@@ -34,6 +34,11 @@ _RE_ILGI = re.compile(r"(^|\n)\s*ilgi\b|ilgi\s*(sayılı|yazı|yazınıza|de kay
 #    celp), bilgi edinme (4982 mevcut-kayda erişim). Konu noun'u (ör. "başvuru sonucu",
 #    "bilirkişi talebi") bu vakalarda yanıltır → öncelikli gövde markeri kazanmalı.
 _GOVDE_ONCELIKLI: tuple[tuple[str, str], ...] = (
+    # CİMER kanal vurgusu: "başvuru" sözcüğü içerse de (başvuru hattı/kanalı/merkezi) bu
+    # bir kanal atfıdır → cimer (generic 'başvuru' keyword'ünden ÖNCE; aksi halde basvuru'ya kapılır).
+    ("tek kapı başvuru", "cimer"), ("elektronik başvuru kanal", "cimer"),
+    ("halk başvuru merkez", "cimer"), ("çevrim içi", "cimer"),
+    ("başvuru portal", "cimer"), ("başvuru hatt", "cimer"),
     # Bilgi edinme (4982): MEVCUT kayda/belgeye erişim talebi — ayırt edici fiiller.
     ("mevcut bilgi ve belge", "bilgi_edinme"),
     ("tarafıma iletilmesini istiyorum", "bilgi_edinme"),
@@ -49,10 +54,21 @@ _GOVDE_ONCELIKLI: tuple[tuple[str, str], ...] = (
     ("tarafınıza bildiril", "cevabi_yazi"),
     ("sonucu aşağıda arz olunur", "cevabi_yazi"),
     ("görüşü aşağıda sunul", "cevabi_yazi"),
-    # Müzekkere: yalnız açık "müzekkere" sözcüğü (öncelikli). "celbi"/"rica olunur" gibi
-    # markerlar icra ('borçluya ait kayıtların celbi') + görüş'ü çalıyordu → KONU katmanına
-    # taşındı (icra Konu sözcükleri 'ödeme emri'/'icra takibi' orada müzekkere'den önce gelir).
+    # Müzekkere: açık "müzekkere" + DAR bilgi-celbi gövde fiilleri (başka kuruma kayıt/belge
+    # isteme). "rica olunur"/"celbi" KASTEN DIŞARIDA (icra/görüşü çalıyordu — bkz. KONU katmanı);
+    # buradakiler müzekkere'ye özgü (icra/görüş gövdesinde geçmez): dosyaya bildirim, makamımıza
+    # gönderim, belge örneği isteme. Genel Konu nouns ('talebi'/'celbi') üzerine baskındır.
     ("müzekkere", "muzekkere"),
+    ("dosyamıza bildiril", "muzekkere"), ("makamımıza gönder", "muzekkere"),
+    ("belgelerin örnek", "muzekkere"), ("resmi yazı ekinde tarafımıza", "muzekkere"),
+    # Tutanak: olay/tespitin huzurda belgelenip imzalanması — gövde fiili Konu noun'undan
+    # ('teslim kaydı' → 'kaydı' = basvuru) DAHA kesin; tutanak'a özgü, başka türde geçmez.
+    ("imza altına al", "tutanak"), ("kayda geçir", "tutanak"),
+    ("huzurunda belgelen", "tutanak"), ("belgelenerek imzal", "tutanak"),
+    # Dava evrakı: mahkeme/yargılama bağlamı — gövde 'itiraz dilekçesi' Konu'sunun generic
+    # 'dilekçe' keyword'üne kapılmasını önler (dava bağlamı dilekçe'den baskın).
+    ("yargılama", "dava_evraki"), ("üst mercie", "dava_evraki"),
+    ("merci nezdinde", "dava_evraki"), ("duruşmada dikkate", "dava_evraki"),
 )
 
 # 1) KONU-satırı tür sözcükleri (en ayırt edici; Konu evrak türünü adlandırır).
@@ -61,6 +77,7 @@ _KONU_KEYWORDS: tuple[tuple[str, str], ...] = (
     ("tutanağı", "tutanak"), ("tutanak", "tutanak"),
     ("raporu", "rapor"),
     ("davası", "dava_evraki"), ("itirazın iptali", "dava_evraki"),
+    ("itiraz dilekçe", "dava_evraki"),  # 'itiraz dilekçesi' Konu'su → dava (generic 'dilekçe'den önce)
     ("müzekkere", "muzekkere"),
     ("haciz", "icra_evraki"), ("ödeme emri", "icra_evraki"), ("icra takibi", "icra_evraki"),
     ("kambiyo", "icra_evraki"), ("kıymet takdiri", "icra_evraki"),
@@ -165,6 +182,115 @@ _CITIZEN_KEYWORDS: tuple[tuple[str, str], ...] = (
     ("bildiririm", "ihbar"), ("kamu zararı", "ihbar"),
 )
 
+# ===========================================================================
+# SEMANTİK NİYET SİNYALLERİ (held-out genelleme — keyword sızıntısı DEĞİL)
+# ===========================================================================
+# TASARIM: keyword tablolarının (Konu/gövde) HİÇBİRİ eşleşmediğinde devreye giren
+# KÖK-BAZLI niyet skorlayıcı. Stem'ler Türkçe çekim eklerini yutacak şekilde KISA
+# (ör. "borçlu" → "borçluya/borçlunun"; "mevcut" → "mevcuttur"). Tek-kelime
+# eşleşmesi değil; her sınıf için NİYET/EYLEM kümesi puan toplar, en yüksek kazanır.
+# Sınıf-imzası ("dilekçe"/"fatura"/"müzekkere" gibi tür ADI) BİLEREK YOK — yalnız
+# anlam taşıyan fiil/eylem kökleri. Bu katman in-domain'i BOZMAZ (keyword'ler önce
+# eşleşir); yalnız dolaylı/örtük held-out gövdesinde fark yaratır.
+
+# Vatandaş (Ad-Soyad/TCKN bloğu) gönderici niyet kökleri — öncelik skoru ile.
+_CITIZEN_INTENT: dict[str, tuple[str, ...]] = {
+    # CİMER: çevrim içi / tek-kapı resmî başvuru kanalı vurgusu (en ayırt edici).
+    "cimer": ("tek kapı", "elektronik başvuru", "çevrim içi", "halk başvuru",
+              "başvuru hatt", "başvuru portal", "başvuru kanal", "online başvuru"),
+    # Bilgi edinme (4982): MEVCUT kayıt/belge/dosyaya ERİŞİM (yeni hak değil).
+    "bilgi_edinme": ("mevcut", "suret", "erişmek", "erişme", "ulaşma", "ulaşmak",
+                     "açıklanmasını", "bir örneğin", "birer örneğin", "dökümün",
+                     "kayıtların tarafıma", "listesinin tarafıma", "verilere"),
+    # İhbar: bir usulsüzlük/aykırılık/suç BİLDİRİMİ (denetim ister). NOT: "bilgilerinize
+    # arz/sun" KASTEN YOK — her resmî evrakın kapalı-biçim KAPANIŞIDIR (catch-all), niyet
+    # ayırt etmez; in-domain dilekçe/talep'i ihbar'a kaptırıyordu. Yalnız usulsüzlük kökleri.
+    "ihbar": ("aykırılığ", "aykırılık", "izinsiz", "usulsüz", "kaçak",
+              "tehlikeye at", "kayıt altına alınmadan", "kayıt dışı", "ihbar",
+              "gizlilik içinde"),
+    # Şikâyet: memnuniyetsizlik / mağduriyet / aksaklık (rahatsızlık bildirimi).
+    "sikayet": ("memnun değil", "memnuniyetsiz", "rahatsız", "huzur", "aksama", "aksıyor",
+                "bunaldım", "kabul edilemez", "şikayet", "şikâyet", "üzerine gid",
+                "sonuç alamadım", "harekete geçmesini", "müdahale edilmesini"),
+    # Başvuru: belirli izin/ruhsat/kayıt için RESMÎ SÜREÇ başlatma (şart/hak tesisi).
+    "basvuru": ("şartları sağla", "şartları taşı", "koşulları taşı", "hakkımın tesis",
+                "kaydımın oluştur", "kaydının oluştur", "programa dahil", "izin için",
+                "sürecin başlat", "yararlanabilm", "dahil edilmesi"),
+    # Talep: somut kaynak/işlem/belge isteği (yeni hak süreci değil; kullanım/tahsis).
+    "talep": ("tahsis", "görevlendir", "kaynağın ayr", "kaynak ayr", "görüşme",
+              "bir nüsha", "nüsha belge", "belge örneği", "ek kaynak", "destek sağlan",
+              "geçici olarak"),
+}
+
+# Kurum→kurum (İmza/e-imza, vatandaş bloğu yok) gönderici niyet kökleri.
+_KURUM_INTENT: dict[str, tuple[str, ...]] = {
+    # Fatura/ödeme: bir BEDEL/MEBLAĞIN ödenmesi/tahsili (para akışı; mali belge). NOT:
+    # generic "karşılanması"/"ödenek" YOK (müzekkere 'hususun karşılanması' + ust_yazi
+    # 'ödenek aktarımı'nı çalıyordu); yalnız net para-akışı kökleri.
+    "fatura": ("meblağ", "tutarın hesab", "bedel", "tahsilat", "hak ediş", "hak edilen",
+               "bütçeden karşıl", "hesabımıza aktar", "meblağın tarafımıza"),
+    # İcra: zorla tahsil / haciz / malvarlığına müdahale (borçlu odaklı).
+    "icra_evraki": ("borçlu", "haciz", "el konul", "bloke", "şerh", "zorla tahsil",
+                    "malvarlığ", "takip dosya", "tahsili amacıyla", "zorlama yol"),
+    # Dava: mahkeme/yargılama beyanı (esas/duruşma/merci/itiraz/savunma).
+    "dava_evraki": ("duruşma", "yargılama", "merci", "savunma", "iddialar", "esas hakk",
+                    "uyuşmazlığ", "delillerin değerlendir", "üst mercie", "heyetinize"),
+    # Müzekkere: başka kurumdan BİLGİ/KAYIT/BELGE celbi (resmî bilgi isteme).
+    "muzekkere": ("rica olunur", "makamımıza gönder", "dosyamıza bildiril", "tarafımıza ulaştır",
+                  "belgelerin örnek", "ihtiyacımız bulun", "ihtiyaç duyulan bilgi",
+                  "kayıtların tarafımıza", "esas dosya"),
+    # Görüş/mütalaa: HUKUKİ yorum/değerlendirme/kanaat isteği.
+    "gorus_mutalaa": ("hukuki", "hukukçu", "kanaat", "yorumlan", "nasıl uygulan",
+                      "tereddüd", "bakış açı", "değerlendirmesi talep", "yorumu konusunda"),
+    # Tebligat: bir karar/yükümlülüğün muhataba RESMEN bildirimi (süre başlatır).
+    "tebligat": ("muhatab", "resmen ulaştır", "resmen duyur", "size bildiril",
+                 "süreniz başla", "tarafınıza resmen", "sabit kılın", "idari işlem"),
+    # Genelge/talimat/olur: düzenleyici işlem + makam ONAYI (teşkilat geneli).
+    "genelge_talimat_olur": ("onay", "yürürlüğe", "tüm birim", "tüm teşkilat",
+                             "teşkilatça", "uygulama esas", "makamın onay", "onayına arz",
+                             "onayınıza"),
+    # Rapor: inceleme/faaliyet bulgu-değerlendirme sunumu.
+    "rapor": ("bulgular", "bulgu", "değerlendirmeye sun", "faaliyetler", "analiz",
+              "saha çalışma", "izleme sürec", "göstergeler", "özetlenerek"),
+    # Tutanak: olay/tespitin huzurda belgelenip imzalanması.
+    "tutanak": ("tespit", "huzurunda belgelen", "imza altına al", "kayda geçir",
+                "yerinde görül", "belgelenerek imzal", "hazır bulunanlar"),
+    # Cevabi yazı: önceki yazıya/talebe KARŞILIK (İlgi atfı + inceleme sonucu).
+    "cevabi_yazi": ("göndermiş olduğunuz yazı", "iletilen talep incelen", "sorduğunuz konu",
+                    "vardığımız sonuç", "yazınızda dile getir", "karşılık hazırla",
+                    "incelememizin çıktı", "yaklaşımı tarafınıza"),
+    # Üst yazı: kurumun BAŞLATTIĞI yeni yazışma (ek/belge sunumu, koordinasyon). NOT:
+    # "bilgilerinize sun"/"saygıyla sunul" YOK (catch-all kapanış; cevabi_yazi'yi çalıyordu);
+    # yalnız ek-sunma/takdim kökleri.
+    "ust_yazi": ("ekte gönder", "ekte sunul", "takdim", "uygun görülmüş",
+                 "değerlendirilmek üzere", "koordinasyon"),
+}
+
+
+def _score_intent(text: str, table: dict[str, tuple[str, ...]]) -> tuple[str, int]:
+    """Niyet tablosunda en çok kök eşleşen sınıfı + skoru döndür (0 = eşleşme yok)."""
+    best, best_n = "", 0
+    for turu, koks in table.items():
+        n = sum(1 for kok in koks if kok in text)
+        if n > best_n:
+            best, best_n = turu, n
+    return best, best_n
+
+
+def _semantik_niyet(text: str, citizen: bool) -> dict[str, Any] | None:
+    """Kök-bazlı niyet skorlama (keyword katmanları boşa düştüğünde) → en olası tür.
+
+    Gönderici rolü (vatandaş vs kurum→kurum) doğru niyet tablosunu seçer; zayıf/çelişkili
+    sinyalde (skor 0) None döner → yapısal fallback + abstention devreye girer.
+    """
+    table = _CITIZEN_INTENT if citizen else _KURUM_INTENT
+    turu, n = _score_intent(text, table)
+    if n == 0:
+        return None
+    # Güven skorla orantılı (tek kök 0.5; çoklu kök 0.58) — abstention eşiği üstünde kalır.
+    conf = 0.58 if n >= 2 else 0.5
+    return _result(turu, conf, f"semantik niyet ({'vatandaş' if citizen else 'kurum'}): {n} kök → {turu}")
+
 
 def _citizen_petition(text: str, konu: str) -> dict[str, Any] | None:
     """Vatandaş bloğu (Ad-Soyad/TCKN) VARSA AÇIK petisyon markeri: cimer/şikâyet/ihbar.
@@ -226,6 +352,11 @@ def _heuristik(text: str) -> dict[str, Any]:
     for kw, turu in _KEYWORDS:
         if tr_lower(kw) in text:
             return _result(turu, 0.6, f"gövde anahtar sözcük: '{kw}'")
+    # Keyword katmanları boş düştü (held-out dolaylı gövde): KÖK-BAZLI niyet skorla.
+    # Yapısal fallback'ten ÖNCE — yoksa her vatandaş→dilekçe, her kurum→üst_yazı çöker.
+    is_citizen = bool(_RE_CITIZEN.search(text))
+    if (niyet := _semantik_niyet(text, is_citizen)) is not None:
+        return niyet
     if (yapisal := _yapisal(text)) is not None:
         return yapisal
     return _result("belirsiz", 0.3,

@@ -101,4 +101,4 @@ göstermek için açılır; zorunlu değildir.
   guard uydurma kurum/tarih/sayıyı veto eder; her çıktıda disclaimer.
 - **"KVKK / kişisel veri?"** → TCKN/telefon backend'de maskelenir; ham PII arayüze hiç ulaşmaz
   (kart üstündeki 🛡️ rozet bunun görünür kanıtı).
-- **"Test?"** → `cd backend && uv run python -m pytest` → **127 passed, 1 skipped**.
+- **"Test?"** → `cd backend && uv run python -m pytest` → **210 passed, 1 skipped**.

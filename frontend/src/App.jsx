@@ -14,6 +14,19 @@ const STEP_MS = 320;
 
 const freshNodes = () => PIPELINE.map((n) => ({ ...n, status: "pending", data: null }));
 
+// Örnekleri kategoriye göre, ilk-görülen sırayı koruyarak grupla (8-9 örnek → okunur düzen).
+// grup alanı yoksa "Örnekler" başlığı altında toplanır (graceful).
+const SAMPLE_GROUPS = (() => {
+  const order = [];
+  const byGroup = new Map();
+  for (const s of SAMPLE_DOCS) {
+    const grup = s.grup || "Örnekler";
+    if (!byGroup.has(grup)) { byGroup.set(grup, []); order.push(grup); }
+    byGroup.get(grup).push(s);
+  }
+  return order.map((grup) => ({ grup, items: byGroup.get(grup) }));
+})();
+
 export default function App() {
   const [nodes, setNodes] = useState(freshNodes);
   const [result, setResult] = useState(null);
@@ -280,26 +293,33 @@ export default function App() {
           </div>
 
           <div className="ke-samples" aria-label="Örnek evraklar">
-            <span className="ke-samples-h">Dosyan yok mu? Örnek bir evrakı dene:</span>
-            <div className="ke-samples-row">
-              {SAMPLE_DOCS.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={"ke-sample" + (selectedSample === s.id ? " active" : "")}
-                  onClick={() => !busy && runSampleJson(s)}
-                  disabled={busy}
-                  title={s.aciklama}
-                  aria-pressed={selectedSample === s.id}
-                >
-                  <span className="ke-sample-ic" aria-hidden="true">{s.icon}</span>
-                  <span className="ke-sample-tx">
-                    <span className="ke-sample-label">{s.label}</span>
-                    <span className="ke-sample-desc">{s.aciklama}</span>
-                  </span>
-                </button>
-              ))}
-            </div>
+            <span className="ke-samples-h">
+              Dosyan yok mu? <strong>{SAMPLE_DOCS.length} örnek evraktan</strong> birini tek tıkla canlı işlet:
+            </span>
+            {SAMPLE_GROUPS.map(({ grup, items }) => (
+              <div className="ke-sample-group" key={grup}>
+                <span className="ke-sample-grup-h" aria-hidden="true">{grup}</span>
+                <div className="ke-samples-row" role="group" aria-label={`${grup} örnek evraklar`}>
+                  {items.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      className={"ke-sample" + (selectedSample === s.id ? " active" : "")}
+                      onClick={() => !busy && runSampleJson(s)}
+                      disabled={busy}
+                      title={s.aciklama}
+                      aria-pressed={selectedSample === s.id}
+                    >
+                      <span className="ke-sample-ic" aria-hidden="true">{s.icon}</span>
+                      <span className="ke-sample-tx">
+                        <span className="ke-sample-label">{s.label}</span>
+                        <span className="ke-sample-desc">{s.aciklama}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

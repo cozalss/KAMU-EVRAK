@@ -102,11 +102,18 @@ body {
 .ke-drop-main { font-weight: 600; font-size: 1.02rem; }
 .ke-drop-sub { font-size: .8rem; color: var(--muted); }
 
-.ke-samples { display: flex; flex-direction: column; gap: .55rem; }
+.ke-samples { display: flex; flex-direction: column; gap: .7rem; }
 .ke-samples-h { font-size: .85rem; color: var(--ink-2); font-weight: 600; }
+.ke-samples-h strong { color: var(--accent-ink); }
+/* kategori grubu (Vatandaş / Kurum / Hukuk-Mali) — 9 örnek okunur kümelenir */
+.ke-sample-group { display: flex; flex-direction: column; gap: .4rem; }
+.ke-sample-grup-h {
+  font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); padding-left: .1rem;
+}
 .ke-samples-row {
   display: grid; gap: .55rem;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 .ke-sample {
   display: flex; align-items: center; gap: .6rem; text-align: left;

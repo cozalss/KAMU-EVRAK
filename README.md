@@ -60,7 +60,7 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
 | Yazı türü doğruluğu | 0.936 |
 | Adillik (counterfactual isim/cinsiyet) | **1.0000** [0.956, 1.000] |
 
-Test paketi: **127 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
+Test paketi: **210 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
 
 ## Gerçek LLM modu (mock taban → bulut tavan)
 

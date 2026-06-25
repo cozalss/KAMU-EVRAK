@@ -21,31 +21,45 @@ log = structlog.get_logger()
 
 _EVRAK = "yazi_isleri_evrak"  # her evrakın ilk havale durağı (resmî akış)
 
-# İçerik-temelli sinyal: anahtar sözcük → birim. docs/02 §3 birim sorumlulukları.
+# İçerik-temelli sinyal: KÖK-bazlı anahtar → birim. docs/02 §3 birim sorumlulukları.
 # Aynı anda birden çok eşleşirse skorlanır (en yüksek kazanır), kalanlar alternatif.
+#
+# GENELLEME (held-out): kökler Türkçe çekim eklerini yutacak şekilde KISA tutuldu
+# (ör. "haciz" yerine değil ama "borçlu"→borçluya/borçlunun; "personel"→personelin;
+# "tahsil"→tahsili/tahsilat). Salt sınıf-imzası değil, DOLAYLI içerik bağlamı da
+# yakalanır (ör. "malvarlığ"/"şerh" → hukuk; "meblağ"/"hak ediş" → mali; "muhatab"/
+# "süreniz başla" → hukuk-tebligat). Bu, 'belirsiz' türde ve alternatif sıralamada
+# içerik sürücü olduğunda dolaylı evrakı da doğru birime taşır.
 _CONTENT_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("hukuk_musavirligi",
      ("dava", "icra", "haciz", "tebligat", "tebliğ", "müzekkere", "mahkeme",
-      "savcılık", "mütalaa", "hukuki görüş", "ihtarname")),
+      "savcılık", "mütalaa", "hukuki", "ihtarname", "borçlu", "malvarlığ",
+      "duruşma", "yargılama", "muhatab", "şerh", "el konul", "zorla tahsil",
+      "kanaat", "merci")),
     ("insan_kaynaklari",
-     ("personel", "atama", "izin", "disiplin", "kadro", "terfi", "sicil", "özlük")),
+     ("personel", "atama", "izin", "disiplin", "kadro", "terfi", "sicil", "özlük",
+      "görevlendir", "memur", "naklen")),
     ("mali_strateji_sgb",
-     ("fatura", "ödeme", "bütçe", "tahakkuk", "harcama", "ihale bedeli", "maaş", "avans")),
+     ("fatura", "ödeme", "bütçe", "tahakkuk", "harcama", "ihale bedel", "maaş",
+      "avans", "meblağ", "hak ediş", "hak edilen", "tahsilat", "ödenek", "bedel")),
     ("bilgi_islem",
-     ("sistem", "yazılım", "donanım", "erişim", "ebys", "e-posta", "ağ", "şifre")),
+     ("sistem", "yazılım", "donanım", "ebys", "e-posta", "şifre", "veri taban")),
     ("destek_idari_hizmetler",
      ("satın alma", "lojistik", "temizlik", "araç", "bakım", "tedarik", "kira")),
     ("basin_halkla_iliskiler_cimer",
-     ("cimer", "bilgi edinme", "4982", "basın", "halkla ilişkiler", "dilekçe")),
+     ("cimer", "bilgi edinme", "4982", "basın", "halkla ilişki", "dilekçe",
+      "tek kapı", "elektronik başvuru", "halk başvuru", "çevrim içi")),
     ("teftis_ic_denetim",
-     ("şikayet", "şikâyet", "ihbar", "soruşturma", "denetim", "inceleme", "usulsüzlük")),
+     ("şikayet", "şikâyet", "ihbar", "soruşturma", "denetim", "inceleme",
+      "usulsüz", "aykırılık", "memnuniyetsiz", "rahatsız", "bulgu", "rapor")),
     ("ilgili_teknik_daire",
-     ("ruhsat", "izin belgesi", "proje", "teknik", "imar", "başvuru")),
+     ("ruhsat", "izin belge", "proje", "teknik", "imar", "başvuru", "şartları sağla",
+      "hakkımın tesis")),
 )
 
 
 def _content_scores(text: str) -> dict[str, int]:
-    """Metinde geçen birim-anahtar sözcüklerini say (birim → eşleşme adedi)."""
+    """Metinde geçen birim-anahtar köklerini say (birim → eşleşme adedi)."""
     scores: dict[str, int] = {}
     for birim, kws in _CONTENT_KEYWORDS:
         n = sum(1 for kw in kws if tr_lower(kw) in text)

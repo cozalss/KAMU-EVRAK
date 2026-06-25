@@ -11,8 +11,20 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü
-- **İT-1 (16:17):** git init + backlog. Ajanlar: gerçek LLM siniflandir/cikar, yazi_taslak+ozetle,
-  eval harness+gen_synthetic, frontend AgentFlowGraph+kartlar, pytest. → (sonuç güncellenecek)
+- **İT-1 (16:17→~16:55) BİTTİ:** git init + backlog. 4 ajan:
+  (A) Görev1 node'ları gerçek LLM+mock fallback (siniflandir/cikar/eksik/ozetle, PII maskeli) ✓ commit 6a255b0
+  (B) Görev2 yazi_taslak (jinja2+PDF/DOCX) + route_birim + mevzuat_oner(BM25) ✓ 6a255b0
+  (C) eval harness (6 metrik + competition_scorecard) + gen_synthetic 18 tür + 6 gold set ✓ ffd34af
+  (D) frontend canlı SVG AgentFlowGraph + 7 sonuç kartı + örnek evraklar ✓ ffd34af
+  E2E mock pipeline doğrulandı (dilekçe→CİMER, dava→Hukuk, PDF üretiliyor).
+  ⚠️ OLAY: Agent C dosyaları yanlışlıkla adalet-agent'a yazdı (relative path + cwd) → TAŞINDI, adalet-agent baseline'a döndü (TEMİZ).
+- **İT-2 sıradaki ÖNCELİKLER:**
+  1. [HIGH] eval'i GERÇEK pipeline'a bağla: gen_synthetic taksonomisi (itiraz/basvuru_izin/...) ≠ config.py
+     (dilekce/bilgi_edinme/...) → BİRLEŞTİR (config.py grounded kazanır) + eval build_graph().ainvoke çağırsın.
+  2. Görev2: yazı taslağı PDF/DOCX İNDİRME endpoint'i (backend) + frontend buton aktif et.
+  3. pytest test suite (node + pipeline + eval) — henüz YOK.
+  4. clarifier dur-ve-sor dalı (graph conditional edge) + verify/risk_guard node.
+  AJAN PROMPT NOTU: her zaman MUTLAK yol ver (C:\Users\cemmo\Desktop\kamu evrak\...), relative DEĞİL.
 
 ---
 

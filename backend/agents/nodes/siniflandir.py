@@ -1,10 +1,9 @@
-"""Görev 1 — Evrak türü sınıflandırma node'u.
+"""Görev 1 — Evrak türü sınıflandırma node'u (LLM-birincil + keyword fallback).
 
-# TODO(kamu-evrak): Bu STUB keyword-heuristik kullanır. Üretimde:
-#   1) few-shot LLM (get_llm, JSON-schema çıktı) BİRİNCİL — ADALET nodes/triaj.py deseni,
-#   2) opsiyonel DistilBERTurk kademe (ablation/yenilikçilik),
-#   3) abstention: düşük güven → "belirsiz" (kendi-tanımlı kapalı-küme manipülasyonu önlenir).
-# Etiket kümesi config.EVRAK_TURLERI (resmî kaynağa dayalı — docs/02).
+Akış (CLAUDE.md v2.3): few-shot LLM JSON-schema çıktı BİRİNCİL (kapalı-küme
+config.EVRAK_TURLERI); LLM yok/mock/hata → keyword-heuristik fallback (deterministik,
+anahtarsız demo çalışır). Düşük güvende "belirsiz" (abstention — kendi-tanımlı
+kapalı-küme F1 manipülasyon algısını önle; docs/02 §1).
 """
 
 from __future__ import annotations
@@ -13,12 +12,17 @@ from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TURU_TR
+from agents.config import EVRAK_TURLERI, EVRAK_TURU_TR
+from agents.nodes._llm_extract import llm_json
 from core.text import tr_lower
 
 log = structlog.get_logger()
 
-# Keyword → evrak türü (öncelik sıralı; ilk eşleşen kazanır).
+# LLM güven eşiği — altında "belirsiz"e abstain (kapalı-küme manipülasyon koruması).
+_ABSTAIN_THRESHOLD = 0.45
+_VALID_TURLER = set(EVRAK_TURLERI)
+
+# Keyword → evrak türü (öncelik sıralı; ilk eşleşen kazanır) — LLM-yok fallback.
 _KEYWORDS: tuple[tuple[str, str], ...] = (
     ("bilgi edinme", "bilgi_edinme"), ("4982", "bilgi_edinme"),
     ("cimer", "cimer"),
@@ -38,32 +42,72 @@ _KEYWORDS: tuple[tuple[str, str], ...] = (
     ("dilekçe", "dilekce"), ("talep ederim", "dilekce"), ("arz ederim", "dilekce"),
 )
 
+# Few-shot LLM prompt — kapalı-küme + abstention talimatı (uydurma sınıf üretilemez).
+_SYSTEM = (
+    "Sen Türk kamu kurumlarında gelen evrakı sınıflandıran bir uzman asistansın. "
+    "Verilen evrak metnini SADECE şu kapalı listeden BİR türe ata:\n"
+    f"{', '.join(EVRAK_TURLERI)}\n\n"
+    "Kurallar:\n"
+    "- Liste DIŞINDA tür UYDURMA.\n"
+    "- Emin değilsen 'belirsiz' seç ve düşük güven ver (abstention).\n"
+    "- 'dilekçe' serbest vatandaş talebidir; 'bilgi_edinme' özel olarak MEVCUT kayda "
+    "erişim talebidir (4982) — karıştırma.\n"
+    "- 'İlgi' atfı + resmî T.C. başlık → cevabi_yazi; yalnız resmî başlık → ust_yazi.\n\n"
+    "Çıktı SADECE şu JSON, başka metin YOK:\n"
+    '{"evrak_turu": "<tür>", "tur_confidence": <0..1>, "tur_reasoning": "<kısa gerekçe>"}'
+)
 
-async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Evrak metninden türü belirle (STUB: keyword; üretimde few-shot LLM)."""
-    text = tr_lower(state.get("evrak_text", ""))
-    if not text.strip():
-        return {"evrak_turu": "belirsiz", "tur_confidence": 0.0,
-                "tur_reasoning": "boş metin"}
 
-    # "İlgi" alanı + resmî başlık → cevabi yazı; yalnız resmî başlık → üst yazı.
+def _heuristik(text: str) -> dict[str, Any]:
+    """Keyword + resmî-başlık heuristiği (LLM-yok fallback) — eski stub mantığı korunur."""
     if "i̇lgi" in text or "ilgi :" in text or "ilgi:" in text:
         if "sayı" in text or "t.c." in text:
             return {"evrak_turu": "cevabi_yazi", "tur_confidence": 0.6,
-                    "tur_reasoning": "İlgi atfı + resmî başlık (cevabi yazı)"}
-
+                    "tur_reasoning": "İlgi atfı + resmî başlık (cevabi yazı) [heuristik]"}
     for kw, turu in _KEYWORDS:
         if tr_lower(kw) in text:
-            log.info("siniflandir", turu=turu, kw=kw)
             return {"evrak_turu": turu, "tur_confidence": 0.6,
-                    "tur_reasoning": f"anahtar sözcük: '{kw}'"}
-
+                    "tur_reasoning": f"anahtar sözcük: '{kw}' [heuristik]"}
     if "sayı" in text and "t.c." in text:
         return {"evrak_turu": "ust_yazi", "tur_confidence": 0.5,
-                "tur_reasoning": "resmî başlık (T.C. + Sayı)"}
-
+                "tur_reasoning": "resmî başlık (T.C. + Sayı) [heuristik]"}
     return {"evrak_turu": "belirsiz", "tur_confidence": 0.3,
             "tur_reasoning": f"eşleşme yok (abstention); etiketler: {list(EVRAK_TURU_TR)[:5]}..."}
+
+
+def _from_llm(obj: dict[str, Any]) -> dict[str, Any] | None:
+    """LLM JSON'unu doğrula → geçerli kapalı-küme türü + abstention; geçersiz → None."""
+    turu = str(obj.get("evrak_turu", "")).strip()
+    if turu not in _VALID_TURLER:
+        return None
+    try:
+        conf = float(obj.get("tur_confidence", 0.0))
+    except (TypeError, ValueError):
+        conf = 0.0
+    conf = max(0.0, min(1.0, conf))
+    reasoning = str(obj.get("tur_reasoning", "") or "LLM sınıflandırması").strip()[:240]
+    if turu != "belirsiz" and conf < _ABSTAIN_THRESHOLD:  # abstention kapısı
+        return {"evrak_turu": "belirsiz", "tur_confidence": conf,
+                "tur_reasoning": f"düşük güven ({conf:.2f}) → belirsiz; LLM önerisi: {turu}"}
+    return {"evrak_turu": turu, "tur_confidence": conf, "tur_reasoning": reasoning}
+
+
+async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
+    """Evrak türünü belirle — LLM-birincil (kapalı-küme + abstention), keyword fallback."""
+    raw = state.get("evrak_text", "")
+    text = tr_lower(raw)
+    if not text.strip():
+        return {"evrak_turu": "belirsiz", "tur_confidence": 0.0, "tur_reasoning": "boş metin"}
+
+    obj = await llm_json(_SYSTEM, raw[:6000], max_tokens=200)
+    if obj is not None and (result := _from_llm(obj)) is not None:
+        log.info("siniflandir", turu=result["evrak_turu"],
+                 conf=result["tur_confidence"], source="llm")
+        return result
+
+    result = _heuristik(text)
+    log.info("siniflandir", turu=result["evrak_turu"], source="heuristik")
+    return result
 
 
 __all__ = ("siniflandir_node",)

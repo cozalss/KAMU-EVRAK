@@ -1,4 +1,5 @@
-{# Cevabi yazı — üst yazı iskeleti + İlgi atfı (Yön. 2646 m.15). #}
+{# Cevabi yazı — üst yazı iskeleti + İlgi atfı (Yön. 2646 m.15). Gövde 'metin' alanından gelir;
+   sağlanmazsa nötr değerlendirme placeholder'ı kalır (uydurma yok). #}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
@@ -10,7 +11,7 @@ Konu : {{ konu | default("{{ KONU }}") }}
 
 İlgi : {{ ilgi_tarih | default("{{ İLGİ TARİH }}") }} tarihli ve {{ ilgi_sayi | default("{{ İLGİ SAYI }}") }} sayılı yazınız.
 
-İlgi yazıda belirtilen konuya ilişkin {{ metin | default("{{ DEĞERLENDİRME / SONUÇ }}") }}.
+{{ metin | default("İlgi yazıda belirtilen konuya ilişkin {{ DEĞERLENDİRME / SONUÇ }}.") }}
 
          {{ kapanis | default("Gereğini rica ederim.") }}
 

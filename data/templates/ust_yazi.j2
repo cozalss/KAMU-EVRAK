@@ -1,5 +1,5 @@
 {# Üst yazı — Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020).
-   Eksik alanlar {{ }} placeholder kalır (CLAUDE.md — uydurma yok). #}
+   Eksik alanlar {{ }} placeholder kalır (CLAUDE.md — uydurma yok). Yön. m.10-19. #}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
@@ -21,6 +21,6 @@ Ek :
 {% endfor %}{% endif %}
 {% if dagitim %}
 Dağıtım:
-Gereği:{% for d in dagitim.geregi %} {{ d }};{% endfor %}
-Bilgi:{% for d in dagitim.bilgi %} {{ d }};{% endfor %}
-{% endif %}
+{% if dagitim.geregi | default([]) %}Gereği:{% for d in dagitim.geregi %} {{ d }};{% endfor %}
+{% endif %}{% if dagitim.bilgi | default([]) %}Bilgi:{% for d in dagitim.bilgi %} {{ d }};{% endfor %}
+{% endif %}{% endif %}

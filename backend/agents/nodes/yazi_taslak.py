@@ -1,75 +1,74 @@
 """Görev 2 — Resmî yazı taslaklama node'u.
 
 Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)
-formatına göre taslak iskeleti üretir: T.C. başlık / Sayı / Tarih / Konu / Muhatap /
-İlgi / metin gövdesi / kapanış (hiyerarşiye göre arz/rica) / imza bloğu. Eksik alanlar
-`{{ }}` placeholder olarak kalır (CLAUDE.md — uydurma yok).
+formatına göre taslak üretir: data/templates/*.j2 (ust_yazi/cevabi_yazi/
+bilgilendirme/olur) jinja2 ile render edilir; metin gövdesi resmî üslupta
+üretilir (LLM varsa get_llm, yoksa deterministik şablon). Eksik alanlar
+`{{ }}` placeholder kalır (CLAUDE.md — uydurma yok).
 
-# TODO(kamu-evrak): STUB string-template. Üretimde:
-#   - data/templates/*.j2 (üst/cevabi/bilgilendirme/olur) + yazi/renderer.py (PDF/DOCX),
-#   - metin gövdesi LLM (get_llm) ile resmî üslupta, kaynaksız iddia yok,
-#   - format-compliance checklist (eval/draft_eval.py) + uydurma-kurum/tarih/sayı veto.
+Boru hattı (yazi/ paketine delege):
+    1. EVRAK_TO_YAZI ile yazı türü seç
+    2. yazi_render.build_body → resmî üslupta gövde metni
+    3. yazi_render.build_context → YaziContext (placeholder-safe)
+    4. renderer.render_yazi → metin + PDF/DOCX bytes + format_uyumlu
+
+Render altyapısı (jinja2/reportlab/docx) yoksa try/except ile korunur:
+node ASLA patlamaz; en kötü ihtimalde format_uyumlu=False + iskelet metin.
 """
 
 from __future__ import annotations
 
-from datetime import date
 from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TO_YAZI, YAZI_TURU_TR
+from agents.config import EVRAK_TO_YAZI
 
 log = structlog.get_logger()
 
-_KAPANIS = {
-    "ust_yazi": "Gereğini arz ederim.",
-    "cevabi_yazi": "Gereğini rica ederim.",
-    "bilgilendirme": "Bilgilerinize arz ederim.",
-    "olur": "Olurlarınıza arz ederim.",
-}
 
-
-def _placeholder(unsurlar: dict[str, Any], key: str, etiket: str) -> str:
-    val = unsurlar.get(key)
-    return str(val) if val else "{{ " + etiket + " }}"
+def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
+    """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
+    konu_satir = konu if konu else "{{ KONU }}"
+    metin = (
+        f"T.C.\n{{{{ İDARE ADI }}}}\nKonu : {konu_satir}\n\n"
+        f"{{{{ METİN GÖVDESİ }}}}\n\nGereğini arz ederim.\n{{{{ AD SOYAD }}}}"
+    )
+    return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin, "format_uyumlu": False}
 
 
 async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Resmî yazı taslağı (markdown iskelet) üret (STUB; üretimde jinja2 + LLM gövde)."""
+    """Resmî yazı taslağı (metin + PDF/DOCX) üret — jinja2 + resmî-üslup gövde."""
     turu = state.get("evrak_turu", "belirsiz")
     yazi_turu = EVRAK_TO_YAZI.get(turu, "cevabi_yazi")
     unsurlar = state.get("bilgi_unsurlari") or {}
-    konu = _placeholder(unsurlar, "konu", "KONU")
-    bugun = date.today().strftime("%d.%m.%Y")
+    evrak_text = state.get("evrak_text", "") or ""
 
-    ilgi = ""
-    if yazi_turu == "cevabi_yazi":
-        sayi = unsurlar.get("sayi", "{{ İLGİ SAYI }}")
-        tarih = unsurlar.get("tarih", "{{ İLGİ TARİH }}")
-        ilgi = f"\nİlgi : {tarih} tarihli ve {sayi} sayılı yazınız.\n"
+    try:
+        from yazi.renderer import render_yazi
+        from yazi.yazi_render import build_body, build_context
 
-    taslak = f"""\
-                                   T.C.
-                          {{{{ İDARE ADI }}}}
-                       {{{{ BİRİM ADI }}}}
+        metin = await build_body(yazi_turu, unsurlar, evrak_text)
+        ctx = build_context(yazi_turu, unsurlar, metin)
+        result = render_yazi(ctx)
+    except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
+        log.warning("yazi_taslak_fallback", err=str(exc))
+        return _fallback_taslak(yazi_turu, str(unsurlar.get("konu", "") or ""))
 
-Sayı : E-{{{{ DETSİS }}}}-{{{{ SDP }}}}-{{{{ KAYIT NO }}}}                {bugun}
-Konu : {konu}
-
-                          {{{{ MUHATAP MAKAM }}}}
-{ilgi}
-İlgili evrak ({YAZI_TURU_TR.get(yazi_turu, yazi_turu)}) tarafımıza ulaşmış olup
-{{{{ METİN GÖVDESİ — talebin değerlendirmesi, dayanak, sonuç }}}}.
-
-{_KAPANIS.get(yazi_turu, "Gereğini rica ederim.")}
-
-                                              {{{{ AD SOYAD }}}}
-                                              {{{{ UNVAN }}}}
-"""
-    log.info("yazi_taslak", turu=turu, yazi_turu=yazi_turu)
-    return {"yazi_turu": yazi_turu, "yazi_taslak_md": taslak,
-            "format_uyumlu": "{{" not in konu}
+    log.info(
+        "yazi_taslak", turu=turu, yazi_turu=result.yazi_turu,
+        format_uyumlu=result.format_uyumlu, n_eksik=len(result.eksik_format_alanlari),
+    )
+    out: dict[str, Any] = {
+        "yazi_turu": result.yazi_turu,
+        "yazi_taslak_md": result.metin,
+        "format_uyumlu": result.format_uyumlu,
+    }
+    if result.pdf_bytes:
+        out["yazi_taslak_pdf_bytes"] = result.pdf_bytes
+    if result.docx_bytes:
+        out["yazi_taslak_docx_bytes"] = result.docx_bytes
+    return out
 
 
 __all__ = ("yazi_taslak_node",)

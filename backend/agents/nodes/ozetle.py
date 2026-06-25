@@ -1,42 +1,85 @@
-"""Görev 1 — Evrak özeti node'u.
+"""Görev 1 — Evrak özeti node'u (LLM kısa-öz + deterministik kısaltma fallback).
 
-# TODO(kamu-evrak): STUB naif kısaltma yapar. Üretimde:
-#   - LLM (get_llm) ile kısa-öz özet VEYA mT5-turkish-summarization (Apache-2.0),
-#   - key-fact recall odaklı (eval/summary_eval.py LLM-judge kapsama metriği),
-#   - ADALET nodes/draft.py prompt-bütçe/adaptif-token deseni ADAPT.
+Akış: LLM (get_llm) ile tür + konu + kilit unsurlara dayalı kısa, olgusal özet üretir;
+LLM yok/mock/hata → tür + konu + ilk cümleler naif kısaltma fallback (deterministik,
+anahtarsız demo çalışır). Mevzuat madde UYDURMA (CLAUDE.md §1) — özet yalnız evrak metnine
+dayanır; LLM şüpheli madde no üretirse prompt'la engellenir, kalan risk fallback'te yok.
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import structlog
 
 from agents.config import evrak_turu_tr
+from agents.nodes._llm_extract import llm_json
 
 log = structlog.get_logger()
 
 _MAX_OZET = 280
 
+# PII redaksiyonu — fallback özet ham metni tekrarlar; TCKN/telefon sızmasın (CLAUDE.md §2).
+_RE_TCKN = re.compile(r"\b[1-9]\d{10}\b")
+_RE_TEL = re.compile(r"\b0?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}\b")
+
+
+def _redact_pii(text: str) -> str:
+    """Özet gövdesindeki ham TCKN/telefon'u maskele (fallback metin sızıntısını önle)."""
+    text = _RE_TCKN.sub("[TCKN]", text)
+    return _RE_TEL.sub("[TEL]", text)
+
+_SYSTEM = (
+    "Sen kamu evrakını özetleyen bir asistansın. Verilen evrakı tek paragrafta, en fazla "
+    "2-3 cümlede, resmî ve olgusal bir dille özetle. SADECE metinde geçenleri yaz — "
+    "mevzuat maddesi veya kurum adı UYDURMA. Çıktı SADECE şu JSON, başka metin YOK:\n"
+    '{"ozet": "<kısa özet>"}'
+)
+
+
+def _kilit_unsurlar(unsurlar: dict[str, Any]) -> str:
+    """Özet prompt'una bağlam — çıkarılan kilit alanlar (ham PII YOK; zaten maskeli)."""
+    parts = []
+    for key, etiket in (("gonderen", "Gönderen"), ("kurum", "Kurum"),
+                        ("konu", "Konu"), ("tarih", "Tarih")):
+        if val := unsurlar.get(key):
+            parts.append(f"{etiket}: {val}")
+    return "; ".join(parts)
+
+
+def _fallback_ozet(text: str, turu: str, konu: str | None) -> str:
+    """Deterministik özet (LLM yok/hata) — tür + konu + ilk cümleler kısaltma (PII redakteli)."""
+    govde = " ".join(_redact_pii(text).split())
+    if len(govde) > _MAX_OZET:
+        govde = govde[:_MAX_OZET].rsplit(" ", 1)[0] + "…"
+    parcalar = [f"**{evrak_turu_tr(turu)}**"]
+    if konu:
+        parcalar.append(f"Konu: {konu}")
+    parcalar.append(govde or "_metin boş_")
+    return " — ".join(parcalar)
+
 
 async def ozetle_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Evrak için kısa öz özet üret (STUB: tür + konu + ilk cümleler)."""
+    """Evrak için kısa öz özet üret — LLM-birincil, deterministik kısaltma fallback."""
     text = (state.get("evrak_text") or "").strip()
     turu = state.get("evrak_turu", "belirsiz")
     unsurlar = state.get("bilgi_unsurlari") or {}
     konu = unsurlar.get("konu")
 
-    govde = " ".join(text.split())
-    if len(govde) > _MAX_OZET:
-        govde = govde[:_MAX_OZET].rsplit(" ", 1)[0] + "…"
+    if not text:
+        return {"ozet": f"**{evrak_turu_tr(turu)}** — _metin boş_"}
 
-    parcalar = [f"**{evrak_turu_tr(turu)}**"]
-    if konu:
-        parcalar.append(f"Konu: {konu}")
-    parcalar.append(govde or "_metin boş_")
-    ozet = " — ".join(parcalar)
+    baglam = _kilit_unsurlar(unsurlar)
+    user = f"Tür: {evrak_turu_tr(turu)}\n{baglam}\n\nEvrak metni:\n{text[:6000]}"
+    obj = await llm_json(_SYSTEM, user, max_tokens=300, temperature=0.2)
+    if obj is not None and isinstance(obj.get("ozet"), str) and obj["ozet"].strip():
+        ozet = f"**{evrak_turu_tr(turu)}** — {obj['ozet'].strip()}"
+        log.info("ozetle", turu=turu, n_chars=len(ozet), source="llm")
+        return {"ozet": ozet}
 
-    log.info("ozetle", turu=turu, n_chars=len(ozet))
+    ozet = _fallback_ozet(text, turu, konu)
+    log.info("ozetle", turu=turu, n_chars=len(ozet), source="fallback")
     return {"ozet": ozet}
 
 

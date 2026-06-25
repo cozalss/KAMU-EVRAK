@@ -1,341 +1,221 @@
-"""Dilekçe renderer — jinja2 markdown + reportlab PDF.
+"""Resmî yazı renderer — jinja2 (data/templates/*.j2) + reportlab PDF + python-docx.
 
-İki aşama:
-    1. Jinja2 ile DilekceContext → markdown string (deterministic, LLM yok)
-    2. Markdown → reportlab PDF bytes (Türkçe karakterler için Helvetica yerine
-       reportlab'ın yerleşik 'STSong-Light' alternatifi kabul edilemez; sistemde
-       bulunmayan DejaVuSans yerine reportlab built-in Helvetica varyantı +
-       UTF-8 string encoding kullanılır)
+ADALET `dilekce/renderer.py` motorundan ADAPT: aynı iki-aşamalı boru hattı
+    1. Jinja2 ile YaziContext → düz-metin (deterministik, LLM YOK)
+    2. Metin → reportlab PDF bytes (+ opsiyonel python-docx bytes)
+ama hukuk (Domain/Citation/dilekçe) yerine kamu-evrak resmî yazı (Yön. 2646).
 
-Mimari (architect kararı):
-    - PDF in-memory bytes; state'e yazılır, API endpoint stream eder
-    - Disk persistence yok (KVKK + test kolaylığı)
-    - Sıfır halüsinasyon: yalnız VERIFIED içerik + KAYNAKLI Citation interpolation
+Resmî yazı SABİT-HİZALI layout ister (ortalanmış "T.C." / antet, sağa-ortalı
+imza bloğu). Dilekçe markdown→Paragraph akışı hizayı bozardı; bunun yerine
+reportlab `Preformatted` (monospace, whitespace-koruyan) kullanılır → şablonun
+boşluk hizası PDF'te aynen korunur (Yön. m.10/m.17 görünüm uyumu).
 
-Türkçe karakter desteği:
-    reportlab Helvetica WinAnsiEncoding ile ç ş ğ İ vb. düzgün render eder
-    (1.x'ten beri). Custom TTF embed gerekirse `_register_dejavu()` çağırılır.
+Jinja undefined: LENIENT `Undefined` (StrictUndefined DEĞİL). Şablonlar
+`{{ alan | default("{{ PLACEHOLDER }}") }}` deseni kullanır; eksik değişken
+`default` filtresine düşer → ham `{{ PLACEHOLDER }}` görünür (uydurma yok).
+
+Mimari:
+    - PDF/DOCX in-memory bytes (disk persistence yok — test + KVKK kolaylığı).
+    - Türkçe karakter: Helvetica WinAnsiEncoding ç ş ğ İ Ö Ü doğru gösterir.
+    - reportlab/docx OPSİYONEL: import başarısızsa metin yine döner (bytes=None).
 """
 
 from __future__ import annotations
 
 import io
+import os
 import re
 from datetime import date
 from pathlib import Path
-from typing import Any
 
 import structlog
-from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import cm
-from reportlab.platypus import (
-    Paragraph,
-    SimpleDocTemplate,
-    Spacer,
-)
+from jinja2 import ChoiceLoader, Environment, FileSystemLoader, select_autoescape
+from jinja2.exceptions import TemplateError
 
-from agents.config import DILEKCE_MAX_DOCX_BYTES, DILEKCE_MAX_PDF_BYTES
-from agents.dilekce.models import DilekceContext, DilekceResult
-from agents.dilekce.template_registry import template_label
-from agents.state import Citation, Domain
+from yazi.models import YaziContext, YaziResult
+from yazi.template_registry import template_file, template_label
 
 log = structlog.get_logger()
 
-_TEMPLATES_DIR = Path(__file__).parent / "templates"
+# Çıktı boyut tavanı (DoS/şişme savunması). Resmî yazı tek-iki sayfa → küçük yeter.
+_MAX_PDF_BYTES = int(os.getenv("YAZI_MAX_PDF_BYTES", str(2_000_000)))
+_MAX_DOCX_BYTES = int(os.getenv("YAZI_MAX_DOCX_BYTES", str(2_000_000)))
 
-# Jinja env — autoescape KAPALI (PDF markdown çıkar, HTML değil); StrictUndefined
-# undefined değişkeni hata olarak verir (test'te kaçırılan placeholder yakalanır).
-_env = Environment(
-    loader=FileSystemLoader(str(_TEMPLATES_DIR)),
-    autoescape=select_autoescape(disabled_extensions=("j2",), default=False),
-    undefined=StrictUndefined,
-    trim_blocks=True,
-    lstrip_blocks=True,
-)
-
-# Reportlab paragraph stilleri — başlık/normal/küçük. Helvetica WinAnsi
-# Türkçe ç ş ğ ı İ Ö Ü karakterlerini doğru gösterir.
-_styles = getSampleStyleSheet()
-_h1 = ParagraphStyle(
-    "H1", parent=_styles["Heading1"], fontSize=16, leading=20, spaceAfter=10,
-)
-_h2 = ParagraphStyle(
-    "H2", parent=_styles["Heading2"], fontSize=12, leading=16, spaceAfter=6,
-)
-_body = ParagraphStyle(
-    "Body", parent=_styles["BodyText"], fontSize=10, leading=14, spaceAfter=4,
-)
-_small = ParagraphStyle(
-    "Small", parent=_styles["BodyText"], fontSize=8, leading=10, textColor="#666666",
-)
-
-# Markdown → reportlab basit dönüşüm (table/image YOK — dilekçe metin tabanlı).
-_HEADING_RE = re.compile(r"^(#{1,3})\s+(.+)$")
-_LI_RE = re.compile(r"^[-*]\s+(.+)$")
-_NUM_LI_RE = re.compile(r"^(\d+)\.\s+(.+)$")
-_HR_RE = re.compile(r"^---+\s*$")
-
-# Bold ve italic - reportlab Paragraph XML-like markup (<b>, <i>) destekler.
-_BOLD_RE = re.compile(r"\*\*([^*]+)\*\*")
-_ITALIC_RE = re.compile(r"(?<!\*)\*([^*]+)\*(?!\*)")
+# Şablon dizini: repo-root data/templates (backend/yazi → backend → repo).
+# YAZI_TEMPLATES_DIR ile override edilebilir. ChoiceLoader fallback yazi/templates.
+_REPO_TEMPLATES = Path(__file__).resolve().parents[2] / "data" / "templates"
+_LOCAL_TEMPLATES = Path(__file__).parent / "templates"
 
 
-def _mark_to_xml(text: str) -> str:
-    """**bold** ve *italic* markdown → reportlab <b>/<i> XML.
-
-    Güvenlik: kullanıcı girdisi PDF metnine sızabilir (verified claim, case
-    facts, user_meta). Sentinel/null-byte yaklaşımı kırılgandı (crafted input
-    "<b>injected" ile reportlab Paragraph'a ham etiket sızdırabilirdi).
-    Yeni yaklaşım: ÖNCE tüm XML-special karakterleri kaç, SONRA escape edilmiş
-    `**` ve `*` pattern'larına bold/italic uygulanır.
-    """
-    # 1) Tüm metni XML-safe yap (kullanıcı girdisindeki <, > zararsız hâle gelir)
-    escaped = (
-        text.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-    )
-    # 2) Markdown sentaksı orijinal asterisk'ler korunmuş; escape edilmiş metinde
-    #    "*..*" ve "**..**" hâlâ literal — bold/italic uygula.
-    escaped = _BOLD_RE.sub(r"<b>\1</b>", escaped)
-    escaped = _ITALIC_RE.sub(r"<i>\1</i>", escaped)
-    return escaped
-
-
-def _render_markdown(ctx: DilekceContext) -> str:
-    """Jinja → markdown string. Template-side LLM çağrısı yok."""
-    template = _env.get_template(f"{ctx.template_id}.j2")
-    return template.render(
-        # Context fields
-        soru=ctx.soru,
-        olgular=ctx.olgular,
-        hukuki_dayanak=ctx.hukuki_dayanak,
-        emsal_destek=ctx.emsal_destek,
-        ozet_metin=ctx.ozet_metin,
-        tarih=ctx.tarih,
-        user_meta=ctx.user_meta,
-        # Optional override-able blocks (templates default'a düşer)
-        karsi_taraf=ctx.user_meta.get("karsi_taraf", ""),
-        talep_metni="",
+def _build_env() -> Environment:
+    """Jinja env — lenient Undefined (| default placeholder'a düşsün), autoescape KAPALI."""
+    search_dirs: list[str] = []
+    env_dir = os.getenv("YAZI_TEMPLATES_DIR")
+    if env_dir:
+        search_dirs.append(env_dir)
+    search_dirs.append(str(_REPO_TEMPLATES))
+    search_dirs.append(str(_LOCAL_TEMPLATES))
+    return Environment(
+        loader=ChoiceLoader([FileSystemLoader(d) for d in search_dirs]),
+        autoescape=select_autoescape(disabled_extensions=("j2",), default=False),
+        trim_blocks=True,
+        lstrip_blocks=True,
+        keep_trailing_newline=True,
     )
 
 
-def _markdown_to_paragraphs(md: str) -> list[Paragraph | Spacer]:
-    """Basit satır-bazlı markdown → reportlab Paragraph listesi.
-
-    Desteklenen: # H1, ## H2, ### H3, **bold**, *italic*, - bullet, 1. ordered,
-    --- hr (Spacer). Code block, table, image YOK (dilekçede gereksiz).
-    """
-    flowables: list[Paragraph | Spacer] = []
-    for raw_line in md.splitlines():
-        line = raw_line.rstrip()
-        if not line:
-            flowables.append(Spacer(1, 0.2 * cm))
-            continue
-        if _HR_RE.match(line):
-            flowables.append(Spacer(1, 0.4 * cm))
-            continue
-        m_heading = _HEADING_RE.match(line)
-        if m_heading:
-            level = len(m_heading.group(1))
-            text = _mark_to_xml(m_heading.group(2))
-            style = _h1 if level == 1 else (_h2 if level == 2 else _body)
-            flowables.append(Paragraph(text, style))
-            continue
-        m_li = _LI_RE.match(line)
-        if m_li:
-            flowables.append(Paragraph(f"&bull; {_mark_to_xml(m_li.group(1))}", _body))
-            continue
-        m_num = _NUM_LI_RE.match(line)
-        if m_num:
-            flowables.append(
-                Paragraph(f"{m_num.group(1)}. {_mark_to_xml(m_num.group(2))}", _body),
-            )
-            continue
-        if line.startswith("> "):
-            flowables.append(Paragraph(_mark_to_xml(line[2:]), _small))
-            continue
-        flowables.append(Paragraph(_mark_to_xml(line), _body))
-    return flowables
+_env = _build_env()
 
 
-def _build_pdf(markdown: str, title: str) -> bytes:
-    """Markdown → A4 PDF bytes. Disk yazımı YOK (in-memory BytesIO)."""
+def render_metin(ctx: YaziContext) -> str:
+    """Jinja → düz-metin resmî yazı. Template-side LLM YOK (deterministik)."""
+    template = _env.get_template(f"{template_file(ctx.yazi_turu)}.j2")
+    return template.render(**ctx.jinja_vars()).rstrip() + "\n"
+
+
+# Render edilmiş metinde HÂLÂ duran ham placeholder'ları yakala (format uyumu).
+_PLACEHOLDER_RE = re.compile(r"\{\{\s*([A-ZÇĞİÖŞÜ ./]+)\s*\}\}")
+
+
+def detect_eksik_format(metin: str) -> tuple[str, ...]:
+    """Render sonrası kalan `{{ PLACEHOLDER }}` etiketlerini topla (eksik alanlar)."""
+    return tuple(dict.fromkeys(m.group(1).strip() for m in _PLACEHOLDER_RE.finditer(metin)))
+
+
+# --------------------------------------------------------------------------
+#  Metin → PDF (reportlab Preformatted; sabit-hizalı resmî yazı görünümü)
+# --------------------------------------------------------------------------
+
+
+def _build_pdf(metin: str, title: str) -> bytes | None:
+    """Düz-metin → A4 PDF bytes (in-memory). reportlab yoksa None döner."""
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import ParagraphStyle
+        from reportlab.lib.units import cm
+        from reportlab.platypus import Preformatted, SimpleDocTemplate
+    except ImportError:  # reportlab opsiyonel — metin yine döner
+        log.warning("yazi_pdf_skip_no_reportlab")
+        return None
+
+    # Monospace (Courier) whitespace hizasını korur → şablonun ortalama/sağa-hizası aynen.
+    style = ParagraphStyle(
+        "ResmiYazi", fontName="Courier", fontSize=9.5, leading=12,
+    )
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
         buf, pagesize=A4,
-        leftMargin=2 * cm, rightMargin=2 * cm,
-        topMargin=2 * cm, bottomMargin=2 * cm,
-        title=title, author="ADALET-AGENT",
+        leftMargin=2.5 * cm, rightMargin=2 * cm,
+        topMargin=2.5 * cm, bottomMargin=2 * cm,
+        title=title, author="kamu-evrak",
     )
-    doc.build(_markdown_to_paragraphs(markdown))
+    # Preformatted XML-escape yapar (< > & güvenli); ham placeholder düz metin kalır.
+    doc.build([Preformatted(metin, style)])
     pdf_bytes = buf.getvalue()
     buf.close()
-    if len(pdf_bytes) > DILEKCE_MAX_PDF_BYTES:
-        raise ValueError(
-            f"PDF too large: {len(pdf_bytes)} > {DILEKCE_MAX_PDF_BYTES} bytes",
-        )
+    if len(pdf_bytes) > _MAX_PDF_BYTES:
+        raise ValueError(f"PDF too large: {len(pdf_bytes)} > {_MAX_PDF_BYTES} bytes")
     return pdf_bytes
 
 
-def _safe_filename(template_id: str, tarih: str, ext: str = "pdf") -> str:
-    """Content-Disposition için güvenli dosya adı (yalnız ASCII + tire)."""
-    base = template_id.replace("/", "-")
-    # Türkçe karakter ASCII'ye düşür (HTTP header safety)
-    tr_map = str.maketrans("çğıöşüÇĞİÖŞÜ", "cgiosuCGIOSU")
-    base = base.translate(tr_map)
-    base = re.sub(r"[^A-Za-z0-9_-]", "-", base)
-    return f"dilekce-{base}-{tarih}.{ext}"
-
-
 # --------------------------------------------------------------------------
-#  Markdown → DOCX (python-docx) — PDF ile AYNI markdown kaynağından.
-#  Vatandaş/avukat düzenleyebilsin diye editlenebilir Word çıktısı.
+#  Metin → DOCX (python-docx; memur düzenleyebilsin diye editlenebilir Word)
 # --------------------------------------------------------------------------
 
-# Inline bold/italic'i run'lara böl: **bold** ve *italic* segmentleri.
-_INLINE_RE = re.compile(r"(\*\*[^*]+\*\*|(?<!\*)\*[^*]+\*(?!\*))")
 
+def _build_docx(metin: str, title: str) -> bytes | None:
+    """Düz-metin → DOCX bytes (in-memory). python-docx yoksa None döner.
 
-def _add_inline_runs(paragraph: Any, text: str) -> None:
-    """Bir docx paragraph'a **bold**/*italic* segmentlerini run olarak ekle.
-
-    PDF'teki _mark_to_xml ile aynı markdown'ı işler ama XML değil docx run üretir.
-    XML injection riski yok (python-docx run.text ham metni güvenle koyar).
+    Her satır bir paragraf; monospace yazı tipiyle hiza korunur (PDF ile tutarlı).
     """
-    for seg in _INLINE_RE.split(text):
-        if not seg:
-            continue
-        if seg.startswith("**") and seg.endswith("**"):
-            paragraph.add_run(seg[2:-2]).bold = True
-        elif seg.startswith("*") and seg.endswith("*"):
-            paragraph.add_run(seg[1:-1]).italic = True
-        else:
-            paragraph.add_run(seg)
-
-
-def _build_docx(markdown: str, title: str) -> bytes:
-    """Markdown → DOCX bytes. PDF ile aynı satır-bazlı markdown parse'ı.
-
-    Desteklenen: # H1, ## H2, ### H3, **bold**, *italic*, - bullet,
-    1. ordered, --- hr, > quote. Disk yazımı YOK (in-memory BytesIO).
-    """
-    from docx import Document
-    from docx.shared import Pt
+    try:
+        from docx import Document
+        from docx.shared import Pt
+    except ImportError:  # python-docx opsiyonel
+        log.warning("yazi_docx_skip_no_docx")
+        return None
 
     doc = Document()
     doc.core_properties.title = title
-    doc.core_properties.author = "ADALET-AGENT"
-
-    for raw_line in markdown.splitlines():
-        line = raw_line.rstrip()
-        if not line:
-            continue  # boş satır — docx paragraph aralığı yeterli
-        if _HR_RE.match(line):
-            doc.add_paragraph()  # ayraç boşluk
-            continue
-        m_heading = _HEADING_RE.match(line)
-        if m_heading:
-            level = len(m_heading.group(1))
-            doc.add_heading(m_heading.group(2), level=min(level, 3))
-            continue
-        m_li = _LI_RE.match(line)
-        if m_li:
-            p = doc.add_paragraph(style="List Bullet")
-            _add_inline_runs(p, m_li.group(1))
-            continue
-        m_num = _NUM_LI_RE.match(line)
-        if m_num:
-            p = doc.add_paragraph(style="List Number")
-            _add_inline_runs(p, m_num.group(2))
-            continue
-        if line.startswith("> "):
-            p = doc.add_paragraph()
-            run = p.add_run(line[2:])
-            run.italic = True
-            run.font.size = Pt(8)
-            continue
+    doc.core_properties.author = "kamu-evrak"
+    for raw_line in metin.splitlines():
         p = doc.add_paragraph()
-        _add_inline_runs(p, line)
+        run = p.add_run(raw_line)  # ham metin — XML injection riski yok (docx escape eder)
+        run.font.name = "Courier New"
+        run.font.size = Pt(10)
 
     buf = io.BytesIO()
     doc.save(buf)
     docx_bytes = buf.getvalue()
     buf.close()
-    if len(docx_bytes) > DILEKCE_MAX_DOCX_BYTES:
-        raise ValueError(
-            f"DOCX too large: {len(docx_bytes)} > {DILEKCE_MAX_DOCX_BYTES} bytes",
-        )
+    if len(docx_bytes) > _MAX_DOCX_BYTES:
+        raise ValueError(f"DOCX too large: {len(docx_bytes)} > {_MAX_DOCX_BYTES} bytes")
     return docx_bytes
 
 
-def render_dilekce(
-    *,
-    domain: Domain,
-    template_id: str,
-    soru: str,
-    olgular: list[str],
-    hukuki_dayanak: list[Citation],
-    emsal_destek: list[Citation],
-    ozet_metin: str,
-    user_meta: dict[str, str] | None = None,
-    tarih: str | None = None,
-    formats: frozenset[str] = frozenset({"pdf", "docx"}),
-) -> DilekceResult:
-    """Tek-çağrı render: DilekceContext kur → markdown → PDF (+ opsiyonel DOCX) bytes.
+def _safe_filename(yazi_turu: str, tarih: str, ext: str) -> str:
+    """Content-Disposition için ASCII-güvenli dosya adı (Türkçe → ASCII)."""
+    tr_map = str.maketrans("çğıöşüÇĞİÖŞÜ", "cgiosuCGIOSU")
+    base = yazi_turu.translate(tr_map)
+    base = re.sub(r"[^A-Za-z0-9_-]", "-", base)
+    safe_tarih = re.sub(r"[^0-9A-Za-z._-]", "-", tarih)
+    return f"resmi-yazi-{base}-{safe_tarih}.{ext}"
 
-    Caller (dilekce_node) yalnız bu fonksiyona girer. Tüm exception'lar
-    yukarı taşar (TemplateNotFound, UndefinedError, ValueError için size cap).
+
+def render_yazi(
+    ctx: YaziContext,
+    *,
+    formats: frozenset[str] = frozenset({"pdf", "docx"}),
+) -> YaziResult:
+    """Tek-çağrı render: YaziContext → metin → PDF (+ opsiyonel DOCX) bytes.
+
+    Caller (yazi_taslak_node) yalnız bu fonksiyona girer. Render hatası
+    (TemplateError) yukarı taşar; reportlab/docx yoksa o format None döner
+    (metin + format_uyumlu yine üretilir → node asla patlamaz).
 
     Args:
         formats: hangi çıktılar üretilsin — {"pdf"}, {"docx"} veya ikisi.
-            Aynı markdown kaynağından üretilir; DOCX editlenebilir (vatandaş/avukat).
-
-    KVKK: user_meta'da eksik anahtarlar template'lerde "[AD SOYAD]" gibi
-    placeholder olarak kalır — gerçek TC/telefon ÜRETİLMEZ.
     """
-    ctx = DilekceContext(
-        domain=domain,
-        template_id=template_id,
-        soru=soru,
-        olgular=olgular,
-        hukuki_dayanak=hukuki_dayanak,
-        emsal_destek=emsal_destek,
-        ozet_metin=ozet_metin,
-        tarih=tarih or date.today().isoformat(),
-        user_meta=user_meta or {},
-    )
-    markdown = _render_markdown(ctx)
-    title = template_label(template_id)
+    tarih = ctx.tarih or date.today().strftime("%d.%m.%Y")
+    if not ctx.tarih:
+        ctx = _with_tarih(ctx, tarih)
 
-    # PDF her zaman üretilir (geriye uyumluluk — mevcut akış PDF bekler).
-    pdf_bytes = _build_pdf(markdown, title)
-    filename = _safe_filename(template_id, ctx.tarih, "pdf")
+    metin = render_metin(ctx)
+    eksik = detect_eksik_format(metin)
+    title = template_label(ctx.yazi_turu)
 
-    docx_bytes: bytes | None = None
-    docx_filename = ""
-    if "docx" in formats:
-        docx_bytes = _build_docx(markdown, title)
-        docx_filename = _safe_filename(template_id, ctx.tarih, "docx")
+    pdf_bytes = _build_pdf(metin, title) if "pdf" in formats else None
+    docx_bytes = _build_docx(metin, title) if "docx" in formats else None
 
     log.info(
-        "dilekce_rendered",
-        template_id=template_id, domain=domain,
-        n_dayanak=len(hukuki_dayanak), n_emsal=len(emsal_destek),
-        pdf_bytes=len(pdf_bytes), docx_bytes=len(docx_bytes) if docx_bytes else 0,
+        "yazi_rendered",
+        yazi_turu=ctx.yazi_turu, n_eksik=len(eksik),
+        pdf_bytes=len(pdf_bytes) if pdf_bytes else 0,
+        docx_bytes=len(docx_bytes) if docx_bytes else 0,
     )
-    return DilekceResult(
-        template_id=template_id,
-        markdown=markdown,
+    return YaziResult(
+        yazi_turu=ctx.yazi_turu,
+        metin=metin,
+        format_uyumlu=not eksik,
+        eksik_format_alanlari=eksik,
         pdf_bytes=pdf_bytes,
-        filename=filename,
-        n_dayanak=len(hukuki_dayanak),
-        n_emsal=len(emsal_destek),
+        pdf_filename=_safe_filename(ctx.yazi_turu, tarih, "pdf") if pdf_bytes else "",
         docx_bytes=docx_bytes,
-        docx_filename=docx_filename,
+        docx_filename=_safe_filename(ctx.yazi_turu, tarih, "docx") if docx_bytes else "",
     )
 
 
-__all__ = ("render_dilekce",)
+def _with_tarih(ctx: YaziContext, tarih: str) -> YaziContext:
+    """Immutable: tarih set edilmiş yeni YaziContext (coding-style: mutasyon yok)."""
+    from dataclasses import replace
+    return replace(ctx, tarih=tarih)
+
+
+__all__ = (
+    "YaziContext",
+    "YaziResult",
+    "render_yazi",
+    "render_metin",
+    "detect_eksik_format",
+    "TemplateError",
+)

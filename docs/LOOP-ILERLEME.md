@@ -29,12 +29,17 @@
   (B) mevzuat seed (5 .txt: 2646/3071/4982/7201/SDP) + seed_mevzuat.py + mevzuat_oner BM25 (dilekçe→3071 m.4 Top-1) +14 test ✓
   (C) .gitattributes (CRLF fix) + README (özellik/eval/test) + docs/demo-senaryosu.md + frontend KVKK/disclaimer/indirme-notu + **npm build BAŞARILI** ✓
   Bütünleşik: pytest **141 passed/1 skipped**, app boot (9 node), BM25 korpustan. commit eb69b11.
-- **İT-4 sıradaki ÖNCELİKLER:**
-  1. Frontend topology sync: PIPELINE'a "verify" node ekle (backend PIPELINE_NODES'ta var, frontend'te yok → SSE verify event'i node yakmıyor).
-  2. [Yenilikçilik 15p] ENV-gated SOTA: crag/self_rag node'larını yeni pipeline'a uyarla (ADALET'ten KEEP) + ablation A/B (stats.py McNemar/bootstrap).
-  3. competition_scorecard yeniden üret (verify dahil pipeline) → docs/benchmark commit.
-  4. Playwright MCP ile çalışan app'in ekran görüntüleri → docs/img/ (README placeholder'ları doldur) — app'i çalıştırıp screenshot.
-  5. Mevzuat korpus genişlet + madde [DOĞRULA] kontrolü; (opsiyonel) worktree+uv sync ile CANLI OCR testi.
+- **İT-4 (17:34→17:55) BİTTİ:** 3 ajan (mutlak yol; adalet-agent TEMİZ):
+  (A) ENV-gated SOTA: crag.py (corrective retrieval, CRAG_ENABLED) + self_rag.py (reflection, SELF_RAG_ENABLED) + ablation_eval.py (McNemar/bootstrap, docs/benchmark/ablation.md) — dürüst Δ=0/p=1.0 + mekanizma kontrolü ✓
+  (B) frontend topology'ye verify node senkron + DogrulamaCard + npm build OK ✓
+  (C) mevzuat korpus 5→9 dosya (28→59 chunk; 657/4734/2577/5018 eklendi, [DOĞRULA] web ile çözüldü) + docs/method.md + docs/data-card.md ✓
+  Bütünleşik: pytest **142 passed/1 skipped**, app boot (SOTA flags dahil), scorecard yeniden üretildi. commit f2abb86.
+- **İT-5 sıradaki ÖNCELİKLER:**
+  1. Playwright MCP ile ÇALIŞAN app ekran görüntüleri → docs/img/ (README placeholder doldur). [ORKESTRATÖR kendi yapar: global-python uvicorn + vite preview(dist) + screenshot]
+  2. CI: .github/workflows/ci.yml (pytest + ruff + npm build) — TAKP teslim kalitesi.
+  3. Teslim hijyeni: CONTRIBUTING.md, .github issue template, README rozetleri.
+  4. (opsiyonel) gerçek-LLM (openai) smoke + worktree+uv sync CANLI OCR testi.
+  5. gold seti genişlet (tür-başı 7→10) + scorecard tazele.
   AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil tut.
 
 ---

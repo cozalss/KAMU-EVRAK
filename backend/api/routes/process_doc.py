@@ -16,11 +16,12 @@ from collections.abc import AsyncIterator
 from typing import Any
 
 import structlog
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 
 from agents.graph import PIPELINE_NODES, build_graph
 from agents.state import make_initial_state
+from api.middleware.ratelimit import rate_limit
 from api.schemas import MAX_EVRAK_CHARS, ProcessRequest, ProcessResponse
 from multimodal.ocr import extract_text
 
@@ -48,7 +49,8 @@ async def _ocr_or_text(
 ) -> tuple[str, dict[str, Any]]:
     """Dosya geldiyse OCR; yoksa düz metin. (text, ocr_meta) döner."""
     if file is not None:
-        data = await file.read()
+        # DoS guard: üst sınır + 1 bayt oku → tüm dosyayı belleğe almadan büyük dosyayı yakala.
+        data = await file.read(MAX_UPLOAD_BYTES + 1)
         if len(data) > MAX_UPLOAD_BYTES:
             raise HTTPException(status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, "Dosya çok büyük")
         res = await extract_text(data)
@@ -87,7 +89,8 @@ async def process(req: ProcessRequest) -> ProcessResponse:
 
 
 @router.post("/stream")
-async def process_stream(file: UploadFile = File(...)) -> StreamingResponse:
+@rate_limit("20/minute")  # IP-başı akış limiti (slowapi yoksa etkisiz)
+async def process_stream(request: Request, file: UploadFile = File(...)) -> StreamingResponse:
     """Dosya yükle → OCR + pipeline node event'lerini SSE ile yayınla."""
     text, ocr_meta = await _ocr_or_text(file, None)
 

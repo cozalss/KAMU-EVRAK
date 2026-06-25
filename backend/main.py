@@ -17,6 +17,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from agents.config import LLM_MODE
+from api.middleware.ratelimit import setup_rate_limiting
+from api.middleware.security_headers import SecurityHeadersMiddleware
 from api.routes import multimodal, process_doc, yazi
 
 log = structlog.get_logger()
@@ -37,6 +39,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Güvenlik başlıkları — her yanıta nosniff/DENY/Referrer-Policy/CSP (clickjacking + MIME guard).
+app.add_middleware(SecurityHeadersMiddleware)
+
 # CORS — frontend dev sunucusu (Vite :5173) erişebilsin.
 _origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
 app.add_middleware(
@@ -46,6 +51,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# IP-başı hız sınırı — slowapi varsa aktif, yoksa zarif şekilde atlanır (boot kırılmaz).
+setup_rate_limiting(app)
 
 app.include_router(process_doc.router)
 app.include_router(multimodal.router)

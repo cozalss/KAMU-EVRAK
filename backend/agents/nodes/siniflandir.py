@@ -102,17 +102,42 @@ _KEYWORDS: tuple[tuple[str, str], ...] = (
     ("dilekçe", "dilekce"),
 )
 
-# Few-shot LLM prompt — kapalı-küme + abstention talimatı (uydurma sınıf üretilemez).
+# Few-shot LLM prompt — kapalı-küme + abstention + AYIRT EDİCİ kurallar + örnekler.
+# TASARIM (held-out genelleme): keyword DEĞİL ANLAM (intent/gönderen-rolü/eylem) üzerinden
+# ayır → dolaylı/örtük ifadede de doğru sınıfla. Örnekler bilerek kısa ve ŞABLON-DIŞIDIR
+# (gen_synthetic/heldout sözcüklerini ezberletmez; ayrımı ÖĞRETİR — OpenAI cookbook
+# few-shot deseni). Her örnek farklı türden ve "anahtar sözcük yok" durumunu kapsar.
 _SYSTEM = (
     "Sen Türk kamu kurumlarında gelen evrakı sınıflandıran bir uzman asistansın. "
     "Verilen evrak metnini SADECE şu kapalı listeden BİR türe ata:\n"
     f"{', '.join(EVRAK_TURLERI)}\n\n"
-    "Kurallar:\n"
-    "- Liste DIŞINDA tür UYDURMA.\n"
-    "- Emin değilsen 'belirsiz' seç ve düşük güven ver (abstention).\n"
-    "- 'dilekçe' serbest vatandaş talebidir; 'bilgi_edinme' özel olarak MEVCUT kayda "
-    "erişim talebidir (4982) — karıştırma.\n"
-    "- 'İlgi' atfı + resmî T.C. başlık → cevabi_yazi; yalnız resmî başlık → ust_yazi.\n\n"
+    "YÖNTEM — anahtar sözcüğe DEĞİL, şu üç sinyale bak:\n"
+    "1) GÖNDEREN ROLÜ: vatandaş mı (Ad-Soyad/TCKN bloğu, 'istiyorum/rica ediyorum') "
+    "yoksa kurum→kurum mu (imza bloğu, 'arz olunur/rica olunur')?\n"
+    "2) NİYET/EYLEM: yeni bir hak/işlem mi isteniyor, mevcut bir belgeye mi erişiliyor, "
+    "bir karar mı bildiriliyor, bir görüş mü soruluyor, para mı isteniyor?\n"
+    "3) BAĞLAM: mahkeme/icra/tebliğ, mali, denetim/şikâyet, arşiv/tutanak?\n\n"
+    "AYIRT EDİCİ KURALLAR (sık karışanlar):\n"
+    "- dilekçe: vatandaşın SERBEST talebi/sorunu (yeni bir istek). bilgi_edinme: vatandaşın "
+    "kurumda MEVCUT olan kayıt/belgeye erişim talebi (4982). basvuru: belirli bir izin/"
+    "ruhsat/kayıt için resmi süreç başlatma.\n"
+    "- sikayet: bir aksaklık/memnuniyetsizlik bildirimi (mağduriyet). ihbar: bir kişi/"
+    "kurum hakkında usulsüzlük/suç bildirimi (denetim ister).\n"
+    "- cimer: Cumhurbaşkanlığı iletişim/tek-kapı/çevrim içi başvuru kanalı vurgusu.\n"
+    "- ust_yazi: kurumun BAŞLATTIĞI yeni yazışma (ek/belge sunumu). cevabi_yazi: önceki "
+    "bir yazıya/talebe KARŞILIK ('yazınıza istinaden', 'incelendi, sonuç şudur').\n"
+    "- tebligat: bir karar/yükümlülüğün muhataba RESMEN bildirimi. muzekkere: kurumun "
+    "başka kurumdan bilgi/kayıt CELBİ. gorus_mutalaa: hukuki YORUM/değerlendirme isteği.\n"
+    "- fatura: bir bedelin/hak edişin ÖDENMESİ talebi (para akışı). icra_evraki: zorla "
+    "tahsil/haciz/malvarlığı. dava_evraki: mahkeme/yargılama beyanı.\n\n"
+    "ÖRNEKLER (yalnız ayrımı göster; metni ezberleme):\n"
+    'Metin: "Mahallemizdeki sorunun çözülmesini umuyorum. Ad-Soyad: ... TCKN: ..."\n'
+    '→ {"evrak_turu": "dilekce", "tur_confidence": 0.8, "tur_reasoning": "vatandaş serbest talep"}\n'
+    'Metin: "Kurumunuzda mevcut geçmiş kayıtların bir suretine erişmek istiyorum."\n'
+    '→ {"evrak_turu": "bilgi_edinme", "tur_confidence": 0.85, "tur_reasoning": "mevcut kayda erişim (4982)"}\n'
+    'Metin: "Daha önce gönderdiğiniz yazıda sorulan hususa ilişkin görüşümüz aşağıdadır."\n'
+    '→ {"evrak_turu": "cevabi_yazi", "tur_confidence": 0.85, "tur_reasoning": "önceki yazıya karşılık"}\n\n'
+    "Kurallar: Liste DIŞINDA tür UYDURMA. Emin değilsen 'belirsiz' + düşük güven (abstention).\n"
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
     '{"evrak_turu": "<tür>", "tur_confidence": <0..1>, "tur_reasoning": "<kısa gerekçe>"}'
 )

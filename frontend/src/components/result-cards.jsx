@@ -56,6 +56,18 @@ const EVRAK_TR = (k) => EVRAK_TURU_TR[k] || k || "—";
 const BIRIM_LBL = (k) => BIRIM_TR[k] || k || "—";
 const YAZI_TR = (k) => YAZI_TURU_TR[k] || k || "";
 
+// XSS guard — mevzuat linki yalnız http/https olsun; javascript:/data: vb. reddedilir.
+// Reddedilirse null döner → çağıran link yerine düz metin gösterir.
+function safeUrl(raw) {
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  try {
+    const u = new URL(raw, window.location.origin);
+    return u.protocol === "http:" || u.protocol === "https:" ? u.href : null;
+  } catch {
+    return null;
+  }
+}
+
 // ---------- güven seviyesi tonu (renk TEK ayırt edici değil; etiket metni de var) ----------
 function confTone(conf) {
   if (conf >= 0.7) return { cls: "high", label: "Yüksek" };
@@ -174,11 +186,14 @@ function MevzuatCard({ oneriler }) {
         <h3 id="rc-mev-h" className="rc-card-title">İlgili Mevzuat</h3>
       </header>
       <ul className="rc-mev-list">
-        {list.map((m, i) => (
+        {list.map((m, i) => {
+          // javascript:/data: gibi tehlikeli şemalar reddedilir; yalnız http/https link olur.
+          const href = safeUrl(m.url);
+          return (
           <li className="rc-mev-item" key={i}>
             <div className="rc-mev-top">
-              {m.url ? (
-                <a className="rc-mev-baslik" href={m.url} target="_blank" rel="noreferrer noopener">{m.baslik}</a>
+              {href ? (
+                <a className="rc-mev-baslik" href={href} target="_blank" rel="noreferrer noopener">{m.baslik}</a>
               ) : (
                 <span className="rc-mev-baslik">{m.baslik}</span>
               )}
@@ -188,7 +203,8 @@ function MevzuatCard({ oneriler }) {
             </div>
             {m.snippet && <p className="rc-mev-snippet">{m.snippet}</p>}
           </li>
-        ))}
+          );
+        })}
       </ul>
     </article>
   );
@@ -430,5 +446,5 @@ export default ResultCards;
 export {
   EvrakTuruCard, CikarilanAlanlarCard, EksikBilgiCard, MevzuatCard,
   BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, BilgilendirmeCard,
-  EVRAK_TR, BIRIM_LBL, YAZI_TR,
+  EVRAK_TR, BIRIM_LBL, YAZI_TR, safeUrl,
 };

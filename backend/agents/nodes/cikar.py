@@ -41,14 +41,23 @@ _PII_SCAN: tuple[re.Pattern[str], ...] = (_RE_TCKN, _RE_TEL)
 
 _SYSTEM = (
     "Sen kamu evrakından yapısal bilgi çıkaran bir asistansın. Verilen evrak metninden "
-    "şu alanları çıkar (yoksa null bırak — UYDURMA):\n"
-    "- gonderen: gönderen kişi adı-soyadı veya tüzel kişi\n"
-    "- kurum: gönderen/muhatap kurum adı (varsa)\n"
-    "- konu: evrakın konusu (kısa)\n"
-    "- talep: evrakta somut bir talep/istek var mı? (true/false)\n"
-    "- iletisim_adres: bir iletişim/tebligat adresi var mı? (true/false)\n"
-    "- imza: imza/e-imza ibaresi var mı? (true/false)\n\n"
-    "TCKN, telefon, tarih, sayı çıkarma — bunlar ayrıca işlenir.\n"
+    "şu alanları çıkar (yoksa null/false bırak — UYDURMA, metinde GÖRÜNMEYENİ yazma):\n"
+    "- gonderen: gönderen kişi adı-soyadı veya tüzel kişi (ör. 'Ad-Soyad:' satırı)\n"
+    "- kurum: gönderen/muhatap kurum adı (T.C. başlık satırından, varsa)\n"
+    "- konu: evrakın konusu (kısa öz; 'Konu:' satırı yoksa gövdeden çıkar)\n"
+    "- talep: evrakta somut bir talep/istek/arz var mı? (true/false)\n"
+    "- iletisim_adres: açık bir iletişim/tebligat adresi var mı? (true/false)\n"
+    "- imza: imza/e-imza/'arz ederim' kapanışı var mı? (true/false)\n\n"
+    "KURALLAR:\n"
+    "- gonderen yalnız metinde AÇIKÇA yazan ad-soyad/kurumdur; tahmin etme.\n"
+    "- talep, gövde dolaylı olsa da gerçek bir istek varsa true ('çözülmesini umuyorum' = true).\n"
+    "- iletisim_adres yalnız gerçek bir adres/iletişim satırı varsa true.\n"
+    "- TCKN, telefon, tarih, sayı çıkarma — bunlar ayrıca regex ile işlenir, ATLAMA.\n\n"
+    "ÖRNEK:\n"
+    'Metin: "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\\nKonu: tesis izni\\nKaydımın oluşturulmasını '
+    'istiyorum.\\nAd-Soyad: Naz Tekin\\nTCKN: ..."\n'
+    '→ {"gonderen": "Naz Tekin", "kurum": "Sanayi ve Teknoloji Bakanlığı", '
+    '"konu": "tesis izni", "talep": true, "iletisim_adres": false, "imza": false}\n\n'
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
     '{"gonderen": null, "kurum": null, "konu": null, "talep": false, '
     '"iletisim_adres": false, "imza": false}'

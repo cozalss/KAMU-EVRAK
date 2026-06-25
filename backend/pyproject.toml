@@ -15,6 +15,8 @@ dependencies = [
     "python-multipart>=0.0.31",
     "structlog>=24.4.0",
     "python-dotenv>=1.0.1",
+    # IP-başı hız sınırı (opsiyonel kod yolu; kurulu değilse zarif atlanır).
+    "slowapi>=0.1.9",
     # Ajan orkestrasyonu
     "langgraph>=0.2.40",
     "langchain-core>=0.3.10",

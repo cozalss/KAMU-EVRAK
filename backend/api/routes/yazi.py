@@ -12,14 +12,16 @@ PDF/DOCX render kütüphaneleri varsa bytes döner.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import structlog
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, Request, status
 from fastapi.responses import Response
 
 from agents.graph import build_graph
 from agents.state import make_initial_state
+from api.middleware.ratelimit import rate_limit
 from api.schemas import MAX_EVRAK_CHARS, YaziTaslakRequest
 
 log = structlog.get_logger()
@@ -46,14 +48,22 @@ def _get_graph() -> Any:
 
 
 def _safe_attachment_name(state: dict[str, Any], fmt: str, fallback: str) -> str:
-    """Renderer'ın ASCII-güvenli ürettiği dosya adı; yoksa fallback (ASCII)."""
-    name = state.get(f"yazi_taslak_{fmt}_filename") or ""
-    name = str(name).replace('"', "").replace("\n", "").replace("\r", "")
-    return name or fallback
+    """Content-Disposition için güvenli dosya adı.
+
+    Header enjeksiyonunu (CRLF `%0d%0a`, `;`, tırnak vb.) engellemek için yalnız
+    alfanümerik + nokta + tire bırakılır; gerisi `_` olur. 64 karakterle sınırlanır.
+    Boş/uydurma sonuç → fallback (zaten ASCII-güvenli).
+    """
+    name = str(state.get(f"yazi_taslak_{fmt}_filename") or "")
+    safe = re.sub(r"[^\w.\-]", "_", name)[:64]
+    # Yalnız ayraç/nokta kalmışsa (gerçek ad yok) fallback'e düş.
+    return safe if safe.strip("._-") else fallback
 
 
 @router.post("/taslak")
+@rate_limit("30/minute")  # IP-başı taslak-indir limiti (slowapi yoksa etkisiz)
 async def yazi_taslak(
+    request: Request,
     req: YaziTaslakRequest,
     format: str = Query("pdf", pattern="^(pdf|docx)$"),
 ) -> Response:

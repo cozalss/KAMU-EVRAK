@@ -62,6 +62,35 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
 
 Test paketi: **127 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
 
+## Gerçek LLM modu (mock taban → bulut tavan)
+
+Sistem üç LLM modunda **uçtan uca aynı pipeline'ı** çalıştırır; fark yalnız **kalitededir**.
+Mod `.env` içindeki `LLM_MODE` ile seçilir (örnek: `.env.example`).
+
+| `LLM_MODE` | LLM çağrısı | Anahtar | Ne için |
+|---|---|---|---|
+| `mock` (varsayılan) | yok — keyword+regex heuristik fallback | gerekmez | demo / CI / offline; **skor tabanı** |
+| `openai` | OpenAI bulut (few-shot JSON çıkarımı) | `OPENAI_API_KEY` zorunlu | **gerçek doğruluk** (skor tavanı) |
+| `llamacpp` | lokal Qwen GGUF | `LLM_MODEL_PATH` | offline / gizlilik |
+
+**Tek komutla aç + ölç** (anahtar `.env`'de ya da satır-içi; asla commit edilmez):
+
+```bash
+# Gerçek LLM ile birkaç örnek evrakı pipeline'dan geçir (sınıf/çıkarım/birim/taslak):
+LLM_MODE=openai OPENAI_API_KEY=sk-... python scripts/run_llm_smoke.py
+# Küçük gold örnekleminde gerçek-LLM sınıflandırma doğruluğunu da ölç:
+LLM_MODE=openai OPENAI_API_KEY=sk-... python scripts/run_llm_smoke.py --acc 12
+# Anahtarsız: NET mesajla mock'a düşer, PATLAMAZ (demo/CI):
+python scripts/run_llm_smoke.py
+```
+
+> **Dürüst not (skorların anlamı):** Yukarıdaki **Eval skorları** ve
+> `docs/benchmark/scorecard.md`, **`LLM_MODE=mock`** ile ölçülmüştür — yani sınıflandırma
+> ve çıkarım few-shot LLM yerine deterministik keyword/regex fallback ile koşar. Bu skorlar
+> **tavan değil tabandır (alt-sınır)**; `LLM_MODE=openai` few-shot LLM bunları **yükseltir**.
+> Önemli olan, eval'in mock'ta da **gerçek LangGraph pipeline'ı** ölçmesi — taban tavana
+> sahte sabitlenmez. Mock vs gerçek-LLM ayrımının ölçüm yöntemi: [`docs/method.md`](docs/method.md).
+
 ## Ekran görüntüleri
 
 > _Placeholder — gerçek görseller `docs/img/` altına eklenecek (PNG/GIF)._

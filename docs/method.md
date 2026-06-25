@@ -51,17 +51,47 @@ START → siniflandir → cikar → eksik_tespit
 (`bilgi_unsurlari` dict-merge; `mevzuat_onerileri`/`errors` `operator.add`). Bu, iki
 ajanın (mevzuat_oner ∥ ozetle) çıktısının yarış koşulu olmadan toplanmasını sağlar.
 
-## 2. Few-shot LLM + mock fallback (sağlamlık)
+## 2. Few-shot LLM + mock fallback (sağlamlık) — ve modlar arası dürüstlük
 
-- **LLM seçimi** `agents/llm.py` Protocol (4-impl): `LLM_MODE ∈ {mock, openai, llamacpp}`.
-  Bulut (gpt-4o) ve lokal (Qwen2.5 Apache) eşit desteklenir; anahtar `.env`'de.
+- **LLM seçimi** `agents/llm.py` Protocol (4-impl): `LLM_MODE ∈ {mock, openai, llamacpp,
+  llamacpp_server}`. Bulut (gpt-4o/mini) ve lokal (Qwen GGUF, Apache) eşit desteklenir;
+  anahtar `.env`'de (asla hardcode). `get_llm()` ENV'e göre tek-nokta dispatch eder.
+
+  | `LLM_MODE` | Çağrı | Anahtar/yol | Skor anlamı |
+  |---|---|---|---|
+  | `mock` | yok — keyword+regex heuristik | — | **taban (alt-sınır)** |
+  | `openai` | bulut few-shot JSON | `OPENAI_API_KEY` (kod `OPENAI_LLM_MODEL` okur) | **gerçek doğruluk (tavan)** |
+  | `llamacpp(_server)` | lokal GGUF | `LLM_MODEL_PATH` / `LLM_SERVER_URL` | offline/gizlilik |
+
 - **Mock fallback bir tasarım hedefi, kısıt değil:** LLM erişilemese/offline'da bile
   her node deterministik bir sonuç döndürür → demo internet kesintisinde çökmez
-  (şartname §7 offline yedek planı). Eval, mock tabanı (alt sınır) ile gerçek-LLM
-  tavanını **ayrı** raporlar — taban tavana sahte sabitlenmez.
+  (şartname §7 offline yedek planı). Anahtarsız `LLM_MODE=openai` seçilse bile kod
+  **patlamaz**: `get_llm()` net bir uyarıyla mock'a düşer (graceful degradation).
+  Doğrula: `python scripts/run_llm_smoke.py` (anahtarsız → mock; anahtarla → gerçek LLM).
+- **Mock vs gerçek-LLM skoru AYRI raporlanır — taban tavana sahte sabitlenmez.** Yayınlanan
+  karne (`docs/benchmark/scorecard.md`, README "Eval skorları") **mock taban** ölçümüdür;
+  gerçek `openai` modu bu metrikleri **yükseltir**. İki modun aynı **gerçek LangGraph
+  pipeline'ını** koşması kritiktir → taban, sahte bir taksonomi-stub değil, sistemin
+  fallback davranışıdır.
 - **Few-shot:** sınıflandırma/taslaklama prompt'ları taksonomi ve resmî-yazı
   iskeletlerinden (docs/01-02) türetilmiş örneklerle desteklenir; ablasyonda
   few-shot var/yok A/B'si ölçülür.
+
+### 2.1 In-domain vs held-out skor + dairesellik uyarısı (dürüstlük)
+
+Skorların yorumlanmasında iki tuzak açıkça not edilir:
+
+1. **In-domain vs held-out.** Sentetik gold (`data/synthetic/*.jsonl`) `gen_synthetic.py`
+   ile taksonomi/şablon **dağıtımından** üretilir. Aynı dağıtımdan ölçülen skor
+   **in-domain**'dir → gerçek-dünya genellemesinin **üst tahmini** olabilir. Dürüst skor
+   **held-out** (üretici görmediği şablon/varyasyon, ideali blind insan-etiketli) gerektirir;
+   eldeki sayılar in-domain'dir ve böyle etiketlenir.
+2. **Dairesellik (circularity) uyarısı.** Sınıf/birim eşleme tabloları (`config.py`)
+   **hem** mock fallback'i **hem** sentetik veri üretimini besliyorsa, mock skoru kısmen
+   "aynı kuralın kendini ölçmesi"dir. Bu yüzden (a) gerçek-LLM modu ayrı raporlanır —
+   LLM bu tablolara bağlı değildir; (b) ablasyonlar (few-shot var/yok, çok-ajan vs tek)
+   ve fairness counterfactual'ları, tek bir kural-tablosunun kendini doğrulamasının
+   ötesinde sinyal verir.
 
 ## 3. Mevzuat RAG (BM25, madde-bazlı)
 

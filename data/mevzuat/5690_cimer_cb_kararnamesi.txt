@@ -1,0 +1,37 @@
+Cumhurbaşkanlığı İletişim Merkezi (CİMER) Yönetmeliği
+Cumhurbaşkanlığı Kararı (Karar Sayısı) 5690 / Resmî Gazete 31856 — 04.06.2022 (YÜRÜRLÜKTE)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5690&MevzuatTur=21&MevzuatTertip=5
+
+Bu metin kamuya açık yönetmeliğin madde başlıkları ve özetlerinden derlenmiştir
+(lafzî tam metin değildir). Madde numaraları kamuya açık kaynaklardan çapraz
+doğrulanmıştır; doğrulanamayan madde numaraları [DOĞRULA:] ile işaretlidir
+(CLAUDE.md §1). CİMER, vatandaşların talep, şikâyet, ihbar, görüş-öneri, bilgi
+edinme ve başvurularını tek kapıdan alıp ilgili kuruma yönlendiren elektronik
+başvuru sistemidir; dilekçe hakkı (3071) ve bilgi edinme hakkı (4982) çerçevesinde
+işletilir.
+
+Madde 1 — Amaç ve kapsam
+Bu Yönetmeliğin amacı, Cumhurbaşkanlığı İletişim Merkezi (CİMER) aracılığıyla
+yapılan başvuruların alınması, ilgili kurum ve kuruluşlara iletilmesi ve
+sonuçlandırılmasına ilişkin usul ve esasları düzenlemektir. Yönetmelik, gerçek ve
+tüzel kişilerin Dilekçe Hakkının Kullanılmasına Dair Kanun (3071) ile Bilgi Edinme
+Hakkı Kanunu (4982) kapsamında kamu kurum ve kuruluşlarına yaptıkları başvuruları
+ve CİMER sisteminin işleyişini kapsar.
+
+Madde 5 — Başvuruların işleme konulmaması
+Aşağıdaki başvurular işleme konulmaz: yalnızca tahmine veya zanna dayalı ifadeler
+içeren ve içeriğinde herhangi bir somut bilgi ya da belge bulunmayan başvurular;
+aynı kişi tarafından hakkın kötüye kullanılması niteliğinde tekrar tekrar ve benzer
+şekilde yapılan başvurular; gerçeğe aykırı belge veya bilgiyle ya da sahte ad ve
+adresle yapıldığı sonradan anlaşılan başvurular (bu hâlde başvuru hiç yapılmamış
+sayılır); hakaret, sövme, küçük düşürücü veya tehdit içeren başvurular; yargıya
+intikal etmiş veya yargı mercilerinin görevine giren konulara ilişkin başvurular;
+kurumun görev ve yetki alanı dışında kalan başvurular işleme konulmaz.
+
+Başvuruların sonuçlandırılması ve süre [DOĞRULA: madde no]
+CİMER üzerinden yapılan başvurular, niteliğine göre dilekçe hakkı (3071) veya bilgi
+edinme hakkı (4982) rejiminde değerlendirilir. Talep ve şikâyet niteliğindeki
+başvurular en geç otuz gün içinde sonuçlandırılır; bilgi edinme niteliğindeki
+başvurular ise 4982 sayılı Kanun gereği on beş iş günü içinde cevaplanır. Başvuru,
+ilgili kurum veya kuruluşa yönlendirilir ve başvuru sahibine sonuç hakkında bilgi
+verilir; işlem ücretsizdir.

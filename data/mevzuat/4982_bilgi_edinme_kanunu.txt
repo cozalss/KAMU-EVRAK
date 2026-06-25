@@ -27,6 +27,12 @@ içindeki başka bir birimden sağlanması, başka bir kurum ve kuruluşun gör�
 alınması gerektiğinde erişim otuz iş günü içinde sağlanır; bu durumda gecikme
 gerekçesiyle birlikte başvurana yazılı olarak bildirilir.
 
+Madde 12 — Başvurulara cevap ve başvurunun reddi
+Kurum ve kuruluşlar, bilgi edinme başvurularıyla ilgili cevaplarını yazılı olarak
+veya elektronik ortamda başvuru sahibine bildirir. Başvurunun reddedilmesi hâlinde
+bu kararın gerekçesi ve buna karşı başvuru yolları belirtilir. Başvuru sahibine
+istenen bilgi veya belgenin hangi sebeple verilmediği açıkça gösterilir.
+
 Madde 16 — Devlet sırrına ilişkin bilgi veya belgeler
 Devlet sırrı olarak gizliliği usulüne uygun olarak belirlenmiş bilgi veya
 belgeler bilgi edinme hakkı kapsamı dışındadır. Bu nitelikteki başvurular

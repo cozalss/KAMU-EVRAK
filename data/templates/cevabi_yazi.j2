@@ -1,19 +1,34 @@
-{# Cevabi yazı — üst yazı iskeleti + İlgi atfı (Yön. 2646 m.15). Gövde 'metin' alanından gelir;
-   sağlanmazsa nötr değerlendirme placeholder'ı kalır (uydurma yok). #}
+{# Cevabi yazı — üst yazı iskeleti + İlgi atfı (Yön. 2646 m.15). Bölüm sırası: başlık →
+   sayı/tarih → konu → muhatap → ilgi → metin → kapanış → imza → ek → dağıtım.
+   Gövde 'metin' alanından gelir; sağlanmazsa nötr placeholder kalır (uydurma yok). #}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
 
-Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
 Konu : {{ konu | default("{{ KONU }}") }}
 
                           {{ muhatap | default("{{ MUHATAP MAKAM }}") }}
 
-İlgi : {{ ilgi_tarih | default("{{ İLGİ TARİH }}") }} tarihli ve {{ ilgi_sayi | default("{{ İLGİ SAYI }}") }} sayılı yazınız.
-
+İlgi : {% if ilgi_satirlari %}{% for ilgi in ilgi_satirlari %}{% if loop.index0 %}       {% endif %}{{ ilgi }}
+{% endfor %}{% else %}{{ ilgi_tarih | default("{{ İLGİ TARİH }}") }} tarihli ve {{ ilgi_sayi | default("{{ İLGİ SAYI }}") }} sayılı yazınız.
+{% endif %}
 {{ metin | default("İlgi yazıda belirtilen konuya ilişkin {{ DEĞERLENDİRME / SONUÇ }}.") }}
 
-         {{ kapanis | default("Gereğini rica ederim.") }}
+{{ " " * 9 }}{{ kapanis | default("Gereğini rica ederim.") }}
 
-                                              {{ ad_soyad | default("{{ AD SOYAD }}") }}
-                                              {{ unvan | default("{{ UNVAN }}") }}
+{{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
+{{ " " * 46 }}{{ unvan | default("{{ UNVAN }}") }}
+{% if ekler %}
+
+Ek :
+{% for ek in ekler %}{{ loop.index }}- {{ ek }}
+{% endfor %}{% endif %}
+{% if dagitim %}
+
+DAĞITIM:
+{% if dagitim.geregi | default([]) %}Gereği:
+{% for d in dagitim.geregi %}{{ d }}
+{% endfor %}{% endif %}{% if dagitim.bilgi | default([]) %}Bilgi:
+{% for d in dagitim.bilgi %}{{ d }}
+{% endfor %}{% endif %}{% endif %}

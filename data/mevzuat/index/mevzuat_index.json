@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "chunk_sayisi": 59,
+  "chunk_sayisi": 55,
   "chunks": [
     {
       "mevzuat": "2005-7 standart dosya plani",
@@ -8,13 +8,6 @@
       "madde_no": null,
       "madde_tur": null,
       "text": "Standart Dosya Planı Genelgesi\nBaşbakanlık Genelgesi 2005/7 / Resmî Gazete 25766 — 24.03.2005 (YÜRÜRLÜKTE)\nKaynak: https://www.resmigazete.gov.tr/eskiler/2005/03/20050325-10.htm\n\nBu metin kamuya açık genelgenin özetinden derlenmiştir (lafzî tam metin\ndeğildir). Standart Dosya Planı genelgesi madde yerine kod aralıklarıyla\ndüzenlenmiştir; aşağıdaki bölümler docs/01-resmi-yazisma-mevzuati.md\nreferansından özetlenmiştir.\n\nKonu — Standart Dosya Planı amacı\nStandart Dosya Planı, kamu kurum ve kuruluşlarında üretilen ve kullanılan\nbelgelerin standart bir dosya kodu sistemine göre dosyalanmasını sağlar.\nBelgelerin aranabilirliğini, saklanmasını ve arşivlenmesini kolaylaştırır.\nYazışmalarda sayı bölümünde Standart Dosya Planı kodu kullanılır.\n\nBölüm 000-099 — Ortak konular\n000 ile 099 arası kodlar tüm kurum ve kuruluşlarda ortak olan konuları kapsar:\nmevzuat, plan ve program, rapor, kurul ve toplantı gibi genel konular bu\naralıkta yer alır.\n\nBölüm 100-599 — Ana hizmet konuları\n100 ile 599 arası kodlar kuruma özgü ana hizmet faaliyetlerini kapsar. Her kurum\nkendi görev alanına göre bu aralıktaki kodları kullanır.\n\nBölüm 600-999 — Yardımcı, danışma ve denetim konuları\n600 ile 999 arası kodlar yardımcı, danışma ve denetim hizmetlerini kapsar:\npersonel, bütçe, mali işler ve hukuk müşavirliği gibi tüm kurumlarda ortak olan\nyardımcı konular bu aralıktadır.\n\nKod hiyerarşisi ve sayı biçimi\nDosya kodu hiyerarşisi ana konu üç hane ile başlar, alt konular nokta ve iki\nhane eklenerek detaylandırılır. Örnek: 622, 622.03, 622.03.01. Yazışmalarda\nsayı; DETSİS numarası, Standart Dosya Planı kodu ve kayıt numarasından oluşur.\nCoğrafi ek örneği 724.13.DE, il kodu örneği 622.01.06 (Ankara) şeklindedir."
-    },
-    {
-      "mevzuat": "2577 idari yargilama usulu kanunu",
-      "kaynak_dosya": "2577_idari_yargilama_usulu_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "İdari Yargılama Usulü Kanunu\nKanun No: 2577 (Kabul: 06.01.1982, RG 20.01.1982/17580 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2577&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.2577) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında idari işleme\nitiraz, üst makama başvuru süreleri ve dava açma sürelerinin hukuki dayanağıdır;\nbu süreler vatandaşa verilecek cevabi yazıda bilgilendirme unsuru olarak önemlidir."
     },
     {
       "mevzuat": "2577 idari yargilama usulu kanunu",
@@ -43,13 +36,6 @@
       "madde_no": 14,
       "madde_tur": "madde",
       "text": "Madde 14 — Dilekçeler üzerine ilk inceleme\nDilekçeler; görev ve yetki, idari merci tecavüzü, ehliyet, idari davaya konu olacak\nkesin ve yürütülmesi gereken bir işlem olup olmadığı, süre aşımı, husumet ve usule\nuygunluk yönlerinden ilk incelemeye tabi tutulur. İdari merci tecavüzü bulunan\ndilekçeler, görevli idari merciye tevdi olunur ve durum ilgilisine bildirilir."
-    },
-    {
-      "mevzuat": "2646 resmi yazisma yonetmeligi",
-      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik\nCumhurbaşkanlığı Kararı 2646 / Resmî Gazete 31151 — 10.06.2020 (YÜRÜRLÜKTE)\nKaynak: https://mevzuat.gov.tr/MevzuatMetin/21.5.2646.pdf\n\nBu metin kamuya açık yönetmeliğin madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları docs/01-resmi-yazisma-mevzuati.md\nreferansından alınmıştır."
     },
     {
       "mevzuat": "2646 resmi yazisma yonetmeligi",
@@ -145,13 +131,6 @@
     {
       "mevzuat": "3071 dilekce hakki kanunu",
       "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Dilekçe Hakkının Kullanılmasına Dair Kanun\nKanun No: 3071 (YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3071.pdf\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları docs/02-evrak-taksonomi-routing.md\nreferansından alınmıştır."
-    },
-    {
-      "mevzuat": "3071 dilekce hakki kanunu",
-      "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
       "madde_no": 3,
       "madde_tur": "madde",
       "text": "Madde 3 — Dilekçe hakkı\nTürk vatandaşları ve Türkiye'de ikamet eden yabancılar kendileriyle veya kamu\nile ilgili dilek ve şikâyetleri hakkında Türkiye Büyük Millet Meclisine ve\nyetkili makamlara yazı ile başvurma hakkına sahiptir."
@@ -166,16 +145,16 @@
     {
       "mevzuat": "3071 dilekce hakki kanunu",
       "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
+      "madde_no": 6,
+      "madde_tur": "madde",
+      "text": "Madde 6 — İncelenemeyecek dilekçeler\nTürkiye Büyük Millet Meclisine veya yetkili makamlara verilen veya gönderilen\ndilekçelerden; belli bir konuyu ihtiva etmeyenler, yargı mercilerinin görevine\ngiren konularla ilgili olanlar ve aynı konuda birden çok dilekçe verilmesi\ndurumunda bunlardan ilkinden sonra verilenler incelenmez. Bu nitelikteki\ndilekçeler hakkında işlem yapılmaz ve durum gerektiğinde dilekçe sahibine\nbildirilir."
+    },
+    {
+      "mevzuat": "3071 dilekce hakki kanunu",
+      "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
       "madde_no": 7,
       "madde_tur": "madde",
       "text": "Madde 7 — Dilekçenin incelenmesi ve sonucun bildirilmesi\nTürk vatandaşlarının ve Türkiye'de ikamet eden yabancıların kendileri ve kamu\nile ilgili dilek ve şikâyetleri konusunda yetkili makamlara yaptıkları\nbaşvuruların sonucu veya yapılmakta olan işlemin safahatı dilekçe sahiplerine\nen geç otuz gün içinde gerekçeli olarak yazılı şekilde bildirilir. İşlem\ndevam ediyorsa bu da ayrıca belirtilir."
-    },
-    {
-      "mevzuat": "4734 kamu ihale kanunu",
-      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Kamu İhale Kanunu\nKanun No: 4734 (Kabul: 04.01.2002, RG 22.01.2002/24648 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4734&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.4734), Kamu\nİhale Kurumu (ihale.gov.tr) ve kamuya açık hukuk kaynaklarından çapraz\ndoğrulanmıştır. Kamu-evrak akışında ihale/satın alma evrakının (şikâyet\nbaşvurusu, itirazen şikâyet, sözleşme) hukuki dayanağıdır."
     },
     {
       "mevzuat": "4734 kamu ihale kanunu",
@@ -229,13 +208,6 @@
     {
       "mevzuat": "4982 bilgi edinme kanunu",
       "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Bilgi Edinme Hakkı Kanunu\nKanun No: 4982 (YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4982&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Süre ve red sebepleri madde numaraları\ndocs/02-evrak-taksonomi-routing.md referansından alınmıştır."
-    },
-    {
-      "mevzuat": "4982 bilgi edinme kanunu",
-      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
       "madde_no": 4,
       "madde_tur": "madde",
       "text": "Madde 4 — Bilgi edinme hakkı\nHerkes bilgi edinme hakkına sahiptir. Türkiye'de ikamet eden yabancılar ile\nTürkiye'de faaliyette bulunan yabancı tüzel kişiler, isteyecekleri bilgi\nkendileriyle veya faaliyet alanlarıyla ilgili olmak kaydıyla bu haktan\nyararlanır."
@@ -257,6 +229,13 @@
     {
       "mevzuat": "4982 bilgi edinme kanunu",
       "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 12,
+      "madde_tur": "madde",
+      "text": "Madde 12 — Başvurulara cevap ve başvurunun reddi\nKurum ve kuruluşlar, bilgi edinme başvurularıyla ilgili cevaplarını yazılı olarak\nveya elektronik ortamda başvuru sahibine bildirir. Başvurunun reddedilmesi hâlinde\nbu kararın gerekçesi ve buna karşı başvuru yolları belirtilir. Başvuru sahibine\nistenen bilgi veya belgenin hangi sebeple verilmediği açıkça gösterilir."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
       "madde_no": 16,
       "madde_tur": "madde",
       "text": "Madde 16 — Devlet sırrına ilişkin bilgi veya belgeler\nDevlet sırrı olarak gizliliği usulüne uygun olarak belirlenmiş bilgi veya\nbelgeler bilgi edinme hakkı kapsamı dışındadır. Bu nitelikteki başvurular\ngerekçesi belirtilerek reddedilir."
@@ -274,13 +253,6 @@
       "madde_no": 13,
       "madde_tur": "madde",
       "text": "Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı\nBilgi edinme istemi reddedilen başvuru sahibi, yargı yoluna başvurmadan önce\nkararın tebliğinden itibaren on beş gün içinde Bilgi Edinme Değerlendirme\nKuruluna itiraz edebilir. Kurul itirazı otuz iş günü içinde karara bağlar.\nİtiraz başvurusu, başvuru sahibinin idari yargıya başvurma süresini durdurur."
-    },
-    {
-      "mevzuat": "5018 kamu mali yonetimi kanunu",
-      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Kamu Malî Yönetimi ve Kontrol Kanunu\nKanun No: 5018 (Kabul: 10.12.2003, RG 24.12.2003/25326 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5018&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.5018) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında fatura/ödeme\nbelgesi gibi mali evrakın tahakkuk-ödeme süreci ve evrakın Strateji Geliştirme /\nMali İşler birimine havalesinin hukuki dayanağıdır."
     },
     {
       "mevzuat": "5018 kamu mali yonetimi kanunu",
@@ -318,11 +290,18 @@
       "text": "Madde 60 — Malî hizmetler birimi (görevleri ve görev ayrılığı)\nİdarelerin malî hizmetler birimi; bütçeyi hazırlama, izleme ve raporlama, malî\nistatistikleri üretme, ön malî kontrol işlemlerini yürütme ve harcama\nbirimlerine malî konularda danışmanlık yapma görevlerini yerine getirir. Harcama\nyetkilisi ile muhasebe yetkilisi görevi aynı kişide birleşemez. Malî hizmetler\nbiriminde ön malî kontrol görevini yürütenler, malî karar ve işlem sürecinde görev\nalamaz. Bu birim, Strateji Geliştirme Başkanlığı/Daire Başkanlığı olarak teşkilatlanır."
     },
     {
-      "mevzuat": "657 devlet memurlari kanunu",
-      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Devlet Memurları Kanunu\nKanun No: 657 (Kabul: 14.07.1965, RG 23.07.1965/12056 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=657&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.657) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında personel\nözlük işlemleri (atama, izin, disiplin) İnsan Kaynakları / Personel Dairesine\nhavale edilen evrakın hukuki dayanağıdır."
+      "mevzuat": "5690 cimer cb kararnamesi",
+      "kaynak_dosya": "5690_cimer_cb_kararnamesi.txt",
+      "madde_no": 1,
+      "madde_tur": "madde",
+      "text": "Madde 1 — Amaç ve kapsam\nBu Yönetmeliğin amacı, Cumhurbaşkanlığı İletişim Merkezi (CİMER) aracılığıyla\nyapılan başvuruların alınması, ilgili kurum ve kuruluşlara iletilmesi ve\nsonuçlandırılmasına ilişkin usul ve esasları düzenlemektir. Yönetmelik, gerçek ve\ntüzel kişilerin Dilekçe Hakkının Kullanılmasına Dair Kanun (3071) ile Bilgi Edinme\nHakkı Kanunu (4982) kapsamında kamu kurum ve kuruluşlarına yaptıkları başvuruları\nve CİMER sisteminin işleyişini kapsar."
+    },
+    {
+      "mevzuat": "5690 cimer cb kararnamesi",
+      "kaynak_dosya": "5690_cimer_cb_kararnamesi.txt",
+      "madde_no": 5,
+      "madde_tur": "madde",
+      "text": "Madde 5 — Başvuruların işleme konulmaması\nAşağıdaki başvurular işleme konulmaz: yalnızca tahmine veya zanna dayalı ifadeler\niçeren ve içeriğinde herhangi bir somut bilgi ya da belge bulunmayan başvurular;\naynı kişi tarafından hakkın kötüye kullanılması niteliğinde tekrar tekrar ve benzer\nşekilde yapılan başvurular; gerçeğe aykırı belge veya bilgiyle ya da sahte ad ve\nadresle yapıldığı sonradan anlaşılan başvurular (bu hâlde başvuru hiç yapılmamış\nsayılır); hakaret, sövme, küçük düşürücü veya tehdit içeren başvurular; yargıya\nintikal etmiş veya yargı mercilerinin görevine giren konulara ilişkin başvurular;\nkurumun görev ve yetki alanı dışında kalan başvurular işleme konulmaz.\n\nBaşvuruların sonuçlandırılması ve süre [DOĞRULA: madde no]\nCİMER üzerinden yapılan başvurular, niteliğine göre dilekçe hakkı (3071) veya bilgi\nedinme hakkı (4982) rejiminde değerlendirilir. Talep ve şikâyet niteliğindeki\nbaşvurular en geç otuz gün içinde sonuçlandırılır; bilgi edinme niteliğindeki\nbaşvurular ise 4982 sayılı Kanun gereği on beş iş günü içinde cevaplanır. Başvuru,\nilgili kurum veya kuruluşa yönlendirilir ve başvuru sahibine sonuç hakkında bilgi\nverilir; işlem ücretsizdir."
     },
     {
       "mevzuat": "657 devlet memurlari kanunu",
@@ -386,13 +365,6 @@
       "madde_no": 135,
       "madde_tur": "madde",
       "text": "Madde 135 — İtiraz\nDisiplin amirleri tarafından verilen uyarma, kınama ve aylıktan kesme cezalarına\nkarşı disiplin kuruluna, kademe ilerlemesinin durdurulması cezasına karşı yüksek\ndisiplin kuruluna itiraz edilebilir. İtirazda süre, cezanın tebliğinden itibaren\nyedi gündür; süresi içinde itiraz edilmeyen disiplin cezaları kesinleşir."
-    },
-    {
-      "mevzuat": "7201 tebligat kanunu",
-      "kaynak_dosya": "7201_tebligat_kanunu.txt",
-      "madde_no": null,
-      "madde_tur": null,
-      "text": "Tebligat Kanunu\nKanun No: 7201 (YÜRÜRLÜKTE)\nKaynak: https://mevzuat.gov.tr/mevzuatmetin/1.3.7201.pdf\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.3.7201) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır."
     },
     {
       "mevzuat": "7201 tebligat kanunu",

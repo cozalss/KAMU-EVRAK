@@ -1,20 +1,28 @@
-{# Olur / Onay yazısı — makam onayı (Yön. 2646 m.20). Muhatap satırı YOKTUR. #}
+{# Olur / Onay yazısı — makam onayı (Yön. 2646 m.20). Muhatap satırı YOKTUR.
+   Akış: başlık → sayı/tarih → konu → teklif metni → "...olurlarınıza arz ederim." →
+   teklif eden imza → (varsa "Uygun görüşle arz ederim." ara makam) → ortalı "OLUR" →
+   onay tarihi → onay makamı ad SOYAD + unvan. #}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
 
-Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
 Konu : {{ konu | default("{{ KONU }}") }}
 
 {{ metin | default("{{ TEKLİF METNİ }}") }}
 
-         Yukarıda arz edilen hususun {{ talep | default("uygun görülmesini") }} olurlarınıza arz ederim.
+{{ " " * 9 }}Yukarıda arz edilen hususun {{ talep | default("uygun görülmesini") }} olurlarınıza arz ederim.
 
-                                              {{ teklif_eden | default("{{ TEKLİF EDEN }}") }}
-                                              {{ teklif_unvan | default("{{ UNVAN }}") }}
+{{ " " * 46 }}{{ teklif_eden | default("{{ TEKLİF EDEN }}") }}
+{{ " " * 46 }}{{ teklif_unvan | default("{{ UNVAN }}") }}
+{% if uygun_gorus %}
 
-                              OLUR
-                            {{ tarih }}
+Uygun görüşle arz ederim.
+{{ " " * 46 }}{{ uygun_gorus }}
+{% endif %}
 
-                                              {{ onay_makami | default("{{ ONAY MAKAMI }}") }}
-                                              {{ onay_unvan | default("{{ ONAY UNVANI }}") }}
+                                 OLUR
+{{ " " * 33 }}{{ tarih }}
+
+{{ " " * 46 }}{{ onay_makami | default("{{ ONAY MAKAMI }}") }}
+{{ " " * 46 }}{{ onay_unvan | default("{{ ONAY UNVANI }}") }}

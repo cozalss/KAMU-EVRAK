@@ -30,7 +30,8 @@ _RE_TALEP = re.compile(r"(talep ederim|rica ederim|arz ederim|gereğini|bilgiler
 # İsim: 2+ baş-harfi büyük Türkçe sözcük; parantezli sıfat (İlgili/Vatandaş) atılır.
 _RE_AD_SOYAD = re.compile(
     r"ad[ıi]?[\s-]*soyad[ıi]?\s*[:：]\s*"
-    r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)"
+    r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)",
+    re.IGNORECASE,  # "Ad-Soyad:" (büyük harf) etiketi de eşleşsin (mock-mod gönderen çıkarımı)
 )
 
 # LLM'in serbest-metin alanlarına TCKN/telefon sızarsa maskelemek için (sızıntı önle).

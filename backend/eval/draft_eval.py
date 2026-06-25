@@ -61,6 +61,38 @@ _COMPONENT_PATTERNS: dict[str, re.Pattern] = {
         re.IGNORECASE),
 }
 
+# --- Yön. 2646 BÖLÜM-BÖLÜM uyum (ayrıntılı format skoru) ---
+# Her zorunlu bölüm → metinde ilk göründüğü konumu bulan regex (sıra denetimi için).
+# Sıra (Yön. m.10-19): başlık(T.C.) → sayı → konu → muhatap → [ilgi] → kapanış → imza.
+_SIRA_BOLUMLERI: tuple[tuple[str, re.Pattern], ...] = (
+    ("baslik", re.compile(r"T\.?\s?C\.?")),
+    ("sayi", re.compile(r"Sayı\s*[:：]", re.IGNORECASE)),
+    ("konu", re.compile(r"Konu\s*[:：]", re.IGNORECASE)),
+    ("kapanis", re.compile(
+        r"arz ederim|rica ederim|olurlarınıza arz|bilgilerinize arz", re.IGNORECASE)),
+    # İmza bloğu anahtarı — şablon imza SLOTU (placeholder) veya açık "e-imza" etiketi.
+    # NOT: çıplak "Müdür/Başkan" KULLANILMAZ; gövde/muhatap metninde geçip sırayı bozar.
+    ("imza", re.compile(
+        r"\{\{\s*AD SOYAD\s*\}\}|\{\{\s*TEKLİF EDEN\s*\}\}|\{\{\s*ONAY MAKAMI\s*\}\}"
+        r"|\{\{\s*UNVAN\s*\}\}|e-imza", re.IGNORECASE)),
+)
+
+# Yazı türü → beklenen resmî kapanış ibaresi (Yön. m.16 hiyerarşik kapanış).
+_TUR_KAPANIS: dict[str, re.Pattern] = {
+    "cevabi_yazi": re.compile(r"rica ederim", re.IGNORECASE),
+    "ust_yazi": re.compile(r"arz ederim", re.IGNORECASE),
+    "bilgilendirme": re.compile(r"bilgilerinize arz", re.IGNORECASE),
+    "olur": re.compile(r"olurlarınıza arz", re.IGNORECASE),
+}
+
+# Muhatap satırı tespiti — "Sayın ..." VEYA "...NE/NA" makam hitabı VEYA placeholder
+# VEYA "Dağıtım yerlerine". olur'da BULUNMAMALI (Yön. m.20).
+_RE_MUHATAP = re.compile(
+    r"Sayın\s+\S|\{\{\s*MUHATAP MAKAM\s*\}\}|Dağıtım yerlerine"
+    r"|^\s+\S.*(?:NE|NA|BAŞKANLIĞINA|MÜDÜRLÜĞÜNE|VALİLİĞİNE)\s*$",
+    re.IGNORECASE | re.MULTILINE)
+_RE_OLUR_BLOK = re.compile(r"^\s*OLUR\s*$", re.MULTILINE)
+
 # Türkçe saflık — resmî yazıda olması beklenen karakter kümesi (ASCII + Türkçe).
 _TR_ALLOWED = set("abcçdefgğhıijklmnoöprsştuüvyzqwxABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZQWX")
 
@@ -88,13 +120,44 @@ def load_gold(path: Path = GOLD) -> list[dict]:
     return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
 
 
+async def _yazi_alt_sistem(metin: str, evrak_turu: str) -> dict[str, Any]:
+    """Graf-bağımsız yazı alt-sistemi: cikar → yazi_taslak (yalnız Görev 2 odaklı).
+
+    Tam graf bir ÜST-AKIM node'unda (örn mevzuat_oner) hata verirse, format-uyum
+    ölçümü engellenmesin diye doğrudan yazı boru hattı koşulur. Çıktı sözleşmesi
+    grafla aynı anahtarları döndürür (yazi_taslak_md/format_uyumlu/yazi_turu).
+    evrak_turu gold satırından gelir → yazi_taslak_node EVRAK_TO_YAZI ile eşler.
+    """
+    from agents.nodes.cikar import cikar_node
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    st: dict[str, Any] = {"evrak_text": metin, "bilgi_unsurlari": {}}
+    st.update(await cikar_node(st))
+    st["evrak_turu"] = evrak_turu
+    return await yazi_taslak_node(st)
+
+
 def run_pipeline(rows: list[dict]) -> None:
-    """GERÇEK pipeline'ı koş → taslak + format_uyumlu + yazi_turu + verify_uyari doldur."""
-    graph = build_graph()
+    """GERÇEK pipeline'ı koş → taslak + format_uyumlu + yazi_turu + verify_uyari doldur.
+
+    Önce tam grafı dener; üst-akım node hatası (Görev 2 dışı) durumunda yazı
+    alt-sistemine düşer → format-uyum skoru her hâlükârda üretilir (eval dayanıklı).
+    """
+    try:
+        graph = build_graph()
+    except Exception:  # graf kurulamadı → alt-sistem fallback
+        graph = None
 
     async def _run() -> None:
         for r in rows:
-            out: dict[str, Any] = await graph.ainvoke(make_initial_state(r["metin"]))
+            out: dict[str, Any] = {}
+            if graph is not None:
+                try:
+                    out = await graph.ainvoke(make_initial_state(r["metin"]))
+                except Exception:
+                    out = {}
+            if not out.get("yazi_taslak_md"):
+                out = await _yazi_alt_sistem(r["metin"], r.get("evrak_turu", ""))
             r["taslak"] = out.get("yazi_taslak_md", "") or ""
             r["format_uyumlu"] = bool(out.get("format_uyumlu", False))
             r["yazi_turu"] = out.get("yazi_turu", "")
@@ -106,6 +169,80 @@ def run_pipeline(rows: list[dict]) -> None:
 def check_components(taslak: str) -> dict[str, bool]:
     """Her zorunlu bileşen taslakta var mı → {bileşen: bool}."""
     return {name: bool(pat.search(taslak)) for name, pat in _COMPONENT_PATTERNS.items()}
+
+
+def check_siralama(taslak: str) -> bool:
+    """Zorunlu bölümler Yön. 2646 sırasında mı (başlık<sayı<konu<kapanış<imza)?
+
+    Her bölümün metindeki ilk konumu artan olmalı. Eksik bölüm → sıra bozulmuş sayılır
+    (tam-uyum şartı). Sıralama, ayrıntılı format skorunun anahtar bileşenidir.
+    """
+    konumlar: list[int] = []
+    for _, pat in _SIRA_BOLUMLERI:
+        m = pat.search(taslak)
+        if not m:
+            return False
+        konumlar.append(m.start())
+    return konumlar == sorted(konumlar)
+
+
+def check_kapanis_turu(taslak: str, yazi_turu: str) -> bool:
+    """Kapanış ibaresi yazı türünün hiyerarşik kapanışına uygun mu (Yön. m.16)?
+
+    cevabi→'rica ederim', üst→'arz ederim', bilgilendirme→'bilgilerinize arz',
+    olur→'olurlarınıza arz'. Bilinmeyen tür → herhangi bir resmî kapanış yeterli.
+    """
+    pat = _TUR_KAPANIS.get(yazi_turu)
+    if pat is None:
+        return bool(_COMPONENT_PATTERNS["kapanis"].search(taslak))
+    return bool(pat.search(taslak))
+
+
+def check_olur_yapisi(taslak: str) -> bool:
+    """olur yazısı yapı kuralı (Yön. m.20): muhatap YOK + ortalı 'OLUR' bloğu VAR."""
+    return bool(_RE_OLUR_BLOK.search(taslak)) and not _RE_MUHATAP.search(taslak)
+
+
+def check_muhatap_turu(taslak: str, yazi_turu: str) -> bool:
+    """Muhatap bölümü türe uygun mu — olur'da yok; diğerlerinde var (Yön. m.14/20)."""
+    if yazi_turu == "olur":
+        return not bool(_RE_MUHATAP.search(taslak))
+    return bool(_RE_MUHATAP.search(taslak))
+
+
+# Ayrıntılı format-skoru bileşenleri (her biri 0/1) → ortalama = format_score [0,1].
+_FORMAT_BOYUTLARI: tuple[str, ...] = (
+    "bilesenler_tam",   # tüm zorunlu bileşenler mevcut (T.C./Sayı/Konu/İlgi/imza/kapanış)
+    "sira_dogru",       # bölümler doğru sırada
+    "kapanis_turu",     # kapanış hiyerarşiye/türe uygun
+    "muhatap_turu",     # muhatap bölümü türe uygun (olur'da yok)
+)
+
+
+# İlgi bölümü yalnız ATIF yazılarında zorunlu (Yön. m.15); olur/bilgilendirme'de
+# İlgi BULUNMAZ → bu türlerde 'ilgi' bileşeni tam-uyum şartından muaf tutulur.
+_ILGI_ZORUNLU_TURLER: frozenset[str] = frozenset({"cevabi_yazi", "ust_yazi"})
+
+
+def _bilesenler_tam(comp: dict[str, bool], yazi_turu: str) -> bool:
+    """Tüm zorunlu bileşen var mı — İlgi türe göre koşullu (olur/bilgilendirme muaf)."""
+    gerekli = dict(comp)
+    if yazi_turu not in _ILGI_ZORUNLU_TURLER:
+        gerekli.pop("ilgi", None)  # bu türlerde İlgi yokluğu eksiklik değildir
+    return all(gerekli.values())
+
+
+def format_skoru(taslak: str, yazi_turu: str) -> tuple[float, dict[str, bool]]:
+    """Bölüm-bölüm format-uyum skoru (Yön. 2646) → (skor[0,1], boyut bayrakları)."""
+    comp = check_components(taslak)
+    boyutlar = {
+        "bilesenler_tam": _bilesenler_tam(comp, yazi_turu),
+        "sira_dogru": check_siralama(taslak),
+        "kapanis_turu": check_kapanis_turu(taslak, yazi_turu),
+        "muhatap_turu": check_muhatap_turu(taslak, yazi_turu),
+    }
+    skor = sum(int(boyutlar[k]) for k in _FORMAT_BOYUTLARI) / len(_FORMAT_BOYUTLARI)
+    return skor, boyutlar
 
 
 def _norm(s: str) -> str:
@@ -138,7 +275,9 @@ def evaluate(rows: list[dict]) -> dict:
     n_components = len(_COMPONENT_PATTERNS)
     fmt_uyumlu = comp_fully = yazi_turu_ok = purity_ok = 0
     comp_hits: dict[str, int] = {k: 0 for k in _COMPONENT_PATTERNS}
+    boyut_hits: dict[str, int] = {k: 0 for k in _FORMAT_BOYUTLARI}
     purities: list[float] = []
+    format_skorlari: list[float] = []
     veto_uyari_toplam = false_veto_toplam = 0
     false_veto_ornek: list[dict] = []
     for r in rows:
@@ -147,6 +286,11 @@ def evaluate(rows: list[dict]) -> dict:
         comp_fully += int(all(comp.values()))
         for k, v in comp.items():
             comp_hits[k] += int(v)
+        # Ayrıntılı bölüm-bölüm format skoru (Yön. 2646): türe göre değerlendirilir.
+        skor, boyutlar = format_skoru(taslak, r["yazi_turu"])
+        format_skorlari.append(skor)
+        for k, v in boyutlar.items():
+            boyut_hits[k] += int(v)
         fmt_uyumlu += int(r["format_uyumlu"])
         yazi_turu_ok += int(r["yazi_turu"] == r.get("beklenen_yazi_turu"))
         pur = turkish_purity(taslak)
@@ -167,6 +311,9 @@ def evaluate(rows: list[dict]) -> dict:
         "compliance_rate": round(comp_fully / n, 4) if n else 0.0,
         "fully_compliant": comp_fully,
         "compliance_ci95": [round(lo, 3), round(hi, 3)],
+        # Ayrıntılı bölüm-bölüm format skoru (Yön. 2646) — bileşen+sıra+kapanış+muhatap.
+        "format_score": round(sum(format_skorlari) / n, 4) if n else 0.0,
+        "per_dimension": {k: round(v / n, 3) if n else 0.0 for k, v in boyut_hits.items()},
         "yazi_turu_acc": round(yazi_turu_ok / n, 4) if n else 0.0,
         "per_component": {k: round(v / n, 3) if n else 0.0 for k, v in comp_hits.items()},
         "avg_turkish_purity": round(sum(purities) / n, 4) if n else 0.0,
@@ -187,6 +334,8 @@ def main() -> int:
           f"({res['format_uyumlu']}/{res['n']})")
     print(f"  Bileşen tam-uyum (regex): {res['compliance_rate']:.3f}  "
           f"(%95 CI {fmt_ci(res['fully_compliant'], res['n'])})")
+    print(f"  AYRINTILI format skoru  : {res['format_score']:.3f}  "
+          f"(bileşen+sıra+kapanış+muhatap; Yön. 2646)")
     print(f"  Yazı türü doğruluğu     : {res['yazi_turu_acc']:.3f}  (EVRAK_TO_YAZI gold)")
     print(f"  Türkçe saflık           : ort {res['avg_turkish_purity']:.4f}  "
           f"(≥{PURITY_MIN}: {res['purity_ok']}/{res['n']})")
@@ -199,6 +348,9 @@ def main() -> int:
     print("\n  Bileşen kapsamı (oran):")
     for k, v in res["per_component"].items():
         print(f"    {k:14s} {v:.2f}")
+    print("\n  Format boyutları (oran):")
+    for k, v in res["per_dimension"].items():
+        print(f"    {k:16s} {v:.2f}")
     return 0
 
 

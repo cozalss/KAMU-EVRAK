@@ -54,12 +54,19 @@ def _chunk_kayitlari(path: Path) -> list[dict[str, object]]:
         return []
 
     etiket = _etiket(path)
-    kayitlar: list[dict[str, object]] = []
     # subchunk=False: madde başına TEK tam-metin chunk (seed dersi — alt-chunk
     # çakışması/baş-kaybı yok; chunker.py docstring'i referans).
-    for chunk in chunk_mevzuat(text, subchunk=False):
+    chunks = chunk_mevzuat(text, subchunk=False)
+    madde_var = any(c.metadata.get("madde_no") is not None for c in chunks)
+    kayitlar: list[dict[str, object]] = []
+    for chunk in chunks:
         govde = chunk.text.strip()
         if len(govde) < _MIN_CHUNK_CHARS:
+            continue
+        # Önsöz/künye chunk'ı (madde başlığı YOK) alaka taşımaz, retrieval'da
+        # "[DOĞRULA: madde no]" gürültüsü üretir → maddesi olan dosyada ELE.
+        # Hiç maddesi olmayan dosya (SDP 2005/7 = kod-aralığı) içerik chunk'ını korur.
+        if madde_var and chunk.metadata.get("madde_no") is None:
             continue
         kayitlar.append({
             "mevzuat": etiket,

@@ -14,6 +14,7 @@ dayanır; somut veri yoksa nötr çerçeve cümlesi kurulur (sahte sayı/kişi y
 
 from __future__ import annotations
 
+import re
 from datetime import date
 from typing import Any
 
@@ -44,26 +45,41 @@ def _olcu_meta(unsurlar: dict[str, Any]) -> dict[str, str]:
 
 
 def _fallback_body(yazi_turu: str, konu: str, has_ilgi: bool) -> str:
-    """LLM yokken deterministik, uydurmasız gövde (test/CI). Yalnız konuya değinir."""
-    konu_ifade = konu if konu else "ilgili konu"
-    if yazi_turu == "cevabi_yazi" or has_ilgi:
+    """LLM yokken deterministik, uydurmasız gövde (test/CI).
+
+    Yön. 2646 m.16 — giriş/gelişme/sonuç akışı: konuya bağlı resmî-üslup paragraf
+    kurar (yalnız çıkarılan konuya değinir; somut sayı/kişi/karar UYDURMAZ).
+    Yazı türüne göre kip farklılaşır → tür-uygun anlamlı metin (sadece placeholder
+    değil). cevabi_yazi her zaman İlgi atfıyla başlar; olur teklif kipinde.
+    """
+    konu_ifade = f"\"{konu}\"" if konu else "ilgili"
+    if yazi_turu == "cevabi_yazi":
         return (
-            f"İlgi yazıda belirtilen \"{konu_ifade}\" konusu kurumumuzca incelenmiştir. "
-            "Yapılan değerlendirme sonucu aşağıda arz/rica edilmektedir."
+            f"İlgi yazıda belirtilen {konu_ifade} konusu kurumumuzca incelenmiştir. "
+            "Söz konusu talebe ilişkin gerekli değerlendirme yapılmış olup sonucu "
+            "aşağıda sunulmuştur."
         )
     if yazi_turu == "olur":
         return (
-            f"\"{konu_ifade}\" hususunda gereğinin yapılması için makamınızca uygun "
-            "görülmesi hâlinde onayınıza arz edilen teklif sunulmuştur."
+            f"{konu_ifade} konusunda yürütülecek iş ve işlemlerin mevzuata uygun "
+            "şekilde tamamlanabilmesi için gerekli onayın verilmesi hususunda; "
+            "Aşağıda arz edilen teklifin değerlendirilmesi uygun mütalaa edilmektedir."
         )
     if yazi_turu == "bilgilendirme":
         return (
-            f"\"{konu_ifade}\" konusuna ilişkin olarak ilgili birim ve kişilerin "
-            "bilgilendirilmesi gereği duyulmuştur."
+            f"{konu_ifade} konusuna ilişkin olarak yürütülen iş ve işlemler hakkında "
+            "ilgili birim ve kişilerin bilgilendirilmesi gereği duyulmuştur. Konuya "
+            "ilişkin açıklamalar aşağıda sunulmuştur."
+        )
+    # üst yazı (gönderen makam → muhatap makam)
+    if has_ilgi:
+        return (
+            f"İlgi yazı ile bildirilen {konu_ifade} konusuna ilişkin gerekli iş ve "
+            "işlemlerin yapılması hususunda gereğini arz/rica ederim."
         )
     return (
-        f"\"{konu_ifade}\" konusuna ilişkin gerekli işlemlerin yapılması "
-        "hususunu içeren bu yazı tanzim edilmiştir."
+        f"{konu_ifade} konusuna ilişkin gerekli iş ve işlemlerin yürütülmesini "
+        "teminen işbu yazı tanzim edilmiştir."
     )
 
 
@@ -96,18 +112,60 @@ async def build_body(
         return _fallback_body(yazi_turu, konu, has_ilgi)
 
 
+def _muhatap(unsurlar: dict[str, Any]) -> str:
+    """Cevabi yazıda muhatap = gelen belgenin GÖNDEREN'i (Yön. m.14).
+
+    Gelen dilekçe/başvuruyu yazan kişi/kurum, cevabımızın muhatabıdır. Gerçek kişi
+    → "Sayın <Ad Soyad>"; tüzel kişi/kurum → adı aynen. Eksikse boş (placeholder).
+    Parantezli sıfat ('(İlgili)', '(Vatandaş)') atılır — resmî hitapta yer almaz.
+    """
+    gonderen = str(unsurlar.get("gonderen", "") or "").strip()
+    if gonderen:
+        gonderen = re.sub(r"\s*\([^)]*\)\s*$", "", gonderen).strip()
+        if gonderen:
+            return f"Sayın {gonderen}"
+    kurum = str(unsurlar.get("kurum", "") or "").strip()
+    return kurum  # boşsa "" → template placeholder'a düşer
+
+
+def _ilgi_satirlari(unsurlar: dict[str, Any]) -> tuple[str, ...]:
+    """İlgi satırlarını gelen belgenin tarih+sayısından kur (Yön. m.15).
+
+    Hem tarih hem sayı varsa tam "a)" satırı; biri eksikse o slot {{ }} kalır
+    (uydurma yok). İkisi de yoksa boş → template ilgi_tarih/ilgi_sayi placeholder'a
+    düşer. Tek atıf → "a)" etiketi kullanılmaz (sade tek-satır).
+    """
+    tarih = str(unsurlar.get("tarih", "") or "").strip()
+    sayi = str(unsurlar.get("sayi", "") or "").strip()
+    if not (tarih or sayi):
+        return ()
+    t = tarih or "{{ İLGİ TARİH }}"
+    s = sayi or "{{ İLGİ SAYI }}"
+    return (f"{t} tarihli ve {s} sayılı yazınız.",)
+
+
 def build_context(
     yazi_turu: str, unsurlar: dict[str, Any], metin: str,
 ) -> YaziContext:
-    """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (placeholder-safe)."""
+    """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (placeholder-safe).
+
+    Çıkarılan unsurlardan azami otomatik doldurma (Yön. 2646): konu, muhatap
+    (gönderen→cevap muhatabı), ilgi (gelen belge tarih/sayı). Bilinmeyen alanlar
+    (idare/birim/imza/OUR sayısı) {{ }} placeholder kalır (CLAUDE.md — uydurma yok).
+    """
     turu = resolve_yazi_turu(yazi_turu)
+    # cevabi/üst yazıda ilgi atfı kurulur; olur'da ilgi yoktur, bilgilendirme nötr.
+    ilgi = _ilgi_satirlari(unsurlar) if turu in ("cevabi_yazi", "ust_yazi") else ()
+    muhatap = "" if turu == "olur" else _muhatap(unsurlar)
     return YaziContext(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
         konu=str(unsurlar.get("konu", "") or ""),
         metin=metin,
+        muhatap=muhatap,
         ilgi_tarih=str(unsurlar.get("tarih", "") or ""),
         ilgi_sayi=str(unsurlar.get("sayi", "") or ""),
+        ilgi_satirlari=ilgi,
         kapanis=default_kapanis(turu),
         olur_alanlari=_olcu_meta(unsurlar) if turu == "olur" else {},
     )

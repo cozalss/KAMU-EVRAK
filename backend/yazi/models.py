@@ -31,8 +31,12 @@ class YaziContext:
         metin: Gövde metni (giriş/gelişme/sonuç) — node üretir.
         muhatap: Hedef makam (Yön. m.14). bilgilendirme'de "Dağıtım yerlerine".
         ilgi_tarih / ilgi_sayi: Cevabi yazıda atıf yapılan belge (Yön. m.15).
+        ilgi_satirlari: Çok-ilgili belge için hazır "a) ... b) ..." satırları
+            (verilirse ilgi_tarih/ilgi_sayi yerine bunlar render edilir).
         kapanis: Hiyerarşiye göre "Gereğini arz/rica ederim." vb. (Yön. m.16).
         idare_adi / birim_adi: Antet (Yön. m.10) — bilinmiyorsa placeholder.
+        sayi_satiri: Hazır "E-DETSİS-SDP-KAYIT" sayı dizgesi (Yön. m.11). OUR
+            yazının sayısı EBYS'ce atanır → genelde bilinmez → placeholder kalır.
         ad_soyad / unvan: İmza bloğu (Yön. m.17).
         ekler / dagitim: Yön. m.18-19 (opsiyonel).
         olur_alanlari: olur türü için teklif_eden/onay_makami vb.
@@ -46,9 +50,11 @@ class YaziContext:
     muhatap: str = ""
     ilgi_tarih: str = ""
     ilgi_sayi: str = ""
+    ilgi_satirlari: tuple[str, ...] = ()
     kapanis: str = ""
     idare_adi: str = ""
     birim_adi: str = ""
+    sayi_satiri: str = ""
     detsis: str = ""
     sdp: str = ""
     kayit_no: str = ""
@@ -68,13 +74,15 @@ class YaziContext:
         out: dict[str, Any] = {"tarih": self.tarih, "yazi_turu": self.yazi_turu}
         scalar_fields = (
             "konu", "metin", "muhatap", "ilgi_tarih", "ilgi_sayi", "kapanis",
-            "idare_adi", "birim_adi", "detsis", "sdp", "kayit_no",
+            "idare_adi", "birim_adi", "sayi_satiri", "detsis", "sdp", "kayit_no",
             "ad_soyad", "unvan",
         )
         for name in scalar_fields:
             val = getattr(self, name)
             if val:
                 out[name] = val
+        if self.ilgi_satirlari:
+            out["ilgi_satirlari"] = list(self.ilgi_satirlari)
         if self.ekler:
             out["ekler"] = list(self.ekler)
         if self.dagitim:

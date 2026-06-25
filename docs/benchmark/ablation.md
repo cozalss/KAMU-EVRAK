@@ -6,15 +6,15 @@
 
 | Ablasyon | n | KAPALI (A) | AÇIK (B) | Δ / anlamlılık |
 |----------|---|-----------|----------|----------------|
-| CRAG — Sınıflandırma (mevzuat düzeltme; sınıfa dolaylı) | 20 | 0.600 [0.387, 0.781] | 0.600 [0.387, 0.781] | Δ=+0.0pp, %95 CI [+0.0, +0.0]pp, p=1.000 → anlamlı DEĞİL |
-| CRAG — Yönlendirme (NEGATİF KONTROL; Δ≈0 beklenir) | 20 | 0.600 [0.387, 0.781] | 0.600 [0.387, 0.781] | Δ=+0.0pp, %95 CI [+0.0, +0.0]pp, p=1.000 → anlamlı DEĞİL |
-| verify — Sınıflandırma (kalite-kapısı; sınıfa etkisiz beklenir) | 20 | 0.600 [0.387, 0.781] | 0.600 [0.387, 0.781] | Δ=+0.0pp, %95 CI [+0.0, +0.0]pp, p=1.000 → anlamlı DEĞİL |
+| CRAG — Sınıflandırma (mevzuat düzeltme; sınıfa dolaylı) | 12 | 0.833 [0.552, 0.953] | 0.833 [0.552, 0.953] | Δ=+0.0pp, %95 CI [+0.0, +0.0]pp, p=1.000 → anlamlı DEĞİL |
+| CRAG — Yönlendirme (NEGATİF KONTROL; Δ≈0 beklenir) | 12 | 0.833 [0.552, 0.953] | 0.833 [0.552, 0.953] | Δ=+0.0pp, %95 CI [+0.0, +0.0]pp, p=1.000 → anlamlı DEĞİL |
+| verify — Sınıflandırma (kalite-kapısı; sınıfa etkisiz beklenir) | 12 | 0.833 [0.552, 0.953] | 0.833 [0.552, 0.953] | Δ=+0.0pp, %95 CI [+0.0, +0.0]pp, p=1.000 → anlamlı DEĞİL |
 
 ## Node Mekanizma Etkisi (doğrudan ölçüm)
 
-- **CRAG düzeltme (temiz gold, tam-graf):** 0/20 vakada düzeltme tetiklendi. Temiz sentetik gold'da `mevzuat_oner` zaten tür-ağırlıklı sorgu-genişletme yapar (raw BM25≈17-40) → retrieval güçlü, CRAG **dormant** kalır. Bu BEKLENEN ve dürüst sonuçtur (gereksiz müdahale yok).
-- **CRAG mekanizma kontrolü (kontrollü düşük-güven state):** 4/4 türde, zayıf (config-fallback) retrieval verilen state'te CRAG sorguyu domain-terimle genişletip korpustan daha güçlü öneri getirdi; ortalama retrieval güven artışı **+0.531** (0..1 normalize). Mekanizma doğru çalışır; tam-grafta tetiklenmemesi corpus/baseline kalitesindendir.
-- **verify kalite-kapısı:** 20/20 taslakta format-uyum/uydurma uyarısı üretildi (20 vakada doğrulama notu).
+- **CRAG düzeltme (temiz gold, tam-graf):** 0/12 vakada düzeltme tetiklendi. Temiz sentetik gold'da `mevzuat_oner` zaten tür-ağırlıklı sorgu-genişletme yapar (raw BM25≈17-40) → retrieval güçlü, CRAG **dormant** kalır. Bu BEKLENEN ve dürüst sonuçtur (gereksiz müdahale yok).
+- **CRAG mekanizma kontrolü (kontrollü düşük-güven state):** 4/4 türde, zayıf (config-fallback) retrieval verilen state'te CRAG sorguyu domain-terimle genişletip korpustan daha güçlü öneri getirdi; ortalama retrieval güven artışı **+0.700** (0..1 normalize). Mekanizma doğru çalışır; tam-grafta tetiklenmemesi corpus/baseline kalitesindendir.
+- **verify kalite-kapısı:** 12/12 taslakta format-uyum/uydurma uyarısı üretildi (12 vakada doğrulama notu).
 
 ## Yorum
 

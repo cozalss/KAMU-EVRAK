@@ -1,6 +1,6 @@
 # TEKNOFEST 2026 — 1. Senaryo Yarışma Karnesi
 
-> Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · `python -m eval.competition_scorecard` ile üretilir (commit `f639b24`, LLM_MODE=`mock`).
+> Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · `python -m eval.competition_scorecard` ile üretilir (commit `57216b9`, LLM_MODE=`mock`).
 
 > **Skorlar MOCK tabandır:** LLM_MODE=mock'ta siniflandir/route keyword-heuristik fallback'i koşar. Bu metrikler TAVAN değil TABAN — gerçek LLM modu (openai/llamacpp) yükseltir. Burada KRİTİK olan, eval'in mock taksonomiyi değil GERÇEK LangGraph pipeline'ını (siniflandir→cikar→eksik_tespit→route_birim→ozetle→yazi_taslak) ölçmesidir.
 
@@ -14,8 +14,8 @@ Kanonik taksonomi: **19 evrak türü** (config.EVRAK_TURLERI; 'belirsiz' abstent
 | Sınıflandırma macro-F1 | **0.919** | — |
 | Abstention oranı (belirsiz/düşük-güven) | 0% | — |
 | Eksik-bilgi recall (β=2) | **0.995** | [0.971, 0.999] |
-| Eksik-bilgi precision | 0.561 | — |
-| Eksik-bilgi F-beta | 0.862 | — |
+| Eksik-bilgi precision | 0.970 | — |
+| Eksik-bilgi F-beta | 0.990 | — |
 | Özet key-fact recall (mikro) | **0.972** | — |
 | Özet faithfulness (sadakat) | **1.000** | [0.983, 1.000] |
 | Özet ort. uzunluk | 41.6 kelime | — |

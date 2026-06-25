@@ -1,5 +1,5 @@
 {
-  "git_sha": "f639b24",
+  "git_sha": "57216b9",
   "llm_mode": "mock",
   "evrak_turu_sayisi": 19,
   "birim_sayisi": 9,
@@ -19,9 +19,9 @@
       }
     },
     "eksik_bilgi": {
-      "precision": 0.5614,
+      "precision": 0.9697,
       "recall": 0.9948,
-      "f_beta": 0.8618,
+      "f_beta": 0.9897,
       "beta": 2.0,
       "recall_ci95": [
         0.971,

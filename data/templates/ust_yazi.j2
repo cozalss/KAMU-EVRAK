@@ -1,26 +1,35 @@
 {# Üst yazı — Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020).
-   Eksik alanlar {{ }} placeholder kalır (CLAUDE.md — uydurma yok). Yön. m.10-19. #}
+   Bölüm sırası (Yön. m.10-19): başlık → sayı/tarih → konu → muhatap → ilgi → metin →
+   kapanış → imza → ek → dağıtım. Eksik alanlar {{ }} placeholder kalır (uydurma yok). #}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
 
-Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
 Konu : {{ konu | default("{{ KONU }}") }}
 
                           {{ muhatap | default("{{ MUHATAP MAKAM }}") }}
+{% if ilgi_satirlari %}
+
+İlgi : {% for ilgi in ilgi_satirlari %}{% if loop.index0 %}       {% endif %}{{ ilgi }}
+{% endfor %}{% endif %}
 
 {{ metin | default("{{ METİN GÖVDESİ }}") }}
 
-         {{ kapanis | default("Gereğini arz ederim.") }}
+{{ " " * 9 }}{{ kapanis | default("Gereğini arz ederim.") }}
 
-                                              {{ ad_soyad | default("{{ AD SOYAD }}") }}
-                                              {{ unvan | default("{{ UNVAN }}") }}
+{{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
+{{ " " * 46 }}{{ unvan | default("{{ UNVAN }}") }}
 {% if ekler %}
+
 Ek :
-{% for ek in ekler %}  {{ loop.index }}- {{ ek }}
+{% for ek in ekler %}{{ loop.index }}- {{ ek }}
 {% endfor %}{% endif %}
 {% if dagitim %}
-Dağıtım:
-{% if dagitim.geregi | default([]) %}Gereği:{% for d in dagitim.geregi %} {{ d }};{% endfor %}
-{% endif %}{% if dagitim.bilgi | default([]) %}Bilgi:{% for d in dagitim.bilgi %} {{ d }};{% endfor %}
-{% endif %}{% endif %}
+
+DAĞITIM:
+{% if dagitim.geregi | default([]) %}Gereği:
+{% for d in dagitim.geregi %}{{ d }}
+{% endfor %}{% endif %}{% if dagitim.bilgi | default([]) %}Bilgi:
+{% for d in dagitim.bilgi %}{{ d }}
+{% endfor %}{% endif %}{% endif %}

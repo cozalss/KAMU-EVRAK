@@ -14,6 +14,7 @@ from agents.nodes.mevzuat_oner import (
     _from_config,
     _load_index,
     _retrieval_query,
+    _tokenize,
     mevzuat_oner_node,
 )
 
@@ -210,3 +211,69 @@ class TestMevzuatOnerIndeks:
         query = _retrieval_query(state)
         # Assert — tür anahtarı (dilekce) Türkçe etikete (Dilekçe) genişler
         assert "Dilekçe" in query
+
+
+# ---------------------------------------------------------------------------
+# Ranking iyileştirmeleri — tür-boost, korpus genişleme, gürültü filtreleme
+# ---------------------------------------------------------------------------
+
+
+class TestMevzuatOnerRankingIyilestirme:
+    async def test_cimer_5690_korpustan_getirilir(self):
+        # Arrange — CİMER korpusu eklendi (5690); tür-boost ile öne alınmalı.
+        state = _state(
+            "cimer",
+            "CİMER şikâyet başvurusu",
+            "Cumhurbaşkanlığı İletişim Merkezi üzerinden yaptığım şikâyet "
+            "başvurusunun otuz gün içinde sonuçlandırılmasını talep ediyorum.",
+        )
+        # Act
+        out = await mevzuat_oner_node(state)
+        # Assert — 5690 CİMER kararnamesi top-1 (baseline'da hiç gelmiyordu → 0%)
+        basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
+        assert basliklar and basliklar[0].startswith("5690")
+
+    async def test_onsoz_chunk_dogrula_isareti_top1_olmaz(self):
+        # Arrange — önsöz/künye chunk'ı (madde_no yok) artık ELENİR; top-1 gerçek
+        # madde olmalı, "[DOĞRULA: madde no]" künye gürültüsü baş sıraya gelmemeli.
+        state = _state(
+            "dilekce",
+            "dilekçe hakkı başvurusu",
+            "Türk vatandaşları yetkili makamlara dilekçe ile başvurma hakkına "
+            "sahiptir; adı soyadı imzası ve adresi zorunludur.",
+        )
+        # Act
+        out = await mevzuat_oner_node(state)
+        # Assert — top-1 madde no taşır ([DOĞRULA:] künye değil)
+        assert "[DOĞRULA:" not in out["mevzuat_onerileri"][0]["baslik"]
+
+    async def test_oneriler_dedup_ayni_madde_tekrar_etmez(self):
+        # Arrange
+        state = _state(
+            "tebligat",
+            "elektronik tebligat",
+            "Elektronik tebligat muhatabın adresine ulaştığı tarihi izleyen "
+            "beşinci günün sonunda yapılmış sayılır.",
+        )
+        # Act
+        out = await mevzuat_oner_node(state)
+        # Assert — aynı başlık iki kez listede olmaz
+        basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
+        assert len(basliklar) == len(set(basliklar))
+
+    def test_tokenize_stopword_ve_boilerplate_eler(self):
+        # Arrange + Act — "arz ederim" boilerplate + "ve" stopword elenir
+        tokenlar = _tokenize("Gereğini arz ederim ve bilgilerinize sunarım")
+        # Assert
+        assert "arz" not in tokenlar
+        assert "ederim" not in tokenlar
+        assert "ve" not in tokenlar
+        assert "sunarım" in tokenlar  # domain terimi korunur
+
+    def test_tokenize_madde_atifi_normalize_eder(self):
+        # Arrange + Act — "m.4" ve "madde 4" aynı tokene indirgenir (hizalama)
+        t1 = _tokenize("3071 m.4 zorunlu unsurlar")
+        t2 = _tokenize("3071 madde 4 zorunlu unsurlar")
+        # Assert
+        assert "madde4" in t1
+        assert "madde4" in t2

@@ -29,8 +29,10 @@ _RE_TALEP = re.compile(r"(talep ederim|rica ederim|arz ederim|gereğini|bilgiler
 # Gönderen ad-soyad: "Ad-Soyad: <İsim>" / "Adı Soyadı: <İsim>" satırı (sentetik+gerçek desen).
 # İsim: 2+ baş-harfi büyük Türkçe sözcük; parantezli sıfat (İlgili/Vatandaş) atılır.
 _RE_AD_SOYAD = re.compile(
-    r"ad[ıi]?[\s-]*soyad[ıi]?\s*[:：]\s*"
-    r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)",
+    r"ad[ıi]?[ \t-]*soyad[ıi]?[ \t]*[:：][ \t]*"
+    # İsim AYNI satırda kalmalı ([ \t], \s DEĞİL) → newline'ı geçip sonraki "Konu" vb.
+    # satırı yutmasın (bug: 'Ayşe Yılmaz\nKonu' yakalanıyordu).
+    r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:[ \t]+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)",
     re.IGNORECASE,  # "Ad-Soyad:" (büyük harf) etiketi de eşleşsin (mock-mod gönderen çıkarımı)
 )
 

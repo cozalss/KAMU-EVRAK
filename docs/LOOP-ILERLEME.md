@@ -10,7 +10,15 @@
 - **Çalıştır-doğrula:** `cd backend && python -c "import ... pipeline ainvoke"` (langgraph global'de var);
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
-## İterasyon günlüğü
+## İterasyon günlüğü (en yeni üstte)
+- **İT-6/7 (gece) BİTTİ:** arsiv/SDP node + frontend favicon/arşiv-kartı/skeleton/a11y + güvenlik denetimi (0 CRIT, 3 HIGH) [57216b9]; **3 ZAYIF ALAN saldırısı** (dış-değerlendirme 60-68→80+): (1) yazı formatı Yön.2646 TAM-uyum, format skoru **1.0**, placeholder↓ [64fea5e] (2) mevzuat retrieval Recall@3 **0.86→1.0**/MRR 0.96, CİMER+5690 düzeldi, retrieval_eval (3) sınıflandırma/yönlendirme mock **0.92/0.93** (DÜRÜST NOT: gen_synthetic template-keyword'e dayalı → DAİRESEL risk; gerçek test LLM modu). fix(cikar) Ad-Soyad IGNORECASE + aynı-satır [6552ad0]. pytest **189**.
+  - **KULLANICI DIŞ-DEĞERLENDİRME:** ~60-68/100; 80+ için yazı-formatı/sınıflandırma/mevzuat düzelt → 3'ü de bu iterasyonda hedeflendi. `gh` yok (WebSearch/Context7 ile araştırıldı).
+- **İT-8 ÖNCELİKLER (kazanma):**
+  1. **Güvenlik HIGH-fix** (denetim raporu): read-before-size OOM cap (multimodal/process_doc), `javascript:` href XSS guard (result-cards), rate-limit (slowapi) + güvenlik header'ları (main.py), Content-Disposition `;` sanitize (yazi.py).
+  2. **Sınıflandırma DÜRÜSTLÜĞÜ**: held-out eval split (gen_synthetic'ten AYRI şablon/keyword) → dairesel-olmayan skor; few-shot LLM prompt güçlendir (gerçek-mod hazır).
+  3. **Gerçek-LLM hazırlık**: OPENAI_API_KEY ile smoke (kullanıcı anahtar verirse); .env.example netleştir.
+  4. (opsiyonel) worktree+uv sync ile CANLI OCR testi; daha çeşitli/gerçekçi sentetik veri.
+  AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil; scorecard'ı orkestratör tazeler.
 - **İT-1 (16:17→~16:55) BİTTİ:** git init + backlog. 4 ajan:
   (A) Görev1 node'ları gerçek LLM+mock fallback (siniflandir/cikar/eksik/ozetle, PII maskeli) ✓ commit 6a255b0
   (B) Görev2 yazi_taslak (jinja2+PDF/DOCX) + route_birim + mevzuat_oner(BM25) ✓ 6a255b0

@@ -1,127 +1,165 @@
-/* Ajan Akış Şeması — canlı LangGraph görselleştirmesi (custom SVG, sıfır ek dep).
-   Kullanıcı sorusu işlenirken hangi ajanın çalıştığını, paralel kolları, doğrulama
-   skorlarını gerçek-zamanlı + şık gösterir. RED-LINE: yalnız İLERLEME görselleştirir;
-   doğrulama SONUCU backend'de (n_verified/confidence final event'inden gelir). */
-import React from "react";
-import { NODES, EDGES, deriveNodeStatus, buildFigcaption, verifyTone } from "./topology.js";
+/* Ajan Akış Şeması — canlı SVG iş-akışı görselleştirmesi (custom SVG, SIFIR ek dep).
+   Evrak işlenirken hangi ajanın çalıştığını, paralel kolları (mevzuat ∥ özet) ve Görev-1/
+   Görev-2 ayrımını gerçek-zamanlı gösterir. Her node SSE'de "done" olunca yanar.
+   RED-LINE: yalnız İLERLEME görselleştirir; sonuç (tür/birim/yazı) backend'de üretilir.
 
-// SVG yerleşimi — col/row → piksel (yatay akış, mevzuat∥emsal dikey çatal).
-const PAD_X = 58;
-const COL_W = 118;
-const ROW_Y = [40, 104, 168];
-const NODE_W = 94;
-const NODE_H = 48;
-const VIEW_W = PAD_X * 2 + 5 * COL_W;
-const VIEW_H = 208;
+   Props:
+     nodes: [{ id, label, gorev, status, data }]  — App SSE'den günceller
+            status ∈ "pending" | "active" | "done" | "error"
+   Erişilebilir: role=img + aria-label (canlı özet) + figcaption status-region;
+   prefers-reduced-motion ile animasyonlar kapanır (CSS). */
+import React, { useMemo } from "react";
+import { PIPELINE, EDGES, edgeState, buildFigcaption } from "./topology.js";
 
-const cx = (col) => PAD_X + col * COL_W;
-const cy = (row) => ROW_Y[row];
-const byId = Object.fromEntries(NODES.map((n) => [n.id, n]));
+// ---- SVG yerleşim sabitleri (col/row → piksel) ----
+const PAD_X = 60;
+const PAD_Y = 56;
+const COL_W = 138;
+const ROW_H = 78;
+const NODE_W = 116;
+const NODE_H = 52;
+const N_COLS = 8; // oku..finalize
+const VIEW_W = PAD_X * 2 + (N_COLS - 1) * COL_W;
+const VIEW_H = PAD_Y * 2 + 2 * ROW_H;
+
+const centerX = (col) => PAD_X + col * COL_W;
+const centerY = (row) => PAD_Y + row * ROW_H;
+const byId = Object.fromEntries(PIPELINE.map((n) => [n.id, n]));
 
 // Düğüm sağ-kenarından sonraki düğüm sol-kenarına yumuşak bezier kenar.
-function edgePath(from, to) {
-  const a = byId[from];
-  const b = byId[to];
-  const x1 = cx(a.col) + NODE_W / 2;
-  const y1 = cy(a.row);
-  const x2 = cx(b.col) - NODE_W / 2;
-  const y2 = cy(b.row);
+function edgePath(fromId, toId) {
+  const a = byId[fromId];
+  const b = byId[toId];
+  const x1 = centerX(a.col) + NODE_W / 2;
+  const y1 = centerY(a.row);
+  const x2 = centerX(b.col) - NODE_W / 2;
+  const y2 = centerY(b.row);
   const mx = (x1 + x2) / 2;
   return `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
 }
 
-export function AgentFlowGraph({
-  phase,
-  activeNode = null,
-  intent = null,
-  retryCount = 0,
-  sources = null,
-  verify = null,
-}) {
-  const status = deriveNodeStatus({ phase, activeNode, intent });
-  const caption = buildFigcaption(status);
-  const showRetry = retryCount > 0;
+const MARK = { done: "✓", active: "●", error: "✕", pending: "" };
 
-  // Bir kenar, hedef düğümü aktif/done ise "akar" (gold çizgi).
-  const edgeState = (e) => {
-    const t = status[e.to];
-    if (t === "active") return "flowing";
-    if (t === "done") return "done";
-    return "idle";
-  };
+export function AgentFlowGraph({ nodes }) {
+  // status haritası — props.nodes'tan; eksikse PIPELINE'dan "pending".
+  const statusById = useMemo(() => {
+    const map = {};
+    for (const n of PIPELINE) map[n.id] = "pending";
+    for (const n of nodes || []) if (n?.id in map) map[n.id] = n.status || "pending";
+    return map;
+  }, [nodes]);
+
+  const dataById = useMemo(() => {
+    const map = {};
+    for (const n of nodes || []) if (n?.id) map[n.id] = n.data;
+    return map;
+  }, [nodes]);
+
+  const caption = buildFigcaption(statusById);
+  const doneCount = PIPELINE.filter((n) => statusById[n.id] === "done").length;
+  const total = PIPELINE.length;
 
   return (
-    <figure className="agw-figure" role="figure" aria-label="Ajan akış şeması">
+    <figure className="agw-figure" role="group" aria-label="Ajan akış şeması">
       <div className="agw-head">
-        <span className="agw-title">Ajan Ekibi</span>
-        {sources && (sources.mevzuat || sources.emsal) ? (
-          <span className="agw-chip" aria-hidden="true">
-            📑 {sources.mevzuat ?? 0} kanun · {sources.emsal ?? 0} içtihat taranıyor
-          </span>
-        ) : null}
-        {showRetry ? (
-          <span className="agw-chip agw-chip-retry" aria-hidden="true">↻ yeniden üretiliyor ({retryCount})</span>
-        ) : null}
+        <span className="agw-title">Ajan Ekibi · Canlı Akış</span>
+        <span className="agw-legend" aria-hidden="true">
+          <span className="agw-legend-item g1"><i className="agw-swatch" /> Görev 1: Anla</span>
+          <span className="agw-legend-item g2"><i className="agw-swatch" /> Görev 2: Üret</span>
+        </span>
+        <span className="agw-progress" aria-hidden="true">{doneCount}/{total}</span>
       </div>
 
-      <svg className="agw-svg" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} role="presentation" aria-hidden="true">
-        {/* Kenarlar (düğümlerin ALTINDA) */}
-        <g className="agw-edges">
-          {EDGES.map((e) => (
-            <path
-              key={`${e.from}-${e.to}`}
-              className={`agw-edge agw-edge-${edgeState(e)}`}
-              d={edgePath(e.from, e.to)}
-              fill="none"
-            />
-          ))}
-          {showRetry ? (
-            <path
-              className="agw-edge agw-edge-retry"
-              d={`M ${cx(byId.debate.col)} ${cy(byId.debate.row) + NODE_H / 2} C ${cx(2)} 196, ${cx(2)} 196, ${cx(byId.draft.col)} ${cy(byId.draft.row) + NODE_H / 2}`}
-              fill="none"
-            />
-          ) : null}
-        </g>
-
-        {/* Düğümler */}
-        <g className="agw-nodes">
-          {NODES.map((n) => {
-            const st = status[n.id];
-            const x = cx(n.col) - NODE_W / 2;
-            const y = cy(n.row) - NODE_H / 2;
-            return (
-              <g key={n.id} className={`agw-node agw-node-${st}`} transform={`translate(${x} ${y})`}>
-                {st === "active" ? (
-                  <rect className="agw-pulse" x="-4" y="-4" width={NODE_W + 8} height={NODE_H + 8} rx="14" />
-                ) : null}
-                <rect className="agw-card" width={NODE_W} height={NODE_H} rx="11" />
-                <text className="agw-dot" x={NODE_W - 13} y="16" aria-hidden="true">
-                  {st === "done" ? "✓" : st === "active" ? "●" : ""}
-                </text>
-                <text className="agw-label" x="11" y="20">{n.label}</text>
-                <text className="agw-sub" x="11" y="35">{n.sub}</text>
-              </g>
-            );
-          })}
-        </g>
-      </svg>
-
-      {/* Doğrulama rozeti — yalnız final geldiğinde (backend kararı; renk DEĞİL metin-kodlu) */}
-      {verify && verify.nTotal != null ? (
-        <div
-          className={`agw-verify agw-verify-${verifyTone(verify.confidenceLabel)}`}
-          aria-label={`Doğrulama: ${verify.nVerified}/${verify.nTotal} iddia kaynakla doğrulandı.${verify.confidenceLabel ? " Güven: " + verify.confidenceLabel + "." : ""}`}
+      <div className="agw-scroll">
+        <svg
+          className="agw-svg"
+          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+          role="presentation"
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
         >
-          <span className="agw-verify-num">{verify.nVerified}/{verify.nTotal}</span>
-          <span className="agw-verify-txt">iddia doğrulandı</span>
-          {verify.confidenceLabel ? <span className="agw-verify-conf">· Güven: {verify.confidenceLabel}</span> : null}
-        </div>
-      ) : null}
+          <defs>
+            <marker
+              id="agw-arrow" markerWidth="7" markerHeight="7" refX="5.4" refY="3"
+              orient="auto" markerUnits="userSpaceOnUse"
+            >
+              <path d="M0,0 L6,3 L0,6 Z" className="agw-arrowhead" />
+            </marker>
+          </defs>
 
-      {/* a11y: figure aria-label statik ad sağlar; TEK aria-live bölge dinamik durumu
-          duyurur (figcaption + live çift-okumasını önlemek için yalnız status region). */}
+          {/* Kenarlar (düğümlerin ALTINDA) */}
+          <g className="agw-edges">
+            {EDGES.map((e) => (
+              <path
+                key={`${e.from}-${e.to}`}
+                className={`agw-edge agw-edge-${edgeState(statusById, e)}`}
+                d={edgePath(e.from, e.to)}
+                fill="none"
+                markerEnd="url(#agw-arrow)"
+              />
+            ))}
+          </g>
+
+          {/* Düğümler */}
+          <g className="agw-nodes">
+            {PIPELINE.map((n) => {
+              const st = statusById[n.id];
+              const x = centerX(n.col) - NODE_W / 2;
+              const y = centerY(n.row) - NODE_H / 2;
+              const summary = summarize(n.id, dataById[n.id]);
+              return (
+                <g
+                  key={n.id}
+                  className={`agw-node agw-node-${st} agw-g${n.gorev}`}
+                  transform={`translate(${x} ${y})`}
+                >
+                  {st === "active" && (
+                    <rect className="agw-pulse" x="-4" y="-4" width={NODE_W + 8} height={NODE_H + 8} rx="14" />
+                  )}
+                  <rect className="agw-card" width={NODE_W} height={NODE_H} rx="11" />
+                  {/* Görev rengi sol-şerit (renk TEK ayırt edici değil; ✓/● işaret + bold da var) */}
+                  <rect className="agw-stripe" width="4" height={NODE_H} rx="2" />
+                  <text className="agw-dot" x={NODE_W - 13} y="17" aria-hidden="true">{MARK[st]}</text>
+                  <text className="agw-label" x="14" y="21">{n.label}</text>
+                  <text className="agw-sub" x="14" y="36">{summary || n.desc}</text>
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+      </div>
+
+      {/* a11y: figure aria-label statik ad sağlar; TEK aria-live bölge dinamik durumu duyurur. */}
       <figcaption className="agw-sr" role="status" aria-live="polite">{caption}</figcaption>
     </figure>
   );
 }
+
+/* Node "done" olunca kutuda gösterilecek kompakt özet (SSE data alanından). */
+function summarize(id, d) {
+  if (!d) return "";
+  if (id === "oku") return `${d.engine || "metin"} · ${d.n_chars ?? 0} krk`;
+  if (id === "siniflandir") {
+    const pct = Math.round((d.tur_confidence || 0) * 100);
+    return d.evrak_turu ? `${d.evrak_turu} · %${pct}` : "";
+  }
+  if (id === "cikar") {
+    const n = d.bilgi_unsurlari ? Object.keys(d.bilgi_unsurlari).length : 0;
+    const pii = d.bilgi_unsurlari?.pii_var ? " · PII⚑" : "";
+    return n ? `${n} alan${pii}` : "";
+  }
+  if (id === "eksik_tespit") {
+    const n = (d.eksik_alanlar || []).length;
+    return n ? `${n} eksik` : "tam ✓";
+  }
+  if (id === "mevzuat_oner") {
+    const n = (d.mevzuat_onerileri || []).length;
+    return n ? `${n} öneri` : "";
+  }
+  if (id === "ozetle") return d.ozet ? "özet ✓" : "";
+  if (id === "route_birim") return d.hedef_birim ? "havale ✓" : "";
+  if (id === "yazi_taslak") return d.format_uyumlu ? "format ✓" : d.yazi_turu ? "taslak" : "";
+  return "";
+}
+
+export default AgentFlowGraph;

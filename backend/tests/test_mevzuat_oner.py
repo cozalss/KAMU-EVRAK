@@ -60,12 +60,15 @@ class TestMevzuatOnerSozlesme:
 
 class TestMevzuatOnerKorpusRetrieval:
     async def test_dilekce_3071_top1(self):
-        # Arrange
+        # Arrange — dilekçe hakkına özgü ayırt edici terimler (dilekçe ile başvurma,
+        # ad-soyad/imza/adres zorunlu). NOT: korpus 657 (yıllık izin) gibi alanları da
+        # kapsadığından, "izin talebi" gibi alan-çakışan konu yerine dilekçe-hakkı
+        # vokabülerini kullanırız → BM25 doğru biçimde 3071'i üst sıraya alır.
         state = _state(
             "dilekce",
-            "Yıllık izin talebi dilekçesi",
-            "Konu: Yıllık izin talebi. Dilekçemde ad soyad imza ve adres "
-            "bilgilerimle gereğinin yapılmasını arz ederim.",
+            "dilekçe hakkı başvurusu",
+            "Türk vatandaşları yetkili makamlara dilekçe ile başvurma hakkına "
+            "sahiptir. Dilekçe sahibinin adı soyadı imzası ve adresi zorunludur.",
         )
         # Act
         out = await mevzuat_oner_node(state)
@@ -133,12 +136,21 @@ class TestMevzuatOnerKorpusRetrieval:
 
 class TestMevzuatOnerConfigFallback:
     async def test_kisa_sorgu_config_fallback(self):
-        # Arrange — çok kısa metin → retrieval atlanır, config'e düşer
-        state = {"evrak_turu": "cimer", "bilgi_unsurlari": {}, "evrak_text": "x"}
+        # Arrange — sorgu uzunluk-eşiğinin (_MIN_QUERY_LEN=8) altında: tür/konu yok,
+        # gövde tek karakter → retrieval atlanır, statik config'e düşer. (Korpus
+        # genişledikçe boş-eşleşme yerine eşik-kapısı fallback'in deterministik tetiği.)
+        state = {"evrak_turu": "belirsiz", "bilgi_unsurlari": {}, "evrak_text": "x"}
         # Act
         out = await mevzuat_oner_node(state)
-        # Assert — CİMER statik eşlemesi (5690)
-        basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
+        # Assert — config kaynaklı (uydurma değil) varsayılan başlık döner
+        assert out["mevzuat_onerileri"]
+        assert out["mevzuat_onerileri"][0]["score"] in (0.3, 0.5)
+
+    async def test_cimer_config_5690_eslemesi(self):
+        # Arrange + Act — CİMER statik eşlemesi (5690) config yolundan ulaşılabilir.
+        oneriler = _from_config("cimer")
+        # Assert
+        basliklar = [o["baslik"] for o in oneriler]
         assert any("5690" in b for b in basliklar)
 
     async def test_config_bilinmeyen_tur_varsayilan_doner(self):

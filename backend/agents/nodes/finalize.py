@@ -24,7 +24,8 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
     birim = birim_tr(state.get("hedef_birim", "yazi_isleri_evrak"))
     eksik = state.get("eksik_alanlar") or []
     sorular = state.get("clarify_questions") or []
-    mevzuat = state.get("mevzuat_onerileri") or []
+    # CRAG düzeltme yaptıysa düzeltilmiş öneriler tercih edilir (yoksa baseline liste).
+    mevzuat = state.get("mevzuat_onerileri_corrected") or state.get("mevzuat_onerileri") or []
 
     satirlar = [
         f"📄 **Evrak türü:** {turu}",

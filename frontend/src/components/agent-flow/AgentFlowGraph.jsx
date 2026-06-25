@@ -18,7 +18,8 @@ const COL_W = 138;
 const ROW_H = 78;
 const NODE_W = 116;
 const NODE_H = 52;
-const N_COLS = 8; // oku..finalize
+// Sütun sayısı PIPELINE'dan türetilir (node eklendiğinde SVG genişliği otomatik uyar).
+const N_COLS = Math.max(...PIPELINE.map((n) => n.col)) + 1; // oku..finalize
 const VIEW_W = PAD_X * 2 + (N_COLS - 1) * COL_W;
 const VIEW_H = PAD_Y * 2 + 2 * ROW_H;
 
@@ -159,6 +160,11 @@ function summarize(id, d) {
   if (id === "ozetle") return d.ozet ? "özet ✓" : "";
   if (id === "route_birim") return d.hedef_birim ? "havale ✓" : "";
   if (id === "yazi_taslak") return d.format_uyumlu ? "format ✓" : d.yazi_turu ? "taslak" : "";
+  if (id === "verify") {
+    const n = (d.verify_uyari || []).length;
+    if (n) return `${n} uyarı ⚠`;
+    return d.format_uyumlu === false ? "format ⚠" : "uyumlu ✓";
+  }
   return "";
 }
 

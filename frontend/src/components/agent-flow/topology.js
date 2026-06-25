@@ -16,7 +16,8 @@ export const PIPELINE = [
   { id: "ozetle", label: "Özetle", gorev: 1, desc: "Kısa öz özet", col: 4, row: 2 },
   { id: "route_birim", label: "Birim Yönlendir", gorev: 2, desc: "Havale → doğru birim", col: 5, row: 1 },
   { id: "yazi_taslak", label: "Yazı Taslağı", gorev: 2, desc: "Resmî yazı (Yön. 2646)", col: 6, row: 1 },
-  { id: "finalize", label: "Bilgilendir", gorev: 2, desc: "Bilgilendirme + eksik talebi", col: 7, row: 1 },
+  { id: "verify", label: "Doğrula", gorev: 2, desc: "Uydurma veto + format", col: 7, row: 1 },
+  { id: "finalize", label: "Bilgilendir", gorev: 2, desc: "Bilgilendirme + eksik talebi", col: 8, row: 1 },
 ];
 
 // Backend grafındaki kenarlar (graph.py add_edge ile birebir) — SVG ok çizimi için.
@@ -29,7 +30,9 @@ export const EDGES = [
   { from: "mevzuat_oner", to: "route_birim" },
   { from: "ozetle", to: "route_birim" },
   { from: "route_birim", to: "yazi_taslak" },
-  { from: "yazi_taslak", to: "finalize" },
+  // Görev 2 kalite kapısı: taslak → doğrula → bilgilendir (graph.py ile birebir).
+  { from: "yazi_taslak", to: "verify" },
+  { from: "verify", to: "finalize" },
 ];
 
 // Geriye-uyum: bazı bileşenler NODES bekleyebilir (col/row zaten PIPELINE'da).

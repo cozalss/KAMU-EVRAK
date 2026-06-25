@@ -112,6 +112,24 @@ VERIFY_ENABLED = os.getenv("VERIFY_ENABLED", "1") == "1"
 # clarifier dur-ve-sor dalı: VARSAYILAN KAPALI → baseline akış (taslak hep üretilir) korunur.
 CLARIFY_STOP_ENABLED = os.getenv("CLARIFY_STOP_ENABLED", "0") == "1"
 
+# --- Yenilikçilik: ENV-gated SOTA öz-düzeltme node'ları (CRAG + Self-RAG) ---
+# İKİSİ DE VARSAYILAN KAPALI → baseline akış birebir korunur (141 test değişmez).
+# Ablation harness'i (eval/ablation_eval.py) bu bayrakları A/B için açıp kapatır.
+#
+# CRAG (Corrective RAG): mevzuat_oner retrieval güveni düşükse (top skor < eşik veya
+# 0 sonuç) sorguyu genişletip BM25'i yeniden çağırır → daha iyi mevzuat önerisi.
+CRAG_ENABLED = os.getenv("CRAG_ENABLED", "0") == "1"
+# CRAG düzeltme eşiği: normalize güven (0..1) bu değerin altındaysa düzeltme tetiklenir.
+CRAG_CONF_ESIK = float(os.getenv("CRAG_CONF_ESIK", "0.55"))
+# Ham BM25 referans eşiği: top raw_score bu değere ulaşırsa "tam güven" (1.0) sayılır;
+# altındaysa oransal düşer (mutlak retrieval kalitesi sinyali). Gold dağılımı: güçlü
+# eşleşmeler raw≈17-40; zayıf/gürültülü sorgu raw<~7 → düzeltme tetiklenir.
+CRAG_RAW_ESIK = float(os.getenv("CRAG_RAW_ESIK", "12.0"))
+#
+# Self-RAG (reflection): finalize öncesi çıktının tamlığını öz-değerlendirir
+# (evrak_turu + hedef_birim + ozet + mevzuat var mı?). Eksikse not düşer (şeffaflık).
+SELF_RAG_ENABLED = os.getenv("SELF_RAG_ENABLED", "0") == "1"
+
 # Resmî yazı taslağında bulunması beklenen zorunlu bölüm başlıkları (format-compliance).
 # Yön. 2646 / 3071: T.C. başlığı + Sayı + Konu + imza (ad-soyad) blokları.
 YAZI_ZORUNLU_BOLUMLER: tuple[tuple[str, tuple[str, ...]], ...] = (

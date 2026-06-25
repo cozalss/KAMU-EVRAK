@@ -27,7 +27,8 @@ class MevzuatOneri(TypedDict):
     baslik: str          # "3071 sayılı Dilekçe Hakkı Kanunu m.4"
     snippet: NotRequired[str]
     url: NotRequired[str]
-    score: NotRequired[float]
+    score: NotRequired[float]       # max-normalize (top≈1.0)
+    raw_score: NotRequired[float]   # normalizasyon öncesi ham BM25 (CRAG mutlak-kalite sinyali)
 
 
 class EvrakState(TypedDict):
@@ -46,6 +47,19 @@ class EvrakState(TypedDict):
     eksik_alanlar: NotRequired[list[str]]   # ZORUNLU_ALANLAR'dan eksik olanlar
     mevzuat_onerileri: Annotated[list[MevzuatOneri], operator.add]
     ozet: NotRequired[str]
+
+    # --- Yenilikçilik: CRAG (corrective retrieval) öz-düzeltme (ENV-gated) ---
+    # operator.add reducer kullanılan mevzuat_onerileri'ne EKLEMEMEK için (duplikasyon
+    # önleme) düzeltilmiş öneriler ayrı alanda tutulur; consumer'lar varsa onu tercih eder.
+    mevzuat_onerileri_corrected: NotRequired[list[MevzuatOneri]]
+    crag_corrected: NotRequired[bool]       # CRAG düzeltme uyguladı mı (şeffaflık)
+    crag_guven_oncesi: NotRequired[float]
+    crag_guven_sonrasi: NotRequired[float]
+
+    # --- Yenilikçilik: Self-RAG (reflection) çıktı tamlık öz-değerlendirmesi (ENV-gated) ---
+    self_rag_tam: NotRequired[bool]         # çıktı tam mı (tüm beklenen alanlar dolu)
+    self_rag_eksikler: NotRequired[list[str]]  # eksik bulunan çıktı alanları
+    self_rag_notu: NotRequired[str]         # okunabilir öz-değerlendirme notu
 
     # --- Görev 2: resmî yazı taslaklama + birim yönlendirme ---
     hedef_birim: NotRequired[str]           # BIRIMLER'den biri

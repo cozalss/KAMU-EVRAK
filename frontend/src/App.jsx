@@ -313,15 +313,16 @@ export default function App() {
               r={result} onToast={showToast}
               onDownload={onDownload} downloading={downloading}
               canDownload={!!evrakText}
+              verify={nodes.find((n) => n.id === "verify")?.data}
             />
           </section>
         )}
 
         {!started && (
           <section className="ke-placeholder" aria-hidden="true">
-            <p>Bir evrak yükleyin ya da örnek seçin; sistem evrakı <strong>9 ajanlı</strong> bir
+            <p>Bir evrak yükleyin ya da örnek seçin; sistem evrakı <strong>{PIPELINE.length} ajanlı</strong> bir
               boru hattından geçirir: okuma → sınıflandırma → bilgi çıkarma → eksik tespiti →
-              mevzuat → özet → birim havalesi → resmî yazı taslağı → bilgilendirme.</p>
+              mevzuat → özet → birim havalesi → resmî yazı taslağı → doğrulama → bilgilendirme.</p>
           </section>
         )}
       </main>
@@ -346,6 +347,13 @@ function nodeDataFromResult(id, r, nChars = 0) {
     case "ozetle": return { ozet: r.ozet };
     case "route_birim": return { hedef_birim: r.hedef_birim };
     case "yazi_taslak": return { yazi_turu: r.yazi_turu, format_uyumlu: !!r.yazi_taslak_md };
+    // verify: kalite kapısı özeti. Backend ProcessResponse şeması verify alanlarını
+    // (format_uyumlu/verify_uyari) HENÜZ taşımayabilir → varsa kullan, yoksa taslak
+    // varlığından "uyumlu" türet (graceful). r.format_uyumlu yalnız mevcutsa okunur.
+    case "verify": return {
+      format_uyumlu: r.format_uyumlu === undefined ? !!r.yazi_taslak_md : r.format_uyumlu,
+      verify_uyari: r.verify_uyari || [],
+    };
     case "finalize": return {};
     default: return null;
   }

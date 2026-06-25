@@ -282,6 +282,53 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
   );
 }
 
+/* ---------- 7) Doğrulama (verify kalite kapısı) ---------- */
+/* Görev 2 kalite kapısı çıktısı: resmî yazı taslağının (a) zorunlu format bölümlerini
+   içerip içermediği (format_uyumlu) ve (b) kaynak evrakta OLMAYAN somut tarih/sayı
+   "uydurması" olup olmadığı (verify_uyari). Veri App'in elindeki verify node data'sından
+   gelir (backend ProcessResponse şeması verify alanlarını taşımayabilir → graceful).
+   taslakMd verilmediyse (taslak yok) kart gizlenir. */
+function DogrulamaCard({ verify, taslakMd }) {
+  if (!taslakMd) return null;
+  const uyarilar = (verify?.verify_uyari || []).filter(Boolean);
+  // format_uyumlu açıkça false ise format eksik; aksi halde uyumlu kabul (graceful).
+  const formatOk = verify?.format_uyumlu !== false;
+  const temiz = formatOk && uyarilar.length === 0;
+  return (
+    <article className={`rc-card rc-dogrulama rc-g2 ${temiz ? "rc-dogru-ok" : "rc-dogru-warn"}`} aria-labelledby="rc-dogru-h">
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true">{temiz ? "🛡️" : "⚠️"}</span>
+        <h3 id="rc-dogru-h" className="rc-card-title">Doğrulama (Kalite Kapısı)</h3>
+        <span className={`rc-badge ${temiz ? "rc-badge-ok" : "rc-badge-warn"}`}>
+          {temiz ? "Doğrulandı ✓" : `${uyarilar.length || 1} uyarı`}
+        </span>
+      </header>
+      <ul className="rc-dogru-checks" aria-label="Doğrulama kontrolleri">
+        <li className={formatOk ? "rc-dogru-pass" : "rc-dogru-fail"}>
+          <span className="rc-dogru-mark" aria-hidden="true">{formatOk ? "✓" : "✕"}</span>
+          Format uyumu — zorunlu bölümler (T.C. / Sayı / Konu / imza)
+        </li>
+        <li className={uyarilar.length === 0 ? "rc-dogru-pass" : "rc-dogru-fail"}>
+          <span className="rc-dogru-mark" aria-hidden="true">{uyarilar.length === 0 ? "✓" : "✕"}</span>
+          Uydurma veto — kaynakta olmayan somut tarih/sayı yok
+        </li>
+      </ul>
+      {uyarilar.length > 0 ? (
+        <div className="rc-dogru-uyarilar">
+          <p className="rc-dogru-uyari-h">Doğrulama uyarıları:</p>
+          <ul className="rc-chiplist" aria-label="Doğrulama uyarıları">
+            {uyarilar.map((u, i) => <li className="rc-chip rc-chip-warn" key={i}>{u}</li>)}
+          </ul>
+        </div>
+      ) : (
+        <p className="rc-dogru-note">
+          Taslak format açısından uyumlu ve kaynak evrakta bulunmayan somut veri içermiyor.
+        </p>
+      )}
+    </article>
+  );
+}
+
 /* ---------- üst özet (bilgilendirme) ---------- */
 function BilgilendirmeCard({ text }) {
   if (!text) return null;
@@ -312,7 +359,7 @@ function renderInlineBold(text) {
 }
 
 /* ---------- ana bileşen ---------- */
-export function ResultCards({ r, onToast, onDownload, downloading, canDownload }) {
+export function ResultCards({ r, onToast, onDownload, downloading, canDownload, verify }) {
   if (!r) return null;
   return (
     <section className="rc-grid" aria-label="Evrak işleme sonuçları">
@@ -328,6 +375,7 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload }
         yaziTuru={r.yazi_turu} taslakMd={r.yazi_taslak_md} onToast={onToast}
         onDownload={onDownload} downloading={downloading} canDownload={canDownload}
       />
+      <DogrulamaCard verify={verify} taslakMd={r.yazi_taslak_md} />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
       <p className="rc-disclaimer" role="note">
         ⚖️ Bu sistem <strong>karar-destek</strong> amaçlıdır; nihai sorumluluk yetkili personeldedir.
@@ -342,6 +390,6 @@ export default ResultCards;
 // Test/yeniden-kullanım için iç kartlar da export edilir.
 export {
   EvrakTuruCard, CikarilanAlanlarCard, EksikBilgiCard, MevzuatCard,
-  BirimCard, YaziTaslakCard, BilgilendirmeCard,
+  BirimCard, YaziTaslakCard, DogrulamaCard, BilgilendirmeCard,
   EVRAK_TR, BIRIM_LBL, YAZI_TR,
 };

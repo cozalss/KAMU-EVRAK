@@ -12,6 +12,14 @@ Türkiye'de faaliyette bulunan yabancı tüzel kişiler, isteyecekleri bilgi
 kendileriyle veya faaliyet alanlarıyla ilgili olmak kaydıyla bu haktan
 yararlanır.
 
+Madde 6 — Başvuru usulü
+Bilgi edinme başvurusu, başvuru sahibinin adı, soyadı, imzası, oturma yeri veya
+iş adresini; tüzel kişilerde tüzel kişinin unvanı, adresi, yetkili kişinin imzası
+ve yetki belgesini içeren dilekçe ile istenen bilgi veya belgenin bulunduğu kurum
+veya kuruluşa yapılır. Başvuru, elektronik ortamda veya diğer iletişim
+araçlarıyla da yapılabilir; bu hâlde başvurunun ait olduğu kişinin kimliği ve
+imzasının başvuruda yer alması esastır.
+
 Madde 11 — Bilgi veya belgeye erişim süresi
 Kurum ve kuruluşlar, başvuru üzerine istenen bilgi veya belgeye erişimi on beş
 iş günü içinde sağlar. İstenen bilgi veya belgenin başvurulan kurum ve kuruluş
@@ -30,6 +38,7 @@ rekabet ve kazanca sebep olacak bilgi veya belgeler bilgi edinme hakkı kapsamı
 dışındadır.
 
 Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı
-Bilgi edinme istemi reddedilen başvuru sahibi, red kararının tebliğinden
-itibaren on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz edebilir.
-Kurul itirazı otuz iş günü içinde karara bağlar. [DOĞRULA: bu hükmün tam madde no'su 4982'de teyit edilmeli]
+Bilgi edinme istemi reddedilen başvuru sahibi, yargı yoluna başvurmadan önce
+kararın tebliğinden itibaren on beş gün içinde Bilgi Edinme Değerlendirme
+Kuruluna itiraz edebilir. Kurul itirazı otuz iş günü içinde karara bağlar.
+İtiraz başvurusu, başvuru sahibinin idari yargıya başvurma süresini durdurur.

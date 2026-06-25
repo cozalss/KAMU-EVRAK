@@ -3,15 +3,20 @@ Kanun No: 7201 (YÜRÜRLÜKTE)
 Kaynak: https://mevzuat.gov.tr/mevzuatmetin/1.3.7201.pdf
 
 Bu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir
-(lafzî tam metin değildir). Elektronik tebligat madde numarası
-docs/02-evrak-taksonomi-routing.md referansından alınmıştır; diğer madde no'lar
-mevzuat.gov.tr'de teyit edilmelidir.
+(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.3.7201) ve kamuya
+açık hukuk kaynaklarından çapraz doğrulanmıştır.
 
 Madde 1 — Tebligatın yapılması
 Kazaî merciler, genel ve katma bütçeli daireler, belediyeler, köy hükmî
 şahsiyetleri, barolar ve noterler tarafından yapılacak bütün tebligat bu Kanun
 hükümlerine göre yapılır. Tebligat, tebliğ yapılacak kişiye resmî bir bildirim
 ulaştırma işlemidir ve çoğu hâlde hukuki süreleri başlatır.
+
+Madde 10 — Bilinen adreste tebligat
+Tebligat, muhatabın bilinen en son adresinde yapılır. Bilinen en son adresin
+tebligata elverişsiz olduğu anlaşılır veya tebligat yapılamazsa, muhatabın adres
+kayıt sisteminde bulunan yerleşim yeri adresi bilinen en son adres olarak kabul
+edilir ve tebligat buraya yapılır.
 
 Madde 7/a — Elektronik tebligat
 Tebligata elverişli bir elektronik adres vererek bu adrese tebligat yapılmasını
@@ -24,4 +29,7 @@ Madde 21 — Tebliğ imkânsızlığı ve tebellüğden kaçınma
 Kendisine tebligat yapılacak kişi adresinde bulunmaz veya tebellüğden kaçınırsa,
 tebliğ memuru tebliğ olunacak evrakı, o yerin muhtar veya ihtiyar heyeti azasından
 birine veyahut zabıta amir veya memurlarına imza karşılığında teslim eder ve
-durumu haber kâğıdı ile bildirir. [DOĞRULA: madde no mevzuat.gov.tr'de teyit edilmeli]
+tesellümden imtina edenin adresini içeren ihbarnameyi gösterilen adresteki binanın
+kapısına yapıştırır. İhbarnamenin kapıya yapıştırıldığı tarih tebliğ tarihi
+sayılır. Adres kayıt sistemindeki yerleşim yeri adresine yapılan tebligatta da
+aynı usul uygulanır.

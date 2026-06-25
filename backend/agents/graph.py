@@ -31,25 +31,45 @@ from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
-from agents.config import CLARIFY_STOP_ENABLED
+from agents.config import (
+    CLARIFY_STOP_ENABLED,
+    CRAG_ENABLED,
+    SELF_RAG_ENABLED,
+)
 from agents.nodes.cikar import cikar_node
 from agents.nodes.clarifier import clarifier_node, kritik_eksikler
+from agents.nodes.crag import crag_node
 from agents.nodes.eksik_tespit import eksik_tespit_node
 from agents.nodes.finalize import finalize_node
 from agents.nodes.mevzuat_oner import mevzuat_oner_node
 from agents.nodes.ozetle import ozetle_node
 from agents.nodes.route_birim import route_birim_node
+from agents.nodes.self_rag import self_rag_node
 from agents.nodes.siniflandir import siniflandir_node
 from agents.nodes.verify import verify_node
 from agents.nodes.yazi_taslak import yazi_taslak_node
 from agents.state import EvrakState
 
+def _pipeline_nodes() -> tuple[str, ...]:
+    """Aktif node sıra etiketleri (frontend topology / SSE ile eşleşir).
+
+    CRAG/Self-RAG ENV-gated → açıkken sırada görünür (şeffaflık), kapalıyken baseline
+    dizi birebir korunur. Modül-seviyesi PIPELINE_NODES geriye-uyum için baseline'ı tutar.
+    """
+    nodes = ["siniflandir", "cikar", "eksik_tespit", "mevzuat_oner"]
+    if CRAG_ENABLED:
+        nodes.append("crag")
+    nodes += ["ozetle", "route_birim", "yazi_taslak", "verify"]
+    if SELF_RAG_ENABLED:
+        nodes.append("self_rag")
+    nodes.append("finalize")
+    return tuple(nodes)
+
+
 # SSE / Ajan Akış Şeması için node sıra etiketleri (frontend topology ile eşleşir).
 # verify, yazi_taslak→finalize arasına eklendi (additive — Görev 2 kalite kapısı).
-PIPELINE_NODES: tuple[str, ...] = (
-    "siniflandir", "cikar", "eksik_tespit", "mevzuat_oner", "ozetle",
-    "route_birim", "yazi_taslak", "verify", "finalize",
-)
+# NOT: modül sabiti baseline diziyi tutar (geriye-uyum). Aktif dizi için _pipeline_nodes().
+PIPELINE_NODES: tuple[str, ...] = _pipeline_nodes()
 
 
 def _clarify_route(state: dict[str, Any]) -> str:
@@ -81,9 +101,18 @@ def build_graph() -> Any:
     # Fan-out: mevzuat önerisi + özet paralel (state reducer'ları fan-in birleştirir).
     g.add_edge("eksik_tespit", "mevzuat_oner")
     g.add_edge("eksik_tespit", "ozetle")
-    # Fan-in → birim yönlendirme.
-    g.add_edge("mevzuat_oner", "route_birim")
     g.add_edge("ozetle", "route_birim")
+
+    if CRAG_ENABLED:
+        # CRAG öz-düzeltme (ENV-gated): mevzuat_oner → crag → route_birim. crag düşük-
+        # güvenli retrieval'ı sorgu-genişletmeyle düzeltir (Yan et al. 2024). Kapalıyken
+        # bu node grafta YOK → baseline fan-in (mevzuat_oner→route_birim) birebir korunur.
+        g.add_node("crag", crag_node)
+        g.add_edge("mevzuat_oner", "crag")
+        g.add_edge("crag", "route_birim")
+    else:
+        # Baseline fan-in → birim yönlendirme (mevzuat_oner doğrudan route_birim'e).
+        g.add_edge("mevzuat_oner", "route_birim")
 
     if CLARIFY_STOP_ENABLED:
         # Dur-ve-sor dalı (ENV-gated): kritik eksikte taslak ÜRETMEDEN kullanıcıdan
@@ -101,7 +130,17 @@ def build_graph() -> Any:
 
     # verify: taslak kalite kapısı (additive). VERIFY_ENABLED=0 ise node no-op.
     g.add_edge("yazi_taslak", "verify")
-    g.add_edge("verify", "finalize")
+
+    if SELF_RAG_ENABLED:
+        # Self-RAG reflection (ENV-gated): verify → self_rag → finalize. self_rag
+        # çıktının TAMLIĞINI öz-değerlendirir (Asai et al. 2023). Kapalıyken bu node
+        # grafta YOK → baseline (verify→finalize) birebir korunur.
+        g.add_node("self_rag", self_rag_node)
+        g.add_edge("verify", "self_rag")
+        g.add_edge("self_rag", "finalize")
+    else:
+        g.add_edge("verify", "finalize")
+
     g.add_edge("finalize", END)
 
     return g.compile()

@@ -165,7 +165,7 @@ body {
 }
 
 .agw-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.agw-svg { width: 100%; min-width: 720px; height: auto; display: block; overflow: visible; }
+.agw-svg { width: 100%; min-width: 820px; height: auto; display: block; overflow: visible; }
 
 /* --- kenarlar --- */
 .agw-edge { stroke: var(--line-strong); stroke-width: 1.6; fill: none; transition: stroke .3s ease; }
@@ -347,6 +347,23 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
 .rc-info-body p { margin: 0 0 .5rem; font-size: .94rem; line-height: 1.6; }
 .rc-info-body p:last-child { margin-bottom: 0; }
 .rc-info-body strong { color: var(--accent-ink); }
+
+/* --- doğrulama (verify kalite kapısı) --- */
+.rc-dogru-ok { border-left: 4px solid var(--ok); }
+.rc-dogru-warn { border-left: 4px solid var(--warn); }
+.rc-dogru-checks {
+  list-style: none; margin: 0 0 .2rem; padding: 0; display: grid; gap: .4rem;
+}
+.rc-dogru-checks li {
+  display: flex; align-items: baseline; gap: .5rem; font-size: .88rem; color: var(--ink-2);
+}
+.rc-dogru-mark { font-weight: 700; font-family: var(--font-mono); flex: none; }
+.rc-dogru-pass .rc-dogru-mark { color: var(--ok); }
+.rc-dogru-fail { color: var(--ink); }
+.rc-dogru-fail .rc-dogru-mark { color: var(--warn); }
+.rc-dogru-uyarilar { margin-top: .8rem; padding-top: .7rem; border-top: 1px dashed var(--line); }
+.rc-dogru-uyari-h { margin: 0 0 .4rem; font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+.rc-dogru-note { margin: .6rem 0 0; font-size: .85rem; color: var(--ink-2); line-height: 1.5; }
 
 /* --- disclaimer --- */
 .rc-disclaimer {

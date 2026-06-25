@@ -145,7 +145,12 @@ def _retrieval_query(state: dict[str, Any]) -> str:
 
 
 def _from_corpus(query: str) -> list[dict[str, Any]]:
-    """Korpustan BM25 retrieval önerileri (boş liste → caller statik'e düşer)."""
+    """Korpustan BM25 retrieval önerileri (boş liste → caller statik'e düşer).
+
+    NOT (CRAG için): öneri skorları max-normalize'dir (top≈1.0); CRAG'in mutlak
+    retrieval kalitesini ölçebilmesi için `raw_score` (normalizasyon öncesi BM25)
+    da eklenir (additive — mevcut consumer'lar etkilenmez).
+    """
     ranked = _score(query, _load_index())
     if not ranked:
         return []
@@ -156,6 +161,7 @@ def _from_corpus(query: str) -> list[dict[str, Any]]:
             "baslik": _baslik(chunk),
             "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
             "score": round(score / max_score, 3),
+            "raw_score": round(score, 3),
         })
     return oneriler
 

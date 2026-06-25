@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "chunk_sayisi": 28,
+  "chunk_sayisi": 59,
   "chunks": [
     {
       "mevzuat": "2005-7 standart dosya plani",
@@ -8,6 +8,41 @@
       "madde_no": null,
       "madde_tur": null,
       "text": "Standart Dosya Planı Genelgesi\nBaşbakanlık Genelgesi 2005/7 / Resmî Gazete 25766 — 24.03.2005 (YÜRÜRLÜKTE)\nKaynak: https://www.resmigazete.gov.tr/eskiler/2005/03/20050325-10.htm\n\nBu metin kamuya açık genelgenin özetinden derlenmiştir (lafzî tam metin\ndeğildir). Standart Dosya Planı genelgesi madde yerine kod aralıklarıyla\ndüzenlenmiştir; aşağıdaki bölümler docs/01-resmi-yazisma-mevzuati.md\nreferansından özetlenmiştir.\n\nKonu — Standart Dosya Planı amacı\nStandart Dosya Planı, kamu kurum ve kuruluşlarında üretilen ve kullanılan\nbelgelerin standart bir dosya kodu sistemine göre dosyalanmasını sağlar.\nBelgelerin aranabilirliğini, saklanmasını ve arşivlenmesini kolaylaştırır.\nYazışmalarda sayı bölümünde Standart Dosya Planı kodu kullanılır.\n\nBölüm 000-099 — Ortak konular\n000 ile 099 arası kodlar tüm kurum ve kuruluşlarda ortak olan konuları kapsar:\nmevzuat, plan ve program, rapor, kurul ve toplantı gibi genel konular bu\naralıkta yer alır.\n\nBölüm 100-599 — Ana hizmet konuları\n100 ile 599 arası kodlar kuruma özgü ana hizmet faaliyetlerini kapsar. Her kurum\nkendi görev alanına göre bu aralıktaki kodları kullanır.\n\nBölüm 600-999 — Yardımcı, danışma ve denetim konuları\n600 ile 999 arası kodlar yardımcı, danışma ve denetim hizmetlerini kapsar:\npersonel, bütçe, mali işler ve hukuk müşavirliği gibi tüm kurumlarda ortak olan\nyardımcı konular bu aralıktadır.\n\nKod hiyerarşisi ve sayı biçimi\nDosya kodu hiyerarşisi ana konu üç hane ile başlar, alt konular nokta ve iki\nhane eklenerek detaylandırılır. Örnek: 622, 622.03, 622.03.01. Yazışmalarda\nsayı; DETSİS numarası, Standart Dosya Planı kodu ve kayıt numarasından oluşur.\nCoğrafi ek örneği 724.13.DE, il kodu örneği 622.01.06 (Ankara) şeklindedir."
+    },
+    {
+      "mevzuat": "2577 idari yargilama usulu kanunu",
+      "kaynak_dosya": "2577_idari_yargilama_usulu_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "İdari Yargılama Usulü Kanunu\nKanun No: 2577 (Kabul: 06.01.1982, RG 20.01.1982/17580 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2577&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.2577) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında idari işleme\nitiraz, üst makama başvuru süreleri ve dava açma sürelerinin hukuki dayanağıdır;\nbu süreler vatandaşa verilecek cevabi yazıda bilgilendirme unsuru olarak önemlidir."
+    },
+    {
+      "mevzuat": "2577 idari yargilama usulu kanunu",
+      "kaynak_dosya": "2577_idari_yargilama_usulu_kanunu.txt",
+      "madde_no": 7,
+      "madde_tur": "madde",
+      "text": "Madde 7 — Dava açma süresi\nDava açma süresi, özel kanunlarında ayrı süre gösterilmeyen hâllerde Danıştayda ve\nidare mahkemelerinde altmış, vergi mahkemelerinde otuz gündür. Bu süre; idari\nuyuşmazlıklarda yazılı bildirimin yapıldığı, düzenleyici işlemlerde ilanın yapıldığı\ntarihi izleyen günden başlar. İlanı gereken düzenleyici işlemlerde dava süresi,\nilan tarihini izleyen günden itibaren başlar."
+    },
+    {
+      "mevzuat": "2577 idari yargilama usulu kanunu",
+      "kaynak_dosya": "2577_idari_yargilama_usulu_kanunu.txt",
+      "madde_no": 10,
+      "madde_tur": "madde",
+      "text": "Madde 10 — İdari makamların sükûtu (idari makamlara başvuru)\nİlgililer, haklarında idari davaya konu olabilecek bir işlem veya eylemin yapılması\niçin idari makamlara başvurabilir. Altmış gün içinde bir cevap verilmezse istek\nreddedilmiş sayılır. İlgililer, altmış günün bittiği tarihten itibaren dava açma\nsüresi içinde, konusuna göre Danıştaya, idare ve vergi mahkemelerine dava açabilir."
+    },
+    {
+      "mevzuat": "2577 idari yargilama usulu kanunu",
+      "kaynak_dosya": "2577_idari_yargilama_usulu_kanunu.txt",
+      "madde_no": 11,
+      "madde_tur": "madde",
+      "text": "Madde 11 — Üst makamlara başvuru\nİlgililer tarafından idari dava açılmadan önce, idari işlemin kaldırılması, geri\nalınması, değiştirilmesi veya yeni bir işlem yapılması, idari dava açma süresi\niçinde üst makamdan, üst makam yoksa işlemi yapmış olan makamdan istenebilir. Bu\nbaşvurma, işlemekte olan idari dava açma süresini durdurur. Otuz gün içinde bir\ncevap verilmezse istek reddedilmiş sayılır. İsteğin reddi veya reddedilmiş\nsayılması hâlinde dava açma süresi yeniden işlemeye başlar ve başvurma tarihine\nkadar geçmiş süre de hesaba katılır."
+    },
+    {
+      "mevzuat": "2577 idari yargilama usulu kanunu",
+      "kaynak_dosya": "2577_idari_yargilama_usulu_kanunu.txt",
+      "madde_no": 14,
+      "madde_tur": "madde",
+      "text": "Madde 14 — Dilekçeler üzerine ilk inceleme\nDilekçeler; görev ve yetki, idari merci tecavüzü, ehliyet, idari davaya konu olacak\nkesin ve yürütülmesi gereken bir işlem olup olmadığı, süre aşımı, husumet ve usule\nuygunluk yönlerinden ilk incelemeye tabi tutulur. İdari merci tecavüzü bulunan\ndilekçeler, görevli idari merciye tevdi olunur ve durum ilgilisine bildirilir."
     },
     {
       "mevzuat": "2646 resmi yazisma yonetmeligi",
@@ -136,6 +171,62 @@
       "text": "Madde 7 — Dilekçenin incelenmesi ve sonucun bildirilmesi\nTürk vatandaşlarının ve Türkiye'de ikamet eden yabancıların kendileri ve kamu\nile ilgili dilek ve şikâyetleri konusunda yetkili makamlara yaptıkları\nbaşvuruların sonucu veya yapılmakta olan işlemin safahatı dilekçe sahiplerine\nen geç otuz gün içinde gerekçeli olarak yazılı şekilde bildirilir. İşlem\ndevam ediyorsa bu da ayrıca belirtilir."
     },
     {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Kamu İhale Kanunu\nKanun No: 4734 (Kabul: 04.01.2002, RG 22.01.2002/24648 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4734&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.4734), Kamu\nİhale Kurumu (ihale.gov.tr) ve kamuya açık hukuk kaynaklarından çapraz\ndoğrulanmıştır. Kamu-evrak akışında ihale/satın alma evrakının (şikâyet\nbaşvurusu, itirazen şikâyet, sözleşme) hukuki dayanağıdır."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 5,
+      "madde_tur": "madde",
+      "text": "Madde 5 — Temel ilkeler\nİdareler, bu Kanuna göre yapılacak ihalelerde saydamlığı, rekabeti, eşit\nmuameleyi, güvenirliği, gizliliği, kamuoyu denetimini, ihtiyaçların uygun\nşartlarla ve zamanında karşılanmasını ve kaynakların verimli kullanılmasını\nsağlamakla sorumludur. Aralarında doğal bir bağlantı olmadıkça mal alımı, hizmet\nalımı ve yapım işleri bir arada ihale edilemez."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 18,
+      "madde_tur": "madde",
+      "text": "Madde 18 — Uygulanacak ihale usulleri\nİdarelerce mal veya hizmet alımları ile yapım işlerinin ihalelerinde aşağıdaki\nusullerden biri uygulanır: açık ihale usulü, belli istekliler arasında ihale\nusulü ve pazarlık usulü."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 19,
+      "madde_tur": "madde",
+      "text": "Madde 19 — Açık ihale usulü\nAçık ihale usulü, bütün isteklilerin teklif verebildiği usuldür. Bu usulde ihale,\nilan yoluyla duyurulur ve isteklilerin tekliflerini ihale dokümanında belirtilen\nesaslara göre vermesiyle yürütülür."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 21,
+      "madde_tur": "madde",
+      "text": "Madde 21 — Pazarlık usulü\nPazarlık usulü; açık ihale veya belli istekliler arasında ihale usulü ile\nsonuçlandırılamayan, doğal afet/salgın gibi ivedilik gerektiren, savunmaya\nilişkin özel nitelikli veya araştırma-geliştirme gerektiren işlerde, kanunda\nsayılan hâllerde başvurulabilen usuldür. Bu usulde isteklilerle teknik ve mali\nhususlarda görüşme yapılabilir."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 22,
+      "madde_tur": "madde",
+      "text": "Madde 22 — Doğrudan temin\nİhtiyacın yalnızca gerçek veya tüzel tek kişiden karşılanabildiği, kanunda sayılan\nözel hâllerde ihale yapılmaksızın doğrudan teminle karşılanabilir. Bu hâlde ilan\nyapılması, teminat alınması ve ihale komisyonu kurulması zorunlu değildir; ancak\npiyasa fiyat araştırması yapılır."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 55,
+      "madde_tur": "madde",
+      "text": "Madde 55 — İdareye şikâyet başvurusu\nŞikâyet başvurusu; ihale sürecindeki işlem veya eylemlerle hakkı muhtel olan aday,\nistekli veya istekli olabilecekler tarafından, kanunun 21'inci maddesinin (b) ve\n(c) bentlerine göre yapılan ihalelerde beş gün, diğer hâllerde on gün içinde\nihaleyi yapan idareye yapılır. İdare, başvuru üzerine gerekli incelemeyi yaparak\non gün içinde gerekçeli bir karar alır ve karar başvurana bildirilir."
+    },
+    {
+      "mevzuat": "4734 kamu ihale kanunu",
+      "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
+      "madde_no": 56,
+      "madde_tur": "madde",
+      "text": "Madde 56 — Kuruma itirazen şikâyet başvurusu\nİdareye yapılan şikâyet başvurusu üzerine alınan kararı uygun bulmayan ya da\nsüresinde karar verilmeyen başvuru sahibi, on gün içinde Kamu İhale Kurumuna\nitirazen şikâyet başvurusunda bulunabilir. Kurum, ihale işlem dosyasının kayda\nalındığı tarihi izleyen yirmi gün içinde nihai kararını verir; bu süreçte ve karar\nverilmeden sözleşme imzalanamaz."
+    },
+    {
       "mevzuat": "4982 bilgi edinme kanunu",
       "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
       "madde_no": null,
@@ -148,6 +239,13 @@
       "madde_no": 4,
       "madde_tur": "madde",
       "text": "Madde 4 — Bilgi edinme hakkı\nHerkes bilgi edinme hakkına sahiptir. Türkiye'de ikamet eden yabancılar ile\nTürkiye'de faaliyette bulunan yabancı tüzel kişiler, isteyecekleri bilgi\nkendileriyle veya faaliyet alanlarıyla ilgili olmak kaydıyla bu haktan\nyararlanır."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 6,
+      "madde_tur": "madde",
+      "text": "Madde 6 — Başvuru usulü\nBilgi edinme başvurusu, başvuru sahibinin adı, soyadı, imzası, oturma yeri veya\niş adresini; tüzel kişilerde tüzel kişinin unvanı, adresi, yetkili kişinin imzası\nve yetki belgesini içeren dilekçe ile istenen bilgi veya belgenin bulunduğu kurum\nveya kuruluşa yapılır. Başvuru, elektronik ortamda veya diğer iletişim\naraçlarıyla da yapılabilir; bu hâlde başvurunun ait olduğu kişinin kimliği ve\nimzasının başvuruda yer alması esastır."
     },
     {
       "mevzuat": "4982 bilgi edinme kanunu",
@@ -175,28 +273,147 @@
       "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
       "madde_no": 13,
       "madde_tur": "madde",
-      "text": "Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı\nBilgi edinme istemi reddedilen başvuru sahibi, red kararının tebliğinden\nitibaren on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz edebilir.\nKurul itirazı otuz iş günü içinde karara bağlar. [DOĞRULA: bu hükmün tam madde no'su 4982'de teyit edilmeli]"
+      "text": "Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı\nBilgi edinme istemi reddedilen başvuru sahibi, yargı yoluna başvurmadan önce\nkararın tebliğinden itibaren on beş gün içinde Bilgi Edinme Değerlendirme\nKuruluna itiraz edebilir. Kurul itirazı otuz iş günü içinde karara bağlar.\nİtiraz başvurusu, başvuru sahibinin idari yargıya başvurma süresini durdurur."
+    },
+    {
+      "mevzuat": "5018 kamu mali yonetimi kanunu",
+      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Kamu Malî Yönetimi ve Kontrol Kanunu\nKanun No: 5018 (Kabul: 10.12.2003, RG 24.12.2003/25326 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5018&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.5018) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında fatura/ödeme\nbelgesi gibi mali evrakın tahakkuk-ödeme süreci ve evrakın Strateji Geliştirme /\nMali İşler birimine havalesinin hukuki dayanağıdır."
+    },
+    {
+      "mevzuat": "5018 kamu mali yonetimi kanunu",
+      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
+      "madde_no": 31,
+      "madde_tur": "madde",
+      "text": "Madde 31 — Harcama yetkisi ve yetkilisi\nBütçeyle ödenek tahsis edilen her bir harcama biriminin en üst yöneticisi harcama\nyetkilisidir. Harcama yetkilisi, harcama talimatının bütçe ilke ve esaslarına,\nkanun, tüzük ve yönetmelikler ile diğer mevzuata uygun olmasından, ödeneklerin\netkili, ekonomik ve verimli kullanılmasından ve bu Kanun çerçevesinde yapmaları\ngereken diğer işlemlerden sorumludur."
+    },
+    {
+      "mevzuat": "5018 kamu mali yonetimi kanunu",
+      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
+      "madde_no": 32,
+      "madde_tur": "madde",
+      "text": "Madde 32 — Harcama talimatı ve sorumluluk\nBütçeden harcama yapılabilmesi, harcama yetkilisinin harcama talimatı vermesiyle\nmümkündür. Harcama talimatlarında hizmet gerekçesi, yapılacak işin konusu ve\ntutarı, süresi, kullanılabilir ödeneği, gerçekleştirme usulü ile\ngerçekleştirmeyle görevli olanlara ilişkin bilgiler yer alır."
+    },
+    {
+      "mevzuat": "5018 kamu mali yonetimi kanunu",
+      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
+      "madde_no": 33,
+      "madde_tur": "madde",
+      "text": "Madde 33 — Giderin gerçekleştirilmesi\nBütçeden bir giderin yapılabilmesi için iş, mal veya hizmetin belirlenmiş usul ve\nesaslara uygun olarak alındığının veya gerçekleştirildiğinin görevlendirilmiş kişi\nveya komisyonlarca onaylanması ve gerçekleştirme belgelerinin düzenlenmiş olması\ngerekir. Gerçekleştirme görevlileri, harcama talimatı üzerine işin yaptırılması,\nmal veya hizmetin alınması, teslim almaya ilişkin işlemlerin yapılması,\nbelgelendirilmesi ve ödeme için gerekli belgelerin hazırlanması görevlerini\nyürütür."
+    },
+    {
+      "mevzuat": "5018 kamu mali yonetimi kanunu",
+      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
+      "madde_no": 34,
+      "madde_tur": "madde",
+      "text": "Madde 34 — Ödeme emri belgesi ve ödeme\nKamu idarelerinin nakit mevcudu ödemelerini karşılayamadığı durumlarda giderler,\nmuhasebe kayıtlarına alınış sırasına göre ödenir. İlgili mevzuatında belirtilen\nhâller dışında, mahkeme kararı, ilama bağlı borç ve kanun gereği ödenmesi gereken\ngiderlerin ödenmesinde sıraya bakılmaz. Ödeme, gerçekleştirme belgelerine dayalı\nödeme emri belgesinin düzenlenmesiyle yapılır."
+    },
+    {
+      "mevzuat": "5018 kamu mali yonetimi kanunu",
+      "kaynak_dosya": "5018_kamu_mali_yonetimi_kanunu.txt",
+      "madde_no": 60,
+      "madde_tur": "madde",
+      "text": "Madde 60 — Malî hizmetler birimi (görevleri ve görev ayrılığı)\nİdarelerin malî hizmetler birimi; bütçeyi hazırlama, izleme ve raporlama, malî\nistatistikleri üretme, ön malî kontrol işlemlerini yürütme ve harcama\nbirimlerine malî konularda danışmanlık yapma görevlerini yerine getirir. Harcama\nyetkilisi ile muhasebe yetkilisi görevi aynı kişide birleşemez. Malî hizmetler\nbiriminde ön malî kontrol görevini yürütenler, malî karar ve işlem sürecinde görev\nalamaz. Bu birim, Strateji Geliştirme Başkanlığı/Daire Başkanlığı olarak teşkilatlanır."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Devlet Memurları Kanunu\nKanun No: 657 (Kabul: 14.07.1965, RG 23.07.1965/12056 — YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=657&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.657) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında personel\nözlük işlemleri (atama, izin, disiplin) İnsan Kaynakları / Personel Dairesine\nhavale edilen evrakın hukuki dayanağıdır."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 6,
+      "madde_tur": "madde",
+      "text": "Madde 6 — Sadakat\nDevlet memurları, Türkiye Cumhuriyeti Anayasasına ve kanunlarına sadakatle bağlı\nkalmak ve milletin hizmetinde Türkiye Cumhuriyeti kanunlarını sadakatle\nuygulamak zorundadır. Memur, asli devlet memurluğuna atandıktan sonra en geç bir\nay içinde düzenlenen törenle yetkili amirlerin huzurunda yemin eder ve özlük\ndosyasına konulacak \"Yemin Belgesi\"ni imzalayarak göreve başlar."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 7,
+      "madde_tur": "madde",
+      "text": "Madde 7 — Tarafsızlık ve devlete bağlılık\nDevlet memurları siyasi partiye üye olamaz; herhangi bir siyasi partinin yararına\nveya zararına davranışta bulunamaz. Görevlerini yerine getirirken dil, ırk,\ncinsiyet, siyasi düşünce, felsefi inanç, din ve mezhep ayrımı yapamaz; hiçbir\nşekilde siyasi ve ideolojik amaçlı beyanda ve eylemde bulunamaz, bu eylemlere\nkatılamaz."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 10,
+      "madde_tur": "madde",
+      "text": "Madde 10 — Amir durumunda olan memurların görev ve sorumlulukları\nDevlet memurları amiri oldukları kuruluş ve hizmet biriminde kanun, tüzük ve\nyönetmeliklerle belirlenen görevleri zamanında ve eksiksiz olarak yapmaktan ve\nyaptırmaktan, maiyetindeki memurları yetiştirmekten, hal ve hareketlerini takip\nve kontrol etmekten görevli ve sorumludur."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 11,
+      "madde_tur": "madde",
+      "text": "Madde 11 — Devlet memurlarının görev ve sorumlulukları\nDevlet memurları kanun, tüzük ve yönetmeliklerde belirtilen esaslara uymakla ve\namirler tarafından verilen görevleri yerine getirmekle yükümlüdür. Memur, amirinden\naldığı emri Anayasa, kanun, tüzük ve yönetmelik hükümlerine aykırı görürse yerine\ngetirmez ve bu aykırılığı emri verene bildirir; amir emrinde ısrar eder ve bunu\nyazı ile yenilerse emir yerine getirilir ve bu hâlde sorumluluk emri verene aittir."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 102,
+      "madde_tur": "madde",
+      "text": "Madde 102 — Yıllık izin\nDevlet memurlarının yıllık izin süresi, hizmeti bir yıldan on yıla kadar (on yıl\ndahil) olanlar için yirmi gün, hizmeti on yıldan fazla olanlar için otuz gündür.\nZorunlu hâllerde bu sürelere gidiş ve dönüş için en çok ikişer gün eklenebilir."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 104,
+      "madde_tur": "madde",
+      "text": "Madde 104 — Mazeret izni\nMemura, eşinin doğum yapması hâlinde isteği üzerine on gün babalık izni; kendisinin\nveya çocuğunun evlenmesi ya da eşinin, çocuğunun, kendisinin veya eşinin ana, baba\nve kardeşinin ölümü hâllerinde isteği üzerine yedi gün izin verilir. Bu hâller\ndışında merkezde atamaya yetkili amir, ilde vali, ilçede kaymakam tarafından, birim\namirinin muvafakatiyle bir yıl içinde toptan veya bölümler hâlinde mazereti\nsebebiyle memura on güne kadar izin verilebilir."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 125,
+      "madde_tur": "madde",
+      "text": "Madde 125 — Disiplin cezaları\nDevlet memurlarına verilecek disiplin cezaları; uyarma, kınama, aylıktan kesme,\nkademe ilerlemesinin durdurulması ve Devlet memurluğundan çıkarma cezalarıdır.\nHangi fiil ve hâllerin hangi cezayı gerektirdiği bu maddede sayılır. Geçmiş\nhizmetleri sırasındaki çalışmaları olumlu olan memurlara bir derece hafif ceza\nuygulanabilir; tekerrür hâlinde bir derece ağır ceza verilir."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 126,
+      "madde_tur": "madde",
+      "text": "Madde 126 — Disiplin cezası vermeye yetkili amir ve kurullar\nUyarma, kınama ve aylıktan kesme cezaları disiplin amirleri tarafından; kademe\nilerlemesinin durdurulması cezası memurun bağlı olduğu kurumdaki disiplin\nkurulunun kararı alındıktan sonra atamaya yetkili amirler tarafından; Devlet\nmemurluğundan çıkarma cezası amirlerin teklifi üzerine yüksek disiplin kurulu\nkararıyla verilir."
+    },
+    {
+      "mevzuat": "657 devlet memurlari kanunu",
+      "kaynak_dosya": "657_devlet_memurlari_kanunu.txt",
+      "madde_no": 135,
+      "madde_tur": "madde",
+      "text": "Madde 135 — İtiraz\nDisiplin amirleri tarafından verilen uyarma, kınama ve aylıktan kesme cezalarına\nkarşı disiplin kuruluna, kademe ilerlemesinin durdurulması cezasına karşı yüksek\ndisiplin kuruluna itiraz edilebilir. İtirazda süre, cezanın tebliğinden itibaren\nyedi gündür; süresi içinde itiraz edilmeyen disiplin cezaları kesinleşir."
     },
     {
       "mevzuat": "7201 tebligat kanunu",
       "kaynak_dosya": "7201_tebligat_kanunu.txt",
       "madde_no": null,
       "madde_tur": null,
-      "text": "Tebligat Kanunu\nKanun No: 7201 (YÜRÜRLÜKTE)\nKaynak: https://mevzuat.gov.tr/mevzuatmetin/1.3.7201.pdf\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Elektronik tebligat madde numarası\ndocs/02-evrak-taksonomi-routing.md referansından alınmıştır; diğer madde no'lar\nmevzuat.gov.tr'de teyit edilmelidir."
+      "text": "Tebligat Kanunu\nKanun No: 7201 (YÜRÜRLÜKTE)\nKaynak: https://mevzuat.gov.tr/mevzuatmetin/1.3.7201.pdf\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.3.7201) ve kamuya\naçık hukuk kaynaklarından çapraz doğrulanmıştır."
     },
     {
       "mevzuat": "7201 tebligat kanunu",
       "kaynak_dosya": "7201_tebligat_kanunu.txt",
       "madde_no": 1,
       "madde_tur": "madde",
-      "text": "Madde 1 — Tebligatın yapılması\nKazaî merciler, genel ve katma bütçeli daireler, belediyeler, köy hükmî\nşahsiyetleri, barolar ve noterler tarafından yapılacak bütün tebligat bu Kanun\nhükümlerine göre yapılır. Tebligat, tebliğ yapılacak kişiye resmî bir bildirim\nulaştırma işlemidir ve çoğu hâlde hukuki süreleri başlatır.\n\nMadde 7/a — Elektronik tebligat\nTebligata elverişli bir elektronik adres vererek bu adrese tebligat yapılmasını\nisteyen kişiye elektronik yolla tebligat yapılabilir. Anonim, limited ve\nsermayesi paylara bölünmüş komandit şirketlere elektronik yolla tebligat\nyapılması zorunludur. Elektronik yolla tebligat, muhatabın elektronik adresine\nulaştığı tarihi izleyen beşinci günün sonunda yapılmış sayılır."
+      "text": "Madde 1 — Tebligatın yapılması\nKazaî merciler, genel ve katma bütçeli daireler, belediyeler, köy hükmî\nşahsiyetleri, barolar ve noterler tarafından yapılacak bütün tebligat bu Kanun\nhükümlerine göre yapılır. Tebligat, tebliğ yapılacak kişiye resmî bir bildirim\nulaştırma işlemidir ve çoğu hâlde hukuki süreleri başlatır."
+    },
+    {
+      "mevzuat": "7201 tebligat kanunu",
+      "kaynak_dosya": "7201_tebligat_kanunu.txt",
+      "madde_no": 10,
+      "madde_tur": "madde",
+      "text": "Madde 10 — Bilinen adreste tebligat\nTebligat, muhatabın bilinen en son adresinde yapılır. Bilinen en son adresin\ntebligata elverişsiz olduğu anlaşılır veya tebligat yapılamazsa, muhatabın adres\nkayıt sisteminde bulunan yerleşim yeri adresi bilinen en son adres olarak kabul\nedilir ve tebligat buraya yapılır.\n\nMadde 7/a — Elektronik tebligat\nTebligata elverişli bir elektronik adres vererek bu adrese tebligat yapılmasını\nisteyen kişiye elektronik yolla tebligat yapılabilir. Anonim, limited ve\nsermayesi paylara bölünmüş komandit şirketlere elektronik yolla tebligat\nyapılması zorunludur. Elektronik yolla tebligat, muhatabın elektronik adresine\nulaştığı tarihi izleyen beşinci günün sonunda yapılmış sayılır."
     },
     {
       "mevzuat": "7201 tebligat kanunu",
       "kaynak_dosya": "7201_tebligat_kanunu.txt",
       "madde_no": 21,
       "madde_tur": "madde",
-      "text": "Madde 21 — Tebliğ imkânsızlığı ve tebellüğden kaçınma\nKendisine tebligat yapılacak kişi adresinde bulunmaz veya tebellüğden kaçınırsa,\ntebliğ memuru tebliğ olunacak evrakı, o yerin muhtar veya ihtiyar heyeti azasından\nbirine veyahut zabıta amir veya memurlarına imza karşılığında teslim eder ve\ndurumu haber kâğıdı ile bildirir. [DOĞRULA: madde no mevzuat.gov.tr'de teyit edilmeli]"
+      "text": "Madde 21 — Tebliğ imkânsızlığı ve tebellüğden kaçınma\nKendisine tebligat yapılacak kişi adresinde bulunmaz veya tebellüğden kaçınırsa,\ntebliğ memuru tebliğ olunacak evrakı, o yerin muhtar veya ihtiyar heyeti azasından\nbirine veyahut zabıta amir veya memurlarına imza karşılığında teslim eder ve\ntesellümden imtina edenin adresini içeren ihbarnameyi gösterilen adresteki binanın\nkapısına yapıştırır. İhbarnamenin kapıya yapıştırıldığı tarih tebliğ tarihi\nsayılır. Adres kayıt sistemindeki yerleşim yeri adresine yapılan tebligatta da\naynı usul uygulanır."
     }
   ]
 }

@@ -51,12 +51,16 @@ from agents.config import (  # noqa: E402  (sys.path ayarından sonra import)
     EVRAK_TO_MEVZUAT,
     EVRAK_TO_YAZI,
     EVRAK_TURLERI,
+    EVRAK_TURU_TR,
     ZORUNLU_ALANLAR,
 )
 
 # Deterministik tekrar-üretilebilirlik (jüri: aynı tohum = aynı veri).
 DEFAULT_SEED = 20260625
-DEFAULT_PER_TYPE = 7
+# Tür-başı varsayılan 12 → 18 üretilen tür × 12 = 216 örnek (Wilson %95 CI anlamlı
+# daralsın; docs/05 hedefi ≥180 class). Çeşitlilik (kurum/konu/ifade varyantları)
+# her tür için artırıldı → gold daha gerçekçi, eval ezber-tavanına oturmaz.
+DEFAULT_PER_TYPE = 12
 
 ZORLUK = ("kolay", "orta", "zor")
 
@@ -70,12 +74,28 @@ URETILEN_TURLER: tuple[str, ...] = tuple(t for t in EVRAK_TURLERI if t != "belir
 # 1. SAHTE PII — CLAUDE.md §2: gerçek TCKN/telefon/isim ASLA. Hep sahte.
 # ===========================================================================
 _AD = ("Ayşe", "Mehmet", "Fatma", "Ali", "Zeynep", "Mustafa", "Elif", "Hüseyin",
-       "Emine", "Ahmet", "Hatice", "İbrahim", "Meryem", "Hasan", "Şükran", "Cem")
+       "Emine", "Ahmet", "Hatice", "İbrahim", "Meryem", "Hasan", "Şükran", "Cem",
+       "Selin", "Burak", "Derya", "Onur", "Gül", "Kerem", "Nida", "Tolga")
 _SOYAD = ("Yılmaz", "Kaya", "Demir", "Şahin", "Çelik", "Yıldız", "Yıldırım",
-          "Öztürk", "Aydın", "Özkan", "Arslan", "Doğan", "Kılıç", "Aslan")
+          "Öztürk", "Aydın", "Özkan", "Arslan", "Doğan", "Kılıç", "Aslan",
+          "Koç", "Erdoğan", "Polat", "Acar", "Bulut", "Korkmaz")
 _IL = ("Ankara", "İstanbul", "İzmir", "Bursa", "Konya", "Antalya", "Adana",
-       "Gaziantep", "Kayseri", "Trabzon", "Eskişehir", "Samsun")
-_MAHALLE = ("Cumhuriyet", "Fatih", "Yeni", "Bağlıca", "Çamlıca", "Gül", "Bahçelievler")
+       "Gaziantep", "Kayseri", "Trabzon", "Eskişehir", "Samsun", "Diyarbakır",
+       "Malatya", "Van", "Aydın", "Denizli", "Sakarya")
+_MAHALLE = ("Cumhuriyet", "Fatih", "Yeni", "Bağlıca", "Çamlıca", "Gül", "Bahçelievler",
+            "Atatürk", "İstiklal", "Yeşilyurt", "Karşıyaka", "Hürriyet")
+
+# Resmî muhatap kurum başlıkları — sınıflandırma sinyalini bozmaz; çeşitlilik için
+# T.C. başlık satırı varyasyonu (tek-tip 'VALİLİĞİNE' yerine gerçekçi kurum yelpazesi).
+_MUHATAP = (
+    "{il} VALİLİĞİNE", "{il} BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞINA",
+    "{il} İL MİLLÎ EĞİTİM MÜDÜRLÜĞÜNE", "{il} İL SAĞLIK MÜDÜRLÜĞÜNE",
+    "{il} DEFTERDARLIĞINA", "{il} İL ÖZEL İDARESİNE",
+    "{il} ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ İL MÜDÜRLÜĞÜNE",
+    "{il} SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜNE",
+)
+# Gönderen sıfatı (kurumsal vs. vatandaş) — yapısal alan değil, üslup çeşitliliği.
+_GONDEREN_SIFAT = ("", "", "", " (Vatandaş)", " (İlgili)")
 
 
 def fake_tckn(rng: random.Random) -> str:
@@ -121,124 +141,329 @@ def fake_evrak_no(rng: random.Random) -> str:
 # ===========================================================================
 # kolay = belirgin tür-imzası (anahtar sözcük); orta = orta; zor = örtük ifade
 # (heuristik fallback kaçırabilir → gerçekçi düşük skor, abstention sinyali).
-_GOVDE: dict[str, dict[str, str]] = {
+#
+# ÇEŞİTLİLİK (eval ezber-tavanına oturmasın): her (tür, zorluk) için BİRDEN ÇOK
+# ifade varyantı; üretimde rng ile biri seçilir (deterministik). 'kolay' varyantların
+# HEPSİ tür-imzası anahtar sözcüğü taşır (siniflandir._KEYWORDS ile uyum → kolay yüksek
+# acc korunur); 'zor' varyantlar örtük (anahtar sözcük yok → gerçekçi düşük skor).
+_GOVDE: dict[str, dict[str, tuple[str, ...]]] = {
     "dilekce": {
-        "kolay": "Bu dilekçe ile {konu} hakkındaki talebimin değerlendirilmesini arz ederim.",
-        "orta": "{konu} konusundaki başvurumun ilgili birimce incelenmesini talep ederim.",
-        "zor": "Bahsi geçen mesele ile ilgili gereğinin yapılmasını saygılarımla rica ederim.",
+        "kolay": (
+            "Bu dilekçe ile {konu} hakkındaki talebimin değerlendirilmesini arz ederim.",
+            "İşbu dilekçe ekinde {konu} konusunda gereğinin yapılmasını talep ederim.",
+            "{konu} hususundaki dilekçemin ivedilikle işleme alınmasını arz ederim.",
+        ),
+        "orta": (
+            "{konu} konusundaki başvurumun ilgili birimce incelenmesini talep ederim.",
+            "{konu} ile ilgili talebimin değerlendirilerek tarafıma bilgi verilmesini arz ederim.",
+        ),
+        "zor": (
+            "Bahsi geçen mesele ile ilgili gereğinin yapılmasını saygılarımla rica ederim.",
+            "Yukarıda arz ettiğim hususun çözüme kavuşturulmasını talep ediyorum.",
+        ),
     },
     "basvuru": {
-        "kolay": "{konu} için gerekli işlemin yapılmasını başvuru ile talep ederim.",
-        "orta": "{konu} işlemi için başvuruda bulunuyorum; gereğini arz ederim.",
-        "zor": "İlgili konuda gerekli onayın tarafıma verilmesini rica ederim.",
+        "kolay": (
+            "{konu} için gerekli işlemin yapılmasını başvuru ile talep ederim.",
+            "{konu} hakkında işbu başvuruyu yaparak gereğinin yapılmasını arz ederim.",
+            "{konu} başvurusunda bulunuyor, evrakımın işleme alınmasını talep ederim.",
+        ),
+        "orta": (
+            "{konu} işlemi için başvuruda bulunuyorum; gereğini arz ederim.",
+            "{konu} için müracaatımın değerlendirilmesini saygıyla arz ederim.",
+        ),
+        "zor": (
+            "İlgili konuda gerekli onayın tarafıma verilmesini rica ederim.",
+            "Söz konusu işlemin tarafıma sağlanması için gereğini arz ederim.",
+        ),
     },
     "sikayet": {
-        "kolay": "{konu} nedeniyle mağdur olduğumu bildirir, şikâyet konusunun "
-                 "incelenmesini talep ederim.",
-        "orta": "{konu} ile ilgili yaşadığım olumsuzluğu şikâyet ederek bildiririm.",
-        "zor": "Komşu parselde süregelen durumun giderilmesini arz ederim.",
+        "kolay": (
+            "{konu} nedeniyle mağdur olduğumu bildirir, şikâyet konusunun "
+            "incelenmesini talep ederim.",
+            "{konu} hakkında şikâyetimi iletiyor, gerekli işlemin yapılmasını arz ederim.",
+            "{konu} sebebiyle yaşadığım mağduriyeti şikâyet eder, çözümünü talep ederim.",
+        ),
+        "orta": (
+            "{konu} ile ilgili yaşadığım olumsuzluğu şikâyet ederek bildiririm.",
+            "{konu} hususunda gerekli tedbirlerin alınmamasından memnuniyetsizliğimi bildiririm.",
+        ),
+        "zor": (
+            "Komşu parselde süregelen durumun giderilmesini arz ederim.",
+            "Mahallemizde devam eden olumsuzluğun bir an önce sona erdirilmesini istiyorum.",
+        ),
     },
     "ihbar": {
-        "kolay": "{konu} hususunu ihbar eder, gerekli denetimin yapılmasını talep ederim.",
-        "orta": "{konu} konusunda usulsüzlük olduğunu bildiririm.",
-        "zor": "Söz konusu durumun ilgili birimce araştırılmasını rica ederim.",
+        "kolay": (
+            "{konu} hususunu ihbar eder, gerekli denetimin yapılmasını talep ederim.",
+            "{konu} ile ilgili usulsüzlüğü ihbar ediyor, incelenmesini arz ederim.",
+            "{konu} konusunu ihbar eder, ilgili birimce işlem yapılmasını rica ederim.",
+        ),
+        "orta": (
+            "{konu} konusunda usulsüzlük olduğunu bildiririm.",
+            "{konu} ile ilgili mevzuata aykırı bir durum tespit ettiğimi bildiririm.",
+        ),
+        "zor": (
+            "Söz konusu durumun ilgili birimce araştırılmasını rica ederim.",
+            "Dikkatinize sunduğum hususun gizlilik içinde incelenmesini talep ederim.",
+        ),
     },
     "talep": {
-        "kolay": "{konu} hakkındaki talebimin yerine getirilmesini arz ve talep ederim.",
-        "orta": "{konu} ile ilgili gereğinin yapılmasını talep ederim.",
-        "zor": "İlgili hususta tarafıma gerekli desteğin sağlanmasını rica ederim.",
+        "kolay": (
+            "{konu} hakkındaki talebimin yerine getirilmesini arz ve talep ederim.",
+            "{konu} konusundaki talebimin karşılanmasını saygıyla talep ederim.",
+            "{konu} için gerekli desteğin sağlanmasını talep ederim.",
+        ),
+        "orta": (
+            "{konu} ile ilgili gereğinin yapılmasını talep ederim.",
+            "{konu} konusunda tarafıma yardımcı olunmasını rica ederim.",
+        ),
+        "zor": (
+            "İlgili hususta tarafıma gerekli desteğin sağlanmasını rica ederim.",
+            "Söz konusu ihtiyacımın giderilmesi için gereğini arz ederim.",
+        ),
     },
     "bilgi_edinme": {
-        "kolay": "4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında {konu} hakkında "
-                 "bilgi/belge talep ederim.",
-        "orta": "Kurumunuzdan {konu} konusuna ilişkin bilgi edinmek istiyorum.",
-        "zor": "Söz konusu işleme ait kayıtların tarafıma iletilmesini istiyorum.",
+        "kolay": (
+            "4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında {konu} hakkında "
+            "bilgi/belge talep ederim.",
+            "Bilgi edinme hakkım kapsamında {konu} konusundaki belgelerin tarafıma "
+            "verilmesini talep ederim.",
+            "4982 sayılı Kanun gereği {konu} ile ilgili kayıtlara erişim talep ederim.",
+        ),
+        "orta": (
+            "Kurumunuzdan {konu} konusuna ilişkin bilgi edinmek istiyorum.",
+            "{konu} hakkında kurumunuzdaki mevcut bilgi ve belgeleri talep ediyorum.",
+        ),
+        "zor": (
+            "Söz konusu işleme ait kayıtların tarafıma iletilmesini istiyorum.",
+            "İlgili dosyada yer alan belgelerin bir örneğinin tarafıma verilmesini istiyorum.",
+        ),
     },
     "cimer": {
-        "kolay": "CİMER üzerinden {konu} hakkındaki başvurumun değerlendirilmesini talep ederim.",
-        "orta": "{konu} konulu CİMER başvurum hakkında gereğini arz ederim.",
-        "zor": "İletmiş olduğum talebin sonuçlandırılmasını rica ederim.",
+        "kolay": (
+            "CİMER üzerinden {konu} hakkındaki başvurumun değerlendirilmesini talep ederim.",
+            "CİMER başvurum kapsamında {konu} sorununun çözülmesini talep ederim.",
+            "CİMER aracılığıyla {konu} konusunu iletiyor, gereğini arz ederim.",
+        ),
+        "orta": (
+            "{konu} konulu CİMER başvurum hakkında gereğini arz ederim.",
+            "Cumhurbaşkanlığı İletişim Merkezi üzerinden ilettiğim {konu} talebimi arz ederim.",
+        ),
+        "zor": (
+            "İletmiş olduğum talebin sonuçlandırılmasını rica ederim.",
+            "Sistem üzerinden başvurduğum hususun değerlendirilmesini bekliyorum.",
+        ),
     },
     "ust_yazi": {
-        "kolay": "İlgi'de kayıtlı {konu} konusunda gereği için bilgilerinize sunulur.",
-        "orta": "{konu} konulu yazımız ekte gönderilmiş olup gereğini arz ederim.",
-        "zor": "Söz konusu hususun gereği için tarafınıza iletilmesi uygun görülmüştür.",
+        "kolay": (
+            "İlgi'de kayıtlı {konu} konusunda gereği için bilgilerinize sunulur.",
+            "İlgi yazıya istinaden {konu} hususu gereği için makamınıza arz olunur.",
+            "{konu} konusunda hazırlanan ekli yazımız gereği için sunulur.",
+        ),
+        "orta": (
+            "{konu} konulu yazımız ekte gönderilmiş olup gereğini arz ederim.",
+            "{konu} ile ilgili işlemlerin yürütülmesi hususunu bilgilerinize sunarım.",
+        ),
+        "zor": (
+            "Söz konusu hususun gereği için tarafınıza iletilmesi uygun görülmüştür.",
+            "Konuya ilişkin ekli belgelerin değerlendirilmesini arz ederim.",
+        ),
     },
     "cevabi_yazi": {
-        "kolay": "İlgi sayılı yazınıza istinaden {konu} hakkında kurumumuz görüşü "
-                 "aşağıda sunulmuştur.",
-        "orta": "İlgi yazınızda belirtilen {konu} konusu incelenmiş olup cevabımız ektedir.",
-        "zor": "İlgide kayıtlı talebe ilişkin değerlendirmemiz aşağıda yer almaktadır.",
+        "kolay": (
+            "İlgi sayılı yazınıza istinaden {konu} hakkında kurumumuz görüşü "
+            "aşağıda sunulmuştur.",
+            "İlgi'de kayıtlı yazınıza cevaben {konu} konusundaki değerlendirmemiz aşağıdadır.",
+            "İlgi yazınıza karşılık {konu} hususundaki cevabımız bilgilerinize sunulur.",
+        ),
+        "orta": (
+            "İlgi yazınızda belirtilen {konu} konusu incelenmiş olup cevabımız ektedir.",
+            "{konu} ile ilgili talebiniz değerlendirilmiş olup sonucu aşağıda arz olunur.",
+        ),
+        "zor": (
+            "İlgide kayıtlı talebe ilişkin değerlendirmemiz aşağıda yer almaktadır.",
+            "Yazınızda yer alan hususa dair görüşümüz tarafınıza bildirilmektedir.",
+        ),
     },
     "tebligat": {
-        "kolay": "7201 sayılı Tebligat Kanunu uyarınca {konu} hususu tarafınıza "
-                 "tebliğ olunur.",
-        "orta": "{konu} konusu işbu yazı ile tarafınıza tebliğ edilir.",
-        "zor": "Aşağıda belirtilen hususun tarafınıza bildirilmesi gerekmektedir.",
+        "kolay": (
+            "7201 sayılı Tebligat Kanunu uyarınca {konu} hususu tarafınıza "
+            "tebliğ olunur.",
+            "{konu} konulu işlem 7201 sayılı Kanun gereği tarafınıza tebliğ edilir.",
+            "İşbu tebligat ile {konu} hususu muhataba tebliğ olunur.",
+        ),
+        "orta": (
+            "{konu} konusu işbu yazı ile tarafınıza tebliğ edilir.",
+            "{konu} ile ilgili kararın tarafınıza tebliği için yazımız gönderilmiştir.",
+        ),
+        "zor": (
+            "Aşağıda belirtilen hususun tarafınıza bildirilmesi gerekmektedir.",
+            "Söz konusu işlemin muhataba usulüne uygun bildirilmesi sağlanacaktır.",
+        ),
     },
     "dava_evraki": {
-        "kolay": "Mahkemenizde görülen {konu} konulu davaya ilişkin dilekçemiz ektedir.",
-        "orta": "{konu} hakkındaki dava dilekçesi gereği için sunulmuştur.",
-        "zor": "İlgili dosya kapsamında duruşma için gereğinin yapılması talep edilir.",
+        "kolay": (
+            "Mahkemenizde görülen {konu} konulu davaya ilişkin dava dilekçemiz ektedir.",
+            "{konu} konulu davada mahkemenize sunulmak üzere dilekçemiz ektedir.",
+            "Sayın mahkemenizde {konu} davasına dair beyan dilekçemiz sunulmuştur.",
+        ),
+        "orta": (
+            "{konu} hakkındaki dava dilekçesi gereği için sunulmuştur.",
+            "{konu} konulu uyuşmazlığa ilişkin dosyamız mahkemeye iletilmiştir.",
+        ),
+        "zor": (
+            "İlgili dosya kapsamında duruşma için gereğinin yapılması talep edilir.",
+            "Esas dosyasındaki beyanlarımızın dikkate alınmasını arz ederiz.",
+        ),
     },
     "icra_evraki": {
-        "kolay": "{konu} kapsamında haciz işleminin icra dairesince yürütülmesi rica olunur.",
-        "orta": "{konu} konulu icra takibine ilişkin yazımız ektedir.",
-        "zor": "İlgili takip dosyası kapsamında gereğinin yapılması talep edilir.",
+        "kolay": (
+            "{konu} kapsamında haciz işleminin icra dairesince yürütülmesi rica olunur.",
+            "{konu} için icra takibi başlatılması ve haciz uygulanması talep edilir.",
+            "{konu} konulu icra takibine ilişkin haciz talebimiz ektedir.",
+        ),
+        "orta": (
+            "{konu} konulu icra takibine ilişkin yazımız ektedir.",
+            "{konu} alacağının tahsili için icra dosyası işlemleri rica olunur.",
+        ),
+        "zor": (
+            "İlgili takip dosyası kapsamında gereğinin yapılması talep edilir.",
+            "Borçluya ait kayıtların dosyamıza celbi hususunda gereği rica olunur.",
+        ),
     },
     "muzekkere": {
-        "kolay": "{konu} esas sayılı dosyaya ilişkin müzekkere gereğinin yerine "
-                 "getirilmesi rica olunur.",
-        "orta": "{konu} hakkındaki müzekkerenin gereği için yazımız ektedir.",
-        "zor": "İlgili dosya kapsamında istenen hususun karşılanması rica olunur.",
+        "kolay": (
+            "{konu} esas sayılı dosyaya ilişkin müzekkere gereğinin yerine "
+            "getirilmesi rica olunur.",
+            "{konu} konulu müzekkereye istinaden gerekli bilginin gönderilmesi rica olunur.",
+            "İşbu müzekkere ile {konu} hususunda kayıtların gönderilmesi rica olunur.",
+        ),
+        "orta": (
+            "{konu} hakkındaki müzekkerenin gereği için yazımız ektedir.",
+            "{konu} ile ilgili olarak istenen bilgilerin gönderilmesi rica olunur.",
+        ),
+        "zor": (
+            "İlgili dosya kapsamında istenen hususun karşılanması rica olunur.",
+            "Yazımız eki listede belirtilen bilgilerin iletilmesi rica olunur.",
+        ),
     },
     "fatura": {
-        "kolay": "{konu} kapsamında düzenlenen faturanın ödenmesi için gereğini arz ederim.",
-        "orta": "{konu} bedeline ilişkin fatura ekte sunulmuş olup ödemesi rica olunur.",
-        "zor": "Söz konusu hizmete ait ödeme belgesi tarafınıza iletilmiştir.",
+        "kolay": (
+            "{konu} kapsamında düzenlenen faturanın ödenmesi için gereğini arz ederim.",
+            "{konu} hizmetine ait fatura tutarının ödenmesi hususunu arz ederim.",
+            "{konu} için kesilen faturanın tahakkuk ve ödemesi rica olunur.",
+        ),
+        "orta": (
+            "{konu} bedeline ilişkin fatura ekte sunulmuş olup ödemesi rica olunur.",
+            "{konu} alımına ait ödeme belgesi tahakkuka esas olarak sunulmuştur.",
+        ),
+        "zor": (
+            "Söz konusu hizmete ait ödeme belgesi tarafınıza iletilmiştir.",
+            "Düzenlenen belgeye istinaden ödemenin gerçekleştirilmesi beklenmektedir.",
+        ),
     },
     "tutanak": {
-        "kolay": "{konu} hakkında düzenlenen işbu tutanak gereği için sunulmuştur.",
-        "orta": "{konu} konulu tutanağın ilgili işleme esas alınması arz olunur.",
-        "zor": "Söz konusu hususa ilişkin tespit aşağıda kayıt altına alınmıştır.",
+        "kolay": (
+            "{konu} hakkında düzenlenen işbu tutanak gereği için sunulmuştur.",
+            "{konu} ile ilgili tutulan tutanak ekte gereği için arz olunur.",
+            "{konu} konusunda taraflarca imza altına alınan tutanak sunulmuştur.",
+        ),
+        "orta": (
+            "{konu} konulu tutanağın ilgili işleme esas alınması arz olunur.",
+            "{konu} ile ilgili tespitler kayıt altına alınarak ekte sunulmuştur.",
+        ),
+        "zor": (
+            "Söz konusu hususa ilişkin tespit aşağıda kayıt altına alınmıştır.",
+            "Olaya dair belirlemeler taraf beyanlarıyla birlikte tespit edilmiştir.",
+        ),
     },
     "rapor": {
-        "kolay": "{konu} hakkında hazırlanan denetim raporu gereği için sunulmuştur.",
-        "orta": "{konu} konulu inceleme raporumuz ekte arz edilmiştir.",
-        "zor": "İlgili konuya ilişkin değerlendirmelerimiz raporda yer almaktadır.",
+        "kolay": (
+            "{konu} hakkında hazırlanan denetim raporu gereği için sunulmuştur.",
+            "{konu} ile ilgili inceleme raporu ekte gereği için arz olunur.",
+            "{konu} konusunda düzenlenen rapor değerlendirilmek üzere sunulmuştur.",
+        ),
+        "orta": (
+            "{konu} konulu inceleme raporumuz ekte arz edilmiştir.",
+            "{konu} ile ilgili bulgularımız ekli raporda özetlenmiştir.",
+        ),
+        "zor": (
+            "İlgili konuya ilişkin değerlendirmelerimiz raporda yer almaktadır.",
+            "Yapılan çalışmanın sonuçları ekli belgede ayrıntılı sunulmuştur.",
+        ),
     },
     "gorus_mutalaa": {
-        "kolay": "{konu} hakkında hukuki görüş/mütalaa talebimiz gereği için sunulur.",
-        "orta": "{konu} konusunda hukuki görüşünüze ihtiyaç duyulmaktadır.",
-        "zor": "Söz konusu mesele hakkında değerlendirmenizin tarafımıza iletilmesi rica olunur.",
+        "kolay": (
+            "{konu} hakkında hukuki görüş/mütalaa talebimiz gereği için sunulur.",
+            "{konu} konusunda hukuki mütalaanızın bildirilmesi rica olunur.",
+            "{konu} ile ilgili hukuki görüşünüzün tarafımıza iletilmesi arz olunur.",
+        ),
+        "orta": (
+            "{konu} konusunda hukuki görüşünüze ihtiyaç duyulmaktadır.",
+            "{konu} hususunda mevzuat çerçevesinde değerlendirmeniz beklenmektedir.",
+        ),
+        "zor": (
+            "Söz konusu mesele hakkında değerlendirmenizin tarafımıza iletilmesi rica olunur.",
+            "Konuya ilişkin uygulamanın ne yönde olması gerektiği hususunda görüş beklenir.",
+        ),
     },
     "genelge_talimat_olur": {
-        "kolay": "{konu} hakkında Makam Olur'u alınmak üzere gereği arz olunur.",
-        "orta": "{konu} konulu genelge/talimatın uygulanması için gereğini arz ederim.",
-        "zor": "İlgili hususun uygulamaya konulması için onayınıza arz olunur.",
+        "kolay": (
+            "{konu} hakkında Makam Olur'u alınmak üzere gereği arz olunur.",
+            "{konu} konulu uygulama talimatının yürürlüğe konulması için olur arz olunur.",
+            "{konu} ile ilgili genelgenin tüm birimlere tebliği için gereği arz olunur.",
+        ),
+        "orta": (
+            "{konu} konulu genelge/talimatın uygulanması için gereğini arz ederim.",
+            "{konu} hususunda alınan kararın birimlere duyurulması için arz olunur.",
+        ),
+        "zor": (
+            "İlgili hususun uygulamaya konulması için onayınıza arz olunur.",
+            "Söz konusu düzenlemenin yürürlüğe alınması makamınızın takdirine arz olunur.",
+        ),
     },
 }
 
 # Türe-özel "konu" örnekleri (anahtar-unsur + sınıflandırma sinyali kaynağı).
+# Genişletilmiş yelpaze (≥6/tür) → gold konu çeşitliliği artar, eval ezberlemez.
 _KONULAR: dict[str, tuple[str, ...]] = {
-    "dilekce": ("park yeri tahsisi", "yol bakımı", "kaldırım onarımı", "su faturası itirazı"),
-    "basvuru": ("iş yeri açma izni", "tabela ruhsatı", "hafriyat izni", "kayıt yenileme"),
-    "sikayet": ("gürültü kirliliği", "çöp toplama aksaklığı", "park işgali", "imar aykırılığı"),
-    "ihbar": ("kaçak yapı", "usulsüz harcama", "ruhsatsız işyeri", "kamu zararı"),
-    "talep": ("hizmet talebi", "belge talebi", "randevu talebi", "yardım talebi"),
-    "bilgi_edinme": ("ihale sözleşme tutarı", "personel atama listesi", "harcama kalemleri"),
-    "cimer": ("ulaşım sorunu", "altyapı şikâyeti", "hizmet talebi", "personel tutumu"),
-    "ust_yazi": ("görüş talebi", "bilgi paylaşımı", "ortak protokol", "koordinasyon"),
-    "cevabi_yazi": ("görüş bildirimi", "bilgi yanıtı", "talep değerlendirmesi"),
-    "tebligat": ("ödeme emri", "yıkım kararı", "idari para cezası tebliği"),
-    "dava_evraki": ("tam yargı davası", "iptal davası", "itirazın iptali"),
-    "icra_evraki": ("haciz talebi", "icra takibi", "ödeme emri tebliği"),
-    "muzekkere": ("haciz müzekkeresi", "tedbir kararı", "bilirkişi talebi"),
-    "fatura": ("temizlik hizmeti bedeli", "kırtasiye alımı", "araç kiralama bedeli"),
-    "tutanak": ("tespit tutanağı", "teslim tutanağı", "kaza tutanağı"),
-    "rapor": ("denetim raporu", "inceleme raporu", "faaliyet raporu"),
-    "gorus_mutalaa": ("sözleşme görüşü", "mevzuat yorumu", "hukuki değerlendirme"),
-    "genelge_talimat_olur": ("mesai düzenlemesi", "uygulama talimatı", "harcama oluru"),
+    "dilekce": ("park yeri tahsisi", "yol bakımı", "kaldırım onarımı", "su faturası itirazı",
+                "ağaç budama talebi", "sokak aydınlatması", "engelli rampası", "otopark düzenlemesi"),
+    "basvuru": ("iş yeri açma izni", "tabela ruhsatı", "hafriyat izni", "kayıt yenileme",
+                "imar durumu belgesi", "yapı ruhsatı", "burs başvurusu", "kreş kaydı"),
+    "sikayet": ("gürültü kirliliği", "çöp toplama aksaklığı", "park işgali", "imar aykırılığı",
+                "kaçak elektrik", "su kesintisi", "hizmet gecikmesi", "haşere sorunu"),
+    "ihbar": ("kaçak yapı", "usulsüz harcama", "ruhsatsız işyeri", "kamu zararı",
+              "çevre kirliliği", "iş güvenliği ihlali", "haksız menfaat", "kayıt dışı istihdam"),
+    "talep": ("hizmet talebi", "belge talebi", "randevu talebi", "yardım talebi",
+              "araç tahsisi", "personel görevlendirme", "ödenek talebi", "eğitim talebi"),
+    "bilgi_edinme": ("ihale sözleşme tutarı", "personel atama listesi", "harcama kalemleri",
+                     "denetim sonuçları", "ruhsat kayıtları", "proje ödenekleri", "atama kriterleri"),
+    "cimer": ("ulaşım sorunu", "altyapı şikâyeti", "hizmet talebi", "personel tutumu",
+              "park sorunu", "yol bozukluğu", "engelli erişimi", "internet altyapısı"),
+    "ust_yazi": ("görüş talebi", "bilgi paylaşımı", "ortak protokol", "koordinasyon",
+                 "personel görevlendirme", "ödenek aktarımı", "eğitim programı"),
+    "cevabi_yazi": ("görüş bildirimi", "bilgi yanıtı", "talep değerlendirmesi",
+                    "itiraz cevabı", "başvuru sonucu", "inceleme sonucu"),
+    "tebligat": ("ödeme emri", "yıkım kararı", "idari para cezası tebliği",
+                 "ruhsat iptali", "tahliye kararı", "vergi ihbarnamesi"),
+    "dava_evraki": ("tam yargı davası", "iptal davası", "itirazın iptali",
+                    "tazminat davası", "yürütmenin durdurulması", "istinaf başvurusu"),
+    "icra_evraki": ("haciz talebi", "icra takibi", "ödeme emri tebliği",
+                    "kıymet takdiri", "tahliye taahhüdü", "kambiyo takibi"),
+    "muzekkere": ("haciz müzekkeresi", "tedbir kararı", "bilirkişi talebi",
+                  "kayıt celbi", "müzekkere cevabı", "adres tespiti"),
+    "fatura": ("temizlik hizmeti bedeli", "kırtasiye alımı", "araç kiralama bedeli",
+               "yemek hizmeti bedeli", "akaryakıt alımı", "danışmanlık bedeli"),
+    "tutanak": ("tespit tutanağı", "teslim tutanağı", "kaza tutanağı",
+                "sayım tutanağı", "denetim tutanağı", "olay tutanağı"),
+    "rapor": ("denetim raporu", "inceleme raporu", "faaliyet raporu",
+              "performans raporu", "izleme raporu", "değerlendirme raporu"),
+    "gorus_mutalaa": ("sözleşme görüşü", "mevzuat yorumu", "hukuki değerlendirme",
+                      "ihale itirazı görüşü", "personel hakları görüşü", "tazminat görüşü"),
+    "genelge_talimat_olur": ("mesai düzenlemesi", "uygulama talimatı", "harcama oluru",
+                             "görevlendirme oluru", "tasarruf genelgesi", "izin talimatı"),
 }
 
 
@@ -299,6 +524,12 @@ class EvrakOrnegi:
 # ===========================================================================
 # 4. METİN RENDER — pipeline-tespit-edilebilir etiketlerle resmî evrak gövdesi
 # ===========================================================================
+def _pick_govde(turu: str, zorluk: str, konu: str, rng: random.Random) -> str:
+    """(tür, zorluk) için ifade varyantlarından birini deterministik seç + render et."""
+    varyantlar = _GOVDE[turu][zorluk]
+    return rng.choice(varyantlar).format(konu=konu)
+
+
 def _render_metin(turu: str, zorluk: str, alanlar: dict[str, str],
                   mevcut: set[str], rng: random.Random) -> str:
     """Resmî evrak metni — başlık + alan-blokları + gövde.
@@ -306,10 +537,15 @@ def _render_metin(turu: str, zorluk: str, alanlar: dict[str, str],
     Yalnız `mevcut` kümesindeki alanlar metne yazılır (eksik olanlar yazılmaz →
     pipeline onları eksik tespit eder). Etiketler cikar.py'nin regex/keyword
     görünürlük varsayımlarıyla uyumludur (Tarih:/Konu:/Adres:/T.C. Kimlik No: ...).
+
+    Çeşitlilik: muhatap kurum başlığı + gövde ifadesi rng ile seçilir (deterministik);
+    `Ad-Soyad:` / `Konu:` etiket formatları KORUNUR (fairness_eval._swap_name + cikar
+    regex bağımlılığı). 'kolay' gövde tür-imzası anahtar sözcüğü taşır (sınıflandırma).
     """
     konu = alanlar.get("konu", "muhtelif")
-    govde = _GOVDE[turu][zorluk].format(konu=konu)
-    lines = [f"T.C. {rng.choice(_IL)} VALİLİĞİNE", ""]
+    govde = _pick_govde(turu, zorluk, konu, rng)
+    muhatap = rng.choice(_MUHATAP).format(il=rng.choice(_IL))
+    lines = [f"T.C. {muhatap}", ""]
     if "tarih" in mevcut:
         lines.append(f"Tarih   : {alanlar['tarih']}")
     lines.append(f"Sayı    : {alanlar['sayi']}")  # sayı her zaman var (resmî evrak)
@@ -320,7 +556,8 @@ def _render_metin(turu: str, zorluk: str, alanlar: dict[str, str],
     lines += ["", govde, "", "Gereğini bilgilerinize arz ederim.", ""]
     # Kimlik/iletişim bloğu — yalnız mevcut alanlar.
     if "gonderen_ad_soyad" in mevcut:
-        lines.append(f"Ad-Soyad: {alanlar['gonderen_ad_soyad']}")
+        sifat = rng.choice(_GONDEREN_SIFAT)
+        lines.append(f"Ad-Soyad: {alanlar['gonderen_ad_soyad']}{sifat}")
     if "tckn_veya_kurum" in mevcut:
         lines.append(f"T.C. Kimlik No: {alanlar['tckn_veya_kurum']}")
     if "iletisim_adres" in mevcut:
@@ -399,8 +636,11 @@ def make_evrak(turu: str, idx: int, rng: random.Random) -> EvrakOrnegi:
     eksik = sorted(zorunlu - mevcut_set)
     mevcut = sorted(mevcut_set)
 
-    # Anahtar unsurlar = özetin kapsaması gereken çekirdek bilgiler.
-    unsurlar = [degerler["konu"]]
+    # Anahtar unsurlar = özetin kapsaması gereken çekirdek bilgiler (key-fact recall gold).
+    # konu (daima) + tür-TR-etiketi (özet '**Tür**' önekiyle daima kapsar) + tarih (varsa).
+    # NOT: tür etiketi 'kolay' demografik ezber DEĞİL; özetin konuyu+belge türünü doğru
+    # yansıtması beklenir (kapsama ölçülebilir, yapay 1.0 tavanına oturmaz).
+    unsurlar = [degerler["konu"], EVRAK_TURU_TR.get(turu, turu)]
     if "tarih" in rendered_present:
         unsurlar.append(degerler["tarih"])
 

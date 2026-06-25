@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+# Çakışan koşuları iptal et (yeni push gelirse eskiyi durdur).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (lint + test, mock)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      # Testler mock modda koşar — LLM anahtarı / ağır model indirmesi gerekmez.
+      LLM_MODE: mock
+    steps:
+      - name: Depoyu çek
+        uses: actions/checkout@v4
+
+      - name: uv kur + Python 3.11 ayarla
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.11"
+          enable-cache: true
+          # Backend lock dosyası değişince cache yenilensin.
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Bağımlılıkları kur (çekirdek + dev; rag/llm ağır extra'lar HARİÇ)
+        run: uv sync --frozen --extra dev
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Pytest (mock modda; ağır importlar test_pdf_utils gibi yerlerde importorskip)
+        run: uv run pytest -q
+
+  frontend:
+    name: Frontend (build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Depoyu çek
+        uses: actions/checkout@v4
+
+      - name: Node 20 kur + npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Bağımlılıkları kur (lock'a sadık)
+        run: npm ci
+
+      - name: Üretim derlemesi (Vite)
+        run: npm run build

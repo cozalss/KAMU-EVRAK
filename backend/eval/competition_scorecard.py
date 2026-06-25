@@ -74,7 +74,10 @@ def build_scorecard() -> dict:
                             "f_beta": missing["f_beta"], "beta": missing["beta"],
                             "recall_ci95": missing["recall_ci95"]},
             "ozet": {"micro_recall": summ["micro_recall"], "macro_recall": summ["macro_recall"],
-                     "full_cover_rate": summ["full_cover_rate"], "avg_uzunluk": summ["avg_uzunluk"]},
+                     "full_cover_rate": summ["full_cover_rate"], "avg_uzunluk": summ["avg_uzunluk"],
+                     "faithfulness_rate": summ["faithfulness_rate"],
+                     "faithfulness_ci95": summ["faithfulness_ci95"],
+                     "judge_coverage": summ["judge_coverage"]},
         },
         "gorev2": {
             "yonlendirme": {"top1": route["top1_acc"], "top3": route["top3_acc"],
@@ -83,7 +86,10 @@ def build_scorecard() -> dict:
                             "compliance_rate": draft["compliance_rate"],
                             "yazi_turu_acc": draft["yazi_turu_acc"],
                             "avg_turkish_purity": draft["avg_turkish_purity"],
-                            "per_component": draft["per_component"]},
+                            "per_component": draft["per_component"],
+                            "false_veto": draft["false_veto"],
+                            "false_veto_rate": draft["false_veto_rate"],
+                            "veto_uyari_toplam": draft["veto_uyari_toplam"]},
         },
         "etik": {
             "class_consistency": fair["class_consistency"],
@@ -129,7 +135,13 @@ def render_markdown(sc: dict) -> str:
         f"| Eksik-bilgi precision | {g1['eksik_bilgi']['precision']:.3f} | — |",
         f"| Eksik-bilgi F-beta | {g1['eksik_bilgi']['f_beta']:.3f} | — |",
         f"| Özet key-fact recall (mikro) | **{g1['ozet']['micro_recall']:.3f}** | — |",
+        f"| Özet faithfulness (sadakat) | **{g1['ozet']['faithfulness_rate']:.3f}** | "
+        f"[{g1['ozet']['faithfulness_ci95'][0]:.3f}, {g1['ozet']['faithfulness_ci95'][1]:.3f}] |",
         f"| Özet ort. uzunluk | {g1['ozet']['avg_uzunluk']} kelime | — |",
+        "",
+        "> **Faithfulness** = özetin kaynak evrakta OLMAYAN somut tarih/sayı (halüsinasyon) "
+        "içermeme oranı (CLAUDE.md §1). LLM-judge kapsama opsiyonel gate'tir "
+        f"(`SUMMARY_JUDGE_ENABLED`; şu an `{g1['ozet']['judge_coverage']}` — kapalıyken key-fact recall raporlanır).",
         "",
         f"Zorluk kırılımı (sınıflandırma acc): {s['by_zorluk']} — "
         "stratifikasyon kanıtı (kolay→zor monoton düşüş beklenir).",
@@ -145,6 +157,12 @@ def render_markdown(sc: dict) -> str:
         f"| Yazı bileşen tam-uyum | **{yt['compliance_rate']:.3f}** | — |",
         f"| Yazı türü doğruluğu | {yt['yazi_turu_acc']:.3f} | — |",
         f"| Yazı Türkçe saflık | {yt['avg_turkish_purity']:.4f} | — |",
+        f"| Uydurma-veto yanlış-pozitif | **{yt['false_veto']}/{yt['veto_uyari_toplam']}** "
+        f"(oran {yt['false_veto_rate']:.3f}) | — |",
+        "",
+        "> **Uydurma-veto false-positive** (docs/06 hedef **0**): verify node'unun "
+        "\"kaynakta yok\" uyarısının GERÇEKTEN kaynakta var olan değeri yanlış işaretleme oranı. "
+        "0 = anti-halüsinasyon kapısı sağlıklı (gerçek uydurmayı yakalar, doğruyu vetolamaz).",
         "",
         "## Etik §13.1 — Adillik (counterfactual isim/cinsiyet)",
         "",

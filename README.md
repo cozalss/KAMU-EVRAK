@@ -1,5 +1,11 @@
 # kamu-evrak — Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi
 
+[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)
+![React 18](https://img.shields.io/badge/React-18-61dafb.svg)
+[![Katkı](https://img.shields.io/badge/Katk%C4%B1-CONTRIBUTING-brightgreen.svg)](CONTRIBUTING.md)
+
 > **TEKNOFEST 2026 — Yapay Zeka Dil Ajanları Yarışması, 1. Senaryo**
 > Çok-ajanlı (LangGraph) yapay zeka ile kamu evrakını **oku → sınıflandır → bilgi çıkar →
 > eksik tespit et → mevzuat öner → özetle** (Görev 1) ve **resmî yazı taslakla → birime

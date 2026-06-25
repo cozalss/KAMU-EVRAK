@@ -31,6 +31,8 @@ export default function App() {
   const fileRef = useRef(null);
   const stepTimers = useRef([]);
   const toastTimer = useRef(null);
+  // Son çalıştırma — hata durumunda "Tekrar dene" için (dosya VEYA örnek).
+  const lastRun = useRef(null);
 
   // Tüm zamanlayıcıları temizle (unmount + her yeni çalıştırma başında).
   const clearTimers = useCallback(() => {
@@ -93,6 +95,7 @@ export default function App() {
     setBusy(true);
     setSelectedSample(null);
     setFileName(file.name);
+    lastRun.current = { kind: "file", file };
     try {
       const fd = new FormData();
       fd.append("file", file);
@@ -146,6 +149,7 @@ export default function App() {
     setSelectedSample(sample.id);
     setFileName("");
     setEvrakText(sample.text);  // indirme bu metinden taslak üretir
+    lastRun.current = { kind: "sample", sample };
     try {
       const res = await fetch("/process_doc", {
         method: "POST",
@@ -165,6 +169,14 @@ export default function App() {
       setBusy(false);
     }
   }, [reset, animateNodes]);
+
+  // Hata sonrası son işlemi yeniden dene (dosya VEYA örnek metin).
+  const onRetry = useCallback(() => {
+    const last = lastRun.current;
+    if (!last) { setError(""); return; }
+    if (last.kind === "file") runStream(last.file);
+    else if (last.kind === "sample") runSampleJson(last.sample);
+  }, [runStream, runSampleJson]);
 
   // ---------- C) Taslağı PDF/DOCX indir → /yazi/taslak ----------
   // Backend pipeline'ı evrak metninden tekrar koşar → render edilmiş bytes döner.
@@ -291,11 +303,21 @@ export default function App() {
           </div>
         </section>
 
-        {error && (
+        {error && !busy && (
           <div className="ke-error" role="alert">
-            <span aria-hidden="true">⚠️</span>
-            <span>{error}</span>
-            <button type="button" className="ke-error-x" onClick={() => setError("")} aria-label="Hatayı kapat">✕</button>
+            <span className="ke-error-ic" aria-hidden="true">⚠️</span>
+            <div className="ke-error-tx">
+              <strong>İşlem tamamlanamadı.</strong>
+              <span>{error}</span>
+            </div>
+            <div className="ke-error-act">
+              {lastRun.current && (
+                <button type="button" className="ke-retry" onClick={onRetry}>
+                  ↻ Tekrar dene
+                </button>
+              )}
+              <button type="button" className="ke-error-x" onClick={() => setError("")} aria-label="Hatayı kapat">✕</button>
+            </div>
           </div>
         )}
 
@@ -306,23 +328,27 @@ export default function App() {
           </section>
         )}
 
-        {/* ---- Sonuç kartları ---- */}
-        {result && (
-          <section className="ke-result-wrap" aria-live="polite">
+        {/* ---- Sonuç bölgesi: yükleniyor (iskelet) → sonuç kartları ---- */}
+        <section className="ke-result-wrap" aria-live="polite" aria-busy={busy}>
+          {busy && !result && <ResultSkeleton />}
+          {result && (
             <ResultCards
               r={result} onToast={showToast}
               onDownload={onDownload} downloading={downloading}
               canDownload={!!evrakText}
               verify={nodes.find((n) => n.id === "verify")?.data}
             />
-          </section>
-        )}
+          )}
+        </section>
 
         {!started && (
-          <section className="ke-placeholder" aria-hidden="true">
-            <p>Bir evrak yükleyin ya da örnek seçin; sistem evrakı <strong>{PIPELINE.length} ajanlı</strong> bir
-              boru hattından geçirir: okuma → sınıflandırma → bilgi çıkarma → eksik tespiti →
-              mevzuat → özet → birim havalesi → resmî yazı taslağı → doğrulama → bilgilendirme.</p>
+          <section className="ke-placeholder">
+            <span className="ke-placeholder-ic" aria-hidden="true">📥</span>
+            <h2 className="ke-placeholder-h">Henüz bir işlem yok</h2>
+            <p>Yukarıdan bir evrak yükleyin ya da bir <strong>örnek evrak</strong> seçin; sistem evrakı
+              <strong> {PIPELINE.length} ajanlı</strong> bir boru hattından geçirir: okuma → sınıflandırma →
+              bilgi çıkarma → eksik tespiti → mevzuat → özet → birim havalesi → resmî yazı taslağı →
+              doğrulama → bilgilendirme.</p>
           </section>
         )}
       </main>
@@ -332,6 +358,37 @@ export default function App() {
       {toast && (
         <div className="ke-toast" role="presentation">{toast}</div>
       )}
+    </div>
+  );
+}
+
+/* Yükleniyor iskeleti — sonuç kartlarının yerini tutan placeholder.
+   Ekran okuyucudan gizli (aria-hidden): canlı bölge zaten aria-busy ile durumu
+   bildirir + akış şeması aktif düğümü duyurur. prefers-reduced-motion'da pırıltı
+   (shimmer) CSS tarafında kapatılır → yalnız sabit placeholder kalır. */
+function ResultSkeleton() {
+  return (
+    <div className="ke-skel" aria-hidden="true">
+      <div className="ke-skel-card ke-skel-info">
+        <span className="ke-skel-line w70" />
+        <span className="ke-skel-line w90" />
+        <span className="ke-skel-line w50" />
+      </div>
+      <div className="ke-skel-row">
+        <div className="ke-skel-card">
+          <span className="ke-skel-line w40 tall" />
+          <span className="ke-skel-line w60" />
+        </div>
+        <div className="ke-skel-card">
+          <span className="ke-skel-line w40 tall" />
+          <span className="ke-skel-line w60" />
+        </div>
+      </div>
+      <div className="ke-skel-card">
+        <span className="ke-skel-line w30" />
+        <span className="ke-skel-line w80" />
+        <span className="ke-skel-line w75" />
+      </div>
     </div>
   );
 }

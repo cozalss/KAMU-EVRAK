@@ -20,9 +20,11 @@ from agents.nodes.siniflandir import siniflandir_node
 class TestSiniflandirKeywordHeuristik:
     """Mock LLM fallback: keyword eşleşmesi → doğru tür."""
 
-    async def test_dilekce_keyword_arz_ederim(self):
-        # Arrange
-        state = {"evrak_text": "Sayın Müdür, gereği için arz ederim."}
+    async def test_dilekce_vatandas_dilekcesi(self):
+        # Arrange — vatandaş dilekçesi: 'dilekçe' sözcüğü + serbest talep.
+        # NOT: salt 'arz ederim' artık dilekçe SİNYALİ DEĞİL (her resmî evrakta geçen
+        # kapalı-biçim selamlama; tür ayırt etmez) → ayırt edici 'dilekçe' sözcüğü kullanılır.
+        state = {"evrak_text": "İşbu dilekçe ile gereğinin yapılmasını talep ederim."}
         # Act
         sonuc = await siniflandir_node(state)
         # Assert

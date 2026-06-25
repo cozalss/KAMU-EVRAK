@@ -19,6 +19,10 @@ Akış:
                                        ▼
                                   yazi_taslak  (eksik yoksa taslak; varsa yine iskelet)
                                        ▼
+                                    verify
+                                       ▼
+                                    arsiv   (SDP 2005/7 arşiv metadata — additive)
+                                       ▼
                                    finalize → END
 
 # TODO(kamu-evrak): Üretimde ENV-gated SOTA node'lar (crag/self_rag/decompose — ADALET'ten
@@ -36,6 +40,7 @@ from agents.config import (
     CRAG_ENABLED,
     SELF_RAG_ENABLED,
 )
+from agents.nodes.arsiv import arsiv_node
 from agents.nodes.cikar import cikar_node
 from agents.nodes.clarifier import clarifier_node, kritik_eksikler
 from agents.nodes.crag import crag_node
@@ -62,7 +67,8 @@ def _pipeline_nodes() -> tuple[str, ...]:
     nodes += ["ozetle", "route_birim", "yazi_taslak", "verify"]
     if SELF_RAG_ENABLED:
         nodes.append("self_rag")
-    nodes.append("finalize")
+    # arsiv: SDP 2005/7 arşiv metadata (additive — yenilikçilik); verify/self_rag→arsiv→finalize.
+    nodes += ["arsiv", "finalize"]
     return tuple(nodes)
 
 
@@ -93,6 +99,7 @@ def build_graph() -> Any:
     g.add_node("route_birim", route_birim_node)
     g.add_node("yazi_taslak", yazi_taslak_node)
     g.add_node("verify", verify_node)
+    g.add_node("arsiv", arsiv_node)
     g.add_node("finalize", finalize_node)
 
     g.add_edge(START, "siniflandir")
@@ -132,15 +139,18 @@ def build_graph() -> Any:
     g.add_edge("yazi_taslak", "verify")
 
     if SELF_RAG_ENABLED:
-        # Self-RAG reflection (ENV-gated): verify → self_rag → finalize. self_rag
+        # Self-RAG reflection (ENV-gated): verify → self_rag → arsiv. self_rag
         # çıktının TAMLIĞINI öz-değerlendirir (Asai et al. 2023). Kapalıyken bu node
-        # grafta YOK → baseline (verify→finalize) birebir korunur.
+        # grafta YOK → baseline (verify→arsiv) birebir korunur.
         g.add_node("self_rag", self_rag_node)
         g.add_edge("verify", "self_rag")
-        g.add_edge("self_rag", "finalize")
+        g.add_edge("self_rag", "arsiv")
     else:
-        g.add_edge("verify", "finalize")
+        g.add_edge("verify", "arsiv")
 
+    # arsiv: SDP 2005/7 arşiv metadata kapısı (additive — yenilikçilik). verify/self_rag
+    # sonrası, finalize öncesi çalışır → bilgilendirmeye arşiv satırı eklenebilir.
+    g.add_edge("arsiv", "finalize")
     g.add_edge("finalize", END)
 
     return g.compile()

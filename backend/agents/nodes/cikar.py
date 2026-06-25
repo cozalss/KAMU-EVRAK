@@ -26,6 +26,12 @@ _RE_TCKN = re.compile(r"\b[1-9]\d{10}\b")                 # 11 haneli — MASKEL
 _RE_TEL = re.compile(r"\b0?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}\b")
 _RE_KONU = re.compile(r"konu\s*[:：]\s*(.+)", re.IGNORECASE)
 _RE_TALEP = re.compile(r"(talep ederim|rica ederim|arz ederim|gereğini|bilgilerinize)", re.IGNORECASE)
+# Gönderen ad-soyad: "Ad-Soyad: <İsim>" / "Adı Soyadı: <İsim>" satırı (sentetik+gerçek desen).
+# İsim: 2+ baş-harfi büyük Türkçe sözcük; parantezli sıfat (İlgili/Vatandaş) atılır.
+_RE_AD_SOYAD = re.compile(
+    r"ad[ıi]?[\s-]*soyad[ıi]?\s*[:：]\s*"
+    r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)"
+)
 
 # LLM'in serbest-metin alanlarına TCKN/telefon sızarsa maskelemek için (sızıntı önle).
 _PII_SCAN: tuple[re.Pattern[str], ...] = (_RE_TCKN, _RE_TEL)
@@ -85,6 +91,10 @@ def _regex_unsurlar(text: str) -> dict[str, Any]:
         unsurlar["sayi"] = m.group(0)
     if m := _RE_KONU.search(redacted):
         unsurlar["konu"] = m.group(1).strip()[:160]
+    # Gönderen ad-soyad: "Ad-Soyad: <İsim>" satırı (mock modda LLM yok → eksik-tespit
+    # gonderen_ad_soyad'ı yanlış-eksik işaretliyordu; deterministik regex bunu kapatır).
+    if m := _RE_AD_SOYAD.search(redacted):
+        unsurlar["gonderen"] = m.group(1).strip()[:80]
     if _RE_TALEP.search(text):
         unsurlar["talep"] = True
     if re.search(r"\b(adres|mahalle|cadde|sokak|no:)\b", text, re.IGNORECASE):

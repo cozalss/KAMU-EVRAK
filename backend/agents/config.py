@@ -84,6 +84,60 @@ EVRAK_TO_BIRIM: dict[str, str] = {
     "belirsiz": "yazi_isleri_evrak",
 }
 
+# --- Yenilikçilik (Görev 2 — arşivleme): Evrak türü → kaba SDP konu kodu (2005/7) ---
+# Standart Dosya Planı (Başbakanlık Genelgesi 2005/7) kod aralıkları:
+#   000-099 ortak konular · 100-599 ana hizmet · 600-999 yardımcı/danışma/denetim.
+# NOT (CLAUDE.md §1): SDP genelgesi MADDE yerine KOD ARALIKLARI ile düzenlidir; aşağıdaki
+# kodlar 2005/7 ortak/yardımcı konu başlıklarının KABA eşlemesidir — kuruma özgü ana hizmet
+# kodları (100-599) belge konusuna göre değişir. Spesifik kod şüpheli → [DOĞRULA:].
+EVRAK_TO_SDP: dict[str, str] = {
+    "dilekce": "010",                 # Mevzuat/dilekçe-genel işlemler (ortak)
+    "basvuru": "100",                 # Ana hizmet başvuruları (kuruma özgü; kaba)
+    "sikayet": "622",                 # Şikâyet/inceleme (yardımcı-denetim)
+    "ihbar": "622",                   # İhbar/inceleme (yardımcı-denetim)
+    "talep": "100",                   # Ana hizmet talepleri (kaba)
+    "bilgi_edinme": "622.03",         # Bilgi edinme başvuruları (4982)
+    "cimer": "622.04",                # CİMER başvuruları (halkla ilişkiler)
+    "ust_yazi": "010",                # Genel yazışma (ortak)
+    "cevabi_yazi": "010",             # Genel yazışma (ortak)
+    "tebligat": "640",                # Hukuk işleri / tebligat (yardımcı)
+    "dava_evraki": "640",             # Hukuk müşavirliği — dava (yardımcı)
+    "icra_evraki": "640",             # Hukuk müşavirliği — icra (yardımcı)
+    "muzekkere": "640",               # Hukuk müşavirliği — müzekkere (yardımcı)
+    "fatura": "841",                  # Bütçe/ödeme/tahakkuk (yardımcı-mali, 5018)
+    "tutanak": "000",                 # Genel/ortak tutanak (ortak)
+    "rapor": "040",                   # Rapor (ortak konular)
+    "gorus_mutalaa": "045",           # Görüş/mütalaa (ortak konular)
+    "genelge_talimat_olur": "020",    # Genelge/talimat/olur (ortak)
+    "belirsiz": "000",                # Sınıflanamayan → genel/ortak
+}
+
+# --- Evrak türü → saklama (muhafaza) süresi — SDP/DAGM saklama planı (kaba kategori) ---
+# NOT: Kesin süreler kurum Saklama Süreli Standart Dosya Planı'nda belirlenir; aşağıdakiler
+# tür-bazlı tipik kategorilerdir. Hukuk/mali evrak uzun, genel yazışma orta, geçici kısa.
+EVRAK_TO_SAKLAMA: dict[str, str] = {
+    "dava_evraki": "10 yıl",
+    "icra_evraki": "10 yıl",
+    "muzekkere": "10 yıl",
+    "tebligat": "10 yıl",
+    "gorus_mutalaa": "10 yıl",
+    "fatura": "10 yıl",               # mali belge (5018; denetim süresi)
+    "sikayet": "5 yıl",
+    "ihbar": "5 yıl",
+    "rapor": "5 yıl",
+    "tutanak": "5 yıl",
+    "genelge_talimat_olur": "Süresiz (devamlı)",  # düzenleyici işlem
+    "dilekce": "5 yıl",
+    "basvuru": "5 yıl",
+    "talep": "5 yıl",
+    "bilgi_edinme": "5 yıl",
+    "cimer": "5 yıl",
+    "ust_yazi": "5 yıl",
+    "cevabi_yazi": "5 yıl",
+    "belirsiz": "[DOĞRULA: saklama süresi tür belirsiz]",
+}
+_SAKLAMA_VARSAYILAN = "5 yıl"
+
 # --- Evrak türü → ilgili mevzuat (araştırma §2; üretimde RAG ile zenginleştirilir) ---
 # NOT (CLAUDE.md §1): madde no'ları mevzuat.gov.tr'de DOĞRULANMALI; şüpheli → [DOĞRULA:].
 EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
@@ -153,3 +207,13 @@ def evrak_turu_tr(key: str) -> str:
 
 def birim_tr(key: str) -> str:
     return BIRIM_TR.get(key, key)
+
+
+def sdp_kodu(turu: str) -> str:
+    """Evrak türü → kaba SDP konu kodu (2005/7). Bilinmeyen tür → genel '000'."""
+    return EVRAK_TO_SDP.get(turu, "000")
+
+
+def saklama_suresi(turu: str) -> str:
+    """Evrak türü → tipik saklama (muhafaza) süresi kategorisi."""
+    return EVRAK_TO_SAKLAMA.get(turu, _SAKLAMA_VARSAYILAN)

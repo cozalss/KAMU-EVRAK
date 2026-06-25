@@ -79,6 +79,12 @@ class EvrakState(TypedDict):
     verify_notes: NotRequired[str]
     verify_uyari: NotRequired[list[str]]    # uydurma-veto + format eksik uyarıları
 
+    # --- Yenilikçilik: Arşivleme (SDP 2005/7) metadata (Görev kapsamı + yenilikçilik) ---
+    # arsiv_node SDP konu kodu + saklama süresi + sayı/tarih/konu/birim üretir (additive).
+    # Sözleşme: frontend bununla eşleşir → anahtarlar SABİT (sdp_kodu/saklama_suresi/konu/
+    # sayi/tarih/birim). Şüpheli madde/kod → değer içinde [DOĞRULA: ...] (CLAUDE.md §1).
+    arsiv_metadata: NotRequired[dict[str, Any]]
+
     # --- Görev 2: dur-ve-sor (clarifier) ---
     # Kritik alan eksikse taslak üretmeden kullanıcıdan bilgi istenir (ENV-gated).
     want_stop: NotRequired[bool]            # clarifier "dur-ve-sor" işareti

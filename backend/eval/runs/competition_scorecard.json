@@ -1,38 +1,38 @@
 {
-  "git_sha": "ae25d69",
+  "git_sha": "f639b24",
   "llm_mode": "mock",
   "evrak_turu_sayisi": 19,
   "birim_sayisi": 9,
   "gorev1": {
     "siniflandirma": {
-      "accuracy": 0.5231,
-      "macro_f1": 0.5608,
+      "accuracy": 0.9167,
+      "macro_f1": 0.9187,
       "accuracy_ci95": [
-        0.457,
-        0.589
+        0.872,
+        0.947
       ],
       "abstention_rate": 0.0,
       "by_zorluk": {
-        "kolay": 0.778,
-        "orta": 0.528,
-        "zor": 0.264
+        "kolay": 0.958,
+        "orta": 0.958,
+        "zor": 0.833
       }
     },
     "eksik_bilgi": {
-      "precision": 0.4189,
-      "recall": 0.9896,
-      "f_beta": 0.7777,
+      "precision": 0.5614,
+      "recall": 0.9948,
+      "f_beta": 0.8618,
       "beta": 2.0,
       "recall_ci95": [
-        0.963,
-        0.997
+        0.971,
+        0.999
       ]
     },
     "ozet": {
-      "micro_recall": 0.8359,
-      "macro_recall": 0.8225,
-      "full_cover_rate": 0.5602,
-      "avg_uzunluk": 41.2,
+      "micro_recall": 0.9724,
+      "macro_recall": 0.9684,
+      "full_cover_rate": 0.9259,
+      "avg_uzunluk": 41.6,
       "faithfulness_rate": 1.0,
       "faithfulness_ci95": [
         0.983,
@@ -43,23 +43,23 @@
   },
   "gorev2": {
     "yonlendirme": {
-      "top1": 0.588,
-      "top3": 0.8056,
+      "top1": 0.9306,
+      "top3": 0.9444,
       "top1_ci95": [
-        0.521,
-        0.652
+        0.889,
+        0.957
       ]
     },
     "yazi_taslak": {
       "format_uyumlu_rate": 0.0,
-      "compliance_rate": 0.8981,
-      "yazi_turu_acc": 0.8889,
+      "compliance_rate": 0.838,
+      "yazi_turu_acc": 0.9954,
       "avg_turkish_purity": 1.0,
       "per_component": {
         "tc_baslik": 1.0,
         "sayi": 1.0,
         "konu": 1.0,
-        "ilgi": 0.898,
+        "ilgi": 0.838,
         "imza_bloku": 1.0,
         "kapanis": 1.0
       },

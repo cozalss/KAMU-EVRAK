@@ -35,6 +35,13 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
         satirlar.append("📚 **İlgili mevzuat:** " + "; ".join(m["baslik"] for m in mevzuat[:3]))
     if state.get("ozet"):
         satirlar.append(f"📝 **Özet:** {state['ozet']}")
+    # Arşivleme (SDP 2005/7) — bir satır bilgilendirme (additive; arsiv_node üretti).
+    arsiv = state.get("arsiv_metadata") or {}
+    if arsiv.get("sdp_kodu"):
+        satirlar.append(
+            f"🗄️ **Arşiv (SDP 2005/7):** dosya kodu {arsiv['sdp_kodu']}, "
+            f"saklama süresi {arsiv.get('saklama_suresi', '—')}"
+        )
     if eksik:
         satirlar.append(f"⚠️ **Eksik bilgi ({len(eksik)}):** " + ", ".join(eksik))
         if sorular:

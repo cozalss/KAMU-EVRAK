@@ -329,6 +329,44 @@ function DogrulamaCard({ verify, taslakMd }) {
   );
 }
 
+/* ---------- 8) Arşiv Bilgisi (SDP / saklama planı) ---------- */
+/* Standart Dosya Planı (2005/7) çıktısı: belgenin saklama/arşiv künyesi.
+   result.arsiv_metadata = { sdp_kodu, saklama_suresi, konu, sayi, tarih, birim }.
+   Alan yoksa kart tamamen gizlenir (graceful — backend şeması henüz taşımayabilir). */
+const ARSIV_ROWS = [
+  { key: "sdp_kodu", label: "SDP kodu", mono: true },
+  { key: "saklama_suresi", label: "Saklama süresi" },
+  { key: "sayi", label: "Sayı", mono: true },
+  { key: "tarih", label: "Tarih" },
+  { key: "konu", label: "Konu" },
+  { key: "birim", label: "Birim" },
+];
+
+function ArsivBilgisiCard({ arsiv }) {
+  const a = arsiv || {};
+  const rows = ARSIV_ROWS
+    .filter(({ key }) => a[key] !== undefined && a[key] !== null && a[key] !== "")
+    .map((row) => ({ ...row, value: a[row.key] }));
+  // Hiçbir alan yoksa kartı hiç gösterme.
+  if (rows.length === 0) return null;
+  return (
+    <article className="rc-card rc-arsiv" aria-labelledby="rc-arsiv-h">
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true">🗄️</span>
+        <h3 id="rc-arsiv-h" className="rc-card-title">Arşiv Bilgisi (Standart Dosya Planı)</h3>
+      </header>
+      <dl className="rc-kv">
+        {rows.map(({ key, label, mono, value }) => (
+          <div className="rc-kv-row" key={key}>
+            <dt>{label}</dt>
+            <dd className={mono ? "rc-mono" : undefined}>{String(value)}</dd>
+          </div>
+        ))}
+      </dl>
+    </article>
+  );
+}
+
 /* ---------- üst özet (bilgilendirme) ---------- */
 function BilgilendirmeCard({ text }) {
   if (!text) return null;
@@ -376,6 +414,7 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
         onDownload={onDownload} downloading={downloading} canDownload={canDownload}
       />
       <DogrulamaCard verify={verify} taslakMd={r.yazi_taslak_md} />
+      <ArsivBilgisiCard arsiv={r.arsiv_metadata} />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
       <p className="rc-disclaimer" role="note">
         ⚖️ Bu sistem <strong>karar-destek</strong> amaçlıdır; nihai sorumluluk yetkili personeldedir.
@@ -390,6 +429,6 @@ export default ResultCards;
 // Test/yeniden-kullanım için iç kartlar da export edilir.
 export {
   EvrakTuruCard, CikarilanAlanlarCard, EksikBilgiCard, MevzuatCard,
-  BirimCard, YaziTaslakCard, DogrulamaCard, BilgilendirmeCard,
+  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, BilgilendirmeCard,
   EVRAK_TR, BIRIM_LBL, YAZI_TR,
 };

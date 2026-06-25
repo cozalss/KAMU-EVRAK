@@ -71,6 +71,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         yazi_turu=state.get("yazi_turu", ""),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         bilgilendirme=state.get("bilgilendirme", ""),
+        arsiv_metadata=state.get("arsiv_metadata", {}),
         ocr_engine=ocr_meta.get("ocr_engine"),
         page_count=ocr_meta.get("page_count"),
     )
@@ -127,6 +128,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "ozetle": ("ozet",),
         "route_birim": ("hedef_birim",),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),
+        "arsiv": ("arsiv_metadata",),
         "finalize": (),
     }.get(node, ())
     return {k: slice_.get(k) for k in keys if k in slice_}

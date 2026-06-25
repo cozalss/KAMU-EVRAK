@@ -55,14 +55,26 @@ def _content_scores(text: str) -> dict[str, int]:
 
 
 async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Hedef birimi belirle: config birincil + içerik heuristiği + top-k alternatif."""
+    """Hedef birimi belirle: config birincil + içerik heuristiği + top-k alternatif.
+
+    Skorlama: içerik anahtar-sözcükleri birim adaylarına oy verir; tür kararı (config) ek
+    ağırlık alır. BİLİNEN tür (belirsiz değil) için config OTORİTERDİR (içerik en yüksek
+    skorunu AŞAR) — petisyon türleri (cimer/bilgi_edinme/dilekçe) içerikteki 'sistem/erişim'
+    gibi gürültü sözcüklerine kapılmadan doğru ilk-birime gider. 'belirsiz' türde içerik
+    sürücüdür (tür sinyali yok) → ham içerik skoru kazanır; içerik de yoksa Yazı İşleri.
+    """
     turu = state.get("evrak_turu", "belirsiz")
     text = tr_lower(state.get("evrak_text", "") or "")
     config_hedef = EVRAK_TO_BIRIM.get(turu, _EVRAK)
     scores = _content_scores(text)
 
-    # config sinyalini güçlendir (+1) ki eşit içerik skorunda tür kararı kazansın.
-    scores[config_hedef] = scores.get(config_hedef, 0) + 1
+    # config ağırlığı: bilinen türde içerik en yüksek skorunu AŞACAK kadar (otoriter); belirsiz
+    # türde sadece +1 (içerik eşitliğinde tür kazansın ama güçlü içerik sinyali öne çıkabilsin).
+    if turu != "belirsiz":
+        config_boost = max(scores.values(), default=0) + 1
+    else:
+        config_boost = 1
+    scores[config_hedef] = scores.get(config_hedef, 0) + config_boost
     # Sıralı birimler: skora göre azalan, eşitlikte config'e ve BIRIMLER sırasına göre.
     sirali = sorted(scores, key=lambda b: (-scores[b], 0 if b == config_hedef else 1,
                                            BIRIMLER.index(b) if b in BIRIMLER else 99))

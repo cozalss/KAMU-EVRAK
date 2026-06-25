@@ -48,6 +48,8 @@ class ProcessResponse(BaseModel):
     yazi_turu: str = ""
     yazi_taslak_md: str = ""
     bilgilendirme: str = ""
+    # Yenilikçilik — Arşivleme (SDP 2005/7) metadata (frontend bununla eşleşir).
+    arsiv_metadata: dict = Field(default_factory=dict)
     # OCR meta (dosya yüklendiyse)
     ocr_engine: str | None = None
     page_count: int | None = None

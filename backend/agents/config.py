@@ -12,6 +12,16 @@ from __future__ import annotations
 
 import os
 
+# .env otomatik yükle (LLM_MODE/OPENAI_API_KEY vb.). config her yerde import edilir →
+# env değişkenleri okunmadan ÖNCE .env yüklenmiş olur. find_dotenv cwd'den yukarı yürür
+# (backend/ → proje kökü). python-dotenv yoksa sessizce geç (zorunlu değil).
+try:
+    from dotenv import find_dotenv, load_dotenv
+
+    load_dotenv(find_dotenv(usecwd=True))
+except Exception:  # noqa: BLE001 — .env yükleme best-effort; yoksa os env kullanılır
+    pass
+
 # --- Görev 1: Evrak türü sınıfları (18 + belirsiz) ---
 EVRAK_TURLERI: tuple[str, ...] = (
     "dilekce", "basvuru", "sikayet", "ihbar", "talep", "bilgi_edinme", "cimer",

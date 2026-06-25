@@ -106,6 +106,28 @@ EVRAK_TO_YAZI: dict[str, str] = {
 # --- LLM modu (ADALET ile aynı desen) ---
 LLM_MODE = os.getenv("LLM_MODE", "mock").lower()  # mock | openai | llamacpp
 
+# --- Görev 2: doğrulama (verify) + dur-ve-sor (clarifier) ENV bayrakları ---
+# verify_node grafta her zaman var; KAPATILIRSA no-op passthrough (state bozulmaz).
+VERIFY_ENABLED = os.getenv("VERIFY_ENABLED", "1") == "1"
+# clarifier dur-ve-sor dalı: VARSAYILAN KAPALI → baseline akış (taslak hep üretilir) korunur.
+CLARIFY_STOP_ENABLED = os.getenv("CLARIFY_STOP_ENABLED", "0") == "1"
+
+# Resmî yazı taslağında bulunması beklenen zorunlu bölüm başlıkları (format-compliance).
+# Yön. 2646 / 3071: T.C. başlığı + Sayı + Konu + imza (ad-soyad) blokları.
+YAZI_ZORUNLU_BOLUMLER: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("T.C. başlığı", ("t.c.", "t.c",)),
+    ("Sayı", ("sayı", "sayi")),
+    ("Konu", ("konu",)),
+    ("İmza/Ad-Soyad", ("imza", "arz ederim", "rica ederim", "ad soyad")),
+)
+
+# Dilekçe için 3071 m.4 KRİTİK alanlar — eksikse evrak incelenmez (dur-ve-sor tetikler).
+# NOT: yalnız DETERMİNİSTİK güvenilir tespit edilen alanlar (imza/adres anahtar-sözcükle
+# yakalanır). 'gonderen_ad_soyad' LLM-yapısal alandır; mock modda her dilekçede eksik
+# görünür → kritik kabul edilmez (yanlış-pozitif dur-ve-sor önlenir, clarify_questions'ta
+# zaten istenir). İmza VEYA adres yoksa evrak gerçekten eksik/imzasızdır → dur-ve-sor.
+CLARIFY_KRITIK_ALANLAR: tuple[str, ...] = ("imza", "iletisim_adres")
+
 
 def evrak_turu_tr(key: str) -> str:
     return EVRAK_TURU_TR.get(key, key)

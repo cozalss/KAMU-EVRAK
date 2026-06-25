@@ -1,0 +1,44 @@
+# kamu-evrak — satır-sonu normalizasyonu (CRLF↔LF uyarılarını sustur).
+# Windows + Linux karışık ekip → repoda her zaman LF; checkout'ta OS'a bırak.
+
+# Varsayılan: tüm metin dosyaları otomatik tespit + repoda LF.
+* text=auto eol=lf
+
+# Açık metin türleri (tespit yanılmasın diye netleştir).
+*.py     text eol=lf
+*.js     text eol=lf
+*.jsx    text eol=lf
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.css    text eol=lf
+*.html   text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.toml   text eol=lf
+*.jsonl  text eol=lf
+*.j2     text eol=lf
+*.env    text eol=lf
+
+# Shell script'leri her zaman LF (CRLF → "bad interpreter" hatası).
+*.sh     text eol=lf
+
+# İkili dosyalar — ASLA dönüştürme (diff/normalize devre dışı).
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.webp   binary
+*.tiff   binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary
+*.docx   binary
+*.xlsx   binary
+*.onnx   binary
+*.gguf   binary
+*.safetensors binary
+*.bin    binary
+*.woff   binary
+*.woff2  binary

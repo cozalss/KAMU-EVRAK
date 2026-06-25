@@ -1,0 +1,34 @@
+Standart Dosya Planı Genelgesi
+Başbakanlık Genelgesi 2005/7 / Resmî Gazete 25766 — 24.03.2005 (YÜRÜRLÜKTE)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2005/03/20050325-10.htm
+
+Bu metin kamuya açık genelgenin özetinden derlenmiştir (lafzî tam metin
+değildir). Standart Dosya Planı genelgesi madde yerine kod aralıklarıyla
+düzenlenmiştir; aşağıdaki bölümler docs/01-resmi-yazisma-mevzuati.md
+referansından özetlenmiştir.
+
+Konu — Standart Dosya Planı amacı
+Standart Dosya Planı, kamu kurum ve kuruluşlarında üretilen ve kullanılan
+belgelerin standart bir dosya kodu sistemine göre dosyalanmasını sağlar.
+Belgelerin aranabilirliğini, saklanmasını ve arşivlenmesini kolaylaştırır.
+Yazışmalarda sayı bölümünde Standart Dosya Planı kodu kullanılır.
+
+Bölüm 000-099 — Ortak konular
+000 ile 099 arası kodlar tüm kurum ve kuruluşlarda ortak olan konuları kapsar:
+mevzuat, plan ve program, rapor, kurul ve toplantı gibi genel konular bu
+aralıkta yer alır.
+
+Bölüm 100-599 — Ana hizmet konuları
+100 ile 599 arası kodlar kuruma özgü ana hizmet faaliyetlerini kapsar. Her kurum
+kendi görev alanına göre bu aralıktaki kodları kullanır.
+
+Bölüm 600-999 — Yardımcı, danışma ve denetim konuları
+600 ile 999 arası kodlar yardımcı, danışma ve denetim hizmetlerini kapsar:
+personel, bütçe, mali işler ve hukuk müşavirliği gibi tüm kurumlarda ortak olan
+yardımcı konular bu aralıktadır.
+
+Kod hiyerarşisi ve sayı biçimi
+Dosya kodu hiyerarşisi ana konu üç hane ile başlar, alt konular nokta ve iki
+hane eklenerek detaylandırılır. Örnek: 622, 622.03, 622.03.01. Yazışmalarda
+sayı; DETSİS numarası, Standart Dosya Planı kodu ve kayıt numarasından oluşur.
+Coğrafi ek örneği 724.13.DE, il kodu örneği 622.01.06 (Ankara) şeklindedir.

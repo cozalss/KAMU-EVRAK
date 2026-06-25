@@ -1,0 +1,202 @@
+{
+  "version": 1,
+  "chunk_sayisi": 28,
+  "chunks": [
+    {
+      "mevzuat": "2005-7 standart dosya plani",
+      "kaynak_dosya": "2005-7_standart_dosya_plani.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Standart Dosya Planı Genelgesi\nBaşbakanlık Genelgesi 2005/7 / Resmî Gazete 25766 — 24.03.2005 (YÜRÜRLÜKTE)\nKaynak: https://www.resmigazete.gov.tr/eskiler/2005/03/20050325-10.htm\n\nBu metin kamuya açık genelgenin özetinden derlenmiştir (lafzî tam metin\ndeğildir). Standart Dosya Planı genelgesi madde yerine kod aralıklarıyla\ndüzenlenmiştir; aşağıdaki bölümler docs/01-resmi-yazisma-mevzuati.md\nreferansından özetlenmiştir.\n\nKonu — Standart Dosya Planı amacı\nStandart Dosya Planı, kamu kurum ve kuruluşlarında üretilen ve kullanılan\nbelgelerin standart bir dosya kodu sistemine göre dosyalanmasını sağlar.\nBelgelerin aranabilirliğini, saklanmasını ve arşivlenmesini kolaylaştırır.\nYazışmalarda sayı bölümünde Standart Dosya Planı kodu kullanılır.\n\nBölüm 000-099 — Ortak konular\n000 ile 099 arası kodlar tüm kurum ve kuruluşlarda ortak olan konuları kapsar:\nmevzuat, plan ve program, rapor, kurul ve toplantı gibi genel konular bu\naralıkta yer alır.\n\nBölüm 100-599 — Ana hizmet konuları\n100 ile 599 arası kodlar kuruma özgü ana hizmet faaliyetlerini kapsar. Her kurum\nkendi görev alanına göre bu aralıktaki kodları kullanır.\n\nBölüm 600-999 — Yardımcı, danışma ve denetim konuları\n600 ile 999 arası kodlar yardımcı, danışma ve denetim hizmetlerini kapsar:\npersonel, bütçe, mali işler ve hukuk müşavirliği gibi tüm kurumlarda ortak olan\nyardımcı konular bu aralıktadır.\n\nKod hiyerarşisi ve sayı biçimi\nDosya kodu hiyerarşisi ana konu üç hane ile başlar, alt konular nokta ve iki\nhane eklenerek detaylandırılır. Örnek: 622, 622.03, 622.03.01. Yazışmalarda\nsayı; DETSİS numarası, Standart Dosya Planı kodu ve kayıt numarasından oluşur.\nCoğrafi ek örneği 724.13.DE, il kodu örneği 622.01.06 (Ankara) şeklindedir."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik\nCumhurbaşkanlığı Kararı 2646 / Resmî Gazete 31151 — 10.06.2020 (YÜRÜRLÜKTE)\nKaynak: https://mevzuat.gov.tr/MevzuatMetin/21.5.2646.pdf\n\nBu metin kamuya açık yönetmeliğin madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları docs/01-resmi-yazisma-mevzuati.md\nreferansından alınmıştır."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 10,
+      "madde_tur": "madde",
+      "text": "Madde 10 — Başlık (antet)\nResmî yazının başlığı (antet) sayfanın en üstünde ortalı yer alır. İlk satır\n\"T.C.\" kısaltması, ikinci satır idarenin adı büyük harfle, üçüncü satır birim\nadıdır. Başlık belgenin hangi idareye ait olduğunu gösterir."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 11,
+      "madde_tur": "madde",
+      "text": "Madde 11 — Sayı\nSayı bilgisi başlığın altında sola yazılır. Sayı; DETSİS numarası, Standart\nDosya Planı kodu ve kayıt numarasından oluşur. Örnek: E-45678257-622.03-12345.\nElektronik imzalı belgelerde sayının başına \"E-\" eklenir."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 12,
+      "madde_tur": "madde",
+      "text": "Madde 12 — Tarih\nTarih, belgenin imza veya onay tarihidir. Gün.ay.yıl biçiminde (gg.aa.yyyy)\nyazılır ve sayı bilgisinin hizasında sağda yer alır."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 13,
+      "madde_tur": "madde",
+      "text": "Madde 13 — Konu\nKonu bölümü \"Konu:\" ifadesiyle başlar. Kısa ve açık yazılır, sonuna nokta\nkonmaz ve \"T.C.\" hizasını geçmez. Belgenin ne hakkında olduğunu özetler."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 14,
+      "madde_tur": "madde",
+      "text": "Madde 14 — Muhatap\nMuhatap, yazının gönderildiği makam veya kişidir. Ortada yer alır; idare/makam\nadı ya da \"Sayın\" ifadesiyle birlikte ad ve soyad yazılır."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 15,
+      "madde_tur": "madde",
+      "text": "Madde 15 — İlgi\nİlgi, daha önceki bir belgeye yapılan atıftır. Birden çok ilgi varsa a) b) c)\nşeklinde kronolojik sıralanır; her ilgi tarih ve sayı içerir. Cevabi yazılar\ncevapladıkları yazıyı ilgi (a) olarak gösterir."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 16,
+      "madde_tur": "madde",
+      "text": "Madde 16 — Metin (gövde)\nMetin, ilgi bölümü ile imza arasındaki gövdedir. Giriş, gelişme ve sonuç\nbölümlerinden oluşur. Kapanış ifadesi muhatabın hiyerarşik konumuna göre\nbelirlenir (alt makama \"Rica ederim\", üst veya eş makama \"Arz ederim\")."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 17,
+      "madde_tur": "madde",
+      "text": "Madde 17 — İmza\nİmza, metinden iki ila dört satır sonra sağa ortalı yazılır. Adın ilk harfi\nbüyük, soyadın tamamı büyük harfle yazılır ve altına unvan eklenir. Yetki\ndevri \"Bakan a.\", \"Vali a.\" veya vekâlet \"V.\" ifadeleriyle belirtilir."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 18,
+      "madde_tur": "madde",
+      "text": "Madde 18 — Ek\nEkler imzadan sonra solda gösterilir. \"Ek: 1 adet ...\" biçiminde veya birden\nçok ek için numaralı liste hâlinde yazılır."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 19,
+      "madde_tur": "madde",
+      "text": "Madde 19 — Dağıtım\nDağıtım bölümü \"Gereği:\" ve \"Bilgi:\" alt başlıklarını içerir. Gereği için\ngönderilen muhataplar ile bilgi için gönderilen muhataplar ayrı ayrı yazılır."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 20,
+      "madde_tur": "madde",
+      "text": "Madde 20 — Olur / Onay\nOlur veya onay, metnin sonunda ortalı \"OLUR\" ifadesi, tarih ve onay makamının\nimza bloğu ile gösterilir. Alt makam onayı \"Uygundur/Onay\", üst makam onayı\n\"OLUR\" biçimindedir."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 21,
+      "madde_tur": "madde",
+      "text": "Madde 21 — Paraf\nParaf, belgenin son nüshasında sol altta yer alır; hazırlayan ve kontrol eden\npersoneli gösterir. Elektronik Belge Yönetim Sisteminde (EBYS) elektronik paraf\nzinciri olarak tutulur."
+    },
+    {
+      "mevzuat": "2646 resmi yazisma yonetmeligi",
+      "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
+      "madde_no": 22,
+      "madde_tur": "madde",
+      "text": "Madde 22 — Koordinasyon\nKoordinasyon, imzadan sonra \"Koordinasyon:\" başlığıyla yazılır ve iş birliği\nyapan birimin unvan, ad ve soyad bilgisini içerir."
+    },
+    {
+      "mevzuat": "3071 dilekce hakki kanunu",
+      "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Dilekçe Hakkının Kullanılmasına Dair Kanun\nKanun No: 3071 (YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3071.pdf\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Madde numaraları docs/02-evrak-taksonomi-routing.md\nreferansından alınmıştır."
+    },
+    {
+      "mevzuat": "3071 dilekce hakki kanunu",
+      "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
+      "madde_no": 3,
+      "madde_tur": "madde",
+      "text": "Madde 3 — Dilekçe hakkı\nTürk vatandaşları ve Türkiye'de ikamet eden yabancılar kendileriyle veya kamu\nile ilgili dilek ve şikâyetleri hakkında Türkiye Büyük Millet Meclisine ve\nyetkili makamlara yazı ile başvurma hakkına sahiptir."
+    },
+    {
+      "mevzuat": "3071 dilekce hakki kanunu",
+      "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
+      "madde_no": 4,
+      "madde_tur": "madde",
+      "text": "Madde 4 — Dilekçede bulunması zorunlu şartlar\nYetkili makamlara verilen veya gönderilen dilekçelerde; dilekçe sahibinin adı\nsoyadı ve imzası ile iş veya ikametgâh adresinin bulunması zorunludur. Bu\nunsurlardan biri eksikse dilekçe işleme alınmaz ve incelenmez. Konu ve talebin\naçıkça belirtilmesi gerekir; uygulamada T.C. kimlik numarası ve tarih de aranır."
+    },
+    {
+      "mevzuat": "3071 dilekce hakki kanunu",
+      "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
+      "madde_no": 7,
+      "madde_tur": "madde",
+      "text": "Madde 7 — Dilekçenin incelenmesi ve sonucun bildirilmesi\nTürk vatandaşlarının ve Türkiye'de ikamet eden yabancıların kendileri ve kamu\nile ilgili dilek ve şikâyetleri konusunda yetkili makamlara yaptıkları\nbaşvuruların sonucu veya yapılmakta olan işlemin safahatı dilekçe sahiplerine\nen geç otuz gün içinde gerekçeli olarak yazılı şekilde bildirilir. İşlem\ndevam ediyorsa bu da ayrıca belirtilir."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Bilgi Edinme Hakkı Kanunu\nKanun No: 4982 (YÜRÜRLÜKTE)\nKaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4982&MevzuatTur=1&MevzuatTertip=5\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Süre ve red sebepleri madde numaraları\ndocs/02-evrak-taksonomi-routing.md referansından alınmıştır."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 4,
+      "madde_tur": "madde",
+      "text": "Madde 4 — Bilgi edinme hakkı\nHerkes bilgi edinme hakkına sahiptir. Türkiye'de ikamet eden yabancılar ile\nTürkiye'de faaliyette bulunan yabancı tüzel kişiler, isteyecekleri bilgi\nkendileriyle veya faaliyet alanlarıyla ilgili olmak kaydıyla bu haktan\nyararlanır."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 11,
+      "madde_tur": "madde",
+      "text": "Madde 11 — Bilgi veya belgeye erişim süresi\nKurum ve kuruluşlar, başvuru üzerine istenen bilgi veya belgeye erişimi on beş\niş günü içinde sağlar. İstenen bilgi veya belgenin başvurulan kurum ve kuruluş\niçindeki başka bir birimden sağlanması, başka bir kurum ve kuruluşun görüşünün\nalınması gerektiğinde erişim otuz iş günü içinde sağlanır; bu durumda gecikme\ngerekçesiyle birlikte başvurana yazılı olarak bildirilir."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 16,
+      "madde_tur": "madde",
+      "text": "Madde 16 — Devlet sırrına ilişkin bilgi veya belgeler\nDevlet sırrı olarak gizliliği usulüne uygun olarak belirlenmiş bilgi veya\nbelgeler bilgi edinme hakkı kapsamı dışındadır. Bu nitelikteki başvurular\ngerekçesi belirtilerek reddedilir."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 17,
+      "madde_tur": "madde",
+      "text": "Madde 17 — Ülkenin ekonomik çıkarlarına ilişkin bilgi veya belgeler\nAçıklanması hâlinde ülkenin ekonomik çıkarlarına zarar verecek veya haksız\nrekabet ve kazanca sebep olacak bilgi veya belgeler bilgi edinme hakkı kapsamı\ndışındadır."
+    },
+    {
+      "mevzuat": "4982 bilgi edinme kanunu",
+      "kaynak_dosya": "4982_bilgi_edinme_kanunu.txt",
+      "madde_no": 13,
+      "madde_tur": "madde",
+      "text": "Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı\nBilgi edinme istemi reddedilen başvuru sahibi, red kararının tebliğinden\nitibaren on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz edebilir.\nKurul itirazı otuz iş günü içinde karara bağlar. [DOĞRULA: bu hükmün tam madde no'su 4982'de teyit edilmeli]"
+    },
+    {
+      "mevzuat": "7201 tebligat kanunu",
+      "kaynak_dosya": "7201_tebligat_kanunu.txt",
+      "madde_no": null,
+      "madde_tur": null,
+      "text": "Tebligat Kanunu\nKanun No: 7201 (YÜRÜRLÜKTE)\nKaynak: https://mevzuat.gov.tr/mevzuatmetin/1.3.7201.pdf\n\nBu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir\n(lafzî tam metin değildir). Elektronik tebligat madde numarası\ndocs/02-evrak-taksonomi-routing.md referansından alınmıştır; diğer madde no'lar\nmevzuat.gov.tr'de teyit edilmelidir."
+    },
+    {
+      "mevzuat": "7201 tebligat kanunu",
+      "kaynak_dosya": "7201_tebligat_kanunu.txt",
+      "madde_no": 1,
+      "madde_tur": "madde",
+      "text": "Madde 1 — Tebligatın yapılması\nKazaî merciler, genel ve katma bütçeli daireler, belediyeler, köy hükmî\nşahsiyetleri, barolar ve noterler tarafından yapılacak bütün tebligat bu Kanun\nhükümlerine göre yapılır. Tebligat, tebliğ yapılacak kişiye resmî bir bildirim\nulaştırma işlemidir ve çoğu hâlde hukuki süreleri başlatır.\n\nMadde 7/a — Elektronik tebligat\nTebligata elverişli bir elektronik adres vererek bu adrese tebligat yapılmasını\nisteyen kişiye elektronik yolla tebligat yapılabilir. Anonim, limited ve\nsermayesi paylara bölünmüş komandit şirketlere elektronik yolla tebligat\nyapılması zorunludur. Elektronik yolla tebligat, muhatabın elektronik adresine\nulaştığı tarihi izleyen beşinci günün sonunda yapılmış sayılır."
+    },
+    {
+      "mevzuat": "7201 tebligat kanunu",
+      "kaynak_dosya": "7201_tebligat_kanunu.txt",
+      "madde_no": 21,
+      "madde_tur": "madde",
+      "text": "Madde 21 — Tebliğ imkânsızlığı ve tebellüğden kaçınma\nKendisine tebligat yapılacak kişi adresinde bulunmaz veya tebellüğden kaçınırsa,\ntebliğ memuru tebliğ olunacak evrakı, o yerin muhtar veya ihtiyar heyeti azasından\nbirine veyahut zabıta amir veya memurlarına imza karşılığında teslim eder ve\ndurumu haber kâğıdı ile bildirir. [DOĞRULA: madde no mevzuat.gov.tr'de teyit edilmeli]"
+    }
+  ]
+}

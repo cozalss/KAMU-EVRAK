@@ -266,6 +266,14 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         </div>
       </header>
       <pre className="rc-taslak-pre" tabIndex={0} aria-label="Yazı taslağı önizleme">{taslakMd}</pre>
+      {!canDownload && (
+        // Dosya/OCR yolunda evrak metni client'ta saklanmaz → indirme devre dışı.
+        // Tooltip yeterli değil; jüri ve ekran okuyucu için görünür açıklama.
+        <p className="rc-taslak-dlnote" role="note">
+          ℹ️ İndirme (PDF/DOCX), <strong>örnek evrak</strong> akışında etkindir. Dosya yükleme
+          yolunda taslağı yukarıdan <strong>Kopyala</strong> ile alabilirsiniz.
+        </p>
+      )}
       <p className="rc-taslak-note">
         Bu taslak yalnız ön hazırlıktır; <code>{"{{ }}"}</code> yer tutucuları yetkili birim
         tarafından doldurulmalıdır.
@@ -322,8 +330,9 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload }
       />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
       <p className="rc-disclaimer" role="note">
-        ⚖️ Bu sonuçlar bir <strong>karar destek</strong> çıktısıdır; nihai sınıflandırma, havale ve
-        yazı onayı yetkili kamu görevlisinin sorumluluğundadır. Kişisel veriler maskelenerek işlenmiştir.
+        ⚖️ Bu sistem <strong>karar-destek</strong> amaçlıdır; nihai sorumluluk yetkili personeldedir.
+        Sınıflandırma, havale ve yazı onayı yetkili kamu görevlisi tarafından teyit edilmelidir.
+        🛡️ Kişisel veriler (TCKN, telefon) <strong>maskelenerek</strong> işlenmiştir.
       </p>
     </section>
   );

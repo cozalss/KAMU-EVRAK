@@ -335,6 +335,12 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
 .rc-taslak-pre:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 1px; }
 .rc-taslak-note { margin: .6rem 0 0; font-size: .78rem; color: var(--muted); }
 .rc-taslak-note code { background: var(--surface-2); padding: 0 .25rem; border-radius: 4px; font-family: var(--font-mono); }
+.rc-taslak-dlnote {
+  margin: .7rem 0 0; font-size: .8rem; color: var(--ink-2); line-height: 1.5;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: .55rem .75rem;
+}
+.rc-taslak-dlnote strong { color: var(--ink); }
 
 /* --- bilgilendirme --- */
 .rc-info { background: var(--accent-soft); border-color: #e6d2ab; }

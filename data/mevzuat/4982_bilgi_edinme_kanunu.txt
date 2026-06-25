@@ -1,0 +1,35 @@
+Bilgi Edinme Hakkı Kanunu
+Kanun No: 4982 (YÜRÜRLÜKTE)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4982&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir
+(lafzî tam metin değildir). Süre ve red sebepleri madde numaraları
+docs/02-evrak-taksonomi-routing.md referansından alınmıştır.
+
+Madde 4 — Bilgi edinme hakkı
+Herkes bilgi edinme hakkına sahiptir. Türkiye'de ikamet eden yabancılar ile
+Türkiye'de faaliyette bulunan yabancı tüzel kişiler, isteyecekleri bilgi
+kendileriyle veya faaliyet alanlarıyla ilgili olmak kaydıyla bu haktan
+yararlanır.
+
+Madde 11 — Bilgi veya belgeye erişim süresi
+Kurum ve kuruluşlar, başvuru üzerine istenen bilgi veya belgeye erişimi on beş
+iş günü içinde sağlar. İstenen bilgi veya belgenin başvurulan kurum ve kuruluş
+içindeki başka bir birimden sağlanması, başka bir kurum ve kuruluşun görüşünün
+alınması gerektiğinde erişim otuz iş günü içinde sağlanır; bu durumda gecikme
+gerekçesiyle birlikte başvurana yazılı olarak bildirilir.
+
+Madde 16 — Devlet sırrına ilişkin bilgi veya belgeler
+Devlet sırrı olarak gizliliği usulüne uygun olarak belirlenmiş bilgi veya
+belgeler bilgi edinme hakkı kapsamı dışındadır. Bu nitelikteki başvurular
+gerekçesi belirtilerek reddedilir.
+
+Madde 17 — Ülkenin ekonomik çıkarlarına ilişkin bilgi veya belgeler
+Açıklanması hâlinde ülkenin ekonomik çıkarlarına zarar verecek veya haksız
+rekabet ve kazanca sebep olacak bilgi veya belgeler bilgi edinme hakkı kapsamı
+dışındadır.
+
+Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı
+Bilgi edinme istemi reddedilen başvuru sahibi, red kararının tebliğinden
+itibaren on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz edebilir.
+Kurul itirazı otuz iş günü içinde karara bağlar. [DOĞRULA: bu hükmün tam madde no'su 4982'de teyit edilmeli]

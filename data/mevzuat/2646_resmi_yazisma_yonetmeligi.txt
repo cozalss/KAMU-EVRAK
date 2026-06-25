@@ -1,0 +1,66 @@
+Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik
+Cumhurbaşkanlığı Kararı 2646 / Resmî Gazete 31151 — 10.06.2020 (YÜRÜRLÜKTE)
+Kaynak: https://mevzuat.gov.tr/MevzuatMetin/21.5.2646.pdf
+
+Bu metin kamuya açık yönetmeliğin madde başlıkları ve özetlerinden derlenmiştir
+(lafzî tam metin değildir). Madde numaraları docs/01-resmi-yazisma-mevzuati.md
+referansından alınmıştır.
+
+Madde 10 — Başlık (antet)
+Resmî yazının başlığı (antet) sayfanın en üstünde ortalı yer alır. İlk satır
+"T.C." kısaltması, ikinci satır idarenin adı büyük harfle, üçüncü satır birim
+adıdır. Başlık belgenin hangi idareye ait olduğunu gösterir.
+
+Madde 11 — Sayı
+Sayı bilgisi başlığın altında sola yazılır. Sayı; DETSİS numarası, Standart
+Dosya Planı kodu ve kayıt numarasından oluşur. Örnek: E-45678257-622.03-12345.
+Elektronik imzalı belgelerde sayının başına "E-" eklenir.
+
+Madde 12 — Tarih
+Tarih, belgenin imza veya onay tarihidir. Gün.ay.yıl biçiminde (gg.aa.yyyy)
+yazılır ve sayı bilgisinin hizasında sağda yer alır.
+
+Madde 13 — Konu
+Konu bölümü "Konu:" ifadesiyle başlar. Kısa ve açık yazılır, sonuna nokta
+konmaz ve "T.C." hizasını geçmez. Belgenin ne hakkında olduğunu özetler.
+
+Madde 14 — Muhatap
+Muhatap, yazının gönderildiği makam veya kişidir. Ortada yer alır; idare/makam
+adı ya da "Sayın" ifadesiyle birlikte ad ve soyad yazılır.
+
+Madde 15 — İlgi
+İlgi, daha önceki bir belgeye yapılan atıftır. Birden çok ilgi varsa a) b) c)
+şeklinde kronolojik sıralanır; her ilgi tarih ve sayı içerir. Cevabi yazılar
+cevapladıkları yazıyı ilgi (a) olarak gösterir.
+
+Madde 16 — Metin (gövde)
+Metin, ilgi bölümü ile imza arasındaki gövdedir. Giriş, gelişme ve sonuç
+bölümlerinden oluşur. Kapanış ifadesi muhatabın hiyerarşik konumuna göre
+belirlenir (alt makama "Rica ederim", üst veya eş makama "Arz ederim").
+
+Madde 17 — İmza
+İmza, metinden iki ila dört satır sonra sağa ortalı yazılır. Adın ilk harfi
+büyük, soyadın tamamı büyük harfle yazılır ve altına unvan eklenir. Yetki
+devri "Bakan a.", "Vali a." veya vekâlet "V." ifadeleriyle belirtilir.
+
+Madde 18 — Ek
+Ekler imzadan sonra solda gösterilir. "Ek: 1 adet ..." biçiminde veya birden
+çok ek için numaralı liste hâlinde yazılır.
+
+Madde 19 — Dağıtım
+Dağıtım bölümü "Gereği:" ve "Bilgi:" alt başlıklarını içerir. Gereği için
+gönderilen muhataplar ile bilgi için gönderilen muhataplar ayrı ayrı yazılır.
+
+Madde 20 — Olur / Onay
+Olur veya onay, metnin sonunda ortalı "OLUR" ifadesi, tarih ve onay makamının
+imza bloğu ile gösterilir. Alt makam onayı "Uygundur/Onay", üst makam onayı
+"OLUR" biçimindedir.
+
+Madde 21 — Paraf
+Paraf, belgenin son nüshasında sol altta yer alır; hazırlayan ve kontrol eden
+personeli gösterir. Elektronik Belge Yönetim Sisteminde (EBYS) elektronik paraf
+zinciri olarak tutulur.
+
+Madde 22 — Koordinasyon
+Koordinasyon, imzadan sonra "Koordinasyon:" başlığıyla yazılır ve iş birliği
+yapan birimin unvan, ad ve soyad bilgisini içerir.

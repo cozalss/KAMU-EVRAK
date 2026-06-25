@@ -63,6 +63,12 @@ class EvrakState(TypedDict):
     # --- Doğrulama / kalite ---
     format_uyumlu: NotRequired[bool]        # resmî yazı zorunlu-alan checklist
     verify_notes: NotRequired[str]
+    verify_uyari: NotRequired[list[str]]    # uydurma-veto + format eksik uyarıları
+
+    # --- Görev 2: dur-ve-sor (clarifier) ---
+    # Kritik alan eksikse taslak üretmeden kullanıcıdan bilgi istenir (ENV-gated).
+    want_stop: NotRequired[bool]            # clarifier "dur-ve-sor" işareti
+    clarify_stop: NotRequired[bool]         # akış clarifier'a yönlendirildi mi
 
     # --- Çıkış ---
     response: NotRequired[str]              # kullanıcıya özet bilgilendirme

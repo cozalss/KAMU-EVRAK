@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+uv.lock
+
+# Ortam / gizli
+.env
+*.key
+
+# Node / frontend
+node_modules/
+dist/
+coverage/
+.vite/
+
+# Modeller / veri (büyük dosyalar repoya YÜKLENMEZ — şartname §7: link+sürüm+lisans)
+models/
+*.onnx
+*.gguf
+*.safetensors
+*.bin
+
+# Üretilmiş sentetik veri (yeniden üretilebilir; gold set'ler hariç tutulabilir)
+data/synthetic/*.jsonl
+!data/synthetic/ornek_*.jsonl
+
+# Geçici
+*.log
+.DS_Store
+.idea/
+.vscode/

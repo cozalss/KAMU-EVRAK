@@ -1,0 +1,19 @@
+{# Bilgilendirme yazısı — üst yazı iskeleti; kapanış "Bilgilerinize arz ederim." (Yön. 2646). #}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+
+Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Konu : {{ konu | default("{{ KONU }}") }}
+
+                          {{ muhatap | default("Dağıtım yerlerine") }}
+
+{{ metin | default("{{ BİLGİLENDİRME METNİ }}") }}
+
+         {{ kapanis | default("Bilgilerinize arz ederim.") }}
+
+                                              {{ ad_soyad | default("{{ AD SOYAD }}") }}
+                                              {{ unvan | default("{{ UNVAN }}") }}
+{% if dagitim_bilgi %}
+Dağıtım (Bilgi):{% for d in dagitim_bilgi %} {{ d }};{% endfor %}
+{% endif %}

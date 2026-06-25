@@ -1,0 +1,18 @@
+{# Cevabi yazı — üst yazı iskeleti + İlgi atfı (Yön. 2646 m.15). #}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+
+Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Konu : {{ konu | default("{{ KONU }}") }}
+
+                          {{ muhatap | default("{{ MUHATAP MAKAM }}") }}
+
+İlgi : {{ ilgi_tarih | default("{{ İLGİ TARİH }}") }} tarihli ve {{ ilgi_sayi | default("{{ İLGİ SAYI }}") }} sayılı yazınız.
+
+İlgi yazıda belirtilen konuya ilişkin {{ metin | default("{{ DEĞERLENDİRME / SONUÇ }}") }}.
+
+         {{ kapanis | default("Gereğini rica ederim.") }}
+
+                                              {{ ad_soyad | default("{{ AD SOYAD }}") }}
+                                              {{ unvan | default("{{ UNVAN }}") }}

@@ -1,0 +1,36 @@
+# kamu-evrak yerel geliştirme yığını.
+# Çekirdek iskelet (OCR + pipeline) yalnız `backend` ile çalışır.
+# Mevzuat RAG için qdrant + redis profili: `docker compose --profile rag up`.
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_MODE=${LLM_MODE:-mock}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OCR_ENGINE=${OCR_ENGINE:-rapidocr}
+      - OCR_PROVIDER=${OCR_PROVIDER:-local}
+      - CORS_ORIGINS=http://localhost:5173
+    # RAG kullanılacaksa:
+    #   - QDRANT_URL=http://qdrant:6333
+    #   - REDIS_URL=redis://redis:6379
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    profiles: ["rag"]
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["rag"]
+    ports:
+      - "6379:6379"
+
+volumes:
+  qdrant_data:

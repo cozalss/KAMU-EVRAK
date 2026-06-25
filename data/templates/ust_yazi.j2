@@ -1,0 +1,26 @@
+{# Üst yazı — Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020).
+   Eksik alanlar {{ }} placeholder kalır (CLAUDE.md — uydurma yok). #}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+
+Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Konu : {{ konu | default("{{ KONU }}") }}
+
+                          {{ muhatap | default("{{ MUHATAP MAKAM }}") }}
+
+{{ metin | default("{{ METİN GÖVDESİ }}") }}
+
+         {{ kapanis | default("Gereğini arz ederim.") }}
+
+                                              {{ ad_soyad | default("{{ AD SOYAD }}") }}
+                                              {{ unvan | default("{{ UNVAN }}") }}
+{% if ekler %}
+Ek :
+{% for ek in ekler %}  {{ loop.index }}- {{ ek }}
+{% endfor %}{% endif %}
+{% if dagitim %}
+Dağıtım:
+Gereği:{% for d in dagitim.geregi %} {{ d }};{% endfor %}
+Bilgi:{% for d in dagitim.bilgi %} {{ d }};{% endfor %}
+{% endif %}

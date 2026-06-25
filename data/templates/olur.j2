@@ -1,0 +1,20 @@
+{# Olur / Onay yazısı — makam onayı (Yön. 2646 m.20). Muhatap satırı YOKTUR. #}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+
+Sayı : E-{{ detsis | default("DETSİS") }}-{{ sdp | default("SDP") }}-{{ kayit_no | default("KAYIT") }}        {{ tarih }}
+Konu : {{ konu | default("{{ KONU }}") }}
+
+{{ metin | default("{{ TEKLİF METNİ }}") }}
+
+         Yukarıda arz edilen hususun {{ talep | default("uygun görülmesini") }} olurlarınıza arz ederim.
+
+                                              {{ teklif_eden | default("{{ TEKLİF EDEN }}") }}
+                                              {{ teklif_unvan | default("{{ UNVAN }}") }}
+
+                              OLUR
+                            {{ tarih }}
+
+                                              {{ onay_makami | default("{{ ONAY MAKAMI }}") }}
+                                              {{ onay_unvan | default("{{ ONAY UNVANI }}") }}

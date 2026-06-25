@@ -24,13 +24,18 @@
   (B) /yazi/taslak PDF/DOCX indirme endpoint + frontend buton aktif (TestClient 200 doğrulandı) ✓
   (C) pytest suite: **127 passed, 1 skipped** ✓
   FIX: multimodal/__init__ eager stt/tts import → boot hatası giderildi (`import main` artık OK). commit dbdf22c.
-- **İT-3 sıradaki ÖNCELİKLER:**
-  1. clarifier dur-ve-sor dalı (graph conditional edge: eksik kritik alan → taslak üretmeden soru) + verify/risk_guard node (uydurma kurum/tarih/sayı veto + format-compliance).
-  2. Mevzuat seed: data/mevzuat/*.txt (2646/3071/4982/7201/SDP kamuya açık alıntı) + mevzuat_oner gerçek BM25/retrieval over it (chunker KEEP).
-  3. [Yenilikçilik] ENV-gated SOTA: crag/self_rag node'larını yeni pipeline'a uyarla + ablation (stats.py).
-  4. Frontend: .gitattributes (CRLF sustur), `npm install && npm run build` doğrula, OCR-path indirme fix (stream metni client'a ver), README ekran görüntüsü/GIF.
-  5. KVKK/PII vurgu kartı + her sonuçta disclaimer + demo senaryosu dokümanı (docs/demo-senaryosu.md).
-  AJAN PROMPT NOTU: her zaman MUTLAK yol ver; graph.py'ı tek ajan sahiplensin.
+- **İT-3 (17:17→17:30) BİTTİ:** 3 ajan (mutlak yol; adalet-agent TEMİZ):
+  (A) clarifier dur-ve-sor (ENV CLARIFY_STOP_ENABLED, default kapalı) + verify uydurma-veto/format (VERIFY_ENABLED, additive) ✓ pytest korundu
+  (B) mevzuat seed (5 .txt: 2646/3071/4982/7201/SDP) + seed_mevzuat.py + mevzuat_oner BM25 (dilekçe→3071 m.4 Top-1) +14 test ✓
+  (C) .gitattributes (CRLF fix) + README (özellik/eval/test) + docs/demo-senaryosu.md + frontend KVKK/disclaimer/indirme-notu + **npm build BAŞARILI** ✓
+  Bütünleşik: pytest **141 passed/1 skipped**, app boot (9 node), BM25 korpustan. commit eb69b11.
+- **İT-4 sıradaki ÖNCELİKLER:**
+  1. Frontend topology sync: PIPELINE'a "verify" node ekle (backend PIPELINE_NODES'ta var, frontend'te yok → SSE verify event'i node yakmıyor).
+  2. [Yenilikçilik 15p] ENV-gated SOTA: crag/self_rag node'larını yeni pipeline'a uyarla (ADALET'ten KEEP) + ablation A/B (stats.py McNemar/bootstrap).
+  3. competition_scorecard yeniden üret (verify dahil pipeline) → docs/benchmark commit.
+  4. Playwright MCP ile çalışan app'in ekran görüntüleri → docs/img/ (README placeholder'ları doldur) — app'i çalıştırıp screenshot.
+  5. Mevzuat korpus genişlet + madde [DOĞRULA] kontrolü; (opsiyonel) worktree+uv sync ile CANLI OCR testi.
+  AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil tut.
 
 ---
 

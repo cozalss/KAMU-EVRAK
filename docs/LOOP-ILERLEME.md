@@ -18,13 +18,19 @@
   (D) frontend canlı SVG AgentFlowGraph + 7 sonuç kartı + örnek evraklar ✓ ffd34af
   E2E mock pipeline doğrulandı (dilekçe→CİMER, dava→Hukuk, PDF üretiliyor).
   ⚠️ OLAY: Agent C dosyaları yanlışlıkla adalet-agent'a yazdı (relative path + cwd) → TAŞINDI, adalet-agent baseline'a döndü (TEMİZ).
-- **İT-2 sıradaki ÖNCELİKLER:**
-  1. [HIGH] eval'i GERÇEK pipeline'a bağla: gen_synthetic taksonomisi (itiraz/basvuru_izin/...) ≠ config.py
-     (dilekce/bilgi_edinme/...) → BİRLEŞTİR (config.py grounded kazanır) + eval build_graph().ainvoke çağırsın.
-  2. Görev2: yazı taslağı PDF/DOCX İNDİRME endpoint'i (backend) + frontend buton aktif et.
-  3. pytest test suite (node + pipeline + eval) — henüz YOK.
-  4. clarifier dur-ve-sor dalı (graph conditional edge) + verify/risk_guard node.
-  AJAN PROMPT NOTU: her zaman MUTLAK yol ver (C:\Users\cemmo\Desktop\kamu evrak\...), relative DEĞİL.
+- **İT-2 (16:53→17:13) BİTTİ:** 3 ajan (mutlak yollarla → adalet-agent TEMİZ kaldı):
+  (A) eval GERÇEK pipeline'a bağlandı + taksonomi config.py'de birleşti (mock taban: class macro-F1=0.628,
+      routing Top-1=0.643/Top-3=0.833, eksik recall=0.991, özet key-fact=1.0, fairness=1.0) ✓
+  (B) /yazi/taslak PDF/DOCX indirme endpoint + frontend buton aktif (TestClient 200 doğrulandı) ✓
+  (C) pytest suite: **127 passed, 1 skipped** ✓
+  FIX: multimodal/__init__ eager stt/tts import → boot hatası giderildi (`import main` artık OK). commit dbdf22c.
+- **İT-3 sıradaki ÖNCELİKLER:**
+  1. clarifier dur-ve-sor dalı (graph conditional edge: eksik kritik alan → taslak üretmeden soru) + verify/risk_guard node (uydurma kurum/tarih/sayı veto + format-compliance).
+  2. Mevzuat seed: data/mevzuat/*.txt (2646/3071/4982/7201/SDP kamuya açık alıntı) + mevzuat_oner gerçek BM25/retrieval over it (chunker KEEP).
+  3. [Yenilikçilik] ENV-gated SOTA: crag/self_rag node'larını yeni pipeline'a uyarla + ablation (stats.py).
+  4. Frontend: .gitattributes (CRLF sustur), `npm install && npm run build` doğrula, OCR-path indirme fix (stream metni client'a ver), README ekran görüntüsü/GIF.
+  5. KVKK/PII vurgu kartı + her sonuçta disclaimer + demo senaryosu dokümanı (docs/demo-senaryosu.md).
+  AJAN PROMPT NOTU: her zaman MUTLAK yol ver; graph.py'ı tek ajan sahiplensin.
 
 ---
 

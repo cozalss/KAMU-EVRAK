@@ -17,7 +17,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from agents.config import LLM_MODE
-from api.routes import multimodal, process_doc
+from api.routes import multimodal, process_doc, yazi
 
 log = structlog.get_logger()
 
@@ -49,6 +49,7 @@ app.add_middleware(
 
 app.include_router(process_doc.router)
 app.include_router(multimodal.router)
+app.include_router(yazi.router)
 
 
 @app.get("/health")

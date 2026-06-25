@@ -2,47 +2,62 @@
 
 Şartname §6.4.1 ("evrakın türünü belirleme") + §9 Uygulama ("sınıflandırma doğruluğu").
 
+ÖLÇÜM HEDEFİ (kritik): GERÇEK pipeline (agents/graph.py) koşulur — mock taksonomi
+DEĞİL. Her gold satırının metni `build_graph().ainvoke(make_initial_state(text))`
+ile işlenir; `out['evrak_turu']` (config.EVRAK_TURLERI kapalı-kümesi) gold ile
+karşılaştırılır. LLM_MODE=mock'ta siniflandir_node keyword-heuristik fallback'e
+düşer (gerçek pipeline yine tür üretir) → offline/CI'da deterministik koşar.
+
 Ölçer:
   - accuracy (mikro doğruluk) + %95 Wilson CI (stats.py)
   - macro-F1 (sınıf-dengesiz korpus için adil; stdlib — sklearn opsiyonel)
   - per-class precision/recall/F1
   - confusion (en sık karışan tür çiftleri)
-  - abstention oranı (düşük-güvende 'genel_evrak'a düşme = dürüst belirsizlik)
+  - abstention oranı ('belirsiz' veya düşük güven = dürüst belirsizlik)
 
-Mock modda (LLM yok) gen_synthetic.mock_classify ile koşar → offline/CI. Skor 1.0
-değil, gerçekçi (zor örneklerde örtük metin kaçar) — önemli olan HARNESS çalışsın.
-
-Çalıştır (cd backend): python -m eval.evrak_class_eval
+Çalıştır (PYTHONPATH=...\\backend): python -m eval.evrak_class_eval
 """
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-# scripts/gen_synthetic.py = yarışma domain modeli + mock ajan (ortak kaynak).
-_SCRIPTS = Path(__file__).resolve().parent.parent.parent / "scripts"
-if str(_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS))
-
-import gen_synthetic as gs  # noqa: E402
-
+from agents.config import EVRAK_TURLERI  # noqa: E402
+from agents.graph import build_graph  # noqa: E402
+from agents.state import make_initial_state  # noqa: E402
 from eval.stats import fmt_ci, wilson_interval  # noqa: E402
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "evrak_class_gold.jsonl"
-ABSTAIN_CLASS = "genel_evrak"      # düşük-güvende buraya düşülür (dürüst belirsizlik)
-ABSTAIN_CONF_FLOOR = 0.45          # güven < bu = abstain sayılır (mock_classify ile uyumlu)
+ABSTAIN_CLASS = "belirsiz"     # kapalı-küme abstention etiketi (config)
+ABSTAIN_CONF_FLOOR = 0.45      # güven < bu = abstain sayılır (siniflandir eşiği ile uyumlu)
+ZORLUK = ("kolay", "orta", "zor")
 
 
 def load_gold(path: Path = GOLD) -> list[dict]:
     if not path.exists():
-        raise FileNotFoundError(f"Gold yok: {path} — önce `python ../scripts/gen_synthetic.py` koşun.")
+        raise FileNotFoundError(f"Gold yok: {path} — önce `python scripts/gen_synthetic.py` koşun.")
     return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+
+def run_pipeline(rows: list[dict]) -> None:
+    """GERÇEK LangGraph pipeline'ı her satıra koş → r['pred'], r['conf'] doldur."""
+    graph = build_graph()
+
+    async def _run() -> None:
+        for r in rows:
+            out: dict[str, Any] = await graph.ainvoke(make_initial_state(r["metin"]))
+            r["pred"] = out.get("evrak_turu", ABSTAIN_CLASS)
+            r["conf"] = float(out.get("tur_confidence", 0.0) or 0.0)
+
+    asyncio.run(_run())
 
 
 def macro_f1(rows: list[dict]) -> tuple[float, dict[str, dict]]:
@@ -74,17 +89,14 @@ def confusion_pairs(rows: list[dict], top: int = 6) -> list[tuple[str, str, int]
 
 
 def evaluate(rows: list[dict]) -> dict:
-    """mock_classify ile tahmin et + tüm metrikleri hesapla."""
-    for r in rows:
-        pred, conf = gs.mock_classify(r["metin"])
-        r["pred"], r["conf"] = pred, conf
+    """GERÇEK pipeline ile tahmin et + tüm metrikleri hesapla."""
+    run_pipeline(rows)
     n = len(rows)
     correct = sum(1 for r in rows if r["pred"] == r["evrak_turu"])
     acc = correct / n if n else 0.0
     mf1, per = macro_f1(rows)
     abstain = sum(1 for r in rows if r["conf"] < ABSTAIN_CONF_FLOOR or r["pred"] == ABSTAIN_CLASS)
-    # zorluk kırılımı (jüri: stratifikasyon kanıtı)
-    by_zorluk = {z: {"n": 0, "ok": 0} for z in gs.ZORLUK}
+    by_zorluk = {z: {"n": 0, "ok": 0} for z in ZORLUK}
     for r in rows:
         z = r.get("zorluk", "orta")
         if z in by_zorluk:
@@ -96,6 +108,7 @@ def evaluate(rows: list[dict]) -> dict:
         "accuracy_ci95": [round(lo, 3), round(hi, 3)], "macro_f1": mf1,
         "per_class": per, "abstention_rate": round(abstain / n, 3) if n else 0.0,
         "abstention_count": abstain, "confusion": confusion_pairs(rows),
+        "n_classes": len(EVRAK_TURLERI),
         "by_zorluk": {z: round(v["ok"] / v["n"], 3) if v["n"] else 0.0
                       for z, v in by_zorluk.items()},
     }
@@ -104,20 +117,21 @@ def evaluate(rows: list[dict]) -> dict:
 def main() -> int:
     res = evaluate(load_gold())
     bar = "=" * 66
-    print(f"\n{bar}\n  GÖREV 1 — EVRAK SINIFLANDIRMA (mock, deterministik)\n{bar}")
-    print(f"  Vaka: {res['n']} · doğru: {res['correct']}")
+    print(f"\n{bar}\n  GÖREV 1 — EVRAK SINIFLANDIRMA (GERÇEK pipeline, mock-LLM)\n{bar}")
+    print(f"  Vaka: {res['n']} · doğru: {res['correct']} · kapalı-küme: {res['n_classes']} sınıf")
     print(f"  Accuracy : {res['accuracy']:.3f}  (%95 CI {fmt_ci(res['correct'], res['n'])})")
     print(f"  Macro-F1 : {res['macro_f1']:.3f}")
     print(f"  Abstention: {res['abstention_count']}/{res['n']} "
-          f"({res['abstention_rate']:.0%})  (düşük-güven → genel_evrak)")
+          f"({res['abstention_rate']:.0%})  (belirsiz / düşük-güven)")
     print(f"  Zorluk acc: {res['by_zorluk']}")
     print("\n  En sık karışmalar (gerçek → tahmin):")
     for a, b, k in res["confusion"]:
-        print(f"    {a:18s} → {b:18s} : {k}")
+        print(f"    {a:20s} → {b:20s} : {k}")
     print("\n  En zayıf 5 sınıf (F1):")
-    weak = sorted(res["per_class"].items(), key=lambda kv: kv[1]["f1"])[:5]
+    weak = sorted((kv for kv in res["per_class"].items() if kv[1]["support"] > 0),
+                  key=lambda kv: kv[1]["f1"])[:5]
     for lab, m in weak:
-        print(f"    {lab:18s} P={m['precision']:.2f} R={m['recall']:.2f} "
+        print(f"    {lab:20s} P={m['precision']:.2f} R={m['recall']:.2f} "
               f"F1={m['f1']:.2f} (n={m['support']})")
     return 0
 

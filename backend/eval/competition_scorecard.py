@@ -2,14 +2,17 @@
 
 Şartname §9 Puanlama: "Uygulama (35p) — sınıflandırma doğruluğu, yönlendirme
 başarımı, özetleme ve yazı şablon oluşturma kalitesi, eksik bilgi tespiti" +
-"Yöntem (35p)". Bu modül her iki görevin tüm DETERMİNİSTİK (LLM'siz) metriklerini
-tek koşuda toplar, jüri-hazır Markdown karne üretir → docs/benchmark/scorecard.md
-ve eval/runs/competition_scorecard.json.
+"Yöntem (35p)". Bu modül her iki görevin tüm metriklerini GERÇEK pipeline
+(agents/graph.py) üzerinde tek koşuda toplar, jüri-hazır Markdown karne üretir →
+docs/benchmark/scorecard.md ve eval/runs/competition_scorecard.json.
 
-Gerçek kamu verisi YOK (§6.5) → tüm ölçüm data/synthetic gold üzerinde. Mock ajan
-boru hattı offline koşar (LLM/GPU/ağ gerekmez) → her commit'te CI regresyon kapısı.
+ÖNEMLİ: Skorlar MOCK-LLM tabanıdır (LLM_MODE=mock; siniflandir/route keyword-
+heuristik fallback'i koşar). Bunlar TAVAN değil TABANDIR — gerçek LLM modu (openai/
+llamacpp) bu metrikleri yükseltir. Önemli olan eval'in GERÇEK pipeline'ı ölçmesidir.
 
-Çalıştır (cd backend):
+Gerçek kamu verisi YOK (§6.5) → tüm ölçüm data/synthetic gold üzerinde.
+
+Çalıştır (PYTHONPATH=...\\backend):
     python -m eval.competition_scorecard            # konsol + docs/benchmark/scorecard.md
     python -m eval.competition_scorecard --check     # yalnız konsol (rapor yazma)
 """
@@ -18,6 +21,7 @@ from __future__ import annotations
 
 import contextlib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -27,13 +31,8 @@ with contextlib.suppress(Exception):
 
 _BACKEND = Path(__file__).resolve().parent.parent
 _REPO = _BACKEND.parent
-_SYNTH = _REPO / "data" / "synthetic"
 _DOC_OUT = _REPO / "docs" / "benchmark" / "scorecard.md"
 _JSON_OUT = _BACKEND / "eval" / "runs" / "competition_scorecard.json"
-
-_SCRIPTS = _REPO / "scripts"
-if str(_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS))
 
 
 def _git_sha() -> str:
@@ -46,8 +45,8 @@ def _git_sha() -> str:
 
 
 def build_scorecard() -> dict:
-    """Tüm görev metriklerini koş → tek karne sözlüğü (saf, LLM'siz)."""
-    import gen_synthetic as gs
+    """Tüm görev metriklerini GERÇEK pipeline üzerinde koş → tek karne sözlüğü."""
+    from agents.config import BIRIMLER, EVRAK_TURLERI
 
     from eval import (
         draft_eval, evrak_class_eval, fairness_eval,
@@ -55,7 +54,7 @@ def build_scorecard() -> dict:
     )
 
     cls = evrak_class_eval.evaluate(evrak_class_eval.load_gold())
-    route = routing_eval.evaluate(routing_eval.load_gold(), use_classified=True)
+    route = routing_eval.evaluate(routing_eval.load_gold())
     missing = missing_info_eval.evaluate(missing_info_eval.load_gold())
     summ = summary_eval.evaluate(summary_eval.load_gold())
     draft = draft_eval.evaluate(draft_eval.load_gold())
@@ -63,8 +62,9 @@ def build_scorecard() -> dict:
 
     return {
         "git_sha": _git_sha(),
-        "evrak_turu_sayisi": len(gs.EVRAK_TURLERI),
-        "birim_sayisi": len(gs.BIRIMLER),
+        "llm_mode": os.getenv("LLM_MODE", "mock").lower(),
+        "evrak_turu_sayisi": len(EVRAK_TURLERI),
+        "birim_sayisi": len(BIRIMLER),
         "gorev1": {
             "siniflandirma": {"accuracy": cls["accuracy"], "macro_f1": cls["macro_f1"],
                               "accuracy_ci95": cls["accuracy_ci95"],
@@ -78,8 +78,10 @@ def build_scorecard() -> dict:
         },
         "gorev2": {
             "yonlendirme": {"top1": route["top1_acc"], "top3": route["top3_acc"],
-                            "soft": route["soft_acc"], "top1_ci95": route["top1_ci95"]},
-            "yazi_taslak": {"compliance_rate": draft["compliance_rate"],
+                            "top1_ci95": route["top1_ci95"]},
+            "yazi_taslak": {"format_uyumlu_rate": draft["format_uyumlu_rate"],
+                            "compliance_rate": draft["compliance_rate"],
+                            "yazi_turu_acc": draft["yazi_turu_acc"],
                             "avg_turkish_purity": draft["avg_turkish_purity"],
                             "per_component": draft["per_component"]},
         },
@@ -96,15 +98,22 @@ def build_scorecard() -> dict:
 def render_markdown(sc: dict) -> str:
     g1, g2 = sc["gorev1"], sc["gorev2"]
     s = g1["siniflandirma"]
+    yt = g2["yazi_taslak"]
     lines: list[str] = [
         "# TEKNOFEST 2026 — 1. Senaryo Yarışma Karnesi",
         "",
-        "> Kamu Evrak ve Yazışma Süreçleri · DETERMİNİSTİK (LLM'siz) ölçüm · "
-        "`cd backend && python -m eval.competition_scorecard` ile üretilir "
-        f"(commit `{sc['git_sha']}`).",
+        "> Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · "
+        "`python -m eval.competition_scorecard` ile üretilir "
+        f"(commit `{sc['git_sha']}`, LLM_MODE=`{sc['llm_mode']}`).",
         "",
-        f"Sentetik korpus: **{sc['evrak_turu_sayisi']} evrak türü**, "
-        f"**{sc['birim_sayisi']} birim** (gerçek kamu verisi YOK — şartname §6.5). "
+        "> **Skorlar MOCK tabandır:** LLM_MODE=mock'ta siniflandir/route keyword-heuristik "
+        "fallback'i koşar. Bu metrikler TAVAN değil TABAN — gerçek LLM modu (openai/llamacpp) "
+        "yükseltir. Burada KRİTİK olan, eval'in mock taksonomiyi değil GERÇEK LangGraph "
+        "pipeline'ını (siniflandir→cikar→eksik_tespit→route_birim→ozetle→yazi_taslak) ölçmesidir.",
+        "",
+        f"Kanonik taksonomi: **{sc['evrak_turu_sayisi']} evrak türü** "
+        f"(config.EVRAK_TURLERI; 'belirsiz' abstention dahil), **{sc['birim_sayisi']} birim** "
+        f"(gerçek kamu verisi YOK — şartname §6.5). "
         f"Vaka: sınıflandırma {sc['n']['siniflandirma']} · yönlendirme {sc['n']['yonlendirme']}.",
         "",
         "## Görev 1 — Evrak Sınıflandırma ve İçerik Analizi (§6.4.1)",
@@ -114,9 +123,10 @@ def render_markdown(sc: dict) -> str:
         f"| Sınıflandırma accuracy | **{s['accuracy']:.3f}** | "
         f"[{s['accuracy_ci95'][0]:.3f}, {s['accuracy_ci95'][1]:.3f}] |",
         f"| Sınıflandırma macro-F1 | **{s['macro_f1']:.3f}** | — |",
-        f"| Abstention oranı (dürüst belirsizlik) | {s['abstention_rate']:.0%} | — |",
+        f"| Abstention oranı (belirsiz/düşük-güven) | {s['abstention_rate']:.0%} | — |",
         f"| Eksik-bilgi recall (β=2) | **{g1['eksik_bilgi']['recall']:.3f}** | "
         f"[{g1['eksik_bilgi']['recall_ci95'][0]:.3f}, {g1['eksik_bilgi']['recall_ci95'][1]:.3f}] |",
+        f"| Eksik-bilgi precision | {g1['eksik_bilgi']['precision']:.3f} | — |",
         f"| Eksik-bilgi F-beta | {g1['eksik_bilgi']['f_beta']:.3f} | — |",
         f"| Özet key-fact recall (mikro) | **{g1['ozet']['micro_recall']:.3f}** | — |",
         f"| Özet ort. uzunluk | {g1['ozet']['avg_uzunluk']} kelime | — |",
@@ -131,9 +141,10 @@ def render_markdown(sc: dict) -> str:
         f"| Yönlendirme Top-1 (uçtan-uca) | **{g2['yonlendirme']['top1']:.3f}** | "
         f"[{g2['yonlendirme']['top1_ci95'][0]:.3f}, {g2['yonlendirme']['top1_ci95'][1]:.3f}] |",
         f"| Yönlendirme Top-3 | {g2['yonlendirme']['top3']:.3f} | — |",
-        f"| Yönlendirme soft-match | {g2['yonlendirme']['soft']:.3f} | — |",
-        f"| Yazı taslağı format-uyum | **{g2['yazi_taslak']['compliance_rate']:.3f}** | — |",
-        f"| Yazı Türkçe saflık | {g2['yazi_taslak']['avg_turkish_purity']:.4f} | — |",
+        f"| Pipeline format_uyumlu | {yt['format_uyumlu_rate']:.3f} | — |",
+        f"| Yazı bileşen tam-uyum | **{yt['compliance_rate']:.3f}** | — |",
+        f"| Yazı türü doğruluğu | {yt['yazi_turu_acc']:.3f} | — |",
+        f"| Yazı Türkçe saflık | {yt['avg_turkish_purity']:.4f} | — |",
         "",
         "## Etik §13.1 — Adillik (counterfactual isim/cinsiyet)",
         "",
@@ -145,9 +156,9 @@ def render_markdown(sc: dict) -> str:
         "",
         "---",
         "",
-        "> Bu karne YALNIZ deterministik (kural/regex/eşik-tabanlı) mock-ajan boru hattını "
-        "ölçer — LLM/GPU/ağ gerektirmez, her commit'te CI'da koşabilir. Mock skorları "
-        "tavan DEĞİL taban: gerçek LLM ajanları (üretim modu) bu metrikleri yükseltir. "
+        "> Bu karne GERÇEK LangGraph pipeline'ını ölçer (mock taksonomi değil). "
+        "Mock-LLM modunda deterministik (keyword/regex/eşik) fallback koşar → her commit'te "
+        "CI regresyon kapısı olabilir. **Mock skorlar tavan DEĞİL tabandır.** "
         "Wilson %95 güven aralıkları küçük-N belirsizliğini dürüstçe gösterir.",
         "",
     ]
@@ -157,21 +168,24 @@ def render_markdown(sc: dict) -> str:
 def render_console(sc: dict) -> str:
     g1, g2 = sc["gorev1"], sc["gorev2"]
     s = g1["siniflandirma"]
+    yt = g2["yazi_taslak"]
     bar = "=" * 66
     return "\n".join([
         f"\n{bar}",
-        f"  TEKNOFEST 1. SENARYO KARNESİ  (commit {sc['git_sha']})",
+        f"  TEKNOFEST 1. SENARYO KARNESİ  (commit {sc['git_sha']}, LLM_MODE={sc['llm_mode']})",
+        f"  [GERÇEK pipeline ölçümü — mock skorlar TABAN, tavan değil]",
         bar,
         f"  GÖREV 1 — Sınıflandırma : acc={s['accuracy']:.3f} macroF1={s['macro_f1']:.3f} "
         f"abstain={s['abstention_rate']:.0%}",
         f"           Eksik-bilgi    : recall={g1['eksik_bilgi']['recall']:.3f} "
-        f"Fβ={g1['eksik_bilgi']['f_beta']:.3f}",
+        f"P={g1['eksik_bilgi']['precision']:.3f} Fβ={g1['eksik_bilgi']['f_beta']:.3f}",
         f"           Özet recall    : {g1['ozet']['micro_recall']:.3f} "
         f"(ort {g1['ozet']['avg_uzunluk']} kelime)",
         f"  GÖREV 2 — Yönlendirme   : top1={g2['yonlendirme']['top1']:.3f} "
-        f"top3={g2['yonlendirme']['top3']:.3f} soft={g2['yonlendirme']['soft']:.3f}",
-        f"           Yazı taslağı   : uyum={g2['yazi_taslak']['compliance_rate']:.3f} "
-        f"saflık={g2['yazi_taslak']['avg_turkish_purity']:.4f}",
+        f"top3={g2['yonlendirme']['top3']:.3f}",
+        f"           Yazı taslağı   : fmt_uyum={yt['format_uyumlu_rate']:.3f} "
+        f"bileşen={yt['compliance_rate']:.3f} yazıTür={yt['yazi_turu_acc']:.3f} "
+        f"saflık={yt['avg_turkish_purity']:.4f}",
         f"  ETİK    — Adillik       : sınıf={sc['etik']['class_consistency']:.4f} "
         f"birim={sc['etik']['route_consistency']:.4f}",
         bar,

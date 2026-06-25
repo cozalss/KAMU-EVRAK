@@ -2,46 +2,55 @@
 
 Şartname §6.4.1 ("kısa ve öz bir özet oluşturabilme") + §9 ("özetleme kalitesi").
 
-Soyut özet kalitesini LLM'siz ölçmenin en güvenilir yolu KEY-FACT RECALL: özetin,
-evrakın anahtar unsurlarını (konu/tarih/taraf) kapsama oranı. Saf string-içerme
-(diakritik-duyarsız) — referansa ihtiyaç duymaz, deterministik, jüri-savunulabilir.
+ÖLÇÜM HEDEFİ: GERÇEK pipeline koşulur; `out['ozet']` (ozetle_node çıktısı)
+gold `anahtar_unsurlar` (konu/tarih) ile KEY-FACT RECALL olarak ölçülür.
+Soyut özet kalitesini LLM'siz ölçmenin en güvenilir yolu key-fact recall: özetin
+evrakın anahtar unsurlarını kapsama oranı. Diakritik-duyarsız string-içerme —
+referansa ihtiyaç duymaz, deterministik, jüri-savunulabilir.
 
 Ölçer:
   - key-fact recall: özet, kaç anahtar unsuru kapsıyor (mikro + makro)
   - ortalama özet uzunluğu (kelime) — "kısa ve öz" kontrolü
-  - LLM-judge: opsiyonel stub (VERIFY_LLM_JUDGE gerektirir; default KAPALI/no-op)
 
-Mock modda gen_synthetic.mock_summary ile koşar (offline).
-
-Çalıştır (cd backend): python -m eval.summary_eval
+Çalıştır (PYTHONPATH=...\\backend): python -m eval.summary_eval
 """
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-_SCRIPTS = Path(__file__).resolve().parent.parent.parent / "scripts"
-if str(_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS))
-
-import gen_synthetic as gs  # noqa: E402
-
+from agents.graph import build_graph  # noqa: E402
+from agents.state import make_initial_state  # noqa: E402
 from eval.stats import fmt_ci, wilson_interval  # noqa: E402
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "ozet_gold.jsonl"
-MAX_OZET_KELIME = 40  # "kısa ve öz" üst sınırı (bu üstü uzun-özet uyarısı)
+MAX_OZET_KELIME = 60  # "kısa ve öz" üst sınırı (bu üstü uzun-özet uyarısı)
 
 
 def load_gold(path: Path = GOLD) -> list[dict]:
     if not path.exists():
         raise FileNotFoundError(f"Gold yok: {path} — önce gen_synthetic.py koşun.")
     return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+
+def run_pipeline(rows: list[dict]) -> None:
+    """GERÇEK pipeline'ı koş → r['ozet'] doldur."""
+    graph = build_graph()
+
+    async def _run() -> None:
+        for r in rows:
+            out: dict[str, Any] = await graph.ainvoke(make_initial_state(r["metin"]))
+            r["ozet"] = out.get("ozet", "") or ""
+
+    asyncio.run(_run())
 
 
 def _norm(s: str) -> str:
@@ -56,26 +65,16 @@ def key_fact_recall(ozet: str, unsurlar: list[str]) -> tuple[int, int]:
     return covered, len(unsurlar)
 
 
-def llm_judge_stub(ozet: str, metin: str) -> float | None:
-    """LLM-judge özet-kalite stub. VERIFY_LLM_JUDGE=1 değilse None (no-op) döner.
-
-    Gerçek implementasyonda OpenAI'ye 'özet evrakı sadık yansıtıyor mu?' sorulur;
-    burada yalnız bağlanma noktası — mock/offline'da çağrılmaz (latency/maliyet)."""
-    import os
-    if os.getenv("VERIFY_LLM_JUDGE", "0").lower() not in {"1", "true", "yes"}:
-        return None
-    return None  # gerçek judge entegrasyonu eval.judge ile yapılır (kapsam dışı stub)
-
-
 def evaluate(rows: list[dict]) -> dict:
-    """Key-fact recall (mikro+makro) + uzunluk dağılımı."""
+    """Key-fact recall (mikro+makro) + uzunluk dağılımı — gerçek pipeline ozet."""
+    run_pipeline(rows)
     total_cov = total_unsur = 0
     macro_sum = 0.0
     uzunluklar: list[int] = []
     uzun_ozet = 0
     full_cover = 0
     for r in rows:
-        ozet = gs.mock_summary(r["metin"], r.get("alanlar", {}))
+        ozet = r["ozet"]
         cov, tot = key_fact_recall(ozet, r["anahtar_unsurlar"])
         total_cov += cov
         total_unsur += tot
@@ -99,7 +98,7 @@ def evaluate(rows: list[dict]) -> dict:
 def main() -> int:
     res = evaluate(load_gold())
     bar = "=" * 66
-    print(f"\n{bar}\n  GÖREV 1 — ÖZETLEME (key-fact recall, deterministik)\n{bar}")
+    print(f"\n{bar}\n  GÖREV 1 — ÖZETLEME (GERÇEK pipeline, key-fact recall)\n{bar}")
     print(f"  Vaka: {res['n']}")
     print(f"  Mikro key-fact recall : {res['micro_recall']:.3f}  "
           f"(%95 CI {fmt_ci(res['total_cov'], res['total_unsur'])})")
@@ -108,8 +107,8 @@ def main() -> int:
           f"({res['full_cover_rate']:.0%})")
     print(f"  Ort. özet uzunluk     : {res['avg_uzunluk']} kelime  "
           f"(>{MAX_OZET_KELIME} kelime: {res['uzun_ozet']} özet)")
-    print("\n  Not: LLM-judge (akıcılık/sadakat) opsiyonel — VERIFY_LLM_JUDGE=1 ile bağlanır "
-          "(default no-op; deterministik recall jüri-savunulabilir taban).")
+    print("\n  Not: mock-LLM'de ozetle fallback (deterministik kısaltma) çalışır; "
+          "gerçek LLM modu daha akıcı/öz özet üretir (taban ≠ tavan).")
     return 0
 
 

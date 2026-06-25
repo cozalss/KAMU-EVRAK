@@ -9,6 +9,7 @@ export default defineConfig({
     proxy: {
       "/process_doc": { target: "http://localhost:8000", changeOrigin: true },
       "/multimodal": { target: "http://localhost:8000", changeOrigin: true },
+      "/yazi": { target: "http://localhost:8000", changeOrigin: true },
       "/health": { target: "http://localhost:8000", changeOrigin: true },
     },
   },

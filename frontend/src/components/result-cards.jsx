@@ -216,8 +216,8 @@ function BirimCard({ hedef, alternatifler }) {
   );
 }
 
-/* ---------- 6) Yazı Taslağı (önizleme + kopyala; PDF indir TODO) ---------- */
-function YaziTaslakCard({ yaziTuru, taslakMd, onToast }) {
+/* ---------- 6) Yazı Taslağı (önizleme + kopyala + PDF/DOCX indir) ---------- */
+function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, canDownload }) {
   const [copied, setCopied] = useState(false);
   if (!taslakMd) return null;
 
@@ -232,6 +232,14 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast }) {
     }
   };
 
+  // İndirme yalnız evrak metni eldeyken (örnek metin yolu) etkin; aksi halde
+  // (dosya/OCR yolu) buton devre dışı + açıklayıcı başlık.
+  const busy = !!downloading;
+  const dlTitle = canDownload
+    ? "Taslağı indir"
+    : "İndirme için örnek bir evrak metni seçin (dosya/OCR yolunda metin saklanmıyor)";
+  const dl = (fmt) => () => onDownload?.(fmt);
+
   return (
     <article className="rc-card rc-taslak rc-g2" aria-labelledby="rc-taslak-h">
       <header className="rc-card-head">
@@ -243,13 +251,17 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast }) {
           <button type="button" className="rc-btn" onClick={copy} aria-label="Yazı taslağını kopyala">
             {copied ? "✓ Kopyalandı" : "Kopyala"}
           </button>
-          {/* PDF/DOCX backend yazi/ render endpoint'i gerektirir (henüz route yok) → TODO rozeti */}
           <button
-            type="button" className="rc-btn rc-btn-todo" disabled
-            title="Yakında: backend PDF/DOCX render endpoint'i bağlanacak"
-            aria-label="PDF indir — yakında"
+            type="button" className="rc-btn" onClick={dl("pdf")}
+            disabled={!canDownload || busy} title={dlTitle} aria-label="Taslağı PDF olarak indir"
           >
-            PDF indir <span className="rc-todo">YAKINDA</span>
+            {downloading === "pdf" ? "İndiriliyor…" : "PDF indir"}
+          </button>
+          <button
+            type="button" className="rc-btn" onClick={dl("docx")}
+            disabled={!canDownload || busy} title={dlTitle} aria-label="Taslağı DOCX olarak indir"
+          >
+            {downloading === "docx" ? "İndiriliyor…" : "DOCX indir"}
           </button>
         </div>
       </header>
@@ -292,7 +304,7 @@ function renderInlineBold(text) {
 }
 
 /* ---------- ana bileşen ---------- */
-export function ResultCards({ r, onToast }) {
+export function ResultCards({ r, onToast, onDownload, downloading, canDownload }) {
   if (!r) return null;
   return (
     <section className="rc-grid" aria-label="Evrak işleme sonuçları">
@@ -304,7 +316,10 @@ export function ResultCards({ r, onToast }) {
       <CikarilanAlanlarCard unsurlar={r.bilgi_unsurlari} />
       <EksikBilgiCard eksik={r.eksik_alanlar} sorular={r.clarify_questions} />
       <MevzuatCard oneriler={r.mevzuat_onerileri} />
-      <YaziTaslakCard yaziTuru={r.yazi_turu} taslakMd={r.yazi_taslak_md} onToast={onToast} />
+      <YaziTaslakCard
+        yaziTuru={r.yazi_turu} taslakMd={r.yazi_taslak_md} onToast={onToast}
+        onDownload={onDownload} downloading={downloading} canDownload={canDownload}
+      />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
       <p className="rc-disclaimer" role="note">
         ⚖️ Bu sonuçlar bir <strong>karar destek</strong> çıktısıdır; nihai sınıflandırma, havale ve

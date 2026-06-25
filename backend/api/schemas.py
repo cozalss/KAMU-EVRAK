@@ -19,6 +19,13 @@ class ProcessRequest(BaseModel):
     filename: str = Field("", max_length=255)
 
 
+class YaziTaslakRequest(BaseModel):
+    """Resmî yazı taslağını PDF/DOCX olarak indirme isteği (Görev 2)."""
+
+    evrak_text: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
+    filename: str = Field("", max_length=255)
+
+
 class MevzuatOneriSchema(BaseModel):
     baslik: str
     snippet: str | None = None
@@ -58,4 +65,4 @@ class OCRResponse(BaseModel):
 
 
 __all__ = ("MAX_EVRAK_CHARS", "MevzuatOneriSchema", "OCRResponse",
-           "ProcessRequest", "ProcessResponse")
+           "ProcessRequest", "ProcessResponse", "YaziTaslakRequest")

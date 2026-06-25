@@ -2,16 +2,22 @@
 """Sentetik kamu-evrak veri üreteci — TEKNOFEST 2026 1. Senaryo (Kamu Evrak ve Yazışma).
 
 Yarışma şartnamesi (§6.5): GERÇEK kamu verisi YASAK → tüm evraklar KURGU. Bu modül
-18 evrak türü için şablon-tabanlı sahte resmî evrak üretir, **checksum-geçerli SAHTE
-TCKN** + sahte telefon/adres ekler (CLAUDE.md §2: gerçek PII ASLA), zorluk
-stratifikasyonu (kolay/orta/zor) ve eksik-alan enjeksiyonu uygular.
+KANONİK taksonomi için (agents/config.py — tek kaynak) şablon-tabanlı sahte resmî
+evrak üretir, **checksum-geçerli SAHTE TCKN** + sahte telefon/adres ekler
+(CLAUDE.md §2: gerçek PII ASLA), zorluk stratifikasyonu (kolay/orta/zor) ve
+eksik-alan enjeksiyonu uygular.
 
-Aynı modül evaluation harness'ının ORTAK BİLGİ KAYNAĞIDIR (single source of truth):
-  - 18 evrak türü taksonomisi + birimler + zorunlu alanlar
-  - evrak→birim ve evrak→mevzuat eşlemeleri (Görev 2 yönlendirme/mevzuat önerisi)
-  - DETERMİNİSTİK mock ajan boru hattı (LLM'siz) → eval scriptleri bunu çağırır,
-    offline/CI'da koşar. Gerçek LangGraph pipeline mock-LLM'de evrak türü ÜRETMEZ
-    (8 hukuk-domain'i sınıflar) → bu shim yarışma görevini temsil eder.
+ÖNEMLİ DEĞİŞİKLİK (eval gerçek pipeline'ı ölçmeli):
+  - Bu modülün ESKİ "kendi uydurma taksonomisi" (itiraz/basvuru_izin/...) ve mock
+    ajan boru hattı KALDIRILDI. Artık taksonomi TEK KAYNAKTAN gelir:
+        from agents.config import EVRAK_TURLERI, BIRIMLER, EVRAK_TO_BIRIM,
+                                   ZORUNLU_ALANLAR, EVRAK_TO_YAZI, EVRAK_TO_MEVZUAT
+  - Eval scriptleri ARTIK gerçek LangGraph pipeline'ı (agents/graph.py) koşar; bu
+    modül YALNIZ veri + altın etiket üreticisidir (gold gerçek config türleri/birim
+    key'leri ile etiketlenir).
+  - Gold `eksik_alanlar`, gerçek pipeline'ın MOCK modda (LLM yok) gerçekten tespit
+    edebileceği alanlara göre türetilir (cikar regex/keyword görünürlüğü simüle
+    edilir) → missing_info_eval anlamlı set-P/R ölçer, tavan 1.0'a sahte sabitlenmez.
 
 Çıktı (data/synthetic/):
   evrak_class_gold.jsonl   — Görev 1 sınıflandırma + özet + eksik-alan altın seti
@@ -21,8 +27,8 @@ Aynı modül evaluation harness'ının ORTAK BİLGİ KAYNAĞIDIR (single source 
   eksik_bilgi_gold.jsonl   — eksik-bilgi tespit (set-P/R) altın seti
   e2e_scenarios.jsonl      — uçtan-uca senaryo (her iki görev birlikte)
 
-Çalıştır (cd backend):
-    python ../scripts/gen_synthetic.py [--per-type N] [--seed S] [--out DIR]
+Çalıştır (mutlak yol; PYTHONPATH=...\\backend):
+    python scripts/gen_synthetic.py [--per-type N] [--seed S] [--out DIR]
 """
 
 from __future__ import annotations
@@ -34,156 +40,34 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+# --- Kanonik backend modüllerini import edebilmek için sys.path'e backend ekle ---
+_BACKEND = Path(__file__).resolve().parent.parent / "backend"
+if str(_BACKEND) not in sys.path:
+    sys.path.insert(0, str(_BACKEND))
+
+from agents.config import (  # noqa: E402  (sys.path ayarından sonra import)
+    BIRIMLER,
+    EVRAK_TO_BIRIM,
+    EVRAK_TO_MEVZUAT,
+    EVRAK_TO_YAZI,
+    EVRAK_TURLERI,
+    ZORUNLU_ALANLAR,
+)
+
 # Deterministik tekrar-üretilebilirlik (jüri: aynı tohum = aynı veri).
 DEFAULT_SEED = 20260625
-DEFAULT_PER_TYPE = 7  # tür-başı; 18×7 ≈ 126 sınıf (docs/05 hedefi ~120+)
+DEFAULT_PER_TYPE = 7
 
 ZORLUK = ("kolay", "orta", "zor")
 
-
-# ===========================================================================
-# 1. TAKSONOMİ — 18 evrak türü (kamu yazışma gerçekliği)
-# ===========================================================================
-# Her tür: ana iş süreci. Şartname §6.4.1 "evrakın türünü belirleme".
-EVRAK_TURLERI: tuple[str, ...] = (
-    "dilekce",              # vatandaş dilekçesi
-    "bilgi_edinme",         # 4982 bilgi edinme başvurusu
-    "sikayet",              # şikâyet/ihbar
-    "itiraz",               # idari işleme itiraz
-    "basvuru_izin",         # ruhsat/izin başvurusu
-    "ihale_teklif",         # ihale teklif/itiraz
-    "personel_ozluk",       # atama/izin/özlük talebi
-    "mali_odeme",           # ödeme/harcama/fatura talebi
-    "resmi_yazi_gelen",     # kurumdan gelen üst/cevap yazısı
-    "tebligat",             # tebligat evrakı
-    "mahkeme_karari",       # mahkeme/icra müzekkeresi
-    "saglik_raporu",        # sağlık/heyet raporu talebi
-    "egitim_belge",         # öğrenci belge/transkript talebi
-    "tapu_kadastro",        # tapu/kadastro işlem talebi
-    "cevre_imar",           # çevre/imar/ruhsat şikâyet-başvuru
-    "vergi_borc",           # vergi/borç yapılandırma başvurusu
-    "sosyal_yardim",        # sosyal yardım başvurusu
-    "genel_evrak",          # sınıflandırılamayan / belirsiz (abstention hedefi)
-)
-
-# Birimler — kamu kurumunda evrakın yönlendirileceği daire/müdürlük.
-BIRIMLER: tuple[str, ...] = (
-    "Yazı İşleri Müdürlüğü",
-    "Bilgi İşlem Daire Başkanlığı",
-    "Hukuk Müşavirliği",
-    "İnsan Kaynakları ve Eğitim Daire Başkanlığı",
-    "Mali Hizmetler Müdürlüğü",
-    "İmar ve Şehircilik Müdürlüğü",
-    "Çevre Koruma ve Kontrol Müdürlüğü",
-    "Sağlık İşleri Müdürlüğü",
-    "Sosyal Yardım İşleri Müdürlüğü",
-    "Destek Hizmetleri (İhale) Müdürlüğü",
-    "Tapu ve Kadastro Müdürlüğü",
-    "Vergi Dairesi Müdürlüğü",
-    "Halkla İlişkiler / Bilgi Edinme Birimi",
-    "Eğitim Öğretim Hizmetleri Müdürlüğü",
-)
-
-# evrak türü → birincil + kabul edilebilir birimler (yönlendirme; soft-match).
-# alternatifler = jüri "soft" kabul edebilir (Top-3 + kabul_edilebilir_birimler).
-EVRAK_TO_BIRIM: dict[str, dict[str, object]] = {
-    "dilekce":          {"birim": "Yazı İşleri Müdürlüğü",
-                          "alt": ("Halkla İlişkiler / Bilgi Edinme Birimi", "Hukuk Müşavirliği")},
-    "bilgi_edinme":     {"birim": "Halkla İlişkiler / Bilgi Edinme Birimi",
-                          "alt": ("Yazı İşleri Müdürlüğü", "Hukuk Müşavirliği")},
-    "sikayet":          {"birim": "Hukuk Müşavirliği",
-                          "alt": ("Yazı İşleri Müdürlüğü", "Çevre Koruma ve Kontrol Müdürlüğü")},
-    "itiraz":           {"birim": "Hukuk Müşavirliği",
-                          "alt": ("Yazı İşleri Müdürlüğü", "Mali Hizmetler Müdürlüğü")},
-    "basvuru_izin":     {"birim": "İmar ve Şehircilik Müdürlüğü",
-                          "alt": ("Çevre Koruma ve Kontrol Müdürlüğü", "Yazı İşleri Müdürlüğü")},
-    "ihale_teklif":     {"birim": "Destek Hizmetleri (İhale) Müdürlüğü",
-                          "alt": ("Mali Hizmetler Müdürlüğü", "Hukuk Müşavirliği")},
-    "personel_ozluk":   {"birim": "İnsan Kaynakları ve Eğitim Daire Başkanlığı",
-                          "alt": ("Yazı İşleri Müdürlüğü", "Mali Hizmetler Müdürlüğü")},
-    "mali_odeme":       {"birim": "Mali Hizmetler Müdürlüğü",
-                          "alt": ("Destek Hizmetleri (İhale) Müdürlüğü", "Yazı İşleri Müdürlüğü")},
-    "resmi_yazi_gelen": {"birim": "Yazı İşleri Müdürlüğü",
-                          "alt": ("Hukuk Müşavirliği", "Halkla İlişkiler / Bilgi Edinme Birimi")},
-    "tebligat":         {"birim": "Hukuk Müşavirliği",
-                          "alt": ("Yazı İşleri Müdürlüğü",)},
-    "mahkeme_karari":   {"birim": "Hukuk Müşavirliği",
-                          "alt": ("Yazı İşleri Müdürlüğü",)},
-    "saglik_raporu":    {"birim": "Sağlık İşleri Müdürlüğü",
-                          "alt": ("İnsan Kaynakları ve Eğitim Daire Başkanlığı",)},
-    "egitim_belge":     {"birim": "Eğitim Öğretim Hizmetleri Müdürlüğü",
-                          "alt": ("İnsan Kaynakları ve Eğitim Daire Başkanlığı", "Yazı İşleri Müdürlüğü")},
-    "tapu_kadastro":    {"birim": "Tapu ve Kadastro Müdürlüğü",
-                          "alt": ("İmar ve Şehircilik Müdürlüğü",)},
-    "cevre_imar":       {"birim": "Çevre Koruma ve Kontrol Müdürlüğü",
-                          "alt": ("İmar ve Şehircilik Müdürlüğü", "Hukuk Müşavirliği")},
-    "vergi_borc":       {"birim": "Vergi Dairesi Müdürlüğü",
-                          "alt": ("Mali Hizmetler Müdürlüğü",)},
-    "sosyal_yardim":    {"birim": "Sosyal Yardım İşleri Müdürlüğü",
-                          "alt": ("Yazı İşleri Müdürlüğü",)},
-    "genel_evrak":      {"birim": "Yazı İşleri Müdürlüğü",
-                          "alt": ("Halkla İlişkiler / Bilgi Edinme Birimi",)},
-}
-
-# evrak türü → önerilecek mevzuat (Görev 1: "ilgili mevzuatı önerebilme").
-EVRAK_TO_MEVZUAT: dict[str, tuple[str, ...]] = {
-    "dilekce":          ("3071 sayılı Dilekçe Hakkı Kanunu",),
-    "bilgi_edinme":     ("4982 sayılı Bilgi Edinme Hakkı Kanunu",),
-    "sikayet":          ("3071 sayılı Dilekçe Hakkı Kanunu", "5326 sayılı Kabahatler Kanunu"),
-    "itiraz":           ("2577 sayılı İdari Yargılama Usulü Kanunu",),
-    "basvuru_izin":     ("3194 sayılı İmar Kanunu", "Resmî Yazışmalarda Uygulanacak Usul ve Esaslar"),
-    "ihale_teklif":     ("4734 sayılı Kamu İhale Kanunu", "4735 sayılı Kamu İhale Sözleşmeleri Kanunu"),
-    "personel_ozluk":   ("657 sayılı Devlet Memurları Kanunu",),
-    "mali_odeme":       ("5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu",),
-    "resmi_yazi_gelen": ("Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik",),
-    "tebligat":         ("7201 sayılı Tebligat Kanunu",),
-    "mahkeme_karari":   ("2004 sayılı İcra ve İflas Kanunu", "6100 sayılı Hukuk Muhakemeleri Kanunu"),
-    "saglik_raporu":    ("657 sayılı Devlet Memurları Kanunu", "Kamu Personeli Sağlık Raporları Yönergesi"),
-    "egitim_belge":     ("2547 sayılı Yükseköğretim Kanunu",),
-    "tapu_kadastro":    ("4721 sayılı Türk Medeni Kanunu", "2644 sayılı Tapu Kanunu"),
-    "cevre_imar":       ("2872 sayılı Çevre Kanunu", "3194 sayılı İmar Kanunu"),
-    "vergi_borc":       ("213 sayılı Vergi Usul Kanunu", "6183 sayılı Amme Alacaklarının Tahsil Usulü"),
-    "sosyal_yardim":    ("3294 sayılı Sosyal Yardımlaşma ve Dayanışmayı Teşvik Kanunu",),
-    "genel_evrak":      ("Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik",),
-}
-
-# evrak türü → üretilecek resmî yazı türü (Görev 2: "üst yazı/cevap yazısı/...").
-EVRAK_TO_YAZI: dict[str, str] = {
-    "dilekce": "cevap_yazisi", "bilgi_edinme": "cevap_yazisi", "sikayet": "ust_yazi",
-    "itiraz": "cevap_yazisi", "basvuru_izin": "cevap_yazisi", "ihale_teklif": "ust_yazi",
-    "personel_ozluk": "cevap_yazisi", "mali_odeme": "ust_yazi", "resmi_yazi_gelen": "ust_yazi",
-    "tebligat": "ust_yazi", "mahkeme_karari": "ust_yazi", "saglik_raporu": "bilgilendirme",
-    "egitim_belge": "cevap_yazisi", "tapu_kadastro": "cevap_yazisi", "cevre_imar": "ust_yazi",
-    "vergi_borc": "cevap_yazisi", "sosyal_yardim": "bilgilendirme", "genel_evrak": "ust_yazi",
-}
-
-# evrak türünde BULUNMASI gereken zorunlu alanlar (Görev 1: "eksik bilgileri tespit").
-# Ortak zorunlu alanlar + türe-özel alanlar. Eksik-bilgi eval'i bunu set olarak ölçer.
-ORTAK_ZORUNLU = ("tarih", "ad_soyad", "konu")
-ZORUNLU_ALANLAR: dict[str, tuple[str, ...]] = {
-    "dilekce":          ORTAK_ZORUNLU + ("tckn", "adres", "imza"),
-    "bilgi_edinme":     ORTAK_ZORUNLU + ("tckn", "iletisim", "talep_edilen_bilgi"),
-    "sikayet":          ORTAK_ZORUNLU + ("adres", "sikayet_konusu"),
-    "itiraz":           ORTAK_ZORUNLU + ("tckn", "itiraz_edilen_islem", "evrak_no"),
-    "basvuru_izin":     ORTAK_ZORUNLU + ("tckn", "adres", "ada_parsel"),
-    "ihale_teklif":     ORTAK_ZORUNLU + ("ihale_kayit_no", "teklif_bedeli", "firma_unvani"),
-    "personel_ozluk":   ORTAK_ZORUNLU + ("sicil_no", "talep_turu"),
-    "mali_odeme":       ORTAK_ZORUNLU + ("tutar", "iban", "fatura_no"),
-    "resmi_yazi_gelen": ORTAK_ZORUNLU + ("sayi", "gonderen_kurum"),
-    "tebligat":         ORTAK_ZORUNLU + ("tckn", "adres", "evrak_no"),
-    "mahkeme_karari":   ORTAK_ZORUNLU + ("esas_no", "mahkeme"),
-    "saglik_raporu":    ORTAK_ZORUNLU + ("tckn", "sicil_no"),
-    "egitim_belge":     ORTAK_ZORUNLU + ("ogrenci_no", "talep_turu"),
-    "tapu_kadastro":    ORTAK_ZORUNLU + ("tckn", "ada_parsel", "il_ilce"),
-    "cevre_imar":       ORTAK_ZORUNLU + ("adres", "sikayet_konusu"),
-    "vergi_borc":       ORTAK_ZORUNLU + ("tckn", "vergi_no", "tutar"),
-    "sosyal_yardim":    ORTAK_ZORUNLU + ("tckn", "adres", "iletisim"),
-    "genel_evrak":      ORTAK_ZORUNLU,
-}
+# 'belirsiz' kapalı-küme abstention etiketidir — sentetik veri ÜRETMEYİZ (gold'da
+# karşılığı yok; pipeline düşük-güvende buraya düşer, bu davranış sınıflandırma
+# eval'inde abstention oranı olarak ölçülür). Kalan 18 tür için kurgu üretilir.
+URETILEN_TURLER: tuple[str, ...] = tuple(t for t in EVRAK_TURLERI if t != "belirsiz")
 
 
 # ===========================================================================
-# 2. SAHTE PII — CLAUDE.md §2: gerçek TCKN/telefon/isim ASLA. Hep sahte.
+# 1. SAHTE PII — CLAUDE.md §2: gerçek TCKN/telefon/isim ASLA. Hep sahte.
 # ===========================================================================
 _AD = ("Ayşe", "Mehmet", "Fatma", "Ali", "Zeynep", "Mustafa", "Elif", "Hüseyin",
        "Emine", "Ahmet", "Hatice", "İbrahim", "Meryem", "Hasan", "Şükran", "Cem")
@@ -212,7 +96,7 @@ def fake_tckn(rng: random.Random) -> str:
 
 def fake_phone(rng: random.Random) -> str:
     """Sahte cep telefonu — 05XX formatı, gerçek operatör bloğu değil (rastgele)."""
-    return f"05{rng.randint(30, 59)}-{rng.randint(100, 999)}-{rng.randint(1000, 9999)}"
+    return f"0{rng.randint(530, 559)} {rng.randint(100, 999)} {rng.randint(10, 99)} {rng.randint(10, 99)}"
 
 
 def fake_name(rng: random.Random) -> str:
@@ -229,382 +113,314 @@ def fake_date(rng: random.Random) -> str:
 
 
 def fake_evrak_no(rng: random.Random) -> str:
-    return f"{rng.randint(2026000, 2026999)}-{rng.randint(1, 9999)}"
+    return f"E-{rng.randint(10000000, 99999999)}-{rng.randint(100, 999)}.03-{rng.randint(1000, 9999)}"
 
 
 # ===========================================================================
-# 3. ŞABLON ÜRETİCİLER — türe-özel gövde + zorluk + eksik-alan enjeksiyonu
+# 2. TÜRE-ÖZEL İÇERİK — gövde cümleleri + konular (sınıflandırma sinyali)
 # ===========================================================================
-@dataclass
-class EvrakOrnegi:
-    """Üretilen tek sentetik evrak + altın etiketler."""
-
-    id: str
-    evrak_turu: str
-    zorluk: str
-    metin: str
-    alanlar: dict[str, str]          # üretilen (mevcut) alanlar
-    eksik_alanlar: list[str]         # enjekte edilen eksik zorunlu alanlar
-    anahtar_unsurlar: list[str]      # özet key-fact'ler (summary_eval gold)
-    beklenen_birim: str
-    kabul_edilebilir_birimler: list[str]
-    beklenen_mevzuat: list[str]
-    beklenen_yazi_turu: str
-
-    def to_record(self) -> dict:
-        return {
-            "id": self.id, "evrak_turu": self.evrak_turu, "zorluk": self.zorluk,
-            "metin": self.metin, "alanlar": self.alanlar,
-            "eksik_alanlar": self.eksik_alanlar, "anahtar_unsurlar": self.anahtar_unsurlar,
-            "beklenen_birim": self.beklenen_birim,
-            "kabul_edilebilir_birimler": self.kabul_edilebilir_birimler,
-            "beklenen_mevzuat": self.beklenen_mevzuat,
-            "beklenen_yazi_turu": self.beklenen_yazi_turu,
-        }
-
-
-# Türe-özel açılış/gövde cümleleri — zayıf-keyword ("zor") vs. güçlü-keyword ("kolay").
-# kolay = belirgin tür-imzası; orta = orta; zor = örtük/karışık ifade (sınıflandırma zorlaşır).
+# kolay = belirgin tür-imzası (anahtar sözcük); orta = orta; zor = örtük ifade
+# (heuristik fallback kaçırabilir → gerçekçi düşük skor, abstention sinyali).
 _GOVDE: dict[str, dict[str, str]] = {
     "dilekce": {
-        "kolay": "Aşağıda kimlik bilgileri yazılı dilekçe sahibi olarak, {konu} hakkındaki talebimin değerlendirilmesini arz ederim.",
-        "orta": "Tarafıma ait {konu} konusundaki başvurumun ilgili birimce incelenmesini talep ediyorum.",
+        "kolay": "Bu dilekçe ile {konu} hakkındaki talebimin değerlendirilmesini arz ederim.",
+        "orta": "{konu} konusundaki başvurumun ilgili birimce incelenmesini talep ederim.",
         "zor": "Bahsi geçen mesele ile ilgili gereğinin yapılmasını saygılarımla rica ederim.",
     },
+    "basvuru": {
+        "kolay": "{konu} için gerekli işlemin yapılmasını başvuru ile talep ederim.",
+        "orta": "{konu} işlemi için başvuruda bulunuyorum; gereğini arz ederim.",
+        "zor": "İlgili konuda gerekli onayın tarafıma verilmesini rica ederim.",
+    },
+    "sikayet": {
+        "kolay": "{konu} nedeniyle mağdur olduğumu bildirir, şikâyet konusunun "
+                 "incelenmesini talep ederim.",
+        "orta": "{konu} ile ilgili yaşadığım olumsuzluğu şikâyet ederek bildiririm.",
+        "zor": "Komşu parselde süregelen durumun giderilmesini arz ederim.",
+    },
+    "ihbar": {
+        "kolay": "{konu} hususunu ihbar eder, gerekli denetimin yapılmasını talep ederim.",
+        "orta": "{konu} konusunda usulsüzlük olduğunu bildiririm.",
+        "zor": "Söz konusu durumun ilgili birimce araştırılmasını rica ederim.",
+    },
+    "talep": {
+        "kolay": "{konu} hakkındaki talebimin yerine getirilmesini arz ve talep ederim.",
+        "orta": "{konu} ile ilgili gereğinin yapılmasını talep ederim.",
+        "zor": "İlgili hususta tarafıma gerekli desteğin sağlanmasını rica ederim.",
+    },
     "bilgi_edinme": {
-        "kolay": "4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında {konu} hakkında bilgi/belge talep ediyorum.",
+        "kolay": "4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında {konu} hakkında "
+                 "bilgi/belge talep ederim.",
         "orta": "Kurumunuzdan {konu} konusuna ilişkin bilgi edinmek istiyorum.",
         "zor": "Söz konusu işleme ait kayıtların tarafıma iletilmesini istiyorum.",
     },
-    "sikayet": {
-        "kolay": "{konu} nedeniyle mağdur olduğumu bildirir, gerekli işlemin yapılmasını şikâyeten bildiririm.",
-        "orta": "{konu} ile ilgili yaşadığım olumsuzluğu şikâyet konusu yapıyorum.",
-        "zor": "Komşu parselde süregelen durumun giderilmesini talep ediyorum.",
+    "cimer": {
+        "kolay": "CİMER üzerinden {konu} hakkındaki başvurumun değerlendirilmesini talep ederim.",
+        "orta": "{konu} konulu CİMER başvurum hakkında gereğini arz ederim.",
+        "zor": "İletmiş olduğum talebin sonuçlandırılmasını rica ederim.",
     },
-    "itiraz": {
-        "kolay": "Tarafıma tebliğ edilen {konu} konulu idari işleme süresi içinde itiraz ediyorum.",
-        "orta": "{konu} hakkında tesis edilen işlemin yeniden değerlendirilmesini talep ederim.",
-        "zor": "Söz konusu kararın kaldırılması yönündeki talebimin işleme alınmasını arz ederim.",
+    "ust_yazi": {
+        "kolay": "İlgi'de kayıtlı {konu} konusunda gereği için bilgilerinize sunulur.",
+        "orta": "{konu} konulu yazımız ekte gönderilmiş olup gereğini arz ederim.",
+        "zor": "Söz konusu hususun gereği için tarafınıza iletilmesi uygun görülmüştür.",
     },
-    "basvuru_izin": {
-        "kolay": "{konu} için gerekli ruhsat/iznin tarafıma verilmesini başvuru ile talep ediyorum.",
-        "orta": "{konu} işlemi için başvuruda bulunuyorum.",
-        "zor": "İlgili taşınmazda yapmak istediğim iş için gerekli onayı rica ederim.",
-    },
-    "ihale_teklif": {
-        "kolay": "{konu} ihalesine ilişkin teklifimizi 4734 sayılı Kanun kapsamında sunuyoruz.",
-        "orta": "{konu} alımına ait teklif dosyamız ekte sunulmuştur.",
-        "zor": "Söz konusu alıma yönelik tekliflerimizi bilgilerinize sunarız.",
-    },
-    "personel_ozluk": {
-        "kolay": "657 sayılı Kanun kapsamında {konu} talebimin özlük dosyama işlenmesini arz ederim.",
-        "orta": "{konu} hakkındaki özlük talebimin değerlendirilmesini rica ederim.",
-        "zor": "Durumuma ilişkin gerekli işlemin yapılmasını talep ederim.",
-    },
-    "mali_odeme": {
-        "kolay": "{konu} kapsamında hak edişimin/ödememin ilgili IBAN'a aktarılmasını talep ederim.",
-        "orta": "{konu} için ödeme işleminin gerçekleştirilmesini rica ederim.",
-        "zor": "Alacağımın tarafıma ödenmesi hususunda gereğini arz ederim.",
-    },
-    "resmi_yazi_gelen": {
-        "kolay": "İlgi sayılı yazınıza istinaden {konu} hakkında kurumumuz görüşü aşağıda sunulmuştur.",
-        "orta": "{konu} konulu yazınız incelenmiş olup gereği için bilgilerinize sunulur.",
-        "zor": "İlgide kayıtlı talebe ilişkin değerlendirmemiz ektedir.",
+    "cevabi_yazi": {
+        "kolay": "İlgi sayılı yazınıza istinaden {konu} hakkında kurumumuz görüşü "
+                 "aşağıda sunulmuştur.",
+        "orta": "İlgi yazınızda belirtilen {konu} konusu incelenmiş olup cevabımız ektedir.",
+        "zor": "İlgide kayıtlı talebe ilişkin değerlendirmemiz aşağıda yer almaktadır.",
     },
     "tebligat": {
-        "kolay": "7201 sayılı Tebligat Kanunu uyarınca {konu} hususu tarafınıza tebliğ olunur.",
-        "orta": "{konu} konusu işbu yazı ile tarafınıza bildirilir.",
-        "zor": "Aşağıda belirtilen hususun bilginize sunulması gerekmektedir.",
+        "kolay": "7201 sayılı Tebligat Kanunu uyarınca {konu} hususu tarafınıza "
+                 "tebliğ olunur.",
+        "orta": "{konu} konusu işbu yazı ile tarafınıza tebliğ edilir.",
+        "zor": "Aşağıda belirtilen hususun tarafınıza bildirilmesi gerekmektedir.",
     },
-    "mahkeme_karari": {
-        "kolay": "{konu} esas sayılı dosyaya ilişkin müzekkere gereğinin yerine getirilmesi rica olunur.",
-        "orta": "{konu} hakkındaki mahkeme kararının gereği için yazımız ektedir.",
-        "zor": "İlgili dosya kapsamında gereğinin yapılması talep edilmektedir.",
+    "dava_evraki": {
+        "kolay": "Mahkemenizde görülen {konu} konulu davaya ilişkin dilekçemiz ektedir.",
+        "orta": "{konu} hakkındaki dava dilekçesi gereği için sunulmuştur.",
+        "zor": "İlgili dosya kapsamında duruşma için gereğinin yapılması talep edilir.",
     },
-    "saglik_raporu": {
-        "kolay": "{konu} nedeniyle sağlık kurulu/heyet raporu talebimin işleme alınmasını arz ederim.",
-        "orta": "{konu} için sağlık raporu düzenlenmesini talep ediyorum.",
-        "zor": "Sağlık durumuma ilişkin gerekli belgenin tarafıma verilmesini rica ederim.",
+    "icra_evraki": {
+        "kolay": "{konu} kapsamında haciz işleminin icra dairesince yürütülmesi rica olunur.",
+        "orta": "{konu} konulu icra takibine ilişkin yazımız ektedir.",
+        "zor": "İlgili takip dosyası kapsamında gereğinin yapılması talep edilir.",
     },
-    "egitim_belge": {
-        "kolay": "Öğrencisi olduğum bölümden {konu} (öğrenci belgesi/transkript) talep ediyorum.",
-        "orta": "{konu} belgemin düzenlenmesini rica ederim.",
-        "zor": "Eğitimime ilişkin belgenin tarafıma verilmesini talep ederim.",
+    "muzekkere": {
+        "kolay": "{konu} esas sayılı dosyaya ilişkin müzekkere gereğinin yerine "
+                 "getirilmesi rica olunur.",
+        "orta": "{konu} hakkındaki müzekkerenin gereği için yazımız ektedir.",
+        "zor": "İlgili dosya kapsamında istenen hususun karşılanması rica olunur.",
     },
-    "tapu_kadastro": {
-        "kolay": "Adıma kayıtlı {konu} taşınmaza ilişkin tapu/kadastro işleminin yapılmasını talep ederim.",
-        "orta": "{konu} hakkındaki tapu işlemim için başvuruda bulunuyorum.",
-        "zor": "Söz konusu parsele ilişkin işlemin tamamlanmasını rica ederim.",
+    "fatura": {
+        "kolay": "{konu} kapsamında düzenlenen faturanın ödenmesi için gereğini arz ederim.",
+        "orta": "{konu} bedeline ilişkin fatura ekte sunulmuş olup ödemesi rica olunur.",
+        "zor": "Söz konusu hizmete ait ödeme belgesi tarafınıza iletilmiştir.",
     },
-    "cevre_imar": {
-        "kolay": "{konu} nedeniyle çevre/imar mevzuatına aykırılığın denetlenmesini şikâyetle bildiririm.",
-        "orta": "{konu} ile ilgili imar/çevre durumunun incelenmesini talep ederim.",
-        "zor": "Bölgedeki olumsuz durumun giderilmesi için gereğini arz ederim.",
+    "tutanak": {
+        "kolay": "{konu} hakkında düzenlenen işbu tutanak gereği için sunulmuştur.",
+        "orta": "{konu} konulu tutanağın ilgili işleme esas alınması arz olunur.",
+        "zor": "Söz konusu hususa ilişkin tespit aşağıda kayıt altına alınmıştır.",
     },
-    "vergi_borc": {
-        "kolay": "{konu} borcumun 6183 sayılı Kanun kapsamında yapılandırılmasını talep ediyorum.",
-        "orta": "{konu} hakkındaki vergi borcuma ilişkin başvuruda bulunuyorum.",
-        "zor": "Borç durumuma ilişkin kolaylık sağlanmasını rica ederim.",
+    "rapor": {
+        "kolay": "{konu} hakkında hazırlanan denetim raporu gereği için sunulmuştur.",
+        "orta": "{konu} konulu inceleme raporumuz ekte arz edilmiştir.",
+        "zor": "İlgili konuya ilişkin değerlendirmelerimiz raporda yer almaktadır.",
     },
-    "sosyal_yardim": {
-        "kolay": "Ekonomik durumum nedeniyle {konu} sosyal yardımından faydalanmak için başvuruyorum.",
-        "orta": "{konu} kapsamında sosyal yardım talebimin değerlendirilmesini rica ederim.",
-        "zor": "İhtiyacım olan desteğin tarafıma sağlanmasını talep ederim.",
+    "gorus_mutalaa": {
+        "kolay": "{konu} hakkında hukuki görüş/mütalaa talebimiz gereği için sunulur.",
+        "orta": "{konu} konusunda hukuki görüşünüze ihtiyaç duyulmaktadır.",
+        "zor": "Söz konusu mesele hakkında değerlendirmenizin tarafımıza iletilmesi rica olunur.",
     },
-    "genel_evrak": {
-        "kolay": "Konuya ilişkin gereğinin yapılmasını arz/rica ederim.",
-        "orta": "Bilgilerinize sunulur.",
-        "zor": "Gereği için.",
+    "genelge_talimat_olur": {
+        "kolay": "{konu} hakkında Makam Olur'u alınmak üzere gereği arz olunur.",
+        "orta": "{konu} konulu genelge/talimatın uygulanması için gereğini arz ederim.",
+        "zor": "İlgili hususun uygulamaya konulması için onayınıza arz olunur.",
     },
 }
 
 # Türe-özel "konu" örnekleri (anahtar-unsur + sınıflandırma sinyali kaynağı).
 _KONULAR: dict[str, tuple[str, ...]] = {
-    "dilekce": ("park yeri tahsisi", "yol bakımı", "su faturası itirazı", "kaldırım onarımı"),
+    "dilekce": ("park yeri tahsisi", "yol bakımı", "kaldırım onarımı", "su faturası itirazı"),
+    "basvuru": ("iş yeri açma izni", "tabela ruhsatı", "hafriyat izni", "kayıt yenileme"),
+    "sikayet": ("gürültü kirliliği", "çöp toplama aksaklığı", "park işgali", "imar aykırılığı"),
+    "ihbar": ("kaçak yapı", "usulsüz harcama", "ruhsatsız işyeri", "kamu zararı"),
+    "talep": ("hizmet talebi", "belge talebi", "randevu talebi", "yardım talebi"),
     "bilgi_edinme": ("ihale sözleşme tutarı", "personel atama listesi", "harcama kalemleri"),
-    "sikayet": ("gürültü kirliliği", "kaçak yapı", "çöp toplama aksaklığı", "park işgali"),
-    "itiraz": ("idari para cezası", "ruhsat iptali", "imar uygulaması", "atama işlemi"),
-    "basvuru_izin": ("inşaat ruhsatı", "iş yeri açma izni", "hafriyat izni", "tabela ruhsatı"),
-    "ihale_teklif": ("temizlik hizmeti alımı", "kırtasiye malzemesi", "araç kiralama"),
-    "personel_ozluk": ("yıllık izin", "naklen atama", "derece terfisi", "ücretsiz izin"),
-    "mali_odeme": ("hak ediş ödemesi", "yolluk", "fatura ödemesi", "avans kapatma"),
-    "resmi_yazi_gelen": ("görüş talebi", "bilgi paylaşımı", "ortak protokol"),
-    "tebligat": ("ödeme emri", "yıkım kararı", "ceza tebliği"),
-    "mahkeme_karari": ("haciz müzekkeresi", "tedbir kararı", "bilirkişi talebi"),
-    "saglik_raporu": ("heyet raporu", "istirahat raporu", "engelli sağlık kurulu raporu"),
-    "egitim_belge": ("öğrenci belgesi", "transkript", "diploma örneği"),
-    "tapu_kadastro": ("ifraz işlemi", "tevhit işlemi", "cins tashihi", "tapu tescili"),
-    "cevre_imar": ("kaçak yapı", "izinsiz hafriyat", "ÇED ihlali", "ruhsatsız işyeri"),
-    "vergi_borc": ("emlak vergisi", "MTV borcu", "gecikme zammı", "ÖTV borcu"),
-    "sosyal_yardim": ("yakacak yardımı", "gıda yardımı", "eğitim yardımı", "engelli aylığı"),
-    "genel_evrak": ("muhtelif", "konu belirtilmemiş", "genel talep"),
+    "cimer": ("ulaşım sorunu", "altyapı şikâyeti", "hizmet talebi", "personel tutumu"),
+    "ust_yazi": ("görüş talebi", "bilgi paylaşımı", "ortak protokol", "koordinasyon"),
+    "cevabi_yazi": ("görüş bildirimi", "bilgi yanıtı", "talep değerlendirmesi"),
+    "tebligat": ("ödeme emri", "yıkım kararı", "idari para cezası tebliği"),
+    "dava_evraki": ("tam yargı davası", "iptal davası", "itirazın iptali"),
+    "icra_evraki": ("haciz talebi", "icra takibi", "ödeme emri tebliği"),
+    "muzekkere": ("haciz müzekkeresi", "tedbir kararı", "bilirkişi talebi"),
+    "fatura": ("temizlik hizmeti bedeli", "kırtasiye alımı", "araç kiralama bedeli"),
+    "tutanak": ("tespit tutanağı", "teslim tutanağı", "kaza tutanağı"),
+    "rapor": ("denetim raporu", "inceleme raporu", "faaliyet raporu"),
+    "gorus_mutalaa": ("sözleşme görüşü", "mevzuat yorumu", "hukuki değerlendirme"),
+    "genelge_talimat_olur": ("mesai düzenlemesi", "uygulama talimatı", "harcama oluru"),
 }
 
 
-def _build_alanlar(turu: str, rng: random.Random) -> dict[str, str]:
-    """Türün TÜM zorunlu alanlarını sahte değerlerle doldur (eksik enjeksiyonu öncesi)."""
-    konu = rng.choice(_KONULAR[turu])
-    base: dict[str, str] = {
-        "tarih": fake_date(rng), "ad_soyad": fake_name(rng), "konu": konu,
-        "tckn": fake_tckn(rng), "adres": fake_address(rng), "iletisim": fake_phone(rng),
-        "imza": "İmza", "evrak_no": fake_evrak_no(rng), "sayi": fake_evrak_no(rng),
-        "tutar": f"{rng.randint(1, 250)}.{rng.randint(0, 999):03d} TL",
-        "iban": f"TR{rng.randint(10**23, 10**24 - 1)}"[:26],
-        "fatura_no": f"F-{rng.randint(100000, 999999)}",
-        "ihale_kayit_no": f"2026/{rng.randint(100000, 999999)}",
-        "teklif_bedeli": f"{rng.randint(10, 900)}.000 TL", "firma_unvani": "Örnek Ltd. Şti.",
-        "sicil_no": f"{rng.randint(100000, 999999)}", "ogrenci_no": f"{rng.randint(10**8, 10**9)}",
-        "vergi_no": f"{rng.randint(10**9, 10**10)}", "esas_no": f"2026/{rng.randint(1, 9999)}",
-        "mahkeme": f"{rng.choice(_IL)} {rng.randint(1, 9)}. Asliye Hukuk Mahkemesi",
-        "ada_parsel": f"{rng.randint(100, 9999)} ada {rng.randint(1, 99)} parsel",
-        "il_ilce": f"{rng.choice(_IL)} / Merkez", "gonderen_kurum": f"{rng.choice(_IL)} Valiliği",
-        "talep_turu": konu, "talep_edilen_bilgi": konu, "sikayet_konusu": konu,
-        "itiraz_edilen_islem": konu,
-    }
-    return {k: base[k] for k in ZORUNLU_ALANLAR[turu] if k in base}
+# ===========================================================================
+# 3. ALAN MODELİ — kanonik ZORUNLU_ALANLAR (tek-kaynak; düz tuple)
+# ===========================================================================
+# config.ZORUNLU_ALANLAR (3071 m.4):
+#   gonderen_ad_soyad, tckn_veya_kurum, tarih, konu, talep, iletisim_adres, imza
+# Sentetik metin bu alanları gerçek pipeline'ın MOCK modda görebileceği biçimde
+# render eder (cikar.py regex/keyword görünürlüğü ile uyumlu etiketler).
+# 'gonderen_ad_soyad': mock cikar (LLM yok) gönderen adını regex ile ÇIKARMAZ →
+# bu alan mock modda DAİMA eksik tespit edilir; gold bu davranışı yansıtır.
+
+# Eksik enjeksiyonunda silinebilen alanlar (konu asla silinmez — sınıflandırma
+# çökmesin; gonderen_ad_soyad zaten mock'ta görünmez, ekstra silmeyiz).
+_SILINEBILIR_ALANLAR = ("tarih", "tckn_veya_kurum", "iletisim_adres", "imza")
+
+# Resmî yazı türleri — eksik_tespit_node bunlarda DARALTILMIŞ zorunlu küme
+# kullanır (konu/tarih/imza); gold de aynı kümeyi uygular (pipeline ile birebir).
+_RESMI_YAZI_TURLER = {"ust_yazi", "cevabi_yazi", "muzekkere", "genelge_talimat_olur",
+                      "tebligat", "gorus_mutalaa"}
+_RESMI_YAZI_ZORUNLU = ("konu", "tarih", "imza")
 
 
-def _render_metin(turu: str, zorluk: str, alanlar: dict[str, str], rng: random.Random) -> str:
-    """Resmî evrak metni — başlık + gövde + mevcut alanlar (eksik olanlar yazılmaz)."""
+def _zorunlu_for(turu: str) -> tuple[str, ...]:
+    """Tür-bağımlı zorunlu alan kümesi — eksik_tespit_node._zorunlu_for ile birebir."""
+    if turu in _RESMI_YAZI_TURLER:
+        return _RESMI_YAZI_ZORUNLU
+    return ZORUNLU_ALANLAR
+
+
+@dataclass
+class EvrakOrnegi:
+    """Üretilen tek sentetik evrak + altın etiketler (config taksonomisi)."""
+
+    id: str
+    evrak_turu: str          # config.EVRAK_TURLERI'nden biri (gold etiket)
+    zorluk: str
+    metin: str
+    mevcut_alanlar: list[str]        # metinde GÖRÜNÜR (pipeline tespit edebilir) alanlar
+    eksik_alanlar: list[str]         # zorunlu − görünür (gerçek pipeline beklenen çıktısı)
+    anahtar_unsurlar: list[str]      # özet key-fact'ler (summary_eval gold)
+    beklenen_birim: str              # config.BIRIMLER key (route_birim hedef_birim gold)
+    beklenen_mevzuat: list[str]
+    beklenen_yazi_turu: str          # EVRAK_TO_YAZI gold
+
+    def to_record(self) -> dict:
+        return {
+            "id": self.id, "evrak_turu": self.evrak_turu, "zorluk": self.zorluk,
+            "metin": self.metin, "mevcut_alanlar": self.mevcut_alanlar,
+            "eksik_alanlar": self.eksik_alanlar, "anahtar_unsurlar": self.anahtar_unsurlar,
+            "beklenen_birim": self.beklenen_birim,
+            "beklenen_mevzuat": self.beklenen_mevzuat,
+            "beklenen_yazi_turu": self.beklenen_yazi_turu,
+        }
+
+
+# ===========================================================================
+# 4. METİN RENDER — pipeline-tespit-edilebilir etiketlerle resmî evrak gövdesi
+# ===========================================================================
+def _render_metin(turu: str, zorluk: str, alanlar: dict[str, str],
+                  mevcut: set[str], rng: random.Random) -> str:
+    """Resmî evrak metni — başlık + alan-blokları + gövde.
+
+    Yalnız `mevcut` kümesindeki alanlar metne yazılır (eksik olanlar yazılmaz →
+    pipeline onları eksik tespit eder). Etiketler cikar.py'nin regex/keyword
+    görünürlük varsayımlarıyla uyumludur (Tarih:/Konu:/Adres:/T.C. Kimlik No: ...).
+    """
     konu = alanlar.get("konu", "muhtelif")
     govde = _GOVDE[turu][zorluk].format(konu=konu)
-    lines = [f"T.C. {rng.choice(_IL)} BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞINA", ""]
-    if "tarih" in alanlar:
-        lines.append(f"Tarih: {alanlar['tarih']}")
-    if "sayi" in alanlar:
-        lines.append(f"Sayı: {alanlar['sayi']}")
-    if "konu" in alanlar:
-        lines.append(f"Konu: {alanlar['konu']}")
-    lines += ["", govde, ""]
-    # Kimlik/iletişim bloğu (yalnız mevcut alanlar)
-    for key, label in (("ad_soyad", "Ad-Soyad"), ("tckn", "T.C. Kimlik No"),
-                       ("adres", "Adres"), ("iletisim", "İletişim"), ("imza", "")):
-        if key in alanlar:
-            lines.append(f"{label}: {alanlar[key]}".strip(": ").strip())
+    lines = [f"T.C. {rng.choice(_IL)} VALİLİĞİNE", ""]
+    if "tarih" in mevcut:
+        lines.append(f"Tarih   : {alanlar['tarih']}")
+    lines.append(f"Sayı    : {alanlar['sayi']}")  # sayı her zaman var (resmî evrak)
+    if "konu" in mevcut:
+        lines.append(f"Konu    : {alanlar['konu']}")
+    # Standart resmî kapanış — somut talep/arz ibaresi (cikar._RE_TALEP tespit eder;
+    # gerçek evrak da böyle biter). 'talep' alanı bu sayede DAİMA ground-truth mevcut.
+    lines += ["", govde, "", "Gereğini bilgilerinize arz ederim.", ""]
+    # Kimlik/iletişim bloğu — yalnız mevcut alanlar.
+    if "gonderen_ad_soyad" in mevcut:
+        lines.append(f"Ad-Soyad: {alanlar['gonderen_ad_soyad']}")
+    if "tckn_veya_kurum" in mevcut:
+        lines.append(f"T.C. Kimlik No: {alanlar['tckn_veya_kurum']}")
+    if "iletisim_adres" in mevcut:
+        lines.append(f"Adres   : {alanlar['adres']}")
+        lines.append(f"İletişim: {alanlar['telefon']}")
+    if "imza" in mevcut:
+        lines.append("İmza / e-imza")
     return "\n".join(lines)
 
 
-def _inject_missing(turu: str, alanlar: dict[str, str], zorluk: str,
-                    rng: random.Random) -> tuple[dict[str, str], list[str]]:
-    """Zorluk'a göre zorunlu alan(lar)ı SİL → eksik-bilgi tespiti hedefi.
+def _build_alan_degerleri(turu: str, rng: random.Random) -> dict[str, str]:
+    """Türün tüm olası alanları için sahte değerler (eksik enjeksiyonu öncesi havuz)."""
+    konu = rng.choice(_KONULAR[turu])
+    return {
+        "tarih": fake_date(rng),
+        "konu": konu,
+        "gonderen_ad_soyad": fake_name(rng),
+        "tckn_veya_kurum": fake_tckn(rng),
+        "adres": fake_address(rng),
+        "telefon": fake_phone(rng),
+        "sayi": fake_evrak_no(rng),
+    }
 
-    kolay: %35 ihtimalle 0-1 eksik; orta: 1 eksik; zor: 1-2 eksik. ad_soyad/konu
-    asla silinmez (sınıflandırma çökmesin); 'genel_evrak' eksik enjekte etmez.
+
+def _ground_truth_present(turu: str, rendered_present: set[str]) -> set[str]:
+    """Metinde OBJEKTİF olarak bulunan zorunlu alanlar (ground truth — pipeline'dan bağımsız).
+
+    Gold = insan-doğrulanabilir gerçek; pipeline'ın bu gerçeğe ne kadar yakınsadığı
+    eval'in ÖLÇTÜĞÜ şeydir (mismatch = pipeline'ın gerçek hata oranı, kasıtlı değil).
+    - 'talep': standart kapanış ("Gereğini bilgilerinize arz ederim.") her metinde
+      yazılır → DAİMA ground-truth mevcut.
+    - konu/gonderen_ad_soyad: çekirdek (silinmez) → daima mevcut.
+    - tarih/tckn_veya_kurum/iletisim_adres/imza: yalnız render'a yazıldıysa mevcut.
+
+    NOT: mock pipeline (LLM yok) gönderen adını regex ile ÇIKARAMAZ → gold'da mevcut
+    olsa bile pipeline eksik işaretler. Bu, mock taban için DÜRÜST bir recall açığıdır
+    (gerçek LLM modunda kapanır); eval bunu olduğu gibi raporlar (taban ≠ tavan).
     """
-    if turu == "genel_evrak":
-        return alanlar, []
-    silinebilir = [a for a in ZORUNLU_ALANLAR[turu] if a not in ("ad_soyad", "konu")]
-    if not silinebilir:
-        return alanlar, []
-    n = {"kolay": rng.choice([0, 0, 1]), "orta": 1, "zor": rng.choice([1, 2])}[zorluk]
-    n = min(n, len(silinebilir))
-    eksik = rng.sample(silinebilir, n) if n else []
-    kalan = {k: v for k, v in alanlar.items() if k not in eksik}
-    return kalan, sorted(eksik)
+    present = set(rendered_present)
+    present.add("talep")  # standart kapanış → objektif olarak talep mevcut
+    return present
+
+
+def _inject_missing(turu: str, zorluk: str, rng: random.Random) -> set[str]:
+    """Zorluk'a göre METNE YAZILACAK (mevcut) silinebilir alanları belirle.
+
+    kolay: 0-1 alan eksik; orta: 1; zor: 1-2. konu/talep asla eksiltilmez.
+    Döndürülen küme: metne YAZILACAK silinebilir alanlar (geri kalanı render'dan
+    çıkarılır → pipeline eksik tespit eder).
+    """
+    zorunlu = set(_zorunlu_for(turu))
+    silinebilir = [a for a in _SILINEBILIR_ALANLAR if a in zorunlu]
+    n_eksik = {"kolay": rng.choice([0, 0, 1]), "orta": 1, "zor": rng.choice([1, 2])}[zorluk]
+    n_eksik = min(n_eksik, len(silinebilir))
+    silinecek = set(rng.sample(silinebilir, n_eksik)) if n_eksik else set()
+    return {a for a in silinebilir if a not in silinecek}
 
 
 def make_evrak(turu: str, idx: int, rng: random.Random) -> EvrakOrnegi:
-    """Tek sentetik evrak + altın etiketleri üret."""
+    """Tek sentetik evrak + altın etiketleri (config taksonomisi) üret."""
     zorluk = ZORLUK[idx % 3]
-    full = _build_alanlar(turu, rng)
-    alanlar, eksik = _inject_missing(turu, full, zorluk, rng)
-    metin = _render_metin(turu, zorluk, alanlar, rng)
-    rinfo = EVRAK_TO_BIRIM[turu]
-    # anahtar unsurlar = özetin kapsaması gereken çekirdek bilgiler
-    unsurlar = [full["konu"]]
-    if "tarih" in full:
-        unsurlar.append(full["tarih"])
-    if "ad_soyad" in full:
-        unsurlar.append(full["ad_soyad"].split()[-1])  # soyad
+    degerler = _build_alan_degerleri(turu, rng)
+    zorunlu = set(_zorunlu_for(turu))
+
+    # Daima metne yazılacak çekirdek alanlar (silinmez): konu + gonderen_ad_soyad.
+    # gonderen mock'ta tespit edilmese de metinde bulunsun (gerçek LLM modu için).
+    cekirdek = {a for a in ("konu", "gonderen_ad_soyad") if a in zorunlu}
+    # Silinebilir alanlardan zorluk'a göre yazılacaklar.
+    yazilacak_silinebilir = _inject_missing(turu, zorluk, rng)
+    rendered_present = cekirdek | yazilacak_silinebilir
+
+    metin = _render_metin(turu, zorluk, degerler, rendered_present, rng)
+
+    # Ground truth: metinde objektif bulunan alanlar → eksik = zorunlu − mevcut.
+    mevcut_set = zorunlu & _ground_truth_present(turu, rendered_present)
+    eksik = sorted(zorunlu - mevcut_set)
+    mevcut = sorted(mevcut_set)
+
+    # Anahtar unsurlar = özetin kapsaması gereken çekirdek bilgiler.
+    unsurlar = [degerler["konu"]]
+    if "tarih" in rendered_present:
+        unsurlar.append(degerler["tarih"])
+
     return EvrakOrnegi(
         id=f"{turu}_{idx:03d}", evrak_turu=turu, zorluk=zorluk, metin=metin,
-        alanlar=alanlar, eksik_alanlar=eksik, anahtar_unsurlar=unsurlar,
-        beklenen_birim=str(rinfo["birim"]),
-        kabul_edilebilir_birimler=[str(rinfo["birim"]), *rinfo["alt"]],  # type: ignore[misc]
-        beklenen_mevzuat=list(EVRAK_TO_MEVZUAT[turu]),
-        beklenen_yazi_turu=EVRAK_TO_YAZI[turu],
+        mevcut_alanlar=mevcut, eksik_alanlar=eksik, anahtar_unsurlar=unsurlar,
+        beklenen_birim=EVRAK_TO_BIRIM[turu],
+        beklenen_mevzuat=list(EVRAK_TO_MEVZUAT.get(turu, [])),
+        beklenen_yazi_turu=EVRAK_TO_YAZI.get(turu, "cevabi_yazi"),
     )
 
 
 def generate(per_type: int, seed: int) -> list[EvrakOrnegi]:
-    """18 tür × per_type → stratifiye sentetik evrak listesi (deterministik)."""
+    """18 üretilen tür × per_type → stratifiye sentetik evrak listesi (deterministik)."""
     rng = random.Random(seed)
     out: list[EvrakOrnegi] = []
-    for turu in EVRAK_TURLERI:
+    for turu in URETILEN_TURLER:
         for i in range(per_type):
             out.append(make_evrak(turu, i, rng))
     return out
-
-
-# ===========================================================================
-# 4. DETERMİNİSTİK MOCK AJAN BORU HATTI (LLM'siz) — eval scriptleri çağırır
-# ===========================================================================
-# Gerçek LangGraph mock-LLM'de evrak türü üretmez (8 hukuk-domain sınıflar). Bu shim
-# yarışmanın Görev 1+2 ajan davranışını TEMSİL eder ve offline koşar. Kontrollü
-# gürültü ("zor" örneklerde) → mock metrikleri 1.0 değil gerçekçi düşük çıkar
-# (önemli olan HARNESS çalışsın + ablation/CI regresyon kapısı kurulsun).
-
-# Sınıflandırma için tür-imza anahtar kelimeleri (zorluk arttıkça örtük → kaçar).
-_TUR_SINYAL: dict[str, tuple[str, ...]] = {
-    "bilgi_edinme": ("bilgi edinme", "4982", "bilgi/belge talep"),
-    "ihale_teklif": ("ihale", "teklif", "4734"),
-    "tebligat": ("tebligat", "7201", "tebliğ olunur"),
-    "mahkeme_karari": ("müzekkere", "esas sayılı", "mahkeme kararı", "haciz"),
-    "saglik_raporu": ("sağlık", "heyet raporu", "istirahat"),
-    "egitim_belge": ("öğrenci", "transkript", "diploma"),
-    "tapu_kadastro": ("tapu", "kadastro", "parsel", "ifraz", "tevhit"),
-    "cevre_imar": ("çevre", "imar", "kaçak yapı", "hafriyat", "ÇED"),
-    "vergi_borc": ("vergi", "6183", "yapılandır", "borc"),
-    "sosyal_yardim": ("sosyal yardım", "yakacak", "gıda yardımı"),
-    "itiraz": ("itiraz", "yeniden değerlendir", "kaldırılması"),
-    "sikayet": ("şikâyet", "mağdur", "aykırılık"),
-    "basvuru_izin": ("ruhsat", "izin", "başvuru"),
-    "personel_ozluk": ("özlük", "657", "izin talebi", "terfi", "naklen"),
-    "mali_odeme": ("ödeme", "hak ediş", "IBAN", "alacağ"),
-    "resmi_yazi_gelen": ("ilgi sayılı", "kurumumuz görüşü", "yazınız"),
-    "dilekce": ("dilekçe", "arz ederim", "rica ederim"),
-}
-
-
-def mock_classify(metin: str) -> tuple[str, float]:
-    """Anahtar-kelime oylaması ile evrak türü tahmini + güven (deterministik).
-
-    Eşleşme yoksa 'genel_evrak' + düşük güven (abstention sinyali). Güven, eşleşen
-    sinyal sayısına göre [0.4, 0.95]. 'zor' örneklerde örtük metin → çoğu sinyal
-    yok → düşük güven / yanlış sınıf (gerçekçi mock hatası).
-    """
-    low = metin.lower().replace("i̇", "i")
-    skor: dict[str, int] = {}
-    for turu, sinyaller in _TUR_SINYAL.items():
-        hit = sum(1 for s in sinyaller if s.lower() in low)
-        if hit:
-            skor[turu] = hit
-    if not skor:
-        return "genel_evrak", 0.40
-    best = max(skor, key=lambda k: skor[k])
-    conf = min(0.95, 0.55 + 0.13 * skor[best])
-    return best, round(conf, 3)
-
-
-def mock_extract_fields(metin: str, turu: str) -> set[str]:
-    """Metinde GERÇEKTEN geçen zorunlu alanları tespit et (etiket-tabanlı regex-light)."""
-    label_map = {
-        "tarih": "tarih:", "ad_soyad": "ad-soyad:", "tckn": "kimlik no:",
-        "adres": "adres:", "iletisim": "iletişim:", "konu": "konu:", "sayi": "sayı:",
-    }
-    low = metin.lower().replace("i̇", "i")
-    bulunan = {a for a, lab in label_map.items() if lab in low}
-    # imza her zaman gövdede ima edilir; gövdedeki "arz/rica ederim" varsa imza var say.
-    if "ederim" in low or "olunur" in low:
-        bulunan.add("imza")
-    return bulunan
-
-
-def mock_missing_fields(metin: str, turu: str) -> list[str]:
-    """Eksik zorunlu alanları çıkar — zorunlu küme − tespit edilen küme.
-
-    Etiketle tespit edilemeyen ama gövdede 'görünmeyen' türe-özel alanları da
-    eksik sayar (recall-öncelikli: eksik olanı kaçırma > fazla işaretleme)."""
-    zorunlu = set(ZORUNLU_ALANLAR[turu])
-    bulunan = mock_extract_fields(metin, turu)
-    low = metin.lower().replace("i̇", "i")
-    # türe-özel alanların metinde görünür olup olmadığını kaba kontrol
-    icerik_alanlari = {"talep_turu", "talep_edilen_bilgi", "sikayet_konusu",
-                       "itiraz_edilen_islem", "ada_parsel", "tutar", "evrak_no",
-                       "esas_no", "mahkeme", "sicil_no", "ogrenci_no", "vergi_no",
-                       "iban", "fatura_no", "ihale_kayit_no", "teklif_bedeli",
-                       "firma_unvani", "il_ilce", "gonderen_kurum"}
-    for a in zorunlu & icerik_alanlari:
-        # konu/gövdede ima ediliyorsa bulundu say (kaba): aksi halde eksik aday
-        if a in ("talep_turu", "talep_edilen_bilgi", "sikayet_konusu", "itiraz_edilen_islem"):
-            bulunan.add(a)  # gövde konuyu içerir → ima
-    return sorted(zorunlu - bulunan)
-
-
-def mock_route(turu: str) -> tuple[str, list[str]]:
-    """Tür → birim yönlendirme (Top-1 + alternatifler). genel_evrak default Yazı İşleri."""
-    info = EVRAK_TO_BIRIM.get(turu, EVRAK_TO_BIRIM["genel_evrak"])
-    return str(info["birim"]), [str(info["birim"]), *info["alt"]]  # type: ignore[misc]
-
-
-def mock_summary(metin: str, alanlar: dict) -> str:
-    """Kısa öz — konu + tarih + ad (anahtar unsurları kapsayan, key-fact recall hedefi)."""
-    parts = []
-    if alanlar.get("konu"):
-        parts.append(f"{alanlar['konu']} konulu evrak")
-    if alanlar.get("tarih"):
-        parts.append(f"{alanlar['tarih']} tarihli")
-    if alanlar.get("ad_soyad"):
-        parts.append(f"{alanlar['ad_soyad']} tarafından")
-    return " ".join(parts) + " işleme alınmıştır." if parts else "Özet üretilemedi."
-
-
-# Resmî yazı taslağı zorunlu format bileşenleri (draft_eval format-compliance).
-YAZI_ZORUNLU_BILESENLER = ("T.C.", "Sayı", "Konu", "İlgi", "imza_bloku", "ek_satiri")
-
-
-def mock_draft(turu: str, alanlar: dict, rng_seed: int = 0) -> str:
-    """Resmî yazı taslağı (üst yazı/cevap) — YAZI_ZORUNLU_BILESENLER'i içerir."""
-    konu = alanlar.get("konu", "ilgili konu")
-    birim, _ = mock_route(turu)
-    return "\n".join([
-        "T.C.",
-        f"{birim.upper()}",
-        "",
-        f"Sayı   : {alanlar.get('sayi', alanlar.get('evrak_no', '____'))}",
-        f"Konu   : {konu}",
-        f"İlgi   : {alanlar.get('tarih', '____')} tarihli başvurunuz.",
-        "",
-        f"İlgi'de kayıtlı {konu} konulu talebiniz incelenmiş olup gereği "
-        "Müdürlüğümüzce değerlendirilmektedir. Sürecin sonucu hakkında "
-        "tarafınıza bilgi verilecektir.",
-        "",
-        "Bilgilerinize rica ederim.",
-        "",
-        "(e-imza)",
-        "Daire Başkanı",
-        "EK: İlgili evrak (1 sayfa)",
-    ])
 
 
 # ===========================================================================
@@ -622,7 +438,6 @@ def _e2e_record(e: EvrakOrnegi) -> dict:
     return {
         "id": e.id, "metin": e.metin, "evrak_turu": e.evrak_turu, "zorluk": e.zorluk,
         "beklenen_birim": e.beklenen_birim,
-        "kabul_edilebilir_birimler": e.kabul_edilebilir_birimler,
         "beklenen_mevzuat": e.beklenen_mevzuat, "eksik_alanlar": e.eksik_alanlar,
         "anahtar_unsurlar": e.anahtar_unsurlar, "beklenen_yazi_turu": e.beklenen_yazi_turu,
     }
@@ -639,25 +454,24 @@ def write_all(samples: list[EvrakOrnegi], out_dir: Path) -> dict[str, int]:
     emit("evrak_class_gold.jsonl", [s.to_record() for s in samples])
     emit("routing_gold.jsonl", [
         {"id": s.id, "metin": s.metin, "evrak_turu": s.evrak_turu,
-         "beklenen_birim": s.beklenen_birim,
-         "kabul_edilebilir_birimler": s.kabul_edilebilir_birimler} for s in samples])
+         "beklenen_birim": s.beklenen_birim} for s in samples])
     emit("ozet_gold.jsonl", [
         {"id": s.id, "metin": s.metin, "evrak_turu": s.evrak_turu,
-         "alanlar": s.alanlar, "anahtar_unsurlar": s.anahtar_unsurlar} for s in samples])
+         "anahtar_unsurlar": s.anahtar_unsurlar} for s in samples])
     emit("yazi_taslak_gold.jsonl", [
-        {"id": s.id, "evrak_turu": s.evrak_turu, "alanlar": s.alanlar,
-         "beklenen_yazi_turu": s.beklenen_yazi_turu,
-         "zorunlu_bilesenler": list(YAZI_ZORUNLU_BILESENLER)} for s in samples])
+        {"id": s.id, "metin": s.metin, "evrak_turu": s.evrak_turu,
+         "beklenen_yazi_turu": s.beklenen_yazi_turu} for s in samples])
     emit("eksik_bilgi_gold.jsonl", [
         {"id": s.id, "metin": s.metin, "evrak_turu": s.evrak_turu,
-         "zorunlu_alanlar": list(ZORUNLU_ALANLAR[s.evrak_turu]),
+         "zorunlu_alanlar": list(_zorunlu_for(s.evrak_turu)),
          "eksik_alanlar": s.eksik_alanlar} for s in samples])
     emit("e2e_scenarios.jsonl", [_e2e_record(s) for s in samples])
     return counts
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Sentetik kamu-evrak gold üreteci (TEKNOFEST 1. Senaryo)")
+    ap = argparse.ArgumentParser(
+        description="Sentetik kamu-evrak gold üreteci (TEKNOFEST 1. Senaryo, kanonik taksonomi)")
     ap.add_argument("--per-type", type=int, default=DEFAULT_PER_TYPE, help="tür-başı örnek (>=4)")
     ap.add_argument("--seed", type=int, default=DEFAULT_SEED)
     ap.add_argument("--out", type=str, default=None, help="çıktı dizini (default repo/data/synthetic)")
@@ -672,7 +486,9 @@ def main(argv: list[str] | None = None) -> int:
     counts = write_all(samples, out_dir)
 
     print(f"\n  Sentetik kamu-evrak gold üretildi → {out_dir}")
-    print(f"  {len(EVRAK_TURLERI)} tür × {per} = {len(samples)} evrak (seed={args.seed})")
+    print(f"  Kanonik taksonomi: {len(URETILEN_TURLER)} üretilen tür "
+          f"(config.EVRAK_TURLERI {len(EVRAK_TURLERI)}; 'belirsiz' abstention)")
+    print(f"  {len(URETILEN_TURLER)} tür × {per} = {len(samples)} evrak (seed={args.seed})")
     zorluk_dag: dict[str, int] = {z: sum(1 for s in samples if s.zorluk == z) for z in ZORLUK}
     eksikli = sum(1 for s in samples if s.eksik_alanlar)
     print(f"  Zorluk dağılımı: {zorluk_dag} · eksik-alanlı evrak: {eksikli}/{len(samples)}")

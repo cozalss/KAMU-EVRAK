@@ -3,34 +3,39 @@
 Şartname §6.4.1 ("bulunması gereken ancak eksik olan bilgileri tespit edebilme")
 + §9 Uygulama ("eksik bilgi tespiti").
 
-Eksik-alan tespiti SET problemidir (bir evrakta 0+ eksik alan olabilir). Ölçer:
+ÖLÇÜM HEDEFİ: GERÇEK pipeline koşulur; `out['eksik_alanlar']`
+(eksik_tespit_node çıktısı) gold ground-truth `eksik_alanlar` ile SET olarak
+karşılaştırılır. Gold = insan-doğrulanabilir gerçek; pipeline'ın bu gerçeğe
+yakınsaması ölçülür (mismatch = pipeline'ın gerçek tespit hatası).
+
+Eksik-alan tespiti SET problemidir (bir evrakta 0+ eksik alan). Ölçer:
   - micro set precision / recall (tüm vakaların eksik-alan birleşimi üzerinden)
   - F-beta (β=2): RECALL-ÖNCELİKLİ. Bir eksik alanı KAÇIRMAK (vatandaş eksik
     evrakla bekletilir) fazladan işaretlemeden daha maliyetli → β=2 recall'ı 2× ağırlıklar.
   - exact-match: vakanın eksik kümesi TAM bilindi mi
   - %95 Wilson CI (recall) — küçük-N dürüstlüğü
 
-Mock modda gen_synthetic.mock_missing_fields ile koşar (offline).
+NOT (mock taban): LLM_MODE=mock'ta cikar gönderen adını regex ile çıkaramaz →
+gold'da mevcut olan 'gonderen_ad_soyad' eksik işaretlenebilir (dürüst recall açığı;
+gerçek LLM modunda kapanır). Eval bunu olduğu gibi raporlar.
 
-Çalıştır (cd backend): python -m eval.missing_info_eval
+Çalıştır (PYTHONPATH=...\\backend): python -m eval.missing_info_eval
 """
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-_SCRIPTS = Path(__file__).resolve().parent.parent.parent / "scripts"
-if str(_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS))
-
-import gen_synthetic as gs  # noqa: E402
-
+from agents.graph import build_graph  # noqa: E402
+from agents.state import make_initial_state  # noqa: E402
 from eval.stats import fmt_ci, wilson_interval  # noqa: E402
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "eksik_bilgi_gold.jsonl"
@@ -43,6 +48,18 @@ def load_gold(path: Path = GOLD) -> list[dict]:
     return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
 
 
+def run_pipeline(rows: list[dict]) -> None:
+    """GERÇEK pipeline'ı koş → r['pred_eksik'] doldur."""
+    graph = build_graph()
+
+    async def _run() -> None:
+        for r in rows:
+            out: dict[str, Any] = await graph.ainvoke(make_initial_state(r["metin"]))
+            r["pred_eksik"] = set(out.get("eksik_alanlar") or [])
+
+    asyncio.run(_run())
+
+
 def f_beta(precision: float, recall: float, beta: float = BETA) -> float:
     b2 = beta * beta
     denom = b2 * precision + recall
@@ -51,10 +68,11 @@ def f_beta(precision: float, recall: float, beta: float = BETA) -> float:
 
 def evaluate(rows: list[dict]) -> dict:
     """Mikro set-P/R + F-beta + exact-match. TP/FP/FN tüm vakalar üzerinde toplanır."""
+    run_pipeline(rows)
     tp = fp = fn = exact = 0
     for r in rows:
         gold = set(r["eksik_alanlar"])
-        pred = set(gs.mock_missing_fields(r["metin"], r["evrak_turu"]))
+        pred = set(r["pred_eksik"])
         tp += len(gold & pred)
         fp += len(pred - gold)
         fn += len(gold - pred)
@@ -75,7 +93,7 @@ def evaluate(rows: list[dict]) -> dict:
 def main() -> int:
     res = evaluate(load_gold())
     bar = "=" * 66
-    print(f"\n{bar}\n  GÖREV 1 — EKSİK BİLGİ TESPİTİ (set-P/R, β={res['beta']})\n{bar}")
+    print(f"\n{bar}\n  GÖREV 1 — EKSİK BİLGİ TESPİTİ (GERÇEK pipeline, set-P/R β={res['beta']})\n{bar}")
     print(f"  Vaka: {res['n']}  ·  TP={res['tp']} FP={res['fp']} FN={res['fn']}")
     print(f"  Set precision : {res['precision']:.3f}")
     print(f"  Set recall    : {res['recall']:.3f}  "

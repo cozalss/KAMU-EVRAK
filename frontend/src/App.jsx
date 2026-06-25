@@ -23,6 +23,10 @@ export default function App() {
   const [dragOver, setDragOver] = useState(false);
   const [selectedSample, setSelectedSample] = useState(null);
   const [fileName, setFileName] = useState("");
+  // İndirme için son işlenen evrak metni (örnek metin yolunda dolu; dosya/OCR
+  // yolunda boş kalır → buton metin gerektiğini bildirir). + indirme durumu.
+  const [evrakText, setEvrakText] = useState("");
+  const [downloading, setDownloading] = useState("");
 
   const fileRef = useRef(null);
   const stepTimers = useRef([]);
@@ -46,6 +50,7 @@ export default function App() {
     setNodes(freshNodes());
     setResult(null);
     setError("");
+    setEvrakText("");
   }, [clearTimers]);
 
   // Tek node durum güncelle (SSE event veya client adımlama).
@@ -140,6 +145,7 @@ export default function App() {
     setBusy(true);
     setSelectedSample(sample.id);
     setFileName("");
+    setEvrakText(sample.text);  // indirme bu metinden taslak üretir
     try {
       const res = await fetch("/process_doc", {
         method: "POST",
@@ -159,6 +165,40 @@ export default function App() {
       setBusy(false);
     }
   }, [reset, animateNodes]);
+
+  // ---------- C) Taslağı PDF/DOCX indir → /yazi/taslak ----------
+  // Backend pipeline'ı evrak metninden tekrar koşar → render edilmiş bytes döner.
+  // Blob → createObjectURL → görünmez <a download> tıkla → URL'i serbest bırak.
+  const onDownload = useCallback(async (format) => {
+    if (!evrakText) {
+      showToast("İndirme için evrak metni gerekli. Lütfen örnek bir evrak seçin.");
+      return;
+    }
+    setDownloading(format);
+    let url = "";
+    try {
+      const res = await fetch(`/yazi/taslak?format=${encodeURIComponent(format)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ evrak_text: evrakText }),
+      });
+      if (!res.ok) throw new Error(`Taslak indirilemedi (${res.status})`);
+      const blob = await res.blob();
+      url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `resmi-yazi-taslak.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast(`Taslak ${format.toUpperCase()} olarak indirildi.`);
+    } catch (err) {
+      showToast(err?.message || "Taslak indirilemedi — backend çalışıyor mu?");
+    } finally {
+      if (url) URL.revokeObjectURL(url);
+      setDownloading("");
+    }
+  }, [evrakText, showToast]);
 
   // ---------- dosya seçimi / drag-drop ----------
   const validateAndRun = useCallback((file) => {
@@ -269,7 +309,11 @@ export default function App() {
         {/* ---- Sonuç kartları ---- */}
         {result && (
           <section className="ke-result-wrap" aria-live="polite">
-            <ResultCards r={result} onToast={showToast} />
+            <ResultCards
+              r={result} onToast={showToast}
+              onDownload={onDownload} downloading={downloading}
+              canDownload={!!evrakText}
+            />
           </section>
         )}
 

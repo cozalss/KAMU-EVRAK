@@ -54,6 +54,9 @@ class EvrakState(TypedDict):
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
     yazi_taslak_md: NotRequired[str]
     yazi_taslak_pdf_bytes: NotRequired[bytes | None]
+    yazi_taslak_pdf_filename: NotRequired[str]
+    yazi_taslak_docx_bytes: NotRequired[bytes | None]
+    yazi_taslak_docx_filename: NotRequired[str]
     # Eksik bilgi varsa kullanıcıya sorulacak takip soruları (dur-ve-sor).
     clarify_questions: NotRequired[list[str]]
 

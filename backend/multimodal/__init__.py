@@ -1,18 +1,9 @@
-"""Multimodal modülü — OCR (belge fotoğrafı), STT (sesli giriş), TTS (sesli cevap).
+"""Multimodal modülü — OCR (belge fotoğrafı/PDF/Word → metin).
 
-Tüm modeller LOKAL ÇALIŞIR (CLAUDE.md §3 — production cloud LLM API yasak).
-Modeller lazy-load: ilk çağrıda HF cache'inden indirilir, sonra in-memory.
+kamu-evrak: yalnız OCR portlandı (STT/TTS gerekmiyor — şartname evrak okuma/yazışma).
+ADALET'teki eager `.stt`/`.tts` importları KALDIRILDI (modüller yok → boot hatası önlendi).
 """
 
 from .ocr import OCRResult, extract_text
-from .stt import STTResult, transcribe_audio
-from .tts import TTSResult, synthesize_speech
 
-__all__ = (
-    "OCRResult",
-    "STTResult",
-    "TTSResult",
-    "extract_text",
-    "synthesize_speech",
-    "transcribe_audio",
-)
+__all__ = ("OCRResult", "extract_text")

@@ -66,8 +66,10 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     }
     if result.pdf_bytes:
         out["yazi_taslak_pdf_bytes"] = result.pdf_bytes
+        out["yazi_taslak_pdf_filename"] = result.pdf_filename
     if result.docx_bytes:
         out["yazi_taslak_docx_bytes"] = result.docx_bytes
+        out["yazi_taslak_docx_filename"] = result.docx_filename
     return out
 
 

@@ -11,6 +11,14 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **İT-8 (gece) BİTTİ [0d19e2c]:** (A) **güvenlik HIGH-fix**: 413 boyut-cap'li okuma, rate-limit (slowapi, opsiyonel/graceful) 429, güvenlik header'ları, Content-Disposition sanitize, PII-log hash → +12 güvenlik testi, TestClient doğruladı. (B) **DÜRÜST held-out eval** (gen_heldout farklı şablon/sözlük, 108 örnek): **in-domain mock 0.92 vs held-out 0.22 macro-F1** → mock heuristik GENELLEMEZ (dairesellik kanıtlandı; gerçek değer LLM modunda) + few-shot prompt güçlendirildi. (C) gerçek-LLM hazırlık: run_llm_smoke.py + .env.example bug-fix (kod `OPENAI_LLM_MODEL` okur, `OPENAI_MODEL` değil) + README/method docs. pytest **210**.
+  - **KAZANMA İÇİN KRİTİK İÇGÖRÜ:** Offline/mock skorları sunma; **held-out (dürüst) + gerçek-LLM** skorlarını sun. Sunum ~puanın %50'si → sunum materyali + şartname-uyum matrisi yüksek değer.
+- **İT-9 ÖNCELİKLER:**
+  1. **Sunum materyali** (kazanma, ~%50 puan): docs/sunum-on-degerlendirme.md (12 Tmz, 10 slayt) + docs/sunum-final.md (10dk+5dk) + docs/sartname-uyum-matrisi.md (her şartname maddesi→özelliğimiz+kanıt).
+  2. Mock heuristik GENELLEME iyileştir (yapısal/semantik özellik; held-out 0.22→0.4+ hedefle, dürüst).
+  3. Demo sağlamlık: daha çok örnek evrak + (varsa) demo GIF/e2e.
+  4. Gerçek-LLM ölçüm — kullanıcı OPENAI_API_KEY verince.
+  AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil; scorecard'ı orkestratör tazeler.
 - **İT-6/7 (gece) BİTTİ:** arsiv/SDP node + frontend favicon/arşiv-kartı/skeleton/a11y + güvenlik denetimi (0 CRIT, 3 HIGH) [57216b9]; **3 ZAYIF ALAN saldırısı** (dış-değerlendirme 60-68→80+): (1) yazı formatı Yön.2646 TAM-uyum, format skoru **1.0**, placeholder↓ [64fea5e] (2) mevzuat retrieval Recall@3 **0.86→1.0**/MRR 0.96, CİMER+5690 düzeldi, retrieval_eval (3) sınıflandırma/yönlendirme mock **0.92/0.93** (DÜRÜST NOT: gen_synthetic template-keyword'e dayalı → DAİRESEL risk; gerçek test LLM modu). fix(cikar) Ad-Soyad IGNORECASE + aynı-satır [6552ad0]. pytest **189**.
   - **KULLANICI DIŞ-DEĞERLENDİRME:** ~60-68/100; 80+ için yazı-formatı/sınıflandırma/mevzuat düzelt → 3'ü de bu iterasyonda hedeflendi. `gh` yok (WebSearch/Context7 ile araştırıldı).
 - **İT-8 ÖNCELİKLER (kazanma):**

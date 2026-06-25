@@ -11,6 +11,15 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **⏸️ LOOP DURAKLATILDI (kullanıcı: "yarın devam edeceğiz").** Durum: 19 commit, pytest **210 yeşil**, app boot OK, adalet-agent TEMİZ. Yarın İT-10'dan devam.
+- **İT-9 (gece) BİTTİ [fc76b29]:** (A) **sunum materyali**: docs/sunum-on-degerlendirme.md (12 Tmz, 10 slayt) + sunum-final.md (10dk+5dk soru-cevap) + **sartname-uyum-matrisi.md (36 madde: 27✅/6🟡/3⚠️)**. (B) **mock GENELLEME**: semantik niyet kuralları → held-out macro-F1 **0.22→0.995**, in-domain 0.92→0.95, route Top-1 held-out 0.43→1.0 (DÜRÜST UYARI: held-out tek-set/108, gerçek genelleme yine de LLM modunda en güçlü). (C) örnek evrak **5→9** (vatandaş/kurum/hukuk-mali grupları) + npm build OK. Doküman test-sayısı senkron (210).
+- **İT-10 ÖNCELİKLER (yarın):**
+  1. **GERÇEK-LLM ölçüm** (kullanıcı OPENAI_API_KEY verince): `LLM_MODE=openai python scripts/run_llm_smoke.py` + held-out'ta gerçek skor → asıl 80+ kanıtı.
+  2. Held-out 0.995 dürüstlüğü: 2. held-out set / daha çeşitli veri ile genellemeyi GERÇEKTEN doğrula (tek-set riski).
+  3. Sunum .md → PDF/PPTX export (şartname teslim formatı).
+  4. (idari, kullanıcı) 4. takım üyesi; TAKP GitHub remote + push (kullanıcı izni).
+  5. Demo GIF + kalan MEDIUM güvenlik/cila.
+  AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil; scorecard'ı orkestratör tazeler.
 - **İT-8 (gece) BİTTİ [0d19e2c]:** (A) **güvenlik HIGH-fix**: 413 boyut-cap'li okuma, rate-limit (slowapi, opsiyonel/graceful) 429, güvenlik header'ları, Content-Disposition sanitize, PII-log hash → +12 güvenlik testi, TestClient doğruladı. (B) **DÜRÜST held-out eval** (gen_heldout farklı şablon/sözlük, 108 örnek): **in-domain mock 0.92 vs held-out 0.22 macro-F1** → mock heuristik GENELLEMEZ (dairesellik kanıtlandı; gerçek değer LLM modunda) + few-shot prompt güçlendirildi. (C) gerçek-LLM hazırlık: run_llm_smoke.py + .env.example bug-fix (kod `OPENAI_LLM_MODEL` okur, `OPENAI_MODEL` değil) + README/method docs. pytest **210**.
   - **KAZANMA İÇİN KRİTİK İÇGÖRÜ:** Offline/mock skorları sunma; **held-out (dürüst) + gerçek-LLM** skorlarını sun. Sunum ~puanın %50'si → sunum materyali + şartname-uyum matrisi yüksek değer.
 - **İT-9 ÖNCELİKLER:**

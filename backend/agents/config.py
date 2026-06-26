@@ -282,10 +282,11 @@ VERIFY_ENABLED = os.getenv("VERIFY_ENABLED", "1") == "1"
 # clarifier dur-ve-sor dalı: VARSAYILAN KAPALI → baseline akış (taslak hep üretilir) korunur.
 CLARIFY_STOP_ENABLED = os.getenv("CLARIFY_STOP_ENABLED", "0") == "1"
 
-# HITL (human-in-the-loop) memur onay kapısı: yazi_taslak sonrası LangGraph interrupt()
-# ile DURUR; memur ONAYLA/DÜZENLE/REDDET. interrupt() bir checkpointer ister. VARSAYILAN
-# KAPALI → baseline (checkpointer'sız, kesintisiz) compile + akış birebir korunur. Açıkken
-# onay_kapisi node'u yazi_taslak↔verify arasına girer ve graf InMemorySaver ile derlenir.
+# HITL (human-in-the-loop) memur onay kapısı: LangGraph interrupt() ile DURUR; memur
+# ONAYLA/DÜZENLE/REDDET. interrupt() bir checkpointer ister. VARSAYILAN KAPALI → baseline
+# (checkpointer'sız, kesintisiz) compile + akış birebir korunur. Açıkken onay_kapisi node'u
+# verify/risk_guard SONRASINA girer (memur riski görerek onaylar); RISK_GUARD ile KOŞULLU
+# (yeşil otomatik geçer, sarı/kırmızı durur); graf InMemorySaver ile derlenir.
 HITL_ENABLED = os.getenv("HITL_ENABLED", "0") == "1"
 
 # --- Yenilikçilik: ENV-gated SOTA öz-düzeltme node'ları (CRAG + Self-RAG) ---

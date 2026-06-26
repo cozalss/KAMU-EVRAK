@@ -155,5 +155,32 @@ class TestKosulluHITL:
         await g.ainvoke(make_initial_state("Konu: izin. arz ederim."), cfg)
         # Act — memur onaylar
         final = await g.ainvoke(Command(resume={"secim": "onayla"}), cfg)
-        # Assert
+        # Assert — onaylandı VE akış arsiv→finalize'a kadar aktı (denetim izi + bilgilendirme)
         assert final["onay_durumu"] == "onaylandı"
+        assert final.get("denetim_izi") and (final.get("bilgilendirme") or final.get("response"))
+
+
+# ---------------------------------------------------------------------------
+# Review düzeltme regresyonları — tur_confidence=0.0, PII maskeleme, verify↔risk sözleşmesi
+# ---------------------------------------------------------------------------
+
+
+class TestReviewRegresyon:
+    def test_sifir_guven_sari_olur(self):
+        # 0.0 güven "hiç güven yok" → SARI (falsy tuzağı: 0.0 yeşile düşmemeli)
+        assert _risk(conf=0.0)["bant"] == "sari"
+
+    async def test_gerekceler_pii_maskeli(self):
+        # uydurma uyarısı TCKN-şekilli sayı içerirse → gerekçede ham TCKN GÖRÜNMEZ
+        u = ["Taslaktaki '12345678950' sayısı kaynak evrakta yok (doğrulayın)."]
+        sonuc = await risk_guard_node({"verify_uyari": u, "yazi_taslak_md": "x",
+                                       "evrak_turu": "dilekce", "tur_confidence": 0.9})
+        assert all("12345678950" not in g for g in sonuc["risk_metadata"]["gerekceler"])
+
+    def test_verify_risk_sozlesmesi_uydurma(self):
+        # verify_node'un ÜRETTİĞİ uydurma mesajı → risk_guard KIRMIZI eşlemeli (imza drift koruması)
+        from agents.nodes.verify import _uydurma_veto
+        uyarilar = _uydurma_veto("Yazımız 99.99.9999 tarihlidir.",
+                                 {"evrak_text": "kaynak", "bilgi_unsurlari": {}})
+        assert uyarilar  # verify gerçekten uydurma yakaladı
+        assert _risk(uyarilar)["bant"] == "kirmizi"

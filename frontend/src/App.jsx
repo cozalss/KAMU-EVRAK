@@ -106,7 +106,9 @@ export default function App() {
         });
       });
     } else if (ev.event === "done") {
-      setResult(ev.result);
+      // HITL: stream koşullu onayda durduysa (sarı/kırmızı) → OnayPaneli; değilse sonuç.
+      if (ev.result?.onay_bekliyor) setPendingOnay(ev.result);
+      else setResult(ev.result);
       setNodes((prev) => prev.map((n) => (n.status === "pending" || n.status === "active" ? { ...n, status: "done" } : n)));
     } else if (ev.event === "error") {
       setError(ev.message || "İşleme hatası");

@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 from collections.abc import AsyncIterator
 from typing import Any
+from uuid import uuid4
 
 import structlog
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
@@ -23,6 +24,7 @@ from agents.config import HITL_ENABLED
 from agents.graph import PIPELINE_NODES, build_graph
 from agents.state import make_initial_state
 from api.middleware.ratelimit import rate_limit
+from api.pii import mask_pii
 from api.schemas import (
     MAX_EVRAK_CHARS,
     OnayResumeRequest,
@@ -93,8 +95,10 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         yazi_turu=state.get("yazi_turu", ""),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         format_uyumlu=bool(state.get("format_uyumlu", False)),
-        verify_uyari=state.get("verify_uyari", []),
-        verify_notes=state.get("verify_notes", ""),
+        # PII güvenliği: uydurma-veto uyarıları somut tarih/sayı token'ı içerir (TCKN-şekilli
+        # olabilir) → API sınırında maskele (savunma derinliği; risk_guard gerekçeleri de maskeli).
+        verify_uyari=[mask_pii(u).masked_text for u in state.get("verify_uyari", [])],
+        verify_notes=mask_pii(state.get("verify_notes", "") or "").masked_text,
         bilgilendirme=state.get("bilgilendirme", ""),
         arsiv_metadata=state.get("arsiv_metadata", {}),
         sla_metadata=state.get("sla_metadata", {}),
@@ -116,8 +120,6 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
     text, _ = await _ocr_or_text(None, req.evrak_text)
     state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=req.filename)
     if HITL_ENABLED:
-        from uuid import uuid4
-
         thread_id = uuid4().hex
         g = _get_hitl_graph()
         cfg = {"configurable": {"thread_id": thread_id}}
@@ -189,9 +191,15 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
             return
         state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=filename)
         accumulated: dict[str, Any] = dict(state)
+        # HITL açıksa checkpointer'lı graf + thread_id → koşullu onayda interrupt PERSIST eder
+        # (resume mümkün; bypass YOK). Kapalıyken (varsayılan) checkpointer'sız graf — yol birebir.
+        graph = _get_hitl_graph() if HITL_ENABLED else _get_graph()
+        cfg = {"configurable": {"thread_id": uuid4().hex}} if HITL_ENABLED else None
         try:
-            async for update in _get_graph().astream(state, stream_mode="updates"):
+            async for update in graph.astream(state, cfg, stream_mode="updates"):
                 for node, slice_ in update.items():
+                    if node == "__interrupt__":
+                        continue  # interrupt aşağıda snap.next ile ele alınır
                     if isinstance(slice_, dict):
                         accumulated.update(slice_)
                     yield _sse({"event": "node", "node": node, "status": "done",
@@ -200,6 +208,16 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
             log.error("process_stream_failed", error=str(exc) or type(exc).__name__)
             yield _sse({"event": "error", "message": "İşleme hatası"})
             return
+        # HITL: akış bir node'da bekliyorsa (memur onayı) → onay_bekliyor + thread_id ile bitir.
+        if HITL_ENABLED:
+            snap = await graph.aget_state(cfg)
+            if snap.next:  # interrupt'ta duruldu (sarı/kırmızı risk) → memur kararı bekleniyor
+                resp = _to_response(dict(snap.values), ocr_meta)
+                resp.onay_bekliyor = True
+                resp.thread_id = cfg["configurable"]["thread_id"]
+                yield _sse({"event": "done", "result": resp.model_dump()})
+                return
+            accumulated = dict(snap.values)
         yield _sse({"event": "done", "result": _to_response(accumulated, ocr_meta).model_dump()})
 
     return StreamingResponse(gen(), media_type="text/event-stream")
@@ -227,6 +245,9 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "verify": ("format_uyumlu", "verify_uyari", "verify_notes"),
         # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).
         "risk_guard": ("risk_metadata",),
+        # self_rag / onay_kapisi (ENV-gated): SSE'de boş kalmasın.
+        "self_rag": ("self_rag_tam", "self_rag_eksikler", "self_rag_notu"),
+        "onay_kapisi": ("onay_durumu",),
         "arsiv": ("arsiv_metadata",),
         "sla_triyaj": ("sla_metadata",),
         "denetim_izi": ("denetim_izi",),

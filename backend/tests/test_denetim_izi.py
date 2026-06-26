@@ -9,6 +9,7 @@ from __future__ import annotations
 import copy
 
 from agents.nodes.denetim_izi import (
+    _ADIMLAR,
     _GENESIS,
     build_chain,
     denetim_izi_node,
@@ -35,8 +36,8 @@ class TestBuildChain:
     def test_zincir_tum_adimlari_kapsar(self):
         # Arrange + Act
         zincir = build_chain(_STATE)
-        # Assert — 10 denetim adımı, her biri hash + onceki taşır
-        assert len(zincir) == 10
+        # Assert — tüm denetim adımları (risk_guard + onay dahil), her biri hash + onceki taşır
+        assert len(zincir) == len(_ADIMLAR)
         for e in zincir:
             assert len(e["hash"]) == 64  # SHA-256 hex
             assert "onceki" in e
@@ -92,7 +93,7 @@ class TestDenetimIziNode:
         assert "denetim_izi" in out
         meta = out["denetim_izi"]
         assert meta["butunluk"] is True
-        assert meta["adim_sayisi"] == 10
+        assert meta["adim_sayisi"] == len(_ADIMLAR)
         assert len(meta["kok_hash"]) == 64
         assert meta["algoritma"] == "SHA-256 hash-chain"
 
@@ -101,4 +102,4 @@ class TestDenetimIziNode:
         out = await denetim_izi_node({})
         # Assert
         assert out["denetim_izi"]["butunluk"] is True
-        assert out["denetim_izi"]["adim_sayisi"] == 10
+        assert out["denetim_izi"]["adim_sayisi"] == len(_ADIMLAR)

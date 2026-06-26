@@ -1,8 +1,9 @@
 """Görev 2 (yenilikçilik) — Memur onay kapısı (human-in-the-loop / HITL).
 
 Kamu gerçeği: resmî yazı GÖNDERİLMEDEN önce yetkili memur ONAYLAR (ıslak/e-imza). Bu
-node, AI'ın ürettiği taslağı memurun denetimine sunan ajan karşılığıdır: yazi_taslak
-sonrası LangGraph `interrupt()` ile akışı DURDURUR, memurun kararını bekler:
+node, AI'ın ürettiği taslağı memurun denetimine sunan ajan karşılığıdır: verify + risk_guard
+SONRASI (memur risk bandını görerek) LangGraph `interrupt()` ile akışı DURDURUR, kararını bekler.
+RISK_GUARD ile KOŞULLU: yeşil otomatik geçer, sarı/kırmızı bu kapıya düşer (graph._risk_route):
   - ONAYLA  → taslak olduğu gibi verify/arşiv'e akar (onay_durumu="onaylandı").
   - DÜZENLE → memurun düzelttiği gövde state'e yazılır, akış onunla sürer.
   - REDDET  → gerekçe kaydedilir (onay_durumu="reddedildi"); jüriye şeffaf.

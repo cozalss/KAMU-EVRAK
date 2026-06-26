@@ -32,6 +32,7 @@ from typing import Any
 import structlog
 
 from agents.config import RISK_GUARD_ENABLED, RISK_GUVEN_ESIK
+from api.pii import mask_pii
 
 log = structlog.get_logger()
 
@@ -78,7 +79,8 @@ def compute_risk(
         sari.append(f"Eksik zorunlu bilgi: {', '.join(eksik_alanlar[:3])}")
     if evrak_turu == "belirsiz":
         sari.append("Evrak türü belirsiz (sınıflandırma abstention)")
-    elif tur_confidence and tur_confidence < RISK_GUVEN_ESIK:
+    elif tur_confidence is not None and tur_confidence < RISK_GUVEN_ESIK:
+        # 0.0 dahil — "hiç güven yok" da SARI'dır (falsy tuzağına düşme).
         sari.append(f"Düşük sınıflandırma güveni ({tur_confidence:.2f})")
 
     if sari:
@@ -92,14 +94,19 @@ async def risk_guard_node(state: dict[str, Any]) -> dict[str, Any]:
     """Risk bandını üret (additive). Koşullu onay graph._risk_route ile bağlanır."""
     if not RISK_GUARD_ENABLED:
         return {}  # node grafta yoksa buraya gelinmez; çift-guard (baseline güvence)
+    # tur_confidence: None → 1.0 (yok sayma); 0.0 KORUNUR ("hiç güven yok" gerçek sinyal).
+    _conf = state.get("tur_confidence")
     meta = compute_risk(
         state.get("verify_uyari", []),
         format_uyumlu=bool(state.get("format_uyumlu", True)),
         eksik_alanlar=state.get("eksik_alanlar", []) or [],
-        tur_confidence=float(state.get("tur_confidence", 1.0) or 1.0),
+        tur_confidence=1.0 if _conf is None else float(_conf),
         evrak_turu=state.get("evrak_turu", "belirsiz"),
         taslak=state.get("yazi_taslak_md", "") or "",
     )
+    # PII güvenliği (CLAUDE.md §2): gerekçeler verify_uyari'dan türer; uydurma sayı/tarih
+    # token'ı TCKN-şekilli olabilir → arayüze/onaya gitmeden maskele.
+    meta["gerekceler"] = [mask_pii(g).masked_text for g in meta["gerekceler"]]
     log.info("risk_guard", bant=meta["bant"], n_gerekce=len(meta["gerekceler"]))
     return {"risk_metadata": meta}
 

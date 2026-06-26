@@ -60,6 +60,13 @@ _ADIMLAR: tuple[tuple[str, Callable[[dict[str, Any]], dict[str, Any]]], ...] = (
         "format_uyumlu": bool(s.get("format_uyumlu", False)),
     }),
     ("verify", lambda s: {"uyari_sayisi": len(s.get("verify_uyari") or [])}),
+    # Risk bandı + memur onay kararı zincire girer → "hangi risk, kim onayladı" denetlenebilir
+    # (Sayıştay/KVKK m.12 işleme kaydı). onay_durumu yoksa "otomatik" (yeşil → koşulsuz geçti).
+    ("risk_guard", lambda s: {
+        "risk_bant": (s.get("risk_metadata") or {}).get("bant"),
+        "gerekce_sayisi": len((s.get("risk_metadata") or {}).get("gerekceler") or []),
+    }),
+    ("onay", lambda s: {"onay_durumu": s.get("onay_durumu") or "otomatik"}),
     ("arsiv", lambda s: {"sdp_kodu": (s.get("arsiv_metadata") or {}).get("sdp_kodu")}),
     ("sla_triyaj", lambda s: {"sla_durum": (s.get("sla_metadata") or {}).get("durum")}),
 )

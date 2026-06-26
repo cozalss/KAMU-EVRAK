@@ -549,6 +549,12 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
 /* SC 2.4.11 — okuma alanı için de koyu outline */
 .rc-taslak-pre:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .rc-taslak-note { margin: .6rem 0 0; font-size: .78rem; color: var(--muted); }
+/* SC 4.1.3 — daktilo tam-metin bölgesi (sr-only): ekran okuyucuya animasyon bitmeden
+   içerik değişmez; animating=false olunca tam metin bir kerede duyurulur (spam yok). */
+.rc-taslak-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 .rc-taslak-note code { background: var(--surface-2); padding: 0 .25rem; border-radius: 4px; font-family: var(--font-mono); }
 .rc-taslak-dlnote {
   margin: .7rem 0 0; font-size: .8rem; color: var(--ink-2); line-height: 1.5;

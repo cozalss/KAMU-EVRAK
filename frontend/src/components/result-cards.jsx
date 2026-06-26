@@ -302,15 +302,30 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         </div>
       </header>
       {/* Görsel: daktilo akışı (kopyala her zaman TAM metni alır — copy() taslakMd kullanır).
-          tabIndex/aria-label korunur; reduced-motion'da shown === tam metin. */}
+          SC 4.1.3 / 1.3.1: Animasyon aktifken parça-parça duyuru (screen-reader spam) önlemek
+          için aria-live="off" + aria-busy=animating. Tam metin rc-taslak-sr bölgesinde bir
+          kez duyurulur (animating biter bitmez). aria-atomic="true" duyuruyu tek blok yapar. */}
       <pre
         className={"rc-taslak-pre" + (animating ? " is-typing" : "")}
         tabIndex={0}
         aria-label="Yazı taslağı önizleme"
+        aria-live="off"
+        aria-busy={animating}
       >
         {shown}
         {animating && <span className="rc-caret rc-caret-pre" aria-hidden="true" />}
       </pre>
+      {/* SC 4.1.3 — Animasyon bitince ekran okuyucuya TAM metin bir kerede duyurulur.
+          animating=true iken içerik değişmez (shown değişir ama sr-only görmez) → spam yok.
+          animating=false olunca tam metin buraya geçer → tek duyuru. */}
+      <p
+        className="rc-taslak-sr"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {animating ? "" : taslakMd}
+      </p>
       {!canDownload && (
         // Dosya/OCR yolunda evrak metni client'ta saklanmaz → indirme devre dışı.
         // Tooltip yeterli değil; jüri ve ekran okuyucu için görünür açıklama.

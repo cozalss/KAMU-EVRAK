@@ -11,6 +11,17 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **İT-10 (sabah) BİTTİ — BÜYÜK KAZANIM:** Gerçek-LLM ölçümü yapıldı (.env'de openai anahtarı).
+  **gpt-4o held-out (dürüst, dairesel-OLMAYAN): sıkı macroF1 0.91 / operasyonel 0.93 / routing Top-1 0.93 (98/108)** → dış-değerlendirmenin "80+" çekincesine kesin yanıt. İlerleme: mock 0.22 → mini 0.61 → gpt-4o 0.91. Detay: docs/benchmark/llm-heldout.md.
+  Ayrıca: hedefli few-shot (karışan çiftler) + EVRAK_ESDEGER operasyonel-eşdeğer puanlama [37d6caf]; sunum PDF+PPTX export (Türkçe font OK) [37d6caf]; mevzuat lafzî tam-metin (chunk 55→63, Recall@1 0.875→0.938) [896ac73]; **code-review (0 CRIT/2 HIGH/3 MED/2 LOW) + 7 bulgu DÜZELTİLDİ** (CRAG tür-boost, /health llm_active, rate-limit, aclose_llm, _node_summary, clarifier) [3d247f6]. **GÜVENLİK:** .env.example'a sızan anahtar .env'e taşındı (git geçmişine girmedi) [23a873b]. pytest **235**. PII/eval-dürüstlük/zero-halüsinasyon code-review'da TEMİZ doğrulandı.
+- **İT-11 ÖNCELİKLER:**
+  1. **gpt-4o sonucunu öne çıkar:** README + scorecard + sunum'a 0.91/0.93 dürüst held-out skorunu işle; üretim önerisi LLM_MODE=openai+gpt-4o.
+  2. **2. held-out set** — 0.91'i çapraz-doğrula (tek-set riskini kapat).
+  3. **a11y denetimi** (frontend, a11y-architect) — henüz yapılmadı.
+  4. Demo GIF/video (jüri canlı-çalıştırma yedeği).
+  5. Teknik borç: PIPELINE_NODES paralel-sıra notu, run_llm_smoke banner (openai'de "mock" diyor mu kontrol), CORS daralt, %80 coverage doğrula.
+  6. Ticarileşme anlatımı (EBYS entegrasyon/ölçeklenebilirlik) sunuma.
+  AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil; scorecard orkestratör.
 - **⏸️ LOOP DURAKLATILDI (kullanıcı: "yarın devam edeceğiz").** Durum: 19 commit, pytest **210 yeşil**, app boot OK, adalet-agent TEMİZ. Yarın İT-10'dan devam.
 - **İT-9 (gece) BİTTİ [fc76b29]:** (A) **sunum materyali**: docs/sunum-on-degerlendirme.md (12 Tmz, 10 slayt) + sunum-final.md (10dk+5dk soru-cevap) + **sartname-uyum-matrisi.md (36 madde: 27✅/6🟡/3⚠️)**. (B) **mock GENELLEME**: semantik niyet kuralları → held-out macro-F1 **0.22→0.995**, in-domain 0.92→0.95, route Top-1 held-out 0.43→1.0 (DÜRÜST UYARI: held-out tek-set/108, gerçek genelleme yine de LLM modunda en güçlü). (C) örnek evrak **5→9** (vatandaş/kurum/hukuk-mali grupları) + npm build OK. Doküman test-sayısı senkron (210).
 - **İT-10 ÖNCELİKLER (yarın):**

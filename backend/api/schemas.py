@@ -42,6 +42,22 @@ class MevzuatOneriSchema(BaseModel):
     score: float = 0.0
 
 
+class AltTalepSchema(BaseModel):
+    """Çok-konulu evrak alt-talebi (decompose) — her istek ayrı tür+birim+yasal süre.
+
+    Tek dilekçedeki birden çok istek ayrıştırılır → otomatik havale önerisi. Özet PII-maskeli.
+    """
+
+    ozet: str
+    tur: str = "belirsiz"
+    tur_tr: str = ""
+    birim: str = ""
+    birim_tr: str = ""
+    yazi_turu: str = ""
+    cevap_suresi: str = ""        # "30 gün (3071 s.K. m.7)" vb.
+    sla_durum: str = ""           # NORMAL | GECIKMIS | KRITIK | tanimsiz | tarih_yok
+
+
 class ProcessResponse(BaseModel):
     """Uçtan-uca pipeline çıktısı (Görev 1 + Görev 2)."""
 
@@ -70,6 +86,9 @@ class ProcessResponse(BaseModel):
     denetim_izi: dict = Field(default_factory=dict)
     # Yenilikçilik — Kanıt bağlama (maskeli metin + çıkarım span'ları, sarı vurgu).
     kanit_metadata: dict = Field(default_factory=dict)
+    # Yenilikçilik — Çok-konulu evrak ayrıştırma (decompose): tek dilekçe → N alt-talep,
+    # her biri ayrı tür+birim+yasal süre. Boş liste = tek-konulu (frontend kartı gizler).
+    alt_talepler: list[AltTalepSchema] = Field(default_factory=list)
     # Yenilikçilik — HITL memur onay kapısı (varsa). onay_bekliyor=True → frontend onay
     # panelini açar; thread_id ile /process_doc/resume çağrılır. onay_durumu resume sonrası dolar.
     onay_bekliyor: bool = False
@@ -92,5 +111,5 @@ class OCRResponse(BaseModel):
     error: str | None = None
 
 
-__all__ = ("MAX_EVRAK_CHARS", "MevzuatOneriSchema", "OCRResponse", "OnayResumeRequest",
-           "ProcessRequest", "ProcessResponse", "YaziTaslakRequest")
+__all__ = ("MAX_EVRAK_CHARS", "AltTalepSchema", "MevzuatOneriSchema", "OCRResponse",
+           "OnayResumeRequest", "ProcessRequest", "ProcessResponse", "YaziTaslakRequest")

@@ -100,6 +100,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         sla_metadata=state.get("sla_metadata", {}),
         denetim_izi=state.get("denetim_izi", {}),
         kanit_metadata=state.get("kanit_metadata", {}),
+        alt_talepler=state.get("alt_talepler", []),
         onay_durumu=state.get("onay_durumu", ""),
         onay_gerekce=state.get("onay_gerekce", ""),
         ocr_engine=ocr_meta.get("ocr_engine"),
@@ -210,6 +211,8 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "cikar": ("bilgi_unsurlari",),
         "kanit_baglama": ("kanit_metadata",),
         "eksik_tespit": ("eksik_alanlar",),
+        # decompose (ENV-gated): çok-konulu evrak alt-talepleri SSE'ye taşınsın (canlı kart).
+        "decompose": ("alt_talepler",),
         "mevzuat_oner": ("mevzuat_onerileri",),
         # CRAG (ENV-gated) öz-düzeltme: SSE'de boş kalmasın (ECC LOW-5).
         "crag": ("crag_corrected", "crag_guven_oncesi", "crag_guven_sonrasi"),

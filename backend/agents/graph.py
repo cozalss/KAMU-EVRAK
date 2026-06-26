@@ -25,11 +25,11 @@ Akış:
                                        ▼
                                    finalize → END
 
-ENV-gated gelişmiş node'lar UYGULANDI: crag (CRAG_ENABLED), self_rag (SELF_RAG_ENABLED),
-verify (taslak kalite kapısı), clarifier dur-ve-sor dalı (CLARIFY_STOP_ENABLED).
+ENV-gated gelişmiş node'lar UYGULANDI: decompose (DECOMPOSE_ENABLED, çok-konulu evrak →
+alt-talepler, fan-out kaynağı, varsayılan AÇIK), crag (CRAG_ENABLED), self_rag
+(SELF_RAG_ENABLED), verify (taslak kalite kapısı), clarifier dur-ve-sor (CLARIFY_STOP_ENABLED).
 
-# TODO(kamu-evrak): Gelecek faz — decompose (çok-konulu evrakı alt-sorulara böl) +
-# risk_guard (uydurma kurum/tarih/sayı veto, ADALET deseni). Henüz node yok.
+# TODO(kamu-evrak): Gelecek faz — risk_guard (uydurma kurum/tarih/sayı veto, ADALET deseni).
 """
 
 from __future__ import annotations
@@ -41,6 +41,7 @@ from langgraph.graph import END, START, StateGraph
 from agents.config import (
     CLARIFY_STOP_ENABLED,
     CRAG_ENABLED,
+    DECOMPOSE_ENABLED,
     HITL_ENABLED,
     NLI_ENABLED,
     SELF_RAG_ENABLED,
@@ -49,6 +50,7 @@ from agents.nodes.arsiv import arsiv_node
 from agents.nodes.cikar import cikar_node
 from agents.nodes.clarifier import clarifier_node, kritik_eksikler
 from agents.nodes.crag import crag_node
+from agents.nodes.decompose import decompose_node
 from agents.nodes.denetim_izi import denetim_izi_node
 from agents.nodes.eksik_tespit import eksik_tespit_node
 from agents.nodes.finalize import finalize_node
@@ -72,7 +74,10 @@ def _pipeline_nodes() -> tuple[str, ...]:
     CRAG/Self-RAG ENV-gated → açıkken sırada görünür (şeffaflık), kapalıyken baseline
     dizi birebir korunur. Modül-seviyesi PIPELINE_NODES geriye-uyum için baseline'ı tutar.
     """
-    nodes = ["siniflandir", "cikar", "kanit_baglama", "eksik_tespit", "mevzuat_oner"]
+    nodes = ["siniflandir", "cikar", "kanit_baglama", "eksik_tespit"]
+    if DECOMPOSE_ENABLED:
+        nodes.append("decompose")  # çok-konulu evrak ayrıştırma (paralel fan-out kaynağı)
+    nodes.append("mevzuat_oner")
     if CRAG_ENABLED:
         nodes.append("crag")
     if NLI_ENABLED:
@@ -140,9 +145,17 @@ def build_graph(checkpointer: Any = None) -> Any:
     # kanit_baglama: çıkarılan unsurları (maskeli) metindeki yerine bağla (additive).
     g.add_edge("cikar", "kanit_baglama")
     g.add_edge("kanit_baglama", "eksik_tespit")
+    # Decompose (ENV-gated): çok-konulu evrakı alt-taleplere böl (additive). Açıkken paralel
+    # fan-out kaynağı eksik_tespit yerine decompose olur; kapalıyken node grafta YOK →
+    # baseline (eksik_tespit → mevzuat_oner ∥ ozetle) birebir korunur.
+    fanout_src = "eksik_tespit"
+    if DECOMPOSE_ENABLED:
+        g.add_node("decompose", decompose_node)
+        g.add_edge("eksik_tespit", "decompose")
+        fanout_src = "decompose"
     # Fan-out: mevzuat önerisi + özet paralel (state reducer'ları fan-in birleştirir).
-    g.add_edge("eksik_tespit", "mevzuat_oner")
-    g.add_edge("eksik_tespit", "ozetle")
+    g.add_edge(fanout_src, "mevzuat_oner")
+    g.add_edge(fanout_src, "ozetle")
     g.add_edge("ozetle", "route_birim")
 
     # Mevzuat dalı kuyruğu: mevzuat_oner → [crag?] → [mevzuat_dogrula?] → route_birim.

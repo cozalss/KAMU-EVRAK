@@ -106,6 +106,14 @@ class EvrakState(TypedDict):
     # frontend "bunu nereden buldun?" → sarı vurgu. {metin (maskeli), spanlar}.
     kanit_metadata: NotRequired[dict[str, Any]]
 
+    # --- Yenilikçilik: Çok-konulu evrak ayrıştırma (decompose, ENV-gated) ---
+    # decompose_node tek dilekçedeki birden çok isteği alt-taleplere böler; her biri ayrı
+    # tür+birim+yazı-türü+yasal-süre alır → otomatik havale. Tek-konulu evrak → boş liste.
+    # Tek yazıcı (fan-out kaynağı), bir kez yazılır → plain (reducer gerekmez). Anahtarlar
+    # SABİT (frontend + AltTalepSchema eşleşir): ozet/tur/tur_tr/birim/birim_tr/yazi_turu/
+    # cevap_suresi/sla_durum. Özet PII-maskeli (CLAUDE.md §2).
+    alt_talepler: NotRequired[list[dict[str, Any]]]
+
     # --- Görev 2: dur-ve-sor (clarifier) ---
     # Kritik alan eksikse taslak üretmeden kullanıcıdan bilgi istenir (ENV-gated).
     want_stop: NotRequired[bool]            # clarifier "dur-ve-sor" işareti

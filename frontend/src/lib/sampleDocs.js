@@ -20,6 +20,31 @@
    Sınıflandırma mock-modda keyword-heuristik ile deterministiktir (anahtarsız demo). */
 
 export const SAMPLE_DOCS = [
+  // ---------- VİTRİN: çok-konulu dilekçe (decompose) ----------
+  {
+    id: "cok_konulu",
+    label: "Çok-Konulu Dilekçe",
+    icon: "route",
+    grup: "Vatandaş",
+    aciklama: "Tek dilekçe → 3 ayrı iş → otomatik bölünüp ayrı birimlere havale (VİTRİN)",
+    text: `T.C.
+KEÇİÖREN BELEDİYE BAŞKANLIĞINA
+ANKARA
+
+Tarih: 02.06.2026
+Konu: Çeşitli talepler
+
+Sokağımızın başındaki çukurun bir an önce onarılmasını, ayrıca geçen ay fazla
+tahakkuk ettirilen su faturasının yanlış olduğunu ve düzeltilmesini, bir de
+oğlumun belediyenizdeki iş başvurusunun sonucunu öğrenmek istiyorum.
+Gereğini arz ederim.
+
+Adı Soyadı: Ayşe Yılmaz
+T.C. Kimlik No: 12345678901
+Adres: Şenlik Mahallesi, Gül Sokak No: 7, Keçiören / ANKARA
+Telefon: 0555 123 45 67
+İmza`,
+  },
   // ---------- Vatandaş → kurum ----------
   {
     id: "dilekce",

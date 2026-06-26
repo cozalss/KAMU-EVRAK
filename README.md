@@ -23,6 +23,7 @@ Tek bir LangGraph boru hattı; **bulut (gpt-4o), lokal (Qwen GGUF) veya anahtars
 
 | | |
 |---|---|
+| 🧩 **Çok-konulu ayrıştırma** | Tek dilekçedeki birden çok istek **alt-taleplere bölünür**; her biri ayrı **tür + birim + yasal süre** alır → otomatik havale (memurun "3 kez fotokopileyip 3 daireye dağıtma" derdini çözer) |
 | 🎯 **Dürüst değerlendirme** | Üretim modeli **DeepSeek-V4** — held-out ön-ölçüm (n=22) **acc 0.955 / op 1.0**; çapraz-referans gpt-4o (n=108) **0.935** [BCa CI]; reprodüke-edilebilir artefaktlar repoda |
 | 🛡️ **PII maskeleme** | TCKN / telefon / IBAN bulut çağrısından **önce** maskelenir; ham kişisel veri arayüze hiç ulaşmaz |
 | 🚫 **Anti-halüsinasyon** | Deterministik uydurma-veto (false-positive 0) + NLI atıf-gerekçelendirme; emin olunmayan madde `[DOĞRULA:]` |
@@ -38,17 +39,18 @@ Tek bir LangGraph boru hattı; **bulut (gpt-4o), lokal (Qwen GGUF) veya anahtars
 ## 🧭 Mimari
 
 ```
-START → siniflandir → cikar → kanit_baglama → eksik_tespit
-                                                    │
-                                   ┌────────────────┴────────────────┐
-                                   ▼                                 ▼
-                              mevzuat_oner ───(rerank? crag? NLI?)   ozetle      (paralel)
-                                   └────────────────┬────────────────┘
-                                                    ▼
+START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompose]
+                                                                   │
+                                          ┌────────────────────────┴────────────┐
+                                          ▼                                      ▼
+                                     mevzuat_oner ──(rerank? crag? NLI?)     ozetle   (paralel)
+                                          └────────────────────────┬────────────┘
+                                                                   ▼
                               route_birim → yazi_taslak → [onay_kapisi*] → verify
                                    → arsiv → sla_triyaj → denetim_izi → finalize → END
 ```
 
+- `[decompose]` çok-konulu evrakı alt-taleplere böler (paralel fan-out kaynağı; `DECOMPOSE_ENABLED`, **varsayılan açık** — additive, baseline metriklerini değiştirmez).
 - `*` ve `?` ile işaretli node'lar **ENV-gated** (varsayılan kapalı) → temel akış birebir korunur, demo için açılır.
 - OCR (`oku`) graf-öncesi (API route'unda) yapılır; graf saf metin üzerinde çalışır → test-edilebilir.
 - Detay: [`docs/03-mimari.md`](docs/03-mimari.md).
@@ -59,6 +61,7 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit
 
 ### Görev 1 — Sınıflandırma ve İçerik Analizi
 - **OCR / metin:** dijital PDF → pypdfium2 (tam Türkçe); taranmış/foto → RapidOCR (offline); Word → python-docx; opsiyonel OpenAI vision.
+- **Çok-konulu ayrıştırma (decompose):** tek dilekçedeki birden çok istek alt-taleplere bölünür; her biri ayrı tür+birim+yasal süre alır → otomatik havale önerisi. LLM segment (DeepSeek) + deterministik bağlaç/madde fallback; alt-talep özeti PII-maskeli. Tek-konulu evrak → bölme yok.
 - **Sınıflandırma:** 19 evrak türü (`belirsiz` abstention dahil) — few-shot LLM + çok-katmanlı keyword/semantik-kök fallback.
 - **Bilgi çıkarımı:** gönderen / kurum / konu / tarih / sayı / talep — **PII maskelenerek**.
 - **Eksik-bilgi tespiti:** tür-bağımlı zorunlu-alan şeması (3071 m.4); eksikse takip soruları üretir.

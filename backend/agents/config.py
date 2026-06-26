@@ -290,6 +290,12 @@ SELF_RAG_ENABLED = os.getenv("SELF_RAG_ENABLED", "0") == "1"
 SELF_CONSISTENCY_N = int(os.getenv("SELF_CONSISTENCY_N", "1"))
 SELF_CONSISTENCY_ESIK = float(os.getenv("SELF_CONSISTENCY_ESIK", "0.6"))
 
+# Çok-konulu evrak ayrıştırma (decompose) — tek dilekçedeki birden çok istek alt-taleplere
+# bölünür; her alt-talep ayrı tür+birim+yazı-türü+yasal-süre alır → otomatik havale önerisi.
+# ADDITIVE: birincil tür/birim/yönlendirme/özet/taslak DEĞİŞMEZ, yalnız alt_talepler eklenir.
+# VARSAYILAN AÇIK (vitrin özelliği); DECOMPOSE_ENABLED=0 ile baseline ablation (node grafta yok).
+DECOMPOSE_ENABLED = os.getenv("DECOMPOSE_ENABLED", "1") == "1"
+
 # Cross-encoder reranking (iki-aşamalı retrieve-then-rerank): mevzuat_oner BM25 top-N
 # adayı bge-reranker-v2-m3 ile yeniden sıralar → +nDCG (gerçek soru-belge alakası).
 # VARSAYILAN KAPALI → baseline saf-BM25 birebir korunur (mock/CI/demo ağır model gerektirmez).

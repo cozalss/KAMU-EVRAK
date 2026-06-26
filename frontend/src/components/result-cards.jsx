@@ -797,6 +797,58 @@ function SlaTriyajCard({ sla }) {
   );
 }
 
+/* ---------- 8c2) Çok-Konulu Ayrıştırma (decompose) — VİTRİN ----------
+   Kamu gerçeği: vatandaş tek dilekçeye birden çok istek yazar; memur 3 kez fotokopileyip
+   3 ayrı daireye elle dağıtır. Sistem dilekçeyi alt-taleplere böler, her birine ayrı
+   tür+birim+yasal süre verir → otomatik havale. result.alt_talepler = [{ozet,tur,tur_tr,
+   birim,birim_tr,yazi_turu,cevap_suresi,sla_durum}, ...]. <2 alt-talep → tek-konulu → gizli. */
+function DecomposeCard({ altTalepler }) {
+  const items = Array.isArray(altTalepler) ? altTalepler : [];
+  if (items.length < 2) return null;
+  return (
+    <article className="rc-card rc-decompose" aria-labelledby="rc-decompose-h">
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true"><Icon.route /></span>
+        <h3 id="rc-decompose-h" className="rc-card-title">Çok-Konulu Ayrıştırma</h3>
+        <span className="rc-badge rc-badge-accent">{items.length} ayrı iş</span>
+      </header>
+      <p className="rc-decompose-sub">
+        Bu tek evrak <strong>{items.length} ayrı iş</strong> içeriyor; her biri ilgili birime
+        ayrı ayrı havale önerildi — kâğıdı elle bölüp dağıtmaya gerek yok.
+      </p>
+      <ol className="rc-decompose-list" aria-label="Alt-talepler">
+        {items.map((a, i) => {
+          const acil = a.sla_durum === "GECIKMIS" || a.sla_durum === "KRITIK";
+          return (
+            <li className="rc-decompose-item" key={i}>
+              <div className="rc-decompose-row">
+                <span className="rc-decompose-no" aria-hidden="true">{i + 1}</span>
+                <p className="rc-decompose-ozet">{cleanDemoText(a.ozet || "")}</p>
+              </div>
+              <div className="rc-decompose-meta">
+                {(a.tur_tr || a.tur) && (
+                  <span className="rc-chip rc-chip-tur">{a.tur_tr || a.tur}</span>
+                )}
+                {(a.birim_tr || a.birim) && (
+                  <span className="rc-chip rc-chip-birim">
+                    <Icon.arrowRight aria-hidden="true" />
+                    {a.birim_tr || a.birim}
+                  </span>
+                )}
+                {a.cevap_suresi && (
+                  <span className={"rc-chip rc-chip-sure" + (acil ? " rc-chip-acil" : "")}>
+                    {cleanDemoText(a.cevap_suresi)}
+                  </span>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </article>
+  );
+}
+
 /* ---------- 8c) Denetim İzi (tamper-evident SHA-256 hash-chain) ----------
    Kamu gerçeği: Sayıştay denetimi + KVKK işleme kaydı → kararların DEĞİŞTİRİLEMEZ izi.
    result.denetim_izi = { zincir:[{adim,veri,hash,onceki}], kok_hash, adim_sayisi,
@@ -900,6 +952,9 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
         <EvrakTuruCard turu={r.evrak_turu} conf={r.tur_confidence} />
         <BirimCard hedef={r.hedef_birim} alternatifler={r.birim_alternatifleri} />
       </div>
+      {/* VİTRİN — çok-konulu evrak ayrıştırma: tek dilekçe → N alt-talep, her biri ayrı
+          birime otomatik havale. <2 alt-talep (tek-konulu) → kart kendini gizler. */}
+      <DecomposeCard altTalepler={r.alt_talepler} />
       {/* Yasal süre takibi — GECİKMİŞ/KRİTİK belirgin (tanımsız türde gizli). */}
       <SlaTriyajCard sla={r.sla_metadata} />
       <CikarilanAlanlarCard unsurlar={r.bilgi_unsurlari} />
@@ -928,6 +983,6 @@ export default ResultCards;
 // Test/yeniden-kullanım için iç kartlar da export edilir.
 export {
   OnayPaneli, ClarifyBanner, EvrakTuruCard, CikarilanAlanlarCard, KanitVurguCard, EksikBilgiCard, MevzuatCard,
-  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, SlaTriyajCard, DenetimIziCard, BilgilendirmeCard,
+  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, SlaTriyajCard, DecomposeCard, DenetimIziCard, BilgilendirmeCard,
   EVRAK_TR, BIRIM_LBL, YAZI_TR, EKSIK_TR, safeUrl, cleanDemoText, normalizeDraftForDemo,
 };

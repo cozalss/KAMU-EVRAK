@@ -7,15 +7,18 @@ kamu-evrak iş akışına yenilendi. OCR (`oku`) graf-öncesi (API route) yapıl
 ## Akış
 
 ```
-START → siniflandir → cikar → eksik_tespit
-                                   │
-                      ┌────────────┴────────────┐
-                      ▼                          ▼
-                 mevzuat_oner                 ozetle      (paralel fan-out)
-                      └────────────┬────────────┘
-                                   ▼
-                              route_birim → yazi_taslak → verify → arsiv → finalize → END
+START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompose]
+                                                                  │
+                                          ┌───────────────────────┴────────┐
+                                          ▼                                 ▼
+                                     mevzuat_oner                        ozetle   (paralel fan-out)
+                                          └───────────────┬─────────────────┘
+                                                          ▼
+            route_birim → yazi_taslak → verify → arsiv → sla_triyaj → denetim_izi → finalize → END
 ```
+
+`[decompose]` (ENV-gated, **varsayılan açık**): çok-konulu evrakı alt-taleplere böler ve paralel
+fan-out kaynağı olur (kapalıyken fan-out `eksik_tespit`'ten başlar — baseline birebir).
 
 OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text` → "oku" SSE event
 → graf `evrak_text` ile çağrılır.
@@ -28,6 +31,7 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 | `siniflandir` | evrak türü (18+belirsiz) | **UYGULANDI** — few-shot LLM + mock fallback | triaj deseni |
 | `cikar` | bilgi unsurları + PII maskeleme | **UYGULANDI** — JSON/regex + maskeleme | yeni |
 | `eksik_tespit` | zorunlu-alan → eksik + takip sorusu | **UYGULANDI** — tür şeması | clarify_slots deseni |
+| `decompose` | çok-konulu evrak → alt-talepler (tür+birim+süre) | **UYGULANDI** — LLM segment + deterministik bağlaç fallback; ENV-gated (varsayılan açık) | yeni (vitrin) |
 | `mevzuat_oner` | ilgili mevzuat | **UYGULANDI** — BM25 + fallback | mevzuat node |
 | `ozetle` | kısa öz özet | **UYGULANDI** — key-fact odaklı özet | draft deseni |
 | `route_birim` | hedef birim + top-k | **UYGULANDI** — 9 birim sınıflandırıcı | yeni |
@@ -42,6 +46,7 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 `mevzuat_onerileri`/`errors` `operator.add` (paralel fan-in). Anahtar alanlar:
 `evrak_text, evrak_turu, bilgi_unsurlari, eksik_alanlar, mevzuat_onerileri, ozet, hedef_birim,
 yazi_turu, yazi_taslak_md, verify_notes, arsiv_metadata, clarify_questions, response`.
+`alt_talepler` (decompose; tek-yazıcı fan-out kaynağı → plain liste, reducer gerekmez).
 
 ## Genişletme / açık kalite kapıları
 

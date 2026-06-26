@@ -106,7 +106,7 @@ kapısı sağlıklı). Kanıt: `docs/benchmark/scorecard.md`.
 | AÇ.3 | **Blind insan-etiketli gold** | Otomatik üretilen gold etiketleri bağımsız kişi onayından geçmeli (etik §13.1) | Hafta 1-2 | ⚠️ |
 | AÇ.4 | **PDF/PPTX sunum export** | Anlatım Markdown hazır; biçim export adımı kaldı | 12 Tmz öncesi | 🟡 |
 | AÇ.5 | **4. takım üyesi** | İdari uygunluk (F.1); kod-dışı | Başvuru öncesi | ⚠️ |
-| AÇ.6 | **Test sayısı netleştirme** | Doküman tutarlılığı: bazı dosyalar 127, son durum **210 test** | README senkronu | 🟡 |
+| AÇ.6 | **Test sayısı netleştirme** | Doküman tutarlılığı: bazı dosyalar 127, 649 test, tüm dokümanlar senkron | ✅ |
 | AÇ.7 | **Canlı OCR uçtan-uca (uv sync ağır)** | RapidOCR/pypdfium2 kurulum doğrulaması; demo örnek-evrak yolu zaten OCR'sız çalışır | Hafta 0 | 🟡 |
 
 ---

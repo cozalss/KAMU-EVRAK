@@ -169,7 +169,7 @@ START → siniflandir → cikar → eksik_tespit
 
 ## Slayt 10 — Kapanış: Durum + Dürüstlük + Sonraki Adım
 
-- **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; 210 test; CI; güvenlik denetimi (0 CRITICAL).
+- **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; 649 test; CI; güvenlik denetimi (0 CRITICAL).
 - **Dürüst skor beyanı (ÖLÇÜLDÜ):** İlerleme **mock 0.22 → gpt-4o-mini 0.61 → gpt-4o 0.91**
   (sıkı macro-F1), hepsi **dairesel-olmayan held-out** sette (örtük ifadeli, farklı sözlük). gpt-4o:
   **operasyonel 0.93 / yönlendirme Top-1 0.93** (98/108). Mock = anahtarsız taban (CI/offline), tavan değil.

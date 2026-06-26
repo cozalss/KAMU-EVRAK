@@ -49,7 +49,7 @@
 7. **Teknik derinlik** — RAG b=0.3, verify false-veto=0, Wilson CI + McNemar ablasyon.
 8. **Dürüst skor** — held-out ilerleme: mock 0.22 → mini 0.61 → **gpt-4o 0.91** (op. 0.93 / Top-1 0.93, 98/108).
 9. **Yenilikçilik + ticarileşme** — PII maskeleme, ENV-gated CRAG/Self-RAG, MIT; EBYS entegrasyonu, SaaS/on-prem (`ticarileşme.md`).
-10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), 210 test, CI; yol haritası; kapanış cümlesi.
+10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), 649 test, CI; yol haritası; kapanış cümlesi.
 
 > **Kapanış cümlesi:** "Çalışan bir sistem, dürüst ölçümler — gpt-4o ile dairesel-olmayan
 > held-out'ta **~%90 doğruluk** — ve temiz bir MIT lisans getirdik; internet kesilse bile

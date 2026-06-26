@@ -96,7 +96,7 @@ SLA'dan gelir — kamu yazılımında sürdürülebilir bir desen.
 
 | Aşama | İçerik | Durum |
 |---|---|---|
-| **MVP (mevcut)** | Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca; gpt-4o held-out ~%90; 210 test; CI | ✅ Çalışıyor + ölçüldü |
+| **MVP (mevcut)** | Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca; gpt-4o held-out ~%90; 649 test; CI | ✅ Çalışıyor + ölçüldü |
 | **Pilot** | 2. bağımsız held-out ile çapraz-doğrulama; blind insan-etiketli gold; tek kurumda dar pilot | Sonraki |
 | **EBYS konektörü** | Yaygın EBYS/DYS ürünleriyle API entegrasyon adaptörleri; e-Yazışma paket çıktısı | Planlı |
 | **Çok-kurum** | Multi-tenant yapılandırma yönetimi; kurum-özel taksonomi/birim ağacı arayüzü | Planlı |

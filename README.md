@@ -67,7 +67,7 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
 > demo), tavan değil. İlerleme: mock **0.22** → mini **0.61** → gpt-4o **0.91** — mimari sağlam, gerçek
 > değer semantik LLM modunda. (Mock in-domain karnesi: [`docs/benchmark/scorecard.md`](docs/benchmark/scorecard.md).)
 
-Test paketi: **210 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
+Test paketi: **649 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
 
 ## Gerçek LLM modu (mock taban → bulut tavan)
 

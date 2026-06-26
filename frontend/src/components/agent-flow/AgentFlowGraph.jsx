@@ -3,6 +3,10 @@
    Görev-2 ayrımını gerçek-zamanlı gösterir. Her node SSE'de "done" olunca yanar.
    RED-LINE: yalnız İLERLEME görselleştirir; sonuç (tür/birim/yazı) backend'de üretilir.
 
+   Demo yıldızı: akan kenarlar (stroke-dashoffset), aktif yolda gezen "komet" parıltısı,
+   sırayla yanan node'lar (glow + pulse), Görev-1 (yeşil) / Görev-2 (mavi) bölge bantları,
+   üstte canlı ilerleme çubuğu.
+
    Props:
      nodes: [{ id, label, gorev, status, data }]  — App SSE'den günceller
             status ∈ "pending" | "active" | "done" | "error"
@@ -12,10 +16,10 @@ import React, { useMemo } from "react";
 import { PIPELINE, EDGES, edgeState, buildFigcaption } from "./topology.js";
 
 // ---- SVG yerleşim sabitleri (col/row → piksel) ----
-const PAD_X = 60;
-const PAD_Y = 56;
+const PAD_X = 64;
+const PAD_Y = 64;
 const COL_W = 138;
-const ROW_H = 78;
+const ROW_H = 82;
 const NODE_W = 116;
 const NODE_H = 52;
 // Sütun sayısı PIPELINE'dan türetilir (node eklendiğinde SVG genişliği otomatik uyar).
@@ -26,6 +30,10 @@ const VIEW_H = PAD_Y * 2 + 2 * ROW_H;
 const centerX = (col) => PAD_X + col * COL_W;
 const centerY = (row) => PAD_Y + row * ROW_H;
 const byId = Object.fromEntries(PIPELINE.map((n) => [n.id, n]));
+
+// Görev-1 / Görev-2 bölge sınırı: ilk gorev=2 node'unun sütunundan önce ayrılır.
+const FIRST_G2_COL = Math.min(...PIPELINE.filter((n) => n.gorev === 2).map((n) => n.col));
+const BAND_SPLIT_X = centerX(FIRST_G2_COL) - COL_W / 2;
 
 // Düğüm sağ-kenarından sonraki düğüm sol-kenarına yumuşak bezier kenar.
 function edgePath(fromId, toId) {
@@ -59,6 +67,8 @@ export function AgentFlowGraph({ nodes }) {
   const caption = buildFigcaption(statusById);
   const doneCount = PIPELINE.filter((n) => statusById[n.id] === "done").length;
   const total = PIPELINE.length;
+  const pct = Math.round((doneCount / total) * 100);
+  const allDone = doneCount >= total;
 
   // SC 4.1.2 — ilerleyiş ekran okuyucuya erişilebilir metin olarak verilir
   const progressLabel = `${doneCount} / ${total} ajan tamamlandı`;
@@ -69,9 +79,15 @@ export function AgentFlowGraph({ nodes }) {
      * aria-label ile adlandırılmış. role="group" kaldırıldı (spec'te figure ile çakışır).
      * figcaption role="status" + aria-live dinamik güncellemeleri duyurur.
      */
-    <figure className="agw-figure" aria-label="Ajan akış şeması — canlı işleme durumu">
+    <figure
+      className={"agw-figure" + (allDone ? " is-complete" : "")}
+      aria-label="Ajan akış şeması — canlı işleme durumu"
+    >
       <div className="agw-head">
-        <span className="agw-title" aria-hidden="true">Ajan Ekibi · Canlı Akış</span>
+        <span className="agw-title" aria-hidden="true">
+          <span className="agw-live-dot" aria-hidden="true" />
+          Ajan Ekibi · Canlı Akış
+        </span>
         {/*
          * SC 1.4.1 — renk tek sinyal DEĞİL: görev ayrımı hem renk (şerit) hem metin
          * (Görev 1 / Görev 2 etiketi) ile sağlanıyor.
@@ -97,6 +113,15 @@ export function AgentFlowGraph({ nodes }) {
         </span>
       </div>
 
+      {/* Canlı ilerleme çubuğu — görsel; sayı zaten agw-progress'te erişilebilir.
+          width compositor-dostu değil ama tek öğe + nadir güncellenir (node başına). */}
+      <div className="agw-bar" aria-hidden="true">
+        <span
+          className={"agw-bar-fill" + (allDone ? " full" : "")}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
       <div className="agw-scroll">
         {/*
          * SC 1.1.1 — SVG tamamen dekoratif/görsel; anlamsal içerik figcaption
@@ -118,19 +143,53 @@ export function AgentFlowGraph({ nodes }) {
             >
               <path d="M0,0 L6,3 L0,6 Z" className="agw-arrowhead" />
             </marker>
+            {/* aktif düğüm parıltısı için yumuşak glow */}
+            <filter id="agw-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3.2" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
+
+          {/* Görev bölge bantları (arka plan) — Görev-1 (yeşil) / Görev-2 (mavi) ayrımı
+              hem renk hem üstteki legend metniyle (SC 1.4.1: renk tek sinyal değil). */}
+          <g className="agw-bands" aria-hidden="true">
+            <rect className="agw-band agw-band-g1" x="0" y="0" width={BAND_SPLIT_X} height={VIEW_H} />
+            <rect
+              className="agw-band agw-band-g2"
+              x={BAND_SPLIT_X} y="0" width={VIEW_W - BAND_SPLIT_X} height={VIEW_H}
+            />
+            <line className="agw-band-split" x1={BAND_SPLIT_X} y1="14" x2={BAND_SPLIT_X} y2={VIEW_H - 14} />
+          </g>
 
           {/* Kenarlar (düğümlerin ALTINDA) */}
           <g className="agw-edges" aria-hidden="true">
-            {EDGES.map((e) => (
-              <path
-                key={`${e.from}-${e.to}`}
-                className={`agw-edge agw-edge-${edgeState(statusById, e)}`}
-                d={edgePath(e.from, e.to)}
-                fill="none"
-                markerEnd="url(#agw-arrow)"
-              />
-            ))}
+            {EDGES.map((e) => {
+              const state = edgeState(statusById, e);
+              const d = edgePath(e.from, e.to);
+              return (
+                <g key={`${e.from}-${e.to}`}>
+                  <path
+                    className={`agw-edge agw-edge-${state}`}
+                    d={d}
+                    fill="none"
+                    markerEnd="url(#agw-arrow)"
+                  />
+                  {/* Aktif yolda gezen "komet" — yalnız akan kenarda; akış yönünü güçlendirir.
+                      pathLength normalize → dash uzunluğu yola bağımsız. */}
+                  {state === "flowing" && (
+                    <path
+                      className="agw-edge-comet"
+                      d={d}
+                      fill="none"
+                      pathLength="100"
+                    />
+                  )}
+                </g>
+              );
+            })}
           </g>
 
           {/* Düğümler — görsel temsil; erişilebilir metin figcaption'da */}
@@ -147,9 +206,16 @@ export function AgentFlowGraph({ nodes }) {
                   transform={`translate(${x} ${y})`}
                 >
                   {st === "active" && (
-                    <rect className="agw-pulse" x="-4" y="-4" width={NODE_W + 8} height={NODE_H + 8} rx="14" />
+                    <>
+                      <rect className="agw-pulse" x="-5" y="-5" width={NODE_W + 10} height={NODE_H + 10} rx="15" />
+                      <rect className="agw-pulse agw-pulse-2" x="-5" y="-5" width={NODE_W + 10} height={NODE_H + 10} rx="15" />
+                    </>
                   )}
-                  <rect className="agw-card" width={NODE_W} height={NODE_H} rx="11" />
+                  <rect
+                    className="agw-card"
+                    width={NODE_W} height={NODE_H} rx="11"
+                    filter={st === "active" ? "url(#agw-glow)" : undefined}
+                  />
                   {/* Görev rengi sol-şerit (renk TEK ayırt edici değil; ✓/● işaret + Görev etiketi de var) */}
                   <rect className="agw-stripe" width="4" height={NODE_H} rx="2" />
                   <text className="agw-dot" x={NODE_W - 13} y="17">{MARK[st]}</text>

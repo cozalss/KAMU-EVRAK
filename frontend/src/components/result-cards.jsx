@@ -6,6 +6,7 @@
    telefon_maskeli). UI bu alanlara açık "maskeli" rozeti basar — vatandaş korumasının
    görünür kanıtı (jüri "wow"). Ham PII frontend'e hiç ulaşmaz. */
 import React, { useState } from "react";
+import { useTypewriter } from "../lib/useTypewriter.js";
 
 // --- Makine kodu → Türkçe etiket (backend config ile eşleşir; UI okunabilirliği) ---
 const EVRAK_TURU_TR = {
@@ -251,6 +252,9 @@ function BirimCard({ hedef, alternatifler }) {
 /* ---------- 6) Yazı Taslağı (önizleme + kopyala + PDF/DOCX indir) ---------- */
 function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, canDownload }) {
   const [copied, setCopied] = useState(false);
+  // Daktilo efekti — resmî yazı "yazılıyormuş" gibi akar (Demo wow). Hook erken-return ÖNCESİ.
+  // Uzun taslak → yüksek cps (hızlı ama görünür). reduced-motion'da anında tam metin.
+  const { shown, animating } = useTypewriter(taslakMd || "", { cps: 1200 });
   if (!taslakMd) return null;
 
   const copy = async () => {
@@ -297,7 +301,16 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
           </button>
         </div>
       </header>
-      <pre className="rc-taslak-pre" tabIndex={0} aria-label="Yazı taslağı önizleme">{taslakMd}</pre>
+      {/* Görsel: daktilo akışı (kopyala her zaman TAM metni alır — copy() taslakMd kullanır).
+          tabIndex/aria-label korunur; reduced-motion'da shown === tam metin. */}
+      <pre
+        className={"rc-taslak-pre" + (animating ? " is-typing" : "")}
+        tabIndex={0}
+        aria-label="Yazı taslağı önizleme"
+      >
+        {shown}
+        {animating && <span className="rc-caret rc-caret-pre" aria-hidden="true" />}
+      </pre>
       {!canDownload && (
         // Dosya/OCR yolunda evrak metni client'ta saklanmaz → indirme devre dışı.
         // Tooltip yeterli değil; jüri ve ekran okuyucu için görünür açıklama.
@@ -399,8 +412,14 @@ function ArsivBilgisiCard({ arsiv }) {
   );
 }
 
-/* ---------- üst özet (bilgilendirme) ---------- */
+/* ---------- üst özet (bilgilendirme) ----------
+   "Düşünen sistem" hissi: metin daktilo (token-token) efektiyle akar. Erişilebilirlik:
+   görsel katman daktilo eder (aria-hidden); ekran okuyucuya TAM metin ayrı sr-only
+   bölgede verilir → kısmi/parçalı duyuru olmaz. reduced-motion'da efekt KAPALI
+   (hook anında tam metin döndürür) → görsel = sr-only, ikisi de tam metin. */
 function BilgilendirmeCard({ text }) {
+  // Hook'lar koşulsuz çağrılmalı (Rules of Hooks) → erken return ÖNCESİ.
+  const { shown, animating } = useTypewriter(text || "", { cps: 520 });
   if (!text) return null;
   return (
     <article className="rc-card rc-info" aria-labelledby="rc-info-h">
@@ -408,9 +427,12 @@ function BilgilendirmeCard({ text }) {
         <span className="rc-ic" aria-hidden="true">📣</span>
         <h3 id="rc-info-h" className="rc-card-title">Bilgilendirme</h3>
       </header>
-      <div className="rc-info-body">
-        {text.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
+      {/* Görsel daktilo katmanı — ekran okuyucudan gizli; tam metin sr-only'de. */}
+      <div className={"rc-info-body" + (animating ? " is-typing" : "")} aria-hidden="true">
+        {shown.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
+        {animating && <span className="rc-caret" aria-hidden="true" />}
       </div>
+      <p className="rc-sr">{text}</p>
     </article>
   );
 }

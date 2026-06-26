@@ -189,16 +189,32 @@ function MevzuatCard({ oneriler }) {
         {list.map((m, i) => {
           // javascript:/data: gibi tehlikeli şemalar reddedilir; yalnız http/https link olur.
           const href = safeUrl(m.url);
+          const scorePct = typeof m.score === "number" && m.score > 0 ? Math.round(m.score * 100) : null;
           return (
           <li className="rc-mev-item" key={i}>
             <div className="rc-mev-top">
               {href ? (
-                <a className="rc-mev-baslik" href={href} target="_blank" rel="noreferrer noopener">{m.baslik}</a>
+                /* SC 2.4.4 Link Amacı — linkin hedefi etiketinde açık */
+                <a
+                  className="rc-mev-baslik"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={`${m.baslik} (yeni sekmede açılır)`}
+                >
+                  {m.baslik}
+                </a>
               ) : (
                 <span className="rc-mev-baslik">{m.baslik}</span>
               )}
-              {typeof m.score === "number" && m.score > 0 && (
-                <span className="rc-mev-score" title="İlgililik skoru">{Math.round(m.score * 100)}%</span>
+              {scorePct !== null && (
+                /* SC 1.4.1 — ikon+metin; renk tek sinyal değil (yüzde değeri metin olarak da var) */
+                <span
+                  className="rc-mev-score"
+                  aria-label={`İlgililik skoru yüzde ${scorePct}`}
+                >
+                  {scorePct}%
+                </span>
               )}
             </div>
             {m.snippet && <p className="rc-mev-snippet">{m.snippet}</p>}

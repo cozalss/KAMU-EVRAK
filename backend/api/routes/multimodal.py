@@ -3,8 +3,12 @@
 ADALET-AGENT api/routes/multimodal.py'dan ADAPT (minimal): magic-byte/boyut guard KEEP;
 hukuk-spesifik mantık DROP. OCR motoru multimodal/ocr.py (KEEP — çok-motorlu hat).
 
-# TODO(kamu-evrak): ADALET'teki tam guard seti (zip-bomb, attachment prompt-injection
-# sanitize, rate-limit) production'da geri eklenir (api/middleware/* KEEP kopyalandı).
+Guard'lar: boyut üst sınırı (MAX_UPLOAD_BYTES, 413) + IP-başı rate-limit (@rate_limit)
+UYGULANDI.
+
+# TODO(kamu-evrak): Gelecek faz — ADALET'teki kalan guard'lar: zip-bomb tespiti
+# (sıkıştırılmış belge bombası) + ekli-belge prompt-injection sanitize (OCR metni LLM'e
+# beslenmeden zararlı talimat temizliği).
 """
 
 from __future__ import annotations

@@ -1,5 +1,24 @@
 # TEKNOFEST 2026 — 1. Senaryo Yarışma Karnesi
 
+> ## ⭐ Gerçek-LLM (gpt-4o) held-out özeti — DÜRÜST, dairesel-OLMAYAN
+>
+> Aşağıdaki ana karne **`LLM_MODE=mock` (taban)** içindir. Üretim kalitesi için ayrı bir
+> **dairesel-olmayan held-out** ölçümü yapıldı (örtük ifadeli, gen_synthetic'ten farklı şablon/sözlük
+> → keyword sızıntısı yok), `LLM_MODE=openai` + **gpt-4o** ile gerçek LangGraph pipeline üzerinden:
+>
+> | Metrik (108-evrak held-out) | gpt-4o |
+> |---|---|
+> | Sınıflandırma macro-F1 (sıkı) | **0.908** |
+> | Sınıflandırma accuracy (sıkı) | **0.907** [%95 CI 0.838–0.949] |
+> | Operasyonel accuracy (eşdeğer-grup) | **0.935** [%95 CI 0.872–0.968] |
+> | Yönlendirme Top-1 | **0.926** [%95 CI 0.861–0.962] · 98/108 |
+> | Yönlendirme Top-3 | **0.944** |
+>
+> İlerleme: mock **0.22** → gpt-4o-mini **0.61** → **gpt-4o 0.91** sıkı macro-F1. Üretim önerisi:
+> `LLM_MODE=openai` + gpt-4o. Tam tablo + hata analizi: [`llm-heldout.md`](llm-heldout.md).
+>
+> ---
+
 > Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · `python -m eval.competition_scorecard` ile üretilir (commit `ab6be51`, LLM_MODE=`mock`).
 
 > **Skorlar MOCK tabandır:** LLM_MODE=mock'ta siniflandir/route keyword-heuristik fallback'i koşar. Bu metrikler TAVAN değil TABAN — gerçek LLM modu (openai/llamacpp) yükseltir. Burada KRİTİK olan, eval'in mock taksonomiyi değil GERÇEK LangGraph pipeline'ını (siniflandir→cikar→eksik_tespit→route_birim→ozetle→yazi_taslak) ölçmesidir.

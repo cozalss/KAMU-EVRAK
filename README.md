@@ -43,22 +43,29 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
   yetkili personeldedir."
 - a11y: klavye gezinme, ARIA, `prefers-reduced-motion`; saf React/Vite (ek dep yok).
 
-## Eval skorları (mock taban)
+## Eval skorları (mock taban → mini → gpt-4o tavan)
 
-> **GERÇEK LangGraph pipeline** ölçümü (`python -m eval.competition_scorecard`); LLM_MODE=`mock`
-> → keyword/regex fallback koşar. **Skorlar tavan değil tabandır** — gerçek LLM modu yükseltir.
-> Tam karne: [`docs/benchmark/scorecard.md`](docs/benchmark/scorecard.md).
+> İki ayrı ölçüm var, ikisi de **GERÇEK LangGraph pipeline**'ı (`build_graph().ainvoke`) koşar;
+> fark yalnız **LLM modu** ve **veri setidir**. Dürüst okuma için ikisini birlikte bakın.
+>
+> - **Mock taban (anahtarsız):** `LLM_MODE=mock` → keyword/regex fallback. CI/offline taban; **tavan değildir.**
+> - **Gerçek-LLM held-out (dürüst, dairesel-OLMAYAN):** `LLM_MODE=openai` → örtük ifadeli, gen_synthetic'ten
+>   **farklı şablon/sözlükle** yazılmış 108-evrak held-out sette (keyword sızıntısı yok). Tam tablo +
+>   mock→mini→gpt-4o ilerlemesi: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
 
-| Metrik | Değer (%95 CI) |
-|---|---|
-| Sınıflandırma macro-F1 | **0.628** |
-| Sınıflandırma accuracy | 0.587 [0.500, 0.669] |
-| Eksik-bilgi recall (β=2) | **0.991** [0.951, 0.998] |
-| Özet key-fact recall | **1.000** |
-| Yönlendirme Top-1 | **0.643** [0.556, 0.721] |
-| Yönlendirme Top-3 | 0.833 |
-| Yazı türü doğruluğu | 0.936 |
-| Adillik (counterfactual isim/cinsiyet) | **1.0000** [0.956, 1.000] |
+| Metrik (aynı held-out set) | Mock (taban) | gpt-4o-mini | **gpt-4o (üretim tavanı)** |
+|---|---|---|---|
+| Sınıflandırma macro-F1 (sıkı) | 0.218 | 0.612 | **0.908** |
+| Sınıflandırma accuracy (sıkı) | 0.213 | 0.620 | **0.907** [%95 CI 0.838–0.949] |
+| Operasyonel accuracy (eşdeğer-grup) | — | 0.768 | **0.935** [%95 CI 0.872–0.968] |
+| Yönlendirme Top-1 | 0.426 | 0.778 | **0.926** [%95 CI 0.861–0.962] |
+| Yönlendirme Top-3 | 0.463 | 0.870 | **0.944** |
+| Doğru / 108 | 23 | 67 | **98** |
+
+> **Üretim önerisi:** `LLM_MODE=openai` + **gpt-4o** → dairesel-olmayan held-out'ta **sıkı macro-F1
+> ~0.91 / operasyonel ~0.93 / yönlendirme Top-1 ~0.93** (98/108). Mock = **anahtarsız taban** (CI/offline
+> demo), tavan değil. İlerleme: mock **0.22** → mini **0.61** → gpt-4o **0.91** — mimari sağlam, gerçek
+> değer semantik LLM modunda. (Mock in-domain karnesi: [`docs/benchmark/scorecard.md`](docs/benchmark/scorecard.md).)
 
 Test paketi: **210 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
 
@@ -84,12 +91,13 @@ LLM_MODE=openai OPENAI_API_KEY=sk-... python scripts/run_llm_smoke.py --acc 12
 python scripts/run_llm_smoke.py
 ```
 
-> **Dürüst not (skorların anlamı):** Yukarıdaki **Eval skorları** ve
-> `docs/benchmark/scorecard.md`, **`LLM_MODE=mock`** ile ölçülmüştür — yani sınıflandırma
-> ve çıkarım few-shot LLM yerine deterministik keyword/regex fallback ile koşar. Bu skorlar
-> **tavan değil tabandır (alt-sınır)**; `LLM_MODE=openai` few-shot LLM bunları **yükseltir**.
-> Önemli olan, eval'in mock'ta da **gerçek LangGraph pipeline'ı** ölçmesi — taban tavana
-> sahte sabitlenmez. Mock vs gerçek-LLM ayrımının ölçüm yöntemi: [`docs/method.md`](docs/method.md).
+> **Dürüst not (skorların anlamı):** `docs/benchmark/scorecard.md` karnesi **`LLM_MODE=mock`** ile
+> ölçülmüştür — sınıflandırma/çıkarım few-shot LLM yerine deterministik keyword/regex fallback ile koşar.
+> Bu **tavan değil tabandır (alt-sınır).** "Yükseltir" iddiası artık **ölçüldü:** dairesel-olmayan
+> held-out sette `LLM_MODE=openai` + **gpt-4o** → sıkı macro-F1 **0.908**, operasyonel **0.935**,
+> yönlendirme Top-1 **0.926** (98/108). İlerleme mock **0.22** → mini **0.61** → gpt-4o **0.91**.
+> Tam tablo: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md). Ölçüm yöntemi:
+> [`docs/method.md`](docs/method.md).
 
 ## Ekran görüntüleri
 

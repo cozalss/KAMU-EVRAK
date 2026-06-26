@@ -4,8 +4,9 @@ config.EVRAK_TO_BIRIM birincil sinyal; içerik-temelli keyword heuristiği ile
 iyileştirilir + top-k alternatif üretilir. Resmî havale akışında (docs/02 §3)
 tüm evrak önce Yazı İşleri/Genel Evrak'a düşer → alternatiflere eklenir.
 
-# TODO(kamu-evrak): Üretimde few-shot LLM / DistilBERTurk sınıflandırıcı + maliyet-
-#   ağırlıklı hata matrisi (yanlış havale pahalı) + eval/routing_eval.py Top-1/Top-3 + MRR.
+# TODO(kamu-evrak): Gelecek faz — şu an tablo + keyword heuristiği (deterministik,
+#   bağımlılıksız). Üretimde few-shot LLM / DistilBERTurk sınıflandırıcı + maliyet-ağırlıklı
+#   hata matrisi (yanlış havale pahalı) + eval/routing_eval.py Top-1/Top-3 + MRR.
 """
 
 from __future__ import annotations

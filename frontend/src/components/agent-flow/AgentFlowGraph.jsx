@@ -60,25 +60,57 @@ export function AgentFlowGraph({ nodes }) {
   const doneCount = PIPELINE.filter((n) => statusById[n.id] === "done").length;
   const total = PIPELINE.length;
 
+  // SC 4.1.2 — ilerleyiş ekran okuyucuya erişilebilir metin olarak verilir
+  const progressLabel = `${doneCount} / ${total} ajan tamamlandı`;
+
   return (
-    <figure className="agw-figure" role="group" aria-label="Ajan akış şeması">
+    /*
+     * SC 4.1.2 / SC 1.3.1 — <figure> öğesi örtük role="figure" taşır;
+     * aria-label ile adlandırılmış. role="group" kaldırıldı (spec'te figure ile çakışır).
+     * figcaption role="status" + aria-live dinamik güncellemeleri duyurur.
+     */
+    <figure className="agw-figure" aria-label="Ajan akış şeması — canlı işleme durumu">
       <div className="agw-head">
-        <span className="agw-title">Ajan Ekibi · Canlı Akış</span>
-        <span className="agw-legend" aria-hidden="true">
-          <span className="agw-legend-item g1"><i className="agw-swatch" /> Görev 1: Anla</span>
-          <span className="agw-legend-item g2"><i className="agw-swatch" /> Görev 2: Üret</span>
+        <span className="agw-title" aria-hidden="true">Ajan Ekibi · Canlı Akış</span>
+        {/*
+         * SC 1.4.1 — renk tek sinyal DEĞİL: görev ayrımı hem renk (şerit) hem metin
+         * (Görev 1 / Görev 2 etiketi) ile sağlanıyor.
+         * legend artık aria-hidden değil; ekran okuyucu görev açıklamalarını duyabilir.
+         */}
+        <span className="agw-legend">
+          <span className="agw-legend-item g1">
+            <i className="agw-swatch" aria-hidden="true" />
+            <span>Görev 1: Anla</span>
+          </span>
+          <span className="agw-legend-item g2">
+            <i className="agw-swatch" aria-hidden="true" />
+            <span>Görev 2: Üret</span>
+          </span>
         </span>
-        <span className="agw-progress" aria-hidden="true">{doneCount}/{total}</span>
+        {/* SC 4.1.2 — görsel sayaç + görünmez erişilebilir etiket */}
+        <span
+          className="agw-progress"
+          aria-label={progressLabel}
+          title={progressLabel}
+        >
+          <span aria-hidden="true">{doneCount}/{total}</span>
+        </span>
       </div>
 
       <div className="agw-scroll">
+        {/*
+         * SC 1.1.1 — SVG tamamen dekoratif/görsel; anlamsal içerik figcaption
+         * aria-live bölgesinde metin olarak sağlanıyor. aria-hidden="true" doğru.
+         */}
         <svg
           className="agw-svg"
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-          role="presentation"
-          aria-hidden="true"
+          role="img"
+          aria-label="Ajan pipeline akış diyagramı"
           preserveAspectRatio="xMidYMid meet"
         >
+          {/* SVG başlığı — role="img" + title kombinasyonu SC 1.1.1 uyumlu */}
+          <title>Ajan pipeline akış diyagramı</title>
           <defs>
             <marker
               id="agw-arrow" markerWidth="7" markerHeight="7" refX="5.4" refY="3"
@@ -89,7 +121,7 @@ export function AgentFlowGraph({ nodes }) {
           </defs>
 
           {/* Kenarlar (düğümlerin ALTINDA) */}
-          <g className="agw-edges">
+          <g className="agw-edges" aria-hidden="true">
             {EDGES.map((e) => (
               <path
                 key={`${e.from}-${e.to}`}
@@ -101,8 +133,8 @@ export function AgentFlowGraph({ nodes }) {
             ))}
           </g>
 
-          {/* Düğümler */}
-          <g className="agw-nodes">
+          {/* Düğümler — görsel temsil; erişilebilir metin figcaption'da */}
+          <g className="agw-nodes" aria-hidden="true">
             {PIPELINE.map((n) => {
               const st = statusById[n.id];
               const x = centerX(n.col) - NODE_W / 2;
@@ -118,9 +150,9 @@ export function AgentFlowGraph({ nodes }) {
                     <rect className="agw-pulse" x="-4" y="-4" width={NODE_W + 8} height={NODE_H + 8} rx="14" />
                   )}
                   <rect className="agw-card" width={NODE_W} height={NODE_H} rx="11" />
-                  {/* Görev rengi sol-şerit (renk TEK ayırt edici değil; ✓/● işaret + bold da var) */}
+                  {/* Görev rengi sol-şerit (renk TEK ayırt edici değil; ✓/● işaret + Görev etiketi de var) */}
                   <rect className="agw-stripe" width="4" height={NODE_H} rx="2" />
-                  <text className="agw-dot" x={NODE_W - 13} y="17" aria-hidden="true">{MARK[st]}</text>
+                  <text className="agw-dot" x={NODE_W - 13} y="17">{MARK[st]}</text>
                   <text className="agw-label" x="14" y="21">{n.label}</text>
                   <text className="agw-sub" x="14" y="36">{summary || n.desc}</text>
                 </g>
@@ -130,8 +162,14 @@ export function AgentFlowGraph({ nodes }) {
         </svg>
       </div>
 
-      {/* a11y: figure aria-label statik ad sağlar; TEK aria-live bölge dinamik durumu duyurur. */}
-      <figcaption className="agw-sr" role="status" aria-live="polite">{caption}</figcaption>
+      {/*
+       * SC 4.1.3 Durum Mesajları — figcaption role="status" + aria-live="polite"
+       * ekran okuyucuya her node değişiminde güncel durumu duyurur.
+       * figure'ın erişilebilir açıklamasını da sağlar (figcaption).
+       */}
+      <figcaption className="agw-sr" role="status" aria-live="polite" aria-atomic="true">
+        {caption}
+      </figcaption>
     </figure>
   );
 }

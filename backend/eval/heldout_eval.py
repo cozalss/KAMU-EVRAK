@@ -23,6 +23,7 @@ diye yazılır.
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import contextlib
 import json
@@ -44,17 +45,41 @@ from eval.evrak_class_eval import (  # noqa: E402 (DRY: aynı metrikler)
 )
 from eval.stats import fmt_ci, wilson_interval  # noqa: E402
 
-GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "heldout_gold.jsonl"
+_DATA = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic"
+GOLD = _DATA / "heldout_gold.jsonl"  # 1. held-out (varsayılan; geri uyum)
+# İsimli set kısayolları (CLI --set). Yeni bir set eklemek = bir satır eklemek.
+GOLD_SETS: dict[str, Path] = {
+    "heldout": GOLD,
+    "heldout2": _DATA / "heldout2_gold.jsonl",  # 2. held-out (çapraz-doğrulama)
+}
 ABSTAIN_CLASS = "belirsiz"
 ABSTAIN_CONF_FLOOR = 0.45  # güven < bu = abstain (siniflandir eşiği ile uyumlu)
 
 
 def load_gold(path: Path = GOLD) -> list[dict]:
     if not path.exists():
+        # Hangi üreteç koşulmalı? heldout2 → gen_heldout2.py, diğeri gen_heldout.py.
+        uretec = "gen_heldout2.py" if "heldout2" in path.name else "gen_heldout.py"
         raise FileNotFoundError(
-            f"Held-out gold yok: {path} — önce `python scripts/gen_heldout.py` koşun."
+            f"Held-out gold yok: {path} — önce `python scripts/{uretec}` koşun."
         )
     return [json.loads(ln) for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
+
+
+def resolve_gold_path(set_adi: str | None, gold: str | None) -> Path:
+    """CLI seçimini gold yoluna çevir. --gold (açık yol) --set'ten önceliklidir.
+
+    --gold yoksa --set kısayolu (heldout|heldout2); ikisi de yoksa varsayılan 1. set
+    (geri uyum: parametresiz çağrı eski davranışı korur).
+    """
+    if gold:
+        return Path(gold)
+    if set_adi:
+        if set_adi not in GOLD_SETS:
+            secenek = ", ".join(GOLD_SETS)
+            raise SystemExit(f"Bilinmeyen --set '{set_adi}'. Seçenekler: {secenek}")
+        return GOLD_SETS[set_adi]
+    return GOLD
 
 
 def run_pipeline(rows: list[dict]) -> None:
@@ -105,10 +130,22 @@ def evaluate(rows: list[dict]) -> dict:
     }
 
 
-def main() -> int:
-    res = evaluate(load_gold())
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(
+        description="Held-out (dürüst, dairesel-olmayan) sınıflandırma + yönlendirme değerlendirmesi")
+    ap.add_argument("--set", dest="set_adi", choices=tuple(GOLD_SETS), default=None,
+                    help="isimli held-out seti (heldout=1. set varsayılan, heldout2=çapraz-doğrulama)")
+    ap.add_argument("--gold", type=str, default=None,
+                    help="açık gold JSONL yolu (--set'i ezer; varsayılan 1. held-out)")
+    args = ap.parse_args(argv)
+
+    gold_path = resolve_gold_path(args.set_adi, args.gold)
+    set_etiketi = args.set_adi or ("heldout2" if "heldout2" in gold_path.name else "heldout")
+    res = evaluate(load_gold(gold_path))
     bar = "=" * 70
-    print(f"\n{bar}\n  HELD-OUT (DÜRÜST, dairesel-OLMAYAN) — SINIFLANDIRMA + YÖNLENDİRME\n{bar}")
+    print(f"\n{bar}\n  HELD-OUT [{set_etiketi}] (DÜRÜST, dairesel-OLMAYAN) — "
+          f"SINIFLANDIRMA + YÖNLENDİRME\n{bar}")
+    print(f"  Set dosyası: {gold_path.name}")
     print(f"  Vaka: {res['n']} · doğru: {res['correct']} · kapalı-küme: {res['n_classes']} sınıf")
     print("  --- Görev 1: sınıflandırma (SIKI — tam tür eşleşmesi) ---")
     print(f"  Accuracy : {res['accuracy']:.3f}  (%95 CI {fmt_ci(res['correct'], res['n'])})")

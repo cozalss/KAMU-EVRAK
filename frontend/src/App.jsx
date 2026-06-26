@@ -16,6 +16,9 @@ const freshNodes = () => PIPELINE.map((n) => ({ ...n, status: "pending", data: n
 
 // Örnekleri kategoriye göre, ilk-görülen sırayı koruyarak grupla (8-9 örnek → okunur düzen).
 // grup alanı yoksa "Örnekler" başlığı altında toplanır (graceful).
+// Grup adından güvenli HTML id üret (boşluk, slash, Türkçe özel karakter sorunsuz)
+const slugifyGrup = (g) => g.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
 const SAMPLE_GROUPS = (() => {
   const order = [];
   const byGroup = new Map();
@@ -24,7 +27,7 @@ const SAMPLE_GROUPS = (() => {
     if (!byGroup.has(grup)) { byGroup.set(grup, []); order.push(grup); }
     byGroup.get(grup).push(s);
   }
-  return order.map((grup) => ({ grup, items: byGroup.get(grup) }));
+  return order.map((grup) => ({ grup, slug: slugifyGrup(grup), items: byGroup.get(grup) }));
 })();
 
 export default function App() {
@@ -251,26 +254,34 @@ export default function App() {
 
   return (
     <div className="ke-app">
-      <a href="#ke-main" className="ke-skip">İçeriğe geç</a>
+      {/* SC 2.4.1 Bypass Blocks — sayfanın üstüne atlama bağlantısı */}
+      <a href="#ke-main" className="ke-skip">Ana içeriğe geç</a>
 
-      <header className="ke-header">
+      {/* SC 1.3.6 Landmark bölgeleri — header */}
+      <header className="ke-header" role="banner">
         <div className="ke-brand">
+          {/* SC 1.1.1 — logo emojisi dekoratif, aria-hidden doğru */}
           <span className="ke-logo" aria-hidden="true">📑</span>
           <div>
+            {/* SC 2.4.6 Başlıklar — h1 sayfa başlığı */}
             <h1>kamu-evrak</h1>
             <p>Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi — <i>TEKNOFEST 2026, 1. Senaryo</i></p>
           </div>
         </div>
         <ul className="ke-trust" aria-label="Sistem güvenceleri">
-          <li>✓ 2 görev tek pipeline</li>
-          <li>🛡️ Kişisel veri maskeli</li>
-          <li>⚖️ Karar destek — uydurmasız</li>
+          {/* SC 1.4.1 — ikon+metin birlikte; ikon tek sinyal değil */}
+          <li><span aria-hidden="true">✓</span> 2 görev tek pipeline</li>
+          <li><span aria-hidden="true">🛡️</span> Kişisel veri maskeli</li>
+          <li><span aria-hidden="true">⚖️</span> Karar destek — uydurmasız</li>
         </ul>
       </header>
 
+      {/* SC 1.3.6 — main landmark */}
       <main id="ke-main" className="ke-main">
         {/* ---- Yükleme alanı ---- */}
-        <section className="ke-intake" aria-label="Evrak yükleme">
+        <section className="ke-intake" aria-labelledby="ke-intake-h">
+          {/* SC 2.4.6 — gizli başlık, section'a ad verir */}
+          <h2 id="ke-intake-h" className="ke-sr">Evrak Yükleme</h2>
           <div
             className={"ke-drop" + (dragOver ? " over" : "") + (busy ? " busy" : "")}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
@@ -279,27 +290,39 @@ export default function App() {
             onClick={() => !busy && fileRef.current?.click()}
             onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !busy) { e.preventDefault(); fileRef.current?.click(); } }}
             role="button"
-            tabIndex={0}
-            aria-label="Evrak dosyası yükle: tıkla veya sürükle bırak (PDF, görsel, Word)"
+            tabIndex={busy ? -1 : 0}
+            aria-label={
+              fileName
+                ? `Seçili dosya: ${fileName}. Değiştirmek için tıkla veya Enter'a bas.`
+                : "Evrak dosyası yükle — tıkla veya sürükle bırak (PDF, görsel, Word)"
+            }
             aria-disabled={busy}
           >
             <span className="ke-drop-ic" aria-hidden="true">⬆️</span>
             <span className="ke-drop-main">{fileName ? fileName : "Evrakı buraya sürükle veya tıkla"}</span>
             <span className="ke-drop-sub">PDF · JPG/PNG · TIFF · Word (.docx) — en fazla {MAX_UPLOAD_MB} MB</span>
+            {/* SC 1.3.1 — gizli file input; görünür alan klavye erişimli role=button ile sağlanıyor */}
             <input
               ref={fileRef} type="file" accept={ACCEPT} hidden
               onChange={onPick} aria-hidden="true" tabIndex={-1}
             />
           </div>
 
-          <div className="ke-samples" aria-label="Örnek evraklar">
-            <span className="ke-samples-h">
+          <div className="ke-samples" aria-labelledby="ke-samples-h">
+            <p id="ke-samples-h" className="ke-samples-h">
               Dosyan yok mu? <strong>{SAMPLE_DOCS.length} örnek evraktan</strong> birini tek tıkla canlı işlet:
-            </span>
-            {SAMPLE_GROUPS.map(({ grup, items }) => (
+            </p>
+            {SAMPLE_GROUPS.map(({ grup, slug, items }) => (
               <div className="ke-sample-group" key={grup}>
-                <span className="ke-sample-grup-h" aria-hidden="true">{grup}</span>
-                <div className="ke-samples-row" role="group" aria-label={`${grup} örnek evraklar`}>
+                {/* SC 1.3.1 / SC 2.4.6 — görünür grup başlığı; aria-hidden kaldırıldı.
+                    role="group" artık aria-labelledby ile başlığa bağlanıyor.
+                    id değeri slug kullanır (slash/boşluk/Türkçe karakter sorunu yok). */}
+                <p id={`ke-grup-${slug}`} className="ke-sample-grup-h">{grup}</p>
+                <div
+                  className="ke-samples-row"
+                  role="group"
+                  aria-labelledby={`ke-grup-${slug}`}
+                >
                   {items.map((s) => (
                     <button
                       key={s.id}
@@ -307,13 +330,14 @@ export default function App() {
                       className={"ke-sample" + (selectedSample === s.id ? " active" : "")}
                       onClick={() => !busy && runSampleJson(s)}
                       disabled={busy}
-                      title={s.aciklama}
                       aria-pressed={selectedSample === s.id}
+                      aria-describedby={`ke-sdesc-${s.id}`}
                     >
                       <span className="ke-sample-ic" aria-hidden="true">{s.icon}</span>
                       <span className="ke-sample-tx">
                         <span className="ke-sample-label">{s.label}</span>
-                        <span className="ke-sample-desc">{s.aciklama}</span>
+                        {/* SC 1.3.1 — açıklama aria-describedby ile butonla ilişkili */}
+                        <span id={`ke-sdesc-${s.id}`} className="ke-sample-desc">{s.aciklama}</span>
                       </span>
                     </button>
                   ))}
@@ -324,32 +348,46 @@ export default function App() {
         </section>
 
         {error && !busy && (
-          <div className="ke-error" role="alert">
+          <div className="ke-error" role="alert" aria-atomic="true">
             <span className="ke-error-ic" aria-hidden="true">⚠️</span>
             <div className="ke-error-tx">
               <strong>İşlem tamamlanamadı.</strong>
+              {/* SC 3.3.1 — hata mesajı programatik olarak duyuruluyor (role=alert) */}
               <span>{error}</span>
             </div>
             <div className="ke-error-act">
               {lastRun.current && (
                 <button type="button" className="ke-retry" onClick={onRetry}>
-                  ↻ Tekrar dene
+                  <span aria-hidden="true">↻</span> Tekrar dene
                 </button>
               )}
-              <button type="button" className="ke-error-x" onClick={() => setError("")} aria-label="Hatayı kapat">✕</button>
+              <button
+                type="button"
+                className="ke-error-x"
+                onClick={() => setError("")}
+                aria-label="Hata bildirimini kapat"
+              >
+                <span aria-hidden="true">✕</span>
+              </button>
             </div>
           </div>
         )}
 
         {/* ---- Canlı Ajan Akış Şeması ---- */}
         {started && (
-          <section className="ke-flow-wrap" aria-label="Ajan akış şeması">
+          <section className="ke-flow-wrap" aria-label="Canlı ajan akış şeması">
             <AgentFlowGraph nodes={nodes} />
           </section>
         )}
 
-        {/* ---- Sonuç bölgesi: yükleniyor (iskelet) → sonuç kartları ---- */}
-        <section className="ke-result-wrap" aria-live="polite" aria-busy={busy}>
+        {/* ---- Sonuç bölgesi: yükleniyor (iskelet) → sonuç kartları ----
+            SC 4.1.3 — aria-live="polite" + aria-busy dinamik içerik değişimini duyurur */}
+        <section
+          className="ke-result-wrap"
+          aria-live="polite"
+          aria-busy={busy}
+          aria-label="Evrak işleme sonuçları"
+        >
           {busy && !result && <ResultSkeleton />}
           {result && (
             <ResultCards
@@ -362,9 +400,9 @@ export default function App() {
         </section>
 
         {!started && (
-          <section className="ke-placeholder">
+          <section className="ke-placeholder" aria-labelledby="ke-ph-h">
             <span className="ke-placeholder-ic" aria-hidden="true">📥</span>
-            <h2 className="ke-placeholder-h">Henüz bir işlem yok</h2>
+            <h2 id="ke-ph-h" className="ke-placeholder-h">Henüz bir işlem yok</h2>
             <p>Yukarıdan bir evrak yükleyin ya da bir <strong>örnek evrak</strong> seçin; sistem evrakı
               <strong> {PIPELINE.length} ajanlı</strong> bir boru hattından geçirir: okuma → sınıflandırma →
               bilgi çıkarma → eksik tespiti → mevzuat → özet → birim havalesi → resmî yazı taslağı →
@@ -373,10 +411,18 @@ export default function App() {
         )}
       </main>
 
-      {/* a11y: kalıcı canlı bölge — ekran okuyucu toast'ı duyurur */}
-      <div className="ke-sr" role="status" aria-live="polite">{toast}</div>
+      {/* SC 1.3.6 — contentinfo landmark (footer) */}
+      <footer className="ke-footer" role="contentinfo">
+        <p className="ke-footer-note">
+          TEKNOFEST 2026, 1. Senaryo — Demo arayüzü. Bu sistem karar-destek amaçlıdır.
+        </p>
+      </footer>
+
+      {/* SC 4.1.3 Durum Mesajları — ekran okuyucu toast'ı bu kalıcı canlı bölgeden duyurur.
+          Görsel toast ayrı (role="presentation") — yalnız görsel kullanıcı içindir. */}
+      <div className="ke-sr" role="status" aria-live="polite" aria-atomic="true">{toast}</div>
       {toast && (
-        <div className="ke-toast" role="presentation">{toast}</div>
+        <div className="ke-toast" role="presentation" aria-hidden="true">{toast}</div>
       )}
     </div>
   );

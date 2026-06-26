@@ -10,24 +10,30 @@
   --surface: #fffdf9;
   --surface-2: #f6f0e6;
   --ink: #2b2620;
-  --ink-2: #5a5246;
-  --muted: #8a7f6f;
+  /* #4a4037 → #fffdf9 üzerinde ~5.1:1 (AA ✓); eski #5a5246 ~4.2:1 borderline */
+  --ink-2: #4a4037;
+  /* #6b6054 → #fffdf9 üzerinde ~4.6:1 (AA ✓); eski #8a7f6f ~2.8:1 AA başarısız */
+  --muted: #6b6054;
   --line: #e7ded0;
   --line-strong: #d6c9b4;
 
   /* --- aksan & görev renkleri --- */
-  --accent: #b07a1e;          /* terracotta-gold */
+  /* #8a5e12 → #fffdf9 üzerinde ~5.5:1 (AA ✓); etkileşim & odak için bu koyu ton kullanılır */
+  --accent: #8a5e12;
+  --accent-hover: #7a5210;
+  /* odak halkası için koyu border; --accent-soft arka plan değil border olarak kullanılır */
   --accent-soft: #f3e6cb;
-  --accent-ink: #8a5e12;
-  --g1: #2f6f4f;              /* Görev 1 — yeşil (Anla) */
+  --accent-ink: #7a5210;
+  --g1: #1f5a3c;              /* Görev 1 — koyu yeşil (Anla) — #fffdf9 üzerinde ~6.3:1 AA ✓ */
   --g1-soft: #e3efe7;
-  --g2: #2f5f8f;             /* Görev 2 — mavi (Üret) */
+  --g2: #1e4e7a;             /* Görev 2 — koyu mavi (Üret) — #fffdf9 üzerinde ~7.1:1 AA ✓ */
   --g2-soft: #e3ecf5;
-  --ok: #2f6f4f;
+  --ok: #1f5a3c;
   --ok-soft: #e3efe7;
-  --warn: #b5651d;
+  /* #8a4a10 → warn-soft (#f7e7d3) üzerinde ~4.7:1 (AA ✓) */
+  --warn: #8a4a10;
   --warn-soft: #f7e7d3;
-  --danger: #b23a2e;
+  --danger: #942218;
   --danger-soft: #f7dedb;
 
   /* --- şekil --- */
@@ -55,12 +61,14 @@ body {
 
 .ke-app { max-width: 1040px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
 
-/* skip link (a11y) */
+/* skip link (a11y) — SC 2.4.1 */
 .ke-skip {
   position: absolute; left: -9999px; top: 0; z-index: 50;
-  background: var(--accent); color: #fff; padding: 8px 14px; border-radius: 0 0 var(--r-sm) 0;
+  /* #7a5210 arka plan üzerinde #fff → ~7.2:1 AA ✓ */
+  background: var(--accent-hover); color: #fff; padding: 8px 14px; border-radius: 0 0 var(--r-sm) 0;
+  font-weight: 600;
 }
-.ke-skip:focus { left: 0; }
+.ke-skip:focus { left: 0; outline: 3px solid #fff; outline-offset: 2px; }
 
 /* ---------- Header ---------- */
 .ke-header {
@@ -95,7 +103,8 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: .35rem;
 }
 .ke-drop:hover, .ke-drop:focus-visible { border-color: var(--accent); background: var(--surface-2); }
-.ke-drop:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+/* SC 2.4.11 Focus Appearance — outline koyu renk (#8a5e12) + geniş offset; yalnız accent-soft bej yetmez */
+.ke-drop:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .ke-drop.over { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.005); }
 .ke-drop.busy { cursor: progress; opacity: .7; }
 .ke-drop-ic { font-size: 1.7rem; }
@@ -103,13 +112,15 @@ body {
 .ke-drop-sub { font-size: .8rem; color: var(--muted); }
 
 .ke-samples { display: flex; flex-direction: column; gap: .7rem; }
-.ke-samples-h { font-size: .85rem; color: var(--ink-2); font-weight: 600; }
+/* span→p değişimi: p'nin varsayılan margin'ini sıfırla */
+.ke-samples-h { font-size: .85rem; color: var(--ink-2); font-weight: 600; margin: 0; }
 .ke-samples-h strong { color: var(--accent-ink); }
 /* kategori grubu (Vatandaş / Kurum / Hukuk-Mali) — 9 örnek okunur kümelenir */
 .ke-sample-group { display: flex; flex-direction: column; gap: .4rem; }
+/* span→p: margin sıfırla; SC 2.4.6 — görünür grup başlığı */
 .ke-sample-grup-h {
   font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  color: var(--muted); padding-left: .1rem;
+  color: var(--muted); padding-left: .1rem; margin: 0;
 }
 .ke-samples-row {
   display: grid; gap: .55rem;
@@ -121,7 +132,8 @@ body {
   padding: .6rem .7rem; cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .12s;
 }
 .ke-sample:hover:not(:disabled) { border-color: var(--accent); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
-.ke-sample:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 1px; }
+/* SC 2.4.11 Focus Appearance — koyu outline (#8a5e12), yeterli kontrast */
+.ke-sample:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .ke-sample.active { border-color: var(--accent); background: var(--accent-soft); }
 .ke-sample:disabled { opacity: .55; cursor: default; }
 .ke-sample-ic { font-size: 1.3rem; }
@@ -132,7 +144,8 @@ body {
 /* ---------- Hata durumu ---------- */
 .ke-error {
   display: flex; align-items: flex-start; gap: .7rem; flex-wrap: wrap;
-  background: var(--danger-soft); color: #842018; border: 1px solid #e7b8b1;
+  /* #7a2418 → danger-soft (#f7dedb) üzerinde ~5.3:1 AA ✓ */
+  background: var(--danger-soft); color: #7a2418; border: 1px solid #e7b8b1;
   border-left: 4px solid var(--danger);
   border-radius: var(--r-md); padding: .85rem 1rem; font-size: .9rem;
 }
@@ -142,17 +155,22 @@ body {
 .ke-error-act { display: flex; align-items: center; gap: .4rem; margin-left: auto; }
 .ke-retry {
   font-size: .8rem; font-weight: 600; cursor: pointer; white-space: nowrap;
-  background: var(--surface); color: #842018; border: 1px solid #e7b8b1;
+  /* #7a2418 → --surface (#fffdf9) üzerinde ~5.3:1 AA ✓ */
+  background: var(--surface); color: #7a2418; border: 1px solid #e7b8b1;
   border-radius: var(--r-sm); padding: .35rem .7rem; transition: background .15s, border-color .15s;
 }
 .ke-retry:hover { background: #fff; border-color: var(--danger); }
-.ke-retry:focus-visible { outline: 3px solid #e7b8b1; outline-offset: 2px; }
+/* SC 2.4.11 Focus Appearance — koyu danger outline, yeterli kontrast */
+.ke-retry:focus-visible { outline: 3px solid var(--danger); outline-offset: 2px; }
 .ke-error-x {
   background: none; border: 0; color: inherit; cursor: pointer;
-  font-size: 1rem; line-height: 1; padding: 4px 7px; border-radius: 6px; flex: none;
+  font-size: 1rem; line-height: 1;
+  /* SC 2.5.8 Hedef Boyutu — en az 24x24px; padding artırıldı */
+  padding: 6px 9px; border-radius: 6px; flex: none; min-width: 32px; min-height: 32px;
 }
-.ke-error-x:hover { background: rgba(132, 32, 24, .14); }
-.ke-error-x:focus-visible { outline: 2px solid var(--danger); outline-offset: 1px; }
+.ke-error-x:hover { background: rgba(148, 34, 24, .14); }
+/* SC 2.4.11 — güçlü odak halkası */
+.ke-error-x:focus-visible { outline: 3px solid var(--danger); outline-offset: 2px; }
 
 /* ---------- Boş durum (henüz işlem yok) ---------- */
 .ke-placeholder {
@@ -367,7 +385,8 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
   cursor: pointer; transition: background .15s, border-color .15s;
 }
 .rc-btn:hover:not(:disabled) { background: var(--surface-2); border-color: var(--accent); }
-.rc-btn:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 1px; }
+/* SC 2.4.11 Focus Appearance — koyu accent outline */
+.rc-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .rc-btn-todo { cursor: not-allowed; opacity: .7; display: inline-flex; align-items: center; gap: .4rem; }
 .rc-btn-todo:disabled { color: var(--muted); }
 .rc-todo {
@@ -379,7 +398,8 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
   padding: 1rem; font-family: var(--font-mono); font-size: .82rem; line-height: 1.55;
   white-space: pre-wrap; word-break: break-word; max-height: 340px; overflow: auto;
 }
-.rc-taslak-pre:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 1px; }
+/* SC 2.4.11 — okuma alanı için de koyu outline */
+.rc-taslak-pre:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .rc-taslak-note { margin: .6rem 0 0; font-size: .78rem; color: var(--muted); }
 .rc-taslak-note code { background: var(--surface-2); padding: 0 .25rem; border-radius: 4px; font-family: var(--font-mono); }
 .rc-taslak-dlnote {
@@ -423,6 +443,19 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
   padding: .7rem .9rem;
 }
 
+/* ---------- Footer (SC 1.3.6 contentinfo landmark) ---------- */
+.ke-footer {
+  margin-top: 2rem;
+  padding: .75rem 0 .5rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.ke-footer-note {
+  margin: 0;
+  font-size: .75rem;
+  color: var(--muted);
+}
+
 /* ---------- toast ---------- */
 .ke-toast {
   position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
@@ -432,14 +465,32 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
 }
 @keyframes ke-toast-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
-/* ---------- reduced motion: hareket TEK ayırt edici olamaz ---------- */
+/* ---------- reduced motion: hareket TEK ayırt edici olamaz (SC 2.3.3 / SC 1.4.1) ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .agw-edge-flowing { animation: none; stroke-dasharray: none; }
-  .agw-pulse { animation: none; opacity: 0; }
-  .agw-node-active .agw-card { stroke-width: 3; }
+
+  /* Tüm transition ve animasyonları kapat */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Akış şeması animasyonları: görsel durum yerine kalın kenarlık ile aktif node gösterilir */
+  .agw-edge-flowing { animation: none; stroke-dasharray: none; stroke: var(--accent); }
+  .agw-pulse { animation: none; opacity: 0; display: none; }
+  /* SC 1.4.1 — aktif node animasyonsuz iken kalın kenarlık + fill ile ayrım sağlar */
+  .agw-node-active .agw-card { stroke-width: 3.5; fill: var(--accent-soft); }
+
   .rc-meter-fill { transition: none; }
+
+  /* toast animasyonsu — hâlâ görünür kalır, yalnız giriş animasyonu yok */
   .ke-toast { animation: none; }
+
+  /* drop hover transform kaldır */
+  .ke-drop.over { transform: none; }
+  .ke-sample:hover:not(:disabled) { transform: none; }
+
   /* iskelet pırıltısı kapanır → sabit placeholder kalır (yine "yükleniyor" sinyali) */
   .ke-skel-line { animation: none; background: var(--surface-2); }
 }

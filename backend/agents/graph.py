@@ -25,8 +25,11 @@ Akış:
                                        ▼
                                    finalize → END
 
-# TODO(kamu-evrak): Üretimde ENV-gated SOTA node'lar (crag/self_rag/decompose — ADALET'ten
-# KEEP) + verify/risk_guard (uydurma kurum/tarih/sayı veto) + clarifier dur-ve-sor dalı eklenir.
+ENV-gated gelişmiş node'lar UYGULANDI: crag (CRAG_ENABLED), self_rag (SELF_RAG_ENABLED),
+verify (taslak kalite kapısı), clarifier dur-ve-sor dalı (CLARIFY_STOP_ENABLED).
+
+# TODO(kamu-evrak): Gelecek faz — decompose (çok-konulu evrakı alt-sorulara böl) +
+# risk_guard (uydurma kurum/tarih/sayı veto, ADALET deseni). Henüz node yok.
 """
 
 from __future__ import annotations
@@ -75,6 +78,14 @@ def _pipeline_nodes() -> tuple[str, ...]:
 # SSE / Ajan Akış Şeması için node sıra etiketleri (frontend topology ile eşleşir).
 # verify, yazi_taslak→finalize arasına eklendi (additive — Görev 2 kalite kapısı).
 # NOT: modül sabiti baseline diziyi tutar (geriye-uyum). Aktif dizi için _pipeline_nodes().
+#
+# DİKKAT — bu DÜZ LİSTE gerçek graf topolojisini birebir TEMSİL ETMEZ; yalnız SSE'de
+# kullanıcıya gösterilecek okunabilir bir SIRA sağlar. Gerçek akışta:
+#   • mevzuat_oner ∥ ozetle PARALEL dallardır (eksik_tespit'ten fan-out, route_birim'de
+#     fan-in) — listede yan yana görünseler de sıralı çalışmazlar.
+#   • crag KOŞULLU bir dalda (CRAG_ENABLED) mevzuat_oner→route_birim arasına girer.
+#   • self_rag KOŞULLU (SELF_RAG_ENABLED) verify→arsiv arasına girer.
+# Bağlayıcı topoloji build_graph()'tedir; bu sabit yalnız görselleştirme etiketidir.
 PIPELINE_NODES: tuple[str, ...] = _pipeline_nodes()
 
 

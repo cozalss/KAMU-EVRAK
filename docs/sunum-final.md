@@ -17,8 +17,8 @@
 | 0:40–1:40 | **Çözüm + mimari** | İki görev tek LangGraph pipeline; çok-ajan neden? | `docs/img/02-akis.png` (canlı şema) |
 | 1:40–5:40 | **CANLI DEMO** (4 dk) | Uçtan-uca Görev 1 + Görev 2 real-time | Çalışan app (aşağıdaki senaryo) |
 | 5:40–7:10 | **Teknik derinlik** | RAG + verify + ablasyon + istatistik disiplini | `docs/benchmark/scorecard.md` + ablation |
-| 7:10–8:10 | **Dürüst skor** | mock taban / held-out / gerçek-LLM ayrımı | Skor tablosu + held-out notu |
-| 8:10–9:10 | **Yenilikçilik + ticarileşme** | PII maskeleme, ENV-gated SOTA, MIT yığın, offline | Yenilikçilik slaytı |
+| 7:10–8:10 | **Dürüst skor** | mock 0.22 → mini 0.61 → **gpt-4o 0.91** held-out (dairesel-olmayan) | Skor tablosu + `llm-heldout.md` |
+| 8:10–9:10 | **Yenilikçilik + ticarileşme** | PII maskeleme, ENV-gated SOTA, MIT yığın, EBYS/SaaS/on-prem | Ticarileşme slaytı (`ticarileşme.md`) |
 | 9:10–10:00 | **Kapanış** | Durum + yol haritası + güçlü kapanış cümlesi | Kapanış slaytı |
 
 ### Demo bölümü (1:40–5:40) — adım adım
@@ -47,12 +47,13 @@
 5. **Görev 1 sonuçları** — sınıflandırma/çıkarım/eksik/mevzuat/özet + mock-taban skor.
 6. **Görev 2 sonuçları** — yönlendirme/taslak/üslup/bilgilendirme + mock-taban skor.
 7. **Teknik derinlik** — RAG b=0.3, verify false-veto=0, Wilson CI + McNemar ablasyon.
-8. **Dürüst skor** — mock taban / held-out 0.22 / gerçek-LLM tavan (few-shot hazır).
-9. **Yenilikçilik + ticarileşme** — PII maskeleme, ENV-gated CRAG/Self-RAG, MIT, offline kurum-içi.
+8. **Dürüst skor** — held-out ilerleme: mock 0.22 → mini 0.61 → **gpt-4o 0.91** (op. 0.93 / Top-1 0.93, 98/108).
+9. **Yenilikçilik + ticarileşme** — PII maskeleme, ENV-gated CRAG/Self-RAG, MIT; EBYS entegrasyonu, SaaS/on-prem (`ticarileşme.md`).
 10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), 210 test, CI; yol haritası; kapanış cümlesi.
 
-> **Kapanış cümlesi:** "Çalışan bir sistem, dürüst ölçümler ve temiz bir lisans getirdik —
-> ve internet kesilse bile demomuz durmuyor. Teşekkürler."
+> **Kapanış cümlesi:** "Çalışan bir sistem, dürüst ölçümler — gpt-4o ile dairesel-olmayan
+> held-out'ta **~%90 doğruluk** — ve temiz bir MIT lisans getirdik; internet kesilse bile
+> demomuz durmuyor. Teşekkürler."
 
 ---
 
@@ -63,17 +64,19 @@
 
 ### S1. "Doğruluk skorunuz nedir? Bu sayılar gerçekçi mi?" ⭐ (en kritik)
 
-> **Cevap:** "Üç katmanlı ve dürüst bir cevap vereyim:
-> 1. **Mock taban:** Yayınlanan karne `LLM_MODE=mock` — yani LLM yerine kural-tabanlı keyword/regex
->    fallback. Bu modda sınıflandırma macro-F1 **0.919**, yönlendirme Top-1 **0.931**, eksik-bilgi
->    recall **0.995**. Ama bunlar **in-domain** — yani sentetik gold ile aynı dağıtımdan.
-> 2. **Held-out (dürüst):** Üreticinin görmediği ayrı şablon/sözlükle ölçtüğümüzde mock macro-F1
->    **0.22'ye düşüyor.** Bunu **gizlemiyoruz** — kural tabanının genellemediğini kanıtlıyor.
-> 3. **Gerçek-LLM (tavan):** Asıl değer few-shot LLM modunda. Prompt hazır; `OPENAI_API_KEY` ya da
->    lokal Qwen ile aynı pipeline'ı koşar, kural-tablosuna bağlı olmadığı için held-out'ta da çalışır.
+> **Cevap:** "Dürüst ve **ölçülmüş** bir cevap vereyim — ilerlemeyi aynı zor sette gösterebilirim:
+> 1. **Mock taban (anahtarsız):** `LLM_MODE=mock` — LLM yerine kural-tabanlı keyword/regex fallback.
+>    CI/offline tabanı; **tavan değil.** Dairesel-olmayan held-out'ta sıkı macro-F1 sadece **0.22** —
+>    bunu **gizlemiyoruz**, kural tabanının genellemediğini kanıtlıyor.
+> 2. **gpt-4o-mini:** Aynı held-out sette **0.61**.
+> 3. **gpt-4o (üretim tavanı):** Aynı sette **sıkı macro-F1 0.908**, **operasyonel accuracy 0.935**,
+>    **yönlendirme Top-1 0.926 — 108 evrakta 98 doğru.** Hepsi Wilson %95 güven aralıklı.
 >
-> Yani önemli olan: eval'imiz mock taksonomi değil **gerçek LangGraph pipeline'ı** ölçüyor, ve mock
-> tavanı sahte sabitlemiyoruz. Tüm sayılar Wilson %95 güven aralıklı." (Kanıt: `docs/benchmark/scorecard.md`, `docs/method.md §2.1`.)
+> Kritik nokta — bu held-out **dairesel DEĞİL:** evraklar örtük/dolaylı ifadeyle, gen_synthetic'ten
+> farklı şablon ve sözlükle yazıldı; keyword sızıntısı yok. Yani ilerleme **mock 0.22 → mini 0.61 →
+> gpt-4o 0.91** gerçek bir genelleme sıçraması. Eval'imiz mock taksonomi değil **gerçek LangGraph
+> pipeline'ı** ölçüyor. Üretim önerimiz açık: `LLM_MODE=openai` + gpt-4o." (Kanıt:
+> `docs/benchmark/llm-heldout.md`, `docs/benchmark/scorecard.md`, `docs/method.md §2.1`.)
 
 ### S2. "Gerçek kamu verisi mi kullandınız?"
 
@@ -115,8 +118,10 @@
 
 > **Cevap:** "Repo **MIT.** Bağımlılık yığınımız tamamen temiz — AGPL yok; ADALET'in kullandığı
 > PyMuPDF (AGPL) yerine pypdfium2 (Apache/BSD) yazdık. Büyük model ağırlıkları repoya yüklenmiyor,
-> link+sürüm+lisansla dokümante. Sistem hem bulutta hem kurum-içi offline çalışabildiği için kamu
-> gizliliği için kurum-içi konuşlandırma mümkün — ticarileşme avantajı." (Kanıt: `docs/07-model-lisanslari.md`, `LICENSE`.)
+> link+sürüm+lisansla dokümante. Hedef müşteri kamu kurumları ve EBYS/DYS operatörleri: değer önermesi
+> evrak işleme süresinde ve havale hatasında düşüş. EBYS/e-Yazışma API'siyle entegre olur; çok-kurum
+> SaaS **veya** kurum-içi on-prem (offline, KVKK) konuşlandırılır — iş modeli lisans/SaaS/kamu ihale.
+> Tam anlatım `docs/ticarileşme.md`'de." (Kanıt: `docs/ticarileşme.md`, `docs/07-model-lisanslari.md`, `LICENSE`.)
 
 ### S8. "Bu projeyi ADALET-AGENT'tan mı türettiniz? Özgün mü?"
 
@@ -128,10 +133,11 @@
 
 ### S9. "Eksik / yapamadığınız ne var?"
 
-> **Cevap (dürüst):** "Üç açık var, hepsini matriste işaretledik: (1) Gerçek-LLM skor ölçümü —
-> şu an mock taban, anahtar verilince ölçeceğiz; (2) Blind insan-etiketli gold — otomatik etiketler
-> bağımsız onaydan geçmeli; (3) Held-out genelleme — kural tabanı genellemiyor, asıl çözüm LLM modu.
-> İdari tarafta 4. takım üyesi tamamlanıyor. Bunları gizlemiyoruz çünkü dürüst ölçüm jüri güveni demek." (Kanıt: `docs/sartname-uyum-matrisi.md §G`.)
+> **Cevap (dürüst):** "Üç açık var, hepsini matriste işaretledik: (1) **Tek held-out set riski** —
+> gerçek-LLM skorunu (gpt-4o 0.91) ölçtük ama tek sette; 2. bağımsız set ile çapraz-doğrulamak istiyoruz;
+> (2) Blind insan-etiketli gold — otomatik etiketler bağımsız onaydan geçmeli; (3) Canlı OCR'ın uçtan-uca
+> gerçek-evrak akışında genişletilmesi. İdari tarafta 4. takım üyesi tamamlanıyor. Bunları gizlemiyoruz
+> çünkü dürüst ölçüm jüri güveni demek." (Kanıt: `docs/benchmark/llm-heldout.md`, `docs/sartname-uyum-matrisi.md §G`.)
 
 ### S10. "Latency / hız? Real-time mı?"
 

@@ -61,17 +61,30 @@ _FALLBACK_ORNEKLER: tuple[dict[str, str], ...] = (
 
 
 def _mode_banner() -> tuple[str, bool]:
-    """(insan-okur mod açıklaması, gerçek_llm_mu). Anahtarsız openai → mock fallback'i bildir."""
-    mode = os.getenv("LLM_MODE", "mock").lower()
-    has_key = bool(os.getenv("OPENAI_API_KEY", "").strip())
-    if mode == "openai" and not has_key:
-        return ("LLM_MODE=openai SEÇİLDİ ama OPENAI_API_KEY YOK → mock'a düşülüyor "
-                "(graceful). Gerçek doğruluk için .env'e anahtar koyun.", False)
-    if mode == "openai":
-        model = os.getenv("OPENAI_LLM_MODEL", "gpt-4o-mini")
+    """(insan-okur mod açıklaması, gerçek_llm_mu). GERÇEK aktif client tipini raporlar.
+
+    KRİTİK: önce `agents.config` import edilir — bu modül `load_dotenv` çağırır, böylece
+    `.env`'deki LLM_MODE/OPENAI_API_KEY OKUNMADAN ÖNCE yüklenir (eski hata: os.getenv
+    config import'undan ÖNCE okunuyor → anahtar .env'deyken yanlışlıkla "MOCK" deniyordu).
+    İstenen modu config.LLM_MODE'dan, GERÇEK çalışan client'ı get_llm() tipinden alırız;
+    böylece sessiz mock-fallback (openai seçili ama anahtar yok) banner'da dürüstçe görünür.
+    """
+    from agents.config import LLM_MODE  # load_dotenv burada tetiklenir (.env yüklenir)
+    from agents.llm import get_llm
+
+    active = type(get_llm()).__name__  # GERÇEK seçilen client (singleton)
+    if active == "OpenAIClient":
+        model = getattr(get_llm(), "model", os.getenv("OPENAI_LLM_MODEL", "gpt-4o-mini"))
         return (f"GERÇEK LLM: OpenAI ({model}) — few-shot JSON çıkarımı aktif.", True)
-    if mode in {"llamacpp", "llamacpp_server", "llama_server", "server"}:
-        return (f"GERÇEK LLM: lokal ({mode}) — GGUF/HTTP inference aktif.", True)
+    if active in {"LlamaCppClient", "LlamaCppServerClient"}:
+        return (f"GERÇEK LLM: lokal ({LLM_MODE}) — GGUF/HTTP inference aktif.", True)
+    # active == MockLLM. İstenen mod openai/llamacpp ise bu SESSİZ FALLBACK demektir.
+    if LLM_MODE == "openai":
+        return ("LLM_MODE=openai SEÇİLDİ ama gerçek client kurulamadı (OPENAI_API_KEY yok) "
+                "→ mock'a düşüldü (graceful). Gerçek doğruluk için .env'e anahtar koyun.", False)
+    if LLM_MODE in {"llamacpp", "llamacpp_server", "llama_server", "server"}:
+        return (f"LLM_MODE={LLM_MODE} SEÇİLDİ ama lokal client kurulamadı → mock'a düşüldü "
+                "(graceful). Model/sunucu yapılandırmasını kontrol edin.", False)
     return ("MOCK mod (anahtarsız demo tabanı): keyword+regex heuristik fallback "
             "koşar. Skorlar TABAN; gerçek LLM yükseltir.", False)
 

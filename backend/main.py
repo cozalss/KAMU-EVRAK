@@ -26,7 +26,8 @@ log = structlog.get_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # noqa: ARG001
-    # TODO(kamu-evrak): üretimde mevzuat-RAG embedder + reranker preload (ADALET deseni).
+    # TODO(kamu-evrak): Gelecek faz — mevzuat-RAG embedder + reranker preload (ADALET
+    # deseni); şu an retrieval lazy/stub, ağır model preload yok (hızlı boot tercih edildi).
     log.info("startup", llm_mode=LLM_MODE)
     try:
         yield
@@ -49,14 +50,16 @@ app = FastAPI(
 # Güvenlik başlıkları — her yanıta nosniff/DENY/Referrer-Policy/CSP (clickjacking + MIME guard).
 app.add_middleware(SecurityHeadersMiddleware)
 
-# CORS — frontend dev sunucusu (Vite :5173) erişebilsin.
+# CORS — frontend dev sunucusu (Vite :5173) erişebilsin. Origin'ler ENV'den (prod'da
+# gerçek alan adı). Metod/başlık wildcard yerine SPESİFİK → credentials'lı isteklerde
+# saldırı yüzeyi daralır (API yalnız GET/POST + Content-Type/Authorization kullanır).
 _origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in _origins if o.strip()],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 # IP-başı hız sınırı — slowapi varsa aktif, yoksa zarif şekilde atlanır (boot kırılmaz).

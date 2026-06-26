@@ -154,8 +154,11 @@ START → siniflandir → cikar → eksik_tespit
 
 - **Özgünlük:** çok-ajan vs tek-ajan **ablasyonla** kanıtlanan kurgu; ENV-gated CRAG (Yan 2024) / Self-RAG (Asai 2023); error-propagation ölçümü.
 - **Ürün artısı:** belge PII maskeleme (kullanıcı koruması + jüri "wow"); SDP 2005/7 arşiv metadata.
-- **Ticarileşme / ölçeklenebilirlik:** lisans-temiz MIT yığın (AGPL yok); modlar arası taşınabilir (mock/bulut/lokal); kamu kurumuna kurum-içi (offline) konuşlandırılabilir → gizlilik avantajı.
+- **Hedef kullanıcı + değer:** kamu kurumları / EBYS-DYS operatörleri → evrak işleme süresi↓, sınıflandırma/havale hatası↓, resmî-format standardı.
+- **Ticarileşme / ölçeklenebilirlik:** lisans-temiz MIT yığın (AGPL yok); EBYS/e-Yazışma API entegrasyonu; çok-kurum SaaS **veya** kurum-içi (on-prem, offline, KVKK) konuşlandırma; iş modeli lisans/SaaS/kamu ihale.
 - **Sürdürülebilirlik:** deterministik veri (sabit tohum), tek-komut karne, CI regresyon kapısı.
+
+> Detaylı ticarileşme/ölçeklenebilirlik anlatımı (şartname "Ticarileşme Potansiyeli 15p"): [`docs/ticarileşme.md`](ticarileşme.md).
 
 > **Konuşma notu (45 sn):** "Yeniliğimiz hem mimaride hem üründe. Çok-ajan kurgunun değerini
 > ablasyonla nicelliyoruz. PII maskeleme gerçek bir ürün koruması. Lisansımız tamamen temiz MIT —
@@ -167,16 +170,17 @@ START → siniflandir → cikar → eksik_tespit
 ## Slayt 10 — Kapanış: Durum + Dürüstlük + Sonraki Adım
 
 - **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; 210 test; CI; güvenlik denetimi (0 CRITICAL).
-- **Dürüst skor beyanı:** Yayınlanan karne `LLM_MODE=mock` **tabandır**. Gerçek-LLM modu yükseltir.
-  In-domain mock macro-F1 **0.92**; held-out (dairesel-olmayan) **0.22** → mock heuristik genellemiyor;
-  **gerçek değer few-shot LLM modunda** (prompt hazır, anahtar verilince ölçülür).
-- **Sonraki adım (finalist olunursa):** gerçek-LLM ölçümü, blind insan-etiketli gold, ablasyon genişletme, canlı OCR.
+- **Dürüst skor beyanı (ÖLÇÜLDÜ):** İlerleme **mock 0.22 → gpt-4o-mini 0.61 → gpt-4o 0.91**
+  (sıkı macro-F1), hepsi **dairesel-olmayan held-out** sette (örtük ifadeli, farklı sözlük). gpt-4o:
+  **operasyonel 0.93 / yönlendirme Top-1 0.93** (98/108). Mock = anahtarsız taban (CI/offline), tavan değil.
+- **Sonraki adım (finalist olunursa):** 2. held-out set ile çapraz-doğrulama, blind insan-etiketli gold, ablasyon genişletme, canlı OCR.
 
-> **Konuşma notu (50 sn):** "Kapatırken en önemli şeyi söyleyeyim: dürüstüz. Gösterdiğimiz
-> skorlar mock taban — yani LLM yerine kural-tabanlı fallback. Bunu özellikle vurguluyoruz çünkü
-> in-domain'de 0.92 görünen sınıflandırma, held-out'ta 0.22'ye düşüyor; bu, kural tabanının
-> genellemediğini dürüstçe gösteriyor. Asıl değer gerçek-LLM modunda ve few-shot prompt'umuz
-> hazır. Pipeline her iki modda da aynı — değişen sadece kalite. Teşekkürler, sorularınızı bekliyoruz."
+> **Konuşma notu (50 sn):** "Kapatırken en önemli şeyi söyleyeyim: dürüstüz ve artık ölçtük.
+> Yayınladığımız mock karne anahtarsız tabandır. Gerçek değeri kasıtlı zor — örtük ifadeli, farklı
+> sözlükle yazılmış — bir held-out sette ölçtük: mock 0.22'den gpt-4o-mini'de 0.61'e, gpt-4o'da
+> 0.91 sıkı macro-F1'e çıkıyor; operasyonel doğruluk 0.93, doğru birime yönlendirme 0.93 (108'de 98).
+> Bu, dış değerlendirmenin 'doğruluk gerçekçi mi' çekincesine kesin yanıt: ilerleme dairesel değil,
+> aynı zor sette ölçülmüş. Pipeline her modda aynı — değişen sadece kalite. Teşekkürler."
 
 ---
 

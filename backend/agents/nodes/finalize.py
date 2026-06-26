@@ -3,8 +3,9 @@
 Şartname Görev 2: "Kullanıcıya süreç hakkında açık ve anlaşılır bilgilendirme sunma" +
 "gerekli durumlarda eksik bilgi talep edebilme". Bu node iki görevin çıktısını birleştirir.
 
-# TODO(kamu-evrak): STUB deterministik metin birleştirir. Üretimde compose/LLM ile
-# daha akıcı bilgilendirme + ADALET nodes/finalize.py disclaimer/sunum deseni.
+# TODO(kamu-evrak): Gelecek faz — şu an deterministik metin birleştirme (test-edilebilir,
+# tahmin-edilebilir). Üretimde compose/LLM ile daha akıcı bilgilendirme + ADALET
+# nodes/finalize.py disclaimer/sunum deseni.
 """
 
 from __future__ import annotations

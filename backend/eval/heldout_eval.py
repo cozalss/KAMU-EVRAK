@@ -26,7 +26,9 @@ from __future__ import annotations
 import argparse
 import asyncio
 import contextlib
+import datetime
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -34,16 +36,17 @@ from typing import Any
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-from agents.config import EVRAK_TURLERI, ayni_esdeger_grup  # noqa: E402
-from agents.graph import build_graph  # noqa: E402
-from agents.state import make_initial_state  # noqa: E402
-from eval.evrak_class_eval import (  # noqa: E402 (DRY: aynı metrikler)
+from agents.config import EVRAK_TURLERI, ayni_esdeger_grup
+from agents.graph import build_graph
+from agents.state import make_initial_state
+from api.pii import mask_pii
+from eval.evrak_class_eval import (
     confusion_pairs,
     macro_f1,
     operational_accuracy,
     operational_macro_f1,
 )
-from eval.stats import fmt_ci, wilson_interval  # noqa: E402
+from eval.stats import bootstrap_bca_ci, fmt_ci, wilson_interval
 
 _DATA = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic"
 GOLD = _DATA / "heldout_gold.jsonl"  # 1. held-out (varsayılan; geri uyum)
@@ -104,6 +107,8 @@ def evaluate(rows: list[dict]) -> dict:
     correct = sum(1 for r in rows if r["pred"] == r["evrak_turu"])
     acc = correct / n if n else 0.0
     mf1, per = macro_f1(rows)
+    # Macro-F1 BCa %95 CI (Wilson oran metriklerinde; macro-F1 oran DEĞİL → bootstrap-BCa).
+    _, mf1_lo, mf1_hi = bootstrap_bca_ci(rows, lambda rs: macro_f1(rs)[0], n_resamples=2000)
     abstain = sum(1 for r in rows if r["conf"] < ABSTAIN_CONF_FLOOR or r["pred"] == ABSTAIN_CLASS)
 
     top1 = sum(1 for r in rows if r["pred_birim"] == r["beklenen_birim"])
@@ -118,6 +123,7 @@ def evaluate(rows: list[dict]) -> dict:
     return {
         "n": n, "correct": correct, "accuracy": round(acc, 4),
         "accuracy_ci95": [round(lo, 3), round(hi, 3)], "macro_f1": mf1,
+        "macro_f1_ci95_bca": [round(mf1_lo, 3), round(mf1_hi, 3)],
         "operational_accuracy": round(op_acc, 4),
         "operational_accuracy_ci95": [round(op_lo, 3), round(op_hi, 3)],
         "operational_correct": op_correct, "operational_macro_f1": op_mf1,
@@ -130,6 +136,58 @@ def evaluate(rows: list[dict]) -> dict:
     }
 
 
+def _artifact_row(r: dict[str, Any]) -> dict[str, Any]:
+    """Tek tahmin satırı — metin PII-MASKELİ (set sentetik olsa da TCKN/telefon deseni
+    secret-scanner tetiklemesin; projenin api.pii.mask_pii yardımcısıyla, DRY)."""
+    metin = (r.get("metin", "") or "")[:200]
+    return {
+        "metin": mask_pii(metin).masked_text,
+        "gercek": r.get("evrak_turu"),
+        "tahmin": r.get("pred"),
+        "conf": round(float(r.get("conf", 0.0) or 0.0), 3),
+        "beklenen_birim": r.get("beklenen_birim"),
+        "tahmin_birim": r.get("pred_birim"),
+        "dogru": r.get("pred") == r.get("evrak_turu"),
+    }
+
+
+def dump_artifact(
+    path: str | os.PathLike[str],
+    gold_path: Path,
+    set_etiketi: str,
+    res: dict[str, Any],
+    rows: list[dict[str, Any]],
+) -> None:
+    """Reprodüksiyon artefaktı yaz — metrikler + per-satır tahmin/gold + meta.
+
+    NEDEN (jüri-güveni): gerçek-LLM (gpt-4o) held-out skoru markdown'a ELLE yazılırsa
+    bağımsız doğrulanamaz. Bu artefakt (tahmin/gold + model + LLM_MODE + tarih) commit'lenince
+    jüri sayıları reprodüke edebilir; .md tabloları da bundan üretilebilir (drift biter).
+    PII: per-satır metin `mask_pii` ile maskelenir (sentetik desen scanner tetiklemesin);
+    API anahtarı ASLA yazılmaz (yalnız LLM_MODE + model adı).
+    """
+    mode = os.getenv("LLM_MODE", "mock")
+    model = os.getenv("OPENAI_LLM_MODEL", "gpt-4o-mini") if mode == "openai" else "—"
+    artefakt = {
+        "set": set_etiketi,
+        "gold_dosya": gold_path.name,
+        "tarih": datetime.datetime.now(tz=datetime.UTC).isoformat(),
+        "llm_mode": mode,
+        "model": model,
+        "metrikler": res,
+        "tahminler": [_artifact_row(r) for r in rows],
+    }
+    out = Path(path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        out.write_text(
+            json.dumps(artefakt, ensure_ascii=False, indent=2), encoding="utf-8",
+        )
+    except OSError as exc:
+        raise SystemExit(f"Artefakt yazılamadı ({out}): {exc}") from exc
+    print(f"\n  ✓ Artefakt yazıldı: {out} ({len(rows)} tahmin, model={model})")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Held-out (dürüst, dairesel-olmayan) sınıflandırma + yönlendirme değerlendirmesi")
@@ -137,11 +195,14 @@ def main(argv: list[str] | None = None) -> int:
                     help="isimli held-out seti (heldout=1. set varsayılan, heldout2=çapraz-doğrulama)")
     ap.add_argument("--gold", type=str, default=None,
                     help="açık gold JSONL yolu (--set'i ezer; varsayılan 1. held-out)")
+    ap.add_argument("--dump", type=str, default=None,
+                    help="reprodüksiyon artefaktı JSON yolu (metrik + per-satır tahmin/gold + meta)")
     args = ap.parse_args(argv)
 
     gold_path = resolve_gold_path(args.set_adi, args.gold)
     set_etiketi = args.set_adi or ("heldout2" if "heldout2" in gold_path.name else "heldout")
-    res = evaluate(load_gold(gold_path))
+    rows = load_gold(gold_path)
+    res = evaluate(rows)
     bar = "=" * 70
     print(f"\n{bar}\n  HELD-OUT [{set_etiketi}] (DÜRÜST, dairesel-OLMAYAN) — "
           f"SINIFLANDIRMA + YÖNLENDİRME\n{bar}")
@@ -149,7 +210,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  Vaka: {res['n']} · doğru: {res['correct']} · kapalı-küme: {res['n_classes']} sınıf")
     print("  --- Görev 1: sınıflandırma (SIKI — tam tür eşleşmesi) ---")
     print(f"  Accuracy : {res['accuracy']:.3f}  (%95 CI {fmt_ci(res['correct'], res['n'])})")
-    print(f"  Macro-F1 : {res['macro_f1']:.3f}")
+    _mf1ci = res.get("macro_f1_ci95_bca", [0.0, 0.0])
+    print(f"  Macro-F1 : {res['macro_f1']:.3f}  (BCa %95 CI [{_mf1ci[0]:.3f}, {_mf1ci[1]:.3f}])")
     print("  --- Görev 1: OPERASYONEL (eşdeğer-grup; config.EVRAK_ESDEGER) ---")
     print(f"  Op-Accuracy: {res['operational_accuracy']:.3f}  "
           f"(%95 CI {fmt_ci(res['operational_correct'], res['n'])})")
@@ -164,6 +226,8 @@ def main(argv: list[str] | None = None) -> int:
     print("\n  NOT (dürüstlük): mock-modda DÜŞÜK skor BEKLENİR — held-out gövdesi DOLAYLI/")
     print("  ÖRTÜK; heuristik keyword'leri yok. Gerçek-mod (LLM) semantik çözer.")
     print("  in-domain − held-out farkı = keyword sızıntısı genelleme açığı.")
+    if args.dump:
+        dump_artifact(args.dump, gold_path, set_etiketi, res, rows)
     return 0
 
 

@@ -19,7 +19,7 @@ try:
     from dotenv import find_dotenv, load_dotenv
 
     load_dotenv(find_dotenv(usecwd=True))
-except Exception:  # noqa: BLE001 — .env yükleme best-effort; yoksa os env kullanılır
+except Exception:
     pass
 
 # --- Görev 1: Evrak türü sınıfları (18 + belirsiz) ---
@@ -200,6 +200,23 @@ EVRAK_TO_SAKLAMA: dict[str, str] = {
 }
 _SAKLAMA_VARSAYILAN = "5 yıl"
 
+# --- Görev 1 (yenilikçilik): Yasal cevap süresi / SLA triyaj tablosu ---
+# (gün, iş_günü_mü, mevzuat_referansı). NOT (CLAUDE.md §1 — süre UYDURMA): yalnız
+# mevzuatta AÇIKÇA tanımlı, doğrulanabilir süreler. Diğer türlerde süre kuruma/işleme
+# göre değişir → tabloda YOK → triyaj "tanımsız" döner (uydurma süre üretilmez).
+#   - 3071 s. Dilekçe Hakkı Kanunu m.7: "...en geç otuz gün içinde..." → 30 takvim günü.
+#   - 4982 s. Bilgi Edinme Hakkı Kanunu m.11: "...on beş iş günü içinde..." → 15 iş günü.
+# CİMER/şikâyet/talep/başvuru/ihbar = 3071 kapsamı vatandaş başvurusu → 30 gün.
+EVRAK_TO_SURE: dict[str, tuple[int, bool, str]] = {
+    "dilekce": (30, False, "3071 s.K. m.7 (otuz gün)"),
+    "basvuru": (30, False, "3071 s.K. m.7 (otuz gün)"),
+    "sikayet": (30, False, "3071 s.K. m.7 (otuz gün)"),
+    "talep": (30, False, "3071 s.K. m.7 (otuz gün)"),
+    "ihbar": (30, False, "3071 s.K. m.7 (otuz gün)"),
+    "cimer": (30, False, "3071 s.K. genel başvuru (otuz gün)"),
+    "bilgi_edinme": (15, True, "4982 s.K. m.11 (on beş iş günü)"),
+}
+
 # --- Evrak türü → ilgili mevzuat (araştırma §2; üretimde RAG ile zenginleştirilir) ---
 # NOT (CLAUDE.md §1): madde no'ları mevzuat.gov.tr'de DOĞRULANMALI; şüpheli → [DOĞRULA:].
 EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
@@ -228,6 +245,12 @@ VERIFY_ENABLED = os.getenv("VERIFY_ENABLED", "1") == "1"
 # clarifier dur-ve-sor dalı: VARSAYILAN KAPALI → baseline akış (taslak hep üretilir) korunur.
 CLARIFY_STOP_ENABLED = os.getenv("CLARIFY_STOP_ENABLED", "0") == "1"
 
+# HITL (human-in-the-loop) memur onay kapısı: yazi_taslak sonrası LangGraph interrupt()
+# ile DURUR; memur ONAYLA/DÜZENLE/REDDET. interrupt() bir checkpointer ister. VARSAYILAN
+# KAPALI → baseline (checkpointer'sız, kesintisiz) compile + akış birebir korunur. Açıkken
+# onay_kapisi node'u yazi_taslak↔verify arasına girer ve graf InMemorySaver ile derlenir.
+HITL_ENABLED = os.getenv("HITL_ENABLED", "0") == "1"
+
 # --- Yenilikçilik: ENV-gated SOTA öz-düzeltme node'ları (CRAG + Self-RAG) ---
 # İKİSİ DE VARSAYILAN KAPALI → baseline akış birebir korunur (141 test değişmez).
 # Ablation harness'i (eval/ablation_eval.py) bu bayrakları A/B için açıp kapatır.
@@ -245,6 +268,25 @@ CRAG_RAW_ESIK = float(os.getenv("CRAG_RAW_ESIK", "12.0"))
 # Self-RAG (reflection): finalize öncesi çıktının tamlığını öz-değerlendirir
 # (evrak_turu + hedef_birim + ozet + mevzuat var mı?). Eksikse not düşer (şeffaflık).
 SELF_RAG_ENABLED = os.getenv("SELF_RAG_ENABLED", "0") == "1"
+
+# Cross-encoder reranking (iki-aşamalı retrieve-then-rerank): mevzuat_oner BM25 top-N
+# adayı bge-reranker-v2-m3 ile yeniden sıralar → +nDCG (gerçek soru-belge alakası).
+# VARSAYILAN KAPALI → baseline saf-BM25 birebir korunur (mock/CI/demo ağır model gerektirmez).
+# Açıkken model/lib (sentence-transformers, rag extra) yoksa GRACEFUL BM25'e düşer (WARN log).
+# Ablation: RERANK_ENABLED=0/1 ile retrieval_eval Recall@1 A/B. Reddetme eşiği reranker.RERANK_SCORE_MIN.
+RERANK_ENABLED = os.getenv("RERANK_ENABLED", "0") == "1"
+# BM25'in rerank'e besleyeceği aday sayısı (recall aşaması); reranker bunları top-K'ya süzer.
+RERANK_CAND_N = int(os.getenv("RERANK_CAND_N", "30"))
+
+# NLI atıf-gerekçelendirme (entailment grounding): önerilen mevzuat maddesi (premise) ile
+# evrak talebi (hypothesis) arasında ANLAMSAL DESTEK var mı? Yoksa öneri [DOĞRULA] işaretlenir →
+# verify'ın yüzeysel string vetosunun üstüne SEMANTİK uydurma-önleme (CLAUDE.md §1 ölçülebilir).
+# VARSAYILAN KAPALI → baseline mevzuat_oner birebir korunur. Açıkken model/lib (transformers,
+# rag extra) yoksa GRACEFUL passthrough (WARN). mDeBERTa-v3-xnli (MIT, Türkçe dahil, CPU).
+NLI_ENABLED = os.getenv("NLI_ENABLED", "0") == "1"
+NLI_MODEL = os.getenv("NLI_MODEL", "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli")
+# Entailment olasılığı bu eşiğin altındaysa öneri "desteklenmiyor" → [DOĞRULA] işareti.
+NLI_ESIK = float(os.getenv("NLI_ESIK", "0.5"))
 
 # Resmî yazı taslağında bulunması beklenen zorunlu bölüm başlıkları (format-compliance).
 # Yön. 2646 / 3071: T.C. başlığı + Sayı + Konu + imza (ad-soyad) blokları.

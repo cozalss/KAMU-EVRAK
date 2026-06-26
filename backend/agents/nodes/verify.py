@@ -17,6 +17,7 @@ LLM opsiyoneldir; varsayılan saf-deterministik (anahtarsız demo deterministik 
 from __future__ import annotations
 
 import re
+from datetime import date
 from typing import Any
 
 import structlog
@@ -47,11 +48,14 @@ def _kaynak_tokenlar(state: dict[str, Any]) -> tuple[set[str], set[str]]:
 
     Taslaktaki somut değerler bu kümelerde yoksa "uydurma" sayılır. Ham evrak da
     dahildir: çıkarımda kaçan ama belgede gerçekten var olan değerler veto'lanmasın.
+    Ayrıca taslağın üretildiği günün tarihi giden yazı tarihi olarak meşrudur; kaynak
+    evrakta bulunması beklenmez.
     """
     unsurlar = state.get("bilgi_unsurlari") or {}
     evrak_text = state.get("evrak_text", "") or ""
     kaynak = f"{evrak_text} {unsurlar.get('tarih', '')} {unsurlar.get('sayi', '')}"
     tarihler = set(_RE_TARIH.findall(kaynak))
+    tarihler.add(date.today().strftime("%d.%m.%Y"))
     sayilar = set(_RE_SAYI.findall(kaynak))
     return tarihler, sayilar
 

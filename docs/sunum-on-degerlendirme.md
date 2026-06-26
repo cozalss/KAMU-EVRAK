@@ -87,11 +87,11 @@ START → siniflandir → cikar → eksik_tespit
 
 | Yetenek | Nasıl | Kanıt (mock taban) |
 |---|---|---|
-| Tür belirleme | 19 tür taksonomisi + abstention (`belirsiz`) | macro-F1 **0.919** / acc **0.917** |
+| Tür belirleme | 19 tür taksonomisi + abstention (`belirsiz`) | macro-F1 **0.9493** / acc **0.9491** |
 | Bilgi çıkarımı | gönderen/tarih/sayı/konu/talep + **PII maskeleme** | 🛡️ ham TCKN/telefon arayüze ulaşmaz |
-| Eksik tespiti | tür-bağımlı zorunlu-alan (recall-öncelikli) | recall(β=2) **0.995** |
+| Eksik tespiti | tür-bağımlı zorunlu-alan (recall-öncelikli) | recall(β=2) **0.9948** |
 | Mevzuat önerisi | madde-bazlı BM25 (59 chunk) | Recall@3 yüksek (in-domain) |
-| Özet | key-fact odaklı | faithfulness **1.000** (halüsinasyonsuz) |
+| Özet | key-fact odaklı | recall **0.9810**, faithfulness **1.0000** |
 
 > **Konuşma notu (45 sn):** "Görev 1'de evrak türünü buluyoruz, bilgileri çıkarıyoruz — ve
 > kritik: kişisel veriyi backend'de maskeliyoruz, ham TCKN arayüze hiç ulaşmıyor. Eksik bilgiyi
@@ -106,9 +106,9 @@ START → siniflandir → cikar → eksik_tespit
 
 | Yetenek | Nasıl | Kanıt (mock taban) |
 |---|---|---|
-| Birim yönlendirme | 9 birim eşleme + top-k + güven | Top-1 **0.931** / Top-3 **0.944** |
-| Resmî yazı taslağı | Yön. 2646 jinja2 iskelet + LLM doldurma (üst/cevabi/bilgilendirme/olur) | türü doğruluğu **0.995** |
-| Resmî üslup | zorunlu bölüm checklist + Türkçe saflık | saflık **1.0000**, bileşen tam-uyum **0.838** |
+| Birim yönlendirme | 9 birim eşleme + top-k + güven | Top-1 **0.9630** / Top-3 **0.9815** |
+| Resmî yazı taslağı | Yön. 2646 jinja2 iskelet + LLM doldurma (üst/cevabi/bilgilendirme/olur) | tür doğruluğu **1.0000** |
+| Resmî üslup | zorunlu bölüm checklist + Türkçe saflık | format uyumu **1.0000**, bileşen tam-uyum **1.0000**, saflık **1.0000** |
 | Bilgilendirme | özet + birim + mevzuat + disclaimer | her çıktıda yasal disclaimer |
 | Eksik isteme | clarifier dur-ve-sor (kritik alan eksikse taslak yok) | dur-ve-sor dalı |
 
@@ -169,18 +169,21 @@ START → siniflandir → cikar → eksik_tespit
 
 ## Slayt 10 — Kapanış: Durum + Dürüstlük + Sonraki Adım
 
-- **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; 649 test; CI; güvenlik denetimi (0 CRITICAL).
-- **Dürüst skor beyanı (ÖLÇÜLDÜ):** İlerleme **mock 0.22 → gpt-4o-mini 0.61 → gpt-4o 0.91**
-  (sıkı macro-F1), hepsi **dairesel-olmayan held-out** sette (örtük ifadeli, farklı sözlük). gpt-4o:
-  **operasyonel 0.93 / yönlendirme Top-1 0.93** (98/108). Mock = anahtarsız taban (CI/offline), tavan değil.
-- **Sonraki adım (finalist olunursa):** 2. held-out set ile çapraz-doğrulama, blind insan-etiketli gold, ablasyon genişletme, canlı OCR.
+- **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; backend **655 passed, 3 warnings**;
+  frontend build başarılı; CI; güvenlik denetimi (0 CRITICAL).
+- **Dürüst skor beyanı (REPRODÜKE-EDİLEBİLİR ARTEFAKT):** **dairesel-olmayan held-out** sette
+  (örtük ifadeli, farklı sözlük) gpt-4o: **sıkı accuracy/macro-F1 0.935 · operasyonel 0.963 · yönlendirme
+  Top-1 0.954 (101/108)** — repodaki `backend/eval/runs/heldout_gpt4o_set1.json` ile doğrulanabilir.
+  Leak-free mock taban (set-2) **0.69**; mock = anahtarsız taban (CI/offline), tavan değil.
+- **Sonraki adım (finalist olunursa):** blind insan-etiketli gold, ablasyon genişletme,
+  canlı OCR saha provası ve kuruma özgü EBYS/e-Yazışma entegrasyonu.
 
 > **Konuşma notu (50 sn):** "Kapatırken en önemli şeyi söyleyeyim: dürüstüz ve artık ölçtük.
 > Yayınladığımız mock karne anahtarsız tabandır. Gerçek değeri kasıtlı zor — örtük ifadeli, farklı
-> sözlükle yazılmış — bir held-out sette ölçtük: mock 0.22'den gpt-4o-mini'de 0.61'e, gpt-4o'da
-> 0.91 sıkı macro-F1'e çıkıyor; operasyonel doğruluk 0.93, doğru birime yönlendirme 0.93 (108'de 98).
-> Bu, dış değerlendirmenin 'doğruluk gerçekçi mi' çekincesine kesin yanıt: ilerleme dairesel değil,
-> aynı zor sette ölçülmüş. Pipeline her modda aynı — değişen sadece kalite. Teşekkürler."
+> sözlükle yazılmış — bir held-out sette ölçtük: gpt-4o sıkı accuracy 0.935'e çıkıyor; operasyonel
+> doğruluk 0.963, doğru birime yönlendirme 0.954 (108'de 101). Bu sayıyı repodaki bir artefakta
+> bağladık — jüri tek komutla doğrular. Leak-free mock taban ise sadece 0.69; yani ilerleme dairesel
+> değil, aynı zor sette ölçülmüş. Pipeline her modda aynı — değişen sadece kalite. Teşekkürler."
 
 ---
 

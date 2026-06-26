@@ -60,7 +60,7 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
   yetkili personeldedir."
 - a11y: klavye gezinme, ARIA, `prefers-reduced-motion`; saf React/Vite (ek dep yok).
 
-## Eval skorları (mock taban → mini → gpt-4o tavan)
+## Eval skorları ve canlı kalite kapısı
 
 > İki ayrı ölçüm var, ikisi de **GERÇEK LangGraph pipeline**'ı (`build_graph().ainvoke`) koşar;
 > fark yalnız **LLM modu** ve **veri setidir**. Dürüst okuma için ikisini birlikte bakın.
@@ -70,21 +70,40 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
 >   **farklı şablon/sözlükle** yazılmış 108-evrak held-out sette (keyword sızıntısı yok). Tam tablo +
 >   mock→mini→gpt-4o ilerlemesi: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
 
-| Metrik (aynı held-out set) | Mock (taban) | gpt-4o-mini | **gpt-4o (üretim tavanı)** |
-|---|---|---|---|
-| Sınıflandırma macro-F1 (sıkı) | 0.218 | 0.612 | **0.908** |
-| Sınıflandırma accuracy (sıkı) | 0.213 | 0.620 | **0.907** [%95 CI 0.838–0.949] |
-| Operasyonel accuracy (eşdeğer-grup) | — | 0.768 | **0.935** [%95 CI 0.872–0.968] |
-| Yönlendirme Top-1 | 0.426 | 0.778 | **0.926** [%95 CI 0.861–0.962] |
-| Yönlendirme Top-3 | 0.463 | 0.870 | **0.944** |
-| Doğru / 108 | 23 | 67 | **98** |
+### Canlı doğrulanmış durum
 
-> **Üretim önerisi:** `LLM_MODE=openai` + **gpt-4o** → dairesel-olmayan held-out'ta **sıkı macro-F1
-> ~0.91 / operasyonel ~0.93 / yönlendirme Top-1 ~0.93** (98/108). Mock = **anahtarsız taban** (CI/offline
-> demo), tavan değil. İlerleme: mock **0.22** → mini **0.61** → gpt-4o **0.91** — mimari sağlam, gerçek
-> değer semantik LLM modunda. (Mock in-domain karnesi: [`docs/benchmark/scorecard.md`](docs/benchmark/scorecard.md).)
+| Kapı | Sonuç |
+|---|---|
+| Backend test | **655 passed, 3 warnings** (`uv run python -m pytest -q`) |
+| Frontend build | **Başarılı** (`npm.cmd run build`) |
+| Mock sınıflandırma | macro-F1 **0.9493** · accuracy **0.9491** |
+| Mock eksik-bilgi | recall **0.9948** |
+| Mock özet | key-fact recall **0.9810** · faithfulness **1.0000** |
+| Mock yönlendirme | Top-1 **0.9630** · Top-3 **0.9815** |
+| Mock taslak | format uyumu **1.0000** · bileşen tam-uyum **1.0000** · tür doğruluğu **1.0000** · Türkçe saflık **1.0000** |
+| Güven / etik | false-veto **0** · fairness **1.0000** |
 
-Test paketi: **649 passed, 1 skipped** (`cd backend && uv run python -m pytest`).
+> **Taslak kalite kapısı kapandı:** resmî yazı önizlemesinde ham `{{ }}` alanları görünmez;
+> EBYS/yetkili makamca tamamlanacak alanlar nötr taslak diliyle gösterilir. Mock karnede
+> `format_uyumlu_rate=1.0` ve bileşen tam-uyum **1.0000**.
+
+| Metrik (held-out set-1) | gpt-4o-mini | **gpt-4o — ARTEFAKT-DESTEKLİ ✅** |
+|---|---|---|
+| Sınıflandırma macro-F1 (sıkı) | 0.612 | **0.935** [**BCa** %95 CI 0.881–0.978] |
+| Sınıflandırma accuracy (sıkı) | 0.620 | **0.935** [Wilson %95 CI 0.872–0.968] |
+| Operasyonel accuracy (eşdeğer-grup) | 0.768 | **0.963** [%95 CI 0.909–0.986] |
+| Yönlendirme Top-1 | 0.778 | **0.954** [%95 CI 0.896–0.980] |
+| Yönlendirme Top-3 | 0.870 | **0.954** |
+| Doğru / 108 | 67 | **101** (abstention 0) |
+
+> **Üretim önerisi:** `LLM_MODE=openai` + **gpt-4o** → dairesel-olmayan held-out'ta **sıkı accuracy
+> 0.935 / operasyonel 0.963 / yönlendirme Top-1 0.954** (101/108). Bu sayı **reprodüke-edilebilir**:
+> repodaki reprodüke-edilebilir artefakt [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json)
+> (per-satır tahmin/gold, metin PII-maskeli, anahtar yok) + komut `docs/benchmark/llm-heldout.md`'de.
+> **Mock = anahtarsız taban** (CI/offline demo), tavan değil — leak-free mock (set-2) **0.69**; mock set-1
+> figürü artık ezber (taban değil). (Mock in-domain karnesi: [`docs/benchmark/scorecard.md`](docs/benchmark/scorecard.md).)
+
+Test paketi: **655 passed, 3 warnings** (`cd backend && uv run python -m pytest -q`).
 
 ## Gerçek LLM modu (mock taban → bulut tavan)
 
@@ -110,20 +129,22 @@ python scripts/run_llm_smoke.py
 
 > **Dürüst not (skorların anlamı):** `docs/benchmark/scorecard.md` karnesi **`LLM_MODE=mock`** ile
 > ölçülmüştür — sınıflandırma/çıkarım few-shot LLM yerine deterministik keyword/regex fallback ile koşar.
-> Bu **tavan değil tabandır (alt-sınır).** "Yükseltir" iddiası artık **ölçüldü:** dairesel-olmayan
-> held-out sette `LLM_MODE=openai` + **gpt-4o** → sıkı macro-F1 **0.908**, operasyonel **0.935**,
-> yönlendirme Top-1 **0.926** (98/108). İlerleme mock **0.22** → mini **0.61** → gpt-4o **0.91**.
-> Tam tablo: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md). Ölçüm yöntemi:
-> [`docs/method.md`](docs/method.md).
+> Bu **tavan değil tabandır (alt-sınır).** "Yükseltir" iddiası artık **reprodüke-edilebilir artefaktla
+> ölçüldü:** dairesel-olmayan held-out sette `LLM_MODE=openai` + **gpt-4o** → sıkı accuracy/macro-F1
+> **0.935**, operasyonel **0.963**, yönlendirme Top-1 **0.954** (101/108) →
+> [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json).
+> **Dürüstlük:** mock held-out set-1 figürü artık ezberdir (heuristik o sete uyarlandı); leak-free mock
+> taban = set-2 **0.69**. Tam tablo: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
 
 ## Ekran görüntüleri
 
-> _Placeholder — gerçek görseller `docs/img/` altına eklenecek (PNG/GIF)._
+> Kurumsal "Devlet" arayüzü (yüksek kontrast lacivert/mavi, Lexend/Source Sans, SVG ikon).
 
 | | |
 |---|---|
 | ![Yükleme + örnek evraklar](docs/img/01-yukleme.png) | ![Canlı ajan akış şeması](docs/img/02-akis.png) |
 | ![Sonuç kartları (PII maskeli)](docs/img/03-sonuc.png) | ![Resmî yazı taslağı + indirme](docs/img/04-taslak.png) |
+| ![Dur-ve-sor: eksik bilgide sistem durup soru sorar](docs/img/04-clarify.png) | ![Mobil görünüm](docs/img/05-mobil.png) |
 
 Canlı akışı kayıt olarak görmek için: `docs/img/demo.gif` (internet-kesinti yedeği — bkz.
 [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md)).

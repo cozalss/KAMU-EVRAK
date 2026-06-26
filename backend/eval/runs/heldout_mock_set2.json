@@ -1,0 +1,1157 @@
+{
+  "set": "heldout2",
+  "gold_dosya": "heldout2_gold.jsonl",
+  "tarih": "2026-06-26T16:47:31.863901+00:00",
+  "llm_mode": "mock",
+  "model": "—",
+  "metrikler": {
+    "n": 108,
+    "correct": 75,
+    "accuracy": 0.6944,
+    "accuracy_ci95": [
+      0.602,
+      0.773
+    ],
+    "macro_f1": 0.7102,
+    "operational_accuracy": 0.8148,
+    "operational_accuracy_ci95": [
+      0.731,
+      0.877
+    ],
+    "operational_correct": 88,
+    "operational_macro_f1": 0.787,
+    "per_class": {
+      "basvuru": {
+        "precision": 1.0,
+        "recall": 0.333,
+        "f1": 0.5,
+        "support": 6
+      },
+      "belirsiz": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "bilgi_edinme": {
+        "precision": 1.0,
+        "recall": 0.833,
+        "f1": 0.909,
+        "support": 6
+      },
+      "cevabi_yazi": {
+        "precision": 0.455,
+        "recall": 0.833,
+        "f1": 0.588,
+        "support": 6
+      },
+      "cimer": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.667,
+        "support": 6
+      },
+      "dava_evraki": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 6
+      },
+      "dilekce": {
+        "precision": 0.238,
+        "recall": 0.833,
+        "f1": 0.37,
+        "support": 6
+      },
+      "fatura": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.857,
+        "support": 6
+      },
+      "genelge_talimat_olur": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 6
+      },
+      "gorus_mutalaa": {
+        "precision": 1.0,
+        "recall": 0.833,
+        "f1": 0.909,
+        "support": 6
+      },
+      "icra_evraki": {
+        "precision": 1.0,
+        "recall": 0.667,
+        "f1": 0.8,
+        "support": 6
+      },
+      "ihbar": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.667,
+        "support": 6
+      },
+      "muzekkere": {
+        "precision": 0.857,
+        "recall": 1.0,
+        "f1": 0.923,
+        "support": 6
+      },
+      "rapor": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 6
+      },
+      "sikayet": {
+        "precision": 0.667,
+        "recall": 0.333,
+        "f1": 0.444,
+        "support": 6
+      },
+      "talep": {
+        "precision": 0.4,
+        "recall": 0.333,
+        "f1": 0.364,
+        "support": 6
+      },
+      "tebligat": {
+        "precision": 1.0,
+        "recall": 0.167,
+        "f1": 0.286,
+        "support": 6
+      },
+      "tutanak": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 6
+      },
+      "ust_yazi": {
+        "precision": 1.0,
+        "recall": 0.333,
+        "f1": 0.5,
+        "support": 6
+      }
+    },
+    "abstention_rate": 0.037,
+    "abstention_count": 4,
+    "confusion": [
+      [
+        "sikayet",
+        "dilekce",
+        4
+      ],
+      [
+        "talep",
+        "dilekce",
+        4
+      ],
+      [
+        "tebligat",
+        "cevabi_yazi",
+        4
+      ],
+      [
+        "ihbar",
+        "dilekce",
+        3
+      ],
+      [
+        "cimer",
+        "dilekce",
+        3
+      ],
+      [
+        "basvuru",
+        "dilekce",
+        2
+      ]
+    ],
+    "n_classes": 19,
+    "route_top1": 86,
+    "route_top1_acc": 0.7963,
+    "route_top1_ci95": [
+      0.711,
+      0.861
+    ],
+    "route_top3": 88,
+    "route_top3_acc": 0.8148
+  },
+  "tahminler": [
+    {
+      "metin": "İSTANBUL BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI\n\nsayı : E-68775326-654.01-4410\ntarih: 25.04.2028\nkonu : gürültü rahatsızlığı\n\nSokağımızdaki uzun süredir devam eden aksaklığın giderilmesini umut ediyorum.\n\nAd ",
+      "gercek": "dilekce",
+      "tahmin": "sikayet",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": false
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-55715945-195.01-8722\ntarih: 14.03.2028\nkonu : park sorunu\n\nKarşılaştığım engelin ortadan kaldırılması için gereğinin yapılmasını saygıyla beklerim.\n\nAd Soyad ",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "ENERJİ PİYASASI DÜZENLEME KURUMU\n\nsayı : E-74741648-604.01-4996\ntarih: 28.06.2028\n\nSokağımızdaki uzun süredir devam eden aksaklığın giderilmesini umut ediyorum.\n\nAd Soyad : Barış Bozkurt\nT.C. No  : 24",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "İSTANBUL BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI\n\nsayı : E-21942584-861.01-5082\ntarih: 20.11.2028\nkonu : yol çukuru\n\nBu hususun değerlendirmeye alınıp tarafıma olumlu dönüş yapılmasını rica ederim.\n\nAd Soyad :",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "ENERJİ PİYASASI DÜZENLEME KURUMU\n\nsayı : E-52912977-760.01-5267\ntarih: 07.05.2028\n\nBu hususun değerlendirmeye alınıp tarafıma olumlu dönüş yapılmasını rica ederim.\n\nAd Soyad : Melis Kurt\nT.C. No  : 24",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-95850407-334.01-3818\ntarih: 12.12.2028\nkonu : yol çukuru\n\nTarafıma yaşatılan haksızlığın düzeltilmesi yönünde adım atılmasını diliyorum.\n\nAd Soyad : Serkan Şimşe",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-15276546-458.01-7867\ntarih: 02.03.2028\nkonu : ruhsat işlemi\n\nŞartları yerine getirdiğimi düşünerek değerlendirmeye alınmayı arz ederim.\n\nAd Soyad : Emre Korkma",
+      "gercek": "basvuru",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-21756927-706.01-6065\ntarih: 14.12.2028\nkonu : ruhsat işlemi\n\nİlgili programdan yararlanabilmem için dosyamın işleme alınmasını istemekteyim.\n\nAd Soyad : Sıla Polat\n",
+      "gercek": "basvuru",
+      "tahmin": "basvuru",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "İSTANBUL BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI\n\nsayı : E-12962836-525.01-7066\ntarih: 11.06.2028\nkonu : burs talebi\n\nİlgili programdan yararlanabilmem için dosyamın işleme alınmasını istemekteyim.\n\nAd Soyad :",
+      "gercek": "basvuru",
+      "tahmin": "talep",
+      "conf": 0.6,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": false
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-69309995-724.01-4955\ntarih: 03.08.2028\nkonu : burs talebi\n\nŞartları yerine getirdiğimi düşünerek değerlendirmeye alınmayı arz ederim.\n\nAd Soyad : Cem Şimşek\nT",
+      "gercek": "basvuru",
+      "tahmin": "talep",
+      "conf": 0.6,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": false
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-32522663-337.01-2733\ntarih: 16.08.2028\n\nİlgili programdan yararlanabilmem için dosyamın işleme alınmasını istemekteyim.\n\nAd Soyad : Melis Kara\nT.C. No  : 8905345",
+      "gercek": "basvuru",
+      "tahmin": "basvuru",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-26935280-101.01-5275\ntarih: 02.04.2028\nkonu : kayıt isteği\n\nSöz konusu haktan faydalanmak üzere durumumun incelenmesini istiyorum.\n\nAd Soyad : Zeynep Yıldız\nT",
+      "gercek": "basvuru",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-96855295-192.01-5764\ntarih: 10.06.2028\n\nKarşı taraftan gördüğüm muameleden son derece rahatsızım, üzerine gidilmesini isterim.\n\nAd Soyad : Barış Aslan\nT.C",
+      "gercek": "sikayet",
+      "tahmin": "sikayet",
+      "conf": 0.58,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-45273422-994.01-3865\ntarih: 07.05.2028\nkonu : komşu işletme\n\nBu derece özensiz bir uygulamayı kabullenemiyor, hoşnutsuzluğumu bildiriyorum.\n\nAd Soyad : Murat ",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-61791097-837.01-7408\ntarih: 10.05.2028\nkonu : kötü muamele\n\nVerilen hizmetin niteliğini hiç beğenmiyor, bu durumu makamınıza iletiyorum.\n\nAd Soyad : Selin",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-13428803-864.01-5261\ntarih: 17.10.2028\n\nKomşu işletmenin yarattığı huzursuzluk günlük yaşamımızı olumsuz etkiliyor.\n\nAd Soyad : Kaan Bozkurt\nT.C. No  : 7612996",
+      "gercek": "sikayet",
+      "tahmin": "sikayet",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-26635396-269.01-8469\ntarih: 06.09.2028\nkonu : komşu işletme\n\nDefalarca dile getirmeme rağmen değişen bir şey olmadı; bu kez ciddiye alınmasını umuyorum.\n\nAd So",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-16874263-982.01-8173\ntarih: 13.11.2028\n\nVerilen hizmetin niteliğini hiç beğenmiyor, bu durumu makamınıza iletiyorum.\n\nAd Soyad : Elif Çelik\nT.C. No  : 757",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-99333621-914.01-8176\ntarih: 11.06.2028\n\nKurallara aykırı yürütüldüğünü gördüğüm bir işi sessizce incelemenize sunuyorum.\n\nAd Soyad : Tolga Yıldız\nT.C. No  : 8275392",
+      "gercek": "ihbar",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-86261286-209.01-6729\ntarih: 11.05.2028\nkonu : usule aykırılık\n\nGörünürde gizlenen bir yolsuzluğun sessizce mercek altına alınmasını rica ederim.\n\nAd Soyad : D",
+      "gercek": "ihbar",
+      "tahmin": "ihbar",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-30381186-814.01-1847\ntarih: 01.05.2028\nkonu : tehlikeli durum\n\nGerekli onayı olmadan sürdürülen bir faaliyetin durdurulması için durumu aktarıyorum.\n\nAd Soyad ",
+      "gercek": "ihbar",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "İSTANBUL BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI\n\nsayı : E-91748237-755.01-1364\ntarih: 02.07.2028\n\nTehlike doğuran ve göz ardı edilen bir uygulamayı yetkili makama duyuruyorum.\n\nAd Soyad : Zeynep Akın\nT.C. No ",
+      "gercek": "ihbar",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-22289418-731.01-9460\ntarih: 10.06.2028\n\nKayıt dışı çalıştırıldığını öğrendiğim kişiler bulunduğunu gizlice bildirmek isterim.\n\nAd Soyad : Barış Doğan\nT.C.",
+      "gercek": "ihbar",
+      "tahmin": "ihbar",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-84533655-128.01-9080\ntarih: 11.02.2028\nkonu : usule aykırılık\n\nGörünürde gizlenen bir yolsuzluğun sessizce mercek altına alınmasını rica ederim.\n\nAd Soyad : Zey",
+      "gercek": "ihbar",
+      "tahmin": "ihbar",
+      "conf": 0.5,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-17449833-959.01-6029\ntarih: 03.01.2028\n\nGörevlinin bu iş için yönlendirilmesi yönünde gereğini istemekteyim.\n\nAd Soyad : Zeynep Demir\nT.C. No  : 790******20\nT",
+      "gercek": "talep",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-79597067-837.01-4112\ntarih: 03.06.2028\nkonu : kolaylık isteği\n\nUygun bir tarihte görüşme ayarlanması hususunu arz ederim.\n\nAd Soyad : Burak Şahin\nT.C. No ",
+      "gercek": "talep",
+      "tahmin": "talep",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-42940312-368.01-3915\ntarih: 24.07.2028\nkonu : nüsha çıkarma\n\nİhtiyaç duyduğum kolaylığın tarafıma sağlanmasını saygıyla istemekteyim.\n\nAd Soyad : Zeynep Bozku",
+      "gercek": "talep",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-56139249-608.01-3611\ntarih: 01.01.2028\nkonu : kolaylık isteği\n\nGörevlinin bu iş için yönlendirilmesi yönünde gereğini istemekteyim.\n\nAd Soyad : S",
+      "gercek": "talep",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-27507605-492.01-1597\ntarih: 04.02.2028\nkonu : randevu\n\nUygun bir tarihte görüşme ayarlanması hususunu arz ederim.\n\nAd Soyad : İrem Arslan\nT.C. No  : 720******36\n",
+      "gercek": "talep",
+      "tahmin": "talep",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-89921690-320.01-6348\ntarih: 06.09.2028\n\nGörevlinin bu iş için yönlendirilmesi yönünde gereğini istemekteyim.\n\nAd Soyad : Melis Ozan\nT.C. No  : 957******16",
+      "gercek": "talep",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-98916576-430.01-7590\ntarih: 22.09.2028\nkonu : liste talebi\n\nElinizde bulunan belgenin bir suretine yasal hakkım gereği ulaşmak isterim.\n\nAd Soyad : Selin Aslan\n",
+      "gercek": "bilgi_edinme",
+      "tahmin": "talep",
+      "conf": 0.6,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": false
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-92200917-577.01-3795\ntarih: 25.02.2028\nkonu : harcama bilgisi\n\nKurumunuzda kayıtlı verilere ulaşma hakkımı kullanmak istemekteyim.\n\nAd Soyad : Cem Demir\nT.C. No ",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-46177162-549.01-3034\ntarih: 08.12.2028\nkonu : kayıt sureti\n\nElinizde bulunan belgenin bir suretine yasal hakkım gereği ulaşmak isterim.\n\nAd Soyad : İrem Çelik",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-99705992-865.01-9699\ntarih: 14.12.2028\nkonu : harcama bilgisi\n\nGeçmişe dönük harcama dökümünün açıklanmasını mevzuat kapsamında istemekteyim.\n\nAd Soyad : Serka",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-57906675-261.01-9167\ntarih: 23.05.2028\n\nSaklanan dosyadaki verilere erişme isteğimi makamınıza iletiyorum.\n\nAd Soyad : Sıla Korkmaz\nT.C. No  : 766******14\nTelefon  ",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-62345757-403.01-5017\ntarih: 19.01.2028\nkonu : liste talebi\n\nMevcut görevlendirme listesinin bir örneğinin tarafıma sunulmasını talep ederim.\n\nAd Soyad : Bahar",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.62,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-80894900-658.01-1902\ntarih: 11.01.2028\n\nDevletin halk masasına bildirdiğim hususun takibe alınmasını arz ederim.\n\nAd Soyad : Yağmur Demir\nT.C. No  : 171******10\nTel",
+      "gercek": "cimer",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-67982950-618.01-9079\ntarih: 11.08.2028\nkonu : danışma kaydı\n\nİletişim merkezi numarasından açtığım kaydın sonuçlandırılmasını istiyorum.\n\nAd Soya",
+      "gercek": "cimer",
+      "tahmin": "cimer",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-72328342-138.01-1735\ntarih: 12.05.2028\nkonu : halk masası\n\nİletişim merkezi numarasından açtığım kaydın sonuçlandırılmasını istiyorum.\n\nAd Soyad : Derya Aslan",
+      "gercek": "cimer",
+      "tahmin": "cimer",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-46234256-700.01-9845\ntarih: 05.12.2028\n\nVatandaş danışma hattına aktardığım meselenin değerlendirilmesini umuyorum.\n\nAd Soyad : Derya Demir\nT.C. ",
+      "gercek": "cimer",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-48508210-293.01-9039\ntarih: 08.10.2028\nkonu : hat üzerinden bildirim\n\nDevletin halk masasına bildirdiğim hususun takibe alınmasını arz ederim.\n\nAd Soyad : Zey",
+      "gercek": "cimer",
+      "tahmin": "dilekce",
+      "conf": 0.5,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-45100765-694.01-7501\ntarih: 17.11.2028\nkonu : danışma kaydı\n\nCumhurbaşkanlığı iletişim merkezine ilettiğim sorunun ele alınmasını bekliyorum.\n\nAd",
+      "gercek": "cimer",
+      "tahmin": "cimer",
+      "conf": 0.58,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-95113471-109.01-2932\ntarih: 02.07.2028\nkonu : dosya gönderimi\n\nSöz konusu çalışmaya dair evrak, incelenmesi amacıyla tarafınıza iletilmektedir.\n\ne-imza   : Elif ",
+      "gercek": "ust_yazi",
+      "tahmin": "belirsiz",
+      "conf": 0.3,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-27041011-494.01-6767\ntarih: 07.12.2028\nİlgi : önceki yazışmamız.\n\nHazırlanan dosya, gereği yapılmak üzere makamınızın takdirine sunulmuştur.\n\ne-imza   : Emre Ko",
+      "gercek": "ust_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-14349632-162.01-4465\ntarih: 11.11.2028\nİlgi : önceki yazışmamız.\n\nHazırlanan dosya, gereği yapılmak üzere makamınızın takdirine sunulmuştur.\n\ne-imza   : C",
+      "gercek": "ust_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-90397084-478.01-3540\ntarih: 12.09.2028\nkonu : evrak takdimi\n\nDüzenlenen metin, koordinasyon sağlanması için makamınıza takdim edilmiştir.\n\ne-imza   : Zeynep G",
+      "gercek": "ust_yazi",
+      "tahmin": "ust_yazi",
+      "conf": 0.58,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-88394867-250.01-5677\ntarih: 14.10.2028\nkonu : evrak takdimi\n\nDüzenlenen metin, koordinasyon sağlanması için makamınıza takdim edilmiştir.\n\ne-imza   : Emre",
+      "gercek": "ust_yazi",
+      "tahmin": "ust_yazi",
+      "conf": 0.58,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-56495424-589.01-8125\ntarih: 25.01.2028\n\nİlgili faaliyetin yürütülmesi hususu, saygıyla bilgilerinize arz olunur.\n\ne-imza   : Barış Akın",
+      "gercek": "ust_yazi",
+      "tahmin": "belirsiz",
+      "conf": 0.3,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-80614640-221.01-7779\ntarih: 25.06.2028\nkonu : değerlendirme dönüşü\n\nSorduğunuz konuda kurumumuzun değerlendirmesi tarafınıza iletilmektedir.\n\ne-imza   : Cem E",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.5,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-43650410-554.01-8705\ntarih: 15.12.2028\n\nTarafınızdan iletilen istem incelenmiş olup ulaştığımız netice şöyledir.\n\ne-imza   : Barış Şimşek",
+      "gercek": "cevabi_yazi",
+      "tahmin": "belirsiz",
+      "conf": 0.3,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-11013058-674.01-1374\ntarih: 09.05.2028\nİlgi : önceki yazışmamız.\n\nGönderdiğiniz isteme yönelik incelememizin çıktısı aşağıda paylaşılmıştır.\n\ne-imza   : İrem Korkma",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.5,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-94052188-923.01-2791\ntarih: 06.10.2028\nİlgi : önceki yazışmamız.\n\nSorduğunuz konuda kurumumuzun değerlendirmesi tarafınıza iletilmektedir.\n\ne-imza   : Kaan Po",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.5,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-49596949-455.01-2149\ntarih: 12.05.2028\nİlgi : önceki yazışmamız.\n\nÖnceki yazınızda yöneltilen hususa dair değerlendirmemiz aşağıda yer almaktadır",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-74241570-727.01-3746\ntarih: 27.08.2028\nİlgi : önceki yazışmamız.\n\nTarafınızdan iletilen istem incelenmiş olup ulaştığımız netice şöyledir.\n\ne-imza   : Zeynep Ka",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-45066251-307.01-9514\ntarih: 18.11.2028\nkonu : işlem duyurusu\nİlgi : önceki yazışmamız.\n\nHakkınızda tesis edilen işlemin usulünce size duyurulduğunu belirtiriz.",
+      "gercek": "tebligat",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-37945803-436.01-8429\ntarih: 07.11.2028\nkonu : yükümlülük bildirimi\nİlgi : önceki yazışmamız.\n\nKararın elinize geçtiği tarihten itibaren süreniz işlemeye başla",
+      "gercek": "tebligat",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-51574841-572.01-4942\ntarih: 16.06.2028\nkonu : karar duyurusu\nİlgi : önceki yazışmamız.\n\nKararın elinize geçtiği tarihten itibaren süreniz işlemeye başlayacaktı",
+      "gercek": "tebligat",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-49963977-481.01-2070\ntarih: 19.05.2028\n\nHakkınızda tesis edilen işlemin usulünce size duyurulduğunu belirtiriz.\n\ne-imza   : İrem Yıldız",
+      "gercek": "tebligat",
+      "tahmin": "belirsiz",
+      "conf": 0.3,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-18148568-132.01-7519\ntarih: 20.02.2028\nİlgi : önceki yazışmamız.\n\nHakkınızda tesis edilen işlemin usulünce size duyurulduğunu belirtiriz.\n\ne-imza   : Melis Yıldı",
+      "gercek": "tebligat",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.55,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": false
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-98663258-969.01-1812\ntarih: 16.09.2028\n\nAşağıdaki kararın muhatabına resmen ulaştırılması gerekmektedir.\n\ne-imza   : Cem Aydın",
+      "gercek": "tebligat",
+      "tahmin": "tebligat",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ENERJİ PİYASASI DÜZENLEME KURUMU\n\nsayı : E-94092663-911.01-1534\ntarih: 11.01.2028\nkonu : uyuşmazlık beyanı\n\nSayın heyetinize sunduğumuz beyanların dosyaya kazandırılmasını arz ederiz.\n\ne-imza   : Cem ",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-52215849-864.01-8478\ntarih: 14.10.2028\nİlgi : önceki yazışmamız.\n\nVerilen karara karşı üst mercie taşıdığımız itirazın görülmesini isteriz.\n\ne-imza   : Murat Ozan",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ENERJİ PİYASASI DÜZENLEME KURUMU\n\nsayı : E-50799289-680.01-2104\ntarih: 12.07.2028\n\nHukuki sürecin yürütüldüğü makama ibraz ettiğimiz delillerin tartışılmasını arz ederiz.\n\ne-imza   : Serkan Demir",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-28115743-154.01-7992\ntarih: 12.04.2028\nkonu : üst itiraz\nİlgi : önceki yazışmamız.\n\nYargılamanın yürütüldüğü merci önünde ileri sürdüğümüz iddialar ektedir.\n\ne-",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-65043711-201.01-1613\ntarih: 03.08.2028\nkonu : üst itiraz\nİlgi : önceki yazışmamız.\n\nSayın heyetinize sunduğumuz beyanların dosyaya kazandırılmasını arz ederiz",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-17927501-144.01-3571\ntarih: 27.10.2028\nkonu : esas savunması\nİlgi : önceki yazışmamız.\n\nAçtığımız uyuşmazlığa dair gerekçeli beyanımız takdim olunmuştur.\n\ne-imza",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-83831403-542.01-6550\ntarih: 15.09.2028\n\nTahsilat için dosyanın yetkili daireye sevkini talep etmekteyiz.\n\ne-imza   : Pınar Uçar",
+      "gercek": "icra_evraki",
+      "tahmin": "fatura",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": false
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-13548229-713.01-1717\ntarih: 06.09.2028\nkonu : hesap tedbiri\n\nAlacağımızın zorla tahsili için sürecin başlatılmasını istemekteyiz.\n\ne-imza   : Burak Şahin",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-41965939-159.01-4521\ntarih: 06.03.2028\n\nTakip dosyamız kapsamında taşınmaza şerh işlenmesini talep ederiz.\n\ne-imza   : Serkan Çelik",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-21505491-970.01-8749\ntarih: 06.02.2028\n\nTahsilat için dosyanın yetkili daireye sevkini talep etmekteyiz.\n\ne-imza   : Elif Çelik",
+      "gercek": "icra_evraki",
+      "tahmin": "fatura",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": false
+    },
+    {
+      "metin": "İSTANBUL BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI\n\nsayı : E-73795953-856.01-3732\ntarih: 07.01.2028\nkonu : alacak takibi\n\nAlacağımızın zorla tahsili için sürecin başlatılmasını istemekteyiz.\n\ne-imza   : Onur Şim",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-82127110-981.01-4798\ntarih: 25.02.2028\nkonu : alacak takibi\nİlgi : önceki yazışmamız.\n\nTahsil edilemeyen alacak için yasal zorlama yoluna gidilmesini arz ederiz",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-56893455-126.01-5523\ntarih: 28.01.2028\n\nİlgili esas dosyası için gereksinim duyulan bilginin makamımıza ulaştırılması rica olunur.\n\ne-imza   : Cem Polat",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-16283312-267.01-7248\ntarih: 16.05.2028\n\nBir kişinin güncel adres bilgisinin dosyamıza bildirilmesi hususu rica olunur.\n\ne-imza   : Tolga Gül",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-33894506-310.01-9559\ntarih: 16.03.2028\nkonu : adres sorma\n\nBir kişinin güncel adres bilgisinin dosyamıza bildirilmesi hususu rica olunur.\n\ne-imza",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-55615808-955.01-5635\ntarih: 20.01.2028\n\nİlgili esas dosyası için gereksinim duyulan bilginin makamımıza ulaştırılması rica olunur.\n\ne-imza   : Pınar Doğan",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-12548198-898.01-2808\ntarih: 20.02.2028\nİlgi : önceki yazışmamız.\n\nİstenen hususların resmi yazı ekinde tarafımıza ulaştırılması beklenmektedir.\n\ne-imza   : To",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-11141780-808.01-6836\ntarih: 11.03.2028\n\nBir kişinin güncel adres bilgisinin dosyamıza bildirilmesi hususu rica olunur.\n\ne-imza   : Serkan Kurt",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.62,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "İZMİR İL SAĞLIK MÜDÜRLÜĞÜ\n\nsayı : E-19528441-579.01-7774\ntarih: 13.07.2028\nkonu : mal karşılığı\n\nDüzenlenen belgeye göre tahsilatımızın yapılmasını beklemekteyiz.\n\ne-imza   : Kaan Gül",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.5,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-76367568-213.01-5672\ntarih: 25.03.2028\nkonu : hak ediş ödemesi\nİlgi : önceki yazışmamız.\n\nSunulan hizmet karşılığı düzenlenen belge uyarınca tutarın hesabımız",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.58,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-29557931-172.01-3871\ntarih: 02.05.2028\nkonu : mal karşılığı\n\nDüzenlenen belgeye göre tahsilatımızın yapılmasını beklemekteyiz.\n\ne-imza   : Kaan Yıldız",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.5,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-77499692-918.01-7796\ntarih: 01.06.2028\nkonu : mal karşılığı\n\nDüzenlenen belgeye göre tahsilatımızın yapılmasını beklemekteyiz.\n\ne-imza   : Kerem ",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.5,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-38395432-427.01-6418\ntarih: 10.11.2028\nkonu : hak ediş ödemesi\n\nDüzenlenen belgeye göre tahsilatımızın yapılmasını beklemekteyiz.\n\ne-imza   : Melis Kaya",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.58,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-47322415-667.01-3764\ntarih: 01.12.2028\nkonu : hak ediş ödemesi\nİlgi : önceki yazışmamız.\n\nHizmet karşılığı tutarın tahakkuka bağlanması hususunu ",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.6,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-80076615-687.01-3701\ntarih: 26.01.2028\nkonu : yerinde saptama\nİlgi : önceki yazışmamız.\n\nYerinde saptanan hususlar hazır bulunanlarca belgeye geçirilip onaylanm",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.62,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-42937961-398.01-6847\ntarih: 11.12.2028\nkonu : sayım belgesi\nİlgi : önceki yazışmamız.\n\nİnceleme boyunca gözlemlenen hususlar belge altına geçirilmiştir.\n\ne-imza ",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.62,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-14669038-648.01-9821\ntarih: 02.10.2028\nkonu : sayım belgesi\n\nSayım esnasında belirlenenler ilgililerce düzenlenen belgeye işlenmiştir.\n\ne-imza   : Selin Uçar",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.62,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-66728270-498.01-9779\ntarih: 20.05.2028\nkonu : teslim kaydı\nİlgi : önceki yazışmamız.\n\nTeslim sırasında görülen durum yazıyla saptanarak belgelenmiştir.\n\ne-imz",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.62,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-88155178-758.01-5610\ntarih: 09.03.2028\n\nTeslim sırasında görülen durum yazıyla saptanarak belgelenmiştir.\n\ne-imza   : Sıla Çelik",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.62,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-11534458-919.01-8399\ntarih: 12.01.2028\n\nTarafların anlatımları ve yerinde görülen durum belgeye dökülerek onaylanmıştır.\n\ne-imza   : Pınar Kurt",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.62,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-83102495-685.01-3391\ntarih: 27.07.2028\nkonu : dönem özeti\n\nYapılan incelemeye dair değerlendirmelerimiz ilişikteki metinde yer almaktadır.\n\ne-imz",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.62,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-55654482-869.01-9573\ntarih: 23.11.2028\nİlgi : önceki yazışmamız.\n\nSaha çalışmasının sonuçları ve saptanan hususlar ekte derlenmiştir.\n\ne-imza   : Onur Yıldız",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.62,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-16266007-358.01-2428\ntarih: 10.04.2028\nkonu : dönem özeti\n\nİzleme boyunca derlenen veriler değerlendirilerek görüşe bağlanmıştır.\n\ne-imza   : Onur Uçar",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.62,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "ENERJİ PİYASASI DÜZENLEME KURUMU\n\nsayı : E-22197484-547.01-5825\ntarih: 25.09.2028\nkonu : dönem özeti\nİlgi : önceki yazışmamız.\n\nİzleme boyunca derlenen veriler değerlendirilerek görüşe bağlanmıştır.\n\n",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.62,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-91920015-558.01-7646\ntarih: 02.01.2028\nkonu : saha sonucu\n\nİzleme boyunca derlenen veriler değerlendirilerek görüşe bağlanmıştır.\n\ne-imza   : Serkan Uçar",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.62,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "BURSA TİCARET VE SANAYİ ODASI\n\nsayı : E-93526808-207.01-6847\ntarih: 20.03.2028\n\nSaha çalışmasının sonuçları ve saptanan hususlar ekte derlenmiştir.\n\ne-imza   : Burak Akın",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.62,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-50668559-334.01-1528\ntarih: 09.04.2028\nkonu : hukuki kanaat isteği\n\nSöz konusu hukuki konuda uygulamanın ne yönde olması gerektiğine dair değerlendirmenizi ri",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "RADYO VE TELEVİZYON ÜST KURULU\n\nsayı : E-98986501-853.01-5175\ntarih: 14.12.2028\n\nSöz konusu hukuki konuda uygulamanın ne yönde olması gerektiğine dair değerlendirmenizi rica ederiz.\n\ne-imza   : Onur U",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ÇANKAYA VERGİ DAİRESİ MÜDÜRLÜĞÜ\n\nsayı : E-80632238-546.01-9926\ntarih: 09.04.2028\n\nSöz konusu hukuki konuda uygulamanın ne yönde olması gerektiğine dair değerlendirmenizi rica ederiz.\n\ne-imza   : Zeyne",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-42293440-468.01-2024\ntarih: 27.05.2028\nİlgi : önceki yazışmamız.\n\nMevzuatın bu hükmünün ne şekilde yorumlanacağına dair görüşünüz rica olunur.\n\ne",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "muzekkere",
+      "conf": 0.5,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": false
+    },
+    {
+      "metin": "GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ\n\nsayı : E-43631408-125.01-7218\ntarih: 24.02.2028\n\nTazminatın hesabında izlenecek yola dair hukuki kanaatinize gereksinim duyulmaktadır.\n\ne-imza   : Tolga Korkmaz",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ENERJİ PİYASASI DÜZENLEME KURUMU\n\nsayı : E-59380404-636.01-3875\ntarih: 03.07.2028\nkonu : hukuki kanaat isteği\n\nİlgili düzenlemenin nasıl anlaşılması gerektiğine dair hukuki kanaatinizi bekliyoruz.\n\ne-",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.58,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-39102856-632.01-1227\ntarih: 22.07.2028\n\nAşağıda belirtilen uygulamanın yürürlüğe alınması makamınızın onayına arz olunur.\n\ne-imza   : Barış Aydın",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.58,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "KONYA İL MİLLİ EĞİTİM MÜDÜRLÜĞÜ\n\nsayı : E-52221521-247.01-9722\ntarih: 15.04.2028\nİlgi : önceki yazışmamız.\n\nMesai düzenine ilişkin yeni esasların yürürlüğe alınması onayınıza sunulur.\n\ne-imza   : Mura",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.58,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-97188388-221.01-7843\ntarih: 26.07.2028\nkonu : uygulama esası\n\nMesai düzenine ilişkin yeni esasların yürürlüğe alınması onayınıza sunulur.\n\ne-imza",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.58,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-18250418-213.01-2963\ntarih: 04.01.2028\nİlgi : önceki yazışmamız.\n\nAşağıda belirtilen uygulamanın yürürlüğe alınması makamınızın onayına arz olunur.\n\ne-imz",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.58,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANTALYA SU VE ATIKSU İDARESİ GENEL MÜDÜRLÜĞÜ\n\nsayı : E-17491839-563.01-3267\ntarih: 14.02.2028\nİlgi : önceki yazışmamız.\n\nTüm birimlerce uyulacak esasların duyurulması hususunda gereğini arz ederim.\n\ne",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.5,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "ANKARA ŞEHİR HASTANESİ BAŞHEKİMLİĞİ\n\nsayı : E-64633695-195.01-2853\ntarih: 20.04.2028\nİlgi : önceki yazışmamız.\n\nBirimlere iletilecek uygulama ilkelerinin onaylanmasını arz ederim.\n\ne-imza   : Sıla Kar",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.5,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    }
+  ]
+}

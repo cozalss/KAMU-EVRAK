@@ -3,16 +3,26 @@
 > Düzeltilmiş takvime göre (bkz. `docs/00`): ön-eleme kapıları **12 Tmz** (başvuru + ön sunum)
 > ve **21 Tmz** (teknik sınav); asıl geliştirme **27 Tmz–26 Ağu** (yalnız finalist olunursa).
 
-## Rol dağılımı (4 kişi — esnek)
+## Rol dağılımı (4 kişi — idari kırmızı şart)
 
 - **Ü1** Backend / Ajan (FastAPI + LangGraph)
 - **Ü2** RAG / Mevzuat / ML-sınıflandırma (embedding + Qdrant + HF)
 - **Ü3** Frontend / Demo (React + SSE + Vite + a11y)
 - **Ü4** Veri / Eval / Doküman (sentetik üretim + istatistik + teknik yazım)
 
+> **✅ İdari madde KAPANDI:** Takım tam 4 kişi + 1 kaptan — şart sağlandı; diskalifiye riski yok.
+
+## Güncel teknik durum (canlı doğrulama)
+
+- Backend: `uv run python -m pytest -q` → **655 passed, 3 warnings**.
+- Frontend: `npm.cmd run build` → **başarılı**.
+- Mock karne: sınıflandırma macro-F1 **0.9493**, routing Top-1 **0.9630**, eksik-bilgi
+  recall **0.9948**, özet faithfulness **1.0000**, taslak `format_uyumlu_rate` **1.0000**,
+  false-veto **0**, fairness **1.0000**.
+
 ## Faz 0 — Ön eleme (şimdi → 12 Tmz)  ⚠️ EN ÖNCELİKLİ
 
-- [ ] T3KYS başvuru + **4 kişi** teyidi + uygunluk kontrol listesi (`docs/00 §5`).
+- [ ] T3KYS başvuru + **4 kişi** teyidi + uygunluk kontrol listesi (`docs/00 §5`) — **KIRMIZI**.
 - [ ] **Ön Değerlendirme Sunumu** (PDF/PPTX): problem, mimari (`docs/03`), takım, motivasyon.
 - [ ] Bu iskeletin demo-GIF/screenshot'ı (OCR + canlı Ajan Akış Şeması) → sunuma güçlü kanıt.
 
@@ -28,7 +38,7 @@
 
 ## Hafta 1 — Görev 1 çekirdeği (1–7 Ağu)
 
-- [ ] `siniflandir` few-shot LLM JSON (stub yerine) + abstention.
+- [x] `siniflandir` few-shot LLM JSON + mock fallback + abstention.
 - [ ] `cikar` LLM JSON-schema + regex + PII maskeleme entegre.
 - [ ] `eksik_tespit` tür-bağımlı şema + `eksik_bilgi_gold` v1.
 - [ ] `evrak_class_gold` ≥100 + `evrak_class_eval.py` ilk macro-F1.
@@ -45,7 +55,7 @@
 ## Hafta 3 — Görev 2 tamam + Verify + Demo cilası (15–21 Ağu)
 
 - [ ] `yazi_taslak` 4 yazı türü + `clarifier` dur-ve-sor (eksik bilgi iste).
-- [ ] `verify`/`risk_guard` ADAPT (uydurma kurum/tarih/sayı veto + format-compliance, false-veto=0).
+- [x] `verify` node çalışıyor (false-veto=0); [ ] `risk_guard` genişletmesi + format kapısı düzeltmesi.
 - [ ] `draft_eval.py` + `missing_info_eval.py` + `latency_eval.py`.
 - [ ] Frontend: AgentFlowGraph node listesi final, ExtractedFields/Routing/DraftPreview kartları, export.
 - **Çıktı:** iki görev uçtan-uca + canlı demo UI.

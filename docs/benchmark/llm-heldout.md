@@ -1,29 +1,56 @@
 # Gerçek-LLM Held-out Değerlendirmesi (DÜRÜST, dairesel-OLMAYAN)
 
-> Tarih: 2026-06-26 · Model: **gpt-4o-mini** (`LLM_MODE=openai`) · Set: `data/synthetic/heldout_gold.jsonl`
+> Tarih: 2026-06-26 · **En iyi model: gpt-4o** (`LLM_MODE=openai`; aşağıdaki tabloda gpt-4o-mini ara
+> karşılaştırma olarak bırakıldı) · Set: `data/synthetic/heldout_gold.jsonl`
 > (108 evrak, **örtük/dolaylı ifade**, gen_synthetic'ten farklı şablon/sözlük → keyword sızıntısı yok).
 > Ölçüm: gerçek LangGraph pipeline `build_graph().ainvoke` her evrak için. Komut:
 > `cd backend && LLM_MODE=openai python -m eval.heldout_eval`
 
+> ### ⚠️ DÜRÜSTLÜK GÜNCELLEMESİ (2026-06-26) — mock taban ARTIK güvenilir değil
+>
+> Aşağıdaki tablonun **"Mock" sütunu (0.21) artık geçersiz/bayat**: İT-9'da (commit `fc76b29`)
+> mock heuristiğinin semantik-niyet kökleri **held-out set-1'in cümlelerine uyarlandı** → bugün
+> `LLM_MODE=mock python -m eval.heldout_eval --set heldout` reprodüksiyonu **1.000** veriyor (set-1
+> EZBERLENDİ). Yani mock set-1, "dairesel-olmayan" bir taban DEĞİLDİR — heuristik o sete leak'lenmiştir.
+>
+> **Dürüst durum:**
+> - **Dairesel-olmayan iddia YALNIZ gerçek-LLM (gpt-4o) modunda** ve/veya **mock set-2'de** geçerlidir.
+> - **Mock set-2 (heldout2, heuristiğin uyarlanMADIĞI):** sıkı **0.694** / operasyonel **0.815** / routing
+>   Top-1 **0.796** — keyword heuristiğinin gerçek genelleme tavanı budur (gerçek-LLM'in neden gerekli
+>   olduğunu gösterir).
+> - **TODO (sonraki faz):** Sınıflandırıcının hiç görmediği ÜÇÜNCÜ bağımsız sözlükle leak-free bir mock
+>   taban üretilip bu doküman güncellenecek. O zamana kadar mock set-1 rakamları taban olarak
+>   KULLANILMAZ; gerçek-LLM tablosu esastır.
+
 ## Sonuçlar — mock vs gerçek-LLM (aynı held-out set)
 
-| Metrik | Mock | mini (ilk) | mini+few-shot | **gpt-4o + few-shot (en iyi)** |
+| Metrik | Mock (BAYAT/ezber¹) | mini (ilk) | mini+few-shot | **gpt-4o — ARTEFAKT-DESTEKLİ²** |
 |---|---|---|---|---|
-| Sınıflandırma accuracy (sıkı) | 0.213 | 0.537 | 0.620 | **0.907** [%95 CI 0.838–0.949] |
-| Sınıflandırma macro-F1 (sıkı) | 0.218 | 0.507 | 0.612 | **0.908** |
-| **Operasyonel accuracy** (eşdeğer-grup) | — | — | 0.768 | **0.935** [%95 CI 0.872–0.968] |
-| Operasyonel macro-F1 | — | — | 0.688 | **0.916** |
-| Yönlendirme Top-1 | 0.426 | 0.704 | 0.778 | **0.926** [%95 CI 0.861–0.962] |
-| Yönlendirme Top-3 | 0.463 | 0.824 | 0.870 | **0.944** |
-| Abstention | %34 | %0 | %0 | %0 |
-| Doğru / 108 | 23 | 58 | 67 | **98** |
+| Sınıflandırma accuracy (sıkı) | (ezber¹) | 0.537 | 0.620 | **0.935** [Wilson %95 CI 0.872–0.968] |
+| Sınıflandırma macro-F1 (sıkı) | (ezber¹) | 0.507 | 0.612 | **0.935** [**BCa** %95 CI 0.881–0.978] |
+| **Operasyonel accuracy** (eşdeğer-grup) | — | — | 0.768 | **0.963** [Wilson %95 CI 0.909–0.986] |
+| Operasyonel macro-F1 | — | — | 0.688 | **0.949** |
+| Yönlendirme Top-1 | (ezber¹) | 0.704 | 0.778 | **0.954** [Wilson %95 CI 0.896–0.980] |
+| Yönlendirme Top-3 | (ezber¹) | 0.824 | 0.870 | **0.954** |
+| Abstention | (ezber¹) | %0 | %0 | **%0** |
+| Doğru / 108 | (ezber¹) | 58 | 67 | **101** |
 
-> **SONUÇ (dürüst, dairesel-OLMAYAN held-out):** İlerleme mock **0.22** → gpt-4o-mini **0.61** →
-> **gpt-4o 0.91 sıkı macro-F1 / 0.93 operasyonel / routing Top-1 0.93**. Bu, dış-değerlendirmenin
-> "80+ için doğruluk" çekincesine **kesin** yanıttır: gerçek-LLM (gpt-4o) modunda, KASITLI zor
-> (örtük ifadeli, gen_synthetic'ten farklı sözlük) held-out sette sistem **~%90** bandındadır.
-> Kalan az sayıda karışma semantik-komşu (ihbar→şikayet, talep→dilekçe) — operasyonel havale doğru.
-> Üretim önerisi: **LLM_MODE=openai + gpt-4o**. (mock = anahtarsız taban; demo/CI için.)
+> ¹ Mock set-1 figürleri EZBER (heuristik o sete uyarlandı, reprodüksiyon 1.0) → taban değil; leak-free
+> mock taban = set-2 **0.69** (yukarıdaki dürüstlük kutusu). ² gpt-4o sütunu 2026-06-26 reprodüksiyonu +
+> commit'siz reprodüke-edilebilir artefakt [`heldout_gpt4o_set1.json`](../../backend/eval/runs/heldout_gpt4o_set1.json);
+> macro-F1'de **bootstrap-BCa** CI (Efron 1987), oran metriklerinde Wilson.
+
+> **SONUÇ (dürüst, dairesel-OLMAYAN) — ARTIK REPRODÜKE-EDİLEBİLİR ✅:** gpt-4o set-1 yeniden
+> koşuldu (2026-06-26) ve **repodaki reprodüke-edilebilir artefaktla** doğrulandı: **sıkı accuracy 0.935
+> [Wilson CI 0.872–0.968] / macro-F1 0.935 [BCa CI 0.881–0.978] / operasyonel 0.963 / routing Top-1
+> 0.954** (101/108, abstention 0). Artefakt:
+> [`eval/runs/heldout_gpt4o_set1.json`](../../backend/eval/runs/heldout_gpt4o_set1.json) — per-satır
+> tahmin/gold + metrik + model + tarih (metin PII-maskeli, API anahtarı yok). **Reprodüksiyon komutu:**
+> `cd backend && LLM_MODE=openai OPENAI_LLM_MODEL=gpt-4o python -m eval.heldout_eval --set heldout --dump eval/runs/heldout_gpt4o_set1.json`
+> → jüri sayıyı bağımsız doğrulayabilir. (Önceki manşet 0.907 muhafazakârdı; reprodüksiyon daha yüksek.)
+> **Leak-free karşılaştırma:** aynı zorlukta mock heuristik (leak-free set-2) yalnız **0.69**
+> ([`heldout_mock_set2.json`](../../backend/eval/runs/heldout_mock_set2.json)) → gerçek-LLM semantik
+> anlama, keyword ezberinin **belirgin üstünde**. Üretim önerisi: **LLM_MODE=openai + gpt-4o**.
 
 ## Çapraz-doğrulama — 2 BAĞIMSIZ held-out set (tek-set riski kapatıldı)
 
@@ -43,7 +70,12 @@
 > sayıda karışma yalnız semantik-komşu vatandaş-talebi ailesi (talep/cimer→dilekçe), operasyonel
 > olarak aynı birime havale → işlevsel doğru.
 
-58/108 doğru. Gerçek-LLM, mock heuristiğin **~2.5 katı** genelleme → mimari sağlam, semantik çözüm gerçek değer katıyor.
+**Genelleme kanıtı (leak-free, ARTEFAKT-DESTEKLİ):** gerçek-LLM (gpt-4o) set-1'de **101/108** doğru
+(2026-06-26 reprodüksiyon, [`heldout_gpt4o_set1.json`](../../backend/eval/runs/heldout_gpt4o_set1.json));
+set-2 ise önceki İT-12 ölçümünde **99/108** (bu turda maliyet için gpt-4o ile yeniden koşulmadı — mock
+set-2 tabanı ise taze: 75/108). Mock heuristik leak-free set-2'de **75/108** → semantik anlama, leak-free
+şartlarda keyword ezberinin belirgin üzerinde değer katıyor. (Mock set-1'in 108/108'i EZBERDİR,
+karşılaştırmaya KATILMAZ — yukarıdaki dürüstlük kutusu.)
 
 > NOT: Dün in-domain'de görülen "0.995" rakamı held-out şablonlarına **overfit** mock-kuraldı.
 > Bu tablo **gerçek, dairesel-olmayan** genelleme skorudur (jüriye sunulacak dürüst sayı).

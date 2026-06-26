@@ -17,7 +17,7 @@
 | 0:40–1:40 | **Çözüm + mimari** | İki görev tek LangGraph pipeline; çok-ajan neden? | `docs/img/02-akis.png` (canlı şema) |
 | 1:40–5:40 | **CANLI DEMO** (4 dk) | Uçtan-uca Görev 1 + Görev 2 real-time | Çalışan app (aşağıdaki senaryo) |
 | 5:40–7:10 | **Teknik derinlik** | RAG + verify + ablasyon + istatistik disiplini | `docs/benchmark/scorecard.md` + ablation |
-| 7:10–8:10 | **Dürüst skor** | mock 0.22 → mini 0.61 → **gpt-4o 0.91** held-out (dairesel-olmayan) | Skor tablosu + `llm-heldout.md` |
+| 7:10–8:10 | **Dürüst skor** | **gpt-4o 0.935** held-out (dairesel-olmayan, reprodüke-edilebilir artefakt); leak-free mock 0.69 | `heldout_gpt4o_set1.json` + `llm-heldout.md` |
 | 8:10–9:10 | **Yenilikçilik + ticarileşme** | PII maskeleme, ENV-gated SOTA, MIT yığın, EBYS/SaaS/on-prem | Ticarileşme slaytı (`ticarileşme.md`) |
 | 9:10–10:00 | **Kapanış** | Durum + yol haritası + güçlü kapanış cümlesi | Kapanış slaytı |
 
@@ -40,16 +40,16 @@
 
 ## B. Slayt İskeleti (final 10 dk — PPTX'e aktarılacak)
 
-1. **Kapak / takım** — proje adı, 1. Senaryo, 4 kişi + roller.
+1. **Kapak / takım** — proje adı, 1. Senaryo, takım + roller; 4 kişi idari şartı tamamlanmış olmalı.
 2. **Problem** — kamu evrak yükü (hacim · süre · format), 3 madde.
 3. **Çözüm + mimari** — iki görev tek pipeline, 10 node diyagramı (`docs/img/02-akis.png`).
 4. **[CANLI DEMO]** — slayt yerine ekran paylaşımı (yedek: `docs/img/` + `demo.gif`).
 5. **Görev 1 sonuçları** — sınıflandırma/çıkarım/eksik/mevzuat/özet + mock-taban skor.
 6. **Görev 2 sonuçları** — yönlendirme/taslak/üslup/bilgilendirme + mock-taban skor.
 7. **Teknik derinlik** — RAG b=0.3, verify false-veto=0, Wilson CI + McNemar ablasyon.
-8. **Dürüst skor** — held-out ilerleme: mock 0.22 → mini 0.61 → **gpt-4o 0.91** (op. 0.93 / Top-1 0.93, 98/108).
+8. **Dürüst skor** — held-out **gpt-4o sıkı 0.935 / op. 0.963 / Top-1 0.954 (101/108)**, reprodüke-edilebilir artefakt; leak-free mock taban 0.69.
 9. **Yenilikçilik + ticarileşme** — PII maskeleme, ENV-gated CRAG/Self-RAG, MIT; EBYS entegrasyonu, SaaS/on-prem (`ticarileşme.md`).
-10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), 649 test, CI; yol haritası; kapanış cümlesi.
+10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), backend 655 test, frontend build; format kapısı + idari yol haritası; kapanış cümlesi.
 
 > **Kapanış cümlesi:** "Çalışan bir sistem, dürüst ölçümler — gpt-4o ile dairesel-olmayan
 > held-out'ta **~%90 doğruluk** — ve temiz bir MIT lisans getirdik; internet kesilse bile
@@ -65,17 +65,23 @@
 ### S1. "Doğruluk skorunuz nedir? Bu sayılar gerçekçi mi?" ⭐ (en kritik)
 
 > **Cevap:** "Dürüst ve **ölçülmüş** bir cevap vereyim — ilerlemeyi aynı zor sette gösterebilirim:
+> Canlı mock karnemiz de güçlü: sınıflandırma macro-F1 **0.9493**, accuracy **0.9491**;
+> yönlendirme Top-1 **0.9630** / Top-3 **0.9815**; eksik-bilgi recall **0.9948**; özet
+> faithfulness **1.0000**; taslak format uyumu **1.0000**; false-veto **0** ve fairness **1.0000**.
+>
 > 1. **Mock taban (anahtarsız):** `LLM_MODE=mock` — LLM yerine kural-tabanlı keyword/regex fallback.
->    CI/offline tabanı; **tavan değil.** Dairesel-olmayan held-out'ta sıkı macro-F1 sadece **0.22** —
->    bunu **gizlemiyoruz**, kural tabanının genellemediğini kanıtlıyor.
+>    CI/offline tabanı; **tavan değil.** Leak-free held-out'ta (set-2, heuristiğin uyarlanMADIĞI) sıkı
+>    sadece **0.69** — bunu **gizlemiyoruz**: kural tabanı semantik genellemiyor, değer LLM modunda.
+>    *(Dürüstlük: mock set-1 figürü artık ezber — heuristik o sete uyarlandı; taban olarak kullanmıyoruz.)*
 > 2. **gpt-4o-mini:** Aynı held-out sette **0.61**.
-> 3. **gpt-4o (üretim tavanı):** Aynı sette **sıkı macro-F1 0.908**, **operasyonel accuracy 0.935**,
->    **yönlendirme Top-1 0.926 — 108 evrakta 98 doğru.** Hepsi Wilson %95 güven aralıklı.
+> 3. **gpt-4o (üretim tavanı) — REPRODÜKE-EDİLEBİLİR ARTEFAKT:** Aynı sette **sıkı accuracy/macro-F1
+>    0.935**, **operasyonel 0.963**, **yönlendirme Top-1 0.954 — 108 evrakta 101 doğru** (Wilson %95 CI'lı).
+>    Commit'li: `backend/eval/runs/heldout_gpt4o_set1.json` → jüri tek komutla doğrular.
 >
 > Kritik nokta — bu held-out **dairesel DEĞİL:** evraklar örtük/dolaylı ifadeyle, gen_synthetic'ten
-> farklı şablon ve sözlükle yazıldı; keyword sızıntısı yok. Yani ilerleme **mock 0.22 → mini 0.61 →
-> gpt-4o 0.91** gerçek bir genelleme sıçraması. Eval'imiz mock taksonomi değil **gerçek LangGraph
-> pipeline'ı** ölçüyor. Üretim önerimiz açık: `LLM_MODE=openai` + gpt-4o." (Kanıt:
+> farklı şablon ve sözlükle yazıldı; keyword sızıntısı yok. Yani gerçek genelleme: leak-free mock **0.69
+> → gpt-4o 0.935** (artefakt-destekli). Eval'imiz mock taksonomi değil **gerçek LangGraph pipeline'ı**
+> ölçüyor. Üretim önerimiz açık: `LLM_MODE=openai` + gpt-4o." (Kanıt:
 > `docs/benchmark/llm-heldout.md`, `docs/benchmark/scorecard.md`, `docs/method.md §2.1`.)
 
 ### S2. "Gerçek kamu verisi mi kullandınız?"
@@ -133,11 +139,11 @@
 
 ### S9. "Eksik / yapamadığınız ne var?"
 
-> **Cevap (dürüst):** "Üç açık var, hepsini matriste işaretledik: (1) **Tek held-out set riski** —
-> gerçek-LLM skorunu (gpt-4o 0.91) ölçtük ama tek sette; 2. bağımsız set ile çapraz-doğrulamak istiyoruz;
-> (2) Blind insan-etiketli gold — otomatik etiketler bağımsız onaydan geçmeli; (3) Canlı OCR'ın uçtan-uca
-> gerçek-evrak akışında genişletilmesi. İdari tarafta 4. takım üyesi tamamlanıyor. Bunları gizlemiyoruz
-> çünkü dürüst ölçüm jüri güveni demek." (Kanıt: `docs/benchmark/llm-heldout.md`, `docs/sartname-uyum-matrisi.md §G`.)
+> **Cevap (dürüst):** "Üç açık var, hepsini matriste işaretledik: (1) **4. takım üyesi** —
+> bu idari kırmızı madde kapanmadan başvuru geçersiz olabilir; (2) blind
+> insan-etiketli gold — otomatik etiketler bağımsız onaydan geçmeli; (3) canlı OCR'ın farklı
+> tarama/foto kaliteleriyle saha provası genişletilmeli. Bunları gizlemiyoruz çünkü dürüst ölçüm
+> jüri güveni demek." (Kanıt: `docs/benchmark/scorecard.md`, `docs/sartname-uyum-matrisi.md §G`.)
 
 ### S10. "Latency / hız? Real-time mı?"
 

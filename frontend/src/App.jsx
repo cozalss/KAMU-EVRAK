@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { PIPELINE } from "./components/agent-flow/topology.js";
 import { AgentFlowGraph } from "./components/agent-flow/AgentFlowGraph.jsx";
-import { ResultCards } from "./components/result-cards.jsx";
+import { ResultCards, OnayPaneli } from "./components/result-cards.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { Icon } from "./components/icons.jsx";
 
@@ -44,6 +44,8 @@ export default function App() {
   // yolunda boş kalır → buton metin gerektiğini bildirir). + indirme durumu.
   const [evrakText, setEvrakText] = useState("");
   const [downloading, setDownloading] = useState("");
+  // HITL: memur onayı bekleyen taslak (data.onay_bekliyor) — varsa OnayPaneli açılır.
+  const [pendingOnay, setPendingOnay] = useState(null);
 
   const fileRef = useRef(null);
   const stepTimers = useRef([]);
@@ -70,6 +72,7 @@ export default function App() {
     setResult(null);
     setError("");
     setEvrakText("");
+    setPendingOnay(null);
   }, [clearTimers]);
 
   // Tek node durum güncelle (SSE event veya client adımlama).
@@ -178,14 +181,43 @@ export default function App() {
 
       // OCR adımı yok (metin verildi) → "oku"yu metin uzunluğuyla tamam say.
       animateNodes(data, sample.text.length);
-      // Kartlar adımlama bittikten sonra belirsin (akış → sonuç akışı doğal).
-      const t = setTimeout(() => setResult(data), PIPELINE.length * STEP_MS + 120);
+      // HITL: taslakta durulduysa onay panelini aç (final sonucu resume sonrası gelir).
+      const t = setTimeout(
+        () => (data.onay_bekliyor ? setPendingOnay(data) : setResult(data)),
+        PIPELINE.length * STEP_MS + 120,
+      );
       stepTimers.current.push(t);
     } catch (err) {
       setError(err?.message || "Bağlantı hatası — backend çalışıyor mu?");
       setBusy(false);
     }
   }, [reset, animateNodes]);
+
+  // HITL: memur kararını (onayla/düzenle/reddet) backend'e gönder → final sonucu al.
+  const handleResume = useCallback(async (secim, metin = "", gerekce = "") => {
+    const p = pendingOnay;
+    if (!p?.thread_id) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/process_doc/resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ thread_id: p.thread_id, secim, metin, gerekce }),
+      });
+      if (!res.ok) throw new Error(`Onay gönderilemedi (${res.status})`);
+      const final = await res.json();
+      setPendingOnay(null);
+      setResult(final);
+      showToast(
+        secim === "reddet" ? "Taslak reddedildi." :
+        secim === "duzenle" ? "Düzenleme onaylandı." : "Taslak onaylandı.",
+      );
+    } catch (err) {
+      showToast(err?.message || "Onay gönderilemedi — backend çalışıyor mu?");
+    } finally {
+      setBusy(false);
+    }
+  }, [pendingOnay, showToast]);
 
   // Hata sonrası son işlemi yeniden dene (dosya VEYA örnek metin).
   const onRetry = useCallback(() => {
@@ -413,7 +445,11 @@ export default function App() {
           aria-busy={busy}
           aria-label="Evrak işleme sonuçları"
         >
-          {busy && !result && <ResultSkeleton />}
+          {/* HITL: memur onay paneli (taslakta durulduysa) — sonuç gelmeden önce. */}
+          {pendingOnay && !result && (
+            <OnayPaneli data={pendingOnay} onResume={handleResume} busy={busy} />
+          )}
+          {busy && !result && !pendingOnay && <ResultSkeleton />}
           {result && (
             <ResultCards
               r={result} onToast={showToast}

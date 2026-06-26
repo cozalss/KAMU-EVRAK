@@ -10,11 +10,14 @@ from __future__ import annotations
 import math
 
 from eval.stats import (
+    bootstrap_bca_ci,
     bootstrap_diff_ci,
     fmt_ci,
     fmt_delta_ci,
     mcnemar_from_paired,
     mcnemar_test,
+    norm_cdf,
+    norm_ppf,
     wilson_interval,
 )
 
@@ -206,3 +209,63 @@ class TestErfcKiKareKuyruk:
         beklenen_p = math.erfc(math.sqrt(chi2 / 2.0))
         # Assert
         assert abs(p - beklenen_p) < 1e-9
+
+
+class TestNormPpfCdf:
+    """Ters-normal (Acklam) + normal CDF — bilinen değerler + round-trip."""
+
+    def test_ppf_medyan_sifir(self):
+        # Φ⁻¹(0.5) = 0
+        assert abs(norm_ppf(0.5)) < 1e-6
+
+    def test_ppf_975_yaklasik_196(self):
+        # Φ⁻¹(0.975) ≈ 1.95996 (z_95)
+        assert abs(norm_ppf(0.975) - 1.95996) < 1e-3
+
+    def test_cdf_sifir_yarim(self):
+        # Φ(0) = 0.5
+        assert abs(norm_cdf(0.0) - 0.5) < 1e-9
+
+    def test_ppf_cdf_round_trip(self):
+        # Φ(Φ⁻¹(p)) ≈ p
+        for p in (0.01, 0.25, 0.5, 0.84, 0.99):
+            assert abs(norm_cdf(norm_ppf(p)) - p) < 1e-4
+
+
+class TestBootstrapBcaCI:
+    """Macro-F1 gibi non-oran metrikler için BCa %95 CI — deterministik + [0,1]."""
+
+    @staticmethod
+    def _mean(items: list) -> float:
+        return sum(items) / len(items) if items else 0.0
+
+    def test_kucuk_n_tam_aralik(self):
+        # n<2 → CI verilemez (nokta, 0, 1)
+        point, lo, hi = bootstrap_bca_ci([1.0], self._mean)
+        assert point == 1.0
+        assert (lo, hi) == (0.0, 1.0)
+
+    def test_nokta_araligin_icinde(self):
+        # Arrange — 0/1 karışık → ortalama ~0.6, CI onu kapsamalı
+        items = [1.0] * 6 + [0.0] * 4
+        point, lo, hi = bootstrap_bca_ci(items, self._mean, n_resamples=1500)
+        # Assert
+        assert abs(point - 0.6) < 1e-9
+        assert lo <= point <= hi
+        assert 0.0 <= lo <= hi <= 1.0
+
+    def test_deterministik_ayni_seed(self):
+        # Arrange — aynı veri + seed → tekrar-üretilebilir
+        items = [1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0] * 4
+        r1 = bootstrap_bca_ci(items, self._mean, n_resamples=1200, seed=7)
+        r2 = bootstrap_bca_ci(items, self._mean, n_resamples=1200, seed=7)
+        # Assert
+        assert r1 == r2
+
+    def test_sabit_metrik_dar_aralik(self):
+        # Arrange — hepsi aynı → varyans yok, CI noktaya çok yakın
+        items = [1.0] * 20
+        point, _lo, hi = bootstrap_bca_ci(items, self._mean, n_resamples=1000)
+        # Assert
+        assert point == 1.0
+        assert hi == 1.0

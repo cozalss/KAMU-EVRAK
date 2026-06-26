@@ -36,7 +36,7 @@ Kontrol listesi:
 
 ### Adım 1 — Açılış (15 sn)
 > "Kamu kurumlarına günde binlerce evrak geliyor: dilekçe, başvuru, tebligat, üst yazı.
-> kamu-evrak bunları **9 ajanlı** bir boru hattından geçirip otomatik sınıflandırıyor,
+> kamu-evrak bunları **10 node'lu** bir boru hattından geçirip otomatik sınıflandırıyor,
 > eksik bilgiyi yakalıyor, ilgili mevzuatı öneriyor, doğru birime havale ediyor ve
 > **resmî yazı taslağını** üretiyor — hepsi canlı."
 
@@ -58,7 +58,8 @@ Sırayla göster:
 5. **Önerilen Havale Birimi** + alternatifler.
 
 ### Adım 4 — Görev 2: resmî yazı taslağı + indirme (45 sn)
-- **Resmî Yazı Taslağı** kartında önizlemeyi göster (resmî üslup, `{{ }}` yer tutucuları).
+- **Resmî Yazı Taslağı** kartında önizlemeyi göster (resmî üslup, EBYS/yetkili makamca
+  tamamlanacak alanlar ham `{{ }}` görünmeden işaretlenir).
 - **"DOCX indir"** (veya PDF) butonuna bas → dosya insin. "Memur taslağı düzenleyip
   gönderebilir; sistem ön hazırlığı yaptı."
 - En altta **yasal disclaimer**: "Bu sistem karar-destek amaçlıdır; nihai sorumluluk
@@ -94,11 +95,15 @@ göstermek için açılır; zorunlu değildir.
 ## 3. Konuşma noktaları (jüri sorusu gelirse)
 
 - **"Skorlar?"** → `docs/benchmark/scorecard.md` (GERÇEK LangGraph pipeline, mock taban):
-  sınıflandırma macro-F1 **0.628**, yönlendirme Top-1 **0.643** / Top-3 **0.833**, eksik-bilgi
-  recall **0.991**, özet key-fact **1.0**, adillik (counterfactual) **1.0**. "Mock taban — gerçek
-  LLM modu yükseltir." %95 Wilson güven aralıkları küçük-N belirsizliğini dürüstçe gösterir.
+  sınıflandırma macro-F1 **0.9493** / accuracy **0.9491**, yönlendirme Top-1 **0.9630** /
+  Top-3 **0.9815**, eksik-bilgi recall **0.9948**, özet key-fact recall **0.9810**,
+  faithfulness **1.0000**, adillik (counterfactual) **1.0000**, false-veto **0**.
+  "Mock taban — gerçek LLM modu kalite tavanı içindir." %95 Wilson güven aralıkları küçük-N
+  belirsizliğini dürüstçe gösterir. Taslakta `format_uyumlu_rate=1.0`; ham `{{ }}` alanları
+  jüri önizlemesinde görünmez.
 - **"Uydurma riski?"** → Mevzuat madde/karar şüpheliyse `[DOĞRULA: ...]` placeholder; verify/risk
   guard uydurma kurum/tarih/sayıyı veto eder; her çıktıda disclaimer.
 - **"KVKK / kişisel veri?"** → TCKN/telefon backend'de maskelenir; ham PII arayüze hiç ulaşmaz
   (kart üstündeki 🛡️ rozet bunun görünür kanıtı).
-- **"Test?"** → `cd backend && uv run python -m pytest` → **649 passed, 1 skipped**.
+- **"Test/build?"** → backend `uv run python -m pytest -q` → **655 passed, 3 warnings**;
+  frontend `npm.cmd run build` → **başarılı**.

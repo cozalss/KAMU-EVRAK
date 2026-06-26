@@ -31,4 +31,4 @@ yönlendirmeye gold-tür vs tahmin-tür besleme A/B.
 ## Fairness (etik §13.1)
 
 Farklı isim/cinsiyet/bölge sahte-PII varyantlarında sınıflandırma/routing **tutarlılık** kontrolü
-(düşük maliyet, etik-madde kapsama). `eval/fairness_eval.py` (YENİ stub).
+(düşük maliyet, etik-madde kapsama). Canlı karne fairness **1.0000** raporlar (`eval/fairness_eval.py`).

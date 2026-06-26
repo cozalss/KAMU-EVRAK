@@ -1,7 +1,7 @@
 # 04 — Port Haritası: ADALET-AGENT → kamu-evrak
 
 > ADALET-AGENT **kaynak/dokunulmaz**; bu depoya yalnız kopyalandı. KEEP = aynen; ADAPT =
-> kopyalandı + `# TODO(kamu-evrak)` ile uyarlanacak; DROP = taşınmadı (hukuk-spesifik).
+> kamu-evrak alanına uyarlanmış; DROP = taşınmadı (hukuk-spesifik).
 
 ## Bu oturumda kopyalanan/uyarlanan (mevcut)
 
@@ -26,8 +26,9 @@
 ## Yeni yazılan (mevcut)
 
 `agents/config.py` (taksonomi), `agents/state.py` (EvrakState), `agents/graph.py` (pipeline),
-`agents/nodes/{siniflandir,cikar,eksik_tespit,mevzuat_oner,ozetle,route_birim,yazi_taslak,finalize}.py`
-(stub), `api/schemas.py`, `api/routes/process_doc.py`, `main.py`.
+`agents/nodes/{siniflandir,cikar,eksik_tespit,mevzuat_oner,ozetle,route_birim,yazi_taslak,verify,arsiv,finalize}.py`
+(çalışan node'lar; taslak `format_uyumlu_rate=1.0`), `api/schemas.py`,
+`api/routes/process_doc.py`, `main.py`.
 
 ## DROP (taşınmadı — hukuk-spesifik)
 
@@ -36,9 +37,11 @@
 `MursitEmbedder`, `api/routes/{dilekce,emsal,preferences,auth,conversations,feedback}.py`,
 `components/LegalTooltip.jsx` + `lib/legalTerms.js`, hukuk eval'leri (`emsal*`,`nli_tr*`,`ragas*`).
 
-## Üretimde ADAPT edilecek (kopyalandı, henüz uyarlanmadı)
+## Genişletilecek / kalite borcu
 
-- `retrieval/*` → mevzuat-RAG (kanun_kodu→mevzuat_no payload, `data/mevzuat` seed).
-- `yazi/template_registry.py` + `data/templates/*.j2` → Yön. 2646 format şablonları.
-- `eval/{scorecard,judge}.py` → `competition_scorecard.py` + evrak rubrikleri.
-- `agents/verifier_layers.py`/`risk_guard.py` → kurum/tarih/sayı/format veto (ADALET'ten çek).
+- `retrieval/*` → mevzuat-RAG derinleştirme (BM25 varsayılan çalışır; Qdrant/reranker opsiyonel).
+- `yazi/template_registry.py` + `data/templates/*.j2` → Yön. 2646 format kapısı
+  (`format_uyumlu_rate=1.0`, ham placeholder yok).
+- `eval/{scorecard,judge}.py` → `competition_scorecard.py` + evrak rubrikleriyle kullanılıyor;
+  LLM-judge ayrı gate olarak genişletilebilir.
+- `agents/verifier_layers.py`/`risk_guard.py` → mevcut `verify` node üstüne daha kapsamlı kurum/tarih/sayı veto katmanı.

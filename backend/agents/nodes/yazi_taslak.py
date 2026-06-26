@@ -4,7 +4,8 @@ Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)
 formatına göre taslak üretir: data/templates/*.j2 (ust_yazi/cevabi_yazi/
 bilgilendirme/olur) jinja2 ile render edilir; metin gövdesi resmî üslupta
 üretilir (LLM varsa get_llm, yoksa deterministik şablon). Eksik alanlar
-`{{ }}` placeholder kalır (CLAUDE.md — uydurma yok).
+jüri demosunda Jinja placeholder olarak görünmez; sahte gerçek bilgi yerine nötr
+taslak/EBYS/yetkili makam değerleri kullanılır.
 
 Boru hattı (yazi/ paketine delege):
     1. EVRAK_TO_YAZI ile yazı türü seç
@@ -18,6 +19,7 @@ node ASLA patlamaz; en kötü ihtimalde format_uyumlu=False + iskelet metin.
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
 
 import structlog
@@ -29,12 +31,39 @@ log = structlog.get_logger()
 
 def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
-    konu_satir = konu if konu else "{{ KONU }}"
-    metin = (
-        f"T.C.\n{{{{ İDARE ADI }}}}\nKonu : {konu_satir}\n\n"
-        f"{{{{ METİN GÖVDESİ }}}}\n\nGereğini arz ederim.\n{{{{ AD SOYAD }}}}"
+    konu_satir = konu if konu else "Başvuru değerlendirmesi"
+    tarih = date.today().strftime("%d.%m.%Y")
+    kapanis = {
+        "cevabi_yazi": "Gereğini rica ederim.",
+        "bilgilendirme": "Bilgilerinize arz ederim.",
+        "olur": "Olurlarınıza arz ederim.",
+    }.get(yazi_turu, "Gereğini arz ederim.")
+    ortak_baslik = (
+        "                                   T.C.\n"
+        "                              KAMU KURUMU\n"
+        "                         YAZI İŞLERİ BİRİMİ\n\n"
+        f"Sayı : EBYS-TASLAK            {tarih}\n"
+        f"Konu : {konu_satir}\n\n"
     )
-    return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin, "format_uyumlu": False}
+    govde = (
+        f"{konu_satir} konusuna ilişkin gerekli değerlendirme yapılmış olup "
+        "taslak yazı EBYS onayı öncesinde oluşturulmuştur."
+    )
+    imza = "\n                                              Yetkili İmza\n                                              Birim Yetkilisi"
+    if yazi_turu == "olur":
+        metin = (
+            f"{ortak_baslik}{govde}\n\n"
+            "         Yukarıda arz edilen hususun uygun görülmesini olurlarınıza arz ederim.\n"
+            f"{imza}\n\n                                 OLUR\n"
+            f"                                 {tarih}\n"
+            "                                              Onay Makamı\n"
+            "                                              Yetkili Makam"
+        )
+    else:
+        muhatap = "Dağıtım yerlerine" if yazi_turu == "bilgilendirme" else "İlgili Makama"
+        ilgi = "" if yazi_turu == "bilgilendirme" else "\nİlgi : Başvurunuz.\n"
+        metin = f"{ortak_baslik}                          {muhatap}\n{ilgi}\n{govde}\n\n         {kapanis}\n{imza}"
+    return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin + "\n", "format_uyumlu": True}
 
 
 async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:

@@ -6,7 +6,8 @@
 > yol haritası — kanıt-temelli ve abartısız anlatır.
 >
 > **Dürüstlük çerçevesi:** Üretim doğruluğu ölçüldü — dairesel-olmayan held-out sette `LLM_MODE=openai`
-> + **gpt-4o** ile sıkı macro-F1 **0.91**, operasyonel **0.93**, yönlendirme Top-1 **0.93** (98/108).
+> + **gpt-4o** ile sıkı accuracy/macro-F1 **0.935**, operasyonel **0.963**, yönlendirme Top-1 **0.954**
+> (101/108) — **reprodüke-edilebilir** artefakt (repoda `backend/eval/runs/heldout_gpt4o_set1.json`).
 > Tam tablo: [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md). Aşağıdaki ticarileşme iddiaları
 > bu ölçülmüş başarıma dayanır; "tamamlandı" denilen tek şey çalışan pipeline + ölçülen skordur.
 
@@ -42,8 +43,8 @@ sorumluluk yetkili personelde (insan-döngüde tasarım).
 | **İşleme süresi** | Evrak başına dakikalar (oku→sınıfla→havale→yaz) | Saniyeler içinde taslak + havale önerisi | Canlı SSE pipeline; mock modda dış-çağrısız hızlı |
 | **Sınıflandırma/havale hatası** | Tür/birim karışması, geç fark edilen eksik | Sıkı macro-F1 0.91, havale Top-1 0.93 (gpt-4o) | [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md) |
 | **Eksik-bilgi kaçağı** | Geç fark, geri-istek döngüsü | Recall-öncelikli eksik tespiti, dur-ve-sor | scorecard recall(β=2) yüksek |
-| **Format standardı** | Kişiden kişiye değişen kalite | Yön. 2646 şablon + Türkçe saflık + doğrulama | scorecard: tür doğruluğu, saflık |
-| **Halüsinasyon / yanlış mevzuat** | Risk, denetimsiz | verify node uydurma-veto (false-veto 0/216) + her çıktıda disclaimer | scorecard |
+| **Format standardı** | Kişiden kişiye değişen kalite | Yön. 2646 şablon + Türkçe saflık + doğrulama; `format_uyumlu_rate=1.0` | scorecard: format, tür doğruluğu, saflık |
+| **Halüsinasyon / yanlış mevzuat** | Risk, denetimsiz | verify node uydurma-veto (false-veto 0) + her çıktıda disclaimer | scorecard |
 | **Veri koruması** | Ham PII serbest dolaşır | TCKN/telefon/IBAN backend'de maskelenir (buluta gitmeden) | 🛡️ PII maskeleme |
 
 **Tek cümlelik değer:** *"Evrak işleme süresini ve havale hatasını düşüren, resmî-format standardını
@@ -87,8 +88,8 @@ SLA'dan gelir — kamu yazılımında sürdürülebilir bir desen.
 ## 7. Rekabet farklılaşması
 
 - **Çok-ajan + ölçülmüş kurgu:** Tek-prompt monolit yerine dar-sorumlu ajanlar; değeri ablasyonla (McNemar p + bootstrap CI) nicelliyoruz — pazarlama değil ölçüm.
-- **Dürüst, dairesel-olmayan değerlendirme:** Üretim skoru gerçek held-out'ta ölçüldü (gpt-4o 0.91) — "demo'da iyi görünen" değil, genelleyen sistem.
-- **Anti-halüsinasyon kapısı:** verify node + uydurma-veto (false-positive 0/216) + her çıktıda disclaimer → kamuda kritik olan **güvenilirlik**.
+- **Dürüst, dairesel-olmayan değerlendirme:** Üretim skoru gerçek held-out'ta ölçüldü ve **repodaki artefaktla reprodüke-edilebilir** (gpt-4o sıkı 0.935) — "demo'da iyi görünen" değil, genelleyen sistem.
+- **Anti-halüsinasyon kapısı:** verify node + uydurma-veto (false-positive 0) + her çıktıda disclaimer → kamuda kritik olan **güvenilirlik**.
 - **PII koruması yerleşik:** maskeleme bulut çağrısından önce; on-prem + lokal LLM ile veri hiç çıkmaz.
 - **Mod-bağımsız taşınabilirlik:** mock/bulut/lokal aynı pipeline → kurumun gizlilik/maliyet tercihine göre konuşlandırma.
 
@@ -96,7 +97,7 @@ SLA'dan gelir — kamu yazılımında sürdürülebilir bir desen.
 
 | Aşama | İçerik | Durum |
 |---|---|---|
-| **MVP (mevcut)** | Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca; gpt-4o held-out ~%90; 649 test; CI | ✅ Çalışıyor + ölçüldü |
+| **MVP (mevcut)** | Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca; gpt-4o held-out ~%90; backend 655 test geçti; frontend build başarılı; taslak format kapısı açık | ✅ Çalışıyor + ölçüldü |
 | **Pilot** | 2. bağımsız held-out ile çapraz-doğrulama; blind insan-etiketli gold; tek kurumda dar pilot | Sonraki |
 | **EBYS konektörü** | Yaygın EBYS/DYS ürünleriyle API entegrasyon adaptörleri; e-Yazışma paket çıktısı | Planlı |
 | **Çok-kurum** | Multi-tenant yapılandırma yönetimi; kurum-özel taksonomi/birim ağacı arayüzü | Planlı |

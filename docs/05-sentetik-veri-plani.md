@@ -28,7 +28,8 @@
 ## Mevzuat korpusu (`data/mevzuat/`) — kamuya açık, izinli
 
 Yön. 2646, Dilekçe 3071, Bilgi Edinme 4982, Tebligat 7201, SDP 2005/7 → mevzuat.gov.tr metni
-chunk'lanıp Qdrant'a seed (`scripts/seed_mevzuat.py` — TODO). Mahkeme kararları YALNIZ
+madde-bazlı chunk'lanıp indekslenir (`scripts/seed_mevzuat.py`; BM25 varsayılan, Qdrant opsiyonel).
+Mahkeme kararları YALNIZ
 mevzuat-eşleştirme referansı; **eğitim/demo evrakı olarak değil**.
 
 ## PII güvenliği

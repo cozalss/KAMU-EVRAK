@@ -26,6 +26,10 @@ dependencies = [
     "python-docx>=1.2.0",
     "pillow>=10.4.0",
     "numpy>=1.26.0",
+    # Mevzuat RAG — madde-bazlı BM25Okapi retrieval (Görev 1 mevzuat önerisi BİRİNCİL yol).
+    # Saf-Python + Apache-2.0 (AGPL-yok, MIT repo iddiası korunur); tek bağımlılığı numpy (zaten core).
+    # Çekirdekte: kurulu olmazsa stdlib term-overlap'e düşer ama o zaman "BM25" iddiası geçersiz olurdu.
+    "rank-bm25>=0.2.2",
     # Resmî yazı taslak render (jinja2 + PDF/DOCX)
     "jinja2>=3.1.4",
     "reportlab>=4.2.0",
@@ -41,7 +45,7 @@ rag = [
     "sentence-transformers>=3.2.0",
     "transformers>=4.45.0",
     "torch>=2.6.0",
-    "rank-bm25>=0.2.2",
+    # NOT: rank-bm25 artık ÇEKİRDEK bağımlılık (mevzuat BM25 birincil yol) — buradan çıkarıldı.
     "rapidfuzz>=3.10.0",
 ]
 # Tam Türkçe diakritik için Tesseract 5 (binary gerekir; RapidOCR offline varsayılan).

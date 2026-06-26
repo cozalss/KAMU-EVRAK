@@ -67,18 +67,18 @@ class TestIlgiTuretme:
         # Assert
         assert satirlar == ("10.04.2026 tarihli ve E-59883029-423.03-4453 sayılı yazınız.",)
 
-    def test_eksik_tarih_placeholder_kalir(self):
-        # Arrange — yalnız sayı var → tarih slotu {{ }} (uydurma yok)
+    def test_eksik_tarih_demo_guvenli_atif(self):
+        # Arrange — yalnız sayı var → tarih uydurulmaz, Jinja placeholder gösterilmez
         unsurlar = {"sayi": "E-123-456"}
         # Act
         satirlar = _ilgi_satirlari(unsurlar)
         # Assert
-        assert "{{ İLGİ TARİH }}" in satirlar[0]
-        assert "E-123-456" in satirlar[0]
+        assert satirlar == ("E-123-456 sayılı başvurunuz.",)
+        assert "{{" not in satirlar[0]
 
-    def test_hicbiri_yoksa_bos(self):
+    def test_hicbiri_yoksa_basvuru_atfi(self):
         # Arrange / Act / Assert
-        assert _ilgi_satirlari({}) == ()
+        assert _ilgi_satirlari({}) == ("Başvurunuz.",)
 
 
 class TestBuildContextAutoFill:
@@ -176,24 +176,28 @@ class TestRenderYaziTumTurler:
         assert "arz ederim." in res.metin
 
 
-class TestPlaceholderDurustlugu:
-    """Bilinmeyen alanlar {{ }} placeholder kalır (uydurma yok); bilinenler dolar."""
+class TestDemoSafeDefaults:
+    """Bilinmeyen alanlar demo metninde Jinja placeholder olarak görünmez."""
 
-    def test_bilinmeyen_idare_placeholder(self):
+    def test_bilinmeyen_alanlar_demo_guvenli_dolar(self):
         # Arrange / Act
-        metin = render_metin(_ctx("cevabi_yazi"))
+        res = render_yazi(_ctx("cevabi_yazi"))
+        metin = res.metin
         eksik = detect_eksik_format(metin)
-        # Assert — idare/birim/imza bilinmiyor → placeholder; muhatap/konu dolu
-        assert any("İDARE" in e for e in eksik)
+        # Assert — idare/birim/imza bilinmiyor ama jüri demosunda {{ }} görünmez
+        assert "{{" not in metin
+        assert "}}" not in metin
+        assert eksik == ()
+        assert res.format_uyumlu is True
         assert "Sayın Test Kişi" in metin
-        assert "{{ MUHATAP MAKAM }}" not in metin
 
-    def test_sayi_fabrike_edilmez(self):
-        # Arrange — OUR yazının sayısı EBYS'ce atanır → placeholder, sahte DETSİS YOK
+    def test_sayi_ebys_taslak_degeriyle_gosterilir(self):
+        # Arrange — OUR yazının sayısı EBYS'ce atanır; sahte DETSİS numarası yazma
         metin = render_metin(_ctx("cevabi_yazi"))
-        # Assert — eski "E-DETSİS-SDP-KAYIT" çöp metni artık yok
+        # Assert — eski "E-DETSİS-SDP-KAYIT" çöp metni yok, Jinja placeholder da yok
         assert "DETSİS-SDP-KAYIT" not in metin
-        assert "{{ SAYI }}" in metin
+        assert "{{ SAYI }}" not in metin
+        assert "EBYS" in metin
 
 
 # ---------------------------------------------------------------------------

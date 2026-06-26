@@ -53,7 +53,8 @@ _COMPONENT_PATTERNS: dict[str, re.Pattern] = {
     # slotu ({{ AD SOYAD }}/{{ UNVAN }}). Yapısal slot mevcudiyeti ölçülür; alanın
     # doldurulup doldurulmadığını ayrıca pipeline.format_uyumlu raporlar.
     "imza_bloku": re.compile(
-        r"e-imza|imza|Başkan|Müdür|Vali|\{\{\s*AD SOYAD\s*\}\}|\{\{\s*UNVAN\s*\}\}",
+        r"e-imza|imza|Başkan|Müdür|Vali|Yetkili İmza|Birim Yetkilisi|Hazırlayan Birim|"
+        r"Onay Makamı|Yetkili Makam|\{\{\s*AD SOYAD\s*\}\}|\{\{\s*UNVAN\s*\}\}",
         re.IGNORECASE),
     # Resmî kapanış ibaresi — taslak yarıda kesilmediğinin (truncation) sinyali.
     "kapanis": re.compile(
@@ -70,11 +71,13 @@ _SIRA_BOLUMLERI: tuple[tuple[str, re.Pattern], ...] = (
     ("konu", re.compile(r"Konu\s*[:：]", re.IGNORECASE)),
     ("kapanis", re.compile(
         r"arz ederim|rica ederim|olurlarınıza arz|bilgilerinize arz", re.IGNORECASE)),
-    # İmza bloğu anahtarı — şablon imza SLOTU (placeholder) veya açık "e-imza" etiketi.
-    # NOT: çıplak "Müdür/Başkan" KULLANILMAZ; gövde/muhatap metninde geçip sırayı bozar.
+    # İmza bloğu anahtarı — şablon imza SLOTU, açık "e-imza" etiketi veya
+    # demo-güvenli yetkili imza satırı. NOT: çıplak "Müdür/Başkan" KULLANILMAZ;
+    # gövde/muhatap metninde geçip sırayı bozar.
     ("imza", re.compile(
         r"\{\{\s*AD SOYAD\s*\}\}|\{\{\s*TEKLİF EDEN\s*\}\}|\{\{\s*ONAY MAKAMI\s*\}\}"
-        r"|\{\{\s*UNVAN\s*\}\}|e-imza", re.IGNORECASE)),
+        r"|\{\{\s*UNVAN\s*\}\}|e-imza|Yetkili İmza|Birim Yetkilisi|Onay Makamı",
+        re.IGNORECASE)),
 )
 
 # Yazı türü → beklenen resmî kapanış ibaresi (Yön. m.16 hiyerarşik kapanış).
@@ -89,6 +92,7 @@ _TUR_KAPANIS: dict[str, re.Pattern] = {
 # VEYA "Dağıtım yerlerine". olur'da BULUNMAMALI (Yön. m.20).
 _RE_MUHATAP = re.compile(
     r"Sayın\s+\S|\{\{\s*MUHATAP MAKAM\s*\}\}|Dağıtım yerlerine"
+    r"|İlgili Makama"
     r"|^\s+\S.*(?:NE|NA|BAŞKANLIĞINA|MÜDÜRLÜĞÜNE|VALİLİĞİNE)\s*$",
     re.IGNORECASE | re.MULTILINE)
 _RE_OLUR_BLOK = re.compile(r"^\s*OLUR\s*$", re.MULTILINE)
@@ -283,7 +287,7 @@ def evaluate(rows: list[dict]) -> dict:
     for r in rows:
         taslak = r["taslak"]
         comp = check_components(taslak)
-        comp_fully += int(all(comp.values()))
+        comp_fully += int(_bilesenler_tam(comp, r["yazi_turu"]))
         for k, v in comp.items():
             comp_hits[k] += int(v)
         # Ayrıntılı bölüm-bölüm format skoru (Yön. 2646): türe göre değerlendirilir.

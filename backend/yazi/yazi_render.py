@@ -37,7 +37,7 @@ _BODY_SYSTEM = (
 
 
 def _olcu_meta(unsurlar: dict[str, Any]) -> dict[str, str]:
-    """olur türü için teklif/onay alanlarını unsurlardan derle (eksik → placeholder)."""
+    """olur türü için teklif/onay alanlarını unsurlardan derle (eksik → demo varsayılanı)."""
     return {
         "teklif_eden": str(unsurlar.get("teklif_eden", "") or ""),
         "talep": str(unsurlar.get("olur_talep", "") or ""),
@@ -116,7 +116,7 @@ def _muhatap(unsurlar: dict[str, Any]) -> str:
     """Cevabi yazıda muhatap = gelen belgenin GÖNDEREN'i (Yön. m.14).
 
     Gelen dilekçe/başvuruyu yazan kişi/kurum, cevabımızın muhatabıdır. Gerçek kişi
-    → "Sayın <Ad Soyad>"; tüzel kişi/kurum → adı aynen. Eksikse boş (placeholder).
+    → "Sayın <Ad Soyad>"; tüzel kişi/kurum → adı aynen. Eksikse boş (demo varsayılanı).
     Parantezli sıfat ('(İlgili)', '(Vatandaş)') atılır — resmî hitapta yer almaz.
     """
     gonderen = str(unsurlar.get("gonderen", "") or "").strip()
@@ -125,33 +125,35 @@ def _muhatap(unsurlar: dict[str, Any]) -> str:
         if gonderen:
             return f"Sayın {gonderen}"
     kurum = str(unsurlar.get("kurum", "") or "").strip()
-    return kurum  # boşsa "" → template placeholder'a düşer
+    return kurum  # boşsa YaziContext demo varsayılanı kullanır
 
 
 def _ilgi_satirlari(unsurlar: dict[str, Any]) -> tuple[str, ...]:
     """İlgi satırlarını gelen belgenin tarih+sayısından kur (Yön. m.15).
 
-    Hem tarih hem sayı varsa tam "a)" satırı; biri eksikse o slot {{ }} kalır
-    (uydurma yok). İkisi de yoksa boş → template ilgi_tarih/ilgi_sayi placeholder'a
-    düşer. Tek atıf → "a)" etiketi kullanılmaz (sade tek-satır).
+    Hem tarih hem sayı varsa tam satır yazılır. Biri eksikse Jinja placeholder
+    göstermek yerine doğal ve nötr bir atıf kurulur; bilgi uydurulmaz. Tek atıf
+    için "a)" etiketi kullanılmaz (sade tek-satır).
     """
     tarih = str(unsurlar.get("tarih", "") or "").strip()
     sayi = str(unsurlar.get("sayi", "") or "").strip()
-    if not (tarih or sayi):
-        return ()
-    t = tarih or "{{ İLGİ TARİH }}"
-    s = sayi or "{{ İLGİ SAYI }}"
-    return (f"{t} tarihli ve {s} sayılı yazınız.",)
+    if tarih and sayi:
+        return (f"{tarih} tarihli ve {sayi} sayılı yazınız.",)
+    if tarih:
+        return (f"{tarih} tarihli başvurunuz.",)
+    if sayi:
+        return (f"{sayi} sayılı başvurunuz.",)
+    return ("Başvurunuz.",)
 
 
 def build_context(
     yazi_turu: str, unsurlar: dict[str, Any], metin: str,
 ) -> YaziContext:
-    """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (placeholder-safe).
+    """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (demo-safe).
 
     Çıkarılan unsurlardan azami otomatik doldurma (Yön. 2646): konu, muhatap
     (gönderen→cevap muhatabı), ilgi (gelen belge tarih/sayı). Bilinmeyen alanlar
-    (idare/birim/imza/OUR sayısı) {{ }} placeholder kalır (CLAUDE.md — uydurma yok).
+    (idare/birim/imza/OUR sayısı) nötr taslak değerlerle gösterilir; uydurma yok.
     """
     turu = resolve_yazi_turu(yazi_turu)
     # cevabi/üst yazıda ilgi atfı kurulur; olur'da ilgi yoktur, bilgilendirme nötr.

@@ -9,6 +9,10 @@
   Mock modda (anahtarsız) demo ÇALIŞMALI → LLM node'ları keyword fallback'e düşmeli.
 - **Çalıştır-doğrula:** `cd backend && python -c "import ... pipeline ainvoke"` (langgraph global'de var);
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
+- **GÜNCEL KANONİK DURUM (2026-06-26):** Backend `uv run python -m pytest -q` →
+  **655 passed, 3 warnings**; frontend `npm.cmd run build` → **başarılı**. Aşağıdaki eski test/skor
+  sayıları iterasyon günlüğüdür; jüri/başvuru için kaynak `README.md`, `docs/benchmark/scorecard.md`
+  ve `docs/sartname-uyum-matrisi.md` olmalıdır.
 
 ## İterasyon günlüğü (en yeni üstte)
 - **✅ İT-20 (UI/UX FİNAL) BİTTİ [0f4615b] — UI/UX LOOP KAPANDI (45 commit):** taze jüri-kritiği 7.5/10 → uygulanan yüksek-etki dokunuşlar: büyük hero (`--text-hero`), **masaüstü BENTO sonuç ızgarası** (6-kol, DOM-sıra korundu), boş-durumda canlı teaser, güven-ölçer `width→scaleX`, taslak `scrollIntoView`+cps 1200→700; README'ye clarify (04) + mobil (05) görselleri gömüldü; npm build OK, a11y/reduced-motion korundu. **NOT:** demo.gif/01-03 masaüstü görselleri bento-ÖNCESİ — istenirse yeniden çekilir. UI/UX artık jüri-9-bandı.

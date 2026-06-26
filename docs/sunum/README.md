@@ -3,6 +3,10 @@
 Bu klasör, anlatım Markdown'larından üretilen **gerçek sunum dosyalarını** içerir.
 Şartname §7 teslim formatı: ön + final sunum **PDF VE PPTX**.
 
+> **Kaynak önceliği:** Skor/test/build metinleri güncellenince kaynak-of-truth
+> `docs/sunum-on-degerlendirme.md` ve `docs/sunum-final.md` olur. Bu Markdown'lar değiştiyse
+> PDF/PPTX çıktıları teslimden önce aşağıdaki komutla yeniden üretilmelidir.
+
 | Dosya | Kaynak Markdown | İçerik |
 |---|---|---|
 | `on-degerlendirme.pdf` / `.pptx` | `docs/sunum-on-degerlendirme.md` | Ön değerlendirme (10 slayt + ek) |

@@ -554,6 +554,57 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
   background: var(--g1-soft); color: var(--g1-ink); border-radius: 4px; padding: .06rem .32rem;
 }
 
+/* yasal süre / SLA triyaj — durum-renk accent (sol kenar) */
+.rc-sla-gecikmis { border-left: 4px solid var(--danger); }
+.rc-sla-gecikmis .rc-ic { background: var(--danger-soft); color: var(--danger-ink); border-color: #f3c2c2; }
+.rc-sla-kritik { border-left: 4px solid var(--warn); }
+.rc-sla-kritik .rc-ic { background: var(--warn-soft); color: var(--warn-ink); border-color: #f0d2a3; }
+.rc-sla-normal { border-left: 4px solid var(--ok); }
+.rc-sla-tarih_yok { border-left: 4px solid var(--warn); }
+
+/* denetim izi — tamper-evident hash-chain kartı */
+.rc-denetim-ok { border-left: 4px solid var(--ok); }
+.rc-denetim-warn { border-left: 4px solid var(--danger); }
+.rc-denetim-warn .rc-ic { background: var(--danger-soft); color: var(--danger-ink); border-color: #f3c2c2; }
+.rc-denetim-sub { margin: .2rem 0 .6rem; color: var(--ink-2); font-size: .85rem; line-height: 1.45; }
+.rc-denetim-kok { display: flex; flex-direction: column; gap: .2rem; margin-bottom: .6rem; }
+.rc-denetim-kok-h { font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-2); }
+.rc-denetim-hash { font-size: .72rem; word-break: break-all; background: var(--surface-2); padding: .3rem .5rem; border-radius: var(--r-md); border: 1px solid var(--line); }
+.rc-denetim-chain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .25rem; }
+.rc-denetim-link { display: flex; justify-content: space-between; align-items: center; gap: .6rem; font-size: .78rem; padding: .22rem .4rem; border-left: 2px solid var(--line); }
+.rc-denetim-step { color: var(--ink-2); }
+.rc-denetim-h8 { color: var(--ink-2); font-size: .72rem; }
+
+/* kanıt vurgu — çıkarımın kaynaktaki yeri (sarı işaret) */
+.rc-kanit-sub { margin: .2rem 0 .6rem; color: var(--ink-2); font-size: .85rem; line-height: 1.45; }
+.rc-kanit-metin { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .8rem; line-height: 1.65; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: .7rem .8rem; max-height: 280px; overflow: auto; color: var(--ink-2); }
+.rc-kanit-mark { background: #fde68a; color: #713f12; border-radius: 3px; padding: 0 .14rem; font-weight: 600; }
+@media (prefers-contrast: more) { .rc-kanit-mark { outline: 1px solid #713f12; } }
+
+/* NLI atıf-gerekçelendirme rozeti (mevzuat önerisinde) */
+.rc-mev-nli { font-size: .68rem; padding: .12rem .45rem; border-radius: 999px; white-space: nowrap; }
+.rc-mev-nli.rc-badge-ok { background: var(--ok-soft); color: var(--ok-ink); }
+.rc-mev-nli.rc-badge-warn { background: var(--warn-soft); color: var(--warn-ink); }
+
+/* HITL memur onay paneli */
+.rc-onay-panel { display: flex; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; box-shadow: 0 4px 18px rgba(15, 23, 42, .07); }
+.rc-onay-bar { flex: none; width: 6px; background: var(--accent, #1e40af); }
+.rc-onay-body { padding: 1rem 1.1rem; flex: 1; min-width: 0; }
+.rc-onay-head { display: flex; gap: .7rem; align-items: flex-start; margin-bottom: .7rem; }
+.rc-onay-ic { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft, #e0e7ff); color: var(--accent, #1e40af); }
+.rc-onay-title { margin: 0; font-size: 1.02rem; }
+.rc-onay-sub { margin: .15rem 0 0; color: var(--ink-2); font-size: .86rem; line-height: 1.45; }
+.rc-onay-taslak { margin: 0 0 .7rem; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .78rem; line-height: 1.6; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: .7rem .8rem; max-height: 260px; overflow: auto; color: var(--ink-2); }
+.rc-onay-textarea, .rc-onay-input { width: 100%; box-sizing: border-box; font-size: .85rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: .7rem; background: var(--surface); color: var(--ink, #0f172a); }
+.rc-onay-textarea { font-family: ui-monospace, Menlo, Consolas, monospace; resize: vertical; }
+.rc-onay-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.rc-onay-btn { display: inline-flex; align-items: center; gap: .4rem; font: inherit; font-size: .86rem; font-weight: 600; padding: .5rem .9rem; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface); color: var(--ink, #0f172a); cursor: pointer; }
+.rc-onay-btn:hover:not(:disabled) { background: var(--surface-2); }
+.rc-onay-btn:disabled { opacity: .55; cursor: not-allowed; }
+.rc-onay-ok { background: var(--ok); border-color: var(--ok); color: #fff; }
+.rc-onay-red { background: var(--danger); border-color: var(--danger); color: #fff; }
+.rc-onay-ok:hover:not(:disabled), .rc-onay-red:hover:not(:disabled) { filter: brightness(.94); }
+
 /* eksik bilgi */
 .rc-eksik-ok { border-left: 4px solid var(--ok); }
 .rc-eksik-warn { border-left: 4px solid var(--warn); }
@@ -561,6 +612,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .rc-chiplist { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; }
 .rc-chip { font-size: .76rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: .24rem .65rem; color: var(--ink-2); }
 .rc-chip-warn { background: var(--warn-soft); border-color: #f0d2a3; color: var(--warn-ink); }
+.rc-chip-field { background: var(--surface-2); border-color: var(--line-strong); color: var(--ink); }
+.rc-chip-review { background: var(--warn-soft); border-color: #f0d2a3; color: var(--warn-ink); }
 .rc-clarify { margin-top: .85rem; padding-top: .75rem; border-top: 1px dashed var(--line); }
 .rc-clarify-h { margin: 0 0 .4rem; font-size: .82rem; font-weight: 600; color: var(--ink-2); }
 .rc-clarify-list { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; font-size: .88rem; }
@@ -636,6 +689,16 @@ a.rc-mev-baslik:hover { color: var(--accent); text-decoration: underline; }
   padding: 1rem 1.1rem; font-family: var(--font-mono); font-size: .82rem; line-height: 1.55;
   white-space: pre-wrap; word-break: break-word; max-height: 360px; overflow: auto; color: var(--ink);
 }
+.rc-taslak-review {
+  display: grid; gap: .55rem; margin-top: .75rem; padding-top: .75rem;
+  border-top: 1px dashed var(--line);
+}
+.rc-taslak-review-row { display: flex; align-items: flex-start; gap: .65rem; flex-wrap: wrap; }
+.rc-taslak-review-h {
+  flex: 0 0 10.5rem; font-size: .72rem; font-weight: 700; letter-spacing: var(--tracking-label);
+  text-transform: uppercase; color: var(--muted); line-height: 1.7;
+}
+.rc-taslak-review-row .rc-chiplist { flex: 1 1 16rem; }
 .rc-taslak-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .rc-taslak-note { margin: .65rem 0 0; font-size: .78rem; color: var(--muted); }
 .rc-taslak-note code { background: var(--surface-2); padding: 0 .25rem; border-radius: 4px; font-family: var(--font-mono); color: var(--ink-2); }
@@ -740,6 +803,7 @@ a.rc-mev-baslik:hover { color: var(--accent); text-decoration: underline; }
   .ke-samples-row { grid-template-columns: 1fr; }
   .ke-skel-row { grid-template-columns: 1fr; }
   .rc-taslak-actions { flex-wrap: wrap; }
+  .rc-taslak-review-h { flex-basis: 100%; }
   .rc-kv-row { grid-template-columns: 1fr; gap: .15rem; }
   .ke-placeholder { padding: 1.5rem 1.1rem; }
   .rc-clarify-banner-head { gap: .5rem; }

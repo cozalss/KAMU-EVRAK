@@ -8,11 +8,14 @@ AAA deseni; gerçek korpus üzerinde davranış doğrulanır (mock yok — pipel
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 from agents.config import EVRAK_TO_MEVZUAT
 from agents.nodes.mevzuat_oner import (
     _baslik,
     _from_config,
     _load_index,
+    _maybe_rerank,
     _retrieval_query,
     _tokenize,
     mevzuat_oner_node,
@@ -277,3 +280,69 @@ class TestMevzuatOnerRankingIyilestirme:
         # Assert
         assert "madde4" in t1
         assert "madde4" in t2
+
+
+# ---------------------------------------------------------------------------
+# Cross-encoder rerank bağlama (opt-in + graceful) — gerçek model GEREKMEDEN
+# wiring doğruluğu mock reranker ile kanıtlanır.
+# ---------------------------------------------------------------------------
+
+
+class _FakeReranker:
+    """Aday sırasını TERSİNE çevirip RerankResult döndürür (deterministik test)."""
+
+    def rerank(self, query, candidates, top_k=5):
+        from retrieval.reranker import RerankResult
+
+        out = []
+        for i, c in enumerate(list(reversed(candidates))[:top_k]):
+            out.append(RerankResult(
+                chunk_id="", score=0.9 - i * 0.1, text=c["text"],
+                source="", source_url="", domain="",
+                metadata={"mevzuat": c["mevzuat"], "madde_no": c["madde_no"], "score": c["score"]},
+                original_score=float(c["score"]),
+            ))
+        return out
+
+
+class TestMevzuatOnerRerank:
+    _DEDUP: ClassVar[list] = [
+        (12.0, {"mevzuat": "3071 dilekce hakki kanunu", "madde_no": 4, "text": "dilekçe unsurları"}),
+        (8.0, {"mevzuat": "4982 bilgi edinme kanunu", "madde_no": 11, "text": "bilgi edinme süresi"}),
+    ]
+
+    def test_rerank_kapali_none_doner(self, monkeypatch):
+        # Arrange — RERANK_ENABLED=False → baseline BM25 (None ile sinyalle)
+        monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", False)
+        # Act + Assert
+        assert _maybe_rerank("dilekçe", self._DEDUP) is None
+
+    def test_rerank_model_yok_graceful_none(self, monkeypatch):
+        # Arrange — açık ama get_reranker patlar (lib/model yok) → graceful None
+        monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", True)
+
+        def _boom():
+            raise ImportError("sentence-transformers kurulu değil")
+
+        monkeypatch.setattr("retrieval.reranker.get_reranker", _boom)
+        # Act + Assert — patlamaz, BM25'e düşmek için None döner
+        assert _maybe_rerank("dilekçe", self._DEDUP) is None
+
+    def test_rerank_aktif_yeniden_siralar(self, monkeypatch):
+        # Arrange — fake reranker adayları tersine çevirir → 4982 öne geçer
+        monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", True)
+        monkeypatch.setattr("retrieval.reranker.get_reranker", _FakeReranker)
+        # Act
+        out = _maybe_rerank("dilekçe", self._DEDUP)
+        # Assert — rerank sonucu; cross-encoder skoru + BM25 raw taşınır
+        assert out is not None and len(out) == 2
+        assert out[0]["baslik"].startswith("4982")  # ters sıra → 4982 top-1
+        assert out[0]["rerank"] is True
+        assert out[0]["score"] == 0.9            # cross-encoder alaka
+        assert out[0]["raw_score"] == 8.0        # taşınan BM25 ham skoru
+
+    def test_rerank_bos_aday_none(self, monkeypatch):
+        # Arrange — boş dedup → None (rerank denemez)
+        monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", True)
+        # Act + Assert
+        assert _maybe_rerank("dilekçe", []) is None

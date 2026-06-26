@@ -14,7 +14,7 @@ START → siniflandir → cikar → eksik_tespit
                  mevzuat_oner                 ozetle      (paralel fan-out)
                       └────────────┬────────────┘
                                    ▼
-                              route_birim → yazi_taslak → finalize → END
+                              route_birim → yazi_taslak → verify → arsiv → finalize → END
 ```
 
 OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text` → "oku" SSE event
@@ -25,27 +25,31 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 | Node | Görev | Durum | Köken |
 |---|---|---|---|
 | `oku` (route) | bytes → metin + güven + sayfa | **GERÇEK** | `multimodal/ocr.py` KEEP |
-| `siniflandir` | evrak türü (18+belirsiz) | STUB→few-shot LLM | triaj deseni |
-| `cikar` | bilgi unsurları + PII maskeleme | STUB→LLM JSON | yeni |
-| `eksik_tespit` | zorunlu-alan → eksik + takip sorusu | STUB→şema | clarify_slots deseni |
-| `mevzuat_oner` | ilgili mevzuat | STUB→hybrid RAG | mevzuat node |
-| `ozetle` | kısa öz özet | STUB→LLM/mT5 | draft deseni |
-| `route_birim` | hedef birim + top-k | STUB→sınıflandırıcı | yeni |
-| `yazi_taslak` | resmî yazı (Yön. 2646 format) | STUB→jinja2+LLM | dilekce node |
-| `finalize` | bilgilendirme + clarify | STUB→compose | finalize deseni |
+| `siniflandir` | evrak türü (18+belirsiz) | **UYGULANDI** — few-shot LLM + mock fallback | triaj deseni |
+| `cikar` | bilgi unsurları + PII maskeleme | **UYGULANDI** — JSON/regex + maskeleme | yeni |
+| `eksik_tespit` | zorunlu-alan → eksik + takip sorusu | **UYGULANDI** — tür şeması | clarify_slots deseni |
+| `mevzuat_oner` | ilgili mevzuat | **UYGULANDI** — BM25 + fallback | mevzuat node |
+| `ozetle` | kısa öz özet | **UYGULANDI** — key-fact odaklı özet | draft deseni |
+| `route_birim` | hedef birim + top-k | **UYGULANDI** — 9 birim sınıflandırıcı | yeni |
+| `yazi_taslak` | resmî yazı (Yön. 2646 format) | **UYGULANDI** — jinja2 + LLM/mock; format kapısı açık | dilekce node |
+| `verify` | taslak kalite kapısı + uydurma-veto | **UYGULANDI** — false-veto=0 | yeni |
+| `arsiv` | SDP 2005/7 arşiv metadata | **UYGULANDI** — additive | yeni |
+| `finalize` | bilgilendirme + clarify | **UYGULANDI** — compose + disclaimer | finalize deseni |
 
 ## State (`backend/agents/state.py`)
 
 `EvrakState` TypedDict. Reducer'lar (ADALET deseni KEEP): `bilgi_unsurlari` dict-merge,
 `mevzuat_onerileri`/`errors` `operator.add` (paralel fan-in). Anahtar alanlar:
 `evrak_text, evrak_turu, bilgi_unsurlari, eksik_alanlar, mevzuat_onerileri, ozet, hedef_birim,
-yazi_turu, yazi_taslak_md, clarify_questions, response`.
+yazi_turu, yazi_taslak_md, verify_notes, arsiv_metadata, clarify_questions, response`.
 
-## Üretimde eklenecekler (`# TODO(kamu-evrak)`)
+## Genişletme / açık kalite kapıları
 
 - **ENV-gated SOTA** (ADALET KEEP): `crag`/`self_rag`/`decompose` → Yenilikçilik puanı.
-- **verify / risk_guard**: uydurma kurum/tarih/sayı **veto** + resmî-yazı format-compliance
-  (false-veto=0 hedefi). ADALET `verifier_layers.py`/`risk_guard.py` ADAPT.
+- **Taslak format kapısı:** canlı karnede `format_uyumlu_rate=1.0`; ham `{{ }}`
+  placeholder yerine EBYS/yetkili makamca tamamlanacak alanlar nötr taslak diliyle gösterilir.
+- **risk_guard genişletmesi:** verify node çalışıyor; daha kapsamlı kurum/tarih/sayı veto katmanı
+  finalist fazında büyütülür.
 - **clarifier dur-ve-sor dalı**: eksik alan varsa conditional-edge ile kullanıcıya soru döndür,
   taslak üretmeden bekle (ADALET clarifier deseni).
 - **LLM seçimi** `agents/llm.py` (KEEP, 4-impl Protocol): `LLM_MODE` ∈ mock/openai/llamacpp.

@@ -19,7 +19,7 @@
 4. **Recall-öncelikli kamu disiplini.** Eksik-bilgi tespitinde yanlış-negatif (kaçan
    eksik) yanlış-pozitiften pahalıdır → F-beta (β=2) ile recall ağırlandırılır.
 
-## 1. Çok-ajan LangGraph pipeline (9 node)
+## 1. Çok-ajan LangGraph pipeline (10 node)
 
 ADALET-AGENT'ten devralınan ENV-gated, fan-in/fan-out, reducer-tabanlı desen kamu-evrak
 iş akışına uyarlanmıştır (ayrıntı: `docs/03-mimari.md`).
@@ -32,7 +32,7 @@ START → siniflandir → cikar → eksik_tespit
                  mevzuat_oner                 ozetle      (paralel fan-out)
                       └────────────┬────────────┘
                                    ▼
-                       route_birim → yazi_taslak → verify → finalize → END
+                       route_birim → yazi_taslak → verify → arsiv → finalize → END
 ```
 
 | Node | Görev (Görev 1 / Görev 2) | Yöntem |
@@ -45,6 +45,8 @@ START → siniflandir → cikar → eksik_tespit
 | `ozetle` | kısa öz özet (Görev 1) | LLM/mT5 özet; anahtar-unsur (key-fact) odaklı |
 | `route_birim` | hedef birim + top-k (Görev 2) | `EVRAK_TO_BIRIM` + sınıflandırıcı; maliyet-ağırlıklı hata değerlendirmesi |
 | `yazi_taslak` | resmî yazı taslağı (Görev 2) | jinja2 iskelet (Yön. 2646 format) + LLM doldurma; zorunlu-bölüm checklist |
+| `verify` | taslak kalite kapısı (Görev 2) | uydurma-veto + format uyarısı; false-veto=0 hedefi |
+| `arsiv` | arşiv metadata (Görev 2) | SDP 2005/7 dosya kodu + saklama süresi |
 | `finalize` | bilgilendirme + clarify (Görev 2) | yanıt kompozisyonu; eksikse soru, tamsa taslak; **hukuki sorumluluk reddi** |
 
 **State (`EvrakState` TypedDict):** reducer'lar paralel fan-in'i güvenli birleştirir
@@ -71,7 +73,7 @@ ajanın (mevzuat_oner ∥ ozetle) çıktısının yarış koşulu olmadan toplan
 - **Mock vs gerçek-LLM skoru AYRI raporlanır — taban tavana sahte sabitlenmez.** Yayınlanan
   karne (`docs/benchmark/scorecard.md`, README "Eval skorları") **mock taban** ölçümüdür;
   gerçek `openai` modu bu metrikleri **yükseltir**. İki modun aynı **gerçek LangGraph
-  pipeline'ını** koşması kritiktir → taban, sahte bir taksonomi-stub değil, sistemin
+  pipeline'ını** koşması kritiktir → taban, sahte bir taksonomi tablosu değil, sistemin
   fallback davranışıdır.
 - **Few-shot:** sınıflandırma/taslaklama prompt'ları taksonomi ve resmî-yazı
   iskeletlerinden (docs/01-02) türetilmiş örneklerle desteklenir; ablasyonda
@@ -121,6 +123,8 @@ ADALET'in `verifier_layers.py`/`risk_guard.py` deseni uyarlanır:
 - **Format-compliance:** resmî yazı taslağı zorunlu bölümleri taşımalı (T.C. başlığı,
   Sayı, Konu, imza/kapanış — `config.YAZI_ZORUNLU_BOLUMLER`). LLM'siz checklist ile
   deterministik ölçülür → her commit CI'da koşar.
+- **Canlı sonuç:** mock karnede `format_uyumlu_rate=1.0`; ham Jinja placeholder yerine
+  EBYS/yetkili makamca tamamlanacak alanlar nötr taslak diliyle gösterilir.
 - **No-op güvenliği:** `VERIFY_ENABLED=0` ise node state'i bozmadan passthrough yapar.
 
 ## 5. Clarifier — dur-ve-sor (stop-and-ask)

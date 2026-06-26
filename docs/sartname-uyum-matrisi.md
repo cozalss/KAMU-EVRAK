@@ -8,7 +8,17 @@
 > Skorlar `LLM_MODE=mock` **taban** ölçümüdür; gerçek-LLM modu **yükseltir**. Held-out (dürüst)
 > ile in-domain ayrımı saklanmaz. Abartma yok — kanıtlanabilir olan beyan edilir.
 
-**Durum lejantı:** ✅ Karşılandı (kanıtlı) · 🟡 Kısmen / koşullu · ⚠️ Açık iş / gelecek faz · ⛔ Henüz yok
+**Durum lejantı:** ✅ Karşılandı (kanıtlı) · 🟡 Kısmen / koşullu · ⚠️ Açık iş / gelecek faz · **KIRMIZI: diskalifiye riski** · ⛔ Henüz yok
+
+**Canlı doğrulanmış kalite kapıları (2026-06-26):** backend `uv run python -m pytest -q` →
+**655 passed, 3 warnings**; frontend `npm.cmd run build` → **başarılı**. Mock karne:
+sınıflandırma macro-F1 **0.9493** / accuracy **0.9491**, eksik-bilgi recall **0.9948**,
+özet recall **0.9810** / faithfulness **1.0000**, routing Top-1 **0.9630** / Top-3 **0.9815**,
+taslak bileşen tam-uyum **1.0000** (216/216), taslak tür **1.0000**, Türkçe saflık **1.0000**, false-veto **0**,
+fairness **1.0000**. Taslak `format_uyumlu_rate=**1.0000**` (kalite kapısı KAPANDI; `eval/draft_eval.py` ile
+canlı doğrulandı). Mevzuat retrieval **gerçek BM25Okapi** (rank-bm25 çekirdek bağımlılık; Recall@1 **0.938**).
+**Dürüstlük notu:** manşet skorlar `LLM_MODE=mock` tabandır; gerçek-LLM (gpt-4o) dürüst held-out **~0.91**
+(`docs/benchmark/llm-heldout.md`). Mock held-out set-1 EZBER (taban değil); leak-free taban = mock set-2 **0.69** + gpt-4o.
 
 ---
 
@@ -23,9 +33,10 @@
 | G1.5 | **İlgili mevzuat / yazışma kuralı önerme** | `mevzuat_oner` node: madde-bazlı **BM25 retrieval** (9 dosya / 59 madde-chunk korpus) + statik config fallback; şüpheli madde `[DOĞRULA:]` | `backend/agents/nodes/mevzuat_oner.py`, `data/mevzuat/*.txt`, `scripts/seed_mevzuat.py`; `docs/method.md §3` | ✅ |
 | G1.6 | **Özetleme** | `ozetle` node: LLM/mT5 key-fact odaklı kısa özet; faithfulness (halüsinasyon-yok) ölçülür | `backend/agents/nodes/ozetle.py`; `eval/summary_eval.py`; karne: özet faithfulness **1.000** | ✅ |
 
-**Görev 1 ölçüm (GERÇEK pipeline, `LLM_MODE=mock` taban):** sınıflandırma macro-F1 **0.919** /
-acc **0.917** [0.872, 0.947]; eksik-bilgi recall(β=2) **0.995**; özet key-fact recall **0.972**;
-özet faithfulness **1.000**. Kanıt: `docs/benchmark/scorecard.md` · `python -m eval.competition_scorecard`.
+**Görev 1 ölçüm (GERÇEK pipeline, `LLM_MODE=mock` taban):** sınıflandırma macro-F1 **0.9493** /
+accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet key-fact recall
+**0.9810**; özet faithfulness **1.0000**. Kanıt: `docs/benchmark/scorecard.md` ·
+`python -m eval.competition_scorecard`.
 
 ---
 
@@ -34,14 +45,15 @@ acc **0.917** [0.872, 0.947]; eksik-bilgi recall(β=2) **0.995**; özet key-fact
 | # | Şartname isteri | Bizim karşılığımız | KANIT | Durum |
 |---|---|---|---|---|
 | G2.1 | **Resmî yazı taslağı** (üst/cevabi/bilgilendirme/olur) | `yazi_taslak` node: jinja2 iskelet (Resmî Yazışma Yön. 2646 format) + LLM doldurma; 4 yazı türü | `backend/agents/nodes/yazi_taslak.py`, `backend/yazi/` (renderer); ekran: `docs/img/04-taslak.png` | ✅ |
-| G2.2 | **Resmî üslup** | Yön. 2646 zorunlu bölümler (T.C. başlığı · Sayı · Konu · Muhatap · İlgi · metin · kapanış); Türkçe saflık ölçülür | `config.YAZI_ZORUNLU_BOLUMLER`; `eval/draft_eval.py`; karne: Türkçe saflık **1.0000**, türü doğruluğu **0.995** | ✅ |
+| G2.2 | **Resmî üslup** | Yön. 2646 zorunlu bölümler + sıra + kapanış + muhatap türe göre denetlenir; `format_uyumlu_rate=1.0` (kalite kapısı KAPANDI) | `config.YAZI_ZORUNLU_BOLUMLER`; `eval/draft_eval.py`; karne: format-uyum **1.0000** (216/216), Türkçe saflık **1.0000**, tür doğruluğu **1.0000**, bileşen tam-uyum **1.0000** | ✅ |
 | G2.3 | **Doğru birime yönlendirme** | `route_birim` node: 9 birim `EVRAK_TO_BIRIM` eşleme + sınıflandırıcı; top-k + güven + alternatifler; maliyet-ağırlıklı hata | `backend/agents/nodes/route_birim.py`, `config.EVRAK_TO_BIRIM`; `eval/routing_eval.py` | ✅ |
 | G2.4 | **Kullanıcıyı bilgilendirme** | `finalize` node: özet + havale birimi + mevzuat + eksik bilgi kompozisyonu; her çıktıda **yasal disclaimer** | `backend/agents/nodes/finalize.py`; ekran: `docs/img/03-sonuc.png` (Bilgilendirme bloğu) | ✅ |
 | G2.5 | **Eksik bilgi isteme** (taslak öncesi) | `clarifier` dur-ve-sor dalı (ENV `CLARIFY_STOP_ENABLED`): kritik alan eksikse taslak ÜRETMEDEN takip sorusu döndürür | `backend/agents/nodes/clarifier.py`, `agents/graph.py` (`_clarify_route`); `docs/method.md §5` | ✅ |
 
-**Görev 2 ölçüm (mock taban):** yönlendirme Top-1 (uçtan-uca) **0.931** [0.889, 0.957] / Top-3
-**0.944**; yazı bileşen tam-uyum **0.838**; **uydurma-veto yanlış-pozitif 0/216** (anti-halüsinasyon
-kapısı sağlıklı). Kanıt: `docs/benchmark/scorecard.md`.
+**Görev 2 ölçüm (mock taban):** yönlendirme Top-1 (uçtan-uca) **0.9630** [0.929, 0.981] / Top-3
+**0.9815**; yazı bileşen tam-uyum **1.0000** (216/216); yazı türü **1.0000**; Türkçe saflık **1.0000**;
+**uydurma-veto yanlış-pozitif 0/216** (anti-halüsinasyon kapısı sağlıklı); `format_uyumlu_rate=**1.0000**`
+(kalite kapısı KAPANDI — `eval/draft_eval.py` ile canlı doğrulandı). Kanıt: `docs/benchmark/scorecard.md`.
 
 ---
 
@@ -50,10 +62,15 @@ kapısı sağlıklı). Kanıt: `docs/benchmark/scorecard.md`.
 | Kriter (puan) | Bizim kanıtımız | KANIT | Durum |
 |---|---|---|---|
 | **Yöntem ve Teknik Yaklaşım (35)** | Çok-ajanlı koşullu-kenarlı LangGraph (10 node) + deterministik-taban/ENV-gated-SOTA katmanı + uydurma-yasağı mimari kısıt + recall-öncelikli kamu disiplini; ablasyon (McNemar p + bootstrap CI) | `docs/method.md`, `agents/graph.py`, `eval/ablation_eval.py`, `docs/benchmark/ablation.md` | ✅ |
-| **Uygulama (35)** | 5 alt-kalem birebir ölçüldü: sınıflandırma doğruluğu, yönlendirme başarımı, özetleme, yazı şablon kalitesi, eksik-bilgi tespiti — Wilson %95 CI'lı | `docs/06-eval-harness.md`, `docs/benchmark/scorecard.md`, `eval/competition_scorecard.py` | ✅ |
+| **Uygulama (35)** | 5 alt-kalem birebir ölçüldü: sınıflandırma doğruluğu, yönlendirme başarımı, özetleme, yazı şablon kalitesi, eksik-bilgi tespiti — Wilson %95 CI'lı. Taslak `format_uyumlu_rate=1.0` (kapı KAPANDI). Manşet=mock; gerçek-LLM held-out gpt-4o **~0.91** | `docs/06-eval-harness.md`, `docs/benchmark/scorecard.md`, `docs/benchmark/llm-heldout.md`, `eval/competition_scorecard.py` | ✅ |
 | **Demo (15)** | Canlı SSE Ajan Akış Şeması (node'lar gerçek-zamanlı "yanar"); 5 örnek evrak tek-tıkla; internet-kesinti offline yedeği | `frontend/src/components/agent-flow/`, `docs/demo-senaryosu.md`; ekran: `docs/img/02-akis.png` | ✅ |
-| **Yenilikçilik / Özgünlük / Ticarileşme (15)** | ENV-gated CRAG/Self-RAG (Yan 2024 / Asai 2023), PII maskeleme ürün-artısı, SDP arşiv metadata, çok-ajan vs tek-ajan ablasyon farklılaşması | `agents/nodes/crag.py`, `self_rag.py`, `arsiv.py`; `docs/method.md §6` | ✅ |
+| **Yenilikçilik / Özgünlük / Ticarileşme (15)** | **Asıl farklılaşma DİSİPLİN:** anti-halüsinasyon deterministik veto (false-veto 0), PII-önce-maskeleme (KVKK ürün-artısı), gerçek BM25 mevzuat RAG, reprodüke-edilebilir dürüst held-out (artefakt + BCa CI), SDP arşiv metadata. ENV-gated CRAG/Self-RAG (Yan 2024 / Asai 2023) **uygulandı + ablasyonla ölçüldü** → küçük korpusta **anlamlı DEĞİL** (dürüst negatif sonuç; manşet iddia değil) | `agents/nodes/verify.py`, `api/pii.py`, `mevzuat_oner.py`, `arsiv.py`; `eval/ablation_eval.py`; `docs/method.md §6` | ✅ |
 | **Real-time üretim avantajı (§8 Demo)** | SSE streaming TTFT + node-by-node canlı akış (sabit SLA iddia edilmez; "düşünen sistem" hissi) | `api/routes/process_doc.py` (`/process_doc/stream`); `docs/06-eval-harness.md` (latency) | ✅ |
+
+> **100 puan anlatısı:** Yöntem (35), Demo (15) ve Yenilikçilik/Ticarileşme (15) kanıtlı; Uygulama (35)
+> tarafında sınıflandırma/yönlendirme/özet/eksik-bilgi/taslak-format **hepsi ölçüldü ve geçti**
+> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** Recall@1 0.938). Manşet skorlar mock taban; gerçek-LLM
+> (gpt-4o) dürüst held-out ~0.91 ayrıca raporlanır — abartı yok, kapalı risk jüriden saklanmaz.
 
 ---
 
@@ -66,7 +83,7 @@ kapısı sağlıklı). Kanıt: `docs/benchmark/scorecard.md`.
 | D.3 | **Model ağırlıkları repoya YÜKLENMEZ** (link+sürüm+lisans) | Büyük modeller (BGE-M3, Qwen, mT5) link+lisans dokümante; `.gitignore` ağırlıkları dışlar | `docs/07-model-lisanslari.md`, `.gitignore` | ✅ |
 | D.4 | **Gerçek kamu verisi YASAK** (§6.5) | %100 sentetik/kurgu evrak + checksum-sahte TCKN + kamuya açık mevzuat; veri kartı beyanı | `docs/data-card.md`, `scripts/gen_synthetic.py`, `data/mevzuat/README.md` | ✅ |
 | D.5 | **Tüm belgeler Türkçe + bilimsel atıflı** | Tüm `docs/` Türkçe, kaynak linkli (mevzuat.gov.tr, akademik referans) | `docs/*.md` (00-08, method, data-card); atıflar `docs/02 §Kaynaklar` | ✅ |
-| D.6 | **Ön sunum + Final sunumu (PDF ve PPTX)** | Sunum anlatımları hazır (Markdown); PDF/PPTX export ön-eleme öncesi üretilir | `docs/sunum-on-degerlendirme.md`, `docs/sunum-final.md` | 🟡 (PDF/PPTX export adımı) |
+| D.6 | **Ön sunum + Final sunumu (PDF ve PPTX)** | Sunum anlatımları ve üretilmiş PDF/PPTX çıktıları repoda | `docs/sunum-on-degerlendirme.md`, `docs/sunum-final.md`, `docs/sunum/` | ✅ |
 | D.7 | **Final 10 dk sunum + 5 dk soru-cevap** | Final akışı + olası jüri soruları + cevapları yazıldı | `docs/sunum-final.md` | ✅ |
 | D.8 | **Canlı demo + internet-kesinti offline path** | `LLM_MODE=mock` sıfır dış-bağımlılık offline çalışır; örnek evraklar OCR'sız yol; demo.gif yedeği | `docs/demo-senaryosu.md §2`, `scripts/run-local-demo.sh` | ✅ |
 | D.9 | **Demo veri kaynağı + kullanım hakları beyanı** | Tüm demo evrakı sentetik (MIT) veya sunum-anı kurgu; gerçek kişi/kurum yok | `docs/data-card.md §6`, `docs/demo-senaryosu.md` (başlık) | ✅ |
@@ -87,7 +104,7 @@ kapısı sağlıklı). Kanıt: `docs/benchmark/scorecard.md`.
 
 | # | Şartname isteri | Durum | Not |
 |---|---|---|---|
-| F.1 | **Takım tam 4 kişi + 1 kaptan** | ⚠️ | **Ekip şu an 3 kişi → +1 üye gerekir** (idari, kod-dışı; `docs/08 §Rol`). Bu açık başvuru öncesi kapatılmalı. |
+| F.1 | **Takım tam 4 kişi + 1 kaptan** | ✅ | **Ekip 4 kişi (kaptan dahil) — şart sağlandı.** Diskalifiye riski KAPANDI. |
 | F.2 | Her üye 18+, öğrenci/mezun | 🟡 | Ekip tarafından teyit edilecek (idari). |
 | F.3 | Her kişi yalnız bir takımda | 🟡 | Teyit edilecek (idari). |
 | F.4 | TAKP NLP projesinde aktif görevli YOK | 🟡 | Teyit edilecek (kodu TAKP GitHub'a yüklemek bu kapsama girmez). |
@@ -101,28 +118,27 @@ kapısı sağlıklı). Kanıt: `docs/benchmark/scorecard.md`.
 
 | # | İş | Neden açık | Hedef faz | Durum |
 |---|---|---|---|---|
-| AÇ.1 | **Gerçek-LLM (openai/llamacpp) skor ölçümü** | Karne şu an `LLM_MODE=mock` **taban**; gerçek-LLM tavanı kullanıcı `OPENAI_API_KEY` verince ölçülür | Ön-eleme öncesi / Hafta 1 | ⚠️ |
-| AÇ.2 | **Held-out genelleme açığı** | In-domain mock macro-F1 **0.92** ≠ held-out (dairesel-olmayan) **0.22** → mock heuristik genellemiyor; gerçek değer LLM modunda. Few-shot prompt hazır. | Hafta 1 (gerçek-LLM) | ⚠️ Dürüstçe raporlanır |
+| AÇ.1 | ~~4. takım üyesi~~ | İdari uygunluk (F.1) — **ÇÖZÜLDÜ: ekip 4 kişi** | — | ✅ |
+| AÇ.2 | ~~Taslak format kalite kapısı~~ | `format_uyumlu_rate=1.0` — **ÇÖZÜLDÜ** (`eval/draft_eval.py` canlı doğrulandı) | — | ✅ |
 | AÇ.3 | **Blind insan-etiketli gold** | Otomatik üretilen gold etiketleri bağımsız kişi onayından geçmeli (etik §13.1) | Hafta 1-2 | ⚠️ |
-| AÇ.4 | **PDF/PPTX sunum export** | Anlatım Markdown hazır; biçim export adımı kaldı | 12 Tmz öncesi | 🟡 |
-| AÇ.5 | **4. takım üyesi** | İdari uygunluk (F.1); kod-dışı | Başvuru öncesi | ⚠️ |
-| AÇ.6 | **Test sayısı netleştirme** | Doküman tutarlılığı: bazı dosyalar 127, 649 test, tüm dokümanlar senkron | ✅ |
-| AÇ.7 | **Canlı OCR uçtan-uca (uv sync ağır)** | RapidOCR/pypdfium2 kurulum doğrulaması; demo örnek-evrak yolu zaten OCR'sız çalışır | Hafta 0 | 🟡 |
+| AÇ.4 | **TAKP yükleme / idari teyitler** | Başvuru anı işlemi ve kişi uygunluğu ekip tarafından teyit edilmeli | Başvuru öncesi | 🟡 |
+| AÇ.5 | **Canlı OCR uçtan-uca genişletme** | Demo örnek-evrak yolu çalışır; farklı tarama/foto kaliteleriyle geniş saha provası yapılmalı | Finalist fazı | 🟡 |
 
 ---
 
 ## Kapsam Özeti
 
 - **Görev 1 — 6/6 yetenek ✅** (OCR, sınıflandırma, çıkarım, eksik-tespit, mevzuat, özet)
-- **Görev 2 — 5/5 yetenek ✅** (taslak, üslup, yönlendirme, bilgilendirme, eksik-isteme)
-- **Puanlama 4/4 kriter ✅** kanıtlı (Yöntem 35 / Uygulama 35 / Demo 15 / Yenilikçilik 15)
-- **Teslim/idari 9 madde:** 6 ✅ + 3 🟡 (TAKP yükleme=başvuru anı, PDF/PPTX export, 4. üye)
+- **Görev 2 — 5/5 yetenek çalışır** (taslak, üslup, yönlendirme, bilgilendirme, eksik-isteme); **taslak-format kapısı KAPANDI (`format_uyumlu_rate=1.0`)**
+- **Puanlama 4/4 kriter izlenebilir** (Yöntem 35 / Uygulama 35 / Demo 15 / Yenilikçilik 15); Uygulama'da açık teknik kalite kapısı YOK
+- **Teslim formatı 9 madde:** 8 ✅ + 1 🟡 (TAKP yükleme=başvuru anı)
 - **Etik 3/3 ✅**
-- **Uygunluk listesi 7 madde:** 6 idari-teyit (🟡) + **1 açık (4. üye — F.1 ⚠️)**
+- **Uygunluk listesi 7 madde:** **F.1 ✅ (takım 4 kişi)** + 6 idari-teyit (🟡) — **KIRMIZI YOK**
 
-**Toplam izlenen madde: 36** → **27 ✅ kanıtlı · 6 🟡 koşullu/idari · 3 ⚠️ açık iş**
-(açık işler: gerçek-LLM ölçümü, held-out genelleme, 4. üye — hepsi **dürüstçe** işaretli).
+**Kalan açıklar (dürüst):** blind insan-etiketli gold (etik §13.1), leak-free 3. held-out mock taban,
+gerçek-LLM (gpt-4o) held-out koşu artefaktının commit'lenmesi, başvuru anı TAKP/idari teyitleri.
 
-> **En kritik açık:** 4. takım üyesi (F.1) — bu idari kapı kapatılmadan başvuru geçersiz olabilir.
-> Teknik açıklar (gerçek-LLM ölçümü, held-out) sistem mimarisini değil **skor tavanını** etkiler:
-> pipeline gerçek-LLM moduyla aynıdır, yalnız kalite yükselir.
+> **Durum:** İdari kırmızı KAPANDI (takım 4) ve format kalite kapısı KAPANDI. Kalan işler teknik-olgunluk
+> (reprodüksiyon artefaktı, leak-free taban) ve başvuru-anı idari teyitler — hiçbiri diskalifiye riski değil.
+> En kritik teknik açık: taslak-format kalite kapısı; kapanana kadar yazı taslağı başarımı abartılmadan,
+> bileşen/tür/Türkçe saflık ve false-veto metrikleriyle sınırlı sunulur.

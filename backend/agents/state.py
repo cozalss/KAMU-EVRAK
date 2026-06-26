@@ -53,6 +53,8 @@ class EvrakState(TypedDict):
     # önleme) düzeltilmiş öneriler ayrı alanda tutulur; consumer'lar varsa onu tercih eder.
     mevzuat_onerileri_corrected: NotRequired[list[MevzuatOneri]]
     crag_corrected: NotRequired[bool]       # CRAG düzeltme uyguladı mı (şeffaflık)
+    # NLI atıf-gerekçelendirme (ENV-gated): her öneri için entailment (madde ⊨ talep?).
+    mevzuat_nli: NotRequired[list[dict[str, Any]]]
     crag_guven_oncesi: NotRequired[float]
     crag_guven_sonrasi: NotRequired[float]
 
@@ -74,6 +76,11 @@ class EvrakState(TypedDict):
     # Eksik bilgi varsa kullanıcıya sorulacak takip soruları (dur-ve-sor).
     clarify_questions: NotRequired[list[str]]
 
+    # --- Yenilikçilik: Memur onay kapısı (HITL) ---
+    # onay_kapisi_node interrupt() ile durur; memur kararı sonrası doldurulur.
+    onay_durumu: NotRequired[str]           # onaylandı | düzenlendi | reddedildi
+    onay_gerekce: NotRequired[str]          # red gerekçesi (varsa)
+
     # --- Doğrulama / kalite ---
     format_uyumlu: NotRequired[bool]        # resmî yazı zorunlu-alan checklist
     verify_notes: NotRequired[str]
@@ -84,6 +91,20 @@ class EvrakState(TypedDict):
     # Sözleşme: frontend bununla eşleşir → anahtarlar SABİT (sdp_kodu/saklama_suresi/konu/
     # sayi/tarih/birim). Şüpheli madde/kod → değer içinde [DOĞRULA: ...] (CLAUDE.md §1).
     arsiv_metadata: NotRequired[dict[str, Any]]
+
+    # --- Yenilikçilik: Yasal süre / SLA triyaj (additive, deterministik) ---
+    # sla_triyaj_node evrak türü + tarihten yasal cevap son tarihini + durum bandını
+    # üretir (GECİKMİŞ/KRİTİK/NORMAL). Anahtarlar SABİT (frontend rozeti eşleşir).
+    sla_metadata: NotRequired[dict[str, Any]]
+
+    # --- Yenilikçilik: Denetim izi (tamper-evident SHA-256 hash-chain) ---
+    # denetim_izi_node pipeline kararlarını zincirler → Sayıştay/KVKK denetlenebilirlik.
+    denetim_izi: NotRequired[dict[str, Any]]
+
+    # --- Yenilikçilik: Kanıt bağlama (evidence grounding) ---
+    # kanit_baglama_node çıkarılan unsurların MASKELİ metindeki span'larını üretir →
+    # frontend "bunu nereden buldun?" → sarı vurgu. {metin (maskeli), spanlar}.
+    kanit_metadata: NotRequired[dict[str, Any]]
 
     # --- Görev 2: dur-ve-sor (clarifier) ---
     # Kritik alan eksikse taslak üretmeden kullanıcıdan bilgi istenir (ENV-gated).

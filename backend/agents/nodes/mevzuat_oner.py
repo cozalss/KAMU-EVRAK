@@ -32,7 +32,12 @@ from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TO_MEVZUAT, EVRAK_TURU_TR
+from agents.config import (
+    EVRAK_TO_MEVZUAT,
+    EVRAK_TURU_TR,
+    RERANK_CAND_N,
+    RERANK_ENABLED,
+)
 from core.text import tr_lower
 from retrieval.chunker import chunk_mevzuat
 
@@ -141,7 +146,7 @@ def _load_index() -> tuple[dict[str, Any], ...]:
 _BM25_MEMO: dict[int, Any] = {}
 
 
-def _bm25_model(chunks: tuple[dict[str, Any], ...]):
+def _bm25_model(chunks: tuple[dict[str, Any], ...]) -> Any:
     """BM25Okapi'yi indeks için BİR kez kur (id-anahtarlı memo).
 
     rank_bm25 yoksa/hata → None döner; caller stdlib term-overlap fallback'e geçer.
@@ -154,7 +159,20 @@ def _bm25_model(chunks: tuple[dict[str, Any], ...]):
 
         corpus_tokens = [_tokenize(c["text"]) for c in chunks]
         model = BM25Okapi(corpus_tokens, k1=_BM25_K1, b=_BM25_B)
-    except Exception:  # rank_bm25 yok/hata
+        # Şeffaflık: hangi retrieval aktif? rank-bm25 çekirdek bağımlılık olduğundan
+        # normalde buraya girilir; aksi (aşağıdaki WARN) ortam bozuk demektir.
+        log.info(
+            "mevzuat_oner.bm25_active",
+            motor="BM25Okapi", k1=_BM25_K1, b=_BM25_B, n_chunk=len(chunks),
+        )
+    except Exception as exc:  # rank_bm25 yok/hata → stdlib term-overlap fallback
+        # DÜRÜSTLÜK: BM25 düşerse "BM25 retrieval" iddiası geçersizdir. Bunu sessiz
+        # bırakmak yerine WARN logla — fallback term-overlap'tir, BM25 değil.
+        log.warning(
+            "mevzuat_oner.bm25_unavailable_fallback",
+            hata=str(exc),
+            not_="rank-bm25 kurulu değil → stdlib term-overlap fallback aktif; 'BM25' iddiası bu modda GEÇERSİZ. Düzelt: uv sync (rank-bm25 çekirdek bağımlılık).",
+        )
         model = None
     _BM25_MEMO[anahtar] = model
     return model
@@ -247,8 +265,57 @@ def _retrieval_query(state: dict[str, Any]) -> str:
     return " ".join(p for p in (boosted, body) if p)
 
 
+def _maybe_rerank(
+    query: str, deduped: list[tuple[float, dict[str, Any]]]
+) -> list[dict[str, Any]] | None:
+    """İki-aşamalı retrieve-then-rerank: BM25 adaylarını cross-encoder ile yeniden sırala.
+
+    Dönüş sözleşmesi:
+      - None  → rerank KAPALI (RERANK_ENABLED=0) veya model/lib yok → caller BM25'e düşer
+                (baseline davranış birebir korunur).
+      - []    → rerank AÇIK ama tüm adaylar RERANK_SCORE_MIN altında (kapsam-dışı) →
+                uydurma yerine REDDET (caller config fallback'e düşer).
+      - liste → rerank sonucu öneri dict'leri (score = cross-encoder alaka 0-1).
+
+    Graceful: sentence-transformers/torch/model yoksa (rag extra kurulu değil) WARN
+    loglar ve None döner → demo/CI saf-BM25 ile çalışmaya devam eder.
+    """
+    if not RERANK_ENABLED or not deduped:
+        return None
+    try:
+        from retrieval.reranker import get_reranker
+
+        cands = [
+            {"text": c.get("text", ""), "mevzuat": c.get("mevzuat", ""),
+             "madde_no": c.get("madde_no"), "score": float(s)}
+            for s, c in deduped[:RERANK_CAND_N]
+        ]
+        results = get_reranker().rerank(query, cands, top_k=_TOP_K)
+    except Exception as exc:  # rag extra/model yok → BM25'e graceful düş
+        log.warning(
+            "mevzuat_oner.rerank_unavailable_fallback", hata=str(exc),
+            not_="cross-encoder reranker yok (rag extra + model gerekir) → BM25 sıralaması.",
+        )
+        return None
+    log.info(
+        "mevzuat_oner.rerank_active",
+        motor="bge-reranker-v2-m3", n_aday=len(cands), n_sonuc=len(results),
+    )
+    return [{
+        "baslik": _baslik({"mevzuat": r.metadata.get("mevzuat", ""),
+                           "madde_no": r.metadata.get("madde_no")}),
+        "snippet": str(r.text)[:_SNIPPET_CHARS],
+        "score": round(float(r.score), 3),            # cross-encoder alaka (0-1)
+        "raw_score": round(float(r.original_score), 3),  # taşınan BM25 ham skoru
+        "rerank": True,
+    } for r in results]
+
+
 def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
-    """Korpustan BM25 retrieval önerileri (boş liste → caller statik'e düşer).
+    """Korpustan retrieval önerileri (boş liste → caller statik'e düşer).
+
+    İki aşama: (1) BM25Okapi recall (tür-boost + dedup); (2) opt-in cross-encoder
+    rerank (RERANK_ENABLED) — kapalıyken saf BM25 birebir korunur.
 
     Tür → mevzuat BOOST: config.EVRAK_TO_MEVZUAT'ta türe atanan kanunlara ait chunk'lar
     `_TUR_BOOST` ile ölçeklenir (alaka sinyali). Dedup (aynı mevzuat+madde) + min-skor.
@@ -262,7 +329,12 @@ def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
     beklenen = _beklenen_kanun_nolari(turu) if turu else set()
     boosted = _apply_boost(ranked, beklenen)
     boosted.sort(key=lambda x: -x[0])
-    top = _dedup(boosted)[:_TOP_K]
+    deduped = _dedup(boosted)
+    # Aşama 2 — cross-encoder rerank (opt-in + graceful). None → BM25 yoluna devam.
+    reranked = _maybe_rerank(query, deduped)
+    if reranked is not None:
+        return reranked
+    top = deduped[:_TOP_K]
     if not top or top[0][0] < _MIN_RAW_SCORE:
         return []  # zayıf retrieval → config fallback (recall-koruyucu)
     max_score = top[0][0] or 1.0

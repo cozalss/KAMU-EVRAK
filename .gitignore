@@ -35,3 +35,12 @@ data/synthetic/*.jsonl
 .DS_Store
 .idea/
 .vscode/
+*.tmp
+Thumbs.db
+
+# Araç / scratch (UI doğrulama, Playwright MCP — repoya girmez)
+.playwright-mcp/
+/after-*.png
+/before-*.png
+test-results/
+playwright-report/

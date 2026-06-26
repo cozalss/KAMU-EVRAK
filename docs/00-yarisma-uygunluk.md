@@ -49,7 +49,7 @@ yeterlilik ölçer (NLP/agent/LLM). Bunlar geçilmeden 27 Tmz gelmez.
 
 ## 5. ✅ Uygunluk Kontrol Listesi (§5 + s.4) — diskalifiye riski
 
-- [ ] Takım **tam 4 kişi** + 1 kaptan. *(Not: ekip 3 kişiyse +1 üye gerekir.)*
+- [x] ✅ Takım **tam 4 kişi** + 1 kaptan — **şart sağlandı** (diskalifiye riski kapandı).
 - [ ] Her üye 18+; lise/önlisans/lisans/YL/doktora/açıköğretim/mezun.
 - [ ] Her kişi **yalnız bir takımda** (birden fazla başvuru → tümü geçersiz).
 - [ ] **TAKP çatısı altındaki Doğal Dil İşleme projesinde aktif görevli** (kişi/danışman/

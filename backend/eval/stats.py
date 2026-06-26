@@ -113,3 +113,84 @@ def fmt_delta_ci(point: float, lo: float, hi: float, p: float) -> str:
         f"Δ={point * 100:+.1f}pp, %95 CI [{lo * 100:+.1f}, {hi * 100:+.1f}]pp, "
         f"p={p:.3f} → {sig}"
     )
+
+
+# --- Bootstrap-BCa (bias-corrected accelerated) — keyfi metrik için CI -------
+# NEDEN: macro-F1 gibi NON-ORAN metriklerde Wilson uygulanamaz (oran değil). BCa,
+# percentile bootstrap'ın yan-yanlılığını (bias) ve çarpıklığını (jackknife ivmesi)
+# düzelten standart yöntemdir (Efron 1987). Saf-Python; scipy/numpy gerekmez.
+
+# Acklam (2003) ters-normal yaklaşımı (|hata| < 1.15e-9) — scipy.stats.norm.ppf yerine.
+_ACKLAM_A = (-3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2,
+             1.383577518672690e2, -3.066479806614716e1, 2.506628277459239)
+_ACKLAM_B = (-5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2,
+             6.680131188771972e1, -1.328068155288572e1)
+_ACKLAM_C = (-7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838,
+             -2.549732539343734, 4.374664141464968, 2.938163982698783)
+_ACKLAM_D = (7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996,
+             3.754408661907416)
+
+
+def norm_cdf(z: float) -> float:
+    """Standart normal kümülatif dağılım Φ(z) (math.erfc ile, bağımlılıksız)."""
+    return 0.5 * math.erfc(-z / math.sqrt(2.0))
+
+
+def norm_ppf(p: float) -> float:
+    """Ters standart normal Φ⁻¹(p), p∈(0,1) — Acklam rasyonel yaklaşımı."""
+    p = min(max(p, 1e-12), 1.0 - 1e-12)
+    plow, phigh = 0.02425, 1.0 - 0.02425
+    if p < plow:
+        q = math.sqrt(-2.0 * math.log(p))
+        return ((((((_ACKLAM_C[0] * q + _ACKLAM_C[1]) * q + _ACKLAM_C[2]) * q
+                   + _ACKLAM_C[3]) * q + _ACKLAM_C[4]) * q + _ACKLAM_C[5])
+                / ((((_ACKLAM_D[0] * q + _ACKLAM_D[1]) * q + _ACKLAM_D[2]) * q + _ACKLAM_D[3]) * q + 1.0))
+    if p <= phigh:
+        q = p - 0.5
+        r = q * q
+        return ((((((_ACKLAM_A[0] * r + _ACKLAM_A[1]) * r + _ACKLAM_A[2]) * r
+                   + _ACKLAM_A[3]) * r + _ACKLAM_A[4]) * r + _ACKLAM_A[5]) * q
+                / (((((_ACKLAM_B[0] * r + _ACKLAM_B[1]) * r + _ACKLAM_B[2]) * r
+                     + _ACKLAM_B[3]) * r + _ACKLAM_B[4]) * r + 1.0))
+    q = math.sqrt(-2.0 * math.log(1.0 - p))
+    return -((((((_ACKLAM_C[0] * q + _ACKLAM_C[1]) * q + _ACKLAM_C[2]) * q
+                + _ACKLAM_C[3]) * q + _ACKLAM_C[4]) * q + _ACKLAM_C[5])
+             / ((((_ACKLAM_D[0] * q + _ACKLAM_D[1]) * q + _ACKLAM_D[2]) * q + _ACKLAM_D[3]) * q + 1.0))
+
+
+def bootstrap_bca_ci(
+    items: list,
+    metric,
+    n_resamples: int = 2000,
+    alpha: float = 0.05,
+    seed: int = 12345,
+) -> tuple[float, float, float]:
+    """Keyfi metrik (örn. macro-F1) için BCa %95 güven aralığı → (nokta, alt, üst).
+
+    items: değerlendirme birimleri (ör. {gold, pred} satırları). metric: list→float.
+    BCa = percentile bootstrap + bias-düzeltme (z0) + jackknife ivmesi (a). Deterministik
+    (seed). n<2 → CI verilemez (nokta, 0, 1). Ref: Efron (1987) "Better Bootstrap CIs".
+    """
+    n = len(items)
+    theta = metric(items) if n else 0.0
+    if n < 2:
+        return (theta, 0.0, 1.0)
+    rng = random.Random(seed)
+    boot = sorted(metric([items[rng.randrange(n)] for _ in range(n)]) for _ in range(n_resamples))
+    # Bias düzeltme z0: bootstrap'ın gözlenen θ'nın altında kalma oranı.
+    n_less = sum(1 for t in boot if t < theta)
+    z0 = norm_ppf(n_less / n_resamples)
+    # İvme a: jackknife (leave-one-out) çarpıklığı.
+    jack = [metric(items[:i] + items[i + 1:]) for i in range(n)]
+    jbar = sum(jack) / n
+    num = sum((jbar - x) ** 3 for x in jack)
+    den = 6.0 * (sum((jbar - x) ** 2 for x in jack) ** 1.5)
+    a = num / den if den else 0.0
+    z_lo, z_hi = norm_ppf(alpha / 2.0), norm_ppf(1.0 - alpha / 2.0)
+
+    def _adj(zb: float) -> float:
+        return norm_cdf(z0 + (z0 + zb) / (1.0 - a * (z0 + zb)))
+
+    lo_idx = min(n_resamples - 1, max(0, int(_adj(z_lo) * n_resamples)))
+    hi_idx = min(n_resamples - 1, max(0, int(_adj(z_hi) * n_resamples)))
+    return (theta, boot[lo_idx], boot[hi_idx])

@@ -10,9 +10,9 @@ imza bloğu). Dilekçe markdown→Paragraph akışı hizayı bozardı; bunun yer
 reportlab `Preformatted` (monospace, whitespace-koruyan) kullanılır → şablonun
 boşluk hizası PDF'te aynen korunur (Yön. m.10/m.17 görünüm uyumu).
 
-Jinja undefined: LENIENT `Undefined` (StrictUndefined DEĞİL). Şablonlar
-`{{ alan | default("{{ PLACEHOLDER }}") }}` deseni kullanır; eksik değişken
-`default` filtresine düşer → ham `{{ PLACEHOLDER }}` görünür (uydurma yok).
+Jinja undefined: LENIENT `Undefined` (StrictUndefined DEĞİL). Normal akışta
+YaziContext eksik alanları demo-güvenli taslak değerleriyle doldurur; kalan ham
+`{{ PLACEHOLDER }}` metinleri beklenmeyen format eksiği olarak yakalanır.
 
 Mimari:
     - PDF/DOCX in-memory bytes (disk persistence yok — test + KVKK kolaylığı).
@@ -48,7 +48,7 @@ _LOCAL_TEMPLATES = Path(__file__).parent / "templates"
 
 
 def _build_env() -> Environment:
-    """Jinja env — lenient Undefined (| default placeholder'a düşsün), autoescape KAPALI."""
+    """Jinja env — lenient Undefined, autoescape KAPALI."""
     search_dirs: list[str] = []
     env_dir = os.getenv("YAZI_TEMPLATES_DIR")
     if env_dir:
@@ -73,7 +73,7 @@ def render_metin(ctx: YaziContext) -> str:
     return template.render(**ctx.jinja_vars()).rstrip() + "\n"
 
 
-# Render edilmiş metinde HÂLÂ duran ham placeholder'ları yakala (format uyumu).
+# Render edilmiş metinde HÂLÂ duran ham placeholder'ları yakala (beklenmeyen format eksiği).
 _PLACEHOLDER_RE = re.compile(r"\{\{\s*([A-ZÇĞİÖŞÜ ./]+)\s*\}\}")
 
 
@@ -109,7 +109,7 @@ def _build_pdf(metin: str, title: str) -> bytes | None:
         topMargin=2.5 * cm, bottomMargin=2 * cm,
         title=title, author="kamu-evrak",
     )
-    # Preformatted XML-escape yapar (< > & güvenli); ham placeholder düz metin kalır.
+    # Preformatted XML-escape yapar (< > & güvenli); düz metin hizası korunur.
     doc.build([Preformatted(metin, style)])
     pdf_bytes = buf.getvalue()
     buf.close()

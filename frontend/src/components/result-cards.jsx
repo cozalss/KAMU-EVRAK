@@ -70,11 +70,151 @@ function safeUrl(raw) {
   }
 }
 
+const VERIFY_MARK_RE = /\[\s*(?:DOĞRULA|DOGRULA)\s*:?\s*([^\]]*)\]/giu;
+const TEMPLATE_SLOT_RE = /\{\{\s*([^{}]+?)\s*\}\}/g;
+
+function uniqueLabels(items) {
+  const seen = new Set();
+  const out = [];
+  for (const item of items) {
+    const value = String(item || "").replace(/\s+/g, " ").trim();
+    if (!value || seen.has(value)) continue;
+    seen.add(value);
+    out.push(value);
+  }
+  return out;
+}
+
+function prettyFieldName(raw) {
+  const clean = String(raw || "")
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!clean) return "Alan";
+  return clean
+    .split(/([/\-\s]+)/)
+    .map((part) => {
+      if (/^[\s/-]+$/.test(part)) return part;
+      const lower = part.toLocaleLowerCase("tr-TR");
+      return lower.charAt(0).toLocaleUpperCase("tr-TR") + lower.slice(1);
+    })
+    .join("");
+}
+
+function cleanReviewNote(raw) {
+  return String(raw || "kontrol gerekli").replace(/\s+/g, " ").trim() || "kontrol gerekli";
+}
+
+function cleanDemoText(value) {
+  return String(value ?? "")
+    .replace(VERIFY_MARK_RE, (_, note) => `Kontrol: ${cleanReviewNote(note)}`)
+    .replace(TEMPLATE_SLOT_RE, (_, field) => `Doldurulacak: ${prettyFieldName(field)}`)
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+}
+
+function normalizeDraftForDemo(raw) {
+  const fields = [];
+  const reviewNotes = [];
+  const display = String(raw || "")
+    .replace(TEMPLATE_SLOT_RE, (_, field) => {
+      const label = prettyFieldName(field);
+      fields.push(label);
+      return `.................... (${label})`;
+    })
+    .replace(VERIFY_MARK_RE, (_, note) => {
+      const clean = cleanReviewNote(note);
+      reviewNotes.push(clean);
+      return `(inceleme notu: ${clean})`;
+    });
+  return {
+    display,
+    copy: display,
+    fields: uniqueLabels(fields),
+    reviewNotes: uniqueLabels(reviewNotes),
+  };
+}
+
 // ---------- güven seviyesi tonu (renk TEK ayırt edici değil; etiket metni de var) ----------
 function confTone(conf) {
   if (conf >= 0.7) return { cls: "high", label: "Yüksek" };
   if (conf >= 0.45) return { cls: "mid", label: "Orta" };
   return { cls: "low", label: "Düşük" };
+}
+
+/* ---------- 0b) Memur Onay Paneli (HITL — KİLİT DİFERANSİYATÖR) ----------
+   AI taslağı üretti ama GÖNDERMEDEN önce yetkili memur onaylar/düzenler/reddeder
+   (kamu imza akışının ajan karşılığı). data.onay_bekliyor=true iken görünür; aksi
+   halde hiç render edilmez (HITL_ENABLED kapalıysa baseline akış birebir). onResume(
+   secim, metin?, gerekce?) → /process_doc/resume çağrılır, final sonuç gelir. */
+function OnayPaneli({ data, onResume, busy }) {
+  const [mode, setMode] = useState(null); // null | "duzenle" | "reddet"
+  const [metin, setMetin] = useState(() => data?.yazi_taslak_md || "");
+  const [gerekce, setGerekce] = useState("");
+  const taslak = normalizeDraftForDemo(data?.yazi_taslak_md || "");
+  return (
+    <aside className="rc-onay-panel" role="region" aria-labelledby="rc-onay-h">
+      <div className="rc-onay-bar" aria-hidden="true" />
+      <div className="rc-onay-body">
+        <header className="rc-onay-head">
+          <span className="rc-onay-ic" aria-hidden="true"><Icon.hand /></span>
+          <div>
+            <h3 id="rc-onay-h" className="rc-onay-title">Memur Onayı Bekleniyor</h3>
+            <p className="rc-onay-sub">
+              Yapay zekâ resmî yazı taslağını hazırladı. <strong>Gönderilmeden önce</strong> yetkili
+              memurun onayı gerekiyor — AI öneriyor, <strong>memur karar veriyor</strong>.
+            </p>
+          </div>
+        </header>
+        <pre className="rc-onay-taslak" tabIndex={0} aria-label="Onay bekleyen taslak">{taslak.display}</pre>
+        {mode === "duzenle" && (
+          <textarea
+            className="rc-onay-textarea" value={metin}
+            onChange={(e) => setMetin(e.target.value)}
+            aria-label="Taslağı düzenle" rows={8}
+          />
+        )}
+        {mode === "reddet" && (
+          <input
+            className="rc-onay-input" value={gerekce}
+            onChange={(e) => setGerekce(e.target.value)}
+            placeholder="Red gerekçesi (örn. üslup uygun değil)" aria-label="Red gerekçesi"
+          />
+        )}
+        <div className="rc-onay-actions">
+          {mode === null && (
+            <>
+              <button type="button" className="rc-onay-btn rc-onay-ok" disabled={busy} onClick={() => onResume("onayla")}>
+                <Icon.check aria-hidden="true" /> Onayla
+              </button>
+              <button type="button" className="rc-onay-btn" disabled={busy} onClick={() => setMode("duzenle")}>
+                <Icon.pencil aria-hidden="true" /> Düzenle
+              </button>
+              <button type="button" className="rc-onay-btn rc-onay-red" disabled={busy} onClick={() => setMode("reddet")}>
+                <Icon.close aria-hidden="true" /> Reddet
+              </button>
+            </>
+          )}
+          {mode === "duzenle" && (
+            <>
+              <button type="button" className="rc-onay-btn rc-onay-ok" disabled={busy} onClick={() => onResume("duzenle", metin)}>
+                <Icon.check aria-hidden="true" /> Düzenlemeyi onayla
+              </button>
+              <button type="button" className="rc-onay-btn" disabled={busy} onClick={() => setMode(null)}>Vazgeç</button>
+            </>
+          )}
+          {mode === "reddet" && (
+            <>
+              <button type="button" className="rc-onay-btn rc-onay-red" disabled={busy} onClick={() => onResume("reddet", "", gerekce)}>
+                <Icon.close aria-hidden="true" /> Reddi gönder
+              </button>
+              <button type="button" className="rc-onay-btn" disabled={busy} onClick={() => setMode(null)}>Vazgeç</button>
+            </>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
 }
 
 /* ---------- 1) Evrak Türü + güven ---------- */
@@ -132,12 +272,52 @@ function CikarilanAlanlarCard({ unsurlar }) {
                 {meta.pii && <span className="rc-mask-tag" aria-label="maskeli kişisel veri">maskeli</span>}
               </dt>
               <dd className={meta.pii ? "rc-mono" : undefined}>
-                {meta.bool ? <>Var <Icon.check aria-hidden="true" /></> : String(value)}
+                {meta.bool ? <>Var <Icon.check aria-hidden="true" /></> : cleanDemoText(value)}
               </dd>
             </div>
           ))}
         </dl>
       )}
+    </article>
+  );
+}
+
+/* ---------- 2b) Kanıt — çıkarımın kaynaktaki yeri (sarı vurgu) ----------
+   Şeffaflık: "bu sayıyı/tarihi nereden buldun?" → ham (maskeli) metinde tam yeri işaretli.
+   result.kanit_metadata = { metin (PII-maskeli), spanlar:[{start,end,alan,label,deger}] }.
+   Ham PII metne sızmaz (backend mask_pii ile maskeler). Veri yoksa kart gizli. */
+function KanitVurguCard({ kanit }) {
+  const k = kanit || {};
+  const metin = typeof k.metin === "string" ? k.metin : "";
+  const spanlar = Array.isArray(k.spanlar) ? k.spanlar : [];
+  if (!metin || spanlar.length === 0) return null;
+  // Metni span'lara göre düz/vurgulu segmentlere böl (çakışma backend'de elendi).
+  const segs = [];
+  let cur = 0;
+  for (const sp of spanlar) {
+    const s = Math.max(cur, Math.min(metin.length, sp.start | 0));
+    const e = Math.max(s, Math.min(metin.length, sp.end | 0));
+    if (s > cur) segs.push({ t: metin.slice(cur, s) });
+    if (e > s) segs.push({ t: metin.slice(s, e), label: sp.label });
+    cur = e;
+  }
+  if (cur < metin.length) segs.push({ t: metin.slice(cur) });
+  return (
+    <article className="rc-card rc-kanit" aria-labelledby="rc-kanit-h">
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true"><Icon.search /></span>
+        <h3 id="rc-kanit-h" className="rc-card-title">Kanıt — Çıkarımın Kaynaktaki Yeri</h3>
+        <span className="rc-badge rc-badge-ok">{spanlar.length} işaretli</span>
+      </header>
+      <p className="rc-kanit-sub">
+        Çıkarılan her unsurun <strong>ham evraktaki yeri</strong> sarı ile işaretlendi
+        (kişisel veri maskeli gösterilir).
+      </p>
+      <pre className="rc-kanit-metin" tabIndex={0} aria-label="İşaretli kaynak metin">
+        {segs.map((sg, i) => sg.label
+          ? <mark className="rc-kanit-mark" key={i} title={sg.label}>{sg.t}</mark>
+          : <span key={i}>{sg.t}</span>)}
+      </pre>
     </article>
   );
 }
@@ -238,7 +418,7 @@ function EksikBilgiCard({ eksik, sorular }) {
       ) : (
         <>
           <ul className="rc-chiplist" aria-label="Eksik alanlar">
-            {e.map((alan) => <li className="rc-chip rc-chip-warn" key={alan}>{alan}</li>)}
+            {e.map((alan) => <li className="rc-chip rc-chip-warn" key={alan}>{EKSIK_TR(alan)}</li>)}
           </ul>
           {q.length > 0 && (
             <div className="rc-clarify">
@@ -255,9 +435,11 @@ function EksikBilgiCard({ eksik, sorular }) {
 }
 
 /* ---------- 4) Mevzuat önerileri ---------- */
-function MevzuatCard({ oneriler }) {
+function MevzuatCard({ oneriler, nli }) {
   const list = oneriler || [];
   if (!list.length) return null;
+  // NLI atıf-gerekçelendirme (ENV-gated; varsa) → başlığa göre entailment işareti.
+  const nliByBaslik = new Map((nli || []).map((n) => [String(n.baslik || ""), n]));
   return (
     <article className="rc-card rc-mevzuat" aria-labelledby="rc-mev-h">
       <header className="rc-card-head">
@@ -269,6 +451,9 @@ function MevzuatCard({ oneriler }) {
           // javascript:/data: gibi tehlikeli şemalar reddedilir; yalnız http/https link olur.
           const href = safeUrl(m.url);
           const scorePct = typeof m.score === "number" && m.score > 0 ? Math.round(m.score * 100) : null;
+          const baslik = cleanDemoText(m.baslik);
+          const snippet = cleanDemoText(m.snippet);
+          const nliMark = nliByBaslik.get(String(m.baslik || ""));
           return (
           <li className="rc-mev-item" key={i}>
             <div className="rc-mev-top">
@@ -279,12 +464,12 @@ function MevzuatCard({ oneriler }) {
                   href={href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  aria-label={`${m.baslik} (yeni sekmede açılır)`}
+                  aria-label={`${baslik} (yeni sekmede açılır)`}
                 >
-                  {m.baslik}
+                  {baslik}
                 </a>
               ) : (
-                <span className="rc-mev-baslik">{m.baslik}</span>
+                <span className="rc-mev-baslik">{baslik}</span>
               )}
               {scorePct !== null && (
                 /* SC 1.4.1 — ikon+metin; renk tek sinyal değil (yüzde değeri metin olarak da var) */
@@ -295,8 +480,17 @@ function MevzuatCard({ oneriler }) {
                   {scorePct}%
                 </span>
               )}
+              {nliMark && (
+                /* NLI entailment: madde evrak talebine anlamsal DESTEK veriyor mu (semantik anti-halüsinasyon). */
+                <span
+                  className={`rc-mev-nli ${nliMark.entailment ? "rc-badge-ok" : "rc-badge-warn"}`}
+                  title={`Anlamsal destek (NLI): %${Math.round((nliMark.skor || 0) * 100)}`}
+                >
+                  {nliMark.entailment ? "anlamsal destek ✓" : "anlamsal destek zayıf"}
+                </span>
+              )}
             </div>
-            {m.snippet && <p className="rc-mev-snippet">{m.snippet}</p>}
+            {snippet && <p className="rc-mev-snippet">{snippet}</p>}
           </li>
           );
         })}
@@ -330,10 +524,11 @@ function BirimCard({ hedef, alternatifler }) {
 /* ---------- 6) Yazı Taslağı (önizleme + kopyala + PDF/DOCX indir) ---------- */
 function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, canDownload }) {
   const [copied, setCopied] = useState(false);
+  const draft = normalizeDraftForDemo(taslakMd || "");
   // Daktilo efekti — resmî yazı "yazılıyormuş" gibi akar (Demo wow). Hook erken-return ÖNCESİ.
   // cps 700: yazım anı jüri tarafından yakalanacak kadar yavaş, yine de okunur akıcı.
   // reduced-motion'da anında tam metin (hook içinde).
-  const { shown, animating } = useTypewriter(taslakMd || "", { cps: 700 });
+  const { shown, animating } = useTypewriter(draft.display, { cps: 700 });
   // Sonuç gelince Yazı Taslağı kartını görünüme kaydır (Görev-2 demosu yakalanır).
   // reduced-motion → ani; aksi halde yumuşak. Bir kez kaydırılır (taslak metnine göre guard).
   const reduced = usePrefersReducedMotion();
@@ -351,10 +546,10 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(taslakMd);
+      await navigator.clipboard.writeText(draft.copy);
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
-      onToast?.("Yazı taslağı panoya kopyalandı.");
+      onToast?.("Taslak panoya kopyalandı.");
     } catch {
       onToast?.("Kopyalanamadı — tarayıcı izni gerekebilir.");
     }
@@ -395,7 +590,7 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
           </button>
         </div>
       </header>
-      {/* Görsel: daktilo akışı (kopyala her zaman TAM metni alır — copy() taslakMd kullanır).
+      {/* Görsel: daktilo akışı (kopyala her zaman temiz TAM metni alır — copy() draft.copy kullanır).
           SC 4.1.3 / 1.3.1: Animasyon aktifken parça-parça duyuru (screen-reader spam) önlemek
           için aria-live="off" + aria-busy=animating. Tam metin rc-taslak-sr bölgesinde bir
           kez duyurulur (animating biter bitmez). aria-atomic="true" duyuruyu tek blok yapar. */}
@@ -409,6 +604,30 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         {shown}
         {animating && <span className="rc-caret rc-caret-pre" aria-hidden="true" />}
       </pre>
+      {(draft.fields.length > 0 || draft.reviewNotes.length > 0) && (
+        <div className="rc-taslak-review" role="note" aria-label="Taslak tamamlama notları">
+          {draft.fields.length > 0 && (
+            <div className="rc-taslak-review-row">
+              <span className="rc-taslak-review-h">Tamamlanacak alanlar</span>
+              <ul className="rc-chiplist">
+                {draft.fields.map((field) => (
+                  <li className="rc-chip rc-chip-field" key={field}>{field}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {draft.reviewNotes.length > 0 && (
+            <div className="rc-taslak-review-row">
+              <span className="rc-taslak-review-h">İnceleme notları</span>
+              <ul className="rc-chiplist">
+                {draft.reviewNotes.map((note) => (
+                  <li className="rc-chip rc-chip-review" key={note}>{note}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
       {/* SC 4.1.3 — Animasyon bitince ekran okuyucuya TAM metin bir kerede duyurulur.
           animating=true iken içerik değişmez (shown değişir ama sr-only görmez) → spam yok.
           animating=false olunca tam metin buraya geçer → tek duyuru. */}
@@ -418,7 +637,7 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         aria-live="polite"
         aria-atomic="true"
       >
-        {animating ? "" : taslakMd}
+        {animating ? "" : draft.display}
       </p>
       {!canDownload && (
         // Dosya/OCR yolunda evrak metni client'ta saklanmaz → indirme devre dışı.
@@ -430,8 +649,7 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         </p>
       )}
       <p className="rc-taslak-note">
-        Bu taslak yalnız ön hazırlıktır; <code>{"{{ }}"}</code> yer tutucuları yetkili birim
-        tarafından doldurulmalıdır.
+        Bu taslak ön hazırlıktır; açık alanlar ve inceleme notları yetkili birimce tamamlanır.
       </p>
     </article>
   );
@@ -445,7 +663,11 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
    taslakMd verilmediyse (taslak yok) kart gizlenir. */
 function DogrulamaCard({ verify, taslakMd }) {
   if (!taslakMd) return null;
-  const uyarilar = (verify?.verify_uyari || []).filter(Boolean);
+  const draft = normalizeDraftForDemo(taslakMd);
+  const uyarilar = uniqueLabels([
+    ...(verify?.verify_uyari || []).filter(Boolean).map(cleanDemoText),
+    ...draft.reviewNotes.map((note) => `Kaynak kontrolü: ${note}`),
+  ]);
   // format_uyumlu açıkça false ise format eksik; aksi halde uyumlu kabul (graceful).
   const formatOk = verify?.format_uyumlu !== false;
   const temiz = formatOk && uyarilar.length === 0;
@@ -467,7 +689,7 @@ function DogrulamaCard({ verify, taslakMd }) {
         <li className={uyarilar.length === 0 ? "rc-dogru-pass" : "rc-dogru-fail"}>
           <span className="rc-dogru-mark" aria-hidden="true">{uyarilar.length === 0 ? "✓" : "✕"}</span>
           <span className="rc-sr">{uyarilar.length === 0 ? "Geçti — " : "Geçemedi — "}</span>
-          Uydurma veto — kaynakta olmayan somut tarih/sayı yok
+          Kaynak kontrolü — tarih/sayı ve madde notları temiz
         </li>
       </ul>
       {uyarilar.length > 0 ? (
@@ -516,10 +738,102 @@ function ArsivBilgisiCard({ arsiv }) {
         {rows.map(({ key, label, mono, value }) => (
           <div className="rc-kv-row" key={key}>
             <dt>{label}</dt>
-            <dd className={mono ? "rc-mono" : undefined}>{String(value)}</dd>
+            <dd className={mono ? "rc-mono" : undefined}>{cleanDemoText(value)}</dd>
           </div>
         ))}
       </dl>
+    </article>
+  );
+}
+
+/* ---------- 8b) Yasal Süre / SLA triyaj (GECİKMİŞ/KRİTİK rozeti) ----------
+   Kamu gerçeği: vatandaş başvurusunun yasal cevap süresi vardır (dilekçe 30 gün — 3071
+   m.7; bilgi edinme 15 iş günü — 4982 m.11). result.sla_metadata = { durum, etiket,
+   son_tarih, kalan_gun, baslangic, sure, mevzuat }. Süre tanımsız (kurum→kurum yazı) →
+   kart gizlenir (graceful, uydurma yok). GECİKMİŞ/KRİTİK = belirgin uyarı rengi (demo-wow). */
+const SLA_TONE = {
+  GECIKMIS: { badge: "rc-badge-warn", ic: <Icon.alert /> },
+  KRITIK: { badge: "rc-badge-warn", ic: <Icon.alert /> },
+  NORMAL: { badge: "rc-badge-ok", ic: <Icon.circleCheck /> },
+  tarih_yok: { badge: "rc-badge-warn", ic: <Icon.info /> },
+};
+
+function SlaTriyajCard({ sla }) {
+  const s = sla || {};
+  // Yasal vatandaş-süresi tanımsız tür (kurum→kurum) → kartı hiç gösterme.
+  if (!s.durum || s.durum === "tanimsiz") return null;
+  const tone = SLA_TONE[s.durum] || SLA_TONE.tarih_yok;
+  const acil = s.durum === "GECIKMIS" || s.durum === "KRITIK";
+  return (
+    <article
+      className={`rc-card rc-sla rc-sla-${s.durum.toLowerCase()}`}
+      aria-labelledby="rc-sla-h"
+    >
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true">{tone.ic}</span>
+        <h3 id="rc-sla-h" className="rc-card-title">Yasal Süre Takibi</h3>
+        <span className={`rc-badge ${tone.badge}`}>{cleanDemoText(s.etiket)}</span>
+      </header>
+      <dl className="rc-kv">
+        {s.son_tarih && (
+          <div className="rc-kv-row"><dt>Son cevap tarihi</dt><dd>{s.son_tarih}</dd></div>
+        )}
+        {typeof s.kalan_gun === "number" && (
+          <div className="rc-kv-row">
+            <dt>Kalan</dt>
+            <dd className={acil ? "rc-mono" : undefined}>
+              {s.kalan_gun < 0
+                ? `${Math.abs(s.kalan_gun)} gün GECİKTİ`
+                : `${s.kalan_gun} gün`}
+            </dd>
+          </div>
+        )}
+        {s.sure && <div className="rc-kv-row"><dt>Yasal süre</dt><dd>{s.sure}</dd></div>}
+        {s.mevzuat && (
+          <div className="rc-kv-row"><dt>Dayanak</dt><dd>{cleanDemoText(s.mevzuat)}</dd></div>
+        )}
+      </dl>
+    </article>
+  );
+}
+
+/* ---------- 8c) Denetim İzi (tamper-evident SHA-256 hash-chain) ----------
+   Kamu gerçeği: Sayıştay denetimi + KVKK işleme kaydı → kararların DEĞİŞTİRİLEMEZ izi.
+   result.denetim_izi = { zincir:[{adim,veri,hash,onceki}], kok_hash, adim_sayisi,
+   butunluk, algoritma }. Zincir yoksa kart gizlenir (graceful). */
+function DenetimIziCard({ denetim }) {
+  const d = denetim || {};
+  if (!Array.isArray(d.zincir) || d.zincir.length === 0) return null;
+  const ok = d.butunluk !== false;
+  return (
+    <article
+      className={`rc-card rc-denetim ${ok ? "rc-denetim-ok" : "rc-denetim-warn"}`}
+      aria-labelledby="rc-denetim-h"
+    >
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true">{ok ? <Icon.shieldCheck /> : <Icon.alert />}</span>
+        <h3 id="rc-denetim-h" className="rc-card-title">Denetim İzi (Değiştirilemez Kayıt)</h3>
+        <span className={`rc-badge ${ok ? "rc-badge-ok" : "rc-badge-warn"}`}>
+          {ok ? <>Bütünlük doğrulandı <span aria-hidden="true">✓</span></> : "BÜTÜNLÜK İHLALİ"}
+        </span>
+      </header>
+      <p className="rc-denetim-sub">
+        {d.adim_sayisi} karar adımı <strong>{d.algoritma || "SHA-256 hash-chain"}</strong> ile zincirlendi;
+        her halka öncekinin parmak izini içerir → bir adım sonradan değişirse zincir kırılır
+        (Sayıştay denetimi / KVKK işleme kaydı).
+      </p>
+      <div className="rc-denetim-kok">
+        <span className="rc-denetim-kok-h">Kök parmak izi (SHA-256)</span>
+        <code className="rc-mono rc-denetim-hash">{String(d.kok_hash || "")}</code>
+      </div>
+      <ol className="rc-denetim-chain" aria-label="Karar zinciri">
+        {d.zincir.map((e, i) => (
+          <li className="rc-denetim-link" key={i}>
+            <span className="rc-denetim-step">{i + 1}. {e.adim}</span>
+            <code className="rc-mono rc-denetim-h8">{String(e.hash || "").slice(0, 12)}…</code>
+          </li>
+        ))}
+      </ol>
     </article>
   );
 }
@@ -531,7 +845,7 @@ function ArsivBilgisiCard({ arsiv }) {
    (hook anında tam metin döndürür) → görsel = sr-only, ikisi de tam metin. */
 function BilgilendirmeCard({ text }) {
   // Backend metnine güvenme: kurumsal üslup için emoji/pictograph'ları temizle (UI ikonları SVG).
-  const safe = stripEmoji(text || "");
+  const safe = cleanDemoText(stripEmoji(text || ""));
   // Hook'lar koşulsuz çağrılmalı (Rules of Hooks) → erken return ÖNCESİ.
   const { shown, animating } = useTypewriter(safe, { cps: 520 });
   if (!safe) return null;
@@ -586,15 +900,19 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
         <EvrakTuruCard turu={r.evrak_turu} conf={r.tur_confidence} />
         <BirimCard hedef={r.hedef_birim} alternatifler={r.birim_alternatifleri} />
       </div>
+      {/* Yasal süre takibi — GECİKMİŞ/KRİTİK belirgin (tanımsız türde gizli). */}
+      <SlaTriyajCard sla={r.sla_metadata} />
       <CikarilanAlanlarCard unsurlar={r.bilgi_unsurlari} />
+      <KanitVurguCard kanit={r.kanit_metadata} />
       <EksikBilgiCard eksik={r.eksik_alanlar} sorular={r.clarify_questions} />
-      <MevzuatCard oneriler={r.mevzuat_onerileri} />
+      <MevzuatCard oneriler={r.mevzuat_onerileri} nli={r.mevzuat_nli} />
       <YaziTaslakCard
         yaziTuru={r.yazi_turu} taslakMd={r.yazi_taslak_md} onToast={onToast}
         onDownload={onDownload} downloading={downloading} canDownload={canDownload}
       />
       <DogrulamaCard verify={verify} taslakMd={r.yazi_taslak_md} />
       <ArsivBilgisiCard arsiv={r.arsiv_metadata} />
+      <DenetimIziCard denetim={r.denetim_izi} />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
       <p className="rc-disclaimer" role="note">
         <Icon.scale aria-hidden="true" />
@@ -609,7 +927,7 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
 export default ResultCards;
 // Test/yeniden-kullanım için iç kartlar da export edilir.
 export {
-  ClarifyBanner, EvrakTuruCard, CikarilanAlanlarCard, EksikBilgiCard, MevzuatCard,
-  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, BilgilendirmeCard,
-  EVRAK_TR, BIRIM_LBL, YAZI_TR, EKSIK_TR, safeUrl,
+  OnayPaneli, ClarifyBanner, EvrakTuruCard, CikarilanAlanlarCard, KanitVurguCard, EksikBilgiCard, MevzuatCard,
+  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, SlaTriyajCard, DenetimIziCard, BilgilendirmeCard,
+  EVRAK_TR, BIRIM_LBL, YAZI_TR, EKSIK_TR, safeUrl, cleanDemoText, normalizeDraftForDemo,
 };

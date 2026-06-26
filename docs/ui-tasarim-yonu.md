@@ -313,7 +313,7 @@ layout-bound (motion kuralına aykırı). **Düzeltme önerisi:** `transform: sc
    rozeti + ⚖️ disclaimer görünür. "Üretti + güvenli + sorumlu."
 
 **Real-time vurgu cümlesi (sunum):** *"Hiçbir şey önceden hazır değil — evrak şu an, canlı,
-9 ajanlı pipeline'dan geçiyor; her node yandıkça arkada gerçek bir LangGraph adımı koşuyor."*
+10 node'lu pipeline'dan geçiyor; her node yandıkça arkada gerçek bir LangGraph adımı koşuyor."*
 
 **Wow envanteri (uygulama önceliğine göre):**
 - [ ] **(P1)** Akış şeması spark + sıralı yanma + done-stamp (§3.1) — *en yüksek etki/çaba oranı*

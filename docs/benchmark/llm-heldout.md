@@ -25,6 +25,23 @@
 > Kalan az sayıda karışma semantik-komşu (ihbar→şikayet, talep→dilekçe) — operasyonel havale doğru.
 > Üretim önerisi: **LLM_MODE=openai + gpt-4o**. (mock = anahtarsız taban; demo/CI için.)
 
+## Çapraz-doğrulama — 2 BAĞIMSIZ held-out set (tek-set riski kapatıldı)
+
+`gen_heldout2.py` ile FARKLI üretici (farklı kurum/üslup/cümle yapısı, daha örtük; mock'ta
+1. set 0.99 vs 2. set **0.59** → 2. set gerçekten daha zor). gpt-4o ile iki set:
+
+| Metrik (gpt-4o, held-out) | 1. set | 2. set (daha zor) | **Ortalama** |
+|---|---|---|---|
+| Sınıflandırma macro-F1 (sıkı) | 0.908 | 0.787 | **~0.85** |
+| Operasyonel accuracy | 0.935 | 0.880 | **~0.91** |
+| Yönlendirme Top-1 | 0.926 | 0.870 | **~0.90** |
+| Doğru / 108 | 98 | 85 | — |
+
+> **Sonuç:** gpt-4o, iki bağımsız zorlu held-out sette **sıkı ~0.79-0.91 / operasyonel ~0.88-0.94 /
+> routing ~0.87-0.93** veriyor → 0.91 tek-set tesadüfü DEĞİL, **sağlam genelleme**. 2. setteki kalan
+> gerçek zayıf noktalar (tutanak/rapor→cevabi_yazi karışması) İT-12 few-shot hedefi. Operasyonel
+> havale her iki sette de güçlü (≥0.87).
+
 58/108 doğru. Gerçek-LLM, mock heuristiğin **~2.5 katı** genelleme → mimari sağlam, semantik çözüm gerçek değer katıyor.
 
 > NOT: Dün in-domain'de görülen "0.995" rakamı held-out şablonlarına **overfit** mock-kuraldı.

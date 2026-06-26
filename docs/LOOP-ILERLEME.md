@@ -11,6 +11,11 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **İT-17 (UI görsel) BİTTİ [ceb8e44]:** yeni animasyonlu UI Playwright ile yakalandı → demo.gif (4 kare canlı akış) + statik görseller (01-yukleme/02-akis/03-sonuc) tazelendi; a11y-architect denetimi (1 fix: taslak daktilo aria-busy/sr-only spam önleme; gerisi AA geçti); adalet-agent Playwright artıkları TEMİZLENDİ (cwd tuzağı — /c/ POSIX yolu Python'da çalışmaz, Windows yolu kullan dersi). 40 commit. **NOT:** sunum PDF/PPTX hâlâ ESKİ görselleri gömülü (İT-15 üretimi) → yeni görsellerle yeniden üret (İT-18).
+- **İT-18 ÖNCELİKLER (büyük ölçüde polish):**
+  1. Sunum PDF/PPTX yeniden üret (yeni animasyonlu-UI görselleri + güncel skorlar gömülü). `uv run python scripts/export_sunum.py --all`.
+  2. (opsiyonel) README'ye demo.gif öne çıkar + final tutarlılık.
+  PROJE TESLİME HAZIR; kalan ağırlıklı idari (4. üye, TAKP push) — kullanıcıda.
 - **İT-16 (UI/UX) BİTTİ [33fb87c]:** internet araştırma + şartname Demo kriteri → `docs/ui-tasarim-yonu.md`; frontend YARIŞMA-KAZANDIRAN animasyon (saf CSS/SVG, 0 dep): akan ajan akışı (komet parıltı + sıralı node pop + glow + canlı ilerleme çubuğu + Görev1/2 bantları), **token-token daktilo yazım** (özet/taslak), sonuç kartları stagger+derinlik, marka gradyanı; reduced-motion + a11y + SSE korundu; npm build OK. 38 commit.
 - **İT-17 ÖNCELİKLER:**
   1. **Yeni animasyonlu UI'nın ekran görüntüleri + demo GIF'i tazele** (orkestratör: backend+vite başlat → Playwright screenshot/dizi → PIL GIF → docs/img; **Playwright artıklarını adalet-agent'tan TEMİZLE** — cwd tuzağı).

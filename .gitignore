@@ -7,7 +7,7 @@ venv/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
-uv.lock
+# NOT: uv.lock COMMIT EDİLİR (reprodüke-edilebilir build + CI `uv sync --frozen` için gerekli).
 
 # Ortam / gizli
 .env

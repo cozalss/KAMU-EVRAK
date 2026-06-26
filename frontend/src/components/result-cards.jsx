@@ -147,6 +147,13 @@ function confTone(conf) {
    (kamu imza akışının ajan karşılığı). data.onay_bekliyor=true iken görünür; aksi
    halde hiç render edilmez (HITL_ENABLED kapalıysa baseline akış birebir). onResume(
    secim, metin?, gerekce?) → /process_doc/resume çağrılır, final sonuç gelir. */
+// Risk bandı (trafik ışığı) etiketleri — yeşil/sarı/kırmızı + ikon + ton sınıfı.
+const RISK_LBL = {
+  yesil: { text: "Yeşil — Yayın-hazır", tone: "ok", ic: <Icon.circleCheck /> },
+  sari: { text: "Sarı — Memur incelesin", tone: "warn", ic: <Icon.alert /> },
+  kirmizi: { text: "Kırmızı — Uydurma şüphesi", tone: "danger", ic: <Icon.alert /> },
+};
+
 function OnayPaneli({ data, onResume, busy }) {
   const [mode, setMode] = useState(null); // null | "duzenle" | "reddet"
   const [metin, setMetin] = useState(() => data?.yazi_taslak_md || "");
@@ -166,6 +173,19 @@ function OnayPaneli({ data, onResume, busy }) {
             </p>
           </div>
         </header>
+        {data?.risk_band && RISK_LBL[data.risk_band] && (
+          <div className={`rc-onay-risk rc-risk-${data.risk_band}`} role="alert">
+            <span className="rc-onay-risk-h">
+              {RISK_LBL[data.risk_band].ic}
+              <strong>{RISK_LBL[data.risk_band].text}</strong> — bu yüzden onayınıza sunuldu
+            </span>
+            {Array.isArray(data.risk_gerekceler) && data.risk_gerekceler.length > 0 && (
+              <ul className="rc-onay-risk-list">
+                {data.risk_gerekceler.slice(0, 4).map((g, i) => <li key={i}>{cleanDemoText(g)}</li>)}
+              </ul>
+            )}
+          </div>
+        )}
         <pre className="rc-onay-taslak" tabIndex={0} aria-label="Onay bekleyen taslak">{taslak.display}</pre>
         {mode === "duzenle" && (
           <textarea
@@ -849,6 +869,33 @@ function DecomposeCard({ altTalepler }) {
   );
 }
 
+/* ---------- 8c3) Risk Bandı (trafik ışığı) + koşullu onay — GÜVEN ----------
+   Kamu gerçeği: kurum AI çıktısını gözden geçirmeden gönderemez. result.risk_metadata =
+   {bant: yesil|sari|kirmizi, skor, gerekceler:[...], oneri}. yeşil=yayın-hazır,
+   sarı=memur incelesin, kırmızı=uydurma şüphesi. Band yoksa kart gizlenir (graceful). */
+function RiskBandCard({ risk }) {
+  const r = risk || {};
+  const lbl = RISK_LBL[r.bant];
+  if (!lbl) return null;
+  return (
+    <article className={`rc-card rc-risk rc-risk-${r.bant}`} aria-labelledby="rc-risk-h">
+      <header className="rc-card-head">
+        <span className="rc-ic" aria-hidden="true">{lbl.ic}</span>
+        <h3 id="rc-risk-h" className="rc-card-title">Risk Bandı (Yayın Güvenliği)</h3>
+        <span className={`rc-badge rc-risk-badge-${r.bant}`}>
+          <span className="rc-risk-dot" aria-hidden="true" />{lbl.text}
+        </span>
+      </header>
+      <p className="rc-risk-oneri">{cleanDemoText(r.oneri || "")}</p>
+      {Array.isArray(r.gerekceler) && r.gerekceler.length > 0 && (
+        <ul className="rc-risk-list">
+          {r.gerekceler.map((g, i) => <li key={i}>{cleanDemoText(g)}</li>)}
+        </ul>
+      )}
+    </article>
+  );
+}
+
 /* ---------- 8c) Denetim İzi (tamper-evident SHA-256 hash-chain) ----------
    Kamu gerçeği: Sayıştay denetimi + KVKK işleme kaydı → kararların DEĞİŞTİRİLEMEZ izi.
    result.denetim_izi = { zincir:[{adim,veri,hash,onceki}], kok_hash, adim_sayisi,
@@ -966,6 +1013,8 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
         onDownload={onDownload} downloading={downloading} canDownload={canDownload}
       />
       <DogrulamaCard verify={verify} taslakMd={r.yazi_taslak_md} />
+      {/* Risk bandı (trafik ışığı) — yayın güvenliği: yeşil/sarı/kırmızı + koşullu onay tetiği. */}
+      <RiskBandCard risk={r.risk_metadata} />
       <ArsivBilgisiCard arsiv={r.arsiv_metadata} />
       <DenetimIziCard denetim={r.denetim_izi} />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
@@ -983,6 +1032,6 @@ export default ResultCards;
 // Test/yeniden-kullanım için iç kartlar da export edilir.
 export {
   OnayPaneli, ClarifyBanner, EvrakTuruCard, CikarilanAlanlarCard, KanitVurguCard, EksikBilgiCard, MevzuatCard,
-  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, SlaTriyajCard, DecomposeCard, DenetimIziCard, BilgilendirmeCard,
+  BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, SlaTriyajCard, DecomposeCard, RiskBandCard, DenetimIziCard, BilgilendirmeCard,
   EVRAK_TR, BIRIM_LBL, YAZI_TR, EKSIK_TR, safeUrl, cleanDemoText, normalizeDraftForDemo,
 };

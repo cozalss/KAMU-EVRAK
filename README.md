@@ -24,6 +24,7 @@ Tek bir LangGraph boru hattı; **bulut (gpt-4o), lokal (Qwen GGUF) veya anahtars
 | | |
 |---|---|
 | 🧩 **Çok-konulu ayrıştırma** | Tek dilekçedeki birden çok istek **alt-taleplere bölünür**; her biri ayrı **tür + birim + yasal süre** alır → otomatik havale (memurun "3 kez fotokopileyip 3 daireye dağıtma" derdini çözer) |
+| 🚦 **Risk bandı + koşullu onay** | Üretilen yazıya **trafik ışığı**: 🟢 yayın-hazır otomatik geçer, 🟡 memur incelesin, 🔴 uydurma şüphesi → memur onaylamadan gitmez. Hash-chain denetim iziyle birleşince "güvenli, denetlenebilir AI" |
 | 🎯 **Dürüst değerlendirme** | Üretim modeli **DeepSeek-V4** — held-out ön-ölçüm (n=22) **acc 0.955 / op 1.0**; çapraz-referans gpt-4o (n=108) **0.935** [BCa CI]; reprodüke-edilebilir artefaktlar repoda |
 | 🛡️ **PII maskeleme** | TCKN / telefon / IBAN bulut çağrısından **önce** maskelenir; ham kişisel veri arayüze hiç ulaşmaz |
 | 🚫 **Anti-halüsinasyon** | Deterministik uydurma-veto (false-positive 0) + NLI atıf-gerekçelendirme; emin olunmayan madde `[DOĞRULA:]` |
@@ -46,11 +47,12 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompos
                                      mevzuat_oner ──(rerank? crag? NLI?)     ozetle   (paralel)
                                           └────────────────────────┬────────────┘
                                                                    ▼
-                              route_birim → yazi_taslak → [onay_kapisi*] → verify
-                                   → arsiv → sla_triyaj → denetim_izi → finalize → END
+                              route_birim → yazi_taslak → verify → [risk_guard]
+                                   → (🟢 otomatik geç │ 🟡🔴 → onay_kapisi*) → arsiv → sla_triyaj → denetim_izi → finalize → END
 ```
 
 - `[decompose]` çok-konulu evrakı alt-taleplere böler (paralel fan-out kaynağı; `DECOMPOSE_ENABLED`, **varsayılan açık** — additive, baseline metriklerini değiştirmez).
+- `[risk_guard]` üretilen yazıya trafik ışığı (🟢/🟡/🔴) atar (`RISK_GUARD_ENABLED`, **varsayılan açık**); HITL açıkken **koşullu onay**: 🟢 otomatik geçer, 🟡🔴 memur onayına durur.
 - `*` ve `?` ile işaretli node'lar **ENV-gated** (varsayılan kapalı) → temel akış birebir korunur, demo için açılır.
 - OCR (`oku`) graf-öncesi (API route'unda) yapılır; graf saf metin üzerinde çalışır → test-edilebilir.
 - Detay: [`docs/03-mimari.md`](docs/03-mimari.md).
@@ -77,7 +79,8 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompos
 ### Gelişmiş node'lar (ENV-gated — demoda açılır)
 | Node | Açıklama | Bayrak |
 |---|---|---|
-| `onay_kapisi` | Memur onay/düzenle/reddet — LangGraph `interrupt()` + checkpointer | `HITL_ENABLED=1` |
+| `risk_guard` | Trafik ışığı (🟢/🟡/🔴) — verify sinyallerinden risk bandı; deterministik | `RISK_GUARD_ENABLED` (varsayılan açık) |
+| `onay_kapisi` | **Koşullu** memur onayı — 🟢 otomatik geç, 🟡🔴 dur (`interrupt()` + checkpointer) | `HITL_ENABLED=1` |
 | `mevzuat_oner` + rerank | BM25 top-30 → cross-encoder top-3 (bge-reranker-v2-m3) | `RERANK_ENABLED=1` |
 | `mevzuat_dogrula` | NLI entailment (madde ⊨ talep) — mDeBERTa-v3-xnli | `NLI_ENABLED=1` |
 | `crag` / `self_rag` | Corrective-RAG / reflection (Yan 2024 / Asai 2023) | `CRAG_ENABLED` / `SELF_RAG_ENABLED` |

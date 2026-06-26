@@ -19,7 +19,9 @@ export const PIPELINE = [
   { id: "route_birim", label: "Birim Yönlendir", gorev: 2, desc: "Havale → doğru birim", col: 6, row: 1 },
   { id: "yazi_taslak", label: "Yazı Taslağı", gorev: 2, desc: "Resmî yazı (Yön. 2646)", col: 7, row: 1 },
   { id: "verify", label: "Doğrula", gorev: 2, desc: "Uydurma veto + format", col: 8, row: 1 },
-  { id: "finalize", label: "Bilgilendir", gorev: 2, desc: "Bilgilendirme + eksik talebi", col: 9, row: 1 },
+  // Risk bandı (trafik ışığı): verify sinyallerini yeşil/sarı/kırmızı'ya çevirir → koşullu onay.
+  { id: "risk_guard", label: "Risk Bandı", gorev: 2, desc: "Trafik ışığı + koşullu onay", col: 9, row: 1 },
+  { id: "finalize", label: "Bilgilendir", gorev: 2, desc: "Bilgilendirme + eksik talebi", col: 10, row: 1 },
 ];
 
 // Backend grafındaki kenarlar (graph.py add_edge ile birebir) — SVG ok çizimi için.
@@ -35,9 +37,10 @@ export const EDGES = [
   { from: "mevzuat_oner", to: "route_birim" },
   { from: "ozetle", to: "route_birim" },
   { from: "route_birim", to: "yazi_taslak" },
-  // Görev 2 kalite kapısı: taslak → doğrula → bilgilendir (graph.py ile birebir).
+  // Görev 2 kalite kapısı: taslak → doğrula → risk bandı → bilgilendir (graph.py ile birebir).
   { from: "yazi_taslak", to: "verify" },
-  { from: "verify", to: "finalize" },
+  { from: "verify", to: "risk_guard" },
+  { from: "risk_guard", to: "finalize" },
 ];
 
 // Geriye-uyum: bazı bileşenler NODES bekleyebilir (col/row zaten PIPELINE'da).

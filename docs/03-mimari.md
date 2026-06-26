@@ -14,11 +14,16 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompos
                                      mevzuat_oner                        ozetle   (paralel fan-out)
                                           └───────────────┬─────────────────┘
                                                           ▼
-            route_birim → yazi_taslak → verify → arsiv → sla_triyaj → denetim_izi → finalize → END
+  route_birim → yazi_taslak → verify → [risk_guard] → (🟢 geç │ 🟡🔴 → onay_kapisi*) → arsiv
+            → sla_triyaj → denetim_izi → finalize → END
 ```
 
 `[decompose]` (ENV-gated, **varsayılan açık**): çok-konulu evrakı alt-taleplere böler ve paralel
 fan-out kaynağı olur (kapalıyken fan-out `eksik_tespit`'ten başlar — baseline birebir).
+
+`[risk_guard]` (ENV-gated, **varsayılan açık**): verify sinyallerinden trafik ışığı bandı
+(🟢 yayın-hazır / 🟡 memur incelesin / 🔴 uydurma şüphesi) üretir. HITL (`HITL_ENABLED`) açıkken
+**koşullu onay**: 🟢 otomatik `arsiv`'e geçer, 🟡🔴 `onay_kapisi` interrupt'ında memura durur.
 
 OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text` → "oku" SSE event
 → graf `evrak_text` ile çağrılır.
@@ -37,6 +42,7 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 | `route_birim` | hedef birim + top-k | **UYGULANDI** — 9 birim sınıflandırıcı | yeni |
 | `yazi_taslak` | resmî yazı (Yön. 2646 format) | **UYGULANDI** — jinja2 + LLM/mock; format kapısı açık | dilekce node |
 | `verify` | taslak kalite kapısı + uydurma-veto | **UYGULANDI** — false-veto=0 | yeni |
+| `risk_guard` | risk bandı (🟢/🟡/🔴) + koşullu HITL | **UYGULANDI** — deterministik, verify sinyallerinden; ENV-gated (varsayılan açık) | yeni (vitrin) |
 | `arsiv` | SDP 2005/7 arşiv metadata | **UYGULANDI** — additive | yeni |
 | `finalize` | bilgilendirme + clarify | **UYGULANDI** — compose + disclaimer | finalize deseni |
 

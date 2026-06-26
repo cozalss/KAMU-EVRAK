@@ -86,6 +86,12 @@ class EvrakState(TypedDict):
     verify_notes: NotRequired[str]
     verify_uyari: NotRequired[list[str]]    # uydurma-veto + format eksik uyarıları
 
+    # --- Yenilikçilik: Risk bandı (trafik ışığı) + koşullu HITL ---
+    # risk_guard_node verify sinyallerini YEŞİL/SARI/KIRMIZI bandına çevirir (deterministik,
+    # tek-yazıcı → plain). Koşullu HITL: sarı/kırmızı → memur onayı, yeşil → otomatik geç.
+    # Anahtarlar SABİT (frontend RiskBandCard eşleşir): bant/skor/gerekceler/oneri.
+    risk_metadata: NotRequired[dict[str, Any]]
+
     # --- Yenilikçilik: Arşivleme (SDP 2005/7) metadata (Görev kapsamı + yenilikçilik) ---
     # arsiv_node SDP konu kodu + saklama süresi + sayı/tarih/konu/birim üretir (additive).
     # Sözleşme: frontend bununla eşleşir → anahtarlar SABİT (sdp_kodu/saklama_suresi/konu/

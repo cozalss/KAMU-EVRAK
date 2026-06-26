@@ -17,7 +17,10 @@ _METIN = "Konu: izin talebi. Dilekçe ile arz ederim. Ad-Soyad: Ayşe Yılmaz"
 
 
 def _hitl_graph(monkeypatch):
+    # KOŞULSUZ HITL kontratı: RISK_GUARD kapalı → her taslak onaya düşer (risk koşulu yok).
+    # Koşullu (risk-tabanlı) HITL ayrı test edilir (test_risk_guard.py).
     monkeypatch.setattr(gmod, "HITL_ENABLED", True)
+    monkeypatch.setattr(gmod, "RISK_GUARD_ENABLED", False)
     monkeypatch.setattr(okmod, "HITL_ENABLED", True)
     return gmod.build_graph(checkpointer=InMemorySaver())
 

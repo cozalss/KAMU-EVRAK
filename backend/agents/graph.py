@@ -26,10 +26,9 @@ Akış:
                                    finalize → END
 
 ENV-gated gelişmiş node'lar UYGULANDI: decompose (DECOMPOSE_ENABLED, çok-konulu evrak →
-alt-talepler, fan-out kaynağı, varsayılan AÇIK), crag (CRAG_ENABLED), self_rag
+alt-talepler, fan-out kaynağı, varsayılan AÇIK), risk_guard (RISK_GUARD_ENABLED, trafik
+ışığı 🟢🟡🔴 + KOŞULLU HITL — verify sonrası, varsayılan AÇIK), crag (CRAG_ENABLED), self_rag
 (SELF_RAG_ENABLED), verify (taslak kalite kapısı), clarifier dur-ve-sor (CLARIFY_STOP_ENABLED).
-
-# TODO(kamu-evrak): Gelecek faz — risk_guard (uydurma kurum/tarih/sayı veto, ADALET deseni).
 """
 
 from __future__ import annotations
@@ -44,6 +43,7 @@ from agents.config import (
     DECOMPOSE_ENABLED,
     HITL_ENABLED,
     NLI_ENABLED,
+    RISK_GUARD_ENABLED,
     SELF_RAG_ENABLED,
 )
 from agents.nodes.arsiv import arsiv_node
@@ -59,6 +59,7 @@ from agents.nodes.mevzuat_dogrula import mevzuat_dogrula_node
 from agents.nodes.mevzuat_oner import mevzuat_oner_node
 from agents.nodes.onay_kapisi import onay_kapisi_node
 from agents.nodes.ozetle import ozetle_node
+from agents.nodes.risk_guard import risk_guard_node
 from agents.nodes.route_birim import route_birim_node
 from agents.nodes.self_rag import self_rag_node
 from agents.nodes.siniflandir import siniflandir_node
@@ -82,14 +83,15 @@ def _pipeline_nodes() -> tuple[str, ...]:
         nodes.append("crag")
     if NLI_ENABLED:
         nodes.append("mevzuat_dogrula")
-    nodes += ["ozetle", "route_birim", "yazi_taslak"]
-    if HITL_ENABLED:
-        nodes.append("onay_kapisi")  # memur onay (HITL) — yazi_taslak↔verify arası
-    nodes.append("verify")
+    nodes += ["ozetle", "route_birim", "yazi_taslak", "verify"]
+    if RISK_GUARD_ENABLED:
+        nodes.append("risk_guard")   # trafik ışığı bandı (verify sonrası)
     if SELF_RAG_ENABLED:
         nodes.append("self_rag")
+    if HITL_ENABLED:
+        nodes.append("onay_kapisi")  # KOŞULLU memur onayı (risk sarı/kırmızı → dur)
     # additive yenilikçilik node'ları: arsiv (SDP) → sla_triyaj (yasal süre) →
-    # denetim_izi (hash-chain). verify/self_rag → arsiv → sla_triyaj → denetim_izi → finalize.
+    # denetim_izi (hash-chain). … → arsiv → sla_triyaj → denetim_izi → finalize.
     nodes += ["arsiv", "sla_triyaj", "denetim_izi", "finalize"]
     return tuple(nodes)
 
@@ -115,6 +117,16 @@ def _clarify_route(state: dict[str, Any]) -> str:
     Dönüş değerleri add_conditional_edges path-map anahtarlarıyla eşleşir.
     """
     return "clarifier" if kritik_eksikler(state) else "yazi_taslak"
+
+
+def _risk_route(state: dict[str, Any]) -> str:
+    """risk_guard sonrası koşullu onay: sarı/kırmızı → memur onayı, yeşil → otomatik geç (arsiv).
+
+    Yalnız RISK_GUARD_ENABLED + HITL_ENABLED birlikte açıkken devrede (akıllı/koşullu onay).
+    Banka mantığı: güvenli (yeşil) anında geçer, riskli (sarı/kırmızı) insana sorulur.
+    """
+    bant = (state.get("risk_metadata") or {}).get("bant", "yesil")
+    return "onay_kapisi" if bant in ("sari", "kirmizi") else "arsiv"
 
 
 def build_graph(checkpointer: Any = None) -> Any:
@@ -187,26 +199,36 @@ def build_graph(checkpointer: Any = None) -> Any:
         # Varsayılan (KAPALI): baseline akış — her evrak için taslak üretilir.
         g.add_edge("route_birim", "yazi_taslak")
 
-    if HITL_ENABLED:
-        # Memur onay kapısı (HITL, ENV-gated): yazi_taslak → onay_kapisi → verify.
-        # onay_kapisi interrupt() ile durur (checkpointer ŞART → build_graph(checkpointer=...)).
-        # Kapalıyken node grafta YOK → baseline (yazi_taslak→verify) birebir korunur.
-        g.add_node("onay_kapisi", onay_kapisi_node)
-        g.add_edge("yazi_taslak", "onay_kapisi")
-        g.add_edge("onay_kapisi", "verify")
-    else:
-        # verify: taslak kalite kapısı (additive). VERIFY_ENABLED=0 ise node no-op.
-        g.add_edge("yazi_taslak", "verify")
+    # verify HER ZAMAN yazi_taslak'tan sonra (risk bandı için verify, onay'dan ÖNCE çalışmalı).
+    g.add_edge("yazi_taslak", "verify")
 
+    # Doğrulama-sonrası additive kuyruk: [risk_guard] → [self_rag] → [KOŞULLU onay] → arsiv.
+    # tail = onay/arsiv kapısına giren son node (ENV-gated node'lara göre kayar).
+    tail = "verify"
+    if RISK_GUARD_ENABLED:
+        # Risk bandı (trafik ışığı): verify sinyallerini yeşil/sarı/kırmızı'ya çevirir (additive).
+        g.add_node("risk_guard", risk_guard_node)
+        g.add_edge(tail, "risk_guard")
+        tail = "risk_guard"
     if SELF_RAG_ENABLED:
-        # Self-RAG reflection (ENV-gated): verify → self_rag → arsiv. self_rag
-        # çıktının TAMLIĞINI öz-değerlendirir (Asai et al. 2023). Kapalıyken bu node
-        # grafta YOK → baseline (verify→arsiv) birebir korunur.
+        # Self-RAG reflection (ENV-gated): çıktı tamlığını öz-değerlendirir (Asai et al. 2023).
         g.add_node("self_rag", self_rag_node)
-        g.add_edge("verify", "self_rag")
-        g.add_edge("self_rag", "arsiv")
+        g.add_edge(tail, "self_rag")
+        tail = "self_rag"
+
+    if HITL_ENABLED:
+        # Memur onay kapısı (interrupt() — checkpointer ŞART → build_graph(checkpointer=...)).
+        # RISK_GUARD ile KOŞULLU: yeşil → otomatik geç (arsiv); sarı/kırmızı → onay_kapisi → arsiv.
+        # RISK_GUARD yoksa KOŞULSUZ (her taslak onaya). Kapalıyken node grafta YOK → baseline birebir.
+        g.add_node("onay_kapisi", onay_kapisi_node)
+        if RISK_GUARD_ENABLED:
+            g.add_conditional_edges(tail, _risk_route,
+                                    {"onay_kapisi": "onay_kapisi", "arsiv": "arsiv"})
+        else:
+            g.add_edge(tail, "onay_kapisi")
+        g.add_edge("onay_kapisi", "arsiv")
     else:
-        g.add_edge("verify", "arsiv")
+        g.add_edge(tail, "arsiv")
 
     # arsiv: SDP 2005/7 arşiv metadata kapısı (additive — yenilikçilik). verify/self_rag
     # sonrası, finalize öncesi çalışır → bilgilendirmeye arşiv satırı eklenebilir.

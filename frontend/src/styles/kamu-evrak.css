@@ -593,6 +593,30 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .rc-chip-acil { background: var(--danger-soft); border-color: #f3c2c2; color: var(--danger-ink); font-weight: 600; }
 @media (max-width: 560px) { .rc-decompose-meta { padding-left: 0; } }
 
+/* risk bandı (trafik ışığı) + koşullu onay — yayın güvenliği (yeşil/sarı/kırmızı) */
+.rc-risk-yesil { border-left: 4px solid var(--ok); }
+.rc-risk-sari { border-left: 4px solid var(--warn); }
+.rc-risk-kirmizi { border-left: 4px solid var(--danger); }
+.rc-risk-yesil .rc-ic { background: var(--ok-soft); color: var(--ok-ink); border-color: #bbe7c8; }
+.rc-risk-sari .rc-ic { background: var(--warn-soft); color: var(--warn-ink); border-color: #f0d2a3; }
+.rc-risk-kirmizi .rc-ic { background: var(--danger-soft); color: var(--danger-ink); border-color: #f3c2c2; }
+.rc-risk-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.rc-risk-badge-yesil { background: var(--ok-soft); color: var(--ok-ink); }
+.rc-risk-badge-yesil .rc-risk-dot { background: var(--ok); }
+.rc-risk-badge-sari { background: var(--warn-soft); color: var(--warn-ink); }
+.rc-risk-badge-sari .rc-risk-dot { background: var(--warn); }
+.rc-risk-badge-kirmizi { background: var(--danger-soft); color: var(--danger-ink); }
+.rc-risk-badge-kirmizi .rc-risk-dot { background: var(--danger); }
+.rc-risk-oneri { margin: .2rem 0 .55rem; color: var(--ink); font-size: .9rem; line-height: 1.45; font-weight: 500; }
+.rc-risk-list { margin: 0; padding-left: 1.1rem; display: grid; gap: .25rem; font-size: .84rem; color: var(--ink-2); }
+/* onay panelinde risk gerekçesi (neden durdu) */
+.rc-onay-risk { margin: 0 0 .7rem; padding: .55rem .7rem; border-radius: var(--r-md); border: 1px solid var(--line); }
+.rc-onay-risk.rc-risk-sari { background: var(--warn-soft); border-color: #f0d2a3; }
+.rc-onay-risk.rc-risk-kirmizi { background: var(--danger-soft); border-color: #f3c2c2; }
+.rc-onay-risk-h { display: inline-flex; align-items: center; gap: .35rem; font-size: .85rem; line-height: 1.4; }
+.rc-onay-risk-h svg { width: 15px; height: 15px; flex: none; }
+.rc-onay-risk-list { margin: .35rem 0 0; padding-left: 1.1rem; display: grid; gap: .2rem; font-size: .82rem; color: var(--ink-2); }
+
 /* kanıt vurgu — çıkarımın kaynaktaki yeri (sarı işaret) */
 .rc-kanit-sub { margin: .2rem 0 .6rem; color: var(--ink-2); font-size: .85rem; line-height: 1.45; }
 .rc-kanit-metin { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .8rem; line-height: 1.65; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: .7rem .8rem; max-height: 280px; overflow: auto; color: var(--ink-2); }

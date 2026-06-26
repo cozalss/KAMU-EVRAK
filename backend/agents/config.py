@@ -219,13 +219,36 @@ EVRAK_TO_SURE: dict[str, tuple[int, bool, str]] = {
 
 # --- Evrak türü → ilgili mevzuat (araştırma §2; üretimde RAG ile zenginleştirilir) ---
 # NOT (CLAUDE.md §1): madde no'ları mevzuat.gov.tr'de DOĞRULANMALI; şüpheli → [DOĞRULA:].
+# KAPSAM: 18 üretilen türün TAMAMI eşlenir (eski 7 → 18). Boost anahtarı olmayan tür,
+# hem retrieval boost'undan (mevzuat_oner._beklenen_kanun_nolari) hem de gold üretiminden
+# (gen_synthetic beklenen_mevzuat) düşüyordu → eval o türü hiç ölçemiyordu (kapalı-döngü
+# kör nokta). Aşağıdaki madde no'lar data/mevzuat/ korpusundan ÇAPRAZ DOĞRULANDI; korpusta
+# bulunmayan tek kaynak (2004 İİK) [DOĞRULA] ile işaretlidir (uydurma yok).
 EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
+    # Vatandaş talebi ailesi → 3071 Dilekçe Hakkı (korpus: 3071; m.4 ve m.7 doğrulandı).
     "dilekce": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.4 (zorunlu unsurlar)"],
+    "basvuru": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.4 (zorunlu unsurlar)"],
+    "talep": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.4 (zorunlu unsurlar)"],
+    "sikayet": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.7 (otuz gün içinde gerekçeli cevap)"],
+    "ihbar": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.3-7 (başvuru ve sonucun bildirimi)"],
     "bilgi_edinme": ["4982 sayılı Bilgi Edinme Hakkı Kanunu (15 iş günü; m.16-17 red sebepleri)"],
     "cimer": ["5690 sayılı CİMER Cumhurbaşkanlığı Kararnamesi"],
-    "tebligat": ["7201 sayılı Tebligat Kanunu (e-tebligat 5. gün kuralı)"],
+    # Yargı/icra → 2577 İYUK (korpus: m.7 dava açma süresi doğrulandı); icra'nın asıl dayanağı
+    # 2004 İİK korpusta YOK → [DOĞRULA]; tebliğ boyutu 7201 ile desteklenir (korpus: 7201).
+    "dava_evraki": ["2577 sayılı İdari Yargılama Usulü Kanunu m.7 (dava açma süresi; idare mah. altmış gün)"],
+    "icra_evraki": [
+        "7201 sayılı Tebligat Kanunu (icra evrakının tebliği)",
+        "[DOĞRULA: 2004 sayılı İcra ve İflas Kanunu — haciz/ödeme emri madde no; korpusta yok, mevzuat.gov.tr]",
+    ],
+    # Mali evrak → 5018 (korpus: m.33-34 gerçekleştirme/ödeme emri doğrulandı).
+    "fatura": ["5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.33-34 (gerçekleştirme ve ödeme emri belgesi)"],
+    # Resmî yazı ailesi → format dayanağı Yön. 2646 (korpus: 2646, 13 chunk).
     "ust_yazi": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
     "cevabi_yazi": ["Resmî Yazışma Yönetmeliği m.15 (İlgi atfı)"],
+    "muzekkere": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
+    "tutanak": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
+    "rapor": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
+    "gorus_mutalaa": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
     "genelge_talimat_olur": ["Resmî Yazışma Yönetmeliği m.20 (Olur/Onay)"],
 }
 
@@ -295,6 +318,16 @@ SELF_CONSISTENCY_ESIK = float(os.getenv("SELF_CONSISTENCY_ESIK", "0.6"))
 # ADDITIVE: birincil tür/birim/yönlendirme/özet/taslak DEĞİŞMEZ, yalnız alt_talepler eklenir.
 # VARSAYILAN AÇIK (vitrin özelliği); DECOMPOSE_ENABLED=0 ile baseline ablation (node grafta yok).
 DECOMPOSE_ENABLED = os.getenv("DECOMPOSE_ENABLED", "1") == "1"
+
+# Risk bandı (trafik ışığı) — verify sonrası üretilen yazıya YEŞİL/SARI/KIRMIZI bandı atar:
+#   yeşil  = yayın-hazır (kaynaktan, format tam, şüphe yok)
+#   sarı   = memur incelesin (format eksik / [DOĞRULA] / düşük güven / eksik zorunlu alan)
+#   kırmızı= uydurma şüphesi (verify metinde olmayan somut tarih/sayı yakaladı)
+# DETERMİNİSTİK (verify sinyallerinden türetilir, LLM yok). ADDITIVE: yalnız risk_metadata ekler.
+# VARSAYILAN AÇIK (vitrin); RISK_GUARD_ENABLED=0 → node grafta yok (baseline birebir).
+RISK_GUARD_ENABLED = os.getenv("RISK_GUARD_ENABLED", "1") == "1"
+# Düşük sınıflandırma güveni eşiği — altında SARI bandı (memur incelesin).
+RISK_GUVEN_ESIK = float(os.getenv("RISK_GUVEN_ESIK", "0.5"))
 
 # Cross-encoder reranking (iki-aşamalı retrieve-then-rerank): mevzuat_oner BM25 top-N
 # adayı bge-reranker-v2-m3 ile yeniden sıralar → +nDCG (gerçek soru-belge alakası).

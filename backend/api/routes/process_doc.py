@@ -101,6 +101,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         denetim_izi=state.get("denetim_izi", {}),
         kanit_metadata=state.get("kanit_metadata", {}),
         alt_talepler=state.get("alt_talepler", []),
+        risk_metadata=state.get("risk_metadata", {}),
         onay_durumu=state.get("onay_durumu", ""),
         onay_gerekce=state.get("onay_gerekce", ""),
         ocr_engine=ocr_meta.get("ocr_engine"),
@@ -224,6 +225,8 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),
         "verify": ("format_uyumlu", "verify_uyari", "verify_notes"),
+        # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).
+        "risk_guard": ("risk_metadata",),
         "arsiv": ("arsiv_metadata",),
         "sla_triyaj": ("sla_metadata",),
         "denetim_izi": ("denetim_izi",),

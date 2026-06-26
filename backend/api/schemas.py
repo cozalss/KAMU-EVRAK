@@ -89,6 +89,9 @@ class ProcessResponse(BaseModel):
     # Yenilikçilik — Çok-konulu evrak ayrıştırma (decompose): tek dilekçe → N alt-talep,
     # her biri ayrı tür+birim+yasal süre. Boş liste = tek-konulu (frontend kartı gizler).
     alt_talepler: list[AltTalepSchema] = Field(default_factory=list)
+    # Yenilikçilik — Risk bandı (trafik ışığı): {bant: yesil|sari|kirmizi, skor, gerekceler, oneri}.
+    # yeşil=yayın-hazır, sarı=memur incelesin, kırmızı=uydurma şüphesi (koşullu HITL tetiği).
+    risk_metadata: dict = Field(default_factory=dict)
     # Yenilikçilik — HITL memur onay kapısı (varsa). onay_bekliyor=True → frontend onay
     # panelini açar; thread_id ile /process_doc/resume çağrılır. onay_durumu resume sonrası dolar.
     onay_bekliyor: bool = False

@@ -34,11 +34,15 @@ async def onay_kapisi_node(state: dict[str, Any]) -> dict[str, Any]:
     if not HITL_ENABLED:
         return {}  # node grafta yoksa buraya gelinmez; çift-guard (baseline güvence)
 
+    # Risk bandı (varsa) interrupt'a taşınır → memur NEDEN durduğunu görür (koşullu onay).
+    risk = state.get("risk_metadata") or {}
     karar = interrupt({
         "tip": "memur_onay",
         "mesaj": "Resmî yazı taslağı hazır. Onaylıyor, düzenliyor ya da reddediyor musunuz?",
         "taslak": state.get("yazi_taslak_md", ""),
         "yazi_turu": state.get("yazi_turu", ""),
+        "risk_band": risk.get("bant", ""),
+        "risk_gerekceler": risk.get("gerekceler", []),
         "secenekler": ["onayla", "duzenle", "reddet"],
     })
 

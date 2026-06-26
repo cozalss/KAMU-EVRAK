@@ -63,12 +63,33 @@ _GOVDE_ONCELIKLI: tuple[tuple[str, str], ...] = (
     ("belgelerin örnek", "muzekkere"), ("resmi yazı ekinde tarafımıza", "muzekkere"),
     # Tutanak: olay/tespitin huzurda belgelenip imzalanması — gövde fiili Konu noun'undan
     # ('teslim kaydı' → 'kaydı' = basvuru) DAHA kesin; tutanak'a özgü, başka türde geçmez.
+    # GÖVDE markeri ÖNCELİKLİ (held-out-2 hata analizi, gpt-4o + mock): tutanak gövdesi
+    # ("belgeye geçir/dökül/işlen", "saptanarak belgelen", "hazır bulunanlar") "İlgi" başlığı
+    # taşısa da cevabi_yazi'ye, "onaylanmıştır" geçince genelge'ye, "teslim kaydı" Konu'su
+    # basvuru'ya kapılıyordu. Bu markerlar 3 sette de yalnız tutanak'ta (sıfır çapraz-tür
+    # çakışması doğrulandı) → cevabi/genelge/Konu sızıntısını ezer.
     ("imza altına al", "tutanak"), ("kayda geçir", "tutanak"),
     ("huzurunda belgelen", "tutanak"), ("belgelenerek imzal", "tutanak"),
+    ("belgeye geçir", "tutanak"), ("belge altına", "tutanak"),
+    ("belgeye işlen", "tutanak"), ("saptanarak belgelen", "tutanak"),
+    ("belgeye dökül", "tutanak"), ("hazır bulunanlar", "tutanak"),
+    # Rapor: DENETİM/İNCELEME bulgu+kanaat SONUCU (bir yazıya cevap DEĞİL). held-out-2'de
+    # gövde ("incelemeye dair değerlendirmeleri", "saha çalışma", "izleme boyunca ... görüşe
+    # bağlan") "İlgi" başlığı yüzünden cevabi_yazi'ye ya da abstain'e kaçıyordu. Bu inceleme-
+    # sonucu markerları 3 sette de yalnız rapor gövdesinde (çapraz-tür çakışması yok) → cevabi
+    # sızıntısını ezer. NOT: 'düzenlenen belgeye' KASTEN YOK (fatura ile çakışıyor).
+    ("incelemeye dair değerlendirmeleri", "rapor"), ("saha çalışma", "rapor"),
+    ("izleme boyunca", "rapor"), ("görüşe bağlan", "rapor"),
+    ("sonuçları ve saptanan", "rapor"),
     # Dava evrakı: mahkeme/yargılama bağlamı — gövde 'itiraz dilekçesi' Konu'sunun generic
-    # 'dilekçe' keyword'üne kapılmasını önler (dava bağlamı dilekçe'den baskın).
+    # 'dilekçe' keyword'üne kapılmasını önler (dava bağlamı dilekçe'den baskın). held-out-2
+    # çapraz-doğrulama (gpt-4o): dava gövdesi "İlgi" başlıklı / 'üst itiraz' Konu'lu olunca
+    # cevabi_yazi/üst_yazı'ya kayıyordu → yargı-beyanı markerları (heyetinize, gerekçeli beyan,
+    # delillerin tartışıl, ibraz ettiğimiz delil) resmî-yazı yapısal kuralından baskın.
     ("yargılama", "dava_evraki"), ("üst mercie", "dava_evraki"),
     ("merci nezdinde", "dava_evraki"), ("duruşmada dikkate", "dava_evraki"),
+    ("heyetinize", "dava_evraki"), ("delillerin tartışıl", "dava_evraki"),
+    ("gerekçeli beyan", "dava_evraki"), ("ibraz ettiğimiz delil", "dava_evraki"),
 )
 
 # 1) KONU-satırı tür sözcükleri (en ayırt edici; Konu evrak türünü adlandırır).
@@ -161,7 +182,22 @@ _SYSTEM = (
     "● ÖDEME/YARGI: fatura = bir bedelin/hak edişin ÖDENMESİ (para akışı). icra_evraki = zorla "
     "tahsil/haciz/malvarlığı (borçlu odaklı; ÜST YAZI değil — resmî format taşısa da icra "
     "bağlamı baskındır). dava_evraki = mahkeme/yargılama beyanı. tebligat = karar/yükümlülüğün "
-    "muhataba RESMEN bildirimi (süre başlatır). gorus_mutalaa = hukuki YORUM/değerlendirme isteği.\n\n"
+    "muhataba RESMEN bildirimi (süre başlatır). gorus_mutalaa = hukuki YORUM/değerlendirme isteği.\n"
+    "● BELGE-İŞLEMİ vs CEVAP (tutanak / rapor / dava_evraki ≠ cevabi_yazi) — held-out çapraz-"
+    "doğrulama hatası; GÖVDE EYLEMİ başlığa baskındır:\n"
+    "  - 'İlgi' satırı TEK BAŞINA cevabi_yazi YAPMAZ; kurumlar rutin atıf için de 'İlgi' yazar. "
+    "Türü GÖVDEDEKİ EYLEM belirler, başlık değil.\n"
+    "  - tutanak: bir OLAY/TESPİT/SAYIM/TESLİM'in HUZURDA belgeye geçirilip imzalanması "
+    "('yerinde saptanan ... belgeye geçirildi/dökülerek onaylandı', 'hazır bulunanlarca'). "
+    "Bir yazıya cevap DEĞİL.\n"
+    "  - rapor: DENETİM/İNCELEME/İZLEME SONUCU — bulgu + kanaat/öneri ('incelemeye dair "
+    "değerlendirmelerimiz', 'saha çalışmasının sonuçları', 'izleme boyunca ... görüşe bağlandı'). "
+    "Bir yazıya cevap DEĞİL; kendi başına üretilen değerlendirme.\n"
+    "  - dava_evraki: mahkeme/yargı beyanı ('heyetinize sunduğumuz beyanlar', 'gerekçeli beyan', "
+    "'delillerin tartışılması', 'üst mercie taşıdığımız itiraz') — 'İlgi' taşısa da yargılama "
+    "bağlamı cevabi_yazi/üst_yazı'dan baskındır.\n"
+    "  - cevabi_yazi YALNIZCA: gövde önceki bir YAZIYA/İSTEME karşılık ('sorduğunuz konu', "
+    "'iletilen istem incelendi, sonuç şudur') ve içerik tutanak/rapor/dava EYLEMİ DEĞİLse.\n\n"
     "ÖRNEKLER (yalnız ÇİFT-AYRIMINI göster; metni ezberleme):\n"
     'Metin: "Mahallemizdeki sorunun çözülmesini umuyorum. Ad-Soyad: ... TCKN: ..."\n'
     '→ {"evrak_turu": "dilekce", "tur_confidence": 0.8, "tur_reasoning": "vatandaş serbest talep"}\n'
@@ -180,7 +216,13 @@ _SYSTEM = (
     'Metin: "Söz konusu uygulamanın tüm birimlerce esas alınması hususunda gereğini rica ederim."\n'
     '→ {"evrak_turu": "genelge_talimat_olur", "tur_confidence": 0.8, "tur_reasoning": "teşkilat geneli bağlayıcı düzenleme"}\n'
     'Metin: "Borçlunun banka hesaplarına haciz konulması için gereğini arz ederiz."\n'
-    '→ {"evrak_turu": "icra_evraki", "tur_confidence": 0.85, "tur_reasoning": "zorla tahsil/haciz (üst yazı değil)"}\n\n'
+    '→ {"evrak_turu": "icra_evraki", "tur_confidence": 0.85, "tur_reasoning": "zorla tahsil/haciz (üst yazı değil)"}\n'
+    'Metin: "İlgi: önceki yazışmamız. Yerinde saptanan hususlar hazır bulunanlarca belgeye geçirilip onaylanmıştır."\n'
+    '→ {"evrak_turu": "tutanak", "tur_confidence": 0.85, "tur_reasoning": "huzurda tespit belgeleme (İlgi rutin atıf; cevap değil)"}\n'
+    'Metin: "İlgi: yazınız. Saha çalışmasının sonuçları ve saptanan hususlar ekte derlenmiştir."\n'
+    '→ {"evrak_turu": "rapor", "tur_confidence": 0.82, "tur_reasoning": "inceleme/saha sonucu (kendi değerlendirmesi; cevap değil)"}\n'
+    'Metin: "İlgi: önceki yazışmamız. Sayın heyetinize sunduğumuz gerekçeli beyanların dosyaya alınmasını arz ederiz."\n'
+    '→ {"evrak_turu": "dava_evraki", "tur_confidence": 0.85, "tur_reasoning": "yargı beyanı (İlgi taşısa da dava bağlamı baskın)"}\n\n'
     "Kurallar: Liste DIŞINDA tür UYDURMA. Emin değilsen 'belirsiz' + düşük güven (abstention).\n"
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
     '{"evrak_turu": "<tür>", "tur_confidence": <0..1>, "tur_reasoning": "<kısa gerekçe>"}'

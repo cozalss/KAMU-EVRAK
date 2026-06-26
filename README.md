@@ -3,220 +3,188 @@
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg)
+![LangGraph](https://img.shields.io/badge/LangGraph-multi--agent-1c3d5a.svg)
 ![React 18](https://img.shields.io/badge/React-18-61dafb.svg)
 [![Katkı](https://img.shields.io/badge/Katk%C4%B1-CONTRIBUTING-brightgreen.svg)](CONTRIBUTING.md)
 
 > **TEKNOFEST 2026 — Yapay Zeka Dil Ajanları Yarışması, 1. Senaryo**
-> Çok-ajanlı (LangGraph) yapay zeka ile kamu evrakını **oku → sınıflandır → bilgi çıkar →
-> eksik tespit et → mevzuat öner → özetle** (Görev 1) ve **resmî yazı taslakla → birime
-> yönlendir → kullanıcıyı bilgilendir** (Görev 2).
 
-Bu depo, mevcut **ADALET-AGENT** altyapısından (çok-ajan + OCR + Türkçe RAG + grounding +
-canlı SSE demo) yeniden-kullanılabilir kod **kopyalanarak** kuruldu; ADALET'e dokunulmadı.
-Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
+Çok-ajanlı (LangGraph) bir yapay zeka asistanı. Kamu kurumuna gelen evrakı uçtan uca işler:
 
-## Canlı demo
+- **Görev 1 — Anla:** oku (OCR/metin) → türü sınıflandır → bilgi çıkar → eksiği tespit et → ilgili mevzuatı öner → özetle
+- **Görev 2 — Üret:** resmî yazı taslağı hazırla → doğru birime yönlendir → kullanıcıyı bilgilendir → gerekirse eksik bilgi iste
 
-![kamu-evrak canlı demo — evrak yükleme → 10-ajanlı canlı akış → sonuç kartları + resmî yazı taslağı](docs/img/demo.gif)
+Tek bir LangGraph boru hattı; **bulut (gpt-4o), lokal (Qwen GGUF) veya anahtarsız (offline)** modlarda aynı şekilde çalışır — fark yalnız kalitededir. Lisans **MIT**, AGPL bağımlılık yok (PDF için PyMuPDF yerine pypdfium2).
 
-> Bir örnek evrak seçilince 10-ajanlı boru hattı **gerçek zamanlı** çalışır: ajan akış şeması
-> node-node "yanar", özet ve resmî yazı taslağı **token-token** yazılır. Gerçek-LLM (gpt-4o)
-> modunda dürüst held-out doğruluğu **~%91** (çapraz-doğrulanmış; [benchmark](docs/benchmark/llm-heldout.md)).
+---
 
-### Ekran görüntüleri
-
-| Dur-ve-sor (eksik bilgi → sistem **durur ve sorar**) | Responsive (mobil) |
-|---|---|
-| ![Clarify — eksik bilgi tespitinde sistem durup soru sorar](docs/img/04-clarify.png) | ![Mobil görünüm](docs/img/05-mobil.png) |
-
-> **Dur-ve-sor**, sistemin körü körüne üretmeyip eksik zorunlu alanı (3071 m.4) fark edip
-> kullanıcıya soru sormasıdır — kamu iş akışında kilit güven mekanizması.
-
-## Özellikler
-
-### Görev 1 — Evrak Sınıflandırma ve İçerik Analizi
-- **OCR / metin okuma:** dijital PDF → pypdfium2 (kusursuz Türkçe); taranmış/foto → RapidOCR
-  (offline); Word → python-docx; opsiyonel OpenAI vision.
-- **Sınıflandırma:** 19 evrak türü (config taksonomisi; `belirsiz` abstention dahil) — few-shot
-  LLM + keyword pre-filter + mock fallback.
-- **Bilgi çıkarımı:** gönderen / kurum / konu / tarih / sayı / talep — **PII (TCKN, telefon)
-  maskelenerek**; ham kişisel veri arayüze ulaşmaz.
-- **Eksik-bilgi tespiti:** tür-bağımlı zorunlu-alan şeması → eksikse clarify soruları üretir.
-- **Mevzuat önerisi:** kamuya açık mevzuat üzerinde BM25/keyword retrieval (RAG opsiyonel).
-- **Özet:** key-fact'leri koruyan kısa özet.
-
-### Görev 2 — Resmî Yazı Taslaklama ve Birim Yönlendirme
-- **Birim yönlendirme:** 9 birim arasında top-k öneri + güven + alternatifler.
-- **Resmî yazı taslağı:** üst / cevabi / bilgilendirme / olur — jinja2 şablon + resmî üslup.
-- **Taslak indirme:** **PDF / DOCX** çıktı (`/yazi/taslak`).
-- **Bilgilendirme:** vatandaşa/kullanıcıya özet + eksik bilgi talebi.
-
-### Demo / arayüz
-- **Canlı Ajan Akış Şeması:** SSE ile node'lar gerçek zamanlı "yanar" (düşünen-sistem hissi).
-- **Sonuç kartları:** evrak türü + güven, çıkarılan alanlar (🛡️ maskeli rozet), eksik bilgi,
-  mevzuat, birim, yazı taslağı önizleme + indirme.
-- **5 örnek evrak** (sahte-PII) — jüri dosya bulmadan tek tıkla farklı türleri canlı işletir.
-- **Yasal disclaimer** her sonuçta: "Bu sistem karar-destek amaçlıdır; nihai sorumluluk
-  yetkili personeldedir."
-- a11y: klavye gezinme, ARIA, `prefers-reduced-motion`; saf React/Vite (ek dep yok).
-
-## Eval skorları ve canlı kalite kapısı
-
-> İki ayrı ölçüm var, ikisi de **GERÇEK LangGraph pipeline**'ı (`build_graph().ainvoke`) koşar;
-> fark yalnız **LLM modu** ve **veri setidir**. Dürüst okuma için ikisini birlikte bakın.
->
-> - **Mock taban (anahtarsız):** `LLM_MODE=mock` → keyword/regex fallback. CI/offline taban; **tavan değildir.**
-> - **Gerçek-LLM held-out (dürüst, dairesel-OLMAYAN):** `LLM_MODE=openai` → örtük ifadeli, gen_synthetic'ten
->   **farklı şablon/sözlükle** yazılmış 108-evrak held-out sette (keyword sızıntısı yok). Tam tablo +
->   mock→mini→gpt-4o ilerlemesi: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
-
-### Canlı doğrulanmış durum
-
-| Kapı | Sonuç |
-|---|---|
-| Backend test | **655 passed, 3 warnings** (`uv run python -m pytest -q`) |
-| Frontend build | **Başarılı** (`npm.cmd run build`) |
-| Mock sınıflandırma | macro-F1 **0.9493** · accuracy **0.9491** |
-| Mock eksik-bilgi | recall **0.9948** |
-| Mock özet | key-fact recall **0.9810** · faithfulness **1.0000** |
-| Mock yönlendirme | Top-1 **0.9630** · Top-3 **0.9815** |
-| Mock taslak | format uyumu **1.0000** · bileşen tam-uyum **1.0000** · tür doğruluğu **1.0000** · Türkçe saflık **1.0000** |
-| Güven / etik | false-veto **0** · fairness **1.0000** |
-
-> **Taslak kalite kapısı kapandı:** resmî yazı önizlemesinde ham `{{ }}` alanları görünmez;
-> EBYS/yetkili makamca tamamlanacak alanlar nötr taslak diliyle gösterilir. Mock karnede
-> `format_uyumlu_rate=1.0` ve bileşen tam-uyum **1.0000**.
-
-| Metrik (held-out set-1) | gpt-4o-mini | **gpt-4o — ARTEFAKT-DESTEKLİ ✅** |
-|---|---|---|
-| Sınıflandırma macro-F1 (sıkı) | 0.612 | **0.935** [**BCa** %95 CI 0.881–0.978] |
-| Sınıflandırma accuracy (sıkı) | 0.620 | **0.935** [Wilson %95 CI 0.872–0.968] |
-| Operasyonel accuracy (eşdeğer-grup) | 0.768 | **0.963** [%95 CI 0.909–0.986] |
-| Yönlendirme Top-1 | 0.778 | **0.954** [%95 CI 0.896–0.980] |
-| Yönlendirme Top-3 | 0.870 | **0.954** |
-| Doğru / 108 | 67 | **101** (abstention 0) |
-
-> **Üretim önerisi:** `LLM_MODE=openai` + **gpt-4o** → dairesel-olmayan held-out'ta **sıkı accuracy
-> 0.935 / operasyonel 0.963 / yönlendirme Top-1 0.954** (101/108). Bu sayı **reprodüke-edilebilir**:
-> repodaki reprodüke-edilebilir artefakt [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json)
-> (per-satır tahmin/gold, metin PII-maskeli, anahtar yok) + komut `docs/benchmark/llm-heldout.md`'de.
-> **Mock = anahtarsız taban** (CI/offline demo), tavan değil — leak-free mock (set-2) **0.69**; mock set-1
-> figürü artık ezber (taban değil). (Mock in-domain karnesi: [`docs/benchmark/scorecard.md`](docs/benchmark/scorecard.md).)
-
-Test paketi: **655 passed, 3 warnings** (`cd backend && uv run python -m pytest -q`).
-
-## Gerçek LLM modu (mock taban → bulut tavan)
-
-Sistem üç LLM modunda **uçtan uca aynı pipeline'ı** çalıştırır; fark yalnız **kalitededir**.
-Mod `.env` içindeki `LLM_MODE` ile seçilir (örnek: `.env.example`).
-
-| `LLM_MODE` | LLM çağrısı | Anahtar | Ne için |
-|---|---|---|---|
-| `mock` (varsayılan) | yok — keyword+regex heuristik fallback | gerekmez | demo / CI / offline; **skor tabanı** |
-| `openai` | OpenAI bulut (few-shot JSON çıkarımı) | `OPENAI_API_KEY` zorunlu | **gerçek doğruluk** (skor tavanı) |
-| `llamacpp` | lokal Qwen GGUF | `LLM_MODEL_PATH` | offline / gizlilik |
-
-**Tek komutla aç + ölç** (anahtar `.env`'de ya da satır-içi; asla commit edilmez):
-
-```bash
-# Gerçek LLM ile birkaç örnek evrakı pipeline'dan geçir (sınıf/çıkarım/birim/taslak):
-LLM_MODE=openai OPENAI_API_KEY=sk-... python scripts/run_llm_smoke.py
-# Küçük gold örnekleminde gerçek-LLM sınıflandırma doğruluğunu da ölç:
-LLM_MODE=openai OPENAI_API_KEY=sk-... python scripts/run_llm_smoke.py --acc 12
-# Anahtarsız: NET mesajla mock'a düşer, PATLAMAZ (demo/CI):
-python scripts/run_llm_smoke.py
-```
-
-> **Dürüst not (skorların anlamı):** `docs/benchmark/scorecard.md` karnesi **`LLM_MODE=mock`** ile
-> ölçülmüştür — sınıflandırma/çıkarım few-shot LLM yerine deterministik keyword/regex fallback ile koşar.
-> Bu **tavan değil tabandır (alt-sınır).** "Yükseltir" iddiası artık **reprodüke-edilebilir artefaktla
-> ölçüldü:** dairesel-olmayan held-out sette `LLM_MODE=openai` + **gpt-4o** → sıkı accuracy/macro-F1
-> **0.935**, operasyonel **0.963**, yönlendirme Top-1 **0.954** (101/108) →
-> [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json).
-> **Dürüstlük:** mock held-out set-1 figürü artık ezberdir (heuristik o sete uyarlandı); leak-free mock
-> taban = set-2 **0.69**. Tam tablo: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
-
-## Ekran görüntüleri
-
-> Kurumsal "Devlet" arayüzü (yüksek kontrast lacivert/mavi, Lexend/Source Sans, SVG ikon).
+## ✨ Öne çıkanlar
 
 | | |
 |---|---|
-| ![Yükleme + örnek evraklar](docs/img/01-yukleme.png) | ![Canlı ajan akış şeması](docs/img/02-akis.png) |
-| ![Sonuç kartları (PII maskeli)](docs/img/03-sonuc.png) | ![Resmî yazı taslağı + indirme](docs/img/04-taslak.png) |
-| ![Dur-ve-sor: eksik bilgide sistem durup soru sorar](docs/img/04-clarify.png) | ![Mobil görünüm](docs/img/05-mobil.png) |
+| 🎯 **Dürüst değerlendirme** | Dairesel-olmayan held-out'ta gerçek-LLM (gpt-4o) **sıkı macro-F1 0.935** [BCa %95 CI 0.881–0.978]; **reprodüke-edilebilir artefakt** repoda |
+| 🛡️ **PII maskeleme** | TCKN / telefon / IBAN bulut çağrısından **önce** maskelenir; ham kişisel veri arayüze hiç ulaşmaz |
+| 🚫 **Anti-halüsinasyon** | Deterministik uydurma-veto (false-positive 0) + NLI atıf-gerekçelendirme; emin olunmayan madde `[DOĞRULA:]` |
+| 📚 **Gerçek RAG** | Madde-bazlı **BM25Okapi** mevzuat retrieval + opsiyonel cross-encoder rerank (bge-reranker-v2-m3) |
+| 👤 **İnsan-döngüde (HITL)** | Resmî yazı taslağı **memur onayına** sunulur: onayla / düzenle / reddet (kamu imza akışının ajan karşılığı) |
+| ⏰ **Yasal süre triyajı** | Mevzuat-dayanaklı cevap süresi (3071 m.7 = 30 gün, 4982 m.11 = 15 iş günü) → **GECİKMİŞ / KRİTİK** uyarısı |
+| 🔗 **Denetim izi** | Tamper-evident **SHA-256 hash-chain** (Sayıştay / KVKK işleme kaydı) |
+| 🔎 **Kanıt-vurgu** | Çıkarılan her unsurun ham (maskeli) evraktaki yeri işaretli — "bunu nereden buldun?" |
+| ⚡ **Gerçek zamanlı demo** | SSE ile canlı ajan akış şeması; özet ve taslak token-token yazılır |
 
-Canlı akışı kayıt olarak görmek için: `docs/img/demo.gif` (internet-kesinti yedeği — bkz.
-[`docs/demo-senaryosu.md`](docs/demo-senaryosu.md)).
+---
 
-## Hızlı başlangıç
+## 🧭 Mimari
 
-```bash
-# Backend (çekirdek iskelet — hafif, model indirmesi yok)
-cd backend
-uv sync
-cp ../.env.example ../.env         # LLM_MODE=mock yeterli (anahtar gerekmez)
-uv run uvicorn main:app --reload   # http://localhost:8000/docs
-
-# Frontend (saf React + Vite; react/react-dom dışında ek dep yok)
-cd ../frontend
-npm install
-npm run dev                        # http://localhost:5173
-npm run build                      # üretim derlemesi → dist/
+```
+START → siniflandir → cikar → kanit_baglama → eksik_tespit
+                                                    │
+                                   ┌────────────────┴────────────────┐
+                                   ▼                                 ▼
+                              mevzuat_oner ───(rerank? crag? NLI?)   ozetle      (paralel)
+                                   └────────────────┬────────────────┘
+                                                    ▼
+                              route_birim → yazi_taslak → [onay_kapisi*] → verify
+                                   → arsiv → sla_triyaj → denetim_izi → finalize → END
 ```
 
-Tek komutla demo: `bash scripts/run-local-demo.sh`.
-Mevzuat RAG (opsiyonel, ağır): `uv sync --extra rag` + `docker compose --profile rag up`.
+- `*` ve `?` ile işaretli node'lar **ENV-gated** (varsayılan kapalı) → temel akış birebir korunur, demo için açılır.
+- OCR (`oku`) graf-öncesi (API route'unda) yapılır; graf saf metin üzerinde çalışır → test-edilebilir.
+- Detay: [`docs/03-mimari.md`](docs/03-mimari.md).
 
-## Demo akışı (jüri için)
+---
 
-1. **Örnek evrak** seç (ör. "Dilekçe") → ajan akış şeması canlı "yanar".
-2. Sonuç kartlarını oku → 🛡️ **kişisel veri maskeli** rozeti, eksik-bilgi kontrolü, mevzuat,
-   önerilen havale birimi.
-3. **Resmî Yazı Taslağı** kartından **PDF/DOCX indir** (örnek-evrak akışında etkin).
-4. "Şikâyet (eksik)" örneği → sistem eksik alanı yakalar, **clarify soruları** üretir.
+## 🔧 Özellikler
 
-Tam senaryo + **internet-kesinti yedeği**: [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md).
+### Görev 1 — Sınıflandırma ve İçerik Analizi
+- **OCR / metin:** dijital PDF → pypdfium2 (tam Türkçe); taranmış/foto → RapidOCR (offline); Word → python-docx; opsiyonel OpenAI vision.
+- **Sınıflandırma:** 19 evrak türü (`belirsiz` abstention dahil) — few-shot LLM + çok-katmanlı keyword/semantik-kök fallback.
+- **Bilgi çıkarımı:** gönderen / kurum / konu / tarih / sayı / talep — **PII maskelenerek**.
+- **Eksik-bilgi tespiti:** tür-bağımlı zorunlu-alan şeması (3071 m.4); eksikse takip soruları üretir.
+- **Mevzuat önerisi:** 10 kanun / 63 madde-chunk korpusu üzerinde **BM25 retrieval** (Recall@1 0.938) + statik fallback.
+- **Özet:** key-fact koruyan kısa, sadık (halüsinasyonsuz) özet.
 
-## Uçtan-uca dene (curl)
+### Görev 2 — Resmî Yazı Taslaklama ve Birim Yönlendirme
+- **Birim yönlendirme:** 9 birim arasında top-k öneri + güven + alternatifler.
+- **Resmî yazı taslağı:** üst / cevabi / bilgilendirme / olur — Resmî Yazışma Yön. 2646 formatı (jinja2 + resmî üslup).
+- **PDF / DOCX indirme** (`/yazi/taslak`).
+- **Doğrulama kapısı:** zorunlu bölüm kontrolü + uydurma somut tarih/sayı vetosu.
+
+### Gelişmiş node'lar (ENV-gated — demoda açılır)
+| Node | Açıklama | Bayrak |
+|---|---|---|
+| `onay_kapisi` | Memur onay/düzenle/reddet — LangGraph `interrupt()` + checkpointer | `HITL_ENABLED=1` |
+| `mevzuat_oner` + rerank | BM25 top-30 → cross-encoder top-3 (bge-reranker-v2-m3) | `RERANK_ENABLED=1` |
+| `mevzuat_dogrula` | NLI entailment (madde ⊨ talep) — mDeBERTa-v3-xnli | `NLI_ENABLED=1` |
+| `crag` / `self_rag` | Corrective-RAG / reflection (Yan 2024 / Asai 2023) | `CRAG_ENABLED` / `SELF_RAG_ENABLED` |
+| `clarifier` | Dur-ve-sor: kritik eksikte taslak üretmeden bilgi iste | `CLARIFY_STOP_ENABLED=1` |
+
+`sla_triyaj`, `denetim_izi`, `kanit_baglama`, `arsiv` her zaman additive çalışır (deterministik, halüsinasyonsuz).
+
+---
+
+## 📊 Skorlar
+
+Tüm ölçümler **gerçek LangGraph pipeline**'ını (`build_graph().ainvoke`) koşar; fark yalnız **LLM modu** ve **veri setidir**.
+
+### Gerçek-LLM held-out (dürüst, dairesel-OLMAYAN) — reprodüke-edilebilir
+
+Örtük ifadeli, üretim sözlüğünden **farklı** 108-evrak held-out sette (keyword sızıntısı yok):
+
+| Metrik (held-out set-1) | gpt-4o-mini | **gpt-4o — ARTEFAKT-DESTEKLİ** |
+|---|---|---|
+| Sınıflandırma macro-F1 (sıkı) | 0.612 | **0.935** [BCa %95 CI 0.881–0.978] |
+| Sınıflandırma accuracy (sıkı) | 0.620 | **0.935** [Wilson %95 CI 0.872–0.968] |
+| Operasyonel accuracy | 0.768 | **0.963** [%95 CI 0.909–0.986] |
+| Yönlendirme Top-1 | 0.778 | **0.954** [%95 CI 0.896–0.980] |
+| Doğru / 108 | 67 | **101** (abstention 0) |
+
+Artefakt: [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json) (per-satır tahmin/gold, metin PII-maskeli, **anahtar yok**). Reprodüksiyon komutu ve iki-set çapraz-doğrulama: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
+
+### Mock taban (anahtarsız — CI / offline)
+
+`LLM_MODE=mock` keyword/regex fallback ile koşar; bu bir **alt-sınırdır, tavan değildir**. In-domain karne (`competition_scorecard.json`): sınıflandırma macro-F1 0.949, eksik-bilgi recall 0.995, özet faithfulness 1.0, yönlendirme Top-1 0.963, taslak format-uyumu 1.0, false-veto 0, fairness 1.0.
+
+> **Dürüstlük notu:** Mock held-out set-1 figürü artık ezberdir (heuristik o sete uyarlandı) → taban olarak kullanılmaz; leak-free mock taban = set-2 **0.69**. Dairesel-olmayan iddia yalnız gerçek-LLM + set-2'de geçerlidir.
+
+**Kalite kapıları:** kapsamlı test paketi (**700+ backend testi**) ve frontend production build yeşil; istatistik: Wilson CI + exact McNemar + bootstrap-BCa (saf-Python, bağımlılıksız).
+
+---
+
+## 🤖 LLM modları (mock taban → bulut tavan)
+
+`.env` içindeki `LLM_MODE` ile seçilir. **Maliyet kuralı:** varsayılan model `gpt-4o-mini` (ucuz); `gpt-4o` ~15-20× pahalı, yalnız tek-seferlik artefakt ölçümünde kullanılır.
+
+| `LLM_MODE` | LLM çağrısı | Anahtar | Ne için |
+|---|---|---|---|
+| `mock` (varsayılan) | yok — keyword+regex fallback | gerekmez | demo / CI / offline; **skor tabanı** |
+| `openai` | OpenAI bulut (gpt-4o-mini varsayılan) | `OPENAI_API_KEY` | **gerçek doğruluk** |
+| `llamacpp_server` | lokal Qwen GGUF | — | on-prem / gizlilik (veri kurumdan çıkmaz) |
+
+Üç mod da **aynı pipeline** → kurumun gizlilik/maliyet/internet tercihine göre konuşlandırma.
+
+---
+
+## 🚀 Hızlı başlangıç
+
+```bash
+# Backend (çekirdek — hafif, model indirmesi yok)
+cd backend
+uv sync
+cp ../.env.example ../.env          # LLM_MODE=mock yeterli (anahtar gerekmez)
+uv run uvicorn main:app --reload    # http://localhost:8000/docs
+
+# Frontend (saf React + Vite)
+cd ../frontend
+npm install
+npm run dev                         # http://localhost:5173
+```
+
+Testler: `cd backend && uv run python -m pytest -q`
+Mevzuat RAG + rerank (opsiyonel, ağır): `uv sync --extra rag`
+
+---
+
+## 🔌 API (curl)
 
 ```bash
 # Hazır metinle (OCR'sız)
 curl -X POST localhost:8000/process_doc -H "Content-Type: application/json" \
   -d '{"evrak_text":"Sayın Valilik, ... talep ederim. Ad Soyad, imza"}'
 
-# Dosya yükle → SSE (OCR + pipeline node event'leri)
+# Dosya yükle → SSE (OCR + canlı pipeline node event'leri)
 curl -N -X POST localhost:8000/process_doc/stream -F "file=@ornek_evrak.pdf"
 ```
 
-## Mimari (özet)
+HITL açıkken `/process_doc` taslakta durur (`onay_bekliyor: true`), karar `/process_doc/resume` ile verilir.
 
-```
-START → siniflandir → cikar → eksik_tespit → [mevzuat_oner ∥ ozetle]
-      → route_birim → yazi_taslak → finalize → END
-```
+---
 
-Detaylar: [`docs/03-mimari.md`](docs/03-mimari.md). OCR graf-öncesi (API route) yapılır.
-
-## Dokümanlar (`docs/`)
+## 📚 Dokümanlar (`docs/`)
 
 | Dosya | İçerik |
 |---|---|
-| `00-yarisma-uygunluk.md` | Şartname özeti + **takvim** + uygunluk kontrol listesi + teslim formatı |
-| `01-resmi-yazisma-mevzuati.md` | Resmî Yazışma Yön. 2646 madde-madde + SDP + e-Yazışma |
+| `00-yarisma-uygunluk.md` | Şartname özeti + uygunluk kontrol listesi |
+| `01-resmi-yazisma-mevzuati.md` | Resmî Yazışma Yön. 2646 + SDP + e-Yazışma |
 | `02-evrak-taksonomi-routing.md` | Evrak türleri + birim havale + zorunlu alanlar |
 | `03-mimari.md` | LangGraph node listesi + state şeması |
-| `04-port-haritasi.md` | ADALET → kamu-evrak (KEEP/ADAPT/DROP) |
-| `05-sentetik-veri-plani.md` | Sahte-PII veri üretimi + gold set |
-| `06-eval-harness.md` | Metrik → puanlama (35/35/15/15) |
-| `07-model-lisanslari.md` | Açık-kaynak model/lisans + AGPL notu |
-| `08-yol-haritasi.md` | Düzeltilmiş takvim + haftalık plan |
-| `demo-senaryosu.md` | **Jüri canlı demo senaryosu + internet-kesinti yedeği** |
-| `benchmark/scorecard.md` | Tek-komut yarışma karnesi (GERÇEK pipeline ölçümü) |
+| `06-eval-harness.md` | Metrik → puanlama eşlemesi |
+| `07-model-lisanslari.md` | Model/lisans + AGPL notu |
+| `benchmark/llm-heldout.md` | **Dürüst gerçek-LLM held-out skorları** (artefakt-destekli) |
+| `benchmark/scorecard.md` | Tek-komut mock karne |
+| `ticarileşme.md` | Hedef kullanıcı, değer, ölçeklenebilirlik, iş modeli |
+| `demo-senaryosu.md` | Jüri canlı demo senaryosu + internet-kesinti yedeği |
 
-## Yarışma kuralları (kritik)
+---
 
-- Açık kaynak (MIT) + **TAKP GitHub** zorunlu; model **ağırlıkları repoya YÜKLENMEZ** (link+lisans).
-- **Gerçek kamu verisi YASAK** → sentetik/kurgu evrak + kamuya açık mevzuat (sahte PII).
-- Her yanıtta uygunluk/disclaimer; uçtan-uca **canlı demo** (real-time avantaj).
-- Takvim ve uygunluk kontrol listesi: [`docs/00-yarisma-uygunluk.md`](docs/00-yarisma-uygunluk.md).
+## ⚖️ Yarışma kuralları ve uyum
+
+- **Açık kaynak (MIT)** — model **ağırlıkları repoya yüklenmez** (yalnız link + sürüm + lisans, [`docs/07`](docs/07-model-lisanslari.md)).
+- **Gerçek kamu verisi YASAK** → %100 sentetik/kurgu evrak + kamuya açık mevzuat (checksum-sahte PII).
+- **API anahtarı asla commit edilmez** (`.env` `.gitignore`'da).
+- Her çıktıda yasal disclaimer: *"Bu sistem karar-destek amaçlıdır; nihai sorumluluk yetkili personeldedir."*
+
+## Lisans
+
+[MIT](LICENSE) © kamu-evrak ekibi · Katkı: [CONTRIBUTING.md](CONTRIBUTING.md)

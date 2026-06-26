@@ -11,6 +11,10 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **✅ İT-13/14/15 BİTTİ — PROJE TESLİME HAZIR (36 commit):** demo GIF (docs/img/demo.gif) [c3907df]; **FİNAL gpt-4o headline**: few-shot sonrası heldout2 0.79→0.92 → iki-set çapraz-doğrulama **sıkı ~0.91 / operasyonel ~0.96 / routing ~0.94** [12e2e78]; son cila — test sayısı tutarlılık sweep (210→649) tüm doküman/README/sunum + sunum PDF/PPTX yeniden üretildi + final QA yeşil [e4900cc].
+  **TAMAMLANAN MÜHENDİSLİK:** Görev 1+2 uçtan-uca (10 node), gpt-4o ~0.91/0.96/0.94 (2 bağımsız held-out), 649 test/%81 coverage, WCAG 2.2 AA, güvenlik+PII (node+log), CI, sunum PDF/PPTX + ticarileşme + demo GIF, 9+ doküman, MIT. adalet-agent hiç dokunulmadı.
+  **KALAN = İDARİ (KULLANICI):** (1) 4. takım üyesi, (2) TAKP GitHub remote+push, (3) 12 Tmz ön-eleme sunumu + 21 Tmz teknik sınav. Kod tarafı opsiyonel polish dışında bitti.
+  **DEVAM için:** yeni yön/özellik verilirse `/loop` ile sürebilir (ör. batch/çoklu-evrak, EBYS API stub, daha fazla mevzuat, gerçek-OCR canlı test).
 - **İT-11/12 BİTTİ:** gpt-4o **çapraz-doğrulama** (2 bağımsız held-out: sıkı ~0.79-0.91 / operasyonel ~0.88-0.94 / routing ~0.87-0.93 → tek-set tesadüfü DEĞİL) [79eaa9d]; README/scorecard/sunum'a gpt-4o işlendi + **ticarileşme.md** [c8f84be]; **WCAG 2.2 AA a11y** (kontrast/focus/ARIA/reduced-motion) [c8f84be]; tutanak/rapor/dava→cevabi **few-shot** (mock heldout2 0.59→0.69, tutanak/rapor 6/6) [1c40293]; **test coverage %44→%81**, 649 test [1c40293]; code-review 2 bulgu DÜZELTİLDİ: **api/pii.py log-PII maskeleme aktif** + legacy kırık scorecard.py silindi [2b60c95]; teknik borç (run_llm_smoke banner, CORS daralt, TODO) [c8f84be]. **DURUM: kazanma seviyesi** — gpt-4o ~0.90, 649 test/%81 coverage, a11y, güvenlik, PII (node+log), sunum PDF/PPTX+ticarileşme, 32 commit. adalet-agent TEMİZ.
 - **İT-13 ÖNCELİKLER (kalan cila):**
   1. **Demo GIF** (orkestratör: backend+vite başlat → Playwright screenshot dizisi → PIL animasyon GIF → docs/img/demo.gif; Playwright artıklarını adalet-agent'tan TEMİZLE).

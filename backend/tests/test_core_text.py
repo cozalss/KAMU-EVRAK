@@ -6,10 +6,7 @@ AAA (Arrange-Act-Assert) deseni.
 
 from __future__ import annotations
 
-import pytest
-
 from core.text import sanitize_text, tr_lower
-
 
 # ---------------------------------------------------------------------------
 # tr_lower testleri

@@ -85,10 +85,7 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
 
     # config ağırlığı: bilinen türde içerik en yüksek skorunu AŞACAK kadar (otoriter); belirsiz
     # türde sadece +1 (içerik eşitliğinde tür kazansın ama güçlü içerik sinyali öne çıkabilsin).
-    if turu != "belirsiz":
-        config_boost = max(scores.values(), default=0) + 1
-    else:
-        config_boost = 1
+    config_boost = max(scores.values(), default=0) + 1 if turu != "belirsiz" else 1
     scores[config_hedef] = scores.get(config_hedef, 0) + config_boost
     # Sıralı birimler: skora göre azalan, eşitlikte config'e ve BIRIMLER sırasına göre.
     sirali = sorted(scores, key=lambda b: (-scores[b], 0 if b == config_hedef else 1,

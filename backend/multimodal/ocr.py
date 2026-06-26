@@ -43,11 +43,11 @@ from typing import Any, Literal
 
 import structlog
 
+from core.text import sanitize_text
 from multimodal.docx_utils import extract_docx_text, is_docx
 from multimodal.ocr_cloud import cloud_ocr_enabled, ocr_image_openai
 from multimodal.ocr_rapidocr import rapidocr_image
 from multimodal.pdf_utils import extract_pdf_text, is_pdf, render_pdf_to_images
-from core.text import sanitize_text
 
 log = structlog.get_logger()
 
@@ -542,7 +542,7 @@ async def _qwen_vl_ocr(image_bytes: bytes, lang: str) -> OCRResult:
             inputs = processor(text=[text_prompt], images=[img], return_tensors="pt")
             output_ids = model.generate(**inputs, max_new_tokens=2048)
             trimmed = [
-                out[len(inp):] for inp, out in zip(inputs.input_ids, output_ids)
+                out[len(inp):] for inp, out in zip(inputs.input_ids, output_ids, strict=False)
             ]
             text = processor.batch_decode(
                 trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=True,

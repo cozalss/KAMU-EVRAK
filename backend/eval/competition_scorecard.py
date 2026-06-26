@@ -47,10 +47,13 @@ def _git_sha() -> str:
 def build_scorecard() -> dict:
     """Tüm görev metriklerini GERÇEK pipeline üzerinde koş → tek karne sözlüğü."""
     from agents.config import BIRIMLER, EVRAK_TURLERI
-
     from eval import (
-        draft_eval, evrak_class_eval, fairness_eval,
-        missing_info_eval, routing_eval, summary_eval,
+        draft_eval,
+        evrak_class_eval,
+        fairness_eval,
+        missing_info_eval,
+        routing_eval,
+        summary_eval,
     )
 
     cls = evrak_class_eval.evaluate(evrak_class_eval.load_gold())
@@ -191,7 +194,7 @@ def render_console(sc: dict) -> str:
     return "\n".join([
         f"\n{bar}",
         f"  TEKNOFEST 1. SENARYO KARNESİ  (commit {sc['git_sha']}, LLM_MODE={sc['llm_mode']})",
-        f"  [GERÇEK pipeline ölçümü — mock skorlar TABAN, tavan değil]",
+        "  [GERÇEK pipeline ölçümü — mock skorlar TABAN, tavan değil]",
         bar,
         f"  GÖREV 1 — Sınıflandırma : acc={s['accuracy']:.3f} macroF1={s['macro_f1']:.3f} "
         f"abstain={s['abstention_rate']:.0%}",

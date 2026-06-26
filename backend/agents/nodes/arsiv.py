@@ -47,10 +47,10 @@ def _sdp_from_sayi(sayi: str) -> str | None:
     parts = [p for p in sayi.replace("E-", "").split("-") if p]
     for p in parts:
         core = p.replace(".", "")
-        if core.isdigit() and 3 <= len(core) <= 7 and not p.startswith("0000"):
-            # DETSİS no genelde uzun (8 hane düz); SDP konu kodu 3-6 hane + nokta.
-            if "." in p or 3 <= len(p) <= 6:
-                return p
+        # DETSİS no genelde uzun (8 hane düz); SDP konu kodu 3-6 hane + nokta.
+        if (core.isdigit() and 3 <= len(core) <= 7 and not p.startswith("0000")
+                and ("." in p or 3 <= len(p) <= 6)):
+            return p
     return None
 
 

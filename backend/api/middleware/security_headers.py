@@ -36,7 +36,7 @@ _SECURITY_HEADERS = {
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Tüm yanıtlara sabit güvenlik başlıkları ekler (mevcut başlığın üzerine yazmaz)."""
 
-    async def dispatch(self, request: Request, call_next) -> Response:  # noqa: ANN001
+    async def dispatch(self, request: Request, call_next) -> Response:
         response = await call_next(request)
         for header, value in _SECURITY_HEADERS.items():
             response.headers.setdefault(header, value)

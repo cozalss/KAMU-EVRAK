@@ -21,7 +21,6 @@ from agents.config import CLARIFY_KRITIK_ALANLAR
 from agents.nodes import crag as crag_mod
 from agents.nodes.clarifier import _KRITIK_TALEP
 
-
 # ---------------------------------------------------------------------------
 # HIGH-1 — CRAG düzeltmesi _from_corpus'a `turu` argümanını iletir (tür-boost korunur)
 # ---------------------------------------------------------------------------

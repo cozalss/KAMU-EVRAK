@@ -8,8 +8,6 @@ AAA deseni; Türkçe açıklayıcı isimler.
 
 from __future__ import annotations
 
-from typing import Any
-
 import pytest
 
 import agents.nodes.self_rag as self_rag_mod

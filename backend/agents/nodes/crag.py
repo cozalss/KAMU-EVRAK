@@ -31,7 +31,7 @@ from agents.config import (
     EVRAK_TO_MEVZUAT,
     EVRAK_TURU_TR,
 )
-from agents.nodes.mevzuat_oner import _from_config, _from_corpus, _MIN_QUERY_LEN
+from agents.nodes.mevzuat_oner import _MIN_QUERY_LEN, _from_config, _from_corpus
 
 log = structlog.get_logger()
 
@@ -91,7 +91,7 @@ async def crag_node(state: dict[str, Any]) -> dict[str, Any]:
         # (beklenen=set()) → düzeltme tür-sinyalsiz retrieval'a düşer (ECC HIGH-1).
         duzeltilmis = _from_corpus(sorgu, turu=state.get("evrak_turu", "") or "")
     if not duzeltilmis:
-        duzeltilmis = _from_config((state.get("evrak_turu", "") or "belirsiz"))
+        duzeltilmis = _from_config(state.get("evrak_turu", "") or "belirsiz")
 
     yeni_guven = _retrieval_guveni(duzeltilmis)
     # Düzeltme yalnızca DAHA İYİ ise uygulanır (regresyon önleme — dürüstlük).

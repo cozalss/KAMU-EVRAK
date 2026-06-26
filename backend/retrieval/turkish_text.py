@@ -200,14 +200,14 @@ def morphological_variants(question: str, max_variants: int = 3) -> list[str]:
         last_stem = stems[-1]
         # Türkçe ünlü uyumu: son ünlü kalın → -lar, ince → -ler
         plural_suffix = "lar" if _last_vowel_back(last_stem) else "ler"
-        plural_form = " ".join(stems[:-1] + [last_stem + plural_suffix])
+        plural_form = " ".join([*stems[:-1], last_stem + plural_suffix])
         variants.append(plural_form)
 
     # Varyant 3: "-lık/-lik/-luk/-lük" abstract noun (4-yönlü ünlü uyumu)
     if len(variants) < max_variants and stems:
         first_stem = stems[0]
         nominal_suffix = _lik_suffix(first_stem)
-        nominal_form = " ".join([first_stem + nominal_suffix] + stems[1:])
+        nominal_form = " ".join([first_stem + nominal_suffix, *stems[1:]])
         if nominal_form != stem_form:
             variants.append(nominal_form)
 

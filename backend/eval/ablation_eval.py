@@ -28,14 +28,15 @@ import contextlib
 import importlib
 import json
 import sys
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-from eval.stats import (  # noqa: E402
+from eval.stats import (
     bootstrap_diff_ci,
     fmt_ci,
     fmt_delta_ci,
@@ -69,7 +70,7 @@ def _bayrak(ad: str, deger: bool) -> Iterator[None]:
             setattr(m, ad, deger)
         yield
     finally:
-        for m, v in zip(moduller, eski):
+        for m, v in zip(moduller, eski, strict=False):
             if v is not None:
                 setattr(m, ad, v)
 
@@ -106,7 +107,7 @@ def _ab_paired(
         outs_a = _run_variant(rows)
     with _bayrak(flag, True):
         outs_b = _run_variant(rows)
-    paired = [(skor_fn(r, a), skor_fn(r, b)) for r, a, b in zip(rows, outs_a, outs_b)]
+    paired = [(skor_fn(r, a), skor_fn(r, b)) for r, a, b in zip(rows, outs_a, outs_b, strict=False)]
     return paired, outs_a, outs_b
 
 
@@ -178,7 +179,7 @@ async def _crag_mekanizma_kontrol() -> dict[str, Any]:
                 # Düşük-güvenli başlangıç: tek statik fallback önerisi (raw_score yok).
                 "mevzuat_onerileri": [{"baslik": "zayıf fallback", "score": 0.3}],
             }
-            g0 = _retrieval_guveni(state["mevzuat_onerileri"])
+            _g0 = _retrieval_guveni(state["mevzuat_onerileri"])  # smoke (CRAG öncesi güven)
             out = await crag_node(state)
             if out.get("crag_corrected"):
                 duzeltilen += 1

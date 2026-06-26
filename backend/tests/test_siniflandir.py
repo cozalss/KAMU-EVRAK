@@ -6,11 +6,8 @@ Tüm testler deterministik (ağ/GPU bağımlılığı yok).
 
 from __future__ import annotations
 
-import pytest
-
 from agents.config import EVRAK_TURLERI
 from agents.nodes.siniflandir import siniflandir_node
-
 
 # ---------------------------------------------------------------------------
 # Keyword → evrak türü heuristik testleri

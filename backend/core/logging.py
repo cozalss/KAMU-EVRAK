@@ -160,7 +160,7 @@ def _metrics_tap(logger: Any, method_name: str, event_dict: dict[str, Any]) -> d
         if isinstance(event_name, str):
             from core.metrics import record_event
             record_event(event_name, event_dict)
-    except Exception:  # noqa: S110 — gözlemleme log'u asla doğrulamayı bozmaz
+    except Exception:
         pass
     return event_dict
 

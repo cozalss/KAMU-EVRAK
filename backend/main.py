@@ -25,7 +25,7 @@ log = structlog.get_logger()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # noqa: ARG001
+async def lifespan(app: FastAPI):
     # TODO(kamu-evrak): Gelecek faz — mevzuat-RAG embedder + reranker preload (ADALET
     # deseni); şu an retrieval lazy/stub, ağır model preload yok (hızlı boot tercih edildi).
     log.info("startup", llm_mode=LLM_MODE)
@@ -86,7 +86,7 @@ def _active_llm() -> str:
             "LlamaCppClient": "llamacpp",
             "LlamaCppServerClient": "llamacpp_server",
         }.get(type(get_llm()).__name__, type(get_llm()).__name__.lower())
-    except Exception as exc:  # noqa: BLE001 — health asla patlamaz; bilinmeyen → işaretle
+    except Exception as exc:
         log.warning("health_llm_probe_failed", error=type(exc).__name__)
         return "unknown"
 

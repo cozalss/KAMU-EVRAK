@@ -8,9 +8,7 @@ from __future__ import annotations
 
 import re
 
-import pytest
-
-from agents.nodes.cikar import cikar_node, _mask, _regex_unsurlar, _scrub_pii
+from agents.nodes.cikar import _mask, _regex_unsurlar, _scrub_pii, cikar_node
 
 # TCKN formatı: 11 haneli, ilk rakam 1-9
 _TCKN_RE = re.compile(r"\b[1-9]\d{10}\b")

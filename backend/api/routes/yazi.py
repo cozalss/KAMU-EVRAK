@@ -77,7 +77,7 @@ async def yazi_taslak(
     state = make_initial_state(text, filename=req.filename)
     try:
         final = await _get_graph().ainvoke(state)
-    except Exception as exc:  # noqa: BLE001 — pipeline hatasını kullanıcıya temiz ilet
+    except Exception as exc:
         log.error("yazi_taslak_pipeline_failed", error=str(exc) or type(exc).__name__)
         raise HTTPException(
             status.HTTP_500_INTERNAL_SERVER_ERROR, "Taslak üretilemedi",

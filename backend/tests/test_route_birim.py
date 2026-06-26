@@ -5,8 +5,6 @@ config.EVRAK_TO_BIRIM eşleşmesi + yazi_isleri_evrak alternatiflerde garantisi.
 
 from __future__ import annotations
 
-import pytest
-
 from agents.config import BIRIMLER, EVRAK_TO_BIRIM
 from agents.nodes.route_birim import route_birim_node
 

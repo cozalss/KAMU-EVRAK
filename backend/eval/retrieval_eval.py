@@ -35,7 +35,7 @@ from typing import Any
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-from eval.stats import fmt_ci, wilson_interval  # noqa: E402
+from eval.stats import fmt_ci, wilson_interval
 
 _ROOT = Path(__file__).resolve().parents[2]
 _GOLD_MEVZUAT = _ROOT / "data" / "synthetic" / "mevzuat_gold.jsonl"

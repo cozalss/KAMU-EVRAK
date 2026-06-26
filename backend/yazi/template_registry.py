@@ -53,9 +53,9 @@ def available_yazi_turleri() -> tuple[str, ...]:
 
 
 __all__ = (
+    "available_yazi_turleri",
+    "default_kapanis",
     "resolve_yazi_turu",
     "template_file",
     "template_label",
-    "default_kapanis",
-    "available_yazi_turleri",
 )

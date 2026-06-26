@@ -17,7 +17,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
 _DEMO_DEFAULTS: dict[str, str] = {
     "idare_adi": "KAMU KURUMU",
     "birim_adi": "YAZI İŞLERİ BİRİMİ",

@@ -31,8 +31,8 @@ class TestBayrakContextManager:
             assert config_mod.CRAG_ENABLED is True
             assert crag_mod.CRAG_ENABLED is True
         # Assert — geri alındı
-        assert config_mod.CRAG_ENABLED == onceki
-        assert crag_mod.CRAG_ENABLED == onceki
+        assert onceki == config_mod.CRAG_ENABLED
+        assert onceki == crag_mod.CRAG_ENABLED
 
     def test_verify_kapatilir_geri_alinir(self):
         # Arrange
@@ -41,7 +41,7 @@ class TestBayrakContextManager:
         with _bayrak("VERIFY_ENABLED", False):
             assert config_mod.VERIFY_ENABLED is False
         # Assert
-        assert config_mod.VERIFY_ENABLED == onceki
+        assert onceki == config_mod.VERIFY_ENABLED
 
 
 class TestSkorFonksiyonlari:

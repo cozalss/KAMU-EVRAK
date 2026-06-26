@@ -27,9 +27,9 @@ from typing import Any
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-from agents.graph import build_graph  # noqa: E402
-from agents.state import make_initial_state  # noqa: E402
-from eval.stats import fmt_ci, wilson_interval  # noqa: E402
+from agents.graph import build_graph
+from agents.state import make_initial_state
+from eval.stats import fmt_ci, wilson_interval
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "routing_gold.jsonl"
 

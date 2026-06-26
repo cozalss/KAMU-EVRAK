@@ -13,6 +13,7 @@ Model: BAAI/bge-reranker-v2-m3 (568M params, multilingual, ~1.1GB)
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass
 from functools import cached_property
 
@@ -20,8 +21,6 @@ import structlog
 
 log = structlog.get_logger()
 logger = logging.getLogger(__name__)
-
-import os
 
 RERANKER_MODEL = os.getenv("RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
 RERANKER_DEVICE = os.getenv("RERANKER_DEVICE", "auto").lower()  # auto|cuda|cpu

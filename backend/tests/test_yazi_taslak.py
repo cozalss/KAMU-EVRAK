@@ -15,8 +15,7 @@ from __future__ import annotations
 import pytest
 
 from agents.config import EVRAK_TO_YAZI
-from agents.nodes.yazi_taslak import yazi_taslak_node, _fallback_taslak
-
+from agents.nodes.yazi_taslak import _fallback_taslak, yazi_taslak_node
 
 # ---------------------------------------------------------------------------
 # _fallback_taslak() birim testleri

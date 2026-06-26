@@ -15,7 +15,6 @@ from yazi.models import YaziContext
 from yazi.renderer import detect_eksik_format, render_metin, render_yazi
 from yazi.yazi_render import _fallback_body, _ilgi_satirlari, _muhatap, build_context
 
-
 # ---------------------------------------------------------------------------
 # build_context — otomatik doldurma (placeholder azaltma)
 # ---------------------------------------------------------------------------

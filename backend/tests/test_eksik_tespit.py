@@ -5,10 +5,7 @@ Mock modda LLM None döndürür → sabit Türkçe şablon sorular (fallback).
 
 from __future__ import annotations
 
-import pytest
-
 from agents.nodes.eksik_tespit import eksik_tespit_node
-
 
 # ---------------------------------------------------------------------------
 # Dilekçede eksik alan tespiti

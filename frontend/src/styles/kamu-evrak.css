@@ -105,6 +105,13 @@ body {
   -webkit-text-fill-color: transparent; color: var(--accent-ink);
 }
 .ke-header p { margin: .15rem 0 0; color: var(--muted); font-size: .92rem; }
+/* hero hiyerarşisi: ürün-vaadi (ne yapar) büyük/koyu; künye (yarışma) küçük/soluk */
+.ke-tagline {
+  margin: .3rem 0 0; color: var(--ink-2); font-size: 1.02rem; line-height: 1.45;
+  max-width: 46ch;
+}
+.ke-tagline strong { color: var(--accent-ink); font-weight: 700; }
+.ke-subline { margin: .25rem 0 0; color: var(--muted); font-size: .82rem; }
 .ke-trust {
   list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0;
 }
@@ -112,6 +119,12 @@ body {
   font-size: .76rem; color: var(--ink-2); background: var(--surface);
   border: 1px solid var(--line); border-radius: 999px; padding: .3rem .7rem;
 }
+/* doğruluk rozeti — güven sinyali; metrik vurgusu (renk + ağırlık, renk tek sinyal değil) */
+.ke-trust-metric {
+  background: var(--accent-soft) !important; border-color: #e6d2ab !important;
+  color: var(--accent-ink) !important;
+}
+.ke-trust-metric strong { font-variant-numeric: tabular-nums; font-weight: 800; }
 
 .ke-main { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
 
@@ -173,6 +186,9 @@ body {
 .ke-error-ic { font-size: 1.1rem; line-height: 1.3; flex: none; }
 .ke-error-tx { display: flex; flex-direction: column; gap: .15rem; min-width: 0; flex: 1 1 14rem; }
 .ke-error-tx strong { font-size: .92rem; }
+/* yardımcı ipucu — panik değil; somut sonraki adım. Hata renginden bir tık soluk. */
+.ke-error-hint { margin-top: .3rem; font-size: .82rem; color: #8a4031; line-height: 1.45; }
+.ke-error-hint strong { font-size: inherit; }
 .ke-error-act { display: flex; align-items: center; gap: .4rem; margin-left: auto; }
 .ke-retry {
   font-size: .8rem; font-weight: 600; cursor: pointer; white-space: nowrap;
@@ -204,6 +220,36 @@ body {
 .ke-placeholder-h { margin: 0 0 .45rem; font-size: 1.1rem; color: var(--ink); font-weight: 700; }
 .ke-placeholder p { margin: 0 auto; max-width: 56ch; line-height: 1.6; }
 .ke-placeholder strong { color: var(--accent-ink); }
+
+/* mini statik akış ipucu — "10 ajan" vaadini görselleştirir (canlı şemanın önizlemesi).
+   Yatay sarmalı pipeline; her adım numaralı çip + görev-renkli sol şerit. */
+.ke-ph-flow {
+  list-style: none; margin: 1.1rem 0 .5rem; padding: 0;
+  display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center; align-items: stretch;
+}
+.ke-ph-step {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: var(--surface); border: 1px solid var(--line); border-left-width: 3px;
+  border-radius: var(--r-sm); padding: .3rem .55rem; font-size: .76rem; color: var(--ink-2);
+  box-shadow: var(--shadow-sm);
+}
+.ke-ph-step.ke-ph-g1 { border-left-color: var(--g1); }
+.ke-ph-step.ke-ph-g2 { border-left-color: var(--g2); }
+.ke-ph-step-n {
+  display: inline-grid; place-items: center; flex: none;
+  width: 17px; height: 17px; border-radius: 50%; font-size: .62rem; font-weight: 700;
+  background: var(--surface-2); color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.ke-ph-g1 .ke-ph-step-n { background: var(--g1-soft); color: var(--g1); }
+.ke-ph-g2 .ke-ph-step-n { background: var(--g2-soft); color: var(--g2); }
+.ke-ph-step-lbl { white-space: nowrap; }
+.ke-ph-flow-cap {
+  margin: .3rem 0 0; font-size: .74rem; color: var(--muted);
+  display: inline-flex; align-items: center; gap: .25rem; justify-content: center;
+}
+.ke-ph-dot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+.ke-ph-dot.ke-ph-g1 { background: var(--g1); }
+.ke-ph-dot.ke-ph-g2 { background: var(--g2); }
 
 /* ---------- Yükleniyor iskeleti (skeleton) ---------- */
 .ke-skel { display: flex; flex-direction: column; gap: 1rem; }
@@ -298,6 +344,21 @@ body {
 
 .agw-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .agw-svg { width: 100%; min-width: 820px; height: auto; display: block; overflow: visible; }
+
+/* mobil yatay-kaydırma ipucu — yalnız dar ekranda görünür (SVG min-width 820px taşar).
+   Geniş ekranda gizli (taşma yok → ipucu gereksiz). */
+.agw-scroll-hint {
+  display: none; margin: 0 0 .5rem; font-size: .74rem; color: var(--muted);
+  align-items: center; gap: .35rem;
+}
+.agw-scroll-hint-ic {
+  font-weight: 700; color: var(--accent-ink);
+  animation: agw-hint-nudge 1.8s var(--ease-out-expo) infinite;
+}
+@keyframes agw-hint-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
 
 /* --- görev bölge bantları (Görev-1 yeşil ∥ Görev-2 mavi zonları) --- */
 .agw-band { opacity: .5; }
@@ -507,6 +568,58 @@ body {
 .rc-clarify-h { margin: 0 0 .4rem; font-size: .82rem; font-weight: 600; color: var(--ink-2); }
 .rc-clarify-list { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; font-size: .88rem; }
 
+/* ---------- Dur-ve-sor bannerı (KİLİT DİFERANSİYATÖR) ----------
+   Sonuç akışının en üstünde belirgin, tasarlanmış uyarı: "sistem eksiği fark edip durdu".
+   warm-warn yüzey + sol accent şerit + derinlik; kart yığınından görsel olarak ayrışır. */
+.rc-clarify-banner {
+  display: flex; gap: 0; overflow: hidden;
+  background:
+    radial-gradient(130% 90% at 0% 0%, rgba(138, 74, 16, 0.07) 0%, transparent 48%),
+    var(--warn-soft);
+  border: 1px solid #e7c9a3; border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+}
+/* sol kalın görev/uyarı şeridi — renk TEK sinyal değil (başlık + ikon + metin de var) */
+.rc-clarify-banner-bar { flex: none; width: 6px; background: var(--warn); }
+.rc-clarify-banner-body { flex: 1 1 auto; min-width: 0; padding: 1rem 1.15rem 1.05rem; }
+.rc-clarify-banner-head {
+  display: flex; align-items: flex-start; gap: .7rem; flex-wrap: wrap;
+}
+.rc-clarify-banner-ic { font-size: 1.5rem; line-height: 1; flex: none; }
+.rc-clarify-banner-title {
+  margin: 0; font-size: 1.12rem; font-weight: 800; color: #6e3a0c; letter-spacing: -0.01em;
+}
+.rc-clarify-banner-sub {
+  margin: .2rem 0 0; font-size: .86rem; line-height: 1.5; color: var(--ink-2); max-width: 60ch;
+}
+.rc-clarify-banner-sub strong { color: #8a4a10; }
+.rc-clarify-banner-count {
+  margin-left: auto; flex: none; align-self: flex-start;
+  font-size: .72rem; font-weight: 700; white-space: nowrap;
+  background: var(--warn); color: #fff; border-radius: 999px; padding: .22rem .7rem;
+}
+.rc-clarify-banner-why {
+  margin: .85rem 0 0; font-size: .82rem; line-height: 1.5; color: var(--ink-2);
+  background: rgba(255, 253, 249, 0.6); border: 1px solid #ecd6b4;
+  border-radius: var(--r-sm); padding: .5rem .7rem;
+}
+.rc-clarify-banner-why strong { color: #8a4a10; }
+.rc-clarify-banner-list {
+  list-style: none; margin: .85rem 0 0; padding: 0; display: grid; gap: .5rem;
+  counter-reset: clarify-q;
+}
+.rc-clarify-banner-list li {
+  display: flex; align-items: flex-start; gap: .55rem;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: .55rem .7rem; font-size: .9rem; line-height: 1.45; color: var(--ink);
+}
+.rc-clarify-banner-q-ic {
+  flex: none; font-weight: 800; color: var(--warn); line-height: 1.45;
+}
+.rc-clarify-banner-foot {
+  margin: .9rem 0 0; font-size: .8rem; color: var(--muted); line-height: 1.45;
+}
+
 /* --- mevzuat --- */
 .rc-mev-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
 .rc-mev-item { border-top: 1px solid var(--line); padding-top: .6rem; }
@@ -664,22 +777,49 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
 
   /* iskelet pırıltısı kapanır → sabit placeholder kalır (yine "yükleniyor" sinyali) */
   .ke-skel-line { animation: none; background: var(--surface-2); }
+
+  /* yeni: mobil kaydırma-ipucu okunun salınımı durur (ipucu metni görünür kalır) */
+  .agw-scroll-hint-ic { animation: none; }
 }
 
 /* ---------- responsive ---------- */
+/* tablet (≤1024px): başlık ve güvence rozetleri aynı satıra sığmayabilir → alt-alta;
+   rozetler sola yaslanır (sağa-itme kalkar) → düzgün sarma, taşma yok. */
+@media (max-width: 1024px) {
+  .ke-header { align-items: flex-start; }
+  .ke-trust { width: 100%; }
+}
 @media (max-width: 768px) {
   .ke-error-act { margin-left: 0; }
+  /* akış şeması min-width (820px) bu eşiğin altında taşar → yatay-kaydırma ipucunu göster */
+  .agw-scroll-hint { display: flex; }
+  /* hero ölçeğini bir tık küçült (tablet portre) */
+  .ke-header h1 { font-size: 1.55rem; }
+  .ke-tagline { font-size: .96rem; }
+  /* clarify banner: soru sayacı başlığın altına akabilsin (dar başlık satırı) */
+  .rc-clarify-banner-count { margin-left: 0; }
 }
 @media (max-width: 560px) {
   .ke-app { padding: 1rem .85rem 4rem; }
   .ke-header h1 { font-size: 1.4rem; }
   .ke-samples-row { grid-template-columns: 1fr 1fr; }
+  /* mini akış ipucu: çipler sola yaslanır (ortalı yerine) → dar ekranda derli toplu */
+  .ke-ph-flow { justify-content: flex-start; }
+  .rc-clarify-banner-body { padding: .85rem .9rem .9rem; }
+  .rc-clarify-banner-title { font-size: 1.04rem; }
 }
-/* dar telefon (320px): tek kolon + taşma yok */
+/* dar telefon (≤420px): tek kolon + taşma yok */
 @media (max-width: 420px) {
   .ke-samples-row { grid-template-columns: 1fr; }
   .ke-skel-row { grid-template-columns: 1fr; }
   .rc-taslak-actions { flex-wrap: wrap; }
   .rc-kv-row { grid-template-columns: 1fr; gap: .15rem; }
   .ke-placeholder { padding: 1.4rem 1.1rem; }
+  /* clarify banner ikonu + başlık dar ekranda taşmasın */
+  .rc-clarify-banner-head { gap: .5rem; }
+  .rc-clarify-banner-ic { font-size: 1.3rem; }
+}
+/* en dar (≤360px): mini-flow çip etiketleri sarmaya izin ver (nowrap taşmasın) */
+@media (max-width: 360px) {
+  .ke-ph-step-lbl { white-space: normal; }
 }

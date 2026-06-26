@@ -141,6 +141,83 @@ function CikarilanAlanlarCard({ unsurlar }) {
   );
 }
 
+/* ---------- 0) Dur-ve-sor (clarify) bannerı — KİLİT DİFERANSİYATÖR ----------
+   Sistem eksik kritik bilgi tespit edince "körü körüne üretmek" yerine DURUR ve
+   vatandaştan net bilgi ister. Bu, sonuç akışının EN ÜSTÜNDE belirgin, tasarlanmış
+   bir uyarı bannerı olur (jüri mesajı: "sistem eksiği fark ediyor ve duruyor").
+
+   Honest-data: backend ProcessResponse `clarify_questions` (eksik_tespit/clarifier
+   çıktısı) + `eksik_alanlar` taşır. Veri yoksa banner hiç render edilmez (uydurma yok).
+   Mevcut EksikBilgiCard KORUNUR (detaylı alan kontrolü) — bu banner onun üstünde özet/çağrı.
+   Eksik alan makine-adlarını okunur Türkçe etikete çevirir (varsa). */
+const EKSIK_ALAN_TR = {
+  gonderen: "Gönderen (ad-soyad)",
+  gonderen_ad_soyad: "Gönderen (ad-soyad)",
+  imza: "İmza",
+  iletisim_adres: "İletişim / tebligat adresi",
+  tarih: "Tarih",
+  konu: "Konu",
+  sayi: "Sayı",
+  kurum: "Muhatap kurum",
+  talep: "Somut talep",
+};
+const EKSIK_TR = (k) => EKSIK_ALAN_TR[k] || k;
+
+function ClarifyBanner({ eksik, sorular }) {
+  const e = (eksik || []).filter(Boolean);
+  const q = (sorular || []).filter(Boolean);
+  // Banner yalnız sistem GERÇEKTEN soru ürettiğinde görünür (clarify tetiklendi).
+  if (q.length === 0) return null;
+  return (
+    <aside
+      className="rc-clarify-banner"
+      role="region"
+      aria-labelledby="rc-clarify-banner-h"
+    >
+      <div className="rc-clarify-banner-bar" aria-hidden="true" />
+      <div className="rc-clarify-banner-body">
+        <header className="rc-clarify-banner-head">
+          <span className="rc-clarify-banner-ic" aria-hidden="true">🖐️</span>
+          <div>
+            <h3 id="rc-clarify-banner-h" className="rc-clarify-banner-title">
+              Eksik Bilgi — Sistem Soru Soruyor
+            </h3>
+            <p className="rc-clarify-banner-sub">
+              Evrak <strong>körü körüne işleme alınmadı</strong>. Sistem zorunlu alanlardaki
+              eksiği fark edip <strong>durdu</strong> ve aşağıdaki bilgileri talep ediyor.
+            </p>
+          </div>
+          <span className="rc-clarify-banner-count" aria-hidden="true">
+            {q.length} soru
+          </span>
+        </header>
+
+        {e.length > 0 && (
+          <p className="rc-clarify-banner-why">
+            <span aria-hidden="true">ℹ️ </span>
+            Neden soruldu? Zorunlu alanlardan{" "}
+            <strong>{e.map(EKSIK_TR).join(", ")}</strong>{" "}
+            evrakta tespit edilemedi (3071 sayılı Kanun m.4).
+          </p>
+        )}
+
+        <ol className="rc-clarify-banner-list" aria-label="Vatandaştan istenen bilgiler">
+          {q.map((s, i) => (
+            <li key={i}>
+              <span className="rc-clarify-banner-q-ic" aria-hidden="true">→</span>
+              <span>{s}</span>
+            </li>
+          ))}
+        </ol>
+
+        <p className="rc-clarify-banner-foot" role="note">
+          Bu bilgiler tamamlanıp evrak yeniden gönderildiğinde işlem kaldığı yerden sürer.
+        </p>
+      </div>
+    </aside>
+  );
+}
+
 /* ---------- 3) Eksik Bilgi + clarify soruları ---------- */
 function EksikBilgiCard({ eksik, sorular }) {
   const e = eksik || [];
@@ -470,6 +547,8 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
   if (!r) return null;
   return (
     <section className="rc-grid" aria-label="Evrak işleme sonuçları">
+      {/* Dur-ve-sor: sistem eksiği fark edip soru ürettiyse EN ÜSTTE belirgin banner. */}
+      <ClarifyBanner eksik={r.eksik_alanlar} sorular={r.clarify_questions} />
       <BilgilendirmeCard text={r.bilgilendirme} />
       <div className="rc-row rc-row-2">
         <EvrakTuruCard turu={r.evrak_turu} conf={r.tur_confidence} />
@@ -497,7 +576,7 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
 export default ResultCards;
 // Test/yeniden-kullanım için iç kartlar da export edilir.
 export {
-  EvrakTuruCard, CikarilanAlanlarCard, EksikBilgiCard, MevzuatCard,
+  ClarifyBanner, EvrakTuruCard, CikarilanAlanlarCard, EksikBilgiCard, MevzuatCard,
   BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, BilgilendirmeCard,
-  EVRAK_TR, BIRIM_LBL, YAZI_TR, safeUrl,
+  EVRAK_TR, BIRIM_LBL, YAZI_TR, EKSIK_TR, safeUrl,
 };

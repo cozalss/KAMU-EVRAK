@@ -265,12 +265,20 @@ export default function App() {
           <div>
             {/* SC 2.4.6 Başlıklar — h1 sayfa başlığı */}
             <h1>kamu-evrak</h1>
-            <p>Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi — <i>TEKNOFEST 2026, 1. Senaryo</i></p>
+            <p className="ke-tagline">
+              Evrakı okur, sınıflandırır, eksiğini sorar ve resmî yazı taslağını üretir —
+              <strong> iki görev tek pipeline</strong>.
+            </p>
+            <p className="ke-subline">Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi · <i>TEKNOFEST 2026, 1. Senaryo</i></p>
           </div>
         </div>
         <ul className="ke-trust" aria-label="Sistem güvenceleri">
-          {/* SC 1.4.1 — ikon+metin birlikte; ikon tek sinyal değil */}
-          <li><span aria-hidden="true">✓</span> 2 görev tek pipeline</li>
+          {/* SC 1.4.1 — ikon+metin birlikte; ikon tek sinyal değil.
+              Doğruluk rozeti: docs/benchmark/llm-heldout.md gpt-4o held-out
+              sınıflandırma macro-F1 0.908 / accuracy 0.907 (bağımsız iki held-out). */}
+          <li className="ke-trust-metric">
+            <span aria-hidden="true">🎯</span> <strong>~%91</strong>&nbsp;sınıflandırma doğruluğu
+          </li>
           <li><span aria-hidden="true">🛡️</span> Kişisel veri maskeli</li>
           <li><span aria-hidden="true">⚖️</span> Karar destek — uydurmasız</li>
         </ul>
@@ -354,6 +362,11 @@ export default function App() {
               <strong>İşlem tamamlanamadı.</strong>
               {/* SC 3.3.1 — hata mesajı programatik olarak duyuruluyor (role=alert) */}
               <span>{error}</span>
+              {/* Panik değil — yardımcı, somut öneri (kullanıcıyı bir sonraki adıma yönlendir). */}
+              <span className="ke-error-hint">
+                Geçici bir aksaklık olabilir. <strong>Tekrar dene</strong>’yi kullanın
+                ya da soldaki <strong>örnek evraklardan</strong> biriyle deneyin.
+              </span>
             </div>
             <div className="ke-error-act">
               {lastRun.current && (
@@ -402,11 +415,24 @@ export default function App() {
         {!started && (
           <section className="ke-placeholder" aria-labelledby="ke-ph-h">
             <span className="ke-placeholder-ic" aria-hidden="true">📥</span>
-            <h2 id="ke-ph-h" className="ke-placeholder-h">Henüz bir işlem yok</h2>
+            <h2 id="ke-ph-h" className="ke-placeholder-h">Başlamak için bir evrak seçin</h2>
             <p>Yukarıdan bir evrak yükleyin ya da bir <strong>örnek evrak</strong> seçin; sistem evrakı
-              <strong> {PIPELINE.length} ajanlı</strong> bir boru hattından geçirir: okuma → sınıflandırma →
-              bilgi çıkarma → eksik tespiti → mevzuat → özet → birim havalesi → resmî yazı taslağı →
-              doğrulama → bilgilendirme.</p>
+              <strong> {PIPELINE.length} ajanlı</strong> canlı bir boru hattından geçirir.</p>
+            {/* "10 ajan" vaadini görselleştiren mini statik akış ipucu — gerçek pipeline
+                node etiketlerinden türetilir (topology.js); canlı şemanın önizlemesi.
+                Yalnız görsel ipucu (aria-hidden); özet metin yukarıda erişilebilir. */}
+            <ol className="ke-ph-flow" aria-hidden="true">
+              {PIPELINE.map((n, i) => (
+                <li className={`ke-ph-step ke-ph-g${n.gorev}`} key={n.id}>
+                  <span className="ke-ph-step-n">{i + 1}</span>
+                  <span className="ke-ph-step-lbl">{n.label}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="ke-ph-flow-cap">
+              <span className="ke-ph-dot ke-ph-g1" aria-hidden="true" /> Görev 1: Anla &nbsp;·&nbsp;
+              <span className="ke-ph-dot ke-ph-g2" aria-hidden="true" /> Görev 2: Üret
+            </p>
           </section>
         )}
       </main>

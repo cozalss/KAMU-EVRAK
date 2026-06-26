@@ -122,6 +122,13 @@ export function AgentFlowGraph({ nodes }) {
         />
       </div>
 
+      {/* Mobil ipucu: dar ekranda SVG min-width nedeniyle yatay kayar; kullanıcıya
+          bilinçli sinyal ver. Yalnız ≤720px'de görünür (CSS); geniş ekranda gizli.
+          aria-hidden — figcaption zaten tam durumu erişilebilir metinle duyurur. */}
+      <p className="agw-scroll-hint" aria-hidden="true">
+        <span className="agw-scroll-hint-ic">↔</span> Tüm adımları görmek için yana kaydırın
+      </p>
+
       <div className="agw-scroll">
         {/*
          * SC 1.1.1 — SVG tamamen dekoratif/görsel; anlamsal içerik figcaption

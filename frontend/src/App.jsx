@@ -86,12 +86,17 @@ export default function App() {
       // start.nodes: ["oku", ...PIPELINE_NODES] — ilk node'u aktifle.
       setNodes((prev) => prev.map((n, i) => (i === 0 ? { ...n, status: "active" } : n)));
     } else if (ev.event === "node") {
+      // M5: status="active" → node CANLI çalışıyor (ör. taranmış PDF'te OCR sürerken
+      // 'oku' yanar); sonraki node'u henüz ilerletme. Diğer durumda node bitti.
+      const nodeDone = ev.status !== "active";
       setNodes((prev) => {
         const idx = prev.findIndex((n) => n.id === ev.node);
         return prev.map((n, i) => {
-          if (n.id === ev.node) return { ...n, status: "done", data: ev.data ?? n.data };
-          // sıradaki pending node(lar)ı aktifle — paralel kol (mevzuat∥özet) ikisi de yanar
-          if (i > idx && n.status === "pending") {
+          if (n.id === ev.node) {
+            return { ...n, status: nodeDone ? "done" : "active", data: ev.data ?? n.data };
+          }
+          // sıradaki pending node(lar)ı aktifle — YALNIZ mevcut node bittiyse (paralel kol yanar)
+          if (nodeDone && i > idx && n.status === "pending") {
             const prevDoneOrActive = prev[i - 1]?.status;
             if (prevDoneOrActive === "done" || prevDoneOrActive === "active") {
               return { ...n, status: "active" };

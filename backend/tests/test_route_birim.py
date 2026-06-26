@@ -172,3 +172,45 @@ class TestRouteBirimCiktiYapisi:
         sonuc = await route_birim_node(state)
         # Assert — içerik sinyali hukuk müşavirliğine yönlendirmeli
         assert sonuc["hedef_birim"] == "hukuk_musavirligi"
+
+
+# ---------------------------------------------------------------------------
+# M1 — config MUTLAK-otoriter DEĞİL: BASKIN içerik yanlış-türü ezebilir,
+# ama gürültü (1-2 sözcük) config'i devirmez (petisyon koruması).
+# ---------------------------------------------------------------------------
+
+
+class TestRouteBirimIcerikBaskinOverride:
+    """Tür yanlış sınıflandırıldığında güçlü içerik sinyali doğru birime taşır."""
+
+    async def test_baskin_icerik_yanlis_turu_ezer(self):
+        # Arrange: tür 'dilekce' (config→basın/CİMER) AMA metin BASKIN hukuk sinyali
+        # (≥3 kök: dava, haciz, mahkeme, icra, borçlu) ve hiç dilekçe/cimer sözcüğü yok.
+        state = {
+            "evrak_turu": "dilekce",
+            "tur_confidence": 0.55,
+            "evrak_text": "Dava açıldı, haciz kondu, mahkeme kararı var, icra takibi "
+                          "başladı, borçlu tarafa müzekkere yazıldı.",
+        }
+        # Act
+        sonuc = await route_birim_node(state)
+        # Assert — baskın içerik (hukuk) yanlış olabilecek türü ezer
+        assert sonuc["hedef_birim"] == "hukuk_musavirligi", (
+            f"Baskın hukuk içeriği bekleniyordu, {sonuc['hedef_birim']} geldi"
+        )
+
+    async def test_gurultu_config_i_devirmez(self):
+        # Arrange: tür 'dilekce' + yalnız 1 gürültü sözcüğü ('sistem' → bilgi_islem).
+        # 1 < eşik(3) → config OTORİTER kalmalı, dilekçe doğru ilk-birime gitmeli.
+        state = {
+            "evrak_turu": "dilekce",
+            "tur_confidence": 0.55,
+            "evrak_text": "Dilekçemle başvuruyorum; sistemde küçük bir aksaklık fark ettim.",
+        }
+        # Act
+        sonuc = await route_birim_node(state)
+        # Assert — gürültü config'i devirmez → dilekce config birimi
+        assert sonuc["hedef_birim"] == EVRAK_TO_BIRIM["dilekce"], (
+            f"Gürültü config'i devirmemeli; {EVRAK_TO_BIRIM['dilekce']} beklendi, "
+            f"{sonuc['hedef_birim']} geldi"
+        )

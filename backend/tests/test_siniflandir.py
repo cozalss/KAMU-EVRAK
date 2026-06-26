@@ -159,3 +159,66 @@ class TestSiniflandirCiktiYapisi:
         sonuc = await siniflandir_node(state)
         # Assert
         assert isinstance(sonuc["evrak_turu"], str)
+
+
+# ---------------------------------------------------------------------------
+# M2 — Self-consistency abstention (ENV-gated): uzlaşı→tür, çelişki→belirsiz
+# ---------------------------------------------------------------------------
+
+
+class TestSelfConsistencyAbstention:
+    """SELF_CONSISTENCY_N>1: örnekler çelişirse dürüst 'belirsiz' (abstention gerçekten tetiklenir)."""
+
+    @staticmethod
+    def _fake_votes(votes):
+        it = iter(votes)
+
+        async def _fake(_sys, _u, max_tokens=200):
+            return next(it)
+
+        return _fake
+
+    async def test_uzlasi_turu_dondurur(self, monkeypatch):
+        # Arrange: 3 örnek, 2'si dilekce (oran 0.67 ≥ 0.6) → dilekce kazanır
+        import agents.nodes.siniflandir as S
+        monkeypatch.setattr(S, "SELF_CONSISTENCY_N", 3)
+        monkeypatch.setattr(S, "llm_json", self._fake_votes([
+            {"evrak_turu": "dilekce", "tur_confidence": 0.8},
+            {"evrak_turu": "dilekce", "tur_confidence": 0.7},
+            {"evrak_turu": "sikayet", "tur_confidence": 0.6},
+        ]))
+        # Act
+        sonuc = await S.siniflandir_node({"evrak_text": "vatandaş talebi"})
+        # Assert
+        assert sonuc["evrak_turu"] == "dilekce"
+
+    async def test_celiski_abstention_tetikler(self, monkeypatch):
+        # Arrange: 3 örnek tamamen farklı → uzlaşı yok → belirsiz (abstention)
+        import agents.nodes.siniflandir as S
+        monkeypatch.setattr(S, "SELF_CONSISTENCY_N", 3)
+        monkeypatch.setattr(S, "llm_json", self._fake_votes([
+            {"evrak_turu": "dilekce", "tur_confidence": 0.8},
+            {"evrak_turu": "sikayet", "tur_confidence": 0.7},
+            {"evrak_turu": "ihbar", "tur_confidence": 0.6},
+        ]))
+        # Act
+        sonuc = await S.siniflandir_node({"evrak_text": "belirsiz nitelikli metin"})
+        # Assert — çelişen örneklem dürüst abstention'a düşmeli
+        assert sonuc["evrak_turu"] == "belirsiz"
+        assert "self-consistency" in sonuc["tur_reasoning"]
+
+    async def test_varsayilan_kapali_tek_cagri(self, monkeypatch):
+        # Arrange: N=1 (varsayılan) → self-consistency YOLU çalışmaz (tek çağrı, ek maliyet yok)
+        import agents.nodes.siniflandir as S
+        monkeypatch.setattr(S, "SELF_CONSISTENCY_N", 1)
+        cagri = {"n": 0}
+
+        async def _tek(_sys, _u, max_tokens=200):
+            cagri["n"] += 1
+            return {"evrak_turu": "dilekce", "tur_confidence": 0.8}
+
+        monkeypatch.setattr(S, "llm_json", _tek)
+        # Act
+        await S.siniflandir_node({"evrak_text": "vatandaş talebi"})
+        # Assert — tam olarak 1 LLM çağrısı (N× değil)
+        assert cagri["n"] == 1

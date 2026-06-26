@@ -155,19 +155,37 @@ async def resume(request: Request, req: OnayResumeRequest) -> ProcessResponse:
 @router.post("/stream")
 @rate_limit("20/minute")  # IP-başı akış limiti (slowapi yoksa etkisiz)
 async def process_stream(request: Request, file: UploadFile = File(...)) -> StreamingResponse:
-    """Dosya yükle → OCR + pipeline node event'lerini SSE ile yayınla."""
-    text, ocr_meta = await _ocr_or_text(file, None)
+    """Dosya yükle → OCR + pipeline node event'lerini SSE ile yayınla.
+
+    M5: OCR AKIŞ İÇİNDE çalışır → taranmış PDF'te jüri 30s boş ekran görmez; 'oku' node'u
+    önce 'active' (canlı), OCR bitince 'done' yayılır. Dosya okuma (hızlı) request
+    context'inde kalır ki >20MB'de 413 düzgün HTTP yanıtı olsun; ağır extract_text akışa girer.
+    """
+    data = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, "Dosya çok büyük")
+    filename = file.filename or ""
 
     async def gen() -> AsyncIterator[str]:
         yield _sse({"event": "start", "nodes": ["oku", *PIPELINE_NODES]})
-        # OCR adımı (graf-öncesi).
+        # OCR'ı akış içinde yap: önce 'oku' CANLI (active) yansın, sonra sonuç (done).
+        yield _sse({"event": "node", "node": "oku", "status": "active"})
+        try:
+            res = await extract_text(data)
+        except Exception as exc:
+            log.error("stream_ocr_failed", error=str(exc) or type(exc).__name__)
+            yield _sse({"event": "error", "message": "OCR hatası"})
+            return
+        text = res.text
+        ocr_meta: dict[str, Any] = {"ocr_engine": res.engine, "page_count": res.page_count,
+                                    "ocr_confidence": res.confidence, "filename": filename}
         yield _sse({"event": "node", "node": "oku", "status": "done",
-                    "data": {"engine": ocr_meta.get("ocr_engine"),
-                             "n_chars": len(text), "page_count": ocr_meta.get("page_count")}})
+                    "data": {"engine": res.engine, "n_chars": len(text),
+                             "page_count": res.page_count}})
         if not text.strip():
             yield _sse({"event": "error", "message": "Belgeden metin çıkarılamadı"})
             return
-        state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=ocr_meta.get("filename", ""))
+        state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=filename)
         accumulated: dict[str, Any] = dict(state)
         try:
             async for update in _get_graph().astream(state, stream_mode="updates"):

@@ -21,6 +21,10 @@ from core.text import tr_lower
 log = structlog.get_logger()
 
 _EVRAK = "yazi_isleri_evrak"  # her evrakın ilk havale durağı (resmî akış)
+# M1: config artık MUTLAK-otoriter değil. İçerik BASKIN (bu eşik kadar kök eşleşmesi)
+# şekilde farklı birimi gösteriyorsa (tür yanlış olabilir) içerik sürücü olur.
+# Eşik yüksek (3) → petisyon-gürültüsü (1-2 sözcük: "sistem/erişim") config'i devirmez.
+_DOMINANT_ESIK = 3
 
 # İçerik-temelli sinyal: KÖK-bazlı anahtar → birim. docs/02 §3 birim sorumlulukları.
 # Aynı anda birden çok eşleşirse skorlanır (en yüksek kazanır), kalanlar alternatif.
@@ -83,10 +87,17 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
     config_hedef = EVRAK_TO_BIRIM.get(turu, _EVRAK)
     scores = _content_scores(text)
 
-    # config ağırlığı: bilinen türde içerik en yüksek skorunu AŞACAK kadar (otoriter); belirsiz
-    # türde sadece +1 (içerik eşitliğinde tür kazansın ama güçlü içerik sinyali öne çıkabilsin).
-    config_boost = max(scores.values(), default=0) + 1 if turu != "belirsiz" else 1
-    scores[config_hedef] = scores.get(config_hedef, 0) + config_boost
+    # config ağırlığı (M1 — config MUTLAK-otoriter DEĞİL):
+    #  - belirsiz tür → +1 (içerik sürücü; tür sinyali yok).
+    #  - bilinen tür AMA içerik BASKIN şekilde (≥_DOMINANT_ESIK kök) FARKLI birimi gösteriyor ve
+    #    config-hedefini net (≥2) aşıyorsa → tür yanlış olabilir; içeriğe izin ver (config +1 tie-break).
+    #  - aksi halde otoriter (içerik en yükseğini +1 aşar) → petisyon türleri 1-2 gürültü sözcüğüne kapılmaz.
+    content_max = max(scores.values(), default=0)
+    config_content = scores.get(config_hedef, 0)
+    rakip_skor = max((s for b, s in scores.items() if b != config_hedef), default=0)
+    icerik_baskin = rakip_skor >= _DOMINANT_ESIK and rakip_skor >= config_content + 2
+    config_boost = 1 if (turu == "belirsiz" or icerik_baskin) else content_max + 1
+    scores[config_hedef] = config_content + config_boost
     # Sıralı birimler: skora göre azalan, eşitlikte config'e ve BIRIMLER sırasına göre.
     sirali = sorted(scores, key=lambda b: (-scores[b], 0 if b == config_hedef else 1,
                                            BIRIMLER.index(b) if b in BIRIMLER else 99))

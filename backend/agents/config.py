@@ -230,10 +230,24 @@ EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
 }
 
 # --- Evrak türü → üretilmesi gereken resmî yazı türü (araştırma §2) ---
+# TÜM 18 tür AÇIKÇA eşlenir (sessiz cevabi_yazi default'u yok — M6). YAZI_TURLERI:
+# ust_yazi (yeni yazışma/iletim) · cevabi_yazi (karşılık) · bilgilendirme · olur (onay).
 EVRAK_TO_YAZI: dict[str, str] = {
-    "dilekce": "cevabi_yazi", "basvuru": "cevabi_yazi", "bilgi_edinme": "bilgilendirme",
-    "sikayet": "olur", "ihbar": "olur", "ust_yazi": "cevabi_yazi", "cevabi_yazi": "cevabi_yazi",
-    "tebligat": "cevabi_yazi", "talep": "cevabi_yazi", "gorus_mutalaa": "cevabi_yazi",
+    # Vatandaş talebi ailesi → karşılık/bilgilendirme
+    "dilekce": "cevabi_yazi", "basvuru": "cevabi_yazi", "talep": "cevabi_yazi",
+    "bilgi_edinme": "bilgilendirme", "cimer": "bilgilendirme",
+    "sikayet": "olur", "ihbar": "olur",          # inceleme/soruşturma → makam oluru
+    # Kurum→kurum resmî yazı ailesi
+    "ust_yazi": "cevabi_yazi", "cevabi_yazi": "cevabi_yazi",
+    "muzekkere": "cevabi_yazi",                   # kayıt/belge celbine karşılık
+    "genelge_talimat_olur": "olur",               # düzenleyici işlem → olur/onay
+    # Yargı/icra → hukuk müşavirliği cevabi yazısı
+    "tebligat": "cevabi_yazi", "dava_evraki": "cevabi_yazi", "icra_evraki": "cevabi_yazi",
+    "gorus_mutalaa": "cevabi_yazi",               # hukuki kanaat cevabı
+    # Mali / belge-işlemi → iletim (üst yazı) veya karşılık
+    "fatura": "cevabi_yazi",                      # ödeme/tahakkuk karşılığı
+    "tutanak": "ust_yazi", "rapor": "ust_yazi",   # tespit/inceleme çıktısı → iletim
+    "belirsiz": "cevabi_yazi",                    # güvenli varsayılan
 }
 
 # --- LLM modu (ADALET ile aynı desen) ---
@@ -268,6 +282,13 @@ CRAG_RAW_ESIK = float(os.getenv("CRAG_RAW_ESIK", "12.0"))
 # Self-RAG (reflection): finalize öncesi çıktının tamlığını öz-değerlendirir
 # (evrak_turu + hedef_birim + ozet + mevzuat var mı?). Eksikse not düşer (şeffaflık).
 SELF_RAG_ENABLED = os.getenv("SELF_RAG_ENABLED", "0") == "1"
+
+# Self-consistency abstention (Wang 2023, ENV-gated): N>1 → sınıflandırma N kez bağımsız
+# örneklenir; örnekler arası UZLAŞI yoksa (oran < _CONSENSUS_ESIK) dürüst "belirsiz" döner —
+# "zor" vakalarda gerçek abstention. VARSAYILAN 1 (KAPALI → ek LLM çağrısı/maliyet YOK).
+# Demo/jüri için SELF_CONSISTENCY_N=3 yeter; N çağrı = N× maliyet (mock'ta etkisiz).
+SELF_CONSISTENCY_N = int(os.getenv("SELF_CONSISTENCY_N", "1"))
+SELF_CONSISTENCY_ESIK = float(os.getenv("SELF_CONSISTENCY_ESIK", "0.6"))
 
 # Cross-encoder reranking (iki-aşamalı retrieve-then-rerank): mevzuat_oner BM25 top-N
 # adayı bge-reranker-v2-m3 ile yeniden sıralar → +nDCG (gerçek soru-belge alakası).

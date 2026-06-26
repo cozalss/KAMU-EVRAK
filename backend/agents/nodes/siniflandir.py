@@ -8,12 +8,19 @@ kapalı-küme F1 manipülasyon algısını önle; docs/02 §1).
 
 from __future__ import annotations
 
+import asyncio
 import re
+from collections import Counter
 from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TURLERI, EVRAK_TURU_TR
+from agents.config import (
+    EVRAK_TURLERI,
+    EVRAK_TURU_TR,
+    SELF_CONSISTENCY_ESIK,
+    SELF_CONSISTENCY_N,
+)
 from agents.nodes._llm_extract import llm_json
 from core.text import tr_lower
 
@@ -449,12 +456,48 @@ def _from_llm(obj: dict[str, Any]) -> dict[str, Any] | None:
     return {"evrak_turu": turu, "tur_confidence": conf, "tur_reasoning": reasoning}
 
 
+async def _self_consistency(raw: str) -> dict[str, Any] | None:
+    """Self-consistency abstention (Wang 2023, M2): SELF_CONSISTENCY_N bağımsız örnek →
+    çoğunluk oyu. Uzlaşı oranı SELF_CONSISTENCY_ESIK altındaysa (örnekler çelişiyor =
+    gerçek belirsizlik) dürüst 'belirsiz' döner — abstention artık "zor" vakada TETİKLENİR.
+    None → hiç geçerli LLM örneği yok → çağıran heuristik fallback'e düşer.
+    """
+    orneklem = await asyncio.gather(
+        *[llm_json(_SYSTEM, raw[:6000], max_tokens=200) for _ in range(SELF_CONSISTENCY_N)]
+    )
+    oylar: list[str] = []
+    confs: dict[str, list[float]] = {}
+    for obj in orneklem:
+        if obj is None or (r := _from_llm(obj)) is None:
+            continue
+        oylar.append(r["evrak_turu"])
+        confs.setdefault(r["evrak_turu"], []).append(r["tur_confidence"])
+    if not oylar:
+        return None
+    sayim = Counter(oylar)
+    top, oy = sayim.most_common(1)[0]
+    oran = oy / len(oylar)
+    if oran < SELF_CONSISTENCY_ESIK or top == "belirsiz":
+        return {"evrak_turu": "belirsiz", "tur_confidence": round(oran, 2),
+                "tur_reasoning": (f"self-consistency: {len(oylar)} örnekte uzlaşı yok "
+                                  f"({dict(sayim)}) → belirsiz (abstention)")}
+    avg = sum(confs[top]) / len(confs[top])
+    return {"evrak_turu": top, "tur_confidence": round(min(avg, oran), 2),
+            "tur_reasoning": f"self-consistency {oy}/{len(oylar)} uzlaşı → {top}"}
+
+
 async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
     """Evrak türünü belirle — LLM-birincil (kapalı-küme + abstention), keyword fallback."""
     raw = state.get("evrak_text", "")
     text = tr_lower(raw)
     if not text.strip():
         return {"evrak_turu": "belirsiz", "tur_confidence": 0.0, "tur_reasoning": "boş metin"}
+
+    # M2 — Self-consistency abstention (ENV-gated; varsayılan KAPALI → tek çağrı/maliyet).
+    if SELF_CONSISTENCY_N > 1 and (sc := await _self_consistency(raw)) is not None:
+        log.info("siniflandir", turu=sc["evrak_turu"], conf=sc["tur_confidence"],
+                 source="self-consistency")
+        return sc
 
     obj = await llm_json(_SYSTEM, raw[:6000], max_tokens=200)
     if obj is not None and (result := _from_llm(obj)) is not None:

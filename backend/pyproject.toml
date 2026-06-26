@@ -85,8 +85,9 @@ ignore = ["E501", "RUF001", "RUF002", "RUF003", "B008"]
 [tool.ruff.lint.per-file-ignores]
 # Test dosyalarında idiomatik kalıplar: blind-exception assert (B017), "raise etmiyor"
 # smoke ifadesi (B018), arrange-act-assert'te kullanılmayan değişken (F841/RUF059),
-# 'None' içeren betimleyici test adı (N802), match= regex metakarakteri (RUF043).
-"tests/**" = ["B017", "B018", "F841", "N802", "RUF043", "RUF059"]
+# 'None' içeren betimleyici test adı (N802), match= regex metakarakteri (RUF043),
+# monkeypatch için modül kısa-alias'ı (N812: 'import x as S').
+"tests/**" = ["B017", "B018", "F841", "N802", "N812", "RUF043", "RUF059"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -14,8 +14,27 @@ from __future__ import annotations
 
 import pytest
 
-from agents.config import EVRAK_TO_YAZI
+from agents.config import EVRAK_TO_YAZI, EVRAK_TURLERI, YAZI_TURLERI
 from agents.nodes.yazi_taslak import _fallback_taslak, yazi_taslak_node
+
+# ---------------------------------------------------------------------------
+# M6 — EVRAK_TO_YAZI TÜM türleri AÇIKÇA eşler (sessiz cevabi_yazi default'u yok)
+# ---------------------------------------------------------------------------
+
+
+class TestEvrakToYaziKapsam:
+    """Her evrak türü resmî yazı türüne açıkça eşlenmeli (M6 boşluk kapatma)."""
+
+    def test_tum_turler_aciklca_eslenir(self):
+        # Arrange / Act
+        eksik = [t for t in EVRAK_TURLERI if t not in EVRAK_TO_YAZI]
+        # Assert — fatura/tutanak/rapor/dava/icra... sessizce default'a düşmemeli
+        assert not eksik, f"EVRAK_TO_YAZI'de eksik tür(ler) sessiz default'a düşüyor: {eksik}"
+
+    def test_hedef_yazi_turleri_gecerli(self):
+        # Arrange / Act / Assert — her hedef geçerli bir YAZI_TURLERI üyesi olmalı
+        gecersiz = {t: y for t, y in EVRAK_TO_YAZI.items() if y not in YAZI_TURLERI}
+        assert not gecersiz, f"EVRAK_TO_YAZI geçersiz yazı türüne işaret ediyor: {gecersiz}"
 
 # ---------------------------------------------------------------------------
 # _fallback_taslak() birim testleri

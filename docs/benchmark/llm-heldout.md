@@ -7,13 +7,20 @@
 
 ## Sonuçlar — mock vs gerçek-LLM (aynı held-out set)
 
-| Metrik | Mock (heuristik) | **Gerçek-LLM (gpt-4o-mini)** |
-|---|---|---|
-| Sınıflandırma accuracy | 0.213 | **0.537** [%95 CI 0.443–0.628] |
-| Sınıflandırma macro-F1 | 0.218 | **0.507** |
-| Yönlendirme Top-1 | 0.426 | **0.704** [%95 CI 0.612–0.782] |
-| Yönlendirme Top-3 | 0.463 | **0.824** |
-| Abstention | %34 | %0 |
+| Metrik | Mock (heuristik) | Gerçek-LLM (ilk) | **Gerçek-LLM + hedefli few-shot (İT-10)** |
+|---|---|---|---|
+| Sınıflandırma accuracy (sıkı) | 0.213 | 0.537 | **0.620** [%95 CI 0.526–0.706] |
+| Sınıflandırma macro-F1 (sıkı) | 0.218 | 0.507 | **0.612** |
+| **Operasyonel accuracy** (eşdeğer-grup) | — | — | **0.768** [%95 CI 0.681–0.838] |
+| Operasyonel macro-F1 | — | — | **0.688** |
+| Yönlendirme Top-1 | 0.426 | 0.704 | **0.778** [%95 CI 0.691–0.846] |
+| Yönlendirme Top-3 | 0.463 | 0.824 | **0.870** |
+| Abstention | %34 | %0 | %0 |
+
+> **İT-10 kazanımı:** Karışan-çift few-shot sıkı macro-F1'i **0.51→0.61**, routing Top-1'i **0.70→0.78**
+> yükseltti (67/108 doğru). **Operasyonel doğruluk %76.8** — taksonomi-belirsizliği düzeltilince gerçek
+> kullanım değeri. Kalan karışmalar hâlâ semantik-komşu (talep→dilekçe, ihbar→şikayet, başvuru→talep).
+> Sıradaki sıçrama: **gpt-4o** (mini yerine).
 
 58/108 doğru. Gerçek-LLM, mock heuristiğin **~2.5 katı** genelleme → mimari sağlam, semantik çözüm gerçek değer katıyor.
 

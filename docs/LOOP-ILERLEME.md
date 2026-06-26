@@ -11,6 +11,8 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **İT-18/19 (UI/UX) BİTTİ:** sunum PDF/PPTX yeni animasyonlu-UI görselleriyle yeniden üretildi + README gömülü demo.gif [a05740c]; **clarify (dur-ve-sor) belirgin ClarifyBanner** ("sistem eksiği fark edip DURUYOR" — kilit diferansiyatör) + hata/boş durum cila + responsive (mobil kaydırma ipucu, 360-1280 taşma yok) + hero/güven-rozeti (~%91) + clarify/mobil ekran görüntüleri (04-clarify/05-mobil) [e4f21de]. npm build OK, a11y/reduced-motion korundu, adalet-agent temiz. **43 commit.**
+- **İT-20 ÖNCELİKLER:** README/sunuma clarify + mobil görselleri göm (dur-ve-sor diferansiyatörü + responsive vitrin); taze "jüri ilk-izlenim" holistik UI/UX kritiği (verdict); final tutarlılık. UI/UX büyük ölçüde TAMAM.
 - **İT-17 (UI görsel) BİTTİ [ceb8e44]:** yeni animasyonlu UI Playwright ile yakalandı → demo.gif (4 kare canlı akış) + statik görseller (01-yukleme/02-akis/03-sonuc) tazelendi; a11y-architect denetimi (1 fix: taslak daktilo aria-busy/sr-only spam önleme; gerisi AA geçti); adalet-agent Playwright artıkları TEMİZLENDİ (cwd tuzağı — /c/ POSIX yolu Python'da çalışmaz, Windows yolu kullan dersi). 40 commit. **NOT:** sunum PDF/PPTX hâlâ ESKİ görselleri gömülü (İT-15 üretimi) → yeni görsellerle yeniden üret (İT-18).
 - **İT-18 ÖNCELİKLER (büyük ölçüde polish):**
   1. Sunum PDF/PPTX yeniden üret (yeni animasyonlu-UI görselleri + güncel skorlar gömülü). `uv run python scripts/export_sunum.py --all`.

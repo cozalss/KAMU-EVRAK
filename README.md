@@ -15,6 +15,14 @@ Bu depo, mevcut **ADALET-AGENT** altyapısından (çok-ajan + OCR + Türkçe RAG
 canlı SSE demo) yeniden-kullanılabilir kod **kopyalanarak** kuruldu; ADALET'e dokunulmadı.
 Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
 
+## Canlı demo
+
+![kamu-evrak canlı demo — evrak yükleme → 10-ajanlı canlı akış → sonuç kartları + resmî yazı taslağı](docs/img/demo.gif)
+
+> Bir örnek evrak seçilince 10-ajanlı boru hattı **gerçek zamanlı** çalışır: ajan akış şeması
+> node-node "yanar", özet ve resmî yazı taslağı **token-token** yazılır. Gerçek-LLM (gpt-4o)
+> modunda dürüst held-out doğruluğu **~%91** (çapraz-doğrulanmış; [benchmark](docs/benchmark/llm-heldout.md)).
+
 ## Özellikler
 
 ### Görev 1 — Evrak Sınıflandırma ve İçerik Analizi

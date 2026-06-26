@@ -11,6 +11,11 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **İT-16 (UI/UX) BİTTİ [33fb87c]:** internet araştırma + şartname Demo kriteri → `docs/ui-tasarim-yonu.md`; frontend YARIŞMA-KAZANDIRAN animasyon (saf CSS/SVG, 0 dep): akan ajan akışı (komet parıltı + sıralı node pop + glow + canlı ilerleme çubuğu + Görev1/2 bantları), **token-token daktilo yazım** (özet/taslak), sonuç kartları stagger+derinlik, marka gradyanı; reduced-motion + a11y + SSE korundu; npm build OK. 38 commit.
+- **İT-17 ÖNCELİKLER:**
+  1. **Yeni animasyonlu UI'nın ekran görüntüleri + demo GIF'i tazele** (orkestratör: backend+vite başlat → Playwright screenshot/dizi → PIL GIF → docs/img; **Playwright artıklarını adalet-agent'tan TEMİZLE** — cwd tuzağı).
+  2. a11y-architect ile yeni animasyonlu UI'yı yeniden denetle (reduced-motion/kontrast/focus).
+  3. README/sunum görselleri yeni UI ile güncelle.
 - **✅ İT-13/14/15 BİTTİ — PROJE TESLİME HAZIR (36 commit):** demo GIF (docs/img/demo.gif) [c3907df]; **FİNAL gpt-4o headline**: few-shot sonrası heldout2 0.79→0.92 → iki-set çapraz-doğrulama **sıkı ~0.91 / operasyonel ~0.96 / routing ~0.94** [12e2e78]; son cila — test sayısı tutarlılık sweep (210→649) tüm doküman/README/sunum + sunum PDF/PPTX yeniden üretildi + final QA yeşil [e4900cc].
   **TAMAMLANAN MÜHENDİSLİK:** Görev 1+2 uçtan-uca (10 node), gpt-4o ~0.91/0.96/0.94 (2 bağımsız held-out), 649 test/%81 coverage, WCAG 2.2 AA, güvenlik+PII (node+log), CI, sunum PDF/PPTX + ticarileşme + demo GIF, 9+ doküman, MIT. adalet-agent hiç dokunulmadı.
   **KALAN = İDARİ (KULLANICI):** (1) 4. takım üyesi, (2) TAKP GitHub remote+push, (3) 12 Tmz ön-eleme sunumu + 21 Tmz teknik sınav. Kod tarafı opsiyonel polish dışında bitti.

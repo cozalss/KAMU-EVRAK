@@ -7,7 +7,9 @@ fallback koşar (deterministik, ağ/GPU yok). AAA deseni.
 
 from __future__ import annotations
 
-from eval.heldout_eval import evaluate, load_gold
+import pytest
+
+from eval.heldout_eval import GOLD, evaluate, load_gold
 
 
 class TestHeldoutEvaluateUctanUca:
@@ -57,8 +59,13 @@ class TestHeldoutEvaluateUctanUca:
         assert res["route_top1_acc"] == 1.0
 
 
+@pytest.mark.skipif(
+    not GOLD.exists(),
+    reason="held-out gold üretilmemiş (gitignore — `python scripts/gen_heldout.py` ile üretilir); "
+           "CI/temiz-klon'da yok → skip. evaluate() in-memory testleri ayrıca koşar.",
+)
 class TestHeldoutGoldYuklenir:
-    """Üretilmiş held-out gold dosyası yüklenir ve şema-uyumludur."""
+    """Üretilmiş held-out gold dosyası yüklenir ve şema-uyumludur (yalnız gold varsa)."""
 
     def test_gold_dosyasi_yuklenir_ve_kanonik(self):
         # Arrange — gen_heldout.py daha önce koşuldu (data/synthetic/heldout_gold.jsonl)

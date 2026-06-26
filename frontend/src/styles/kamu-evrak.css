@@ -640,7 +640,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .rc-onay-textarea, .rc-onay-input { width: 100%; box-sizing: border-box; font-size: .85rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: .7rem; background: var(--surface); color: var(--ink, #0f172a); }
 .rc-onay-textarea { font-family: ui-monospace, Menlo, Consolas, monospace; resize: vertical; }
 .rc-onay-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.rc-onay-btn { display: inline-flex; align-items: center; gap: .4rem; font: inherit; font-size: .86rem; font-weight: 600; padding: .5rem .9rem; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface); color: var(--ink, #0f172a); cursor: pointer; }
+/* Kritik memur-karar butonları: 44px touch-target (WCAG/HIG, govtech a11y) + onay paneli vurgusu. */
+.rc-onay-btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; font: inherit; font-size: .86rem; font-weight: 600; padding: .5rem 1rem; min-height: 44px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface); color: var(--ink, #0f172a); cursor: pointer; }
 .rc-onay-btn:hover:not(:disabled) { background: var(--surface-2); }
 .rc-onay-btn:disabled { opacity: .55; cursor: not-allowed; }
 .rc-onay-ok { background: var(--ok); border-color: var(--ok); color: #fff; }

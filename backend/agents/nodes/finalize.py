@@ -28,27 +28,29 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
     # CRAG düzeltme yaptıysa düzeltilmiş öneriler tercih edilir (yoksa baseline liste).
     mevzuat = state.get("mevzuat_onerileri_corrected") or state.get("mevzuat_onerileri") or []
 
+    # Kurumsal/resmî üslup: kalın etiketler tarama için yeter; emoji kullanılmaz
+    # (frontend ikon çiplerini kendi katmanında SVG ile sağlar — tutarlı, jenerik-olmayan UI).
     satirlar = [
-        f"📄 **Evrak türü:** {turu}",
-        f"➡️ **Önerilen birim:** {birim}",
+        f"**Evrak türü:** {turu}",
+        f"**Önerilen birim:** {birim}",
     ]
     if mevzuat:
-        satirlar.append("📚 **İlgili mevzuat:** " + "; ".join(m["baslik"] for m in mevzuat[:3]))
+        satirlar.append("**İlgili mevzuat:** " + "; ".join(m["baslik"] for m in mevzuat[:3]))
     if state.get("ozet"):
-        satirlar.append(f"📝 **Özet:** {state['ozet']}")
+        satirlar.append(f"**Özet:** {state['ozet']}")
     # Arşivleme (SDP 2005/7) — bir satır bilgilendirme (additive; arsiv_node üretti).
     arsiv = state.get("arsiv_metadata") or {}
     if arsiv.get("sdp_kodu"):
         satirlar.append(
-            f"🗄️ **Arşiv (SDP 2005/7):** dosya kodu {arsiv['sdp_kodu']}, "
+            f"**Arşiv (SDP 2005/7):** dosya kodu {arsiv['sdp_kodu']}, "
             f"saklama süresi {arsiv.get('saklama_suresi', '—')}"
         )
     if eksik:
-        satirlar.append(f"⚠️ **Eksik bilgi ({len(eksik)}):** " + ", ".join(eksik))
+        satirlar.append(f"**Eksik bilgi ({len(eksik)}):** " + ", ".join(eksik))
         if sorular:
-            satirlar.append("❓ **Tamamlanması gerekenler:**\n" + "\n".join(f"- {s}" for s in sorular))
+            satirlar.append("**Tamamlanması gerekenler:**\n" + "\n".join(f"- {s}" for s in sorular))
     else:
-        satirlar.append("✅ Zorunlu alanlar tam — resmî yazı taslağı hazırlandı.")
+        satirlar.append("**Zorunlu alanlar tam** — resmî yazı taslağı hazırlandı.")
 
     bilgilendirme = "\n\n".join(satirlar)
     log.info("finalize", turu=turu, birim=birim, eksik=len(eksik))

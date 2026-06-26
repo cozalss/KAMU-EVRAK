@@ -1,15 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="kamu-evrak">
-  <!-- warm-light tema: terracotta-gold üzerinde evrak + terazi (kamu/adalet) -->
-  <rect width="64" height="64" rx="14" fill="#b07a1e"/>
-  <!-- evrak sayfası -->
-  <path d="M19 12h18l9 9v25a3 3 0 0 1-3 3H19a3 3 0 0 1-3-3V15a3 3 0 0 1 3-3z" fill="#fffdf9"/>
-  <path d="M37 12v8a1 1 0 0 0 1 1h8z" fill="#f3e6cb"/>
-  <!-- terazi: direk + kefe çubuğu + iki kefe (ç,ş,ğ yok — saf vektör) -->
-  <g stroke="#8a5e12" stroke-width="2.2" stroke-linecap="round" fill="none">
-    <line x1="32" y1="28" x2="32" y2="44"/>
-    <line x1="23" y1="31" x2="41" y2="31"/>
-    <path d="M23 31l-4 7h8z"/>
-    <path d="M41 31l-4 7h8z"/>
+  <!-- Kurumsal Devlet teması: lacivert üzerinde resmî evrak + onay mührü (saf vektör) -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15375f"/>
+      <stop offset="1" stop-color="#0f2a4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- evrak sayfası + kıvrık köşe -->
+  <path d="M20 13h16l10 10v25a3 3 0 0 1-3 3H20a3 3 0 0 1-3-3V16a3 3 0 0 1 3-3z" fill="#ffffff"/>
+  <path d="M36 13v9a1 1 0 0 0 1 1h9z" fill="#cdddf2"/>
+  <!-- satırlar + onay işareti (mavi) -->
+  <g stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <line x1="24" y1="29" x2="36" y2="29"/>
+    <line x1="24" y1="35" x2="33" y2="35"/>
+    <path d="M24 42l4 4 9-9"/>
   </g>
-  <circle cx="32" cy="27" r="2.4" fill="#8a5e12"/>
 </svg>

@@ -7,6 +7,7 @@
    görünür kanıtı (jüri "wow"). Ham PII frontend'e hiç ulaşmaz. */
 import React, { useEffect, useRef, useState } from "react";
 import { useTypewriter, usePrefersReducedMotion } from "../lib/useTypewriter.js";
+import { Icon } from "./icons.jsx";
 
 // --- Makine kodu → Türkçe etiket (backend config ile eşleşir; UI okunabilirliği) ---
 const EVRAK_TURU_TR = {
@@ -83,7 +84,7 @@ function EvrakTuruCard({ turu, conf }) {
   return (
     <article className="rc-card rc-tur" aria-labelledby="rc-tur-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">📄</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.file /></span>
         <h3 id="rc-tur-h" className="rc-card-title">Evrak Türü</h3>
       </header>
       <div className="rc-tur-body">
@@ -112,11 +113,11 @@ function CikarilanAlanlarCard({ unsurlar }) {
   return (
     <article className="rc-card rc-alanlar" aria-labelledby="rc-alan-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">🔎</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.search /></span>
         <h3 id="rc-alan-h" className="rc-card-title">Çıkarılan Bilgi Unsurları</h3>
         {piiVar && (
           <span className="rc-badge rc-badge-pii" title="Kişisel veri tespit edildi ve maskelendi">
-            🛡️ Kişisel veri maskelendi
+            <Icon.shield aria-hidden="true" /> Kişisel veri maskelendi
           </span>
         )}
       </header>
@@ -131,7 +132,7 @@ function CikarilanAlanlarCard({ unsurlar }) {
                 {meta.pii && <span className="rc-mask-tag" aria-label="maskeli kişisel veri">maskeli</span>}
               </dt>
               <dd className={meta.pii ? "rc-mono" : undefined}>
-                {meta.bool ? "Var ✓" : String(value)}
+                {meta.bool ? <>Var <Icon.check aria-hidden="true" /></> : String(value)}
               </dd>
             </div>
           ))}
@@ -177,7 +178,7 @@ function ClarifyBanner({ eksik, sorular }) {
       <div className="rc-clarify-banner-bar" aria-hidden="true" />
       <div className="rc-clarify-banner-body">
         <header className="rc-clarify-banner-head">
-          <span className="rc-clarify-banner-ic" aria-hidden="true">🖐️</span>
+          <span className="rc-clarify-banner-ic" aria-hidden="true"><Icon.hand /></span>
           <div>
             <h3 id="rc-clarify-banner-h" className="rc-clarify-banner-title">
               Eksik Bilgi — Sistem Soru Soruyor
@@ -194,17 +195,17 @@ function ClarifyBanner({ eksik, sorular }) {
 
         {e.length > 0 && (
           <p className="rc-clarify-banner-why">
-            <span aria-hidden="true">ℹ️ </span>
-            Neden soruldu? Zorunlu alanlardan{" "}
+            <Icon.info aria-hidden="true" />
+            <span>Neden soruldu? Zorunlu alanlardan{" "}
             <strong>{e.map(EKSIK_TR).join(", ")}</strong>{" "}
-            evrakta tespit edilemedi (3071 sayılı Kanun m.4).
+            evrakta tespit edilemedi (3071 sayılı Kanun m.4).</span>
           </p>
         )}
 
         <ol className="rc-clarify-banner-list" aria-label="Vatandaştan istenen bilgiler">
           {q.map((s, i) => (
             <li key={i}>
-              <span className="rc-clarify-banner-q-ic" aria-hidden="true">→</span>
+              <span className="rc-clarify-banner-q-ic" aria-hidden="true"><Icon.arrowRight /></span>
               <span>{s}</span>
             </li>
           ))}
@@ -226,7 +227,7 @@ function EksikBilgiCard({ eksik, sorular }) {
   return (
     <article className={`rc-card rc-eksik ${tam ? "rc-eksik-ok" : "rc-eksik-warn"}`} aria-labelledby="rc-eksik-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">{tam ? "✅" : "⚠️"}</span>
+        <span className="rc-ic" aria-hidden="true">{tam ? <Icon.circleCheck /> : <Icon.alert />}</span>
         <h3 id="rc-eksik-h" className="rc-card-title">Eksik Bilgi Kontrolü</h3>
         <span className={`rc-badge ${tam ? "rc-badge-ok" : "rc-badge-warn"}`}>
           {tam ? "Zorunlu alanlar tam" : `${e.length} eksik alan`}
@@ -260,7 +261,7 @@ function MevzuatCard({ oneriler }) {
   return (
     <article className="rc-card rc-mevzuat" aria-labelledby="rc-mev-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">📚</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.book /></span>
         <h3 id="rc-mev-h" className="rc-card-title">İlgili Mevzuat</h3>
       </header>
       <ul className="rc-mev-list">
@@ -310,7 +311,7 @@ function BirimCard({ hedef, alternatifler }) {
   return (
     <article className="rc-card rc-birim rc-g2" aria-labelledby="rc-birim-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">➡️</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.route /></span>
         <h3 id="rc-birim-h" className="rc-card-title">Önerilen Havale Birimi</h3>
       </header>
       <p className="rc-birim-hedef">{BIRIM_LBL(hedef)}</p>
@@ -370,25 +371,27 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
   return (
     <article ref={cardRef} className="rc-card rc-taslak rc-g2" aria-labelledby="rc-taslak-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">📝</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.pencil /></span>
         <h3 id="rc-taslak-h" className="rc-card-title">
           Resmî Yazı Taslağı{yaziTuru ? ` · ${YAZI_TR(yaziTuru)}` : ""}
         </h3>
         <div className="rc-taslak-actions">
           <button type="button" className="rc-btn" onClick={copy} aria-label="Yazı taslağını kopyala">
-            {copied ? "✓ Kopyalandı" : "Kopyala"}
+            {copied
+              ? <><Icon.check aria-hidden="true" /> Kopyalandı</>
+              : <><Icon.copy aria-hidden="true" /> Kopyala</>}
           </button>
           <button
             type="button" className="rc-btn" onClick={dl("pdf")}
             disabled={!canDownload || busy} title={dlTitle} aria-label="Taslağı PDF olarak indir"
           >
-            {downloading === "pdf" ? "İndiriliyor…" : "PDF indir"}
+            {downloading === "pdf" ? "İndiriliyor…" : <><Icon.download aria-hidden="true" /> PDF</>}
           </button>
           <button
             type="button" className="rc-btn" onClick={dl("docx")}
             disabled={!canDownload || busy} title={dlTitle} aria-label="Taslağı DOCX olarak indir"
           >
-            {downloading === "docx" ? "İndiriliyor…" : "DOCX indir"}
+            {downloading === "docx" ? "İndiriliyor…" : <><Icon.download aria-hidden="true" /> DOCX</>}
           </button>
         </div>
       </header>
@@ -421,8 +424,9 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         // Dosya/OCR yolunda evrak metni client'ta saklanmaz → indirme devre dışı.
         // Tooltip yeterli değil; jüri ve ekran okuyucu için görünür açıklama.
         <p className="rc-taslak-dlnote" role="note">
-          ℹ️ İndirme (PDF/DOCX), <strong>örnek evrak</strong> akışında etkindir. Dosya yükleme
-          yolunda taslağı yukarıdan <strong>Kopyala</strong> ile alabilirsiniz.
+          <Icon.info aria-hidden="true" />
+          <span>İndirme (PDF/DOCX), <strong>örnek evrak</strong> akışında etkindir. Dosya yükleme
+          yolunda taslağı yukarıdan <strong>Kopyala</strong> ile alabilirsiniz.</span>
         </p>
       )}
       <p className="rc-taslak-note">
@@ -448,19 +452,21 @@ function DogrulamaCard({ verify, taslakMd }) {
   return (
     <article className={`rc-card rc-dogrulama rc-g2 ${temiz ? "rc-dogru-ok" : "rc-dogru-warn"}`} aria-labelledby="rc-dogru-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">{temiz ? "🛡️" : "⚠️"}</span>
+        <span className="rc-ic" aria-hidden="true">{temiz ? <Icon.shieldCheck /> : <Icon.alert />}</span>
         <h3 id="rc-dogru-h" className="rc-card-title">Doğrulama (Kalite Kapısı)</h3>
         <span className={`rc-badge ${temiz ? "rc-badge-ok" : "rc-badge-warn"}`}>
-          {temiz ? "Doğrulandı ✓" : `${uyarilar.length || 1} uyarı`}
+          {temiz ? <>Doğrulandı <span aria-hidden="true">✓</span></> : `${uyarilar.length || 1} uyarı`}
         </span>
       </header>
       <ul className="rc-dogru-checks" aria-label="Doğrulama kontrolleri">
         <li className={formatOk ? "rc-dogru-pass" : "rc-dogru-fail"}>
           <span className="rc-dogru-mark" aria-hidden="true">{formatOk ? "✓" : "✕"}</span>
+          <span className="rc-sr">{formatOk ? "Geçti — " : "Geçemedi — "}</span>
           Format uyumu — zorunlu bölümler (T.C. / Sayı / Konu / imza)
         </li>
         <li className={uyarilar.length === 0 ? "rc-dogru-pass" : "rc-dogru-fail"}>
           <span className="rc-dogru-mark" aria-hidden="true">{uyarilar.length === 0 ? "✓" : "✕"}</span>
+          <span className="rc-sr">{uyarilar.length === 0 ? "Geçti — " : "Geçemedi — "}</span>
           Uydurma veto — kaynakta olmayan somut tarih/sayı yok
         </li>
       </ul>
@@ -503,7 +509,7 @@ function ArsivBilgisiCard({ arsiv }) {
   return (
     <article className="rc-card rc-arsiv" aria-labelledby="rc-arsiv-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">🗄️</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.archive /></span>
         <h3 id="rc-arsiv-h" className="rc-card-title">Arşiv Bilgisi (Standart Dosya Planı)</h3>
       </header>
       <dl className="rc-kv">
@@ -524,13 +530,15 @@ function ArsivBilgisiCard({ arsiv }) {
    bölgede verilir → kısmi/parçalı duyuru olmaz. reduced-motion'da efekt KAPALI
    (hook anında tam metin döndürür) → görsel = sr-only, ikisi de tam metin. */
 function BilgilendirmeCard({ text }) {
+  // Backend metnine güvenme: kurumsal üslup için emoji/pictograph'ları temizle (UI ikonları SVG).
+  const safe = stripEmoji(text || "");
   // Hook'lar koşulsuz çağrılmalı (Rules of Hooks) → erken return ÖNCESİ.
-  const { shown, animating } = useTypewriter(text || "", { cps: 520 });
-  if (!text) return null;
+  const { shown, animating } = useTypewriter(safe, { cps: 520 });
+  if (!safe) return null;
   return (
     <article className="rc-card rc-info" aria-labelledby="rc-info-h">
       <header className="rc-card-head">
-        <span className="rc-ic" aria-hidden="true">📣</span>
+        <span className="rc-ic" aria-hidden="true"><Icon.megaphone /></span>
         <h3 id="rc-info-h" className="rc-card-title">Bilgilendirme</h3>
       </header>
       {/* Görsel daktilo katmanı — ekran okuyucudan gizli; tam metin sr-only'de. */}
@@ -538,9 +546,19 @@ function BilgilendirmeCard({ text }) {
         {shown.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
         {animating && <span className="rc-caret" aria-hidden="true" />}
       </div>
-      <p className="rc-sr">{text}</p>
+      <p className="rc-sr">{safe}</p>
     </article>
   );
+}
+
+// Backend kaynaklı metinden emoji/pictograph temizle — "no emoji" sözleşmesi UI sınırında
+// da korunsun (backend regresyonuna karşı savunma). Ok/onay işaretleri (→ ✓) etkilenmez.
+function stripEmoji(s) {
+  return s
+    .replace(/\p{Extended_Pictographic}/gu, "")
+    .replace(/️/g, "")
+    .replace(/^[ \t]+/gm, "")
+    .replace(/[ \t]{2,}/g, " ");
 }
 
 // Çok hafif **kalın** ve satır-sonu işleyici (markdown kütüphanesi gerektirmeden).
@@ -579,9 +597,10 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
       <ArsivBilgisiCard arsiv={r.arsiv_metadata} />
       {/* Yasal sorumluluk reddi — her sonuçta zorunlu (kamu kararı destek aracı, karar mercii değil) */}
       <p className="rc-disclaimer" role="note">
-        ⚖️ Bu sistem <strong>karar-destek</strong> amaçlıdır; nihai sorumluluk yetkili personeldedir.
+        <Icon.scale aria-hidden="true" />
+        <span>Bu sistem <strong>karar-destek</strong> amaçlıdır; nihai sorumluluk yetkili personeldedir.
         Sınıflandırma, havale ve yazı onayı yetkili kamu görevlisi tarafından teyit edilmelidir.
-        🛡️ Kişisel veriler (TCKN, telefon) <strong>maskelenerek</strong> işlenmiştir.
+        Kişisel veriler (TCKN, telefon) <strong>maskelenerek</strong> işlenmiştir.</span>
       </p>
     </section>
   );

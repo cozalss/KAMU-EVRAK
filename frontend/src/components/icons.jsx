@@ -205,6 +205,85 @@ export const Icon = {
       <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   ),
+  // --- kamu-evrak kurumsal set (Lucide-stili, 1.7 stroke) ---
+  upload: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M12 16V5M8 9l4-4 4 4M5 19h14" />
+    </svg>
+  ),
+  inbox: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M4 13l2.5-7.2A2 2 0 0 1 8.4 4.5h7.2a2 2 0 0 1 1.9 1.3L20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5z" />
+      <path d="M4 13h4l1.2 2.2h5.6L16 13h4" />
+    </svg>
+  ),
+  target: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  megaphone: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M4 10v4a1 1 0 0 0 1 1h2l8 4V5L7 9H5a1 1 0 0 0-1 1z" /><path d="M18.5 9a4 4 0 0 1 0 6" />
+    </svg>
+  ),
+  archive: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="3.5" y="4" width="17" height="4" rx="1.2" /><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4" />
+    </svg>
+  ),
+  arrowRight: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  ),
+  route: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <circle cx="6" cy="18" r="2.4" /><circle cx="18" cy="6" r="2.4" /><path d="M8.4 18H14a3.5 3.5 0 0 0 0-7H9.5A3.5 3.5 0 0 1 9.5 4H15.6" />
+    </svg>
+  ),
+  hand: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M8 11V5.5a1.5 1.5 0 0 1 3 0V11M11 10.5V4.5a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v7a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-2.7L4.2 14a1.5 1.5 0 0 1 2.4-1.8L8 14V11" />
+    </svg>
+  ),
+  alert: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M12 4.5 21 19.5H3L12 4.5z" /><path d="M12 10v4.5M12 17.5h.01" />
+    </svg>
+  ),
+  mail: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="M4 7.5l8 5.5 8-5.5" />
+    </svg>
+  ),
+  landmark: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M12 3l9 4.5H3L12 3zM5 10v7M9.5 10v7M14.5 10v7M19 10v7M3.5 20.5h17" />
+    </svg>
+  ),
+  receipt: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M6 3h12v18l-2.2-1.4L13.6 21 12 19.6 10.4 21 8.2 19.6 6 21V3z" /><path d="M9 8h6M9 12h6" />
+    </svg>
+  ),
+  card: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <rect x="3" y="5.5" width="18" height="13" rx="2.5" /><path d="M3 10h18M7 15h4" />
+    </svg>
+  ),
+  shieldCheck: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z" /><path d="M8.7 12l2.2 2.2 4.4-4.6" />
+    </svg>
+  ),
+  // Marka işareti — resmî belge + onay mührü (logo)
+  brand: (p) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M7 3h7l4 4v9.5a1.5 1.5 0 0 1-1.5 1.5H7a1.5 1.5 0 0 1-1.5-1.5V4.5A1.5 1.5 0 0 1 7 3z" />
+      <path d="M14 3v4h4M8.5 13.5l2 2 4-4.2" />
+    </svg>
+  ),
 };
 
 export const SB_NAV = [

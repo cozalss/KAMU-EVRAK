@@ -3,6 +3,7 @@ import { PIPELINE } from "./components/agent-flow/topology.js";
 import { AgentFlowGraph } from "./components/agent-flow/AgentFlowGraph.jsx";
 import { ResultCards } from "./components/result-cards.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
+import { Icon } from "./components/icons.jsx";
 
 // kamu-evrak demo arayüzü — evrak yükle (SSE) VEYA örnek metin gönder (JSON) → canlı node akışı + sonuç kartları.
 // SIFIR ek dep (react/react-dom dışında). TEKNOFEST 2026, 1. Senaryo — Demo (15p) + real-time avantajı.
@@ -258,30 +259,33 @@ export default function App() {
       <a href="#ke-main" className="ke-skip">Ana içeriğe geç</a>
 
       {/* SC 1.3.6 Landmark bölgeleri — header */}
-      <header className="ke-header" role="banner">
-        <div className="ke-brand">
-          {/* SC 1.1.1 — logo emojisi dekoratif, aria-hidden doğru */}
-          <span className="ke-logo" aria-hidden="true">📑</span>
-          <div>
-            {/* SC 2.4.6 Başlıklar — h1 sayfa başlığı */}
-            <h1>kamu-evrak</h1>
-            <p className="ke-tagline">
-              Evrakı okur, sınıflandırır, eksiğini sorar ve resmî yazı taslağını üretir —
-              <strong> iki görev tek pipeline</strong>.
-            </p>
-            <p className="ke-subline">Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi · <i>TEKNOFEST 2026, 1. Senaryo</i></p>
+      <header className="ke-header">
+        <div className="ke-header-top">
+          <div className="ke-brand">
+            {/* SC 1.1.1 — logo dekoratif SVG, aria-hidden doğru */}
+            <span className="ke-logo" aria-hidden="true"><Icon.brand /></span>
+            <div className="ke-brand-tx">
+              {/* SC 2.4.6 Başlıklar — h1 sayfa başlığı */}
+              <h1>kamu-evrak</h1>
+              <p className="ke-subline">Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi · <i>TEKNOFEST 2026, 1. Senaryo</i></p>
+            </div>
           </div>
+          <ul className="ke-trust" aria-label="Sistem güvenceleri">
+            {/* SC 1.4.1 — ikon+metin birlikte; ikon tek sinyal değil.
+                Doğruluk rozeti: docs/benchmark/llm-heldout.md gpt-4o held-out
+                sınıflandırma macro-F1 0.908 / accuracy 0.907 (bağımsız iki held-out). */}
+            <li className="ke-trust-metric">
+              <Icon.target aria-hidden="true" /> <strong>~%91</strong>&nbsp;sınıflandırma doğruluğu
+            </li>
+            <li><Icon.shield className="ke-trust-i-g1" aria-hidden="true" /> Kişisel veri maskeli</li>
+            <li><Icon.scale className="ke-trust-i-warn" aria-hidden="true" /> Karar destek — uydurmasız</li>
+          </ul>
         </div>
-        <ul className="ke-trust" aria-label="Sistem güvenceleri">
-          {/* SC 1.4.1 — ikon+metin birlikte; ikon tek sinyal değil.
-              Doğruluk rozeti: docs/benchmark/llm-heldout.md gpt-4o held-out
-              sınıflandırma macro-F1 0.908 / accuracy 0.907 (bağımsız iki held-out). */}
-          <li className="ke-trust-metric">
-            <span aria-hidden="true">🎯</span> <strong>~%91</strong>&nbsp;sınıflandırma doğruluğu
-          </li>
-          <li><span aria-hidden="true">🛡️</span> Kişisel veri maskeli</li>
-          <li><span aria-hidden="true">⚖️</span> Karar destek — uydurmasız</li>
-        </ul>
+        {/* hero ürün-vaadi — gerçek kahraman (editöryel ölçek) */}
+        <p className="ke-tagline">
+          Evrakı okur, sınıflandırır, eksiğini sorar ve resmî yazı taslağını üretir —
+          <strong> iki görev, tek pipeline</strong>.
+        </p>
       </header>
 
       {/* SC 1.3.6 — main landmark */}
@@ -306,9 +310,14 @@ export default function App() {
             }
             aria-disabled={busy}
           >
-            <span className="ke-drop-ic" aria-hidden="true">⬆️</span>
+            <span className="ke-drop-ic" aria-hidden="true"><Icon.upload /></span>
             <span className="ke-drop-main">{fileName ? fileName : "Evrakı buraya sürükle veya tıkla"}</span>
             <span className="ke-drop-sub">PDF · JPG/PNG · TIFF · Word (.docx) — en fazla {MAX_UPLOAD_MB} MB</span>
+            {!fileName && (
+              <span className="ke-drop-hint">
+                <Icon.shieldCheck aria-hidden="true" /> OCR + sınıflandırma otomatik başlar · veriler maskelenir
+              </span>
+            )}
             {/* SC 1.3.1 — gizli file input; görünür alan klavye erişimli role=button ile sağlanıyor */}
             <input
               ref={fileRef} type="file" accept={ACCEPT} hidden
@@ -331,7 +340,9 @@ export default function App() {
                   role="group"
                   aria-labelledby={`ke-grup-${slug}`}
                 >
-                  {items.map((s) => (
+                  {items.map((s) => {
+                    const SampleIcon = Icon[s.icon] || Icon.file;
+                    return (
                     <button
                       key={s.id}
                       type="button"
@@ -341,14 +352,15 @@ export default function App() {
                       aria-pressed={selectedSample === s.id}
                       aria-describedby={`ke-sdesc-${s.id}`}
                     >
-                      <span className="ke-sample-ic" aria-hidden="true">{s.icon}</span>
+                      <span className="ke-sample-ic" aria-hidden="true"><SampleIcon /></span>
                       <span className="ke-sample-tx">
                         <span className="ke-sample-label">{s.label}</span>
                         {/* SC 1.3.1 — açıklama aria-describedby ile butonla ilişkili */}
                         <span id={`ke-sdesc-${s.id}`} className="ke-sample-desc">{s.aciklama}</span>
                       </span>
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -357,7 +369,7 @@ export default function App() {
 
         {error && !busy && (
           <div className="ke-error" role="alert" aria-atomic="true">
-            <span className="ke-error-ic" aria-hidden="true">⚠️</span>
+            <span className="ke-error-ic" aria-hidden="true"><Icon.alert /></span>
             <div className="ke-error-tx">
               <strong>İşlem tamamlanamadı.</strong>
               {/* SC 3.3.1 — hata mesajı programatik olarak duyuruluyor (role=alert) */}
@@ -371,7 +383,7 @@ export default function App() {
             <div className="ke-error-act">
               {lastRun.current && (
                 <button type="button" className="ke-retry" onClick={onRetry}>
-                  <span aria-hidden="true">↻</span> Tekrar dene
+                  <Icon.refresh aria-hidden="true" /> Tekrar dene
                 </button>
               )}
               <button
@@ -380,7 +392,7 @@ export default function App() {
                 onClick={() => setError("")}
                 aria-label="Hata bildirimini kapat"
               >
-                <span aria-hidden="true">✕</span>
+                <Icon.close aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -414,7 +426,7 @@ export default function App() {
 
         {!started && (
           <section className="ke-placeholder" aria-labelledby="ke-ph-h">
-            <span className="ke-placeholder-ic" aria-hidden="true">📥</span>
+            <span className="ke-placeholder-ic" aria-hidden="true"><Icon.inbox /></span>
             <h2 id="ke-ph-h" className="ke-placeholder-h">Başlamak için bir evrak seçin</h2>
             <p>Yukarıdan bir evrak yükleyin ya da bir <strong>örnek evrak</strong> seçin; sistem evrakı
               <strong> {PIPELINE.length} ajanlı</strong> canlı bir boru hattından geçirir.</p>
@@ -438,7 +450,7 @@ export default function App() {
       </main>
 
       {/* SC 1.3.6 — contentinfo landmark (footer) */}
-      <footer className="ke-footer" role="contentinfo">
+      <footer className="ke-footer">
         <p className="ke-footer-note">
           TEKNOFEST 2026, 1. Senaryo — Demo arayüzü. Bu sistem karar-destek amaçlıdır.
         </p>

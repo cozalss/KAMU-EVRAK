@@ -114,11 +114,11 @@ export function AgentFlowGraph({ nodes }) {
       </div>
 
       {/* Canlı ilerleme çubuğu — görsel; sayı zaten agw-progress'te erişilebilir.
-          width compositor-dostu değil ama tek öğe + nadir güncellenir (node başına). */}
+          Doluş compositor-dostu transform:scaleX(--p) ile (layout tetiklemez). */}
       <div className="agw-bar" aria-hidden="true">
         <span
           className={"agw-bar-fill" + (allDone ? " full" : "")}
-          style={{ width: `${pct}%` }}
+          style={{ "--p": pct / 100 }}
         />
       </div>
 
@@ -137,12 +137,10 @@ export function AgentFlowGraph({ nodes }) {
         <svg
           className="agw-svg"
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-          role="img"
-          aria-label="Ajan pipeline akış diyagramı"
+          aria-hidden="true"
+          focusable="false"
           preserveAspectRatio="xMidYMid meet"
         >
-          {/* SVG başlığı — role="img" + title kombinasyonu SC 1.1.1 uyumlu */}
-          <title>Ajan pipeline akış diyagramı</title>
           <defs>
             <marker
               id="agw-arrow" markerWidth="7" markerHeight="7" refX="5.4" refY="3"
@@ -169,6 +167,10 @@ export function AgentFlowGraph({ nodes }) {
               x={BAND_SPLIT_X} y="0" width={VIEW_W - BAND_SPLIT_X} height={VIEW_H}
             />
             <line className="agw-band-split" x1={BAND_SPLIT_X} y1="14" x2={BAND_SPLIT_X} y2={VIEW_H - 14} />
+            {/* Bant başlıkları — canlı şema üzerinde Görev-1/Görev-2 ayrımını kanvasta da yazar
+                (renk TEK sinyal değil; üstteki legend + bu başlık + şerit birlikte). */}
+            <text className="agw-band-title agw-band-title-g1" x="18" y="26">GÖREV 1 · ANLA</text>
+            <text className="agw-band-title agw-band-title-g2" x={BAND_SPLIT_X + 18} y="26">GÖREV 2 · ÜRET</text>
           </g>
 
           {/* Kenarlar (düğümlerin ALTINDA) */}
@@ -257,7 +259,7 @@ function summarize(id, d) {
   }
   if (id === "cikar") {
     const n = d.bilgi_unsurlari ? Object.keys(d.bilgi_unsurlari).length : 0;
-    const pii = d.bilgi_unsurlari?.pii_var ? " · PII⚑" : "";
+    const pii = d.bilgi_unsurlari?.pii_var ? " · PII maskeli" : "";
     return n ? `${n} alan${pii}` : "";
   }
   if (id === "eksik_tespit") {

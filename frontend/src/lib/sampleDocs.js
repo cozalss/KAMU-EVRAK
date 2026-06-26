@@ -24,7 +24,7 @@ export const SAMPLE_DOCS = [
   {
     id: "dilekce",
     label: "Dilekçe",
-    icon: "📝",
+    icon: "pencil",
     grup: "Vatandaş",
     aciklama: "Vatandaş talebi — zorunlu alanlar tam",
     text: `T.C.
@@ -47,7 +47,7 @@ Telefon: 0555 123 45 67
   {
     id: "bilgi_edinme",
     label: "Bilgi Edinme",
-    icon: "🔍",
+    icon: "search",
     grup: "Vatandaş",
     aciklama: "4982 sayılı Kanun kapsamında başvuru",
     text: `T.C.
@@ -69,7 +69,7 @@ Adres: Bahçelievler Mahallesi, 7. Sokak No: 3, Bahçelievler / İSTANBUL
   {
     id: "sikayet",
     label: "Şikâyet (eksik)",
-    icon: "⚠️",
+    icon: "alert",
     grup: "Vatandaş",
     aciklama: "Eksik alanlı — dur-ve-sor (clarify) tetiklenir",
     text: `Belediyeye bağlı temizlik araçları sabahın çok erken saatlerinde yüksek
@@ -81,7 +81,7 @@ Gereken işlemin yapılmasını istiyorum.`,
   {
     id: "ust_yazi",
     label: "Üst Yazı",
-    icon: "🏛️",
+    icon: "landmark",
     grup: "Kurum",
     aciklama: "Kurumlar arası yeni resmî yazışma",
     text: `T.C.
@@ -105,7 +105,7 @@ e-imza`,
   {
     id: "muzekkere",
     label: "Müzekkere",
-    icon: "📑",
+    icon: "file",
     grup: "Kurum",
     aciklama: "Kurumlar arası bilgi/kayıt celbi — Hukuk Müşavirliği",
     text: `T.C.
@@ -129,7 +129,7 @@ e-imza`,
   {
     id: "gorus_mutalaa",
     label: "Görüş / Mütalaa",
-    icon: "⚖️",
+    icon: "scale",
     grup: "Kurum",
     aciklama: "Hukuki mütalaa talebi — Hukuk Müşavirliği",
     text: `T.C.
@@ -154,7 +154,7 @@ e-imza`,
   {
     id: "tebligat",
     label: "Tebligat",
-    icon: "📨",
+    icon: "mail",
     grup: "Hukuk/Mali",
     aciklama: "7201 sayılı Kanun — karar bildirimi → Hukuk birimi",
     text: `T.C.
@@ -179,7 +179,7 @@ e-imza`,
   {
     id: "icra_evraki",
     label: "İcra / Haciz",
-    icon: "🧾",
+    icon: "receipt",
     grup: "Hukuk/Mali",
     aciklama: "İcra ödeme emri / haciz — 10 yıl saklama",
     text: `T.C.
@@ -204,7 +204,7 @@ e-imza`,
   {
     id: "fatura",
     label: "Fatura / Ödeme",
-    icon: "💳",
+    icon: "card",
     grup: "Hukuk/Mali",
     aciklama: "Mal/hizmet bedeli ödemesi → Mali İşler",
     text: `T.C.

@@ -36,6 +36,12 @@ class TestHeldoutEvaluateUctanUca:
         assert 0.0 <= res["route_top1_acc"] <= 1.0
         assert res["route_top3_acc"] >= res["route_top1_acc"]
         assert len(res["accuracy_ci95"]) == 2
+        # Operasyonel metrik (eşdeğer-grup) sıkı metriğin YANINDA raporlanır.
+        assert 0.0 <= res["operational_accuracy"] <= 1.0
+        assert 0.0 <= res["operational_macro_f1"] <= 1.0
+        # Operasyonel doğruluk sıkı doğruluktan ASLA düşük olamaz (gevşek tolerans).
+        assert res["operational_accuracy"] >= res["accuracy"]
+        assert len(res["operational_accuracy_ci95"]) == 2
 
     def test_dogru_siniflandirmada_accuracy_yuksek(self):
         # Arrange — keyword'ü açık iki örnek → heuristik doğru bulmalı

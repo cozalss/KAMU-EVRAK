@@ -41,6 +41,58 @@ EVRAK_TURU_TR: dict[str, str] = {
     "belirsiz": "Belirsiz",
 }
 
+# --- Görev 1: Operasyonel-eşdeğer sınıf grupları (taksonomi belirsizliği) ---
+# NEDEN: 18-sınıflı taksonomi bazı yerlerde insan etiketleyicinin bile karıştırdığı
+# kadar ince (held-out hata analizi, docs/benchmark/llm-heldout.md): talep≈başvuru≈
+# dilekçe = "vatandaş talebi"; müzekkere≈genelge≈üst yazı = "resmî yazı ailesi".
+# Bu çiftler arası hatalar RASTGELE değil — LLM SAVUNULABİLİR seçim yapar ve çoğu
+# AYNI birime havale olur (operasyonel olarak doğru). Sıkı macro-F1 bu nüansı
+# cezalandırır; "operasyonel doğruluk" (tahmin, gerçeğin eşdeğer-grubunda mı?) dürüst
+# bir İKİNCİ metriktir — sıkı metriğin YERİNE değil, YANINDA raporlanır (eval/).
+#
+# DÜRÜST GRUPLAMA İLKESİ (jüriye savunulabilir; aşırı-birleştirme YOK):
+#  - Gruplar yalnız GERÇEKTEN bulanık sınır + AYNI operasyonel sonuç (havale/işlem)
+#    paylaşan türleri birleştirir; gevşek "hepsi yazı" birleştirmesi YAPILMAZ.
+#  - bilgi_edinme AYRI tutulur: 4982 ayrı süre rejimi (15 iş günü, m.16-17 red, BEDK
+#    itirazı) → dilekçe/talep ile operasyonel olarak DEĞİŞTİRİLEMEZ (docs/02 §4).
+#  - ihbar AYRI: soruşturma/denetim tetikler (teftiş); şikâyet'ten ayrı sonuç doğurur.
+#  - fatura/tutanak/rapor/tebligat: ayrık operasyonel sonuç → kendi grubu (singleton).
+EVRAK_ESDEGER: dict[str, tuple[str, ...]] = {
+    # Vatandaş talebi: serbest istek/başvuru kanalları — ilk havale aynı (halkla
+    # ilişkiler/ilgili daire), işlem aynı (kayıt→havale→cevabi yazı, 3071/30 gün).
+    # bilgi_edinme DAHİL DEĞİL (ayrı 4982 rejimi). cimer DAHİL (3071 türü başvuru).
+    "vatandas_talebi": ("dilekce", "talep", "basvuru", "cimer"),
+    # Resmî yazı ailesi: kurum→kurum yazışma; üst yazı/cevabi/müzekkere/genelge sınırı
+    # bulanık (hepsi resmî format + Yazı İşleri akışı). gorus_mutalaa DAHİL DEĞİL
+    # (hukuki kanaat = ayrı işlem, hukuk müşavirliği esas içerik).
+    "resmi_yazi": ("ust_yazi", "cevabi_yazi", "muzekkere", "genelge_talimat_olur"),
+    # İcra/dava: yargı-icra evrakı; süreli + hukuk müşavirliği savunma/işlem (ayrık sonuç).
+    "yargi_icra": ("dava_evraki", "icra_evraki"),
+}
+
+# Tür → eşdeğer-grup adı (singleton türler kendi adıyla; hızlı ters-arama).
+_EVRAK_GRUP: dict[str, str] = {
+    turu: grup for grup, turler in EVRAK_ESDEGER.items() for turu in turler
+}
+
+
+def esdeger_grup(turu: str) -> str:
+    """Evrak türü → operasyonel-eşdeğer grup adı.
+
+    Gruba ait değilse türün KENDİSİ grup sayılır (singleton) → operasyonel metrik
+    aşırı-birleştirmez; yalnız tanımlı bulanık-sınır çiftlerinde tolerans gösterir.
+    'belirsiz' her zaman singleton (abstention; hiçbir grupla eşdeğer değil).
+    """
+    return _EVRAK_GRUP.get(turu, turu)
+
+
+def ayni_esdeger_grup(a: str, b: str) -> bool:
+    """İki tür operasyonel-eşdeğer mi? 'belirsiz' hiçbir şeyle eşdeğer DEĞİL (sıkı abstention)."""
+    if a == "belirsiz" or b == "belirsiz":
+        return a == b
+    return esdeger_grup(a) == esdeger_grup(b)
+
+
 # --- Görev 2: Birim yönlendirme (havale) etiketleri ---
 BIRIMLER: tuple[str, ...] = (
     "yazi_isleri_evrak", "hukuk_musavirligi", "insan_kaynaklari", "mali_strateji_sgb",

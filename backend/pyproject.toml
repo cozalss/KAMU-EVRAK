@@ -56,6 +56,12 @@ dev = [
     "ruff>=0.6.9",
     "faker>=30.0.0",
 ]
+# Sunum (ön + final) export: Markdown → PDF + PPTX (scripts/export_sunum.py).
+# PDF yolu çekirdek reportlab ile sağlanır (TTF font gömme → Türkçe ç/ş/ğ/İ);
+# burada yalnız PPTX için python-pptx eklenir.
+docs = [
+    "python-pptx>=1.0.2",
+]
 
 [build-system]
 requires = ["hatchling"]

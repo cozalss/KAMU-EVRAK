@@ -134,26 +134,53 @@ _SYSTEM = (
     "2) NİYET/EYLEM: yeni bir hak/işlem mi isteniyor, mevcut bir belgeye mi erişiliyor, "
     "bir karar mı bildiriliyor, bir görüş mü soruluyor, para mı isteniyor?\n"
     "3) BAĞLAM: mahkeme/icra/tebliğ, mali, denetim/şikâyet, arşiv/tutanak?\n\n"
-    "AYIRT EDİCİ KURALLAR (sık karışanlar):\n"
-    "- dilekçe: vatandaşın SERBEST talebi/sorunu (yeni bir istek). bilgi_edinme: vatandaşın "
-    "kurumda MEVCUT olan kayıt/belgeye erişim talebi (4982). basvuru: belirli bir izin/"
-    "ruhsat/kayıt için resmi süreç başlatma.\n"
-    "- sikayet: bir aksaklık/memnuniyetsizlik bildirimi (mağduriyet). ihbar: bir kişi/"
-    "kurum hakkında usulsüzlük/suç bildirimi (denetim ister).\n"
-    "- cimer: Cumhurbaşkanlığı iletişim/tek-kapı/çevrim içi başvuru kanalı vurgusu.\n"
-    "- ust_yazi: kurumun BAŞLATTIĞI yeni yazışma (ek/belge sunumu). cevabi_yazi: önceki "
-    "bir yazıya/talebe KARŞILIK ('yazınıza istinaden', 'incelendi, sonuç şudur').\n"
-    "- tebligat: bir karar/yükümlülüğün muhataba RESMEN bildirimi. muzekkere: kurumun "
-    "başka kurumdan bilgi/kayıt CELBİ. gorus_mutalaa: hukuki YORUM/değerlendirme isteği.\n"
-    "- fatura: bir bedelin/hak edişin ÖDENMESİ talebi (para akışı). icra_evraki: zorla "
-    "tahsil/haciz/malvarlığı. dava_evraki: mahkeme/yargılama beyanı.\n\n"
-    "ÖRNEKLER (yalnız ayrımı göster; metni ezberleme):\n"
+    "AYIRT EDİCİ KURALLAR (sık karışan ÇİFTLER — held-out hata analizi; bunlara DİKKAT):\n"
+    "● VATANDAŞ TALEBİ ailesi (dilekçe / talep / başvuru / cimer) — hepsi vatandaştan ama\n"
+    "  AYRI niyet; karıştırma:\n"
+    "  - dilekce: vatandaşın SERBEST/genel talebi veya sorununun çözümü (özel bir izin/"
+    "ruhsat süreci YOK; 'şu sorunun giderilmesini istiyorum').\n"
+    "  - talep: SOMUT TEKİL istek — belirli bir belge/nüsha/randevu/kaynak/tahsis (yeni hak "
+    "süreci değil; var olan bir işlemin yapılması: 'şu belgenin bir örneği', 'şu tahsisi').\n"
+    "  - basvuru: belirli bir HİZMET/İZİN/RUHSAT/KAYIT için resmî SÜREÇ başlatma (şart/hak "
+    "tesisi: 'şartları sağlıyorum, kaydımın yapılmasını/programa dâhil edilmemi').\n"
+    "  - cimer: Cumhurbaşkanlığı İletişim Merkezi / tek-kapı / çevrim içi başvuru KANALI vurgusu "
+    "(içerik dilekçe gibi olsa da kanal CİMER ise → cimer).\n"
+    "  - bilgi_edinme (AYRI; vatandaş talebiyle KARIŞTIRMA): kurumda MEVCUT olan kayıt/belgeye "
+    "ERİŞİM (4982; yeni hak değil, var olanın sureti/dökümü).\n"
+    "● RESMÎ YAZI ailesi (üst yazı / cevabi yazı / müzekkere / genelge-talimat-olur) — kurum→kurum:\n"
+    "  - ust_yazi: kurumun BAŞLATTIĞI yeni yazışma (ek/belge sunumu, koordinasyon; önceki yazıya "
+    "atıf YOK).\n"
+    "  - cevabi_yazi: önceki bir yazıya/talebe KARŞILIK ('ilgi yazınıza istinaden', 'incelendi, "
+    "sonuç şudur').\n"
+    "  - muzekkere: BAŞKA bir kurumdan/dosyadan bilgi/kayıt/belge CELBİ — genellikle mahkeme/"
+    "savcılık/icra bağlamı ('… dosyasına ilişkin kayıtların makamımıza gönderilmesi').\n"
+    "  - genelge_talimat_olur: ÜST MAKAM bağlayıcı düzenleme/onay (teşkilat geneli: 'tüm "
+    "birimlerce uygulanmak üzere', 'makam oluru/onayı').\n"
+    "● sikayet vs ihbar: sikayet = aksaklık/memnuniyetsizlik (mağduriyet). ihbar = bir kişi/"
+    "kurum hakkında usulsüzlük/suç bildirimi (denetim/soruşturma ister).\n"
+    "● ÖDEME/YARGI: fatura = bir bedelin/hak edişin ÖDENMESİ (para akışı). icra_evraki = zorla "
+    "tahsil/haciz/malvarlığı (borçlu odaklı; ÜST YAZI değil — resmî format taşısa da icra "
+    "bağlamı baskındır). dava_evraki = mahkeme/yargılama beyanı. tebligat = karar/yükümlülüğün "
+    "muhataba RESMEN bildirimi (süre başlatır). gorus_mutalaa = hukuki YORUM/değerlendirme isteği.\n\n"
+    "ÖRNEKLER (yalnız ÇİFT-AYRIMINI göster; metni ezberleme):\n"
     'Metin: "Mahallemizdeki sorunun çözülmesini umuyorum. Ad-Soyad: ... TCKN: ..."\n'
     '→ {"evrak_turu": "dilekce", "tur_confidence": 0.8, "tur_reasoning": "vatandaş serbest talep"}\n'
+    'Metin: "Faaliyet belgemin bir suretinin tarafıma verilmesini rica ederim. Ad-Soyad: ..."\n'
+    '→ {"evrak_turu": "talep", "tur_confidence": 0.75, "tur_reasoning": "somut tekil belge isteği (izin süreci yok)"}\n'
+    'Metin: "Aranan şartları taşıdığımdan kaydımın yapılarak programa dâhil edilmemi istiyorum."\n'
+    '→ {"evrak_turu": "basvuru", "tur_confidence": 0.8, "tur_reasoning": "izin/kayıt süreci başlatma (şart tesisi)"}\n'
+    'Metin: "Çevrim içi başvuru sistemi üzerinden ilettiğim şikâyetimdir. Ad-Soyad: ..."\n'
+    '→ {"evrak_turu": "cimer", "tur_confidence": 0.8, "tur_reasoning": "çevrim içi başvuru kanalı (CİMER)"}\n'
     'Metin: "Kurumunuzda mevcut geçmiş kayıtların bir suretine erişmek istiyorum."\n'
     '→ {"evrak_turu": "bilgi_edinme", "tur_confidence": 0.85, "tur_reasoning": "mevcut kayda erişim (4982)"}\n'
     'Metin: "Daha önce gönderdiğiniz yazıda sorulan hususa ilişkin görüşümüz aşağıdadır."\n'
-    '→ {"evrak_turu": "cevabi_yazi", "tur_confidence": 0.85, "tur_reasoning": "önceki yazıya karşılık"}\n\n'
+    '→ {"evrak_turu": "cevabi_yazi", "tur_confidence": 0.85, "tur_reasoning": "önceki yazıya karşılık"}\n'
+    'Metin: "Esas dosyaya ilişkin kayıtların bir örneğinin makamımıza gönderilmesini rica ederiz."\n'
+    '→ {"evrak_turu": "muzekkere", "tur_confidence": 0.8, "tur_reasoning": "başka dosyadan kayıt celbi"}\n'
+    'Metin: "Söz konusu uygulamanın tüm birimlerce esas alınması hususunda gereğini rica ederim."\n'
+    '→ {"evrak_turu": "genelge_talimat_olur", "tur_confidence": 0.8, "tur_reasoning": "teşkilat geneli bağlayıcı düzenleme"}\n'
+    'Metin: "Borçlunun banka hesaplarına haciz konulması için gereğini arz ederiz."\n'
+    '→ {"evrak_turu": "icra_evraki", "tur_confidence": 0.85, "tur_reasoning": "zorla tahsil/haciz (üst yazı değil)"}\n\n'
     "Kurallar: Liste DIŞINDA tür UYDURMA. Emin değilsen 'belirsiz' + düşük güven (abstention).\n"
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
     '{"evrak_turu": "<tür>", "tur_confidence": <0..1>, "tur_reasoning": "<kısa gerekçe>"}'

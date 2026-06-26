@@ -30,7 +30,7 @@ from typing import Any
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-from agents.config import EVRAK_TURLERI  # noqa: E402
+from agents.config import EVRAK_TURLERI, ayni_esdeger_grup, esdeger_grup  # noqa: E402
 from agents.graph import build_graph  # noqa: E402
 from agents.state import make_initial_state  # noqa: E402
 from eval.stats import fmt_ci, wilson_interval  # noqa: E402
@@ -88,6 +88,35 @@ def confusion_pairs(rows: list[dict], top: int = 6) -> list[tuple[str, str, int]
     return sorted(((a, b, n) for (a, b), n in cnt.items()), key=lambda x: -x[2])[:top]
 
 
+def operational_accuracy(rows: list[dict]) -> float:
+    """Operasyonel doğruluk: tahmin, gerçeğin EŞDEĞER-grubunda mı (config.EVRAK_ESDEGER)?
+
+    Sıkı doğruluğun YERİNE değil YANINDA raporlanır. talep↔dilekçe gibi insan
+    etiketleyicinin bile karıştırdığı bulanık-sınır çiftleri 'eşdeğer' sayılır
+    (çoğu aynı birime havale → operasyonel olarak doğru); 'belirsiz' (abstention)
+    hiçbir şeyle eşdeğer değildir → sıkı kalır.
+    """
+    n = len(rows)
+    if not n:
+        return 0.0
+    ok = sum(1 for r in rows if ayni_esdeger_grup(r["pred"], r["evrak_turu"]))
+    return ok / n
+
+
+def operational_macro_f1(rows: list[dict]) -> float:
+    """Eşdeğer-grup düzeyinde macro-F1 (tür yerine grup etiketiyle).
+
+    Sınıfları operasyonel-eşdeğer gruba indirger, sonra aynı macro_f1 mantığını
+    grup-etiketi üzerinde koşar → taksonomi-belirsizliğinden arındırılmış adil skor.
+    """
+    grouped = [
+        {"evrak_turu": esdeger_grup(r["evrak_turu"]), "pred": esdeger_grup(r["pred"])}
+        for r in rows
+    ]
+    mf1, _ = macro_f1(grouped)
+    return mf1
+
+
 def evaluate(rows: list[dict]) -> dict:
     """GERÇEK pipeline ile tahmin et + tüm metrikleri hesapla."""
     run_pipeline(rows)
@@ -102,10 +131,17 @@ def evaluate(rows: list[dict]) -> dict:
         if z in by_zorluk:
             by_zorluk[z]["n"] += 1
             by_zorluk[z]["ok"] += int(r["pred"] == r["evrak_turu"])
+    op_correct = sum(1 for r in rows if ayni_esdeger_grup(r["pred"], r["evrak_turu"]))
+    op_acc = operational_accuracy(rows)
+    op_mf1 = operational_macro_f1(rows)
     lo, hi = wilson_interval(correct, n)
+    op_lo, op_hi = wilson_interval(op_correct, n)
     return {
         "n": n, "correct": correct, "accuracy": round(acc, 4),
         "accuracy_ci95": [round(lo, 3), round(hi, 3)], "macro_f1": mf1,
+        "operational_accuracy": round(op_acc, 4),
+        "operational_accuracy_ci95": [round(op_lo, 3), round(op_hi, 3)],
+        "operational_correct": op_correct, "operational_macro_f1": op_mf1,
         "per_class": per, "abstention_rate": round(abstain / n, 3) if n else 0.0,
         "abstention_count": abstain, "confusion": confusion_pairs(rows),
         "n_classes": len(EVRAK_TURLERI),
@@ -119,8 +155,13 @@ def main() -> int:
     bar = "=" * 66
     print(f"\n{bar}\n  GÖREV 1 — EVRAK SINIFLANDIRMA (GERÇEK pipeline, mock-LLM)\n{bar}")
     print(f"  Vaka: {res['n']} · doğru: {res['correct']} · kapalı-küme: {res['n_classes']} sınıf")
+    print("  --- SIKI metrik (tam tür eşleşmesi) ---")
     print(f"  Accuracy : {res['accuracy']:.3f}  (%95 CI {fmt_ci(res['correct'], res['n'])})")
     print(f"  Macro-F1 : {res['macro_f1']:.3f}")
+    print("  --- OPERASYONEL metrik (eşdeğer-grup; config.EVRAK_ESDEGER) ---")
+    print(f"  Op-Accuracy: {res['operational_accuracy']:.3f}  "
+          f"(%95 CI {fmt_ci(res['operational_correct'], res['n'])})")
+    print(f"  Op-Macro-F1: {res['operational_macro_f1']:.3f}")
     print(f"  Abstention: {res['abstention_count']}/{res['n']} "
           f"({res['abstention_rate']:.0%})  (belirsiz / düşük-güven)")
     print(f"  Zorluk acc: {res['by_zorluk']}")

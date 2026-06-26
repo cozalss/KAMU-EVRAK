@@ -33,10 +33,15 @@ from typing import Any
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
-from agents.config import EVRAK_TURLERI  # noqa: E402
+from agents.config import EVRAK_TURLERI, ayni_esdeger_grup  # noqa: E402
 from agents.graph import build_graph  # noqa: E402
 from agents.state import make_initial_state  # noqa: E402
-from eval.evrak_class_eval import confusion_pairs, macro_f1  # noqa: E402 (DRY: aynı metrik)
+from eval.evrak_class_eval import (  # noqa: E402 (DRY: aynı metrikler)
+    confusion_pairs,
+    macro_f1,
+    operational_accuracy,
+    operational_macro_f1,
+)
 from eval.stats import fmt_ci, wilson_interval  # noqa: E402
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "heldout_gold.jsonl"
@@ -79,11 +84,18 @@ def evaluate(rows: list[dict]) -> dict:
     top1 = sum(1 for r in rows if r["pred_birim"] == r["beklenen_birim"])
     top3 = sum(1 for r in rows if r["beklenen_birim"] in r["alts"][:3])
 
+    op_correct = sum(1 for r in rows if ayni_esdeger_grup(r["pred"], r["evrak_turu"]))
+    op_acc = operational_accuracy(rows)
+    op_mf1 = operational_macro_f1(rows)
     lo, hi = wilson_interval(correct, n)
+    op_lo, op_hi = wilson_interval(op_correct, n)
     r1_lo, r1_hi = wilson_interval(top1, n)
     return {
         "n": n, "correct": correct, "accuracy": round(acc, 4),
         "accuracy_ci95": [round(lo, 3), round(hi, 3)], "macro_f1": mf1,
+        "operational_accuracy": round(op_acc, 4),
+        "operational_accuracy_ci95": [round(op_lo, 3), round(op_hi, 3)],
+        "operational_correct": op_correct, "operational_macro_f1": op_mf1,
         "per_class": per, "abstention_rate": round(abstain / n, 3) if n else 0.0,
         "abstention_count": abstain, "confusion": confusion_pairs(rows),
         "n_classes": len(EVRAK_TURLERI),
@@ -98,9 +110,13 @@ def main() -> int:
     bar = "=" * 70
     print(f"\n{bar}\n  HELD-OUT (DÜRÜST, dairesel-OLMAYAN) — SINIFLANDIRMA + YÖNLENDİRME\n{bar}")
     print(f"  Vaka: {res['n']} · doğru: {res['correct']} · kapalı-küme: {res['n_classes']} sınıf")
-    print("  --- Görev 1: sınıflandırma ---")
+    print("  --- Görev 1: sınıflandırma (SIKI — tam tür eşleşmesi) ---")
     print(f"  Accuracy : {res['accuracy']:.3f}  (%95 CI {fmt_ci(res['correct'], res['n'])})")
     print(f"  Macro-F1 : {res['macro_f1']:.3f}")
+    print("  --- Görev 1: OPERASYONEL (eşdeğer-grup; config.EVRAK_ESDEGER) ---")
+    print(f"  Op-Accuracy: {res['operational_accuracy']:.3f}  "
+          f"(%95 CI {fmt_ci(res['operational_correct'], res['n'])})")
+    print(f"  Op-Macro-F1: {res['operational_macro_f1']:.3f}")
     print(f"  Abstention: {res['abstention_count']}/{res['n']} ({res['abstention_rate']:.0%})")
     print("  --- Görev 2: yönlendirme (uçtan-uca) ---")
     print(f"  Top-1    : {res['route_top1_acc']:.3f}  (%95 CI {fmt_ci(res['route_top1'], res['n'])})")

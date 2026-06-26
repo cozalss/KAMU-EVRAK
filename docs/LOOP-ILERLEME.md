@@ -11,6 +11,13 @@
   `python -m py_compile`. Frontend: dosya varlığı + (mümkünse) `npm run build`.
 
 ## İterasyon günlüğü (en yeni üstte)
+- **İT-11/12 BİTTİ:** gpt-4o **çapraz-doğrulama** (2 bağımsız held-out: sıkı ~0.79-0.91 / operasyonel ~0.88-0.94 / routing ~0.87-0.93 → tek-set tesadüfü DEĞİL) [79eaa9d]; README/scorecard/sunum'a gpt-4o işlendi + **ticarileşme.md** [c8f84be]; **WCAG 2.2 AA a11y** (kontrast/focus/ARIA/reduced-motion) [c8f84be]; tutanak/rapor/dava→cevabi **few-shot** (mock heldout2 0.59→0.69, tutanak/rapor 6/6) [1c40293]; **test coverage %44→%81**, 649 test [1c40293]; code-review 2 bulgu DÜZELTİLDİ: **api/pii.py log-PII maskeleme aktif** + legacy kırık scorecard.py silindi [2b60c95]; teknik borç (run_llm_smoke banner, CORS daralt, TODO) [c8f84be]. **DURUM: kazanma seviyesi** — gpt-4o ~0.90, 649 test/%81 coverage, a11y, güvenlik, PII (node+log), sunum PDF/PPTX+ticarileşme, 32 commit. adalet-agent TEMİZ.
+- **İT-13 ÖNCELİKLER (kalan cila):**
+  1. **Demo GIF** (orkestratör: backend+vite başlat → Playwright screenshot dizisi → PIL animasyon GIF → docs/img/demo.gif; Playwright artıklarını adalet-agent'tan TEMİZLE).
+  2. (opsiyonel) tutanak/rapor few-shot SONRASI gpt-4o yeniden ölçüm → headline güncelle.
+  3. İdari (kullanıcı): 4. takım üyesi, TAKP GitHub remote+push, ön-eleme sunumu (12 Tmz).
+  4. Son cila: README ekran görüntüleri tazele, kalan MEDIUM (varsa), final QA geçişi.
+  AJAN PROMPT NOTU: MUTLAK yol; graph.py tek ajan; pytest yeşil; api/pii MaskResult arayüzü korunur.
 - **İT-10 (sabah) BİTTİ — BÜYÜK KAZANIM:** Gerçek-LLM ölçümü yapıldı (.env'de openai anahtarı).
   **gpt-4o held-out (dürüst, dairesel-OLMAYAN): sıkı macroF1 0.91 / operasyonel 0.93 / routing Top-1 0.93 (98/108)** → dış-değerlendirmenin "80+" çekincesine kesin yanıt. İlerleme: mock 0.22 → mini 0.61 → gpt-4o 0.91. Detay: docs/benchmark/llm-heldout.md.
   Ayrıca: hedefli few-shot (karışan çiftler) + EVRAK_ESDEGER operasyonel-eşdeğer puanlama [37d6caf]; sunum PDF+PPTX export (Türkçe font OK) [37d6caf]; mevzuat lafzî tam-metin (chunk 55→63, Recall@1 0.875→0.938) [896ac73]; **code-review (0 CRIT/2 HIGH/3 MED/2 LOW) + 7 bulgu DÜZELTİLDİ** (CRAG tür-boost, /health llm_active, rate-limit, aclose_llm, _node_summary, clarifier) [3d247f6]. **GÜVENLİK:** .env.example'a sızan anahtar .env'e taşındı (git geçmişine girmedi) [23a873b]. pytest **235**. PII/eval-dürüstlük/zero-halüsinasyon code-review'da TEMİZ doğrulandı.

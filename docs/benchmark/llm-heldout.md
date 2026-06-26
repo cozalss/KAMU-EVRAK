@@ -1,10 +1,23 @@
 # Gerçek-LLM Held-out Değerlendirmesi (DÜRÜST, dairesel-OLMAYAN)
 
-> Tarih: 2026-06-26 · **En iyi model: gpt-4o** (`LLM_MODE=openai`; aşağıdaki tabloda gpt-4o-mini ara
-> karşılaştırma olarak bırakıldı) · Set: `data/synthetic/heldout_gold.jsonl`
-> (108 evrak, **örtük/dolaylı ifade**, gen_synthetic'ten farklı şablon/sözlük → keyword sızıntısı yok).
-> Ölçüm: gerçek LangGraph pipeline `build_graph().ainvoke` her evrak için. Komut:
-> `cd backend && LLM_MODE=openai python -m eval.heldout_eval`
+> Set: `data/synthetic/heldout_gold.jsonl` (108 evrak, **örtük/dolaylı ifade**, gen_synthetic'ten
+> farklı şablon/sözlük → keyword sızıntısı yok). Ölçüm: gerçek LangGraph pipeline `build_graph().ainvoke`.
+
+> ### 🔄 ÜRETİM MODELİ: DeepSeek-V4 (`deepseek-chat`) — 2026-06-27
+>
+> Proje **DeepSeek-V4'e geçti**: OpenAI-uyumlu (**kod değişikliği yok** — `OPENAI_BASE_URL=https://api.deepseek.com`),
+> **ucuz** (V4 Flash $0.14/$0.28 per 1M — gpt-4o-mini'den de ucuz) ve **güçlü Türkçe**.
+>
+> **Held-out ön-ölçüm (n=22, dağıtılmış örneklem):** sıkı accuracy **0.955** (21/22) · macro-F1 **0.933**
+> [BCa CI 0.875–1.0] · operasyonel **1.000** · routing Top-1 **0.955** → gpt-4o'nun (n=108) **0.935**'iyle
+> **aynı seviyede ya da üstünde**. Artefakt: `backend/eval/runs/heldout_deepseek_quick.json`.
+>
+> ⚠️ **Dürüstlük:** n=22 küçük örneklem → güven aralığı geniş; **tam 108-evrak ölçümü sonraki adımdır**.
+> Komut (`.env` DeepSeek'e ayarlı; ek bayrak yok):
+> `cd backend && python -m eval.heldout_eval --set heldout --dump eval/runs/heldout_deepseek_set1.json`
+>
+> Aşağıdaki **gpt-4o** tabloları **çapraz-referans** olarak korunur (tam 108-evrak, artefakt-destekli,
+> reprodüke-edilebilir) — önceki üretim modeli + bağımsız doğrulama.
 
 > ### ⚠️ DÜRÜSTLÜK GÜNCELLEMESİ (2026-06-26) — mock taban ARTIK güvenilir değil
 >

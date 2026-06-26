@@ -23,7 +23,7 @@ Tek bir LangGraph boru hattı; **bulut (gpt-4o), lokal (Qwen GGUF) veya anahtars
 
 | | |
 |---|---|
-| 🎯 **Dürüst değerlendirme** | Dairesel-olmayan held-out'ta gerçek-LLM (gpt-4o) **sıkı macro-F1 0.935** [BCa %95 CI 0.881–0.978]; **reprodüke-edilebilir artefakt** repoda |
+| 🎯 **Dürüst değerlendirme** | Üretim modeli **DeepSeek-V4** — held-out ön-ölçüm (n=22) **acc 0.955 / op 1.0**; çapraz-referans gpt-4o (n=108) **0.935** [BCa CI]; reprodüke-edilebilir artefaktlar repoda |
 | 🛡️ **PII maskeleme** | TCKN / telefon / IBAN bulut çağrısından **önce** maskelenir; ham kişisel veri arayüze hiç ulaşmaz |
 | 🚫 **Anti-halüsinasyon** | Deterministik uydurma-veto (false-positive 0) + NLI atıf-gerekçelendirme; emin olunmayan madde `[DOĞRULA:]` |
 | 📚 **Gerçek RAG** | Madde-bazlı **BM25Okapi** mevzuat retrieval + opsiyonel cross-encoder rerank (bge-reranker-v2-m3) |
@@ -88,19 +88,34 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit
 
 Tüm ölçümler **gerçek LangGraph pipeline**'ını (`build_graph().ainvoke`) koşar; fark yalnız **LLM modu** ve **veri setidir**.
 
-### Gerçek-LLM held-out (dürüst, dairesel-OLMAYAN) — reprodüke-edilebilir
+Held-out: örtük ifadeli, üretim sözlüğünden **farklı** evrak (keyword sızıntısı yok).
 
-Örtük ifadeli, üretim sözlüğünden **farklı** 108-evrak held-out sette (keyword sızıntısı yok):
+### Üretim modeli: DeepSeek-V4 (`deepseek-chat`, OpenAI-uyumlu)
 
-| Metrik (held-out set-1) | gpt-4o-mini | **gpt-4o — ARTEFAKT-DESTEKLİ** |
+Tercih sebebi: **ucuz** (V4 Flash $0.14/$0.28 per 1M — gpt-4o-mini'den de ucuz) + **güçlü Türkçe**. Held-out **ön-ölçüm (n=22, dağıtılmış örneklem)**:
+
+| Metrik (DeepSeek-V4, n=22 ön-ölçüm) | Değer |
+|---|---|
+| Sınıflandırma accuracy (sıkı) | **0.955** (21/22) |
+| Sınıflandırma macro-F1 (sıkı) | **0.933** [BCa %95 CI 0.875–1.0] |
+| Operasyonel accuracy | **1.000** |
+| Yönlendirme Top-1 | **0.955** |
+
+> ⚠️ **Dürüstlük:** Küçük örneklem (n=22) → güven aralığı geniş; tam 108-evrak ölçümü sonraki adımdır. Artefakt: [`backend/eval/runs/heldout_deepseek_quick.json`](backend/eval/runs/heldout_deepseek_quick.json).
+
+### Çapraz-referans: gpt-4o (n=108, artefakt-destekli)
+
+Tam 108-evrak held-out'ta (önceki üretim modeli, reprodüke-edilebilir):
+
+| Metrik (n=108) | gpt-4o-mini | **gpt-4o** |
 |---|---|---|
-| Sınıflandırma macro-F1 (sıkı) | 0.612 | **0.935** [BCa %95 CI 0.881–0.978] |
-| Sınıflandırma accuracy (sıkı) | 0.620 | **0.935** [Wilson %95 CI 0.872–0.968] |
-| Operasyonel accuracy | 0.768 | **0.963** [%95 CI 0.909–0.986] |
-| Yönlendirme Top-1 | 0.778 | **0.954** [%95 CI 0.896–0.980] |
-| Doğru / 108 | 67 | **101** (abstention 0) |
+| Sınıflandırma macro-F1 (sıkı) | 0.612 | **0.935** [BCa CI 0.881–0.978] |
+| Sınıflandırma accuracy (sıkı) | 0.620 | **0.935** [Wilson CI 0.872–0.968] |
+| Operasyonel accuracy | 0.768 | **0.963** |
+| Yönlendirme Top-1 | 0.778 | **0.954** |
+| Doğru / 108 | 67 | **101** |
 
-Artefakt: [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json) (per-satır tahmin/gold, metin PII-maskeli, **anahtar yok**). Reprodüksiyon komutu ve iki-set çapraz-doğrulama: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
+Artefakt: [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json) (PII-maskeli, anahtar yok). Detay: [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
 
 ### Mock taban (anahtarsız — CI / offline)
 
@@ -114,12 +129,14 @@ Artefakt: [`backend/eval/runs/heldout_gpt4o_set1.json`](backend/eval/runs/heldou
 
 ## 🤖 LLM modları (mock taban → bulut tavan)
 
-`.env` içindeki `LLM_MODE` ile seçilir. **Maliyet kuralı:** varsayılan model `gpt-4o-mini` (ucuz); `gpt-4o` ~15-20× pahalı, yalnız tek-seferlik artefakt ölçümünde kullanılır.
+`.env` içindeki `LLM_MODE` ile seçilir. **Üretim sağlayıcı: DeepSeek-V4** (OpenAI-uyumlu —
+`OPENAI_BASE_URL=https://api.deepseek.com`, `OPENAI_LLM_MODEL=deepseek-chat`); ucuz + güçlü Türkçe.
+OpenAI client'ı base_url override ile DeepSeek/OpenAI/Azure'a bağlanır — **kod değişikliği yok**.
 
 | `LLM_MODE` | LLM çağrısı | Anahtar | Ne için |
 |---|---|---|---|
 | `mock` (varsayılan) | yok — keyword+regex fallback | gerekmez | demo / CI / offline; **skor tabanı** |
-| `openai` | OpenAI bulut (gpt-4o-mini varsayılan) | `OPENAI_API_KEY` | **gerçek doğruluk** |
+| `openai` | **DeepSeek-V4** (önerilen) / OpenAI / Azure — OpenAI-uyumlu | `OPENAI_API_KEY` | **üretim doğruluğu** |
 | `llamacpp_server` | lokal Qwen GGUF | — | on-prem / gizlilik (veri kurumdan çıkmaz) |
 
 Üç mod da **aynı pipeline** → kurumun gizlilik/maliyet/internet tercihine göre konuşlandırma.

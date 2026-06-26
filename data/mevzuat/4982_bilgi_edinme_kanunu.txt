@@ -1,31 +1,58 @@
 Bilgi Edinme Hakkı Kanunu
-Kanun No: 4982 (YÜRÜRLÜKTE)
+Kanun No: 4982 (Kabul: 09.10.2003, RG 24.10.2003/25269 — YÜRÜRLÜKTE)
 Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4982&MevzuatTur=1&MevzuatTertip=5
 
-Bu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir
-(lafzî tam metin değildir). Süre ve red sebepleri madde numaraları
-docs/02-evrak-taksonomi-routing.md referansından alınmıştır.
+Bu metin kamuya açık kanunun (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları ve süreler mevzuat.gov.tr (1.5.4982), TBMM
+kanun mirror'ı ve kamuya açık hukuk kaynaklarından çapraz doğrulanmıştır. Erişim
+süresi on beş iş günü (başka birimden/kurumdan toplanırsa otuz iş günü); red
+tebliğinden on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz edilir.
 
 Madde 4 — Bilgi edinme hakkı
 Herkes bilgi edinme hakkına sahiptir. Türkiye'de ikamet eden yabancılar ile
 Türkiye'de faaliyette bulunan yabancı tüzel kişiler, isteyecekleri bilgi
-kendileriyle veya faaliyet alanlarıyla ilgili olmak kaydıyla bu haktan
-yararlanır.
+kendileriyle veya faaliyet alanlarıyla ilgili olmak ve karşılıklılık ilkesi
+çerçevesinde bu Kanun hükümlerinden yararlanır.
+
+Madde 5 — Bilgi verme yükümlülüğü
+Kurum ve kuruluşlar, bu Kanunda yer alan istisnalar dışındaki her türlü bilgi veya
+belgeyi başvuranların yararlanmasına sunmak ve bilgi edinme başvurularını etkin,
+süratli ve doğru sonuçlandırmak üzere gerekli idari ve teknik tedbirleri almakla
+yükümlüdür. Bu Kanun yürürlüğe girdiği tarihten itibaren diğer kanunların bu Kanuna
+aykırı hükümleri uygulanmaz.
 
 Madde 6 — Başvuru usulü
-Bilgi edinme başvurusu, başvuru sahibinin adı, soyadı, imzası, oturma yeri veya
-iş adresini; tüzel kişilerde tüzel kişinin unvanı, adresi, yetkili kişinin imzası
-ve yetki belgesini içeren dilekçe ile istenen bilgi veya belgenin bulunduğu kurum
-veya kuruluşa yapılır. Başvuru, elektronik ortamda veya diğer iletişim
-araçlarıyla da yapılabilir; bu hâlde başvurunun ait olduğu kişinin kimliği ve
-imzasının başvuruda yer alması esastır.
+Bilgi edinme başvurusu, başvuru sahibinin adı, soyadı, imzası, oturma yeri veya iş
+adresini; tüzel kişilerde tüzel kişinin unvanı ve adresi ile yetkili kişinin imzasını
+ve yetki belgesini içeren dilekçe ile istenen bilgi veya belgenin bulunduğu kurum ve
+kuruluşa yapılır. Bu başvuru, kişinin kimliğinin ve imzasının veya yazının kimden
+neşet ettiğinin tespitine yarayacak başka bilgilerin yasal olarak belirlenebilir
+olması kaydıyla elektronik ortamda veya diğer iletişim araçlarıyla da yapılabilir.
 
-Madde 11 — Bilgi veya belgeye erişim süresi
-Kurum ve kuruluşlar, başvuru üzerine istenen bilgi veya belgeye erişimi on beş
-iş günü içinde sağlar. İstenen bilgi veya belgenin başvurulan kurum ve kuruluş
+Madde 7 — İstenecek bilgi veya belgenin niteliği
+Bilgi edinme başvurusu, başvurulan kurum ve kuruluşların ellerinde bulunan veya
+görevleri gereği bulunması gereken bilgi veya belgelere ilişkin olmalıdır. Kurum ve
+kuruluşlar, ayrı veya özel bir çalışma, araştırma, inceleme ya da analiz neticesinde
+oluşturulabilecek türden bilgi veya belge için yapılacak başvurulara olumsuz cevap
+verebilir. İstenen bilgi veya belge, başvurulan kurumdan başka bir yerde bulunuyorsa
+başvuru dilekçesi bu kurum ve kuruluşa gönderilir ve durum ilgiliye yazılı bildirilir.
+
+Madde 10 — Bilgi veya belgeye erişim
+Kurum ve kuruluşlar, başvuru sahibine istenen belgenin onaylı bir kopyasını verir.
+Bilgi veya belgenin niteliği gereği kopyası verilmesinin mümkün olmadığı veya kopya
+çıkarılmasının aslına zarar vereceği hâllerde, başvuru sahibinin; yazılı veya basılı
+belgeler için söz konusu belgenin aslını incelemesi ve not alabilmesi, ses kaydı
+şeklindeki bilgi veya belgelerde bunu dinleyebilmesi, görüntü kaydı şeklindeki bilgi
+veya belgelerde bunu izleyebilmesi sağlanır.
+
+Madde 11 — Bilgi veya belgeye erişim süreleri
+Kurum ve kuruluşlar, başvuru üzerine istenen bilgi veya belgeye erişimi on beş iş
+günü içinde sağlar. Ancak istenen bilgi veya belgenin başvurulan kurum ve kuruluş
 içindeki başka bir birimden sağlanması, başka bir kurum ve kuruluşun görüşünün
-alınması gerektiğinde erişim otuz iş günü içinde sağlanır; bu durumda gecikme
-gerekçesiyle birlikte başvurana yazılı olarak bildirilir.
+alınmasının gerekmesi veya başvuru içeriğinin birden fazla kurum ve kuruluşu
+ilgilendirmesi durumlarında bilgi veya belgeye erişim otuz iş günü içinde sağlanır;
+bu durumda sürenin uzatılması ve bunun gerekçesi başvuru sahibine yazılı olarak ve
+on beş iş günlük sürenin bitiminden önce bildirilir.
 
 Madde 12 — Başvurulara cevap ve başvurunun reddi
 Kurum ve kuruluşlar, bilgi edinme başvurularıyla ilgili cevaplarını yazılı olarak
@@ -33,18 +60,19 @@ veya elektronik ortamda başvuru sahibine bildirir. Başvurunun reddedilmesi hâ
 bu kararın gerekçesi ve buna karşı başvuru yolları belirtilir. Başvuru sahibine
 istenen bilgi veya belgenin hangi sebeple verilmediği açıkça gösterilir.
 
+Madde 13 — İtiraz usulü
+Bilgi edinme istemi reddedilen başvuru sahibi, yargı yoluna başvurmadan önce kararın
+tebliğinden itibaren on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz
+edebilir. Kurul, bu konudaki kararını otuz iş günü içinde verir. Kurula itiraz,
+başvuru sahibinin idari yargıya başvurma süresini durdurur.
+
 Madde 16 — Devlet sırrına ilişkin bilgi veya belgeler
-Devlet sırrı olarak gizliliği usulüne uygun olarak belirlenmiş bilgi veya
-belgeler bilgi edinme hakkı kapsamı dışındadır. Bu nitelikteki başvurular
-gerekçesi belirtilerek reddedilir.
+Açıklanması hâlinde Devletin emniyetine, dış ilişkilerine, millî savunmasına ve
+millî güvenliğine açıkça zarar verecek ve niteliği itibarıyla Devlet sırrı olan
+gizlilik dereceli bilgi veya belgeler bu Kanun kapsamı dışındadır. Bu nitelikteki
+başvurular gerekçesi belirtilerek reddedilir.
 
 Madde 17 — Ülkenin ekonomik çıkarlarına ilişkin bilgi veya belgeler
-Açıklanması hâlinde ülkenin ekonomik çıkarlarına zarar verecek veya haksız
-rekabet ve kazanca sebep olacak bilgi veya belgeler bilgi edinme hakkı kapsamı
-dışındadır.
-
-Madde 13 — Bilgi Edinme Değerlendirme Kurulu itirazı
-Bilgi edinme istemi reddedilen başvuru sahibi, yargı yoluna başvurmadan önce
-kararın tebliğinden itibaren on beş gün içinde Bilgi Edinme Değerlendirme
-Kuruluna itiraz edebilir. Kurul itirazı otuz iş günü içinde karara bağlar.
-İtiraz başvurusu, başvuru sahibinin idari yargıya başvurma süresini durdurur.
+Açıklanması ya da zamanından önce açıklanması hâlinde ülkenin ekonomik çıkarlarına
+zarar verecek veya haksız rekabet ve kazanca sebep olacak bilgi veya belgeler bu
+Kanun kapsamı dışındadır.

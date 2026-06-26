@@ -2,36 +2,42 @@
 Kanun No: 2577 (Kabul: 06.01.1982, RG 20.01.1982/17580 — YÜRÜRLÜKTE)
 Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2577&MevzuatTur=1&MevzuatTertip=5
 
-Bu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir
-(lafzî tam metin değildir). Madde numaraları mevzuat.gov.tr (1.5.2577) ve kamuya
-açık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında idari işleme
-itiraz, üst makama başvuru süreleri ve dava açma sürelerinin hukuki dayanağıdır;
-bu süreler vatandaşa verilecek cevabi yazıda bilgilendirme unsuru olarak önemlidir.
+Bu metin kamuya açık kanunun (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları ve süreler mevzuat.gov.tr (1.5.2577) ve
+kamuya açık hukuk kaynaklarından çapraz doğrulanmıştır. Kamu-evrak akışında idari
+işleme itiraz, üst makama başvuru ve dava açma sürelerinin (genel: idare mah. 60 gün,
+vergi mah. 30 gün) hukuki dayanağıdır; bu süreler vatandaşa verilecek cevabi yazıda
+bilgilendirme unsuru olarak önemlidir.
 
 Madde 7 — Dava açma süresi
 Dava açma süresi, özel kanunlarında ayrı süre gösterilmeyen hâllerde Danıştayda ve
-idare mahkemelerinde altmış, vergi mahkemelerinde otuz gündür. Bu süre; idari
-uyuşmazlıklarda yazılı bildirimin yapıldığı, düzenleyici işlemlerde ilanın yapıldığı
-tarihi izleyen günden başlar. İlanı gereken düzenleyici işlemlerde dava süresi,
-ilan tarihini izleyen günden itibaren başlar.
+idare mahkemelerinde altmış ve vergi mahkemelerinde otuz gündür. Bu süreler; idari
+uyuşmazlıklarda yazılı bildirimin yapıldığı, vergi, resim ve harçlar ile benzeri malî
+yükümler ve bunların zam ve cezalarından doğan uyuşmazlıklarda tahakkuku takip eden;
+tebliğ yapılan hâllerde tebliğin, tebliğ yerine geçen işlemlerde bu işlemlerin
+yapıldığı tarihi izleyen günden başlar. İlanı gereken düzenleyici işlemlerde dava
+süresi, ilan tarihini izleyen günden itibaren başlar.
 
-Madde 10 — İdari makamların sükûtu (idari makamlara başvuru)
+Madde 10 — İdari makamların sükûtu
 İlgililer, haklarında idari davaya konu olabilecek bir işlem veya eylemin yapılması
-için idari makamlara başvurabilir. Altmış gün içinde bir cevap verilmezse istek
-reddedilmiş sayılır. İlgililer, altmış günün bittiği tarihten itibaren dava açma
-süresi içinde, konusuna göre Danıştaya, idare ve vergi mahkemelerine dava açabilir.
+için idari makamlara başvurabilirler. Altmış gün içinde bir cevap verilmezse istek
+reddedilmiş sayılır. İlgililer altmış günün bittiği tarihten itibaren dava açma süresi
+içinde, konusuna göre Danıştaya, idare ve vergi mahkemelerine dava açabilirler. Altmış
+günlük süre içinde idarece verilen cevap kesin değilse ilgili bu cevabı, isteminin
+reddi sayarak dava açabileceği gibi, kesin cevabı da bekleyebilir.
 
-Madde 11 — Üst makamlara başvuru
+Madde 11 — Üst makamlara başvurma
 İlgililer tarafından idari dava açılmadan önce, idari işlemin kaldırılması, geri
-alınması, değiştirilmesi veya yeni bir işlem yapılması, idari dava açma süresi
-içinde üst makamdan, üst makam yoksa işlemi yapmış olan makamdan istenebilir. Bu
-başvurma, işlemekte olan idari dava açma süresini durdurur. Otuz gün içinde bir
-cevap verilmezse istek reddedilmiş sayılır. İsteğin reddi veya reddedilmiş
-sayılması hâlinde dava açma süresi yeniden işlemeye başlar ve başvurma tarihine
-kadar geçmiş süre de hesaba katılır.
+alınması, değiştirilmesi veya yeni bir işlem yapılması üst makamdan, üst makam yoksa
+işlemi yapmış olan makamdan, idari dava açma süresi içinde istenebilir. Bu başvurma,
+işlemekte olan idari dava açma süresini durdurur. Otuz gün içinde bir cevap verilmezse
+istek reddedilmiş sayılır. İsteğin reddedilmesi veya reddedilmiş sayılması hâlinde dava
+açma süresi yeniden işlemeye başlar ve başvurma tarihine kadar geçmiş süre de hesaba
+katılır.
 
 Madde 14 — Dilekçeler üzerine ilk inceleme
 Dilekçeler; görev ve yetki, idari merci tecavüzü, ehliyet, idari davaya konu olacak
-kesin ve yürütülmesi gereken bir işlem olup olmadığı, süre aşımı, husumet ve usule
-uygunluk yönlerinden ilk incelemeye tabi tutulur. İdari merci tecavüzü bulunan
-dilekçeler, görevli idari merciye tevdi olunur ve durum ilgilisine bildirilir.
+kesin ve yürütülmesi gereken bir işlem olup olmadığı, süre aşımı, husumet ile
+dilekçenin 3 ve 5 inci maddelere uygun olup olmadığı yönlerinden sırasıyla ilk
+incelemeye tâbi tutulur. İdari merci tecavüzü bulunan dilekçeler, görevli idari
+merciye tevdi olunur ve durum ilgilisine bildirilir.

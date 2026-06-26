@@ -1,33 +1,50 @@
 Dilekçe Hakkının Kullanılmasına Dair Kanun
-Kanun No: 3071 (YÜRÜRLÜKTE)
+Kanun No: 3071 (Kabul: 01.11.1984, RG 10.11.1984/18571 — YÜRÜRLÜKTE)
 Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3071.pdf
 
-Bu metin kamuya açık kanunun madde başlıkları ve özetlerinden derlenmiştir
-(lafzî tam metin değildir). Madde numaraları docs/02-evrak-taksonomi-routing.md
-referansından alınmıştır.
+Bu metin kamuya açık kanunun (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları ve süreler mevzuat.gov.tr (1.5.3071), TBMM
+kanun mirror'ı ve kamuya açık hukuk kaynaklarından çapraz doğrulanmıştır. Cevap
+süresi 02.01.2003 değişikliğiyle "iki ay"dan "otuz gün"e indirilmiştir (güncel: 30 gün).
+
+Madde 1 — Amaç
+Bu Kanunun amacı, Türk vatandaşlarının ve Türkiye'de ikamet eden yabancıların
+kendileriyle veya kamu ile ilgili dilek ve şikâyetleri hakkında, Türkiye Büyük
+Millet Meclisine ve yetkili makamlara yazı ile başvurma haklarının kullanılma
+biçimini düzenlemektir.
 
 Madde 3 — Dilekçe hakkı
-Türk vatandaşları ve Türkiye'de ikamet eden yabancılar kendileriyle veya kamu
-ile ilgili dilek ve şikâyetleri hakkında Türkiye Büyük Millet Meclisine ve
-yetkili makamlara yazı ile başvurma hakkına sahiptir.
+Türk vatandaşları kendileriyle veya kamu ile ilgili dilek ve şikâyetleri hakkında,
+Türkiye Büyük Millet Meclisine ve yetkili makamlara yazı ile başvurma hakkına
+sahiptirler. Bu hak, herkesin kendisiyle ilgili olan veya kamuyu ilgilendiren
+konularda idareye yazılı olarak başvurabilmesinin temelidir.
 
 Madde 4 — Dilekçede bulunması zorunlu şartlar
-Yetkili makamlara verilen veya gönderilen dilekçelerde; dilekçe sahibinin adı
-soyadı ve imzası ile iş veya ikametgâh adresinin bulunması zorunludur. Bu
-unsurlardan biri eksikse dilekçe işleme alınmaz ve incelenmez. Konu ve talebin
-açıkça belirtilmesi gerekir; uygulamada T.C. kimlik numarası ve tarih de aranır.
+Türkiye Büyük Millet Meclisine veya yetkili makamlara verilen veya gönderilen
+dilekçelerde, dilekçe sahibinin adı-soyadı ve imzası ile iş veya ikametgâh
+adresinin bulunması gerekir. Bu unsurlardan herhangi biri eksikse dilekçe işleme
+alınmaz ve incelenmez (m.6/c). Konu ve talebin açıkça belirtilmesi gerekir;
+uygulamada T.C. kimlik numarası ve tarih de aranır.
+
+Madde 5 — Türkiye'de ikamet eden yabancıların dilekçe hakkı
+Türkiye'de ikamet eden yabancılar, karşılıklılık esası gözetilmek ve dilekçelerinin
+Türkçe yazılması kaydıyla bu haktan yararlanabilirler.
 
 Madde 6 — İncelenemeyecek dilekçeler
 Türkiye Büyük Millet Meclisine veya yetkili makamlara verilen veya gönderilen
-dilekçelerden; belli bir konuyu ihtiva etmeyenler, yargı mercilerinin görevine
-giren konularla ilgili olanlar ve aynı konuda birden çok dilekçe verilmesi
-durumunda bunlardan ilkinden sonra verilenler incelenmez. Bu nitelikteki
-dilekçeler hakkında işlem yapılmaz ve durum gerektiğinde dilekçe sahibine
-bildirilir.
+dilekçelerden; a) belli bir konuyu ihtiva etmeyenler, b) yargı mercilerinin görevine
+giren konularla ilgili olanlar, c) 4 üncü maddede gösterilen şartlardan herhangi
+birini taşımayanlar incelenemez. Bu nitelikteki dilekçeler hakkında işlem yapılmaz;
+ayrıca aynı konuda birden çok dilekçe verilmesi hâlinde ilkinden sonra verilenler
+de incelenmez. Durum gerektiğinde dilekçe sahibine bildirilir.
 
-Madde 7 — Dilekçenin incelenmesi ve sonucun bildirilmesi
-Türk vatandaşlarının ve Türkiye'de ikamet eden yabancıların kendileri ve kamu
-ile ilgili dilek ve şikâyetleri konusunda yetkili makamlara yaptıkları
-başvuruların sonucu veya yapılmakta olan işlemin safahatı dilekçe sahiplerine
-en geç otuz gün içinde gerekçeli olarak yazılı şekilde bildirilir. İşlem
-devam ediyorsa bu da ayrıca belirtilir.
+Madde 7 — Dilekçenin incelenmesi ve sonucunun bildirilmesi
+Türk vatandaşlarının ve Türkiye'de ikamet eden yabancıların kendileri ve kamu ile
+ilgili dilek ve şikâyetleri konusunda yetkili makamlara yaptıkları başvuruların
+sonucu veya yapılmakta olan işlemin safahatı hakkında dilekçe sahiplerine en geç
+otuz gün içinde gerekçeli olarak cevap verilir. İşlem safahatının duyurulması
+hâlinde alınan sonuç ayrıca bildirilir.
+
+Madde 8 — Dilekçenin ilgili makama gönderilmesi
+Dilekçe, konusuyla ilgili olmayan bir idari makama verilmiş ise, bu makamca yetkili
+idari makama gönderilir ve ayrıca dilekçe sahibine de durum bildirilir.

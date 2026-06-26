@@ -87,7 +87,9 @@ async def crag_node(state: dict[str, Any]) -> dict[str, Any]:
     sorgu = _genisletilmis_sorgu(state)
     duzeltilmis: list[dict[str, Any]] = []
     if len(sorgu) >= _MIN_QUERY_LEN:
-        duzeltilmis = _from_corpus(sorgu)
+        # Tür→mevzuat BOOST'u koru: turu geçilmezse _from_corpus boost UYGULAMAZ
+        # (beklenen=set()) → düzeltme tür-sinyalsiz retrieval'a düşer (ECC HIGH-1).
+        duzeltilmis = _from_corpus(sorgu, turu=state.get("evrak_turu", "") or "")
     if not duzeltilmis:
         duzeltilmis = _from_config((state.get("evrak_turu", "") or "belirsiz"))
 

@@ -21,8 +21,11 @@ from agents.config import CLARIFY_KRITIK_ALANLAR
 log = structlog.get_logger()
 
 # Kritik alan → kullanıcıya net talep mesajı (3071 m.4 dayanaklı, uydurmasız).
+# NOT: anahtarlar config.CLARIFY_KRITIK_ALANLAR ile BİREBİR örtüşür. 'gonderen_ad_soyad'
+# bilerek YOK: LLM-yapısal alandır, mock modda her dilekçede eksik görünür → kritik
+# sayılmaz (CLARIFY_KRITIK_ALANLAR'a dahil değil); buraya eklenirse ASLA erişilmeyen
+# ölü kayıt olurdu (ECC LOW-6). Yeni kritik alan eklenirse İKİSİ birlikte güncellenir.
 _KRITIK_TALEP: dict[str, str] = {
-    "gonderen_ad_soyad": "Gönderenin adı ve soyadı",
     "imza": "Islak/elektronik imza",
     "iletisim_adres": "İletişim/tebligat adresi (veya telefon)",
 }

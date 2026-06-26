@@ -80,7 +80,8 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
 
 
 @router.post("", response_model=ProcessResponse)
-async def process(req: ProcessRequest) -> ProcessResponse:
+@rate_limit("20/minute")  # IP-başı limit (/stream ile aynı desen; slowapi yoksa etkisiz)
+async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
     """Hazır metinle blocking pipeline (OCR'sız)."""
     text, _ = await _ocr_or_text(None, req.evrak_text)
     state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=req.filename)
@@ -128,8 +129,12 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "cikar": ("bilgi_unsurlari",),
         "eksik_tespit": ("eksik_alanlar",),
         "mevzuat_oner": ("mevzuat_onerileri",),
+        # CRAG (ENV-gated) öz-düzeltme: SSE'de boş kalmasın (ECC LOW-5).
+        "crag": ("crag_corrected", "crag_guven_oncesi", "crag_guven_sonrasi"),
         "ozetle": ("ozet",),
         "route_birim": ("hedef_birim",),
+        # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
+        "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),
         "arsiv": ("arsiv_metadata",),
         "finalize": (),

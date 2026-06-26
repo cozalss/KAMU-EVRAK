@@ -28,8 +28,15 @@ log = structlog.get_logger()
 async def lifespan(app: FastAPI):  # noqa: ARG001
     # TODO(kamu-evrak): üretimde mevzuat-RAG embedder + reranker preload (ADALET deseni).
     log.info("startup", llm_mode=LLM_MODE)
-    yield
-    log.info("shutdown")
+    try:
+        yield
+    finally:
+        # LLM httpx bağlantılarını (openai/llamacpp_server) temiz kapat — aksi halde
+        # SIGTERM'de bağlantı/thread sızar (ECC MEDIUM-4). MockLLM'de no-op.
+        from agents.llm import aclose_llm
+
+        await aclose_llm()
+        log.info("shutdown")
 
 
 app = FastAPI(
@@ -60,11 +67,37 @@ app.include_router(multimodal.router)
 app.include_router(yazi.router)
 
 
+def _active_llm() -> str:
+    """get_llm()'in GERÇEK client tipi → 'openai' | 'mock' | 'llamacpp' | 'llamacpp_server'.
+
+    LLM_MODE=openai iken anahtar yoksa get_llm() sessizce MockLLM'e düşer; operatör bunu
+    yalnız `llm_mode` (istenen) bakarak GÖREMEZ. Aktif client tipini ayrı raporlarız →
+    sessiz-fallback şeffaf olur (ECC HIGH-2). get_llm() RAISE ETMEZ (mock demo bozulmaz).
+    """
+    try:
+        from agents.llm import get_llm
+
+        return {
+            "OpenAIClient": "openai",
+            "MockLLM": "mock",
+            "LlamaCppClient": "llamacpp",
+            "LlamaCppServerClient": "llamacpp_server",
+        }.get(type(get_llm()).__name__, type(get_llm()).__name__.lower())
+    except Exception as exc:  # noqa: BLE001 — health asla patlamaz; bilinmeyen → işaretle
+        log.warning("health_llm_probe_failed", error=type(exc).__name__)
+        return "unknown"
+
+
 @app.get("/health")
 async def health() -> dict[str, Any]:
-    """Sağlık kontrolü — LLM modu + pipeline node sayısı."""
+    """Sağlık kontrolü — istenen LLM modu + GERÇEK aktif client + pipeline node sayısı."""
     from agents.graph import PIPELINE_NODES
-    return {"status": "ok", "llm_mode": LLM_MODE, "pipeline_nodes": list(PIPELINE_NODES)}
+    return {
+        "status": "ok",
+        "llm_mode": LLM_MODE,          # istenen mod (ENV)
+        "llm_active": _active_llm(),   # gerçek client (sessiz-fallback görünür)
+        "pipeline_nodes": list(PIPELINE_NODES),
+    }
 
 
 @app.get("/")

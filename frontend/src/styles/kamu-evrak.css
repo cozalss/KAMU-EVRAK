@@ -47,6 +47,11 @@
   --font-body: -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
 
+  /* --- editöryel tipografi ölçeği (doc §2.2) — tagline gerçek kahraman olur --- */
+  --text-hero: clamp(1.5rem, 1.15rem + 1.7vw, 2.15rem); /* ürün-vaadi tagline (hero) */
+  --text-label: .72rem;
+  --tracking-label: .06em;
+
   /* --- hareket token'ları (compositor-dostu: transform/opacity) --- */
   --dur-fast: 160ms;
   --dur-normal: 300ms;
@@ -105,10 +110,11 @@ body {
   -webkit-text-fill-color: transparent; color: var(--accent-ink);
 }
 .ke-header p { margin: .15rem 0 0; color: var(--muted); font-size: .92rem; }
-/* hero hiyerarşisi: ürün-vaadi (ne yapar) büyük/koyu; künye (yarışma) küçük/soluk */
+/* hero hiyerarşisi: ürün-vaadi (ne yapar) GERÇEK kahraman → büyük/koyu editöryel ölçek;
+   künye (yarışma) küçük/soluk. h1 marka adı kalır ama tagline ölçek kontrastıyla öne çıkar. */
 .ke-tagline {
-  margin: .3rem 0 0; color: var(--ink-2); font-size: 1.02rem; line-height: 1.45;
-  max-width: 46ch;
+  margin: .4rem 0 0; color: var(--ink); font-size: var(--text-hero); font-weight: 600;
+  line-height: 1.24; letter-spacing: -0.015em; max-width: 32ch;
 }
 .ke-tagline strong { color: var(--accent-ink); font-weight: 700; }
 .ke-subline { margin: .25rem 0 0; color: var(--muted); font-size: .82rem; }
@@ -129,12 +135,14 @@ body {
 .ke-main { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
 
 /* ---------- Yükleme alanı ---------- */
+/* Mobil: tek kolon (drop üstte, örnekler altta). ≥860px: drop sol (kompakt) + örnekler
+   sağ (1fr 1.2fr) → "tek tıkla canlı işlet" çağrısı katlama-üstünde yan yana kalır. */
 .ke-intake { display: flex; flex-direction: column; gap: 1rem; }
 .ke-drop {
   border: 2px dashed var(--line-strong); border-radius: var(--r-lg);
-  background: var(--surface); padding: 1.8rem 1.25rem; text-align: center;
+  background: var(--surface); padding: 1.1rem 1.1rem; text-align: center;
   cursor: pointer; transition: border-color .2s, background .2s, transform .12s;
-  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
 }
 .ke-drop:hover, .ke-drop:focus-visible { border-color: var(--accent); background: var(--surface-2); }
 /* SC 2.4.11 Focus Appearance — outline koyu renk (#8a5e12) + geniş offset; yalnız accent-soft bej yetmez */
@@ -174,6 +182,15 @@ body {
 .ke-sample-tx { display: flex; flex-direction: column; min-width: 0; }
 .ke-sample-label { font-weight: 600; font-size: .9rem; }
 .ke-sample-desc { font-size: .72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* masaüstü: drop kompakt sol kolon + örnekler geniş sağ kolon (katlama-üstü çağrı).
+   align-items:start → drop kutusu örnek listesi boyunca uzamaz (kompakt kalır). */
+@media (min-width: 860px) {
+  .ke-intake {
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.25rem; align-items: start;
+  }
+  .ke-drop { height: 100%; justify-content: center; }
+}
 
 /* ---------- Hata durumu ---------- */
 .ke-error {
@@ -250,6 +267,29 @@ body {
 .ke-ph-dot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
 .ke-ph-dot.ke-ph-g1 { background: var(--g1); }
 .ke-ph-dot.ke-ph-g2 { background: var(--g2); }
+
+/* boş durum "düşünen sistem" teaser'ı — çipler sıralı "yanar" (nth-child gecikme).
+   ~3.6sn döngü; tıklamadan önce canlı pipeline sinyali. compositor-dostu (transform/opacity).
+   reduced-motion'da KAPALI (aşağıda). Renk TEK sinyal değil — numara + etiket sabit kalır. */
+.ke-ph-step {
+  animation: ke-ph-fire 3.6s var(--ease-out-expo) infinite;
+  transform-origin: center;
+}
+.ke-ph-step:nth-child(1) { animation-delay: 0s; }
+.ke-ph-step:nth-child(2) { animation-delay: .3s; }
+.ke-ph-step:nth-child(3) { animation-delay: .6s; }
+.ke-ph-step:nth-child(4) { animation-delay: .9s; }
+.ke-ph-step:nth-child(5) { animation-delay: 1.2s; }
+.ke-ph-step:nth-child(6) { animation-delay: 1.5s; }
+.ke-ph-step:nth-child(7) { animation-delay: 1.8s; }
+.ke-ph-step:nth-child(8) { animation-delay: 2.1s; }
+.ke-ph-step:nth-child(9) { animation-delay: 2.4s; }
+.ke-ph-step:nth-child(n+10) { animation-delay: 2.7s; }
+@keyframes ke-ph-fire {
+  0%, 100% { transform: translateY(0) scale(1); box-shadow: var(--shadow-sm); }
+  6% { transform: translateY(-3px) scale(1.04); box-shadow: var(--shadow-md); }
+  14% { transform: translateY(0) scale(1); box-shadow: var(--shadow-sm); }
+}
 
 /* ---------- Yükleniyor iskeleti (skeleton) ---------- */
 .ke-skel { display: flex; flex-direction: column; gap: 1rem; }
@@ -469,6 +509,28 @@ body {
 .rc-row-2 { grid-template-columns: 1fr 1fr; }
 @media (max-width: 620px) { .rc-row-2 { grid-template-columns: 1fr; } }
 
+/* --- bento ızgarası (doc §3.6) — yalnız ≥860px; altında mevcut tek-kolon akış KORUNUR ---
+   DOM sırası DEĞİŞMEZ (yalnız CSS grid yerleşimi) → sekme/okuma sırası mantıksal kalır.
+   span class'larıyla değil doğrudan kart class'larıyla yerleştirilir (kontrat korunur).
+   grid-auto-flow:dense → küçük kartlar boşlukları kapatır (görsel boyut kontrastı). */
+@media (min-width: 860px) {
+  .rc-grid {
+    display: grid; gap: 1rem;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-flow: dense; align-items: start;
+  }
+  .rc-clarify-banner { grid-column: span 6; }   /* dur-ve-sor — tam genişlik (en üst çağrı) */
+  .rc-info { grid-column: span 6; }              /* Bilgilendirme — kahraman, tam genişlik */
+  .rc-grid > .rc-row { grid-column: span 6; }    /* Evrak Türü + Birim yan yana (iç 2-kolon) */
+  .rc-alanlar { grid-column: span 3; }
+  .rc-eksik { grid-column: span 3; }
+  .rc-mevzuat { grid-column: span 3; }
+  .rc-taslak { grid-column: span 6; }            /* Yazı Taslağı — Görev-2 yıldızı, tam genişlik */
+  .rc-dogrulama { grid-column: span 3; }
+  .rc-arsiv { grid-column: span 3; }
+  .rc-disclaimer { grid-column: span 6; }
+}
+
 /* ekran-okuyucu için görünmez tam metin (daktilo kartlarında) */
 .rc-sr {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -534,7 +596,13 @@ body {
 .rc-conf-mid { background: var(--accent-soft); color: var(--accent-ink); }
 .rc-conf-low { background: var(--warn-soft); color: #8a4a10; }
 .rc-meter { margin-top: .7rem; height: 7px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
-.rc-meter-fill { display: block; height: 100%; border-radius: 999px; transition: width .5s ease; }
+/* compositor-dostu doluş: width yerine scaleX (--p = 0..1, JS'te set edilir; transform-origin:left).
+   Tam-genişlik blok scaleX ile sola doğru dolar → layout tetiklemez. */
+.rc-meter-fill {
+  display: block; height: 100%; width: 100%; border-radius: 999px;
+  transform: scaleX(var(--p, 0)); transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
 .rc-meter-fill.rc-conf-high { background: var(--ok); }
 .rc-meter-fill.rc-conf-mid { background: var(--accent); }
 .rc-meter-fill.rc-conf-low { background: var(--warn); }
@@ -780,6 +848,9 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
 
   /* yeni: mobil kaydırma-ipucu okunun salınımı durur (ipucu metni görünür kalır) */
   .agw-scroll-hint-ic { animation: none; }
+
+  /* boş durum teaser çip "yanma" döngüsü kapanır → çipler sabit (numara+etiket görünür) */
+  .ke-ph-step { animation: none; transform: none; }
 }
 
 /* ---------- responsive ---------- */
@@ -793,9 +864,9 @@ a.rc-mev-baslik:hover { color: var(--accent-ink); text-decoration: underline; }
   .ke-error-act { margin-left: 0; }
   /* akış şeması min-width (820px) bu eşiğin altında taşar → yatay-kaydırma ipucunu göster */
   .agw-scroll-hint { display: flex; }
-  /* hero ölçeğini bir tık küçült (tablet portre) */
+  /* hero ölçeğini bir tık küçült (tablet portre); tagline clamp(--text-hero) ile
+     zaten ölçeklenir → sabit override kaldırıldı (hero kahraman kalır). */
   .ke-header h1 { font-size: 1.55rem; }
-  .ke-tagline { font-size: .96rem; }
   /* clarify banner: soru sayacı başlığın altına akabilsin (dar başlık satırı) */
   .rc-clarify-banner-count { margin-left: 0; }
 }

@@ -5,8 +5,8 @@
    PII şeffaflığı (CLAUDE.md §2): backend TCKN/telefon'u ZATEN maskeler (tckn_maskeli/
    telefon_maskeli). UI bu alanlara açık "maskeli" rozeti basar — vatandaş korumasının
    görünür kanıtı (jüri "wow"). Ham PII frontend'e hiç ulaşmaz. */
-import React, { useState } from "react";
-import { useTypewriter } from "../lib/useTypewriter.js";
+import React, { useEffect, useRef, useState } from "react";
+import { useTypewriter, usePrefersReducedMotion } from "../lib/useTypewriter.js";
 
 // --- Makine kodu → Türkçe etiket (backend config ile eşleşir; UI okunabilirliği) ---
 const EVRAK_TURU_TR = {
@@ -96,7 +96,7 @@ function EvrakTuruCard({ turu, conf }) {
         className="rc-meter" role="meter" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
         aria-label={`Sınıflandırma güveni yüzde ${pct}`}
       >
-        <span className={`rc-meter-fill rc-conf-${tone.cls}`} style={{ width: `${pct}%` }} />
+        <span className={`rc-meter-fill rc-conf-${tone.cls}`} style={{ "--p": pct / 100 }} />
       </div>
     </article>
   );
@@ -330,8 +330,22 @@ function BirimCard({ hedef, alternatifler }) {
 function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, canDownload }) {
   const [copied, setCopied] = useState(false);
   // Daktilo efekti — resmî yazı "yazılıyormuş" gibi akar (Demo wow). Hook erken-return ÖNCESİ.
-  // Uzun taslak → yüksek cps (hızlı ama görünür). reduced-motion'da anında tam metin.
-  const { shown, animating } = useTypewriter(taslakMd || "", { cps: 1200 });
+  // cps 700: yazım anı jüri tarafından yakalanacak kadar yavaş, yine de okunur akıcı.
+  // reduced-motion'da anında tam metin (hook içinde).
+  const { shown, animating } = useTypewriter(taslakMd || "", { cps: 700 });
+  // Sonuç gelince Yazı Taslağı kartını görünüme kaydır (Görev-2 demosu yakalanır).
+  // reduced-motion → ani; aksi halde yumuşak. Bir kez kaydırılır (taslak metnine göre guard).
+  const reduced = usePrefersReducedMotion();
+  const cardRef = useRef(null);
+  const scrolledFor = useRef(null);
+  useEffect(() => {
+    if (!taslakMd || !cardRef.current || scrolledFor.current === taslakMd) return;
+    scrolledFor.current = taslakMd;
+    cardRef.current.scrollIntoView({
+      behavior: reduced ? "auto" : "smooth",
+      block: "nearest",
+    });
+  }, [taslakMd, reduced]);
   if (!taslakMd) return null;
 
   const copy = async () => {
@@ -354,7 +368,7 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
   const dl = (fmt) => () => onDownload?.(fmt);
 
   return (
-    <article className="rc-card rc-taslak rc-g2" aria-labelledby="rc-taslak-h">
+    <article ref={cardRef} className="rc-card rc-taslak rc-g2" aria-labelledby="rc-taslak-h">
       <header className="rc-card-head">
         <span className="rc-ic" aria-hidden="true">📝</span>
         <h3 id="rc-taslak-h" className="rc-card-title">

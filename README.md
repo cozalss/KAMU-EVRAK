@@ -23,6 +23,15 @@ Lisans: **MIT** (AGPL bağımlılık yok — PyMuPDF yerine pypdfium2).
 > node-node "yanar", özet ve resmî yazı taslağı **token-token** yazılır. Gerçek-LLM (gpt-4o)
 > modunda dürüst held-out doğruluğu **~%91** (çapraz-doğrulanmış; [benchmark](docs/benchmark/llm-heldout.md)).
 
+### Ekran görüntüleri
+
+| Dur-ve-sor (eksik bilgi → sistem **durur ve sorar**) | Responsive (mobil) |
+|---|---|
+| ![Clarify — eksik bilgi tespitinde sistem durup soru sorar](docs/img/04-clarify.png) | ![Mobil görünüm](docs/img/05-mobil.png) |
+
+> **Dur-ve-sor**, sistemin körü körüne üretmeyip eksik zorunlu alanı (3071 m.4) fark edip
+> kullanıcıya soru sormasıdır — kamu iş akışında kilit güven mekanizması.
+
 ## Özellikler
 
 ### Görev 1 — Evrak Sınıflandırma ve İçerik Analizi

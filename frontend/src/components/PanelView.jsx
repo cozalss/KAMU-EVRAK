@@ -20,7 +20,7 @@ function Stat({ label, value, accent, icon }) {
   );
 }
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, onGoInbox, onUpload }) {
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, onGoInbox, onUpload, user }) {
   const n = history.length;
   const taslakSay = history.filter((h) => h.result?.yazi_taslak_md).length;
   const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
@@ -31,7 +31,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, o
   const turList = Object.entries(turler).sort((a, b) => b[1] - a[1]).slice(0, 6);
 
   return (
-    <ViewWrap id="panel-h" title="Panel" sub={`Hoş geldiniz, M. Yılmaz · ${new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}`}
+    <ViewWrap id="panel-h" title="Panel" sub={`Hoş geldiniz, ${user?.ad_soyad || "memur"} · ${new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}`}
       actions={[
         <Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak ({inboxCount})</Btn>,
         <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,

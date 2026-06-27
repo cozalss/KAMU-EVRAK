@@ -104,7 +104,7 @@ export default function DashboardApp() {
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
   let view;
-  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} />;
+  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS} processedIds={processedIds} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView history={history} onGoInbox={() => goView("gelen")} />;

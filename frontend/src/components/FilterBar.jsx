@@ -76,6 +76,30 @@ function FilterDateRange({ dateRange, filter }) {
   );
 }
 
+/* Hızlı tarih ön-ayarları (Bugün / Son 7 / Son 30 gün) — dateRange'i set eder (additive). */
+function FilterDatePresets({ filter }) {
+  const uygula = (gun) => {
+    const now = Date.now();
+    if (gun === 0) { const d = new Date(); d.setHours(0, 0, 0, 0); filter.setDateRange(d.getTime(), now); }
+    else filter.setDateRange(now - gun * 86400000, now);
+  };
+  const presets = [["Bugün", 0], ["Son 7 gün", 7], ["Son 30 gün", 30]];
+  const aktif = filter.filters.dateFrom != null || filter.filters.dateTo != null;
+  return (
+    <div role="group" aria-label="Hızlı tarih filtreleri" style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+      <span style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, letterSpacing: ".5px" }}>Hızlı tarih:</span>
+      {presets.map(([lbl, g]) => (
+        <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing}
+          style={{ padding: "5px 10px", borderRadius: 8, cursor: "pointer", fontFamily: MONO, fontSize: 11, border: `1px solid ${PAL.line}`, background: PAL.bg2, color: PAL.mut2 }}>{lbl}</button>
+      ))}
+      {aktif && (
+        <button type="button" onClick={() => filter.setDateRange(null, null)} aria-label="Tarih filtresini temizle" {...focusRing}
+          style={{ padding: "5px 8px", borderRadius: 8, cursor: "pointer", fontFamily: MONO, fontSize: 11, border: "1px solid transparent", background: "none", color: PAL.mut3, textDecoration: "underline" }}>temizle</button>
+      )}
+    </div>
+  );
+}
+
 function FilterSort({ sort, filter }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 190 }}>
@@ -134,6 +158,8 @@ export default function FilterBar({ config, filter, compact = false, showResultC
           {config.sort?.enabled && <FilterSort sort={config.sort} filter={filter} />}
         </div>
       )}
+
+      {config.datePresets?.enabled && <FilterDatePresets filter={filter} />}
 
       {config.dateRange?.enabled && <FilterDateRange dateRange={config.dateRange} filter={filter} />}
 

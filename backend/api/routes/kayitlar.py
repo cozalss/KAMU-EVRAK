@@ -9,9 +9,11 @@ import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.deps import CurrentUser
+from db.models import Birim
 from db.repositories import dogrula_denetim
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
@@ -26,6 +28,14 @@ from db.session import get_session
 router = APIRouter(tags=["kayitlar"])
 
 Session = Annotated[AsyncSession, Depends(get_session)]
+
+
+@router.get("/referans/birimler")
+async def birimler(session: Session) -> dict:
+    """Aktif birim listesi (kayıt formu dropdown'u için PUBLIC — auth gerekmez)."""
+    rows = (await session.execute(
+        select(Birim.kod, Birim.ad).where(Birim.aktif).order_by(Birim.ad))).all()
+    return {"birimler": [{"kod": k, "ad": a} for k, a in rows]}
 
 
 @router.get("/panel/istatistik")

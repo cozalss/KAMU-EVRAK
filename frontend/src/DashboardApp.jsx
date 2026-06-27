@@ -5,6 +5,7 @@
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { useEffect, useRef, useState } from "react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
+import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { PAL, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
@@ -22,6 +23,7 @@ export default function DashboardApp() {
     runFile, runSample, resume, download, showToast, dismissError, canRetry, retry,
   } = usePipeline();
 
+  const { user, logout } = useAuth();
   const [activeView, setActiveView] = useState("panel");
   const [history, setHistory] = useState([]);
   const [processedIds, setProcessedIds] = useState(() => new Set());
@@ -124,7 +126,7 @@ export default function DashboardApp() {
       <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: "#2ee6c9", color: "#06121a", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
       <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-      <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} />
+      <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
 
       <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         {view}

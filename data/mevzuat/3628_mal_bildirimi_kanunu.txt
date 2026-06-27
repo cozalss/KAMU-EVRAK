@@ -1,0 +1,35 @@
+Mal Bildiriminde Bulunulması, Rüşvet ve Yolsuzluklarla Mücadele Kanunu
+Kanun No 3628, Kabul 19.04.1990, RG 04.05.1990/20508 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.3628 konsolide metin)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3628.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Mal bildiriminde bulunacaklar (kapsam)
+Kanun, geniş bir kamu görevlisi kesimini mal bildirimiyle yükümlü kılar: her tür seçilmiş ve atanmış kamu görevlileri, Cumhurbaşkanı yardımcıları ve bakanlar, kamu kurumu niteliğindeki meslek kuruluşları yöneticileri, belediye başkanları ve meclis üyeleri, siyasî parti genel başkanları, kooperatif/birlik yöneticileri ile kamu yararına faaliyet gösteren bazı kuruluş görevlileri bu kapsamdadır. Yükümlülük, kişinin kendisi, eşi ve velâyeti altındaki çocuklarının mal varlığını kapsar.
+
+Madde 5 — Bildirimlerin konusu
+Mal bildiriminde; kişinin kendisine, eşine ve velâyeti altındaki çocuklarına ait taşınmaz mallar ile belirli değeri aşan taşınır mallar, hak, alacak, borç, gelir, para, hisse senedi ve tahvil gibi menkul kıymetler ve bunların kaynakları gösterilir. Bildirim, bu mal varlığı unsurlarını edinme tarihi ve değeriyle birlikte beyan etmeyi gerektirir; amaç mal varlığındaki gelişimin denetlenebilmesidir.
+
+Madde 6 — Bildirimlerin zamanı
+Mal bildirimi; göreve atanmada (giriş için gerekli belgelerle birlikte) verilir. Görevin sona ermesi hâlinde, ayrılma tarihini izleyen bir ay içinde bildirim verilir. Kanun kapsamında göreve devam edenler ise sonu (0) ve (5) ile biten yılların en geç şubat ayı sonuna kadar bildirimlerini yenilemekle yükümlüdür. Böylece atama anında, beş yıllık periyodik yenilemede ve görev bitiminde bildirim zorunludur.
+
+Madde 7 — Bildirimlerin yenilenmesi
+Bu Kanun kapsamındaki göreve devam edenler, sonu (0) ve (5) ile biten yılların en geç şubat ayı sonuna kadar yeni bir mal bildirimi vererek bildirimlerini yenilerler. Ayrıca, kendileri, eşleri ve velâyetleri altındaki çocuklarının şahsî mal varlıklarında önemli bir değişiklik olduğunda, değişikliği izleyen bir ay içinde yeni edindikleri mal, hak, gelir, alacak ve borçlara münhasır ek mal bildirimi verirler.
+
+Madde 8 — Mal bildiriminin verileceği merciler
+Mal bildirimleri, ilgilinin görev ve sıfatına göre kanunda belirtilen mercilere (örneğin atandıkları kurumun yetkili birimi, ilgili bakanlık, TBMM Başkanlığı, bağlı/ilgili kuruluş gibi) verilir. Bildirimi alacak merci, görevin türüne göre kanunda ayrı ayrı gösterilmiştir; bildirimin doğru mercie ve süresinde verilmesi yükümlülüğün yerine getirilmesi için esastır.
+
+Madde 9 — Mal bildiriminin gizliliği
+Mal bildirimindeki bilgiler özel kanunlarda aksine hüküm bulunmadıkça gizlidir; bu bilgileri alan merciler ve görevliler bildirim içeriğini açıklayamaz ve başka amaçla kullanamaz. Bildirimler ancak adlî/idarî soruşturma ve kovuşturmalarda yetkili merci kararıyla incelenebilir. Gizliliğe aykırı davrananlar hakkında cezaî sorumluluk öngörülmüştür.
+
+Madde 10 — Mal bildiriminde bulunmayanlar (ceza)
+Süresinde mal bildiriminde bulunmayana, ilgili merci tarafından yazılı uyarı yapılır; uyarının tebliğinden itibaren otuz gün içinde mazeretsiz olarak bildirimde bulunmayana üç aya kadar hapis cezası verilir. Bir soruşturma ile bağlantılı olarak verilen süre içinde mal bildiriminde bulunmayana ise üç aydan bir yıla kadar hapis cezası verilir.
+
+Madde 12 — Gerçeğe aykırı açıklama (ceza)
+Kanunen daha ağır bir cezayı gerektirmediği takdirde, mal bildiriminde gerçeğe aykırı beyanda bulunana altı aydan üç yıla kadar hapis cezası verilir. Bu hüküm, mal bildiriminin yalnızca verilmesini değil, doğru ve gerçeğe uygun verilmesini de yaptırıma bağlar; mal varlığını gizleme veya olduğundan farklı gösterme cezalandırılır.
+
+Madde 13 — Haksız mal edinme
+Kanuna veya genel ahlâka uygun olarak sağlandığı kanıtlanmayan, görevin/sıfatın sağladığı nüfuz kullanılarak edinilen mallar haksız edinilmiş sayılır. Haksız edinildiği tespit edilen mallar ile bunların değerlendirilmesiyle elde edilen mal ve menfaatlerin müsaderesine ve haksız mal edinmeye ilişkin cezaî sorumluluğa hükmolunur; bu yönüyle Kanun yolsuzlukla mücadelenin temel araçlarından birini oluşturur.

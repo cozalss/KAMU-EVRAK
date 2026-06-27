@@ -1,0 +1,23 @@
+Yapı Denetimi Hakkında Kanun
+Kanun No 4708, Kabul 29.06.2001, RG 13.07.2001/24461 (Düstur Tertip 5, Cilt 40) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4708.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç, kapsam ve tanımlar
+Kanunun amacının; can ve mal güvenliğini teminen, imar planına ile fen, sanat ve sağlık kurallarına ve standartlara uygun kaliteli yapı yapılması için proje ve yapı denetimini sağlamak olduğunu belirtir. Yapı denetimine ilişkin usul ve esasları düzenler ve kapsam dışı yapıları (muafiyetleri) tanımlar. Yapı denetim hizmet kapsamı ve dayanak yazışmalarının başlangıç maddesidir.
+
+Madde 2 — Yapı denetim kuruluşlarının görevleri
+Kapsamdaki her türlü yapının, Bakanlıktan izin belgesi almış ve münhasıran yapı denetimiyle uğraşan tüzel kişiliğe sahip yapı denetim kuruluşlarının denetimine tabi olduğunu düzenler; hizmet, yapı sahibi ile kuruluş arasındaki sözleşmeye göre yürür. Kuruluşların görevlerini bentler halinde sayar: proje/zemin raporu inceleme, taahhütname verme ve yapı bilgilerini yedi gün içinde Bakanlığa bildirme, ruhsata uygunluk denetimi, malzeme/imalat ve iş sağlığı-güvenliği kontrolü. Yapı denetim taahhütname ve denetim raporu yazışmalarının dayanağıdır.
+
+Madde 3 — Yapı denetim kuruluşunun sorumluluğu (fenni mesuliyet)
+Yapı denetim kuruluşunun, imar mevzuatınca öngörülen fenni mesuliyeti ilgili idareye karşı üstlendiğini düzenler. Kuruluş, denetçi mimar/mühendisler, proje müellifleri, laboratuvar görevlileri ve müteahhit ile birlikte, yapının ruhsat ve eklerine aykırı, eksik veya kusurlu yapılması nedeniyle ortaya çıkan yapı hasarından kusurları oranında sorumludur. Sorumluluk süresi, yapı kullanma izni tarihinden itibaren taşıyıcı sistemde on beş yıl, diğer kısımlarda iki yıldır. Yapı hasarı sorumluluk ve tazmin yazışmalarının dayanağıdır.
+
+Madde 8 — İdari müeyyideler (yeni iş almaktan men)
+Görevlerini bu Kanun ve ilgili mevzuata uygun yapmayan yapı denetim/laboratuvar kuruluşları ile denetçi ve müelliflere uygulanacak idari yaptırımları (uyarma, yeni iş almaktan geçici/sürekli men, izin belgesi iptali) düzenler. Fiilin durumuna göre kademeli yaptırımlar ve faaliyet kısıtlamaları öngörür. [DOĞRULA: bent sıralaması ve men süreleri 5/12/2024-7534 değişikliğiyle güncellenmiştir] İdari yaptırım kararı ve men yazışmalarının dayanağıdır.
+
+Madde 9 — Cezai sorumluluk
+Kanun hükümlerinin uygulanması sırasında, men cezası gerektiren veya 8. maddede sayılan belirli fiilleri işleyerek görevini kötüye kullanan ortak, yönetici, mimar-mühendis, müteahhit, şantiye şefi, proje müellifi ve laboratuvar görevlilerinin altı aydan üç yıla kadar hapis cezasıyla cezalandırılacağını düzenler. Denetimi yapmadığı halde yapmış gibi veya gerçeğe aykırı belge düzenleyenler, Türk Ceza Kanunu'nun resmî belgede sahtecilik hükümlerine göre cezalandırılır. Kesinleşen mahkeme kararları Bakanlığa ve meslek odalarına bildirilir; suç duyurusu ve bildirim yazışmalarının dayanağıdır.

@@ -1,0 +1,30 @@
+Kayıtlı Elektronik Posta Sistemine İlişkin Usul ve Esaslar Hakkında Yönetmelik (KEP)
+RG 25.08.2011/28036 — YÜRÜRLÜKTE (yürürlük 01.07.2012; dayanak 6102 sayılı Türk Ticaret Kanunu m.1525; sonraki yıllarda değişiklik yapılmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=15169&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır). KEP, resmî
+yazışma ve bildirimlerde (ihtar, ihbar, başvuru) hukukî delil sağlayan nitelikli elektronik
+posta türüdür; KEP delillerinin senet hükmü, kamu/özel yazışmaların ispatında dayanaktır.
+KEP üzerinden yapılan elektronik tebligat ise 7201 sayılı Kanun ve Elektronik Tebligat
+Yönetmeliğine tâbidir (KEP tek başına Tebligat Kanunu anlamında tebligat sonucu doğurmaz).
+
+Madde 3 — Dayanak
+Yönetmelik, 13/1/2011 tarihli ve 6102 sayılı Türk Ticaret Kanununun 1525 inci maddesine dayanılarak hazırlanmıştır. TTK m.18/3 uyarınca tacirler arasında ihtar, ihbar ve tebligatların KEP (veya noter/iadeli taahhütlü posta/telgraf) yoluyla yapılabilmesinin teknik usul ve esaslarını düzenler.
+
+Madde 4 — Tanımlar (KEP, KEP hesabı, KEP iletisi, KEPHS, KEP delili)
+Yönetmeliğin temel kavramlarını tanımlar. KEP (kayıtlı elektronik posta), elektronik iletilerin gönderimi ve teslimatı dâhil kullanımına ilişkin hukukî delil sağlayan, elektronik postanın nitelikli şeklidir. KEP hesabı, orijinal ileti gönderme/alma ile KEP iletisi alma yeteneğine sahip hesaptır. KEP iletisi, KEPHS tarafından üretilen KEP delilini içeren ve işlem sertifikasıyla imzalanmış iletidir. KEPHS, KEP sistemi kurup işletmek üzere yetkilendirilen hizmet sağlayıcıdır. KEP delili, belirli bir işlemin belirli bir zamanda meydana geldiğini gösteren, KEPHS'nin işlem sertifikasıyla imzalanmış veridir; zaman damgası 5070 sayılı Kanun m.3 anlamındadır.
+
+Madde 10 — KEP hesabının kullanıma açılması ve kimlik doğrulama
+KEPHS, başvuran gerçek veya tüzel kişiyle sözleşme imzalayarak ve hesap sahibinin onayını (güvenli elektronik imza veya Kimlik Doğrulama hükümleri uyarınca) alarak KEP hesabını kullanıma açar. Kimlik doğrulama, KEP iletilerinin hangi gerçek/tüzel kişiye ait olduğunun ve gönderici-alıcı kimliğinin güvenilir biçimde tespit edilmesini sağlar; bu, KEP delillerinin senet niteliğinin önkoşuludur.
+
+Madde 11 — KEP sistemi ile yapılabilecek işlemler
+KEP sistemi; elektronik iletilerin taraflar arasında hukukî ve teknik güvenliğe sahip biçimde gönderilip alınmasını sağlar. Resmî ve özel her türlü yazışma, bildirim, ihtar ve ihbar KEP üzerinden gönderilebilir; sistem gönderim, teslim ve okunma gibi olayları zaman damgalı KEP delilleriyle kayıt altına alır. Bu işlemler, gönderinin yapıldığının ve içeriğinin sonradan ispatlanabilmesini sağlar.
+
+Madde 15 — KEP delillerinin hukukî niteliği (senet / kesin delil)
+KEPHS'nin KEP sistemi üzerinden sunduğu hizmetlere ilişkin oluşturduğu kayıtlar ile KEP delilleri senet hükmündedir ve aksi ispat edilinceye kadar kesin delil sayılır. Bu hüküm, KEP üzerinden yapılan gönderi, teslim ve zamanın ispatında KEP delillerine kanunî bir karine değeri tanır; gönderinin yapıldığı, muhataba ulaştığı ve içeriği KEP delilleriyle ispatlanır.
+
+Madde 16 — İşlem ve delil kayıtlarının tutulması ve saklanması
+KEPHS, KEP sisteminin tüm süreçlerine ilişkin işlem (günlük) ve delil kayıtlarını; güvenliğini, gizliliğini ve bütünlüğünü sağlayarak kayıt altına almak ve mevzuatta öngörülen süreyle saklamakla yükümlüdür. Bu kayıtlar, KEP iletisinin gönderildiği/alındığı anın ve içeriğinin sonradan ispatlanabilmesini güvence altına alır. [DOĞRULA: asgari saklama süresi — güncel değişiklikle 20 yıl olarak öngörülmüş olabilir]

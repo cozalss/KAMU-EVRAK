@@ -60,3 +60,25 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | İcra ve İflas Kanunu | 2004 | `2004_icra_iflas_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.3.2004.pdf |
 | Hukuk Muhakemeleri Kanunu | 6100 | `6100_hukuk_muhakemeleri_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6100.pdf |
 | Türk Borçlar Kanunu | 6098 | `6098_turk_borclar_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6098.pdf |
+
+## 2026-06 Genişletme Batch 2 — denetim/tüketici/çevre/e-tebligat/ceza (15 mevzuat / 96 madde)
+
+> Korpus 31 -> **46 mevzuat (306 chunk)**. Gerçek mevzuat madde-özetleri (mevzuat.gov.tr).
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Sayıştay Kanunu | 6085 | `6085_sayistay_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6085.pdf |
+| Mal Bildiriminde Bulunulması, Rüşvet ve Yolsuzluklarla Mücadele Kanunu | 3628 | `3628_mal_bildirimi_kanunu.txt` | 9 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3628.pdf |
+| Kamu Görevlileri Etik Kurulu Kurulması ve Bazı Kanunlarda Değişiklik Yapılması Hakkında Kanun | 5176 | `5176_etik_kurulu_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5176.pdf |
+| Tüketicinin Korunması Hakkında Kanun | 6502 | `6502_tuketicinin_korunmasi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6502.pdf |
+| Kamu İhale Sözleşmeleri Kanunu | 4735 | `4735_kamu_ihale_sozlesmeleri.txt` | 10 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4735.pdf |
+| Türk Ticaret Kanunu | 6102 | `6102_turk_ticaret_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6102.pdf |
+| Çevre Kanunu | 2872 | `2872_cevre_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2872.pdf |
+| Yapı Denetimi Hakkında Kanun | 4708 | `4708_yapi_denetimi_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4708.pdf |
+| Afet Riski Altındaki Alanların Dönüştürülmesi Hakkında Kanun | 6306 | `6306_afet_riski_donusum_kanunu.txt` | 4 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6306&MevzuatTur=1&MevzuatTertip=5 |
+| Ulusal Bayram ve Genel Tatiller Hakkında Kanun | 2429 | `2429_ulusal_bayram_genel_tatiller.txt` | 3 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2429.pdf |
+| Elektronik Tebligat Yönetmeliği | 30617 (RG) | `elektronik_tebligat_yonetmeligi.txt` | 8 | https://www.resmigazete.gov.tr/eskiler/2018/12/20181206-2.htm |
+| Kayıtlı Elektronik Posta Sistemine İlişkin Usul ve Esaslar Hakkında Yönetmelik (KEP) | 28036 (RG) | `kayitli_elektronik_posta_yonetmeligi.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=15169&MevzuatTur=7&MevzuatTertip=5 |
+| Türk Ceza Kanunu — Resmî Belgede Sahtecilik ve Görev Suçları (seçili maddeler) | 5237 | `5237_turk_ceza_kanunu_belgede_sahtecilik.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5237.pdf |
+| İl İdaresi Kanunu | 5442 | `5442_il_idaresi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5442.pdf |
+| İl Özel İdaresi Kanunu | 5302 | `5302_il_ozel_idaresi_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5302.pdf |

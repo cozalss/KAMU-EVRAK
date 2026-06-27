@@ -1,0 +1,23 @@
+Türk Ticaret Kanunu
+Kabul 13/1/2011, RG 14/2/2011 sayı 27846 (Düstur Tertip 5, Cilt 50) — YÜRÜRLÜKTE. Burada yalnızca evrak/ticari yazışma açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6102.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 18 — Tacir olmanın hükümleri (basiretli iş adamı, ihtar şekli)
+Tacir, her türlü borcu için iflasa tabidir; ayrıca kanuna uygun ticaret unvanı seçmek, ticari işletmesini ticaret siciline tescil ettirmek ve gerekli ticari defterleri tutmakla yükümlüdür. Her tacir ticari faaliyetlerinde basiretli bir iş adamı gibi hareket etmek zorundadır. Tacirler arasında karşı tarafı temerrüde düşürmeye, sözleşmeyi feshe veya sözleşmeden dönmeye ilişkin ihbar ya da ihtarlar; noter aracılığıyla, taahhütlü mektupla, telgrafla ya da güvenli elektronik imza kullanılarak kayıtlı elektronik posta (KEP) sistemiyle yapılır.
+
+Madde 20 — Ücret ve faiz isteme hakkı
+Tacir olan veya olmayan bir kişiye, ticari işletmesiyle ilgili bir iş veya hizmet görmüş olan tacir, uygun bir ücret isteyebilir. Ayrıca tacir, verdiği avanslar ve yaptığı giderler için ödeme tarihinden itibaren faize hak kazanır. Bu hüküm, ticari ilişkilerde ücret ve faiz talebinin yazılı taleple ileri sürülmesinin dayanağıdır.
+
+Madde 21 — Fatura ve teyit mektubu
+Ticari işletmesi bağlamında mal satan, üreten, iş gören veya menfaat sağlayan tacirden diğer taraf fatura verilmesini ve bedel ödenmişse bunun faturada gösterilmesini isteyebilir. Bir faturayı alan kişi, aldığı tarihten itibaren sekiz gün içinde içeriğine itiraz etmezse faturayı kabul etmiş sayılır. Telefon, telgraf veya başka teknik araçla ya da sözlü kurulan sözleşmelerin içeriğini doğrulayan teyit mektubunu alan kişi de sekiz gün içinde itiraz etmezse mektubu sözleşmeye uygun kabul etmiş sayılır.
+
+Madde 64 — Defter tutma yükümlülüğü
+Her tacir; ticari işlemleriyle işletmesinin ekonomik-mali durumunu, borç-alacak ilişkilerini ve her hesap dönemindeki neticeleri açıkça görülebilir biçimde ortaya koyacak şekilde ticari defterleri tutmak zorundadır. Tacir, işletmesiyle ilgili gönderilmiş her türlü belgenin bir kopyasını yazılı, görsel veya elektronik ortamda saklamakla yükümlüdür. Fiziki defterlerin açılış onayları kuruluşta ve kullanılmadan önce notere (anonim/limited şirketlerin tescili sırasında ticaret sicil müdürlüğüne) yaptırılır; bu tacirler Vergi Usul Kanununun defter tutma hükümlerine de uymak zorundadır.
+
+Madde 82 — Belgelerin saklanması, saklama süresi
+Her tacir; ticari defterlerini, envanterlerini, açılış ve ara bilançolarını, finansal tablolarını, yıllık faaliyet raporlarını, alınan ticari mektupları, gönderilen ticari mektupların suretlerini ve kayıtların dayandığı belgeleri sınıflandırılmış şekilde saklamakla yükümlüdür. Ticari mektuplar, bir ticari işe ilişkin tüm yazışmalardır. Bu belgeler on yıl saklanır; saklama süresi ilgili kaydın/yazışmanın yapıldığı takvim yılının bitişiyle başlar. Defter ve belgeler yangın, su baskını, deprem veya hırsızlık nedeniyle ziyaa uğrarsa tacir, öğrendiği tarihten itibaren otuz gün içinde yetkili mahkemeden belge isteyebilir.

@@ -1,0 +1,38 @@
+Kamu İhale Sözleşmeleri Kanunu
+Kabul 5/1/2002, RG 22/1/2002 sayı 24648 (Düstur Tertip 5, Cilt 42) — YÜRÜRLÜKTE. 4734 sayılı Kamu İhale Kanunu ile birlikte uygulanır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4735.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — İlkeler
+Bu Kanuna göre düzenlenecek sözleşmelerde ihale dokümanında yer alan şartlara aykırı hükümlere yer verilemez. Kanunda belirtilen hâller dışında sözleşme hükümlerinde değişiklik yapılamaz ve ek sözleşme düzenlenemez. Kamu sözleşmelerinin tarafları, sözleşme hükümlerinin uygulanmasında eşit hak ve yükümlülüklere sahiptir ve bu ilke kanunun yorum ve uygulanmasında gözetilir.
+
+Madde 11 — Muayene ve kabul işlemleri
+Teslim edilen mal, hizmet veya yapım işinin muayene ve kabul işlemleri, idarelerce kurulacak en az üç kişilik muayene ve kabul komisyonları tarafından yapılır. Mal veya iş yüklenici tarafından idareye teslim edilmedikçe muayene ve kabul işlemleri yapılamaz. Taahhüdün tamamlanan ve müstakil kullanıma elverişli bölümleri için kısmî kabul yapılabilir.
+
+Madde 12 — Ek kesin teminat
+Fiyat farkı ödenmesi öngörülerek ihale edilen işlerde, sözleşme bedelinde artış meydana gelmesi hâlinde fiyat farkı olarak ödenecek bedelin artış tutarının %6'sı oranında ek kesin teminat alınır. Bu ek kesin teminat hakedişlerden kesinti yapılmak suretiyle de karşılanabilir. Kesin teminata ilişkin esaslar bakımından 4734 sayılı Kanunun teminatlara ilişkin hükümlerine atıf yapılır.
+
+Madde 13 — Kesin teminatın geri verilmesi
+Taahhüdün sözleşme ve ihale dokümanı hükümlerine uygun yerine getirildiği ve yüklenicinin idareye borcu olmadığı tespit edildikten sonra kesin ve ek kesin teminatlar yükleniciye iade edilir. Yapım işlerinde geçici kabulün onaylanmasından sonra yarısı, SGK'dan ilişiksiz belgesi getirilmesi ve kesin kabulün onaylanmasından sonra kalanı iade edilir. Yüklenicinin idareye veya SGK'ya borçları ödenmezse teminatlar protesto çekmeye ve hüküm almaya gerek kalmaksızın paraya çevrilir.
+
+Madde 15 — Sözleşmede değişiklik yapılması
+Sözleşme imzalandıktan sonra, sözleşme bedelinin aşılmaması ve idare ile yüklenicinin karşılıklı anlaşması kaydıyla yalnızca sınırlı hususlarda değişiklik yapılabilir: işin yapılma veya teslim yeri, ve işin süresinden önce yapılması/teslim edilmesi kaydıyla işin süresi ile buna uygun ödeme şartları. Bunun dışında sözleşme hükümleri değiştirilemez.
+
+Madde 20 — İdarenin sözleşmeyi feshetmesi
+Yüklenicinin taahhüdünü sözleşme hükümlerine uygun yerine getirmemesi veya işi süresinde bitirmemesi üzerine, gecikme cezası uygulanmak şartıyla idarenin en az on gün süreli ve nedenleri açıkça belirtilen ihtarına rağmen aynı durumun devam etmesi hâlinde idare sözleşmeyi fesheder. Yüklenicinin sözleşme uygulanırken 25. maddedeki yasak fiil veya davranışlarda bulunduğunun tespiti de fesih sebebidir. Bu hâllerde ayrıca protesto çekmeye gerek kalmaksızın kesin ve ek kesin teminatlar gelir kaydedilir ve hesap genel hükümlere göre tasfiye edilir.
+
+Madde 21 — Sözleşmeden önceki yasak fiil/davranışlar nedeniyle fesih
+Yüklenicinin ihale sürecinde Kamu İhale Kanununa göre yasak fiil veya davranışlarda bulunduğunun sözleşme yapıldıktan sonra tespit edilmesi hâlinde kesin ve ek kesin teminatlar gelir kaydedilir ve sözleşme feshedilerek hesap genel hükümlere göre tasfiye edilir. Ancak taahhüdün en az %80'inin tamamlanmış olması ve tamamlanmasında kamu yararı bulunması kaydıyla, ivedilik, başka yükleniciye yaptırılamaması veya fiilin işi engellemeyecek nitelikte olması hâllerinde idare fesih yerine yüklenicinin işi tamamlamasını isteyebilir; bu durumda 26. madde uygulanır ve teminat tutarı kadar ceza tahsil edilir.
+
+Madde 22 — Sözleşmenin feshine ilişkin düzenlemeler
+19. maddeye göre yüklenicinin fesih talebinin idareye intikali, 20-a bendine göre sürenin bitimi, 20-b ve 21. maddeye göre ise tespit tarihi itibarıyla sözleşme feshedilmiş sayılır. Bu tarihleri izleyen yedi gün içinde idare fesih kararı alır ve karar, karar tarihini izleyen beş gün içinde yükleniciye bildirilir. Fesih hâlinde teminatlar TÜFE/ÜFE endeksine göre güncellenir, gelir kaydedilir ve borca mahsup edilemez; yükleniciler hakkında 26. madde uygulanır ve idarenin uğradığı zarar yükleniciye tazmin ettirilir.
+
+Madde 25 — Yasak fiil ve davranışlar
+Sözleşmenin uygulanması sırasında şu fiiller yasaktır: hile, vaat, tehdit, nüfuz kullanma, çıkar sağlama, anlaşma, irtikâp veya rüşvetle sözleşmeye ilişkin işlemlere fesat karıştırmak; sahte belge düzenlemek veya kullanmak; hileli malzeme/usul kullanmak ya da fen ve sanat kurallarına aykırı eksik, hatalı, kusurlu imalat yapmak; idareye zarar vermek; bilgi ve deneyimini idarenin zararına kullanmak; mücbir sebep dışında taahhüdü yerine getirmemek; sözleşmeyi 16. maddeye aykırı devretmek veya devralmak.
+
+Madde 26 — İhalelere katılmaktan yasaklama
+25. maddede sayılan yasak fiil veya davranışlarda bulunduğu tespit edilenler hakkında, fiilin özelliğine göre bir yıldan az olmamak üzere iki yıla kadar bütün kamu kurum ve kuruluşlarının ihalelerine katılmaktan yasaklama kararı verilir. Tüzel kişilerde şahıs şirketi ortaklarının tamamı, sermaye şirketinde ise sermayesinin yarısından fazlasına sahip ortaklar hakkında da yasaklama uygulanır. Yasaklama kararları, fiilin tespit edildiği tarihi izleyen en geç kırk beş gün içinde verilir ve Resmî Gazete'de yayımlanır.

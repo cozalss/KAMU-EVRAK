@@ -1,4 +1,4 @@
-"""Mevzuat korpusu (data/mevzuat/*.txt) → madde-bazlı seed indeksi (mevzuat_index.json).
+"""Mevzuat korpusu (data/mevzuat/*.txt) -> madde-bazlı seed indeksi (mevzuat_index.json).
 
 mevzuat_oner node'u bu indeksi (varsa) seed olarak okur; yoksa korpusu runtime chunk'lar.
 Korpus genişletildikten sonra çalıştır:  uv run python scripts/seed_mevzuat.py
@@ -47,7 +47,7 @@ def main() -> None:
     index = build_index()
     _INDEX_FILE.parent.mkdir(parents=True, exist_ok=True)
     _INDEX_FILE.write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"OK {index['mevzuat_sayisi']} mevzuat → {index['chunk_sayisi']} chunk → {_INDEX_FILE.relative_to(_ROOT)}")
+    print(f"[OK] {index['mevzuat_sayisi']} mevzuat -> {index['chunk_sayisi']} chunk -> {_INDEX_FILE.relative_to(_ROOT)}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+Afet Riski Altındaki Alanların Dönüştürülmesi Hakkında Kanun
+Kanun No 6306, Kabul 16.05.2012, RG 31.05.2012/28309 (Düstur Tertip 5, Cilt 52) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6306&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanımlar (riskli alan / riskli yapı / rezerv yapı alanı)
+Kanunda geçen temel kavramları tanımlar. Riskli yapı, riskli alan içinde veya dışında olup ekonomik ömrünü tamamlamış ya da yıkılma veya ağır hasar görme riski taşıdığı ilmî ve teknik verilere dayanılarak tespit edilen yapıdır. Riskli alan, rezerv yapı alanı, TOKİ ve Kentsel Dönüşüm Başkanlığı (Başkanlık) gibi terimleri tanımlar (Başkanlık ibaresi 7/11/2023-7471 ile eklenmiştir). Riskli yapı/alan kavramlarının dayanak maddesidir.
+
+Madde 3 — Riskli yapı tespiti, itiraz ve tebligat
+Riskli yapı tespitinin, öncelikle masrafları kendilerine ait olmak üzere maliklerce, Başkanlıkça lisanslandırılan kurum/kuruluşlara yaptırılacağını; tespit yapılmazsa Başkanlık/İdarece resen yapılacağını düzenler. Tespite karşı maliklerce ON BEŞ GÜN içinde itiraz edilebilir; itirazlar üniversite öğretim üyeleri ile Bakanlık/Başkanlık personelinden oluşan teknik heyetlerce karara bağlanır. Riskli yapı, tespit tarihinden itibaren en geç on iş günü içinde tapuya bildirilir; tutanak yapıya asılır, maliklere e-Devlet'ten bildirilir ve muhtarlıkta on beş gün ilan edilir (ilan son günü tebliğ sayılır). Riskli yapı tespit raporu ve tebligat yazışmalarının dayanağıdır.
+
+Madde 4 — Tasarrufların kısıtlanması ve hizmet durdurma
+Başkanlık, TOKİ veya İdarenin; riskli alanlar ve rezerv yapı alanlarında her türlü imar ve yapılaşma işlemini iki yıl (gerektiğinde bir yıl daha uzatılmak üzere) geçici durdurabileceğini düzenler. Belirli taşınmazların devir işlemleri sonuçlanıncaya kadar satılamayacağı, kiraya verilemeyeceği ve tahsis edilemeyeceği öngörülür. Uygulama sırasında talep halinde, hak sahiplerinin görüşü alınarak riskli yapılara elektrik, su ve doğal gaz verilmeyebilir veya hizmet durdurulabilir. İmar/yapılaşma durdurma ve hizmet kesme yazışmalarının dayanağıdır.
+
+Madde 5 — Tahliye ve yıktırma
+Riskli yapıların yıktırılmasında öncelikle maliklerle anlaşma yoluna gidilmesinin esas olduğunu düzenler; anlaşma ile tahliye edilenlere geçici konut/işyeri tahsisi, kira yardımı ve yapım yardımı yapılabilir. Yıktırma için maliklere DOKSAN GÜNDEN fazla olmamak üzere süre verilir; süre içinde yıkılmazsa tahliye ve yıktırma işlemleri mahallî idarelerin iştirakiyle mülki amirlerce yapılır/yaptırılır. Tahliye engellenirse mülki idare amirinin yazılı izniyle kolluk kuvvetiyle tahliye yapılır; tespit, tahliye ve yıktırma masrafları hisseleri oranında maliklerden 6183 sayılı Kanuna göre tahsil edilir. Tahliye/yıkım tebligat ve masraf tahsili yazışmalarının dayanağıdır.

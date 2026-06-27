@@ -1,0 +1,29 @@
+Tüketicinin Korunması Hakkında Kanun
+Kabul 7/11/2013, RG 28/11/2013 sayı 28835 (Düstur Tertip 5, Cilt 54) — YÜRÜRLÜKTE. Parasal sınırlar her yıl yeniden değerleme oranında güncellenir; güncel tutar için Ticaret Bakanlığı tebliğine bakılır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6502.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 8 — Ayıplı mal
+Ayıplı mal, tüketiciye teslimi anında taraflarca kararlaştırılan örnek/modele uygun olmaması ya da objektif olarak sahip olması gereken özellikleri taşımaması nedeniyle sözleşmeye aykırı olan maldır. Ambalaj, etiket, kullanma kılavuzu, internet portalı veya reklamlarda belirtilen özellikleri taşımayan; teknik düzenlemeye aykırı; kullanım amacını karşılamayan ya da tüketicinin makul beklediği faydayı azaltan maddi/hukuki/ekonomik eksiklik içeren mallar da ayıplı sayılır. Sözleşmede kararlaştırılan sürede teslim edilmeme veya hatalı montaj da sözleşmeye aykırı ifa kabul edilir.
+
+Madde 11 — Tüketicinin seçimlik hakları
+Malın ayıplı çıkması durumunda tüketici dört seçimlik haktan birini kullanabilir: sözleşmeden dönme, ayıp oranında bedelden indirim, ücretsiz onarım veya ayıpsız misli ile değişim. Satıcı tüketicinin tercih ettiği talebi yerine getirmekle yükümlüdür; ücretsiz onarım ve değişimden satıcı, üretici ve ithalatçı müteselsil sorumludur. Onarım/değişim talebi kural olarak en çok 30 iş günü (konut-tatil amaçlı taşınmazda 60 iş günü) içinde yerine getirilir; sözleşmeden dönme veya indirim seçilirse ödenen bedel derhâl tüketiciye iade edilir. Tüketici ayrıca Türk Borçlar Kanunu uyarınca tazminat da isteyebilir.
+
+Madde 12 — Zamanaşımı
+Kanunlarda veya sözleşmede daha uzun süre belirlenmedikçe ayıplı maldan sorumluluk, ayıp sonradan ortaya çıksa bile malın teslim tarihinden itibaren iki yıllık zamanaşımına tabidir. Konut veya tatil amaçlı taşınmazlarda bu süre teslimden itibaren beş yıldır. İkinci el satışlarda satıcının sorumluluğu bir yıldan (konut-tatil taşınmazda üç yıldan) az olamaz. Ayıp ağır kusur veya hile ile gizlenmişse zamanaşımı hükümleri uygulanmaz.
+
+Madde 48 — Mesafeli sözleşmeler
+Mesafeli sözleşme, satıcı/sağlayıcı ile tüketicinin eş zamanlı fiziksel varlığı olmaksızın uzaktan iletişim araçlarıyla kurulan sözleşmedir. Satıcı veya sağlayıcı, siparişin ulaştığı andan itibaren taahhüt edilen sürede, mal satışlarında her hâlükârda en çok otuz gün içinde edimini yerine getirir; aksi hâlde tüketici sözleşmeyi feshedebilir. Tüketici, on dört gün içinde herhangi bir gerekçe göstermeksizin ve cezai şart ödemeksizin sözleşmeden cayma hakkına sahiptir; cayma hakkı konusunda gerektiği gibi bilgilendirilmezse bu süre bir yıla kadar uzar.
+
+Madde 66 — Tüketici hakem heyetleri
+Bakanlık, tüketici işlemlerinden ve tüketiciye yönelik uygulamalardan doğabilecek uyuşmazlıkları çözmek için tüketici hakem heyetleri oluşturmakla görevlidir; heyetlerin yetki alanı ve iş bölümü Bakanlıkça belirlenir. Heyete illerde ticaret il müdürü, ilçelerde kaymakam veya görevlendireceği memur başkanlık eder ve heyet başkan dahil beş üyeden oluşur (belediye, baro, ticaret/sanayi veya esnaf odası ve tüketici örgütü temsilcileri). Heyetin oluşamadığı yerlerde eksik üyelikler Devlet memurları arasından tamamlanır.
+
+Madde 68 — Tüketici hakem heyetine başvuru
+İcra ve İflas Kanunundaki haklar saklı kalmak üzere, kanunda belirlenen parasal sınırın altındaki uyuşmazlıklarda tüketici hakem heyetine başvuru zorunludur; bu sınırın üzerindeki uyuşmazlıklar için heyete başvurulamaz (doğrudan tüketici mahkemesine gidilir). Başvuru, tüketicinin yerleşim yerinin veya işlemin yapıldığı yerin tüketici hakem heyetine yapılabilir. Parasal sınır her takvim yılı başında Vergi Usul Kanunu yeniden değerleme oranında artırılarak uygulanır. [DOĞRULA: 2026 yılı için geçerli güncel parasal sınır tutarı — 23/12/2025 tarihli 33116 sayılı RG'de yayımlanan Ticaret Bakanlığı tebliğinden teyit edilmeli]
+
+Madde 70 — Karar ve karara itiraz
+Tüketici hakem heyeti kararları tarafları bağlar ve İcra ve İflas Kanununun ilamların yerine getirilmesine ilişkin hükümlerine göre icra edilir. Taraflar, karara karşı tebliğ tarihinden itibaren iki hafta içinde tüketici hakem heyetinin veya tüketicinin yerleşim yerindeki tüketici mahkemesine itiraz edebilir; itiraz kararın icrasını kendiliğinden durdurmaz ancak hâkim talep üzerine tedbiren durdurabilir. Tüketici mahkemesinin itiraz üzerine verdiği karar kesindir.

@@ -1,0 +1,28 @@
+Türk Ceza Kanunu — Resmî Belgede Sahtecilik ve Görev Suçları (seçili maddeler)
+Kanun No 5237, Kabul 26.09.2004, RG 12.10.2004/25611 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5237 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5237.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Yalnızca resmî evrak güvenliği / suistimal açısından ilgili maddeler (m.204-207 belgede
+sahtecilik, m.257 görevi kötüye kullanma/ihmal) seçilmiştir; Kanunun tamamı değildir.
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 204 — Resmî belgede sahtecilik
+Bir resmî belgeyi sahte olarak düzenleyen, gerçek bir resmî belgeyi başkalarını aldatacak şekilde değiştiren veya sahte resmî belgeyi kullanan kişi iki yıldan beş yıla kadar hapis cezası ile cezalandırılır. Suç, görevi gereği düzenlemeye yetkili olduğu belgede kamu görevlisi tarafından işlenirse (gerçeğe aykırı belge düzenleme dahil) ceza üç yıldan sekiz yıla kadar hapistir. Belgenin, kanun gereği sahteliği sabit oluncaya kadar geçerli sayılan nitelikte (örneğin tapu, nüfus, mahkeme kararı) olması halinde verilecek ceza yarı oranında artırılır. Resmî evrak güvenliğini doğrudan ilgilendiren temel suç tipidir.
+
+Madde 205 — Resmî belgeyi bozmak, yok etmek veya gizlemek
+Gerçek bir resmî belgeyi bozan, yok eden veya gizleyen kişi iki yıldan beş yıla kadar hapis cezası ile cezalandırılır. Suçun bir kamu görevlisi tarafından görevi sebebiyle işlenmesi halinde verilecek ceza yarı oranında artırılır. Bu hüküm, dosya/evrak akıbetinin korunması ve arşiv güvenliği bakımından sahtecilikten farklı olarak belgenin maddi varlığına veya erişilebilirliğine yönelik fiilleri cezalandırır.
+
+Madde 206 — Resmî belgenin düzenlenmesinde yalan beyan
+Bir resmî belgeyi düzenlemek yetkisine sahip olan kamu görevlisine, gerçeğe aykırı bir beyanda bulunulması suretiyle bu beyanın belgeye geçirilmesine yol açan kişi üç aydan iki yıla kadar hapis veya adlî para cezası ile cezalandırılır. Burada cezalandırılan, belgeyi düzenleyen görevli değil, ona yalan beyan veren kişidir; vatandaşın idareye/kamu görevlisine sunduğu beyanların doğruluğu yükümlülüğünü güvence altına alır.
+
+Madde 207 — Özel belgede sahtecilik
+Bir özel belgeyi sahte olarak düzenleyen veya gerçek bir özel belgeyi başkalarını aldatacak şekilde değiştiren ve kullanan kişi bir yıldan üç yıla kadar hapis cezası ile cezalandırılır. Bir sahte özel belgeyi bu özelliğini bilerek kullanan kişi de aynı ceza ile cezalandırılır. Resmî belge sayılmayan (sözleşme, fatura örneği, özel yazışma gibi) belgelerdeki sahtecilik bu madde kapsamındadır; resmî belgeye göre ceza aralığı daha düşüktür.
+
+Madde 247 — Zimmet
+Görevi nedeniyle zilyetliği kendisine devredilmiş olan veya koruma ve gözetimiyle yükümlü olduğu malı kendisinin veya başkasının zimmetine geçiren kamu görevlisi beş yıldan oniki yıla kadar hapis cezası ile cezalandırılır. Suçun, zimmetin açığa çıkmamasını sağlamaya yönelik hileli davranışlarla işlenmesi halinde ceza yarı oranında artırılır. [DOĞRULA: zimmetin etkin pişmanlık/iade ile indirim hükümleri (m.248) ve güncel oranlar.] Evrak ve mali işlemler üzerinde yetki kullanan kamu görevlilerinin suistimalini cezalandırır.
+
+Madde 257 — Görevi kötüye kullanma
+Kanunda ayrıca suç olarak tanımlanan haller dışında, görevinin gereklerine aykırı hareket etmek suretiyle kişilerin mağduriyetine veya kamunun zararına neden olan ya da kişilere haksız menfaat sağlayan kamu görevlisi altı aydan iki yıla kadar hapis cezası ile cezalandırılır. Görevin gereklerini yapmakta ihmal veya gecikme göstererek (görevi ihmal) aynı sonuçlara yol açan kamu görevlisi ise üç aydan bir yıla kadar hapis cezası ile cezalandırılır. Evrak akışında usule aykırı işlem, geciktirme veya kayırma gibi fiiller bu maddenin kapsamına girebilir; suçun oluşması için somut mağduriyet, kamu zararı veya haksız menfaat unsuru aranır.

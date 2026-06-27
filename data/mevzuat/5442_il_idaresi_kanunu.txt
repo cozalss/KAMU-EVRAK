@@ -1,0 +1,31 @@
+İl İdaresi Kanunu
+Kanun No 5442, Kabul 10.06.1949, RG 18.06.1949/7236 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.5442 konsolide metin; 703/2018 ve sonraki değişikliklerle 'Cumhurbaşkanı/Cumhurbaşkanlığı kararnamesi' ibareleri işli)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5442.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Vali/kaymakam yetkileri ve idari yazışma usulü açısından ilgili maddeler seçilmiştir.
+Madde 9, 11 ve 31 harf bentleriyle (9-A, 9-B; 11-A...11-D; 31-A...) düzenlenmiştir; özetler
+bu bentlerin bütününü kapsar. Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr
+resmî kaynaklarından araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler
+[DOĞRULA: ...] işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — İl, ilçe ve bucak teşkilatı
+Türkiye'nin merkezî idare kuruluşu coğrafya durumuna, ekonomik şartlara ve kamu hizmetlerinin gereklerine göre illere; iller ilçelere, ilçeler bucaklara bölünür. İllerin kurulması, kaldırılması, merkez ve sınır değişiklikleri kanunla; ilçe ve bucak işlemleri ise mevzuatta belirtilen usulle yapılır. Bakanlıklar ile tüzel kişiliği haiz genel müdürlükler, illerde lüzumu kadar teşkilat bulundurur ve bu kuruluşlar valinin gözetim ve denetimi altında çalışır.
+
+Madde 9 — Valinin hukuki durumu ve yazışma usulü
+Vali, ilde Cumhurbaşkanının temsilcisi ve idarî yürütme vasıtası olup ilin genel idaresinden sorumludur; kanunları, Cumhurbaşkanlığı kararnamelerini ve diğer mevzuatı yayımlatır ve uygulatır. Yazışma bakımından: bakanlıklar ve tüzel kişiliği haiz genel müdürlükler, il genel idare teşkilatına ait işleri doğrudan doğruya valiliklere yazar; valilikler de illere ait işler için ilgili bakanlık veya genel müdürlüklerle doğrudan doğruya muhabere eder. Vali, hesap ve teknik konularda imza yetkisini ilgili birim amirlerine devredebilir. Bu madde, kamu yazışmasında ilin tek muhatabının valilik olduğu ilkesini kurar.
+
+Madde 11 — Valinin görev ve yetkileri (kamu düzeni, kolluk, denetim)
+Vali; il sınırları içinde huzur ve güvenliğin, kişi dokunulmazlığının, tasarrufa ilişkin emniyetin ve kamu esenliğinin sağlanmasından ve önleyici kolluk yetkisinden sorumludur; il genel ve özel kolluk kuvvetlerinin amiridir. Suç işlenmesini önlemek ve kamu düzenini korumak için gereken tedbirleri alır, gerektiğinde belirli yerlere giriş-çıkışı düzenler. Kamu düzeni ve güvenliğinin gerektirdiği hallerde kamu kurum ve kuruluşlarının personeli ve araçlarından yararlanabilir; bu kurumlar valinin emir ve talimatlarını yerine getirmek zorundadır. Vali ayrıca adlî ve askerî teşkilat dışındaki tüm devlet daire ve kuruluşlarını, mahallî idareleri ve köyleri teftiş ve denetler.
+
+Madde 27 — Kaymakamın hukuki durumu (ilçe genel idaresinin başı)
+İlçe genel idaresinin başı ve mercii kaymakamdır. Kaymakam, ilçede Cumhurbaşkanının idarî yürütme vasıtası olup ilçenin genel idaresinden sorumludur. Bakanlıklar ve tüzel kişiliği haiz genel müdürlükler ilçe işleri için doğrudan ilçe teşkilatına değil, vali aracılığıyla işlem yürütülmesini esas alan hiyerarşik düzene tabidir; kaymakam ilçedeki devlet daire ve kuruluşlarının çalışmasını düzenler ve denetler.
+
+Madde 31 — Kaymakamın görev ve yetkileri ile yazışma usulü
+Kaymakam; kanunları, Cumhurbaşkanlığı kararnamelerini ve diğer mevzuatı ilçede yayımlatır ve uygular; valinin emir ve talimatlarını yürütür. Yazışma bakımından valiler, ilçeye ait işleri doğrudan doğruya kaymakama yazar; kaymakamlar da ilçenin işleri hakkında bağlı bulundukları valilikle muhabere eder. Ancak olağanüstü ve ivedi hallerde kaymakam, durumu valiye bildirmek koşuluyla ilgili bakanlık ve diğer kuruluşlarla doğrudan haberleşebilir. Kaymakam, ilçedeki memurların atama ve özlük işlemlerinde mevzuatın verdiği yetkileri kullanır.
+
+Madde 32 — Kaymakamın teftiş ve denetim yetkisi
+Kaymakam, dördüncü maddenin son fıkrasında belirtilen adlî ve askerî teşkilat dışında kalan ilçedeki bütün devlet daire ve kuruluşlarını, mahallî idareleri ve köyleri teftiş ve denetler; bu denetimi bizzat veya ilgili bakanlık/genel müdürlük müfettişleri ile daire amirleri eliyle yapar. Denetim sonucu tespit ettiği aksaklıkları giderir veya yetkisi dışındaysa valiye bildirir. İlçe sınırları içindeki genel ve özel kolluk kuvvetlerinin de amiridir.
+
+Madde 66 — Emirlere aykırı hareket (yaptırım)
+İl genel kurulu veya idare kurulları yahut en büyük mülkî amir tarafından kanunların verdiği yetkiye dayanılarak alınan ve usulüne göre ilan/tebliğ edilen karar ve tedbirlere aykırı hareket eden, güçlük çıkaran veya bunları yerine getirmeyenler hakkında Kabahatler Kanununun ilgili maddesine göre idarî para cezası uygulanır. Ancak kamu düzeni ve güvenliğini ya da kişilerin can ve mal emniyetini tehlikeye düşürecek toplumsal olaylar bakımından valinin usulüne uygun ilan ettiği karar ve tedbirlere aykırı davrananlar üç aydan bir yıla kadar hapis cezası ile cezalandırılır. [DOĞRULA: idarî para cezası atfının Kabahatler Kanunu m.32 olduğu ve hapis cezası alt-üst sınırları güncel metinden teyit edilmelidir.]

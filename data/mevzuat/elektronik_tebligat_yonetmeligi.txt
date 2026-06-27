@@ -1,0 +1,35 @@
+Elektronik Tebligat Yönetmeliği
+RG 06.12.2018/30617 — YÜRÜRLÜKTE (yürürlük tarihi 01.01.2019; dayanak 7201 sayılı Tebligat Kanunu m.7/a)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2018/12/20181206-2.htm
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve süreler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır). Bu Yönetmelik,
+7201 sayılı Tebligat Kanunu m.7/a'nın ikincil düzenlemesidir; elektronik tebligatın yapılmış
+sayıldığı an (beşinci günün sonu) ve UETS delil kayıtları, kamu yazışmalarında tebligat
+süresinin başlangıcını belirleyen temel dayanaktır.
+
+Madde 2 — Dayanak
+Yönetmelik, 7201 sayılı Tebligat Kanununun 7/a maddesine dayanılarak hazırlanmıştır. Elektronik ortamda yapılacak tebligatın usul ve esaslarını, anonim/limited/sermayesi paylara bölünmüş komandit şirketler başta olmak üzere zorunluluk kapsamındaki muhataplar bakımından belirler.
+
+Madde 3 — Tanımlar (UETS, elektronik tebligat adresi, muhatap, PTT)
+Yönetmeliğin temel kavramlarını tanımlar. UETS (Ulusal Elektronik Tebligat Sistemi), Tebligat Kanunu ve bu Yönetmelik uyarınca elektronik tebligat işlemlerini yürütmek amacıyla PTT tarafından kurulup işletilen ve güvenliği sağlanan sistemdir. Elektronik tebligat adresi, PTT tarafından kimlik/sistem bilgilerine göre oluşturulan tek ve benzersiz adrestir. Muhatap, elektronik tebligatı alan gerçek veya tüzel kişidir; PTT ise Posta ve Telgraf Teşkilatı Anonim Şirketidir. Ayrıca delil kaydı, işlem kaydı ve gizli ileti kavramları tanımlanır.
+
+Madde 5 — Elektronik tebligat yapması zorunlu olanlar
+Tebligatın elektronik yolla yapılmasının zorunlu olduğu muhatapları sayar: 7201 sayılı Kanunda belirtilen kamu idareleri, mahallî idareler, kamu iktisadi teşebbüsleri, sermayesinin yarısından fazlası kamuya ait şirketler, baro ve noterler, kanunla kurulan kamu kurumu niteliğindeki meslek kuruluşları, avukatlar, arabulucular ve bilirkişiler ile tüm özel hukuk tüzel kişileri. Bu muhataplara fiziksel tebligat yapılamaz; talep eden diğer gerçek ve tüzel kişilere de elektronik tebligat adresi verilebilir.
+
+Madde 7 — Elektronik tebligat adresi başvurusu ve oluşturulması
+Zorunluluk kapsamındaki gerçek ve tüzel kişiler için elektronik tebligat adresi, ilgili kurum-kuruluşların PTT'ye bildirimi üzerine; isteğe bağlı muhataplar için ise başvuru üzerine oluşturulur. PTT, başvuru veya bildirim tarihinden itibaren bir ay içinde adresi oluşturarak UETS'ye kaydeder ve ilgilisine teslim eder. Bu işlem, muhatabın UETS üzerinden tebligat almaya hazır hale gelmesini sağlar.
+
+Madde 9 — Elektronik tebligatın muhataba ulaşması ve beşinci gün kuralı
+Elektronik tebligat mesajı UETS tarafından muhatabın elektronik tebligat adresine iletilir; mesajın tamamının ulaştığı anda delil kaydı üretilir ve elektronik sertifika ile imzalanır. Elektronik yolla tebligat, muhatabın elektronik tebligat adresine ulaştığı tarihi izleyen beşinci günün sonunda yapılmış sayılır. Tebligatın muhatap tarafından daha önce veya sonra okunmuş olması tebliğ tarihini etkilemez; süre bu beşinci günün sonundan itibaren işler. [DOĞRULA: beşinci günün sonu — 7201 m.7/a ile uyumlu]
+
+Madde 11 — Muhatabın bilgilendirilmesi
+Muhatabın talebine bağlı olarak, elektronik tebligatın adresine ulaştığına dair bilgilendirme; kısa mesaj (SMS) veya elektronik posta yoluyla yapılır. Bu bilgilendirme yapılmaması veya muhataba ulaşmaması, tebligatın geçerliliğini ve beşinci gün kuralı uyarınca tebliğ edilmiş sayılma anını etkilemez; bilgilendirme tebliğ tarihinin başlangıcını değiştirmez.
+
+Madde 13 — Delil kayıtları
+UETS, elektronik tebligatın muhatabın adresine ulaşıp ulaşmadığına, ulaşma anına ve tebliğ tarihine ilişkin delil kayıtlarını oluşturur ve bu kayıtları tebligat çıkarmaya yetkili merciye rapor olarak iletir. Delil kayıtları, aksi ispat edilinceye kadar kesin delil sayılır ve tebligatın yapıldığı/yapılmadığı ile tarihinin ispatında esas alınır.
+
+Madde 15 — İşlem ve delil kayıtlarının saklanması
+UETS'ye ait işlem kayıtları en az on yıl, tebligata ilişkin delil kayıtları ise en az otuz yıl süreyle saklanır. Kayıtların silinmesi, en az bir kez denetimden geçmiş olması şartına bağlıdır. Bu saklama yükümlülüğü, tebligatın geçerliliğinin ve tebliğ tarihinin sonradan ispatlanabilmesini güvence altına alır.

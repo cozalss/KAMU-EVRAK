@@ -1,0 +1,35 @@
+İl Özel İdaresi Kanunu
+Kanun No 5302, Kabul 22.02.2005, RG 04.03.2005/25745 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5302 konsolide metin esas alınmıştır; 6360/2012 sonrası büyükşehir illerinde il özel idareleri kaldırılmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5302.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Görev alanı, meclis/encümen kararı ve valinin il özel idaresindeki rolü açısından ilgili
+maddeler seçilmiştir. NOT: 6360 sayılı Kanunla büyükşehir belediyesi bulunan illerde il özel
+idarelerinin tüzel kişiliği kaldırılmıştır; Kanun, büyükşehir olmayan illerde uygulanır.
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Organlar
+İl özel idaresinin organları il genel meclisi, il encümeni ve validir. İl genel meclisi karar organı; il encümeni ise valinin başkanlığında çalışan icra-yürütme ve danışma organıdır. Vali, hem il özel idaresinin başı ve tüzel kişiliğinin temsilcisi, hem de devletin ildeki en üst mülkî amiri sıfatını taşır. Bu yapı, il özel idaresinin kararlarının hangi organca ve hangi belge (meclis kararı / encümen kararı / vali oluru) ile alınacağını belirler.
+
+Madde 6 — Görev ve sorumluluklar
+İl özel idaresi, mahallî müşterek nitelikte olmak şartıyla; sağlık, tarım, sanayi ve ticaret, ilin çevre düzeni planı, bayındırlık ve iskân, toprağın korunması, erozyon, kültür-sanat-turizm, sosyal hizmet ve yardımlar, yoksullara mikrokredi, çocuk yuvaları ve yetiştirme yurtları, ilk ve orta öğretim kurumlarının arsa temini ve bakım-onarımı gibi alanlarda görev yapar. Bu görevlerin bir kısmı belediye sınırları dışında, bir kısmı il sınırları içinde yürütülür. Görev alanı, il özel idaresinin düzenleyeceği evrak ve hizmet taleplerinin konusunu belirler.
+
+Madde 7 — Yetkiler ve imtiyazlar
+İl özel idaresi; kanunlarla verilen görev ve hizmetleri yapabilir, bunlara ilişkin yönetmelik çıkarabilir; taşınır ve taşınmaz malları edinip idare edebilir; kamu hizmetiyle ilgili faaliyetler için izin ve ruhsat verip denetleyebilir; borçlanabilir, bağış ve yardım kabul edebilir; vergi, resim ve harç dışındaki özel hukuk ilişkilerinde sözleşme yapabilir. Bu yetkiler, il özel idaresinin ürettiği idarî işlemlerin ve resmî yazışmaların hukukî dayanağını oluşturur.
+
+Madde 10 — İl genel meclisinin görev ve yetkileri
+İl genel meclisi, il özel idaresinin karar organıdır ve şu konularda karar verir: stratejik plan ile yatırım ve çalışma programlarını görüşmek; bütçe ve kesin hesabı kabul etmek; il çevre düzeni planı ile belediye sınırı dışındaki imar planlarını onaylamak; borçlanmaya ve taşınmaz mal alım-satım, takas, tahsis ve kiralanmasına karar vermek; yönetmelikleri kabul etmek; encümen üyeleri ile ihtisas komisyonu üyelerini seçmek; norm kadroyu, şirket/işletme kurulmasını ve dış ilişkileri karara bağlamak. Bu konulardaki idarî tasarruflar 'il genel meclisi kararı' biçiminde belgelenir.
+
+Madde 15 — Kararların kesinleşmesi
+İl genel meclisince alınan kararlar, valiye gönderildiği tarihten itibaren kanunda öngörülen süre içinde vali tarafından ya onaylanarak yürürlüğe konulur ya da gerekçe gösterilerek bir kez daha görüşülmek üzere meclise iade edilir. Meclis, iade edilen kararda ısrar ederse karar kesinleşir; vali, kesinleşen kararlar aleyhine idarî yargıya başvurabilir. Bu süreç, meclis kararlarının yürürlük kazanması için izlenecek evrak ve onay akışını düzenler. [DOĞRULA: valinin karar iadesi ve dava açma süreleri (gün) güncel metinden teyit edilmelidir.]
+
+Madde 26 — İl encümeninin görev ve yetkileri
+İl encümeni; stratejik plan ve yıllık çalışma programı ile bütçe ve kesin hesabı inceleyip il genel meclisine görüş bildirir; kamulaştırma kararlarını ve buna ilişkin kullanma yetkisini, öngörülmeyen giderler ödeneğinin harcanmasını ve bütçe içi aktarmaları karara bağlar; kanunlarda öngörülen cezaları verir; taşınmaz mal satımı, trampası ve tahsisine ilişkin meclis kararlarını uygular; süresi üç yılı geçmemek üzere kiralama kararları alır. Bu işlemler 'il encümeni kararı' olarak belgelenir ve günlük idarî karar üretiminin önemli bölümünü oluşturur.
+
+Madde 27 — Encümen toplantısı ve karar usulü
+İl encümeni; vali başkanlığında, il genel meclisinin her yıl kendi üyeleri arasından gizli oyla seçtiği üyeler ile valinin birim amirleri arasından her yıl belirlediği üyelerden oluşur ve haftada en az bir defa toplanır. Encümen, üye tam sayısının salt çoğunluğuyla toplanır ve katılanların salt çoğunluğuyla karar verir; oyların eşitliği halinde başkanın bulunduğu taraf çoğunluk sayılır. Valinin katılamadığı toplantılara genel sekreter başkanlık eder. [DOĞRULA: encümenin üye sayısı ve bileşimi (vali + meclisten seçilen üyeler + birim amirleri) 6360 ve sonraki değişikliklerle güncellenmiş olabileceğinden büyükşehir-dışı il için güncel metin teyit edilmelidir.]
+
+Madde 30 — Valinin görev ve yetkileri
+Vali, il özel idaresinin başı ve tüzel kişiliğinin temsilcisidir; il özel idaresi teşkilatının en üst amiri olarak teşkilatı sevk ve idare eder, encümene başkanlık eder, stratejik plan ve bütçeyi uygulayıp gelir ve alacakları takip ve tahsil eder; idareyi temsilen sözleşme yapar, personeli atar ve idarenin taşınır-taşınmaz mallarını yönetir. Vali, hem il özel idaresinin yürütme organı hem de devletin ildeki temsilcisi olarak çift sıfat taşır; il özel idaresine ait resmî yazıların imza ve onay yetkisi bu sıfata dayanır.

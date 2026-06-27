@@ -1,0 +1,21 @@
+Ulusal Bayram ve Genel Tatiller Hakkında Kanun
+Kanun No 2429, Kabul 17.03.1981, RG 19.03.1981/17284, Düstur Tertip 5 Cilt 20 — YÜRÜRLÜKTE (m.2 6772/5892/7033 vb. sayılı Kanunlarla; 1 Mayıs ve 15 Temmuz sonradan eklenmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2429.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve süreler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır). Bu Kanun, bir
+sürenin son günü resmî tatile rastladığında sürenin işleyişi (uzaması) bakımından evrak/
+yazışma süre hesabının temel dayanağıdır; resmî yazı ve tebligat sürelerinin son günü genel
+tatil/hafta tatiline gelirse süre, izleyen ilk iş günü mesai bitiminde sona erer (HMK m.93,
+genel usul hükümleriyle birlikte).
+
+Madde 1 — Ulusal Bayram
+1923 yılında Cumhuriyetin ilan edildiği 29 Ekim günü Ulusal Bayramdır. Türkiye'nin içinde ve dışında Devlet adına yalnız bu gün tören yapılır. Ulusal Bayram, 28 Ekim günü saat 13.00'ten itibaren başlar ve 29 Ekim günü devam eder. Bu gün, süre hesabında resmî tatil sayılan ilk gündür.
+
+Madde 2 — Genel tatil günleri (resmî ve dinî bayramlar, diğer tatiller)
+Resmî ve dinî bayram günleri ile yılbaşı, 1 Mayıs ve 15 Temmuz genel tatil günleridir; bu günler süre hesabında tatil sayılır. Resmî bayram günleri 23 Nisan (Ulusal Egemenlik ve Çocuk Bayramı), 19 Mayıs (Atatürk'ü Anma, Gençlik ve Spor Bayramı) ve 30 Ağustos (Zafer Bayramı) günleridir. Dinî bayramlar; Ramazan Bayramı arefe günü saat 13.00'ten itibaren 3,5 gün, Kurban Bayramı arefe günü saat 13.00'ten itibaren 4,5 gündür. Ayrıca 1 Ocak (yılbaşı), 1 Mayıs (Emek ve Dayanışma Günü) ve 15 Temmuz (Demokrasi ve Millî Birlik Günü) genel tatildir. Bu Kanunda belirtilen Ulusal Bayram ve genel tatil günleri resmî daire ve kuruluşlarda çalışmaya ara verilerek kutlanır.
+
+Madde 3 — Hafta tatili
+Hafta tatili Pazar günüdür. Bu tatil 35 saatten az olmamak üzere Cumartesi günü en geç saat 13.00'ten itibaren başlar. Süre hesabında Cumartesi ve Pazar günleri de tatil günü olarak dikkate alınır; bir sürenin son günü hafta tatiline rastlarsa süre, izleyen ilk iş günü çalışma saati sonunda biter.

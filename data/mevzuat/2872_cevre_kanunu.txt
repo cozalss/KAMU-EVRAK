@@ -1,0 +1,26 @@
+Çevre Kanunu
+Kanun No 2872, Kabul 09.08.1983, RG 11.08.1983/18132 (Düstur Tertip 5, Cilt 22) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2872.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 9 — Çevrenin korunması
+Çevrenin korunması amacıyla uyulması gereken genel ilkeleri sayar: biyolojik çeşitlilik ve ekosistemlerin korunması, doğal varlıklar üzerinde tasarrufta bulunma esasları, kalkınma çabalarının çevreye zarar vermeyecek biçimde yürütülmesi gibi temel kurallar. Çevreyi koruyan kurum/kuruluş ilkelerinin ve denetim yetkisinin (Madde 12) dayanağıdır; çevre koruma talepleri ve şikâyet yazışmalarında atıf yapılan ilke maddesidir.
+
+Madde 10 — Çevresel Etki Değerlendirmesi (ÇED)
+Çevre sorunlarına yol açabilecek faaliyetleri planlayan kurum, kuruluş ve işletmelerin ÇED Raporu veya proje tanıtım dosyası hazırlamakla yükümlü olduğunu düzenler. ÇED Olumlu Kararı alınmadıkça projeyle ilgili onay, izin, teşvik, yapı ve kullanım ruhsatı verilemez; yatırıma başlanamaz ve ihale edilemez. ÇED başvuru, taahhütname ve karar yazışmalarının temel dayanağıdır (26/4/2006-5491 ve 19/7/2025-7554 değişiklikleriyle güncellenmiştir).
+
+Madde 11 — İzin alma, arıtma ve bertaraf etme yükümlülüğü
+Faaliyetleri sonucunda atık oluşturan tesis, işletme ve yerleşim birimlerinin atıklarını yönetmeliklere uygun arıtmak/bertaraf etmek ve gerekli izinleri almakla yükümlü olduğunu düzenler. Bu yükümlülüğünü belgelemeyenlere yapı ruhsatı, yapı kullanma izni veya işletme ruhsatı verilmez; mevcut izinler iptal edilir. Çevre izni, deşarj izni ve ruhsat reddi yazışmalarının dayanağıdır.
+
+Madde 12 — Denetim, bilgi verme ve bildirim yükümlülüğü
+Kanun hükümlerine uyulup uyulmadığını denetleme yetkisinin Bakanlığa (bazı bentlerde Doğa Koruma ve Milli Parklar Genel Müdürlüğüne) ait olduğunu, gerektiğinde il özel idarelerine ve çevre denetim birimi kuran belediyelere devredilebileceğini düzenler. İlgililer, denetim mercilerinin isteyeceği bilgi ve belgeleri vermek, analiz/ölçüm giderlerini karşılamak ve denetimde kolaylık göstermek zorundadır. Çevre denetim tutanakları ve bilgi/belge talep yazılarının dayanağıdır.
+
+Madde 20 — İdari nitelikteki cezalar (idari para cezaları)
+Kanuna aykırı fiil ve haller için uygulanacak idari para cezalarını bent bent düzenler: egzoz emisyon ölçümü yaptırmama, izinsiz tesis kurma/işletme, hava kirliliği, atık/atıksu ihlalleri gibi fiiller için kademeli ceza tutarları belirler. Ceza tutarları her yıl yeniden değerleme oranında artırılır (en güncel tutarlar 2026/1 sayılı Tebliğ ile, RG 30/12/2025/33123). Çevre idari yaptırım kararı (idari para cezası) tutanak ve yazışmalarının dayanağıdır.
+
+Madde 28 — Kirletenin sorumluluğu (kusursuz sorumluluk)
+Çevreyi kirletenlerin ve çevreye zarar verenlerin, sebep oldukları kirlenme ve bozulmadan doğan zararlardan KUSUR ŞARTI ARANMAKSIZIN sorumlu olduğunu düzenler (objektif/kusursuz sorumluluk). Kirletenin genel hükümlere göre tazminat sorumluluğu da saklıdır; çevreye verilen zararların tazminine ilişkin talepler, zarar görenin zararı ve yükümlüyü öğrendiği tarihten itibaren beş yılda zamanaşımına uğrar. Çevre zararı tazmin ve rücu yazışmalarının dayanağıdır.

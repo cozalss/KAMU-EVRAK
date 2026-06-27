@@ -1,0 +1,29 @@
+Sayıştay Kanunu
+Kanun No 6085, Kabul 03.12.2010, RG 19.12.2010/27790 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.6085 konsolide metin; 6353/2012 vb. değişiklikler işli)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6085.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Kanunun amacı, kamuda hesap verme sorumluluğu ve mali saydamlık esasları çerçevesinde, kamu idarelerinin etkili, ekonomik, verimli ve hukuka uygun olarak çalışması ile kamu kaynaklarının kanunlara uygun elde edilip kullanılmasını sağlamak için Türkiye Büyük Millet Meclisi adına yapılacak denetimleri, sorumluların hesap ve işlemlerinin kesin hükme bağlanmasını ve kanunlarla verilen inceleme/denetim/hükme bağlama işlerini yapmaktır. Kapsamına merkezî yönetim, sosyal güvenlik kurumları, mahallî idareler ve genel olarak kamu idareleri ile bunlara bağlı/ilgili kamu kaynağı kullanan kuruluşlar girer.
+
+Madde 5 — Sayıştayın görevleri
+Sayıştay; genel yönetim kapsamındaki kamu idarelerinin gelir, gider ve mallarına ilişkin hesap ve işlemlerinin kanunlara ve diğer hukukî düzenlemelere uygunluğunu denetler ve sonuçları hakkında TBMM'ye doğru, yeterli, zamanlı bilgi ve raporlar sunar. Ayrıca sorumluların hesap ve işlemlerinden kamu zararına yol açan hususları kesin hükme bağlar (hesap yargılaması). Yani Sayıştay hem TBMM adına dış denetim yapan denetim organı hem de tazmin hükmü verebilen yargısal görevli bir kurumdur.
+
+Madde 6 — Sayıştayın yetkileri
+Sayıştay, görevlerini yerine getirirken kamu idareleri ve görevlileriyle doğrudan yazışmaya; gerekli gördüğü belge, defter ve kayıtları görevlendireceği mensupları aracılığıyla görmeye veya istemeye; ilgilileri çağırıp sözlü bilgi almaya; kamu idareleri, bankalar ve gerçek/tüzel kişilerden denetimine giren iş ve işlemlere ilişkin her türlü bilgi ve belgeyi istemeye yetkilidir. Denetim, işlem ve olayların her aşamasında ve yerinde yapılabilir; istenen bilgi ve belgeleri vermeyenler hakkında yaptırım öngörülmüştür.
+
+Madde 36 — Denetimin kapsamı (denetim türleri)
+Sayıştay denetimi, düzenlilik denetimi ve performans denetimini kapsar. Düzenlilik denetimi; kamu idarelerinin gelir, gider ve malları ile bunlara ilişkin malî nitelikteki tüm hesap ve işlemlerinin kanunlara ve diğer hukukî düzenlemelere uygunluğunun (uygunluk denetimi) ve malî rapor ve tabloların güvenilirliği ile doğruluğunun (malî denetim) tespitini içerir. Performans denetimi ise hesap verme sorumluluğu çerçevesinde idarelerce belirlenen hedef ve göstergelerle ilgili olarak faaliyet sonuçlarının ölçülmesi suretiyle yapılır.
+
+Madde 38 — Denetim raporları
+Kamu idarelerinin düzenlilik ve performans denetimleri sonucunda denetim grup başkanlıklarınca düzenlenen denetim raporları idareler itibarıyla birleştirilir; bir örneği Sayıştay Başkanlığınca ilgili kamu idaresine gönderilir. İdare, raporda yer alan hususlara ilişkin görüş/cevaplarını belirtilen süre içinde gönderir. Bu raporlar, dış denetim genel değerlendirme raporunun hazırlanmasına ve TBMM'ye sunulacak raporlara esas teşkil eder (denetim izi/raporlama zinciri).
+
+Madde 39 — Dış denetim genel değerlendirme raporu
+Sayıştay, malî konularda belirtilmesi uygun görülen diğer hususlarla birlikte bir dış denetim genel değerlendirme raporu hazırlar ve Rapor Değerlendirme Kurulunun görüşünü alır. Dış denetim genel değerlendirme raporu ile Kurulun görüş bildirdiği kamu idarelerine ilişkin denetim raporları, Sayıştay Başkanı tarafından bir genel uygunluk bildirimiyle birlikte TBMM'ye sunulur. Genel uygunluk bildiriminin TBMM'ye sunulması, o yıla ait henüz sonuçlandırılmamış denetim ve hesap yargılamasını engellemez ve hesapların kesin hükümle sonuçlandığı anlamına gelmez.
+
+Madde 48 — Yargılamaya esas rapor
+Genel yönetim kapsamındaki kamu idarelerinin hesap ve işlemlerinin denetimi sırasında denetçiler tarafından kamu zararına yol açan bir husus tespit edildiğinde, sorumluların savunmaları alınarak malî yıl sonu itibarıyla yargılamaya esas rapor düzenlenir. Tebliğ tarihinden itibaren otuz gün içinde cevap vermeyen sorumluların savunmaları dikkate alınmaz. Bu rapor üzerine Sayıştay daireleri hesap yargılaması yapar; kamu zararı tespit edilirse sorumlular hakkında tazmin hükmü (ilam) verilir.

@@ -56,6 +56,13 @@ const T = "#2ee6c9", V = "#b794ff";
 const ta = (a) => `rgba(46,230,201,${a})`;
 const va = (a) => `rgba(183,148,255,${a})`;
 
+// Klavye odak halkası — inline-style sisteminde :focus-visible yazılamaz; onFocus/onBlur ile.
+const focusRing = {
+  onFocus: (e) => { e.currentTarget.style.boxShadow = "0 0 0 2px #121829, 0 0 0 4px #2ee6c9"; },
+  onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
+};
+const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 };
+
 const KEYFRAMES = `
 @keyframes cak-blink{50%{opacity:0}}
 @keyframes cak-dotpulse{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
@@ -118,7 +125,7 @@ function buildDrivenFields(result, risk) {
 function buildSegments(metin, spanlar) {
   const segs = [];
   let cur = 0;
-  for (const sp of spanlar) {
+  for (const sp of [...spanlar].sort((a, b) => (a.start | 0) - (b.start | 0))) {
     const s = Math.max(cur, Math.min(metin.length, sp.start | 0));
     const e = Math.max(s, Math.min(metin.length, sp.end | 0));
     if (s > cur) segs.push({ t: metin.slice(cur, s) });
@@ -157,13 +164,16 @@ export default function CanliAjanAkisi({
 
   // Demo zamanlayıcısı (yalnız önizleme modunda).
   useEffect(() => {
-    if (driven || !running) return;
+    if (driven || !running) return () => clearTimeout(timer.current);
     const delay = stage >= 12 ? speed * 2.8 : speed;
     timer.current = setTimeout(() => {
       setStage((s) => { let n = s + 1; if (n > 12) n = autoLoop ? 0 : 12; return n; });
     }, delay);
     return () => clearTimeout(timer.current);
   }, [stage, running, speed, autoLoop, driven]);
+
+  // İdle'a (started=false) dönülürse demo'yu baştan başlat (stage birikmesini önle).
+  useEffect(() => { if (!started) setStage(0); }, [started]);
 
   const risk = RISK[riskOutcome] || RISK.yesil;
 
@@ -213,21 +223,30 @@ export default function CanliAjanAkisi({
   return (
     <div style={{ display: "flex", height: "100vh", minHeight: 680, background: "#121829", color: "#e6ebf5", fontFamily: SANS, overflow: "hidden" }}>
       <style>{KEYFRAMES}</style>
+      {/* Ekran-okuyucu: canlı pipeline ilerleme duyurusu */}
+      <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
+        {started ? (() => {
+          const act = display.find((a) => a.status === "active");
+          if (act) return `${act.label} çalışıyor — adım ${display.indexOf(act) + 1} / ${total}`;
+          if (allDone) return `İşleme tamamlandı — ${total} ajan başarıyla yürütüldü.`;
+          return "";
+        })() : ""}
+      </div>
 
       {/* ===== Sol menü ===== */}
       <aside style={{ width: 228, flexShrink: 0, background: "#0f1626", borderRight: "1px solid rgba(255,255,255,.07)", display: "flex", flexDirection: "column", padding: "18px 14px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "4px 6px 18px" }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg,#5b8cff,#3a63d6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px -6px rgba(91,140,255,.7)" }}>
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2.5" stroke="#fff" strokeWidth="1.7" /><path d="M8.5 13.5 L11 16 L16 9.5" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <div aria-hidden="true" style={{ width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg,#5b8cff,#3a63d6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px -6px rgba(91,140,255,.7)" }}>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5" stroke="#fff" strokeWidth="1.7" /><path d="M8.5 13.5 L11 16 L16 9.5" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </div>
           <div>
-            <div style={{ fontFamily: MONO, fontSize: 15, fontWeight: 600, letterSpacing: "-.3px", color: "#eaf0fb" }}>kamu-evrak</div>
-            <div style={{ fontSize: 10, letterSpacing: ".5px", color: "#6b768f" }}>TEKNOFEST 2026 · S1</div>
+            <h1 style={{ margin: 0, fontFamily: MONO, fontSize: 15, fontWeight: 600, letterSpacing: "-.3px", color: "#eaf0fb" }}>kamu-evrak</h1>
+            <div style={{ fontSize: 10, letterSpacing: ".5px", color: "#8b97b0" }}>TEKNOFEST 2026 · S1</div>
           </div>
         </div>
 
-        <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#5c688a", padding: "0 8px 8px" }}>ÇALIŞMA ALANI</div>
-        <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#7d89a4", padding: "0 8px 8px" }}>ÇALIŞMA ALANI</div>
+        <nav aria-label="Çalışma alanı bölümleri" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <NavItem label="Panel" icon={<IconGrid />} />
           <NavItem label="Gelen Evrak" icon={<IconInbox />} badge="14" />
           <NavItem label="İşleniyor" active icon={<IconSpin />} />
@@ -236,24 +255,24 @@ export default function CanliAjanAkisi({
           <NavItem label="Denetim İzi" icon={<IconShieldCheck />} />
         </nav>
 
-        <button onClick={onUpload} style={{ cursor: "pointer", marginTop: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 11, borderRadius: 11, border: "1px dashed rgba(91,140,255,.4)", background: "rgba(91,140,255,.08)", color: "#aec6ff", fontFamily: SANS, fontSize: 13, fontWeight: 500 }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 5 V19 M5 12 H19" stroke="#aec6ff" strokeWidth="1.9" strokeLinecap="round" /></svg>
+        <button onClick={onUpload} {...focusRing} style={{ cursor: "pointer", marginTop: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 11, borderRadius: 11, border: "1px dashed rgba(91,140,255,.4)", background: "rgba(91,140,255,.08)", color: "#aec6ff", fontFamily: SANS, fontSize: 13, fontWeight: 500 }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5 V19 M5 12 H19" stroke="#aec6ff" strokeWidth="1.9" strokeLinecap="round" /></svg>
           Yeni evrak yükle
         </button>
 
         {/* Örnek evrak hızlı başlat (demo / jüri) */}
         {samples.length > 0 && (
-          <div style={{ position: "relative", marginTop: 8 }}>
-            <button onClick={() => setShowSamples((v) => !v)} style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: 9, borderRadius: 10, border: "1px solid rgba(46,230,201,.28)", background: "rgba(46,230,201,.07)", color: "#9fe6d8", fontFamily: MONO, fontSize: 11.5 }}>
+          <div style={{ position: "relative", marginTop: 8 }} onKeyDown={(e) => { if (e.key === "Escape") setShowSamples(false); }}>
+            <button onClick={() => setShowSamples((v) => !v)} aria-expanded={showSamples} aria-haspopup="listbox" aria-controls="cak-sample-listbox" {...focusRing} style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: 9, borderRadius: 10, border: "1px solid rgba(46,230,201,.28)", background: "rgba(46,230,201,.07)", color: "#9fe6d8", fontFamily: MONO, fontSize: 11.5 }}>
               Örnek evrakla dene {showSamples ? "▴" : "▾"}
             </button>
             {showSamples && (
-              <div style={{ position: "absolute", bottom: "calc(100% + 6px)", left: 0, right: 0, maxHeight: 280, overflowY: "auto", background: "#141c30", border: "1px solid rgba(255,255,255,.1)", borderRadius: 11, padding: 6, boxShadow: "0 18px 50px -10px rgba(0,0,0,.7)", zIndex: 30 }}>
+              <div id="cak-sample-listbox" role="listbox" aria-label="Örnek evraklar" style={{ position: "absolute", bottom: "calc(100% + 6px)", left: 0, right: 0, maxHeight: 280, overflowY: "auto", background: "#141c30", border: "1px solid rgba(255,255,255,.1)", borderRadius: 11, padding: 6, boxShadow: "0 18px 50px -10px rgba(0,0,0,.7)", zIndex: 30 }}>
                 {samples.map((s) => (
-                  <button key={s.id} onClick={() => { setShowSamples(false); onPickSample(s); }} style={{ cursor: "pointer", width: "100%", textAlign: "left", padding: "8px 10px", borderRadius: 8, border: "none", background: "transparent", color: "#cdd6e8", fontFamily: SANS, fontSize: 12.5, display: "block" }}
+                  <button key={s.id} role="option" aria-selected="false" onClick={() => { setShowSamples(false); onPickSample(s); }} {...focusRing} style={{ cursor: "pointer", width: "100%", textAlign: "left", padding: "8px 10px", borderRadius: 8, border: "none", background: "transparent", color: "#cdd6e8", fontFamily: SANS, fontSize: 12.5, display: "block" }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(46,230,201,.1)")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
-                    {s.label}<div style={{ fontSize: 10.5, color: "#6b768f", marginTop: 1 }}>{s.aciklama}</div>
+                    {s.label}<div style={{ fontSize: 10.5, color: "#8b97b0", marginTop: 1 }}>{s.aciklama}</div>
                   </button>
                 ))}
               </div>
@@ -263,7 +282,7 @@ export default function CanliAjanAkisi({
 
         <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 10, padding: 10, borderRadius: 11, background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
           <div style={{ width: 32, height: 32, borderRadius: 9, background: "linear-gradient(135deg,#b794ff,#7c5ce0)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MONO, fontSize: 12, fontWeight: 600, color: "#1a1230" }}>MY</div>
-          <div style={{ lineHeight: 1.3 }}><div style={{ fontSize: 12.5, color: "#dfe5f2" }}>M. Yılmaz</div><div style={{ fontSize: 10.5, color: "#6b768f" }}>Yetkili memur</div></div>
+          <div style={{ lineHeight: 1.3 }}><div style={{ fontSize: 12.5, color: "#dfe5f2" }}>M. Yılmaz</div><div style={{ fontSize: 10.5, color: "#8b97b0" }}>Yetkili memur</div></div>
         </div>
       </aside>
 
@@ -274,10 +293,10 @@ export default function CanliAjanAkisi({
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 13, minWidth: 0 }}>
               <div style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(91,140,255,.12)", border: "1px solid rgba(91,140,255,.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#aec6ff" strokeWidth="1.6" /><path d="M9 12 L11 14 L15 9.5" stroke="#aec6ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#aec6ff" strokeWidth="1.6" /><path d="M9 12 L11 14 L15 9.5" stroke="#aec6ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: MONO, fontSize: 14, color: "#eaf0fb", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</div>
+                <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 14, color: "#eaf0fb", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
                 <div style={{ fontSize: 11.5, color: "#7d89a4" }}>{metaLine}</div>
               </div>
               <span style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 11px", borderRadius: 20, background: allDone ? "rgba(52,211,153,.1)" : "rgba(46,230,201,.1)", border: "1px solid " + (allDone ? "rgba(52,211,153,.3)" : "rgba(46,230,201,.26)"), marginLeft: 6, flexShrink: 0 }}>
@@ -291,9 +310,9 @@ export default function CanliAjanAkisi({
                 <span style={{ width: 8, height: 8, borderRadius: 2, background: V, marginLeft: 5 }} />Görev 2 · Üret
               </div>
               {!driven && (
-                <button onClick={toggle} style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10, border: "1px solid rgba(46,230,201,.4)", background: "rgba(46,230,201,.12)", color: "#cfe9e2", fontFamily: MONO, fontSize: 12, fontWeight: 500 }}>{running ? "❚❚ Duraklat" : "▶ Devam"}</button>
+                <button onClick={toggle} aria-label={running ? "Demo önizlemeyi duraklat" : "Demo önizlemeye devam et"} {...focusRing} style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 10, border: "1px solid rgba(46,230,201,.4)", background: "rgba(46,230,201,.12)", color: "#cfe9e2", fontFamily: MONO, fontSize: 12, fontWeight: 500 }}>{running ? "❚❚ Duraklat" : "▶ Devam"}</button>
               )}
-              <button onClick={onUpload} style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.04)", color: "#9aa6c0", fontFamily: MONO, fontSize: 12 }} title="Yeni evrak">↻</button>
+              <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.04)", color: "#9aa6c0", fontFamily: MONO, fontSize: 12 }} title="Yeni evrak">↻</button>
             </div>
           </div>
           {/* İlerleme şeridi */}
@@ -301,7 +320,7 @@ export default function CanliAjanAkisi({
             {display.map((a, i) => {
               const col = a.gorev === 1 ? T : V;
               const st = a.status;
-              return <div key={a.id + i} style={{ flex: 1, height: 5, borderRadius: 3, background: st === "done" ? col : "rgba(255,255,255,.08)", boxShadow: st === "active" && glow ? `0 0 10px ${col}` : "none", transform: st === "active" ? "scaleY(1.6)" : "none", transition: "all .4s" }} />;
+              return <div key={a.id} style={{ flex: 1, height: 5, borderRadius: 3, background: st === "done" || st === "active" ? col : "rgba(255,255,255,.2)", boxShadow: st === "active" && glow ? `0 0 10px ${col}` : "none", transform: st === "active" ? "scaleY(1.6)" : "none", transition: "all .4s" }} />;
             })}
             <span style={{ fontFamily: MONO, fontSize: 11, color: "#7d89a4", marginLeft: 8, flexShrink: 0 }}>{pct}%</span>
           </div>
@@ -312,7 +331,7 @@ export default function CanliAjanAkisi({
           <div style={{ height: "100%", minWidth: 1060, display: "grid", gridTemplateColumns: "290px minmax(380px,1fr) 360px" }}>
             {/* — Kaynak belge — */}
             <div style={{ borderRight: "1px solid rgba(255,255,255,.07)", padding: 18, overflowY: "auto", display: "flex", flexDirection: "column" }}>
-              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#5c688a", marginBottom: 12 }}>KAYNAK BELGE</div>
+              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#7d89a4", marginBottom: 12 }}>KAYNAK BELGE</div>
               <div style={{ position: "relative", borderRadius: 10, overflow: "hidden", background: "#eef0f6", boxShadow: "0 12px 34px -12px rgba(0,0,0,.6)", minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
                 {busy && <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 2, background: "linear-gradient(90deg,transparent,#2ee6c9,transparent)", boxShadow: "0 0 12px #2ee6c9", animation: "cak-scanv 2.8s ease-in-out infinite", zIndex: 3 }} />}
                 {segs ? (
@@ -332,14 +351,14 @@ export default function CanliAjanAkisi({
                 )}
               </div>
               <div style={{ marginTop: 14, padding: "11px 13px", borderRadius: 11, background: "rgba(46,230,201,.07)", border: "1px solid rgba(46,230,201,.2)", fontSize: 11.5, color: "#a7d8cd", display: "flex", gap: 8, alignItems: "flex-start" }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill="#2ee6c9" /><circle cx="12" cy="12" r="2.2" fill="#2ee6c9" /><circle cx="18" cy="12" r="2.2" fill="#2ee6c9" /></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill="#2ee6c9" /><circle cx="12" cy="12" r="2.2" fill="#2ee6c9" /><circle cx="18" cy="12" r="2.2" fill="#2ee6c9" /></svg>
                 Kişisel veriler (TCKN, telefon) maskelenerek işleniyor — KVKK uyumlu.
               </div>
             </div>
 
             {/* — Ajan izi — */}
             <div ref={traceRef} style={{ overflowY: "auto", padding: "18px 22px" }}>
-              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#5c688a", marginBottom: 14 }}>AJAN İZİ · {total} ADIM</div>
+              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#7d89a4", marginBottom: 14 }}>AJAN İZİ · {total} ADIM</div>
               {display.map((a, i) => {
                 const isAnla = a.gorev === 1, col = isAnla ? T : V, colA = isAnla ? ta : va;
                 const st = a.status;
@@ -347,7 +366,7 @@ export default function CanliAjanAkisi({
                 const prevGorev = i > 0 ? display[i - 1].gorev : null;
                 const group = i === 0 ? "GÖREV 1 · ANLA" : (a.gorev === 2 && prevGorev === 1 ? "GÖREV 2 · ÜRET" : "");
                 return (
-                  <div key={a.id + i}>
+                  <div key={a.id}>
                     {group && <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "2px", color: i === 0 ? "#3f8f7f" : "#7a5fb0", margin: (i === 0 ? "0" : "18px") + " 0 8px", paddingLeft: 2 }}>{group}</div>}
                     <div style={{ display: "flex", gap: 13, padding: "10px 12px", borderRadius: 12, marginBottom: 4, background: active ? colA(0.1) : "transparent", border: "1px solid " + (active ? colA(0.3) : "transparent"), boxShadow: active && glow ? `0 8px 26px -10px ${colA(0.5)}` : "none", opacity: st === "pending" ? 0.45 : 1, transition: "all .4s cubic-bezier(.2,.8,.2,1)" }}>
                       <div style={{ position: "relative", flexShrink: 0 }}>
@@ -358,9 +377,9 @@ export default function CanliAjanAkisi({
                         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                           <span style={{ fontSize: 13.5, fontWeight: 500, whiteSpace: "nowrap", color: active ? "#eaf6ff" : done ? "#dfe5f2" : "#7d89a4", transition: "color .4s" }}>{a.label}</span>
                           {a.tag && <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 7px", borderRadius: 7, color: a.id === "risk_guard" ? risk.c : col, background: a.id === "risk_guard" ? risk.c + "22" : colA(0.12), opacity: (done || active) ? 1 : 0.5 }}>{a.tag}</span>}
-                          {active && !driven && <span onClick={toggle} style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, color: "#cfe9e2", cursor: "pointer", opacity: 0.85 }}>{"❚❚ duraklat"}</span>}
+                          {active && !driven && <button onClick={toggle} aria-label="Demo önizlemeyi duraklat" {...focusRing} style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, color: "#cfe9e2", cursor: "pointer", opacity: 0.85, background: "none", border: "none", padding: "2px 4px" }}>{"❚❚ duraklat"}</button>}
                         </div>
-                        <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : "#93a0bb") : "#5c688a", animation: active ? "cak-thinking 1.2s ease-in-out infinite" : "none" }}>{done ? (a.out || "tamamlandı ✓") : active ? "çalışıyor…" : "—"}</div>
+                        <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : "#93a0bb") : "#7d89a4", animation: active ? "cak-thinking 1.2s ease-in-out infinite" : "none" }}>{done ? (a.out || "tamamlandı ✓") : active ? "çalışıyor…" : "—"}</div>
                       </div>
                     </div>
                   </div>
@@ -376,7 +395,7 @@ export default function CanliAjanAkisi({
                   <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: "#8b97b0" }}>ÇIKARILAN VERİ</span>
                   <span style={{ fontFamily: MONO, fontSize: 10, color: "#34d399", display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399" }} />maskeli</span>
                 </div>
-                {(driven ? (drivenFields || DEMO_FIELDS.map((d) => [d[0], "•••", "#5c688a"])) : DEMO_FIELDS).map((d, k) => {
+                {(driven ? (drivenFields || DEMO_FIELDS.map((d) => [d[0], "•••", "#7d89a4"])) : DEMO_FIELDS).map((d, k) => {
                   // demo: [etiket, değer|null(risk), eşik, renk] · driven: [etiket, değer, renk]
                   const vis = driven ? true : doneCount >= d[2];
                   const value = d[1] === null ? risk.label : d[1];
@@ -401,7 +420,7 @@ export default function CanliAjanAkisi({
                     })}
                   </div>
                 </div>
-                <div style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 10, color: lit ? risk.c : "#6b768f", background: lit ? risk.c + "1f" : "rgba(255,255,255,.04)", border: "1px solid " + (lit ? risk.c + "66" : "rgba(255,255,255,.1)"), transition: "all .5s" }}>{lit ? risk.label : "—"}</div>
+                <div style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 10, color: lit ? risk.c : "#8b97b0", background: lit ? risk.c + "1f" : "rgba(255,255,255,.04)", border: "1px solid " + (lit ? risk.c + "66" : "rgba(255,255,255,.1)"), transition: "all .5s" }}>{lit ? risk.label : "—"}</div>
               </div>
 
               {/* Resmî yazı taslağı + HITL */}
@@ -421,19 +440,19 @@ export default function CanliAjanAkisi({
                     </div>
                   )
                 ) : (
-                  <div style={{ display: "flex", alignItems: "center", gap: 9, flex: 1, justifyContent: "center", fontSize: 12, color: "#6b768f", border: "1px dashed rgba(255,255,255,.1)", borderRadius: 9 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 9, flex: 1, justifyContent: "center", fontSize: 12, color: "#8b97b0", border: "1px dashed rgba(255,255,255,.1)", borderRadius: 9 }}>
                     <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: "#7d89a4", animation: "cak-thinking 1.2s ease-in-out infinite" }} />
                     Taslak, "Yazı Taslağı" adımında üretilecek…
                   </div>
                 )}
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 11, fontSize: 10.5, color: "#7d89a4" }}>
-                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: V, flexShrink: 0 }} />
+                <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 11, fontSize: 10.5, color: "#7d89a4" }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: V, flexShrink: 0 }} aria-hidden="true" />
                   Yapay zekâ <strong style={{ color: "#cdd6e8", fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: "#cdd6e8", fontWeight: 600 }}>karar verir</strong> (HITL)
                 </div>
                 <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
-                  <button onClick={onApprove} disabled={!decisionReady} style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: 10, borderRadius: 10, border: "none", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: decisionReady ? "#1a1230" : "#5c688a", background: decisionReady ? "linear-gradient(135deg,#b794ff,#8b6ef0)" : "rgba(255,255,255,.05)", boxShadow: decisionReady ? "0 8px 22px -8px rgba(183,148,255,.7)" : "none", transition: "all .4s" }}>{"✓ Onayla & Gönder"}</button>
-                  <button onClick={onEdit} disabled={!decisionReady} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.04)", color: decisionReady ? "#cdd6e8" : "#5c688a", fontFamily: SANS, fontSize: 12.5, transition: "all .4s" }}>Düzenle</button>
-                  <button onClick={onReject} disabled={!decisionReady} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid " + (decisionReady ? "rgba(248,113,113,.4)" : "rgba(255,255,255,.1)"), background: decisionReady ? "rgba(248,113,113,.08)" : "rgba(255,255,255,.03)", color: decisionReady ? "#f4a5a5" : "#5c688a", fontFamily: SANS, fontSize: 12.5, transition: "all .4s" }}>Reddet</button>
+                  <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing} style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: 10, borderRadius: 10, border: "none", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: decisionReady ? "#1a1230" : "#7d89a4", background: decisionReady ? "linear-gradient(135deg,#b794ff,#8b6ef0)" : "rgba(255,255,255,.05)", boxShadow: decisionReady ? "0 8px 22px -8px rgba(183,148,255,.7)" : "none", transition: "all .4s" }}><span aria-hidden="true">✓ </span>Onayla &amp; Gönder</button>
+                  <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.04)", color: decisionReady ? "#cdd6e8" : "#7d89a4", fontFamily: SANS, fontSize: 12.5, transition: "all .4s" }}>Düzenle</button>
+                  <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid " + (decisionReady ? "rgba(248,113,113,.4)" : "rgba(255,255,255,.1)"), background: decisionReady ? "rgba(248,113,113,.08)" : "rgba(255,255,255,.03)", color: decisionReady ? "#f4a5a5" : "#7d89a4", fontFamily: SANS, fontSize: 12.5, transition: "all .4s" }}>Reddet</button>
                 </div>
               </div>
             </div>
@@ -458,25 +477,25 @@ function buildMetaLine(driven, result, fileMeta) {
 }
 
 /* ---- küçük yardımcı bileşenler ---- */
-function NavItem({ label, icon, active, badge }) {
-  const base = { display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", borderRadius: 10, fontSize: 13.5 };
+function NavItem({ label, icon, active, badge, onClick }) {
+  const base = { display: "flex", alignItems: "center", gap: 11, padding: "9px 11px", borderRadius: 10, fontSize: 13.5, width: "100%", textAlign: "left", fontFamily: SANS, cursor: "pointer" };
   if (active) return (
-    <div style={{ ...base, background: "linear-gradient(90deg,rgba(46,230,201,.14),rgba(46,230,201,.03))", border: "1px solid rgba(46,230,201,.28)", color: "#eaf6ff", fontWeight: 500 }}>{icon}{label}</div>
+    <button type="button" aria-current="page" onClick={onClick} {...focusRing} style={{ ...base, background: "linear-gradient(90deg,rgba(46,230,201,.14),rgba(46,230,201,.03))", border: "1px solid rgba(46,230,201,.28)", color: "#eaf6ff", fontWeight: 500 }}>{icon}{label}</button>
   );
   return (
-    <div style={{ ...base, color: "#9aa6c0", justifyContent: badge ? "space-between" : "flex-start" }}>
+    <button type="button" onClick={onClick} {...focusRing} style={{ ...base, border: "1px solid transparent", background: "transparent", color: "#9aa6c0", justifyContent: badge ? "space-between" : "flex-start" }}>
       <span style={{ display: "flex", alignItems: "center", gap: 11 }}>{icon}{label}</span>
-      {badge && <span style={{ fontFamily: MONO, fontSize: 10, padding: "2px 7px", borderRadius: 8, background: "rgba(91,140,255,.16)", color: "#aec6ff" }}>{badge}</span>}
-    </div>
+      {badge && <span aria-label={`${badge} bekleyen evrak`} style={{ fontFamily: MONO, fontSize: 10, padding: "2px 7px", borderRadius: 8, background: "rgba(91,140,255,.16)", color: "#aec6ff" }}>{badge}</span>}
+    </button>
   );
 }
 const Bar = ({ w, mb = 7 }) => <div style={{ height: 7, width: w, background: "#cdd2df", borderRadius: 3, marginBottom: mb }} />;
 const Bar2 = ({ w, mb = 7 }) => <div style={{ height: 6, width: w, background: "#dde0ea", borderRadius: 3, marginBottom: mb }} />;
 
 const sw = "#7d89a4";
-const IconGrid = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /><rect x="14" y="3" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /><rect x="3" y="14" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /><rect x="14" y="14" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /></svg>;
-const IconInbox = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 5 H20 M12 8 V15 M9 12 L12 15 L15 12" stroke={sw} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 19 H20" stroke={sw} strokeWidth="1.6" strokeLinecap="round" /></svg>;
-const IconSpin = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{ animation: "cak-spin 2.4s linear infinite" }}><circle cx="12" cy="12" r="8" stroke="rgba(46,230,201,.25)" strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke="#2ee6c9" strokeWidth="2" strokeLinecap="round" /></svg>;
-const IconDoc = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke={sw} strokeWidth="1.6" /><path d="M8 9 H16 M8 13 H16 M8 17 H13" stroke={sw} strokeWidth="1.6" strokeLinecap="round" /></svg>;
-const IconBook = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 4 H19 V20 H5 Z" stroke={sw} strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8 H15 M9 12 H15 M9 16 H13" stroke={sw} strokeWidth="1.6" strokeLinecap="round" /></svg>;
-const IconShieldCheck = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke={sw} strokeWidth="1.6" /><path d="M8.5 12 L11 14.5 L15.5 9.5" stroke={sw} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const IconGrid = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /><rect x="14" y="3" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /><rect x="3" y="14" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /><rect x="14" y="14" width="7" height="7" rx="1.5" stroke={sw} strokeWidth="1.6" /></svg>;
+const IconInbox = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5 H20 M12 8 V15 M9 12 L12 15 L15 12" stroke={sw} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 19 H20" stroke={sw} strokeWidth="1.6" strokeLinecap="round" /></svg>;
+const IconSpin = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: "cak-spin 2.4s linear infinite" }}><circle cx="12" cy="12" r="8" stroke="rgba(46,230,201,.25)" strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke="#2ee6c9" strokeWidth="2" strokeLinecap="round" /></svg>;
+const IconDoc = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke={sw} strokeWidth="1.6" /><path d="M8 9 H16 M8 13 H16 M8 17 H13" stroke={sw} strokeWidth="1.6" strokeLinecap="round" /></svg>;
+const IconBook = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4 H19 V20 H5 Z" stroke={sw} strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8 H15 M9 12 H15 M9 16 H13" stroke={sw} strokeWidth="1.6" strokeLinecap="round" /></svg>;
+const IconShieldCheck = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke={sw} strokeWidth="1.6" /><path d="M8.5 12 L11 14.5 L15.5 9.5" stroke={sw} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;

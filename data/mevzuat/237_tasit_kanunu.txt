@@ -1,0 +1,32 @@
+Taşıt Kanunu
+Kanun No: 237 — Kabul: 05.01.1961, RG 12.01.1961/10705 — YÜRÜRLÜKTE (çok kez değişik). Kamu kurumlarının (genel/özel/katma bütçeli idareler, il özel idareleri, belediyeler ve bağlıları, mahalli idare birlikleri, İktisadi Devlet Teşekkülleri, döner sermayeler, Cumhurbaşkanlığınca lüzumlu görülen kamuya yararlı dernekler) resmî taşıt edinme, makam taşıtı tahsisi, kullanım ve elden çıkarmasını düzenler. Resmî taşıt tahsis/edinme evrakının (olur, tahsis yazısı, T cetveli talebi) dayanağıdır. Madde özetleri mevzuat.gov.tr resmî metni ile teyit edilmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=237&MevzuatTur=1&MevzuatTertip=4
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kanunun şümulü (kapsam)
+Kanun; genel bütçeye dahil daireler, katma ve özel bütçeli idareler ile bunlara bağlı sabit ve döner sermayeli müesseseler, il özel idareleri, belediyeler ve bunların bağlı kuruluşları ile mahalli idare birlikleri, İktisadi Devlet Teşekkülleri ve diğer kamu iktisadi teşebbüsleri, sermayesinin yarısından fazlası kamuya ait bankalar ile kamuya yararlı derneklerden Cumhurbaşkanlığınca lüzumlu görülenlerin edinecekleri taşıtlara uygulanır. Bu kurumların taşıt edinme, tahsis, kullanım ve elden çıkarma işlemleri Kanun hükümlerine tabidir.
+
+Madde 2 — İstisnalar (kapsam dışı taşıtlar)
+Traktör, arazöz, motorla işleyen ziraat ve inşaat makineleri, hava taşıtları ve deniz taşıtları, münhasıran askerî maksatlar için kullanılan ve ordunun silah, teçhizat ve malzemesinden sayılan taşıtlar ile bunlara benzer özel amaçlı araçlar Kanun kapsamı dışındadır. Bu taşıtlar makam/hizmet taşıtı tahsis ve sınırlamalarına tabi tutulmaz.
+
+Madde 3 — Tarifler (tanımlar)
+Kanunda geçen "kurum", "taşıt", "binek otomobili", "station wagon", "kaptıkaçtı", "arazi binek (arazöz hariç)", "pick-up (kamyonet)", "panel", "minibüs", "otobüs", "kamyon", "ambulans" gibi araç türleri tek tek tanımlanır. Tanımlar, hangi makama hangi tip taşıtın tahsis edilebileceğinin ve cetvellerdeki sınıflandırmanın esasını oluşturur.
+
+Madde 4 — Makam taşıtları ve "Resmî hizmete mahsustur" ibaresi
+Emir ve zatlarına binek otomobili verilecek makamlar Kanuna bağlı (1) sayılı cetvelde; belirli makamların hizmetlerine tahsis olunacak taşıtlar (2) sayılı cetvelde gösterilir. (1) sayılı cetveldeki makamlara tahsis olunan taşıtlar hariç, kurumların bütün taşıtlarının yan taraflarına "Resmî hizmete mahsustur" ibaresi ile kurum adı yazılır; bu zorunluluk taşıtın yalnız resmî hizmette kullanılmasını sağlamaya yöneliktir.
+
+Madde 5 — Kurumlara hizmet (havuz) taşıtı tahsisi
+Cetvellerde makam taşıtı tahsis edilmemiş kurumlar, daimî hizmetlerinin gerektirdiği taşıt ihtiyacını karşılamak üzere Cumhurbaşkanı kararıyla taşıt bulundurabilir; tahsis edilecek taşıtın tipi ve adedi bu kararla belirlenir. Kurumlar, cetvellerde ve kararda öngörülen sayı ve tipin dışında taşıt edinemez ve bulunduramaz. [DOĞRULA: makam/hizmet taşıtı tahsis yetkisinin Madde 5 mi yoksa Madde 6'ya mı denk geldiği, kanunun değişik güncel metnindeki madde kaymasına göre teyit edilmeli]
+
+Madde 10 — Taşıt edinme şekli, (T) işaretli cetvel ve hizmet alımı esası
+Genel bütçeli daireler, katma bütçeli idareler ve döner sermayelerin bir yıl içinde her ne suretle olursa olsun edinebilecekleri taşıtların cinsi, adedi, hangi hizmette kullanılacağı ve kaynağı, yılı bütçe kanunlarına bağlı (T) işaretli cetvelde gösterilir; cetvelde yer almayan taşıt edinilemez. Taşıt ihtiyacının hizmet alımı (kiralama) suretiyle karşılanması esastır; bu yolla teminin mümkün veya ekonomik olmadığı ya da sağlık, savunma ve güvenlik gibi nedenlerle uygun görülmediği hâllerde satın alma yoluna gidilebilir. Edinilecek taşıtlar muayyen ve standart tipte, lüks ve gösterişten uzak olmalıdır.
+
+Madde 12 — Taşıtların hizmet dışı/şahsî kullanım yasağı ve sorumluluk
+Bu Kanun kapsamındaki taşıtlar, tahsis olundukları resmî hizmet dışında veya şahsî işlerde kullanılamaz. Taşıtların hukuka aykırı kullanımına emir veren amir ile fiilen kullanan görevli müteselsilen sorumlu olur ve doğan kamu zararı ilgililere tazmin ettirilir. İşletme ve onarım giderleri, taşıtın bağlı olduğu kurumun bütçesine konulan ödeneklerden karşılanır. [DOĞRULA: hizmet dışı kullanım yasağının madde numarası kanunun değişik güncel metnine göre Madde 12 olarak teyit edilmeli]
+
+Madde 16 — Ceza hükmü
+Bu Kanuna aykırı olarak taşıtı tahsis edildiği işin dışında veya şahsî işlerde kullanan ya da kullanılmasına emir veya müsaade edenler hakkında bir seneye kadar hapis cezasına hükmolunur; fiilin tekrarı hâlinde ceza iki aydan az olamaz. Ayrıca taşıtın bu kullanımdan doğan giderleri sorumlulardan tahsil edilir. [DOĞRULA: ceza miktarları kanunun yürürlükteki güncel metni ve sonraki ceza mevzuatı değişiklikleriyle teyit edilmeli]

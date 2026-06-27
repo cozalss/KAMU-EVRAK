@@ -1,0 +1,26 @@
+Sinema Filmlerinin Değerlendirilmesi ve Sınıflandırılması ile Desteklenmesi Hakkında Kanun
+Kanun No 5224, Kabul 14.07.2004, RG 21.07.2004/25529 — YÜRÜRLÜKTE (7163 sayılı Kanun ile değişik, RG 30.01.2019/30671)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5224.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı; sinema sanatına ilişkin ürünlerden birey ve toplumun verimli biçimde yararlanabilmesini sağlamaktır. Bu doğrultuda sinema sektörünün geliştirilip güçlendirilmesi, sinema filmlerinin değerlendirilmesi ve sınıflandırılması ile bu alanda yerli ve yabancı yatırım ve girişimlerin desteklenmesini düzenler. Sinema destek ve değerlendirme evrakının yasal dayanağını oluşturur.
+
+Madde 3 — Tanımlar
+Bakanlık (Kültür ve Turizm Bakanlığı), sinema filmi, kurgu film, belgesel film, animasyon film gibi temel kavramları tanımlar. Sinema filmini; belgesel, kurgu veya animasyon türlerinde, elektronik ya da mekanik araçlarla gösterilebilen hareketli görüntüler dizisi olarak tanımlar. Değerlendirme ve sınıflandırma; kamu düzeni, genel ahlak ile küçüklerin ruh sağlığının korunması doğrultusunda yapılan işlemdir. Başvuru evrakında kullanılan film türü sınıflandırmasının dayanağıdır.
+
+Madde 4 — Değerlendirme ve Sınıflandırma Kurulu
+Sinema filmlerinin değerlendirilmesi ve sınıflandırılması, Bakanlık bünyesinde oluşturulan Değerlendirme ve Sınıflandırma Kurulunca yapılır. Kurul; Bakanlık ile İçişleri ve Millî Eğitim bakanlıklarından birer üye, meslek birliklerince önerilen uzmanlar arasından Bakanlıkça seçilecek üç üye ve alanında doktora derecesi bulunan bir sosyolog, bir psikolog ile bir çocuk gelişimi uzmanı olmak üzere toplam dokuz üyeden oluşur. Kurulun verdiği işaret ve ibareler, başvuruya konu filmin yaş sınıflandırmasını belirler. [DOĞRULA: 7163 sayılı Kanun ile değişik kurul toplantı/karar yeter sayısı ayrıntısı]
+
+Madde 7 — Değerlendirme ve sınıflandırma
+Ülke içinde üretilen veya ithal edilen sinema filmleri, ticari dolaşıma veya gösterime sunulmasından önce değerlendirilir ve sınıflandırılır. Uygun bulunmayan filmler ticari dolaşıma ve gösterime sunulamaz; değerlendirme sonucu belirlenen işaret ve ibarelerin tanıtım ve gösterim alanlarında kullanılması zorunludur. Bu madde, dağıtım ve gösterim öncesi yapılan değerlendirme-sınıflandırma başvurusunun esasıdır. [DOĞRULA: 7163 ile değiştirilen metinde 'kayıt ve tescile esas' ibaresinin çıkarıldığı ve festival/18+ istisnası ayrıntısı]
+
+Madde 8 — Destekleme türleri
+Sinema sektörüne sağlanacak destekler; proje (araştırma, senaryo yazımı gibi yapım öncesi aşamalar için doğrudan ve geri ödemesiz), yapım (filmin gösterilebilir hale getirilmesine kadarki tüm yapım aşamaları için) ve yapım sonrası (tanıtım, dağıtım, gösterim aşamaları için) destekleri olarak düzenlenir. Destek miktarı, kanunda belirlenen üst oranlarla sınırlandırılır. Sinema mali destek başvuru evrakının dayanağıdır. [DOĞRULA: 7163 sayılı Kanun ile güncellenen destek türleri ve üst oran yüzdeleri (ör. senaryo/animasyon için artırılan oranlar)]
+
+Madde 15 — Yapımcı belgeleri ve diğer belgeler
+Sinema ve müzik eseri yapımcılarına verilecek yapımcı belgeleri ile kayıt ve tescil ve bandrol işlemlerine esas teşkil eden diğer belgeler, 5/12/1951 tarihli ve 5846 sayılı Fikir ve Sanat Eserleri Kanununun 13 üncü maddesi hükümlerine göre verilir. Bu madde, sinema kayıt-tescil belgesi ve yapımcı belgesi başvurusunun doğrudan yasal dayanağıdır.

@@ -1,0 +1,26 @@
+Kamu Konutları Kanunu (Kanun No. 2946)
+RG 11.11.1983/18218 — YÜRÜRLÜKTE. Kamu kurum ve kuruluşlarınca yurt içinde ve yurt dışında inşa ettirme, satın alma, kiralama suretiyle temin olunan ve personelin yararlanması için ayrılan kamu konutlarının (lojman) tahsis biçimi, oturma süresi, kira, bakım, onarım ve yönetimine ilişkin temel ilkeleri belirler. Konut türleri: özel, görev, sıra ve hizmet tahsisli. Uygulama esasları 84/8345 sayılı Kamu Konutları Yönetmeliği ile düzenlenir. Madde metinleri mevzuat.gov.tr ile LEXPERA/Alomaliye/Bakanlık teftiş kaynaklarından çapraz doğrulanmıştır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2946&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı; kamu konutlarının tahsis biçimi, oturma süresi, kira, bakım, onarım ve yönetimine ilişkin temel ilkeleri belirlemektir. Kapsama giren kurum ve kuruluşlar konut tahsis, kira ve tahliye işlemlerini bu Kanunun ilkeleri çerçevesinde yürütür.
+
+Madde 2 — Kapsam
+Kanun; genel ve katma bütçeli daireler, il özel idareleri, belediyeler, köyler ile bunların kurdukları birlikler, müesseseler ve işletmeler, iktisadi devlet teşekkülleri ve kamu iktisadi kuruluşları ile bunların müessese, bağlı ortaklık ve iştirakleri, kamu kurumu niteliğindeki diğer idarelerce inşa ettirme, satın alma veya kiralama suretiyle temin olunan ve personele tahsis edilen konutları kapsar. Bir görevin yürütülmesi için zorunlu olan konutlar dışında kiralama yoluyla konut teminine, zorunlu hâller dışında, gidilmez.
+
+Madde 3 — Konutların tahsis biçimine göre türleri
+Kamu konutları tahsis esasına göre dört türe ayrılır: (a) Özel tahsisli konutlar — temsil özelliği olan, yönetmelikle belirlenen makam ve rütbe sahiplerine özel nitelikleriyle tahsis edilir; (b) Görev tahsisli konutlar — görevin önem ve özelliği, yetki ve sorumluluğu gereği yönetmelikle belirlenen unvan sahiplerine tahsis edilir; (c) Sıra tahsisli konutlar — hizmet süresi, daha önce konuttan yararlanma, çocuk ve aile durumu gibi ölçütlere dayalı puanlama esasına göre sıraya bağlı olarak tahsis edilir; (d) Hizmet tahsisli konutlar — karakol, istasyon, gözlem ve haberleşme istasyonu, şantiye gibi sosyal/ekonomik zorlukları olan yerlerdeki baraka, prefabrik yapı vb. konutlardır. Tahsis biçimi, başvuru ve puanlama evrakının türünü belirler.
+
+Madde 4 — Oturma süresi
+Özel, görev ve hizmet tahsisli konutlarda oturma, tahsise esas görev veya hizmetin devamı süresince sürer. Sıra tahsisli konutlarda oturma süresi beş yıldır; bu sürenin bitiminde konuta başka istekli yoksa, oturanın talebi ve idarenin uygun görmesiyle oturma süreli olarak uzatılabilir. [DOĞRULA: sıra tahsisli oturma süresi ve uzatma koşulları yönetmelikle ayrıntılandırılır]
+
+Madde 5 — Kira
+Kamu konutlarından, özel ve görev tahsisli olanlar dâhil, oturanlardan kira alınır; kira bedeli konutun brüt inşaat alanı üzerinden birim metrekare bedeline göre hesaplanır ve personelin aylık/ücretinden kesilerek ilgili kurumun bütçesine/hesabına gelir kaydedilir. Yönetmelikle belirlenen üst düzey makamlara tahsis edilen bazı konutlardan kira alınmayabilir. Yakıt, elektrik, su, gaz ve ortak gider gibi işletme giderleri kiraya dâhil olmayıp ayrıca konutta oturandan tahsil edilir. [DOĞRULA: kira muafiyeti tanınan makamların güncel listesi ve işletme gideri paylaşımı yönetmelikle belirlenir]
+
+Madde 7 — Konutların boşaltılması (tahliye)
+Konutta oturma hakkı sona erenler konutu süresinde boşaltmakla yükümlüdür. Özel, görev ve hizmet tahsisli konutlarda oturanlar görevin son bulduğu, sıra tahsisli konutlarda oturanlar beş yıllık sürenin bitiminden itibaren onbeş gün (kendilerine yapılan tebligat hâlinde tebliğden itibaren bir ay) içinde; memurluk sıfatı kalkanlar (emeklilik, istifa, çekilme vb.) ilişiklerinin kesildiği tarihten, ölüm hâlinde aileleri ölüm tarihinden itibaren iki ay içinde konutu boşaltır. Süresinde boşaltılmayan konut, ayrıca bildirime gerek kalmaksızın kolluk kuvveti kullanılarak bir hafta içinde zorla boşalttırılır; tahliyeye karşı yapılan başvurular boşaltma işlemini durdurmaz.

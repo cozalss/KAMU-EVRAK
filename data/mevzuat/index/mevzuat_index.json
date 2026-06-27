@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1441,
+ "chunk_sayisi": 1467,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -939,6 +939,62 @@
    "madde_no": 10,
    "madde_tur": "madde",
    "text": "Madde 10 — Yönetmelik ve ödemenin geciktirilememesi\nVerilecek nakdi tazminatların ödenme şekli ile 3 üncü maddenin (b) bendine göre ödenecek tazminat tutarları ve ilgili diğer hususlar Cumhurbaşkanınca hazırlanacak yönetmelikle düzenlenir. Nakdi tazminat ödenmesine ilişkin işlemler ilgili Bakan veya yetkili kılınan kişilerce onaylandıktan sonra, olayın Kanun kapsamına girmediği gerekçesiyle saymanlıklarca ödeme işlemi geciktirilemez. Engellilik tazminatı, 1053 sayılı Nizamnamede gösterilen 6 derece üzerinden ve her derece için %10 indirim yapılmak suretiyle belirlenir."
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Kanunun şümulü (kapsam)\nKanun; genel bütçeye dahil daireler, katma ve özel bütçeli idareler ile bunlara bağlı sabit ve döner sermayeli müesseseler, il özel idareleri, belediyeler ve bunların bağlı kuruluşları ile mahalli idare birlikleri, İktisadi Devlet Teşekkülleri ve diğer kamu iktisadi teşebbüsleri, sermayesinin yarısından fazlası kamuya ait bankalar ile kamuya yararlı derneklerden Cumhurbaşkanlığınca lüzumlu görülenlerin edinecekleri taşıtlara uygulanır. Bu kurumların taşıt edinme, tahsis, kullanım ve elden çıkarma işlemleri Kanun hükümlerine tabidir."
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — İstisnalar (kapsam dışı taşıtlar)\nTraktör, arazöz, motorla işleyen ziraat ve inşaat makineleri, hava taşıtları ve deniz taşıtları, münhasıran askerî maksatlar için kullanılan ve ordunun silah, teçhizat ve malzemesinden sayılan taşıtlar ile bunlara benzer özel amaçlı araçlar Kanun kapsamı dışındadır. Bu taşıtlar makam/hizmet taşıtı tahsis ve sınırlamalarına tabi tutulmaz."
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tarifler (tanımlar)\nKanunda geçen \"kurum\", \"taşıt\", \"binek otomobili\", \"station wagon\", \"kaptıkaçtı\", \"arazi binek (arazöz hariç)\", \"pick-up (kamyonet)\", \"panel\", \"minibüs\", \"otobüs\", \"kamyon\", \"ambulans\" gibi araç türleri tek tek tanımlanır. Tanımlar, hangi makama hangi tip taşıtın tahsis edilebileceğinin ve cetvellerdeki sınıflandırmanın esasını oluşturur."
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Makam taşıtları ve \"Resmî hizmete mahsustur\" ibaresi\nEmir ve zatlarına binek otomobili verilecek makamlar Kanuna bağlı (1) sayılı cetvelde; belirli makamların hizmetlerine tahsis olunacak taşıtlar (2) sayılı cetvelde gösterilir. (1) sayılı cetveldeki makamlara tahsis olunan taşıtlar hariç, kurumların bütün taşıtlarının yan taraflarına \"Resmî hizmete mahsustur\" ibaresi ile kurum adı yazılır; bu zorunluluk taşıtın yalnız resmî hizmette kullanılmasını sağlamaya yöneliktir."
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Kurumlara hizmet (havuz) taşıtı tahsisi\nCetvellerde makam taşıtı tahsis edilmemiş kurumlar, daimî hizmetlerinin gerektirdiği taşıt ihtiyacını karşılamak üzere Cumhurbaşkanı kararıyla taşıt bulundurabilir; tahsis edilecek taşıtın tipi ve adedi bu kararla belirlenir. Kurumlar, cetvellerde ve kararda öngörülen sayı ve tipin dışında taşıt edinemez ve bulunduramaz. [DOĞRULA: makam/hizmet taşıtı tahsis yetkisinin Madde 5 mi yoksa Madde 6'ya mı denk geldiği, kanunun değişik güncel metnindeki madde kaymasına göre teyit edilmeli]"
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Taşıt edinme şekli, (T) işaretli cetvel ve hizmet alımı esası\nGenel bütçeli daireler, katma bütçeli idareler ve döner sermayelerin bir yıl içinde her ne suretle olursa olsun edinebilecekleri taşıtların cinsi, adedi, hangi hizmette kullanılacağı ve kaynağı, yılı bütçe kanunlarına bağlı (T) işaretli cetvelde gösterilir; cetvelde yer almayan taşıt edinilemez. Taşıt ihtiyacının hizmet alımı (kiralama) suretiyle karşılanması esastır; bu yolla teminin mümkün veya ekonomik olmadığı ya da sağlık, savunma ve güvenlik gibi nedenlerle uygun görülmediği hâllerde satın alma yoluna gidilebilir. Edinilecek taşıtlar muayyen ve standart tipte, lüks ve gösterişten uzak olmalıdır."
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Taşıtların hizmet dışı/şahsî kullanım yasağı ve sorumluluk\nBu Kanun kapsamındaki taşıtlar, tahsis olundukları resmî hizmet dışında veya şahsî işlerde kullanılamaz. Taşıtların hukuka aykırı kullanımına emir veren amir ile fiilen kullanan görevli müteselsilen sorumlu olur ve doğan kamu zararı ilgililere tazmin ettirilir. İşletme ve onarım giderleri, taşıtın bağlı olduğu kurumun bütçesine konulan ödeneklerden karşılanır. [DOĞRULA: hizmet dışı kullanım yasağının madde numarası kanunun değişik güncel metnine göre Madde 12 olarak teyit edilmeli]"
+  },
+  {
+   "mevzuat": "237 tasit kanunu",
+   "kaynak_dosya": "237_tasit_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Ceza hükmü\nBu Kanuna aykırı olarak taşıtı tahsis edildiği işin dışında veya şahsî işlerde kullanan ya da kullanılmasına emir veya müsaade edenler hakkında bir seneye kadar hapis cezasına hükmolunur; fiilin tekrarı hâlinde ceza iki aydan az olamaz. Ayrıca taşıtın bu kullanımdan doğan giderleri sorumlulardan tahsil edilir. [DOĞRULA: ceza miktarları kanunun yürürlükteki güncel metni ve sonraki ceza mevzuatı değişiklikleriyle teyit edilmeli]"
   },
   {
    "mevzuat": "2429 ulusal bayram genel tatiller",
@@ -1884,6 +1940,48 @@
    "madde_no": 27,
    "madde_tur": "madde",
    "text": "Madde 27 — Acele kamulaştırma\nMilli müdafaa mükellefiyeti, yurt savunması ihtiyacı/aceleliği veya özel kanunlarla öngörülen olağanüstü durumlarda, Cumhurbaşkanınca acele kamulaştırma kararı alınabileceğini düzenler. Bu hallerde kıymet takdiri dışındaki işlemler sonradan tamamlanmak üzere taşınmaza el konulabilir; acele el koyma yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "2946 kamu konutlari kanunu",
+   "kaynak_dosya": "2946_kamu_konutlari_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı; kamu konutlarının tahsis biçimi, oturma süresi, kira, bakım, onarım ve yönetimine ilişkin temel ilkeleri belirlemektir. Kapsama giren kurum ve kuruluşlar konut tahsis, kira ve tahliye işlemlerini bu Kanunun ilkeleri çerçevesinde yürütür."
+  },
+  {
+   "mevzuat": "2946 kamu konutlari kanunu",
+   "kaynak_dosya": "2946_kamu_konutlari_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nKanun; genel ve katma bütçeli daireler, il özel idareleri, belediyeler, köyler ile bunların kurdukları birlikler, müesseseler ve işletmeler, iktisadi devlet teşekkülleri ve kamu iktisadi kuruluşları ile bunların müessese, bağlı ortaklık ve iştirakleri, kamu kurumu niteliğindeki diğer idarelerce inşa ettirme, satın alma veya kiralama suretiyle temin olunan ve personele tahsis edilen konutları kapsar. Bir görevin yürütülmesi için zorunlu olan konutlar dışında kiralama yoluyla konut teminine, zorunlu hâller dışında, gidilmez."
+  },
+  {
+   "mevzuat": "2946 kamu konutlari kanunu",
+   "kaynak_dosya": "2946_kamu_konutlari_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Konutların tahsis biçimine göre türleri\nKamu konutları tahsis esasına göre dört türe ayrılır: (a) Özel tahsisli konutlar — temsil özelliği olan, yönetmelikle belirlenen makam ve rütbe sahiplerine özel nitelikleriyle tahsis edilir; (b) Görev tahsisli konutlar — görevin önem ve özelliği, yetki ve sorumluluğu gereği yönetmelikle belirlenen unvan sahiplerine tahsis edilir; (c) Sıra tahsisli konutlar — hizmet süresi, daha önce konuttan yararlanma, çocuk ve aile durumu gibi ölçütlere dayalı puanlama esasına göre sıraya bağlı olarak tahsis edilir; (d) Hizmet tahsisli konutlar — karakol, istasyon, gözlem ve haberleşme istasyonu, şantiye gibi sosyal/ekonomik zorlukları olan yerlerdeki baraka, prefabrik yapı vb. konutlardır. Tahsis biçimi, başvuru ve puanlama evrakının türünü belirler."
+  },
+  {
+   "mevzuat": "2946 kamu konutlari kanunu",
+   "kaynak_dosya": "2946_kamu_konutlari_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Oturma süresi\nÖzel, görev ve hizmet tahsisli konutlarda oturma, tahsise esas görev veya hizmetin devamı süresince sürer. Sıra tahsisli konutlarda oturma süresi beş yıldır; bu sürenin bitiminde konuta başka istekli yoksa, oturanın talebi ve idarenin uygun görmesiyle oturma süreli olarak uzatılabilir. [DOĞRULA: sıra tahsisli oturma süresi ve uzatma koşulları yönetmelikle ayrıntılandırılır]"
+  },
+  {
+   "mevzuat": "2946 kamu konutlari kanunu",
+   "kaynak_dosya": "2946_kamu_konutlari_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Kira\nKamu konutlarından, özel ve görev tahsisli olanlar dâhil, oturanlardan kira alınır; kira bedeli konutun brüt inşaat alanı üzerinden birim metrekare bedeline göre hesaplanır ve personelin aylık/ücretinden kesilerek ilgili kurumun bütçesine/hesabına gelir kaydedilir. Yönetmelikle belirlenen üst düzey makamlara tahsis edilen bazı konutlardan kira alınmayabilir. Yakıt, elektrik, su, gaz ve ortak gider gibi işletme giderleri kiraya dâhil olmayıp ayrıca konutta oturandan tahsil edilir. [DOĞRULA: kira muafiyeti tanınan makamların güncel listesi ve işletme gideri paylaşımı yönetmelikle belirlenir]"
+  },
+  {
+   "mevzuat": "2946 kamu konutlari kanunu",
+   "kaynak_dosya": "2946_kamu_konutlari_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Konutların boşaltılması (tahliye)\nKonutta oturma hakkı sona erenler konutu süresinde boşaltmakla yükümlüdür. Özel, görev ve hizmet tahsisli konutlarda oturanlar görevin son bulduğu, sıra tahsisli konutlarda oturanlar beş yıllık sürenin bitiminden itibaren onbeş gün (kendilerine yapılan tebligat hâlinde tebliğden itibaren bir ay) içinde; memurluk sıfatı kalkanlar (emeklilik, istifa, çekilme vb.) ilişiklerinin kesildiği tarihten, ölüm hâlinde aileleri ölüm tarihinden itibaren iki ay içinde konutu boşaltır. Süresinde boşaltılmayan konut, ayrıca bildirime gerek kalmaksızın kolluk kuvveti kullanılarak bir hafta içinde zorla boşalttırılır; tahliyeye karşı yapılan başvurular boşaltma işlemini durdurmaz."
   },
   {
    "mevzuat": "2985 toplu konut kanunu",
@@ -4476,6 +4574,48 @@
    "text": "Madde 16 — Büyükşehir belediye encümeni\nBüyükşehir belediye encümeninin oluşumunu düzenler: belediye başkanının başkanlığında, meclisin kendi üyeleri arasından bir yıl için gizli oyla seçeceği beş üye ile genel sekreter, mali hizmetler birim amiri ve başkanın seçeceği birim amirlerinden oluşur. Encümen kararı gerektiren büyükşehir işlemlerinin (kamulaştırma, imar yaptırımı) dayanağıdır."
   },
   {
+   "mevzuat": "5224 sinema filmleri degerlendirme siniflandirma destekleme kanunu",
+   "kaynak_dosya": "5224_sinema_filmleri_degerlendirme_siniflandirma_destekleme_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı; sinema sanatına ilişkin ürünlerden birey ve toplumun verimli biçimde yararlanabilmesini sağlamaktır. Bu doğrultuda sinema sektörünün geliştirilip güçlendirilmesi, sinema filmlerinin değerlendirilmesi ve sınıflandırılması ile bu alanda yerli ve yabancı yatırım ve girişimlerin desteklenmesini düzenler. Sinema destek ve değerlendirme evrakının yasal dayanağını oluşturur."
+  },
+  {
+   "mevzuat": "5224 sinema filmleri degerlendirme siniflandirma destekleme kanunu",
+   "kaynak_dosya": "5224_sinema_filmleri_degerlendirme_siniflandirma_destekleme_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nBakanlık (Kültür ve Turizm Bakanlığı), sinema filmi, kurgu film, belgesel film, animasyon film gibi temel kavramları tanımlar. Sinema filmini; belgesel, kurgu veya animasyon türlerinde, elektronik ya da mekanik araçlarla gösterilebilen hareketli görüntüler dizisi olarak tanımlar. Değerlendirme ve sınıflandırma; kamu düzeni, genel ahlak ile küçüklerin ruh sağlığının korunması doğrultusunda yapılan işlemdir. Başvuru evrakında kullanılan film türü sınıflandırmasının dayanağıdır."
+  },
+  {
+   "mevzuat": "5224 sinema filmleri degerlendirme siniflandirma destekleme kanunu",
+   "kaynak_dosya": "5224_sinema_filmleri_degerlendirme_siniflandirma_destekleme_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Değerlendirme ve Sınıflandırma Kurulu\nSinema filmlerinin değerlendirilmesi ve sınıflandırılması, Bakanlık bünyesinde oluşturulan Değerlendirme ve Sınıflandırma Kurulunca yapılır. Kurul; Bakanlık ile İçişleri ve Millî Eğitim bakanlıklarından birer üye, meslek birliklerince önerilen uzmanlar arasından Bakanlıkça seçilecek üç üye ve alanında doktora derecesi bulunan bir sosyolog, bir psikolog ile bir çocuk gelişimi uzmanı olmak üzere toplam dokuz üyeden oluşur. Kurulun verdiği işaret ve ibareler, başvuruya konu filmin yaş sınıflandırmasını belirler. [DOĞRULA: 7163 sayılı Kanun ile değişik kurul toplantı/karar yeter sayısı ayrıntısı]"
+  },
+  {
+   "mevzuat": "5224 sinema filmleri degerlendirme siniflandirma destekleme kanunu",
+   "kaynak_dosya": "5224_sinema_filmleri_degerlendirme_siniflandirma_destekleme_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Değerlendirme ve sınıflandırma\nÜlke içinde üretilen veya ithal edilen sinema filmleri, ticari dolaşıma veya gösterime sunulmasından önce değerlendirilir ve sınıflandırılır. Uygun bulunmayan filmler ticari dolaşıma ve gösterime sunulamaz; değerlendirme sonucu belirlenen işaret ve ibarelerin tanıtım ve gösterim alanlarında kullanılması zorunludur. Bu madde, dağıtım ve gösterim öncesi yapılan değerlendirme-sınıflandırma başvurusunun esasıdır. [DOĞRULA: 7163 ile değiştirilen metinde 'kayıt ve tescile esas' ibaresinin çıkarıldığı ve festival/18+ istisnası ayrıntısı]"
+  },
+  {
+   "mevzuat": "5224 sinema filmleri degerlendirme siniflandirma destekleme kanunu",
+   "kaynak_dosya": "5224_sinema_filmleri_degerlendirme_siniflandirma_destekleme_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Destekleme türleri\nSinema sektörüne sağlanacak destekler; proje (araştırma, senaryo yazımı gibi yapım öncesi aşamalar için doğrudan ve geri ödemesiz), yapım (filmin gösterilebilir hale getirilmesine kadarki tüm yapım aşamaları için) ve yapım sonrası (tanıtım, dağıtım, gösterim aşamaları için) destekleri olarak düzenlenir. Destek miktarı, kanunda belirlenen üst oranlarla sınırlandırılır. Sinema mali destek başvuru evrakının dayanağıdır. [DOĞRULA: 7163 sayılı Kanun ile güncellenen destek türleri ve üst oran yüzdeleri (ör. senaryo/animasyon için artırılan oranlar)]"
+  },
+  {
+   "mevzuat": "5224 sinema filmleri degerlendirme siniflandirma destekleme kanunu",
+   "kaynak_dosya": "5224_sinema_filmleri_degerlendirme_siniflandirma_destekleme_kanunu.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Yapımcı belgeleri ve diğer belgeler\nSinema ve müzik eseri yapımcılarına verilecek yapımcı belgeleri ile kayıt ve tescil ve bandrol işlemlerine esas teşkil eden diğer belgeler, 5/12/1951 tarihli ve 5846 sayılı Fikir ve Sanat Eserleri Kanununun 13 üncü maddesi hükümlerine göre verilir. Bu madde, sinema kayıt-tescil belgesi ve yapımcı belgesi başvurusunun doğrudan yasal dayanağıdır."
+  },
+  {
    "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
    "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
    "madde_no": 3,
@@ -5965,6 +6105,48 @@
    "madde_no": 10,
    "madde_tur": "madde",
    "text": "Madde 10 — İdari yaptırımlar (idari para cezaları)\nKanunda öngörülen yükümlülüklere uymayanlara uygulanacak idari para cezalarını düzenler: istenen bilgi/belgeyi vermeme veya inceleme yaptırmama, yanlış/eksik bilgi verme, enerji yöneticisi görevlendirmeme ve asgari verimlilik standartlarına uymayan ürün satışı gibi fiiller için kademeli ceza tutarları belirler; bir yıl içinde tekrarlanan ihlallerde ceza iki katına çıkar. Enerji verimliliği idari yaptırım (idari para cezası) karar ve tutanak yazışmalarının dayanağıdır. [DOĞRULA: idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellendiğinden cari tutarlar teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5648 tarim kirsal kalkinma destekleme",
+   "kaynak_dosya": "5648_tarim_kirsal_kalkinma_destekleme.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı, ulusal kalkınma plan, program ve stratejilerinde öngörülen ilke ve hedefler çerçevesinde, Avrupa Birliği ve uluslararası kuruluşlardan sağlanan kaynaklar dâhil kırsal kalkınma programlarının uygulanmasına yönelik faaliyetleri yürütmek üzere Tarım ve Kırsal Kalkınmayı Destekleme Kurumunun kuruluş, görev, yetki ve sorumluluklarını düzenlemektir. Kurum bu çerçevede IPARD kapsamındaki hibe desteklerinin uygulayıcısıdır. [DOĞRULA: bu madde 2/7/2018-KHK-703/93 ile mülga edilmiş olabilir; teşkilat hükümleri 1 No.lu Cumhurbaşkanlığı Kararnamesine taşınmış, içerik dayanağı korunmuştur.]"
+  },
+  {
+   "mevzuat": "5648 tarim kirsal kalkinma destekleme",
+   "kaynak_dosya": "5648_tarim_kirsal_kalkinma_destekleme.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nMaddede Kanunda geçen temel kavramlar tanımlanır: Bakanlık, Kurum (Tarım ve Kırsal Kalkınmayı Destekleme Kurumu), Program (kırsal kalkınma programları), yararlanıcı, proje başvurusu, izleme komitesi ve proje değerlendirme/seçim komisyonu gibi terimler. Bu tanımlar, hibe başvuru ve değerlendirme sürecinde kullanılan kavramların hukuki çerçevesini belirler."
+  },
+  {
+   "mevzuat": "5648 tarim kirsal kalkinma destekleme",
+   "kaynak_dosya": "5648_tarim_kirsal_kalkinma_destekleme.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Kuruluş\nTarım ve Kırsal Kalkınmayı Destekleme Kurumu; kamu tüzel kişiliğini haiz, idarî ve malî özerkliğe sahip, özel bütçeli bir kuruluş olarak kurulmuştur. Kurum, kırsal kalkınma desteklerinin tek elden uygulanması ve AB IPARD fonlarının akredite ödeme kurumu olarak yönetilmesi görevini üstlenir. [DOĞRULA: Kurumun bağlılığı ve teşkilat statüsü 2018 sonrası 1 No.lu Cumhurbaşkanlığı Kararnamesi ile güncellenmiştir.]"
+  },
+  {
+   "mevzuat": "5648 tarim kirsal kalkinma destekleme",
+   "kaynak_dosya": "5648_tarim_kirsal_kalkinma_destekleme.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Görev ve yetkiler\nKurum; programa ilişkin tanıtım, bilgilendirme, eğitim ve yönlendirme faaliyetlerini yürütür, proje ve faaliyet başvurularını alır, ön incelemeleri ile yerinde kontrollerini yapar ve başvuruları başvuru şartları ile değerlendirme/seçim kriterlerine göre değerlendirir. Desteklenecek projeleri belirleyip uygulama (hibe) sözleşmelerini hazırlar; tahakkuk, ödeme ve muhasebe işlemleri ile kontrolleri gerçekleştirir; proje uygulamalarını izler ve yararlanıcıların sözleşme şartlarına uyup uymadığını takip eder. Bu madde, hibe başvuru-değerlendirme-ödeme-izleme döngüsünün hukuki dayanağıdır. [DOĞRULA: madde 2/7/2018-KHK-703/93 ile mülga edilerek görev tanımı Cumhurbaşkanlığı Kararnamesine aktarılmış olabilir; işlevsel kapsam korunmuştur.]"
+  },
+  {
+   "mevzuat": "5648 tarim kirsal kalkinma destekleme",
+   "kaynak_dosya": "5648_tarim_kirsal_kalkinma_destekleme.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Avrupa Birliği kırsal kalkınma program ve destekleri – Genel hükümler\nAvrupa Birliği ile imzalanan anlaşmalar çerçevesinde sağlanan malî kaynakların (IPARD) programlanması ve yönetimine ilişkin genel hükümleri düzenler. Kurum, AB desteklerinin uygulanması için ulusal akreditasyon alır ve dış denetim/sertifikasyon mekanizmalarına tâbi tutulur. Bu çerçeve, hibe ödemelerinin AB kurallarına uygunluğunu güvence altına alır. [DOĞRULA: maddenin güncel yürürlük durumu ve numarası konsolide metinde teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5648 tarim kirsal kalkinma destekleme",
+   "kaynak_dosya": "5648_tarim_kirsal_kalkinma_destekleme.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Kurumun sorumlulukları\nKurum; programın etkin, etkili ve doğru biçimde uygulanmasından, ödemelerin zamanında ve usulüne uygun yapılmasından, yararlanıcıların sözleşme yükümlülüklerinin takibinden ve yetkili makamların tavsiye ile taleplerinin yerine getirilmesinden sorumludur. Bu hükümler, hibe sözleşmelerinin ifası, ödeme ve geri alma süreçlerinde Kurumun yükümlülük çerçevesini belirler. [DOĞRULA: madde 2/7/2018-KHK-703/93 ile mülga edilmiş olabilir; sorumluluk çerçevesi Cumhurbaşkanlığı Kararnamesi ve AB akreditasyon kuralları ile sürdürülmektedir.]"
   },
   {
    "mevzuat": "5651 internet yayinlari",
@@ -10090,5 +10272,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 222
+ "mevzuat_sayisi": 226
 }

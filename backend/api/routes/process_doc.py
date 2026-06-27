@@ -12,6 +12,7 @@ compile-once; lazy singleton ile cache'lenir.
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import AsyncIterator
 from typing import Any
 from uuid import uuid4
@@ -114,6 +115,24 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
     )
 
 
+async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,
+                         kaynak_metin: str, filename: str) -> None:
+    """DB_PERSIST=1 ise koşumu DB'ye yaz (gelen_evrak+islem+denetim). ENV-gated + lazy.
+
+    Demo güvenliği: DATABASE_URL/DB yoksa veya yazma hata verirse YANITI BOZMAZ
+    (yalnız uyarı loglanır). Kalıcılaştırma opsiyoneldir; stateless demo birebir korunur.
+    """
+    if os.getenv("DB_PERSIST", "0") != "1":
+        return
+    try:
+        from db.repositories.persist_run import persist_pipeline_run
+        islem_id = await persist_pipeline_run(
+            state=state, response=response, kaynak_metin=kaynak_metin, filename=filename)
+        log.info("db_persist", islem_id=str(islem_id))
+    except Exception as e:  # noqa: BLE001 — persistence demo akışını asla kıramaz
+        log.warning("db_persist_hata", hata=str(e)[:200])
+
+
 @router.post("", response_model=ProcessResponse)
 @rate_limit("20/minute")  # IP-başı limit (/stream ile aynı desen; slowapi yoksa etkisiz)
 async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
@@ -132,9 +151,13 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
             resp.onay_bekliyor = True
             resp.thread_id = thread_id
             return resp
-        return _to_response(out, {})
+        resp = _to_response(out, {})
+        await _maybe_persist(out, resp, text, req.filename)
+        return resp
     final = await _get_graph().ainvoke(state)
-    return _to_response(final, {})
+    resp = _to_response(final, {})
+    await _maybe_persist(final, resp, text, req.filename)
+    return resp
 
 
 @router.post("/resume", response_model=ProcessResponse)

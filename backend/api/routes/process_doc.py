@@ -110,6 +110,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         onay_gerekce=state.get("onay_gerekce", ""),
         ocr_engine=ocr_meta.get("ocr_engine"),
         page_count=ocr_meta.get("page_count"),
+        ocr_confidence=ocr_meta.get("ocr_confidence"),
     )
 
 
@@ -185,7 +186,7 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
                                     "ocr_confidence": res.confidence, "filename": filename}
         yield _sse({"event": "node", "node": "oku", "status": "done",
                     "data": {"engine": res.engine, "n_chars": len(text),
-                             "page_count": res.page_count}})
+                             "page_count": res.page_count, "ocr_confidence": res.confidence}})
         if not text.strip():
             yield _sse({"event": "error", "message": "Belgeden metin çıkarılamadı"})
             return

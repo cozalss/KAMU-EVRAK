@@ -44,3 +44,6 @@ Thumbs.db
 /before-*.png
 test-results/
 playwright-report/
+
+# Tasarim-araci mockup export (sayfa/) — tasarim referansi, kod degil; repo temiz/lisans-guvenli kalsin
+sayfa/

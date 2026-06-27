@@ -101,6 +101,8 @@ class ProcessResponse(BaseModel):
     # OCR meta (dosya yüklendiyse)
     ocr_engine: str | None = None
     page_count: int | None = None
+    # OCR güven skoru (0-1) — OCRResponse.confidence'tan taşınır (dosya yolu); metin yolunda None.
+    ocr_confidence: float | None = None
 
 
 class OCRResponse(BaseModel):

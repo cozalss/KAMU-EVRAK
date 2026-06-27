@@ -47,6 +47,13 @@ _ONERI: dict[str, str] = {
 }
 _SKOR: dict[str, float] = {"yesil": 0.1, "sari": 0.5, "kirmizi": 0.9}
 
+# Zorunlu-alan anahtarı → kısa Türkçe etiket (risk gerekçesi okunur olsun; ham anahtar gösterilmez).
+_ALAN_TR: dict[str, str] = {
+    "gonderen_ad_soyad": "gönderen ad-soyad", "tckn_veya_kurum": "TCKN/kurum",
+    "tarih": "tarih", "konu": "konu", "talep": "talep",
+    "iletisim_adres": "iletişim/adres", "imza": "imza",
+}
+
 
 def compute_risk(
     verify_uyari: list[str],
@@ -76,7 +83,8 @@ def compute_risk(
     if dogrula:
         sari.append(f"{dogrula} alan doğrulanmalı ([DOĞRULA] işareti)")
     if eksik_alanlar:
-        sari.append(f"Eksik zorunlu bilgi: {', '.join(eksik_alanlar[:3])}")
+        etiketler = [_ALAN_TR.get(a, a) for a in eksik_alanlar[:3]]
+        sari.append(f"Eksik zorunlu bilgi: {', '.join(etiketler)}")
     if evrak_turu == "belirsiz":
         sari.append("Evrak türü belirsiz (sınıflandırma abstention)")
     elif tur_confidence is not None and tur_confidence < RISK_GUVEN_ESIK:

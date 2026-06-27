@@ -179,7 +179,7 @@ function OnayPaneli({ data, onResume, busy }) {
           const gerekceler = data?.risk_metadata?.gerekceler;
           if (!bant || !RISK_LBL[bant]) return null;
           return (
-            <div className={`rc-onay-risk rc-risk-${bant}`} role="alert">
+            <div className={`rc-onay-risk rc-risk-${bant}`} role="status">
               <span className="rc-onay-risk-h">
                 {RISK_LBL[bant].ic}
                 <strong>{RISK_LBL[bant].text}</strong> — bu yüzden onayınıza sunuldu

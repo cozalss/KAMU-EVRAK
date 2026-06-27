@@ -6,24 +6,19 @@ yapılır; graf metin üzerinde çalışır → saf/test-edilebilir.
 
 Akış:
 
-    START → siniflandir → cikar → eksik_tespit
-                                       │
-                          ┌────────────┴────────────┐
-                          ▼                          ▼
-                     mevzuat_oner                 ozetle      (paralel fan-out)
-                          └────────────┬────────────┘
-                                       ▼
-                                  route_birim
-                                       │
-                          eksik var? ──┤
-                                       ▼
-                                  yazi_taslak  (eksik yoksa taslak; varsa yine iskelet)
-                                       ▼
-                                    verify
-                                       ▼
-                                    arsiv   (SDP 2005/7 arşiv metadata — additive)
-                                       ▼
-                                   finalize → END
+    START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompose]
+                                                       │
+                                      ┌────────────────┴────────────────┐
+                                      ▼                                 ▼
+                                 mevzuat_oner                        ozetle   (paralel fan-out)
+                                      └────────────────┬────────────────┘
+                                                       ▼
+       route_birim → yazi_taslak → verify → [risk_guard] → (🟢 geç │ 🟡🔴 → onay_kapisi*)
+             → arsiv → sla_triyaj → denetim_izi → finalize → END
+
+    [.] ENV-gated (decompose/risk_guard varsayılan AÇIK; * onay_kapisi HITL ile koşullu).
+    Additive yenilikçilik node'ları (kanit_baglama/arsiv/sla_triyaj/denetim_izi) çıktıyı
+    zenginleştirir, birincil tür/birim/yönlendirmeyi DEĞİŞTİRMEZ.
 
 ENV-gated gelişmiş node'lar UYGULANDI: decompose (DECOMPOSE_ENABLED, çok-konulu evrak →
 alt-talepler, fan-out kaynağı, varsayılan AÇIK), risk_guard (RISK_GUARD_ENABLED, trafik

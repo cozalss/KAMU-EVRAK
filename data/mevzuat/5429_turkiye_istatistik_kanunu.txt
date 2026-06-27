@@ -1,0 +1,26 @@
+Türkiye İstatistik Kanunu
+Kanun No: 5429 (Kabul: 10.11.2005, RG 18.11.2005/25997 — YÜRÜRLÜKTE). Resmî istatistiklerin üretim ve organizasyonuna ilişkin temel ilke ve standartları belirleyen, Türkiye İstatistik Kurumu (TÜİK) merkezli istatistik sistemini düzenleyen kanun. 5813 sayılı Kanun (2008) ile 8, 13, 54. maddelerde değişiklik; 703 sayılı KHK (2018) ile kurumsal/teşkilât maddeleri (16-52 arası büyük bölümü) mülga edilmiştir; istatistik üretimi, veri talebi, gizlilik ve ceza hükümleri yürürlüktedir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5429&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı, resmî istatistiklerin üretimine ve organizasyonuna ilişkin temel ilke ve standartları belirlemektir. Ülkenin ihtiyaç duyduğu alanlarda veri ve bilgilerin derlenmesini, değerlendirilmesini, istatistik üretimini, yayımını ve dağıtımını kapsar. Ayrıca Resmî İstatistik Programı kapsamında istatistik sürecine dâhil kurum ve kuruluşlar arasında koordinasyonu sağlamayı hedefler.
+
+Madde 7 — Bilgi isteme, bilgilerin doğruluğunu araştırma, kontrol ve saklama
+Başkanlık (TÜİK), görev alanına giren sayım ve araştırmalarda istatistik üretimi için gerekli gördüğü her türlü ortamdaki veri ve bilgiyi tüm istatistikî birimlerden, kendisinin belirlediği şekil, süre ve standartlarda doğrudan isteme yetkisine sahiptir. Gerektiğinde verilen veri/bilgilerin doğruluğunu araştırabilir, kontrol edebilir, ek bilgi ve belge isteyebilir. Bu faaliyetler elektronik ortamda yapılabilir, arşivlenebilir ve elektronik imza kullanılabilir.
+
+Madde 8 — Cevap verme yükümlülüğü ve sınırları
+İstatistikî birimler; ekonomi, sosyal, demografi, çevre, bilim, teknoloji ve diğer alanlarda resmî istatistik üretmek üzere kendilerinden istenen veri veya bilgileri vermekle yükümlüdür. Bu bilgiler, Anayasa'da belirlenen temel hak ve ödevler çerçevesinde, Başkanlığın belirleyeceği şekil, süre ve standartlarda eksiksiz, doğru ve ücretsiz verilir. Maddenin önceki hâli Anayasa Mahkemesi'nce iptal edilmiş, 5813 sayılı Kanunla (2008) yeniden düzenlenmiştir.
+
+Madde 9 — İdarî verilere erişim
+Kurum ve kuruluşlar, resmî istatistik üretiminde kullanılmak üzere kendi görev alanlarıyla ilgili topladıkları, işledikleri ve sakladıkları kayıt ve veri dosyalarını, her türlü harita ile uzaktan algılanmış veriyi belirlenen süre içinde ücret talep etmeksizin Başkanlığa (TÜİK) vermek veya kullanımına açmakla yükümlüdür. Bu yükümlülüğün ihlali, 54. madde uyarınca üst yöneticiler hakkında idarî para cezası gerektirir.
+
+Madde 13 — Gizli veriler
+Gizli verilere yalnızca resmî istatistik üretiminde görev alanlar, görevleri için ihtiyaç duydukları ölçüde erişebilir. Toplanan gizli veriler idarî, adlî ve askerî hiçbir organ, makam, merci veya kişiye verilemez, istatistik amacı dışında kullanılamaz ve ispat aracı olamaz; bu yasak görevliler için görevden ayrılsalar da sürer. Gizli veriler ancak doğrudan veya dolaylı tanımlamaya yol açmayacak şekilde diğer bilgilerle birleştirilerek yayımlanabilir; istatistikî birimin yazılı onayı ile gizlilik kalkar.
+
+Madde 54 — İdarî para cezaları
+Program kapsamında istenen bilgileri geçerli mazereti olmadan belirlenen şekil ve sürede vermeyen veya eksik/hatalı verenler, bir kereye mahsus uyarılarak yedi gün içinde gidermeye davet edilir; uyarıya rağmen vermeyenlere fiilin işlendiği alana göre idarî para cezası uygulanır (hanehalkı/birey araştırmalarında, diğer istatistikî birimlerde ve sayımlarda farklı tutarlar — kanundaki YTL tutarları her yıl yeniden değerleme oranıyla güncellenir [DOĞRULA: güncel tutarlar için ilgili yıl tebliği]). 9. madde kapsamında istenen kayıt/verinin otuz gün içinde verilmemesi hâlinde ilgili kurumun üst yöneticisine ceza uygulanır; ceza, bilgi verme yükümlülüğünü ortadan kaldırmaz.

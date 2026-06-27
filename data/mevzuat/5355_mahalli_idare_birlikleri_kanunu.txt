@@ -1,0 +1,28 @@
+Mahallî İdare Birlikleri Kanunu
+Kanun No 5355, Kabul 26.05.2005, RG 11.06.2005/25842 (Düstur Tertip 5, Cilt 44) — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5355 konsolide metin esas alınmıştır; 700 sayılı KHK/2018 ile "Bakanlar Kurulu" ibareleri "Cumhurbaşkanı", 7153 sayılı Kanun/2018 ile tüzük onay makamı güncellenmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5355.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Birlik kuruluşu, birlik tüzüğünün onayı, birlik organları ve meclis/başkanlık seçimi
+açısından ilgili maddeler seçilmiştir. Madde numaraları ve hükümler mevzuat.gov.tr /
+resmigazete.gov.tr resmî kaynaklarından araştırılarak özetlenmiştir; şüpheli veya sonradan
+değiştirilmiş hükümler [DOĞRULA: ...] işareti taşır (CLAUDE.md §1: mevzuat referansı
+üretimden önce doğrulanır).
+
+Madde 4 — Birliğin kuruluşu ve üyelik
+Mahallî idare birliği, birlik tüzüğünün kesinleşmesinden sonra Cumhurbaşkanının izni ile kurulur ve tüzel kişilik kazanır (2018'de 700 sayılı KHK ile "Bakanlar Kurulu" yerine "Cumhurbaşkanı"). Kurulmuş bir birliğe sonradan üyelik, üye olmak isteyen mahallî idare meclisinin kararı ve buna dayalı başvuru üzerine birlik meclisinin kabulü ile olur; bu durumda Cumhurbaşkanı izni aranmaz, ayrılmada ise ilgili mahallî idare meclisinin kararı yeterlidir. Su/atıksu/katı atık gibi altyapı ve çevre projelerinin zorunlu kılması halinde Cumhurbaşkanı, ilgili mahallî idarelerin böyle bir birliğe katılmasına karar verebilir. Birlik kuruluş izni başvurusu ve üyelik/ayrılma yazışmalarının dayanağıdır.
+
+Madde 5 — Birlik tüzüğü ve onay makamı
+Birlik tüzüğü, birliği kuracak mahallî idarelerin meclislerinde üye tam sayısının üçte iki çoğunluğuyla kabul edildikten sonra valinin onayı ile kesinleşir; birlik birden fazla ildeki mahallî idarelerin katılımıyla kuruluyorsa üyeleri il özel idareleri ve köylerden oluşan birlikler için İçişleri Bakanının, geri kalanları için ilgili Bakanlığın onayı ile kesinleşir. Tüzükte birliğin adı/amacı, üye idareler, merkez, görev süresi, devredilen görev ve hizmetler, her üyenin mecliste kaç üye ile temsil edileceği, katılma payları ve değişiklik usûlü gibi hususların bulunması zorunludur. Birlik tüzüğü onay başvurusu, vali/İçişleri Bakanı onay yazıları ve tüzük değişikliği işlemlerinin temel dayanağıdır. [DOĞRULA: çok-illi birliklerde "geri kalanlar" için onay makamının güncel bakanlık adı teyit edilmeli — metinde Çevre ve Şehircilik Bakanlığı geçmekteydi, sonraki teşkilat değişiklikleriyle karşılaştırılmalı]
+
+Madde 7 — Birliğin organları
+Birliğin organlarının birlik meclisi, birlik encümeni ve birlik başkanı olduğunu belirler. Birliğin karar, yürütme ve temsil yapısının çerçevesini çizer; birlik adına alınan kararların hangi organca alınması gerektiğinin (meclis kararı / encümen kararı / başkan onayı) belirlenmesinde dayanaktır.
+
+Madde 8 — Birlik meclisi
+Birlik meclisi, birliğin karar organıdır ve birlik üyesi mahallî idarelerin meclislerinin kendi üyeleri veya belediye meclis üyeliğine seçilmeyi haiz kişiler arasından, birlik tüzüğünde belirlenen sayıda ve gizli oyla seçeceği üyelerden oluşur; dışarıdan seçileceklerin sayısı mahallî idare meclisinden seçileceklerin üçte birini geçemez ve asıl üye sayısının yarısı kadar yedek üye seçilir. Birlik üyesi il özel idaresi için vali, belediye için belediye başkanı ve köy için muhtar birlik meclisinin doğal üyesidir; birlik başkanı aynı zamanda birlik meclisinin de başkanıdır. Birlik meclisi üye seçimi ve temsil yazışmalarının dayanağıdır.
+
+Madde 9 — Birlik meclisinin görev ve yetkileri
+Birlik meclisinin görev ve yetkilerini sayar: yatırım plânı ve çalışma programını görüşüp kabul etmek; bütçe ve kesinhesabı kabul etmek; borçlanmaya karar vermek; taşınmaz mal alım/satım/kiralama/takasına karar vermek; hizmet ücret tarifesini belirlemek; şartlı bağışları kabul etmek; birlik encümen üyeleri ile ihtisas komisyonu üyelerini seçmek; birim kurulmasına ve birlik yönetmeliklerine karar vermek. Birlik bünyesinde meclis kararı gerektiren işlemlerin (bütçe, tarife, borçlanma, taşınmaz) dayanağıdır.
+
+Madde 10 — Meclis başkanlık divanı ve birlik başkanı seçimi
+Birlik meclisi, birliğin kuruluşundan ve mahallî idare genel seçim sonuçlarının Yüksek Seçim Kurulunca ilânından itibaren otuz gün içinde, birlik merkezinin bulunduğu yerin mülkî idare amiri tarafından birlik merkezinde toplantıya çağrılır. Meclis, en yaşlı üyenin başkanlığında toplanarak gizli oyla birlik başkanını, birinci ve ikinci başkan vekili ile kâtip üyeleri seçer; başkanlık divanı seçimi üç gün içinde tamamlanır. Birlik başkanlığı/divan seçimi tutanakları ve mülkî amir davet yazılarının dayanağıdır.

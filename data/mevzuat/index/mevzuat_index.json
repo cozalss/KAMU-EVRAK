@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1467,
+ "chunk_sayisi": 1490,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -3433,6 +3433,41 @@
    "text": "Madde 1022 — Tescilin etkisi: aynî hakkın doğması\nAynî haklar, tapu kütüğüne tescille doğar; sıralarını ve tarihlerini tescile göre alırlar. Mülkiyet, ipotek, irtifak gibi taşınmaz üzerindeki aynî haklar hukuken ancak sicile tescil edildiklerinde kazanılmış sayılır. Bu hüküm tescilin kurucu (constitutive) etkisini ortaya koyar."
   },
   {
+   "mevzuat": "4733 tutun tutun mamulleri ve alkol piyasasi kanunu",
+   "kaynak_dosya": "4733_tutun_tutun_mamulleri_ve_alkol_piyasasi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı; tütün ve tütün mamulleri ile alkol ve alkollü içkiler piyasasını düzenlemek; tütün, tütün mamulleri, etil alkol, metanol ve alkollü içkilerin Türkiye'de üretimine, iç ve dış alım ile satımına ve buna ilişkin usul ve esasları belirlemektir. Kanun, bu ürünlerin üretiminden tüketiciye sunumuna kadarki süreçte piyasanın denetimini ve düzenlenmesini kapsar."
+  },
+  {
+   "mevzuat": "4733 tutun tutun mamulleri ve alkol piyasasi kanunu",
+   "kaynak_dosya": "4733_tutun_tutun_mamulleri_ve_alkol_piyasasi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Görevler ve yetki\nTütün, tütün mamulleri, etil alkol, metanol ve alkollü içkilerle ilgili piyasa düzenleme, izin/uygunluk belgesi verme, üretim ve satış belgesi düzenleme, fiyat ve piyasaya arz şartlarını belirleme ile denetim görevleri yetkili merci (mülga TAPDK; hâlen Tarım ve Orman Bakanlığı) tarafından yürütülür. Sağlık Bakanlığı ise tütün ve alkol tüketiminin halk sağlığı üzerindeki zararlı etkilerinin önlenmesine ilişkin görevleri yerine getirir. [DOĞRULA: Madde 3'ün başlığı ve içeriği 696 sayılı KHK ile TAPDK'nın kaldırılmasından sonra değişmiştir; güncel resmî metinde maddenin tam başlığı ve görev dağılımı teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "4733 tutun tutun mamulleri ve alkol piyasasi kanunu",
+   "kaynak_dosya": "4733_tutun_tutun_mamulleri_ve_alkol_piyasasi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Üretici tütünlerinin alımı-satımı, tütün mamulleri üretimi ve belge zorunluluğu\nTürkiye'de tütün mamullerini, etil alkol, metanol ve alkollü içkileri üretmek ve satmak isteyenlerin, yetkili merciden (Tarım ve Orman Bakanlığı / mülga TAPDK) üretim, satış ve/veya uygunluk belgesi alması zorunludur. Üretici tütünleri yazılı sözleşme veya açık artırma yöntemiyle alınıp satılır; tütün mamulü üretimi için asgari yıllık üretim kapasitesi (örn. sigarada yılda iki milyar adet) gibi şartlar aranır. Belge bedeli ile tescil, izin ve ruhsat harçları ilgili yönetmelikle belirlenir. [DOĞRULA: madde içindeki asgari kapasite rakamı ve belge türleri güncel yönetmelik/Kanun metninden teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "4733 tutun tutun mamulleri ve alkol piyasasi kanunu",
+   "kaynak_dosya": "4733_tutun_tutun_mamulleri_ve_alkol_piyasasi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — İdari yaptırımlar (satış belgesi ve idari para cezaları)\nYetkili merciden satış belgesi almadan tütün mamulleri, etil alkol, metanol ve alkollü içkilerin toptan satışını yapanlara yüksek tutarlı, perakende satışını yapanlara daha düşük tutarlı idari para cezası uygulanır. Belgesiz kişilerden ürün alan/bunlara ürün satan veya belgesinde belirtilen işyeri dışında satış yapan satıcılara da idari para cezası verilir; dökme alkollü içkileri izinsiz piyasaya arz edenler ayrıca cezalandırılır. İhlalin tekrarı hâlinde ceza artırılır ve satış belgesi iptal edilebilir; idari para cezaları her yıl yeniden değerleme oranında güncellenir. [DOĞRULA: Madde 8'deki güncel ceza tutarları 7423 sayılı Kanun ve sonraki değişiklikler ile yeniden değerleme nedeniyle yıllık değiştiğinden cari rakamlar Tarım ve Orman Bakanlığı (TADAB) idari para cezası cetvelinden teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "4733 tutun tutun mamulleri ve alkol piyasasi kanunu",
+   "kaynak_dosya": "4733_tutun_tutun_mamulleri_ve_alkol_piyasasi_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Satış belgesi ve uygunluk belgesi usulü\nTütün mamulleri, etil alkol, metanol ve alkollü içkilerin toptan veya perakende satışını yapacakların satış belgesi alması; üretim, ithalat ve piyasaya arz faaliyetlerinde uygunluk belgesi düzenlenmesi ve bu belgelerin verilmesine, süresine, yenilenmesine ve iptaline ilişkin usul ve esasların yönetmelikle belirlenmesi öngörülür. Satış belgesi başvuruları ilgili yönetmelikteki şartlar çerçevesinde değerlendirilir ve belirlenen sürede sonuçlandırılır. [DOĞRULA: satış belgesi/uygunluk belgesi usulünü düzenleyen maddenin numarası (Madde 9 veya ilgili ek madde) ve içeriği güncel konsolide metinden teyit edilmelidir; uygulama \"Tütün Mamulleri ve Alkollü İçkilerin Satışına ve Sunumuna İlişkin Usul ve Esaslar Hakkında Yönetmelik\" ile yürütülmektedir]"
+  },
+  {
    "mevzuat": "4734 kamu ihale kanunu",
    "kaynak_dosya": "4734_kamu_ihale_kanunu.txt",
    "madde_no": 5,
@@ -5148,6 +5183,48 @@
    "text": "Madde 12 — Arşiv bilgilerinin silinmesi (süreler)\nArşive alınan kayıtlar; Anayasanın 76 ncı maddesi ile Türk Ceza Kanunu dışındaki kanunlarda bir hak yoksunluğuna neden olan mahkûmiyetler bakımından, arşive alınma koşullarının oluştuğu tarihten itibaren yasaklanmış hakların geri verilmesi kararı alınması koşuluyla on beş yıl, böyle bir karar aranmaksızın otuz yıl geçmesiyle; diğer mahkûmiyetler bakımından ise arşive alınma koşullarının oluştuğu tarihten itibaren beş yıl geçmesiyle tamamen silinir. Kaydın silinmesi için ilgili, dilekçeyle Adlî Sicil ve İstatistik Genel Müdürlüğüne başvurabilir. [DOĞRULA: belirli istisnaî kayıt türlerinde sürelere ilişkin ek/özel hükümler ayrıca kontrol edilmeli]"
   },
   {
+   "mevzuat": "5355 mahalli idare birlikleri kanunu",
+   "kaynak_dosya": "5355_mahalli_idare_birlikleri_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Birliğin kuruluşu ve üyelik\nMahallî idare birliği, birlik tüzüğünün kesinleşmesinden sonra Cumhurbaşkanının izni ile kurulur ve tüzel kişilik kazanır (2018'de 700 sayılı KHK ile \"Bakanlar Kurulu\" yerine \"Cumhurbaşkanı\"). Kurulmuş bir birliğe sonradan üyelik, üye olmak isteyen mahallî idare meclisinin kararı ve buna dayalı başvuru üzerine birlik meclisinin kabulü ile olur; bu durumda Cumhurbaşkanı izni aranmaz, ayrılmada ise ilgili mahallî idare meclisinin kararı yeterlidir. Su/atıksu/katı atık gibi altyapı ve çevre projelerinin zorunlu kılması halinde Cumhurbaşkanı, ilgili mahallî idarelerin böyle bir birliğe katılmasına karar verebilir. Birlik kuruluş izni başvurusu ve üyelik/ayrılma yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5355 mahalli idare birlikleri kanunu",
+   "kaynak_dosya": "5355_mahalli_idare_birlikleri_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Birlik tüzüğü ve onay makamı\nBirlik tüzüğü, birliği kuracak mahallî idarelerin meclislerinde üye tam sayısının üçte iki çoğunluğuyla kabul edildikten sonra valinin onayı ile kesinleşir; birlik birden fazla ildeki mahallî idarelerin katılımıyla kuruluyorsa üyeleri il özel idareleri ve köylerden oluşan birlikler için İçişleri Bakanının, geri kalanları için ilgili Bakanlığın onayı ile kesinleşir. Tüzükte birliğin adı/amacı, üye idareler, merkez, görev süresi, devredilen görev ve hizmetler, her üyenin mecliste kaç üye ile temsil edileceği, katılma payları ve değişiklik usûlü gibi hususların bulunması zorunludur. Birlik tüzüğü onay başvurusu, vali/İçişleri Bakanı onay yazıları ve tüzük değişikliği işlemlerinin temel dayanağıdır. [DOĞRULA: çok-illi birliklerde \"geri kalanlar\" için onay makamının güncel bakanlık adı teyit edilmeli — metinde Çevre ve Şehircilik Bakanlığı geçmekteydi, sonraki teşkilat değişiklikleriyle karşılaştırılmalı]"
+  },
+  {
+   "mevzuat": "5355 mahalli idare birlikleri kanunu",
+   "kaynak_dosya": "5355_mahalli_idare_birlikleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Birliğin organları\nBirliğin organlarının birlik meclisi, birlik encümeni ve birlik başkanı olduğunu belirler. Birliğin karar, yürütme ve temsil yapısının çerçevesini çizer; birlik adına alınan kararların hangi organca alınması gerektiğinin (meclis kararı / encümen kararı / başkan onayı) belirlenmesinde dayanaktır."
+  },
+  {
+   "mevzuat": "5355 mahalli idare birlikleri kanunu",
+   "kaynak_dosya": "5355_mahalli_idare_birlikleri_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Birlik meclisi\nBirlik meclisi, birliğin karar organıdır ve birlik üyesi mahallî idarelerin meclislerinin kendi üyeleri veya belediye meclis üyeliğine seçilmeyi haiz kişiler arasından, birlik tüzüğünde belirlenen sayıda ve gizli oyla seçeceği üyelerden oluşur; dışarıdan seçileceklerin sayısı mahallî idare meclisinden seçileceklerin üçte birini geçemez ve asıl üye sayısının yarısı kadar yedek üye seçilir. Birlik üyesi il özel idaresi için vali, belediye için belediye başkanı ve köy için muhtar birlik meclisinin doğal üyesidir; birlik başkanı aynı zamanda birlik meclisinin de başkanıdır. Birlik meclisi üye seçimi ve temsil yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5355 mahalli idare birlikleri kanunu",
+   "kaynak_dosya": "5355_mahalli_idare_birlikleri_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Birlik meclisinin görev ve yetkileri\nBirlik meclisinin görev ve yetkilerini sayar: yatırım plânı ve çalışma programını görüşüp kabul etmek; bütçe ve kesinhesabı kabul etmek; borçlanmaya karar vermek; taşınmaz mal alım/satım/kiralama/takasına karar vermek; hizmet ücret tarifesini belirlemek; şartlı bağışları kabul etmek; birlik encümen üyeleri ile ihtisas komisyonu üyelerini seçmek; birim kurulmasına ve birlik yönetmeliklerine karar vermek. Birlik bünyesinde meclis kararı gerektiren işlemlerin (bütçe, tarife, borçlanma, taşınmaz) dayanağıdır."
+  },
+  {
+   "mevzuat": "5355 mahalli idare birlikleri kanunu",
+   "kaynak_dosya": "5355_mahalli_idare_birlikleri_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Meclis başkanlık divanı ve birlik başkanı seçimi\nBirlik meclisi, birliğin kuruluşundan ve mahallî idare genel seçim sonuçlarının Yüksek Seçim Kurulunca ilânından itibaren otuz gün içinde, birlik merkezinin bulunduğu yerin mülkî idare amiri tarafından birlik merkezinde toplantıya çağrılır. Meclis, en yaşlı üyenin başkanlığında toplanarak gizli oyla birlik başkanını, birinci ve ikinci başkan vekili ile kâtip üyeleri seçer; başkanlık divanı seçimi üç gün içinde tamamlanır. Birlik başkanlığı/divan seçimi tutanakları ve mülkî amir davet yazılarının dayanağıdır."
+  },
+  {
    "mevzuat": "5362 esnaf sanatkar meslek kuruluslari kanunu",
    "kaynak_dosya": "5362_esnaf_sanatkar_meslek_kuruluslari_kanunu.txt",
    "madde_no": 3,
@@ -5503,6 +5580,48 @@
    "madde_no": 146,
    "madde_tur": "madde",
    "text": "Madde 146 — İdari para cezaları\nKanunun ilgili maddelerinde öngörülen yükümlülüklere aykırı davranan banka ve görevliler hakkında Kurulca idari para cezası uygulanır; cezanın alt ve üst sınırları ile uygulama usulü maddede ve atıf yapılan hükümlerde belirlenmiştir. İdari para cezaları her takvim yılı başında yeniden değerleme oranında artırılarak uygulanır. Bu hüküm, idari para cezası karar/tebliğ ve cezaya itiraz evrakının dayanağıdır. [DOĞRULA: 2026 yılı için geçerli güncel idari para cezası alt/üst tutarları yeniden değerleme oranıyla güncellenmiş hâliyle teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5429 turkiye istatistik kanunu",
+   "kaynak_dosya": "5429_turkiye_istatistik_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı, resmî istatistiklerin üretimine ve organizasyonuna ilişkin temel ilke ve standartları belirlemektir. Ülkenin ihtiyaç duyduğu alanlarda veri ve bilgilerin derlenmesini, değerlendirilmesini, istatistik üretimini, yayımını ve dağıtımını kapsar. Ayrıca Resmî İstatistik Programı kapsamında istatistik sürecine dâhil kurum ve kuruluşlar arasında koordinasyonu sağlamayı hedefler."
+  },
+  {
+   "mevzuat": "5429 turkiye istatistik kanunu",
+   "kaynak_dosya": "5429_turkiye_istatistik_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Bilgi isteme, bilgilerin doğruluğunu araştırma, kontrol ve saklama\nBaşkanlık (TÜİK), görev alanına giren sayım ve araştırmalarda istatistik üretimi için gerekli gördüğü her türlü ortamdaki veri ve bilgiyi tüm istatistikî birimlerden, kendisinin belirlediği şekil, süre ve standartlarda doğrudan isteme yetkisine sahiptir. Gerektiğinde verilen veri/bilgilerin doğruluğunu araştırabilir, kontrol edebilir, ek bilgi ve belge isteyebilir. Bu faaliyetler elektronik ortamda yapılabilir, arşivlenebilir ve elektronik imza kullanılabilir."
+  },
+  {
+   "mevzuat": "5429 turkiye istatistik kanunu",
+   "kaynak_dosya": "5429_turkiye_istatistik_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Cevap verme yükümlülüğü ve sınırları\nİstatistikî birimler; ekonomi, sosyal, demografi, çevre, bilim, teknoloji ve diğer alanlarda resmî istatistik üretmek üzere kendilerinden istenen veri veya bilgileri vermekle yükümlüdür. Bu bilgiler, Anayasa'da belirlenen temel hak ve ödevler çerçevesinde, Başkanlığın belirleyeceği şekil, süre ve standartlarda eksiksiz, doğru ve ücretsiz verilir. Maddenin önceki hâli Anayasa Mahkemesi'nce iptal edilmiş, 5813 sayılı Kanunla (2008) yeniden düzenlenmiştir."
+  },
+  {
+   "mevzuat": "5429 turkiye istatistik kanunu",
+   "kaynak_dosya": "5429_turkiye_istatistik_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — İdarî verilere erişim\nKurum ve kuruluşlar, resmî istatistik üretiminde kullanılmak üzere kendi görev alanlarıyla ilgili topladıkları, işledikleri ve sakladıkları kayıt ve veri dosyalarını, her türlü harita ile uzaktan algılanmış veriyi belirlenen süre içinde ücret talep etmeksizin Başkanlığa (TÜİK) vermek veya kullanımına açmakla yükümlüdür. Bu yükümlülüğün ihlali, 54. madde uyarınca üst yöneticiler hakkında idarî para cezası gerektirir."
+  },
+  {
+   "mevzuat": "5429 turkiye istatistik kanunu",
+   "kaynak_dosya": "5429_turkiye_istatistik_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Gizli veriler\nGizli verilere yalnızca resmî istatistik üretiminde görev alanlar, görevleri için ihtiyaç duydukları ölçüde erişebilir. Toplanan gizli veriler idarî, adlî ve askerî hiçbir organ, makam, merci veya kişiye verilemez, istatistik amacı dışında kullanılamaz ve ispat aracı olamaz; bu yasak görevliler için görevden ayrılsalar da sürer. Gizli veriler ancak doğrudan veya dolaylı tanımlamaya yol açmayacak şekilde diğer bilgilerle birleştirilerek yayımlanabilir; istatistikî birimin yazılı onayı ile gizlilik kalkar."
+  },
+  {
+   "mevzuat": "5429 turkiye istatistik kanunu",
+   "kaynak_dosya": "5429_turkiye_istatistik_kanunu.txt",
+   "madde_no": 54,
+   "madde_tur": "madde",
+   "text": "Madde 54 — İdarî para cezaları\nProgram kapsamında istenen bilgileri geçerli mazereti olmadan belirlenen şekil ve sürede vermeyen veya eksik/hatalı verenler, bir kereye mahsus uyarılarak yedi gün içinde gidermeye davet edilir; uyarıya rağmen vermeyenlere fiilin işlendiği alana göre idarî para cezası uygulanır (hanehalkı/birey araştırmalarında, diğer istatistikî birimlerde ve sayımlarda farklı tutarlar — kanundaki YTL tutarları her yıl yeniden değerleme oranıyla güncellenir [DOĞRULA: güncel tutarlar için ilgili yıl tebliği]). 9. madde kapsamında istenen kayıt/verinin otuz gün içinde verilmemesi hâlinde ilgili kurumun üst yöneticisine ceza uygulanır; ceza, bilgi verme yükümlülüğünü ortadan kaldırmaz."
   },
   {
    "mevzuat": "5434 emekli sandigi kanunu",
@@ -7750,6 +7869,48 @@
    "madde_no": 29,
    "madde_tur": "madde",
    "text": "Madde 29 — Sorumluluk, başvuru hakkı ve zamanaşımı\nPTT hizmetlerine ilişkin talepte bulunma ve dava açma süresini düzenler; bu hak işlemin tesisi tarihinden itibaren bir yılın sonunda zamanaşımına uğrar. PTT, anlaşmazlık konusu olmayan posta hizmetine ait evrakı iki yıl saklamak zorundadır. Kaybolan, çalınan veya zarar gören gönderilere ilişkin başvuru ve sorumluluk bu çerçevede değerlendirilir. [DOĞRULA: tazminat üst sınırının kanunun bu maddesinde mi yoksa ikincil mevzuatta mı belirlendiği]"
+  },
+  {
+   "mevzuat": "6491 turk petrol kanunu",
+   "kaynak_dosya": "6491_turk_petrol_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Araştırma izni\nGenel Müdürlük, uygun bulduğu araştırma izni başvurusunu altmış gün içinde verir; talep edilen sahanın bir kısmında başkaca izin/ruhsat bulunması bu izni engellemez ancak araştırıcı başka bir hak sahibinin rızası olmadan onun süren saha çalışmalarına giremez. Araştırma izni sahibi, araştırma alanının hektarı başına bir defaya mahsus elli kuruş ücret ödemekle yükümlüdür ve bu tutar her yıl yeniden değerleme oranıyla güncellenir. Araştırma sonucu elde edilen bilgiler Genel Müdürlüğe verilir ve sekiz yıl süreyle gizli tutulur."
+  },
+  {
+   "mevzuat": "6491 turk petrol kanunu",
+   "kaynak_dosya": "6491_turk_petrol_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Arama ruhsatı\nArama ruhsatı; ruhsat alanı içinde arama yapmak, çevresinde araştırmada bulunmak, bulunan petrollü alanları geliştirip üretmek ve keşif başvurusunda bulunmak üzere verilir; karada/karasuları içinde 1/50.000 ölçekli pafta esasına, münhasır ekonomik bölgede bir derecelik alan esasına göre düzenlenir. Arama ruhsatının süresi karalarda beş, denizlerde sekiz yıldır; iş programını yerine getiren ve yüzde 2 teminat veren ruhsat sahibine karalarda iki, denizlerde üç yıla kadar (iki kez) uzatma verilebilir. Uzatmalar dâhil toplam süre karalarda dokuz, karasuları içi denizlerde on dört yılı geçemez; keşif yapılan alanlarda ticari değerlendirme için iki yıla kadar ilave süre verilebilir."
+  },
+  {
+   "mevzuat": "6491 turk petrol kanunu",
+   "kaynak_dosya": "6491_turk_petrol_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Başvuru ve ruhsatlandırma usulü\nPetrol hakkı başvurusunun değerlendirilmesinde başvurunun mevzuata uygunluğu, başvuranın mali yeterliliği ve taahhüt edilen iş ve yatırım programının kanunun amacını diğerlerine göre daha kısa sürede yerine getirme özelliği dikkate alınır; başvurular en geç altmış gün içinde sonuçlandırılır. Başvuru sahibi, ruhsat başvurusunda ve süre uzatım taleplerinde iş programı için gerekli yatırım tutarının yüzde 2'si (denizlerde yüzde 1) kadar teminat verir ve gerçekleşen kısma karşılık gelen teminat iade edilir. Teminatlar, ruhsat verilişi veya süre uzatımının kesinleşmesinden itibaren otuz gün içinde verilmezse ruhsat iptal edilir."
+  },
+  {
+   "mevzuat": "6491 turk petrol kanunu",
+   "kaynak_dosya": "6491_turk_petrol_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — İşletme ruhsatı\nArama faaliyeti kapsamında keşif yapılması hâlinde, üretim ve satış için işletme ruhsatı düzenlenir ve bu ruhsat arama ruhsatının verildiği tarihteki şartları içerir; alınması için yönetmeliğe uygun olarak Genel Müdürlüğe başvurulur. İşletme ruhsatı, iş ve mali yatırım programı dikkate alınarak yürürlüğe girdiği tarihten itibaren yirmi yıl için verilir ve üretim programının uygun görülmesi hâlinde onar yılı geçmemek üzere iki defa uzatılabilir. İşletme hakkı süresi sona eren sahalar Bakan onayıyla müzayedeye çıkarılabilir; ancak TPAO'nun talebi hâlinde saha müzayedeye çıkarılmaz."
+  },
+  {
+   "mevzuat": "6491 turk petrol kanunu",
+   "kaynak_dosya": "6491_turk_petrol_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Devlet hissesi\nBir arayıcı veya işletmeci, ürettiği petrolün sekizde birini Devlet hissesi olarak ödemekle yükümlüdür; petrol işlemlerinde kullanılan petrolden Devlet hissesi alınmaz. Devlet hissesi, ham petrolde yerli ham petrolün piyasa fiyatı, doğal gazda satış fiyatı üzerinden hesaplanır ve üretimin yapıldığı ayı takip eden ayın yirminci günü akşamına kadar beyan edilerek tahakkuk ettirilir, ay sonuna kadar ilgili vergi dairesine ödenir. Beyan edilmemesi veya eksik beyan hâlinde Devlet hissesi yüzde 100 fazlasıyla (kendiliğinden iki ay içinde beyanda yüzde 50 fazlasıyla) tarh edilir ve süresinde ödenmeyen tutarlar 6183 sayılı Kanuna göre takip ve tahsil edilir."
+  },
+  {
+   "mevzuat": "6491 turk petrol kanunu",
+   "kaynak_dosya": "6491_turk_petrol_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Terk, sahaya ilave, tesislerin kaldırılması ve devredilmesi\nPetrol hakkı sahibi; araştırma iznini ve arama ruhsatını en az bir ay, işletme ruhsatını en az üç ay önceden Genel Müdürlüğe başvurarak kısmen veya tamamen terk edebilir ve ruhsattan doğan haklar terk edilen kısım için başvuru tarihinde sona erer. Genel Müdürlük, başvuru hâlinde arama ve işletme ruhsatlarına ilaveler yapabilir; bu durumda yeni bir iş programı istenir. Üretimi devam eden ancak kullanma hakkı sona eren işletme ruhsatının yeni işletmeciye devri hâlinde yüzey tesislerinin devri, kullanma hakkının sona ermesinden üç ay önce devreden ile devralan arasında yapılan anlaşmayla belirlenir; anlaşma sağlanamazsa tesisler ruhsat süresinin bitiminde Bakanlığa bedelsiz devredilir."
   },
   {
    "mevzuat": "6502 tuketicinin korunmasi",
@@ -10272,5 +10433,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 226
+ "mevzuat_sayisi": 230
 }

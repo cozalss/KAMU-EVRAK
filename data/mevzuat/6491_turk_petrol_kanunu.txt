@@ -1,0 +1,26 @@
+Türk Petrol Kanunu
+Kanun No. 6491 — Kabul Tarihi: 30/5/2013 — Resmî Gazete: 11/6/2013, Sayı: 28674 (Düstur: Tertip 5, Cilt 53). Petrol arama ve üretim faaliyetlerini düzenleyen kanun; araştırma izni, arama ruhsatı, işletme ruhsatı, devlet hissesi ve petrol haklarının devrini kapsar. Sonradan 6719, 700 sayılı KHK ve 7346 sayılı Kanunla değişiklikler yapılmıştır.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6491.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Araştırma izni
+Genel Müdürlük, uygun bulduğu araştırma izni başvurusunu altmış gün içinde verir; talep edilen sahanın bir kısmında başkaca izin/ruhsat bulunması bu izni engellemez ancak araştırıcı başka bir hak sahibinin rızası olmadan onun süren saha çalışmalarına giremez. Araştırma izni sahibi, araştırma alanının hektarı başına bir defaya mahsus elli kuruş ücret ödemekle yükümlüdür ve bu tutar her yıl yeniden değerleme oranıyla güncellenir. Araştırma sonucu elde edilen bilgiler Genel Müdürlüğe verilir ve sekiz yıl süreyle gizli tutulur.
+
+Madde 6 — Arama ruhsatı
+Arama ruhsatı; ruhsat alanı içinde arama yapmak, çevresinde araştırmada bulunmak, bulunan petrollü alanları geliştirip üretmek ve keşif başvurusunda bulunmak üzere verilir; karada/karasuları içinde 1/50.000 ölçekli pafta esasına, münhasır ekonomik bölgede bir derecelik alan esasına göre düzenlenir. Arama ruhsatının süresi karalarda beş, denizlerde sekiz yıldır; iş programını yerine getiren ve yüzde 2 teminat veren ruhsat sahibine karalarda iki, denizlerde üç yıla kadar (iki kez) uzatma verilebilir. Uzatmalar dâhil toplam süre karalarda dokuz, karasuları içi denizlerde on dört yılı geçemez; keşif yapılan alanlarda ticari değerlendirme için iki yıla kadar ilave süre verilebilir.
+
+Madde 7 — Başvuru ve ruhsatlandırma usulü
+Petrol hakkı başvurusunun değerlendirilmesinde başvurunun mevzuata uygunluğu, başvuranın mali yeterliliği ve taahhüt edilen iş ve yatırım programının kanunun amacını diğerlerine göre daha kısa sürede yerine getirme özelliği dikkate alınır; başvurular en geç altmış gün içinde sonuçlandırılır. Başvuru sahibi, ruhsat başvurusunda ve süre uzatım taleplerinde iş programı için gerekli yatırım tutarının yüzde 2'si (denizlerde yüzde 1) kadar teminat verir ve gerçekleşen kısma karşılık gelen teminat iade edilir. Teminatlar, ruhsat verilişi veya süre uzatımının kesinleşmesinden itibaren otuz gün içinde verilmezse ruhsat iptal edilir.
+
+Madde 8 — İşletme ruhsatı
+Arama faaliyeti kapsamında keşif yapılması hâlinde, üretim ve satış için işletme ruhsatı düzenlenir ve bu ruhsat arama ruhsatının verildiği tarihteki şartları içerir; alınması için yönetmeliğe uygun olarak Genel Müdürlüğe başvurulur. İşletme ruhsatı, iş ve mali yatırım programı dikkate alınarak yürürlüğe girdiği tarihten itibaren yirmi yıl için verilir ve üretim programının uygun görülmesi hâlinde onar yılı geçmemek üzere iki defa uzatılabilir. İşletme hakkı süresi sona eren sahalar Bakan onayıyla müzayedeye çıkarılabilir; ancak TPAO'nun talebi hâlinde saha müzayedeye çıkarılmaz.
+
+Madde 9 — Devlet hissesi
+Bir arayıcı veya işletmeci, ürettiği petrolün sekizde birini Devlet hissesi olarak ödemekle yükümlüdür; petrol işlemlerinde kullanılan petrolden Devlet hissesi alınmaz. Devlet hissesi, ham petrolde yerli ham petrolün piyasa fiyatı, doğal gazda satış fiyatı üzerinden hesaplanır ve üretimin yapıldığı ayı takip eden ayın yirminci günü akşamına kadar beyan edilerek tahakkuk ettirilir, ay sonuna kadar ilgili vergi dairesine ödenir. Beyan edilmemesi veya eksik beyan hâlinde Devlet hissesi yüzde 100 fazlasıyla (kendiliğinden iki ay içinde beyanda yüzde 50 fazlasıyla) tarh edilir ve süresinde ödenmeyen tutarlar 6183 sayılı Kanuna göre takip ve tahsil edilir.
+
+Madde 11 — Terk, sahaya ilave, tesislerin kaldırılması ve devredilmesi
+Petrol hakkı sahibi; araştırma iznini ve arama ruhsatını en az bir ay, işletme ruhsatını en az üç ay önceden Genel Müdürlüğe başvurarak kısmen veya tamamen terk edebilir ve ruhsattan doğan haklar terk edilen kısım için başvuru tarihinde sona erer. Genel Müdürlük, başvuru hâlinde arama ve işletme ruhsatlarına ilaveler yapabilir; bu durumda yeni bir iş programı istenir. Üretimi devam eden ancak kullanma hakkı sona eren işletme ruhsatının yeni işletmeciye devri hâlinde yüzey tesislerinin devri, kullanma hakkının sona ermesinden üç ay önce devreden ile devralan arasında yapılan anlaşmayla belirlenir; anlaşma sağlanamazsa tesisler ruhsat süresinin bitiminde Bakanlığa bedelsiz devredilir.

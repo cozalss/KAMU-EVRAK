@@ -33,6 +33,11 @@ dependencies = [
     # Resmî yazı taslak render (jinja2 + PDF/DOCX)
     "jinja2>=3.1.4",
     "reportlab>=4.2.0",
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.31.0",
+    "psycopg[binary]>=3.3.4",
+    "alembic>=1.18.5",
+    "pgvector>=0.4.2",
 ]
 
 [project.optional-dependencies]

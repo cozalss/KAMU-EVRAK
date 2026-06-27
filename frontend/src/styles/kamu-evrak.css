@@ -203,6 +203,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .ke-samples-row { display: grid; gap: .55rem; grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); }
 .ke-sample {
   display: flex; align-items: center; gap: .65rem; text-align: left;
+  min-width: 0;  /* grid item içerik (nowrap desc) genişliğine zorlanmasın → ellipsis çalışır, mobil overflow yok */
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
   padding: .6rem .7rem; cursor: pointer;
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-fast);
@@ -466,6 +467,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
   .rc-dogrulama { grid-column: span 3; }
   .rc-arsiv { grid-column: span 3; }
   .rc-disclaimer { grid-column: span 6; }
+  /* Sonradan eklenen vitrin/yenilikçilik kartları — bento span'leri (span-1 sıkışmasını önler). */
+  .rc-decompose { grid-column: span 3; }
+  .rc-risk { grid-column: span 3; }
+  .rc-kanit { grid-column: span 3; }
+  .rc-sla { grid-column: span 3; }
+  .rc-denetim { grid-column: span 6; }
 }
 
 .rc-sr {

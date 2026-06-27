@@ -9,12 +9,13 @@ import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.deps import CurrentUser
-from db.models import Birim
-from db.repositories import dogrula_denetim
+from auth.deps import CurrentUser, require_role
+from db.models import Birim, Kullanici
+from db.repositories import KararHatasi, dogrula_denetim, onayla_ve_gonder
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
     gelen_evrak_listele,
@@ -98,6 +99,26 @@ async def islem(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> di
 async def denetim_dogrula(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> dict:
     """Denetim izinin bütünlüğünü DB'den bağımsız yeniden hesapla (tamper-evident)."""
     return await dogrula_denetim(session, islem_id=islem_id)
+
+
+class OnaylaRequest(BaseModel):
+    secim: str = Field("onayla", pattern="^(onayla|duzenle|reddet)$")
+    gerekce: str = Field("", max_length=2000)
+
+
+@router.post("/islem/{islem_id}/onayla")
+async def onayla(
+    islem_id: uuid.UUID, req: OnaylaRequest, session: Session,
+    kullanici: Annotated[Kullanici, Depends(require_role("yetkili"))],
+) -> dict:
+    """HITL kararı (yetkili+) → onay + giden_evrak. Reddedilirse yalnız onay yazılır."""
+    try:
+        return await onayla_ve_gonder(
+            session, islem_id=islem_id, kullanici_id=kullanici.id,
+            secim=req.secim, gerekce=req.gerekce)
+    except KararHatasi as e:
+        kod = status.HTTP_404_NOT_FOUND if e.kod == "taslak_yok" else status.HTTP_409_CONFLICT
+        raise HTTPException(kod, e.mesaj) from e
 
 
 __all__ = ("router",)

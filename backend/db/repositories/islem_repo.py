@@ -26,6 +26,7 @@ from db.models import (
     MevzuatOneri,
     RiskDegerlendirme,
     SlaTakip,
+    Taslak,
     YaziTuru,
 )
 
@@ -135,6 +136,26 @@ def _risk(islem_id, meta: dict) -> RiskDegerlendirme | None:
                              gerekceler=list(meta.get("gerekceler", [])))
 
 
+def _konu(response) -> str:
+    """Taslak konusu — bilgi_unsurlari.konu (maskeli) veya ilk alt-talep özeti."""
+    konu = (response.bilgi_unsurlari or {}).get("konu")
+    if isinstance(konu, dict):
+        konu = konu.get("deger") or konu.get("value") or ""
+    if not konu and response.alt_talepler:
+        konu = response.alt_talepler[0].ozet
+    return str(konu or "")[:500]
+
+
+def _taslak(islem_id, response, yazi_kods) -> Taslak | None:
+    """yazi_taslak_md varsa + yazı türü geçerliyse taslak satırı (1 islem → 1 taslak)."""
+    if not response.yazi_taslak_md or response.yazi_turu not in yazi_kods:
+        return None
+    return Taslak(
+        islem_id=islem_id, yazi_turu_kod=response.yazi_turu, konu=_konu(response),
+        metin_md=response.yazi_taslak_md, format_uyumlu=response.format_uyumlu,
+    )
+
+
 def _sla(islem_id, meta: dict) -> SlaTakip | None:
     durum_raw = (meta or {}).get("durum")
     if not durum_raw:
@@ -187,6 +208,8 @@ async def persist_islem(
         session.add(r)
     if (sl := _sla(islem.id, response.sla_metadata)) is not None:
         session.add(sl)
+    if (ts := _taslak(islem.id, response, yazi_kods)) is not None:
+        session.add(ts)
 
     await session.commit()
     await session.refresh(islem)

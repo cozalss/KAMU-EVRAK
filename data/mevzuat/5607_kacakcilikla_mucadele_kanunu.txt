@@ -1,0 +1,32 @@
+Kaçakçılıkla Mücadele Kanunu
+Kanun No 5607, Kabul 21.03.2007, RG 31.03.2007/26479 — YÜRÜRLÜKTE (10.07.2003 tarihli 4926 sayılı önceki Kanunu yürürlükten kaldırmıştır; mevzuat.gov.tr konsolide metin ve resmigazete.gov.tr 20070331-1 metni üzerinden 1/1/2026 itibarıyla doğrulanmıştır).
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5607&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Bu Kanunun amacı, kaçakçılık fiilleri ile yaptırımlarını ve kaçakçılığı önleme, izleme ve araştırmaya ilişkin usûl ve esasları belirlemektir. Kanun hem ithalde/ihraçta gümrük işlemlerine tabi tutulmadan veya aldatıcı işlemlerle vergisi ödenmeden Türkiye'ye sokulan eşyayı, hem de ithali/ihracı yasak eşyayı kapsar; kaçakçılık suçlarına ilişkin davalar bu Kanun hükümlerine göre yürütülür.
+
+Madde 2 — Tanımlar
+Kanunda geçen "gümrük vergileri" (4458 sayılı Gümrük Kanunu uyarınca alınan vergi ve mali yükler), "gümrüklenmiş değer" (eşyanın CIF kıymeti ile gümrük vergilerinin toplamı; ithali yasak eşyada borsa/rayiç değer üzerinden hesaplanır) ve akaryakıt, tütün, alkol gibi özel ürün kavramları tanımlanır. Gümrüklenmiş değer, adlî para cezalarının ve müsadere kararlarının hesaplanmasında esas alınan temel ölçüttür.
+
+Madde 3 — Kaçakçılık suçları
+Eşyayı gümrük işlemlerine tabi tutmaksızın ülkeye sokan kişi bir yıldan beş yıla kadar hapis ve onbin güne kadar adlî para cezasıyla cezalandırılır; eşyanın değeri ve niteliğine göre ceza ağırlaşır. Aldatıcı işlem ve belgelerle gümrük vergilerini kısmen veya tamamen ödemeyen ile transit/aktarma rejimini kötüye kullananlara ayrı cezalar öngörülür; ithali yasak eşyayı (ör. uyuşturucu hariç kaçak silah/eşya) sokmak iki yıldan altı yıla kadar hapsi gerektirir. Akaryakıt, tütün, tütün mamulleri, etil alkol ve alkollü içkiler gibi özel ürünlerin kaçakçılığında cezalar artırılır. [DOĞRULA: fıkra bazında alt/üst hapis sınırları ve gün adlî para cezası miktarları 7242/2020 ve sonraki değişikliklerle güncellenebildiğinden işlem tarihindeki konsolide metinden teyit edilmelidir.]
+
+Madde 5 — Etkin pişmanlık
+Kaçakçılık suçunu işleyen kişi, resmî makamlar tarafından haber alınmadan önce fiili ve diğer failleri merciine haber verirse cezalandırılmaz. Soruşturma başladıktan sonra ancak kovuşturma evresine geçilmeden önce etkin pişmanlık gösterilmesi veya kaçak eşyanın gümrüklenmiş değerinin iki katı tutarındaki paranın ödenmesi hallerinde ceza belirli oranlarda indirilir. Bu hüküm, kaçakçılıkta zararın giderilmesini ve gönüllü iş birliğini teşvik eder. [DOĞRULA: indirim oranları (ör. yarı/üçte iki) ve ödeme şartları güncel metinden teyit edilmelidir.]
+
+Madde 9 — Arama ve el koyma
+Kaçak eşya, silah, mühimmat, patlayıcı ve uyuşturucu madde bulunduğundan şüphe edilen kap, ambalaj, taşıma aracı ve kişiler üzerinde yapılacak arama ve el koymalar 5271 sayılı Ceza Muhakemesi Kanunu hükümlerine göre yerine getirilir. Gümrük salon ve kapılarında şüpheli kişiler gümrük görevlilerince aranabilir; gümrük bölgesine kanunî olmayan yerlerden giren kişi ve taşıma araçları durdurularak eşya ve üzerleri aranır. Bu madde, kaçak eşyaya el konulmasının ve buna ilişkin tutanağın hukukî dayanağıdır.
+
+Madde 11 — El konulan eşyanın muhafazası
+Kaçak şüphesiyle el konulan eşya ile alıkonulan her türlü taşıt ve araç; miktarı, cinsi, markası, tipi, modeli, seri numarası gibi ayırıcı özelliklerini gösteren bir tutanakla gümrük idaresine teslim edilir. Gümrük idaresi muhafaza için depo/ambar temin eder; muhafaza, taşıma ve depolama masrafları idarece karşılanır. Bandrolsüz tütün mamulü ve sahte/kaçak alkollü içki gibi muhafazası sakıncalı eşyada numune alınarak kalanın imhası mümkündür. Düzenlenen el koyma/teslim tutanağı, kaçakçılık evrakının çekirdek belgesidir.
+
+Madde 16 — El konulan eşyanın tasfiyesi
+Kamu davası açıldıktan sonra belirli süre içinde kovuşturma sonuçlanmazsa veya muhafazası ekonomik/fiilî güçlük doğuruyorsa el konulan kaçak eşya, müsadere kararı beklenmeksizin tasfiye edilebilir; satış bedeli emanet hesabına alınır ve dava sonucuna göre işlem yapılır. Çabuk bozulabilir, değerini yitirebilir veya muhafazası tehlikeli eşyada daha kısa sürelerde tasfiyeye karar verilir. Tasfiye işlemleri Tasfiye Yönetmeliği hükümlerine göre yürütülür. [DOĞRULA: tasfiye süreleri (ör. bir yıl / üç gün / onbeş gün) güncel metinden teyit edilmelidir.]
+
+Madde 23 — İkramiye
+Kaçak eşyanın yakalanmasında muhbirlere ve el koyma işlemini yapan kamu görevlilerine, kaçak eşyanın gümrüklenmiş değeri veya niteliğine göre hesaplanan ikramiye ödenir. İkramiyenin bir kısmı muhbire, bir kısmı el koyanlara dağıtılır; kaçakçılığı önleme/yakalama görevi bulunan personel kural olarak muhbir ikramiyesi alamaz, yalnız el koyma ikramiyesine hak kazanır. Bu hüküm, kaçakçılıkla mücadelede ihbar ve yakalamayı teşvik eder. [DOĞRULA: dağıtım oranları ve ikramiye hesabı esasları güncel metinden teyit edilmelidir.]

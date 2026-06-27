@@ -1,0 +1,53 @@
+Veteriner Hizmetleri, Bitki Sağlığı, Gıda ve Yem Kanunu — Hayvan Islahı / Zootekni Hükümleri
+Kanun No 5996, Kabul 11.06.2010, RG 13.06.2010/27610 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5996.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+NOT (korpus gerekçesi): Bu parti için tematik olarak istenen "hayvan ıslahı" alanının yürürlükteki
+dayanağı 4631 sayılı Hayvan Islahı Kanunu DEĞİLDİR; 4631, 5996 sayılı Kanunun yürürlüğe
+girmesiyle (RG 13.06.2010) YÜRÜRLÜKTEN KALDIRILMIŞTIR (MÜLGA). Hayvan ıslahı, soy kütüğü,
+damızlık belgesi ve ıslah amaçlı yetiştirici birliği hükümleri 5996 sayılı Kanunun zootekni
+maddesine (m.10) taşınmıştır. Korpustaki ana 5996 dosyası gıda/yem/denetim maddelerini
+kapsadığından bu dosya, çakışmayı önlemek için yalnız hayvan ıslahı/zootekni maddelerine ayrılmıştır.
+
+Madde 4 — Tanımlar (hayvan ıslahı ile ilgili kavramlar)
+Kanunda geçen "soy kütüğü", "ön soy kütüğü", "damızlık", "ıslah amaçlı yetiştirici birliği",
+"zootekni" gibi kavramları tanımlar. Soy kütüğü, yetiştirme ve verim kayıtları tutulan işletmelerde
+ırk özelliklerini taşıyan hayvanlar için oluşturulan kayıt sistemini; ön soy kütüğü ise yalnız
+yetiştirme kayıtları tutulan işletmeler için oluşturulan kayıt sistemini ifade eder. Damızlık belgesi
+ve soy kütüğü kaydı başvurularında esas alınan kavramların dayanağıdır. [DOĞRULA: ilgili tanımların yer aldığı fıkra numaraları yürürlükteki metinden teyit edilmeli]
+
+Madde 7 — Hayvanların tanımlanması ve kayıt altına alınması
+Hayvan sahiplerinin; hayvanlarını tanımlatma (kimliklendirme/küpeleme), Bakanlıkça oluşturulan kayıt
+sistemine kaydettirme, hayvan hareketlerinin (giriş-çıkış) bildirimini yapma ve kayıt belgelerini
+muhafaza etme yükümlülüklerini düzenler. Kimliklendirme ve hayvan kayıt sistemi (işletme tescili,
+küpe/pasaport) başvuru ve bildirim yazışmalarının dayanağıdır. [DOĞRULA: kimliklendirme/kayıt yükümlülüğünün madde numarası (7) yürürlükteki metinden teyit edilmeli]
+
+Madde 10 — Zootekni (hayvan ıslahı, soy kütüğü, damızlık belgesi)
+Bakanlığın; hayvan ıslahı, hayvan gen kaynaklarının korunması ve geliştirilmesi, damızlık amaçlı
+hayvanların yetiştirilmesi ve kayıt altına alınması, ön soy kütüğü ve soy kütüklerinin oluşturulması
+ile belgelendirilmesi konularında düzenleme yapmaya yetkili olduğunu hükme bağlar. Ferdi, koloni veya
+sürü bazında hayvan satışında, yetiştiricinin birliğe talebi üzerine içeriği ve şekli Bakanlıkça
+belirlenen damızlık belgesi verilir. Sperma, ovum ve embriyo gibi üreme ürünlerini üreten, depolayan
+veya dağıtanların Bakanlıktan izin alması zorunludur. Hayvan ıslahı, damızlık belgesi, soy kütüğü
+kaydı ve suni tohumlama/üreme ürünü izni başvurularının temel dayanağıdır. [DOĞRULA: damızlık belgesi ve üreme ürünleri izninin fıkra numaraları yürürlükteki metinden teyit edilmeli]
+
+Madde 10 — Islah amaçlı hayvan yetiştirici birliklerinin kurulması ve görevleri
+Hayvan gen kaynaklarının korunması, araştırılması, ıslahı, geliştirilmesi, yaygınlaştırılması ve
+pazarlanması amacıyla; gerçek veya tüzel kişi yetiştiriciler tarafından tüzel kişiliği haiz ve özel
+hukuk hükümlerine tabi ıslah amaçlı yetiştirici birliği kurulabileceğini düzenler. Bu birlikler,
+Bakanlıkça merkez birliğine verilen yetkiler doğrultusunda ve Bakanlığın kontrol/denetiminde ön soy
+kütüğü, soy kütüğü, döl kontrolü, suni tohumlama ve/veya ıslah programı faaliyetlerini yürütür.
+Yetiştirici birliği kuruluş izni ve birlik yetkilendirme yazışmalarının dayanağıdır. [DOĞRULA: birlik kuruluşu ve yetkilendirilmesine ilişkin hükmün m.10 içindeki fıkra/bent düzeni yürürlükteki metinden teyit edilmeli]
+
+Madde 36 — Hayvan ıslahı, tanımlama ve hayvan hareketlerine ilişkin yaptırımlar
+Hayvan sağlığı, hayvan hareketleri, hayvanların tanımlanması/kaydı ile zootekni (hayvan ıslahı, soy
+kütüğü, damızlık, üreme ürünleri izni) kurallarına aykırılık hâlinde uygulanacak idari para cezalarını
+ve diğer idari yaptırımları, fiilin türüne göre kademeli olarak düzenler. Hayvanını tanımlatmayan/
+kaydettirmeyen sahipler, izinsiz üreme ürünü üreten/dağıtan kişiler ve damızlık/ıslah kurallarını
+ihlal edenler hakkında idari para cezası uygulanır. Zootekni ve kimliklendirme ihlallerine ilişkin
+idari yaptırım kararı yazışmalarının dayanağıdır. [DOĞRULA: hayvan ıslahı/tanımlama ihlallerinin hangi bende denk geldiği ve güncel ceza tutarları (her yıl yeniden değerleme ile artar) m.36'nın yürürlükteki metninden teyit edilmeli]

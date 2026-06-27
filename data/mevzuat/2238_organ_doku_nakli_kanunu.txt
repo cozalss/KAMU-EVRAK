@@ -1,0 +1,29 @@
+Organ ve Doku Alınması, Saklanması, Aşılanması ve Nakli Hakkında Kanun
+Kanun No 2238, Kabul 29.05.1979, RG 03.06.1979/16655 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.2238 konsolide metin esas alınmıştır; son değişiklik 21.07.2025-7557 sK)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2238.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Bedel/çıkar karşılığı organ-doku alımı ve satışı yasağı
+Bir bedel veya başkaca çıkar karşılığında organ ve doku alınması ve satılması yasaktır. Organ bağışı yalnız insancıl amaçla ve karşılıksız yapılabilir; ücret veya menfaat karşılığı yapılan bağış beyanları hukuka aykırıdır ve hekim böyle bir bağışı reddetmek zorundadır (md. 7/e). Hukuka aykırı organ-doku alım-satımı ve buna aracılık, md. 15 yollamasıyla 5237 sK md. 91 (organ veya doku ticareti suçu) kapsamında cezalandırılır.
+
+Madde 5 — Yaşayan vericide yaş ve ehliyet (18 yaş + mümeyyiz)
+Onsekiz yaşını doldurmamış ve mümeyyiz (ayırt etme gücüne sahip) olmayan kişilerden organ ve doku alınması yasaktır. Yaşayan kişiden organ/doku bağışı için verici hem reşit hem de mümeyyiz olmalıdır; bu şart sağlanmadan yapılan alım geçersizdir.
+
+Madde 6 — Yaşayan vericinin yazılı muvafakati (iki tanık + hekim onayı)
+Reşit ve mümeyyiz bir kişiden organ/doku alınabilmesi için vericinin en az iki tanık huzurunda; açık, bilinçli ve baskıdan uzak biçimde önceden verilmiş yazılı-imzalı beyanı ya da en az iki tanık önünde sözlü beyan edip imzaladığı tutanağın bir hekim tarafından onaylanması zorunludur. Bağış izni (muvafakat) bu şekil şartlarına uymadıkça geçerli sayılmaz.
+
+Madde 7 — Hekimin aydınlatma ve araştırma yükümlülüğü
+Organ/doku alacak hekim; vericiye işlemin tıbbi, psikolojik, ailevi ve sosyal tehlike ile sonuçlarını ayrıntılı anlatmak, alıcıya sağlanacak yararı açıklamak, kendiliğinden karar veremeyecek durumdaki kişilerin bağışını reddetmek, vericinin evli olması halinde eşinin haberdar olup olmadığını araştırıp tutanağa bağlamak ve bedel/çıkar karşılığı ya da insancıl amaca aykırı bağışları reddetmek zorundadır. Alıcı ile verici isimleri (yakınlık halleri ayrık) gizli tutulur.
+
+Madde 11 — Tıbbi ölümün (beyin ölümü) saptanması
+Bu Kanunun uygulanmasında tıbbi ölümün gerçekleştiğine; biri nörolog veya nöroşirürjiyen, biri de anesteziyoloji-reanimasyon veya yoğun bakım uzmanı olmak üzere iki hekim tarafından, kanıta dayalı tıp kurallarına uygun ve oy birliği ile karar verilir. (2.1.2014-6514 sK ile değişik; eski dört hekimlik kurul iki uzmana indirilmiştir.)
+
+Madde 14 — Ölüden organ/doku alma koşulu (sağlığındaki beyan / yakın muvafakati)
+Bir kimse sağlığında vücudunu ya da organ-dokularını tedavi, teşhis ve bilimsel amaçla bıraktığını e-Devlet Kapısı veya Sağlık Bakanlığı bilişim sistemi üzerinden güvenli kimlik doğrulama ile beyan etmiş, resmî/yazılı vasiyetle belirtmiş veya iki tanık huzurunda açıklamışsa ölüden organ-doku alınır; bağışçının iradesi yakınlarının görüşüne aykırı olsa bile esas alınır. Böyle bir beyan yoksa sırasıyla ölüm anında yanında bulunan eşi, reşit çocukları, ana-babası, kardeşleri veya herhangi bir yakınının muvafakati ile alınabilir; ölü sağlığında karşı olduğunu belirtmişse organ alınamaz. (21.07.2025-7557 sK ile e-Devlet beyanı, merkezî kayıt sistemi ve bağışçı yakınına nakil önceliği eklenmiştir.)
+
+Madde 15 — Cezai ve idari müeyyideler
+Hukuka aykırı olarak organ-doku alan, satan, satın alan, satışına aracılık eden, saklayan, nakleden, aşılayan veya bu amaçla ilan/reklam veren-yayınlayan kişiler hakkında 5237 sK md. 91 (organ veya doku ticareti) hükümleri uygulanır. Kanuna aykırı embriyo/üreme hücresi işlemleri için üç yıldan beş yıla kadar hapis ve bin-iki bin gün adli para cezası öngörülür. Bakanlık izni olmadan organ nakli veya üremeye yardımcı tedavi merkezi açılması yasaktır; kurallara aykırı sağlık kuruluşlarına faaliyet durdurma veya izin iptali uygulanır.

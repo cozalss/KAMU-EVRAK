@@ -1,0 +1,29 @@
+Banka Kartları ve Kredi Kartları Kanunu
+Kabul 23/2/2006, RG 1/3/2006 sayı 26095 — YÜRÜRLÜKTE (Kanun No 5464). Burada yalnızca kart çıkarma/talep, kart hamili ile yapılan sözleşme, harcama belgesi ve üye işyeri yükümlülükleri, kayıp-çalıntı bildirimi ve sorumluluk, hesap özeti/bilgilendirme, faiz-ücretler ile bilgilerin gizliliği konularındaki kart başvuru, itiraz ve şikâyet evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5464.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 8 — Kart çıkarılması ve bilgilendirme yükümlülüğü
+Kart çıkaran kuruluşlar, talepte bulunmayan veya sözleşme imzalamayan kişiler adına hiçbir şekil ve surette kart veremez; kart hamilini yeterince bilgilendirmek ve talep edilmesi hâlinde işlemlere ilişkin kayıtları otuz günü (yurt dışı işlemlerde altmış günü) geçmeyecek şekilde sağlamakla yükümlüdür. Asgari ödeme tutarının üç ay üst üste ödenmemesi hâlinde ilgili kredi kartı kullanıma kapatılır. Bu hüküm, kart talebi/başvurusu ve bilgilendirme talebi evrakının dayanağıdır.
+
+Madde 12 — Kartın haksız kullanımı ve sigortalanması
+Kart hamili, kartın kaybolması veya çalınması hâlinde yaptığı bildirimden önceki yirmi dört saat içinde gerçekleşen hukuka aykırı kullanımdan sınırlı bir tutarla (sözleşmede belirlenebilecek azami sorumluluk tutarıyla) sorumlu tutulur; hamil isterse bu sorumluluğa karşı sigorta yaptırabilir. Bildirimden sonraki haksız kullanımlardan hamil sorumlu olmaz. Bu hüküm, haksız kullanım itirazı ve sorumluluk sınırlaması talebine ilişkin evrakın dayanağıdır. [DOĞRULA: bildirim öncesi 24 saatlik sorumluluk için güncel azami tutar (eski metinde 150 YTL/250 TL) yeniden değerleme ve mevzuat değişiklikleriyle teyit edilmeli]
+
+Madde 16 — Bildirim zorunluluğu
+Kart hamili, kartın kaybolması, çalınması veya iradesi dışında gerçekleşen herhangi bir işlemi öğrendiğinde durumu derhâl kartı çıkaran kuruluşa bildirmekle yükümlüdür; kuruluş bu bildirimleri yedi gün yirmi dört saat esasına göre kabul edecek bir sistem kurmak zorundadır. Bildirim anı, hamilin sorumluluğunun sınırını belirlemede esas alınır. Bu hüküm, kayıp/çalıntı bildirim evrakı ve bildirim tarihinin ispatına ilişkin başvurunun dayanağıdır.
+
+Madde 19 — Harcama ve alacak belgesi
+Üye işyerleri, mal veya hizmet bedeli karşılığında, kartı kullanan kişiye elektronik ya da mekanik cihazlarla harcama belgesi veya nakit ödeme belgesi düzenlemek ve bunların asıllarını saklamakla yükümlüdür; belgenin bir nüshası kart hamiline verilir. Belge düzenlenmeden yapılan işlemlerde ve sistemin güvenli işletilmemesinden doğan zararlardan üye işyeri sorumlu olur. Bu hüküm, harcama belgesi/slip ibrazı, işyeri itirazı ve harcama itirazı evrakının dayanağıdır.
+
+Madde 23 — Bilgilerin saklanması
+Üye işyerleri ile kart çıkaran kuruluşlar, kart ve kart hamiline ilişkin bilgileri, kanunen yetkili kişi ve mercîler dışında, kart hamilinin yazılı rızası olmadan başkasına açıklayamaz, saklayamaz ve kopyalayamaz; kart çıkaran kuruluşlar kişisel bilgileri gizli tutmak ve kendi hizmetlerinin pazarlanması dışındaki amaçlarla kullanmamakla yükümlüdür. Bu yükümlülüğün ihlali sorumluluk doğurur. Bu hüküm, kart bilgisi/kişisel veri gizliliği ihlali şikâyet evrakının dayanağıdır.
+
+Madde 24 — Sözleşme şartları
+Kart çıkaran kuruluş ile kart hamili arasındaki sözleşme, en az on iki punto ve koyu siyah harflerle hazırlanan yazılı şekilde yapılır ve bir örneği kart hamiline verilir; sözleşmede yer almayan faiz, komisyon veya masraf adı altında hiçbir ödeme talep edilemez. Dönem borcunun ödenmesi gereken asgari tutarı, dönem borcunun belirli bir oranından az olamaz. Bu hüküm, kart sözleşmesi/sözleşme örneği talebi ve haksız ücret-faiz itirazı evrakının dayanağıdır. [DOĞRULA: asgari ödeme tutarının dönem borcuna oranına (yüzde) ilişkin güncel oran BDDK düzenlemeleriyle teyit edilmeli]
+
+Madde 26 — Faiz ve diğer ücretler
+Kredi kartı faizi, hesap kesim tarihinden önceki bir tarih esas alınarak hesaplanamaz; faiz kalan bakiye üzerinden işletilir ve bileşik faiz uygulanmaz. Türkiye Cumhuriyet Merkez Bankası, azami akdi faiz ve azami gecikme faizi oranlarını tespit etmeye ve bunları kuruluşlara bildirmeye yetkilidir. Bu hüküm, faiz hesabına ve azami orana aykırılık itirazı evrakının dayanağıdır. [DOĞRULA: azami akdi/gecikme faiz oranını belirleme yetkisinin güncel hâli ve TCMB tarafından ilan edilen yürürlükteki oranlar teyit edilmeli]

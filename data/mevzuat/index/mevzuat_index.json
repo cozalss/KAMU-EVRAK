@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1155,
+ "chunk_sayisi": 1238,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -815,6 +815,55 @@
    "text": "Madde 253 — Defter ve belgeleri muhafaza mecburiyeti\nDefter tutmak zorunda olanlar, tuttuklari defterleri ve ucuncu kisimdaki vesikalari (fatura, makbuz vb.) ilgili bulunduklari yili takip eden takvim yilindan baslayarak bes yil sureyle muhafaza etmek zorundadir. Mali evrakin arsivlenme/saklanma suresinin yasal dayanagidir."
   },
   {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Bedel/çıkar karşılığı organ-doku alımı ve satışı yasağı\nBir bedel veya başkaca çıkar karşılığında organ ve doku alınması ve satılması yasaktır. Organ bağışı yalnız insancıl amaçla ve karşılıksız yapılabilir; ücret veya menfaat karşılığı yapılan bağış beyanları hukuka aykırıdır ve hekim böyle bir bağışı reddetmek zorundadır (md. 7/e). Hukuka aykırı organ-doku alım-satımı ve buna aracılık, md. 15 yollamasıyla 5237 sK md. 91 (organ veya doku ticareti suçu) kapsamında cezalandırılır."
+  },
+  {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Yaşayan vericide yaş ve ehliyet (18 yaş + mümeyyiz)\nOnsekiz yaşını doldurmamış ve mümeyyiz (ayırt etme gücüne sahip) olmayan kişilerden organ ve doku alınması yasaktır. Yaşayan kişiden organ/doku bağışı için verici hem reşit hem de mümeyyiz olmalıdır; bu şart sağlanmadan yapılan alım geçersizdir."
+  },
+  {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Yaşayan vericinin yazılı muvafakati (iki tanık + hekim onayı)\nReşit ve mümeyyiz bir kişiden organ/doku alınabilmesi için vericinin en az iki tanık huzurunda; açık, bilinçli ve baskıdan uzak biçimde önceden verilmiş yazılı-imzalı beyanı ya da en az iki tanık önünde sözlü beyan edip imzaladığı tutanağın bir hekim tarafından onaylanması zorunludur. Bağış izni (muvafakat) bu şekil şartlarına uymadıkça geçerli sayılmaz."
+  },
+  {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Hekimin aydınlatma ve araştırma yükümlülüğü\nOrgan/doku alacak hekim; vericiye işlemin tıbbi, psikolojik, ailevi ve sosyal tehlike ile sonuçlarını ayrıntılı anlatmak, alıcıya sağlanacak yararı açıklamak, kendiliğinden karar veremeyecek durumdaki kişilerin bağışını reddetmek, vericinin evli olması halinde eşinin haberdar olup olmadığını araştırıp tutanağa bağlamak ve bedel/çıkar karşılığı ya da insancıl amaca aykırı bağışları reddetmek zorundadır. Alıcı ile verici isimleri (yakınlık halleri ayrık) gizli tutulur."
+  },
+  {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Tıbbi ölümün (beyin ölümü) saptanması\nBu Kanunun uygulanmasında tıbbi ölümün gerçekleştiğine; biri nörolog veya nöroşirürjiyen, biri de anesteziyoloji-reanimasyon veya yoğun bakım uzmanı olmak üzere iki hekim tarafından, kanıta dayalı tıp kurallarına uygun ve oy birliği ile karar verilir. (2.1.2014-6514 sK ile değişik; eski dört hekimlik kurul iki uzmana indirilmiştir.)"
+  },
+  {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Ölüden organ/doku alma koşulu (sağlığındaki beyan / yakın muvafakati)\nBir kimse sağlığında vücudunu ya da organ-dokularını tedavi, teşhis ve bilimsel amaçla bıraktığını e-Devlet Kapısı veya Sağlık Bakanlığı bilişim sistemi üzerinden güvenli kimlik doğrulama ile beyan etmiş, resmî/yazılı vasiyetle belirtmiş veya iki tanık huzurunda açıklamışsa ölüden organ-doku alınır; bağışçının iradesi yakınlarının görüşüne aykırı olsa bile esas alınır. Böyle bir beyan yoksa sırasıyla ölüm anında yanında bulunan eşi, reşit çocukları, ana-babası, kardeşleri veya herhangi bir yakınının muvafakati ile alınabilir; ölü sağlığında karşı olduğunu belirtmişse organ alınamaz. (21.07.2025-7557 sK ile e-Devlet beyanı, merkezî kayıt sistemi ve bağışçı yakınına nakil önceliği eklenmiştir.)"
+  },
+  {
+   "mevzuat": "2238 organ doku nakli kanunu",
+   "kaynak_dosya": "2238_organ_doku_nakli_kanunu.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Cezai ve idari müeyyideler\nHukuka aykırı olarak organ-doku alan, satan, satın alan, satışına aracılık eden, saklayan, nakleden, aşılayan veya bu amaçla ilan/reklam veren-yayınlayan kişiler hakkında 5237 sK md. 91 (organ veya doku ticareti) hükümleri uygulanır. Kanuna aykırı embriyo/üreme hücresi işlemleri için üç yıldan beş yıla kadar hapis ve bin-iki bin gün adli para cezası öngörülür. Bakanlık izni olmadan organ nakli veya üremeye yardımcı tedavi merkezi açılması yasaktır; kurallara aykırı sağlık kuruluşlarına faaliyet durdurma veya izin iptali uygulanır."
+  },
+  {
    "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
    "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
    "madde_no": 1,
@@ -876,6 +925,55 @@
    "madde_no": 3,
    "madde_tur": "madde",
    "text": "Madde 3 — Hafta tatili\nHafta tatili Pazar günüdür. Bu tatil 35 saatten az olmamak üzere Cumartesi günü en geç saat 13.00'ten itibaren başlar. Süre hesabında Cumartesi ve Pazar günleri de tatil günü olarak dikkate alınır; bir sürenin son günü hafta tatiline rastlarsa süre, izleyen ilk iş günü çalışma saati sonunda biter."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — İlan ve Reklam Vergisinin konusu\nBelediye sinirlari ile mucavir alanlari icinde yapilan her turlu ilan ve reklam, ilan ve reklam vergisine tabidir. Levha, tabela, isikli/projeksiyonlu reklamlar, brosur-katalog dagitimi, afis, bez/karton ilanlar ve motorlu tasit uzerindeki reklamlar gibi her tur ilan-reklam kapsama girer. Bu madde ilan ve reklam vergisinin konusunu (belediye sinirinda yapilan reklamlari) belirler."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — İlan ve Reklam Vergisi mukellefi ve sorumlusu\nVerginin mukellefi, yurt disindan gonderilenler dahil olmak uzere ilan ve reklami kendi adina yapan veya yaptiran gercek veya tuzel kisilerdir. Ilan ve reklam islerini mutat meslek olarak ifa edenler (reklam ajanslari/isletmecileri), baskalari adina yaptiklari ilan ve reklamlara ait vergiyi mukellef adina ilgili belediyeye yatirmaktan sorumludur. Verginin kim tarafindan odenecegini ve sorumluyu belirler."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — İlan ve Reklam Vergisinin tarhı, tahakkuku ve odenmesi\nIlan ve reklam vergisi, mukelleflerin verecegi beyanname uzerine tarh ve tahakkuk ettirilir. Vergi, beyanname verme suresi icinde odenir. Beyanname, ilan ve reklam isinin yapilmasindan once mukellef tarafindan verilir; ilan-reklam islerini mutat meslek olarak yapanlar ise islere iliskin beyannameyi takip eden ayin yirminci gunune kadar verir. Belediye meclisleri, tarifenin belirli bentlerindeki yillik ilan ve reklamlara ait vergileri yili icinde iki esit taksitte almaya yetkilidir. Verginin beyan ve odeme usulunu duzenler.\n\nMükerrer Madde 44 — Çevre Temizlik Vergisi\nBelediye sinirlari ve mucavir alanlar icinde bulunan ve katı atik toplama ile kanalizasyon hizmetlerinden yararlanan konut, isyeri ve diger sekildeki binalar cevre temizlik vergisine tabidir. Verginin mukellefi binalari kullananlardir. Konutlara ait vergi, su tuketim miktari esas alinarak metrekup basina belirlenen tutar uzerinden su faturasinda tahakkuk ettirilir; isyeri ve diger binalarda ise bina gruplari ve dereceleri itibariyla yillik maktu tarife uygulanir (buyuksehirlerde artirimli). Cevre temizlik (cop) vergisinin konu-mukellef-tahsilini duzenler."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 52,
+   "madde_tur": "madde",
+   "text": "Madde 52 — İşgal Harcının konusu\nBelediye sinirlari icinde su islerin yapilmasi isgal harcina tabidir: (1) pazar veya panayir kurulan yerlerin, meydanlarin, mezat yerlerinin her turlu mal ve hayvan saticilari tarafindan isgali; (2) yol, meydan, pazar, iskele, kopru gibi umuma ait yerlerden bir kismin herhangi bir maksat icin isgali; (3) motorlu kara tasitlarinin park etmeleri icin il trafik komisyonunun olumlu gorusu alinarak belediyelerce sehir merkezlerinde tesis edilip isletilen yerlerin calisma saatleri icinde tasitlar tarafindan isgali. Isgal harcinin konusunu (umumi yer/alan isgalini) belirler."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 53,
+   "madde_tur": "madde",
+   "text": "Madde 53 — İşgal Harcı mukellefi\nIsgal harcini, harca tabi yerleri 52. maddede yazili maksatlarla isgal edenler odemekle mukelleftir. Yani pazar/panayir yerini satis amaciyla kullanan satici, umumi yerin bir kismini isgal eden kisi veya belediyece tesis edilen park yerini kullanan tasit sahibi harcin mukellefidir. Harci kimin odeyecegini (fiilen isgali yapani) belirler."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 56,
+   "madde_tur": "madde",
+   "text": "Madde 56 — İşgal Harcı tarifesi\nIsgal harci, Kanunda gosterilen alt ve ust sinirlar icinde belediye meclisince belirlenecek tarifeye gore alinir. Tarifede; pazar-panayir-meydan-yol isgallerinde beher metrekare icin gunluk tutar, kucukbas/buyukbas hayvan satislarinda hayvan basina tutar ve motorlu tasit park yerlerinde beher saat icin tutar esas alinir. Maddede yer alan maktu tutarlar belediye meclisi kararlari ve yeniden degerleme ile guncellenir [DOĞRULA: guncel maktu tutarlar]. Harcin hesaplanmasini duzenler."
+  },
+  {
+   "mevzuat": "2464 belediye gelirleri kanunu",
+   "kaynak_dosya": "2464_belediye_gelirleri_kanunu.txt",
+   "madde_no": 57,
+   "madde_tur": "madde",
+   "text": "Madde 57 — İşgal Harcının odenmesi\nIsgal harci, belediyelerin yetkili kilacaklari memur veya kisilerce makbuz karsiliginda tahsil edilir. Harc, isgalin yapildigi sure dikkate alinarak (gunluk/donemsel) ve genellikle pesin olarak makbuz mukabili odenir. Verilen makbuzlar isgalin harca tabi tutuldugunu belgeler. Isgal harcinin tahsil usulunu (makbuzlu/pesin tahsilat) duzenler."
   },
   {
    "mevzuat": "2547 yuksekogretim kanunu",
@@ -4819,6 +4917,55 @@
    "text": "Madde 66 — Emirlere aykırı hareket (yaptırım)\nİl genel kurulu veya idare kurulları yahut en büyük mülkî amir tarafından kanunların verdiği yetkiye dayanılarak alınan ve usulüne göre ilan/tebliğ edilen karar ve tedbirlere aykırı hareket eden, güçlük çıkaran veya bunları yerine getirmeyenler hakkında Kabahatler Kanununun ilgili maddesine göre idarî para cezası uygulanır. Ancak kamu düzeni ve güvenliğini ya da kişilerin can ve mal emniyetini tehlikeye düşürecek toplumsal olaylar bakımından valinin usulüne uygun ilan ettiği karar ve tedbirlere aykırı davrananlar üç aydan bir yıla kadar hapis cezası ile cezalandırılır. [DOĞRULA: idarî para cezası atfının Kabahatler Kanunu m.32 olduğu ve hapis cezası alt-üst sınırları güncel metinden teyit edilmelidir.]"
   },
   {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Kart çıkarılması ve bilgilendirme yükümlülüğü\nKart çıkaran kuruluşlar, talepte bulunmayan veya sözleşme imzalamayan kişiler adına hiçbir şekil ve surette kart veremez; kart hamilini yeterince bilgilendirmek ve talep edilmesi hâlinde işlemlere ilişkin kayıtları otuz günü (yurt dışı işlemlerde altmış günü) geçmeyecek şekilde sağlamakla yükümlüdür. Asgari ödeme tutarının üç ay üst üste ödenmemesi hâlinde ilgili kredi kartı kullanıma kapatılır. Bu hüküm, kart talebi/başvurusu ve bilgilendirme talebi evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Kartın haksız kullanımı ve sigortalanması\nKart hamili, kartın kaybolması veya çalınması hâlinde yaptığı bildirimden önceki yirmi dört saat içinde gerçekleşen hukuka aykırı kullanımdan sınırlı bir tutarla (sözleşmede belirlenebilecek azami sorumluluk tutarıyla) sorumlu tutulur; hamil isterse bu sorumluluğa karşı sigorta yaptırabilir. Bildirimden sonraki haksız kullanımlardan hamil sorumlu olmaz. Bu hüküm, haksız kullanım itirazı ve sorumluluk sınırlaması talebine ilişkin evrakın dayanağıdır. [DOĞRULA: bildirim öncesi 24 saatlik sorumluluk için güncel azami tutar (eski metinde 150 YTL/250 TL) yeniden değerleme ve mevzuat değişiklikleriyle teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Bildirim zorunluluğu\nKart hamili, kartın kaybolması, çalınması veya iradesi dışında gerçekleşen herhangi bir işlemi öğrendiğinde durumu derhâl kartı çıkaran kuruluşa bildirmekle yükümlüdür; kuruluş bu bildirimleri yedi gün yirmi dört saat esasına göre kabul edecek bir sistem kurmak zorundadır. Bildirim anı, hamilin sorumluluğunun sınırını belirlemede esas alınır. Bu hüküm, kayıp/çalıntı bildirim evrakı ve bildirim tarihinin ispatına ilişkin başvurunun dayanağıdır."
+  },
+  {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Harcama ve alacak belgesi\nÜye işyerleri, mal veya hizmet bedeli karşılığında, kartı kullanan kişiye elektronik ya da mekanik cihazlarla harcama belgesi veya nakit ödeme belgesi düzenlemek ve bunların asıllarını saklamakla yükümlüdür; belgenin bir nüshası kart hamiline verilir. Belge düzenlenmeden yapılan işlemlerde ve sistemin güvenli işletilmemesinden doğan zararlardan üye işyeri sorumlu olur. Bu hüküm, harcama belgesi/slip ibrazı, işyeri itirazı ve harcama itirazı evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Bilgilerin saklanması\nÜye işyerleri ile kart çıkaran kuruluşlar, kart ve kart hamiline ilişkin bilgileri, kanunen yetkili kişi ve mercîler dışında, kart hamilinin yazılı rızası olmadan başkasına açıklayamaz, saklayamaz ve kopyalayamaz; kart çıkaran kuruluşlar kişisel bilgileri gizli tutmak ve kendi hizmetlerinin pazarlanması dışındaki amaçlarla kullanmamakla yükümlüdür. Bu yükümlülüğün ihlali sorumluluk doğurur. Bu hüküm, kart bilgisi/kişisel veri gizliliği ihlali şikâyet evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 24,
+   "madde_tur": "madde",
+   "text": "Madde 24 — Sözleşme şartları\nKart çıkaran kuruluş ile kart hamili arasındaki sözleşme, en az on iki punto ve koyu siyah harflerle hazırlanan yazılı şekilde yapılır ve bir örneği kart hamiline verilir; sözleşmede yer almayan faiz, komisyon veya masraf adı altında hiçbir ödeme talep edilemez. Dönem borcunun ödenmesi gereken asgari tutarı, dönem borcunun belirli bir oranından az olamaz. Bu hüküm, kart sözleşmesi/sözleşme örneği talebi ve haksız ücret-faiz itirazı evrakının dayanağıdır. [DOĞRULA: asgari ödeme tutarının dönem borcuna oranına (yüzde) ilişkin güncel oran BDDK düzenlemeleriyle teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5464 banka kartlari kredi kartlari kanunu",
+   "kaynak_dosya": "5464_banka_kartlari_kredi_kartlari_kanunu.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Faiz ve diğer ücretler\nKredi kartı faizi, hesap kesim tarihinden önceki bir tarih esas alınarak hesaplanamaz; faiz kalan bakiye üzerinden işletilir ve bileşik faiz uygulanmaz. Türkiye Cumhuriyet Merkez Bankası, azami akdi faiz ve azami gecikme faizi oranlarını tespit etmeye ve bunları kuruluşlara bildirmeye yetkilidir. Bu hüküm, faiz hesabına ve azami orana aykırılık itirazı evrakının dayanağıdır. [DOĞRULA: azami akdi/gecikme faiz oranını belirleme yetkisinin güncel hâli ve TCMB tarafından ilan edilen yürürlükteki oranlar teyit edilmeli]"
+  },
+  {
    "mevzuat": "5488 tarim kanunu",
    "kaynak_dosya": "5488_tarim_kanunu.txt",
    "madde_no": 3,
@@ -5090,6 +5237,104 @@
    "madde_no": 7,
    "madde_tur": "madde",
    "text": "Madde 7 — Devir, nakil ve iznin iptali\nKurum açma izni alan kurumların belirlenen süre içinde öğretime başlamaması, izinsiz ara verilmesi veya amaç dışı kullanım hâlinde kurum açma izni ile iş yeri açma ve çalışma ruhsatının iptal edileceğini düzenler. Kurumların devir ve nakline ilişkin usul ve esasların yönetmelikle belirleneceğini öngörür. [DOĞRULA: faaliyete başlama süresi ve fıkra ayrımı]"
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Kanunun amacı, kaçakçılık fiilleri ile yaptırımlarını ve kaçakçılığı önleme, izleme ve araştırmaya ilişkin usûl ve esasları belirlemektir. Kanun hem ithalde/ihraçta gümrük işlemlerine tabi tutulmadan veya aldatıcı işlemlerle vergisi ödenmeden Türkiye'ye sokulan eşyayı, hem de ithali/ihracı yasak eşyayı kapsar; kaçakçılık suçlarına ilişkin davalar bu Kanun hükümlerine göre yürütülür."
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nKanunda geçen \"gümrük vergileri\" (4458 sayılı Gümrük Kanunu uyarınca alınan vergi ve mali yükler), \"gümrüklenmiş değer\" (eşyanın CIF kıymeti ile gümrük vergilerinin toplamı; ithali yasak eşyada borsa/rayiç değer üzerinden hesaplanır) ve akaryakıt, tütün, alkol gibi özel ürün kavramları tanımlanır. Gümrüklenmiş değer, adlî para cezalarının ve müsadere kararlarının hesaplanmasında esas alınan temel ölçüttür."
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Kaçakçılık suçları\nEşyayı gümrük işlemlerine tabi tutmaksızın ülkeye sokan kişi bir yıldan beş yıla kadar hapis ve onbin güne kadar adlî para cezasıyla cezalandırılır; eşyanın değeri ve niteliğine göre ceza ağırlaşır. Aldatıcı işlem ve belgelerle gümrük vergilerini kısmen veya tamamen ödemeyen ile transit/aktarma rejimini kötüye kullananlara ayrı cezalar öngörülür; ithali yasak eşyayı (ör. uyuşturucu hariç kaçak silah/eşya) sokmak iki yıldan altı yıla kadar hapsi gerektirir. Akaryakıt, tütün, tütün mamulleri, etil alkol ve alkollü içkiler gibi özel ürünlerin kaçakçılığında cezalar artırılır. [DOĞRULA: fıkra bazında alt/üst hapis sınırları ve gün adlî para cezası miktarları 7242/2020 ve sonraki değişikliklerle güncellenebildiğinden işlem tarihindeki konsolide metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Etkin pişmanlık\nKaçakçılık suçunu işleyen kişi, resmî makamlar tarafından haber alınmadan önce fiili ve diğer failleri merciine haber verirse cezalandırılmaz. Soruşturma başladıktan sonra ancak kovuşturma evresine geçilmeden önce etkin pişmanlık gösterilmesi veya kaçak eşyanın gümrüklenmiş değerinin iki katı tutarındaki paranın ödenmesi hallerinde ceza belirli oranlarda indirilir. Bu hüküm, kaçakçılıkta zararın giderilmesini ve gönüllü iş birliğini teşvik eder. [DOĞRULA: indirim oranları (ör. yarı/üçte iki) ve ödeme şartları güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Arama ve el koyma\nKaçak eşya, silah, mühimmat, patlayıcı ve uyuşturucu madde bulunduğundan şüphe edilen kap, ambalaj, taşıma aracı ve kişiler üzerinde yapılacak arama ve el koymalar 5271 sayılı Ceza Muhakemesi Kanunu hükümlerine göre yerine getirilir. Gümrük salon ve kapılarında şüpheli kişiler gümrük görevlilerince aranabilir; gümrük bölgesine kanunî olmayan yerlerden giren kişi ve taşıma araçları durdurularak eşya ve üzerleri aranır. Bu madde, kaçak eşyaya el konulmasının ve buna ilişkin tutanağın hukukî dayanağıdır."
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — El konulan eşyanın muhafazası\nKaçak şüphesiyle el konulan eşya ile alıkonulan her türlü taşıt ve araç; miktarı, cinsi, markası, tipi, modeli, seri numarası gibi ayırıcı özelliklerini gösteren bir tutanakla gümrük idaresine teslim edilir. Gümrük idaresi muhafaza için depo/ambar temin eder; muhafaza, taşıma ve depolama masrafları idarece karşılanır. Bandrolsüz tütün mamulü ve sahte/kaçak alkollü içki gibi muhafazası sakıncalı eşyada numune alınarak kalanın imhası mümkündür. Düzenlenen el koyma/teslim tutanağı, kaçakçılık evrakının çekirdek belgesidir."
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — El konulan eşyanın tasfiyesi\nKamu davası açıldıktan sonra belirli süre içinde kovuşturma sonuçlanmazsa veya muhafazası ekonomik/fiilî güçlük doğuruyorsa el konulan kaçak eşya, müsadere kararı beklenmeksizin tasfiye edilebilir; satış bedeli emanet hesabına alınır ve dava sonucuna göre işlem yapılır. Çabuk bozulabilir, değerini yitirebilir veya muhafazası tehlikeli eşyada daha kısa sürelerde tasfiyeye karar verilir. Tasfiye işlemleri Tasfiye Yönetmeliği hükümlerine göre yürütülür. [DOĞRULA: tasfiye süreleri (ör. bir yıl / üç gün / onbeş gün) güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5607 kacakcilikla mucadele kanunu",
+   "kaynak_dosya": "5607_kacakcilikla_mucadele_kanunu.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — İkramiye\nKaçak eşyanın yakalanmasında muhbirlere ve el koyma işlemini yapan kamu görevlilerine, kaçak eşyanın gümrüklenmiş değeri veya niteliğine göre hesaplanan ikramiye ödenir. İkramiyenin bir kısmı muhbire, bir kısmı el koyanlara dağıtılır; kaçakçılığı önleme/yakalama görevi bulunan personel kural olarak muhbir ikramiyesi alamaz, yalnız el koyma ikramiyesine hak kazanır. Bu hüküm, kaçakçılıkla mücadelede ihbar ve yakalamayı teşvik eder. [DOĞRULA: dağıtım oranları ve ikramiye hesabı esasları güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5624 kan ve kan urunleri kanunu",
+   "kaynak_dosya": "5624_kan_ve_kan_urunleri_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Kanunun amacı; kan, kan bileşenleri ve ürünleri ile ilgili usul ve esasları düzenlemektir. Kapsamına kamu kurum ve kuruluşları ile Bakanlıktan izin/ruhsat almış özel kuruluşlar girer; kan kök hücresi uygulamaları bu Kanun kapsamı dışındadır."
+  },
+  {
+   "mevzuat": "5624 kan ve kan urunleri kanunu",
+   "kaynak_dosya": "5624_kan_ve_kan_urunleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Genel esaslar (karşılıksız bağış, veri saklama, hekim denetimi)\nKan ve kan ürünleri hizmetinde Sağlık Bakanlığı planlama, yürütme ve denetlemede münhasıran yetkili ve sorumludur. Kan, kan bileşenleri ve ürünlerinin temininde karşılıksız ve gönüllü bağış esastır; mal karşılığı anlamına gelmeyecek teşvik edici uygulamalar müstesnadır. Bağışçı, hazırlayan kuruluş, kullanım yeri ve alıcıya ait tüm verilerin yazılı/elektronik ortamda kaydı ve otuz yıl saklanması zorunludur; alma ve transfüzyon hekimin sorumluluk ve denetimi altında yapılır; bağışçının kişisel bilgileri korunur, üçüncü kişilere verilmez ve basına açıklanmaz."
+  },
+  {
+   "mevzuat": "5624 kan ve kan urunleri kanunu",
+   "kaynak_dosya": "5624_kan_ve_kan_urunleri_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Hizmet birimleri ve kuruluş yetkisi (bölge/bağış/transfüzyon merkezi)\nKanın temini ve kullanımı için transfüzyon merkezleri, kan bağışı merkezleri ve bölge kan merkezleri kurulur. Bölge kan merkezi ve kan bağışı merkezini yalnızca kamu kurum-kuruluşları ile Türkiye Kızılay Derneği kurabilir; transfüzyon merkezini ise bunlara ek olarak özel sağlık kuruluşu bünyesinde gerçek kişiler ve özel hukuk tüzel kişileri kurabilir. Plazma ürünleri üretim tesisi kamu ile gerçek/tüzel kişilerce kurulabilir."
+  },
+  {
+   "mevzuat": "5624 kan ve kan urunleri kanunu",
+   "kaynak_dosya": "5624_kan_ve_kan_urunleri_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Ruhsat, denetim ve ceza hükümleri\nBu Kanun kapsamında faaliyet gösterecek gerçek ve tüzel kişiler, faaliyete başlamadan önce Bakanlıktan (Bakanlığın yetkilendirmesi halinde valilikten) ruhsat almak zorundadır; ruhsatsız veya ruhsat kapsamı dışında faaliyet gösterenler ile saklanması zorunlu belge/örnekleri saklamayanlar faaliyetten men edilir ve idari para cezası uygulanır. İstenen bilgileri zamanında vermeyenlere ve uygun nitelikte personel çalıştırmayanlara da idari para cezası verilir; tekrarında tutar artar. Kişilerin hayat ve sağlığını tehlikeye sokacak biçimde faaliyet gösterenler bir yıldan beş yıla kadar hapis ve adli para cezasıyla cezalandırılır ve beş yıl ruhsat verilmez. [DOĞRULA: idari para cezası tutarları (örn. ruhsatsız faaliyet için onbin TL) her yıl 5326 sK yeniden değerleme oranıyla güncellenir; uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5624 kan ve kan urunleri kanunu",
+   "kaynak_dosya": "5624_kan_ve_kan_urunleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Yönetmelik\nKan, kan bileşenleri ve ürünlerine ilişkin standartlar, kuruluş-çalışma usul ve esasları ile denetime dair hususlar Sağlık Bakanlığınca çıkarılacak yönetmelikle düzenlenir."
+  },
+  {
+   "mevzuat": "5624 kan ve kan urunleri kanunu",
+   "kaynak_dosya": "5624_kan_ve_kan_urunleri_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Yürürlükten kaldırılan hükümler\n23.06.1983 tarihli ve 2857 sayılı Kan ve Kan Ürünleri Kanunu yürürlükten kaldırılmıştır. Bu tarihten itibaren kan bağışı, kan merkezi ruhsatı ve kan ürünleri işlemleri 5624 sayılı bu Kanun ve ikincil mevzuatına tabidir."
   },
   {
    "mevzuat": "5627 enerji verimliligi kanunu",
@@ -5468,6 +5713,41 @@
    "madde_no": 37,
    "madde_tur": "madde",
    "text": "Madde 37 — Vatandaşlık işlemlerinde müracaat makamı ve usul\nTürk vatandaşlığının kazanılması ve kaybına ilişkin başvurular yurt içinde ikamet edilen yer valiliğine, yurt dışında ise dış temsilciliklere bizzat veya bu hakkın kullanılmasına ilişkin vekâletname ile yapılır. Vatandaşlık hizmetleri yurt içinde Bakanlık, yurt dışında dış temsilciliklerce yürütülür (md. 4); kararlar ilgiliye ve başvuru makamlarına tebliğ olunur (md. 41)."
+  },
+  {
+   "mevzuat": "5996 hayvan islahi zootekni hukumleri",
+   "kaynak_dosya": "5996_hayvan_islahi_zootekni_hukumleri.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Tanımlar (hayvan ıslahı ile ilgili kavramlar)\nKanunda geçen \"soy kütüğü\", \"ön soy kütüğü\", \"damızlık\", \"ıslah amaçlı yetiştirici birliği\",\n\"zootekni\" gibi kavramları tanımlar. Soy kütüğü, yetiştirme ve verim kayıtları tutulan işletmelerde\nırk özelliklerini taşıyan hayvanlar için oluşturulan kayıt sistemini; ön soy kütüğü ise yalnız\nyetiştirme kayıtları tutulan işletmeler için oluşturulan kayıt sistemini ifade eder. Damızlık belgesi\nve soy kütüğü kaydı başvurularında esas alınan kavramların dayanağıdır. [DOĞRULA: ilgili tanımların yer aldığı fıkra numaraları yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5996 hayvan islahi zootekni hukumleri",
+   "kaynak_dosya": "5996_hayvan_islahi_zootekni_hukumleri.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Hayvanların tanımlanması ve kayıt altına alınması\nHayvan sahiplerinin; hayvanlarını tanımlatma (kimliklendirme/küpeleme), Bakanlıkça oluşturulan kayıt\nsistemine kaydettirme, hayvan hareketlerinin (giriş-çıkış) bildirimini yapma ve kayıt belgelerini\nmuhafaza etme yükümlülüklerini düzenler. Kimliklendirme ve hayvan kayıt sistemi (işletme tescili,\nküpe/pasaport) başvuru ve bildirim yazışmalarının dayanağıdır. [DOĞRULA: kimliklendirme/kayıt yükümlülüğünün madde numarası (7) yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5996 hayvan islahi zootekni hukumleri",
+   "kaynak_dosya": "5996_hayvan_islahi_zootekni_hukumleri.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Zootekni (hayvan ıslahı, soy kütüğü, damızlık belgesi)\nBakanlığın; hayvan ıslahı, hayvan gen kaynaklarının korunması ve geliştirilmesi, damızlık amaçlı\nhayvanların yetiştirilmesi ve kayıt altına alınması, ön soy kütüğü ve soy kütüklerinin oluşturulması\nile belgelendirilmesi konularında düzenleme yapmaya yetkili olduğunu hükme bağlar. Ferdi, koloni veya\nsürü bazında hayvan satışında, yetiştiricinin birliğe talebi üzerine içeriği ve şekli Bakanlıkça\nbelirlenen damızlık belgesi verilir. Sperma, ovum ve embriyo gibi üreme ürünlerini üreten, depolayan\nveya dağıtanların Bakanlıktan izin alması zorunludur. Hayvan ıslahı, damızlık belgesi, soy kütüğü\nkaydı ve suni tohumlama/üreme ürünü izni başvurularının temel dayanağıdır. [DOĞRULA: damızlık belgesi ve üreme ürünleri izninin fıkra numaraları yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5996 hayvan islahi zootekni hukumleri",
+   "kaynak_dosya": "5996_hayvan_islahi_zootekni_hukumleri.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Islah amaçlı hayvan yetiştirici birliklerinin kurulması ve görevleri\nHayvan gen kaynaklarının korunması, araştırılması, ıslahı, geliştirilmesi, yaygınlaştırılması ve\npazarlanması amacıyla; gerçek veya tüzel kişi yetiştiriciler tarafından tüzel kişiliği haiz ve özel\nhukuk hükümlerine tabi ıslah amaçlı yetiştirici birliği kurulabileceğini düzenler. Bu birlikler,\nBakanlıkça merkez birliğine verilen yetkiler doğrultusunda ve Bakanlığın kontrol/denetiminde ön soy\nkütüğü, soy kütüğü, döl kontrolü, suni tohumlama ve/veya ıslah programı faaliyetlerini yürütür.\nYetiştirici birliği kuruluş izni ve birlik yetkilendirme yazışmalarının dayanağıdır. [DOĞRULA: birlik kuruluşu ve yetkilendirilmesine ilişkin hükmün m.10 içindeki fıkra/bent düzeni yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5996 hayvan islahi zootekni hukumleri",
+   "kaynak_dosya": "5996_hayvan_islahi_zootekni_hukumleri.txt",
+   "madde_no": 36,
+   "madde_tur": "madde",
+   "text": "Madde 36 — Hayvan ıslahı, tanımlama ve hayvan hareketlerine ilişkin yaptırımlar\nHayvan sağlığı, hayvan hareketleri, hayvanların tanımlanması/kaydı ile zootekni (hayvan ıslahı, soy\nkütüğü, damızlık, üreme ürünleri izni) kurallarına aykırılık hâlinde uygulanacak idari para cezalarını\nve diğer idari yaptırımları, fiilin türüne göre kademeli olarak düzenler. Hayvanını tanımlatmayan/\nkaydettirmeyen sahipler, izinsiz üreme ürünü üreten/dağıtan kişiler ve damızlık/ıslah kurallarını\nihlal edenler hakkında idari para cezası uygulanır. Zootekni ve kimliklendirme ihlallerine ilişkin\nidari yaptırım kararı yazışmalarının dayanağıdır. [DOĞRULA: hayvan ıslahı/tanımlama ihlallerinin hangi bende denk geldiği ve güncel ceza tutarları (her yıl yeniden değerleme ile artar) m.36'nın yürürlükteki metninden teyit edilmeli]"
   },
   {
    "mevzuat": "5996 veteriner hizmetleri bitki sagligi gida yem kanunu",
@@ -6184,6 +6464,69 @@
    "text": "Madde 12 — Vaizler\nVaizler, toplumu dinî konularda bilgilendirmek, irşat ve rehberlik hizmetlerini yürütmekle görevlidir. Vaizlik için aranan nitelikler ile atama ve görevlendirme usulleri kanun ve ilgili yönetmeliklerde düzenlenir. Vaizler, müftülükler bünyesinde din hizmetlerinin yürütülmesinde görev alır."
   },
   {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Veteriner hekim tanımı\nYüksek veteriner okulları ile veteriner fakültelerinden veya muadeleti yetkili makamca onaylanmış veteriner okullarından diploma almış olanlara \"veteriner hekim\" denir. Bu madde, veteriner hekim unvanının ve mesleki yetkinin temel tanımını yapar; diploma denkliği ve unvan kullanımına ilişkin başvuruların dayanağıdır."
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Diplomanın tescili ve mesleğin serbest icrası\nTürkiye Cumhuriyeti vatandaşı olup diplomasını yetkili Bakanlık (Tarım ve Orman Bakanlığı) nezdinde tescil ettirmiş olan veteriner hekimler, bu Kanun hükümleri çerçevesinde mesleklerini serbestçe icra edebilir. Diploma tescili, serbest meslek icrasının ve oda kaydının ön koşuludur; tescil başvurusu ve mesleğe kabul yazışmalarının temel dayanağıdır. [DOĞRULA: tescil mercii güncel teşkilat adıyla (Tarım ve Orman Bakanlığı) yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Yabancı ülke diplomalılarının meslek icrası\nYabancı memleket veteriner okul veya fakültelerinden diploma almış olanların Türkiye'de mesleklerini icra edebilmeleri, diploma denkliğinin onaylanması ve mevzuatta öngörülen ehliyet/denklik (Collegium) şartlarının yerine getirilmesine bağlıdır. Yabancı diploma denklik ve meslek icra izni başvurularının dayanağıdır. [DOĞRULA: yabancı diploma denklik usulünün güncel madde içeriği yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Veteriner hekimin meslekî yetki ve görevleri\nVeteriner hekimin yetkili olduğu işleri sayar: hayvanların muayene, teşhis ve tedavisi, cerrahi müdahaleler, koruyucu hekimlik, sağlık raporu/reçete düzenleme, gıda ve hayvansal ürünlerin kontrolüne katılma, serum/aşı gibi biyolojik maddelerin uygulanması ve bulaşıcı/ihbarı mecburi hayvan hastalıklarının resmî makamlara ihbarı. Reçete, sağlık raporu ve hastalık ihbar yazışmalarının meslekî dayanağıdır. [DOĞRULA: yetki kapsamının güncel fıkra düzeni (5/a-f) yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Türk Veteriner Hekimleri Birliği'nin kuruluşu\nTürkiye sınırları içinde mesleğini icra eden veteriner hekimlerin katıldığı, tüzel kişiliği haiz, kamu kurumu niteliğinde meslek kuruluşu olan Türk Veteriner Hekimleri Birliği kurulur. Birlik, mesleğin kamu ve meslektaş yararına gelişmesini sağlamak, meslek onurunu korumak ve odalar arası koordinasyonu yürütmekle görevlidir. Birlik nezdindeki üst düzey meslekî başvuru ve onay yazışmalarının dayanağıdır. [DOĞRULA: Birlik kuruluş maddesinin güncel numarası yürürlükteki konsolide metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Veteriner hekim odalarının kurulması\nBelirli sayıda (asgari öngörülen) veteriner hekim bulunan il merkezlerinde veya mücavir illerde, Birlik/Merkez Konseyi kararıyla tüzel kişiliği haiz, kamu kurumu niteliğinde veteriner hekim odaları kurulur. Oda, bölgesindeki meslek mensuplarının kaydını tutar, meslekî denetimi ve dayanışmayı sağlar. Oda kuruluşu ve bölge belirleme işlemlerinin dayanağıdır. [DOĞRULA: oda kuruluşu için aranan asgari hekim sayısı ve madde numarası yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — Odaya kayıt zorunluluğu\nBir veteriner hekim odası bölgesinde mesleğini münhasıran serbest olarak icra eden veteriner hekimler, faaliyete başladıkları tarihten itibaren belirli süre içinde bulundukları il veya bölge veteriner hekim odasına kaydolmak zorundadır. Kamu kurumlarında asli ve sürekli görevde çalışanlar ile mesleğini icra etmeyenler isteğe bağlı üye olabilir. Oda kayıt başvurusu, üyelik belgesi ve serbest çalışma bildirimlerinin temel dayanağıdır. (20.06.2026 tarihli 7584 sayılı Kanunla, odaya kayıt yaptırmadan bölgede faaliyet ve kayıtsız hekim çalıştırma fiillerine yönelik yaptırımlar ağırlaştırılmıştır.) [DOĞRULA: kayıt süresi ve madde numarası yürürlükteki konsolide metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Haysiyet divanı\nVeteriner hekim odası bünyesinde, meslekî disiplini sağlamak üzere seçimle oluşan üyelerden müteşekkil haysiyet divanı kurulur; divan, odaya kaydolmayan veya Kanunun yüklediği yükümlülükleri yerine getirmeyen ve dosyası kendisine tevdi edilen oda üyeleri hakkında, fiilin niteliğine göre disiplin cezası vermeye yetkilidir. Disiplin soruşturması ve haysiyet divanı kararlarının dayanağıdır. [DOĞRULA: haysiyet divanının teşekkülü ve madde numarası yürürlükteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
+   "kaynak_dosya": "6343_veteriner_hekimligi_mesleginin_icrasi_kanunu.txt",
+   "madde_no": 41,
+   "madde_tur": "madde",
+   "text": "Madde 41 — Disiplin cezaları\nHaysiyet divanınca verilebilecek disiplin cezalarını düzenler; 20.06.2026 tarihli 7584 sayılı Kanunla yeniden düzenlenen güncel hâle göre cezalar: (a) yazılı ihtar, (b) fiilin ağırlığına göre yirmi bin Türk lirasından yüz bin Türk lirasına kadar para cezası (ilgili oda veya Birliğe ödenir), (c) on beş günden altı aya kadar geçici olarak meslekten men. Disiplin para cezasının ve geçici meslekten men kararının dayanağıdır. [DOĞRULA: 41 inci maddenin 7584 sayılı Kanunla değişik son metni ve ceza tutarları (yıllık yeniden değerleme ile güncellenebilir) yürürlükteki metinden teyit edilmeli]"
+  },
+  {
    "mevzuat": "634 kat mulkiyeti kanunu",
    "kaynak_dosya": "634_kat_mulkiyeti_kanunu.txt",
    "madde_no": 12,
@@ -6273,6 +6616,62 @@
    "madde_no": 62,
    "madde_tur": "madde",
    "text": "Madde 62 — Grev ve lokavt yasakları\nCan ve mal kurtarma işleri, cenaze ve tedavi işleri, hastaneler, doğal gaz ve petrol üretimi, arıtımı ve dağıtımı, bankacılık hizmetleri ile şehir içi toplu taşıma ve itfaiye gibi belirli iş ve işyerlerinde grev ve lokavt yapılamaz. Bu işyerlerinde çıkan uyuşmazlıklar Yüksek Hakem Kurulu tarafından çözülür. Grev ve lokavt yasağının kapsamı kanunda sınırlı sayıda sayılmıştır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Kuruluş izni\nTürkiye'de bir finansal kiralama, faktoring, finansman veya tasarruf finansman şirketinin kurulmasına, Kanunda öngörülen şartların yerine getirilmesi kaydıyla, Bankacılık Düzenleme ve Denetleme Kurulunun en az beş üyesinin aynı yöndeki oyuyla alınacak kararla izin verilir. İzin başvurusunda kurucuların, sermayenin ve yönetimin Kanunda aranan nitelikleri taşıması gerekir. Bu hüküm, şirket kuruluş izni başvuru evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Faaliyet izni\nKuruluş izni alan şirketin, faaliyete geçmek için Kuruldan ayrıca faaliyet izni alması şarttır; izin için sermayenin nakden ve muvazaadan arî ödenmiş olması, iç kontrol-muhasebe-bilgi işlem altyapısının hazır bulunması ve yöneticilerin nitelikli olması gibi koşullar aranır. Faaliyet izni başvurusu Kuruma yapılan beyanname/başvuru evrakı ile yürütülür. Bu hüküm, faaliyet izni başvuru evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Finansal kiralama sözleşmesi\nFinansal kiralama sözleşmesi; kiralayanın, kiracının talebi ve seçimi üzerine üçüncü kişiden veya bizzat kiracıdan satın aldığı ya da başka suretle temin ettiği bir malın zilyetliğini, her türlü faydayı sağlamak üzere kira bedeli karşılığında kiracıya bırakmasını öngören sözleşmedir. Sözleşmeye konu mal ve tarafların hak-yükümlülükleri sözleşmede gösterilir. Bu hüküm, finansal kiralama sözleşmesi evrakının tanım ve içerik dayanağıdır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 22,
+   "madde_tur": "madde",
+   "text": "Madde 22 — Sözleşmenin şekli ve tescili\nFinansal kiralama sözleşmesi yazılı şekilde yapılır; taşınmaza dair sözleşme tapu kütüğünün şerhler hanesine, özel sicili bulunan taşınırlara dair sözleşme ilgili sicile, diğer taşınırlara dair sözleşme ise Birlik tarafından tutulan özel sicile tescil edilir. Tescil veya şerhten sonra üçüncü kişilerin kiralama konusu mal üzerinde iktisap ettikleri ayni haklar kiralayana karşı ileri sürülemez. Bu hüküm, finansal kiralama sözleşmesinin yazılı düzenlenmesi ve tescil/şerh başvuru evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 31,
+   "madde_tur": "madde",
+   "text": "Madde 31 — Sözleşmenin ihlali\nKiracının kira bedelini ödemede temerrüde düşmesi hâlinde kiralayan, en az otuz günlük süre vererek borcun ödenmesini ister; sözleşmede mülkiyetin kiracıya geçeceği kararlaştırılmışsa bu süre altmış gündür. Bir yıl içinde sözleşmede yer alan kira bedellerini ödememe nedeniyle ihtara muhatap olan kiracılarla yapılan sözleşmeler kiralayan tarafından feshedilebilir. Bu hüküm, ödeme ihtarı ve sözleşme fesih bildirimi evrakının dayanağıdır. [DOĞRULA: bir yıl içindeki tekrar/temerrüt eşiğine ilişkin fıkra ifadesi 6361 sayılı Kanunun güncel konsolide metninden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 38,
+   "madde_tur": "madde",
+   "text": "Madde 38 — Faktoring sözleşmesi\nFaktoring sözleşmesi; mal veya hizmet satışından doğmuş fatura ile tevsik edilen alacaklar ile Kurulca belirlenen usul ve esaslar çerçevesinde tevsik edilebilen mal veya hizmet satışına bağlı doğacak alacakları devralmak suretiyle, faktoring şirketinin müşterisine sağladığı tahsilat, borçlu ve müşteri hesaplarının tutulması ile finansman veya faktoring garantisi fonksiyonlarından birini ya da tümünü içeren sözleşmedir; yazılı şekilde düzenlenmesi zorunludur. Aynı faturaya dayalı alacak yalnızca tek bir faktoring şirketine temlik edilebilir. Bu hüküm, faktoring sözleşmesi ve alacak temliki evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 39,
+   "madde_tur": "madde",
+   "text": "Madde 39 — Finansman sözleşmesi\nFinansman sözleşmesi, her türlü mal veya hizmet alımının, malı veya hizmeti satın alan gerçek veya tüzel kişi adına ve hesabına teslim veya temini ile birlikte doğrudan satıcıya ödeme yapılması suretiyle kredilendirilmesini öngören sözleşmedir; finansman şirketi ile satıcılar arasında yazılı genel bir sözleşme yapılması ve müşteriyle imzalanan finansman sözleşmesinin yazılı şekilde düzenlenmesi zorunludur. Geri ödemeler finansman şirketine yapılır. Bu hüküm, finansman (kredi) sözleşmesi evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "6361 finansal kiralama faktoring finansman kanunu",
+   "kaynak_dosya": "6361_finansal_kiralama_faktoring_finansman_kanunu.txt",
+   "madde_no": 50,
+   "madde_tur": "madde",
+   "text": "Madde 50 — Faaliyet izninin iptali\nŞirketin bir yıl içinde faaliyete geçmemesi, Birliğe üye olmaması, sürekli bir yıl faaliyete ara vermesi, Kanunda yasaklanan faaliyetlerde bulunması veya faaliyetlerine son vermesi gibi hâllerde faaliyet izni Kurulca iptal edilir; iptal kararı Resmî Gazete'de yayımlanır. İptal sonrası şirket hakkında tasfiye ve denetim işlemleri yürütülür. Bu hüküm, faaliyet izni iptal kararı ve buna itiraz evrakının dayanağıdır."
   },
   {
    "mevzuat": "6362 sermaye piyasasi kanunu",
@@ -7052,6 +7451,55 @@
    "text": "Madde 32 — Usulüne aykırı tebliğin hükmü\nTebliğ usulüne aykırı yapılmış olsa bile, muhatabı tebliğe muttali olmuş ise muteber\nsayılır. Muhatabın beyan ettiği tarih, tebliğ tarihi olarak kabul edilir. Tebliğin\nusulüne aykırı yapıldığını iddia eden, beyan ettiği bu tarihi ispatla mükelleftir."
   },
   {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Verginin mevzuu (konusu)\nTurkiye Cumhuriyeti tabiiyetinde bulunan sahislara ait mallar ile Turkiye'de bulunan mallarin, veraset yoluyla veya herhangi bir suretle ivazsiz (karsiliksiz) bir tarzda bir sahistan diger sahsa intikali veraset ve intikal vergisine tabidir. Turk tabiiyetindeki kisilerin yabanci memleketlerde ayni yollarla mal iktisap etmesi de vergi kapsamindadir. Bu madde verginin konusunu (mirasla veya bagis yoluyla mal gecisini) belirler."
+  },
+  {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tarifler (tabirler)\nKanunda gecen temel kavramlari tanimlar. 'Veraset' tabiri; miras, vasiyet ve miras mukavelesi gibi olume bagli tasarruflari ifade eder. 'Ivazsiz intikal' tabiri ise hibe yoluyla veya herhangi bir tarzda olan karsiliksiz iktisaplari kapsar; ancak maddede sayilan istisnalar saklidir. Veraset ile ivazsiz intikal ayrimini ve mal/sahis kavramlarini netlestirir."
+  },
+  {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — İstisnalar (vergiden istisna olan intikaller)\nVeraset ve intikal vergisinden istisna tutulan halleri sayar; baslicalari: ev esyasi ile murise ait kisisel esyalar ve aile hatirasi olan tablo-kilic-madalya gibi esyalar, evlatliklar dahil furu (altsoy) ve esten her birine isabet eden miras hisselerinin yilliki belirlenen tutara kadar olan kismi (furu yoksa ese taninan istisna daha yuksektir), orf-adete gore verilen hediye-ceyiz-drahoma, kamu idarelerine ve kamu yararina dernek/vakiflara yapilan bagislar ve sans oyunu/yarisma ikramiyelerinin belli tutara kadar olan kismi. Istisna tutarlari her yil yeniden degerleme oraninda artirilarak Genel Teblig ile ilan edilir [DOĞRULA: guncel tutarlar yillik teblig]."
+  },
+  {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Beyanname verilmesi (beyanname verme mecburiyeti)\nVeraset yoluyla veya sair suretle ivazsiz bir tarzda mal iktisap edenler, iktisap ettikleri mallari bir beyanname ile bildirmeye mecburdur. Beyannamede gosterilecek mallar ve degerleri ile mukellefe iliskin bilgiler yer alir. Kanunda istisna kapsamina giren bazi intikaller icin beyanname verilmesine gerek olmayan haller saklidir. Bu madde veraset/intikal beyannamesi verme yukumlulugunu kurar."
+  },
+  {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Beyannamenin verilme muddeti (sure)\nVeraset yoluyla mal intikalinde beyanname; olum Turkiye'de olmus ve mukellef de Turkiye'de ise olum tarihinden itibaren 4 ay icinde, olum Turkiye'de olmus ancak mukellef yabanci memlekette ise 6 ay icinde, olum yabanci memlekette olmus mukellef Turkiye'de ise 6 ay icinde verilir. Diger suretle (ivazsiz) meydana gelen intikallerde beyanname, malin hukuken iktisap edildigi tarihten itibaren 1 ay icinde verilir. Gercek/tuzel kisilerce duzenlenen yarisma ve cekilislerde kazanilan ikramiyelerde ise ilgililerce, cekilis/musabaka yapildigi gunu takip eden ayin 20. gunu aksamina kadar beyanname verilir. Beyanname verme takvimini belirleyen temel maddedir."
+  },
+  {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Nispetler (vergi tarifesi/oranlari)\nVeraset ve intikal vergisi, artan oranli (mutezayit) bir tarife uzerinden hesaplanir. Veraset yoluyla intikallerde dusuk oranli dilimden baslayarak yukselen oranlar; ivazsiz (bagis) intikallerde ise daha yuksek oranli dilimler uygulanir. Ana-baba, es ve cocuklara (furu) yapilan ivazsiz intikallerde tarife indirimli uygulanir. Para ve mal uzerine duzenlenen yarisma ve cekilisler ile sans oyunlarinda kazanilan ikramiyelerde ise sabit oranli vergi alinir. Tarifenin matrah dilim tutarlari her yil bir onceki yila iliskin yeniden degerleme oraninda artirilarak uygulanir [DOĞRULA: guncel oran/dilim yillik teblig]."
+  },
+  {
+   "mevzuat": "7338 veraset ve intikal vergisi kanunu",
+   "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Verginin odenmesi (tahakkuk ve taksitler)\nTahakkuk eden veraset ve intikal vergisi, tahakkukundan itibaren 3 yilda ve her yil Mayis ile Kasim aylarinda olmak uzere iki esit taksitte odenir. Bu durumda toplam alti taksit soz konusu olur. Ancak gercek/tuzel kisilerce duzenlenen yarisma ve cekilislerde kazanilan ikramiyeler ile sans oyunu ikramiyeleri uzerinden alinan vergi, beyanname verme suresi icinde odenir. Verginin odeme takvimini ve uzun vadeli taksitlendirmeyi duzenler."
+  },
+  {
    "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
    "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
    "madde_no": 2,
@@ -7176,6 +7624,41 @@
    "madde_no": 10,
    "madde_tur": "madde",
    "text": "Madde 10 — Fenne aykırı işletme ve ruhsatın etkisi\nFenne uygun tahliller yapılmadığı, beyannamesinde belirtilen hükümlere uyulmadığı veya 7. madde uyarınca çıkarılan yönetmeliğe aykırı hareket edildiği belirlenenlere mahalli mülki amir tarafından idarî para cezası verilir ve şartlar yerine getirilinceye kadar laboratuvar kapatılır. Beyannamedeki taahhütlere/ruhsat şartlarına aykırı işletme bu maddenin konusudur. [DOĞRULA: ceza tutarları ve eksiklik tamamlama süresi güncel metinle teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "ambalaj atiklarinin kontrolu yonetmeligi",
+   "kaynak_dosya": "ambalaj_atiklarinin_kontrolu_yonetmeligi.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Ambalaj üreticilerinin yükümlülükleri\nAmbalaj üreticilerini, genişletilmiş üretici sorumluluğu çerçevesinde, ambalajları tasarım aşamasından itibaren mümkün olan en az atık oluşturacak ve geri kazanıma elverişli şekilde üretmekle yükümlü kılar. Üreticiler ayrıca Ambalaj Bilgi Sistemine kayıt olmak, ürettikleri ambalajlara ilişkin bilgi ve belgeleri sisteme bildirmek ve depozito sistemi kriterlerine uygun ambalaj üretmekle sorumludur. Ambalaj üreticisi kayıt ve beyan yazışmalarının dayanağıdır. [DOĞRULA: 9 uncu maddenin güncel fıkra ayrıntıları]"
+  },
+  {
+   "mevzuat": "ambalaj atiklarinin kontrolu yonetmeligi",
+   "kaynak_dosya": "ambalaj_atiklarinin_kontrolu_yonetmeligi.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Piyasaya sürenlerin yükümlülükleri\nPiyasaya sürenleri (ürünü ambalajlı olarak ilk kez piyasaya arz edenleri), genişletilmiş üretici sorumluluğu kapsamında yeniden kullanılabilir ambalajları tercih etmek, uygun işaretleme/etiketleme yapmak, Ambalaj Bilgi Sistemine kayıt olmak ve geri kazanım katılım payı (GEKAP) ile depozito sistemine ilişkin yükümlülüklerini yerine getirmekle sorumlu kılar. Piyasaya süren kaydı ve katılım payı yazışmalarının temel dayanağıdır. [DOĞRULA: 10 uncu maddenin güncel fıkra ayrıntıları]"
+  },
+  {
+   "mevzuat": "ambalaj atiklarinin kontrolu yonetmeligi",
+   "kaynak_dosya": "ambalaj_atiklarinin_kontrolu_yonetmeligi.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Ambalaj atıklarının biriktirilmesi, toplanması ve taşınması\nAmbalaj atıklarının kaynağında diğer atıklardan ayrı biriktirilmesi, Sıfır Atık Yönetmeliği esas alınarak belirli bir sistem dâhilinde toplanması ve taşınmasına ilişkin esasları düzenler. Belediyeler ve yetkili idareler, ambalaj atıklarının ayrı toplanıp geri kazanılması için gerekli sistemi kurmak ve bu atıkların düzenli depolama tesislerine gönderilmesini önlemekle yükümlüdür. Belediye ayrı toplama sistemi ve sözleşme yazışmalarının dayanağıdır. [DOĞRULA: 19 uncu maddedeki belediye/yetkili idare yükümlülüklerinin güncel fıkra metni]"
+  },
+  {
+   "mevzuat": "ambalaj atiklarinin kontrolu yonetmeligi",
+   "kaynak_dosya": "ambalaj_atiklarinin_kontrolu_yonetmeligi.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Geri dönüşüm ve geri kazanım hedefleri\nPiyasaya sürülen ambalajlar için yıllara ve malzeme türüne (cam, plastik, metal, kâğıt/karton, ahşap) göre asgari geri dönüşüm ve geri kazanım hedeflerini belirler. Düzenlemede 2021–2025 ve sonrası dönemler için kademeli olarak artan oranlar öngörülür ve bu hedeflere ulaşma sorumluluğu genişletilmiş üretici sorumluluğu kapsamındaki taraflara verilir. Hedef raporlaması ve geri kazanım performansı yazışmalarının dayanağıdır. [DOĞRULA: 21 inci maddedeki yıl ve malzeme bazlı güncel oranlar (ör. cam, plastik, metal, kâğıt yüzdeleri)]"
+  },
+  {
+   "mevzuat": "ambalaj atiklarinin kontrolu yonetmeligi",
+   "kaynak_dosya": "ambalaj_atiklarinin_kontrolu_yonetmeligi.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Bildirimler, beyanlar ve planlar ile bu kapsamda sunulan bilgi ve belgelerin değerlendirilmesi\nAmbalaj üreticileri ve piyasaya sürenlerin, bir önceki yıl içinde piyasaya arz ettikleri ambalajlara ilişkin verileri her yıl Mart ayı sonuna kadar Ambalaj Bilgi Sistemi üzerinden Bakanlığa bildirmesini düzenler. Çevre lisanslı ayırma ve geri dönüşüm/geri kazanım tesisleri de faaliyetlerine ilişkin beyan formlarını sistem üzerinden doldurur; sunulan bilgi ve belgeler Bakanlıkça değerlendirilir. Ambalaj beyanı ve yıllık bildirim yükümlülüğü yazışmalarının temel dayanağıdır. [DOĞRULA: 25 inci maddenin beyan formu türleri ve süre ayrıntıları]"
   },
   {
    "mevzuat": "atik yonetimi yonetmeligi",
@@ -7808,6 +8291,55 @@
    "text": "Madde 15 — Aykırı Kullanım ve Taklidin Bildirilmesi\nResmî mühürlerin bu Yönetmelik hükümlerine aykırı kullanıldığını, taklit edildiğini veya\nDarphane ve Damga Matbaası dışında imal edildiğini öğrenen kamu görevlileri durumu en yakın\nmülki amire bildirmek zorundadır."
   },
   {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Atıksuların kontrolü ve alıcı ortamlarda kirlenmenin önlenmesine ilişkin genel esaslar\nAtıksuların nitelik/niceliklerinin kontrolü, deşarj standartlarına uyulup uyulmadığının uygun aralıklarla düzenli gözlenmesi ve belgelenmesi kirletenin yükümlülüğündedir; kirleten tarafından yaptırılan ölçümler beş yıl saklanır ve idare gerekirse kendi ölçümleriyle denetler (masrafı kirleten karşılar). Atıksu altyapısı bulunan yörelerde sanayi, bağlantı esaslarına uyarak kanalizasyona deşarj edebilir; kent dışında doğrudan alıcı ortama deşarj yapanlar arıtma yapmak zorundadır. Atıksuların seyreltilmesi yasaktır; faaliyet sahipleri ekteki Tablo 5–21 deşarj standartlarını sağlamakla yükümlüdür ve tehlikeli madde içeren atıksular için ayrıca Tehlikeli Madde Deşarj İzin Belgesi alınır. Deşarj yükümlülüğü ve izleme yazışmalarının genel dayanağıdır."
+  },
+  {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 37,
+   "madde_tur": "madde",
+   "text": "Madde 37 — Alıcı ortama atıksu deşarjı olan kurum, kuruluş ve işletmeler için çevre izni\nAlıcı ortama her türlü evsel ve/veya endüstriyel nitelikli atıksuyun doğrudan deşarjı için, idarenin istediği çıkış suyu kalitesi ve diğer şartların sağlanması koşuluyla idareden çevre izni alınması zorunludur. Çevre izni işlemlerinde Çevre Kanununca Alınması Gereken İzin ve Lisanslar Hakkında Yönetmelik hükümleri uygulanır; söz konusu Yönetmeliğin Ek-3C'sindeki 'Atıksu Deşarjı Teknik Bilgiler Listesi' ilgili tebliğdeki usule göre doldurulur. Deşarj izni (çevre izni) başvuru ve dayanak yazışmalarının temel maddesidir."
+  },
+  {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 38,
+   "madde_tur": "madde",
+   "text": "Madde 38 — Alıcı ortama atıksu deşarjı konusunda çevre iznine tabi işletmeler için genel hükümler\nİşletmenin çevre izni başvurusu yapabilmesi için atıksu arıtma tesisinin giriş ve çıkışından farklı günlerde üç adet iki saatlik kompozit numune alınması ve çıkış analizlerinin aritmetik ortalamasının standartları sağlaması gerekir; analizler Bakanlıktan yeterlik belgeli laboratuvarlarda yapılır. Arıtma yapmadan standardı sağlayan işletmelerden de İl Müdürlüğü gözetiminde 3 adet 2 saatlik kompozit numune alınır ve herhangi bir numunenin standardı %20'den fazla aşması olumsuz değerlendirilerek arıtma tesisi istenir. Kurulu kapasitesi 5.000 m³/gün ve üzeri kentsel atıksu arıtma tesisleri için yılda 12 kez izleme öngörülür. Çevre izni başvurusu numune/analiz şartlarının dayanağıdır."
+  },
+  {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 39,
+   "madde_tur": "madde",
+   "text": "Madde 39 — Alıcı ortama atıksu deşarjı olan kurum, kuruluş ve işletmeler için çevre iznine itiraz\nBir alıcı ortama atıksu deşarjından olumsuz etki oluştuğunun belirlenmesi hâlinde veya bu deşarjdan zarar gören ya da görmesi muhtemel üçüncü kişiler, delilleriyle birlikte izni veren idareye başvurarak çevre iznine itiraz etme hakkına sahiptir. İtirazların uygun bulunması hâlinde deşarjı yapanlar gerekli iyileştirme tedbirlerini almak zorundadır. Çevre iznine itiraz ve şikâyet yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 43,
+   "madde_tur": "madde",
+   "text": "Madde 43 — Atıksu toplama ve bertaraf yükümlülüğü (atıksu altyapı tesisleri yönetimleri)\nAtıksu altyapı tesisleri yönetimleri (belediyeler vb.), 2872 sayılı Çevre Kanununun 11 inci maddesi uyarınca sorumluluk bölgelerindeki atıksuların toplanması, iletilmesi ve bertarafını yerine getirir; kanalizasyonla toplanan atıksular için Çevre Kanununda öngörülen sürelerde arıtma tesisi kurmak ve İş Termin Planının uygulanmasına ilişkin gelişmeleri Bakanlığa bildirmek zorundadır. Taahhütlerini mücbir sebep dışında yerine getirmeyen belediye başkanları hakkında Cumhuriyet Savcılığına suç duyurusunda bulunulur; ayrıca atıksu altyapı tesisi yönetimlerince kooperatif kurulması ve arıtma çamuru yönetim planı hazırlanmasına ilişkin yükümlülükler düzenlenmiştir. Belediye atıksu altyapısı ve iş termin planı yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 44,
+   "madde_tur": "madde",
+   "text": "Madde 44 — Atıksu bağlantı izni ve belgesi\nBir şehir ve/veya sanayi bölgesinde parsellerin, kurum, kuruluş ve işletmelerin atıksularını atıksu altyapı tesislerine (kanalizasyona) bağlayabilmesi, atıksu altyapı tesisleri yönetimince verilecek atıksu bağlantı iznine tabidir. Evsel atıksular yazılı bir belge karşılığında; endüstriyel ve karışık atıksular ise düzenlenecek bağlantı kalite kontrol izin belgesindeki koşulların sağlanması hâlinde bağlanabilir. Bu izin ve belgeler 45, 46, 47 ve 48 inci maddelerdeki hususlara uyulması şartıyla verilir. Atıksu bağlantı izni ve bağlantı kalite kontrol izin belgesi başvurularının dayanağıdır."
+  },
+  {
+   "mevzuat": "su kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "su_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 45,
+   "madde_tur": "madde",
+   "text": "Madde 45 — Kanalizasyon sistemine bağlantı kısıtları\nAtıksu altyapı tesisleri kapsamında inşa edilip işletilen kanalizasyon sistemlerine yapılacak bağlantıları kısıtlamalara bağlar: ayrık sistemde yağmur suyu, temassız soğutma suyu ve kirli olmayan drenaj suları kanalizasyona; her türlü atık/atıksu da yağmur suyu kanalına bağlanamaz, usulsüz bağlantılar kesilir. Kesikli çalışan işletmeler bağlantı öncesi dengeleme havuzu inşa etmek zorundadır ve madde, kanalizasyona kabul edilemeyecek (yanıcı/patlayıcı, tıkayıcı, zehirli vb.) atıkları da sınırlar. Endüstriyel atıksuların kanalizasyona bağlantı koşulları ve bağlantı izni reddi yazışmalarının dayanağıdır. [DOĞRULA: 45 inci maddenin (h) ve (ı) bentlerinin güncel tam metni]"
+  },
+  {
    "mevzuat": "sulak alanlarin korunmasi yonetmeligi",
    "kaynak_dosya": "sulak_alanlarin_korunmasi_yonetmeligi.txt",
    "madde_no": 7,
@@ -7848,6 +8380,55 @@
    "madde_no": 41,
    "madde_tur": "madde",
    "text": "Madde 41 — İdari yaptırımlar\nBu Yönetmelik hükümlerine aykırı hareket edenler hakkında 2872 sayılı Çevre Kanunu'nun ilgili maddelerinin (idari para cezaları dahil) uygulanacağını düzenler; somut ceza tutarları Çevre Kanunu'nda belirlenmiştir. Sulak alan ihlali nedeniyle idari yaptırım uygulama yazışmalarının dayanağıdır. [DOĞRULA: atıf yapılan 2872 sayılı Kanun idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellendiğinden cari tutarlar teyit edilmeli]"
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Yönetmelik, gümrük idarelerince işletilen geçici depolama yeri, antrepo ve ambarlara eşya alınması, muhafazası ve teslimi ile tasfiyelik hale gelmiş eşyanın tasfiyesine ilişkin usul ve esasları belirler. Hem 4458 sayılı Gümrük Kanunu kapsamında süresi dolan/işlemleri tamamlanmayan eşyayı, hem de 5607 sayılı Kanun kapsamında kaçak zannıyla el konulan eşya ve araçların tasfiyesini kapsar."
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\n\"Tasfiyelik eşya\", gümrük idaresince işletilen geçici depolama yeri, antrepo ve ambarlarda bulunup bekleme süreleri dolmuş veya bekletilmeyecek eşyayı; \"kaçak eşya\", 5607 sayılı Kanun kapsamında kaçak zannıyla el konulan eşya veya alıkonulan aracı; \"ambar\" ise yolcu beraberi, kaçak, tasfiyelik ve perakendelik eşyanın konulduğu açık, yarı açık ve kapalı yerleri ifade eder. Bu tanımlar, kaçak/el konulan eşyanın hangi statüde tasfiye sürecine gireceğini belirler. [DOĞRULA: tanım fıkralarının tam lafzı güncel Yönetmelik metninden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Eşyanın ambara/geçici depolama yerine alınması ve teslim tutanağı\nEl konulan veya tasfiyelik hale gelen eşya, sayımı yapılarak ve ayırıcı özellikleri (adet, cins, marka, tip, model, seri numarası) tespit edilerek bir teslim tutanağı ile ambara/geçici depolama yerine alınır. Tutanak, eşyayı teslim alan görevli, teslim eden görevli ve hazır bulunması halinde eşya sahibi tarafından imzalanır; eşyaya giriş kaydı verilerek envantere işlenir. Bu tutanak, kaçak/tasfiyelik eşyanın resmî muhafaza zincirinin başlangıç belgesidir. [DOĞRULA: teslim ve sayım tutanağına ilişkin madde numarası (10-12 aralığı) güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Tasfiyelik hale gelen eşyanın tespiti ve tasfiye listesi\nEşya tasfiyelik hale geldikten sonra öngörülen süre içinde tespit ve tahakkuk belgesi düzenlenerek tasfiyelik statüsü belirlenir ve tasfiye listesi hazırlanır. Mahkemece iadesine karar verilen eşya sahibine teslim edilir; diğer hallerde eşya tasfiye ambarına alınarak satış/tasfiye sürecine sokulur. Bu madde, kaçak eşyanın hukukî durumu netleştikten sonra fiilen tasfiyeye geçişin dayanağıdır. [DOĞRULA: tespit/liste için öngörülen gün süresi ve madde numarası güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — Tasfiye yolları\nTasfiyelik eşya; ihale yoluyla satış, yeniden ihraç amaçlı satış, perakende satış, kamu kurum ve kuruluşları ile özel kanunla kurulu vakıf/derneklere tahsis, özel yolla satış ve imha yollarından biriyle tasfiye edilir. Eşyanın niteliğine, ekonomik değerine ve sağlık/güvenlik durumuna göre uygun tasfiye yöntemi seçilir. Bu hüküm, kaçak ve tasfiyelik eşyaya uygulanabilecek tasfiye seçeneklerinin çerçevesini çizer. [DOĞRULA: tasfiye yollarını sayan madde numarası güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Satışların duyurulması (Resmî Gazete ilanı)\nİhale yoluyla yapılacak satışların ilanı, satış tarihinden en az beş gün önce Resmî Gazete'de yayımlanmak üzere gönderilir; ilan ayrıca ilgili gümrük müdürlüğü ilan tahtasında ve elektronik ortamda duyurulur. İlan, satışa çıkarılan eşyayı, satış yerini, gününü ve şartlarını içerir. Bu hüküm, tasfiye satışlarında saydamlık ve kamuya açık duyuru zorunluluğunu sağlar. [DOĞRULA: beş günlük ilan süresi ve madde numarası güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "tasfiye yonetmeligi",
+   "kaynak_dosya": "tasfiye_yonetmeligi.txt",
+   "madde_no": 58,
+   "madde_tur": "madde",
+   "text": "Madde 58 — Kamu kurumlarına bedelsiz tahsis\nÖzelliği itibarıyla belirli kamu kurum ve kuruluşlarının kullanabileceği tasfiyelik eşya, ilgili kurumlara ve özel kanunla kurulmuş vakıf ile derneklere bedelsiz olarak tahsis edilebilir. Tahsis, satış yerine geçen bir tasfiye yöntemi olup eşyanın kamu yararına değerlendirilmesini sağlar. Tahsise konu eşya, tahsis kararı ve teslim tutanağı ile ilgili kuruma devredilir. [DOĞRULA: bedelsiz tahsise ilişkin madde numarası güncel metinden teyit edilmelidir.]"
   },
   {
    "mevzuat": "tasinir mal yonetmeligi",
@@ -8088,5 +8669,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 178
+ "mevzuat_sayisi": 190
 }

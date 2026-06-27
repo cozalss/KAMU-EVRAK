@@ -1,0 +1,32 @@
+Belediye Gelirleri Kanunu
+Kanun No 2464, Kabul 26.05.1981, RG 29.05.1981/17354 — YURURLUKTE (mevzuat.gov.tr / GİB resmi kaynak madde ozetleri uzerinden 1/1/2026 itibariyla dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2464&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 12 — İlan ve Reklam Vergisinin konusu
+Belediye sinirlari ile mucavir alanlari icinde yapilan her turlu ilan ve reklam, ilan ve reklam vergisine tabidir. Levha, tabela, isikli/projeksiyonlu reklamlar, brosur-katalog dagitimi, afis, bez/karton ilanlar ve motorlu tasit uzerindeki reklamlar gibi her tur ilan-reklam kapsama girer. Bu madde ilan ve reklam vergisinin konusunu (belediye sinirinda yapilan reklamlari) belirler.
+
+Madde 13 — İlan ve Reklam Vergisi mukellefi ve sorumlusu
+Verginin mukellefi, yurt disindan gonderilenler dahil olmak uzere ilan ve reklami kendi adina yapan veya yaptiran gercek veya tuzel kisilerdir. Ilan ve reklam islerini mutat meslek olarak ifa edenler (reklam ajanslari/isletmecileri), baskalari adina yaptiklari ilan ve reklamlara ait vergiyi mukellef adina ilgili belediyeye yatirmaktan sorumludur. Verginin kim tarafindan odenecegini ve sorumluyu belirler.
+
+Madde 16 — İlan ve Reklam Vergisinin tarhı, tahakkuku ve odenmesi
+Ilan ve reklam vergisi, mukelleflerin verecegi beyanname uzerine tarh ve tahakkuk ettirilir. Vergi, beyanname verme suresi icinde odenir. Beyanname, ilan ve reklam isinin yapilmasindan once mukellef tarafindan verilir; ilan-reklam islerini mutat meslek olarak yapanlar ise islere iliskin beyannameyi takip eden ayin yirminci gunune kadar verir. Belediye meclisleri, tarifenin belirli bentlerindeki yillik ilan ve reklamlara ait vergileri yili icinde iki esit taksitte almaya yetkilidir. Verginin beyan ve odeme usulunu duzenler.
+
+Mükerrer Madde 44 — Çevre Temizlik Vergisi
+Belediye sinirlari ve mucavir alanlar icinde bulunan ve katı atik toplama ile kanalizasyon hizmetlerinden yararlanan konut, isyeri ve diger sekildeki binalar cevre temizlik vergisine tabidir. Verginin mukellefi binalari kullananlardir. Konutlara ait vergi, su tuketim miktari esas alinarak metrekup basina belirlenen tutar uzerinden su faturasinda tahakkuk ettirilir; isyeri ve diger binalarda ise bina gruplari ve dereceleri itibariyla yillik maktu tarife uygulanir (buyuksehirlerde artirimli). Cevre temizlik (cop) vergisinin konu-mukellef-tahsilini duzenler.
+
+Madde 52 — İşgal Harcının konusu
+Belediye sinirlari icinde su islerin yapilmasi isgal harcina tabidir: (1) pazar veya panayir kurulan yerlerin, meydanlarin, mezat yerlerinin her turlu mal ve hayvan saticilari tarafindan isgali; (2) yol, meydan, pazar, iskele, kopru gibi umuma ait yerlerden bir kismin herhangi bir maksat icin isgali; (3) motorlu kara tasitlarinin park etmeleri icin il trafik komisyonunun olumlu gorusu alinarak belediyelerce sehir merkezlerinde tesis edilip isletilen yerlerin calisma saatleri icinde tasitlar tarafindan isgali. Isgal harcinin konusunu (umumi yer/alan isgalini) belirler.
+
+Madde 53 — İşgal Harcı mukellefi
+Isgal harcini, harca tabi yerleri 52. maddede yazili maksatlarla isgal edenler odemekle mukelleftir. Yani pazar/panayir yerini satis amaciyla kullanan satici, umumi yerin bir kismini isgal eden kisi veya belediyece tesis edilen park yerini kullanan tasit sahibi harcin mukellefidir. Harci kimin odeyecegini (fiilen isgali yapani) belirler.
+
+Madde 56 — İşgal Harcı tarifesi
+Isgal harci, Kanunda gosterilen alt ve ust sinirlar icinde belediye meclisince belirlenecek tarifeye gore alinir. Tarifede; pazar-panayir-meydan-yol isgallerinde beher metrekare icin gunluk tutar, kucukbas/buyukbas hayvan satislarinda hayvan basina tutar ve motorlu tasit park yerlerinde beher saat icin tutar esas alinir. Maddede yer alan maktu tutarlar belediye meclisi kararlari ve yeniden degerleme ile guncellenir [DOĞRULA: guncel maktu tutarlar]. Harcin hesaplanmasini duzenler.
+
+Madde 57 — İşgal Harcının odenmesi
+Isgal harci, belediyelerin yetkili kilacaklari memur veya kisilerce makbuz karsiliginda tahsil edilir. Harc, isgalin yapildigi sure dikkate alinarak (gunluk/donemsel) ve genellikle pesin olarak makbuz mukabili odenir. Verilen makbuzlar isgalin harca tabi tutuldugunu belgeler. Isgal harcinin tahsil usulunu (makbuzlu/pesin tahsilat) duzenler.

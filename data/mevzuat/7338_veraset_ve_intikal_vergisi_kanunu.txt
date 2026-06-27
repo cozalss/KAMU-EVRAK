@@ -1,0 +1,29 @@
+Veraset ve İntikal Vergisi Kanunu
+Kanun No 7338, Kabul 08.06.1959, RG 15.06.1959/10231 — YURURLUKTE (mevzuat.gov.tr / GİB resmi kaynak madde ozetleri uzerinden 1/1/2026 itibariyla dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=7338&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Verginin mevzuu (konusu)
+Turkiye Cumhuriyeti tabiiyetinde bulunan sahislara ait mallar ile Turkiye'de bulunan mallarin, veraset yoluyla veya herhangi bir suretle ivazsiz (karsiliksiz) bir tarzda bir sahistan diger sahsa intikali veraset ve intikal vergisine tabidir. Turk tabiiyetindeki kisilerin yabanci memleketlerde ayni yollarla mal iktisap etmesi de vergi kapsamindadir. Bu madde verginin konusunu (mirasla veya bagis yoluyla mal gecisini) belirler.
+
+Madde 2 — Tarifler (tabirler)
+Kanunda gecen temel kavramlari tanimlar. 'Veraset' tabiri; miras, vasiyet ve miras mukavelesi gibi olume bagli tasarruflari ifade eder. 'Ivazsiz intikal' tabiri ise hibe yoluyla veya herhangi bir tarzda olan karsiliksiz iktisaplari kapsar; ancak maddede sayilan istisnalar saklidir. Veraset ile ivazsiz intikal ayrimini ve mal/sahis kavramlarini netlestirir.
+
+Madde 4 — İstisnalar (vergiden istisna olan intikaller)
+Veraset ve intikal vergisinden istisna tutulan halleri sayar; baslicalari: ev esyasi ile murise ait kisisel esyalar ve aile hatirasi olan tablo-kilic-madalya gibi esyalar, evlatliklar dahil furu (altsoy) ve esten her birine isabet eden miras hisselerinin yilliki belirlenen tutara kadar olan kismi (furu yoksa ese taninan istisna daha yuksektir), orf-adete gore verilen hediye-ceyiz-drahoma, kamu idarelerine ve kamu yararina dernek/vakiflara yapilan bagislar ve sans oyunu/yarisma ikramiyelerinin belli tutara kadar olan kismi. Istisna tutarlari her yil yeniden degerleme oraninda artirilarak Genel Teblig ile ilan edilir [DOĞRULA: guncel tutarlar yillik teblig].
+
+Madde 7 — Beyanname verilmesi (beyanname verme mecburiyeti)
+Veraset yoluyla veya sair suretle ivazsiz bir tarzda mal iktisap edenler, iktisap ettikleri mallari bir beyanname ile bildirmeye mecburdur. Beyannamede gosterilecek mallar ve degerleri ile mukellefe iliskin bilgiler yer alir. Kanunda istisna kapsamina giren bazi intikaller icin beyanname verilmesine gerek olmayan haller saklidir. Bu madde veraset/intikal beyannamesi verme yukumlulugunu kurar.
+
+Madde 9 — Beyannamenin verilme muddeti (sure)
+Veraset yoluyla mal intikalinde beyanname; olum Turkiye'de olmus ve mukellef de Turkiye'de ise olum tarihinden itibaren 4 ay icinde, olum Turkiye'de olmus ancak mukellef yabanci memlekette ise 6 ay icinde, olum yabanci memlekette olmus mukellef Turkiye'de ise 6 ay icinde verilir. Diger suretle (ivazsiz) meydana gelen intikallerde beyanname, malin hukuken iktisap edildigi tarihten itibaren 1 ay icinde verilir. Gercek/tuzel kisilerce duzenlenen yarisma ve cekilislerde kazanilan ikramiyelerde ise ilgililerce, cekilis/musabaka yapildigi gunu takip eden ayin 20. gunu aksamina kadar beyanname verilir. Beyanname verme takvimini belirleyen temel maddedir.
+
+Madde 16 — Nispetler (vergi tarifesi/oranlari)
+Veraset ve intikal vergisi, artan oranli (mutezayit) bir tarife uzerinden hesaplanir. Veraset yoluyla intikallerde dusuk oranli dilimden baslayarak yukselen oranlar; ivazsiz (bagis) intikallerde ise daha yuksek oranli dilimler uygulanir. Ana-baba, es ve cocuklara (furu) yapilan ivazsiz intikallerde tarife indirimli uygulanir. Para ve mal uzerine duzenlenen yarisma ve cekilisler ile sans oyunlarinda kazanilan ikramiyelerde ise sabit oranli vergi alinir. Tarifenin matrah dilim tutarlari her yil bir onceki yila iliskin yeniden degerleme oraninda artirilarak uygulanir [DOĞRULA: guncel oran/dilim yillik teblig].
+
+Madde 19 — Verginin odenmesi (tahakkuk ve taksitler)
+Tahakkuk eden veraset ve intikal vergisi, tahakkukundan itibaren 3 yilda ve her yil Mayis ile Kasim aylarinda olmak uzere iki esit taksitte odenir. Bu durumda toplam alti taksit soz konusu olur. Ancak gercek/tuzel kisilerce duzenlenen yarisma ve cekilislerde kazanilan ikramiyeler ile sans oyunu ikramiyeleri uzerinden alinan vergi, beyanname verme suresi icinde odenir. Verginin odeme takvimini ve uzun vadeli taksitlendirmeyi duzenler.

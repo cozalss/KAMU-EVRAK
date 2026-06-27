@@ -1,0 +1,29 @@
+Su Kirliliği Kontrolü Yönetmeliği
+Yönetmelik (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı), RG 31.12.2004/25687 — YÜRÜRLÜKTE (son değişiklikler dâhil)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=7221&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 26 — Atıksuların kontrolü ve alıcı ortamlarda kirlenmenin önlenmesine ilişkin genel esaslar
+Atıksuların nitelik/niceliklerinin kontrolü, deşarj standartlarına uyulup uyulmadığının uygun aralıklarla düzenli gözlenmesi ve belgelenmesi kirletenin yükümlülüğündedir; kirleten tarafından yaptırılan ölçümler beş yıl saklanır ve idare gerekirse kendi ölçümleriyle denetler (masrafı kirleten karşılar). Atıksu altyapısı bulunan yörelerde sanayi, bağlantı esaslarına uyarak kanalizasyona deşarj edebilir; kent dışında doğrudan alıcı ortama deşarj yapanlar arıtma yapmak zorundadır. Atıksuların seyreltilmesi yasaktır; faaliyet sahipleri ekteki Tablo 5–21 deşarj standartlarını sağlamakla yükümlüdür ve tehlikeli madde içeren atıksular için ayrıca Tehlikeli Madde Deşarj İzin Belgesi alınır. Deşarj yükümlülüğü ve izleme yazışmalarının genel dayanağıdır.
+
+Madde 37 — Alıcı ortama atıksu deşarjı olan kurum, kuruluş ve işletmeler için çevre izni
+Alıcı ortama her türlü evsel ve/veya endüstriyel nitelikli atıksuyun doğrudan deşarjı için, idarenin istediği çıkış suyu kalitesi ve diğer şartların sağlanması koşuluyla idareden çevre izni alınması zorunludur. Çevre izni işlemlerinde Çevre Kanununca Alınması Gereken İzin ve Lisanslar Hakkında Yönetmelik hükümleri uygulanır; söz konusu Yönetmeliğin Ek-3C'sindeki 'Atıksu Deşarjı Teknik Bilgiler Listesi' ilgili tebliğdeki usule göre doldurulur. Deşarj izni (çevre izni) başvuru ve dayanak yazışmalarının temel maddesidir.
+
+Madde 38 — Alıcı ortama atıksu deşarjı konusunda çevre iznine tabi işletmeler için genel hükümler
+İşletmenin çevre izni başvurusu yapabilmesi için atıksu arıtma tesisinin giriş ve çıkışından farklı günlerde üç adet iki saatlik kompozit numune alınması ve çıkış analizlerinin aritmetik ortalamasının standartları sağlaması gerekir; analizler Bakanlıktan yeterlik belgeli laboratuvarlarda yapılır. Arıtma yapmadan standardı sağlayan işletmelerden de İl Müdürlüğü gözetiminde 3 adet 2 saatlik kompozit numune alınır ve herhangi bir numunenin standardı %20'den fazla aşması olumsuz değerlendirilerek arıtma tesisi istenir. Kurulu kapasitesi 5.000 m³/gün ve üzeri kentsel atıksu arıtma tesisleri için yılda 12 kez izleme öngörülür. Çevre izni başvurusu numune/analiz şartlarının dayanağıdır.
+
+Madde 39 — Alıcı ortama atıksu deşarjı olan kurum, kuruluş ve işletmeler için çevre iznine itiraz
+Bir alıcı ortama atıksu deşarjından olumsuz etki oluştuğunun belirlenmesi hâlinde veya bu deşarjdan zarar gören ya da görmesi muhtemel üçüncü kişiler, delilleriyle birlikte izni veren idareye başvurarak çevre iznine itiraz etme hakkına sahiptir. İtirazların uygun bulunması hâlinde deşarjı yapanlar gerekli iyileştirme tedbirlerini almak zorundadır. Çevre iznine itiraz ve şikâyet yazışmalarının dayanağıdır.
+
+Madde 43 — Atıksu toplama ve bertaraf yükümlülüğü (atıksu altyapı tesisleri yönetimleri)
+Atıksu altyapı tesisleri yönetimleri (belediyeler vb.), 2872 sayılı Çevre Kanununun 11 inci maddesi uyarınca sorumluluk bölgelerindeki atıksuların toplanması, iletilmesi ve bertarafını yerine getirir; kanalizasyonla toplanan atıksular için Çevre Kanununda öngörülen sürelerde arıtma tesisi kurmak ve İş Termin Planının uygulanmasına ilişkin gelişmeleri Bakanlığa bildirmek zorundadır. Taahhütlerini mücbir sebep dışında yerine getirmeyen belediye başkanları hakkında Cumhuriyet Savcılığına suç duyurusunda bulunulur; ayrıca atıksu altyapı tesisi yönetimlerince kooperatif kurulması ve arıtma çamuru yönetim planı hazırlanmasına ilişkin yükümlülükler düzenlenmiştir. Belediye atıksu altyapısı ve iş termin planı yazışmalarının dayanağıdır.
+
+Madde 44 — Atıksu bağlantı izni ve belgesi
+Bir şehir ve/veya sanayi bölgesinde parsellerin, kurum, kuruluş ve işletmelerin atıksularını atıksu altyapı tesislerine (kanalizasyona) bağlayabilmesi, atıksu altyapı tesisleri yönetimince verilecek atıksu bağlantı iznine tabidir. Evsel atıksular yazılı bir belge karşılığında; endüstriyel ve karışık atıksular ise düzenlenecek bağlantı kalite kontrol izin belgesindeki koşulların sağlanması hâlinde bağlanabilir. Bu izin ve belgeler 45, 46, 47 ve 48 inci maddelerdeki hususlara uyulması şartıyla verilir. Atıksu bağlantı izni ve bağlantı kalite kontrol izin belgesi başvurularının dayanağıdır.
+
+Madde 45 — Kanalizasyon sistemine bağlantı kısıtları
+Atıksu altyapı tesisleri kapsamında inşa edilip işletilen kanalizasyon sistemlerine yapılacak bağlantıları kısıtlamalara bağlar: ayrık sistemde yağmur suyu, temassız soğutma suyu ve kirli olmayan drenaj suları kanalizasyona; her türlü atık/atıksu da yağmur suyu kanalına bağlanamaz, usulsüz bağlantılar kesilir. Kesikli çalışan işletmeler bağlantı öncesi dengeleme havuzu inşa etmek zorundadır ve madde, kanalizasyona kabul edilemeyecek (yanıcı/patlayıcı, tıkayıcı, zehirli vb.) atıkları da sınırlar. Endüstriyel atıksuların kanalizasyona bağlantı koşulları ve bağlantı izni reddi yazışmalarının dayanağıdır. [DOĞRULA: 45 inci maddenin (h) ve (ı) bentlerinin güncel tam metni]

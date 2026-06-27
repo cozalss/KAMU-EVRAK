@@ -1,0 +1,32 @@
+Finansal Kiralama, Faktoring, Finansman ve Tasarruf Finansman Şirketleri Kanunu
+Kabul 21/11/2012, RG 13/12/2012 sayı 28496 — YÜRÜRLÜKTE (Kanun No 6361; tasarruf finansman kapsamı 7292 sayılı Kanunla eklenmiştir). Burada yalnızca şirket kuruluş/faaliyet izni başvurusu, finansal kiralama / faktoring / finansman sözleşmeleri, sözleşmenin şekli-tescili, sözleşmenin ihlali-feshi ve faaliyet izni iptali evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6361.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Kuruluş izni
+Türkiye'de bir finansal kiralama, faktoring, finansman veya tasarruf finansman şirketinin kurulmasına, Kanunda öngörülen şartların yerine getirilmesi kaydıyla, Bankacılık Düzenleme ve Denetleme Kurulunun en az beş üyesinin aynı yöndeki oyuyla alınacak kararla izin verilir. İzin başvurusunda kurucuların, sermayenin ve yönetimin Kanunda aranan nitelikleri taşıması gerekir. Bu hüküm, şirket kuruluş izni başvuru evrakının dayanağıdır.
+
+Madde 7 — Faaliyet izni
+Kuruluş izni alan şirketin, faaliyete geçmek için Kuruldan ayrıca faaliyet izni alması şarttır; izin için sermayenin nakden ve muvazaadan arî ödenmiş olması, iç kontrol-muhasebe-bilgi işlem altyapısının hazır bulunması ve yöneticilerin nitelikli olması gibi koşullar aranır. Faaliyet izni başvurusu Kuruma yapılan beyanname/başvuru evrakı ile yürütülür. Bu hüküm, faaliyet izni başvuru evrakının dayanağıdır.
+
+Madde 18 — Finansal kiralama sözleşmesi
+Finansal kiralama sözleşmesi; kiralayanın, kiracının talebi ve seçimi üzerine üçüncü kişiden veya bizzat kiracıdan satın aldığı ya da başka suretle temin ettiği bir malın zilyetliğini, her türlü faydayı sağlamak üzere kira bedeli karşılığında kiracıya bırakmasını öngören sözleşmedir. Sözleşmeye konu mal ve tarafların hak-yükümlülükleri sözleşmede gösterilir. Bu hüküm, finansal kiralama sözleşmesi evrakının tanım ve içerik dayanağıdır.
+
+Madde 22 — Sözleşmenin şekli ve tescili
+Finansal kiralama sözleşmesi yazılı şekilde yapılır; taşınmaza dair sözleşme tapu kütüğünün şerhler hanesine, özel sicili bulunan taşınırlara dair sözleşme ilgili sicile, diğer taşınırlara dair sözleşme ise Birlik tarafından tutulan özel sicile tescil edilir. Tescil veya şerhten sonra üçüncü kişilerin kiralama konusu mal üzerinde iktisap ettikleri ayni haklar kiralayana karşı ileri sürülemez. Bu hüküm, finansal kiralama sözleşmesinin yazılı düzenlenmesi ve tescil/şerh başvuru evrakının dayanağıdır.
+
+Madde 31 — Sözleşmenin ihlali
+Kiracının kira bedelini ödemede temerrüde düşmesi hâlinde kiralayan, en az otuz günlük süre vererek borcun ödenmesini ister; sözleşmede mülkiyetin kiracıya geçeceği kararlaştırılmışsa bu süre altmış gündür. Bir yıl içinde sözleşmede yer alan kira bedellerini ödememe nedeniyle ihtara muhatap olan kiracılarla yapılan sözleşmeler kiralayan tarafından feshedilebilir. Bu hüküm, ödeme ihtarı ve sözleşme fesih bildirimi evrakının dayanağıdır. [DOĞRULA: bir yıl içindeki tekrar/temerrüt eşiğine ilişkin fıkra ifadesi 6361 sayılı Kanunun güncel konsolide metninden teyit edilmeli]
+
+Madde 38 — Faktoring sözleşmesi
+Faktoring sözleşmesi; mal veya hizmet satışından doğmuş fatura ile tevsik edilen alacaklar ile Kurulca belirlenen usul ve esaslar çerçevesinde tevsik edilebilen mal veya hizmet satışına bağlı doğacak alacakları devralmak suretiyle, faktoring şirketinin müşterisine sağladığı tahsilat, borçlu ve müşteri hesaplarının tutulması ile finansman veya faktoring garantisi fonksiyonlarından birini ya da tümünü içeren sözleşmedir; yazılı şekilde düzenlenmesi zorunludur. Aynı faturaya dayalı alacak yalnızca tek bir faktoring şirketine temlik edilebilir. Bu hüküm, faktoring sözleşmesi ve alacak temliki evrakının dayanağıdır.
+
+Madde 39 — Finansman sözleşmesi
+Finansman sözleşmesi, her türlü mal veya hizmet alımının, malı veya hizmeti satın alan gerçek veya tüzel kişi adına ve hesabına teslim veya temini ile birlikte doğrudan satıcıya ödeme yapılması suretiyle kredilendirilmesini öngören sözleşmedir; finansman şirketi ile satıcılar arasında yazılı genel bir sözleşme yapılması ve müşteriyle imzalanan finansman sözleşmesinin yazılı şekilde düzenlenmesi zorunludur. Geri ödemeler finansman şirketine yapılır. Bu hüküm, finansman (kredi) sözleşmesi evrakının dayanağıdır.
+
+Madde 50 — Faaliyet izninin iptali
+Şirketin bir yıl içinde faaliyete geçmemesi, Birliğe üye olmaması, sürekli bir yıl faaliyete ara vermesi, Kanunda yasaklanan faaliyetlerde bulunması veya faaliyetlerine son vermesi gibi hâllerde faaliyet izni Kurulca iptal edilir; iptal kararı Resmî Gazete'de yayımlanır. İptal sonrası şirket hakkında tasfiye ve denetim işlemleri yürütülür. Bu hüküm, faaliyet izni iptal kararı ve buna itiraz evrakının dayanağıdır.

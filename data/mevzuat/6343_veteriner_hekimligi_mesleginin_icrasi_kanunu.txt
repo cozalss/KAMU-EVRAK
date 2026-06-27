@@ -1,0 +1,35 @@
+Veteriner Hekimliği Mesleğinin İcrasına, Türk Veteriner Hekimleri Birliği ile Odalarının Teşekkül Tarzına ve Göreceği İşlere Dair Kanun
+Kanun No 6343, Kabul 09.03.1954, RG 18.03.1954/8661 — YÜRÜRLÜKTE (mevzuat.gov.tr konsolide metin; disiplin hükümleri 20.06.2026 tarihli 7584 sayılı Kanunla güncellenmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.6343.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Veteriner hekim tanımı
+Yüksek veteriner okulları ile veteriner fakültelerinden veya muadeleti yetkili makamca onaylanmış veteriner okullarından diploma almış olanlara "veteriner hekim" denir. Bu madde, veteriner hekim unvanının ve mesleki yetkinin temel tanımını yapar; diploma denkliği ve unvan kullanımına ilişkin başvuruların dayanağıdır.
+
+Madde 2 — Diplomanın tescili ve mesleğin serbest icrası
+Türkiye Cumhuriyeti vatandaşı olup diplomasını yetkili Bakanlık (Tarım ve Orman Bakanlığı) nezdinde tescil ettirmiş olan veteriner hekimler, bu Kanun hükümleri çerçevesinde mesleklerini serbestçe icra edebilir. Diploma tescili, serbest meslek icrasının ve oda kaydının ön koşuludur; tescil başvurusu ve mesleğe kabul yazışmalarının temel dayanağıdır. [DOĞRULA: tescil mercii güncel teşkilat adıyla (Tarım ve Orman Bakanlığı) yürürlükteki metinden teyit edilmeli]
+
+Madde 3 — Yabancı ülke diplomalılarının meslek icrası
+Yabancı memleket veteriner okul veya fakültelerinden diploma almış olanların Türkiye'de mesleklerini icra edebilmeleri, diploma denkliğinin onaylanması ve mevzuatta öngörülen ehliyet/denklik (Collegium) şartlarının yerine getirilmesine bağlıdır. Yabancı diploma denklik ve meslek icra izni başvurularının dayanağıdır. [DOĞRULA: yabancı diploma denklik usulünün güncel madde içeriği yürürlükteki metinden teyit edilmeli]
+
+Madde 5 — Veteriner hekimin meslekî yetki ve görevleri
+Veteriner hekimin yetkili olduğu işleri sayar: hayvanların muayene, teşhis ve tedavisi, cerrahi müdahaleler, koruyucu hekimlik, sağlık raporu/reçete düzenleme, gıda ve hayvansal ürünlerin kontrolüne katılma, serum/aşı gibi biyolojik maddelerin uygulanması ve bulaşıcı/ihbarı mecburi hayvan hastalıklarının resmî makamlara ihbarı. Reçete, sağlık raporu ve hastalık ihbar yazışmalarının meslekî dayanağıdır. [DOĞRULA: yetki kapsamının güncel fıkra düzeni (5/a-f) yürürlükteki metinden teyit edilmeli]
+
+Madde 14 — Türk Veteriner Hekimleri Birliği'nin kuruluşu
+Türkiye sınırları içinde mesleğini icra eden veteriner hekimlerin katıldığı, tüzel kişiliği haiz, kamu kurumu niteliğinde meslek kuruluşu olan Türk Veteriner Hekimleri Birliği kurulur. Birlik, mesleğin kamu ve meslektaş yararına gelişmesini sağlamak, meslek onurunu korumak ve odalar arası koordinasyonu yürütmekle görevlidir. Birlik nezdindeki üst düzey meslekî başvuru ve onay yazışmalarının dayanağıdır. [DOĞRULA: Birlik kuruluş maddesinin güncel numarası yürürlükteki konsolide metinden teyit edilmeli]
+
+Madde 16 — Veteriner hekim odalarının kurulması
+Belirli sayıda (asgari öngörülen) veteriner hekim bulunan il merkezlerinde veya mücavir illerde, Birlik/Merkez Konseyi kararıyla tüzel kişiliği haiz, kamu kurumu niteliğinde veteriner hekim odaları kurulur. Oda, bölgesindeki meslek mensuplarının kaydını tutar, meslekî denetimi ve dayanışmayı sağlar. Oda kuruluşu ve bölge belirleme işlemlerinin dayanağıdır. [DOĞRULA: oda kuruluşu için aranan asgari hekim sayısı ve madde numarası yürürlükteki metinden teyit edilmeli]
+
+Madde 17 — Odaya kayıt zorunluluğu
+Bir veteriner hekim odası bölgesinde mesleğini münhasıran serbest olarak icra eden veteriner hekimler, faaliyete başladıkları tarihten itibaren belirli süre içinde bulundukları il veya bölge veteriner hekim odasına kaydolmak zorundadır. Kamu kurumlarında asli ve sürekli görevde çalışanlar ile mesleğini icra etmeyenler isteğe bağlı üye olabilir. Oda kayıt başvurusu, üyelik belgesi ve serbest çalışma bildirimlerinin temel dayanağıdır. (20.06.2026 tarihli 7584 sayılı Kanunla, odaya kayıt yaptırmadan bölgede faaliyet ve kayıtsız hekim çalıştırma fiillerine yönelik yaptırımlar ağırlaştırılmıştır.) [DOĞRULA: kayıt süresi ve madde numarası yürürlükteki konsolide metinden teyit edilmeli]
+
+Madde 35 — Haysiyet divanı
+Veteriner hekim odası bünyesinde, meslekî disiplini sağlamak üzere seçimle oluşan üyelerden müteşekkil haysiyet divanı kurulur; divan, odaya kaydolmayan veya Kanunun yüklediği yükümlülükleri yerine getirmeyen ve dosyası kendisine tevdi edilen oda üyeleri hakkında, fiilin niteliğine göre disiplin cezası vermeye yetkilidir. Disiplin soruşturması ve haysiyet divanı kararlarının dayanağıdır. [DOĞRULA: haysiyet divanının teşekkülü ve madde numarası yürürlükteki metinden teyit edilmeli]
+
+Madde 41 — Disiplin cezaları
+Haysiyet divanınca verilebilecek disiplin cezalarını düzenler; 20.06.2026 tarihli 7584 sayılı Kanunla yeniden düzenlenen güncel hâle göre cezalar: (a) yazılı ihtar, (b) fiilin ağırlığına göre yirmi bin Türk lirasından yüz bin Türk lirasına kadar para cezası (ilgili oda veya Birliğe ödenir), (c) on beş günden altı aya kadar geçici olarak meslekten men. Disiplin para cezasının ve geçici meslekten men kararının dayanağıdır. [DOĞRULA: 41 inci maddenin 7584 sayılı Kanunla değişik son metni ve ceza tutarları (yıllık yeniden değerleme ile güncellenebilir) yürürlükteki metinden teyit edilmeli]

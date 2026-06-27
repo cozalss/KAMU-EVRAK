@@ -1,0 +1,23 @@
+Ambalaj Atıklarının Kontrolü Yönetmeliği
+Yönetmelik (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı), RG 26.06.2021/31523 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=38745&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 9 — Ambalaj üreticilerinin yükümlülükleri
+Ambalaj üreticilerini, genişletilmiş üretici sorumluluğu çerçevesinde, ambalajları tasarım aşamasından itibaren mümkün olan en az atık oluşturacak ve geri kazanıma elverişli şekilde üretmekle yükümlü kılar. Üreticiler ayrıca Ambalaj Bilgi Sistemine kayıt olmak, ürettikleri ambalajlara ilişkin bilgi ve belgeleri sisteme bildirmek ve depozito sistemi kriterlerine uygun ambalaj üretmekle sorumludur. Ambalaj üreticisi kayıt ve beyan yazışmalarının dayanağıdır. [DOĞRULA: 9 uncu maddenin güncel fıkra ayrıntıları]
+
+Madde 10 — Piyasaya sürenlerin yükümlülükleri
+Piyasaya sürenleri (ürünü ambalajlı olarak ilk kez piyasaya arz edenleri), genişletilmiş üretici sorumluluğu kapsamında yeniden kullanılabilir ambalajları tercih etmek, uygun işaretleme/etiketleme yapmak, Ambalaj Bilgi Sistemine kayıt olmak ve geri kazanım katılım payı (GEKAP) ile depozito sistemine ilişkin yükümlülüklerini yerine getirmekle sorumlu kılar. Piyasaya süren kaydı ve katılım payı yazışmalarının temel dayanağıdır. [DOĞRULA: 10 uncu maddenin güncel fıkra ayrıntıları]
+
+Madde 19 — Ambalaj atıklarının biriktirilmesi, toplanması ve taşınması
+Ambalaj atıklarının kaynağında diğer atıklardan ayrı biriktirilmesi, Sıfır Atık Yönetmeliği esas alınarak belirli bir sistem dâhilinde toplanması ve taşınmasına ilişkin esasları düzenler. Belediyeler ve yetkili idareler, ambalaj atıklarının ayrı toplanıp geri kazanılması için gerekli sistemi kurmak ve bu atıkların düzenli depolama tesislerine gönderilmesini önlemekle yükümlüdür. Belediye ayrı toplama sistemi ve sözleşme yazışmalarının dayanağıdır. [DOĞRULA: 19 uncu maddedeki belediye/yetkili idare yükümlülüklerinin güncel fıkra metni]
+
+Madde 21 — Geri dönüşüm ve geri kazanım hedefleri
+Piyasaya sürülen ambalajlar için yıllara ve malzeme türüne (cam, plastik, metal, kâğıt/karton, ahşap) göre asgari geri dönüşüm ve geri kazanım hedeflerini belirler. Düzenlemede 2021–2025 ve sonrası dönemler için kademeli olarak artan oranlar öngörülür ve bu hedeflere ulaşma sorumluluğu genişletilmiş üretici sorumluluğu kapsamındaki taraflara verilir. Hedef raporlaması ve geri kazanım performansı yazışmalarının dayanağıdır. [DOĞRULA: 21 inci maddedeki yıl ve malzeme bazlı güncel oranlar (ör. cam, plastik, metal, kâğıt yüzdeleri)]
+
+Madde 25 — Bildirimler, beyanlar ve planlar ile bu kapsamda sunulan bilgi ve belgelerin değerlendirilmesi
+Ambalaj üreticileri ve piyasaya sürenlerin, bir önceki yıl içinde piyasaya arz ettikleri ambalajlara ilişkin verileri her yıl Mart ayı sonuna kadar Ambalaj Bilgi Sistemi üzerinden Bakanlığa bildirmesini düzenler. Çevre lisanslı ayırma ve geri dönüşüm/geri kazanım tesisleri de faaliyetlerine ilişkin beyan formlarını sistem üzerinden doldurur; sunulan bilgi ve belgeler Bakanlıkça değerlendirilir. Ambalaj beyanı ve yıllık bildirim yükümlülüğü yazışmalarının temel dayanağıdır. [DOĞRULA: 25 inci maddenin beyan formu türleri ve süre ayrıntıları]

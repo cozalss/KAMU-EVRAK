@@ -1,0 +1,23 @@
+Motorlu Taşıtlar Vergisi Kanunu
+Kanun No 197, Kabul 18.02.1963, RG 23.02.1963/11342 — YURURLUKTE (resmi PDF 1.5.197 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.197.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Verginin mevzuu (konusu)
+Bu Kanunun 5 ve 6 ncı maddelerindeki tarifelerde yer alan; Karayolları Trafik Kanununa göre trafik şube veya bürolarına kayıt ve tescil edilmiş motorlu kara taşıtları ile Ulaştırma Bakanlığı Sivil Havacılık Genel Müdürlüğüne kayıt ve tescil edilmiş uçak ve helikopterler Motorlu Taşıtlar Vergisine tabidir. Verginin konusu trafik/sivil hava sicili tesciline bağlanmıştır; tescil belgesi ve trafik kaydı tahakkukun dayanak evrakıdır.
+
+Madde 3 — Mükellef
+Motorlu Taşıtlar Vergisinin mükellefi; trafik sicili ile Ulaştırma Bakanlığınca tutulan sivil hava vasıtaları sicilinde adlarına motorlu taşıt kayıt ve tescil edilmiş olan gerçek ve tüzel kişilerdir. Vergi borcu, taşıtın fiilî kullanıcısına değil sicilde malik görünen kişiye yüklenir; bu nedenle satış/devirde tescilin güncellenmesi vergi sorumluluğu için kritiktir.
+
+Madde 7 — Mükellefiyetin başlaması
+Mükellefiyet, motorlu taşıtların trafik sicili ile sivil hava vasıtaları siciline kayıt ve tescili ile başlar. Takvim yılının ilk altı ayında yeni tescil edilen taşıtlarda mükellefiyet o yıl başından, son altı ayında tescil edilenlerde ise son altı aylık dönemin başından itibaren nazara alınır. Devir-temlik nedeniyle yeniden tescilde de değişikliğin yapıldığı döneme göre takip eden dönem/yıl başı esas alınır.
+
+Madde 9 — Verginin tarh, tebliğ ve ödenmesi
+Motorlu taşıtlar vergisi, taşıtların kayıt ve tescilinin yapıldığı yerin vergi dairesince her yıl Ocak ayının başında yıllık olarak tahakkuk ettirilmiş sayılır; ayrıca mükellefe tebliğ olunmaz ve tahakkuk gününde tebliğ edilmiş sayılır. Vergi her yıl Ocak ve Temmuz aylarında iki eşit taksitte; vergi dairesine veya yetkili banka şubelerine ödenir. Eksik veya hiç tahakkuk halinde vergi ilgili vergi dairesince ikmalen tarh edilir.
+
+Madde 13 — Bildirme ve sorumluluk
+Trafik ve sivil hava sicil memurları, tescil ettikleri taşıtların verginin alınmasına esas bilgilerini ve değişikliklerini bir ay içinde ilgili vergi dairesine bildirmek zorundadır; mükellefler de adlarına tescilli taşıtlardaki değişiklikleri bir ay içinde bildirmekle yükümlüdür. Noterler ile taşıtların her türlü satış veya devir işlemini yapanlar, işlemden önce o güne kadar ödenmemiş motorlu taşıtlar vergileri, gecikme zamları/faizleri ve cezalarının ödendiğini gösterir belgeyi istemeye mecburdur; fenni muayene yetkilileri de tescil/muayenede bu ilişiği arar.

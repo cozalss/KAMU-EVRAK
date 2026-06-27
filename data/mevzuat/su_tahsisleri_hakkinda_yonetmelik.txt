@@ -1,0 +1,32 @@
+Su Tahsisleri Hakkında Yönetmelik
+RG 10.12.2019/30974 — YÜRÜRLÜKTE. 18.12.1953 tarihli 6200 sayılı Devlet Su İşleri Genel Müdürlüğünce Yürütülen Hizmetler Hakkında Kanunun ek 7 ve geçici 13 üncü maddeleri ile 4 sayılı Cumhurbaşkanlığı Kararnamesinin 121 inci maddesine dayanılarak DSİ tarafından çıkarılmıştır. Denizler hariç genel sularda DSİ'nin yaptığı su tahsisleri ile diğer kamu kurum ve kuruluşlarının su işlemlerinde DSİ görüşü alınmasının usul ve esaslarını düzenler; içme-kullanma suyu önceliğini ve su-tahsis başvuru/belge sürecini belirleyen temel mevzuattır. Madde metinleri Resmî Gazete (resmigazete.gov.tr 20191210-1) ve LEXPERA konsolide metni üzerinden doğrulanmıştır.
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2019/12/20191210-1.htm
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Yönetmeliğin amacı; su kaynaklarının diğer kamu kurum ve kuruluşlarınca tahsisi, kiralanması, ruhsatlandırılması gibi işlemlerde DSİ görüşünün alınmasına ilişkin usul ve esaslar ile DSİ tarafından yapılacak su tahsislerine ilişkin usul ve esasları belirlemektir. Su-tahsis ve kaynak-kullanım evrakının dayanağını oluşturan giriş maddesidir.
+
+Madde 2 — Kapsam
+Yönetmelik, denizler hariç genel sularda DSİ tarafından yapılan su tahsislerini ve diğer kurum ve kuruluşların yapacağı su işlemlerinde DSİ görüşü alınmasına ilişkin işlemleri kapsar. Hangi su kaynaklarının ve hangi işlemlerin tahsis rejimine tabi olduğunu belirleyerek başvuruların kapsamını çerçeveler.
+
+Madde 4 — Tanımlar
+Su tahsisi; miktarı ve kalitesi belirli sudan, bir ya da birden fazla gerçek veya tüzel kişiye belirli bir amaç için, belirli miktarda ve belirli süre ile su kullanım izni verilmesidir. Tahsis, başvuru, havza planı gibi temel kavramları tanımlayarak su-tahsis evrakının terim çerçevesini kurar.
+
+Madde 7 — Su tahsisinde öncelik sıralaması
+Su tahsisinde öncelik sırası; birinci olarak içme-kullanma suyu ihtiyacı, ardından çevresel su ihtiyacı, tarımsal sulama ve su ürünleri yetiştiriciliği, enerji üretimi ve sınai su ihtiyaçları, son olarak ticari/turizm/rekreasyon ve diğer ihtiyaçlar şeklindedir. Çakışan tahsis taleplerinde içme-kullanma suyunun mutlak önceliğini belirleyen maddedir.
+
+Madde 9 — Tahsis başvurusu ve istenecek belgeler
+Su tahsisi başvurusu; tahsisin amacına (içme-kullanma, sulama, su ürünleri, enerji, sınai, ticari vb.) göre değişen formlar ve eklerle (Ek-1 ila Ek-7) DSİ'ye yapılır. Diğer kamu kurum ve kuruluşları tarafından yürütülen su işlemlerinde de bu kapsamda DSİ görüşü alınması gerekir. Su-tahsis başvuru dilekçesi ve ek belgelerinin dayanağıdır. [DOĞRULA: ek form numaralarının (Ek-1..Ek-7) ve madde içeriğinin sonraki değişikliklerle güncellenmiş cari metinde teyidi]
+
+Madde 11 — Tahsis süresi
+Su tahsis süresi; mevcut ve mutasavver (tasarlanan) projeler açısından değerlendirilerek DSİ tarafından tespit edilir. Tahsis belgesinin geçerlilik süresinin idarece belirlenmesinin esasını koyar; süre uzatımı ve yenileme yazışmalarının çerçevesini oluşturur.
+
+Madde 12 — Tahsisin geçerlilik kazanması (protokol/taahhütname)
+Yapılan su tahsisi, ilgilisi ile DSİ arasında protokol veya taahhütname imzalanması ile geçerlilik kazanır ve tahsis bu belgede yer alan şartlara tabidir. Su-tahsis kararının bağlayıcı evraka (protokol/taahhütname) dönüşmesinin dayanağıdır. [DOĞRULA: protokol/taahhütname imzasına ilişkin madde içeriğinin cari konsolide metinde teyidi]
+
+Madde 14 — Tahsisin iptali
+Tahsis şartlarına aykırı davranılması, suyun tahsis amacı dışında veya hiç kullanılmaması ya da öngörülen projeye süresinde başlanmaması gibi hallerde DSİ tarafından su tahsisi iptal edilir. Tahsis iptali bildirimi ve buna bağlı yaptırım yazışmalarının çerçevesini belirler. [DOĞRULA: iptal sebepleri ve fıkra numaralandırmasının cari metinde teyidi]

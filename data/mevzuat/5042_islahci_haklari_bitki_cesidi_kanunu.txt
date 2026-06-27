@@ -1,0 +1,41 @@
+Yeni Bitki Çeşitlerine Ait Islahçı Haklarının Korunmasına İlişkin Kanun
+Kabul 8/1/2004, RG 15/1/2004 sayı 25347 — YÜRÜRLÜKTE. Burada yalnızca bitki çeşidi tescili ve ıslahçı hakkı başvuru evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5042.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Korumadan yararlanacak çeşitler ve aranan şartlar
+Yeni, farklı, yeknesak ve durulmuş olduğu tespit edilen ve uygun bir çeşit ismi verilen bitki çeşitleri, ıslahçı hakkı verilerek bu Kanun kapsamında korunur. Koruma tüm bitki cins ve türlerini kapsar. Bu hüküm, bir bitki çeşidinin tescil edilip ıslahçı hakkıyla korunabilmesi için sağlanması gereken dört temel koşulu (yenilik, farklılık, yeknesaklık, durulmuşluk) ortaya koyan ana dayanaktır; çeşit tescil başvurusunda bu şartların belgelenmesi gerekir.
+
+Madde 5 — Yenilik şartı
+Bir çeşit, başvuru tarihinden geriye doğru çeşide ait çoğaltım veya hasat edilmiş materyali; yurt içinde bir yıl, yurt dışında dört yıl (ağaç ve asmalarda altı yıl) öncesine kadar ıslahçının izniyle satılmamış veya başka bir şekilde ticari amaçla halka sunulmamışsa yeni sayılır. Bu süreler içindeki ticari kullanım yenilik niteliğini ortadan kaldırır. Başvuru evrakında çeşidin ticari kullanım geçmişine ilişkin bilgi bu nedenle istenir. [DOĞRULA: yurt dışı/ağaç-asma süreleri tam metinden teyit edilmeli]
+
+Madde 6 — Farklılık şartı
+Başvuru tarihinde herkesçe bilinen (genel kullanıma açık) çeşitlerden en az bir önemli özelliği bakımından açıkça ayırt edilebilen çeşit, farklı kabul edilir. Bir çeşidin tescil için başvurulmuş veya tescil edilmiş olması, o çeşidi başvuru tarihinden itibaren herkesçe bilinen çeşit haline getirir. Farklılık, çeşidin diğer çeşitlerden ayırt edilebilirliğini sağlayan temel teknik kriterdir ve teknik inceleme/testlerle belirlenir.
+
+Madde 7 — Yeknesaklık (bir örneklik) şartı
+Kullanılan çoğaltım metoduna bağlı muhtemel değişiklikler dışında, ilgili özellikleri itibarıyla yeterli derecede bir örneklik (homojenlik) gösteren çeşit, yeknesak kabul edilir. Çeşidin çoğaltımı sırasında bireyler arasında beklenenden fazla farklılık bulunmamalıdır. Bu şart, teknik testlerle (FYD/DUS) ölçülür ve başvurunun esastan incelenmesinde aranır.
+
+Madde 8 — Durulmuşluk (değişmezlik) şartı
+Birbirini izleyen çoğaltımlar sırasında veya belirli çoğaltım dönemleri sonunda ilgili özellikleri değişmeksizin aynı kalan çeşit, durulmuş kabul edilir. Çeşit, tekrarlanan üretim/çoğaltma sonrası ayırt edici niteliklerini korumalıdır. Durulmuşluk da yeknesaklık ve farklılık gibi teknik inceleme (FYD/DUS testleri) ile tespit edilir.
+
+Madde 9 — Çeşide isim verilmesi ve çeşit isminin şartları
+Her çeşide, çeşidin tanınmasını sağlayan uygun bir çeşit ismi verilir; isim anlamlı veya anlamsız kelimeler ya da sayılardan oluşabilir. İsim; aynı veya yakın türlerde tescilli isimlerle karışıklığa yol açacak şekilde benzer olmamalı, çeşidin özellikleri/değeri/menşei konusunda yanıltıcı olmamalı, kamu düzenine ve genel ahlaka aykırı bulunmamalı ve önceki marka haklarıyla çakışmamalıdır. UPOV üyesi ülkelerde tescilli ise aynı isim kullanılır. Önerilen çeşit ismi başvuruda belirtilir ve uygunluğu inceleme aşamasında denetlenir.
+
+Madde 10 — Koruma süresi
+Islahçı hakkı koruma süresi, hakkın tescil edildiği tarihten itibaren yirmibeş yıldır; bu süre ağaçlar, asmalar ve patates için otuz yıldır. Koruma, tescille başlayıp süre sonunda kendiliğinden sona erer. Sürenin korunması yıllık ücretlerin (ücret) ödenmesi koşuluna bağlıdır; ücret ödenmezse hak düşebilir. [DOĞRULA: yıllık ücret/hakkın düşmesi ayrıntısı ilgili maddeden teyit edilmeli]
+
+Madde 32 — Islahçı hakkı için başvuru ve başvurunun yapıldığı merci
+Bu Kanunun verdiği koruma hakkından yararlanmak isteyen çeşit sahibi (ıslahçı veya halefi), yazılı olarak Bakanlığa (Tarım ve Orman Bakanlığı / yetkili genel müdürlük) başvurur. Başvuru, çeşit tescili ve ıslahçı hakkının verilmesi sürecini başlatan resmî evraktır. Bu hüküm, ıslahçı hakkı başvuru dilekçesinin hangi mercie ve hangi şekilde (yazılı) sunulacağının dayanağıdır.
+
+Madde 33 — Başvuruda bulunması gereken bilgi ve belgeler
+Başvuruda; başvuru sahibinin ve varsa vekilinin adı ve adresi, ıslahçıya ilişkin bilgiler, çeşidin ait olduğu cins ve türün Türkçe ve Latince adı, önerilen çeşit ismi, çeşidin teknik özellikleri (ayırt edici özellikleri) ve gerekli teknik belgeler, varsa rüçhan hakkı talebine ilişkin bilgiler, çeşidin ticari kullanımına ilişkin bilgiler, coğrafi orijin ve ücretin ödendiğine ilişkin belge yer alır. Başvuruyu vekil yapıyorsa vekâletname, tüzel kişilerde imza sirküleri eklenir. Bu hüküm, çeşit tescili/ıslahçı hakkı başvuru evrakının zorunlu asgari unsurlarının dayanağıdır.
+
+Madde 34 — Rüçhan hakkı (öncelik hakkı)
+UPOV Sözleşmesine taraf bir ülkede veya kuruluşta aynı çeşit için usulüne uygun başvuru yapmış olan başvuru sahibi, ilk başvuru tarihinden itibaren oniki ay içinde Türkiye'de başvurursa rüçhan (öncelik) hakkından yararlanır; bu durumda Türkiye'deki başvuru, ilk başvuru tarihi esas alınarak değerlendirilir. Rüçhan talep eden başvuru sahibi; ilk başvurunun yapıldığı ülke/kuruluş, başvuru tarihi ve numarasını bildirir ve onaylı belgeleri sunar. Bu hüküm, yurt dışı önceki başvuruya dayanan öncelik talebinin başvuru evrakındaki dayanağıdır.
+
+Madde 35 — Başvurunun incelenmesi ve eksikliklerin giderilmesi
+Bakanlık, başvuruyu önce şekli yönden inceler: dilekçenin uygunluğu, gerekli belgelerin tamlığı, rüçhan hakkı şartlarının sağlanması ve ücretin ödenmesi denetlenir. Tespit edilen şekli eksikliklerin giderilmesi için başvuru sahibine süre (otuz gün) verilir; eksiklik süresinde giderilmezse başvuru reddedilir veya rüçhan talebi geçersiz sayılır. Şekli inceleme tamamlanan başvuru, yenilik, başvuru sahibinin hak sahipliği ve çeşit isminin uygunluğu yönünden esastan incelenir. Bu hüküm, eksik başvuru evrakının tamamlanması için verilen sürenin dayanağıdır. [DOĞRULA: süre/red sonucu ayrıntısı tam metinden teyit edilmeli]

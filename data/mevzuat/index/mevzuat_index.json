@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1412,
+ "chunk_sayisi": 1441,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -617,6 +617,41 @@
    "madde_no": 15,
    "madde_tur": "madde",
    "text": "Madde 15 — İdari para cezası (konaklama tesisi ve işletici yükümlülükleri)\nBu Kanunun 3. ve 4. maddelerindeki yükümlülüklere (sorumlu işleticinin ve çalışanların bildirimi) aykırı hareket eden sorumlu işleticilere idarî para cezası uygulanır; cezalar mahallin en büyük mülkî amiri tarafından verilir. Para cezası tutarları her yıl yeniden değerleme oranında güncellenir. [DOĞRULA: 15. maddedeki idarî para cezası taban tutarı (5728 sayılı Kanunla 250 TL olarak belirlenen) güncel yeniden değerleme oranına göre artırılır]"
+  },
+  {
+   "mevzuat": "197 motorlu tasitlar vergisi kanunu",
+   "kaynak_dosya": "197_motorlu_tasitlar_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Verginin mevzuu (konusu)\nBu Kanunun 5 ve 6 ncı maddelerindeki tarifelerde yer alan; Karayolları Trafik Kanununa göre trafik şube veya bürolarına kayıt ve tescil edilmiş motorlu kara taşıtları ile Ulaştırma Bakanlığı Sivil Havacılık Genel Müdürlüğüne kayıt ve tescil edilmiş uçak ve helikopterler Motorlu Taşıtlar Vergisine tabidir. Verginin konusu trafik/sivil hava sicili tesciline bağlanmıştır; tescil belgesi ve trafik kaydı tahakkukun dayanak evrakıdır."
+  },
+  {
+   "mevzuat": "197 motorlu tasitlar vergisi kanunu",
+   "kaynak_dosya": "197_motorlu_tasitlar_vergisi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Mükellef\nMotorlu Taşıtlar Vergisinin mükellefi; trafik sicili ile Ulaştırma Bakanlığınca tutulan sivil hava vasıtaları sicilinde adlarına motorlu taşıt kayıt ve tescil edilmiş olan gerçek ve tüzel kişilerdir. Vergi borcu, taşıtın fiilî kullanıcısına değil sicilde malik görünen kişiye yüklenir; bu nedenle satış/devirde tescilin güncellenmesi vergi sorumluluğu için kritiktir."
+  },
+  {
+   "mevzuat": "197 motorlu tasitlar vergisi kanunu",
+   "kaynak_dosya": "197_motorlu_tasitlar_vergisi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Mükellefiyetin başlaması\nMükellefiyet, motorlu taşıtların trafik sicili ile sivil hava vasıtaları siciline kayıt ve tescili ile başlar. Takvim yılının ilk altı ayında yeni tescil edilen taşıtlarda mükellefiyet o yıl başından, son altı ayında tescil edilenlerde ise son altı aylık dönemin başından itibaren nazara alınır. Devir-temlik nedeniyle yeniden tescilde de değişikliğin yapıldığı döneme göre takip eden dönem/yıl başı esas alınır."
+  },
+  {
+   "mevzuat": "197 motorlu tasitlar vergisi kanunu",
+   "kaynak_dosya": "197_motorlu_tasitlar_vergisi_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Verginin tarh, tebliğ ve ödenmesi\nMotorlu taşıtlar vergisi, taşıtların kayıt ve tescilinin yapıldığı yerin vergi dairesince her yıl Ocak ayının başında yıllık olarak tahakkuk ettirilmiş sayılır; ayrıca mükellefe tebliğ olunmaz ve tahakkuk gününde tebliğ edilmiş sayılır. Vergi her yıl Ocak ve Temmuz aylarında iki eşit taksitte; vergi dairesine veya yetkili banka şubelerine ödenir. Eksik veya hiç tahakkuk halinde vergi ilgili vergi dairesince ikmalen tarh edilir."
+  },
+  {
+   "mevzuat": "197 motorlu tasitlar vergisi kanunu",
+   "kaynak_dosya": "197_motorlu_tasitlar_vergisi_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Bildirme ve sorumluluk\nTrafik ve sivil hava sicil memurları, tescil ettikleri taşıtların verginin alınmasına esas bilgilerini ve değişikliklerini bir ay içinde ilgili vergi dairesine bildirmek zorundadır; mükellefler de adlarına tescilli taşıtlardaki değişiklikleri bir ay içinde bildirmekle yükümlüdür. Noterler ile taşıtların her türlü satış veya devir işlemini yapanlar, işlemden önce o güne kadar ödenmemiş motorlu taşıtlar vergileri, gecikme zamları/faizleri ve cezalarının ödendiğini gösterir belgeyi istemeye mecburdur; fenni muayene yetkilileri de tescil/muayenede bu ilişiği arar."
   },
   {
    "mevzuat": "1 cumhurbaskanligi teskilati cbk",
@@ -4021,6 +4056,83 @@
    "text": "Madde 60 — Malî hizmetler birimi\nİdarelerin malî hizmetler birimi; idarenin bütçesini hazırlama, izleme ve raporlama,\nmalî istatistikleri üretme, ön malî kontrol işlemlerini yürütme ve harcama birimlerine\nmalî konularda danışmanlık yapma görevlerini yerine getirir. Harcama yetkilisi ile\nmuhasebe yetkilisi görevi aynı kişide birleşemez. Malî hizmetler biriminde ön malî\nkontrol görevini yürütenler, malî karar ve işlem sürecinde görev alamaz. Bu birim,\ngenel bütçe kapsamındaki kamu idarelerinde Strateji Geliştirme Başkanlığı / Daire\nBaşkanlığı olarak teşkilatlanır."
   },
   {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Korumadan yararlanacak çeşitler ve aranan şartlar\nYeni, farklı, yeknesak ve durulmuş olduğu tespit edilen ve uygun bir çeşit ismi verilen bitki çeşitleri, ıslahçı hakkı verilerek bu Kanun kapsamında korunur. Koruma tüm bitki cins ve türlerini kapsar. Bu hüküm, bir bitki çeşidinin tescil edilip ıslahçı hakkıyla korunabilmesi için sağlanması gereken dört temel koşulu (yenilik, farklılık, yeknesaklık, durulmuşluk) ortaya koyan ana dayanaktır; çeşit tescil başvurusunda bu şartların belgelenmesi gerekir."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Yenilik şartı\nBir çeşit, başvuru tarihinden geriye doğru çeşide ait çoğaltım veya hasat edilmiş materyali; yurt içinde bir yıl, yurt dışında dört yıl (ağaç ve asmalarda altı yıl) öncesine kadar ıslahçının izniyle satılmamış veya başka bir şekilde ticari amaçla halka sunulmamışsa yeni sayılır. Bu süreler içindeki ticari kullanım yenilik niteliğini ortadan kaldırır. Başvuru evrakında çeşidin ticari kullanım geçmişine ilişkin bilgi bu nedenle istenir. [DOĞRULA: yurt dışı/ağaç-asma süreleri tam metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Farklılık şartı\nBaşvuru tarihinde herkesçe bilinen (genel kullanıma açık) çeşitlerden en az bir önemli özelliği bakımından açıkça ayırt edilebilen çeşit, farklı kabul edilir. Bir çeşidin tescil için başvurulmuş veya tescil edilmiş olması, o çeşidi başvuru tarihinden itibaren herkesçe bilinen çeşit haline getirir. Farklılık, çeşidin diğer çeşitlerden ayırt edilebilirliğini sağlayan temel teknik kriterdir ve teknik inceleme/testlerle belirlenir."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Yeknesaklık (bir örneklik) şartı\nKullanılan çoğaltım metoduna bağlı muhtemel değişiklikler dışında, ilgili özellikleri itibarıyla yeterli derecede bir örneklik (homojenlik) gösteren çeşit, yeknesak kabul edilir. Çeşidin çoğaltımı sırasında bireyler arasında beklenenden fazla farklılık bulunmamalıdır. Bu şart, teknik testlerle (FYD/DUS) ölçülür ve başvurunun esastan incelenmesinde aranır."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Durulmuşluk (değişmezlik) şartı\nBirbirini izleyen çoğaltımlar sırasında veya belirli çoğaltım dönemleri sonunda ilgili özellikleri değişmeksizin aynı kalan çeşit, durulmuş kabul edilir. Çeşit, tekrarlanan üretim/çoğaltma sonrası ayırt edici niteliklerini korumalıdır. Durulmuşluk da yeknesaklık ve farklılık gibi teknik inceleme (FYD/DUS testleri) ile tespit edilir."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Çeşide isim verilmesi ve çeşit isminin şartları\nHer çeşide, çeşidin tanınmasını sağlayan uygun bir çeşit ismi verilir; isim anlamlı veya anlamsız kelimeler ya da sayılardan oluşabilir. İsim; aynı veya yakın türlerde tescilli isimlerle karışıklığa yol açacak şekilde benzer olmamalı, çeşidin özellikleri/değeri/menşei konusunda yanıltıcı olmamalı, kamu düzenine ve genel ahlaka aykırı bulunmamalı ve önceki marka haklarıyla çakışmamalıdır. UPOV üyesi ülkelerde tescilli ise aynı isim kullanılır. Önerilen çeşit ismi başvuruda belirtilir ve uygunluğu inceleme aşamasında denetlenir."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Koruma süresi\nIslahçı hakkı koruma süresi, hakkın tescil edildiği tarihten itibaren yirmibeş yıldır; bu süre ağaçlar, asmalar ve patates için otuz yıldır. Koruma, tescille başlayıp süre sonunda kendiliğinden sona erer. Sürenin korunması yıllık ücretlerin (ücret) ödenmesi koşuluna bağlıdır; ücret ödenmezse hak düşebilir. [DOĞRULA: yıllık ücret/hakkın düşmesi ayrıntısı ilgili maddeden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — Islahçı hakkı için başvuru ve başvurunun yapıldığı merci\nBu Kanunun verdiği koruma hakkından yararlanmak isteyen çeşit sahibi (ıslahçı veya halefi), yazılı olarak Bakanlığa (Tarım ve Orman Bakanlığı / yetkili genel müdürlük) başvurur. Başvuru, çeşit tescili ve ıslahçı hakkının verilmesi sürecini başlatan resmî evraktır. Bu hüküm, ıslahçı hakkı başvuru dilekçesinin hangi mercie ve hangi şekilde (yazılı) sunulacağının dayanağıdır."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 33,
+   "madde_tur": "madde",
+   "text": "Madde 33 — Başvuruda bulunması gereken bilgi ve belgeler\nBaşvuruda; başvuru sahibinin ve varsa vekilinin adı ve adresi, ıslahçıya ilişkin bilgiler, çeşidin ait olduğu cins ve türün Türkçe ve Latince adı, önerilen çeşit ismi, çeşidin teknik özellikleri (ayırt edici özellikleri) ve gerekli teknik belgeler, varsa rüçhan hakkı talebine ilişkin bilgiler, çeşidin ticari kullanımına ilişkin bilgiler, coğrafi orijin ve ücretin ödendiğine ilişkin belge yer alır. Başvuruyu vekil yapıyorsa vekâletname, tüzel kişilerde imza sirküleri eklenir. Bu hüküm, çeşit tescili/ıslahçı hakkı başvuru evrakının zorunlu asgari unsurlarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Rüçhan hakkı (öncelik hakkı)\nUPOV Sözleşmesine taraf bir ülkede veya kuruluşta aynı çeşit için usulüne uygun başvuru yapmış olan başvuru sahibi, ilk başvuru tarihinden itibaren oniki ay içinde Türkiye'de başvurursa rüçhan (öncelik) hakkından yararlanır; bu durumda Türkiye'deki başvuru, ilk başvuru tarihi esas alınarak değerlendirilir. Rüçhan talep eden başvuru sahibi; ilk başvurunun yapıldığı ülke/kuruluş, başvuru tarihi ve numarasını bildirir ve onaylı belgeleri sunar. Bu hüküm, yurt dışı önceki başvuruya dayanan öncelik talebinin başvuru evrakındaki dayanağıdır."
+  },
+  {
+   "mevzuat": "5042 islahci haklari bitki cesidi kanunu",
+   "kaynak_dosya": "5042_islahci_haklari_bitki_cesidi_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Başvurunun incelenmesi ve eksikliklerin giderilmesi\nBakanlık, başvuruyu önce şekli yönden inceler: dilekçenin uygunluğu, gerekli belgelerin tamlığı, rüçhan hakkı şartlarının sağlanması ve ücretin ödenmesi denetlenir. Tespit edilen şekli eksikliklerin giderilmesi için başvuru sahibine süre (otuz gün) verilir; eksiklik süresinde giderilmezse başvuru reddedilir veya rüçhan talebi geçersiz sayılır. Şekli inceleme tamamlanan başvuru, yenilik, başvuru sahibinin hak sahipliği ve çeşit isminin uygunluğu yönünden esastan incelenir. Bu hüküm, eksik başvuru evrakının tamamlanması için verilen sürenin dayanağıdır. [DOĞRULA: süre/red sonucu ayrıntısı tam metinden teyit edilmeli]"
+  },
+  {
    "mevzuat": "5070 elektronik imza",
    "kaynak_dosya": "5070_elektronik_imza.txt",
    "madde_no": 3,
@@ -4985,6 +5097,41 @@
    "madde_no": 17,
    "madde_tur": "madde",
    "text": "Madde 17 — Sigorta yaptırmayan üreticilere ilişkin sonuç\nKanun kapsamında uygulama yılında yer alan riskler için tarım sigortası yaptırmayan üreticilerin, 2090 sayılı Kanundan (tabii afet nedeniyle zarar gören çiftçilere yapılacak yardımlar) yararlanamayacağını düzenler. Poliçe yaptırmamanın doğal afet yardımı başvurusundaki sonucunun dayanağıdır."
+  },
+  {
+   "mevzuat": "5366 yipranan tarihi kulturel tasinmaz yenileme kanunu",
+   "kaynak_dosya": "5366_yipranan_tarihi_kulturel_tasinmaz_yenileme_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nKanunun amacını; büyükşehir / il / ilçe belediyeleri, büyükşehir sınırı içindeki ilçe ve ilk kademe belediyeleri, nüfusu 50.000'in üzerindeki belediyeler ile yetki alanı dışında il özel idarelerince, yıpranan ve özelliğini kaybetmeye yüz tutmuş; kültür ve tabiat varlıklarını koruma kurullarınca sit alanı olarak tescil ve ilan edilen bölgeler ile koruma alanlarının yeniden inşa ve restore edilerek konut/ticaret/kültür/turizm/sosyal donatı alanları oluşturulması, tabii afet risklerine karşı tedbir alınması ve tarihî-kültürel taşınmazların yenilenerek korunup yaşatılarak kullanılması olarak tanımlar. Kanun; yenileme alanlarının tespitine, teknik altyapı ve yapısal standartlarına, projelerin oluşturulmasına, uygulama/örgütlenme/yönetim/denetim/katılım/kullanıma ilişkin usul ve esasları kapsar. Yenileme alanı projelerinin amaç ve kapsam dayanağıdır."
+  },
+  {
+   "mevzuat": "5366 yipranan tarihi kulturel tasinmaz yenileme kanunu",
+   "kaynak_dosya": "5366_yipranan_tarihi_kulturel_tasinmaz_yenileme_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Yenileme alanlarının belirlenmesi ve onaylanması\nYenileme alanlarının; il özel idarelerinde il genel meclisinin, belediyelerde belediye meclisinin üye tam sayısının SALT ÇOĞUNLUĞU kararı ile belirleneceğini düzenler (6306/15 ile değişik). İl genel meclisi ve büyükşehir dışındaki belediye meclisi kararları doğrudan Cumhurbaşkanına; büyükşehirlerde ilçe belediye meclisi kararları büyükşehir belediye meclisince onaylandıktan sonra Cumhurbaşkanına sunulur. Cumhurbaşkanı projenin uygulanıp uygulanmamasına ÜÇ AY içinde karar verir (önceki halinde Bakanlar Kurulu — 700 sayılı KHK ile değişik). Kabul edilen alanlarda uygulama etap etap projelendirilebilir; etap proje ve programları meclis salt çoğunluğu kararı ve belediyelerde başkanın / il özel idaresinde valinin onayı ile uygulamaya konulur. Belirlenen sınırlar içindeki tüm taşınmazlar, yenileme projelerinin koruma bölge kurulunca karara bağlanmasının ardından bu Kanuna göre yenileme projesi hükümlerine tabi olur. Yenileme alanı ilanı ve meclis kararı yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5366 yipranan tarihi kulturel tasinmaz yenileme kanunu",
+   "kaynak_dosya": "5366_yipranan_tarihi_kulturel_tasinmaz_yenileme_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Uygulama, yenileme projeleri ve koruma kurulu onayı\nYenileme projelerinin il özel idaresi ve belediyece hazırlanıp/hazırlatılarak kendi eliyle veya kamu kurum-kuruluşları ya da gerçek/özel hukuk tüzel kişilerine yaptırılarak uygulanacağını; TOKİ ile ortak uygulama yapılabileceğini ya da TOKİ'ye yaptırılabileceğini düzenler. Yenileme projelerinin; uygulama alanındaki taşınmaz kültür ve tabiat varlıklarının RÖLÖVE, RESTİTÜSYON, RESTORASYON projeleri ile onarılacak veya yeniden inşa edilecek yapıların imar mevzuatında öngörülen projelerinden oluştuğunu belirtir. Projeleri onaylamak üzere 2863 sayılı Kanunun 51. maddesine göre gerektiği kadar Kültür ve Tabiat Varlıklarını Koruma Bölge Kurulu oluşturulur; kurulca onaylanan projeler idarece uygulanır. Yenileme alanı uygulamaları her türlü vergi/resim/harç/ücretten muaftır ve mal-hizmet alımları ile yapım işleri (ceza ve ihalelerden yasaklama hükümleri hariç) 4734 sayılı Kamu İhale Kanunundan muaftır. Tabii afet riski taşıyan bölgelerde tasfiye dahil düzenleme yapılabilir, yasak konulabilir. Proje türleri, koruma kurulu onayı ve ihale istisnası yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5366 yipranan tarihi kulturel tasinmaz yenileme kanunu",
+   "kaynak_dosya": "5366_yipranan_tarihi_kulturel_tasinmaz_yenileme_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Taşınmaz tasarruflarının kısıtlanması ve kamulaştırma\nİl özel idaresi ve belediyenin, yenileme alanı ilan edilen yerlerdeki taşınmazlar üzerinde her türlü yapılaşma, kullanım ve işletme konusunda proje tamamlanıncaya kadar GEÇİCİ KISITLAMA uygulayabileceğini düzenler. Yapıların boşaltılması, yıkımı ve kamulaştırılmasında ANLAŞMA yolu esastır; anlaşma sağlanamazsa gerçek ve özel hukuk tüzel kişilerinin taşınmazları idarece kamulaştırılabilir ve bu kamulaştırmalar 2942 sayılı Kanunun 3. maddesindeki iskân projeleri amaçlı kamulaştırma sayılır. Mülkiyet hanesi açık, varisi belli olmayan, kayyım tayinli, ihtilaflı/davalı taşınmazlar için de aynı hükümlere göre işlem yürütülür; idare veraset ilamı çıkarttırmaya, kayyım tayin ettirmeye veya son malike göre işlem yapmaya yetkilidir. Kamulaştırma yerine satın alma, kat karşılığı, intifa/üst hakkı ile sınırlı ayni hak tesis edilebilir; kamulaştırma bedeli tespiti ve tescil davalarında 2942 sayılı Kanunun 15. maddesi uygulanır. Yenileme alanındaki Hazine taşınmazları (askerî yasak bölge, havaalanı, tahsisli/ön izinli yerler hariç) Cumhurbaşkanı kararıyla projeyi yürüten idareye BEDELSİZ devredilir; beş yıl içinde amacına uygun kullanılmazsa resen Hazine adına tescil edilir, elde edilen gelirin proje/uygulama giderleri düşüldükten sonra kalanın %50'si Hazineye aktarılır. Kısıtlama, kamulaştırma ve Hazine devri yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5366 yipranan tarihi kulturel tasinmaz yenileme kanunu",
+   "kaynak_dosya": "5366_yipranan_tarihi_kulturel_tasinmaz_yenileme_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Sınırlı ayni hak tesisi\nKamu kurum ve kuruluşlarının elindeki tarihî eser niteliğindeki bina ve müştemilatının; tarihî özelliklerine uygun restore ettirilmek ve/veya tarihî özellikleri korunmak ve mülkiyeti ilgili kamu kurumunda kalmak şartıyla, eğitim/sağlık/kültür/sosyal amaçlı olarak kamu yararına çalışan derneklere, vakıflara, kamu kurumu niteliğindeki meslek kuruluşlarına, üniversitelere ve diğer kamu kurumlarına; ticarî faaliyetlerde kullanılmak üzere de gerçek ve özel hukuk tüzel kişilerine SINIRLI AYNİ HAK olarak tesis edilebileceğini düzenler. Sınırlı ayni hak tesisine ilişkin esas ve usuller ile bedel ve kullanma süresi; ilgili belediye veya kamu kurumlarınca Türk Medeni Kanunu, İl Özel İdaresi Kanunu, Belediye Kanunu ve ilgili diğer mevzuat çerçevesinde belirlenir. Tarihî bina restorasyonu için irtifak/intifa ve sınırlı ayni hak tesis yazışmalarının dayanağıdır."
   },
   {
    "mevzuat": "5378 engelliler hakkinda kanun",
@@ -9558,6 +9705,62 @@
    "text": "Madde 45 — Kanalizasyon sistemine bağlantı kısıtları\nAtıksu altyapı tesisleri kapsamında inşa edilip işletilen kanalizasyon sistemlerine yapılacak bağlantıları kısıtlamalara bağlar: ayrık sistemde yağmur suyu, temassız soğutma suyu ve kirli olmayan drenaj suları kanalizasyona; her türlü atık/atıksu da yağmur suyu kanalına bağlanamaz, usulsüz bağlantılar kesilir. Kesikli çalışan işletmeler bağlantı öncesi dengeleme havuzu inşa etmek zorundadır ve madde, kanalizasyona kabul edilemeyecek (yanıcı/patlayıcı, tıkayıcı, zehirli vb.) atıkları da sınırlar. Endüstriyel atıksuların kanalizasyona bağlantı koşulları ve bağlantı izni reddi yazışmalarının dayanağıdır. [DOĞRULA: 45 inci maddenin (h) ve (ı) bentlerinin güncel tam metni]"
   },
   {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nYönetmeliğin amacı; su kaynaklarının diğer kamu kurum ve kuruluşlarınca tahsisi, kiralanması, ruhsatlandırılması gibi işlemlerde DSİ görüşünün alınmasına ilişkin usul ve esaslar ile DSİ tarafından yapılacak su tahsislerine ilişkin usul ve esasları belirlemektir. Su-tahsis ve kaynak-kullanım evrakının dayanağını oluşturan giriş maddesidir."
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nYönetmelik, denizler hariç genel sularda DSİ tarafından yapılan su tahsislerini ve diğer kurum ve kuruluşların yapacağı su işlemlerinde DSİ görüşü alınmasına ilişkin işlemleri kapsar. Hangi su kaynaklarının ve hangi işlemlerin tahsis rejimine tabi olduğunu belirleyerek başvuruların kapsamını çerçeveler."
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Tanımlar\nSu tahsisi; miktarı ve kalitesi belirli sudan, bir ya da birden fazla gerçek veya tüzel kişiye belirli bir amaç için, belirli miktarda ve belirli süre ile su kullanım izni verilmesidir. Tahsis, başvuru, havza planı gibi temel kavramları tanımlayarak su-tahsis evrakının terim çerçevesini kurar."
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Su tahsisinde öncelik sıralaması\nSu tahsisinde öncelik sırası; birinci olarak içme-kullanma suyu ihtiyacı, ardından çevresel su ihtiyacı, tarımsal sulama ve su ürünleri yetiştiriciliği, enerji üretimi ve sınai su ihtiyaçları, son olarak ticari/turizm/rekreasyon ve diğer ihtiyaçlar şeklindedir. Çakışan tahsis taleplerinde içme-kullanma suyunun mutlak önceliğini belirleyen maddedir."
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Tahsis başvurusu ve istenecek belgeler\nSu tahsisi başvurusu; tahsisin amacına (içme-kullanma, sulama, su ürünleri, enerji, sınai, ticari vb.) göre değişen formlar ve eklerle (Ek-1 ila Ek-7) DSİ'ye yapılır. Diğer kamu kurum ve kuruluşları tarafından yürütülen su işlemlerinde de bu kapsamda DSİ görüşü alınması gerekir. Su-tahsis başvuru dilekçesi ve ek belgelerinin dayanağıdır. [DOĞRULA: ek form numaralarının (Ek-1..Ek-7) ve madde içeriğinin sonraki değişikliklerle güncellenmiş cari metinde teyidi]"
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Tahsis süresi\nSu tahsis süresi; mevcut ve mutasavver (tasarlanan) projeler açısından değerlendirilerek DSİ tarafından tespit edilir. Tahsis belgesinin geçerlilik süresinin idarece belirlenmesinin esasını koyar; süre uzatımı ve yenileme yazışmalarının çerçevesini oluşturur."
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Tahsisin geçerlilik kazanması (protokol/taahhütname)\nYapılan su tahsisi, ilgilisi ile DSİ arasında protokol veya taahhütname imzalanması ile geçerlilik kazanır ve tahsis bu belgede yer alan şartlara tabidir. Su-tahsis kararının bağlayıcı evraka (protokol/taahhütname) dönüşmesinin dayanağıdır. [DOĞRULA: protokol/taahhütname imzasına ilişkin madde içeriğinin cari konsolide metinde teyidi]"
+  },
+  {
+   "mevzuat": "su tahsisleri hakkinda yonetmelik",
+   "kaynak_dosya": "su_tahsisleri_hakkinda_yonetmelik.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Tahsisin iptali\nTahsis şartlarına aykırı davranılması, suyun tahsis amacı dışında veya hiç kullanılmaması ya da öngörülen projeye süresinde başlanmaması gibi hallerde DSİ tarafından su tahsisi iptal edilir. Tahsis iptali bildirimi ve buna bağlı yaptırım yazışmalarının çerçevesini belirler. [DOĞRULA: iptal sebepleri ve fıkra numaralandırmasının cari metinde teyidi]"
+  },
+  {
    "mevzuat": "sulak alanlarin korunmasi yonetmeligi",
    "kaynak_dosya": "sulak_alanlarin_korunmasi_yonetmeligi.txt",
    "madde_no": 7,
@@ -9887,5 +10090,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 218
+ "mevzuat_sayisi": 222
 }

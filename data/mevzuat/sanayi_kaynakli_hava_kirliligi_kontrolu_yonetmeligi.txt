@@ -1,0 +1,32 @@
+Sanayi Kaynaklı Hava Kirliliğinin Kontrolü Yönetmeliği
+RG 03.07.2009/27277, Çevre Şehircilik ve İklim Değişikliği Bakanlığı (2872 sayılı Çevre Kanununa dayanır) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=13184&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Sanayi ve enerji üretim tesislerinin faaliyeti sonucu atmosfere yayılan is, duman, toz, gaz, buhar ve aerosol halindeki emisyonları kontrol altına almayı; insanı ve çevresini hava kirlenmesinden doğacak tehlikelerden korumayı amaçlar. Emisyon izni başvurusu, emisyon ölçüm raporu ve hava emisyonu uygunluk yazışmalarının dayanak amacını ortaya koyar.
+
+Madde 2 — Kapsam
+İşletmelerin kurulması ve işletilmesi sırasında uyulacak esasları, hava emisyonlarının önlenmesi ve sınırlandırılmasına ilişkin usul ve esasları kapsar. Nükleer tesisler ile kapalı ortam (iş sağlığı) hava kalitesi gibi bazı konuların kapsam dışı olduğunu belirtir. Bir tesisin emisyon izni yükümlülüğüne tabi olup olmadığını belirlemede kapsam maddesidir.
+
+Madde 4 — Tanımlar
+Emisyon, emisyon kaynağı, atık gaz, yakma tesisi, emisyon ölçüm raporu, hava kirlenmesine katkı değeri gibi çok sayıda teknik kavramı tanımlar. "Emisyon ölçüm raporu", çevre izni/lisans başvuru dosyasının hava emisyonları bölümüne esas teşkil eden rapor olarak tanımlanır. Emisyon izni ve ölçüm yazışmalarında atıf yapılan kavram maddesidir. [DOĞRULA: tanım sayısı ve içerikleri 2014/2020 değişiklikleriyle güncellenmiştir]
+
+Madde 5 — Hava emisyonu kapsamında değerlendirilen işletmeler (çevre izni zorunluluğu)
+Hava emisyonu olan ve "Çevre Kanununca Alınması Gereken İzin ve Lisanslar Hakkında Yönetmelik" kapsamında yer alan işletmelerin kurulması ve işletilmesi için çevre izni (emisyon konulu) alınmasının zorunlu olduğunu düzenler. Bu işletmelerin hava emisyonları bu yönetmelik hükümleri ve sınır değerlerine göre değerlendirilir. Emisyon izni başvuru ve çevre izni yazışmalarının temel dayanağıdır.
+
+Madde 6 — Tesislerin kurulması ve işletilmesinde uyulacak esaslar
+İşletmelerin, çevreye zararlı etkilerini "mevcut en iyi üretim ve/veya arıtım teknikleri" uygulayarak azaltmasını; bu yönetmelikte ve eklerinde (Ek-1/Ek-2) belirtilen emisyon sınır değerlerini aşmamasını; tesis etki alanında hava kalitesi sınır değerlerini sağlamasını ve emisyon ölçümlerini öngörülen yöntemlerle yaptırmasını düzenler. Emisyon sınır değerleri ve kütlesel debi eşikleri esas olarak eklerde (Ek-2) yer alır. Emisyon uygunluğu değerlendirmesi ve ölçüm istem yazılarının dayanağıdır.
+
+Madde 24 — Emisyon ölçüm raporu
+İşletmelerin hazırlatacağı emisyon ölçüm raporunun içeriğinin Bakanlıkça belirleneceğini; işletme sırrı niteliğindeki bilgilerin talep üzerine gizli tutulacağını düzenler. Çevre izni başvurusunda sunulan emisyon ölçüm raporu ve eksiklik bildirim yazışmalarının dayanak maddesidir. [DOĞRULA: rapor içeriğine ilişkin alt düzenleme tebliği güncel sürümle teyit edilmelidir]
+
+Madde 34 — Denetim
+Çevre iznine tabi tesislerin izlenip denetleneceğini; işletmecilerin denetimle yetkili kişilerin tesise girmesine, ölçüm/test yapmasına izin vermek ve istenen bilgi/belgeyi vermek zorunda olduğunu düzenler. Hava emisyonu denetim tutanakları ve bilgi/belge talep yazılarının dayanağıdır.
+
+Madde 36 — İdari yaptırımlar
+Yönetmelikte öngörülen yükümlülükleri (kurulma/işletme esasları, ölçüm, bilgi verme, denetime izin verme vb.) zamanında yerine getirmeyen veya aykırı davrananlara 2872 sayılı Çevre Kanunu uyarınca idari yaptırım uygulanacağını düzenler. Hava kirliliği kaynaklı idari para cezası ve yaptırım kararı yazışmalarının dayanak maddesidir.

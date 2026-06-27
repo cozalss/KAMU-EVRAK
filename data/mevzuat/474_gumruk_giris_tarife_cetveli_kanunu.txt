@@ -1,0 +1,20 @@
+Gümrük Giriş Tarife Cetveli Hakkında Kanun
+Kanun No 474, Kabul 14/5/1964, RG 25/5/1964 sayı 11711 — YÜRÜRLÜKTE (mevzuat.gov.tr ve gumruk.com.tr konsolide metinleri üzerinden 27/6/2026 itibarıyla doğrulandı). Cetvel, Armonize Sistem (HS) Nomenklatürü esas alınarak düzenlenir. Not: 'Bakanlar Kurulu' yetkileri 2/7/2018 tarihli 700 sayılı KHK ile 'Cumhurbaşkanı'na devredilmiştir. Yalnızca gümrük tarife/sınıflandırma ve ithalat vergi oranı evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.474.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Gümrük Giriş Tarife Cetveli ve Armonize Sistem
+Türkiye Gümrük Giriş Tarife Cetveli, Armonize Sistem (Harmonized System) Nomenklatürü esas alınarak yeniden düzenlenmiştir ve bu Kanuna ekli cetvel olarak yürürlüğe konulmuştur. Cetvelde yer alan pozisyonlar, kodlar, eşya tanımları, bölüm/fasıl notları ve yorum kuralları, ithal eşyasının tarifedeki yerinin (GTİP) belirlenmesinde esas alınır. Bu hüküm, eşyanın tarife sınıflandırmasının ve GTİP beyanının temel dayanağıdır.
+
+Madde 2 — Cumhurbaşkanının gümrük vergisi oranlarını değiştirme yetkisi
+Cumhurbaşkanı, Tarife Cetvelindeki gümrük vergisi oranlarını eşyanın her biri için ayrı ayrı veya toplu olarak sıfıra kadar indirmeye, kanunda öngörülen tavana (50'ye) kadar yükseltmeye ve tarife notlarında değişiklik yapmaya yetkilidir. Uluslararası anlaşmalardan doğan yükümlülükler saklıdır. Bu hüküm, ithalatta uygulanan güncel gümrük vergisi oranlarının ve ithalat rejimi kararlarının yasal dayanağıdır. [DOĞRULA: tavan oran ve güncel oran her zaman yürürlükteki İthalat Rejimi Kararından teyit edilmelidir.]
+
+Madde 3 — Yatırım malı ithalatında taksitle ödeme
+Kalkınma planı ve programlarına uygun yatırım malı niteliğindeki eşyanın ithalinde Cumhurbaşkanı, gümrük vergisinin en çok beş yıllık bir dönem içinde eşit yıllık taksitlerle ödenmesine izin verebilir. Bu hüküm, uygun yatırım malı ithalatında taksitlendirilmiş gümrük vergisi ödeme talebinin dayanağıdır. [DOĞRULA: güncel uygulama koşulları yürürlükteki ithalat/teşvik mevzuatından teyit edilmelidir.]
+
+Madde 5 — Tarife hazırlık komisyonu
+Tarife cetvelinin hazırlanması, güncellenmesi ve sınıflandırmaya ilişkin hazırlık çalışmalarını yürütmek üzere bir komisyon oluşturulur. Komisyon, 15 günden az ve iki aydan çok olmayan aralıklarla toplanarak çalışmalarını yürütür. Bu hüküm, tarife cetvelindeki güncelleme ve sınıflandırma kararlarının kurumsal hazırlık sürecini düzenler.

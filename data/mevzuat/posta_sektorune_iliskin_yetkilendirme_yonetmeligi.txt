@@ -1,0 +1,23 @@
+Posta Sektörüne İlişkin Yetkilendirme Yönetmeliği
+BTK Yönetmeliği (RG 03.06.2014/29019, son değişiklik RG 08.03.2025/32835 — YÜRÜRLÜKTE; dayanak: 6475 sayılı Posta Hizmetleri Kanunu)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2014/06/20140603-9.htm
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Yönetmeliğin amacının, posta hizmeti verilebilmesi ve/veya bunun için gerekli altyapının kurulup işletilebilmesine yönelik usul ve esasları düzenlemek olduğunu belirtir. 6475 sayılı Posta Hizmetleri Kanununa dayanılarak çıkarılmıştır ve posta sektöründe faaliyet gösterecek hizmet sağlayıcıların yetkilendirilmesini kapsar.
+
+Madde 4 — Tanımlar
+Yönetmelikte geçen kavramları tanımlar. Değer konulmuş (sigortalı) gönderi, kaybı, çalınması veya hasara uğraması hâlinde göndericinin kabulde beyan ettiği değere kadar tazminat istenebilen gönderidir. Haberleşme gönderisi, kitap/katalog/süreli yayınlar hariç fiziksel araç üzerine yazılan veya elektronik ileti şeklinde hazırlanan ve telgraf dâhil her türlü gönderiyi; kullanıcı ise hizmetlerden gönderici veya alıcı olarak faydalanan gerçek/tüzel kişiyi ifade eder.
+
+Madde 16 — Hizmet sağlayıcının yükümlülükleri
+Posta hizmeti sağlayıcılarının yetkilendirme süresince uymakla yükümlü olduğu esasları sayar. Sağlayıcı; posta hizmetlerinin gizliliği ve güvenliğine ilişkin düzenlemelere, kişisel verilerin korunmasına ilişkin düzenlemelere ve kullanıcıların korunması ile hizmet kalitesine ilişkin düzenlemelere uymak zorundadır. Ayrıca hizmetin sürekli sunulması için gerekli tedbirleri almak ve yetkilendirmeyi sonlandırmadan önce kullanıcılarına karşı yükümlülüklerini ifa etmekle yükümlüdür.
+
+Madde 17 — Mücbir sebepler
+Hizmet sağlayıcının kontrolü dışında gelişen ve yükümlülüklerini yerine getirmesini engelleyen mücbir sebep hâllerini düzenler. Bu durumlarda hizmet sunumunda yaşanan aksaklıklar ve kullanıcı koruma önlemlerinin nasıl değerlendirileceğine ilişkin esaslar belirlenir. [DOĞRULA: madde 17 başlığının 'Mücbir sebepler' olduğu ve içeriğinin kullanıcı koruma boyutu]
+
+Madde 20 — Kabul şartları
+Gönderilerin hizmet sağlayıcı tarafından kabul edilmesine ilişkin şartları düzenler. Değerli maddeler ve kıymetli evrak, ancak değer konulmuş veya sigortalı olarak gönderilmesi şartıyla kabul edilebilir. Böylece kayıp, çalınma veya hasar hâlinde tazminat hakkının doğabilmesi için gönderinin kabul aşamasındaki beyan ve kayıt koşulları belirlenir. [DOĞRULA: madde 20 başlığının 'Kabul şartları' olduğu ve son değişikliklerle madde numarasının kaymadığı]

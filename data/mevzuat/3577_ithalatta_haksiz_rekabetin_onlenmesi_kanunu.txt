@@ -1,0 +1,29 @@
+İthalatta Haksız Rekabetin Önlenmesi Hakkında Kanun
+Kanun No 3577, Kabul 14/6/1989, RG 1/7/1989 sayı 20212 — YÜRÜRLÜKTE (4412 sayılı Kanunla değiştirilmiş; mevzuat.gov.tr ve orgTR.org/LEXPERA konsolide metinleri üzerinden 27/6/2026 itibarıyla doğrulandı). Yalnızca damping/sübvansiyon şikâyeti, başvuru ve soruşturma evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3577.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanımlar (damping, sübvansiyon, zarar, üretim dalı)
+Bu maddede Kanunun temel kavramları tanımlanır: damping, bir malın Türkiye'ye ihraç fiyatının benzer malın normal değerinin altında olması; sübvansiyon, menşe veya ihracatçı ülkenin sağladığı doğrudan ya da dolaylı malî katkı veya fayda; zarar ise bir üretim dalında maddî zarar, maddî zarar tehdidi veya bir üretim dalının kurulmasının fizikî olarak gecikmesidir. Ayrıca benzer mal, normal değer ve üretim dalı tanımlanır. Bu tanımlar, şikâyet ve soruşturma evrakının kavramsal dayanağıdır.
+
+Madde 4 — Şikâyet üzerine veya re'sen inceleme
+Dampinge veya sübvansiyona konu ithalattan maddî zarar gördüğünü, maddî zarar tehdidi altında olduğunu veya bir üretim dalının kurulmasının fizikî olarak geciktiğini iddia eden üreticiler ya da üretim dalı adına hareket eden gerçek/tüzel kişi veya kuruluşlar İthalat Genel Müdürlüğüne yazılı olarak başvurabilir. Genel Müdürlük, şikâyet üzerine veya gerektiğinde re'sen damping/sübvansiyon incelemesi yapabilir. Bu hüküm, damping şikâyet dilekçesinin ve başvuru ehliyetinin dayanağıdır.
+
+Madde 5 — Genel Müdürlüğün görevleri
+İthalat Genel Müdürlüğü; başvuru üzerine ön inceleme yapmak, soruşturma açılıp açılmaması konusunda Kurula teklifte bulunmak, açılan soruşturmayı yürütmek ve İthalatta Haksız Rekabeti Değerlendirme Kuruluna sekretarya hizmeti vermekle görevlidir. Bu hüküm, şikâyet sonrası idarî sürecin (ön inceleme ve soruşturma yürütme) yetkili merciini belirler.
+
+Madde 6 — İthalatta Haksız Rekabeti Değerlendirme Kurulu
+İthalatta Haksız Rekabeti Değerlendirme Kurulu, İthalat Genel Müdürünün (veya görevlendireceği yardımcısının) başkanlığında ilgili bakanlık/kuruluş ve meslek örgütlerinin yetkili temsilcilerinden oluşur. Kurul; soruşturma açılması/kapatılması, geçici önlemlerin onaylanması, taahhütlerin değerlendirilmesi ve soruşturma sonuçlarına göre önlem alınması konularında karar verir. Bu hüküm, damping/sübvansiyon kararlarını veren karar organını düzenler. [DOĞRULA: Kurul üyelerinin güncel bakanlık adları yeniden teşkilatlanmalarla değişmiş olabilir.]
+
+Madde 7 — Dampinge karşı vergi ve telafi edici vergi
+Soruşturma sonucunda damping ve buna bağlı zararın tespiti hâlinde, dampinge konu malın ithalinde damping marjını aşmayacak şekilde dampinge karşı vergi; sübvansiyona konu malın ithalinde ise sübvansiyon miktarını aşmayacak şekilde telafi edici vergi alınır. Aynı mal için hem dampinge karşı vergi hem telafi edici vergi aynı anda uygulanmaz. Bu hüküm, kesin önlem olarak alınan ek malî yükümlülüğün dayanağıdır.
+
+Madde 11 — Taahhütler
+İhracatçılar, soruşturma sürecinde fiyatlarını gözden geçirmeyi veya dampingli/sübvansiyonlu ihracatı durdurmayı taahhüt edebilir; zararı giderici nitelikteki taahhütler Kurulca kabul edilirse soruşturma önlem alınmaksızın durdurulabilir veya askıya alınabilir. Bu hüküm, fiyat taahhüdü başvurusu ve buna ilişkin yazışmaların dayanağıdır.
+
+Madde 12 — Geçici önlemler
+Soruşturma sırasında, dampingli veya sübvansiyonlu ithalatın varlığı ve bunun zarara yol açtığı yönünde ön belirleme yapılması hâlinde, ön belirlenen marj/miktar kadar teminat alınması suretiyle geçici önlem uygulanabilir. Geçici önlemler kural olarak dört ay, koşullara göre altı aya kadar uygulanabilir. Bu hüküm, soruşturma devam ederken alınan geçici teminat/önlem evrakının dayanağıdır. [DOĞRULA: güncel azamî süreler için yürürlükteki yönetmelik teyit edilmelidir.]

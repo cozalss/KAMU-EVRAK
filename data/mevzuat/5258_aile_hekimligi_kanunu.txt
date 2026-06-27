@@ -1,0 +1,29 @@
+Aile Hekimliği Kanunu
+Kanun No 5258, Kabul 24.11.2004, RG 09.12.2004/25665 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5258 konsolide metin esas alınmıştır). Kanunun ilk adı 'Aile Hekimliği Pilot Uygulaması Hakkında Kanun' iken 11.10.2011 tarihli 663 sayılı KHK ile 'Aile Hekimliği Kanunu' olarak değiştirilmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5258.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Kanunun amacı; Sağlık Bakanlığının belirleyeceği illerde birinci basamak sağlık hizmetlerini geliştirmek, koruyucu sağlık hizmetlerine ağırlık vermek, kişisel sağlık kayıtlarını tutmak ve bu hizmetlere eşit erişimi sağlamak üzere aile hekimliği hizmetlerini yürütecek personelin statüsü, malî hakları ve hizmetin esaslarını düzenlemektir. (663 sayılı KHK ile maddeden 'pilot olarak' ibaresi çıkarılmıştır.)
+
+Madde 2 — Tanımlar
+Aile hekimi; kişiye yönelik koruyucu sağlık hizmetleri ile birinci basamak teşhis, tedavi ve rehabilite edici hizmetleri yaş, cinsiyet ve hastalık ayrımı yapmaksızın belli bir mekânda kapsamlı ve devamlı veren, gerektiğinde gezici sağlık hizmeti sunan ve tam gün esasına göre çalışan aile hekimliği uzmanı veya Bakanlıkça öngörülen eğitimleri almış uzman tabip/tabiptir. Aile sağlığı çalışanı; aile hekimiyle birlikte hizmet veren hemşire, ebe, sağlık memuru gibi sağlık elemanıdır (7151 sayılı Kanunla 'aile sağlığı elemanı' ibaresi 'aile sağlığı çalışanı' olarak değiştirilmiştir).
+
+Madde 3 — Personelin statüsü, hak ve yükümlülükleri
+Sağlık Bakanlığı; uzman tabip, tabip ve aile sağlığı çalışanlarını kendi talepleri ve kurumlarının/Bakanlığın muvafakatı üzerine 657 sayılı Kanunun sözleşmeli personel hükümlerine bağlı olmaksızın sözleşmeli çalıştırmaya veya görevlendirmeye yetkilidir. Sözleşmeli aile hekimi ve aile sağlığı çalışanları kurumlarında aylıksız/ücretsiz izinli sayılır, kadrolarıyla ilişkileri devam eder ve talepleri halinde eski görevlerine atanırlar. Ödeme tutarları kayıtlı kişi sayısı ve risk grupları, gezici sağlık hizmetleri, sosyo-ekonomik gelişmişlik gibi kriterlere göre belirlenir; koruyucu hekimlik hizmetlerinin eksik uygulanması halinde brüt ücretten %20'ye kadar indirim yapılır. Disiplin işlemlerinde 657 sayılı Kanun hükümleri uygulanır. [DOĞRULA: madde defalarca değiştirildiği için güncel ödeme katsayıları (aile hekimi için 6 kat, aile sağlığı çalışanı için 1,5 kat) ve indirim oranlarının son hâli teyit edilmelidir.]
+
+Madde 4 — Kamuya ait taşınmazların kullanımı
+Hazine, belediye veya il özel idaresine ait taşınmazlardan aile sağlığı merkezi olarak kullanılması uygun görülenler; Maliye Bakanlığı, belediye veya il özel idarelerince bu amaçla kullanılmak üzere doğrudan aile hekimine kiraya verilebilir.
+
+Madde 5 — Hizmetin esasları (kayıt, sevk ve katkı payı)
+Aile hekimliği uygulaması kapsamında kişilerin aile hekimine kaydı yapılır; belirlenen süre sonunda kişiler aile hekimini değiştirebilir veya planlamaya uygun olarak Bakanlık değiştirebilir. Aile hekimliği hizmetleri kural olarak ücretsizdir. Acil haller ve mücbir sebepler dışında, kişi hangi sosyal güvenlik kuruluşuna tâbi olursa olsun aile hekiminin sevki olmaksızın sağlık kurum ve kuruluşlarına başvuranlardan katkı payı alınır. Aile hekimlerinin kişilerin sağlık dosyaları, raporlar, sevk belgesi ve reçete gibi düzenledikleri belgeler resmî kayıt ve evrak niteliğindedir ve hekimin ayrılması/kişinin hekim değiştirmesi halinde eksiksiz devredilir.
+
+Madde 6 — Denetim, sorumluluk ve mal bildirimi
+Aile hekimleri ve aile sağlığı çalışanları, mevzuat ve sözleşme hükümlerine uygunluk ile diğer konularda Bakanlık, ilgili mülkî idare ve sağlık idaresinin denetimine tâbidir. Görevleriyle ilgili veya görevleri başında işledikleri ya da kendilerine karşı işlenen suçlarda Devlet memuru gibi kabul edilirler. Ayrıca 3628 sayılı Mal Bildiriminde Bulunulması Kanunu gereğince mal bildiriminde bulunmakla yükümlüdürler.
+
+Madde 8 — Yönetmelikler
+Aile hekimi ve aile sağlığı çalışanlarının çalışma usul ve esasları; öncelik sıralaması; uygulamaya geçişe ve nakillere ilişkin puanlama; aile sağlığı merkezlerinde aranacak fizikî/teknik şartlar; meslek ilkeleri; performans ve hizmet kalite standartları; hasta sevk evrakı, reçete, rapor ve diğer belgelerin şekli ve içeriği ile kayıt ve denetime ilişkin usul ve esaslar Sağlık Bakanlığınca çıkarılacak yönetmelikle düzenlenir. Sözleşmede yer alacak hususlar ve ödeme tutarları ise Cumhurbaşkanınca çıkarılacak yönetmelikle düzenlenir.

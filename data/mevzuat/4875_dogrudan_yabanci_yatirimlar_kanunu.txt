@@ -1,0 +1,23 @@
+Dogrudan Yabanci Yatirimlar Kanunu
+Kanun No 4875, Kabul 05.06.2003, RG 17.06.2003/25141 — YURURLUKTE (resmi PDF 1.5.4875, Resmi Gazete metni ve Lexpera konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4875.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amac
+Kanunun amaci; dogrudan yabanci yatirimlarin ozendirilmesi, yabanci yatirimcilarin haklarinin korunmasi, yatirim ve yatirimci tanimlarinda uluslararasi standartlara uyulmasi, izin ve onay sisteminin bilgilendirme sistemine donusturulmesi ile dogrudan yabanci yatirimlarin artirilmasina iliskin esaslari duzenlemektir. Yabanci yatirimcinin Turkiye'de sirket kurma/ortaklik surecinin politika cercevesini belirleyen maddedir.
+
+Madde 2 — Tanimlar (yabanci yatirimci, dogrudan yabanci yatirim)
+Yabanci yatirimci; Turkiye'de dogrudan yabanci yatirim yapan yabanci ulke vatandasligina sahip gercek kisiler, yurt disinda yerlesik Turk vatandaslari ile yabanci ulke kanunlarina gore kurulmus tuzel kisiler ve uluslararasi kuruluslardir. Dogrudan yabanci yatirim; yeni sirket kurma veya sube acma, ya da mevcut bir sirkete hisse edinerek/sermaye koyarak ortak olma yoluyla yapilan yatirimi ifade eder. Basvuru ve bildirim evrakinin kime ve hangi islemlere iliskin oldugunu tanimlar.
+
+Madde 3 — Dogrudan yabanci yatirimlara iliskin esaslar
+Uluslararasi anlasmalar ve ozel kanun hukumleri sakli kalmak uzere yabanci yatirimcilarin Turkiye'de dogrudan yabanci yatirim yapmasi serbesttir ve bu yatirimcilar yerli yatirimcilarla esit muameleye tabidir (yatirim serbestisi ve milli muamele). Madde ayrica; kamu yarari gerektirmedikce ve karsiligi odenmedikce kamulastirma/devletlestirme yasagini, net kar-temettu-satis/tasfiye bedellerinin bankalar araciligiyla yurt disina serbestce transferini, Turk vatandaslarina acik alanlarda tasinmaz edinimini, uyusmazliklarda milli/milletlerarasi tahkim imkanini, nakit disi sermayenin TTK'ya gore deger tespitini ve yabanci personel istihdamini duzenler. Yabanci yatirimcinin temel guvencelerini iceren cekirdek maddedir.
+
+Madde 3/g — Yabanci personel istihdami
+Kanun kapsaminda kurulan sirket, sube ve kuruluslarda istihdam edilecek yabanci uyruklu personele calisma izni verilir. Calisma izinleri ilgili mevzuat (6735 sayili Uluslararasi Isgucu Kanunu) cercevesinde duzenlenir; bu hukum yabanci yatirimin kilit personelinin istihdam evrakinin dayanagidir. [DOGRULA: calisma izni mercii ve usulu 6735 sayili Kanun sonrasi guncellendiginden cari duzenleme teyit edilmeli]
+
+Madde 4 — Politika belirleme ve bilgi isteme yetkisi
+Ilgili idare (kanun metninde Hazine Mustesarligi; gunumuzde Sanayi ve Teknoloji Bakanligi) dogrudan yabanci yatirimlara iliskin politikalarin genel cercevesini belirlemeye ve yatirimlar hakkinda istatistiki bilgileri kamu kurum ve kuruluslarindan istemeye yetkilidir. Yatirimci, yatirimina iliskin bilgileri (bildirim) bu cercevede ilgili idareye iletir. Izin/onay yerine bilgilendirme sistemini hayata geciren maddedir. [DOGRULA: yetkili merci Hazine Mustesarligi'ndan Sanayi ve Teknoloji Bakanligi'na gectiginden cari teskilat duzenlemesinden teyit edilmeli]

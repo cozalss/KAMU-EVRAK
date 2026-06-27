@@ -1,0 +1,26 @@
+Serbest Bolgeler Kanunu
+Kanun No 3218, Kabul 06.06.1985, RG 15.06.1985/18785 — YURURLUKTE (resmi PDF 1.5.3218, Resmi Gazete metni ve Lexpera konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3218.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amac ve kapsam
+Kanunun amaci; Turkiye'de ihracat icin yatirim ve uretimi artirmak, yabanci sermaye ve teknoloji girisini hizlandirmak, ekonominin girdi ihtiyacini ucuz ve duzenli sekilde temin etmek, dis finansman ve ticaret imkanlarindan daha fazla yararlanmak uzere serbest bolgeler kurulmasini, bu bolgelerin yer ve sinirlari ile faaliyet konularinin belirlenmesini, yonetim ve isletilmesini kapsar. Serbest bolgede yatirim/uretim yapmak isteyen sirketin basvuracagi rejimin cercevesini cizen temel maddedir.
+
+Madde 2 — Yer ve sinirlarin belirlenmesi, kurulus yetkisi
+Serbest bolgelerin yer ve sinirlarini belirleme ile bu bolgelerin kamu kurum ve kuruluslarinca, yerli veya yabanci gercek ya da tuzel kisilerce kurulmasi ve isletilmesine izin verme yetkisi (kanunun ilk metninde Bakanlar Kurulu) bugun Cumhurbaskanina aittir. Bolgenin nerede kurulacagi ve hangi alani kapsayacagi bu yetkiyle karara baglanir. [DOGRULA: 700 sayili KHK ve Cumhurbaskanligi teskilat duzenlemeleri sonrasi yetki Bakanlar Kurulu'ndan Cumhurbaskanina gecmistir; cari metinden teyit edilmeli]
+
+Madde 3 — Tanimlar (isletici, kullanici, faaliyet ruhsati)
+Isletici, serbest bolgeyi isleten kamu kurum/kurulusu ile yerli veya yabanci gercek/tuzel kisidir. Kullanici ise faaliyet ruhsati almis ve serbest bolgede belli bir is yeri bulunan gercek veya tuzel kisidir; yani serbest bolgede is yapma izninin belgesi faaliyet ruhsatidir. Doviz, Merkez Bankasinca alim-satim konusu yapilan konvertibl para ile bu paralarla odemeyi saglayan belgeleri ifade eder. Basvuru ve ruhsatlandirma evrakinin dayandigi temel kavramlari tanimlar.
+
+Madde 4 — Serbest bolgelerde faaliyet konulari
+Serbest bolgelerde, yetkili kurulca (kanunun ilk metninde Ekonomik Isler Yuksek Koordinasyon Kurulu / Yuksek Planlama Kurulu) uygun gorulecek her turlu sinai, ticari ve hizmetle ilgili faaliyetler yapilabilir. Uretici isletmeler disinda, ureticiler tarafindan uygulanan fiyat, kalite ve standartlarla ilgili kamu duzenlemeleri serbest bolgelerde uygulanmaz. Faaliyet ruhsati basvurusunun hangi is konulari icin verilebilecegini cerceveler. [DOGRULA: uygun gorme yetkisinin guncel mercii (Ticaret Bakanligi / ilgili kurul) cari metinden teyit edilmeli]
+
+Madde 5 — Isletici ve kullanicilara faaliyet ruhsati, arazi ve insaat
+Serbest bolgede faaliyet gosterecek yerli/yabanci gercek ve tuzel kisilerin yetkili idareden (gunumuzde Ticaret Bakanligi) faaliyet ruhsati almasi gerekir. Kullanicilara Hazinenin ozel mulkiyetindeki veya Devletin hukum ve tasarrufu altindaki yerlerde en cok kirk dokuz yil sureyle kiralama veya irtifak/kullanim hakki tesis edilebilir. Bolgedeki tum yapi ve kullanim izinleri bolge mudurlugunun denetiminde verilir. Serbest-bolge faaliyet ruhsati basvurusunun ve arazi tahsisinin dayandigi maddedir. [DOGRULA: ruhsati veren mercinin (DPT'den Ekonomi/Ticaret Bakanligi'na gecis) ve 49 yil suresinin cari metinden teyiti]
+
+Madde 6 — Muafiyet ve tesvikler (gumruk, vergi, kambiyo)
+Serbest bolgeler Turkiye Gumruk Bolgesinin parcasi olmakla birlikte; gumruk rejimi, ithalat vergileri, ticaret politikasi onlemleri ve kambiyo mevzuati bakimindan Turkiye Gumruk Bolgesi disinda kabul edilir. Bolgedeki faaliyetlerden elde edilen kazanc ve gelirlere ozel vergi muafiyet/istisnalari ile vergi disi tesvikler, kanun ve Cumhurbaskani kararlari cercevesinde uygulanir. Yatirimcinin serbest bolgeden bekledigi mali avantajlarin hukuki dayanagidir. [DOGRULA: vergi muafiyetlerinin kapsami 5084/zaman icindeki degisikliklerle daraltildigindan cari istisna sartlari teyit edilmeli]

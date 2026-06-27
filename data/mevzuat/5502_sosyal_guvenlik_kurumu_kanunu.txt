@@ -1,0 +1,23 @@
+Sosyal Güvenlik Kurumu Kanunu
+Kanun No 5502, Kabul 16.05.2006, RG 20.05.2006/26173 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5502 konsolide metin esas alınmıştır). DİKKAT: Kanunun Birinci ve İkinci Bölümlerindeki teşkilat/organ hükümlerinin (Madde 1, 3, 4, 5, 7, 27 vb.) önemli bölümü 2.7.2018 tarihli KHK-703 ile mülga edilmiş; Kurumun amaç, görev ve teşkilat yapısı 1 No.lu Cumhurbaşkanlığı Teşkilatı Hakkında CBK'ya taşınmıştır. Malî/icra hükümleri (Madde 35-37) yürürlüktedir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5502.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kuruluş
+Kanunun amacı, Sosyal Güvenlik Kurumunun (SGK) kuruluş, teşkilat, görev ve yetkilerine ilişkin usul ve esasları düzenlemektir. Kurum; kamu tüzel kişiliğini haiz, idari ve malî açıdan özerk, Çalışma ve Sosyal Güvenlik Bakanlığı ile ilgili, Sayıştay denetimine tabi ve merkezi Ankara'da olan bir kuruluş olarak kurulmuştur. [DOĞRULA: Bu madde 2.7.2018 tarihli KHK-703 m.81/82 ile mülga edilmiş; Kurumun kuruluş ve bağlılık hükümleri 1 No.lu Cumhurbaşkanlığı Teşkilatı CBK'sına aktarılmış olabilir — mevzuat.gov.tr konsolide metinden güncel yürürlük durumu teyit edilmelidir.]
+
+Madde 3 — Kurumun amacı ve görevleri
+Kurumun temel amacı; sosyal sigortacılık ilkelerine dayalı, etkin, adil, kolay erişilebilir ve malî açıdan sürdürülebilir bir sosyal güvenlik sistemini yürütmektir. Görevleri arasında ulusal kalkınma strateji ve politikalarıyla uyumlu sosyal güvenlik politikalarını uygulamak, hak sahiplerini hak ve yükümlülükleri konusunda bilgilendirmek, uluslararası gelişmeleri izleyip işbirliği yapmak ve kamu idareleri arasında koordinasyonu sağlamak yer alır. [DOĞRULA: Bu madde 2.7.2018 tarihli KHK-703 ile mülga edilmiş; Kurumun görevleri büyük ölçüde 1 No.lu Cumhurbaşkanlığı Teşkilatı CBK'sına taşınmıştır — güncel görev listesi CBK'dan teyit edilmelidir.]
+
+Madde 35 — Kurum mallarının ve alacaklarının hukukî durumu
+Kurumun malları, alacakları ve banka hesapları, 2004 sayılı İcra ve İflâs Kanunu ile 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun bakımından Devlet malı hükmünde olup alacakları imtiyazlı alacaklardır. Kurumun taşınır ve taşınmazları ile bankalardaki mevduatları dahil her türlü hak ve alacakları haczedilemez ve haklarında İcra ve İflâs Kanununun haciz ve iflas hükümleri uygulanmaz. Bu hüküm SGK alacaklarının takibinde Kuruma güçlü bir konum sağlar.
+
+Madde 36 — Muafiyetler
+Kurum; yaptığı işlemler ve düzenlediği kâğıtlar yönünden damga vergisi ve harçlar ile belediyelerce yürütülen hizmet karşılığı alınan ücret ve katılma paylarından müstesnadır (muaftır). Ayrıca Kurum, açtığı veya aleyhine açılan her türlü dava ve icra işlemlerinde teminat yatırma yükümlülüğünden muaftır. Bu muafiyetler Kurumun resmî yazışma, dava ve icra süreçlerinde malî yük doğurmaması amacını taşır. [DOĞRULA: muafiyet kapsamına giren vergi/harç kalemlerinin tam listesi ve sonraki değişiklikler madde metninden teyit edilmelidir.]
+
+Madde 37 — Çeşitli malî hükümler (alacakların takip ve tahsili)
+Kurumun süresinde ödenmeyen prim ve diğer alacakları, 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre takip ve tahsil edilir; anılan Kanunun tecil/zamanaşımı gibi 51, 102 ve 106 ncı maddeleri hariç diğer maddeleri uygulanır. Böylece SGK alacakları için ödeme emri düzenlenmesi, haciz ve cebrî tahsil yolları işletilebilir. [DOĞRULA: hangi madde istisnalarının ve hangi tahsil usullerinin güncel metinde yer aldığı mevzuat.gov.tr konsolide metninden teyit edilmelidir.]

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1238,
+ "chunk_sayisi": 1334,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -2117,6 +2117,83 @@
    "text": "Madde 12 — Ruhsatsiz uretim ve idari yaptirim\nRuhsati olmadan veya baskasina ait ruhsat alani icinde uretim yapildiginin tespiti halinde faaliyetler durdurulur ve uretilen madene mulki idare amirligince el konulur. Ilk tespitte ocak basi satis bedelinin bes kati tutarinda idari para cezasi uygulanir; tekrarinda ceza artirilir. Ruhsatsiz/izinsiz madencilige karsi vatandas ve idarenin basvurabilecegi yaptirim cercevesini belirler. [DOGRULA: idari para cezasi katsayisi ve usul yururlukteki son degisiklikle teyit edilmeli]"
   },
   {
+   "mevzuat": "3218 serbest bolgeler kanunu",
+   "kaynak_dosya": "3218_serbest_bolgeler_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amac ve kapsam\nKanunun amaci; Turkiye'de ihracat icin yatirim ve uretimi artirmak, yabanci sermaye ve teknoloji girisini hizlandirmak, ekonominin girdi ihtiyacini ucuz ve duzenli sekilde temin etmek, dis finansman ve ticaret imkanlarindan daha fazla yararlanmak uzere serbest bolgeler kurulmasini, bu bolgelerin yer ve sinirlari ile faaliyet konularinin belirlenmesini, yonetim ve isletilmesini kapsar. Serbest bolgede yatirim/uretim yapmak isteyen sirketin basvuracagi rejimin cercevesini cizen temel maddedir."
+  },
+  {
+   "mevzuat": "3218 serbest bolgeler kanunu",
+   "kaynak_dosya": "3218_serbest_bolgeler_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Yer ve sinirlarin belirlenmesi, kurulus yetkisi\nSerbest bolgelerin yer ve sinirlarini belirleme ile bu bolgelerin kamu kurum ve kuruluslarinca, yerli veya yabanci gercek ya da tuzel kisilerce kurulmasi ve isletilmesine izin verme yetkisi (kanunun ilk metninde Bakanlar Kurulu) bugun Cumhurbaskanina aittir. Bolgenin nerede kurulacagi ve hangi alani kapsayacagi bu yetkiyle karara baglanir. [DOGRULA: 700 sayili KHK ve Cumhurbaskanligi teskilat duzenlemeleri sonrasi yetki Bakanlar Kurulu'ndan Cumhurbaskanina gecmistir; cari metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "3218 serbest bolgeler kanunu",
+   "kaynak_dosya": "3218_serbest_bolgeler_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanimlar (isletici, kullanici, faaliyet ruhsati)\nIsletici, serbest bolgeyi isleten kamu kurum/kurulusu ile yerli veya yabanci gercek/tuzel kisidir. Kullanici ise faaliyet ruhsati almis ve serbest bolgede belli bir is yeri bulunan gercek veya tuzel kisidir; yani serbest bolgede is yapma izninin belgesi faaliyet ruhsatidir. Doviz, Merkez Bankasinca alim-satim konusu yapilan konvertibl para ile bu paralarla odemeyi saglayan belgeleri ifade eder. Basvuru ve ruhsatlandirma evrakinin dayandigi temel kavramlari tanimlar."
+  },
+  {
+   "mevzuat": "3218 serbest bolgeler kanunu",
+   "kaynak_dosya": "3218_serbest_bolgeler_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Serbest bolgelerde faaliyet konulari\nSerbest bolgelerde, yetkili kurulca (kanunun ilk metninde Ekonomik Isler Yuksek Koordinasyon Kurulu / Yuksek Planlama Kurulu) uygun gorulecek her turlu sinai, ticari ve hizmetle ilgili faaliyetler yapilabilir. Uretici isletmeler disinda, ureticiler tarafindan uygulanan fiyat, kalite ve standartlarla ilgili kamu duzenlemeleri serbest bolgelerde uygulanmaz. Faaliyet ruhsati basvurusunun hangi is konulari icin verilebilecegini cerceveler. [DOGRULA: uygun gorme yetkisinin guncel mercii (Ticaret Bakanligi / ilgili kurul) cari metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "3218 serbest bolgeler kanunu",
+   "kaynak_dosya": "3218_serbest_bolgeler_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Isletici ve kullanicilara faaliyet ruhsati, arazi ve insaat\nSerbest bolgede faaliyet gosterecek yerli/yabanci gercek ve tuzel kisilerin yetkili idareden (gunumuzde Ticaret Bakanligi) faaliyet ruhsati almasi gerekir. Kullanicilara Hazinenin ozel mulkiyetindeki veya Devletin hukum ve tasarrufu altindaki yerlerde en cok kirk dokuz yil sureyle kiralama veya irtifak/kullanim hakki tesis edilebilir. Bolgedeki tum yapi ve kullanim izinleri bolge mudurlugunun denetiminde verilir. Serbest-bolge faaliyet ruhsati basvurusunun ve arazi tahsisinin dayandigi maddedir. [DOGRULA: ruhsati veren mercinin (DPT'den Ekonomi/Ticaret Bakanligi'na gecis) ve 49 yil suresinin cari metinden teyiti]"
+  },
+  {
+   "mevzuat": "3218 serbest bolgeler kanunu",
+   "kaynak_dosya": "3218_serbest_bolgeler_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Muafiyet ve tesvikler (gumruk, vergi, kambiyo)\nSerbest bolgeler Turkiye Gumruk Bolgesinin parcasi olmakla birlikte; gumruk rejimi, ithalat vergileri, ticaret politikasi onlemleri ve kambiyo mevzuati bakimindan Turkiye Gumruk Bolgesi disinda kabul edilir. Bolgedeki faaliyetlerden elde edilen kazanc ve gelirlere ozel vergi muafiyet/istisnalari ile vergi disi tesvikler, kanun ve Cumhurbaskani kararlari cercevesinde uygulanir. Yatirimcinin serbest bolgeden bekledigi mali avantajlarin hukuki dayanagidir. [DOGRULA: vergi muafiyetlerinin kapsami 5084/zaman icindeki degisikliklerle daraltildigindan cari istisna sartlari teyit edilmeli]"
+  },
+  {
+   "mevzuat": "3289 genclik ve spor hizmetleri kanunu",
+   "kaynak_dosya": "3289_genclik_ve_spor_hizmetleri_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı, beden eğitimi ve spor hizmetlerinin yürütülmesi ile gençlik ve spor alanındaki teşkilatın görev, yetki ve sorumluluklarına ilişkin esas ve usulleri düzenlemektir. Özgün metinde Beden Terbiyesi Genel Müdürlüğü teşkilatı düzenlenmiş; sonraki değişikliklerle kanun, taşrada Gençlik ve Spor İl/İlçe Müdürlüklerinin ve spor hizmetlerinin yasal çerçevesini oluşturan temel metne dönüşmüştür. Bu madde, kanunun spor tesisi, sporcu ve antrenör işlemlerine ilişkin hükümlerinin uygulama alanını belirler."
+  },
+  {
+   "mevzuat": "3289 genclik ve spor hizmetleri kanunu",
+   "kaynak_dosya": "3289_genclik_ve_spor_hizmetleri_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Uluslararası müsabakalara katılacakların izinli sayılması\nMilletlerarası seviyede yurt içi ve yurt dışı spor müsabakalarına ve bunların hazırlık çalışmalarına katılacak sporcu, hakem, antrenör, monitör, idareci ve bu amaçla görevlendirilen diğer kişiler, bağlı bulundukları kurum ve kuruluşlarca organizasyonun devamı süresince izinli sayılır ve bu süre içinde özlük hakları saklı tutulur. Bu hüküm, kamu kurumlarına resmî müsabaka/kamp davet yazısı geldiğinde memur veya işçi statüsündeki sporcu ve görevlilerin izin işlemlerinin hukuki dayanağını oluşturur. Görevlendirme yazısı ile izin onayı arasındaki bağ, evrak yönlendirmesinde dikkate alınır."
+  },
+  {
+   "mevzuat": "3289 genclik ve spor hizmetleri kanunu",
+   "kaynak_dosya": "3289_genclik_ve_spor_hizmetleri_kanunu.txt",
+   "madde_no": 37,
+   "madde_tur": "madde",
+   "text": "Madde 37 — Spor tesisi yapımı, işletilmesi ve malzeme yardımı\nBakanlık, beden eğitimi ve spor hizmetlerini geliştirmek amacıyla, eğitim kurum ve kuruluşlarının beden eğitimi ve spor için ayıracağı alanlara spor tesisleri yapar veya yaptırır; yeni inşa edilen tesisler ile bu kurumların mevcut tesislerine personel, antrenör ve monitör tahsis eder, bu tesisleri işletir ve spor araç-gereç ile malzeme yardımında bulunur. Bu madde, kamu kurumları ile okullara yönelik tesis yapımı, personel/antrenör tahsisi ve malzeme yardımı taleplerinin yasal dayanağıdır. Tesis ve malzeme talep yazıları bu hüküm kapsamında değerlendirilir. [DOĞRULA: madde numarası teşkilat değişiklikleri sonrası konsolide metinde değişmiş olabilir; mevzuat.gov.tr güncel metinde teyit edilmeli]"
+  },
+  {
+   "mevzuat": "3289 genclik ve spor hizmetleri kanunu",
+   "kaynak_dosya": "3289_genclik_ve_spor_hizmetleri_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "ek",
+   "text": "Ek Madde 9 — Bağımsız spor federasyonlarının kuruluşu\nBağımsız spor federasyonları, ilgili spor dalını ulusal ve uluslararası düzeyde yönetmek üzere Cumhurbaşkanı kararı ile kurulur ve bu kararın Resmî Gazete'de yayımlanmasıyla tüzel kişilik kazanarak özerk olarak faaliyet gösterir. Federasyonlar; sporcu, antrenör ve hakem lisans/tescil işlemleri, müsabaka düzenleme ve disiplin işlemleri bakımından kendi spor dalında yetkili merciidir. Bu yapı, sporcu/antrenör lisansı ve kulüp faaliyet izni evrakının doğru federasyona yönlendirilmesini belirler. [DOĞRULA: 7405 sayılı Spor Kulüpleri ve Spor Federasyonları Kanunu (2022) ile bu maddenin bir kısmı yeniden düzenlenmiş/mülga edilmiş olabilir; güncel federasyon kuruluş hükümleri için 7405 ile birlikte teyit edilmeli]\n\nEk Madde 9/A — Tahkim Kurulu\nSpor federasyonları ile kulüpler, sporcular, hakemler, antrenörler ve diğer ilgililer arasında federasyon kararlarından doğan uyuşmazlıkları kesin olarak karara bağlamak üzere bir Tahkim Kurulu oluşturulur. Federasyonların; tescil, lisans, vize, ceza ve benzeri kararlarına karşı önce federasyonun kendi disiplin/itiraz mercilerine, sonra Tahkim Kuruluna başvurulur ve Kurulun kararları kesindir (idari ve adli mercilere ayrıca götürülemez). Bu nedenle sporcu/kulüp itiraz dilekçelerinin süresi içinde doğru mercie yönlendirilmesi kritiktir. [DOĞRULA: Tahkim Kurulu üye sayısı, görev süresi ve başvuru süreleri ilgili yönetmelikle belirlenir]"
+  },
+  {
+   "mevzuat": "3289 genclik ve spor hizmetleri kanunu",
+   "kaynak_dosya": "3289_genclik_ve_spor_hizmetleri_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "ek",
+   "text": "Ek Madde 11 — Spor tesislerinin tahsisi, devri ve kiralanması\nBakanlığın veya il müdürlüklerinin mülkiyetinde ya da kullanımında bulunan spor tesisleri ile gayrimenkullerin; spor federasyonlarına, gençlik ve spor kulüplerine, yerel yönetimlere ve ilgili kamu kurumlarına protokolle tahsisi, işletilmek üzere devri, kiralanması ve bedelsiz kullandırılmasına ilişkin işlemler Bakanlık izni ve onayıyla yürütülür. Bu hüküm, kamu kurumları ve kulüplerin tesis tahsis/kiralama taleplerinde başvuru, protokol ve tahsis kararı evrakının hukuki çerçevesini oluşturur; tahsis süresi, bedel ve amaç dışı kullanım yasağı protokolde gösterilir. [DOĞRULA: federasyonlara 49 yıla kadar bedelsiz tahsis ve maddenin tam numarası/yürürlüğü mevzuat.gov.tr konsolide metinde teyit edilmeli; 7405 sayılı Kanunla kısmen değişmiş olabilir]"
+  },
+  {
    "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
    "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
    "madde_no": 1,
@@ -2360,6 +2437,55 @@
    "madde_no": 46,
    "madde_tur": "madde",
    "text": "Madde 46 — Yönetmelik\nBu Kanunun uygulanmasına ilişkin usul ve esasların ilgili Bakanlık (Gençlik ve Spor Bakanlığı) tarafından çıkarılacak yönetmeliklerle düzenleneceğini hükme bağlar. Öğrenim kredisi, burs-kredi ve yurt işletme yönetmeliklerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar (damping, sübvansiyon, zarar, üretim dalı)\nBu maddede Kanunun temel kavramları tanımlanır: damping, bir malın Türkiye'ye ihraç fiyatının benzer malın normal değerinin altında olması; sübvansiyon, menşe veya ihracatçı ülkenin sağladığı doğrudan ya da dolaylı malî katkı veya fayda; zarar ise bir üretim dalında maddî zarar, maddî zarar tehdidi veya bir üretim dalının kurulmasının fizikî olarak gecikmesidir. Ayrıca benzer mal, normal değer ve üretim dalı tanımlanır. Bu tanımlar, şikâyet ve soruşturma evrakının kavramsal dayanağıdır."
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Şikâyet üzerine veya re'sen inceleme\nDampinge veya sübvansiyona konu ithalattan maddî zarar gördüğünü, maddî zarar tehdidi altında olduğunu veya bir üretim dalının kurulmasının fizikî olarak geciktiğini iddia eden üreticiler ya da üretim dalı adına hareket eden gerçek/tüzel kişi veya kuruluşlar İthalat Genel Müdürlüğüne yazılı olarak başvurabilir. Genel Müdürlük, şikâyet üzerine veya gerektiğinde re'sen damping/sübvansiyon incelemesi yapabilir. Bu hüküm, damping şikâyet dilekçesinin ve başvuru ehliyetinin dayanağıdır."
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Genel Müdürlüğün görevleri\nİthalat Genel Müdürlüğü; başvuru üzerine ön inceleme yapmak, soruşturma açılıp açılmaması konusunda Kurula teklifte bulunmak, açılan soruşturmayı yürütmek ve İthalatta Haksız Rekabeti Değerlendirme Kuruluna sekretarya hizmeti vermekle görevlidir. Bu hüküm, şikâyet sonrası idarî sürecin (ön inceleme ve soruşturma yürütme) yetkili merciini belirler."
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — İthalatta Haksız Rekabeti Değerlendirme Kurulu\nİthalatta Haksız Rekabeti Değerlendirme Kurulu, İthalat Genel Müdürünün (veya görevlendireceği yardımcısının) başkanlığında ilgili bakanlık/kuruluş ve meslek örgütlerinin yetkili temsilcilerinden oluşur. Kurul; soruşturma açılması/kapatılması, geçici önlemlerin onaylanması, taahhütlerin değerlendirilmesi ve soruşturma sonuçlarına göre önlem alınması konularında karar verir. Bu hüküm, damping/sübvansiyon kararlarını veren karar organını düzenler. [DOĞRULA: Kurul üyelerinin güncel bakanlık adları yeniden teşkilatlanmalarla değişmiş olabilir.]"
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Dampinge karşı vergi ve telafi edici vergi\nSoruşturma sonucunda damping ve buna bağlı zararın tespiti hâlinde, dampinge konu malın ithalinde damping marjını aşmayacak şekilde dampinge karşı vergi; sübvansiyona konu malın ithalinde ise sübvansiyon miktarını aşmayacak şekilde telafi edici vergi alınır. Aynı mal için hem dampinge karşı vergi hem telafi edici vergi aynı anda uygulanmaz. Bu hüküm, kesin önlem olarak alınan ek malî yükümlülüğün dayanağıdır."
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Taahhütler\nİhracatçılar, soruşturma sürecinde fiyatlarını gözden geçirmeyi veya dampingli/sübvansiyonlu ihracatı durdurmayı taahhüt edebilir; zararı giderici nitelikteki taahhütler Kurulca kabul edilirse soruşturma önlem alınmaksızın durdurulabilir veya askıya alınabilir. Bu hüküm, fiyat taahhüdü başvurusu ve buna ilişkin yazışmaların dayanağıdır."
+  },
+  {
+   "mevzuat": "3577 ithalatta haksiz rekabetin onlenmesi kanunu",
+   "kaynak_dosya": "3577_ithalatta_haksiz_rekabetin_onlenmesi_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Geçici önlemler\nSoruşturma sırasında, dampingli veya sübvansiyonlu ithalatın varlığı ve bunun zarara yol açtığı yönünde ön belirleme yapılması hâlinde, ön belirlenen marj/miktar kadar teminat alınması suretiyle geçici önlem uygulanabilir. Geçici önlemler kural olarak dört ay, koşullara göre altı aya kadar uygulanabilir. Bu hüküm, soruşturma devam ederken alınan geçici teminat/önlem evrakının dayanağıdır. [DOĞRULA: güncel azamî süreler için yürürlükteki yönetmelik teyit edilmelidir.]"
   },
   {
    "mevzuat": "3621 kiyi kanunu",
@@ -3181,6 +3307,34 @@
    "text": "Madde 26 — İhalelere katılmaktan yasaklama\n25. maddede sayılan yasak fiil veya davranışlarda bulunduğu tespit edilenler hakkında, fiilin özelliğine göre bir yıldan az olmamak üzere iki yıla kadar bütün kamu kurum ve kuruluşlarının ihalelerine katılmaktan yasaklama kararı verilir. Tüzel kişilerde şahıs şirketi ortaklarının tamamı, sermaye şirketinde ise sermayesinin yarısından fazlasına sahip ortaklar hakkında da yasaklama uygulanır. Yasaklama kararları, fiilin tespit edildiği tarihi izleyen en geç kırk beş gün içinde verilir ve Resmî Gazete'de yayımlanır."
   },
   {
+   "mevzuat": "474 gumruk giris tarife cetveli kanunu",
+   "kaynak_dosya": "474_gumruk_giris_tarife_cetveli_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Gümrük Giriş Tarife Cetveli ve Armonize Sistem\nTürkiye Gümrük Giriş Tarife Cetveli, Armonize Sistem (Harmonized System) Nomenklatürü esas alınarak yeniden düzenlenmiştir ve bu Kanuna ekli cetvel olarak yürürlüğe konulmuştur. Cetvelde yer alan pozisyonlar, kodlar, eşya tanımları, bölüm/fasıl notları ve yorum kuralları, ithal eşyasının tarifedeki yerinin (GTİP) belirlenmesinde esas alınır. Bu hüküm, eşyanın tarife sınıflandırmasının ve GTİP beyanının temel dayanağıdır."
+  },
+  {
+   "mevzuat": "474 gumruk giris tarife cetveli kanunu",
+   "kaynak_dosya": "474_gumruk_giris_tarife_cetveli_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Cumhurbaşkanının gümrük vergisi oranlarını değiştirme yetkisi\nCumhurbaşkanı, Tarife Cetvelindeki gümrük vergisi oranlarını eşyanın her biri için ayrı ayrı veya toplu olarak sıfıra kadar indirmeye, kanunda öngörülen tavana (50'ye) kadar yükseltmeye ve tarife notlarında değişiklik yapmaya yetkilidir. Uluslararası anlaşmalardan doğan yükümlülükler saklıdır. Bu hüküm, ithalatta uygulanan güncel gümrük vergisi oranlarının ve ithalat rejimi kararlarının yasal dayanağıdır. [DOĞRULA: tavan oran ve güncel oran her zaman yürürlükteki İthalat Rejimi Kararından teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "474 gumruk giris tarife cetveli kanunu",
+   "kaynak_dosya": "474_gumruk_giris_tarife_cetveli_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Yatırım malı ithalatında taksitle ödeme\nKalkınma planı ve programlarına uygun yatırım malı niteliğindeki eşyanın ithalinde Cumhurbaşkanı, gümrük vergisinin en çok beş yıllık bir dönem içinde eşit yıllık taksitlerle ödenmesine izin verebilir. Bu hüküm, uygun yatırım malı ithalatında taksitlendirilmiş gümrük vergisi ödeme talebinin dayanağıdır. [DOĞRULA: güncel uygulama koşulları yürürlükteki ithalat/teşvik mevzuatından teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "474 gumruk giris tarife cetveli kanunu",
+   "kaynak_dosya": "474_gumruk_giris_tarife_cetveli_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Tarife hazırlık komisyonu\nTarife cetvelinin hazırlanması, güncellenmesi ve sınıflandırmaya ilişkin hazırlık çalışmalarını yürütmek üzere bir komisyon oluşturulur. Komisyon, 15 günden az ve iki aydan çok olmayan aralıklarla toplanarak çalışmalarını yürütür. Bu hüküm, tarife cetvelindeki güncelleme ve sınıflandırma kararlarının kurumsal hazırlık sürecini düzenler."
+  },
+  {
    "mevzuat": "4760 ozel tuketim vergisi kanunu",
    "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
    "madde_no": 1,
@@ -3340,6 +3494,34 @@
    "madde_no": 63,
    "madde_tur": "madde",
    "text": "Madde 63 — Çalışma süresi\nGenel bakımdan haftalık çalışma süresi en çok kırkbeş saattir ve aksi kararlaştırılmamışsa çalışılan günlere eşit bölünür. Tarafların anlaşmasıyla bu süre, günde onbir saati aşmamak koşuluyla haftanın günlerine farklı dağıtılabilir (denkleştirme); bu halde iki aylık (TİS ile dört aya kadar) ortalama haftalık süre normal haftalık süreyi aşamaz. Yer altı maden işlerinde çalışma süresi günde en çok 7,5, haftada en çok 37,5 saattir."
+  },
+  {
+   "mevzuat": "4875 dogrudan yabanci yatirimlar kanunu",
+   "kaynak_dosya": "4875_dogrudan_yabanci_yatirimlar_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amac\nKanunun amaci; dogrudan yabanci yatirimlarin ozendirilmesi, yabanci yatirimcilarin haklarinin korunmasi, yatirim ve yatirimci tanimlarinda uluslararasi standartlara uyulmasi, izin ve onay sisteminin bilgilendirme sistemine donusturulmesi ile dogrudan yabanci yatirimlarin artirilmasina iliskin esaslari duzenlemektir. Yabanci yatirimcinin Turkiye'de sirket kurma/ortaklik surecinin politika cercevesini belirleyen maddedir."
+  },
+  {
+   "mevzuat": "4875 dogrudan yabanci yatirimlar kanunu",
+   "kaynak_dosya": "4875_dogrudan_yabanci_yatirimlar_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanimlar (yabanci yatirimci, dogrudan yabanci yatirim)\nYabanci yatirimci; Turkiye'de dogrudan yabanci yatirim yapan yabanci ulke vatandasligina sahip gercek kisiler, yurt disinda yerlesik Turk vatandaslari ile yabanci ulke kanunlarina gore kurulmus tuzel kisiler ve uluslararasi kuruluslardir. Dogrudan yabanci yatirim; yeni sirket kurma veya sube acma, ya da mevcut bir sirkete hisse edinerek/sermaye koyarak ortak olma yoluyla yapilan yatirimi ifade eder. Basvuru ve bildirim evrakinin kime ve hangi islemlere iliskin oldugunu tanimlar."
+  },
+  {
+   "mevzuat": "4875 dogrudan yabanci yatirimlar kanunu",
+   "kaynak_dosya": "4875_dogrudan_yabanci_yatirimlar_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Dogrudan yabanci yatirimlara iliskin esaslar\nUluslararasi anlasmalar ve ozel kanun hukumleri sakli kalmak uzere yabanci yatirimcilarin Turkiye'de dogrudan yabanci yatirim yapmasi serbesttir ve bu yatirimcilar yerli yatirimcilarla esit muameleye tabidir (yatirim serbestisi ve milli muamele). Madde ayrica; kamu yarari gerektirmedikce ve karsiligi odenmedikce kamulastirma/devletlestirme yasagini, net kar-temettu-satis/tasfiye bedellerinin bankalar araciligiyla yurt disina serbestce transferini, Turk vatandaslarina acik alanlarda tasinmaz edinimini, uyusmazliklarda milli/milletlerarasi tahkim imkanini, nakit disi sermayenin TTK'ya gore deger tespitini ve yabanci personel istihdamini duzenler. Yabanci yatirimcinin temel guvencelerini iceren cekirdek maddedir.\n\nMadde 3/g — Yabanci personel istihdami\nKanun kapsaminda kurulan sirket, sube ve kuruluslarda istihdam edilecek yabanci uyruklu personele calisma izni verilir. Calisma izinleri ilgili mevzuat (6735 sayili Uluslararasi Isgucu Kanunu) cercevesinde duzenlenir; bu hukum yabanci yatirimin kilit personelinin istihdam evrakinin dayanagidir. [DOGRULA: calisma izni mercii ve usulu 6735 sayili Kanun sonrasi guncellendiginden cari duzenleme teyit edilmeli]"
+  },
+  {
+   "mevzuat": "4875 dogrudan yabanci yatirimlar kanunu",
+   "kaynak_dosya": "4875_dogrudan_yabanci_yatirimlar_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Politika belirleme ve bilgi isteme yetkisi\nIlgili idare (kanun metninde Hazine Mustesarligi; gunumuzde Sanayi ve Teknoloji Bakanligi) dogrudan yabanci yatirimlara iliskin politikalarin genel cercevesini belirlemeye ve yatirimlar hakkinda istatistiki bilgileri kamu kurum ve kuruluslarindan istemeye yetkilidir. Yatirimci, yatirimina iliskin bilgileri (bildirim) bu cercevede ilgili idareye iletir. Izin/onay yerine bilgilendirme sistemini hayata geciren maddedir. [DOGRULA: yetkili merci Hazine Mustesarligi'ndan Sanayi ve Teknoloji Bakanligi'na gectiginden cari teskilat duzenlemesinden teyit edilmeli]"
   },
   {
    "mevzuat": "488 damga vergisi kanunu",
@@ -4070,6 +4252,55 @@
    "text": "Madde 16 — Büyükşehir belediye encümeni\nBüyükşehir belediye encümeninin oluşumunu düzenler: belediye başkanının başkanlığında, meclisin kendi üyeleri arasından bir yıl için gizli oyla seçeceği beş üye ile genel sekreter, mali hizmetler birim amiri ve başkanın seçeceği birim amirlerinden oluşur. Encümen kararı gerektiren büyükşehir işlemlerinin (kamulaştırma, imar yaptırımı) dayanağıdır."
   },
   {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nKanunda geçen temel kavramları tanımlar: Bakanlık (Kültür ve Turizm Bakanlığı), kültür merkezi, kültür varlığı, somut olmayan kültürel miras, kültür yatırımı ve kültür girişimi. Bu tanımlar belgelendirme başvurularında ve teşvik hükümlerinin uygulanmasında esas alınır; kültür yatırımı belge alınarak yapılan tesis/inşa-onarım aşamasını, kültür girişimi ise belgeli tesisin işletilmesi aşamasını ifade eder."
+  },
+  {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Teşvik Konuları\nTeşvik kapsamındaki faaliyetleri sayar: kültür merkezlerinin yapımı, onarımı ve işletilmesi; kütüphane, müze, sanat galerisi, sinema, tiyatro, opera, konser ve benzeri kültürel-sanatsal etkinliklerin yapıldığı mekânlar ile araştırma ve eğitim merkezleri; 2863 sayılı Kanun kapsamındaki taşınmaz kültür varlıklarının bu Kanun amacına uygun kullanımı; kültür varlıkları ile somut olmayan kültürel mirasın araştırılması, belgelendirilmesi, arşivlenmesi ve tanıtımı. Belge başvurusu yalnız bu konulardaki yatırım ve girişimler için yapılabilir."
+  },
+  {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Teşvik Unsurları\nBelge sahibi yatırım/girişimlere sağlanan teşvik araçlarını düzenler: (a) kamu taşınmazı tahsisi/kullanım izni, (b) gelir vergisi stopajı indirimi — münhasıran belgeli yatırım/girişimde çalışanlar için yatırım aşamasında %50 (üç yılı geçmemek üzere), işletme aşamasında %25 (yedi yılı geçmemek üzere), (c) sigorta primi işveren payı desteği — aynı oran ve sürelerle Hazinece karşılanır, (d) su bedeli indirimi (bölgede uygulanan en düşük tarife) ve enerji desteği (elektrik/doğalgaz tüketim bedelinin %20'si, beş yıl), (e) yabancı uzman personel ve sanatçı çalıştırma kolaylığı, (f) hafta sonu ve resmî tatillerde faaliyet izni. [DOĞRULA: stopaj/sigorta primi oran ve süreleri ile enerji desteği %20/5 yıl güncel uygulama yönetmeliğinden teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Teşvik Esasları\nTeşvik unsurlarının uygulama esaslarını belirler. Bakanlık tercih ve öncelikleri saptamaya yetkilidir; aynı yatırım/girişim için başka mevzuatta benzer teşvik bulunması halinde yatırımcı veya girişimci lehine olan hükümler uygulanır. Teşviklere ilişkin ayrıntılı usul ve esaslar ilgili bakanlıklarca müştereken çıkarılan düzenlemelerle tespit edilir."
+  },
+  {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Belge\nKültür yatırımı belgesi ile kültür girişimi belgesinin Bakanlıkça verilmesini düzenler. Belge, yatırım veya girişimin nitelik ve niceliklerine göre düzenlenir; belge alanlar bu Kanun ve ilgili mevzuattaki teşvik ve indirim unsurlarından yararlanır. Yatırımların Bakanlıkça belirlenen süreler içinde başlatılması, tamamlanması ve işletme aşamasına geçirilmesi zorunludur; mücbir sebeplerle bu süreler uzatılabilir. Belgelendirme işlemlerinin usul ve esasları Bakanlıkça çıkarılan yönetmelikle belirlenir."
+  },
+  {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — İzin Alma ve Bilgi Verme Zorunluluğu\nBelgeli kuruluşların belirli işlemleri Bakanlık iznine bağlar: şirket ana sözleşmesi değişiklikleri, tesisin devri veya kiraya verilmesi ve girişim konusu değişiklikleri Bakanlığın iznine tabidir. Belgeli işletmeler ayrıca yıllık faaliyetlerine ilişkin bilgileri (faaliyet raporu) izleyen yılın belirlenen ayında Bakanlığa bildirmekle yükümlüdür; bu hüküm belgeli yatırım ve girişimlerin denetimi ile teşvik uygunluğunun sürekliliği bakımından esastır. [DOĞRULA: yıllık bildirimin yapılacağı ay (ocak) güncel metinden teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "5225 kultur yatirimlari girisimleri tesvik kanunu",
+   "kaynak_dosya": "5225_kultur_yatirimlari_girisimleri_tesvik_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Devir ve Faaliyetin Sona Ermesi Hallerinde Teşvik Hükümleri\nBelgeli yatırım veya girişimin devri ile faaliyetin sona ermesi durumlarını düzenler. Belgeli yatırımı devralanlar kalan süre için teşvik hükümlerinden yararlanmaya devam eder. Faaliyetini sona erdirenler, yatırım aşamasında yararlandıkları istisna ve muafiyetlerin parasal tutarını ilgili mevzuata göre öder; mücbir sebep halleri bu yükümlülüğün dışında tutulur."
+  },
+  {
    "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
    "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
    "madde_no": 1,
@@ -4215,6 +4446,55 @@
    "madde_no": 32,
    "madde_tur": "madde",
    "text": "Madde 32 — Ceza hükümleri\nKanun hükümlerine aykırı davrananlara idari para cezası veya hapis/adli para cezası uygulanır; örneğin genel kurulu süresinde toplantıya çağırmayan veya toplantıyı kanun/tüzüğe aykırı yapan yöneticilere idari para cezası verilir. 19'uncu maddedeki beyannameyi bilerek gerçeğe aykırı verenler yüz günden az olmamak üzere adli para cezası ile cezalandırılır; 22, 23 ve 24'üncü maddelerdeki bildirim ile beyanname verme yükümlülüğünü yerine getirmeyen yöneticilere beş yüz Türk Lirası idari para cezası verilir. Defter tutmama, gelir/gider işlemlerini finans kuruluşları aracılığıyla yapmama gibi fiiller için ayrıca hapis veya oransal idari para cezaları öngörülmüştür."
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nKanunun amacı; Sağlık Bakanlığının belirleyeceği illerde birinci basamak sağlık hizmetlerini geliştirmek, koruyucu sağlık hizmetlerine ağırlık vermek, kişisel sağlık kayıtlarını tutmak ve bu hizmetlere eşit erişimi sağlamak üzere aile hekimliği hizmetlerini yürütecek personelin statüsü, malî hakları ve hizmetin esaslarını düzenlemektir. (663 sayılı KHK ile maddeden 'pilot olarak' ibaresi çıkarılmıştır.)"
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nAile hekimi; kişiye yönelik koruyucu sağlık hizmetleri ile birinci basamak teşhis, tedavi ve rehabilite edici hizmetleri yaş, cinsiyet ve hastalık ayrımı yapmaksızın belli bir mekânda kapsamlı ve devamlı veren, gerektiğinde gezici sağlık hizmeti sunan ve tam gün esasına göre çalışan aile hekimliği uzmanı veya Bakanlıkça öngörülen eğitimleri almış uzman tabip/tabiptir. Aile sağlığı çalışanı; aile hekimiyle birlikte hizmet veren hemşire, ebe, sağlık memuru gibi sağlık elemanıdır (7151 sayılı Kanunla 'aile sağlığı elemanı' ibaresi 'aile sağlığı çalışanı' olarak değiştirilmiştir)."
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Personelin statüsü, hak ve yükümlülükleri\nSağlık Bakanlığı; uzman tabip, tabip ve aile sağlığı çalışanlarını kendi talepleri ve kurumlarının/Bakanlığın muvafakatı üzerine 657 sayılı Kanunun sözleşmeli personel hükümlerine bağlı olmaksızın sözleşmeli çalıştırmaya veya görevlendirmeye yetkilidir. Sözleşmeli aile hekimi ve aile sağlığı çalışanları kurumlarında aylıksız/ücretsiz izinli sayılır, kadrolarıyla ilişkileri devam eder ve talepleri halinde eski görevlerine atanırlar. Ödeme tutarları kayıtlı kişi sayısı ve risk grupları, gezici sağlık hizmetleri, sosyo-ekonomik gelişmişlik gibi kriterlere göre belirlenir; koruyucu hekimlik hizmetlerinin eksik uygulanması halinde brüt ücretten %20'ye kadar indirim yapılır. Disiplin işlemlerinde 657 sayılı Kanun hükümleri uygulanır. [DOĞRULA: madde defalarca değiştirildiği için güncel ödeme katsayıları (aile hekimi için 6 kat, aile sağlığı çalışanı için 1,5 kat) ve indirim oranlarının son hâli teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Kamuya ait taşınmazların kullanımı\nHazine, belediye veya il özel idaresine ait taşınmazlardan aile sağlığı merkezi olarak kullanılması uygun görülenler; Maliye Bakanlığı, belediye veya il özel idarelerince bu amaçla kullanılmak üzere doğrudan aile hekimine kiraya verilebilir."
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Hizmetin esasları (kayıt, sevk ve katkı payı)\nAile hekimliği uygulaması kapsamında kişilerin aile hekimine kaydı yapılır; belirlenen süre sonunda kişiler aile hekimini değiştirebilir veya planlamaya uygun olarak Bakanlık değiştirebilir. Aile hekimliği hizmetleri kural olarak ücretsizdir. Acil haller ve mücbir sebepler dışında, kişi hangi sosyal güvenlik kuruluşuna tâbi olursa olsun aile hekiminin sevki olmaksızın sağlık kurum ve kuruluşlarına başvuranlardan katkı payı alınır. Aile hekimlerinin kişilerin sağlık dosyaları, raporlar, sevk belgesi ve reçete gibi düzenledikleri belgeler resmî kayıt ve evrak niteliğindedir ve hekimin ayrılması/kişinin hekim değiştirmesi halinde eksiksiz devredilir."
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Denetim, sorumluluk ve mal bildirimi\nAile hekimleri ve aile sağlığı çalışanları, mevzuat ve sözleşme hükümlerine uygunluk ile diğer konularda Bakanlık, ilgili mülkî idare ve sağlık idaresinin denetimine tâbidir. Görevleriyle ilgili veya görevleri başında işledikleri ya da kendilerine karşı işlenen suçlarda Devlet memuru gibi kabul edilirler. Ayrıca 3628 sayılı Mal Bildiriminde Bulunulması Kanunu gereğince mal bildiriminde bulunmakla yükümlüdürler."
+  },
+  {
+   "mevzuat": "5258 aile hekimligi kanunu",
+   "kaynak_dosya": "5258_aile_hekimligi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Yönetmelikler\nAile hekimi ve aile sağlığı çalışanlarının çalışma usul ve esasları; öncelik sıralaması; uygulamaya geçişe ve nakillere ilişkin puanlama; aile sağlığı merkezlerinde aranacak fizikî/teknik şartlar; meslek ilkeleri; performans ve hizmet kalite standartları; hasta sevk evrakı, reçete, rapor ve diğer belgelerin şekli ve içeriği ile kayıt ve denetime ilişkin usul ve esaslar Sağlık Bakanlığınca çıkarılacak yönetmelikle düzenlenir. Sözleşmede yer alacak hususlar ve ödeme tutarları ise Cumhurbaşkanınca çıkarılacak yönetmelikle düzenlenir."
   },
   {
    "mevzuat": "5271 ceza muhakemesi kanunu",
@@ -5069,6 +5349,41 @@
    "madde_no": 41,
    "madde_tur": "madde",
    "text": "Madde 41 — Kimlik kartı düzenlenmesi ve teslimi\nTürkiye Cumhuriyeti kimlik kartının bilgileri, tasarımı, basımı ve teslim yöntemi Bakanlıkça belirlenir; biyometrik verisi alınacak kişilerin şahsen müracaatı esastır. Biyometrik verisi alınmayacak çocukların kimlik kartı müracaatı veli/vasi veya doğum bildiriminde yükümlü kişilerce yapılır. Kimlik kartı hiçbir kişi veya kurumca alıkonulamaz; kayıp/değişiklik hâlinde yenisi verilinceye kadar geçerli geçici belge düzenlenebilir."
+  },
+  {
+   "mevzuat": "5502 sosyal guvenlik kurumu kanunu",
+   "kaynak_dosya": "5502_sosyal_guvenlik_kurumu_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kuruluş\nKanunun amacı, Sosyal Güvenlik Kurumunun (SGK) kuruluş, teşkilat, görev ve yetkilerine ilişkin usul ve esasları düzenlemektir. Kurum; kamu tüzel kişiliğini haiz, idari ve malî açıdan özerk, Çalışma ve Sosyal Güvenlik Bakanlığı ile ilgili, Sayıştay denetimine tabi ve merkezi Ankara'da olan bir kuruluş olarak kurulmuştur. [DOĞRULA: Bu madde 2.7.2018 tarihli KHK-703 m.81/82 ile mülga edilmiş; Kurumun kuruluş ve bağlılık hükümleri 1 No.lu Cumhurbaşkanlığı Teşkilatı CBK'sına aktarılmış olabilir — mevzuat.gov.tr konsolide metinden güncel yürürlük durumu teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5502 sosyal guvenlik kurumu kanunu",
+   "kaynak_dosya": "5502_sosyal_guvenlik_kurumu_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Kurumun amacı ve görevleri\nKurumun temel amacı; sosyal sigortacılık ilkelerine dayalı, etkin, adil, kolay erişilebilir ve malî açıdan sürdürülebilir bir sosyal güvenlik sistemini yürütmektir. Görevleri arasında ulusal kalkınma strateji ve politikalarıyla uyumlu sosyal güvenlik politikalarını uygulamak, hak sahiplerini hak ve yükümlülükleri konusunda bilgilendirmek, uluslararası gelişmeleri izleyip işbirliği yapmak ve kamu idareleri arasında koordinasyonu sağlamak yer alır. [DOĞRULA: Bu madde 2.7.2018 tarihli KHK-703 ile mülga edilmiş; Kurumun görevleri büyük ölçüde 1 No.lu Cumhurbaşkanlığı Teşkilatı CBK'sına taşınmıştır — güncel görev listesi CBK'dan teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5502 sosyal guvenlik kurumu kanunu",
+   "kaynak_dosya": "5502_sosyal_guvenlik_kurumu_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Kurum mallarının ve alacaklarının hukukî durumu\nKurumun malları, alacakları ve banka hesapları, 2004 sayılı İcra ve İflâs Kanunu ile 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun bakımından Devlet malı hükmünde olup alacakları imtiyazlı alacaklardır. Kurumun taşınır ve taşınmazları ile bankalardaki mevduatları dahil her türlü hak ve alacakları haczedilemez ve haklarında İcra ve İflâs Kanununun haciz ve iflas hükümleri uygulanmaz. Bu hüküm SGK alacaklarının takibinde Kuruma güçlü bir konum sağlar."
+  },
+  {
+   "mevzuat": "5502 sosyal guvenlik kurumu kanunu",
+   "kaynak_dosya": "5502_sosyal_guvenlik_kurumu_kanunu.txt",
+   "madde_no": 36,
+   "madde_tur": "madde",
+   "text": "Madde 36 — Muafiyetler\nKurum; yaptığı işlemler ve düzenlediği kâğıtlar yönünden damga vergisi ve harçlar ile belediyelerce yürütülen hizmet karşılığı alınan ücret ve katılma paylarından müstesnadır (muaftır). Ayrıca Kurum, açtığı veya aleyhine açılan her türlü dava ve icra işlemlerinde teminat yatırma yükümlülüğünden muaftır. Bu muafiyetler Kurumun resmî yazışma, dava ve icra süreçlerinde malî yük doğurmaması amacını taşır. [DOĞRULA: muafiyet kapsamına giren vergi/harç kalemlerinin tam listesi ve sonraki değişiklikler madde metninden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5502 sosyal guvenlik kurumu kanunu",
+   "kaynak_dosya": "5502_sosyal_guvenlik_kurumu_kanunu.txt",
+   "madde_no": 37,
+   "madde_tur": "madde",
+   "text": "Madde 37 — Çeşitli malî hükümler (alacakların takip ve tahsili)\nKurumun süresinde ödenmeyen prim ve diğer alacakları, 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre takip ve tahsil edilir; anılan Kanunun tecil/zamanaşımı gibi 51, 102 ve 106 ncı maddeleri hariç diğer maddeleri uygulanır. Böylece SGK alacakları için ödeme emri düzenlenmesi, haciz ve cebrî tahsil yolları işletilebilir. [DOĞRULA: hangi madde istisnalarının ve hangi tahsil usullerinin güncel metinde yer aldığı mevzuat.gov.tr konsolide metninden teyit edilmelidir.]"
   },
   {
    "mevzuat": "5510 sosyal sigortalar gss kanunu",
@@ -6814,6 +7129,41 @@
    "text": "Madde 65 — Uluslararası koruma başvurusu\nUluslararası koruma başvuruları valiliklere bizzat yapılır; ülke içinde veya sınır kapılarında kolluk birimlerine yapılan başvurular derhâl valiliğe bildirilir ve işlemler valilikçe yürütülür. Her yabancı/vatansız kişi kendi adına, ergin aile üyelerinin muvafakatiyle onlar adına da başvurabilir. Makul sürede kendiliğinden başvuranlara, yasa dışı giriş/kalışın geçerli nedenini açıklamaları kaydıyla cezaî işlem yapılmaz; başvurular valiliklerce kaydedilir (md. 69)."
   },
   {
+   "mevzuat": "6475 posta hizmetleri kanunu",
+   "kaynak_dosya": "6475_posta_hizmetleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nKanunda geçen temel kavramları tanımlar. Posta gönderisi, göndericinin talimatıyla belirtilen adrese teslim edilen haberleşme gönderileri ile en fazla beş kilogram ağırlığında eşya içeren posta maddesi, koli ve kargoyu kapsar. Kayıtlı gönderi, kabulünden teslimine kadar kayda tabi tutulan gönderiyi; kullanıcı ise hizmetlerden gönderici veya alıcı olarak faydalanan gerçek/tüzel kişiyi ifade eder. Taahhütlü gönderi ve değer konulmuş gönderi gibi özel hizmet türleri de bu tanım çerçevesinde işlenir. [DOĞRULA: taahhütlü gönderi tanımının madde içinde ayrı bent olarak yer alıp almadığı]"
+  },
+  {
+   "mevzuat": "6475 posta hizmetleri kanunu",
+   "kaynak_dosya": "6475_posta_hizmetleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Posta hizmetlerinin gizliliği ve güvenliği\nPosta gönderilerinin gizliliğini ve dokunulmazlığını güvence altına alır; haberleşme hürriyetinin Anayasa m.22 ile bağlantısını yansıtır. Hizmet sağlayıcılar, çalışanlar ve posta hizmetlerine ilişkin bilgiye sahip olanlar bu bilgileri açığa vuramaz, gönderileri açamaz, içeriğini araştıramaz, üçüncü kişilere bilgi veremez veya gönderileri zapt/yok edemez. Yetkisiz açma ve alıkoyma yasaktır; bu yasağa aykırılık idari yaptırıma bağlanmıştır."
+  },
+  {
+   "mevzuat": "6475 posta hizmetleri kanunu",
+   "kaynak_dosya": "6475_posta_hizmetleri_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Evrensel posta hizmeti\nEvrensel posta hizmetinin coğrafi alan farkı gözetilmeksizin ülke sınırları içinde tüm kullanıcılara karşılanabilir ücretlerle kesintisiz sunulması ilkesini düzenler. Hizmet etkin, verimli, kaliteli ve hızlı biçimde, haftada en az beş iş günü olmak üzere sağlanır. Kapsamına belirli ağırlığa kadar posta gönderileri, koliler, basılmış kâğıtlar ve görme engellilere özgü yazılar girer. [DOĞRULA: evrensel posta hizmeti madde numarasının 13 olduğu ve kapsam/ağırlık eşiklerinin aynı maddede mi yoksa ayrı maddede mi düzenlendiği]"
+  },
+  {
+   "mevzuat": "6475 posta hizmetleri kanunu",
+   "kaynak_dosya": "6475_posta_hizmetleri_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — İdari yaptırımlar\nMevzuata ve yetkilendirme şartlarına aykırılık hâlinde uygulanacak idari yaptırımları belirler. Kurum (BTK), bir önceki takvim yılı net satışlarının yüzde üçüne kadar idari para cezası uygulayabilir; ayrıca faaliyetin durdurulması veya yetkilendirmenin iptali mümkündür. Kabulü yasak maddeleri postayla gönderenler ile gizlilik (m.7) hükümlerine aykırı davrananlara gönderi ücretinin beş yüz katı tutarında idari para cezası verilir. Cezalar süresinde ödenmezse 6183 sayılı Kanuna göre tahsil edilir."
+  },
+  {
+   "mevzuat": "6475 posta hizmetleri kanunu",
+   "kaynak_dosya": "6475_posta_hizmetleri_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Sorumluluk, başvuru hakkı ve zamanaşımı\nPTT hizmetlerine ilişkin talepte bulunma ve dava açma süresini düzenler; bu hak işlemin tesisi tarihinden itibaren bir yılın sonunda zamanaşımına uğrar. PTT, anlaşmazlık konusu olmayan posta hizmetine ait evrakı iki yıl saklamak zorundadır. Kaybolan, çalınan veya zarar gören gönderilere ilişkin başvuru ve sorumluluk bu çerçevede değerlendirilir. [DOĞRULA: tazminat üst sınırının kanunun bu maddesinde mi yoksa ikincil mevzuatta mı belirlendiği]"
+  },
+  {
    "mevzuat": "6502 tuketicinin korunmasi",
    "kaynak_dosya": "6502_tuketicinin_korunmasi.txt",
    "madde_no": 8,
@@ -7843,6 +8193,62 @@
    "text": "Madde 17 — Çevresel etki değerlendirmesi gereklidir veya gerekli değildir kararı\nProje Tanıtım Dosyasının incelenmesi sonucunda Bakanlığın \"ÇED Gereklidir\" veya \"ÇED Gerekli Değildir\" kararını vermesini düzenler. \"ÇED Gereklidir\" kararı verilen projeler bir ÇED Başvuru Dosyası hazırlanarak Madde 8 sürecine tabi tutulur; \"ÇED Gerekli Değildir\" kararı verilen projeler taahhütlere uyulması koşuluyla gerçekleştirilebilir ve bu karar beş yıl içinde yatırıma başlanmaması hâlinde geçersiz olur. Karar internet sitesinde ve askıda ilan edilir. ÇED Gereklidir/Gerekli Değildir karar yazışmalarının dayanağıdır."
   },
   {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nÇevresel gürültünün çevre ve insan sağlığı üzerindeki olumsuz etkilerinin önlenmesini, gürültü haritalarının ve gürültü eylem planlarının hazırlanmasını, gürültü kontrol tedbirlerinin uygulanmasını ve gürültü yönetimi çalışmaları hakkında kamuoyunun bilgilendirilmesini amaçlar. Gürültü şikâyeti, akustik rapor talebi ve müzik yayını izni yazışmalarının dayanak amacını ortaya koyan maddedir."
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nYönetmeliğin; endüstri tesisleri, ulaştırma kaynakları (kara/demir/hava/deniz yolu), şantiye faaliyetleri, müzik yayını yapan eğlence yerleri ve işyerlerinden kaynaklanan çevresel gürültü ile titreşimi kapsadığını düzenler. Ev faaliyetleri ve komşuların oluşturduğu gürültü ile askerî alanlardaki faaliyetler kapsam dışıdır. Bir evrakın bu yönetmeliğe mi yoksa başka mevzuata mı tabi olduğunu belirlemede kapsam maddesidir."
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Tanımlar\nAkustik rapor, çevresel gürültü, gürültü haritası, gürültü eylem planı, hassas kullanım alanı, Lgündüz/Lakşam/Lgece gibi temel kavramları tanımlar. \"Akustik rapor\", bir tesis/işyeri için öngörülen veya mevcut çevresel gürültü seviyelerinin ölçüm ve/veya hesaplamayla belirlendiği ve sınır değerlere uygunluğunun ortaya konduğu rapor olarak tanımlanır. Akustik rapor ve gürültü kontrol yazışmalarında atıf yapılan kavram maddesidir. [DOĞRULA: tanım maddesinin tam fıkra yapısı yıllık değişikliklerle güncellenmiş olabilir]"
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Görev, yetki ve sorumluluklar\nBakanlığın program ve politikaları belirlemesi, İl Müdürlüklerinin müzik yayını izni vermesi/denetlemesi ve akustik raporları incelemesi, belediyelerin stratejik gürültü haritalarını hazırlaması, ulaştırma idarelerinin kendi kaynakları için gürültü haritası yapması gibi görev dağılımını düzenler. Akustik raporun hangi merciye sunulacağı ve gürültü izin/denetim yazışmalarının muhatabını belirleyen maddedir."
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Endüstri tesisleri ve işyerlerine ilişkin kriterler\nEndüstri tesisleri ile işyerlerinin oluşturduğu çevresel gürültüyü Ek'teki sınır değerlerin altında tutmakla, gerektiğinde akustik rapor hazırlatmakla, gürültü azaltıcı tedbirleri uygulamakla ve yetkili merciyle işbirliği yapmakla yükümlü olduğunu düzenler. Klima, jeneratör gibi işyerinde kullanılan ekipman gürültüsü Ek-2'deki işyeri sınır değerlerine göre değerlendirilir. Tesis/işyeri için akustik rapor istem yazıları ve gürültü uygunluk değerlendirmesinin dayanağıdır."
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Müzik yayını yapan işyerleri ve eğlence yerlerine ilişkin kriterler\nCanlı veya elektronik müzik yayını yapan eğlence yerleri ve işyerleri ile müzik yayını yapan deniz araçlarının akustik rapor hazırlatması ve İl Müdürlüğünden müzik yayını izni alması zorunluluğunu düzenler. Çalışma saatleri yaz/kış dönemi, bölge özellikleri ve gürültü haritaları dikkate alınarak Mahalli Çevre Kurulu kararıyla yıllık belirlenebilir; aynı takvim yılı içinde hükümlerin üç kez ihlali halinde müzik yayını izni İl Müdürlüğünce iptal edilir ve sahibi iki yıl geçmeden yeniden başvuramaz. Müzik yayını izni başvurusu, akustik rapor ve izin iptali yazışmalarının doğrudan dayanağıdır. [DOĞRULA: üç ihlal / iki yıl bekleme süresi rakamları güncel metinde teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — İzleme ve denetim\nÇevresel gürültünün izlenmesinin Bakanlıkça belirlenen format ve esaslara göre yapılacağını; denetimlerin yetki devri yapılan idareler veya İl Müdürlükleri tarafından koordineli biçimde yürütüleceğini düzenler. Gürültü ölçüm/denetim tutanakları ve şikâyet üzerine yapılan inceleme yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "cevresel gurultu kontrol yonetmeligi",
+   "kaynak_dosya": "cevresel_gurultu_kontrol_yonetmeligi.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — İdari yaptırım\nYönetmelik hükümlerine aykırı davrananlara, 2872 sayılı Çevre Kanununun 20'nci maddesi (idari para cezaları) uyarınca idari yaptırım uygulanacağını düzenler. Gürültü kaynaklı idari para cezası karar ve tutanaklarının dayanak maddesidir; ceza tutarları her yıl yeniden değerleme oranında güncellenir."
+  },
+  {
    "mevzuat": "devlet arsiv hizmetleri yonetmeligi",
    "kaynak_dosya": "devlet_arsiv_hizmetleri_yonetmeligi.txt",
    "madde_no": 4,
@@ -7962,6 +8368,69 @@
    "text": "Madde 38 — İtiraz\nDisiplin amirleri tarafından verilen uyarma, kınama ve aylıktan kesme cezalarına karşı\ndisiplin kuruluna, kademe ilerlemesinin durdurulması cezasına karşı yüksek disiplin\nkuruluna itiraz edilebilir. İtiraz süresi, kararın memura tebliği tarihinden itibaren\nyedi gündür; süresinde itiraz edilmeyen ceza kesinleşir. İtiraz mercileri itiraz\ndilekçesi ile karar ve eklerinin kendilerine intikalinden itibaren otuz gün içinde\nkarar verir. Disiplin cezalarına karşı ayrıca idari yargı yoluna başvurulabilir (657\nm.135 ile uyumlu). [DOĞRULA: madde numarası mevzuat.gov.tr 3935 üzerinden]"
   },
   {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve dayanak\nBu Yönetmelik, Devlet memurlarının şikâyet ve müracaatları ile ilgili usul ve esasları\nbelirlemek amacıyla 657 sayılı Devlet Memurları Kanununun değişik 21'inci maddesine\ndayanılarak hazırlanmıştır. Memura tanınan müracaat ve şikâyet hakkının kullanılış\nbiçimi, başvurulacak merci ve süreler bu Yönetmelikte gösterilir."
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nYönetmelik hükümleri, 657 sayılı Kanunun değişik 1'inci maddesinin birinci fıkrasında\nsayılan kurum ve kuruluşlarda çalışan memurlar hakkında uygulanır. Diğer hükümlerle\n(m.15) sözleşmeli ve geçici personele de uygulanması öngörülmüştür. [DOĞRULA: kapsam\nfıkrasının tam ibaresi mevzuat.gov.tr 85743 üzerinden]"
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Şikâyet hakkı\nDevlet memurları, amirleri veya kurumları tarafından kendilerine uygulanan idari eylem\nve işlemlerden dolayı şikâyet hakkına sahiptir. Şikâyet hakkı tek başına kullanılır;\ntoplu (birden çok memurun bir araya gelerek) şikâyet yapılamaz. Şikâyet üzerine memura\nşikâyetinden dolayı bir ceza verilemez; ancak hakkın kötüye kullanılması veya bu sırada\nsuç işlenmesi hâli saklıdır."
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Şikâyetlerin yapılma şekli\nŞikâyetler söz veya yazı ile en yakın amirden başlanarak silsile yolu ile ve şikâyet\nedilen amirler atlanarak yapılır. Sözlü şikâyetlerde, şikâyeti kabul eden amir durumu\nbir tutanağa bağlar. Şikâyetin kapsamı ve şekli bu Yönetmelikteki esaslara uygun olmak\nzorundadır. [DOĞRULA: madde numarası ve \"atlanarak\" ibaresi yürürlükteki metinde]"
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Şikâyeti karara bağlayacak merci\nŞikâyet hakkında karar verme yetkisi, şikâyet edilenin ilk disiplin amirine aittir.\nŞikâyeti kabul eden ancak çözümleme yetkisi bulunmayan amirler, şikâyeti silsile yolu\nile yetkili mercie en kısa sürede intikal ettirir. [DOĞRULA: yetkili amirin tam tanımı\nmevzuat.gov.tr 85743 üzerinden]"
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Şikâyetin incelenmesi ve süre\nŞikâyetlerin incelenmesi ve bir karara bağlanarak şikâyet sahiplerine tebliğ edilmesi\nile ilgili bütün işlemlerin en geç otuz gün içinde tamamlanması zorunludur. Süre,\nşikâyetin yetkili mercie ulaştığı tarihten başlar. [DOĞRULA: 30 gün süresi ve başlangıç\nanı yürürlükteki metinde]"
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — İtiraz\nŞikâyette bulunan memurlar, yetkili amirlerce verilen kararlara karşı, kararın tebliğini\nizleyen on gün içinde bir üst mercie itiraz edebilir. İtiraz mercii, itirazı uygun\ngördüğü takdirde gereğini yapar; süresinde itiraz edilmeyen karar kesinleşir. Şikâyetlere\nve bunlara verilen kararlara karşı ayrıca idari yargı yolu açıktır. [DOĞRULA: 10 gün\nitiraz süresi ve üst merci ifadesi]"
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Müracaat hakkı\nDevlet memurları, kurumları ile ilgili resmî ve şahsi işlerinden dolayı müracaat hakkına\nsahiptir. Müracaat, bir hakkın tanınması, bir işlemin yapılması veya yapılmaması ya da\nbir bilginin verilmesi gibi taleplerle ilgilidir ve idari eyleme/işleme karşı bir\nyakınma niteliği taşımaması yönüyle şikâyetten ayrılır. [DOĞRULA: müracaat-şikâyet ayrımı\nibaresi mevzuat.gov.tr 85743 üzerinden]"
+  },
+  {
+   "mevzuat": "devlet memurlari sikayet muracaat yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_sikayet_muracaat_yonetmeligi.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Müracaat usulü\nMüracaatlar hakkında, bu Yönetmeliğin şikâyete ilişkin usul ve esasları (özellikle\nyapılma şekli, karar mercii, inceleme süresi ve itiraz hükümleri) uygulanır. Müracaat da\nsöz veya yazı ile silsile yolu ile yapılır; yetkili merci tarafından incelenip karara\nbağlanır ve sonucu müracaat sahibine bildirilir. [DOĞRULA: atıf yapılan madde numaraları\nyürürlükteki metinde]"
+  },
+  {
    "mevzuat": "elektronik tebligat yonetmeligi",
    "kaynak_dosya": "elektronik_tebligat_yonetmeligi.txt",
    "madde_no": 2,
@@ -8016,6 +8485,69 @@
    "madde_no": 15,
    "madde_tur": "madde",
    "text": "Madde 15 — İşlem ve delil kayıtlarının saklanması\nUETS'ye ait işlem kayıtları en az on yıl, tebligata ilişkin delil kayıtları ise en az otuz yıl süreyle saklanır. Kayıtların silinmesi, en az bir kez denetimden geçmiş olması şartına bağlıdır. Bu saklama yükümlülüğü, tebligatın geçerliliğinin ve tebliğ tarihinin sonradan ispatlanabilmesini güvence altına alır."
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nYönetmelik; temel insan haklarının sağlık hizmetleri sahasındaki yansıması olan ve Anayasa, diğer mevzuat ve milletlerarası hukuki metinlerde kabul edilen 'hasta hakları'nı somut olarak göstermek; sağlık hizmeti verilen tüm kurum ve kuruluşlarda herkesin bu haklardan insan haysiyetine yakışır şekilde faydalanabilmesine, hak ihlallerinden korunabilmesine ve gerektiğinde hukuki korunma yollarını fiilen kullanabilmesine dair usul ve esasları düzenlemek amacıyla hazırlanmıştır."
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Bilgi isteme\nHasta, sağlık hizmetlerinden nasıl faydalanabileceği konusunda bilgi isteyebilir; bu hak hangi kuruluştan hangi şartlarla faydalanılacağını ve verilen hizmet ve imkânların neler olduğunu öğrenmeyi kapsar. Bütün sağlık kurum ve kuruluşları, hastayı bilgilendirmek için yeterli teknik donanıma sahip bir birim oluşturmak, ehliyetli personel istihdam etmek ve uygun yerlerde bilgilendirici tabela, broşür ve işaretler bulundurmakla yükümlüdür."
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Bilgilendirmenin kapsamı\nHastaya; hastalığın muhtemel sebepleri ve seyri, tıbbi müdahalenin kim tarafından nerede ve nasıl yapılacağı ile tahmini süresi, diğer tanı ve tedavi seçenekleri ile bunların fayda ve riskleri, muhtemel komplikasyonlar, reddetme halinde ortaya çıkabilecek fayda ve riskler, kullanılacak ilaçların önemli özellikleri, kritik yaşam tarzı önerileri ve gerektiğinde aynı konuda tıbbi yardıma nasıl ulaşabileceği hususlarında bilgi verilir. (Madde başlığıyla birlikte RG 08.05.2014/28994 ile değiştirilmiştir.)"
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Kayıtları inceleme\nHasta, sağlık durumuyla ilgili bilgiler bulunan dosyayı ve kayıtları doğrudan veya vekili ya da kanuni temsilcisi aracılığıyla inceleyebilir ve bir suretini alabilir. Bu kayıtlar, sadece hastanın tedavisiyle doğrudan ilgili olanlar tarafından görülebilir."
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 24,
+   "madde_tur": "madde",
+   "text": "Madde 24 — Hastanın rızası ve izin\nTıbbi müdahalelerde hastanın rızası gerekir; hasta küçük veya mahcur ise velisinden/vasisinden izin alınır, bunların bulunamadığı veya hastanın ifade gücünün olmadığı hallerde bu şart aranmaz. Hayati tehlikenin bulunduğu, bilincin kapalı olduğu acil durumlarda veya bir organın kaybı/işlevsizleşmesi riski varlığında tıbbi müdahale rızaya bağlı değildir; durum kayıt altına alınır ve mümkünse yakını/kanuni temsilcisi bilgilendirilir. Yatarak tedavisi tamamlanan hastaya taburcu sonrası tedavi planı sözlü anlatılır ve epikrizin bir nüshası verilir. (RG 08.05.2014/28994 ile değiştirilmiştir.)"
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Rıza formu\nMevzuatta öngörülen durumlar ile uyuşmazlığa yol açması tıbben muhtemel müdahaleler için 15. maddedeki bilgileri içeren rıza formu hazırlanır; formdaki bilgiler sözlü olarak aktarılarak forma hastaya veya kanuni temsilcisine imzalatılır. Form iki nüsha düzenlenir, biri hasta dosyasına konur diğeri hastaya verilir; bilgilendirmeyi yapan ve müdahaleyi gerçekleştirecek sağlık meslek mensubu tarafından da imzalanır ve arşiv mevzuatına uygun saklanır. (Madde başlığıyla birlikte RG 08.05.2014/28994 ile değiştirilmiştir.)"
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 42,
+   "madde_tur": "madde",
+   "text": "Madde 42 — Müracaat, şikayet ve dava hakkı\nHastanın ve hastayla ilgili bulunanların, hasta haklarının ihlali halinde mevzuat çerçevesinde her türlü müracaat, şikayet ve dava hakları vardır."
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 42,
+   "madde_tur": "madde",
+   "text": "Madde 42 — Hasta hakları birimleri ve hasta hakları kurulları\nHasta hakları uygulamalarının yürütülmesi için sağlık kurum ve kuruluşları bünyesinde hasta hakları birimleri oluşturulur (önceki 'hasta iletişim birimleri' ibaresi RG 23.12.2016/29927 ile 'hasta hakları birimleri' olarak değiştirilmiştir). İl sağlık müdürlüğü; üniversite, özel ve kamu sağlık kuruluşları, ADSM, aile sağlığı ve toplum sağlığı merkezlerinden gelen başvuruları değerlendirmek, karara bağlamak ve düzeltici işlemleri belirlemek üzere, başkanlığını il sağlık müdürü/temsilcisinin yaptığı Hasta Hakları Kurulu oluşturur. (Madde RG 08.05.2014/28994 ile eklenmiştir.)"
+  },
+  {
+   "mevzuat": "hasta haklari yonetmeligi",
+   "kaynak_dosya": "hasta_haklari_yonetmeligi.txt",
+   "madde_no": 42,
+   "madde_tur": "madde",
+   "text": "Madde 42 — Kurulun görevleri, çalışma usul ve esasları\nKurul, sağlık kurum/kuruluşunca yerinde çözülemeyen yazılı ve/veya elektronik başvuruları değerlendirir ve başvurunun kurula ulaştığı tarihten itibaren otuz gün içinde karar verir. Üye tam sayısının salt çoğunluğuyla toplanır, katılanların salt çoğunluğuyla karar alır; kararlar ilgili kuruluşa ve başvurana bildirilir. Başvurular ve görüşülen dosyalar gizlidir; resmî talep halinde idari soruşturmacıya veya adli mercilere gizliliğe riayet edilerek verilir. Tıbbi hata (malpraktis) iddialarına ilişkin başvurular kurul tarafından değerlendirilmez. (Madde RG 08.05.2014/28994 ile eklenmiştir.)"
   },
   {
    "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
@@ -8158,6 +8690,55 @@
    "text": "Madde 16 — İşlem ve delil kayıtlarının tutulması ve saklanması\nKEPHS, KEP sisteminin tüm süreçlerine ilişkin işlem (günlük) ve delil kayıtlarını; güvenliğini, gizliliğini ve bütünlüğünü sağlayarak kayıt altına almak ve mevzuatta öngörülen süreyle saklamakla yükümlüdür. Bu kayıtlar, KEP iletisinin gönderildiği/alındığı anın ve içeriğinin sonradan ispatlanabilmesini güvence altına alır. [DOĞRULA: asgari saklama süresi — güncel değişiklikle 20 yıl olarak öngörülmüş olabilir]"
   },
   {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Taslak hazırlamada uyulacak ilkeler\nTaslaklar üst hukuk normlarına aykırı olamaz; düzenleme amacına uygun, kısa ve anlaşılır\nolur. Hazırlık aşamasında konuya ilişkin tüm mevzuat ve yargı kararları gözden geçirilir,\nihtiyaca uygun olup olmadığı değerlendirilir. Düzenleme açık, sade ve uygulanabilir\nbiçimde kaleme alınır; uygulanamayacak veya gereksiz hükümlere yer verilmez. [DOĞRULA:\nilkelerin tam listesi mevzuat.gov.tr 5210 üzerinden]"
+  },
+  {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Görüş alma\nTaslaklar hakkında, düzenlemeyle ilgisi bulunan bakanlık, kamu kurum ve kuruluşları ile\ngerektiğinde kamu kurumu niteliğindeki meslek kuruluşları ve sivil toplum kuruluşlarının\ngörüşü alınır. Mali yük getiren taslaklarda ilgili mali idarenin, kamu personeline\nilişkin taslaklarda yetkili kurumun görüşü alınır. Görüş istenen makamlara taslağın\ngerekçesi ve etki analizi de gönderilir. [DOĞRULA: görüş alınacak kurumların güncel\nlistesi 5210 metninde]"
+  },
+  {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Görüşlerin bildirilmesi\nGörüş istenen kurum ve kuruluşlar, görüşlerini en geç otuz gün içinde bildirir. Bu süre\niçinde görüş bildirilmemesi hâlinde taslağa olumlu görüş verilmiş sayılır. Verilen\ngörüşler, taslağı hazırlayan birim tarafından değerlendirilerek taslağa son şekli verilir.\n[DOĞRULA: 30 günlük süre ve \"olumlu sayılır\" hükmü yürürlükteki metinde]"
+  },
+  {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Maddelerin sıralanması\nMüstakil taslaklarda maddeler genel olarak şu sıraya göre düzenlenir: amaç, kapsam,\ndayanak, tanımlar; ardından asıl düzenleyici hükümler (teşkilat, görev, yetki ve\nsorumluluklar), varsa cezai hükümler, geçici hükümler ve en sonda yürürlük ile yürütme\nmaddeleri yer alır. Bu standart yapı, mevzuatın aranabilir ve birbiriyle uyumlu olmasını\nsağlar."
+  },
+  {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Gerekçeler\nHer taslağa genel gerekçe eklenir; genel gerekçede düzenlemenin hazırlanma nedenleri ve\namacı açıklanır. Kanun ve Cumhurbaşkanlığı kararnamesi taslaklarında ayrıca her madde\niçin madde gerekçesi hazırlanır. Madde gerekçesi, madde metninin tekrarı şeklinde değil;\nmaddenin niçin ve nasıl düzenlendiğini açıklayacak biçimde yazılır. [DOĞRULA: gerekçe\nzorunluluğunun kapsamı (hangi taslak türleri) 5210 üzerinden]"
+  },
+  {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Taslaklarda kullanılacak dil\nTaslaklarda Türkçenin yaşayan ve anlaşılır ifadeleri kullanılır; Türkçe karşılığı bulunan\nyabancı kelimelere yer verilmez. Tanımlar maddesinde belirlenenler dışında kısaltma\nkullanılmaz; terimler metin boyunca aynı anlamda ve tutarlı kullanılır. Dilbilgisi ve\nyazım kurallarına uyulur."
+  },
+  {
+   "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
+   "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Düzenleyici etki analizi\nYürürlüğe konulması hâlinde ekonomik, sosyal ve mali etkisi belirli bir tutarı aşacağı\ntahmin edilen kanun ve Cumhurbaşkanlığı kararnamesi taslakları için düzenleyici etki\nanalizi hazırlanması zorunludur. Analizde düzenlemenin amacı, getireceği yükümlülükler,\nfayda-maliyet değerlendirmesi ve alternatifler gösterilir. Bütçe kanunu ve milli\ngüvenliğe ilişkin taslaklar gibi istisnalarda analiz aranmaz. [DOĞRULA: parasal eşik ve\nistisnaların güncel hâli mevzuat.gov.tr 5210 üzerinden]"
+  },
+  {
    "mevzuat": "planli alanlar imar yonetmeligi",
    "kaynak_dosya": "planli_alanlar_imar_yonetmeligi.txt",
    "madde_no": 23,
@@ -8198,6 +8779,41 @@
    "madde_no": 65,
    "madde_tur": "madde",
    "text": "Madde 65 — Yapı kullanma izinlerinde başvuru sahibinden belge istenmesine ilişkin esaslar\nYapı kullanma izni başvurularında, başvuru sahibinin dilekçesi veya idarenin matbu formu ile yapının ruhsat ve eklerine uygunluğuna, malzemeye ve fen-sağlık bakımından sakınca bulunmadığına dair fenni mesul/yapı denetim raporu, enerji kimlik belgesi ve yapı fotoğrafları dışında belge istenemez. İdarede mevcut olan veya elektronik ortamda paylaşılan bilgi-belgeler ile KPS'den erişilebilen bilgiler tekrar istenmez. Malzeme fatura/irsaliyesi, doğalgaz uygunluk belgesi, itfaiye raporu, sığınak raporu, vergi borcu yazısı ve harç makbuzları gibi belgeler başvuru sahibinden istenmez. İskân başvurusunda istenebilecek belgeleri sınırlandırır."
+  },
+  {
+   "mevzuat": "posta sektorune iliskin yetkilendirme yonetmeligi",
+   "kaynak_dosya": "posta_sektorune_iliskin_yetkilendirme_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nYönetmeliğin amacının, posta hizmeti verilebilmesi ve/veya bunun için gerekli altyapının kurulup işletilebilmesine yönelik usul ve esasları düzenlemek olduğunu belirtir. 6475 sayılı Posta Hizmetleri Kanununa dayanılarak çıkarılmıştır ve posta sektöründe faaliyet gösterecek hizmet sağlayıcıların yetkilendirilmesini kapsar."
+  },
+  {
+   "mevzuat": "posta sektorune iliskin yetkilendirme yonetmeligi",
+   "kaynak_dosya": "posta_sektorune_iliskin_yetkilendirme_yonetmeligi.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Tanımlar\nYönetmelikte geçen kavramları tanımlar. Değer konulmuş (sigortalı) gönderi, kaybı, çalınması veya hasara uğraması hâlinde göndericinin kabulde beyan ettiği değere kadar tazminat istenebilen gönderidir. Haberleşme gönderisi, kitap/katalog/süreli yayınlar hariç fiziksel araç üzerine yazılan veya elektronik ileti şeklinde hazırlanan ve telgraf dâhil her türlü gönderiyi; kullanıcı ise hizmetlerden gönderici veya alıcı olarak faydalanan gerçek/tüzel kişiyi ifade eder."
+  },
+  {
+   "mevzuat": "posta sektorune iliskin yetkilendirme yonetmeligi",
+   "kaynak_dosya": "posta_sektorune_iliskin_yetkilendirme_yonetmeligi.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Hizmet sağlayıcının yükümlülükleri\nPosta hizmeti sağlayıcılarının yetkilendirme süresince uymakla yükümlü olduğu esasları sayar. Sağlayıcı; posta hizmetlerinin gizliliği ve güvenliğine ilişkin düzenlemelere, kişisel verilerin korunmasına ilişkin düzenlemelere ve kullanıcıların korunması ile hizmet kalitesine ilişkin düzenlemelere uymak zorundadır. Ayrıca hizmetin sürekli sunulması için gerekli tedbirleri almak ve yetkilendirmeyi sonlandırmadan önce kullanıcılarına karşı yükümlülüklerini ifa etmekle yükümlüdür."
+  },
+  {
+   "mevzuat": "posta sektorune iliskin yetkilendirme yonetmeligi",
+   "kaynak_dosya": "posta_sektorune_iliskin_yetkilendirme_yonetmeligi.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — Mücbir sebepler\nHizmet sağlayıcının kontrolü dışında gelişen ve yükümlülüklerini yerine getirmesini engelleyen mücbir sebep hâllerini düzenler. Bu durumlarda hizmet sunumunda yaşanan aksaklıklar ve kullanıcı koruma önlemlerinin nasıl değerlendirileceğine ilişkin esaslar belirlenir. [DOĞRULA: madde 17 başlığının 'Mücbir sebepler' olduğu ve içeriğinin kullanıcı koruma boyutu]"
+  },
+  {
+   "mevzuat": "posta sektorune iliskin yetkilendirme yonetmeligi",
+   "kaynak_dosya": "posta_sektorune_iliskin_yetkilendirme_yonetmeligi.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — Kabul şartları\nGönderilerin hizmet sağlayıcı tarafından kabul edilmesine ilişkin şartları düzenler. Değerli maddeler ve kıymetli evrak, ancak değer konulmuş veya sigortalı olarak gönderilmesi şartıyla kabul edilebilir. Böylece kayıp, çalınma veya hasar hâlinde tazminat hakkının doğabilmesi için gönderinin kabul aşamasındaki beyan ve kayıt koşulları belirlenir. [DOĞRULA: madde 20 başlığının 'Kabul şartları' olduğu ve son değişikliklerle madde numarasının kaymadığı]"
   },
   {
    "mevzuat": "resmi muhur yonetmeligi",
@@ -8289,6 +8905,62 @@
    "madde_no": 15,
    "madde_tur": "madde",
    "text": "Madde 15 — Aykırı Kullanım ve Taklidin Bildirilmesi\nResmî mühürlerin bu Yönetmelik hükümlerine aykırı kullanıldığını, taklit edildiğini veya\nDarphane ve Damga Matbaası dışında imal edildiğini öğrenen kamu görevlileri durumu en yakın\nmülki amire bildirmek zorundadır."
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nSanayi ve enerji üretim tesislerinin faaliyeti sonucu atmosfere yayılan is, duman, toz, gaz, buhar ve aerosol halindeki emisyonları kontrol altına almayı; insanı ve çevresini hava kirlenmesinden doğacak tehlikelerden korumayı amaçlar. Emisyon izni başvurusu, emisyon ölçüm raporu ve hava emisyonu uygunluk yazışmalarının dayanak amacını ortaya koyar."
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nİşletmelerin kurulması ve işletilmesi sırasında uyulacak esasları, hava emisyonlarının önlenmesi ve sınırlandırılmasına ilişkin usul ve esasları kapsar. Nükleer tesisler ile kapalı ortam (iş sağlığı) hava kalitesi gibi bazı konuların kapsam dışı olduğunu belirtir. Bir tesisin emisyon izni yükümlülüğüne tabi olup olmadığını belirlemede kapsam maddesidir."
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Tanımlar\nEmisyon, emisyon kaynağı, atık gaz, yakma tesisi, emisyon ölçüm raporu, hava kirlenmesine katkı değeri gibi çok sayıda teknik kavramı tanımlar. \"Emisyon ölçüm raporu\", çevre izni/lisans başvuru dosyasının hava emisyonları bölümüne esas teşkil eden rapor olarak tanımlanır. Emisyon izni ve ölçüm yazışmalarında atıf yapılan kavram maddesidir. [DOĞRULA: tanım sayısı ve içerikleri 2014/2020 değişiklikleriyle güncellenmiştir]"
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Hava emisyonu kapsamında değerlendirilen işletmeler (çevre izni zorunluluğu)\nHava emisyonu olan ve \"Çevre Kanununca Alınması Gereken İzin ve Lisanslar Hakkında Yönetmelik\" kapsamında yer alan işletmelerin kurulması ve işletilmesi için çevre izni (emisyon konulu) alınmasının zorunlu olduğunu düzenler. Bu işletmelerin hava emisyonları bu yönetmelik hükümleri ve sınır değerlerine göre değerlendirilir. Emisyon izni başvuru ve çevre izni yazışmalarının temel dayanağıdır."
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Tesislerin kurulması ve işletilmesinde uyulacak esaslar\nİşletmelerin, çevreye zararlı etkilerini \"mevcut en iyi üretim ve/veya arıtım teknikleri\" uygulayarak azaltmasını; bu yönetmelikte ve eklerinde (Ek-1/Ek-2) belirtilen emisyon sınır değerlerini aşmamasını; tesis etki alanında hava kalitesi sınır değerlerini sağlamasını ve emisyon ölçümlerini öngörülen yöntemlerle yaptırmasını düzenler. Emisyon sınır değerleri ve kütlesel debi eşikleri esas olarak eklerde (Ek-2) yer alır. Emisyon uygunluğu değerlendirmesi ve ölçüm istem yazılarının dayanağıdır."
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 24,
+   "madde_tur": "madde",
+   "text": "Madde 24 — Emisyon ölçüm raporu\nİşletmelerin hazırlatacağı emisyon ölçüm raporunun içeriğinin Bakanlıkça belirleneceğini; işletme sırrı niteliğindeki bilgilerin talep üzerine gizli tutulacağını düzenler. Çevre izni başvurusunda sunulan emisyon ölçüm raporu ve eksiklik bildirim yazışmalarının dayanak maddesidir. [DOĞRULA: rapor içeriğine ilişkin alt düzenleme tebliği güncel sürümle teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Denetim\nÇevre iznine tabi tesislerin izlenip denetleneceğini; işletmecilerin denetimle yetkili kişilerin tesise girmesine, ölçüm/test yapmasına izin vermek ve istenen bilgi/belgeyi vermek zorunda olduğunu düzenler. Hava emisyonu denetim tutanakları ve bilgi/belge talep yazılarının dayanağıdır."
+  },
+  {
+   "mevzuat": "sanayi kaynakli hava kirliligi kontrolu yonetmeligi",
+   "kaynak_dosya": "sanayi_kaynakli_hava_kirliligi_kontrolu_yonetmeligi.txt",
+   "madde_no": 36,
+   "madde_tur": "madde",
+   "text": "Madde 36 — İdari yaptırımlar\nYönetmelikte öngörülen yükümlülükleri (kurulma/işletme esasları, ölçüm, bilgi verme, denetime izin verme vb.) zamanında yerine getirmeyen veya aykırı davrananlara 2872 sayılı Çevre Kanunu uyarınca idari yaptırım uygulanacağını düzenler. Hava kirliliği kaynaklı idari para cezası ve yaptırım kararı yazışmalarının dayanak maddesidir."
   },
   {
    "mevzuat": "su kirliligi kontrolu yonetmeligi",
@@ -8669,5 +9341,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 190
+ "mevzuat_sayisi": 205
 }

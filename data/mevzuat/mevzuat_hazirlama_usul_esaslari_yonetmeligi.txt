@@ -1,0 +1,65 @@
+Mevzuat Hazırlama Usul ve Esasları Hakkında Yönetmelik
+Cumhurbaşkanı Kararı 5210 — Karar Tarihi 23.02.2022 / Resmî Gazete 24.02.2022-31760 (YÜRÜRLÜKTE)
+Önceki versiyon: Bakanlar Kurulu Kararı 2005/9986 (RG 17.02.2006-26083) — bu Yönetmelikle yürürlükten kaldırılmıştır
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5210&MevzuatTur=21&MevzuatTertip=5
+RG metni (2022): https://www.resmigazete.gov.tr/eskiler/2022/02/20220224-9.htm
+
+Bu metin kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+doğru özet/yakın-lafzî alıntıdır. Güncel yürürlükteki versiyon 23.02.2022 tarihli 5210
+sayılı Cumhurbaşkanı Kararı (RG 24.02.2022/31760) ile yayımlanmış olup 2005/9986 sayılı
+eski Yönetmeliği yürürlükten kaldırmıştır; madde başlıkları mevzuat.gov.tr (Mevzuat No
+5210) fihristi üzerinden çapraz doğrulanmıştır. Yönetmelik; kanun, Cumhurbaşkanlığı
+kararnamesi, yönetmelik ve diğer düzenleyici işlem taslaklarının hazırlanması, görüş
+alınması, şekli, dili, gerekçesi ve düzenleyici etki analizi usullerini düzenler.
+Kamu-evrak akışında mevzuat/yönetmelik taslağı hazırlama, kurumlardan görüş isteme yazısı,
+görüş bildirme yazısı, genel/madde gerekçesi, düzenleyici etki analizi ve teklif (üst)
+yazısı evrakının hukuki dayanağıdır.
+
+Madde 4 — Taslak hazırlamada uyulacak ilkeler
+Taslaklar üst hukuk normlarına aykırı olamaz; düzenleme amacına uygun, kısa ve anlaşılır
+olur. Hazırlık aşamasında konuya ilişkin tüm mevzuat ve yargı kararları gözden geçirilir,
+ihtiyaca uygun olup olmadığı değerlendirilir. Düzenleme açık, sade ve uygulanabilir
+biçimde kaleme alınır; uygulanamayacak veya gereksiz hükümlere yer verilmez. [DOĞRULA:
+ilkelerin tam listesi mevzuat.gov.tr 5210 üzerinden]
+
+Madde 6 — Görüş alma
+Taslaklar hakkında, düzenlemeyle ilgisi bulunan bakanlık, kamu kurum ve kuruluşları ile
+gerektiğinde kamu kurumu niteliğindeki meslek kuruluşları ve sivil toplum kuruluşlarının
+görüşü alınır. Mali yük getiren taslaklarda ilgili mali idarenin, kamu personeline
+ilişkin taslaklarda yetkili kurumun görüşü alınır. Görüş istenen makamlara taslağın
+gerekçesi ve etki analizi de gönderilir. [DOĞRULA: görüş alınacak kurumların güncel
+listesi 5210 metninde]
+
+Madde 7 — Görüşlerin bildirilmesi
+Görüş istenen kurum ve kuruluşlar, görüşlerini en geç otuz gün içinde bildirir. Bu süre
+içinde görüş bildirilmemesi hâlinde taslağa olumlu görüş verilmiş sayılır. Verilen
+görüşler, taslağı hazırlayan birim tarafından değerlendirilerek taslağa son şekli verilir.
+[DOĞRULA: 30 günlük süre ve "olumlu sayılır" hükmü yürürlükteki metinde]
+
+Madde 15 — Maddelerin sıralanması
+Müstakil taslaklarda maddeler genel olarak şu sıraya göre düzenlenir: amaç, kapsam,
+dayanak, tanımlar; ardından asıl düzenleyici hükümler (teşkilat, görev, yetki ve
+sorumluluklar), varsa cezai hükümler, geçici hükümler ve en sonda yürürlük ile yürütme
+maddeleri yer alır. Bu standart yapı, mevzuatın aranabilir ve birbiriyle uyumlu olmasını
+sağlar.
+
+Madde 23 — Gerekçeler
+Her taslağa genel gerekçe eklenir; genel gerekçede düzenlemenin hazırlanma nedenleri ve
+amacı açıklanır. Kanun ve Cumhurbaşkanlığı kararnamesi taslaklarında ayrıca her madde
+için madde gerekçesi hazırlanır. Madde gerekçesi, madde metninin tekrarı şeklinde değil;
+maddenin niçin ve nasıl düzenlendiğini açıklayacak biçimde yazılır. [DOĞRULA: gerekçe
+zorunluluğunun kapsamı (hangi taslak türleri) 5210 üzerinden]
+
+Madde 25 — Taslaklarda kullanılacak dil
+Taslaklarda Türkçenin yaşayan ve anlaşılır ifadeleri kullanılır; Türkçe karşılığı bulunan
+yabancı kelimelere yer verilmez. Tanımlar maddesinde belirlenenler dışında kısaltma
+kullanılmaz; terimler metin boyunca aynı anlamda ve tutarlı kullanılır. Dilbilgisi ve
+yazım kurallarına uyulur.
+
+Madde 26 — Düzenleyici etki analizi
+Yürürlüğe konulması hâlinde ekonomik, sosyal ve mali etkisi belirli bir tutarı aşacağı
+tahmin edilen kanun ve Cumhurbaşkanlığı kararnamesi taslakları için düzenleyici etki
+analizi hazırlanması zorunludur. Analizde düzenlemenin amacı, getireceği yükümlülükler,
+fayda-maliyet değerlendirmesi ve alternatifler gösterilir. Bütçe kanunu ve milli
+güvenliğe ilişkin taslaklar gibi istisnalarda analiz aranmaz. [DOĞRULA: parasal eşik ve
+istisnaların güncel hâli mevzuat.gov.tr 5210 üzerinden]

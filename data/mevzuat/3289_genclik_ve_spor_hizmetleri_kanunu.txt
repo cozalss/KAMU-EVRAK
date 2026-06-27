@@ -1,0 +1,26 @@
+Gençlik ve Spor Hizmetleri Kanunu
+Kanun No 3289, Kabul 21.05.1986, RG 28.05.1986/19120 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.3289 konsolide metin esas alınmıştır; özgün adı "Beden Terbiyesi ve Spor Genel Müdürlüğünün Teşkilat ve Görevleri Hakkında Kanun" iken kapsamlı değişikliklerle bugünkü "Gençlik ve Spor Hizmetleri Kanunu" adını almıştır; teşkilata ilişkin birçok madde 703 sayılı KHK (2/7/2018) ile mülga edilmiş, görevler Cumhurbaşkanlığı kararnamelerine devredilmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3289.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı, beden eğitimi ve spor hizmetlerinin yürütülmesi ile gençlik ve spor alanındaki teşkilatın görev, yetki ve sorumluluklarına ilişkin esas ve usulleri düzenlemektir. Özgün metinde Beden Terbiyesi Genel Müdürlüğü teşkilatı düzenlenmiş; sonraki değişikliklerle kanun, taşrada Gençlik ve Spor İl/İlçe Müdürlüklerinin ve spor hizmetlerinin yasal çerçevesini oluşturan temel metne dönüşmüştür. Bu madde, kanunun spor tesisi, sporcu ve antrenör işlemlerine ilişkin hükümlerinin uygulama alanını belirler.
+
+Madde 29 — Uluslararası müsabakalara katılacakların izinli sayılması
+Milletlerarası seviyede yurt içi ve yurt dışı spor müsabakalarına ve bunların hazırlık çalışmalarına katılacak sporcu, hakem, antrenör, monitör, idareci ve bu amaçla görevlendirilen diğer kişiler, bağlı bulundukları kurum ve kuruluşlarca organizasyonun devamı süresince izinli sayılır ve bu süre içinde özlük hakları saklı tutulur. Bu hüküm, kamu kurumlarına resmî müsabaka/kamp davet yazısı geldiğinde memur veya işçi statüsündeki sporcu ve görevlilerin izin işlemlerinin hukuki dayanağını oluşturur. Görevlendirme yazısı ile izin onayı arasındaki bağ, evrak yönlendirmesinde dikkate alınır.
+
+Madde 37 — Spor tesisi yapımı, işletilmesi ve malzeme yardımı
+Bakanlık, beden eğitimi ve spor hizmetlerini geliştirmek amacıyla, eğitim kurum ve kuruluşlarının beden eğitimi ve spor için ayıracağı alanlara spor tesisleri yapar veya yaptırır; yeni inşa edilen tesisler ile bu kurumların mevcut tesislerine personel, antrenör ve monitör tahsis eder, bu tesisleri işletir ve spor araç-gereç ile malzeme yardımında bulunur. Bu madde, kamu kurumları ile okullara yönelik tesis yapımı, personel/antrenör tahsisi ve malzeme yardımı taleplerinin yasal dayanağıdır. Tesis ve malzeme talep yazıları bu hüküm kapsamında değerlendirilir. [DOĞRULA: madde numarası teşkilat değişiklikleri sonrası konsolide metinde değişmiş olabilir; mevzuat.gov.tr güncel metinde teyit edilmeli]
+
+Ek Madde 9 — Bağımsız spor federasyonlarının kuruluşu
+Bağımsız spor federasyonları, ilgili spor dalını ulusal ve uluslararası düzeyde yönetmek üzere Cumhurbaşkanı kararı ile kurulur ve bu kararın Resmî Gazete'de yayımlanmasıyla tüzel kişilik kazanarak özerk olarak faaliyet gösterir. Federasyonlar; sporcu, antrenör ve hakem lisans/tescil işlemleri, müsabaka düzenleme ve disiplin işlemleri bakımından kendi spor dalında yetkili merciidir. Bu yapı, sporcu/antrenör lisansı ve kulüp faaliyet izni evrakının doğru federasyona yönlendirilmesini belirler. [DOĞRULA: 7405 sayılı Spor Kulüpleri ve Spor Federasyonları Kanunu (2022) ile bu maddenin bir kısmı yeniden düzenlenmiş/mülga edilmiş olabilir; güncel federasyon kuruluş hükümleri için 7405 ile birlikte teyit edilmeli]
+
+Ek Madde 9/A — Tahkim Kurulu
+Spor federasyonları ile kulüpler, sporcular, hakemler, antrenörler ve diğer ilgililer arasında federasyon kararlarından doğan uyuşmazlıkları kesin olarak karara bağlamak üzere bir Tahkim Kurulu oluşturulur. Federasyonların; tescil, lisans, vize, ceza ve benzeri kararlarına karşı önce federasyonun kendi disiplin/itiraz mercilerine, sonra Tahkim Kuruluna başvurulur ve Kurulun kararları kesindir (idari ve adli mercilere ayrıca götürülemez). Bu nedenle sporcu/kulüp itiraz dilekçelerinin süresi içinde doğru mercie yönlendirilmesi kritiktir. [DOĞRULA: Tahkim Kurulu üye sayısı, görev süresi ve başvuru süreleri ilgili yönetmelikle belirlenir]
+
+Ek Madde 11 — Spor tesislerinin tahsisi, devri ve kiralanması
+Bakanlığın veya il müdürlüklerinin mülkiyetinde ya da kullanımında bulunan spor tesisleri ile gayrimenkullerin; spor federasyonlarına, gençlik ve spor kulüplerine, yerel yönetimlere ve ilgili kamu kurumlarına protokolle tahsisi, işletilmek üzere devri, kiralanması ve bedelsiz kullandırılmasına ilişkin işlemler Bakanlık izni ve onayıyla yürütülür. Bu hüküm, kamu kurumları ve kulüplerin tesis tahsis/kiralama taleplerinde başvuru, protokol ve tahsis kararı evrakının hukuki çerçevesini oluşturur; tahsis süresi, bedel ve amaç dışı kullanım yasağı protokolde gösterilir. [DOĞRULA: federasyonlara 49 yıla kadar bedelsiz tahsis ve maddenin tam numarası/yürürlüğü mevzuat.gov.tr konsolide metinde teyit edilmeli; 7405 sayılı Kanunla kısmen değişmiş olabilir]

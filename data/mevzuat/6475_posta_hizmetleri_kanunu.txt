@@ -1,0 +1,23 @@
+Posta Hizmetleri Kanunu
+Kanun No: 6475 (Kabul: 9/5/2013, RG 23.05.2013/28655 — YÜRÜRLÜKTE)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6475.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanunda geçen temel kavramları tanımlar. Posta gönderisi, göndericinin talimatıyla belirtilen adrese teslim edilen haberleşme gönderileri ile en fazla beş kilogram ağırlığında eşya içeren posta maddesi, koli ve kargoyu kapsar. Kayıtlı gönderi, kabulünden teslimine kadar kayda tabi tutulan gönderiyi; kullanıcı ise hizmetlerden gönderici veya alıcı olarak faydalanan gerçek/tüzel kişiyi ifade eder. Taahhütlü gönderi ve değer konulmuş gönderi gibi özel hizmet türleri de bu tanım çerçevesinde işlenir. [DOĞRULA: taahhütlü gönderi tanımının madde içinde ayrı bent olarak yer alıp almadığı]
+
+Madde 7 — Posta hizmetlerinin gizliliği ve güvenliği
+Posta gönderilerinin gizliliğini ve dokunulmazlığını güvence altına alır; haberleşme hürriyetinin Anayasa m.22 ile bağlantısını yansıtır. Hizmet sağlayıcılar, çalışanlar ve posta hizmetlerine ilişkin bilgiye sahip olanlar bu bilgileri açığa vuramaz, gönderileri açamaz, içeriğini araştıramaz, üçüncü kişilere bilgi veremez veya gönderileri zapt/yok edemez. Yetkisiz açma ve alıkoyma yasaktır; bu yasağa aykırılık idari yaptırıma bağlanmıştır.
+
+Madde 13 — Evrensel posta hizmeti
+Evrensel posta hizmetinin coğrafi alan farkı gözetilmeksizin ülke sınırları içinde tüm kullanıcılara karşılanabilir ücretlerle kesintisiz sunulması ilkesini düzenler. Hizmet etkin, verimli, kaliteli ve hızlı biçimde, haftada en az beş iş günü olmak üzere sağlanır. Kapsamına belirli ağırlığa kadar posta gönderileri, koliler, basılmış kâğıtlar ve görme engellilere özgü yazılar girer. [DOĞRULA: evrensel posta hizmeti madde numarasının 13 olduğu ve kapsam/ağırlık eşiklerinin aynı maddede mi yoksa ayrı maddede mi düzenlendiği]
+
+Madde 19 — İdari yaptırımlar
+Mevzuata ve yetkilendirme şartlarına aykırılık hâlinde uygulanacak idari yaptırımları belirler. Kurum (BTK), bir önceki takvim yılı net satışlarının yüzde üçüne kadar idari para cezası uygulayabilir; ayrıca faaliyetin durdurulması veya yetkilendirmenin iptali mümkündür. Kabulü yasak maddeleri postayla gönderenler ile gizlilik (m.7) hükümlerine aykırı davrananlara gönderi ücretinin beş yüz katı tutarında idari para cezası verilir. Cezalar süresinde ödenmezse 6183 sayılı Kanuna göre tahsil edilir.
+
+Madde 29 — Sorumluluk, başvuru hakkı ve zamanaşımı
+PTT hizmetlerine ilişkin talepte bulunma ve dava açma süresini düzenler; bu hak işlemin tesisi tarihinden itibaren bir yılın sonunda zamanaşımına uğrar. PTT, anlaşmazlık konusu olmayan posta hizmetine ait evrakı iki yıl saklamak zorundadır. Kaybolan, çalınan veya zarar gören gönderilere ilişkin başvuru ve sorumluluk bu çerçevede değerlendirilir. [DOĞRULA: tazminat üst sınırının kanunun bu maddesinde mi yoksa ikincil mevzuatta mı belirlendiği]

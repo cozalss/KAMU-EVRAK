@@ -1,0 +1,32 @@
+Çevresel Gürültü Kontrol Yönetmeliği
+RG 30.11.2022/32029, Çevre Şehircilik ve İklim Değişikliği Bakanlığı (Çevre Kanunu m.14 ve 2872'ye dayanır) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=39864&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Çevresel gürültünün çevre ve insan sağlığı üzerindeki olumsuz etkilerinin önlenmesini, gürültü haritalarının ve gürültü eylem planlarının hazırlanmasını, gürültü kontrol tedbirlerinin uygulanmasını ve gürültü yönetimi çalışmaları hakkında kamuoyunun bilgilendirilmesini amaçlar. Gürültü şikâyeti, akustik rapor talebi ve müzik yayını izni yazışmalarının dayanak amacını ortaya koyan maddedir.
+
+Madde 2 — Kapsam
+Yönetmeliğin; endüstri tesisleri, ulaştırma kaynakları (kara/demir/hava/deniz yolu), şantiye faaliyetleri, müzik yayını yapan eğlence yerleri ve işyerlerinden kaynaklanan çevresel gürültü ile titreşimi kapsadığını düzenler. Ev faaliyetleri ve komşuların oluşturduğu gürültü ile askerî alanlardaki faaliyetler kapsam dışıdır. Bir evrakın bu yönetmeliğe mi yoksa başka mevzuata mı tabi olduğunu belirlemede kapsam maddesidir.
+
+Madde 4 — Tanımlar
+Akustik rapor, çevresel gürültü, gürültü haritası, gürültü eylem planı, hassas kullanım alanı, Lgündüz/Lakşam/Lgece gibi temel kavramları tanımlar. "Akustik rapor", bir tesis/işyeri için öngörülen veya mevcut çevresel gürültü seviyelerinin ölçüm ve/veya hesaplamayla belirlendiği ve sınır değerlere uygunluğunun ortaya konduğu rapor olarak tanımlanır. Akustik rapor ve gürültü kontrol yazışmalarında atıf yapılan kavram maddesidir. [DOĞRULA: tanım maddesinin tam fıkra yapısı yıllık değişikliklerle güncellenmiş olabilir]
+
+Madde 5 — Görev, yetki ve sorumluluklar
+Bakanlığın program ve politikaları belirlemesi, İl Müdürlüklerinin müzik yayını izni vermesi/denetlemesi ve akustik raporları incelemesi, belediyelerin stratejik gürültü haritalarını hazırlaması, ulaştırma idarelerinin kendi kaynakları için gürültü haritası yapması gibi görev dağılımını düzenler. Akustik raporun hangi merciye sunulacağı ve gürültü izin/denetim yazışmalarının muhatabını belirleyen maddedir.
+
+Madde 6 — Endüstri tesisleri ve işyerlerine ilişkin kriterler
+Endüstri tesisleri ile işyerlerinin oluşturduğu çevresel gürültüyü Ek'teki sınır değerlerin altında tutmakla, gerektiğinde akustik rapor hazırlatmakla, gürültü azaltıcı tedbirleri uygulamakla ve yetkili merciyle işbirliği yapmakla yükümlü olduğunu düzenler. Klima, jeneratör gibi işyerinde kullanılan ekipman gürültüsü Ek-2'deki işyeri sınır değerlerine göre değerlendirilir. Tesis/işyeri için akustik rapor istem yazıları ve gürültü uygunluk değerlendirmesinin dayanağıdır.
+
+Madde 11 — Müzik yayını yapan işyerleri ve eğlence yerlerine ilişkin kriterler
+Canlı veya elektronik müzik yayını yapan eğlence yerleri ve işyerleri ile müzik yayını yapan deniz araçlarının akustik rapor hazırlatması ve İl Müdürlüğünden müzik yayını izni alması zorunluluğunu düzenler. Çalışma saatleri yaz/kış dönemi, bölge özellikleri ve gürültü haritaları dikkate alınarak Mahalli Çevre Kurulu kararıyla yıllık belirlenebilir; aynı takvim yılı içinde hükümlerin üç kez ihlali halinde müzik yayını izni İl Müdürlüğünce iptal edilir ve sahibi iki yıl geçmeden yeniden başvuramaz. Müzik yayını izni başvurusu, akustik rapor ve izin iptali yazışmalarının doğrudan dayanağıdır. [DOĞRULA: üç ihlal / iki yıl bekleme süresi rakamları güncel metinde teyit edilmelidir]
+
+Madde 19 — İzleme ve denetim
+Çevresel gürültünün izlenmesinin Bakanlıkça belirlenen format ve esaslara göre yapılacağını; denetimlerin yetki devri yapılan idareler veya İl Müdürlükleri tarafından koordineli biçimde yürütüleceğini düzenler. Gürültü ölçüm/denetim tutanakları ve şikâyet üzerine yapılan inceleme yazışmalarının dayanağıdır.
+
+Madde 20 — İdari yaptırım
+Yönetmelik hükümlerine aykırı davrananlara, 2872 sayılı Çevre Kanununun 20'nci maddesi (idari para cezaları) uyarınca idari yaptırım uygulanacağını düzenler. Gürültü kaynaklı idari para cezası karar ve tutanaklarının dayanak maddesidir; ceza tutarları her yıl yeniden değerleme oranında güncellenir.

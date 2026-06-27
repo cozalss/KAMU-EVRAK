@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 744,
+ "chunk_sayisi": 855,
  "chunks": [
   {
    "mevzuat": "1136 avukatlik kanunu",
@@ -507,6 +507,41 @@
    "text": "Standart Dosya Planı Genelgesi\nBaşbakanlık Genelgesi 2005/7 / Resmî Gazete 25766 — 24.03.2005 (YÜRÜRLÜKTE)\nKaynak: https://www.resmigazete.gov.tr/eskiler/2005/03/20050325-10.htm\n\nBu metin kamuya açık genelgenin özetinden derlenmiştir (lafzî tam metin\ndeğildir). Standart Dosya Planı genelgesi madde yerine kod aralıklarıyla\ndüzenlenmiştir; aşağıdaki bölümler docs/01-resmi-yazisma-mevzuati.md\nreferansından özetlenmiştir.\n\nKonu — Standart Dosya Planı amacı\nStandart Dosya Planı, kamu kurum ve kuruluşlarında üretilen ve kullanılan\nbelgelerin standart bir dosya kodu sistemine göre dosyalanmasını sağlar.\nBelgelerin aranabilirliğini, saklanmasını ve arşivlenmesini kolaylaştırır.\nYazışmalarda sayı bölümünde Standart Dosya Planı kodu kullanılır.\n\nBölüm 000-099 — Ortak konular\n000 ile 099 arası kodlar tüm kurum ve kuruluşlarda ortak olan konuları kapsar:\nmevzuat, plan ve program, rapor, kurul ve toplantı gibi genel konular bu\naralıkta yer alır.\n\nBölüm 100-599 — Ana hizmet konuları\n100 ile 599 arası kodlar kuruma özgü ana hizmet faaliyetlerini kapsar. Her kurum\nkendi görev alanına göre bu aralıktaki kodları kullanır.\n\nBölüm 600-999 — Yardımcı, danışma ve denetim konuları\n600 ile 999 arası kodlar yardımcı, danışma ve denetim hizmetlerini kapsar:\npersonel, bütçe, mali işler ve hukuk müşavirliği gibi tüm kurumlarda ortak olan\nyardımcı konular bu aralıktadır.\n\nKod hiyerarşisi ve sayı biçimi\nDosya kodu hiyerarşisi ana konu üç hane ile başlar, alt konular nokta ve iki\nhane eklenerek detaylandırılır. Örnek: 622, 622.03, 622.03.01. Yazışmalarda\nsayı; DETSİS numarası, Standart Dosya Planı kodu ve kayıt numarasından oluşur.\nCoğrafi ek örneği 724.13.DE, il kodu örneği 622.01.06 (Ankara) şeklindedir."
   },
   {
+   "mevzuat": "2022 65 yas muhtac aylik baglanmasi kanunu",
+   "kaynak_dosya": "2022_65_yas_muhtac_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Kimlere aylık bağlanır (yaşlılık ve engelli aylığı)\nSosyal güvenlik kuruluşlarının herhangi birinden her ne nam altında olursa olsun bir gelir veya aylık hakkından yararlananlar, uzun vadeli sigorta kollarına tâbi çalışanlar, nafaka bağlanmış veya bağlanması mümkün olanlar hariç olmak üzere; Sosyal Yardımlaşma ve Dayanışma Vakıfları (SYDV) tarafından muhtaç olduğuna karar verilen 65 yaşını doldurmuş Türk vatandaşlarına yaşlılık aylığı bağlanır. Ayrıca 18 yaşını dolduran, sağlık kurulu raporu ile %40 ve üzeri engelli olduğu belgelenen muhtaç kişilere engelli aylığı; %70 ve üzeri (başkasının yardımı olmaksızın hayatını devam ettiremeyecek derecede) engellilere daha yüksek oranda aylık bağlanır. Hane içinde kişi başına düşen ortalama aylık gelir, aylık net asgari ücretin 1/3'ünden fazla olanlar muhtaç kabul edilmez. [DOĞRULA: yürürlükteki engellilik oranı eşikleri (%40 / %70) sağlık kurulu raporu ve hane geliri ölçütüyle birlikte mevzuat.gov.tr 1.5.2022 metninde teyit edilmelidir]"
+  },
+  {
+   "mevzuat": "2022 65 yas muhtac aylik baglanmasi kanunu",
+   "kaynak_dosya": "2022_65_yas_muhtac_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Muhtaçlığın tespiti (sosyal inceleme ve sağlık kurulu raporu)\nAylık bağlanacakların muhtaçlık hâli; Sosyal Yardımlaşma ve Dayanışma Vakıflarınca düzenlenen sosyal inceleme raporları ve gerektiğinde sağlık kurulu raporları da dikkate alınarak verilen kararlara göre tespit edilir. Engellilik durumu ve oranı, yetkili hastanelerden alınan engelli sağlık kurulu raporu ile belirlenir. Muhtaçlık hâli devam ettiği müddetçe aylık ödenmeye devam eder."
+  },
+  {
+   "mevzuat": "2022 65 yas muhtac aylik baglanmasi kanunu",
+   "kaynak_dosya": "2022_65_yas_muhtac_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Aylığın başlangıcı (başvuru tarihini izleyen aybaşı)\nBu aylıkların başlangıç tarihi, muhtaçlık durumuna ilişkin mütevelli heyeti kararını izleyen ve ilgililerin Sosyal Yardımlaşma ve Dayanışma Vakıflarına yapacakları yazılı müracaatlarını takip eden aybaşıdır. Aylıklar, belirlenen ödeme tarihlerinde peşin olarak ödenir."
+  },
+  {
+   "mevzuat": "2022 65 yas muhtac aylik baglanmasi kanunu",
+   "kaynak_dosya": "2022_65_yas_muhtac_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Aylığın kesilmesi ve usul\nMuhtaçlık hâlinin ortadan kalkması, sosyal güvenlik kuruluşundan gelir/aylık bağlanması veya kanunda sayılan diğer hâllerin gerçekleşmesi durumunda aylık kesilir. Aylığın bağlanması, kesilmesi, ödenmesi ve denetimine ilişkin usul ve esaslar, ilgili Bakanlıklarca çıkarılan yönetmelikle düzenlenir."
+  },
+  {
+   "mevzuat": "2022 65 yas muhtac aylik baglanmasi kanunu",
+   "kaynak_dosya": "2022_65_yas_muhtac_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Yersiz ve gerçeğe aykırı ödemelerin geri alınması\nGerçeğe aykırı beyan veya belge ile haksız yere aylık alınması ya da aylığın yersiz ödenmesi hâlinde, fazla ve yersiz ödenen tutarlar; ödemenin yapıldığı tarihten itibaren hesaplanacak kanunî/yasal faizi (TÜFE oranı) ile birlikte geri alınır. Gerçeğe aykırı belge düzenleyen ve kullananlar hakkında Türk Ceza Kanunu hükümlerine göre ayrıca işlem yapılır."
+  },
+  {
    "mevzuat": "213 vergi usul kanunu",
    "kaynak_dosya": "213_vergi_usul_kanunu.txt",
    "madde_no": 93,
@@ -582,6 +617,48 @@
    "madde_no": 253,
    "madde_tur": "madde",
    "text": "Madde 253 — Defter ve belgeleri muhafaza mecburiyeti\nDefter tutmak zorunda olanlar, tuttuklari defterleri ve ucuncu kisimdaki vesikalari (fatura, makbuz vb.) ilgili bulunduklari yili takip eden takvim yilindan baslayarak bes yil sureyle muhafaza etmek zorundadir. Mali evrakin arsivlenme/saklanma suresinin yasal dayanagidir."
+  },
+  {
+   "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
+   "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı; barışta güven ve asayişi korumak, kaçakçılığı men/takip/tahkik etmek, trafik ve yol güvenliğini veya tutuklu-hükümlülerin sevk-naklini sağlamakla görevli olanlar ile patlayıcı madde işlemlerinde, orman yangını söndürmede görevlendirilenler ve yetkililerce kendilerine bu kapsamda görev verilen kamu görevlileri ve gönüllülerin; görevleri sona ermiş olsa bile bu hizmet nedeniyle ölmeleri veya engelli hâle gelmeleri hâlinde ödenecek nakdi tazminat ile bağlanacak aylığın, yaralanmalarında ise ödenecek nakdi tazminatın esas ve yöntemlerini düzenlemektir. (Madde 23.03.2023 tarih ve 7442 sayılı Kanunla yeniden düzenlenmiştir.)"
+  },
+  {
+   "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
+   "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam (yararlanacak kişiler)\nKanun; iç güvenlik ve asayişin korunması, kaçakçılığın men-takip-tahkiki veya trafik-yol güvenliği konularında görevlendirilen Jandarma, Emniyet, Sahil Güvenlik personelini, Silahlı Kuvvetler ve MİT mensuplarını, çarşı/mahalle/kır bekçilerini, orman ve gümrük muhafaza memurlarını kapsar. Ayrıca adli-askeri hâkim ve savcıları, mülki idare amirlerini, ceza/tutukevi iç-dış güvenlik personelini, güvenlik kuvvetlerine kendiliğinden yardımcı olan şahısları ve bu görev/yardımları sebebiyle saldırıya maruz kalan eş, füru, ana, baba ve kardeşleri kapsama alır. (Bentler 3658, 6353, 6495, 7442 sayılı Kanunlarla genişletilmiştir.)"
+  },
+  {
+   "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
+   "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Nakdi tazminat\nÖlenlerin kanuni mirasçılarına en yüksek Devlet memuru brüt aylığının (ek gösterge dahil) 100 katı tutarında nakdi tazminat ödenir. Yaşamak için gerekli hareketleri yapmaktan aciz ve hayatını başkasının yardımıyla sürdürebilecek şekilde malul olanlara bu aylığın 200 katı; diğer engelli hâle gelenlere (a) bendindeki tutarın %25-%75'i; yaralananlara ise %20'sini geçmemek üzere engellilik/yaralanma derecesine göre tazminat verilir. Tazminata esas aylık, tazminat kararı tarihindeki en yüksek Devlet memuru brüt aylığıdır; kesin raporun gecikmesi hâlinde avans ödenebilir. (Tutarlar 4356 ve 6462 sayılı Kanunlarla güncellenmiştir.)"
+  },
+  {
+   "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
+   "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Aylık bağlanması (görev malullüğü)\nEngelli hâle gelerek bağlı oldukları sosyal güvenlik mevzuatına göre emekliye sevk edilenlere görev malullüğü aylığı bağlanır; emekli aylığı alırken engelli hâle gelenlerin aylığı görev malullüğü aylığına dönüştürülür; ölenlerin kendilerine bağlanması gereken görev malullüğü aylığı dul ve yetimlerine intikal ettirilir. Bu kapsamda bağlanan aylıklar %25 artırılarak ödenir; herhangi bir sosyal güvenlik kurumuna tabi olmayanların engelli hâle gelmesinde 657 sayılı Kanunun 36 ncı maddesine göre belirlenecek derece-kademe üzerinden T.C. Emekli Sandığınca görev malullüğü aylığı %25 artırımlı bağlanır. (Hükümler 6462 ve 6495 sayılı Kanunlarla revize edilmiştir.)"
+  },
+  {
+   "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
+   "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Öğrenim ve sağlık yardımı\nKanunda yazılı hâllerde ölenlerin veya çalışamayacak derecede engelli hâle gelenlerin çocukları, devlete ait yatılı okul ve eğitim kurumlarında yönetmelikle belirlenecek esaslara göre ücretsiz okutulur; yükseköğrenim görenler devlet yurtları ile öğrenim kredilerinden öncelikle yararlanır. Kapsamdakilerin tedavi giderleri kamu kurumlarınca karşılanamadığında devlet/üniversite/SSK ve askeri hastanelerde ücretsiz tedavi yapılır; tedavisi süren yedek subay, erbaş ve erlerin sağlık kuruluşlarına sevkleri en yakın askerlik şubelerince sağlanır ve yol-gündelik giderleri Milli Savunma Bakanlığı bütçesinden ödenir. (İki defa sınıfta kalan öğrenci bu hakları kaybeder.)"
+  },
+  {
+   "mevzuat": "2330 nakdi tazminat ve aylik baglanmasi kanunu",
+   "kaynak_dosya": "2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Yönetmelik ve ödemenin geciktirilememesi\nVerilecek nakdi tazminatların ödenme şekli ile 3 üncü maddenin (b) bendine göre ödenecek tazminat tutarları ve ilgili diğer hususlar Cumhurbaşkanınca hazırlanacak yönetmelikle düzenlenir. Nakdi tazminat ödenmesine ilişkin işlemler ilgili Bakan veya yetkili kılınan kişilerce onaylandıktan sonra, olayın Kanun kapsamına girmediği gerekçesiyle saymanlıklarca ödeme işlemi geciktirilemez. Engellilik tazminatı, 1053 sayılı Nizamnamede gösterilen 6 derece üzerinden ve her derece için %10 indirim yapılmak suretiyle belirlenir."
   },
   {
    "mevzuat": "2429 ulusal bayram genel tatiller",
@@ -904,6 +981,97 @@
    "madde_no": 7,
    "madde_tur": "ek",
    "text": "Ek Madde 7 — Bakıma ihtiyacı olan engellilere bakım hizmeti / evde bakım sosyal yardımı başvurusu\nHane içinde kişi başına düşen ortalama aylık gelir, asgari ücretin aylık net tutarının 2/3'ünden az olan bakıma ihtiyacı olan engellilere; resmî/özel bakım merkezlerinde bakım hizmeti ya da evde bakımına destek için sosyal yardım yapılır. Bakım hizmetinden yararlanacakların başvuru şekli, değerlendirilmesi, ödeme ve denetim usul ve esasları ilgili Bakanlıklarca çıkarılan yönetmelikle belirlenir; evde bakım sosyal yardımına ilişkin iş ve işlemler Bakanlık ve Sosyal Yardımlaşma ve Dayanışma Vakıflarınca yürütülür. Hane gelir ölçütünü aşan değişiklik tespitinde ödemeler durdurulur ve yasal faiziyle tahsil edilir."
+  },
+  {
+   "mevzuat": "2829 hizmet birlestirme kanunu",
+   "kaynak_dosya": "2829_hizmet_birlestirme_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı; çeşitli sosyal güvenlik kurumlarına tabi olarak geçen hizmet sürelerinin birleştirilmesi suretiyle ilgililerin sosyal güvenliklerinin sağlanmasına ilişkin usul ve esasları düzenlemektir. Birden fazla kuruma tabi çalışması bulunan kişilerin, dağınık hizmetlerini tek bir aylık hakkında toplayabilmesi hedeflenir."
+  },
+  {
+   "mevzuat": "2829 hizmet birlestirme kanunu",
+   "kaynak_dosya": "2829_hizmet_birlestirme_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nBu Kanun; T.C. Emekli Sandığına, Sosyal Sigortalar Kurumuna, Esnaf ve Sanatkârlar ve Diğer Bağımsız Çalışanlar Sosyal Sigortalar Kurumuna (Bağ-Kur) ve 506 sayılı Kanunun geçici 20'nci maddesine göre kurulan emekli sandıklarına tabi çeşitli hizmet süreleri bulunanları kapsar. Bu kurumlara tabi olarak geçen sürelerin emeklilik, malullük, yaşlılık ve ölüm halinde kendilerine ve hak sahiplerine sağlanacak haklar bu Kanuna göre belirlenir."
+  },
+  {
+   "mevzuat": "2829 hizmet birlestirme kanunu",
+   "kaynak_dosya": "2829_hizmet_birlestirme_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Hizmet sürelerinin birleştirilmesi\nSosyal güvenlik kurumlarına tabi çeşitli işlerde çalışmış olanların bu kurumlara tabi olarak geçen hizmet süreleri, aynı tarihlere rastlamamak (çakışmamak) kaydıyla, aylık bağlanmasına hak kazanıldığında birleştirilir. Birleştirme, ilgilinin tek bir kurumdan tam hizmetiyle aylık alabilmesini sağlamak üzere yapılır. Aynı döneme rastlayan (çakışan) hizmetler birleştirilmez; bunlardan hangisinin esas alınacağı ayrıca düzenlenir."
+  },
+  {
+   "mevzuat": "2829 hizmet birlestirme kanunu",
+   "kaynak_dosya": "2829_hizmet_birlestirme_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Birikmiş prim ve keseneklerin iade edilmemesi\nBir sosyal güvenlik kurumu ile ilişiği kesildikten sonra diğer kurumlardan birinde sigortalı/iştirakçi olanların, önceki kurumlarda birikmiş prim ve kesenekleri ilgililere geri verilmez ve toptan ödemeleri yapılmaz. Böylece önceki hizmetler korunarak birleştirmeye konu edilir. Bu hüküm, hizmet sürelerinin birleştirilmesi ilkesinin mali yönden tamamlayıcısıdır."
+  },
+  {
+   "mevzuat": "2829 hizmet birlestirme kanunu",
+   "kaynak_dosya": "2829_hizmet_birlestirme_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Aylığı bağlayacak kurum (son yedi yıllık fiili hizmet kuralı)\nBirleştirilmiş hizmet süreleri toplamı üzerinden ilgiliye; son yedi yıllık fiili hizmet süresi içinde fiili hizmet süresi fazla olan kurumca, süreler eşitse bu eşit sürelerden sonuncusunun tabi olduğu kurumca, kendi mevzuatına göre aylık bağlanır ve ödenir. Ancak malullük, ölüm, 5434 sayılı Kanuna göre yaş haddinden re'sen emeklilik ve kanunla belirlenen bazı görevlere atanma/seçilme hallerinde aylık, hizmet sürelerinden sonuncusunun tabi olduğu kurumca bağlanır. Hangi kurumun aylık bağlayacağının tespiti, hizmet birleştirme başvurusunun temel sonucudur."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı; yardım toplamaya yetkili kişi ve kuruluşları ve bunların hangi amaçla yardım toplayabileceklerini belirlemek, yardımın toplanmasına, kullanılmasına ve denetlenmesine ilişkin usul ve esasları düzenlemektir."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Yardım toplayabilecek olanlar\nKamu yararına uygun olarak, amaçlarını gerçekleştirmek, muhtaç kişilere yardım sağlamak ve kamu hizmetlerinden bir veya birkaçını gerçekleştirmek veya destek olmak üzere; gerçek kişiler, dernekler, kurumlar, vakıflar, spor kulüpleri, gazete ve dergiler yardım toplayabilirler."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Yardım toplama şekilleri\nBu Kanuna göre yardım; makbuzla, belirli yerlere kutu koyarak, bankalarda hesap açtırarak, yardım pulu çıkararak, eşya piyangosu düzenleyerek, kültürel gösteriler ve sergiler yoluyla, spor gösterileri, gezi ve eğlenceler düzenlemek veya bilgileri otomatik/elektronik olarak işleme tâbi tutmuş sistemler kullanmak suretiyle toplanabilir. Makbuz ve biletlerde yardımın hangi amaç için toplandığının belirtilmesi zorunludur."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — İzin alma zorunluğu\nKişiler ve kuruluşlar, yetkili makamdan izin almadan yardım toplayamazlar. Ancak, kamu yararına çalışan dernek, kurum ve vakıflardan hangilerinin izin almadan yardım toplayabilecekleri Cumhurbaşkanınca belirlenip ilan edilir. İzin alınmadan girişilen yardım toplama faaliyetleri güvenlik kuvvetlerince derhal menedilir ve sorumlular hakkında kovuşturma yapılır; izinsiz faaliyetin internet ortamında yapıldığının tespitinde valilik veya İçişleri Bakanlığınca içeriğin çıkarılması/erişimin engellenmesi yoluna gidilir."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — İzin vermeye yetkili makamlar\nYardım toplama faaliyeti bir ilin birden fazla ilçesini kapsıyorsa o ilin valisinden, bir ilçenin sınırları içinde ise o ilçenin kaymakamından izin alınır. Faaliyet birden fazla ili kapsıyorsa, yardım toplayacak gerçek veya tüzel kişinin yerleşim yerinin bulunduğu ilin valisinden izin alınır ve izni veren valilik ilgili valiliklere ve İçişleri Bakanlığına bilgi verir. İşlemler dernekler birimlerince yürütülür."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Başvuru (dilekçe)\nYardım toplayacak kişi ve kuruluşlar, isteklerini bir dilekçeyle izin vermeye yetkili makama bildirirler. Gazete ve dergiler için dilekçeler sorumlu yazı işleri müdürlerince verilir. Yardım toplama, öğrenim kurumları yararına veya kurum içinde yapılacaksa başvuru dilekçesine kurum sorumlusunun yazılı izninin eklenmesi zorunludur; dilekçede bulunması gereken hususlar ve eklenecek belgeler yönetmelikte gösterilir."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Başvurunun incelenmesi ve izin\nİzin vermeye yetkili makamlarca başvuru üzerine; işin önemi, yardım toplayacakların yeterlikleri, yapılacak hizmetin amaca ve kamu yararına uygunluğu ile faaliyetin başarıya ulaşıp ulaşamayacağı incelenir ve sonucu en geç iki ay içinde başvuranlara bildirilir."
+  },
+  {
+   "mevzuat": "2860 yardim toplama kanunu",
+   "kaynak_dosya": "2860_yardim_toplama_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Süre\nYardım toplama süresinin takdiri izin veren makama aittir. Bu süre bir yılı geçemez; ancak haklı sebeplerin bulunması hâlinde verilen süre izin veren makamca uzatılabilir. [DOĞRULA: Anayasa Mahkemesinin 27/6/2024 tarihli E:2023/181, K:2024/128 kararı \"bir yılı geçmemek üzere\" ibaresine ilişkin değişiklik içerdiğinden güncel metin teyit edilmelidir]"
   },
   {
    "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
@@ -1382,6 +1550,48 @@
    "text": "Madde 12 — Ruhsatsiz uretim ve idari yaptirim\nRuhsati olmadan veya baskasina ait ruhsat alani icinde uretim yapildiginin tespiti halinde faaliyetler durdurulur ve uretilen madene mulki idare amirligince el konulur. Ilk tespitte ocak basi satis bedelinin bes kati tutarinda idari para cezasi uygulanir; tekrarinda ceza artirilir. Ruhsatsiz/izinsiz madencilige karsi vatandas ve idarenin basvurabilecegi yaptirim cercevesini belirler. [DOGRULA: idari para cezasi katsayisi ve usul yururlukteki son degisiklikle teyit edilmeli]"
   },
   {
+   "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
+   "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı; fakr u zaruret içinde ve muhtaç durumda bulunan vatandaşlar ile gerektiğinde her ne suretle olursa olsun Türkiye'ye kabul edilmiş veya gelmiş olan kişilere yardım etmek, sosyal adaleti pekiştirici tedbirler alarak gelir dağılımının adilane bir şekilde tevzi edilmesini sağlamak, sosyal yardımlaşma ve dayanışmayı teşvik etmektir. Sosyal yardım sisteminin (SYDV başvurusu) yasal dayanağıdır."
+  },
+  {
+   "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
+   "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam (kimler yardımdan yararlanır)\nFakr u zaruret içinde ve muhtaç durumda bulunan, kanunla kurulu sosyal güvenlik kuruluşlarına tâbi olmayan ve bu kuruluşlardan aylık veya gelir almayan vatandaşlar ile geçici olarak küçük bir yardım veya eğitim-öğretim imkânı sağlanması hâlinde topluma faydalı/üretken hâle getirilebilecek kişiler bu Kanun kapsamındadır. Ayrıca Fon Kurulunca belirlenen ölçütlere göre hane içinde kişi başına düşen geliri, onaltı yaşından büyükler için belirlenen aylık net asgari ücretin 1/3'ünden az olan fakir ve muhtaç kişiler; her türlü acil durum ve afetten zarar görenler ile şehit yakınları ve gaziler de kapsamdadır."
+  },
+  {
+   "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
+   "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Kuruluş (Sosyal Yardımlaşma ve Dayanışmayı Teşvik Fonu)\nBu Kanunda öngörülen hizmetlerin gerçekleştirilmesi için, Cumhurbaşkanınca görevlendirilen Cumhurbaşkanı yardımcısına veya bakana bağlı ve T.C. Merkez Bankası nezdinde \"Sosyal Yardımlaşma ve Dayanışmayı Teşvik Fonu\" kurulmuştur. Fon, vakıflara kaynak aktaran merkezî yapıdır."
+  },
+  {
+   "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
+   "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Fonun gelirleri\nFonun gelirleri; kanun ve kararnamelerle kurulu fonlardan Cumhurbaşkanı kararıyla %10'a kadar aktarılacak miktardan, bütçeye konulacak ödeneklerden, trafik para cezası hâsılatının yarısından, Radyo ve Televizyon Üst Kurulu reklam gelirleri hâsılatından aktarılacak %15'lik miktardan, her nevi bağış ve yardımlardan ve diğer gelirlerden oluşur. Tahsil edilen tutarlar takip eden ayın en geç 15'ine kadar Merkez Bankası nezdindeki fon hesabına yatırılır."
+  },
+  {
+   "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
+   "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Sosyal Yardımlaşma ve Dayanışma Vakıfları (her il ve ilçede)\nBu Kanunun amacına uygun faaliyet yapmak ve ihtiyaç sahibi vatandaşlara nakdî ve aynî yardımda bulunmak üzere her il ve ilçede sosyal yardımlaşma ve dayanışma vakıfları (SYDV) kurulur. Mülkî idare amiri (vali/kaymakam) vakfın tabii başkanıdır; mütevelli heyeti belediye başkanı, defterdar/mal müdürü, il/ilçe millî eğitim, sağlık, tarım, sosyal hizmet müdürleri ile il/ilçe müftüsü ve seçilen muhtar/sivil toplum/hayırsever üyelerden oluşur. Yardım başvuruları bu vakıflara yapılır ve mütevelli heyeti kararıyla sonuçlandırılır."
+  },
+  {
+   "mevzuat": "3294 sosyal yardimlasma dayanismayi tesvik kanunu",
+   "kaynak_dosya": "3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Muafiyetler (vergi, resim, harç)\nBu Kanunla kurulan Fon ile Sosyal Yardımlaşma ve Dayanışma Vakıfları; Kurumlar Vergisinden (iktisadi işletmeler hariç), yapılacak bağış ve yardımlar sebebiyle Veraset ve İntikal Vergisinden, sahip oldukları taşınır-taşınmaz mallar ve yapacakları tüm muameleler dolayısıyla her türlü vergi, resim, harç ve fonlardan muaftır. Fona ve Vakfa yapılan bağış ve yardımlar her türlü vergi, resim ve harçtan muaf olup Kurumlar ve Gelir Vergisi matrahından indirilebilir."
+  },
+  {
    "mevzuat": "3308 mesleki egitim kanunu",
    "kaynak_dosya": "3308_mesleki_egitim_kanunu.txt",
    "madde_no": 1,
@@ -1599,6 +1809,27 @@
    "text": "Madde 13 — Haksız mal edinme\nKanuna veya genel ahlâka uygun olarak sağlandığı kanıtlanmayan, görevin/sıfatın sağladığı nüfuz kullanılarak edinilen mallar haksız edinilmiş sayılır. Haksız edinildiği tespit edilen mallar ile bunların değerlendirilmesiyle elde edilen mal ve menfaatlerin müsaderesine ve haksız mal edinmeye ilişkin cezaî sorumluluğa hükmolunur; bu yönüyle Kanun yolsuzlukla mücadelenin temel araçlarından birini oluşturur."
   },
   {
+   "mevzuat": "3713 terorle mucadele kanunu",
+   "kaynak_dosya": "3713_terorle_mucadele_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Terör tanımı\nTerör; cebir ve şiddet kullanarak baskı, korkutma, yıldırma, sindirme veya tehdit yöntemlerinden biriyle Anayasada belirtilen Cumhuriyetin niteliklerini ve siyasi-hukuki-sosyal-laik-ekonomik düzeni değiştirmek, Devletin ülkesi ve milletiyle bölünmez bütünlüğünü bozmak, kamu düzenini veya genel sağlığı bozmak amacıyla bir örgüte mensup kişi veya kişilerce girişilen her türlü suç teşkil eden eylemlerdir. Bu tanım, Kanun kapsamında şehit/gazi statüsünü ve sonraki haklara erişimi belirleyen temel hükümdür; 5233 sayılı Kanunun kapsamı da bu maddeye atıfla kurulur. (Birinci fıkra 4928 sayılı Kanunla değişik; ikinci-üçüncü fıkralar 5532 sayılı Kanunla mülga.)"
+  },
+  {
+   "mevzuat": "3713 terorle mucadele kanunu",
+   "kaynak_dosya": "3713_terorle_mucadele_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Yardım (malul, dul ve yetimlere sağlanan haklar)\nGörevlerini ifa ederken veya bu görevleri nedeniyle terör eylemine maruz kalarak yaralanan, engelli hâle gelen, ölen veya öldürülen kamu görevlileri hakkında 2330 sayılı Nakdi Tazminat ve Aylık Bağlanması Hakkında Kanun hükümleri uygulanır. Ayrıca malul olanlar ile ölenlerin dul ve yetimlerine en yüksek devlet memuru aylığı esas alınarak 30 yıl hizmet yapmış gibi emekli ikramiyesi ödenir; on yıl süreyle kira ödemeksizin kamu konutundan yararlanma veya kira yardımı sağlanır; hibe edilen gayrimenkuller veraset-intikal vergisinden, devir harçlarından ve damga vergisinden müstesnadır; her türlü muayene-tedavi giderleri karşılanır ve eksilen vücut organları en son teknik usullerle protezlenir. Yaşamak için gerekli hareketleri yapamayanlar ile kimsesizler kamu (gerektiğinde özel) bakım merkezlerinde ücretsiz barındırılıp baktırılır."
+  },
+  {
+   "mevzuat": "3713 terorle mucadele kanunu",
+   "kaynak_dosya": "3713_terorle_mucadele_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "ek",
+   "text": "Ek Madde 1 — İstihdam hakkı (kamu kurumlarına atama)\n5018 sayılı Kanuna ekli (I)-(IV) sayılı cetvellerdeki kamu kurum ve kuruluşları, KİT'ler, il özel idareleri, belediyeler ve bağlı kuruluşlar; hak sahibi olduğu yetkili Bakanlıkça belirlenip kura sonucu atama teklifi yapılanları 657 sayılı Kanuna tabi memur kadrolarına, sözleşmeli personel pozisyonlarına veya sürekli işçi kadrolarına atamak zorundadır. Hak sahipliği; harp/vazife malulü sayılanlar ile 5233 sayılı Kanunun ek 1 inci maddesi kapsamında aylık bağlananlardan terör nedeniyle hayatını kaybeden veya engelli hâle gelenler bakımından doğar; hayatını kaybedenlerde eş/çocuk ile ana-baba/kardeşten toplam iki kişiye, malullerde ise kendisi veya eş/çocuk/kardeşten toplam bir kişiye istihdam hakkı tanınır. Hak sahipliği başvurusu yetkili sosyal hizmet/aile birimine yapılır; [DOĞRULA: atamayı koordine eden merkezi kurum, Devlet Personel Başkanlığının kapatılmasından sonra Cumhurbaşkanlığı İnsan Kaynakları Ofisi/Aile ve Sosyal Hizmetler Bakanlığı uygulamasına göre güncel olmalıdır]."
+  },
+  {
    "mevzuat": "375 khk mali sosyal haklar",
    "kaynak_dosya": "375_khk_mali_sosyal_haklar.txt",
    "madde_no": 9,
@@ -1674,6 +1905,48 @@
    "madde_no": 43,
    "madde_tur": "madde",
    "text": "Madde 43 — Soruşturmaya başlanması, taahhüt ve uzlaşma\nKurul, yaptığı ön araştırma sonucunda soruşturma açılmasına veya açılmamasına karar verir. Soruşturmaya başlanması hâlinde ilgili taraflara on beş gün içinde iddialara ilişkin yeterli bilgi verilir. Soruşturma sürecinde teşebbüsler, rekabet sorunlarını gidermeye yönelik taahhüt sunabilir; Kurul taahhütleri yeterli görürse soruşturma açmadan veya açılan soruşturmayı sonlandırarak işlemi kapatabilir. Ayrıca ilgililer uzlaşma sürecinden yararlanabilir. Bu hüküm taahhüt/uzlaşma başvuru yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4342 mera kanunu",
+   "kaynak_dosya": "4342_mera_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nDaha önce çeşitli kanunlarla tahsis edilmiş veya kadimden beri kullanılan mera, yaylak ve kışlaklar ile umuma ait çayır ve otlakların tespit, tahdit ve köy veya belediye tüzel kişiliklerine tahsis edilmesini, kullanımlarının belirli kurallara bağlanmasını, korunmalarını ve gerektiğinde ıslah edilerek verimlerinin artırılmasını ve sürekli denetlenmelerini sağlamayı amaçlar. Mera tahsisi, vasıf tespiti ve tahsis amacı değişikliği başvuru-yazışmalarının çerçeve dayanağıdır."
+  },
+  {
+   "mevzuat": "4342 mera kanunu",
+   "kaynak_dosya": "4342_mera_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Mera, Yaylak ve Kışlak Olarak Tahsis Edilecek Yerler\nKomisyonca hangi yerlerin mera, yaylak ve kışlak olarak köy veya belediyelere tahsis edileceğini düzenler: kadimden beri bu amaçla kullanılan ya da aynı amaçla devredilen yerler, incelenerek uygun bulunan Hazine/Devlet arazileri, mera için kamulaştırılacak yerler ve tapu/kütük kayıtlarında mera-yaylak-kışlak olarak görünen yerler bu kapsamdadır. Mera tahsis talebi ve uygunluk değerlendirmesi yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4342 mera kanunu",
+   "kaynak_dosya": "4342_mera_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Tespit ve Tahdit Çalışmaları\nMera, yaylak ve kışlakların yerinde tespit (sınır, vasıf ve fiili durumun belirlenmesi) ve tahdit (sınırlarının ölçülerek haritaya bağlanması) çalışmalarının teknik ekiplerce komisyon gözetiminde yürütüleceğini düzenler; çalışmalarda muhtar/belediye temsilcisi ile ilgili kurum görevlilerinin hazır bulunması esastır. Mera tespit-tahdit tutanağı ve sınır uyuşmazlığı yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4342 mera kanunu",
+   "kaynak_dosya": "4342_mera_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Tahsis Kararı\nTespit ve tahdit çalışmaları tamamlanan yerler için komisyonun ihtiyaç tespitine göre hangi tüzel kişiliğe ne kadar alanın mera, yaylak veya kışlak olarak tahsis edileceğine ilişkin tahsis kararını vereceğini düzenler. Tahsis kararı, mera tahsis-talep dosyalarının ve sonraki itiraz/kütüğe kayıt işlemlerinin esas belgesidir."
+  },
+  {
+   "mevzuat": "4342 mera kanunu",
+   "kaynak_dosya": "4342_mera_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Tahsis Kararının Tebliği, İlanı, İtirazı ve Kütüğe Kayıt\nTahsis kararının ilgili köy ve belediyelere tebliğ edilip uygun yerlerde askıya çıkarılarak ilan edileceğini; ilgililerin bu karara karşı belirli süre içinde itiraz edebileceğini ve itirazların değerlendirilmesinden sonra kesinleşen tahsisin özel sicile/kütüğe kaydedileceğini düzenler. Mera tahsisine itiraz dilekçeleri ve askı-ilan yazışmalarının dayanağıdır. [DOĞRULA: itiraz süresi (gün) — mevzuat.gov.tr 4342 m.13 metninden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "4342 mera kanunu",
+   "kaynak_dosya": "4342_mera_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Tahsis Amacının Değiştirilmesi\nTahsis edilmiş mera, yaylak ve kışlakların tahsis amacının (vasfının) kural olarak değiştirilemeyeceğini; ancak enerji, madencilik, savunma, kamu yatırımı, turizm gibi sayılan kamu yararı hâllerinde ilgili müracaat üzerine ve komisyonca yirmi yıllık mera geliri esas alınarak hesaplanan bedel ödenmek kaydıyla tahsis amacının değiştirilebileceğini düzenler; bu yerlerin vasfı değiştirilerek tapuda Hazine adına tescil edilir. Mera vasıf değişikliği (tahsis amacı değişikliği) başvuru ve bedel yazışmalarının temel dayanağıdır."
   },
   {
    "mevzuat": "4458 gumruk kanunu",
@@ -1786,6 +2059,90 @@
    "madde_no": 11,
    "madde_tur": "madde",
    "text": "Madde 11 — Soruşturma izninin gönderileceği merci (hazırlık soruşturması)\nSoruşturma izninin itiraz edilmeden ya da itirazın reddi sonucu kesinleşmesi veya izin verilmemesi kararına yapılan itirazın kabulü üzerine dosya derhal yetkili ve görevli Cumhuriyet başsavcılığına gönderilir. İlgili başsavcılık, Ceza Muhakemesi Kanunu ve diğer kanunlardaki yetkilerini kullanarak hazırlık soruşturmasını yürütür ve sonuçlandırır."
+  },
+  {
+   "mevzuat": "4675 infaz hakimligi kanunu",
+   "kaynak_dosya": "4675_infaz_hakimligi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Kanunun amacı, infaz hâkimliklerinin kuruluş, görev, çalışma esas ve usullerini düzenlemektir. İnfaz hâkimlikleri; ceza infaz kurumları ve tutukevlerinde bulunan hükümlü ve tutuklular hakkında yapılan işlemler veya bunlarla ilgili faaliyetlere yönelik şikâyetleri incelemek ve kanunla verilen diğer görevleri yerine getirmek üzere kurulur. Bu yapı, hükümlü/tutuklunun infaz işlemlerine karşı yargısal başvuru hakkını güvence altına alır."
+  },
+  {
+   "mevzuat": "4675 infaz hakimligi kanunu",
+   "kaynak_dosya": "4675_infaz_hakimligi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — İnfaz hâkimliklerinin kuruluşu ve yetkisi\nİnfaz hâkimlikleri, Hâkimler ve Savcılar Kurulunun olumlu görüşü alınarak Adalet Bakanlığınca her il merkezi ile bölgelerin coğrafî durumu ve iş yoğunluğu göz önünde tutularak belirlenen ilçelerde kurulur. Her infaz hâkimliğinin yargı çevresi, kurulduğu il veya ilçenin idarî sınırları ile bu yere adlî yönden bağlanan ilçelerin idarî sınırlarıdır. İnfaz hâkimliğinin yetkisi, hükümlü veya tutuklu hakkındaki işlemin yapıldığı yerdeki infaz hâkimliğine aittir."
+  },
+  {
+   "mevzuat": "4675 infaz hakimligi kanunu",
+   "kaynak_dosya": "4675_infaz_hakimligi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — İnfaz hâkimlerinin nitelikleri ve atanmaları\nİnfaz hâkimleri, bulundukları bölgeye veya bir alt bölgeye hak kazanmış adlî yargı hâkim ve Cumhuriyet savcıları arasından Hâkimler ve Savcılar Kurulunca atanır. Doğrudan infaz hâkimi olarak atananların yükselmeleri, müfettiş hâl kâğıtları ve çıkardıkları işlerin nitelik ve sayısına göre yapılır. İnfaz hâkimliğinde bir hâkimin bulunmadığı veya görevine engel hâllerinde, görev başka bir hâkim tarafından yürütülür."
+  },
+  {
+   "mevzuat": "4675 infaz hakimligi kanunu",
+   "kaynak_dosya": "4675_infaz_hakimligi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — İnfaz hâkimliğinin görevleri (kabul/barınma/sağlık/disiplin/izin şikâyetleri)\nİnfaz hâkimliği; (1) hükümlü ve tutukluların ceza infaz kurumlarına kabul, yerleştirme, barındırma, beslenme, sağlık muayene ve tedavileri, dış dünya ile ilişkileri ve çalıştırılmaları gibi işlem veya faaliyetlere; (2) hükümlülerin müşahade, sınıflandırma, açık kuruma ayrılma, izin, sevk, nakil ve tahliyeleriyle ilgili işlemlere; (3) disiplin cezaları ve tedbirleri, ödüllendirme ve bunlarla ilgili işlemlere ilişkin şikâyetleri inceler ve karara bağlar. Ayrıca ceza infaz kurumlarının izleme kurullarının bu kurumlardaki tespit ve önerilerini içeren raporlarını inceleyerek görüş bildirir ve kanunlarla verilen diğer görevleri yapar. Böylece infaz sürecindeki hak ihlali iddialarının yargısal denetim mercii infaz hâkimliğidir."
+  },
+  {
+   "mevzuat": "4675 infaz hakimligi kanunu",
+   "kaynak_dosya": "4675_infaz_hakimligi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — İnfaz hâkimliğine şikâyet ve usulü (onbeş gün / otuz gün)\nCeza infaz kurumları ve tutukevlerinde hükümlü ve tutuklular hakkında yapılan işlemler veya bunlarla ilgili faaliyetlerin kanun, tüzük ve yönetmelik hükümleri ile genelgelere aykırı olduğu gerekçesiyle, bu işlem veya faaliyetlerin öğrenildiği tarihten itibaren onbeş gün, herhâlde yapıldığı tarihten itibaren otuz gün içinde şikâyet yoluyla infaz hâkimliğine başvurulabilir. Şikâyet; hükümlü veya tutuklunun kendisi ya da eşi, ana-babası, çocuğu, kardeşi, avukatı, yasal temsilcisi veya ceza infaz kurumu izleme kurulu tarafından yapılabilir. Şikâyet dilekçeyle doğrudan infaz hâkimliğine yapılabileceği gibi Cumhuriyet başsavcılığı veya ceza infaz kurumu müdürlüğü aracılığıyla da yapılabilir; bu mercilere verilen dilekçe en geç üç gün içinde infaz hâkimliğine gönderilir. Şikâyet, kural olarak işlem/faaliyetin yerine getirilmesini durdurmaz; ancak infaz hâkimi telafisi güç veya imkânsız zararların doğması ve açıkça hukuka aykırılık şartlarının birlikte gerçekleşmesi hâlinde işlemin ertelenmesine veya durdurulmasına karar verebilir."
+  },
+  {
+   "mevzuat": "4675 infaz hakimligi kanunu",
+   "kaynak_dosya": "4675_infaz_hakimligi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Şikâyet üzerine verilen kararlar ve itiraz (bir hafta karar / iki hafta itiraz / ağır ceza mahkemesi)\nİnfaz hâkimi, şikâyet üzerine yaptığı inceleme sonunda kararını dosya üzerinden kural olarak bir hafta içinde verir; ancak disiplin cezasına karşı yapılan şikâyetlerde hükümlü veya tutuklunun savunması alınmadan ve gerekli görülürse avukatından yararlandırılmadan karar verilemez. Şikâyet yerinde görülmezse reddedilir; yerinde görülürse şikâyet konusu işlem veya faaliyetin iptaline ya da düzeltilmesine, faaliyetin durdurulmasına karar verilir. İnfaz hâkiminin kararlarına karşı şikâyetçi veya ilgili Cumhuriyet savcısı, tebliğden itibaren iki hafta içinde Ceza Muhakemesi Kanunu hükümlerine göre itiraz yoluna gidebilir. İtiraz, infaz hâkimliğinin yargı çevresinde bulunduğu ağır ceza mahkemesine yapılır; infaz hâkimi aynı zamanda bu ağır ceza mahkemesinin üyesi ise itirazla ilgili karara katılamaz. İtiraz üzerine verilen karar kesindir."
+  },
+  {
+   "mevzuat": "4688 kamu gorevlileri sendikalari toplu sozlesme kanunu",
+   "kaynak_dosya": "4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Sendika üyeliğinin kazanılması (üyelik başvuru formu)\nSendikalara üye olmak serbesttir; kamu görevlileri çalıştıkları işyerinin girdiği hizmet kolunda kurulu bir sendikaya üye olabilir. Üyelik, kamu görevlisinin doldurup imzaladığı üye formu ile sendikaya başvurması ve başvurunun sendikanın yetkili organınca otuz gün içinde kabulü ile kazanılır; başvuru otuz gün içinde reddedilmezse istek kabul edilmiş sayılır. Üyeliği kabul edilmeyen kamu görevlisi, kararın tebliğinden itibaren otuz gün içinde yetkili iş mahkemesinde dava açabilir."
+  },
+  {
+   "mevzuat": "4688 kamu gorevlileri sendikalari toplu sozlesme kanunu",
+   "kaynak_dosya": "4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Üyeliğin sona ermesi (üyelikten çekilme / istifa bildirimi)\nHer üye üyelikten serbestçe çekilebilir; çekilme, doldurulup imzalanan çekilme bildiriminin kamu görevlisi tarafından kurumuna verilmesi ile gerçekleşir. Kurum, bildirimin bir örneğini onbeş gün içinde sendikaya gönderir ve çekilme, bildirim tarihinden başlayarak otuz gün sonra geçerli olur. Üyenin başka bir hizmet koluna geçmesi, emekli olması, kamu görevinden ayrılması, çıkarılması veya ölümü hallerinde de üyelik sona erer."
+  },
+  {
+   "mevzuat": "4688 kamu gorevlileri sendikalari toplu sozlesme kanunu",
+   "kaynak_dosya": "4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Kamu görevlisi olan sendika üyelerinin ve yöneticilerinin güvencesi (sendikal izin)\nKamu görevlileri, iş saatleri dışında veya işverenin izniyle iş saatleri içinde sendika ve konfederasyonların bu Kanunda belirtilen faaliyetlerine katılmalarından dolayı farklı işleme tabi tutulamaz ve görevlerine son verilemez. Sendika yönetim kuruluna seçilenler aylıksız izinli sayılabilir veya bazı yöneticilere kanunda belirtilen ölçüde sendika izni verilir; üyeler arasından seçilen işyeri sendika temsilcilerine haftada belli süre izin tanınır. Bu güvence, kamu görevlisini sendikal nedenli ayrımcılığa karşı korur."
+  },
+  {
+   "mevzuat": "4688 kamu gorevlileri sendikalari toplu sozlesme kanunu",
+   "kaynak_dosya": "4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt",
+   "madde_no": 28,
+   "madde_tur": "madde",
+   "text": "Madde 28 — Toplu sözleşmenin kapsamı (toplu sözleşmeyle düzenlenecek konular)\nToplu sözleşme; kamu görevlilerinin mali ve sosyal haklarını (katsayı ve göstergeler, aylık ve ücretler, her türlü zam ve tazminatlar, ek ödeme, fazla çalışma ücreti, harcırah, ikramiye, doğum/ölüm/aile yardımı ödenekleri, tedavi ve cenaze giderleri, yiyecek ve giyecek yardımları gibi) düzenler. Toplu sözleşme bir önceki toplu sözleşmenin bitiminden sonraki iki mali yılı kapsamak üzere yapılır; genel ve hizmet kollarına yönelik bölümlerden oluşur. Kapsam dışı bırakılan hususlarda mevcut mevzuat hükümleri uygulanmaya devam eder."
+  },
+  {
+   "mevzuat": "4688 kamu gorevlileri sendikalari toplu sozlesme kanunu",
+   "kaynak_dosya": "4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — Toplu sözleşmenin yapılması (görüşmelere başlama tarihi)\nKamu görevlilerinin geneline ve hizmet kollarına yönelik mali ve sosyal haklara ilişkin toplu sözleşme için, yetkili kamu görevlileri sendikaları ile bağlı oldukları konfederasyonlar ve Kamu İşveren Heyeti her yılın (iki yılda bir) Ağustos ayının onbeşinci günü toplanarak toplu sözleşme görüşmelerine başlar. Görüşmelerin tamamlanması ve toplu sözleşmenin imzalanması için Eylül ayının onbeşine kadar süre öngörülmüştür. Tarafların anlaşması halinde toplu sözleşme imzalanır; anlaşma sağlanamazsa uyuşmazlık Kamu Görevlileri Hakem Kuruluna götürülür."
+  },
+  {
+   "mevzuat": "4688 kamu gorevlileri sendikalari toplu sozlesme kanunu",
+   "kaynak_dosya": "4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Kamu Görevlileri Hakem Kurulu (uyuşmazlığın çözümü)\nToplu sözleşme görüşmelerinde anlaşma sağlanamaması ve toplantı tutanağında uyuşmazlık konularının belirtilmesi halinde, taraflar Kamu Görevlileri Hakem Kuruluna başvurabilir. Kurul; başkanı Cumhurbaşkanınca atanan bir öğretim üyesi olmak üzere belirli sayıda kamu işveren ve kamu görevlileri sendikaları temsilcilerinden oluşur ve uyuşmazlık konularını karara bağlar. Kurul kararları kesindir ve toplu sözleşme hükmündedir; tarafları ve ilgili idareyi bağlar."
   },
   {
    "mevzuat": "4708 yapi denetimi kanunu",
@@ -2537,6 +2894,48 @@
    "text": "Madde 20 — İdari para cezasını gerektiren fiiller\nÖzel güvenlik hizmetlerinde bildirim yükümlülüğünü yerine getirmeyenlere, gerekli koruma ve güvenlik tedbirlerini almayanlara, greve katılan, kimlik kartını başkasına kullandıran veya başkasının kartını kullanan görevlilere ve sigorta yükümlülüğünü yerine getirmeyenlere idari para cezası uygulanır; tekrarı hâlinde faaliyet izni veya çalışma izni iptal edilebilir. Bu maddedeki idari para cezaları mahallî mülki amir tarafından verilir ve her yıl yeniden değerleme oranında artırılır. [DOĞRULA: madde 20'deki güncel idari para cezası tutarları ilgili yıl yeniden değerleme tebliğinden teyit edilmeli]"
   },
   {
+   "mevzuat": "5199 hayvanlari koruma kanunu",
+   "kaynak_dosya": "5199_hayvanlari_koruma_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nHayvanların rahat yaşamlarını ve hayvanlara iyi ve uygun muamele edilmesini temin etmeyi; onları açlık, susuzluk, eziyet ve kötü muameleden korumayı; insan, hayvan ve çevre sağlığını gözeterek hayvanların korunmasına ilişkin esasları düzenlemeyi amaçlar. Hayvan koruma ihbarı, sahipsiz hayvan başvurusu ve idari yaptırım yazışmalarının çerçeve dayanağıdır."
+  },
+  {
+   "mevzuat": "5199 hayvanlari koruma kanunu",
+   "kaynak_dosya": "5199_hayvanlari_koruma_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — İlkeler\nHayvanların korunmasına ve refahına ilişkin temel ilkeleri sayar: bütün hayvanların eşit ölçüde korunması, nesli yok olma tehlikesi altındaki tür ve doğal yaşam alanlarının korunması, yabani hayvanların yaşam ortamlarından koparılmaması, hayvanların gözetimi ve bakımında gerekli tedbirlerin alınması gibi. Hayvan refahı ve koruma tedbirine ilişkin başvuru/şikâyet değerlendirmelerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "5199 hayvanlari koruma kanunu",
+   "kaynak_dosya": "5199_hayvanlari_koruma_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Hayvanların sahiplenilmesi ve bakımı\nHayvanı sahiplenen kişinin, türe ve üreme yöntemine göre etolojik ihtiyaçları karşılamak, barınma-bakım-sağlık koşullarını sağlamak ve insan/hayvan/çevre sağlığı yönünden gerekli tedbirleri almakla yükümlü olduğunu düzenler; ev hayvanı satıcılarının mahalli yetkililerce onaylı eğitim almasını, sahiplenilen hayvanın uygun olmayan ortama terk edilemeyeceğini, ancak yeniden sahiplendirilebileceğini veya barınağa bırakılabileceğini öngörür. Ev/süs hayvanı edinimi ve sorumlu sahiplenme yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5199 hayvanlari koruma kanunu",
+   "kaynak_dosya": "5199_hayvanlari_koruma_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Sahipsiz ve güçten düşmüş hayvanların korunması\nSahipsiz ya da güçten düşmüş hayvanların öldürülmesinin (kanunda sayılan istisnalar dışında) yasak olduğunu; bu hayvanların yerel yönetimlerce en kısa sürede kurulan/işletilen bakımevlerine (barınaklara) götürüleceğini ve Bakanlık kayıt sistemine kaydedileceğini düzenler; rehabilite edilen hayvanlar sahiplendirilinceye kadar barınakta tutulur, barınak yapımı için kamu arazileri öncelikli tahsis edilir. Belediyelere sahipsiz hayvan toplama-barındırma ve bakımevi yazışmalarının dayanağıdır. [DOĞRULA: 2021/2024 değişiklikleriyle eklenen belediye barınak yükümlülüğü ayrıntıları — 5199 m.6 güncel metninden teyit]"
+  },
+  {
+   "mevzuat": "5199 hayvanlari koruma kanunu",
+   "kaynak_dosya": "5199_hayvanlari_koruma_kanunu.txt",
+   "madde_no": 24,
+   "madde_tur": "madde",
+   "text": "Madde 24 — El koyma\nBu Kanun hükümlerine aykırı davranan veya hayvanlara karşı bakımda ihmal gösteren kişilerin elindeki hayvanlara, yetkili merciin kararıyla geçici veya sürekli olarak el konulabileceğini ve hayvanların bakımevlerine yerleştirileceğini düzenler; el konulan hayvan sahiplendirilinceye veya usulüne göre işlem yapılıncaya kadar barınakta tutulur. Hayvana kötü muamele tespiti sonrası el koyma tutanağı ve yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5199 hayvanlari koruma kanunu",
+   "kaynak_dosya": "5199_hayvanlari_koruma_kanunu.txt",
+   "madde_no": 28,
+   "madde_tur": "madde",
+   "text": "Madde 28 — İdari para cezaları\nKanunun çeşitli maddelerine aykırı fiiller için uygulanacak idari para cezalarını fiil türüne göre ayrı ayrı belirler (ör. ev hayvanını terk eden, toplanan hayvanı barınak dışına bırakan, hayvana kötü muamele eden kişiler için kademeli cezalar); cezaların Bakanlıkça veya yetki devriyle mahallin en büyük mülki amirince verileceğini öngörür. Kasten hayvan öldürme/işkence gibi ağır eylemler için ceza yaptırımları 28/A maddesinde düzenlenmiştir (sahipli/evcil hayvanı kasten öldürme: altı aydan dört yıla kadar hapis). Hayvan hakları ihlali tutanağına dayalı idari yaptırım kararı yazışmalarının dayanağıdır. [DOĞRULA: güncel idari para cezası tutarları ve 28/A hapis aralıkları — 5199 m.28 ve m.28/A güncel metninden teyit]"
+  },
+  {
    "mevzuat": "5216 buyuksehir belediyesi kanunu",
    "kaynak_dosya": "5216_buyuksehir_belediyesi_kanunu.txt",
    "madde_no": 7,
@@ -2570,6 +2969,62 @@
    "madde_no": 16,
    "madde_tur": "madde",
    "text": "Madde 16 — Büyükşehir belediye encümeni\nBüyükşehir belediye encümeninin oluşumunu düzenler: belediye başkanının başkanlığında, meclisin kendi üyeleri arasından bir yıl için gizli oyla seçeceği beş üye ile genel sekreter, mali hizmetler birim amiri ve başkanın seçeceği birim amirlerinden oluşur. Encümen kararı gerektiren büyükşehir işlemlerinin (kamulaştırma, imar yaptırımı) dayanağıdır."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı, terör eylemleri veya terörle mücadele kapsamında yürütülen faaliyetler nedeniyle maddi zarara uğrayan kişilerin bu zararlarının karşılanmasına ilişkin esas ve usulleri belirlemektir. Zararlar idari yoldan sulhen karşılanır; yargı yolu saklı tutulur."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nKanun, 3713 sayılı Terörle Mücadele Kanununun 1, 3 ve 4 üncü maddeleri kapsamına giren eylemler veya terörle mücadele faaliyetleri nedeniyle zarar gören gerçek kişiler ile özel hukuk tüzel kişilerinin maddi zararlarının sulhen karşılanmasına ilişkin hükümleri kapsar. Devletçe arazi/konut tahsisiyle veya mahkeme kararı/AİHM tazminatıyla zaten karşılanan zararlar, terör dışı ekonomik-sosyal sebeplerle uğranılan zararlar, kişinin kendi kastı sonucu oluşan zararlar ve terör suçlarından mahkûm olanların bu fiillerinden doğan zararlar kapsam dışındadır."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Zarar tespit komisyonları\nZarar tespit komisyonları illerde, Kanun kapsamında yapılacak başvurular üzerine on gün içinde kurulur. Komisyon bir başkan ve altı üyeden oluşur: vali tarafından görevlendirilen vali yardımcısı başkanlık eder; maliye, bayındırlık ve iskân, tarım, sağlık, sanayi ve ticaret konularında uzman birer kamu görevlisi ile baro yönetim kurulunca görevlendirilecek bir avukat üyedir. Komisyon başkan ve üyeleri her yıl ocak ayının ilk haftasında yeniden belirlenir; salt çoğunlukla toplanır ve üye tam sayısının salt çoğunluğuyla karar alır."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Başvurunun süresi, şekli, incelenmesi ve sonuçlandırılması\nZarar gören veya yetkili temsilcileri, zarar konusu olayı öğrenmesinden itibaren altmış gün, her hâlde olayın meydana gelmesinden itibaren bir yıl içinde, zararın gerçekleştiği veya olayın olduğu il valiliğine başvurur; bu sürelerden sonraki başvurular kabul edilmez. Yaralanma ve engelli hâle gelme durumunda hastaneye kabulden çıkışa kadar geçen süre başvuru süresinin hesabında dikkate alınmaz. Komisyon her başvuruyu, başvuru tarihinden itibaren altı ay içinde tamamlamak zorundadır; zorunlu hâllerde bu süre vali tarafından üç ay daha uzatılabilir. [DOĞRULA: Anayasa Mahkemesinin 10.07.2025 tarihli E.2024/116 K.2025/151 kararıyla birinci cümledeki 'veya mirasçılarının' ibaresi iptal edilmiş olup iptal kararı 10.09.2026 tarihinde yürürlüğe girecektir.]"
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Karşılanacak zararlar\nSulh yoluyla karşılanabilecek zararlar; hayvanlara, ağaçlara, ürünlere ve diğer taşınır-taşınmazlara verilen her türlü zararlar ile yaralanma, engelli hâle gelme ve ölüm hâllerinde uğranılan zararlar ile tedavi ve cenaze giderleridir. Ayrıca terörle mücadele kapsamında yürütülen faaliyetler nedeniyle kişilerin mal varlıklarına ulaşamamalarından kaynaklanan maddi zararlar da bu kapsamdadır."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Yaralanma, engelli hâle gelme ve ölüm hâllerinde yapılacak ödemeler\nBu hâllerde (7000) gösterge rakamının memur aylık katsayısı ile çarpımı sonucu bulunan miktarın; yaralananlara altı katını geçmemek üzere yaralanma derecesine göre, çalışma gücü kaybı üçüncü/ikinci/birinci derece tespit edilenlere belirlenen kat aralıklarında, ölenlerin mirasçılarına elli katı tutarında nakdi ödeme yapılır. Ödemeye esas miktar, valinin veya Bakanın onay tarihindeki gösterge ve katsayı rakamları esas alınarak belirlenir; Cumhurbaşkanı gösterge rakamını yüzde otuza kadar artırmaya veya kanuni sınıra kadar indirmeye yetkilidir."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Zararın karşılanmasına ilişkin sulhname\nKomisyon, 8 inci maddeye göre belirlenen zararı, 9 uncu maddeye göre hesaplanan nakdi ödemeyi, 10 uncu maddeye göre ifa tarzını ve 11 inci maddeye göre mahsubu dikkate alarak uğranılan zararı sulh yoluyla karşılayacak safi miktarı belirler ve hazırlanan sulhname tasarısını davet yazısıyla hak sahibine tebliğ eder. Hak sahibinin otuz gün içinde gelip imzalaması istenir; aksi hâlde tasarı kabul edilmemiş sayılır ve yargı yoluyla tazmin talep hakkı saklı kalır. Tasarı kabul edilmezse uyuşmazlık tutanağı düzenlenip bir örneği ilgiliye gönderilir."
+  },
+  {
+   "mevzuat": "5233 teror zararlarinin karsilanmasi kanunu",
+   "kaynak_dosya": "5233_teror_zararlarinin_karsilanmasi_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Zararın karşılanması (ödeme)\nSulhnamede belirlenen zararlar, sulhnamenin imzalanmasından sonra valinin onayı üzerine ifa tarzına göre Bakanlık bütçesine bu amaçla konulan ödenekten üç ay içerisinde karşılanır. [DOĞRULA: ellibin TL'yi (eski Yeni Türk Lirası ibaresi) aşan ayni ifa veya nakdi ödemelerin Bakan onayına tabi olmasına ilişkin parasal sınırın güncel tutarı yönetmelik/değişikliklerle teyit edilmelidir.]"
   },
   {
    "mevzuat": "5237 turk ceza kanunu belgede sahtecilik",
@@ -2661,6 +3116,111 @@
    "madde_no": 32,
    "madde_tur": "madde",
    "text": "Madde 32 — Ceza hükümleri\nKanun hükümlerine aykırı davrananlara idari para cezası veya hapis/adli para cezası uygulanır; örneğin genel kurulu süresinde toplantıya çağırmayan veya toplantıyı kanun/tüzüğe aykırı yapan yöneticilere idari para cezası verilir. 19'uncu maddedeki beyannameyi bilerek gerçeğe aykırı verenler yüz günden az olmamak üzere adli para cezası ile cezalandırılır; 22, 23 ve 24'üncü maddelerdeki bildirim ile beyanname verme yükümlülüğünü yerine getirmeyen yöneticilere beş yüz Türk Lirası idari para cezası verilir. Defter tutmama, gelir/gider işlemlerini finans kuruluşları aracılığıyla yapmama gibi fiiller için ayrıca hapis veya oransal idari para cezaları öngörülmüştür."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 100,
+   "madde_tur": "madde",
+   "text": "Madde 100 — Tutuklama nedenleri (kuvvetli suç şüphesi + tutuklama nedeni)\nŞüpheli veya sanık hakkında tutuklama kararı verilebilmesi için, kuvvetli suç şüphesinin varlığını gösteren somut delillerin ve bir tutuklama nedeninin bulunması gerekir; işin önemi ile verilmesi beklenen ceza veya güvenlik tedbiri ölçülü olmalıdır. Tutuklama nedeni; (a) şüpheli/sanığın kaçması, saklanması veya kaçacağı şüphesini uyandıran somut olgular ile (b) davranışlarının delilleri yok etme, gizleme, değiştirme veya tanık-mağdur-başkaları üzerinde baskı girişimi kuvvetli şüphesini oluşturması hâllerinde var sayılır. Maddede tek tek sayılan katalog suçlarda (kasten öldürme, cinsel saldırı, uyuşturucu ticareti, devletin güvenliğine karşı suçlar vb.) işlendiği hususunda somut delillere dayanan kuvvetli şüphe sebebinin varlığı hâlinde tutuklama nedeni var sayılabilir. Sadece adlî para cezasını gerektiren veya hapis cezasının üst sınırı iki yıldan fazla olmayan suçlarda kural olarak tutuklama kararı verilemez."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 101,
+   "madde_tur": "madde",
+   "text": "Madde 101 — Tutuklama kararı (hâkim/mahkeme kararı, gerekçe, müdafi)\nTutuklamaya; soruşturma evresinde Cumhuriyet savcısının istemi üzerine sulh ceza hâkimi, kovuşturma evresinde savcının istemi üzerine veya re'sen mahkeme karar verir. İstemlerde mutlaka gerekçe gösterilir ve adlî kontrol uygulamasının yetersiz kalacağını belirten hukukî ve fiilî nedenlere yer verilir. Tutuklamaya, tutuklamanın devamına veya bu husustaki tahliye istemlerinin reddine ilişkin kararlarda; kuvvetli suç şüphesini, tutuklama nedenlerinin varlığını ve tutuklamanın ölçülü olduğunu gösteren deliller somut olgularla gerekçelendirilir. Karar, şüpheli/sanığa sözlü bildirilir ve bir örneği yazılı verilir; kararda ayrıca itiraz yolu, mercii ve süresi açıkça gösterilir. Tutuklanan kişiye müdafi tayin edilmediyse baro tarafından bir müdafi görevlendirilir."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 147,
+   "madde_tur": "madde",
+   "text": "Madde 147 — İfade ve sorgunun tarzı (şüpheli/sanık haklarının bildirilmesi)\nŞüpheli veya sanığın ifadesinin alınmasında veya sorguya çekilmesinde; kimliği saptanır, kendisine yüklenen suç anlatılır, müdafi seçme hakkının ve istemi hâlinde baroca müdafi görevlendirileceği bildirilir, yakınlarına yakalandığının haber verilmesi sağlanır, susma (yüklenen suç hakkında açıklamada bulunmama) ve şüpheden kurtulması için somut delillerin toplanmasını isteme hakları hatırlatılır. İfade veren kişinin beyanı özgür iradesine dayanmalıdır; kötü davranma, işkence, yorma, aldatma, cebir-tehdit ve kanuna aykırı vaat gibi iradeyi bozan yasak usuller uygulanamaz. Bu usullere aykırı elde edilen ifadeler rıza olsa bile delil olarak kullanılamaz; sonuç doğurmayan ifade/sorgu tutanağa bağlanır."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 158,
+   "madde_tur": "madde",
+   "text": "Madde 158 — İhbar ve şikâyet (Cumhuriyet başsavcılığı / kolluk / valilik / yurt dışı)\nSuça ilişkin ihbar veya şikâyet, Cumhuriyet başsavcılığına veya kolluk makamlarına yapılabilir. Valilik, kaymakamlık ya da mahkemeye yapılan ihbar veya şikâyet, ilgili Cumhuriyet başsavcılığına gönderilir. Yurt dışında işlenip ülkede takibi gereken suçlar hakkında Türkiye'nin elçilik ve konsolosluklarına da ihbar veya şikâyette bulunulabilir. Bir kamu görevinin yürütülmesiyle bağlantılı olarak işlendiği iddia edilen suç nedeniyle ilgili kurum ve kuruluş idaresine yapılan ihbar veya şikâyet, gecikmeksizin ilgili Cumhuriyet başsavcılığına gönderilir. İhbar veya şikâyet yazılı ya da tutanağa geçirilmek üzere sözlü olarak yapılabilir. Yürütülen soruşturma sonucunda kovuşturma evresine geçildikten sonra suçun şikâyete bağlı olduğunun anlaşılması hâlinde, mağdur açıkça şikâyetten vazgeçmediği takdirde yargılamaya devam olunur. [DOĞRULA: ihbar/şikâyette bulunanın kimliğinin ve adresinin gizli tutulmasına ilişkin fıkraların güncel hâli]"
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 160,
+   "madde_tur": "madde",
+   "text": "Madde 160 — Bir suçun işlendiğini öğrenen Cumhuriyet savcısının görevi\nCumhuriyet savcısı, ihbar veya başka bir suretle bir suçun işlendiği izlenimini veren bir hâli öğrenir öğrenmez kamu davasını açmaya yer olup olmadığına karar vermek üzere hemen işin gerçeğini araştırmaya başlar. Cumhuriyet savcısı, maddî gerçeğin araştırılması ve adil bir yargılamanın yapılabilmesi için, emrindeki adlî kolluk görevlileri marifetiyle şüphelinin lehine ve aleyhine olan delilleri toplayarak muhafaza altına almakla ve şüphelinin haklarını korumakla yükümlüdür. Böylece soruşturmanın sahibi Cumhuriyet savcısıdır ve soruşturma yalnız sanığın aleyhine değil, lehine olan hususları da kapsar."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 173,
+   "madde_tur": "madde",
+   "text": "Madde 173 — Cumhuriyet savcısının kovuşturmaya yer olmadığına dair kararına itiraz\nSuçtan zarar gören, kovuşturmaya yer olmadığına dair (takipsizlik) kararının kendisine tebliğ edildiği tarihten itibaren onbeş gün içinde, bu kararı veren Cumhuriyet savcısının yargı çevresinde görev yaptığı ağır ceza mahkemesinin bulunduğu yerdeki sulh ceza hâkimliğine itiraz edebilir. İtiraz dilekçesinde kamu davasının açılmasını gerektirebilecek olaylar ve deliller belirtilir. Sulh ceza hâkimliği, gerekirse araştırma yaptırarak istemi inceler; kovuşturmaya yer olmadığı kararını yerinde görürse istemi reddeder, yerinde görmezse Cumhuriyet savcısının iddianame düzenlemesine karar verir. İstemin kabulü hâlinde Cumhuriyet savcısı iddianame düzenleyerek mahkemeye verir. Bu yol, vatandaşın adlî makam kararına karşı başvuru hakkının önemli bir aşamasıdır."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 267,
+   "madde_tur": "madde",
+   "text": "Madde 267 — İtiraz olunabilecek kararlar\nHâkim kararları ile kanunun gösterdiği hâllerde mahkeme kararlarına karşı itiraz yoluna gidilebilir. İtiraz, kural olarak kanunun ayrıca öngördüğü kararlar ile hâkimlik kararları için tanınan olağan bir kanun yoludur. Tutuklama, adlî kontrol, yakalananın serbest bırakılmaması gibi koruma tedbiri kararları ile bu kararların devamına ilişkin kararlar itiraza tabidir."
+  },
+  {
+   "mevzuat": "5271 ceza muhakemesi kanunu",
+   "kaynak_dosya": "5271_ceza_muhakemesi_kanunu.txt",
+   "madde_no": 268,
+   "madde_tur": "madde",
+   "text": "Madde 268 — İtiraz usulü ve inceleyecek merciler (yedi gün)\nİtiraz, kararı veren mercie verilecek bir dilekçe veya tutanağa geçirilmek koşuluyla zabıt kâtibine beyanda bulunmak suretiyle yapılır. Kanunda ayrıca hüküm bulunmayan hâllerde itiraz süresi, ilgililerin kararı öğrendiği günden itibaren yedi gündür. Kararına itiraz edilen hâkim veya mahkeme itirazı yerinde görürse kararını düzeltir; yerinde görmezse en çok üç gün içinde itirazı incelemeye yetkili mercie gönderir. İtirazı; sulh ceza hâkimliği kararlarında o yerdeki başka bir sulh ceza hâkimliği, asliye/ağır ceza mahkemesi başkanı veya hâkim kararlarında ilgili mahkeme inceler. Merci, yazı ile cevap verebilmesi için itirazı Cumhuriyet savcısına ve gerektiğinde karşı tarafa bildirir; inceleme sonunda itirazı yerinde görürse aynı zamanda itiraz konusu hakkında da karar verir. İtiraz hakkında verilen karar kesindir."
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — İnfazda temel ilke (kesinleşen hükmün infazı)\nMahkemece hükmolunan cezanın infazı, hükmün kesinleşmesinden sonra Cumhuriyet başsavcılığınca yerine getirilir. Cezaların infazı ile güvenlik tedbirlerinin uygulanması Cumhuriyet savcısı tarafından izlenir ve denetlenir. Böylece infazın hukukî dayanağı kesinleşmiş bir mahkeme kararıdır; kesinleşmeden infaza başlanamaz."
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Hapis cezasının infazının hastalık nedeniyle ertelenmesi (hükümlünün talebi)\nAkıl hastalığına tutulan hükümlünün cezasının infazı, iyileşinceye kadar geri bırakılır. Diğer hastalıklarda cezanın infazına, kurumda hayatî tehlike oluşturmayacaksa devam olunur; hükümlü, hayatî tehlike oluşturacak veya hastalığını ağırlaştıracak bir durumdaysa cezanın infazı geri bırakılabilir. Gebe olan veya doğurduğu tarihten itibaren altı ay geçmemiş bulunan kadınlar ile doğurduğu tarihten itibaren altı ay-bir buçuk yıl arasındaki belirli hâllerde infaz geri bırakılır. Geri bırakma kararı Cumhuriyet başsavcılığınca, koşulları varsa resmî sağlık kuruluşu raporuna dayanılarak verilir. [DOĞRULA: 7242 sayılı Kanun ve sonraki değişikliklerle gebelik/doğum sonrası sürelerin ve hastalık erteleme usulünün güncel hâli]"
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 94,
+   "madde_tur": "madde",
+   "text": "Madde 94 — Hükümlülere verilebilecek mazeret izni (yakının ölümü/hastalığı, afet)\nHükümlülük süresinin onda birini iyi hâlle geçirmiş ve açık ceza infaz kurumuna ayrılma şartlarını taşıyan hükümlülere; ana, baba, eş, kardeş veya çocuğunun ölümü ya da bunlardan birinin yaşamsal tehlike oluşturacak önemli ve ağır hastalık hâlinde, veya deprem, su baskını, yangın gibi felaketler nedeniyle zarara uğramaları hâlinde, kurum en üst amirinin önerisi ve Cumhuriyet başsavcılığının onayı ile yol süresi dışında ölüm hâlinde on güne kadar; hastalık veya felaket hâllerinde ise bir ila iki güne kadar mazeret izni verilebilir. Bu izinler vatandaşın/hükümlünün aile bağlarının korunmasına ve zorunlu mazeretlerin karşılanmasına yöneliktir."
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 95,
+   "madde_tur": "madde",
+   "text": "Madde 95 — Hükümlülere özel izin (açık kurum, üç ayda bir yedi güne kadar)\nAçık ceza infaz kurumlarında bulunanlarla, kapalı ceza infaz kurumunda olup da açık kuruma ayrılmaya hak kazanmış hükümlülere; aile bağlarını sürdürmesi veya güçlendirmesi ve dış dünyaya uyumlarını sağlaması amacıyla, kurum en üst amirinin önerisi ve Cumhuriyet başsavcılığının onayı ile üç ayda bir, yol hariç yedi güne kadar izin verilebilir. İzin süreleri hükümlünün hücrede geçirdiği süreden sayılmaz; iznini izin belgesinde belirtilen yere gitmek için kullanmayan ya da süresinde dönmeyen hükümlü hakkında gerekli işlem yapılır."
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 96,
+   "madde_tur": "madde",
+   "text": "Madde 96 — İş arama izni (koşullu salıverilmesine az süre kalan hükümlü)\nAçık ceza infaz kurumunda bulunan veya çocuk eğitimevinde kalan ve koşullu salıverilmesine bir aydan az süre kalan hükümlülere, tahliye sonrası iş bulmalarını ve yeniden topluma kazandırılmalarını kolaylaştırmak amacıyla; kurum en üst amirinin önerisi ve Cumhuriyet başsavcılığının onayı ile çalışma günleri içinde sekiz saati geçmemek üzere iş arama izni verilebilir. Bu izin, salıverilme sonrası dış dünyaya uyumu desteklemeye yöneliktir. [DOĞRULA: iş arama izninin gün/saat sınırı ve uygulama usulünün güncel hâli]"
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 98,
+   "madde_tur": "madde",
+   "text": "Madde 98 — İnfazda tereddüt/duraksama hâlinde başvurulacak merci (hükmü veren mahkeme)\nMahkûmiyet hükmünün yorumunda veya çektirilecek cezanın hesabında duraksama olursa, cezanın kısmen veya tamamen yerine getirilemeyeceği ileri sürülürse ya da sonradan yürürlüğe giren kanun hükümlünün lehine ise; hükümlü, Cumhuriyet savcısı veya ilgili infaz mercii, hükmü veren mahkemeden bu konuda bir karar verilmesini ister. Bu kararlar duruşma yapılmaksızın dosya üzerinden verilir ve karar gerekçeli olur; ancak gerekli görülen hâllerde Cumhuriyet savcısı ve hükümlünün müdafii dinlenebilir. İnfaza ilişkin bu kararlara karşı itiraz yoluna gidilebilir.\n\nMadde 105/A — Denetimli serbestlik tedbiri uygulanarak infaz (talep üzerine)\nAçık ceza infaz kurumunda veya çocuk eğitimevinde bulunan ve koşullu salıverilmesine belirli bir süre (kural olarak bir yıl) kalan iyi hâlli hükümlülerin talebi hâlinde, cezalarının koşullu salıverilme tarihine kadarki kısmının, denetimli serbestlik tedbiri uygulanmak suretiyle infazına karar verilebilir. Bu kararı, hükümlünün talebi üzerine, idare ve gözlem kurulunun değerlendirmesine dayanarak infaz hâkimi verir. Tedbir kapsamında hükümlü, belirlenen yükümlülüklere (denetim, çalışma, eğitim, ikamet vb.) uyar; yükümlülüklere uyulmaması hâlinde açık kuruma iade edilebilir. [DOĞRULA: 7242 sayılı ve sonraki değişikliklerle denetimli serbestlik süresinin (1 yıl/3 yıl) güncel hâli]"
+  },
+  {
+   "mevzuat": "5275 ceza guvenlik tedbirleri infazi kanunu",
+   "kaynak_dosya": "5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt",
+   "madde_no": 107,
+   "madde_tur": "madde",
+   "text": "Madde 107 — Koşullu salıverilme (infaz oranı, iyi hâl, başvuru/karar)\nKoşullu salıverilmeden yararlanabilmek için hükümlünün, kural olarak süreli hapis cezasının yarısını infaz kurumunda çekmiş ve bu süreyi iyi hâlli olarak geçirmiş olması gerekir; ancak kanunda sayılan ağır suçlarda (kasten öldürme, neticesi sebebiyle ağırlaşmış yaralama, işkence, cinsel dokunulmazlığa karşı suçlar, uyuşturucu ve örgüt suçları gibi) bu oran üçte iki ya da dörtte üç olarak uygulanır. Ağırlaştırılmış müebbet hapis cezasına mahkûm olanlar otuz yılını, müebbet hapis cezasına mahkûm olanlar yirmidört yılını infaz kurumunda çektikten sonra koşullu salıverilmeden yararlanabilir. İyi hâl, ceza infaz kurumu idare ve gözlem kurulunun hazırladığı gerekçeli raporla değerlendirilir; bu rapor infaz işlemlerinin yapıldığı yer infaz hâkimliğine verilir ve infaz hâkimi raporu uygun bulursa hükümlünün koşullu salıverilmesine dosya üzerinden karar verir. Koşullu salıverilen hükümlü, hak ederek tahliye tarihine kadarki bakiye süre kadar denetim süresine tabi tutulur. [DOĞRULA: 7242 sayılı Kanunla genel infaz oranının 2/3'ten 1/2'ye indirilmesi ve suç türüne göre istisnaların güncel hâli]"
   },
   {
    "mevzuat": "5302 il ozel idaresi kanunu",
@@ -2999,6 +3559,48 @@
    "text": "Madde 146 — İdari para cezaları\nKanunun ilgili maddelerinde öngörülen yükümlülüklere aykırı davranan banka ve görevliler hakkında Kurulca idari para cezası uygulanır; cezanın alt ve üst sınırları ile uygulama usulü maddede ve atıf yapılan hükümlerde belirlenmiştir. İdari para cezaları her takvim yılı başında yeniden değerleme oranında artırılarak uygulanır. Bu hüküm, idari para cezası karar/tebliğ ve cezaya itiraz evrakının dayanağıdır. [DOĞRULA: 2026 yılı için geçerli güncel idari para cezası alt/üst tutarları yeniden değerleme oranıyla güncellenmiş hâliyle teyit edilmeli]"
   },
   {
+   "mevzuat": "5434 emekli sandigi kanunu",
+   "kaynak_dosya": "5434_emekli_sandigi_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Sandıktan faydalanacaklar (iştirakçiler)\nBu maddede Emekli Sandığından emeklilik hakkı tanınan iştirakçiler sayılır; genel olarak Devlet memurları ile kanunla emeklilik hakkı tanınan kadrolarda çalışanlar Sandık iştirakçisi sayılır. İştirakçilerin aylıklarından emekli keseneği kesilir ve kurumlarınca karşılık eklenerek Sandığa gönderilir. İştirakçilik, kişiye ve dul/yetimlerine bu Kanunla tanınan emekli aylığı, dul-yetim aylığı, malullük aylığı ve emekli ikramiyesi gibi hakların dayanağıdır."
+  },
+  {
+   "mevzuat": "5434 emekli sandigi kanunu",
+   "kaynak_dosya": "5434_emekli_sandigi_kanunu.txt",
+   "madde_no": 39,
+   "madde_tur": "madde",
+   "text": "Madde 39 — Emekli aylığı bağlanacak haller\nBu maddede iştirakçiye emekli aylığı bağlanacak haller düzenlenir; yaş haddini dolduranlar, yeterli fiili hizmet süresini tamamlayıp yaş şartını yerine getirenler ve kanunda sayılan diğer hallerde istek üzerine veya re'sen emekli aylığı bağlanır. [DOĞRULA: yaş ve hizmet yılı eşikleri 5434 ek/geçici maddeler ve 5510 geçiş hükümleriyle değiştiği için somut yıl/yaş rakamı üretmeden önce yürürlükteki metinde doğrulanmalıdır] Emekli aylığı bağlanması, ilgilinin emeklilik talep dilekçesi vermesi ve kurumunca emekliye sevk onayı düzenlenmesiyle başlayan tahsis sürecine bağlıdır."
+  },
+  {
+   "mevzuat": "5434 emekli sandigi kanunu",
+   "kaynak_dosya": "5434_emekli_sandigi_kanunu.txt",
+   "madde_no": 67,
+   "madde_tur": "madde",
+   "text": "Madde 67 — Dul ve yetim aylığı bağlanacak haller (hak sahipleri)\nİştirakçinin veya aylık almakta iken ölenin geride bıraktığı hak sahiplerine dul ve yetim aylığı bağlanır; hak sahipleri dul eş, çocuklar ile şartları taşıyan ana ve babadır. Aylık almakta olan veya aylık bağlanmasına hak kazanmış iştirakçinin ölümü halinde hak sahiplerine bu Kanun hükümlerine göre aylık tahsis edilir. Aylık bağlanması, hak sahiplerinin Kuruma müracaatı ve ölüm/akrabalık ile hak sahipliğini gösterir belgelerin ibrazıyla yürütülür."
+  },
+  {
+   "mevzuat": "5434 emekli sandigi kanunu",
+   "kaynak_dosya": "5434_emekli_sandigi_kanunu.txt",
+   "madde_no": 68,
+   "madde_tur": "madde",
+   "text": "Madde 68 — Dul ve yetim aylığı oranları\nÖlenin bağlanmış veya bu Kanuna göre hesaplanacak emekli, adi malullük veya vazife malullüğü aylığının; dul eşe %50'si, aylık alan yetimi bulunmayan dul eşe %75'i, çocuklar ile ana veya babanın her biri için %25'i oranında aylık bağlanır. Ölenin bir dul eşi ile bir yetimi bulunması halinde dul eşe %60, yetime %30 oranı uygulanır. Hak sahiplerinin sayısındaki değişiklik, aylık kesilmesi veya yeniden bağlanması hallerinde aylıklar bu oranlar gözetilerek yeniden hesaplanır."
+  },
+  {
+   "mevzuat": "5434 emekli sandigi kanunu",
+   "kaynak_dosya": "5434_emekli_sandigi_kanunu.txt",
+   "madde_no": 89,
+   "madde_tur": "madde",
+   "text": "Madde 89 — Emekli ikramiyesi\nEmekli, adi malullük veya vazife malullüğü aylığı bağlanan iştirakçilere, her tam fiili hizmet yılı için aylık bağlamaya esas tutarın bir aylığı emekli ikramiyesi olarak ödenir. İştirakçinin ölümü halinde bu ikramiye, dul ve yetim aylığına hak kazanan hak sahiplerine ödenir. Emekli ikramiyesi, tahsis işlemi sırasında talep ve hizmet belgeleri esas alınarak hesaplanıp ilgililere/hak sahiplerine ödenir."
+  },
+  {
+   "mevzuat": "5434 emekli sandigi kanunu",
+   "kaynak_dosya": "5434_emekli_sandigi_kanunu.txt",
+   "madde_no": 91,
+   "madde_tur": "madde",
+   "text": "Madde 91 — Emeklilik işlemleri ve emeklilik belgesi\nEmekliye sevk onayı alınan iştirakçiler, kanunda belirtilen yasal süre içinde görevleriyle ilişiklerini keserek \"Emeklilik Belgesi\"ni düzenleyip Kuruma intikal ettirir. Tahsis işlemleri, ilgililerin emeklilik talep dilekçesi ve gerekli hizmet/sicil belgeleri üzerinden yürütülür ve aylık, ilişik kesme tarihini takip eden aybaşından itibaren bağlanır. Bu süreç, kamu görevlisi ile idare arasındaki emeklilik başvuru-tahsis evrak akışının çerçevesini oluşturur."
+  },
+  {
    "mevzuat": "5442 il idaresi kanunu",
    "kaynak_dosya": "5442_il_idaresi_kanunu.txt",
    "madde_no": 4,
@@ -3181,6 +3783,55 @@
    "text": "Madde 30 — Dar mükellefiyette vergi kesintisi\nDar mükellef kurumların Türkiye'de elde ettikleri serbest meslek kazançları, gayrimenkul sermaye iratları, menkul sermaye iratları ve maddede sayılan diğer kazanç ve iratları üzerinden, bu ödemeleri yapanlarca kurumlar vergisi kesintisi yapılır. Kesinti oranları Cumhurbaşkanınca belirlenen sınırlar içinde uygulanır ve kesilen vergiler muhtasar beyanname ile beyan edilir. Madde, yurt dışı yerleşik kurumlara yapılan ödemelerde kaynakta vergileme (stopaj) esasını kurar."
   },
   {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBitkisel üretimde verim ve kaliteyi yükseltmeyi, tohumluk kalitesini güvence altına almayı, tohumluk üretim ve ticaretine ilişkin düzenlemeleri yapmayı ve tohumculuk sektörünün yeniden yapılandırılması ile geliştirilmesini sağlamayı amaçlar. Tohumluk üretim/ticaret izni, çeşit tescili ve sektör yetkilendirme başvurularının çerçeve dayanağıdır."
+  },
+  {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Kayıt altına alma\nBitki çeşitlerinin tescili, üretim izni ve genetik kaynakların kayıt altına alınmasının Bakanlıkça yapılacağını; çeşitlerin farklılık, yeknesaklık ve durulmuşluk (ayırt edilebilirlik) özellikleri belirlenerek Millî Çeşit Listesi/kütüğüne kaydedileceğini düzenler. Çeşit tescil başvurusu ve kayıt yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Tohumluk üretimi\nYalnızca kayıt altına alınmış çeşitlere ait tohumlukların üretilebileceğini; tohumluk üretiminin Bakanlıkça belirlenen usul ve esaslara, özel üretim alanlarının ise belirlenen sınır ve koşullara tabi olduğunu düzenler. Tohumluk üretim izni ve özel üretim alanı başvurularının dayanağıdır."
+  },
+  {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Tohumluk sertifikasyonu\nTescil edilmiş çeşitlerden yetiştirilen tohumlukların tarla ve laboratuvar kontrolleri yapılarak sertifikalandırılacağını, usulüne uygun ambalajlanıp etiketleneceğini düzenler; sertifikasyon işlemleri Bakanlıkça veya yetkilendirilmiş kuruluşlarca yürütülür. Tohumluk sertifikası talep ve kontrol yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Tohumluk ticareti\nYurt içinde yalnızca kayıt altına alınmış çeşitlere ait tohumlukların ticaretine izin verileceğini; tohumluk ithalat ve ihracatının Bakanlık iznine tabi olduğunu düzenler. Tohumluk ticaret izni ile ithalat/ihracat başvuru ve uygunluk yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Piyasa denetimi\nTohumluk yetiştiren, işleyen ve satan gerçek/tüzel kişilerin Bakanlıkça yetkilendirileceğini ve denetleneceğini; piyasaya arz edilen tohumlukların standartlara ve mevzuata uygunluğunun Bakanlıkça denetleneceğini düzenler. Tohumluk bayi/üretici yetkilendirme belgesi ve denetim tutanağı yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5553 tohumculuk kanunu",
+   "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Ceza hükümleri\nBu Kanuna aykırı fiiller için uygulanacak idari para cezalarını fiil türüne göre belirler: standartlara uymayan veya kayıtsız tohumluk üretip satanlar, yetkisiz tohumluk üretim/ticareti yapanlar, ithalat/ihracat kurallarını ihlal edenler ve özel üretim alanı kurallarına aykırı davrananlar için kademeli idari para cezaları öngörülür; tekrar hâlinde cezalar artırılabilir veya faaliyetten men uygulanır. Tohumculuk idari yaptırım kararı yazışmalarının dayanağıdır. [DOĞRULA: güncel idari para cezası tutarları (yıllık yeniden değerleme ile değişmektedir) — 5553 m.12 güncel metninden teyit]"
+  },
+  {
    "mevzuat": "5580 ozel ogretim kurumlari kanunu",
    "kaynak_dosya": "5580_ozel_ogretim_kurumlari_kanunu.txt",
    "madde_no": 1,
@@ -3326,6 +3977,48 @@
    "madde_no": 5,
    "madde_tur": "madde",
    "text": "Madde 5 — İşleme konulmayacak başvurular\nAşağıdaki başvurular işleme konulmaz: amacı ve konusu anlaşılamayan başvurular;\nyalnızca tahmine veya zanna dayalı, içeriğinde herhangi bir somut bilgi ya da belge\nbulunmayan başvurular; aynı başvuru sahibi tarafından hakkın kötüye kullanılması\nniteliğinde olacak şekilde sürekli ve benzer şekilde tekrar tekrar yapılan başvurular;\ngerçeğe aykırı belge veya bilgiyle ya da sahte ad ve adresle yapıldığı sonradan\nanlaşılan başvurular (bu hâlde başvuru hiç yapılmamış sayılır); hakaret, sövme, küçük\ndüşürücü veya tehdit içeren başvurular; yasama ve yargı faaliyetlerine ya da yargı\nmercilerinin görevine giren konulara ilişkin başvurular; başvuru sahibi ile üçüncü\nkişiler veya kurumlar arasındaki özel hukuk ilişkilerinden kaynaklanan talep, alacak\nve borçlara ilişkin başvurular; kurumun görev ve yetki alanı dışında kalan başvurular.\n\nBaşvuruların sonuçlandırılması ve süre [DOĞRULA: madde no]\nCİMER üzerinden yapılan başvurular, niteliğine göre dilekçe hakkı (3071) veya bilgi\nedinme hakkı (4982) rejiminde değerlendirilir. Talep ve şikâyet niteliğindeki\nbaşvurular, idarece niteliğine göre en geç otuz gün içinde ücretsiz olarak\nsonuçlandırılır; bilgi edinme niteliğindeki başvurular ise 4982 sayılı Kanun gereği on\nbeş iş günü içinde cevaplanır. Başvuru, ilgili kurum veya kuruluşa yönlendirilir ve\nbaşvuru sahibine sonuç hakkında bilgi verilir."
+  },
+  {
+   "mevzuat": "5737 vakiflar kanunu",
+   "kaynak_dosya": "5737_vakiflar_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Yeni vakıfların kuruluşu, mal varlığı, şube ve temsilcilikleri\nYeni vakıflar 4721 sayılı Türk Medeni Kanunu hükümlerine göre kurulur ve faaliyet gösterir; vakıf, yerleşim yeri mahkemesi nezdinde tutulan sicile tescil ile tüzel kişilik kazanır ve Genel Müdürlükte tutulan merkezî sicile kaydedilerek Resmî Gazete'de ilan edilir. Yeni vakıfların kuruluşunda amacına özgülenecek asgarî mal varlığı her yıl Vakıflar Meclisince belirlenir. Yeni vakıflar, vakıf senedinde hüküm bulunmak kaydıyla amaçlarını gerçekleştirmek üzere şube ve temsilcilik açabilir."
+  },
+  {
+   "mevzuat": "5737 vakiflar kanunu",
+   "kaynak_dosya": "5737_vakiflar_kanunu.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Hayrat taşınmazların nitelikleri ve değerlendirilmesi\nVakıfların hayrat taşınmazları haczedilemez, rehnedilemez, gibi kısıtlamalar ile ayrı bir hukuki rejime tabidir. Tahsis amacını kaybetmiş hayrat taşınmazlar, Vakıflar Meclisi kararıyla başka hayratlara dönüştürülebilir veya akara devredilerek değerlendirilebilir. Bu hüküm, hayrat (toplumun istifadesine bedelsiz sunulan vakıf mal/hizmeti) ile akar (gelir getirici vakıf malı) ayrımına dayanır."
+  },
+  {
+   "mevzuat": "5737 vakiflar kanunu",
+   "kaynak_dosya": "5737_vakiflar_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Hayrat taşınmazların tahsisi\nMazbut vakıflara ait hayrat taşınmazlara Genel Müdürlük tarafından öncelikle vakfiyesi doğrultusunda işlev verilir; bu şekilde değerlendirilemeyenler, vakfiyedeki amaca uygun olarak kamu kurum ve kuruluşlarına veya benzer amaçlı vakıflara tahsis edilebilir. Tahsis edilen taşınmaz tahsis amacı dışında ve ticari faaliyette kullanılamaz; tahsis talepleri taşınmazın bulunduğu bölge müdürlüğüne başvuru ile yapılır."
+  },
+  {
+   "mevzuat": "5737 vakiflar kanunu",
+   "kaynak_dosya": "5737_vakiflar_kanunu.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Uluslararası faaliyet\nVakıflar, vakıf senetlerinde yer almak kaydıyla amaç veya faaliyetleri doğrultusunda uluslararası faaliyet ve işbirliğinde bulunabilir, yurt dışında şube ve temsilcilik açabilir, üst kuruluşlar kurabilir veya kurulmuş kuruluşlara katılabilir. Vakıflar; yurt içi ve yurt dışındaki kişi, kurum ve kuruluşlardan aynî ve nakdî bağış ve yardım alabilir, yurt içi ve yurt dışındakilere aynî ve nakdî bağış ve yardımda bulunabilir. Nakdî yardımların yurt dışından alınması veya yurt dışına yapılması banka aracılığı ile olur."
+  },
+  {
+   "mevzuat": "5737 vakiflar kanunu",
+   "kaynak_dosya": "5737_vakiflar_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — Beyanname verme yükümlülüğü\nVakıf yönetimi; vakfın yönetici veya yönetim kurulu üyelerinin listesini, bir önceki yıla ait faaliyet raporlarını, bütçe ve bilançolarını, gayrimenkullerini ve mali tablolarını içeren beyannameyi her takvim yılının ilk altı ayı içinde Genel Müdürlüğe vermek zorundadır. Bu yıllık beyanname, vakıfların idarî gözetim ve denetiminin temel evrakıdır; uygulamada beyanname Vakıflar Yönetmeliği ekindeki forma göre doldurulur ve elektronik ortamda da gönderilir."
+  },
+  {
+   "mevzuat": "5737 vakiflar kanunu",
+   "kaynak_dosya": "5737_vakiflar_kanunu.txt",
+   "madde_no": 33,
+   "madde_tur": "madde",
+   "text": "Madde 33 — Vakıfların denetimi\nMülhak, cemaat, esnaf vakıfları ile yeni vakıflarda iç denetim esastır; vakıflar dilerlerse bağımsız denetim kuruluşlarına da denetim yaptırabilir, ancak bu denetim Genel Müdürlüğün denetim yetkisini ortadan kaldırmaz. Vakıfların amaca ve yasalara uygunluk denetimi ile iktisadi işletmelerinin faaliyet ve hesaplarının denetimi Genel Müdürlükçe yapılır. Denetim sonucunda mevzuata aykırılık tespit edilirse ilgili mercilere bildirimde bulunulur ve gerekli işlemler tesis edilir."
   },
   {
    "mevzuat": "5809 elektronik haberlesme kanunu",
@@ -3991,6 +4684,41 @@
    "madde_no": 26,
    "madde_tur": "madde",
    "text": "Madde 26 — İdari para cezaları\nKanunda öngörülen yükümlülükleri yerine getirmeyen işverene maddede her bir ihlal türü için ayrı ayrı idari para cezası uygulanır; örneğin risk değerlendirmesi yapmayan/yaptırmayan işverene (10. madde) ceza ve aykırılığın devam ettiği her ay için ilave ceza, iş güvenliği uzmanı/işyeri hekimi görevlendirmeyen işverene (6. madde) görevlendirmediği kişi başına ceza, bildirim yükümlülüğünü yerine getirmeyene (14. madde) ve çalışanları bilgilendirmeyene/eğitmeyene (16-17. madde) ceza öngörülür. [DOĞRULA: maddedeki Türk Lirası tutarları 2012 yılı değerleri olup 5326 sK yeniden değerleme oranıyla her yıl güncellenir; uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Görev\nİslam Dininin inançları, ibadet ve ahlâk esasları ile ilgili işleri yürütmek, din konusunda toplumu aydınlatmak ve ibadet yerlerini yönetmek üzere, Cumhurbaşkanlığına bağlı Diyanet İşleri Başkanlığı kurulmuştur. Bu madde, Başkanlığın temel görev alanını ve kamu tüzel kişiliğini belirler. Başkanlığın hizmet birimleri ve teşkilatı, bu görevi yerine getirmek üzere düzenlenmiştir."
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Din İşleri Yüksek Kurulu\nDin İşleri Yüksek Kurulu, Başkanlığın dinî konularda en yüksek karar ve danışma organıdır ve [DOĞRULA: üye sayısı; kaynaklarda on altı üye belirtilmektedir]. Kurul; dinî konularda toplumu aydınlatacak kararlar almak, dinî soruları cevaplandırmak (fetva), dinî yayınları ve Kur'an mealleri ile tefsir/tercümelerini inceleyip görüş bildirmek ve namaz vakitleri ile dinî gün ve geceleri tespit ve ilan etmek gibi görevleri yürütür. Kurulun çalışma usul ve esasları yönetmelikle düzenlenir."
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Taşra teşkilatı\nBaşkanlığın taşra teşkilatı il ve ilçe müftülükleri ile dinî eğitim/ihtisas merkezlerinden oluşur; il müftüleri Başkanlığa, ilçe müftüleri il müftülüklerine bağlıdır. İl ve ilçe müftüleri bulundukları yerde Başkanlığı temsil eder, din hizmetlerini ve dinî kurumları yönetir ve din görevlilerinin hizmetlerini düzenleyip denetler. Müftülükler, vatandaşın din hizmetiyle ilgili başvurularında ve cami/Kur'an kursu işlemlerinde idare nezdinde muhatap birimdir."
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Cami ve mescitler\nCami ve mescitler, Diyanet İşleri Başkanlığının izni ile ibadete açılır ve Başkanlıkça yönetilir. Hakiki ve hükmi şahıslar tarafından yapıldığı hâlde izinli veya izinsiz olarak ibadete açılmış bulunan cami ve mescitlerin yönetimi, üç ay içinde Diyanet İşleri Başkanlığına devredilir; Başkanlıkça buralara imkânlar nispetinde kadro tahsis edilir. Bu hüküm, ibadethane açılması için kamu izni ve devir başvurusunun temel dayanağıdır."
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Vaizler\nVaizler, toplumu dinî konularda bilgilendirmek, irşat ve rehberlik hizmetlerini yürütmekle görevlidir. Vaizlik için aranan nitelikler ile atama ve görevlendirme usulleri kanun ve ilgili yönetmeliklerde düzenlenir. Vaizler, müftülükler bünyesinde din hizmetlerinin yürütülmesinde görev alır."
   },
   {
    "mevzuat": "634 kat mulkiyeti kanunu",
@@ -5169,6 +5897,55 @@
    "text": "Madde 16 — Yerel birimlerce merkez birimlerine gönderilecek bilgi ve belgeler\nTahsis/devir yetkisi il veya merkez biriminde ise, ilçe biriminden il birimine ya da il biriminden merkez birimine yazılacak talep yazısında; taşınmazın tahsis/devre engel durumu, imar planı içinde olup olmadığı ve plan türü, Kıyı Kanunu kapsamında kalıp kalmadığı, hangi amaçla istendiği, halen nasıl kullanıldığı, üzerindeki muhdesata ilişkin tespit tutanağı, tapu kayıt örneği ile merkez biriminden alınan uygun görüş yazısı gibi bilgi ve belgelere yer verilir. Tahsis/devre engel bir durum varsa, diğer belgeler yerine bunu tespit eden belge yeterlidir."
   },
   {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Resmî senetle kuruluş\nGerçek veya tüzel kişilerin vakıf kurma iradesi, noterde düzenleme şeklinde hazırlanan resmî senetle açıklanır; vekil aracılığıyla kuruluşta vekâlet noterce düzenlenir ve vakfın amacı ile özgülenecek mal ve haklar vekâletnamede gösterilir. Noter, resmî senedin bir örneğini düzenleme tarihinden itibaren yedi gün içinde Genel Müdürlüğe gönderir. Yerleşim yeri mahkemesine tescil başvurusu, resmî senedin düzenlenmesinden sonra vakfeden tarafından yapılır."
+  },
+  {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Tescil ve mahkeme işlemleri\nMahkeme, dosya üzerinde Genel Müdürlüğün görüşünü almak ve gerektiğinde vakfedeni dinlemek suretiyle vakıf senedinin kanuna uygunluğunu inceleyerek vakfın tesciline veya istemin reddine karar verir. Mahkeme, tescil ya da ret kararını Genel Müdürlüğe resen tebliğ eder; tescile itiraz ve temyiz yolu açıktır. Vakıf, yerleşim yeri mahkemesi nezdinde tutulan sicile tescil ile tüzel kişilik kazanır."
+  },
+  {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Merkezî sicile tescil ve ilan\nVakıf, yerleşim yeri mahkemesinin yapacağı bildirim üzerine Genel Müdürlükte tutulan merkezî sicile kaydolunur ve Resmî Gazete'de ilan edilir. İlanda vakfeden ile vakfın adı, yerleşim yeri, amacı, mal ve hakları, varsa tapu bilgileri, vakfın organları ile tescil tarihi ve numarası yer alır. Bu ilan, vakfın üçüncü kişilere karşı aleniyetini sağlar."
+  },
+  {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — Yeni vakıfların şube ve temsilcilik açması\nYeni vakıflar, vakıf senedinde hüküm bulunmak kaydıyla amaçlarını gerçekleştirmek üzere şube veya temsilcilik açabilir; şube ve temsilcilikler vakıf adına faaliyet gösterir ve bulundukları yerde vakfı temsil eder. Şube veya temsilcilik açmadan önce yönetmelik ekindeki (Ek-1) beyanname doldurularak bölge müdürlüğüne verilir ve elektronik ortamda gönderilir. Şube veya temsilciliğin kapanması hâlinde de durum otuz gün içinde bölge müdürlüğüne bildirilir."
+  },
+  {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Beyanname verme yükümlülüğü\nVakıf yöneticileri, yönetmelik ekindeki (Ek-2) beyannameyi eksiksiz doldurarak her takvim yılının ilk altı ayı içinde bölge müdürlüğüne vermek ve elektronik ortamda göndermek zorundadır. Beyanname; yöneticilere ilişkin bilgiler, bir önceki yıla ait faaliyet raporu, bütçe ve bilanço ile gayrimenkul ve mali tabloları kapsar. Bu yükümlülük 5737 sayılı Kanunun 32. maddesindeki yıllık beyanname zorunluluğunun uygulama usulünü gösterir."
+  },
+  {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 51,
+   "madde_tur": "madde",
+   "text": "Madde 51 — Tutulacak defterler\nYeni vakıflar ile mülhak, cemaat ve esnaf vakıfları; işletme hesabı esasında karar defteri, işletme hesabı defteri ve bağış makbuzu kayıt defterini, bilanço esasında ise karar defteri, yevmiye defteri, büyük defter ve envanter defterini tutmak zorundadır. Defterlerin tutulmasında Genel Müdürlükçe yayımlanan Vakıflar Tek Düzen Hesap Planı esas alınır. Defterler kullanılmaya başlanmadan önce tasdik ettirilir ve mevzuata uygun olarak saklanır."
+  },
+  {
+   "mevzuat": "vakiflar yonetmeligi",
+   "kaynak_dosya": "vakiflar_yonetmeligi.txt",
+   "madde_no": 59,
+   "madde_tur": "madde",
+   "text": "Madde 59 — Hayrat taşınmazların tahsisi\nMazbut vakıflara ait hayrat taşınmazlar, vakfiyeleri doğrultusundaki işlevlerde kullanılmak üzere kamu kurum ve kuruluşlarına veya benzer amaçlı vakıflara tahsis edilebilir. Yeterli geliri bulunmayan veya işlev verilemeyen hayrat taşınmazlar, durumlarına göre geçici süreyle kiraya verilebilir. Tahsis talepleri, taşınmazın bulunduğu bölge müdürlüğüne başvuru ile yapılır ve taşınmazın hâlihazır durumu ile onarım ihtiyacı tespit edilerek ayrıntılı rapor Genel Müdürlüğe gönderilir."
+  },
+  {
    "mevzuat": "yapi ruhsati yapi kullanma izni islemleri",
    "kaynak_dosya": "yapi_ruhsati_yapi_kullanma_izni_islemleri.txt",
    "madde_no": 3194,
@@ -5211,5 +5988,5 @@
    "text": "Madde 54 — Uygulama yönetmeliğinde ruhsat ve iskân işlemleri (m.PAİY m.54-55-64)\nPlanlı Alanlar İmar Yönetmeliği m.54 ruhsat tarihinden itibaren 2 yıl içinde başlama ve 5 yıllık ruhsat süresini, m.55 ruhsat başvurusunda aplikasyon krokisi ve tapu kayıt örneği ekli dilekçe ile imar durum belgesi, yol/kanal kotu tutanağı ve onaylı jeolojik-jeoteknik etüt raporunun temininin esaslarını, m.64 ise mal sahibinin müracaatı üzerine fenni mesul/yapı denetim raporu, enerji kimlik belgesi ve fotoğraflarla yapı kullanma izin belgesinin 30 gün içinde düzenlenmesini ayrıntılandırır. İmar Kanunu m.21-30 hükümlerinin pratik uygulama dayanağıdır."
   }
  ],
- "mevzuat_sayisi": 112
+ "mevzuat_sayisi": 130
 }

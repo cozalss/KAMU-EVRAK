@@ -1,0 +1,26 @@
+Mera Kanunu
+Kanun No 4342, Kabul 25/2/1998, RG 28/2/1998 Sayı 23272 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4342.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Daha önce çeşitli kanunlarla tahsis edilmiş veya kadimden beri kullanılan mera, yaylak ve kışlaklar ile umuma ait çayır ve otlakların tespit, tahdit ve köy veya belediye tüzel kişiliklerine tahsis edilmesini, kullanımlarının belirli kurallara bağlanmasını, korunmalarını ve gerektiğinde ıslah edilerek verimlerinin artırılmasını ve sürekli denetlenmelerini sağlamayı amaçlar. Mera tahsisi, vasıf tespiti ve tahsis amacı değişikliği başvuru-yazışmalarının çerçeve dayanağıdır.
+
+Madde 5 — Mera, Yaylak ve Kışlak Olarak Tahsis Edilecek Yerler
+Komisyonca hangi yerlerin mera, yaylak ve kışlak olarak köy veya belediyelere tahsis edileceğini düzenler: kadimden beri bu amaçla kullanılan ya da aynı amaçla devredilen yerler, incelenerek uygun bulunan Hazine/Devlet arazileri, mera için kamulaştırılacak yerler ve tapu/kütük kayıtlarında mera-yaylak-kışlak olarak görünen yerler bu kapsamdadır. Mera tahsis talebi ve uygunluk değerlendirmesi yazışmalarının dayanağıdır.
+
+Madde 9 — Tespit ve Tahdit Çalışmaları
+Mera, yaylak ve kışlakların yerinde tespit (sınır, vasıf ve fiili durumun belirlenmesi) ve tahdit (sınırlarının ölçülerek haritaya bağlanması) çalışmalarının teknik ekiplerce komisyon gözetiminde yürütüleceğini düzenler; çalışmalarda muhtar/belediye temsilcisi ile ilgili kurum görevlilerinin hazır bulunması esastır. Mera tespit-tahdit tutanağı ve sınır uyuşmazlığı yazışmalarının dayanağıdır.
+
+Madde 12 — Tahsis Kararı
+Tespit ve tahdit çalışmaları tamamlanan yerler için komisyonun ihtiyaç tespitine göre hangi tüzel kişiliğe ne kadar alanın mera, yaylak veya kışlak olarak tahsis edileceğine ilişkin tahsis kararını vereceğini düzenler. Tahsis kararı, mera tahsis-talep dosyalarının ve sonraki itiraz/kütüğe kayıt işlemlerinin esas belgesidir.
+
+Madde 13 — Tahsis Kararının Tebliği, İlanı, İtirazı ve Kütüğe Kayıt
+Tahsis kararının ilgili köy ve belediyelere tebliğ edilip uygun yerlerde askıya çıkarılarak ilan edileceğini; ilgililerin bu karara karşı belirli süre içinde itiraz edebileceğini ve itirazların değerlendirilmesinden sonra kesinleşen tahsisin özel sicile/kütüğe kaydedileceğini düzenler. Mera tahsisine itiraz dilekçeleri ve askı-ilan yazışmalarının dayanağıdır. [DOĞRULA: itiraz süresi (gün) — mevzuat.gov.tr 4342 m.13 metninden teyit edilmeli]
+
+Madde 14 — Tahsis Amacının Değiştirilmesi
+Tahsis edilmiş mera, yaylak ve kışlakların tahsis amacının (vasfının) kural olarak değiştirilemeyeceğini; ancak enerji, madencilik, savunma, kamu yatırımı, turizm gibi sayılan kamu yararı hâllerinde ilgili müracaat üzerine ve komisyonca yirmi yıllık mera geliri esas alınarak hesaplanan bedel ödenmek kaydıyla tahsis amacının değiştirilebileceğini düzenler; bu yerlerin vasfı değiştirilerek tapuda Hazine adına tescil edilir. Mera vasıf değişikliği (tahsis amacı değişikliği) başvuru ve bedel yazışmalarının temel dayanağıdır.

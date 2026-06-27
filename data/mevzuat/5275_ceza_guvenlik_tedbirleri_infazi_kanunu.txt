@@ -1,0 +1,32 @@
+Ceza ve Güvenlik Tedbirlerinin İnfazı Hakkında Kanun
+Kanun No 5275, Kabul 13.12.2004, RG 29.12.2004/25685 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5275 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5275.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — İnfazda temel ilke (kesinleşen hükmün infazı)
+Mahkemece hükmolunan cezanın infazı, hükmün kesinleşmesinden sonra Cumhuriyet başsavcılığınca yerine getirilir. Cezaların infazı ile güvenlik tedbirlerinin uygulanması Cumhuriyet savcısı tarafından izlenir ve denetlenir. Böylece infazın hukukî dayanağı kesinleşmiş bir mahkeme kararıdır; kesinleşmeden infaza başlanamaz.
+
+Madde 16 — Hapis cezasının infazının hastalık nedeniyle ertelenmesi (hükümlünün talebi)
+Akıl hastalığına tutulan hükümlünün cezasının infazı, iyileşinceye kadar geri bırakılır. Diğer hastalıklarda cezanın infazına, kurumda hayatî tehlike oluşturmayacaksa devam olunur; hükümlü, hayatî tehlike oluşturacak veya hastalığını ağırlaştıracak bir durumdaysa cezanın infazı geri bırakılabilir. Gebe olan veya doğurduğu tarihten itibaren altı ay geçmemiş bulunan kadınlar ile doğurduğu tarihten itibaren altı ay-bir buçuk yıl arasındaki belirli hâllerde infaz geri bırakılır. Geri bırakma kararı Cumhuriyet başsavcılığınca, koşulları varsa resmî sağlık kuruluşu raporuna dayanılarak verilir. [DOĞRULA: 7242 sayılı Kanun ve sonraki değişikliklerle gebelik/doğum sonrası sürelerin ve hastalık erteleme usulünün güncel hâli]
+
+Madde 94 — Hükümlülere verilebilecek mazeret izni (yakının ölümü/hastalığı, afet)
+Hükümlülük süresinin onda birini iyi hâlle geçirmiş ve açık ceza infaz kurumuna ayrılma şartlarını taşıyan hükümlülere; ana, baba, eş, kardeş veya çocuğunun ölümü ya da bunlardan birinin yaşamsal tehlike oluşturacak önemli ve ağır hastalık hâlinde, veya deprem, su baskını, yangın gibi felaketler nedeniyle zarara uğramaları hâlinde, kurum en üst amirinin önerisi ve Cumhuriyet başsavcılığının onayı ile yol süresi dışında ölüm hâlinde on güne kadar; hastalık veya felaket hâllerinde ise bir ila iki güne kadar mazeret izni verilebilir. Bu izinler vatandaşın/hükümlünün aile bağlarının korunmasına ve zorunlu mazeretlerin karşılanmasına yöneliktir.
+
+Madde 95 — Hükümlülere özel izin (açık kurum, üç ayda bir yedi güne kadar)
+Açık ceza infaz kurumlarında bulunanlarla, kapalı ceza infaz kurumunda olup da açık kuruma ayrılmaya hak kazanmış hükümlülere; aile bağlarını sürdürmesi veya güçlendirmesi ve dış dünyaya uyumlarını sağlaması amacıyla, kurum en üst amirinin önerisi ve Cumhuriyet başsavcılığının onayı ile üç ayda bir, yol hariç yedi güne kadar izin verilebilir. İzin süreleri hükümlünün hücrede geçirdiği süreden sayılmaz; iznini izin belgesinde belirtilen yere gitmek için kullanmayan ya da süresinde dönmeyen hükümlü hakkında gerekli işlem yapılır.
+
+Madde 96 — İş arama izni (koşullu salıverilmesine az süre kalan hükümlü)
+Açık ceza infaz kurumunda bulunan veya çocuk eğitimevinde kalan ve koşullu salıverilmesine bir aydan az süre kalan hükümlülere, tahliye sonrası iş bulmalarını ve yeniden topluma kazandırılmalarını kolaylaştırmak amacıyla; kurum en üst amirinin önerisi ve Cumhuriyet başsavcılığının onayı ile çalışma günleri içinde sekiz saati geçmemek üzere iş arama izni verilebilir. Bu izin, salıverilme sonrası dış dünyaya uyumu desteklemeye yöneliktir. [DOĞRULA: iş arama izninin gün/saat sınırı ve uygulama usulünün güncel hâli]
+
+Madde 98 — İnfazda tereddüt/duraksama hâlinde başvurulacak merci (hükmü veren mahkeme)
+Mahkûmiyet hükmünün yorumunda veya çektirilecek cezanın hesabında duraksama olursa, cezanın kısmen veya tamamen yerine getirilemeyeceği ileri sürülürse ya da sonradan yürürlüğe giren kanun hükümlünün lehine ise; hükümlü, Cumhuriyet savcısı veya ilgili infaz mercii, hükmü veren mahkemeden bu konuda bir karar verilmesini ister. Bu kararlar duruşma yapılmaksızın dosya üzerinden verilir ve karar gerekçeli olur; ancak gerekli görülen hâllerde Cumhuriyet savcısı ve hükümlünün müdafii dinlenebilir. İnfaza ilişkin bu kararlara karşı itiraz yoluna gidilebilir.
+
+Madde 105/A — Denetimli serbestlik tedbiri uygulanarak infaz (talep üzerine)
+Açık ceza infaz kurumunda veya çocuk eğitimevinde bulunan ve koşullu salıverilmesine belirli bir süre (kural olarak bir yıl) kalan iyi hâlli hükümlülerin talebi hâlinde, cezalarının koşullu salıverilme tarihine kadarki kısmının, denetimli serbestlik tedbiri uygulanmak suretiyle infazına karar verilebilir. Bu kararı, hükümlünün talebi üzerine, idare ve gözlem kurulunun değerlendirmesine dayanarak infaz hâkimi verir. Tedbir kapsamında hükümlü, belirlenen yükümlülüklere (denetim, çalışma, eğitim, ikamet vb.) uyar; yükümlülüklere uyulmaması hâlinde açık kuruma iade edilebilir. [DOĞRULA: 7242 sayılı ve sonraki değişikliklerle denetimli serbestlik süresinin (1 yıl/3 yıl) güncel hâli]
+
+Madde 107 — Koşullu salıverilme (infaz oranı, iyi hâl, başvuru/karar)
+Koşullu salıverilmeden yararlanabilmek için hükümlünün, kural olarak süreli hapis cezasının yarısını infaz kurumunda çekmiş ve bu süreyi iyi hâlli olarak geçirmiş olması gerekir; ancak kanunda sayılan ağır suçlarda (kasten öldürme, neticesi sebebiyle ağırlaşmış yaralama, işkence, cinsel dokunulmazlığa karşı suçlar, uyuşturucu ve örgüt suçları gibi) bu oran üçte iki ya da dörtte üç olarak uygulanır. Ağırlaştırılmış müebbet hapis cezasına mahkûm olanlar otuz yılını, müebbet hapis cezasına mahkûm olanlar yirmidört yılını infaz kurumunda çektikten sonra koşullu salıverilmeden yararlanabilir. İyi hâl, ceza infaz kurumu idare ve gözlem kurulunun hazırladığı gerekçeli raporla değerlendirilir; bu rapor infaz işlemlerinin yapıldığı yer infaz hâkimliğine verilir ve infaz hâkimi raporu uygun bulursa hükümlünün koşullu salıverilmesine dosya üzerinden karar verir. Koşullu salıverilen hükümlü, hak ederek tahliye tarihine kadarki bakiye süre kadar denetim süresine tabi tutulur. [DOĞRULA: 7242 sayılı Kanunla genel infaz oranının 2/3'ten 1/2'ye indirilmesi ve suç türüne göre istisnaların güncel hâli]

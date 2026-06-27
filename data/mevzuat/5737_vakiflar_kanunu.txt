@@ -1,0 +1,26 @@
+Vakıflar Kanunu
+Kanun No 5737, Kabul 20.02.2008, RG 27.02.2008/26800 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5737 konsolide metin esas alınmıştır; 4721 sayılı Türk Medeni Kanununun vakıflara ilişkin hükümleri saklıdır; Vakıflar Genel Müdürlüğü Cumhurbaşkanlığına bağlıdır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5737.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Yeni vakıfların kuruluşu, mal varlığı, şube ve temsilcilikleri
+Yeni vakıflar 4721 sayılı Türk Medeni Kanunu hükümlerine göre kurulur ve faaliyet gösterir; vakıf, yerleşim yeri mahkemesi nezdinde tutulan sicile tescil ile tüzel kişilik kazanır ve Genel Müdürlükte tutulan merkezî sicile kaydedilerek Resmî Gazete'de ilan edilir. Yeni vakıfların kuruluşunda amacına özgülenecek asgarî mal varlığı her yıl Vakıflar Meclisince belirlenir. Yeni vakıflar, vakıf senedinde hüküm bulunmak kaydıyla amaçlarını gerçekleştirmek üzere şube ve temsilcilik açabilir.
+
+Madde 15 — Hayrat taşınmazların nitelikleri ve değerlendirilmesi
+Vakıfların hayrat taşınmazları haczedilemez, rehnedilemez, gibi kısıtlamalar ile ayrı bir hukuki rejime tabidir. Tahsis amacını kaybetmiş hayrat taşınmazlar, Vakıflar Meclisi kararıyla başka hayratlara dönüştürülebilir veya akara devredilerek değerlendirilebilir. Bu hüküm, hayrat (toplumun istifadesine bedelsiz sunulan vakıf mal/hizmeti) ile akar (gelir getirici vakıf malı) ayrımına dayanır.
+
+Madde 16 — Hayrat taşınmazların tahsisi
+Mazbut vakıflara ait hayrat taşınmazlara Genel Müdürlük tarafından öncelikle vakfiyesi doğrultusunda işlev verilir; bu şekilde değerlendirilemeyenler, vakfiyedeki amaca uygun olarak kamu kurum ve kuruluşlarına veya benzer amaçlı vakıflara tahsis edilebilir. Tahsis edilen taşınmaz tahsis amacı dışında ve ticari faaliyette kullanılamaz; tahsis talepleri taşınmazın bulunduğu bölge müdürlüğüne başvuru ile yapılır.
+
+Madde 25 — Uluslararası faaliyet
+Vakıflar, vakıf senetlerinde yer almak kaydıyla amaç veya faaliyetleri doğrultusunda uluslararası faaliyet ve işbirliğinde bulunabilir, yurt dışında şube ve temsilcilik açabilir, üst kuruluşlar kurabilir veya kurulmuş kuruluşlara katılabilir. Vakıflar; yurt içi ve yurt dışındaki kişi, kurum ve kuruluşlardan aynî ve nakdî bağış ve yardım alabilir, yurt içi ve yurt dışındakilere aynî ve nakdî bağış ve yardımda bulunabilir. Nakdî yardımların yurt dışından alınması veya yurt dışına yapılması banka aracılığı ile olur.
+
+Madde 32 — Beyanname verme yükümlülüğü
+Vakıf yönetimi; vakfın yönetici veya yönetim kurulu üyelerinin listesini, bir önceki yıla ait faaliyet raporlarını, bütçe ve bilançolarını, gayrimenkullerini ve mali tablolarını içeren beyannameyi her takvim yılının ilk altı ayı içinde Genel Müdürlüğe vermek zorundadır. Bu yıllık beyanname, vakıfların idarî gözetim ve denetiminin temel evrakıdır; uygulamada beyanname Vakıflar Yönetmeliği ekindeki forma göre doldurulur ve elektronik ortamda da gönderilir.
+
+Madde 33 — Vakıfların denetimi
+Mülhak, cemaat, esnaf vakıfları ile yeni vakıflarda iç denetim esastır; vakıflar dilerlerse bağımsız denetim kuruluşlarına da denetim yaptırabilir, ancak bu denetim Genel Müdürlüğün denetim yetkisini ortadan kaldırmaz. Vakıfların amaca ve yasalara uygunluk denetimi ile iktisadi işletmelerinin faaliyet ve hesaplarının denetimi Genel Müdürlükçe yapılır. Denetim sonucunda mevzuata aykırılık tespit edilirse ilgili mercilere bildirimde bulunulur ve gerekli işlemler tesis edilir.

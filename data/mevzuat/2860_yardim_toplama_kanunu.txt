@@ -1,0 +1,32 @@
+Yardım Toplama Kanunu
+Kanun No 2860, Kabul 23.06.1983, RG 25.06.1983/18088 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.2860 konsolide metin esas alınmıştır; 7262 sayılı Kanun ve sonraki değişiklikler işlenmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2860.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Bu Kanunun amacı; yardım toplamaya yetkili kişi ve kuruluşları ve bunların hangi amaçla yardım toplayabileceklerini belirlemek, yardımın toplanmasına, kullanılmasına ve denetlenmesine ilişkin usul ve esasları düzenlemektir.
+
+Madde 3 — Yardım toplayabilecek olanlar
+Kamu yararına uygun olarak, amaçlarını gerçekleştirmek, muhtaç kişilere yardım sağlamak ve kamu hizmetlerinden bir veya birkaçını gerçekleştirmek veya destek olmak üzere; gerçek kişiler, dernekler, kurumlar, vakıflar, spor kulüpleri, gazete ve dergiler yardım toplayabilirler.
+
+Madde 5 — Yardım toplama şekilleri
+Bu Kanuna göre yardım; makbuzla, belirli yerlere kutu koyarak, bankalarda hesap açtırarak, yardım pulu çıkararak, eşya piyangosu düzenleyerek, kültürel gösteriler ve sergiler yoluyla, spor gösterileri, gezi ve eğlenceler düzenlemek veya bilgileri otomatik/elektronik olarak işleme tâbi tutmuş sistemler kullanmak suretiyle toplanabilir. Makbuz ve biletlerde yardımın hangi amaç için toplandığının belirtilmesi zorunludur.
+
+Madde 6 — İzin alma zorunluğu
+Kişiler ve kuruluşlar, yetkili makamdan izin almadan yardım toplayamazlar. Ancak, kamu yararına çalışan dernek, kurum ve vakıflardan hangilerinin izin almadan yardım toplayabilecekleri Cumhurbaşkanınca belirlenip ilan edilir. İzin alınmadan girişilen yardım toplama faaliyetleri güvenlik kuvvetlerince derhal menedilir ve sorumlular hakkında kovuşturma yapılır; izinsiz faaliyetin internet ortamında yapıldığının tespitinde valilik veya İçişleri Bakanlığınca içeriğin çıkarılması/erişimin engellenmesi yoluna gidilir.
+
+Madde 7 — İzin vermeye yetkili makamlar
+Yardım toplama faaliyeti bir ilin birden fazla ilçesini kapsıyorsa o ilin valisinden, bir ilçenin sınırları içinde ise o ilçenin kaymakamından izin alınır. Faaliyet birden fazla ili kapsıyorsa, yardım toplayacak gerçek veya tüzel kişinin yerleşim yerinin bulunduğu ilin valisinden izin alınır ve izni veren valilik ilgili valiliklere ve İçişleri Bakanlığına bilgi verir. İşlemler dernekler birimlerince yürütülür.
+
+Madde 8 — Başvuru (dilekçe)
+Yardım toplayacak kişi ve kuruluşlar, isteklerini bir dilekçeyle izin vermeye yetkili makama bildirirler. Gazete ve dergiler için dilekçeler sorumlu yazı işleri müdürlerince verilir. Yardım toplama, öğrenim kurumları yararına veya kurum içinde yapılacaksa başvuru dilekçesine kurum sorumlusunun yazılı izninin eklenmesi zorunludur; dilekçede bulunması gereken hususlar ve eklenecek belgeler yönetmelikte gösterilir.
+
+Madde 9 — Başvurunun incelenmesi ve izin
+İzin vermeye yetkili makamlarca başvuru üzerine; işin önemi, yardım toplayacakların yeterlikleri, yapılacak hizmetin amaca ve kamu yararına uygunluğu ile faaliyetin başarıya ulaşıp ulaşamayacağı incelenir ve sonucu en geç iki ay içinde başvuranlara bildirilir.
+
+Madde 10 — Süre
+Yardım toplama süresinin takdiri izin veren makama aittir. Bu süre bir yılı geçemez; ancak haklı sebeplerin bulunması hâlinde verilen süre izin veren makamca uzatılabilir. [DOĞRULA: Anayasa Mahkemesinin 27/6/2024 tarihli E:2023/181, K:2024/128 kararı "bir yılı geçmemek üzere" ibaresine ilişkin değişiklik içerdiğinden güncel metin teyit edilmelidir]

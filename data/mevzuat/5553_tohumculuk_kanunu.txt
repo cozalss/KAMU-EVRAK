@@ -1,0 +1,35 @@
+Tohumculuk Kanunu
+Kanun No 5553, Kabul 31/10/2006, RG 8/11/2006 Sayı 26340 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5553.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+NOT (korpus gerekçesi): Bu parti için istenen 6968 sayılı Zirai Mücadele ve Zirai Karantina
+Kanunu, 5996 sayılı Veteriner Hizmetleri, Bitki Sağlığı, Gıda ve Yem Kanunu (RG 13/6/2010)
+ile YÜRÜRLÜKTEN KALDIRILMIŞTIR (MÜLGA). Korpus kuralı yalnız yürürlükteki mevzuata izin
+verdiğinden ve 5996 zaten korpusta bulunduğundan, aynı tematik alanda (tarım — kayıt/izin/
+yetkilendirme/denetim/idari yaptırım) yürürlükteki 5553 sayılı Tohumculuk Kanunu ikame edilmiştir.
+
+Madde 1 — Amaç
+Bitkisel üretimde verim ve kaliteyi yükseltmeyi, tohumluk kalitesini güvence altına almayı, tohumluk üretim ve ticaretine ilişkin düzenlemeleri yapmayı ve tohumculuk sektörünün yeniden yapılandırılması ile geliştirilmesini sağlamayı amaçlar. Tohumluk üretim/ticaret izni, çeşit tescili ve sektör yetkilendirme başvurularının çerçeve dayanağıdır.
+
+Madde 4 — Kayıt altına alma
+Bitki çeşitlerinin tescili, üretim izni ve genetik kaynakların kayıt altına alınmasının Bakanlıkça yapılacağını; çeşitlerin farklılık, yeknesaklık ve durulmuşluk (ayırt edilebilirlik) özellikleri belirlenerek Millî Çeşit Listesi/kütüğüne kaydedileceğini düzenler. Çeşit tescil başvurusu ve kayıt yazışmalarının dayanağıdır.
+
+Madde 5 — Tohumluk üretimi
+Yalnızca kayıt altına alınmış çeşitlere ait tohumlukların üretilebileceğini; tohumluk üretiminin Bakanlıkça belirlenen usul ve esaslara, özel üretim alanlarının ise belirlenen sınır ve koşullara tabi olduğunu düzenler. Tohumluk üretim izni ve özel üretim alanı başvurularının dayanağıdır.
+
+Madde 6 — Tohumluk sertifikasyonu
+Tescil edilmiş çeşitlerden yetiştirilen tohumlukların tarla ve laboratuvar kontrolleri yapılarak sertifikalandırılacağını, usulüne uygun ambalajlanıp etiketleneceğini düzenler; sertifikasyon işlemleri Bakanlıkça veya yetkilendirilmiş kuruluşlarca yürütülür. Tohumluk sertifikası talep ve kontrol yazışmalarının dayanağıdır.
+
+Madde 7 — Tohumluk ticareti
+Yurt içinde yalnızca kayıt altına alınmış çeşitlere ait tohumlukların ticaretine izin verileceğini; tohumluk ithalat ve ihracatının Bakanlık iznine tabi olduğunu düzenler. Tohumluk ticaret izni ile ithalat/ihracat başvuru ve uygunluk yazışmalarının dayanağıdır.
+
+Madde 8 — Piyasa denetimi
+Tohumluk yetiştiren, işleyen ve satan gerçek/tüzel kişilerin Bakanlıkça yetkilendirileceğini ve denetleneceğini; piyasaya arz edilen tohumlukların standartlara ve mevzuata uygunluğunun Bakanlıkça denetleneceğini düzenler. Tohumluk bayi/üretici yetkilendirme belgesi ve denetim tutanağı yazışmalarının dayanağıdır.
+
+Madde 12 — Ceza hükümleri
+Bu Kanuna aykırı fiiller için uygulanacak idari para cezalarını fiil türüne göre belirler: standartlara uymayan veya kayıtsız tohumluk üretip satanlar, yetkisiz tohumluk üretim/ticareti yapanlar, ithalat/ihracat kurallarını ihlal edenler ve özel üretim alanı kurallarına aykırı davrananlar için kademeli idari para cezaları öngörülür; tekrar hâlinde cezalar artırılabilir veya faaliyetten men uygulanır. Tohumculuk idari yaptırım kararı yazışmalarının dayanağıdır. [DOĞRULA: güncel idari para cezası tutarları (yıllık yeniden değerleme ile değişmektedir) — 5553 m.12 güncel metninden teyit]

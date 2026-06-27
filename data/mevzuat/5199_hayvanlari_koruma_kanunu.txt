@@ -1,0 +1,28 @@
+Hayvanları Koruma Kanunu
+Kanun No 5199, Kabul 24/6/2004, RG 1/7/2004 Sayı 25509 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5199.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+Not: Bu Kanun 7332 sayılı Kanun (9/7/2021) ve sonraki düzenlemelerle önemli ölçüde
+değiştirilmiştir; bazı eylemler kabahatten suça dönüştürülmüş, idari para cezaları artırılmıştır.
+
+Madde 1 — Amaç
+Hayvanların rahat yaşamlarını ve hayvanlara iyi ve uygun muamele edilmesini temin etmeyi; onları açlık, susuzluk, eziyet ve kötü muameleden korumayı; insan, hayvan ve çevre sağlığını gözeterek hayvanların korunmasına ilişkin esasları düzenlemeyi amaçlar. Hayvan koruma ihbarı, sahipsiz hayvan başvurusu ve idari yaptırım yazışmalarının çerçeve dayanağıdır.
+
+Madde 4 — İlkeler
+Hayvanların korunmasına ve refahına ilişkin temel ilkeleri sayar: bütün hayvanların eşit ölçüde korunması, nesli yok olma tehlikesi altındaki tür ve doğal yaşam alanlarının korunması, yabani hayvanların yaşam ortamlarından koparılmaması, hayvanların gözetimi ve bakımında gerekli tedbirlerin alınması gibi. Hayvan refahı ve koruma tedbirine ilişkin başvuru/şikâyet değerlendirmelerinin dayanağıdır.
+
+Madde 5 — Hayvanların sahiplenilmesi ve bakımı
+Hayvanı sahiplenen kişinin, türe ve üreme yöntemine göre etolojik ihtiyaçları karşılamak, barınma-bakım-sağlık koşullarını sağlamak ve insan/hayvan/çevre sağlığı yönünden gerekli tedbirleri almakla yükümlü olduğunu düzenler; ev hayvanı satıcılarının mahalli yetkililerce onaylı eğitim almasını, sahiplenilen hayvanın uygun olmayan ortama terk edilemeyeceğini, ancak yeniden sahiplendirilebileceğini veya barınağa bırakılabileceğini öngörür. Ev/süs hayvanı edinimi ve sorumlu sahiplenme yazışmalarının dayanağıdır.
+
+Madde 6 — Sahipsiz ve güçten düşmüş hayvanların korunması
+Sahipsiz ya da güçten düşmüş hayvanların öldürülmesinin (kanunda sayılan istisnalar dışında) yasak olduğunu; bu hayvanların yerel yönetimlerce en kısa sürede kurulan/işletilen bakımevlerine (barınaklara) götürüleceğini ve Bakanlık kayıt sistemine kaydedileceğini düzenler; rehabilite edilen hayvanlar sahiplendirilinceye kadar barınakta tutulur, barınak yapımı için kamu arazileri öncelikli tahsis edilir. Belediyelere sahipsiz hayvan toplama-barındırma ve bakımevi yazışmalarının dayanağıdır. [DOĞRULA: 2021/2024 değişiklikleriyle eklenen belediye barınak yükümlülüğü ayrıntıları — 5199 m.6 güncel metninden teyit]
+
+Madde 24 — El koyma
+Bu Kanun hükümlerine aykırı davranan veya hayvanlara karşı bakımda ihmal gösteren kişilerin elindeki hayvanlara, yetkili merciin kararıyla geçici veya sürekli olarak el konulabileceğini ve hayvanların bakımevlerine yerleştirileceğini düzenler; el konulan hayvan sahiplendirilinceye veya usulüne göre işlem yapılıncaya kadar barınakta tutulur. Hayvana kötü muamele tespiti sonrası el koyma tutanağı ve yazışmalarının dayanağıdır.
+
+Madde 28 — İdari para cezaları
+Kanunun çeşitli maddelerine aykırı fiiller için uygulanacak idari para cezalarını fiil türüne göre ayrı ayrı belirler (ör. ev hayvanını terk eden, toplanan hayvanı barınak dışına bırakan, hayvana kötü muamele eden kişiler için kademeli cezalar); cezaların Bakanlıkça veya yetki devriyle mahallin en büyük mülki amirince verileceğini öngörür. Kasten hayvan öldürme/işkence gibi ağır eylemler için ceza yaptırımları 28/A maddesinde düzenlenmiştir (sahipli/evcil hayvanı kasten öldürme: altı aydan dört yıla kadar hapis). Hayvan hakları ihlali tutanağına dayalı idari yaptırım kararı yazışmalarının dayanağıdır. [DOĞRULA: güncel idari para cezası tutarları ve 28/A hapis aralıkları — 5199 m.28 ve m.28/A güncel metninden teyit]

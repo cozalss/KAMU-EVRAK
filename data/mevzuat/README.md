@@ -207,3 +207,29 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | Çocuk Koruma Kanunu | 5395 | `5395_cocuk_koruma_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5395.pdf |
 | Ailenin Korunması ve Kadına Karşı Şiddetin Önlenmesine Dair Kanun | 6284 | `6284_ailenin_korunmasi_kadina_siddet_onleme.txt` | 9 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6284.pdf |
 | Aile Mahkemelerinin Kuruluş, Görev ve Yargılama Usullerine Dair Kanun | 4787 | `4787_aile_mahkemeleri_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4787.pdf |
+
+## 2026-06 Genişletme Batch 7 — sosyal-yardım/tarım/sendika-emekli/infaz/vakıf/şehit-gazi (18 mevzuat)))))
+
+> Korpus 112 -> **130 mevzuat (855 chunk)**. Resmî mühür, e-yazışma (EBYS/KEP/e-imza/karekod),
+> medeni/vekâlet/koruma, personel disiplin/mali haklar, ihale itiraz. Gerçek mevzuat (mevzuat.gov.tr).
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Sosyal Yardımlaşma ve Dayanışmayı Teşvik Kanunu | 3294 | `3294_sosyal_yardimlasma_dayanismayi_tesvik_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3294.pdf |
+| 65 Yaşını Doldurmuş Muhtaç, Güçsüz ve Kimsesiz Türk Vatandaşlarına Aylık Bağlanması Hakkında Kanun | 2022 | `2022_65_yas_muhtac_aylik_baglanmasi_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2022.pdf |
+| Yardım Toplama Kanunu | 2860 | `2860_yardim_toplama_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2860.pdf |
+| Mera Kanunu | 4342 | `4342_mera_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4342.pdf |
+| Hayvanları Koruma Kanunu | 5199 | `5199_hayvanlari_koruma_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5199.pdf |
+| Tohumculuk Kanunu (6968 mülga olduğundan ikame edilen yürürlükteki tarım mevzuatı) | 5553 | `5553_tohumculuk_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5553.pdf |
+| Kamu Görevlileri Sendikaları ve Toplu Sözleşme Kanunu | 4688 | `4688_kamu_gorevlileri_sendikalari_toplu_sozlesme_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4688.pdf |
+| Türkiye Cumhuriyeti Emekli Sandığı Kanunu | 5434 | `5434_emekli_sandigi_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5434.pdf |
+| Sosyal Güvenlik Kurumlarına Tabi Olarak Geçen Hizmetlerin Birleştirilmesi Hakkında Kanun | 2829 | `2829_hizmet_birlestirme_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/5.5.2829.pdf |
+| Ceza Muhakemesi Kanunu | 5271 | `5271_ceza_muhakemesi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5271.pdf |
+| Ceza ve Güvenlik Tedbirlerinin İnfazı Hakkında Kanun | 5275 | `5275_ceza_guvenlik_tedbirleri_infazi_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5275.pdf |
+| İnfaz Hâkimliği Kanunu | 4675 | `4675_infaz_hakimligi_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4675.pdf |
+| Vakıflar Kanunu | 5737 | `5737_vakiflar_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5737.pdf |
+| Vakıflar Yönetmeliği | — | `vakiflar_yonetmeligi.txt` | 7 | https://www.resmigazete.gov.tr/eskiler/2008/09/20080927-13.htm |
+| Diyanet İşleri Başkanlığı Kuruluş ve Görevleri Hakkında Kanun | 633 | `633_diyanet_isleri_baskanligi_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.633.pdf |
+| Terörle Mücadele Kanunu | 3713 | `3713_terorle_mucadele_kanunu.txt` | 3 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3713.pdf |
+| Nakdi Tazminat ve Aylık Bağlanması Hakkında Kanun | 2330 | `2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2330.pdf |
+| Terör ve Terörle Mücadeleden Doğan Zararların Karşılanması Hakkında Kanun | 5233 | `5233_teror_zararlarinin_karsilanmasi_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5233.pdf |

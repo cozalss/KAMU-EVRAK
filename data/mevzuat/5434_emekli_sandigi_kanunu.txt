@@ -1,0 +1,30 @@
+Türkiye Cumhuriyeti Emekli Sandığı Kanunu
+Kanun No 5434, Kabul 08.06.1949, RG 17.06.1949/7235 — YÜRÜRLÜKTE (5510 sayılı Kanun öncesi ilk defa kamu görevlisi olanlar için; mevzuat.gov.tr 1.3.5434 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5434.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Not: 5510 sayılı Kanunun yürürlüğe girdiği 01.10.2008 sonrası ilk defa göreve başlayanlar
+hakkında 5510 uygulanır; 5434 esas olarak bu tarihten önce iştirakçi olanlar (4/c kapsamı)
+ile bunların dul ve yetimleri için geçerlidir.
+
+Madde 12 — Sandıktan faydalanacaklar (iştirakçiler)
+Bu maddede Emekli Sandığından emeklilik hakkı tanınan iştirakçiler sayılır; genel olarak Devlet memurları ile kanunla emeklilik hakkı tanınan kadrolarda çalışanlar Sandık iştirakçisi sayılır. İştirakçilerin aylıklarından emekli keseneği kesilir ve kurumlarınca karşılık eklenerek Sandığa gönderilir. İştirakçilik, kişiye ve dul/yetimlerine bu Kanunla tanınan emekli aylığı, dul-yetim aylığı, malullük aylığı ve emekli ikramiyesi gibi hakların dayanağıdır.
+
+Madde 39 — Emekli aylığı bağlanacak haller
+Bu maddede iştirakçiye emekli aylığı bağlanacak haller düzenlenir; yaş haddini dolduranlar, yeterli fiili hizmet süresini tamamlayıp yaş şartını yerine getirenler ve kanunda sayılan diğer hallerde istek üzerine veya re'sen emekli aylığı bağlanır. [DOĞRULA: yaş ve hizmet yılı eşikleri 5434 ek/geçici maddeler ve 5510 geçiş hükümleriyle değiştiği için somut yıl/yaş rakamı üretmeden önce yürürlükteki metinde doğrulanmalıdır] Emekli aylığı bağlanması, ilgilinin emeklilik talep dilekçesi vermesi ve kurumunca emekliye sevk onayı düzenlenmesiyle başlayan tahsis sürecine bağlıdır.
+
+Madde 67 — Dul ve yetim aylığı bağlanacak haller (hak sahipleri)
+İştirakçinin veya aylık almakta iken ölenin geride bıraktığı hak sahiplerine dul ve yetim aylığı bağlanır; hak sahipleri dul eş, çocuklar ile şartları taşıyan ana ve babadır. Aylık almakta olan veya aylık bağlanmasına hak kazanmış iştirakçinin ölümü halinde hak sahiplerine bu Kanun hükümlerine göre aylık tahsis edilir. Aylık bağlanması, hak sahiplerinin Kuruma müracaatı ve ölüm/akrabalık ile hak sahipliğini gösterir belgelerin ibrazıyla yürütülür.
+
+Madde 68 — Dul ve yetim aylığı oranları
+Ölenin bağlanmış veya bu Kanuna göre hesaplanacak emekli, adi malullük veya vazife malullüğü aylığının; dul eşe %50'si, aylık alan yetimi bulunmayan dul eşe %75'i, çocuklar ile ana veya babanın her biri için %25'i oranında aylık bağlanır. Ölenin bir dul eşi ile bir yetimi bulunması halinde dul eşe %60, yetime %30 oranı uygulanır. Hak sahiplerinin sayısındaki değişiklik, aylık kesilmesi veya yeniden bağlanması hallerinde aylıklar bu oranlar gözetilerek yeniden hesaplanır.
+
+Madde 89 — Emekli ikramiyesi
+Emekli, adi malullük veya vazife malullüğü aylığı bağlanan iştirakçilere, her tam fiili hizmet yılı için aylık bağlamaya esas tutarın bir aylığı emekli ikramiyesi olarak ödenir. İştirakçinin ölümü halinde bu ikramiye, dul ve yetim aylığına hak kazanan hak sahiplerine ödenir. Emekli ikramiyesi, tahsis işlemi sırasında talep ve hizmet belgeleri esas alınarak hesaplanıp ilgililere/hak sahiplerine ödenir.
+
+Madde 91 — Emeklilik işlemleri ve emeklilik belgesi
+Emekliye sevk onayı alınan iştirakçiler, kanunda belirtilen yasal süre içinde görevleriyle ilişiklerini keserek "Emeklilik Belgesi"ni düzenleyip Kuruma intikal ettirir. Tahsis işlemleri, ilgililerin emeklilik talep dilekçesi ve gerekli hizmet/sicil belgeleri üzerinden yürütülür ve aylık, ilişik kesme tarihini takip eden aybaşından itibaren bağlanır. Bu süreç, kamu görevlisi ile idare arasındaki emeklilik başvuru-tahsis evrak akışının çerçevesini oluşturur.

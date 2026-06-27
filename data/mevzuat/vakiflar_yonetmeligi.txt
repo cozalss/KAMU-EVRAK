@@ -1,0 +1,29 @@
+Vakıflar Yönetmeliği
+RG 27.09.2008/27010 — YÜRÜRLÜKTE (5737 sayılı Vakıflar Kanununa dayanılarak çıkarılmıştır; mevzuat.gov.tr konsolide metin esas alınmıştır; Vakıflar Genel Müdürlüğünce yürütülür)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2008/09/20080927-13.htm
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Resmî senetle kuruluş
+Gerçek veya tüzel kişilerin vakıf kurma iradesi, noterde düzenleme şeklinde hazırlanan resmî senetle açıklanır; vekil aracılığıyla kuruluşta vekâlet noterce düzenlenir ve vakfın amacı ile özgülenecek mal ve haklar vekâletnamede gösterilir. Noter, resmî senedin bir örneğini düzenleme tarihinden itibaren yedi gün içinde Genel Müdürlüğe gönderir. Yerleşim yeri mahkemesine tescil başvurusu, resmî senedin düzenlenmesinden sonra vakfeden tarafından yapılır.
+
+Madde 7 — Tescil ve mahkeme işlemleri
+Mahkeme, dosya üzerinde Genel Müdürlüğün görüşünü almak ve gerektiğinde vakfedeni dinlemek suretiyle vakıf senedinin kanuna uygunluğunu inceleyerek vakfın tesciline veya istemin reddine karar verir. Mahkeme, tescil ya da ret kararını Genel Müdürlüğe resen tebliğ eder; tescile itiraz ve temyiz yolu açıktır. Vakıf, yerleşim yeri mahkemesi nezdinde tutulan sicile tescil ile tüzel kişilik kazanır.
+
+Madde 9 — Merkezî sicile tescil ve ilan
+Vakıf, yerleşim yeri mahkemesinin yapacağı bildirim üzerine Genel Müdürlükte tutulan merkezî sicile kaydolunur ve Resmî Gazete'de ilan edilir. İlanda vakfeden ile vakfın adı, yerleşim yeri, amacı, mal ve hakları, varsa tapu bilgileri, vakfın organları ile tescil tarihi ve numarası yer alır. Bu ilan, vakfın üçüncü kişilere karşı aleniyetini sağlar.
+
+Madde 17 — Yeni vakıfların şube ve temsilcilik açması
+Yeni vakıflar, vakıf senedinde hüküm bulunmak kaydıyla amaçlarını gerçekleştirmek üzere şube veya temsilcilik açabilir; şube ve temsilcilikler vakıf adına faaliyet gösterir ve bulundukları yerde vakfı temsil eder. Şube veya temsilcilik açmadan önce yönetmelik ekindeki (Ek-1) beyanname doldurularak bölge müdürlüğüne verilir ve elektronik ortamda gönderilir. Şube veya temsilciliğin kapanması hâlinde de durum otuz gün içinde bölge müdürlüğüne bildirilir.
+
+Madde 34 — Beyanname verme yükümlülüğü
+Vakıf yöneticileri, yönetmelik ekindeki (Ek-2) beyannameyi eksiksiz doldurarak her takvim yılının ilk altı ayı içinde bölge müdürlüğüne vermek ve elektronik ortamda göndermek zorundadır. Beyanname; yöneticilere ilişkin bilgiler, bir önceki yıla ait faaliyet raporu, bütçe ve bilanço ile gayrimenkul ve mali tabloları kapsar. Bu yükümlülük 5737 sayılı Kanunun 32. maddesindeki yıllık beyanname zorunluluğunun uygulama usulünü gösterir.
+
+Madde 51 — Tutulacak defterler
+Yeni vakıflar ile mülhak, cemaat ve esnaf vakıfları; işletme hesabı esasında karar defteri, işletme hesabı defteri ve bağış makbuzu kayıt defterini, bilanço esasında ise karar defteri, yevmiye defteri, büyük defter ve envanter defterini tutmak zorundadır. Defterlerin tutulmasında Genel Müdürlükçe yayımlanan Vakıflar Tek Düzen Hesap Planı esas alınır. Defterler kullanılmaya başlanmadan önce tasdik ettirilir ve mevzuata uygun olarak saklanır.
+
+Madde 59 — Hayrat taşınmazların tahsisi
+Mazbut vakıflara ait hayrat taşınmazlar, vakfiyeleri doğrultusundaki işlevlerde kullanılmak üzere kamu kurum ve kuruluşlarına veya benzer amaçlı vakıflara tahsis edilebilir. Yeterli geliri bulunmayan veya işlev verilemeyen hayrat taşınmazlar, durumlarına göre geçici süreyle kiraya verilebilir. Tahsis talepleri, taşınmazın bulunduğu bölge müdürlüğüne başvuru ile yapılır ve taşınmazın hâlihazır durumu ile onarım ihtiyacı tespit edilerek ayrıntılı rapor Genel Müdürlüğe gönderilir.

@@ -1,0 +1,23 @@
+65 Yaşını Doldurmuş Muhtaç, Güçsüz ve Kimsesiz Türk Vatandaşlarına Aylık Bağlanması Hakkında Kanun
+Kanun No 2022, Kabul 01.07.1976, RG 10.07.1976/15642 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.2022 konsolide metin esas alınmıştır; başlık ve hükümler 5754 ve sonraki kanunlarla değiştirilmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2022.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kimlere aylık bağlanır (yaşlılık ve engelli aylığı)
+Sosyal güvenlik kuruluşlarının herhangi birinden her ne nam altında olursa olsun bir gelir veya aylık hakkından yararlananlar, uzun vadeli sigorta kollarına tâbi çalışanlar, nafaka bağlanmış veya bağlanması mümkün olanlar hariç olmak üzere; Sosyal Yardımlaşma ve Dayanışma Vakıfları (SYDV) tarafından muhtaç olduğuna karar verilen 65 yaşını doldurmuş Türk vatandaşlarına yaşlılık aylığı bağlanır. Ayrıca 18 yaşını dolduran, sağlık kurulu raporu ile %40 ve üzeri engelli olduğu belgelenen muhtaç kişilere engelli aylığı; %70 ve üzeri (başkasının yardımı olmaksızın hayatını devam ettiremeyecek derecede) engellilere daha yüksek oranda aylık bağlanır. Hane içinde kişi başına düşen ortalama aylık gelir, aylık net asgari ücretin 1/3'ünden fazla olanlar muhtaç kabul edilmez. [DOĞRULA: yürürlükteki engellilik oranı eşikleri (%40 / %70) sağlık kurulu raporu ve hane geliri ölçütüyle birlikte mevzuat.gov.tr 1.5.2022 metninde teyit edilmelidir]
+
+Madde 2 — Muhtaçlığın tespiti (sosyal inceleme ve sağlık kurulu raporu)
+Aylık bağlanacakların muhtaçlık hâli; Sosyal Yardımlaşma ve Dayanışma Vakıflarınca düzenlenen sosyal inceleme raporları ve gerektiğinde sağlık kurulu raporları da dikkate alınarak verilen kararlara göre tespit edilir. Engellilik durumu ve oranı, yetkili hastanelerden alınan engelli sağlık kurulu raporu ile belirlenir. Muhtaçlık hâli devam ettiği müddetçe aylık ödenmeye devam eder.
+
+Madde 3 — Aylığın başlangıcı (başvuru tarihini izleyen aybaşı)
+Bu aylıkların başlangıç tarihi, muhtaçlık durumuna ilişkin mütevelli heyeti kararını izleyen ve ilgililerin Sosyal Yardımlaşma ve Dayanışma Vakıflarına yapacakları yazılı müracaatlarını takip eden aybaşıdır. Aylıklar, belirlenen ödeme tarihlerinde peşin olarak ödenir.
+
+Madde 4 — Aylığın kesilmesi ve usul
+Muhtaçlık hâlinin ortadan kalkması, sosyal güvenlik kuruluşundan gelir/aylık bağlanması veya kanunda sayılan diğer hâllerin gerçekleşmesi durumunda aylık kesilir. Aylığın bağlanması, kesilmesi, ödenmesi ve denetimine ilişkin usul ve esaslar, ilgili Bakanlıklarca çıkarılan yönetmelikle düzenlenir.
+
+Madde 5 — Yersiz ve gerçeğe aykırı ödemelerin geri alınması
+Gerçeğe aykırı beyan veya belge ile haksız yere aylık alınması ya da aylığın yersiz ödenmesi hâlinde, fazla ve yersiz ödenen tutarlar; ödemenin yapıldığı tarihten itibaren hesaplanacak kanunî/yasal faizi (TÜFE oranı) ile birlikte geri alınır. Gerçeğe aykırı belge düzenleyen ve kullananlar hakkında Türk Ceza Kanunu hükümlerine göre ayrıca işlem yapılır.

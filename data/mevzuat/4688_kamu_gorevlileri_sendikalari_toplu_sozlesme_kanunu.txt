@@ -1,0 +1,26 @@
+Kamu Görevlileri Sendikaları ve Toplu Sözleşme Kanunu
+Kanun No 4688, Kabul 25.06.2001, RG 12.07.2001/24460 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.4688 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4688.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 14 — Sendika üyeliğinin kazanılması (üyelik başvuru formu)
+Sendikalara üye olmak serbesttir; kamu görevlileri çalıştıkları işyerinin girdiği hizmet kolunda kurulu bir sendikaya üye olabilir. Üyelik, kamu görevlisinin doldurup imzaladığı üye formu ile sendikaya başvurması ve başvurunun sendikanın yetkili organınca otuz gün içinde kabulü ile kazanılır; başvuru otuz gün içinde reddedilmezse istek kabul edilmiş sayılır. Üyeliği kabul edilmeyen kamu görevlisi, kararın tebliğinden itibaren otuz gün içinde yetkili iş mahkemesinde dava açabilir.
+
+Madde 16 — Üyeliğin sona ermesi (üyelikten çekilme / istifa bildirimi)
+Her üye üyelikten serbestçe çekilebilir; çekilme, doldurulup imzalanan çekilme bildiriminin kamu görevlisi tarafından kurumuna verilmesi ile gerçekleşir. Kurum, bildirimin bir örneğini onbeş gün içinde sendikaya gönderir ve çekilme, bildirim tarihinden başlayarak otuz gün sonra geçerli olur. Üyenin başka bir hizmet koluna geçmesi, emekli olması, kamu görevinden ayrılması, çıkarılması veya ölümü hallerinde de üyelik sona erer.
+
+Madde 18 — Kamu görevlisi olan sendika üyelerinin ve yöneticilerinin güvencesi (sendikal izin)
+Kamu görevlileri, iş saatleri dışında veya işverenin izniyle iş saatleri içinde sendika ve konfederasyonların bu Kanunda belirtilen faaliyetlerine katılmalarından dolayı farklı işleme tabi tutulamaz ve görevlerine son verilemez. Sendika yönetim kuruluna seçilenler aylıksız izinli sayılabilir veya bazı yöneticilere kanunda belirtilen ölçüde sendika izni verilir; üyeler arasından seçilen işyeri sendika temsilcilerine haftada belli süre izin tanınır. Bu güvence, kamu görevlisini sendikal nedenli ayrımcılığa karşı korur.
+
+Madde 28 — Toplu sözleşmenin kapsamı (toplu sözleşmeyle düzenlenecek konular)
+Toplu sözleşme; kamu görevlilerinin mali ve sosyal haklarını (katsayı ve göstergeler, aylık ve ücretler, her türlü zam ve tazminatlar, ek ödeme, fazla çalışma ücreti, harcırah, ikramiye, doğum/ölüm/aile yardımı ödenekleri, tedavi ve cenaze giderleri, yiyecek ve giyecek yardımları gibi) düzenler. Toplu sözleşme bir önceki toplu sözleşmenin bitiminden sonraki iki mali yılı kapsamak üzere yapılır; genel ve hizmet kollarına yönelik bölümlerden oluşur. Kapsam dışı bırakılan hususlarda mevcut mevzuat hükümleri uygulanmaya devam eder.
+
+Madde 32 — Toplu sözleşmenin yapılması (görüşmelere başlama tarihi)
+Kamu görevlilerinin geneline ve hizmet kollarına yönelik mali ve sosyal haklara ilişkin toplu sözleşme için, yetkili kamu görevlileri sendikaları ile bağlı oldukları konfederasyonlar ve Kamu İşveren Heyeti her yılın (iki yılda bir) Ağustos ayının onbeşinci günü toplanarak toplu sözleşme görüşmelerine başlar. Görüşmelerin tamamlanması ve toplu sözleşmenin imzalanması için Eylül ayının onbeşine kadar süre öngörülmüştür. Tarafların anlaşması halinde toplu sözleşme imzalanır; anlaşma sağlanamazsa uyuşmazlık Kamu Görevlileri Hakem Kuruluna götürülür.
+
+Madde 34 — Kamu Görevlileri Hakem Kurulu (uyuşmazlığın çözümü)
+Toplu sözleşme görüşmelerinde anlaşma sağlanamaması ve toplantı tutanağında uyuşmazlık konularının belirtilmesi halinde, taraflar Kamu Görevlileri Hakem Kuruluna başvurabilir. Kurul; başkanı Cumhurbaşkanınca atanan bir öğretim üyesi olmak üzere belirli sayıda kamu işveren ve kamu görevlileri sendikaları temsilcilerinden oluşur ve uyuşmazlık konularını karara bağlar. Kurul kararları kesindir ve toplu sözleşme hükmündedir; tarafları ve ilgili idareyi bağlar.

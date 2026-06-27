@@ -1,0 +1,26 @@
+İnfaz Hâkimliği Kanunu
+Kanun No 4675, Kabul 16.05.2001, RG 23.05.2001/24410 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.4675 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4675.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Bu Kanunun amacı, infaz hâkimliklerinin kuruluş, görev, çalışma esas ve usullerini düzenlemektir. İnfaz hâkimlikleri; ceza infaz kurumları ve tutukevlerinde bulunan hükümlü ve tutuklular hakkında yapılan işlemler veya bunlarla ilgili faaliyetlere yönelik şikâyetleri incelemek ve kanunla verilen diğer görevleri yerine getirmek üzere kurulur. Bu yapı, hükümlü/tutuklunun infaz işlemlerine karşı yargısal başvuru hakkını güvence altına alır.
+
+Madde 2 — İnfaz hâkimliklerinin kuruluşu ve yetkisi
+İnfaz hâkimlikleri, Hâkimler ve Savcılar Kurulunun olumlu görüşü alınarak Adalet Bakanlığınca her il merkezi ile bölgelerin coğrafî durumu ve iş yoğunluğu göz önünde tutularak belirlenen ilçelerde kurulur. Her infaz hâkimliğinin yargı çevresi, kurulduğu il veya ilçenin idarî sınırları ile bu yere adlî yönden bağlanan ilçelerin idarî sınırlarıdır. İnfaz hâkimliğinin yetkisi, hükümlü veya tutuklu hakkındaki işlemin yapıldığı yerdeki infaz hâkimliğine aittir.
+
+Madde 3 — İnfaz hâkimlerinin nitelikleri ve atanmaları
+İnfaz hâkimleri, bulundukları bölgeye veya bir alt bölgeye hak kazanmış adlî yargı hâkim ve Cumhuriyet savcıları arasından Hâkimler ve Savcılar Kurulunca atanır. Doğrudan infaz hâkimi olarak atananların yükselmeleri, müfettiş hâl kâğıtları ve çıkardıkları işlerin nitelik ve sayısına göre yapılır. İnfaz hâkimliğinde bir hâkimin bulunmadığı veya görevine engel hâllerinde, görev başka bir hâkim tarafından yürütülür.
+
+Madde 4 — İnfaz hâkimliğinin görevleri (kabul/barınma/sağlık/disiplin/izin şikâyetleri)
+İnfaz hâkimliği; (1) hükümlü ve tutukluların ceza infaz kurumlarına kabul, yerleştirme, barındırma, beslenme, sağlık muayene ve tedavileri, dış dünya ile ilişkileri ve çalıştırılmaları gibi işlem veya faaliyetlere; (2) hükümlülerin müşahade, sınıflandırma, açık kuruma ayrılma, izin, sevk, nakil ve tahliyeleriyle ilgili işlemlere; (3) disiplin cezaları ve tedbirleri, ödüllendirme ve bunlarla ilgili işlemlere ilişkin şikâyetleri inceler ve karara bağlar. Ayrıca ceza infaz kurumlarının izleme kurullarının bu kurumlardaki tespit ve önerilerini içeren raporlarını inceleyerek görüş bildirir ve kanunlarla verilen diğer görevleri yapar. Böylece infaz sürecindeki hak ihlali iddialarının yargısal denetim mercii infaz hâkimliğidir.
+
+Madde 5 — İnfaz hâkimliğine şikâyet ve usulü (onbeş gün / otuz gün)
+Ceza infaz kurumları ve tutukevlerinde hükümlü ve tutuklular hakkında yapılan işlemler veya bunlarla ilgili faaliyetlerin kanun, tüzük ve yönetmelik hükümleri ile genelgelere aykırı olduğu gerekçesiyle, bu işlem veya faaliyetlerin öğrenildiği tarihten itibaren onbeş gün, herhâlde yapıldığı tarihten itibaren otuz gün içinde şikâyet yoluyla infaz hâkimliğine başvurulabilir. Şikâyet; hükümlü veya tutuklunun kendisi ya da eşi, ana-babası, çocuğu, kardeşi, avukatı, yasal temsilcisi veya ceza infaz kurumu izleme kurulu tarafından yapılabilir. Şikâyet dilekçeyle doğrudan infaz hâkimliğine yapılabileceği gibi Cumhuriyet başsavcılığı veya ceza infaz kurumu müdürlüğü aracılığıyla da yapılabilir; bu mercilere verilen dilekçe en geç üç gün içinde infaz hâkimliğine gönderilir. Şikâyet, kural olarak işlem/faaliyetin yerine getirilmesini durdurmaz; ancak infaz hâkimi telafisi güç veya imkânsız zararların doğması ve açıkça hukuka aykırılık şartlarının birlikte gerçekleşmesi hâlinde işlemin ertelenmesine veya durdurulmasına karar verebilir.
+
+Madde 6 — Şikâyet üzerine verilen kararlar ve itiraz (bir hafta karar / iki hafta itiraz / ağır ceza mahkemesi)
+İnfaz hâkimi, şikâyet üzerine yaptığı inceleme sonunda kararını dosya üzerinden kural olarak bir hafta içinde verir; ancak disiplin cezasına karşı yapılan şikâyetlerde hükümlü veya tutuklunun savunması alınmadan ve gerekli görülürse avukatından yararlandırılmadan karar verilemez. Şikâyet yerinde görülmezse reddedilir; yerinde görülürse şikâyet konusu işlem veya faaliyetin iptaline ya da düzeltilmesine, faaliyetin durdurulmasına karar verilir. İnfaz hâkiminin kararlarına karşı şikâyetçi veya ilgili Cumhuriyet savcısı, tebliğden itibaren iki hafta içinde Ceza Muhakemesi Kanunu hükümlerine göre itiraz yoluna gidebilir. İtiraz, infaz hâkimliğinin yargı çevresinde bulunduğu ağır ceza mahkemesine yapılır; infaz hâkimi aynı zamanda bu ağır ceza mahkemesinin üyesi ise itirazla ilgili karara katılamaz. İtiraz üzerine verilen karar kesindir.

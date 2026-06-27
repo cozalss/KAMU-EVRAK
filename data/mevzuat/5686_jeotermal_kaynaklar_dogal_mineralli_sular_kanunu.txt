@@ -1,0 +1,26 @@
+Jeotermal Kaynaklar ve Doğal Mineralli Sular Kanunu
+5686 sayılı Jeotermal Kaynaklar ve Doğal Mineralli Sular Kanunu; Kabul Tarihi: 3/6/2007; Resmî Gazete: 13/6/2007, Sayı 26551.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5686.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı; jeotermal ve doğal mineralli su kaynaklarının etkin biçimde aranması, araştırılması, geliştirilmesi, üretilmesi ve korunmasıdır. Ayrıca bu kaynaklar üzerinde hak sahibi olunması, hakların devredilmesi, çevreyle uyumlu ve ekonomik değerlendirilmesi ile terk edilmesine ilişkin usul ve esasları düzenler.
+
+Madde 4 — Mülkiyet ve ruhsat
+Jeotermal kaynaklar ve doğal mineralli sular Devletin hüküm ve tasarrufu altındadır ve bulundukları arzın mülkiyetine tâbi değildir. Kaynağa ilişkin faaliyetlerin yapılabilmesi için bu Kanuna göre ruhsat alınması zorunludur; haklar Türkiye Cumhuriyeti vatandaşları, ilgili tüzel kişiler ile kamu kurum ve kuruluşlarına verilebilir.
+
+Madde 5 — Arama ruhsatı
+Arama ruhsatı müracaatı, 1/25.000 ölçekli haritada pafta ve koordinatları belirtilerek beş bin hektarı geçmeyecek alan için arama projesiyle birlikte idareye yapılır. Arama ruhsat süresi üç yıldır; faaliyetlerin olumlu gelişmesi ve ilave etütlere ihtiyaç duyulması hâlinde revize proje sonrası idarece bir yıl uzatılabilir.
+
+Madde 6 — İşletme ruhsatı
+Arama ruhsatı sahibinin, arama ruhsat süresinin son günü mesai bitimine kadar işletme projesiyle başvurması hâlinde işletme ruhsatı verilir. İşletme ruhsatı süresi otuz yıldır; süre sonunda ruhsat sahibinin talebiyle onar yıllık dönemler hâlinde uzatılır.
+
+Madde 10 — Devir, sicil, ihale, harç, teminat ve idare payı
+Ruhsatlar devredilebilir ve İdare ruhsatlara ilişkin devir, haciz, rehin, ipotek ve sona erme bilgilerini içeren bir sicil tutar; hükümden düşen, terk veya taksir edilen ruhsatlar ihaleyle yeniden aramaya/işletmeye açılır. Arama ruhsat harcı jeotermal kaynaklar için 1000 TL, doğal mineralli sular için 500 TL olup işletme ruhsatlarında dört kat uygulanır; hektar başına ruhsat harcının %1'i teminat alınır ve akışkanın kullanıldığı tesislerden gayrisafi hasılatın %1'i oranında idare payı ödenir. [DOĞRULA: harç ve teminat alt sınırı tutarları her yıl yeniden değerleme oranıyla güncellenmektedir]
+
+Madde 11 — İdari yaptırımlar
+Ruhsat şartlarına aykırı faaliyet hâlinde teminat irat kaydedilebilir, faaliyetler durdurulur ve idarî para cezaları uygulanır. Ruhsatsız faaliyette bulunulduğunun tespiti hâlinde idare tarafından idarî para cezası tahakkuk ettirilir. [DOĞRULA: ruhsatsız faaliyet idarî para cezasının güncel tutarı yeniden değerleme oranıyla artırılmaktadır]

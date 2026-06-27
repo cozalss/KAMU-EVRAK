@@ -1,0 +1,23 @@
+Bireysel Emeklilik Tasarruf ve Yatırım Sistemi Kanunu
+Kabul 28/3/2001, RG 7/4/2001 sayı 24366 — YÜRÜRLÜKTE (2012/6327, 2016/6740 ve sonraki değişikliklerle güncel). Burada yalnızca bireysel emeklilik sözleşmesi (BES) kurulması, giriş bilgilendirme formu/teklif, cayma hakkı, devlet katkısı başvurusu, otomatik katılım (OKS) sözleşmesi ve sistemden ayrılma/emeklilik başvurusu evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4632&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Emeklilik Sözleşmesi
+Bireysel emeklilik sistemine katılım, katılımcı ile emeklilik şirketi arasında düzenlenen emeklilik sözleşmesiyle sağlanır; şirket nezdinde katılımcı adına bir bireysel emeklilik hesabı açılır. Sözleşme; hesabın açılması, katkı payı ödenmesi, ödenen katkıların seçilen fonlarda yatırıma yönlendirilmesi ve birikimin lehdara ödenmesine ilişkin tarafların hak ve yükümlülüklerini belirler. Sözleşme bireysel veya gruba bağlı (işveren/sponsor üzerinden) kurulabilir. Bu hüküm, BES sözleşmesi/başvuru formu evrakının dayanağıdır.
+
+Madde 5 — Giriş Bilgilendirme Formu, Teklif ve Cayma Hakkı
+Sözleşmenin kurulmasından önce katılımcıya, sistemin işleyişine ilişkin önemli hususları içeren ve içeriği Kurum (SEDDK/EGM) tarafından belirlenen giriş bilgilendirme formu verilir; sözleşme teklif formunun imzalanması veya mesafeli satışta teklifin onaylanmasıyla kurulur. Katılımcı, teklif formunu imzaladığı ya da teklifi onayladığı tarihten itibaren iki ay içinde cayma hakkını kullanarak sistemden ayrılabilir ve ödediği tutarlar iade edilir. Bu hüküm, giriş bilgilendirme formu, teklif/başvuru ve cayma bildirimi evrakının dayanağıdır.
+
+Madde 6 — Emeklilik Hakkı ve Sistemden Ayrılma
+Katılımcı, sisteme giriş tarihinden itibaren en az on yıl sistemde bulunmak ve elli altı yaşını tamamlamak koşuluyla emekli olmaya hak kazanır; emeklilik hakkını kullananlar birikimlerini toplu ödeme, programlı geri ödeme veya yıllık gelir sigortası yapılması yoluyla alabilir. Emeklilik hakkı kazanılmadan sistemden ayrılma da mümkün olup, bu durumda devlet katkısı hak ediş oranları uygulanır. Bu hüküm, emeklilik talebi ve emeklilik öncesi sistemden ayrılma başvurusu evrakının dayanağıdır. [DOĞRULA: 56 yaş ve 10 yıl koşulunun yürürlükteki güncel hâli teyit edilmeli]
+
+Madde 1 — Devlet Katkısı
+Katılımcı adına ödenen katkı paylarının Devlet tarafından belirli oranda (mevcut düzenlemede yüzde otuz) artırılması suretiyle bireysel emeklilik hesabına devlet katkısı eklenir; devlet katkısı ve getirileri, sistemde kalış süresine bağlı kademeli hak ediş oranlarına tâbidir (örn. 3 yıl %15, 6 yıl %35, 10 yıl %60; emeklilik ile tam hak ediş). Devlet katkısından yararlanma için katılımcının Türk vatandaşı veya mavi kart sahibi olması gibi koşullar aranır. Bu hüküm, devlet katkısı tahakkuk ve sistemden ayrılmada hak ediş hesabının dayanağıdır. [DOĞRULA: güncel devlet katkısı oranı (%30) ve kademeli hak ediş yüzdeleri yürürlükteki Yönetmelikle teyit edilmeli]
+
+Madde 2 — Çalışanların Otomatik Olarak Emeklilik Planına Dâhil Edilmesi (OKS)
+Türk vatandaşı veya mavi kartlı çalışanlar, işverenleri aracılığıyla bir emeklilik planına otomatik olarak dâhil edilir; çalışan katkı payı prime esas kazancın yüzde üçü oranındadır. Çalışan, plana dâhil edildiğinin bildirildiği tarihten itibaren iki ay içinde cayarak sistemden ayrılabilir ve ödediği tutarlar getirileriyle iade edilir; cayılmaması hâlinde bir defaya mahsus başlangıç devlet katkısı (1.000 TL) sağlanır. 2022 değişikliğiyle kırk beş yaşını dolduran çalışanlar da talep etmeleri hâlinde otomatik katılım kapsamına alınabilir. Bu hüküm, otomatik katılım sözleşmesi (OKS) ve cayma başvurusu evrakının dayanağıdır. [DOĞRULA: başlangıç devlet katkısı tutarı (1.000 TL) ve katkı payı oranının (%3) güncel hâli teyit edilmeli]

@@ -1,23 +1,26 @@
 Diyanet İşleri Başkanlığı Kuruluş ve Görevleri Hakkında Kanun
-Kanun No 633, Kabul 22.06.1965, RG 02.07.1965/12038 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.633 konsolide metin esas alınmıştır; 6002/2010 sayılı Kanunla kapsamlı değişiklik; 703 sayılı KHK/2018 ile Başkanlık Cumhurbaşkanlığına bağlanmıştır)
+Kanun No 633, Kabul 22.06.1965, RG 02.07.1965/12038 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.633 konsolide metin esas alınmıştır; 6002/2010 sayılı Kanunla kapsamlı değişiklik; 703 sayılı KHK/2018 ile Başkanlık Cumhurbaşkanlığına bağlanmıştır; 7549/2025 ile mushaf inceleme ve dinî yayın hükümlerinde değişiklik)
 Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.633.pdf
 
 Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
-Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
-araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
-işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+Madde numaraları ve hükümler mevzuat.gov.tr resmî konsolide PDF'inden (1.5.633) çapraz
+doğrulanmıştır. Kamu-evrak akışında Diyanet'e yönelik başvuru, görüş/fetva talebi, cami açma
+izni, mushaf-Kur'an basım onayı ve din görevlisi işlemleri bu Kanunun dayanağıdır.
 
 Madde 1 — Görev
-İslam Dininin inançları, ibadet ve ahlâk esasları ile ilgili işleri yürütmek, din konusunda toplumu aydınlatmak ve ibadet yerlerini yönetmek üzere, Cumhurbaşkanlığına bağlı Diyanet İşleri Başkanlığı kurulmuştur. Bu madde, Başkanlığın temel görev alanını ve kamu tüzel kişiliğini belirler. Başkanlığın hizmet birimleri ve teşkilatı, bu görevi yerine getirmek üzere düzenlenmiştir.
+İslam Dininin inançları, ibadet ve ahlâk esasları ile ilgili işleri yürütmek, din konusunda toplumu aydınlatmak ve ibadet yerlerini yönetmek üzere, Cumhurbaşkanlığına bağlı Diyanet İşleri Başkanlığı kurulmuştur. Bu madde Başkanlığın temel görev alanını ve kamu tüzel kişiliğini belirler. Ayrıca Başkanlık ile Başkanlığın izin verdiği vakıf, kurum ve kuruluşlar dışında, hiçbir kurum, kuruluş ya da gerçek/tüzel kişi "Diyanet" kelimesini isim, unvan veya marka olarak kullanamaz (Ek fıkra: 6495/2013).
 
 Madde 5 — Din İşleri Yüksek Kurulu
-Din İşleri Yüksek Kurulu, Başkanlığın dinî konularda en yüksek karar ve danışma organıdır ve [DOĞRULA: üye sayısı; kaynaklarda on altı üye belirtilmektedir]. Kurul; dinî konularda toplumu aydınlatacak kararlar almak, dinî soruları cevaplandırmak (fetva), dinî yayınları ve Kur'an mealleri ile tefsir/tercümelerini inceleyip görüş bildirmek ve namaz vakitleri ile dinî gün ve geceleri tespit ve ilan etmek gibi görevleri yürütür. Kurulun çalışma usul ve esasları yönetmelikle düzenlenir.
+Din İşleri Yüksek Kurulu, Başkanlığın dinî konularda en yüksek karar ve danışma organıdır ve on altı üyeden oluşur (1/7/2010-6002 ile düzenlenmiştir). Kurul; İslam dininin temel bilgi kaynaklarını ve metodolojisini dikkate alarak dinî konularda karar vermek, görüş bildirmek ve dinî soruları cevaplandırmak (fetva), dinî konularda telif/tercüme/araştırma yapmak, Başkanlıkça havale edilen basılı, sesli ve görüntülü eserleri dinî bakımdan inceleyerek yayımlanıp yayımlanamayacağına karar vermek, resmî kurumlarca incelenmesi talep edilen dinî yayınlara mütalaa vermek ve namaz vakitleri ile dinî gün ve geceleri tespit ve ilan etmekle görevlidir. Üyelerin görev süresi beş yıldır; çalışma usul ve esasları yönetmelikle düzenlenir.
+
+Madde 6 — Mushafları İnceleme ve Kıraat Kurulu
+Mushafları İnceleme ve Kıraat Kurulu bir başkan ile on iki üyeden oluşur (7549/2025); üyelerin görev süresi beş yıldır. Kurul; mushafların, cüzlerin, mealli mushafların ve Kur'an-ı Kerim metinlerinin hatasız ve eksiksiz basım/yayımını sağlamak üzere kontrol ettikten sonra mühürlemek veya onaylamakla, hatalı/noksan basılan yayınları tespit etmekle ve kıraat ilmi alanında çalışmalar yapmakla görevlidir. Kurulun onay ve mührü bulunmayan mushaf, mealli mushaf ile sesli/görüntülü/elektronik Kur'an-ı Kerimler basılamaz ve yayımlanamaz; bu hüküm Kur'an basım-yayım onay başvurularının dayanağıdır.
 
 Madde 8 — Taşra teşkilatı
-Başkanlığın taşra teşkilatı il ve ilçe müftülükleri ile dinî eğitim/ihtisas merkezlerinden oluşur; il müftüleri Başkanlığa, ilçe müftüleri il müftülüklerine bağlıdır. İl ve ilçe müftüleri bulundukları yerde Başkanlığı temsil eder, din hizmetlerini ve dinî kurumları yönetir ve din görevlilerinin hizmetlerini düzenleyip denetler. Müftülükler, vatandaşın din hizmetiyle ilgili başvurularında ve cami/Kur'an kursu işlemlerinde idare nezdinde muhatap birimdir.
+Başkanlığın taşra teşkilatı, il ve ilçe müftülükleri ile doğrudan Başkanlığa bağlı Kur'an eğitim merkezleri ve dinî ihtisas/eğitim merkezlerinden oluşur (7383/2022). İl müftüleri Diyanet İşleri Başkanlığına, ilçe müftüleri ise il müftülüklerine bağlıdır; 5442 sayılı İl İdaresi Kanunu hükümleri saklıdır. İl ve ilçe müftüleri bölgelerinde Başkanlığı temsil eder, din hizmetlerini ve dinî müesseseleri yönetir, din görevlilerinin hizmetlerini düzenleyip denetler. Müftülükler, vatandaşın din hizmetiyle ilgili başvurularında ve cami/Kur'an kursu işlemlerinde idare nezdinde muhatap birimdir.
 
-Madde 35 — Cami ve mescitler
-Cami ve mescitler, Diyanet İşleri Başkanlığının izni ile ibadete açılır ve Başkanlıkça yönetilir. Hakiki ve hükmi şahıslar tarafından yapıldığı hâlde izinli veya izinsiz olarak ibadete açılmış bulunan cami ve mescitlerin yönetimi, üç ay içinde Diyanet İşleri Başkanlığına devredilir; Başkanlıkça buralara imkânlar nispetinde kadro tahsis edilir. Bu hüküm, ibadethane açılması için kamu izni ve devir başvurusunun temel dayanağıdır.
+Madde 12 — Vaizler, imam-hatip ve müezzin-kayyımlar, Kur'an kursu öğreticileri ve murakıplar
+Vaizler; cami ve mescitler ile diğer mekânlarda toplumu dinî konularda bilgilendirmek, irşat, rehberlik, inceleme ve araştırma yapmakla görevlidir (vaiz, uzman vaiz, başvaiz kariyer basamakları). İmam-hatip ve müezzin-kayyımlar cami ve mescitlerde din hizmetlerini yürütür ve toplumu dinî konularda bilgilendirir; Kur'an kursu öğreticileri Kur'an kurslarındaki eğitim-öğretim faaliyetlerini yürütür. Murakıp, il ve ilçe müftülüklerine bağlı olarak taşra hizmetlerinin denetimiyle görevlidir. Kariyer basamaklarında yükselme ve atama usulleri yönetmelikle düzenlenir.
 
-Madde 12 — Vaizler
-Vaizler, toplumu dinî konularda bilgilendirmek, irşat ve rehberlik hizmetlerini yürütmekle görevlidir. Vaizlik için aranan nitelikler ile atama ve görevlendirme usulleri kanun ve ilgili yönetmeliklerde düzenlenir. Vaizler, müftülükler bünyesinde din hizmetlerinin yürütülmesinde görev alır.
+Madde 35 — Camilerin ibadete açılması ve yönetimi
+Cami ve mescitler Diyanet İşleri Başkanlığının izni ile ibadete açılır ve Başkanlıkça yönetilir. Gerçek ve tüzel kişilerce yapıldığı hâlde izinli veya izinsiz ibadete açılmış cami ve mescitlerin yönetimi üç ay içinde Diyanet İşleri Başkanlığına devredilir; Başkanlıkça buralara imkânlar nispetinde kadro tahsis edilir. Bu madde, ibadethane açma izni ve devir başvurusunun temel dayanağıdır.

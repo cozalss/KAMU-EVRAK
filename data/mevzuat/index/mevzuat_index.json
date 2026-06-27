@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1490,
+ "chunk_sayisi": 1506,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -2943,6 +2943,34 @@
    "text": "Madde 43 — Soruşturmaya başlanması, taahhüt ve uzlaşma\nKurul, yaptığı ön araştırma sonucunda soruşturma açılmasına veya açılmamasına karar verir. Soruşturmaya başlanması hâlinde ilgili taraflara on beş gün içinde iddialara ilişkin yeterli bilgi verilir. Soruşturma sürecinde teşebbüsler, rekabet sorunlarını gidermeye yönelik taahhüt sunabilir; Kurul taahhütleri yeterli görürse soruşturma açmadan veya açılan soruşturmayı sonlandırarak işlemi kapatabilir. Ayrıca ilgililer uzlaşma sürecinden yararlanabilir. Bu hüküm taahhüt/uzlaşma başvuru yazışmalarının dayanağıdır."
   },
   {
+   "mevzuat": "4207 tutun urunleri zararlarinin onlenmesi kanunu",
+   "kaynak_dosya": "4207_tutun_urunleri_zararlarinin_onlenmesi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "MADDE 2 — Tütün ürünlerinin tüketilemeyeceği yerler (yasak alanlar)\n\nTütün ürünleri; kamu hizmet binalarının kapalı alanlarında; koridorları dahil olmak üzere her türlü eğitim, sağlık, üretim, ticaret, sosyal, kültürel, spor, eğlence ve benzeri amaçlı özel hukuk kişilerine ait olan ve birden çok kişinin girebileceği binaların kapalı alanlarında; taksi hizmeti verenler dahil olmak üzere karayolu, demiryolu, denizyolu ve havayolu toplu taşıma araçlarında tüketilemez. Okul öncesi eğitim kurumlarının, dershaneler ile öğrenci yurtlarının kapalı ve açık alanlarında tütün ürünleri tüketilemez. Özel hukuk kişilerine ait olan lokantalar ile kahvehane, kafeterya, birahane gibi eğlence hizmeti verilen işletmelerde tütün ürünleri tüketilemez. Belirli istisna alanlar (yaşlı bakım evleri, ruh ve sinir hastalıkları hastaneleri, ceza infaz kurumları ile şehirlerarası veya uluslararası deniz hattı araçlarında tütün ürünleri tüketilmesine mahsus ayrı kapalı alanlar) yönetmelikle düzenlenir.\n\n---"
+  },
+  {
+   "mevzuat": "4207 tutun urunleri zararlarinin onlenmesi kanunu",
+   "kaynak_dosya": "4207_tutun_urunleri_zararlarinin_onlenmesi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "MADDE 3 — Satış, reklam, tanıtım ve sponsorluk yasakları\n\nTütün ürünlerinin ve üretici firmaların isim, marka veya alâmetleri kullanılarak her ne suretle olursa olsun reklam ve tanıtımı yapılamaz; bunların kullanılmasını teşvik eden ve özendiren kampanyalar düzenlenemez. Tütün ürünleri üreten ve pazarlayan firmalar her ne suretle olursa olsun hiçbir etkinliğe ürünlerinin marka, amblem veya işaretlerini kullanarak sponsor olamaz. Onsekiz yaşını doldurmamış kişilere tütün ürünü satılamaz ve tüketimine sunulamaz; tütün ürünleri otomatik makinelerle, telefon, televizyon ve internet gibi elektronik ortamlarla satılamaz, paketleri açılarak adet (tek dal) sigara şeklinde veya daha küçük paketlere bölünerek satılamaz. Bu yasaklar tüketicinin korunması ve halk sağlığının gözetilmesi amacını taşır.\n\n---"
+  },
+  {
+   "mevzuat": "4207 tutun urunleri zararlarinin onlenmesi kanunu",
+   "kaynak_dosya": "4207_tutun_urunleri_zararlarinin_onlenmesi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "MADDE 4 — Sağlık uyarıları ve paketleme (düz/standart paket) zorunlulukları\n\nTütün ürünlerinin satışının yapıldığı yerlerde ürünlerin gösterilmesi ve görsel olarak halka sunulması yasaktır. Tütün ürünleri paketlerinin üzerine, paketin en geniş iki yüzünden her birine, bu yüzlerin alanlarının yüzde seksen beşinden az olmamak üzere, özel çerçeve içinde tütün ürünlerinin zararlarını belirten resimli ve Türkçe yazılı uyarılar konulur. Markanın yazım şekli, yazı karakteri ve boyutu ile paket üzerindeki konumu standart (düz/standart paket) biçimde belirlenir; uyarısız veya kaçak ürün satışı yapılamaz. Bu yükümlülüklerin denetimi yetkili kurum tarafından yürütülür.\n\n---"
+  },
+  {
+   "mevzuat": "4207 tutun urunleri zararlarinin onlenmesi kanunu",
+   "kaynak_dosya": "4207_tutun_urunleri_zararlarinin_onlenmesi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "MADDE 5 — Ceza hükümleri (idari para cezaları, yaptırım ve yetkili merciler)\n\nMadde 2'de belirtilen yasak alanlarda tütün ürünü tüketen kişiler, 5326 sayılı Kabahatler Kanununun 39 uncu maddesine göre idari para cezası ile cezalandırılır. Madde 2'deki yasakların uygulanmasını ve gerekli tedbirlerin alınmasını sağlamayan işletme sorumluları, mahallî mülkî amir tarafından idari para cezası ile cezalandırılır. Madde 3'teki reklam, tanıtım ve sponsorluk yasaklarına aykırı davrananlara yetkili düzenleme kurulu, görsel/işitsel/internet yayını yoluyla işlenen ihlallerde ise Radyo ve Televizyon Üst Kurulu (RTÜK) tarafından idari para cezası uygulanır. Onsekiz yaşını doldurmamış kişilere tütün ürünü satanlar 5237 sayılı Türk Ceza Kanununun 194 üncü maddesine göre cezalandırılır. Cezayı gerektiren fiillerin bir yıllık dönemde tekerrürü hâlinde idari para cezası bir kat, ikinci tekerrüründe iki kat artırılır. Denetim ve yaptırım yetkisi; mahallî mülkî amirlere, görevlendirdikleri kamu görevlilerine, yayın ihlallerinde RTÜK'e ve ürün/pazarlama ihlallerinde yetkili piyasa düzenleme kuruluna verilmiştir. [DOĞRULA: idari para cezalarının güncel TL tutarları her yıl yeniden değerleme oranında artar; yetkili düzenleme kurulunun güncel adı/teşkilatı 2018 sonrası değişti — üretimden önce doğrula]\n\nİdari-yaptırım/şikâyet evrakı açısından ilgili evrak türleri: tütün denetim tutanağı, idari yaptırım karar tutanağı, sigara yasağı şikâyet dilekçesi/ihbar, idari para cezası kararı, denetim raporu, savunma istem yazısı."
+  },
+  {
    "mevzuat": "4342 mera kanunu",
    "kaynak_dosya": "4342_mera_kanunu.txt",
    "madde_no": 1,
@@ -3221,6 +3249,41 @@
    "madde_no": 7,
    "madde_tur": "madde",
    "text": "Madde 7 — Örnek anasözleşmeler\nKooperatif ve birliklerin örnek anasözleşmelerinin, birliklerin görüşü alınarak Bakanlıkça hazırlanacağını düzenler. Kooperatif ve birlikler, yönetim kurulu kararıyla anasözleşmelerini örnek anasözleşme değişikliklerine intibak ettirir ve tescile tabi hususları karar tarihinden itibaren bir ay içinde ticaret siciline tescil ettirerek Bakanlığa bildirir; anasözleşmelerini en çok altı ay içinde intibak ettirmeyen kooperatif ve birlikler dağılmış sayılır. Anasözleşme onayı ve tescil-bildirim yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4632 bireysel emeklilik kanunu",
+   "kaynak_dosya": "4632_bireysel_emeklilik_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Emeklilik Sözleşmesi\nBireysel emeklilik sistemine katılım, katılımcı ile emeklilik şirketi arasında düzenlenen emeklilik sözleşmesiyle sağlanır; şirket nezdinde katılımcı adına bir bireysel emeklilik hesabı açılır. Sözleşme; hesabın açılması, katkı payı ödenmesi, ödenen katkıların seçilen fonlarda yatırıma yönlendirilmesi ve birikimin lehdara ödenmesine ilişkin tarafların hak ve yükümlülüklerini belirler. Sözleşme bireysel veya gruba bağlı (işveren/sponsor üzerinden) kurulabilir. Bu hüküm, BES sözleşmesi/başvuru formu evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "4632 bireysel emeklilik kanunu",
+   "kaynak_dosya": "4632_bireysel_emeklilik_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Giriş Bilgilendirme Formu, Teklif ve Cayma Hakkı\nSözleşmenin kurulmasından önce katılımcıya, sistemin işleyişine ilişkin önemli hususları içeren ve içeriği Kurum (SEDDK/EGM) tarafından belirlenen giriş bilgilendirme formu verilir; sözleşme teklif formunun imzalanması veya mesafeli satışta teklifin onaylanmasıyla kurulur. Katılımcı, teklif formunu imzaladığı ya da teklifi onayladığı tarihten itibaren iki ay içinde cayma hakkını kullanarak sistemden ayrılabilir ve ödediği tutarlar iade edilir. Bu hüküm, giriş bilgilendirme formu, teklif/başvuru ve cayma bildirimi evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "4632 bireysel emeklilik kanunu",
+   "kaynak_dosya": "4632_bireysel_emeklilik_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Emeklilik Hakkı ve Sistemden Ayrılma\nKatılımcı, sisteme giriş tarihinden itibaren en az on yıl sistemde bulunmak ve elli altı yaşını tamamlamak koşuluyla emekli olmaya hak kazanır; emeklilik hakkını kullananlar birikimlerini toplu ödeme, programlı geri ödeme veya yıllık gelir sigortası yapılması yoluyla alabilir. Emeklilik hakkı kazanılmadan sistemden ayrılma da mümkün olup, bu durumda devlet katkısı hak ediş oranları uygulanır. Bu hüküm, emeklilik talebi ve emeklilik öncesi sistemden ayrılma başvurusu evrakının dayanağıdır. [DOĞRULA: 56 yaş ve 10 yıl koşulunun yürürlükteki güncel hâli teyit edilmeli]"
+  },
+  {
+   "mevzuat": "4632 bireysel emeklilik kanunu",
+   "kaynak_dosya": "4632_bireysel_emeklilik_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Devlet Katkısı\nKatılımcı adına ödenen katkı paylarının Devlet tarafından belirli oranda (mevcut düzenlemede yüzde otuz) artırılması suretiyle bireysel emeklilik hesabına devlet katkısı eklenir; devlet katkısı ve getirileri, sistemde kalış süresine bağlı kademeli hak ediş oranlarına tâbidir (örn. 3 yıl %15, 6 yıl %35, 10 yıl %60; emeklilik ile tam hak ediş). Devlet katkısından yararlanma için katılımcının Türk vatandaşı veya mavi kart sahibi olması gibi koşullar aranır. Bu hüküm, devlet katkısı tahakkuk ve sistemden ayrılmada hak ediş hesabının dayanağıdır. [DOĞRULA: güncel devlet katkısı oranı (%30) ve kademeli hak ediş yüzdeleri yürürlükteki Yönetmelikle teyit edilmeli]"
+  },
+  {
+   "mevzuat": "4632 bireysel emeklilik kanunu",
+   "kaynak_dosya": "4632_bireysel_emeklilik_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Çalışanların Otomatik Olarak Emeklilik Planına Dâhil Edilmesi (OKS)\nTürk vatandaşı veya mavi kartlı çalışanlar, işverenleri aracılığıyla bir emeklilik planına otomatik olarak dâhil edilir; çalışan katkı payı prime esas kazancın yüzde üçü oranındadır. Çalışan, plana dâhil edildiğinin bildirildiği tarihten itibaren iki ay içinde cayarak sistemden ayrılabilir ve ödediği tutarlar getirileriyle iade edilir; cayılmaması hâlinde bir defaya mahsus başlangıç devlet katkısı (1.000 TL) sağlanır. 2022 değişikliğiyle kırk beş yaşını dolduran çalışanlar da talep etmeleri hâlinde otomatik katılım kapsamına alınabilir. Bu hüküm, otomatik katılım sözleşmesi (OKS) ve cayma başvurusu evrakının dayanağıdır. [DOĞRULA: başlangıç devlet katkısı tutarı (1.000 TL) ve katkı payı oranının (%3) güncel hâli teyit edilmeli]"
   },
   {
    "mevzuat": "4646 dogal gaz piyasasi kanunu",
@@ -6401,6 +6464,48 @@
    "text": "Madde 30 — Sigorta tahkim (Sigorta Tahkim Komisyonu)\nSigorta ettiren veya sigorta sözleşmesinden menfaat sağlayan kişiler ile riski üstlenen taraf arasında, sigorta sözleşmesinden doğan uyuşmazlıkların çözümü için Birlik nezdinde Sigorta Tahkim Komisyonu oluşturulur; sigorta tahkim sistemine üye olan kuruluşlarla uyuşmazlığa düşen kişi, sözleşmede özel hüküm olmasa bile tahkim usulünden yararlanabilir. Komisyona başvuru için, uyuşmazlığa konu talebin sigorta kuruluşuna iletilmiş ve kuruluşça yazılı olarak ya da süresinde cevap verilmeyerek reddedilmiş olması gerekir; hakem kararları belirlenen tutara kadar kesin olup, üst sınırı aşan uyuşmazlıklarda itiraz/temyiz yoluna gidilebilir. Bu hüküm, sigorta tahkimine başvuru ve hakem kararına itiraz evrakının dayanağıdır. [DOĞRULA: hakem kararlarının kesinlik ve itiraz/temyiz için geçerli güncel parasal sınırlar (yeniden değerleme ile güncellenen tutarlar) teyit edilmeli]"
   },
   {
+   "mevzuat": "5686 jeotermal kaynaklar dogal mineralli sular kanunu",
+   "kaynak_dosya": "5686_jeotermal_kaynaklar_dogal_mineralli_sular_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacı; jeotermal ve doğal mineralli su kaynaklarının etkin biçimde aranması, araştırılması, geliştirilmesi, üretilmesi ve korunmasıdır. Ayrıca bu kaynaklar üzerinde hak sahibi olunması, hakların devredilmesi, çevreyle uyumlu ve ekonomik değerlendirilmesi ile terk edilmesine ilişkin usul ve esasları düzenler."
+  },
+  {
+   "mevzuat": "5686 jeotermal kaynaklar dogal mineralli sular kanunu",
+   "kaynak_dosya": "5686_jeotermal_kaynaklar_dogal_mineralli_sular_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Mülkiyet ve ruhsat\nJeotermal kaynaklar ve doğal mineralli sular Devletin hüküm ve tasarrufu altındadır ve bulundukları arzın mülkiyetine tâbi değildir. Kaynağa ilişkin faaliyetlerin yapılabilmesi için bu Kanuna göre ruhsat alınması zorunludur; haklar Türkiye Cumhuriyeti vatandaşları, ilgili tüzel kişiler ile kamu kurum ve kuruluşlarına verilebilir."
+  },
+  {
+   "mevzuat": "5686 jeotermal kaynaklar dogal mineralli sular kanunu",
+   "kaynak_dosya": "5686_jeotermal_kaynaklar_dogal_mineralli_sular_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Arama ruhsatı\nArama ruhsatı müracaatı, 1/25.000 ölçekli haritada pafta ve koordinatları belirtilerek beş bin hektarı geçmeyecek alan için arama projesiyle birlikte idareye yapılır. Arama ruhsat süresi üç yıldır; faaliyetlerin olumlu gelişmesi ve ilave etütlere ihtiyaç duyulması hâlinde revize proje sonrası idarece bir yıl uzatılabilir."
+  },
+  {
+   "mevzuat": "5686 jeotermal kaynaklar dogal mineralli sular kanunu",
+   "kaynak_dosya": "5686_jeotermal_kaynaklar_dogal_mineralli_sular_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — İşletme ruhsatı\nArama ruhsatı sahibinin, arama ruhsat süresinin son günü mesai bitimine kadar işletme projesiyle başvurması hâlinde işletme ruhsatı verilir. İşletme ruhsatı süresi otuz yıldır; süre sonunda ruhsat sahibinin talebiyle onar yıllık dönemler hâlinde uzatılır."
+  },
+  {
+   "mevzuat": "5686 jeotermal kaynaklar dogal mineralli sular kanunu",
+   "kaynak_dosya": "5686_jeotermal_kaynaklar_dogal_mineralli_sular_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Devir, sicil, ihale, harç, teminat ve idare payı\nRuhsatlar devredilebilir ve İdare ruhsatlara ilişkin devir, haciz, rehin, ipotek ve sona erme bilgilerini içeren bir sicil tutar; hükümden düşen, terk veya taksir edilen ruhsatlar ihaleyle yeniden aramaya/işletmeye açılır. Arama ruhsat harcı jeotermal kaynaklar için 1000 TL, doğal mineralli sular için 500 TL olup işletme ruhsatlarında dört kat uygulanır; hektar başına ruhsat harcının %1'i teminat alınır ve akışkanın kullanıldığı tesislerden gayrisafi hasılatın %1'i oranında idare payı ödenir. [DOĞRULA: harç ve teminat alt sınırı tutarları her yıl yeniden değerleme oranıyla güncellenmektedir]"
+  },
+  {
+   "mevzuat": "5686 jeotermal kaynaklar dogal mineralli sular kanunu",
+   "kaynak_dosya": "5686_jeotermal_kaynaklar_dogal_mineralli_sular_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — İdari yaptırımlar\nRuhsat şartlarına aykırı faaliyet hâlinde teminat irat kaydedilebilir, faaliyetler durdurulur ve idarî para cezaları uygulanır. Ruhsatsız faaliyette bulunulduğunun tespiti hâlinde idare tarafından idarî para cezası tahakkuk ettirilir. [DOĞRULA: ruhsatsız faaliyet idarî para cezasının güncel tutarı yeniden değerleme oranıyla artırılmaktadır]"
+  },
+  {
    "mevzuat": "5690 cimer cb kararnamesi",
    "kaynak_dosya": "5690_cimer_cb_kararnamesi.txt",
    "madde_no": 1,
@@ -7455,35 +7560,42 @@
    "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
    "madde_no": 1,
    "madde_tur": "madde",
-   "text": "Madde 1 — Görev\nİslam Dininin inançları, ibadet ve ahlâk esasları ile ilgili işleri yürütmek, din konusunda toplumu aydınlatmak ve ibadet yerlerini yönetmek üzere, Cumhurbaşkanlığına bağlı Diyanet İşleri Başkanlığı kurulmuştur. Bu madde, Başkanlığın temel görev alanını ve kamu tüzel kişiliğini belirler. Başkanlığın hizmet birimleri ve teşkilatı, bu görevi yerine getirmek üzere düzenlenmiştir."
+   "text": "Madde 1 — Görev\nİslam Dininin inançları, ibadet ve ahlâk esasları ile ilgili işleri yürütmek, din konusunda toplumu aydınlatmak ve ibadet yerlerini yönetmek üzere, Cumhurbaşkanlığına bağlı Diyanet İşleri Başkanlığı kurulmuştur. Bu madde Başkanlığın temel görev alanını ve kamu tüzel kişiliğini belirler. Ayrıca Başkanlık ile Başkanlığın izin verdiği vakıf, kurum ve kuruluşlar dışında, hiçbir kurum, kuruluş ya da gerçek/tüzel kişi \"Diyanet\" kelimesini isim, unvan veya marka olarak kullanamaz (Ek fıkra: 6495/2013)."
   },
   {
    "mevzuat": "633 diyanet isleri baskanligi kanunu",
    "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
    "madde_no": 5,
    "madde_tur": "madde",
-   "text": "Madde 5 — Din İşleri Yüksek Kurulu\nDin İşleri Yüksek Kurulu, Başkanlığın dinî konularda en yüksek karar ve danışma organıdır ve [DOĞRULA: üye sayısı; kaynaklarda on altı üye belirtilmektedir]. Kurul; dinî konularda toplumu aydınlatacak kararlar almak, dinî soruları cevaplandırmak (fetva), dinî yayınları ve Kur'an mealleri ile tefsir/tercümelerini inceleyip görüş bildirmek ve namaz vakitleri ile dinî gün ve geceleri tespit ve ilan etmek gibi görevleri yürütür. Kurulun çalışma usul ve esasları yönetmelikle düzenlenir."
+   "text": "Madde 5 — Din İşleri Yüksek Kurulu\nDin İşleri Yüksek Kurulu, Başkanlığın dinî konularda en yüksek karar ve danışma organıdır ve on altı üyeden oluşur (1/7/2010-6002 ile düzenlenmiştir). Kurul; İslam dininin temel bilgi kaynaklarını ve metodolojisini dikkate alarak dinî konularda karar vermek, görüş bildirmek ve dinî soruları cevaplandırmak (fetva), dinî konularda telif/tercüme/araştırma yapmak, Başkanlıkça havale edilen basılı, sesli ve görüntülü eserleri dinî bakımdan inceleyerek yayımlanıp yayımlanamayacağına karar vermek, resmî kurumlarca incelenmesi talep edilen dinî yayınlara mütalaa vermek ve namaz vakitleri ile dinî gün ve geceleri tespit ve ilan etmekle görevlidir. Üyelerin görev süresi beş yıldır; çalışma usul ve esasları yönetmelikle düzenlenir."
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Mushafları İnceleme ve Kıraat Kurulu\nMushafları İnceleme ve Kıraat Kurulu bir başkan ile on iki üyeden oluşur (7549/2025); üyelerin görev süresi beş yıldır. Kurul; mushafların, cüzlerin, mealli mushafların ve Kur'an-ı Kerim metinlerinin hatasız ve eksiksiz basım/yayımını sağlamak üzere kontrol ettikten sonra mühürlemek veya onaylamakla, hatalı/noksan basılan yayınları tespit etmekle ve kıraat ilmi alanında çalışmalar yapmakla görevlidir. Kurulun onay ve mührü bulunmayan mushaf, mealli mushaf ile sesli/görüntülü/elektronik Kur'an-ı Kerimler basılamaz ve yayımlanamaz; bu hüküm Kur'an basım-yayım onay başvurularının dayanağıdır."
   },
   {
    "mevzuat": "633 diyanet isleri baskanligi kanunu",
    "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
    "madde_no": 8,
    "madde_tur": "madde",
-   "text": "Madde 8 — Taşra teşkilatı\nBaşkanlığın taşra teşkilatı il ve ilçe müftülükleri ile dinî eğitim/ihtisas merkezlerinden oluşur; il müftüleri Başkanlığa, ilçe müftüleri il müftülüklerine bağlıdır. İl ve ilçe müftüleri bulundukları yerde Başkanlığı temsil eder, din hizmetlerini ve dinî kurumları yönetir ve din görevlilerinin hizmetlerini düzenleyip denetler. Müftülükler, vatandaşın din hizmetiyle ilgili başvurularında ve cami/Kur'an kursu işlemlerinde idare nezdinde muhatap birimdir."
-  },
-  {
-   "mevzuat": "633 diyanet isleri baskanligi kanunu",
-   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
-   "madde_no": 35,
-   "madde_tur": "madde",
-   "text": "Madde 35 — Cami ve mescitler\nCami ve mescitler, Diyanet İşleri Başkanlığının izni ile ibadete açılır ve Başkanlıkça yönetilir. Hakiki ve hükmi şahıslar tarafından yapıldığı hâlde izinli veya izinsiz olarak ibadete açılmış bulunan cami ve mescitlerin yönetimi, üç ay içinde Diyanet İşleri Başkanlığına devredilir; Başkanlıkça buralara imkânlar nispetinde kadro tahsis edilir. Bu hüküm, ibadethane açılması için kamu izni ve devir başvurusunun temel dayanağıdır."
+   "text": "Madde 8 — Taşra teşkilatı\nBaşkanlığın taşra teşkilatı, il ve ilçe müftülükleri ile doğrudan Başkanlığa bağlı Kur'an eğitim merkezleri ve dinî ihtisas/eğitim merkezlerinden oluşur (7383/2022). İl müftüleri Diyanet İşleri Başkanlığına, ilçe müftüleri ise il müftülüklerine bağlıdır; 5442 sayılı İl İdaresi Kanunu hükümleri saklıdır. İl ve ilçe müftüleri bölgelerinde Başkanlığı temsil eder, din hizmetlerini ve dinî müesseseleri yönetir, din görevlilerinin hizmetlerini düzenleyip denetler. Müftülükler, vatandaşın din hizmetiyle ilgili başvurularında ve cami/Kur'an kursu işlemlerinde idare nezdinde muhatap birimdir."
   },
   {
    "mevzuat": "633 diyanet isleri baskanligi kanunu",
    "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
    "madde_no": 12,
    "madde_tur": "madde",
-   "text": "Madde 12 — Vaizler\nVaizler, toplumu dinî konularda bilgilendirmek, irşat ve rehberlik hizmetlerini yürütmekle görevlidir. Vaizlik için aranan nitelikler ile atama ve görevlendirme usulleri kanun ve ilgili yönetmeliklerde düzenlenir. Vaizler, müftülükler bünyesinde din hizmetlerinin yürütülmesinde görev alır."
+   "text": "Madde 12 — Vaizler, imam-hatip ve müezzin-kayyımlar, Kur'an kursu öğreticileri ve murakıplar\nVaizler; cami ve mescitler ile diğer mekânlarda toplumu dinî konularda bilgilendirmek, irşat, rehberlik, inceleme ve araştırma yapmakla görevlidir (vaiz, uzman vaiz, başvaiz kariyer basamakları). İmam-hatip ve müezzin-kayyımlar cami ve mescitlerde din hizmetlerini yürütür ve toplumu dinî konularda bilgilendirir; Kur'an kursu öğreticileri Kur'an kurslarındaki eğitim-öğretim faaliyetlerini yürütür. Murakıp, il ve ilçe müftülüklerine bağlı olarak taşra hizmetlerinin denetimiyle görevlidir. Kariyer basamaklarında yükselme ve atama usulleri yönetmelikle düzenlenir."
+  },
+  {
+   "mevzuat": "633 diyanet isleri baskanligi kanunu",
+   "kaynak_dosya": "633_diyanet_isleri_baskanligi_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Camilerin ibadete açılması ve yönetimi\nCami ve mescitler Diyanet İşleri Başkanlığının izni ile ibadete açılır ve Başkanlıkça yönetilir. Gerçek ve tüzel kişilerce yapıldığı hâlde izinli veya izinsiz ibadete açılmış cami ve mescitlerin yönetimi üç ay içinde Diyanet İşleri Başkanlığına devredilir; Başkanlıkça buralara imkânlar nispetinde kadro tahsis edilir. Bu madde, ibadethane açma izni ve devir başvurusunun temel dayanağıdır."
   },
   {
    "mevzuat": "6343 veteriner hekimligi mesleginin icrasi kanunu",
@@ -10433,5 +10545,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 230
+ "mevzuat_sayisi": 233
 }

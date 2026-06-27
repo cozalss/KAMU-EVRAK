@@ -1,0 +1,76 @@
+{# _makro.j2 — Resmî yazı ortak makroları (Yön. 2646 / CB 2020 + e-Yazışma).
+   Tüm türler {% from "_makro.j2" import ... %} ile bunları kullanır → DRY + tutarlılık.
+   reportlab Preformatted (monospace) hizası KORUNUR: makro içi boşluklar bilinçli.
+   SIFIR UYDURMA (CLAUDE.md §1): doğrulama kodu/iletişim verisi yoksa nötr taslak yazılır,
+   sahte DETSİS/kod üretilmez. #}
+
+{# Antet — T.C. + idare + birim (ortalı, Yön. m.10). #}
+{% macro antet(idare_adi, birim_adi) -%}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+{%- endmacro %}
+
+{# Üst işaretler — ivedilik (ACELE/GÜNLÜDÜR) + gizlilik (KİŞİYE ÖZEL/GİZLİ), sağ üst (Yön. m.31).
+   Yalnız verildiğinde render edilir; demo-güvenli (placeholder bırakmaz). #}
+{% macro ust_isaretler(ivedilik, gizlilik) -%}
+{% if gizlilik %}{{ " " * 50 }}{{ gizlilik }}
+{% endif %}{% if ivedilik %}{{ " " * 50 }}{{ ivedilik }}
+{% endif %}{%- endmacro %}
+
+{# Sayı-Tarih satırı + Konu (Yön. m.11-13). #}
+{% macro sayi_konu(sayi_satiri, tarih, konu) -%}
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
+Konu : {{ konu | default("{{ KONU }}") }}
+{%- endmacro %}
+
+{# İmza bloğu — Ad SOYAD + unvan, sağa-ortalı (Yön. m.17). #}
+{% macro imza_blogu(ad_soyad, unvan) -%}
+{{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
+{{ " " * 46 }}{{ unvan | default("{{ UNVAN }}") }}
+{%- endmacro %}
+
+{# Koordinasyon (Yön. m.22) — imza altında, varsa. #}
+{% macro koordinasyon_blogu(koordinasyon) -%}
+{% if koordinasyon %}
+
+Koordinasyon : {{ koordinasyon }}
+{% endif %}{%- endmacro %}
+
+{# Ek listesi (Yön. m.18) — numaralı, varsa. #}
+{% macro ek_blogu(ekler) -%}
+{% if ekler %}
+
+Ek :
+{% for ek in ekler %}{{ loop.index }}- {{ ek }}
+{% endfor %}{% endif %}{%- endmacro %}
+
+{# Dağıtım (Yön. m.19) — Gereği / Bilgi, varsa. #}
+{% macro dagitim_blogu(dagitim) -%}
+{% if dagitim %}
+
+DAĞITIM:
+{% if dagitim.geregi | default([]) %}Gereği:
+{% for d in dagitim.geregi %}{{ d }}
+{% endfor %}{% endif %}{% if dagitim.bilgi | default([]) %}Bilgi:
+{% for d in dagitim.bilgi %}{{ d }}
+{% endfor %}{% endif %}{% endif %}{%- endmacro %}
+
+{# E-imza bloğu — Yön. 2646 m.23 (güvenli e-imza belgeleri). İletişim üstü.
+   Doğrulama kodu EBYS'ce imzalama anında atanır → taslakta nötr ifade (uydurma yok). #}
+{% macro eimza_blogu(e_imza, dogrulama_kodu, dogrulama_adresi) -%}
+{% if e_imza %}
+
+Bu belge, güvenli elektronik imza ile imzalanmıştır.
+Belge Doğrulama Kodu : {{ dogrulama_kodu | default("EBYS tarafından imzalama anında atanır") }}{{ " " * 6 }}[karekod]
+Bu belgeyi {{ dogrulama_adresi | default("https://www.turkiye.gov.tr/belge-dogrulama") }} adresinden doğrulayabilirsiniz.
+{% endif %}{%- endmacro %}
+
+{# İletişim dipnotu — Yön. 2646 m.23 (belge sonu kurum iletişim verisi). Varsa. #}
+{% macro iletisim_dipnot(adres, telefon, faks, email, web) -%}
+{% if adres or telefon or email or web %}
+__________________________________________________________________________
+{% if adres %}Adres : {{ adres }}
+{% endif %}{% if telefon or faks %}Tel : {{ telefon }}{{ "   Faks : " ~ faks if faks else "" }}
+{% endif %}{% if email or web %}e-Posta : {{ email }}{{ "   Web : " ~ web if web else "" }}
+{% endif %}{% endif %}{%- endmacro %}

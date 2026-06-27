@@ -112,10 +112,13 @@ BIRIM_TR: dict[str, str] = {
 }
 
 # --- Görev 2: Resmî yazı türleri ---
-YAZI_TURLERI: tuple[str, ...] = ("ust_yazi", "cevabi_yazi", "bilgilendirme", "olur")
+YAZI_TURLERI: tuple[str, ...] = (
+    "ust_yazi", "cevabi_yazi", "bilgilendirme", "olur", "muzekkere", "gorus_mutalaa",
+)
 YAZI_TURU_TR: dict[str, str] = {
     "ust_yazi": "Üst Yazı", "cevabi_yazi": "Cevabi Yazı",
     "bilgilendirme": "Bilgilendirme Yazısı", "olur": "Olur / Onay Yazısı",
+    "muzekkere": "Müzekkere", "gorus_mutalaa": "Görüş / Mütalaa",
 }
 
 # --- Eksik bilgi tespiti: bir evrakta olması gereken zorunlu alanlar (3071 m.4) ---

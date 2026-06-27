@@ -32,6 +32,11 @@ _DEMO_DEFAULTS: dict[str, str] = {
 }
 
 
+def _tr_upper(s: str) -> str:
+    """Türkçe büyük harf (i→İ, ı→I) — Python upper() 'i'yi 'I' yapar; resmî işaret hatalı olur."""
+    return s.replace("i", "İ").replace("ı", "I").upper()
+
+
 def _demo_muhatap(yazi_turu: str) -> str:
     if yazi_turu == "bilgilendirme":
         return "Dağıtım yerlerine"
@@ -95,6 +100,18 @@ class YaziContext:
     unvan: str = ""
     ekler: tuple[str, ...] = ()
     dagitim: dict[str, list[str]] | None = None
+    # Yön. 2646 e-Yazışma / üst işaretler (opsiyonel; verilmezse render edilmez → uydurma yok)
+    ivedilik_derecesi: str = ""      # ACELE | GÜNLÜDÜR (m.31)
+    gizlilik_derecesi: str = ""      # KİŞİYE ÖZEL | HİZMETE ÖZEL | GİZLİ (m.31)
+    e_imza: bool = False             # m.23 güvenli e-imza bloğu render edilsin mi
+    dogrulama_kodu: str = ""         # EBYS imzalama anında atar; taslakta nötr ifade
+    dogrulama_adresi: str = ""       # belge doğrulama URL'i (varsayılan e-Devlet)
+    koordinasyon: str = ""           # m.22 koordinasyon eden unvan + ad soyad
+    adres: str = ""                  # iletişim dipnotu (m.23)
+    telefon: str = ""
+    faks: str = ""
+    email: str = ""
+    web: str = ""
     olur_alanlari: dict[str, str] = field(default_factory=dict)
 
     def jinja_vars(self) -> dict[str, Any]:
@@ -106,13 +123,17 @@ class YaziContext:
         görünür ve resmî format içinde tutar.
         """
         out: dict[str, Any] = {"tarih": self.tarih, "yazi_turu": self.yazi_turu}
+        # Sayı oto-kompoze (Yön. m.11): üç bileşen de varsa E-DETSİS-SDP-KAYIT (uydurma yok).
+        sayi = self.sayi_satiri
+        if not sayi and self.detsis and self.sdp and self.kayit_no:
+            sayi = f"E-{self.detsis}-{self.sdp}-{self.kayit_no}"
         scalar_fields = (
             "konu", "metin", "muhatap", "ilgi_tarih", "ilgi_sayi", "kapanis",
             "idare_adi", "birim_adi", "sayi_satiri", "detsis", "sdp", "kayit_no",
             "ad_soyad", "unvan",
         )
         for name in scalar_fields:
-            val = getattr(self, name)
+            val = sayi if name == "sayi_satiri" else getattr(self, name)
             if not val:
                 if name == "muhatap" and self.yazi_turu != "olur":
                     val = _demo_muhatap(self.yazi_turu)
@@ -120,6 +141,14 @@ class YaziContext:
                     val = _DEMO_DEFAULTS.get(name, "")
             if val:
                 out[name] = val
+        # Yön. 2646 e-Yazışma / üst işaretler — yalnız verildiğinde geçir (boşsa render edilmez)
+        out["e_imza"] = self.e_imza
+        for name in ("ivedilik_derecesi", "gizlilik_derecesi", "dogrulama_kodu",
+                     "dogrulama_adresi", "koordinasyon", "adres", "telefon", "faks", "email", "web"):
+            val = getattr(self, name)
+            if val:
+                # Resmî işaretler büyük harf (Yön. m.31): Türkçe-doğru i→İ.
+                out[name] = _tr_upper(val) if name in ("ivedilik_derecesi", "gizlilik_derecesi") else val
         if self.ilgi_satirlari:
             out["ilgi_satirlari"] = list(self.ilgi_satirlari)
         elif self.yazi_turu in {"cevabi_yazi", "ust_yazi"}:

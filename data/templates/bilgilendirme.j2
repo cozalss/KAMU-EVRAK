@@ -1,11 +1,12 @@
 {# Bilgilendirme yazısı — üst yazı iskeleti; kapanış "Bilgilerinize arz ederim." (Yön. 2646).
-   Birden çok muhataba gönderildiğinde muhatap "Dağıtım yerlerine" + sonda "Dağıtım (Bilgi):". #}
+   Birden çok muhataba "Dağıtım yerlerine" + sonda "Dağıtım (Bilgi):"; + e-imza/iletişim (m.23). #}
+{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot -%}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
 
 Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
-Konu : {{ konu | default("{{ KONU }}") }}
+{% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("{{ KONU }}") }}
 
                           {{ muhatap | default("Dağıtım yerlerine") }}
 
@@ -15,8 +16,9 @@ Konu : {{ konu | default("{{ KONU }}") }}
 
 {{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
 {{ " " * 46 }}{{ unvan | default("{{ UNVAN }}") }}
-{% if dagitim_bilgi | default([]) %}
+{% if koordinasyon %}{{ koordinasyon_blogu(koordinasyon) }}{% endif %}{% if dagitim_bilgi | default([]) %}
 
 Dağıtım (Bilgi):
 {% for d in dagitim_bilgi %}{{ d }}
 {% endfor %}{% endif %}
+{% if e_imza %}{{ eimza_blogu(e_imza, dogrulama_kodu, dogrulama_adresi) }}{% endif %}{% if adres or telefon or email or web %}{{ iletisim_dipnot(adres, telefon, faks, email, web) }}{% endif %}

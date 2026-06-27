@@ -1,12 +1,13 @@
 {# Üst yazı — Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020).
-   Bölüm sırası (Yön. m.10-19): başlık → sayı/tarih → konu → muhatap → ilgi → metin →
-   kapanış → imza → ek → dağıtım. Eksik alanlar {{ }} placeholder kalır (uydurma yok). #}
+   Sıra (m.10-23): başlık → sayı/tarih → [ivedilik/gizlilik] → konu → muhatap → ilgi → metin →
+   kapanış → imza → [koordinasyon] → ek → dağıtım → [e-imza] → [iletişim]. #}
+{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot -%}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
 
 Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
-Konu : {{ konu | default("{{ KONU }}") }}
+{% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("{{ KONU }}") }}
 
                           {{ muhatap | default("{{ MUHATAP MAKAM }}") }}
 {% if ilgi_satirlari %}
@@ -20,7 +21,7 @@ Konu : {{ konu | default("{{ KONU }}") }}
 
 {{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
 {{ " " * 46 }}{{ unvan | default("{{ UNVAN }}") }}
-{% if ekler %}
+{% if koordinasyon %}{{ koordinasyon_blogu(koordinasyon) }}{% endif %}{% if ekler %}
 
 Ek :
 {% for ek in ekler %}{{ loop.index }}- {{ ek }}
@@ -33,3 +34,4 @@ DAĞITIM:
 {% endfor %}{% endif %}{% if dagitim.bilgi | default([]) %}Bilgi:
 {% for d in dagitim.bilgi %}{{ d }}
 {% endfor %}{% endif %}{% endif %}
+{% if e_imza %}{{ eimza_blogu(e_imza, dogrulama_kodu, dogrulama_adresi) }}{% endif %}{% if adres or telefon or email or web %}{{ iletisim_dipnot(adres, telefon, faks, email, web) }}{% endif %}

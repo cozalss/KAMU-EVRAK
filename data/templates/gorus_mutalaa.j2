@@ -1,0 +1,21 @@
+{# Görüş / Mütalaa — hukuki kanaat (Yön. 2646). Hukuk müşavirliği → ilgili birime.
+   Kapanış "Bilgilerine arz olunur."; metin hukuki gerekçe + sonuç içerir (node üretir). #}
+{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot -%}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("HUKUK MÜŞAVİRLİĞİ") }}
+
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
+{% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("Hukuki görüş") }}
+
+                          {{ muhatap | default("{{ MUHATAP MAKAM }}") }}
+{% if ilgi_satirlari %}
+İlgi : {% for ilgi in ilgi_satirlari %}{% if loop.index0 %}       {% endif %}{{ ilgi }}
+{% endfor %}{% endif %}
+{{ metin | default("İlgi yazı ile talep edilen konuya ilişkin hukuki değerlendirme aşağıda sunulmuştur. {{ HUKUKİ GEREKÇE VE SONUÇ }}") }}
+
+{{ " " * 9 }}{{ kapanis | default("Bilgilerine arz olunur.") }}
+
+{{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
+{{ " " * 46 }}{{ unvan | default("Hukuk Müşaviri") }}
+{% if koordinasyon %}{{ koordinasyon_blogu(koordinasyon) }}{% endif %}{% if e_imza %}{{ eimza_blogu(e_imza, dogrulama_kodu, dogrulama_adresi) }}{% endif %}{% if adres or telefon or email or web %}{{ iletisim_dipnot(adres, telefon, faks, email, web) }}{% endif %}

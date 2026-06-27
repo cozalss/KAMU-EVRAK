@@ -1,13 +1,14 @@
 {# Olur / Onay yazısı — makam onayı (Yön. 2646 m.20). Muhatap satırı YOKTUR.
-   Akış: başlık → sayı/tarih → konu → teklif metni → "...olurlarınıza arz ederim." →
-   teklif eden imza → (varsa "Uygun görüşle arz ederim." ara makam) → ortalı "OLUR" →
-   onay tarihi → onay makamı ad SOYAD + unvan. #}
+   Akış: başlık → sayı/tarih → [ivedilik/gizlilik] → konu → teklif metni → "...olurlarınıza
+   arz ederim." → teklif imza → (varsa ara makam) → "OLUR" → onay tarihi → onay makamı
+   → [e-imza] → [iletişim]. #}
+{% from "_makro.j2" import ust_isaretler, eimza_blogu, iletisim_dipnot -%}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
 
 Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
-Konu : {{ konu | default("{{ KONU }}") }}
+{% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("{{ KONU }}") }}
 
 {{ metin | default("{{ TEKLİF METNİ }}") }}
 
@@ -26,3 +27,4 @@ Uygun görüşle arz ederim.
 
 {{ " " * 46 }}{{ onay_makami | default("{{ ONAY MAKAMI }}") }}
 {{ " " * 46 }}{{ onay_unvan | default("{{ ONAY UNVANI }}") }}
+{% if e_imza %}{{ eimza_blogu(e_imza, dogrulama_kodu, dogrulama_adresi) }}{% endif %}{% if adres or telefon or email or web %}{{ iletisim_dipnot(adres, telefon, faks, email, web) }}{% endif %}

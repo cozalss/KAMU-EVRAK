@@ -1,0 +1,22 @@
+{# Müzekkere — kurum-içi yazı (Yön. 2646). Makama/üst birime; muhatap kurum-içi makam.
+   Sıra: başlık → sayı/tarih → [ivedilik/gizlilik] → konu → makam → ilgi → metin →
+   kapanış → imza → [koordinasyon] → [e-imza] → [iletişim]. #}
+{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot -%}
+                                   T.C.
+                          {{ idare_adi | default("{{ İDARE ADI }}") }}
+                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
+{% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("{{ KONU }}") }}
+
+                          {{ muhatap | default("MAKAMA") }}
+{% if ilgi_satirlari %}
+İlgi : {% for ilgi in ilgi_satirlari %}{% if loop.index0 %}       {% endif %}{{ ilgi }}
+{% endfor %}{% endif %}
+{{ metin | default("{{ METİN GÖVDESİ }}") }}
+
+{{ " " * 9 }}{{ kapanis | default("Gereğini arz ederim.") }}
+
+{{ " " * 46 }}{{ ad_soyad | default("{{ AD SOYAD }}") }}
+{{ " " * 46 }}{{ unvan | default("{{ UNVAN }}") }}
+{% if koordinasyon %}{{ koordinasyon_blogu(koordinasyon) }}{% endif %}{% if e_imza %}{{ eimza_blogu(e_imza, dogrulama_kodu, dogrulama_adresi) }}{% endif %}{% if adres or telefon or email or web %}{{ iletisim_dipnot(adres, telefon, faks, email, web) }}{% endif %}

@@ -20,6 +20,8 @@ _REGISTRY: dict[str, TemplateMeta] = {
     "cevabi_yazi": ("cevabi_yazi", "Cevabi Yazı", "Gereğini rica ederim."),
     "bilgilendirme": ("bilgilendirme", "Bilgilendirme Yazısı", "Bilgilerinize arz ederim."),
     "olur": ("olur", "Olur / Onay Yazısı", "Olurlarınıza arz ederim."),
+    "muzekkere": ("muzekkere", "Müzekkere", "Gereğini arz ederim."),
+    "gorus_mutalaa": ("gorus_mutalaa", "Görüş / Mütalaa", "Bilgilerine arz olunur."),
 }
 
 _FALLBACK = "cevabi_yazi"

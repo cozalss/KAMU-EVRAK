@@ -1,0 +1,29 @@
+İş Mahkemeleri Kanunu
+Kanun No 7036, Kabul 12.10.2017, RG 25.10.2017/30221 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.7036 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7036.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Bu Kanunun amacı, iş mahkemelerinin kuruluş, görev, yetki ve yargılama usulünü düzenlemektir. Kanun; iş ve sosyal güvenlik hukukundan kaynaklanan uyuşmazlıkların çözümünde uygulanacak özel usul kurallarını kapsar. Bu çerçevede iş davalarında dava şartı olarak arabuluculuk ve basit yargılama usulü gibi kurumlar düzenlenmiştir.
+
+Madde 2 — İş mahkemelerinin kuruluşu (tek hâkimli, asliye derecesinde)
+İş mahkemeleri, Hâkimler ve Savcılar Kurulunun olumlu görüşü alınarak Adalet Bakanlığınca tek hâkimli ve asliye mahkemesi derecesinde kurulur. Mahkemelerin yargı çevresi, 5235 sayılı Kanun hükümlerine göre belirlenir. İhtisaslaşmanın sağlanması amacıyla gelen işlerin yoğunluğu ve niteliği dikkate alınarak daireler oluşturulabilir; daireler arasındaki iş dağılımı Hâkimler ve Savcılar Kurulunca belirlenir. İş mahkemesi kurulmayan yerlerde bu davalara, HSK'ca belirlenen asliye hukuk mahkemesince iş mahkemesi sıfatıyla bakılır.
+
+Madde 3 — Dava şartı olarak arabuluculuk (işçi/işveren alacağı, tazminat, işe iade)
+Kanuna, bireysel veya toplu iş sözleşmesine dayanan işçi veya işveren alacağı ve tazminatı ile işe iade talebiyle açılan davalarda, dava açılmadan önce arabulucuya başvurulmuş olması dava şartıdır. Davacı, arabuluculuk faaliyeti sonunda anlaşmaya varılamadığına ilişkin son tutanağın aslını veya arabulucunun onayladığı bir örneğini dava dilekçesine eklemek zorundadır; eklenmemişse mahkeme bir haftalık kesin süre verir, bu sürede de eklenmezse dava usulden reddedilir. Arabulucuya başvurulmadan dava açıldığı anlaşılırsa, herhangi bir işlem yapılmaksızın dava, dava şartı yokluğu sebebiyle usulden reddedilir. İş kazası veya meslek hastalığından kaynaklanan maddi ve manevi tazminat ile bunlara ilişkin tespit, itiraz ve rücu davaları bu zorunluluğun dışındadır.
+
+Madde 5 — Görev (iş ilişkisinden ve sosyal güvenlikten doğan uyuşmazlıklar)
+İş mahkemeleri; 5953 sayılı Kanuna tabi gazeteciler, 854 sayılı Kanuna tabi gemiadamları, 4857 sayılı İş Kanununa veya 6098 sayılı Türk Borçlar Kanununun hizmet sözleşmesine ilişkin hükümlerine tabi işçiler ile işveren veya işveren vekilleri arasındaki iş ilişkisi nedeniyle sözleşmeden veya kanundan doğan her türlü hukuk uyuşmazlığına bakar. Ayrıca; idari para cezalarına itiraz ile genel sağlık sigortalılığında alt sınır esnafına ilişkin uyuşmazlıklar hariç olmak üzere, Sosyal Güvenlik Kurumu veya Türkiye İş Kurumunun taraf olduğu iş ve sosyal güvenlik mevzuatından kaynaklanan uyuşmazlıklara ve diğer kanunlarla iş mahkemelerine verilen davalara bakmakla görevlidir.
+
+Madde 6 — Yetki
+İş mahkemelerinde açılacak davalarda yetkili mahkeme, davalı gerçek veya tüzel kişinin davanın açıldığı tarihteki yerleşim yeri mahkemesi ile işin veya işlemin yapıldığı yer mahkemesidir. Davalı birden fazlaysa, bunlardan birinin yerleşim yeri mahkemesi de yetkilidir. İş kazasından doğan tazminat davalarında ayrıca kazanın veya zararın meydana geldiği yer ile zarar gören işçinin yerleşim yeri mahkemesi de yetkilidir. Bu yetki kuralları kesin nitelikte değildir, ancak işçinin korunması amacıyla seçimlik yetkili yerler öngörülmüştür.
+
+Madde 7 — Yargılama usulü ve kanun yolları (basit yargılama)
+İş mahkemelerinde basit yargılama usulü uygulanır. 6100 sayılı Hukuk Muhakemeleri Kanununun kanun yollarına (istinaf ve temyiz) ilişkin hükümleri, iş mahkemelerince verilen kararlar hakkında da uygulanır; kanun yoluna başvuru süresi, ilamın taraflara tebliğinden itibaren işlemeye başlar. Kanun yoluna başvurulan kararlar, bölge adliye mahkemesi ve Yargıtayca ivedilikle karara bağlanır. Bu suretle iş uyuşmazlıklarının hızlı ve basit usulle çözülmesi amaçlanır.
+
+Madde 8 — Temyiz edilemeyen kararlar
+İş mahkemelerinin bazı kararları, bölge adliye mahkemesince verilen istinaf kararlarından sonra temyiz yoluna kapalıdır. Özellikle Kanunda sayılan; hizmet tespiti, işe iade, sigortalılık niteliğinin tespiti gibi bazı uyuşmazlıklara ilişkin bölge adliye mahkemesi kararları kesin olup temyiz edilemez. Bu hüküm, belirli iş davalarında yargılamanın istinaf aşamasında kesinleşerek hızlanmasını sağlar; hangi kararların temyize kapalı olduğu maddede ayrıca belirtilmiştir. [DOĞRULA: temyize kapalı dava türlerinin tam listesi için 7036 m.8 güncel metni]

@@ -1,0 +1,29 @@
+Kara Avcılığı Kanunu
+Kanun No 4915, Kabul 01.07.2003, RG 11.07.2003/25165 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4915.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacını düzenler: sürdürülebilir av ve yaban hayatı yönetimi için av ve yaban hayvanlarının doğal yaşam ortamlarıyla birlikte korunmalarını, geliştirilmelerini, avlağın bakımı ve avlanmanın düzenlenmesini sağlamak. Avcılık belgesi, avlanma izni ve idari yaptırım yazışmalarının dayanak ilkesidir.
+
+Madde 2 — Tanımlar
+Kanunda geçen temel kavramları tanımlar: "Av hayvanı" Kanun kapsamında avlanan ve Bakanlıkça listelenen hayvanlar; "Yaban hayvanı" doğada yaşayan hayvanlar; "Avlak" av ve yaban hayvanlarının doğal olarak yaşadığı veya sonradan salındığı saha (devlet/genel/özel avlak); "Avcılık belgesi" avlanmak için gereken ehliyet belgesi; "Avlanma izni" her av yılı için ücret ödenerek alınan izin. Belge ve izin başvurularında esas alınan tanım maddesidir.
+
+Madde 3 — Merkez Av Komisyonu
+Av ve yaban hayatıyla ilgili kararların alındığı Merkez Av Komisyonunun oluşumu ve görevlerini düzenler: komisyon Bakan/yetkili başkanlığında ilgili kurum temsilcilerinden oluşur; avlanma süreleri, av miktarları, avına izin verilen/yasaklanan türler ve avlanma esasları komisyon kararıyla belirlenir. İl av komisyonlarının görüş ve önerileri dikkate alınır. Avlanma izni kapsam ve sürelerinin dayanağıdır.
+
+Madde 6 — Avlanma esasları (belge ve izin zorunluluğu)
+Avlanmanın hangi esaslara göre yapılacağını düzenler: avlanmak isteyenlerin avcılık belgesi ve avlanma izni almak zorunda olduğunu, avlanmanın ancak yasal izin verilen silah, araç ve eğitilmiş hayvanlarla, avlanma planı veya Merkez Av Komisyonu kararlarına uygun olarak yapılabileceğini öngörür. Belgesiz/izinsiz veya plana aykırı avlanmanın men edilmesi ve ceza uygulamasının (Madde 20) maddi dayanağıdır.
+
+Madde 13 — Avcılık belgesi
+Avcılık belgesinin kimlere ve nasıl verileceğini düzenler: belge Türk vatandaşlarına bir defaya mahsus verilir ve her yıl vize edilir; belge alacaklar eğitime ve yeterlik sınavına tabi tutulur. Yabancı uyruklulara karşılıklılık esası uygulanır. Avcılık belgesi başvurusu, eğitim/sınav ve yıllık vize işlemlerinin dayanağıdır.
+
+Madde 14 — Avlanma izni
+Avlanma izninin nasıl alınacağını düzenler: avcılık belgesi sahibi avcılar, avlanmak istedikleri av yılına ait avlanma izin ücretini Döner Sermaye İşletmesine yatırmak suretiyle avlanma izni almak zorundadır; izin bir av yılı içindir ve hayvan gruplarına, avlanmanın il/bölge/ülke genelinde yapılmasına göre ücret farklılaştırılabilir. Avlanma izni başvuru ve ücret yatırma yazışmalarının dayanağıdır.
+
+Madde 20 — İdari para cezaları (belgesiz/izinsiz/yasak yerde avlanma)
+Kanuna aykırı avlanma fiillerine uygulanacak idari para cezalarını düzenler: avcılık belgesi almadan avlananlara, avlanma izni olmadan avlananlara ve yasaklara/yasak yerlere aykırı avlananlara kademeli idari para cezası verilir; av hayvanları, türevleri ve avlanmada kullanılan sair eşyaya el konulabilir ve mülkiyetinin kamuya geçirilmesine mahallî mülkî amir karar verir. [DOĞRULA: güncel ceza tutarları her yıl yeniden değerleme oranında artırıldığından en güncel rakamlar mevzuat.gov.tr 1.5.4915 güncel metninden teyit edilmeli.] Belgesiz/izinsiz avlanma idari yaptırım kararı ve el koyma yazışmalarının dayanağıdır.

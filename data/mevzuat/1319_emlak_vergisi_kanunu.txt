@@ -1,0 +1,26 @@
+Emlak Vergisi Kanunu
+Kanun No 1319, Kabul 29.07.1970, RG 11.08.1970/13576 — YURURLUKTE (resmi PDF 1.5.1319 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.1319.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Bina vergisinin konusu (verginin mevzuu)
+Turkiye sinirlari icinde bulunan binalar bu Kanun hukumlerine gore bina vergisine tabidir. Bu Kanundaki 'bina' tabiri; yapildigi madde ne olursa olsun gerek karada gerek su uzerindeki sabit insaatin hepsini kapsar. Vergi Usul Kanununda yazili bina mutemmimleri de bina ile birlikte nazara alinir; yuzer havuzlar, sair yuzer yapilar, cadirlar ve nakil vasitalarina takilip cekilebilen seyyar evler bina sayilmaz. Bina vergisinin konusunu belirler.
+
+Madde 3 — Bina vergisi mukellefi
+Bina vergisini, binanin maliki, varsa intifa hakki sahibi, her ikisi de yoksa binaya malik gibi tasarruf edenler oder. Bir binaya paylı mulkiyet halinde malik olanlar hisseleri orannda mukelleftir; el birligi (istirak) mulkiyetinde malikler vergiden muteselsilen sorumludur. Bina sahipligi degisikliklerinde mukellefiyetin kime ait oldugunu belirler.
+
+Madde 12 — Arazi vergisinin konusu
+Turkiye sinirlari icinde bulunan arazi ve arsalar bu Kanun hukumlerine gore arazi vergisine tabidir. Belediye sinirlari icinde, belediyece parsellenmis arazi arsa sayilir; belediye sinirlari disinda olup da yine belediyece parsellenmis ve hizmetlerinden faydalanilan araziler de arsa kabul edilir. Arazi/arsa vergisinin konusunu ve arsa-arazi ayrimini duzenler.
+
+Madde 23 — Bildirim verme ve sure
+Bu Kanunun 33. maddesinde (8 numarali fikra haric) yazili vergi degerini tadil eden sebeplerin dogmasi halinde (gecici ve daimi muafiyetten faydalanma hali dahil) emlak vergisi bildirimi verilmesi zorunludur. Devlete ait arazi icin bildirim verilmez. Bildirimler; yeni insaat veya degisikligin meydana geldigi butce yili icinde, degisiklik son uc ayda olmussa olayin meydana geldigi tarihten itibaren uc ay icinde ilgili belediyeye verilir. Emlak vergisi bildiriminin ne zaman verilecegini belirler.
+
+Madde 30 — Verginin odeme suresi
+Emlak vergisi birinci taksiti Mart, Nisan ve Mayis aylarinda, ikinci taksiti Kasim ayinda olmak uzere iki esit taksitte odenir. Birinci taksit Mayis ayi sonuna, ikinci taksit Kasim ayi sonuna kadar odenir. Maliye Bakanligi odeme aylarini, bolgelerin ozelligine gore degistirebilir. Devir-ferag halinde devreden, devir tarihine kadar olan vergiyi odemekle yukumludur. Emlak vergisi taksit takvimini belirler.
+
+Madde 33 — Vergi degerini tadil eden sebepler
+Bu maddede emlak vergisi degerini degistiren (tadil eden) sebepler sayilir; baslicalari: yeni bina insa edilmesi (mevcut binalara ilave yapilmasi, asansor veya kalorifer tesisi konulmasi yeni insaat hukmundedir), binanin yanmasi-yikilmasi suretiyle veya baska sebeplerle tamamen veya kismen harap olmasi, arazinin parsellenmesi/kullanim seklinin degismesi ve cins tashihi. Bu sebeplerin dogmasi emlak vergisi bildirimi verilmesini gerektirir; vergi degeri degisikliklerinde bildirim yukumlulugunun temelidir.

@@ -1,0 +1,29 @@
+Bilirkişilik Kanunu
+Kanun No 6754, Kabul 03.11.2016, RG 24.11.2016/29898 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.6754 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6754.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Bu Kanunun amacı, bilirkişilerin nitelikleri, eğitimi, seçimi ve denetimine ilişkin usul ve esasların belirlenmesi ile bilirkişilik için etkin ve verimli bir kurumsal yapı oluşturulmasıdır. Kanun; adlî, idarî ve askerî yargı alanında yürütülen her türlü bilirkişilik faaliyetini kapsar. Böylece çözümü uzmanlığı, özel veya teknik bilgiyi gerektiren hâllerde mahkemelere görüş bildiren bilirkişilerin tâbi olduğu çerçeve tek elden düzenlenir.
+
+Madde 3 — Temel ilkeler (bilirkişinin yükümlülükleri)
+Bilirkişi, görevini dürüstlük kuralları çerçevesinde bağımsız, tarafsız ve objektif olarak yerine getirir. Bilirkişi, raporunda yalnızca çözümü uzmanlığı, özel veya teknik bilgiyi gerektiren hususlarda görüş bildirir; hukukî nitelendirme ve değerlendirmelerde bulunamaz. Genel bilgi veya tecrübeyle ya da hâkimlik mesleğinin gerektirdiği hukukî bilgiyle çözümlenmesi mümkün konularda bilirkişiye başvurulamaz. Bilirkişi, kendisine tevdi olunan bilgi ve belgelerin veya öğrendiği sırların gizliliğini sağlamakla yükümlüdür; bu yükümlülük görev sona erdikten sonra da devam eder. Görev bizzat yerine getirilir, başkasına devredilemez.
+
+Madde 6 — Bilirkişilik Daire Başkanlığı ve görevleri (temel/alt uzmanlık alanları, temel eğitim)
+Bilirkişilik hizmetlerinin yürütülmesini sağlamak üzere Adalet Bakanlığı Hukuk İşleri Genel Müdürlüğü bünyesinde Bilirkişilik Daire Başkanlığı kurulmuştur. Daire Başkanlığı; bilirkişiliğe ilişkin temel ve alt uzmanlık alanlarını belirlemek, bu alanlara göre aranacak nitelikleri tespit etmek, bilirkişilik temel ve alt uzmanlık eğitimlerinin usul ve esasları ile eğitim verecek kuruluşları belirlemek, bilirkişilerin uyacağı etik ilkeler ile rapor standartlarını ve rehber ilkeleri hazırlamakla görevlidir. Bilirkişiliğe başvuru ve sicile kayıt şartları bu çerçevede uygulanır.
+
+Madde 10 — Bilirkişiliğe kabul şartları (gerçek kişiler)
+Bilirkişilik başvurusunda bulunacak gerçek kişilerde; Türk vatandaşı olmak, tam ehliyetli olmak, kasten işlenen bir suçtan dolayı belirli süreyle hapis cezasına veya affa uğramış olsa bile Kanunda sayılan yüz kızartıcı/güveni sarsıcı suçlardan mahkûm olmamak, disiplin yönünden meslekten veya memuriyetten çıkarılmamış olmak, daha önce kendi isteği dışında sicilden çıkarılmamış olmak, başka bir bölge kurulunun listesine kayıtlı olmamak, bilirkişilik temel eğitimini tamamlamış olmak ve uzmanlık alanında en az beş yıl (alanına göre Daire Başkanlığınca belirlenen süre) fiilen görev yapmış olmak şartları aranır. Şartları taşıyan tüzel kişiler de bünyesindeki uzmanlar adına başvurabilir.
+
+Madde 11 — Başvuru, seçilme usulü ve sicile kayıt (eksik belge için 15 gün, üç yıl sicil)
+Bilirkişilik başvurusu, ilgilinin yerleşim yerinin veya mesleki faaliyetini yürüttüğü yerin bağlı olduğu bilirkişilik bölge kuruluna ya da adlî veya idarî yargı ilk derece mahkemesi adalet komisyonuna, gerekli belgeler eklenmek suretiyle yazılı olarak yapılır. Başvuru dilekçesine eklenmesi zorunlu belgeler eksikse, başvuru sahibine eksikliği tamamlaması için on beş gün süre verilir; eksiklik bu sürede tamamlanmazsa başvuru reddedilir. Bölge kurulu, başvuranlar arasından liyakatli olanları seçerek sicile kaydeder; sicile kayıt üç yıl için yapılır ve süre sonunda yenilenmediğinde geçerliliğini yitirir.
+
+Madde 12 — Sicil ve listenin tutulması, yemin ve görevlendirme
+Bilirkişilik sicili ve listesi Bilirkişilik Daire Başkanlığınca elektronik ortamda tutulur. Sicile; bilirkişinin adı-soyadı, kimlik ve iletişim bilgileri, mesleği, temel ve alt uzmanlık alanları, temel eğitim bilgisi ile düzenlediği rapor sayısı gibi bilgiler işlenir. Sicile kaydedilen bilirkişi, görevine başlamadan önce yemin eder; yemin etmeyen bilirkişi listeye yazılmaz. Bilirkişiler, görev yapacakları bölge adliye mahkemesinin yargı çevresi esas alınarak ilgili bölge kurulunun listesinden görevlendirilir.
+
+Madde 13 — Sicilden ve listeden çıkarılma
+Kabul şartlarını sonradan kaybeden, temel ilkelere aykırı davranan, kanunî bir sebep olmaksızın bilirkişilik yapmaktan kaçınan veya raporunu belirlenen sürede mazeretsiz olarak vermeyen ya da performansı yetersiz görülen bilirkişi, bölge kurulu kararıyla sicilden ve listeden çıkarılır. İhlalin niteliğine göre çıkarma yerine uyarma ya da bir yıla kadar geçici olarak listeden çıkarma yaptırımı da uygulanabilir. Bilirkişi, kendi isteğiyle de sicilden çıkarılmasını talep edebilir; sicil süresinin dolması hâlinde yenileme talep edilmezse kayıt sona erer.

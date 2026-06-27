@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1059,
+ "chunk_sayisi": 1155,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -218,6 +218,90 @@
    "madde_no": 47,
    "madde_tur": "madde",
    "text": "Madde 47 — Ebelik unvanı ve diploma tescili\nEbelik mesleğini icra ve ebe unvanını taşıyabilmek için ebelikle ilgili lisans eğitimi veren fakülte/yüksekokuldan mezun olup diplomasının Sağlık Bakanlığınca tescil edilmiş olması gerekir; yurt dışında ebelik öğrenimi görenlerde denkliğin onaylanması ve tescil aranır. Ebeler, özellik arz eden alanlarda belirlenen esaslar çerçevesinde yetki belgesi alır."
+  },
+  {
+   "mevzuat": "1262 ispenciyari tibbi mustahzarlar kanunu",
+   "kaynak_dosya": "1262_ispenciyari_tibbi_mustahzarlar_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Ruhsat (müsaade) alma zorunluluğu\nDahilde imal olunan ispençiyari ve tıbbi müstahzarların ticarete çıkarılmasından ve hariçte yapılanların memlekete ithalinden evvel Sağlık Bakanlığından (kanundaki tabirle Sıhhiye ve Muaveneti İçtimaiye Vekaletinden) müsaade alınması şarttır. Yani bir müstahzar, ruhsat alınmadan piyasaya verilemez veya ithal edilemez. Ruhsat başvurusu olmadan satışa sunulan müstahzar ruhsatsız sayılır."
+  },
+  {
+   "mevzuat": "1262 ispenciyari tibbi mustahzarlar kanunu",
+   "kaynak_dosya": "1262_ispenciyari_tibbi_mustahzarlar_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — İmal yetkisi ve mesul müdür\nTürkiye'de gerçek ve tüzel kişiler, müstahzarları ancak bir Türk tabip, eczacı veya kimyagerin mesuliyeti altında (mesul müdür) imal edebilir; tüzel kişiler için aranacak nitelikler Bakanlıkça belirlenir. İmalathane/laboratuvar açma ve sorumlu yönetici şartı bu maddeden doğar. Mesul müdürün niteliği ruhsat dosyasında belgelenir."
+  },
+  {
+   "mevzuat": "1262 ispenciyari tibbi mustahzarlar kanunu",
+   "kaynak_dosya": "1262_ispenciyari_tibbi_mustahzarlar_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Ruhsat başvurusu ve eklenecek belgeler\nMüstahzar ruhsatı için Sağlık Bakanlığına bir istida (dilekçe) ile başvurulur; başvuruya müstahzarı terkip eden maddeleri bildiren tasdikli formül, ambalaj ve etiket örnekleri, tarifname (kullanım talimatı) ve istenen diğer belgeler eklenir. Bakanlık başvuruyu inceleyerek uygun bulunanlara ruhsatname (ruhsat numarası içeren belge) verir. Bu madde ilaç ruhsat başvuru evrakının temel içeriğini belirler."
+  },
+  {
+   "mevzuat": "1262 ispenciyari tibbi mustahzarlar kanunu",
+   "kaynak_dosya": "1262_ispenciyari_tibbi_mustahzarlar_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Etiket ve ambalaj üzerinde ruhsat bilgileri\nMüstahzarların dış ambalajı üzerinde ve ambalaj içindeki tarifnamelerde açık ve Türkçe olarak ruhsat sahibinin ve yapıldığı laboratuvarın adı ve adresi, ruhsat numarası ve ilacın nasıl kullanılacağı yazılı olur; tesirli/zehirli madde içeriyorsa cinsi ve miktarı belirtilir. Etikette ruhsat numarasının bulunması ruhsatın varlığının ispatıdır. [DOĞRULA: bazı konsolide nüshalarda bu hüküm madde 13 olarak numaralandırılabilir; üretimden önce güncel mevzuat.gov.tr metni ile teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "1262 ispenciyari tibbi mustahzarlar kanunu",
+   "kaynak_dosya": "1262_ispenciyari_tibbi_mustahzarlar_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Formüle aykırı/saf olmayan imal cezası\nTahlil neticesinde müstahzarın terkibindeki maddelerin saf olmadığı, ruhsat almak için verilen formüle uymadığı veya tedavi vasfını azaltacak/kaybedecek şekilde imal edildiği anlaşılırsa, fiil ayrıca suç oluşturmadığı takdirde ruhsat sahibine ve bunu bilerek satan/satışa arz edenlere idarî para cezası verilir. Ruhsat dosyasındaki formüle uymayan üretim bu madde kapsamındadır. [DOĞRULA: idari para cezası alt-üst tutarları 5326 sK yeniden değerleme oranı ile her yıl güncellenir; uygulamadan önce güncel tutar teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "1262 ispenciyari tibbi mustahzarlar kanunu",
+   "kaynak_dosya": "1262_ispenciyari_tibbi_mustahzarlar_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Ruhsatsız imal/satış cezası\nRuhsatsız olarak müstahzar imal edenler ile bu suretle imal edilen müstahzarları bilerek satan, satışa arz eden veya sattıranlara idarî para cezası verilir; ceza, failin müstahzar imaline salahiyeti (mesul müdür/yetki) olup olmamasına göre farklı tutarlarda uygulanır. Ruhsat başvurusu yapılmadan piyasaya sürülen ilaç bu maddenin konusudur. [DOĞRULA: güncel idari para cezası tutarları ve değişik fıkralar 5728 sK sonrası metinle teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "1319 emlak vergisi kanunu",
+   "kaynak_dosya": "1319_emlak_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Bina vergisinin konusu (verginin mevzuu)\nTurkiye sinirlari icinde bulunan binalar bu Kanun hukumlerine gore bina vergisine tabidir. Bu Kanundaki 'bina' tabiri; yapildigi madde ne olursa olsun gerek karada gerek su uzerindeki sabit insaatin hepsini kapsar. Vergi Usul Kanununda yazili bina mutemmimleri de bina ile birlikte nazara alinir; yuzer havuzlar, sair yuzer yapilar, cadirlar ve nakil vasitalarina takilip cekilebilen seyyar evler bina sayilmaz. Bina vergisinin konusunu belirler."
+  },
+  {
+   "mevzuat": "1319 emlak vergisi kanunu",
+   "kaynak_dosya": "1319_emlak_vergisi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Bina vergisi mukellefi\nBina vergisini, binanin maliki, varsa intifa hakki sahibi, her ikisi de yoksa binaya malik gibi tasarruf edenler oder. Bir binaya paylı mulkiyet halinde malik olanlar hisseleri orannda mukelleftir; el birligi (istirak) mulkiyetinde malikler vergiden muteselsilen sorumludur. Bina sahipligi degisikliklerinde mukellefiyetin kime ait oldugunu belirler."
+  },
+  {
+   "mevzuat": "1319 emlak vergisi kanunu",
+   "kaynak_dosya": "1319_emlak_vergisi_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Arazi vergisinin konusu\nTurkiye sinirlari icinde bulunan arazi ve arsalar bu Kanun hukumlerine gore arazi vergisine tabidir. Belediye sinirlari icinde, belediyece parsellenmis arazi arsa sayilir; belediye sinirlari disinda olup da yine belediyece parsellenmis ve hizmetlerinden faydalanilan araziler de arsa kabul edilir. Arazi/arsa vergisinin konusunu ve arsa-arazi ayrimini duzenler."
+  },
+  {
+   "mevzuat": "1319 emlak vergisi kanunu",
+   "kaynak_dosya": "1319_emlak_vergisi_kanunu.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Bildirim verme ve sure\nBu Kanunun 33. maddesinde (8 numarali fikra haric) yazili vergi degerini tadil eden sebeplerin dogmasi halinde (gecici ve daimi muafiyetten faydalanma hali dahil) emlak vergisi bildirimi verilmesi zorunludur. Devlete ait arazi icin bildirim verilmez. Bildirimler; yeni insaat veya degisikligin meydana geldigi butce yili icinde, degisiklik son uc ayda olmussa olayin meydana geldigi tarihten itibaren uc ay icinde ilgili belediyeye verilir. Emlak vergisi bildiriminin ne zaman verilecegini belirler."
+  },
+  {
+   "mevzuat": "1319 emlak vergisi kanunu",
+   "kaynak_dosya": "1319_emlak_vergisi_kanunu.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Verginin odeme suresi\nEmlak vergisi birinci taksiti Mart, Nisan ve Mayis aylarinda, ikinci taksiti Kasim ayinda olmak uzere iki esit taksitte odenir. Birinci taksit Mayis ayi sonuna, ikinci taksit Kasim ayi sonuna kadar odenir. Maliye Bakanligi odeme aylarini, bolgelerin ozelligine gore degistirebilir. Devir-ferag halinde devreden, devir tarihine kadar olan vergiyi odemekle yukumludur. Emlak vergisi taksit takvimini belirler."
+  },
+  {
+   "mevzuat": "1319 emlak vergisi kanunu",
+   "kaynak_dosya": "1319_emlak_vergisi_kanunu.txt",
+   "madde_no": 33,
+   "madde_tur": "madde",
+   "text": "Madde 33 — Vergi degerini tadil eden sebepler\nBu maddede emlak vergisi degerini degistiren (tadil eden) sebepler sayilir; baslicalari: yeni bina insa edilmesi (mevcut binalara ilave yapilmasi, asansor veya kalorifer tesisi konulmasi yeni insaat hukmundedir), binanin yanmasi-yikilmasi suretiyle veya baska sebeplerle tamamen veya kismen harap olmasi, arazinin parsellenmesi/kullanim seklinin degismesi ve cins tashihi. Bu sebeplerin dogmasi emlak vergisi bildirimi verilmesini gerektirir; vergi degeri degisikliklerinde bildirim yukumlulugunun temelidir."
   },
   {
    "mevzuat": "1380 su urunleri kanunu",
@@ -1375,6 +1459,62 @@
    "text": "Madde 28 — Kirletenin sorumluluğu (kusursuz sorumluluk)\nÇevreyi kirletenlerin ve çevreye zarar verenlerin, sebep oldukları kirlenme ve bozulmadan doğan zararlardan KUSUR ŞARTI ARANMAKSIZIN sorumlu olduğunu düzenler (objektif/kusursuz sorumluluk). Kirletenin genel hükümlere göre tazminat sorumluluğu da saklıdır; çevreye verilen zararların tazminine ilişkin talepler, zarar görenin zararı ve yükümlüyü öğrendiği tarihten itibaren beş yılda zamanaşımına uğrar. Çevre zararı tazmin ve rücu yazışmalarının dayanağıdır."
   },
   {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacını düzenler: yurttaki millî ve milletlerarası düzeyde değerlere sahip millî park, tabiat parkı, tabiat anıtı ve tabiatı koruma alanlarının seçilip belirlenmesine, özellik ve karakterleri bozulmadan korunmasına, geliştirilmesine ve yönetilmesine ilişkin esasları kapsar. Milli park statüsü, izin ve koruma yazışmalarının dayanak ilkesidir."
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nKanunda geçen temel kavramları tanımlar: \"Millî park\" bilimsel ve estetik bakımdan ender bulunan tabiî ve kültürel kaynak değerlerine sahip alan; \"Tabiat parkı\" bitki örtüsü ve yaban hayatı özelliğine sahip dinlenme ve eğlenme alanı; \"Tabiat anıtı\" ilginç tabiat olaylarının oluşturduğu alan; \"Tabiatı koruma alanı\" bilim ve eğitim amacıyla ayrılan ekosistem. İzin ve başvuru yazışmalarında alanın hangi statüde olduğunun belirlenmesinde esas alınan tanım maddesidir."
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Belirleme ve ilan (statü kazandırma)\nMillî park karakterine sahip alanların belirlenip ilan edilme usulünü düzenler: millî parklar Cumhurbaşkanı kararıyla belirlenir; orman rejimine giren yerlerdeki tabiat parkı, tabiat anıtı ve tabiatı koruma alanları Bakan onayıyla, orman rejimi dışındaki alanlar Cumhurbaşkanı kararıyla statü kazanır. Bir alanın milli park/tabiat parkı ilan edilmesine ilişkin talep ve tescil yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Planlama (uzun devreli gelişme planı / yönetim planı)\nİlan edilen alanların koruma ve kullanma amaçlarını gerçekleştirmek üzere uzun devreli gelişme planı, gelişme planı ve yönetim planının ilgili Genel Müdürlükçe hazırlanmasını düzenler. Bu planlar kesinleşmeden Kanunda sözü edilen izinler verilemez; izin başvurularının plan uygunluğu denetiminde dayanak maddedir."
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Kamu kurum ve kuruluşlarına izin (plan ve projelere izin)\nMillî park ve tabiat parklarında, onaylı planlara uygun olması koşuluyla kamu kurum ve kuruluşlarınca yapılacak her türlü plan, proje ve yatırımlara Genel Müdürlükçe izin verilebileceğini ve uygulamaların Kanun hükümlerine göre denetleneceğini düzenler. Tarihî ve arkeolojik sahalarda ayrıca ilgili kültür mercii izni gerekir. Milli park alanında tesis/yatırım/işletme izni başvuru ve değerlendirme yazışmalarının doğrudan dayanağıdır."
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Yasaklar (milli park alanında yasak fiiller)\nMillî park alanlarında yasak olan fiilleri sayar: tabiî kaynak değerlerini ve ekolojik dengeyi bozmak, yaban hayatını tahrip etmek, çevre kirliliğine yol açmak, kamu yararı bakımından vazgeçilmez ve kesin zorunluluk bulunmadıkça yapı ve tesis inşa etmek, alanın doğal yapısını değiştiren işler yapmak. İzinsiz faaliyet ve ihlal tespiti yazışmaları ile ceza uygulamasının (Madde 21) maddi dayanağıdır."
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Ceza hükmü (yasak fiillere yaptırım)"
+  },
+  {
+   "mevzuat": "2873 milli parklar kanunu",
+   "kaynak_dosya": "2873_milli_parklar_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 ve ilgili hükümlerle yasaklanan faaliyetleri yürütenler hakkında, fiil daha ağır cezayı gerektirmediği takdirde hapis ve adli para cezası uygulanmasını düzenler. [DOĞRULA: güncel ceza alt-üst sınırları ve adli para cezası gün sayısı sonraki değişikliklerle güncellenmiş olabilir — mevzuat.gov.tr 1.5.2873 güncel metinden teyit edilmeli.] Milli parkta izinsiz/yasak faaliyet nedeniyle suç duyurusu ve yaptırım yazışmalarının dayanağıdır."
+  },
+  {
    "mevzuat": "2886 devlet ihale kanunu",
    "kaynak_dosya": "2886_devlet_ihale_kanunu.txt",
    "madde_no": 1,
@@ -2278,6 +2418,48 @@
    "text": "Ek Madde 10 — Bazı kamu görevlilerine ücret/tazminat\nMaddede sayılan kadro ve görev unvanlarında bulunanlara, en yüksek Devlet memuru\naylığına ekli cetvellerdeki oranların uygulanmasıyla bulunan tutarda ücret ve tazminat\nödenir; bu ödemelerin vergi ve kesinti rejimi maddede gösterilir. Düzenleme, belirli\nüst düzey ve özellikli kadrolar için ücret çerçevesi getirir. [DOĞRULA: Ek Madde 10\nkapsamına giren unvanlar ve oranlar mevzuat.gov.tr 4.5.375 üzerinden]"
   },
   {
+   "mevzuat": "4046 ozellestirme uygulamalari kanunu",
+   "kaynak_dosya": "4046_ozellestirme_uygulamalari_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nKanun; kamuya ait kuruluş, mal ve hizmet üretim birimleri ile varlıkların (baraj, gölet, otoyol, yataklı tedavi kurumları, limanlar ve benzeri üretim birimleri dâhil) ve işletme haklarının özelleştirilmesine ilişkin esasları düzenler. Amaç; ekonomide verimlilik artışı ve kamu giderlerinde azalma sağlamak, Hazineye ait taşınmazları değerlendirerek kamuya gelir elde etmek gibi gerekçelerle devletin ekonomideki işletmecilik rolünü daraltmaktır. Bu madde, özelleştirme programına alma ve özelleştirme ihalesi işlemlerinin kapsamını belirler."
+  },
+  {
+   "mevzuat": "4046 ozellestirme uygulamalari kanunu",
+   "kaynak_dosya": "4046_ozellestirme_uygulamalari_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Özelleştirme Yüksek Kurulu ve özelleştirme programına alınma\nÖzelleştirmeyle ilgili en üst karar organı Özelleştirme Yüksek Kuruludur; kuruluşların özelleştirme kapsam ve programına alınmasına, özelleştirme yöntem ve sürelerinin belirlenmesine, ihale komisyonu kararlarının onaylanmasına ve nihai devir kararlarına Kurul karar verir. Kurul kararında, kuruluşlardan hangilerinin mali/hukuki yönden özelleştirmeye hazırlık işlemine tabi tutulacağı, hangilerinin doğrudan özelleştirme programına alınacağı ve özelleştirmenin hangi yöntemle gerçekleştirileceği belirtilir. Özelleştirme programına alma kararı, kuruluşa ilişkin işlemlerin başlatılmasının hukuki dayanağıdır."
+  },
+  {
+   "mevzuat": "4046 ozellestirme uygulamalari kanunu",
+   "kaynak_dosya": "4046_ozellestirme_uygulamalari_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Özelleştirme İdaresi Başkanlığı (yürütücü idare)\nÖzelleştirme uygulamalarını Özelleştirme Yüksek Kurulunun kararları çerçevesinde yürütmekle görevli yürütücü idare Özelleştirme İdaresi Başkanlığıdır (ÖİB); değer tespiti, ihalelerin yapılması, danışmanlık hizmeti alınması ve devir sözleşmelerinin hazırlanması bu İdarece yürütülür. [DOĞRULA: 4046 sayılı Kanunun 4. ve 5. maddeleri 703 sayılı KHK / Cumhurbaşkanlığı teşkilatına ilişkin düzenlemelerle MÜLGA edilmiş olup, İdarenin güncel kuruluş ve görevleri 1 No.lu Cumhurbaşkanlığı Teşkilatı Kararnamesinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "4046 ozellestirme uygulamalari kanunu",
+   "kaynak_dosya": "4046_ozellestirme_uygulamalari_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Özelleştirme yöntemleri, değer tespiti ve ihale usulleri\nÖzelleştirme yöntemleri; satış (blok satış, halka arz, çalışanlara satış, borsada satış vb.), kiralama, işletme hakkı devri, mülkiyetin gayri ayni hakların tesisi ve gelir ortaklığı modeli ile bunların birlikte uygulanması olarak sayılmıştır. Değer tespiti, ihale komisyonundan ayrı çalışan değer tespit komisyonunca indirgenmiş nakit akımları, defter değeri, net aktif değeri, tasfiye değeri, piyasa kapitalizasyon değeri, ekspertiz değeri gibi en az iki uluslararası kabul görmüş yöntem uygulanarak yapılır. İhaleler kapalı teklif, pazarlık, açık artırma, belli istekliler arasında kapalı teklif ve elektronik ihale usullerinden biriyle yürütülür; ihale komisyonu kararları onay için Özelleştirme Yüksek Kuruluna sunulur ve sonuçlar Kurul onayından sonra kamuoyuna duyurulur."
+  },
+  {
+   "mevzuat": "4046 ozellestirme uygulamalari kanunu",
+   "kaynak_dosya": "4046_ozellestirme_uygulamalari_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Hazine taşınmazlarının devri ve aynî sermaye konulması\nÖzelleştirme programındaki kuruluşların sermaye yapılarının düzenlenmesi amacıyla, Hazineye ait taşınmazlar ve diğer varlıklar bedeli karşılığında bu kuruluşlara aynî sermaye olarak konulabilir veya devredilebilir; bu işlemler Özelleştirme Yüksek Kurulu kararına dayanılarak yapılır. Devir ve sermaye işlemleri, özelleştirmeye hazırlık kapsamında kuruluşların mali yapısını güçlendirmeye yöneliktir. [DOĞRULA: aynî sermaye/Hazine taşınmazı devrine ilişkin güncel madde metni ve yetkili merci mevzuat.gov.tr konsolide metninden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "4046 ozellestirme uygulamalari kanunu",
+   "kaynak_dosya": "4046_ozellestirme_uygulamalari_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — İş kaybı tazminatı ve diğer hizmetler\nÖzelleştirme kapsamına alınan kuruluşların (iştirakler hariç) özelleştirilmesi, küçültülmesi, faaliyetinin kısmen veya tamamen durdurulması ya da tasfiyesi nedeniyle iş sözleşmeleri sona eren ve bu kapsamda işsiz kalan işçilere, başvuruları üzerine Özelleştirme Fonundan iş kaybı tazminatı ödenir. Ayrıca bu işçilere yeni iş bulma, meslek geliştirme ve edindirme eğitimi gibi hizmetler sağlanır. Tazminat ve hizmetlerden yararlanmak isteyen işçinin, iş sözleşmesinin sona erdiği tarihten itibaren maddede ve ilgili yönetmelikte öngörülen süre içinde İŞKUR'a başvurması gerekir. [DOĞRULA: iş kaybı tazminatı miktarı ve başvuru süresine ilişkin güncel hükümler İŞKUR uygulama yönetmeliğinden teyit edilmelidir.]"
+  },
+  {
    "mevzuat": "4054 rekabetin korunmasi kanunu",
    "kaynak_dosya": "4054_rekabetin_korunmasi_kanunu.txt",
    "madde_no": 4,
@@ -2367,6 +2549,48 @@
    "madde_no": 14,
    "madde_tur": "madde",
    "text": "Madde 14 — Tahsis Amacının Değiştirilmesi\nTahsis edilmiş mera, yaylak ve kışlakların tahsis amacının (vasfının) kural olarak değiştirilemeyeceğini; ancak enerji, madencilik, savunma, kamu yatırımı, turizm gibi sayılan kamu yararı hâllerinde ilgili müracaat üzerine ve komisyonca yirmi yıllık mera geliri esas alınarak hesaplanan bedel ödenmek kaydıyla tahsis amacının değiştirilebileceğini düzenler; bu yerlerin vasfı değiştirilerek tapuda Hazine adına tescil edilir. Mera vasıf değişikliği (tahsis amacı değişikliği) başvuru ve bedel yazışmalarının temel dayanağıdır."
+  },
+  {
+   "mevzuat": "4447 issizlik sigortasi kanunu",
+   "kaynak_dosya": "4447_issizlik_sigortasi_kanunu.txt",
+   "madde_no": 46,
+   "madde_tur": "madde",
+   "text": "Madde 46 — İşsizlik sigortasının amacı ve kapsamı\nİşsizlik sigortası; bir işyerinde çalışırken çalışma istek, yetenek, sağlık ve yeterliliğinde olmasına rağmen kendi istek ve kusuru dışında işini kaybedenlere, uğradıkları gelir kaybını kısmen telafi etmek üzere bu Kanunda öngörülen ödeme ve hizmetlerin sağlanmasını amaçlar. Sigorta, 5510 sayılı Kanunun 4/a (eski SSK) kapsamındaki hizmet akdine tabi sigortalılar ile kapsama dâhil edilen diğer çalışanları kapsar. Bu madde, işsizlik ödeneği başvurusunun ve hizmetlerinin yasal temelini oluşturur."
+  },
+  {
+   "mevzuat": "4447 issizlik sigortasi kanunu",
+   "kaynak_dosya": "4447_issizlik_sigortasi_kanunu.txt",
+   "madde_no": 50,
+   "madde_tur": "madde",
+   "text": "Madde 50 — İşsizlik ödeneğinin miktarı, ödeme süreleri ve ödeme zamanı\nGünlük işsizlik ödeneği, sigortalının son dört aylık prime esas kazançları dikkate alınarak hesaplanan günlük ortalama brüt kazancının yüzde kırkıdır; bu tutar 4857 sayılı İş Kanununun 39. maddesine göre uygulanan aylık brüt asgari ücretin yüzde seksenini geçemez. Hizmet akdinin sona ermesinden önceki son 120 gün hizmet akdine tabi olanlardan son üç yıl içinde en az 600 gün prim ödeyene 180 gün, 900 gün ödeyene 240 gün, 1080 gün ödeyene 300 gün süreyle işsizlik ödeneği verilir. Ödenek her ayın sonunda aylık olarak sigortalı işsizin kendisine ödenir; ilk işsizlik ödeneği başvuruyu izleyen ayın sonunda yapılır."
+  },
+  {
+   "mevzuat": "4447 issizlik sigortasi kanunu",
+   "kaynak_dosya": "4447_issizlik_sigortasi_kanunu.txt",
+   "madde_no": 51,
+   "madde_tur": "madde",
+   "text": "Madde 51 — İşsizlik ödeneğine hak kazanmanın şartları ve başvuru (30 gün)\nSigortalı işsizin işsizlik ödeneğine hak kazanabilmesi için hizmet akdinin; sigortalının kendi istek ve kusuru dışında (örneğin işveren feshi, belirli süreli sözleşmenin sona ermesi, işyerinin kapanması, sağlık/haklı nedenle işçi feshi gibi maddede sayılan hâllerde) sona ermiş olması, prim ödeme koşullarını sağlaması ve Kuruma süresinde başvurması gerekir. Sigortalı işsiz, hizmet akdinin feshedildiği tarihi izleyen günden itibaren otuz gün içinde en yakın İŞKUR birimine doğrudan veya elektronik ortamda (e-Devlet) başvurarak yeni bir iş almaya hazır olduğunu kaydettirmek zorundadır. Mücbir sebepler dışında başvuruda gecikilen süre, hak kazanılan toplam işsizlik ödeneği süresinden düşülür."
+  },
+  {
+   "mevzuat": "4447 issizlik sigortasi kanunu",
+   "kaynak_dosya": "4447_issizlik_sigortasi_kanunu.txt",
+   "madde_no": 52,
+   "madde_tur": "madde",
+   "text": "Madde 52 — İşsizlik ödeneğinin kesilmesi (hak düşürücü nedenler)\nİŞKUR tarafından teklif edilen mesleklerine uygun ve son çalıştığı işin ücret ve çalışma koşullarına yakın, ikamet yerinin değişmesini gerektirmeyen bir işi haklı bir nedene dayanmaksızın reddeden sigortalı işsizlerin işsizlik ödeneği kesilir. Ayrıca ödenek aldığı sürede gelir getirici bir işte çalıştığı veya başka bir sosyal güvenlik kuruluşundan gelir ya da aylık aldığı tespit edilenlerin, Kurumca önerilen meslek geliştirme/edindirme eğitimini haklı sebep olmaksızın reddedenlerin ve haklı bir nedene dayanmaksızın çağrılan denetimlere gelmeyen veya istenen bilgi/belgeyi vermeyenlerin ödeneği kesilir. Belirli hâllerde kesilen ödenek, durumun ortadan kalkması üzerine kalan süre kadar yeniden başlatılabilir."
+  },
+  {
+   "mevzuat": "4447 issizlik sigortasi kanunu",
+   "kaynak_dosya": "4447_issizlik_sigortasi_kanunu.txt",
+   "madde_no": 54,
+   "madde_tur": "madde",
+   "text": "Madde 54 — İdari para cezaları (bildirim yükümlülüğü)\nİşverenler, hizmet akdi sona eren sigortalılar için işten ayrılma bildirgesini düzenlemek ve bu Kanunda öngörülen bildirim yükümlülüklerini yerine getirmek zorundadır; bu bildirimler işsizlik ödeneği başvurusunun değerlendirilmesinde esas alınır. Yükümlülüklere aykırı hareket eden işverenlere maddede belirtilen tutarlarda idari para cezası uygulanır. [DOĞRULA: idari para cezası tutarları her yıl yeniden değerleme oranında güncellendiğinden cari rakamlar İŞKUR/Bakanlık tebliğinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "4447 issizlik sigortasi kanunu",
+   "kaynak_dosya": "4447_issizlik_sigortasi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "ek",
+   "text": "Ek Madde 2 — Kısa çalışma ve kısa çalışma ödeneği\nGenel ekonomik, sektörel veya bölgesel kriz ile zorlayıcı sebeplerle işyerindeki haftalık çalışma sürelerinin geçici olarak önemli ölçüde azaltılması veya işyerinde faaliyetin tamamen ya da kısmen geçici olarak durdurulması hâllerinde, işyerinde üç ayı aşmamak üzere (Cumhurbaşkanınca altı aya kadar uzatılabilir) kısa çalışma yapılabilir. İşveren kısa çalışma talebini gerekçeleriyle birlikte Türkiye İş Kurumuna ve varsa toplu iş sözleşmesi tarafı sendikaya yazılı olarak bildirir; talebin uygunluğu Bakanlık/İŞKUR denetimiyle tespit edilir. Günlük kısa çalışma ödeneği, sigortalının son on iki aylık prime esas kazançları üzerinden hesaplanan günlük ortalama brüt kazancının yüzde altmışıdır ve aylık brüt asgari ücretin yüzde 150'sini geçemez; işçinin kısa çalışma ödeneğine hak kazanması için işsizlik sigortası prim ödeme koşullarını sağlaması gerekir."
   },
   {
    "mevzuat": "4458 gumruk kanunu",
@@ -2859,6 +3083,48 @@
    "text": "Madde 26 — İhalelere katılmaktan yasaklama\n25. maddede sayılan yasak fiil veya davranışlarda bulunduğu tespit edilenler hakkında, fiilin özelliğine göre bir yıldan az olmamak üzere iki yıla kadar bütün kamu kurum ve kuruluşlarının ihalelerine katılmaktan yasaklama kararı verilir. Tüzel kişilerde şahıs şirketi ortaklarının tamamı, sermaye şirketinde ise sermayesinin yarısından fazlasına sahip ortaklar hakkında da yasaklama uygulanır. Yasaklama kararları, fiilin tespit edildiği tarihi izleyen en geç kırk beş gün içinde verilir ve Resmî Gazete'de yayımlanır."
   },
   {
+   "mevzuat": "4760 ozel tuketim vergisi kanunu",
+   "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Verginin konusu (vergiyi doguran olay)\nKanuna ekli (I), (II), (III) ve (IV) sayili listelerdeki mallar bir defaya mahsus olmak uzere ozel tuketim vergisine tabidir. Vergiyi doguran olay; (I) sayili listedeki mallarin imalatcilari (rafineriler dahil) veya ithalatcilari tarafindan teslimi, (II) sayili listedeki kayit ve tescile tabi mallarin ilk iktisabi, (III)/(IV) sayili liste mallarinin imalatci tarafindan teslimi veya ithali ve bu mallarin acik artirma yoluyla satisidir. OTV verginin konusunu ve hangi mal gruplarinda dogdugunu belirler."
+  },
+  {
+   "mevzuat": "4760 ozel tuketim vergisi kanunu",
+   "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Mukellef ve vergi sorumlusu\nOzel tuketim vergisinin mukellefi; (I), (III) ve (IV) sayili listelerdeki mallar ile (II) sayili listedeki kayit-tescile tabi olmayan mallari imal, insa veya ithal edenler ile bu mallarin acik artirma yoluyla satisini gerceklestirenlerdir. (II) sayili listedeki kayit ve tescile tabi mallarda mukellef; motorlu arac ticareti yapanlar, kullanmak uzere ithal edenler veya acik artirmayla satisini yapanlardir. Mukellefin Turkiye'de ikametgahi/isyeri yoksa Maliye Bakanligi vergi alacaginin emniyeti icin vergi sorumlusu belirleyebilir."
+  },
+  {
+   "mevzuat": "4760 ozel tuketim vergisi kanunu",
+   "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Ihracat istisnasi\nBu Kanuna ekli listelerdeki mallarin ihracat teslimleri, teslimin yurt disindaki bir musteriye yapilmasi ve malin Turkiye Cumhuriyeti gumruk bolgesinden cikmis olmasi sartiyla vergiden mustesnadir. Ihrac edilen mallara ait alis belgelerinde gosterilen ve beyan edilen OTV, ihracatcinin bagli oldugu vergi dairesince iade edilir. Ihracat evrakina dayali OTV istisnasinin ve iadesinin dayanagidir."
+  },
+  {
+   "mevzuat": "4760 ozel tuketim vergisi kanunu",
+   "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Diger istisnalar\nBu maddede sayilan teslimler OTV'den mustesnadir; baslicalari: askeri amacli teslimler, petrol arama-istihsal faaliyetlerinde kullanilacak mallar, diplomatik istisna kapsamindaki teslimler ve malul/engellilere ait arac iktisabi. 7. maddenin 2. fikrasi uyarinca, 87.03/87.04/87.11 G.T.I.P. numarali bazi araclarin, harekete iliskin ozel tertibati bulunan engelliler ile saglik kurulu raporuyla agir engellilik (orn. %90 ve uzeri) durumu belgelenenler tarafindan ilk iktisabi belirli sartlarla vergiden mustesnadir. Engelli arac istisnasi basvurularinin temel dayanagidir."
+  },
+  {
+   "mevzuat": "4760 ozel tuketim vergisi kanunu",
+   "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Verginin beyani, vergilendirme donemi ve odeme\nOTV, mukelleflerin yazili beyanlari uzerine tarh olunur. Vergilendirme donemi (I) sayili listedeki mallar icin her ayin ilk onbes gunu ile kalan gunlerinden olusan iki donem; diger listelerdeki ve kayit-tescile tabi olmayan mallarda birer aylik takvim donemleridir. Beyanname, (I) sayili liste mallari icin donemi izleyen onuncu gun, diger mallar icin izleyen ayin onbesinci gunu aksamina kadar mukellefin KDV yonunden bagli oldugu vergi dairesine verilir; vergi beyanname verme suresi icinde odenir. OTV beyannamesinin verilme ve odeme takviminin dayanagidir."
+  },
+  {
+   "mevzuat": "4760 ozel tuketim vergisi kanunu",
+   "kaynak_dosya": "4760_ozel_tuketim_vergisi_kanunu.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Verginin belgelerde gosterilmesi\nMukellefler ozel tuketim vergisini duzenledikleri satis belgelerinde ayrica gostermeye mecburdur. Vergiye tabi bir islem olmadigi veya bu vergiyi gosterme hakki bulunmadigi halde belgelerde OTV gosterenler, gosterdikleri bu vergiyi beyan etmek ve odemekle yukumludur. Fatura/satis evrakinda OTV'nin gosterilmesi ve haksiz gosterimin sorumlulugunu duzenler."
+  },
+  {
    "mevzuat": "4787 aile mahkemeleri kanunu",
    "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
    "madde_no": 1,
@@ -2978,6 +3244,41 @@
    "text": "Madde 63 — Çalışma süresi\nGenel bakımdan haftalık çalışma süresi en çok kırkbeş saattir ve aksi kararlaştırılmamışsa çalışılan günlere eşit bölünür. Tarafların anlaşmasıyla bu süre, günde onbir saati aşmamak koşuluyla haftanın günlerine farklı dağıtılabilir (denkleştirme); bu halde iki aylık (TİS ile dört aya kadar) ortalama haftalık süre normal haftalık süreyi aşamaz. Yer altı maden işlerinde çalışma süresi günde en çok 7,5, haftada en çok 37,5 saattir."
   },
   {
+   "mevzuat": "488 damga vergisi kanunu",
+   "kaynak_dosya": "488_damga_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Damga vergisine tabi kagitlar (konu)\nBu Kanuna ekli (1) sayili tabloda yazili kagitlar damga vergisine tabidir. Kanundaki 'kagitlar' terimi; yazilip imzalanmak veya imza yerine gecen bir isaret konmak suretiyle duzenlenen ve herhangi bir hususu ispat veya belli etmek icin ibraz edilebilecek belgeler ile elektronik imza kullanilarak manyetik ortamda ve elektronik veri seklinde olusturulan belgeleri ifade eder. Sozlesme, taahhutname, makbuz gibi evrakin verginin konusuna girmesinin dayanagidir."
+  },
+  {
+   "mevzuat": "488 damga vergisi kanunu",
+   "kaynak_dosya": "488_damga_vergisi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Mukellef\nDamga vergisinin mukellefi kagitlari imza edenlerdir. Resmi dairelerle kisiler arasindaki islemlere ait kagitlarin damga vergisini kisiler oder. Yabanci memleketlerle Turkiye'deki yabanci elcilik ve konsolosluklarda duzenlenen kagitlarin vergisini, bu kagitlari Turkiye'de resmi dairelere ibraz eden, uzerlerinde devir veya ciro islemi yapan ya da herhangi bir suretle hukumlerinden yararlananlar oder. Sozlesme taraflarinin damga vergisi mukellefiyetini belirler."
+  },
+  {
+   "mevzuat": "488 damga vergisi kanunu",
+   "kaynak_dosya": "488_damga_vergisi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Resmi daire tanimi\nBu Kanunda yazili resmi daireden maksat; genel ve ozel butceli idarelerle il ozel idareleri, yatirim izleme ve koordinasyon baskanliklari, belediyeler ve koylerdir. Bu dairelere bagli olup ayri tuzel kisiligi bulunan iktisadi isletmeler resmi daire sayilmaz. Damga vergisi istisna ve odeme hukumlerinde 'resmi daire' kapsamini netlestirir."
+  },
+  {
+   "mevzuat": "488 damga vergisi kanunu",
+   "kaynak_dosya": "488_damga_vergisi_kanunu.txt",
+   "madde_no": 22,
+   "madde_tur": "madde",
+   "text": "Madde 22 — Verginin odenmesi (makbuz karsiligi / surekli mukellefiyet)\nKanunda belirtilen haller disinda damga vergisi makbuz karsiligi odenir. Maliye Bakanligi'nca belirlenen mukellefler, kurum ve kuruluslarin bir ay icinde duzenledikleri kagitlarin vergisi, ertesi ayin yirminci gunu aksamina kadar damga vergisi beyannamesi ile beyan edilir ve yirmialtinci gunu aksamina kadar odenir (surekli damga vergisi mukellefiyeti). Genel/ozel butceli idareler, belediyeler ve bankalar gibi kuruluslarin istihkaktan kesinti yoluyla odemesine de imkan taninir. Damga vergisi beyannamesinin verilme ve odeme takviminin dayanagidir."
+  },
+  {
+   "mevzuat": "488 damga vergisi kanunu",
+   "kaynak_dosya": "488_damga_vergisi_kanunu.txt",
+   "madde_no": 24,
+   "madde_tur": "madde",
+   "text": "Madde 24 — Mukelleflerin teselsulu (muteselsil sorumluluk)\nVergiye tabi kagitlarin damga vergisinin hic odenmemesi veya noksan odenmesinden dolayi alinmasi gereken vergi ve cezadan, mukelleflere rucu hakki olmak uzere kagitlari ibraz edenler sorumludur. Birden fazla kisi tarafindan imza edilen kagitlara ait vergi ve cezanin tamamindan imza edenler muteselsilen sorumludur. Resmi daireler veya noterlerce kagitlarin damga vergisi hukmunun yerine getirilmesinde sorumluluk paylasimini duzenler."
+  },
+  {
    "mevzuat": "4904 turkiye is kurumu kanunu",
    "kaynak_dosya": "4904_turkiye_is_kurumu_kanunu.txt",
    "madde_no": 3,
@@ -3018,6 +3319,55 @@
    "madde_no": 21,
    "madde_tur": "madde",
    "text": "Madde 21 — Bilgi verme yükümlülüğü (işverenlerin Kuruma bilgi vermesi)\nKurum tarafından kamu ve özel kesim işyerlerinden iş ve işgücü konularında bilgi istenildiğinde, işverenler belirtilen süre içinde bu bilgileri vermek zorundadır. Bu yükümlülük, işgücü piyasası verilerinin derlenmesi ile iş arayanların açık işlere yönlendirilmesini sağlar. Yükümlülüğe aykırılık idari para cezası yaptırımına bağlanmıştır."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacını düzenler: sürdürülebilir av ve yaban hayatı yönetimi için av ve yaban hayvanlarının doğal yaşam ortamlarıyla birlikte korunmalarını, geliştirilmelerini, avlağın bakımı ve avlanmanın düzenlenmesini sağlamak. Avcılık belgesi, avlanma izni ve idari yaptırım yazışmalarının dayanak ilkesidir."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nKanunda geçen temel kavramları tanımlar: \"Av hayvanı\" Kanun kapsamında avlanan ve Bakanlıkça listelenen hayvanlar; \"Yaban hayvanı\" doğada yaşayan hayvanlar; \"Avlak\" av ve yaban hayvanlarının doğal olarak yaşadığı veya sonradan salındığı saha (devlet/genel/özel avlak); \"Avcılık belgesi\" avlanmak için gereken ehliyet belgesi; \"Avlanma izni\" her av yılı için ücret ödenerek alınan izin. Belge ve izin başvurularında esas alınan tanım maddesidir."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Merkez Av Komisyonu\nAv ve yaban hayatıyla ilgili kararların alındığı Merkez Av Komisyonunun oluşumu ve görevlerini düzenler: komisyon Bakan/yetkili başkanlığında ilgili kurum temsilcilerinden oluşur; avlanma süreleri, av miktarları, avına izin verilen/yasaklanan türler ve avlanma esasları komisyon kararıyla belirlenir. İl av komisyonlarının görüş ve önerileri dikkate alınır. Avlanma izni kapsam ve sürelerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Avlanma esasları (belge ve izin zorunluluğu)\nAvlanmanın hangi esaslara göre yapılacağını düzenler: avlanmak isteyenlerin avcılık belgesi ve avlanma izni almak zorunda olduğunu, avlanmanın ancak yasal izin verilen silah, araç ve eğitilmiş hayvanlarla, avlanma planı veya Merkez Av Komisyonu kararlarına uygun olarak yapılabileceğini öngörür. Belgesiz/izinsiz veya plana aykırı avlanmanın men edilmesi ve ceza uygulamasının (Madde 20) maddi dayanağıdır."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Avcılık belgesi\nAvcılık belgesinin kimlere ve nasıl verileceğini düzenler: belge Türk vatandaşlarına bir defaya mahsus verilir ve her yıl vize edilir; belge alacaklar eğitime ve yeterlik sınavına tabi tutulur. Yabancı uyruklulara karşılıklılık esası uygulanır. Avcılık belgesi başvurusu, eğitim/sınav ve yıllık vize işlemlerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Avlanma izni\nAvlanma izninin nasıl alınacağını düzenler: avcılık belgesi sahibi avcılar, avlanmak istedikleri av yılına ait avlanma izin ücretini Döner Sermaye İşletmesine yatırmak suretiyle avlanma izni almak zorundadır; izin bir av yılı içindir ve hayvan gruplarına, avlanmanın il/bölge/ülke genelinde yapılmasına göre ücret farklılaştırılabilir. Avlanma izni başvuru ve ücret yatırma yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4915 kara avciligi kanunu",
+   "kaynak_dosya": "4915_kara_avciligi_kanunu.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — İdari para cezaları (belgesiz/izinsiz/yasak yerde avlanma)\nKanuna aykırı avlanma fiillerine uygulanacak idari para cezalarını düzenler: avcılık belgesi almadan avlananlara, avlanma izni olmadan avlananlara ve yasaklara/yasak yerlere aykırı avlananlara kademeli idari para cezası verilir; av hayvanları, türevleri ve avlanmada kullanılan sair eşyaya el konulabilir ve mülkiyetinin kamuya geçirilmesine mahallî mülkî amir karar verir. [DOĞRULA: güncel ceza tutarları her yıl yeniden değerleme oranında artırıldığından en güncel rakamlar mevzuat.gov.tr 1.5.4915 güncel metninden teyit edilmeli.] Belgesiz/izinsiz avlanma idari yaptırım kararı ve el koyma yazışmalarının dayanağıdır."
   },
   {
    "mevzuat": "4922 denizde can ve mal koruma kanunu",
@@ -3375,6 +3725,34 @@
    "madde_no": 6,
    "madde_tur": "madde",
    "text": "Madde 6 — Yönetmelik\nBu Kanunun uygulanmasına ilişkin usul ve esasların, ilgili bakanlıklar (Maliye/Hazine ile Millî Eğitim) tarafından çıkarılacak yönetmelikle belirleneceğini hükme bağlar. Burs-Kredi Yönetmeliği'nin dayanağını oluşturur."
+  },
+  {
+   "mevzuat": "5174 tobb odalar borsalar kanunu",
+   "kaynak_dosya": "5174_tobb_odalar_borsalar_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Odalar\nOdaları; üyelerinin müşterek ihtiyaçlarını karşılamak, meslekî faaliyetlerini kolaylaştırmak, mesleğin genel menfaatlere uygun gelişmesini sağlamak, meslek mensuplarının birbirleriyle ve halkla olan ilişkilerinde dürüstlüğü ve güveni hâkim kılmak üzere meslek disiplini ile ahlâkını korumak amacıyla kurulan, tüzel kişiliğe sahip kamu kurumu niteliğindeki meslek kuruluşları olarak tanımlar. Odanın görev ve yetki alanına giren işlemlerin (kayıt, belge, sicil yazışmaları) dayanağıdır."
+  },
+  {
+   "mevzuat": "5174 tobb odalar borsalar kanunu",
+   "kaynak_dosya": "5174_tobb_odalar_borsalar_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Odaların kuruluşu\nOdaların illerde, Birliğin olumlu görüşü üzerine Bakanlığın kararı ile kurulacağını düzenler. Bir ilde oda kurulabilmesi için ticaret siciline kayıtlı ve Kanunda belirtilen nitelikleri haiz en az bin tacir ve/veya sanayici veya deniz ticareti ile iştigal edenin Birliğe yazılı başvuruda bulunması zorunludur. Oda kuruluş başvurusu ve gerekli üye sayısının dayanağıdır."
+  },
+  {
+   "mevzuat": "5174 tobb odalar borsalar kanunu",
+   "kaynak_dosya": "5174_tobb_odalar_borsalar_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Odalara kayıt zorunluluğu\nTicaret siciline kayıtlı tacirler ile sanayici ve deniz taciri sıfatını haiz tüm gerçek ve tüzel kişiler ile bunların şube ve fabrikalarının, bulundukları yerdeki odaya kaydolmak zorunda olduğunu düzenler. Meslek gruplarına göre üye kayıtları Bakanlık ve Birlik bünyesindeki ortak veri tabanında güncel tutulur. Kayıt zorunluluğunu bir ay içinde yerine getirmeyenler odalar tarafından re'sen kaydedilir ve durum kendilerine tebliğ edilir. Oda üyelik kayıt başvurusu ve re'sen kayıt tebliği yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5174 tobb odalar borsalar kanunu",
+   "kaynak_dosya": "5174_tobb_odalar_borsalar_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Değişikliklerin bildirilmesi\nOdalara kayıt zorunluluğu bulunanların, durumlarında meydana gelen ve Türk Ticaret Kanununa göre tescil ve ilânı gereken her türlü değişikliği, gerçekleşmesinden itibaren bir ay içinde kayıtlı oldukları odaya bildirmek zorunda olduğunu düzenler. Ticaret odasına kayıtlı iken sanayicilik vasfı kazanan üyenin durumu ticaret odasınca en geç otuz gün içinde ilgili sanayi odasına bildirilir. Adres/unvan/faaliyet değişikliği bildirim yazışmalarının dayanağıdır. [DOĞRULA: aidat ödemeyen veya iki yıl süreyle adresi tespit edilemeyen üyelerin seçmen listesinden silinmesine ilişkin hükmün bu madde mi yoksa ilgili başka madde kapsamında mı düzenlendiği teyit edilmeli.]"
   },
   {
    "mevzuat": "5176 etik kurulu kanunu",
@@ -4026,6 +4404,41 @@
    "madde_no": 12,
    "madde_tur": "madde",
    "text": "Madde 12 — Arşiv bilgilerinin silinmesi (süreler)\nArşive alınan kayıtlar; Anayasanın 76 ncı maddesi ile Türk Ceza Kanunu dışındaki kanunlarda bir hak yoksunluğuna neden olan mahkûmiyetler bakımından, arşive alınma koşullarının oluştuğu tarihten itibaren yasaklanmış hakların geri verilmesi kararı alınması koşuluyla on beş yıl, böyle bir karar aranmaksızın otuz yıl geçmesiyle; diğer mahkûmiyetler bakımından ise arşive alınma koşullarının oluştuğu tarihten itibaren beş yıl geçmesiyle tamamen silinir. Kaydın silinmesi için ilgili, dilekçeyle Adlî Sicil ve İstatistik Genel Müdürlüğüne başvurabilir. [DOĞRULA: belirli istisnaî kayıt türlerinde sürelere ilişkin ek/özel hükümler ayrıca kontrol edilmeli]"
+  },
+  {
+   "mevzuat": "5362 esnaf sanatkar meslek kuruluslari kanunu",
+   "kaynak_dosya": "5362_esnaf_sanatkar_meslek_kuruluslari_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nKanunda geçen temel kavramları tanımlar: 'esnaf ve sanatkâr' ekonomik faaliyetini sermayesi ile birlikte bedenî çalışmasına dayandıran ve gelirinin tamamı veya bir kısmı bedenî çalışmasıyla sağlanan, esnaf ve sanatkâr siciline kayıtlı kişiyi; 'oda', 'ihtisas odası', 'birlik', 'federasyon', 'konfederasyon' ve 'sicil' (Esnaf ve Sanatkâr Sicil Müdürlüğü) ifadelerini açıklar. Esnaf-sanatkâr niteliğinin ve sicil/oda başvurularının kavramsal dayanağıdır."
+  },
+  {
+   "mevzuat": "5362 esnaf sanatkar meslek kuruluslari kanunu",
+   "kaynak_dosya": "5362_esnaf_sanatkar_meslek_kuruluslari_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Odaların kuruluşu\nBir oda kurulabilmesi için en az beş yüz esnaf ve sanatkârın isteği ve Bakanlık izninin gerektiğini düzenler. Kuruluş işlemleri Bakanlık e-esnaf ve sanatkâr veri tabanı üzerinden ve sicil müdürünün gözetiminde yürütülür. Oda kuruluş başvurusu ve izin yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5362 esnaf sanatkar meslek kuruluslari kanunu",
+   "kaynak_dosya": "5362_esnaf_sanatkar_meslek_kuruluslari_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Odaya kayıt (sicil ön koşulu)\nEsnaf ve sanatkârların sicile kayıtları yapılmadıkça hiçbir şekilde odaya kaydının yapılamayacağını düzenler. Sicile kayıt olan esnaf ve sanatkâra ait bilgiler sicil tarafından elektronik ortamda, iş yerinin (seyyar ise ikametgâhın) bulunduğu yerdeki ilgili ihtisas odasına; ihtisas odası yoksa karma odaya kayıt için gönderilir ve oda yönetim kurulu üyelik kararını ilk toplantısında alır. Sicil kaydı ile oda üyeliği arasındaki zorunlu sıralamanın ve oda kayıt başvurusunun dayanağıdır."
+  },
+  {
+   "mevzuat": "5362 esnaf sanatkar meslek kuruluslari kanunu",
+   "kaynak_dosya": "5362_esnaf_sanatkar_meslek_kuruluslari_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Üyelik şartları\nOda üyeliği için aranan şartları sayar: Türkiye Cumhuriyeti vatandaşı olmak veya yabancı devlet tabiiyetinde bulunmakla beraber Türkiye'de sanat ve ticaret yapıyor olmak, medeni hakları kullanma ehliyetine sahip olmak ve esnaf ve sanatkâr siciline kayıtlı olmak. Oda üyelik başvurusunda istenen belgelerin ve uygunluk değerlendirmesinin dayanağıdır."
+  },
+  {
+   "mevzuat": "5362 esnaf sanatkar meslek kuruluslari kanunu",
+   "kaynak_dosya": "5362_esnaf_sanatkar_meslek_kuruluslari_kanunu.txt",
+   "madde_no": 68,
+   "madde_tur": "madde",
+   "text": "Madde 68 — Sicile tescil mecburiyeti\nKanun kapsamındaki esnaf ve sanatkârların (yanlarında çalışanlar hariç) çalışmaya başladıkları tarihten itibaren durumlarını otuz gün içinde bağlı bulundukları sicile tescil ve Sicil Gazetesinde ilan ettirmekle yükümlü olduğunu düzenler. Bu yükümlülüğü yerine getirmeyenler Birlik tarafından ruhsat vermeye yetkili kurum ve kuruluşlara bildirilir; ilgili kurumlar sicil kaydı yapılana kadar faaliyeti durdurur. Tescili gerektiren olayın sona ermesi halinde kayıt ilgilinin talebi üzerine silinir. Esnaf sicil tescil/terkin başvurusunun ve faaliyet durdurma bildiriminin dayanağıdır. [DOĞRULA: Türk Ticaret Kanununun ticaret siciline ilişkin 26-40 ıncı maddelerinin aykırı olmayan hükümlerinin sicil müdürlüğü hakkında da uygulanacağına ilişkin atıf madde içinde teyit edilmeli.]"
   },
   {
    "mevzuat": "5363 tarim sigortalari kanunu",
@@ -5470,6 +5883,55 @@
    "text": "Madde 59 — Harcirahin pesin odenmesi, beyan ve iade\nHarcirah, memur/hizmetlinin gidisinde ve ailenin nakli sirasinda pesin olarak verilir; tam miktar onceden belirlenemiyorsa yetecek kadar para avans olarak verilir. Harcirahini kesin veya avans suretiyle alanlardan, kisisel sebeplerle 15 gun icinde hareket etmeyenler aldiklari parayi derhal iade etmek zorundadir. Aile harcirahinda ilgilinin verecegi beyan kagidi esas alinir."
   },
   {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Hemşire unvanı ve diploma tescili\nHemşirelik ile ilgili lisans eğitimi veren fakülte ve yüksekokullardan mezun olup diplomaları Sağlık Bakanlığınca tescil edilenler ile yurt dışında hemşirelik öğrenimi görüp diploma denkliği onaylanan ve diploması Bakanlıkça tescil edilenlere \"hemşire\" unvanı verilir. Hemşire olarak çalışmanın ön koşulu diplomanın Bakanlığa tescilidir; tescil başvurusu hemşire meslek kaydının temelidir. [DOĞRULA: maddenin ilk şekli (orta öğrenim + jüri sınavı) 6225 sayılı Kanunla değiştirilmiştir; güncel lisans/denklik şartı esas alınmalıdır.]"
+  },
+  {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Meslek icra hakkı (münhasırlık)\nTürkiye'de hemşirelik mesleğini ancak bu Kanuna göre hemşire unvanı kazanmış Türk vatandaşı hemşireler icra edebilir. Bu unvana sahip olmayan kimse hemşirelik yapamaz ve hemşire unvanını kullanamaz. Meslek icrası için diploma tescili ile birlikte bu maddedeki şartların sağlanması gerekir."
+  },
+  {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Hemşirenin görev ve yetkileri\nHemşire; tabip tarafından acil haller dışında yazılı olarak verilen tedavileri uygulamaya, birey/aile/toplumun hemşirelik girişimleriyle karşılanabilecek sağlık gereksinimlerini belirlemeye ve hemşirelik tanılama süreci kapsamında bakımı planlamaya, uygulamaya, denetlemeye ve değerlendirmeye yetkili ve sorumlu sağlık personelidir. Görev, yetki ve sorumlulukların ayrıntısı yönetmelikle düzenlenir. [DOĞRULA: görev tanımı 663/6225 sK değişikliği sonrası metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Serbest çalışma ve bildirim\nHemşirelik okullarından mezun olup mecburi hizmetini tamamlayan hemşireler dilerlerse serbest çalışabilir; serbest çalışanlar gerekli belgeleri bulundukları yerin en büyük sağlık amirliğine vermek ve ev adresi ile iş yerindeki değişiklikleri bir hafta içinde aynı makama bildirmekle yükümlüdür. Serbest meslek icrasında bildirim/belge ibrazı bu maddeden doğar. [DOĞRULA: mecburi hizmet ve serbest çalışma şartları güncel metinle teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Uzman hemşirelik ve tescili\nHemşireler, mesleklerine ilişkin lisansüstü eğitim alıp diplomaları Bakanlıkça tescil edildikten sonra uzman hemşire olarak çalışabilir; ayrıca yönetmelikle belirlenen standartlarda uzmanlık alanlarında yetki belgesi (sertifika) alabilir, bu belgelerin eğitim-uygulama-tescil esasları Bakanlıkça düzenlenir. Uzman hemşirelik için ayrı bir tescil/yetki belgesi başvurusu gerekir."
+  },
+  {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Kanuna aykırı meslek icrası cezası"
+  },
+  {
+   "mevzuat": "6283 hemsirelik kanunu",
+   "kaynak_dosya": "6283_hemsirelik_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 hükümlerine aykırı olarak hemşirelik mesleğini icra edenlere idarî para cezası verilir ve meslek icrasına aykırı faaliyetleri durdurulur. Hemşire unvanı/tescili olmadan meslek icrası bu madde kapsamındadır. [DOĞRULA: idari para cezası tutarı (663 sK / 5326 sK yeniden değerleme) güncel metinle teyit edilmelidir.]"
+  },
+  {
    "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
    "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
    "madde_no": 1,
@@ -6128,6 +6590,41 @@
    "text": "Madde 135 — İtiraz\nDisiplin amirleri tarafından verilen uyarma, kınama ve aylıktan kesme cezalarına karşı\ndisiplin kuruluna, kademe ilerlemesinin durdurulması cezasına karşı yüksek disiplin\nkuruluna itiraz edilebilir. İtirazda süre, kararın ilgiliye tebliği tarihinden itibaren\nyedi gündür. Süresi içinde itiraz edilmeyen disiplin cezaları kesinleşir. İtiraz\nmercileri, itiraz dilekçesi ile karar ve eklerinin kendilerine intikalinden itibaren\notuz gün içinde kararlarını vermek zorundadır."
   },
   {
+   "mevzuat": "6585 perakende ticaretin duzenlenmesi kanunu",
+   "kaynak_dosya": "6585_perakende_ticaretin_duzenlenmesi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nKanunun amacının; perakende işletmelerin açılış ve faaliyete geçiş işlemlerinin kolaylaştırılması, perakende ticaretin serbest piyasa ortamında etkin ve sürdürülebilir rekabet şartlarına göre yapılması, tüketicinin korunması ve perakende işletmelerin dengeli şekilde büyüme ve gelişmesinin sağlanması olduğunu belirtir. Perakende işyeri açılış başvurularının amaç çerçevesinin dayanağıdır."
+  },
+  {
+   "mevzuat": "6585 perakende ticaretin duzenlenmesi kanunu",
+   "kaynak_dosya": "6585_perakende_ticaretin_duzenlenmesi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nKanunda geçen kavramları tanımlar: perakende işletme, büyük mağaza (en az dört yüz metrekare satış alanına sahip işletme), zincir mağaza, bayi işletme, alışveriş merkezi (içinde çeşitli işyerlerini barındıran, merkezi yönetim ve ortak kullanım alanlarına sahip yapı), PERBİS, yetkili idare ve yetkili kurum/kuruluş. İşyeri tür belirleme ve ruhsat başvuru sınıflandırmasının dayanağıdır."
+  },
+  {
+   "mevzuat": "6585 perakende ticaretin duzenlenmesi kanunu",
+   "kaynak_dosya": "6585_perakende_ticaretin_duzenlenmesi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Perakende bilgi sistemi (PERBİS)\nPerakende işletmelerin açılış, faaliyet ve kapanışında gerekli başvuru ve diğer işlemlerin yapılması ile bu işlemlere ilişkin verilerin elektronik ortamda tutulması amacıyla Bakanlık bünyesinde Perakende Bilgi Sisteminin (PERBİS) kurulduğunu düzenler. Sistem, başvuruları alan ve ilgili kurum/kuruluşlar arasında çevrim içi bağlantı sağlayan merkezi yapı olarak işler. Elektronik ruhsat ve kayıt başvurularının dayanağıdır."
+  },
+  {
+   "mevzuat": "6585 perakende ticaretin duzenlenmesi kanunu",
+   "kaynak_dosya": "6585_perakende_ticaretin_duzenlenmesi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — İşyeri açma ve çalışma ruhsatı verilmesi\nİşyeri açma ve çalışma ruhsatının PERBİS üzerinden verileceğini; başvurunun doğrudan veya PERBİS üzerinden yetkili idareye yapılacağını, doğrudan yapılan başvuruların yetkili idarece PERBİS'e işleneceğini düzenler. Ön değerlendirme sonucu uygun bulunan başvurular, başvuru tarihinden itibaren en geç üç iş günü içinde gerekli kayıt işlemlerini yapacak yetkili kurum ve kuruluşlara PERBİS üzerinden iletilir; büyükşehirlerde alışveriş merkezlerine ruhsat vermeye büyükşehir belediyeleri yetkilidir. Perakende işyeri ruhsat başvurusunun ve süreç akışının temel dayanağıdır."
+  },
+  {
+   "mevzuat": "6585 perakende ticaretin duzenlenmesi kanunu",
+   "kaynak_dosya": "6585_perakende_ticaretin_duzenlenmesi_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Ortak kullanım alanları\nAlışveriş merkezlerinde, kullanımı ücretsiz olacak şekilde sosyal ve kültürel etkinlik alanı, acil tıbbi müdahale ünitesi, ibadet yeri, bebek bakım odası, çocuk oyun alanı ve dinlenme alanları ile ortaklaşa kullanma, korunma veya faydalanma için zorunlu diğer alanların oluşturulacağını düzenler. Alışveriş merkezi ruhsat ve uygunluk yazışmalarında ortak kullanım alanı yükümlülüğünün dayanağıdır."
+  },
+  {
    "mevzuat": "6698 kvkk",
    "kaynak_dosya": "6698_kvkk.txt",
    "madde_no": 3,
@@ -6226,6 +6723,55 @@
    "text": "Madde 23 — Denetim ve idari para cezası\nKanun kapsamındaki yabancıların ve işverenlerin yükümlülüklerini yerine getirip getirmedikleri Bakanlık iş müfettişleri ile Sosyal Güvenlik Kurumu müfettişleri ve sosyal güvenlik denetmenlerince denetlenir. Çalışma izni olmaksızın bir işverene bağlı çalışan yabancıya, bağımsız çalışan yabancıya ve yabancı çalıştıran işveren ile işveren vekiline her bir yabancı için maddede belirtilen tutarlarda idari para cezası uygulanır; tekrarında ceza iki katı uygulanır. İdari para cezaları her yıl yeniden değerleme oranında artırıldığından cari tutarlar her yıl değişir. [DOĞRULA: idari para cezası tutarları cari yıl tebliğinden teyit edilmelidir; bazı kaynaklarda ceza hükmü ayrı madde (m.24) olarak numaralandırılmaktadır.]"
   },
   {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Kanunun amacı, bilirkişilerin nitelikleri, eğitimi, seçimi ve denetimine ilişkin usul ve esasların belirlenmesi ile bilirkişilik için etkin ve verimli bir kurumsal yapı oluşturulmasıdır. Kanun; adlî, idarî ve askerî yargı alanında yürütülen her türlü bilirkişilik faaliyetini kapsar. Böylece çözümü uzmanlığı, özel veya teknik bilgiyi gerektiren hâllerde mahkemelere görüş bildiren bilirkişilerin tâbi olduğu çerçeve tek elden düzenlenir."
+  },
+  {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Temel ilkeler (bilirkişinin yükümlülükleri)\nBilirkişi, görevini dürüstlük kuralları çerçevesinde bağımsız, tarafsız ve objektif olarak yerine getirir. Bilirkişi, raporunda yalnızca çözümü uzmanlığı, özel veya teknik bilgiyi gerektiren hususlarda görüş bildirir; hukukî nitelendirme ve değerlendirmelerde bulunamaz. Genel bilgi veya tecrübeyle ya da hâkimlik mesleğinin gerektirdiği hukukî bilgiyle çözümlenmesi mümkün konularda bilirkişiye başvurulamaz. Bilirkişi, kendisine tevdi olunan bilgi ve belgelerin veya öğrendiği sırların gizliliğini sağlamakla yükümlüdür; bu yükümlülük görev sona erdikten sonra da devam eder. Görev bizzat yerine getirilir, başkasına devredilemez."
+  },
+  {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Bilirkişilik Daire Başkanlığı ve görevleri (temel/alt uzmanlık alanları, temel eğitim)\nBilirkişilik hizmetlerinin yürütülmesini sağlamak üzere Adalet Bakanlığı Hukuk İşleri Genel Müdürlüğü bünyesinde Bilirkişilik Daire Başkanlığı kurulmuştur. Daire Başkanlığı; bilirkişiliğe ilişkin temel ve alt uzmanlık alanlarını belirlemek, bu alanlara göre aranacak nitelikleri tespit etmek, bilirkişilik temel ve alt uzmanlık eğitimlerinin usul ve esasları ile eğitim verecek kuruluşları belirlemek, bilirkişilerin uyacağı etik ilkeler ile rapor standartlarını ve rehber ilkeleri hazırlamakla görevlidir. Bilirkişiliğe başvuru ve sicile kayıt şartları bu çerçevede uygulanır."
+  },
+  {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Bilirkişiliğe kabul şartları (gerçek kişiler)\nBilirkişilik başvurusunda bulunacak gerçek kişilerde; Türk vatandaşı olmak, tam ehliyetli olmak, kasten işlenen bir suçtan dolayı belirli süreyle hapis cezasına veya affa uğramış olsa bile Kanunda sayılan yüz kızartıcı/güveni sarsıcı suçlardan mahkûm olmamak, disiplin yönünden meslekten veya memuriyetten çıkarılmamış olmak, daha önce kendi isteği dışında sicilden çıkarılmamış olmak, başka bir bölge kurulunun listesine kayıtlı olmamak, bilirkişilik temel eğitimini tamamlamış olmak ve uzmanlık alanında en az beş yıl (alanına göre Daire Başkanlığınca belirlenen süre) fiilen görev yapmış olmak şartları aranır. Şartları taşıyan tüzel kişiler de bünyesindeki uzmanlar adına başvurabilir."
+  },
+  {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Başvuru, seçilme usulü ve sicile kayıt (eksik belge için 15 gün, üç yıl sicil)\nBilirkişilik başvurusu, ilgilinin yerleşim yerinin veya mesleki faaliyetini yürüttüğü yerin bağlı olduğu bilirkişilik bölge kuruluna ya da adlî veya idarî yargı ilk derece mahkemesi adalet komisyonuna, gerekli belgeler eklenmek suretiyle yazılı olarak yapılır. Başvuru dilekçesine eklenmesi zorunlu belgeler eksikse, başvuru sahibine eksikliği tamamlaması için on beş gün süre verilir; eksiklik bu sürede tamamlanmazsa başvuru reddedilir. Bölge kurulu, başvuranlar arasından liyakatli olanları seçerek sicile kaydeder; sicile kayıt üç yıl için yapılır ve süre sonunda yenilenmediğinde geçerliliğini yitirir."
+  },
+  {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Sicil ve listenin tutulması, yemin ve görevlendirme\nBilirkişilik sicili ve listesi Bilirkişilik Daire Başkanlığınca elektronik ortamda tutulur. Sicile; bilirkişinin adı-soyadı, kimlik ve iletişim bilgileri, mesleği, temel ve alt uzmanlık alanları, temel eğitim bilgisi ile düzenlediği rapor sayısı gibi bilgiler işlenir. Sicile kaydedilen bilirkişi, görevine başlamadan önce yemin eder; yemin etmeyen bilirkişi listeye yazılmaz. Bilirkişiler, görev yapacakları bölge adliye mahkemesinin yargı çevresi esas alınarak ilgili bölge kurulunun listesinden görevlendirilir."
+  },
+  {
+   "mevzuat": "6754 bilirkisilik kanunu",
+   "kaynak_dosya": "6754_bilirkisilik_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Sicilden ve listeden çıkarılma\nKabul şartlarını sonradan kaybeden, temel ilkelere aykırı davranan, kanunî bir sebep olmaksızın bilirkişilik yapmaktan kaçınan veya raporunu belirlenen sürede mazeretsiz olarak vermeyen ya da performansı yetersiz görülen bilirkişi, bölge kurulu kararıyla sicilden ve listeden çıkarılır. İhlalin niteliğine göre çıkarma yerine uyarma ya da bir yıla kadar geçici olarak listeden çıkarma yaptırımı da uygulanabilir. Bilirkişi, kendi isteğiyle de sicilden çıkarılmasını talep edebilir; sicil süresinin dolması hâlinde yenileme talep edilmezse kayıt sona erer."
+  },
+  {
    "mevzuat": "6769 sinai mulkiyet kanunu",
    "kaynak_dosya": "6769_sinai_mulkiyet_kanunu.txt",
    "madde_no": 11,
@@ -6322,6 +6868,97 @@
    "madde_no": 93,
    "madde_tur": "madde",
    "text": "Madde 93 — Ormani isgal ve izinsiz faydalanma sucu cezasi\nKanunun 17. maddesinde yasaklanan fiilleri isleyenler veya izne bagli isleri izinsiz yapanlar (91. madde sakli kalmak uzere) alti aydan iki yila kadar hapis cezasi ile cezalandirilir. Isgal ve faydalanma sucu; yeniden tarla acmak suretiyle, yanmis orman sahalarinda ya da kesinlesmis orman kadastrosu sinirlari icinde islenirse ceza bir kat artirilir. Izinsiz orman isgali ve kullaniminin cezai sonucunu duzenleyen temel maddedir."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Kanunun amacı, iş mahkemelerinin kuruluş, görev, yetki ve yargılama usulünü düzenlemektir. Kanun; iş ve sosyal güvenlik hukukundan kaynaklanan uyuşmazlıkların çözümünde uygulanacak özel usul kurallarını kapsar. Bu çerçevede iş davalarında dava şartı olarak arabuluculuk ve basit yargılama usulü gibi kurumlar düzenlenmiştir."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — İş mahkemelerinin kuruluşu (tek hâkimli, asliye derecesinde)\nİş mahkemeleri, Hâkimler ve Savcılar Kurulunun olumlu görüşü alınarak Adalet Bakanlığınca tek hâkimli ve asliye mahkemesi derecesinde kurulur. Mahkemelerin yargı çevresi, 5235 sayılı Kanun hükümlerine göre belirlenir. İhtisaslaşmanın sağlanması amacıyla gelen işlerin yoğunluğu ve niteliği dikkate alınarak daireler oluşturulabilir; daireler arasındaki iş dağılımı Hâkimler ve Savcılar Kurulunca belirlenir. İş mahkemesi kurulmayan yerlerde bu davalara, HSK'ca belirlenen asliye hukuk mahkemesince iş mahkemesi sıfatıyla bakılır."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Dava şartı olarak arabuluculuk (işçi/işveren alacağı, tazminat, işe iade)\nKanuna, bireysel veya toplu iş sözleşmesine dayanan işçi veya işveren alacağı ve tazminatı ile işe iade talebiyle açılan davalarda, dava açılmadan önce arabulucuya başvurulmuş olması dava şartıdır. Davacı, arabuluculuk faaliyeti sonunda anlaşmaya varılamadığına ilişkin son tutanağın aslını veya arabulucunun onayladığı bir örneğini dava dilekçesine eklemek zorundadır; eklenmemişse mahkeme bir haftalık kesin süre verir, bu sürede de eklenmezse dava usulden reddedilir. Arabulucuya başvurulmadan dava açıldığı anlaşılırsa, herhangi bir işlem yapılmaksızın dava, dava şartı yokluğu sebebiyle usulden reddedilir. İş kazası veya meslek hastalığından kaynaklanan maddi ve manevi tazminat ile bunlara ilişkin tespit, itiraz ve rücu davaları bu zorunluluğun dışındadır."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Görev (iş ilişkisinden ve sosyal güvenlikten doğan uyuşmazlıklar)\nİş mahkemeleri; 5953 sayılı Kanuna tabi gazeteciler, 854 sayılı Kanuna tabi gemiadamları, 4857 sayılı İş Kanununa veya 6098 sayılı Türk Borçlar Kanununun hizmet sözleşmesine ilişkin hükümlerine tabi işçiler ile işveren veya işveren vekilleri arasındaki iş ilişkisi nedeniyle sözleşmeden veya kanundan doğan her türlü hukuk uyuşmazlığına bakar. Ayrıca; idari para cezalarına itiraz ile genel sağlık sigortalılığında alt sınır esnafına ilişkin uyuşmazlıklar hariç olmak üzere, Sosyal Güvenlik Kurumu veya Türkiye İş Kurumunun taraf olduğu iş ve sosyal güvenlik mevzuatından kaynaklanan uyuşmazlıklara ve diğer kanunlarla iş mahkemelerine verilen davalara bakmakla görevlidir."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Yetki\nİş mahkemelerinde açılacak davalarda yetkili mahkeme, davalı gerçek veya tüzel kişinin davanın açıldığı tarihteki yerleşim yeri mahkemesi ile işin veya işlemin yapıldığı yer mahkemesidir. Davalı birden fazlaysa, bunlardan birinin yerleşim yeri mahkemesi de yetkilidir. İş kazasından doğan tazminat davalarında ayrıca kazanın veya zararın meydana geldiği yer ile zarar gören işçinin yerleşim yeri mahkemesi de yetkilidir. Bu yetki kuralları kesin nitelikte değildir, ancak işçinin korunması amacıyla seçimlik yetkili yerler öngörülmüştür."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Yargılama usulü ve kanun yolları (basit yargılama)\nİş mahkemelerinde basit yargılama usulü uygulanır. 6100 sayılı Hukuk Muhakemeleri Kanununun kanun yollarına (istinaf ve temyiz) ilişkin hükümleri, iş mahkemelerince verilen kararlar hakkında da uygulanır; kanun yoluna başvuru süresi, ilamın taraflara tebliğinden itibaren işlemeye başlar. Kanun yoluna başvurulan kararlar, bölge adliye mahkemesi ve Yargıtayca ivedilikle karara bağlanır. Bu suretle iş uyuşmazlıklarının hızlı ve basit usulle çözülmesi amaçlanır."
+  },
+  {
+   "mevzuat": "7036 is mahkemeleri kanunu",
+   "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Temyiz edilemeyen kararlar\nİş mahkemelerinin bazı kararları, bölge adliye mahkemesince verilen istinaf kararlarından sonra temyiz yoluna kapalıdır. Özellikle Kanunda sayılan; hizmet tespiti, işe iade, sigortalılık niteliğinin tespiti gibi bazı uyuşmazlıklara ilişkin bölge adliye mahkemesi kararları kesin olup temyiz edilemez. Bu hüküm, belirli iş davalarında yargılamanın istinaf aşamasında kesinleşerek hızlanmasını sağlar; hangi kararların temyize kapalı olduğu maddede ayrıca belirtilmiştir. [DOĞRULA: temyize kapalı dava türlerinin tam listesi için 7036 m.8 güncel metni]"
+  },
+  {
+   "mevzuat": "7155 abonelik sozlesmesi para alacaklari takip kanunu",
+   "kaynak_dosya": "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Kapsam\nBu Kanun; abonelik sözleşmelerinden ve bu sözleşmelerin ifası amacıyla tüketiciye sunulup bedeli faturaya yansıtılan mal veya hizmetten kaynaklanan para alacaklarına ilişkin haciz yoluyla ilamsız icra takiplerinin, Ulusal Yargı Ağı Bilişim Sistemi (UYAP) bünyesindeki Merkezî Takip Sistemi üzerinden başlatılmasını ve haciz aşamasına kadar yürütülmesini kapsar. Bu alacaklara ilişkin icra takipleri ancak bu Kanunda öngörülen yöntemle başlatılabilir; aksi hâlde icra dairesi takip talebini reddeder."
+  },
+  {
+   "mevzuat": "7155 abonelik sozlesmesi para alacaklari takip kanunu",
+   "kaynak_dosya": "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Takip talebi (alacaklı avukatı, elektronik ortam, güvenli elektronik imza)\nAlacaklı, icra takibini avukatı aracılığıyla Merkezî Takip Sistemi üzerinden başlatır. Avukat; sistemde tarafların kimlik ve iletişim bilgileri, alacağın tutarı ile faiz türü/oranı/başlangıç tarihi, alacağın dayanağı belge bilgileri ve yetkili icra dairesini içeren takip talebini doldurur. Dayanak belgeler taranıp sisteme yüklendikten ve harç elektronik ortamda ödendikten sonra talep, güvenli elektronik imzayla onaylanarak sisteme kaydedilir ve takibe bir Merkezî Takip Numarası verilir."
+  },
+  {
+   "mevzuat": "7155 abonelik sozlesmesi para alacaklari takip kanunu",
+   "kaynak_dosya": "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Ödeme emri ve tebliği (yedi gün ödeme/itiraz süresi, elektronik tebligat)\nSistem tarafından düzenlenen ödeme emrinde; alacağın toplam tutarı, borcun ve takip masraflarının yedi gün içinde ödenmesi gerektiği, bu süre içinde itiraz edilmezse takibin kesinleşeceği, yetkili icra dairesi ve haciz işlemlerine nasıl devam edileceği yer alır. Ödeme emri, borçluya 7201 sayılı Tebligat Kanunu hükümlerine göre tebliğ edilir; tebliğ mazbatası sisteme aktarılır. Tebligat yapılamazsa borçlunun adres kayıt sistemindeki yerleşim yeri adresine yeniden tebligat çıkarılır. Borç, ödeme emrinin tebliğinden itibaren yedi gün içinde ödenebilir."
+  },
+  {
+   "mevzuat": "7155 abonelik sozlesmesi para alacaklari takip kanunu",
+   "kaynak_dosya": "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Ödeme emrine itiraz (yedi gün, herhangi bir icra dairesi veya sistem üzerinden, takip durur)\nBorçlu, ödeme emrinin tebliğinden itibaren yedi gün içinde, herhangi bir icra dairesine başvurarak veya güvenli elektronik imza kullanmak suretiyle Merkezî Takip Sistemi üzerinden ödeme emrine itiraz edebilir. Süresinde yapılan itiraz takibi durdurur; duran takip hakkında 2004 sayılı İcra ve İflas Kanunu hükümleri uygulanır. İtiraz, sisteme yüklendiği tarihi izleyen beşinci günün sonunda alacaklı avukatına tebliğ edilmiş sayılır. Yalnızca yetki itirazında yeniden ödeme emri tebliği gerekmez. (Sıralamada bu madde, kaynak metinde Madde 7 olarak yer alır.)"
+  },
+  {
+   "mevzuat": "7155 abonelik sozlesmesi para alacaklari takip kanunu",
+   "kaynak_dosya": "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — İtiraz edilmemesi veya itirazın hükümsüz kılınması (cebrî icra, beş yılda haciz istenmezse takip düşer)\nSüresinde itiraz edilmez veya itiraz hükümsüz kılınırsa, alacaklının talebi üzerine yetkili icra dairesinde cebrî icra (haciz ve sonraki) işlemlerine devam edilir. İtirazın iptali/kaldırılması için açılan davada geçen süre, aşağıdaki haciz isteme süresinin hesabında dikkate alınmaz. Ödeme emrinin tebliği tarihinden itibaren beş yıl içinde haciz talep edilmezse takip düşer (bu süre 7343 sayılı Kanunla iki yıldan beş yıla çıkarılmıştır). (Sıralamada bu madde, kaynak metinde Madde 8 olarak yer alır.)"
+  },
+  {
+   "mevzuat": "7155 abonelik sozlesmesi para alacaklari takip kanunu",
+   "kaynak_dosya": "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Hüküm bulunmayan hâller ve yönetmelik\nBu Kanunda hüküm bulunmayan hâllerde, niteliğine uygun düştüğü ölçüde 2004 sayılı İcra ve İflas Kanunu hükümleri uygulanır. Merkezî Takip Sisteminin işleyişi, takip talebi ve ödeme emrinin düzenlenmesi, belgelerin yüklenmesi, harçların tahsili ile tebligat işlemlerine ilişkin usul ve esaslar Adalet Bakanlığınca çıkarılan yönetmelikle belirlenir. (Sıralamada bu madde, kaynak metinde Madde 9 olarak yer alır.)"
   },
   {
    "mevzuat": "7179 askeralma kanunu",
@@ -6504,6 +7141,41 @@
    "madde_no": 8,
    "madde_tur": "ek",
    "text": "Ek Madde 8 — Belediye sınırı dışındaki kaynaklarda yetki\nKaynağı belediye sınırları dışında bulunan sular bakımından da belediye; kaynakların ve su yollarının bakımı, korunması ve sağlık şartlarına uygunluğunun sağlanması ile Madde 7 uyarınca yasakların uygulanması yetkisine sahiptir ve bu yetki kaynağa kadar uzanır. İçme suyu kaynağının korunmasına ilişkin işlemlerin belediye sınırı dışında da yürütülebilmesinin dayanağıdır. [DOĞRULA: ek madde numaralandırması sonraki değişikliklerle eklendiğinden cari metinde teyit edilmeli]"
+  },
+  {
+   "mevzuat": "992 seriri gidai taharriyat laboratuvarlar kanunu",
+   "kaynak_dosya": "992_seriri_gidai_taharriyat_laboratuvarlar_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Laboratuvar açma ruhsatı ve açabilecek meslek grupları\nUmuma mahsus seroloji/bakteriyoloji ve kimya tahlilleri yapan laboratuvarlar, ancak ihtisas vesikasına sahip ve Türkiye'de sanatını icraya yetkili tabip, baytar (veteriner), eczacı veya kimyagerler tarafından Sağlık Bakanlığının müsaadesi (ruhsatı) alınarak açılabilir. Yani laboratuvar açmak ruhsata bağlıdır ve başvuran kişide uzmanlık/icra yetkisi şartı aranır."
+  },
+  {
+   "mevzuat": "992 seriri gidai taharriyat laboratuvarlar kanunu",
+   "kaynak_dosya": "992_seriri_gidai_taharriyat_laboratuvarlar_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Ruhsat başvurusu: istida ve beyanname\nLaboratuvar açacak uzman, mahalli sağlık müdürlüğüne bir istida (dilekçe) ile başvurur; istidaya kimlik/diploma ve ihtisas belgeleriyle birlikte laboratuvarın ismini, açık adresini, krokisini, yapılacak tahlilatın nevilerini, her tahlil için tespit edilen ücret tarifesini ve çalışacak mütehassısların isimlerini içeren bir beyanname eklenir. Başvuru ve belgeler sağlık müdürlüğünce incelenip Bakanlığa gönderilir; şartları taşıyanlara ruhsatname verilir ve işlem başvuru tarihinden en geç bir ay içinde sonuçlandırılarak başvurana bildirilir. Bu madde laboratuvar ruhsat başvuru evrakının içeriğini belirler."
+  },
+  {
+   "mevzuat": "992 seriri gidai taharriyat laboratuvarlar kanunu",
+   "kaynak_dosya": "992_seriri_gidai_taharriyat_laboratuvarlar_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Mesul müdür/ruhsatname sahibinin fenni sorumluluğu\nLaboratuvarın fenni (teknik) işlerinden ruhsatname sahibi sorumludur; ruhsat sahibi laboratuvarın bilimsel/teknik faaliyetinin usulüne uygunluğundan mesuldür. Ruhsat dosyasındaki sorumlu uzmanın değişmesi yeni bildirim/işlem gerektirir. [DOĞRULA: birden fazla mütehassıs ve mesul müdür ilişkisi güncel metinle teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "992 seriri gidai taharriyat laboratuvarlar kanunu",
+   "kaynak_dosya": "992_seriri_gidai_taharriyat_laboratuvarlar_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Ruhsatsız laboratuvar cezası ve kapatma\nUzman olduğu hâlde izinsiz (ruhsatsız) laboratuvar açanın laboratuvarı, kanundaki usule göre izin alınıncaya kadar mahalli mülki amir tarafından kapatılır; uzman olmadığı hâlde böyle bir laboratuvar açanlara veya ruhsatlı laboratuvarını uzman olmayanlara terk edenlere idarî para cezası verilir ve laboratuvar kapatılır. Ruhsat başvurusu yapılmadan açılan laboratuvar bu madde kapsamındadır. [DOĞRULA: idari para cezası tutarları 5728/5326 sK yeniden değerlemeye tabidir; güncel tutar teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "992 seriri gidai taharriyat laboratuvarlar kanunu",
+   "kaynak_dosya": "992_seriri_gidai_taharriyat_laboratuvarlar_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Fenne aykırı işletme ve ruhsatın etkisi\nFenne uygun tahliller yapılmadığı, beyannamesinde belirtilen hükümlere uyulmadığı veya 7. madde uyarınca çıkarılan yönetmeliğe aykırı hareket edildiği belirlenenlere mahalli mülki amir tarafından idarî para cezası verilir ve şartlar yerine getirilinceye kadar laboratuvar kapatılır. Beyannamedeki taahhütlere/ruhsat şartlarına aykırı işletme bu maddenin konusudur. [DOĞRULA: ceza tutarları ve eksiklik tamamlama süresi güncel metinle teyit edilmelidir.]"
   },
   {
    "mevzuat": "atik yonetimi yonetmeligi",
@@ -7416,5 +8088,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 162
+ "mevzuat_sayisi": 178
 }

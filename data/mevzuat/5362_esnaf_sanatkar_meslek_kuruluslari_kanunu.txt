@@ -1,0 +1,23 @@
+Esnaf ve Sanatkârlar Meslek Kuruluşları Kanunu
+Kanun No 5362, Kabul 7/6/2005, RG 21/6/2005 Sayı 25852 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5362.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanunda geçen temel kavramları tanımlar: 'esnaf ve sanatkâr' ekonomik faaliyetini sermayesi ile birlikte bedenî çalışmasına dayandıran ve gelirinin tamamı veya bir kısmı bedenî çalışmasıyla sağlanan, esnaf ve sanatkâr siciline kayıtlı kişiyi; 'oda', 'ihtisas odası', 'birlik', 'federasyon', 'konfederasyon' ve 'sicil' (Esnaf ve Sanatkâr Sicil Müdürlüğü) ifadelerini açıklar. Esnaf-sanatkâr niteliğinin ve sicil/oda başvurularının kavramsal dayanağıdır.
+
+Madde 4 — Odaların kuruluşu
+Bir oda kurulabilmesi için en az beş yüz esnaf ve sanatkârın isteği ve Bakanlık izninin gerektiğini düzenler. Kuruluş işlemleri Bakanlık e-esnaf ve sanatkâr veri tabanı üzerinden ve sicil müdürünün gözetiminde yürütülür. Oda kuruluş başvurusu ve izin yazışmalarının dayanağıdır.
+
+Madde 6 — Odaya kayıt (sicil ön koşulu)
+Esnaf ve sanatkârların sicile kayıtları yapılmadıkça hiçbir şekilde odaya kaydının yapılamayacağını düzenler. Sicile kayıt olan esnaf ve sanatkâra ait bilgiler sicil tarafından elektronik ortamda, iş yerinin (seyyar ise ikametgâhın) bulunduğu yerdeki ilgili ihtisas odasına; ihtisas odası yoksa karma odaya kayıt için gönderilir ve oda yönetim kurulu üyelik kararını ilk toplantısında alır. Sicil kaydı ile oda üyeliği arasındaki zorunlu sıralamanın ve oda kayıt başvurusunun dayanağıdır.
+
+Madde 7 — Üyelik şartları
+Oda üyeliği için aranan şartları sayar: Türkiye Cumhuriyeti vatandaşı olmak veya yabancı devlet tabiiyetinde bulunmakla beraber Türkiye'de sanat ve ticaret yapıyor olmak, medeni hakları kullanma ehliyetine sahip olmak ve esnaf ve sanatkâr siciline kayıtlı olmak. Oda üyelik başvurusunda istenen belgelerin ve uygunluk değerlendirmesinin dayanağıdır.
+
+Madde 68 — Sicile tescil mecburiyeti
+Kanun kapsamındaki esnaf ve sanatkârların (yanlarında çalışanlar hariç) çalışmaya başladıkları tarihten itibaren durumlarını otuz gün içinde bağlı bulundukları sicile tescil ve Sicil Gazetesinde ilan ettirmekle yükümlü olduğunu düzenler. Bu yükümlülüğü yerine getirmeyenler Birlik tarafından ruhsat vermeye yetkili kurum ve kuruluşlara bildirilir; ilgili kurumlar sicil kaydı yapılana kadar faaliyeti durdurur. Tescili gerektiren olayın sona ermesi halinde kayıt ilgilinin talebi üzerine silinir. Esnaf sicil tescil/terkin başvurusunun ve faaliyet durdurma bildiriminin dayanağıdır. [DOĞRULA: Türk Ticaret Kanununun ticaret siciline ilişkin 26-40 ıncı maddelerinin aykırı olmayan hükümlerinin sicil müdürlüğü hakkında da uygulanacağına ilişkin atıf madde içinde teyit edilmeli.]

@@ -1,0 +1,27 @@
+Seriri ve Gıdai Taharriyat ve Tahlilat Yapılan ve Masli Teamüller Aranılan Umuma Mahsus Bakteriyoloji ve Kimya Laboratuvarları Kanunu
+Kanun No 992, Kabul 19.03.1927, RG 30.03.1927/580 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.992 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/anasayfa/MevzuatFihristDetayIframe?MevzuatTur=1&MevzuatNo=992&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+İlgi: Umuma mahsus (klinik/tıbbi) tahlil laboratuvarı açma ruhsatı (ruhsatname) başvurusu,
+ruhsat dilekçesi ve eklenecek beyanname, mesul müdür sorumluluğu, ruhsatın geri alınması ve
+ruhsatsız laboratuvar cezaları açısından laboratuvar ruhsat başvuru evrakının dayanağıdır.
+
+Madde 1 — Laboratuvar açma ruhsatı ve açabilecek meslek grupları
+Umuma mahsus seroloji/bakteriyoloji ve kimya tahlilleri yapan laboratuvarlar, ancak ihtisas vesikasına sahip ve Türkiye'de sanatını icraya yetkili tabip, baytar (veteriner), eczacı veya kimyagerler tarafından Sağlık Bakanlığının müsaadesi (ruhsatı) alınarak açılabilir. Yani laboratuvar açmak ruhsata bağlıdır ve başvuran kişide uzmanlık/icra yetkisi şartı aranır.
+
+Madde 2 — Ruhsat başvurusu: istida ve beyanname
+Laboratuvar açacak uzman, mahalli sağlık müdürlüğüne bir istida (dilekçe) ile başvurur; istidaya kimlik/diploma ve ihtisas belgeleriyle birlikte laboratuvarın ismini, açık adresini, krokisini, yapılacak tahlilatın nevilerini, her tahlil için tespit edilen ücret tarifesini ve çalışacak mütehassısların isimlerini içeren bir beyanname eklenir. Başvuru ve belgeler sağlık müdürlüğünce incelenip Bakanlığa gönderilir; şartları taşıyanlara ruhsatname verilir ve işlem başvuru tarihinden en geç bir ay içinde sonuçlandırılarak başvurana bildirilir. Bu madde laboratuvar ruhsat başvuru evrakının içeriğini belirler.
+
+Madde 5 — Mesul müdür/ruhsatname sahibinin fenni sorumluluğu
+Laboratuvarın fenni (teknik) işlerinden ruhsatname sahibi sorumludur; ruhsat sahibi laboratuvarın bilimsel/teknik faaliyetinin usulüne uygunluğundan mesuldür. Ruhsat dosyasındaki sorumlu uzmanın değişmesi yeni bildirim/işlem gerektirir. [DOĞRULA: birden fazla mütehassıs ve mesul müdür ilişkisi güncel metinle teyit edilmelidir.]
+
+Madde 9 — Ruhsatsız laboratuvar cezası ve kapatma
+Uzman olduğu hâlde izinsiz (ruhsatsız) laboratuvar açanın laboratuvarı, kanundaki usule göre izin alınıncaya kadar mahalli mülki amir tarafından kapatılır; uzman olmadığı hâlde böyle bir laboratuvar açanlara veya ruhsatlı laboratuvarını uzman olmayanlara terk edenlere idarî para cezası verilir ve laboratuvar kapatılır. Ruhsat başvurusu yapılmadan açılan laboratuvar bu madde kapsamındadır. [DOĞRULA: idari para cezası tutarları 5728/5326 sK yeniden değerlemeye tabidir; güncel tutar teyit edilmelidir.]
+
+Madde 10 — Fenne aykırı işletme ve ruhsatın etkisi
+Fenne uygun tahliller yapılmadığı, beyannamesinde belirtilen hükümlere uyulmadığı veya 7. madde uyarınca çıkarılan yönetmeliğe aykırı hareket edildiği belirlenenlere mahalli mülki amir tarafından idarî para cezası verilir ve şartlar yerine getirilinceye kadar laboratuvar kapatılır. Beyannamedeki taahhütlere/ruhsat şartlarına aykırı işletme bu maddenin konusudur. [DOĞRULA: ceza tutarları ve eksiklik tamamlama süresi güncel metinle teyit edilmelidir.]

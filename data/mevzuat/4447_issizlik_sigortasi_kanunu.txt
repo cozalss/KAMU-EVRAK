@@ -1,0 +1,26 @@
+İşsizlik Sigortası Kanunu
+Kanun No 4447, Kabul 25.08.1999, RG 08.09.1999/23810 — YÜRÜRLÜKTE (İşsizlik sigortası hükümleri 4447 sayılı Kanunun 46-55. maddeleri ve ek maddelerinde düzenlenmiştir; mevzuat.gov.tr 1.5.4447 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4447&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 46 — İşsizlik sigortasının amacı ve kapsamı
+İşsizlik sigortası; bir işyerinde çalışırken çalışma istek, yetenek, sağlık ve yeterliliğinde olmasına rağmen kendi istek ve kusuru dışında işini kaybedenlere, uğradıkları gelir kaybını kısmen telafi etmek üzere bu Kanunda öngörülen ödeme ve hizmetlerin sağlanmasını amaçlar. Sigorta, 5510 sayılı Kanunun 4/a (eski SSK) kapsamındaki hizmet akdine tabi sigortalılar ile kapsama dâhil edilen diğer çalışanları kapsar. Bu madde, işsizlik ödeneği başvurusunun ve hizmetlerinin yasal temelini oluşturur.
+
+Madde 50 — İşsizlik ödeneğinin miktarı, ödeme süreleri ve ödeme zamanı
+Günlük işsizlik ödeneği, sigortalının son dört aylık prime esas kazançları dikkate alınarak hesaplanan günlük ortalama brüt kazancının yüzde kırkıdır; bu tutar 4857 sayılı İş Kanununun 39. maddesine göre uygulanan aylık brüt asgari ücretin yüzde seksenini geçemez. Hizmet akdinin sona ermesinden önceki son 120 gün hizmet akdine tabi olanlardan son üç yıl içinde en az 600 gün prim ödeyene 180 gün, 900 gün ödeyene 240 gün, 1080 gün ödeyene 300 gün süreyle işsizlik ödeneği verilir. Ödenek her ayın sonunda aylık olarak sigortalı işsizin kendisine ödenir; ilk işsizlik ödeneği başvuruyu izleyen ayın sonunda yapılır.
+
+Madde 51 — İşsizlik ödeneğine hak kazanmanın şartları ve başvuru (30 gün)
+Sigortalı işsizin işsizlik ödeneğine hak kazanabilmesi için hizmet akdinin; sigortalının kendi istek ve kusuru dışında (örneğin işveren feshi, belirli süreli sözleşmenin sona ermesi, işyerinin kapanması, sağlık/haklı nedenle işçi feshi gibi maddede sayılan hâllerde) sona ermiş olması, prim ödeme koşullarını sağlaması ve Kuruma süresinde başvurması gerekir. Sigortalı işsiz, hizmet akdinin feshedildiği tarihi izleyen günden itibaren otuz gün içinde en yakın İŞKUR birimine doğrudan veya elektronik ortamda (e-Devlet) başvurarak yeni bir iş almaya hazır olduğunu kaydettirmek zorundadır. Mücbir sebepler dışında başvuruda gecikilen süre, hak kazanılan toplam işsizlik ödeneği süresinden düşülür.
+
+Madde 52 — İşsizlik ödeneğinin kesilmesi (hak düşürücü nedenler)
+İŞKUR tarafından teklif edilen mesleklerine uygun ve son çalıştığı işin ücret ve çalışma koşullarına yakın, ikamet yerinin değişmesini gerektirmeyen bir işi haklı bir nedene dayanmaksızın reddeden sigortalı işsizlerin işsizlik ödeneği kesilir. Ayrıca ödenek aldığı sürede gelir getirici bir işte çalıştığı veya başka bir sosyal güvenlik kuruluşundan gelir ya da aylık aldığı tespit edilenlerin, Kurumca önerilen meslek geliştirme/edindirme eğitimini haklı sebep olmaksızın reddedenlerin ve haklı bir nedene dayanmaksızın çağrılan denetimlere gelmeyen veya istenen bilgi/belgeyi vermeyenlerin ödeneği kesilir. Belirli hâllerde kesilen ödenek, durumun ortadan kalkması üzerine kalan süre kadar yeniden başlatılabilir.
+
+Madde 54 — İdari para cezaları (bildirim yükümlülüğü)
+İşverenler, hizmet akdi sona eren sigortalılar için işten ayrılma bildirgesini düzenlemek ve bu Kanunda öngörülen bildirim yükümlülüklerini yerine getirmek zorundadır; bu bildirimler işsizlik ödeneği başvurusunun değerlendirilmesinde esas alınır. Yükümlülüklere aykırı hareket eden işverenlere maddede belirtilen tutarlarda idari para cezası uygulanır. [DOĞRULA: idari para cezası tutarları her yıl yeniden değerleme oranında güncellendiğinden cari rakamlar İŞKUR/Bakanlık tebliğinden teyit edilmelidir.]
+
+Ek Madde 2 — Kısa çalışma ve kısa çalışma ödeneği
+Genel ekonomik, sektörel veya bölgesel kriz ile zorlayıcı sebeplerle işyerindeki haftalık çalışma sürelerinin geçici olarak önemli ölçüde azaltılması veya işyerinde faaliyetin tamamen ya da kısmen geçici olarak durdurulması hâllerinde, işyerinde üç ayı aşmamak üzere (Cumhurbaşkanınca altı aya kadar uzatılabilir) kısa çalışma yapılabilir. İşveren kısa çalışma talebini gerekçeleriyle birlikte Türkiye İş Kurumuna ve varsa toplu iş sözleşmesi tarafı sendikaya yazılı olarak bildirir; talebin uygunluğu Bakanlık/İŞKUR denetimiyle tespit edilir. Günlük kısa çalışma ödeneği, sigortalının son on iki aylık prime esas kazançları üzerinden hesaplanan günlük ortalama brüt kazancının yüzde altmışıdır ve aylık brüt asgari ücretin yüzde 150'sini geçemez; işçinin kısa çalışma ödeneğine hak kazanması için işsizlik sigortası prim ödeme koşullarını sağlaması gerekir.

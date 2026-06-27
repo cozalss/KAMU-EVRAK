@@ -1,0 +1,29 @@
+İspençiyari ve Tıbbi Müstahzarlar Kanunu
+Kanun No 1262, Kabul 14.05.1928, RG 26.05.1928/898 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.1262 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.1262.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr ve TİTCK resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+İlgi: İlaç/müstahzar ruhsatı (ruhsatname) başvurusu, etiket-ambalaj beyanı, mesul müdür,
+ruhsatsız imal/satış cezaları açısından ilaç ruhsat başvuru evrakının dayanağıdır.
+
+Madde 3 — Ruhsat (müsaade) alma zorunluluğu
+Dahilde imal olunan ispençiyari ve tıbbi müstahzarların ticarete çıkarılmasından ve hariçte yapılanların memlekete ithalinden evvel Sağlık Bakanlığından (kanundaki tabirle Sıhhiye ve Muaveneti İçtimaiye Vekaletinden) müsaade alınması şarttır. Yani bir müstahzar, ruhsat alınmadan piyasaya verilemez veya ithal edilemez. Ruhsat başvurusu olmadan satışa sunulan müstahzar ruhsatsız sayılır.
+
+Madde 5 — İmal yetkisi ve mesul müdür
+Türkiye'de gerçek ve tüzel kişiler, müstahzarları ancak bir Türk tabip, eczacı veya kimyagerin mesuliyeti altında (mesul müdür) imal edebilir; tüzel kişiler için aranacak nitelikler Bakanlıkça belirlenir. İmalathane/laboratuvar açma ve sorumlu yönetici şartı bu maddeden doğar. Mesul müdürün niteliği ruhsat dosyasında belgelenir.
+
+Madde 6 — Ruhsat başvurusu ve eklenecek belgeler
+Müstahzar ruhsatı için Sağlık Bakanlığına bir istida (dilekçe) ile başvurulur; başvuruya müstahzarı terkip eden maddeleri bildiren tasdikli formül, ambalaj ve etiket örnekleri, tarifname (kullanım talimatı) ve istenen diğer belgeler eklenir. Bakanlık başvuruyu inceleyerek uygun bulunanlara ruhsatname (ruhsat numarası içeren belge) verir. Bu madde ilaç ruhsat başvuru evrakının temel içeriğini belirler.
+
+Madde 12 — Etiket ve ambalaj üzerinde ruhsat bilgileri
+Müstahzarların dış ambalajı üzerinde ve ambalaj içindeki tarifnamelerde açık ve Türkçe olarak ruhsat sahibinin ve yapıldığı laboratuvarın adı ve adresi, ruhsat numarası ve ilacın nasıl kullanılacağı yazılı olur; tesirli/zehirli madde içeriyorsa cinsi ve miktarı belirtilir. Etikette ruhsat numarasının bulunması ruhsatın varlığının ispatıdır. [DOĞRULA: bazı konsolide nüshalarda bu hüküm madde 13 olarak numaralandırılabilir; üretimden önce güncel mevzuat.gov.tr metni ile teyit edilmelidir.]
+
+Madde 18 — Formüle aykırı/saf olmayan imal cezası
+Tahlil neticesinde müstahzarın terkibindeki maddelerin saf olmadığı, ruhsat almak için verilen formüle uymadığı veya tedavi vasfını azaltacak/kaybedecek şekilde imal edildiği anlaşılırsa, fiil ayrıca suç oluşturmadığı takdirde ruhsat sahibine ve bunu bilerek satan/satışa arz edenlere idarî para cezası verilir. Ruhsat dosyasındaki formüle uymayan üretim bu madde kapsamındadır. [DOĞRULA: idari para cezası alt-üst tutarları 5326 sK yeniden değerleme oranı ile her yıl güncellenir; uygulamadan önce güncel tutar teyit edilmelidir.]
+
+Madde 19 — Ruhsatsız imal/satış cezası
+Ruhsatsız olarak müstahzar imal edenler ile bu suretle imal edilen müstahzarları bilerek satan, satışa arz eden veya sattıranlara idarî para cezası verilir; ceza, failin müstahzar imaline salahiyeti (mesul müdür/yetki) olup olmamasına göre farklı tutarlarda uygulanır. Ruhsat başvurusu yapılmadan piyasaya sürülen ilaç bu maddenin konusudur. [DOĞRULA: güncel idari para cezası tutarları ve değişik fıkralar 5728 sK sonrası metinle teyit edilmelidir.]

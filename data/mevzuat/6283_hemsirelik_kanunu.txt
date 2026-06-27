@@ -1,0 +1,30 @@
+Hemşirelik Kanunu
+Kanun No 6283, Kabul 25.02.1954, RG 02.03.1954/8647 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.6283 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.6283.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+İlgi: Hemşirelik unvanı, diploma tescili (yurt dışı denklik dâhil), meslek icra hakkı ve
+şartları, görev-yetki, uzman hemşirelik tescili açısından hemşire tescil/meslek icra başvuru
+evrakının dayanağıdır. (Çok sayıda hüküm 6225/663 sK ile güncellenmiştir.)
+
+Madde 1 — Hemşire unvanı ve diploma tescili
+Hemşirelik ile ilgili lisans eğitimi veren fakülte ve yüksekokullardan mezun olup diplomaları Sağlık Bakanlığınca tescil edilenler ile yurt dışında hemşirelik öğrenimi görüp diploma denkliği onaylanan ve diploması Bakanlıkça tescil edilenlere "hemşire" unvanı verilir. Hemşire olarak çalışmanın ön koşulu diplomanın Bakanlığa tescilidir; tescil başvurusu hemşire meslek kaydının temelidir. [DOĞRULA: maddenin ilk şekli (orta öğrenim + jüri sınavı) 6225 sayılı Kanunla değiştirilmiştir; güncel lisans/denklik şartı esas alınmalıdır.]
+
+Madde 3 — Meslek icra hakkı (münhasırlık)
+Türkiye'de hemşirelik mesleğini ancak bu Kanuna göre hemşire unvanı kazanmış Türk vatandaşı hemşireler icra edebilir. Bu unvana sahip olmayan kimse hemşirelik yapamaz ve hemşire unvanını kullanamaz. Meslek icrası için diploma tescili ile birlikte bu maddedeki şartların sağlanması gerekir.
+
+Madde 4 — Hemşirenin görev ve yetkileri
+Hemşire; tabip tarafından acil haller dışında yazılı olarak verilen tedavileri uygulamaya, birey/aile/toplumun hemşirelik girişimleriyle karşılanabilecek sağlık gereksinimlerini belirlemeye ve hemşirelik tanılama süreci kapsamında bakımı planlamaya, uygulamaya, denetlemeye ve değerlendirmeye yetkili ve sorumlu sağlık personelidir. Görev, yetki ve sorumlulukların ayrıntısı yönetmelikle düzenlenir. [DOĞRULA: görev tanımı 663/6225 sK değişikliği sonrası metinden teyit edilmelidir.]
+
+Madde 5 — Serbest çalışma ve bildirim
+Hemşirelik okullarından mezun olup mecburi hizmetini tamamlayan hemşireler dilerlerse serbest çalışabilir; serbest çalışanlar gerekli belgeleri bulundukları yerin en büyük sağlık amirliğine vermek ve ev adresi ile iş yerindeki değişiklikleri bir hafta içinde aynı makama bildirmekle yükümlüdür. Serbest meslek icrasında bildirim/belge ibrazı bu maddeden doğar. [DOĞRULA: mecburi hizmet ve serbest çalışma şartları güncel metinle teyit edilmelidir.]
+
+Madde 8 — Uzman hemşirelik ve tescili
+Hemşireler, mesleklerine ilişkin lisansüstü eğitim alıp diplomaları Bakanlıkça tescil edildikten sonra uzman hemşire olarak çalışabilir; ayrıca yönetmelikle belirlenen standartlarda uzmanlık alanlarında yetki belgesi (sertifika) alabilir, bu belgelerin eğitim-uygulama-tescil esasları Bakanlıkça düzenlenir. Uzman hemşirelik için ayrı bir tescil/yetki belgesi başvurusu gerekir.
+
+Madde 11 — Kanuna aykırı meslek icrası cezası
+Madde 3 hükümlerine aykırı olarak hemşirelik mesleğini icra edenlere idarî para cezası verilir ve meslek icrasına aykırı faaliyetleri durdurulur. Hemşire unvanı/tescili olmadan meslek icrası bu madde kapsamındadır. [DOĞRULA: idari para cezası tutarı (663 sK / 5326 sK yeniden değerleme) güncel metinle teyit edilmelidir.]

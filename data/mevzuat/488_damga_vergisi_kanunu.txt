@@ -1,0 +1,23 @@
+Damga Vergisi Kanunu
+Kanun No 488, Kabul 01.07.1964, RG 11.07.1964/11751 — YURURLUKTE (resmi PDF 1.5.488 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.488.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Damga vergisine tabi kagitlar (konu)
+Bu Kanuna ekli (1) sayili tabloda yazili kagitlar damga vergisine tabidir. Kanundaki 'kagitlar' terimi; yazilip imzalanmak veya imza yerine gecen bir isaret konmak suretiyle duzenlenen ve herhangi bir hususu ispat veya belli etmek icin ibraz edilebilecek belgeler ile elektronik imza kullanilarak manyetik ortamda ve elektronik veri seklinde olusturulan belgeleri ifade eder. Sozlesme, taahhutname, makbuz gibi evrakin verginin konusuna girmesinin dayanagidir.
+
+Madde 3 — Mukellef
+Damga vergisinin mukellefi kagitlari imza edenlerdir. Resmi dairelerle kisiler arasindaki islemlere ait kagitlarin damga vergisini kisiler oder. Yabanci memleketlerle Turkiye'deki yabanci elcilik ve konsolosluklarda duzenlenen kagitlarin vergisini, bu kagitlari Turkiye'de resmi dairelere ibraz eden, uzerlerinde devir veya ciro islemi yapan ya da herhangi bir suretle hukumlerinden yararlananlar oder. Sozlesme taraflarinin damga vergisi mukellefiyetini belirler.
+
+Madde 8 — Resmi daire tanimi
+Bu Kanunda yazili resmi daireden maksat; genel ve ozel butceli idarelerle il ozel idareleri, yatirim izleme ve koordinasyon baskanliklari, belediyeler ve koylerdir. Bu dairelere bagli olup ayri tuzel kisiligi bulunan iktisadi isletmeler resmi daire sayilmaz. Damga vergisi istisna ve odeme hukumlerinde 'resmi daire' kapsamini netlestirir.
+
+Madde 22 — Verginin odenmesi (makbuz karsiligi / surekli mukellefiyet)
+Kanunda belirtilen haller disinda damga vergisi makbuz karsiligi odenir. Maliye Bakanligi'nca belirlenen mukellefler, kurum ve kuruluslarin bir ay icinde duzenledikleri kagitlarin vergisi, ertesi ayin yirminci gunu aksamina kadar damga vergisi beyannamesi ile beyan edilir ve yirmialtinci gunu aksamina kadar odenir (surekli damga vergisi mukellefiyeti). Genel/ozel butceli idareler, belediyeler ve bankalar gibi kuruluslarin istihkaktan kesinti yoluyla odemesine de imkan taninir. Damga vergisi beyannamesinin verilme ve odeme takviminin dayanagidir.
+
+Madde 24 — Mukelleflerin teselsulu (muteselsil sorumluluk)
+Vergiye tabi kagitlarin damga vergisinin hic odenmemesi veya noksan odenmesinden dolayi alinmasi gereken vergi ve cezadan, mukelleflere rucu hakki olmak uzere kagitlari ibraz edenler sorumludur. Birden fazla kisi tarafindan imza edilen kagitlara ait vergi ve cezanin tamamindan imza edenler muteselsilen sorumludur. Resmi daireler veya noterlerce kagitlarin damga vergisi hukmunun yerine getirilmesinde sorumluluk paylasimini duzenler.

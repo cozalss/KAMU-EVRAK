@@ -1,0 +1,26 @@
+Özel Tüketim Vergisi Kanunu
+Kanun No 4760, Kabul 06.06.2002, RG 12.06.2002/24783 (yürürlük 01.08.2002) — YURURLUKTE (resmi PDF 1.5.4760 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4760.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Verginin konusu (vergiyi doguran olay)
+Kanuna ekli (I), (II), (III) ve (IV) sayili listelerdeki mallar bir defaya mahsus olmak uzere ozel tuketim vergisine tabidir. Vergiyi doguran olay; (I) sayili listedeki mallarin imalatcilari (rafineriler dahil) veya ithalatcilari tarafindan teslimi, (II) sayili listedeki kayit ve tescile tabi mallarin ilk iktisabi, (III)/(IV) sayili liste mallarinin imalatci tarafindan teslimi veya ithali ve bu mallarin acik artirma yoluyla satisidir. OTV verginin konusunu ve hangi mal gruplarinda dogdugunu belirler.
+
+Madde 4 — Mukellef ve vergi sorumlusu
+Ozel tuketim vergisinin mukellefi; (I), (III) ve (IV) sayili listelerdeki mallar ile (II) sayili listedeki kayit-tescile tabi olmayan mallari imal, insa veya ithal edenler ile bu mallarin acik artirma yoluyla satisini gerceklestirenlerdir. (II) sayili listedeki kayit ve tescile tabi mallarda mukellef; motorlu arac ticareti yapanlar, kullanmak uzere ithal edenler veya acik artirmayla satisini yapanlardir. Mukellefin Turkiye'de ikametgahi/isyeri yoksa Maliye Bakanligi vergi alacaginin emniyeti icin vergi sorumlusu belirleyebilir.
+
+Madde 5 — Ihracat istisnasi
+Bu Kanuna ekli listelerdeki mallarin ihracat teslimleri, teslimin yurt disindaki bir musteriye yapilmasi ve malin Turkiye Cumhuriyeti gumruk bolgesinden cikmis olmasi sartiyla vergiden mustesnadir. Ihrac edilen mallara ait alis belgelerinde gosterilen ve beyan edilen OTV, ihracatcinin bagli oldugu vergi dairesince iade edilir. Ihracat evrakina dayali OTV istisnasinin ve iadesinin dayanagidir.
+
+Madde 7 — Diger istisnalar
+Bu maddede sayilan teslimler OTV'den mustesnadir; baslicalari: askeri amacli teslimler, petrol arama-istihsal faaliyetlerinde kullanilacak mallar, diplomatik istisna kapsamindaki teslimler ve malul/engellilere ait arac iktisabi. 7. maddenin 2. fikrasi uyarinca, 87.03/87.04/87.11 G.T.I.P. numarali bazi araclarin, harekete iliskin ozel tertibati bulunan engelliler ile saglik kurulu raporuyla agir engellilik (orn. %90 ve uzeri) durumu belgelenenler tarafindan ilk iktisabi belirli sartlarla vergiden mustesnadir. Engelli arac istisnasi basvurularinin temel dayanagidir.
+
+Madde 14 — Verginin beyani, vergilendirme donemi ve odeme
+OTV, mukelleflerin yazili beyanlari uzerine tarh olunur. Vergilendirme donemi (I) sayili listedeki mallar icin her ayin ilk onbes gunu ile kalan gunlerinden olusan iki donem; diger listelerdeki ve kayit-tescile tabi olmayan mallarda birer aylik takvim donemleridir. Beyanname, (I) sayili liste mallari icin donemi izleyen onuncu gun, diger mallar icin izleyen ayin onbesinci gunu aksamina kadar mukellefin KDV yonunden bagli oldugu vergi dairesine verilir; vergi beyanname verme suresi icinde odenir. OTV beyannamesinin verilme ve odeme takviminin dayanagidir.
+
+Madde 15 — Verginin belgelerde gosterilmesi
+Mukellefler ozel tuketim vergisini duzenledikleri satis belgelerinde ayrica gostermeye mecburdur. Vergiye tabi bir islem olmadigi veya bu vergiyi gosterme hakki bulunmadigi halde belgelerde OTV gosterenler, gosterdikleri bu vergiyi beyan etmek ve odemekle yukumludur. Fatura/satis evrakinda OTV'nin gosterilmesi ve haksiz gosterimin sorumlulugunu duzenler.

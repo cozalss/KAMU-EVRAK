@@ -1,0 +1,29 @@
+Milli Parklar Kanunu
+Kanun No 2873, Kabul 09.08.1983, RG 11.08.1983/18132 (Düstur Tertip 5, Cilt 22) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2873.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacını düzenler: yurttaki millî ve milletlerarası düzeyde değerlere sahip millî park, tabiat parkı, tabiat anıtı ve tabiatı koruma alanlarının seçilip belirlenmesine, özellik ve karakterleri bozulmadan korunmasına, geliştirilmesine ve yönetilmesine ilişkin esasları kapsar. Milli park statüsü, izin ve koruma yazışmalarının dayanak ilkesidir.
+
+Madde 2 — Tanımlar
+Kanunda geçen temel kavramları tanımlar: "Millî park" bilimsel ve estetik bakımdan ender bulunan tabiî ve kültürel kaynak değerlerine sahip alan; "Tabiat parkı" bitki örtüsü ve yaban hayatı özelliğine sahip dinlenme ve eğlenme alanı; "Tabiat anıtı" ilginç tabiat olaylarının oluşturduğu alan; "Tabiatı koruma alanı" bilim ve eğitim amacıyla ayrılan ekosistem. İzin ve başvuru yazışmalarında alanın hangi statüde olduğunun belirlenmesinde esas alınan tanım maddesidir.
+
+Madde 3 — Belirleme ve ilan (statü kazandırma)
+Millî park karakterine sahip alanların belirlenip ilan edilme usulünü düzenler: millî parklar Cumhurbaşkanı kararıyla belirlenir; orman rejimine giren yerlerdeki tabiat parkı, tabiat anıtı ve tabiatı koruma alanları Bakan onayıyla, orman rejimi dışındaki alanlar Cumhurbaşkanı kararıyla statü kazanır. Bir alanın milli park/tabiat parkı ilan edilmesine ilişkin talep ve tescil yazışmalarının dayanağıdır.
+
+Madde 4 — Planlama (uzun devreli gelişme planı / yönetim planı)
+İlan edilen alanların koruma ve kullanma amaçlarını gerçekleştirmek üzere uzun devreli gelişme planı, gelişme planı ve yönetim planının ilgili Genel Müdürlükçe hazırlanmasını düzenler. Bu planlar kesinleşmeden Kanunda sözü edilen izinler verilemez; izin başvurularının plan uygunluğu denetiminde dayanak maddedir.
+
+Madde 7 — Kamu kurum ve kuruluşlarına izin (plan ve projelere izin)
+Millî park ve tabiat parklarında, onaylı planlara uygun olması koşuluyla kamu kurum ve kuruluşlarınca yapılacak her türlü plan, proje ve yatırımlara Genel Müdürlükçe izin verilebileceğini ve uygulamaların Kanun hükümlerine göre denetleneceğini düzenler. Tarihî ve arkeolojik sahalarda ayrıca ilgili kültür mercii izni gerekir. Milli park alanında tesis/yatırım/işletme izni başvuru ve değerlendirme yazışmalarının doğrudan dayanağıdır.
+
+Madde 14 — Yasaklar (milli park alanında yasak fiiller)
+Millî park alanlarında yasak olan fiilleri sayar: tabiî kaynak değerlerini ve ekolojik dengeyi bozmak, yaban hayatını tahrip etmek, çevre kirliliğine yol açmak, kamu yararı bakımından vazgeçilmez ve kesin zorunluluk bulunmadıkça yapı ve tesis inşa etmek, alanın doğal yapısını değiştiren işler yapmak. İzinsiz faaliyet ve ihlal tespiti yazışmaları ile ceza uygulamasının (Madde 21) maddi dayanağıdır.
+
+Madde 21 — Ceza hükmü (yasak fiillere yaptırım)
+Madde 14 ve ilgili hükümlerle yasaklanan faaliyetleri yürütenler hakkında, fiil daha ağır cezayı gerektirmediği takdirde hapis ve adli para cezası uygulanmasını düzenler. [DOĞRULA: güncel ceza alt-üst sınırları ve adli para cezası gün sayısı sonraki değişikliklerle güncellenmiş olabilir — mevzuat.gov.tr 1.5.2873 güncel metinden teyit edilmeli.] Milli parkta izinsiz/yasak faaliyet nedeniyle suç duyurusu ve yaptırım yazışmalarının dayanağıdır.

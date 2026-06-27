@@ -1,0 +1,23 @@
+Perakende Ticaretin Düzenlenmesi Hakkında Kanun
+Kanun No 6585, Kabul 14/1/2015, RG 29/1/2015 Sayı 29251 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6585.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacının; perakende işletmelerin açılış ve faaliyete geçiş işlemlerinin kolaylaştırılması, perakende ticaretin serbest piyasa ortamında etkin ve sürdürülebilir rekabet şartlarına göre yapılması, tüketicinin korunması ve perakende işletmelerin dengeli şekilde büyüme ve gelişmesinin sağlanması olduğunu belirtir. Perakende işyeri açılış başvurularının amaç çerçevesinin dayanağıdır.
+
+Madde 3 — Tanımlar
+Kanunda geçen kavramları tanımlar: perakende işletme, büyük mağaza (en az dört yüz metrekare satış alanına sahip işletme), zincir mağaza, bayi işletme, alışveriş merkezi (içinde çeşitli işyerlerini barındıran, merkezi yönetim ve ortak kullanım alanlarına sahip yapı), PERBİS, yetkili idare ve yetkili kurum/kuruluş. İşyeri tür belirleme ve ruhsat başvuru sınıflandırmasının dayanağıdır.
+
+Madde 4 — Perakende bilgi sistemi (PERBİS)
+Perakende işletmelerin açılış, faaliyet ve kapanışında gerekli başvuru ve diğer işlemlerin yapılması ile bu işlemlere ilişkin verilerin elektronik ortamda tutulması amacıyla Bakanlık bünyesinde Perakende Bilgi Sisteminin (PERBİS) kurulduğunu düzenler. Sistem, başvuruları alan ve ilgili kurum/kuruluşlar arasında çevrim içi bağlantı sağlayan merkezi yapı olarak işler. Elektronik ruhsat ve kayıt başvurularının dayanağıdır.
+
+Madde 5 — İşyeri açma ve çalışma ruhsatı verilmesi
+İşyeri açma ve çalışma ruhsatının PERBİS üzerinden verileceğini; başvurunun doğrudan veya PERBİS üzerinden yetkili idareye yapılacağını, doğrudan yapılan başvuruların yetkili idarece PERBİS'e işleneceğini düzenler. Ön değerlendirme sonucu uygun bulunan başvurular, başvuru tarihinden itibaren en geç üç iş günü içinde gerekli kayıt işlemlerini yapacak yetkili kurum ve kuruluşlara PERBİS üzerinden iletilir; büyükşehirlerde alışveriş merkezlerine ruhsat vermeye büyükşehir belediyeleri yetkilidir. Perakende işyeri ruhsat başvurusunun ve süreç akışının temel dayanağıdır.
+
+Madde 11 — Ortak kullanım alanları
+Alışveriş merkezlerinde, kullanımı ücretsiz olacak şekilde sosyal ve kültürel etkinlik alanı, acil tıbbi müdahale ünitesi, ibadet yeri, bebek bakım odası, çocuk oyun alanı ve dinlenme alanları ile ortaklaşa kullanma, korunma veya faydalanma için zorunlu diğer alanların oluşturulacağını düzenler. Alışveriş merkezi ruhsat ve uygunluk yazışmalarında ortak kullanım alanı yükümlülüğünün dayanağıdır.

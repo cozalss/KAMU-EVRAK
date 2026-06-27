@@ -1,0 +1,27 @@
+Abonelik Sözleşmesinden Kaynaklanan Para Alacaklarına İlişkin Takibin Başlatılması Usulü Hakkında Kanun
+Kanun No 7155, Kabul 06.12.2018, RG 19.12.2018/30630 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.7155 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7155.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır). Madde 8 haciz
+talep süresi, 7343 sayılı Kanun (2021) ile iki yıldan BEŞ yıla çıkarılmıştır.
+
+Madde 1 — Kapsam
+Bu Kanun; abonelik sözleşmelerinden ve bu sözleşmelerin ifası amacıyla tüketiciye sunulup bedeli faturaya yansıtılan mal veya hizmetten kaynaklanan para alacaklarına ilişkin haciz yoluyla ilamsız icra takiplerinin, Ulusal Yargı Ağı Bilişim Sistemi (UYAP) bünyesindeki Merkezî Takip Sistemi üzerinden başlatılmasını ve haciz aşamasına kadar yürütülmesini kapsar. Bu alacaklara ilişkin icra takipleri ancak bu Kanunda öngörülen yöntemle başlatılabilir; aksi hâlde icra dairesi takip talebini reddeder.
+
+Madde 2 — Takip talebi (alacaklı avukatı, elektronik ortam, güvenli elektronik imza)
+Alacaklı, icra takibini avukatı aracılığıyla Merkezî Takip Sistemi üzerinden başlatır. Avukat; sistemde tarafların kimlik ve iletişim bilgileri, alacağın tutarı ile faiz türü/oranı/başlangıç tarihi, alacağın dayanağı belge bilgileri ve yetkili icra dairesini içeren takip talebini doldurur. Dayanak belgeler taranıp sisteme yüklendikten ve harç elektronik ortamda ödendikten sonra talep, güvenli elektronik imzayla onaylanarak sisteme kaydedilir ve takibe bir Merkezî Takip Numarası verilir.
+
+Madde 3 — Ödeme emri ve tebliği (yedi gün ödeme/itiraz süresi, elektronik tebligat)
+Sistem tarafından düzenlenen ödeme emrinde; alacağın toplam tutarı, borcun ve takip masraflarının yedi gün içinde ödenmesi gerektiği, bu süre içinde itiraz edilmezse takibin kesinleşeceği, yetkili icra dairesi ve haciz işlemlerine nasıl devam edileceği yer alır. Ödeme emri, borçluya 7201 sayılı Tebligat Kanunu hükümlerine göre tebliğ edilir; tebliğ mazbatası sisteme aktarılır. Tebligat yapılamazsa borçlunun adres kayıt sistemindeki yerleşim yeri adresine yeniden tebligat çıkarılır. Borç, ödeme emrinin tebliğinden itibaren yedi gün içinde ödenebilir.
+
+Madde 4 — Ödeme emrine itiraz (yedi gün, herhangi bir icra dairesi veya sistem üzerinden, takip durur)
+Borçlu, ödeme emrinin tebliğinden itibaren yedi gün içinde, herhangi bir icra dairesine başvurarak veya güvenli elektronik imza kullanmak suretiyle Merkezî Takip Sistemi üzerinden ödeme emrine itiraz edebilir. Süresinde yapılan itiraz takibi durdurur; duran takip hakkında 2004 sayılı İcra ve İflas Kanunu hükümleri uygulanır. İtiraz, sisteme yüklendiği tarihi izleyen beşinci günün sonunda alacaklı avukatına tebliğ edilmiş sayılır. Yalnızca yetki itirazında yeniden ödeme emri tebliği gerekmez. (Sıralamada bu madde, kaynak metinde Madde 7 olarak yer alır.)
+
+Madde 5 — İtiraz edilmemesi veya itirazın hükümsüz kılınması (cebrî icra, beş yılda haciz istenmezse takip düşer)
+Süresinde itiraz edilmez veya itiraz hükümsüz kılınırsa, alacaklının talebi üzerine yetkili icra dairesinde cebrî icra (haciz ve sonraki) işlemlerine devam edilir. İtirazın iptali/kaldırılması için açılan davada geçen süre, aşağıdaki haciz isteme süresinin hesabında dikkate alınmaz. Ödeme emrinin tebliği tarihinden itibaren beş yıl içinde haciz talep edilmezse takip düşer (bu süre 7343 sayılı Kanunla iki yıldan beş yıla çıkarılmıştır). (Sıralamada bu madde, kaynak metinde Madde 8 olarak yer alır.)
+
+Madde 6 — Hüküm bulunmayan hâller ve yönetmelik
+Bu Kanunda hüküm bulunmayan hâllerde, niteliğine uygun düştüğü ölçüde 2004 sayılı İcra ve İflas Kanunu hükümleri uygulanır. Merkezî Takip Sisteminin işleyişi, takip talebi ve ödeme emrinin düzenlenmesi, belgelerin yüklenmesi, harçların tahsili ile tebligat işlemlerine ilişkin usul ve esaslar Adalet Bakanlığınca çıkarılan yönetmelikle belirlenir. (Sıralamada bu madde, kaynak metinde Madde 9 olarak yer alır.)

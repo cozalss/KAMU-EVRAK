@@ -1,0 +1,26 @@
+Özelleştirme Uygulamaları Hakkında Kanun
+Kanun No 4046, Kabul 24.11.1994, RG 27.11.1994/22124 — YÜRÜRLÜKTE (Özelleştirme Uygulamaları Hakkında Kanun; mevzuat.gov.tr 1.5.4046 konsolide metin esas alınmıştır; bazı maddeler 5398/4971/703 sayılı düzenlemelerle değişmiş/mülga olmuştur)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4046&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Kanun; kamuya ait kuruluş, mal ve hizmet üretim birimleri ile varlıkların (baraj, gölet, otoyol, yataklı tedavi kurumları, limanlar ve benzeri üretim birimleri dâhil) ve işletme haklarının özelleştirilmesine ilişkin esasları düzenler. Amaç; ekonomide verimlilik artışı ve kamu giderlerinde azalma sağlamak, Hazineye ait taşınmazları değerlendirerek kamuya gelir elde etmek gibi gerekçelerle devletin ekonomideki işletmecilik rolünü daraltmaktır. Bu madde, özelleştirme programına alma ve özelleştirme ihalesi işlemlerinin kapsamını belirler.
+
+Madde 3 — Özelleştirme Yüksek Kurulu ve özelleştirme programına alınma
+Özelleştirmeyle ilgili en üst karar organı Özelleştirme Yüksek Kuruludur; kuruluşların özelleştirme kapsam ve programına alınmasına, özelleştirme yöntem ve sürelerinin belirlenmesine, ihale komisyonu kararlarının onaylanmasına ve nihai devir kararlarına Kurul karar verir. Kurul kararında, kuruluşlardan hangilerinin mali/hukuki yönden özelleştirmeye hazırlık işlemine tabi tutulacağı, hangilerinin doğrudan özelleştirme programına alınacağı ve özelleştirmenin hangi yöntemle gerçekleştirileceği belirtilir. Özelleştirme programına alma kararı, kuruluşa ilişkin işlemlerin başlatılmasının hukuki dayanağıdır.
+
+Madde 4 — Özelleştirme İdaresi Başkanlığı (yürütücü idare)
+Özelleştirme uygulamalarını Özelleştirme Yüksek Kurulunun kararları çerçevesinde yürütmekle görevli yürütücü idare Özelleştirme İdaresi Başkanlığıdır (ÖİB); değer tespiti, ihalelerin yapılması, danışmanlık hizmeti alınması ve devir sözleşmelerinin hazırlanması bu İdarece yürütülür. [DOĞRULA: 4046 sayılı Kanunun 4. ve 5. maddeleri 703 sayılı KHK / Cumhurbaşkanlığı teşkilatına ilişkin düzenlemelerle MÜLGA edilmiş olup, İdarenin güncel kuruluş ve görevleri 1 No.lu Cumhurbaşkanlığı Teşkilatı Kararnamesinden teyit edilmelidir.]
+
+Madde 18 — Özelleştirme yöntemleri, değer tespiti ve ihale usulleri
+Özelleştirme yöntemleri; satış (blok satış, halka arz, çalışanlara satış, borsada satış vb.), kiralama, işletme hakkı devri, mülkiyetin gayri ayni hakların tesisi ve gelir ortaklığı modeli ile bunların birlikte uygulanması olarak sayılmıştır. Değer tespiti, ihale komisyonundan ayrı çalışan değer tespit komisyonunca indirgenmiş nakit akımları, defter değeri, net aktif değeri, tasfiye değeri, piyasa kapitalizasyon değeri, ekspertiz değeri gibi en az iki uluslararası kabul görmüş yöntem uygulanarak yapılır. İhaleler kapalı teklif, pazarlık, açık artırma, belli istekliler arasında kapalı teklif ve elektronik ihale usullerinden biriyle yürütülür; ihale komisyonu kararları onay için Özelleştirme Yüksek Kuruluna sunulur ve sonuçlar Kurul onayından sonra kamuoyuna duyurulur.
+
+Madde 19 — Hazine taşınmazlarının devri ve aynî sermaye konulması
+Özelleştirme programındaki kuruluşların sermaye yapılarının düzenlenmesi amacıyla, Hazineye ait taşınmazlar ve diğer varlıklar bedeli karşılığında bu kuruluşlara aynî sermaye olarak konulabilir veya devredilebilir; bu işlemler Özelleştirme Yüksek Kurulu kararına dayanılarak yapılır. Devir ve sermaye işlemleri, özelleştirmeye hazırlık kapsamında kuruluşların mali yapısını güçlendirmeye yöneliktir. [DOĞRULA: aynî sermaye/Hazine taşınmazı devrine ilişkin güncel madde metni ve yetkili merci mevzuat.gov.tr konsolide metninden teyit edilmelidir.]
+
+Madde 21 — İş kaybı tazminatı ve diğer hizmetler
+Özelleştirme kapsamına alınan kuruluşların (iştirakler hariç) özelleştirilmesi, küçültülmesi, faaliyetinin kısmen veya tamamen durdurulması ya da tasfiyesi nedeniyle iş sözleşmeleri sona eren ve bu kapsamda işsiz kalan işçilere, başvuruları üzerine Özelleştirme Fonundan iş kaybı tazminatı ödenir. Ayrıca bu işçilere yeni iş bulma, meslek geliştirme ve edindirme eğitimi gibi hizmetler sağlanır. Tazminat ve hizmetlerden yararlanmak isteyen işçinin, iş sözleşmesinin sona erdiği tarihten itibaren maddede ve ilgili yönetmelikte öngörülen süre içinde İŞKUR'a başvurması gerekir. [DOĞRULA: iş kaybı tazminatı miktarı ve başvuru süresine ilişkin güncel hükümler İŞKUR uygulama yönetmeliğinden teyit edilmelidir.]

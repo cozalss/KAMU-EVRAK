@@ -1,0 +1,26 @@
+Meslekî Eğitim Kanunu
+3308 sayılı Meslekî Eğitim Kanunu. Kabul Tarihi: 5/6/1986. Resmî Gazete: 19/6/1986, Sayı 19139. Çırak, kalfa ve ustaların eğitimi ile okullarda, yükseköğretim kurumlarında ve işletmelerde yapılacak meslekî eğitime ilişkin esasları düzenler.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3308&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacının; çırak, kalfa ve ustaların eğitimi ile okullarda, yükseköğretim kurumlarında ve işletmelerde yapılacak meslekî eğitime ilişkin esasları düzenlemek olduğunu belirtir. Meslekî belgelendirme ve sözleşme süreçlerinin temel dayanağıdır.
+
+Madde 13 — Çıraklık sözleşmesi
+Belirli yaş altındaki kişilerin yazılı çıraklık sözleşmesi yapılmadan çalıştırılamayacağını düzenler. İşyeri sahibi ile çırağın velisi veya vasisi arasında yazılı sözleşme yapılmasını; on sekiz yaşını doldurduktan sonra sözleşmesi devam eden çıraklar hakkında ilgili iş mevzuatı hükümlerinin uygulanacağını öngörür. [DOĞRULA: güncel yaş üst sınırı ve atıf yapılan iş kanunu]
+
+Madde 16 — Kalfalık sınavı ve belgesi
+Çırakların eğitim süresi sonunda kalfalık sınavına girmek zorunda olduğunu; sınavda başarılı olanlara kalfalık belgesi verileceğini düzenler. Kalfa adayının meslekî bilgi ve becerisinin bu sınavla tespit edileceğini öngörür.
+
+Madde 28 — Ustalık sınavı ve belgesi
+Kalfalık belgesini almış olanların ustalık eğitimini/sınavını tamamlayarak ustalık belgesi alabileceğini düzenler. Ustalık sınavının adayın bağımsız çalışabilme yeterliğini ölçtüğünü; belirli süre çalışmış kalfalara doğrudan sınav hakkı tanındığını öngörür. [DOĞRULA: 22 yaş ve doğrudan sınav için çalışma süresi şartının güncel metni]
+
+Madde 30 — İş yeri açma ve belgesiz çalıştırma yasağı
+Ustalık belgesine sahip olanların veya bunları işyerinde çalıştıranların bağımsız iş yeri açabileceğini düzenler. Esnaf ve sanatkârların iş yeri açarken her meslek dalında ustalık belgesi veya ilgili ön lisans/diploma şartının aranacağını; belgesi olmayanların usta unvanı kullanamayacağını öngörür.
+
+Madde 31 — Usta öğreticilik belgesi
+Ustalık yeterliğini kazanmış olanların, Bakanlıkça açılacak iş pedagojisi kurslarını başarıyla tamamlamaları hâlinde usta öğreticilik belgesi alabileceğini düzenler. Belirli süre çalışmış ustalara doğrudan kursa katılma imkânı tanır; usta öğretici, çırak ve öğrencilerin işyerindeki eğitiminden sorumlu kişidir.

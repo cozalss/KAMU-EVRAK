@@ -1,0 +1,29 @@
+Sınai Mülkiyet Kanunu
+Kabul 22/12/2016, RG 10/1/2017 sayı 29944 — YÜRÜRLÜKTE. Burada yalnızca marka/patent başvurusu, itiraz ve tescil evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6769.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 11 — Marka başvurusu, başvuru şartları, sınıflandırma ve bölünme
+Marka tescil başvurusu, başvuru sahibinin kimlik ve iletişim bilgilerini içeren başvuru formu, marka örneği, tescili istenen mal veya hizmetlerin Nis sınıflandırmasına göre listesi ve ücretin ödendiğine ilişkin bilgi ile Türk Patent ve Marka Kurumuna (TÜRKPATENT) yapılır. Her başvuruyla yalnızca bir markanın tescili talep edilebilir. Mal ve hizmetlerin ait olduğu sınıflar başvuruda belirtilir; başvuru, talep üzerine birden fazla başvuruya bölünebilir. Bu hüküm marka başvuru dilekçesinde bulunması gereken asgari unsurların dayanağıdır.
+
+Madde 15 — Şekli inceleme, şekli eksikliklerin giderilmesi
+Kurum, başvurunun 3 üncü ve 11 inci maddelerde belirtilen şartlara uygunluğunu şekli yönden inceler. Başvuruda şekli bir eksiklik tespit edilirse, başvuru sahibine eksikliği gidermesi için iki ay süre verilir. Eksiklik süresinde giderilmezse başvuru işlemden kaldırılır (reddedilmiş sayılır). Bu hüküm, eksik başvuru evrakının tamamlanması için verilen sürenin dayanağıdır.
+
+Madde 16 — Mutlak ret nedenleri açısından inceleme ve başvurunun yayımlanması
+Başvuru şartları eksiksiz yerine getirilmiş ve mutlak ret nedenleri (5 inci madde) açısından reddedilmemiş başvuru, Resmî Marka Bülteninde yayımlanır. Mutlak ret nedeni bulunan başvuru kısmen veya tamamen reddedilir. Yayım, üçüncü kişilerin görüş ve itirazlarını sunabilmesi için başvurunun kamuya duyurulduğu işlemdir.
+
+Madde 18 — Yayıma itiraz
+Bültende yayımlanmış bir marka başvurusunun 5 inci veya 6 ncı maddelere göre tescil edilmemesi gerektiğine ilişkin itirazlar, ilgili kişilerce yayımdan itibaren iki ay içinde yazılı ve gerekçeli olarak Kuruma yapılır. İtirazın incelenebilmesi için itiraz ücretinin süresi içinde ödenmesi ve ödemeye ilişkin bilginin aynı süre içinde Kuruma sunulması gerekir. İtiraz süresinden sonra itiraz gerekçeleri değiştirilemez ve yeni gerekçe eklenemez.
+
+Madde 20 — Karara itiraz
+Kurum tarafından bu Kanun kapsamında alınan kararlardan zarar gören taraflar, kararın bildirim tarihinden itibaren iki ay içinde Kurum nezdinde (Yeniden İnceleme ve Değerlendirme Dairesi/Kurulu) yazılı ve gerekçeli olarak itiraz edebilir. İtiraz ücreti süresi içinde ödenmediği takdirde itiraz yapılmamış sayılır. Bu hüküm, idari karara karşı kurum içi itiraz yolunun dayanağıdır; kurul kararına karşı dava yolu saklıdır.
+
+Madde 22 — Tescil
+Başvurusu eksiksiz yapılmış veya eksiklikleri giderilmiş, mutlak ve nispi ret nedenlerine ilişkin engel kalmamış başvuru tescil edilir, sicile kaydedilir ve Bültende yayımlanır. Tescil edilen markaya marka tescil belgesi düzenlenir. Sicil kayıtları aleni olup talep eden herkes ücreti karşılığında suret alabilir.
+
+Madde 90 — Patent başvurusu (Başvuru)
+Patent verilmesi için yapılacak başvuru; başvuru formu, buluş konusunu açıklayan tarifname, korunması istenen unsurları belirleyen istem veya istemler, tarifnamede veya istemlerde atıf yapılan resimler (varsa) ve özet ile Kuruma yapılır. Başvuru tarihinin kesinleşmesi için en az başvuru talebinin, başvuru sahibinin kimlik bilgilerinin ve tarifnamenin (veya önceki bir başvuruya atfın) Kuruma verilmiş olması gerekir. Buluşu yapan başvuruda belirtilir; buluş genetik kaynağa dayanıyorsa kaynağın nereden alındığına ilişkin açıklamaya yer verilir. Bu hüküm patent başvuru evrakının zorunlu unsurlarının dayanağıdır.

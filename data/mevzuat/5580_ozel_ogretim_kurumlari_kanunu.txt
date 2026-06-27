@@ -1,0 +1,26 @@
+Özel Öğretim Kurumları Kanunu
+5580 sayılı Özel Öğretim Kurumları Kanunu. Kabul Tarihi: 8/2/2007. Resmî Gazete: 14/2/2007, Sayı 26434. Gerçek ve tüzel kişilerce açılan özel öğretim kurumlarına kurum açma izni verilmesi, personel çalıştırılması ve denetimini düzenler.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5580&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kapsam (Amaç ve kapsam)
+Kanunun, Türkiye Cumhuriyeti uyruklu gerçek kişiler ile özel hukuk tüzel kişileri veya özel hukuk hükümlerine göre yönetilen tüzel kişiler tarafından açılacak özel öğretim kurumlarına kurum açma izni verilmesi, kurumların açılması, personel çalıştırılması, devri, kapatılması, denetimi ve buralarda eğitim öğretim yapılmasıyla ilgili esasları kapsadığını düzenler.
+
+Madde 2 — Tanımlar
+Kanunda geçen Bakanlık (Millî Eğitim Bakanlığı), kurum, okul, yabancı okul, azınlık okulu, milletlerarası özel öğretim kurumu, çeşitli kurslar, özel eğitim ve rehabilitasyon merkezi, motorlu taşıt sürücüleri kursu, öğrenci etüt eğitim merkezi gibi kavramları tanımlar. Kurum açma başvurularında hangi kurum türünün hangi rejime tabi olduğunu belirler.
+
+Madde 3 — Kurum açma izni
+Kurumların öğretime başlayabilmek için kurum açma izni almasının zorunlu olduğunu düzenler. Başvuruların il/ilçe millî eğitim müdürlüğüne yapılacağını; gerekli inceleme sonucunda uygun görülen kurumlara kurum açma izni verileceğini öngörür. Ders araç-gereci yeterliği, personel niteliği, yönetmelik ve öğretim programının onaylanması gibi şartları içerir.
+
+Madde 4 — Kurum binaları
+Kurum binalarının nitelik ve standartlarının Bakanlıkça belirleneceğini düzenler. Meyhane, kahvehane, bar, elektronik oyun merkezleri gibi yerlerin okul binalarına en az yüz metre mesafede bulunmasını zorunlu kılar; özel eğitim kurumlarını bu mesafe şartından muaf tutar. Yer ve bina uygunluğu başvurularının dayanağıdır.
+
+Madde 8 — Personel çalıştırılması (çalışma izni)
+Kurumlardaki eğitim öğretim ve yönetim hizmetlerinin, asıl görevi bu kurumlarda olan yönetici ve öğretmenlerce yürütüleceğini düzenler. Müdürün kurucu tarafından, diğer yönetici ve öğretmenlerin müdür tarafından seçileceğini; bu personelin çalışma izinlerinin valiliğin onayına sunulacağını ve izin olmadan göreve başlatılamayacağını öngörür.
+
+Madde 7 — Devir, nakil ve iznin iptali
+Kurum açma izni alan kurumların belirlenen süre içinde öğretime başlamaması, izinsiz ara verilmesi veya amaç dışı kullanım hâlinde kurum açma izni ile iş yeri açma ve çalışma ruhsatının iptal edileceğini düzenler. Kurumların devir ve nakline ilişkin usul ve esasların yönetmelikle belirleneceğini öngörür. [DOĞRULA: faaliyete başlama süresi ve fıkra ayrımı]

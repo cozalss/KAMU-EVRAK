@@ -1,0 +1,26 @@
+Sosyal Hizmetler Kanunu
+Kanun No 2828, Kabul 24.05.1983, RG 27.05.1983/18059 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.2828 konsolide metin esas alınmıştır; eski adı "Sosyal Hizmetler ve Çocuk Esirgeme Kurumu Kanunu" iken 633 sayılı KHK ile değişmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2828.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Bu Kanunun amacı; korunmaya, bakıma veya yardıma ihtiyacı olan aile, çocuk, engelli, yaşlı ve diğer kişilere götürülen sosyal hizmetlere ve bu hizmetleri yürütmek üzere kurulan teşkilatın kuruluş, görev, yetki ve sorumlulukları ile faaliyet ve gelirlerine ait esas ve usulleri düzenlemektir.
+
+Madde 3 — Tanımlar (korunmaya/bakıma/yardıma ihtiyacı olan kişiler)
+Kanunda "sosyal hizmetler", kişi ve ailelerin maddi-manevi-sosyal yoksunluklarının giderilmesini amaçlayan sistemli ve programlı hizmetler bütünü olarak tanımlanır. "Korunmaya ihtiyacı olan çocuk"; beden, ruh ve ahlak gelişimi veya güvenliği tehlikede olup ana/babasız, terkedilmiş, ihmal edilmiş veya sosyal tehlikelere savunmasız bırakılmış çocuktur. Ayrıca "engelli", "bakıma ihtiyacı olan engelli", "ihtiyacı olan yaşlı" ile çocuk yuvası, yetiştirme yurdu, huzurevi, bakım-rehabilitasyon merkezi, koruyucu aile, sosyal hizmet merkezi gibi kuruluş türleri tanımlanır.
+
+Madde 4 — Genel esaslar
+Sosyal hizmetler Devletin denetim ve gözetiminde, sivil toplum ve halkın gönüllü katılımıyla bütünlük içinde yürütülür. Programların uygulanmasında korunmaya ihtiyacı olan çocuk, engelli ve yaşlıya öncelik tanınır; sınıf, ırk, dil, din, mezhep veya bölge farkı gözetilemez. Talep arzdan fazlaysa öncelikler ihtiyaç derecesi ile başvuru/tespit sırası esas alınarak belirlenir; hizmet sunumu insan haysiyetine yaraşır şekilde yapılır.
+
+Madde 22 — Korunma/tedbir kararı ve belgelerin mahkemeye gönderilmesi
+Korunmaya ihtiyacı olan çocukların reşit oluncaya kadar bakılıp yetiştirilmeleri ve meslek sahibi edilmeleri için gerekli tedbir kararı, 5395 sayılı Çocuk Koruma Kanununa göre yetkili ve görevli mahkemece alınır; bu karar için gerekli belgeler Kurumca (Bakanlıkça) düzenlenir ve ilgili mahkemeye gönderilir. Derhal korunma tedbiri zorunlu görülen çocuklar, mahkeme kararına kadar mahalli mülki amirin onayıyla kuruluşta veya aile yanında bakım altına alınabilir.
+
+Madde 23 — Koruyucu aile
+Mahkemece korunma kararı alınan çocuğun bakımı ve yetiştirilmesi, kuruluşlarda olduğu gibi Kurumun denetim ve gözetiminde bir "Koruyucu Aile" tarafından da yerine getirilebilir. Koruyucu aileye çocuğun bakım ve yetiştirilmesi karşılığında ödeme yapılabileceği gibi, koruyucu aile bu işi gönüllü olarak da üstlenebilir. Çocuğun bakım, eğitim, okul, harçlık ve benzeri ihtiyaçları için ödemelerin usul ve esasları yönetmelikle belirlenir.
+
+Ek Madde 7 — Bakıma ihtiyacı olan engellilere bakım hizmeti / evde bakım sosyal yardımı başvurusu
+Hane içinde kişi başına düşen ortalama aylık gelir, asgari ücretin aylık net tutarının 2/3'ünden az olan bakıma ihtiyacı olan engellilere; resmî/özel bakım merkezlerinde bakım hizmeti ya da evde bakımına destek için sosyal yardım yapılır. Bakım hizmetinden yararlanacakların başvuru şekli, değerlendirilmesi, ödeme ve denetim usul ve esasları ilgili Bakanlıklarca çıkarılan yönetmelikle belirlenir; evde bakım sosyal yardımına ilişkin iş ve işlemler Bakanlık ve Sosyal Yardımlaşma ve Dayanışma Vakıflarınca yürütülür. Hane gelir ölçütünü aşan değişiklik tespitinde ödemeler durdurulur ve yasal faiziyle tahsil edilir.

@@ -1,0 +1,29 @@
+Rekabetin Korunması Hakkında Kanun
+Kabul 7/12/1994, RG 13/12/1994 sayı 22140 — YÜRÜRLÜKTE. Burada yalnızca Rekabet Kuruluna başvuru, şikâyet/ihbar, bildirim ve muafiyet evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4054.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Rekabeti sınırlayıcı anlaşma, uyumlu eylem ve kararlar
+Belirli bir mal veya hizmet piyasasında doğrudan veya dolaylı olarak rekabeti engelleme, bozma ya da kısıtlama amacını taşıyan veya bu etkiyi doğuran teşebbüsler arası anlaşmalar, uyumlu eylemler ve teşebbüs birliği kararları hukuka aykırı ve yasaktır. Bunlar arasında fiyat tespiti, piyasa/müşteri paylaşımı, arz veya talebin kontrolü, ayrımcı uygulamalar ve bağlı sözleşmeler sayılır. Bu yasağa aykırı davranışlar, şikâyet ve ihbar başvurularının temel konusunu oluşturur.
+
+Madde 5 — Muafiyet
+Belirli koşulların tümünü taşıyan anlaşma, uyumlu eylem ve teşebbüs birliği kararları 4 üncü maddedeki yasaktan muaftır: malların üretim veya dağıtımında ya da teknik/ekonomik gelişmenin sağlanmasına katkı, tüketicinin bundan yarar sağlaması, ilgili piyasada rekabetin önemli bölümünün ortadan kalkmaması ve rekabetin zorunlu olandan fazla sınırlanmaması. Muafiyet koşulları teşebbüslerce kendiliğinden değerlendirilir; gerektiğinde Kuruldan görüş istenebilir. Bu hüküm muafiyet başvurusu/öz değerlendirme evrakının dayanağıdır.
+
+Madde 7 — Birleşme veya devralma
+Bir veya birden fazla teşebbüsün birleşmesi ya da bir teşebbüsün başka bir teşebbüsü devralması, ülkenin bütünü yahut bir kısmında etkin rekabetin önemli ölçüde azaltılması (özellikle hâkim durum yaratılması veya güçlendirilmesi) sonucunu doğuracaksa hukuka aykırı ve yasaktır. Hangi tür birleşme ve devralmaların hukukî geçerlilik kazanabilmesi için Kurula bildirilerek izin alınması gerektiği Kurulca çıkarılan tebliğlerle belirlenir.
+
+Madde 8 — Menfi tespit
+İlgili teşebbüs veya teşebbüs birliklerinin başvurusu üzerine Kurul, elindeki bilgiler çerçevesinde bir anlaşmanın, uyumlu eylemin, kararın ya da birleşme-devralmanın 4, 6 veya 7 nci maddelere aykırı olmadığını gösteren bir menfi tespit belgesi verebilir. Bu hüküm, teşebbüslerin hukukî belirlilik amacıyla Kurula yapacağı menfi tespit başvurusunun dayanağıdır.
+
+Madde 10 — Birleşme ve devralmaların Kurula bildirilmesi
+Kapsama giren birleşme ve devralmalar, Kurulca belirlenen süre ve usulde Kurula bildirilir. Bildirim üzerine Kurul, ön inceleme yaparak nihai izin verir veya işlemi nihai incelemeye (soruşturmaya) alır. Kurulun süresi içinde işleme ilişkin herhangi bir cevap vermemesi veya işlem yapmaması hâlinde, birleşme veya devralma bildirim tarihinden otuz gün sonra yürürlüğe girerek hukukî geçerlilik kazanır. Bu hüküm bildirim/izin başvuru evrakının dayanağıdır.
+
+Madde 42 — Başvuru sahiplerine bildirim (ihbar ve şikâyet üzerine)
+Kurul; ihbar veya şikâyet başvurularında ileri sürülen iddiaları ciddi ve yeterli bulması hâlinde, başvuru sahiplerine iddiaların ciddi bulunduğunu ve araştırmaya başlandığını yazılı olarak bildirir. Kurulun başvuruyu açıkça reddetmesi veya süresi içinde bildirimde bulunmayarak reddetmiş sayılması hâllerinde, doğrudan ya da dolaylı menfaati olduğunu belgeleyen herkes red kararına karşı yargı yoluna başvurabilir. Bu hüküm, şikâyet/ihbar dilekçelerine verilecek cevabın ve red kararına itirazın dayanağıdır.
+
+Madde 43 — Soruşturmaya başlanması, taahhüt ve uzlaşma
+Kurul, yaptığı ön araştırma sonucunda soruşturma açılmasına veya açılmamasına karar verir. Soruşturmaya başlanması hâlinde ilgili taraflara on beş gün içinde iddialara ilişkin yeterli bilgi verilir. Soruşturma sürecinde teşebbüsler, rekabet sorunlarını gidermeye yönelik taahhüt sunabilir; Kurul taahhütleri yeterli görürse soruşturma açmadan veya açılan soruşturmayı sonlandırarak işlemi kapatabilir. Ayrıca ilgililer uzlaşma sürecinden yararlanabilir. Bu hüküm taahhüt/uzlaşma başvuru yazışmalarının dayanağıdır.

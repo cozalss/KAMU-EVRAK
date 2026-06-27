@@ -1,0 +1,29 @@
+Taşınır Mal Yönetmeliği
+Bakanlar Kurulu Kararı: 28.12.2006-2006/11545, RG 18.01.2007/26407 — YÜRÜRLÜKTE. 5018 sayılı Kanunun 44 üncü maddesine dayanır. Kamu idarelerine ait taşınırların kaydı, muhafazası, kullanımı, yönetim hesabı ve idareler arası devir/tahsisini düzenler. Madde metinleri Hazine ve Maliye Bakanlığı (ms.hmb.gov.tr) güncel resmî metninden doğrulanmıştır. NOT: 2024 değişikliğiyle 'Taşınır İşlem Fişi' ibaresi 'Varlık İşlem Fişi' olarak değiştirilmiştir; eski uygulamada 'Taşınır İşlem Fişi (TİF)' geçer.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=9014&MevzuatTur=21&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Yönetmeliğin amacı; kaynağına ve edinme yöntemine bakılmaksızın kamu idarelerine ait taşınır malların kaydı, muhafazası ve kullanımı ile yönetim hesabının verilmesi, merkez ve taşrada taşınır yönetim sorumluları ile bunlar adına görev yapacak olanların belirlenmesi ve kamu idareleri arasında taşınırların geçici tahsisine ilişkin usul ve esasları belirlemektir. Yönetmelik genel yönetim kapsamındaki kamu idarelerini ve taşınır mallarını kapsar.
+
+Madde 5 — Harcama yetkilisinin sorumluluğu
+Harcama yetkilileri taşınırların etkili, ekonomik, verimli ve hukuka uygun edinilmesinden, kullanılmasından, kontrolünden ve kayıtlarının saydam/erişilebilir tutulmasından sorumludur; bu sorumluluğu taşınır kayıt yetkilileri ve taşınır kontrol yetkilileri aracılığıyla yerine getirir. Kullanıma verilen dayanıklı taşınırlar başkasına devredilemez ve görevden ayrılmada ambara iade zorunludur; teslim yapılmadan personelin kurumla ilişiği kesilmez. Kasıt/kusur/ihmalle kullanılmaz hâle gelen taşınırlar için kamu zararı tahsil edilir.
+
+Madde 6 — Taşınır kayıt yetkilileri ve taşınır kontrol yetkilileri
+Taşınır kayıt yetkilileri, harcama yetkililerince, unvana bağlı kalmaksızın taşınır kayıt ve işlemlerini usule uygun yapabilecek bilgi ve niteliğe sahip personel arasından görevlendirilir; işlemleri yoğun birimlerde birden fazla kayıt yetkilisi görevlendirilebilir. Taşınır kontrol yetkilileri ise kayıt yetkilisinin hazırladığı yönetim hesabına ilişkin belge ve cetvellerin mevzuata ve mali tablolara uygunluğunu kontrol etmekle görevlendirilir.
+
+Madde 10 — Defter, belge ve cetveller (Varlık İşlem Fişi)
+Kabul edilerek teslim alınan taşınırların girişleri, çıkışları ve ambarlar arası devir işlemleri ile esaslı onarım sonucu değer artışlarında kayıtlara esas olmak üzere Varlık İşlem Fişi (eski adı Taşınır İşlem Fişi) düzenlenir; en az üç nüsha düzenlenir ve her mali yılın başında 1'den başlayan sıra numarası verilir. Madde ayrıca Taşınır Teslim Belgesi, Sayım Tutanağı, Ambar Devir ve Teslim Tutanağı ile Taşınır Sayım ve Döküm Cetveli gibi belge ve cetvelleri tanımlar. [DOĞRULA: madde numaralandırması 2024 güncel metne göredir; eski metinde Taşınır İşlem Fişi farklı madde numarasında olabilir]
+
+Madde 28 — Hurdaya ayırma nedeniyle çıkış
+Ekonomik ömrünü tamamlamış veya teknik/fiziki nedenlerle kullanılmasında yarar görülmeyen taşınırlar, biri işin uzmanı olmak üzere harcama yetkilisinin belirleyeceği en az üç kişilik komisyonca değerlendirilir. Hurdaya ayrılmasına karar verilenler için Kayıttan Düşme Teklif ve Onay Tutanağı düzenlenir ve harcama yetkilisinin onayı ile kayıtlardan çıkarılır. Hurdaya ayrılan veya imha edilen taşınırlar Varlık İşlem Fişi düzenlenerek kayıttan düşülür ve fişin ekine tutanağın bir nüshası bağlanır.
+
+Madde 31 — Kamu idareleri arasında bedelsiz devir ve geçici tahsis
+Kamu idareleri ihtiyaç fazlası taşınırları, bu taşınıra ihtiyaç duyan diğer kamu idarelerine bedelsiz olarak devredebilir veya geçici olarak tahsis edebilir. Devredilmeyecek taşınırlar ile devir ve kayıt işlemlerine ilişkin usul ve esaslar 5018 sayılı Kanunun 45 inci maddesi gereğince Çevre, Şehircilik ve İklim Değişikliği Bakanlığınca belirlenir. Devir ve geçici tahsis işlemlerinde Yönetmelikte belirtilen defter, fiş, belge, tutanak ve cetveller kullanılabilir.
+
+Madde 32 — Sayım ve sayım sonrası yapılacak işlemler
+Kamu idarelerine ait taşınırların yıl sonlarında ve harcama yetkilisinin gerekli gördüğü zamanlarda sayımı yapılır. Sayım, harcama yetkilisinin veya görevlendireceği bir kişinin başkanlığında, taşınır kayıt yetkilisinin de katılımıyla en az üç kişilik sayım kurulunca yapılır. Önce kayıttaki miktarlar Sayım Tutanağına işlenir, sonra ambardaki taşınırlar fiilen sayılır; sayımda bulunan miktar ile kayıtlı miktar arasında fark çıkarsa giriş/çıkış işlemleri yapılarak kayıtlar düzeltilir ve Taşınır Sayım ve Döküm Cetveli düzenlenir.

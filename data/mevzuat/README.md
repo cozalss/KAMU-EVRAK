@@ -99,3 +99,32 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | Devlet Memurları Disiplin Yönetmeliği | 3935 (Cumhurbaşkanı Kararı) | `devlet_memurlari_disiplin_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3935&MevzuatTur=21&MevzuatTertip=5 |
 | 375 sayılı Kanun Hükmünde Kararname (Kamu Personeli Mali ve Sosyal Hakları) | 375 (KHK) | `375_khk_mali_sosyal_haklar.txt` | 4 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=375&MevzuatTur=4&MevzuatTertip=5 |
 | İhalelere Yönelik Başvurular Hakkında Yönetmelik | 12766 (Yönetmelik) | `ihalelere_yonelik_basvurular_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=12766&MevzuatTur=7&MevzuatTertip=5 |
+
+## 2026-06 Genişletme Batch 4 — sağlık/eğitim/ticaret/imar-yön/nüfus/devlet-ihale (21 mevzuat))
+
+> Korpus 55 -> **76 mevzuat (513 chunk)**. Resmî mühür, e-yazışma (EBYS/KEP/e-imza/karekod),
+> medeni/vekâlet/koruma, personel disiplin/mali haklar, ihale itiraz. Gerçek mevzuat (mevzuat.gov.tr).
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Umumi Hıfzıssıhha Kanunu | 1593 | `1593_umumi_hifzissihha_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.1593.pdf |
+| Sosyal Hizmetler Kanunu | 2828 | `2828_sosyal_hizmetler_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2828.pdf |
+| Engelliler Hakkında Kanun | 5378 | `5378_engelliler_hakkinda_kanun.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5378.pdf |
+| İş Sağlığı ve Güvenliği Kanunu | 6331 | `6331_is_sagligi_guvenligi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6331.pdf |
+| Yükseköğretim Kanunu | 2547 | `2547_yuksekogretim_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2547&MevzuatTur=1&MevzuatTertip=5 |
+| Millî Eğitim Temel Kanunu | 1739 | `1739_milli_egitim_temel_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.1739.pdf |
+| Özel Öğretim Kurumları Kanunu | 5580 | `5580_ozel_ogretim_kurumlari_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5580&MevzuatTur=1&MevzuatTertip=5 |
+| Meslekî Eğitim Kanunu | 3308 | `3308_mesleki_egitim_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3308&MevzuatTur=1&MevzuatTertip=5 |
+| Elektronik Ticaretin Düzenlenmesi Hakkında Kanun | 6563 | `6563_elektronik_ticaret_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6563.pdf |
+| Sınai Mülkiyet Kanunu | 6769 | `6769_sinai_mulkiyet_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6769.pdf |
+| Fikir ve Sanat Eserleri Kanunu | 5846 | `5846_fikir_ve_sanat_eserleri_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5846.pdf |
+| Rekabetin Korunması Hakkında Kanun | 4054 | `4054_rekabetin_korunmasi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4054.pdf |
+| Planlı Alanlar İmar Yönetmeliği | 30113 (RG sayısı); 3194 sayılı İmar Kanununa dayanır | `planli_alanlar_imar_yonetmeligi.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=23722&MevzuatTur=7&MevzuatTertip=5 |
+| Kat Mülkiyeti Kanunu | 634 | `634_kat_mulkiyeti_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=634&MevzuatTur=1&MevzuatTertip=5 |
+| Yapı Ruhsatı ve Yapı Kullanma İzin Belgesi İşlemleri (İmar Kanunu m.21-30 ve Planlı Alanlar İmar Yönetmeliği) | 3194 (İmar Kanunu) + 30113 sayılı Planlı Alanlar İmar Yönetmeliği | `yapi_ruhsati_yapi_kullanma_izni_islemleri.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3194.pdf |
+| Nüfus Hizmetleri Kanunu | 5490 | `5490_nufus_hizmetleri_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5490.pdf |
+| Türk Vatandaşlığı Kanunu | 5901 | `5901_turk_vatandasligi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5901.pdf |
+| Yabancılar ve Uluslararası Koruma Kanunu | 6458 | `6458_yabancilar_uluslararasi_koruma_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6458.pdf |
+| Devlet İhale Kanunu | 2886 | `2886_devlet_ihale_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2886&MevzuatTur=1&MevzuatTertip=5 |
+| Taşınır Mal Yönetmeliği | 2006/11545 (BKK) | `tasinir_mal_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=9014&MevzuatTur=21&MevzuatTertip=5 |
+| Kamu İdarelerine Ait Taşınmazların Tahsis ve Devri Hakkında Yönetmelik | RG 26315 | `tasinmaz_tahsis_devir_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=10691&MevzuatTur=7&MevzuatTertip=5 |

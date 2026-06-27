@@ -1,0 +1,32 @@
+Devlet İhale Kanunu
+Kanun No: 2886 (Kabul: 08.09.1983, RG 10.09.1983/18161 — YÜRÜRLÜKTE). Genel bütçeli daireler, katma bütçeli idareler, özel idareler ve belediyelerin 4734 kapsamı dışındaki alım-satım, kira, trampa, mülkiyetin gayri ayni hak tesisi ve taşıma işlerinde uygulanan ihale kanunu. Madde metinleri mevzuat.gov.tr (1.5.2886) resmî PDF'inden doğrulanmıştır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2886&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kapsam
+Genel bütçeye dahil daireler ile katma bütçeli idarelerin, özel idarelerin ve belediyelerin alım, satım, hizmet, yapım, kira, trampa, mülkiyetin gayri ayni hak tesisi ve taşıma işleri bu Kanunda yazılı hükümlere göre yürütülür. Bunlara bağlı döner sermayeli kuruluşlar ile özel kanunlarla kurulmuş fonların bu işlerinin nasıl yapılacağı Cumhurbaşkanınca çıkarılacak yönetmelikte belirtilir. Bu Kanun, kamu mal/satış/kira evrakının hukuki dayanağıdır.
+
+Madde 2 — İlkeler
+Kanunun yürütülmesinde ihtiyaçların en iyi şekilde, uygun şartlarla ve zamanında karşılanması ile ihalede açıklık ve rekabetin sağlanması esastır. Başka başka isteklilerce karşılanması mutat olan muhtelif işler bir eksiltmede toplanamaz; Kanundaki hallerden yararlanmak amacıyla işler kısımlara bölünemez. Arsası temin edilmemiş, mülkiyet/kamulaştırma işlemleri tamamlanmamış veya gerekli projeleri/keşifleri bulunmayan yapım işlerinde ihaleye çıkılamaz.
+
+Madde 5 — İhaleye katılabilme şartları
+Bu Kanuna göre yapılacak ihalelere katılabilmek için kanuni ikametgah sahibi olmak, gerekli nitelik ve yeterliği haiz bulunmak, istenilen teminat ve belgeleri vermek zorunludur. Madde 6 ise idarenin ita amirleri, ihale işlemlerini hazırlayan/yürüten görevliler, bunların belirli yakınları ve ortakları ile kamu ihalelerinden yasaklı olanların ihaleye katılamayacağını düzenler.
+
+Madde 7 — Şartnameler
+İhale konusu işlerin her türlü özelliğini belirten şartname ve varsa ekleri idarelerce hazırlanır. Şartnamelerde işin niteliği/nevi/miktarı; taşınmaz satış, kira, trampa ve gayri ayni hak tesisinde tapu kaydına göre yer/sınır/yüzölçümü; tahmin edilen bedel, geçici teminat miktarı ve kesin teminat şartları; isteklilerde aranan belgeler; ihale kararının 15 işgünü içinde onaylanacağı ve ihtilafların çözüm şekli gibi hususların gösterilmesi zorunludur.
+
+Madde 9 — Tahmin edilen bedelin tespiti
+Tahmin edilen bedel idarelerce tespit edilir veya ettirilir; işin özelliğine göre belediye, ticaret/sanayi odası, borsa gibi kuruluşlardan veya bilirkişilerden soruşturulabilir. Bu bedel, dayanaklarının da eklendiği bir hesap tutanağında gösterilir ve asıl evrak arasında saklanır; gerektiğinde ihale komisyonlarınca tahkik ettirilir. Yapım işlerinde kanuni yetkiye dayalı ilgili dairelerce tespit edilmiş birim fiyatları varsa bunlar uygulanır.
+
+Madde 17 — İlan
+İhaleler, ihalenin yapılacağı yerde çıkan bir gazete ve bir internet haber sitesinde duyurulur (7418 sayılı Kanunla 2022 değişikliği). İlk ilan ile ihale günü arası 10 günden, son ilan ile ihale günü arası 5 günden az olamaz; gazete çıkmayan yerlerde ilan Basın İlân Kurumu İlan Portalında yayınlanır. Tahmin edilen bedeli eşikleri aşan işler ayrıca günlük gazete ve gerektiğinde Resmî Gazete'de ilan edilir; pazarlık usulüyle yapılacak ihalelerde idareler ilan yapıp yapmamakta serbesttir.
+
+Madde 35 — İhale usulleri
+Kanunun 1 inci maddesinde yazılı işlerin ihalelerinde kapalı teklif usulü, belli istekliler arasında kapalı teklif usulü, açık teklif usulü, pazarlık usulü ve yarışma usulü uygulanır. İşin gereğine göre hangi usulün uygulanacağı idarelerce tespit edilir. Madde 36'ya göre tekliflerin gizli verilmesini sağlayan kapalı teklif usulü esas olup diğer usuller kanunda sayılan hallerde uygulanır.
+
+Madde 51 — Pazarlık usulüyle yapılacak işler
+Genel Bütçe Kanununda gösterilen tutarları aşmayan ve süreklilik göstermeyen işler; ani ve beklenmeyen olaylar nedeniyle acele işler; Devletin özel mülkiyetindeki ve hüküm/tasarrufu altındaki taşınır-taşınmazların kiralanması, trampası ve gayri ayni hak tesisi; tek kişi/firma elindeki mal, hak ve hizmetler gibi maddede sayılan hallerde ihale pazarlık usulüyle yapılabilir. Belirli bentlerdeki işler için şartname düzenlenmesi, tahmini bedel tespiti, teminat alınması ve sözleşme yapılması zorunlu değildir.

@@ -1,0 +1,32 @@
+Nüfus Hizmetleri Kanunu
+Kanun No 5490, Kabul 25.04.2006, RG 29.04.2006/26153 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5490.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Nüfus kütüklerinin hukukî mahiyeti
+Nüfus kütükleri; kişilerin kimliklerinin, yerleşim yeri adreslerinin, aile bağlarının, vatandaşlık durumlarının ve şahsî hallerinin belirlenmesi amacıyla ilçe ve aile esasına göre nüfus olaylarının tescil edildiği, daimî olarak saklanması gereken resmî belgelerdir. Aile kütüğü ve özel kütüklerdeki kayıtlar ile bunlardan çıkarılan örnekler resmî belge niteliğindedir; nüfus kayıt örneği gibi idarî başvurularda dayanak teşkil eder.
+
+Madde 15 — Doğum bildirimi yükümlülüğü ve süresi
+Sağ doğan her çocuğun, doğumdan itibaren Türkiye'de otuz gün, yurt dışında altmış gün içinde nüfus müdürlüğüne veya dış temsilciliğe bildirilmesi zorunludur; bildirim doğumu gerçekleştiren sağlık kuruluşuna da yapılabilir. Sağlık personeli nezaretinde gerçekleşen doğumlar ilgili sağlık birimince beş iş günü içinde nüfus müdürlüğüne bildirilir. Bildirim; veli, vasi, kayyım veya bunların yokluğunda büyükana/büyükbaba, ergin kardeş ya da çocuğu yanında bulunduran tarafından yapılır ve çocuğa konulan ad (en çok üç ad) yazılır.
+
+Madde 23 — Evlenmenin bildirilmesi ve tescili
+Evlendirme işlemini yapanlar, evlenmenin yapıldığı tarihten itibaren on gün içinde düzenleyecekleri evlenme bildirimini nüfus müdürlüğüne göndermekle, nüfus müdürlüğü de bu bildirimi aile kütüğüne tescil etmekle yükümlüdür. Dış temsilciliklerce yapılan evlenmeler otuz gün içinde nüfus müdürlüğüne bildirilir. Bildirim, resmî nüfus olayı evrakının (evlenme bildirimi) dayanağıdır.
+
+Madde 31 — Ölüm bildirimi süresi ve yükümlü olanlar
+Ölüm olayı; defin ruhsatı vermeye yetkili olanlar, resmî tabip/sağlık kuruluşu yetkilileri veya köy muhtarları, hastane/bakımevi amirlikleri, askerî tabipler ve adlî olaylarda Cumhuriyet savcılıkları gibi yükümlüler tarafından, olay tarihinden itibaren on gün içinde Genel Müdürlüğe ya da nüfus müdürlüğüne bildirilir. Yasal süre geçtikten sonra gelen ölümler, resmî sağlık kurumu kayıtlarına veya diğer resmî belgelere dayanılarak nüfus müdürlüğünce işleme alınır.
+
+Madde 35 — Nüfus kaydının düzeltilmesi (mahkeme şartı)
+Kesinleşmiş mahkeme hükmü olmadıkça nüfus kütüklerinin hiçbir kaydı düzeltilemez ve kayıtların anlamını değiştirecek şerh konulamaz. Ancak tescil sırasında yapılan maddî hatalar, dayanak belgesine uygun olarak nüfus müdürlüğünce düzeltilir. Bu hüküm, idareye yapılan kayıt düzeltme taleplerinin sınırını çizer; din bilgisine ilişkin talepler ise kişinin yazılı beyanına göre işlenir.
+
+Madde 43 — Nüfus kayıt örneği verilmesi
+Kişinin aile kütüğündeki kaydının çıkarılıp aslına uygunluğunun nüfus müdürlüğünce onanmasıyla elde edilen nüfus kayıt örnekleri, aksi ispatlanana kadar geçerlidir. Örnek; istenme nedeni ve kullanım amacı belirtilen yazılı istek üzerine verilir (kişi kimliğini ibrazla şahsen başvurursa yazılı istek aranmaz). Düzenlendiği tarihten itibaren yüzseksen gün içinde kullanılmayan örnek geçerliliğini kaybeder; Bakanlık bu süreyi otuz güne kadar kısaltabilir.
+
+Madde 50 — Adres bildirimi yükümlülüğü ve usulü
+Adres bildiriminde kişilerin yazılı beyanı esas alınır; bildirim şahsen veya güvenli elektronik imza ile yapılır. Adres bildirimi, nüfus müdürlüklerine veya dış temsilciliklere yapılır; hizmet alımıyla ilgili başvuru sırasında adrese dayalı hizmet sunan kuruluşlara da adres değişikliği beyanında bulunulabilir. [DOĞRULA: bildirim için tanınan yirmi iş günü süresi 5490'ın 50/51. maddeleri ile Adres Kayıt Sistemi Yönetmeliğinde düzenlenir]
+
+Madde 41 — Kimlik kartı düzenlenmesi ve teslimi
+Türkiye Cumhuriyeti kimlik kartının bilgileri, tasarımı, basımı ve teslim yöntemi Bakanlıkça belirlenir; biyometrik verisi alınacak kişilerin şahsen müracaatı esastır. Biyometrik verisi alınmayacak çocukların kimlik kartı müracaatı veli/vasi veya doğum bildiriminde yükümlü kişilerce yapılır. Kimlik kartı hiçbir kişi veya kurumca alıkonulamaz; kayıp/değişiklik hâlinde yenisi verilinceye kadar geçerli geçici belge düzenlenebilir.

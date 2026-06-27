@@ -1,0 +1,29 @@
+Kamu İdarelerine Ait Taşınmazların Tahsis ve Devri Hakkında Yönetmelik
+RG 10.10.2006/26315 — YÜRÜRLÜKTE. 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanununun 47 nci maddesine dayanır. Kamu idarelerinin mülkiyetindeki taşınmazların birbirlerine bedelsiz tahsis/devri ile Hazine taşınmazları ve Devletin hüküm ve tasarrufu altındaki yerlerin kamu idarelerine tahsis ve devir işlemlerinin usul ve esaslarını belirler. Madde metinleri HMB Milli Emlak Genel Müdürlüğü resmî metninden doğrulanmıştır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=10691&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Yönetmeliğin amacı; kamu idarelerinin mülkiyetlerindeki taşınmazların birbirlerine bedelsiz olarak tahsis ve devri ile Hazineye ait taşınmazlar ve Devletin hüküm ve tasarrufu altındaki yerlerin kamu idarelerine tahsis ve devir işlemlerinin usul ve esaslarını belirlemektir. Yönetmelik 5018 sayılı Kanunun 47 nci maddesine dayanılarak hazırlanmıştır.
+
+Madde 4 — Tahsis yetkisi
+Özel bir hüküm olmaması durumunda kamu idareleri tahsis işlemini 5018 sayılı Kanunun 47 nci maddesine dayanarak yapar; belediyeler 5393 sayılı Kanunun 15/(h), il özel idareleri 5302 sayılı Kanunun 64/(d) bendine göre tahsis yapar. Hazineye ait taşınmazlar ile Devletin hüküm ve tasarrufu altındaki yerlerin tahsis yetkisi, özel hüküm olmadıkça Bakanlığa (Çevre/Şehircilik Bakanlığı–Milli Emlak) ve taşra birimlerine aittir.
+
+Madde 6 — Ön ve kesin tahsis ile süresi
+Üzerinde tesis yapılması planlanan taşınmazlar, talepte bulunan kamu idaresine yatırım projesinin hazırlanması, yatırım programına alınması ve inşaata başlanması amacıyla iki yıla kadar ön tahsis edilebilir. Ön tahsis süresinde bu işlemlerin yapıldığını gösteren belgeler ve tespit tutanağı gönderilerek talep edilirse, ön tahsis hizmetin devamı süresince kesin tahsise dönüştürülür; taşınmazın aynen kullanılması durumunda doğrudan kesin tahsis yapılabilir. Koşullar yerine getirilmez veya iki yıl amaca uygun kullanılmazsa tahsis kendiliğinden kalkmış sayılır.
+
+Madde 9 — Tahsisin kaldırılması
+Tahsis işlemi; kamu hizmetinin sona ermesi, taşınmazın tahsis amacı dışında kullanılması veya malik idarenin izni olmaksızın üçüncü kişilere kullandırılması, en az iki yıl boş bırakılması veya hiç kullanılmaması, tahsis amacının değişmesi, imar planıyla başka amaca ayrılması, 8 inci maddedeki tedbir/bildirim yükümlülüğünün yerine getirilmemesi ya da tahsis amacının ortadan kalkması hâllerinde, tahsis yapılan idarenin görüşü alınmaksızın tahsisi yapan idarenin merkez veya taşra birimlerince resen kaldırılabilir.
+
+Madde 14 — Tahsis veya devir talebinin yapılması
+Tahsis veya devir istenilen taşınmaz Hazineye ait ya da Devletin hüküm ve tasarrufu altında ise bulunduğu yer defterdarlığı/malmüdürlüğüne veya Milli Emlak Genel Müdürlüğüne; belediye/il özel idaresi ve birliklerine ait ise ilgili idareye; diğer kamu idarelerine ait ise malik idarenin merkez birimine müracaat edilerek talepte bulunulur. Bu madde, hangi makama başvurulacağını taşınmazın mülkiyetine göre belirler.
+
+Madde 15 — Tahsis veya devir talebine eklenecek bilgi ve belgeler
+Talepte bulunan kamu idaresi, taşınmazı hangi kamu hizmetinde kullanacağını talep yazısında açıkça belirtir. Talep yazısında taşınmazın tapu bilgileri (il, ilçe, mahalle/köy, mevki, pafta/ada/parsel, cins, yüzölçümü); Devletin hüküm ve tasarrufu altındaki yer ise sınır ve yüzölçümünü gösterir ölçekli kroki; tamamının mı bir kısmının mı istendiği; imar planı içindeyse onaylı plan örneği ve ayrıldığı amaç; üzerinde inşaat yapılacaksa avan projesi ve yatırım programı bilgileri yer alır ve belgeler eklenir.
+
+Madde 16 — Yerel birimlerce merkez birimlerine gönderilecek bilgi ve belgeler
+Tahsis/devir yetkisi il veya merkez biriminde ise, ilçe biriminden il birimine ya da il biriminden merkez birimine yazılacak talep yazısında; taşınmazın tahsis/devre engel durumu, imar planı içinde olup olmadığı ve plan türü, Kıyı Kanunu kapsamında kalıp kalmadığı, hangi amaçla istendiği, halen nasıl kullanıldığı, üzerindeki muhdesata ilişkin tespit tutanağı, tapu kayıt örneği ile merkez biriminden alınan uygun görüş yazısı gibi bilgi ve belgelere yer verilir. Tahsis/devre engel bir durum varsa, diğer belgeler yerine bunu tespit eden belge yeterlidir.

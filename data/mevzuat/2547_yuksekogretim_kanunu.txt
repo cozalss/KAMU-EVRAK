@@ -1,0 +1,26 @@
+Yükseköğretim Kanunu
+2547 sayılı Yükseköğretim Kanunu. Kabul Tarihi: 4/11/1981. Resmî Gazete: 6/11/1981, Sayı 17506. Yükseköğretim kurumlarının teşkilatı, işleyişi ve öğrenci işlemlerinin temel çerçeve kanunu.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2547&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı; yükseköğretimin amaç ve ilkelerini belirlemek ve bütün yükseköğretim kurumlarının ve üst kuruluşların teşkilatlanma, işleyiş, görev, yetki ve sorumlulukları ile eğitim-öğretim, araştırma, yayım, öğretim elemanları, öğrenciler ve diğer personel ile ilgili esasları bir bütünlük içinde düzenlemektir. Kamu yükseköğretim evrak ve başvuru süreçlerinin yasal dayanağıdır.
+
+Madde 7 — Yükseköğretim Kurulunun görevleri (diploma denkliği dâhil)
+Yükseköğretim Kurulunun (YÖK) görevlerini düzenler. (p) bendi uyarınca yurt dışındaki yükseköğretim kurumlarından alınmış ön lisans, lisans ve lisansüstü diplomaların denkliğini tespit etmek YÖK'ün görevidir. Yurt dışı diploma denklik başvurularının yasal dayanağını oluşturur; ayrıca yatay ve dikey geçiş esaslarının belirlenmesi de bu kapsamdadır.
+
+Madde 44 — Diploma alma, ders kredilerinin hesaplanması, öğrencilik haklarından yararlanma ve sınavlar
+Ön lisans, lisans ve lisansüstü diploma programlarına kayıtlı öğrencilerin, belirlenen ders kredilerini ve diğer yükümlülükleri başarıyla tamamlamaları hâlinde ilgili diplomayı alacaklarını düzenler. Azami öğrenim sürelerini de belirler (ön lisans 4 yıl, lisans 7 yıl gibi); azami süre dolduğunda öğrencilere tanınan ek sınav hakları ve öğrencilik haklarından yararlanma koşullarını içerir. [DOĞRULA: azami süre yıllarının güncel fıkra metni]
+
+Madde 45 — Yükseköğretime giriş ve yerleştirme
+Öğrencilerin yükseköğretim kurumlarına giriş ve yerleştirilmesine ilişkin esasların Yükseköğretim Kurulu tarafından belirlenmesini düzenler. Merkezî sınav ve yerleştirme sistemine ilişkin kayıt-kabul işlemlerinin çerçevesini çizer.
+
+Madde 46 — Cari hizmet maliyeti, öğrenci katkı payları ve öğrenim ücretleri
+Öğrencilerin birinci öğretim programları için her yarıyıl/yıl öğrenci katkı payı, ikinci öğretim ve uzaktan öğretim programları için öğrenim ücreti ödeyeceğini düzenler. Katkı payı veya öğrenim ücretini süresinde ödemeyen ve mazereti idarece kabul edilmeyen öğrencilerin o dönem için kayıt yaptıramayacağını ve öğrencilik haklarından yararlanamayacağını öngörür.
+
+Madde 54 — Öğrencilerin disiplin işleri
+Yükseköğretim öğrencilerine verilebilecek disiplin cezalarını ve usulünü düzenler: uyarma, kınama, yükseköğretim kurumundan bir haftadan bir aya kadar uzaklaştırma, bir veya iki yarıyıl uzaklaştırma ve yükseköğretim kurumundan çıkarma. Uyarma ve bir aya kadar uzaklaştırma cezalarında soruşturmaya fiilin öğrenilmesinden itibaren bir ay, çıkarma ve uzun süreli uzaklaştırmada üç ay içinde başlanır; disiplin cezasında zamanaşımı fiilin işlendiği tarihten itibaren iki yıldır.

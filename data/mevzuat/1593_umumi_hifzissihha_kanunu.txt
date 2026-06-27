@@ -1,0 +1,29 @@
+Umumi Hıfzıssıhha Kanunu
+Kanun No 1593, Kabul 24.04.1930, RG 06.05.1930/1489 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.1593 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.1593.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 57 — İhbarı zorunlu bulaşıcı hastalıklar
+Kolera, veba, lekeli humma, karahumma (tifo), paratifo, gıda zehirlenmeleri, çiçek, difteri, sari beyin humması, dizanteri, lohusa humması, ruam, kızıl, şarbon, çocuk felci, kızamık, cüzam, hummai racia ve malta humması gibi sayılan hastalıklardan biri ortaya çıkar, bunlardan şüphe edilir veya bu hastalıklardan ölüm meydana gelirse, aşağıdaki maddelerde belirtilen kişiler vakayı haber vermeye mecburdur. Kuduz veya kuduz şüpheli hayvan tarafından ısırılma ile kuduza yakalanan hasta veya kuduzdan ölenlerin ihbarı da zorunludur.
+
+Madde 58 — Tabibin ihbar yükümlülüğü (24 saat)
+Sanatını icra eden her tabip, 57. maddede sayılan vakaları kesin veya muhtemel teşhisi koyduktan sonra ilk 24 saat içinde sıhhiye dairesine; hükümet veya belediye tabibi bulunmadığı takdirde polis veya jandarma karakoluna, hastanın isim ve adresiyle birlikte yazılı veya sözlü olarak haber verir. Polis ve jandarma, öğrendikleri bu vakaları vakit kaybetmeden ilgili makamlara bildirir.
+
+Madde 61 — Diğer kişilerin (kurum/işyeri sorumluları, meslek erbabı) ihbar mecburiyeti
+Hastane baştabipleri; okul, fabrika, imalathane, hayır kurumu, ticarethane, mağaza, otel, pansiyon, han, hamam ve hapishane sahip/işletici ve müdürleri ile apartman kapıcıları; köy ihtiyar heyetleri köylerinde; eczacılar, diş tabipleri, ebeler, hastabakıcılar, ölü taşıyan ve yıkayanlar sanatları sebebiyle öğrendikleri 57. maddedeki vakaları derhal ilgili makamlara tebliğ ve ihbar etmekle yükümlüdür.
+
+Madde 215 — Defin ruhsatı olmadan gömme yasağı
+Bu kanunun tarifi kapsamında defin ruhsatiyesi (gömme izin belgesi) alınmadıkça ve ibraz edilmedikçe hiçbir cenazenin defni caiz değildir. Ruhsatname, ölünün hüviyetini, adresini, biliniyorsa ölüm sebebini içerir ve defnine ruhsat verildiği açıkça kaydedilir.
+
+Madde 216 — Defin ruhsatını kim verir
+Defin ruhsatiyeleri belediye tabipleri, toplum sağlığı merkezi tabipleri ve aile hekimleri tarafından ölünün muayenesinden sonra verilir; hangi yerleşim yerinde hangi tabiplerce verileceği yetkili sağlık idaresince belirlenir. Ölüme sebep olan hastalık sırasında tedavi eden hekimin verdiği ruhsatname, resmî tabipler tarafından tasdik edilmek şartıyla geçerlidir.
+
+Madde 220 — Ölüm kayıt defteri ve aylık bildirim
+Her belediye ve belediye olmayan yerlerde defin ruhsatiyesi verenler nezdinde ölümlerin kayıt ve zaptına mahsus bir defter bulundurulur; bu deftere ölünün ismi, adresi, ölüm tarihi, biliniyorsa ölüme yol açan hastalık ve ruhsatiyeyi verenin ismi kaydedilir. Bu bilgiler her ay sonunda toplanarak ertesi ayın on beşine kadar en yakın hükümet tabibi ve sağlık müdürlüğüne bildirilir; sağlık daireleri tarafından da mahalli nüfus idarelerine ihbar olunur.
+
+Madde 282 — Umumi ceza hükmü (idari para cezası)
+Bu Kanunda yazılı yasaklara aykırı hareket edenler veya zorunluluklara uymayanlara, fiilleri ayrıca suç oluşturmadığı takdirde idarî para cezası verilir. (23.01.2008-5728 sayılı Kanun değişikliğindeki taban-tavan tutarlar — ikiyüzelli TL'den bin TL'ye kadar — sonradan değer güncellemelerine tabidir.) [DOĞRULA: güncel idari para cezası alt-üst tutarları 5326 sK yeniden değerleme oranı ile her yıl güncellenir; cezayı uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]

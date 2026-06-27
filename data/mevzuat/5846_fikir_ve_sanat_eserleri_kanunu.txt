@@ -1,0 +1,29 @@
+Fikir ve Sanat Eserleri Kanunu
+Kabul 5/12/1951, RG 13/12/1951 sayı 7981 — YÜRÜRLÜKTE. Burada yalnızca telif, izin/devir yazışmaları ve kayıt-tescil evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5846.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 8 — Eser sahibi
+Bir eserin sahibi onu meydana getirendir. Bir işlenmenin ve derlemenin sahibi, asıl eser sahibinin hakları saklı kalmak şartıyla onu işleyen veya derleyendir. Sinema eserlerinde; yönetmen, özgün müzik bestecisi, senaryo yazarı ve diyalog yazarı eserin birlikte sahibidir. Bu hüküm, izin/devir yazışmalarında hak sahibinin kim olduğunun tespitinde esas alınır.
+
+Madde 13 — Genel olarak (mali ve manevi haklar; isteğe bağlı kayıt-tescil)
+Fikir ve sanat eserleri üzerinde sahiplerinin malî ve mânevi menfaatleri bu Kanun dairesinde himaye görür. Eser sahibinin hakları, eserin kamuya sunulması veya tescili şartına bağlı değildir; koruma eserin meydana getirilmesiyle başlar. Filmlerin ilk tespitini gerçekleştiren film yapımcıları ile seslerin ilk tespitini gerçekleştiren fonogram yapımcıları, hak ihdas etmemek ve ispat kolaylığı sağlamak amacıyla eserlerini kayıt ve tescil ettirebilir. Bu hüküm isteğe bağlı kayıt-tescil başvurusunun dayanağıdır.
+
+Madde 21-23 — Mali haklar: işleme, çoğaltma ve yayma hakkı
+Bir eserden onu işlemek suretiyle faydalanma hakkı (işleme hakkı) münhasıran eser sahibine aittir. Eserin aslını veya kopyalarını tamamen veya kısmen, doğrudan veya dolaylı, geçici veya sürekli çoğaltma hakkı (çoğaltma hakkı) eser sahibine aittir. Eserin aslını veya çoğaltılmış nüshalarını kiralamak, ödünç vermek, satışa çıkarmak veya diğer yollarla dağıtmak hakkı (yayma hakkı) da münhasıran eser sahibine aittir. Bu hakların kullanımı, üçüncü kişilerce ancak eser sahibinin izniyle mümkündür.
+
+Madde 25 — İşaret, ses ve/veya görüntü nakline yarayan araçlarla umuma iletim hakkı
+Bir eserin aslını veya çoğaltılmış nüshalarını radyo-televizyon, uydu, kablo, sayısal iletim dâhil işaret, ses ve/veya görüntü nakline yarayan araçlarla yayınlamak ve umuma iletmek hakkı münhasıran eser sahibine aittir. Eser sahibi, eserinin internet gibi araçlarla kişilerin seçtikleri yer ve zamanda erişimine sunulmasına izin verme veya yasaklama hakkına da sahiptir. Bu hüküm dijital izin/lisans yazışmalarının dayanağıdır.
+
+Madde 52 — Şekil (mali haklara dair sözleşmelerin yazılı olması)
+Mali haklara dair sözleşme ve tasarrufların yazılı olması ve konuları olan hakların ayrı ayrı gösterilmesi şarttır. Bu nedenle telif/lisans/devir sözleşmelerinde devredilen veya kullanım izni verilen her bir mali hakkın (işleme, çoğaltma, yayma, temsil, umuma iletim) açıkça ve ayrı ayrı belirtilmesi gerekir; sözlü izin geçerli sayılmaz. Bu hüküm izin/devir evrakının geçerlilik şartının dayanağıdır.
+
+Madde 68 — Tecavüzün ref'i (haklara tecavüz hâlinde talep edilebilecek bedel)
+Eseri, izinsiz çoğaltan, işleyen, yayan veya umuma ileten kişiden; hak sahibi, sözleşme yapılmış olması hâlinde isteyebileceği bedelin veya emsal/rayiç bedelin en çok üç kat fazlasını talep edebilir. Ödeme talebinde bulunan kişi, tecavüz edene karşı onunla bir sözleşme yapmış olsaydı sahip olacağı tüm hak ve yetkileri ileri sürebilir. Bu hüküm, izinsiz kullanım hâlinde gönderilecek ihtar/talep yazılarının ve telif tazminatı taleplerinin dayanağıdır.
+
+Madde 81 — Bandrol yükümlülüğü
+Musiki ve sinema eserlerinin çoğaltılmış nüshaları ile süreli olmayan yayınlara bandrol yapıştırılması zorunludur; kolayca çoğaltılabilen diğer eser gruplarında bandrol isteğe bağlıdır. Bandrol almak isteyenler, eser veya hak sahibi olduklarını beyan eden taahhütname ile başvurur; tescil ve kayıtlı sinema/müzik eseri nüshalarına çoğaltımdan sonra ve piyasaya arzdan önce bandrol yapıştırılır. Bandrol yükümlülüğüne aykırılık, Kanunda öngörülen yaptırımlara tabidir. Bu hüküm bandrol başvuru ve taahhütname evrakının dayanağıdır.

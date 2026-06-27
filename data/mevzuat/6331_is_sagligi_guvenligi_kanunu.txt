@@ -1,0 +1,29 @@
+İş Sağlığı ve Güvenliği Kanunu
+Kanun No 6331, Kabul 20.06.2012, RG 30.06.2012/28339 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.6331 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6331.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — İşverenin genel yükümlülüğü
+İşveren, çalışanların işle ilgili sağlık ve güvenliğini sağlamakla yükümlüdür; bu çerçevede mesleki risklerin önlenmesi, eğitim ve bilgi verilmesi dâhil her türlü tedbiri alır, organizasyonu yapar, gerekli araç-gereci sağlar ve tedbirleri değişen şartlara uygun hale getirir. Alınan tedbirlere uyulup uyulmadığını izler ve denetler, risk değerlendirmesi yapar veya yaptırır. İşyeri dışından hizmet alınması işverenin sorumluluğunu ortadan kaldırmaz; iş sağlığı ve güvenliği tedbirlerinin maliyeti çalışanlara yansıtılamaz.
+
+Madde 6 — İş sağlığı ve güvenliği hizmetleri (uzman/işyeri hekimi görevlendirme)
+İşveren, mesleki risklerin önlenmesine yönelik hizmetler için çalışanları arasından iş güvenliği uzmanı, işyeri hekimi ve (on ve daha fazla çalışanı olan çok tehlikeli işyerlerinde) diğer sağlık personeli görevlendirir; nitelikli personel yoksa ortak sağlık ve güvenlik birimlerinden veya ÇASMER'lerden hizmet alabilir. Görevlendirilen kişi/kuruluşların ihtiyaçlarını karşılar, aralarında koordinasyonu sağlar ve yazılı bildirilen tedbirleri yerine getirir.
+
+Madde 10 — Risk değerlendirmesi
+İşveren, iş sağlığı ve güvenliği yönünden risk değerlendirmesi yapmak veya yaptırmakla yükümlüdür; değerlendirmede belirli risklerden etkilenecek çalışanların durumu, kullanılacak iş ekipmanı ile kimyasallar, işyerinin tertip-düzeni ve genç/yaşlı/engelli/gebe/emziren çalışanlar ile kadın çalışanlar gibi özel politika gerektiren grupların durumu dikkate alınır. İşveren değerlendirme sonucuna göre alınacak tedbirleri ve kullanılacak koruyucu donanımı belirler, gerekli kontrol, ölçüm ve araştırmaların yapılmasını sağlar.
+
+Madde 14 — İş kazası ve meslek hastalıklarının kayıt ve bildirimi
+İşveren bütün iş kazaları ile meslek hastalıklarının kaydını tutar, inceleme yapıp rapor düzenler; yaralanma/ölüm olmasa da zarara veya zarar potansiyeline yol açan olayları da raporlar. İşveren, iş kazalarını kazadan sonraki üç iş günü içinde, kendisine bildirilen meslek hastalıklarını ise öğrendiği tarihten itibaren üç iş günü içinde Sosyal Güvenlik Kurumuna bildirir. Sağlık hizmeti sunucuları, kendilerine intikal eden iş kazaları ile tanı koydukları meslek hastalıklarını en geç on gün içinde SGK'ya bildirir.
+
+Madde 16 — Çalışanların bilgilendirilmesi
+İşveren, işyerinde karşılaşılabilecek sağlık ve güvenlik riskleri ile koruyucu-önleyici tedbirler, çalışanların yasal hak ve sorumlulukları, ilk yardım/yangın/tahliye için görevlendirilen kişiler konusunda çalışanları ve çalışan temsilcilerini bilgilendirir. Ciddi ve yakın tehlikeye maruz kalan çalışanlar derhal bilgilendirilir; risk değerlendirmesi, ölçüm, rapor ve teftiş bilgilerine çalışan temsilcileri ve destek elemanlarının ulaşması sağlanır.
+
+Madde 17 — Çalışanların eğitimi
+İşveren, çalışanların iş sağlığı ve güvenliği eğitimlerini almasını sağlar; bu eğitim özellikle işe başlamadan önce, çalışma yeri/iş değişikliğinde, iş ekipmanı veya teknoloji değişiminde verilir ve yeni risklere göre yenilenir. Tehlikeli ve çok tehlikeli işlerde mesleki eğitim aldığını belgeleyemeyenler çalıştırılamaz; iş kazası geçirene veya altı aydan fazla işten uzak kalana ilave/yenileme eğitimi verilir. Eğitim maliyeti çalışana yansıtılamaz, eğitimde geçen süre çalışma süresinden sayılır.
+
+Madde 26 — İdari para cezaları
+Kanunda öngörülen yükümlülükleri yerine getirmeyen işverene maddede her bir ihlal türü için ayrı ayrı idari para cezası uygulanır; örneğin risk değerlendirmesi yapmayan/yaptırmayan işverene (10. madde) ceza ve aykırılığın devam ettiği her ay için ilave ceza, iş güvenliği uzmanı/işyeri hekimi görevlendirmeyen işverene (6. madde) görevlendirmediği kişi başına ceza, bildirim yükümlülüğünü yerine getirmeyene (14. madde) ve çalışanları bilgilendirmeyene/eğitmeyene (16-17. madde) ceza öngörülür. [DOĞRULA: maddedeki Türk Lirası tutarları 2012 yılı değerleri olup 5326 sK yeniden değerleme oranıyla her yıl güncellenir; uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]

@@ -1,0 +1,29 @@
+Engelliler Hakkında Kanun
+Kanun No 5378, Kabul 01.07.2005, RG 07.07.2005/25868 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5378 konsolide metin esas alınmıştır; eski adı "Özürlüler Hakkında Kanun" iken 6462 sayılı Kanun ile değişmiştir)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5378.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Bu Kanunun amacı; engellilerin temel hak ve özgürlüklerden faydalanmasını teşvik ve temin ederek, doğuştan sahip oldukları onura saygıyı güçlendirerek toplumsal hayata diğer bireylerle eşit koşullarda tam ve etkin katılımlarının sağlanması ve engelliliği önleyici tedbirlerin alınması için gerekli düzenlemelerin yapılmasını sağlamaktır.
+
+Madde 3 — Tanımlar (erişilebilirlik, makul düzenleme, ayrımcılık)
+Kanun; doğrudan ve dolaylı ayrımcılık, engelli, engellilik durumu, korumalı işyeri gibi kavramları tanımlar. "Erişilebilirlik", binaların, açık alanların, ulaşım ve bilgilendirme hizmetleri ile bilgi-iletişim teknolojisinin engelliler tarafından güvenli ve bağımsız olarak ulaşılabilir ve kullanılabilir olmasıdır. "Makul düzenleme", engellilerin haklarını eşit şekilde kullanmasını sağlamak için ihtiyaç duyulan, ölçüsüz/aşırı yük getirmeyen gerekli ve uygun değişiklik ve tedbirlerdir.
+
+Madde 4 — Genel esaslar
+Kanun kapsamındaki hizmetlerin yerine getirilmesinde; engellinin bireysel özerkliğine saygı, fırsat eşitliği, ayrımcılıkla mücadele, bağımsız yaşam ve topluma katılım için erişilebilirliğin sağlanması, istismarın önlenmesi, aile bütünlüğünün korunması ve çocuğun üstün yararının gözetilmesi esastır. Engellilere yönelik mevzuat düzenlemelerinde ilgili Bakanlığın görüşü alınır.
+
+Madde 4/A — Ayrımcılık yasağı ve makul düzenleme
+Doğrudan ve dolaylı ayrımcılık dâhil olmak üzere engelliliğe dayalı her türlü ayrımcılık yasaktır. Eşitliği sağlamak ve ayrımcılığı ortadan kaldırmak için engellilere yönelik makul düzenlemelerin yapılmasına dair gerekli tedbirler alınır. Engellilerin hak ve özgürlüklerden tam ve eşit yararlanmasını sağlamaya yönelik özel tedbirler ayrımcılık olarak değerlendirilemez.
+
+Madde 7 — Erişilebilirlik (yapılı çevre, toplu taşıma, bilgilendirme)
+Yapılı çevrede engellilerin erişebilirliğinin sağlanması için planlama, tasarım, inşaat, imalat, ruhsatlandırma ve denetleme süreçlerinde erişilebilirlik standartlarına uygunluk sağlanır. Özel ve kamu toplu taşıma sistemleri ile sürücü koltuğu hariç dokuz veya daha fazla koltuğu bulunan toplu taşıma araçlarının engellilerin erişebilirliğine uygun olması zorunludur. Bilgilendirme hizmetleri ile bilgi ve iletişim teknolojisinin engelliler için erişilebilir olması sağlanır.
+
+Madde 14 — İstihdam ve işe başvuruda ayrımcılık yasağı
+Engellilerin sürdürülebilir istihdamı için kendi işini kurmaya rehberlik ve mesleki danışmanlık dâhil gerekli tedbirler alınır. İşe başvuru, alım, çalışma süre ve şartları, istihdamın sürekliliği, kariyer gelişimi ve sağlıklı-güvenli çalışma koşulları dâhil istihdama ilişkin hiçbir hususta engelliliğe dayalı ayrımcı uygulama yapılamaz. İşyerlerinde makul düzenlemelerin yapılması, görev ve yetkisi bulunan kurum/kuruluşlar ile işverenler tarafından zorunludur.
+
+Geçici Madde 2 — Mevcut yapıların erişilebilir hale getirilmesi süresi
+Kamu kurum ve kuruluşlarına ait mevcut resmî yapılar; mevcut yol, kaldırım, yaya geçidi, açık-yeşil alanlar, spor alanları ve benzeri altyapı ile gerçek/tüzel kişilerce yapılmış umuma açık hizmet veren her türlü yapılar, Kanunun yürürlüğe girdiği tarihten itibaren (sonradan sekiz yıla uzatılan) süre içinde engellilerin erişebilirliğine uygun duruma getirilir. Süre bitiminde yükümlülüğünü yerine getirmediği denetim komisyonlarınca tespit edilenlere idari para cezası uygulanır.

@@ -1,0 +1,26 @@
+Planlı Alanlar İmar Yönetmeliği
+Planlı Alanlar İmar Yönetmeliği, RG 03.07.2017/30113. Çevre, Şehircilik ve İklim Değişikliği Bakanlığı tarafından 3/5/1985 tarihli ve 3194 sayılı İmar Kanunu ile 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında CBK'ye dayanılarak hazırlanmıştır — YÜRÜRLÜKTE (son değişiklikler dahil 2025-2026 tarihli RG'lerle güncel).
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=23722&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 23 — Bahçe mesafeleri (yapı yaklaşma/çekme mesafeleri)
+Uygulama imar planında aksine hüküm yoksa ön bahçe ve yol kenarına rastlayan bahçe mesafeleri ile kamusal alanlara komşu bahçe mesafeleri en az 5,00 metre, yan bahçe en az 3,00 metre, arka bahçe en az 3,00 metredir. Dörtten fazla katlı binalarda 4 katın üzerindeki her kat için yan ve arka bahçe mesafesi 0,50 metre artırılır; görünen yüksekliği 60,50 metre ve fazlası olan yapılarda ön/yan/arka sınırdan en az 15,00 metre çekilir. Çekme mesafeleri, ruhsat projesinin plana uygunluk denetiminde ve imar durumu yazışmalarında esas alınır.
+
+Madde 54 — Yapı ruhsatına ilişkin genel hükümler (ruhsat süresi)
+Kanun ve Yönetmelikteki istisnalar dışında yapı ruhsatı alınmaksızın hiçbir yapının inşasına başlanamaz. Ruhsat tarihinden itibaren 2 yıl içinde inşasına başlanmayan veya 5 yıllık ruhsat süresi içinde tamamlanmayan ve süresinde yenilenmeyen yapılar ruhsatsız sayılır. Süre içinde yapılan başvuruda ruhsat ilk ruhsat tarihindeki plan ve mevzuata göre beş yıl uzatılarak yenilenir; süreye ilişkin yenileme en çok iki kez yapılır. Ruhsat geçerlilik süresi ve yenileme yazışmalarının dayanağıdır.
+
+Madde 55 — Yapı ruhsatı işlemleri (başvuruda istenen belgeler)
+Yeni inşaat, ilave ve esaslı tadilatta yapı sahipleri veya vekilleri; imar durum belgesi, yol kotu tutanağı, kanal kotu tutanağı ve onaylı jeolojik-jeoteknik etüt raporunu almak için başvuru dilekçesine aplikasyon krokisi ile tapu kayıt örneğini (veya istisnai hâllerde yerine geçen belgeleri) ekleyerek ilgili idareye müracaat eder. İdare imar durum belgesini ve eklerini en geç iki iş günü, kanal kotu tutanağını en geç beş iş günü içinde verir; belgeler verilmezse gerekçesi aynı sürede yazılı bildirilir. Tapu bilgisine TAKBİS üzerinden erişilebiliyorsa ayrıca tapu kayıt örneği istenmez. Ruhsat başvuru evrakının temel listesidir.
+
+Madde 56 — Kamu alanlarında yapılacak yapılarda ruhsat
+Kamu kurum ve kuruluşlarınca yapılacak/yaptırılacak yapılar, uygulama imar planında o maksada tahsis edilmiş ve mülkiyeti belgelenmiş olmak kaydıyla ilgili idarelerden avan projeye göre yapı ruhsatı alınarak inşa edilir; mimari/statik/tesisat projeleri ve denetime ilişkin fenni mesuliyet kurum mimar ve mühendislerince üstlenilir. Devletin güvenlik ve TSK harekât/savunma yapıları ile gizlilik arz eden yapılara, 55. maddedeki belgeler aranmaksızın yalnız mülkiyet ve sorumluluk yazısı alınarak müdürlükçe ruhsat verilir. Kamu yapılarına ilişkin ruhsat istisna rejiminin dayanağıdır.
+
+Madde 64 — Yapı kullanma izni (iskân) düzenlenmesi
+Yapı tamamlandığında veya kullanılabilir kısımları bittiğinde, mal sahibinin müracaatı üzerine yapı ruhsatını veren ilgili idareden yapı kullanma izni alınması zorunludur. Başvuru dilekçesi ekinde fenni mesullerin veya yapı denetim kuruluşunun yapının ruhsat eki projelerine, fen ve sağlık kurallarına uygun yapıldığına ilişkin raporu, enerji kimlik belgesi ve yapı fotoğrafları yer alır. Yapının mevzuata uygun bulunması hâlinde 30 gün içinde yapı kullanma izin belgesi düzenlenir; belgenin birer örneği mal sahibi/sahiplerine, müteahhide ve fenni mesullere verilir. İskân başvurusu ve belge düzenlenmesinin dayanağıdır.
+
+Madde 65 — Yapı kullanma izinlerinde başvuru sahibinden belge istenmesine ilişkin esaslar
+Yapı kullanma izni başvurularında, başvuru sahibinin dilekçesi veya idarenin matbu formu ile yapının ruhsat ve eklerine uygunluğuna, malzemeye ve fen-sağlık bakımından sakınca bulunmadığına dair fenni mesul/yapı denetim raporu, enerji kimlik belgesi ve yapı fotoğrafları dışında belge istenemez. İdarede mevcut olan veya elektronik ortamda paylaşılan bilgi-belgeler ile KPS'den erişilebilen bilgiler tekrar istenmez. Malzeme fatura/irsaliyesi, doğalgaz uygunluk belgesi, itfaiye raporu, sığınak raporu, vergi borcu yazısı ve harç makbuzları gibi belgeler başvuru sahibinden istenmez. İskân başvurusunda istenebilecek belgeleri sınırlandırır.

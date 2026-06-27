@@ -40,6 +40,13 @@ class MevzuatOneriSchema(BaseModel):
     snippet: str | None = None
     url: str | None = None
     score: float = 0.0
+    # B2 — şeffaflık (kaynak göstermeyen öneri = güven kaybı). Hepsi türetilmiş/doğrulanabilir.
+    dayanak: str = ""              # "hangi talebe dayanıyor" (evrak konusu)
+    guven: str = ""               # "yüksek" | "orta" | "düşük"
+    inceleme_oner: bool = False    # düşük güven / [DOĞRULA] → insan incelemesi önerilir
+    dogrula: bool = False         # başlık/snippet'te [DOĞRULA] işareti
+    nli_etiket: str = ""          # NLI açıksa: "destekleniyor" / "[DOĞRULA: anlamsal destek zayıf]"
+    yururluk: str = ""            # başlıkta zaten var olan sürüm/yürürlük (uydurma yok)
 
 
 class AltTalepSchema(BaseModel):

@@ -24,6 +24,7 @@ from fastapi.responses import StreamingResponse
 from agents.config import HITL_ENABLED
 from agents.graph import PIPELINE_NODES, build_graph
 from agents.state import make_initial_state
+from api.mevzuat_zenginlestir import zenginlestir_mevzuat
 from api.middleware.ratelimit import rate_limit
 from api.pii import mask_pii
 from api.schemas import (
@@ -88,7 +89,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         bilgi_unsurlari=state.get("bilgi_unsurlari", {}),
         eksik_alanlar=state.get("eksik_alanlar", []),
         clarify_questions=state.get("clarify_questions", []),
-        mevzuat_onerileri=state.get("mevzuat_onerileri", []),
+        mevzuat_onerileri=zenginlestir_mevzuat(state),  # B2: güven/dayanak/[DOĞRULA] yüzeye çıkar
         mevzuat_nli=state.get("mevzuat_nli", []),
         ozet=state.get("ozet", ""),
         hedef_birim=state.get("hedef_birim", ""),

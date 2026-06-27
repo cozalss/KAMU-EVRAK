@@ -163,28 +163,29 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 
 .ke-main { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
 
-/* ================= Yükleme alanı ================= */
-.ke-intake { display: flex; flex-direction: column; gap: 1rem; }
+/* ================= Yükleme alanı (KAHRAMAN: büyük, ortalı, davetkâr) ================= */
+.ke-intake { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 .ke-drop {
-  position: relative; border: 1.5px dashed var(--line-strong); border-radius: var(--r-lg);
+  position: relative; width: 100%; max-width: 660px;
+  border: 2px dashed var(--line-strong); border-radius: var(--r-lg);
   background:
-    radial-gradient(120% 100% at 50% -12%, rgba(29, 78, 216, 0.06) 0%, transparent 62%),
+    radial-gradient(150% 120% at 50% -10%, rgba(29, 78, 216, 0.07) 0%, transparent 60%),
     var(--surface);
-  padding: 2.2rem 1.4rem; text-align: center; box-shadow: var(--shadow-sm);
+  padding: 3rem 2rem 2.4rem; text-align: center; box-shadow: var(--shadow-md);
   cursor: pointer; transition: border-color var(--dur-fast), background var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-fast);
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  display: flex; flex-direction: column; align-items: center; gap: .55rem;
 }
-.ke-drop:hover, .ke-drop:focus-visible { border-color: var(--accent); background: #f8fbff; box-shadow: var(--shadow-sm); }
-.ke-drop.over { border-color: var(--accent); border-style: solid; background: var(--accent-soft); transform: scale(1.004); }
+.ke-drop:hover, .ke-drop:focus-visible { border-color: var(--accent); background: #f8fbff; box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.ke-drop.over { border-color: var(--accent); border-style: solid; background: var(--accent-soft); box-shadow: var(--ring); transform: translateY(-3px); }
 .ke-drop.busy { cursor: progress; opacity: .7; }
 .ke-drop-ic {
-  width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%;
-  background: var(--accent-soft); color: var(--accent); margin-bottom: .2rem;
-  box-shadow: 0 0 0 7px rgba(29, 78, 216, 0.06);
+  width: 64px; height: 64px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent); margin-bottom: .35rem;
+  box-shadow: 0 0 0 9px rgba(29, 78, 216, 0.06);
 }
-.ke-drop-ic svg { width: 25px; height: 25px; }
-.ke-drop-main { font-weight: 600; font-size: 1.08rem; color: var(--ink); font-family: var(--font-display); }
-.ke-drop-sub { font-size: .8rem; color: var(--muted); }
+.ke-drop-ic svg { width: 30px; height: 30px; }
+.ke-drop-main { font-weight: 600; font-size: 1.32rem; color: var(--ink); font-family: var(--font-display); }
+.ke-drop-sub { font-size: .84rem; color: var(--muted); }
 .ke-drop-hint {
   display: inline-flex; align-items: center; gap: .35rem; margin-top: .3rem;
   font-size: .74rem; font-weight: 600; color: var(--g1-ink);
@@ -222,10 +223,25 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .ke-sample-desc { font-size: .74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ke-sample.active .ke-sample-desc { color: var(--accent-ink); }
 
-@media (min-width: 880px) {
-  .ke-intake { display: grid; grid-template-columns: .9fr 1.25fr; gap: 1.3rem; align-items: start; }
-  .ke-drop { height: 100%; justify-content: center; }
+/* ke-try: örnek evraklar — ikincil, varsayılan gizli, tek tıkla açılır toggle */
+.ke-try { width: 100%; max-width: 660px; display: flex; flex-direction: column; gap: .85rem; }
+.ke-try-toggle {
+  display: inline-flex; align-items: center; gap: .55rem; align-self: center;
+  font: inherit; font-size: .9rem; color: var(--ink-2);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+  padding: .55rem 1.1rem; min-height: 44px; cursor: pointer;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast), background var(--dur-fast);
 }
+.ke-try-toggle:hover { border-color: var(--accent); background: var(--surface-2); box-shadow: var(--shadow-sm); }
+.ke-try-toggle strong { color: var(--accent-ink); font-weight: 700; }
+.ke-try-ic { display: grid; place-items: center; color: var(--accent); }
+.ke-try-ic svg { width: 16px; height: 16px; }
+.ke-try-chev { display: grid; place-items: center; color: var(--muted); }
+.ke-try-chev svg { width: 14px; height: 14px; transform: rotate(90deg); transition: transform var(--dur-normal) var(--ease-out-expo); }
+.ke-try-chev.open svg { transform: rotate(-90deg); }
+.ke-samples { display: flex; flex-direction: column; gap: .85rem; animation: ke-reveal var(--dur-normal) var(--ease-out-expo) both; }
+@keyframes ke-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .ke-samples { animation: none; } .ke-try-chev svg { transition: none; } }
 
 /* ================= Hata durumu ================= */
 .ke-error {
@@ -268,6 +284,34 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .ke-placeholder-h { margin: 0 0 .45rem; font-size: 1.15rem; color: var(--ink); font-weight: 700; }
 .ke-placeholder p { margin: 0 auto; max-width: 58ch; line-height: 1.6; }
 .ke-placeholder strong { color: var(--accent-ink); }
+
+/* ================= Nasıl çalışır (anlamlı onboarding) ================= */
+.ke-howto {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 1.9rem 1.7rem 1.5rem; box-shadow: var(--shadow-sm);
+}
+.ke-howto-head { text-align: center; margin-bottom: 1.35rem; }
+.ke-howto-h { margin: 0 0 .4rem; font-size: 1.3rem; color: var(--ink); }
+.ke-howto-sub { margin: 0 auto; max-width: 62ch; line-height: 1.55; color: var(--ink-2); font-size: .92rem; }
+.ke-howto-sub strong { color: var(--accent-ink); font-weight: 700; }
+.ke-howto-steps { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .ke-howto-steps { grid-template-columns: repeat(3, 1fr); } }
+.ke-howto-step {
+  display: flex; gap: .8rem; align-items: flex-start;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: .95rem 1rem;
+}
+.ke-howto-n {
+  flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem; font-variant-numeric: tabular-nums;
+}
+.ke-howto-n.ke-ph-g1 { background: var(--g1-soft); color: var(--g1-ink); }
+.ke-howto-n.ke-ph-g2 { background: var(--g2-soft); color: var(--g2-ink); }
+.ke-howto-tx strong { display: block; font-size: 1rem; color: var(--ink); margin-bottom: .22rem; font-family: var(--font-display); }
+.ke-howto-tx p { margin: 0; font-size: .85rem; line-height: 1.5; color: var(--ink-2); }
+.ke-howto-flow-h {
+  text-align: center; margin: 0 0 .1rem; font-size: var(--text-label); font-weight: 700;
+  letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted);
+}
 
 .ke-ph-flow {
   list-style: none; margin: 1.2rem 0 .5rem; padding: 0;

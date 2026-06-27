@@ -39,6 +39,9 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [selectedSample, setSelectedSample] = useState(null);
+  // Örnek evraklar varsayılan GİZLİ (memur kendi evrakını yükler — yükleme kahraman);
+  // "Örnek evrakla dene" ile açılır (jüri demosu da tek tıkla erişir).
+  const [showSamples, setShowSamples] = useState(false);
   const [fileName, setFileName] = useState("");
   // İndirme için son işlenen evrak metni (örnek metin yolunda dolu; dosya/OCR
   // yolunda boş kalır → buton metin gerektiğini bildirir). + indirme durumu.
@@ -364,10 +367,20 @@ export default function App() {
             />
           </div>
 
-          <div className="ke-samples" aria-labelledby="ke-samples-h">
-            <p id="ke-samples-h" className="ke-samples-h">
-              Dosyan yok mu? <strong>{SAMPLE_DOCS.length} örnek evraktan</strong> birini tek tıkla canlı işlet:
-            </p>
+          {/* İkincil: örnek evraklar — varsayılan GİZLİ, tek tıkla açılır (memur kendi
+              evrakını yükler; jüri/deneme için örnekler bir tık ötede). */}
+          <div className="ke-try">
+            <button
+              type="button" className="ke-try-toggle"
+              onClick={() => setShowSamples((v) => !v)}
+              aria-expanded={showSamples} aria-controls="ke-samples-panel"
+            >
+              <span className="ke-try-ic" aria-hidden="true"><Icon.search /></span>
+              <span className="ke-try-tx">Dosyanız yok mu? <strong>{SAMPLE_DOCS.length} örnek evrakla deneyin</strong></span>
+              <span className={"ke-try-chev" + (showSamples ? " open" : "")} aria-hidden="true"><Icon.arrowRight /></span>
+            </button>
+            {showSamples && (
+            <div id="ke-samples-panel" className="ke-samples" aria-label="Örnek evraklar">
             {SAMPLE_GROUPS.map(({ grup, slug, items }) => (
               <div className="ke-sample-group" key={grup}>
                 {/* SC 1.3.1 / SC 2.4.6 — görünür grup başlığı; aria-hidden kaldırıldı.
@@ -403,6 +416,8 @@ export default function App() {
                 </div>
               </div>
             ))}
+            </div>
+            )}
           </div>
         </section>
 
@@ -465,11 +480,30 @@ export default function App() {
         </section>
 
         {!started && (
-          <section className="ke-placeholder" aria-labelledby="ke-ph-h">
-            <span className="ke-placeholder-ic" aria-hidden="true"><Icon.inbox /></span>
-            <h2 id="ke-ph-h" className="ke-placeholder-h">Başlamak için bir evrak seçin</h2>
-            <p>Yukarıdan bir evrak yükleyin ya da bir <strong>örnek evrak</strong> seçin; sistem evrakı
-              <strong> {PIPELINE.length} ajanlı</strong> canlı bir boru hattından geçirir.</p>
+          <section className="ke-howto" aria-labelledby="ke-ph-h">
+            <header className="ke-howto-head">
+              <h2 id="ke-ph-h" className="ke-howto-h">Nasıl çalışır</h2>
+              <p className="ke-howto-sub">Evrakınızı yükleyin; sistem <strong>{PIPELINE.length} ajanlı</strong> tek
+                bir boru hattında okur, anlar ve resmî yazı taslağını üretir — memur onayıyla.</p>
+            </header>
+            <ol className="ke-howto-steps">
+              <li className="ke-howto-step">
+                <span className="ke-howto-n ke-ph-g1" aria-hidden="true">1</span>
+                <div className="ke-howto-tx"><strong>Yükle</strong>
+                  <p>PDF · görsel · Word yükleyin. OCR ile okunur, kişisel veri (TCKN/telefon) otomatik maskelenir.</p></div>
+              </li>
+              <li className="ke-howto-step">
+                <span className="ke-howto-n ke-ph-g1" aria-hidden="true">2</span>
+                <div className="ke-howto-tx"><strong>Anla</strong>
+                  <p>Türü sınıflandırır, bilgi çıkarır, eksiği tespit eder, ilgili mevzuatı önerir ve özetler.</p></div>
+              </li>
+              <li className="ke-howto-step">
+                <span className="ke-howto-n ke-ph-g2" aria-hidden="true">3</span>
+                <div className="ke-howto-tx"><strong>Üret &amp; Onayla</strong>
+                  <p>Resmî yazı taslağı + doğru birime havale; risk bandı (trafik ışığı) ve memur onayıyla, değiştirilemez denetim iziyle.</p></div>
+              </li>
+            </ol>
+            <p className="ke-howto-flow-h">Canlı boru hattı önizlemesi</p>
             {/* "10 ajan" vaadini görselleştiren mini statik akış ipucu — gerçek pipeline
                 node etiketlerinden türetilir (topology.js); canlı şemanın önizlemesi.
                 Yalnız görsel ipucu (aria-hidden); özet metin yukarıda erişilebilir. */}

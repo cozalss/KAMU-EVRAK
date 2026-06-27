@@ -1,7 +1,49 @@
 {
  "version": 1,
- "chunk_sayisi": 306,
+ "chunk_sayisi": 370,
  "chunks": [
+  {
+   "mevzuat": "1136 avukatlik kanunu",
+   "kaynak_dosya": "1136_avukatlik_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Avukatlığın amacı ve kamu kurumlarının yardım yükümlülüğü\nAvukatlığın amacı; hukukî ilişkilerin düzenlenmesini, hukukî mesele ve anlaşmazlıkların adalet ve hakkaniyete uygun çözümünü ve hukuk kurallarının tam uygulanmasını her derecede yargı organı, hakem, resmî ve özel kişi, kurul ve kurumlar nezdinde sağlamaktır. Yargı organları, emniyet makamları, diğer kamu kurum ve kuruluşları, KİT'ler, bankalar, noterler, sigorta şirketleri ve vakıflar, avukatlara görevlerini yerine getirmesinde yardımcı olmak zorundadır."
+  },
+  {
+   "mevzuat": "1136 avukatlik kanunu",
+   "kaynak_dosya": "1136_avukatlik_kanunu.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — Baroya yazılma (levhaya kayıt) dilekçesine eklenecek belgeler\nBaroya yazılma için verilecek dilekçeye; kanunun aradığı şartlara ilişkin belgelerin asılları ile onanmış örnekleri, adayın belirli engel hâllerinin bulunmadığını gösteren bildiri, yanında staj göreceği avukatın yazılı muvafakati ve adayın ahlak durumu hakkında iki avukatça düzenlenmiş tanıtma kâğıdı eklenir. Bu hüküm, baroya kayıt başvurusunda sunulması zorunlu evrakı belirler."
+  },
+  {
+   "mevzuat": "1136 avukatlik kanunu",
+   "kaynak_dosya": "1136_avukatlik_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Yalnız avukatların yapabileceği işler\nKanun işlerinde ve hukukî meselelerde mütalaa vermek; mahkeme, hakem veya yargı yetkisini haiz organlar huzurunda gerçek ve tüzel kişilere ait hakları dava etmek ve savunmak, adlî işlemleri takip etmek ve bu işlere ait bütün evrakı düzenlemek yalnız baroda yazılı avukatlara aittir. Dava ehliyeti olan herkes kendi davasının evrakını düzenleyip işini bizzat takip edebilir; ancak belirli büyüklükteki anonim şirketler ve yapı kooperatifleri sözleşmeli avukat bulundurmak zorundadır."
+  },
+  {
+   "mevzuat": "1136 avukatlik kanunu",
+   "kaynak_dosya": "1136_avukatlik_kanunu.txt",
+   "madde_no": 41,
+   "madde_tur": "madde",
+   "text": "Madde 41 — İşi reddetme ve çekilmede görevin devamı\nBelli bir işi takipten veya savunmadan kendi isteğiyle çekilen avukatın o işe ait vekâlet görevi, durumun müvekkile tebliğinden itibaren on beş gün süreyle devam eder. Bu süre, müvekkilin hak kaybına uğramaması için avukata son işlemleri yapma ve müvekkili haberdar etme yükümlülüğü getirir. [DOĞRULA: işin reddine ilişkin ek hüküm madde 38'de yer alabilir]"
+  },
+  {
+   "mevzuat": "1136 avukatlik kanunu",
+   "kaynak_dosya": "1136_avukatlik_kanunu.txt",
+   "madde_no": 56,
+   "madde_tur": "madde",
+   "text": "Madde 56 — Vekaletname örneği çıkarma ve onaylama yetkisi\nUsulüne uygun olarak avukata verilen vekaletname dosyada saklanır. Avukat, bu vekaletnamenin örneğini çıkarıp aslına uygunluğunu kendi imzasıyla onaylayarak kullanabilir. Avukatın çıkardığı vekaletname örnekleri bütün yargı mercileri, resmî daire ve kurumlar ile gerçek ve tüzel kişiler için resmî örnek hükmündedir."
+  },
+  {
+   "mevzuat": "1136 avukatlik kanunu",
+   "kaynak_dosya": "1136_avukatlik_kanunu.txt",
+   "madde_no": 171,
+   "madde_tur": "madde",
+   "text": "Madde 171 — İşi sonuna kadar takip etme ve başkasını tevkil\nAvukat, üzerine aldığı işi kanun hükümlerine göre ve yazılı sözleşme olmasa bile sonuna kadar takip eder. Vekaletnamede başkasını tevkile yetki tanınmışsa, yazılı sözleşmede aksine açık hüküm yoksa işi başka bir avukatla birlikte veya başka avukata vererek takip ettirebilir. Vekaletnamede düzenleme tarihinden sonraki tüm dava ve işler için genel yetki verilmişse, müvekkilden ayrıca vekâlet almaya gerek kalmaz; tevkil eden avukatın müvekkile karşı sorumluluğu devam eder."
+  },
   {
    "mevzuat": "11 devlet arsivleri baskanligi cbk",
    "kaynak_dosya": "11_devlet_arsivleri_baskanligi_cbk.txt",
@@ -57,6 +99,41 @@
    "madde_no": 19,
    "madde_tur": "madde",
    "text": "Madde 19 — Ayıklama ve İmha Komisyonlarının Teşkili\nKapsamdaki kurum ve kuruluşların kurum arşivlerinde yapılacak ayıklama ve imha işlemleri için bünyelerinde ayıklama ve imha komisyonları teşkil edilir. Komisyonların oluşumu ve çalışma esasları ikincil düzenlemeyle (Devlet Arşiv Hizmetleri Yönetmeliği) ayrıntılandırılır."
+  },
+  {
+   "mevzuat": "1 cumhurbaskanligi teskilati cbk",
+   "kaynak_dosya": "1_cumhurbaskanligi_teskilati_cbk.txt",
+   "madde_no": 507,
+   "madde_tur": "madde",
+   "text": "Madde 507 — Koordinasyon ve İşbirliği\nBakanlık, hizmet ve görevleriyle ilgili konularda diğer bakanlıkların ve kamu kurum ve\nkuruluşlarının uyacakları esasları mevzuata uygun olarak belirlemekle, kaynak israfını\nönleyecek ve koordinasyonu sağlayacak tedbirleri almakla görevli ve yetkilidir. Diğer\nbakanlıkların hizmet alanına giren faaliyetlerinde ilgili bakanlıklara danışmak ve gerekli\nişbirliği ile koordinasyonu sağlamaktan sorumludur."
+  },
+  {
+   "mevzuat": "1 cumhurbaskanligi teskilati cbk",
+   "kaynak_dosya": "1_cumhurbaskanligi_teskilati_cbk.txt",
+   "madde_no": 508,
+   "madde_tur": "madde",
+   "text": "Madde 508 — Düzenleme Görev ve Yetkisi\nBakanlık, görev, yetki ve sorumluluk alanına giren konularda idari düzenlemeler (yönetmelik,\ntebliğ, genelge vb.) yapabilir. Bu yetki, kamu yazışmalarında atıf yapılan ikincil düzenleme\nve usul-esas belgelerinin hukuki dayanağıdır."
+  },
+  {
+   "mevzuat": "1 cumhurbaskanligi teskilati cbk",
+   "kaynak_dosya": "1_cumhurbaskanligi_teskilati_cbk.txt",
+   "madde_no": 509,
+   "madde_tur": "madde",
+   "text": "Madde 509 — Bakanlıkların Temel Kuruluşları ve Hiyerarşik Kademeler\nBakanlıklar; merkez teşkilatı ile ihtiyaca göre kurulan taşra ve yurt dışı teşkilatından ve\nbağlı, ilgili ve ilişkili kuruluşlardan meydana gelir. Merkez teşkilatı amaç/politika tayini,\nplanlama, koordinasyon, gözetim ve denetim görevlerini yürüten birimlerden oluşur. Taşra\nteşkilatı; il valisine bağlı il kuruluşları, kaymakama bağlı ilçe kuruluşları veya doğrudan\nmerkeze bağlı taşra kuruluşlarından düzenlenir. Hiyerarşik kademeler (merkezde Bakan\nYardımcılığı, Genel Müdürlük/Kurul/Daire Başkanlığı; taşrada Bölge/İl/İlçe Müdürlüğü, Şube\nMüdürlüğü, Şeflik) bu maddede belirlenir ve resmî yazışmada makam/birim yönlendirmesinin\ndayanağıdır."
+  },
+  {
+   "mevzuat": "1 cumhurbaskanligi teskilati cbk",
+   "kaynak_dosya": "1_cumhurbaskanligi_teskilati_cbk.txt",
+   "madde_no": 510,
+   "madde_tur": "madde",
+   "text": "Madde 510 — Yurt Dışı Teşkilatı\nYurt dışı teşkilatı; kamu kurum ve kuruluşlarının yurt dışında devamlı veya geçici görev\nyapan, dış temsilcilik niteliği taşıyan veya taşımayan bütün kuruluşlarıdır. Dış temsilcilik\ndiplomatik temsilcilikler (büyükelçilik, daimi temsilcilik, elçilik vb.) ile konsolosluklardan\noluşur; ihtisas birimleri ise dış temsilcilik bünyesinde çalışan diğer kamu kurumlarına\nmensup görevlilerden meydana gelir."
+  },
+  {
+   "mevzuat": "1 cumhurbaskanligi teskilati cbk",
+   "kaynak_dosya": "1_cumhurbaskanligi_teskilati_cbk.txt",
+   "madde_no": 519,
+   "madde_tur": "madde",
+   "text": "Madde 519 — Yurt Dışı Teşkilatı ile Merkez Arasındaki Yazışmalar\nBir misyon veya konsolosluk şefine bağlı yurt dışı teşkilatı ile merkez arasındaki yazışmalar,\nilgili misyon veya konsolosluk şefi aracılığıyla yapılır. Dışişleri Bakanlığına doğrudan bağlı\ndış temsilciliklerin şefleri, ihtisas birimlerinin yazılarını ilgili kamu kurumlarına intikal\nettirir ve gerekli gördüklerinin bir örneğini Dışişleri Bakanlığına da gönderebilir. Dış\ntemsilcilik niteliği taşımayan yurt dışı teşkilatı, merkezde bağlı olduğu kurumlarla doğrudan\nyazışabilir; ancak ilgili misyon/konsolosluk şeflerini ilgilendiren yazıların birer suretini\nonlara vermekle yükümlüdür. Yazışmalara ilişkin diğer hususlar Cumhurbaşkanlığınca hazırlanan\nbir yönetmelikle düzenlenir."
   },
   {
    "mevzuat": "2004 icra iflas kanunu",
@@ -234,6 +311,62 @@
    "text": "Madde 14 — Dilekçeler üzerine ilk inceleme\nDilekçeler; görev ve yetki, idari merci tecavüzü, ehliyet, idari davaya konu olacak\nkesin ve yürütülmesi gereken bir işlem olup olmadığı, süre aşımı, husumet ile\ndilekçenin 3 ve 5 inci maddelere uygun olup olmadığı yönlerinden sırasıyla ilk\nincelemeye tâbi tutulur. İdari merci tecavüzü bulunan dilekçeler, görevli idari\nmerciye tevdi olunur ve durum ilgilisine bildirilir."
   },
   {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar ve Kısaltmalar (Elektronik Yazışma Kavramları)\nBu Yönetmelikte; \"arşiv imza\" kriptografik yöntemlerin koruyucu özelliğini zamanla\nyitirmesine karşı periyodik zaman damgası ile korunan elektronik imzayı; \"DETSİS\" (Devlet\nTeşkilatı Merkezi Kayıt Sistemi) idarelerin birimlerinin T.C. Devlet Teşkilatı Numarası ile\ntanımlandığı sistemi; \"EBYS\" (Elektronik Belge Yönetim Sistemi) e-Yazışma Teknik Rehberine\nuygun belgelerin içerik, üstveri, format ve ilişkisel özelliklerini koruyarak elektronik\nortamda yönetimini sağlayan sistemi; \"güvenli elektronik imza\" münhasıran imza sahibine\nbağlı, sadece imza sahibinin tasarrufundaki araçla oluşturulan imzayı; \"e-Yazışma Teknik\nRehberi\" Dijital Dönüşüm Ofisi Başkanlığınca yayımlanan güncel rehberi ifade eder."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Resmî Yazışma Ortamları (Elektronik Esas, Fiziksel İstisna)\nKamu kurum ve kuruluşlarınca resmî yazışmalar, elektronik ortamda e-Yazışma Teknik Rehberine\nuygun olarak hazırlanan ve güvenli elektronik imza ile imzalanan belgelerle yapılır. Bu\nbelgeler elektronik ortamda muhataplarıyla paylaşılır ve elektronik ortamda saklanır; güvenli\nelektronik imzalı belgeler çıktısı alınıp el yazısı imza ile imzalanmaz ve fiziksel ortamda\nsaklanmaz. Yalnızca zorunlu hâllerde veya olağanüstü durumlarda yazışmalar el yazısıyla\nimzalanan belgelerle yapılır ve fiziksel ortam şartlarına göre gönderilip saklanır."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Nüsha Sayısı\nElektronik ortamda güvenli elektronik imza ile imzalanan belgeler tek nüsha olarak hazırlanır.\nZorunlu hâllerde veya olağanüstü durumlarda hazırlanacak belgeler, paraflı nüshası hazırlayan\nidarede kalacak şekilde en az iki nüsha olarak düzenlenir."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Belge Doğrulama Bilgileri (Karekod / e-Devlet)\nElektronik ortamda güvenli elektronik imza ile imzalanan belgelerde, \"İletişim bilgileri\"\nalanının üst sınır çizgisinin üzerindeki iki satırlık alanın ilk satırında \"Bu belge, güvenli\nelektronik imza ile imzalanmıştır.\" ibaresi yer alır; ikinci satırda \"belge doğrulama kodu\",\nen sağda ise \"karekod\" bulunur. Belge doğrulama işlemi, doğrulama kodu ve karekod ile Dijital\nTürkiye (e-Devlet) üzerinden sağlanır."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 28,
+   "madde_tur": "madde",
+   "text": "Madde 28 — Üstveri Elemanları\nGüvenli elektronik imza ile imzalanan belgelerde asgari olarak e-Yazışma Teknik Rehberinde\nbelirtilen üstveri elemanları kullanılır; idare ihtiyacına göre ilave üstveri elemanları\nekleyebilir. Üstveri elemanları belgenin ayrılmaz bir bütünüdür; tarih ve sayı gibi belge\ngörüntüsü üzerindeki bilgilerle üstverideki bilgiler arasında fark olamaz."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Belgenin Elektronik Ortamda Gönderilmesi ve Alınması (KEP / Üçüncü Taraf)\nGüvenli elektronik imza ile imzalanan belgelerin gönderilmesi ve alınması işlemlerinin,\nelektronik ortamda ilgili mevzuatla yetki verilmiş üçüncü bir taraf aracılığıyla (kayıtlı\niletim) kayıt altına alınarak yapılması esastır; idareler arasında taraflarca yapılacak\nanlaşmalar çerçevesinde, kayıt altına alınmak şartıyla başka bir iletim mekanizması da\nkullanılabilir. İdare, kendisine iletilen ve Rehbere uygun belgeleri işleme koymakla\nyükümlüdür; Rehbere uygun hazırlanmamış bir belgeyi reddetme hakkına sahiptir ve reddi,\nbelgenin ulaştığı tarihi takip eden ikinci iş gününün sonuna kadar sebepleriyle gönderen\nidareye bildirir. Gerekli hâllerde idare dışına gönderilen belgeler elektronik olarak\nşifrelenir."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 31,
+   "madde_tur": "madde",
+   "text": "Madde 31 — Belgenin Fiziksel Ortamda Gönderilmesi ve Alınması\nMuhatabına elektronik iletimin mümkün olmadığı durumlarda, yetkilendirilmiş görevlilerce\nçıktısı alınan güvenli elektronik imzalı belge, elektronik ortamdaki aslına erişim amacıyla\nfiziksel ortamda gönderilir; fiziksel ortamda alınan belgenin doğrulaması 23 üncü maddeye göre\n(doğrulama kodu/karekod) yapılır ve doğrulanan belge işleme alınır. Belge zarflandığında\nbaşlık/tarih/sayı zarfın sol üst köşesine, muhatap bilgisi ortaya, varsa ivedilik/kişiye özel\nibaresi (ACELE, GÜNLÜDÜR, KİŞİYE ÖZEL) zarfın sağ üst köşesine kırmızı büyük harflerle yazılır."
+  },
+  {
+   "mevzuat": "2646 resmi yazisma e yazisma",
+   "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — Belgenin İade Edilmesi\nİdareye muhatabı olmadığı hâlde elektronik ortamda güvenli elektronik imzalı bir belge\ngelmesi durumunda, muhatap olunmadığı bilgisi ve belgeye ilişkin tanımlayıcı bilgiler gönderene\nelektronik ortamda iletilir; asıl muhatap açıkça belliyse belge muhataba iletilebilir ve\ngönderene bilgi verilir, bir kopyası elektronik ortamda muhafaza edilir. Fiziksel ortamda gelen\nve asıl muhatabı anlaşılamayan belge gönderene iade edilir."
+  },
+  {
    "mevzuat": "2646 resmi yazisma yonetmeligi",
    "kaynak_dosya": "2646_resmi_yazisma_yonetmeligi.txt",
    "madde_no": 10,
@@ -323,6 +456,48 @@
    "madde_no": 22,
    "madde_tur": "madde",
    "text": "Madde 22 — Koordinasyon\nBelgenin imzalanmadan önce idare içindeki başka birimlerle iş birliği yapılarak\nhazırlanması gerektiğinde, koordinasyonu sağlayan personelin unvanı, adı ve soyadı\n\"Koordinasyon:\" ifadesinden sonra, parafın altına yazılır."
+  },
+  {
+   "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
+   "kaynak_dosya": "2863_kultur_tabiat_varliklari_koruma_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Haber verme (bildirim) yükümlülüğü\nTaşınır ve taşınmaz kültür ve tabiat varlıklarını bulanlar; malik oldukları veya kullandıkları arazide kültür-tabiat varlığı bulunduğunu bilen ya da yeni haberdar olan malik ve zilyetler, bunu en geç üç gün içinde en yakın müze müdürlüğüne, köyde muhtara veya diğer yerlerde mülki idare amirlerine bildirmek zorundadır. Bu, vatandaşın idareye yapması gereken zorunlu bildirim evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
+   "kaynak_dosya": "2863_kultur_tabiat_varliklari_koruma_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Devlet malı niteliği\nDevlete, kamu kurum ve kuruluşlarına ait taşınmazlar ile özel hukuk kişilerinin mülkiyetinde bulunan taşınmazlarda yer alan korunması gerekli taşınır ve taşınmaz kültür ve tabiat varlıkları Devlet malı niteliğindedir. Bu varlıkların bulunduğu yerin mülkiyeti kime ait olursa olsun kural olarak Devletin hakları saklıdır; mazbut ve mülhak vakıf malları bu hükmün istisnasıdır. [DOĞRULA: vakıf malları istisnasının kapsamı]"
+  },
+  {
+   "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
+   "kaynak_dosya": "2863_kultur_tabiat_varliklari_koruma_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Tescil ve tapu siciline bildirim\nKorunması gerekli taşınmaz kültür ve tabiat varlıklarının tespiti ve tescili koruma bölge kurullarınca yapılır. Tescil kararları, taşınmazın kadastral bilgileriyle birlikte tapu siciline şerh düşülmek üzere ilgili tapu müdürlüğüne bildirilir; tek yapı ölçeğindeki kararlar maliklere Tebligat Kanunu uyarınca tebliğ edilir. Maliki tespit edilemeyen taşınmazların tescil kararları Resmî Gazete'de yayımlanır ve Bakanlığın internet sayfasında bir ay süreyle duyurulur."
+  },
+  {
+   "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
+   "kaynak_dosya": "2863_kultur_tabiat_varliklari_koruma_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — İzinsiz müdahale yasağı\nKoruma Yüksek Kurulunun ilke kararları çerçevesinde koruma kurullarınca alınan kararlara aykırı olarak, korunması gerekli taşınmaz kültür ve tabiat varlıklarında her çeşit inşaî ve fizikî müdahalede bulunmak, bunları yeniden kullanıma açmak veya kullanımlarını değiştirmek yasaktır. Onarım, inşaat, tesisat, sondaj, kısmen veya tamamen yıkma, kazı ve benzeri işler inşaî ve fizikî müdahale sayılır; bu işler için kurul izni zorunludur."
+  },
+  {
+   "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
+   "kaynak_dosya": "2863_kultur_tabiat_varliklari_koruma_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Araştırma, sondaj ve kazı izni\nBilimsel ve malî yeterliği Kültür ve Turizm Bakanlığınca takdir ve kabul olunan Türk ve yabancı heyet ve kurumlara araştırma izni Bakanlık tarafından verilir; sondaj ve kazı yapma izni ise Cumhurbaşkanı kararı ile verilir. İzinsiz araştırma, sondaj ve kazı yapılması yasaktır; bu hüküm bilimsel kazı başvuru ve ruhsat sürecinin yetki kademelerini belirler."
+  },
+  {
+   "mevzuat": "2863 kultur tabiat varliklari koruma kanunu",
+   "kaynak_dosya": "2863_kultur_tabiat_varliklari_koruma_kanunu.txt",
+   "madde_no": 57,
+   "madde_tur": "madde",
+   "text": "Madde 57 — Koruma bölge kurullarının görev ve yetkileri\nKoruma bölge kurulları, Koruma Yüksek Kurulunun ilke kararları çerçevesinde; korunması gerekli kültür ve tabiat varlıklarının tescilini yapmak, kültür varlıklarını gruplandırmak, sit alanlarının geçiş dönemi yapı şartlarını belirlemek, koruma amaçlı imar planları ile değişikliklerini inceleyip karara bağlamak, koruma alanlarını tespit etmek, özelliğini kaybedenlerin tescilini kaldırmak ve uygulamaya yönelik kararlar almakla görevli ve yetkilidir. İzin ve onarım başvuruları bu kurulun kararına bağlanır."
   },
   {
    "mevzuat": "2872 cevre kanunu",
@@ -612,6 +787,34 @@
    "text": "Madde 13 — Haksız mal edinme\nKanuna veya genel ahlâka uygun olarak sağlandığı kanıtlanmayan, görevin/sıfatın sağladığı nüfuz kullanılarak edinilen mallar haksız edinilmiş sayılır. Haksız edinildiği tespit edilen mallar ile bunların değerlendirilmesiyle elde edilen mal ve menfaatlerin müsaderesine ve haksız mal edinmeye ilişkin cezaî sorumluluğa hükmolunur; bu yönüyle Kanun yolsuzlukla mücadelenin temel araçlarından birini oluşturur."
   },
   {
+   "mevzuat": "375 khk mali sosyal haklar",
+   "kaynak_dosya": "375_khk_mali_sosyal_haklar.txt",
+   "madde_no": 9,
+   "madde_tur": "ek",
+   "text": "Ek Madde 9 — Ek ödeme\nAylıklarını 657 sayılı Devlet Memurları Kanunu ile 2914 sayılı Yükseköğretim Personel\nKanununa göre almakta olan personel ile 399 sayılı KHK'ya ekli (II) sayılı Cetvele\ndahil pozisyonlarda istihdam edilen sözleşmeli personele (ve maddede sayılan diğer\ngruplara), mali haklar kapsamında yapılan ödemeler dâhil almakta oldukları toplam ödeme\ndikkate alınarak, aynı veya benzer kadro ve görevlerde bulunan personel arasında ücret\ndengesini sağlamak amacıyla, en yüksek Devlet memuru aylığına (ek gösterge dâhil) ekli\n(I) sayılı Cetveldeki oranların uygulanmasıyla hesaplanan tutarda ek ödeme yapılır. Bu\nek ödeme damga vergisi hariç herhangi bir vergiye ve sigorta primi kesintisine tabi\ntutulmaz; emekli keseneğine/sigorta primine esas kazanca dâhil edilmez."
+  },
+  {
+   "mevzuat": "375 khk mali sosyal haklar",
+   "kaynak_dosya": "375_khk_mali_sosyal_haklar.txt",
+   "madde_no": 12,
+   "madde_tur": "ek",
+   "text": "Ek Madde 12 — Mali hakların birleştirilmesi / mükerrer ödeme yasağı\nMaddede belirtilen tarih itibarıyla yürürlükten kaldırılan hükümler uyarınca, çeşitli\nadlar altında (ek ödeme, ikramiye, fazla çalışma ücreti, fiilen yapılmayan ders\nkarşılığı ek ders ücreti gibi) mükerrer ödeme yapılması engellenmiş; personelin mali\nhakları Ek Madde 9 ve ilgili düzenlemeler altında birleştirilmiştir. Amaç, aynı işe\nkarşılık birden fazla kaynaktan ödeme yapılmasını önleyerek ücret bütünlüğü sağlamaktır.\n[DOĞRULA: Ek Madde 12'nin yürürlükteki tam kapsamı ve atıf yaptığı tarihler]"
+  },
+  {
+   "mevzuat": "375 khk mali sosyal haklar",
+   "kaynak_dosya": "375_khk_mali_sosyal_haklar.txt",
+   "madde_no": 15,
+   "madde_tur": "ek",
+   "text": "Ek Madde 15 — Sözleşmeli personele ek ödeme (Cumhurbaşkanı yetkisi)\nKadro karşılığı sözleşmeli personel ile 399 sayılı KHK'ya ekli (II) sayılı Cetvele dahil\nsözleşmeli personel hariç olmak üzere, çeşitli statülerde istihdam edilen sözleşmeli\npersonele; çalıştıkları birim ve pozisyon unvanı itibarıyla aynı veya benzer unvanlı\nmemur kadrosunda çalışan, hizmet yılı ve öğrenim durumu aynı olan emsali personel için\nbelirlenmiş ek ödeme oranını aşmamak üzere ek ödeme yapılıp yapılmayacağını, oranını ve\nusulünü belirlemeye Cumhurbaşkanı yetkilidir. [DOĞRULA: Ek Madde numarası — bazı\nkaynaklarda farklı Ek Madde altında düzenlenmiş olabilir]"
+  },
+  {
+   "mevzuat": "375 khk mali sosyal haklar",
+   "kaynak_dosya": "375_khk_mali_sosyal_haklar.txt",
+   "madde_no": 10,
+   "madde_tur": "ek",
+   "text": "Ek Madde 10 — Bazı kamu görevlilerine ücret/tazminat\nMaddede sayılan kadro ve görev unvanlarında bulunanlara, en yüksek Devlet memuru\naylığına ekli cetvellerdeki oranların uygulanmasıyla bulunan tutarda ücret ve tazminat\nödenir; bu ödemelerin vergi ve kesinti rejimi maddede gösterilir. Düzenleme, belirli\nüst düzey ve özellikli kadrolar için ücret çerçevesi getirir. [DOĞRULA: Ek Madde 10\nkapsamına giren unvanlar ve oranlar mevzuat.gov.tr 4.5.375 üzerinden]"
+  },
+  {
    "mevzuat": "4483 memur yargilama kanunu",
    "kaynak_dosya": "4483_memur_yargilama_kanunu.txt",
    "madde_no": 1,
@@ -701,6 +904,62 @@
    "madde_no": 9,
    "madde_tur": "madde",
    "text": "Madde 9 — Cezai sorumluluk\nKanun hükümlerinin uygulanması sırasında, men cezası gerektiren veya 8. maddede sayılan belirli fiilleri işleyerek görevini kötüye kullanan ortak, yönetici, mimar-mühendis, müteahhit, şantiye şefi, proje müellifi ve laboratuvar görevlilerinin altı aydan üç yıla kadar hapis cezasıyla cezalandırılacağını düzenler. Denetimi yapmadığı halde yapmış gibi veya gerçeğe aykırı belge düzenleyenler, Türk Ceza Kanunu'nun resmî belgede sahtecilik hükümlerine göre cezalandırılır. Kesinleşen mahkeme kararları Bakanlığa ve meslek odalarına bildirilir; suç duyurusu ve bildirim yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 27,
+   "madde_tur": "madde",
+   "text": "Madde 27 — Adın değiştirilmesi\nBir kişinin adı, ancak haklı sebeplere dayanılarak hâkimden istenebilir. Adın değiştirildiği nüfus kütüğüne tescil ve ilan edilir; ad değişikliği kişisel durumu etkilemez. Ad değişikliğinden zarar gören, bunu öğrendiği tarihten itibaren bir yıl içinde değiştirme kararının kaldırılmasını dava edebilir."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 39,
+   "madde_tur": "madde",
+   "text": "Madde 39 — Kişisel durum sicilinde düzeltme\nMahkeme kararı olmadıkça, kişisel durum (nüfus) sicilinin hiçbir kaydında düzeltme yapılamaz. Nüfus kütüğündeki kayıtların değiştirilmesi, idarî başvuruyla değil ancak yetkili mahkemede açılacak nüfus kaydı düzeltme davasıyla mümkündür. Bu hüküm, idareye yapılan düzeltme taleplerinin sınırını çizer."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 405,
+   "madde_tur": "madde",
+   "text": "Madde 405 — Vesayeti gerektiren hâller: akıl hastalığı veya akıl zayıflığı (kısıtlama)\nAkıl hastalığı veya akıl zayıflığı sebebiyle işlerini göremeyen, korunması ve bakımı için kendisine sürekli yardım gereken ya da başkalarının güvenliğini tehlikeye sokan her ergin kısıtlanır (vesayet altına alınır). Akıl hastalığı veya zayıflığı nedeniyle kısıtlamaya karar verilebilmesi için resmî sağlık kurulu raporu alınması zorunludur."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 419,
+   "madde_tur": "madde",
+   "text": "Madde 419 — Vasinin atanması\nVesayet makamı, vesayet altına alınan kişiye gecikmeksizin bir vasi atamakla yükümlüdür. Gerektiğinde henüz ergin olmayanların da kısıtlanmasına karar verilebilir; ancak kısıtlama kararı ergin olduktan sonra sonuç doğurur. Vasi atama işlemi, vesayet makamı olan sulh hukuk mahkemesince yürütülür."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 426,
+   "madde_tur": "madde",
+   "text": "Madde 426 — Temsil kayyımı atanması\nVesayet makamı, ilgilinin isteği üzerine veya re'sen temsil kayyımı atar. Başlıca hâller: ergin bir kişinin hastalık, başka yerde bulunma veya benzeri sebeple ivedi işini görememesi ya da temsilci atayamaması; yasal temsilcinin menfaati ile küçük veya kısıtlının menfaatinin çatışması; yasal temsilcinin görevini yapmasına engel bir durum bulunması. Kayyım belirli iş veya malvarlığı için sınırlı temsil yetkisiyle atanır."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 1011,
+   "madde_tur": "madde",
+   "text": "Madde 1011 — Tapu sicilinde geçici tescil şerhi\nİddia edilen bir aynî hakkın güvence altına alınması gerekiyorsa veya tasarruf yetkisini belirleyen belgelerdeki noksanlıkların sonradan tamamlanmasına kanun olanak tanıyorsa geçici tescil şerhi verilebilir. Şerh istemi üzerine hâkim, tarafları dinleyerek veya dosya üzerinde inceleme yaparak hakkın varlığının kabul edilebileceği kanaatine varırsa şerh kararı verir; kararda şerhin süresi ve içeriği belirlenir."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 1013,
+   "madde_tur": "madde",
+   "text": "Madde 1013 — Tescil istemi\nTescil, tasarrufa konu taşınmazın malikinin yazılı beyanı üzerine yapılır. Edinen kişi kanun hükmüne, kesinleşmiş mahkeme kararına veya buna eşdeğer bir belgeye dayanıyorsa bu beyana gerek yoktur. Tescilden önce bir aynî hakkı kazanan kişi, gerekli belgeleri ibraz ederek tescili isteyebilir; bu, tapu müdürlüğüne yapılan tescil başvurusunun dayanağını oluşturur."
+  },
+  {
+   "mevzuat": "4721 turk medeni kanunu",
+   "kaynak_dosya": "4721_turk_medeni_kanunu.txt",
+   "madde_no": 1022,
+   "madde_tur": "madde",
+   "text": "Madde 1022 — Tescilin etkisi: aynî hakkın doğması\nAynî haklar, tapu kütüğüne tescille doğar; sıralarını ve tarihlerini tescile göre alırlar. Mülkiyet, ipotek, irtifak gibi taşınmaz üzerindeki aynî haklar hukuken ancak sicile tescil edildiklerinde kazanılmış sayılır. Bu hüküm tescilin kurucu (constitutive) etkisini ortaya koyar."
   },
   {
    "mevzuat": "4734 kamu ihale kanunu",
@@ -2047,6 +2306,55 @@
    "text": "Madde 24 — Dosya Planları ve Saklama Planları\nYükümlüler dosya ve saklama planlarını sorumlu birim koordinesinde hazırlar ve Başkanlığın uygun görüşünü müteakip uygulamaya koyar. Dosyalamada Standart Dosya Planı'nın uygulanması zorunludur; saklama planı belgelerin idari, mali, hukuki ve tarihsel değerlendirilmesi neticesinde hazırlanır."
   },
   {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Disiplin cezaları (genel)\nMemurların görevlerini düzgün yürütmelerini sağlamak amacıyla, durumun niteliği ve\nağırlık derecesine göre uyarma, kınama, aylıktan kesme, kademe ilerlemesinin\ndurdurulması ve Devlet memurluğundan çıkarma cezalarından biri verilir. Disiplin cezası\nverilmesine sebep olan fiil veya hâlin işlenmesinden itibaren cezanın uygulanmasına\nkadarki tüm süreçte memurun hakları korunur. [DOĞRULA: maddenin Yönetmelikteki tam\nnumarası mevzuat.gov.tr 3935 üzerinden]"
+  },
+  {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Disiplin amirleri ve yetkisi\nDisipline aykırı fiil veya hâli işleyen memur hakkında disiplin işlemi yapmaya, fiil\nveya hâlin işlendiği anda memurun görevli olduğu yerdeki disiplin amiri yetkilidir.\nDisiplin amirleri kurumların kuruluş ve görev özelliklerine göre kurumca belirlenir.\nUyarma, kınama ve aylıktan kesme cezaları disiplin amirleri tarafından verilir."
+  },
+  {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 28,
+   "madde_tur": "madde",
+   "text": "Madde 28 — Savunma hakkı\nMemura savunma hakkı tanınmadan disiplin cezası verilemez. Soruşturmayı yapanın veya\nyetkili disiplin amiri/kurulunun yedi günden az olmamak üzere verdiği süre içinde veya\nbelirtilen tarihte savunmasını yapmayan memur savunma hakkından vazgeçmiş sayılır.\nSavunma istem yazısında, hakkında soruşturma yapılan memura isnat edilen fiil ve hâller\nile bunların hangi disiplin cezasını gerektirebileceği açıkça belirtilir; memur bizzat\nveya vekili aracılığıyla yazılı ya da sözlü savunma yapabilir."
+  },
+  {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Disiplin cezası verme süresi (karar)\nDisiplin amirleri uyarma, kınama ve aylıktan kesme cezalarını soruşturmanın\ntamamlandığı tarihten itibaren on beş gün içinde vermek zorundadır. Kademe\nilerlemesinin durdurulması cezasını gerektiren hâllerde soruşturma dosyası, kararını\nbildirmek üzere yetkili disiplin kuruluna gönderilir; ilgili kurul soruşturma\ndosyasını aldığı tarihten itibaren otuz gün içinde karar verir. [DOĞRULA: madde numarası\nve gün süreleri Yönetmeliğin yürürlükteki metninde]"
+  },
+  {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 36,
+   "madde_tur": "madde",
+   "text": "Madde 36 — Cezaların uygulanması\nDisiplin cezaları verildiği tarihten itibaren hüküm ifade eder ve derhâl uygulanır.\nAylıktan kesme cezası, cezanın veriliş tarihini takip eden aybaşında uygulanır. Verilen\ndisiplin cezaları üst disiplin amirine, Devlet memurluğundan çıkarma cezası ayrıca\nilgili kuruma bildirilir. [DOĞRULA: madde numarası mevzuat.gov.tr 3935 üzerinden]"
+  },
+  {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 37,
+   "madde_tur": "madde",
+   "text": "Madde 37 — Disiplin cezalarının sicilden silinmesi\nDisiplin cezaları memurun özlük dosyasına işlenir. Devlet memurluğundan çıkarma cezası\ndışındaki cezaların verilmesini gerektiren fiil veya hâl yeniden işlenmediği takdirde,\nmemur, uyarma ve kınama cezalarının uygulanmasından beş yıl, diğer cezaların\nuygulanmasından on yıl sonra atamaya yetkili amire başvurarak cezanın özlük dosyasından\nsilinmesini isteyebilir. (657 m.133 ile uyumlu.) [DOĞRULA: 5 yıl/10 yıl süreleri ve\nmadde numarası]"
+  },
+  {
+   "mevzuat": "devlet memurlari disiplin yonetmeligi",
+   "kaynak_dosya": "devlet_memurlari_disiplin_yonetmeligi.txt",
+   "madde_no": 38,
+   "madde_tur": "madde",
+   "text": "Madde 38 — İtiraz\nDisiplin amirleri tarafından verilen uyarma, kınama ve aylıktan kesme cezalarına karşı\ndisiplin kuruluna, kademe ilerlemesinin durdurulması cezasına karşı yüksek disiplin\nkuruluna itiraz edilebilir. İtiraz süresi, kararın memura tebliği tarihinden itibaren\nyedi gündür; süresinde itiraz edilmeyen ceza kesinleşir. İtiraz mercileri itiraz\ndilekçesi ile karar ve eklerinin kendilerine intikalinden itibaren otuz gün içinde\nkarar verir. Disiplin cezalarına karşı ayrıca idari yargı yoluna başvurulabilir (657\nm.135 ile uyumlu). [DOĞRULA: madde numarası mevzuat.gov.tr 3935 üzerinden]"
+  },
+  {
    "mevzuat": "elektronik tebligat yonetmeligi",
    "kaynak_dosya": "elektronik_tebligat_yonetmeligi.txt",
    "madde_no": 2,
@@ -2103,6 +2411,55 @@
    "text": "Madde 15 — İşlem ve delil kayıtlarının saklanması\nUETS'ye ait işlem kayıtları en az on yıl, tebligata ilişkin delil kayıtları ise en az otuz yıl süreyle saklanır. Kayıtların silinmesi, en az bir kez denetimden geçmiş olması şartına bağlıdır. Bu saklama yükümlülüğü, tebligatın geçerliliğinin ve tebliğ tarihinin sonradan ispatlanabilmesini güvence altına alır."
   },
   {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Başvuru ehliyeti\nİhale sürecindeki bir işlem veya eylemin hukuka aykırılığı iddiasıyla, bu işlem veya\neylem nedeniyle hak kaybına veya zarara uğradığını ya da uğramasının muhtemel olduğunu\nileri süren aday, istekli veya istekli olabilecekler şikâyet ve itirazen şikâyet\nbaşvurusunda bulunabilir. İstekli olabilecekler yalnızca ön yeterlik/ihale dokümanının\nverilmesi, ilan ve dokümana yönelik başvurularda ehliyetlidir."
+  },
+  {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Şikâyet başvuru süresi\nİdareye yapılacak şikâyet başvurusu, başvuruya konu işlem veya eylemin farkına varıldığı\nya da farkına varılmış olması gereken tarihi izleyen günden itibaren, 4734 sayılı Kanunun\n21 inci maddesinin (b) ve (c) bentlerine göre yapılan ihalelerde beş gün, diğer hâllerde\non gün içinde ve sözleşme imzalanmadan önce yapılır. İlan ve dokümana yönelik\nbaşvurularda süre, ihale veya son başvuru tarihinden üç iş günü öncesine kadardır."
+  },
+  {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Şikâyet başvurusunun şekli\nBaşvurular, başvuru sahibinin adı/unvanı, adresi, ihale kayıt numarası, başvuruya konu\nişlem ve iddialar ile dayandığı maddi ve hukuki nedenleri içeren imzalı dilekçe ile\nyapılır. Vekâleten yapılan başvurularda temsil yetkisini gösteren belge (vekâletname,\nimza sirküleri) eklenir. Dilekçedeki eksiklikler başvuru süresi içinde giderilebilir.\n[DOĞRULA: madde numarası — bazı sürümlerde dilekçe şekli farklı madde altında]"
+  },
+  {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — İdarece inceleme ve karar\nİdare, usulüne uygun yapılan şikâyet başvurusu üzerine gerekli incelemeyi yaparak,\nbaşvurunun kayıtlara alındığı tarihi izleyen on gün içinde gerekçeli bir karar alır ve\nkararı başvurana ve diğer aday/isteklilere bildirir. İdarece belirlenen sürede veya on\ngünlük süre içinde karar alınmaması hâlinde başvuru sahibi doğrudan itirazen şikâyet\nyoluna başvurabilir. Şikâyet sonuçlanmadan ve sözleşme imzalama yasağı süresi dolmadan\nsözleşme imzalanamaz. [DOĞRULA: madde numarası ve gün süreleri mevzuat.gov.tr 12766]"
+  },
+  {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — İtirazen şikâyet başvuru süresi ve şekli\nİdareye şikâyet başvurusunda bulunan veya idarece alınan kararı uygun bulmayanlar,\nkararın bildirimini veya on günlük karar süresinin bitimini izleyen günden itibaren on\ngün (idarenin ihaleyi iptal kararına karşı beş gün) içinde Kamu İhale Kurumuna itirazen\nşikâyet başvurusunda bulunabilir. Başvuru, Kurum tarafından belirlenen şekil şartlarını\ntaşıyan dilekçe ile ve başvuru bedeli yatırılarak yapılır. [DOĞRULA: madde numarası ve\nsüreler; elektronik ortamda (EKAP) başvuru zorunluluğu ayrıca düzenlenmiştir]"
+  },
+  {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — İtirazen şikâyet başvuru bedeli\nİtirazen şikâyet başvurularında, 4734 sayılı Kanunun 53 üncü maddesi uyarınca yaklaşık\nmaliyetin belirlenen oranına göre hesaplanan başvuru bedeli Kurum hesabına yatırılır;\nbedel yatırılmadan başvuru yapılamaz. Bedel tutarı, ihale kayıt numarası üzerinden Kurum\ninternet sayfasından sorgulanabilir. Başvurunun haklı bulunması hâlinde bedelin iadesine\nilişkin hükümler uygulanır. [DOĞRULA: madde numarası ve iade koşulları — 09.04.2026\ndeğişikliği ile iade usulü güncellenmiştir]"
+  },
+  {
+   "mevzuat": "ihalelere yonelik basvurular yonetmeligi",
+   "kaynak_dosya": "ihalelere_yonelik_basvurular_yonetmeligi.txt",
+   "madde_no": 22,
+   "madde_tur": "madde",
+   "text": "Madde 22 — Kurum tarafından inceleme ve karar türleri\nKurum, itirazen şikâyet başvurusunu ihale işlem dosyasının kayıtlara alındığı tarihi\nizleyen yirmi gün içinde inceleyerek sonuçlandırır. İnceleme sonucunda Kurul; ihale\nsürecinin devamına ve düzeltici işlem belirlenmesine, ihalenin iptaline veya başvurunun\n(süre, usul veya ehliyet yönünden ya da esastan) reddine karar verebilir. Karar\nverilmeden ve bu süre geçmeden sözleşme imzalanamaz. [DOĞRULA: madde numarası ve karar\ntürlerinin tam listesi mevzuat.gov.tr 12766 üzerinden]"
+  },
+  {
    "mevzuat": "kayitli elektronik posta yonetmeligi",
    "kaynak_dosya": "kayitli_elektronik_posta_yonetmeligi.txt",
    "madde_no": 3,
@@ -2143,7 +2500,98 @@
    "madde_no": 16,
    "madde_tur": "madde",
    "text": "Madde 16 — İşlem ve delil kayıtlarının tutulması ve saklanması\nKEPHS, KEP sisteminin tüm süreçlerine ilişkin işlem (günlük) ve delil kayıtlarını; güvenliğini, gizliliğini ve bütünlüğünü sağlayarak kayıt altına almak ve mevzuatta öngörülen süreyle saklamakla yükümlüdür. Bu kayıtlar, KEP iletisinin gönderildiği/alındığı anın ve içeriğinin sonradan ispatlanabilmesini güvence altına alır. [DOĞRULA: asgari saklama süresi — güncel değişiklikle 20 yıl olarak öngörülmüş olabilir]"
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve Kapsam\nBu Yönetmelik, kamu kurum ve kuruluşları ile kamu kurumu niteliğindeki meslek\nkuruluşlarında kullanılan resmî mühürlerin hangi birim ve kişilerce kullanılacağını,\nbunların yazı, karakter ve standardının tespit edilmesini ve yaptırılmasında ile\nkaybolmasında uygulanacak esasları belirlemek amacıyla düzenlenmiştir."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Resmî Mührün Tanımı\nResmî mühür; yapımına 3 üncü maddede belirtilen mercilerce karar verilip, Darphane ve\nDamga Matbaası Genel Müdürlüğünce imal ve tescil edilen ve resmî mühür beratı ile birlikte\nkullanılma imkânı olan bir araçtır."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Resmî Mühürlerin Kullanılacağı Birimler ve Karar Mercileri\nResmî mühürler yalnızca kuruluş kanunları ve Cumhurbaşkanlığı Kararnameleri gereği\nkendilerine kamu görevi verilmiş kurum veya kuruluşlarca kullanılabilir. Hangi birimlerin\nmühür kullanacağı, ilgili makamın onayı ile tespit edilir: Cumhurbaşkanlığı Makamı ve İdari\nİşler Başkanlığında İdari İşler Başkanı; TBMM'de Genel Sekreter; bakanlıklar ile bağlı,\nilgili ve ilişkili kuruluşlarında Bakan veya Bakanın yetki verdiği makam; bağımsız yargı\norganlarında Başkan; üniversitelerde Yükseköğretim Kurulu Başkanı; mahallî idarelerde vali;\nmahkemeler, icra daireleri ve noterlerde Adalet Bakanı veya yetki verdiği makam."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Mühür Kullanacak Birimlerin Tespitinde Uyulacak Esaslar\nResmî mühürleri kullanacak birimlerin tespitinde kuruluş mevzuatında yazılı hiyerarşik\nkademelerden müdürlük ve daha üst kademeler esas alınır. Bir birim oluşturmayan alt\nkuruluşlar ile birimlere bağlı yardımcılıklar için ayrıca mühür yapılmaz. Görevleri gereği\ntek başına bir birim gibi düşünülmesi gereken kişiler (müfettiş, tapu-kadastro memuru, icra\nmemuru gibi) için, ihtiyacı belirleyen onayla 1 numaradan başlayan sıra numaralı birden\nfazla mühür yapılabilir."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Mühür Standardının Tespiti\nYapımına karar verilen mühürler Darphane ve Damga Matbaası Genel Müdürlüğünce imal edilir.\nMühürlerde kullanılacak yazı karakteri teknik imkânlar göz önüne alınarak bu Genel\nMüdürlükçe incelenip standart olarak belirlenir ve Hazine ve Maliye Bakanlığı onayı ile\nyürürlüğe konulur. Yapımda uygulanacak şekil ve ölçüler Ek-1'de gösterilmiştir (tek, iki ve\nüç satırlı mühür ölçüleri; toplam çap 36 mm, ay-yıldızlı çap 14 mm)."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Resmî Mühürlerin Yapımı\nYapılması kararlaştırılan mühürler Darphane ve Damga Matbaası Genel Müdürlüğü tarafından\nimal edilir. Bu Genel Müdürlükçe imal edilmemiş resmî mühürler kullanılmaz."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Resmî Mühür Sicili ve Berat\nDarphane ve Damga Matbaası Genel Müdürlüğünde bir resmî mühür kütüğü oluşturulur. İmal\nolunan her mühür için bir sicil numarası verilir ve resmî mühür beratı düzenlenir."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Teslim Alma\nİmal edilen resmî mühürler mühür beratı ile birlikte mahalline gönderilir. Bunları teslim\nalan birim, mühür beratına ekli teslim alma formunun bir nüshasını mühürle mühürleyip\nimzaladıktan sonra Darphane ve Damga Matbaası Genel Müdürlüğüne iade eder; bu form sicil\nkayıtları ile birleştirilir."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Resmî Mühürlerin Saklanması ve Devri\nResmî mühürler, mühür beratı ile birlikte birimin yetkili memurlarınca muhafaza edilir.\nHerhangi bir şekilde kaybedilen beratlara ait mühürler kullanılamaz. Resmî mühür\nkullanmasına yetki verilen memurlar, yetkililer tarafından istendiğinde resmî mührü ve\nberatını ibraz etmek zorundadır."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Resmî Mührün İptali (İade)\nResmî mühür kullanan birimin unvanının değişmesi veya kaldırılması nedeniyle mührün iptali\ngerektiğinde, mühür beratı ile birlikte iptal edilmek üzere Darphane ve Damga Matbaası Genel\nMüdürlüğüne gönderilir; gönderme sırasında beratın arka bölümü doldurularak yetkilisince\nimzalanır."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Resmî Mührün Yenilenmesi\nResmî mühürlerin yazılarının okunmayacak kadar silikleşmesi hâlinde, yenisi yapılmak üzere\ndurum Darphane ve Damga Matbaası Genel Müdürlüğüne bildirilir. Yeni mühür gönderildiğinde\neski mühür beratı ile birlikte iade edilir. Yeni mühür alınmasından itibaren 1 ay içinde\neski mührünü iade etmeyen sorumlular hakkında, Hazine ve Maliye Bakanlığının talebi üzerine\nidari soruşturma açılması zorunludur."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Kaybetme\nMühür veya mühür beratı ya da ikisi birden kaybedildiğinde durum, 3 üncü maddede belirtilen\nmerci tarafından usulüne uygun olarak Darphane ve Damga Matbaası Genel Müdürlüğüne bildirilir.\nYeni mühür yapımının istenmesi hâlinde mühür kütüğüne gerekli kayıt konularak yeni mühür\nyapılması sağlanır."
+  },
+  {
+   "mevzuat": "resmi muhur yonetmeligi",
+   "kaynak_dosya": "resmi_muhur_yonetmeligi.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Aykırı Kullanım ve Taklidin Bildirilmesi\nResmî mühürlerin bu Yönetmelik hükümlerine aykırı kullanıldığını, taklit edildiğini veya\nDarphane ve Damga Matbaası dışında imal edildiğini öğrenen kamu görevlileri durumu en yakın\nmülki amire bildirmek zorundadır."
   }
  ],
- "mevzuat_sayisi": 46
+ "mevzuat_sayisi": 55
 }

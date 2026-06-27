@@ -1,0 +1,32 @@
+Türk Medeni Kanunu
+Kanun No 4721, Kabul 22.11.2001, RG 08.12.2001/24607 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4721.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 27 — Adın değiştirilmesi
+Bir kişinin adı, ancak haklı sebeplere dayanılarak hâkimden istenebilir. Adın değiştirildiği nüfus kütüğüne tescil ve ilan edilir; ad değişikliği kişisel durumu etkilemez. Ad değişikliğinden zarar gören, bunu öğrendiği tarihten itibaren bir yıl içinde değiştirme kararının kaldırılmasını dava edebilir.
+
+Madde 39 — Kişisel durum sicilinde düzeltme
+Mahkeme kararı olmadıkça, kişisel durum (nüfus) sicilinin hiçbir kaydında düzeltme yapılamaz. Nüfus kütüğündeki kayıtların değiştirilmesi, idarî başvuruyla değil ancak yetkili mahkemede açılacak nüfus kaydı düzeltme davasıyla mümkündür. Bu hüküm, idareye yapılan düzeltme taleplerinin sınırını çizer.
+
+Madde 405 — Vesayeti gerektiren hâller: akıl hastalığı veya akıl zayıflığı (kısıtlama)
+Akıl hastalığı veya akıl zayıflığı sebebiyle işlerini göremeyen, korunması ve bakımı için kendisine sürekli yardım gereken ya da başkalarının güvenliğini tehlikeye sokan her ergin kısıtlanır (vesayet altına alınır). Akıl hastalığı veya zayıflığı nedeniyle kısıtlamaya karar verilebilmesi için resmî sağlık kurulu raporu alınması zorunludur.
+
+Madde 419 — Vasinin atanması
+Vesayet makamı, vesayet altına alınan kişiye gecikmeksizin bir vasi atamakla yükümlüdür. Gerektiğinde henüz ergin olmayanların da kısıtlanmasına karar verilebilir; ancak kısıtlama kararı ergin olduktan sonra sonuç doğurur. Vasi atama işlemi, vesayet makamı olan sulh hukuk mahkemesince yürütülür.
+
+Madde 426 — Temsil kayyımı atanması
+Vesayet makamı, ilgilinin isteği üzerine veya re'sen temsil kayyımı atar. Başlıca hâller: ergin bir kişinin hastalık, başka yerde bulunma veya benzeri sebeple ivedi işini görememesi ya da temsilci atayamaması; yasal temsilcinin menfaati ile küçük veya kısıtlının menfaatinin çatışması; yasal temsilcinin görevini yapmasına engel bir durum bulunması. Kayyım belirli iş veya malvarlığı için sınırlı temsil yetkisiyle atanır.
+
+Madde 1011 — Tapu sicilinde geçici tescil şerhi
+İddia edilen bir aynî hakkın güvence altına alınması gerekiyorsa veya tasarruf yetkisini belirleyen belgelerdeki noksanlıkların sonradan tamamlanmasına kanun olanak tanıyorsa geçici tescil şerhi verilebilir. Şerh istemi üzerine hâkim, tarafları dinleyerek veya dosya üzerinde inceleme yaparak hakkın varlığının kabul edilebileceği kanaatine varırsa şerh kararı verir; kararda şerhin süresi ve içeriği belirlenir.
+
+Madde 1013 — Tescil istemi
+Tescil, tasarrufa konu taşınmazın malikinin yazılı beyanı üzerine yapılır. Edinen kişi kanun hükmüne, kesinleşmiş mahkeme kararına veya buna eşdeğer bir belgeye dayanıyorsa bu beyana gerek yoktur. Tescilden önce bir aynî hakkı kazanan kişi, gerekli belgeleri ibraz ederek tescili isteyebilir; bu, tapu müdürlüğüne yapılan tescil başvurusunun dayanağını oluşturur.
+
+Madde 1022 — Tescilin etkisi: aynî hakkın doğması
+Aynî haklar, tapu kütüğüne tescille doğar; sıralarını ve tarihlerini tescile göre alırlar. Mülkiyet, ipotek, irtifak gibi taşınmaz üzerindeki aynî haklar hukuken ancak sicile tescil edildiklerinde kazanılmış sayılır. Bu hüküm tescilin kurucu (constitutive) etkisini ortaya koyar.

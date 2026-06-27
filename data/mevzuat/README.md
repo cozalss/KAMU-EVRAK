@@ -82,3 +82,20 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | Türk Ceza Kanunu — Resmî Belgede Sahtecilik ve Görev Suçları (seçili maddeler) | 5237 | `5237_turk_ceza_kanunu_belgede_sahtecilik.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5237.pdf |
 | İl İdaresi Kanunu | 5442 | `5442_il_idaresi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5442.pdf |
 | İl Özel İdaresi Kanunu | 5302 | `5302_il_ozel_idaresi_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5302.pdf |
+
+## 2026-06 Genişletme Batch 3 — resmî mühür/e-yazışma + medeni/vekâlet + personel-disiplin (9 mevzuat)
+
+> Korpus 46 -> **55 mevzuat (370 chunk)**. Resmî mühür, e-yazışma (EBYS/KEP/e-imza/karekod),
+> medeni/vekâlet/koruma, personel disiplin/mali haklar, ihale itiraz. Gerçek mevzuat (mevzuat.gov.tr).
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Resmî Mühür Yönetmeliği | 84/8422 | `resmi_muhur_yonetmeligi.txt` | 11 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=848422&MevzuatTur=21&MevzuatTertip=5 |
+| Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik — Elektronik Yazışma (e-Yazışma / EBYS / KEP / Güvenli Elektronik İmza) | 2646 | `2646_resmi_yazisma_e_yazisma.txt` | 8 | https://mevzuat.gov.tr/MevzuatMetin/21.5.2646.pdf |
+| 1 Sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi — Bakanlıklara İlişkin Ortak Hükümler (Teşkilat ve Yazışma) | 1 | `1_cumhurbaskanligi_teskilati_cbk.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf |
+| Türk Medeni Kanunu | 4721 | `4721_turk_medeni_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4721.pdf |
+| Avukatlık Kanunu | 1136 | `1136_avukatlik_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.1136.pdf |
+| Kültür ve Tabiat Varlıklarını Koruma Kanunu | 2863 | `2863_kultur_tabiat_varliklari_koruma_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2863.pdf |
+| Devlet Memurları Disiplin Yönetmeliği | 3935 (Cumhurbaşkanı Kararı) | `devlet_memurlari_disiplin_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3935&MevzuatTur=21&MevzuatTertip=5 |
+| 375 sayılı Kanun Hükmünde Kararname (Kamu Personeli Mali ve Sosyal Hakları) | 375 (KHK) | `375_khk_mali_sosyal_haklar.txt` | 4 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=375&MevzuatTur=4&MevzuatTertip=5 |
+| İhalelere Yönelik Başvurular Hakkında Yönetmelik | 12766 (Yönetmelik) | `ihalelere_yonelik_basvurular_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=12766&MevzuatTur=7&MevzuatTertip=5 |

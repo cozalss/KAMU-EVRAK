@@ -1,0 +1,73 @@
+Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik — Elektronik Yazışma
+(e-Yazışma / EBYS / KEP / Güvenli Elektronik İmza Boyutu)
+Cumhurbaşkanlığı Kararı 2646 / Resmî Gazete 31151 — 10.06.2020 (YÜRÜRLÜKTE)
+Kaynak: https://mevzuat.gov.tr/MevzuatMetin/21.5.2646.pdf
+
+Bu metin, korpustaki "2646_resmi_yazisma_yonetmeligi.txt" dosyasını TAMAMLAR. O dosya
+belgenin biçimsel bölümlerini (Madde 10-22: başlık, sayı, tarih, konu, muhatap, ilgi,
+metin, imza, ek, dağıtım, olur, paraf) kapsar. Bu dosya ise SADECE yönetmeliğin elektronik
+yazışma boyutunu — güvenli elektronik imza, EBYS, e-Yazışma Teknik Rehberi, kayıtlı/üçüncü
+taraf üzerinden iletim (KEP) ve belge doğrulama (karekod/e-Devlet) — içerir. Madde numaraları
+mevzuat.gov.tr (21.5.2646) resmî PDF üzerinden çapraz doğrulanmıştır.
+
+Madde 3 — Tanımlar ve Kısaltmalar (Elektronik Yazışma Kavramları)
+Bu Yönetmelikte; "arşiv imza" kriptografik yöntemlerin koruyucu özelliğini zamanla
+yitirmesine karşı periyodik zaman damgası ile korunan elektronik imzayı; "DETSİS" (Devlet
+Teşkilatı Merkezi Kayıt Sistemi) idarelerin birimlerinin T.C. Devlet Teşkilatı Numarası ile
+tanımlandığı sistemi; "EBYS" (Elektronik Belge Yönetim Sistemi) e-Yazışma Teknik Rehberine
+uygun belgelerin içerik, üstveri, format ve ilişkisel özelliklerini koruyarak elektronik
+ortamda yönetimini sağlayan sistemi; "güvenli elektronik imza" münhasıran imza sahibine
+bağlı, sadece imza sahibinin tasarrufundaki araçla oluşturulan imzayı; "e-Yazışma Teknik
+Rehberi" Dijital Dönüşüm Ofisi Başkanlığınca yayımlanan güncel rehberi ifade eder.
+
+Madde 4 — Resmî Yazışma Ortamları (Elektronik Esas, Fiziksel İstisna)
+Kamu kurum ve kuruluşlarınca resmî yazışmalar, elektronik ortamda e-Yazışma Teknik Rehberine
+uygun olarak hazırlanan ve güvenli elektronik imza ile imzalanan belgelerle yapılır. Bu
+belgeler elektronik ortamda muhataplarıyla paylaşılır ve elektronik ortamda saklanır; güvenli
+elektronik imzalı belgeler çıktısı alınıp el yazısı imza ile imzalanmaz ve fiziksel ortamda
+saklanmaz. Yalnızca zorunlu hâllerde veya olağanüstü durumlarda yazışmalar el yazısıyla
+imzalanan belgelerle yapılır ve fiziksel ortam şartlarına göre gönderilip saklanır.
+
+Madde 5 — Nüsha Sayısı
+Elektronik ortamda güvenli elektronik imza ile imzalanan belgeler tek nüsha olarak hazırlanır.
+Zorunlu hâllerde veya olağanüstü durumlarda hazırlanacak belgeler, paraflı nüshası hazırlayan
+idarede kalacak şekilde en az iki nüsha olarak düzenlenir.
+
+Madde 23 — Belge Doğrulama Bilgileri (Karekod / e-Devlet)
+Elektronik ortamda güvenli elektronik imza ile imzalanan belgelerde, "İletişim bilgileri"
+alanının üst sınır çizgisinin üzerindeki iki satırlık alanın ilk satırında "Bu belge, güvenli
+elektronik imza ile imzalanmıştır." ibaresi yer alır; ikinci satırda "belge doğrulama kodu",
+en sağda ise "karekod" bulunur. Belge doğrulama işlemi, doğrulama kodu ve karekod ile Dijital
+Türkiye (e-Devlet) üzerinden sağlanır.
+
+Madde 28 — Üstveri Elemanları
+Güvenli elektronik imza ile imzalanan belgelerde asgari olarak e-Yazışma Teknik Rehberinde
+belirtilen üstveri elemanları kullanılır; idare ihtiyacına göre ilave üstveri elemanları
+ekleyebilir. Üstveri elemanları belgenin ayrılmaz bir bütünüdür; tarih ve sayı gibi belge
+görüntüsü üzerindeki bilgilerle üstverideki bilgiler arasında fark olamaz.
+
+Madde 30 — Belgenin Elektronik Ortamda Gönderilmesi ve Alınması (KEP / Üçüncü Taraf)
+Güvenli elektronik imza ile imzalanan belgelerin gönderilmesi ve alınması işlemlerinin,
+elektronik ortamda ilgili mevzuatla yetki verilmiş üçüncü bir taraf aracılığıyla (kayıtlı
+iletim) kayıt altına alınarak yapılması esastır; idareler arasında taraflarca yapılacak
+anlaşmalar çerçevesinde, kayıt altına alınmak şartıyla başka bir iletim mekanizması da
+kullanılabilir. İdare, kendisine iletilen ve Rehbere uygun belgeleri işleme koymakla
+yükümlüdür; Rehbere uygun hazırlanmamış bir belgeyi reddetme hakkına sahiptir ve reddi,
+belgenin ulaştığı tarihi takip eden ikinci iş gününün sonuna kadar sebepleriyle gönderen
+idareye bildirir. Gerekli hâllerde idare dışına gönderilen belgeler elektronik olarak
+şifrelenir.
+
+Madde 31 — Belgenin Fiziksel Ortamda Gönderilmesi ve Alınması
+Muhatabına elektronik iletimin mümkün olmadığı durumlarda, yetkilendirilmiş görevlilerce
+çıktısı alınan güvenli elektronik imzalı belge, elektronik ortamdaki aslına erişim amacıyla
+fiziksel ortamda gönderilir; fiziksel ortamda alınan belgenin doğrulaması 23 üncü maddeye göre
+(doğrulama kodu/karekod) yapılır ve doğrulanan belge işleme alınır. Belge zarflandığında
+başlık/tarih/sayı zarfın sol üst köşesine, muhatap bilgisi ortaya, varsa ivedilik/kişiye özel
+ibaresi (ACELE, GÜNLÜDÜR, KİŞİYE ÖZEL) zarfın sağ üst köşesine kırmızı büyük harflerle yazılır.
+
+Madde 32 — Belgenin İade Edilmesi
+İdareye muhatabı olmadığı hâlde elektronik ortamda güvenli elektronik imzalı bir belge
+gelmesi durumunda, muhatap olunmadığı bilgisi ve belgeye ilişkin tanımlayıcı bilgiler gönderene
+elektronik ortamda iletilir; asıl muhatap açıkça belliyse belge muhataba iletilebilir ve
+gönderene bilgi verilir, bir kopyası elektronik ortamda muhafaza edilir. Fiziksel ortamda gelen
+ve asıl muhatabı anlaşılamayan belge gönderene iade edilir.

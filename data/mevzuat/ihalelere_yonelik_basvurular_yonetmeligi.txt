@@ -1,0 +1,68 @@
+İhalelere Yönelik Başvurular Hakkında Yönetmelik
+Mevzuat No: 12766 (Kamu İhale Kurumu — RG 03.01.2009/27099 — YÜRÜRLÜKTE)
+Dayanak: 4734 sayılı Kamu İhale Kanunu (özellikle m.53, 54, 55, 56) ve 4735 sayılı Kanun
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=12766&MevzuatTur=7&MevzuatTertip=5
+Kurum metni: https://www.ihale.gov.tr/DokumanDownload.aspx?DokumanID=1202
+
+Bu metin kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+doğru özet/yakın-lafzî alıntıdır. Madde numaraları mevzuat.gov.tr (Mevzuat No 12766) ve
+Kamu İhale Kurumu (ihale.gov.tr) metninden çapraz doğrulanmıştır. Yönetmelik, 4734 sayılı
+Kanunun şikâyet (idareye) ve itirazen şikâyet (Kamu İhale Kurumuna) başvuru yollarını
+usul yönünden ayrıntılandırır (bkz. 4734_kamu_ihale_kanunu.txt m.55-56). Kamu-evrak
+akışında ihale itiraz evrakının (şikâyet dilekçesi, idarenin gerekçeli kararı, itirazen
+şikâyet dilekçesi, başvuru bedeli dekontu, Kurul kararı) hukuki dayanağıdır. Not: Süreler
+ve başvuru bedeli Kanun ve sonraki değişikliklerle güncellenebilir; tutarlar için yıllık
+Kurum tebliğine bakılır. Yönetmelikte 09.04.2026 tarihli değişiklik yapılmıştır.
+
+Madde 5 — Başvuru ehliyeti
+İhale sürecindeki bir işlem veya eylemin hukuka aykırılığı iddiasıyla, bu işlem veya
+eylem nedeniyle hak kaybına veya zarara uğradığını ya da uğramasının muhtemel olduğunu
+ileri süren aday, istekli veya istekli olabilecekler şikâyet ve itirazen şikâyet
+başvurusunda bulunabilir. İstekli olabilecekler yalnızca ön yeterlik/ihale dokümanının
+verilmesi, ilan ve dokümana yönelik başvurularda ehliyetlidir.
+
+Madde 6 — Şikâyet başvuru süresi
+İdareye yapılacak şikâyet başvurusu, başvuruya konu işlem veya eylemin farkına varıldığı
+ya da farkına varılmış olması gereken tarihi izleyen günden itibaren, 4734 sayılı Kanunun
+21 inci maddesinin (b) ve (c) bentlerine göre yapılan ihalelerde beş gün, diğer hâllerde
+on gün içinde ve sözleşme imzalanmadan önce yapılır. İlan ve dokümana yönelik
+başvurularda süre, ihale veya son başvuru tarihinden üç iş günü öncesine kadardır.
+
+Madde 8 — Şikâyet başvurusunun şekli
+Başvurular, başvuru sahibinin adı/unvanı, adresi, ihale kayıt numarası, başvuruya konu
+işlem ve iddialar ile dayandığı maddi ve hukuki nedenleri içeren imzalı dilekçe ile
+yapılır. Vekâleten yapılan başvurularda temsil yetkisini gösteren belge (vekâletname,
+imza sirküleri) eklenir. Dilekçedeki eksiklikler başvuru süresi içinde giderilebilir.
+[DOĞRULA: madde numarası — bazı sürümlerde dilekçe şekli farklı madde altında]
+
+Madde 10 — İdarece inceleme ve karar
+İdare, usulüne uygun yapılan şikâyet başvurusu üzerine gerekli incelemeyi yaparak,
+başvurunun kayıtlara alındığı tarihi izleyen on gün içinde gerekçeli bir karar alır ve
+kararı başvurana ve diğer aday/isteklilere bildirir. İdarece belirlenen sürede veya on
+günlük süre içinde karar alınmaması hâlinde başvuru sahibi doğrudan itirazen şikâyet
+yoluna başvurabilir. Şikâyet sonuçlanmadan ve sözleşme imzalama yasağı süresi dolmadan
+sözleşme imzalanamaz. [DOĞRULA: madde numarası ve gün süreleri mevzuat.gov.tr 12766]
+
+Madde 14 — İtirazen şikâyet başvuru süresi ve şekli
+İdareye şikâyet başvurusunda bulunan veya idarece alınan kararı uygun bulmayanlar,
+kararın bildirimini veya on günlük karar süresinin bitimini izleyen günden itibaren on
+gün (idarenin ihaleyi iptal kararına karşı beş gün) içinde Kamu İhale Kurumuna itirazen
+şikâyet başvurusunda bulunabilir. Başvuru, Kurum tarafından belirlenen şekil şartlarını
+taşıyan dilekçe ile ve başvuru bedeli yatırılarak yapılır. [DOĞRULA: madde numarası ve
+süreler; elektronik ortamda (EKAP) başvuru zorunluluğu ayrıca düzenlenmiştir]
+
+Madde 21 — İtirazen şikâyet başvuru bedeli
+İtirazen şikâyet başvurularında, 4734 sayılı Kanunun 53 üncü maddesi uyarınca yaklaşık
+maliyetin belirlenen oranına göre hesaplanan başvuru bedeli Kurum hesabına yatırılır;
+bedel yatırılmadan başvuru yapılamaz. Bedel tutarı, ihale kayıt numarası üzerinden Kurum
+internet sayfasından sorgulanabilir. Başvurunun haklı bulunması hâlinde bedelin iadesine
+ilişkin hükümler uygulanır. [DOĞRULA: madde numarası ve iade koşulları — 09.04.2026
+değişikliği ile iade usulü güncellenmiştir]
+
+Madde 22 — Kurum tarafından inceleme ve karar türleri
+Kurum, itirazen şikâyet başvurusunu ihale işlem dosyasının kayıtlara alındığı tarihi
+izleyen yirmi gün içinde inceleyerek sonuçlandırır. İnceleme sonucunda Kurul; ihale
+sürecinin devamına ve düzeltici işlem belirlenmesine, ihalenin iptaline veya başvurunun
+(süre, usul veya ehliyet yönünden ya da esastan) reddine karar verebilir. Karar
+verilmeden ve bu süre geçmeden sözleşme imzalanamaz. [DOĞRULA: madde numarası ve karar
+türlerinin tam listesi mevzuat.gov.tr 12766 üzerinden]

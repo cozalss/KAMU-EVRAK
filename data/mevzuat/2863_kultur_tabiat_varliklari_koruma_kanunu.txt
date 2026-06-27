@@ -1,0 +1,26 @@
+Kültür ve Tabiat Varlıklarını Koruma Kanunu
+Kanun No 2863, Kabul 21.07.1983, RG 23.07.1983/18113 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2863.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Haber verme (bildirim) yükümlülüğü
+Taşınır ve taşınmaz kültür ve tabiat varlıklarını bulanlar; malik oldukları veya kullandıkları arazide kültür-tabiat varlığı bulunduğunu bilen ya da yeni haberdar olan malik ve zilyetler, bunu en geç üç gün içinde en yakın müze müdürlüğüne, köyde muhtara veya diğer yerlerde mülki idare amirlerine bildirmek zorundadır. Bu, vatandaşın idareye yapması gereken zorunlu bildirim evrakının dayanağıdır.
+
+Madde 5 — Devlet malı niteliği
+Devlete, kamu kurum ve kuruluşlarına ait taşınmazlar ile özel hukuk kişilerinin mülkiyetinde bulunan taşınmazlarda yer alan korunması gerekli taşınır ve taşınmaz kültür ve tabiat varlıkları Devlet malı niteliğindedir. Bu varlıkların bulunduğu yerin mülkiyeti kime ait olursa olsun kural olarak Devletin hakları saklıdır; mazbut ve mülhak vakıf malları bu hükmün istisnasıdır. [DOĞRULA: vakıf malları istisnasının kapsamı]
+
+Madde 7 — Tescil ve tapu siciline bildirim
+Korunması gerekli taşınmaz kültür ve tabiat varlıklarının tespiti ve tescili koruma bölge kurullarınca yapılır. Tescil kararları, taşınmazın kadastral bilgileriyle birlikte tapu siciline şerh düşülmek üzere ilgili tapu müdürlüğüne bildirilir; tek yapı ölçeğindeki kararlar maliklere Tebligat Kanunu uyarınca tebliğ edilir. Maliki tespit edilemeyen taşınmazların tescil kararları Resmî Gazete'de yayımlanır ve Bakanlığın internet sayfasında bir ay süreyle duyurulur.
+
+Madde 9 — İzinsiz müdahale yasağı
+Koruma Yüksek Kurulunun ilke kararları çerçevesinde koruma kurullarınca alınan kararlara aykırı olarak, korunması gerekli taşınmaz kültür ve tabiat varlıklarında her çeşit inşaî ve fizikî müdahalede bulunmak, bunları yeniden kullanıma açmak veya kullanımlarını değiştirmek yasaktır. Onarım, inşaat, tesisat, sondaj, kısmen veya tamamen yıkma, kazı ve benzeri işler inşaî ve fizikî müdahale sayılır; bu işler için kurul izni zorunludur.
+
+Madde 35 — Araştırma, sondaj ve kazı izni
+Bilimsel ve malî yeterliği Kültür ve Turizm Bakanlığınca takdir ve kabul olunan Türk ve yabancı heyet ve kurumlara araştırma izni Bakanlık tarafından verilir; sondaj ve kazı yapma izni ise Cumhurbaşkanı kararı ile verilir. İzinsiz araştırma, sondaj ve kazı yapılması yasaktır; bu hüküm bilimsel kazı başvuru ve ruhsat sürecinin yetki kademelerini belirler.
+
+Madde 57 — Koruma bölge kurullarının görev ve yetkileri
+Koruma bölge kurulları, Koruma Yüksek Kurulunun ilke kararları çerçevesinde; korunması gerekli kültür ve tabiat varlıklarının tescilini yapmak, kültür varlıklarını gruplandırmak, sit alanlarının geçiş dönemi yapı şartlarını belirlemek, koruma amaçlı imar planları ile değişikliklerini inceleyip karara bağlamak, koruma alanlarını tespit etmek, özelliğini kaybedenlerin tescilini kaldırmak ve uygulamaya yönelik kararlar almakla görevli ve yetkilidir. İzin ve onarım başvuruları bu kurulun kararına bağlanır.

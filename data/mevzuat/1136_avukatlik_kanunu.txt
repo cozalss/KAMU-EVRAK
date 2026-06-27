@@ -1,0 +1,26 @@
+Avukatlık Kanunu
+Kanun No 1136, Kabul 19.03.1969, RG 07.04.1969/13168 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.1136.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Avukatlığın amacı ve kamu kurumlarının yardım yükümlülüğü
+Avukatlığın amacı; hukukî ilişkilerin düzenlenmesini, hukukî mesele ve anlaşmazlıkların adalet ve hakkaniyete uygun çözümünü ve hukuk kurallarının tam uygulanmasını her derecede yargı organı, hakem, resmî ve özel kişi, kurul ve kurumlar nezdinde sağlamaktır. Yargı organları, emniyet makamları, diğer kamu kurum ve kuruluşları, KİT'ler, bankalar, noterler, sigorta şirketleri ve vakıflar, avukatlara görevlerini yerine getirmesinde yardımcı olmak zorundadır.
+
+Madde 17 — Baroya yazılma (levhaya kayıt) dilekçesine eklenecek belgeler
+Baroya yazılma için verilecek dilekçeye; kanunun aradığı şartlara ilişkin belgelerin asılları ile onanmış örnekleri, adayın belirli engel hâllerinin bulunmadığını gösteren bildiri, yanında staj göreceği avukatın yazılı muvafakati ve adayın ahlak durumu hakkında iki avukatça düzenlenmiş tanıtma kâğıdı eklenir. Bu hüküm, baroya kayıt başvurusunda sunulması zorunlu evrakı belirler.
+
+Madde 35 — Yalnız avukatların yapabileceği işler
+Kanun işlerinde ve hukukî meselelerde mütalaa vermek; mahkeme, hakem veya yargı yetkisini haiz organlar huzurunda gerçek ve tüzel kişilere ait hakları dava etmek ve savunmak, adlî işlemleri takip etmek ve bu işlere ait bütün evrakı düzenlemek yalnız baroda yazılı avukatlara aittir. Dava ehliyeti olan herkes kendi davasının evrakını düzenleyip işini bizzat takip edebilir; ancak belirli büyüklükteki anonim şirketler ve yapı kooperatifleri sözleşmeli avukat bulundurmak zorundadır.
+
+Madde 41 — İşi reddetme ve çekilmede görevin devamı
+Belli bir işi takipten veya savunmadan kendi isteğiyle çekilen avukatın o işe ait vekâlet görevi, durumun müvekkile tebliğinden itibaren on beş gün süreyle devam eder. Bu süre, müvekkilin hak kaybına uğramaması için avukata son işlemleri yapma ve müvekkili haberdar etme yükümlülüğü getirir. [DOĞRULA: işin reddine ilişkin ek hüküm madde 38'de yer alabilir]
+
+Madde 56 — Vekaletname örneği çıkarma ve onaylama yetkisi
+Usulüne uygun olarak avukata verilen vekaletname dosyada saklanır. Avukat, bu vekaletnamenin örneğini çıkarıp aslına uygunluğunu kendi imzasıyla onaylayarak kullanabilir. Avukatın çıkardığı vekaletname örnekleri bütün yargı mercileri, resmî daire ve kurumlar ile gerçek ve tüzel kişiler için resmî örnek hükmündedir.
+
+Madde 171 — İşi sonuna kadar takip etme ve başkasını tevkil
+Avukat, üzerine aldığı işi kanun hükümlerine göre ve yazılı sözleşme olmasa bile sonuna kadar takip eder. Vekaletnamede başkasını tevkile yetki tanınmışsa, yazılı sözleşmede aksine açık hüküm yoksa işi başka bir avukatla birlikte veya başka avukata vererek takip ettirebilir. Vekaletnamede düzenleme tarihinden sonraki tüm dava ve işler için genel yetki verilmişse, müvekkilden ayrıca vekâlet almaya gerek kalmaz; tevkil eden avukatın müvekkile karşı sorumluluğu devam eder.

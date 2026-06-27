@@ -1,0 +1,69 @@
+Devlet Memurları Disiplin Yönetmeliği
+Karar Sayısı: 3935 (Cumhurbaşkanı Kararı — RG 30.04.2021/31470 — YÜRÜRLÜKTE)
+Dayanak: 657 sayılı Devlet Memurları Kanunu (özellikle m.124-136 disiplin hükümleri)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3935&MevzuatTur=21&MevzuatTertip=5
+RG metni: https://www.resmigazete.gov.tr/eskiler/2021/04/20210430-20.pdf
+
+Bu metin kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+doğru özet/yakın-lafzî alıntıdır. Madde numaraları mevzuat.gov.tr (Mevzuat No 3935),
+30.04.2021/31470 sayılı Resmî Gazete ve kamuya açık hukuk kaynaklarından çapraz
+doğrulanmıştır. Yönetmelik, 657 sayılı Kanunun disiplin cezalarını (m.125-136) usul
+yönünden tamamlar: soruşturma yürütülmesi, savunma alınması, disiplin amiri/kurul
+yetkisi, zamanaşımı, cezaların uygulanması, sicilden silinmesi ve itiraz. Kamu-evrak
+akışında disiplin/özlük evrakının (disiplin soruşturma raporu, savunma istem yazısı,
+savunma, disiplin cezası kararı, itiraz dilekçesi) hukuki dayanağıdır. Not: Yönetmelik
+maddelerinin numaraları 657'deki madde numaralarından farklıdır; cezaların türleri ve
+gerektiren fiiller için 657 m.125 esas alınır (bkz. 657_devlet_memurlari_kanunu.txt).
+
+Madde 5 — Disiplin cezaları (genel)
+Memurların görevlerini düzgün yürütmelerini sağlamak amacıyla, durumun niteliği ve
+ağırlık derecesine göre uyarma, kınama, aylıktan kesme, kademe ilerlemesinin
+durdurulması ve Devlet memurluğundan çıkarma cezalarından biri verilir. Disiplin cezası
+verilmesine sebep olan fiil veya hâlin işlenmesinden itibaren cezanın uygulanmasına
+kadarki tüm süreçte memurun hakları korunur. [DOĞRULA: maddenin Yönetmelikteki tam
+numarası mevzuat.gov.tr 3935 üzerinden]
+
+Madde 7 — Disiplin amirleri ve yetkisi
+Disipline aykırı fiil veya hâli işleyen memur hakkında disiplin işlemi yapmaya, fiil
+veya hâlin işlendiği anda memurun görevli olduğu yerdeki disiplin amiri yetkilidir.
+Disiplin amirleri kurumların kuruluş ve görev özelliklerine göre kurumca belirlenir.
+Uyarma, kınama ve aylıktan kesme cezaları disiplin amirleri tarafından verilir.
+
+Madde 28 — Savunma hakkı
+Memura savunma hakkı tanınmadan disiplin cezası verilemez. Soruşturmayı yapanın veya
+yetkili disiplin amiri/kurulunun yedi günden az olmamak üzere verdiği süre içinde veya
+belirtilen tarihte savunmasını yapmayan memur savunma hakkından vazgeçmiş sayılır.
+Savunma istem yazısında, hakkında soruşturma yapılan memura isnat edilen fiil ve hâller
+ile bunların hangi disiplin cezasını gerektirebileceği açıkça belirtilir; memur bizzat
+veya vekili aracılığıyla yazılı ya da sözlü savunma yapabilir.
+
+Madde 30 — Disiplin cezası verme süresi (karar)
+Disiplin amirleri uyarma, kınama ve aylıktan kesme cezalarını soruşturmanın
+tamamlandığı tarihten itibaren on beş gün içinde vermek zorundadır. Kademe
+ilerlemesinin durdurulması cezasını gerektiren hâllerde soruşturma dosyası, kararını
+bildirmek üzere yetkili disiplin kuruluna gönderilir; ilgili kurul soruşturma
+dosyasını aldığı tarihten itibaren otuz gün içinde karar verir. [DOĞRULA: madde numarası
+ve gün süreleri Yönetmeliğin yürürlükteki metninde]
+
+Madde 36 — Cezaların uygulanması
+Disiplin cezaları verildiği tarihten itibaren hüküm ifade eder ve derhâl uygulanır.
+Aylıktan kesme cezası, cezanın veriliş tarihini takip eden aybaşında uygulanır. Verilen
+disiplin cezaları üst disiplin amirine, Devlet memurluğundan çıkarma cezası ayrıca
+ilgili kuruma bildirilir. [DOĞRULA: madde numarası mevzuat.gov.tr 3935 üzerinden]
+
+Madde 37 — Disiplin cezalarının sicilden silinmesi
+Disiplin cezaları memurun özlük dosyasına işlenir. Devlet memurluğundan çıkarma cezası
+dışındaki cezaların verilmesini gerektiren fiil veya hâl yeniden işlenmediği takdirde,
+memur, uyarma ve kınama cezalarının uygulanmasından beş yıl, diğer cezaların
+uygulanmasından on yıl sonra atamaya yetkili amire başvurarak cezanın özlük dosyasından
+silinmesini isteyebilir. (657 m.133 ile uyumlu.) [DOĞRULA: 5 yıl/10 yıl süreleri ve
+madde numarası]
+
+Madde 38 — İtiraz
+Disiplin amirleri tarafından verilen uyarma, kınama ve aylıktan kesme cezalarına karşı
+disiplin kuruluna, kademe ilerlemesinin durdurulması cezasına karşı yüksek disiplin
+kuruluna itiraz edilebilir. İtiraz süresi, kararın memura tebliği tarihinden itibaren
+yedi gündür; süresinde itiraz edilmeyen ceza kesinleşir. İtiraz mercileri itiraz
+dilekçesi ile karar ve eklerinin kendilerine intikalinden itibaren otuz gün içinde
+karar verir. Disiplin cezalarına karşı ayrıca idari yargı yoluna başvurulabilir (657
+m.135 ile uyumlu). [DOĞRULA: madde numarası mevzuat.gov.tr 3935 üzerinden]

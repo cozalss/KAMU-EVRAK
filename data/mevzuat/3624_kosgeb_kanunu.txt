@@ -1,0 +1,31 @@
+Küçük ve Orta Ölçekli İşletmeleri Geliştirme ve Destekleme İdaresi Başkanlığı (KOSGEB) Teşvik ve Muafiyetleri Kanunu
+Kanun No 3624, Kabul 12.04.1990, RG 20.04.1990/20498 — YÜRÜRLÜKTE (Düstur Tertip 5; kanunun adı 2/7/2018 tarihli 703 sayılı KHK'nin 77. maddesiyle "...Kurulması Hakkında Kanun" iken "...Teşvik ve Muafiyetleri Kanunu" şeklinde değiştirilmiştir; mevzuat.gov.tr konsolide metni esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3624&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+ÖNEMLİ KAPSAM NOTU: Bu Kanunun KOSGEB'in amacını, KOBİ tanımını, görevlerini ve organlarını
+düzenleyen 1 ilâ 13. maddeleri 2/7/2018 tarihli 703 sayılı KHK ile yürürlükten kaldırılmıştır;
+bu konular artık Cumhurbaşkanlığı Teşkilatı hakkındaki 4 No.lu CBK'da düzenlenmektedir.
+"Küçük ve orta ölçekli işletme (KOBİ)" tanımı ise bugün KOBİ Yönetmeliği'nde yer alır (250'den
+az çalışan + yıllık net satış hasılatı ya da mali bilançosu üst sınırı; üst sınır 25.05.2023
+tarihli düzenlemeyle 500 milyon TL'ye çıkarılmıştır). Bu nedenle Kanundan YÜRÜRLÜKTEKİ
+hükümler esas olarak bütçe/gelir kaynakları, vergi muafiyetleri ve teşviklerle ilgilidir.
+
+Madde 14 — Başkanlık bütçesinin gelir kaynakları (TESK ve TOBB aidatları)
+KOSGEB Başkanlığı bütçesi; Türkiye Esnaf ve Sanatkârlar Konfederasyonunun (TESK) ve Türkiye Odalar ve Borsalar Birliğinin (TOBB) yıllık safi gelirlerinin yüzde 2'si nispetinde ödeyecekleri aidatlar ile Teşkilata ilişkin Cumhurbaşkanlığı kararnamesinde belirtilen gelirlerden oluşur. Bu aidatlar bir önceki yıla ait kâr miktarlarına göre her yıl mayıs ve ekim aylarında iki taksit halinde, Başkanlığın bir kamu bankasında açtırdığı hesaba yatırılır ve ödenen tutarlar matrah hesabında gider kaydedilir; kanıtlayıcı belgeleri zamanında göndermeyenlere on bin Türk lirasına kadar idari para cezası uygulanır. Başkanlık gelirleriyle ilgili alacaklar 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre tahsil olunur; (d) ve (e) bentlerindeki oranlar Cumhurbaşkanınca iki katına kadar artırılabilir.
+
+Madde 17 — KOSGEB'in vergi muafiyetleri ve teknoloji merkezlerine sağlanan teşvikler
+KOSGEB Başkanlığı; iktisadi işletmeleri hariç olmak üzere Kurumlar Vergisinden, yapılacak bağış ve yardımlar nedeniyle Veraset ve İntikal Vergisinden, lehte tahakkuk edecek faizler için banka ve sigorta muameleleri vergisinden muaftır; gelirleri ile bu gelirlere ilişkin işlemleri ve sahip olduğu taşınmazlar her türlü vergi, resim ve harçtan istisna tutulur. Bu Kanuna göre kurulacak Araştırma Merkezi, Enstitü, Teknoloji Merkezleri (TEKMER) ve Teknoparklar; yatırımları için kalkınmada birinci derecede öncelikli bölgelere uygulanan teşviklerden ve Ar-Ge faaliyetlerine ilişkin teçhizat/malzeme imali, alımı veya ithali ile elde edecekleri kazançlar için gelir, kurumlar veya gümrük vergisi indirim/istisnalarından, düşük faizli kredi, hibe ve diğer teşviklerden yararlandırılır. Bu hüküm, KOSGEB destekli işletme ve teknoloji geliştirme yapılarının destek başvurularına dayanak oluşturur.
+
+Madde 18 — KOSGEB'e uygulanmayacak hükümler ve mallarının Devlet malı sayılması
+KOSGEB Başkanlığınca yapılması öngörülen iş ve işlemlerde 1050 sayılı Muhasebe-i Umumiye Kanunu ile 832 sayılı (mülga) Sayıştay Kanunu hükümleri uygulanmaz; Başkanlık alım-satım ve kiralama gibi işlemlerinde 2886 sayılı Devlet İhale Kanununa, çalıştıracağı personel bakımından 657 sayılı Devlet Memurları Kanununa ve harcırah uygulamasında 6245 sayılı Harcırah Kanununa tabi değildir. Buna karşılık Başkanlığın malları Devlet malı hükmündedir; bu mallar ile para ve para hükmündeki evrak ve senetleri aleyhine suç işleyen personel, Devlet Memurları gibi cezalandırılır. [DOĞRULA: maddede atıf yapılan 832 sayılı Sayıştay Kanunu yürürlükten kalkmış olup yerini 6085 sayılı Sayıştay Kanunu almıştır; konsolide metindeki güncel atıf teyit edilmelidir.]
+
+Ek Madde 1 — Destek faaliyetlerinde uzman/kamu görevlisi görevlendirme ve ödeme
+Başkanlık tarafından desteklenen araştırma, geliştirme, tasarım, yenilik, girişimcilik, iş geliştirme, üretim ve yatırım faaliyetlerinin her türlü sürecinde görev yapmak ve mesleki bilgi ve deneyiminden faydalanmak üzere, geçici süreyle kamu görevlileri ile kamu görevlisi olmayan alanında uzman diğer kişiler görevlendirilebilir. Bu kapsamda görevlendirilen öğretim elemanları ile uzman kişilere, 2547 sayılı Yükseköğretim Kanununun 38. maddesinde öngörülen aylık tutarın beş katını aşmamak kaydıyla, diğer kanunlardaki kısıtlamalara tabi olmaksızın ödeme yapılabilir; usul ve esaslar işin niteliği, görev yeri ve çalışma şartları esas alınarak Başkanlıkça belirlenir. Bu madde, 6676 ve 7162 sayılı Kanunlarla düzenlenmiş olup KOSGEB'in destek projelerinde dış uzman istihdamının yasal temelini oluşturur.
+
+Madde 19 — Yürürlük; Madde 20 — Yürütme
+Kanun yayımı tarihinde (20.04.1990) yürürlüğe girmiştir. Kanun hükümleri, metinde Bakanlar Kurulu olarak geçmekle birlikte 2018 sonrası Cumhurbaşkanlığı hükümet sistemine geçişle birlikte Cumhurbaşkanı tarafından yürütülür. Bu maddeler kanunun yürürlük ve yürütme çerçevesini belirler. [DOĞRULA: "Bakanlar Kurulu yürütür" ibaresinin 2018 sonrası uyum düzenlemeleriyle güncel hali mevzuat.gov.tr konsolide metninden teyit edilmelidir.]

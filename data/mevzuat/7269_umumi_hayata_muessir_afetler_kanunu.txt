@@ -1,0 +1,26 @@
+Umumi Hayata Müessir Afetler Dolayısıyla Alınacak Tedbirlerle Yapılacak Yardımlara Dair Kanun
+7269 sayılı Kanun; Kabul Tarihi 15.5.1959; RG 25.5.1959 / 10213. Yürürlükte (konsolide metin). Doğrulama: mevzuat.gov.tr resmî metin ve AFAD/ÇŞB uygulama kaynakları.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.7269.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kanunun Kapsamı ve Afetin Belirlenmesi
+Deprem, yangın, su baskını, yer kayması, kaya düşmesi, çığ, tasman ve benzeri afetlerde yapıları ve kamu tesisleri umumi (genel) hayata etkili olacak derecede zarar gören veya görmesi muhtemel olan yerlerde alınacak tedbirler bu Kanuna tabidir. Bir afetin umumi hayata etkili olup olmadığına -afet anındaki ve sonrasındaki ölçütlere göre- yetkili bakanlık (mülga İmar ve İskân Bakanlığı; bugün Çevre, Şehircilik ve İklim Değişikliği Bakanlığı / AFAD koordinasyonu) karar verir.
+
+Madde 13 — Afet Sonrası Tedbirler, Fen Kurulu Hasar Tespiti ve Geçici Barınma
+Afetin meydana gelmesi üzerine yetkili bakanlıkça kurulan fen kurulları, afetten etkilenen arazinin durumu ile bütün yapıları ve kamu tesislerini inceleyerek hasar tespit raporu düzenler; tehlikeli durumda olup boşaltılması veya yıktırılması gereken yapılar hakkında ayrıca o yer mülki amirine (vali/kaymakam) rapor verilir. Maddenin (d) bendi uyarınca afetzedelerin geçici barındırılması için çadır, baraka ve geçici konutlar inşa edilebilir, ettirilebilir, kiralanabilir veya satın alınabilir; geçici barınma süresi ve nakdi yardım miktarı bakanlıkça belirlenir. Hasar tespitiyle ilgili belge ve raporlar, hak sahipliği ve yardım süreçlerinin dayanağını oluşturur. [DOĞRULA: hasar tespit raporuna itiraz süresinin (yaygın uygulamada ilan tarihinden itibaren 30 gün) tam dayanağı ve güncel madde fıkrası mevzuat.gov.tr metninden teyit edilmeli].
+
+Madde 14 — Tehlikeli Yapıların Boşaltılması ve Yıktırılması
+Fen kurullarınca veya yetkili teknik elemanlarca tehlikeli görülerek boşaltılması ve yıktırılması gereken yapılar derhal boşaltılır; tehlike bertaraf edilinceye kadar girilmesi yasaklanır. Yapı sahibi süresinde yıkmadığı takdirde yapı, vali veya kaymakamın emriyle yıktırılır ve yıkım masrafı sahibinden veya afet fonundan karşılanır. Bu hüküm, can güvenliği için boşaltma/tahliye ve yıkım tebligatlarının hukuki dayanağıdır.
+
+Madde 29 — Hak Sahipliği — Konut Yaptırılması veya İnşaat Kredisi
+Yıkılan, yanan veya ağır hasara uğrayan yahut ağır hasar görmesi muhtemel olan binalarla, imar planları gereğince kamulaştırılması zorunlu yerlerdeki binalarda oturan ailelere, hak sahibi olmak şartıyla konut yaptırılır veya inşaat kredisi verilir. Afet nedeniyle yıkılan/yanan/ağır hasarlı binalarda birden fazla aile oturuyorsa her aile ayrı ayrı bu Kanun hükümlerinden yararlanabilir. Hak sahipliği, afetzedenin yıkılan/ağır hasarlı binayla mülkiyet ya da oturma ilişkisine dayanır; ayrıntılı şartlar 'Afet Sebebiyle Hak Sahibi Olanların Tespiti Hakkında Yönetmelik' ile düzenlenir.
+
+Madde 40 — Borçlandırma Senedi, Geri Ödeme Süresi ve Faiz
+Hak sahiplerine verilen arsa, konut ve işyeri yardımları borçlandırma senedi imzalanarak temlik edilir; bakanlıkça yapılan ilan tarihinden itibaren (yaygın uygulamada 2 ay) içinde borçlanma işlemini yaptırmayanlar veya teslim almayanlar hak sahipliğini kaybeder. Konut ve konut inşaat kredisi yardımları faizsiz, dükkân/işyeri gibi yardımlar yıllık %4 faizli olarak; konutta 20-30 yıla, işyerinde 5-15 yıla varan eşit taksitlerle ve 2 yıllık ödemesiz dönemin ardından geri alınır. [DOĞRULA: kesin taksit yılı, faiz oranı ve ödemesiz dönem rakamları, ilgili uygulama yönetmeliği ve sonradan getirilen indirim düzenlemeleriyle birlikte mevzuat.gov.tr/güncel ilanlardan teyit edilmeli].
+
+Madde 21 — İskân Yeri Seçimi ve Arazi Temini / Kamulaştırma
+Afet sebebiyle yeniden iskân edilecek afetzedeler için yapı yerlerinin seçiminde önce Hazine, özel idare, belediye ve köy tüzel kişiliğine ait taşınmazlar değerlendirilir; bu yerlere uygun arazi bulunamazsa kamulaştırma mevzuatı çerçevesinde kamulaştırma yapılabilir. Temin edilen ya da kamulaştırılan taşınmazlar genel olarak Hazine adına tescil edilir ve hak sahiplerine borçlandırma yoluyla devredilir. Bu hüküm, afet konutu yer seçimi, tahsis ve kamulaştırma işlemlerinin (tahsis kararı, kamulaştırma belgesi, tapu tescili) dayanağını oluşturur. [DOĞRULA: arazi temini/kamulaştırma hükümlerinin tam madde numarası (21 ile çevresi 21-22) güncel konsolide metinden teyit edilmeli].

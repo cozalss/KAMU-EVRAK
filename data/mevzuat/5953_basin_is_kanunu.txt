@@ -1,0 +1,26 @@
+Basın Mesleğinde Çalışanlarla Çalıştıranlar Arasındaki Münasebetlerin Tanzimi Hakkında Kanun (Basın İş Kanunu)
+Kanun No 5953, Kabul 13.06.1952, RG 20.06.1952/8140 — YÜRÜRLÜKTE (mevzuat.gov.tr 5.3.5953 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/5.3.5953.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Gazetecinin tanımı ve kanunun kapsamı
+Bu kanunun şümulüne giren fikir ve sanat işlerinde ücret karşılığı çalışanlara gazeteci denir. Kanun hükümleri; Türkiye'de yayınlanan gazete, internet haber siteleri ve mevkutelerle haber ve fotoğraf ajanslarında her türlü fikir ve sanat işlerinde çalışan ve 4857 sayılı İş Kanunu'ndaki "işçi" tarifi kapsamı dışında kalan kimseler ile bunların işverenleri hakkında uygulanır. Gazetecinin iş ilişkisi bu nedenle genel İş Kanunu'na değil, özel olarak bu kanuna tabidir.
+
+Madde 4 — İş akdinin (mukavelenin) yazılı yapılması ve içeriği
+Gazeteci ile kendisini çalıştıran işveren arasındaki iş akdinin yazılı şekilde yapılması zorunludur. Mukavelede; işin nev'i (türü), ücret miktarı ve gazetecinin kıdemi gibi hususların gösterilmesi şarttır. İşin türünün ve ücretin sonradan değişmesi halinde bu değişikliğin de mukaveleye işlenmesi (derci) zorunludur. Yazılı şekil, gazetecinin kıdem ve ücret haklarının belgelenmesini sağlar.
+
+Madde 6 — Kıdem tazminatı ve mukavelenin işverence feshi (ihbar)
+İşveren tarafından mukavelenin feshi halinde gazeteciye, meslekteki kıdemine göre belirli bir ihbar süresi tanınması veya bu süreye ait ücretin peşin ödenmesi gerekir. Mesleki kıdemi en az beş yıl olan gazeteciye, fesih halinde her hizmet yılı için son aylık ücreti tutarında kıdem tazminatı ödenir. Kıdem tazminatı ve ihbar süresi, gazetecinin işten çıkarılması karşısındaki temel güvencesidir. [DOĞRULA: ihbar süreleri ve kıdem tazminatına esas kıdem eşiği (beş yıl) güncel madde metninden teyit edilmelidir.]
+
+Madde 9 — Mukavelenin yapılış ve feshinin ilgili makamlara bildirimi
+Mukavelenin yapılışı işveren tarafından; feshi ise fesheden tarafça, ilgili Bölge Çalışma Müdürlüğü ve mülki amirliğe, ayrıca gazeteci sendika üyesi ise sendikasına (değilse en fazla üyesi bulunan mesleki teşekküle) on beş gün içinde beyanname ile bildirilir. Bu bildirim, gazetecinin meslekteki kıdeminin resmî olarak takibini ve haklarının korunmasını sağlar.
+
+Madde 10 — Deneme (tecrübe) süresi
+Mesleğe ilk defa giren bir gazeteci için mukaveleye konulabilecek deneme süresi en çok üç aydır. Deneme süresi içinde taraflar, mukaveleyi ihbar süresine ve tazminata gerek olmaksızın feshedebilir; ancak gazetecinin çalıştığı günlere ait ücret ve hakları saklıdır. Deneme süresinin sonunda mukavele kendiliğinden devam eder.
+
+Madde 14 — Ücretin peşin ödenmesi ve geç ödeme zammı
+Gazetecinin kararlaştırılan aylık ücreti her ay peşin olarak ödenir. Ücretlerini zamanında ödemeyen işveren, gecikilen her gün için ücreti yüzde beş (%5) fazlasıyla ödemekle yükümlüdür. Bu ağır gecikme zammı, basın mesleğinde ücretin zamanında ödenmesini güvence altına alan ayırt edici bir hükümdür. [DOĞRULA: günlük %5 oranının güncel madde metninde devam edip etmediği teyit edilmelidir.]

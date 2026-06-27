@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1372,
+ "chunk_sayisi": 1412,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -2570,6 +2570,41 @@
    "madde_no": 9,
    "madde_tur": "madde",
    "text": "Madde 9 — Kiyi kenar cizgisinin tespiti\nKiyi kenar cizgisi, valiliklerce kamu gorevlilerinden olusturulan en az bes kisilik bir komisyon (jeoloji muhendisi/jeolog, harita-kadastro muhendisi, ziraat muhendisi, mimar/sehir plancisi, insaat muhendisi) tarafindan tespit edilir. Komisyonca tespit edilip valiligin uygun gorusuyle gonderilen kiyi kenar cizgisi, Cevre, Sehircilik ve Iklim Degisikligi Bakanliginca onaylandiktan sonra yururluge girer. Vatandasin tasinmazinin kiyi-sahil seridi sinirinin nasil ve kim tarafindan belirlenecegini duzenleyen maddedir."
+  },
+  {
+   "mevzuat": "3624 kosgeb kanunu",
+   "kaynak_dosya": "3624_kosgeb_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Başkanlık bütçesinin gelir kaynakları (TESK ve TOBB aidatları)\nKOSGEB Başkanlığı bütçesi; Türkiye Esnaf ve Sanatkârlar Konfederasyonunun (TESK) ve Türkiye Odalar ve Borsalar Birliğinin (TOBB) yıllık safi gelirlerinin yüzde 2'si nispetinde ödeyecekleri aidatlar ile Teşkilata ilişkin Cumhurbaşkanlığı kararnamesinde belirtilen gelirlerden oluşur. Bu aidatlar bir önceki yıla ait kâr miktarlarına göre her yıl mayıs ve ekim aylarında iki taksit halinde, Başkanlığın bir kamu bankasında açtırdığı hesaba yatırılır ve ödenen tutarlar matrah hesabında gider kaydedilir; kanıtlayıcı belgeleri zamanında göndermeyenlere on bin Türk lirasına kadar idari para cezası uygulanır. Başkanlık gelirleriyle ilgili alacaklar 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre tahsil olunur; (d) ve (e) bentlerindeki oranlar Cumhurbaşkanınca iki katına kadar artırılabilir."
+  },
+  {
+   "mevzuat": "3624 kosgeb kanunu",
+   "kaynak_dosya": "3624_kosgeb_kanunu.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — KOSGEB'in vergi muafiyetleri ve teknoloji merkezlerine sağlanan teşvikler\nKOSGEB Başkanlığı; iktisadi işletmeleri hariç olmak üzere Kurumlar Vergisinden, yapılacak bağış ve yardımlar nedeniyle Veraset ve İntikal Vergisinden, lehte tahakkuk edecek faizler için banka ve sigorta muameleleri vergisinden muaftır; gelirleri ile bu gelirlere ilişkin işlemleri ve sahip olduğu taşınmazlar her türlü vergi, resim ve harçtan istisna tutulur. Bu Kanuna göre kurulacak Araştırma Merkezi, Enstitü, Teknoloji Merkezleri (TEKMER) ve Teknoparklar; yatırımları için kalkınmada birinci derecede öncelikli bölgelere uygulanan teşviklerden ve Ar-Ge faaliyetlerine ilişkin teçhizat/malzeme imali, alımı veya ithali ile elde edecekleri kazançlar için gelir, kurumlar veya gümrük vergisi indirim/istisnalarından, düşük faizli kredi, hibe ve diğer teşviklerden yararlandırılır. Bu hüküm, KOSGEB destekli işletme ve teknoloji geliştirme yapılarının destek başvurularına dayanak oluşturur."
+  },
+  {
+   "mevzuat": "3624 kosgeb kanunu",
+   "kaynak_dosya": "3624_kosgeb_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — KOSGEB'e uygulanmayacak hükümler ve mallarının Devlet malı sayılması\nKOSGEB Başkanlığınca yapılması öngörülen iş ve işlemlerde 1050 sayılı Muhasebe-i Umumiye Kanunu ile 832 sayılı (mülga) Sayıştay Kanunu hükümleri uygulanmaz; Başkanlık alım-satım ve kiralama gibi işlemlerinde 2886 sayılı Devlet İhale Kanununa, çalıştıracağı personel bakımından 657 sayılı Devlet Memurları Kanununa ve harcırah uygulamasında 6245 sayılı Harcırah Kanununa tabi değildir. Buna karşılık Başkanlığın malları Devlet malı hükmündedir; bu mallar ile para ve para hükmündeki evrak ve senetleri aleyhine suç işleyen personel, Devlet Memurları gibi cezalandırılır. [DOĞRULA: maddede atıf yapılan 832 sayılı Sayıştay Kanunu yürürlükten kalkmış olup yerini 6085 sayılı Sayıştay Kanunu almıştır; konsolide metindeki güncel atıf teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "3624 kosgeb kanunu",
+   "kaynak_dosya": "3624_kosgeb_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "ek",
+   "text": "Ek Madde 1 — Destek faaliyetlerinde uzman/kamu görevlisi görevlendirme ve ödeme\nBaşkanlık tarafından desteklenen araştırma, geliştirme, tasarım, yenilik, girişimcilik, iş geliştirme, üretim ve yatırım faaliyetlerinin her türlü sürecinde görev yapmak ve mesleki bilgi ve deneyiminden faydalanmak üzere, geçici süreyle kamu görevlileri ile kamu görevlisi olmayan alanında uzman diğer kişiler görevlendirilebilir. Bu kapsamda görevlendirilen öğretim elemanları ile uzman kişilere, 2547 sayılı Yükseköğretim Kanununun 38. maddesinde öngörülen aylık tutarın beş katını aşmamak kaydıyla, diğer kanunlardaki kısıtlamalara tabi olmaksızın ödeme yapılabilir; usul ve esaslar işin niteliği, görev yeri ve çalışma şartları esas alınarak Başkanlıkça belirlenir. Bu madde, 6676 ve 7162 sayılı Kanunlarla düzenlenmiş olup KOSGEB'in destek projelerinde dış uzman istihdamının yasal temelini oluşturur."
+  },
+  {
+   "mevzuat": "3624 kosgeb kanunu",
+   "kaynak_dosya": "3624_kosgeb_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Yürürlük; Madde 20 — Yürütme\nKanun yayımı tarihinde (20.04.1990) yürürlüğe girmiştir. Kanun hükümleri, metinde Bakanlar Kurulu olarak geçmekle birlikte 2018 sonrası Cumhurbaşkanlığı hükümet sistemine geçişle birlikte Cumhurbaşkanı tarafından yürütülür. Bu maddeler kanunun yürürlük ve yürütme çerçevesini belirler. [DOĞRULA: \"Bakanlar Kurulu yürütür\" ibaresinin 2018 sonrası uyum düzenlemeleriyle güncel hali mevzuat.gov.tr konsolide metninden teyit edilmelidir.]"
   },
   {
    "mevzuat": "3628 mal bildirimi kanunu",
@@ -6121,6 +6156,48 @@
    "text": "Madde 37 — Vatandaşlık işlemlerinde müracaat makamı ve usul\nTürk vatandaşlığının kazanılması ve kaybına ilişkin başvurular yurt içinde ikamet edilen yer valiliğine, yurt dışında ise dış temsilciliklere bizzat veya bu hakkın kullanılmasına ilişkin vekâletname ile yapılır. Vatandaşlık hizmetleri yurt içinde Bakanlık, yurt dışında dış temsilciliklerce yürütülür (md. 4); kararlar ilgiliye ve başvuru makamlarına tebliğ olunur (md. 41)."
   },
   {
+   "mevzuat": "5953 basin is kanunu",
+   "kaynak_dosya": "5953_basin_is_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Gazetecinin tanımı ve kanunun kapsamı\nBu kanunun şümulüne giren fikir ve sanat işlerinde ücret karşılığı çalışanlara gazeteci denir. Kanun hükümleri; Türkiye'de yayınlanan gazete, internet haber siteleri ve mevkutelerle haber ve fotoğraf ajanslarında her türlü fikir ve sanat işlerinde çalışan ve 4857 sayılı İş Kanunu'ndaki \"işçi\" tarifi kapsamı dışında kalan kimseler ile bunların işverenleri hakkında uygulanır. Gazetecinin iş ilişkisi bu nedenle genel İş Kanunu'na değil, özel olarak bu kanuna tabidir."
+  },
+  {
+   "mevzuat": "5953 basin is kanunu",
+   "kaynak_dosya": "5953_basin_is_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — İş akdinin (mukavelenin) yazılı yapılması ve içeriği\nGazeteci ile kendisini çalıştıran işveren arasındaki iş akdinin yazılı şekilde yapılması zorunludur. Mukavelede; işin nev'i (türü), ücret miktarı ve gazetecinin kıdemi gibi hususların gösterilmesi şarttır. İşin türünün ve ücretin sonradan değişmesi halinde bu değişikliğin de mukaveleye işlenmesi (derci) zorunludur. Yazılı şekil, gazetecinin kıdem ve ücret haklarının belgelenmesini sağlar."
+  },
+  {
+   "mevzuat": "5953 basin is kanunu",
+   "kaynak_dosya": "5953_basin_is_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Kıdem tazminatı ve mukavelenin işverence feshi (ihbar)\nİşveren tarafından mukavelenin feshi halinde gazeteciye, meslekteki kıdemine göre belirli bir ihbar süresi tanınması veya bu süreye ait ücretin peşin ödenmesi gerekir. Mesleki kıdemi en az beş yıl olan gazeteciye, fesih halinde her hizmet yılı için son aylık ücreti tutarında kıdem tazminatı ödenir. Kıdem tazminatı ve ihbar süresi, gazetecinin işten çıkarılması karşısındaki temel güvencesidir. [DOĞRULA: ihbar süreleri ve kıdem tazminatına esas kıdem eşiği (beş yıl) güncel madde metninden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "5953 basin is kanunu",
+   "kaynak_dosya": "5953_basin_is_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Mukavelenin yapılış ve feshinin ilgili makamlara bildirimi\nMukavelenin yapılışı işveren tarafından; feshi ise fesheden tarafça, ilgili Bölge Çalışma Müdürlüğü ve mülki amirliğe, ayrıca gazeteci sendika üyesi ise sendikasına (değilse en fazla üyesi bulunan mesleki teşekküle) on beş gün içinde beyanname ile bildirilir. Bu bildirim, gazetecinin meslekteki kıdeminin resmî olarak takibini ve haklarının korunmasını sağlar."
+  },
+  {
+   "mevzuat": "5953 basin is kanunu",
+   "kaynak_dosya": "5953_basin_is_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Deneme (tecrübe) süresi\nMesleğe ilk defa giren bir gazeteci için mukaveleye konulabilecek deneme süresi en çok üç aydır. Deneme süresi içinde taraflar, mukaveleyi ihbar süresine ve tazminata gerek olmaksızın feshedebilir; ancak gazetecinin çalıştığı günlere ait ücret ve hakları saklıdır. Deneme süresinin sonunda mukavele kendiliğinden devam eder."
+  },
+  {
+   "mevzuat": "5953 basin is kanunu",
+   "kaynak_dosya": "5953_basin_is_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Ücretin peşin ödenmesi ve geç ödeme zammı\nGazetecinin kararlaştırılan aylık ücreti her ay peşin olarak ödenir. Ücretlerini zamanında ödemeyen işveren, gecikilen her gün için ücreti yüzde beş (%5) fazlasıyla ödemekle yükümlüdür. Bu ağır gecikme zammı, basın mesleğinde ücretin zamanında ödenmesini güvence altına alan ayırt edici bir hükümdür. [DOĞRULA: günlük %5 oranının güncel madde metninde devam edip etmediği teyit edilmelidir.]"
+  },
+  {
    "mevzuat": "5957 sebze meyve ticareti hal kanunu",
    "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
    "madde_no": 2,
@@ -6434,6 +6511,55 @@
    "madde_no": 29,
    "madde_tur": "madde",
    "text": "Madde 29 — Yayın lisansı şartlarının kaybedilmesi ve iptal\nYayın lisansı verilmesi için Kanunda aranan şartlardan birinin sonradan kaybedilmesi hâlinde, ilgili kuruluşa şartı yerine getirmesi için otuz günlük süre verilir. Süreye rağmen şart yerine getirilmezse kuruluşun yayınları üç ay süreyle durdurulur; bu süre içinde de şart sağlanmazsa yayın lisansı iptal edilerek kanal ve frekans kullanımına son verilir. Yayın lisansını hile ile elde ettiği tespit edilen kuruluşun lisansı doğrudan iptal edilir. [DOĞRULA: maddenin kesin numarası ve fıkra düzeni yürürlükteki konsolide metinden teyit edilmeli.]"
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amac ve kapsam\nKanunun amaci, su varliklarinin rasyonel kullanimi maksadiyla umumi sulardan faydalanmak uzere Devlet Su Isleri (DSI) Genel Mudurlugu tarafindan insa edilmis veya edilmekte olan sulama tesislerini amacina uygun sekilde kullanmak, isletmek, bunlarin bakim ve onarimini yapmak uzere kurulan sulama birliklerinin kurulusu, organlari ile gorev ve yetkilerini duzenlemektir. Birlikler kamu tuzel kisiligine sahiptir. Sulama-birlik basvuru ve yazismalarinin yasal cercevesini belirleyen temel maddedir."
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanimlar\nKanunda gecen temel kavramlari tanimlar. \"Gorev alani\" birlige devredilen tesisin hizmet alanidir. \"Su kullanicisi\" gorev alaninda sulama yapan veya yapacak olan gercek ya da tuzel kisidir. \"Katilim payi\" su kullanicilarinin birlige ilk katilimlarinda, arazinin her dekari icin bir defaya mahsus alinan paydir. \"Su kullanim hizmet bedeli tarifesi\" suyun ulastirilmasi, fazla suyun uzaklastirilmasi, isletme-bakim-onarim ve enerji gibi giderleri karsilayacak sekilde belirlenen bedeldir. Uyelik/katilim payi/tarife evraklarinin dayanak tanimlarini icerir."
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Birligin gorev alani ve calisma konulari\nBirliklerin gorev alani, devredilen tesislerin hizmet alanidir ve DSI tarafindan belirlenir; bir gorev alaninda ayni amacla birden fazla birlik kurulamaz. Calisma konulari: tesislerin isletme, bakim, onarim ve yenilenmesi; katilim payi ile su kullanim hizmet bedelinin tahsili; yatirim bedeli geri odeme; ekim planlamasi ve verim hedefleri; arastirma-egitim faaliyetleri. Sulama hizmeti talebi ve birlik gorev kapsamini belirleyen maddedir."
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Birligin tuzel kisilik kazanmasi ve uyelik\nBirlik, gorev alanindaki yerlesim birimlerinden katilimcilarin imzaladigi birlik ana statusunun DSI gorusu alinarak Bakanlikca onaylanmasi ile tuzel kisilik kazanir. Gorev alanindaki su kullanicilari birlige uye olabilir; uyelik kaydi yapilirken bir defaya mahsus katilim payi tahsil edilir. Katilim payi, ilgili yil isletme-bakim ucret tarifesinde dekar basina belirlenen en dusuk ucret tarifesinden asagi olamaz. Sulama-birlik uyelik basvurusu ve katilim payi tahakkukunun dogrudan dayanagidir."
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Baskanlik; su kullanim hizmet bedelinin belirlenmesi\nBirligin yurutme ve temsil organi baskanliktir. Baskan, butce ve is programini hazirlamak, gelir ve alacaklari tahsil etmek ile yillik su kullanim hizmet bedelini, Bakanlikca onaylanan asgari su kullanim hizmet bedeli tarifesinden az olmamak uzere belirleyip onay icin sunmakla gorevlidir. Su kullanim hizmet bedeli tarifesinin belirlenme ve onay surecinin dayanagidir. [DOGRULA: 2018 sonrasi yapida tarifeyi baskan belirleyip DSI Bolge Mudurlugu/Bakanlik onayina sunar; fikra numaralandirmasi konsolide metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Birligin gelirleri ve giderleri\nBirligin baslica gelirleri; su kullanim hizmet bedeli, katilim payi, gecikme zammi, ortak tesislerden elde edilen gelirler ve bagislardir. Giderleri ise isletme-bakim-onarim, personel, enerji ve yatirim geri odeme kalemlerinden olusur. Birlik uyeleri tahakkuk ettirilen su kullanim hizmet bedelini ve borclarini duzenli odemek zorundadir; sure odenmeyen alacaklar gecikme zammi ile tahsil edilir. Su kullanim bedeli tahakkuk/tahsilat evraginin dayanagidir."
+  },
+  {
+   "mevzuat": "6172 sulama birlikleri kanunu",
+   "kaynak_dosya": "6172_sulama_birlikleri_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Ceza hukumleri\nHazirlanan su dagitim planinda belirtilen zaman veya sure disinda izinsiz sulama yapan birlik uyelerine, sulanan arazinin dekari basina su kullanim hizmet bedelinin iki katina kadar; tekrari halinde dort katina kadar idari para cezasi uygulanir. Gorev alani icinde uye olmadan izinsiz su kullananlardan da bedelin kati uygulanir. Su dagitim planina aykiri kullanim ve usulsuz sulamaya iliskin tutanak/ceza evraklarinin dayanagidir. [DOGRULA: cari kat oranlari ve madde fikra detaylari konsolide metinden teyit edilmeli]"
   },
   {
    "mevzuat": "6183 amme alacaklari tahsil kanunu",
@@ -7703,6 +7829,62 @@
    "text": "Madde 90 — Patent başvurusu (Başvuru)\nPatent verilmesi için yapılacak başvuru; başvuru formu, buluş konusunu açıklayan tarifname, korunması istenen unsurları belirleyen istem veya istemler, tarifnamede veya istemlerde atıf yapılan resimler (varsa) ve özet ile Kuruma yapılır. Başvuru tarihinin kesinleşmesi için en az başvuru talebinin, başvuru sahibinin kimlik bilgilerinin ve tarifnamenin (veya önceki bir başvuruya atfın) Kuruma verilmiş olması gerekir. Buluşu yapan başvuruda belirtilir; buluş genetik kaynağa dayanıyorsa kaynağın nereden alındığına ilişkin açıklamaya yer verilir. Bu hüküm patent başvuru evrakının zorunlu unsurlarının dayanağıdır."
   },
   {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 28,
+   "madde_tur": "madde",
+   "text": "Madde 28 — Mevzu (verginin konusu) ve vergiyi doguran olay\nBanka ve sigorta sirketlerinin (Finansal Kiralama Kanununa gore yaptiklari islemler haric) her ne sekilde olursa olsun yapacaklari butun muameleler dolayisiyla kendi lehlerine her ne nam ile olursa olsun nakden veya hesaben aldiklari paralar banka ve sigorta muameleleri vergisine tabidir. Bankerlerin yaptiklari banka muamele ve hizmetleri dolayisiyla kendi lehlerine aldiklari paralar da bu verginin kapsamindadir; vergiyi doguran olay lehe paranin alinmasidir."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Istisnalar\nBazi islemler banka ve sigorta muameleleri vergisinden istisnadir; bunlar arasinda banka sube ve ajanslari arasi muameleler, ozel kanunlarla veya kanunun verdigi yetkiye dayanilarak vergiden istisna edilmis menkul kiymetlerin gelirleri, emeklilik ve hayat sigortalari ile zirai sigortalar ve mevzuatta sayilan kredi/konut finansmani islemleri yer alir. Istisna kapsami zamanla eklenen bentlerle genisletilmistir; uygulanacak guncel istisna bentleri icin [DOGRULA: 1/1/2026 itibariyla yururlukteki bent listesi]."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Mukellef\nBanka ve sigorta muameleleri vergisini banka ve bankerlerle sigorta sirketleri oder. Sigorta aracilari (acente/broker) tarafindan yapilan sigorta islemlerinde de verginin mukellefi sigorta sirketleridir. Vergi mukellefce beyan edilip odenir; beyan evrakinin sorumlusunu belirler."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 31,
+   "madde_tur": "madde",
+   "text": "Madde 31 — Matrah\nVerginin matrahi 28 inci maddede yazilan paralarin tutaridir. Sigorta islemlerinde matrah, bu islem dolayisiyla policede yer alan prim tutaridir; primin tamami pesin alinmamis olsa dahi matraha dahildir. Matrahtan hicbir ad altinda gider veya vergi indirimi yapilamaz; kambiyo muamelelerinde matrah kambiyo satis tutaridir."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 33,
+   "madde_tur": "madde",
+   "text": "Madde 33 — Nispet (oran)\nBanka ve sigorta muameleleri vergisinin nispeti kanunda belirlenen ust sinirlar icinde Cumhurbaskani (eskiden Bakanlar Kurulu) karariyla tespit edilir; kambiyo muamelelerinde sifira kadar indirme ve on katina kadar artirma yetkisi taninmistir. Genel BSMV orani [DOGRULA: 98/11591 sayili BKK ile %5; kambiyo islemlerinde 1/1/2026 itibariyla binde 2; tuketici kredilerinde %10] olup oran kararlarla degisebileceginden beyandan once guncel oran teyit edilmelidir."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 39,
+   "madde_tur": "madde",
+   "text": "Madde 39 — Ozel iletisim vergisi\nElektronik haberlesme hizmeti sunan isletmecilerin verdikleri (mobil telefon, kablolu/kablosuz ve uydu yayini, internet servis saglayiciligi dahil) hizmetler ozel iletisim vergisine tabidir; mobil telefon aboneliginin ilk tesisinde ayrica maktu vergi alinir. Ozel iletisim vergisi faturada ayrica gosterilir, KDV matrahina dahil edilmez ve gelir/kurumlar vergisi uygulamasinda gider yazilamaz. Oranlar [DOGRULA: 1/1/2026 itibariyla yururlukteki ozel iletisim vergisi orani] olarak teyit edilmelidir."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 44,
+   "madde_tur": "madde",
+   "text": "Madde 44 — Verginin tarhi ve beyannamenin verilecegi yer\nBanka ve sigorta muameleleri vergisi, mukellefin bu islemleri yaptigi yer vergi dairesince tarh olunur. Sigorta sirketlerinin tum muamelelerine ait vergi, sirket merkezinin (veya kanunda belirtilen yerin) bagli oldugu vergi dairesine verilecek tek beyanname ile beyan edilir; beyannamenin dogru vergi dairesine verilmesi tarhin gecerliligi acisindan esastir."
+  },
+  {
+   "mevzuat": "6802 gider vergileri kanunu",
+   "kaynak_dosya": "6802_gider_vergileri_kanunu.txt",
+   "madde_no": 47,
+   "madde_tur": "madde",
+   "text": "Madde 47 — Beyanname verme zamani\nHer mukellef bir ay icindeki vergiye tabi muamelelerini, ertesi ayin on besinci gunu aksamina kadar bir beyanname ile ilgili vergi dairesine bildirmek zorundadir. O ay icinde vergiye tabi muamelesi bulunmasa dahi durumun beyanname ile bildirilmesi gerekir; beyanname verme suresi ayni zamanda verginin odeme suresidir."
+  },
+  {
    "mevzuat": "6831 orman kanunu",
    "kaynak_dosya": "6831_orman_kanunu.txt",
    "madde_no": 1,
@@ -7976,6 +8158,48 @@
    "text": "Madde 32 — Usulüne aykırı tebliğin hükmü\nTebliğ usulüne aykırı yapılmış olsa bile, muhatabı tebliğe muttali olmuş ise muteber\nsayılır. Muhatabın beyan ettiği tarih, tebliğ tarihi olarak kabul edilir. Tebliğin\nusulüne aykırı yapıldığını iddia eden, beyan ettiği bu tarihi ispatla mükelleftir."
   },
   {
+   "mevzuat": "7269 umumi hayata muessir afetler kanunu",
+   "kaynak_dosya": "7269_umumi_hayata_muessir_afetler_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Kanunun Kapsamı ve Afetin Belirlenmesi\nDeprem, yangın, su baskını, yer kayması, kaya düşmesi, çığ, tasman ve benzeri afetlerde yapıları ve kamu tesisleri umumi (genel) hayata etkili olacak derecede zarar gören veya görmesi muhtemel olan yerlerde alınacak tedbirler bu Kanuna tabidir. Bir afetin umumi hayata etkili olup olmadığına -afet anındaki ve sonrasındaki ölçütlere göre- yetkili bakanlık (mülga İmar ve İskân Bakanlığı; bugün Çevre, Şehircilik ve İklim Değişikliği Bakanlığı / AFAD koordinasyonu) karar verir."
+  },
+  {
+   "mevzuat": "7269 umumi hayata muessir afetler kanunu",
+   "kaynak_dosya": "7269_umumi_hayata_muessir_afetler_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Afet Sonrası Tedbirler, Fen Kurulu Hasar Tespiti ve Geçici Barınma\nAfetin meydana gelmesi üzerine yetkili bakanlıkça kurulan fen kurulları, afetten etkilenen arazinin durumu ile bütün yapıları ve kamu tesislerini inceleyerek hasar tespit raporu düzenler; tehlikeli durumda olup boşaltılması veya yıktırılması gereken yapılar hakkında ayrıca o yer mülki amirine (vali/kaymakam) rapor verilir. Maddenin (d) bendi uyarınca afetzedelerin geçici barındırılması için çadır, baraka ve geçici konutlar inşa edilebilir, ettirilebilir, kiralanabilir veya satın alınabilir; geçici barınma süresi ve nakdi yardım miktarı bakanlıkça belirlenir. Hasar tespitiyle ilgili belge ve raporlar, hak sahipliği ve yardım süreçlerinin dayanağını oluşturur. [DOĞRULA: hasar tespit raporuna itiraz süresinin (yaygın uygulamada ilan tarihinden itibaren 30 gün) tam dayanağı ve güncel madde fıkrası mevzuat.gov.tr metninden teyit edilmeli]."
+  },
+  {
+   "mevzuat": "7269 umumi hayata muessir afetler kanunu",
+   "kaynak_dosya": "7269_umumi_hayata_muessir_afetler_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Tehlikeli Yapıların Boşaltılması ve Yıktırılması\nFen kurullarınca veya yetkili teknik elemanlarca tehlikeli görülerek boşaltılması ve yıktırılması gereken yapılar derhal boşaltılır; tehlike bertaraf edilinceye kadar girilmesi yasaklanır. Yapı sahibi süresinde yıkmadığı takdirde yapı, vali veya kaymakamın emriyle yıktırılır ve yıkım masrafı sahibinden veya afet fonundan karşılanır. Bu hüküm, can güvenliği için boşaltma/tahliye ve yıkım tebligatlarının hukuki dayanağıdır."
+  },
+  {
+   "mevzuat": "7269 umumi hayata muessir afetler kanunu",
+   "kaynak_dosya": "7269_umumi_hayata_muessir_afetler_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Hak Sahipliği — Konut Yaptırılması veya İnşaat Kredisi\nYıkılan, yanan veya ağır hasara uğrayan yahut ağır hasar görmesi muhtemel olan binalarla, imar planları gereğince kamulaştırılması zorunlu yerlerdeki binalarda oturan ailelere, hak sahibi olmak şartıyla konut yaptırılır veya inşaat kredisi verilir. Afet nedeniyle yıkılan/yanan/ağır hasarlı binalarda birden fazla aile oturuyorsa her aile ayrı ayrı bu Kanun hükümlerinden yararlanabilir. Hak sahipliği, afetzedenin yıkılan/ağır hasarlı binayla mülkiyet ya da oturma ilişkisine dayanır; ayrıntılı şartlar 'Afet Sebebiyle Hak Sahibi Olanların Tespiti Hakkında Yönetmelik' ile düzenlenir."
+  },
+  {
+   "mevzuat": "7269 umumi hayata muessir afetler kanunu",
+   "kaynak_dosya": "7269_umumi_hayata_muessir_afetler_kanunu.txt",
+   "madde_no": 40,
+   "madde_tur": "madde",
+   "text": "Madde 40 — Borçlandırma Senedi, Geri Ödeme Süresi ve Faiz\nHak sahiplerine verilen arsa, konut ve işyeri yardımları borçlandırma senedi imzalanarak temlik edilir; bakanlıkça yapılan ilan tarihinden itibaren (yaygın uygulamada 2 ay) içinde borçlanma işlemini yaptırmayanlar veya teslim almayanlar hak sahipliğini kaybeder. Konut ve konut inşaat kredisi yardımları faizsiz, dükkân/işyeri gibi yardımlar yıllık %4 faizli olarak; konutta 20-30 yıla, işyerinde 5-15 yıla varan eşit taksitlerle ve 2 yıllık ödemesiz dönemin ardından geri alınır. [DOĞRULA: kesin taksit yılı, faiz oranı ve ödemesiz dönem rakamları, ilgili uygulama yönetmeliği ve sonradan getirilen indirim düzenlemeleriyle birlikte mevzuat.gov.tr/güncel ilanlardan teyit edilmeli]."
+  },
+  {
+   "mevzuat": "7269 umumi hayata muessir afetler kanunu",
+   "kaynak_dosya": "7269_umumi_hayata_muessir_afetler_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — İskân Yeri Seçimi ve Arazi Temini / Kamulaştırma\nAfet sebebiyle yeniden iskân edilecek afetzedeler için yapı yerlerinin seçiminde önce Hazine, özel idare, belediye ve köy tüzel kişiliğine ait taşınmazlar değerlendirilir; bu yerlere uygun arazi bulunamazsa kamulaştırma mevzuatı çerçevesinde kamulaştırma yapılabilir. Temin edilen ya da kamulaştırılan taşınmazlar genel olarak Hazine adına tescil edilir ve hak sahiplerine borçlandırma yoluyla devredilir. Bu hüküm, afet konutu yer seçimi, tahsis ve kamulaştırma işlemlerinin (tahsis kararı, kamulaştırma belgesi, tapu tescili) dayanağını oluşturur. [DOĞRULA: arazi temini/kamulaştırma hükümlerinin tam madde numarası (21 ile çevresi 21-22) güncel konsolide metinden teyit edilmeli]."
+  },
+  {
    "mevzuat": "7338 veraset ve intikal vergisi kanunu",
    "kaynak_dosya": "7338_veraset_ve_intikal_vergisi_kanunu.txt",
    "madde_no": 1,
@@ -8156,6 +8380,62 @@
    "madde_no": 8,
    "madde_tur": "ek",
    "text": "Ek Madde 8 — Belediye sınırı dışındaki kaynaklarda yetki\nKaynağı belediye sınırları dışında bulunan sular bakımından da belediye; kaynakların ve su yollarının bakımı, korunması ve sağlık şartlarına uygunluğunun sağlanması ile Madde 7 uyarınca yasakların uygulanması yetkisine sahiptir ve bu yetki kaynağa kadar uzanır. İçme suyu kaynağının korunmasına ilişkin işlemlerin belediye sınırı dışında da yürütülebilmesinin dayanağıdır. [DOĞRULA: ek madde numaralandırması sonraki değişikliklerle eklendiğinden cari metinde teyit edilmeli]"
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Hizmet aktinin yazılı yapılması (yazılı akit)\nHizmet akti, işveren veya işveren vekili ile gemiadamı arasında yazılı olarak iki nüsha düzenlenir ve taraflardan her birine birer nüsha verilir. Yazılı şekil bu kanun kapsamındaki gemiadamı hizmet aktinin geçerlilik koşuludur; deniz iş ilişkisi 4857 sayılı İş Kanunu'nun aksine sözlü kurulamaz. Hizmet akti belirli bir süre veya sefer için yahut süresiz olarak yapılabilir."
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Yazılı aktin şekli (içermesi gereken hususlar)\nBu kanuna göre yapılacak yazılı hizmet akitlerinde belirli hususların gösterilmesi zorunludur: işverenle gemiadamının adı-soyadı ve adresleri, gemiadamının yapacağı iş, işyeri (gemi), aktin yapıldığı yer ve tarih, gemiadamının göreve başlayacağı tarih ve yer, ücret ve ekleri ile ödeme şekli/zamanı, varsa avans şartları, aktin belirli süreli ise süresi/seferi gibi unsurlar. Bu hususlar gemiadamının çalışma koşullarını belgelendirir ve uyuşmazlıkta esas alınır."
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Feshin yazılı bildirimi (sebep gösterme)\nHizmet aktinin işveren veya işveren vekili tarafından feshedilmesi halinde, fesih sebepleri ile birlikte gemiadamına yazılı olarak bildirilmesi şarttır. Yazılı ve gerekçeli bildirim, gemiadamının fesih sebebini öğrenmesini ve haklarını (ihbar/kıdem tazminatı, dava) aramasını güvence altına alır. [DOĞRULA: madde 14'ün haklı nedenle derhal fesih (m.14 bentleri) ile ilişkisi resmî metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Hizmet aktinin feshinde bildirim (ihbar) süreleri\nSüresi belirli olmayan hizmet akitleri, feshden önce durumun diğer tarafa bildirilmesiyle sona erer. Bildirim süreleri gemiadamının kıdemine göre kademelidir: işi altı aydan az sürene 2 hafta, altı ay–birbuçuk yıl arasına 4 hafta, birbuçuk–üç yıl arasına 6 hafta, üç yıldan fazla sürene 8 hafta. Bildirim şartına uymayan taraf, bildirim süresine ait ücret tutarında ihbar tazminatı öder. Bu süreler asgari olup sözleşmeyle artırılabilir."
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — Kıdem tazminatı\nHizmet aktinin işverence (haklı sebep dışında) feshi, gemiadamının ölümü veya kanunda sayılan hallerde son bulması durumunda; gemiadamının işe başladığı tarihten itibaren hizmet aktinin devamı süresince geçen her tam yıl için işverence 30 günlük ücreti tutarında kıdem tazminatı ödenir. Bir yıldan artan süreler için de aynı oran üzerinden ödeme yapılır. Kıdem tazminatına esas ücrete, gemiadamına sağlanan para ve para ile ölçülebilen menfaatler de katılır."
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 28,
+   "madde_tur": "madde",
+   "text": "Madde 28 — Fazla saatlerle çalışma ücreti\nBu kanuna göre tespit edilen iş sürelerinin (günde 8, haftada 48 saat) aşılması suretiyle yapılan çalışmalar fazla saatlerle çalışma sayılır. Yapılacak her fazla çalışma saati için ödenecek ücret, normal çalışma ücretinin saat başına düşen tutarının %25 oranında artırılmasıyla bulunacak miktardan az olamaz. Fazla çalışma ücreti, gemiadamına ilgili ücret ödeme devresinde ödenir."
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Ücretin ödenmesi (ödeme devresi)\nÜcret, prim, ikramiye ve bu nitelikteki her çeşit istihkakın gemiadamına hizmet aktinde gösterilen yer ve devrelerde tam olarak ödenmesi zorunludur; ücret ödeme devresi bir aydan fazla olamaz. Hizmet aktinin sona ermesi veya bozulması halinde işveren veya işveren vekili gemiadamının ücretini derhal ve tam olarak ödemek zorundadır. İşveren, gemiadamının isteği halinde hizmet aktinde yazılı esaslara göre avans ödemeye zorunludur."
+  },
+  {
+   "mevzuat": "854 deniz is kanunu",
+   "kaynak_dosya": "854_deniz_is_kanunu.txt",
+   "madde_no": 40,
+   "madde_tur": "madde",
+   "text": "Madde 40 — Yıllık ücretli izin\nAynı işveren emrinde veya aynı gemide bir takvim yılı içinde bir veya birkaç hizmet aktine dayanarak en az altı ay çalışmış olan gemiadamı, yıllık ücretli izne hak kazanır. İzin süresi gemiadamının hizmet süresine göre belirlenir ve bu haktan vazgeçilemez. İzin ücreti, izne başlanmadan önce peşin olarak veya avans olarak ödenir. [DOĞRULA: yıllık izin gün sayıları kıdem dilimlerine göre resmî metinden teyit edilmelidir.]"
   },
   {
    "mevzuat": "992 seriri gidai taharriyat laboratuvarlar kanunu",
@@ -9607,5 +9887,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 212
+ "mevzuat_sayisi": 218
 }

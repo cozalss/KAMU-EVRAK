@@ -1,0 +1,29 @@
+Sulama Birlikleri Kanunu
+Kanun No 6172, Kabul 18.03.2011, RG 22.03.2011/27882 — YURURLUKTE (mevzuat.gov.tr ve Lexpera konsolide metin uzerinden dogrulandi; son degisiklik 08.03.2022 tarih 7381 sayili Kanun; 2018'de 703 sayili KHK ile organ yapisi yeniden duzenlendi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6172&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amac ve kapsam
+Kanunun amaci, su varliklarinin rasyonel kullanimi maksadiyla umumi sulardan faydalanmak uzere Devlet Su Isleri (DSI) Genel Mudurlugu tarafindan insa edilmis veya edilmekte olan sulama tesislerini amacina uygun sekilde kullanmak, isletmek, bunlarin bakim ve onarimini yapmak uzere kurulan sulama birliklerinin kurulusu, organlari ile gorev ve yetkilerini duzenlemektir. Birlikler kamu tuzel kisiligine sahiptir. Sulama-birlik basvuru ve yazismalarinin yasal cercevesini belirleyen temel maddedir.
+
+Madde 2 — Tanimlar
+Kanunda gecen temel kavramlari tanimlar. "Gorev alani" birlige devredilen tesisin hizmet alanidir. "Su kullanicisi" gorev alaninda sulama yapan veya yapacak olan gercek ya da tuzel kisidir. "Katilim payi" su kullanicilarinin birlige ilk katilimlarinda, arazinin her dekari icin bir defaya mahsus alinan paydir. "Su kullanim hizmet bedeli tarifesi" suyun ulastirilmasi, fazla suyun uzaklastirilmasi, isletme-bakim-onarim ve enerji gibi giderleri karsilayacak sekilde belirlenen bedeldir. Uyelik/katilim payi/tarife evraklarinin dayanak tanimlarini icerir.
+
+Madde 3 — Birligin gorev alani ve calisma konulari
+Birliklerin gorev alani, devredilen tesislerin hizmet alanidir ve DSI tarafindan belirlenir; bir gorev alaninda ayni amacla birden fazla birlik kurulamaz. Calisma konulari: tesislerin isletme, bakim, onarim ve yenilenmesi; katilim payi ile su kullanim hizmet bedelinin tahsili; yatirim bedeli geri odeme; ekim planlamasi ve verim hedefleri; arastirma-egitim faaliyetleri. Sulama hizmeti talebi ve birlik gorev kapsamini belirleyen maddedir.
+
+Madde 4 — Birligin tuzel kisilik kazanmasi ve uyelik
+Birlik, gorev alanindaki yerlesim birimlerinden katilimcilarin imzaladigi birlik ana statusunun DSI gorusu alinarak Bakanlikca onaylanmasi ile tuzel kisilik kazanir. Gorev alanindaki su kullanicilari birlige uye olabilir; uyelik kaydi yapilirken bir defaya mahsus katilim payi tahsil edilir. Katilim payi, ilgili yil isletme-bakim ucret tarifesinde dekar basina belirlenen en dusuk ucret tarifesinden asagi olamaz. Sulama-birlik uyelik basvurusu ve katilim payi tahakkukunun dogrudan dayanagidir.
+
+Madde 9 — Baskanlik; su kullanim hizmet bedelinin belirlenmesi
+Birligin yurutme ve temsil organi baskanliktir. Baskan, butce ve is programini hazirlamak, gelir ve alacaklari tahsil etmek ile yillik su kullanim hizmet bedelini, Bakanlikca onaylanan asgari su kullanim hizmet bedeli tarifesinden az olmamak uzere belirleyip onay icin sunmakla gorevlidir. Su kullanim hizmet bedeli tarifesinin belirlenme ve onay surecinin dayanagidir. [DOGRULA: 2018 sonrasi yapida tarifeyi baskan belirleyip DSI Bolge Mudurlugu/Bakanlik onayina sunar; fikra numaralandirmasi konsolide metinden teyit edilmeli]
+
+Madde 11 — Birligin gelirleri ve giderleri
+Birligin baslica gelirleri; su kullanim hizmet bedeli, katilim payi, gecikme zammi, ortak tesislerden elde edilen gelirler ve bagislardir. Giderleri ise isletme-bakim-onarim, personel, enerji ve yatirim geri odeme kalemlerinden olusur. Birlik uyeleri tahakkuk ettirilen su kullanim hizmet bedelini ve borclarini duzenli odemek zorundadir; sure odenmeyen alacaklar gecikme zammi ile tahsil edilir. Su kullanim bedeli tahakkuk/tahsilat evraginin dayanagidir.
+
+Madde 12 — Ceza hukumleri
+Hazirlanan su dagitim planinda belirtilen zaman veya sure disinda izinsiz sulama yapan birlik uyelerine, sulanan arazinin dekari basina su kullanim hizmet bedelinin iki katina kadar; tekrari halinde dort katina kadar idari para cezasi uygulanir. Gorev alani icinde uye olmadan izinsiz su kullananlardan da bedelin kati uygulanir. Su dagitim planina aykiri kullanim ve usulsuz sulamaya iliskin tutanak/ceza evraklarinin dayanagidir. [DOGRULA: cari kat oranlari ve madde fikra detaylari konsolide metinden teyit edilmeli]

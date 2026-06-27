@@ -1,0 +1,32 @@
+Deniz İş Kanunu
+Kanun No 854, Kabul 20.04.1967, RG 29.04.1967/12586 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.854 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.854.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Hizmet aktinin yazılı yapılması (yazılı akit)
+Hizmet akti, işveren veya işveren vekili ile gemiadamı arasında yazılı olarak iki nüsha düzenlenir ve taraflardan her birine birer nüsha verilir. Yazılı şekil bu kanun kapsamındaki gemiadamı hizmet aktinin geçerlilik koşuludur; deniz iş ilişkisi 4857 sayılı İş Kanunu'nun aksine sözlü kurulamaz. Hizmet akti belirli bir süre veya sefer için yahut süresiz olarak yapılabilir.
+
+Madde 6 — Yazılı aktin şekli (içermesi gereken hususlar)
+Bu kanuna göre yapılacak yazılı hizmet akitlerinde belirli hususların gösterilmesi zorunludur: işverenle gemiadamının adı-soyadı ve adresleri, gemiadamının yapacağı iş, işyeri (gemi), aktin yapıldığı yer ve tarih, gemiadamının göreve başlayacağı tarih ve yer, ücret ve ekleri ile ödeme şekli/zamanı, varsa avans şartları, aktin belirli süreli ise süresi/seferi gibi unsurlar. Bu hususlar gemiadamının çalışma koşullarını belgelendirir ve uyuşmazlıkta esas alınır.
+
+Madde 14 — Feshin yazılı bildirimi (sebep gösterme)
+Hizmet aktinin işveren veya işveren vekili tarafından feshedilmesi halinde, fesih sebepleri ile birlikte gemiadamına yazılı olarak bildirilmesi şarttır. Yazılı ve gerekçeli bildirim, gemiadamının fesih sebebini öğrenmesini ve haklarını (ihbar/kıdem tazminatı, dava) aramasını güvence altına alır. [DOĞRULA: madde 14'ün haklı nedenle derhal fesih (m.14 bentleri) ile ilişkisi resmî metinden teyit edilmelidir.]
+
+Madde 16 — Hizmet aktinin feshinde bildirim (ihbar) süreleri
+Süresi belirli olmayan hizmet akitleri, feshden önce durumun diğer tarafa bildirilmesiyle sona erer. Bildirim süreleri gemiadamının kıdemine göre kademelidir: işi altı aydan az sürene 2 hafta, altı ay–birbuçuk yıl arasına 4 hafta, birbuçuk–üç yıl arasına 6 hafta, üç yıldan fazla sürene 8 hafta. Bildirim şartına uymayan taraf, bildirim süresine ait ücret tutarında ihbar tazminatı öder. Bu süreler asgari olup sözleşmeyle artırılabilir.
+
+Madde 20 — Kıdem tazminatı
+Hizmet aktinin işverence (haklı sebep dışında) feshi, gemiadamının ölümü veya kanunda sayılan hallerde son bulması durumunda; gemiadamının işe başladığı tarihten itibaren hizmet aktinin devamı süresince geçen her tam yıl için işverence 30 günlük ücreti tutarında kıdem tazminatı ödenir. Bir yıldan artan süreler için de aynı oran üzerinden ödeme yapılır. Kıdem tazminatına esas ücrete, gemiadamına sağlanan para ve para ile ölçülebilen menfaatler de katılır.
+
+Madde 28 — Fazla saatlerle çalışma ücreti
+Bu kanuna göre tespit edilen iş sürelerinin (günde 8, haftada 48 saat) aşılması suretiyle yapılan çalışmalar fazla saatlerle çalışma sayılır. Yapılacak her fazla çalışma saati için ödenecek ücret, normal çalışma ücretinin saat başına düşen tutarının %25 oranında artırılmasıyla bulunacak miktardan az olamaz. Fazla çalışma ücreti, gemiadamına ilgili ücret ödeme devresinde ödenir.
+
+Madde 29 — Ücretin ödenmesi (ödeme devresi)
+Ücret, prim, ikramiye ve bu nitelikteki her çeşit istihkakın gemiadamına hizmet aktinde gösterilen yer ve devrelerde tam olarak ödenmesi zorunludur; ücret ödeme devresi bir aydan fazla olamaz. Hizmet aktinin sona ermesi veya bozulması halinde işveren veya işveren vekili gemiadamının ücretini derhal ve tam olarak ödemek zorundadır. İşveren, gemiadamının isteği halinde hizmet aktinde yazılı esaslara göre avans ödemeye zorunludur.
+
+Madde 40 — Yıllık ücretli izin
+Aynı işveren emrinde veya aynı gemide bir takvim yılı içinde bir veya birkaç hizmet aktine dayanarak en az altı ay çalışmış olan gemiadamı, yıllık ücretli izne hak kazanır. İzin süresi gemiadamının hizmet süresine göre belirlenir ve bu haktan vazgeçilemez. İzin ücreti, izne başlanmadan önce peşin olarak veya avans olarak ödenir. [DOĞRULA: yıllık izin gün sayıları kıdem dilimlerine göre resmî metinden teyit edilmelidir.]

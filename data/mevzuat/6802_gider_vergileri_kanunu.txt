@@ -1,0 +1,32 @@
+Gider Vergileri Kanunu (Banka ve Sigorta Muameleleri Vergisi - Özel İletişim Vergisi)
+Kanun No 6802, Kabul 13.07.1956, RG 23.07.1956/9362 — YURURLUKTE (resmi PDF 1.3.6802 konsolide metin ve mevzuat.gov.tr fihristi uzerinden dogrulandi). Banka ve Sigorta Muameleleri Vergisi (BSMV) ile Ozel Iletisim Vergisini duzenleyen yururlukteki kanun; eski dahili istihsal/PTT/akaryakit gider vergileri kaldirilmistir. Vergi oranlari (nispet) buyuk olcude Cumhurbaskani/Bakanlar Kurulu kararlariyla degisken oldugundan guncel oranlar [DOGRULA] isareti tasir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6802&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 28 — Mevzu (verginin konusu) ve vergiyi doguran olay
+Banka ve sigorta sirketlerinin (Finansal Kiralama Kanununa gore yaptiklari islemler haric) her ne sekilde olursa olsun yapacaklari butun muameleler dolayisiyla kendi lehlerine her ne nam ile olursa olsun nakden veya hesaben aldiklari paralar banka ve sigorta muameleleri vergisine tabidir. Bankerlerin yaptiklari banka muamele ve hizmetleri dolayisiyla kendi lehlerine aldiklari paralar da bu verginin kapsamindadir; vergiyi doguran olay lehe paranin alinmasidir.
+
+Madde 29 — Istisnalar
+Bazi islemler banka ve sigorta muameleleri vergisinden istisnadir; bunlar arasinda banka sube ve ajanslari arasi muameleler, ozel kanunlarla veya kanunun verdigi yetkiye dayanilarak vergiden istisna edilmis menkul kiymetlerin gelirleri, emeklilik ve hayat sigortalari ile zirai sigortalar ve mevzuatta sayilan kredi/konut finansmani islemleri yer alir. Istisna kapsami zamanla eklenen bentlerle genisletilmistir; uygulanacak guncel istisna bentleri icin [DOGRULA: 1/1/2026 itibariyla yururlukteki bent listesi].
+
+Madde 30 — Mukellef
+Banka ve sigorta muameleleri vergisini banka ve bankerlerle sigorta sirketleri oder. Sigorta aracilari (acente/broker) tarafindan yapilan sigorta islemlerinde de verginin mukellefi sigorta sirketleridir. Vergi mukellefce beyan edilip odenir; beyan evrakinin sorumlusunu belirler.
+
+Madde 31 — Matrah
+Verginin matrahi 28 inci maddede yazilan paralarin tutaridir. Sigorta islemlerinde matrah, bu islem dolayisiyla policede yer alan prim tutaridir; primin tamami pesin alinmamis olsa dahi matraha dahildir. Matrahtan hicbir ad altinda gider veya vergi indirimi yapilamaz; kambiyo muamelelerinde matrah kambiyo satis tutaridir.
+
+Madde 33 — Nispet (oran)
+Banka ve sigorta muameleleri vergisinin nispeti kanunda belirlenen ust sinirlar icinde Cumhurbaskani (eskiden Bakanlar Kurulu) karariyla tespit edilir; kambiyo muamelelerinde sifira kadar indirme ve on katina kadar artirma yetkisi taninmistir. Genel BSMV orani [DOGRULA: 98/11591 sayili BKK ile %5; kambiyo islemlerinde 1/1/2026 itibariyla binde 2; tuketici kredilerinde %10] olup oran kararlarla degisebileceginden beyandan once guncel oran teyit edilmelidir.
+
+Madde 39 — Ozel iletisim vergisi
+Elektronik haberlesme hizmeti sunan isletmecilerin verdikleri (mobil telefon, kablolu/kablosuz ve uydu yayini, internet servis saglayiciligi dahil) hizmetler ozel iletisim vergisine tabidir; mobil telefon aboneliginin ilk tesisinde ayrica maktu vergi alinir. Ozel iletisim vergisi faturada ayrica gosterilir, KDV matrahina dahil edilmez ve gelir/kurumlar vergisi uygulamasinda gider yazilamaz. Oranlar [DOGRULA: 1/1/2026 itibariyla yururlukteki ozel iletisim vergisi orani] olarak teyit edilmelidir.
+
+Madde 44 — Verginin tarhi ve beyannamenin verilecegi yer
+Banka ve sigorta muameleleri vergisi, mukellefin bu islemleri yaptigi yer vergi dairesince tarh olunur. Sigorta sirketlerinin tum muamelelerine ait vergi, sirket merkezinin (veya kanunda belirtilen yerin) bagli oldugu vergi dairesine verilecek tek beyanname ile beyan edilir; beyannamenin dogru vergi dairesine verilmesi tarhin gecerliligi acisindan esastir.
+
+Madde 47 — Beyanname verme zamani
+Her mukellef bir ay icindeki vergiye tabi muamelelerini, ertesi ayin on besinci gunu aksamina kadar bir beyanname ile ilgili vergi dairesine bildirmek zorundadir. O ay icinde vergiye tabi muamelesi bulunmasa dahi durumun beyanname ile bildirilmesi gerekir; beyanname verme suresi ayni zamanda verginin odeme suresidir.

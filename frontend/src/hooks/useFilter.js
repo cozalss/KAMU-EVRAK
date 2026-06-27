@@ -41,7 +41,8 @@ export function deriveOptions(items, field, labelFn) {
 }
 
 export function useFilter(items, config) {
-  const dm = config?.dataMapping || {};
+  // dataMapping kararlı referans tut → results useMemo gereksiz yeniden-hesaplanmasın.
+  const dm = useMemo(() => config?.dataMapping || {}, [config]);
   const [search, setSearchState] = useState("");
   const [chips, setChips] = useState(() => {
     const m = {};

@@ -1,7 +1,7 @@
 /* GidenEvrakView — onaylanıp gönderilen resmî yazıların arşivi + en zengin filtre
    (arama/risk/durum çip + tür/birim select + tarih + sıralama) + detay modalı.
    outbox: DashboardApp session state (Onayla&Gönder → giden evrak). */
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ViewWrap, NeonCard, Btn, EmptyState, KV, Icon, MONO, SANS, T, V, PAL, BANT } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
@@ -77,6 +77,8 @@ function DetayModal({ item, onClose }) {
 
 export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onResend }) {
   const [detay, setDetay] = useState(null);
+  const triggerRef = useRef(null);   // modal kapanınca odağı tetikleyen butona geri ver (a11y)
+  const closeDetay = useCallback(() => { setDetay(null); triggerRef.current?.focus(); }, []);
   const config = useMemo(() => ({
     ...BASE_CONFIG,
     select: [
@@ -121,14 +123,14 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
                 <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: (BANT[item.risk]?.c || PAL.mut2) + "22", color: BANT[item.risk]?.c || PAL.mut2, flexShrink: 0 }}>{BANT[item.risk]?.l || "—"}</span>
                 <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: drenk + "1a", color: drenk, flexShrink: 0 }}>{DURUM_TR[item.durum] || item.durum}</span>
                 <span style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, flexShrink: 0 }}>{fmtTime(item.gonderim_tarihi)}</span>
-                <Btn accent={T} onClick={() => setDetay(item)} ariaLabel={`${item.id} detayını görüntüle`}>Görüntüle</Btn>
+                <Btn accent={T} onClick={(e) => { triggerRef.current = e.currentTarget; setDetay(item); }} ariaLabel={`${item.id} detayını görüntüle`}>Görüntüle</Btn>
               </div>
             );
           })}
         </div>
       )}
 
-      <DetayModal item={detay} onClose={() => setDetay(null)} />
+      <DetayModal item={detay} onClose={closeDetay} />
     </ViewWrap>
   );
 }

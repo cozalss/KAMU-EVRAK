@@ -65,7 +65,7 @@ export default function DashboardApp() {
       lastResultRef.current = result;
       const name = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
       setHistory((h) => [{
-        id: `${h.length}-${name}`, name, kind: fileMeta?.kind, ts: Date.now(),
+        id: `${Date.now()}-${h.length}-${name}`, name, kind: fileMeta?.kind, ts: Date.now(),
         evrak_turu: result.evrak_turu, hedef_birim: result.hedef_birim,
         bant: result.risk_metadata?.bant, result,
       }, ...h]);

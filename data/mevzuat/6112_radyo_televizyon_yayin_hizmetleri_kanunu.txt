@@ -1,0 +1,26 @@
+Radyo ve Televizyonların Kuruluş ve Yayın Hizmetleri Hakkında Kanun
+Kanun No 6112, Kabul 15.02.2011, RG 03.03.2011/27863 — YÜRÜRLÜKTE (sonraki kanunlarla, özellikle 7253 sayılı Kanunla internet yayınlarına ilişkin değişiklikler dâhil; idari para cezaları her yıl yeniden değerleme oranıyla güncellenir)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6112.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanundaki temel aktörleri ve kavramları tanımlar. Medya hizmet sağlayıcı, radyo, televizyon ve isteğe bağlı yayın hizmeti içeriğinin seçiminde editoryal sorumluluğu bulunan ve bu hizmetin düzenlenme ve yayınlanma biçimine karar veren tüzel kişidir. Yayın lisansı, medya hizmet sağlayıcı kuruluşlara, Kanunda ve düzenlemelerde belirtilen şartları taşımaları hâlinde kablo, uydu, karasal ve benzeri ortamlardan her türlü teknoloji ile yayın yapabilmeleri için her yayın türü, tekniği ve ortamına ilişkin ayrı ayrı verilen izin belgesidir. Platform işletmecisi, çok sayıda yayın hizmetini sinyal hâline getirerek izleyiciye iletimini sağlayan; altyapı işletmecisi ise yayın hizmeti iletim altyapısını işleten kuruluştur.
+
+Madde 18 — Düzeltme ve cevap hakkı
+Gerçek ve tüzel kişiler, kendileri hakkında şeref ve haysiyetlerini ihlâl edici veya gerçeğe aykırı yayın yapılması hâlinde, yayın tarihinden itibaren altmış gün içinde, üçüncü kişilerin hukuken korunan menfaatlerine aykırı olmamak ve suç unsuru içermemek kaydıyla düzeltme ve cevap yazısını ilgili medya hizmet sağlayıcıya gönderir. Medya hizmet sağlayıcı, hiçbir düzeltme ve ekleme yapmaksızın, yazıyı aldığı tarihten itibaren en geç yedi gün içinde, cevap ve düzeltmeye konu yayının yapıldığı saatte ve programda, izleyicilerin kolaylıkla takip edebileceği biçimde yayınlar. İlgili kişi, aynı süreler içinde düzeltme ve cevap hakkını doğrudan sulh ceza hâkiminden de isteyebilir.
+
+Madde 19 — Medya hizmet sağlayıcı kuruluşların kuruluşu
+Yayın lisansı, münhasıran radyo, televizyon ve isteğe bağlı yayın hizmeti sunmak amacıyla Türk Ticaret Kanunu hükümlerine göre anonim şirket olarak kurulan kuruluşlara verilir; aynı şirket ancak bir radyo, bir televizyon ve bir isteğe bağlı yayın hizmeti sunabilir. Halka açık olmayan hisselerin nama yazılı olması, imtiyazlı hisse senedi bulunmaması ve ana sözleşmede ortaklık yapısı ile iştigal konularının açıkça gösterilmesi gibi şartlar aranır. Siyasî partiler, sendikalar, meslek kuruluşları, dernekler, kooperatifler, mahallî idareler, sermaye piyasası kurumları ve bunların doğrudan/dolaylı ortağı oldukları şirketlere yayın lisansı verilemez. Yabancı sermaye payına ilişkin sınırlamalar da bu kapsamda düzenlenir.
+
+Madde 27 — Yayın lisansı türleri, süresi ve devri
+Medya hizmet sağlayıcı kuruluşlara, kablo, uydu, karasal ve benzeri ortamlardan yayın yapabilmeleri için her yayın türü, tekniği ve ortamına ilişkin olarak ayrı ayrı yayın lisansı verilir. Yayın lisansları on yıl süreyle verilir ve bu süre sonunda kuruluşun talebi, yerinde inceleme ile teknik yeterliliğin tespiti ve istenen belgelerin sunulması hâlinde Üst Kurulca on yıllık dönemler için yenilenir. Lisansın devri Üst Kurulun iznine bağlıdır. [DOĞRULA: lisans süresi ve devir/yenileme koşullarının ayrıntısı yürürlükteki metin ve karasal yayın lisansı yönetmeliğinden teyit edilmeli.]
+
+Madde 32 — İdari yaptırımlar
+Üst Kurul (RTÜK), yayın hizmeti ilkelerine aykırı yayın yapan medya hizmet sağlayıcı kuruluşlara, ihlalin ağırlığı ile yayının ortamı ve alanı göz önünde bulundurularak, ihlalin tespit edildiği aydan bir önceki aydaki brüt ticari iletişim gelirinin yüzde ikisinden yüzde beşine kadar idari para cezası uygular. Ceza miktarı radyo kuruluşları için belirlenen alt tutardan, televizyon kuruluşları ve isteğe bağlı medya hizmet sağlayıcıları için daha yüksek bir alt tutardan az olamaz. İhlalin tekrarı hâlinde program durdurma ve yayın durdurma gibi idari tedbirler uygulanabilir; yaptırım kararına aykırı yayına devam edilmesi yayın lisansının iptaline yol açabilir. [DOĞRULA: idari para cezası alt tutarları her yıl yeniden değerleme oranıyla güncellendiğinden cari tutarlar teyit edilmeli.]
+
+Madde 29 — Yayın lisansı şartlarının kaybedilmesi ve iptal
+Yayın lisansı verilmesi için Kanunda aranan şartlardan birinin sonradan kaybedilmesi hâlinde, ilgili kuruluşa şartı yerine getirmesi için otuz günlük süre verilir. Süreye rağmen şart yerine getirilmezse kuruluşun yayınları üç ay süreyle durdurulur; bu süre içinde de şart sağlanmazsa yayın lisansı iptal edilerek kanal ve frekans kullanımına son verilir. Yayın lisansını hile ile elde ettiği tespit edilen kuruluşun lisansı doğrudan iptal edilir. [DOĞRULA: maddenin kesin numarası ve fıkra düzeni yürürlükteki konsolide metinden teyit edilmeli.]

@@ -1,0 +1,35 @@
+Katma Değer Vergisi Kanunu
+Kanun No 3065, Kabul 25.10.1984, RG 02.11.1984/18563 — YURURLUKTE (mevzuat.gov.tr resmi PDF madde ozetleri uzerinden 1/1/2026 itibariyla dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3065&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Verginin konusunu teşkil eden işlemler
+Türkiye'de yapılan ticari, sınai, zirai faaliyet ve serbest meslek faaliyeti çerçevesindeki teslim ve hizmetler, her türlü mal ve hizmet ithalatı ile maddede sayılan diğer faaliyetlerden doğan teslim ve hizmetler katma değer vergisine tabidir. Vergiyi doğuran işlemlerin niteliği, faaliyetin süreklilik arz edip etmemesi ve kişilerin hukuki statüsü vergilendirmeyi etkilemez. Bu madde KDV'nin konusunu (verginin kapsamını) belirler.
+
+Madde 8 — Mükellef
+KDV mükellefi; mal teslimi ve hizmet ifasında bu işleri yapanlar, ithalatta mal ve hizmet ithal edenler ile maddede sayılan diğer işlemleri yapan kişilerdir. Vergiye tabi bir işlem söz konusu olmasa dahi, düzenledikleri belgelerde KDV gösterenler veya KDV'ye tabi bir işlem yapmamakla birlikte fatura/benzeri belgelerde vergi gösterenler bu vergiyi ödemekle yükümlüdür. Madde, beyanname verme ve vergiyi ödeme yükümlülüğünün kime ait olduğunu saptar.
+
+Madde 10 — Vergiyi doğuran olay
+Vergiyi doğuran olay; mal teslimi ve hizmet ifası hallerinde malın teslimi veya hizmetin yapılması, faturanın işlemden önce düzenlenmesi halinde belgede gösterilen miktarla sınırlı olmak üzere faturanın düzenlenmesi anında meydana gelir. İthalatta vergiyi doğuran olay, gümrük yükümlülüğünün başladığı (gümrük vergisi ödeme mükellefiyetinin doğduğu) anda gerçekleşir. Bu madde beyan dönemini ve verginin hangi dönemde beyan edileceğini belirleyen kritik hükümdür.
+
+Madde 11 — Mal ve hizmet ihracatı (ihracat istisnası)
+İhracat teslimleri ve bu teslimlere ilişkin hizmetler ile yurt dışındaki müşteriler için yapılan hizmetler ve roaming hizmetleri KDV'den istisnadır. Türkiye'de ikamet etmeyen yolculara yapılan satışlarda hesaplanan KDV, malın yurt dışına çıkarılması şartıyla iade edilir. İhracatçıya mal teslim eden imalatçıların ihraç kaydıyla teslimlerinde hesaplanan vergi, ihracat gerçekleştikten sonra iade edilir.
+
+Madde 29 — Vergi indirimi
+Mükellefler, vergiye tabi işlemleri üzerinden hesaplanan KDV'den, kendilerine yapılan teslim ve hizmetler ile ithal ettikleri mallar dolayısıyla ödenen (yüklenilen) KDV'yi indirebilir. İndirim hakkı, vergiyi doğuran olayın vuku bulduğu takvim yılını takip eden takvim yılı aşılmamak şartıyla, ilgili belgelerin yasal defterlere kaydedildiği dönemde kullanılır. İndirim, KDV'nin temel mekanizması olup beyannamede hesaplanan vergiden düşülecek tutarı oluşturur.
+
+Madde 32 — İstisna edilmiş işlemlerde indirim ve iade
+Kanunun 11, 13, 14, 15 ve 17/4-s gibi maddeleri uyarınca vergiden istisna edilmiş işlemlerle ilgili olarak yüklenilen KDV, mükellefin vergiye tabi işlemleri üzerinden hesaplanan vergiden indirilir. İndirim yoluyla giderilemeyen kısım, işlemlerin gerçekleştiği dönemi izleyen ikinci takvim yılının sonuna kadar talep edilmesi şartıyla Hazine ve Maliye Bakanlığınca tespit edilen usule göre iade edilir. Bu madde, özellikle ihracatçıların KDV iadesi talebinin yasal dayanağıdır.
+
+Madde 39 — Vergilendirme dönemi
+KDV'de vergilendirme dönemi, faaliyet gösterilen takvim yılının birer aylık (kural olarak takvim ayı) dönemleridir; Hazine ve Maliye Bakanlığı bazı mükellef grupları için üçer aylık dönem belirlemeye yetkilidir. İthalat, transit ve ikametgâhı yurt dışında olanlara yapılan hizmetlerde vergilendirme dönemi gümrük hattından geçildiği andır. Dönem, beyannamenin hangi süre için verileceğini belirler.
+
+Madde 41 — Beyanname verme zamanı
+Mükellefler ve vergi kesintisi yapmakla sorumlu tutulanlar, KDV beyannamelerini vergilendirme dönemini izleyen ayın belirli gününe kadar ilgili vergi dairesine vermekle yükümlüdür. [DOĞRULA: 1/1/2026 itibariyla aylık 1 No.lu KDV beyannamesi izleyen ayın 28'ine kadar verilir — beyan ve ödeme sürelerini eşitleyen son düzenlemeler]. İşi bırakan mükellefin beyannamesi, işin bırakıldığı tarihi izleyen ayda verilir.
+
+Madde 46 — Verginin ödenmesi
+Beyanname vermek zorunda olan mükellefler ile sorumlular, bir vergilendirme dönemine ait KDV'yi beyanname verme süresi içinde öderler. İthalde alınan KDV, gümrük vergisi ile birlikte ve aynı zamanda ödenir; gümrük vergisine tabi olmayan ithalatta ise gümrük beyannamesinin tescili anında ödenir. [DOĞRULA: aylık KDV ödeme son gününün 1/1/2026 itibariyla beyan günü (28) ile eşitlenmiş olması].

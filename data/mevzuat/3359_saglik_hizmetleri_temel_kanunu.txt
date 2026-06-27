@@ -1,0 +1,20 @@
+Sağlık Hizmetleri Temel Kanunu
+Kanun No 3359, Kabul 07.05.1987, RG 15.05.1987/19461 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.3359 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3359.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Bu Kanunun amacı, sağlık hizmetleriyle ilgili temel esasları düzenlemektir. Kanun, kamu ve özel sağlık kurum ve kuruluşlarının kurulması, işletilmesi ve denetimine ilişkin çerçeveyi belirler.
+
+Madde 2 — Kapsam
+Kanun, Milli Savunma Bakanlığı hariç bütün kamu kurum ve kuruluşları ile özel hukuk tüzel kişilerini ve gerçek kişileri kapsar. Böylece hem kamu hem özel sağlık hizmeti sunucuları Kanunun düzenleme ve denetim alanına girer.
+
+Madde 3 — Temel esaslar — kurulma, işletme ve denetim (bent c ve k)
+Bütün sağlık kurum ve kuruluşları ile sağlık personelinin ülke genelinde dengeli dağılımı esastır; sağlık kurum ve kuruluşlarının kurulması ve işletilmesi bu esas içinde Sağlık Bakanlığınca düzenlenir ve özel sağlık kuruluşlarının ücret tarifeleri Bakanlıkça onaylanır. Ayrıca ruhsat veya izin alınmamış ilaç ve terkiplerin üretimi, ithali ve satışı yasaktır.
+
+Ek Madde 11 — Ruhsatsız sağlık hizmeti ve izinsiz tesis açma cezası
+Ruhsatsız veya yetkisiz olarak sağlık hizmeti veren ya da verdirenler bir yıldan üç yıla kadar hapis cezası ile cezalandırılır. Bakanlıkça özel izin gerektiren sağlık tesisini izinsiz açan veya buralarda hizmet verenlere, iki yüz elli bin Türk lirasından az olmamak üzere bir önceki aya ait brüt hizmet gelirinin yarısına kadar idarî para cezası uygulanır. [DOĞRULA: idari para cezası taban tutarı her yıl yeniden değerleme oranıyla güncellenir; uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]

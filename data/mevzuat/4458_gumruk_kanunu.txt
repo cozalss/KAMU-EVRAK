@@ -1,0 +1,32 @@
+Gümrük Kanunu
+Kanun No 4458, Kabul 27.10.1999, RG 04.11.1999/23866 — YURURLUKTE (mevzuat.gov.tr konsolide metin ve orgTR.org madde metinleri uzerinden 1/1/2026 itibariyla dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4458&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 60 — Yazılı beyan (normal usul)
+Eşyanın bir gümrük rejimine yazılı beyanı, ilgili rejimi düzenleyen hükümlerin uygulanması için gerekli bütün bilgileri içeren bir gümrük beyannamesi ile yapılır. Beyanname Bakanlıkça belirlenen örneğe uygun olmalı, beyan sahibince imzalanmalı ve kazıntı/silinti içermemelidir. Düzeltmeler yanlış kısım çizilip doğrusu yazılarak ve imzalanarak yapılır. Bu madde, gümrük beyannamesinin standart (yazılı) düzenlenme usulünün temel dayanağıdır.
+
+Madde 61 — Beyannamenin tescili ve eklenecek belgeler
+Şartlara uygun beyannameler, ait oldukları eşyanın gümrüğe sunulmuş olması halinde gümrük idaresince derhal tescil edilir; tescil tarihi, aksine hüküm yoksa beyan edilen rejime ilişkin tüm hükümlerin uygulanmasında esas alınır. Beyannameye, beyan edilen gümrük rejiminin uygulanması için ibrazı gereken bütün belgeler eklenir. Eksik belge veya bilgi, beyanın kabul ve tescilini engelleyebilir; bu nedenle beyanname ekleri evrak bütünlüğü açısından zorunludur.
+
+Madde 63 — Beyanın düzeltilmesi
+Beyan sahibinin talebi üzerine, tescil edilmiş beyannamedeki bir veya birden fazla bilginin düzeltilmesine gümrük idaresince izin verilebilir; ancak düzeltme eşyanın cinsini değiştiremez. İzin verilmesi için talebin; eşyanın muayene edileceğinin beyan sahibine bildirilmesinden, bilgilerin yanlış olduğunun tespitinden veya eşyanın tesliminden önce yapılmış olması gerekir. Bu üç durumdan biri gerçekleştikten sonra beyanda düzeltme yapılamaz.
+
+Madde 64 — Beyannamenin iptali
+Gümrük idareleri, beyan sahibinin talebi ve eşyanın yanlışlıkla o rejime tabi tutulduğunu yahut beyan edilen rejime artık tabi tutulmasının özel nedenlerle mümkün olmadığını kanıtlayan belgeler üzerine, tescil edilmiş bir beyannameyi iptal edebilir. İptal talebinin kural olarak beyannamenin tescil tarihinden itibaren üç ay içinde yapılması gerekir; mücbir sebep kanıtlanırsa bu süre aşılabilir. Eşyanın muayene edileceği bildirilmişse, muayene sonuçlanmadan iptal talebi kabul edilmez.
+
+Madde 197 — Gümrük vergilerinin tebliği
+Gümrük vergileri, tahakkukundan hemen sonra yükümlüye tebliğ edilir. Denetlemeler sonucunda hiç alınmadığı veya eksik alındığı belirlenen gümrük vergilerine ilişkin tebligatın, gümrük yükümlülüğünün doğduğu tarihten itibaren üç yıl içinde yapılması zorunludur; bu süre, ceza davası ve hukuk uyuşmazlıklarında durur. Yükümlünün beyannamede gösterdiği vergi tutarı ile idarece hesaplanan tutar birbirine eşitse, eşyanın teslimi gümrük vergilerinin yükümlüye tebliği yerine geçer.
+
+Madde 198 — Gümrük vergilerinin ödenmesi
+Tebliğ edilen gümrük vergilerinin, tebliğ tarihinden itibaren on beş gün içinde ödenmesi zorunludur. Bu süre, yükümlünün yazılı talebi ve teminat gösterilmesi koşuluyla otuz günü geçmemek üzere uzatılabilir; uzatılan süre için gecikme faizi/zammı uygulanır. Yükümlü, sürenin bitmesini beklemeden vergileri kısmen veya tamamen ödeyebilir.
+
+Madde 242 — İtiraz (idari başvuru)
+Yükümlüler kendilerine tebliğ edilen gümrük vergileri, cezalar ve idari kararlara karşı, tebliğ tarihinden itibaren on beş gün içinde bir üst makama, üst makam yoksa aynı makama dilekçe ile itiraz edebilir. İdare, itirazı otuz gün içinde karara bağlar. İtirazın reddi kararlarına karşı işlemin yapıldığı yerdeki idari yargı merciine başvurulabilir; bu nedenle 242 yargı yolundan önce tüketilmesi gereken zorunlu idari itiraz aşamasını düzenler.
+
+Madde 244 — Uzlaşma
+Beyan ile gümrük idaresince tespit edilen tutar arasındaki farklara ve idari para cezalarına ilişkin olarak yükümlü, tebliğ tarihinden itibaren on beş gün içinde uzlaşma talebinde bulunabilir; bu sürede itiraz ve dava açma süreleri durur. [DOĞRULA: uzlaşma kapsamı dışında bırakılan fiiller (5607 sayılı Kanun'a göre kaçakçılık vb.) için güncel istisnalar]. Uzlaşmanın sağlanması halinde düzenlenen tutanak kesindir; taraflar uzlaşılan konuda dava açamaz ve hiçbir mercie şikâyette bulunamaz.

@@ -167,3 +167,43 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | Bankacılık Kanunu | 5411 | `5411_bankacilik_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5411.pdf |
 | Sermaye Piyasası Kanunu | 6362 | `6362_sermaye_piyasasi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6362.pdf |
 | Sigortacılık Kanunu | 5684 | `5684_sigortacilik_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5684.pdf |
+
+## 2026-06 Genişletme Batch 6 — aile/çocuk/kadın koruma (3 mevzuat / 24 madde)
+
+> Korpus 94 -> **97 mevzuat (647 chunk)**. Çocuk koruma (koruyucu/destekleyici tedbir kararı,
+> danışmanlık, acil korunma, sosyal inceleme), kadına karşı şiddet/aile koruma (mülki amir &
+> hâkim koruyucu/önleyici tedbir, uzaklaştırma, başvuru, itiraz, zorlama hapsi), aile mahkemesi
+> (kuruluş/görev, uzman, sulh). Gerçek mevzuat madde-özetleri (mevzuat.gov.tr / resmigazete.gov.tr).
+> Şüpheli/değişen hükümler `[DOĞRULA:]` taşır. Yeniden indeksleme: `python scripts/seed_mevzuat.py`.
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Çocuk Koruma Kanunu | 5395 | `5395_cocuk_koruma_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5395.pdf |
+| Ailenin Korunması ve Kadına Karşı Şiddetin Önlenmesine Dair Kanun | 6284 | `6284_ailenin_korunmasi_kadina_siddet_onleme.txt` | 9 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6284.pdf |
+| Aile Mahkemelerinin Kuruluş, Görev ve Yargılama Usullerine Dair Kanun | 4787 | `4787_aile_mahkemeleri_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4787.pdf |
+
+## 2026-06 Genişletme Batch 6 — spor/turizm/basın/orman/gümrük-vergi/sağlık/aile (18 mevzuat))))
+
+> Korpus 94 -> **112 mevzuat (744 chunk)**. Resmî mühür, e-yazışma (EBYS/KEP/e-imza/karekod),
+> medeni/vekâlet/koruma, personel disiplin/mali haklar, ihale itiraz. Gerçek mevzuat (mevzuat.gov.tr).
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Spor Kulüpleri ve Spor Federasyonları Kanunu | 7405 | `7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7405.pdf |
+| Turizmi Teşvik Kanunu | 2634 | `2634_turizmi_tesvik_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2634.pdf |
+| Seyahat Acentaları ve Seyahat Acentaları Birliği Kanunu | 1618 | `1618_seyahat_acentalari_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.1618.pdf |
+| Basın Kanunu | 5187 | `5187_basin_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5187.pdf |
+| Radyo ve Televizyonların Kuruluş ve Yayın Hizmetleri Hakkında Kanun | 6112 | `6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6112.pdf |
+| Elektronik Haberleşme Kanunu | 5809 | `5809_elektronik_haberlesme_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5809.pdf |
+| Orman Kanunu | 6831 | `6831_orman_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6831&MevzuatTur=1&MevzuatTertip=3 |
+| Kiyi Kanunu | 3621 | `3621_kiyi_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3621&MevzuatTur=1&MevzuatTertip=5 |
+| Su Urunleri Kanunu | 1380 | `1380_su_urunleri_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=1380&MevzuatTur=1&MevzuatTertip=5 |
+| Gümrük Kanunu | 4458 | `4458_gumruk_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4458&MevzuatTur=1&MevzuatTertip=5 |
+| Katma Değer Vergisi Kanunu | 3065 | `3065_katma_deger_vergisi_kanunu.txt` | 9 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3065&MevzuatTur=1&MevzuatTertip=5 |
+| Kurumlar Vergisi Kanunu | 5520 | `5520_kurumlar_vergisi_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5520&MevzuatTur=1&MevzuatTertip=5 |
+| Tababet ve Şuabatı San'atlarının Tarzı İcrasına Dair Kanun | 1219 | `1219_tababet_ve_suabati_sanatlari_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.1219.pdf |
+| Eczacılar ve Eczaneler Hakkında Kanun | 6197 | `6197_eczacilar_ve_eczaneler_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/1.3.6197.pdf |
+| Sağlık Hizmetleri Temel Kanunu | 3359 | `3359_saglik_hizmetleri_temel_kanunu.txt` | 4 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3359.pdf |
+| Çocuk Koruma Kanunu | 5395 | `5395_cocuk_koruma_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5395.pdf |
+| Ailenin Korunması ve Kadına Karşı Şiddetin Önlenmesine Dair Kanun | 6284 | `6284_ailenin_korunmasi_kadina_siddet_onleme.txt` | 9 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6284.pdf |
+| Aile Mahkemelerinin Kuruluş, Görev ve Yargılama Usullerine Dair Kanun | 4787 | `4787_aile_mahkemeleri_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4787.pdf |

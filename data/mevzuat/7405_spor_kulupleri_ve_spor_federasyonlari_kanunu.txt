@@ -1,0 +1,29 @@
+Spor Kulüpleri ve Spor Federasyonları Kanunu
+Kanun No 7405, Kabul 22.04.2022, RG 26.04.2022/31821 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.7405 konsolide metin esas alınmıştır; "Yeni Spor Kanunu" olarak anılır; spor kulüplerinin tescilini dernek statüsünden ayırarak Gençlik ve Spor Bakanlığı siciline bağlamış, spor anonim şirketi kavramını getirmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7405.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanımlar
+Kanunda geçen temel kavramları tanımlar: spor kulübü, Bakanlık ve spor federasyonlarının faaliyetlerine katılmak amacıyla tescilini yaptıran özel hukuk tüzel kişisidir; spor anonim şirketi, 6102 sayılı Türk Ticaret Kanununa göre kurulup Bakanlıkça tescil edilen ve spor faaliyetinde bulunan anonim şirkettir; spor federasyonu ise spor dalı ile ilgili faaliyetleri yürütmek üzere kurulan tüzel kişiliktir. Bu tanımlar tescil ve belgelendirme işlemlerinde esas alınır.
+
+Madde 3 — Spor kulübünün kuruluşu ve tescili
+Spor kulüpleri en az yedi gerçek veya tüzel kişi tarafından, kuruluş bildirimi, tüzük ve gerekli belgelerin Bakanlığa (Gençlik ve Spor Bakanlığı) sunulmasıyla kurulur ve Bakanlık tarafından spor kulüpleri siciline tescil edilmekle tüzel kişilik kazanır. Spor kulübü tüzüğünde kulübün adı, amacı, gelir kaynakları, üyelik koşulları, organları ve geçici yönetim kurulunun gösterilmesi zorunludur. Tescil, kulübün resmî varlık kazandığı ve Bakanlık nezdinde dosya açtığı temel idari işlemdir.
+
+Madde 4 — Spor dalı federasyonuna tescil ve faaliyetlere katılım
+Spor kulüplerinin bir spor dalında müsabaka ve faaliyetlere katılabilmesi, o spor dalının bağlı bulunduğu spor federasyonu tarafından ayrıca tescil edilmesine bağlıdır. Yani Bakanlık siciline tescil tüzel kişilik için yeterliyken, fiilî spor faaliyeti için ilgili federasyon nezdinde tescil ve lisans işlemi gereklidir. Bu iki kademeli tescil yapısı, kulüp evrakının hem Bakanlığa hem ilgili federasyona yönlendirilmesini gerektirir.
+
+Madde 13 — Denetim
+Spor kulüpleri, spor anonim şirketleri ve üst kuruluşların ilgili mevzuat, tüzük ve esas sözleşmelerindeki amaçlar doğrultusunda faaliyet gösterip göstermedikleri, defter ve kayıtlarını mevzuata uygun tutup tutmadıkları başta olmak üzere idari ve mali her türlü işlem ve faaliyetleri Bakanlık tarafından denetlenir. Ayrıca spor kulüpleri, 5253 sayılı Dernekler Kanununun 19'uncu maddesi kıyasen uygulanmak suretiyle İçişleri Bakanlığı veya mülki idare amiri tarafından da denetlenebilir. [DOĞRULA: madde 20'deki beyanname yükümlülüğü ile ilişkisi — kulüpler hesap dönemi bitiminden itibaren üç ay içinde gelir-gider ve bilanço beyannamesini Bakanlığa verir]
+
+Madde 14 — Spor anonim şirketi
+6102 sayılı Türk Ticaret Kanununa göre kurulup tüzel kişilik kazanan anonim şirketler, Gençlik ve Spor Bakanlığı tarafından tescil edilmeleriyle spor anonim şirketi vasfını kazanır. Spor kulüpleri belirli koşullarda spor faaliyetlerini bir spor anonim şirketi eliyle yürütebilir veya bu şirkete dönüştürülebilir. Halka açık spor anonim şirketleri ayrıca sermaye piyasası mevzuatına tabidir; tescil başvurusu ve ortaklık yapısı belgeleri Bakanlığa sunulur.
+
+Madde 26 — Spor federasyonlarının kuruluşu
+Spor federasyonları, ilgili spor dalına ait faaliyetleri ulusal ve uluslararası düzeyde yürütmek üzere kanunla veya Cumhurbaşkanlığı kararnamesiyle kurulur ve bu düzenlemenin Resmî Gazete'de yayımlanmasıyla tüzel kişilik kazanır. Federasyonlar, kulüp ve sporcu tescili, müsabaka düzenleme ve disiplin işlemleri bakımından kendi spor dalında yetkili idari mercidir. Bu yapı, kulüplerin faaliyet izni ve sporcu lisansı evrakının doğru federasyona yönlendirilmesini belirler.
+
+Madde 47 — Ceza hükümleri ve idari yaptırımlar
+Kanuna aykırı fiiller için adli ve idari yaptırımlar öngörülür: spor kulübü ve spor anonim şirketi başkan, yönetim kurulu üyesi ve yöneticilerinin Kanunun 20'nci maddesinin belirli fıkralarına aykırı (örneğin denk bütçe ve harcama sınırlarına ilişkin) fiilleri bir yıldan üç yıla kadar hapis cezasıyla; bazı bildirim ve kayıt ihlalleri yüz günden beş yüz güne kadar adli para cezasıyla cezalandırılır. Ayrıca çeşitli yükümlülük ihlalleri için belirli tutarlarda idari para cezaları uygulanır; bu tutarlar her yıl yeniden değerleme oranında güncellenir. [DOĞRULA: alt fıkralardaki güncel idari para cezası tutarları her yıl GSB tebliğiyle yeniden belirlenir]

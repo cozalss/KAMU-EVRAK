@@ -1,0 +1,26 @@
+Turizmi Teşvik Kanunu
+Kanun No 2634, Kabul 12.03.1982, RG 16.03.1982/17635 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.2634 konsolide metin esas alınmıştır; 7334/2021 sayılı Kanunla kapsamlı değişiklik görmüştür; turizm yatırımı ve işletmesi belgelendirmesini düzenler)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2634.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanunda geçen temel kavramları tanımlar: Bakanlık (Kültür ve Turizm Bakanlığı), kültür ve turizm koruma ve gelişim bölgeleri, turizm merkezleri, turizm yatırımı belgesi ve turizm işletmesi belgesi gibi terimler burada tanımlanır. Bu tanımlar, belgelendirme başvurularında ve teşvik mevzuatının uygulanmasında esas alınır.
+
+Madde 4 — Kültür ve turizm koruma ve gelişim bölgeleri ile turizm merkezlerinin tespiti ve ilanı
+Doğal, tarihî, arkeolojik ve sosyo-kültürel turizm değerleri ile turizm potansiyeli dikkate alınarak belirlenen kültür ve turizm koruma ve gelişim bölgeleri ile turizm merkezleri, Bakanlığın teklifi üzerine Cumhurbaşkanı kararıyla tespit ve ilan edilir. Bu bölge ve merkezlerde planlama ve yatırım işlemleri özel hükümlere tabidir; ilan, alandaki imar ve tahsis süreçlerini doğrudan etkilediğinden ilgili idarelere ve yatırımcılara bildirilir.
+
+Madde 5 — Belgelendirme zorunluluğu (turizm yatırımı ve turizm işletmesi belgesi)
+Turizm sektöründe bu Kanun ve diğer mevzuatta yer alan teşvik tedbirleri ile istisna, muafiyet ve haklardan yararlanabilmek için Bakanlıktan turizm yatırımı belgesi veya turizm işletmesi belgesi alınması zorunludur. Yetkili idarece işyeri açma ve çalışma ruhsatı verilen konaklama işletmeleri, ruhsatı aldıkları tarihten itibaren belirli süre içinde Bakanlıktan turizm işletmesi belgesi almakla yükümlüdür. Belgeli yatırımların Bakanlıkça belirlenen sürelerde tamamlanarak işletmeye açılması gerekir.
+
+Madde 30 — Denetim ve sınıflandırma yetkisi
+Belgeli yatırım ve işletmeleri, bunların belgeye esas niteliklerini ve bu nitelikleri koruyup korumadıklarını denetleme ile işletmeleri sınıflandırma (yıldız vb.) yetkisi Bakanlığa aittir. Bakanlık bu yetkisini valilikler aracılığıyla da kullanabilir ve uluslararası standartlara uygunluk için akredite/yetkilendirilmiş denetim kuruluşlarından yararlanabilir. Denetim sonucu işletmenin sınıfı, belge türü ve belgenin sürdürülüp sürdürülmeyeceği belirlenir.
+
+Madde 33 — Ceza hükümleri (idari para cezaları)
+Kanuna ve ilgili mevzuata aykırı davranan belgeli işletmelere uyarma ve idari para cezaları uygulanır; örneğin uyarmaya rağmen kusurun süresinde giderilmemesi, yanıltıcı tanıtım/reklamın sürdürülmesi, istenen bilgi ve belgelerin gönderilmemesi, devir-kiralama bildiriminin yapılmaması gibi fiiller için maktu idari para cezaları öngörülür; fiyat tarifesinin aşılması halinde fazladan alınan ücretin katı oranında ceza uygulanır. Cezalar her yıl yeniden değerleme oranında artırılır ve tebliğden itibaren belirli süre içinde ödenir. [DOĞRULA: maktu idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellenir]
+
+Madde 34 — Turizm belgesinin iptali
+Bakanlık tarafından verilen turizm yatırımı veya turizm işletmesi belgesi, kanunda sayılan hallerde iptal edilir; örneğin yatırımın süresinde tamamlanmaması, belgeye esas niteliklerin kaybedilmesi, işletme izni/iznine esas belgenin temin edilememesi, faaliyetin durdurulması veya kamu taşınmazındaki kullanım hakkı izninin iptali gibi durumlar iptal sebebidir. Turizm işletmesi belgesi iptal edilen konaklama işletmelerinin, iptal kararının tebliğinden itibaren belirli süre içinde yeniden belge alması zorunludur; aksi halde faaliyet idari yaptırıma konu olur.

@@ -1,0 +1,23 @@
+Eczacılar ve Eczaneler Hakkında Kanun
+Kanun No 6197, Kabul 18.12.1953, RG 24.12.1953/8591 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.6197 konsolide metin; 6308 sK ile esaslı değişiklik esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.6197.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Eczacılık tanımı ve eczacı olma şartı
+Eczacılık; hastalıkların teşhis ve tedavisi ile korunmada kullanılan ilaç hammaddelerinden farmasötik ürünlerin hazırlanması ve hastaya sunulması faaliyetidir. Eczane açmak ve işletmek ile ecza deposu mesul müdürlüğü yapmak için eczacı olmak şarttır.
+
+Madde 4 — Eczacılık ve ruhsat almaya engel haller
+Belirli suçlardan mahkûmiyet, daha önce verilmiş meslekten men/eczane açma yasağı ve mesleği icraya engel iyileşmez (devamlı) hastalık gibi haller eczacılık yapmaya ve eczane ruhsatı almaya engeldir. Ruhsat başvurusunda bu engellerin bulunmadığının belgelenmesi gerekir. [DOĞRULA: engel oluşturan suç türleri ve süreler 5728/6308 değişiklikleri sonrası güncel metinden teyit edilmelidir.]
+
+Madde 5 — Eczane açma ruhsatnamesi ve nüfus kriteri
+Eczaneler, il sağlık müdürlüğünce düzenlenip valilikçe onaylanan ruhsatname ile açılır; ruhsata ilişkin uyuşmazlıkların çözüm yeri Türkiye İlaç ve Tıbbî Cihaz Kurumudur. Serbest eczane sayısı, ilçe nüfusuna göre en az üç bin beş yüz kişiye bir eczane olacak şekilde düzenlenir; eczanelerin aynı ilçe içindeki nakillerinde nüfusa göre eczane açma kriteri uygulanmaz.
+
+Madde 6 — Ruhsatın geri alınması
+Başvuruda kullanılan belgelerin sahteliği veya eczacılığa engel hallerin (Madde 4) ortaya çıkması durumunda ruhsatname geri alınır. Sahte belge ile ruhsat alan eczacı, belirli süreyle (beş yıl) yeniden eczane açamaz. Bu hüküm ruhsatın iptali işlemlerinin dayanağıdır.
+
+Madde 13 — Kapatma / nakil / unvan değişikliğinde bir ay önceden bildirim
+Bir eczacı eczanesini kapatmak, başka yere nakletmek veya eczanesinin unvanını değiştirmek isterse durumu bir ay önceden yetkili sağlık makamına (il sağlık müdürlüğüne) bildirmek zorundadır. Bu süre ve bildirim, eczane kapatma/nakil/unvan değişikliği başvuru evrakının zorunlu unsurudur.

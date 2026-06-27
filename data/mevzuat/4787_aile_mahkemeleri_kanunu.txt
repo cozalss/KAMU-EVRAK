@@ -1,0 +1,29 @@
+Aile Mahkemelerinin Kuruluş, Görev ve Yargılama Usullerine Dair Kanun
+Kanun No 4787, Kabul 09.01.2003, RG 18.01.2003/24997 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.4787 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4787.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Bu Kanunun amacı, aile mahkemelerinin kuruluş, görev ve yargılama usullerini düzenlemektir. Kanun, aile hukukundan doğan dava ve işleri görmek üzere kurulan aile mahkemelerine dair hükümleri kapsar. Böylece aile hukuku uyuşmazlıkları, ihtisaslaşmış ve uzmanlardan yararlanan özel bir mahkeme önünde görülür.
+
+Madde 2 — Aile mahkemelerinin kuruluşu (her il / merkez nüfusu yüz binin üzerindeki ilçe, tek hâkimli)
+Aile mahkemeleri, Adalet Bakanlığınca Hâkimler ve Savcılar Kurulunun olumlu görüşü alınarak her ilde ve merkez nüfusu yüz binin üzerindeki her ilçede, tek hâkimli ve asliye mahkemesi derecesinde kurulur. Yargı çevresi kurulduğu il ve ilçenin mülkî sınırlarıyla belirlenir ve Adalet Bakanlığının teklifi üzerine değiştirilebilir. Bir yerde birden çok daire kurulabilir ve daireler numaralandırılır. Aile mahkemesi kurulamayan yerlerde Kanun kapsamına giren dava ve işlere, HSK'ca belirlenen asliye hukuk mahkemesince bakılır.
+
+Madde 3 — Hâkimlerin nitelikleri ve atanmaları
+Aile mahkemelerine; atanacakları bölgeye veya alt bölgeye hak kazanmış, adlî yargıda görevli, tercihan evli ve çocuk sahibi, otuz yaşını doldurmuş ve aile hukuku alanında lisansüstü eğitim yapmış hâkimler arasından Hâkimler ve Savcılar Kurulunca atama yapılır. Bu nitelikler, aile hukuku davalarının ihtisas gerektiren yapısı nedeniyle aranır.
+
+Madde 4 — Aile mahkemelerinin görevleri (4721 Türk Medenî Kanunu aile hukuku dava ve işleri)
+Aile mahkemeleri; (1) 4721 sayılı Türk Medenî Kanununun Üçüncü Kısım hariç olmak üzere İkinci Kitabı (Aile Hukuku) ile 4722 sayılı Yürürlük Kanununa göre aile hukukundan doğan dava ve işler, (2) 2675 sayılı Milletlerarası Özel Hukuk ve Usul Hukuku Hakkında Kanuna göre aile hukukuna ilişkin yabancı mahkeme kararlarının tanıma ve tenfizi, (3) kanunlarla verilen diğer görevleri görür. Boşanma, nafaka, velayet, evliliğin iptali, soybağı, vesayet gibi işler ile 6284 sayılı Kanun kapsamındaki tedbir talepleri bu kapsamdadır.
+
+Madde 5 — Uzmanlardan yararlanma (psikolog / pedagog / sosyal çalışmacı)
+Aile mahkemeleri; davanın esasına girilmeden önce veya görülmesi sırasında uyuşmazlık nedenleri hakkında araştırma-inceleme yapmak, duruşmada hazır bulunmak ve görüş bildirmek üzere; tercihan evli ve çocuk sahibi, otuz yaşını doldurmuş ve aile sorunları alanında lisansüstü eğitim yapmış olanlar arasından Adalet Bakanlığınca adliyelerde görevlendirilen psikolog, pedagog ve sosyal çalışmacılardan yararlanır. Bu görevliler bulunmazsa diğer kamu kurumlarından veya serbest meslek mensuplarından yararlanılır; uzmanlar HMK'daki hâkimin reddi sebeplerine göre reddolunabilir.
+
+Madde 6 — Koruyucu, eğitici ve sosyal önlemler
+Aile mahkemesi, görev alanına giren konularda yetişkinler hakkında; evlilik birliğinden doğan yükümlülükler konusunda eşleri uyararak gerektiğinde uzlaştırmaya, ailenin ekonomik varlığının korunmasına veya malî yükümlülüklerin yerine getirilmesine ilişkin önlem almaya, resmî/özel sağlık veya sosyal hizmet kurumlarına yerleştirmeye, bir meslek edinme kursuna vermeye; küçükler hakkında ise bakım ve gözetime yönelik nafaka yükümlülüğü gibi konularda gerekli önlemleri almaya yetkilidir. Bu önlemler, davadan bağımsız olarak ailenin ve çocuğun korunmasını amaçlar.
+
+Madde 7 — Usul hükümleri (sulh yoluyla çözüm teşviki)
+Aile mahkemeleri, önlerine gelen dava ve işlerin özelliklerine göre esasa girmeden önce, aile içindeki karşılıklı sevgi, saygı ve hoşgörünün korunması bakımından eşlerin ve çocukların sorunlarını tespit ederek bunların sulh yoluyla çözümünü, gerektiğinde uzmanlardan da yararlanarak teşvik eder. Sulh sağlanamazsa yargılamaya devam edilerek esas hakkında karar verilir. Bu Kanunda hüküm bulunmayan konularda Türk Medenî Kanununun aile hukukuna ilişkin usul hükümleri ile Hukuk Muhakemeleri Kanunu hükümleri uygulanır.

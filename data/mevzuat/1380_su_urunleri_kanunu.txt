@@ -1,0 +1,26 @@
+Su Urunleri Kanunu
+Kanun No 1380, Kabul 22.03.1971, RG 04.04.1971/13799 — YURURLUKTE (mevzuat.gov.tr konsolide metin 1.5.1380 uzerinden dogrulandi; 7191 sayili Kanunla yapilan ruhsat/ceza degisiklikleri islenmis)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=1380&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Ruhsat tezkeresi ve avlanma izni
+Ticari amacli su urunleri avciligi yapacak gercek ve tuzel kisiler ile bu faaliyette kullanilacak gemi ve su vasitalari icin Tarim ve Orman Bakanligindan ruhsat tezkeresi veya izin alinmasi zorunludur. Ruhsat tezkereleri ilgili dairelerin mutalaasi alinarak valiliklerce verilir; orman bolgeleri veya sulama tesislerinin bulundugu sularda istihsal yapacaklar ruhsatlarini mahalli orman ve DSI teskilatina onceden vize ettirmek zorundadir. Avlanma ruhsati basvurusunun temel hukmudur.
+
+Madde 4 — Istihsal yerlerinin kiralanmasi
+Devletin hukum ve tasarrufu altindaki su urunleri istihsal yerleri (dalyan, voli yeri vb.), Bakanlikca belirlenen sart ve usullerle su urunleri kooperatiflerine veya gercek/tuzel kisilere kiraya verilebilir. Kiralama, kira suresi, oncelik ve fesih sartlari kanun ve yonetmelik cercevesinde belirlenir. Vatandasin/kooperatifin kamuya ait avlak yeri kiralama basvurusunun dayanagidir.
+
+Madde 13 — Su urunleri uretim (yetistiricilik) tesisi izni
+Su urunleri uretim ve yetistiricilik tesisi kurmak ve isletmek, Tarim ve Orman Bakanligindan izin alinmasina baglidir. Tesis yeri, projesi ve cevresel uygunluk Bakanlikca degerlendirilir; izinsiz kurulan tesisler icin yaptirim uygulanir. Balik ciftligi/yetistiricilik isletmesi acmak isteyenlerin izin basvurusunu duzenleyen maddedir. [DOGRULA: yetistiricilik tesisi izninin guncel madde numarasi ve usulu (su urunleri yetistiriciligi yonetmeligi ile) yururlukteki metinden teyit edilmeli]
+
+Madde 23 — Avlanma yasaklari ve sinirlamalar
+Su urunlerinin uremesini ve neslini korumak amaciyla belirli bolge, mevsim, cins, boy ve avlanma vasitasi bakimindan yasak ve sinirlamalar getirilir; bu yasaklarin ayrintilari Bakanlikca cikarilan tebliğ ve yonetmeliklerle belirlenir. Yasak donem, asgari avlanma boyu ve yasak vasitalar bu cerceveye dayanir. Avlanma izninin sinirlarini ve avcinin uymasi gereken kurallari belirleyen maddedir.
+
+Madde 34 — Yasak faaliyetlerde el koyma ve musadere
+Ruhsatsiz veya kanuna aykiri yontemlerle (yasak vasita, yasak donem/cins) elde edilen su urunlerine el konularak mulkiyetinin kamuya gecirilmesine karar verilir; suclarda kullanilan vasita ve gemiler hakkinda da el koyma ve musadere uygulanabilir. El koyma tutanagi yetkili gorevlilerce duzenlenir. Izinsiz/yasak avcilik tespitinde uygulanan idari ve cezai sonuclarin temel maddesidir. [DOGRULA: el koyma ve mulkiyetin kamuya gecirilmesi hukmunun guncel madde numarasi (34-35) yururlukteki metinden teyit edilmeli]
+
+Madde 36 — Idari para cezalari
+Kanunda ongorulen yukumluluklere aykiri davranislar (ruhsatsiz avcilik, yasak vasita/trol kullanimi, yasak donem/cins avlama, izinsiz tesis vb.) icin fiilin agirligina gore degisen idari para cezalari uygulanir ve gerektiginde el koyma/musadere ile birlikte hukmolunur. Cezalar mulki amir veya yetkili idare tarafindan verilir ve her yil yeniden degerleme ile guncellenir. Su urunleri ihlallerinin parasal yaptirim cercevesini cizen maddedir. [DOGRULA: idari para cezasi tutarlari ve madde numarasi yururlukteki son metin (7191 sayili Kanun sonrasi) ile teyit edilmeli]

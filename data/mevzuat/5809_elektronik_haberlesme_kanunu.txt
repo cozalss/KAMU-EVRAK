@@ -1,0 +1,29 @@
+Elektronik Haberleşme Kanunu
+Kanun No 5809, Kabul 05.11.2008, RG 10.11.2008/27050 — YÜRÜRLÜKTE (sonraki kanunlarla değişiklikler dâhil; idari para cezaları yeniden değerleme oranıyla güncellenir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5809.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar ve kısaltmalar
+Kanundaki temel aktörleri tanımlar. Abone, bir işletmeci ile elektronik haberleşme hizmetinin sunumuna yönelik sözleşmeye taraf olan gerçek veya tüzel kişidir. Kullanıcı, aboneliği olsun olmasın elektronik haberleşme hizmetlerinden yararlanan gerçek veya tüzel kişidir. İşletmeci, yetkilendirme çerçevesinde elektronik haberleşme hizmeti sunan ve/veya şebeke sağlayıp altyapısını işleten şirkettir. Yetkilendirme ise hizmet sunmak ve/veya şebeke sağlamak isteyen şirketlerin Kurum (BTK) nezdinde kayıtlanmasını veya kayıtla birlikte bu şirketlere belirli hak ve yükümlülükler verilmesini ifade eder.
+
+Madde 8 — Elektronik haberleşme hizmetlerinin yetkilendirilmesi
+Elektronik haberleşme hizmeti sunmak ve/veya şebeke veya altyapı kurup işletmek, Bakanlığın strateji ve politikaları da dikkate alınarak Kurumca yapılacak yetkilendirme ile mümkündür. Kişilerin kendi taşınmazları içinde münhasıran şahsi ihtiyaçları için kurdukları veya kamu kurumlarının özel kanunları uyarınca oluşturdukları ağlar gibi belirli hâller yetkilendirme dışında tutulur. Sayı ve kapasitesi sınırlı kaynakların (frekans, numara, uydu pozisyonu) kullanımını gerektiren hizmetler için kullanım hakkı verilmesi gerekir; kullanım hakkı süreleri yirmibeş yıldan fazla olamaz.
+
+Madde 9 — Yetkilendirme usulü (bildirim ve kullanım hakkı)
+Yetkilendirme, bildirim veya kullanım hakkının verilmesi yoluyla yapılır. Elektronik haberleşme hizmeti sunmak ve/veya şebeke ya da altyapı kurup işletmek isteyen şirketler, faaliyete başlamadan önce Kurum düzenlemeleri çerçevesinde Kuruma bildirimde bulunur. Kaynak tahsisi (frekans, numara, uydu pozisyonu) gerektiren hizmetler için, bildirimin yanı sıra ayrıca kullanım hakkı alınması zorunludur. Kuruma yapılan başvurular belirlenen usul ve esaslar çerçevesinde değerlendirilerek yetkilendirme işlemi tamamlanır.
+
+Madde 12 — İşletmecilerin hak ve yükümlülükleri
+İşletmeciler; yetkilendirmeleri kapsamında elektronik haberleşme hizmeti sunma, şebeke kurma ve işletme hakkına sahiptir. Buna karşılık Kurum düzenlemelerine, abone ve kullanıcı haklarına, hizmet kalitesi standartlarına, erişim ve arabağlantı yükümlülüklerine ve belirlenen ücret/raporlama yükümlülüklerine uymakla yükümlüdür. İşletmeci, Kurumca belirlenen usul ve esaslara aykırı olmamak üzere sistemine abone kaydetmekte serbesttir.
+
+Madde 48 — Tüketicinin ve son kullanıcının korunması
+Kurum, elektronik haberleşme hizmetlerinden yararlanan tüketici ve son kullanıcıların hizmetlere eşit koşullarda erişebilmelerine ve hak ile menfaatlerinin korunmasına yönelik usul ve esasları belirler. İşletmeciler, sağladıkları hizmetleri benzer konumdaki tüketici ve son kullanıcılara eşit koşullarda ve ayrım gözetmeden sunmakla yükümlüdür (Madde 47). Tüketicinin korunmasına ilişkin diğer mevzuat hükümleri saklıdır.
+
+Madde 50 — Abonelik sözleşmeleri
+İşletmeci ile abone arasındaki abonelik sözleşmesi en azından işletmecinin kimliği ve adresi, sunulacak hizmetler ve kalite seviyeleri, bağlantı süresi, uygulanacak tarifeler, sözleşme süresi ile yenileme ve fesih koşulları, hizmet kalitesinin karşılanamaması hâlinde tazminat ve geri ödeme usulleri ve uyuşmazlık çözüm yöntemlerini içerir. Abonelik sözleşme koşullarında değişiklik yapılması abonelere önceden bildirilir; abone, herhangi bir tazminat ödemeden sözleşmeyi feshedebilir ve talebini bildirmek kaydıyla aboneliğini her zaman sona erdirebilir. [DOĞRULA: abonelik sözleşmesi asgari unsurları ve fesih koşullarının ayrıntısı yürürlükteki metin ve ilgili yönetmelikten teyit edilmeli.]
+
+Madde 60 — İdari para cezaları ve diğer yaptırımlar
+Kurum, Kanun ile düzenlemelere, yetkilendirme şartlarına veya verilen kullanım hakkı koşullarına aykırı davranan işletmecilere idari para cezası uygulamaya ve ihlalin niteliğine göre yetkilendirmeyi iptale kadar varan idari yaptırımlar uygulamaya yetkilidir. İdari para cezaları, işletmecinin bir önceki takvim yılındaki net satışlarının belirli bir oranını aşmayacak şekilde kademeli olarak belirlenir; tekrarlanan ihlallerde ceza artırılır. [DOĞRULA: idari para cezası maddesinin kesin numarası, oranlar ve yaptırım türleri yürürlükteki konsolide metinden teyit edilmeli.]

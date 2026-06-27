@@ -1,0 +1,26 @@
+Kurumlar Vergisi Kanunu
+Kanun No 5520, Kabul 13.06.2006, RG 21.06.2006/26205 — YURURLUKTE (mevzuat.gov.tr ve orgTR.org madde metinleri uzerinden 1/1/2026 itibariyla dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5520&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Verginin konusu (mükellefler)
+Sermaye şirketleri, kooperatifler, iktisadi kamu kuruluşları, dernek ve vakıflara ait iktisadi işletmeler ile iş ortaklıklarının kazançları kurumlar vergisine tabidir. Kurum kazancı, gelir vergisinin konusuna giren gelir unsurlarından oluşur. Madde, hangi tüzel kişilik ve oluşumların kurumlar vergisi beyannamesi vermekle yükümlü olduğunu belirler.
+
+Madde 3 — Tam ve dar mükellefiyet
+Kanuni veya iş merkezi Türkiye'de bulunan kurumlar tam mükellef sayılır ve gerek Türkiye'de gerekse yurt dışında elde ettikleri kazançların tamamı üzerinden vergilendirilir. Kanuni ve iş merkezinin her ikisi de Türkiye'de bulunmayan kurumlar dar mükellef olup yalnızca Türkiye'de elde ettikleri kazançları üzerinden vergilendirilir. Mükellefiyet türü, verilecek beyanname türünü (yıllık, özel, münferit) ve vergilendirilecek kazancın kapsamını belirler.
+
+Madde 14 — Beyan esası ve beyannamenin verilmesi
+Kurumlar vergisi, mükellefin veya vergi sorumlusunun beyanı üzerine tarh olunur; beyanname, ilgili bulunduğu hesap döneminin sonuçlarını içerir ve her mükellef vergiye tabi kazancının tamamı için bir beyanname verir. Yıllık kurumlar vergisi beyannamesi, hesap döneminin kapandığı ayı izleyen dördüncü ayın [DOĞRULA: 1/1/2026 itibariyla son gününe (takvim yılı kullananlar için pratikte 30 Nisan) kadar] verilir. Beyanname, mükellefin bağlı olduğu vergi dairesine verilir.
+
+Madde 15 — Vergi kesintisi (tevkifat) ve muhtasar beyanname
+Kamu idareleri, sermaye şirketleri ve maddede sayılan kurumlar, yaptıkları belirli ödemeler (yıllara sâri inşaat hak edişleri, kâr payı, kira, mevduat/repo faizleri vb.) üzerinden kurumlar vergisi kesintisi yapmak zorundadır. Bu kesintiler, ödemeyi yapanlarca muhtasar beyanname ile [DOĞRULA: vergilendirme dönemini izleyen ayın 26'sına kadar — beyan/ödeme süresinin eşitlendiği güncel düzenleme] beyan edilip ödenir. Kesinti, gayrisafi tutarlar üzerinden yapılır ve kesintiyi yapanın kayıtlarında ayrıca gösterilir.
+
+Madde 21 — Verginin ödenmesi
+Beyanname üzerinden tarh olunan kurumlar vergisi, beyannamenin verildiği ayın sonuna kadar ödenir. Tasfiye ve birleşme hallerinde tarh edilen vergiler ile tasfiye/birleşme nedeniyle hesaplanan vergiler için maddede belirtilen özel ödeme süreleri uygulanır. Bu madde yıllık verginin ödeme zamanını düzenler.
+
+Madde 30 — Dar mükellefiyette vergi kesintisi
+Dar mükellef kurumların Türkiye'de elde ettikleri serbest meslek kazançları, gayrimenkul sermaye iratları, menkul sermaye iratları ve maddede sayılan diğer kazanç ve iratları üzerinden, bu ödemeleri yapanlarca kurumlar vergisi kesintisi yapılır. Kesinti oranları Cumhurbaşkanınca belirlenen sınırlar içinde uygulanır ve kesilen vergiler muhtasar beyanname ile beyan edilir. Madde, yurt dışı yerleşik kurumlara yapılan ödemelerde kaynakta vergileme (stopaj) esasını kurar.

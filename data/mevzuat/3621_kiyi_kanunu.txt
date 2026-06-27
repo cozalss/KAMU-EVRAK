@@ -1,0 +1,26 @@
+Kiyi Kanunu
+Kanun No 3621, Kabul 04.04.1990, RG 17.04.1990/20495 — YURURLUKTE (mevzuat.gov.tr konsolide metin 1.5.3621 ve Kiyi Kanununun Uygulanmasina Dair Yonetmelik uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3621&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Tanimlar (kiyi cizgisi, kiyi kenar cizgisi, sahil seridi)
+Kiyi cizgisi, kiyi kenar cizgisi, kiyi, sahil seridi ve dar kiyi gibi temel kavramlari tanimlar. Kiyi kenar cizgisi; deniz, tabii/suni gol ve akarsularda kiyinin kara yonundeki sinirini gosteren cizgidir ve yapilasma sinirlamalarinin referansidir. Sahil seridi, kiyi kenar cizgisinden itibaren kara yonunde olculen, kullanimi sinirlandirilmis seridi ifade eder; tum kiyi izin ve ruhsat islemlerinin kavramsal temelidir.
+
+Madde 5 — Genel esaslar — kiyinin herkese acik kullanimi
+Kiyilar, devletin huku ve tasarrufu altindadir; herkesin esit ve serbest olarak yararlanmasina aciktir. Kiyi ve sahil seridinden yararlanmada oncelikle kamu yarari gozetilir ve buralar ozel mulkiyete konu edilemez. Kiyiya kamunun erisimini engelleyici kullanimlara izin verilmemesinin dayanagi olan ilke maddesidir.
+
+Madde 6 — Kiyida yapi yasagi ve istisna yapilar
+Kiyi, herkese acik kalmak zorunda oldugundan kural olarak kiyida yapi yapilamaz; duvar, cit, parmaklik, tel orgu, hendek, kazik gibi gecisi engelleyen unsurlar kurulamaz. Ancak iskele, liman, baris/tersane, yat limani, dalga kiran, fener, balikci barinagi, aritma-pompaj istasyonu gibi kiyinin kamu yararina kullanimini ve korunmasini saglayan altyapi ve tesisler, uygulama imar plani kararina dayali olarak yapilabilir. Kiyida hangi yapinin izinli oldugunu belirleyen temel maddedir.
+
+Madde 7 — Doldurma ve kurutma yoluyla arazi kazanma izni
+Kamu yararinin gerektirdigi hallerde, uygulama imar plani karari ile deniz, gol ve akarsularda ekolojik ozellikler dikkate alinarak doldurma veya kurutma suretiyle arazi elde edilebilir. Doldurma/kurutmayi yapacak ilgili idarenin teklifi valilik gorusu ile Cevre, Sehircilik ve Iklim Degisikligi Bakanligina gonderilir; Bakanlik ilgili kuruluslarin gorusunu de alarak teklifi inceler ve uygun bulursa uygulama imar plani hazirlanir. Dolgu/kurutma izninin basvuru ve onay zincirini duzenleyen maddedir.
+
+Madde 8 — Sahil seridinde yapilanma ve yapi ruhsati
+Sahil seridi, uygulama imar plani yapilacak alanlarda kiyi kenar cizgisinden itibaren kara yonunde en az 100 metre genisliginde belirlenir ve birinci/ikinci bolum olarak ayrilir; birinci bolumde yalniz acik alan kullanimlari ve sinirli yapilara izin verilirken yapilasma ikinci bolume kaydirilir. Doldurma/kurutmayla kazanilan arazide yapilabilecek yapi ve tesisler icin Bakanlik onayi alinmasi zorunlu olup bu onay belgesi yapi ruhsati duzenlenmesi icin yeterli sayilir. Sahil seridindeki yapilasma izninin ve ruhsat surecinin dayanagidir. [DOGRULA: sahil seridi birinci/ikinci bolum yapilasma kosullarinin guncel madde numarasi yururlukteki metinden teyit edilmeli]
+
+Madde 9 — Kiyi kenar cizgisinin tespiti
+Kiyi kenar cizgisi, valiliklerce kamu gorevlilerinden olusturulan en az bes kisilik bir komisyon (jeoloji muhendisi/jeolog, harita-kadastro muhendisi, ziraat muhendisi, mimar/sehir plancisi, insaat muhendisi) tarafindan tespit edilir. Komisyonca tespit edilip valiligin uygun gorusuyle gonderilen kiyi kenar cizgisi, Cevre, Sehircilik ve Iklim Degisikligi Bakanliginca onaylandiktan sonra yururluge girer. Vatandasin tasinmazinin kiyi-sahil seridi sinirinin nasil ve kim tarafindan belirlenecegini duzenleyen maddedir.

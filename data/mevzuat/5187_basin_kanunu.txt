@@ -1,0 +1,29 @@
+Basın Kanunu
+Kanun No 5187, Kabul 09.06.2004, RG 26.06.2004/25504, Düstur Tertip 5 Cilt 43 — YÜRÜRLÜKTE (sonraki kanunlarla değişiklikler; idari para cezaları 5326 sayılı Kabahatler Kanunu ile uyumlu hâle getirilmiş ve yeniden değerleme ile güncellenmektedir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5187.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanımlar
+Kanundaki temel kavramları tanımlar. Basılmış eser, yayımlanmak üzere her türlü basım araçları ile basılan veya diğer araçlarla çoğaltılan yazı, resim ve benzeri eserlerdir. Süreli yayın, belli aralıklarla yayımlanan gazete, dergi gibi basılmış eserler ile haber ajansları yayınlarıdır; süresiz yayın ise belli aralıklarla yayımlanmayan kitap, armağan gibi basılmış eserlerdir. Eser sahibi, süreli veya süresiz yayının içeriğini oluşturan yazıyı veya haberi yazan ya da çizen kişidir. Ayrıca yayımcı, basımcı ve sorumlu müdür kavramları tanımlanır.
+
+Madde 4 — Zorunlu bilgiler (künye)
+Her basılmış eserde basıldığı yer ve tarih, basımcının ve varsa yayımcının adları, varsa ticarî unvanları ve işyeri adresleri gösterilir. Süreli yayınlarda ayrıca yönetim yeri, sahibinin, varsa temsilcisinin ve sorumlu müdürün ad ve adresleri ile yayının türü belirtilir. Bu künye/zorunlu bilgi yükümlülüğü, basılmış eserin sorumlularının kim olduğunu kamuya gösterir.
+
+Madde 7 — Beyanname verilmesi
+Süreli yayınların çıkarılması için, kaydedilmek üzere yönetim yerinin bulunduğu yer Cumhuriyet Başsavcılığına bir beyanname verilmesi yeterlidir; ayrıca izin veya ruhsat alınması gerekmez. Beyannamede yayının adı ve mahiyeti, hangi aralıklarla yayımlanacağı, yönetim yeri, sahibinin (varsa temsilcisinin) ve sorumlu müdürün ad ve adresleri ile yayının türü gösterilir. Beyannameye, sorumlu müdür ve sahibe ilişkin Kanunda yazılı şartların varlığını gösteren belgeler eklenir. Beyanname, yayın sahibi veya temsilcisi tarafından imzalanır.
+
+Madde 8 — Beyannamenin incelenmesi
+Cumhuriyet Başsavcılığı, beyannamenin ve eklerinin gerekli veya gerçek bilgileri içermemesi ya da yayın sahibi/temsilci/sorumlu müdürün Kanunda yazılı şartlara sahip olmaması hâlinde, beyannamenin verilmesinden itibaren iki hafta içinde eksikliğin giderilmesini veya gerçeğe aykırı bilgilerin düzeltilmesini yayın sahibinden ister. Eksiklik tamamlanınca beyanname verilmiş sayılır.
+
+Madde 10 — Teslim yükümlülüğü
+Basımcı, bastığı her türlü yayının imzalı iki nüshasını, dağıtım veya yayımın yapıldığı gün, mahallin Cumhuriyet Başsavcılığına teslim etmekle yükümlüdür. Bu yükümlülük, basılmış eserin denetim ve kayıt altına alınmasını sağlar.
+
+Madde 14 — Düzeltme ve cevap
+Süreli yayınlarda kişilerin şeref ve haysiyetini ihlâl edici veya kişilerle ilgili gerçeğe aykırı yayım yapılması hâlinde, bundan zarar gören kişi, yayım tarihinden itibaren iki ay içinde, suç unsuru içermeyen ve üçüncü kişilerin hukuken korunan menfaatlerine aykırı olmayan düzeltme ve cevap yazısını gönderir. Sorumlu müdür, hiçbir düzeltme ve ekleme yapmaksızın, günlük süreli yayınlarda yazıyı aldığı tarihten itibaren en geç üç gün içinde, diğer süreli yayınlarda üç günden sonraki ilk nüshada, ilgili yayının yer aldığı sayfa ve sütunlarda, aynı puntolarla yayımlamak zorundadır. Düzeltme ve cevap yayımlanmazsa ilgili kişi, sürelerin bitiminden itibaren onbeş gün içinde bulunduğu yer sulh ceza hâkiminden yayımlanmasını isteyebilir; hâkim istemi üç gün içinde duruşma yapmaksızın karara bağlar.
+
+Madde 18 — Düzeltme ve cevabın yayımlanmaması
+Düzeltme ve cevabın yayımlanmaması veya Kanuna aykırı şekilde yayımlanması hâlinde sorumlu müdür ve sorumlu müdürün bağlı olduğu yetkili hakkında idari/adli para cezası uygulanır. Yargı kararına rağmen düzeltme ve cevabın yayımlanmaması ayrıca yaptırıma bağlanmıştır. [DOĞRULA: maddenin 2004 metnindeki ağır para cezası tutarları (lira) sonradan idari para cezasına dönüştürülmüş ve yeniden değerleme oranıyla güncellenmiştir; cari tutar ve ceza türü yürürlükteki metinden teyit edilmeli.]

@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 623,
+ "chunk_sayisi": 744,
  "chunks": [
   {
    "mevzuat": "1136 avukatlik kanunu",
@@ -150,6 +150,97 @@
    "text": "Madde 19 — Ayıklama ve İmha Komisyonlarının Teşkili\nKapsamdaki kurum ve kuruluşların kurum arşivlerinde yapılacak ayıklama ve imha işlemleri için bünyelerinde ayıklama ve imha komisyonları teşkil edilir. Komisyonların oluşumu ve çalışma esasları ikincil düzenlemeyle (Devlet Arşiv Hizmetleri Yönetmeliği) ayrıntılandırılır."
   },
   {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Hekimlik icrası için tıp fakültesi diploması şartı\nTürkiye Cumhuriyeti dahilinde tababet icra etmek ve her ne suretle olursa olsun hasta tedavi edebilmek için tıp fakültesinden diploma sahibi olmak şarttır. Diploması olmayan kişinin hasta tedavi etmesi yasaktır; bu hüküm diploma tescili başvurularının dayanağıdır."
+  },
+  {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Diplomanın geçerliliği — Sağlık Bakanlığınca tasdik ve tescil\nÖnceki maddede yazılı diplomanın muteber (geçerli) olması için diploma sahibinin mevzuatta öngörülen mecburi hizmetini tamamlamış olması ve diplomasının Sağlık Bakanlığınca tasdik ve tescil edilmiş bulunması gerekir. Hekimlik mesleğini icra hakkı, ancak diploma Bakanlık nezdinde tescil edildikten sonra doğar."
+  },
+  {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Yabancı tıp fakültesi diploması ve denklik\nYabancı memleketlerin tıp fakültelerinden mezun hekimlerin Türkiye'de hekimlik yapabilmeleri için diplomalarının yetkili makamca denkliğinin (muadeletinin) kabulü ve Sağlık Bakanlığınca tescili gerekir. [DOĞRULA: yabancı diploma denklik usulü ve denklik makamı (YÖK / Sağlık Bakanlığı) sonradan değişen düzenlemelere tabidir; güncel denklik mevzuatı teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Uzmanlık (mütehassıslık) ve uzmanlık vesikası\nBu Kanundaki nitelikleri taşıyanlar genel olarak hastalıkları tedavi hakkına sahiptir; ancak tababetin herhangi bir şubesinde sürekli (müstemirren) mütehassıs olarak çalışmak ve uzmanlık unvanını kullanmak için usulüne uygun uzmanlık vesikası sahibi olmak gerekir. Uzmanlık belgesi, ilgili dalda yetkili icra için aranan resmî evraktır."
+  },
+  {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Diplomasız / yetkisiz hekimlik icrası cezası\nDiploması olmadığı halde, menfaat temin etmek amacına yönelik olmasa bile, hasta tedavi eden veya tabip unvanını takınan kişi iki yıldan beş yıla kadar hapis ve bin güne kadar adlî para cezası ile cezalandırılır. Hüküm hem diplomasız tedaviyi hem yetkisiz tabip unvanı kullanımını kapsar."
+  },
+  {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Diş tabipliği (diş hekimliği) icra şartı\nTürkiye'de diş tabipliği (diş hekimliği) sanatını icra etmek ve diş tabibi unvanını taşıyabilmek için diş hekimliği fakültesinden lisans diploması almış olmak gerekir. Yabancı ülkeden mezun Türk vatandaşlarının diplomasının YÖK'çe denkliğinin kabulü ve denklik belgesinin Sağlık Bakanlığınca tescili şarttır."
+  },
+  {
+   "mevzuat": "1219 tababet ve suabati sanatlari kanunu",
+   "kaynak_dosya": "1219_tababet_ve_suabati_sanatlari_kanunu.txt",
+   "madde_no": 47,
+   "madde_tur": "madde",
+   "text": "Madde 47 — Ebelik unvanı ve diploma tescili\nEbelik mesleğini icra ve ebe unvanını taşıyabilmek için ebelikle ilgili lisans eğitimi veren fakülte/yüksekokuldan mezun olup diplomasının Sağlık Bakanlığınca tescil edilmiş olması gerekir; yurt dışında ebelik öğrenimi görenlerde denkliğin onaylanması ve tescil aranır. Ebeler, özellik arz eden alanlarda belirlenen esaslar çerçevesinde yetki belgesi alır."
+  },
+  {
+   "mevzuat": "1380 su urunleri kanunu",
+   "kaynak_dosya": "1380_su_urunleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Ruhsat tezkeresi ve avlanma izni\nTicari amacli su urunleri avciligi yapacak gercek ve tuzel kisiler ile bu faaliyette kullanilacak gemi ve su vasitalari icin Tarim ve Orman Bakanligindan ruhsat tezkeresi veya izin alinmasi zorunludur. Ruhsat tezkereleri ilgili dairelerin mutalaasi alinarak valiliklerce verilir; orman bolgeleri veya sulama tesislerinin bulundugu sularda istihsal yapacaklar ruhsatlarini mahalli orman ve DSI teskilatina onceden vize ettirmek zorundadir. Avlanma ruhsati basvurusunun temel hukmudur."
+  },
+  {
+   "mevzuat": "1380 su urunleri kanunu",
+   "kaynak_dosya": "1380_su_urunleri_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Istihsal yerlerinin kiralanmasi\nDevletin hukum ve tasarrufu altindaki su urunleri istihsal yerleri (dalyan, voli yeri vb.), Bakanlikca belirlenen sart ve usullerle su urunleri kooperatiflerine veya gercek/tuzel kisilere kiraya verilebilir. Kiralama, kira suresi, oncelik ve fesih sartlari kanun ve yonetmelik cercevesinde belirlenir. Vatandasin/kooperatifin kamuya ait avlak yeri kiralama basvurusunun dayanagidir."
+  },
+  {
+   "mevzuat": "1380 su urunleri kanunu",
+   "kaynak_dosya": "1380_su_urunleri_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Su urunleri uretim (yetistiricilik) tesisi izni\nSu urunleri uretim ve yetistiricilik tesisi kurmak ve isletmek, Tarim ve Orman Bakanligindan izin alinmasina baglidir. Tesis yeri, projesi ve cevresel uygunluk Bakanlikca degerlendirilir; izinsiz kurulan tesisler icin yaptirim uygulanir. Balik ciftligi/yetistiricilik isletmesi acmak isteyenlerin izin basvurusunu duzenleyen maddedir. [DOGRULA: yetistiricilik tesisi izninin guncel madde numarasi ve usulu (su urunleri yetistiriciligi yonetmeligi ile) yururlukteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "1380 su urunleri kanunu",
+   "kaynak_dosya": "1380_su_urunleri_kanunu.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Avlanma yasaklari ve sinirlamalar\nSu urunlerinin uremesini ve neslini korumak amaciyla belirli bolge, mevsim, cins, boy ve avlanma vasitasi bakimindan yasak ve sinirlamalar getirilir; bu yasaklarin ayrintilari Bakanlikca cikarilan tebliğ ve yonetmeliklerle belirlenir. Yasak donem, asgari avlanma boyu ve yasak vasitalar bu cerceveye dayanir. Avlanma izninin sinirlarini ve avcinin uymasi gereken kurallari belirleyen maddedir."
+  },
+  {
+   "mevzuat": "1380 su urunleri kanunu",
+   "kaynak_dosya": "1380_su_urunleri_kanunu.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Yasak faaliyetlerde el koyma ve musadere\nRuhsatsiz veya kanuna aykiri yontemlerle (yasak vasita, yasak donem/cins) elde edilen su urunlerine el konularak mulkiyetinin kamuya gecirilmesine karar verilir; suclarda kullanilan vasita ve gemiler hakkinda da el koyma ve musadere uygulanabilir. El koyma tutanagi yetkili gorevlilerce duzenlenir. Izinsiz/yasak avcilik tespitinde uygulanan idari ve cezai sonuclarin temel maddesidir. [DOGRULA: el koyma ve mulkiyetin kamuya gecirilmesi hukmunun guncel madde numarasi (34-35) yururlukteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "1380 su urunleri kanunu",
+   "kaynak_dosya": "1380_su_urunleri_kanunu.txt",
+   "madde_no": 36,
+   "madde_tur": "madde",
+   "text": "Madde 36 — Idari para cezalari\nKanunda ongorulen yukumluluklere aykiri davranislar (ruhsatsiz avcilik, yasak vasita/trol kullanimi, yasak donem/cins avlama, izinsiz tesis vb.) icin fiilin agirligina gore degisen idari para cezalari uygulanir ve gerektiginde el koyma/musadere ile birlikte hukmolunur. Cezalar mulki amir veya yetkili idare tarafindan verilir ve her yil yeniden degerleme ile guncellenir. Su urunleri ihlallerinin parasal yaptirim cercevesini cizen maddedir. [DOGRULA: idari para cezasi tutarlari ve madde numarasi yururlukteki son metin (7191 sayili Kanun sonrasi) ile teyit edilmeli]"
+  },
+  {
    "mevzuat": "1593 umumi hifzissihha kanunu",
    "kaynak_dosya": "1593_umumi_hifzissihha_kanunu.txt",
    "madde_no": 57,
@@ -197,6 +288,48 @@
    "madde_no": 282,
    "madde_tur": "madde",
    "text": "Madde 282 — Umumi ceza hükmü (idari para cezası)\nBu Kanunda yazılı yasaklara aykırı hareket edenler veya zorunluluklara uymayanlara, fiilleri ayrıca suç oluşturmadığı takdirde idarî para cezası verilir. (23.01.2008-5728 sayılı Kanun değişikliğindeki taban-tavan tutarlar — ikiyüzelli TL'den bin TL'ye kadar — sonradan değer güncellemelerine tabidir.) [DOĞRULA: güncel idari para cezası alt-üst tutarları 5326 sK yeniden değerleme oranı ile her yıl güncellenir; cezayı uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "1618 seyahat acentalari kanunu",
+   "kaynak_dosya": "1618_seyahat_acentalari_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Seyahat acentası tanımı\nSeyahat acentası, kâr amacıyla turistlere turizmle ilgili bilgi vermeye, paket tur ve turlar oluşturmaya, turizm amaçlı konaklama, ulaştırma, gezi, spor ve eğlence hizmetlerini görmeye yetkili olan, oluşturduğu ürünü kendi veya diğer seyahat acentaları aracılığıyla pazarlayan ticarî kuruluştur. Bu tanım, hangi faaliyetlerin işletme belgesi gerektiren seyahat acentalığı sayılacağını belirler."
+  },
+  {
+   "mevzuat": "1618 seyahat acentalari kanunu",
+   "kaynak_dosya": "1618_seyahat_acentalari_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — İşletme belgesi alma zorunluluğu ve devri\nTürkiye'de seyahat acentalığı faaliyeti göstermek için Bakanlıktan (Kültür ve Turizm Bakanlığı) işletme belgesi alınması zorunludur; belge yalnızca tüzel kişiler adına ve bir işletme için düzenlenir. İşletme belgesi, başvuru usul ve esasları yönetmelikle belirlenecek şekilde verilir ve Bakanlık izniyle başka bir tüzel kişiye devredilebilir; devir, Bakanlık siciline işlendiği tarihte hüküm ifade eder. İşletme belgesini devreden tüzel kişiye üç yıl içinde yeniden işletme belgesi verilmez ve devredilen acenta unvanı on yıl süreyle başka acenta tarafından kullanılamaz."
+  },
+  {
+   "mevzuat": "1618 seyahat acentalari kanunu",
+   "kaynak_dosya": "1618_seyahat_acentalari_kanunu.txt",
+   "madde_no": 27,
+   "madde_tur": "madde",
+   "text": "Madde 27 — İdari para cezaları\nBu Kanun ve ilgili mevzuata aykırı davranan seyahat acentalarına aykırılığın niteliğine göre kademeli idari para cezaları uygulanır; örneğin belirli bilgi ve belgelerin süresinde Bakanlığa gönderilmemesi, mevzuata aykırı işlem yapılması gibi fiiller için maktu tutarlarda ceza öngörülür. Tekrar eden veya ağırlığı artan ihlallerde işletme belgesinin iptaline kadar giden yaptırımlar uygulanabilir. [DOĞRULA: maktu idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellenir]"
+  },
+  {
+   "mevzuat": "1618 seyahat acentalari kanunu",
+   "kaynak_dosya": "1618_seyahat_acentalari_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Belgesiz (yetkisiz) faaliyetin men'i\nİşletme belgesi almadan seyahat acentalığı faaliyetinde bulunanlar, bulundukları yerin en büyük mülki idare amiri tarafından faaliyetten men edilir. Bu hüküm, belgesiz acenta faaliyetini idari bir tedbirle derhal durdurma yetkisi verir ve tüketici/turist korumasının temel aracıdır; men kararı ilgiliye tebliğ edilir ve uygulanması kolluk marifetiyle sağlanabilir."
+  },
+  {
+   "mevzuat": "1618 seyahat acentalari kanunu",
+   "kaynak_dosya": "1618_seyahat_acentalari_kanunu.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Belgesiz faaliyet için idari para cezası\nİşletme belgesi olmaksızın seyahat acentalığı faaliyeti yürütenlere, men tedbirine ek olarak idari para cezası uygulanır. Ceza, belgesiz faaliyetin kapsam ve süresine göre belirlenir ve faaliyetin sürdürülmesi halinde tekrarlanabilir. Bu yaptırım, belgeli ve denetime tabi acentalar ile belgesizler arasındaki haksız rekabeti önlemeyi ve turisti korumayı amaçlar. [DOĞRULA: idari para cezası alt ve üst tutarları her yıl yeniden değerleme oranıyla güncellenir]"
+  },
+  {
+   "mevzuat": "1618 seyahat acentalari kanunu",
+   "kaynak_dosya": "1618_seyahat_acentalari_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — Türkiye Seyahat Acentaları Birliği (TÜRSAB) üyeliği zorunluluğu\nİşletme belgesi alan seyahat acentalarının, kamu kurumu niteliğindeki meslek kuruluşu olan Türkiye Seyahat Acentaları Birliğine (TÜRSAB) üye olmaları zorunludur. Birlik, mesleğin gelişmesi, mesleki disiplin ve ahlakın korunması ile üyeler arasında dayanışmanın sağlanması amacıyla faaliyet gösterir. Üyelik, işletme belgesinin geçerliliğiyle bağlantılıdır; bu nedenle acenta kuruluş ve belge başvuru sürecinde Birliğe kayıt da tamamlanır."
   },
   {
    "mevzuat": "167 yeralti sulari kanunu",
@@ -540,6 +673,48 @@
    "madde_no": 14,
    "madde_tur": "madde",
    "text": "Madde 14 — Dilekçeler üzerine ilk inceleme\nDilekçeler; görev ve yetki, idari merci tecavüzü, ehliyet, idari davaya konu olacak\nkesin ve yürütülmesi gereken bir işlem olup olmadığı, süre aşımı, husumet ile\ndilekçenin 3 ve 5 inci maddelere uygun olup olmadığı yönlerinden sırasıyla ilk\nincelemeye tâbi tutulur. İdari merci tecavüzü bulunan dilekçeler, görevli idari\nmerciye tevdi olunur ve durum ilgilisine bildirilir."
+  },
+  {
+   "mevzuat": "2634 turizmi tesvik kanunu",
+   "kaynak_dosya": "2634_turizmi_tesvik_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nKanunda geçen temel kavramları tanımlar: Bakanlık (Kültür ve Turizm Bakanlığı), kültür ve turizm koruma ve gelişim bölgeleri, turizm merkezleri, turizm yatırımı belgesi ve turizm işletmesi belgesi gibi terimler burada tanımlanır. Bu tanımlar, belgelendirme başvurularında ve teşvik mevzuatının uygulanmasında esas alınır."
+  },
+  {
+   "mevzuat": "2634 turizmi tesvik kanunu",
+   "kaynak_dosya": "2634_turizmi_tesvik_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Kültür ve turizm koruma ve gelişim bölgeleri ile turizm merkezlerinin tespiti ve ilanı\nDoğal, tarihî, arkeolojik ve sosyo-kültürel turizm değerleri ile turizm potansiyeli dikkate alınarak belirlenen kültür ve turizm koruma ve gelişim bölgeleri ile turizm merkezleri, Bakanlığın teklifi üzerine Cumhurbaşkanı kararıyla tespit ve ilan edilir. Bu bölge ve merkezlerde planlama ve yatırım işlemleri özel hükümlere tabidir; ilan, alandaki imar ve tahsis süreçlerini doğrudan etkilediğinden ilgili idarelere ve yatırımcılara bildirilir."
+  },
+  {
+   "mevzuat": "2634 turizmi tesvik kanunu",
+   "kaynak_dosya": "2634_turizmi_tesvik_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Belgelendirme zorunluluğu (turizm yatırımı ve turizm işletmesi belgesi)\nTurizm sektöründe bu Kanun ve diğer mevzuatta yer alan teşvik tedbirleri ile istisna, muafiyet ve haklardan yararlanabilmek için Bakanlıktan turizm yatırımı belgesi veya turizm işletmesi belgesi alınması zorunludur. Yetkili idarece işyeri açma ve çalışma ruhsatı verilen konaklama işletmeleri, ruhsatı aldıkları tarihten itibaren belirli süre içinde Bakanlıktan turizm işletmesi belgesi almakla yükümlüdür. Belgeli yatırımların Bakanlıkça belirlenen sürelerde tamamlanarak işletmeye açılması gerekir."
+  },
+  {
+   "mevzuat": "2634 turizmi tesvik kanunu",
+   "kaynak_dosya": "2634_turizmi_tesvik_kanunu.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Denetim ve sınıflandırma yetkisi\nBelgeli yatırım ve işletmeleri, bunların belgeye esas niteliklerini ve bu nitelikleri koruyup korumadıklarını denetleme ile işletmeleri sınıflandırma (yıldız vb.) yetkisi Bakanlığa aittir. Bakanlık bu yetkisini valilikler aracılığıyla da kullanabilir ve uluslararası standartlara uygunluk için akredite/yetkilendirilmiş denetim kuruluşlarından yararlanabilir. Denetim sonucu işletmenin sınıfı, belge türü ve belgenin sürdürülüp sürdürülmeyeceği belirlenir."
+  },
+  {
+   "mevzuat": "2634 turizmi tesvik kanunu",
+   "kaynak_dosya": "2634_turizmi_tesvik_kanunu.txt",
+   "madde_no": 33,
+   "madde_tur": "madde",
+   "text": "Madde 33 — Ceza hükümleri (idari para cezaları)\nKanuna ve ilgili mevzuata aykırı davranan belgeli işletmelere uyarma ve idari para cezaları uygulanır; örneğin uyarmaya rağmen kusurun süresinde giderilmemesi, yanıltıcı tanıtım/reklamın sürdürülmesi, istenen bilgi ve belgelerin gönderilmemesi, devir-kiralama bildiriminin yapılmaması gibi fiiller için maktu idari para cezaları öngörülür; fiyat tarifesinin aşılması halinde fazladan alınan ücretin katı oranında ceza uygulanır. Cezalar her yıl yeniden değerleme oranında artırılır ve tebliğden itibaren belirli süre içinde ödenir. [DOĞRULA: maktu idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellenir]"
+  },
+  {
+   "mevzuat": "2634 turizmi tesvik kanunu",
+   "kaynak_dosya": "2634_turizmi_tesvik_kanunu.txt",
+   "madde_no": 34,
+   "madde_tur": "madde",
+   "text": "Madde 34 — Turizm belgesinin iptali\nBakanlık tarafından verilen turizm yatırımı veya turizm işletmesi belgesi, kanunda sayılan hallerde iptal edilir; örneğin yatırımın süresinde tamamlanmaması, belgeye esas niteliklerin kaybedilmesi, işletme izni/iznine esas belgenin temin edilememesi, faaliyetin durdurulması veya kamu taşınmazındaki kullanım hakkı izninin iptali gibi durumlar iptal sebebidir. Turizm işletmesi belgesi iptal edilen konaklama işletmelerinin, iptal kararının tebliğinden itibaren belirli süre içinde yeniden belge alması zorunludur; aksi halde faaliyet idari yaptırıma konu olur."
   },
   {
    "mevzuat": "2646 resmi yazisma e yazisma",
@@ -1004,6 +1179,69 @@
    "text": "Madde 27 — Acele kamulaştırma\nMilli müdafaa mükellefiyeti, yurt savunması ihtiyacı/aceleliği veya özel kanunlarla öngörülen olağanüstü durumlarda, Cumhurbaşkanınca acele kamulaştırma kararı alınabileceğini düzenler. Bu hallerde kıymet takdiri dışındaki işlemler sonradan tamamlanmak üzere taşınmaza el konulabilir; acele el koyma yazışmalarının dayanağıdır."
   },
   {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Verginin konusunu teşkil eden işlemler\nTürkiye'de yapılan ticari, sınai, zirai faaliyet ve serbest meslek faaliyeti çerçevesindeki teslim ve hizmetler, her türlü mal ve hizmet ithalatı ile maddede sayılan diğer faaliyetlerden doğan teslim ve hizmetler katma değer vergisine tabidir. Vergiyi doğuran işlemlerin niteliği, faaliyetin süreklilik arz edip etmemesi ve kişilerin hukuki statüsü vergilendirmeyi etkilemez. Bu madde KDV'nin konusunu (verginin kapsamını) belirler."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Mükellef\nKDV mükellefi; mal teslimi ve hizmet ifasında bu işleri yapanlar, ithalatta mal ve hizmet ithal edenler ile maddede sayılan diğer işlemleri yapan kişilerdir. Vergiye tabi bir işlem söz konusu olmasa dahi, düzenledikleri belgelerde KDV gösterenler veya KDV'ye tabi bir işlem yapmamakla birlikte fatura/benzeri belgelerde vergi gösterenler bu vergiyi ödemekle yükümlüdür. Madde, beyanname verme ve vergiyi ödeme yükümlülüğünün kime ait olduğunu saptar."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Vergiyi doğuran olay\nVergiyi doğuran olay; mal teslimi ve hizmet ifası hallerinde malın teslimi veya hizmetin yapılması, faturanın işlemden önce düzenlenmesi halinde belgede gösterilen miktarla sınırlı olmak üzere faturanın düzenlenmesi anında meydana gelir. İthalatta vergiyi doğuran olay, gümrük yükümlülüğünün başladığı (gümrük vergisi ödeme mükellefiyetinin doğduğu) anda gerçekleşir. Bu madde beyan dönemini ve verginin hangi dönemde beyan edileceğini belirleyen kritik hükümdür."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Mal ve hizmet ihracatı (ihracat istisnası)\nİhracat teslimleri ve bu teslimlere ilişkin hizmetler ile yurt dışındaki müşteriler için yapılan hizmetler ve roaming hizmetleri KDV'den istisnadır. Türkiye'de ikamet etmeyen yolculara yapılan satışlarda hesaplanan KDV, malın yurt dışına çıkarılması şartıyla iade edilir. İhracatçıya mal teslim eden imalatçıların ihraç kaydıyla teslimlerinde hesaplanan vergi, ihracat gerçekleştikten sonra iade edilir."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Vergi indirimi\nMükellefler, vergiye tabi işlemleri üzerinden hesaplanan KDV'den, kendilerine yapılan teslim ve hizmetler ile ithal ettikleri mallar dolayısıyla ödenen (yüklenilen) KDV'yi indirebilir. İndirim hakkı, vergiyi doğuran olayın vuku bulduğu takvim yılını takip eden takvim yılı aşılmamak şartıyla, ilgili belgelerin yasal defterlere kaydedildiği dönemde kullanılır. İndirim, KDV'nin temel mekanizması olup beyannamede hesaplanan vergiden düşülecek tutarı oluşturur."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — İstisna edilmiş işlemlerde indirim ve iade\nKanunun 11, 13, 14, 15 ve 17/4-s gibi maddeleri uyarınca vergiden istisna edilmiş işlemlerle ilgili olarak yüklenilen KDV, mükellefin vergiye tabi işlemleri üzerinden hesaplanan vergiden indirilir. İndirim yoluyla giderilemeyen kısım, işlemlerin gerçekleştiği dönemi izleyen ikinci takvim yılının sonuna kadar talep edilmesi şartıyla Hazine ve Maliye Bakanlığınca tespit edilen usule göre iade edilir. Bu madde, özellikle ihracatçıların KDV iadesi talebinin yasal dayanağıdır."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 39,
+   "madde_tur": "madde",
+   "text": "Madde 39 — Vergilendirme dönemi\nKDV'de vergilendirme dönemi, faaliyet gösterilen takvim yılının birer aylık (kural olarak takvim ayı) dönemleridir; Hazine ve Maliye Bakanlığı bazı mükellef grupları için üçer aylık dönem belirlemeye yetkilidir. İthalat, transit ve ikametgâhı yurt dışında olanlara yapılan hizmetlerde vergilendirme dönemi gümrük hattından geçildiği andır. Dönem, beyannamenin hangi süre için verileceğini belirler."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 41,
+   "madde_tur": "madde",
+   "text": "Madde 41 — Beyanname verme zamanı\nMükellefler ve vergi kesintisi yapmakla sorumlu tutulanlar, KDV beyannamelerini vergilendirme dönemini izleyen ayın belirli gününe kadar ilgili vergi dairesine vermekle yükümlüdür. [DOĞRULA: 1/1/2026 itibariyla aylık 1 No.lu KDV beyannamesi izleyen ayın 28'ine kadar verilir — beyan ve ödeme sürelerini eşitleyen son düzenlemeler]. İşi bırakan mükellefin beyannamesi, işin bırakıldığı tarihi izleyen ayda verilir."
+  },
+  {
+   "mevzuat": "3065 katma deger vergisi kanunu",
+   "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
+   "madde_no": 46,
+   "madde_tur": "madde",
+   "text": "Madde 46 — Verginin ödenmesi\nBeyanname vermek zorunda olan mükellefler ile sorumlular, bir vergilendirme dönemine ait KDV'yi beyanname verme süresi içinde öderler. İthalde alınan KDV, gümrük vergisi ile birlikte ve aynı zamanda ödenir; gümrük vergisine tabi olmayan ithalatta ise gümrük beyannamesinin tescili anında ödenir. [DOĞRULA: aylık KDV ödeme son gününün 1/1/2026 itibariyla beyan günü (28) ile eşitlenmiş olması]."
+  },
+  {
    "mevzuat": "3071 dilekce hakki kanunu",
    "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
    "madde_no": 1,
@@ -1186,6 +1424,34 @@
    "text": "Madde 31 — Usta öğreticilik belgesi\nUstalık yeterliğini kazanmış olanların, Bakanlıkça açılacak iş pedagojisi kurslarını başarıyla tamamlamaları hâlinde usta öğreticilik belgesi alabileceğini düzenler. Belirli süre çalışmış ustalara doğrudan kursa katılma imkânı tanır; usta öğretici, çırak ve öğrencilerin işyerindeki eğitiminden sorumlu kişidir."
   },
   {
+   "mevzuat": "3359 saglik hizmetleri temel kanunu",
+   "kaynak_dosya": "3359_saglik_hizmetleri_temel_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı, sağlık hizmetleriyle ilgili temel esasları düzenlemektir. Kanun, kamu ve özel sağlık kurum ve kuruluşlarının kurulması, işletilmesi ve denetimine ilişkin çerçeveyi belirler."
+  },
+  {
+   "mevzuat": "3359 saglik hizmetleri temel kanunu",
+   "kaynak_dosya": "3359_saglik_hizmetleri_temel_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Kapsam\nKanun, Milli Savunma Bakanlığı hariç bütün kamu kurum ve kuruluşları ile özel hukuk tüzel kişilerini ve gerçek kişileri kapsar. Böylece hem kamu hem özel sağlık hizmeti sunucuları Kanunun düzenleme ve denetim alanına girer."
+  },
+  {
+   "mevzuat": "3359 saglik hizmetleri temel kanunu",
+   "kaynak_dosya": "3359_saglik_hizmetleri_temel_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Temel esaslar — kurulma, işletme ve denetim (bent c ve k)\nBütün sağlık kurum ve kuruluşları ile sağlık personelinin ülke genelinde dengeli dağılımı esastır; sağlık kurum ve kuruluşlarının kurulması ve işletilmesi bu esas içinde Sağlık Bakanlığınca düzenlenir ve özel sağlık kuruluşlarının ücret tarifeleri Bakanlıkça onaylanır. Ayrıca ruhsat veya izin alınmamış ilaç ve terkiplerin üretimi, ithali ve satışı yasaktır."
+  },
+  {
+   "mevzuat": "3359 saglik hizmetleri temel kanunu",
+   "kaynak_dosya": "3359_saglik_hizmetleri_temel_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "ek",
+   "text": "Ek Madde 11 — Ruhsatsız sağlık hizmeti ve izinsiz tesis açma cezası\nRuhsatsız veya yetkisiz olarak sağlık hizmeti veren ya da verdirenler bir yıldan üç yıla kadar hapis cezası ile cezalandırılır. Bakanlıkça özel izin gerektiren sağlık tesisini izinsiz açan veya buralarda hizmet verenlere, iki yüz elli bin Türk lirasından az olmamak üzere bir önceki aya ait brüt hizmet gelirinin yarısına kadar idarî para cezası uygulanır. [DOĞRULA: idari para cezası taban tutarı her yıl yeniden değerleme oranıyla güncellenir; uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]"
+  },
+  {
    "mevzuat": "3473 evrak imha kanunu",
    "kaynak_dosya": "3473_evrak_imha_kanunu.txt",
    "madde_no": 1,
@@ -1226,6 +1492,48 @@
    "madde_no": 6,
    "madde_tur": "madde",
    "text": "Madde 6 — Yönetmelik (ikincil düzenleme dayanağı)\nArşiv/arşivlik malzemenin tespiti, korunması, değerlendirilmesi ile muhafazasına lüzum görülmeyen malzemenin ayıklama-imhası ve komisyonlara dair usul ve esaslar yönetmelikle gösterilir. 700 sayılı KHK ile 'Başbakanlıkça' ibaresi 'Cumhurbaşkanınca' olarak değiştirilmiştir [DOĞRULA: değişiklik yürürlüğü 09.07.2018]."
+  },
+  {
+   "mevzuat": "3621 kiyi kanunu",
+   "kaynak_dosya": "3621_kiyi_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Tanimlar (kiyi cizgisi, kiyi kenar cizgisi, sahil seridi)\nKiyi cizgisi, kiyi kenar cizgisi, kiyi, sahil seridi ve dar kiyi gibi temel kavramlari tanimlar. Kiyi kenar cizgisi; deniz, tabii/suni gol ve akarsularda kiyinin kara yonundeki sinirini gosteren cizgidir ve yapilasma sinirlamalarinin referansidir. Sahil seridi, kiyi kenar cizgisinden itibaren kara yonunde olculen, kullanimi sinirlandirilmis seridi ifade eder; tum kiyi izin ve ruhsat islemlerinin kavramsal temelidir."
+  },
+  {
+   "mevzuat": "3621 kiyi kanunu",
+   "kaynak_dosya": "3621_kiyi_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Genel esaslar — kiyinin herkese acik kullanimi\nKiyilar, devletin huku ve tasarrufu altindadir; herkesin esit ve serbest olarak yararlanmasina aciktir. Kiyi ve sahil seridinden yararlanmada oncelikle kamu yarari gozetilir ve buralar ozel mulkiyete konu edilemez. Kiyiya kamunun erisimini engelleyici kullanimlara izin verilmemesinin dayanagi olan ilke maddesidir."
+  },
+  {
+   "mevzuat": "3621 kiyi kanunu",
+   "kaynak_dosya": "3621_kiyi_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Kiyida yapi yasagi ve istisna yapilar\nKiyi, herkese acik kalmak zorunda oldugundan kural olarak kiyida yapi yapilamaz; duvar, cit, parmaklik, tel orgu, hendek, kazik gibi gecisi engelleyen unsurlar kurulamaz. Ancak iskele, liman, baris/tersane, yat limani, dalga kiran, fener, balikci barinagi, aritma-pompaj istasyonu gibi kiyinin kamu yararina kullanimini ve korunmasini saglayan altyapi ve tesisler, uygulama imar plani kararina dayali olarak yapilabilir. Kiyida hangi yapinin izinli oldugunu belirleyen temel maddedir."
+  },
+  {
+   "mevzuat": "3621 kiyi kanunu",
+   "kaynak_dosya": "3621_kiyi_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Doldurma ve kurutma yoluyla arazi kazanma izni\nKamu yararinin gerektirdigi hallerde, uygulama imar plani karari ile deniz, gol ve akarsularda ekolojik ozellikler dikkate alinarak doldurma veya kurutma suretiyle arazi elde edilebilir. Doldurma/kurutmayi yapacak ilgili idarenin teklifi valilik gorusu ile Cevre, Sehircilik ve Iklim Degisikligi Bakanligina gonderilir; Bakanlik ilgili kuruluslarin gorusunu de alarak teklifi inceler ve uygun bulursa uygulama imar plani hazirlanir. Dolgu/kurutma izninin basvuru ve onay zincirini duzenleyen maddedir."
+  },
+  {
+   "mevzuat": "3621 kiyi kanunu",
+   "kaynak_dosya": "3621_kiyi_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Sahil seridinde yapilanma ve yapi ruhsati\nSahil seridi, uygulama imar plani yapilacak alanlarda kiyi kenar cizgisinden itibaren kara yonunde en az 100 metre genisliginde belirlenir ve birinci/ikinci bolum olarak ayrilir; birinci bolumde yalniz acik alan kullanimlari ve sinirli yapilara izin verilirken yapilasma ikinci bolume kaydirilir. Doldurma/kurutmayla kazanilan arazide yapilabilecek yapi ve tesisler icin Bakanlik onayi alinmasi zorunlu olup bu onay belgesi yapi ruhsati duzenlenmesi icin yeterli sayilir. Sahil seridindeki yapilasma izninin ve ruhsat surecinin dayanagidir. [DOGRULA: sahil seridi birinci/ikinci bolum yapilasma kosullarinin guncel madde numarasi yururlukteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "3621 kiyi kanunu",
+   "kaynak_dosya": "3621_kiyi_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Kiyi kenar cizgisinin tespiti\nKiyi kenar cizgisi, valiliklerce kamu gorevlilerinden olusturulan en az bes kisilik bir komisyon (jeoloji muhendisi/jeolog, harita-kadastro muhendisi, ziraat muhendisi, mimar/sehir plancisi, insaat muhendisi) tarafindan tespit edilir. Komisyonca tespit edilip valiligin uygun gorusuyle gonderilen kiyi kenar cizgisi, Cevre, Sehircilik ve Iklim Degisikligi Bakanliginca onaylandiktan sonra yururluge girer. Vatandasin tasinmazinin kiyi-sahil seridi sinirinin nasil ve kim tarafindan belirlenecegini duzenleyen maddedir."
   },
   {
    "mevzuat": "3628 mal bildirimi kanunu",
@@ -1366,6 +1674,62 @@
    "madde_no": 43,
    "madde_tur": "madde",
    "text": "Madde 43 — Soruşturmaya başlanması, taahhüt ve uzlaşma\nKurul, yaptığı ön araştırma sonucunda soruşturma açılmasına veya açılmamasına karar verir. Soruşturmaya başlanması hâlinde ilgili taraflara on beş gün içinde iddialara ilişkin yeterli bilgi verilir. Soruşturma sürecinde teşebbüsler, rekabet sorunlarını gidermeye yönelik taahhüt sunabilir; Kurul taahhütleri yeterli görürse soruşturma açmadan veya açılan soruşturmayı sonlandırarak işlemi kapatabilir. Ayrıca ilgililer uzlaşma sürecinden yararlanabilir. Bu hüküm taahhüt/uzlaşma başvuru yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 60,
+   "madde_tur": "madde",
+   "text": "Madde 60 — Yazılı beyan (normal usul)\nEşyanın bir gümrük rejimine yazılı beyanı, ilgili rejimi düzenleyen hükümlerin uygulanması için gerekli bütün bilgileri içeren bir gümrük beyannamesi ile yapılır. Beyanname Bakanlıkça belirlenen örneğe uygun olmalı, beyan sahibince imzalanmalı ve kazıntı/silinti içermemelidir. Düzeltmeler yanlış kısım çizilip doğrusu yazılarak ve imzalanarak yapılır. Bu madde, gümrük beyannamesinin standart (yazılı) düzenlenme usulünün temel dayanağıdır."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 61,
+   "madde_tur": "madde",
+   "text": "Madde 61 — Beyannamenin tescili ve eklenecek belgeler\nŞartlara uygun beyannameler, ait oldukları eşyanın gümrüğe sunulmuş olması halinde gümrük idaresince derhal tescil edilir; tescil tarihi, aksine hüküm yoksa beyan edilen rejime ilişkin tüm hükümlerin uygulanmasında esas alınır. Beyannameye, beyan edilen gümrük rejiminin uygulanması için ibrazı gereken bütün belgeler eklenir. Eksik belge veya bilgi, beyanın kabul ve tescilini engelleyebilir; bu nedenle beyanname ekleri evrak bütünlüğü açısından zorunludur."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 63,
+   "madde_tur": "madde",
+   "text": "Madde 63 — Beyanın düzeltilmesi\nBeyan sahibinin talebi üzerine, tescil edilmiş beyannamedeki bir veya birden fazla bilginin düzeltilmesine gümrük idaresince izin verilebilir; ancak düzeltme eşyanın cinsini değiştiremez. İzin verilmesi için talebin; eşyanın muayene edileceğinin beyan sahibine bildirilmesinden, bilgilerin yanlış olduğunun tespitinden veya eşyanın tesliminden önce yapılmış olması gerekir. Bu üç durumdan biri gerçekleştikten sonra beyanda düzeltme yapılamaz."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 64,
+   "madde_tur": "madde",
+   "text": "Madde 64 — Beyannamenin iptali\nGümrük idareleri, beyan sahibinin talebi ve eşyanın yanlışlıkla o rejime tabi tutulduğunu yahut beyan edilen rejime artık tabi tutulmasının özel nedenlerle mümkün olmadığını kanıtlayan belgeler üzerine, tescil edilmiş bir beyannameyi iptal edebilir. İptal talebinin kural olarak beyannamenin tescil tarihinden itibaren üç ay içinde yapılması gerekir; mücbir sebep kanıtlanırsa bu süre aşılabilir. Eşyanın muayene edileceği bildirilmişse, muayene sonuçlanmadan iptal talebi kabul edilmez."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 197,
+   "madde_tur": "madde",
+   "text": "Madde 197 — Gümrük vergilerinin tebliği\nGümrük vergileri, tahakkukundan hemen sonra yükümlüye tebliğ edilir. Denetlemeler sonucunda hiç alınmadığı veya eksik alındığı belirlenen gümrük vergilerine ilişkin tebligatın, gümrük yükümlülüğünün doğduğu tarihten itibaren üç yıl içinde yapılması zorunludur; bu süre, ceza davası ve hukuk uyuşmazlıklarında durur. Yükümlünün beyannamede gösterdiği vergi tutarı ile idarece hesaplanan tutar birbirine eşitse, eşyanın teslimi gümrük vergilerinin yükümlüye tebliği yerine geçer."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 198,
+   "madde_tur": "madde",
+   "text": "Madde 198 — Gümrük vergilerinin ödenmesi\nTebliğ edilen gümrük vergilerinin, tebliğ tarihinden itibaren on beş gün içinde ödenmesi zorunludur. Bu süre, yükümlünün yazılı talebi ve teminat gösterilmesi koşuluyla otuz günü geçmemek üzere uzatılabilir; uzatılan süre için gecikme faizi/zammı uygulanır. Yükümlü, sürenin bitmesini beklemeden vergileri kısmen veya tamamen ödeyebilir."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 242,
+   "madde_tur": "madde",
+   "text": "Madde 242 — İtiraz (idari başvuru)\nYükümlüler kendilerine tebliğ edilen gümrük vergileri, cezalar ve idari kararlara karşı, tebliğ tarihinden itibaren on beş gün içinde bir üst makama, üst makam yoksa aynı makama dilekçe ile itiraz edebilir. İdare, itirazı otuz gün içinde karara bağlar. İtirazın reddi kararlarına karşı işlemin yapıldığı yerdeki idari yargı merciine başvurulabilir; bu nedenle 242 yargı yolundan önce tüketilmesi gereken zorunlu idari itiraz aşamasını düzenler."
+  },
+  {
+   "mevzuat": "4458 gumruk kanunu",
+   "kaynak_dosya": "4458_gumruk_kanunu.txt",
+   "madde_no": 244,
+   "madde_tur": "madde",
+   "text": "Madde 244 — Uzlaşma\nBeyan ile gümrük idaresince tespit edilen tutar arasındaki farklara ve idari para cezalarına ilişkin olarak yükümlü, tebliğ tarihinden itibaren on beş gün içinde uzlaşma talebinde bulunabilir; bu sürede itiraz ve dava açma süreleri durur. [DOĞRULA: uzlaşma kapsamı dışında bırakılan fiiller (5607 sayılı Kanun'a göre kaçakçılık vb.) için güncel istisnalar]. Uzlaşmanın sağlanması halinde düzenlenen tutanak kesindir; taraflar uzlaşılan konuda dava açamaz ve hiçbir mercie şikâyette bulunamaz."
   },
   {
    "mevzuat": "4483 memur yargilama kanunu",
@@ -1632,6 +1996,55 @@
    "madde_no": 26,
    "madde_tur": "madde",
    "text": "Madde 26 — İhalelere katılmaktan yasaklama\n25. maddede sayılan yasak fiil veya davranışlarda bulunduğu tespit edilenler hakkında, fiilin özelliğine göre bir yıldan az olmamak üzere iki yıla kadar bütün kamu kurum ve kuruluşlarının ihalelerine katılmaktan yasaklama kararı verilir. Tüzel kişilerde şahıs şirketi ortaklarının tamamı, sermaye şirketinde ise sermayesinin yarısından fazlasına sahip ortaklar hakkında da yasaklama uygulanır. Yasaklama kararları, fiilin tespit edildiği tarihi izleyen en geç kırk beş gün içinde verilir ve Resmî Gazete'de yayımlanır."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nBu Kanunun amacı, aile mahkemelerinin kuruluş, görev ve yargılama usullerini düzenlemektir. Kanun, aile hukukundan doğan dava ve işleri görmek üzere kurulan aile mahkemelerine dair hükümleri kapsar. Böylece aile hukuku uyuşmazlıkları, ihtisaslaşmış ve uzmanlardan yararlanan özel bir mahkeme önünde görülür."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Aile mahkemelerinin kuruluşu (her il / merkez nüfusu yüz binin üzerindeki ilçe, tek hâkimli)\nAile mahkemeleri, Adalet Bakanlığınca Hâkimler ve Savcılar Kurulunun olumlu görüşü alınarak her ilde ve merkez nüfusu yüz binin üzerindeki her ilçede, tek hâkimli ve asliye mahkemesi derecesinde kurulur. Yargı çevresi kurulduğu il ve ilçenin mülkî sınırlarıyla belirlenir ve Adalet Bakanlığının teklifi üzerine değiştirilebilir. Bir yerde birden çok daire kurulabilir ve daireler numaralandırılır. Aile mahkemesi kurulamayan yerlerde Kanun kapsamına giren dava ve işlere, HSK'ca belirlenen asliye hukuk mahkemesince bakılır."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Hâkimlerin nitelikleri ve atanmaları\nAile mahkemelerine; atanacakları bölgeye veya alt bölgeye hak kazanmış, adlî yargıda görevli, tercihan evli ve çocuk sahibi, otuz yaşını doldurmuş ve aile hukuku alanında lisansüstü eğitim yapmış hâkimler arasından Hâkimler ve Savcılar Kurulunca atama yapılır. Bu nitelikler, aile hukuku davalarının ihtisas gerektiren yapısı nedeniyle aranır."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Aile mahkemelerinin görevleri (4721 Türk Medenî Kanunu aile hukuku dava ve işleri)\nAile mahkemeleri; (1) 4721 sayılı Türk Medenî Kanununun Üçüncü Kısım hariç olmak üzere İkinci Kitabı (Aile Hukuku) ile 4722 sayılı Yürürlük Kanununa göre aile hukukundan doğan dava ve işler, (2) 2675 sayılı Milletlerarası Özel Hukuk ve Usul Hukuku Hakkında Kanuna göre aile hukukuna ilişkin yabancı mahkeme kararlarının tanıma ve tenfizi, (3) kanunlarla verilen diğer görevleri görür. Boşanma, nafaka, velayet, evliliğin iptali, soybağı, vesayet gibi işler ile 6284 sayılı Kanun kapsamındaki tedbir talepleri bu kapsamdadır."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Uzmanlardan yararlanma (psikolog / pedagog / sosyal çalışmacı)\nAile mahkemeleri; davanın esasına girilmeden önce veya görülmesi sırasında uyuşmazlık nedenleri hakkında araştırma-inceleme yapmak, duruşmada hazır bulunmak ve görüş bildirmek üzere; tercihan evli ve çocuk sahibi, otuz yaşını doldurmuş ve aile sorunları alanında lisansüstü eğitim yapmış olanlar arasından Adalet Bakanlığınca adliyelerde görevlendirilen psikolog, pedagog ve sosyal çalışmacılardan yararlanır. Bu görevliler bulunmazsa diğer kamu kurumlarından veya serbest meslek mensuplarından yararlanılır; uzmanlar HMK'daki hâkimin reddi sebeplerine göre reddolunabilir."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Koruyucu, eğitici ve sosyal önlemler\nAile mahkemesi, görev alanına giren konularda yetişkinler hakkında; evlilik birliğinden doğan yükümlülükler konusunda eşleri uyararak gerektiğinde uzlaştırmaya, ailenin ekonomik varlığının korunmasına veya malî yükümlülüklerin yerine getirilmesine ilişkin önlem almaya, resmî/özel sağlık veya sosyal hizmet kurumlarına yerleştirmeye, bir meslek edinme kursuna vermeye; küçükler hakkında ise bakım ve gözetime yönelik nafaka yükümlülüğü gibi konularda gerekli önlemleri almaya yetkilidir. Bu önlemler, davadan bağımsız olarak ailenin ve çocuğun korunmasını amaçlar."
+  },
+  {
+   "mevzuat": "4787 aile mahkemeleri kanunu",
+   "kaynak_dosya": "4787_aile_mahkemeleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Usul hükümleri (sulh yoluyla çözüm teşviki)\nAile mahkemeleri, önlerine gelen dava ve işlerin özelliklerine göre esasa girmeden önce, aile içindeki karşılıklı sevgi, saygı ve hoşgörünün korunması bakımından eşlerin ve çocukların sorunlarını tespit ederek bunların sulh yoluyla çözümünü, gerektiğinde uzmanlardan da yararlanarak teşvik eder. Sulh sağlanamazsa yargılamaya devam edilerek esas hakkında karar verilir. Bu Kanunda hüküm bulunmayan konularda Türk Medenî Kanununun aile hukukuna ilişkin usul hükümleri ile Hukuk Muhakemeleri Kanunu hükümleri uygulanır."
   },
   {
    "mevzuat": "4857 is kanunu",
@@ -2019,6 +2432,55 @@
    "text": "Madde 5 — İnceleme ve araştırma\nKurul, başvuru veya re'sen ele aldığı konularda gerekli inceleme ve araştırmayı yapar; ilgili kurum ve kişilerden bilgi ve belge isteyebilir. Bu Kanuna göre yapılan inceleme ve araştırmalar, ilgililerin tâbi olduğu personel mevzuatına göre yürütülecek disiplin işlemlerini ve genel hükümlere göre yapılacak ceza soruşturmalarını engellemez. Kurul, başvuruya konu kamu görevlisinin etik davranış ilkelerine aykırı işlem/eylemde bulunduğunu tespit ederse durumu ilgili makamlara bildirir; karar kesinleştiğinde, kanunda öngörülen hâllerde sonuç Resmî Gazete aracılığıyla kamuoyuna duyurulabilir."
   },
   {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nKanundaki temel kavramları tanımlar. Basılmış eser, yayımlanmak üzere her türlü basım araçları ile basılan veya diğer araçlarla çoğaltılan yazı, resim ve benzeri eserlerdir. Süreli yayın, belli aralıklarla yayımlanan gazete, dergi gibi basılmış eserler ile haber ajansları yayınlarıdır; süresiz yayın ise belli aralıklarla yayımlanmayan kitap, armağan gibi basılmış eserlerdir. Eser sahibi, süreli veya süresiz yayının içeriğini oluşturan yazıyı veya haberi yazan ya da çizen kişidir. Ayrıca yayımcı, basımcı ve sorumlu müdür kavramları tanımlanır."
+  },
+  {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Zorunlu bilgiler (künye)\nHer basılmış eserde basıldığı yer ve tarih, basımcının ve varsa yayımcının adları, varsa ticarî unvanları ve işyeri adresleri gösterilir. Süreli yayınlarda ayrıca yönetim yeri, sahibinin, varsa temsilcisinin ve sorumlu müdürün ad ve adresleri ile yayının türü belirtilir. Bu künye/zorunlu bilgi yükümlülüğü, basılmış eserin sorumlularının kim olduğunu kamuya gösterir."
+  },
+  {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Beyanname verilmesi\nSüreli yayınların çıkarılması için, kaydedilmek üzere yönetim yerinin bulunduğu yer Cumhuriyet Başsavcılığına bir beyanname verilmesi yeterlidir; ayrıca izin veya ruhsat alınması gerekmez. Beyannamede yayının adı ve mahiyeti, hangi aralıklarla yayımlanacağı, yönetim yeri, sahibinin (varsa temsilcisinin) ve sorumlu müdürün ad ve adresleri ile yayının türü gösterilir. Beyannameye, sorumlu müdür ve sahibe ilişkin Kanunda yazılı şartların varlığını gösteren belgeler eklenir. Beyanname, yayın sahibi veya temsilcisi tarafından imzalanır."
+  },
+  {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Beyannamenin incelenmesi\nCumhuriyet Başsavcılığı, beyannamenin ve eklerinin gerekli veya gerçek bilgileri içermemesi ya da yayın sahibi/temsilci/sorumlu müdürün Kanunda yazılı şartlara sahip olmaması hâlinde, beyannamenin verilmesinden itibaren iki hafta içinde eksikliğin giderilmesini veya gerçeğe aykırı bilgilerin düzeltilmesini yayın sahibinden ister. Eksiklik tamamlanınca beyanname verilmiş sayılır."
+  },
+  {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 10,
+   "madde_tur": "madde",
+   "text": "Madde 10 — Teslim yükümlülüğü\nBasımcı, bastığı her türlü yayının imzalı iki nüshasını, dağıtım veya yayımın yapıldığı gün, mahallin Cumhuriyet Başsavcılığına teslim etmekle yükümlüdür. Bu yükümlülük, basılmış eserin denetim ve kayıt altına alınmasını sağlar."
+  },
+  {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Düzeltme ve cevap\nSüreli yayınlarda kişilerin şeref ve haysiyetini ihlâl edici veya kişilerle ilgili gerçeğe aykırı yayım yapılması hâlinde, bundan zarar gören kişi, yayım tarihinden itibaren iki ay içinde, suç unsuru içermeyen ve üçüncü kişilerin hukuken korunan menfaatlerine aykırı olmayan düzeltme ve cevap yazısını gönderir. Sorumlu müdür, hiçbir düzeltme ve ekleme yapmaksızın, günlük süreli yayınlarda yazıyı aldığı tarihten itibaren en geç üç gün içinde, diğer süreli yayınlarda üç günden sonraki ilk nüshada, ilgili yayının yer aldığı sayfa ve sütunlarda, aynı puntolarla yayımlamak zorundadır. Düzeltme ve cevap yayımlanmazsa ilgili kişi, sürelerin bitiminden itibaren onbeş gün içinde bulunduğu yer sulh ceza hâkiminden yayımlanmasını isteyebilir; hâkim istemi üç gün içinde duruşma yapmaksızın karara bağlar."
+  },
+  {
+   "mevzuat": "5187 basin kanunu",
+   "kaynak_dosya": "5187_basin_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Düzeltme ve cevabın yayımlanmaması\nDüzeltme ve cevabın yayımlanmaması veya Kanuna aykırı şekilde yayımlanması hâlinde sorumlu müdür ve sorumlu müdürün bağlı olduğu yetkili hakkında idari/adli para cezası uygulanır. Yargı kararına rağmen düzeltme ve cevabın yayımlanmaması ayrıca yaptırıma bağlanmıştır. [DOĞRULA: maddenin 2004 metnindeki ağır para cezası tutarları (lira) sonradan idari para cezasına dönüştürülmüş ve yeniden değerleme oranıyla güncellenmiştir; cari tutar ve ceza türü yürürlükteki metinden teyit edilmeli.]"
+  },
+  {
    "mevzuat": "5188 ozel guvenlik hizmetleri kanunu",
    "kaynak_dosya": "5188_ozel_guvenlik_hizmetleri_kanunu.txt",
    "madde_no": 3,
@@ -2390,6 +2852,62 @@
    "text": "Madde 38 — Belediye başkanının görev ve yetkileri\nBelediye başkanının görev ve yetkilerini düzenler: belediye teşkilatının en üst amiri olarak teşkilatı sevk ve idare etmek, belediyenin hak ve menfaatlerini korumak, belediyeyi stratejik plana uygun yönetmek, belediyeyi temsil etmek ve belediye personelini atamak. Resmi yazıların imza ve onay yetkisinin dayanağıdır."
   },
   {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı, korunma ihtiyacı olan veya suça sürüklenen çocukların korunmasına, haklarının ve esenliklerinin güvence altına alınmasına ilişkin usul ve esasları düzenlemektir. Kanun, korunma ihtiyacı olan çocuklar hakkında alınacak tedbirler ile suça sürüklenen çocuklar hakkında uygulanacak güvenlik tedbirlerini ve çocuk mahkemelerinin kuruluş, görev ve yetkilerini kapsar (m.2)."
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar (çocuk / korunma ihtiyacı olan çocuk / suça sürüklenen çocuk / çocuk hâkimi)\nÇocuk; daha erken yaşta ergin olsa bile onsekiz yaşını doldurmamış kişidir. \"Korunma ihtiyacı olan çocuk\"; bedensel, zihinsel, ahlaki, sosyal ve duygusal gelişimi ile kişisel güvenliği tehlikede olan, ihmal veya istismar edilen ya da suç mağduru çocuktur. \"Suça sürüklenen çocuk\"; suç tanımlanan bir fiili işlediği iddiasıyla hakkında soruşturma/kovuşturma yapılan ya da güvenlik tedbirine karar verilen çocuktur. \"Çocuk hâkimi\"; bu çocuklar hakkında tedbir kararlarını veren çocuk mahkemesi hâkimidir. \"Sosyal çalışma görevlisi\" psikolojik danışmanlık-rehberlik, psikoloji, sosyoloji, çocuk gelişimi, öğretmenlik, sosyal hizmet gibi alanlardan mezun meslek mensuplarını ifade eder."
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Temel ilkeler\nKanunun uygulanmasında çocuğun yaşama-gelişme-korunma-katılım hakları güvence altına alınır; çocuğun yarar ve esenliği gözetilir; çocuk ve ailesi ayrımcılığa tâbi tutulamaz; çocuk ve ailesi bilgilendirilerek karar sürecine katılımı sağlanır. İnsan haklarına dayalı, adil, etkili ve süratli bir usul izlenir; özgürlüğü kısıtlayıcı tedbirlere ve hapse en son çare olarak başvurulur; kurumda bakım ve kurumda tutma son çare görülür; çocuğun kimliğinin başkaları tarafından belirlenememesine yönelik önlemler alınır."
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Koruyucu ve destekleyici tedbirler (danışmanlık / eğitim / bakım / sağlık / barınma)\nKoruyucu ve destekleyici tedbirler, çocuğun öncelikle kendi aile ortamında korunmasını sağlamaya yönelik tedbirlerdir. (a) Danışmanlık tedbiri: çocuğun bakımından sorumlu kimselere çocuk yetiştirme, çocuklara da gelişim sorunlarının çözümünde yol gösterme; (b) Eğitim tedbiri: bir eğitim kurumuna devam, meslek/sanat edinme kursu veya işyerine yerleştirme; (c) Bakım tedbiri: sorumlu kimsenin görevini yerine getirememesi hâlinde resmî/özel bakım yurdu ya da koruyucu aile hizmetinden yararlandırma; (d) Sağlık tedbiri: gerekli tıbbî bakım, rehabilitasyon ve bağımlılık tedavisi; (e) Barınma tedbiri: barınma yeri olmayan çocuklu kimselere veya hayatı tehlikede olan hamile kadınlara uygun barınma yeri sağlanması. Barınma tedbiri uygulananların talebi hâlinde kimlik ve adresi gizli tutulur."
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Kuruma başvuru / bildirim yükümlülüğü\nAdlî ve idarî merciler, kolluk görevlileri, sağlık ve eğitim kuruluşları ile sivil toplum kuruluşları, korunma ihtiyacı olan çocuğu Kuruma (Aile ve Sosyal Hizmetler Bakanlığı) bildirmekle yükümlüdür. Çocuk ile bakımından sorumlu kimseler de çocuğun korunma altına alınması amacıyla Kuruma başvurabilir. Kurum, kendisine bildirilen olaylarla ilgili gerekli araştırmayı derhâl yapar. [DOĞRULA: \"Sosyal Hizmetler ve Çocuk Esirgeme Kurumu\" ibaresi 633 sayılı KHK/teşkilat değişiklikleriyle Aile ve Sosyal Hizmetler Bakanlığına devredilmiştir]"
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Koruyucu ve destekleyici tedbir kararı alınması (kim ister, sosyal inceleme)\nÇocuklar hakkında koruyucu ve destekleyici tedbir kararı; çocuğun anası, babası, vasisi, bakım ve gözetiminden sorumlu kimse, Kurum ve Cumhuriyet savcısının istemi üzerine veya re'sen çocuk hâkimi tarafından alınabilir. Tedbir kararı verilmeden önce çocuk hakkında sosyal inceleme yaptırılabilir; tedbirin türü kararda gösterilir, bir veya birden fazla tedbire karar verilebilir. Hâkim çocuğun denetim altına alınmasına da karar verebilir; gelişimi göz önünde bulundurarak tedbiri kaldırabilir veya değiştirebilir. Mahkeme ayrıca 4721 sayılı Türk Medenî Kanunu hükümlerine göre velayet, vesayet, kayyım, nafaka ve kişisel ilişki kurulması konusunda da karar vermeye yetkilidir."
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Tedbirlerde yetki ve denetim (üçer aylık inceleme)\nKorunma ihtiyacı olan çocuklar hakkında koruyucu ve destekleyici tedbirler, çocuğun menfaati bakımından kendisinin, ana, baba, vasisi veya birlikte yaşadığı kimselerin bulunduğu yerdeki çocuk hâkimince alınır. Tedbir kararlarının uygulanması, kararı veren hâkim veya mahkemece en geç üçer aylık sürelerle incelettirilir. Hâkim/mahkeme; denetim memurları, çocuğun velisi-vasisi, tedbiri yerine getiren kişi/kuruluş temsilcisi ile Cumhuriyet savcısının talebi üzerine veya re'sen tedbirin sonuçlarını inceleyerek tedbiri kaldırabilir, süresini uzatabilir veya değiştirebilir."
+  },
+  {
+   "mevzuat": "5395 cocuk koruma kanunu",
+   "kaynak_dosya": "5395_cocuk_koruma_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Acil korunma kararı alınması (beş gün / otuz gün)\nDerhâl korunma altına alınmasını gerektiren bir durumda çocuk, Kurum tarafından bakım ve gözetim altına alındıktan sonra, çocuğun Kuruma geldiği tarihten itibaren en geç beş gün içinde acil korunma kararı için çocuk hâkimine müracaat edilir; hâkim üç gün içinde karar verir. Acil korunma kararı en fazla otuz günlük süreyle verilebilir; bu süre içinde Kurumca sosyal inceleme yapılır. Tedbir gerekmediği sonucuna varılırsa çocuğun ailesine teslimine veya uygun başka tedbire hâkim karar verir; tedbir gerektiği sonucuna varılırsa hâkimden koruyucu ve destekleyici tedbir kararı talep edilir."
+  },
+  {
    "mevzuat": "5403 toprak koruma ve arazi kullanimi kanunu",
    "kaynak_dosya": "5403_toprak_koruma_ve_arazi_kullanimi_kanunu.txt",
    "madde_no": 8,
@@ -2621,6 +3139,48 @@
    "text": "Madde 102 — Kurumca verilecek idarî para cezaları\nİşe giriş bildirgesi, aylık prim ve hizmet belgesi, işyeri bildirgesi gibi bildirim ve belge yükümlülüklerinin süresinde veya usulüne uygun yerine getirilmemesi halinde Kurum, aylık asgari ücret esas alınarak idarî para cezası uygular. Cezalar fiilin türüne göre asgari ücretin katları olarak belirlenir; tebliğden itibaren belirli süre içinde ödeme veya itiraz/uzlaşma hallerinde indirim öngörülür. [DOĞRULA: idarî para cezalarının asgari ücrete göre kat oranları ve ödeme/itiraz indirim oranları madde metninden teyit edilmelidir.]"
   },
   {
+   "mevzuat": "5520 kurumlar vergisi kanunu",
+   "kaynak_dosya": "5520_kurumlar_vergisi_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Verginin konusu (mükellefler)\nSermaye şirketleri, kooperatifler, iktisadi kamu kuruluşları, dernek ve vakıflara ait iktisadi işletmeler ile iş ortaklıklarının kazançları kurumlar vergisine tabidir. Kurum kazancı, gelir vergisinin konusuna giren gelir unsurlarından oluşur. Madde, hangi tüzel kişilik ve oluşumların kurumlar vergisi beyannamesi vermekle yükümlü olduğunu belirler."
+  },
+  {
+   "mevzuat": "5520 kurumlar vergisi kanunu",
+   "kaynak_dosya": "5520_kurumlar_vergisi_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tam ve dar mükellefiyet\nKanuni veya iş merkezi Türkiye'de bulunan kurumlar tam mükellef sayılır ve gerek Türkiye'de gerekse yurt dışında elde ettikleri kazançların tamamı üzerinden vergilendirilir. Kanuni ve iş merkezinin her ikisi de Türkiye'de bulunmayan kurumlar dar mükellef olup yalnızca Türkiye'de elde ettikleri kazançları üzerinden vergilendirilir. Mükellefiyet türü, verilecek beyanname türünü (yıllık, özel, münferit) ve vergilendirilecek kazancın kapsamını belirler."
+  },
+  {
+   "mevzuat": "5520 kurumlar vergisi kanunu",
+   "kaynak_dosya": "5520_kurumlar_vergisi_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Beyan esası ve beyannamenin verilmesi\nKurumlar vergisi, mükellefin veya vergi sorumlusunun beyanı üzerine tarh olunur; beyanname, ilgili bulunduğu hesap döneminin sonuçlarını içerir ve her mükellef vergiye tabi kazancının tamamı için bir beyanname verir. Yıllık kurumlar vergisi beyannamesi, hesap döneminin kapandığı ayı izleyen dördüncü ayın [DOĞRULA: 1/1/2026 itibariyla son gününe (takvim yılı kullananlar için pratikte 30 Nisan) kadar] verilir. Beyanname, mükellefin bağlı olduğu vergi dairesine verilir."
+  },
+  {
+   "mevzuat": "5520 kurumlar vergisi kanunu",
+   "kaynak_dosya": "5520_kurumlar_vergisi_kanunu.txt",
+   "madde_no": 15,
+   "madde_tur": "madde",
+   "text": "Madde 15 — Vergi kesintisi (tevkifat) ve muhtasar beyanname\nKamu idareleri, sermaye şirketleri ve maddede sayılan kurumlar, yaptıkları belirli ödemeler (yıllara sâri inşaat hak edişleri, kâr payı, kira, mevduat/repo faizleri vb.) üzerinden kurumlar vergisi kesintisi yapmak zorundadır. Bu kesintiler, ödemeyi yapanlarca muhtasar beyanname ile [DOĞRULA: vergilendirme dönemini izleyen ayın 26'sına kadar — beyan/ödeme süresinin eşitlendiği güncel düzenleme] beyan edilip ödenir. Kesinti, gayrisafi tutarlar üzerinden yapılır ve kesintiyi yapanın kayıtlarında ayrıca gösterilir."
+  },
+  {
+   "mevzuat": "5520 kurumlar vergisi kanunu",
+   "kaynak_dosya": "5520_kurumlar_vergisi_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Verginin ödenmesi\nBeyanname üzerinden tarh olunan kurumlar vergisi, beyannamenin verildiği ayın sonuna kadar ödenir. Tasfiye ve birleşme hallerinde tarh edilen vergiler ile tasfiye/birleşme nedeniyle hesaplanan vergiler için maddede belirtilen özel ödeme süreleri uygulanır. Bu madde yıllık verginin ödeme zamanını düzenler."
+  },
+  {
+   "mevzuat": "5520 kurumlar vergisi kanunu",
+   "kaynak_dosya": "5520_kurumlar_vergisi_kanunu.txt",
+   "madde_no": 30,
+   "madde_tur": "madde",
+   "text": "Madde 30 — Dar mükellefiyette vergi kesintisi\nDar mükellef kurumların Türkiye'de elde ettikleri serbest meslek kazançları, gayrimenkul sermaye iratları, menkul sermaye iratları ve maddede sayılan diğer kazanç ve iratları üzerinden, bu ödemeleri yapanlarca kurumlar vergisi kesintisi yapılır. Kesinti oranları Cumhurbaşkanınca belirlenen sınırlar içinde uygulanır ve kesilen vergiler muhtasar beyanname ile beyan edilir. Madde, yurt dışı yerleşik kurumlara yapılan ödemelerde kaynakta vergileme (stopaj) esasını kurar."
+  },
+  {
    "mevzuat": "5580 ozel ogretim kurumlari kanunu",
    "kaynak_dosya": "5580_ozel_ogretim_kurumlari_kanunu.txt",
    "madde_no": 1,
@@ -2766,6 +3326,55 @@
    "madde_no": 5,
    "madde_tur": "madde",
    "text": "Madde 5 — İşleme konulmayacak başvurular\nAşağıdaki başvurular işleme konulmaz: amacı ve konusu anlaşılamayan başvurular;\nyalnızca tahmine veya zanna dayalı, içeriğinde herhangi bir somut bilgi ya da belge\nbulunmayan başvurular; aynı başvuru sahibi tarafından hakkın kötüye kullanılması\nniteliğinde olacak şekilde sürekli ve benzer şekilde tekrar tekrar yapılan başvurular;\ngerçeğe aykırı belge veya bilgiyle ya da sahte ad ve adresle yapıldığı sonradan\nanlaşılan başvurular (bu hâlde başvuru hiç yapılmamış sayılır); hakaret, sövme, küçük\ndüşürücü veya tehdit içeren başvurular; yasama ve yargı faaliyetlerine ya da yargı\nmercilerinin görevine giren konulara ilişkin başvurular; başvuru sahibi ile üçüncü\nkişiler veya kurumlar arasındaki özel hukuk ilişkilerinden kaynaklanan talep, alacak\nve borçlara ilişkin başvurular; kurumun görev ve yetki alanı dışında kalan başvurular.\n\nBaşvuruların sonuçlandırılması ve süre [DOĞRULA: madde no]\nCİMER üzerinden yapılan başvurular, niteliğine göre dilekçe hakkı (3071) veya bilgi\nedinme hakkı (4982) rejiminde değerlendirilir. Talep ve şikâyet niteliğindeki\nbaşvurular, idarece niteliğine göre en geç otuz gün içinde ücretsiz olarak\nsonuçlandırılır; bilgi edinme niteliğindeki başvurular ise 4982 sayılı Kanun gereği on\nbeş iş günü içinde cevaplanır. Başvuru, ilgili kurum veya kuruluşa yönlendirilir ve\nbaşvuru sahibine sonuç hakkında bilgi verilir."
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar ve kısaltmalar\nKanundaki temel aktörleri tanımlar. Abone, bir işletmeci ile elektronik haberleşme hizmetinin sunumuna yönelik sözleşmeye taraf olan gerçek veya tüzel kişidir. Kullanıcı, aboneliği olsun olmasın elektronik haberleşme hizmetlerinden yararlanan gerçek veya tüzel kişidir. İşletmeci, yetkilendirme çerçevesinde elektronik haberleşme hizmeti sunan ve/veya şebeke sağlayıp altyapısını işleten şirkettir. Yetkilendirme ise hizmet sunmak ve/veya şebeke sağlamak isteyen şirketlerin Kurum (BTK) nezdinde kayıtlanmasını veya kayıtla birlikte bu şirketlere belirli hak ve yükümlülükler verilmesini ifade eder."
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Elektronik haberleşme hizmetlerinin yetkilendirilmesi\nElektronik haberleşme hizmeti sunmak ve/veya şebeke veya altyapı kurup işletmek, Bakanlığın strateji ve politikaları da dikkate alınarak Kurumca yapılacak yetkilendirme ile mümkündür. Kişilerin kendi taşınmazları içinde münhasıran şahsi ihtiyaçları için kurdukları veya kamu kurumlarının özel kanunları uyarınca oluşturdukları ağlar gibi belirli hâller yetkilendirme dışında tutulur. Sayı ve kapasitesi sınırlı kaynakların (frekans, numara, uydu pozisyonu) kullanımını gerektiren hizmetler için kullanım hakkı verilmesi gerekir; kullanım hakkı süreleri yirmibeş yıldan fazla olamaz."
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Yetkilendirme usulü (bildirim ve kullanım hakkı)\nYetkilendirme, bildirim veya kullanım hakkının verilmesi yoluyla yapılır. Elektronik haberleşme hizmeti sunmak ve/veya şebeke ya da altyapı kurup işletmek isteyen şirketler, faaliyete başlamadan önce Kurum düzenlemeleri çerçevesinde Kuruma bildirimde bulunur. Kaynak tahsisi (frekans, numara, uydu pozisyonu) gerektiren hizmetler için, bildirimin yanı sıra ayrıca kullanım hakkı alınması zorunludur. Kuruma yapılan başvurular belirlenen usul ve esaslar çerçevesinde değerlendirilerek yetkilendirme işlemi tamamlanır."
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — İşletmecilerin hak ve yükümlülükleri\nİşletmeciler; yetkilendirmeleri kapsamında elektronik haberleşme hizmeti sunma, şebeke kurma ve işletme hakkına sahiptir. Buna karşılık Kurum düzenlemelerine, abone ve kullanıcı haklarına, hizmet kalitesi standartlarına, erişim ve arabağlantı yükümlülüklerine ve belirlenen ücret/raporlama yükümlülüklerine uymakla yükümlüdür. İşletmeci, Kurumca belirlenen usul ve esaslara aykırı olmamak üzere sistemine abone kaydetmekte serbesttir."
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 48,
+   "madde_tur": "madde",
+   "text": "Madde 48 — Tüketicinin ve son kullanıcının korunması\nKurum, elektronik haberleşme hizmetlerinden yararlanan tüketici ve son kullanıcıların hizmetlere eşit koşullarda erişebilmelerine ve hak ile menfaatlerinin korunmasına yönelik usul ve esasları belirler. İşletmeciler, sağladıkları hizmetleri benzer konumdaki tüketici ve son kullanıcılara eşit koşullarda ve ayrım gözetmeden sunmakla yükümlüdür (Madde 47). Tüketicinin korunmasına ilişkin diğer mevzuat hükümleri saklıdır."
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 50,
+   "madde_tur": "madde",
+   "text": "Madde 50 — Abonelik sözleşmeleri\nİşletmeci ile abone arasındaki abonelik sözleşmesi en azından işletmecinin kimliği ve adresi, sunulacak hizmetler ve kalite seviyeleri, bağlantı süresi, uygulanacak tarifeler, sözleşme süresi ile yenileme ve fesih koşulları, hizmet kalitesinin karşılanamaması hâlinde tazminat ve geri ödeme usulleri ve uyuşmazlık çözüm yöntemlerini içerir. Abonelik sözleşme koşullarında değişiklik yapılması abonelere önceden bildirilir; abone, herhangi bir tazminat ödemeden sözleşmeyi feshedebilir ve talebini bildirmek kaydıyla aboneliğini her zaman sona erdirebilir. [DOĞRULA: abonelik sözleşmesi asgari unsurları ve fesih koşullarının ayrıntısı yürürlükteki metin ve ilgili yönetmelikten teyit edilmeli.]"
+  },
+  {
+   "mevzuat": "5809 elektronik haberlesme kanunu",
+   "kaynak_dosya": "5809_elektronik_haberlesme_kanunu.txt",
+   "madde_no": 60,
+   "madde_tur": "madde",
+   "text": "Madde 60 — İdari para cezaları ve diğer yaptırımlar\nKurum, Kanun ile düzenlemelere, yetkilendirme şartlarına veya verilen kullanım hakkı koşullarına aykırı davranan işletmecilere idari para cezası uygulamaya ve ihlalin niteliğine göre yetkilendirmeyi iptale kadar varan idari yaptırımlar uygulamaya yetkilidir. İdari para cezaları, işletmecinin bir önceki takvim yılındaki net satışlarının belirli bir oranını aşmayacak şekilde kademeli olarak belirlenir; tekrarlanan ihlallerde ceza artırılır. [DOĞRULA: idari para cezası maddesinin kesin numarası, oranlar ve yaptırım türleri yürürlükteki konsolide metinden teyit edilmeli.]"
   },
   {
    "mevzuat": "5846 fikir ve sanat eserleri kanunu",
@@ -3062,6 +3671,48 @@
    "text": "Madde 82 — Belgelerin saklanması, saklama süresi\nHer tacir; ticari defterlerini, envanterlerini, açılış ve ara bilançolarını, finansal tablolarını, yıllık faaliyet raporlarını, alınan ticari mektupları, gönderilen ticari mektupların suretlerini ve kayıtların dayandığı belgeleri sınıflandırılmış şekilde saklamakla yükümlüdür. Ticari mektuplar, bir ticari işe ilişkin tüm yazışmalardır. Bu belgeler on yıl saklanır; saklama süresi ilgili kaydın/yazışmanın yapıldığı takvim yılının bitişiyle başlar. Defter ve belgeler yangın, su baskını, deprem veya hırsızlık nedeniyle ziyaa uğrarsa tacir, öğrendiği tarihten itibaren otuz gün içinde yetkili mahkemeden belge isteyebilir."
   },
   {
+   "mevzuat": "6112 radyo televizyon yayin hizmetleri kanunu",
+   "kaynak_dosya": "6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanımlar\nKanundaki temel aktörleri ve kavramları tanımlar. Medya hizmet sağlayıcı, radyo, televizyon ve isteğe bağlı yayın hizmeti içeriğinin seçiminde editoryal sorumluluğu bulunan ve bu hizmetin düzenlenme ve yayınlanma biçimine karar veren tüzel kişidir. Yayın lisansı, medya hizmet sağlayıcı kuruluşlara, Kanunda ve düzenlemelerde belirtilen şartları taşımaları hâlinde kablo, uydu, karasal ve benzeri ortamlardan her türlü teknoloji ile yayın yapabilmeleri için her yayın türü, tekniği ve ortamına ilişkin ayrı ayrı verilen izin belgesidir. Platform işletmecisi, çok sayıda yayın hizmetini sinyal hâline getirerek izleyiciye iletimini sağlayan; altyapı işletmecisi ise yayın hizmeti iletim altyapısını işleten kuruluştur."
+  },
+  {
+   "mevzuat": "6112 radyo televizyon yayin hizmetleri kanunu",
+   "kaynak_dosya": "6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Düzeltme ve cevap hakkı\nGerçek ve tüzel kişiler, kendileri hakkında şeref ve haysiyetlerini ihlâl edici veya gerçeğe aykırı yayın yapılması hâlinde, yayın tarihinden itibaren altmış gün içinde, üçüncü kişilerin hukuken korunan menfaatlerine aykırı olmamak ve suç unsuru içermemek kaydıyla düzeltme ve cevap yazısını ilgili medya hizmet sağlayıcıya gönderir. Medya hizmet sağlayıcı, hiçbir düzeltme ve ekleme yapmaksızın, yazıyı aldığı tarihten itibaren en geç yedi gün içinde, cevap ve düzeltmeye konu yayının yapıldığı saatte ve programda, izleyicilerin kolaylıkla takip edebileceği biçimde yayınlar. İlgili kişi, aynı süreler içinde düzeltme ve cevap hakkını doğrudan sulh ceza hâkiminden de isteyebilir."
+  },
+  {
+   "mevzuat": "6112 radyo televizyon yayin hizmetleri kanunu",
+   "kaynak_dosya": "6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt",
+   "madde_no": 19,
+   "madde_tur": "madde",
+   "text": "Madde 19 — Medya hizmet sağlayıcı kuruluşların kuruluşu\nYayın lisansı, münhasıran radyo, televizyon ve isteğe bağlı yayın hizmeti sunmak amacıyla Türk Ticaret Kanunu hükümlerine göre anonim şirket olarak kurulan kuruluşlara verilir; aynı şirket ancak bir radyo, bir televizyon ve bir isteğe bağlı yayın hizmeti sunabilir. Halka açık olmayan hisselerin nama yazılı olması, imtiyazlı hisse senedi bulunmaması ve ana sözleşmede ortaklık yapısı ile iştigal konularının açıkça gösterilmesi gibi şartlar aranır. Siyasî partiler, sendikalar, meslek kuruluşları, dernekler, kooperatifler, mahallî idareler, sermaye piyasası kurumları ve bunların doğrudan/dolaylı ortağı oldukları şirketlere yayın lisansı verilemez. Yabancı sermaye payına ilişkin sınırlamalar da bu kapsamda düzenlenir."
+  },
+  {
+   "mevzuat": "6112 radyo televizyon yayin hizmetleri kanunu",
+   "kaynak_dosya": "6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt",
+   "madde_no": 27,
+   "madde_tur": "madde",
+   "text": "Madde 27 — Yayın lisansı türleri, süresi ve devri\nMedya hizmet sağlayıcı kuruluşlara, kablo, uydu, karasal ve benzeri ortamlardan yayın yapabilmeleri için her yayın türü, tekniği ve ortamına ilişkin olarak ayrı ayrı yayın lisansı verilir. Yayın lisansları on yıl süreyle verilir ve bu süre sonunda kuruluşun talebi, yerinde inceleme ile teknik yeterliliğin tespiti ve istenen belgelerin sunulması hâlinde Üst Kurulca on yıllık dönemler için yenilenir. Lisansın devri Üst Kurulun iznine bağlıdır. [DOĞRULA: lisans süresi ve devir/yenileme koşullarının ayrıntısı yürürlükteki metin ve karasal yayın lisansı yönetmeliğinden teyit edilmeli.]"
+  },
+  {
+   "mevzuat": "6112 radyo televizyon yayin hizmetleri kanunu",
+   "kaynak_dosya": "6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 — İdari yaptırımlar\nÜst Kurul (RTÜK), yayın hizmeti ilkelerine aykırı yayın yapan medya hizmet sağlayıcı kuruluşlara, ihlalin ağırlığı ile yayının ortamı ve alanı göz önünde bulundurularak, ihlalin tespit edildiği aydan bir önceki aydaki brüt ticari iletişim gelirinin yüzde ikisinden yüzde beşine kadar idari para cezası uygular. Ceza miktarı radyo kuruluşları için belirlenen alt tutardan, televizyon kuruluşları ve isteğe bağlı medya hizmet sağlayıcıları için daha yüksek bir alt tutardan az olamaz. İhlalin tekrarı hâlinde program durdurma ve yayın durdurma gibi idari tedbirler uygulanabilir; yaptırım kararına aykırı yayına devam edilmesi yayın lisansının iptaline yol açabilir. [DOĞRULA: idari para cezası alt tutarları her yıl yeniden değerleme oranıyla güncellendiğinden cari tutarlar teyit edilmeli.]"
+  },
+  {
+   "mevzuat": "6112 radyo televizyon yayin hizmetleri kanunu",
+   "kaynak_dosya": "6112_radyo_televizyon_yayin_hizmetleri_kanunu.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Yayın lisansı şartlarının kaybedilmesi ve iptal\nYayın lisansı verilmesi için Kanunda aranan şartlardan birinin sonradan kaybedilmesi hâlinde, ilgili kuruluşa şartı yerine getirmesi için otuz günlük süre verilir. Süreye rağmen şart yerine getirilmezse kuruluşun yayınları üç ay süreyle durdurulur; bu süre içinde de şart sağlanmazsa yayın lisansı iptal edilerek kanal ve frekans kullanımına son verilir. Yayın lisansını hile ile elde ettiği tespit edilen kuruluşun lisansı doğrudan iptal edilir. [DOĞRULA: maddenin kesin numarası ve fıkra düzeni yürürlükteki konsolide metinden teyit edilmeli.]"
+  },
+  {
    "mevzuat": "6183 amme alacaklari tahsil kanunu",
    "kaynak_dosya": "6183_amme_alacaklari_tahsil_kanunu.txt",
    "madde_no": 37,
@@ -3109,6 +3760,41 @@
    "madde_no": 64,
    "madde_tur": "madde",
    "text": "Madde 64 — Haciz varakasi\nHaciz muameleleri; tahsil dairelerince duzenlenen ve alacakli amme idaresinin mahalli en buyuk memuru veya yetkili kilacagi memur tarafindan tasdik edilen haciz varakalarina dayanilarak yapilir. Varakalarin sekli ve icerigi Hazine ve Maliye Bakanliginca belirlenir. Haciz isleminin dayanak evrakini tanimlar."
+  },
+  {
+   "mevzuat": "6197 eczacilar ve eczaneler kanunu",
+   "kaynak_dosya": "6197_eczacilar_ve_eczaneler_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Eczacılık tanımı ve eczacı olma şartı\nEczacılık; hastalıkların teşhis ve tedavisi ile korunmada kullanılan ilaç hammaddelerinden farmasötik ürünlerin hazırlanması ve hastaya sunulması faaliyetidir. Eczane açmak ve işletmek ile ecza deposu mesul müdürlüğü yapmak için eczacı olmak şarttır."
+  },
+  {
+   "mevzuat": "6197 eczacilar ve eczaneler kanunu",
+   "kaynak_dosya": "6197_eczacilar_ve_eczaneler_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Eczacılık ve ruhsat almaya engel haller\nBelirli suçlardan mahkûmiyet, daha önce verilmiş meslekten men/eczane açma yasağı ve mesleği icraya engel iyileşmez (devamlı) hastalık gibi haller eczacılık yapmaya ve eczane ruhsatı almaya engeldir. Ruhsat başvurusunda bu engellerin bulunmadığının belgelenmesi gerekir. [DOĞRULA: engel oluşturan suç türleri ve süreler 5728/6308 değişiklikleri sonrası güncel metinden teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "6197 eczacilar ve eczaneler kanunu",
+   "kaynak_dosya": "6197_eczacilar_ve_eczaneler_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Eczane açma ruhsatnamesi ve nüfus kriteri\nEczaneler, il sağlık müdürlüğünce düzenlenip valilikçe onaylanan ruhsatname ile açılır; ruhsata ilişkin uyuşmazlıkların çözüm yeri Türkiye İlaç ve Tıbbî Cihaz Kurumudur. Serbest eczane sayısı, ilçe nüfusuna göre en az üç bin beş yüz kişiye bir eczane olacak şekilde düzenlenir; eczanelerin aynı ilçe içindeki nakillerinde nüfusa göre eczane açma kriteri uygulanmaz."
+  },
+  {
+   "mevzuat": "6197 eczacilar ve eczaneler kanunu",
+   "kaynak_dosya": "6197_eczacilar_ve_eczaneler_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Ruhsatın geri alınması\nBaşvuruda kullanılan belgelerin sahteliği veya eczacılığa engel hallerin (Madde 4) ortaya çıkması durumunda ruhsatname geri alınır. Sahte belge ile ruhsat alan eczacı, belirli süreyle (beş yıl) yeniden eczane açamaz. Bu hüküm ruhsatın iptali işlemlerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "6197 eczacilar ve eczaneler kanunu",
+   "kaynak_dosya": "6197_eczacilar_ve_eczaneler_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Kapatma / nakil / unvan değişikliğinde bir ay önceden bildirim\nBir eczacı eczanesini kapatmak, başka yere nakletmek veya eczanesinin unvanını değiştirmek isterse durumu bir ay önceden yetkili sağlık makamına (il sağlık müdürlüğüne) bildirmek zorundadır. Bu süre ve bildirim, eczane kapatma/nakil/unvan değişikliği başvuru evrakının zorunlu unsurudur."
   },
   {
    "mevzuat": "6245 harcirah kanunu",
@@ -3165,6 +3851,69 @@
    "madde_no": 59,
    "madde_tur": "madde",
    "text": "Madde 59 — Harcirahin pesin odenmesi, beyan ve iade\nHarcirah, memur/hizmetlinin gidisinde ve ailenin nakli sirasinda pesin olarak verilir; tam miktar onceden belirlenemiyorsa yetecek kadar para avans olarak verilir. Harcirahini kesin veya avans suretiyle alanlardan, kisisel sebeplerle 15 gun icinde hareket etmeyenler aldiklari parayi derhal iade etmek zorundadir. Aile harcirahinda ilgilinin verecegi beyan kagidi esas alinir."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç, kapsam ve temel ilkeler\nKanunun amacı; şiddete uğrayan veya şiddete uğrama tehlikesi bulunan kadınların, çocukların, aile bireylerinin ve tek taraflı ısrarlı takip mağduru olan kişilerin korunması ve bu kişilere yönelik şiddetin önlenmesi amacıyla alınacak tedbirlere ilişkin usul ve esasları düzenlemektir. Uygulamada İstanbul Sözleşmesi başta olmak üzere Türkiye'nin taraf olduğu sözleşmeler ve yürürlükteki kanunlar esas alınır; temel insan haklarına dayalı, kadın erkek eşitliğine duyarlı, adil, etkili ve süratli bir usul izlenir; tedbirler insan onuruna yaraşır şekilde yerine getirilir."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar (şiddet / şiddet mağduru / şiddet uygulayan / ŞÖNİM / ev içi şiddet)\n\"Ev içi şiddet\"; aynı haneyi paylaşmasa da aile veya hane bireyleri ile aile mensubu sayılan kişiler arasında meydana gelen her türlü fiziksel, cinsel, psikolojik ve ekonomik şiddettir. \"Kadına yönelik şiddet\"; kadınlara yalnızca kadın oldukları için uygulanan veya kadını etkileyen, cinsiyete dayalı ayrımcılık ile insan hakkı ihlaline yol açan tutum ve davranışlardır. Ayrıca \"şiddet\", \"şiddet mağduru\", \"şiddet uygulayan\", \"tedbir kararı\", \"hâkim\" (aile mahkemesi hâkimi) ve şiddet önleme ve izleme merkezi (ŞÖNİM) tanımlanır. [DOĞRULA: \"Bakanlık\" ibaresi Aile ve Sosyal Politikalar Bakanlığı iken teşkilat değişiklikleriyle Aile ve Sosyal Hizmetler Bakanlığı olmuştur]"
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Mülkî amir tarafından verilecek koruyucu tedbir kararları (barınma / geçici maddi yardım / rehberlik)\nKorunan kişiyle ilgili olarak mülkî amir; (a) kendisine ve gerekiyorsa beraberindeki çocuklara uygun barınma yeri sağlanması, (b) geçici maddi yardım yapılması, (c) psikolojik, meslekî, hukukî ve sosyal rehberlik ve danışmanlık hizmeti verilmesi, (ç) hayatî tehlike hâlinde geçici koruma altına alınması, (d) şartları varsa kreş imkânı sağlanması tedbirlerine karar verebilir. Gecikmesinde sakınca bulunan hâllerde barınma ve geçici koruma tedbirleri ilgili kolluk amirince de alınabilir; kolluk amiri evrakı en geç ilk işgünü içinde mülkî amirin onayına sunar, kırksekiz saat içinde onaylanmayan tedbirler kendiliğinden kalkar."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Hâkim tarafından verilecek önleyici tedbir kararları (uzaklaştırma / iletişim kurmama / silah teslimi)\nŞiddet uygulayanlarla ilgili olarak hâkim; (a) şiddet tehdidi, hakaret, aşağılama içeren söz ve davranışlarda bulunmaması, (b) müşterek konuttan derhâl uzaklaştırılması ve konutun korunan kişiye tahsisi, (c) korunan kişilere, konutuna, okuluna ve işyerine yaklaşmaması, (ç) çocuklarla kişisel ilişkinin refakatçi eşliğinde yapılması/sınırlanması/kaldırılması, (f) korunan kişiyi iletişim araçlarıyla rahatsız etmemesi, (g) ruhsatlı silahlarını kolluğa teslim etmesi ve (h) alkol/uyuşturucu kullanmaması gibi önleyici tedbirlere karar verebilir. Gecikmesinde sakınca bulunan hâllerde (a), (b), (c) ve (d) bentlerindeki tedbirler kolluk amirince alınabilir; hâkim tarafından yirmidört saat içinde onaylanmayan tedbirler kendiliğinden kalkar."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — İhbar\nŞiddet veya şiddet uygulanma tehlikesinin varlığı hâlinde herkes bu durumu resmî makam veya mercilere ihbar edebilir. İhbarı alan kamu görevlileri bu Kanun kapsamındaki görevlerini gecikmeksizin yerine getirmek ve uygulanması gereken diğer tedbirlere ilişkin olarak yetkilileri haberdar etmekle yükümlüdür."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Tedbir kararının verilmesi, tebliği ve süresi (en çok altı ay, delil aranmaz)\nTedbir kararı; ilgilinin talebi, Bakanlık veya kolluk görevlileri ya da Cumhuriyet savcısının başvurusu üzerine verilir ve en çabuk, en kolay ulaşılabilecek yer hâkiminden, mülkî amirden ya da kolluk biriminden talep edilebilir. Tedbir kararı ilk defasında en çok altı ay için verilebilir; tehlikenin devamı hâlinde süre/şekil değiştirilebilir, kaldırılabilir veya aynen devam ettirilebilir. Koruyucu tedbir kararı verilmesi için şiddetin uygulandığına dair delil veya belge aranmaz; önleyici tedbir kararı geciktirilmeksizin verilir. Karar korunan kişiye ve şiddet uygulayana tefhim/tebliğ edilir; tefhim ve tebliğde aykırılık hâlinde zorlama hapsi uygulanacağı ihtarı yapılır."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — İtiraz (iki hafta)\nBu Kanun hükümlerine göre verilen kararlara karşı tefhim veya tebliğ tarihinden itibaren iki hafta içinde ilgililer tarafından aile mahkemesine itiraz edilebilir. İtiraz üzerine dosya, aynı yerde başka aile mahkemesi dairesine, tek daire varsa asliye hukuk mahkemesine gecikmeksizin gönderilir. İtiraz mercii kararını bir hafta içinde verir ve itiraz üzerine verilen kararlar kesindir."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Tedbir kararlarına aykırılık (zorlama hapsi)\nHakkında tedbir kararı verilen şiddet uygulayan, kararın gereklerine aykırı hareket etmesi hâlinde, fiili bir suç oluştursa bile, ihlal edilen tedbirin niteliğine ve aykırılığın ağırlığına göre hâkim kararıyla üç günden on güne kadar zorlama hapsine tabi tutulur. Aykırılığın her tekrarında zorlama hapsi onbeş günden otuz güne kadardır; ancak toplam süre altı ayı geçemez. Zorlama hapsine ilişkin kararlar Cumhuriyet başsavcılığınca yerine getirilir ve Bakanlığın ilgili müdürlüklerine bildirilir."
+  },
+  {
+   "mevzuat": "6284 ailenin korunmasi kadina siddet onleme",
+   "kaynak_dosya": "6284_ailenin_korunmasi_kadina_siddet_onleme.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — Harç ve masraf muafiyeti / davaya katılma\nBu Kanun kapsamındaki başvurular ile kararların icra ve infazı için yapılan işlemlerden yargılama gideri, harç, posta gideri ve benzeri hiçbir ad altında masraf alınmaz. Geçici maddi yardım ödemeleri gelir vergisi ile veraset ve intikal vergisinden, bu ödemeler için düzenlenen kâğıtlar damga vergisinden müstesnadır. Bakanlık, gerekli görmesi hâlinde kadın, çocuk ve aile bireylerine yönelik şiddet veya şiddet tehlikesi dolayısıyla açılan her tür idarî, cezaî ve hukukî davaya katılabilir."
   },
   {
    "mevzuat": "6306 afet riski donusum kanunu",
@@ -3797,6 +4546,55 @@
    "text": "Madde 90 — Patent başvurusu (Başvuru)\nPatent verilmesi için yapılacak başvuru; başvuru formu, buluş konusunu açıklayan tarifname, korunması istenen unsurları belirleyen istem veya istemler, tarifnamede veya istemlerde atıf yapılan resimler (varsa) ve özet ile Kuruma yapılır. Başvuru tarihinin kesinleşmesi için en az başvuru talebinin, başvuru sahibinin kimlik bilgilerinin ve tarifnamenin (veya önceki bir başvuruya atfın) Kuruma verilmiş olması gerekir. Buluşu yapan başvuruda belirtilir; buluş genetik kaynağa dayanıyorsa kaynağın nereden alındığına ilişkin açıklamaya yer verilir. Bu hüküm patent başvuru evrakının zorunlu unsurlarının dayanağıdır."
   },
   {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Ormanin tarifi\nTabii olarak yetisen veya emekle yetistirilen agac ve agaccik topluluklarini, yerleri ile birlikte orman olarak tanimlar. Sazliklar, step nebatlariyla ortulu yerler, devlet ormani niteligi tasimayan dar agaclik alanlar ve benzeri istisna sayilan yerler kanunda ayrica belirtilir. Bir alanin orman rejimine girip girmediginin tespiti, sonraki kadastro ve izin islemlerinin temelidir."
+  },
+  {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Orman kadastrosu ve komisyonlari\nDevlet ormanlari ile kamu/ozel ormanlarinin sinirlandirilmasi (orman kadastrosu) ve bu ormanlarin icindeki/bitisigindeki tasinmazlarla ortak sinirin belirlenmesi gorevini orman kadastro komisyonlarina verir. Komisyon calismalari sonucu duzenlenen tutanak ve haritalar, bir yerin orman sayilip sayilmadigini ve sinirini resmen tespit eder. Vatandasin tasinmazinin orman icinde/disinda kalip kalmadigi bu kadastro ile belirlenir."
+  },
+  {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Kadastro ilani, itiraz ve dava suresi\nOrman kadastro komisyonu kararlari askiya cikarilarak ilan edilir; ilgililer (tasinmaz sahipleri ve idare) bu karara karsi belirli surede itiraz ve dava acabilir. Suresi icinde dava acilmayan kadastro kesinlesir ve sicile islenir. Vatandasin orman sinir tespitine karsi hak arama ve itiraz dilekcesi sunma usulunu cizen maddedir. [DOGRULA: askida ilan ve dava suresinin (10 yil/belirli gun) yururlukteki son metindeki kesin sekli teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Madencilik faaliyetleri icin izin ve irtifak hakki\nDevlet ormanlari icinde maden aranmasi ve isletilmesi ile bu faaliyet icin zorunlu tesis, yol, enerji, su, haberlesme ve altyapi tesislerine; fon bedelleri haric bedeli alinarak Tarim ve Orman Bakanliginca izin verilebilir. Tohum mescereleri, gen koruma alanlari, muhafaza ormani, milli park gibi hassas alanlarda izin Bakanlik onayina baglidir; faaliyet sahibinden agaclandirma/orman izin bedeli alinir. Madencilik orman izin basvurusunun ve bedel yukumlulugunun temel hukmudur. [DOGRULA: IV. Grup ruhsatlarda agaclandirma bedeli disindaki bedellerden Cumhurbaskaninca muafiyet yetkisi ve oran yururlukteki son metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — Savunma, turizm, tesis vb. amacli izin ve irtifak hakki\nOrmanlarin gelistirilmesi disindaki amaclarla orman alanindan yararlanmak orman idaresinin iznine baglidir; savunma, ulasim, enerji, haberlesme, saglik, turizm, egitim ve benzeri kamu yarari tasiyan tesisler icin Devlet ormanlarinda bedeli alinarak izin ve irtifak hakki tesis edilebilir. Bu izinler belirli sureyle (uzun donemli) ve agaclandirma bedeli ile arazi izin bedeli odenmesi sartiyla verilir. Orman alani uzerinde tesis kurma/yatirim yapma basvurusunun dayanagidir. [DOGRULA: izin azami suresi (or. 49 yil) ve bedel kalemleri yururlukteki son metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 82,
+   "madde_tur": "madde",
+   "text": "Madde 82 — Orman memuru suc tutanaginin ispat degeri\nOrman memurlari tarafindan kanuna aykiri fiiller hakkinda duzenlenen suc (zabit) tutanaklari, aksi sabit oluncaya kadar muteber (gecerli) kabul edilir. Bu tutanaklar, kacak kesim, isgal ve izinsiz faaliyet gibi orman suclarinin tespitinde resmi belge niteligi tasir. Vatandasa teblig edilen orman suc tutanaginin hukuki agirligini ve aksini ispat yukunu belirleyen maddedir. [DOGRULA: tutanak duzenleme ve ispat hukmunun guncel madde numarasi (82 civari) yururlukteki metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "6831 orman kanunu",
+   "kaynak_dosya": "6831_orman_kanunu.txt",
+   "madde_no": 93,
+   "madde_tur": "madde",
+   "text": "Madde 93 — Ormani isgal ve izinsiz faydalanma sucu cezasi\nKanunun 17. maddesinde yasaklanan fiilleri isleyenler veya izne bagli isleri izinsiz yapanlar (91. madde sakli kalmak uzere) alti aydan iki yila kadar hapis cezasi ile cezalandirilir. Isgal ve faydalanma sucu; yeniden tarla acmak suretiyle, yanmis orman sahalarinda ya da kesinlesmis orman kadastrosu sinirlari icinde islenirse ceza bir kat artirilir. Izinsiz orman isgali ve kullaniminin cezai sonucunu duzenleyen temel maddedir."
+  },
+  {
    "mevzuat": "7201 tebligat kanunu",
    "kaynak_dosya": "7201_tebligat_kanunu.txt",
    "madde_no": 1,
@@ -3823,6 +4621,55 @@
    "madde_no": 32,
    "madde_tur": "madde",
    "text": "Madde 32 — Usulüne aykırı tebliğin hükmü\nTebliğ usulüne aykırı yapılmış olsa bile, muhatabı tebliğe muttali olmuş ise muteber\nsayılır. Muhatabın beyan ettiği tarih, tebliğ tarihi olarak kabul edilir. Tebliğin\nusulüne aykırı yapıldığını iddia eden, beyan ettiği bu tarihi ispatla mükelleftir."
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar\nKanunda geçen temel kavramları tanımlar: spor kulübü, Bakanlık ve spor federasyonlarının faaliyetlerine katılmak amacıyla tescilini yaptıran özel hukuk tüzel kişisidir; spor anonim şirketi, 6102 sayılı Türk Ticaret Kanununa göre kurulup Bakanlıkça tescil edilen ve spor faaliyetinde bulunan anonim şirkettir; spor federasyonu ise spor dalı ile ilgili faaliyetleri yürütmek üzere kurulan tüzel kişiliktir. Bu tanımlar tescil ve belgelendirme işlemlerinde esas alınır."
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Spor kulübünün kuruluşu ve tescili\nSpor kulüpleri en az yedi gerçek veya tüzel kişi tarafından, kuruluş bildirimi, tüzük ve gerekli belgelerin Bakanlığa (Gençlik ve Spor Bakanlığı) sunulmasıyla kurulur ve Bakanlık tarafından spor kulüpleri siciline tescil edilmekle tüzel kişilik kazanır. Spor kulübü tüzüğünde kulübün adı, amacı, gelir kaynakları, üyelik koşulları, organları ve geçici yönetim kurulunun gösterilmesi zorunludur. Tescil, kulübün resmî varlık kazandığı ve Bakanlık nezdinde dosya açtığı temel idari işlemdir."
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Spor dalı federasyonuna tescil ve faaliyetlere katılım\nSpor kulüplerinin bir spor dalında müsabaka ve faaliyetlere katılabilmesi, o spor dalının bağlı bulunduğu spor federasyonu tarafından ayrıca tescil edilmesine bağlıdır. Yani Bakanlık siciline tescil tüzel kişilik için yeterliyken, fiilî spor faaliyeti için ilgili federasyon nezdinde tescil ve lisans işlemi gereklidir. Bu iki kademeli tescil yapısı, kulüp evrakının hem Bakanlığa hem ilgili federasyona yönlendirilmesini gerektirir."
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 13,
+   "madde_tur": "madde",
+   "text": "Madde 13 — Denetim\nSpor kulüpleri, spor anonim şirketleri ve üst kuruluşların ilgili mevzuat, tüzük ve esas sözleşmelerindeki amaçlar doğrultusunda faaliyet gösterip göstermedikleri, defter ve kayıtlarını mevzuata uygun tutup tutmadıkları başta olmak üzere idari ve mali her türlü işlem ve faaliyetleri Bakanlık tarafından denetlenir. Ayrıca spor kulüpleri, 5253 sayılı Dernekler Kanununun 19'uncu maddesi kıyasen uygulanmak suretiyle İçişleri Bakanlığı veya mülki idare amiri tarafından da denetlenebilir. [DOĞRULA: madde 20'deki beyanname yükümlülüğü ile ilişkisi — kulüpler hesap dönemi bitiminden itibaren üç ay içinde gelir-gider ve bilanço beyannamesini Bakanlığa verir]"
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Spor anonim şirketi\n6102 sayılı Türk Ticaret Kanununa göre kurulup tüzel kişilik kazanan anonim şirketler, Gençlik ve Spor Bakanlığı tarafından tescil edilmeleriyle spor anonim şirketi vasfını kazanır. Spor kulüpleri belirli koşullarda spor faaliyetlerini bir spor anonim şirketi eliyle yürütebilir veya bu şirkete dönüştürülebilir. Halka açık spor anonim şirketleri ayrıca sermaye piyasası mevzuatına tabidir; tescil başvurusu ve ortaklık yapısı belgeleri Bakanlığa sunulur."
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Spor federasyonlarının kuruluşu\nSpor federasyonları, ilgili spor dalına ait faaliyetleri ulusal ve uluslararası düzeyde yürütmek üzere kanunla veya Cumhurbaşkanlığı kararnamesiyle kurulur ve bu düzenlemenin Resmî Gazete'de yayımlanmasıyla tüzel kişilik kazanır. Federasyonlar, kulüp ve sporcu tescili, müsabaka düzenleme ve disiplin işlemleri bakımından kendi spor dalında yetkili idari mercidir. Bu yapı, kulüplerin faaliyet izni ve sporcu lisansı evrakının doğru federasyona yönlendirilmesini belirler."
+  },
+  {
+   "mevzuat": "7405 spor kulupleri ve spor federasyonlari kanunu",
+   "kaynak_dosya": "7405_spor_kulupleri_ve_spor_federasyonlari_kanunu.txt",
+   "madde_no": 47,
+   "madde_tur": "madde",
+   "text": "Madde 47 — Ceza hükümleri ve idari yaptırımlar\nKanuna aykırı fiiller için adli ve idari yaptırımlar öngörülür: spor kulübü ve spor anonim şirketi başkan, yönetim kurulu üyesi ve yöneticilerinin Kanunun 20'nci maddesinin belirli fıkralarına aykırı (örneğin denk bütçe ve harcama sınırlarına ilişkin) fiilleri bir yıldan üç yıla kadar hapis cezasıyla; bazı bildirim ve kayıt ihlalleri yüz günden beş yüz güne kadar adli para cezasıyla cezalandırılır. Ayrıca çeşitli yükümlülük ihlalleri için belirli tutarlarda idari para cezaları uygulanır; bu tutarlar her yıl yeniden değerleme oranında güncellenir. [DOĞRULA: alt fıkralardaki güncel idari para cezası tutarları her yıl GSB tebliğiyle yeniden belirlenir]"
   },
   {
    "mevzuat": "devlet arsiv hizmetleri yonetmeligi",
@@ -4364,5 +5211,5 @@
    "text": "Madde 54 — Uygulama yönetmeliğinde ruhsat ve iskân işlemleri (m.PAİY m.54-55-64)\nPlanlı Alanlar İmar Yönetmeliği m.54 ruhsat tarihinden itibaren 2 yıl içinde başlama ve 5 yıllık ruhsat süresini, m.55 ruhsat başvurusunda aplikasyon krokisi ve tapu kayıt örneği ekli dilekçe ile imar durum belgesi, yol/kanal kotu tutanağı ve onaylı jeolojik-jeoteknik etüt raporunun temininin esaslarını, m.64 ise mal sahibinin müracaatı üzerine fenni mesul/yapı denetim raporu, enerji kimlik belgesi ve fotoğraflarla yapı kullanma izin belgesinin 30 gün içinde düzenlenmesini ayrıntılandırır. İmar Kanunu m.21-30 hükümlerinin pratik uygulama dayanağıdır."
   }
  ],
- "mevzuat_sayisi": 94
+ "mevzuat_sayisi": 112
 }

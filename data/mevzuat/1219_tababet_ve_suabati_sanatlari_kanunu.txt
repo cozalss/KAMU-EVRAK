@@ -1,0 +1,29 @@
+Tababet ve Şuabatı San'atlarının Tarzı İcrasına Dair Kanun
+Kanun No 1219, Kabul 11.04.1928, RG 14.04.1928/863 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.1219 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.1219.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Hekimlik icrası için tıp fakültesi diploması şartı
+Türkiye Cumhuriyeti dahilinde tababet icra etmek ve her ne suretle olursa olsun hasta tedavi edebilmek için tıp fakültesinden diploma sahibi olmak şarttır. Diploması olmayan kişinin hasta tedavi etmesi yasaktır; bu hüküm diploma tescili başvurularının dayanağıdır.
+
+Madde 2 — Diplomanın geçerliliği — Sağlık Bakanlığınca tasdik ve tescil
+Önceki maddede yazılı diplomanın muteber (geçerli) olması için diploma sahibinin mevzuatta öngörülen mecburi hizmetini tamamlamış olması ve diplomasının Sağlık Bakanlığınca tasdik ve tescil edilmiş bulunması gerekir. Hekimlik mesleğini icra hakkı, ancak diploma Bakanlık nezdinde tescil edildikten sonra doğar.
+
+Madde 4 — Yabancı tıp fakültesi diploması ve denklik
+Yabancı memleketlerin tıp fakültelerinden mezun hekimlerin Türkiye'de hekimlik yapabilmeleri için diplomalarının yetkili makamca denkliğinin (muadeletinin) kabulü ve Sağlık Bakanlığınca tescili gerekir. [DOĞRULA: yabancı diploma denklik usulü ve denklik makamı (YÖK / Sağlık Bakanlığı) sonradan değişen düzenlemelere tabidir; güncel denklik mevzuatı teyit edilmelidir.]
+
+Madde 8 — Uzmanlık (mütehassıslık) ve uzmanlık vesikası
+Bu Kanundaki nitelikleri taşıyanlar genel olarak hastalıkları tedavi hakkına sahiptir; ancak tababetin herhangi bir şubesinde sürekli (müstemirren) mütehassıs olarak çalışmak ve uzmanlık unvanını kullanmak için usulüne uygun uzmanlık vesikası sahibi olmak gerekir. Uzmanlık belgesi, ilgili dalda yetkili icra için aranan resmî evraktır.
+
+Madde 25 — Diplomasız / yetkisiz hekimlik icrası cezası
+Diploması olmadığı halde, menfaat temin etmek amacına yönelik olmasa bile, hasta tedavi eden veya tabip unvanını takınan kişi iki yıldan beş yıla kadar hapis ve bin güne kadar adlî para cezası ile cezalandırılır. Hüküm hem diplomasız tedaviyi hem yetkisiz tabip unvanı kullanımını kapsar.
+
+Madde 30 — Diş tabipliği (diş hekimliği) icra şartı
+Türkiye'de diş tabipliği (diş hekimliği) sanatını icra etmek ve diş tabibi unvanını taşıyabilmek için diş hekimliği fakültesinden lisans diploması almış olmak gerekir. Yabancı ülkeden mezun Türk vatandaşlarının diplomasının YÖK'çe denkliğinin kabulü ve denklik belgesinin Sağlık Bakanlığınca tescili şarttır.
+
+Madde 47 — Ebelik unvanı ve diploma tescili
+Ebelik mesleğini icra ve ebe unvanını taşıyabilmek için ebelikle ilgili lisans eğitimi veren fakülte/yüksekokuldan mezun olup diplomasının Sağlık Bakanlığınca tescil edilmiş olması gerekir; yurt dışında ebelik öğrenimi görenlerde denkliğin onaylanması ve tescil aranır. Ebeler, özellik arz eden alanlarda belirlenen esaslar çerçevesinde yetki belgesi alır.

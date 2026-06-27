@@ -36,6 +36,30 @@
 3. Türkçe karakterler içerikte tam (ç, ş, ğ, İ); değişken isimleri Latin (`evrak_turu`).
 4. Yeni node eklerken `agents/graph.py` topolojisine + frontend `agent-flow/topology.js`'e ekle.
 5. Çıkarılan PII'yi **maskele** (kullanıcı koruması + jüri "wow").
+6. **UI = neon dark tema.** Renk/font/animasyon `frontend/src/components/neonUi.jsx`
+   token'larından (`T`/`V`/`PAL`/`BANT`) gelir — elle hex yazma. Detay: aşağıdaki Tasarım/UI
+   bölümü + `frontend/design-system/kamu-evrak/MASTER.md`.
+
+## Tasarım / UI — Neon Dark (aktif tema)
+
+> Tek kaynak: `frontend/src/components/neonUi.jsx`. Tam spesifikasyon:
+> `frontend/design-system/kamu-evrak/MASTER.md`.
+
+- **Aktif kabuk:** `DashboardApp.jsx` → `NeonSidebar` + görünümler (`PanelView`, `GelenEvrakView`,
+  `TaslaklarView`, `MevzuatView`, `DenetimView`) + canlı `CanliAjanAkisi` (demo yıldızı).
+- **Renk (token):** birincil aksan teal `T=#2ee6c9`, ikincil mor `V=#b794ff`; zemin `PAL.bg=#121829`
+  / `PAL.bg2=#0f1626`; metin `PAL.ink=#eaf0fb` / `ink2=#dfe5f2`; risk bandı `BANT` (yeşil `#34d399` /
+  sarı `#fbbf24` / kırmızı `#f87171`). **Hex'i elle yazma, token kullan.**
+- **Font:** Space Grotesk (`SANS`, başlık/UI) + IBM Plex Mono (`MONO`, etiket/veri) —
+  `index.html` Google Fonts.
+- **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
+  `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`.
+- **Adlandırma:** kabuk/parça `Neon*`, bölümler `*View`, canlı akış `CanliAjanAkisi`.
+- **a11y:** her tıklanabilirde `focusRing` + `cursor:pointer`; renk tek sinyal değil (ikon+metin+etiket);
+  `prefers-reduced-motion` desteklenir; koyu zeminde AA kontrast.
+- **Legacy (yedek):** açık "Kurumsal Devlet" teması (`App.jsx` + `styles/kamu-evrak.css`, Lexend)
+  artık birincil değil; sadece reset + `rc-*`/`agw-*` yardımcıları için yüklenir. **Genişletme;**
+  yeni iş neon temada.
 
 ## İki Zorunlu Görev (biri eksikse sistem tamamlanmamış sayılır — şartname §9)
 

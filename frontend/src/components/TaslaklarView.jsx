@@ -17,9 +17,9 @@ const BASE_CONFIG = {
   dataMapping: { search: ["name"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
 };
 
-export default function TaslaklarView({ history = [], onGoInbox }) {
+export default function TaslaklarView({ drafts = [], onGoInbox }) {
   const [open, setOpen] = useState(null);
-  const drafts = useMemo(() => history.filter((h) => h.result?.yazi_taslak_md), [history]);
+  // drafts: yalnız "Düzenle" ile ayrılmış taslaklar (her biri result.yazi_taslak_md taşır).
   const config = useMemo(() => ({
     ...BASE_CONFIG,
     select: [
@@ -32,15 +32,15 @@ export default function TaslaklarView({ history = [], onGoInbox }) {
   if (drafts.length === 0) {
     return (
       <ViewWrap id="taslak-h" title="Taslaklar" sub="Üretilen resmî yazı taslakları">
-        <EmptyState icon={<Icon.doc />} title="Henüz taslak üretilmedi"
-          sub="Bir evrak işlendiğinde, üretilen resmî yazı taslağı (cevabi/üst/olur) burada listelenir."
+        <EmptyState icon={<Icon.doc />} title="Henüz taslak ayrılmadı"
+          sub="Onay kartında “Düzenle” seçtiğinizde, ilgili resmî yazı taslağı düzenlenmek üzere burada listelenir."
           actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>]} />
       </ViewWrap>
     );
   }
 
   return (
-    <ViewWrap id="taslak-h" title="Taslaklar" sub={`${drafts.length} resmî yazı taslağı · memur onayı bekliyor`}>
+    <ViewWrap id="taslak-h" title="Taslaklar" sub={`${drafts.length} resmî yazı taslağı · düzenleme bekliyor`}>
       <FilterBar config={config} filter={filter} />
       {filter.results.length === 0 ? (
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />

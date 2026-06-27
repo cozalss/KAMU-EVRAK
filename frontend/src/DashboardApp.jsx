@@ -28,15 +28,17 @@ export default function DashboardApp() {
   const [history, setHistory] = useState([]);
   const [processedIds, setProcessedIds] = useState(() => new Set());
   const [outbox, setOutbox] = useState([]);
+  const [drafts, setDrafts] = useState([]);   // YALNIZ "Düzenle" ile ayrılan taslaklar
   const fileRef = useRef(null);
   const lastResultRef = useRef(null);
   const pendingApprovalRef = useRef(null);   // HITL kararı damgası (resume async)
   const sentRef = useRef(new Set());          // aynı sonuç iki kez gönderilmesin
+  const draftedRef = useRef(new Set());       // aynı sonuç iki kez taslağa eklenmesin
 
   const started = busy || !!result || !!error || !!pendingOnay;
   const data = result || pendingOnay;
   const riskOutcome = data?.risk_metadata?.bant || "yesil";
-  const draftCount = history.filter((h) => h.result?.yazi_taslak_md).length;
+  const draftCount = drafts.length;
   const inboxCount = Math.max(0, SAMPLE_DOCS.length - processedIds.size);
   const gidenCount = outbox.filter((o) => o.durum === "gonderildi").length;
 
@@ -55,8 +57,26 @@ export default function DashboardApp() {
       alici_birim: res.hedef_birim, risk: res.risk_metadata?.bant || "yesil",
       durum, taslak: res.yazi_taslak_md || "",
       memor_adi: "M. Yılmaz", memor_unvan: "Yetkili memur",
+      // Liste zenginleştirme (kategori filtresi + satır): güven / evrak tarihi / SLA durumu.
+      guven: typeof res.tur_confidence === "number" ? res.tur_confidence : null,
+      evrak_tarihi: res.bilgi_unsurlari?.tarih || "",
+      sla_durum: res.sla_metadata?.durum || "",
       ...(res.denetim_izi?.son_hash ? { son_hash: res.denetim_izi.son_hash } : {}),
     }, ...o]);
+    return true;
+  };
+
+  // "Düzenle" → taslağı Taslaklar kuyruğuna ekle (YALNIZ kullanıcı Düzenle dediğinde;
+  // aynı sonuç iki kez eklenmez). Taslak yoksa (yazi_taslak_md boş) eklenmez.
+  const pushDraft = (res, fm) => {
+    if (!res || !res.yazi_taslak_md || draftedRef.current.has(res)) return false;
+    draftedRef.current.add(res);
+    const name = fm?.kind === "sample" ? (fm.label || fm.name) : (fm?.name || "evrak");
+    setDrafts((d) => [{
+      id: `T-${Date.now()}-${d.length}-${name}`, name, kind: fm?.kind, ts: Date.now(),
+      evrak_turu: res.evrak_turu, hedef_birim: res.hedef_birim,
+      bant: res.risk_metadata?.bant, result: res,
+    }, ...d]);
     return true;
   };
 
@@ -74,8 +94,14 @@ export default function DashboardApp() {
       const pa = pendingApprovalRef.current;
       if (pa) {
         pendingApprovalRef.current = null;
-        pushOutbox(result, fileMeta, pa.secim);
-        showToast(pa.secim === "reddet" ? "Reddedildi — Giden Evrak'a kaydedildi." : "Evrak gönderildi — Giden Evrak'a eklendi.");
+        if (pa.secim === "duzenle") {
+          pushDraft(result, fileMeta);
+          showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi.");
+          setActiveView("taslaklar");
+        } else {
+          pushOutbox(result, fileMeta, pa.secim);
+          showToast(pa.secim === "reddet" ? "Reddedildi — Giden Evrak'a kaydedildi." : "Evrak gönderildi — Giden Evrak'a eklendi.");
+        }
       }
     }
   }, [result, fileMeta]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -99,7 +125,8 @@ export default function DashboardApp() {
   };
   const onEdit = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; resume("duzenle"); }
-    else showToast("Düzenleme: taslağı PDF/DOCX indirip değiştirebilirsiniz.");
+    else if (pushDraft(result, fileMeta)) { showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); setActiveView("taslaklar"); }
+    else showToast("Önce taslak üreten bir evrak işleyin.");
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
@@ -107,7 +134,7 @@ export default function DashboardApp() {
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS} processedIds={processedIds} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
-  else if (activeView === "taslaklar") view = <TaslaklarView history={history} onGoInbox={() => goView("gelen")} />;
+  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (

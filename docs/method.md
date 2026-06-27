@@ -111,7 +111,7 @@ Skorların yorumlanmasında iki tuzak açıkça not edilir:
   ağırlandırılır → boilerplate ("arz ederim") gürültüsü domain-spesifik maddeyi
   bastırmaz. Çok kısa sorguda (eşik altı) retrieval atlanır, statik config'e düşülür.
 - **Seed:** `scripts/seed_mevzuat.py` korpusu JSON indekse yazar (tokenleştirme/BM25
-  runtime'da → rank_bm25 kurulu olmasa da indeks geçerli). 9 dosya → 59 madde-chunk.
+  runtime'da → rank_bm25 kurulu olmasa da indeks geçerli). 198 dosya → 1285 madde-chunk.
 
 ## 4. Doğrulama (verify) — uydurma vetosu
 

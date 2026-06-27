@@ -30,6 +30,11 @@ export const NEON_KEYFRAMES = `
 @keyframes nu-think{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes nu-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes nu-ring{0%{transform:translate(-50%,-50%) scale(.7);opacity:.6}100%{transform:translate(-50%,-50%) scale(1.8);opacity:0}}
+@keyframes nu-pkt{0%{transform:translateY(-30px);opacity:0}10%{opacity:1}88%{opacity:1}100%{transform:translateY(1000px);opacity:0}}
+@keyframes nu-breathe{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.06);filter:brightness(1.18)}}
+@keyframes nu-pop{0%{transform:scale(.5);opacity:.4}60%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+@keyframes nu-rise-stag{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 `;
 
 /* Görünüm kabuğu — başlık + alt başlık + içerik (kaydırılır sayfa). */
@@ -48,17 +53,25 @@ export function ViewWrap({ id, title, sub, actions, children }) {
   );
 }
 
-/* Neon kart. */
-export function NeonCard({ title, tag, tagColor, accent = T, children, full, style }) {
+/* Neon kart — premium glass: gradyan yüzey + katmanlı gölge + köşe ışıması + hover kalkış.
+   icon: opsiyonel başlık ikon çipi (accent tonlu). accent hex olmalı (alfa ekleri için). */
+const CARD_SHADOW = "0 18px 40px -24px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.05)";
+const CARD_SHADOW_HOVER = "0 26px 54px -22px rgba(0,0,0,.82), inset 0 1px 0 rgba(255,255,255,.08)";
+export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, style }) {
+  const onEnter = (e) => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = CARD_SHADOW_HOVER; };
+  const onLeave = (e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = CARD_SHADOW; };
   return (
-    <section style={{ gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, borderRadius: 14, padding: "16px 18px", ...style }}>
+    <section onMouseEnter={onEnter} onMouseLeave={onLeave}
+      style={{ position: "relative", overflow: "hidden", gridColumn: full ? "1 / -1" : "auto", background: "linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012))", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, borderRadius: 16, padding: "16px 18px", boxShadow: CARD_SHADOW, backdropFilter: "blur(10px)", transition: "transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s", ...style }}>
+      <span aria-hidden="true" style={{ position: "absolute", top: -42, right: -42, width: 168, height: 168, borderRadius: "50%", background: `radial-gradient(circle, ${accent}, transparent 70%)`, opacity: 0.1, pointerEvents: "none" }} />
       {title && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12, position: "relative" }}>
+          {icon && <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: 8, display: "grid", placeItems: "center", flexShrink: 0, color: accent, background: accent + "1f", border: `1px solid ${accent}40` }}>{icon}</span>}
           <h3 style={{ margin: 0, fontFamily: MONO, fontSize: 10.5, letterSpacing: "1.5px", color: PAL.mut, textTransform: "uppercase", fontWeight: 600 }}>{title}</h3>
-          {tag && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, padding: "2px 8px", borderRadius: 7, color: tagColor || accent, background: (tagColor || accent) + "22" }}>{tag}</span>}
+          {tag && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, padding: "3px 9px", borderRadius: 8, color: tagColor || accent, background: (tagColor || accent) + "22", border: `1px solid ${(tagColor || accent)}3a` }}>{tag}</span>}
         </div>
       )}
-      {children}
+      <div style={{ position: "relative" }}>{children}</div>
     </section>
   );
 }
@@ -125,21 +138,27 @@ export const Icon = {
 export function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
   const [open, setOpen] = useState(false);
   const id = useId();
+  const show = () => setOpen(true);
+  const hide = () => setOpen(false);
+  // a11y: trigger=button, role=tooltip + aria-describedby (aria-expanded YOK — tooltip deseni).
+  // Hover + klavye odağıyla açılır; Esc/blur/mouseleave kapatır. Tooltip wrapper'ın
+  // alt-öğesidir + şeffaf paddingTop "köprü" ile aradaki boşlukta kapanma (WCAG 1.4.13 hoverable).
   return (
     <span style={{ position: "relative", display: "inline-flex", verticalAlign: "middle" }}
-      onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button type="button" aria-label={label} aria-expanded={open} aria-describedby={open ? id : undefined}
-        onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}
-        onClick={() => setOpen((o) => !o)}
-        onKeyDown={(e) => { if (e.key === "Escape") { setOpen(false); } }}
+      onMouseEnter={show} onMouseLeave={hide}>
+      <button type="button" aria-label={label} aria-describedby={open ? id : undefined}
+        onFocus={show} onBlur={hide}
+        onKeyDown={(e) => { if (e.key === "Escape") hide(); }}
         {...focusRing}
-        style={{ cursor: "pointer", width: 17, height: 17, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: "rgba(255,255,255,.05)", color: PAL.mut, padding: 0 }}>
+        style={{ cursor: "pointer", width: 24, height: 24, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: "rgba(255,255,255,.05)", color: PAL.mut, padding: 0, flexShrink: 0 }}>
         <Icon.info />
       </button>
       {open && (
         <span role="tooltip" id={id}
-          style={{ position: "absolute", top: "calc(100% + 8px)", [align === "right" ? "right" : "left"]: 0, width, zIndex: 60, background: "#141c30", border: `1px solid ${PAL.lineHi}`, borderRadius: 12, padding: "12px 14px", boxShadow: "0 20px 54px -14px rgba(0,0,0,.78)", fontFamily: SANS, fontSize: 11.5, lineHeight: 1.55, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, cursor: "default" }}>
-          {children}
+          style={{ position: "absolute", top: "100%", [align === "right" ? "right" : "left"]: 0, paddingTop: 8, width, zIndex: 60, cursor: "default" }}>
+          <span style={{ display: "block", background: "#141c30", border: `1px solid ${PAL.lineHi}`, borderRadius: 12, padding: "12px 14px", boxShadow: "0 20px 54px -14px rgba(0,0,0,.78)", fontFamily: SANS, fontSize: 11.5, lineHeight: 1.55, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400 }}>
+            {children}
+          </span>
         </span>
       )}
     </span>
@@ -155,13 +174,13 @@ const RISK_DESC = {
 
 /* RiskBand — açıklamalı (tooltip'li) risk göstergesi. CanliAjanAkisi + NeonDetay ortak kullanır.
    band: "yesil|sari|kirmizi" · lit: risk_guard tamamlandı mı (yanmadan "—"). */
-export function RiskBand({ band = "yesil", lit = true }) {
+export function RiskBand({ band = "yesil", lit = true, sub }) {
   const cur = BANT[band] || BANT.yesil;
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, minWidth: 230 }}>
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 9 }}>
-          <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3 }}>RİSK BANDI</span>
+          <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3 }}>RİSK BANDI{sub ? ` · ${sub}` : ""}</span>
           <InfoTip label="Risk bandı nedir? Açıklamayı göster" width={266}>
             <strong style={{ display: "block", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: PAL.ink, marginBottom: 6 }}>Risk bandı nedir?</strong>
             <span style={{ display: "block", color: PAL.mut, marginBottom: 4 }}>
@@ -178,7 +197,7 @@ export function RiskBand({ band = "yesil", lit = true }) {
         <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "6px 10px", borderRadius: 11, background: "rgba(0,0,0,.28)", border: `1px solid ${PAL.line}`, width: "fit-content" }}>
           {RISK_ORDER.map((key) => {
             const on = lit && band === key;
-            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 14, height: 14, borderRadius: "50%", background: on ? BANT[key].c : "rgba(255,255,255,0.07)", boxShadow: on ? `0 0 14px 2px ${BANT[key].c}` : "none", border: "1px solid " + (on ? BANT[key].c : "rgba(255,255,255,0.12)"), transition: "all .5s" }} />;
+            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 14, height: 14, borderRadius: "50%", background: on ? BANT[key].c : "rgba(255,255,255,0.1)", boxShadow: on ? `0 0 14px 2px ${BANT[key].c}` : "none", border: "1px solid " + (on ? BANT[key].c : "rgba(255,255,255,0.24)"), transition: "all .5s" }} />;
           })}
         </div>
       </div>

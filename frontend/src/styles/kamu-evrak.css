@@ -126,6 +126,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
   transition: transform var(--dur-normal) var(--ease-out-back), box-shadow var(--dur-normal) ease;
 }
 .ke-logo svg { width: 26px; height: 26px; }
+.ke-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
 .ke-brand:hover .ke-logo { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .ke-brand-tx { min-width: 0; }
 /* ürün adı/wordmark — küçük eyebrow; gerçek kahraman tagline'dır (hiyerarşi) */

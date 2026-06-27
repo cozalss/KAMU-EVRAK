@@ -1,0 +1,392 @@
+===== PAGE 1 =====
+0
+YAPAY ZEKA DİL 
+AJANLARI 
+YARIŞMASI
+TEKNİK 
+ŞARTNAMESİ
+(1.Senaryo)
+===== PAGE 2 =====
+1
+İÇİNDEKİLER
+İÇİNDEKİLER .....................................................................................................................................1
+1. YARIŞMANIN KONUSU, YERİ VE TARİHİ.....................................................................2
+1.1. YARIŞMA TARİHİ VE KONUMU ............................................................................................. 2
+1.2. YARIŞMANIN KONUSU......................................................................................................... 2
+2. YARIŞMANIN DÜZENLENME AMACI.............................................................................3
+3. YARIŞMAYA YÖNELİK GENEL BİLGİLER ...................................................................3
+3.1. ÖN DEĞERLENDİRME SUNUMU............................................................................................. 3
+3.2. TEKNİK DEĞERLENDİRME SINAVI ........................................................................................ 3
+4. YARIŞMA TAKVİMİ.............................................................................................................5
+5. YARIŞMAYA KATILIM ŞARTLARI..................................................................................6
+6. TEKNİK İSTERLER ..............................................................................................................6
+6.1. YARIŞMA TEMASI: KAMU EVRAK VE YAZIŞMA SÜREÇLERİ İÇİN AKILLI AGENT DESTEK SİSTEMİ
+6
+6.2. GEREKÇE VE KAPSAM......................................................................................................... 7
+6.3. PROBLEM TANIMI............................................................................................................... 7
+6.4. GÖREVLER ........................................................................................................................ 8
+6.4.1. Görev 1: Evrak Sınıflandırma ve İçerik Analizi........................................................... 8
+6.4.2. Görev 2: Resmî Yazı Taslaklama ve Birim Yönlendirme ............................................ 8
+6.5. VERİ KULLANIMI................................................................................................................ 9
+6.6. YÖNTEM VE TEKNİK YAKLAŞIMLAR..................................................................................... 9
+7. PROJE BİLGİLERİ SUNUMLARI ....................................................................................10
+8. FİNAL SUNUMLARI ...........................................................................................................10
+9. PUANLAMA SİSTEMİ.........................................................................................................11
+10. ÖDÜLLER..............................................................................................................................12
+11. İLETİŞİM...............................................................................................................................12
+12. GENEL KURALLAR............................................................................................................13
+13. ETİK KURALLAR................................................................................................................13
+13.1. EK ETİK KURALLAR VE İLETİŞİM İLKELERİ........................................................................ 13
+14. SORUMLULUK BEYANI....................................................................................................14
+===== PAGE 3 =====
+2
+1. Yarışmanın Konusu, Yeri Ve Tarihi
+TEKNOFEST Kapsamında Bilişim Vadisi yürütücülüğünde Türksat Uydu Haberleşme Kablo 
+TV ve İşletme A.Ş. destekleriyle, kamu kurumları, özel sektör kuruluşları ve üniversitelerin 
+katılımına açık şekilde “Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi” 
+temalı yarışmanın kapsamını, hedeflerini, problem çerçevesini, görev tanımlarını ve 
+değerlendirme yaklaşımını ayrıntılı biçimde ortaya koymak amacıyla hazırlanmıştır.
+1.1. Yarışma Tarihi ve Konumu
+Yarışmanın çevrimiçi süreçlerinin tamamlanmasının ardından final aşaması, TEKNOFEST 
+2026 kapsamında belirlenmiş olan yarışma takvimi doğrultusunda fiziki olarak 
+gerçekleştirilecektir. Finalist takımların jüri sunumları ve sistem demoları Bilişim Vadisi 
+Kocaeli Kampüsü'nde yapılacak olup, dereceye giren takımların ödüllendirileceği büyük ödül 
+töreni ise TEKNOFEST Şanlıurfa bünyesinde düzenlenecektir. Final etkinliğine, jüri 
+değerlendirmelerine ve festival alanına ilişkin kesin tarihler ile lokasyon detayları, 
+TEKNOFEST resmî web sitesinde duyurulacak olan resmi takvim üzerinden ilan edilecektir.
+1.2. Yarışmanın Konusu
+Kamu kurumlarında günlük işleyişin önemli bir bölümü; evrak hazırlama, inceleme, 
+yönlendirme, yazışma üretimi ve arşivleme süreçleri çoğu zaman çok adımlı, tekrarlı, manuel 
+müdahale gerektiren ve zaman baskısı altında yürütülen işlemlerden oluşmaktadır. Bu yarışma, 
+söz konusu süreçlerin yapay zeka destekli akıllı ajan sistemleriyle yeniden tasarlanarak daha 
+verimli, daha güvenilir ve daha hızlı hale getirilmesini teşvik etmektedir.
+===== PAGE 4 =====
+3
+2. Yarışmanın Düzenlenme Amacı
+Yapay zeka teknolojilerinin hızla geliştiği günümüzde, özellikle doğal dil işleme ve akıllı ajan 
+sistemleri stratejik bir teknoloji alanı olarak öne çıkmaktadır. Kamu kurumlarında yürütülen 
+evrak ve yazışma süreçlerinin dijitalleşmesi, otomasyonu ve akıllı sistemlerle desteklenmesi; 
+verimlilik, doğruluk ve hız açısından kritik önem taşımaktadır.
+Bu doğrultuda yarışmanın temel amacı; Türkçe dilinde çalışan yapay zeka tabanlı akıllı ajan 
+sistemlerinin geliştirilmesini teşvik etmek, kamu evrak ve yazışma süreçlerine yönelik 
+yenilikçi, uygulanabilir ve ölçeklenebilir çözümler ortaya çıkarmaktır. Aynı zamanda, yerli ve 
+milli dil teknolojilerinin geliştirilmesine katkı sağlanarak Türkiye’nin bu alandaki teknolojik 
+yetkinliğinin artırılması hedeflenmektedir.
+3. Yarışmaya Yönelik Genel Bilgiler
+Yapay Zeka Dil Ajanları Yarışması, katılımcıların büyük dil modelleri (LLM), otonom 
+karar mekanizmaları ve çoklu ortam (multimodal) anlama yeteneklerini harmanlayarak 
+gerçek dünya problemlerine yapay zeka tabanlı otonom çözümler geliştirmelerini amaçlayan 
+çok aşamalı bir süreçtir. Yarışma boyunca takımların hem teorik yeterlilikleri hem de 
+geliştirdikleri ajan mimarilerinin teknik başarısı, aşağıda belirtilen şeffaf ve bütünsel 
+değerlendirme aşamalarıyla ölçümlenir. 
+3.1. Ön Değerlendirme Sunumu
+Takımların geliştirmeyi hedefledikleri projelerini, teknik mimari yaklaşımlarını ve takım 
+yapılarını genel hatlarıyla özetleyerek yarışmaya katılım motivasyonlarını gerekçeleriyle 
+birlikte sundukları ilk değerlendirme aşamasıdır.
+3.2. Teknik Değerlendirme Sınavı
+Alanında uzman akademisyenler tarafından hazırlanmış olan bu teknik sınav yarışmaya 
+başvuruda bulunan takımların üyelerinin genel yeterliliğe sahip olduklarını ölçümlemek 
+amacıyla yapılacaktır, sınava tüm takım üyeleri katılımı zorunludur. 
+===== PAGE 5 =====
+4
+Yarışmaya katılımda aşağıdaki genel şartların sağlanması gerekmektedir:
+• Bu alanda proje geliştirmek isteyen, Türkiye'de ve yurt dışında öğrenim gören 18 
+yaşından büyük tüm lise ve üniversite öğrencileri (Ön Lisans, Lisans, Yüksek Lisans, 
+Doktora ve Açık Öğretim dahil) ile mezunlar katılabilir. Yarışmaya katılım, sadece
+takım halinde olabilir.
+Aşağıda belirtilen kişiler yarışmaya katılım sağlayamaz:
+• Yarışmada görev alan organizasyon sorumluları, mentörler ve bunların birinci derece 
+yakınları yarışmaya katılım sağlayamaz.
+• Yarışmanın değerlendirme süreçlerinde görev alan jüri üyeleri, danışma kurulu üyeleri 
+ve hakemler ile bunların birinci derece yakınları yarışmaya katılım sağlayamaz.
+• Önceki yıllarda TEKNOFEST yarışmalarında diskalifiye edilmiş veya etik ihlal 
+nedeniyle yarışmadan çıkarılmış kişiler ve bu kişilerin yer aldığı takımlar yarışmaya 
+katılım sağlayamaz.
+• Aynı projeyle eş zamanlı olarak başka bir TEKNOFEST yarışmasına başvuru yapan 
+takımlar; bu durum tespit edildiğinde tüm ilgili başvurular iptal edilir.
+• Türkiye Açık Kaynak Platformu (TAKP) çatısı altında yürütülen Doğal Dil İşleme 
+projesinde aktif olarak görev alan kişiler, danışmanlar, akademisyenler ve ilgili 
+akademisyenlerin öğrencileri yarışmaya katılamaz.
+• Bu gibi durumlar tespit edildiğinde ilgili takım diskalifiye edilecektir.
+• Son 2 yıl içerisinde üst üste Yapay Zeka Dil Ajanları Yarışması'nda (veya önceki adıyla 
+Türkçe Doğal Dil İşleme Yarışması'nda) dereceye girerek ödül almış takımların üyeleri 
+ve takımlar, yarışmaya başvuramaz; bu tür başvuruların tespit edilmesi durumunda 
+katılım hakları iptal edilir.
+===== PAGE 6 =====
+5
+4. Yarışma Takvimi
+Yarışmanın aşamalarına ilişkin tahmini takvim aşağıdaki tabloda sunulmuştur. Tarihlerde 
+ihtiyaç duyulması halinde değişiklik yapılabilir; her durumda güncel takvim TEKNOFEST 
+resmi web sitesi üzerinden duyurulur.
+Tablo 1: Yarışma Takvimi
+Açıklama Yarışma Takvimi
+Başvuru Başlangıcı 12 Haziran 
+Son Başvuru Tarihi 12 Temmuz
+Ön Değerlendirme Sunumu Son 
+Teslimi 12 Temmuz
+Ön Değerlendirme Sonuçlarının 
+Açıklanması 17 Temmuz 
+Teknik Değerlendirme Sınavı 21 Temmuz
+Finalistlerin Açıklanması 24 Temmuz
+Kick Off 27 Temmuz
+Yarışma Çevrimiçi Süreci 27 Temmuz – 26 Ağustos
+FİNAL AĞUSTOS
+TEKNOFEST Şanlıurfa 30 Eylül – 4 Ekim
+Yarışma sürecinde finale kalan takımlara, geliştirdikleri projelere yönelik teknik ve yönetsel 
+danışmanlık sunmak üzere alanında deneyimli mentörler atanacaktır. Bilişim Vadisi Mentörlük 
+Programı, takımların proje ilerleme takip aşamasında düzenli geri bildirim almasını ve final 
+değerlendirmesine en olgun haliyle ulaşmasını desteklemek amacıyla planlanmıştır.
+===== PAGE 7 =====
+6
+5. Yarışmaya Katılım Şartları
+Yarışmaya katılım, aşağıda sıralanan şartların tamamının sağlanmasına bağlıdır:
+• Başvurular, T3KYS üzerinden alınacak olup takımlar 4 kişiden oluşmalıdır. Her 
+takımın bir takım kaptanı bulunması zorunludur.
+• Bir kişi yalnızca bir takımda yer alabilir. Aynı kişinin birden fazla takıma başvurması 
+durumunda ilgili kişinin tüm başvuruları geçersiz sayılır.
+• Her takım düzenleyici kurum tarafından organize edilen Bilişim Vadisi mentörlük 
+programından mentörlük alacaktır. Mentör Heyeti, Bilişim Vadisi tarafından 
+belirlenecektir.
+• Dereceye giren takımlar Şanlıurfa’da gerçekleşecek TEKNOFEST ödül törenine 
+katılacaktır.
+• Yarışmaya başvuran tüm takımlar; işbu şartnamede yer alan kuralları, TEKNOFEST 
+Genel Yarışma Kurallarını ve TEKNOFEST Etik Kurallarını okumuş, anlamış ve kabul 
+etmiş sayılır.
+• Takımlar, geliştirdikleri projelerin özgünlüğünden ve üçüncü taraf haklarına 
+uygunluğundan sorumludur. Açık kaynak yazılımların kullanımı, ilgili lisans şartlarına 
+uygun biçimde gerçekleştirilmelidir.
+6. Teknik İsterler
+6.1. Yarışma Teması: Kamu Evrak ve Yazışma Süreçleri İçin Akıllı 
+Agent Destek Sistemi
+Bu tema, kamusal işleyişin temel taşlarından biri olan evrak döngüsünün yapay zeka ile 
+desteklenmesini merkeze alır. Evrak işleme ve yazışma hazırlama süreçleri, hemen her 
+kurumda yoğun olarak tekrarlanan ve personel kaynaklarının önemli bir kısmını tüketen 
+operasyonlardır. Yapay zeka tabanlı akıllı ajanlar sayesinde bu süreçler yalnızca hızlanmakla 
+kalmayacak; daha standart, izlenebilir ve hataya dayanıklı bir hale gelecektir.
+===== PAGE 8 =====
+7
+6.2. Gerekçe ve Kapsam 
+Kamu kurumlarında yürütülen resmi yazışma ve evrak işlemleri, pratikte çok sayıda alt 
+görevden oluşan karmaşık bir süreç zinciri şeklinde işler. Bir evrakın kuruma ulaştığı andan 
+arşivlenmesine kadar geçen sürede; belgenin okunması, içerik analizi yapılması, evrakın 
+türünün belirlenmesi, hangi mevzuata tabi olduğu veya hangi standart metinleri gerektirdiğinin 
+tespit edilmesi, resmi yazı taslağının hazırlanması, uygun birime yönlendirilmesi ve süreç 
+içinde gerekli bilgilendirmelerin yapılması gerekmektedir. Bütün bu aşamalar çoğu zaman 
+farklı personeller tarafından yürütülmekte, bu da hem iş yükünün dağılmasına hem de işlem 
+sürelerinin uzamasına neden olmaktadır.
+Akıllı ajan sistemleri, bu sürecin her bir aşamasını üstlenen özelleşmiş dijital görev birimleri 
+gibi davranabilir. Her bir agent belirli bir rolü yerine getirir; örneğin biri evrakı okur ve 
+sınıflandırır, diğeri mevzuat eşleştirmesi yapar, bir diğeri yazı taslağı oluşturur, bir başka agent 
+ise uygun yönlendirme kararını üstlenebilir. Bu şekilde tasarlanan çok ajanlı bir yapı hem görev 
+dağılımını hem de süreç bütünlüğünü güçlendirir.
+Yarışmanın kapsamı, bu tür birçok ajanlı mimarinin kamu gerçekliğine uygun olarak 
+tasarlanması, geliştirilmesi ve bir demo senaryosu üzerinden çalışır hale getirilmesini 
+içermektedir.
+6.3. Problem Tanımı
+Bu yarışmada katılımcılardan, kamu kurumlarına gelen evrakların işlenmesi ve resmi 
+yazışmaların üretilmesi süreçlerini destekleyebilecek yapay zeka temelli bir agent sistemi 
+geliştirmeleri beklenmektedir. Tasarlanacak sistem, gerçek bir iş akışı üzerinde çalışıyormuş 
+gibi davranmalı; evrakı okuyabilmeli, anlamlandırabilmeli, sınıflandırabilmeli, mevzuat 
+önerisinde bulunabilmeli, resmi yazı taslakları hazırlayabilmeli ve evrakın hangi birime 
+yönlendirileceğine dair tutarlı öneriler sunabilmelidir.
+Bu doğrultuda yarışma iki görevden oluşmakta olup katılımcıların her iki görevi de 
+tamamlaması zorunludur. Görevler farklı işlevsel aşamaları temsil etse de yarışmacıların 
+geliştireceği sistemin uçtan uca bir evrak işleme ve yazışma hazırlama sürecini kapsaması 
+beklenmektedir.
+===== PAGE 9 =====
+8
+6.4. Görevler
+Yarışmada her iki görevin de tamamlanması zorunludur. Görevler birbirini tamamlayan süreç 
+adımlarını temsil eder ve değerlendirme tüm görevlerin bütünlüğü üzerinden yapılacaktır.
+6.4.1. Görev 1: Evrak Sınıflandırma ve İçerik Analizi
+Bu görevde amaç, kuruma ulaşan bir evrakın ilk inceleme ve değerlendirme aşamasını yapay 
+zeka ile otomatikleştirmektir. Gelen evrakın içeriğinin doğru anlaşılması, hangi türde bir işlem 
+gerektirdiğinin belirlenmesi ve evrakın ilgili mevzuat veya yazışma kurallarına göre 
+değerlendirilmesi sürecin en kritik adımlarındandır. Yarışmacıların geliştireceği agent sistemi, 
+bu erken aşamayı üstlenerek kamu çalışanlarına önemli zaman kazandırmalı ve evrak akışını 
+hızlandırmalıdır.
+Bu kapsamda sistemin aşağıdaki yeteneklere sahip olması beklenmektedir:
+• Evrakı OCR veya doğrudan metin olarak okuyabilme,
+• Metni anlamlandırarak evrakın türünü belirleme,
+• İçerikte geçen önemli bilgi unsurlarını çıkarma,
+• Evrakta bulunması gereken ancak eksik olan bilgileri tespit edebilme,
+• İlgili mevzuat, yönetmelik veya standart yazışma kurallarını önerebilme,
+• Evraka ilişkin kısa ve öz bir özet oluşturabilme.
+• Bu görev, kamu kurumlarında genellikle ilk değerlendirme birimlerinin yaptığı 
+işlemleri dijitalleştiren bir ön işleme aşaması olarak düşünülebilir.
+6.4.2. Görev 2: Resmî Yazı Taslaklama ve Birim Yönlendirme
+Bu görevde yarışmacılardan, evrakın işleme alınması sonrasında hangi resmi yazının 
+hazırlanması gerektiğine karar veren ve buna uygun bir yazı taslağı oluşturan yazı taslağı 
+oluşturma ve birim yönlendirme işlevlerini yerine getiren bir agent sistemi geliştirmeleri 
+beklenir. Amaç, yazı hazırlama sürecini standartlaştırmak, hızlandırmak ve yönlendirme 
+hatalarını en aza indirmektir.
+===== PAGE 10 =====
+9
+Bu kapsamda sistemin:
+• Üst yazı, cevap yazısı, bilgilendirme metni veya alternatif bir resmi yazışma türü için 
+uygun bir taslak oluşturması,
+• Taslak metnin resmi üsluba uygun olmasını sağlaması,
+• Evrakın içeriğine göre doğru birime yönlendirme önerisinde bulunması,
+• Kullanıcıya süreç hakkında açık ve anlaşılır bilgilendirme sunması,
+• Gerekli durumlarda eksik bilgi talep edebilmesi beklenmektedir.
+Bu görev, kamu kurumlarında yazışma işlerini yürüten birimlerin günlük pratiğini destekleyen 
+bir yapay zeka çözümünün temel bileşenlerini kapsamaktadır.
+6.5. Veri Kullanımı
+Yarışmada gerçek kamu verisi kullanılmayacaktır. Bunun yerine katılımcıların; açık kaynak 
+metinler, kurgu evrak örnekleri, yapay olarak oluşturulmuş resmi yazışma taslakları ve kamuya 
+açık mevzuat metinleri üzerinden çalışmaları beklenir. Veri setlerinin çeşitliliği, geliştirilen 
+agent sisteminin farklı evrak türleriyle başa çıkabilme becerisini göstermesi açısından olumlu 
+bir katkı sağlayacaktır.
+6.6. Yöntem ve Teknik Yaklaşımlar
+Katılımcılar çözüm geliştirirken farklı teknik yöntemlerden yararlanabilirler. OCR tabanlı 
+metin çıkarımı, doğal dil işleme yöntemleri ile içerik analizi, sınıflandırma ve bilgi çıkarımı 
+teknikleri, mevzuat eşleştirme algoritmaları, metin üretimi modelleri ve agent orkestrasyonu 
+bunlara örnektir. Sistem ister tek bir agent tarafından ister birden fazla agentın birbiriyle 
+etkileşime girdiği bir mimari tarafından yönetilebilir.
+Model eğitmek zorunlu değildir; açık kaynak modeller, hazır NLP araçları veya ince ayar 
+yapılmış modeller kullanılabilir. Önemli olan, geliştirilen çözümün kamu kurumlarındaki 
+gerçek evrak akışı ile uyumlu bir işleyiş ortaya koyabilmesidir.
+===== PAGE 11 =====
+10
+7. Proje Bilgileri Sunumları
+Yarışmaya kabul edilen takımlar, yarışma boyunca düzenleyici kurum tarafından talep edilen 
+bilgi, belge, kod deposu erişimi, veri kümeleri ve teknik raporu belirlenen sürelerde teslim 
+etmekle yükümlüdür. Tüm belgeler Türkçe olarak hazırlanmalı; kullanılan kaynaklar bilimsel 
+atıf kurallarına uygun biçimde belirtilmelidir. Yarışma süresince geliştirilecek kodların, veri 
+kümelerinin ve diğer bileşenlerin Türkiye Açık Kaynak Platformu GitHub hesabında 
+erişilebilir biçimde Açık Kaynak herhangi bir lisans ile (Apache, MIT, GNU vb.) paylaşımı 
+zorunludur. Bu bağlamda tüm yarışmacılar projeleri ile ilgili gerekli dokümantasyonu yapmak 
+zorundadır. Açık kaynak lisanslarla paylaşılması zorunlu olan proje bileşenleri kapsamında, 
+üçüncü taraf açık ağırlık (open-weight) veya kısıtlı/açık kaynak tanımına (örn. MIT License, 
+Apache License 2.0, GNU General Public License) uymayan lisanslı yapay zekâ modelleri 
+doğrudan depoya yüklenmemelidir. Bu tür modeller için yalnızca erişim bağlantısı, sürüm 
+bilgisi, lisans metni ve kullanım talimatlarının dokümantasyonda belirtilmesi yeterlidir. 
+Yarışmacılar, kullandıkları tüm üçüncü taraf bileşenlerin lisans koşullarına uymakla 
+yükümlüdür.
+Proje son teslim tarihinde proje dosyası yüklenmediği takdirde projeler değerlendirmeye 
+alınmayacaktır.
+8. Final Sunumları
+Sunum süreci, takımların projelerini hem teknik hem de iletişimsel açıdan en iyi biçimde 
+aktarmasını hedefler. Sunumlara ilişkin temel kurallar şunlardır:
+• Her takıma sunum için ayrılan süre toplam 15 dakika olup; bu sürenin 10 dakikası takım 
+sunumuna, 5 dakikası ise jüri soru-cevap bölümüne ayrılmıştır.
+• Sunumlar, takım kaptanı veya kaptanın yetkilendirdiği takım üyeleri tarafından 
+gerçekleştirilir. Sunumda takım üyelerinin tamamının söz alması zorunlu değildir.
+• Sunumlar Türkçe olarak yapılır. İhtiyaç duyulması hâlinde teknik terimler İngilizce 
+orijinal formlarıyla birlikte verilebilir.
+• Sunum dosyaları PDF ve PPTX formatında, etkinlik salonunun teknik ekibine 
+belirlenen süre içinde teslim edilir.
+• Sunumlarda kullanılacak görsel, video ve ses materyallerinin telif haklarına uygun 
+olması takımların sorumluluğundadır.
+===== PAGE 12 =====
+11
+Yarışmanın final aşaması fiziki bir etkinlik olarak gerçekleştirilecektir.
+Final aşamasında her takımdan, geliştirdiği sistemin uçtan uca çalışan bir demosunu sunması 
+beklenmektedir. Demo gerekliliklerine ilişkin kurallar aşağıda özetlenmiştir:
+• Demo, gerçek zamanlı veya kayıttan sunulabilir; ancak kayıttan sunum tercih 
+edildiğinde, jürinin canlı çalıştırma talebine yanıt verilebilmesi gerekir.
+• Demo senaryosunun, Türkçe metinler üzerinde sistemin temel yeteneklerini ve özgün 
+çıktılarını gözlemlenebilir biçimde göstermesi beklenir.
+• Demoda kullanılan veri setlerinin kaynağı ve kullanım hakları açıkça belirtilmelidir.
+• İnternet kesintisi gibi olası teknik sorunlara karşı takımların yedek planlarının olması 
+tavsiye edilir.
+Sunum ve demo gösterimleri, aşağıdaki kriterler çerçevesinde toplam 100 puan üzerinden 
+değerlendirilir:
+• Yöntem ve Teknik Yaklaşım (35 puan)
+• Uygulama (35 puan)
+• Demo (15 puan)
+• Yenilikçilik, Özgünlük ve Ticarileşme Potansiyeli (15 puan)
+9. Puanlama Sistemi
+Tüm yarışma süreçlerinde değerlendirme, yukarıda yer alan kriterlere göre toplam 100 puan 
+üzerinden yapılır ve dereceler bu puanlama sistemine göre belirlenir. Değerlendirme, iki 
+görevin bütüncül olarak yerine getirildiği uçtan uca senaryolar üzerinden yapılacaktır. Tek 
+görevin eksik olması durumunda sistem tamamlanmış kabul edilmez. Bir önceki bölümde 
+belirtilen değerlendirme kriterlerine ilişkin detaylar aşağıda sunulmaktadır.
+Yöntem ve Teknik Yaklaşım kapsamında; çözüm geliştirilirken kullanılan yöntemlerin 
+derinliği, karmaşıklığı ve teknik açıdan ne kadar detaylı kurgulandığı değerlendirilir.
+Uygulama başlığı altında; sınıflandırma doğruluğu, yönlendirme başarımı, özetleme ve yazı 
+şablon oluşturma kalitesi ve eksik bilgi tespiti gibi performans ölçütleri dikkate alınır.
+===== PAGE 13 =====
+12
+Demo kapsamında; geliştirilen çözümün ne kadar etkili ve anlaşılır şekilde sunulduğu 
+değerlendirilir. Ayrıca, gerçek zamana yakın (real-time) sonuç üretebilme kabiliyeti önemli bir 
+avantaj olarak kabul edilir.
+Yenilikçilik ve Özgünlük kriteri; çözümün literatüre ve mevcut uygulamalara göre farklılaşma 
+düzeyini değerlendirir. Ticarileşme Potansiyeli ise çözümün gerçek dünyada uygulanabilirliği, 
+ölçeklenebilirliği ve sürdürülebilir değer üretme kapasitesi üzerinden ele alınır.
+10. Ödüller
+Dereceye giren takımlara aşağıdaki tabloda yer alan ödüller takdim edilir. Ödüller, takım 
+kaptanının banka hesabına transfer edilerek takım üyeleri arasında eşit olarak paylaşılır; pay 
+edilme yöntemi takımın kendi sorumluluğundadır.
+Tablo 2: Ödül Miktarları
+Derece Ödül Miktarları
+1. Takım 120.000 TL
+2. Takım 100.000 TL
+3. Takım 80.000 TL
+*Yukarıda belirtilen ödül miktarları takıma verilecek olup takım üyelerine eşit bölüştürülerek iletim sağlanacaktır.
+11.İletişim
+Yarışmaya ilişkin sorular, görüşler ve teknik destek talepleri için aşağıdaki iletişim kanalları 
+kullanılabilir:
+• TEKNOFEST resmi web sitesi: https://www.teknofest.org
+• TEKNOFEST resmi sosyal medya hesapları üzerinden duyurular
+===== PAGE 14 =====
+13
+Düzenleyici kurum, takımlara güncel bilgilendirmeleri başvuru sırasında bildirilen e-posta 
+adresleri ve TEKNOFEST resmi iletişim kanalları üzerinden iletecektir. Takımların, başvuru 
+sistemindeki iletişim bilgilerini güncel tutması ve duyuruları düzenli olarak takip etmesi kendi 
+sorumluluğundadır. Bilgilendirme mesajlarının okunmamış olması, takımları yarışma 
+kurallarına uyma yükümlülüğünden kurtarmaz.
+12. Genel Kurallar
+Bu şartnamede yer almayan tüm hususlarda TEKNOFEST Genel Yarışma Kuralları geçerlidir. 
+İlgili kurallar bütününe aşağıdaki bağlantı üzerinden erişilebilir:
+TEKNOFEST Genel Yarışma Kuralları Kitapçığı
+Genel Yarışma Kuralları ile bu şartname arasında çelişki bulunması durumunda, TEKNOFEST 
+Genel Yarışma Kuralları esas alınır.
+13. Etik Kurallar
+Yarışmaya katılan tüm takımlar, TEKNOFEST Etik Kuralları’na uymakla yükümlüdür. Etik 
+kuralların tamamına aşağıdaki bağlantı üzerinden erişilebilir:
+TEKNOFEST Etik Kuralları Kitapçığı
+13.1. Ek Etik Kurallar ve İletişim İlkeleri
+TEKNOFEST Etik Kuralları’na ek olarak, Yapay Zeka Dil Ajanları Yarışması katılımcılarının 
+aşağıdaki kurallara da titizlikle uyması beklenmektedir.
+Davranış Beklentileri
+• Tüm takım üyelerinin ve danışmanların, yarışma boyunca diğer takımlara, jüri 
+üyelerine, mentorlara ve organizasyon ekibine karşı saygılı, kapsayıcı ve yapıcı bir 
+tutum sergilemesi esastır.
+• Geri bildirim verirken ve alırken nezaket kurallarına uyulmalı; eleştiriler kişisel değil, 
+projeye ilişkin ve yapıcı olmalıdır.
+===== PAGE 15 =====
+14
+• Takımlar, geliştirdikleri sistemlerin Türkçe konuşan tüm bireyler için adil, kapsayıcı ve 
+yanlılıktan arındırılmış olmasına özen göstermekle yükümlüdür.
+Yasaklı Davranışlar
+• Başkasına ait projelerin, kod parçalarının veya akademik çalışmaların kaynak 
+gösterilmeden kendi çalışmasıymış gibi sunulması (intihal) kesinlikle yasaktır.
+• Veri sahteciliği, sonuçların manipülasyonu, jüriyi yanıltıcı bilgi sunumu ve 
+değerlendirme süreçlerini etkileme amacıyla yapılan tüm girişimler etik ihlal kabul 
+edilir.
+• Yarışma değerlendirmelerini etkilemek amacıyla jüri üyeleri, hakemler veya 
+organizasyon görevlileriyle uygunsuz iletişim kurulması yasaktır.
+• Diğer takımların verilerine, kodlarına veya sistemlerine yetkisiz erişim, kopyalama 
+veya zarar verme girişimleri ağır etik ihlal sayılır.
+Sosyal Medya Kuralları
+• Takımlar, yarışma süresince yaptıkları sosyal medya paylaşımlarında TEKNOFEST 
+kurumsal kimliğine ve diğer takımlara saygılı bir dil kullanmakla yükümlüdür.
+• Yarışma sürecinde elde edilen ve düzenleyici kurum tarafından gizli olarak işaretlenen 
+veriler, senaryolar veya değerlendirme sonuçlarının ifşa edilmesi kesinlikle yasaktır.
+14. Sorumluluk Beyanı
+İşbu şartname,Yapay Zeka Dil Ajanları Yarışması’nın genel çerçevesini ve katılım kurallarını 
+belirlemek amacıyla hazırlanmıştır. Yarışmaya başvuran tüm takımlar, şartnamenin tüm 
+hükümlerini ve eklerini okumuş, anlamış ve kabul etmiş sayılır. Yarışma süreci boyunca 
+takımların kendi sağlık, güvenlik, ulaşım, konaklama ve kişisel eşya sorumlulukları ile 
+yarışmaya getirdikleri donanımın güvenliği kendilerine aittir.
+Takımların geliştirdikleri sistemlerin üçüncü taraf haklarına, kişisel verilerin korunması 
+mevzuatına ve fikri mülkiyet hukukuna uygun olması yükümlülüğü, takımların kendisine 
+aittir.
+Mücbir sebepler, salgın hastalık, doğal afet, kamu otoritelerinin kararları veya benzeri 
+olağanüstü hâller nedeniyle yarışmanın takvimi, formatı veya yapılma biçimi değiştirilebilir; 
+gerekli görülmesi hâlinde yarışma çevrim içi ortama taşınabilir veya ileri bir tarihe 
+ertelenebilir. Bu tür değişikliklerden doğacak hiçbir maddi veya manevi zarar talebi 
+düzenleyici kurum tarafından karşılanmaz.
+===== PAGE 16 =====
+15

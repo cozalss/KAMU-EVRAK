@@ -132,8 +132,8 @@ export default function CanliAjanAkisi({
       {/* SR: canlı ilerleme */}
       <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
         {(() => {
-          const act = display.find((a) => a.status === "active");
-          if (act) return `${act.label} çalışıyor — adım ${display.indexOf(act) + 1} / ${total}`;
+          const ai = display.findIndex((a) => a.status === "active");
+          if (ai >= 0) return `${display[ai].label} çalışıyor — adım ${ai + 1} / ${total}`;
           if (allDone) return `İşleme tamamlandı — ${total} ajan başarıyla yürütüldü.`;
           return "";
         })()}
@@ -199,33 +199,80 @@ export default function CanliAjanAkisi({
             </div>
           </div>
 
-          {/* Ajan izi */}
+          {/* Ajan izi — neon omurga zaman çizelgesi (dolan ilerleme + akan paket + nefes alan aktif düğüm) */}
           <div style={{ padding: "18px 22px" }}>
-            <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2, marginBottom: 14 }}>AJAN İZİ · {total} ADIM</div>
-            {display.map((a, i) => {
-              const isAnla = a.gorev === 1, col = isAnla ? T : V, colA = isAnla ? ta : va;
-              const st = a.status, done = st === "done", active = st === "active";
-              const prevGorev = i > 0 ? display[i - 1].gorev : null;
-              const group = i === 0 ? "GÖREV 1 · ANLA" : (a.gorev === 2 && prevGorev === 1 ? "GÖREV 2 · ÜRET" : "");
-              return (
-                <div key={a.id}>
-                  {group && <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "2px", color: i === 0 ? "#3f8f7f" : "#7a5fb0", margin: (i === 0 ? "0" : "18px") + " 0 8px", paddingLeft: 2 }}>{group}</div>}
-                  <div style={{ display: "flex", gap: 13, padding: "10px 12px", borderRadius: 12, marginBottom: 4, background: active ? colA(0.1) : "transparent", border: "1px solid " + (active ? colA(0.3) : "transparent"), boxShadow: active && glow ? `0 8px 26px -10px ${colA(0.5)}` : "none", opacity: st === "pending" ? 0.45 : 1, transition: "all .4s cubic-bezier(.2,.8,.2,1)" }}>
-                    <div style={{ position: "relative", flexShrink: 0 }}>
-                      {active && glow && <div aria-hidden="true" style={{ position: "absolute", left: "50%", top: "50%", width: 30, height: 30, borderRadius: 9, border: "1px solid " + col, transform: "translate(-50%,-50%)", animation: "nu-ring 1.5s ease-out infinite", pointerEvents: "none" }} />}
-                      <div style={{ width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: MONO, fontSize: 11, fontWeight: 600, color: (done || active) ? "#06121a" : col, background: (done || active) ? col : colA(0.14), transition: "all .4s" }}>{done ? "✓" : st === "error" ? "✕" : String(i + 1).padStart(2, "0")}</div>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                        <span style={{ fontSize: 13.5, fontWeight: 500, whiteSpace: "nowrap", color: active ? "#eaf6ff" : done ? PAL.ink2 : PAL.mut2 }}>{a.label}</span>
-                        {a.tag && <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 7px", borderRadius: 7, color: a.id === "risk_guard" ? risk.c : col, background: a.id === "risk_guard" ? risk.c + "22" : colA(0.12), opacity: (done || active) ? 1 : 0.5 }}>{a.tag}</span>}
+            {/* Başlık + kompakt telemetri */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
+              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2 }}>AJAN İZİ · {total} ADIM</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: MONO, fontSize: 9.5, letterSpacing: "1px", color: PAL.mut3 }}>
+                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: busy ? T : (doneCount >= total ? BANT.yesil.c : PAL.mut2), boxShadow: busy && glow ? `0 0 8px ${T}` : "none", animation: busy && glow ? "nu-dotpulse 1.4s ease-in-out infinite" : "none" }} />
+                {busy ? "CANLI" : (doneCount >= total ? "TAMAM" : "BEKLEMEDE")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}
+              </div>
+            </div>
+
+            {/* Omurga + düğümler */}
+            <div style={{ position: "relative" }}>
+              {/* OMURGA — sönük taban ray; içinde dolan ilerleme + akan paket. aria-hidden. */}
+              <div aria-hidden="true" style={{ position: "absolute", left: 13, top: 14, bottom: 14, width: 2, borderRadius: 2, background: PAL.line, overflow: "hidden", pointerEvents: "none" }}>
+                <div style={{ position: "absolute", inset: 0, borderRadius: 2, transformOrigin: "top center", transform: `scaleY(${total ? Math.max(doneCount, busy ? 0.04 : 0) / total : 0})`, background: `linear-gradient(180deg, ${T} 0%, ${T} 42%, ${V} 100%)`, boxShadow: glow ? `0 0 10px ${ta(0.5)}` : "none", transition: "transform .6s cubic-bezier(.2,.8,.2,1)" }} />
+                {busy && glow && (() => {
+                  const ai = display.findIndex((a) => a.status === "active");
+                  const flowCol = ai >= 0 ? (display[ai].gorev === 2 ? V : T) : (doneCount < Math.ceil(total / 2) ? T : V);
+                  const flowColA = ai >= 0 ? (display[ai].gorev === 2 ? va : ta) : (doneCount < Math.ceil(total / 2) ? ta : va);
+                  return <span style={{ position: "absolute", left: "50%", top: 0, width: 6, height: 26, marginLeft: -3, borderRadius: 6, background: `linear-gradient(180deg, transparent, ${flowCol}, transparent)`, boxShadow: `0 0 9px 1px ${flowColA(0.75)}`, animation: "nu-pkt 2.2s cubic-bezier(.5,0,.5,1) infinite", willChange: "transform, opacity" }} />;
+                })()}
+              </div>
+
+              {display.map((a, i) => {
+                const isAnla = a.gorev === 1, col = isAnla ? T : V, colA = isAnla ? ta : va;
+                const st = a.status, done = st === "done", active = st === "active", err = st === "error", pending = st === "pending";
+                const prevGorev = i > 0 ? display[i - 1].gorev : null;
+                const group = i === 0 ? "GÖREV 1 · ANLA" : (a.gorev === 2 && prevGorev === 1 ? "GÖREV 2 · ÜRET" : "");
+                const tagCol = a.id === "risk_guard" ? risk.c : col;
+                const tagBg = a.id === "risk_guard" ? risk.c + "22" : colA(0.12);
+                const tagBd = a.id === "risk_guard" ? risk.c + "3a" : colA(0.22);
+                const enterDelay = `${Math.min(i * 50, 640)}ms`;
+                return (
+                  <div key={a.id}>
+                    {group && (
+                      <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "2px", color: i === 0 ? "#3f8f7f" : "#7a5fb0", margin: (i === 0 ? "0" : "20px") + " 0 10px", paddingLeft: 42, display: "flex", alignItems: "center", gap: 9 }}>
+                        <span>{group}</span>
+                        <span aria-hidden="true" style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${i === 0 ? ta(0.4) : va(0.4)}, transparent)` }} />
                       </div>
-                      <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : "#93a0bb") : PAL.mut2, animation: active ? "nu-think 1.2s ease-in-out infinite" : "none" }}>{done ? (a.out || "tamamlandı ✓") : active ? "çalışıyor…" : "—"}</div>
+                    )}
+                    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: 14, padding: "9px 12px 9px 0", borderRadius: 12, marginBottom: 2, background: active ? colA(0.08) : "transparent", boxShadow: active && glow ? `inset 0 0 0 1px ${colA(0.26)}, 0 10px 30px -14px ${colA(0.55)}` : "none", transition: "background .4s, box-shadow .4s", animation: glow ? "nu-rise-stag .5s cubic-bezier(.2,.8,.2,1) both" : "none", animationDelay: glow ? enterDelay : "0ms" }}>
+                      {/* DÜĞÜM — omurga üstünde oturan nokta/çember */}
+                      <div aria-hidden="true" style={{ position: "relative", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        {active && glow && <span style={{ position: "absolute", left: "50%", top: "50%", width: 26, height: 26, borderRadius: "50%", border: `1.5px solid ${col}`, transform: "translate(-50%,-50%)", animation: "nu-ring 1.6s ease-out infinite", pointerEvents: "none" }} />}
+                        <span style={{ position: "relative", zIndex: 1, width: done || active ? 26 : 14, height: done || active ? 26 : 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MONO, fontSize: 10.5, fontWeight: 700, color: done || active ? "#06121a" : err ? BANT.kirmizi.c : col, background: done || active ? col : err ? "rgba(248,113,113,.16)" : PAL.bg2, border: done || active ? "none" : `2px solid ${err ? BANT.kirmizi.c : pending ? PAL.lineHi : colA(0.6)}`, boxShadow: active && glow ? `0 0 16px 1px ${col}` : done && glow ? `0 0 9px ${colA(0.55)}` : "none", animation: active && glow ? "nu-breathe 2s ease-in-out infinite" : done && glow ? "nu-pop .42s cubic-bezier(.34,1.56,.64,1) both" : "none", transition: "width .35s cubic-bezier(.34,1.56,.64,1), height .35s cubic-bezier(.34,1.56,.64,1), background .35s, border-color .35s" }}>
+                          {done ? (
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7" stroke="#06121a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          ) : err ? "✕" : active ? (
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#06121a", animation: glow ? "nu-think 1.1s ease-in-out infinite" : "none" }} />
+                          ) : null}
+                        </span>
+                      </div>
+
+                      {/* İÇERİK */}
+                      <div style={{ minWidth: 0, paddingTop: 1, opacity: pending ? 0.5 : 1, transition: "opacity .4s" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
+                          <span style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, lineHeight: 1.3, color: active ? "#eaf6ff" : done ? PAL.ink2 : PAL.mut2, transition: "color .35s" }}>{a.label}</span>
+                          {a.tag && <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 7px", borderRadius: 7, color: tagCol, background: tagBg, border: `1px solid ${tagBd}`, opacity: done || active ? 1 : 0.45, transition: "opacity .35s" }}>{a.tag}</span>}
+                          {active ? (
+                            <span aria-hidden="true" style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 8.5, letterSpacing: "1.5px", color: col, opacity: 0.9, flexShrink: 0, animation: glow ? "nu-think 1.2s ease-in-out infinite" : "none" }}>İŞLENİYOR</span>
+                          ) : (
+                            <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 9, letterSpacing: "1px", color: PAL.mut2, opacity: 0.65, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span>
+                          )}
+                        </div>
+                        <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : "#93a0bb") : active ? PAL.mut : err ? BANT.kirmizi.c : PAL.mut2, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>
+                          {done ? (a.out || "tamamlandı ✓") : active ? "çalışıyor…" : err ? "hata · adım başarısız" : "—"}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           {/* Sağ panel: çıkarılan veri + risk + taslak + HITL */}

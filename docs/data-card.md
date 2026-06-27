@@ -87,12 +87,13 @@ kişi(ler)ce doğrulanmalı; taksonomi resmî kaynağa dayalı (docs/02), kendi-
 
 ## 5. Mevzuat korpusu (`data/mevzuat/`) — ayrı, kamuya açık
 
-Sentetik evraktan ayrı; **kamuya açık mevzuat metni** (mevzuat.gov.tr): Resmî Yazışma
-Yön. 2646, Dilekçe 3071, Bilgi Edinme 4982, Tebligat 7201, SDP 2005/7 ve eklenen
-**657 DMK, 4734 Kamu İhale, 2577 İYUK, 5018 Kamu Mali Yönetimi**. Madde-başlıklı özet
+Sentetik evraktan ayrı; **kamuya açık mevzuat metni** (mevzuat.gov.tr): **198 mevzuat**
+(kanun + yönetmelik + CBK); çekirdek Resmî Yazışma Yön. 2646, Dilekçe 3071, Bilgi Edinme
+4982, Tebligat 7201, SDP 2005/7, 657 DMK, 4734 Kamu İhale, 2577 İYUK, 5018 Kamu Mali
+Yönetimi + çok-alanlı genişletme (vergi, belediye, çevre, sosyal güvenlik, ceza...). Madde-başlıklı özet
 (lafzî tam metin değil); madde no'lar çapraz doğrulanır, şüpheli → `[DOĞRULA:]`. Mahkeme
 kararları YALNIZ mevzuat-eşleştirme referansı; **eğitim/demo evrakı değil**. Kart:
-`data/mevzuat/README.md`. Seed: `scripts/seed_mevzuat.py` → 59 madde-chunk.
+`data/mevzuat/README.md`. Seed: `scripts/seed_mevzuat.py` → **198 mevzuat / 1285 madde-chunk**.
 
 ## 6. Lisans ve kullanım hakları beyanı (şartname §6.5, §7)
 

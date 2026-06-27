@@ -304,8 +304,8 @@ export default function App() {
       <header className="ke-header">
         <div className="ke-header-top">
           <div className="ke-brand">
-            {/* SC 1.1.1 — logo dekoratif SVG, aria-hidden doğru */}
-            <span className="ke-logo" aria-hidden="true"><Icon.brand /></span>
+            {/* SC 1.1.1 — logo dekoratif, aria-hidden doğru */}
+            <span className="ke-logo" aria-hidden="true"><img src="/logo.png" alt="" /></span>
             <div className="ke-brand-tx">
               {/* SC 2.4.6 Başlıklar — h1 sayfa başlığı */}
               <h1>kamu-evrak</h1>

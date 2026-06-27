@@ -1,0 +1,29 @@
+İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü Kuruluş ve Görevleri Hakkında Kanun
+Kanun No 2560, Kabul 20.11.1981, RG 23.11.1981/17523 — YÜRÜRLÜKTE (LEXPERA konsolide metin ve mevzuat.gov.tr 1.5.2560 üzerinden doğrulandı; diğer büyükşehir su-kanal idarelerine — ASKİ, İZSU, BUSKİ vb. — kıyasen uygulanır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2560.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kuruluş ve hizmet alanı
+İstanbul Su ve Kanalizasyon İdaresi (İSKİ), İstanbul Büyükşehir Belediyesinin su ve kanalizasyon hizmetlerini yürütmek üzere kurulmuş, su ve kanalizasyon tesislerini kurmak/devralmak/işletmekle görevli bir kamu tüzel kişiliğidir. Genel Müdürlüğün hizmeti kural olarak büyükşehir belediyesinin görev alanı ile sınırlıdır; ancak şehrin yararlandığı su kaynaklarının korunmasına ilişkin hizmetler büyükşehir belediye sınırları dışında da yürütülür. Su-kanal abonelik ve hizmet taleplerinin hangi idare yetki alanında olduğunun belirlenmesinde temel dayanaktır.
+
+Madde 2 — İdarenin görev ve yetkileri
+İSKİ'nin görevlerini sayar: içme, kullanma ve endüstri suyu ihtiyaçlarının karşılanması amacıyla kaynaktan abonelere ulaşana kadar her türlü tesisin etüt/proje/yapımı; kullanılmış sular ile yağış sularının toplanması, uzaklaştırılması ve uygun şekilde deşarjı; su kaynaklarının kirlenmesini önleyici tedbirleri almak; bölge içindeki su kaynaklarının korunması. Abone başvurusu, atıksu bağlantısı ve su temini taleplerinin idarenin görev kapsamında olup olmadığının tespitinde dayanaktır.
+
+Madde 13 — İdarenin gelirleri
+İdarenin gelir kaynaklarını sayar: su satışı ve kullanılmış suların uzaklaştırılması karşılığı abonelerden tarife esasında alınan ücretler, katılma payları, devlet yardımları, özel hizmet karşılığı alınan ücretler, bağışlar ve diğer gelirler. Su-kanal abonelik ücretleri ile atıksu bedellerinin hukuki dayanağını gösterir.
+
+Madde 17 — Kanalizasyon şebekesine bağlanma zorunluluğu
+Kanalizasyon şebekesi bulunan cadde ve sokaklardaki her taşınmazın kanalizasyona bağlanması zorunludur. Bağlantılar İSKİ tarafından yapılır veya projesine uygun olarak yaptırılır; bağlantı bedeli taşınmaz sahibinden alınır. Atıksu/kanal bağlantısı talebi ve bağlantı bedeli yazışmalarının dayanağıdır.
+
+Madde 18 — Su ve kanalizasyon durum belgesi
+Yapı için belediyeden ruhsat isteyen gerçek ve tüzel kişiler, daha önce İSKİ'den su ve kanalizasyon durumu hakkında belge (durum belgesi) almak zorundadır. İSKİ o yerdeki şebeke durumuna göre belgeyi düzenler; belge alınmadan veya tesisat belgeye aykırı yapılırsa ruhsatsız yapılar hakkındaki imar mevzuatı hükümleri uygulanır. İnşaat ruhsatı öncesi su-kanal durum belgesi başvurusunun dayanağıdır.
+
+Madde 19 — Endüstriyel atıksu ön arıtma yükümlülüğü
+Kanalizasyon şebekesine doğrudan deşarjı uygun olmayan nitelikteki endüstriyel atıksu kaynaklarının, gerekli ön arıtma tesislerini kurmak ve işletmekle yükümlü olduğunu; bu tesislerin yapım, işletme, bakım, kontrol ve belgelendirme masraflarının ilgilisine ait olduğunu düzenler. İşyerlerinin atıksu deşarj/bağlantı izni başvurularında dayanak teşkil eder.
+
+Madde 23 — Tarifelerin tespiti esasları
+Su satışı, kanalizasyon tesisi bulunan yerlerde kullanılmış suların uzaklaştırılması ve septik çukurların boşaltılması giderleri için ayrı tarifeler yapılır. Tarifelerin tespitinde yönetim ve işletme giderleri ile amortismanları doğrudan gider yazılan yenileme/ıslah/tevsi masrafları ve bir kâr oranı esas alınır; tarifelerin tespiti ve tahsilatına ilişkin usul ve esaslar yönetmelikle belirlenir. Su-kanal abonelik ücreti ve tarife itirazı yazışmalarının dayanağıdır. [DOĞRULA: eski metindeki %10 kâr oranı sınırı Anayasa Mahkemesi kararıyla iptal edildiğinden cari hüküm teyit edilmeli]

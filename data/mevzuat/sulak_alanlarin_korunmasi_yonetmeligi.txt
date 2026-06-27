@@ -1,0 +1,26 @@
+Sulak Alanların Korunması Yönetmeliği
+Orman ve Su İşleri Bakanlığı, RG 04.04.2014/28962 (Mevzuat No 19546) — YÜRÜRLÜKTE (resmigazete.gov.tr 20140404-11 ve mevzuat.gov.tr 19546 üzerinden doğrulandı)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=19546&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 7 — Doldurma ve kurutma yasağı
+Sulak alanların doldurulmasının ve kurutulmasının yasak olduğunu düzenler; bu yasağa aykırı işlem yapılması halinde alanın faaliyet/işlem sahibi tarafından eski (doğal) haline getirilmesi gerekir. Sulak alan ekosisteminin bütünlüğünü koruyan temel yasak hükmüdür. Sulak alan tahribatına ilişkin tespit, ihbar ve eski hale getirme yazışmalarının dayanağıdır.
+
+Madde 15 — Atık su deşarjı
+Sulak alanlara hiçbir surette arıtılmamış evsel ve endüstriyel atık su verilemeyeceğini düzenler; deşarj konusunda Su Kirliliği Kontrolü Yönetmeliği hükümlerinin uygulanacağını belirtir. Sulak alan su kalitesinin korunmasına yönelik temel sınırlamadır. Deşarj izni reddi ve atık su ihlali bildirim yazışmalarının dayanağıdır.
+
+Madde 18 — Sulak alanların belirlenmesi ve tescili
+Ulusal öneme haiz sulak alanlar için taşra teşkilatınca etüt raporu hazırlanmasını, mahalli komisyonda değerlendirilip Ulusal Sulak Alan Komisyonuna sunulmasını; Komisyon onayı sonrası Resmî Gazete'de ilan edilerek tescil edilmesini düzenler. Sulak alan statüsü ve sınırları bu süreçle kesinleşir. Sulak alan tescili ve sınır ilanı yazışmalarının dayanağıdır.
+
+Madde 23 — Kontrollü kullanım bölgesinde uygulama esasları
+Kontrollü kullanım bölgesinde, Yönetmelik ekinde (Ek-1) sayılan faaliyetler için ekosistem değerlendirme raporu hazırlanmasının zorunlu olduğunu düzenler; raporda önleyici ve telafi edici tedbirler belirtilir ve Genel Müdürlük onayı alındıktan sonra faaliyete izin verilir. Sulak alan faaliyet izni başvurusu ve ekosistem değerlendirme raporu yazışmalarının dayanağıdır.
+
+Madde 24 — Tampon bölgede uygulama esasları (faaliyet izni)
+Tampon bölgede katı atık depolanması ve maden ocağı açılması gibi faaliyetlere izin verilmediğini; Yönetmelik ekinde (Ek-2) sayılan faaliyetlerin ise Genel Müdürlük/Bölge Müdürlüğü iznine tabi olduğunu düzenler. İzin başvuruları belirli süre (en geç 30 gün) içinde sonuçlandırılır ve izin belgeleri belirli süreyle (5 yıl) geçerli olup yenilenir. Tampon bölge faaliyet izni başvuru ve yenileme yazışmalarının dayanağıdır.
+
+Madde 41 — İdari yaptırımlar
+Bu Yönetmelik hükümlerine aykırı hareket edenler hakkında 2872 sayılı Çevre Kanunu'nun ilgili maddelerinin (idari para cezaları dahil) uygulanacağını düzenler; somut ceza tutarları Çevre Kanunu'nda belirlenmiştir. Sulak alan ihlali nedeniyle idari yaptırım uygulama yazışmalarının dayanağıdır. [DOĞRULA: atıf yapılan 2872 sayılı Kanun idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellendiğinden cari tutarlar teyit edilmeli]

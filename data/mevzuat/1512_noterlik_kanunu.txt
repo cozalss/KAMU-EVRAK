@@ -1,0 +1,26 @@
+Noterlik Kanunu
+Kanun No 1512, Kabul 18.01.1972, RG 05.02.1972/14090 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.1512 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.1512.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 60 — Noterlerin görevleri (yapacağı işler)
+Noterler, yapılması kanunla başka bir makam, merci veya kişiye verilmemiş olan her türlü hukukî işlemi düzenlemek; kanunlarda resmî olarak yapılmaları emredilen ve mercileri belirtilmemiş olan bütün hukukî işlemleri bu Kanun hükümlerine göre yapmakla görevlidir. Noterler ayrıca dışarıda yazılıp getirilen kâğıtların imza, mühür veya tarihini onaylamak; örnek (suret) çıkarıp aslına uygunluğunu onaylamak; tebligat, ihtar, ihbar ve protesto işlemlerini yapmak; defter onaylamak ve emanet kabul etmek gibi işleri yürütür. Bu madde, bir işlemin noterde mi yoksa başka bir resmî mercide mi yaptırılacağını belirleyen temel görev hükmüdür.
+
+Madde 84 — Düzenleme işleminin (resmî senet/tutanak) şekli ve içeriği
+Hukukî işlemlerin noter tarafından düzenlenmesi bir tutanak biçiminde yapılır. Bu tutanakta noterin adı-soyadı ile noterliğin adı, işlemin yapıldığı yer ve tarih, ilgilinin (ve varsa tercüman, tanık, bilirkişinin) kimlik ve adresi ile vergi kimlik numarası, ilgilinin gerçek isteğine ilişkin beyanı, işleme katılanların imzaları ile noterin imza ve mührü bulunur. Düzenleme şeklindeki işlemler, içeriği bakımından da noterin sorumluluğunda olduğundan ispat gücü en yüksek noter belgesidir. Başvuru evrakında "noterde düzenlenmiş" ibaresi bu şekle göndermedir.
+
+Madde 89 — Düzenleme şeklinde yapılması zorunlu işlemler (vekâletname dâhil)
+Niteliği bakımından tapuda işlem yapılmasını gerektiren sözleşme ve vekâletnameler ile vasiyetname, mülkiyeti muhafaza kaydı ile satış, gayrimenkul satış vaadi, vakıf senedi, evlenme (mal rejimi) sözleşmesi, evlat edinme ve tanıma, mirasın taksimi sözleşmesi ve diğer kanunlarda öngörülen sair işlemler düzenleme şeklinde yapılır. Bu işlemler imza onaylama (tasdik) yoluyla geçerli yapılamaz; bu nedenle taşınmaz işlemlerine ilişkin vekâletnameler düzenleme biçiminde noterce hazırlanmalıdır.
+
+Madde 90 — İmza onaylaması (imza tasdiki)
+Noter, bu Kanuna uygun olarak dışarıda yazılıp getirilen kâğıtların üzerindeki imza, mühür veya herhangi bir işareti ya da tarihi onaylar. İmza onaylaması, onaylanan imzanın ilgiliye ait olduğunu belgelendirme niteliğinde olup belgenin içeriğini (metnin doğruluğunu) kapsamaz; içeriğin sorumluluğu imza sahibine aittir. Muvafakatname, taahhütname ve düzenleme zorunluluğu bulunmayan birçok başvuru evrakı imza tasdiki yoluyla resmîleştirilir.
+
+Madde 96 — Örnek (suret) çıkarma ve aslına uygunluğunun onaylanması
+İlgili, getirdiği herhangi bir kâğıdın tamamından veya bir kısmından örnek çıkarılmasını isterse, noter aslındaki yazı, resim, çizgi ve işaretleri aynı biçimde göstererek istenilen sayıda örnek çıkarır ve aslına uygunluğunu onaylar. Çıkarılan örneklerden biri ilgiliye imzalattırılarak noter dairesinde saklanır. Aslına uygunluğu noterce onaylanmış suretler, kamu kurumlarına yapılan başvurularda asıl belge yerine geçen "noter onaylı suret"i oluşturur.
+
+Madde 158 — Noterin işlemi kanunî sebep olmaksızın yapmaktan kaçınması
+Noter, kendisinden istenen ve kanuna uygun olan bir noterlik işlemini haklı/kanunî bir sebep bulunmaksızın yapmaktan kaçınamaz; aksi hâlde sorumluluğu doğar ve ilgili, işlemden kaçınılmasına karşı hukukî yollara başvurabilir. İşlemin reddi hâlinde sebep ilgiliye bildirilir. Noterin bulunmadığı veya hukukî engel nedeniyle yapamadığı işlem, o yerde başka noter yoksa asliye hukuk hâkimi (yoksa sulh hukuk hâkimi) tarafından yerine getirilir. [DOĞRULA: işlemin reddine karşı şikâyetin tâbi olduğu özel süre ilgili usul hükmünde ayrıca aranmalı]

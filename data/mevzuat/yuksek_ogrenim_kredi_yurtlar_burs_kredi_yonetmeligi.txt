@@ -1,0 +1,29 @@
+Yüksek Öğrenim Kredi ve Yurtlar Kurumu Burs-Kredi Yönetmeliği
+Yüksek Öğrenim Kredi ve Yurtlar Kurumu Burs-Kredi Yönetmeliği. Resmî Gazete: 24/8/2004, Sayı 25563. Dayanak: 5102 sayılı Kanunun 6. maddesi. Yükseköğrenim öğrencilerine burs-kredi verilmesi, başvuru, değerlendirme/tahsis ile bursun kesilmesi ve gerektiğinde tahsiline ilişkin usul ve esasları düzenler.
+Kaynak: https://www.lexpera.com.tr/mevzuat/yonetmelikler/YR801Y2004N25563P1
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç (m.Madde 1)
+Yönetmeliğin amacının, Yüksek Öğrenim Kredi ve Yurtlar Kurumu tarafından yükseköğrenim öğrencilerine burs-kredi verilmesine ilişkin usul ve esasları, öğrencilere hangi şartlarla burs-kredi verileceğini ve bunların kesilmesi ile lüzumu halinde tahsiline ilişkin hak ve yükümlülükleri düzenlemek olduğunu belirtir.
+
+Madde 10 — Burs başvurusu (m.Madde 10)
+Burs almak isteyen öğrencilerin, Kurumca belirlenen usul, süre ve yöntemle (genellikle elektronik ortamda) burs başvurusu yapacaklarını düzenler. Başvuruda istenecek bilgi ve belgeler ile başvuru takvimine ilişkin esasları içerir; burs başvuru sürecinin dayanağıdır. [DOĞRULA: başvuru yöntemine ilişkin güncel madde metni]
+
+Madde 14 — Kurumca burs verileceklerin değerlendirilmesi (m.Madde 14)
+Burs verilecek öğrencilerin; öğrenci ve ailesinin sosyal-ekonomik durumu, öğrencinin yükseköğretime girişte aldığı puan ve puan türü, ara sınıfta ise yıl sonu başarı durumu dikkate alınarak her yıl Yönetim Kurulunca belirlenen kıstaslar doğrultusunda değerlendirileceğini düzenler. Burs tahsisinin liyakat ve ihtiyaç ölçütlerine bağlandığı maddedir.
+
+Madde 24 — Başarısızlık sebebiyle bursun kesilmesi (m.Madde 24)
+Öğretim kurumunca başarısız olduğu bildirilen öğrencilerin bursunun kesileceğini ve tekrar burs verilmeyeceğini düzenler. Bursu kesilen öğrencilere, kesildiği tarihten itibaren Öğrenim Kredisi Yönetmeliğinde belirlenen esaslara göre kredi verilebileceğini öngörür.
+
+Madde 25 — Öğretim kurumundan ayrılma halinde bursun kesilmesi (m.Madde 25)
+Burs almakta olan öğrencinin öğretim kurumundan ayrılması durumunda bursunun kesileceğini düzenler. En az bir yarıyıl izin alan veya kayıt donduran öğrencinin bursunun, durumun Kuruma bildirildiği tarihi izleyen ödeme döneminden itibaren kalan süre kadar kesileceğini öngörür.
+
+Madde 29 — Kesin hükümle mahkûm olma halinde bursun kesilmesi (m.Madde 29)
+Herhangi bir suçtan dolayı haklarında altı ay ve daha fazla hapis cezası ile kesinleşmiş mahkûmiyeti bulunan (cezası ertelenenler hariç) öğrencilerin bursunun kesileceğini ve bir daha burs verilmeyeceğini düzenler. [DOĞRULA: güncel ceza süresi/ibaresinin yürürlükteki metni]
+
+Madde 30 — Disiplin cezası halinde bursun kesilmesi (m.Madde 30)
+Kurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]

@@ -1,0 +1,26 @@
+Pasaport Kanunu
+Kanun No 5682, Kabul 15.07.1950, RG 24.07.1950/7564 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.5682.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Pasaport veya vesika ibrazı zorunluluğu
+Türkiye'ye girmek veya Türkiye'den çıkmak isteyen Türk vatandaşları ile yabancılar, usulüne uygun ve geçerli bir pasaport veya pasaport yerine geçen geçerli bir belge (vesika) ibraz etmek zorundadır. Giriş ve çıkış işlemleri, yetkili emniyet (polis) makamlarınca yürütülür; sınır kapılarında pasaport ile yapılan giriş-çıkış tescili idarî işlemin temelidir. Bu madde, pasaport başvurusu ve sınır geçiş evrakının dayanağını oluşturur.
+
+Madde 12 — Pasaport çeşitleri (nevileri)
+Kanuna göre verilecek pasaportlar beş çeşittir: diplomatik pasaportlar; hususi damgalı pasaportlar (yeşil); hizmet damgalı pasaportlar (gri); umuma mahsus pasaportlar (bordo, münferit veya müşterek); ve yabancılara mahsus pasaportlar. Pasaport başvurusunda talep edilecek belgeler ve harç, başvuran kişinin dahil olduğu pasaport çeşidine göre değişir; pasaport türü, başvuru evrakının türünü ve yetkili mercii belirler.
+
+Madde 13 — Diplomatik pasaport
+Diplomatik pasaport; Cumhurbaşkanı, bakanlar, milletvekilleri, diplomatik memurlar ve bu nitelikteki üst düzey görevliler ile kanunda sayılan kişilere, görevleri ya da seyahat amaçları için verilir. Diplomatik pasaportlar Dışişleri Bakanlığı ve yetkili büyükelçilik/konsolosluklarca düzenlenir. [DOĞRULA: diplomatik pasaport hak sahipleri listesi 13. madde fıkralarında sayılır ve sonradan değişikliğe uğramıştır]
+
+Madde 14 — Hususi (yeşil) ve hizmet (gri) damgalı pasaportlar
+Hususi damgalı (yeşil) pasaport; birinci, ikinci ve üçüncü derece kadrolu memurlara, belediye başkanlarına, il genel meclisi/il daimî komisyon üyelerine ve kanunda sayılan diğer kişilere verilir. Bu kişilerden emeklilik veya çekilme sebebiyle görevlerinden ayrılmış olanlara da hususi damgalı pasaport verilebilir. Hizmet damgalı (gri) pasaport ise diplomatik veya hususi pasaport hakkı bulunmadığı hâlde resmî bir görevle ya da kurumlarca yurt dışına gönderilen kamu görevlilerine ve bunların eş/çocuklarına verilir. [DOĞRULA: yeşil pasaport hak sahipliği derecesi ve hak sahibinin eş-çocuğuna verilme şartları 14. maddede yer alır]
+
+Madde 17 — Umuma mahsus (bordo) pasaport başvurusu
+Umuma mahsus pasaport almak için başvuru yapılacak makamlar ile istenecek belgeler İçişleri Bakanlığınca belirlenir; yurt dışında ilgili konsolosluk, kendi kayıtlarına dayanarak pasaport verir. Reşit olmayanlar (küçükler) ve kısıtlılar için yapılacak başvurularda, kanunî temsilcinin muvafakatini gösteren resmî makamca onaylı belge aranır. Bu madde, vatandaşın olağan pasaport başvurusunda ibraz edeceği evrakın çerçevesini çizer.
+
+Madde 22 — Pasaport verilmeyecek ve yurt dışına çıkışı tahdit edilecek kişiler
+Yurt dışına çıkmaları yetkili mahkemelerce yasaklananlara, hakkında verilmiş tutuklama veya yakalama kararı bulunanlara ve terör örgütlerine aidiyeti, iltisakı ya da irtibatı tespit edilen kişilere pasaport veya pasaport yerine geçen belge verilmez. Mahkemece çıkışı yasaklananlar dışında kalanlardan, zarurî hâllerde yurt dışına çıkışına Cumhurbaşkanınca izin verilenlere pasaport düzenlenebilir. Bu kişilere ilişkin tahdit bilgileri sınır kapılarındaki emniyet birimlerine bildirilir; madde, pasaport reddi ve seyahat tahdidi kararlarının idarî dayanağıdır. [DOĞRULA: vergi borcu nedeniyle yurt dışı çıkış tahdidi 5682'de değil 6183 sayılı Kanunun ilgili hükümlerinde düzenlenmiştir]

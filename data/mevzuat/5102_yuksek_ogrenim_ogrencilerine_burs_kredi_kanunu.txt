@@ -1,0 +1,23 @@
+Yüksek Öğrenim Öğrencilerine Burs, Kredi Verilmesine İlişkin Kanun
+5102 sayılı Yüksek Öğrenim Öğrencilerine Burs, Kredi Verilmesine İlişkin Kanun. Kabul Tarihi: 3/3/2004. Resmî Gazete: 6/3/2004, Sayı 25394 (1/1/2004 tarihinden geçerli). Kamu kurum ve kuruluşlarının yükseköğrenim öğrencilerine vereceği burs, kredi ve nakdî yardımların tek elden (Kredi ve Yurtlar Kurumu) yürütülmesini ve bildirilmesini düzenleyen kanun.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5102.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam (m.Madde 1)
+Kanunun amacının, yurt içinde ve yurt dışında yükseköğrenim gören öğrencilere burs, kredi ve nakdî yardım verilmesine ilişkin usul ve esasları düzenlemek olduğunu belirtir. Bütün kamu kurum ve kuruluşlarını kapsar; öğrencilere yapılacak burs/kredi/nakdî yardımların yasal çerçevesini çizer.
+
+Madde 2 — Burs ve kredilerin verilmesi ve bildirim yükümlülüğü (m.Madde 2)
+Yurt içinde yükseköğrenim gören öğrencilere burs-kredi verme görevini Yüksek Öğrenim Kredi ve Yurtlar Kurumu'na (Kredi ve Yurtlar Genel Müdürlüğü) bırakır. Kamu kurum ve kuruluşlarının (vakıf yükseköğretim kurumları hariç) kendi adlarına burs, kredi ve nakdî yardım adı altında ödeme yapamayacaklarını; bunun yerine mevzuatlarına göre burs/kredi verecekleri öğrencileri bu Kuruma bildireceklerini düzenler. [DOĞRULA: vakıf üniversitesi istisnasının güncel kapsamı]
+
+Madde 3 — Diğer kuruluşlarca yapılacak işlemler ve bildirim (m.Madde 3)
+Belediyeler ve ilgili diğer kuruluşların öğrencilere sağladıkları burs/nakdî yardımlara ilişkin (yardımın türü, tutarı ve öğrenci sayısı gibi) bilgileri Kuruma bildireceklerini düzenler. Mükerrer ödemeyi önlemek için periyodik (üçer aylık) bildirim esasını öngörür. [DOĞRULA: bildirim periyodu ve kapsamının güncel metni]
+
+Madde 4 — Malî muafiyet ve haciz (m.Madde 4)
+Burs-kredi işlemlerine ilişkin taahhütname ve belgelerin damga vergisi, harç ve benzeri yükümlülüklerden muaf tutulduğunu; öğrencilere ödenen burs ve kredilerin haczedilemeyeceğini düzenler. Öğrenciye yapılan ödemelerin korunmasına ilişkin güvenceyi sağlar.
+
+Madde 6 — Yönetmelik (m.Madde 6)
+Bu Kanunun uygulanmasına ilişkin usul ve esasların, ilgili bakanlıklar (Maliye/Hazine ile Millî Eğitim) tarafından çıkarılacak yönetmelikle belirleneceğini hükme bağlar. Burs-Kredi Yönetmeliği'nin dayanağını oluşturur.

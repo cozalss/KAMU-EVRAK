@@ -1,0 +1,29 @@
+İşyeri Açma ve Çalışma Ruhsatlarına İlişkin Yönetmelik
+BKK 2005/9207, RG 10.08.2005/25902 — YÜRÜRLÜKTE (mevzuat.gov.tr 21.5.20059207, resmigazete.gov.tr 20050810-4 ve LEXPERA konsolide metin üzerinden doğrulandı; dayanak 3572 ve 5393 sayılı Kanunlar — son değişiklik 2025)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/21.5.20059207.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Tanımlar / yetkili idare
+Yönetmelikteki temel kavramları tanımlar; özellikle "yetkili idare", ruhsatı düzenleyecek mercii belirler: büyükşehir belediyesi sınırları içinde büyükşehir belediyesinin yetkili olduğu konularda büyükşehir belediyesi, diğer konularda ilçe/ilk kademe belediyesi; belediye sınırları ve mücavir alan içinde belediye; bu alanlar dışında ve kanunla il özel idaresine verilen konularda il özel idaresi; organize sanayi bölgesinde OSB tüzel kişiliği. Ruhsat başvurusunun hangi idareye yapılacağının ve ruhsat üst yazısının doğru muhataba yönlendirilmesinin dayanağıdır.
+
+Madde 6 — Ruhsatsız işyeri açma yasağı ve alındı belgesi
+Yetkili idarelerden usulüne uygun işyeri açma ve çalışma ruhsatı alınmadan işyeri açılamaz ve çalıştırılamaz. Yönetmelik kapsamında her ruhsat başvurusunda müracaat sahibine, başvuruyu kabul eden görevlinin adı-soyadı ve unvanı ile başvuru tarih ve saatini gösteren bir alındı belgesi verilir; ön incelemede tespit edilen eksiklikler alındı belgesinde belirtilir. Ruhsat zorunluluğunun ve başvuru kayıt belgesinin temel dayanağıdır.
+
+Madde 12 — Sıhhi işyeri açma ruhsatı başvurusu
+Sıhhi işyeri açmak isteyen gerçek veya tüzel kişiler, işyerlerini bu Yönetmeliğe uygun şekilde tanzim ettikten sonra Örnek 1'deki başvuru/beyan formunu doldurarak yetkili idareye başvurur. Beyan edilen bilgiler doğru ise başka bir işleme gerek kalmaksızın işyeri açma ve çalışma ruhsatı düzenlenip verilir. Sıhhi işyeri (market, lokanta, büro vb.) ruhsat başvuru evrakının ve beyan formunun dayanağıdır.
+
+Madde 13 — Sıhhi işyeri ruhsatının kesinleşmesi (kontrol)
+Ruhsat verilen işyerleri, ruhsatın verildiği tarihi izleyen en geç bir ay içinde yetkili idarece kontrol edilir. Bu süre içinde kontrol edilmeyen işyeri ruhsatı kesinleşir ve faaliyetine devam eder; kontrolde aykırılık tespit edilirse eksikliklerin giderilmesi için süre verilir. Verilen ruhsatın akıbeti ve kontrol süreci yazışmalarının dayanağıdır.
+
+Madde 21 — Gayrisıhhi müesseselerde sınıflandırma ve ruhsat
+Gayrisıhhi müesseseler çevreye verebilecekleri zarar ve tehlike derecesine göre birinci, ikinci ve üçüncü sınıf olarak sınıflandırılır; her sınıf için izlenecek ruhsat usulü belirlenir. Birinci sınıf gayrisıhhi müesseseler yer seçimi ve tesis kurma izni ile açılma izni gibi aşamalı bir sürece tabidir. Sanayi/imalat/depolama tesislerinin ruhsat başvuru türünün ve sınıfının tespitinde dayanaktır. [DOĞRULA: sınıflandırma ve süreç maddeleri 2020 sonrası değişikliklerle güncellendiğinden ilgili madde aralığı cari metinde teyit edilmeli]
+
+Madde 22 — Birinci sınıf GSM yer seçimi ve istenen belgeler
+Birinci sınıf gayrisıhhi müesseselerin açılması için inceleme kurulunca yer seçimi yapılması ve başvuruda istenen belgelerin (sağlık koruma bandı, çevre izni vb. dahil) ibraz edilmesi gereken usulü düzenler. Yüksek tehlike sınıfındaki tesisler için yer seçimi-tesis kurma izni başvuru evrakının dayanağıdır. [DOĞRULA: birinci sınıf GSM yer seçimi ve istenen belgelere ilişkin madde numarası 2017/2020 değişiklikleriyle kaymış olabilir; cari metinde teyit edilmeli]
+
+Madde 32 — Umuma açık istirahat ve eğlence yeri ruhsatı
+Umuma açık istirahat ve eğlence yeri (otel, kafe, lokanta, internet salonu vb.) açmak isteyen kişiler, Örnek 1'deki başvuru/beyan formuyla yetkili idareye başvurur; bu işyerleri için kolluk görüşü ve uygunluk şartları aranır ve ruhsatlandırma süreci Yönetmeliğin ilgili kısmındaki sürelere tabidir. Umuma açık işyeri ruhsat başvurusunun ve ek belge/görüş taleplerinin dayanağıdır.

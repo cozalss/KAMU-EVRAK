@@ -1,0 +1,38 @@
+Askerlik Kanunu (MÜLGA — yürürlükten kaldırılmıştır)
+Kanun No 1111, Kabul 21.06.1927, RG 12-17.07.1927/631-635 — MÜLGA. 7179 sayılı Askeralma Kanununun (RG 26.06.2019/30813) 63 üncü maddesiyle 26.06.2019 tarihinde tümüyle yürürlükten kaldırılmıştır. Mevzuatta 1111 sayılı Kanuna yapılan atıflar 7179 sayılı Kanuna yapılmış sayılır.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.1111.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+ÖNEMLİ — YÜRÜRLÜK DURUMU
+1111 sayılı Askerlik Kanunu artık YÜRÜRLÜKTE DEĞİLDİR. Yoklama, celp-sevk, erteleme,
+bedelli askerlik ve dövizle askerlik dâhil tüm askerlik yükümlülüğü işlemleri için güncel
+ve tek dayanak 7179 sayılı Askeralma Kanunudur (bkz. 7179_askeralma_kanunu.txt). Bu kayıt,
+eski evraklarda/atıflarda 1111 sayılı Kanuna yapılan göndermelerin 7179'a yönlendirilmesi
+amacıyla tutulmaktadır; üretilecek resmî yazılarda 1111'e atıf YAPILMAMALI, yerine 7179
+sayılı Kanunun ilgili maddesi kullanılmalıdır.
+
+Madde 1 — Askerlik yükümlülüğünün esası (mülga)
+Türkiye Cumhuriyeti vatandaşı her erkeğin askerlik yapmakla yükümlü olduğu temel kuralı bu
+Kanunda düzenlenmişti. Hüküm, içerik olarak 7179 sayılı Askeralma Kanununun 1 ve 2 nci
+maddelerine taşınmıştır; 1111'deki bu madde mülgadır ve uygulanmaz.
+
+Madde 5 — Askerlik çağı (mülga)
+Askerlik çağının yirmi yaşında başlayıp belirli yaşa kadar süren yoklama, muvazzaflık ve
+yedeklik dönemlerinden oluşması bu Kanunda tanımlanmıştı. Aynı tanım 7179 sayılı Kanunun
+3 üncü maddesine (Tanımlar) aktarılmıştır; 1111'deki hüküm yürürlükten kalkmıştır.
+
+Madde 35 — Erteleme/tecil (mülga)
+Öğrenim, sağlık ve diğer nedenlerle askerliğin ertelenmesine (tecil) ilişkin hükümler bu
+Kanunda yer alıyordu. Erteleme rejimi 7179 sayılı Kanunun 20 nci maddesinde yeniden
+düzenlenmiştir; 1111'deki tecil hükümleri mülgadır. [DOĞRULA: 1111'de erteleme/tecile ilişkin
+ilgili madde numaraları yalnızca tarihsel referans amaçlıdır; üretimde 7179 m.20 esas alınır.]
+
+Geçiş hükmü — Atıfların 7179'a yönlendirilmesi
+7179 sayılı Kanunun 63 üncü maddesi gereği, mevcut mevzuatta ve eski resmî evrakta 1111
+sayılı Askerlik Kanununa yapılmış tüm atıflar 7179 sayılı Askeralma Kanununa yapılmış
+sayılır. Bu nedenle yoklama/erteleme/bedelli/dövizle askerlik başvuru ve sevk evrakında
+hukuki dayanak olarak 7179 sayılı Kanun ve Askeralma Yönetmeliği gösterilir.

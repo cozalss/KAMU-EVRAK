@@ -1,0 +1,35 @@
+Askeralma Kanunu
+Kanun No 7179, Kabul 25.06.2019, RG 26.06.2019/30813 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.7179 konsolide metin esas alınmıştır; bedelli/dövizle hükümlerinde son değişiklikler 30.06.2022 tarihli 7410 sayılı Kanunla yapılmıştır). 1111 sayılı Askerlik Kanunu ile 1076 sayılı Yedek Subaylar Kanununu yürürlükten kaldırmıştır.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7179.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanunda kullanılan temel askerlik kavramları tanımlanır: "yoklama" askerlik çağına girenlerin kayıt, sağlık muayenesi ve niteliklerinin tespit edildiği dönem; "celp ve sevk" yükümlülerin silahaltına çağrılıp birliklerine gönderilmesi; "erteleme" yükümlülüğün Kanunda belirtilen nedenlerle geçici olarak ileri bırakılması; "sınıflandırma" yükümlülerin niteliklerine göre sınıf ve branşlara ayrılması olarak tanımlanır. Askerlik çağı; nüfus kaydına göre erkeğin yirmi yaşına girdiği yılın 1 Ocak gününden başlayıp kırk bir yaşına girdiği yılın 1 Ocak gününe kadar süren ve yoklama, muvazzaflık ve yedeklik dönemlerinden oluşan süredir.
+
+Madde 9 — Bedelli askerlik
+Bedelli askerlikten yararlanmak isteyen yükümlüler, ödeme yapacakları gün geçerli 240.000 gösterge rakamının memur aylık katsayısı ile çarpımı sonucu bulunan bedeli peşin olarak ödemek ve bir aylık temel askerlik eğitimini yapmakla askerlik hizmetini yerine getirmiş sayılır. Bedelli askerlikten yararlanacakların sayısı ve kapsamı, Türk Silahlı Kuvvetlerinin ihtiyacı dikkate alınarak Millî Savunma Bakanlığınca belirlenir; başvuru e-Devlet veya askerlik şubesi üzerinden yapılır. Ödeme yapıldıktan sonra bu haktan vazgeçilemez ve ödenen bedel iade edilmez (yükümlünün vefatı gibi istisnalar hariç). (240.000 gösterge ve "ödemenin yapıldığı gün" ifadesi 30.06.2022 tarihli 7410 sayılı Kanunla güncellenmiştir.)
+
+Madde 14 — Yoklamanın genel esasları
+Askerlik çağına girenlerin ve daha önceki doğumlulardan henüz yoklaması yapılmayanların yoklama işlemleri her yıl 1 Ocak günü başlar ve 31 Aralık günü sona erer. Yoklama sırasında yükümlülerin kimlik, öğrenim, meslek ve sağlık durumu elektronik ortamda tespit edilir; sağlık muayeneleri aile hekimliği veya resmî sağlık kuruluşlarınca yapılır ve askerliğe elverişlilik kararı yetkili sağlık kurullarınca verilir. Yoklama ve sağlık muayenesi işlemlerinden yükümlüden herhangi bir ücret alınmaz; e-Devlet üzerinden yürütülen işlemlerde yükümlü kendi başvuru ve bilgilendirme süreçlerini takip eder.
+
+Madde 19 — Sevke tabi yükümlülerin sevk belgesi alması
+Sevke tabi tutulan yükümlüler, sevk belgelerini bizzat askerlik şubesinden veya e-Devlet üzerinden almak ve belgede yazılı sürede ilgili eğitim merkezine/birliğe katılmakla yükümlüdür. Sevk belgesi yükümlünün hangi tarihte nereye sevk edildiğini gösteren resmî evraktır; belgede yer alan tarih ve yere zamanında katılmayanlar hakkında yoklama kaçağı/bakaya hükümleri ve idarî/cezaî yaptırımlar uygulanır. [DOĞRULA: madde numarası 7179'da sevk belgesinin alınmasına ilişkin hükmün 19. maddede yer aldığı resmî konsolide metinden teyit edilmelidir; uygulamada e-Devlet "sevk belgesi" çıktısı esas alınır.]
+
+Madde 20 — Erteleme
+Askerlik hizmeti, Kanunda sayılan nedenlerle geçici olarak ertelenir. Öğrenim görenlerden lise ve dengi okul öğrencileri 22, yükseköğretim (üniversite/yüksekokul) öğrencileri ise mezun olana veya ilişiği kesilene kadar en geç 28 (lisansüstü için ileri) yaşını tamamlayacağı yıla kadar ertelenebilir; kamu kurumlarında görevli dört yıllık yükseköğrenim mezunu personel için yaşa bağlı (32-35) erteleme imkânı tanınır. Geçici hastalık nedeniyle askerliğe elverişsiz bulunanlara toplam üç yılı geçmemek üzere sevk geciktirme/erteleme verilir; tutuklu veya hükümlülerin de işlemleri ertelenir. Erteleme talepleri ilgili öğretim kurumu/işveren ya da yükümlü tarafından belgeleriyle askerlik şubesine veya e-Devlet üzerinden yapılır.
+
+Madde 22 — Celp ve sevk esasları
+Sağlık ve nitelik yönünden askerliğe elverişli bulunan yükümlüler, Millî Savunma Bakanlığınca belirlenen celp esaslarına göre silahaltına çağrılır ve sınıflandırıldıkları birlik/eğitim merkezine sevk edilir. Celp dönemleri, sevk tarihleri ve sevk edilecek yükümlü grupları Bakanlıkça ilan edilir; barışta ve seferde silahaltına alınan yükümlülere yol ve iaşe giderleri Devletçe karşılanır. Yükümlü, celp ve sevk işlemlerini e-Devlet ve askerlik şubesi üzerinden takip eder; mazereti bulunanlar Madde 23 kapsamında sevk erteleme talebinde bulunabilir.
+
+Madde 23 — Sevke ilişkin mazeret hâlleri
+Sevk edilecekleri sırada kendisinin hastalığı, ana-baba-eş-çocuk-kardeş gibi yakınının ölümü/ağır hastalığı, doğum veya evlenme gibi belgelenmiş mazereti bulunan yükümlülerin sevkleri, belirlenen süre kadar ertelenir. İstirahat gerektiren bir hastalıkla sevk edilenler istirahatleri bitiminde derhal askere alınır; mazeretin sona ermesiyle yükümlü ilk celp/sevk döneminde silahaltına alınır. Mazerete dayalı sevk erteleme başvurusu, mazereti kanıtlayan resmî belgelerle (rapor, ölüm belgesi, evlilik/doğum kaydı) askerlik şubesine veya e-Devlet üzerinden yapılır.
+
+Madde 39 — Dövizle askerlik
+Yurt dışında oturma/çalışma iznine sahip olarak işçi, işveren veya bir meslek-sanat mensubu sıfatıyla en az toplam üç yıl (1095 gün) fiilen çalışan vatandaşlar, Bakanlıkça verilen uzaktan eğitimi tamamlamak ve 9 uncu maddedeki gösterge rakamına göre hesaplanan tutarı başvuru anında peşin olarak Avro veya dönüştürülebilir döviz cinsinden ödemekle askerlik hizmetini yerine getirmiş sayılır. Başvuru, ilgili dış temsilcilik (konsolosluk) veya MSB dövizle askerlik portalı üzerinden yapılır; sadece oturma/çalışma izni yetmez, fiilî üç yıllık çalışma şartı aranır. Başvuru ve ödeme tamamlandıktan sonra kapsamdan çıkma talepleri kabul edilmez; ödeme taksitle değil tek seferde peşin yapılır.
+
+Madde 63 — Yürürlükten kaldırılan kanunlar ve atıflar
+21/6/1927 tarihli ve 1111 sayılı Askerlik Kanunu ile 16/6/1927 tarihli ve 1076 sayılı Yedek Subaylar ve Yedek Askerî Memurlar Kanunu yürürlükten kaldırılmıştır. Mevzuatta 1111 sayılı Kanun ile 1076 sayılı Kanuna yapılan atıflar bu Kanuna (7179) yapılmış sayılır. Bu nedenle 26.06.2019'dan itibaren askerlik yükümlülüğü, yoklama, celp-sevk, erteleme, bedelli ve dövizle askerlik işlemlerinde tek dayanak 7179 sayılı Askeralma Kanunu ve buna bağlı Askeralma Yönetmeliğidir.

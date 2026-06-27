@@ -1,0 +1,26 @@
+Çevre İzin ve Lisans Yönetmeliği
+Yönetmelik (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı), RG 10.09.2014/29115 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20033&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Çevre izni veya çevre izin ve lisansına tabi işletmeler
+Hangi işletmelerin çevre izni veya çevre izin ve lisansı almak zorunda olduğunu düzenler: işletmeler, çevreye olan etkilerine göre Ek-1 ve Ek-2 listelerinde sınıflandırılmıştır. Bu listelerde yer alan işletmeler, faaliyette bulunabilmek için bu Yönetmelikte belirlenen usule göre çevre izni veya çevre izin ve lisans belgesi almakla yükümlüdür. Atık işleme (geri kazanım, bertaraf, ara depolama vb.) yapan tesisler için belge "çevre izin ve lisansı" niteliğindedir. İzin kapsamı belirleme yazışmalarının dayanağıdır.
+
+Madde 6 — Geçici faaliyet belgesi, çevre izni veya çevre izin ve lisansı belgesi vermeye yetkili merciler
+Belgeleri vermeye yetkili merciyi belirler: Ek-1 listesinde yer alan işletmeler için geçici faaliyet belgesini ve çevre izni/çevre izin ve lisans belgesini Bakanlık, Ek-2 listesinde yer alan işletmeler için ilgili Çevre, Şehircilik ve İklim Değişikliği İl Müdürlüğü düzenler. Başvuruların hangi mercie yapılacağının ve yetki devrinin dayanağıdır. [DOĞRULA: bazı Ek-2 yetkilerinin Bakanlıkta tutulduğu istisnalar için güncel ek listeler]
+
+Madde 7 — Çevre izni veya çevre izin ve lisansına başvuru
+Başvurunun nasıl ve kim tarafından yapılacağını düzenler: başvurular Ek-1 işletmeleri için çevre danışmanlık firması ya da tesisin çevre yönetim birimi, Ek-2 işletmeleri için çevre danışmanlık firması, çevre yönetim birimi veya tesiste istihdam edilen çevre görevlisi tarafından yapılır. Başvuru, elektronik imza/mobil imza ile elektronik ortamda yetkili merciye sunulur ve Ek-3'te belirtilen bilgi, belge ve raporları içerir. Çevre izin başvuru evrakının dayanağıdır.
+
+Madde 8 — Geçici faaliyet belgesine ait başvurunun değerlendirilmesi ve belgenin düzenlenmesi
+Ek-1 ve Ek-2 listelerindeki işletmelerin faaliyete geçebilmek için önce geçici faaliyet belgesi (GFB) almak zorunda olduğunu ve GFB sürecini düzenler: başvuru yetkili merci tarafından otuz gün içinde değerlendirilir; eksiklik bildirilirse altmış gün içinde tamamlanması gerekir. Uygun bulunan başvurulara bir yıl süreli geçici faaliyet belgesi düzenlenir. GFB alan işletme, belge tarihinden itibaren bu süre içinde çevre izni veya çevre izin ve lisans belgesini almak zorundadır. Geçici faaliyet belgesi başvuru ve düzenleme yazışmalarının dayanağıdır.
+
+Madde 9 — Çevre izni veya çevre izin ve lisans belgesine ait başvurunun değerlendirilmesi ve belgenin düzenlenmesi
+Esas çevre izni/lisansı sürecini düzenler: işletme, geçici faaliyet belgesi alındıktan sonra yüz seksen gün içinde çevre izni veya çevre izin ve lisans başvurusunu yapmak zorundadır. Yetkili merci, başvuruyu altmış gün içinde değerlendirir; ölçüm, analiz ve raporların uygun bulunması hâlinde belge düzenlenir, eksiklik hâlinde tamamlanması için doksan güne kadar ek süre verilir. Süresinde başvurmayan veya belge alamayan işletmenin geçici faaliyet belgesi iptal edilir. Çevre izin/lisans belgesi düzenleme ve red yazışmalarının dayanağıdır.
+
+Madde 11 — Çevre izin veya çevre izin ve lisans belgesinin geçerliliği ve yenilenmesi
+Belgenin geçerlilik süresini ve yenileme usulünü düzenler: çevre izin veya çevre izin ve lisans belgesi beş yıl süreyle geçerlidir. Yenileme başvurusu, geçerlilik süresinin bitiminden önce belirlenen süre içinde yapılmalıdır. İşletmenin faaliyet yeri, faaliyet konusu, yakıtı/yakma sistemi veya kapasitesi gibi belge eklerini etkileyen değişikliklerde süreç yeniden başlatılır ve yeniden başvuru yapılması gerekir. Belge yenileme ve değişiklik bildirimi yazışmalarının dayanağıdır.

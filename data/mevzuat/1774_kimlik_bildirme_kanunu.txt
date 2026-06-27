@@ -1,0 +1,29 @@
+Kimlik Bildirme Kanunu
+Kanun No 1774, Kabul 26.06.1973, RG 11.07.1973/14591 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.1774.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kanunun kapsamı
+Bu Kanun; özel veya resmî her türlü konaklama, dinlenme, bakım ve tedavi tesisleri ile marina, liman ve kıyı tesisleri ve işyerlerinde kalan, çalışan veya ayrılanların; ayrıca konutlarda oturan ve hizmet edenlerin kimliklerinin tespiti ve bildirimine ilişkin yükümlülükleri düzenler. Amaç, kişilerin kimlik bilgilerinin kayıt altına alınması ve gerektiğinde genel kolluğa bildirilmesidir; bu yükümlülükler kimlik bildirim belgesi evrakının dayanağıdır.
+
+Madde 2 — Konaklama tesislerine gelenlerin kimlik kaydı ve bildirimi
+Otel, motel, han, pansiyon, bekâr odaları, günü birlik kiralanan evler, kamp, kamping, tatil köyü, marina ve benzeri her türlü konaklama yerleri ile özel sağlık kuruluşları, dinlenme/huzurevleri ve dinî/hayır kurumlarının sosyal tesislerinin sorumlu işleticileri; bu yerlerde kalan yerli veya yabancı herkesin kimlik bilgilerini ve geliş-ayrılış kayıtlarını usulüne uygun şekilde günü gününe tutmak ve genel kolluk kuvvetlerinin denetimine hazır bulundurmakla yükümlüdür. Bu kayıtlar elektronik ortamda da tutulup bildirilebilir.
+
+Madde 3 — Sorumlu işleticinin bildirimi
+İkinci maddede sayılan tesislerin sorumlu işleticilerinin kimlikleri, tesis faaliyete geçmeden önce en yakın kolluk örgütüne bildirilir; işletici değişikliğinde durum 24 saat içinde yeni işletici tarafından kolluğa bildirilir. Sorumlu işletici bu yükümlülüğü tesis yöneticisine devredebilir; ancak bildirim yükümlülüğü bakımından müşterek sorumluluk devam eder. Bu bildirim, tesise ilişkin sorumlu kişi evrakının temelini oluşturur.
+
+Madde 4 — Tesiste çalıştırılanların kimlik bildirimi
+İkinci maddede sayılan konaklama ve benzeri tesislerin sorumlu işleticileri; sürekli veya geçici olarak çalıştırdıkları kişiler ile bunların işten ayrılışını, usulüne uygun olarak düzenleyecekleri kimlik bildirim belgesiyle 24 saat içinde en yakın kolluk örgütüne bildirmekle yükümlüdür. Bu madde, konaklama/işyeri personeline ilişkin kimlik bildirim evrakının dayanağıdır. [DOĞRULA: 4. maddedeki 24 saatlik bildirim süresi yürürlükteki metinde geçerlidir]
+
+Madde 6 — Ticaret-sanat işyerlerinde ve binalarda çalışanların bildirimi
+Şehir, kasaba ve köy sınırları içinde her çeşit ticaret ve sanat amacı güden işyerlerinde sürekli veya geçici çalışanlar ile binalarda görevli kapıcı, kaloriferci, bekçi, kapı görevlisi ve benzeri yönetim, teknik ve yardımcı hizmet personeli için; işyeri sahibi/işveren ya da apartman yönetimi, işe başlamayı izleyen üç gün içinde usulüne uygun kimlik bildirim belgesini ilgili kolluğa vermek zorundadır. Bu madde, işyeri ve bina çalışanlarına ilişkin kimlik bildirim evrakının dayanağıdır. [DOĞRULA: 1774 sayılı Kanunun 5. ve 8. maddeleri 5490 sayılı Nüfus Hizmetleri Kanunu ile yürürlükten kaldırılmış olup işyeri/konut bildirim yükümlülüğü 6 ve 7. maddelerde sürmektedir]
+
+Madde 9 — Kimliğini ispat edemeyenlerin barındırılamaması
+Bu Kanun hükümlerine göre kimlik bildirim belgesi düzenlenmesi gereken kişiler; kimliklerini nüfus cüzdanı (T.C. kimlik kartı) veya diğer resmî geçerli belgelerle ispat etmek zorundadır. Sorumlu işletici ve işverenler, kimliğini bu şekilde ispat edemeyen kişileri tesislerinde barındıramaz veya işyerlerinde çalıştıramaz. Bu hüküm, konaklama/çalıştırma öncesinde kimlik ibrazını zorunlu kılarak bildirim sisteminin doğruluğunu güvence altına alır.
+
+Madde 15 — İdari para cezası (konaklama tesisi ve işletici yükümlülükleri)
+Bu Kanunun 3. ve 4. maddelerindeki yükümlülüklere (sorumlu işleticinin ve çalışanların bildirimi) aykırı hareket eden sorumlu işleticilere idarî para cezası uygulanır; cezalar mahallin en büyük mülkî amiri tarafından verilir. Para cezası tutarları her yıl yeniden değerleme oranında güncellenir. [DOĞRULA: 15. maddedeki idarî para cezası taban tutarı (5728 sayılı Kanunla 250 TL olarak belirlenen) güncel yeniden değerleme oranına göre artırılır]

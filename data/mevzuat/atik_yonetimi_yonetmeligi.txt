@@ -1,0 +1,26 @@
+Atık Yönetimi Yönetmeliği
+Yönetmelik (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı), RG 02.04.2015/29314 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20644&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Atık yönetimine ilişkin genel ilkeler
+Atık yönetiminin dayandığı temel ilkeleri ve atık hiyerarşisini düzenler: öncelik sırasıyla atık oluşumunun önlenmesi ve azaltılması, yeniden kullanım, geri dönüşüm, enerji geri kazanımı ve son çare olarak bertaraf esas alınır. Atıkların kaynağında ayrı toplanması, insan sağlığına ve çevreye zarar verecek şekilde yönetilmemesi, "kirleten öder" ilkesi ve atık yönetimi maliyetinin atık üreticisince karşılanması temel kurallardır. Atık yönetim planı ve yükümlülük yazışmalarında atıf yapılan ilke maddesidir.
+
+Madde 8 — Belediyelerin görev ve yükümlülükleri
+Belediyelerin (büyükşehir, il/ilçe/belde) atık yönetimindeki görev ve yükümlülüklerini düzenler: atıkların kaynağında ayrı toplanması için sistem kurmak, atık işleme/geri kazanım/bertaraf tesisleri kurmak veya kurdurmak, atık getirme merkezleri oluşturmak, yönetiminden sorumlu oldukları atıklar için atık yönetim planı hazırlamak ve halkı bilgilendirmek/eğitmekle yükümlüdürler. Belediye atık yönetimi yazışmalarının dayanağıdır.
+
+Madde 9 — Atık üreticisi ve sahibinin yükümlülükleri (atık beyanı dâhil)
+Atık üreten gerçek/tüzel kişilerin yükümlülüklerini düzenler: atık üretimini en aza indirmek, atıkları türlerine göre kaynağında ayrı biriktirmek ve uygun şekilde geçici depolamak, atık yönetim planı hazırlayıp valilikten onay almak, atıklarla ilgili kayıt tutmak, taşımada Ulusal Atık Taşıma Formu (UATF) kullanmak ve atıklarını lisanslı tesislere göndermek zorundadırlar. Üretilen atıklara ilişkin atık beyanı, atık yönetim uygulaması (çevrimiçi sistem) üzerinden her yıl ocak ayından başlayarak en geç mart ayı sonuna kadar yapılır. Atık beyanı ve atık üreticisi yükümlülük yazışmalarının temel dayanağıdır.
+
+Madde 10 — Atık işleme tesislerinin yükümlülükleri (çevre lisansı)
+Atık işleme (geri kazanım, bertaraf, ara depolama) tesislerinin yükümlülüklerini düzenler: bu tesisler Çevre İzin ve Lisans Yönetmeliği kapsamında geçici faaliyet belgesi ve çevre izin ve lisans belgesi almak zorundadır. Tesisler ayrıca acil durum planı hazırlamak, personel eğitimi sağlamak, UATF prosedürüne ve çevrimiçi bildirim sistemine uymak ve faaliyet sonunda kapatma planı uygulamakla yükümlüdür. Atık işleme tesisi lisans başvuru ve denetim yazışmalarının dayanağıdır.
+
+Madde 13 — Atıkların geçici depolanması
+Atıkların üretildikleri yerde geçici depolanmasına ilişkin esasları düzenler: atıklar, üretildikleri yerde türlerine göre belirlenmiş kriterlere uygun şekilde, çevre ve insan sağlığına zarar vermeyecek biçimde geçici olarak depolanır. Tehlikeli atık üreticilerinin geçici depolama alanları için il müdürlüğünden izin alması gerekir; belediye atıkları bu izin kapsamı dışındadır. Geçici depolama alanı izin yazışmalarının dayanağıdır. [DOĞRULA: tehlikeli atık aylık eşik ve izin muafiyetleri için güncel madde metni]
+
+Madde 32 — Kaza ve sızıntı durumunda yapılacaklar / bildirim
+Atıkla ilgili kaza, dökülme ve sızıntı hâlinde yapılacak işlemleri ve bildirim yükümlülüğünü düzenler: kaza sonucu çevreye yayılan atık için derhal müdahale edilmesi, alanın temizlenip eski hâline getirilmesi ve kaza tarihi, yeri, atığın türü/miktarı ve kaza sebebini içeren raporun il müdürlüğüne bildirilmesi gerekir. Kaza/sızıntı bildirim yazışmalarının dayanağıdır. [DOĞRULA: bildirim süresi ve madde numarası (Md.9 ilgili bendi / Md.32) güncel metinde teyit edilmeli]

@@ -1,0 +1,26 @@
+Hukuk Uyuşmazlıklarında Arabuluculuk Kanunu
+Kanun No 6325, Kabul 07.06.2012, RG 22.06.2012/28331 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.6325 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6325.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam (üzerinde serbestçe tasarruf edilebilen özel hukuk uyuşmazlıkları)
+Bu Kanun, yabancılık unsuru taşıyanlar da dâhil olmak üzere, ancak tarafların üzerinde serbestçe tasarruf edebilecekleri iş veya işlemlerden doğan özel hukuk uyuşmazlıklarının arabuluculukla çözümlenmesinde uygulanır. Aile içi şiddet iddiasını içeren uyuşmazlıklar arabuluculuğa elverişli değildir. Bir uyuşmazlığın arabuluculuğa götürülebilmesi için "tarafların üzerinde serbestçe tasarruf edebilmesi" temel ölçüttür; bu da başvuru evrakının hangi uyuşmazlıklarda hazırlanabileceğini belirler.
+
+Madde 3 — İradî olma ve eşitlik ilkesi
+Taraflar; arabulucuya başvurmak, süreci sürdürmek, sonuçlandırmak veya bu süreçten vazgeçmek konusunda serbesttir. Taraflar, gerek arabulucuya başvururken gerekse tüm süreç boyunca eşit haklara sahiptir ve sürece kendi iradeleriyle katılır. Bu ilke, arabuluculuk başvuru ve anlaşma belgelerinin tarafların özgür iradesini yansıtması gerektiğinin dayanağıdır.
+
+Madde 13 — Arabulucuya başvuru (teklif ve otuz günlük süre)
+Taraflar, dava açılmadan önce veya davanın görülmesi sırasında arabulucuya başvurma konusunda anlaşabilir; mahkeme de tarafları arabulucuya başvurmaya teşvik edebilir. Aksi kararlaştırılmadıkça, taraflardan birinin arabulucuya başvuru teklifine diğer tarafça otuz gün içinde olumlu cevap verilmezse teklif reddedilmiş sayılır. Bu hüküm, ihtiyarî (dava şartı olmayan) arabuluculukta başvurunun nasıl başlatılacağını düzenler.
+
+Madde 17 — Arabuluculuğun sona ermesi (son tutanak)
+Arabuluculuk; tarafların anlaşmaya varması, taraflara danışıldıktan sonra arabuluculuğun sürdürülmesinin gereksiz olduğunun arabulucu tarafından tespiti, taraflardan birinin süreçten çekildiğini bildirmesi, tarafların anlaşması ya da uyuşmazlığın arabuluculuğa elverişli olmadığının belirlenmesi hâllerinde sona erer. Sürecin bitiminde durumu belgeleyen bir son tutanak düzenlenir; bu tutanak tarafların ve arabulucunun imzasını taşır. Anlaşma sağlanamayan dava şartı arabuluculukta, davacı bu son tutanağın aslını veya onaylı örneğini dava dilekçesine eklemek zorundadır.
+
+Madde 18 — Anlaşma belgesi ve icra edilebilirlik şerhi (ilam niteliği)
+Arabuluculuk faaliyeti sonunda varılan anlaşmanın kapsamı taraflarca belirlenir; anlaşma belgesi düzenlenmesi hâlinde bu belge taraflar ile arabulucu tarafından imzalanır. Taraflar, anlaşma belgesinin icra edilebilirliğine ilişkin şerh verilmesini, asıl uyuşmazlık hakkındaki yetkili ve görevli mahkemeden talep edebilir; bu şerh, anlaşmanın icra edilebilir olduğunu gösterir. Taraflar ve avukatları ile arabulucunun birlikte imzaladıkları anlaşma belgesi, icra edilebilirlik şerhi aranmaksızın ilam niteliğinde belge sayılır. Üzerinde anlaşılan hususlar hakkında taraflarca dava açılamaz.
+
+Madde 18/A — Dava şartı olarak arabuluculuk (zorunlu arabuluculuk ve büroya başvuru)
+Kanunda öngörülen bazı uyuşmazlıklarda (ör. belirli ticarî ve işçi-işveren alacak uyuşmazlıkları ile kira ilişkisinden kaynaklanan, taşınmaz paylaştırılması/ortaklığın giderilmesi, kat mülkiyeti ve komşu hakkından doğan uyuşmazlıklar) dava açılmadan önce arabulucuya başvurulmuş olması dava şartıdır. Başvuru, uyuşmazlığın konusuna göre yetkili mahkemenin bulunduğu yer arabuluculuk bürosuna; büro kurulmayan yerlerde görevlendirilen yazı işleri müdürlüğüne yapılır. Arabuluculuk bürosuna başvurulmasından son tutanağın düzenlendiği tarihe kadar geçen sürede zamanaşımı durur ve hak düşürücü süre işlemez. Anlaşmaya varılamazsa düzenlenen son tutanak, dava dilekçesine eklenmesi gereken zorunlu evraktır. [DOĞRULA: dava şartı arabuluculuk kapsamına giren uyuşmazlık türleri sonradan genişletildiğinden güncel liste mevzuat.gov.tr'den teyit edilmeli]

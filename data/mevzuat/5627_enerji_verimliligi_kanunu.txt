@@ -1,0 +1,26 @@
+Enerji Verimliliği Kanunu
+Kanun No 5627, Kabul 18.04.2007, RG 02.05.2007/26510 — YÜRÜRLÜKTE (resmigazete.gov.tr 20070502-2 ve mevzuat.gov.tr 1.5.5627 üzerinden doğrulandı)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5627&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Yetkilendirmeler
+Enerji verimliliği hizmetlerini yürütecek kuruluşların yetkilendirilmesini düzenler: Enerji Verimliliği Koordinasyon Kurulu kararıyla üniversitelere, meslek odalarına ve enerji verimliliği danışmanlık (EVD) şirketlerine yetki belgesi verilir; bu kurum ve kuruluşlar eğitim, etüt, danışmanlık ve verimlilik artırıcı proje (VAP) hazırlama hizmeti sunar. Yetki belgeleri belirli sürelerle (genel olarak üç/beş yıl) yenilenir ve yetkilendirilenler kamuoyuna duyurulur. Enerji verimliliği danışmanlık şirketi yetki belgesi başvuru, yenileme ve iptal yazışmalarının dayanağıdır. [DOĞRULA: yetki belgesi geçerlilik/yenileme süreleri ve yetki devri ayrıntıları ilgili yönetmelikle güncellenmiş olabilir]
+
+Madde 6 — Eğitim ve sertifikalandırma
+Enerji yöneticisi ile enerji yönetim biriminde görev alacak personele yönelik teorik ve uygulamalı eğitim programlarının Genel Müdürlük ve yetkilendirilmiş kurumlarca düzenlenmesini öngörür. Eğitim sonunda yapılan sınavlarda başarılı olanlara enerji yöneticisi sertifikası, etüt-proje sertifikası ve benzeri belgeler verilir. Enerji yöneticisi/etüt-proje sertifikası talep ve düzenleme yazışmalarının dayanağıdır.
+
+Madde 7 — Uygulama (enerji yönetimi yükümlülükleri)
+Endüstriyel işletmeler, belirli büyüklüğün üzerindeki ticari/hizmet/kamu binaları ve organize sanayi bölgeleri için enerji yönetimi yükümlülüklerini düzenler: yıllık enerji tüketimi veya toplam inşaat alanı eşik değerleri aşan yerlerde enerji yöneticisi görevlendirilmesi, çok büyük tüketimli işletmelerde enerji yönetim birimi kurulması ve tüketim/verimlilik bilgilerinin Bakanlığa bildirilmesi zorunludur. Enerji yöneticisi görevlendirme bildirimi ve yıllık enerji tüketim raporu yazışmalarının dayanağıdır.
+
+Madde 8 — Destekleme
+Enerji verimliliğini artırmaya yönelik uygulama projelerinin (VAP) ve enerji yoğunluğunu azaltan işletmelerin desteklenmesini düzenler: belirli geri ödeme süresi ve proje bedeli sınırları içindeki verimlilik artırıcı projelerin bir bölümü ile enerji yoğunluğunu belirli oranda azaltan işletmelerin enerji giderlerinin bir kısmı karşılanabilir. Destek başvuruları Kurul tarafından değerlendirilir. VAP/enerji verimliliği destek başvuru ve değerlendirme yazışmalarının dayanağıdır. [DOĞRULA: proje bedeli üst sınırı ve destek oranları her yıl/ilgili tebliğle güncellendiğinden cari değerler teyit edilmeli]
+
+Madde 9 — Yenilenebilir enerji ve kojenerasyon teşvikleri
+Yenilenebilir enerji kaynaklarının kullanımının teşviki ile Kurul tarafından onaylanan kojenerasyon (birleşik ısı-güç) projelerinin yatırım teşvik mevzuatından yararlandırılmasını öngörür. Atık ısı geri kazanımı ve verimli enerji üretim teknolojilerinin yaygınlaştırılmasını destekler. Kojenerasyon teşvik başvuru yazışmalarına çerçeve oluşturan maddedir.
+
+Madde 10 — İdari yaptırımlar (idari para cezaları)
+Kanunda öngörülen yükümlülüklere uymayanlara uygulanacak idari para cezalarını düzenler: istenen bilgi/belgeyi vermeme veya inceleme yaptırmama, yanlış/eksik bilgi verme, enerji yöneticisi görevlendirmeme ve asgari verimlilik standartlarına uymayan ürün satışı gibi fiiller için kademeli ceza tutarları belirler; bir yıl içinde tekrarlanan ihlallerde ceza iki katına çıkar. Enerji verimliliği idari yaptırım (idari para cezası) karar ve tutanak yazışmalarının dayanağıdır. [DOĞRULA: idari para cezası tutarları her yıl yeniden değerleme oranıyla güncellendiğinden cari tutarlar teyit edilmeli]

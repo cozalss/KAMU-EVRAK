@@ -1,0 +1,23 @@
+Limanlar Kanunu
+Kabul 14/4/1925, Kanun No 618 (Düstur Tertip 3) — YÜRÜRLÜKTE. Madde 2 ve 11 hükümleri sonradan değiştirilmiştir (16/7/2008 ve 23/1/2008 tarihli kanunlarla). İdari para cezası tutarları her yıl Vergi Usul Kanunu yeniden değerleme oranında güncellenir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=618&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Liman işlerinin yönetmelikle düzenlenmesi (Değişik: 16/7/2008)
+Türk limanlarına giren tüm gemiler bu Kanuna tabidir. Liman idari sınırları, gemilerin seyir/demirleme/yanaşma kuralları, tehlikeli yük elleçleme usulleri, gemilerin limanda kalma süreleri, çevrenin korunması ile liman düzen ve disiplinine ilişkin hususlar, Denizcilik İdaresince (Ulaştırma Bakanlığı) çıkarılan yönetmelikle düzenlenir. Bu yönetmelik hükümlerine aykırılık, madde 11 uyarınca idari para cezası gerektirir.
+
+Madde 4 — Liman dahilinde inşaat, iskele/rıhtım yapımı ve dökme yasağı için izin
+Liman başkanlığından (liman reisliğinden) resmî izin alınmadıkça deniz kıyılarında iskele, rıhtım, tersane ve benzeri tesisler yapılamaz; aynı şekilde liman içinde yasaklanan yerlere süprüntü, moloz, safra (balast) veya atık dökülemez. Bu tür işler için önceden liman başkanlığına başvurularak izin alınması zorunludur; izinsiz inşaat veya dökme yapılması yasaktır ve cezayı gerektirir.
+
+Madde 5 — Liman alanını daraltacak dolgu, kazık ve tesis kurma yasağı
+Liman içinde hükümetçe belirlenen yerlerde deniz dibine kazık çakmak, denize tecavüz eden dolgu yapmak ve liman genişliğini daraltacak şekilde kahvehane, lokanta veya benzeri tesisler kurmak yasaktır. Bu işler için izin verilemez; aykırılık tespit edildiğinde tesisin kaldırılması ve idari yaptırım söz konusu olur. [DOĞRULA: madde 5 yasak kapsamı ve istisnaların güncel metinden teyidi]
+
+Madde 8 — Limanlarda yükleme-boşaltma için şirket kurulması
+Hükümet, her limanda yükleme, boşaltma ve tedarik işlerini düzenlemek üzere sermayesinin bir kısmı bütçeden karşılanan Türk anonim şirketleri kurabilir. Eskiden bu işleri yürüten deniz araçları sahiplerine, belirli süre içinde (altı ay) öncelikli hisse alma hakkı tanınır. Bu hükmün tarihsel olduğu ve uygulamada güncel liman işletme mevzuatıyla birlikte değerlendirilmesi gerektiği not edilmelidir. [DOĞRULA: madde 8'in yürürlük durumu ve güncel liman işletme uygulamasıyla ilişkisi]
+
+Madde 11 — İdari para cezası ve liman başkanının yetkisi (Değişik: 23/1/2008)
+Bu Kanuna veya madde 2 uyarınca çıkarılan yönetmeliğe aykırı davrananlara, liman başkanı tarafından beşyüz Türk Lirasından yirmibin Türk Lirasına kadar idari para cezası verilir. Ceza, ihlali tespit eden liman başkanlığınca düzenlenen tutanağa dayanır. Tutar, her yıl yeniden değerleme oranında güncellenir; cezaya karşı Kabahatler Kanunu hükümlerine göre sulh ceza hâkimliğine başvurulabilir. [DOĞRULA: madde 11 güncel ceza alt/üst tutarları ve değişiklik tarihi resmî metinden teyit edilmeli]

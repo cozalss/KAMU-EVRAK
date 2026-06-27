@@ -1,0 +1,26 @@
+Adlî Sicil Kanunu
+Kanun No 5352, Kabul 25.05.2005, RG 01.06.2005/25832 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5352 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5352.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Adlî sicile kaydedilecek bilgiler (mahkûmiyet kayıtları)
+Bir kişi hakkında verilip kesinleşen ceza ve güvenlik tedbiri mahkûmiyetlerine ilişkin bilgiler adlî sicile kaydedilir. Hapis cezaları, adlî para cezaları, hapis cezasının ertelenmesi ve denetim süresi, koşullu salıverilme, belli haklardan yoksun bırakılma gibi hükümler ile sonradan verilen değişiklik kararları (af, cezanın infazının tamamlanması, zamanaşımı vb.) sicile işlenir. Bu kayıtlar, "adlî sicil kaydı belgesi" (sabıka kaydı) talep edildiğinde verilen bilgilerin kaynağıdır.
+
+Madde 5 — Doğrudan arşiv kaydına alınacak bilgiler
+Adlî para cezasına mahkûmiyet hükümleri ile cezanın ertelenmesine ilişkin kayıtlar gibi kanunda sayılan bazı hükümler ile yabancı mahkemelerce verilip Türk hukuku bakımından sonuç doğuran belirli kayıtlar, adlî sicile alınmaksızın doğrudan arşiv kaydına işlenir. Arşiv kaydı, genel sabıka belgesinde görünmeyen; ancak kanunda öngörülen hâllerde özel olarak istenebilen kayıt türüdür.
+
+Madde 6 — Adlî sicil bilgilerinin verileceği yerler (talep mercileri)
+Adlî sicil bilgileri; mahallî adlî sicilde Cumhuriyet başsavcılıklarınca, ilçe adlî sicili kurulmayan yerlerde kaymakamlıklarca, yurt dışında elçilik ve konsolosluklarca, merkezî adlî sicilde ise Adlî Sicil ve İstatistik Genel Müdürlüğünce verilir. Vatandaşlar, e-Devlet üzerinden güvenli kimlik doğrulama araçlarıyla kendi adlî sicil ve arşiv kayıtlarını sorgulayıp fizikî veya elektronik belge olarak alabilir. Bu madde, sabıka kaydı belgesinin nereden talep edileceğini belirler.
+
+Madde 8 — Adlî sicil ve arşiv bilgilerinin gizliliği ve kimlere verilebileceği
+Adlî sicil ve arşiv bilgileri gizlidir; görevlilerce açıklanamaz ve bu Kanuna göre verilen bilgiler, alan kişi, kurum veya kuruluş tarafından verilme amacı dışında kullanılamaz. Bu bilgiler kullanım amacı belirtilerek; kişinin kendisine veya açık vekâletnamesi bulunan vekiline, soruşturma/kovuşturma kapsamında Cumhuriyet başsavcılıklarına, hâkim veya mahkemelere verilir. Kolluk ve diğer kamu kurumlarına ise ancak ilgili mevzuatın izin verdiği hâllerde sunulur. Başvuru evrakında istenen "adlî sicil kaydı" bu gizlilik kuralı içinde temin edilir.
+
+Madde 9 — Adlî sicil bilgilerinin silinerek arşiv kaydına alınması koşulları
+Adlî sicildeki bilgiler; cezanın veya güvenlik tedbirinin infazının tamamlanması, ceza mahkûmiyetini bütün sonuçlarıyla ortadan kaldıran şikâyetten vazgeçme veya etkin pişmanlık, ceza zamanaşımının dolması ya da genel af hâlinde Adlî Sicil ve İstatistik Genel Müdürlüğünce silinerek arşiv kaydına alınır. Böylece koşulların oluşmasıyla mahkûmiyet, olağan sabıka belgesinden çıkarılır; ancak arşiv kaydında belirli süre tutulmaya devam eder.
+
+Madde 12 — Arşiv bilgilerinin silinmesi (süreler)
+Arşive alınan kayıtlar; Anayasanın 76 ncı maddesi ile Türk Ceza Kanunu dışındaki kanunlarda bir hak yoksunluğuna neden olan mahkûmiyetler bakımından, arşive alınma koşullarının oluştuğu tarihten itibaren yasaklanmış hakların geri verilmesi kararı alınması koşuluyla on beş yıl, böyle bir karar aranmaksızın otuz yıl geçmesiyle; diğer mahkûmiyetler bakımından ise arşive alınma koşullarının oluştuğu tarihten itibaren beş yıl geçmesiyle tamamen silinir. Kaydın silinmesi için ilgili, dilekçeyle Adlî Sicil ve İstatistik Genel Müdürlüğüne başvurabilir. [DOĞRULA: belirli istisnaî kayıt türlerinde sürelere ilişkin ek/özel hükümler ayrıca kontrol edilmeli]

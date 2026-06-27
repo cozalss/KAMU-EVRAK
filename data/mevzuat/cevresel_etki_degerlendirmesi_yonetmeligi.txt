@@ -1,0 +1,26 @@
+Çevresel Etki Değerlendirmesi Yönetmeliği
+Yönetmelik (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı), RG 29.07.2022/31907 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=39647&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 6 — ÇED başvuru dosyası, ÇED raporu veya proje tanıtım dosyası hazırlama yükümlülüğü
+Bu Yönetmelik kapsamındaki bir projeyi gerçekleştirmeyi planlayan gerçek/tüzel kişilerin yükümlülüklerini düzenler: ÇED'ye tabi projeler (Ek-1) için ÇED Başvuru Dosyasını ve ÇED Raporunu, seçme-eleme kriterlerine (ön incelemeye) tabi projeler (Ek-2) için Proje Tanıtım Dosyasını Bakanlıkça yeterlik verilmiş kurum/kuruluşlara hazırlatmak ve verdikleri taahhütlere uymakla yükümlüdürler. "ÇED Olumlu" veya "ÇED Gerekli Değildir" kararı alınmadıkça projeyle ilgili teşvik, onay, izin, yapı ve kullanım ruhsatı verilemez, proje ihale edilemez ve yatırıma başlanamaz. ÇED başvuru ve taahhütname yazışmalarının temel dayanağıdır.
+
+Madde 8 — Çevresel etki değerlendirmesi sürecinin başlatılması ve komisyonun kurulması
+ÇED'ye tabi (Ek-1) projelerde sürecin nasıl başlatılacağını düzenler: yeterlik belgeli kuruluş, ÇED Başvuru Dosyasını Bakanlığa sunar; Bakanlık dosyanın belirlenen formata uygunluğunu beş iş günü içinde inceler. Uygun bulunması hâlinde, kapsam ve özel format belirlemek üzere ilgili kamu kurum ve kuruluşlarının temsilcileri ile Bakanlık yetkililerinden oluşan bir Komisyon kurulur; gerekli görülen hâllerde üniversite, meslek odaları ve sivil toplum kuruluşları da Komisyona dâhil edilebilir. Başvuru ve sürecin başladığı Bakanlık/Valilik tarafından halka duyurulur. ÇED süreç başlatma yazışmalarının dayanağıdır.
+
+Madde 9 — Halkın bilgilendirilmesi ve sürece katılım toplantısı
+ÇED sürecine halkın katılımını düzenler: projeden etkilenecek halkı bilgilendirmek, görüş ve önerilerini almak üzere, projenin gerçekleştirileceği yerde halkın kolayca ulaşabileceği bir yer ve saatte katılım toplantısı yapılır. Toplantı tarihi, yeri ve saati en az on gün önceden yerel/ulusal gazete ile halka duyurulur. Halkın görüş, öneri ve itirazları tutanağa kaydedilir ve süreçte değerlendirilir. ÇED halkın katılımı toplantı duyuru ve tutanak yazışmalarının dayanağıdır. [DOĞRULA: ilan süresinin güncel hali için Madde 9 son metni]
+
+Madde 14 — Çevresel etki değerlendirmesi olumlu veya çevresel etki değerlendirmesi olumsuz kararı
+ÇED Raporu hakkında Komisyon değerlendirmesi sonucunda Bakanlığın "ÇED Olumlu" veya "ÇED Olumsuz" kararını vermesini düzenler. "ÇED Olumlu" kararı, taahhütlere uyulması koşuluyla projenin gerçekleştirilmesinde çevre açısından sakınca olmadığını gösterir ve alındığı tarihten itibaren beş yıl içinde yatırıma başlanmaması hâlinde geçersiz olur. "ÇED Olumsuz" kararı verilen projeler gerçekleştirilemez. Kararlar Bakanlık internet sitesinde ve askıda (otuz gün) ilan edilir. ÇED Olumlu/Olumsuz karar tebliğ yazışmalarının dayanağıdır.
+
+Madde 16 — Proje tanıtım dosyasının hazırlanması ve başvuru (seçme-eleme kriterleri)
+Ek-2 listesindeki, çevresel etkileri ön incelemeye tabi projeler için Proje Tanıtım Dosyası hazırlama ve başvuru usulünü düzenler. Yeterlik belgeli kuruluş, Ek-4 formatına uygun Proje Tanıtım Dosyasını taahhüt yazısı ile Bakanlığa/Valiliğe sunar; Bakanlık dosyanın formata uygunluğunu beş iş günü içinde inceler. Seçme-eleme kriterleri uygulanarak projenin çevresel etkilerinin önemi değerlendirilir. Proje tanıtım dosyası başvuru yazışmalarının dayanağıdır.
+
+Madde 17 — Çevresel etki değerlendirmesi gereklidir veya gerekli değildir kararı
+Proje Tanıtım Dosyasının incelenmesi sonucunda Bakanlığın "ÇED Gereklidir" veya "ÇED Gerekli Değildir" kararını vermesini düzenler. "ÇED Gereklidir" kararı verilen projeler bir ÇED Başvuru Dosyası hazırlanarak Madde 8 sürecine tabi tutulur; "ÇED Gerekli Değildir" kararı verilen projeler taahhütlere uyulması koşuluyla gerçekleştirilebilir ve bu karar beş yıl içinde yatırıma başlanmaması hâlinde geçersiz olur. Karar internet sitesinde ve askıda ilan edilir. ÇED Gereklidir/Gerekli Değildir karar yazışmalarının dayanağıdır.

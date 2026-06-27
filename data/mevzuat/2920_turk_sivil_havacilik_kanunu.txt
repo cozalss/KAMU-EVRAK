@@ -1,0 +1,26 @@
+Türk Sivil Havacılık Kanunu
+Kabul 14/10/1983, Kanun No 2920, RG 19/10/1983 sayı 18196 — YÜRÜRLÜKTE. İdari para cezası tutarları (madde 143) her yıl Vergi Usul Kanunu yeniden değerleme oranında güncellenir; güncel tutarlar için ilgili yıl Resmî Gazete duyurusuna bakılır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2920&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 18 — İzin (ticari hava taşımacılığı için ön izin)
+Gerçek ve tüzel kişilerin ticari amaçla, ücret karşılığında hava araçlarıyla yolcu, yük veya posta taşımaları için Ulaştırma Bakanlığından (Sivil Havacılık Genel Müdürlüğü) izin almaları ön şarttır. İzin, başvuru üzerine belirli şartlara ve süreye bağlanabilir; izin almaksızın ticari taşıma yapılamaz. Bu izin, işletme ruhsatından (madde 19) önce gelen temel başvuru aşamasıdır ve sonradan işletme ruhsatı alınması koşuluna bağlanır.
+
+Madde 19 — İşletme ruhsatı (belirli hatlarda tarifeli taşıma için ruhsat)
+Madde 18 uyarınca izin almış olup hava araçlarıyla ticari amaçla, belirli hatlar üzerinde, ücret karşılığında düzenli (tarifeli) yolcu/yük/posta taşıması yapacak kişilerin, izinden ayrı olarak Ulaştırma Bakanlığından işletme ruhsatı almaları şarttır. Ruhsat, başvuru sahibinin projesini ve gerekli şartları tamamladığının tespiti üzerine verilir; ruhsat sahibi ruhsat koşullarına uymak zorundadır (madde 24) ve aykırılık ruhsatın iptaline yol açabilir (madde 30).
+
+Madde 56 — Hava aracının Türk sivil uçak siciline tescili için başvuru ve şekli
+Türk sivil hava araçlarının Ulaştırma Bakanlığınca tutulan Türk sivil uçak siciline tescil ettirilmesi için malik tarafından başvuru yapılır; tescil talebinin şekli, başvuruya eklenecek belgeler ve sicile yazılacak hususlar (malik, hava aracının niteliği, milliyet ve tescil işareti vb.) kanunda ve yönetmelikte belirlenir. Tescil ile hava aracı Türk milliyetini kazanır ve tescil işareti taşır. [DOĞRULA: madde 56 başvuru belgeleri ve geçici tescil (madde 55) süreleri güncel metinden teyit edilmeli]
+
+Madde 86 — Uçuşa elverişlilik belgesi
+Türk sivil hava araçlarının uçabilmesi için uçuşa elverişlilik belgesi alması zorunludur. Belgenin verilmesi, geçerlilik süresi, yenilenmesi, geri alınması veya iptaline ilişkin şartlar Ulaştırma Bakanlığınca (Sivil Havacılık Genel Müdürlüğü) çıkarılan yönetmeliklerle ve tarafı olunan uluslararası anlaşmalarla belirlenir. Hava aracının muayene ve kontrolü (madde 85) sonucunda elverişli bulunması belgenin ön koşuludur; geçerli belgesi olmayan hava aracı uçurulamaz.
+
+Madde 143 — Kabahat oluşturan davranışlar ve idari para cezaları
+Kanunun belirli maddelerine (izin/ruhsat, tescil, uçuşa elverişlilik, ruhsat koşulları vb.) aykırı davrananlara, ihlalin türüne göre kademeli idari para cezası uygulanır; cezalar yirmibin Türk Lirasından (bazı kabahatlerde onbin Türk Lirasından) beşyüzbin Türk Lirasına kadar değişebilir. İdari para cezasını uygulamaya Ulaştırma Bakanlığı Sivil Havacılık Genel Müdürü yetkilidir. Tutarlar her yıl yeniden değerleme oranında artırılır. [DOĞRULA: 2026 yılı güncel ceza alt/üst tutarları ve kademe ayrımı madde 143 metninden teyit edilmeli]
+
+Madde 144 — İnsansız hava araçlarına (İHA/drone) ilişkin idari yaptırımlar
+İnsansız hava araçlarının tescili, kaydı ve uçuşuna ilişkin yükümlülüklere aykırı davrananlara idari para cezası uygulanmasını düzenler; izinsiz veya kurallara aykırı İHA uçuşu yaptıranlara Sivil Havacılık Genel Müdürlüğünce yaptırım uygulanır. [DOĞRULA: madde 144 İHA tescil/kayıt yükümlülükleri ve ceza tutarları güncel metinden teyit edilmeli — madde sonradan eklenmiştir]

@@ -1,0 +1,26 @@
+Petrol Piyasasi Kanunu
+Kanun No 5015, Kabul 04.12.2003, RG 20.12.2003/25322 — YURURLUKTE (mevzuat.gov.tr resmi metin ve Lexpera konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5015.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanimlar (lisans, bayilik, dagitici)
+Kanunun uygulanmasinda kullanilan temel kavramlari tanimlar. Lisans, gercek veya tuzel kisilerin piyasada faaliyet gosterebilmeleri icin Kurul (EPDK) tarafindan verilen izin belgesidir. Bayilik, dagiticilar tarafindan gercek veya tuzel kisilere akaryakit ikmali konusunda verilen yetkilendirmeyi; dagitici ise akaryakit dagitim yetkisi olup lisansina islenmesi halinde depolama, tasima ve ihrakiye yapabilen sermaye sirketini ifade eder. Rafinerici, akaryakit istasyonu, serbest kullanici, iletim ve depolama gibi basvuru evraklarinin dayandigi kavramlar burada tanimlanir.
+
+Madde 3 — Lisansa tabi piyasa faaliyetleri ve lisans basvurusu
+Rafinaj, isleme, madeni yag uretimi, depolama, iletim, ihrakiye, akaryakit dagitimi, tasima ve bayilik gibi piyasa faaliyetleri ancak Kurumdan lisans alinarak yurutulebilir. Lisans taleplerine iliskin degerlendirmeler en gec altmis gun icinde karara baglanir; basvuruda mevzuat kosullarina uygunluk, teknoloji, kalite, guvenlik, hizmet ve tesebbusun surdurulebilirligi olculeri dikkate alinir. Dagitici lisansi basvurularinda Sosyal Guvenlik Kurumu ve vergi dairesine vadesi gecmis borc bulunmamasi ile sermaye sirketi olma sarti aranir; Kurum mali yukumluluklerin tahsili icin teminat mektubu talep edebilir. Vatandasin/sirketin hangi petrol piyasasi faaliyeti icin lisans almasi gerektigini ve basvuru sartlarini belirleyen temel maddedir.
+
+Madde 7 — Dagitici lisansi ve bayilik teskilati
+Dagitici lisansi sahipleri akaryakit dagitimi yapar ve bayileri ile tek elden satis sozlesmesi kurar. Bayilik teskilati, dagitici ile bayi arasinda yapilan sozlesmeye dayanir; bayilik suresi bitiminden uc ay oncesinde sozlesme yenilenemezse sure bitimine kadar dagitici bayinin ikmal ihtiyacini karsilar. Dagitici, lisansina islenen illerde asgari sayida bayi ile calismak ve teknik/mali yukumluluklerini yerine getirmekle sorumludur. Bayilik basvurusunda hangi dagitici ile sozlesme yapilacaginin belirlenmesi acisindan dayanak maddedir.
+
+Madde 8 — Bayilik lisansi ve bayinin yukumlulukleri
+Bayiler, dagiticilari ile yapacaklari tek elden satis sozlesmesine gore bayilik faaliyetlerini yururutur ve yalnizca sozlesmeli dagiticidan akaryakit temin edebilir. Bayinin kacak akaryakit, ulusal markeri gecersiz urun veya tagsis (hile) amacli madde bulundurmasi ve istasyonunda bunlari satmasi yasaktir. Bayilik lisansi basvurusunda istasyon ruhsati, sozlesme ve teknik kosullarin saglanmasi gerekir. Akaryakit istasyonu acmak isteyen vatandas/sirket icin bayilik basvuru ve yukumluluk cercevesini ceren ana maddedir.
+
+Madde 19 — Idari para cezalari
+Lisanssiz faaliyet, ulusal marker ihlali, tagsis amacli urun bulundurma, lisans hukumlerine aykirilik ve bayilik kosullarinin ihlali gibi fiillere karsi EPDK kademeli idari para cezalari uygular. Cezalar fiilin agirligina gore farkli bentlerde duzenlenir; lisanssiz bayilik ve bayi lisansi ihlalleri ile lisanssiz dagiticilik/rafinericilik gibi agir ihlaller arasinda tutar farki vardir ve net satislarin belirli bindelik oranlari esas alinir. Tekrar eden ihlallerde cezalar artirilir. Lisans sahibinin idareye karsi sorumlulugunu belirleyen temel yaptirim maddesidir. [DOGRULA: ceza tutarlari her yil yeniden degerleme orani ile guncellendiginden cari tutarlar teyit edilmeli]
+
+Madde 20 — Idari yaptirimlar, durdurma ve lisans iptali
+Duzeltilebilir fiillerde Kurum once ihtarda bulunur; verilen surede giderilmezse faaliyet gecici olarak durdurulur. Duzeltme imkani olmayan fiiller ile kacakcilik hallerinde dogrudan sorusturma acilir ve faaliyetler (rafineri haric) gecici durdurulabilir. Lisans alinirken gercek disi belge sunulmasi veya yalan beyanda bulunulmasi halinde lisans iptal edilir ve ilgiliye yeniden lisans verilmez. Basvuru/beyan evraklarinin dogrulugunun ne kadar kritik oldugunu gosteren yaptirim maddesidir. [DOGRULA: durdurma sureleri ve iptal hallerinin tam listesi yururlukteki metinden teyit edilmeli]

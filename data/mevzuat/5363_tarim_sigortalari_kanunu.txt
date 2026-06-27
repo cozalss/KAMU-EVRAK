@@ -1,0 +1,32 @@
+Tarım Sigortaları Kanunu
+Kanun No 5363, Kabul 14/6/2005, RG 21/6/2005 Sayı 25852 (Düstur Tertip 5, Cilt 44) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5363.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacının; üreticilerin Kanunda belirtilen riskler nedeniyle uğrayacağı zararların tazmin edilmesini temin etmek üzere, tarım sigortaları uygulamasına ilişkin usûl ve esasların belirlenmesi olduğunu düzenler. Tarım sigortası (TARSİM) poliçe ve hasar süreçlerinin temel dayanağıdır.
+
+Madde 3 — Tanımlar
+Kanunda geçen kavramları tanımlar: Üreticiyi bitkisel ve hayvansal üretimle uğraşan gerçek ve tüzel kişiler; sigorta şirketlerini tarım sigortaları alanında ruhsatı bulunan şirketler; Havuzu Tarım Sigortaları Havuzu; Şirketi Havuzun işletilmesini üstlenen şirket (TARSİM); Kurulu Havuz Yönetim Kurulu olarak açıklar. Çiftlik hayvanlarını büyükbaş, küçükbaş, kümes hayvanları ve kültür balıkçılığı ürünleri olarak tanımlar. Poliçe taraflarının ve sigortalanabilir konunun dayanağıdır.
+
+Madde 4 — Havuz (Tarım Sigortaları Havuzu)
+Kapsamdaki risklerin teminat altına alınması, standart sigorta poliçelerinin belirlenmesi, hasar organizasyonları, aktüerya çalışmaları, tazminat ödemelerinin yapılması ve tarım sigortalarının geliştirilmesi amacıyla tüzel kişiliği haiz Havuzun kurulduğunu düzenler. Sigorta şirketleri tarım sigortaları alanında elde ettikleri primin tamamını Havuza devretmekle yükümlüdür; Havuz, dokuzuncu maddede belirtilen Şirket (TARSİM) tarafından yönetilir ve merkezi İstanbul'dur. Poliçenin münhasıran Havuz üzerinden düzenlenmesinin dayanağıdır.
+
+Madde 9 — Şirket ve hasar tespiti
+Havuzun işletilmesine ilişkin iş ve işlemlerin, sigorta şirketlerinin eşit oranda pay sahibi olduğu anonim şirket (Havuz işleticisi şirket — TARSİM) tarafından yürütüleceğini düzenler. Şirketin görevleri arasında tazminat ödemelerine esas hasar tespit işlemlerini yapmak, primleri tahsil etmek ve üreticileri bilgilendirmek sayılır. Bitkisel ürün hasar tespitleri ziraat mühendisi/teknikeri/teknisyeni; çiftlik hayvanları hasar tespitleri veteriner hekimler; su ürünleri hasar tespitleri ise su ürünleri mühendisi/ziraat mühendisi/balıkçılık teknoloji mühendisiyle birlikte veteriner hekim tarafından yapılır. Hasar ihbarı sonrası eksper incelemesi ve tazminat başvurusunun dayanağıdır.
+
+Madde 12 — Havuz tarafından teminat altına alınacak riskler
+Kapsama alınacak bitkiler, bitkisel ürünler ve seralar, tarımsal yapılar, tarım alet ve makineleri ile çiftlik hayvanları için kuraklık, dolu, don, sel, taban suyu baskını, fırtına, hortum, deprem, heyelan, yangın, kaza ve zararlılar ile hayvan hastalıklarının neden olacağı zararlar ve/veya tarım sektörü bakımından önemli görülecek diğer risklere ilişkin teminatların Cumhurbaşkanınca belirleneceğini düzenler. Poliçede teminat altına alınan riskler ile hasar başvurusunun kapsamının dayanağıdır.
+
+Madde 13 — Prim desteği (Devlet prim katkısı)
+Ürünler, riskler, bölgeler ve işletme ölçekleri itibariyle Devlet tarafından sağlanacak prim desteği miktarlarının her yıl Cumhurbaşkanı tarafından belirleneceğini düzenler. Prim desteğine ilişkin ödenek her yıl bütçe kanunu ile Bakanlık bütçesinde yer alır; Bakanlık, sigorta şirketlerince Havuza aktarılacak prim miktarlarını çiftçi kayıtları ile karşılaştırarak prim desteğini hesaplar ve gecikmeksizin Havuza aktarır. Devlet katkılı poliçe priminin hesaplanması ve ÇKS kaydı ilişkisinin dayanağıdır.
+
+Madde 14 — Sigorta sözleşmeleri ve Havuza katılım (standart poliçe)
+Kanun kapsamındaki tarım sigortası teminatlarının münhasıran Havuz tarafından verileceğini; risk yönetimi açısından şartların gerektirmesi ve Kurulca uygun görülmesi halinde sigorta şirketleriyle müştereken de verilebileceğini düzenler. Sigorta sözleşmelerinin Havuz tarafından belirlenen standart poliçeler üzerinden yapılacağını, tahmini hasar durumuna göre uygun şartlarda yeterli koruma sağlanamadığında kalan kısma Devlet tarafından iştirak edileceğini belirtir. Standart tarım sigortası poliçesinin düzenlenmesinin dayanağıdır.
+
+Madde 17 — Sigorta yaptırmayan üreticilere ilişkin sonuç
+Kanun kapsamında uygulama yılında yer alan riskler için tarım sigortası yaptırmayan üreticilerin, 2090 sayılı Kanundan (tabii afet nedeniyle zarar gören çiftçilere yapılacak yardımlar) yararlanamayacağını düzenler. Poliçe yaptırmamanın doğal afet yardımı başvurusundaki sonucunun dayanağıdır.

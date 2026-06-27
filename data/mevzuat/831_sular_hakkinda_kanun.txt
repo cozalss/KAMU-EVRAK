@@ -1,0 +1,26 @@
+Sular Hakkında Kanun
+Kanun No 831, Kabul 28.04.1926, RG 10.05.1926/364 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.3.831 ve LEXPERA konsolide metin üzerinden doğrulandı; içme-kullanma suyu temininde belediye/köy yetkisinin tarihsel temel kanunu)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.831.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Suların tedarik ve idaresinde yetki
+Şehir, kasaba ve köylerde kamu ihtiyacını (ihtiyacı âmmeyi) karşılamaya mahsus suların tedariki ve idaresi; belediye teşkilatı olan yerlerde belediyelere, olmayan yerlerde Köy Kanunu gereğince köy ihtiyar meclislerine aittir. İçme-kullanma suyu temini ve dağıtımının yerel yönetimin görevi olduğunu gösteren temel maddedir; su abonelik ve hizmet taleplerinin idarece karşılanmasının dayanağıdır.
+
+Madde 2 — Umumun istifadesine mahsus suların idaresi
+Vakfa ait olsun veya başka suretle vücuda getirilmiş olsun, umumun (kamunun) istifadesine mahsus olarak şehir, kasaba ve köylere isale edilmiş suların idaresi; tüm müesseseleri ve gelir kaynaklarıyla birlikte belediye ve köy ihtiyar meclislerine devredilmiştir. Devletçe/mahalli idarelerce sözleşmeye bağlı sular kendi sözleşme hükümlerine; su ile birlikte hayrî vakıflar ise vakıf idaresine tabi kalmaya devam eder. Mevcut su tesislerinin yerel yönetime intikalinin dayanağıdır.
+
+Madde 4 — Su tesis, isale ve idame masrafları
+Suların tesisi, isalesi (taşınması) ve idamesi (sürdürülmesi/bakımı) için yapılacak masraflar belediye ve köylerce temin ve tesviye edilir (karşılanır). Su altyapısının kurulması ve sürdürülmesi giderlerinin yerel yönetim bütçesinden karşılanacağını ve buna bağlı su bedeli/katılım payı yazışmalarının çerçevesini belirler.
+
+Madde 5 — Su tesisleri projesi ve sağlık onayı
+Belediyelerin su tesislerine ilişkin projeleri belirli bir süre içinde hazırlamaları ve yetkili sağlık makamının onayına sunmaları, onaylanan projelerin de süresi içinde uygulanması gerekir. İçme suyu altyapısının sağlık şartlarına uygun ve onaylı proje üzerinden kurulmasını zorunlu kılar; içme suyu tesis başvuru ve onay sürecinin dayanağıdır. [DOĞRULA: maddedeki proje hazırlama ve uygulama süreleri 1926 tarihli olup sonraki düzenlemelerle birlikte teyit edilmeli]
+
+Madde 7 — Vakıf ve sahipli sulardan istifade
+Vakfa veya kişilere ait olup belediye idaresine devredilen sulardan istifade edenlerin, bu sulardan eskisi gibi yararlanmaya devam edecekleri ve kendilerinden katılma payı (iştirak hissesi) alınmaya zorlanamayacakları düzenlenir. Sahipli/vakıf kaynaklı sulardan yararlanan abonelerin haklarının ve belediyenin ücret talebinin sınırının dayanağıdır.
+
+Ek Madde 8 — Belediye sınırı dışındaki kaynaklarda yetki
+Kaynağı belediye sınırları dışında bulunan sular bakımından da belediye; kaynakların ve su yollarının bakımı, korunması ve sağlık şartlarına uygunluğunun sağlanması ile Madde 7 uyarınca yasakların uygulanması yetkisine sahiptir ve bu yetki kaynağa kadar uzanır. İçme suyu kaynağının korunmasına ilişkin işlemlerin belediye sınırı dışında da yürütülebilmesinin dayanağıdır. [DOĞRULA: ek madde numaralandırması sonraki değişikliklerle eklendiğinden cari metinde teyit edilmeli]

@@ -1,0 +1,26 @@
+Denizde Can ve Mal Koruma Hakkında Kanun
+Kabul 10/6/1946, Kanun No 4922, RG 14/6/1946 sayı 6333 (Düstur Tertip 3) — YÜRÜRLÜKTE. Belge ve denetim hükümleri ile cezalar 9/7/2008 tarihli 5790 sayılı Kanunla geniş ölçüde yenilenmiştir. İdari para cezası tutarları her yıl Vergi Usul Kanunu yeniden değerleme oranında güncellenir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4922&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Denize elverişlilik kavramı ve kapsamı (Değişik: 5790 s.K.)
+Bir geminin denize elverişli sayılması; gemi teknesi, makineleri, genel donanımı, can kurtarma ve yangından korunma/söndürme araçları, seyir (navigasyon) ve haberleşme teçhizatı, sağlık koşulları, yük ve yolcu kapasitesi, denizi kirletmeyi önleme donanımı ile seyir güvenliği bakımından, gireceği seferin olağan deniz tehlikelerine karşı yeterli durumda bulunmasını ifade eder. Bu unsurların tümü gemi belgelendirmesinin esasını oluşturur.
+
+Madde 2 — Geminin muayenesi ve sefere çıkma (liman çıkış) izni (Değişik: 5790 s.K.)
+Liman idari sınırlarını geçecek ticaret gemilerinin sefere çıkması, liman başkanlığından alınacak liman çıkış belgesi (sefere çıkma izni) ile mümkündür. Liman başkanlığı; geminin denize elverişli olduğunu, belgelerinin geçerli olduğunu, mürettebat, yük cinsi ve yükleme durumunun belgelerine uygunluğunu denetler. Gemi denize elverişsizse veya sefere çıkmasının önlenmesini gerektiren bir bilgi varsa liman çıkış belgesi verilmez ve gemiye sefere çıkma izni tanınmaz.
+
+Madde 4 — Denize elverişlilik belgesi (verilmesi, süresi ve geri alınması) (Değişik: 5790 s.K.)
+Gemilere, yapılan muayene sonunda mevzuata uygunluğun tespiti üzerine süreli bir denize elverişlilik belgesi verilir. Belgesi olmayan veya belgesinin süresi dolan gemiler sefere çıkamaz. İdare, geminin teknesinde, makinelerinde veya genel donanımında gerekli nitelikleri kaybettiğini tespit ederse belgeyi geri alabilir. Kısa sürede onarılabilecek küçük eksiklikler gemiyi denize elverişsiz kılmaz; sefer sırasında niteliğini yitiren gemi, ticari varış limanına ulaşıp en yakın onarım limanına ticari işlem yapmadan gidebilir.
+
+Madde 20 — Belgesiz/izinsiz sefere çıkma ve idari para cezası (Değişik: 5790 s.K.)
+Liman çıkış belgesi almadan, denize elverişlilik belgesi olmadan ya da belgesi geri alınmış/süresi dolmuş olarak sefere çıkan gemiler derhal alıkonularak en yakın uygun limana gönderilir. Geminin groston (GT) tonajına göre iki yüz elli Türk Lirasından yirmibeş bin Türk Lirasına kadar idari para cezası uygulanır; ayrıca kaptana bu cezanın üçte biri oranında ceza verilir. Doğan tüm masraf ve cezalar ödenmeden veya teminat gösterilmeden gemi serbest bırakılmaz. [DOĞRULA: madde 20 GT'ye göre ceza dilimleri ve güncel tutarlar resmî metinden teyit edilmeli]
+
+Madde 21 — Belgede yazılı sınırı aşan yolcu/yük taşıma ve ceza (Değişik: 5790 s.K.)
+Belgesinde yazılı yolcu veya yük sınırını aşacak şekilde taşıma yapan gemiler derhal alıkonur; madde 20'deki esaslara benzer şekilde idari para cezası uygulanır ve doğan masraflar tahsil edilir. Bu hüküm, belge sınırlarına uygunluğun sefere çıkış için zorunlu olduğunu pekiştirir.
+
+Madde 23 — İdari yaptırımı uygulamaya yetkili merci (Değişik: 5790 s.K.)
+Bu Kanunda öngörülen idari para cezalarını uygulamaya liman başkanlıkları (liman başkanı) yetkilidir. Liman idari sınırları dışında Sahil Güvenlik unsurlarınca yapılan denetimlerde tespit edilen aykırılıklar, ceza işlemleri için yetkili liman başkanlığına bildirilir. Cezaya karşı Kabahatler Kanunu hükümlerine göre sulh ceza hâkimliğine başvurulabilir. [DOĞRULA: madde 23 yetkili merci ve Sahil Güvenlik bildirim usulü güncel metinden teyit edilmeli]

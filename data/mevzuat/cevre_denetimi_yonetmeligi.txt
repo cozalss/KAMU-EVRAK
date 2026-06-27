@@ -1,0 +1,32 @@
+Çevre Denetimi Yönetmeliği
+Çevre ve Şehircilik Bakanlığı, RG 12.06.2021/31509 (Mevzuat No 38696, 2872 sayılı Çevre Kanunu'na dayanır) — YÜRÜRLÜKTE (resmigazete.gov.tr 20210612-5 ve mevzuat.gov.tr 38696 üzerinden doğrulandı)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=38696&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Denetime tabi tesis veya faaliyetler
+Çevre Kanunu ve ilgili mevzuat kapsamına giren her türlü kirlilik kaynağının, tesisin ve faaliyetin çevre denetimine tabi olduğunu düzenler. Denetim, tesisin tüm çevresel konulardaki uygunluğunun birlikte ele alındığı birleşik denetim veya belirli bir konuya odaklı konu bazlı denetim olarak yapılabilir. Çevre denetim kapsamına alma ve denetim programı yazışmalarının dayanağıdır.
+
+Madde 6 — Denetime tabi tesis veya faaliyetlerin yükümlülükleri
+Denetlenen tesis/faaliyet sahiplerinin denetim ekibine saha girişi izni verme, istenen bilgi ve belgeleri eksiksiz sunma, gerekli ölçüm/analiz/numune işlemlerini yaptırma ve bunların giderlerini karşılama yükümlülüklerini düzenler. Denetimde kolaylık göstermek ve istenen düzeltici faaliyetleri yerine getirmek zorunludur. Çevre denetimine ilişkin bilgi/belge talebi ve düzeltici faaliyet bildirim yazışmalarının dayanağıdır.
+
+Madde 12 — Planlı denetimler
+Tesis ve faaliyetlerin çevresel risk değerlendirmesine göre sınıflandırılarak denetim sıklıklarının belirlenmesini ve yıllık birleşik çevre denetim programının hazırlanmasını düzenler. Programa alınan tesislere, denetim öncesinde belirli süre içinde bilgilendirme yapılır. Yıllık çevre denetim programına alma bildirim yazışmalarının dayanağıdır.
+
+Madde 13 — Plansız (ani) denetimler
+Kaza, olay, şikâyet ve ihbar gibi durumlarda denetim planına bağlı olmaksızın yapılan ani denetimleri düzenler. Şikâyetlerin değerlendirmeye alınmasında 4982 sayılı Bilgi Edinme Hakkı Kanununa uygunluk şartı aranır. Çevre şikâyeti/ihbarı üzerine yapılan ani denetim ve cevap yazışmalarının dayanağıdır.
+
+Madde 16 — Çevre denetim tutanağı
+Çevre denetimlerinde Yönetmelik ekinde yer alan çevre denetim tutanağının düzenlenmesini, e-denetim sistemi veya matbu form kullanılmasını ve tutanağın denetim ekibince (elektronik/mobil imza dahil) imzalanmasını düzenler. Tutanak, ihlalin tespitinde temel belgedir. Çevre denetim tutanağı düzenleme ve tebliğ yazışmalarının dayanağıdır.
+
+Madde 17 — İhlalin tespiti
+Kanunda belirtilen ihlallerin belirlenmesinde çevre denetim tutanağının esas alındığını; tespit sürecinde çevre bilgi sistemleri, fotoğraf, hava fotoğrafı, kamera, uydu görüntüleri ve diğer teknik cihazlardan yararlanılabileceğini düzenler. Toplanan kanıtlar idari yaptırım sürecine dayanak oluşturur. İhlal tespit ve kanıt değerlendirme yazışmalarının dayanağıdır.
+
+Madde 18 — Denetim raporu
+Yıllık denetim programına alınan birleşik denetimlerde denetim raporu hazırlanmasını ve raporun belirli süre içinde (kırk gün) tamamlanmasını düzenler; rapor, tespit edilen uygunsuzluklar, önerilen cezalar ve yasal dayanaklar ile denetim tutanağı, analiz sonuçları ve görsel kanıtları içerir. Hazırlanan rapor idari yaptırıma yetkili makama sunulur. Çevre denetim raporu hazırlama ve sunum yazışmalarının dayanağıdır.
+
+Madde 19 — İdari yaptırım kararı
+İhlal tespit edildiğinde Çevre Kanunu'nda öngörülen idari yaptırımların uygulanmasını ve idari yaptırım kararında muhatabın kimlik/adres bilgileri, ceza miktarı, ödeme şekli ve başvurulabilecek kanun yolunun belirtilmesini düzenler. Karar usulüne uygun tebliğ edilir. Çevre idari yaptırım kararı (idari para cezası) düzenleme ve tebliğ yazışmalarının dayanağıdır.

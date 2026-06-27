@@ -1,0 +1,29 @@
+Yenilenebilir Enerji Kaynaklarinin Elektrik Enerjisi Uretimi Amacli Kullanimina Iliskin Kanun
+Kanun No 5346, Kabul 10.05.2005, RG 18.05.2005/25819 — YURURLUKTE (resmigazete.gov.tr ve Lexpera konsolide metin uzerinden dogrulandi; YEKDEM hukumleri 6094 ve 7257 sayili kanunlarla eklenmistir)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5346.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amac
+Kanunun amaci; yenilenebilir enerji kaynaklarindan elektrik enerjisi uretiminin yayginlastirilmasi, bu kaynaklarin guvenilir ve ekonomik sekilde ekonomiye kazandirilmasi, kaynak cesitliliginin artirilmasi, sera gazi emisyonlarinin azaltilmasi ve cevrenin korunmasidir. Ayrica yenilenebilir enerji kaynagi alanlarinin degerlendirilmesi ile ilgili imalat sanayiinin gelistirilmesini hedefler. YEK Belgesi ve destekleme basvurularinin amac cercevesini cizen maddedir.
+
+Madde 3 — Tanimlar (yenilenebilir kaynak, YEK Belgesi, YEKDEM)
+Yenilenebilir enerji kaynaklari; hidrolik, ruzgar, gunes, jeotermal, biyokutle, biyogaz, dalga, akinti ve gel-git gibi fosil olmayan enerji kaynaklarini ifade eder. YEK Destekleme Mekanizmasi (YEKDEM), Kanun kapsamindaki yenilenebilir kaynaklara dayali uretim faaliyeti gosterenlerin faydalanabilecegi fiyat, sureler, miktarlar ve bunlara yapilacak odemelere iliskin usul ve esaslari iceren destekleme mekanizmasidir. YEK Belgesi ise uretilen elektrigin kaynak turunun belirlenmesi ve takibi icin verilen belgedir. Destekleme basvurusunda kullanilan temel kavramlari tanimlar.
+
+Madde 4 — YEK alanlari ve yarisma (YEKA)
+Bakanlik, yenilenebilir enerji kaynagi alanlarini (YEKA) belirler ve bu alanlarda kurulacak tesisler icin yarisma duzenler. Yarismaya iliskin usul ve esaslar ilgili yarisma sartnamesinde Bakanlikca belirlenir; yarisma sonucunda olusan fiyat ve/veya bedel, sartnamede belirlenecek sure boyunca YEK Destekleme Mekanizmasi kapsaminda degerlendirilir. Buyuk olcekli yenilenebilir yatirim basvurularinin (YEKA yarismasi) dayanagidir. [DOGRULA: YEKA yarisma hukumlerinin tam fikra yapisi yururlukteki metinden teyit edilmeli]
+
+Madde 5 — YEK Belgesi (belgelendirme)
+Yenilenebilir enerji kaynaklarindan uretilen elektrik enerjisinin ic piyasada ve uluslararasi piyasalarda alim satiminda kaynak turunun belirlenmesi ve takibi icin, uretim lisansi sahibi tuzel kisiye EPDK tarafindan Yenilenebilir Enerji Kaynak Belgesi (YEK Belgesi) verilir. Belgelendirmeye iliskin usul ve esaslar yonetmelikle duzenlenir. Uretim lisansi sahibi tuzel kisinin destek ve takip surecine giris basvurusu icin temel maddedir.
+
+Madde 6 — YEK Destekleme Mekanizmasi (YEKDEM) ve fiyatlar
+Bu Kanun kapsamindaki yenilenebilir kaynaklara dayali uretim tesislerinden belirlenen tarihler arasinda isletmeye giren tesisler, ilgili cetvelde yer alan fiyatlardan (ABD Dolari cinsinden cent/kWh) on yil sure ile yararlanir. Belirlenen tarihten sonra isletmeye girecek tesisler icin uygulanacak fiyat, sure ve diger sartlar Cumhurbaskani tarafindan belirlenir. Yenilenebilir uretim lisansi sahiplerinin destek mekanizmasina katilim basvurusunun fiyat ve sure cercevesini belirleyen ana maddedir. [DOGRULA: YEKDEM fiyat cetveli ve tarih araliklari sonradan degistirildiginden cari donem teyit edilmeli]
+
+Madde 6/A — Lisanssiz uretimde destekleme
+Kendi ihtiyacini karsilamak uzere kurulan ve lisanssiz uretim kapsaminda olan yenilenebilir tesislerde, kendi tuketim fazlasi enerjinin sisteme verilmesi halinde ilgili cetveldeki fiyatlardan on yil sure ile yararlanilir. Cati tipi gunes ve kucuk olcekli yenilenebilir uretim basvurularinin destek dayanagidir. Lisanssiz uretim basvuru ve baglanti islemleri ilgili yonetmelik hukumlerine gore yurutulur. [DOGRULA: lisanssiz uretim destek sure ve kosullari yururlukteki metinden teyit edilmeli]
+
+Madde 6/B — Yerli aksam (yerli katki) ilave destegi
+Belirlenen tarihten once isletmeye giren ve uretim tesisinde kullanilan mekanik ve/veya elektromekanik aksamin yurt icinde imal edilmis olmasi halinde, ilgili cetvelde belirtilen ilave fiyat destegi belirli bir ek sure boyunca uygulanir. Yerli uretim aksami kullanan yatirimcilarin ilave destek basvurusu icin dayanaktir. Yerli katki belgesi ve dogrulama islemleri ilgili mevzuata gore yapilir. [DOGRULA: yerli aksam ilave destek sure ve cetvel degerleri yururlukteki metinden teyit edilmeli]

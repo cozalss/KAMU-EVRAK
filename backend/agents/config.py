@@ -222,8 +222,9 @@ EVRAK_TO_SURE: dict[str, tuple[int, bool, str]] = {
 # KAPSAM: 18 üretilen türün TAMAMI eşlenir (eski 7 → 18). Boost anahtarı olmayan tür,
 # hem retrieval boost'undan (mevzuat_oner._beklenen_kanun_nolari) hem de gold üretiminden
 # (gen_synthetic beklenen_mevzuat) düşüyordu → eval o türü hiç ölçemiyordu (kapalı-döngü
-# kör nokta). Aşağıdaki madde no'lar data/mevzuat/ korpusundan ÇAPRAZ DOĞRULANDI; korpusta
-# bulunmayan tek kaynak (2004 İİK) [DOĞRULA] ile işaretlidir (uydurma yok).
+# kör nokta). Aşağıdaki madde no'lar data/mevzuat/ korpusundan (31 mevzuat / 210 chunk)
+# ÇAPRAZ DOĞRULANDI. 2026-06 genişletme: KVKK 6698, e-imza 5070, VUK 213, İmar 3194,
+# İcra 2004, HMK 6100, Belediye 5393, Kamulaştırma 2942, İş 4857 vb. korpusa eklendi (uydurma yok).
 EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
     # Vatandaş talebi ailesi → 3071 Dilekçe Hakkı (korpus: 3071; m.4 ve m.7 doğrulandı).
     "dilekce": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.4 (zorunlu unsurlar)"],
@@ -233,12 +234,12 @@ EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
     "ihbar": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.3-7 (başvuru ve sonucun bildirimi)"],
     "bilgi_edinme": ["4982 sayılı Bilgi Edinme Hakkı Kanunu (15 iş günü; m.16-17 red sebepleri)"],
     "cimer": ["5690 sayılı CİMER Cumhurbaşkanlığı Kararnamesi"],
-    # Yargı/icra → 2577 İYUK (korpus: m.7 dava açma süresi doğrulandı); icra'nın asıl dayanağı
-    # 2004 İİK korpusta YOK → [DOĞRULA]; tebliğ boyutu 7201 ile desteklenir (korpus: 7201).
+    # Yargı/icra → 2577 İYUK (korpus: m.7) + 2004 İİK (korpus: m.60/62/78 — 2026-06
+    # genişletme ile eklendi, doğrulandı) + 7201 tebliğ (korpus: 7201).
     "dava_evraki": ["2577 sayılı İdari Yargılama Usulü Kanunu m.7 (dava açma süresi; idare mah. altmış gün)"],
     "icra_evraki": [
+        "2004 sayılı İcra ve İflas Kanunu m.60 (ödeme emri), m.62 (itiraz), m.78 (haciz)",
         "7201 sayılı Tebligat Kanunu (icra evrakının tebliği)",
-        "[DOĞRULA: 2004 sayılı İcra ve İflas Kanunu — haciz/ödeme emri madde no; korpusta yok, mevzuat.gov.tr]",
     ],
     # Mali evrak → 5018 (korpus: m.33-34 gerçekleştirme/ödeme emri doğrulandı).
     "fatura": ["5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.33-34 (gerçekleştirme ve ödeme emri belgesi)"],

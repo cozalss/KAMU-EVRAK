@@ -1,0 +1,41 @@
+Vergi Usul Kanunu
+Kanun No 213, Kabul 04.01.1961, RG 10.01.1961/10703 — YURURLUKTE (resmi PDF 1.4.213, 1/1/2026 yururlukteki konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=213&MevzuatTur=1&MevzuatTertip=4
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 93 — Teblig esaslari
+Tahakkuk fisi disinda vergilendirmeyle ilgili hukum ifade eden butun vesika ve yazilar; adresi bilinenlere posta ile ilmuhaberli taahhutlu, adresi bilinmeyenlere ilan yoluyla teblig edilir. Ilgili kabul ederse teblig daire veya komisyonda da yapilabilir. Vergi/ceza ihbarnamesinin muhataba usulune uygun ulastirilmasinin temel kuralidir.
+
+Madde 94 — Teblig yapilacak kimseler
+Teblig mukelleflere, kanuni temsilcilerine, umumi vekillerine veya vergi cezasi kesilenlere yapilir. Tuzel kisilerde baskan, mudur veya kanuni temsilcilerden birine yapilmasi yeterlidir. Muhatap bulunmazsa ikametgah adresindekilerden veya isyerindeki memur/mustahdemden birine (gorununuse gore 18 yasindan kucuk ve bariz ehliyetsiz olmamak kaydiyla) yapilir.
+
+Madde 98 — Kamu idare ve muesseselerine teblig
+Kamu idare ve muesseselerine yapilacak teblig; bu idarelerin en buyuk amirlerine, muavinlerine ya da en buyuk amirin yetkili kilacagi memurlara yapilir. Kamu kurumlari arasi vergi tebligatinin dogru muhatabini belirler.
+
+Madde 101 — Bilinen adresler
+Bilinen adresler; mukellefce ise baslama/adres degisikliginde bildirilen isyeri adresleri, yetkili memurlarca tutanakla tespit edilen isyeri adresleri ve 5490 sayili Kanuna gore adres kayit sistemindeki yerlesim yeri adresidir. Isyeri adresinde teblig yapilamazsa teblig dogrudan adres kayit sistemindeki yerlesim yeri adresinde yapilir.
+
+Madde 102 — Teblig evrakinin teslimi
+Teblig zarfi posta idaresince muhataba verilir; durum muhatap ve posta memurunca tarih-imza ile tespit edilir. Muhatap tebellugden imtina ederse evrakin idareden alinabilecegine dair pusula kapiya yapistirilir ve teblig o tarihte yapilmis sayilir. Adres kayit sistemindeki adreste bulunamama halinde ikinci denemeden sonra pusula yapistirilir; evrak on bes gun icinde alinirsa alindigi gunde, alinmazsa on besinci gunde teblig yapilmis sayilir.
+
+Madde 103 — Tebligin ilanla yapilacagi haller
+Teblig; muhatabin bilinen adresi yoksa, bilinen isyeri adresinde teblig yapilamayip adres kayit sisteminde de kayitli adresi bulunmazsa, yabanci memlekettekilere teblig imkani yoksa veya baskaca nedenlerle teblig imkani yoksa ilan yoluyla yapilir.
+
+Madde 104 — Ilanin sekli
+Ilan yazisi vergi dairesinin ilan mahalline asilir. Teblig konusu her biri icin ayri ayri belirli haddi [DOGRULA: 1/1/2026 itibariyla 30.000 TL] gecmeyen vergi/ceza ise gazete ilani yapilmaz; askiya cikarildigi tarihi izleyen on besinci gun ilan tarihi sayilir. Tutar haddi asarsa belediye sinirlarindaki gazetede ve bir internet haber sitesinde, daha yuksek tutarlarda Turkiye genelinde yayin yapan gazetede de yayimlanir.
+
+Madde 107 — Elektronik ortamda teblig (m.107/A)
+93 uncu maddedeki usullerle bagli kalinmaksizin, teblige elverisli bir elektronik adres vasitasiyla elektronik ortamda teblig yapilabilir. Elektronik tebligat, muhatabin elektronik adresine ulastigi tarihi izleyen besinci gunun sonunda yapilmis sayilir. (Korpusta madde 93 chunk'i icinde nested; chunker /A ekini ayri madde olarak bolemediginden konu butunlugu icin tebligat esaslari altinda tutuldu.)
+
+Madde 109 — Teblig yerine gecen muameleler
+Verginin tarh ve tahakkukunda teblig yerine gecen muameleler hakkindaki hukumler saklidir. Bazi vergiler tarh zamaninda mukellefin vergi karnesine yazilmak suretiyle tarh ve teblig olunur; bu hallerde ayri bir teblig islemi aranmaz.
+
+Madde 232 — Fatura kullanma mecburiyeti
+Birinci ve ikinci sinif tuccarlar, basit usul mukellefleri ve defter tutmak zorunda olan ciftciler; sattiklari emtia/yaptiklari isler icin fatura vermek, aldiklarinda istemek ve almak zorundadir. Bunlar disindakilerin satin aldigi emtia/yaptirdigi isin bedeli belli haddi [DOGRULA: 2026 icin 12.000 TL] gecerse fatura zorunludur; bedel haddin altinda olsa dahi alici isterse fatura verilmesi mecburidir.
+
+Madde 253 — Defter ve belgeleri muhafaza mecburiyeti
+Defter tutmak zorunda olanlar, tuttuklari defterleri ve ucuncu kisimdaki vesikalari (fatura, makbuz vb.) ilgili bulunduklari yili takip eden takvim yilindan baslayarak bes yil sureyle muhafaza etmek zorundadir. Mali evrakin arsivlenme/saklanma suresinin yasal dayanagidir.

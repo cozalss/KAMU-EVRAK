@@ -1,0 +1,29 @@
+Amme Alacaklarının Tahsil Usulü Hakkında Kanun
+Kanun No 6183, Kabul 21.07.1953, RG 28.07.1953/8469 — YURURLUKTE (resmi PDF 1.3.6183 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6183&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 37 — Odeme zamani (vade)
+Amme alacaklari hususi kanunlarinda belli edilen zamanlarda odenir. Odeme zamani tespit edilmemis alacaklar tebligden itibaren bir ay icinde odenir ve bu surenin son gunu alacagin vade gunudur. Borclu isterse borcunu vadesinden once de odeyebilir.
+
+Madde 48 — Tecil
+Amme borcunun vadesinde odenmesi, haczin tatbiki veya hacizli mallarin paraya cevrilmesi borcluyu cok zor duruma dusurecekse; yazili talep ve teminat sartiyla alacak 72 ayi gecmemek uzere ve faiz alinarak tecil olunabilir. Tecil edilen borc toplami bir milyon TL'yi [DOGRULA: tutar Cumhurbaskaninca artirilip azaltilabilir] asmiyorsa teminat aranmaz; asan kismin yarisi kadar teminat istenir. Reddedilen borclu, redden itibaren idarece verilen 30 gune kadarlik surede oderse alacak odendigi tarihe kadar faizle tecil olunur.
+
+Madde 54 — Cebren tahsil sekilleri
+Odeme muddeti icinde odenmeyen amme alacagi tahsil dairesince cebren tahsil olunur. Cebren tahsil; teminatin paraya cevrilmesi veya kefilin takibi, borclunun mallarinin haczedilerek paraya cevrilmesi ya da sartlari varsa iflasinin istenmesi yollarindan biriyle yapilir.
+
+Madde 55 — Odeme emri
+Amme alacagini vadesinde odemeyenlere, 15 gun icinde borclarini odemeleri veya mal bildiriminde bulunmalari luzumu bir 'odeme emri' ile teblig olunur. Odeme emrinde borcun asil ve ferilerinin tutari, nereye odenecegi, suresinde odenmez veya mal bildirilmezse cebren tahsil edilecegi ve uc ayi gecmemek uzere hapisle tazyik olunacagi yer alir. Cebri takibin baslangic evrakidir.
+
+Madde 58 — Odeme emrine itiraz
+Odeme emri teblig olunan kisi; boyle bir borcu olmadigi, kismen odedigi veya zamanasimina ugradigi iddiasiyla teblig tarihinden itibaren 15 gun icinde alacakli tahsil dairesinin vergi itiraz komisyonuna itiraz edebilir. Komisyon itirazi en gec 7 gun icinde karara baglar. Itirazin reddi halinde borclu, ret kararinin tebliginden itibaren 15 gun icinde mal bildiriminde bulunmak zorundadir.
+
+Madde 62 — Haciz
+Borclunun mal bildiriminde gosterilen veya tahsil dairesince tespit edilen menkul/gayrimenkul mallari ile alacak ve haklarindan amme alacagina yetecek miktari tahsil dairesince haczolunur. Ucuncu sahsa ait oldugu beyan edilen veya istihkak iddia edilen mallarin haczi en sona birakilir. Tahsil dairesi alacakli idare ile borclunun menfaatlerini mumkun oldugunca telif etmekle yukumludur.
+
+Madde 64 — Haciz varakasi
+Haciz muameleleri; tahsil dairelerince duzenlenen ve alacakli amme idaresinin mahalli en buyuk memuru veya yetkili kilacagi memur tarafindan tasdik edilen haciz varakalarina dayanilarak yapilir. Varakalarin sekli ve icerigi Hazine ve Maliye Bakanliginca belirlenir. Haciz isleminin dayanak evrakini tanimlar.

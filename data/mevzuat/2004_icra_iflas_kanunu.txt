@@ -1,0 +1,26 @@
+İcra ve İflas Kanunu
+Kanun No 2004, Kabul 09.06.1932, RG 19.06.1932/2128 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.3.2004.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 42 — Takip yolları (para borcu ve teminat için takip)
+Para alacağının veya teminat sağlanmasının ilamsız icrası takip talebiyle başlar; haciz, rehnin paraya çevrilmesi veya iflas yollarından biriyle yürür. İlamsız takip yalnızca para alacağı ve teminat borçları için kullanılabilir, bunun dışındaki taleplerde uygulanmaz. Rehinle güvence altına alınmış alacakta kural olarak önce rehnin paraya çevrilmesi yoluna gidilir.
+
+Madde 58 — Takip talebinin içeriği
+Takip talebi icra dairesine yazılı, sözlü veya elektronik ortamda yapılır. Talepte alacaklı ve varsa vekilinin kimlik/adresi, borçlunun kimlik ve adresi, alacağın Türk parasıyla tutarı, faizli alacaklarda faiz oranı ve başlangıç günü, senet (yoksa borcun sebebi) ve seçilen takip yolu bulunur. Bu talep, takibin başlangıç anını ve kapsamını belirleyen temel evraktır.
+
+Madde 60 — Ödeme emri ve içeriği
+İcra müdürü takip talebinin Kanundaki şartları taşıdığına karar verirse ödeme emri düzenleyip borçluya gönderir. Ödeme emrinde borcun ve masrafların yedi gün içinde ödenmesi, bu süre içinde itiraz edilebileceği, itiraz edilmez ve ödenmezse takibe devam edileceği ve yedi gün içinde mal beyanında bulunma zorunluluğu ihtar edilir. [DOĞRULA: ödeme/itiraz süresi 7 gün]
+
+Madde 62 — Ödeme emrine itiraz
+Borçlu, ödeme emrinin tebliğinden itibaren yedi gün içinde dilekçe ile veya sözlü olarak icra dairesine itiraz edebilir. Sebep bildirmeden yapılan itiraz da geçerlidir; ancak borcun bir kısmına itiraz ediliyorsa itiraz edilen kısım miktarıyla açıkça gösterilmelidir, aksi hâlde itiraz edilmemiş sayılır. Süresinde yapılan itiraz takibi kendiliğinden durdurur. [DOĞRULA: itiraz süresi 7 gün]
+
+Madde 78 — Haciz talebi ve haciz isteme süresi
+Ödeme emrine süresinde itiraz edilmemiş veya itiraz kaldırılmışsa alacaklı haciz isteyebilir. Haciz isteme hakkı, ödeme emrinin tebliği tarihinden itibaren bir sene geçmekle düşer; itiraz/dava veya taksit sözleşmesi süreleri bu süreden düşülür. Haciz süresinde istenmez veya geri alınıp yenilenmezse dosya işlemden kaldırılır. [DOĞRULA: haciz isteme süresi 1 sene]
+
+Madde 168 — Kambiyo senetlerine mahsus haciz yolu — ödeme emri
+İcra müdürü senedin kambiyo senedi (çek, poliçe, bono) niteliğinde ve vadesinin gelmiş olduğunu görürse borçluya senet sureti ile ödeme emri gönderir. Ödeme emrinde borcun beş gün içinde ödenmesi ve senedin kambiyo vasfını taşımadığı yönünde itiraz/şikâyetin beş gün içinde icra mahkemesine yapılması ihtar edilir. Bu yolda itiraz takibi kendiliğinden durdurmaz. [DOĞRULA: itiraz/şikâyet süresi 5 gün]

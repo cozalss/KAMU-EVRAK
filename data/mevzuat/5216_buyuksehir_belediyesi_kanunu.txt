@@ -1,0 +1,23 @@
+Büyükşehir Belediyesi Kanunu
+Kanun No 5216, Kabul 10.07.2004, RG 23.07.2004/25531 (Düstur Tertip 5, Cilt 43) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5216.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 7 — Büyükşehir ve ilçe belediyelerinin görev ve sorumlulukları
+Büyükşehir belediyesi ile ilçe belediyeleri arasındaki görev, yetki ve sorumluluk paylaşımını düzenler. Büyükşehir belediyesi; stratejik plan ve yatırım programlarını hazırlamak, nazım imar planını yapmak/onaylamak ve ilçe belediyelerinin uygulama imar planlarını uygunluk açısından denetlemek gibi görevleri yürütür. Büyükşehirde imar/ruhsat yazışmalarında hangi belediyenin yetkili olduğunun tespitinde dayanaktır.
+
+Madde 8 — Altyapı hizmetleri (Altyapı Koordinasyon Merkezi - AYKOME)
+Büyükşehir içindeki altyapı hizmetlerinin koordinasyon içinde yürütülmesi amacıyla, büyükşehir belediye başkanı veya görevlendireceği kişinin başkanlığında ilgili kamu kurum/kuruluşları ile özel kuruluşların katılacağı Altyapı Koordinasyon Merkezi (AYKOME) kurulmasını düzenler. Altyapı kazı, ruhsat ve koordinasyon yazışmalarının dayanağıdır.
+
+Madde 12 — Büyükşehir belediye meclisi
+Büyükşehir belediye meclisinin büyükşehir belediyesinin karar organı olduğunu ve ilgili kanunda gösterilen esas ve usullere göre seçilen üyelerden oluştuğunu düzenler. Büyükşehir belediye başkanı meclisin başkanıdır; büyükşehir içindeki ilçe belediye başkanları da meclisin doğal üyesidir. Meclis kararı gerektiren büyükşehir işlemlerinin dayanağıdır.
+
+Madde 14 — Meclis kararlarının kesinleşmesi
+Büyükşehir belediye başkanı, hukuka aykırı gördüğü meclis kararlarını yedi gün içinde [DOĞRULA: yedi günlük süre] gerekçesini belirterek yeniden görüşülmek üzere meclise iade edebilir. İlçe belediye meclislerinin bütçe ve imar dışındaki kararları büyükşehir belediye başkanına gönderilmez; kesinleşme ve onay usulünü düzenler.
+
+Madde 16 — Büyükşehir belediye encümeni
+Büyükşehir belediye encümeninin oluşumunu düzenler: belediye başkanının başkanlığında, meclisin kendi üyeleri arasından bir yıl için gizli oyla seçeceği beş üye ile genel sekreter, mali hizmetler birim amiri ve başkanın seçeceği birim amirlerinden oluşur. Encümen kararı gerektiren büyükşehir işlemlerinin (kamulaştırma, imar yaptırımı) dayanağıdır.

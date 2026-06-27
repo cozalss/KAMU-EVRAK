@@ -1,0 +1,29 @@
+Kabahatler Kanunu
+Kanun No 5326, Kabul 30.03.2005, RG 31.03.2005/25772 (Mükerrer) — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5326 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5326.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanım (kabahat)
+Kabahat; kanunun, karşılığında idarî yaptırım uygulanmasını öngördüğü haksızlıktır. Suçtan farklı olarak kabahatler, ceza mahkemesi yargılaması yerine kural olarak idari makamlarca verilen idarî para cezası veya mülkiyetin kamuya geçirilmesi gibi idarî yaptırımlarla karşılanır.
+
+Madde 3 — Genel kanun niteliği
+Bu Kanunun idarî yaptırım kararlarına karşı kanun yoluna ilişkin hükümleri, diğer kanunlarda aksine hüküm bulunmaması halinde uygulanır. Diğer genel hükümleri ise idarî para cezası veya mülkiyetin kamuya geçirilmesi yaptırımını gerektiren bütün fiiller hakkında uygulanır. Böylece Kabahatler Kanunu, özel kanunlardaki idari yaptırımlar bakımından genel/çerçeve kanun işlevi görür.
+
+Madde 17 — İdarî para cezası
+İdarî para cezası maktu veya nispi olabilir; kanunda alt ve üst sınır gösterilmişse miktar belirlenirken kabahatin haksızlık içeriği ile failin kusuru ve ekonomik durumu birlikte göz önünde tutulur. Kanunlarında ödeme süresi düzenlenmemiş cezalar tebliğden itibaren bir ay içinde ödenir ve süresinde ödenmesi halinde %25 indirim uygulanır; ödeme, kanun yoluna başvurma hakkını etkilemez. Genel bütçeye gelir kaydedilecek kesinleşmiş cezalar 6183 sayılı Kanuna göre tahsil edilir ve cezalar her yıl yeniden değerleme oranında artırılır. [DOĞRULA: %25 indirim oranı ve bir aylık ödeme süresi 7417/2022 değişikliğiyle güncel metinden teyit edilmiştir; özel kanunlardaki farklı süreler saklıdır.]
+
+Madde 20 — Soruşturma zamanaşımı
+Soruşturma zamanaşımının dolması halinde kabahatten dolayı kişiye idarî para cezası verilemez. Zamanaşımı süresi cezanın miktarına göre değişir: yüzbin TL ve üzeri cezayı gerektiren kabahatlerde beş yıl, ellibin TL ve üzeri olanlarda dört yıl, ellibin TL'den az olanlarda üç yıldır; nispî idarî para cezalarında süre sekiz yıldır. Süre, kabahate ilişkin fiilin işlenmesi veya neticenin gerçekleşmesiyle işlemeye başlar. [DOĞRULA: parasal eşikler (yüzbin/ellibin TL) yeniden değerleme ile güncellenebildiğinden ödeme tarihindeki güncel tutarlar teyit edilmelidir.]
+
+Madde 22 — İdarî yaptırım kararı verme yetkisi
+Kabahat dolayısıyla idarî yaptırım kararı vermeye, ilgili kanunda açıkça gösterilen idarî kurul, makam veya kamu görevlileri yetkilidir. Kanunda açık hüküm bulunmayan hallerde, ilgili kamu kurum ve kuruluşunun en üst amiri yetkilidir. Bu yetki, ancak ilgili kurumun görev alanına giren yerlerde işlenen kabahatler için kullanılabilir.
+
+Madde 26 — Kararların tebliği
+İdarî yaptırım kararı, 7201 sayılı Tebligat Kanunu hükümlerine göre ilgili kişiye tebliğ edilir ve tebligat metninde başvurulabilecek kanun yolu, mercii ve süresi açıkça belirtilir. Kararın ilgilinin huzurunda verilmesi halinde bu husus tutanağa geçirilir, kişi kanun yolu konusunda bilgilendirilerek tutanağı imzalaması istenir ve bir örneği kendisine verilir. Tüzel kişiler hakkındaki kararlar her halde ilgili tüzel kişiye tebliğ edilir.
+
+Madde 27 — Başvuru yolu (itiraz)
+İdarî para cezası ve mülkiyetin kamuya geçirilmesine ilişkin idarî yaptırım kararına karşı, kararın tebliği veya tefhimi tarihinden itibaren en geç onbeş gün içinde sulh ceza mahkemesine (sulh ceza hâkimliğine) başvurulabilir; bu süre içinde başvurulmazsa karar kesinleşir. Mücbir sebeple süre kaçırılmışsa, sebebin ortadan kalkmasından itibaren yedi gün içinde başvurulabilir. Başvuru, bizzat, kanuni temsilci veya avukat tarafından iki nüsha dilekçe ile yapılır.

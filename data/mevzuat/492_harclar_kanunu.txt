@@ -1,0 +1,23 @@
+Harçlar Kanunu
+Kanun No 492, Kabul 02.07.1964, RG 17.07.1964/11756 — YURURLUKTE (resmi PDF 1.5.492 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=492&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kanunun kapsami (harc turleri)
+Bu Kanuna gore alinacak harclar; yargi harclari, noter harclari, vergi yargisi harclari, tapu ve kadastro harclari, konsolosluk harclari, pasaport-ikamet-calisma izni-vize ve Disisleri tasdik harclari, gemi ve liman harclari, imtiyazname-ruhsatname-diploma harclari ve trafik harclaridir. Kamu islemlerine bagli harclarin kapsamini belirler.
+
+Madde 11 — Mukellef (yargi harclari)
+Yargi harclarini, genel olarak davayi acan veya harca konu islemin yapilmasini isteyen kisiler oder. Vasinin hesabinin gorulmesi dolayisiyla alinacak harclar vesayet altindaki sahsa izafeten vasiden alinir. Istek olmaksizin resen yapilan islemlere ait harclar, aksine hukum yoksa lehine islem yapilan kisilerden alinir.
+
+Madde 27 — Maktu harclarda odeme zamani
+(1) sayili tarifedeki maktu harclar, ilgili oldugu islemin yapilmasindan once pesin olarak odenir. Mahiyeti geregi isin sonunda hesap edilenler, harc alacaginin dogmasi tarihinden itibaren 15 gun icinde odenir. Harc pesin veya suresinde odenmemisse, muteakip muamelelere ancak harc odendikten sonra devam olunur. Harc odenmeden islemin yurutulememesi kuralinin dayanagidir.
+
+Madde 28 — Nispi harclarda odeme zamani
+(1) sayili tarifedeki nispi harclar belirtilen zamanlarda odenir. Karar ve ilam harcinin dortte biri pesin, geri kalani [DOGRULA: kararin verilmesinden itibaren bir ay icinde] odenir. Nispi harc odeme dilimleri ve sureleri madde 28 bentlerinde ayrintili duzenlenir; yargi evrakina bagli harcin odeme zamanini belirler.
+
+Madde 113 — Yillik ve maktu harclarin tahakkuku
+Bu harclar pesin olarak alinir. Yillik harclar her yil ocak ayinin basinda yillik tahakkuk ettirilmis sayilir; ayrica mukellefe teblig olunmaz ve ocak ayinda odenir. Denetim kuruluslari yetkilendirme belgesi ve elektrik uretim lisans harclari gibi bazi harclar, kurumlar vergisi beyannamesi verme suresindeki bildirim uzerine tahakkuk eder. Lisans/ruhsat harclarinin tahakkuk-odeme duzenini gosterir.

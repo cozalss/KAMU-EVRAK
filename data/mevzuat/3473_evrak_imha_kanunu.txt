@@ -1,0 +1,26 @@
+Muhafazasına Lüzum Kalmayan Evrak ve Malzemenin Yok Edilmesi Hakkında Kanun Hükmünde Kararnamenin Değiştirilerek Kabulü Hakkında Kanun
+Kanun No 3473, Kabul 28.09.1988, RG 04.10.1988/19949 (4516 ve 700 sayılı KHK ile değişik) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3473.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve Kapsam
+Kamu kurum ve kuruluşlarının arşivlerinde arşiv/arşivlik malzeme niteliği taşımayan, muhafazasına lüzum görülmeyen evrak ve malzemenin ayıklama ve imha usul ve esaslarını düzenler. Kapsama genel ve katma bütçeli daireler, mahallî idareler, üniversiteler, KİT'ler ve özel kanunla kurulan kamu bankaları girer. Cumhurbaşkanlığı, TBMM, Genelkurmay, Millî Savunma, İçişleri, Dışişleri Bakanlıkları ve MİT kendi mevzuatına tâbi olmak kaydıyla kapsam dışıdır.
+
+Madde 2 — Tarifler (arşiv malzemesi, arşivlik malzeme, ayıklama, imha)
+Arşiv malzemesi, son işlem tarihinden otuz yıl geçmiş veya onbeş yıl geçtikten sonra kesin sonuca bağlanmış, geleceğe tarihî/hukukî değer olarak intikal etmesi gereken belge ve malzemedir [DOĞRULA: 3473'te 'otuz yıl'; yürürlükteki 11 sayılı CBK ve 2019 Yönetmeliğinde arşiv belgesi süresi 'yirmi yıl']. Arşivlik malzeme henüz bu vasfı kazanmamış belgelerdir (sicil dosyaları, andlaşmalar, tapu/nüfus kayıtları). Ayıklama, delil değerini yitirmiş malzemenin arşiv malzemesinden ayrılması; imha ise bunların yönetmelikteki usule göre yok edilmesidir.
+
+Madde 3 — Mükellefiyet (koruma, tasnif, devir, yok etme)
+Kapsamdaki kurumlar arşiv ve arşivlik malzemeyi zararlı etkenlerden korumak, asli düzenine göre tasnif edip saklamak, yönetmelikteki bekletme ve saklama süreleri sonunda Devlet Arşivleri Başkanlığına (mülga Genel Müdürlük) teslim etmek ve muhafazasına lüzum kalmayanı yok etmekle yükümlüdür. Arşiv/arşivlik malzeme temlik amacıyla kullanılamaz, tahrip-tahrif edilemez ve yurt dışına çıkarılamaz.
+
+Madde 4 — Ayıklama ve İmha Komisyonlarının Teşkili
+Kapsamdaki kurum ve kuruluşların kurum arşivlerinde yapılacak ayıklama ve imha işlemleri için bünyelerinde ayıklama ve imha komisyonları kurulur. Komisyonların kuruluşu, üyeleri ve çalışma esasları Cumhurbaşkanınca çıkarılacak yönetmelikle düzenlenir.
+
+Madde 5 — Müsadere Olunan Malzeme
+İlgili kanunlara göre suçta kullanıldığı anlaşılarak müsaderesine dair kararı kesinleşen malzeme, derhal Devlet Arşivleri Başkanlığına teslim edilir.
+
+Madde 6 — Yönetmelik (ikincil düzenleme dayanağı)
+Arşiv/arşivlik malzemenin tespiti, korunması, değerlendirilmesi ile muhafazasına lüzum görülmeyen malzemenin ayıklama-imhası ve komisyonlara dair usul ve esaslar yönetmelikle gösterilir. 700 sayılı KHK ile 'Başbakanlıkça' ibaresi 'Cumhurbaşkanınca' olarak değiştirilmiştir [DOĞRULA: değişiklik yürürlüğü 09.07.2018].

@@ -140,10 +140,11 @@ class TestMevzuatOnerKorpusRetrieval:
 
 class TestMevzuatOnerConfigFallback:
     async def test_kisa_sorgu_config_fallback(self):
-        # Arrange — sorgu uzunluk-eşiğinin (_MIN_QUERY_LEN=8) altında: tür/konu yok,
-        # gövde tek karakter → retrieval atlanır, statik config'e düşer. (Korpus
-        # genişledikçe boş-eşleşme yerine eşik-kapısı fallback'in deterministik tetiği.)
-        state = {"evrak_turu": "belirsiz", "bilgi_unsurlari": {}, "evrak_text": "x"}
+        # Arrange — tür/konu/domain-terim YOK + gövde boş → _retrieval_query "" döner →
+        # retrieval ATLANIR (len<_MIN_QUERY_LEN=8 eşik-kapısı), statik config'e düşer.
+        # Korpus boyutundan BAĞIMSIZ deterministik tetik (korpus 10→31 büyüyünce "belirsiz"
+        # ×boost artık corpus-hit alıyordu; gerçek eşik-kapısı korpustan etkilenmez).
+        state = {"evrak_turu": "", "bilgi_unsurlari": {}, "evrak_text": ""}
         # Act
         out = await mevzuat_oner_node(state)
         # Assert — config kaynaklı (uydurma değil) varsayılan başlık döner

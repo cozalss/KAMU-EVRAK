@@ -1,0 +1,32 @@
+Memurlar ve Diğer Kamu Görevlilerinin Yargılanması Hakkında Kanun
+Kanun No 4483, Kabul 02.12.1999, RG 04.12.1999/23896 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.4483 konsolide metin; 7196/2019 ve 703/2018 KHK değişiklikleri işli)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4483.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Kanunun amacı, memurlar ve diğer kamu görevlilerinin görevleri sebebiyle işledikleri suçlardan dolayı yargılanabilmeleri için soruşturma iznini vermeye yetkili mercileri belirlemek ve izlenecek usulü düzenlemektir. Yani görev suçlarında doğrudan ceza soruşturması açılamaz; önce idari makamdan soruşturma izni alınması gerekir.
+
+Madde 2 — Kapsam
+Kanun, Devletin ve diğer kamu tüzel kişilerinin genel idare esaslarına göre yürüttükleri kamu hizmetlerinin gerektirdiği asli ve sürekli görevleri ifa eden memurlar ile diğer kamu görevlilerinin görevleri sebebiyle işledikleri suçlar hakkında uygulanır. Özel soruşturma usulüne tabi olanlar, suçun niteliği yönünden özel usule tabi haller, ağır cezayı gerektiren suçüstü hali ve disiplin hükümleri kapsam dışında/saklıdır.
+
+Madde 3 — İzin vermeye yetkili merciler
+Soruşturma izni vermeye yetkili merci, kamu görevlisinin suç tarihindeki görev yerine göre belirlenir: ilçedeki görevliler için kaymakam; il/merkez ilçedeki görevliler ile kaymakamlar için vali; Cumhurbaşkanlığına bağlı/ilgili kuruluş ve bakanlık görevlileri için o kuruluşun en üst idari amiri; Cumhurbaşkanı kararıyla atananlar için Cumhurbaşkanı veya ilgili bakan; belediye başkanları ve meclis üyeleri için İçişleri Bakanı yetkilidir. (2018 sonrası 'Başbakanlık' ibareleri ilgili değişikliklerle yürürlükten kaldırılmıştır.)
+
+Madde 5 — Ön inceleme
+İzin vermeye yetkili merci, kapsama giren bir suçun işlendiğini bizzat veya ihbar/şikayet yoluyla öğrendiğinde bir ön inceleme başlatır. Ön inceleme; merciin kendisi tarafından veya görevlendireceği bir ya da birden fazla denetim elemanı/kamu görevlisi eliyle yapılır. Daha önce sonuçlandırılmış aynı konudaki ön inceleme varsa ve yeni belge sunulmamışsa müracaat işleme konulmaz.
+
+Madde 6 — Ön inceleme yetkileri ve karar
+Ön incelemeyle görevlendirilenler, bakanlık müfettişleri ve kendilerini görevlendiren merciin tüm yetkilerine sahiptir; hakkında inceleme yapılan görevlinin ifadesini de alarak bilgi ve belgeleri toplar, görüşlerini içeren bir rapor düzenleyip mercie sunar. Yetkili merci bu rapor üzerine soruşturma izni verilmesine veya verilmemesine karar verir; bu kararlarda gerekçe gösterilmesi zorunludur.
+
+Madde 7 — Süre (soruşturma izni karar süresi)
+Yetkili merci, soruşturma izni konusundaki kararını, suçun öğrenilmesinden itibaren ön inceleme dahil en geç otuz gün içinde vermek zorundadır. Bu süre, zorunlu hallerde onbeş günü geçmemek üzere bir defaya mahsus uzatılabilir. Merci her halde belirtilen süreler içinde izin verme veya vermeme yönünde karar vermek zorundadır.
+
+Madde 9 — İtiraz
+Yetkili merci, soruşturma izni verilmesine veya verilmemesine ilişkin kararını Cumhuriyet başsavcılığına, hakkında inceleme yapılan görevliye ve varsa şikayetçiye bildirir. İzin verilmesine karşı ilgili kamu görevlisi, izin verilmemesine veya işleme koymama kararına karşı ise başsavcılık veya şikayetçi itiraz edebilir; itiraz süresi kararın tebliğinden itibaren on gündür. İtiraza, 3. maddenin belirli bentlerindeki üst düzey görevliler için Danıştay İkinci Dairesi, diğerleri için yetkili bölge idare mahkemesi bakar; itirazlar en geç üç ay içinde kesin olarak karara bağlanır.
+
+Madde 11 — Soruşturma izninin gönderileceği merci (hazırlık soruşturması)
+Soruşturma izninin itiraz edilmeden ya da itirazın reddi sonucu kesinleşmesi veya izin verilmemesi kararına yapılan itirazın kabulü üzerine dosya derhal yetkili ve görevli Cumhuriyet başsavcılığına gönderilir. İlgili başsavcılık, Ceza Muhakemesi Kanunu ve diğer kanunlardaki yetkilerini kullanarak hazırlık soruşturmasını yürütür ve sonuçlandırır.

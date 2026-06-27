@@ -30,3 +30,33 @@ Her mevzuat `<no>_<kisa_ad>.txt` olarak kaydedilir (UTF-8, madde başlıkları k
 Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapılır.
 
 > CLAUDE.md §1: madde no'ları çıktıdan önce DOĞRULANIR; şüpheli → `[DOĞRULA:]`.
+
+## 2026-06 Genişletme — web araştırmasıyla eklenen mevzuat (21 mevzuat / 147 madde)
+
+> Çok-ajanlı web araştırması (mevzuat.gov.tr / resmigazete.gov.tr) ile derlenen GERÇEK
+> mevzuat madde-özetleri. Korpus 10 → **31 mevzuat (210 chunk)**. Şüpheli/değişen hükümler
+> `[DOĞRULA:]` işareti taşır. Yeniden indeksleme: `uv run python scripts/seed_mevzuat.py`.
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Kişisel Verilerin Korunması Kanunu (KVKK) | 6698 | `6698_kvkk.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6698.pdf |
+| Elektronik İmza Kanunu | 5070 | `5070_elektronik_imza.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5070.pdf |
+| İnternet Ortamında Yapılan Yayınların Düzenlenmesi ve Bu Yayınlar Yoluyla İşlenen Suçlarla Mücadele Edilmesi Hakkında Kanun | 5651 | `5651_internet_yayinlari.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5651.pdf |
+| Muhafazasına Lüzum Kalmayan Evrak ve Malzemenin Yok Edilmesi Hakkında Kanun Hükmünde Kararnamenin Değiştirilerek Kabulü Hakkında Kanun | 3473 | `3473_evrak_imha_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3473.pdf |
+| Devlet Arşiv Hizmetleri Hakkında Yönetmelik | RG 30922 (Yönetmelik, 11 sayılı CBK'ya dayalı) | `devlet_arsiv_hizmetleri_yonetmeligi.txt` | 10 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=33899&MevzuatTur=7&MevzuatTertip=5 |
+| Devlet Arşivleri Başkanlığı Hakkında Cumhurbaşkanlığı Kararnamesi | CB 11 | `11_devlet_arsivleri_baskanligi_cbk.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/19.5.11.pdf |
+| Vergi Usul Kanunu | 213 | `213_vergi_usul_kanunu.txt` | 11 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=213&MevzuatTur=1&MevzuatTertip=4 |
+| Amme Alacaklarının Tahsil Usulü Hakkında Kanun | 6183 | `6183_amme_alacaklari_tahsil_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6183&MevzuatTur=1&MevzuatTertip=3 |
+| Harçlar Kanunu | 492 | `492_harclar_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=492&MevzuatTur=1&MevzuatTertip=5 |
+| Harcırah Kanunu | 6245 | `6245_harcirah_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6245&MevzuatTur=1&MevzuatTertip=3 |
+| İmar Kanunu | 3194 | `3194_imar_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3194.pdf |
+| Belediye Kanunu | 5393 | `5393_belediye_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5393.pdf |
+| Büyükşehir Belediyesi Kanunu | 5216 | `5216_buyuksehir_belediyesi_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5216.pdf |
+| Kamulaştırma Kanunu | 2942 | `2942_kamulastirma_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2942.pdf |
+| İş Kanunu | 4857 | `4857_is_kanunu.txt` | 10 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4857.pdf |
+| Sosyal Sigortalar ve Genel Sağlık Sigortası Kanunu | 5510 | `5510_sosyal_sigortalar_gss_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5510.pdf |
+| Memurlar ve Diğer Kamu Görevlilerinin Yargılanması Hakkında Kanun | 4483 | `4483_memur_yargilama_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4483.pdf |
+| Kabahatler Kanunu | 5326 | `5326_kabahatler_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5326.pdf |
+| İcra ve İflas Kanunu | 2004 | `2004_icra_iflas_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.3.2004.pdf |
+| Hukuk Muhakemeleri Kanunu | 6100 | `6100_hukuk_muhakemeleri_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6100.pdf |
+| Türk Borçlar Kanunu | 6098 | `6098_turk_borclar_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6098.pdf |

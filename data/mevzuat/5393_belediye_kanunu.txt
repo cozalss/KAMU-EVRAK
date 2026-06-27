@@ -1,0 +1,26 @@
+Belediye Kanunu
+Kanun No 5393, Kabul 03.07.2005, RG 13.07.2005/25874 (Düstur Tertip 5, Cilt 44) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5393.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 14 — Belediyenin görev ve sorumlulukları
+Belediyenin, mahalli müşterek nitelikte olmak şartıyla yürüteceği görev ve sorumlulukları sayar: imar, su ve kanalizasyon, ulaşım gibi kentsel altyapı; çevre ve çevre sağlığı, temizlik ve katı atık; zabıta, itfaiye, acil yardım, kurtarma ve ambulans; defin ve mezarlıklar; ağaçlandırma, park ve yeşil alan gibi hizmetler. Bir konunun belediye görev alanına girip girmediğinin tespitinde temel dayanaktır.
+
+Madde 15 — Belediyenin yetkileri ve imtiyazları
+Belediyenin yetki ve imtiyazlarını düzenler: belde sakinlerinin mahalli müşterek ihtiyaçlarını karşılamak için her türlü faaliyette bulunmak, kanunların verdiği yetki çerçevesinde yönetmelik çıkarmak, belediye yasakları koymak ve uygulamak, kanunlarda belirtilen cezaları vermek. İdari işlem ve yazışmalarda belediyenin yetki dayanağını gösterir.
+
+Madde 18 — Belediye meclisinin görev ve yetkileri
+Belediye meclisinin görev ve yetkilerini sayar: stratejik plan ile yatırım ve çalışma programlarını görüşüp kabul etmek, bütçe ve kesin hesabı kabul etmek, imar planlarını görüşüp onaylamak, belediye adına imtiyaz vermek, borçlanmaya karar vermek ve benzeri işlemler. Meclis kararı gerektiren konuların ve meclis kararı üst yazılarının dayanağıdır.
+
+Madde 23 — Meclis kararlarının kesinleşmesi
+Belediye başkanı, hukuka aykırı gördüğü meclis kararlarını gerekçesini de belirterek yeniden görüşülmek üzere beş gün içinde [DOĞRULA: beş günlük süre] meclise iade edebilir. Yeniden görüşülmesi istenmeyen kararlar ile ısrar edilen kararlar kesinleşir. Kesinleşen kararlar usulüne uygun şekilde ilan edilir ve mülki idare amirine (kaymakam/vali) gönderilir.
+
+Madde 34 — Belediye encümeninin görev ve yetkileri
+Belediye encümeninin görev ve yetkilerini sayar: stratejik plan, yıllık program, bütçe ve kesin hesabı inceleyip meclise görüş bildirmek; yıllık programdaki işlerle ilgili kamulaştırma kararlarını almak ve uygulamak; öngörülmeyen giderler ödeneğini harcamak; kanunlarda öngörülen cezalara karar vermek. Encümen kararı gerektiren idari işlemlerin (kamulaştırma, imar para cezası, yıkım) dayanağıdır.
+
+Madde 38 — Belediye başkanının görev ve yetkileri
+Belediye başkanının görev ve yetkilerini düzenler: belediye teşkilatının en üst amiri olarak teşkilatı sevk ve idare etmek, belediyenin hak ve menfaatlerini korumak, belediyeyi stratejik plana uygun yönetmek, belediyeyi temsil etmek ve belediye personelini atamak. Resmi yazıların imza ve onay yetkisinin dayanağıdır.

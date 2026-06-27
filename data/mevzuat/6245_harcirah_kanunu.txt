@@ -1,0 +1,32 @@
+Harcırah Kanunu
+Kanun No 6245, Kabul 10.02.1954, RG 18.02.1954/8637 — YURURLUKTE (resmi PDF 1.3.6245 konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6245&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kanunun kapsami
+Genel butceye dahil daireler ile katma ve ozel butceli idareler (koy butceleri haric), bunlara bagli sabit/mutedavil sermayeli muesseseler; ozel kanunlarla kurulmus banka ve tesekkuller (sayilan istisnalar haric) ve bunlarin sermayesinin yarisindan fazlasina sahip oldugu tesekkuller tarafindan odenecek harcirah bu Kanuna tabidir. Kamu kurumlarinca odenen yollugun kapsamini belirler.
+
+Madde 3 — Tarifler
+Harcirah; bu Kanuna gore odenmesi gereken yol masrafi, gundelik, aile masrafi ve yer degistirme masrafindan birini, birkacini veya tamamini ifade eder. Kurum, memur ve hizmetli kavramlari da tanimlanir. Yolluk evraki ve beyannamesinde gecen temel kavramlari belirler.
+
+Madde 5 — Harcirahin unsurlari
+Harcirah; yol masrafi, yevmiye (gundelik), aile masrafi ve yer degistirme masrafini icerir. Ilgili, Kanun hukumlerine gore bunlardan birine, birkacina veya tamamina hak kazanabilir. Yolluk beyannamesinde hesaplanacak kalemlerin cercevesini cizer.
+
+Madde 14 — Muvakkat (gecici) vazife harcirahi
+Kurumlara ait bir vazifenin ifasi amaciyla gecici olarak yurt icinde/disinda baska bir yere gonderilenlere; muvakkat vazife harcirahi olarak yol masrafi ile yevmiye verilir, ayrica beyannamede gosterilmek uzere hamal, bagaj ve ikametgah/vazife mahalli ile istasyon-iskele-durak arasindaki nakil masraflari da odenir. Gecici gorevlendirme (olur/gorevlendirme yazisi) yollugunun dayanagidir.
+
+Madde 33 — Yurtici gundeliklerinin tespiti
+Yurtici gundeliklerinin miktari her yil butce kanunlari ile tespit olunur [DOGRULA: guncel gundelik tutarlari yillik butce kanunu (H) cetvelinde]. Denetim/teftis goreviyle gorev merkezi disina gonderilen belirli denetim elemanlari icin farkli (artirimli) gundelik esaslari ongorulur. Yolluk tutarinin yasal kaynagini gosterir.
+
+Madde 39 — Gundelik verilecek sure ve oran
+Resmi gorevle memuriyet mahalli icinde bir yere gonderilenlere gundelik verilmez. Memuriyet mahalli disina gonderilenlerden; yolda veya gorev yerinde ogle (13.00) ve aksam (19.00) yemegi zamanlarindan birini gecirenlere 1/3, ikisini gecirenlere 2/3, geceyi de gecirenlere tam gundelik verilir. Mucbir sebeple yola devam edilememesi halinde tevakkuf gunleri icin yevmiye verilir; zati sebeplerde verilmez.
+
+Madde 42 — Gecici gorev gundeliginin azami suresi
+Gecici gorevle baska yere gonderilenlere verilen gundelikler; yurt icinde bir yillik donemde ayni yerde, ayni is ve ayni sahsa 180 gunden fazla verilemez; ilk 90 gun tam, takip eden 90 gun 2/3 oraninda odenir. Yurt disinda ilk 180 gun tam, sonraki gunler 2/3 oraninda odenir. Gorevlendirme suresinin yolluk uzerindeki sinirini belirler.
+
+Madde 59 — Harcirahin pesin odenmesi, beyan ve iade
+Harcirah, memur/hizmetlinin gidisinde ve ailenin nakli sirasinda pesin olarak verilir; tam miktar onceden belirlenemiyorsa yetecek kadar para avans olarak verilir. Harcirahini kesin veya avans suretiyle alanlardan, kisisel sebeplerle 15 gun icinde hareket etmeyenler aldiklari parayi derhal iade etmek zorundadir. Aile harcirahinda ilgilinin verecegi beyan kagidi esas alinir.

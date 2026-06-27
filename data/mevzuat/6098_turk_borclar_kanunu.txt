@@ -1,0 +1,23 @@
+Türk Borçlar Kanunu
+Kanun No 6098, Kabul 11.01.2011, RG 04.02.2011/27836 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6098.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 117 — Borçlu temerrüdü ve ihtar
+Muaccel bir borcun borçlusu, alacaklının ihtarıyla temerrüde düşer. Borcun ifa edileceği gün birlikte belirlenmişse veya sözleşmede saklı tutulan bir hakka dayanarak usulüne uygun bildirimle belirlenmişse, bu günün geçmesiyle borçlu ihtara gerek olmadan temerrüde düşer. İhtarname, borçluyu temerrüde düşüren ve sonuçlarını başlatan yazılı bildirimdir.
+
+Madde 118 — Temerrüt faizi
+Faiz ödeme borcunda temerrüde düşen borçlu, sözleşmeyle kararlaştırılmamış olsa bile geçmiş günler faizini ödemekle yükümlüdür. Sözleşmede daha yüksek bir oran kararlaştırılmamışsa temerrüt faizi kanuni faiz oranı üzerinden hesaplanır. Bu hüküm, ihtarla başlayan temerrüdün parasal sonucunu düzenler. [DOĞRULA: madde no 118]
+
+Madde 123 — Sözleşmeden dönme: süre verilmesi
+Karşılıklı borç yükleyen sözleşmelerde taraflardan biri temerrüde düşerse diğer taraf, borcun ifası için uygun bir süre verebilir veya bu sürenin hâkim tarafından verilmesini isteyebilir. Bu süre verme (mehil/ihtar), sözleşmeden dönme ya da aynen ifa-tazminat seçeneklerine geçmeden önce kural olarak zorunlu adımdır.
+
+Madde 124 — Süre verilmesini gerektirmeyen hâller
+Borçlunun tutum veya durumundan süre verilmesinin etkisiz kalacağı anlaşılıyorsa, temerrüt nedeniyle ifa alacaklı için yararsız hâle gelmişse ya da sözleşmeden kesin vadeli ifa gerektiği anlaşılıyorsa alacaklının ayrıca süre vermesine gerek yoktur. Bu hâllerde doğrudan seçimlik haklar kullanılabilir.
+
+Madde 125 — Borçlu temerrüdünde alacaklının seçimlik hakları
+Verilen süre sonuçsuz kalır veya süre verilmesi gerekmeyen bir hâl varsa alacaklı, her zaman aynen ifa ile gecikme tazminatını isteyebilir. Bunun yerine, ifadan ve gecikme tazminatından vazgeçtiğini hemen bildirerek ifa edilmemesinden doğan zararın giderilmesini ya da sözleşmeden dönmeyi tercih edebilir. [DOĞRULA: madde no 125]

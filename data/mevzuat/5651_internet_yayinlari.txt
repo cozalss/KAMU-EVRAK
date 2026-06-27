@@ -1,0 +1,29 @@
+İnternet Ortamında Yapılan Yayınların Düzenlenmesi ve Bu Yayınlar Yoluyla İşlenen Suçlarla Mücadele Edilmesi Hakkında Kanun
+Kanun No 5651, Kabul 04.05.2007, RG 23.05.2007/26530, Düstur Tertip 5 Cilt 46 — YÜRÜRLÜKTE (6518, 6639, 7253, 7418 vb. sayılı Kanunlarla değiştirilmiştir; m.9 son olarak 7418 sayılı Kanunla güncellenmiştir)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5651.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tanımlar
+Kanundaki temel aktörleri tanımlar. İçerik sağlayıcı, internet ortamı üzerinden kullanıcılara her türlü bilgi/veriyi üreten, değiştiren ve sağlayan kişidir. Yer sağlayıcı, hizmet ve içerikleri barındıran sistemleri sağlayan/işletendir. Erişim sağlayıcı, kullanıcılara internet ortamına erişim olanağı sağlayandır. Toplu kullanım sağlayıcı ise kişilere belli bir yerde ve süreyle internet ortamı kullanım olanağı sağlayandır. Ayrıca Kurum, Başkan ve diğer kavramlar tanımlanır.
+
+Madde 4 — İçerik sağlayıcının sorumluluğu
+İçerik sağlayıcı, internet ortamında kullanıma sunduğu her türlü içerikten sorumludur. Bağlantı sağladığı başkasına ait içerikten kural olarak sorumlu değildir; ancak sunuş biçiminden bu içeriği benimsediği ve kullanıcının ulaşmasını sağlamayı amaçladığı açıkça belli ise genel hükümlere göre sorumludur.
+
+Madde 5 — Yer sağlayıcının yükümlülükleri
+Yer sağlayıcı, yer sağladığı içeriği kontrol etmek veya hukuka aykırı bir faaliyetin söz konusu olup olmadığını araştırmakla yükümlü değildir. Ancak hukuka aykırı içerikten haberdar edilmesi halinde, teknik olarak imkân bulunduğu ölçüde içeriği yayından kaldırmakla yükümlüdür. Ayrıca yer sağlayıcı, yer sağladığı hizmetlere ilişkin trafik bilgilerini belirlenen süre boyunca saklamak ve bilgilerin doğruluğunu, bütünlüğünü ve gizliliğini sağlamakla yükümlüdür. [DOĞRULA: trafik/işlem kaydı saklama süresi (genelde bir-iki yıl aralığı) yönetmelik ve madde değişiklikleriyle belirlenir; süre verilecekse güncel metinle teyit edilmeli.]
+
+Madde 6 — Erişim sağlayıcının yükümlülükleri
+Erişim sağlayıcı; herhangi bir kullanıcısının yayınladığı hukuka aykırı içerikten haberdar edilmesi halinde ve teknik olarak engelleme imkânı bulunduğu ölçüde erişimi engellemekle, sağladığı hizmete ilişkin trafik bilgilerini belirlenen süre saklamak ve bütünlüğü ile gizliliğini sağlamakla, faaliyetine son vereceğini önceden Kuruma ve abonelerine bildirmekle yükümlüdür. Kendisi aracılığıyla erişilen içerikleri kontrol veya hukuka aykırılık araştırmasıyla yükümlü değildir.
+
+Madde 8 — Erişimin engellenmesi kararı ve yerine getirilmesi (katalog suçlar)
+İçeriği Türk Ceza Kanunu'nda ve Atatürk Aleyhine İşlenen Suçlar Hakkında Kanun'da sayılan belirli katalog suçları (intihara yönlendirme, çocukların cinsel istismarı, uyuşturucu kullanımını kolaylaştırma, müstehcenlik, fuhuş, kumar, sağlığa zararlı madde temini vb.) oluşturduğu hususunda yeterli şüphe bulunan yayınlarla ilgili erişimin engellenmesine karar verilir. Karar, soruşturma evresinde hâkim, kovuşturma evresinde mahkeme tarafından; gecikmesinde sakınca bulunan veya re'sen Başkanlık tarafından verilebilir ve sağlayıcılarca yerine getirilir.
+
+Madde 9 — İçeriğin yayından çıkarılması ve erişimin engellenmesi (kişilik hakları)
+İnternet ortamındaki yayın içeriği nedeniyle kişilik haklarının ihlal edildiğini iddia eden gerçek/tüzel kişiler ile kurum ve kuruluşlar, içerik sağlayıcıya veya yer sağlayıcıya başvurarak uyarı yöntemiyle içeriğin yayından çıkarılmasını isteyebileceği gibi doğrudan sulh ceza hâkimine başvurarak içeriğin çıkarılmasını ve/veya erişimin engellenmesini talep edebilir. Hâkim kararını başvurudan itibaren belirlenen kısa süre içinde verir ve karar yalnızca ihlalin gerçekleştiği yayın, kısım veya bölümle (URL vb.) sınırlı olur. [DOĞRULA: hâkimin karar süresi (yirmi dört saat) ve itiraz süreleri madde değişiklikleriyle güncellenmiştir; süre verilecekse son metinle teyit edilmeli.]
+
+Madde 9 — Özel hayatın gizliliği nedeniyle içeriğe erişimin engellenmesi (m.9/A)
+Özel hayatının gizliliğinin ihlal edildiğini iddia eden kişiler, doğrudan Birliğe (Erişim Sağlayıcıları Birliği) başvurarak içeriğe erişimin engellenmesini isteyebilir; talepte ihlale neden olan yayın adresi (URL) belirtilir. Başkan, talebi en geç yirmi dört saat içinde erişim sağlayıcılara bildirerek engellemenin uygulanmasını sağlar. Gecikmesinde sakınca bulunan hallerde Başkan re'sen erişimin engellenmesine karar verebilir; bu karar yirmi dört saat içinde sulh ceza hâkiminin onayına sunulur ve hâkim kararını kırk sekiz saat içinde açıklar.

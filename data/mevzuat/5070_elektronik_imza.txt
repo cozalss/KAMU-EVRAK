@@ -1,0 +1,26 @@
+Elektronik İmza Kanunu
+Kanun No 5070, Kabul 15.01.2004, RG 23.01.2004/25355, Düstur Tertip 5 Cilt 43 — YÜRÜRLÜKTE (m.5 6728 ve 7349 sayılı Kanunlarla; m.10 6661 ve 7263 sayılı Kanunlarla değiştirilmiştir)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5070.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanundaki temel kavramları tanımlar. Elektronik imza, başka bir elektronik veriye eklenen veya onunla mantıksal bağlantısı bulunan ve kimlik doğrulama amacıyla kullanılan elektronik veridir. İmza sahibi, imza oluşturma aracını kullanan gerçek kişidir. Ayrıca imza oluşturma/doğrulama verisi ve araçları, zaman damgası ve elektronik sertifika (imza sahibinin imza doğrulama verisi ile kimlik bilgilerini birbirine bağlayan elektronik kayıt) tanımlanır.
+
+Madde 4 — Güvenli elektronik imza
+Güvenli elektronik imzanın taşıması gereken nitelikleri sayar. Bu imza; münhasıran imza sahibine bağlı olan, yalnızca imza sahibinin tasarrufundaki güvenli imza oluşturma aracıyla oluşturulan, nitelikli elektronik sertifikaya dayanarak imza sahibinin kimliğinin tespitini sağlayan ve imzalanmış veride sonradan değişiklik yapılıp yapılmadığının tespitini sağlayan elektronik imzadır.
+
+Madde 5 — Güvenli elektronik imzanın hukuki sonucu ve uygulama alanı
+Güvenli elektronik imza, elle atılan (ıslak) imza ile aynı hukuki sonucu doğurur. Ancak kanunların resmi şekle veya özel bir merasime tabi tuttuğu hukuki işlemler ile banka teminat mektupları ve Türkiye'de yerleşik sigorta şirketlerince düzenlenen kefalet senetleri dışındaki teminat sözleşmeleri güvenli elektronik imza ile gerçekleştirilemez.
+
+Madde 6 — Güvenli elektronik imza oluşturma araçları
+Güvenli elektronik imza oluşturma araçlarının sağlaması gereken güvenlik özelliklerini düzenler. Bu araçlar; ürettiği imza oluşturma verilerinin eşsiz olmasını, kayıtlı imza oluşturma verilerinin araç dışına çıkarılamamasını ve gizliliğini, üçüncü kişilerce elde edilememesini ve sahteciliğe karşı korunmasını, imzalanacak verinin imza sahibi dışında değiştirilememesini ve imza oluşturulmadan önce sahibince görülebilmesini sağlamalıdır.
+
+Madde 8 — Elektronik sertifika hizmet sağlayıcısı
+Elektronik sertifika, zaman damgası ve elektronik imza hizmetlerini sağlayan kamu kurum/kuruluşları ile gerçek veya özel hukuk tüzel kişileri elektronik sertifika hizmet sağlayıcısıdır. Sağlayıcı, Kuruma yapacağı bildirimden iki ay sonra faaliyete geçer ve güvenli ürün/sistem kullanma, hizmeti güvenilir yürütme ve sertifikaların taklit/tahrifini önleme şartlarını sağladığını ayrıntılı gösterir. Şartlardan birinin eksikliğinde Kurum süre verir, gidermezse faaliyete son verir.
+
+Madde 9 — Nitelikli elektronik sertifika
+Nitelikli elektronik sertifikada bulunması zorunlu unsurları sayar: sertifikanın 'nitelikli elektronik sertifika' olduğu ibaresi, hizmet sağlayıcısının kimlik bilgileri ve kurulduğu ülke, imza sahibinin kimlik bilgileri, imza doğrulama verisi, geçerlilik süresinin başlangıç-bitiş tarihleri, seri numarası, başkası adına hareket yetkisine ilişkin bilgi, varsa kullanım şartları ve maddi sınırlamalar ile hizmet sağlayıcısının sertifikadaki bilgileri doğrulayan güvenli elektronik imzası.

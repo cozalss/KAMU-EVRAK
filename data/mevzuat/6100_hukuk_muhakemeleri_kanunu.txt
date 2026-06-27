@@ -1,0 +1,26 @@
+Hukuk Muhakemeleri Kanunu
+Kanun No 6100, Kabul 12.01.2011, RG 04.02.2011/27836 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6100.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 119 — Dava dilekçesinin içeriği
+Dava dilekçesinde mahkemenin adı, tarafların kimlik ve adresleri, davacının T.C. kimlik numarası, varsa vekil bilgileri, davanın konusu ve dava değeri, iddianın dayanağı vakıaların sıra numaralı özeti, her vakıanın ispat delili, dayanılan hukuki sebepler, açık talep sonucu ve imza bulunur. Mahkeme adı, T.C. kimlik no, vekil, dava değeri ve imza dışındaki eksiklikler için hâkim bir haftalık kesin süre verir; tamamlanmazsa dava açılmamış sayılır. [DOĞRULA: eksiklik tamamlama süresi 1 hafta]
+
+Madde 122 — Dava dilekçesinin tebliği
+Dava dilekçesi mahkemece davalıya tebliğ edilir. Tebliğ zarfında davalının iki hafta içinde davaya cevap verebileceği ve cevap dilekçesini bu mahkemeye vermesi gerektiği belirtilir. Bu tebliğ, cevap süresini ve dilekçeler teatisi aşamasını başlatan usuli işlemdir.
+
+Madde 126 — Cevap dilekçesinin verilmesi
+Davalı cevap dilekçesini davanın açıldığı mahkemeye verir ve dilekçeye davacı sayısı kadar örnek ekler. Cevap dilekçesinin bir örneği mahkemece davacıya tebliğ edilir. Cevap dilekçesi içerik olarak dava dilekçesindeki unsurlara paralel düzenlenir ve davalının savunma çerçevesini belirler.
+
+Madde 127 — Cevap dilekçesini verme süresi
+Cevap dilekçesini verme süresi, dava dilekçesinin davalıya tebliğinden itibaren iki haftadır. Cevabın bu sürede hazırlanması çok zor veya imkânsızsa davalı, süre içinde mahkemeye başvurursa hâkim bir defaya mahsus ve bir ayı geçmemek üzere ek süre verebilir. [DOĞRULA: cevap süresi 2 hafta]
+
+Madde 136 — Tarafların ikinci dilekçeleri (dilekçeler teatisi)
+Davacı, cevap dilekçesinin tebliğinden itibaren iki hafta içinde cevaba cevap dilekçesi; davalı da bunun tebliğinden itibaren iki hafta içinde ikinci cevap dilekçesi verebilir. Bu karşılıklı dilekçelerin verilmesi veya sürelerin geçmesiyle dilekçeler teatisi aşaması tamamlanır ve mahkeme ön incelemeye geçer. [DOĞRULA: süreler 2 hafta]
+
+Madde 318 — Basit yargılama usulünde dilekçeler
+Basit yargılama usulünde dava açılması ve cevap dilekçeleri yazılı yargılama hükümlerine göre yapılır; ancak bu usulde cevaba cevap ve ikinci cevap dilekçeleri verilemez. İş, tüketici, kira ve birçok hızlı görülmesi gereken uyuşmazlık bu usulde görülür. [DOĞRULA: basit yargılamada cevap süresi 2 hafta]

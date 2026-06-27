@@ -1,0 +1,23 @@
+Sosyal Sigortalar ve Genel Sağlık Sigortası Kanunu
+Kanun No 5510, Kabul 31.05.2006, RG 16.06.2006/26200 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5510 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5510.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Sigortalı sayılanlar
+Kanunun kısa ve uzun vadeli sigorta kolları bakımından üç ana grup sigortalı sayılır: (a) hizmet akdi ile bir veya birden fazla işveren tarafından çalıştırılanlar (4/a — eski SSK'lılar); (b) köy/mahalle muhtarları ile hizmet akdine bağlı olmaksızın kendi adına ve hesabına bağımsız çalışanlar (4/b — eski Bağ-Kur'lular); (c) kamu idarelerinde kadro/pozisyonda çalışan memurlar ve benzeri kamu görevlileri (4/c — eski Emekli Sandığı). Madde, sanatçı, yabancı uyruklu işçi, TYP katılımcısı gibi grupları da kapsama dahil eder.
+
+Madde 8 — Sigortalı bildirimi ve tescili (işe giriş bildirgesi)
+İşverenler, 4/a kapsamındaki sigortalıları sigortalılık başlangıç tarihinden ÖNCE 'sigortalı işe giriş bildirgesi' ile Kuruma bildirmekle yükümlüdür; inşaat-balıkçılık-tarım işyerleri ve ilk defa işyeri açılışı gibi hallerde bildirim için istisnai süreler tanınır. 4/c (kamu) sigortalıları için işveren, sigortalılık başlangıcından itibaren 15 gün içinde bildirir. 4/b kapsamında vergi dairesi, sicil müdürlükleri ve meslek kuruluşları, b-1/2/3 alt bentleri için en geç 15 gün, b-4 (tarım) için en geç 1 ay içinde bildirgeyi düzenleyip Kuruma verir.
+
+Madde 80 — Prime esas kazançlar
+4/a kapsamındaki sigortalıların prime esas kazancı; hak edilen ücretlerin, o ay içinde ödenen prim-ikramiye ve benzeri istihkakların ve idari/yargı kararıyla yapılan ödemelerin brüt toplamı esas alınarak belirlenir. Ayni yardımlar, ölüm-doğum-evlenme yardımları, görev yollukları, kıdem ve ihbar tazminatı, çocuk ve aile zamları ile sınırları aşmayan yemek bedeli gibi belirli ödemeler prime esas kazanca dahil edilmez. [DOĞRULA: prime esas kazanca dahil olmayan istisna kalemlerinin güncel tutar/oran sınırları (yemek bedeli, %30 BES sınırı) son değişikliklerle teyit edilmelidir.]
+
+Madde 81 — Prim oranları ve Devlet katkısı
+Malullük, yaşlılık ve ölüm sigortaları prim oranı prime esas kazancın %21'idir; bunun %9'u sigortalı hissesi, %12'si işveren hissesidir. Kısa vadeli sigorta kolları prim oranı %2,25 olup tamamını işveren öder (Cumhurbaşkanı %1,5–%2,5 arasında değiştirebilir). Genel sağlık sigortası ve fiili hizmet süresi zammı için ayrı prim oranları öngörülmüş olup, belirli hallerde Devlet katkısı uygulanır. [DOĞRULA: GSS prim oranı ve Devlet katkısı oranları madde metninin ilgili bentlerinden teyit edilmelidir.]
+
+Madde 102 — Kurumca verilecek idarî para cezaları
+İşe giriş bildirgesi, aylık prim ve hizmet belgesi, işyeri bildirgesi gibi bildirim ve belge yükümlülüklerinin süresinde veya usulüne uygun yerine getirilmemesi halinde Kurum, aylık asgari ücret esas alınarak idarî para cezası uygular. Cezalar fiilin türüne göre asgari ücretin katları olarak belirlenir; tebliğden itibaren belirli süre içinde ödeme veya itiraz/uzlaşma hallerinde indirim öngörülür. [DOĞRULA: idarî para cezalarının asgari ücrete göre kat oranları ve ödeme/itiraz indirim oranları madde metninden teyit edilmelidir.]

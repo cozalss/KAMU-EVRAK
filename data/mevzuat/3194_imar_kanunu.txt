@@ -1,0 +1,26 @@
+İmar Kanunu
+Kanun No 3194, Kabul 03.05.1985, RG 09.05.1985/18749 (Düstur Tertip 5, Cilt 24) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3194.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 8 — Planların hazırlanması ve yürürlüğe konulması
+İmar planlarının (bölge planı, çevre düzeni planı, nazım imar planı, uygulama imar planı) hazırlanması ve yürürlüğe konulmasında uyulacak esasları düzenler. Planlar belediye meclisince onaylanır; onaydan sonra bir ay süreyle ilan edilir (askıya çıkarılır) ve bu sürede yapılan itirazlar değerlendirilir. Belediye/ruhsat yazışmalarında plana uygunluk denetiminin dayanağıdır.
+
+Madde 18 — Arsa ve arazi düzenlemesi (parselasyon)
+İmar hududu içindeki arsa ve arazileri maliklerin muvafakati aranmaksızın imar planına uygun ada ve parsellere ayırma (parselasyon) yetkisini düzenler. Düzenleme ortaklık payı (DOP) alınması, kamu alanlarına terk gibi işlemler bu madde kapsamındadır. Belediye encümeni kararıyla yürütülür ve ilgililere tebliğ edilir.
+
+Madde 21 — Yapı ruhsatiyesi
+Kanun kapsamına giren bütün yapılar için, 26. maddedeki istisna dışında, belediye veya valiliklerden yapı ruhsatı (ruhsatiye) alınması zorunludur. Ruhsat alınmış yapılarda yapılacak her değişiklik de yeniden ruhsata bağlıdır. Ruhsat başvurusu/talep dilekçeleri ve ruhsat üst yazılarının temel dayanağıdır.
+
+Madde 26 — Kamuya ait yapı ve tesislerde ruhsat (istisna)
+Kamu kurum ve kuruluşlarınca yapılacak/yaptırılacak yapılara, imar planında o maksada tahsis edilmiş olmak ve plan ile mevzuata aykırı olmamak kaydıyla, fenni mesuliyetin kurumca üstlenilmesi ve mülkiyetin belgelenmesi şartıyla avan projeye göre ruhsat verilir. 21. maddedeki tam ruhsat zorunluluğunun kamu yapılarına ilişkin istisna rejimini düzenler.
+
+Madde 32 — Ruhsatsız veya ruhsata aykırı yapılar (mühürleme ve yıkım)
+Ruhsat alınmadan veya ruhsat ve eklerine aykırı yapılan yapılarda; idarece tespit, fenni mesulün ihbarı veya başka şekilde durumun öğrenilmesi üzerine yapı derhal durdurulur (mühürlenir) ve yapı tatil tutanağı düzenlenir. Sahibine, tespitten itibaren bir ay içinde [DOĞRULA: bir aylık süre] ruhsat alması veya yapıyı ruhsata uygun hale getirmesi için süre verilir; aksi halde belediye encümeni/il idare kurulu kararıyla yapı yıktırılır. Yapı tatil tutanağı ve yıkım yazışmalarının dayanağıdır.
+
+Madde 42 — İdari müeyyideler (imar para cezaları)
+İmar mevzuatına aykırılık teşkil eden fiil ve hallerin tespitinden itibaren on iş günü içinde [DOĞRULA: on iş günlük süre] ilgili idare encümenince sorumlular hakkında idari para cezası uygulanmasını düzenler. Ruhsatsız/ruhsata aykırı yapılar ile fenni mesul ve müteahhit sorumluluklarına ilişkin ceza miktarlarını ve hesaplama esaslarını içerir (9/12/2009-5940 ve sonraki değişikliklerle güncellenmiştir).

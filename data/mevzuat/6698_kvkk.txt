@@ -1,0 +1,32 @@
+Kişisel Verilerin Korunması Kanunu (KVKK)
+Kanun No 6698, Kabul 24.03.2016, RG 07.04.2016/29677, Düstur Tertip 5 — YÜRÜRLÜKTE (sonraki yıllarda 7499 sayılı Kanunla m.6, m.9 vb. değişiklikler yapılmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6698.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanımlar
+Kanunun temel kavramlarını tanımlar. Kişisel veri, kimliği belirli veya belirlenebilir gerçek kişiye ilişkin her türlü bilgidir. Açık rıza, belirli bir konuya ilişkin bilgilendirmeye dayanan ve özgür iradeyle açıklanan onaydır. Veri sorumlusu kişisel verilerin işlenme amaç ve vasıtalarını belirleyen, veri işleyen ise veri sorumlusu adına işleyen kişidir. Ayrıca anonim hale getirme, ilgili kişi, Kurul ve Kurum tanımlanır.
+
+Madde 5 — Kişisel verilerin işlenme şartları
+Kişisel veriler ilke olarak ilgili kişinin açık rızası olmaksızın işlenemez. Açık rıza aranmaksızın işlemenin mümkün olduğu istisnalar sayılır: kanunlarda açıkça öngörülmesi, fiili imkânsızlık halinde hayatın/beden bütünlüğünün korunması, sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması, veri sorumlusunun hukuki yükümlülüğü, ilgili kişinin verisini alenileştirmesi, bir hakkın tesisi/kullanılması/korunması ve temel hak ve özgürlüklere zarar vermemek kaydıyla veri sorumlusunun meşru menfaati.
+
+Madde 6 — Özel nitelikli kişisel verilerin işlenme şartları
+Irk, etnik köken, siyasi düşünce, felsefi inanç, din-mezhep, kılık-kıyafet, dernek-vakıf-sendika üyeliği, sağlık, cinsel hayat, ceza mahkûmiyeti ile biyometrik ve genetik veriler özel nitelikli (hassas) veri sayılır ve işlenmesi kural olarak yasaktır. İstisna halleri (açık rıza, kanunda öngörülme, alenileştirme, bir hakkın korunması, sağlık ve kamu sağlığı amaçları vb.) madde içinde belirtilmiştir. [DOĞRULA: bu madde 7499 sayılı Kanun (2024) ile yeniden düzenlenmiştir; güncel fıkra yapısı ve işleme şartları korpusa alınırken son metinle teyit edilmeli.]
+
+Madde 10 — Veri sorumlusunun aydınlatma yükümlülüğü
+Kişisel verilerin elde edilmesi sırasında veri sorumlusu veya yetkilendirdiği kişi ilgili kişiyi bilgilendirmek zorundadır. Bilgilendirme; veri sorumlusunun ve varsa temsilcisinin kimliğini, verilerin hangi amaçla işleneceğini, kimlere ve hangi amaçla aktarılabileceğini, toplama yöntemi ile hukuki sebebini ve 11. maddede sayılan diğer hakları kapsar. Bu yükümlülük resmi yazışmalarda aydınlatma metni hazırlanmasının dayanağıdır.
+
+Madde 11 — İlgili kişinin hakları
+Herkes veri sorumlusuna başvurarak; verisinin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, aktarıldığı üçüncü kişileri bilme, eksik/yanlış işlenmişse düzeltilmesini, şartların oluşması halinde silinmesini veya yok edilmesini isteme, yapılan işlemlerin aktarılan üçüncü kişilere bildirilmesini isteme, münhasıran otomatik analiz sonucu aleyhine çıkan sonuca itiraz etme ve kanuna aykırı işleme nedeniyle zararın giderilmesini talep etme haklarına sahiptir.
+
+Madde 12 — Veri güvenliğine ilişkin yükümlülükler
+Veri sorumlusu, kişisel verilerin hukuka aykırı işlenmesini ve erişilmesini önlemek ile muhafazasını sağlamak amacıyla uygun güvenlik düzeyini temin edecek gerekli teknik ve idari tedbirleri almak zorundadır. Verinin başka bir gerçek/tüzel kişi tarafından işlenmesi halinde tedbirler için müştereken sorumludur ve gerekli denetimleri yaptırır. İşlenen verilerin kanuna aykırı yollarla başkalarınca ele geçirilmesi (veri ihlali) halinde durum en kısa sürede ilgilisine ve Kurula bildirilir. [DOĞRULA: ihlal bildirim süresi mevzuatta sayı olarak yazılmaz; Kurul kararıyla 72 saat olarak belirlenmiştir — korpusta süre verilecekse Kurul kararı kaynak gösterilmeli.]
+
+Madde 13 — Veri sorumlusuna başvuru
+İlgili kişi, Kanunun uygulanmasıyla ilgili taleplerini yazılı olarak veya Kurulun belirleyeceği diğer yöntemlerle veri sorumlusuna iletir. Veri sorumlusu talebi niteliğine göre en kısa sürede ve en geç otuz gün içinde ücretsiz sonuçlandırır; işlem ayrıca maliyet gerektiriyorsa Kurulca belirlenen tarifedeki ücret alınabilir. Talep kabul edilir veya gerekçe açıklanarak reddedilir ve cevap yazılı veya elektronik ortamda bildirilir.
+
+Madde 16 — Veri Sorumluları Sicili (VERBİS)
+Kurulun gözetiminde, Başkanlık tarafından kamuya açık olarak Veri Sorumluları Sicili (VERBİS) tutulur. Kişisel veri işleyen gerçek ve tüzel kişiler, veri işlemeye başlamadan önce Sicile kaydolmak zorundadır; ancak Kurul objektif kriterlere göre kayıt zorunluluğuna istisna getirebilir. Kayıt başvurusu; veri sorumlusunun kimlik/adres bilgileri, işleme amaçları, veri kategorileri, alıcı grupları, yurt dışına aktarılacak veriler ve alınan güvenlik tedbirlerini içeren bir bildirimle yapılır.

@@ -1,0 +1,38 @@
+İş Kanunu
+Kanun No 4857, Kabul 22.05.2003, RG 10.06.2003/25134 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.4857 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.4857.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 8 — Tanım ve şekil (iş sözleşmesi)
+İş sözleşmesi, bir tarafın (işçi) bağımlı olarak iş görmeyi, diğer tarafın (işveren) ücret ödemeyi üstlenmesinden oluşan sözleşmedir; kanunda aksi belirtilmedikçe özel bir şekle tabi değildir. Süresi bir yıl ve daha fazla olan iş sözleşmelerinin yazılı yapılması gerekir. Yazılı sözleşme yapılmayan hallerde işveren, işçiye en geç iki ay içinde çalışma koşullarını gösteren yazılı belge vermekle yükümlüdür.
+
+Madde 11 — Belirli ve belirsiz süreli iş sözleşmesi
+İş ilişkisinin bir süreye bağlanmadığı hallerde sözleşme belirsiz süreli sayılır; belirli süreli iş ise objektif koşullara (belirli işin tamamlanması, belirli olgunun ortaya çıkması) bağlı olarak yazılı yapılan sözleşmedir. Belirli süreli sözleşme, esaslı bir neden olmadıkça birden fazla üst üste (zincirleme) yapılamaz; aksi halde baştan itibaren belirsiz süreli kabul edilir. Esaslı nedene dayalı zincirleme sözleşmeler belirli süreli olma özelliğini korur.
+
+Madde 15 — Deneme süreli iş sözleşmesi
+Sözleşmeye konulacak deneme süresi en çok iki ay olabilir; bu süre toplu iş sözleşmeleriyle dört aya kadar uzatılabilir. Deneme süresi içinde taraflar sözleşmeyi bildirim süresine gerek olmaksızın ve tazminatsız feshedebilir. İşçinin çalıştığı günlere ait ücret ve diğer hakları saklı kalır.
+
+Madde 17 — Süreli fesih (ihbar/bildirim süreleri)
+Belirsiz süreli iş sözleşmelerinin feshinden önce karşı tarafa bildirim yapılır; bildirim süreleri kıdeme göre kademelidir: işi altı aydan az sürene 2 hafta, altı ay–birbuçuk yıl arasına 4 hafta, birbuçuk–üç yıl arasına 6 hafta, üç yıldan fazla sürene 8 hafta. Bu süreler asgari olup sözleşmelerle artırılabilir. Bildirim şartına uymayan taraf, bildirim süresine ait ücret tutarında ihbar tazminatı öder; işveren bu ücreti peşin vererek sözleşmeyi feshedebilir.
+
+Madde 18 — Feshin geçerli sebebe dayandırılması (iş güvencesi)
+Otuz veya daha fazla işçi çalıştıran işyerlerinde en az altı aylık kıdemi olan işçinin belirsiz süreli sözleşmesini fesheden işveren; işçinin yeterliliğinden, davranışlarından ya da işletmenin/işyerinin/işin gereklerinden kaynaklanan geçerli bir sebebe dayanmak zorundadır. Sendika üyeliği, sendikal faaliyet, hak arama amacıyla makamlara başvuru, ırk-cinsiyet-din-siyasi görüş gibi ayrımcı nedenler, hamilelik-doğum ve geçici hastalık devamsızlığı geçerli fesih sebebi sayılmaz. (Yer altı işlerinde kıdem şartı aranmaz.)
+
+Madde 24 — İşçinin haklı nedenle derhal fesih hakkı
+İşçi; sağlık sebepleri, işverenin ahlak ve iyiniyet kurallarına uymayan halleri (yanıltma, hakaret/cinsel taciz, ücretin kanuna/sözleşmeye uygun ödenmemesi, çalışma şartlarının uygulanmaması) ve bir haftadan fazla işin durmasına yol açan zorlayıcı sebepler hallerinde, sözleşmeyi sürenin bitiminden önce veya bildirim süresini beklemeksizin derhal feshedebilir. Bu haller işçinin kıdem tazminatına hak kazanmasını sağlayabilir.
+
+Madde 25 — İşverenin haklı nedenle derhal fesih hakkı (II - ahlak ve iyiniyet kurallarına aykırılık)
+İşveren; sağlık sebepleri, ahlak ve iyiniyet kurallarına uymayan haller, zorlayıcı sebepler ve işçinin gözaltı/tutukluluk nedeniyle devamsızlığının bildirim süresini aşması hallerinde sözleşmeyi derhal (bildirimsiz) feshedebilir. II numaralı bentteki haller arasında işvereni yanıltma, hakaret/cinsel taciz, güveni kötüye kullanma-hırsızlık gibi doğruluk ve bağlılığa aykırı davranış, izinsiz/haklı sebepsiz devamsızlık (ardı ardına iki işgünü ya da ayda üç işgünü) ve görevi yapmamakta ısrar sayılır. (m.26 uyarınca bu fesih hakkı, durumun öğrenildiği günden başlayarak 6 iş günü ve her halde fiilden itibaren 1 yıl içinde kullanılır.)
+
+Geçici Madde 6 — Kıdem tazminatı (1475 sayılı Kanun m.14 hükümlerinin saklılığı)
+Kıdem tazminatı için bir Kıdem Tazminatı Fonu kurulması öngörülmüş olup, Fona ilişkin kanun yürürlüğe girinceye kadar işçilerin kıdemleri için mülga 1475 sayılı İş Kanunu'nun 14'üncü maddesi hükümlerine göre kıdem tazminatı hakları saklıdır. Buna göre en az bir yıllık kıdemi olan işçiye, her tam hizmet yılı için 30 günlük ücreti tutarında kıdem tazminatı ödenir. [DOĞRULA: kıdem tazminatına hak kazandıran fesih halleri ve günlük tutar 1475 sK m.14 metninden teyit edilmelidir.]
+
+Madde 53 — Yıllık ücretli izin hakkı ve izin süreleri
+İşe başladığı günden itibaren deneme süresi dahil en az bir yıl çalışan işçilere yıllık ücretli izin verilir ve bu haktan vazgeçilemez. İzin süresi hizmet süresine göre belirlenir: bir–beş yıl (dahil) arası 14 günden, beş–onbeş yıl arası 20 günden, onbeş yıl (dahil) ve fazlası 26 günden az olamaz. Onsekiz yaş ve altı ile elli yaş ve üzeri işçilere verilecek izin 20 günden az olamaz; süreler sözleşmelerle artırılabilir.
+
+Madde 63 — Çalışma süresi
+Genel bakımdan haftalık çalışma süresi en çok kırkbeş saattir ve aksi kararlaştırılmamışsa çalışılan günlere eşit bölünür. Tarafların anlaşmasıyla bu süre, günde onbir saati aşmamak koşuluyla haftanın günlerine farklı dağıtılabilir (denkleştirme); bu halde iki aylık (TİS ile dört aya kadar) ortalama haftalık süre normal haftalık süreyi aşamaz. Yer altı maden işlerinde çalışma süresi günde en çok 7,5, haftada en çok 37,5 saattir.

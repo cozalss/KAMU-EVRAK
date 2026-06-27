@@ -1,0 +1,29 @@
+Kamulaştırma Kanunu
+Kanun No 2942, Kabul 04.11.1983, RG 08.11.1983/18215 (Düstur Tertip 5, Cilt 22) — YÜRÜRLÜKTE (4650 sayılı Kanunla esaslı değişiklik, 2001)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2942.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Kamu yararı kararı verecek merciler
+Kamulaştırma için ön şart olan kamu yararı kararını hangi mercilerin vereceğini sayar: kamu idareleri ve kamu tüzelkişileri için ilgili bakanlık, köy yararına kamulaştırmalarda köy ihtiyar kurulu, belediye yararına kamulaştırmalarda belediye encümeni gibi. Kamulaştırma dosyasının ilk işlemi olan kamu yararı kararının yetki dayanağıdır.
+
+Madde 6 — Kamu yararı kararının onay mercii
+Kamu yararı kararlarını onaylayacak mercileri düzenler: köy ihtiyar kurulu ve belediye encümeni kararlarını ilçelerde kaymakam, il merkezlerinde vali; il daimi encümeni ve il idare kurulu kararlarını vali onaylar. Belediye encümeni kamulaştırma kararının yürürlük kazanması için onay yazışmasının dayanağıdır.
+
+Madde 7 — Kamulaştırmada önce yapılacak işlemler ve idari şerh
+İdarenin, kamulaştırılacak taşınmazın sınırını, yüzölçümünü ve cinsini gösterir ölçekli planını yapması/yaptırması; malik ve zilyetleri tespit etmesi ve tapu siciline kamulaştırma şerhi (idari şerh) konulmasını istemesi gereken hazırlık işlemlerini düzenler. Tapuya şerh ve hazırlık yazışmalarının dayanağıdır.
+
+Madde 8 — Satın alma usulü
+İdarelerin tapuda kayıtlı taşınmazların kamulaştırılmasında öncelikle satın alma usulünü uygulamasının esas olduğunu düzenler (4650 sayılı Kanunla değişik). Kamulaştırma kararından sonra idare, kendi kıymet takdir ve uzlaşma komisyonları aracılığıyla tespit ettireceği bedel üzerinden malikle anlaşmaya (uzlaşmaya) çalışır. Uzlaşma davet yazısı ve tutanaklarının dayanağıdır.
+
+Madde 10 — Kamulaştırma bedelinin mahkemece tespiti ve tescil
+Satın alma usulü ile anlaşma sağlanamazsa idarenin, taşınmazın bulunduğu yer asliye hukuk mahkemesine başvurarak kamulaştırma bedelinin tespitini ve taşınmazın idare adına tescilini istemesini düzenler (4650 sayılı Kanunla değişik). Mahkeme tarafların davet edilmesi, keşif ve bilirkişi incelemesiyle bedeli belirler. Kamulaştırma bedel tespit ve tescil davası evraklarının dayanağıdır.
+
+Madde 25 — Hakların sınırlandırılması ve mülkiyetin idareye geçmesi
+Hakların kullanılması ve borçların yerine getirilmesi bakımından kamulaştırma işleminin, mal sahibi için 10. madde uyarınca mahkemece yapılan tebligatla başladığını; mülkiyetin idareye geçmesinin ise mahkemece verilen tescil kararı ile gerçekleştiğini düzenler. Kamulaştırma sürecinde mülkiyet devri ve tebligat tarihlerinin dayanağıdır.
+
+Madde 27 — Acele kamulaştırma
+Milli müdafaa mükellefiyeti, yurt savunması ihtiyacı/aceleliği veya özel kanunlarla öngörülen olağanüstü durumlarda, Cumhurbaşkanınca acele kamulaştırma kararı alınabileceğini düzenler. Bu hallerde kıymet takdiri dışındaki işlemler sonradan tamamlanmak üzere taşınmaza el konulabilir; acele el koyma yazışmalarının dayanağıdır.

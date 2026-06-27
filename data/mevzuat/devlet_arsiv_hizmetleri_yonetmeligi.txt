@@ -1,0 +1,38 @@
+Devlet Arşiv Hizmetleri Hakkında Yönetmelik
+Yönetmelik, RG 18.10.2019/30922 — YÜRÜRLÜKTE (16.05.1988/19816 sayılı eski yönetmeliği ilga eder)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=33899&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Tanımlar (arşiv belgesi, arşivlik belge, saklama planı)
+Arşiv belgesi, son işlem tarihinden yirmi yıl geçmiş veya onbeş yıl geçtikten sonra kesin sonuca bağlanmış, günlük iş akışında işlevi kalmayan ve saklama planındaki süreyi tamamlayan belgedir [DOĞRULA: '20 yıl' — 3473 sayılı Kanunun eski tanımında '30 yıl' geçer, çelişki bilinçli not edilmiştir]. Arşivlik belge süre yönünden henüz arşiv belgesi vasfı kazanmamış veya güncelliğini koruyan işlevli belgedir. Ayrıca birim/kurum/merkezi arşiv ve saklama planı tanımlanır.
+
+Madde 13 — Devredilecek Belgelerin Hazırlanması (Uygunluk Kontrolü)
+Her yılın ocak ayı içinde önceki yıla ait dosya ve klasörler uygunluk kontrolünden geçirilir. Dosyalama kurallarına uygunluk, eklerin birleştirilmesi, tarihsel sıralama, dosya etiketi ve içerik listesinin hazırlanması kontrol edilip eksikler tamamlanır. Kontrol, ilgili birim personeli ve birim belge yöneticisi tarafından müştereken yapılır.
+
+Madde 14 — Belgelerin Arşivlere Devri
+İşlemi tamamlanmış ve uygunluk kontrolü yapılarak eksiklikleri giderilmiş dosya ve klasörler, müteakip takvim yılının ilk üç ayı içerisinde arşivlere devredilir. Belge eki olmayan kitap, broşür, boş form ve benzeri materyal arşivlere devredilmez; devir işlemlerinde dosya/klasör içerik listeleri referans alınır.
+
+Madde 16 — Başkanlığa Devir ve Teslim (Devir-Teslim ve Envanter Formu)
+Kurum ve merkezi arşivlerde ayıklama sonrası arşiv belgesi sayılanlar Devlet Arşivleri Başkanlığına devredilmek üzere ayrılır ve 'Arşiv Belgesi Devir-Teslim ve Envanter Formu'na (EK-4) kaydedilir. Devri kesinleşen belgeler, varsa dijital görüntüleriyle birlikte en geç bir yıl içinde özel kutulara konularak güvenlik önlemleriyle Başkanlığa teslim edilir.
+
+Madde 18 — Ayıklama İşlemine Tâbi Tutulmayacak Belgeler
+Cari işlemlerde fiilen rolü bulunan, mevzuat ve saklama planına göre saklama süresini tamamlamayan veya herhangi bir davaya konu olan belgeler; öngörülen saklama süresi tamamlanıncaya ve/veya dava sonuçlanıncaya kadar ayıklama ve imha işlemine tâbi tutulamaz.
+
+Madde 19 — Ayıklama ve İmha Komisyonlarının Oluşturulması
+Kurum ve merkezi arşivlerde komisyon beş kişiden oluşur: arşiv hizmetinden sorumlu birim amiri veya belge yöneticisi (başkan), arşivden görevlendirilen iki personel ve belgeleri ayıklanacak ilgili birimce görevlendirilen bilgi-tecrübe sahibi iki temsilci. Taşra, bölge ve yurt dışı teşkilatlarında yeterli personel bulunmazsa komisyon en az üç kişiden oluşur.
+
+Madde 20 — Komisyonların Çalışma Esasları
+Ayıklama ve İmha Komisyonları her yılın mart ayı başında çalışmaya başlar. Komisyonlar üye tam sayısı ile toplanır ve kararlarını oy çokluğu ile alır; tereddüt halinde belgelerin saklanmasına karar verilmiş sayılır. İmhası reddedilen belgeler sonraki yıllarda ilgili komisyonlarca yeniden değerlendirilir.
+
+Madde 21 — İmha Listelerinin Düzenlenmesi ve Kesinlik Kazanması
+İmha edilecek belgeler için 'İmha Listesi' (EK-5) hazırlanır ve her sayfası komisyon başkan ve üyelerince imzalanır. Merkez teşkilatında listeler Başkanlığın uygun görüşü alındıktan sonra kurumun en üst amirinin onayıyla; taşra, bölge ve yurt dışında kurum arşivinin uygun görüşü ardından en üst amirin onayıyla kesinlik kazanır. İmha listeleri, tutanakları ve ilgili belgeler on yıl süreyle muhafaza edilir.
+
+Madde 22 — İmha Şekilleri
+İmha edilecek belgeler başkaları tarafından görülüp okunması mümkün olmayacak şekilde parçalanır ve geri dönüşümde kullanılmak üzere değerlendirilir. İmha şekli kendi mevzuatında belirlenmiş belgelerde ilgili hükümler uygulanır; e-Arşivdeki belgeler okunması ve kullanılması mümkün olmayacak şekilde sistemden çıkarılarak tasfiye edilir.
+
+Madde 24 — Dosya Planları ve Saklama Planları
+Yükümlüler dosya ve saklama planlarını sorumlu birim koordinesinde hazırlar ve Başkanlığın uygun görüşünü müteakip uygulamaya koyar. Dosyalamada Standart Dosya Planı'nın uygulanması zorunludur; saklama planı belgelerin idari, mali, hukuki ve tarihsel değerlendirilmesi neticesinde hazırlanır.

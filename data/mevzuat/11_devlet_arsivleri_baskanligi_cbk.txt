@@ -1,0 +1,32 @@
+Devlet Arşivleri Başkanlığı Hakkında Cumhurbaşkanlığı Kararnamesi
+Cumhurbaşkanlığı Kararnamesi No 11, RG 16.07.2018/30480 — YÜRÜRLÜKTE. NOT: İstekteki '1 No.lu CBK' yerine teşkilat ayrı/numaralı 11 sayılı CBK ile düzenlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.11.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Kapsam
+TBMM ve MİT Başkanlığı hariç olmak üzere 5018 sayılı Kanuna ekli cetvellerdeki kamu idarelerini, Genelkurmay Başkanlığı ve Kuvvet Komutanlıklarını, mahallî idareler (köyler hariç) ve bağlı kuruluşlarını, kamu tüzel kişiliğini haiz tüm kurum/kuruluşları, kamu kurumu niteliğindeki meslek kuruluşlarını, vergi muafiyeti tanınan vakıfları ve kamu yararına dernekleri kapsar.
+
+Madde 3 — Kuruluş
+Arşiv hizmet ve faaliyetlerini düzenlemek ve kamuda belge yönetimini sağlamak üzere Cumhurbaşkanlığına bağlı, genel bütçeye tabi Devlet Arşivleri Başkanlığı kurulmuştur. Mevzuatta mülga Başbakanlık Devlet Arşivleri Genel Müdürlüğüne yapılan atıflar bu Başkanlığa yapılmış sayılır.
+
+Madde 4 — Tanımlar (arşiv belgesi, ayıklama, imha)
+Arşiv belgesi, son işlem tarihinden yirmi yıl geçmiş veya onbeş yıl geçtikten sonra kesin sonuca bağlanmış, işlevi kalmayan ve saklama süresini tamamladığı için Başkanlığa devredilmesi gereken belgedir [DOĞRULA: '20 yıl' — 3473 sayılı Kanunun eski tanımında '30 yıl' geçer]. Ayrıca arşivlik belge, ayıklama, imha, tasnif, dijitalleştirme ve özel arşiv kavramları tanımlanır.
+
+Madde 5 — Görev
+Başkanlık devlet arşivlerine ilişkin esasları belirler ve denetler; devlet ve kişilerin haklarını belgeler ve korur; kamu/özel/yurt dışı arşivlerindeki belgeleri tespit, tescil ve sertifikalandırır, gerektiğinde satın alır ve tasnif ederek araştırmaya açar; belge tahribini önleyip restorasyon yapar; mikrofilm ve dijitalleştirme usul-esaslarını belirler; Devlet Arşiv Ağı ve Veri Merkezini kurar; eğitim ve sertifikasyon hizmeti verir.
+
+Madde 7 — Hizmet Birimleri
+Başkanlığın hizmet birimleri Cumhurbaşkanlığı Arşivi Dairesi, Belge Tespit ve Değerlendirme Dairesi, Tasnif ve Araştırma Hizmetleri Dairesi, Bilgi İşlem ve Elektronik Arşiv Dairesi, Muhafaza ve Bakım Dairesi, Personel ve Eğitim Dairesi, Destek Hizmetleri Dairesi, Dış İlişkiler ve Tanıtım Dairesi, Strateji Geliştirme Dairesi ile Özel Kalem Müdürlüğüdür.
+
+Madde 9 — Belge Tespit ve Değerlendirme Dairesi Başkanlığı
+Bu daire, kamu kurum ve kuruluşlarının arşiv, ayıklama-imha, saklama süreli standart dosya planı ve belge devir-teslim faaliyetlerine yönelik rehberlik, eğitim ve denetim hizmeti verir; yıllık arşiv faaliyet raporlarını inceler; arşivlerde bekleme süresi dolan belgelerin saklama, ayıklama ve imha onayı süreçlerini yürütür ve denetler.
+
+Madde 18 — Yükümlülük
+Kapsamdaki kurum ve kuruluşlar, ellerindeki arşiv ve arşivlik belgeyi zararlı etkenlerden korumak, asli düzenine göre tasnif edip saklamak, yönetmelikteki bekletme ve saklama süreleri sonunda Devlet Arşivleri Başkanlığına teslim etmek ve saklanmasına gerek kalmayan belgeleri yok etmekle yükümlüdür. Arşiv/arşivlik belge tahrip-tahrif edilemez ve yurt dışına çıkarılamaz.
+
+Madde 19 — Ayıklama ve İmha Komisyonlarının Teşkili
+Kapsamdaki kurum ve kuruluşların kurum arşivlerinde yapılacak ayıklama ve imha işlemleri için bünyelerinde ayıklama ve imha komisyonları teşkil edilir. Komisyonların oluşumu ve çalışma esasları ikincil düzenlemeyle (Devlet Arşiv Hizmetleri Yönetmeliği) ayrıntılandırılır.

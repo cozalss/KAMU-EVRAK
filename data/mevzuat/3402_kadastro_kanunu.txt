@@ -1,0 +1,29 @@
+Kadastro Kanunu
+Kanun No 3402, Kabul 21.06.1987, RG 09.07.1987/19512 (Düstur Tertip 5, Cilt 26) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3402.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — Kadastro çalışma alanı sınırının tespiti
+Kadastro teknisyenlerinin il, ilçe belediye sınırları ile köy sınırlarını dikkate alarak kadastro çalışma alanı sınırını tespit edeceğini ve bunu harita/ölçü krokisinde göstereceğini düzenler. Belirlenen sınıra karşı yedi gün içinde kadastro müdürlüğü nezdinde itiraz edilebileceğini öngörür. Kadastro çalışmalarının başlangıç ve sınır itirazı evrakının dayanağıdır.
+
+Madde 7 — Kadastro tutanağının düzenlenmesi
+Kadastro teknisyenlerinin mal sahipleri ve ilgililerin huzurunda, harita ve tapu kayıtlarından yararlanarak, en az üç bilirkişi ile muhtarın bilgisinden istifade ederek inceleme yapacağını düzenler. Elde edilen bilgi ve kanaate göre her taşınmaz için kadastro tutanağı düzenlenerek taşınmazın sınırlandırılması ve hak sahiplerinin tayin edileceğini öngörür. Kadastro tespit tutanağının temel dayanağıdır.
+
+Madde 9 — Kadastro tespitine itiraz
+Kadastro tutanağı düzenlendikten sonra, kadastro ekibi çalışma alanındaki işlerini bitirinceye kadar tespitlere itiraz edilebileceğini düzenler. İtirazın kadastro teknisyenliğine veya müdürlüğüne yapılacağını ve itiraza ilişkin tutanağın en geç on gün içinde kadastro komisyonuna iletileceğini öngörür. Kadastro tespitine itiraz dilekçelerinin dayanağıdır.
+
+Madde 11 — Askı ilanı (30 günlük ilan)
+Kadastro müdürünün tutanaklara dayanarak askı cetvellerini düzenleyeceğini; bu cetveller ile pafta örneklerinin müdürlükte ve muhtarın çalışma yerinde otuz gün süreyle ilan ettirileceğini düzenler. İlanda, itirazı olanların ilan süresi içinde kadastro mahkemesinde dava açabilecekleri belirtilir. Askı ilanı ve buna karşı yapılacak başvuruların dayanağıdır.
+
+Madde 12 — Tutanakların kesinleşmesi ve on yıllık hak düşürücü süre
+Otuz günlük askı ilan süresi geçtikten sonra dava açılmayan kadastro tutanaklarına ait sınırlandırma ve tespitlerin kesinleşeceğini düzenler. Tutanaklarda belirtilen haklara, sınırlandırma ve tespitlere ait tutanakların kesinleştiği tarihten itibaren on yıl geçtikten sonra, kadastrodan önceki hukuki sebeplere dayanarak itiraz olunamayacağını ve dava açılamayacağını (on yıllık hak düşürücü süre) öngörür. Tescilin kesinleşmesi ve süre defilerinin dayanağıdır.
+
+Madde 25 — Kadastro mahkemelerinin kuruluşu ve görevi
+Her kadastro bölgesinde tek hakimli ve asliye mahkemesi sıfatını haiz kadastro mahkemeleri kurulacağını düzenler. Bu mahkemelerin taşınmaz mal mülkiyeti ve sınırlı ayni haklara, sınır ve ölçü uyuşmazlıklarına, kadastroya ve tapu sicilini ilgilendiren davalara bakacağını öngörür. Kadastro davalarının görüleceği özel mahkemenin dayanağıdır.
+
+Madde 26 — Kadastro mahkemesinin görev alanı (devredilen ve açılan davalar)
+Kadastro mahkemesinin; kadastro komisyonunca gönderilen ihtilaflı tutanaklara ait davalar, askı ilanı süresi içinde açılan davalar ve mahalli (genel) mahkemelerden devredilen kadastroyla ilgili dosyalar bakımından yetkili olduğunu düzenler. Davaların kadastro mahkemesine devri ve burada açılması usulünün dayanağıdır.

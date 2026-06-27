@@ -1,0 +1,32 @@
+Tapu Kanunu
+Kanun No 2644, Kabul 22.12.1934, RG 29.12.1934/2892 (Düstur Tertip 3, Cilt 16) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.2644.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Tüzel kişilerin tapu işlerinde belge ibrazı
+Tüzel kişilerin (hükmî şahısların) tapu işlemlerinde, merkez veya şubelerinin bulunduğu yerin en büyük mülki amirinden, tüzüklerine göre taşınmaz tasarrufuna izinli olduklarını gösterir belge ibrazını zorunlu kılar. Ticaret şirketleri için bu belge ticaret sicili memurluğunca verilir. Tüzel kişi adına yapılacak tescil/devir başvurularında yetki ve ehliyet belgesinin dayanağıdır.
+
+Madde 21 — Kapanmış yolların ve yol fazlalarının tescili
+Köy ve belediye sınırları içinde kapanmış yollarla yol fazlalarının köy veya belediye namına tapuya tescil edileceğini düzenler. 2019 değişikliğiyle [DOĞRULA: 7181 sayılı Kanun] askerî amaçla kapatılan yolların Hazine adına tescili eklenmiştir. Kamu taşınmazlarının idare adına tescil yazışmalarında dayanak oluşturur.
+
+Madde 26 — Resmî senet (akit) düzenlenmesi
+Taşınmaz mülkiyetinin devrini, mülkiyetin gayri ayni hakların ve irtifak haklarının kurulmasını amaçlayan tescili gereken sözleşmelere ilişkin resmî senetlerin tapu müdürü veya tapu sicil görevlilerince düzenleneceğini hükme bağlar. Tarafların farklı tapu müdürlüklerinde bulunması halinde senedin ayrı ayrı düzenlenebilmesine imkân tanır; gayrimenkul satış vaadi ve arsa payı karşılığı inşaat sözleşmelerinin taraflardan birinin isteğiyle tapuya şerhini düzenler. Devir/satış başvurularının ve akit işlemlerinin temel dayanağıdır.
+
+Madde 31 — Yüzölçümü fazlalığında tapu kaydının düzeltilmesi
+Bir taşınmazın yüzölçümünün tapu sicilindeki kayıttan fazla çıkması halinde, mahkemece fazlalığın bitişik araziye tecavüzden kaynaklanmadığı ve sınırda değişiklik olmadığı tespit edilirse sicilin buna göre düzeltileceğini düzenler. Tapu kaydı düzeltme (tashih) taleplerinde dayanaktır.
+
+Madde 35 — Yabancı uyruklu gerçek kişilerin taşınmaz edinmesi
+Cumhurbaşkanınca belirlenen ülkelerin vatandaşı olan yabancı uyruklu gerçek kişilerin Türkiye'de kanuni sınırlamalara uymak kaydıyla taşınmaz ve sınırlı ayni hak edinebileceğini düzenler. Edinim, bir kişi adına ülke genelinde otuz hektarı ve özel mülkiyete konu ilçe yüzölçümünün yüzde onunu geçemez; Cumhurbaşkanı bu miktarları iki katına çıkarmaya yetkilidir. Yabancının taşınmaz edinim başvurularının temel dayanağıdır.
+
+Madde 36 — Yabancı sermayeli şirketlerin taşınmaz edinmesi
+Türkiye'de kurulu, yabancı yatırımcıların oluşturduğu/ortağı olduğu şirketlerin ana sözleşmelerindeki faaliyet konularını yürütmek üzere taşınmaz ve sınırlı ayni hak edinebileceğini düzenler. Askerî yasak bölge, güvenlik bölgesi ve stratejik bölgelerdeki edinimler izne tabidir. Hukuka aykırı edinim halinde tasfiye yükümlülüğü öngörür; yabancı sermayeli şirketlerin taşınmaz edinim başvuru ve izin yazışmalarına dayanaktır.
+
+Ek Madde 1 — Miras intikali ve mirasçılık belgesi
+Ölüm tarihinden itibaren iki yıl içinde tapu sicilinde miras intikalinin gerçekleştirilmemesi halinde tapu müdürlüğünün mirasçılık belgesi temini için yargıya başvurabileceğini ve elde edilen belgeye göre taşınmazı mirasçılar adına elbirliği (iştirak) halinde tescil edebileceğini düzenler. [DOĞRULA: iki yıllık süre ve resen intikal usulü güncel metinle] Miras intikali tescil taleplerinin dayanağıdır.
+
+Ek Madde 3 — Kadastro/tapu işlemlerinden kaynaklı hataların düzeltilmesi
+Kadastro veya tapu sicili işlemlerinden kaynaklanan hisse ve benzeri hataların düzeltilmesinde, etkilenen hisse maliklerine tebligat yapılacağını; otuz gün içinde muvafakat verilirse düzeltmenin yapılacağını, aksi halde tapu müdürlüğünce resen düzeltilebileceğini ve ilgililerin altmış gün içinde dava açabileceğini düzenler. [DOĞRULA: süreler ve resen düzeltme yetkisi güncel metinle] Tapu kaydı düzeltme taleplerinde dayanaktır.

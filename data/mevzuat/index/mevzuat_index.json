@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1029,
+ "chunk_sayisi": 1059,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -955,6 +955,62 @@
    "text": "Madde 34 — Turizm belgesinin iptali\nBakanlık tarafından verilen turizm yatırımı veya turizm işletmesi belgesi, kanunda sayılan hallerde iptal edilir; örneğin yatırımın süresinde tamamlanmaması, belgeye esas niteliklerin kaybedilmesi, işletme izni/iznine esas belgenin temin edilememesi, faaliyetin durdurulması veya kamu taşınmazındaki kullanım hakkı izninin iptali gibi durumlar iptal sebebidir. Turizm işletmesi belgesi iptal edilen konaklama işletmelerinin, iptal kararının tebliğinden itibaren belirli süre içinde yeniden belge alması zorunludur; aksi halde faaliyet idari yaptırıma konu olur."
   },
   {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tüzel kişilerin tapu işlerinde belge ibrazı\nTüzel kişilerin (hükmî şahısların) tapu işlemlerinde, merkez veya şubelerinin bulunduğu yerin en büyük mülki amirinden, tüzüklerine göre taşınmaz tasarrufuna izinli olduklarını gösterir belge ibrazını zorunlu kılar. Ticaret şirketleri için bu belge ticaret sicili memurluğunca verilir. Tüzel kişi adına yapılacak tescil/devir başvurularında yetki ve ehliyet belgesinin dayanağıdır."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Kapanmış yolların ve yol fazlalarının tescili\nKöy ve belediye sınırları içinde kapanmış yollarla yol fazlalarının köy veya belediye namına tapuya tescil edileceğini düzenler. 2019 değişikliğiyle [DOĞRULA: 7181 sayılı Kanun] askerî amaçla kapatılan yolların Hazine adına tescili eklenmiştir. Kamu taşınmazlarının idare adına tescil yazışmalarında dayanak oluşturur."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Resmî senet (akit) düzenlenmesi\nTaşınmaz mülkiyetinin devrini, mülkiyetin gayri ayni hakların ve irtifak haklarının kurulmasını amaçlayan tescili gereken sözleşmelere ilişkin resmî senetlerin tapu müdürü veya tapu sicil görevlilerince düzenleneceğini hükme bağlar. Tarafların farklı tapu müdürlüklerinde bulunması halinde senedin ayrı ayrı düzenlenebilmesine imkân tanır; gayrimenkul satış vaadi ve arsa payı karşılığı inşaat sözleşmelerinin taraflardan birinin isteğiyle tapuya şerhini düzenler. Devir/satış başvurularının ve akit işlemlerinin temel dayanağıdır."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 31,
+   "madde_tur": "madde",
+   "text": "Madde 31 — Yüzölçümü fazlalığında tapu kaydının düzeltilmesi\nBir taşınmazın yüzölçümünün tapu sicilindeki kayıttan fazla çıkması halinde, mahkemece fazlalığın bitişik araziye tecavüzden kaynaklanmadığı ve sınırda değişiklik olmadığı tespit edilirse sicilin buna göre düzeltileceğini düzenler. Tapu kaydı düzeltme (tashih) taleplerinde dayanaktır."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 35,
+   "madde_tur": "madde",
+   "text": "Madde 35 — Yabancı uyruklu gerçek kişilerin taşınmaz edinmesi\nCumhurbaşkanınca belirlenen ülkelerin vatandaşı olan yabancı uyruklu gerçek kişilerin Türkiye'de kanuni sınırlamalara uymak kaydıyla taşınmaz ve sınırlı ayni hak edinebileceğini düzenler. Edinim, bir kişi adına ülke genelinde otuz hektarı ve özel mülkiyete konu ilçe yüzölçümünün yüzde onunu geçemez; Cumhurbaşkanı bu miktarları iki katına çıkarmaya yetkilidir. Yabancının taşınmaz edinim başvurularının temel dayanağıdır."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 36,
+   "madde_tur": "madde",
+   "text": "Madde 36 — Yabancı sermayeli şirketlerin taşınmaz edinmesi\nTürkiye'de kurulu, yabancı yatırımcıların oluşturduğu/ortağı olduğu şirketlerin ana sözleşmelerindeki faaliyet konularını yürütmek üzere taşınmaz ve sınırlı ayni hak edinebileceğini düzenler. Askerî yasak bölge, güvenlik bölgesi ve stratejik bölgelerdeki edinimler izne tabidir. Hukuka aykırı edinim halinde tasfiye yükümlülüğü öngörür; yabancı sermayeli şirketlerin taşınmaz edinim başvuru ve izin yazışmalarına dayanaktır."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "ek",
+   "text": "Ek Madde 1 — Miras intikali ve mirasçılık belgesi\nÖlüm tarihinden itibaren iki yıl içinde tapu sicilinde miras intikalinin gerçekleştirilmemesi halinde tapu müdürlüğünün mirasçılık belgesi temini için yargıya başvurabileceğini ve elde edilen belgeye göre taşınmazı mirasçılar adına elbirliği (iştirak) halinde tescil edebileceğini düzenler. [DOĞRULA: iki yıllık süre ve resen intikal usulü güncel metinle] Miras intikali tescil taleplerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "2644 tapu kanunu",
+   "kaynak_dosya": "2644_tapu_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "ek",
+   "text": "Ek Madde 3 — Kadastro/tapu işlemlerinden kaynaklı hataların düzeltilmesi\nKadastro veya tapu sicili işlemlerinden kaynaklanan hisse ve benzeri hataların düzeltilmesinde, etkilenen hisse maliklerine tebligat yapılacağını; otuz gün içinde muvafakat verilirse düzeltmenin yapılacağını, aksi halde tapu müdürlüğünce resen düzeltilebileceğini ve ilgililerin altmış gün içinde dava açabileceğini düzenler. [DOĞRULA: süreler ve resen düzeltme yetkisi güncel metinle] Tapu kaydı düzeltme taleplerinde dayanaktır."
+  },
+  {
    "mevzuat": "2646 resmi yazisma e yazisma",
    "kaynak_dosya": "2646_resmi_yazisma_e_yazisma.txt",
    "madde_no": 3,
@@ -1557,6 +1613,69 @@
    "text": "Madde 27 — Acele kamulaştırma\nMilli müdafaa mükellefiyeti, yurt savunması ihtiyacı/aceleliği veya özel kanunlarla öngörülen olağanüstü durumlarda, Cumhurbaşkanınca acele kamulaştırma kararı alınabileceğini düzenler. Bu hallerde kıymet takdiri dışındaki işlemler sonradan tamamlanmak üzere taşınmaza el konulabilir; acele el koyma yazışmalarının dayanağıdır."
   },
   {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Oyun gizliliği ve sayımın açıklığı\nSeçimlerde oy, seçmen tarafından gizli olarak (kapalı oy verme yerinde) verilir. Buna karşılık oyların sayımı, dökümü ve tutanağa bağlanması açık olarak yapılır. Bu madde, Türk seçim sisteminin temel ilkesi olan 'gizli oy, açık sayım' esasını düzenler ve oy verme ile sayım süreçlerine ilişkin tüm işlemlerin (ve bunlara yapılacak itirazların) çerçevesini belirler."
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 6,
+   "madde_tur": "madde",
+   "text": "Madde 6 — Seçmen niteliği (seçme yeterliği)\nOnsekiz yaşını dolduran her Türk vatandaşı seçme ve halk oylamasına katılma hakkına sahiptir; seçmen sıfatını kazanmanın temel şartı budur. Seçmen olarak oy kullanabilmek için kişinin seçmen kütüğüne ve sandık seçmen listesine kayıtlı olması gerekir. Bu madde, seçmen kütüğüne yazılma ve oy kullanma hakkının dayanağını oluşturur."
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Oy kullanamayacaklar ve seçmen olamayanlar (m.7-8)"
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 uyarınca silah altındaki erler, onbaşılar ve kıta çavuşları (her ne sebeple olursa olsun izinli olanlar dâhil) ile askerî öğrenciler ve ceza infaz kurumlarında bulunan hükümlüler oy kullanamaz. Madde 8 uyarınca kısıtlı olanlar ile kamu hizmetinden yasaklı olanlar seçmen olamaz. Bu hükümler seçmen kütüğüne yazılma ve oy kullanma hakkının sınırlarını belirler; bu durumdaki kişilerin kütüğe yazılmasına/silinmesine yönelik itirazlarda esas alınır."
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Sandık kurulunun teşkili\nSandık kurulu bir başkan ile asıl ve yedek üyelerden oluşur. İlçe seçim kurulu başkanı, tüzüklerine göre ilk genel kongresini yapmış olup en az on beş ilde ve en az altı ay önce teşkilat kurmuş siyasi partilere her sandık için birer üye adı bildirmelerini tebliğ eder; partiler bu adları beş gün içinde bildirmek zorundadır. Sandık kurulunun oluşumuna ilişkin işlemler, iki gün içinde ilçe seçim kuruluna yapılacak şikâyetlere konu olabilir."
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 42,
+   "madde_tur": "madde",
+   "text": "Madde 42 — Muhtarlık Bölgesi Askı Listesi, askıya çıkarma ve itiraz\nSeçmen kütüğündeki yanlışların düzeltilmesi ve eksikliklerin tamamlanması amacıyla, aynı muhtarlıkta oturan seçmenlerin kimlik ve adres bilgilerini soyadı alfabe sırasına göre içeren 'Muhtarlık Bölgesi Askı Listesi' düzenlenir ve belirlenen süreyle muhtarlıkta askıya çıkarılır. Askı süresi içinde seçmen kütüğüne yazım, silinme veya seçmen nakli istemlerine ilişkin itirazlar ilçe seçim kurulu başkanına yapılır; başkan itiraz üzerine veya resen inceleme yaparak karar verir. [DOĞRULA: askı süresinin gün olarak uzunluğu ve liste türleri sonraki değişikliklerle güncellenmiş olabilir, mevzuat.gov.tr güncel metninden teyit edin]"
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 105,
+   "madde_tur": "madde",
+   "text": "Madde 105 — Sandık sonuç tutanağı\nOyların sayım ve dökümü tamamlandıktan sonra sandık kurulu, sonuçları gösteren sandık sonuç tutanağını düzenler, imzalar ve mühürler. Tutanağın ıslak imzalı ve mühürlü bir örneği, talep eden siyasi parti ve bağımsız aday müşahitlerine imza karşılığı verilir. Bu tutanak, oy sonuçlarının resmî belgesidir ve sayım/döküm işlemlerine yönelik itirazlarda esas alınır."
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 110,
+   "madde_tur": "madde",
+   "text": "Madde 110 — Seçim işlemlerine karşı şikâyet ve itiraz (m.110-112)\nSeçim kurulları ile başkanlarının kararlarına ve işlemlerine karşı, kanunda gösterilen kişi ve kuruluşlar (seçmen, aday, siyasi parti) tarafından şikâyet ve itiraz yoluna başvurulabilir. Şikâyet, işlemi yapan kurula veya başkanına sözlü veya yazılı (dilekçeyle) olarak belirli süreler içinde (örneğin sandık kurulu teşkili işlemleri için iki gün) yapılır. Bu hükümler, seçim sürecindeki idari işlemlere karşı başvuru evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
+   "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
+   "madde_no": 121,
+   "madde_tur": "madde",
+   "text": "Madde 121 — İl seçim kuruluna ve Yüksek Seçim Kuruluna itiraz (m.121-122)\nİlçe seçim kurulu kararlarına karşı il seçim kuruluna; il seçim kurulu kararlarına ve kanunda belirtilen hususlara karşı Yüksek Seçim Kuruluna itiraz edilebilir. İl seçim kurulu, kendi teşkiline karşı yapılan itirazları üç gün içinde karara bağlar. Yüksek Seçim Kurulu, siyasi parti merkezlerinin askı listeleri ve seçmen kütüğünün tümüne ilişkin şikâyet ve itirazları ile askı listesi itirazları üzerine verilen kararlara karşı yeniden inceleme istemlerini kesin olarak karara bağlar. [DOĞRULA: itiraz mercileri ve sürelerin madde numaraları sonraki değişikliklerle kaymış olabilir, güncel metinden teyit edin]"
+  },
+  {
    "mevzuat": "3065 katma deger vergisi kanunu",
    "kaynak_dosya": "3065_katma_deger_vergisi_kanunu.txt",
    "madde_no": 1,
@@ -1870,6 +1989,55 @@
    "madde_no": 11,
    "madde_tur": "ek",
    "text": "Ek Madde 11 — Ruhsatsız sağlık hizmeti ve izinsiz tesis açma cezası\nRuhsatsız veya yetkisiz olarak sağlık hizmeti veren ya da verdirenler bir yıldan üç yıla kadar hapis cezası ile cezalandırılır. Bakanlıkça özel izin gerektiren sağlık tesisini izinsiz açan veya buralarda hizmet verenlere, iki yüz elli bin Türk lirasından az olmamak üzere bir önceki aya ait brüt hizmet gelirinin yarısına kadar idarî para cezası uygulanır. [DOĞRULA: idari para cezası taban tutarı her yıl yeniden değerleme oranıyla güncellenir; uygulamadan önce ilgili yılın güncel tutarı teyit edilmelidir.]"
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Kadastro çalışma alanı sınırının tespiti\nKadastro teknisyenlerinin il, ilçe belediye sınırları ile köy sınırlarını dikkate alarak kadastro çalışma alanı sınırını tespit edeceğini ve bunu harita/ölçü krokisinde göstereceğini düzenler. Belirlenen sınıra karşı yedi gün içinde kadastro müdürlüğü nezdinde itiraz edilebileceğini öngörür. Kadastro çalışmalarının başlangıç ve sınır itirazı evrakının dayanağıdır."
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "madde",
+   "text": "Madde 7 — Kadastro tutanağının düzenlenmesi\nKadastro teknisyenlerinin mal sahipleri ve ilgililerin huzurunda, harita ve tapu kayıtlarından yararlanarak, en az üç bilirkişi ile muhtarın bilgisinden istifade ederek inceleme yapacağını düzenler. Elde edilen bilgi ve kanaate göre her taşınmaz için kadastro tutanağı düzenlenerek taşınmazın sınırlandırılması ve hak sahiplerinin tayin edileceğini öngörür. Kadastro tespit tutanağının temel dayanağıdır."
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Kadastro tespitine itiraz\nKadastro tutanağı düzenlendikten sonra, kadastro ekibi çalışma alanındaki işlerini bitirinceye kadar tespitlere itiraz edilebileceğini düzenler. İtirazın kadastro teknisyenliğine veya müdürlüğüne yapılacağını ve itiraza ilişkin tutanağın en geç on gün içinde kadastro komisyonuna iletileceğini öngörür. Kadastro tespitine itiraz dilekçelerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 11,
+   "madde_tur": "madde",
+   "text": "Madde 11 — Askı ilanı (30 günlük ilan)\nKadastro müdürünün tutanaklara dayanarak askı cetvellerini düzenleyeceğini; bu cetveller ile pafta örneklerinin müdürlükte ve muhtarın çalışma yerinde otuz gün süreyle ilan ettirileceğini düzenler. İlanda, itirazı olanların ilan süresi içinde kadastro mahkemesinde dava açabilecekleri belirtilir. Askı ilanı ve buna karşı yapılacak başvuruların dayanağıdır."
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 12,
+   "madde_tur": "madde",
+   "text": "Madde 12 — Tutanakların kesinleşmesi ve on yıllık hak düşürücü süre\nOtuz günlük askı ilan süresi geçtikten sonra dava açılmayan kadastro tutanaklarına ait sınırlandırma ve tespitlerin kesinleşeceğini düzenler. Tutanaklarda belirtilen haklara, sınırlandırma ve tespitlere ait tutanakların kesinleştiği tarihten itibaren on yıl geçtikten sonra, kadastrodan önceki hukuki sebeplere dayanarak itiraz olunamayacağını ve dava açılamayacağını (on yıllık hak düşürücü süre) öngörür. Tescilin kesinleşmesi ve süre defilerinin dayanağıdır."
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Kadastro mahkemelerinin kuruluşu ve görevi\nHer kadastro bölgesinde tek hakimli ve asliye mahkemesi sıfatını haiz kadastro mahkemeleri kurulacağını düzenler. Bu mahkemelerin taşınmaz mal mülkiyeti ve sınırlı ayni haklara, sınır ve ölçü uyuşmazlıklarına, kadastroya ve tapu sicilini ilgilendiren davalara bakacağını öngörür. Kadastro davalarının görüleceği özel mahkemenin dayanağıdır."
+  },
+  {
+   "mevzuat": "3402 kadastro kanunu",
+   "kaynak_dosya": "3402_kadastro_kanunu.txt",
+   "madde_no": 26,
+   "madde_tur": "madde",
+   "text": "Madde 26 — Kadastro mahkemesinin görev alanı (devredilen ve açılan davalar)\nKadastro mahkemesinin; kadastro komisyonunca gönderilen ihtilaflı tutanaklara ait davalar, askı ilanı süresi içinde açılan davalar ve mahalli (genel) mahkemelerden devredilen kadastroyla ilgili dosyalar bakımından yetkili olduğunu düzenler. Davaların kadastro mahkemesine devri ve burada açılması usulünün dayanağıdır."
   },
   {
    "mevzuat": "3473 evrak imha kanunu",
@@ -5428,6 +5596,48 @@
    "text": "Madde 18 — Anlaşma belgesi ve icra edilebilirlik şerhi (ilam niteliği)\nArabuluculuk faaliyeti sonunda varılan anlaşmanın kapsamı taraflarca belirlenir; anlaşma belgesi düzenlenmesi hâlinde bu belge taraflar ile arabulucu tarafından imzalanır. Taraflar, anlaşma belgesinin icra edilebilirliğine ilişkin şerh verilmesini, asıl uyuşmazlık hakkındaki yetkili ve görevli mahkemeden talep edebilir; bu şerh, anlaşmanın icra edilebilir olduğunu gösterir. Taraflar ve avukatları ile arabulucunun birlikte imzaladıkları anlaşma belgesi, icra edilebilirlik şerhi aranmaksızın ilam niteliğinde belge sayılır. Üzerinde anlaşılan hususlar hakkında taraflarca dava açılamaz.\n\nMadde 18/A — Dava şartı olarak arabuluculuk (zorunlu arabuluculuk ve büroya başvuru)\nKanunda öngörülen bazı uyuşmazlıklarda (ör. belirli ticarî ve işçi-işveren alacak uyuşmazlıkları ile kira ilişkisinden kaynaklanan, taşınmaz paylaştırılması/ortaklığın giderilmesi, kat mülkiyeti ve komşu hakkından doğan uyuşmazlıklar) dava açılmadan önce arabulucuya başvurulmuş olması dava şartıdır. Başvuru, uyuşmazlığın konusuna göre yetkili mahkemenin bulunduğu yer arabuluculuk bürosuna; büro kurulmayan yerlerde görevlendirilen yazı işleri müdürlüğüne yapılır. Arabuluculuk bürosuna başvurulmasından son tutanağın düzenlendiği tarihe kadar geçen sürede zamanaşımı durur ve hak düşürücü süre işlemez. Anlaşmaya varılamazsa düzenlenen son tutanak, dava dilekçesine eklenmesi gereken zorunlu evraktır. [DOĞRULA: dava şartı arabuluculuk kapsamına giren uyuşmazlık türleri sonradan genişletildiğinden güncel liste mevzuat.gov.tr'den teyit edilmeli]"
   },
   {
+   "mevzuat": "6328 kamu denetciligi kurumu kanunu",
+   "kaynak_dosya": "6328_kamu_denetciligi_kurumu_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç\nBu Kanunun amacı, kamu hizmetlerinin işleyişinde bağımsız ve etkin bir şikâyet mekanizması oluşturmak suretiyle, idarenin her türlü eylem, işlem, tutum ve davranışlarını; insan haklarına dayalı adalet anlayışı içinde, hukuka ve hakkaniyete uygunluk yönünden incelemek, araştırmak ve önerilerde bulunmak üzere Kamu Denetçiliği Kurumunu (Ombudsmanlık) kurmaktır. Madde, Kuruma yapılacak şikâyet başvurularının genel çerçevesini ve denetimin ölçütlerini belirler."
+  },
+  {
+   "mevzuat": "6328 kamu denetciligi kurumu kanunu",
+   "kaynak_dosya": "6328_kamu_denetciligi_kurumu_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Kurumun görevi\nKurum, idarenin işleyişiyle ilgili şikâyet üzerine, idarenin her türlü eylem ve işlemleri ile tutum ve davranışlarını; insan haklarına dayalı adalet anlayışı içinde, hukuka ve hakkaniyete uygunluk yönlerinden incelemek, araştırmak ve idareye önerilerde bulunmakla görevlidir. Kurumun görev alanına Cumhurbaşkanının tek başına yaptığı işlemler, yasama ve yargı yetkisi kapsamındaki işlemler ile bazı istisnalar girmez. Bu madde, şikâyet başvurusunun konusunu ve denetim sınırlarını tanımlar."
+  },
+  {
+   "mevzuat": "6328 kamu denetciligi kurumu kanunu",
+   "kaynak_dosya": "6328_kamu_denetciligi_kurumu_kanunu.txt",
+   "madde_no": 17,
+   "madde_tur": "madde",
+   "text": "Madde 17 — Başvuru ve usulü\nKuruma, menfaati ihlal edilen gerçek ve tüzel kişiler başvurabilir; başvuru için kural olarak idari başvuru yollarının tüketilmiş olması gerekir. Başvuru, başvuranın ad-soyad, imza, yerleşim yeri/iş adresi ve Türk vatandaşları için kimlik numarası, yabancılar için pasaport numarasını içeren Türkçe dilekçeyle ya da elektronik ortamda yapılır. İdarenin cevabının tebliğinden veya idare altmış gün içinde cevap vermezse bu sürenin bitiminden itibaren altı ay içinde başvurulabilir; dava açma süresi içinde yapılan başvuru, işlemeye başlamış olan dava açma süresini durdurur."
+  },
+  {
+   "mevzuat": "6328 kamu denetciligi kurumu kanunu",
+   "kaynak_dosya": "6328_kamu_denetciligi_kurumu_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Bilgi ve belge istenmesi\nKurum, inceleme ve araştırma konusuyla ilgili bilgi ve belgeleri ilgili merciden isteyebilir; istenen bilgi ve belgeler, istemin tebliğinden itibaren otuz gün içinde Kuruma verilir. İlgili merci, devlet sırrı veya ticari sır niteliğindeki bilgiler dışında bu yükümlülükten kaçınamaz. Bu madde, ombudsman incelemesinde idarenin belge sunma yükümlülüğünün ve bu kapsamda düzenlenecek cevap yazılarının dayanağıdır."
+  },
+  {
+   "mevzuat": "6328 kamu denetciligi kurumu kanunu",
+   "kaynak_dosya": "6328_kamu_denetciligi_kurumu_kanunu.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — İnceleme ve araştırma sonucu / tavsiye kararı\nKurum, şikâyet üzerine yaptığı inceleme ve araştırmayı başvuru tarihinden itibaren en geç altı ay içinde sonuçlandırır ve sonucu ile varsa önerilerini (tavsiye kararını) ilgili mercie ve başvurana bildirir. İlgili merci, Kurumun tavsiyelerini yerine getirmez veya önerilen çözümü uygulanabilir bulmazsa bunun gerekçesini otuz gün içinde Kuruma bildirir. Bu madde, ombudsman tavsiye kararının verilmesi ve idarenin cevap yükümlülüğünü düzenler. [DOĞRULA: inceleme süresi ve fıkra düzeni sonraki değişikliklerle güncellenmiş olabilir, güncel metinden teyit edin]"
+  },
+  {
+   "mevzuat": "6328 kamu denetciligi kurumu kanunu",
+   "kaynak_dosya": "6328_kamu_denetciligi_kurumu_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Dava açma süresinin yeniden işlemesi\nKuruma başvurma ile durmuş olan dava açma süresi; şikâyetin Kurum tarafından reddi hâlinde gerekçeli ret kararının tebliğinden, Kurumun tavsiye kararı vermesi ve ilgili idarenin otuz gün içinde işlem tesis etmemesi hâlinde bu sürenin bitiminden, Kurumun altı ay içinde inceleme ve araştırmayı sonuçlandıramaması hâlinde ise bu sürenin bitiminden itibaren kaldığı yerden işlemeye başlar. Bu madde, ombudsmana başvuran kişinin idari yargıya başvuru hakkını koruyan süre rejimini düzenler."
+  },
+  {
    "mevzuat": "6331 is sagligi guvenligi kanunu",
    "kaynak_dosya": "6331_is_sagligi_guvenligi_kanunu.txt",
    "madde_no": 4,
@@ -7206,5 +7416,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi (m.Madde 30)\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 158
+ "mevzuat_sayisi": 162
 }

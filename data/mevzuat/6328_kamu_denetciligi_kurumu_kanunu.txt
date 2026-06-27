@@ -1,0 +1,26 @@
+Kamu Denetçiliği Kurumu Kanunu (Ombudsmanlık)
+Kanun No 6328, Kabul 14.06.2012, RG 29.06.2012/28338 — YÜRÜRLÜKTE (mevzuat.gov.tr konsolide metin)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6328.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç
+Bu Kanunun amacı, kamu hizmetlerinin işleyişinde bağımsız ve etkin bir şikâyet mekanizması oluşturmak suretiyle, idarenin her türlü eylem, işlem, tutum ve davranışlarını; insan haklarına dayalı adalet anlayışı içinde, hukuka ve hakkaniyete uygunluk yönünden incelemek, araştırmak ve önerilerde bulunmak üzere Kamu Denetçiliği Kurumunu (Ombudsmanlık) kurmaktır. Madde, Kuruma yapılacak şikâyet başvurularının genel çerçevesini ve denetimin ölçütlerini belirler.
+
+Madde 5 — Kurumun görevi
+Kurum, idarenin işleyişiyle ilgili şikâyet üzerine, idarenin her türlü eylem ve işlemleri ile tutum ve davranışlarını; insan haklarına dayalı adalet anlayışı içinde, hukuka ve hakkaniyete uygunluk yönlerinden incelemek, araştırmak ve idareye önerilerde bulunmakla görevlidir. Kurumun görev alanına Cumhurbaşkanının tek başına yaptığı işlemler, yasama ve yargı yetkisi kapsamındaki işlemler ile bazı istisnalar girmez. Bu madde, şikâyet başvurusunun konusunu ve denetim sınırlarını tanımlar.
+
+Madde 17 — Başvuru ve usulü
+Kuruma, menfaati ihlal edilen gerçek ve tüzel kişiler başvurabilir; başvuru için kural olarak idari başvuru yollarının tüketilmiş olması gerekir. Başvuru, başvuranın ad-soyad, imza, yerleşim yeri/iş adresi ve Türk vatandaşları için kimlik numarası, yabancılar için pasaport numarasını içeren Türkçe dilekçeyle ya da elektronik ortamda yapılır. İdarenin cevabının tebliğinden veya idare altmış gün içinde cevap vermezse bu sürenin bitiminden itibaren altı ay içinde başvurulabilir; dava açma süresi içinde yapılan başvuru, işlemeye başlamış olan dava açma süresini durdurur.
+
+Madde 18 — Bilgi ve belge istenmesi
+Kurum, inceleme ve araştırma konusuyla ilgili bilgi ve belgeleri ilgili merciden isteyebilir; istenen bilgi ve belgeler, istemin tebliğinden itibaren otuz gün içinde Kuruma verilir. İlgili merci, devlet sırrı veya ticari sır niteliğindeki bilgiler dışında bu yükümlülükten kaçınamaz. Bu madde, ombudsman incelemesinde idarenin belge sunma yükümlülüğünün ve bu kapsamda düzenlenecek cevap yazılarının dayanağıdır.
+
+Madde 20 — İnceleme ve araştırma sonucu / tavsiye kararı
+Kurum, şikâyet üzerine yaptığı inceleme ve araştırmayı başvuru tarihinden itibaren en geç altı ay içinde sonuçlandırır ve sonucu ile varsa önerilerini (tavsiye kararını) ilgili mercie ve başvurana bildirir. İlgili merci, Kurumun tavsiyelerini yerine getirmez veya önerilen çözümü uygulanabilir bulmazsa bunun gerekçesini otuz gün içinde Kuruma bildirir. Bu madde, ombudsman tavsiye kararının verilmesi ve idarenin cevap yükümlülüğünü düzenler. [DOĞRULA: inceleme süresi ve fıkra düzeni sonraki değişikliklerle güncellenmiş olabilir, güncel metinden teyit edin]
+
+Madde 21 — Dava açma süresinin yeniden işlemesi
+Kuruma başvurma ile durmuş olan dava açma süresi; şikâyetin Kurum tarafından reddi hâlinde gerekçeli ret kararının tebliğinden, Kurumun tavsiye kararı vermesi ve ilgili idarenin otuz gün içinde işlem tesis etmemesi hâlinde bu sürenin bitiminden, Kurumun altı ay içinde inceleme ve araştırmayı sonuçlandıramaması hâlinde ise bu sürenin bitiminden itibaren kaldığı yerden işlemeye başlar. Bu madde, ombudsmana başvuran kişinin idari yargıya başvuru hakkını koruyan süre rejimini düzenler.

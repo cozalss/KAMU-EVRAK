@@ -1,0 +1,32 @@
+Seçimlerin Temel Hükümleri ve Seçmen Kütükleri Hakkında Kanun
+Kanun No 298, Kabul 26.04.1961, RG 02.05.1961/10796 — YÜRÜRLÜKTE (mevzuat.gov.tr konsolide metin; sonraki değişiklikler işli)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.4.298.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 2 — Oyun gizliliği ve sayımın açıklığı
+Seçimlerde oy, seçmen tarafından gizli olarak (kapalı oy verme yerinde) verilir. Buna karşılık oyların sayımı, dökümü ve tutanağa bağlanması açık olarak yapılır. Bu madde, Türk seçim sisteminin temel ilkesi olan 'gizli oy, açık sayım' esasını düzenler ve oy verme ile sayım süreçlerine ilişkin tüm işlemlerin (ve bunlara yapılacak itirazların) çerçevesini belirler.
+
+Madde 6 — Seçmen niteliği (seçme yeterliği)
+Onsekiz yaşını dolduran her Türk vatandaşı seçme ve halk oylamasına katılma hakkına sahiptir; seçmen sıfatını kazanmanın temel şartı budur. Seçmen olarak oy kullanabilmek için kişinin seçmen kütüğüne ve sandık seçmen listesine kayıtlı olması gerekir. Bu madde, seçmen kütüğüne yazılma ve oy kullanma hakkının dayanağını oluşturur.
+
+Madde 7 — Oy kullanamayacaklar ve seçmen olamayanlar (m.7-8)
+Madde 7 uyarınca silah altındaki erler, onbaşılar ve kıta çavuşları (her ne sebeple olursa olsun izinli olanlar dâhil) ile askerî öğrenciler ve ceza infaz kurumlarında bulunan hükümlüler oy kullanamaz. Madde 8 uyarınca kısıtlı olanlar ile kamu hizmetinden yasaklı olanlar seçmen olamaz. Bu hükümler seçmen kütüğüne yazılma ve oy kullanma hakkının sınırlarını belirler; bu durumdaki kişilerin kütüğe yazılmasına/silinmesine yönelik itirazlarda esas alınır.
+
+Madde 23 — Sandık kurulunun teşkili
+Sandık kurulu bir başkan ile asıl ve yedek üyelerden oluşur. İlçe seçim kurulu başkanı, tüzüklerine göre ilk genel kongresini yapmış olup en az on beş ilde ve en az altı ay önce teşkilat kurmuş siyasi partilere her sandık için birer üye adı bildirmelerini tebliğ eder; partiler bu adları beş gün içinde bildirmek zorundadır. Sandık kurulunun oluşumuna ilişkin işlemler, iki gün içinde ilçe seçim kuruluna yapılacak şikâyetlere konu olabilir.
+
+Madde 42 — Muhtarlık Bölgesi Askı Listesi, askıya çıkarma ve itiraz
+Seçmen kütüğündeki yanlışların düzeltilmesi ve eksikliklerin tamamlanması amacıyla, aynı muhtarlıkta oturan seçmenlerin kimlik ve adres bilgilerini soyadı alfabe sırasına göre içeren 'Muhtarlık Bölgesi Askı Listesi' düzenlenir ve belirlenen süreyle muhtarlıkta askıya çıkarılır. Askı süresi içinde seçmen kütüğüne yazım, silinme veya seçmen nakli istemlerine ilişkin itirazlar ilçe seçim kurulu başkanına yapılır; başkan itiraz üzerine veya resen inceleme yaparak karar verir. [DOĞRULA: askı süresinin gün olarak uzunluğu ve liste türleri sonraki değişikliklerle güncellenmiş olabilir, mevzuat.gov.tr güncel metninden teyit edin]
+
+Madde 105 — Sandık sonuç tutanağı
+Oyların sayım ve dökümü tamamlandıktan sonra sandık kurulu, sonuçları gösteren sandık sonuç tutanağını düzenler, imzalar ve mühürler. Tutanağın ıslak imzalı ve mühürlü bir örneği, talep eden siyasi parti ve bağımsız aday müşahitlerine imza karşılığı verilir. Bu tutanak, oy sonuçlarının resmî belgesidir ve sayım/döküm işlemlerine yönelik itirazlarda esas alınır.
+
+Madde 110 — Seçim işlemlerine karşı şikâyet ve itiraz (m.110-112)
+Seçim kurulları ile başkanlarının kararlarına ve işlemlerine karşı, kanunda gösterilen kişi ve kuruluşlar (seçmen, aday, siyasi parti) tarafından şikâyet ve itiraz yoluna başvurulabilir. Şikâyet, işlemi yapan kurula veya başkanına sözlü veya yazılı (dilekçeyle) olarak belirli süreler içinde (örneğin sandık kurulu teşkili işlemleri için iki gün) yapılır. Bu hükümler, seçim sürecindeki idari işlemlere karşı başvuru evrakının dayanağıdır.
+
+Madde 121 — İl seçim kuruluna ve Yüksek Seçim Kuruluna itiraz (m.121-122)
+İlçe seçim kurulu kararlarına karşı il seçim kuruluna; il seçim kurulu kararlarına ve kanunda belirtilen hususlara karşı Yüksek Seçim Kuruluna itiraz edilebilir. İl seçim kurulu, kendi teşkiline karşı yapılan itirazları üç gün içinde karara bağlar. Yüksek Seçim Kurulu, siyasi parti merkezlerinin askı listeleri ve seçmen kütüğünün tümüne ilişkin şikâyet ve itirazları ile askı listesi itirazları üzerine verilen kararlara karşı yeniden inceleme istemlerini kesin olarak karara bağlar. [DOĞRULA: itiraz mercileri ve sürelerin madde numaraları sonraki değişikliklerle kaymış olabilir, güncel metinden teyit edin]

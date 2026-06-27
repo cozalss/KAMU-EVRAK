@@ -20,9 +20,10 @@ function Stat({ label, value, accent, icon }) {
   );
 }
 
-export default function PanelView({ history = [], inboxCount = 0, onGoInbox, onUpload }) {
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, onGoInbox, onUpload }) {
   const n = history.length;
   const taslakSay = history.filter((h) => h.result?.yazi_taslak_md).length;
+  const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
   const risk = { yesil: 0, sari: 0, kirmizi: 0 };
   for (const h of history) if (risk[h.bant] != null) risk[h.bant]++;
   const turler = {};
@@ -39,6 +40,7 @@ export default function PanelView({ history = [], inboxCount = 0, onGoInbox, onU
         <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} />
         <Stat label="Bekleyen kuyruk" value={inboxCount} accent="#5b8cff" icon={<Icon.inbox />} />
         <Stat label="Üretilen taslak" value={taslakSay} accent={V} icon={<Icon.scale />} />
+        <Stat label="Gönderilen evrak" value={gonderilen} accent="#34d399" icon={<Icon.arrow />} />
         <Stat label="Onaya sunulan" value={risk.sari + risk.kirmizi} accent="#fbbf24" icon={<Icon.clock />} />
       </div>
 

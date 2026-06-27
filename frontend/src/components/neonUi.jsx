@@ -1,7 +1,7 @@
 /* neonUi — kamu-evrak neon çalışma alanı paylaşılan tasarım atomları.
    Tüm görünümler (Panel/Gelen/İşleniyor/Taslaklar/Mevzuat/Denetim) bunları kullanır → tutarlı,
    DRY. Satır-içi stil (tek <style> yalnız @keyframes). a11y: focusRing + SR_ONLY + semantik. */
-import React from "react";
+import React, { useState, useId } from "react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
 export const SANS = "'Space Grotesk',system-ui,sans-serif";
@@ -117,4 +117,75 @@ export const Icon = {
   clock: (p) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M12 7.5 V12 L15 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   scale: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 4 V20 M7 20 H17 M5 8 H19 M5 8 L3 13 H7 L5 8Z M19 8 L17 13 H21 L19 8Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round" /></svg>,
   route: (p) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="6" cy="18" r="2.4" stroke="currentColor" strokeWidth="1.6" /><circle cx="18" cy="6" r="2.4" stroke="currentColor" strokeWidth="1.6" /><path d="M8.4 18 H14 a3.5 3.5 0 0 0 0-7 H9.5 a3.5 3.5 0 0 1 0-7 H15.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  info: (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" /><path d="M12 11 V16.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="7.6" r="1.15" fill="currentColor" /></svg>,
 };
+
+/* InfoTip — erişilebilir "ⓘ" ipucu. Hover + klavye odağıyla açılır, Esc/blur kapatır.
+   children = ipucu gövdesi (JSX). a11y: buton + role=tooltip + aria-describedby. */
+export function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  return (
+    <span style={{ position: "relative", display: "inline-flex", verticalAlign: "middle" }}
+      onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button type="button" aria-label={label} aria-expanded={open} aria-describedby={open ? id : undefined}
+        onFocus={() => setOpen(true)} onBlur={() => setOpen(false)}
+        onClick={() => setOpen((o) => !o)}
+        onKeyDown={(e) => { if (e.key === "Escape") { setOpen(false); } }}
+        {...focusRing}
+        style={{ cursor: "pointer", width: 17, height: 17, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: "rgba(255,255,255,.05)", color: PAL.mut, padding: 0 }}>
+        <Icon.info />
+      </button>
+      {open && (
+        <span role="tooltip" id={id}
+          style={{ position: "absolute", top: "calc(100% + 8px)", [align === "right" ? "right" : "left"]: 0, width, zIndex: 60, background: "#141c30", border: `1px solid ${PAL.lineHi}`, borderRadius: 12, padding: "12px 14px", boxShadow: "0 20px 54px -14px rgba(0,0,0,.78)", fontFamily: SANS, fontSize: 11.5, lineHeight: 1.55, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, cursor: "default" }}>
+          {children}
+        </span>
+      )}
+    </span>
+  );
+}
+
+const RISK_ORDER = ["yesil", "sari", "kirmizi"];
+const RISK_DESC = {
+  yesil: "Düşük risk — taslak yayına hazır; rutin memur onayı yeterli.",
+  sari: "Orta risk — yayından önce memur incelemesi önerilir.",
+  kirmizi: "Yüksek risk — dikkatli memur kararı gerekir; otomatik gönderim durur.",
+};
+
+/* RiskBand — açıklamalı (tooltip'li) risk göstergesi. CanliAjanAkisi + NeonDetay ortak kullanır.
+   band: "yesil|sari|kirmizi" · lit: risk_guard tamamlandı mı (yanmadan "—"). */
+export function RiskBand({ band = "yesil", lit = true }) {
+  const cur = BANT[band] || BANT.yesil;
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, minWidth: 230 }}>
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 9 }}>
+          <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3 }}>RİSK BANDI</span>
+          <InfoTip label="Risk bandı nedir? Açıklamayı göster" width={266}>
+            <strong style={{ display: "block", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: PAL.ink, marginBottom: 6 }}>Risk bandı nedir?</strong>
+            <span style={{ display: "block", color: PAL.mut, marginBottom: 4 }}>
+              Yapay zekânın ürettiği taslağın <strong style={{ color: PAL.ink2, fontWeight: 600 }}>yayın güvenliği</strong> risk seviyesi — memurun ne kadar dikkatle incelemesi gerektiğini gösterir (trafik ışığı mantığı).
+            </span>
+            {RISK_ORDER.map((key) => (
+              <span key={key} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 7 }}>
+                <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: BANT[key].c, marginTop: 4, flexShrink: 0, boxShadow: `0 0 6px ${BANT[key].c}` }} />
+                <span style={{ color: PAL.mut }}><strong style={{ color: BANT[key].c, fontWeight: 600 }}>{BANT[key].l}</strong> — {RISK_DESC[key]}</span>
+              </span>
+            ))}
+          </InfoTip>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "6px 10px", borderRadius: 11, background: "rgba(0,0,0,.28)", border: `1px solid ${PAL.line}`, width: "fit-content" }}>
+          {RISK_ORDER.map((key) => {
+            const on = lit && band === key;
+            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 14, height: 14, borderRadius: "50%", background: on ? BANT[key].c : "rgba(255,255,255,0.07)", boxShadow: on ? `0 0 14px 2px ${BANT[key].c}` : "none", border: "1px solid " + (on ? BANT[key].c : "rgba(255,255,255,0.12)"), transition: "all .5s" }} />;
+          })}
+        </div>
+      </div>
+      <div role="status" aria-label={lit ? `Risk bandı: ${cur.l}, ${cur.t}` : "Risk bandı henüz belirlenmedi"}
+        style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 10, color: lit ? cur.c : PAL.mut2, background: lit ? cur.c + "1f" : "rgba(255,255,255,.04)", border: "1px solid " + (lit ? cur.c + "66" : "rgba(255,255,255,.1)") }}>
+        {lit ? cur.l : "—"}
+      </div>
+    </div>
+  );
+}

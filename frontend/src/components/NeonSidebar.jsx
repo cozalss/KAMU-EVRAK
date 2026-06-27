@@ -6,16 +6,17 @@ import { MONO, SANS, T, PAL, focusRing, Icon } from "./neonUi.jsx";
 const NAV = [
   { id: "panel", label: "Panel", icon: "grid" },
   { id: "gelen", label: "Gelen Evrak", icon: "inbox", badge: true },
+  { id: "giden", label: "Giden Evrak", icon: "arrow", count: "giden" },
   { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
   { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },
   { id: "mevzuat", label: "Mevzuat", icon: "book" },
   { id: "denetim", label: "Denetim İzi", icon: "shield" },
 ];
 
-function NavBtn({ item, active, onClick, busy, inboxCount, draftCount }) {
+function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCount }) {
   const Ic = Icon[item.icon];
   const base = { display: "flex", alignItems: "center", gap: 11, width: "100%", padding: "9px 11px", borderRadius: 10, fontSize: 13.5, fontFamily: SANS, textAlign: "left", cursor: "pointer" };
-  const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : null;
+  const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : item.count === "giden" ? gidenCount : null;
   const showBadge = badgeVal != null && badgeVal > 0;
   return (
     <button type="button" onClick={onClick} aria-current={active ? "page" : undefined} {...focusRing}
@@ -32,7 +33,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount }) {
   );
 }
 
-export default function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0 }) {
+export default function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0 }) {
   const [showSamples, setShowSamples] = useState(false);
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: "18px 14px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
@@ -48,7 +49,7 @@ export default function NeonSidebar({ activeView, onNavigate, onUpload, samples 
 
       <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2, padding: "0 8px 8px" }}>ÇALIŞMA ALANI</div>
       <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} />)}
+        {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} />)}
       </nav>
 
       <button type="button" onClick={onUpload} disabled={busy} {...focusRing} style={{ cursor: busy ? "not-allowed" : "pointer", marginTop: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 11, borderRadius: 11, border: "1px dashed rgba(91,140,255,.4)", background: "rgba(91,140,255,.08)", color: "#aec6ff", fontFamily: SANS, fontSize: 13, fontWeight: 500, opacity: busy ? 0.5 : 1 }}>

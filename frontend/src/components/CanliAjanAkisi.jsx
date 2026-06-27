@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
-import { MONO, SANS, T, V, PAL, BANT, focusRing, SR_ONLY, EmptyState, Btn, Icon } from "./neonUi.jsx";
+import { MONO, SANS, T, V, PAL, BANT, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
 
 const ta = (a) => `rgba(46,230,201,${a})`;
 const va = (a) => `rgba(183,148,255,${a})`;
@@ -243,17 +243,8 @@ export default function CanliAjanAkisi({
               ))}
             </div>
 
-            <div style={{ borderRadius: 14, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3, marginBottom: 9 }}>RİSK BANDI</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "6px 10px", borderRadius: 11, background: "rgba(0,0,0,.28)", border: `1px solid ${PAL.line}` }}>
-                  {[["#34d399", "yesil"], ["#fbbf24", "sari"], ["#f87171", "kirmizi"]].map(([c, key]) => {
-                    const on = lit && riskOutcome === key;
-                    return <span key={key} aria-hidden="true" style={{ width: 14, height: 14, borderRadius: "50%", background: on ? c : "rgba(255,255,255,0.07)", boxShadow: on ? `0 0 14px 2px ${c}` : "none", border: "1px solid " + (on ? c : "rgba(255,255,255,0.12)"), transition: "all .5s" }} />;
-                  })}
-                </div>
-              </div>
-              <div style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 10, color: lit ? risk.c : PAL.mut2, background: lit ? risk.c + "1f" : "rgba(255,255,255,.04)", border: "1px solid " + (lit ? risk.c + "66" : "rgba(255,255,255,.1)") }}>{lit ? risk.l : "—"}</div>
+            <div style={{ borderRadius: 14, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: "14px 16px" }}>
+              <RiskBand band={riskOutcome} lit={lit} />
             </div>
 
             <div style={{ borderRadius: 14, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: "14px 16px", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>

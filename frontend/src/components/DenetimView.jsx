@@ -1,13 +1,35 @@
 /* DenetimView — değiştirilemez denetim izi kayıtları. Her işlenen evrak için tamper-evident
    SHA-256 hash-zinciri (Sayıştay/KVKK uyumlu). Oturum geçmişinden (gerçek denetim_izi). */
-import React from "react";
+import React, { useMemo } from "react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, SANS, T, V, PAL, BANT } from "./neonUi.jsx";
+import FilterBar from "./FilterBar.jsx";
+import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR } from "./result-cards.jsx";
 
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR"); } catch { return ""; } };
 
+const BASE_CONFIG = {
+  search: { enabled: true, placeholder: "Evrak adı…" },
+  chips: [{ id: "bant", label: "Risk", options: [
+    { value: "yesil", label: "Yeşil · Düşük", color: "#34d399" },
+    { value: "sari", label: "Sarı · Orta", color: "#fbbf24" },
+    { value: "kirmizi", label: "Kırmızı · Yüksek", color: "#f87171" },
+  ] }],
+  select: [{ id: "evrak_turu", label: "Evrak Türü", options: [] }],
+  dateRange: { enabled: true, label: "İşlem Tarihi" },
+  sort: { enabled: true, default: "ts_desc", options: [
+    { value: "ts_desc", label: "En yeni" }, { value: "ts_asc", label: "En eski" }, { value: "risk_desc", label: "Risk (yüksek→düşük)" },
+  ] },
+  dataMapping: { search: ["name"], bant: "bant", evrak_turu: "evrak_turu", dateField: "ts" },
+};
+
 export default function DenetimView({ history = [], onGoInbox }) {
-  const kayitlar = history.filter((h) => h.result?.denetim_izi && Object.keys(h.result.denetim_izi).length);
+  const kayitlar = useMemo(() => history.filter((h) => h.result?.denetim_izi && Object.keys(h.result.denetim_izi).length), [history]);
+  const config = useMemo(() => ({
+    ...BASE_CONFIG,
+    select: [{ ...BASE_CONFIG.select[0], options: [{ value: "", label: "Tüm türler" }, ...deriveOptions(kayitlar, "evrak_turu", EVRAK_TR)] }],
+  }), [kayitlar]);
+  const filter = useFilter(kayitlar, config);
 
   if (kayitlar.length === 0) {
     return (
@@ -28,8 +50,13 @@ export default function DenetimView({ history = [], onGoInbox }) {
         </p>
       </NeonCard>
 
+      <FilterBar config={config} filter={filter} />
+
+      {filter.results.length === 0 ? (
+        <EmptyState icon={<Icon.shield />} title="Eşleşen kayıt yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
+      ) : (
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {kayitlar.map((h) => {
+        {filter.results.map((h) => {
           const di = h.result.denetim_izi;
           const zincir = Array.isArray(di.zincir) ? di.zincir : (Array.isArray(di.adimlar) ? di.adimlar : []);
           return (
@@ -50,6 +77,7 @@ export default function DenetimView({ history = [], onGoInbox }) {
           );
         })}
       </div>
+      )}
     </ViewWrap>
   );
 }

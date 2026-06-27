@@ -173,19 +173,25 @@ function OnayPaneli({ data, onResume, busy }) {
             </p>
           </div>
         </header>
-        {data?.risk_band && RISK_LBL[data.risk_band] && (
-          <div className={`rc-onay-risk rc-risk-${data.risk_band}`} role="alert">
-            <span className="rc-onay-risk-h">
-              {RISK_LBL[data.risk_band].ic}
-              <strong>{RISK_LBL[data.risk_band].text}</strong> — bu yüzden onayınıza sunuldu
-            </span>
-            {Array.isArray(data.risk_gerekceler) && data.risk_gerekceler.length > 0 && (
-              <ul className="rc-onay-risk-list">
-                {data.risk_gerekceler.slice(0, 4).map((g, i) => <li key={i}>{cleanDemoText(g)}</li>)}
-              </ul>
-            )}
-          </div>
-        )}
+        {(() => {
+          // Risk bandı /process_doc yanıtında risk_metadata olarak gelir (interrupt payload değil).
+          const bant = data?.risk_metadata?.bant;
+          const gerekceler = data?.risk_metadata?.gerekceler;
+          if (!bant || !RISK_LBL[bant]) return null;
+          return (
+            <div className={`rc-onay-risk rc-risk-${bant}`} role="alert">
+              <span className="rc-onay-risk-h">
+                {RISK_LBL[bant].ic}
+                <strong>{RISK_LBL[bant].text}</strong> — bu yüzden onayınıza sunuldu
+              </span>
+              {Array.isArray(gerekceler) && gerekceler.length > 0 && (
+                <ul className="rc-onay-risk-list">
+                  {gerekceler.slice(0, 4).map((g, i) => <li key={i}>{cleanDemoText(g)}</li>)}
+                </ul>
+              )}
+            </div>
+          );
+        })()}
         <pre className="rc-onay-taslak" tabIndex={0} aria-label="Onay bekleyen taslak">{taslak.display}</pre>
         {mode === "duzenle" && (
           <textarea

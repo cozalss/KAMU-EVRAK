@@ -50,7 +50,7 @@ export default function AuthPage() {
   }, []);
 
   const submit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();   // Btn type="button" → onClick'ten de çağrılır (form submit etmez)
     setHata("");
     setBusy(true);
     try {
@@ -145,7 +145,7 @@ export default function AuthPage() {
               </div>
             )}
 
-            <Btn primary disabled={busy} style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 14, marginTop: 4 }}>
+            <Btn primary onClick={submit} disabled={busy} style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 14, marginTop: 4 }}>
               {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : (kayit ? "Hesap oluştur" : "Giriş yap")}
             </Btn>
           </form>

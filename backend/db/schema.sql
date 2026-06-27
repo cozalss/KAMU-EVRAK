@@ -355,8 +355,15 @@ CREATE INDEX IF NOT EXISTS ix_madde_mevzuat        ON mevzuat_madde(mevzuat_id);
 
 -- ============================================================ 12. TETİKLEYİCİLER
 -- 12.1 denetim_adimi append-only (tamper-evident).
+--   UPDATE: her zaman YASAK (değiştirilemez).
+--   DELETE: yalnız kontrollü imha (KVKK/3473 saklama dolumu) — app.denetim_silmeye_izin='on'
+--           GUC'si SET LOCAL ile açıldığında izin verilir (islem cascade silme bu yolla yapılır).
+--           GUC yoksa/false → YASAK (varsayılan-deny) → kazara/saldırgan silme engellenir.
 CREATE OR REPLACE FUNCTION denetim_immutable() RETURNS trigger AS $$
 BEGIN
+    IF TG_OP = 'DELETE' AND current_setting('app.denetim_silmeye_izin', true) = 'on' THEN
+        RETURN OLD;
+    END IF;
     RAISE EXCEPTION 'denetim_adimi değiştirilemez (tamper-evident hash-zinciri)';
 END; $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_denetim_no_update ON denetim_adimi;

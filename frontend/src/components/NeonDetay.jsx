@@ -1,0 +1,157 @@
+/* NeonDetay — komuta merkezinin ALTINDA (sayfa aşağı kaydıkça) açılan ayrıntılı sonuç
+   bölümü. Üst 3-panel kompakt "canlı" görünüm; burada TÜM ajan çıktıları neon-stilde:
+   çok-konulu ayrıştırma, mevzuat (skor+snippet), eksik bilgi/sorular, doğrulama uyarıları,
+   arşiv/yasal-süre/denetim metadata, bilgilendirme ve resmî yazı taslağı indirme.
+   Tümü GERÇEK ProcessResponse; satır-içi stil (neon tema). */
+import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
+
+const MONO = "'IBM Plex Mono',ui-monospace,monospace";
+const SANS = "'Space Grotesk',system-ui,sans-serif";
+const T = "#2ee6c9", V = "#b794ff";
+const BANT = { yesil: { c: "#34d399", l: "YEŞİL" }, sari: { c: "#fbbf24", l: "SARI" }, kirmizi: { c: "#f87171", l: "KIRMIZI" } };
+
+function Card({ title, tag, tagColor, accent = T, children, full }) {
+  return (
+    <section style={{ gridColumn: full ? "1 / -1" : "auto", background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.08)", borderTop: `2px solid ${accent}`, borderRadius: 14, padding: "16px 18px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+        <h3 style={{ margin: 0, fontFamily: MONO, fontSize: 10.5, letterSpacing: "1.5px", color: "#9aa6c0", textTransform: "uppercase", fontWeight: 600 }}>{title}</h3>
+        {tag && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, padding: "2px 8px", borderRadius: 7, color: tagColor || accent, background: (tagColor || accent) + "22" }}>{tag}</span>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+const KV = ({ k, v, c = "#dfe5f2" }) => (
+  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "5px 0", borderBottom: "1px dashed rgba(255,255,255,.07)" }}>
+    <span style={{ fontFamily: MONO, fontSize: 11.5, color: "#8b97b0" }}>{k}</span>
+    <span style={{ fontFamily: MONO, fontSize: 11.5, color: c, textAlign: "right", fontWeight: 500 }}>{v}</span>
+  </div>
+);
+
+export default function NeonDetay({ result, onDownload, downloading, canDownload }) {
+  const r = result;
+  if (!r) return null;
+
+  const alt = (r.alt_talepler || []).filter(Boolean);
+  const mev = (r.mevzuat_onerileri || []).filter(Boolean);
+  const eksik = r.eksik_alanlar || [];
+  const clarify = r.clarify_questions || [];
+  const uyari = r.verify_uyari || [];
+  const arsiv = r.arsiv_metadata || {};
+  const sla = r.sla_metadata || {};
+  const den = r.denetim_izi || {};
+  const denAdimlar = Array.isArray(den.zincir) ? den.zincir : (Array.isArray(den.adimlar) ? den.adimlar : []);
+  const risk = BANT[r.risk_metadata?.bant];
+
+  return (
+    <section aria-labelledby="cak-detay-h" style={{ borderTop: "1px solid rgba(255,255,255,.08)", background: "#0f1626", padding: "26px 32px 48px" }}>
+      <header style={{ marginBottom: 18 }}>
+        <h2 id="cak-detay-h" style={{ margin: 0, fontFamily: SANS, fontSize: 17, fontWeight: 600, color: "#eaf0fb" }}>Ayrıntılı Sonuç · Tüm Ajan Çıktıları</h2>
+        <p style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 11.5, color: "#7d89a4" }}>Görev 1 (anlama) + Görev 2 (üretim) — değiştirilemez denetim iziyle.</p>
+      </header>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(440px, 1fr))", gap: 16, alignItems: "start" }}>
+
+        {/* Çok-konulu ayrıştırma (vitrin) */}
+        {alt.length >= 2 && (
+          <Card title="Çok-Konulu Ayrıştırma" tag={`${alt.length} alt-talep`} accent={T} full>
+            <p style={{ margin: "0 0 10px", fontFamily: MONO, fontSize: 11.5, color: "#93a0bb", lineHeight: 1.5 }}>Tek dilekçedeki ayrı istekler bölünüp her biri uygun birime ayrı havale edildi.</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 10 }}>
+              {alt.map((a, i) => (
+                <div key={i} style={{ background: "rgba(46,230,201,.05)", border: "1px solid rgba(46,230,201,.18)", borderRadius: 10, padding: "11px 13px" }}>
+                  <div style={{ fontFamily: SANS, fontSize: 12.5, color: "#dfe5f2", lineHeight: 1.5, marginBottom: 8 }}>{cleanDemoText(a.ozet || "")}</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, fontFamily: MONO, fontSize: 10 }}>
+                    {(a.tur_tr || a.tur) && <span style={{ padding: "2px 7px", borderRadius: 6, background: "rgba(255,255,255,.05)", color: "#9aa6c0" }}>{a.tur_tr || EVRAK_TR(a.tur)}</span>}
+                    {(a.birim_tr || a.birim) && <span style={{ padding: "2px 7px", borderRadius: 6, background: "rgba(183,148,255,.14)", color: "#d7c4ff" }}>{a.birim_tr || BIRIM_LBL(a.birim)}</span>}
+                    {a.cevap_suresi && <span style={{ padding: "2px 7px", borderRadius: 6, background: "rgba(46,230,201,.12)", color: "#8ff0e0" }}>{cleanDemoText(a.cevap_suresi)}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* İlgili mevzuat */}
+        {mev.length > 0 && (
+          <Card title="İlgili Mevzuat" tag={`${mev.length} öneri`} accent={T}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {mev.map((m, i) => {
+                const sc = Math.round((Number(m.score) || 0) * 100);
+                return (
+                  <div key={i} style={{ borderLeft: "2px solid rgba(46,230,201,.4)", paddingLeft: 11 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: "#dfe5f2" }}>{cleanDemoText(m.baslik)}</span>
+                      {sc > 0 && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, color: "#8ff0e0", background: "rgba(46,230,201,.12)", padding: "1px 7px", borderRadius: 6 }}>%{sc}</span>}
+                    </div>
+                    {m.snippet && <p style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 10.5, color: "#7d89a4", lineHeight: 1.5 }}>{cleanDemoText(m.snippet)}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        {/* Eksik bilgi & sorular */}
+        <Card title="Eksik Bilgi Kontrolü" tag={eksik.length ? `${eksik.length} eksik` : "tam ✓"} tagColor={eksik.length ? "#fbbf24" : "#34d399"} accent={eksik.length ? "#fbbf24" : "#34d399"}>
+          {eksik.length === 0 && clarify.length === 0 ? (
+            <p style={{ margin: 0, fontFamily: MONO, fontSize: 11.5, color: "#34d399" }}>Zorunlu alanlar eksiksiz — evrak işleme alınabilir (3071 s.K. m.4).</p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {eksik.map((e, i) => <div key={"e" + i} style={{ fontFamily: MONO, fontSize: 11.5, color: "#fde68a" }}>• {cleanDemoText(String(e))}</div>)}
+              {clarify.map((q, i) => <div key={"q" + i} style={{ fontFamily: SANS, fontSize: 12, color: "#cdd6e8", background: "rgba(251,191,36,.07)", border: "1px solid rgba(251,191,36,.2)", borderRadius: 8, padding: "7px 10px" }}>{cleanDemoText(String(q))}</div>)}
+            </div>
+          )}
+        </Card>
+
+        {/* Doğrulama (kalite kapısı) */}
+        <Card title="Doğrulama · Kalite Kapısı" tag={uyari.length ? `${uyari.length} uyarı` : "uyumlu ✓"} tagColor={uyari.length ? "#fbbf24" : "#34d399"} accent={V}>
+          <KV k="Uydurma-veto" v={uyari.length ? `${uyari.length} işaret` : "temiz ✓"} c={uyari.length ? "#fde68a" : "#34d399"} />
+          <KV k="Format (Yön. 2646)" v={r.format_uyumlu ? "uyumlu ✓" : "kontrol"} c={r.format_uyumlu ? "#34d399" : "#fde68a"} />
+          {uyari.slice(0, 5).map((u, i) => <div key={i} style={{ marginTop: 6, fontFamily: MONO, fontSize: 10.5, color: "#fde68a", lineHeight: 1.4 }}>⚠ {cleanDemoText(String(u))}</div>)}
+        </Card>
+
+        {/* Arşiv · Yasal süre · Denetim */}
+        <Card title="Arşiv · Yasal Süre · Denetim İzi" accent={V}>
+          {arsiv.sdp_kodu && <KV k="SDP kodu (2005/7)" v={String(arsiv.sdp_kodu)} c="#d7c4ff" />}
+          {(arsiv.saklama_suresi || arsiv.saklama) && <KV k="Saklama süresi" v={String(arsiv.saklama_suresi || arsiv.saklama)} />}
+          {sla.durum && <KV k="Yasal süre durumu" v={`${sla.durum}${sla.kalan_gun != null ? ` · ${sla.kalan_gun}g` : ""}`} c={sla.durum === "NORMAL" ? "#34d399" : "#fde68a"} />}
+          {risk && <KV k="Risk bandı" v={risk.l} c={risk.c} />}
+          <KV k="Denetim izi" v={denAdimlar.length ? `SHA-256 zincir · ${denAdimlar.length} adım ✓` : "SHA-256 ✓"} c="#8ff0e0" />
+          {den.kok_hash && <KV k="Kök hash" v={String(den.kok_hash).slice(0, 18) + "…"} c="#9aa6c0" />}
+        </Card>
+
+        {/* Bilgilendirme */}
+        {r.bilgilendirme && (
+          <Card title="Bilgilendirme" accent={V}>
+            <p style={{ margin: 0, fontFamily: SANS, fontSize: 12.5, color: "#cdd6e8", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{cleanDemoText(r.bilgilendirme).replace(/\*\*/g, "").replace(/\s*##\s*/g, "  ")}</p>
+          </Card>
+        )}
+
+        {/* Resmî yazı taslağı — indir */}
+        <Card title="Resmî Yazı Taslağı" tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "taslak"} accent={V} full>
+          {r.yazi_taslak_md && (
+            <pre style={{ margin: "0 0 12px", background: "#f4f5f9", borderRadius: 9, padding: "14px 16px", fontFamily: MONO, fontSize: 10.5, color: "#3a4252", whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6, maxHeight: 360, overflowY: "auto" }}>{cleanDemoText(r.yazi_taslak_md)}</pre>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <button onClick={() => onDownload?.("pdf")} disabled={!canDownload || downloading === "pdf"} {...ring} style={btn(canDownload, "#b794ff")}>{downloading === "pdf" ? "indiriliyor…" : "PDF indir"}</button>
+            <button onClick={() => onDownload?.("docx")} disabled={!canDownload || downloading === "docx"} {...ring} style={btn(canDownload, "#2ee6c9")}>{downloading === "docx" ? "indiriliyor…" : "DOCX indir"}</button>
+            {!canDownload && <span style={{ fontFamily: MONO, fontSize: 10.5, color: "#7d89a4" }}>İndirme için örnek evrak metni gerekir (dosya yolunda metin sunucuda tutulmaz).</span>}
+          </div>
+        </Card>
+
+      </div>
+    </section>
+  );
+}
+
+const ring = {
+  onFocus: (e) => { e.currentTarget.style.boxShadow = "0 0 0 2px #0f1626, 0 0 0 4px #2ee6c9"; },
+  onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
+};
+const btn = (enabled, accent) => ({
+  cursor: enabled ? "pointer" : "not-allowed", padding: "9px 16px", borderRadius: 10,
+  border: `1px solid ${enabled ? accent + "66" : "rgba(255,255,255,.1)"}`,
+  background: enabled ? accent + "18" : "rgba(255,255,255,.03)",
+  color: enabled ? accent : "#7d89a4", fontFamily: SANS, fontSize: 12.5, fontWeight: 600,
+});

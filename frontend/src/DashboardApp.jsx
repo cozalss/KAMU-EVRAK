@@ -9,8 +9,8 @@ import CanliAjanAkisi from "./components/CanliAjanAkisi.jsx";
 
 export default function DashboardApp() {
   const {
-    nodes, result, busy, error, toast, fileMeta, pendingOnay,
-    runFile, runSample, resume, showToast, dismissError, canRetry, retry,
+    nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading,
+    runFile, runSample, resume, download, showToast, dismissError, canRetry, retry,
   } = usePipeline();
 
   const fileRef = useRef(null);
@@ -44,6 +44,9 @@ export default function DashboardApp() {
         onEdit={onEdit}
         onReject={onReject}
         pendingOnay={pendingOnay}
+        onDownload={download}
+        downloading={downloading}
+        canDownload={!!evrakText}
       />
 
       {/* SR canlı bölge + görsel toast */}

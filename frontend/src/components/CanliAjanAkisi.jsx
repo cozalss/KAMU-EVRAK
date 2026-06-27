@@ -13,6 +13,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
+import NeonDetay from "./NeonDetay.jsx";
 
 // Demo (önizleme) ajan listesi — 12 adım, görsel hayatta tutar. Gerçek modda nodes kullanılır.
 const AGENTS = [
@@ -151,6 +152,9 @@ export default function CanliAjanAkisi({
   onEdit = () => {},
   onReject = () => {},
   pendingOnay = null,
+  onDownload = () => {},
+  downloading = "",
+  canDownload = false,
   speed = 820,
   autoLoop = true,
   glow = true,
@@ -221,7 +225,7 @@ export default function CanliAjanAkisi({
   const toggle = () => !driven && setRunning((r) => !r);
 
   return (
-    <div style={{ display: "flex", height: "100vh", minHeight: 680, background: "#121829", color: "#e6ebf5", fontFamily: SANS, overflow: "hidden" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#121829", color: "#e6ebf5", fontFamily: SANS }}>
       <style>{KEYFRAMES}</style>
       {/* Ekran-okuyucu: canlı pipeline ilerleme duyurusu */}
       <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
@@ -234,7 +238,7 @@ export default function CanliAjanAkisi({
       </div>
 
       {/* ===== Sol menü ===== */}
-      <aside style={{ width: 228, flexShrink: 0, background: "#0f1626", borderRight: "1px solid rgba(255,255,255,.07)", display: "flex", flexDirection: "column", padding: "18px 14px" }}>
+      <aside style={{ width: 228, flexShrink: 0, background: "#0f1626", borderRight: "1px solid rgba(255,255,255,.07)", display: "flex", flexDirection: "column", padding: "18px 14px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "4px 6px 18px" }}>
           <div aria-hidden="true" style={{ width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg,#5b8cff,#3a63d6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px -6px rgba(91,140,255,.7)" }}>
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5" stroke="#fff" strokeWidth="1.7" /><path d="M8.5 13.5 L11 16 L16 9.5" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -289,7 +293,7 @@ export default function CanliAjanAkisi({
       {/* ===== Ana sütun ===== */}
       <main style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         {/* Üst durum çubuğu */}
-        <header style={{ flexShrink: 0, padding: "15px 24px", borderBottom: "1px solid rgba(255,255,255,.07)", background: "rgba(15,22,38,.55)", backdropFilter: "blur(8px)" }}>
+        <header style={{ flexShrink: 0, padding: "15px 24px", borderBottom: "1px solid rgba(255,255,255,.07)", background: "rgba(15,22,38,.85)", backdropFilter: "blur(8px)", position: "sticky", top: 0, zIndex: 20 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 13, minWidth: 0 }}>
               <div style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(91,140,255,.12)", border: "1px solid rgba(91,140,255,.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -326,16 +330,16 @@ export default function CanliAjanAkisi({
           </div>
         </header>
 
-        {/* 3 panel */}
-        <section style={{ flex: 1, minHeight: 0, overflow: "auto" }}>
-          <div style={{ height: "100%", minWidth: 1060, display: "grid", gridTemplateColumns: "290px minmax(380px,1fr) 360px" }}>
+        {/* 3 panel — komuta merkezi (ilk ekran; sayfa aşağı kaydıkça detay açılır) */}
+        <section style={{ minHeight: "calc(100vh - 132px)" }}>
+          <div style={{ minHeight: "100%", minWidth: 1060, display: "grid", gridTemplateColumns: "290px minmax(380px,1fr) 360px" }}>
             {/* — Kaynak belge — */}
-            <div style={{ borderRight: "1px solid rgba(255,255,255,.07)", padding: 18, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+            <div style={{ borderRight: "1px solid rgba(255,255,255,.07)", padding: 18, display: "flex", flexDirection: "column" }}>
               <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#7d89a4", marginBottom: 12 }}>KAYNAK BELGE</div>
               <div style={{ position: "relative", borderRadius: 10, overflow: "hidden", background: "#eef0f6", boxShadow: "0 12px 34px -12px rgba(0,0,0,.6)", minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
                 {busy && <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 2, background: "linear-gradient(90deg,transparent,#2ee6c9,transparent)", boxShadow: "0 0 12px #2ee6c9", animation: "cak-scanv 2.8s ease-in-out infinite", zIndex: 3 }} />}
                 {segs ? (
-                  <pre style={{ margin: 0, padding: "18px 16px", fontFamily: MONO, fontSize: 10.5, lineHeight: 1.7, color: "#2a3346", whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: "62vh", overflowY: "auto" }}>
+                  <pre style={{ margin: 0, padding: "18px 16px", fontFamily: MONO, fontSize: 10.5, lineHeight: 1.7, color: "#2a3346", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                     {segs.map((sg, i) => sg.mark
                       ? <mark key={i} style={{ background: "#fde68a", color: "#92400e", borderRadius: 3, padding: "0 2px" }}>{sg.t}</mark>
                       : <span key={i}>{sg.t}</span>)}
@@ -357,7 +361,7 @@ export default function CanliAjanAkisi({
             </div>
 
             {/* — Ajan izi — */}
-            <div ref={traceRef} style={{ overflowY: "auto", padding: "18px 22px" }}>
+            <div ref={traceRef} style={{ padding: "18px 22px" }}>
               <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: "#7d89a4", marginBottom: 14 }}>AJAN İZİ · {total} ADIM</div>
               {display.map((a, i) => {
                 const isAnla = a.gorev === 1, col = isAnla ? T : V, colA = isAnla ? ta : va;
@@ -388,7 +392,7 @@ export default function CanliAjanAkisi({
             </div>
 
             {/* — Sağ panel — */}
-            <div style={{ borderLeft: "1px solid rgba(255,255,255,.07)", padding: 18, overflowY: "auto", display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ borderLeft: "1px solid rgba(255,255,255,.07)", padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
               {/* Çıkarılan veri */}
               <div style={{ borderRadius: 14, background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.08)", padding: "14px 16px" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
@@ -458,6 +462,11 @@ export default function CanliAjanAkisi({
             </div>
           </div>
         </section>
+
+        {/* Ayrıntılı sonuç — sayfa aşağı kaydıkça TÜM ajan çıktıları (gerçek modda) */}
+        {driven && result && (
+          <NeonDetay result={result} onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
+        )}
       </main>
     </div>
   );

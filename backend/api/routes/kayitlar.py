@@ -1,0 +1,93 @@
+"""Kalıcı kayıt görünümleri — REST (Faz 7). Frontend'i oturum-state yerine DB'den besler.
+
+Tümü auth-korumalı (get_current_user). FilterBar parametreleri query string ile.
+Mevzuat araması gerçek seed korpusta (233 mevzuat / 1506 chunk) çalışır.
+"""
+from __future__ import annotations
+
+import uuid
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from auth.deps import CurrentUser
+from db.repositories import dogrula_denetim
+from db.repositories.mevzuat_repo import hybrid_ara
+from db.repositories.sorgu_repo import (
+    gelen_evrak_listele,
+    giden_evrak_listele,
+    islem_detay,
+    panel_istatistik,
+    taslak_listele,
+)
+from db.session import get_session
+
+router = APIRouter(tags=["kayitlar"])
+
+Session = Annotated[AsyncSession, Depends(get_session)]
+
+
+@router.get("/panel/istatistik")
+async def panel(_user: CurrentUser, session: Session) -> dict:
+    return await panel_istatistik(session)
+
+
+@router.get("/mevzuat/ara")
+async def mevzuat_ara(
+    _user: CurrentUser, session: Session,
+    q: Annotated[str, Query(min_length=1, max_length=200)],
+    limit: Annotated[int, Query(ge=1, le=50)] = 10,
+) -> dict:
+    sonuc = await hybrid_ara(session, q=q, limit=limit)
+    return {"q": q, "adet": len(sonuc), "sonuclar": sonuc}
+
+
+@router.get("/gelen-evrak")
+async def gelen_evrak(
+    _user: CurrentUser, session: Session,
+    arama: Annotated[str, Query(max_length=200)] = "",
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> dict:
+    rows = await gelen_evrak_listele(session, limit=limit, offset=offset, arama=arama)
+    return {"adet": len(rows), "kayitlar": rows}
+
+
+@router.get("/giden-evrak")
+async def giden_evrak(
+    _user: CurrentUser, session: Session,
+    durum: Annotated[str, Query(max_length=20)] = "",
+    risk: Annotated[str, Query(max_length=10)] = "",
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> dict:
+    rows = await giden_evrak_listele(session, limit=limit, offset=offset, durum=durum, risk=risk)
+    return {"adet": len(rows), "kayitlar": rows}
+
+
+@router.get("/taslaklar")
+async def taslaklar(
+    _user: CurrentUser, session: Session,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> dict:
+    rows = await taslak_listele(session, limit=limit, offset=offset)
+    return {"adet": len(rows), "kayitlar": rows}
+
+
+@router.get("/islem/{islem_id}")
+async def islem(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> dict:
+    detay = await islem_detay(session, islem_id)
+    if detay is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
+    return detay
+
+
+@router.get("/islem/{islem_id}/denetim/dogrula")
+async def denetim_dogrula(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> dict:
+    """Denetim izinin bütünlüğünü DB'den bağımsız yeniden hesapla (tamper-evident)."""
+    return await dogrula_denetim(session, islem_id=islem_id)
+
+
+__all__ = ("router",)

@@ -5,6 +5,7 @@ Hata eşlemesi: AuthError.kod → HTTP (409 eposta_kayitli, 404 birim_yok, 401 k
 """
 from __future__ import annotations
 
+import ipaddress
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -38,8 +39,19 @@ def _http(e: service.AuthError) -> HTTPException:
     return HTTPException(_KOD_HTTP.get(e.kod, status.HTTP_400_BAD_REQUEST), e.mesaj)
 
 
+def _gecerli_ip(host: str | None) -> str | None:
+    """INET kolonu için doğrula — geçersizse (örn. 'testclient', proxy adı) None."""
+    if not host:
+        return None
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        return None
+
+
 def _istemci(req: Request) -> tuple[str | None, str | None]:
-    ip = req.client.host if req.client else None
+    ip = _gecerli_ip(req.client.host if req.client else None)
     return ip, req.headers.get("user-agent")
 
 

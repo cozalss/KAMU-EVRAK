@@ -190,35 +190,32 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
             yield _sse({"event": "error", "message": "Belgeden metin çıkarılamadı"})
             return
         state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=filename)
-        accumulated: dict[str, Any] = dict(state)
-        # HITL açıksa checkpointer'lı graf + thread_id → koşullu onayda interrupt PERSIST eder
-        # (resume mümkün; bypass YOK). Kapalıyken (varsayılan) checkpointer'sız graf — yol birebir.
-        graph = _get_hitl_graph() if HITL_ENABLED else _get_graph()
-        cfg = {"configurable": {"thread_id": uuid4().hex}} if HITL_ENABLED else None
+        # Akış HER ZAMAN checkpointer'lı graf + thread_id: (1) final state get_state ile okunur →
+        # LangGraph reducer'ları (operator.add / _merge_dict fan-in) DOĞRU uygulanır — plain
+        # dict.update fan-in'i bozardı (HIGH-8); (2) HITL koşullu onayda interrupt PERSIST eder
+        # (resume mümkün, bypass YOK). onay_kapisi yalnız HITL_ENABLED iken grafta (baseline korunur).
+        graph = _get_hitl_graph()
+        cfg = {"configurable": {"thread_id": uuid4().hex}}
         try:
             async for update in graph.astream(state, cfg, stream_mode="updates"):
                 for node, slice_ in update.items():
                     if node == "__interrupt__":
                         continue  # interrupt aşağıda snap.next ile ele alınır
-                    if isinstance(slice_, dict):
-                        accumulated.update(slice_)
                     yield _sse({"event": "node", "node": node, "status": "done",
                                 "data": _node_summary(node, slice_ or {})})
         except Exception as exc:
             log.error("process_stream_failed", error=str(exc) or type(exc).__name__)
             yield _sse({"event": "error", "message": "İşleme hatası"})
             return
-        # HITL: akış bir node'da bekliyorsa (memur onayı) → onay_bekliyor + thread_id ile bitir.
-        if HITL_ENABLED:
-            snap = await graph.aget_state(cfg)
-            if snap.next:  # interrupt'ta duruldu (sarı/kırmızı risk) → memur kararı bekleniyor
-                resp = _to_response(dict(snap.values), ocr_meta)
-                resp.onay_bekliyor = True
-                resp.thread_id = cfg["configurable"]["thread_id"]
-                yield _sse({"event": "done", "result": resp.model_dump()})
-                return
-            accumulated = dict(snap.values)
-        yield _sse({"event": "done", "result": _to_response(accumulated, ocr_meta).model_dump()})
+        # Final state: reducer'lar uygulanmış halde (birikimli dict.update yerine).
+        snap = await graph.aget_state(cfg)
+        if HITL_ENABLED and snap.next:  # interrupt'ta duruldu (sarı/kırmızı risk) → memur onayı
+            resp = _to_response(dict(snap.values), ocr_meta)
+            resp.onay_bekliyor = True
+            resp.thread_id = cfg["configurable"]["thread_id"]
+            yield _sse({"event": "done", "result": resp.model_dump()})
+            return
+        yield _sse({"event": "done", "result": _to_response(dict(snap.values), ocr_meta).model_dump()})
 
     return StreamingResponse(gen(), media_type="text/event-stream")
 

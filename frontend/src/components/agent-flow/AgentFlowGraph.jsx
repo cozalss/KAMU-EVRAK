@@ -13,6 +13,7 @@
    Erişilebilir: role=img + aria-label (canlı özet) + figcaption status-region;
    prefers-reduced-motion ile animasyonlar kapanır (CSS). */
 import React, { useMemo } from "react";
+import { EVRAK_TR } from "../result-cards.jsx";
 import { PIPELINE, EDGES, edgeState, buildFigcaption } from "./topology.js";
 
 // ---- SVG yerleşim sabitleri (col/row → piksel) ----
@@ -255,7 +256,15 @@ function summarize(id, d) {
   if (id === "oku") return `${d.engine || "metin"} · ${d.n_chars ?? 0} krk`;
   if (id === "siniflandir") {
     const pct = Math.round((d.tur_confidence || 0) * 100);
-    return d.evrak_turu ? `${d.evrak_turu} · %${pct}` : "";
+    return d.evrak_turu ? `${EVRAK_TR(d.evrak_turu)} · %${pct}` : "";
+  }
+  if (id === "decompose") {
+    const n = (d.alt_talepler || []).length;
+    return n >= 2 ? `${n} alt-talep` : "";
+  }
+  if (id === "risk_guard") {
+    const bant = d.risk_metadata?.bant;
+    return bant ? ({ yesil: "yeşil ✓", sari: "sarı ⚠", kirmizi: "kırmızı ⚠" }[bant] || bant) : "";
   }
   if (id === "cikar") {
     const n = d.bilgi_unsurlari ? Object.keys(d.bilgi_unsurlari).length : 0;

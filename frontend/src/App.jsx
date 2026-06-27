@@ -445,13 +445,10 @@ export default function App() {
         )}
 
         {/* ---- Sonuç bölgesi: yükleniyor (iskelet) → sonuç kartları ----
-            SC 4.1.3 — aria-live="polite" + aria-busy dinamik içerik değişimini duyurur */}
-        <section
-          className="ke-result-wrap"
-          aria-live="polite"
-          aria-busy={busy}
-          aria-label="Evrak işleme sonuçları"
-        >
+            SC 4.1.3 — aria-live YOK: tüm kart ağacını canlı-bölge sarmak SR-taşması yapar;
+            durum AgentFlow figcaption + toast (role=status) ile kısa/hedefli duyurulur.
+            ResultCards kendi h2'siyle (aria-labelledby) bölgeyi adlandırır. */}
+        <section className="ke-result-wrap" aria-busy={busy} aria-label="Evrak işleme sonuçları">
           {/* HITL: memur onay paneli (taslakta durulduysa) — sonuç gelmeden önce. */}
           {pendingOnay && !result && (
             <OnayPaneli data={pendingOnay} onResume={handleResume} busy={busy} />
@@ -558,6 +555,8 @@ function nodeDataFromResult(id, r, nChars = 0) {
       format_uyumlu: r.format_uyumlu === undefined ? !!r.yazi_taslak_md : r.format_uyumlu,
       verify_uyari: r.verify_uyari || [],
     };
+    case "decompose": return { alt_talepler: r.alt_talepler || [] };
+    case "risk_guard": return { risk_metadata: r.risk_metadata };
     case "finalize": return {};
     default: return null;
   }

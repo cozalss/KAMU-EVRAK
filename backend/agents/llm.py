@@ -642,7 +642,8 @@ class OpenAIClient:
 
         choices = data.get("choices") or []
         if not choices:
-            raise ValueError(f"OpenAI yanıtında choices boş: {str(data)[:200]}")
+            # Ham yanıt gövdesini hataya/loga YAZMA (hassas içerik sızıntısı) — yalnız yapı ipucu.
+            raise ValueError(f"OpenAI yanıtı geçersiz: 'choices' boş (yanıt anahtarları: {sorted(data)})")
         choice = choices[0]
         usage = data.get("usage", {})
         log.info(

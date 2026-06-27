@@ -213,7 +213,7 @@ def compute_decomposition(
     segs = _heuristik_segment(govde)
     if len(segs) < 2:
         return []
-    tarih_str = str(unsurlar.get("tarih") or "") or text
+    tarih_str = str(unsurlar.get("tarih") or "")  # tüm metni GEÇİRME (yanlış tarih riski); yoksa tarih_yok
     return [_enrich(s, tarih_str, bugun) for s in segs]
 
 
@@ -233,7 +233,7 @@ async def decompose_node(state: dict[str, Any]) -> dict[str, Any]:
     if len(segs) < 2:
         return {"alt_talepler": []}
 
-    tarih_str = str(unsurlar.get("tarih") or "") or text
+    tarih_str = str(unsurlar.get("tarih") or "")  # tüm metni GEÇİRME (yanlış tarih riski); yoksa tarih_yok
     alt = [_enrich(s, tarih_str, bugun) for s in segs]
     log.info("decompose", n_alt=len(alt), birimler=[a["birim"] for a in alt])
     return {"alt_talepler": alt}

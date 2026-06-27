@@ -113,7 +113,9 @@ async def sla_triyaj_node(state: dict[str, Any]) -> dict[str, Any]:
     """Yasal cevap süresi triyajı (additive, deterministik) — GECİKMİŞ/KRİTİK rozeti."""
     turu = state.get("evrak_turu", "belirsiz")
     unsurlar = state.get("bilgi_unsurlari") or {}
-    tarih_str = str(unsurlar.get("tarih") or "") or state.get("evrak_text", "")
+    # Yalnız çıkarılan/doğrulanan tarih; tüm evrak metnini GEÇİRME (gövdedeki rastgele
+    # tarihi yakalayıp yanlış SLA hesaplama riski). Tarih yoksa compute_sla 'tarih_yok' üretir.
+    tarih_str = str(unsurlar.get("tarih") or "")
     meta = compute_sla(turu, tarih_str, date.today())
     log.info("sla_triyaj", turu=turu, durum=meta["durum"], kalan=meta.get("kalan_gun"))
     return {"sla_metadata": meta}

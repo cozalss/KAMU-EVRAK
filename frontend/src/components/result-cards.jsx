@@ -260,7 +260,7 @@ function EvrakTuruCard({ turu, conf }) {
         </span>
       </div>
       <div
-        className="rc-meter" role="meter" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
+        className="rc-meter" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
         aria-label={`Sınıflandırma güveni yüzde ${pct}`}
       >
         <span className={`rc-meter-fill rc-conf-${tone.cls}`} style={{ "--p": pct / 100 }} />
@@ -997,7 +997,9 @@ function renderInlineBold(text) {
 export function ResultCards({ r, onToast, onDownload, downloading, canDownload, verify }) {
   if (!r) return null;
   return (
-    <section className="rc-grid" aria-label="Evrak işleme sonuçları">
+    <section className="rc-grid" aria-labelledby="rc-results-h">
+      {/* Başlık hiyerarşisi h1→h2→h3: kartlar (h3) bu h2'nin altına oturur (SC 1.3.1/2.4.6). */}
+      <h2 id="rc-results-h" className="rc-sr">Evrak işleme sonuçları</h2>
       {/* Dur-ve-sor: sistem eksiği fark edip soru ürettiyse EN ÜSTTE belirgin banner. */}
       <ClarifyBanner eksik={r.eksik_alanlar} sorular={r.clarify_questions} />
       <BilgilendirmeCard text={r.bilgilendirme} />

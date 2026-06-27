@@ -11,7 +11,7 @@ import datetime as _dt
 import re
 import uuid
 
-from sqlalchemy import delete, func, select, text, update
+from sqlalchemy import delete, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from agents.config import saklama_suresi
@@ -32,7 +32,7 @@ def saklama_yil(evrak_turu_kod: str | None) -> int | None:
 async def suresi_dolmus(session: AsyncSession, *, simdi: _dt.datetime | None = None
                         ) -> list[dict]:
     """Saklama süresi dolmuş evraklar. Tür, en güncel işlemin evrak_turu_kod'undan."""
-    simdi = simdi or _dt.datetime.now(_dt.timezone.utc)
+    simdi = simdi or _dt.datetime.now(_dt.UTC)
     rows = (await session.execute(
         select(GelenEvrak.id, GelenEvrak.evrak_no, GelenEvrak.olusturuldu,
                Islem.evrak_turu_kod, Islem.baslangic)
@@ -87,4 +87,4 @@ async def imha_uygula(session: AsyncSession, *, simdi: _dt.datetime | None = Non
             "evraklar": [d["evrak_no"] for d in dolmus]}
 
 
-__all__ = ("saklama_yil", "suresi_dolmus", "anonimlestir", "sil", "imha_uygula")
+__all__ = ("anonimlestir", "imha_uygula", "saklama_yil", "sil", "suresi_dolmus")

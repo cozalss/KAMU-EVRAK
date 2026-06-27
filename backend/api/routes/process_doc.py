@@ -130,7 +130,7 @@ async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,
         islem_id = await persist_pipeline_run(
             state=state, response=response, kaynak_metin=kaynak_metin, filename=filename)
         log.info("db_persist", islem_id=str(islem_id))
-    except Exception as e:  # noqa: BLE001 — persistence demo akışını asla kıramaz
+    except Exception as e:
         log.warning("db_persist_hata", hata=str(e)[:200])
 
 

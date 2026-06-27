@@ -42,7 +42,7 @@ def main() -> int:
     r = client.post("/auth/kayit", json={"eposta": _EPOSTA, "parola": _PAROLA,
                                          "ad_soyad": "Smoke API", "birim_kod": birim_kod})
     assert r.status_code == 201, f"kayıt {r.status_code} {r.text}"
-    print(f"1. kayıt OK (201)")
+    print("1. kayıt OK (201)")
 
     # 2) giriş
     r = client.post("/auth/giris", json={"eposta": _EPOSTA, "parola": _PAROLA})

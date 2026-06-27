@@ -71,4 +71,4 @@ async def dogrula_denetim(session: AsyncSession, *, islem_id: uuid.UUID) -> dict
     }
 
 
-__all__ = ("persist_denetim", "dogrula_denetim")
+__all__ = ("dogrula_denetim", "persist_denetim")

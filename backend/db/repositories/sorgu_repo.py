@@ -104,6 +104,9 @@ async def islem_detay(session: AsyncSession, islem_id: uuid.UUID) -> dict | None
 
 
 __all__ = (
-    "panel_istatistik", "gelen_evrak_listele", "giden_evrak_listele",
-    "taslak_listele", "islem_detay",
+    "gelen_evrak_listele",
+    "giden_evrak_listele",
+    "islem_detay",
+    "panel_istatistik",
+    "taslak_listele",
 )

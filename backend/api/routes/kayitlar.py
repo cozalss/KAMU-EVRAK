@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.deps import CurrentUser, require_role
 from db.models import Birim, Kullanici
-from db.repositories import KararHatasi, dogrula_denetim, onayla_ve_gonder
+from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
     gelen_evrak_listele,
@@ -116,7 +116,7 @@ async def onayla(
         return await onayla_ve_gonder(
             session, islem_id=islem_id, kullanici_id=kullanici.id,
             secim=req.secim, gerekce=req.gerekce)
-    except KararHatasi as e:
+    except KararError as e:
         kod = status.HTTP_404_NOT_FOUND if e.kod == "taslak_yok" else status.HTTP_409_CONFLICT
         raise HTTPException(kod, e.mesaj) from e
 

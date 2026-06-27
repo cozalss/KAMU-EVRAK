@@ -23,7 +23,7 @@ _ROOT = Path(__file__).resolve().parents[2]
 
 
 def _vars() -> str:
-    return _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d_%H%M%S")
+    return _dt.datetime.now(_dt.UTC).strftime("%Y%m%d_%H%M%S")
 
 
 async def main() -> int:
@@ -34,7 +34,7 @@ async def main() -> int:
         adimlar = (await s.execute(
             select(DenetimAdimi).order_by(DenetimAdimi.islem_id, DenetimAdimi.sira))).scalars().all()
         veri = {
-            "uretildi": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+            "uretildi": _dt.datetime.now(_dt.UTC).isoformat(),
             "denetim_izi": [{
                 "islem_id": str(i.islem_id), "kok_hash": i.kok_hash, "son_hash": i.son_hash,
                 "adim_sayisi": i.adim_sayisi, "butunluk": i.butunluk,

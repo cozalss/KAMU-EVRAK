@@ -17,7 +17,6 @@ from db.models import (
     AltTalep,
     BilgiUnsuru,
     GelenEvrak,
-    Islem,
     KanitSpan,
     Kullanici,
     MevzuatOneri,
@@ -68,6 +67,7 @@ async def main() -> int:
     async with session_factory() as s:
         await _temizle(s)
         from sqlalchemy import select as _sel
+
         from db.models import Birim
         birim = await s.scalar(_sel(Birim).limit(1))
         k = await service.kayit(s, eposta=_EPOSTA, parola="Smoke.Islem.1!",
@@ -92,7 +92,7 @@ async def main() -> int:
         sl_row = await s.get(SlaTakip, islem.id)
         assert ri_row.bant == "sari" and sl_row.durum == "normal", "risk/sla normalize hatası"
         ok = (bu == 3 and ks == 1 and at == 1 and mo == 2 and ri == 1 and sl == 1)
-        print(f"4. doğrulama: hedef_birim çözüldü, JSONB kayıpsız, risk=sari, sla=normal")
+        print("4. doğrulama: hedef_birim çözüldü, JSONB kayıpsız, risk=sari, sla=normal")
         await _temizle(s)
         print("5. temizlik OK (gelen_evrak cascade + kullanıcı silindi)")
     await engine.dispose()

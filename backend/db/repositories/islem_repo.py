@@ -194,7 +194,7 @@ async def persist_islem(
         sla_metadata=response.sla_metadata or {},
         risk_metadata=response.risk_metadata or {},
         kanit_metadata=response.kanit_metadata or {},
-        bitis=_dt.datetime.now(_dt.timezone.utc) if durum == "tamamlandi" else None,
+        bitis=_dt.datetime.now(_dt.UTC) if durum == "tamamlandi" else None,
         sure_ms=sure_ms,
     )
     session.add(islem)

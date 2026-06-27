@@ -26,7 +26,7 @@ class AuthError(Exception):
 
 
 def _now() -> _dt.datetime:
-    return _dt.datetime.now(_dt.timezone.utc)
+    return _dt.datetime.now(_dt.UTC)
 
 
 async def kayit(session: AsyncSession, *, eposta: str, parola: str, ad_soyad: str,
@@ -111,4 +111,4 @@ async def cikis(session: AsyncSession, *, refresh_token: str) -> bool:
     return True
 
 
-__all__ = ("AuthError", "kayit", "giris", "yenile", "cikis")
+__all__ = ("AuthError", "cikis", "giris", "kayit", "yenile")

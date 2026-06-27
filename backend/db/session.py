@@ -43,4 +43,4 @@ async def get_session() -> AsyncIterator[AsyncSession]:
         yield session
 
 
-__all__ = ("engine", "session_factory", "get_session")
+__all__ = ("engine", "get_session", "session_factory")

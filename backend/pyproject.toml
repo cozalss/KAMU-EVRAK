@@ -96,6 +96,10 @@ ignore = ["E501", "RUF001", "RUF002", "RUF003", "B008"]
 # 'None' içeren betimleyici test adı (N802), match= regex metakarakteri (RUF043),
 # monkeypatch için modül kısa-alias'ı (N812: 'import x as S').
 "tests/**" = ["B017", "B018", "F841", "N802", "N812", "RUF043", "RUF059"]
+# db/smoke_*.py: CANLI elle çalıştırılan smoke betikleri (CI'da değil) — kompakt smoke
+# kalıpları: tek-satır çoklu ifade (E702), kullanılmayan değişken (F841/RUF059),
+# kısa SQLAlchemy model arg adı (N803/N806). Gerçek hatalar (F/I/UP) aktif kalır.
+"db/smoke_*.py" = ["E702", "N803", "N806", "F841", "RUF059"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

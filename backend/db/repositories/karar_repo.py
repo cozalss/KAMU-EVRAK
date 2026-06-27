@@ -19,7 +19,7 @@ _KARAR = {"onayla": "onaylandi", "duzenle": "duzenlendi", "reddet": "reddedildi"
 _GIDEN = {"onaylandi": "gonderildi", "duzenlendi": "duzenlendi"}
 
 
-class KararHatasi(Exception):
+class KararError(Exception):
     """kod: 'taslak_yok' | 'zaten_gonderildi'."""
 
     def __init__(self, kod: str, mesaj: str) -> None:
@@ -28,7 +28,7 @@ class KararHatasi(Exception):
 
 
 async def _giden_no(session: AsyncSession) -> str:
-    yil = _dt.datetime.now(_dt.timezone.utc).year
+    yil = _dt.datetime.now(_dt.UTC).year
     n = int(await session.scalar(select(func.count()).select_from(GidenEvrak)) or 0)
     return f"E-G-{yil}/{n + 1:04d}"
 
@@ -42,12 +42,12 @@ async def onayla_ve_gonder(
         select(Taslak).where(Taslak.islem_id == islem_id)
         .order_by(Taslak.surum.desc()).limit(1))
     if taslak is None:
-        raise KararHatasi("taslak_yok", "Bu işleme ait taslak bulunamadı.")
+        raise KararError("taslak_yok", "Bu işleme ait taslak bulunamadı.")
 
     karar = _KARAR.get(secim, "onaylandi")
     session.add(Onay(
         taslak_id=taslak.id, karar=karar, karar_veren_id=kullanici_id,
-        gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.timezone.utc)))
+        gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.UTC)))
 
     giden_no = None
     if karar != "reddedildi":
@@ -56,7 +56,7 @@ async def onayla_ve_gonder(
             select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id,
                                         GidenEvrak.durum != "reddedildi"))
         if mevcut is not None:
-            raise KararHatasi("zaten_gonderildi", "Bu taslak zaten gönderilmiş.")
+            raise KararError("zaten_gonderildi", "Bu taslak zaten gönderilmiş.")
         islem = await session.get(Islem, islem_id)
         risk = await session.scalar(
             select(RiskDegerlendirme.bant).where(RiskDegerlendirme.islem_id == islem_id))
@@ -74,4 +74,4 @@ async def onayla_ve_gonder(
     return {"karar": karar, "giden_no": giden_no}
 
 
-__all__ = ("KararHatasi", "onayla_ve_gonder")
+__all__ = ("KararError", "onayla_ve_gonder")

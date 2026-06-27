@@ -50,7 +50,7 @@ def test_access_token_coz_payload():
     assert p is not None
     assert p["sub"] == "kid-1" and p["rol"] == "yetkili" and p["birim_id"] == "bid-9"
     assert p["type"] == "access"
-    assert son > _dt.datetime.now(_dt.timezone.utc)
+    assert son > _dt.datetime.now(_dt.UTC)
 
 
 def test_access_token_refresh_olarak_cozulmez():
@@ -73,7 +73,7 @@ def test_gecersiz_imza_reddedilir():
 
 
 def test_suresi_dolmus_token_reddedilir():
-    gecmis = _dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(hours=1)
+    gecmis = _dt.datetime.now(_dt.UTC) - _dt.timedelta(hours=1)
     suresi_dolmus = jwt.encode(
         {"sub": "x", "type": "access", "exp": gecmis},
         security._SECRET, algorithm="HS256")

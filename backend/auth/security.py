@@ -56,7 +56,7 @@ def token_hash(token: str) -> str:
 
 # --- JWT ------------------------------------------------------------------
 def _now() -> _dt.datetime:
-    return _dt.datetime.now(_dt.timezone.utc)
+    return _dt.datetime.now(_dt.UTC)
 
 
 def access_token_uret(kullanici_id: str, rol: str, birim_id: str) -> tuple[str, _dt.datetime]:
@@ -89,6 +89,11 @@ def token_coz(token: str, beklenen_tip: str) -> dict | None:
 
 
 __all__ = (
-    "hash_parola", "parola_dogrula", "rehash_gerekli", "token_hash",
-    "access_token_uret", "refresh_token_uret", "token_coz",
+    "access_token_uret",
+    "hash_parola",
+    "parola_dogrula",
+    "refresh_token_uret",
+    "rehash_gerekli",
+    "token_coz",
+    "token_hash",
 )

@@ -15,7 +15,7 @@ from sqlalchemy import delete, select, text
 from api.schemas import ProcessResponse
 from auth import service
 from db.models import Birim, GelenEvrak, Kullanici
-from db.repositories import evrak_olustur, persist_islem
+from db.repositories import persist_islem
 from db.repositories.imha_repo import anonimlestir, sil, suresi_dolmus
 from db.session import engine, session_factory
 
@@ -34,7 +34,7 @@ async def _temizle(s):
 
 async def _evrak(s, k, birim, no, gun_once):
     """Geriye-tarihli gelen_evrak + dilekçe işlemi (tür → 5 yıl saklama)."""
-    eski = _dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(days=gun_once)
+    eski = _dt.datetime.now(_dt.UTC) - _dt.timedelta(days=gun_once)
     ev = GelenEvrak(evrak_no=no, ocr_metni="Gizli içerik: Ayşe Y***z başvurusu.",
                     baslik="test", olusturan_id=k.id, gelis_birim_id=birim.id, olusturuldu=eski)
     s.add(ev)

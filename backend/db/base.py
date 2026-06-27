@@ -27,4 +27,4 @@ class Olusturuldu:
         DateTime(timezone=True), server_default=func.now())
 
 
-__all__ = ("Base", "UUIDPk", "Olusturuldu")
+__all__ = ("Base", "Olusturuldu", "UUIDPk")

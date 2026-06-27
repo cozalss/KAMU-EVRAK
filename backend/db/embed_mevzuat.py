@@ -60,7 +60,7 @@ async def main() -> int:
             vekt = model.encode(
                 [_PREFIX + (m or "") for _id, m in parca],
                 normalize_embeddings=True, batch_size=_BATCH, show_progress_bar=False)
-            for (cid, _m), v in zip(parca, vekt):
+            for (cid, _m), v in zip(parca, vekt, strict=False):
                 await s.execute(update(MevzuatChunk).where(MevzuatChunk.id == cid)
                                 .values(embedding=v.tolist()))
             await s.commit()

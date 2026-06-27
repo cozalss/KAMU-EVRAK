@@ -13,8 +13,8 @@ from sqlalchemy import delete, func, select
 
 from api.schemas import ProcessResponse
 from auth import service
-from db.models import Birim, GelenEvrak, GidenEvrak, Islem, Kullanici, Onay, Taslak
-from db.repositories import KararHatasi, evrak_olustur, onayla_ve_gonder, persist_islem
+from db.models import Birim, GelenEvrak, GidenEvrak, Kullanici, Onay, Taslak
+from db.repositories import KararError, evrak_olustur, onayla_ve_gonder, persist_islem
 from db.session import engine, session_factory
 
 _EPOSTA = "smoke.karar@kamu-evrak.local"
@@ -64,7 +64,7 @@ async def main() -> int:
         guard = False
         try:
             await onayla_ve_gonder(s, islem_id=islem.id, kullanici_id=k.id, secim="onayla")
-        except KararHatasi as e:
+        except KararError as e:
             await s.rollback()
             guard = e.kod == "zaten_gonderildi"
             print(f"3. çift-gönderim engellendi ({e.kod})")

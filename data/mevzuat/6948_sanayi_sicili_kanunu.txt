@@ -1,0 +1,26 @@
+Sanayi Sicili Kanunu
+Kanun No 6948, Kabul 17.04.1957, RG 24.04.1957/9593 — YURURLUKTE (mevzuat.gov.tr 1.3.6948 konsolide metin ve Sanayi ve Teknoloji Bakanligi mevzuat sayfasi uzerinden dogrulandi; idari para cezasi ve kayit sureleri teyit edildi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=6948&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Sanayi isletmesi tanimi
+Bir maddenin vasif, sekil, hassa veya terkibini makine, cihaz, tezgah, alet veya diger vasita ve kuvvetlerle ya da el emegiyle kismen veya tamamen degistiren yahut bu maddeleri isleyen, devamli ve seri halinde imal veya istihsal eden yerler ile madenlerin cikarilip islendigi yerler sanayi isletmesi sayilir. Devamli ve seri tamir atolyeleri, enerji uretim tesisleri, gemi insa gibi buyuk insaat yerleri ve bilisim/yazilim ureten isletmeler de bu kapsamdadir. El sanatlari, ev sanatlari ve kucuk tamir isleri Kanun kapsami disindadir; sanayi sicili yukumlulugunun kim icin dogdugunu belirleyen temel maddedir.
+
+Madde 2 — Sanayi siciline kayit zorunlulugu ve sanayi sicil belgesi
+Sanayi isletmelerinin Bakanlikta (Sanayi ve Teknoloji Bakanligi) tutulan sanayi siciline kaydettirilmesi ve sanayi sicil belgesinin istenildiginde yetkili memurlara ibraz edilmesi mecburidir. Yeni acilan veya faaliyete baslayan sanayi isletmeleri, beyannamelerini 3 uncu madde dairesinde doldurarak faaliyete basladiklari tarihten itibaren iki ay icinde Bakanliga (il mudurlugune) vermekle yukumludur. Sanayi sicil belgesi, isletmenin kayitli oldugunu gosteren ve tesvik/ihale/elektrik tarifesi gibi islemlerde aranan temel belgedir.
+
+Madde 3 — Sanayi siciline yazilacak bilgiler ve beyanname
+Sanayi siciline; isletmenin unvani, adresi, kurulus tarihi, sermayesi, kullandigi makine ve tesisat, calistirdigi personel sayisi, kullanilan ham/yardimci maddeler ile uretim (istihsal) kapasitesi ve cesitleri gibi bilgiler yazilir. Bu bilgiler Bakanlikca tanzim edilen beyanname (sanayi sicil beyannamesi) ile bildirilir. Madde, kayit basvurusunda isletmenin sunacagi bilgi unsurlarinin cercevesini cizer.
+
+Madde 5 — Yillik isletme cetveli
+Sanayi isletmeleri, bir yillik faaliyetlerini gosteren yillik isletme cetvellerini Bakanlikca hazirlanan forma gore doldurarak, takvim yili sonundan itibaren en gec dort ay icinde Bakanliga (il mudurlugune) gondermek zorundadir. Bu cetvel, isletmenin uretim, istihdam ve kapasite verilerinin guncellenmesini saglar ve sicil kaydinin devamliligi icin zorunlu periyodik bildirimdir.
+
+Madde 4 — Degisikliklerin bildirilmesi
+Sanayi isletmelerinde meydana gelen degisikliklerin (adres, unvan, sermaye, kapasite, faaliyet konusu vb.) ile isletmenin kapanmasi veya yeniden faaliyete gecmesi hallerinin, sicile kayitli bilgilerin guncel tutulmasi icin ilgili mercilere bildirilmesi gerekir. Bildirim yukumlulugu, sicil verilerinin gercek durumla uyumlu kalmasini saglar ve suresinde yapilmazsa idari yaptirima konu olur.
+
+Madde 9 — Idari para cezasi
+Sanayi isletmelerini suresinde sanayi siciline tescil ettirmeyenler, 2 nci maddeye gore verilen beyannamelerdeki degisiklikleri ya da kapanma/faaliyete gecme hallerini suresinde bildirmeyenler veya yillik isletme cetvellerini zamaninda Bakanliga gondermeyenler hakkinda idari para cezasi uygulanir. Maddede yazili maktu tutar her yil yeniden degerleme oraninda artirilir; kanunun yaptirim cercevesini ve denetim mercilerinin yetkisini belirler. [DOGRULA: guncel idari para cezasi tutari yeniden degerleme ile her yil degistiginden yururlukteki son rakam mevzuat.gov.tr/ilgili tebligden teyit edilmeli]

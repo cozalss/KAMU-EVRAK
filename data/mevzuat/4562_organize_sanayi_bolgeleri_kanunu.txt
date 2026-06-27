@@ -1,0 +1,23 @@
+Organize Sanayi Bolgeleri Kanunu
+Kanun No 4562, Kabul 12.04.2000, RG 15.04.2000/24021 — YURURLUKTE (mevzuat.gov.tr 1.5.4562 konsolide metin ve Lexpera uzerinden dogrulandi; OSB ruhsat yetkisi, arsa tahsisi ve muafiyet hukumleri teyit edildi)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4562&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanimlar ve kisaltmalar
+OSB; sanayinin uygun gorulen alanlarda yapilanmasini saglamak, kentlesmeyi yonlendirmek, cevre sorunlarini onlemek ve sanayi turlerini belirli planlar dahilinde yerlestirmek amaciyla sinirlari tasdikli arazi parcalarinin gerekli altyapi ve sosyal tesislerle donatilarak sanayi icin tahsis edildigi uretim bolgesidir. Katilimci ise OSB'de parsel tahsisi veya satisi yapilan, uretime gecen ve amacina uygun faaliyet gosteren gercek veya tuzel kisidir. Madde, basvuru ve tahsis islemlerinde kullanilan temel kavramlari (OSB, katilimci, mute sebbis heyeti, ruhsat/izin mercileri) tanimlar.
+
+Madde 4 — Yer secimi, kurulus, planlama ve ruhsat yetkisi
+OSB, yer secimine iliskin yonetmelige gore uygun gorulen yerlerde Bakanligin onayiyla kurulur; sinirlari yer secimi komisyonunca belirlenip tasdik edilir ve OSB icin imar plani yapilir. Yururluge giren imar planina gore arazi kullanimi, yapi ve tesislerin projelendirilmesi, insasi ve kullanimiyla ilgili ruhsat ve izinler ile isyeri acma ve calisma ruhsatlari OSB tarafindan verilir ve denetlenir. Boylece OSB icindeki yapi ruhsati, yapi kullanma izni ve isyeri acma ruhsatinda yetkili merci belediye degil OSB tuzel kisiligidir.
+
+Madde 18 — Arsa tahsisleri ve uretime gecme sarti
+Katilimcilara parsel tahsisi veya satisi mutesebbis heyet/yonetim kurulunca Bakanlik yonetmeligine gore yapilir; tahsis veya satisi yapilan arsalar hicbir sekilde tahsis amaci disinda kullanilamaz. Arsa tapulari, tesisi uretime gecenlere geri alim hakki serhi konulmadan; yonetmelikte belirlenen surelerde uretime gecmeyenlere ise geri alim hakki serhi konularak verilir. Surede uretime gecmeyen veya amac disi kullanan katilimcinin parseli OSB tarafindan geri alinabilir; bu madde tahsis basvurusunun yukumluluk cercevesini belirler.
+
+Madde 21 — Muafiyetler
+OSB tuzel kisiligi, bu Kanunun uygulanmasiyla ilgili islemlerinde her turlu vergi, resim ve harctan muaftir; ayrica atik su aritma tesisi isleten OSB'lerden cevre temizlik vergisi alinmaz. Madde, OSB'nin tahsis, ruhsat ve altyapi islemlerinde uygulanan mali muafiyetlerin kapsamini cizer ve katilimci ile OSB arasindaki maliyet/harc yukumlulugunu netlestirir. [DOGRULA: muafiyetin kapsami ve istisnalar sonradan yapilan degisikliklerle daralip genisleyebileceginden yururlukteki son metinden teyit edilmeli]
+
+Madde 20 — Ruhsat ve izin harclarinin yatirilmasi
+OSB tarafindan duzenlenen yapi ruhsati, yapi kullanma izni ve isyeri acma-calisma ruhsati islemlerinde tahsil edilen harc ve ucretler, ilgili belediye veya il ozel idaresi hesabina yatirilir ya da mevzuata gore OSB butcesine gelir kaydedilir. Madde, OSB'nin ruhsat yetkisini kullanirken alacagi bedellerin akibetini ve yerel idarelere aktarim usulunu duzenler. [DOGRULA: harc/ucretlerin hangi idarenin hesabina yatirilacagina iliskin guncel duzenleme ve ilgili madde numarasi yururlukteki konsolide metinden teyit edilmeli; OSB ruhsat harci hukmu bazi degisikliklerde madde 4 fikrasinda da yer alabilir]

@@ -1,0 +1,26 @@
+Toplu Konut Kanunu
+Kanun No 2985, Kabul 02.03.1984, RG 17.03.1984/18344 (Düstur Tertip 5, Cilt 23) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2985&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Konut ihtiyacının karşılanması, konut inşaatını yapanların tâbi olacağı usul ve esasların düzenlenmesi ve memleket şart ve malzemelerine uygun endüstriyel inşaat teknikleriyle araç ve gereçlerin geliştirilmesi ve devletin desteklenmesini amaçlar. Kanunun temel amaç ve uygulama alanını belirleyen dayanak maddesidir; toplu konut projeleri ve dar gelirli vatandaşların konut edinimine ilişkin tüm başvuru ve uygulamaların çerçevesini çizer.
+
+Madde 2 — Toplu Konut İdaresi gelirleri (kaynakları) ve harcamaları
+İdarenin kaynaklarını sayar: konut, işyeri, arsa ve arazilerin satış/kira gelirleri, verilen kredilerin geri ödemeleri, Hazine arsaları üzerine yapılan binalara katılım payları, yurt içi ve yurt dışından sağlanan kredi ve fonlar, faiz gelirleri ile bütçe ödenekleri, bağış ve yardımlar. Bu kaynakların ferdî ve toplu konut kredisi verilmesinde, toplu konut alanlarına arsa temininde, altyapı ve sosyal donatı kredilerinde, afet konutlarında ve gecekondu dönüşüm projelerinde kullanılacağını düzenler. [DOĞRULA: fıkra düzeni ve kaynak kalemleri son değişikliklerle] Konut kredisi ve arsa tahsisi başvurularının mali dayanağıdır.
+
+Ek Madde 1 — Toplu Konut İdaresi Başkanlığının kuruluşu ve görevleri
+Toplu Konut İdaresi Başkanlığının (TOKİ) hukukî statüsünü ve görevlerini düzenler; devlet garantili veya garantisiz tahvil/menkul kıymet çıkarmak, yurt içi ve yurt dışından kredi almak, ferdî ve toplu konut kredisi vermek, köy mimarisinin ve tarihî/yöresel dokunun korunup yenilenmesine yönelik projeleri kredilendirmek, konut sektörüyle ilgili araştırma ve proje yaptırmak, doğal afet bölgelerinde konut uygulamalarını desteklemek gibi görevleri sayar. [DOĞRULA: İdarenin bağlı olduğu makam (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı) güncel teşkilat mevzuatıyla] Konut başvuru ve kredi süreçlerinde yetkili idarenin dayanağıdır.
+
+Ek Madde 2 — Şehit aileleri ile harp/vazife malullerine faizsiz konut kredisi
+5434 sayılı Emekli Sandığı Kanunu, 5510 sayılı Kanun ve 2330 sayılı Nakdi Tazminat Kanunu kapsamında harp veya vazife malulü sayılarak kendilerine aylık bağlananlara, bir konut ile sınırlı olmak kaydıyla Toplu Konut İdaresince faizsiz kredi verilmesini düzenler. Aynı sebeplerle hayatını kaybedenlerin dul ve yetimlerine; öncelikle dul eşine, yoksa yetim aylığı alan çocuklarına müştereken, onlar da yoksa öncelikle anaya olmak üzere ana/babasına bir konutla sınırlı faizsiz kredi açılır. Şehit yakını ve gazi konut başvurularının doğrudan dayanağıdır.
+
+Ek Madde 7 — Gecekondu dönüşüm projeleri kapsamında konut yapımı
+Başkanlığın, gecekondu dönüşüm projesi uygulayacağı alanlarda konut yapımını gerçekleştirebileceğini ve bu konutların bedellerinin yapım maliyetlerinin altında tespit edilebileceğini düzenler. Gecekondu sahibi/hak sahiplerinin dönüşüm kapsamında konut edinimine ilişkin başvuruların dayanağıdır. [DOĞRULA: ek madde numarası ve dönüşüm bedeli hükmü güncel metinle] Kentsel dönüşüm ve gecekondu ıslahı başvuru yazışmalarında atıf yapılır.
+
+Madde 4 — Toplu konut alanlarının ve uygulama alanlarının tespiti
+İdarenin, mülkiyeti kendisine ait veya gecekondu dönüşüm projesi uygulayacağı arsa ve arazilerde her ölçekteki imar planlarını yapma, yaptırma ve değiştirme yetkisini düzenler. Toplu konut uygulama alanlarının belirlenmesi ve plan onayına ilişkin işlemlerin dayanağıdır. [DOĞRULA: madde numarası ve plan yetkisinin kapsamı güncel metinle] Toplu konut alanı tespiti ve arsa tahsisine ilişkin idari işlemlerde atıf yapılır.

@@ -1,0 +1,26 @@
+Gecekondu Kanunu
+Kanun No 775, Kabul 20.07.1966, RG 30.07.1966/12362 (Düstur Tertip 5, Cilt 5) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=775&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Amaç ve kapsam
+Mevcut gecekonduların ıslahı, tasfiyesi, yeniden gecekondu yapımının önlenmesi ve bu amaçlarla alınması gereken tedbirler hakkında bu kanun hükümlerinin uygulanacağını düzenler. Gecekondu ıslahı, önleme ve tasfiyesine ilişkin tüm idari işlem ve başvuruların çerçevesini çizen dayanak maddesidir.
+
+Madde 2 — Gecekondu tanımı
+Gecekondu deyimiyle, imar ve yapı işlerini düzenleyen mevzuata bağlı kalınmaksızın, kendisine ait olmayan arazi veya arsalar üzerinde, sahibinin rızası alınmadan yapılan izinsiz yapıların kastedildiğini hükme bağlar. Bir yapının kanun kapsamında "gecekondu" sayılıp sayılmayacağının tespitinde temel dayanaktır; ıslah/tasfiye ve tahsis işlemlerinin nitelendirme ölçütüdür.
+
+Madde 18 — İzinsiz yapıların yıkımı (yeniden gecekondu yapımının önlenmesi)
+Kanunun yürürlüğe girmesinden sonra, belediye sınırları içinde veya dışında, izin alınmadan yapılan daimi veya geçici bütün izinsiz yapıların, herhangi bir karar alınmasına lüzum kalmaksızın belediye veya valilikçe derhal yıktırılacağını düzenler. Yıkım, ilgili yapı henüz ikamet edilmeye başlanmamışsa doğrudan; ikamet ediliyorsa süreli bildirim sonrası yapılır. [DOĞRULA: yıkım usulü ve süreleri (7/15 gün) güncel metinle] Yeni izinsiz yapılara karşı yıkım ve men yazışmalarının dayanağıdır.
+
+Madde 25 — Arsa tahsisinin şartları (yoksul/dar gelirli hak sahipliği)
+Tahsis edilecek arsalar bakımından hak sahipliği şartlarını düzenler: kişinin yoksul veya dar gelirli olması; kendisinin, eşinin veya ergin olmayan çocuğunun herhangi bir belediye sınırı içinde ev yapmaya elverişli arsaya ya da herhangi bir yerde bir ev veya apartman dairesi payına sahip bulunmaması şarttır. Kimlerin yoksul/dar gelirli sayılacağı ve öncelik sırası yönetmelikle belirlenir. Arsa tahsisi ve tapu tahsis başvurularında hak sahipliği incelemesinin dayanağıdır.
+
+Madde 27 — Hak sahiplerine teknik yardım ve uzun vadeli konut kredisi
+Kendilerine arsa tahsis edilen yoksul ve dar gelirli kişilere belediyelerce veya ilgili idarelerce her türlü teknik yardımın yapılacağını ve uzun vadeli konut kredisi verilebileceğini; tahsisten itibaren belirli süre (yönetmelikte gösterilen süre) içinde inşaata başlama/bitirme yükümlülüğünü düzenler. [DOĞRULA: kredi mercii (Toplu Konut İdaresi/fon) ve süre güncel metinle] Gecekondu önleme bölgelerinde konut kredisi ve yapı yardımı başvurularının dayanağıdır.
+
+Madde 33 — Vergi, resim ve harç muafiyetleri
+Bu kanun gereğince yapılacak devir, temlik, kamulaştırma, alım-satım, kira, tescil, cins değişikliği ve rehin tesisi gibi işlemlerin her türlü vergi, resim ve harçtan müstesna tutulduğunu düzenler. Gecekondu ıslah/önleme bölgelerinde tahsis edilen arsa ve konutların tapuya tescil ve devir işlemlerinde harç muafiyetinin dayanağıdır. [DOĞRULA: muafiyet kapsamındaki işlem türleri güncel metinle]

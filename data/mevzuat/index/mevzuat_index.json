@@ -1,6 +1,6 @@
 {
  "version": 1,
- "chunk_sayisi": 1334,
+ "chunk_sayisi": 1372,
  "chunks": [
   {
    "mevzuat": "1111 askerlik kanunu mulga",
@@ -1851,6 +1851,48 @@
    "text": "Madde 27 — Acele kamulaştırma\nMilli müdafaa mükellefiyeti, yurt savunması ihtiyacı/aceleliği veya özel kanunlarla öngörülen olağanüstü durumlarda, Cumhurbaşkanınca acele kamulaştırma kararı alınabileceğini düzenler. Bu hallerde kıymet takdiri dışındaki işlemler sonradan tamamlanmak üzere taşınmaza el konulabilir; acele el koyma yazışmalarının dayanağıdır."
   },
   {
+   "mevzuat": "2985 toplu konut kanunu",
+   "kaynak_dosya": "2985_toplu_konut_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nKonut ihtiyacının karşılanması, konut inşaatını yapanların tâbi olacağı usul ve esasların düzenlenmesi ve memleket şart ve malzemelerine uygun endüstriyel inşaat teknikleriyle araç ve gereçlerin geliştirilmesi ve devletin desteklenmesini amaçlar. Kanunun temel amaç ve uygulama alanını belirleyen dayanak maddesidir; toplu konut projeleri ve dar gelirli vatandaşların konut edinimine ilişkin tüm başvuru ve uygulamaların çerçevesini çizer."
+  },
+  {
+   "mevzuat": "2985 toplu konut kanunu",
+   "kaynak_dosya": "2985_toplu_konut_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Toplu Konut İdaresi gelirleri (kaynakları) ve harcamaları\nİdarenin kaynaklarını sayar: konut, işyeri, arsa ve arazilerin satış/kira gelirleri, verilen kredilerin geri ödemeleri, Hazine arsaları üzerine yapılan binalara katılım payları, yurt içi ve yurt dışından sağlanan kredi ve fonlar, faiz gelirleri ile bütçe ödenekleri, bağış ve yardımlar. Bu kaynakların ferdî ve toplu konut kredisi verilmesinde, toplu konut alanlarına arsa temininde, altyapı ve sosyal donatı kredilerinde, afet konutlarında ve gecekondu dönüşüm projelerinde kullanılacağını düzenler. [DOĞRULA: fıkra düzeni ve kaynak kalemleri son değişikliklerle] Konut kredisi ve arsa tahsisi başvurularının mali dayanağıdır."
+  },
+  {
+   "mevzuat": "2985 toplu konut kanunu",
+   "kaynak_dosya": "2985_toplu_konut_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "ek",
+   "text": "Ek Madde 1 — Toplu Konut İdaresi Başkanlığının kuruluşu ve görevleri\nToplu Konut İdaresi Başkanlığının (TOKİ) hukukî statüsünü ve görevlerini düzenler; devlet garantili veya garantisiz tahvil/menkul kıymet çıkarmak, yurt içi ve yurt dışından kredi almak, ferdî ve toplu konut kredisi vermek, köy mimarisinin ve tarihî/yöresel dokunun korunup yenilenmesine yönelik projeleri kredilendirmek, konut sektörüyle ilgili araştırma ve proje yaptırmak, doğal afet bölgelerinde konut uygulamalarını desteklemek gibi görevleri sayar. [DOĞRULA: İdarenin bağlı olduğu makam (Çevre, Şehircilik ve İklim Değişikliği Bakanlığı) güncel teşkilat mevzuatıyla] Konut başvuru ve kredi süreçlerinde yetkili idarenin dayanağıdır."
+  },
+  {
+   "mevzuat": "2985 toplu konut kanunu",
+   "kaynak_dosya": "2985_toplu_konut_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "ek",
+   "text": "Ek Madde 2 — Şehit aileleri ile harp/vazife malullerine faizsiz konut kredisi\n5434 sayılı Emekli Sandığı Kanunu, 5510 sayılı Kanun ve 2330 sayılı Nakdi Tazminat Kanunu kapsamında harp veya vazife malulü sayılarak kendilerine aylık bağlananlara, bir konut ile sınırlı olmak kaydıyla Toplu Konut İdaresince faizsiz kredi verilmesini düzenler. Aynı sebeplerle hayatını kaybedenlerin dul ve yetimlerine; öncelikle dul eşine, yoksa yetim aylığı alan çocuklarına müştereken, onlar da yoksa öncelikle anaya olmak üzere ana/babasına bir konutla sınırlı faizsiz kredi açılır. Şehit yakını ve gazi konut başvurularının doğrudan dayanağıdır."
+  },
+  {
+   "mevzuat": "2985 toplu konut kanunu",
+   "kaynak_dosya": "2985_toplu_konut_kanunu.txt",
+   "madde_no": 7,
+   "madde_tur": "ek",
+   "text": "Ek Madde 7 — Gecekondu dönüşüm projeleri kapsamında konut yapımı\nBaşkanlığın, gecekondu dönüşüm projesi uygulayacağı alanlarda konut yapımını gerçekleştirebileceğini ve bu konutların bedellerinin yapım maliyetlerinin altında tespit edilebileceğini düzenler. Gecekondu sahibi/hak sahiplerinin dönüşüm kapsamında konut edinimine ilişkin başvuruların dayanağıdır. [DOĞRULA: ek madde numarası ve dönüşüm bedeli hükmü güncel metinle] Kentsel dönüşüm ve gecekondu ıslahı başvuru yazışmalarında atıf yapılır."
+  },
+  {
+   "mevzuat": "2985 toplu konut kanunu",
+   "kaynak_dosya": "2985_toplu_konut_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Toplu konut alanlarının ve uygulama alanlarının tespiti\nİdarenin, mülkiyeti kendisine ait veya gecekondu dönüşüm projesi uygulayacağı arsa ve arazilerde her ölçekteki imar planlarını yapma, yaptırma ve değiştirme yetkisini düzenler. Toplu konut uygulama alanlarının belirlenmesi ve plan onayına ilişkin işlemlerin dayanağıdır. [DOĞRULA: madde numarası ve plan yetkisinin kapsamı güncel metinle] Toplu konut alanı tespiti ve arsa tahsisine ilişkin idari işlemlerde atıf yapılır."
+  },
+  {
    "mevzuat": "298 secimlerin temel hukumleri secmen kutukleri kanunu",
    "kaynak_dosya": "298_secimlerin_temel_hukumleri_secmen_kutukleri_kanunu.txt",
    "madde_no": 2,
@@ -2927,6 +2969,41 @@
    "madde_no": 11,
    "madde_tur": "madde",
    "text": "Madde 11 — Soruşturma izninin gönderileceği merci (hazırlık soruşturması)\nSoruşturma izninin itiraz edilmeden ya da itirazın reddi sonucu kesinleşmesi veya izin verilmemesi kararına yapılan itirazın kabulü üzerine dosya derhal yetkili ve görevli Cumhuriyet başsavcılığına gönderilir. İlgili başsavcılık, Ceza Muhakemesi Kanunu ve diğer kanunlardaki yetkilerini kullanarak hazırlık soruşturmasını yürütür ve sonuçlandırır."
+  },
+  {
+   "mevzuat": "4562 organize sanayi bolgeleri kanunu",
+   "kaynak_dosya": "4562_organize_sanayi_bolgeleri_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Tanimlar ve kisaltmalar\nOSB; sanayinin uygun gorulen alanlarda yapilanmasini saglamak, kentlesmeyi yonlendirmek, cevre sorunlarini onlemek ve sanayi turlerini belirli planlar dahilinde yerlestirmek amaciyla sinirlari tasdikli arazi parcalarinin gerekli altyapi ve sosyal tesislerle donatilarak sanayi icin tahsis edildigi uretim bolgesidir. Katilimci ise OSB'de parsel tahsisi veya satisi yapilan, uretime gecen ve amacina uygun faaliyet gosteren gercek veya tuzel kisidir. Madde, basvuru ve tahsis islemlerinde kullanilan temel kavramlari (OSB, katilimci, mute sebbis heyeti, ruhsat/izin mercileri) tanimlar."
+  },
+  {
+   "mevzuat": "4562 organize sanayi bolgeleri kanunu",
+   "kaynak_dosya": "4562_organize_sanayi_bolgeleri_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Yer secimi, kurulus, planlama ve ruhsat yetkisi\nOSB, yer secimine iliskin yonetmelige gore uygun gorulen yerlerde Bakanligin onayiyla kurulur; sinirlari yer secimi komisyonunca belirlenip tasdik edilir ve OSB icin imar plani yapilir. Yururluge giren imar planina gore arazi kullanimi, yapi ve tesislerin projelendirilmesi, insasi ve kullanimiyla ilgili ruhsat ve izinler ile isyeri acma ve calisma ruhsatlari OSB tarafindan verilir ve denetlenir. Boylece OSB icindeki yapi ruhsati, yapi kullanma izni ve isyeri acma ruhsatinda yetkili merci belediye degil OSB tuzel kisiligidir."
+  },
+  {
+   "mevzuat": "4562 organize sanayi bolgeleri kanunu",
+   "kaynak_dosya": "4562_organize_sanayi_bolgeleri_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — Arsa tahsisleri ve uretime gecme sarti\nKatilimcilara parsel tahsisi veya satisi mutesebbis heyet/yonetim kurulunca Bakanlik yonetmeligine gore yapilir; tahsis veya satisi yapilan arsalar hicbir sekilde tahsis amaci disinda kullanilamaz. Arsa tapulari, tesisi uretime gecenlere geri alim hakki serhi konulmadan; yonetmelikte belirlenen surelerde uretime gecmeyenlere ise geri alim hakki serhi konularak verilir. Surede uretime gecmeyen veya amac disi kullanan katilimcinin parseli OSB tarafindan geri alinabilir; bu madde tahsis basvurusunun yukumluluk cercevesini belirler."
+  },
+  {
+   "mevzuat": "4562 organize sanayi bolgeleri kanunu",
+   "kaynak_dosya": "4562_organize_sanayi_bolgeleri_kanunu.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Muafiyetler\nOSB tuzel kisiligi, bu Kanunun uygulanmasiyla ilgili islemlerinde her turlu vergi, resim ve harctan muaftir; ayrica atik su aritma tesisi isleten OSB'lerden cevre temizlik vergisi alinmaz. Madde, OSB'nin tahsis, ruhsat ve altyapi islemlerinde uygulanan mali muafiyetlerin kapsamini cizer ve katilimci ile OSB arasindaki maliyet/harc yukumlulugunu netlestirir. [DOGRULA: muafiyetin kapsami ve istisnalar sonradan yapilan degisikliklerle daralip genisleyebileceginden yururlukteki son metinden teyit edilmeli]"
+  },
+  {
+   "mevzuat": "4562 organize sanayi bolgeleri kanunu",
+   "kaynak_dosya": "4562_organize_sanayi_bolgeleri_kanunu.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — Ruhsat ve izin harclarinin yatirilmasi\nOSB tarafindan duzenlenen yapi ruhsati, yapi kullanma izni ve isyeri acma-calisma ruhsati islemlerinde tahsil edilen harc ve ucretler, ilgili belediye veya il ozel idaresi hesabina yatirilir ya da mevzuata gore OSB butcesine gelir kaydedilir. Madde, OSB'nin ruhsat yetkisini kullanirken alacagi bedellerin akibetini ve yerel idarelere aktarim usulunu duzenler. [DOGRULA: harc/ucretlerin hangi idarenin hesabina yatirilacagina iliskin guncel duzenleme ve ilgili madde numarasi yururlukteki konsolide metinden teyit edilmeli; OSB ruhsat harci hukmu bazi degisikliklerde madde 4 fikrasinda da yer alabilir]"
   },
   {
    "mevzuat": "4572 tarim satis kooperatif birlikleri kanunu",
@@ -5463,6 +5540,20 @@
    "text": "Madde 30 — Dar mükellefiyette vergi kesintisi\nDar mükellef kurumların Türkiye'de elde ettikleri serbest meslek kazançları, gayrimenkul sermaye iratları, menkul sermaye iratları ve maddede sayılan diğer kazanç ve iratları üzerinden, bu ödemeleri yapanlarca kurumlar vergisi kesintisi yapılır. Kesinti oranları Cumhurbaşkanınca belirlenen sınırlar içinde uygulanır ve kesilen vergiler muhtasar beyanname ile beyan edilir. Madde, yurt dışı yerleşik kurumlara yapılan ödemelerde kaynakta vergileme (stopaj) esasını kurar."
   },
   {
+   "mevzuat": "5544 mesleki yeterlilik kurumu kanunu",
+   "kaynak_dosya": "5544_mesleki_yeterlilik_kurumu_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "ek",
+   "text": "EK MADDE 1 — Tehlikeli işlerde Mesleki Yeterlilik Belgesi zorunluluğu (Ek: 4/4/2015-6645/74 md.)\nTehlikeli ve çok tehlikeli işlerden olup Kurumca standardı yayımlanan ve Bakanlıkça çıkarılacak tebliğlerde belirtilen mesleklerde, tebliğin yayım tarihinden itibaren on iki ay sonra bu Kanuna göre meslekî yeterlilik belgesine sahip olmayan kişiler çalıştırılamaz. 3308 sayılı Mesleki Eğitim Kanununa göre ustalık belgesi alanlar ile MEB'e bağlı meslekî-teknik eğitim okullarından veya üniversitelerin ilgili bölümlerinden mezun olup diploma/ustalık belgesindeki alan ve dalda çalıştırılanlar için belge şartı aranmaz. Birinci fıkraya aykırı işveren veya vekiline, Çalışma ve İş Kurumu il müdürünce her bir çalışan için idari para cezası verilir (denetimler iş müfettişlerince yapılır). Bu madde, yeterlilik belgesi başvuru evrakının (sınav başvurusu, belge zorunluluğu tebliği kapsamı tespiti) hukuki temelidir. [DOĞRULA: idari para cezası tutarı maddede 500 TL olarak yazılıdır; her yıl yeniden değerleme oranında arttığından cari rakam Bakanlık/İŞKUR tebliğinden teyit edilmelidir.]\n\nMadde 23/A — Türkiye Yeterlilikler Çerçevesi (Ek: 11/10/2011-KHK-665/41 md.)\nTürkiye Yeterlilikler Çerçevesinin (TYÇ) oluşturulması, geliştirilmesi ve güncelliğinin korunmasına ilişkin işlemler Kurum tarafından yürütülür; kalite güvencesi sağlanmış tüm yeterlilikler TYÇ'ye dâhil edilir ve kalite güvence ölçütleri Kurumca belirlenir. TYÇ'nin oluşumu ve yürütülmesi için Millî Eğitim Bakanlığı, Yükseköğretim Kurulu, Kurum ve ilgili tarafların temsilcilerinden kurul, komisyon ve çalışma grupları oluşturulabilir. Bu madde, mesleki yeterlilik belgelerinin ve diğer öğrenim çıktılarının seviyelendirilmesi ve karşılıklı tanınmasının çerçevesini kurar.\n\nMadde 20/A — Vekâlet ve istisna sözleşmesi ile yaptırılacak işler (Yeniden düzenleme: 10/7/2025-7553/14 md.)\nÖzel bilgi ve uzmanlık gerektiren geçici nitelikli işlerde; vekâlet veya istisna sözleşmesiyle yabancı danışman ve uzmanların, istisna sözleşmesiyle de yerli danışman ve uzmanların bilgi ve deneyiminden yararlanılabilir. Bunlara bir ayda yapılacak ödeme, 48.800 gösterge rakamının memur aylık katsayısı ile çarpımı sonucu bulunacak tutarın üç katını aşamaz; tutar, görevin önem ve niteliği ile çalışılan gün/saat dikkate alınarak Çalışma ve Sosyal Güvenlik Bakanınca tespit edilir. Bu kapsamda yararlanma, sözleşme bitiminde kamuda kadro/pozisyon açısından kazanılmış hak doğurmaz; uygulama esasları Bakanlık yönetmeliği ile belirlenir.\n\nMadde 8/3 — Yönetim Kurulu üyeliği şartları (kalan hüküm)\nYönetim Kurulu üyesi seçilebilmek için 657 sayılı Devlet Memurları Kanununun 48/A maddesinin (1), (4), (6) ve (7) numaralı alt bentlerindeki şartları taşımak ve Kurumun faaliyet alanına giren konularda yeterli bilgiye ve en az on yıllık meslekî tecrübeye sahip olmak şarttır. Üyelerin görev süreleri dolmadan görevlerine son verilemez; kesinleşmiş mahkûmiyet veya altı aydan fazla süreli görev yapamama hâlinde üyelik kendiliğinden sona erer. (Bu maddenin diğer fıkraları KHK-703 ile mülgadır.)\n\nMadde 28/2 — Vergi, resim ve harç muafiyeti (kalan hüküm)\nKurumun gelirleri, işlemleri ve taşınmazları her türlü vergi, resim ve harçtan muaftır. (Maddenin bütçeye ilişkin birinci fıkrası KHK-703 ile mülgadır.) Bu hüküm, Kurumun yürüttüğü belgelendirme ve yeterlilik işlemlerine ilişkin mali yükümlülük rejiminin bir parçasıdır."
+  },
+  {
+   "mevzuat": "5544 mesleki yeterlilik kurumu kanunu",
+   "kaynak_dosya": "5544_mesleki_yeterlilik_kurumu_kanunu.txt",
+   "madde_no": 32,
+   "madde_tur": "madde",
+   "text": "Madde 32 / Madde 33 — Yürürlük ve yürütme\nKanun yayımı tarihinde (7/10/2006) yürürlüğe girmiştir. Kanun hükümlerini Bakanlar Kurulu (mevcut teşkilat yapısında Cumhurbaşkanı/ilgili Bakanlık) yürütür. Kanunla kurulan Meslekî Yeterlilik Kurumu, ulusal meslek standartları ile ulusal yeterliliklere dayalı sınav ve belgelendirme sisteminin merkezî otoritesidir."
+  },
+  {
    "mevzuat": "5553 tohumculuk kanunu",
    "kaynak_dosya": "5553_tohumculuk_kanunu.txt",
    "madde_no": 1,
@@ -6028,6 +6119,48 @@
    "madde_no": 37,
    "madde_tur": "madde",
    "text": "Madde 37 — Vatandaşlık işlemlerinde müracaat makamı ve usul\nTürk vatandaşlığının kazanılması ve kaybına ilişkin başvurular yurt içinde ikamet edilen yer valiliğine, yurt dışında ise dış temsilciliklere bizzat veya bu hakkın kullanılmasına ilişkin vekâletname ile yapılır. Vatandaşlık hizmetleri yurt içinde Bakanlık, yurt dışında dış temsilciliklerce yürütülür (md. 4); kararlar ilgiliye ve başvuru makamlarına tebliğ olunur (md. 41)."
+  },
+  {
+   "mevzuat": "5957 sebze meyve ticareti hal kanunu",
+   "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Tanımlar (künye, toptancı hali, üretici örgütü, meslek mensubu)\nKanunun temel kavramlarını tanımlar. Künyeyi; malların üretim yerini, cinsini, miktarını, hangi üretici ve işletmeye ait olduğunu, varsa sertifika bilgilerini ve Bakanlık ile Tarım Bakanlığınca uygun görülecek diğer hususları içeren barkodlu etiket veya bu bilgileri içeren belge olarak tanımlar. Toptancı hali; asgarî koşulları taşıyan projeler çerçevesinde belediyeler ile gerçek/tüzel kişilerce kurulan, malların toptan alım-satımı ile kaydının yapıldığı yerdir; üretici örgütü ise Bakanlıktan üretici örgütü belgesi almış tüzel kişiliktir. Yetkili bakanlık 6455 sayılı Kanun değişikliğiyle Gümrük ve Ticaret Bakanlığıdır. Künye/etiket düzenleme ve bildirim başvuru evrakının terim dayanağıdır."
+  },
+  {
+   "mevzuat": "5957 sebze meyve ticareti hal kanunu",
+   "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Toptancı hallerinin kurulması ve kapatılması\nToptancı hallerinin imar planında belirlenmiş alanlarda; halin sınıf, büyüklük ve işlem hacmine göre müzayede, depolama, tasnifleme, ambalajlama tesisleri ile laboratuvar ve soğuk hava deposu gibi asgarî koşulları taşıyan projeler çerçevesinde, belediye sınırı içinde belediyelerce, büyükşehir sınırı içinde büyükşehir belediyelerince ya da gerçek/tüzel kişilerce kurulacağını düzenler. Gerçek veya tüzel kişilerin hal kurması ilgili belediyenin iznine tabidir ve halin kuruluşu en geç bir ay içinde belediye tarafından Bakanlığa bildirilir. Şartları taşımadığı tespit edilen haller belediyece kapatılır ve kapatılış da bir ay içinde Bakanlığa bildirilir. Özel toptancı hali kuruluş izni başvurusu ve belediye-Bakanlık bildirim yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5957 sebze meyve ticareti hal kanunu",
+   "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Toptancı haline bildirim, malların toptan ve perakende alım satımı\nSınaî üretimde kullanılacak, ihraç edilecek, ithal edilen, organik/iyi tarım sertifikalı, üretici örgütlerince hal dışında satılan ve fatura/müstahsil makbuzu ile üreticiden alınan malların bildirime tabi olduğunu sayar. Bildirim; malların üretildiği yerdeki (ithalde gümrük kapısının bulunduğu yerdeki) toptancı haline yapılan beyan işlemidir; hal bulunmayan yerlerde Bakanlıkça belirlenen belediye toptancı haline yapılır. Kural olarak toptan alım-satım toptancı hallerinde yapılır; ancak sayılan bentlerdeki işlemler hale bildirilmek kaydıyla hal dışında da yapılabilir ve e-ticaret satışları da kapsamdadır. Hale bildirilen/halden alınan mal mükerrer rüsuma tabi tutulamaz ve hale girmeye zorlanamaz. Hal kayıt bildirim formu/beyan evrakının doğrudan dayanağıdır."
+  },
+  {
+   "mevzuat": "5957 sebze meyve ticareti hal kanunu",
+   "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
+   "madde_no": 8,
+   "madde_tur": "madde",
+   "text": "Madde 8 — Hal rüsumu ve cezalı hal rüsumu\nToptancı halinde satılan maldan yüzde bir, hal dışında satılandan yüzde iki oranında hal rüsumu tahsil edileceğini; üretici örgütlerince halde satılan ile hale bildirim şartıyla belirli bentlerdeki mallardan rüsum alınmayacağını düzenler (Cumhurbaşkanı oranları yüzde doksana kadar artırıp azaltabilir). Toptancı haline bildirilmeden hal dışında toptan alınıp satılan, künyesine/miktarına ilişkin gerçeğe aykırı beyanda bulunulan mallar için, bir önceki gün oluşan en yüksek birim fiyat esas alınarak hesaplanan toptan satış bedelinin yüzde yirmi beşi oranında cezalı hal rüsumu alınacağını ve buna belediye encümeninin karar vereceğini öngörür. Hal rüsumu tahakkuk/tahsil ile cezalı rüsum karar yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5957 sebze meyve ticareti hal kanunu",
+   "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
+   "madde_no": 14,
+   "madde_tur": "madde",
+   "text": "Madde 14 — Cezalar (idarî para cezaları ve faaliyetten men)\nKanun ve 13 üncü maddedeki yasaklara aykırı fiiller için yüz TL'den on bin TL'ye kadar kademeli idarî para cezaları öngörür; bildirim, künye, etiketleme ve denetimde bilgi/belge vermeme gibi ihlalleri ayrı ayrı cezalandırır (fiilin bir takvim yılında tekrarında ceza iki kat uygulanır). Cezaların belirli bentlerini Bakanlık veya Tarım Bakanlığı, diğerlerini doğrudan ya da Bakanlığın talebi üzerine belediyeler uygular; belediyelerde yetki belediye encümenince kullanılır. Görevlerini yazılı uyarıya rağmen yerine getirmeyen toptancı haline elli bin TL ceza verilir ve tekrarında faaliyet durdurulur; belirli yasaklara yılda iki kez aykırılıkta bir aya kadar faaliyetten men uygulanır. [DOĞRULA: TL ceza tutarları yeniden değerleme oranıyla her yıl güncellenir] İdari yaptırım karar ve tebliğ yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "5957 sebze meyve ticareti hal kanunu",
+   "kaynak_dosya": "5957_sebze_meyve_ticareti_hal_kanunu.txt",
+   "madde_no": 16,
+   "madde_tur": "madde",
+   "text": "Madde 16 — Malların analizi, kaydı, izlenmesi ve merkezi hal kayıt sistemi\nToptancı hallerinin, halde işlem gören malların gıda güvenilirliği analizini yetkili laboratuvarlarda yaptırmakla görevli/yükümlü kılınabileceğini; analizde uygunsuz çıkan malların 5996 sayılı Kanun hükümlerine göre ilgili mercilere bildirileceğini düzenler. Toptancı halleri; halde veya hale bildirilerek işlem gören malların cinsi, miktarı, fiyatı, alıcı ve satıcısına ilişkin bilgileri elektronik ortamda tutmak, hal kayıt sistemine veri sağlayıp aktarmak ve hale giren-çıkan malı kontrol/denetlemekle yükümlüdür; bilgi işlem altyapısından özel hal işletmecileri ile belediyeler sorumludur. Bu bilgilerin izlenmesi, meslek mensuplarının kayıt altına alınması ve haller arası bilgi paylaşımı için Bakanlık bünyesinde elektronik ortamda merkezi hal kayıt sistemi (HKS) kurulur. Hal kayıt sistemi veri girişi ve meslek mensubu kayıt başvurusunun dayanağıdır."
   },
   {
    "mevzuat": "5996 hayvan islahi zootekni hukumleri",
@@ -7619,6 +7752,48 @@
    "text": "Madde 93 — Ormani isgal ve izinsiz faydalanma sucu cezasi\nKanunun 17. maddesinde yasaklanan fiilleri isleyenler veya izne bagli isleri izinsiz yapanlar (91. madde sakli kalmak uzere) alti aydan iki yila kadar hapis cezasi ile cezalandirilir. Isgal ve faydalanma sucu; yeniden tarla acmak suretiyle, yanmis orman sahalarinda ya da kesinlesmis orman kadastrosu sinirlari icinde islenirse ceza bir kat artirilir. Izinsiz orman isgali ve kullaniminin cezai sonucunu duzenleyen temel maddedir."
   },
   {
+   "mevzuat": "6948 sanayi sicili kanunu",
+   "kaynak_dosya": "6948_sanayi_sicili_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Sanayi isletmesi tanimi\nBir maddenin vasif, sekil, hassa veya terkibini makine, cihaz, tezgah, alet veya diger vasita ve kuvvetlerle ya da el emegiyle kismen veya tamamen degistiren yahut bu maddeleri isleyen, devamli ve seri halinde imal veya istihsal eden yerler ile madenlerin cikarilip islendigi yerler sanayi isletmesi sayilir. Devamli ve seri tamir atolyeleri, enerji uretim tesisleri, gemi insa gibi buyuk insaat yerleri ve bilisim/yazilim ureten isletmeler de bu kapsamdadir. El sanatlari, ev sanatlari ve kucuk tamir isleri Kanun kapsami disindadir; sanayi sicili yukumlulugunun kim icin dogdugunu belirleyen temel maddedir."
+  },
+  {
+   "mevzuat": "6948 sanayi sicili kanunu",
+   "kaynak_dosya": "6948_sanayi_sicili_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Sanayi siciline kayit zorunlulugu ve sanayi sicil belgesi\nSanayi isletmelerinin Bakanlikta (Sanayi ve Teknoloji Bakanligi) tutulan sanayi siciline kaydettirilmesi ve sanayi sicil belgesinin istenildiginde yetkili memurlara ibraz edilmesi mecburidir. Yeni acilan veya faaliyete baslayan sanayi isletmeleri, beyannamelerini 3 uncu madde dairesinde doldurarak faaliyete basladiklari tarihten itibaren iki ay icinde Bakanliga (il mudurlugune) vermekle yukumludur. Sanayi sicil belgesi, isletmenin kayitli oldugunu gosteren ve tesvik/ihale/elektrik tarifesi gibi islemlerde aranan temel belgedir."
+  },
+  {
+   "mevzuat": "6948 sanayi sicili kanunu",
+   "kaynak_dosya": "6948_sanayi_sicili_kanunu.txt",
+   "madde_no": 3,
+   "madde_tur": "madde",
+   "text": "Madde 3 — Sanayi siciline yazilacak bilgiler ve beyanname\nSanayi siciline; isletmenin unvani, adresi, kurulus tarihi, sermayesi, kullandigi makine ve tesisat, calistirdigi personel sayisi, kullanilan ham/yardimci maddeler ile uretim (istihsal) kapasitesi ve cesitleri gibi bilgiler yazilir. Bu bilgiler Bakanlikca tanzim edilen beyanname (sanayi sicil beyannamesi) ile bildirilir. Madde, kayit basvurusunda isletmenin sunacagi bilgi unsurlarinin cercevesini cizer."
+  },
+  {
+   "mevzuat": "6948 sanayi sicili kanunu",
+   "kaynak_dosya": "6948_sanayi_sicili_kanunu.txt",
+   "madde_no": 5,
+   "madde_tur": "madde",
+   "text": "Madde 5 — Yillik isletme cetveli\nSanayi isletmeleri, bir yillik faaliyetlerini gosteren yillik isletme cetvellerini Bakanlikca hazirlanan forma gore doldurarak, takvim yili sonundan itibaren en gec dort ay icinde Bakanliga (il mudurlugune) gondermek zorundadir. Bu cetvel, isletmenin uretim, istihdam ve kapasite verilerinin guncellenmesini saglar ve sicil kaydinin devamliligi icin zorunlu periyodik bildirimdir."
+  },
+  {
+   "mevzuat": "6948 sanayi sicili kanunu",
+   "kaynak_dosya": "6948_sanayi_sicili_kanunu.txt",
+   "madde_no": 4,
+   "madde_tur": "madde",
+   "text": "Madde 4 — Degisikliklerin bildirilmesi\nSanayi isletmelerinde meydana gelen degisikliklerin (adres, unvan, sermaye, kapasite, faaliyet konusu vb.) ile isletmenin kapanmasi veya yeniden faaliyete gecmesi hallerinin, sicile kayitli bilgilerin guncel tutulmasi icin ilgili mercilere bildirilmesi gerekir. Bildirim yukumlulugu, sicil verilerinin gercek durumla uyumlu kalmasini saglar ve suresinde yapilmazsa idari yaptirima konu olur."
+  },
+  {
+   "mevzuat": "6948 sanayi sicili kanunu",
+   "kaynak_dosya": "6948_sanayi_sicili_kanunu.txt",
+   "madde_no": 9,
+   "madde_tur": "madde",
+   "text": "Madde 9 — Idari para cezasi\nSanayi isletmelerini suresinde sanayi siciline tescil ettirmeyenler, 2 nci maddeye gore verilen beyannamelerdeki degisiklikleri ya da kapanma/faaliyete gecme hallerini suresinde bildirmeyenler veya yillik isletme cetvellerini zamaninda Bakanliga gondermeyenler hakkinda idari para cezasi uygulanir. Maddede yazili maktu tutar her yil yeniden degerleme oraninda artirilir; kanunun yaptirim cercevesini ve denetim mercilerinin yetkisini belirler. [DOGRULA: guncel idari para cezasi tutari yeniden degerleme ile her yil degistiginden yururlukteki son rakam mevzuat.gov.tr/ilgili tebligden teyit edilmeli]"
+  },
+  {
    "mevzuat": "7036 is mahkemeleri kanunu",
    "kaynak_dosya": "7036_is_mahkemeleri_kanunu.txt",
    "madde_no": 1,
@@ -7897,6 +8072,48 @@
    "madde_no": 47,
    "madde_tur": "madde",
    "text": "Madde 47 — Ceza hükümleri ve idari yaptırımlar\nKanuna aykırı fiiller için adli ve idari yaptırımlar öngörülür: spor kulübü ve spor anonim şirketi başkan, yönetim kurulu üyesi ve yöneticilerinin Kanunun 20'nci maddesinin belirli fıkralarına aykırı (örneğin denk bütçe ve harcama sınırlarına ilişkin) fiilleri bir yıldan üç yıla kadar hapis cezasıyla; bazı bildirim ve kayıt ihlalleri yüz günden beş yüz güne kadar adli para cezasıyla cezalandırılır. Ayrıca çeşitli yükümlülük ihlalleri için belirli tutarlarda idari para cezaları uygulanır; bu tutarlar her yıl yeniden değerleme oranında güncellenir. [DOĞRULA: alt fıkralardaki güncel idari para cezası tutarları her yıl GSB tebliğiyle yeniden belirlenir]"
+  },
+  {
+   "mevzuat": "775 gecekondu kanunu",
+   "kaynak_dosya": "775_gecekondu_kanunu.txt",
+   "madde_no": 1,
+   "madde_tur": "madde",
+   "text": "Madde 1 — Amaç ve kapsam\nMevcut gecekonduların ıslahı, tasfiyesi, yeniden gecekondu yapımının önlenmesi ve bu amaçlarla alınması gereken tedbirler hakkında bu kanun hükümlerinin uygulanacağını düzenler. Gecekondu ıslahı, önleme ve tasfiyesine ilişkin tüm idari işlem ve başvuruların çerçevesini çizen dayanak maddesidir."
+  },
+  {
+   "mevzuat": "775 gecekondu kanunu",
+   "kaynak_dosya": "775_gecekondu_kanunu.txt",
+   "madde_no": 2,
+   "madde_tur": "madde",
+   "text": "Madde 2 — Gecekondu tanımı\nGecekondu deyimiyle, imar ve yapı işlerini düzenleyen mevzuata bağlı kalınmaksızın, kendisine ait olmayan arazi veya arsalar üzerinde, sahibinin rızası alınmadan yapılan izinsiz yapıların kastedildiğini hükme bağlar. Bir yapının kanun kapsamında \"gecekondu\" sayılıp sayılmayacağının tespitinde temel dayanaktır; ıslah/tasfiye ve tahsis işlemlerinin nitelendirme ölçütüdür."
+  },
+  {
+   "mevzuat": "775 gecekondu kanunu",
+   "kaynak_dosya": "775_gecekondu_kanunu.txt",
+   "madde_no": 18,
+   "madde_tur": "madde",
+   "text": "Madde 18 — İzinsiz yapıların yıkımı (yeniden gecekondu yapımının önlenmesi)\nKanunun yürürlüğe girmesinden sonra, belediye sınırları içinde veya dışında, izin alınmadan yapılan daimi veya geçici bütün izinsiz yapıların, herhangi bir karar alınmasına lüzum kalmaksızın belediye veya valilikçe derhal yıktırılacağını düzenler. Yıkım, ilgili yapı henüz ikamet edilmeye başlanmamışsa doğrudan; ikamet ediliyorsa süreli bildirim sonrası yapılır. [DOĞRULA: yıkım usulü ve süreleri (7/15 gün) güncel metinle] Yeni izinsiz yapılara karşı yıkım ve men yazışmalarının dayanağıdır."
+  },
+  {
+   "mevzuat": "775 gecekondu kanunu",
+   "kaynak_dosya": "775_gecekondu_kanunu.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Arsa tahsisinin şartları (yoksul/dar gelirli hak sahipliği)\nTahsis edilecek arsalar bakımından hak sahipliği şartlarını düzenler: kişinin yoksul veya dar gelirli olması; kendisinin, eşinin veya ergin olmayan çocuğunun herhangi bir belediye sınırı içinde ev yapmaya elverişli arsaya ya da herhangi bir yerde bir ev veya apartman dairesi payına sahip bulunmaması şarttır. Kimlerin yoksul/dar gelirli sayılacağı ve öncelik sırası yönetmelikle belirlenir. Arsa tahsisi ve tapu tahsis başvurularında hak sahipliği incelemesinin dayanağıdır."
+  },
+  {
+   "mevzuat": "775 gecekondu kanunu",
+   "kaynak_dosya": "775_gecekondu_kanunu.txt",
+   "madde_no": 27,
+   "madde_tur": "madde",
+   "text": "Madde 27 — Hak sahiplerine teknik yardım ve uzun vadeli konut kredisi\nKendilerine arsa tahsis edilen yoksul ve dar gelirli kişilere belediyelerce veya ilgili idarelerce her türlü teknik yardımın yapılacağını ve uzun vadeli konut kredisi verilebileceğini; tahsisten itibaren belirli süre (yönetmelikte gösterilen süre) içinde inşaata başlama/bitirme yükümlülüğünü düzenler. [DOĞRULA: kredi mercii (Toplu Konut İdaresi/fon) ve süre güncel metinle] Gecekondu önleme bölgelerinde konut kredisi ve yapı yardımı başvurularının dayanağıdır."
+  },
+  {
+   "mevzuat": "775 gecekondu kanunu",
+   "kaynak_dosya": "775_gecekondu_kanunu.txt",
+   "madde_no": 33,
+   "madde_tur": "madde",
+   "text": "Madde 33 — Vergi, resim ve harç muafiyetleri\nBu kanun gereğince yapılacak devir, temlik, kamulaştırma, alım-satım, kira, tescil, cins değişikliği ve rehin tesisi gibi işlemlerin her türlü vergi, resim ve harçtan müstesna tutulduğunu düzenler. Gecekondu ıslah/önleme bölgelerinde tahsis edilen arsa ve konutların tapuya tescil ve devir işlemlerinde harç muafiyetinin dayanağıdır. [DOĞRULA: muafiyet kapsamındaki işlem türleri güncel metinle]"
   },
   {
    "mevzuat": "831 sular hakkinda kanun",
@@ -8690,6 +8907,55 @@
    "text": "Madde 16 — İşlem ve delil kayıtlarının tutulması ve saklanması\nKEPHS, KEP sisteminin tüm süreçlerine ilişkin işlem (günlük) ve delil kayıtlarını; güvenliğini, gizliliğini ve bütünlüğünü sağlayarak kayıt altına almak ve mevzuatta öngörülen süreyle saklamakla yükümlüdür. Bu kayıtlar, KEP iletisinin gönderildiği/alındığı anın ve içeriğinin sonradan ispatlanabilmesini güvence altına alır. [DOĞRULA: asgari saklama süresi — güncel değişiklikle 20 yıl olarak öngörülmüş olabilir]"
   },
   {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 20,
+   "madde_tur": "madde",
+   "text": "Madde 20 — Sınav başvurusu ve başvurunun değerlendirilmesi\nAdayların bilgi, beceri ve yetkinlikleri, ulusal yeterliliklere göre değerlendirilmek üzere yetkilendirilmiş belgelendirme kuruluşu tarafından teorik, uygulamalı ve benzeri yöntemlerle yapılan sınavla ölçülür; sınava ilişkin usuller ilgili ulusal yeterlilikte belirlenir. Mesleki yeterliliğinin tespitini isteyen birey, ilgili ulusal yeterlilikte Kurumca yetkilendirilmiş bir belgelendirme kuruluşuna sınav başvurusu yapar. Kuruluş, ilgili ulusal yeterlilikteki başvuru şartlarına göre başvuruları değerlendirir ve uygun olanları kabul eder. Bu madde, yeterlilik belgesi sınav başvuru evrakının kabul kriterini belirler."
+  },
+  {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 21,
+   "madde_tur": "madde",
+   "text": "Madde 21 — Sınav programı\nSınav, yetkilendirilmiş belgelendirme kuruluşunca hazırlanan ve Kuruma bildirilen sınav programına uygun olarak yapılır. Programda hangi ulusal yeterliliklerden sınav yapılacağı, yeterliliğin seviyesi, revizyon numarası, birimleri, teorik/uygulama sınavlarının yeri, tarih ve saati, görevli değerlendiriciler ve aday sayısı yer alır. Sınav programı, sınavın başladığı tarihten iki gün öncesine kadar; adayların kişisel bilgileri ise sınav öncesine kadar elektronik ortamda Kuruma bildirilir. Mücbir sebeple sınavın güvenilirliği etkilenirse sınav kuruluşça iptal edilir ve tutanağa bağlanır."
+  },
+  {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 23,
+   "madde_tur": "madde",
+   "text": "Madde 23 — Sınav sonuçlarının değerlendirilmesi ve belgelendirme kararı\nSınav sonuçlarının değerlendirilmesi ve belgelendirme kararı, yetkilendirilmiş belgelendirme kuruluşunun yetki ve sorumluluğundadır; sonuçlar kuruluşun yazılı dokümanlarındaki usullere göre değerlendirilir ve belgelendirme kararı alınır. Sınavın yeri, tarihi, türü, katılımcıları ve değerlendiricilerini içeren sınav sonuç listesi ile belge almaya hak kazananların listesi kuruluş tarafından Kuruma bildirilir. Düzenlenen Mesleki Yeterlilik Belgelerine ilişkin bilgiler Yönetim Kurulunun bilgisine sunulur."
+  },
+  {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 24,
+   "madde_tur": "madde",
+   "text": "Madde 24 — Mesleki Yeterlilik Belgesinin düzenlenmesi\nBelgelendirme kararı alınan bireyler için yetkilendirilmiş belgelendirme kuruluşunca Mesleki Yeterlilik Belgesi düzenlenir ve belgede tek imza yer alır. Belge almaya hak kazananlara, belgeye bağlı olarak kimlik kartı şeklinde belgeler de düzenlenebilir. Belgenin ve kimlik kartının şekli, içeriği ve güvenlik unsurları Kurum tarafından belirlenir; belgeyi imzalamaya kuruluşu temsil ve ilzama yetkili olan veya usulüne uygun yetki devri yapılan kişiler yetkilidir. Bu madde, geçerli MYK Mesleki Yeterlilik Belgesinin biçimsel unsurlarını tanımlar."
+  },
+  {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 25,
+   "madde_tur": "madde",
+   "text": "Madde 25 — Birim başarı belgesi ve birimlerin birleştirilmesi\nYapılan sınavlarda başarılı olunan her bir yeterlilik birimi için, bireyin talebi hâlinde, başarı durumunu gösteren birim başarı belgesi düzenlenir; belgenin şekli, içeriği ve geçerlilik süresi ilgili ulusal yeterliliğe uygun olmak kaydıyla kuruluşça belirlenir ve ilan edilir. Bireyin sahip olduğu birim başarı belgeleri bir ulusal yeterliliği oluşturursa, talep üzerine birleştirilir ve en son tarihli sınavı yapan kuruluş belgelendirme kararı vererek Mesleki Yeterlilik Belgesi düzenler. Birim başarı belgesi sahibi, birimin geçerlilik süresi boyunca aynı birimi içeren farklı yeterliliklerde o birimden muaf tutulur."
+  },
+  {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 27,
+   "madde_tur": "madde",
+   "text": "Madde 27 — Belgenin geçerlilik süresi, gözetimi, yenilenmesi ve yeniden basımı\nMesleki Yeterlilik Belgesinin geçerlilik süresi ile gözetim ve belge yenileme şartları ilgili ulusal yeterlilikte belirlenir. Geçerlilik süresi dolan belgelerin yenileme işlemleri, ilgilinin süre dolmadan başvurusu üzerine yetkilendirilmiş belgelendirme kuruluşunca yapılır; başvuru, belge alınan kuruluşa veya ilgili ulusal yeterlilikte yetkili farklı bir kuruluşa yapılabilir. Geçerlilik süresi içinde belgenin yeniden basımı talepleri kuruluşça değerlendirilir; yeniden basımda belge masraf karşılığı dışında, masraf karşılığını aşmayan ilave ücret istenebilir."
+  },
+  {
+   "mevzuat": "mesleki yeterlilik sinav belgelendirme yonetmeligi",
+   "kaynak_dosya": "mesleki_yeterlilik_sinav_belgelendirme_yonetmeligi.txt",
+   "madde_no": 29,
+   "madde_tur": "madde",
+   "text": "Madde 29 — Kayıtların tutulması (saklama süresi)\nMesleki Yeterlilik Belgesi düzenlenen bireylerin başvurularına, sınavlarına ve belgelendirme kararına ilişkin kayıtlar, yetkilendirilmiş belgelendirme kuruluşu tarafından belgelerin geçerlilik süresinin sona ermesinden sonraki beşinci yılın sonuna kadar saklanır. Sınavlara ilişkin sesli ve görüntülü kayıtların saklama süresi ise belgelendirme kararından itibaren bir yıldır. Bu madde, belgelendirme dosyalarının arşivlenme ve denetlenebilirlik süresini belirler."
+  },
+  {
    "mevzuat": "mevzuat hazirlama usul esaslari yonetmeligi",
    "kaynak_dosya": "mevzuat_hazirlama_usul_esaslari_yonetmeligi.txt",
    "madde_no": 4,
@@ -9341,5 +9607,5 @@
    "text": "Madde 30 — Disiplin cezası halinde bursun kesilmesi\nKurum yurtlarından, Yurt İdare ve İşletme Yönetmeliği hükümlerine göre süresiz çıkarma cezası alan öğrencilerin burslarının kesileceğini düzenler. Disiplin yaptırımının burs hakkına etkisini belirleyen maddedir. [DOĞRULA: maddenin güncel numarası ve metni]"
   }
  ],
- "mevzuat_sayisi": 205
+ "mevzuat_sayisi": 212
 }

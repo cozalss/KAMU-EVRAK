@@ -1,0 +1,29 @@
+Mesleki Yeterlilik Kurumu Sınav, Ölçme, Değerlendirme ve Belgelendirme Yönetmeliği
+RG 15.10.2015/29503 — YÜRÜRLÜKTE (Dayanak: 5544 sayılı Mesleki Yeterlilik Kurumu Kanunu m.4 ve m.22; mevzuat.gov.tr 5.5.21180 konsolide metin esas alınmıştır. Bu Yönetmelik, 30/12/2008 tarihli ve 27096 sayılı RG'de yayımlanan önceki "Mesleki Yeterlilik, Sınav ve Belgelendirme Yönetmeliği"ni yürürlükten kaldırmıştır.)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=21180&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 20 — Sınav başvurusu ve başvurunun değerlendirilmesi
+Adayların bilgi, beceri ve yetkinlikleri, ulusal yeterliliklere göre değerlendirilmek üzere yetkilendirilmiş belgelendirme kuruluşu tarafından teorik, uygulamalı ve benzeri yöntemlerle yapılan sınavla ölçülür; sınava ilişkin usuller ilgili ulusal yeterlilikte belirlenir. Mesleki yeterliliğinin tespitini isteyen birey, ilgili ulusal yeterlilikte Kurumca yetkilendirilmiş bir belgelendirme kuruluşuna sınav başvurusu yapar. Kuruluş, ilgili ulusal yeterlilikteki başvuru şartlarına göre başvuruları değerlendirir ve uygun olanları kabul eder. Bu madde, yeterlilik belgesi sınav başvuru evrakının kabul kriterini belirler.
+
+Madde 21 — Sınav programı
+Sınav, yetkilendirilmiş belgelendirme kuruluşunca hazırlanan ve Kuruma bildirilen sınav programına uygun olarak yapılır. Programda hangi ulusal yeterliliklerden sınav yapılacağı, yeterliliğin seviyesi, revizyon numarası, birimleri, teorik/uygulama sınavlarının yeri, tarih ve saati, görevli değerlendiriciler ve aday sayısı yer alır. Sınav programı, sınavın başladığı tarihten iki gün öncesine kadar; adayların kişisel bilgileri ise sınav öncesine kadar elektronik ortamda Kuruma bildirilir. Mücbir sebeple sınavın güvenilirliği etkilenirse sınav kuruluşça iptal edilir ve tutanağa bağlanır.
+
+Madde 23 — Sınav sonuçlarının değerlendirilmesi ve belgelendirme kararı
+Sınav sonuçlarının değerlendirilmesi ve belgelendirme kararı, yetkilendirilmiş belgelendirme kuruluşunun yetki ve sorumluluğundadır; sonuçlar kuruluşun yazılı dokümanlarındaki usullere göre değerlendirilir ve belgelendirme kararı alınır. Sınavın yeri, tarihi, türü, katılımcıları ve değerlendiricilerini içeren sınav sonuç listesi ile belge almaya hak kazananların listesi kuruluş tarafından Kuruma bildirilir. Düzenlenen Mesleki Yeterlilik Belgelerine ilişkin bilgiler Yönetim Kurulunun bilgisine sunulur.
+
+Madde 24 — Mesleki Yeterlilik Belgesinin düzenlenmesi
+Belgelendirme kararı alınan bireyler için yetkilendirilmiş belgelendirme kuruluşunca Mesleki Yeterlilik Belgesi düzenlenir ve belgede tek imza yer alır. Belge almaya hak kazananlara, belgeye bağlı olarak kimlik kartı şeklinde belgeler de düzenlenebilir. Belgenin ve kimlik kartının şekli, içeriği ve güvenlik unsurları Kurum tarafından belirlenir; belgeyi imzalamaya kuruluşu temsil ve ilzama yetkili olan veya usulüne uygun yetki devri yapılan kişiler yetkilidir. Bu madde, geçerli MYK Mesleki Yeterlilik Belgesinin biçimsel unsurlarını tanımlar.
+
+Madde 25 — Birim başarı belgesi ve birimlerin birleştirilmesi
+Yapılan sınavlarda başarılı olunan her bir yeterlilik birimi için, bireyin talebi hâlinde, başarı durumunu gösteren birim başarı belgesi düzenlenir; belgenin şekli, içeriği ve geçerlilik süresi ilgili ulusal yeterliliğe uygun olmak kaydıyla kuruluşça belirlenir ve ilan edilir. Bireyin sahip olduğu birim başarı belgeleri bir ulusal yeterliliği oluşturursa, talep üzerine birleştirilir ve en son tarihli sınavı yapan kuruluş belgelendirme kararı vererek Mesleki Yeterlilik Belgesi düzenler. Birim başarı belgesi sahibi, birimin geçerlilik süresi boyunca aynı birimi içeren farklı yeterliliklerde o birimden muaf tutulur.
+
+Madde 27 — Belgenin geçerlilik süresi, gözetimi, yenilenmesi ve yeniden basımı
+Mesleki Yeterlilik Belgesinin geçerlilik süresi ile gözetim ve belge yenileme şartları ilgili ulusal yeterlilikte belirlenir. Geçerlilik süresi dolan belgelerin yenileme işlemleri, ilgilinin süre dolmadan başvurusu üzerine yetkilendirilmiş belgelendirme kuruluşunca yapılır; başvuru, belge alınan kuruluşa veya ilgili ulusal yeterlilikte yetkili farklı bir kuruluşa yapılabilir. Geçerlilik süresi içinde belgenin yeniden basımı talepleri kuruluşça değerlendirilir; yeniden basımda belge masraf karşılığı dışında, masraf karşılığını aşmayan ilave ücret istenebilir.
+
+Madde 29 — Kayıtların tutulması (saklama süresi)
+Mesleki Yeterlilik Belgesi düzenlenen bireylerin başvurularına, sınavlarına ve belgelendirme kararına ilişkin kayıtlar, yetkilendirilmiş belgelendirme kuruluşu tarafından belgelerin geçerlilik süresinin sona ermesinden sonraki beşinci yılın sonuna kadar saklanır. Sınavlara ilişkin sesli ve görüntülü kayıtların saklama süresi ise belgelendirme kararından itibaren bir yıldır. Bu madde, belgelendirme dosyalarının arşivlenme ve denetlenebilirlik süresini belirler.

@@ -60,7 +60,7 @@
   background: var(--accent); color: var(--brand); padding: .6rem 1rem;
   border-radius: 0 0 8px 0; font-weight: 700; font-size: .9rem;
 }
-.dash-skip:focus { left: 0; }
+.dash-skip:focus { left: 0; outline: 3px solid var(--brand); outline-offset: 2px; }
 
 /* odak halkası — tüm interaktifler */
 .ke-dash :is(button, a, [role="button"], input):focus-visible {

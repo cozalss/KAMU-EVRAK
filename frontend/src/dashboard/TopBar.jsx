@@ -21,7 +21,7 @@ export function TopBar({ fileMeta, result, nodes, busy, error, pendingOnay }) {
 
   // Aktif görev: çalışan (active) node'un görevi; yoksa son done node'un görevi.
   const activeNode = nodes.find((n) => n.status === "active");
-  const lastDone = [...nodes].reverse().find((n) => n.status === "done");
+  const lastDone = nodes.findLast((n) => n.status === "done");
   const activeGorev = activeNode?.gorev ?? lastDone?.gorev ?? null;
 
   let status = "sirada", statusLabel = "sırada";
@@ -59,7 +59,7 @@ export function TopBar({ fileMeta, result, nodes, busy, error, pendingOnay }) {
         </span>
       </div>
 
-      <span className={"dash-status " + status} role="status" aria-live="polite">
+      <span className={"dash-status " + status} role="status" aria-live="polite" aria-atomic="true" aria-label={`Durum: ${statusLabel}`}>
         <span className="dot" aria-hidden="true" /> {statusLabel}
       </span>
 

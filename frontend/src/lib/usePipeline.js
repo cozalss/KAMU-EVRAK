@@ -30,11 +30,14 @@ export function usePipeline() {
   const [evrakText, setEvrakText] = useState("");
   const [downloading, setDownloading] = useState("");
   const [pendingOnay, setPendingOnay] = useState(null);
+  // canRetry'i ref yerine state'ten türet (ref render'da güvenilir okunmaz).
+  const [hasRun, setHasRun] = useState(false);
 
   const stepTimers = useRef([]);
   const toastTimer = useRef(null);
   const runStart = useRef(0);
   const lastRun = useRef(null);
+  const abortRef = useRef(null);   // akış reader'ını unmount'ta iptal et
 
   const elapsed = () => (runStart.current ? Math.max(0, performance.now() - runStart.current) : 0);
 
@@ -42,7 +45,11 @@ export function usePipeline() {
     stepTimers.current.forEach(clearTimeout);
     stepTimers.current = [];
   }, []);
-  useEffect(() => () => { clearTimers(); clearTimeout(toastTimer.current); }, [clearTimers]);
+  useEffect(() => () => {
+    abortRef.current?.abort();   // yarıda kalan SSE reader döngüsünü kapat
+    clearTimers();
+    clearTimeout(toastTimer.current);
+  }, [clearTimers]);
 
   const showToast = useCallback((msg) => {
     clearTimeout(toastTimer.current);
@@ -115,15 +122,19 @@ export function usePipeline() {
 
   // ---------- A) Dosya → /process_doc/stream (gerçek SSE) ----------
   const runFile = useCallback(async (file) => {
+    abortRef.current?.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
     reset();
     setBusy(true);
+    setHasRun(true);
     setSelectedSample(null);
     setFileMeta({ name: file.name, size: file.size, kind: "file" });
     lastRun.current = { kind: "file", file };
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/process_doc/stream", { method: "POST", body: fd });
+      const res = await fetch("/process_doc/stream", { method: "POST", body: fd, signal: ctrl.signal });
       if (!res.ok || !res.body) throw new Error(`Sunucu hatası (${res.status})`);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -142,6 +153,7 @@ export function usePipeline() {
         }
       }
     } catch (err) {
+      if (err?.name === "AbortError") return;   // unmount/iptal — sessizce çık
       setError(err?.message || "Bağlantı hatası — backend çalışıyor mu?");
       setNodes((prev) => prev.map((n) => (n.status === "active" ? { ...n, status: "error" } : n)));
     } finally {
@@ -166,6 +178,7 @@ export function usePipeline() {
   const runSample = useCallback(async (sample) => {
     reset();
     setBusy(true);
+    setHasRun(true);
     setSelectedSample(sample.id);
     setFileMeta({ name: `${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
     setEvrakText(sample.text);
@@ -247,23 +260,25 @@ export function usePipeline() {
     } catch (err) {
       showToast(err?.message || "Taslak indirilemedi — backend çalışıyor mu?");
     } finally {
-      if (url) URL.revokeObjectURL(url);
+      // Tarayıcı indirmeyi yakalasın diye revoke'u bir tık geciktir (bazı tarayıcılarda
+      // senkron revoke indirmeyi iptal eder).
+      if (url) { const u = url; setTimeout(() => URL.revokeObjectURL(u), 1500); }
       setDownloading("");
     }
   }, [evrakText, showToast]);
 
   // Dosya doğrula + çalıştır.
   const runFileValidated = useCallback((file) => {
-    if (!file) return;
+    if (!file || busy) return;   // busy iken yeni dosya başlatma (yarış önle)
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
       setError(`Dosya çok büyük (en fazla ${MAX_UPLOAD_MB} MB).`);
       return;
     }
     runFile(file);
-  }, [runFile]);
+  }, [runFile, busy]);
 
   const dismissError = useCallback(() => setError(""), []);
-  const canRetry = !!lastRun.current;
+  const canRetry = hasRun;
 
   return {
     nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay,

@@ -50,6 +50,7 @@ export default function DashboardApp() {
   return (
     <div className="ke-dash">
       <a href="#dash-main" className="dash-skip">Ana içeriğe geç</a>
+      <h1 className="dash-sr">kamu-evrak — Yapay Zekâ Destekli Kamu Evrak ve Yazışma Asistanı</h1>
       <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
       <div className="dash-layout">
@@ -139,7 +140,7 @@ function EmptyState({ busy, dragOver, setDragOver, fileRef, onDrop, showSamples,
           <div id="dash-samples-panel" className="dash-samples" aria-label="Örnek evraklar">
             {SAMPLE_GROUPS.map(({ grup, slug, items }) => (
               <div className="dash-sample-group" key={grup}>
-                <p id={`dash-grup-${slug}`} className="dash-sample-grup-h">{grup}</p>
+                <h3 id={`dash-grup-${slug}`} className="dash-sample-grup-h">{grup}</h3>
                 <div className="dash-samples-row" role="group" aria-labelledby={`dash-grup-${slug}`}>
                   {items.map((s) => {
                     const SampleIcon = Icon[s.icon] || Icon.file;

@@ -36,7 +36,7 @@ export function Sidebar({ activeView, onNavigate, onUpload, busy }) {
                   type="button"
                   className={"dash-nav-item" + (isActive ? " active" : "")}
                   onClick={() => onNavigate(v.id)}
-                  aria-current={isActive ? "page" : undefined}
+                  aria-current={isActive ? "true" : undefined}
                 >
                   <NavIcon aria-hidden="true" />
                   <span>{v.label}</span>

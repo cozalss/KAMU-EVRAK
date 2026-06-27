@@ -12,7 +12,8 @@ function fmtClock(ms) {
 export function TerminalLog({ nodes, fileMeta, busy }) {
   const bodyRef = useRef(null);
   const doneCount = nodes.filter((n) => n.status === "done").length;
-  const activeNode = nodes.find((n) => n.status === "active");
+  const activeIdx = nodes.findIndex((n) => n.status === "active");
+  const activeNode = activeIdx >= 0 ? nodes[activeIdx] : null;
   const simulated = fileMeta?.kind === "sample";
   const target = fileMeta?.name || "evrak";
 
@@ -45,7 +46,7 @@ export function TerminalLog({ nodes, fileMeta, busy }) {
         {activeNode && (
           <div className={`dash-term-line g${activeNode.gorev}`}>
             <span className="dash-term-ts">[{fmtClock(activeNode.t0)}]</span>
-            <span className="dash-term-tag">A{String(nodes.indexOf(activeNode) + 1).padStart(2, "0")} {activeNode.label}</span>
+            <span className="dash-term-tag">A{String(activeIdx + 1).padStart(2, "0")} {activeNode.label}</span>
             <span className="dash-term-msg"><span className="arrow">→</span>çalışıyor<span className="dash-term-cursor" aria-hidden="true" /></span>
           </div>
         )}

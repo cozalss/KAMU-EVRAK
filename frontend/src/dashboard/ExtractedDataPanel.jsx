@@ -15,7 +15,7 @@ function RiskBand({ risk }) {
   const m = BANT[bant];
   if (!m) return null;
   return (
-    <div className={"dash-riskband " + m.cls} role="status">
+    <div className={"dash-riskband " + m.cls} role="group" aria-label={`Risk bandı: ${m.val}${risk.skor != null ? `, skor ${risk.skor}` : ""}`}>
       <span className="dash-riskband-lights" aria-hidden="true">
         <i className="l-yesil" /><i className="l-sari" /><i className="l-kirmizi" />
       </span>

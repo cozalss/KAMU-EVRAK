@@ -6,6 +6,8 @@ import React, { useMemo } from "react";
 import { cleanDemoText } from "../components/result-cards.jsx";
 import { Icon } from "../components/icons.jsx";
 
+const EMPTY = [];   // kararlı boş-referans (useMemo bağımlılığı her render yenilenmesin)
+
 // Maskeli metni span'lara göre düz/vurgulu segmentlere böl (KanitVurguCard ile aynı mantık; çakışma backend'de elendi).
 function buildSegments(metin, spanlar) {
   const segs = [];
@@ -24,15 +26,15 @@ function buildSegments(metin, spanlar) {
 export function SourceDocPanel({ result, evrakText, busy }) {
   const km = result?.kanit_metadata;
   const metin = typeof km?.metin === "string" ? km.metin : "";
-  const spanlar = Array.isArray(km?.spanlar) ? km.spanlar : [];
-  const segs = useMemo(() => (metin ? buildSegments(metin, spanlar) : []), [metin, spanlar]);
+  const spanlar = Array.isArray(km?.spanlar) ? km.spanlar : EMPTY;
+  const segs = useMemo(() => (metin ? buildSegments(metin, spanlar) : EMPTY), [metin, spanlar]);
 
   let body;
   if (segs.length) {
     body = (
       <pre className="dash-source-doc">
         {segs.map((sg, i) => sg.mark
-          ? <mark className="dash-pii" key={i} title={sg.label}>{sg.t}</mark>
+          ? <mark className="dash-pii" key={i} title={sg.label}>{sg.t}<span className="dash-sr"> [{sg.label}]</span></mark>
           : <React.Fragment key={i}>{sg.t}</React.Fragment>)}
       </pre>
     );

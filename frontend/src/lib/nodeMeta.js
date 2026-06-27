@@ -119,7 +119,7 @@ export function summarize(id, d) {
     }
     case "sla_triyaj": {
       const durum = d.sla_metadata?.durum;
-      const gun = d.sla_metadata?.sure_gun ?? d.sla_metadata?.kalan_gun;
+      const gun = d.sla_metadata?.kalan_gun ?? d.sla_metadata?.sure_gun;
       return durum ? `${durum}${gun != null ? ` · ${gun}g` : ""}` : "";
     }
     case "denetim_izi":

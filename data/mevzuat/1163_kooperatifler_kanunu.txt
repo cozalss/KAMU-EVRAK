@@ -1,0 +1,29 @@
+Kooperatifler Kanunu
+Kanun No 1163, Kabul 24/4/1969, RG 10/5/1969 Sayı 13195 (Düstur Tertip 5, Cilt 8) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.1163.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 1 — Kooperatif tarifi
+Kooperatifi; ortaklarının belirli ekonomik menfaatlerini ve özellikle meslek veya geçimlerine ait ihtiyaçlarını işgücü ve parasal katkılarıyla karşılıklı yardım, dayanışma ve kefalet suretiyle sağlayıp korumak amacıyla gerçek ve tüzel kişilerce kurulan, değişir ortaklı ve değişir sermayeli, tüzel kişiliği haiz ortaklıklar olarak tanımlar. Bu tanım, kooperatif kuruluş ve ana sözleşme işlemlerinin temel dayanağıdır.
+
+Madde 2 — Kuruluş, ortak sayısı ve isim kullanma yetkisi
+Bir kooperatifin en az 7 ortak tarafından imzalanacak ana sözleşme ile kurulacağını ve ana sözleşmenin ticaret sicili müdürlüğünde yetkilendirilmiş personel huzurunda imzalanması gerektiğini düzenler. İlgili Bakanlık, faaliyet konularına göre kooperatifleri sınıflandırmaya, çalışma bölgeleri oluşturmaya ve asgari ortak sayısından az olmamak üzere kuruluş şartları ile usul ve esasları belirlemeye yetkilidir. Kooperatif kuruluş başvurusunun ortak sayısı ve şekil şartlarının dayanağıdır.
+
+Madde 3 — Ana sözleşmenin onayı, tescil ve ilan
+Ana sözleşmenin Ticaret Bakanlığına verileceğini; Bakanlığın kuruluşa izin vermesi hâlinde kooperatif merkezinin bulunduğu yer ticaret siciline tescil ve ilan olunacağını düzenler. Tescil ve ilan olunacak hususları (ana sözleşme tarihi, amaç-konu-süre, unvan ve merkez, sermaye ve ödenen asgari miktar, temsil ve denetim şekli, yönetim kurulu üyeleri vb.) madde madde sayar. Kooperatif kuruluş izni ve tescil-ilan başvuru yazışmalarının dayanağıdır.
+
+Madde 4 — Ana sözleşmede bulunması gereken hususlar
+Kooperatif ana sözleşmesinde yer alması zorunlu hükümleri sayar: kooperatifin adı ve merkezi, amaç ve çalışma konuları, ortaklık sıfatını kazandıran ve kaybettiren hâl ve şartlar, ortakların pay tutarı ve sermayenin ödenme şekli (nakdi sermayenin en az dörtte birinin peşin ödenmesi), ortakların sorumluluk durumu, organların görev-yetki ve seçim tarzı, temsile ait hükümler ve yıllık gelir-gider farklarının kullanılma şekli. Ana sözleşme hazırlama ve onay evrakının dayanağıdır.
+
+Madde 8 — Ortaklığa giriş (üyelik başvurusu)
+Kooperatif ortaklığına girmek için gerçek kişilerin medeni hakları kullanma yeterliliğine sahip olması gerektiğini düzenler; ortak olmak isteyen gerçek ve tüzel kişiler, ana sözleşme hükümlerini bütün hak ve ödevleriyle kabul ettiklerini belirten bir yazı ile yönetim kuruluna başvurur. Yönetim kurulu başvuruyu bir ay içinde sonuçlandırır ve kararını başvuru sahibine taahhütlü mektupla veya elden imza karşılığında tebliğ eder. Kooperatif üyelik başvurusu ve kabul/ret tebliği yazışmalarının dayanağıdır.
+
+Madde 42 — Genel kurulun devredilemez yetkileri
+Genel kurulun bütün ortakları temsil eden en yetkili organ olduğunu ve devredip terk edemeyeceği yetkileri sayar: ana sözleşmeyi değiştirmek, yönetim kurulu ve denetçiler kurulu üyeleri ile gerektiğinde tasfiye kurulunu seçmek, işletme hesabı ile bilanço ve gelir-gider farkının bölüşülmesi hakkında karar almak, yönetim ve denetçiler kurullarını ibra etmek ve kanun veya ana sözleşmeyle genel kurula tanınmış konularda karar vermek. Genel kurul kararı ve gündem yazışmalarının dayanağıdır.
+
+Madde 45 — Genel kurul toplantısı
+Genel kurulun olağan ve gerektiğinde olağanüstü olarak toplanacağını; olağan toplantının her hesap devresi sonundan itibaren altı ay içinde ve en az yılda bir defa yapılmasının zorunlu olduğunu düzenler. İlgili Bakanlıkça belirlenecek usul çerçevesinde ve gündeme madde konulması şartıyla olağan toplantılar en fazla iki hesap dönemini kapsayacak şekilde birleştirilerek yapılabilir; genel kurul ana sözleşmede gösterilen şekil ve surette toplantıya çağrılır ve toplantı nisabı ana sözleşmede gösterilir. Genel kurul çağrı ve toplantı yazışmalarının dayanağıdır.

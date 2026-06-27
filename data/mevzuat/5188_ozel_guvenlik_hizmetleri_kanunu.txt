@@ -1,0 +1,32 @@
+Özel Güvenlik Hizmetlerine Dair Kanun
+Kabul 10/6/2004, RG 26/6/2004 sayı 25504 (Düstur Tertip 5, Cilt 43) — YÜRÜRLÜKTE. İdari para cezası ve ruhsat harçları her yıl Vergi Usul Kanunu yeniden değerleme oranında güncellenir; güncel tutarlar için ilgili yıl tebliğine bakılır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5188&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Özel güvenlik izni
+Kişilerin silahlı personel tarafından korunması, kurum ve kuruluşlar bünyesinde özel güvenlik birimi kurulması veya güvenlik hizmetinin özel güvenlik şirketlerine gördürülmesi, özel güvenlik komisyonunun kararı üzerine valinin iznine bağlıdır. Geçici ve acil hâllerde özel güvenlik komisyonunun kararı sonradan alınmak üzere vali tarafından izin verilebilir. İzin için yapılan başvuruda, koruma ve güvenlik hizmetinin gerektirdiği gerekçe ve bilgiler valiliğe sunulur; izin belirli bir süre ve kapsam için verilir.
+
+Madde 5 — Özel güvenlik şirketlerine faaliyet izni
+Özel güvenlik hizmeti veren şirketler, ancak alanında faaliyet göstermek üzere İçişleri Bakanlığından faaliyet izni alabilir. Şirketin hisselerinin nama yazılı olması ve şirketin faaliyet alanının münhasıran koruma ve güvenlik hizmeti olması zorunludur. Şirket kurucu ve yöneticilerinde aranan şartları taşımayanlara faaliyet izni verilmez; faaliyet izni, belirlenen ruhsat harcı yatırılmadan düzenlenmez.
+
+Madde 10 — Özel güvenlik görevlilerinde aranacak şartlar
+Özel güvenlik görevlisi olabilmek için Türkiye Cumhuriyeti vatandaşı olmak, asgari öğrenim düzeyini (silahsız için ilkokul/ortaokul, silahlı için lise veya dengi okul) tamamlamış olmak, onsekiz yaşını doldurmuş olmak, kanunda sayılan suçlardan mahkûm olmamak, kamu haklarından yasaklı olmamak, görevin gerektirdiği sağlık şartlarını taşımak ve özel güvenlik temel eğitimini başarıyla tamamlamış olmak gerekir. [DOĞRULA: silahlı/silahsız görevliler için güncel asgari öğrenim düzeyi madde 10 metninden teyit edilmeli]
+
+Madde 11 — Çalışma izni
+Özel güvenlik görevlisi olarak istihdam edilecekler ile özel güvenlik şirketlerinde, alarm izleme merkezlerinde ve eğitim kurumlarında kurucu/yönetici olarak çalışacaklar hakkında valilikçe güvenlik soruşturması ve arşiv araştırması yapılır. Soruşturmanın olumlu sonuçlanması ve madde 14'te belirtilen özel güvenlik temel eğitiminin başarıyla tamamlanması hâlinde valilik tarafından beş yıl süreli çalışma izni (özel güvenlik görevlisi kimlik kartı) verilir. Çalışma izni, süresi dolmadan yenilenir.
+
+Madde 12 — Kimlik kartı
+Özel güvenlik görevlilerine valilikçe kimlik kartı verilir. Kimlik kartında görevlinin adı ve soyadı ile silahlı mı yoksa silahsız mı olduğu belirtilir. Kimlik kartı, görev alanı ve süresi içinde herkes tarafından görülebilecek şekilde yakaya takılır. Üzerinde kimlik kartı olmayan özel güvenlik görevlileri çalıştırılamaz. Kimlik kartını başkasına kullandıran görevli ve yöneticiye idari para cezası uygulanır ve görevlinin kartı iptal edilir.
+
+Madde 14 — Özel güvenlik eğitimi
+Özel güvenlik temel eğitimi; teorik ve uygulamalı eğitim ile silah eğitiminden oluşur ve toplam yüzyirmi ders saatinden az olamaz. Yenileme eğitimi ise altmış ders saatinden az olamaz. Eğitim, İçişleri Bakanlığınca ruhsatlandırılan özel güvenlik eğitim kurumlarında verilir; eğitim sonunda yapılan sınavda başarılı olanlara sertifika düzenlenir. Çalışma izni almak için bu eğitimin başarıyla tamamlanması zorunludur.
+
+Madde 19 — Adli suçlar ve cezalar
+Bu Kanunda öngörülen izin alınmadan özel güvenlik faaliyetinde bulunan kişi ve kuruluşların yöneticileri ile izinsiz silah taşıyan veya bulunduran görevliler hakkında hapis ve/veya adli para cezası uygulanır. Eğitim almadan veya kimlik kartı olmadan özel güvenlik görevlisi çalıştıran ya da bu Kanuna aykırı olarak silah kullandıran kişiler de cezalandırılır. Bu maddedeki suçlardan dolayı tüzel kişiler hakkında güvenlik tedbirleri de uygulanabilir. [DOĞRULA: 23/1/2008-5728 ve sonraki değişikliklerle madde 19'daki güncel hapis/adli para cezası sınırları teyit edilmeli]
+
+Madde 20 — İdari para cezasını gerektiren fiiller
+Özel güvenlik hizmetlerinde bildirim yükümlülüğünü yerine getirmeyenlere, gerekli koruma ve güvenlik tedbirlerini almayanlara, greve katılan, kimlik kartını başkasına kullandıran veya başkasının kartını kullanan görevlilere ve sigorta yükümlülüğünü yerine getirmeyenlere idari para cezası uygulanır; tekrarı hâlinde faaliyet izni veya çalışma izni iptal edilebilir. Bu maddedeki idari para cezaları mahallî mülki amir tarafından verilir ve her yıl yeniden değerleme oranında artırılır. [DOĞRULA: madde 20'deki güncel idari para cezası tutarları ilgili yıl yeniden değerleme tebliğinden teyit edilmeli]

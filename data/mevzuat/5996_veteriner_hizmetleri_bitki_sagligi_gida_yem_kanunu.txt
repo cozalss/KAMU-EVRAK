@@ -1,0 +1,23 @@
+Veteriner Hizmetleri, Bitki Sağlığı, Gıda ve Yem Kanunu
+Kanun No 5996, Kabul 11/6/2010, RG 13/6/2010 Sayı 27610 (Düstur Tertip 5, Cilt 49) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5996.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 30 — Gıda ve yem işletmelerinin kayıt ve onay işlemleri
+Bu Kanun kapsamındaki gıda ve yem işletmelerinden hangilerinin onaya, hangilerinin kayıt işlemine tâbi olacağı Bakanlıkça belirlenir; onaya tâbi işletmeler faaliyete geçmeden önce Bakanlıktan onay almak, kayıt işlemine tâbi işletmeler işletme kayıtlarını Bakanlığa yaptırmak zorundadır. Onaya tâbi işletme mevzuata uygun faaliyette bulunmazsa faaliyeti durdurulur, onayı geçici askıya alınır ve eksiklikler bir yıl içinde giderilmezse onay iptal edilir. İşletmeci faaliyetini kısmen veya tamamen durdurursa bunu üç ay içinde Bakanlığa bildirmekle yükümlüdür. Gıda işletmesi kayıt/onay başvuru evrakının temel dayanağıdır.
+
+Madde 31 — Resmî kontroller ve kontrol görevlisinin yetkileri
+Resmî kontrollerin uygun sıklıkta, tarafsız, şeffaf ve risk esasına göre, ön bildirim gereken hâller dışında önceden haber verilmeksizin yapılacağını düzenler; kontroller izleme, gözetim, doğrulama, tetkik, denetim, numune alma ve analizi kapsar ve Bakanlıkça yetki verilen personelce yürütülür. Kontrol görevlisi tarafsız ve bağımsız karar almak zorundadır ve bu Kanunda öngörülen idari yaptırımları uygulamaya yetkilidir; kontrol amacıyla Kanun kapsamındaki her yere girebilir ve numune alabilir. Gıda denetim tutanakları ve numune alma yazışmalarının dayanağıdır.
+
+Madde 32 — Uygun olmayan canlı hayvan ve ürünlere ilişkin önlemler
+Resmî kontrol sonucunda mevzuat şartlarını taşımadığı veya insan, hayvan ya da bitki sağlığı açısından tehlike oluşturduğu tespit edilen canlı hayvan ve ürünler için Bakanlığın alabileceği önlemleri sayar. Bu önlemler arasında piyasaya arzın, taşımanın, ülkeye giriş-çıkışın kısıtlanması veya yasaklanması, piyasaya arz edilmişse satışın durdurulması ve ürünün piyasadan toplatılması yer alır. Ürün geri çağırma (toplatma) ve piyasaya arz yasağı yazışmalarının dayanağıdır.
+
+Madde 40 — Gıda ve yem ile ilgili yaptırımlar
+Gıda ve yem ihlallerine uygulanacak yaptırımları düzenler: kişilerin hayatını ve sağlığını tehlikeye sokacak gıdalar masrafı sorumlusuna ait olmak üzere piyasadan toplatılır, mülkiyeti kamuya geçirilerek imha edilir ve bunları üreten/ithal eden/piyasaya arz eden işletmeciye bir yıldan beş yıla kadar hapis ile bin günden beş bin güne kadar adli para cezası verilir. Tüketime uygun olmayan yemler ile belirli esaslara aykırı hareket edenler için idari para cezası ve mülkiyetin kamuya geçirilmesi öngörülür. Gıda güvenliği idari yaptırım ve imha kararı yazışmalarının dayanağıdır.
+
+Madde 41 — Hijyen ve resmî kontroller ile ilgili yaptırımlar
+Hijyen kurallarına ve resmî kontrollere ilişkin yaptırımları kademeli idari para cezaları hâlinde düzenler; birincil üretim, perakende ve diğer işyerleri için farklı tutarlar belirler. Özellikle 30 uncu madde gereği Bakanlıktan onay alması gerektiği hâlde onay almadan üretim yapanlara on bin Türk Lirası, depo ve satış yerlerine beş bin Türk Lirası idari para cezası verilir, işletme faaliyeti durdurularak ürünlere el konulur ve mülkiyeti kamuya geçirilir; kayıt yaptırmayan üretim yerlerine de idari para cezası uygulanır. Kayıt/onay yükümlülüğünü ihlal yaptırım yazışmalarının dayanağıdır.

@@ -1,0 +1,23 @@
+Elektrik Piyasasi Kanunu
+Kanun No 6446, Kabul 14.03.2013, RG 30.03.2013/28603 — YURURLUKTE (resmi PDF 1.5.6446 ve Lexpera konsolide metin uzerinden dogrulandi)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6446.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Tanimlar (lisans ve onlisans)
+Lisans, tuzel kisilere piyasada faaliyet gosterebilmeleri icin bu Kanun uyarinca verilen izni ifade eder. Onlisans ise uretim faaliyetinde bulunmak isteyen tuzel kisilere, uretim tesisi yatirimlarina baslamalari icin gerekli onay, izin, ruhsat ve benzerlerini alabilmeleri amaciyla belirli sure icin verilen izindir. Basvuru ve lisanslama evraklarinin dayandigi temel kavramlari tanimlar.
+
+Madde 4 — Piyasa faaliyetleri ve lisans alma zorunlulugu
+Piyasada; uretim, iletim, dagitim, toptan satis, perakende satis, piyasa isletim, ithalat, ihracat ve toplayicilik gibi faaliyetler ancak Kurumdan (EPDK) lisans alinmasi kosuluyla yurutulebilir. Bu faaliyetleri yapacak tuzel kisiler anonim sirket veya limited sirket olarak kurulur. Lisanssiz yurutulebilecek faaliyetler ayrica duzenlenir. Vatandas/sirketin elektrik piyasasinda hangi faaliyet icin lisans almasi gerektigini belirler.
+
+Madde 5 — Lisanslar ve onlisans
+Lisans, uzerinde kayitli piyasa faaliyetlerinin yapilabilmesi icin tuzel kisilere verilen izin belgesidir. Uretim lisansi basvurularinda tuzel kisiye once, gerekli izin/ruhsatlari almasi ve uretim tesisi sahasinda mulkiyet haklari edinmesi icin belirli sureli onlisans verilir. Kurum; basvuru usulu ve degerlendirme olculeri, bedeller, hak ve yukumlulukler, sermaye yeterliligi ile lisans verme, tadil, sona erdirme ve iptal islemlerini yonetmelikle duzenler. Lisanslar en cok kirk dokuz yil icin verilir; uretim, iletim ve dagitim lisanslarinin asgari suresi on yildir.
+
+Madde 6 — Lisansin sona ermesi ve iptali
+Lisans, suresinin dolmasi, lisans sahibinin talebi, faaliyetin sona ermesi veya iflas gibi hallerde sona erer. Kanun ve lisans hukumlerine aykirilik, onlisans/lisans yukumluluklerinin yerine getirilmemesi ya da gercege aykiri belge sunulmasi gibi durumlarda Kurum lisansi iptal edebilir. Iptal ve sona ermenin sonuclari ile tuketici/piyasa surekliligini koruyan tedbirler bu kapsamda duzenlenir. [DOGRULA: sona erme ve iptal hallerinin tam listesi yururlukteki metinden teyit edilmeli]
+
+Madde 16 — Idari yaptirimlar ve para cezalari
+EPDK; yanlis veya eksik bilgi/belge verilmesi, Kanun ve lisans hukumlerine aykirilik, gercek disi belge sunulmasi, istirak yasaginin ihlali ve lisans kapsami disinda faaliyet gibi ihlallere karsi kademeli idari para cezalari uygular. Piyasa bozucu davranislarda gercek kisilere ve tuzel kisilere agir tutarli cezalar verilebilir; tekrar eden ihlallerde cezalar artirilir ancak bir onceki mali yil gayrisafi gelirinin belirli oranini asamaz. Lisans sahibinin idareye karsi sorumlulugunu belirleyen temel yaptirim maddesidir. [DOGRULA: ceza tutarlari her yil yeniden degerleme orani ile guncellendiginden cari tutarlar teyit edilmeli]

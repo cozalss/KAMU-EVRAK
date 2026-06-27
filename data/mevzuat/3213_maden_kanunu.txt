@@ -1,0 +1,29 @@
+Maden Kanunu
+Kanun No 3213, Kabul 04.06.1985, RG 15.06.1985/18785 — YURURLUKTE (resmi PDF 1.5.3213 ve mevzuat.gov.tr/Lexpera konsolide metin uzerinden dogrulandi; son degisiklikler islenmis)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3213&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Ruhsatlarin devri ve intikali
+Maden haklari hisselere bolunemez; arama ve isletme ruhsatlari Bakanlik (Genel Mudurluk) onayiyla baskasina devredilebilir. Devirden once, devredildigi tarihteki ruhsat bedelinin iki kati tutarinda devir bedeli alinir ve devir Bakanlik onayiyla tamamlanir. Miras yoluyla intikal halinde ruhsat mirascilar tarafindan en ehil kisiye devredilir; mirascilar anlasamazsa mahkeme karar verir.
+
+Madde 6 — Maden hakki sahibi olabilecekler
+Maden haklarina; medeni haklari kullanmaya ehil T.C. vatandaslari, Turk hukukuna gore kurulmus tuzel kisiligi haiz sirketler ile kamu kurum ve kuruluslari sahip olabilir. Maden haklari gercek veya tuzel tek kisi adina verilir, hisselere bolunemez. Devlet memurlari ve diger kamu gorevlileri arama ve isletme ruhsati alamaz, bu haklarda ortak olamaz. Vatandasin/sirketin maden hakki ehliyetini belirleyen temel maddedir.
+
+Madde 7 — Madencilik faaliyetlerinde izinler
+Madencilik faaliyetleri; ormanlik alan, korunan alan, turizm bolgesi, mera, sit alani, su havzasi gibi hassas alanlarda ilgili kurumlardan izin alinmasi sartiyla yurutulur. Imarli alanlarda yerel merciden izin gerekir; gerekli izinler alinmadan faaliyete baslanamaz. Cevreyle uyum bakimindan teminat alinmasi ve cevresel uyum planlarina iliskin yukumlulukler de bu kapsamda duzenlenir. [DOGRULA: cevresel uyum teminatinin yatirilma usulu ve tutari madde 7 ile yonetmelikte ayrintili olabilir, yururlukteki son metinden teyit edilmeli]
+
+Madde 16 — Ilk muracaat (takaddum hakki) ve arama ruhsati
+Maden hakki icin ilk muracaat edene oncelik (takaddum hakki) taninir. II. Grup (b), III., IV. ve V. Grup madenler arama ruhsati ile aranir; bazi gruplar (I. Grup, II. Grup (a)/(c)) icin dogrudan isletme ruhsati ya da ihale yoluyla ruhsat verilir. Arama ruhsati gruplara gore belirli hektar sinirlarinda (or. III. Grup 500, IV. Grup 2.000 hektar) verilir ve ruhsat harci ile teminatin yatirilmasi zorunludur. Arama donemi on arama, genel arama ve detay arama asamalarindan olusur (on arama genelde 1 yil).
+
+Madde 24 — Isletme ruhsati ve madenin isletilmesi
+Isletme ruhsati talebinde; isletme ruhsat bedeli, rehabilitasyon bedeli, isletme ruhsat taban bedeli, maden muhendisinin sorumlulugunda hazirlanmis isletme projesi, mali yeterlilik belgeleri ve elektronik teblig adresi sunulur. Projedeki teknik eksiklikler Genel Mudurlukce iki ay icinde bildirilir ve uc ay icinde tamamlanir. Isletme ruhsati yururluk tarihinden itibaren uc yil icinde CED karari, mulkiyet izni ve isyeri acma-calisma ruhsati alinmasi uzerine isletme izni duzenlenir; ruhsat sahibi isletme izninden itibaren alti ay icinde madeni isletmeye almak zorundadir. Isletme ruhsat suresi (I. Grup (a) haric) on yildan az olmamak uzere projeye gore belirlenir.
+
+Madde 13 — Ruhsat ve rehabilitasyon bedeli ile muracaat sartlari
+Ruhsat ve rehabilitasyon bedellerinin tamami her yil ocak ayinin sonuna kadar yatirilmak zorundadir; rehabilitasyon bedeli isletme ruhsat bedeline esittir. Bedellerin suresinde yatirilmamasi halinde ruhsat iptal edilir. Muracaatlarda KEP/elektronik teblig adresinin aktif olmasi, ruhsat harci ve bedelinin odenmesi, gerekli belgelerin eksiksiz sunulmasi ve (isletme izni varsa) daimi nezaretci atanmasi sarttir. Ruhsat sahibinin yillik mali yukumlulukleri ile basvuru evrakinin temel cercevesini cizer.
+
+Madde 12 — Ruhsatsiz uretim ve idari yaptirim
+Ruhsati olmadan veya baskasina ait ruhsat alani icinde uretim yapildiginin tespiti halinde faaliyetler durdurulur ve uretilen madene mulki idare amirligince el konulur. Ilk tespitte ocak basi satis bedelinin bes kati tutarinda idari para cezasi uygulanir; tekrarinda ceza artirilir. Ruhsatsiz/izinsiz madencilige karsi vatandas ve idarenin basvurabilecegi yaptirim cercevesini belirler. [DOGRULA: idari para cezasi katsayisi ve usul yururlukteki son degisiklikle teyit edilmeli]

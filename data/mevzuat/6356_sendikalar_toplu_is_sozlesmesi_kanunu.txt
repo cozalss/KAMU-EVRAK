@@ -1,0 +1,29 @@
+Sendikalar ve Toplu İş Sözleşmesi Kanunu
+Kanun No 6356, Kabul 18.10.2012, RG 07.11.2012/28460 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.6356 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6356.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 7 — Kuruluş (sendika kurmak için verilecek dilekçe ve belgeler)
+Sendika ve konfederasyonlar, kurucuların kuruluş bildirimi ile kuruluş tüzüğünü merkezlerinin bulunacağı ilin valiliğine vermeleriyle tüzel kişilik kazanır. Dilekçeye sendikalar için kurucuların nüfus ve ikamet bilgileri ile meslek/işkolu beyanları, üst kuruluşlar için ise üye kuruluşların genel kurul kararları eklenir. Valilik belgeleri Bakanlığa gönderir; gerçeğe aykırı veya eksik belge tespit edilirse bir aylık süre içinde tamamlatılması istenir.
+
+Madde 17 — Sendika üyeliği ve üyeliğin kazanılması (e-Devlet başvurusu)
+Onbeş yaşını dolduran ve fiilen çalışan işçiler işçi sendikasına üye olabilir; bir işçi aynı işkolunda ve aynı zamanda birden çok sendikaya üye olamaz. Üyelik, Bakanlıkça sağlanan elektronik başvuru sistemine e-Devlet kapısı üzerinden başvurulması ve sendikanın yetkili organının kabulü ile e-Devlet üzerinden kazanılır. Başvuru tarihinden itibaren otuz gün içinde reddedilmeyen başvuru kabul edilmiş sayılır.
+
+Madde 19 — Üyeliğin sona ermesi ve üyelikten çekilme (istifa bildirimi)
+Her üye, e-Devlet kapısı üzerinden çekilme bildiriminde bulunmak suretiyle üyelikten serbestçe çekilebilir; e-Devlet kapısı üzerinden yapılan çekilme bildirimi elektronik ortamda eş zamanlı olarak Bakanlığa ve sendikaya ulaşır. Çekilme, bildirim tarihinden itibaren bir ay sonra geçerlilik kazanır ve çekilenin yeni bir sendikaya üye olmasına engel değildir. Üyenin ölümü, ilgili işkolunda çalışmaya son vermesi veya çıkarılması hallerinde de üyelik sona erer.
+
+Madde 25 — Sendika özgürlüğünün güvencesi (işverenin ayrımcılık yasağı)
+İşçilerin işe alınması, sendikaya üye olmaları veya olmamaları şartına bağlanamaz; işveren, çalışma şartları, ücret, ilerleme ve işten çıkarma bakımından sendika üyesi olan ve olmayan işçiler arasında ayrım yapamaz. Sendika üyeliği veya sendikal faaliyete katılma nedeniyle iş sözleşmesinin feshi halinde işçi, ücretinin bir yıllık tutarından az olmamak üzere sendikal tazminata hak kazanır. Bu güvence, işçiyi sendikal nedenli ayrımcılığa ve baskıya karşı korur.
+
+Madde 42 — Toplu iş sözleşmesi yetki tespiti için Bakanlığa başvuru
+Toplu iş sözleşmesi yapmak isteyen işçi sendikası, kurulu olduğu işkolunda çalışan işçilerin en az yüzde birini ve işyeri/işletmede çoğunluğu temsil ettiğini ileri sürerek Bakanlığa başvurarak yetkili olduğunun tespitini ister (m.41 yetki şartı). Bakanlık, kayıtlarına göre başvuran sendikanın yetki şartlarını taşıyıp taşımadığını ve işyerinde çalışan işçi sayısını altı iş günü içinde ilgili sendika ve işverene bildirir. Tespit yazısı, toplu görüşme sürecinin başlatılmasının resmî dayanağıdır.
+
+Madde 60 — Grev ve lokavt kararının alınması ve uygulamaya konulması
+Toplu görüşmenin uyuşmazlıkla sonuçlanması ve arabuluculuk sürecinin tamamlanması halinde, yetkili işçi sendikası uyuşmazlık tutanağının tebliğinden itibaren altmış gün içinde grev kararı alabilir ve bu süre içinde altı iş günü önceden karşı tarafa bildirilecek tarihte greve başlayabilir; bu süre içinde grev kararı alınıp uygulamaya konulmazsa yetki belgesi düşer. Karşı taraf da aynı şekilde lokavt kararı alıp uygulayabilir. Grev ve lokavt kararı, kararı alan tarafça işyerinde derhal ilan edilir.
+
+Madde 62 — Grev ve lokavt yasakları
+Can ve mal kurtarma işleri, cenaze ve tedavi işleri, hastaneler, doğal gaz ve petrol üretimi, arıtımı ve dağıtımı, bankacılık hizmetleri ile şehir içi toplu taşıma ve itfaiye gibi belirli iş ve işyerlerinde grev ve lokavt yapılamaz. Bu işyerlerinde çıkan uyuşmazlıklar Yüksek Hakem Kurulu tarafından çözülür. Grev ve lokavt yasağının kapsamı kanunda sınırlı sayıda sayılmıştır.

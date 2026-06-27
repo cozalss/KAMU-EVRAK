@@ -1,0 +1,32 @@
+Bankacılık Kanunu
+Kabul 19/10/2005, RG 1/11/2005 sayı 25983 (mükerrer) — YÜRÜRLÜKTE. Burada yalnızca banka kuruluş/faaliyet izni başvurusu, mevduat-katılım fonu, sır saklama ve BDDK'ya yapılan başvuru/şikâyet ile idari para cezası evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5411.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 6 — Kuruluş veya Türkiye'de şube açma izni
+Türkiye'de bir bankanın kurulmasına ya da yurt dışında kurulmuş bir bankanın Türkiye'deki ilk şubesinin açılmasına, Bankacılık Düzenleme ve Denetleme Kurulunun en az beş üyesinin aynı yöndeki oyuyla alınacak kararla izin verilir. İzin başvurusunda kurucuların, sermaye yapısının ve yönetimin kanunda aranan nitelikleri taşıması gerekir. Bu hüküm, banka kuruluş izni başvuru evrakının dayanağıdır.
+
+Madde 10 — Faaliyet izni
+Kuruluş veya Türkiye'de şube açma izni alan bankaların ayrıca faaliyete geçmek için Kurumdan faaliyet izni alması zorunludur; izin bir beyanname ile yapılacak başvuru üzerine verilir ve 4 üncü maddede sayılan faaliyetleri kapsar. İzin için sermayenin nakden ve her türlü muvazaadan arî ödenmiş olması, sistem ve personel altyapısının hazır bulunması gibi koşullar aranır. Bu hüküm, faaliyet izni başvuru/beyanname evrakının dayanağıdır.
+
+Madde 13 — Yurt içinde ve yurt dışında şube açma
+Bankaların yurt içinde şube açması, Kurulca belirlenecek esaslara uyulması ve Kuruma bildirilmesi kaydıyla serbesttir; yurt dışında şube veya temsilcilik açılması ise Kurulun iznine tâbidir. Şube açılışlarında sermaye yeterliliği ve standart oranlara uyum şartı gözetilir. Bu hüküm, şube açma bildirim/izin başvuru evrakının dayanağıdır.
+
+Madde 60 — Mevduat ve katılım fonu kabulü
+Mevduat bankaları dışındaki kişiler mevduat, katılım bankaları dışındaki kişiler katılım fonu kabul edemez; bu Kanuna göre faaliyet izni almadan mevduat veya katılım fonu kabulü yasaktır. Mevduat ve katılım fonunun kabulü, geri ödenmesi ve zamanaşımına ilişkin esaslar Kurulca düzenlenir. Bu hüküm, izinsiz mevduat toplama ihbar/şikâyet evrakının dayanağıdır.
+
+Madde 63 — Tasarruf Mevduatı Sigorta Fonu ve mevduatın sigortalanması
+Kredi kuruluşları nezdindeki tasarruf mevduatı ve gerçek kişilere ait katılım fonu, Tasarruf Mevduatı Sigorta Fonu tarafından sigorta edilir; sigortaya tâbi olacak tutar ve kapsam Fon Kurulunca belirlenir. Resmî kuruluşlara, kredi kuruluşlarına ve belirli kişilere ait mevduat sigorta kapsamı dışında tutulabilir. Bu hüküm, bankası tasfiyeye/iflasa giden mudilerin sigortalı mevduat ödeme talebi evrakının dayanağıdır.
+
+Madde 73 — Sırların saklanması ve bilgi paylaşımı
+Kurul başkan ve üyeleri ile Kurum personeli, görevleri sırasında öğrendikleri bankalara ve müşterilerine ait sırları kanunen açıkça yetkili kılınanlardan başkasına açıklayamaz ve kendi yararlarına kullanamaz; bu yükümlülük görevden ayrılmalarından sonra da devam eder. Konsolide finansal tablo, risk yönetimi, içsel denetim ve değerleme amaçlı bilgi paylaşımı ile yetkili mercilere yapılan bildirimler sır kapsamında sayılmaz. Bu hüküm, müşteri sırrı/banka sırrı ihlali şikâyet evrakının dayanağıdır.
+
+Madde 74 — Müşteri sırrı ve banka sırrı niteliğindeki bilgilerin kullanılması
+Bu Kanun hükümleri saklı kalmak kaydıyla, sıfat ve görevleri dolayısıyla bankalara veya müşterilerine ait sırları öğrenenler, bu sırları yetkili mercilerden başkasına açıklayamaz ve kendilerinin veya başkalarının yararına kullanamaz. Müşteri sırrı niteliğindeki bilgilerin müşteri talebi/onayı ya da kanunda öngörülen istisnalar dışında üçüncü kişilerle paylaşılması yasaktır. Bu hüküm, kişisel/finansal bilginin izinsiz paylaşımına ilişkin şikâyetin dayanağıdır. [DOĞRULA: 5411 sayılı Kanuna 7222 sayılı Kanunla eklenen müşteri sırrı/banka sırrı düzenlemesinin güncel madde numarası ve fıkra metni mevzuat.gov.tr konsolide metinden teyit edilmeli]
+
+Madde 146 — İdari para cezaları
+Kanunun ilgili maddelerinde öngörülen yükümlülüklere aykırı davranan banka ve görevliler hakkında Kurulca idari para cezası uygulanır; cezanın alt ve üst sınırları ile uygulama usulü maddede ve atıf yapılan hükümlerde belirlenmiştir. İdari para cezaları her takvim yılı başında yeniden değerleme oranında artırılarak uygulanır. Bu hüküm, idari para cezası karar/tebliğ ve cezaya itiraz evrakının dayanağıdır. [DOĞRULA: 2026 yılı için geçerli güncel idari para cezası alt/üst tutarları yeniden değerleme oranıyla güncellenmiş hâliyle teyit edilmeli]

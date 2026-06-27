@@ -128,3 +128,42 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | Devlet İhale Kanunu | 2886 | `2886_devlet_ihale_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2886&MevzuatTur=1&MevzuatTertip=5 |
 | Taşınır Mal Yönetmeliği | 2006/11545 (BKK) | `tasinir_mal_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=9014&MevzuatTur=21&MevzuatTertip=5 |
 | Kamu İdarelerine Ait Taşınmazların Tahsis ve Devri Hakkında Yönetmelik | RG 26315 | `tasinmaz_tahsis_devir_yonetmeligi.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=10691&MevzuatTur=7&MevzuatTertip=5 |
+
+## 2026-06 Genişletme Batch 5 — trafik/ulaştırma/güvenlik (3 mevzuat / 18 madde)
+
+> Korpus 76 -> **79 mevzuat**. Trafik cezası-itiraz (sulh ceza hâkimliği, m.114),
+> sürücü belgesi/araç tescil, karayolu taşıma yetki belgesi, özel güvenlik izni/çalışma
+> izni/kimlik kartı. Gerçek mevzuat madde-özetleri (mevzuat.gov.tr / resmigazete.gov.tr).
+> Şüpheli/değişen hükümler `[DOĞRULA:]` taşır. Yeniden indeksleme: `python scripts/seed_mevzuat.py`.
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Karayolları Trafik Kanunu | 2918 | `2918_karayollari_trafik_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2918&MevzuatTur=1&MevzuatTertip=5 |
+| Karayolu Taşıma Kanunu | 4925 | `4925_karayolu_tasima_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4925&MevzuatTur=1&MevzuatTertip=5 |
+| Özel Güvenlik Hizmetlerine Dair Kanun | 5188 | `5188_ozel_guvenlik_hizmetleri_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5188&MevzuatTur=1&MevzuatTertip=5 |
+
+## 2026-06 Genişletme Batch 5 — trafik/dernek/sendika/tarım/enerji/bankacılık (18 mevzuat)))
+
+> Korpus 76 -> **94 mevzuat (623 chunk)**. Resmî mühür, e-yazışma (EBYS/KEP/e-imza/karekod),
+> medeni/vekâlet/koruma, personel disiplin/mali haklar, ihale itiraz. Gerçek mevzuat (mevzuat.gov.tr).
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Karayolları Trafik Kanunu | 2918 | `2918_karayollari_trafik_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2918&MevzuatTur=1&MevzuatTertip=5 |
+| Karayolu Taşıma Kanunu | 4925 | `4925_karayolu_tasima_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4925&MevzuatTur=1&MevzuatTertip=5 |
+| Özel Güvenlik Hizmetlerine Dair Kanun | 5188 | `5188_ozel_guvenlik_hizmetleri_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5188&MevzuatTur=1&MevzuatTertip=5 |
+| Dernekler Kanunu | 5253 | `5253_dernekler_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5253.pdf |
+| Dernek ve Vakıfların Kamu Kurum ve Kuruluşları ile İlişkilerine Dair Kanun | 5072 | `5072_dernek_vakif_kamu_iliskileri_kanunu.txt` | 3 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5072.pdf |
+| Toplantı ve Gösteri Yürüyüşleri Kanunu | 2911 | `2911_toplanti_ve_gosteri_yuruyusleri_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2911.pdf |
+| Sendikalar ve Toplu İş Sözleşmesi Kanunu | 6356 | `6356_sendikalar_toplu_is_sozlesmesi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6356.pdf |
+| Türkiye İş Kurumu Kanunu | 4904 | `4904_turkiye_is_kurumu_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4904&MevzuatTur=1&MevzuatTertip=5 |
+| Uluslararası İşgücü Kanunu | 6735 | `6735_uluslararasi_isgucu_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6735.pdf |
+| Veteriner Hizmetleri, Bitki Sağlığı, Gıda ve Yem Kanunu | 5996 | `5996_veteriner_hizmetleri_bitki_sagligi_gida_yem_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5996.pdf |
+| Toprak Koruma ve Arazi Kullanımı Kanunu | 5403 | `5403_toprak_koruma_ve_arazi_kullanimi_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5403.pdf |
+| Kooperatifler Kanunu | 1163 | `1163_kooperatifler_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.1163.pdf |
+| Maden Kanunu | 3213 | `3213_maden_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3213&MevzuatTur=1&MevzuatTertip=5 |
+| Elektrik Piyasasi Kanunu | 6446 | `6446_elektrik_piyasasi_kanunu.txt` | 5 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6446.pdf |
+| Yeralti Sulari Hakkinda Kanun | 167 | `167_yeralti_sulari_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.4.167.pdf |
+| Bankacılık Kanunu | 5411 | `5411_bankacilik_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5411.pdf |
+| Sermaye Piyasası Kanunu | 6362 | `6362_sermaye_piyasasi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6362.pdf |
+| Sigortacılık Kanunu | 5684 | `5684_sigortacilik_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5684.pdf |

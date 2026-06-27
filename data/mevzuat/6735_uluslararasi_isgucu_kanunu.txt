@@ -1,0 +1,26 @@
+Uluslararası İşgücü Kanunu
+Kanun No 6735, Kabul 28.07.2016, RG 13.08.2016/29800 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.6735 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6735.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 6 — Çalışma izni ve çalışma izni muafiyetinde yetki ve yükümlülük
+Bu Kanun kapsamındaki yabancıların çalışma izni veya çalışma izni muafiyeti olmaksızın Türkiye'de çalışmaları ya da çalıştırılmaları yasaktır. Çalışma izni ve çalışma izni muafiyeti, uluslararası işgücü politikası esas alınarak Aile, Çalışma ve Sosyal Hizmetler Bakanlığınca verilir. Süreli, süresiz veya bağımsız çalışma izni ile Turkuaz Kart düzenlenebilir.
+
+Madde 7 — Çalışma izni başvurusu ve değerlendirilmesi
+Çalışma izni başvuruları yurt içinde doğrudan Bakanlığa, yurt dışında yabancının vatandaşı olduğu veya yasal olarak bulunduğu ülkedeki Türkiye Cumhuriyeti büyükelçilik veya başkonsolosluklarına yapılır ve başvurular yetkili aracı kurum tarafından da yapılabilir. Usulüne uygun ve eksiksiz yapılan başvurular, bilgi ve belgelerin tam olduğu tarihten itibaren otuz gün içinde sonuçlandırılır. Eksikliklerin tamamlanması istenebilir; eksiklik tamamlanıncaya kadar otuz günlük süre işlemez.
+
+Madde 10 — Çalışma izninin süresi (ilk başvuru ve uzatmalar)
+Çalışma izni, iş veya hizmet sözleşmesinin süresini aşmamak koşuluyla, belirli bir işveren yanında belirli bir işte çalışmak üzere ilk başvuruda en çok bir yıl geçerli olarak verilir. İznin uzatılmasında, aynı işveren yanında çalışmaya devam edilmesi şartıyla ilk uzatmada en çok iki yıl, sonraki uzatmalarda en çok üç yıl süreli izin verilebilir. Sürelerin hesabında işverenin değişmesi yeniden ilk başvuru sayılır.
+
+Madde 12 — Çalışma izni başvurusunun reddi
+Madde 7'ye göre yapılan değerlendirme sonucunda; uluslararası işgücü politikasına uygun olmayan, sahte veya yanıltıcı bilgi ve belgelerle yapılan, yabancı istihdamına ilişkin gerekçesi yeterli görülmeyen başvurular reddedilir. Ayrıca diğer kanunlarda yalnızca Türk vatandaşlarına hasredilen iş ve mesleklere ilişkin, gerekli nitelik ve uzmanlığı taşımadığı anlaşılan yabancılara ilişkin ve Bakanlıkça belirlenen değerlendirme kriterlerini karşılamayan başvurular da reddedilir. Ret kararı başvuru sahibine bildirilir.
+
+Madde 22 — Bildirim yükümlülüğü (çalışmaya başlama ve sona erme)
+Çalışma izni veya çalışma izni muafiyeti alan yabancıyı çalıştıran işveren ile bağımsız çalışan yabancı, çalışmanın fiilen başladığı ve sona erdiği tarihleri ile izin sona ermeden iş ilişkisinin sona ermesini kanunda belirtilen süre içinde Bakanlığa bildirmek zorundadır. Bu bildirim, sosyal güvenlik ve denetim açısından yabancı istihdamının takibini sağlar. [DOĞRULA: bildirim için öngörülen gün sayısı ve yürürlükteki madde numarası konsolide metinden teyit edilmelidir.]
+
+Madde 23 — Denetim ve idari para cezası
+Kanun kapsamındaki yabancıların ve işverenlerin yükümlülüklerini yerine getirip getirmedikleri Bakanlık iş müfettişleri ile Sosyal Güvenlik Kurumu müfettişleri ve sosyal güvenlik denetmenlerince denetlenir. Çalışma izni olmaksızın bir işverene bağlı çalışan yabancıya, bağımsız çalışan yabancıya ve yabancı çalıştıran işveren ile işveren vekiline her bir yabancı için maddede belirtilen tutarlarda idari para cezası uygulanır; tekrarında ceza iki katı uygulanır. İdari para cezaları her yıl yeniden değerleme oranında artırıldığından cari tutarlar her yıl değişir. [DOĞRULA: idari para cezası tutarları cari yıl tebliğinden teyit edilmelidir; bazı kaynaklarda ceza hükmü ayrı madde (m.24) olarak numaralandırılmaktadır.]

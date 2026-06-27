@@ -1,0 +1,23 @@
+Karayolları Trafik Kanunu
+Kabul 13/10/1983, RG 18/10/1983 sayı 18195 (Düstur Tertip 5, Cilt 22) — YÜRÜRLÜKTE. İdari para cezası tutarları her yıl Vergi Usul Kanunu yeniden değerleme oranında güncellenir; güncel tutarlar için ilgili yıl Resmî Gazete duyurusuna bakılır.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2918&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 20 — Araçların tescili, satış ve devir bildirimi
+Tescili zorunlu araçların sahipleri, aracı edindikleri tarihten itibaren öngörülen süre içinde trafik tescil kuruluşuna başvurarak araçlarını tescil ettirmek zorundadır. Araçların her türlü satış ve devirleri noterler tarafından yapılır; noterler bu işlemi belirlenen süre içinde ilgili trafik tescil kuruluşuna ve vergi dairesine bildirir. Yeni malik adına geçici trafik belgesi düzenlenir ve tescil belgesi ilgili kuruluşça verilir. Bildirim ve tescil yükümlülüğüne uyulmaması idari para cezası gerektirir. [DOĞRULA: edinme tarihinden itibaren tescil süresi ve noter bildirim süresi (gün) güncel madde 20 metninden teyit edilmeli]
+
+Madde 41 — Sürücü belgesi alma şartları
+Sürücü belgesi alacakların; alacakları belge sınıfına göre belirlenen asgari yaşı doldurmuş olması (örneğin A1/B/C/F/G/H sınıfı için onsekiz yaş, D/E sınıfı için daha ileri yaş ve mesleki tecrübe koşulu), öğrenim durumu, sağlık şartları ve sınavlarda başarılı olma koşullarını taşıması gerekir. Sürücülerin ve adayların hangi şartlarda hangi sınıf sürücü belgesi alabilecekleri, araç kullanma ve sağlık şartları İçişleri ve Sağlık Bakanlıklarınca çıkarılan yönetmelikle düzenlenir. Maddede sayılan belirli suçlardan mahkûmiyet, sürücü belgesinin verilmemesi veya geri alınması sonucunu doğurabilir.
+
+Madde 114 — Trafik idari para cezalarına karşı başvuru (itiraz)
+Trafik idari para cezası karar tutanaklarına karşı, kararın tebliği veya tutanağın düzenlendiği tarihten itibaren en geç onbeş gün içinde yetkili sulh ceza hâkimliğine başvurularak itiraz edilebilir; bu süre içinde başvurulmaması hâlinde ceza kesinleşir. İtiraz ve sonrasındaki yargılama usulü hakkında Kabahatler Kanunu hükümleri uygulanır. İdari yaptırım kararı, ihlali tespit eden Emniyet Genel Müdürlüğü, Jandarma Genel Komutanlığı ve ilgili kuruluş personelince düzenlenen tutanağa dayanır. [DOĞRULA: 2026 değişiklikleri sonrası madde 114 itiraz süresi ve yetkili merci ifadesi güncel metinden teyit edilmeli]
+
+Madde 115 — Trafik idari para cezalarının ödenmesi
+Trafik idari para cezaları, tutanağın tebliği tarihinden itibaren belirlenen süre içinde ödenir. Cezanın tebliğ tarihinden itibaren öngörülen kısa süre içinde peşin ödenmesi hâlinde kanunda belirtilen oranda indirim uygulanır. Süresinde ödenmeyen cezalar 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre gecikme zammı ile birlikte tahsil edilir. [DOĞRULA: güncel peşin ödeme indirim oranı (ör. %25) ve ödeme süresi madde 115 metninden teyit edilmeli]
+
+Madde 116 — Sürücüsü tespit edilemeyen ihlallerde tescil plakasına göre tutanak düzenlenmesi
+Trafiği tehlikeye düşürecek, engel olacak biçimde veya yasaklanmış yerlerde park etmiş ya da trafik kural ve yasaklarına aykırılığı tespit edilmiş araçların sürücüsünün belirlenemediği hâllerde, idari yaptırım kararı (tutanak) doğrudan aracın tescil plakası sahibi (işleten/malik) adına düzenlenir. Bu düzenleme, sürücünün tespit edilemediği durumlarda araç sahibinin sorumluluğunu esas alır; tescil plakasına kesilen cezaya karşı da madde 114 uyarınca sulh ceza hâkimliğine itiraz yolu açıktır.

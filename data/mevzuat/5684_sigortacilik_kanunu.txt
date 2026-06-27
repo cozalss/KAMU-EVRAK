@@ -1,0 +1,26 @@
+Sigortacılık Kanunu
+Kabul 3/6/2007, RG 14/6/2007 sayı 26552 — YÜRÜRLÜKTE. Burada yalnızca sigorta/reasürans ruhsatı, poliçe/sözleşme, acentelik tescili, sigorta tahkimine başvuru ve Güvence Hesabından tazmin talebi evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5684.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Ruhsat
+Sigorta şirketleri ve reasürans şirketleri, faaliyet göstermek istedikleri her bir sigorta branşı için ayrı ayrı ruhsat almak zorundadır; ruhsatlar ticaret siciline tescil ve Ticaret Sicili Gazetesi ile yetkili merciin internet sitesinde ilan edilir. Ruhsat için kanunda öngörülen asgari ödenmiş sermaye ve nitelik koşullarının sağlanması gerekir. Bu hüküm, branş ruhsatı başvuru evrakının dayanağıdır. [DOĞRULA: 2019/2023 düzenlemeleriyle ruhsat veren merciin "Hazine Müsteşarlığı"ndan Sigortacılık ve Özel Emeklilik Düzenleme ve Denetleme Kurumu'na (SEDDK) geçişi ve güncel asgari sermaye tutarı teyit edilmeli]
+
+Madde 11 — Sigorta sözleşmeleri ve genel şartlar
+Sigorta sözleşmeleri, ilgili merci tarafından onaylanan genel şartlara uygun olarak düzenlenir; sözleşmede ve eklerinde yer alacak hükümler ile sigortalı aleyhine olan değişikliklere ilişkin esaslar gözetilir. Hayat sigortalarında teklifin sigorta şirketine ulaşmasından itibaren öngörülen süre içinde reddedilmemesi hâlinde sözleşme yapılmış sayılır; sözleşmede açıkça teminat dışı bırakılmayan riskler teminata dâhil sayılır. Bu hüküm, poliçe/sözleşme uyuşmazlığı ve teminat kapsamı şikâyet evrakının dayanağıdır.
+
+Madde 14 — Güvence Hesabı
+Zorunlu sorumluluk sigortaları (özellikle karayolu taşımacılığı) için, Türkiye Sigorta, Reasürans ve Emeklilik Şirketleri Birliği nezdinde bir Güvence Hesabı oluşturulur. Kaza yapan aracın/sorumlunun tespit edilememesi, sigortasız olması, sigorta şirketinin malî bünyesinin zayıflaması veya iflası gibi hâllerde, zarar görenlerin bedenî zararları bu Hesaptan karşılanır. Bu hüküm, Güvence Hesabından tazminat talep başvurusunun dayanağıdır.
+
+Madde 23 — Sigorta acenteleri ve Levhaya kayıt
+Sigorta acenteliği faaliyeti, kanunda aranan nitelikleri taşıyan gerçek veya tüzel kişilerce yapılır ve Türkiye Odalar ve Borsalar Birliği tarafından tutulan Levhaya kayıt olunması zorunludur. Levhaya kayıt için yetkili merciden alınan uygunluk/nitelik belgesi aranır; kayıt silinen acente faaliyette bulunamaz. Bu hüküm, acentelik Levha kayıt/sil başvuru evrakının dayanağıdır.
+
+Madde 29 — Bilgi verme ve sır saklama
+Bu Kanunun uygulanması ile ilgili olarak istenecek her türlü bilgi ve belge, gizli dahi olsa, yetkili mercie verilmek zorundadır; aile hayatının gizliliği ve savunma hakkına ilişkin hükümler saklıdır. Görevleri dolayısıyla sigorta sırrı veya ticari sır niteliğindeki bilgileri öğrenenler bunları kanunen yetkili kılınanlardan başkasına açıklayamaz. Bu hüküm, bilgi/belge talebi ve sigorta sırrı ihlali şikâyet evrakının dayanağıdır.
+
+Madde 30 — Sigorta tahkim (Sigorta Tahkim Komisyonu)
+Sigorta ettiren veya sigorta sözleşmesinden menfaat sağlayan kişiler ile riski üstlenen taraf arasında, sigorta sözleşmesinden doğan uyuşmazlıkların çözümü için Birlik nezdinde Sigorta Tahkim Komisyonu oluşturulur; sigorta tahkim sistemine üye olan kuruluşlarla uyuşmazlığa düşen kişi, sözleşmede özel hüküm olmasa bile tahkim usulünden yararlanabilir. Komisyona başvuru için, uyuşmazlığa konu talebin sigorta kuruluşuna iletilmiş ve kuruluşça yazılı olarak ya da süresinde cevap verilmeyerek reddedilmiş olması gerekir; hakem kararları belirlenen tutara kadar kesin olup, üst sınırı aşan uyuşmazlıklarda itiraz/temyiz yoluna gidilebilir. Bu hüküm, sigorta tahkimine başvuru ve hakem kararına itiraz evrakının dayanağıdır. [DOĞRULA: hakem kararlarının kesinlik ve itiraz/temyiz için geçerli güncel parasal sınırlar (yeniden değerleme ile güncellenen tutarlar) teyit edilmeli]

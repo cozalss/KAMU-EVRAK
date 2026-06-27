@@ -1,0 +1,23 @@
+Karayolu Taşıma Kanunu
+Kabul 10/7/2003, RG 19/7/2003 sayı 25173 (Düstur Tertip 5, Cilt 42) — YÜRÜRLÜKTE. İdari para cezası tutarları her yıl Vergi Usul Kanunu yeniden değerleme oranında güncellenir; yetki belgesi ücretleri ilgili yıl Ulaştırma ve Altyapı Bakanlığı düzenlemesiyle belirlenir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4925&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 5 — Yetki belgesi alma zorunluluğu
+Taşımacılık, acentelik ve taşıma işleri komisyonculuğu ile nakliyat ambarı ve kargo işletmeciliği yapılabilmesi için Ulaştırma ve Altyapı Bakanlığından yetki belgesi alınması zorunludur. Yetki belgesi, faaliyetin türüne ve kapsamına göre verilir; belgesi olmadan veya belge kapsamı dışında faaliyette bulunulamaz. Taşımacılar, ticari araçlarda çalışan şoförlerden mesleki yeterlilik belgesine sahip olmalarını istemek zorundadır. Yetki belgeleri, belirlenen ücret ödenmeden verilmez ve devredilemez. [DOĞRULA: güncel yetki belgesi türleri ve devir yasağına ilişkin ifade madde 5 metninden teyit edilmeli]
+
+Madde 6 — Yetki belgesi sahiplerinin (taşımacının) yükümlülükleri
+Taşımacı, yolcu ve eşyayı taahhüt ettiği yere kadar, taahhüt ettiği zaman ve şekilde güvenli olarak götürmekle yükümlüdür. Yolcu taşımalarında yolcuların sağlık, rahatlık ve güvenliğini sağlayacak nitelikte taşıt ve personel bulundurmak, çevre kirliliğini önleme ve insan sağlığını koruma mevzuatına uymak, taşıdığı yolcu ve eşyayı zorunlu sigorta kapsamında güvence altına almak zorundadır. Taşımacı, taşıma sözleşmesinin gereklerini yerine getirmekle ve yetki belgesinde öngörülen şartları korumakla yükümlüdür.
+
+Madde 7 — Taşımacının sorumluluğu ve sigorta zorunluluğu
+Taşımacı; yolcuya gelebilecek bedeni zararlardan, eşyanın zaman içinde uğrayacağı kayıp ve hasardan sorumludur. Bu sorumluluğu karşılamak üzere taşımacının zorunlu mali sorumluluk sigortası yaptırması şarttır. Yolcu taşımalarında, taşımacı yolcunun ölümü, yaralanması ya da eşyasının zarara uğraması hâlinde doğan zararları sigorta kapsamında karşılatmakla yükümlüdür. Sigortası bulunmayan taşıtların trafiğe çıkması ve sefer yapması yasaktır. [DOĞRULA: madde 7'nin güncel sigorta türü ve kapsamı ifadeleri metinden teyit edilmeli]
+
+Madde 26 — İdari para cezasını gerektiren fiiller
+Kanun ile buna bağlı yönetmelik hükümlerine aykırı davrananlara, fiilin ağırlığına göre değişen tutarlarda idari para cezası uygulanır. Yetki belgesi almadan veya belge kapsamı dışında taşımacılık yapanlar, taşıt belgesine kayıtlı olmayan taşıtı çalıştıranlar, zorunlu sigortayı yaptırmayanlar, mesleki yeterlilik belgesi bulunmayan şoför çalıştıranlar bu kapsamda cezalandırılır. Tekrarlanan ihlallerde ceza tutarı artırılır ve yetki belgesi iptaline kadar varan yaptırımlar uygulanabilir. Ceza tutarları her yıl yeniden değerleme oranında güncellenir.
+
+Madde 28 — Cezalarda yetki ve itiraz
+Bu Kanuna göre idari para cezaları, Ulaştırma ve Altyapı Bakanlığının ilgili birimleri ile yetkilendirilmiş denetim görevlileri (trafik zabıtası, bölge müdürlüğü görevlileri vb.) tarafından düzenlenen tutanağa dayanılarak verilir. İdari para cezalarına karşı, tebliğ tarihinden itibaren Kabahatler Kanununda öngörülen süre ve usulle yetkili sulh ceza hâkimliğine itiraz edilebilir. Kesinleşen idari para cezaları 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre tahsil edilir. [DOĞRULA: idari para cezalarına itiraz ve tahsile ilişkin güncel madde numarası (28/31 değişiklik geçmişi) teyit edilmeli]

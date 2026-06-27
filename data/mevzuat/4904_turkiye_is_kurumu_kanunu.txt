@@ -1,0 +1,26 @@
+Türkiye İş Kurumu Kanunu
+Kanun No 4904, Kabul 25.06.2003, RG 05.07.2003/25159 — YÜRÜRLÜKTE (Türkiye İş Kurumu ile İlgili Bazı Düzenlemeler Hakkında Kanun; mevzuat.gov.tr 1.5.4904 konsolide metin esas alınmıştır)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4904&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Kurumun görevleri (iş ve işçi bulma, işgücü piyasası, işsizlik sigortası)
+Türkiye İş Kurumu (İŞKUR); ulusal istihdam politikasının oluşturulmasına yardımcı olmak, işgücünün yurt içinde ve yurt dışında uygun oldukları işlere yerleştirilmelerine aracılık etmek ve iş ve işçi bulma faaliyetlerini yürütmekle görevlidir. Kurum ayrıca işgücü piyasası verilerini derlemek, mesleki eğitim ve aktif/pasif işgücü hizmetlerini sunmak ve işsizlik sigortası işlemlerini yürütmekle yükümlüdür. Bu görevler, iş arayan vatandaşların istihdama yönlendirilmesinin yasal temelini oluşturur.
+
+Madde 9 — Kurum hizmetlerinden yararlanma ve iş arayan kaydı
+Kurumun iş ve işçi bulmaya yönelik hizmetlerinden ücretsiz yararlanılır; iş arayanlar ile işçi/işgücü talebinde bulunan işverenler Kuruma başvurarak hizmet alır. İş arayanların kaydı, başvurularının değerlendirilmesi ve uygun açık işlere yönlendirilmesi Kurum tarafından yapılır. [DOĞRULA: iş arayan kayıt ve hizmetten yararlanma hükmünün tam madde numarası mevzuat.gov.tr konsolide metninden teyit edilmelidir.]
+
+Madde 17 — Özel istihdam bürolarına izin verilmesi ve başvuru koşulları
+İş ve işçi bulmaya aracılık faaliyeti, ancak Kurumdan izin alan gerçek veya tüzel kişilerce kurulan özel istihdam büroları aracılığıyla yapılabilir. İzin için en az lisans düzeyinde öğrenim, faaliyete uygun işyeri ve donanım ile brüt asgari ücretin belirli katı tutarında teminat verme gibi koşullar aranır. Verilen izin üç yıl süreyle geçerlidir ve üçer yıllık sürelerle yenilenebilir.
+
+Madde 19 — Özel istihdam bürolarının yükümlülükleri ve ücret alma yasağı
+Özel istihdam büroları iş arayanlardan ve geçici iş ilişkisiyle çalıştırılan işçilerden her ne ad altında olursa olsun menfaat sağlayamaz ve hizmet bedeli alamaz; aracılık hizmetinin bedeli kural olarak işverenden alınır. Bürolar, Kurumun belirlediği usul ve esaslara uymak, işlemlerine ilişkin bilgi ve belgeleri Kuruma vermek zorundadır. Bu yükümlülük, iş arayanların korunmasına yöneliktir.
+
+Madde 20 — İdari para cezaları
+Kurumdan izin almaksızın iş ve işçi bulmaya aracılık faaliyeti yürütenlere ve izinsiz geçici iş ilişkisi düzenleyenlere maddede belirtilen tutarlarda idari para cezası uygulanır; istenen bilgi ve belgeleri süresinde vermeyenlere de ceza öngörülmüştür. İdari para cezaları her yıl 213 sayılı Vergi Usul Kanununun 298. maddesi uyarınca belirlenen yeniden değerleme oranında artırılır. Cezalar Kurum bütçesine gelir kaydedilir. [DOĞRULA: ceza tutarları güncel yeniden değerleme oranıyla her yıl değiştiğinden cari rakamlar Bakanlık/İŞKUR tebliğinden teyit edilmelidir.]
+
+Madde 21 — Bilgi verme yükümlülüğü (işverenlerin Kuruma bilgi vermesi)
+Kurum tarafından kamu ve özel kesim işyerlerinden iş ve işgücü konularında bilgi istenildiğinde, işverenler belirtilen süre içinde bu bilgileri vermek zorundadır. Bu yükümlülük, işgücü piyasası verilerinin derlenmesi ile iş arayanların açık işlere yönlendirilmesini sağlar. Yükümlülüğe aykırılık idari para cezası yaptırımına bağlanmıştır.

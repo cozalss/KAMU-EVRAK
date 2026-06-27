@@ -1,0 +1,29 @@
+Dernekler Kanunu
+Kanun No 5253, Kabul 04.11.2004, RG 23.11.2004/25649 — YÜRÜRLÜKTE (mevzuat.gov.tr 1.5.5253 konsolide metin esas alınmıştır; 2908 sayılı eski Dernekler Kanununu yürürlükten kaldırmıştır; 7262/2020 ve 7533/2024 sayılı Kanunlarla değişik)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5253.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Dernek kurma hakkı
+Fiil ehliyetine sahip gerçek veya tüzel kişiler önceden izin almaksızın dernek kurma hakkına sahiptir. Türk Silahlı Kuvvetleri, kolluk mensupları ve memur statüsündeki kamu görevlileri hakkındaki özel kanun kısıtlamaları saklıdır; terörün finansmanı, uyuşturucu imal/ticareti ve aklama suçlarından mahkûm olanlar genel kurul dışındaki organlarda görev alamaz. Onbeş yaşını bitiren ayırt etme gücüne sahip küçükler yasal temsilcilerinin yazılı izniyle çocuk derneği kurabilir.
+
+Madde 4 — Dernek tüzüğü
+Her derneğin bir tüzüğü bulunur ve tüzükte derneğin adı/merkezi, amacı ve çalışma konuları, üyelik şartları, genel kurulun toplanma şekli/zamanı ve görevleri, yönetim ve denetim kurullarının görev ve yetkileri ile seçim usulü, aidat, borçlanma ve iç denetim şekilleri, tüzük değişikliği ve fesih halinde tasfiye usulü gibi hususların gösterilmesi zorunludur. Bu, dernek kuruluşunda mülki idareye verilen temel kurucu belgedir.
+
+Madde 9 — İç denetim
+Derneklerde iç denetim esastır; iç denetim genel kurul, yönetim kurulu veya denetim kurulu ya da bağımsız denetim kuruluşlarınca yapılabilir, ancak bu denetim kurulunun yükümlülüğünü ortadan kaldırmaz. Denetim kurulu, derneğin tüzükteki amaç doğrultusunda faaliyet gösterip göstermediğini ve defter/hesap/kayıtların mevzuata ve tüzüğe uygun tutulup tutulmadığını bir yılı geçmeyen aralıklarla denetler ve sonuçları bir raporla yönetim kuruluna ve toplandığında genel kurula sunar.
+
+Madde 19 — Beyanname verme yükümlülüğü ve denetim
+Dernekler, yıl sonu itibarıyla faaliyetlerini ve gelir-gider işlemlerinin sonuçlarını düzenleyecekleri beyanname ile her yıl Nisan ayı sonuna kadar mülki idare amirliğine vermekle yükümlüdür. Gerekli görülen hallerde derneklerin amaçları doğrultusunda faaliyet gösterip göstermedikleri ve defter/kayıtları İçişleri Bakanı veya mülki idare amiri tarafından kamu görevlilerine denetletilebilir; bu denetimler mesai saatleri içinde yapılır ve en az yirmidört saat önce derneğe bildirilir. Suç teşkil eden fiil tespit edilirse mülki idare amiri durumu derhal Cumhuriyet savcılığına ve derneğe bildirir.
+
+Madde 21 — Yurt dışı yardımlar
+Dernekler, mülki idare amirliğine önceden bildirimde bulunmak şartıyla yurt dışındaki kişi, kurum ve kuruluşlardan ayni ve nakdi yardım alabilir; nakdi yardımların bankalar aracılığıyla alınması zorunludur. Yurt dışına yapılacak yardımlar da yardım yapılmadan önce mülki idare amirliğine bildirilir. Bildirimin şekli ve içeriği yönetmelikle düzenlenir.
+
+Madde 23 — Genel kurul ve organlara/üyelere ilişkin idareye bildirim
+Dernekler, genel kurulu izleyen otuz gün içinde yönetim ve denetim kurulu ile diğer organlara seçilen asıl ve yedek üyeleri merkezinin bulunduğu dernekler birimine bildirmekle yükümlüdür. Ayrıca üyeliğe kabul edilenler ile üyeliği sona erenlerin ad, soyad, doğum tarihi ve kimlik numarası, kabul/sona erme tarihinden itibaren kırk beş gün içinde bildirilir. Dernek organlarında ve yerleşim yerinde meydana gelen değişiklikler de aynı usule tabidir.
+
+Madde 32 — Ceza hükümleri
+Kanun hükümlerine aykırı davrananlara idari para cezası veya hapis/adli para cezası uygulanır; örneğin genel kurulu süresinde toplantıya çağırmayan veya toplantıyı kanun/tüzüğe aykırı yapan yöneticilere idari para cezası verilir. 19'uncu maddedeki beyannameyi bilerek gerçeğe aykırı verenler yüz günden az olmamak üzere adli para cezası ile cezalandırılır; 22, 23 ve 24'üncü maddelerdeki bildirim ile beyanname verme yükümlülüğünü yerine getirmeyen yöneticilere beş yüz Türk Lirası idari para cezası verilir. Defter tutmama, gelir/gider işlemlerini finans kuruluşları aracılığıyla yapmama gibi fiiller için ayrıca hapis veya oransal idari para cezaları öngörülmüştür.

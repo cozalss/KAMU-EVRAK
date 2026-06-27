@@ -1,0 +1,26 @@
+Yeralti Sulari Hakkinda Kanun
+Kanun No 167, Kabul 16.12.1960, RG 23.12.1960/10688 — YURURLUKTE (resmi PDF 1.4.167 ve Lexpera konsolide metin uzerinden dogrulandi; son degisiklik 2018)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.4.167.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 3 — Yeralti suyu isletme sahalarinin tespiti ve ilani
+Sinirlari belirlendikce 'Yeraltisuyu Isletme Sahalari', Devlet Su Isleri Genel Mudurlugunun teklifi uzerine ilgili bakanlikca kabul ve ilan edilir. Bu sahalarda yeralti suyu kullanimi DSI denetimine tabidir. Hangi alanlarda kuyu acma ve su cekme islemlerinin ozel izne baglandigini belirleyen cerceve maddedir.
+
+Madde 4 — Kuyu acilmasi ve su miktarinin tespiti
+Isletme sahalari icinde acilacak kuyularin adedi, yeri, derinligi ve cekilecek su miktari DSI tarafindan tespit edilir. Kuyu acan kimse, ancak kendi faydali ihtiyaclarina yetecek miktarda suyu kullanabilir. Vatandasin tarim/icme/sanayi amacli kuyu acarken DSI tarafindan belirlenen sinirlara uymasini zorunlu kilar.
+
+Madde 7 — DSI'nin yetkileri ve kamulastirma
+DSI, yeralti suyu durumunu tespit etmek icin arastirma kuyulari acma hakkina sahiptir. Isletme kuyulari icin gerektiginde arazi kamulastirilabilir; yeralti suyu uzerindeki intifa hakki devredilebilir veya kiralanabilir. Kamu su kaynaklarinin yonetiminde DSI'nin idari yetkilerini belirler.
+
+Madde 8 — Belge alinmasi ve bilgi verilmesi mecburiyeti
+Su temini maksadiyla, kesiti ne olursa olsun, DSI tarafindan tespit ve ilgili bakanlik onayindan sonra ilan edilen derinligi asan kuyu, sondaj ve galerilerin acilabilmesi icin DSI Genel Mudurlugunden belge (izin) alinmasi mecburidir. Su temini maksadi gutmeyen kazi ve kuyularda belge aranmamakla birlikte, DSI'nin talebi uzerine bilgi verilmesi zorunludur. Kuyu acma izni basvurusunun dayanagi olan temel maddedir.
+
+Madde 10 — Kullanma belgesi alinmasi
+Arama belgesine dayanarak su bulan kisi, suyu buldugu tarihten itibaren bir ay icinde DSI'ye muracaat ederek kullanma belgesi almak zorundadir. Kuyu, galeri ve benzerlerine olcum sistemleri kurulmadan kullanma belgesi verilmez; olcum sistemlerinin kurulma suresi ilgili bakanlikca belirlenebilir. Acilan kuyunun yasal olarak isletilebilmesi icin gereken belge surecini duzenler.
+
+Madde 18 — Ceza hukumleri (belgesiz kuyu)
+Belge almadan kuyu acan, sondaj veya galeri yapanlar idari para cezasi ile cezalandirilir; ayrica kuyu masraflari ilgilisinden alinmak uzere kapatilir/iptal edilir. Olcum sistemi kurmamak veya belge sartlarina uymamak gibi diger ihlallerde daha dusuk tutarli idari para cezalari uygulanir. Belgesiz/izinsiz yeralti suyu kullanimina karsi yaptirim cercevesini belirler. [DOGRULA: idari para cezasi tutarlari her yil yeniden degerleme orani ile guncellendiginden cari tutarlar teyit edilmeli]

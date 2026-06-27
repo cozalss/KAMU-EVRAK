@@ -1,0 +1,29 @@
+Sermaye Piyasası Kanunu
+Kabul 6/12/2012, RG 30/12/2012 sayı 28513 — YÜRÜRLÜKTE. Burada yalnızca halka arzda izahname/Kurula başvuru, kamuyu aydınlatma belgelerinden sorumluluk, yatırımcıların tazmini (YTM) ve sermaye piyasası suçlarına ilişkin şikâyet/başvuru evrakı açısından ilgili maddeler özetlenmiştir.
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.6362.pdf
+
+Bu metin kamuya açık mevzuatın madde ÖZETLERİNDEN derlenmiştir (lafzî tam metin değildir).
+Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kaynaklarından
+araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
+işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
+
+Madde 4 — İzahname hazırlama ve onay zorunluluğu
+Sermaye piyasası araçlarının halka arz edilebilmesi veya borsada işlem görebilmesi için bir izahname hazırlanması ve hazırlanan bu izahnamenin Sermaye Piyasası Kurulunca onaylanması zorunludur. İzahnamede yer alan bilgilerin yatırımcılar tarafından kolayca anlaşılabilir ve değerlendirilebilir olması gerekir. Bu hüküm, halka arz/izahname onay başvuru evrakının dayanağıdır.
+
+Madde 6 — İzahnamenin onaylanması ve başvuru süreci
+İzahnamenin onaylanması için yapılan başvuru, gerekli bilgi ve belgelerin eksiksiz sunulmasından itibaren Kurul tarafından kanunda öngörülen süre içinde sonuçlandırılır; başvuruda eksiklik bulunması hâlinde başvuru sahibi bilgilendirilerek belgeler tamamlatılır. Kurul izahnameyi onaylar, değişiklik ister veya başvuruyu reddeder. Bu hüküm, izahname onay başvurusu ve eksik tamamlama yazışmalarının dayanağıdır. [DOĞRULA: izahname başvurusunun karara bağlanma süresi (ilk halka arzda daha uzun) güncel madde metninden teyit edilmeli]
+
+Madde 10 — İzahnameden sorumluluk
+İzahnamede yer alan yanlış, yanıltıcı veya eksik bilgilerden kaynaklanan zararlardan öncelikle ihraççılar sorumludur; zararın ihraççıdan tazmin edilememesi veya edilemeyeceğinin açıkça belli olması hâlinde, halka arz edenler, ihraca aracılık eden lider aracı kurum, garantör ve ihraççının yönetim kurulu üyeleri kusurlarına ve durumun gereklerine göre sorumlu tutulur. Bu sorumluluk, izahnameye dayanarak yatırım yapan yatırımcının uğradığı zararın tazminine yöneliktir. Bu hüküm, izahnameden doğan tazminat talep evrakının dayanağıdır.
+
+Madde 32 — Kamuyu aydınlatma belgelerinden doğan sorumluluk
+İzahname dışındaki diğer kamuyu aydınlatma belgelerinde (pay alım teklifi, finansal rapor, özel durum açıklaması vb.) yer alan yanlış, yanıltıcı veya eksik bilgilerden bu belgeleri imzalayanlar müteselsilen sorumludur. Yatırımcının uğradığı zarar ile kamuyu aydınlatma belgesi arasındaki illiyet bağı kurulmuş sayılır. Bu hüküm, kamuyu aydınlatma belgelerine dayanan zarar/tazminat başvurusunun dayanağıdır.
+
+Madde 82 — Yatırımcıların tazmini
+Yatırım kuruluşlarının, yatırım hizmet ve faaliyetlerinden kaynaklanan nakit ödeme veya sermaye piyasası araçları teslim yükümlülüklerini yerine getirememeleri ya da kısa sürede yerine getiremeyeceklerinin tespit edilmesi hâlinde, yatırımcıların bu kapsamdaki zararları Kurulca alınacak tazmin kararı uyarınca Yatırımcı Tazmin Merkezi (YTM) tarafından karşılanır. Tazmin, kanunda ve Kurul düzenlemelerinde belirlenen azami tutar ve esaslar çerçevesinde yapılır. Bu hüküm, yatırımcının YTM'ye tazmin başvurusu evrakının dayanağıdır. [DOĞRULA: yatırımcı başına azami tazmin tutarı ve her yıl güncellenen sınır, güncel Kurul düzenlemesinden teyit edilmeli]
+
+Madde 106 — Bilgi suistimali (içeriden öğrenenlerin ticareti)
+Sermaye piyasası araçlarının fiyatını, değerini veya yatırımcıların kararlarını etkileyebilecek nitelikteki, henüz kamuya açıklanmamış bilgilere dayalı olarak doğrudan veya dolaylı menfaat sağlamak amacıyla işlem yapanlar bilgi suistimali suçunu işlemiş olur ve maddede öngörülen hapis ve adli para cezası ile cezalandırılır. Bu suç, sermaye piyasasında haksız kazanca yönelik ihbar/şikâyet ve Kurul soruşturmasının konusunu oluşturur. Bu hüküm, bilgi suistimali ihbarı/suç duyurusu evrakının dayanağıdır. [DOĞRULA: 106 ncı maddedeki güncel hapis süresi ve adli para cezası gün sayısı (7222 sayılı Kanun değişiklikleri dahil) teyit edilmeli]
+
+Madde 107 — Piyasa dolandırıcılığı
+Sermaye piyasası araçlarının fiyatlarına, fiyat değişimlerine, arz ve taleplerine ilişkin olarak yanlış veya yanıltıcı izlenim uyandırmak amacıyla işlem yapan, emir veren, emri iptal/değiştiren veya hesap hareketi gerçekleştirenler iki yıldan beş yıla kadar hapis ve beş bin günden on bin güne kadar adli para cezası ile cezalandırılır (işlem bazlı/manipülasyon). Ayrıca araçların fiyat veya değerini ya da yatırımcıların kararlarını etkilemek amacıyla yalan, yanlış veya yanıltıcı bilgi veren, söylenti çıkaran, haber yayan kişiler de cezalandırılır (bilgiye dayalı piyasa dolandırıcılığı). Bu hüküm, piyasa dolandırıcılığı ihbarı/suç duyurusunun dayanağıdır.

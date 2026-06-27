@@ -46,19 +46,30 @@ _VURGU_ALANLAR: tuple[tuple[str, str], ...] = (
 )
 
 
+# Türkçe "İ".lower() == "i̇" (i + U+0307) UZUNLUĞU DEĞİŞTİRİR → str.lower() ile yapılan
+# offset hesabı, metinde "İ" varsa span'ları kaydırır (ilk karakter kesilir). Bu eşleme
+# İ→i, I→ı'yı 1:1 (uzunluk-koruyan) yapar; sonraki .lower() kalan harfleri 1:1 küçültür.
+_TR_LOWER_MAP = str.maketrans("İI", "iı")
+
+
+def _tr_low(s: str) -> str:
+    """Uzunluk-koruyan Türkçe küçük-harf (offset hesabı için güvenli)."""
+    return s.translate(_TR_LOWER_MAP).lower()
+
+
 def _find_span(haystack_low: str, needle: str) -> tuple[int, int] | None:
     """needle'ın haystack'teki ilk konumu (küçük-harf arama) → (start, end) | None."""
     n = needle.strip()
     if len(n) < 2:
         return None
-    i = haystack_low.find(n.lower())
+    i = haystack_low.find(_tr_low(n))
     return None if i < 0 else (i, i + len(n))
 
 
 def compute_spans(evrak_text: str, unsurlar: dict[str, Any]) -> dict[str, Any]:
     """Çıkarılan unsurların MASKELİ metindeki span'larını hesapla (PII-güvenli, deterministik)."""
     masked = mask_pii(evrak_text or "").masked_text[:_MAX_METIN]
-    low = masked.lower()
+    low = _tr_low(masked)
     spanlar: list[dict[str, Any]] = []
     used: list[tuple[int, int]] = []
     for alan, label in _VURGU_ALANLAR:

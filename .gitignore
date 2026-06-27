@@ -47,3 +47,6 @@ playwright-report/
 
 # Tasarim-araci mockup export (sayfa/) — tasarim referansi, kod degil; repo temiz/lisans-guvenli kalsin
 sayfa/
+
+# Aktarim tasarim referansi (canli surum frontend/src/components/CanliAjanAkisi.jsx)
+aktarim/

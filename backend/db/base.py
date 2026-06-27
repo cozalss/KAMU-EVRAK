@@ -4,7 +4,7 @@ from __future__ import annotations
 import datetime as _dt
 import uuid
 
-from sqlalchemy import func
+from sqlalchemy import DateTime, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -21,9 +21,10 @@ class UUIDPk:
 
 
 class Olusturuldu:
-    """now() oluşturma damgası mixin."""
+    """now() oluşturma damgası mixin. TIMESTAMPTZ (DB ile uyumlu → aware datetime kabul)."""
 
-    olusturuldu: Mapped[_dt.datetime] = mapped_column(server_default=func.now())
+    olusturuldu: Mapped[_dt.datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now())
 
 
 __all__ = ("Base", "UUIDPk", "Olusturuldu")

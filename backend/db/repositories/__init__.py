@@ -6,10 +6,12 @@ Stateless demo modu korunur; persistence ENV-gated çağrılır (Faz 7 route wir
 from __future__ import annotations
 
 from db.repositories.denetim_repo import dogrula_denetim, persist_denetim
+from db.repositories.imha_repo import imha_uygula, saklama_yil, suresi_dolmus
 from db.repositories.islem_repo import evrak_olustur, persist_islem
 from db.repositories.karar_repo import KararHatasi, onayla_ve_gonder
 
 __all__ = (
-    "KararHatasi", "dogrula_denetim", "evrak_olustur", "onayla_ve_gonder",
-    "persist_denetim", "persist_islem",
+    "KararHatasi", "dogrula_denetim", "evrak_olustur", "imha_uygula",
+    "onayla_ve_gonder", "persist_denetim", "persist_islem", "saklama_yil",
+    "suresi_dolmus",
 )

@@ -50,3 +50,6 @@ sayfa/
 
 # Aktarim tasarim referansi (canli surum frontend/src/components/CanliAjanAkisi.jsx)
 aktarim/
+
+# Denetim yedek exportları (runtime artifact + denetim verisi — repoya girmez)
+data/backups/

@@ -7,17 +7,17 @@ Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kayna
 araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
 işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
 
-Madde 1 — Amaç ve kapsam (m.Madde 1)
+Madde 1 — Amaç ve kapsam
 Kanunun amacının, yurt içinde ve yurt dışında yükseköğrenim gören öğrencilere burs, kredi ve nakdî yardım verilmesine ilişkin usul ve esasları düzenlemek olduğunu belirtir. Bütün kamu kurum ve kuruluşlarını kapsar; öğrencilere yapılacak burs/kredi/nakdî yardımların yasal çerçevesini çizer.
 
-Madde 2 — Burs ve kredilerin verilmesi ve bildirim yükümlülüğü (m.Madde 2)
+Madde 2 — Burs ve kredilerin verilmesi ve bildirim yükümlülüğü
 Yurt içinde yükseköğrenim gören öğrencilere burs-kredi verme görevini Yüksek Öğrenim Kredi ve Yurtlar Kurumu'na (Kredi ve Yurtlar Genel Müdürlüğü) bırakır. Kamu kurum ve kuruluşlarının (vakıf yükseköğretim kurumları hariç) kendi adlarına burs, kredi ve nakdî yardım adı altında ödeme yapamayacaklarını; bunun yerine mevzuatlarına göre burs/kredi verecekleri öğrencileri bu Kuruma bildireceklerini düzenler. [DOĞRULA: vakıf üniversitesi istisnasının güncel kapsamı]
 
-Madde 3 — Diğer kuruluşlarca yapılacak işlemler ve bildirim (m.Madde 3)
+Madde 3 — Diğer kuruluşlarca yapılacak işlemler ve bildirim
 Belediyeler ve ilgili diğer kuruluşların öğrencilere sağladıkları burs/nakdî yardımlara ilişkin (yardımın türü, tutarı ve öğrenci sayısı gibi) bilgileri Kuruma bildireceklerini düzenler. Mükerrer ödemeyi önlemek için periyodik (üçer aylık) bildirim esasını öngörür. [DOĞRULA: bildirim periyodu ve kapsamının güncel metni]
 
-Madde 4 — Malî muafiyet ve haciz (m.Madde 4)
+Madde 4 — Malî muafiyet ve haciz
 Burs-kredi işlemlerine ilişkin taahhütname ve belgelerin damga vergisi, harç ve benzeri yükümlülüklerden muaf tutulduğunu; öğrencilere ödenen burs ve kredilerin haczedilemeyeceğini düzenler. Öğrenciye yapılan ödemelerin korunmasına ilişkin güvenceyi sağlar.
 
-Madde 6 — Yönetmelik (m.Madde 6)
+Madde 6 — Yönetmelik
 Bu Kanunun uygulanmasına ilişkin usul ve esasların, ilgili bakanlıklar (Maliye/Hazine ile Millî Eğitim) tarafından çıkarılacak yönetmelikle belirleneceğini hükme bağlar. Burs-Kredi Yönetmeliği'nin dayanağını oluşturur.

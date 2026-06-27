@@ -7,20 +7,20 @@ Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kayna
 araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
 işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
 
-Madde 2 — Kurumun amacı (m.Madde 2)
+Madde 2 — Kurumun amacı
 Kurumun amacını yurt içinde ve yurt dışında yükseköğrenim gören öğrenciler için yurtlar yapmak ve işletmek, öğrencilere beslenme/barınma yardımı sağlamak, eğitim ve sosyal-kültürel gelişimlerine katkıda bulunmak ve öğrencilere öğrenim kredisi (ve mevzuatına göre burs) vermek olarak belirler. Öğrenim kredisi ve yurt hizmetlerinin yasal çerçevesini çizer.
 
-Madde 14 — Öğrenim kredisi verilmesi (m.Madde 14)
+Madde 14 — Öğrenim kredisi verilmesi
 Yükseköğrenim gören ve yeterlik ile ihtiyaçları yönetmelikle belirlenen esaslara göre tespit edilen öğrencilere öğrenim kredisi verileceğini düzenler. Kredinin kimlere, hangi şartlarla ve hangi süreyle verileceği bu maddeye dayanan yönetmeliklerle (Öğrenim Kredisi Yönetmeliği) belirlenir; öğrenim kredisi başvurularının dayanağıdır. [DOĞRULA: yürürlükteki fıkra metninin güncel ayrıntıları]
 
-Madde 16 — Kredi borcunun tespiti ve ödenmesi (m.Madde 16)
+Madde 16 — Kredi borcunun tespiti ve ödenmesi
 Öğrencinin kredi borcunun, kendisine ödenen kredi tutarı kadar olduğunu düzenler. Borcun geri ödenmesine, öğrencinin mezun olduğu veya öğrenimden ayrıldığı tarihten itibaren iki yıl sonra başlanır ve borç, kredi alınan süreye eşit bir sürede aylık taksitlerle ödenir. Ödeme döneminin ertelenmesi ve borca yıllık artış (faiz/endeks) uygulanmasına ilişkin esasları içerir. [DOĞRULA: güncel erteleme ve artış oranı hükmü]
 
-Madde 17 — Taksitlerin zamanında ödenmemesi ve borcun silinmesi (m.Madde 17)
+Madde 17 — Taksitlerin zamanında ödenmemesi ve borcun silinmesi
 Zamanında ödenmeyen kredi taksitlerine 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümleri uyarınca gecikme zammı uygulanacağını ve borcun bu Kanuna göre takip ve tahsil edileceğini düzenler. Öğrenimi sırasında veya sonrasında ölen ya da tam teşekküllü hastane sağlık kurulu raporuyla çalışamayacak derecede malul olduğu belgelenen borçluların kredi borçlarının silineceğini öngörür.
 
-Madde 23 — Beslenme ve barınma yardımı (m.Madde 23)
+Madde 23 — Beslenme ve barınma yardımı
 Kurum yurtlarında veya şartları uygun vakıf/dernek yurtlarında barınan öğrencilere beslenme ve barınma yardımı yapılabileceğini düzenler. Yardımın yılda en çok dokuz ay süreyle ve öğrenci başına Devletin aylık yurt maliyetini geçmeyecek tutarda verileceğine ilişkin sınırları belirler. [DOĞRULA: güncel ay sayısı ve tutar ölçütü]
 
-Madde 46 — Yönetmelik (m.Madde 46)
+Madde 46 — Yönetmelik
 Bu Kanunun uygulanmasına ilişkin usul ve esasların ilgili Bakanlık (Gençlik ve Spor Bakanlığı) tarafından çıkarılacak yönetmeliklerle düzenleneceğini hükme bağlar. Öğrenim kredisi, burs-kredi ve yurt işletme yönetmeliklerinin dayanağıdır.

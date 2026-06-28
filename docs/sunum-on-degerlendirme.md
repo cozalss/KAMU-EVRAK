@@ -90,7 +90,7 @@ START → siniflandir → cikar → eksik_tespit
 | Tür belirleme | 19 tür taksonomisi + abstention (`belirsiz`) | macro-F1 **0.9493** / acc **0.9491** |
 | Bilgi çıkarımı | gönderen/tarih/sayı/konu/talep + **PII maskeleme** | 🛡️ ham TCKN/telefon arayüze ulaşmaz |
 | Eksik tespiti | tür-bağımlı zorunlu-alan (recall-öncelikli) | recall(β=2) **0.9948** |
-| Mevzuat önerisi | madde-bazlı BM25 (198 mevzuat / 1285 chunk) | Recall@3 **0.875** [0.64, 0.97], n=16 |
+| Mevzuat önerisi | madde-bazlı BM25 (233 mevzuat / 1506 chunk) | Recall@3 **0.875** [0.64, 0.97], n=16 |
 | Özet | key-fact odaklı | recall **0.9810**, faithfulness **1.0000** |
 
 > **Konuşma notu (45 sn):** "Görev 1'de evrak türünü buluyoruz, bilgileri çıkarıyoruz — ve

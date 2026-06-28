@@ -16,7 +16,7 @@ sınıflandırma macro-F1 **0.9493** / accuracy **0.9491**, eksik-bilgi recall *
 özet recall **0.9810** / faithfulness **1.0000**, routing Top-1 **0.9630** / Top-3 **0.9815**,
 taslak bileşen tam-uyum **1.0000** (216/216), taslak tür **1.0000**, Türkçe saflık **1.0000**, false-veto **0**,
 fairness **1.0000**. Taslak `format_uyumlu_rate=**1.0000**` (kalite kapısı KAPANDI; `eval/draft_eval.py` ile
-canlı doğrulandı). Mevzuat retrieval **gerçek BM25Okapi** (rank-bm25 çekirdek bağımlılık; **198 mevzuat / 1285 madde-chunk** korpus; canlı Recall@1 **0.625** [0.39, 0.82] / Recall@3 **0.875** [0.64, 0.97], n=16 — korpus 22× büyüdü, distraktör artışıyla top-1 düştü, top-3 güçlü).
+canlı doğrulandı). Mevzuat retrieval **gerçek BM25Okapi** (rank-bm25 çekirdek bağımlılık; **233 mevzuat / 1506 madde-chunk** korpus; canlı Recall@1 **0.625** [0.39, 0.82] / Recall@3 **0.875** [0.64, 0.97], n=16 — korpus 22× büyüdü, distraktör artışıyla top-1 düştü, top-3 güçlü).
 **Dürüstlük notu:** manşet skorlar `LLM_MODE=mock` tabandır; gerçek-LLM (gpt-4o) dürüst held-out **~0.91**
 (`docs/benchmark/llm-heldout.md`). Mock held-out set-1 EZBER (taban değil); leak-free taban = mock set-2 **0.69** + gpt-4o.
 
@@ -30,7 +30,7 @@ canlı doğrulandı). Mevzuat retrieval **gerçek BM25Okapi** (rank-bm25 çekird
 | G1.2 | **Evrak türü belirleme** (sınıflandırma) | `siniflandir` node: 19 tür taksonomisi (18 + `belirsiz` abstention); few-shot LLM birincil, mock'ta keyword heuristik | `backend/agents/nodes/siniflandir.py`, `agents/config.py` (`EVRAK_TURLERI`); `docs/02-evrak-taksonomi-routing.md §1` | ✅ |
 | G1.3 | **Bilgi unsurlarını çıkarma** (gönderen/tarih/sayı/konu/talep) | `cikar` node: LLM JSON çıkarımı + regex; **PII maskeleme** (TCKN/telefon/IBAN) çıkarım sonrası, dış çağrı öncesi | `backend/agents/nodes/cikar.py`; ekran: `docs/img/03-sonuc.png` (maskeli rozet) | ✅ |
 | G1.4 | **Eksik bilgileri tespit etme** | `eksik_tespit` node: tür-bağımlı zorunlu-alan şeması (3071 m.4 / resmî-yazı daraltılmış); recall-öncelikli (F-beta β=2) | `backend/agents/nodes/eksik_tespit.py`, `config.ZORUNLU_ALANLAR`; `docs/06-eval-harness.md` | ✅ |
-| G1.5 | **İlgili mevzuat / yazışma kuralı önerme** | `mevzuat_oner` node: madde-bazlı **BM25 retrieval** (198 mevzuat / 1285 madde-chunk korpus) + statik config fallback; şüpheli madde `[DOĞRULA:]` | `backend/agents/nodes/mevzuat_oner.py`, `data/mevzuat/*.txt`, `scripts/seed_mevzuat.py`; `docs/method.md §3` | ✅ |
+| G1.5 | **İlgili mevzuat / yazışma kuralı önerme** | `mevzuat_oner` node: madde-bazlı **BM25 retrieval** (233 mevzuat / 1506 madde-chunk korpus) + statik config fallback; şüpheli madde `[DOĞRULA:]` | `backend/agents/nodes/mevzuat_oner.py`, `data/mevzuat/*.txt`, `scripts/seed_mevzuat.py`; `docs/method.md §3` | ✅ |
 | G1.6 | **Özetleme** | `ozetle` node: LLM/mT5 key-fact odaklı kısa özet; faithfulness (halüsinasyon-yok) ölçülür | `backend/agents/nodes/ozetle.py`; `eval/summary_eval.py`; karne: özet faithfulness **1.000** | ✅ |
 
 **Görev 1 ölçüm (GERÇEK pipeline, `LLM_MODE=mock` taban):** sınıflandırma macro-F1 **0.9493** /
@@ -46,8 +46,8 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 |---|---|---|---|---|
 | G2.1 | **Resmî yazı taslağı** (üst/cevabi/bilgilendirme/olur) | `yazi_taslak` node: jinja2 iskelet (Resmî Yazışma Yön. 2646 format) + LLM doldurma; 4 yazı türü | `backend/agents/nodes/yazi_taslak.py`, `backend/yazi/` (renderer); ekran: `docs/img/04-taslak.png` | ✅ |
 | G2.2 | **Resmî üslup** | Yön. 2646 zorunlu bölümler + sıra + kapanış + muhatap türe göre denetlenir; `format_uyumlu_rate=1.0` (kalite kapısı KAPANDI) | `config.YAZI_ZORUNLU_BOLUMLER`; `eval/draft_eval.py`; karne: format-uyum **1.0000** (216/216), Türkçe saflık **1.0000**, tür doğruluğu **1.0000**, bileşen tam-uyum **1.0000** | ✅ |
-| G2.3 | **Doğru birime yönlendirme** | `route_birim` node: 9 birim `EVRAK_TO_BIRIM` eşleme + sınıflandırıcı; top-k + güven + alternatifler; maliyet-ağırlıklı hata | `backend/agents/nodes/route_birim.py`, `config.EVRAK_TO_BIRIM`; `eval/routing_eval.py` | ✅ |
-| G2.4 | **Kullanıcıyı bilgilendirme** | `finalize` node: özet + havale birimi + mevzuat + eksik bilgi kompozisyonu; her çıktıda **yasal disclaimer** | `backend/agents/nodes/finalize.py`; ekran: `docs/img/03-sonuc.png` (Bilgilendirme bloğu) | ✅ |
+| G2.3 | **Doğru birime yönlendirme** | `route_birim` node: **DeepSeek akıl-yürütme** + 9 birim `EVRAK_TO_BIRIM` deterministik fallback; top-k + güven + alternatifler; maliyet-ağırlıklı hata | `backend/agents/nodes/route_birim.py`, `config.EVRAK_TO_BIRIM`; `eval/routing_eval.py` | ✅ |
+| G2.4 | **Kullanıcıyı bilgilendirme** | `finalize` node: **DeepSeek** ile özet + havale birimi + mevzuat + eksik bilgi kompozisyonu (deterministik fallback); her çıktıda **yasal disclaimer** | `backend/agents/nodes/finalize.py`; ekran: `docs/img/03-sonuc.png` (Bilgilendirme bloğu) | ✅ |
 | G2.5 | **Eksik bilgi isteme** (taslak öncesi) | `clarifier` dur-ve-sor dalı (ENV `CLARIFY_STOP_ENABLED`): kritik alan eksikse taslak ÜRETMEDEN takip sorusu döndürür | `backend/agents/nodes/clarifier.py`, `agents/graph.py` (`_clarify_route`); `docs/method.md §5` | ✅ |
 
 **Görev 2 ölçüm (mock taban):** yönlendirme Top-1 (uçtan-uca) **0.9630** [0.929, 0.981] / Top-3
@@ -69,7 +69,7 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 
 > **100 puan anlatısı:** Yöntem (35), Demo (15) ve Yenilikçilik/Ticarileşme (15) kanıtlı; Uygulama (35)
 > tarafında sınıflandırma/yönlendirme/özet/eksik-bilgi/taslak-format **hepsi ölçüldü ve geçti**
-> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 198 mevzuat/1285 chunk, Recall@1 0.625 / Recall@3 0.875, n=16). Manşet skorlar mock taban; gerçek-LLM
+> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 233 mevzuat/1506 chunk, Recall@1 0.625 / Recall@3 0.875, n=16). Manşet skorlar mock taban; gerçek-LLM
 > (gpt-4o) dürüst held-out ~0.91 ayrıca raporlanır — abartı yok, kapalı risk jüriden saklanmaz.
 
 ---

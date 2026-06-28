@@ -39,12 +39,12 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 | `decompose` | çok-konulu evrak → alt-talepler (tür+birim+süre) | **UYGULANDI** — LLM segment + deterministik bağlaç fallback; ENV-gated (varsayılan açık) | yeni (vitrin) |
 | `mevzuat_oner` | ilgili mevzuat | **UYGULANDI** — BM25 + fallback | mevzuat node |
 | `ozetle` | kısa öz özet | **UYGULANDI** — key-fact odaklı özet | draft deseni |
-| `route_birim` | hedef birim + top-k | **UYGULANDI** — 9 birim sınıflandırıcı | yeni |
+| `route_birim` | hedef birim + top-k | **UYGULANDI** — DeepSeek akıl-yürütme + 9 birim deterministik fallback | yeni |
 | `yazi_taslak` | resmî yazı (Yön. 2646 format) | **UYGULANDI** — jinja2 + LLM/mock; format kapısı açık | dilekce node |
 | `verify` | taslak kalite kapısı + uydurma-veto | **UYGULANDI** — false-veto=0 | yeni |
 | `risk_guard` | risk bandı (🟢/🟡/🔴) + koşullu HITL | **UYGULANDI** — deterministik, verify sinyallerinden; ENV-gated (varsayılan açık) | yeni (vitrin) |
 | `arsiv` | SDP 2005/7 arşiv metadata | **UYGULANDI** — additive | yeni |
-| `finalize` | bilgilendirme + clarify | **UYGULANDI** — compose + disclaimer | finalize deseni |
+| `finalize` | bilgilendirme + clarify | **UYGULANDI** — DeepSeek kompozisyon + deterministik fallback + disclaimer | finalize deseni |
 
 ## State (`backend/agents/state.py`)
 

@@ -43,7 +43,7 @@ START → siniflandir → cikar → eksik_tespit
 | `eksik_tespit` | zorunlu alan → eksik + takip sorusu | tür-bağımlı zorunlu küme (3071 m.4 / resmî-yazı daraltılmış); `clarify_questions` üretir |
 | `mevzuat_oner` | ilgili mevzuat (Görev 1) | madde-bazlı **BM25 retrieval** (korpus) + config statik fallback |
 | `ozetle` | kısa öz özet (Görev 1) | LLM/mT5 özet; anahtar-unsur (key-fact) odaklı |
-| `route_birim` | hedef birim + top-k (Görev 2) | `EVRAK_TO_BIRIM` + sınıflandırıcı; maliyet-ağırlıklı hata değerlendirmesi |
+| `route_birim` | hedef birim + top-k (Görev 2) | DeepSeek akıl-yürütme; fallback `EVRAK_TO_BIRIM` + sınıflandırıcı; maliyet-ağırlıklı hata değerlendirmesi |
 | `yazi_taslak` | resmî yazı taslağı (Görev 2) | jinja2 iskelet (Yön. 2646 format) + LLM doldurma; zorunlu-bölüm checklist |
 | `verify` | taslak kalite kapısı (Görev 2) | uydurma-veto + format uyarısı; false-veto=0 hedefi |
 | `arsiv` | arşiv metadata (Görev 2) | SDP 2005/7 dosya kodu + saklama süresi |
@@ -111,7 +111,7 @@ Skorların yorumlanmasında iki tuzak açıkça not edilir:
   ağırlandırılır → boilerplate ("arz ederim") gürültüsü domain-spesifik maddeyi
   bastırmaz. Çok kısa sorguda (eşik altı) retrieval atlanır, statik config'e düşülür.
 - **Seed:** `scripts/seed_mevzuat.py` korpusu JSON indekse yazar (tokenleştirme/BM25
-  runtime'da → rank_bm25 kurulu olmasa da indeks geçerli). 198 dosya → 1285 madde-chunk.
+  runtime'da → rank_bm25 kurulu olmasa da indeks geçerli). 233 dosya → 1506 madde-chunk.
 
 ## 4. Doğrulama (verify) — uydurma vetosu
 

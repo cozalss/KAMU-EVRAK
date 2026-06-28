@@ -15,7 +15,7 @@
 - **Görev 1 — Anla:** oku (OCR/metin) → türü sınıflandır → bilgi çıkar → eksiği tespit et → ilgili mevzuatı öner → özetle
 - **Görev 2 — Üret:** resmî yazı taslağı hazırla → doğru birime yönlendir → kullanıcıyı bilgilendir → gerekirse eksik bilgi iste
 
-Tek bir LangGraph boru hattı; **bulut (gpt-4o), lokal (Qwen GGUF) veya anahtarsız (offline)** modlarda aynı şekilde çalışır — fark yalnız kalitededir. Lisans **MIT**, AGPL bağımlılık yok (PDF için PyMuPDF yerine pypdfium2).
+Tek bir LangGraph boru hattı; **bulut (DeepSeek-V4), lokal (Qwen GGUF) veya anahtarsız (offline)** modlarda aynı şekilde çalışır — fark yalnız kalitededir. Lisans **MIT**, AGPL bağımlılık yok (PDF için PyMuPDF yerine pypdfium2).
 
 ---
 
@@ -67,11 +67,11 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompos
 - **Sınıflandırma:** 19 evrak türü (`belirsiz` abstention dahil) — few-shot LLM + çok-katmanlı keyword/semantik-kök fallback.
 - **Bilgi çıkarımı:** gönderen / kurum / konu / tarih / sayı / talep — **PII maskelenerek**.
 - **Eksik-bilgi tespiti:** tür-bağımlı zorunlu-alan şeması (3071 m.4); eksikse takip soruları üretir.
-- **Mevzuat önerisi:** 10 kanun / 63 madde-chunk korpusu üzerinde **BM25 retrieval** (Recall@1 0.938) + statik fallback.
+- **Mevzuat önerisi:** 233 mevzuat / 1506 madde-chunk korpusu üzerinde **BM25 retrieval** (Recall@1 0.625 / Recall@3 0.875, n=16) + statik fallback.
 - **Özet:** key-fact koruyan kısa, sadık (halüsinasyonsuz) özet.
 
 ### Görev 2 — Resmî Yazı Taslaklama ve Birim Yönlendirme
-- **Birim yönlendirme:** 9 birim arasında top-k öneri + güven + alternatifler.
+- **Birim yönlendirme:** DeepSeek akıl-yürütme ile 9 birim arasında top-k öneri + güven + alternatifler (deterministik fallback).
 - **Resmî yazı taslağı:** üst / cevabi / bilgilendirme / olur — Resmî Yazışma Yön. 2646 formatı (jinja2 + resmî üslup).
 - **PDF / DOCX indirme** (`/yazi/taslak`).
 - **Doğrulama kapısı:** zorunlu bölüm kontrolü + uydurma somut tarih/sayı vetosu.

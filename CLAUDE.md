@@ -8,7 +8,7 @@
 
 | Klasör | Dil | Çalıştır |
 |--------|-----|----------|
-| `frontend/` | JS (Vite + React) | `pnpm dev` |
+| `frontend/` | JS (Vite + React) | `npm install` → `npm run dev` |
 | `backend/` | Python 3.11 (FastAPI + LangGraph) | `uv run uvicorn main:app --reload` |
 | `backend/agents/` | Pipeline node'ları (Görev 1+2) | — |
 | `backend/multimodal/` | OCR (PDF/görsel/Word) — KEEP | — |
@@ -73,9 +73,13 @@
 Yöntem & Teknik 35 · Uygulama 35 (sınıflandırma/yönlendirme/özet/yazı-kalitesi/eksik-tespit) ·
 Demo 15 (real-time avantaj) · Yenilikçilik/Özgünlük/Ticarileşme 15.
 
-## STUB → üretim
+## LLM entegrasyonu + fallback
 
-`agents/nodes/*.py` içinde `# TODO(kamu-evrak)` ile işaretli stub'lar deterministik çalışır
-(uçtan-uca akış ayakta). Üretimde: sınıflandırma/çıkarım few-shot LLM JSON; mevzuat hybrid-RAG
-(lokal seed birincil); yazı taslağı jinja2 + LLM gövde; birim yönlendirme sınıflandırıcı.
-Eval: `eval/` (metrik → puanlama eşleme; bkz. `docs/06-eval-harness.md`).
+Çekirdek anlama/üretim node'ları **gerçek LLM (DeepSeek, `LLM_MODE=openai`,
+`deepseek-chat`)** kullanır — **sınıflandır · bilgi çıkar · çok-konulu ayır · eksik tespit ·
+özetle · yazı taslağı · birim yönlendir · bilgilendir** (8 node, belge başına ~8 çağrı).
+Her node'da LLM yok/mock/hata/timeout → **deterministik fallback** (keyword/regex/şablon):
+mock modda uçtan-uca akış ayakta kalır, CI testleri deterministik geçer. **Mevzuat öner =
+BM25 RAG** (LLM yok, lokal seed birincil); CRAG/Self-RAG/multi_query ENV-gated (varsayılan
+kapalı). Maliyet ~$0.001/belge (DeepSeek). Eval: `eval/` (mock-taban ölçer; metrik →
+puanlama eşleme, bkz. `docs/06-eval-harness.md`).

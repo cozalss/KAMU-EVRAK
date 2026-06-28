@@ -21,7 +21,7 @@ from typing import Any
 import httpx
 import structlog
 
-from agents.llm import ChatMessage, get_llm
+from agents.llm import ChatMessage, MockLLM, get_llm
 
 log = structlog.get_logger()
 
@@ -100,4 +100,51 @@ async def llm_json(
     return obj
 
 
-__all__ = ("LLM_NODE_TIMEOUT_S", "llm_json", "parse_json_object")
+def real_llm() -> Any | None:
+    """GERÇEK LLM client (DeepSeek/yerel); MockLLM veya yoksa None.
+
+    None dönerse node deterministik mantığını kullanır. Özellikle serbest-metin
+    node'larında (finalize) MockLLM jenerik metin döndürür ve anahtarsız/mock demoyu
+    bozardı — bu yüzden mock modda LLM yolu HİÇ açılmaz (testler deterministik kalır).
+    """
+    llm = get_llm()
+    return None if isinstance(llm, MockLLM) else llm
+
+
+async def llm_text(
+    system: str,
+    user: str,
+    *,
+    max_tokens: int = 420,
+    temperature: float = 0.2,
+    timeout_s: float = LLM_NODE_TIMEOUT_S,
+) -> str | None:
+    """LLM'i SERBEST METİN modunda çağır (JSON değil). Mock/hata/timeout/boş → None.
+
+    None dönerse çağıran node kendi deterministik metnine düşer (demo asla bozulmaz).
+    llm_json'ın metin-üreten ikizi (DRY: route/finalize gibi prose node'ları paylaşır).
+    """
+    llm = real_llm()
+    if llm is None:
+        return None
+    try:
+        resp = await asyncio.wait_for(
+            llm.chat(
+                messages=[
+                    ChatMessage(role="system", content=system),
+                    ChatMessage(role="user", content=user),
+                ],
+                temperature=temperature,
+                max_tokens=max_tokens,
+            ),
+            timeout=timeout_s,
+        )
+    except _LLM_FALLBACK_EXCEPTIONS as exc:
+        log.warning("evrak_llm_failed_fallback", error=str(exc) or type(exc).__name__,
+                    exc_type=type(exc).__name__)
+        return None
+    txt = (resp.content or "").strip()
+    return txt or None
+
+
+__all__ = ("LLM_NODE_TIMEOUT_S", "llm_json", "llm_text", "parse_json_object", "real_llm")

@@ -3,9 +3,9 @@
 Şartname Görev 2: "Kullanıcıya süreç hakkında açık ve anlaşılır bilgilendirme sunma" +
 "gerekli durumlarda eksik bilgi talep edebilme". Bu node iki görevin çıktısını birleştirir.
 
-# TODO(kamu-evrak): Gelecek faz — şu an deterministik metin birleştirme (test-edilebilir,
-# tahmin-edilebilir). Üretimde compose/LLM ile daha akıcı bilgilendirme + ADALET
-# nodes/finalize.py disclaimer/sunum deseni.
+GERÇEK LLM (DeepSeek) yapılandırılmış sonuçtan AKICI, resmî bir bilgilendirme yazar; bilgi
+UYDURMAZ (yalnız verilenleri kullanır). LLM yok/mock/hata → deterministik metin birleştirme
+(test-edilebilir, tahmin-edilebilir) aynen devreye girer.
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from typing import Any
 import structlog
 
 from agents.config import birim_tr, evrak_turu_tr
+from agents.nodes._llm_extract import llm_text
 
 log = structlog.get_logger()
 
@@ -52,8 +53,38 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
     else:
         satirlar.append("**Zorunlu alanlar tam** — resmî yazı taslağı hazırlandı.")
 
-    bilgilendirme = "\n\n".join(satirlar)
-    log.info("finalize", turu=turu, birim=birim, eksik=len(eksik))
+    det_bilgilendirme = "\n\n".join(satirlar)
+
+    # DeepSeek ile akıcı bilgilendirme (gerçek LLM'de); başarısız/mock → deterministik metin.
+    # Yalnız yapılandırılmış sonuç verilir (ham evrak metni DEĞİL) — özet zaten LLM-üretimi.
+    mevzuat_str = "; ".join(m["baslik"] for m in mevzuat[:3]) if mevzuat else "yok"
+    arsiv = state.get("arsiv_metadata") or {}
+    facts = (
+        f"Evrak türü: {turu}\n"
+        f"Önerilen birim: {birim}\n"
+        f"İlgili mevzuat: {mevzuat_str}\n"
+        f"Özet: {state.get('ozet') or '—'}\n"
+        f"Arşiv (SDP 2005/7): {arsiv.get('sdp_kodu', 'yok')}\n"
+        f"Eksik zorunlu alanlar: {', '.join(eksik) if eksik else 'yok'}\n"
+        f"Tamamlanması istenecekler: {'; '.join(sorular) if sorular else 'yok'}"
+    )
+    llm_metin = await llm_text(
+        system=(
+            "Sen bir kamu kurumunda memura yardımcı olan asistansın. Verilen yapılandırılmış "
+            "sonuçtan; vatandaşa/memura yönelik AÇIK, RESMÎ ve AKICI bir bilgilendirme yaz.\n"
+            "KESİN KURALLAR:\n"
+            "1) Yalnız sana verilen bilgileri kullan; HİÇBİR ŞEY UYDURMA.\n"
+            "2) MEVZUAT: yalnızca 'İlgili mevzuat' satırındaki başlıkları AYNEN kullan. "
+            "ASLA yeni kanun adı, kanun numarası veya madde numarası ekleme/uydurma. "
+            "'İlgili mevzuat: yok' ise mevzuattan HİÇ bahsetme.\n"
+            "3) Kısa tut: 1 kısa paragraf + gerekirse madde listesi. Eksik alan varsa nazikçe "
+            "tamamlanmasını iste. Emoji kullanma."
+        ),
+        user=facts,
+        max_tokens=400,
+    )
+    bilgilendirme = llm_metin or det_bilgilendirme
+    log.info("finalize", turu=turu, birim=birim, eksik=len(eksik), llm=bool(llm_metin))
     return {"response": bilgilendirme, "bilgilendirme": bilgilendirme}
 
 

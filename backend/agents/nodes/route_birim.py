@@ -1,12 +1,11 @@
 """Görev 2 — Birim yönlendirme (havale) node'u.
 
-config.EVRAK_TO_BIRIM birincil sinyal; içerik-temelli keyword heuristiği ile
-iyileştirilir + top-k alternatif üretilir. Resmî havale akışında (docs/02 §3)
-tüm evrak önce Yazı İşleri/Genel Evrak'a düşer → alternatiflere eklenir.
+GERÇEK LLM (DeepSeek) birincil: evrak metni + türü + birim listesi verilip en uygun birim
+akıl-yürütmeyle seçilir. LLM yok/mock/hata/geçersiz kod → deterministik fallback:
+config.EVRAK_TO_BIRIM + içerik-temelli keyword heuristiği + top-k alternatif. Resmî havale
+akışında (docs/02 §3) tüm evrak önce Yazı İşleri/Genel Evrak'a düşer → alternatiflere eklenir.
 
-# TODO(kamu-evrak): Gelecek faz — şu an tablo + keyword heuristiği (deterministik,
-#   bağımlılıksız). Üretimde few-shot LLM / DistilBERTurk sınıflandırıcı + maliyet-ağırlıklı
-#   hata matrisi (yanlış havale pahalı) + eval/routing_eval.py Top-1/Top-3 + MRR.
+Not: eval/routing_eval.py Top-1/Top-3 + MRR ile ölçülür; yanlış havale maliyetlidir.
 """
 
 from __future__ import annotations
@@ -16,6 +15,7 @@ from typing import Any
 import structlog
 
 from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM
+from agents.nodes._llm_extract import llm_json, real_llm
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -73,7 +73,7 @@ def _content_scores(text: str) -> dict[str, int]:
     return scores
 
 
-async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
+def _route_deterministik(state: dict[str, Any]) -> dict[str, Any]:
     """Hedef birimi belirle: config birincil + içerik heuristiği + top-k alternatif.
 
     Skorlama: içerik anahtar-sözcükleri birim adaylarına oy verir; tür kararı (config) ek
@@ -117,6 +117,63 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
             f"{BIRIM_TR.get(hedef, hedef)} (tür: {turu}, config: "
             f"{BIRIM_TR.get(config_hedef, config_hedef)}{icerik_not})"
         ),
+    }
+
+
+def _birim_listesi() -> str:
+    """LLM prompt'u için geçerli birim kodları + Türkçe adları (yalnız bunlar seçilebilir)."""
+    return "\n".join(f"- {kod}: {BIRIM_TR.get(kod, kod)}" for kod in BIRIMLER)
+
+
+async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
+    """Birim yönlendirme — GERÇEK LLM (DeepSeek) birincil, deterministik fallback.
+
+    LLM evrak metni + türü + birim listesinden en uygun birimi akıl-yürütmeyle seçer;
+    yalnız geçerli birim kodu döndürürse kullanılır. LLM yok/mock/hata/geçersiz → mevcut
+    config + içerik heuristiği aynen çalışır (mock testleri deterministik kalır).
+    """
+    det = _route_deterministik(state)
+    llm = real_llm()
+    if llm is None:
+        return det  # mock/anahtarsız → deterministik (CI testleri bunu bekler)
+
+    turu = state.get("evrak_turu", "belirsiz")
+    text = (state.get("evrak_text", "") or "")[:900]
+    obj = await llm_json(
+        system=(
+            "Sen bir kamu kurumunda evrak havale uzmanısın. Verilen evrakı SADECE listedeki "
+            "birimlerden EN UYGUN olanına yönlendir. Yalnız listedeki birim KODLARINI kullan. "
+            "Yanlış havale maliyetlidir; tür ve içeriğe göre karar ver."
+        ),
+        user=(
+            f"EVRAK TÜRÜ: {turu}\n\nBİRİMLER (kod: ad):\n{_birim_listesi()}\n\n"
+            f"EVRAK METNİ:\n{text}\n\n"
+            'Yalnız şu JSON: {"hedef":"<birim_kod>","alternatifler":["<kod>","<kod>"],'
+            '"gerekce":"<tek cümle Türkçe gerekçe>"}'
+        ),
+        max_tokens=220,
+    )
+    hedef = (obj or {}).get("hedef")
+    if not obj or hedef not in BIRIMLER:
+        return det  # LLM başarısız/geçersiz kod → deterministik
+
+    # Alternatifler: LLM'den geçerli olanlar + resmî ilk durak + deterministik yedekle tamamla.
+    sirali = [hedef]
+    for b in (obj.get("alternatifler") or []):
+        if b in BIRIMLER and b not in sirali:
+            sirali.append(b)
+    if _EVRAK not in sirali:
+        sirali.append(_EVRAK)
+    for b in det["birim_alternatifleri"]:
+        if b not in sirali:
+            sirali.append(b)
+
+    gerekce = (obj.get("gerekce") or "").strip() or BIRIM_TR.get(hedef, hedef)
+    log.info("route_birim_llm", turu=turu, hedef=hedef, alt=sirali[:4])
+    return {
+        "hedef_birim": hedef,
+        "birim_alternatifleri": sirali[:4],
+        "birim_reasoning": f"{BIRIM_TR.get(hedef, hedef)} — {gerekce} (DeepSeek)",
     }
 
 

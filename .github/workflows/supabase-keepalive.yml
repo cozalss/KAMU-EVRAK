@@ -1,0 +1,33 @@
+name: Supabase Keep-Alive
+
+# Ücretsiz Supabase planı 7 gün hareketsizlikte projeyi kapatır.
+# Bu workflow her 3 günde bir gerçek bir sorgu atarak projeyi canlı tutar.
+
+on:
+  schedule:
+    # UTC 03:00 — her 3 günde bir (Pazartesi, Perşembe, Pazar)
+    - cron: '0 3 */3 * *'
+  workflow_dispatch:
+    # GitHub UI'dan "Run workflow" ile elle de tetiklenebilir
+
+jobs:
+  ping:
+    name: Supabase'i canlı tut
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping — evrak_turu tablosuna basit sorgu
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Accept: application/json" \
+            "https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/rest/v1/evrak_turu?select=kod&limit=1")
+
+          echo "HTTP $HTTP_CODE"
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Supabase aktif (HTTP 200)"
+          else
+            echo "⚠️ Beklenmeyen yanıt: HTTP $HTTP_CODE"
+            exit 1
+          fi

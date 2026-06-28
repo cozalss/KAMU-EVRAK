@@ -9,6 +9,7 @@ import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { PAL, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
+import PullCord from "./components/PullCord.jsx";
 import CanliAjanAkisi from "./components/CanliAjanAkisi.jsx";
 import PanelView from "./components/PanelView.jsx";
 import GelenEvrakView from "./components/GelenEvrakView.jsx";
@@ -24,6 +25,7 @@ export default function DashboardApp() {
   } = usePipeline();
 
   const { user, logout } = useAuth();
+  const [isDark, setIsDark] = useState(true);
   const [activeView, setActiveView] = useState("panel");
   const [history, setHistory] = useState([]);
   const [processedIds, setProcessedIds] = useState(() => new Set());
@@ -148,21 +150,48 @@ export default function DashboardApp() {
   );
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: PAL.bg, color: PAL.ink, fontFamily: SANS }}>
-      <style>{NEON_KEYFRAMES}</style>
-      <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: "#2ee6c9", color: "#06121a", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
-      <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
+    <>
+      {/* PullCord dışarıda — filtered wrapper filter:invert stacking context oluştururdu,
+          position:fixed'ı kırar. Vars :root üzerinden tüm sayfaya iletilir. */}
+      <style>{NEON_KEYFRAMES + `
+        :root{
+          --pullcord-top:0px;
+          /* Kord merkezi sidebar(228px)/içerik dikişinde: left = merkez(233) - ANCHOR_X(32). */
+          --pullcord-left:201px;
+          --pullcord-z:20;
+        }
+      `}</style>
+      {/* Kord renkleri tema-duyarlı: kord filtre DIŞINDA (kendisi invert olmaz), bu yüzden
+          rengi elle yönetilir. dark→parlak teal (T token rgb: 46,230,201); light→koyu teal
+          (beyaz zeminde kontrast). display:contents → kutu yaratmaz, CSS değişkenleri yine kalıtılır. */}
+      <div style={{
+        display: "contents",
+        "--pullcord-ink": isDark ? "rgba(46,230,201,0.72)" : "rgba(13,118,110,0.95)",
+        "--pullcord-knob-top": isDark ? "#cdeee9" : "#2ee6c9",
+        "--pullcord-knob-bot": isDark ? "#7fcabf" : "#0d7d72",
+      }}>
+        <PullCord onPull={() => setIsDark((d) => !d)} pulled={!isDark} ariaLabel={isDark ? "Açık temaya geç" : "Koyu temaya geç"} />
+      </div>
 
-      <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
+      <div style={{
+        display: "flex", minHeight: "100vh", background: PAL.bg, color: PAL.ink, fontFamily: SANS,
+        filter: isDark ? undefined : "invert(1) hue-rotate(180deg)",
+        transition: "filter 0.35s ease",
+      }}>
+        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: "#2ee6c9", color: "#06121a", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
+        <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-      <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        {view}
-      </main>
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
 
-      <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
-      {toast && <Toast msg={toast} />}
-      {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
-    </div>
+        <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+          {view}
+        </main>
+
+        <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
+        {toast && <Toast msg={toast} />}
+        {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
+      </div>
+    </>
   );
 }
 

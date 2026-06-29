@@ -12,6 +12,8 @@ venv/
 # Ortam / gizli
 .env
 *.key
+# backend/env — .env'in NOKTASIZ ikizi; GERÇEK DeepSeek anahtarı + Supabase şifresi içerir. ASLA commit edilmez.
+/backend/env
 
 # Node / frontend
 node_modules/

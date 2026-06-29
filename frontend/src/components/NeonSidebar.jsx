@@ -70,7 +70,7 @@ function bashHarfler(ad) {
   return ((p[0]?.[0] || "") + (p[1]?.[0] || p[0]?.[1] || "")).toUpperCase() || "?";
 }
 
-export default function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout }) {
   const [showSamples, setShowSamples] = useState(false);
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: "18px 14px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
@@ -151,3 +151,7 @@ export default function NeonSidebar({ activeView, onNavigate, onUpload, samples 
     </aside>
   );
 }
+
+// React.memo: props (DashboardApp'te useCallback ile sabitlendi) değişmedikçe yeniden render
+// olmaz → canlı akış sırasında gereksiz sidebar render'ı önlenir. Görsel/davranış aynı.
+export default React.memo(NeonSidebar);

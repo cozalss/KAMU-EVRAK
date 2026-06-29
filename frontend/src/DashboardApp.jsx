@@ -3,20 +3,23 @@
    usePipeline tek evrak işler; sonuçlar OTURUM GEÇMİŞİNE eklenir → Panel/Taslaklar/Denetim beslenir.
    Akış: Gelen Evrak'tan seç (veya yükle) → İşleniyor (canlı) → sonuç geçmişe → Panel'de özet.
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
-import React, { useEffect, useRef, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { PAL, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
 import PullCord from "./components/PullCord.jsx";
-import CanliAjanAkisi from "./components/CanliAjanAkisi.jsx";
-import PanelView from "./components/PanelView.jsx";
-import GelenEvrakView from "./components/GelenEvrakView.jsx";
-import GidenEvrakView from "./components/GidenEvrakView.jsx";
-import TaslaklarView from "./components/TaslaklarView.jsx";
-import MevzuatView from "./components/MevzuatView.jsx";
-import DenetimView from "./components/DenetimView.jsx";
+// Görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir aynı
+// kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar + PullCord
+// her zaman görünür (nav + tema kordu) olduğundan eager kalır.
+const CanliAjanAkisi = lazy(() => import("./components/CanliAjanAkisi.jsx"));
+const PanelView = lazy(() => import("./components/PanelView.jsx"));
+const GelenEvrakView = lazy(() => import("./components/GelenEvrakView.jsx"));
+const GidenEvrakView = lazy(() => import("./components/GidenEvrakView.jsx"));
+const TaslaklarView = lazy(() => import("./components/TaslaklarView.jsx"));
+const MevzuatView = lazy(() => import("./components/MevzuatView.jsx"));
+const DenetimView = lazy(() => import("./components/DenetimView.jsx"));
 
 export default function DashboardApp() {
   const {
@@ -108,10 +111,12 @@ export default function DashboardApp() {
     }
   }, [result, fileMeta]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const goView = (v) => setActiveView(v);
+  // useCallback: NeonSidebar (React.memo) için kararlı referans → akış sırasında (busy/counts
+  // sabitken nodes saniyede onlarca kez değişir) sidebar gereksiz yere yeniden render olmaz.
+  const goView = useCallback((v) => setActiveView(v), []);
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFile(f); };
-  const triggerUpload = () => { setActiveView("isleniyor"); if (!busy) fileRef.current?.click(); };
-  const processSample = (s) => { setProcessedIds((p) => new Set(p).add(s.id)); setActiveView("isleniyor"); if (!busy) runSample(s); };
+  const triggerUpload = useCallback(() => { setActiveView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy]);
+  const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); setActiveView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample]);
 
   // HITL açık → kararı damgala + resume (outbox kaydı result-effect'te). HITL kapalı → mevcut
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
@@ -184,7 +189,7 @@ export default function DashboardApp() {
         <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-          {view}
+          <Suspense fallback={<ViewFallback />}>{view}</Suspense>
         </main>
 
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
@@ -192,6 +197,16 @@ export default function DashboardApp() {
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
       </div>
     </>
+  );
+}
+
+// Tembel görünüm chunk'ı inerken (yalnız ilk geçişte, çok kısa) gösterilen sade, tema-uyumlu
+// yer tutucu — görünüm tasarımını değiştirmez, layout çökmesini önler.
+function ViewFallback() {
+  return (
+    <div aria-hidden="true" style={{ flex: 1, display: "grid", placeItems: "center", minHeight: "60vh", color: PAL.mut2, fontFamily: MONO, fontSize: 12, letterSpacing: ".5px" }}>
+      yükleniyor…
+    </div>
   );
 }
 

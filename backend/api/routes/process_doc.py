@@ -144,7 +144,9 @@ async def _owner_id_from_request(request: Request) -> UUID | None:
     except HTTPException:
         raise
     except Exception:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Geçersiz veya süresi dolmuş token.")
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED, "Geçersiz veya süresi dolmuş token."
+        ) from None
 
 
 async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,

@@ -19,6 +19,7 @@ export default defineConfig({
       "/gelen-evrak": { target: "http://localhost:8000", changeOrigin: true },
       "/giden-evrak": { target: "http://localhost:8000", changeOrigin: true },
       "/taslaklar": { target: "http://localhost:8000", changeOrigin: true },
+      "/islemler": { target: "http://localhost:8000", changeOrigin: true },
       "/islem": { target: "http://localhost:8000", changeOrigin: true },
     },
   },

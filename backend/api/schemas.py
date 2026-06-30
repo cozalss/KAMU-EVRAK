@@ -111,6 +111,7 @@ class ProcessResponse(BaseModel):
     risk_metadata: dict = Field(default_factory=dict)
     # Yenilikçilik — HITL memur onay kapısı (varsa). onay_bekliyor=True → frontend onay
     # panelini açar; thread_id ile /process_doc/resume çağrılır. onay_durumu resume sonrası dolar.
+    islem_id: str = ""           # DB persistence açıksa kalıcı işlem id'si
     onay_bekliyor: bool = False
     thread_id: str = ""
     onay_durumu: str = ""        # onaylandı | düzenlendi | reddedildi

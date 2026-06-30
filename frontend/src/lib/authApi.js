@@ -32,19 +32,26 @@ async function parseError(res) {
 }
 
 /* Düşük seviye fetch — Bearer ekler, 401'de refresh deneyip bir kez tekrarlar. */
-async function apiFetch(path, { method = "GET", body, auth = true, _retry = true } = {}) {
-  const headers = { "Content-Type": "application/json" };
-  if (auth && tokens.access()) headers.Authorization = `Bearer ${tokens.access()}`;
-  const res = await fetch(path, {
-    method,
-    headers,
-    body: body != null ? JSON.stringify(body) : undefined,
-  });
+export async function authFetch(path, { headers = {}, auth = true, _retry = true, ...options } = {}) {
+  const nextHeaders = { ...headers };
+  if (auth && tokens.access()) nextHeaders.Authorization = `Bearer ${tokens.access()}`;
+  const res = await fetch(path, { ...options, headers: nextHeaders });
 
   if (res.status === 401 && auth && _retry && tokens.refresh()) {
     const yenilendi = await tryRefresh();
-    if (yenilendi) return apiFetch(path, { method, body, auth, _retry: false });
+    if (yenilendi) return authFetch(path, { ...options, headers, auth, _retry: false });
   }
+  return res;
+}
+
+async function apiFetch(path, { method = "GET", body, auth = true } = {}) {
+  const res = await authFetch(path, {
+    method,
+    auth,
+    headers: { "Content-Type": "application/json" },
+    body: body != null ? JSON.stringify(body) : undefined,
+  });
+
   if (!res.ok) throw new Error(await parseError(res));
   if (res.status === 204) return null;
   return res.json();
@@ -102,4 +109,8 @@ export async function birimleriGetir() {
 
 export async function apiGet(path) {
   return apiFetch(path);
+}
+
+export async function apiPost(path, body) {
+  return apiFetch(path, { method: "POST", body });
 }

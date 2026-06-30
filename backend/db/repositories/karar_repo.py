@@ -16,7 +16,7 @@ from db.models import DenetimIzi, GidenEvrak, Islem, Onay, RiskDegerlendirme, Ta
 
 # Frontend seçimi → onay_karari + giden_durumu enum.
 _KARAR = {"onayla": "onaylandi", "duzenle": "duzenlendi", "reddet": "reddedildi"}
-_GIDEN = {"onaylandi": "gonderildi", "duzenlendi": "duzenlendi"}
+_GIDEN = {"onaylandi": "gonderildi", "duzenlendi": "duzenlendi", "reddedildi": "reddedildi"}
 
 
 class KararError(Exception):
@@ -49,26 +49,27 @@ async def onayla_ve_gonder(
         taslak_id=taslak.id, karar=karar, karar_veren_id=kullanici_id,
         gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.UTC)))
 
+    # Karar arşivi: onay/duzenle gönderim, red ise reddedildi kaydı olarak giden_evrak'a düşer.
+    # Çift-gönderim kontrolü (partial-unique zaten korur; erken net hata için).
     giden_no = None
     if karar != "reddedildi":
-        # Çift-gönderim kontrolü (partial-unique zaten korur; erken net hata için).
         mevcut = await session.scalar(
             select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id,
                                         GidenEvrak.durum != "reddedildi"))
         if mevcut is not None:
             raise KararError("zaten_gonderildi", "Bu taslak zaten gönderilmiş.")
-        islem = await session.get(Islem, islem_id)
-        risk = await session.scalar(
-            select(RiskDegerlendirme.bant).where(RiskDegerlendirme.islem_id == islem_id))
-        izi = await session.get(DenetimIzi, islem_id)
-        giden_no = await _giden_no(session)
-        session.add(GidenEvrak(
-            giden_no=giden_no, taslak_id=taslak.id,
-            kaynak_evrak_id=islem.gelen_evrak_id if islem else None,
-            konu=taslak.konu, alici_birim_id=islem.hedef_birim_id if islem else None,
-            yazi_turu_kod=taslak.yazi_turu_kod, risk=risk,
-            durum=_GIDEN.get(karar, "gonderildi"), gonderen_id=kullanici_id,
-            son_hash=izi.son_hash if izi else None))
+    islem = await session.get(Islem, islem_id)
+    risk = await session.scalar(
+        select(RiskDegerlendirme.bant).where(RiskDegerlendirme.islem_id == islem_id))
+    izi = await session.get(DenetimIzi, islem_id)
+    giden_no = await _giden_no(session)
+    session.add(GidenEvrak(
+        giden_no=giden_no, taslak_id=taslak.id,
+        kaynak_evrak_id=islem.gelen_evrak_id if islem else None,
+        konu=taslak.konu, alici_birim_id=islem.hedef_birim_id if islem else None,
+        yazi_turu_kod=taslak.yazi_turu_kod, risk=risk,
+        durum=_GIDEN.get(karar, "gonderildi"), gonderen_id=kullanici_id,
+        son_hash=izi.son_hash if izi else None))
 
     await session.commit()
     return {"karar": karar, "giden_no": giden_no}

@@ -5,6 +5,7 @@
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
+import { apiGet, apiPost } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { PAL, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
@@ -85,6 +86,62 @@ export default function DashboardApp() {
     return true;
   };
 
+  const persistDecision = useCallback(async (res, secim) => {
+    if (!res?.islem_id || secim === "duzenle") return;
+    try {
+      await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, { secim });
+    } catch (err) {
+      console.warn("Onay/giden evrak DB'ye yazılamadı", err);
+      showToast("Evrak oturumda görünüyor; DB onay kaydı yazılamadı.");
+    }
+  }, [showToast]);
+
+  // Sayfa yenilendiğinde kalıcı DB geçmişini yeniden kur. Pipeline sonucu yine canlı state'e
+  // eklenir; bu yükleme yalnız açılışta DB'den son kayıtları geri getirir.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await apiGet("/islemler?limit=100");
+        if (cancelled) return;
+        const items = Array.isArray(data?.kayitlar) ? data.kayitlar : [];
+        setHistory(items);
+        setDrafts(items.filter((x) => x.result?.yazi_taslak_md).map((x) => ({
+          ...x,
+          id: `db-taslak-${x.id}`,
+          name: x.name || "Kalıcı taslak",
+        })));
+      } catch (err) {
+        console.warn("Kalıcı işlem geçmişi alınamadı", err);
+      }
+
+      try {
+        const data = await apiGet("/giden-evrak?limit=100");
+        if (cancelled) return;
+        const rows = Array.isArray(data?.kayitlar) ? data.kayitlar : [];
+        setOutbox(rows.map((r) => ({
+          id: r.giden_no || r.id,
+          kaynak_evrak_adi: r.kaynak_evrak_adi || "Kalıcı kayıt",
+          gonderim_tarihi: Date.parse(r.gonderim_tarihi || "") || Date.now(),
+          evrak_turu: r.evrak_turu || "",
+          tur: r.yazi_turu_kod || r.tur || "",
+          konu: r.konu || "—",
+          alici_birim: r.alici_birim || "",
+          risk: r.risk || "yesil",
+          durum: r.durum || "gonderildi",
+          taslak: r.taslak || "",
+          memor_adi: user.ad_soyad || "Memur",
+          memor_unvan: user.unvan || "",
+          son_hash: r.son_hash || "",
+        })));
+      } catch (err) {
+        console.warn("Kalıcı giden evrak alınamadı", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
+
   // Sonuç kesinleşince oturum geçmişine ekle (Panel/Taslaklar/Denetim/Mevzuat bundan beslenir).
   // HITL kararı damgalanmışsa (resume sonrası) Giden Evrak kaydını burada kur (resume async).
   useEffect(() => {
@@ -105,6 +162,7 @@ export default function DashboardApp() {
           setActiveView("taslaklar");
         } else {
           pushOutbox(result, fileMeta, pa.secim);
+          persistDecision(result, pa.secim);
           showToast(pa.secim === "reddet" ? "Reddedildi — Giden Evrak'a kaydedildi." : "Evrak gönderildi — Giden Evrak'a eklendi.");
         }
       }
@@ -125,12 +183,12 @@ export default function DashboardApp() {
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
   const onApprove = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "onayla", fileMeta }; resume("onayla"); }
-    else if (pushOutbox(result, fileMeta, "onayla")) { showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); setActiveView("giden"); }
+    else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); setActiveView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onReject = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; resume("reddet"); }
-    else if (pushOutbox(result, fileMeta, "reddet")) { showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); setActiveView("giden"); }
+    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); setActiveView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onEdit = () => {

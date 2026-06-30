@@ -8,6 +8,7 @@
      B) Örnek metin → /process_doc (JSON; sonuç gelince node'lar sırayla "yan" → düşünen-sistem)
    + HITL resume (/process_doc/resume) + taslak indirme (/yazi/taslak). */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { authFetch } from "./authApi.js";
 import { DEFAULT_NODE_IDS, makeNode, nodeDataFromResult } from "./nodeMeta.js";
 
 const MAX_UPLOAD_MB = 20;            // backend MAX_UPLOAD_BYTES (20 MiB) ile eşleşir
@@ -134,7 +135,7 @@ export function usePipeline() {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/process_doc/stream", { method: "POST", body: fd, signal: ctrl.signal });
+      const res = await authFetch("/process_doc/stream", { method: "POST", body: fd, signal: ctrl.signal });
       if (!res.ok || !res.body) throw new Error(`Sunucu hatası (${res.status})`);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -186,7 +187,7 @@ export function usePipeline() {
     setEvrakText(sample.text);
     lastRun.current = { kind: "sample", sample };
     try {
-      const res = await fetch("/process_doc", {
+      const res = await authFetch("/process_doc", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ evrak_text: sample.text, filename: `${sample.id}.txt` }),
@@ -209,7 +210,7 @@ export function usePipeline() {
     if (!p?.thread_id) return;
     setBusy(true);
     try {
-      const res = await fetch("/process_doc/resume", {
+      const res = await authFetch("/process_doc/resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ thread_id: p.thread_id, secim, metin, gerekce }),

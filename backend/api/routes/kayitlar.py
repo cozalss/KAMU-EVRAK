@@ -21,6 +21,7 @@ from db.repositories.sorgu_repo import (
     gelen_evrak_listele,
     giden_evrak_listele,
     islem_detay,
+    islem_listele,
     panel_istatistik,
     taslak_listele,
 )
@@ -41,7 +42,7 @@ async def birimler(session: Session) -> dict:
 
 @router.get("/panel/istatistik")
 async def panel(_user: CurrentUser, session: Session) -> dict:
-    return await panel_istatistik(session)
+    return await panel_istatistik(session, owner_id=_user.id)
 
 
 @router.get("/mevzuat/ara")
@@ -61,7 +62,8 @@ async def gelen_evrak(
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> dict:
-    rows = await gelen_evrak_listele(session, limit=limit, offset=offset, arama=arama)
+    rows = await gelen_evrak_listele(
+        session, owner_id=_user.id, limit=limit, offset=offset, arama=arama)
     return {"adet": len(rows), "kayitlar": rows}
 
 
@@ -73,7 +75,8 @@ async def giden_evrak(
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> dict:
-    rows = await giden_evrak_listele(session, limit=limit, offset=offset, durum=durum, risk=risk)
+    rows = await giden_evrak_listele(
+        session, owner_id=_user.id, limit=limit, offset=offset, durum=durum, risk=risk)
     return {"adet": len(rows), "kayitlar": rows}
 
 
@@ -83,13 +86,23 @@ async def taslaklar(
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> dict:
-    rows = await taslak_listele(session, limit=limit, offset=offset)
+    rows = await taslak_listele(session, owner_id=_user.id, limit=limit, offset=offset)
+    return {"adet": len(rows), "kayitlar": rows}
+
+
+@router.get("/islemler")
+async def islemler(
+    _user: CurrentUser, session: Session,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> dict:
+    rows = await islem_listele(session, owner_id=_user.id, limit=limit, offset=offset)
     return {"adet": len(rows), "kayitlar": rows}
 
 
 @router.get("/islem/{islem_id}")
 async def islem(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> dict:
-    detay = await islem_detay(session, islem_id)
+    detay = await islem_detay(session, islem_id, owner_id=_user.id)
     if detay is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
     return detay
@@ -98,6 +111,8 @@ async def islem(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> di
 @router.get("/islem/{islem_id}/denetim/dogrula")
 async def denetim_dogrula(islem_id: uuid.UUID, _user: CurrentUser, session: Session) -> dict:
     """Denetim izinin bütünlüğünü DB'den bağımsız yeniden hesapla (tamper-evident)."""
+    if await islem_detay(session, islem_id, owner_id=_user.id) is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
     return await dogrula_denetim(session, islem_id=islem_id)
 
 
@@ -109,10 +124,12 @@ class OnaylaRequest(BaseModel):
 @router.post("/islem/{islem_id}/onayla")
 async def onayla(
     islem_id: uuid.UUID, req: OnaylaRequest, session: Session,
-    kullanici: Annotated[Kullanici, Depends(require_role("yetkili"))],
+    kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
 ) -> dict:
     """HITL kararı (yetkili+) → onay + giden_evrak. Reddedilirse yalnız onay yazılır."""
     try:
+        if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
         return await onayla_ve_gonder(
             session, islem_id=islem_id, kullanici_id=kullanici.id,
             secim=req.secim, gerekce=req.gerekce)

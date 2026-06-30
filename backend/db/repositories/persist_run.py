@@ -39,10 +39,13 @@ async def _sistem_kullanici(session) -> Kullanici:
 
 async def persist_pipeline_run(
     *, state: dict[str, Any], response, kaynak_metin: str, filename: str = "",
+    owner_id: uuid.UUID | None = None,
 ) -> uuid.UUID:
     """gelen_evrak + islem + denetim_izi yaz. islem.id döner. Hatalar çağırana propagate."""
     async with session_factory() as s:
-        k = await _sistem_kullanici(s)
+        k = await s.get(Kullanici, owner_id) if owner_id is not None else None
+        if k is None or not k.aktif:
+            k = await _sistem_kullanici(s)
         masked = (response.kanit_metadata or {}).get("metin") or mask_pii(kaynak_metin).masked_text
         evrak = await evrak_olustur(
             s, evrak_no=f"E-AUTO-{uuid.uuid4().hex[:10]}", ocr_metni=(masked or "")[:50_000],

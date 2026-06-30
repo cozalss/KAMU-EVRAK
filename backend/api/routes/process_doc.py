@@ -15,7 +15,7 @@ import json
 import os
 from collections.abc import AsyncIterator
 from typing import Any
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import structlog
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
@@ -116,22 +116,58 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
     )
 
 
+async def _owner_id_from_request(request: Request) -> UUID | None:
+    """Bearer access token varsa aktif kullanıcı id'sini döndür.
+
+    Token yoksa demo uyumluluğu için None döner. Token varsa ama geçersiz/süresi dolmuşsa
+    401 döndürür; frontend bu sayede refresh token ile yenileyip isteği tekrarlar.
+    """
+    auth = request.headers.get("authorization", "")
+    if not auth.lower().startswith("bearer "):
+        return None
+    token = auth.split(" ", 1)[1].strip()
+    try:
+        from auth.security import token_coz
+        from db.models import Kullanici
+        from db.session import session_factory
+
+        payload = token_coz(token, "access")
+        if not payload:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Geçersiz veya süresi dolmuş token.")
+        user_id = UUID(str(payload.get("sub")))
+        async with session_factory() as session:
+            user = await session.get(Kullanici, user_id)
+            if user is None or not user.aktif:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, "Kullanıcı bulunamadı veya pasif.")
+        return user_id
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Geçersiz veya süresi dolmuş token.")
+
+
 async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,
-                         kaynak_metin: str, filename: str) -> None:
+                         kaynak_metin: str, filename: str,
+                         owner_id: UUID | None = None) -> str:
     """DB_PERSIST=1 ise koşumu DB'ye yaz (gelen_evrak+islem+denetim). ENV-gated + lazy.
 
     Demo güvenliği: DATABASE_URL/DB yoksa veya yazma hata verirse YANITI BOZMAZ
     (yalnız uyarı loglanır). Kalıcılaştırma opsiyoneldir; stateless demo birebir korunur.
     """
     if os.getenv("DB_PERSIST", "0") != "1":
-        return
+        return ""
     try:
         from db.repositories.persist_run import persist_pipeline_run
         islem_id = await persist_pipeline_run(
-            state=state, response=response, kaynak_metin=kaynak_metin, filename=filename)
+            state=state, response=response, kaynak_metin=kaynak_metin, filename=filename,
+            owner_id=owner_id)
+        response.islem_id = str(islem_id)
         log.info("db_persist", islem_id=str(islem_id))
+        return str(islem_id)
     except Exception as e:
         log.warning("db_persist_hata", hata=str(e)[:200])
+        return ""
 
 
 @router.post("", response_model=ProcessResponse)
@@ -153,11 +189,11 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
             resp.thread_id = thread_id
             return resp
         resp = _to_response(out, {})
-        await _maybe_persist(out, resp, text, req.filename)
+        await _maybe_persist(out, resp, text, req.filename, await _owner_id_from_request(request))
         return resp
     final = await _get_graph().ainvoke(state)
     resp = _to_response(final, {})
-    await _maybe_persist(final, resp, text, req.filename)
+    await _maybe_persist(final, resp, text, req.filename, await _owner_id_from_request(request))
     return resp
 
 
@@ -235,12 +271,16 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
         # Final state: reducer'lar uygulanmış halde (birikimli dict.update yerine).
         snap = await graph.aget_state(cfg)
         if HITL_ENABLED and snap.next:  # interrupt'ta duruldu (sarı/kırmızı risk) → memur onayı
-            resp = _to_response(dict(snap.values), ocr_meta)
+            final_state = dict(snap.values)
+            resp = _to_response(final_state, ocr_meta)
             resp.onay_bekliyor = True
             resp.thread_id = cfg["configurable"]["thread_id"]
             yield _sse({"event": "done", "result": resp.model_dump()})
             return
-        yield _sse({"event": "done", "result": _to_response(dict(snap.values), ocr_meta).model_dump()})
+        final_state = dict(snap.values)
+        resp = _to_response(final_state, ocr_meta)
+        await _maybe_persist(final_state, resp, text, filename, await _owner_id_from_request(request))
+        yield _sse({"event": "done", "result": resp.model_dump()})
 
     return StreamingResponse(gen(), media_type="text/event-stream")
 

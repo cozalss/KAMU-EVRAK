@@ -162,13 +162,15 @@ export function usePipeline() {
   }, [reset, handleEvent]);
 
   // Sonuç alanlarından her node'a özet türetip sırayla "done" işaretle (JSON yolu görsel akış).
-  const animateNodes = useCallback((data, nChars = 0) => {
+  const animateNodes = useCallback((data, nChars = 0, onComplete) => {
     const ids = DEFAULT_NODE_IDS;
     ids.forEach((id, i) => {
       const tActive = setTimeout(() => markNode(id, "active"), Math.max(0, i * STEP_MS - 140));
       const tDone = setTimeout(() => {
         markNode(id, "done", nodeDataFromResult(id, data, nChars));
-        if (i === ids.length - 1) setBusy(false);
+        // Son adım: sonucu busy=false ile AYNI callback'te yaz → React tek render'da birleştirir;
+        // "started" hiç false olmaz → bitişte boş-durum ("evrak seçilmedi") parlaması engellenir.
+        if (i === ids.length - 1) { onComplete?.(); setBusy(false); }
       }, i * STEP_MS + 120);
       stepTimers.current.push(tActive, tDone);
     });
@@ -191,12 +193,10 @@ export function usePipeline() {
       });
       if (!res.ok) throw new Error(`Sunucu hatası (${res.status})`);
       const data = await res.json();
-      animateNodes(data, sample.text.length);
-      const t = setTimeout(
-        () => (data.onay_bekliyor ? setPendingOnay(data) : setResult(data)),
-        DEFAULT_NODE_IDS.length * STEP_MS + 120,
-      );
-      stepTimers.current.push(t);
+      // Sonuç, son adım "done" olduğu anda (busy=false ile birlikte) yazılır → boş-durum parlaması yok.
+      animateNodes(data, sample.text.length, () => {
+        if (data.onay_bekliyor) setPendingOnay(data); else setResult(data);
+      });
     } catch (err) {
       setError(err?.message || "Bağlantı hatası — backend çalışıyor mu?");
       setBusy(false);

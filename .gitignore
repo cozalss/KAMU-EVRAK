@@ -62,3 +62,6 @@ data/backups/
 # Tasarım kaynak görselleri (Canva drop-in hero/landing master'ları, kök) — repoya
 # girmez; üretilmiş optimize sürüm frontend/public/portfolio/'da. logo.png takipli.
 /Ads*.png
+
+# Playwright MCP tarayıcı artifact'leri (snapshot/console/screenshot) — runtime, repoya girmez
+.playwright-mcp/

@@ -102,7 +102,7 @@ export default function AuthPage() {
           </ul>
         </div>
 
-        <div style={{ position: "relative", fontFamily: MONO, fontSize: 10.5, color: PAL.mut3, letterSpacing: ".5px" }}>TEKNOFEST 2026 · Yapay Zekâ Dil Ajanları · 1. Senaryo</div>
+        <div style={{ position: "relative", fontFamily: MONO, fontSize: 10.5, color: PAL.mut3, letterSpacing: ".5px" }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
       </section>
 
       {/* Sağ — form */}

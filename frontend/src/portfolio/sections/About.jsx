@@ -39,8 +39,8 @@ export default function About() {
             birime yönlendirir ve kullanıcıyı bilgilendirir. Kişisel veriler
             buluta gitmeden maskelenir; her karar SHA-256 hash-zinciriyle
             denetlenebilir kaydedilir. Aynı hat mock, bulut (DeepSeek) ve on-prem
-            modlarında çalışır — TEKNOFEST 2026 Yapay Zeka Dil Ajanları Yarışması
-            1. Senaryo için geliştirilmiştir.
+            modlarında çalışır; kurumların evrak ve yazışma yükünü saniyelere
+            indirir.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">

@@ -4,7 +4,7 @@ import { APP_URL } from "../data.js";
 
 const SOCIAL_BTNS = [
   { label: "E-posta", icon: <Mail size={18} /> },
-  { label: "Demo", icon: <Sparkle size={18} /> },
+  { label: "GitHub", icon: <Sparkle size={18} /> },
   { label: "X", icon: <Twitter size={16} /> },
 ];
 

@@ -8,7 +8,7 @@ export default function Stats() {
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
         {/* Left */}
         <div>
-          <Badge>TEKNOFEST 2026 · 1. Senaryo</Badge>
+          <Badge>Yapay Zekâ Destekli</Badge>
           <h2 className="mt-5 text-5xl font-semibold tracking-tight text-white md:text-6xl">
             Rakamlarla sistem
           </h2>

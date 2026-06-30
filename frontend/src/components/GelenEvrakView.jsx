@@ -80,7 +80,7 @@ export default function GelenEvrakView({ samples = [], processedIds, onProcess, 
 
       <NeonCard accent="#5b8cff" style={{ marginTop: 18 }}>
         <p style={{ margin: 0, fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, lineHeight: 1.6 }}>
-          Bu kuyruk demo akışında sentetik örneklerle beslenir. Üretim entegrasyonunda gelen evrak <strong style={{ color: "#aec6ff" }}>EBYS / KEP</strong> üzerinden otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
+          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: "#aec6ff" }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
         </p>
       </NeonCard>
     </ViewWrap>

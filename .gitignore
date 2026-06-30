@@ -58,3 +58,7 @@ aktarim/
 
 # Denetim yedek exportları (runtime artifact + denetim verisi — repoya girmez)
 data/backups/
+
+# Tasarım kaynak görselleri (Canva drop-in hero/landing master'ları, kök) — repoya
+# girmez; üretilmiş optimize sürüm frontend/public/portfolio/'da. logo.png takipli.
+/Ads*.png

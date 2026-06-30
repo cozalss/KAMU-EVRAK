@@ -235,18 +235,25 @@ export function usePipeline() {
 
   // ---------- C) Taslağı PDF/DOCX indir → /yazi/taslak ----------
   const download = useCallback(async (format) => {
-    if (!evrakText) {
-      showToast("İndirme için evrak metni gerekli. Lütfen örnek bir evrak seçin.");
+    const md = result?.yazi_taslak_md;
+    if (!md && !evrakText) {
+      showToast("İndirme için önce bir evrak işleyin.");
       return;
     }
     setDownloading(format);
     let url = "";
     try {
-      const res = await fetch(`/yazi/taslak?format=${encodeURIComponent(format)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ evrak_text: evrakText }),
-      });
+      // HIZLI YOL: taslak zaten üretildiyse pipeline'ı (≈8 LLM çağrısı) TEKRAR çalıştırma —
+      // mevcut metni doğrudan render et (/yazi/render). Yalnız taslak yoksa pipeline'a düş.
+      const res = md
+        ? await fetch(`/yazi/render?format=${encodeURIComponent(format)}`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: md, title: "Resmî Yazı Taslağı" }),
+          })
+        : await fetch(`/yazi/taslak?format=${encodeURIComponent(format)}`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ evrak_text: evrakText }),
+          });
       if (!res.ok) throw new Error(`Taslak indirilemedi (${res.status})`);
       const blob = await res.blob();
       url = URL.createObjectURL(blob);
@@ -265,7 +272,7 @@ export function usePipeline() {
       if (url) { const u = url; setTimeout(() => URL.revokeObjectURL(u), 1500); }
       setDownloading("");
     }
-  }, [evrakText, showToast]);
+  }, [evrakText, result, showToast]);
 
   // Dosya doğrula + çalıştır.
   const runFileValidated = useCallback((file) => {

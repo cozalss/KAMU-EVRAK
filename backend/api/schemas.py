@@ -26,6 +26,16 @@ class YaziTaslakRequest(BaseModel):
     filename: str = Field("", max_length=255)
 
 
+class YaziRenderRequest(BaseModel):
+    """Düzenlenmiş taslak metnini DOĞRUDAN PDF/DOCX'e render etme isteği (pipeline YOK).
+
+    TaslaklarView 'DOCX indir' — memurun elle düzenlediği gövde olduğu gibi indirilir.
+    """
+
+    text: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
+    title: str = Field("", max_length=255)
+
+
 class OnayResumeRequest(BaseModel):
     """HITL memur onay kararı — duraklamış pipeline'ı sürdürür (Görev 2 yenilikçilik)."""
 
@@ -124,4 +134,5 @@ class OCRResponse(BaseModel):
 
 
 __all__ = ("MAX_EVRAK_CHARS", "AltTalepSchema", "MevzuatOneriSchema", "OCRResponse",
-           "OnayResumeRequest", "ProcessRequest", "ProcessResponse", "YaziTaslakRequest")
+           "OnayResumeRequest", "ProcessRequest", "ProcessResponse", "YaziRenderRequest",
+           "YaziTaslakRequest")

@@ -22,7 +22,7 @@ from fastapi.responses import Response
 from agents.graph import build_graph
 from agents.state import make_initial_state
 from api.middleware.ratelimit import rate_limit
-from api.schemas import MAX_EVRAK_CHARS, YaziTaslakRequest
+from api.schemas import MAX_EVRAK_CHARS, YaziRenderRequest, YaziTaslakRequest
 
 log = structlog.get_logger()
 router = APIRouter(prefix="/yazi", tags=["yazi"])
@@ -98,6 +98,45 @@ async def yazi_taslak(
         content=data,
         media_type=media_type,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.post("/render")
+@rate_limit("30/minute")
+async def yazi_render(
+    request: Request,
+    req: YaziRenderRequest,
+    format: str = Query("docx", pattern="^(pdf|docx)$"),
+) -> Response:
+    """Verilen (elle düzenlenmiş) taslak metnini DOĞRUDAN PDF/DOCX indir — pipeline YOK.
+
+    TaslaklarView 'DOCX indir': memurun düzenlediği gövde olduğu gibi render edilir.
+    """
+    from yazi.renderer import render_text_bytes
+
+    _, media_type, fallback = _FORMAT_MAP[format]
+    text = (req.text or "").strip()[:MAX_EVRAK_CHARS]
+    if not text:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Taslak metni boş")
+
+    try:
+        data = render_text_bytes(text, format, title=(req.title or "Resmî Yazı Taslağı"))
+    except Exception as exc:
+        log.error("yazi_render_failed", error=str(exc) or type(exc).__name__)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Render başarısız") from exc
+
+    if not data:
+        log.warning("yazi_render_no_bytes", format=format)
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            f"{format.upper()} üretilemedi (render altyapısı eksik olabilir)",
+        )
+
+    log.info("yazi_render_download", format=format, n_bytes=len(data))
+    return Response(
+        content=data,
+        media_type=media_type,
+        headers={"Content-Disposition": f'attachment; filename="{fallback}"'},
     )
 
 

@@ -20,7 +20,7 @@
 
 {# Sayı-Tarih satırı + Konu (Yön. m.11-13). #}
 {% macro sayi_konu(sayi_satiri, tarih, konu) -%}
-Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * 12 }}{{ tarih }}
+Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * ([2, 73 - (sayi_satiri | default("{{ SAYI }}") | length) - (tarih | length)] | max) }}{{ tarih }}
 Konu : {{ konu | default("{{ KONU }}") }}
 {%- endmacro %}
 

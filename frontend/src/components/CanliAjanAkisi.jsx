@@ -126,6 +126,8 @@ export default function CanliAjanAkisi({
   const decisionReady = !busy && (!!pendingOnay || !!result);
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   const metaLine = buildMetaLine(result, fileMeta);
+  // Sağ panel kartları — neon premium dil (gradyan yüzey + üst aksan + katmanlı gölge), NeonCard ile tutarlı.
+  const card = (accent) => ({ position: "relative", borderRadius: 14, background: "linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.014))", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, padding: 16, boxShadow: "0 16px 38px -26px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05)" });
 
   return (
     <>
@@ -168,7 +170,7 @@ export default function CanliAjanAkisi({
             const col = a.gorev === 1 ? T : V;
             return <div key={a.id} style={{ flex: 1, height: 5, borderRadius: 3, background: a.status === "done" || a.status === "active" ? col : "rgba(255,255,255,.2)", boxShadow: a.status === "active" && glow ? `0 0 10px ${col}` : "none", transform: a.status === "active" ? "scaleY(1.6)" : "none", transition: "all .4s" }} />;
           })}
-          <span style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut2, marginLeft: 8, flexShrink: 0 }}>{pct}%</span>
+          <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 600, color: PAL.ink2, marginLeft: 10, flexShrink: 0, minWidth: 38, textAlign: "right" }}>{pct}%</span>
         </div>
       </header>
 
@@ -277,7 +279,7 @@ export default function CanliAjanAkisi({
 
           {/* Sağ panel: çıkarılan veri + risk + taslak + HITL */}
           <div style={{ borderLeft: `1px solid ${PAL.line}`, padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={{ borderRadius: 14, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: "14px 16px" }}>
+            <div style={card(T)}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                 <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3 }}>ÇIKARILAN VERİ</span>
                 <span style={{ fontFamily: MONO, fontSize: 10, color: "#34d399", display: "flex", alignItems: "center", gap: 5 }}><span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399" }} />maskeli</span>
@@ -290,11 +292,11 @@ export default function CanliAjanAkisi({
               ))}
             </div>
 
-            <div style={{ borderRadius: 14, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: "14px 16px" }}>
+            <div style={card(risk.c)}>
               <RiskBand band={riskOutcome} lit={lit} />
             </div>
 
-            <div style={{ borderRadius: 14, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: "14px 16px", flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+            <div style={{ ...card(V), flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
               <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3, marginBottom: 10 }}>RESMÎ YAZI TASLAĞI</div>
               {draftMd ? (
                 <pre style={{ background: "#f4f5f9", borderRadius: 9, padding: "15px 16px", fontFamily: MONO, fontSize: 10.5, color: "#3a4252", flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .5s ease both", lineHeight: 1.6, maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>

@@ -114,6 +114,9 @@ export default function DashboardApp() {
   // useCallback: NeonSidebar (React.memo) için kararlı referans → akış sırasında (busy/counts
   // sabitken nodes saniyede onlarca kez değişir) sidebar gereksiz yere yeniden render olmaz.
   const goView = useCallback((v) => setActiveView(v), []);
+  // Taslak düzenle (metni güncelle) / sil — Taslaklar görünümünden çağrılır.
+  const updateDraft = useCallback((id, md) => setDrafts((d) => d.map((x) => (x.id === id ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x))), []);
+  const deleteDraft = useCallback((id) => setDrafts((d) => d.filter((x) => x.id !== id)), []);
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFile(f); };
   const triggerUpload = useCallback(() => { setActiveView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy]);
   const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); setActiveView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample]);
@@ -141,7 +144,7 @@ export default function DashboardApp() {
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS} processedIds={processedIds} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
-  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} />;
+  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (

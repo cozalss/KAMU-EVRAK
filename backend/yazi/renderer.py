@@ -25,6 +25,7 @@ from __future__ import annotations
 import io
 import os
 import re
+import textwrap
 from datetime import date
 from pathlib import Path
 
@@ -45,6 +46,8 @@ _MAX_DOCX_BYTES = int(os.getenv("YAZI_MAX_DOCX_BYTES", str(2_000_000)))
 # YAZI_TEMPLATES_DIR ile override edilebilir. ChoiceLoader fallback yazi/templates.
 _REPO_TEMPLATES = Path(__file__).resolve().parents[2] / "data" / "templates"
 _LOCAL_TEMPLATES = Path(__file__).parent / "templates"
+# PDF Türkçe-tam monospace font (İ ş ğ ı): repoya gömülü IBM Plex Mono (OFL) birincil.
+_FONTS_DIR = Path(__file__).resolve().parents[2] / "data" / "fonts"
 
 
 def _build_env() -> Environment:
@@ -86,6 +89,72 @@ def detect_eksik_format(metin: str) -> tuple[str, ...]:
 #  Metin → PDF (reportlab Preformatted; sabit-hizalı resmî yazı görünümü)
 # --------------------------------------------------------------------------
 
+_MONO_FALLBACK = "Courier"
+_mono_cache: dict[str, str] = {}
+
+
+def _mono_font() -> str:
+    """PDF için Türkçe-tam monospace font adı (reportlab'a BİR kez kaydeder).
+
+    Yerleşik Courier (Type1/WinAnsi) İ ş ğ ı çizemez → kutucuk (tofu). Gömülü IBM Plex
+    Mono (TTF, OFL) birincil; yoksa sistem monospace'leri; hiçbiri yoksa Courier'a düşer
+    (tofu sürebilir ama render asla patlamaz). Monospace → şablon hizası korunur.
+    """
+    if "name" in _mono_cache:
+        return _mono_cache["name"]
+    name = _MONO_FALLBACK
+    try:
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
+
+        candidates = (
+            _FONTS_DIR / "IBMPlexMono-Regular.ttf",            # gömülü (her ortamda var)
+            Path("C:/Windows/Fonts/cour.ttf"),                 # Courier New (TTF, Türkçe)
+            Path("C:/Windows/Fonts/consola.ttf"),              # Consolas
+            Path("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"),
+        )
+        for p in candidates:
+            try:
+                if p.is_file():
+                    pdfmetrics.registerFont(TTFont("KamuMono", str(p)))
+                    name = "KamuMono"
+                    log.info("yazi_pdf_font_registered", font=p.name)
+                    break
+            except Exception:
+                continue
+        else:
+            log.warning("yazi_pdf_font_fallback_courier_tofu_risk")
+    except Exception as exc:
+        log.warning("yazi_pdf_font_register_failed", error=str(exc) or type(exc).__name__)
+    _mono_cache["name"] = name
+    return name
+
+
+# A4 + (2.5cm sol, 2cm sağ) kenar + Courier 9.5pt → satıra ≈82 karakter sığar.
+# Preformatted satır KAYDIRMAZ → uzun satır sağdan TAŞAR/kesilir. 80'de kaydır (güvenli pay).
+_PDF_WRAP_COLS = 80
+
+
+def _wrap_mono(metin: str, width: int = _PDF_WRAP_COLS) -> str:
+    """Uzun satırları monospace-uyumlu kaydır; satır girintisini (hiza) koru.
+
+    Kısa satırlar (ortalı antet, sağa-hizalı imza) dokunulmaz; yalnız genişliği aşan
+    gövde satırları sarılır, devam satırlarına aynı girinti verilir (görünüm bozulmaz).
+    """
+    out: list[str] = []
+    for line in metin.split("\n"):
+        if len(line) <= width or not line.strip():
+            out.append(line)
+            continue
+        stripped = line.lstrip(" ")
+        indent = line[: len(line) - len(stripped)]
+        avail = max(24, width - len(indent))
+        pieces = textwrap.wrap(
+            stripped, width=avail, break_long_words=True, break_on_hyphens=False,
+        ) or [stripped]
+        out.extend(indent + p for p in pieces)
+    return "\n".join(out)
+
 
 def _build_pdf(metin: str, title: str) -> bytes | None:
     """Düz-metin → A4 PDF bytes (in-memory). reportlab yoksa None döner."""
@@ -98,9 +167,10 @@ def _build_pdf(metin: str, title: str) -> bytes | None:
         log.warning("yazi_pdf_skip_no_reportlab")
         return None
 
-    # Monospace (Courier) whitespace hizasını korur → şablonun ortalama/sağa-hizası aynen.
+    metin = _wrap_mono(metin)  # uzun satır taşmasını önle (Preformatted kaydırmaz)
+    # Türkçe-tam monospace (gömülü IBM Plex Mono) — whitespace hizası korunur, tofu yok.
     style = ParagraphStyle(
-        "ResmiYazi", fontName="Courier", fontSize=9.5, leading=12,
+        "ResmiYazi", fontName=_mono_font(), fontSize=9.5, leading=12,
     )
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -211,11 +281,25 @@ def _with_tarih(ctx: YaziContext, tarih: str) -> YaziContext:
     return replace(ctx, tarih=tarih)
 
 
+def render_text_bytes(metin: str, fmt: str, title: str = "Resmî Yazı Taslağı") -> bytes | None:
+    """Verilen düz metni DOĞRUDAN PDF/DOCX bytes'a render et (jinja/pipeline YOK).
+
+    Memurun elle düzenlediği taslağı olduğu gibi indirmek için (TaslaklarView 'DOCX indir').
+    reportlab/python-docx yoksa None döner (caller 422 verir).
+    """
+    if fmt == "pdf":
+        return _build_pdf(metin, title)
+    if fmt == "docx":
+        return _build_docx(metin, title)
+    return None
+
+
 __all__ = (
     "TemplateError",
     "YaziContext",
     "YaziResult",
     "detect_eksik_format",
     "render_metin",
+    "render_text_bytes",
     "render_yazi",
 )

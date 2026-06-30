@@ -2,13 +2,18 @@
    status: "loading" (açılışta token doğrulanıyor) | "anon" (girişsiz) | "auth" (girişli).
    Açılışta access token varsa /auth/ben ile doğrular; geçersizse anon'a düşer. */
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { benKimim, cikisYap, girisYap, kayitOl, tokens } from "./authApi.js";
+import { benKimim, cachedUser, cikisYap, girisYap, kayitOl, tokens } from "./authApi.js";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [status, setStatus] = useState("loading");
+  // Optimistik başlangıç: token + önbellekli kullanıcı varsa DOĞRUDAN "auth"
+  // (Splash/"Oturum doğrulanıyor" beklemesi yok). Token yoksa hemen "anon".
+  // Yalnız token var ama önbellek yoksa "loading" (ilk yük) — sonra doğrulanır.
+  const [user, setUser] = useState(() => cachedUser.get());
+  const [status, setStatus] = useState(() =>
+    tokens.access() ? (cachedUser.get() ? "auth" : "loading") : "anon"
+  );
 
   useEffect(() => {
     let iptal = false;
@@ -17,15 +22,18 @@ export function AuthProvider({ children }) {
         setStatus("anon");
         return;
       }
+      // Arka plan doğrulama: oturum geçerliyse kullanıcıyı tazele; değilse düşür.
       try {
         const ben = await benKimim();
-        if (!iptal) {
-          setUser(ben);
-          setStatus("auth");
-        }
+        if (iptal) return;
+        setUser(ben);
+        cachedUser.set(ben);
+        setStatus("auth");
       } catch {
         tokens.clear();
-        if (!iptal) setStatus("anon");
+        if (iptal) return;
+        setUser(null);
+        setStatus("anon");
       }
     })();
     return () => {
@@ -37,6 +45,7 @@ export function AuthProvider({ children }) {
     await girisYap(eposta, parola);
     const ben = await benKimim();
     setUser(ben);
+    cachedUser.set(ben);
     setStatus("auth");
     return ben;
   }, []);

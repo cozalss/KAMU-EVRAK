@@ -5,6 +5,7 @@
 
 const ACCESS_KEY = "ke_access";
 const REFRESH_KEY = "ke_refresh";
+const USER_KEY = "ke_user";
 
 export const tokens = {
   access: () => localStorage.getItem(ACCESS_KEY) || "",
@@ -16,6 +17,22 @@ export const tokens = {
   clear: () => {
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
+    localStorage.removeItem(USER_KEY); // optimistik kullanıcı önbelleğini de temizle
+  },
+};
+
+// Optimistik oturum geri yükleme: refresh'te kullanıcıyı anında localStorage'dan
+// kur (Splash beklemesi yok), arka planda /auth/ben ile doğrula/güncelle.
+export const cachedUser = {
+  get: () => {
+    try {
+      return JSON.parse(localStorage.getItem(USER_KEY) || "null");
+    } catch {
+      return null;
+    }
+  },
+  set: (u) => {
+    if (u) localStorage.setItem(USER_KEY, JSON.stringify(u));
   },
 };
 

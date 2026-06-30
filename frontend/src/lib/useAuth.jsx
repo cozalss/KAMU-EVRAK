@@ -51,6 +51,8 @@ export function AuthProvider({ children }) {
     await cikisYap();
     setUser(null);
     setStatus("anon");
+    // Çıkışta herkese açık landing'e (sitenin ön kapısı) dön.
+    window.location.assign("/");
   }, []);
 
   return (

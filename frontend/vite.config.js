@@ -1,9 +1,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { resolve } from "node:path";
 
 // Backend (FastAPI :8000) proxy — SSE dahil.
 export default defineConfig({
   plugins: [react()],
+  // Multi-page:
+  //  index.html → LANDING (portfolio, kök "/") — kendi Tailwind'i, izole.
+  //  app.html   → neon çalışma alanı (auth → dashboard).
+  // İki ayrı doküman → Tailwind preflight neon app'i etkilemez.
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        app: resolve(__dirname, "app.html"),
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {

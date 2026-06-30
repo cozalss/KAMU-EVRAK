@@ -108,6 +108,8 @@ export default function AuthPage() {
       {/* Sağ — form */}
       <main style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 22px" }}>
         <div style={{ width: "100%", maxWidth: 400 }}>
+          {/* Odak halkası: global :focus-visible (kamu-evrak.css) kapsar — focusRing gereksiz. */}
+          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, textDecoration: "none", marginBottom: 18, borderRadius: 6, padding: "2px 4px" }}>← Ana sayfa</a>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }} className="ke-formlogo">
             <img src="/logo.png" alt="" width="40" height="40" style={{ borderRadius: 12 }} />
             <span style={{ fontFamily: SANS, fontSize: 20, fontWeight: 700, textTransform: "uppercase", letterSpacing: "-.02em", color: T }}>kamu-evrak</span>

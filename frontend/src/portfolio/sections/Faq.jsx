@@ -15,7 +15,7 @@ export default function Faq() {
         <div>
           <Badge icon={<QuestionSquare />}>SSS</Badge>
           <h2 className="mt-5 max-w-md text-4xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
-            Sistemi denemek ister misiniz? Hadi birlikte inceleyelim.
+            KAMU EVRAK'ı denemek ister misiniz? Hadi birlikte inceleyelim.
           </h2>
           <a
             href={APP_URL}

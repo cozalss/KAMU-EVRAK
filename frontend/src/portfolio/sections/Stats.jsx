@@ -10,7 +10,7 @@ export default function Stats() {
         <div>
           <Badge>Yapay Zekâ Destekli</Badge>
           <h2 className="mt-5 text-5xl font-semibold tracking-tight text-white md:text-6xl">
-            Rakamlarla sistem
+            Rakamlarla KAMU EVRAK
           </h2>
           <a
             href="#projects"
@@ -24,8 +24,8 @@ export default function Stats() {
         {/* Right — two chamfered cards side by side. */}
         <div className="grid grid-cols-2 gap-5">
           {[
-            { value: "20", label: "Ajan Düğümü (LangGraph)" },
-            { value: "0.935", label: "Makro-F1 · held-out n=108" },
+            { value: "20", label: "Otomatik İşlem Adımı" },
+            { value: "%93,5", label: "Doğru Evrak Türü Tespiti" },
           ].map((stat) => (
             <div
               key={stat.label}

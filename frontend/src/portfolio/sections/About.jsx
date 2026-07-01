@@ -6,14 +6,14 @@ const PORTRAIT = "/portfolio/portre.jpg";
 // Çekirdek teknoloji yığını — pill rozetler.
 const STACK = ["FastAPI", "LangGraph", "DeepSeek", "React"];
 
-// "Sistem nedir?" — iki sütun. Sol portre (turuncu yay görselin parçası, CSS
+// "KAMU EVRAK nedir?" — iki sütun. Sol portre (turuncu yay görselin parçası, CSS
 // glow eklenmedi). Sağ: açıklama + teknoloji pill satırı + "Detaylar".
 export default function About() {
   return (
     <section id="about" className="mx-auto max-w-shell px-6 py-24 md:px-12">
       <Badge icon={<Bolt />}>Proje Hakkında</Badge>
       <h2 className="mt-5 text-5xl font-semibold tracking-tight text-white md:text-6xl">
-        Sistem nedir?
+        KAMU EVRAK nedir?
       </h2>
 
       <div className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2">
@@ -31,16 +31,16 @@ export default function About() {
         {/* Right — text, socials, CTA. */}
         <div className="flex flex-col">
           <p className="text-lg leading-relaxed text-muted">
-            kamu-evrak, gelen resmî evrakı uçtan uca işleyen 20 düğümlü bir
-            LangGraph ajan hattıdır. OCR ile okur, 18 evrak türünü sınıflandırır,
-            bilgi unsurlarını çıkarıp eksikleri tespit eder, 233 mevzuat / 1506
-            madde korpusundan BM25 ile ilgili maddeleri önerir ve özetler.
-            Ardından Resmî Yazışma Yönetmeliği'ne uygun taslağı hazırlar, doğru
-            birime yönlendirir ve kullanıcıyı bilgilendirir. Kişisel veriler
-            buluta gitmeden maskelenir; her karar SHA-256 hash-zinciriyle
-            denetlenebilir kaydedilir. Aynı hat mock, bulut (DeepSeek) ve on-prem
-            modlarında çalışır; kurumların evrak ve yazışma yükünü saniyelere
-            indirir.
+            kamu-evrak, gelen resmî evrakı uçtan uca işleyen, 20 otomatik işlem
+            adımından oluşan bir yapay zekâ sistemidir. OCR ile okur, 19 evrak
+            türünü sınıflandırır, bilgi unsurlarını çıkarıp eksikleri tespit eder,
+            233 mevzuat / 1506 madde korpusundan akıllı arama ile ilgili maddeleri
+            önerir ve özetler. Ardından Resmî Yazışma Yönetmeliği'ne uygun taslağı
+            hazırlar, doğru birime yönlendirir ve kullanıcıyı bilgilendirir.
+            Kişisel veriler buluta gitmeden maskelenir; her karar değiştirilemez
+            şekilde kaydedilir ve sonradan denetlenebilir. Aynı sistem anahtarsız
+            (mock), bulut (DeepSeek) ve kurum-içi (on-prem) modlarında çalışır;
+            kurumların evrak ve yazışma yükünü saniyelere indirir.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">

@@ -21,7 +21,7 @@ export const NAV_LINKS = [
 export const PROJECTS = [
   {
     title: "Oku & Sınıflandır",
-    tags: ["OCR", "18 Evrak Türü"],
+    tags: ["OCR", "19 Evrak Türü"],
     image: "/portfolio/proje-1.webp",
   },
   {
@@ -30,8 +30,8 @@ export const PROJECTS = [
     image: "/portfolio/proje-2.webp",
   },
   {
-    title: "Mevzuat Önerisi (RAG)",
-    tags: ["BM25 Hibrit", "233 Mevzuat"],
+    title: "Mevzuat Önerisi",
+    tags: ["Akıllı Arama", "233 Mevzuat"],
     image: "/portfolio/proje-3.webp",
   },
   {
@@ -45,11 +45,11 @@ export const PROJECTS = [
 export const FAQS = [
   {
     q: "Sistem hangi evrak türlerini işleyebiliyor?",
-    a: "OCR ile dijital/taranmış PDF, görsel ve Word belgelerini okur; dilekçe, şikâyet, CİMER, tebligat, dava evrakı gibi 18 evrak türünü otomatik sınıflandırır.",
+    a: "OCR ile dijital/taranmış PDF, görsel ve Word belgelerini okur; dilekçe, şikâyet, CİMER, tebligat, dava evrakı gibi 19 evrak türünü otomatik sınıflandırır; emin olamadığı durumları da 'belirsiz' olarak işaretleyip insana bırakır.",
   },
   {
     q: "Mevzuat önerileri nasıl üretiliyor?",
-    a: "233 mevzuat / 1506 madde korpusu üzerinde BM25 tabanlı hibrit arama ile ilgili maddeler getirilir. Uydurma madde verilmez; şüpheli atıf doğrulama için işaretlenir.",
+    a: "233 mevzuat / 1506 madde içeren veri tabanı üzerinde akıllı arama ile ilgili maddeler getirilir. Uydurma madde verilmez; şüpheli atıf doğrulama için işaretlenir.",
   },
   {
     q: "Resmî yazı taslağını kim hazırlıyor?",
@@ -65,7 +65,7 @@ export const FAQS = [
   },
   {
     q: "Maliyet ve çalışma modu nedir?",
-    a: "Aynı hat üç modda çalışır: mock (anahtarsız/CI), bulut (DeepSeek, ~$0.001/belge) ve on-prem. Tüm kararlar SHA-256 hash-zinciriyle denetlenebilir kaydedilir.",
+    a: "Aynı sistem üç modda çalışır: anahtarsız/test modu, bulut (DeepSeek, ~$0.001/belge) ve kurum-içi (on-prem) mod. Tüm kararlar değiştirilemez şekilde kaydedilir ve sonradan denetlenebilir.",
   },
 ];
 

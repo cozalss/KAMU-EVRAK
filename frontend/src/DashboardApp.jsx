@@ -48,6 +48,10 @@ export default function DashboardApp() {
   const [activeView, setActiveView] = useState("panel");
   const [history, setHistory] = useState(() => cachedDash?.history || []);
   const [processedIds, setProcessedIds] = useState(() => new Set());
+  // Onaylanıp/reddedilip Giden Evrak'a düşen örnekler (id) → artık işlenmiş VE gitmiş
+  // sayılır, Gelen Evrak kuyruğunda görünmez ("Düzenle" ile taslağa alınanlar hariç,
+  // onlar henüz gönderilmediği için kuyrukta kalır).
+  const [sentSampleIds, setSentSampleIds] = useState(() => new Set());
   const [outbox, setOutbox] = useState(() => cachedDash?.outbox || []);
   const [drafts, setDrafts] = useState(() => draftsFromHistory(cachedDash?.history));   // DB/önbellek taslakları + "Düzenle" ile eklenenler
   const fileRef = useRef(null);
@@ -60,7 +64,7 @@ export default function DashboardApp() {
   const data = result || pendingOnay;
   const riskOutcome = data?.risk_metadata?.bant || "yesil";
   const draftCount = drafts.length;
-  const inboxCount = Math.max(0, SAMPLE_DOCS.length - processedIds.size);
+  const inboxCount = Math.max(0, SAMPLE_DOCS.length - sentSampleIds.size);
   const gidenCount = outbox.filter((o) => o.durum === "gonderildi").length;
 
   // Onaylanan/gönderilen evrakı Giden Evrak'a yaz (durum: gonderildi|duzenlendi|reddedildi).
@@ -68,6 +72,7 @@ export default function DashboardApp() {
   const pushOutbox = (res, fm, secim) => {
     if (!res || sentRef.current.has(res)) return false;
     sentRef.current.add(res);
+    if (fm?.kind === "sample" && fm.id) setSentSampleIds((s) => new Set(s).add(fm.id));
     const name = fm?.kind === "sample" ? (fm.label || fm.name) : (fm?.name || "evrak");
     const durum = secim === "reddet" ? "reddedildi" : secim === "duzenle" ? "duzenlendi" : "gonderildi";
     setOutbox((o) => [{
@@ -218,7 +223,7 @@ export default function DashboardApp() {
 
   let view;
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
-  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS} processedIds={processedIds} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
+  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} />;

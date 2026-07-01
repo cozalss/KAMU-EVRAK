@@ -183,7 +183,7 @@ export function usePipeline() {
     setBusy(true);
     setHasRun(true);
     setSelectedSample(sample.id);
-    setFileMeta({ name: `${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
+    setFileMeta({ id: sample.id, name: `${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
     setEvrakText(sample.text);
     lastRun.current = { kind: "sample", sample };
     try {

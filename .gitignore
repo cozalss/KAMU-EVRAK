@@ -65,3 +65,6 @@ data/backups/
 
 # Playwright MCP tarayıcı artifact'leri (snapshot/console/screenshot) — runtime, repoya girmez
 .playwright-mcp/
+
+# Claude Code yerel izin/ayar dosyası (makineye özel, repoya girmez)
+.claude/settings.local.json

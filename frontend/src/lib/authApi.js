@@ -6,6 +6,7 @@
 const ACCESS_KEY = "ke_access";
 const REFRESH_KEY = "ke_refresh";
 const USER_KEY = "ke_user";
+const DASH_KEY = "ke_dashboard";
 
 export const tokens = {
   access: () => localStorage.getItem(ACCESS_KEY) || "",
@@ -18,6 +19,7 @@ export const tokens = {
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
     localStorage.removeItem(USER_KEY); // optimistik kullanıcı önbelleğini de temizle
+    localStorage.removeItem(DASH_KEY); // optimistik panel önbelleğini de temizle
   },
 };
 
@@ -33,6 +35,30 @@ export const cachedUser = {
   },
   set: (u) => {
     if (u) localStorage.setItem(USER_KEY, JSON.stringify(u));
+  },
+};
+
+// Optimistik panel önbelleği: refresh'te history/outbox'u localStorage'dan ANINDA kur
+// (boş→dolu "Henüz evrak işlenmedi" flash'ı yok), arka planda DB'den (uzak Supabase, gerçek
+// gecikme) tazele. uid ile anahtarlı → başka kullanıcının verisi sızmaz; kota aşımında sessiz
+// atlanır (DB fetch yine çalışır). cachedUser ile aynı desen.
+export const cachedDashboard = {
+  get: (uid) => {
+    if (!uid) return null;
+    try {
+      const d = JSON.parse(localStorage.getItem(DASH_KEY) || "null");
+      return d && d.uid === uid ? d : null;
+    } catch {
+      return null;
+    }
+  },
+  set: (uid, data) => {
+    if (!uid) return;
+    try {
+      localStorage.setItem(DASH_KEY, JSON.stringify({ uid, ...data }));
+    } catch {
+      /* localStorage kotası dolu → önbellek atlanır, DB reconcile yine çalışır */
+    }
   },
 };
 

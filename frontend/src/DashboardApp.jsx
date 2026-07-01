@@ -5,22 +5,34 @@
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
-import { apiGet, apiPost } from "./lib/authApi.js";
+import { apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { PAL, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
-import PullCord from "./components/PullCord.jsx";
-// Görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir aynı
-// kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar + PullCord
-// her zaman görünür (nav + tema kordu) olduğundan eager kalır.
+// PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
+// ("yükleniyor…" flash) yaşanmasın, panel anında görünsün. Bağımlılıkları (neonUi +
+// result-cards) zaten usePipeline→nodeMeta zinciriyle ana bundle'da olduğundan ilk yük
+// indirmesine pratikte ağırlık eklemez.
+import PanelView from "./components/PanelView.jsx";
+// Diğer görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir
+// aynı kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar
+// her zaman görünür (nav) olduğundan eager kalır.
 const CanliAjanAkisi = lazy(() => import("./components/CanliAjanAkisi.jsx"));
-const PanelView = lazy(() => import("./components/PanelView.jsx"));
 const GelenEvrakView = lazy(() => import("./components/GelenEvrakView.jsx"));
 const GidenEvrakView = lazy(() => import("./components/GidenEvrakView.jsx"));
 const TaslaklarView = lazy(() => import("./components/TaslaklarView.jsx"));
 const MevzuatView = lazy(() => import("./components/MevzuatView.jsx"));
 const DenetimView = lazy(() => import("./components/DenetimView.jsx"));
+
+// DB geçmişinden taslak listesi türet (yazi_taslak_md olanlar). Hem açılış hidrasyonunda
+// hem de DB reconcile'ında aynı eşlemeyi kullan → iki yol tutarlı kalsın.
+const draftsFromHistory = (items) =>
+  (items || []).filter((x) => x.result?.yazi_taslak_md).map((x) => ({
+    ...x,
+    id: `db-taslak-${x.id}`,
+    name: x.name || "Kalıcı taslak",
+  }));
 
 export default function DashboardApp() {
   const {
@@ -29,12 +41,15 @@ export default function DashboardApp() {
   } = usePipeline();
 
   const { user, logout } = useAuth();
-  const [isDark, setIsDark] = useState(true);
+  // Optimistik açılış: son bilinen panel verisini (history/outbox) localStorage'dan ANINDA kur
+  // → refresh'te boş→dolu ("Henüz evrak işlenmedi") flash'ı yok. Arka plandaki DB fetch (aşağıdaki
+  // effect) uzak Supabase'ten tazeleyip günceller; değişince persist effect önbelleği yeniler.
+  const [cachedDash] = useState(() => cachedDashboard.get(user?.id));
   const [activeView, setActiveView] = useState("panel");
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => cachedDash?.history || []);
   const [processedIds, setProcessedIds] = useState(() => new Set());
-  const [outbox, setOutbox] = useState([]);
-  const [drafts, setDrafts] = useState([]);   // YALNIZ "Düzenle" ile ayrılan taslaklar
+  const [outbox, setOutbox] = useState(() => cachedDash?.outbox || []);
+  const [drafts, setDrafts] = useState(() => draftsFromHistory(cachedDash?.history));   // DB/önbellek taslakları + "Düzenle" ile eklenenler
   const fileRef = useRef(null);
   const lastResultRef = useRef(null);
   const pendingApprovalRef = useRef(null);   // HITL kararı damgası (resume async)
@@ -107,11 +122,7 @@ export default function DashboardApp() {
         if (cancelled) return;
         const items = Array.isArray(data?.kayitlar) ? data.kayitlar : [];
         setHistory(items);
-        setDrafts(items.filter((x) => x.result?.yazi_taslak_md).map((x) => ({
-          ...x,
-          id: `db-taslak-${x.id}`,
-          name: x.name || "Kalıcı taslak",
-        })));
+        setDrafts(draftsFromHistory(items));
       } catch (err) {
         console.warn("Kalıcı işlem geçmişi alınamadı", err);
       }
@@ -141,6 +152,13 @@ export default function DashboardApp() {
     })();
     return () => { cancelled = true; };
   }, [user]);
+
+  // history/outbox her değiştiğinde (DB reconcile VEYA canlı işlem sonucu eklenince) optimistik
+  // önbelleği tazele → bir sonraki refresh son veriyi ANINDA gösterir. Yazma seyrek (kesikli
+  // olaylar), stream sırasında tetiklenmez.
+  useEffect(() => {
+    if (user?.id) cachedDashboard.set(user.id, { history, outbox });
+  }, [history, outbox, user]);
 
   // Sonuç kesinleşince oturum geçmişine ekle (Panel/Taslaklar/Denetim/Mevzuat bundan beslenir).
   // HITL kararı damgalanmışsa (resume sonrası) Giden Evrak kaydını burada kur (resume async).
@@ -217,32 +235,10 @@ export default function DashboardApp() {
 
   return (
     <>
-      {/* PullCord dışarıda — filtered wrapper filter:invert stacking context oluştururdu,
-          position:fixed'ı kırar. Vars :root üzerinden tüm sayfaya iletilir. */}
-      <style>{NEON_KEYFRAMES + `
-        :root{
-          --pullcord-top:0px;
-          /* Kord merkezi sidebar(228px)/içerik dikişinde: left = merkez(233) - ANCHOR_X(32). */
-          --pullcord-left:201px;
-          --pullcord-z:20;
-        }
-      `}</style>
-      {/* Kord renkleri tema-duyarlı: kord filtre DIŞINDA (kendisi invert olmaz), bu yüzden
-          rengi elle yönetilir. dark→parlak teal (T token rgb: 46,230,201); light→koyu teal
-          (beyaz zeminde kontrast). display:contents → kutu yaratmaz, CSS değişkenleri yine kalıtılır. */}
-      <div style={{
-        display: "contents",
-        "--pullcord-ink": isDark ? "rgba(46,230,201,0.72)" : "rgba(13,118,110,0.95)",
-        "--pullcord-knob-top": isDark ? "#cdeee9" : "#2ee6c9",
-        "--pullcord-knob-bot": isDark ? "#7fcabf" : "#0d7d72",
-      }}>
-        <PullCord onPull={() => setIsDark((d) => !d)} pulled={!isDark} ariaLabel={isDark ? "Açık temaya geç" : "Koyu temaya geç"} />
-      </div>
+      <style>{NEON_KEYFRAMES}</style>
 
       <div style={{
         display: "flex", minHeight: "100vh", background: PAL.bg, color: PAL.ink, fontFamily: SANS,
-        filter: isDark ? undefined : "invert(1) hue-rotate(180deg)",
-        transition: "filter 0.35s ease",
       }}>
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: "#2ee6c9", color: "#06121a", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />

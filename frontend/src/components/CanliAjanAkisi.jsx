@@ -10,8 +10,8 @@ import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
 import { MONO, SANS, T, V, PAL, BANT, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
 
-const ta = (a) => `rgba(46,230,201,${a})`;
-const va = (a) => `rgba(183,148,255,${a})`;
+const ta = (a) => `rgba(47,143,166,${a})`;
+const va = (a) => `rgba(139,92,176,${a})`;
 
 function nodeTag(n, risk) {
   const d = n.data || {};
@@ -51,7 +51,7 @@ function buildDrivenFields(r, risk) {
   return [
     ["Evrak türü", `${EVRAK_TR(r.evrak_turu)}${conf}`, PAL.ink2],
     ...spanRows,
-    ["Eksik alan", eksik ? `${eksik} eksik` : "Yok · tam ✓", eksik ? "#fbbf24" : "#34d399"],
+    ["Eksik alan", eksik ? `${eksik} eksik` : "Yok · tam ✓", eksik ? BANT.sari.c : BANT.yesil.c],
     mev ? ["Mevzuat", cleanDemoText(mev), T] : null,
     r.hedef_birim ? ["Hedef birim", BIRIM_LBL(r.hedef_birim), V] : null,
     ["Risk bandı", risk.l, risk.c],
@@ -127,7 +127,7 @@ export default function CanliAjanAkisi({
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   const metaLine = buildMetaLine(result, fileMeta);
   // Sağ panel kartları — neon premium dil (gradyan yüzey + üst aksan + katmanlı gölge), NeonCard ile tutarlı.
-  const card = (accent) => ({ position: "relative", borderRadius: 14, background: "linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.014))", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, padding: 16, boxShadow: "0 16px 38px -26px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05)" });
+  const card = (accent) => ({ position: "relative", borderRadius: 14, background: "linear-gradient(180deg,#ffffff,#fdfbf7)", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, padding: 16, boxShadow: "0 14px 30px -22px rgba(35,26,18,.24)" });
 
   return (
     <>
@@ -142,19 +142,19 @@ export default function CanliAjanAkisi({
       </div>
 
       {/* Üst durum çubuğu */}
-      <header style={{ padding: "15px 24px", borderBottom: `1px solid ${PAL.line}`, background: "rgba(15,22,38,.85)", backdropFilter: "blur(8px)", position: "sticky", top: 0, zIndex: 20 }}>
+      <header style={{ padding: "15px 24px", borderBottom: `1px solid ${PAL.line}`, background: "rgba(247,243,238,.9)", backdropFilter: "blur(8px)", position: "sticky", top: 0, zIndex: 20 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 13, minWidth: 0 }}>
-            <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(91,140,255,.12)", border: "1px solid rgba(91,140,255,.3)", display: "flex", alignItems: "center", justifyContent: "center", color: "#aec6ff" }}>
+            <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(79,124,201,.12)", border: "1px solid rgba(79,124,201,.3)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5f8f" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M9 12 L11 14 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </span>
             <span style={{ minWidth: 0 }}>
               <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 14, color: PAL.ink, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
               <span style={{ display: "block", fontSize: 11.5, color: PAL.mut2 }}>{metaLine}</span>
             </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 11px", borderRadius: 20, background: allDone ? "rgba(52,211,153,.1)" : "rgba(46,230,201,.1)", border: "1px solid " + (allDone ? "rgba(52,211,153,.3)" : "rgba(46,230,201,.26)"), marginLeft: 6, flexShrink: 0 }}>
-              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: allDone ? "#34d399" : T, animation: busy ? "nu-dotpulse 1.4s ease-in-out infinite" : "none" }} />
-              <span style={{ fontFamily: MONO, fontSize: 11, color: "#cfe9e2" }}>{statusText}</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 11px", borderRadius: 20, background: allDone ? "rgba(47,158,110,.1)" : "rgba(47,143,166,.1)", border: "1px solid " + (allDone ? "rgba(47,158,110,.3)" : "rgba(47,143,166,.28)"), marginLeft: 6, flexShrink: 0 }}>
+              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: allDone ? BANT.yesil.c : T, animation: busy ? "nu-dotpulse 1.4s ease-in-out infinite" : "none" }} />
+              <span style={{ fontFamily: MONO, fontSize: 11, color: allDone ? "#1f7a52" : "#1f6d82" }}>{statusText}</span>
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
@@ -162,13 +162,13 @@ export default function CanliAjanAkisi({
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 2, background: T }} />Görev 1 · Anla
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 2, background: V, marginLeft: 5 }} />Görev 2 · Üret
             </span>
-            <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 10, border: `1px solid ${PAL.lineHi}`, background: "rgba(255,255,255,.04)", color: PAL.mut, fontFamily: MONO, fontSize: 12 }} title="Yeni evrak">↻</button>
+            <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 10, border: `1px solid ${PAL.lineHi}`, background: "rgba(35,26,18,.04)", color: PAL.mut, fontFamily: MONO, fontSize: 12 }} title="Yeni evrak">↻</button>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 13 }}>
           {display.map((a) => {
             const col = a.gorev === 1 ? T : V;
-            return <div key={a.id} style={{ flex: 1, height: 5, borderRadius: 3, background: a.status === "done" || a.status === "active" ? col : "rgba(255,255,255,.2)", boxShadow: a.status === "active" && glow ? `0 0 10px ${col}` : "none", transform: a.status === "active" ? "scaleY(1.6)" : "none", transition: "all .4s" }} />;
+            return <div key={a.id} style={{ flex: 1, height: 5, borderRadius: 3, background: a.status === "done" || a.status === "active" ? col : "rgba(35,26,18,.12)", boxShadow: a.status === "active" && glow ? `0 0 10px ${col}66` : "none", transform: a.status === "active" ? "scaleY(1.6)" : "none", transition: "all .4s" }} />;
           })}
           <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 600, color: PAL.ink2, marginLeft: 10, flexShrink: 0, minWidth: 38, textAlign: "right" }}>{pct}%</span>
         </div>
@@ -181,22 +181,22 @@ export default function CanliAjanAkisi({
           {/* Kaynak belge */}
           <div style={{ borderRight: `1px solid ${PAL.line}`, padding: 18, display: "flex", flexDirection: "column" }}>
             <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2, marginBottom: 12 }}>KAYNAK BELGE</div>
-            <div style={{ position: "relative", borderRadius: 10, overflow: "hidden", background: "#eef0f6", boxShadow: "0 12px 34px -12px rgba(0,0,0,.6)", minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
-              {busy && <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 2, background: "linear-gradient(90deg,transparent,#2ee6c9,transparent)", boxShadow: "0 0 12px #2ee6c9", animation: "nu-scanv 2.8s ease-in-out infinite", zIndex: 3 }} />}
+            <div style={{ position: "relative", borderRadius: 10, overflow: "hidden", background: "#ffffff", border: `1px solid ${PAL.line}`, boxShadow: "0 12px 30px -16px rgba(35,26,18,.24)", minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
+              {busy && <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 2, background: `linear-gradient(90deg,transparent,${T},transparent)`, boxShadow: `0 0 12px ${T}99`, animation: "nu-scanv 2.8s ease-in-out infinite", zIndex: 3 }} />}
               {segs ? (
                 <pre style={{ margin: 0, padding: "18px 16px", fontFamily: MONO, fontSize: 10.5, lineHeight: 1.7, color: "#2a3346", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                   {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: "#fde68a", color: "#92400e", borderRadius: 3, padding: "0 2px" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
                 </pre>
               ) : (
                 <div style={{ padding: "20px 18px", fontFamily: MONO, display: "flex", flexDirection: "column", gap: 10, color: "#9aa3b8", fontSize: 11 }}>
-                  <div style={{ height: 7, width: "55%", background: "#cdd2df", borderRadius: 3 }} />
-                  <div style={{ height: 7, width: "40%", background: "#cdd2df", borderRadius: 3, marginBottom: 6 }} />
+                  <div style={{ height: 7, width: "55%", background: "#e4ddd0", borderRadius: 3 }} />
+                  <div style={{ height: 7, width: "40%", background: "#e4ddd0", borderRadius: 3, marginBottom: 6 }} />
                   {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Metin işlenecek…"}
                 </div>
               )}
             </div>
-            <div style={{ marginTop: 14, padding: "11px 13px", borderRadius: 11, background: "rgba(46,230,201,.07)", border: "1px solid rgba(46,230,201,.2)", fontSize: 11.5, color: "#a7d8cd", display: "flex", gap: 8, alignItems: "flex-start" }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill="#2ee6c9" /><circle cx="12" cy="12" r="2.2" fill="#2ee6c9" /><circle cx="18" cy="12" r="2.2" fill="#2ee6c9" /></svg>
+            <div style={{ marginTop: 14, padding: "11px 13px", borderRadius: 11, background: "rgba(47,143,166,.08)", border: "1px solid rgba(47,143,166,.24)", fontSize: 11.5, color: "#1f6d82", display: "flex", gap: 8, alignItems: "flex-start" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill={T} /><circle cx="12" cy="12" r="2.2" fill={T} /><circle cx="18" cy="12" r="2.2" fill={T} /></svg>
               Kişisel veriler (TCKN, telefon) maskelenerek işleniyor — KVKK uyumlu.
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function CanliAjanAkisi({
                 return (
                   <div key={a.id}>
                     {group && (
-                      <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "2px", color: i === 0 ? "#3f8f7f" : "#7a5fb0", margin: (i === 0 ? "0" : "20px") + " 0 10px", paddingLeft: 42, display: "flex", alignItems: "center", gap: 9 }}>
+                      <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "2px", color: i === 0 ? "#1f6d82" : "#6a4787", margin: (i === 0 ? "0" : "20px") + " 0 10px", paddingLeft: 42, display: "flex", alignItems: "center", gap: 9 }}>
                         <span>{group}</span>
                         <span aria-hidden="true" style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${i === 0 ? ta(0.4) : va(0.4)}, transparent)` }} />
                       </div>
@@ -246,11 +246,11 @@ export default function CanliAjanAkisi({
                       {/* DÜĞÜM — omurga üstünde oturan nokta/çember */}
                       <div aria-hidden="true" style={{ position: "relative", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         {active && glow && <span style={{ position: "absolute", left: "50%", top: "50%", width: 26, height: 26, borderRadius: "50%", border: `1.5px solid ${col}`, transform: "translate(-50%,-50%)", animation: "nu-ring 1.6s ease-out infinite", pointerEvents: "none" }} />}
-                        <span style={{ position: "relative", zIndex: 1, width: done || active ? 26 : 14, height: done || active ? 26 : 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MONO, fontSize: 10.5, fontWeight: 700, color: done || active ? "#06121a" : err ? BANT.kirmizi.c : col, background: done || active ? col : err ? "rgba(248,113,113,.16)" : PAL.bg2, border: done || active ? "none" : `2px solid ${err ? BANT.kirmizi.c : pending ? PAL.lineHi : colA(0.6)}`, boxShadow: active && glow ? `0 0 16px 1px ${col}` : done && glow ? `0 0 9px ${colA(0.55)}` : "none", animation: active && glow ? "nu-breathe 2s ease-in-out infinite" : done && glow ? "nu-pop .42s cubic-bezier(.34,1.56,.64,1) both" : "none", transition: "width .35s cubic-bezier(.34,1.56,.64,1), height .35s cubic-bezier(.34,1.56,.64,1), background .35s, border-color .35s" }}>
+                        <span style={{ position: "relative", zIndex: 1, width: done || active ? 26 : 14, height: done || active ? 26 : 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MONO, fontSize: 10.5, fontWeight: 700, color: done || active ? "#fbf7f0" : err ? BANT.kirmizi.c : col, background: done || active ? col : err ? "rgba(201,67,47,.14)" : PAL.bg2, border: done || active ? "none" : `2px solid ${err ? BANT.kirmizi.c : pending ? PAL.lineHi : colA(0.6)}`, boxShadow: active && glow ? `0 0 16px 1px ${col}66` : done && glow ? `0 0 9px ${colA(0.5)}` : "none", animation: active && glow ? "nu-breathe 2s ease-in-out infinite" : done && glow ? "nu-pop .42s cubic-bezier(.34,1.56,.64,1) both" : "none", transition: "width .35s cubic-bezier(.34,1.56,.64,1), height .35s cubic-bezier(.34,1.56,.64,1), background .35s, border-color .35s" }}>
                           {done ? (
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7" stroke="#06121a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7" stroke="#fbf7f0" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
                           ) : err ? "✕" : active ? (
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#06121a", animation: glow ? "nu-think 1.1s ease-in-out infinite" : "none" }} />
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#fbf7f0", animation: glow ? "nu-think 1.1s ease-in-out infinite" : "none" }} />
                           ) : null}
                         </span>
                       </div>
@@ -258,7 +258,7 @@ export default function CanliAjanAkisi({
                       {/* İÇERİK */}
                       <div style={{ minWidth: 0, paddingTop: 1, opacity: pending ? 0.5 : 1, transition: "opacity .4s" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-                          <span style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, lineHeight: 1.3, color: active ? "#eaf6ff" : done ? PAL.ink2 : PAL.mut2, transition: "color .35s" }}>{a.label}</span>
+                          <span style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, lineHeight: 1.3, color: active ? PAL.ink : done ? PAL.ink2 : PAL.mut2, transition: "color .35s" }}>{a.label}</span>
                           {a.tag && <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 7px", borderRadius: 7, color: tagCol, background: tagBg, border: `1px solid ${tagBd}`, opacity: done || active ? 1 : 0.45, transition: "opacity .35s" }}>{a.tag}</span>}
                           {active ? (
                             <span aria-hidden="true" style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 8.5, letterSpacing: "1.5px", color: col, opacity: 0.9, flexShrink: 0, animation: glow ? "nu-think 1.2s ease-in-out infinite" : "none" }}>İŞLENİYOR</span>
@@ -266,7 +266,7 @@ export default function CanliAjanAkisi({
                             <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 9, letterSpacing: "1px", color: PAL.mut2, opacity: 0.65, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span>
                           )}
                         </div>
-                        <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : "#93a0bb") : active ? PAL.mut : err ? BANT.kirmizi.c : PAL.mut2, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>
+                        <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : PAL.mut) : active ? PAL.mut : err ? BANT.kirmizi.c : PAL.mut2, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>
                           {done ? (a.out || "tamamlandı ✓") : active ? "çalışıyor…" : err ? "hata · adım başarısız" : "—"}
                         </div>
                       </div>
@@ -282,7 +282,7 @@ export default function CanliAjanAkisi({
             <div style={card(T)}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                 <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3 }}>ÇIKARILAN VERİ</span>
-                <span style={{ fontFamily: MONO, fontSize: 10, color: "#34d399", display: "flex", alignItems: "center", gap: 5 }}><span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399" }} />maskeli</span>
+                <span style={{ fontFamily: MONO, fontSize: 10, color: BANT.yesil.c, display: "flex", alignItems: "center", gap: 5 }}><span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: "50%", background: BANT.yesil.c }} />maskeli</span>
               </div>
               {(drivenFields || [["Evrak türü", "•••"], ["Konu", "•••"], ["Gönderen", "•••"], ["Risk bandı", "•••"]]).map((d, k) => (
                 <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", padding: "6px 0", borderBottom: `1px dashed ${PAL.line}` }}>
@@ -299,21 +299,21 @@ export default function CanliAjanAkisi({
             <div style={{ ...card(V), flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
               <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3, marginBottom: 10 }}>RESMÎ YAZI TASLAĞI</div>
               {draftMd ? (
-                <pre style={{ background: "#f4f5f9", borderRadius: 9, padding: "15px 16px", fontFamily: MONO, fontSize: 10.5, color: "#3a4252", flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .5s ease both", lineHeight: 1.6, maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>
+                <pre style={{ background: "#ffffff", border: `1px solid ${PAL.line}`, borderRadius: 9, padding: "15px 16px", fontFamily: MONO, fontSize: 10.5, color: "#3a4252", flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .5s ease both", lineHeight: 1.6, maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>
               ) : (
-                <div style={{ display: "flex", alignItems: "center", gap: 9, flex: 1, justifyContent: "center", fontSize: 12, color: PAL.mut2, border: "1px dashed rgba(255,255,255,.1)", borderRadius: 9, padding: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 9, flex: 1, justifyContent: "center", fontSize: 12, color: PAL.mut2, border: "1px dashed rgba(35,26,18,.14)", borderRadius: 9, padding: 20 }}>
                   <span aria-hidden="true" style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
                   Taslak, "Yazı Taslağı" adımında üretilecek…
                 </div>
               )}
               <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 11, fontSize: 10.5, color: PAL.mut2 }}>
                 <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: "50%", background: V, flexShrink: 0 }} />
-                Yapay zekâ <strong style={{ color: "#cdd6e8", fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: "#cdd6e8", fontWeight: 600 }}>karar verir</strong> (HITL)
+                Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
-                <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing} style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: 10, borderRadius: 10, border: "none", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: decisionReady ? "#1a1230" : PAL.mut2, background: decisionReady ? "linear-gradient(135deg,#b794ff,#8b6ef0)" : "rgba(255,255,255,.05)", boxShadow: decisionReady ? "0 8px 22px -8px rgba(183,148,255,.7)" : "none" }}><span aria-hidden="true">✓ </span>Onayla &amp; Gönder</button>
-                <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: `1px solid ${PAL.lineHi}`, background: "rgba(255,255,255,.04)", color: decisionReady ? "#cdd6e8" : PAL.mut2, fontFamily: SANS, fontSize: 12.5 }}>Düzenle</button>
-                <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid " + (decisionReady ? "rgba(248,113,113,.4)" : "rgba(255,255,255,.1)"), background: decisionReady ? "rgba(248,113,113,.08)" : "rgba(255,255,255,.03)", color: decisionReady ? "#f4a5a5" : PAL.mut2, fontFamily: SANS, fontSize: 12.5 }}>Reddet</button>
+                <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing} style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: 10, borderRadius: 10, border: "none", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: decisionReady ? "#fbf7f0" : PAL.mut2, background: decisionReady ? `linear-gradient(135deg,${V},${V}cc)` : "rgba(35,26,18,.06)", boxShadow: decisionReady ? "0 8px 20px -8px rgba(139,92,176,.5)" : "none" }}><span aria-hidden="true">✓ </span>Onayla &amp; Gönder</button>
+                <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: `1px solid ${PAL.lineHi}`, background: "rgba(35,26,18,.04)", color: decisionReady ? PAL.ink2 : PAL.mut2, fontFamily: SANS, fontSize: 12.5 }}>Düzenle</button>
+                <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid " + (decisionReady ? "rgba(201,67,47,.4)" : "rgba(35,26,18,.1)"), background: decisionReady ? "rgba(201,67,47,.08)" : "rgba(35,26,18,.03)", color: decisionReady ? "#a23425" : PAL.mut2, fontFamily: SANS, fontSize: 12.5 }}>Reddet</button>
               </div>
             </div>
           </div>

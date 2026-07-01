@@ -9,14 +9,14 @@ import { useFilter } from "../hooks/useFilter.js";
 import { evrakKategori, kategoriMeta, KATEGORILER, KATEGORI_BIRIM } from "../lib/kategori.js";
 import { BIRIM_LBL } from "./result-cards.jsx";
 
-const GRUP_RENK = { "Vatandaş": T, "Kurum": "#5b8cff", "Hukuk/Mali": V };
+const GRUP_RENK = { "Vatandaş": T, "Kurum": "#4f7cc9", "Hukuk/Mali": V };
 const KATEGORI_SELECT = [{ value: "", label: "Tüm kategoriler" }, ...KATEGORILER.map((k) => ({ value: k.id, label: k.label }))];
 
 const GELEN_FILTER_CONFIG = {
   search: { enabled: true, placeholder: "Evrak adı, açıklama…" },
   chips: [{ id: "grup", label: "Grup", options: [
     { value: "Vatandaş", label: "Vatandaş", color: T },
-    { value: "Kurum", label: "Kurum", color: "#5b8cff" },
+    { value: "Kurum", label: "Kurum", color: "#4f7cc9" },
     { value: "Hukuk/Mali", label: "Hukuk/Mali", color: V },
   ] }],
   select: [{ id: "kategori", label: "Kategori", options: KATEGORI_SELECT }],
@@ -61,7 +61,7 @@ export default function GelenEvrakView({ samples = [], processedIds, onProcess, 
                     {/* Kategori rozeti (operasyonel) */}
                     <span style={{ fontFamily: MONO, fontSize: 9, letterSpacing: ".3px", padding: "2px 7px", borderRadius: 6, background: kat.color + "1c", color: kat.color, border: `1px solid ${kat.color}3a` }}>{kat.label}</span>
                     <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: renk + "1a", color: renk }}>{s.grup || "Evrak"}</span>
-                    <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: isDone ? "rgba(52,211,153,.14)" : "rgba(124,180,255,.14)", color: isDone ? "#7ff0c4" : "#aec6ff" }}>{isDone ? "İşlendi ✓" : "Yeni"}</span>
+                    <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: isDone ? "rgba(47,158,110,.14)" : "rgba(79,124,201,.14)", color: isDone ? "#1f7a52" : "#3a5f8f" }}>{isDone ? "İşlendi ✓" : "Yeni"}</span>
                   </div>
                   <div style={{ fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, marginTop: 3, display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <span>{s.aciklama}</span>
@@ -78,9 +78,9 @@ export default function GelenEvrakView({ samples = [], processedIds, onProcess, 
         </div>
       )}
 
-      <NeonCard accent="#5b8cff" style={{ marginTop: 18 }}>
+      <NeonCard accent="#4f7cc9" style={{ marginTop: 18 }}>
         <p style={{ margin: 0, fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, lineHeight: 1.6 }}>
-          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: "#aec6ff" }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
+          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: "#3a5f8f" }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
         </p>
       </NeonCard>
     </ViewWrap>

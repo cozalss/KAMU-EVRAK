@@ -38,10 +38,10 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, o
       ]}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px,1fr))", gap: 14, marginBottom: 22 }}>
         <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} />
-        <Stat label="Bekleyen kuyruk" value={inboxCount} accent="#5b8cff" icon={<Icon.inbox />} />
+        <Stat label="Bekleyen kuyruk" value={inboxCount} accent="#4f7cc9" icon={<Icon.inbox />} />
         <Stat label="Üretilen taslak" value={taslakSay} accent={V} icon={<Icon.scale />} />
-        <Stat label="Gönderilen evrak" value={gonderilen} accent="#34d399" icon={<Icon.arrow />} />
-        <Stat label="Onaya sunulan" value={risk.sari + risk.kirmizi} accent="#fbbf24" icon={<Icon.clock />} />
+        <Stat label="Gönderilen evrak" value={gonderilen} accent={BANT.yesil.c} icon={<Icon.arrow />} />
+        <Stat label="Onaya sunulan" value={risk.sari + risk.kirmizi} accent={BANT.sari.c} icon={<Icon.clock />} />
       </div>
 
       {n === 0 ? (
@@ -58,7 +58,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, o
                   <div style={{ display: "flex", justifyContent: "space-between", fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, marginBottom: 4 }}>
                     <span style={{ color: BANT[k].c }}>{BANT[k].l} · {BANT[k].t}</span><span>{risk[k]} (%{pct})</span>
                   </div>
-                  <div style={{ height: 7, borderRadius: 4, background: "rgba(255,255,255,.06)", overflow: "hidden" }}>
+                  <div style={{ height: 7, borderRadius: 4, background: "rgba(35,26,18,.06)", overflow: "hidden" }}>
                     <div style={{ height: "100%", width: `${pct}%`, background: BANT[k].c, borderRadius: 4, transition: "width .5s" }} />
                   </div>
                 </div>
@@ -80,7 +80,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, o
                 <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: "50%", background: BANT[h.bant]?.c || PAL.mut2, flexShrink: 0 }} />
                 <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
                 <span style={{ fontFamily: MONO, fontSize: 11, color: T }}>{EVRAK_TR(h.evrak_turu)}</span>
-                <span style={{ fontFamily: MONO, fontSize: 11, color: "#d7c4ff", textAlign: "right" }}>{BIRIM_LBL(h.hedef_birim)}</span>
+                <span style={{ fontFamily: MONO, fontSize: 11, color: "#6a4787", textAlign: "right" }}>{BIRIM_LBL(h.hedef_birim)}</span>
                 <span style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, flexShrink: 0 }}>{fmtTime(h.ts)}</span>
               </div>
             ))}

@@ -1,24 +1,28 @@
-/* neonUi — kamu-evrak neon çalışma alanı paylaşılan tasarım atomları.
+/* neonUi — kamu-evrak çalışma alanı paylaşılan tasarım atomları ("Hero Light" tema).
+   Palet, herodaki (frontend/public/portfolio/hero.webp) sıcak fildişi zemin + pastel
+   gökyüzü (pudra-gül → lavanta → gök mavisi) + tek doygun mercan kırmızısı vurgudan
+   türetildi (bkz. design-system/kamu-evrak/MASTER.md). T=gök mavisi (Görev 1),
+   V=lavanta moru (Görev 2), R=hero'nun mercan noktası — yalnız imza dokunuşlarında.
    Tüm görünümler (Panel/Gelen/İşleniyor/Taslaklar/Mevzuat/Denetim) bunları kullanır → tutarlı,
    DRY. Satır-içi stil (tek <style> yalnız @keyframes). a11y: focusRing + SR_ONLY + semantik. */
 import React, { useState, useId } from "react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
 export const SANS = "'Space Grotesk',system-ui,sans-serif";
-export const T = "#2ee6c9", V = "#b794ff";
+export const T = "#2f8fa6", V = "#8b5cb0", R = "#e0563c";
 export const PAL = {
-  bg: "#121829", bg2: "#0f1626", surf: "rgba(255,255,255,.025)", surfHi: "rgba(255,255,255,.05)",
-  line: "rgba(255,255,255,.08)", lineHi: "rgba(255,255,255,.14)",
-  ink: "#eaf0fb", ink2: "#dfe5f2", mut: "#9aa6c0", mut2: "#7d89a4", mut3: "#8b97b0",
+  bg: "#f7f3ee", bg2: "#efe6da", surf: "#ffffff", surfHi: "rgba(35,26,18,.05)",
+  line: "rgba(35,26,18,.12)", lineHi: "rgba(35,26,18,.22)",
+  ink: "#161616", ink2: "#3a3229", mut: "#6b6255", mut2: "#57503f", mut3: "#8a8172",
 };
 export const BANT = {
-  yesil: { c: "#34d399", l: "YEŞİL", t: "Düşük risk" },
-  sari: { c: "#fbbf24", l: "SARI", t: "Orta risk" },
-  kirmizi: { c: "#f87171", l: "KIRMIZI", t: "Yüksek risk" },
+  yesil: { c: "#2f9e6e", l: "YEŞİL", t: "Düşük risk" },
+  sari: { c: "#c98a1f", l: "SARI", t: "Orta risk" },
+  kirmizi: { c: "#c9432f", l: "KIRMIZI", t: "Yüksek risk" },
 };
 
 export const focusRing = {
-  onFocus: (e) => { e.currentTarget.style.boxShadow = "0 0 0 2px #0f1626, 0 0 0 4px #2ee6c9"; },
+  onFocus: (e) => { e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; },
   onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
 };
 export const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 };
@@ -53,22 +57,22 @@ export function ViewWrap({ id, title, sub, actions, children }) {
   );
 }
 
-/* Neon kart — premium glass: gradyan yüzey + katmanlı gölge + köşe ışıması + hover kalkış.
+/* Kağıt kart — beyaz yüzey + katmanlı sıcak gölge + köşe ışıması + hover kalkış.
    icon: opsiyonel başlık ikon çipi (accent tonlu). accent hex olmalı (alfa ekleri için). */
-const CARD_SHADOW = "0 18px 40px -24px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.05)";
-const CARD_SHADOW_HOVER = "0 26px 54px -22px rgba(0,0,0,.82), inset 0 1px 0 rgba(255,255,255,.08)";
+const CARD_SHADOW = "0 14px 30px -20px rgba(35,26,18,.22), 0 2px 6px -2px rgba(35,26,18,.08)";
+const CARD_SHADOW_HOVER = "0 22px 46px -18px rgba(35,26,18,.28), 0 4px 10px -2px rgba(35,26,18,.10)";
 export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, style }) {
   const onEnter = (e) => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = CARD_SHADOW_HOVER; };
   const onLeave = (e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = CARD_SHADOW; };
   return (
     <section onMouseEnter={onEnter} onMouseLeave={onLeave}
-      style={{ position: "relative", overflow: "hidden", gridColumn: full ? "1 / -1" : "auto", background: "linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012))", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, borderRadius: 16, padding: "16px 18px", boxShadow: CARD_SHADOW, backdropFilter: "blur(10px)", transition: "transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s", ...style }}>
-      <span aria-hidden="true" style={{ position: "absolute", top: -42, right: -42, width: 168, height: 168, borderRadius: "50%", background: `radial-gradient(circle, ${accent}, transparent 70%)`, opacity: 0.1, pointerEvents: "none" }} />
+      style={{ position: "relative", overflow: "hidden", gridColumn: full ? "1 / -1" : "auto", background: "linear-gradient(180deg,#ffffff,#fdfbf7)", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, borderRadius: 16, padding: "16px 18px", boxShadow: CARD_SHADOW, transition: "transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s", ...style }}>
+      <span aria-hidden="true" style={{ position: "absolute", top: -42, right: -42, width: 168, height: 168, borderRadius: "50%", background: `radial-gradient(circle, ${accent}, transparent 70%)`, opacity: 0.08, pointerEvents: "none" }} />
       {title && (
         <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12, position: "relative" }}>
           {icon && <span aria-hidden="true" style={{ width: 28, height: 28, borderRadius: 8, display: "grid", placeItems: "center", flexShrink: 0, color: accent, background: accent + "1f", border: `1px solid ${accent}40` }}>{icon}</span>}
           <h3 style={{ margin: 0, fontFamily: MONO, fontSize: 10.5, letterSpacing: "1.5px", color: PAL.mut, textTransform: "uppercase", fontWeight: 600 }}>{title}</h3>
-          {tag && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, padding: "3px 9px", borderRadius: 8, color: tagColor || accent, background: (tagColor || accent) + "22", border: `1px solid ${(tagColor || accent)}3a` }}>{tag}</span>}
+          {tag && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, padding: "3px 9px", borderRadius: 8, color: tagColor || accent, background: (tagColor || accent) + "1c", border: `1px solid ${(tagColor || accent)}3a` }}>{tag}</span>}
         </div>
       )}
       <div style={{ position: "relative" }}>{children}</div>
@@ -83,7 +87,7 @@ export const KV = ({ k, v, c = PAL.ink2 }) => (
   </div>
 );
 
-/* Buton — primary (dolu accent) veya ghost. */
+/* Buton — primary (dolu accent, açık metin) veya ghost. */
 export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabel, title, style }) {
   const base = {
     cursor: disabled ? "not-allowed" : "pointer", padding: "9px 16px", borderRadius: 10,
@@ -91,8 +95,8 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
     display: "inline-flex", alignItems: "center", gap: 7, border: "1px solid",
   };
   const skin = primary
-    ? { border: accent + "00", background: disabled ? "rgba(255,255,255,.05)" : `linear-gradient(135deg,${accent},#1ea7d6)`, color: disabled ? PAL.mut2 : "#06121a", boxShadow: disabled ? "none" : `0 8px 22px -10px ${accent}` }
-    : { borderColor: disabled ? "rgba(255,255,255,.1)" : accent + "55", background: disabled ? "rgba(255,255,255,.03)" : accent + "14", color: disabled ? PAL.mut2 : accent };
+    ? { border: accent + "00", background: disabled ? "rgba(35,26,18,.06)" : `linear-gradient(135deg,${accent},${accent}cc)`, color: disabled ? PAL.mut2 : "#fbf7f0", boxShadow: disabled ? "none" : `0 8px 20px -10px ${accent}99` }
+    : { borderColor: disabled ? "rgba(35,26,18,.12)" : accent + "55", background: disabled ? "rgba(35,26,18,.03)" : accent + "14", color: disabled ? PAL.mut2 : accent };
   return (
     <button type="button" onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title} {...focusRing} style={{ ...base, ...skin, ...style }}>
       {children}
@@ -104,7 +108,7 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
 export function EmptyState({ icon, title, sub, actions }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, padding: "60px 20px", textAlign: "center", minHeight: 360 }}>
-      <span style={{ width: 64, height: 64, borderRadius: 18, display: "grid", placeItems: "center", background: "rgba(46,230,201,.08)", border: "1px solid rgba(46,230,201,.2)", color: T }} aria-hidden="true">{icon}</span>
+      <span style={{ width: 64, height: 64, borderRadius: 18, display: "grid", placeItems: "center", background: T + "14", border: `1px solid ${T}35`, color: T }} aria-hidden="true">{icon}</span>
       <div>
         <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 600, color: PAL.ink2 }}>{title}</div>
         {sub && <p style={{ margin: "6px 0 0", fontFamily: MONO, fontSize: 12, color: PAL.mut2, maxWidth: 420, lineHeight: 1.6 }}>{sub}</p>}
@@ -114,12 +118,11 @@ export function EmptyState({ icon, title, sub, actions }) {
   );
 }
 
-/* İkonlar (stroke neon). */
-const sw = "#7d89a4";
+/* İkonlar (stroke, çizgi seti). */
 export const Icon = {
   grid: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /></svg>,
   inbox: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 5 H20 M12 8 V15 M9 12 L12 15 L15 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 19 H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  spin: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke="rgba(46,230,201,.25)" strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke="#2ee6c9" strokeWidth="2" strokeLinecap="round" /></svg>,
+  spin: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke={T + "40"} strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke={T} strokeWidth="2" strokeLinecap="round" /></svg>,
   doc: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M8 9 H16 M8 13 H16 M8 17 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   book: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 4 H19 V20 H5 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8 H15 M9 12 H15 M9 16 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   shield: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M8.5 12 L11 14.5 L15.5 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
@@ -150,13 +153,13 @@ export function InfoTip({ label = "Bilgi", children, width = 256, align = "right
         onFocus={show} onBlur={hide}
         onKeyDown={(e) => { if (e.key === "Escape") hide(); }}
         {...focusRing}
-        style={{ cursor: "pointer", width: 24, height: 24, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: "rgba(255,255,255,.05)", color: PAL.mut, padding: 0, flexShrink: 0 }}>
+        style={{ cursor: "pointer", width: 24, height: 24, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: "rgba(35,26,18,.04)", color: PAL.mut, padding: 0, flexShrink: 0 }}>
         <Icon.info />
       </button>
       {open && (
         <span role="tooltip" id={id}
           style={{ position: "absolute", top: "100%", [align === "right" ? "right" : "left"]: 0, paddingTop: 8, width, zIndex: 60, cursor: "default" }}>
-          <span style={{ display: "block", background: "#141c30", border: `1px solid ${PAL.lineHi}`, borderRadius: 12, padding: "12px 14px", boxShadow: "0 20px 54px -14px rgba(0,0,0,.78)", fontFamily: SANS, fontSize: 11.5, lineHeight: 1.55, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400 }}>
+          <span style={{ display: "block", background: "#ffffff", border: `1px solid ${PAL.lineHi}`, borderRadius: 12, padding: "12px 14px", boxShadow: "0 20px 48px -14px rgba(35,26,18,.32)", fontFamily: SANS, fontSize: 11.5, lineHeight: 1.55, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400 }}>
             {children}
           </span>
         </span>
@@ -188,21 +191,21 @@ export function RiskBand({ band = "yesil", lit = true, sub }) {
             </span>
             {RISK_ORDER.map((key) => (
               <span key={key} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 7 }}>
-                <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: BANT[key].c, marginTop: 4, flexShrink: 0, boxShadow: `0 0 6px ${BANT[key].c}` }} />
+                <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: BANT[key].c, marginTop: 4, flexShrink: 0, boxShadow: `0 0 6px ${BANT[key].c}66` }} />
                 <span style={{ color: PAL.mut }}><strong style={{ color: BANT[key].c, fontWeight: 600 }}>{BANT[key].l}</strong> — {RISK_DESC[key]}</span>
               </span>
             ))}
           </InfoTip>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "6px 10px", borderRadius: 11, background: "rgba(0,0,0,.28)", border: `1px solid ${PAL.line}`, width: "fit-content" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "6px 10px", borderRadius: 11, background: "rgba(35,26,18,.05)", border: `1px solid ${PAL.line}`, width: "fit-content" }}>
           {RISK_ORDER.map((key) => {
             const on = lit && band === key;
-            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 14, height: 14, borderRadius: "50%", background: on ? BANT[key].c : "rgba(255,255,255,0.1)", boxShadow: on ? `0 0 14px 2px ${BANT[key].c}` : "none", border: "1px solid " + (on ? BANT[key].c : "rgba(255,255,255,0.24)"), transition: "all .5s" }} />;
+            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 14, height: 14, borderRadius: "50%", background: on ? BANT[key].c : "rgba(35,26,18,.08)", boxShadow: on ? `0 0 12px 1px ${BANT[key].c}66` : "none", border: "1px solid " + (on ? BANT[key].c : "rgba(35,26,18,.18)"), transition: "all .5s" }} />;
           })}
         </div>
       </div>
       <div role="status" aria-label={lit ? `Risk bandı: ${cur.l}, ${cur.t}` : "Risk bandı henüz belirlenmedi"}
-        style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 10, color: lit ? cur.c : PAL.mut2, background: lit ? cur.c + "1f" : "rgba(255,255,255,.04)", border: "1px solid " + (lit ? cur.c + "66" : "rgba(255,255,255,.1)") }}>
+        style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, padding: "7px 12px", borderRadius: 10, color: lit ? cur.c : PAL.mut2, background: lit ? cur.c + "14" : "rgba(35,26,18,.04)", border: "1px solid " + (lit ? cur.c + "55" : "rgba(35,26,18,.12)") }}>
         {lit ? cur.l : "—"}
       </div>
     </div>

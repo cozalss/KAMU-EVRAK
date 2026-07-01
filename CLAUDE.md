@@ -36,30 +36,37 @@
 3. Türkçe karakterler içerikte tam (ç, ş, ğ, İ); değişken isimleri Latin (`evrak_turu`).
 4. Yeni node eklerken `agents/graph.py` topolojisine + frontend `agent-flow/topology.js`'e ekle.
 5. Çıkarılan PII'yi **maskele** (kullanıcı koruması + jüri "wow").
-6. **UI = neon dark tema.** Renk/font/animasyon `frontend/src/components/neonUi.jsx`
-   token'larından (`T`/`V`/`PAL`/`BANT`) gelir — elle hex yazma. Detay: aşağıdaki Tasarım/UI
-   bölümü + `frontend/design-system/kamu-evrak/MASTER.md`.
+6. **UI = Hero Light tema.** Renk/font/animasyon `frontend/src/components/neonUi.jsx`
+   token'larından (`T`/`V`/`R`/`PAL`/`BANT`) gelir — elle hex yazma. Palet landing hero'sundan
+   (`frontend/public/portfolio/hero.webp`) türetilir; **landing sayfasına (`index.html` +
+   `src/portfolio/**`) dokunulmaz.** Detay: aşağıdaki Tasarım/UI bölümü +
+   `frontend/design-system/kamu-evrak/MASTER.md`.
 
-## Tasarım / UI — Neon Dark (aktif tema)
+## Tasarım / UI — Hero Light (aktif tema)
 
 > Tek kaynak: `frontend/src/components/neonUi.jsx`. Tam spesifikasyon:
-> `frontend/design-system/kamu-evrak/MASTER.md`.
+> `frontend/design-system/kamu-evrak/MASTER.md`. Palet, landing hero görselinin (sıcak fildişi
+> zemin + pudra-gül→lavanta→gök mavisi pastel gökyüzü + tek mercan kırmızısı nokta) koyulaştırılmış,
+> UI'da kullanılabilir versiyonudur — **çalışma alanına (app.html) özgüdür, landing page ayrı kalır.**
 
 - **Aktif kabuk:** `DashboardApp.jsx` → `NeonSidebar` + görünümler (`PanelView`, `GelenEvrakView`,
   `TaslaklarView`, `MevzuatView`, `DenetimView`) + canlı `CanliAjanAkisi` (demo yıldızı).
-- **Renk (token):** birincil aksan teal `T=#2ee6c9`, ikincil mor `V=#b794ff`; zemin `PAL.bg=#121829`
-  / `PAL.bg2=#0f1626`; metin `PAL.ink=#eaf0fb` / `ink2=#dfe5f2`; risk bandı `BANT` (yeşil `#34d399` /
-  sarı `#fbbf24` / kırmızı `#f87171`). **Hex'i elle yazma, token kullan.**
+- **Renk (token):** birincil aksan gök mavisi `T=#2f8fa6`, ikincil lavanta `V=#8b5cb0`, imza mercanı
+  `R=#e0563c` (yalnız küçük dokunuşlar — genel CTA rengi değil); zemin `PAL.bg=#f7f3ee` /
+  `PAL.bg2=#efe6da`; metin `PAL.ink=#161616` / `ink2=#3a3229`; risk bandı `BANT` (yeşil `#2f9e6e` /
+  sarı `#c98a1f` / kırmızı `#c9432f`). **Hex'i elle yazma, token kullan.**
 - **Font:** Space Grotesk (`SANS`, başlık/UI) + IBM Plex Mono (`MONO`, etiket/veri) —
-  `index.html` Google Fonts.
+  `app.html` Google Fonts.
 - **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
-  `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`.
-- **Adlandırma:** kabuk/parça `Neon*`, bölümler `*View`, canlı akış `CanliAjanAkisi`.
+  `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`
+  (isim tarihsel — animasyon mekaniği renkten bağımsız).
+- **Adlandırma:** kabuk/parça `Neon*` (isim tarihsel, görünüm artık açık/kağıt), bölümler `*View`,
+  canlı akış `CanliAjanAkisi`.
 - **a11y:** her tıklanabilirde `focusRing` + `cursor:pointer`; renk tek sinyal değil (ikon+metin+etiket);
-  `prefers-reduced-motion` desteklenir; koyu zeminde AA kontrast.
-- **Legacy (yedek):** açık "Kurumsal Devlet" teması (`App.jsx` + `styles/kamu-evrak.css`, Lexend)
-  artık birincil değil; sadece reset + `rc-*`/`agw-*` yardımcıları için yüklenir. **Genişletme;**
-  yeni iş neon temada.
+  `prefers-reduced-motion` desteklenir; açık zeminde AA kontrast.
+- **Legacy (yedek, unmounted):** açık "Kurumsal Devlet" teması (`App.jsx` + `styles/kamu-evrak.css`,
+  Lexend) `main.jsx`'te render edilmiyor; CSS dosyası reset + `rc-*`/`agw-*` yardımcıları için
+  yüklenir, `:root` token'ları Hero Light ile hizalı. **Genişletme;** yeni iş `neonUi.jsx`'ten kurulur.
 
 ## İki Zorunlu Görev (biri eksikse sistem tamamlanmamış sayılır — şartname §9)
 

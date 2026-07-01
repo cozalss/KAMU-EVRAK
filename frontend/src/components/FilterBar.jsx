@@ -55,7 +55,7 @@ function FilterSelect({ sel, filter }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 190 }}>
       <label htmlFor={`flt-${sel.id}`} style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, letterSpacing: ".5px" }}>{sel.label}</label>
       <select id={`flt-${sel.id}`} value={filter.filters.select[sel.id] || ""} onChange={(e) => filter.setSelect(sel.id, e.target.value)} {...focusRing} style={{ ...inputBase, cursor: "pointer" }}>
-        {sel.options.map((o) => <option key={o.value} value={o.value} style={{ background: "#141c30" }}>{o.label}</option>)}
+        {sel.options.map((o) => <option key={o.value} value={o.value} style={{ background: "#ffffff" }}>{o.label}</option>)}
       </select>
     </div>
   );
@@ -67,10 +67,10 @@ function FilterDateRange({ dateRange, filter }) {
       <span style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, letterSpacing: ".5px" }}>{dateRange.label || "Tarih"}</span>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <label htmlFor="flt-date-from" style={SR_ONLY}>Başlangıç tarihi</label>
-        <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={{ ...inputBase, colorScheme: "dark" }} />
+        <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={{ ...inputBase, colorScheme: "light" }} />
         <span style={{ color: PAL.mut2, fontFamily: MONO }}>—</span>
         <label htmlFor="flt-date-to" style={SR_ONLY}>Bitiş tarihi</label>
-        <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={{ ...inputBase, colorScheme: "dark" }} />
+        <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={{ ...inputBase, colorScheme: "light" }} />
       </div>
     </div>
   );
@@ -105,7 +105,7 @@ function FilterSort({ sort, filter }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 190 }}>
       <label htmlFor="flt-sort" style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, letterSpacing: ".5px" }}>Sıralama</label>
       <select id="flt-sort" value={filter.filters.sortBy} onChange={(e) => filter.setSortBy(e.target.value)} {...focusRing} style={{ ...inputBase, cursor: "pointer" }}>
-        {sort.options.map((o) => <option key={o.value} value={o.value} style={{ background: "#141c30" }}>{o.label}</option>)}
+        {sort.options.map((o) => <option key={o.value} value={o.value} style={{ background: "#ffffff" }}>{o.label}</option>)}
       </select>
     </div>
   );

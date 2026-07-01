@@ -28,7 +28,7 @@ export default function MevzuatView({ history = [] }) {
         <NeonCard title={`Bu Oturumda Önerilen Mevzuat (RAG)`} tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: 18 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px,1fr))", gap: 12 }}>
             {onerilen.map((m, i) => (
-              <div key={i} style={{ borderLeft: "2px solid rgba(46,230,201,.4)", paddingLeft: 11 }}>
+              <div key={i} style={{ borderLeft: "2px solid rgba(47,143,166,.4)", paddingLeft: 11 }}>
                 <div style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: PAL.ink2 }}>{cleanDemoText(m.baslik)}</div>
                 {m.snippet && <p style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, lineHeight: 1.5 }}>{cleanDemoText(m.snippet)}</p>}
               </div>
@@ -41,7 +41,7 @@ export default function MevzuatView({ history = [] }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px,1fr))", gap: 14, alignItems: "start" }}>
         {KATALOG.map((k) => (
           <div key={k.no} style={{ display: "flex", gap: 13, padding: "15px 17px", borderRadius: 12, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
-            <span aria-hidden="true" style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, display: "grid", placeItems: "center", background: "rgba(46,230,201,.12)", color: T }}><Icon.book /></span>
+            <span aria-hidden="true" style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, display: "grid", placeItems: "center", background: "rgba(47,143,166,.12)", color: T }}><Icon.book /></span>
             <div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
                 <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, color: T }}>{k.no}</span>

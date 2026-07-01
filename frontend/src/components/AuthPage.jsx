@@ -2,7 +2,7 @@
    sağ: form kartı (giriş ⇄ kayıt geçişi). Backend auth API'sine useAuth ile bağlanır.
    a11y: <form> + <label> + autoComplete + focusRing + aria-live hata. Neon token'lar. */
 import React, { useEffect, useState } from "react";
-import { PAL, T, V, SANS, MONO, Btn, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
+import { PAL, T, V, R, SANS, MONO, Btn, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
 
@@ -23,7 +23,7 @@ function Field({ label, type = "text", value, onChange, autoComplete, required, 
           {...focusRing}
           style={{
             width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11,
-            background: "rgba(255,255,255,.04)", border: `1px solid ${PAL.line}`,
+            background: "#ffffff", border: `1px solid ${PAL.line}`,
             color: PAL.ink, fontFamily: SANS, fontSize: 14, outline: "none", transition: "border-color .2s",
           }}
         />
@@ -74,13 +74,13 @@ export default function AuthPage() {
       <section aria-hidden="true" style={{
         flex: "1 1 0", minWidth: 0, position: "relative", overflow: "hidden", display: "none",
         padding: "56px 52px", flexDirection: "column", justifyContent: "space-between",
-        background: `radial-gradient(900px 500px at 12% 8%, rgba(46,230,201,.16), transparent 60%), radial-gradient(800px 600px at 90% 100%, rgba(183,148,255,.16), transparent 55%), ${PAL.bg2}`,
+        background: `radial-gradient(700px 400px at 50% -10%, rgba(224,86,60,.07), transparent 60%), radial-gradient(900px 500px at 12% 8%, rgba(47,143,166,.14), transparent 60%), radial-gradient(800px 600px at 90% 100%, rgba(139,92,176,.14), transparent 55%), ${PAL.bg2}`,
         borderRight: `1px solid ${PAL.line}`,
       }} className="ke-brand">
-        <span aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px)", backgroundSize: "44px 44px", maskImage: "radial-gradient(700px 500px at 30% 30%, #000, transparent 75%)" }} />
+        <span aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(35,26,18,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(35,26,18,.035) 1px,transparent 1px)", backgroundSize: "44px 44px", maskImage: "radial-gradient(700px 500px at 30% 30%, #000, transparent 75%)" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 14, position: "relative" }}>
-          <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: 13, boxShadow: "0 6px 26px -8px rgba(46,230,201,.55)" }} />
-          <span style={{ fontFamily: SANS, fontSize: 25, fontWeight: 700, letterSpacing: "-.02em", textTransform: "uppercase", backgroundImage: "linear-gradient(100deg,#67e8e0,#2ee6c9 34%,#7cb4ff 70%,#b794ff)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>kamu-evrak</span>
+          <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: 13, boxShadow: "0 6px 22px -8px rgba(47,143,166,.4)" }} />
+          <span style={{ fontFamily: SANS, fontSize: 25, fontWeight: 700, letterSpacing: "-.02em", textTransform: "uppercase", backgroundImage: `linear-gradient(100deg, ${R} 0%, ${V} 48%, ${T} 100%)`, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>kamu-evrak</span>
         </div>
 
         <div style={{ position: "relative" }}>
@@ -93,7 +93,7 @@ export default function AuthPage() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 14, maxWidth: 440 }}>
             {DEGERLER.map(([b, a], i) => (
               <li key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", animation: "nu-rise-stag .4s ease-out both", animationDelay: `${i * 90}ms` }}>
-                <span style={{ flexShrink: 0, width: 26, height: 26, borderRadius: 8, marginTop: 1, display: "grid", placeItems: "center", color: T, background: "rgba(46,230,201,.12)", border: "1px solid rgba(46,230,201,.3)" }}>
+                <span style={{ flexShrink: 0, width: 26, height: 26, borderRadius: 8, marginTop: 1, display: "grid", placeItems: "center", color: T, background: "rgba(47,143,166,.12)", border: "1px solid rgba(47,143,166,.3)" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </span>
                 <span><span style={{ display: "block", fontSize: 14, fontWeight: 600, color: PAL.ink2 }}>{b}</span><span style={{ display: "block", fontFamily: MONO, fontSize: 11, color: PAL.mut3, marginTop: 2 }}>{a}</span></span>
@@ -131,7 +131,7 @@ export default function AuthPage() {
               <>
                 <Field label="Birim">
                   <select value={form.birim_kod} onChange={(e) => set("birim_kod")(e.target.value)} required {...focusRing}
-                    style={{ width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11, background: "rgba(255,255,255,.04)", border: `1px solid ${PAL.line}`, color: PAL.ink, fontFamily: SANS, fontSize: 14, outline: "none", cursor: "pointer" }}>
+                    style={{ width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11, background: "#ffffff", border: `1px solid ${PAL.line}`, color: PAL.ink, fontFamily: SANS, fontSize: 14, outline: "none", cursor: "pointer" }}>
                     {birimler.length === 0 && <option value="">Yükleniyor…</option>}
                     {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: PAL.bg2 }}>{b.ad}</option>)}
                   </select>
@@ -142,7 +142,7 @@ export default function AuthPage() {
             <Field label="Parola" type="password" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} required placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
 
             {hata && (
-              <div role="alert" aria-live="assertive" style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", marginBottom: 14, borderRadius: 10, background: "rgba(248,113,113,.1)", border: "1px solid rgba(248,113,113,.4)", color: "#fca5a5", fontFamily: SANS, fontSize: 12.5 }}>
+              <div role="alert" aria-live="assertive" style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", marginBottom: 14, borderRadius: 10, background: "rgba(201,67,47,.08)", border: "1px solid rgba(201,67,47,.35)", color: "#a23425", fontFamily: SANS, fontSize: 12.5 }}>
                 <span aria-hidden="true">⚠</span><span>{hata}</span>
               </div>
             )}

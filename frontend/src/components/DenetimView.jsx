@@ -11,9 +11,9 @@ const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR"); } c
 const BASE_CONFIG = {
   search: { enabled: true, placeholder: "Evrak adı…" },
   chips: [{ id: "bant", label: "Risk", options: [
-    { value: "yesil", label: "Yeşil · Düşük", color: "#34d399" },
-    { value: "sari", label: "Sarı · Orta", color: "#fbbf24" },
-    { value: "kirmizi", label: "Kırmızı · Yüksek", color: "#f87171" },
+    { value: "yesil", label: "Yeşil · Düşük", color: BANT.yesil.c },
+    { value: "sari", label: "Sarı · Orta", color: BANT.sari.c },
+    { value: "kirmizi", label: "Kırmızı · Yüksek", color: BANT.kirmizi.c },
   ] }],
   select: [{ id: "evrak_turu", label: "Evrak Türü", options: [] }],
   dateRange: { enabled: true, label: "İşlem Tarihi" },
@@ -43,10 +43,10 @@ export default function DenetimView({ history = [], onGoInbox }) {
 
   return (
     <ViewWrap id="denetim-h" title="Denetim İzi" sub={`${kayitlar.length} değiştirilemez kayıt · tamper-evident SHA-256 hash-zinciri`}>
-      <NeonCard accent="#34d399" style={{ marginBottom: 16 }}>
+      <NeonCard accent={BANT.yesil.c} style={{ marginBottom: 16 }}>
         <p style={{ margin: 0, fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, lineHeight: 1.6 }}>
           Her işlem adımı bir öncekinin hash'ini içerir → tek bir kaydın değiştirilmesi tüm zinciri bozar.
-          <strong style={{ color: "#7ff0c4" }}> Sayıştay denetimi ve KVKK</strong> için kanıt niteliğindedir.
+          <strong style={{ color: "#1f7a52" }}> Sayıştay denetimi ve KVKK</strong> için kanıt niteliğindedir.
         </p>
       </NeonCard>
 
@@ -60,16 +60,16 @@ export default function DenetimView({ history = [], onGoInbox }) {
           const di = h.result.denetim_izi;
           const zincir = Array.isArray(di.zincir) ? di.zincir : (Array.isArray(di.adimlar) ? di.adimlar : []);
           return (
-            <div key={h.id} style={{ padding: "15px 18px", borderRadius: 13, background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: "3px solid #34d399" }}>
+            <div key={h.id} style={{ padding: "15px 18px", borderRadius: 13, background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${BANT.yesil.c}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 10 }}>
-                <span aria-hidden="true" style={{ color: "#34d399", display: "flex" }}><Icon.shield /></span>
+                <span aria-hidden="true" style={{ color: BANT.yesil.c, display: "flex" }}><Icon.shield /></span>
                 <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 600, color: PAL.ink2 }}>{h.name}</span>
-                <span style={{ fontFamily: MONO, fontSize: 10, padding: "2px 8px", borderRadius: 6, background: "rgba(46,230,201,.12)", color: "#8ff0e0" }}>{EVRAK_TR(h.evrak_turu)}</span>
+                <span style={{ fontFamily: MONO, fontSize: 10, padding: "2px 8px", borderRadius: 6, background: "rgba(47,143,166,.12)", color: "#1f6d82" }}>{EVRAK_TR(h.evrak_turu)}</span>
                 <span style={{ fontFamily: MONO, fontSize: 10, padding: "2px 8px", borderRadius: 6, background: (BANT[h.bant]?.c || PAL.mut2) + "22", color: BANT[h.bant]?.c || PAL.mut2 }}>{BANT[h.bant]?.l || "—"}</span>
                 <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10.5, color: PAL.mut2 }}>{fmtTime(h.ts)}</span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: 8 }}>
-                <KV2 k="Zincir" v={`SHA-256 · ${zincir.length || "—"} adım ✓`} c="#7ff0c4" />
+                <KV2 k="Zincir" v={`SHA-256 · ${zincir.length || "—"} adım ✓`} c="#1f7a52" />
                 {di.kok_hash && <KV2 k="Kök hash" v={String(di.kok_hash).slice(0, 22) + "…"} />}
                 {di.son_hash && <KV2 k="Son hash" v={String(di.son_hash).slice(0, 22) + "…"} />}
               </div>

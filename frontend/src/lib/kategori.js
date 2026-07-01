@@ -5,16 +5,16 @@
    Mali-Vergi / Zabıta / Hukuk-İtiraz / İnsan Kaynakları / Diğer / Sınıflandırılmamış. */
 
 export const KATEGORILER = [
-  { id: "genel_dilekce", label: "Genel Dilekçe", color: "#2ee6c9" },
-  { id: "sikayet", label: "Şikâyet", color: "#fbbf24" },
-  { id: "bilgi_edinme", label: "Bilgi Edinme Başvurusu", color: "#5b8cff" },
-  { id: "imar_ruhsat", label: "İmar / Ruhsat", color: "#f59e0b" },
-  { id: "mali_vergi", label: "Mali İşler / Vergi", color: "#34d399" },
-  { id: "zabita", label: "Zabıta", color: "#fb7185" },
-  { id: "hukuk_itiraz", label: "Hukuk / İtiraz", color: "#b794ff" },
-  { id: "insan_kaynaklari", label: "İnsan Kaynakları", color: "#7cd4ff" },
-  { id: "diger", label: "Diğer", color: "#9aa6c0" },
-  { id: "siniflanmamis", label: "Sınıflandırılmamış", color: "#7d89a4" },
+  { id: "genel_dilekce", label: "Genel Dilekçe", color: "#2f8fa6" },
+  { id: "sikayet", label: "Şikâyet", color: "#d99a1f" },
+  { id: "bilgi_edinme", label: "Bilgi Edinme Başvurusu", color: "#4f7cc9" },
+  { id: "imar_ruhsat", label: "İmar / Ruhsat", color: "#c97c12" },
+  { id: "mali_vergi", label: "Mali İşler / Vergi", color: "#2f9e6e" },
+  { id: "zabita", label: "Zabıta", color: "#d9566a" },
+  { id: "hukuk_itiraz", label: "Hukuk / İtiraz", color: "#8b5cb0" },
+  { id: "insan_kaynaklari", label: "İnsan Kaynakları", color: "#5fa8c9" },
+  { id: "diger", label: "Diğer", color: "#8a8172" },
+  { id: "siniflanmamis", label: "Sınıflandırılmamış", color: "#6b6255" },
 ];
 
 const _META = Object.fromEntries(KATEGORILER.map((k) => [k.id, k]));

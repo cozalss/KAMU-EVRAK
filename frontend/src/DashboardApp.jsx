@@ -8,7 +8,7 @@ import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
-import { PAL, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
+import { PAL, T, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
 // ("yükleniyor…" flash) yaşanmasın, panel anında görünsün. Bağımlılıkları (neonUi +
@@ -240,7 +240,7 @@ export default function DashboardApp() {
       <div style={{
         display: "flex", minHeight: "100vh", background: PAL.bg, color: PAL.ink, fontFamily: SANS,
       }}>
-        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: "#2ee6c9", color: "#06121a", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
+        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: T, color: "#fbf7f0", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
         <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
@@ -269,16 +269,16 @@ function ViewFallback() {
 
 function Toast({ msg }) {
   return (
-    <div aria-hidden="true" style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#18203a", color: "#eaf0fb", border: "1px solid rgba(255,255,255,.14)", padding: "11px 18px", borderRadius: 12, boxShadow: "0 18px 50px -10px rgba(0,0,0,.6)", fontFamily: SANS, fontSize: 13.5, fontWeight: 500 }}>{msg}</div>
+    <div aria-hidden="true" style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#2a251e", color: "#fbf7f0", border: "1px solid rgba(255,255,255,.12)", padding: "11px 18px", borderRadius: 12, boxShadow: "0 18px 44px -10px rgba(35,26,18,.5)", fontFamily: SANS, fontSize: 13.5, fontWeight: 500 }}>{msg}</div>
   );
 }
 
 function ErrorBar({ msg, canRetry, onRetry, onDismiss }) {
   return (
-    <div role="alert" style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 200, display: "flex", alignItems: "center", gap: 14, background: "#3a1616", color: "#fca5a5", border: "1px solid rgba(248,113,113,.45)", padding: "12px 16px", borderRadius: 12, boxShadow: "0 18px 50px -10px rgba(0,0,0,.6)", fontFamily: SANS, fontSize: 13 }}>
+    <div role="alert" style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 200, display: "flex", alignItems: "center", gap: 14, background: "#fbe4e1", color: "#a23425", border: "1px solid rgba(201,67,47,.4)", padding: "12px 16px", borderRadius: 12, boxShadow: "0 18px 44px -10px rgba(35,26,18,.3)", fontFamily: SANS, fontSize: 13 }}>
       <span>⚠ {msg}</span>
-      {canRetry && <button onClick={onRetry} style={{ cursor: "pointer", padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(248,113,113,.5)", background: "rgba(248,113,113,.12)", color: "#fca5a5", fontFamily: "inherit", fontSize: 12.5, fontWeight: 600 }}>Tekrar dene</button>}
-      <button onClick={onDismiss} aria-label="Kapat" style={{ cursor: "pointer", padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,.14)", background: "transparent", color: "#cdd6e8", fontFamily: "inherit", fontSize: 12.5 }}>✕</button>
+      {canRetry && <button onClick={onRetry} style={{ cursor: "pointer", padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(201,67,47,.45)", background: "rgba(201,67,47,.1)", color: "#a23425", fontFamily: "inherit", fontSize: 12.5, fontWeight: 600 }}>Tekrar dene</button>}
+      <button onClick={onDismiss} aria-label="Kapat" style={{ cursor: "pointer", padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(35,26,18,.15)", background: "transparent", color: "#7a3a30", fontFamily: "inherit", fontSize: 12.5 }}>✕</button>
     </div>
   );
 }

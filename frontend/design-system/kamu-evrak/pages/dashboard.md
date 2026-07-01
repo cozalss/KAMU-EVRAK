@@ -27,7 +27,7 @@
 
 ### Color Overrides
 
-- **Strategy:** Dark or neutral. Status colors (green/amber/red). Data-dense but scannable.
+- **Strategy:** Warm light/neutral (Hero Light — see MASTER.md). Status colors (green/amber/red). Data-dense but scannable.
 
 ### Component Overrides
 

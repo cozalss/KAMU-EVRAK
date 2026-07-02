@@ -3,17 +3,16 @@
    node zamanlaması (terminal log [mm:ss]) ve DİNAMİK node listesi (SSE start.nodes'tan,
    ENV değişse bile bozulmaz). Dashboard bu hook'u kullanır; eski App.jsx kendi kopyasını korur.
 
-   İki yol:
-     A) Dosya → /process_doc/stream (gerçek SSE; node'lar canlı yanar)
-     B) Örnek metin → /process_doc (JSON; sonuç gelince node'lar sırayla "yan" → düşünen-sistem)
+   TEK yol (L1 hız düzeltmesi): dosya VE örnek metin AYNI /process_doc/stream SSE
+   akışından geçer → node'lar her iki yolda da CANLI yanar (örneklerdeki bloklayan
+   POST + sahte animasyon kaldırıldı; backend .txt'i text-plain olarak kabul eder).
    + HITL resume (/process_doc/resume) + taslak indirme (/yazi/taslak). */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { authFetch } from "./authApi.js";
-import { DEFAULT_NODE_IDS, makeNode, nodeDataFromResult } from "./nodeMeta.js";
+import { DEFAULT_NODE_IDS, makeNode } from "./nodeMeta.js";
 
 const MAX_UPLOAD_MB = 20;            // backend MAX_UPLOAD_BYTES (20 MiB) ile eşleşir
-const ACCEPT = ".pdf,.png,.jpg,.jpeg,.webp,.tiff,.docx";
-const STEP_MS = 320;                 // JSON yolunda node adımlama aralığı
+const ACCEPT = ".pdf,.png,.jpg,.jpeg,.webp,.tiff,.docx,.txt";
 
 const freshNodes = () => DEFAULT_NODE_IDS.map(makeNode);
 
@@ -68,18 +67,7 @@ export function usePipeline() {
     setPendingOnay(null);
   }, [clearTimers]);
 
-  // Tek node durum + zamanlama güncelle. active→t0 damgala, done/error→t1 damgala.
-  const markNode = useCallback((id, status, data) => {
-    const t = elapsed();
-    setNodes((prev) => prev.map((n) => {
-      if (n.id !== id) return n;
-      const t0 = n.t0 ?? t;
-      const t1 = status === "done" || status === "error" ? t : n.t1;
-      return { ...n, status, data: data ?? n.data, t0, t1 };
-    }));
-  }, []);
-
-  // SSE event işleyici (dosya yolu). Bir node bitince sıradaki(ler)i aktifle (akış hissi).
+  // SSE event işleyici (dosya + örnek — tek yol). Bir node bitince sıradakini aktifle.
   const handleEvent = useCallback((ev) => {
     if (ev.event === "start") {
       // start.nodes DİNAMİK — backend ENV ne döndürürse onu kur (R1). İlki aktif.
@@ -121,17 +109,11 @@ export function usePipeline() {
     }
   }, []);
 
-  // ---------- A) Dosya → /process_doc/stream (gerçek SSE) ----------
-  const runFile = useCallback(async (file) => {
+  // ---------- SSE akış çekirdeği — dosya + örnek AYNI yolu paylaşır ----------
+  const streamRun = useCallback(async (file) => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
-    reset();
-    setBusy(true);
-    setHasRun(true);
-    setSelectedSample(null);
-    setFileMeta({ name: file.name, size: file.size, kind: "file" });
-    lastRun.current = { kind: "file", file };
     try {
       const fd = new FormData();
       fd.append("file", file);
@@ -160,24 +142,20 @@ export function usePipeline() {
     } finally {
       setBusy(false);
     }
-  }, [reset, handleEvent]);
+  }, [handleEvent]);
 
-  // Sonuç alanlarından her node'a özet türetip sırayla "done" işaretle (JSON yolu görsel akış).
-  const animateNodes = useCallback((data, nChars = 0, onComplete) => {
-    const ids = DEFAULT_NODE_IDS;
-    ids.forEach((id, i) => {
-      const tActive = setTimeout(() => markNode(id, "active"), Math.max(0, i * STEP_MS - 140));
-      const tDone = setTimeout(() => {
-        markNode(id, "done", nodeDataFromResult(id, data, nChars));
-        // Son adım: sonucu busy=false ile AYNI callback'te yaz → React tek render'da birleştirir;
-        // "started" hiç false olmaz → bitişte boş-durum ("evrak seçilmedi") parlaması engellenir.
-        if (i === ids.length - 1) { onComplete?.(); setBusy(false); }
-      }, i * STEP_MS + 120);
-      stepTimers.current.push(tActive, tDone);
-    });
-  }, [markNode]);
+  // ---------- A) Dosya → SSE ----------
+  const runFile = useCallback(async (file) => {
+    reset();
+    setBusy(true);
+    setHasRun(true);
+    setSelectedSample(null);
+    setFileMeta({ name: file.name, size: file.size, kind: "file" });
+    lastRun.current = { kind: "file", file };
+    await streamRun(file);
+  }, [reset, streamRun]);
 
-  // ---------- B) Örnek metin → /process_doc (JSON) ----------
+  // ---------- B) Örnek metin → AYNI SSE yolu (canlı node akışı; bloklayan POST kalktı) ----------
   const runSample = useCallback(async (sample) => {
     reset();
     setBusy(true);
@@ -186,23 +164,10 @@ export function usePipeline() {
     setFileMeta({ id: sample.id, name: `${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
     setEvrakText(sample.text);
     lastRun.current = { kind: "sample", sample };
-    try {
-      const res = await authFetch("/process_doc", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ evrak_text: sample.text, filename: `${sample.id}.txt` }),
-      });
-      if (!res.ok) throw new Error(`Sunucu hatası (${res.status})`);
-      const data = await res.json();
-      // Sonuç, son adım "done" olduğu anda (busy=false ile birlikte) yazılır → boş-durum parlaması yok.
-      animateNodes(data, sample.text.length, () => {
-        if (data.onay_bekliyor) setPendingOnay(data); else setResult(data);
-      });
-    } catch (err) {
-      setError(err?.message || "Bağlantı hatası — backend çalışıyor mu?");
-      setBusy(false);
-    }
-  }, [reset, animateNodes]);
+    // Örnek metni .txt dosyasına sarılır → backend text-plain dalıyla OCR'sız kabul eder.
+    const file = new File([sample.text], `${sample.id}.txt`, { type: "text/plain" });
+    await streamRun(file);
+  }, [reset, streamRun]);
 
   // ---------- HITL resume ----------
   const resume = useCallback(async (secim, metin = "", gerekce = "") => {

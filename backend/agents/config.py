@@ -311,18 +311,42 @@ def llm_profil() -> str:
         return "mock"
     return "bulut"
 
-# --- S3: Vitrin (jüri demo) modu — TEK anahtar, kapalı hazineleri birlikte açar ---
-# VITRIN_MODU=1 → clarifier (dur-ve-sor) + HITL onay kapısı + self-consistency (N=3)
-# + CRAG birlikte açılır. Yalnız MODEL BAĞIMLILIĞI OLMAYANLAR vitrine girer
-# (RERANK/NLI ağır model ister → bireysel bayrakla açılır). Bireysel ENV HER ZAMAN
-# kazanır: VITRIN_MODU=1 + HITL_ENABLED=0 → HITL kapalı. Varsayılan 0 → baseline/CI
-# birebir korunur (827 test bayraksız topolojiyi sabitler).
+# --- S3: Vitrin (jüri demo) modu — TEK anahtar: özellikler + hız birlikte ---
+# VITRIN_MODU=1 → (a) kapalı hazineler açılır: clarifier (dur-ve-sor) + HITL onay
+# kapısı + CRAG + atıf genişletme; (b) hız profili devreye girer: danışma LLM
+# çağrıları atlanır (LLM_ATLA_NODELAR) + node timeout 15 sn. Yalnız MODEL
+# BAĞIMLILIĞI OLMAYANLAR vitrine girer (RERANK/NLI ağır model ister → bireysel
+# bayrak). Bireysel ENV HER ZAMAN kazanır: VITRIN_MODU=1 + HITL_ENABLED=0 → HITL
+# kapalı. Varsayılan 0 → baseline/CI birebir korunur (bayraksız topoloji test-sabit).
 VITRIN_MODU = os.getenv("VITRIN_MODU", "0") == "1"
 
 
 def _bayrak(ad: str, *, vitrin_acik: bool, env=os.environ) -> bool:
     """ENV bayrağı çözümü: bireysel değer > vitrin varsayılanı > kapalı (SAF, test edilir)."""
     return env.get(ad, "1" if vitrin_acik else "0") == "1"
+
+
+def _csv_kume(deger: str) -> frozenset[str]:
+    """Virgüllü ENV listesi → temiz küme (SAF, test edilir)."""
+    return frozenset(p.strip() for p in deger.split(",") if p.strip())
+
+
+# --- Vitrin modunun HIZ profili (TEK MOD: vitrin = özellikler + hız birlikte) ---
+# Gerçek LLM'de (DeepSeek 7-57 sn/çağrı ölçüldü) belge ~2-3 dk sürüyordu. Vitrin modu
+# yalnız DANIŞMA niteliğindeki çağrıları deterministiğe düşürür:
+#   - route_birim: LLM önerisi zaten danışmaydı (loglarda deterministik hedef kazandı)
+#   - finalize: bilgilendirme metni — deterministik şablon yeterli
+# Kalite-kritik node'lar (sınıflandır · çıkar · özetle · yazı gövdesi · decompose)
+# LLM'DE KALIR. LLM_ATLA_NODELAR bireysel ENV ile ezilebilir ("" = hiçbirini atlama).
+LLM_ATLA_NODELAR: frozenset[str] = _csv_kume(
+    os.getenv("LLM_ATLA_NODELAR", "route_birim,finalize" if VITRIN_MODU else "")
+)
+if VITRIN_MODU:
+    # Node LLM timeout 20→15 sn (ölçüm: sağlayıcı yoğunken timeout'a düşen çağrılar
+    # ZATEN deterministiğe iniyordu — aynı kaliteye 5 sn erken düşer, israf kısalır).
+    # setdefault → açık ENV her zaman kazanır. _llm_extract import'unda okunur;
+    # config her node'dan önce import edilir (KVKK bloğuyla aynı desen).
+    os.environ.setdefault("EVRAK_LLM_TIMEOUT_S", "15.0")
 
 
 # --- Görev 2: doğrulama (verify) + dur-ve-sor (clarifier) ENV bayrakları ---
@@ -365,7 +389,9 @@ SELF_RAG_ENABLED = os.getenv("SELF_RAG_ENABLED", "0") == "1"
 # örneklenir; örnekler arası UZLAŞI yoksa (oran < _CONSENSUS_ESIK) dürüst "belirsiz" döner —
 # "zor" vakalarda gerçek abstention. VARSAYILAN 1 (KAPALI → ek LLM çağrısı/maliyet YOK).
 # Demo/jüri için SELF_CONSISTENCY_N=3 yeter; N çağrı = N× maliyet (mock'ta etkisiz).
-SELF_CONSISTENCY_N = int(os.getenv("SELF_CONSISTENCY_N", "3" if VITRIN_MODU else "1"))
+# Vitrin (tek mod) N=1 kalır — 3× sınıflandırma demoda en büyük gecikmeydi; N=3
+# yalnız açık ENV ile (eval/ablation harness'i zaten kendi set eder).
+SELF_CONSISTENCY_N = int(os.getenv("SELF_CONSISTENCY_N", "1"))
 SELF_CONSISTENCY_ESIK = float(os.getenv("SELF_CONSISTENCY_ESIK", "0.6"))
 
 # Çok-konulu evrak ayrıştırma (decompose) — tek dilekçedeki birden çok istek alt-taleplere

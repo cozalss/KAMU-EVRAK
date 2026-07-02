@@ -14,7 +14,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM
+from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM, LLM_ATLA_NODELAR
 from agents.nodes._llm_extract import llm_json, real_llm
 from core.text import tr_lower
 
@@ -133,6 +133,8 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
     config + içerik heuristiği aynen çalışır (mock testleri deterministik kalır).
     """
     det = _route_deterministik(state)
+    if "route_birim" in LLM_ATLA_NODELAR:
+        return det  # vitrin hız profili: danışma çağrısı atlanır — deterministik hedef kalır
     llm = real_llm()
     if llm is None:
         return det  # mock/anahtarsız → deterministik (CI testleri bunu bekler)

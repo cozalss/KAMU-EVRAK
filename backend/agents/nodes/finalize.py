@@ -14,7 +14,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import birim_tr, evrak_turu_tr
+from agents.config import LLM_ATLA_NODELAR, birim_tr, evrak_turu_tr
 from agents.nodes._llm_extract import llm_text
 
 log = structlog.get_logger()
@@ -68,7 +68,8 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
         f"Eksik zorunlu alanlar: {', '.join(eksik) if eksik else 'yok'}\n"
         f"Tamamlanması istenecekler: {'; '.join(sorular) if sorular else 'yok'}"
     )
-    llm_metin = await llm_text(
+    # Vitrin hız profili: bilgilendirme LLM'i danışma niteliğinde → atla, şablon kalır.
+    llm_metin = None if "finalize" in LLM_ATLA_NODELAR else await llm_text(
         system=(
             "Sen bir kamu kurumunda memura yardımcı olan asistansın. Verilen yapılandırılmış "
             "sonuçtan; vatandaşa/memura yönelik AÇIK, RESMÎ ve AKICI bir bilgilendirme yaz.\n"

@@ -148,6 +148,26 @@ class OCRResult:
 #  Public API
 # --------------------------------------------------------------------------
 
+# Düz-metin sniff boyut tavanı — metin dosyaları küçüktür; dev binary'yi decode denemeyelim.
+_PLAIN_TEXT_MAX_BYTES = 2_000_000
+
+
+def _try_plain_text(data: bytes) -> str | None:
+    """Girdi düz UTF-8 metinse (örn. .txt yüklemesi / örnek evrak) metni döndür.
+
+    Görüntü/PDF/docx magic'leri extract_text'te ZATEN elendi; kalan binary'ler UTF-8
+    decode'da doğal olarak düşer → yanlış-pozitif riski pratikte yok. Bu yol olmadan
+    .txt yüklemesi görüntü-OCR'a gidip hata veriyordu (SSE örnek akışının da önkoşulu).
+    """
+    if not data or len(data) > _PLAIN_TEXT_MAX_BYTES:
+        return None
+    try:
+        metin = data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return None
+    return metin if metin.strip() else None
+
+
 async def extract_text(
     image_bytes: bytes,
     *,
@@ -177,6 +197,10 @@ async def extract_text(
     # PDF? → önce dijital metin katmanı (kusursuz Türkçe), yoksa render+OCR (tarama).
     elif is_pdf(image_bytes):
         result = await _pdf_ocr(image_bytes, lang, chosen, auto=auto)
+    # Düz UTF-8 metin (.txt / örnek evrak SSE akışı)? → OCR'sız doğrudan geç.
+    elif (duz_metin := _try_plain_text(image_bytes)) is not None:
+        result = OCRResult(text=duz_metin, engine="text-plain", lang=lang,
+                           n_chars=len(duz_metin), elapsed_ms=0, page_count=1)
     else:
         result = await _image_ocr(image_bytes, lang, chosen, auto=auto)
 

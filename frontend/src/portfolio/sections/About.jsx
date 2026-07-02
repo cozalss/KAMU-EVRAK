@@ -1,13 +1,13 @@
 import { Badge } from "../components/ui.jsx";
 import { Bolt, ArrowUpRight } from "../components/icons.jsx";
 
-const PORTRAIT = "/portfolio/portre.jpg";
+const PORTRAIT = "/portfolio/el.webp";
 
 // Çekirdek teknoloji yığını — pill rozetler.
 const STACK = ["FastAPI", "LangGraph", "DeepSeek", "React"];
 
-// "KAMU EVRAK nedir?" — iki sütun. Sol portre (turuncu yay görselin parçası, CSS
-// glow eklenmedi). Sağ: açıklama + teknoloji pill satırı + "Detaylar".
+// "KAMU EVRAK nedir?" — iki sütun. Sol görsel: mühürlü evrakı tutan robotik el
+// (siyah zemin sayfayla kaynaşır). Sağ: açıklama + teknoloji pill satırı + "Detaylar".
 export default function About() {
   return (
     <section id="about" className="mx-auto max-w-shell px-6 py-24 md:px-12">
@@ -17,13 +17,12 @@ export default function About() {
       </h2>
 
       <div className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2">
-        {/* Left — portrait. Natural height (h-auto) so the column doesn't
-            collapse to 0 before load — avoids layout shift — and the baked-in
-            orange arc is never cropped. */}
+        {/* Left — visual. Natural height (h-auto) so the column doesn't
+            collapse to 0 before load — avoids layout shift. */}
         <div className="overflow-hidden rounded-3xl">
           <img
             src={PORTRAIT}
-            alt="kamu-evrak sistemi görseli"
+            alt="Mühürlü resmî evrakı tutan robotik el — kamu-evrak sistemi görseli"
             className="block h-auto w-full"
           />
         </div>

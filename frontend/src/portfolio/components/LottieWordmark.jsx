@@ -6,7 +6,7 @@ import animationData from "./kamuEvrakWordmark.json";
 
 // Edge-to-edge animated "KAMU EVRAK" wordmark (footer).
 // Lottie JSON authored per the diffusionstudio/lottie skill (native Inter-800
-// text + left→right mask wipe + teal accent line drawn via trim-path), rendered
+// text + left→right mask wipe + coral accent line drawn via trim-path), rendered
 // with lottie-web (the player the repo recommends for web).
 //
 // - aspect-ratio reserves the exact box the old SVG used → zero layout shift.

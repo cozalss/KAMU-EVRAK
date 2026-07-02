@@ -17,6 +17,7 @@ from db.models import (
     GidenEvrak,
     Islem,
     Mevzuat,
+    Onay,
     RiskDegerlendirme,
     Taslak,
 )
@@ -152,8 +153,19 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
         .limit(limit)
         .offset(offset)
     )).all()
+    # taslak → EN SON onay kararı (tek toplu sorgu; outer-join yapılsaydı birden çok onay
+    # satırı işlem satırlarını çoğaltırdı). Kronolojik artan sırada yazılır → sonuncu kazanır.
+    taslak_ids = [t.id for _, _, _, t, _ in rows if t is not None]
+    onaylar: dict[uuid.UUID, Onay] = {}
+    if taslak_ids:
+        onay_rows = (await session.execute(
+            select(Onay).where(Onay.taslak_id.in_(taslak_ids))
+            .order_by(Onay.karar_zamani.asc().nullsfirst()))).scalars()
+        for o in onay_rows:
+            onaylar[o.taslak_id] = o
     items: list[dict] = []
     for islem, evrak, birim_kod, taslak, denetim in rows:
+        onay = onaylar.get(taslak.id) if taslak is not None else None
         denetim_izi = {}
         if denetim is not None:
             denetim_izi = {
@@ -188,8 +200,10 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
             "risk_metadata": islem.risk_metadata or {},
             "onay_bekliyor": False,
             "thread_id": islem.thread_id or "",
-            "onay_durumu": "",
-            "onay_gerekce": "",
+            # Gerçek HITL kararı (onaylandi/duzenlendi/reddedildi) — Panel "Karar bekleyen"
+            # ve sohbet "onaylanabilir işlem" bundan beslenir; karar yoksa boş kalır.
+            "onay_durumu": onay.karar if onay is not None and onay.karar != "bekliyor" else "",
+            "onay_gerekce": (onay.gerekce or "") if onay is not None else "",
             "ocr_engine": evrak.ocr_engine,
             "page_count": evrak.sayfa_sayisi,
             "ocr_confidence": evrak.ocr_confidence,

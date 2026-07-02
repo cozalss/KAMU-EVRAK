@@ -34,6 +34,8 @@ export default defineConfig({
       "/taslaklar": { target: "http://localhost:8000", changeOrigin: true },
       "/islemler": { target: "http://localhost:8000", changeOrigin: true },
       "/islem": { target: "http://localhost:8000", changeOrigin: true },
+      "/sohbet": { target: "http://localhost:8000", changeOrigin: true },
+      "/sla": { target: "http://localhost:8000", changeOrigin: true },
     },
   },
 });

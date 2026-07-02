@@ -193,6 +193,7 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
             "ocr_engine": evrak.ocr_engine,
             "page_count": evrak.sayfa_sayisi,
             "ocr_confidence": evrak.ocr_confidence,
+            "sure_ms": islem.sure_ms,
         }
         items.append({
             "id": str(islem.id),

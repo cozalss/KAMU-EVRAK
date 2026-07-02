@@ -1,10 +1,17 @@
-/* MevzuatView — ilgili kamu mevzuatı referansı. Sabit çekirdek katalog (sistemin dayandığı
-   mevzuat) + bu oturumda işlenen evraklarda RAG'in önerdiği mevzuat (gerçek). */
-import React from "react";
-import { ViewWrap, NeonCard, Icon, MONO, SANS, T, V, PAL } from "./neonUi.jsx";
+/* MevzuatView — kapsamlı mevzuat referans paneli. Sistemdeki TÜM mevzuat (backend
+   /mevzuat/katalog → data/mevzuat korpusu, RAG ile aynı kaynak) aranabilir kart listesi;
+   kart tıklanınca ortada blur arka planlı okuma modalı tam metni gösterir
+   (/mevzuat/icerik/{dosya}). Oturumda RAG'in önerdiği mevzuat da tıklanınca ilgili
+   maddeye kaydırılmış açılır. Backend yoksa statik çekirdek katalog fallback. */
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ViewWrap, NeonCard, EmptyState, Icon, Btn, MONO, T, V, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY } from "./neonUi.jsx";
 import { cleanDemoText } from "./result-cards.jsx";
 
-const KATALOG = [
+/* Sistemin dayandığı çekirdek mevzuat — katalogda etiketlenir + listede öne alınır. */
+const CEKIRDEK_NO = new Set(["3071", "4982", "7201", "2646", "5018", "2005-7", "6698"]);
+
+/* Backend kapalıyken (statik dağıtım / demo) asgari referans listesi — eski davranış. */
+const STATIK_KATALOG = [
   { no: "3071 s.K.", ad: "Dilekçe Hakkının Kullanılmasına Dair Kanun", aciklama: "Zorunlu unsurlar (ad-soyad, imza, adres) ve 30 günlük cevap süresi (m.4, m.7)." },
   { no: "4982 s.K.", ad: "Bilgi Edinme Hakkı Kanunu", aciklama: "Bilgi/belge taleplerinde 15 iş günü cevap süresi ve istisnalar." },
   { no: "7201 s.K.", ad: "Tebligat Kanunu", aciklama: "Resmî tebligat usulü; dava açma sürelerinin başlangıcı." },
@@ -14,44 +21,465 @@ const KATALOG = [
   { no: "6698 s.K.", ad: "Kişisel Verilerin Korunması Kanunu (KVKK)", aciklama: "TCKN/telefon gibi kişisel verilerin maskelenmesi ve işlenme ilkeleri." },
 ];
 
-export default function MevzuatView({ history = [] }) {
-  // Oturumda RAG'in önerdiği mevzuat (gerçek), başlığa göre tekilleştir.
-  const seen = new Map();
-  for (const h of history) for (const m of (h.result?.mevzuat_onerileri || [])) {
-    if (m?.baslik && !seen.has(m.baslik)) seen.set(m.baslik, m);
+const trLower = (s) => String(s || "").toLocaleLowerCase("tr");
+
+/* Kategori başlığı altındaki tek satırlık rehber — personelin grubu tanıması için.
+   Anahtarlar backend _KATEGORI_KURALLARI adlarıyla birebir; eksik ad = açıklamasız grup. */
+const KATEGORI_ACIKLAMA = {
+  "İdari Usul & Yazışma": "Dilekçe, bilgi edinme, tebligat, resmî yazışma, arşiv, e-imza — günlük evrak işinin temeli.",
+  "Vergi & Kamu Maliyesi": "Vergi kanunları, harçlar, amme alacakları, kamu ihalesi ve mali yönetim.",
+  "Sağlık": "Sağlık hizmetleri, meslek kanunları (hekim/eczacı/hemşire), hasta hakları.",
+  "Yargı & Adalet": "Usul kanunları, icra-iflas, ceza ve infaz, arabuluculuk, adli meslekler.",
+  "Kamu Personeli": "Memur statüsü, disiplin, şikâyet-müracaat, harcırah, mal bildirimi.",
+  "Çalışma, Sosyal Güvenlik & Aile": "İş kanunları, SGK, emeklilik, sendikalar, sosyal hizmet ve aile koruması.",
+  "Eğitim, Gençlik & Spor": "Eğitim sistemi, yükseköğretim, burs-yurt, mesleki yeterlilik, spor.",
+  "Güvenlik & Kamu Düzeni": "Askerlik, terörle mücadele, kaçakçılık, özel güvenlik, toplantı-gösteri.",
+  "Tarım, Hayvancılık & Gıda": "Tarım destekleri, veterinerlik, tohum-ıslah, mera ve toprak koruma.",
+  "Çevre, Orman & Su": "Çevre izin/denetim, atık, hava-su-gürültü kontrolü, orman ve sular.",
+  "İmar, Şehircilik & Afet": "İmar, yapı ruhsatı, tapu-kadastro, kamulaştırma, afet ve dönüşüm.",
+  "Enerji & Madencilik": "Maden, petrol, doğal gaz, elektrik piyasası ve yenilenebilir enerji.",
+  "Ulaştırma & Haberleşme": "Trafik, taşıma, havacılık-denizcilik, posta ve elektronik haberleşme.",
+  "Kültür, Turizm & Medya": "Kültür varlıkları, turizm, basın-yayın, internet ve fikri haklar.",
+  "STK & Meslek Kuruluşları": "Dernekler, vakıflar, yardım toplama, odalar-borsalar ve esnaf kuruluşları.",
+  "Ekonomi, Ticaret & Sanayi": "Ticaret, rekabet, tüketici, bankacılık-finans, gümrük, sanayi ve yatırımlar.",
+  "Kamu Yönetimi & Yerel İdare": "Teşkilat, il ve belediye idaresi, nüfus-vatandaşlık, Sayıştay, seçimler.",
+  "Diğer": "Belirli bir gruba atanmamış mevzuat.",
+};
+
+/* RAG öneri başlığı ("3071 dilekce hakki kanunu m.4") → katalog dosyası + madde no.
+   Etiket, dosya adının boşluklu hâlidir (backend _baslik sözleşmesi); katalogda yoksa null. */
+function oneriHedef(hamBaslik, dosyalar) {
+  const ham = String(hamBaslik || "");
+  const madde = ham.match(/\s+m\.(\d+)\s*$/i);
+  const etiket = ham.replace(/\s+m\.\d+\s*$/i, "").replace(/\s*\[DOĞRULA:.*$/i, "").trim();
+  const dosya = etiket.replace(/\s+/g, "_");
+  if (!dosyalar.has(dosya)) return null;
+  return { dosya, maddeNo: madde ? Number(madde[1]) : null };
+}
+
+/* Ham mevzuat metni → bloklar: künye-sonrası giriş notu + "Madde N — ..." blokları. */
+function maddeAyir(metin) {
+  const satirlar = String(metin || "").split("\n").slice(2); // 1-2. satır başlık+künye (modal başlığında)
+  const bloklar = [];
+  let aktif = { no: null, baslik: "", parcalar: [] };
+  const kapat = () => {
+    const govde = aktif.parcalar.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    if (aktif.baslik || govde) bloklar.push({ no: aktif.no, baslik: aktif.baslik, govde });
+  };
+  for (const satir of satirlar) {
+    const m = satir.match(/^Madde\s+(\d+)/);
+    if (m) { kapat(); aktif = { no: Number(m[1]), baslik: satir.trim(), parcalar: [] }; }
+    else aktif.parcalar.push(satir);
   }
-  const onerilen = [...seen.values()];
+  kapat();
+  return bloklar;
+}
+
+/* Okuma modalındaki tek madde bloğu — hedef madde lavanta şeritle vurgulanır. */
+function MaddeBlok({ blok, vurgulu, anchorRef }) {
+  if (blok.no === null) {
+    return <p style={{ margin: "0 0 16px", ...TYPE.data, color: PAL.mut2, whiteSpace: "pre-wrap" }}>{blok.govde}</p>;
+  }
+  return (
+    <section ref={vurgulu ? anchorRef : undefined}
+      style={{ margin: "0 0 16px", scrollMarginTop: 8, ...(vurgulu ? { padding: "8px 12px", borderLeft: `2px solid ${V}`, background: ALFA(V), borderRadius: RAD.card } : {}) }}>
+      <h3 style={{ margin: "0 0 6px", ...TYPE.ui, fontWeight: 600, color: vurgulu ? DERIN.V : PAL.ink }}>
+        {blok.baslik}
+        {vurgulu && <span style={{ marginLeft: SP.s, ...TYPE.meta, color: PAL.mut, verticalAlign: "middle" }}>Önerilen</span>}
+      </h3>
+      <p style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap" }}>{blok.govde}</p>
+    </section>
+  );
+}
+
+const ICERIK_CACHE = new Map(); // dosya → içerik yanıtı (modal her açılışta yeniden inmesin)
+
+/* Okuma modalı — ortada dar panel, arka plan blurlanır; yalnız seçilen mevzuat okunur.
+   Esc / dış tıklama / kapat düğmesi kapatır; açılışta odak kapat butonuna, gövde kaydırması kilitlenir. */
+function OkumaModal({ dosya, maddeNo, onClose }) {
+  const [icerik, setIcerik] = useState(ICERIK_CACHE.get(dosya) || null); // null=yükleniyor, "hata", {...}
+  const [deneme, setDeneme] = useState(0);
+  const closeRef = useRef(null);
+  const maddeRef = useRef(null);
+
+  useEffect(() => {
+    if (ICERIK_CACHE.has(dosya)) { setIcerik(ICERIK_CACHE.get(dosya)); return undefined; }
+    let iptal = false;
+    setIcerik(null);
+    fetch(`/mevzuat/icerik/${encodeURIComponent(dosya)}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => { ICERIK_CACHE.set(dosya, d); if (!iptal) setIcerik(d); })
+      .catch(() => { if (!iptal) setIcerik("hata"); });
+    return () => { iptal = true; };
+  }, [dosya, deneme]);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    const eski = document.body.style.overflow;
+    document.body.style.overflow = "hidden"; // arka sayfa kaydırması kilitli — yalnız mevzuat okunur
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = eski; };
+  }, [onClose]);
+
+  const bloklar = useMemo(() => (icerik && icerik !== "hata" ? maddeAyir(icerik.metin) : []), [icerik]);
+  // Hedef maddeye kaydır. rAF: içerik cache'liyken bloklar ilk render'da hazır olur ama modal
+  // scroll konteyneri henüz layout almadan scrollIntoView boşa gider → bir tick ertele.
+  useEffect(() => {
+    if (!bloklar.length || maddeNo == null) return undefined;
+    const id = requestAnimationFrame(() => maddeRef.current?.scrollIntoView({ block: "start" }));
+    return () => cancelAnimationFrame(id);
+  }, [bloklar, maddeNo]);
 
   return (
-    <ViewWrap id="mevzuat-h" title="Mevzuat" sub="Sistemin dayandığı çekirdek mevzuat + işlenen evraklarda önerilen kaynaklar">
-      {onerilen.length > 0 && (
-        <NeonCard title={`Bu Oturumda Önerilen Mevzuat (RAG)`} tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: 18 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px,1fr))", gap: 12 }}>
-            {onerilen.map((m, i) => (
-              <div key={i} style={{ borderLeft: "2px solid rgba(47,143,166,.4)", paddingLeft: 11 }}>
-                <div style={{ fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: PAL.ink2 }}>{cleanDemoText(m.baslik)}</div>
-                {m.snippet && <p style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, lineHeight: 1.5 }}>{cleanDemoText(m.snippet)}</p>}
-              </div>
-            ))}
+    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(35,26,18,.35)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="mevzuat-okuma-h" onClick={(e) => e.stopPropagation()}
+        style={{ width: "min(760px,100%)", maxHeight: "86vh", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s ease-out" }}>
+        <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.m, padding: "16px 24px 12px", borderBottom: `1px solid ${PAL.line}`, flexShrink: 0 }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.book /></span>
+              {icerik && icerik !== "hata" && icerik.no && <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: DERIN.T }}>{icerik.no}</span>}
+              <h2 id="mevzuat-okuma-h" style={{ margin: 0, ...TYPE.read, fontWeight: 600, color: PAL.ink }}>
+                {icerik === null ? "Mevzuat yükleniyor…" : icerik === "hata" ? "Mevzuat açılamadı" : icerik.baslik}
+              </h2>
+            </div>
+            {icerik && icerik !== "hata" && icerik.kunye && (
+              <p style={{ margin: "4px 0 0", ...TYPE.meta, color: PAL.mut2 }}>{icerik.kunye}</p>
+            )}
           </div>
-        </NeonCard>
-      )}
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Okuma panelini kapat" {...focusRing}
+            style={{ cursor: "pointer", width: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0, borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.ink2, flexShrink: 0, transition: "background .12s ease-out" }}><Icon.x /></button>
+        </header>
+        <div style={{ overflowY: "auto", padding: "16px 24px 24px" }}>
+          {icerik === null && (
+            <div role="status" style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, padding: "16px 0" }}>
+              <Icon.spin /> Tam metin yükleniyor…
+            </div>
+          )}
+          {icerik === "hata" && (
+            <div role="alert" style={{ ...TYPE.data, color: PAL.ink2, padding: "8px 0" }}>
+              Tam metin alınamadı — backend çalışıyor mu?
+              <div style={{ marginTop: SP.m }}><Btn onClick={() => setDeneme((n) => n + 1)}>Tekrar dene</Btn></div>
+            </div>
+          )}
+          {bloklar.map((b, i) => <MaddeBlok key={i} blok={b} vurgulu={maddeNo != null && b.no === maddeNo} anchorRef={maddeRef} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2, margin: "4px 0 12px" }}>ÇEKİRDEK MEVZUAT KATALOĞU</div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px,1fr))", gap: 14, alignItems: "start" }}>
-        {KATALOG.map((k) => (
-          <div key={k.no} style={{ display: "flex", gap: 13, padding: "15px 17px", borderRadius: 12, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
-            <span aria-hidden="true" style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, display: "grid", placeItems: "center", background: "rgba(47,143,166,.12)", color: T }}><Icon.book /></span>
+/* Katalog kartı — tıklanabilir; okuma modalını açar. Hover = zemin tonu (kalkış yok). */
+function KatalogKart({ m, onAc }) {
+  const cekirdek = CEKIRDEK_NO.has(m.no);
+  return (
+    <button type="button" onClick={() => onAc({ dosya: m.dosya, maddeNo: null })} aria-haspopup="dialog" {...focusRing}
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+      style={{ display: "flex", gap: SP.m, alignItems: "flex-start", textAlign: "left", padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, cursor: "pointer", transition: "background .12s ease-out" }}>
+      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.book /></span>
+      <span style={{ minWidth: 0, flex: 1 }}>
+        <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
+          {m.no && <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: DERIN.T }}>{m.no}</span>}
+          {cekirdek && <span style={{ ...TYPE.meta, color: PAL.mut }}>Çekirdek</span>}
+          <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{m.madde_sayisi > 0 ? `${m.madde_sayisi} madde` : "tam metin"}</span>
+        </span>
+        <span style={{ display: "block", marginTop: SP.xs, ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{m.baslik}</span>
+        {m.kunye && <span style={{ display: "block", marginTop: SP.xs, ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.kunye}</span>}
+      </span>
+    </button>
+  );
+}
+
+/* Oturumda RAG'in önerdiği kaynak — katalogda karşılığı varsa tıklanınca ilgili maddeye açılır. */
+function OneriSatir({ m, dosyalar, onAc }) {
+  const hedef = oneriHedef(m.baslik, dosyalar);
+  const govde = (
+    <>
+      <div style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{cleanDemoText(m.baslik)}</div>
+      {m.snippet && <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{cleanDemoText(m.snippet)}</p>}
+    </>
+  );
+  const stil = { borderLeft: `2px solid ${T}`, paddingLeft: SP.m };
+  if (!hedef) return <div style={stil}>{govde}</div>;
+  return (
+    <button type="button" onClick={() => onAc(hedef)} aria-haspopup="dialog" {...focusRing}
+      style={{ ...stil, display: "block", textAlign: "left", background: "transparent", border: "none", borderLeft: stil.borderLeft, cursor: "pointer", padding: `0 0 0 ${SP.m}px`, width: "100%" }}>
+      {govde}
+      <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, marginTop: SP.s, ...TYPE.meta, color: DERIN.T }}>Tam metni oku <Icon.arrow /></span>
+    </button>
+  );
+}
+
+/* Kategori filtre düğmesi — aktifken gök mavisi tint zemin, değilken beyaz yüzey. */
+function KategoriCip({ ad, adet, aktif, onSec }) {
+  return (
+    <button type="button" onClick={onSec} aria-pressed={aktif} {...focusRing}
+      style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.chip, border: "1px solid",
+        borderColor: aktif ? "transparent" : PAL.line, background: aktif ? ALFA(T) : PAL.surf,
+        color: aktif ? DERIN.T : PAL.ink2, ...TYPE.meta, fontWeight: 500,
+        display: "inline-flex", alignItems: "center", gap: SP.s, transition: "background .12s ease-out" }}>
+      {ad}
+      <span style={{ opacity: 0.75, fontWeight: 400, ...TNUM }}>{adet}</span>
+    </button>
+  );
+}
+
+/* Kategori grup bölümü — başlık + adet + tek satır rehber + kart ızgarası. */
+function KategoriGrup({ ad, mevzuatlar, onAc }) {
+  return (
+    <section aria-label={`${ad} mevzuatı`} style={{ marginBottom: SP.xl }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", marginBottom: SP.xs }}>
+        <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{ad}</h3>
+        <span style={{ ...TYPE.meta, color: PAL.mut, ...TNUM }}>{mevzuatlar.length}</span>
+      </div>
+      {KATEGORI_ACIKLAMA[ad] && (
+        <p style={{ margin: "0 0 12px", ...TYPE.data, color: PAL.mut2 }}>{KATEGORI_ACIKLAMA[ad]}</p>
+      )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px,1fr))", gap: SP.l, alignItems: "start" }}>
+        {mevzuatlar.map((m) => <KatalogKart key={m.dosya} m={m} onAc={onAc} />)}
+      </div>
+    </section>
+  );
+}
+
+/* Arama modu seçici — "Katalogda" (başlık/künye) | "Madde içinde" (BM25 derin arama). */
+function AramaModSecici({ modu, onSec }) {
+  const secenekler = [["katalog", "Katalogda"], ["derin", "Madde içinde"]];
+  return (
+    <div role="group" aria-label="Arama modu" style={{ display: "inline-flex", padding: 2, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surfHi }}>
+      {secenekler.map(([k, ad]) => (
+        <button key={k} type="button" onClick={() => onSec(k)} aria-pressed={modu === k} {...focusRing}
+          style={{ cursor: "pointer", padding: "5px 12px", borderRadius: RAD.chip, border: "none",
+            background: modu === k ? PAL.surf : "transparent", color: modu === k ? DERIN.T : PAL.mut2,
+            ...TYPE.meta, fontWeight: modu === k ? 600 : 500, boxShadow: modu === k ? SH.card : "none",
+            transition: "background .12s ease-out" }}>
+          {ad}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* Derin arama sonucu — tıklanınca okuma modalı İLGİLİ MADDEDE açılır. */
+function DerinSonucSatir({ s, onAc }) {
+  return (
+    <button type="button" onClick={() => onAc({ dosya: s.dosya, maddeNo: s.madde_no ?? null })}
+      aria-haspopup="dialog" {...focusRing}
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+      style={{ display: "block", width: "100%", textAlign: "left", padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, cursor: "pointer", transition: "background .12s ease-out" }}>
+      <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
+        {s.no && <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: DERIN.T }}>{s.no}</span>}
+        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{s.baslik}</span>
+        {s.madde_no != null && <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN.V }}>m.{s.madde_no}</span>}
+      </span>
+      <span style={{ display: "block", marginTop: SP.xs, ...TYPE.data, color: PAL.mut2 }}>{s.snippet}</span>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, marginTop: SP.s, ...TYPE.meta, color: DERIN.T }}>Maddeye git <Icon.arrow /></span>
+    </button>
+  );
+}
+
+/* Backend kapalıyken statik çekirdek liste (tıklanamaz — tam metin backend'den gelir). */
+function StatikKatalog() {
+  return (
+    <>
+      <p role="status" style={{ margin: "0 0 12px", ...TYPE.data, color: PAL.mut2 }}>
+        Canlı katalog yüklenemedi — çekirdek referans listesi gösteriliyor. Tam metin okuma için backend gerekli.
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start" }}>
+        {STATIK_KATALOG.map((k) => (
+          <div key={k.no} style={{ display: "flex", gap: SP.m, padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
+            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.book /></span>
             <div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, color: T }}>{k.no}</span>
-                <span style={{ fontFamily: SANS, fontSize: 13, fontWeight: 600, color: PAL.ink2 }}>{k.ad}</span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
+                <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: DERIN.T }}>{k.no}</span>
+                <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{k.ad}</span>
               </div>
-              <p style={{ margin: "5px 0 0", fontFamily: MONO, fontSize: 11, color: PAL.mut2, lineHeight: 1.55 }}>{k.aciklama}</p>
+              <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{k.aciklama}</p>
             </div>
           </div>
         ))}
       </div>
+    </>
+  );
+}
+
+export default function MevzuatView({ history = [], hedef = null, onHedefAcildi }) {
+  const [katalog, setKatalog] = useState(null);   // null=yükleniyor, "hata", [liste]
+  const [kategoriler, setKategoriler] = useState([]); // backend'in sıralı grup listesi
+  const [kategori, setKategori] = useState("");   // "" = tüm gruplar
+  const [filtre, setFiltre] = useState("");
+  const [aramaModu, setAramaModu] = useState("katalog"); // "katalog" | "derin" (madde içinde)
+  const [derin, setDerin] = useState(null);       // null | "hata" | {q, sonuclar}
+  const [derinBekliyor, setDerinBekliyor] = useState(false);
+  const [secili, setSecili] = useState(null);     // {dosya, maddeNo} → okuma modalı açık
+  const sonOdak = useRef(null);
+
+  useEffect(() => {
+    let iptal = false;
+    fetch("/mevzuat/katalog")
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => {
+        if (iptal) return;
+        setKatalog(d.mevzuatlar || []);
+        setKategoriler(d.kategoriler || []);
+      })
+      .catch(() => { if (!iptal) setKatalog("hata"); });
+    return () => { iptal = true; };
+  }, []);
+
+  const ac = useCallback((h) => { sonOdak.current = document.activeElement; setSecili(h); }, []);
+  const kapat = useCallback(() => { setSecili(null); sonOdak.current?.focus?.(); }, []); // odak tetikleyene döner (a11y)
+
+  // Dışarıdan modal açma köprüsü (sohbet kaynak çipi → DashboardApp → buraya):
+  // hedef her tıklamada yeni nesne gelir; tüketilince temizletilir (aynı çip tekrar çalışsın).
+  useEffect(() => {
+    if (hedef?.dosya) {
+      ac({ dosya: hedef.dosya, maddeNo: hedef.maddeNo ?? null });
+      onHedefAcildi?.();
+    }
+  }, [hedef, ac, onHedefAcildi]);
+
+  // Derin arama: mod aktif + sorgu ≥3 karakter → debounce'lu /mevzuat/derin-ara.
+  useEffect(() => {
+    if (aramaModu !== "derin") return undefined;
+    const q = filtre.trim();
+    if (q.length < 3) { setDerin(null); setDerinBekliyor(false); return undefined; }
+    let iptal = false;
+    setDerinBekliyor(true);
+    const t = setTimeout(() => {
+      fetch(`/mevzuat/derin-ara?q=${encodeURIComponent(q)}&limit=30`)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((d) => { if (!iptal) setDerin(d); })
+        .catch(() => { if (!iptal) setDerin("hata"); })
+        .finally(() => { if (!iptal) setDerinBekliyor(false); });
+    }, 350);
+    return () => { iptal = true; clearTimeout(t); };
+  }, [aramaModu, filtre]);
+
+  // Oturumda RAG'in önerdiği mevzuat (gerçek), başlığa göre tekilleştir.
+  const onerilen = useMemo(() => {
+    const seen = new Map();
+    for (const h of history) for (const m of (h.result?.mevzuat_onerileri || [])) {
+      if (m?.baslik && !seen.has(m.baslik)) seen.set(m.baslik, m);
+    }
+    return [...seen.values()];
+  }, [history]);
+
+  const dosyalar = useMemo(() => new Set(Array.isArray(katalog) ? katalog.map((m) => m.dosya) : []), [katalog]);
+
+  // Arama + kategori filtresi birlikte; grup içi sıra: çekirdek önce, sonra Türkçe alfabetik.
+  const listelenen = useMemo(() => {
+    if (!Array.isArray(katalog)) return [];
+    const q = trLower(filtre.trim());
+    let uyan = q ? katalog.filter((m) => trLower(`${m.no} ${m.baslik} ${m.kunye} ${m.kategori} ${m.dosya.replace(/_/g, " ")}`).includes(q)) : katalog;
+    if (kategori) uyan = uyan.filter((m) => m.kategori === kategori);
+    return [...uyan].sort((a, b) =>
+      (CEKIRDEK_NO.has(b.no) - CEKIRDEK_NO.has(a.no)) || a.baslik.localeCompare(b.baslik, "tr"));
+  }, [katalog, filtre, kategori]);
+
+  // Kategori başına adet (çipler) — arama uygulanmış hâliyle değil, tüm katalogla sayılır
+  // (çip adetleri sabit kalır; arama sonucu grup başlıklarındaki adetten okunur).
+  const kategoriAdet = useMemo(() => {
+    const sayim = new Map();
+    if (Array.isArray(katalog)) for (const m of katalog) sayim.set(m.kategori, (sayim.get(m.kategori) || 0) + 1);
+    return sayim;
+  }, [katalog]);
+
+  // Gruplu görünüm: backend'in kategori sırasıyla, yalnız eşleşmesi olan gruplar.
+  const gruplar = useMemo(() => {
+    const sira = kategoriler.length ? kategoriler : [...new Set(listelenen.map((m) => m.kategori))];
+    return sira
+      .map((ad) => [ad, listelenen.filter((m) => m.kategori === ad)])
+      .filter(([, uyeler]) => uyeler.length > 0);
+  }, [kategoriler, listelenen]);
+
+  return (
+    <ViewWrap id="mevzuat-h" title="Mevzuat" sub="Sistemdeki tüm mevzuat konu gruplarıyla — kategori seç veya ara, kartı aç, tam metni oku.">
+      {onerilen.length > 0 && (
+        <NeonCard title="Bu oturumda önerilen mevzuat (RAG)" tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: SP.l }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px,1fr))", gap: SP.m }}>
+            {onerilen.map((m, i) => <OneriSatir key={i} m={m} dosyalar={dosyalar} onAc={ac} />)}
+          </div>
+        </NeonCard>
+      )}
+
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", margin: "4px 0 12px" }}>
+        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Mevzuat kataloğu</span>
+        {aramaModu === "katalog" && Array.isArray(katalog) && (
+          <span style={{ ...TYPE.meta, color: PAL.mut, ...TNUM }}>
+            {filtre.trim() || kategori ? `${listelenen.length} / ${katalog.length}` : `${katalog.length} mevzuat`}
+          </span>
+        )}
+        {aramaModu === "derin" && derin && derin !== "hata" && (
+          <span style={{ ...TYPE.meta, color: PAL.mut, ...TNUM }}>{derin.sonuclar.length} madde eşleşti</span>
+        )}
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+          <AramaModSecici modu={aramaModu} onSec={setAramaModu} />
+          <input type="search" value={filtre} onChange={(e) => setFiltre(e.target.value)}
+            placeholder={aramaModu === "derin" ? "Madde metninde ara — ör. dilekçede zorunlu şartlar…" : "Kanun adı, numara veya konu ara…"}
+            aria-label={aramaModu === "derin" ? "Mevzuat maddelerinin içinde ara" : "Mevzuat kataloğunda ara"} {...focusRing}
+            style={{ width: "min(360px,100%)", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, ...TYPE.ui, color: PAL.ink, outline: "none" }} />
+        </div>
+      </div>
+
+      {aramaModu === "derin" && (
+        filtre.trim().length < 3 ? (
+          <p role="status" style={{ margin: "8px 0 0", ...TYPE.data, color: PAL.mut2 }}>
+            Madde içinde arama: en az 3 karakter yazın — sonuç, ilgili maddeye kaydırılmış okuma paneliyle açılır.
+          </p>
+        ) : derinBekliyor && !derin ? (
+          <div role="status" style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, padding: "12px 0" }}>
+            <Icon.spin /> Maddelerde aranıyor…
+          </div>
+        ) : derin === "hata" ? (
+          <div role="alert" style={{ ...TYPE.data, color: PAL.ink2, padding: "8px 0" }}>
+            Arama yapılamadı — backend çalışıyor mu?
+          </div>
+        ) : derin && derin.sonuclar.length === 0 ? (
+          <EmptyState icon={<Icon.book />} title="Eşleşen madde yok"
+            sub={`"${filtre.trim()}" için madde metinlerinde sonuç bulunamadı — farklı terimlerle deneyin.`}
+            actions={<Btn onClick={() => setFiltre("")}>Aramayı temizle</Btn>} />
+        ) : derin ? (
+          <div aria-live="polite" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
+            {derin.sonuclar.map((s) => <DerinSonucSatir key={`${s.dosya}-${s.madde_no}`} s={s} onAc={ac} />)}
+          </div>
+        ) : null
+      )}
+
+      {aramaModu === "katalog" && Array.isArray(katalog) && kategoriler.length > 0 && (
+        <div role="group" aria-label="Kategori filtresi" style={{ display: "flex", gap: SP.s, flexWrap: "wrap", marginBottom: SP.xl }}>
+          <KategoriCip ad="Tümü" adet={katalog.length} aktif={!kategori} onSec={() => setKategori("")} />
+          {kategoriler.map((ad) => (
+            <KategoriCip key={ad} ad={ad} adet={kategoriAdet.get(ad) || 0} aktif={kategori === ad} onSec={() => setKategori(kategori === ad ? "" : ad)} />
+          ))}
+        </div>
+      )}
+
+      {aramaModu === "katalog" && katalog === null && (
+        <div aria-busy="true" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px,1fr))", gap: SP.l }}>
+          <span role="status" style={SR_ONLY}>Mevzuat kataloğu yükleniyor…</span>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} aria-hidden="true" style={{ height: 104, borderRadius: RAD.card, background: PAL.surfHi, animation: "nu-think 1.6s ease-in-out infinite" }} />
+          ))}
+        </div>
+      )}
+
+      {aramaModu === "katalog" && katalog === "hata" && <StatikKatalog />}
+
+      {aramaModu === "katalog" && Array.isArray(katalog) && (listelenen.length === 0 ? (
+        <EmptyState icon={<Icon.book />} title="Eşleşen mevzuat yok"
+          sub={filtre.trim()
+            ? `"${filtre.trim()}" için ${kategori ? `${kategori} grubunda` : "katalogda"} sonuç bulunamadı — kanun adı veya numarasıyla deneyin.`
+            : "Bu grupta gösterilecek mevzuat yok."}
+          actions={<Btn onClick={() => { setFiltre(""); setKategori(""); }}>Filtreleri temizle</Btn>} />
+      ) : (
+        gruplar.map(([ad, uyeler]) => <KategoriGrup key={ad} ad={ad} mevzuatlar={uyeler} onAc={ac} />)
+      ))}
+
+      {secili && <OkumaModal dosya={secili.dosya} maddeNo={secili.maddeNo} onClose={kapat} />}
     </ViewWrap>
   );
 }

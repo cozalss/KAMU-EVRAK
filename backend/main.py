@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from agents.config import LLM_MODE
 from api.middleware.ratelimit import setup_rate_limiting
 from api.middleware.security_headers import SecurityHeadersMiddleware
-from api.routes import kayitlar, multimodal, process_doc, yazi
+from api.routes import kayitlar, mevzuat, multimodal, process_doc, sla, sohbet, yazi
 from auth import auth_router
 
 log = structlog.get_logger()
@@ -71,6 +71,9 @@ app.include_router(multimodal.router)
 app.include_router(yazi.router)
 app.include_router(auth_router)
 app.include_router(kayitlar.router)
+app.include_router(mevzuat.router)
+app.include_router(sohbet.router)
+app.include_router(sla.router)
 
 
 def _active_llm() -> str:

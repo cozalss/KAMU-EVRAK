@@ -42,7 +42,7 @@
    `src/portfolio/**`) dokunulmaz.** Detay: aşağıdaki Tasarım/UI bölümü +
    `frontend/design-system/kamu-evrak/MASTER.md`.
 
-## Tasarım / UI — Hero Light (aktif tema)
+## Tasarım / UI — Hero Light v2 "Sakin Ürün" (aktif tema)
 
 > Tek kaynak: `frontend/src/components/neonUi.jsx`. Tam spesifikasyon:
 > `frontend/design-system/kamu-evrak/MASTER.md`. Palet, landing hero görselinin (sıcak fildişi
@@ -55,8 +55,12 @@
   `R=#e0563c` (yalnız küçük dokunuşlar — genel CTA rengi değil); zemin `PAL.bg=#f7f3ee` /
   `PAL.bg2=#efe6da`; metin `PAL.ink=#161616` / `ink2=#3a3229`; risk bandı `BANT` (yeşil `#2f9e6e` /
   sarı `#c98a1f` / kırmızı `#c9432f`). **Hex'i elle yazma, token kullan.**
-- **Font:** Space Grotesk (`SANS`, başlık/UI) + IBM Plex Mono (`MONO`, etiket/veri) —
-  `app.html` Google Fonts.
+- **Font:** IBM Plex Sans (`SANS`, tüm UI/metin) + IBM Plex Mono (`MONO`, **yalnız makine
+  verisi**: evrak no, tarih damgası, hash, maskeli PII, dosya adı) — `app.html` Google Fonts.
+- **v2 disiplini:** tip ölçeği `TYPE` (12/13/14/16/20/24/28) · radius `RAD` (4/6/8/12/"50%") ·
+  boşluk `SP` · gölge `SH` (border-first: statik yüzey 1px hairline) · açık zeminde renkli metin
+  yalnız `DERIN.*` (AA) · tint zemin yalnız `ALFA()`. **Gradyan/glow/uppercase-eyebrow/hover-kalkış
+  sıfır** — sentence case varsayılan; çip yalnız semantik durum; ekran başına 1 primary buton.
 - **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
   `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`
   (isim tarihsel — animasyon mekaniği renkten bağımsız).

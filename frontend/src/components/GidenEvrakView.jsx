@@ -2,7 +2,7 @@
    (arama/risk/durum çip + tür/birim select + tarih + sıralama) + detay modalı.
    outbox: DashboardApp session state (Onayla&Gönder → giden evrak). */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ViewWrap, NeonCard, Btn, EmptyState, KV, Icon, MONO, SANS, T, V, PAL, BANT } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, PAL, BANT, TYPE, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
@@ -39,14 +39,14 @@ const BASE_CONFIG = {
   ],
   select: [
     { id: "kategori", label: "Kategori", options: KATEGORI_SELECT },
-    { id: "tur", label: "Yazı Türü", options: [] },
-    { id: "birim", label: "Alıcı Birim", options: [] },
+    { id: "tur", label: "Yazı türü", options: [] },
+    { id: "birim", label: "Alıcı birim", options: [] },
   ],
-  dateRange: { enabled: true, label: "Gönderim Tarihi" },
+  dateRange: { enabled: true, label: "Gönderim tarihi" },
   datePresets: { enabled: true },
   sort: { enabled: true, default: "ts_desc", options: [
     { value: "ts_desc", label: "En yeni önce" }, { value: "ts_asc", label: "En eski bekleyenler" },
-    { value: "risk_desc", label: "Risk (yüksek→düşük)" }, { value: "birim_asc", label: "Birim (A→Z)" },
+    { value: "risk_desc", label: "Risk (yüksek–düşük)" }, { value: "birim_asc", label: "Birim (A–Z)" },
   ] },
   dataMapping: { search: ["konu", "kaynak_evrak_adi", "id"], risk: "risk", durum: "durum", sla: "sla_durum", kategori: "_kategori", tur: "tur", birim: "alici_birim", dateField: "gonderim_tarihi" },
 };
@@ -61,32 +61,35 @@ function DetayModal({ item, onClose }) {
   }, [onClose]);
   if (!item) return null;
   return (
-    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(35,26,18,.35)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: "#ffffff", border: `1px solid ${PAL.lineHi}`, borderRadius: 16, padding: "22px 24px", boxShadow: "0 30px 70px -20px rgba(35,26,18,.35)" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 14, marginBottom: 14 }}>
+    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(35,26,18,.35)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.l, marginBottom: SP.l }}>
           <div>
-            <h2 id="giden-modal-h" style={{ margin: 0, fontFamily: SANS, fontSize: 18, fontWeight: 600, color: PAL.ink }}>{item.id}</h2>
-            <p style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 12, color: PAL.mut2 }}>{cleanDemoText(item.konu)}</p>
+            <h2 id="giden-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{item.id}</h2>
+            <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{cleanDemoText(item.konu)}</p>
           </div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" style={{ cursor: "pointer", padding: "6px 12px", borderRadius: 9, border: `1px solid ${PAL.lineHi}`, background: "rgba(35,26,18,.04)", color: PAL.ink2, fontFamily: MONO, fontSize: 13 }}>✕</button>
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing}
+            style={{ cursor: "pointer", flexShrink: 0, width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.ink2, padding: 0 }}>
+            <Icon.x />
+          </button>
         </div>
-        <div style={{ marginBottom: 14 }}>
+        <div style={{ marginBottom: SP.l }}>
           <KV k="Kaynak evrak" v={item.kaynak_evrak_adi} />
-          <KV k="Kategori" v={kategoriMeta(item._kategori).label} c={kategoriMeta(item._kategori).color} />
+          <KV k="Kategori" v={kategoriMeta(item._kategori).label} />
           <KV k="Evrak türü" v={EVRAK_TR(item.evrak_turu)} />
           <KV k="Yazı türü" v={item.tur ? YAZI_TR(item.tur) : "—"} />
-          <KV k="Önerilen / alıcı birim" v={BIRIM_LBL(item.alici_birim)} c="#6a4787" />
-          <KV k="Sınıflandırma güveni" v={fmtGuven(item.guven) || "—"} c={item.guven >= 0.5 ? "#1f6d82" : PAL.mut2} />
-          <KV k="Risk bandı" v={BANT[item.risk]?.l || "—"} c={BANT[item.risk]?.c} />
-          <KV k="Durum" v={DURUM_TR[item.durum] || item.durum} c={DURUM_RENK[item.durum]} />
-          {item.sla_durum && <KV k="Yasal süre" v={item.sla_durum === "GECIKMIS" ? "Süresi geçmiş" : item.sla_durum === "KRITIK" ? "Süre yaklaşıyor" : item.sla_durum} c={item.sla_durum === "GECIKMIS" ? BANT.kirmizi.c : item.sla_durum === "KRITIK" ? BANT.sari.c : PAL.mut2} />}
+          <KV k="Önerilen / alıcı birim" v={BIRIM_LBL(item.alici_birim)} c={DERIN.V} />
+          <KV k="Sınıflandırma güveni" v={fmtGuven(item.guven) || "—"} c={item.guven >= 0.5 ? DERIN.T : PAL.mut2} />
+          <KV k="Risk bandı" v={BANT[item.risk]?.l || "—"} c={DERIN_OF(BANT[item.risk]?.c)} />
+          <KV k="Durum" v={DURUM_TR[item.durum] || item.durum} c={DERIN_OF(DURUM_RENK[item.durum])} />
+          {item.sla_durum && <KV k="Yasal süre" v={item.sla_durum === "GECIKMIS" ? "Süresi geçmiş" : item.sla_durum === "KRITIK" ? "Süre yaklaşıyor" : item.sla_durum} c={item.sla_durum === "GECIKMIS" ? DERIN.kirmizi : item.sla_durum === "KRITIK" ? DERIN.sari : PAL.mut2} />}
           {item.evrak_tarihi && <KV k="Evrak / dilekçe tarihi" v={item.evrak_tarihi} />}
           <KV k="Gönderen memur" v={`${item.memor_adi} · ${item.memor_unvan}`} />
           <KV k="Gönderim tarihi" v={fmtTime(item.gonderim_tarihi)} />
-          {item.son_hash && <KV k="Denetim hash" v={String(item.son_hash).slice(0, 22) + "…"} c="#1f7a52" />}
+          {item.son_hash && <KV k="Denetim hash" v={String(item.son_hash).slice(0, 22) + "…"} c={DERIN.yesil} />}
         </div>
         {item.taslak && (
-          <pre style={{ margin: 0, background: "#ffffff", border: `1px solid ${PAL.line}`, borderRadius: 10, padding: "16px 18px", fontFamily: MONO, fontSize: 11, color: "#3a4252", whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6 }}>{cleanDemoText(item.taslak)}</pre>
+          <pre style={{ margin: 0, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{cleanDemoText(item.taslak)}</pre>
         )}
       </div>
     </div>
@@ -114,50 +117,53 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
 
   if (outbox.length === 0) {
     return (
-      <ViewWrap id="giden-h" title="Giden Evrak" sub="Onaylanıp gönderilen resmî yazılar">
+      <ViewWrap id="giden-h" title="Giden evrak" sub="Onaylanıp gönderilen resmî yazılar">
         <EmptyState icon={<Icon.arrow />} title="Henüz gönderilen evrak yok"
           sub="Bir evrakı işleyip İşleniyor görünümünde 'Onayla & Gönder' dediğinizde, üretilen resmî yazı buraya — değiştirilemez denetim iziyle — düşer."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>]} />
+          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrak'ı aç</Btn>]} />
       </ViewWrap>
     );
   }
 
   return (
-    <ViewWrap id="giden-h" title="Giden Evrak" sub={`${outbox.length} evrak · ${gonderildi} gönderildi`}
+    <ViewWrap id="giden-h" title="Giden evrak" sub={`${outbox.length} evrak · ${gonderildi} gönderildi`}
       actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]}>
       <FilterBar config={config} filter={filter} />
 
       {filter.results.length === 0 ? (
         <EmptyState icon={<Icon.arrow />} title="Eşleşen evrak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
           {filter.results.map((item) => {
             const drenk = DURUM_RENK[item.durum] || PAL.mut2;
             const kat = kategoriMeta(item._kategori);
             const guven = fmtGuven(item.guven);
             const gecikmis = item.sla_durum === "GECIKMIS";
+            const riskC = BANT[item.risk]?.c;
             return (
-              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", borderRadius: 12, background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${drenk}` }}>
-                <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: "50%", background: drenk, flexShrink: 0 }} />
-                <span style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut2, flexShrink: 0, minWidth: 96 }}>{item.id}</span>
+              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
+                {/* Durum: 8px düz renk noktası + sağda 12px metin (çip yerine) */}
+                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: drenk, flexShrink: 0 }} />
+                <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, flexShrink: 0, minWidth: 96 }}>{item.id}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                    <span style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 600, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
-                    {/* Kategori rozeti (operasyonel gruplama) */}
-                    <span style={{ flexShrink: 0, fontFamily: MONO, fontSize: 9, letterSpacing: ".3px", padding: "2px 7px", borderRadius: 6, background: kat.color + "1c", color: kat.color, border: `1px solid ${kat.color}3a` }}>{kat.label}</span>
-                  </div>
-                  <div style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut3, marginTop: 3, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                  <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
+                  {/* Kategori + kaynak + süre + güven + birim: düz meta metin */}
+                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs, display: "flex", gap: SP.s, flexWrap: "wrap", alignItems: "center" }}>
+                    <span>{kat.label}</span>
+                    <span aria-hidden="true">·</span>
                     <span>{item.kaynak_evrak_adi}</span>
                     <span aria-hidden="true">·</span>
                     <span>{gecenSure(item.gonderim_tarihi)}</span>
                     {guven && <><span aria-hidden="true">·</span><span>güven {guven}</span></>}
-                    {gecikmis && <span style={{ color: BANT.kirmizi.c }}>· süresi geçmiş</span>}
+                    <span aria-hidden="true">·</span>
+                    <span>{BIRIM_LBL(item.alici_birim)}</span>
+                    {gecikmis && <span style={{ color: DERIN.kirmizi }}>· süresi geçmiş</span>}
                   </div>
                 </div>
-                <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: "rgba(139,92,176,.14)", color: "#6a4787", flexShrink: 0 }}>{BIRIM_LBL(item.alici_birim)}</span>
-                <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: (BANT[item.risk]?.c || PAL.mut2) + "22", color: BANT[item.risk]?.c || PAL.mut2, flexShrink: 0 }}>{BANT[item.risk]?.l || "—"}</span>
-                <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: drenk + "1a", color: drenk, flexShrink: 0 }}>{DURUM_TR[item.durum] || item.durum}</span>
-                <Btn accent={T} onClick={(e) => { triggerRef.current = e.currentTarget; setDetay(item); }} ariaLabel={`${item.id} detayını görüntüle`}>Görüntüle</Btn>
+                <span style={{ ...TYPE.meta, color: DERIN_OF(drenk), flexShrink: 0 }}>{DURUM_TR[item.durum] || item.durum}</span>
+                {/* Tek çip: risk kodu (BANT.l uppercase istisnası — mono 12) */}
+                <span style={{ flexShrink: 0, fontFamily: MONO, fontSize: 12, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: riskC ? ALFA(riskC) : PAL.hov, color: riskC ? DERIN_OF(riskC) : PAL.mut2 }}>{BANT[item.risk]?.l || "—"}</span>
+                <Btn onClick={(e) => { triggerRef.current = e.currentTarget; setDetay(item); }} ariaLabel={`${item.id} detayını görüntüle`}>Görüntüle</Btn>
               </div>
             );
           })}

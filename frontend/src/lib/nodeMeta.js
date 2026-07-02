@@ -74,7 +74,7 @@ export function summarize(id, d) {
     }
     case "eksik_tespit": {
       const n = (d.eksik_alanlar || []).length;
-      return n ? `${n} eksik alan` : "tam ✓";
+      return n ? `${n} eksik alan` : "tam";
     }
     case "decompose": {
       const n = (d.alt_talepler || []).length;
@@ -85,32 +85,32 @@ export function summarize(id, d) {
       return n ? `${n} mevzuat önerisi` : "öneri yok";
     }
     case "crag":
-      return d.crag_corrected ? "getirim düzeltildi" : "getirim yeterli ✓";
+      return d.crag_corrected ? "getirim düzeltildi" : "getirim yeterli";
     case "mevzuat_dogrula": {
       const n = (d.mevzuat_nli || []).length;
       return n ? `${n} atıf doğrulandı` : "";
     }
-    case "ozetle": return d.ozet ? "özet hazır ✓" : "";
+    case "ozetle": return d.ozet ? "özet hazır" : "";
     case "route_birim": return d.hedef_birim ? `${BIRIM_LBL(d.hedef_birim)}` : "";
     case "clarifier": {
       const n = (d.clarify_questions || []).length;
-      return n ? `${n} soru` : "bilgi tam ✓";
+      return n ? `${n} soru` : "bilgi tam";
     }
     case "yazi_taslak":
-      return d.yazi_turu ? `${YAZI_TR(d.yazi_turu)}${d.format_uyumlu ? " · format ✓" : ""}` : (d.format_uyumlu ? "taslak ✓" : "taslak");
+      return d.yazi_turu ? `${YAZI_TR(d.yazi_turu)}${d.format_uyumlu ? " · format uyumlu" : ""}` : (d.format_uyumlu ? "taslak" : "taslak");
     case "verify": {
       const n = (d.verify_uyari || []).length;
-      if (n) return `${n} uyarı ⚠`;
-      return d.format_uyumlu === false ? "format ⚠" : "doğrulandı ✓";
+      if (n) return `${n} uyarı`;
+      return d.format_uyumlu === false ? "format uyarısı" : "doğrulandı";
     }
     case "risk_guard": {
       const bant = d.risk_metadata?.bant;
       const skor = d.risk_metadata?.skor;
-      const tr = { yesil: "yeşil ✓", sari: "sarı ⚠", kirmizi: "kırmızı ⚠" }[bant];
+      const tr = { yesil: "yeşil", sari: "sarı", kirmizi: "kırmızı" }[bant];
       return bant ? `${tr || bant}${skor != null ? ` (skor ${skor})` : ""}` : "";
     }
     case "self_rag":
-      return d.self_rag_tam ? "yanıt yeterli ✓" : "eksik tespit edildi";
+      return d.self_rag_tam ? "yanıt yeterli" : "eksik tespit edildi";
     case "onay_kapisi":
       return d.onay_durumu ? `${d.onay_durumu}` : "onaya sunuldu";
     case "arsiv": {
@@ -123,8 +123,8 @@ export function summarize(id, d) {
       return durum ? `${durum}${gun != null ? ` · ${gun}g` : ""}` : "";
     }
     case "denetim_izi":
-      return d.denetim_izi ? "SHA-256 zincir ✓" : "";
-    case "finalize": return "bilgilendirme hazır ✓";
+      return d.denetim_izi ? "SHA-256 zincir" : "";
+    case "finalize": return "bilgilendirme hazır";
     default: return "";
   }
 }

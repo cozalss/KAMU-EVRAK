@@ -57,11 +57,12 @@ export function AuthProvider({ children }) {
   }, [login]);
 
   const logout = useCallback(async () => {
-    await cikisYap();
+    // Ağ hatası olsa da oturum düşer (cikisYap finally'de token'ları zaten temizler).
+    try { await cikisYap(); } catch { /* sunucuya çıkış yazılamadı — yerelde çıkış tamam */ }
     setUser(null);
-    setStatus("anon");
-    // Çıkışta herkese açık landing'e (sitenin ön kapısı) dön.
-    window.location.assign("/");
+    setStatus("anon");   // Root: anon → AuthPage (giriş ekranı) — tam sayfa yönlendirme yok.
+    // Görünüm hash'ini temizle → sonraki giriş eski görünümde/geçmişte açılmasın.
+    window.history.replaceState(null, "", window.location.pathname);
   }, []);
 
   return (

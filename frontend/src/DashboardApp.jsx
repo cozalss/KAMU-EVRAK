@@ -8,7 +8,7 @@ import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
-import { PAL, T, SANS, MONO, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
+import { PAL, DERIN, SANS, TYPE, RAD, SP, SH, ALFA, BANT, Icon, focusRing, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
 // ("yükleniyor…" flash) yaşanmasın, panel anında görünsün. Bağımlılıkları (neonUi +
@@ -24,6 +24,15 @@ const GidenEvrakView = lazy(() => import("./components/GidenEvrakView.jsx"));
 const TaslaklarView = lazy(() => import("./components/TaslaklarView.jsx"));
 const MevzuatView = lazy(() => import("./components/MevzuatView.jsx"));
 const DenetimView = lazy(() => import("./components/DenetimView.jsx"));
+// Sohbet asistanı (FAB + panel) — her görünümde sağ altta; tembel: yalnız kabuk yüklendikten
+// sonra iner, ilk yük bundle'ına ağırlık eklemez. Spec: docs/09-sohbet-asistani.md
+const ChatbotWidget = lazy(() => import("./components/ChatbotWidget.jsx"));
+
+// Görünüm ↔ URL hash eşlemesi (app.html#gelen). Görünüm geçişleri tarayıcı geçmişine yazılır →
+// fare/tarayıcı "geri" tuşu landing'e fırlatmak yerine ÖNCEKİ GÖRÜNÜME döner; yenilemede
+// görünüm korunur. Router bağımlılığı yok (tek kabuk, altı görünüm — hash yeterli).
+const VIEWS = new Set(["panel", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
+const hashView = () => window.location.hash.slice(1);
 
 // DB geçmişinden taslak listesi türet (yazi_taslak_md olanlar). Hem açılış hidrasyonunda
 // hem de DB reconcile'ında aynı eşlemeyi kullan → iki yol tutarlı kalsın.
@@ -45,7 +54,8 @@ export default function DashboardApp() {
   // → refresh'te boş→dolu ("Henüz evrak işlenmedi") flash'ı yok. Arka plandaki DB fetch (aşağıdaki
   // effect) uzak Supabase'ten tazeleyip günceller; değişince persist effect önbelleği yeniler.
   const [cachedDash] = useState(() => cachedDashboard.get(user?.id));
-  const [activeView, setActiveView] = useState("panel");
+  // Açılış görünümü URL hash'inden (yenilemede görünüm korunur); geçersiz/boş → panel.
+  const [activeView, setActiveView] = useState(() => (VIEWS.has(hashView()) ? hashView() : "panel"));
   const [history, setHistory] = useState(() => cachedDash?.history || []);
   const [processedIds, setProcessedIds] = useState(() => new Set());
   // Onaylanıp/reddedilip Giden Evrak'a düşen örnekler (id) → artık işlenmiş VE gitmiş
@@ -54,6 +64,11 @@ export default function DashboardApp() {
   const [sentSampleIds, setSentSampleIds] = useState(() => new Set());
   const [outbox, setOutbox] = useState(() => cachedDash?.outbox || []);
   const [drafts, setDrafts] = useState(() => draftsFromHistory(cachedDash?.history));   // DB/önbellek taslakları + "Düzenle" ile eklenenler
+  // Sohbet kaynak çipi → Mevzuat görünümü + okuma modalı köprüsü. MevzuatView tembel
+  // yüklendiğinden window-event yerine state taşınır; view mount olunca hedefi tüketir.
+  const [mevzuatHedef, setMevzuatHedef] = useState(null);
+  // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
+  const [slaMap, setSlaMap] = useState(null);
   const fileRef = useRef(null);
   const lastResultRef = useRef(null);
   const pendingApprovalRef = useRef(null);   // HITL kararı damgası (resume async)
@@ -182,7 +197,7 @@ export default function DashboardApp() {
         if (pa.secim === "duzenle") {
           pushDraft(result, fileMeta);
           showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi.");
-          setActiveView("taslaklar");
+          goView("taslaklar");
         } else {
           pushOutbox(result, fileMeta, pa.secim);
           persistDecision(result, pa.secim);
@@ -194,39 +209,82 @@ export default function DashboardApp() {
 
   // useCallback: NeonSidebar (React.memo) için kararlı referans → akış sırasında (busy/counts
   // sabitken nodes saniyede onlarca kez değişir) sidebar gereksiz yere yeniden render olmaz.
-  const goView = useCallback((v) => setActiveView(v), []);
+  // Hash ataması geçmişe KAYIT ekler → geri/ileri tuşu görünümler arasında gezinir.
+  const goView = useCallback((v) => {
+    setActiveView(v);
+    if (hashView() !== v) window.location.hash = v;
+  }, []);
+
+  // Geri/ileri tuşu (popstate→hashchange): hash'teki görünüme dön. Görünüm-dışı hash'ler
+  // (ör. skip-link "#nu-main") yok sayılır; boş hash = geçmişin ilk kaydı → panel.
+  useEffect(() => {
+    if (!VIEWS.has(hashView())) window.history.replaceState(null, "", "#panel");
+    const onHash = () => {
+      const h = hashView();
+      if (VIEWS.has(h)) setActiveView(h);
+      else if (!h) setActiveView("panel");
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  const mevzuatAc = useCallback((hedef) => { setMevzuatHedef(hedef); goView("mevzuat"); }, [goView]);
+
+  // İşlenmemiş kuyruk için SLA rozetleri — statik örnek seti için BİR kez hesaplanır.
+  // Backend yoksa sessizce atlanır (rozetler görünmez, kuyruk aynen çalışır).
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/sla/onizleme", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ogeler: SAMPLE_DOCS.map((s) => ({ id: s.id, tur: s.id, metin: s.text })) }),
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => {
+        if (cancelled) return;
+        setSlaMap(Object.fromEntries((d.sonuclar || []).map((x) => [x.id, x.sla_metadata])));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  // Panel "süresi yaklaşan" kartı: kuyruktaki (henüz gönderilmemiş) örneklerin SLA'sı.
+  const kuyrukSla = slaMap
+    ? SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))
+        .map((s) => ({ id: s.id, label: s.label, sla: slaMap[s.id] }))
+        .filter((x) => x.sla)
+    : [];
+
   // Taslak düzenle (metni güncelle) / sil — Taslaklar görünümünden çağrılır.
   const updateDraft = useCallback((id, md) => setDrafts((d) => d.map((x) => (x.id === id ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x))), []);
   const deleteDraft = useCallback((id) => setDrafts((d) => d.filter((x) => x.id !== id)), []);
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFile(f); };
-  const triggerUpload = useCallback(() => { setActiveView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy]);
-  const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); setActiveView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample]);
+  const triggerUpload = useCallback(() => { goView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy, goView]);
+  const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); goView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample, goView]);
 
   // HITL açık → kararı damgala + resume (outbox kaydı result-effect'te). HITL kapalı → mevcut
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
   const onApprove = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "onayla", fileMeta }; resume("onayla"); }
-    else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); setActiveView("giden"); }
+    else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onReject = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; resume("reddet"); }
-    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); setActiveView("giden"); }
+    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onEdit = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; resume("duzenle"); }
-    else if (pushDraft(result, fileMeta)) { showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); setActiveView("taslaklar"); }
+    else if (pushDraft(result, fileMeta)) { showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); goView("taslaklar"); }
     else showToast("Önce taslak üreten bir evrak işleyin.");
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
   let view;
-  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
-  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
+  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
+  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} />;
-  else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
+  else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (
     <CanliAjanAkisi
@@ -245,7 +303,7 @@ export default function DashboardApp() {
       <div style={{
         display: "flex", minHeight: "100vh", background: PAL.bg, color: PAL.ink, fontFamily: SANS,
       }}>
-        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: T, color: "#fbf7f0", padding: "8px 14px", borderRadius: "0 0 8px 0", fontWeight: 700 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
+        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
         <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
@@ -257,6 +315,8 @@ export default function DashboardApp() {
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
         {toast && <Toast msg={toast} />}
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
+
+        {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
       </div>
     </>
   );
@@ -266,7 +326,7 @@ export default function DashboardApp() {
 // yer tutucu — görünüm tasarımını değiştirmez, layout çökmesini önler.
 function ViewFallback() {
   return (
-    <div aria-hidden="true" style={{ flex: 1, display: "grid", placeItems: "center", minHeight: "60vh", color: PAL.mut2, fontFamily: MONO, fontSize: 12, letterSpacing: ".5px" }}>
+    <div aria-hidden="true" style={{ flex: 1, display: "grid", placeItems: "center", minHeight: "60vh", ...TYPE.data, color: PAL.mut2 }}>
       yükleniyor…
     </div>
   );
@@ -274,16 +334,18 @@ function ViewFallback() {
 
 function Toast({ msg }) {
   return (
-    <div aria-hidden="true" style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "#2a251e", color: "#fbf7f0", border: "1px solid rgba(255,255,255,.12)", padding: "11px 18px", borderRadius: 12, boxShadow: "0 18px 44px -10px rgba(35,26,18,.5)", fontFamily: SANS, fontSize: 13.5, fontWeight: 500 }}>{msg}</div>
+    <div aria-hidden="true" style={{ position: "fixed", bottom: SP.xl, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: PAL.inkSurf, color: PAL.onAccent, padding: "12px 16px", borderRadius: RAD.pop, boxShadow: SH.modal, ...TYPE.ui, fontWeight: 500 }}>{msg}</div>
   );
 }
 
 function ErrorBar({ msg, canRetry, onRetry, onDismiss }) {
   return (
-    <div role="alert" style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 200, display: "flex", alignItems: "center", gap: 14, background: "#fbe4e1", color: "#a23425", border: "1px solid rgba(201,67,47,.4)", padding: "12px 16px", borderRadius: 12, boxShadow: "0 18px 44px -10px rgba(35,26,18,.3)", fontFamily: SANS, fontSize: 13 }}>
-      <span>⚠ {msg}</span>
-      {canRetry && <button onClick={onRetry} style={{ cursor: "pointer", padding: "6px 12px", borderRadius: 8, border: "1px solid rgba(201,67,47,.45)", background: "rgba(201,67,47,.1)", color: "#a23425", fontFamily: "inherit", fontSize: 12.5, fontWeight: 600 }}>Tekrar dene</button>}
-      <button onClick={onDismiss} aria-label="Kapat" style={{ cursor: "pointer", padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(35,26,18,.15)", background: "transparent", color: "#7a3a30", fontFamily: "inherit", fontSize: 12.5 }}>✕</button>
+    <div role="alert" style={{ position: "fixed", bottom: SP.xl, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, background: ALFA(BANT.kirmizi.c), color: DERIN.kirmizi, padding: "12px 16px", ...TYPE.data }}>
+        <span style={{ display: "flex", alignItems: "center", gap: SP.s }}><Icon.alert /> {msg}</span>
+        {canRetry && <button onClick={onRetry} {...focusRing} style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: DERIN.kirmizi, ...TYPE.data, fontWeight: 500 }}>Tekrar dene</button>}
+        <button onClick={onDismiss} aria-label="Kapat" {...focusRing} style={{ cursor: "pointer", display: "flex", alignItems: "center", padding: "4px 8px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: DERIN.kirmizi }}><Icon.x /></button>
+      </div>
     </div>
   );
 }

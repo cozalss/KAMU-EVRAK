@@ -1,64 +1,58 @@
 /* NeonSidebar — çalışma alanı navigasyonu. Her öğe GERÇEK görünüm değiştirir (activeView).
    "Yeni evrak yükle" + "Örnek evrakla dene" dropdown girişi. Klavye erişilebilir (button + focusRing). */
 import React, { useState } from "react";
-import { MONO, SANS, T, V, R, PAL, focusRing, Icon } from "./neonUi.jsx";
+import { T, V, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
 
 const NAV = [
   { id: "panel", label: "Panel", icon: "grid" },
-  { id: "gelen", label: "Gelen Evrak", icon: "inbox", badge: true },
-  { id: "giden", label: "Giden Evrak", icon: "arrow", count: "giden" },
+  { id: "gelen", label: "Gelen evrak", icon: "inbox", badge: true },
+  { id: "giden", label: "Giden evrak", icon: "arrow", count: "giden" },
   { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
   { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },
   { id: "mevzuat", label: "Mevzuat", icon: "book" },
-  { id: "denetim", label: "Denetim İzi", icon: "shield" },
+  { id: "denetim", label: "Denetim izi", icon: "shield" },
 ];
 
 function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCount }) {
   const Ic = Icon[item.icon];
-  const base = { display: "flex", alignItems: "center", gap: 11, width: "100%", padding: "9px 11px", borderRadius: 10, fontSize: 13.5, fontFamily: SANS, textAlign: "left", cursor: "pointer" };
+  const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: "8px 12px", borderRadius: RAD.ctl, ...TYPE.ui, textAlign: "left", cursor: "pointer" };
   const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : item.count === "giden" ? gidenCount : null;
   const showBadge = badgeVal != null && badgeVal > 0;
   return (
     <button type="button" onClick={onClick} aria-current={active ? "page" : undefined} {...focusRing}
       style={active
-        ? { ...base, background: "linear-gradient(90deg,rgba(47,143,166,.14),rgba(47,143,166,.03))", border: "1px solid rgba(47,143,166,.3)", color: PAL.ink, fontWeight: 500, justifyContent: showBadge ? "space-between" : "flex-start" }
+        ? { ...base, background: ALFA(T), border: "1px solid transparent", color: PAL.ink, fontWeight: 500, justifyContent: showBadge ? "space-between" : "flex-start" }
         : { ...base, border: "1px solid transparent", background: "transparent", color: PAL.mut, justifyContent: showBadge ? "space-between" : "flex-start" }}>
-      <span style={{ display: "flex", alignItems: "center", gap: 11 }}>
-        <span style={{ color: active ? T : PAL.mut2, display: "flex" }}>{Ic && <Ic />}</span>{item.label}
+      {active && <span aria-hidden="true" style={{ position: "absolute", left: 0, top: SP.s, bottom: SP.s, width: 2, background: T }} />}
+      <span style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+        <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic />}</span>{item.label}
       </span>
       {item.live && active && busy
-        ? <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: "50%", border: "2px solid rgba(47,143,166,.3)", borderTopColor: T, animation: "nu-spin .8s linear infinite", marginLeft: "auto" }} />
-        : showBadge && <span aria-label={`${badgeVal} öğe`} style={{ fontFamily: MONO, fontSize: 10, padding: "2px 7px", borderRadius: 8, background: "rgba(79,124,201,.14)", color: "#3a5f8f" }}>{badgeVal}</span>}
+        ? <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, border: `2px solid ${PAL.line}`, borderTopColor: T, animation: "nu-spin .8s linear infinite", marginLeft: "auto" }} />
+        : showBadge && <span aria-label={`${badgeVal} öğe`} style={{ ...TYPE.meta, ...TNUM, color: PAL.mut }}>{badgeVal}</span>}
     </button>
   );
 }
 
-/* Örnek evrak satırı — grup rengiyle (Vatandaş=teal · Kurum=mavi · Hukuk/Mali=mor)
-   renklenen chip + başlık + açıklama + hover'da kayan ok. Giriş kademeli (nu-rise-stag). */
-const GRUP_RENK = { "Vatandaş": T, "Kurum": "#4f7cc9", "Hukuk/Mali": V };
-
-function SampleRow({ sample, index, onPick }) {
+/* Örnek evrak satırı — nötr ikon + başlık + açıklama; hover'da zemin tonu + görünen ok.
+   Giriş tek sefer nu-rise. */
+function SampleRow({ sample, onPick }) {
   const [hover, setHover] = useState(false);
-  const c = GRUP_RENK[sample.grup] || T;
   return (
     <button type="button" role="option" aria-selected="false" title={sample.aciklama} onClick={() => onPick(sample)}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} {...focusRing}
       style={{
-        cursor: "pointer", width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 11,
-        padding: "9px 10px", borderRadius: 10, border: `1px solid ${hover ? c + "44" : "transparent"}`,
-        background: hover ? c + "14" : "transparent", transition: "background .18s, border-color .18s",
-        animation: "nu-rise-stag .3s ease-out both", animationDelay: `${index * 38}ms`,
+        cursor: "pointer", width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: SP.m,
+        padding: SP.s, borderRadius: RAD.ctl, border: "none",
+        background: hover ? PAL.hov : "transparent", transition: "background .12s ease-out",
+        animation: "nu-rise .16s ease-out both",
       }}>
-      <span aria-hidden="true" style={{
-        flexShrink: 0, width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center",
-        background: hover ? c + "26" : c + "14", border: `1px solid ${hover ? c : c + "44"}`, color: c,
-        transition: "background .18s, border-color .18s",
-      }}><Icon.doc /></span>
+      <span aria-hidden="true" style={{ flexShrink: 0, display: "flex", color: hover ? DERIN.T : PAL.mut2, transition: "color .12s ease-out" }}><Icon.doc /></span>
       <span style={{ minWidth: 0, flex: 1 }}>
-        <span style={{ display: "block", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: hover ? PAL.ink : PAL.ink2, lineHeight: 1.25 }}>{sample.label}</span>
-        {sample.aciklama && <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontFamily: MONO, fontSize: 10.5, color: PAL.mut3, marginTop: 2, lineHeight: 1.4 }}>{sample.aciklama}</span>}
+        <span style={{ display: "block", ...TYPE.data, fontWeight: 500, color: hover ? PAL.ink : PAL.ink2 }}>{sample.label}</span>
+        {sample.aciklama && <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", ...TYPE.data, color: PAL.mut3, marginTop: SP.xs }}>{sample.aciklama}</span>}
       </span>
-      <span aria-hidden="true" style={{ flexShrink: 0, color: c, opacity: hover ? 1 : 0, transform: hover ? "translateX(0)" : "translateX(-4px)", transition: "opacity .18s, transform .18s" }}><Icon.arrow /></span>
+      <span aria-hidden="true" style={{ flexShrink: 0, display: "flex", color: DERIN.T, opacity: hover ? 1 : 0, transition: "opacity .12s ease-out" }}><Icon.arrow /></span>
     </button>
   );
 }
@@ -73,45 +67,50 @@ function bashHarfler(ad) {
 function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout }) {
   const [showSamples, setShowSamples] = useState(false);
   return (
-    <aside aria-label="Çalışma alanı navigasyonu" style={{ width: 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: "18px 14px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
+    <aside aria-label="Çalışma alanı navigasyonu" style={{ width: 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
       <button type="button" onClick={() => onNavigate("panel")}
         onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; }}
         onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
-        style={{ display: "flex", alignItems: "center", gap: 12, padding: "4px 6px 20px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: 12, outline: "none" }}>
-        <img src="/logo.png" alt="" width="40" height="40" style={{ display: "block", flexShrink: 0, borderRadius: 12, boxShadow: "0 6px 20px -9px rgba(47,143,166,.4), 0 4px 16px -10px rgba(139,92,176,.35)" }} />
-        <span style={{
-          position: "relative", fontFamily: SANS, fontSize: 19.5, fontWeight: 700, letterSpacing: "-.02em", lineHeight: 1.05, textTransform: "uppercase",
-          backgroundImage: `linear-gradient(100deg, ${R} 0%, ${V} 48%, ${T} 100%)`,
-          WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", color: T,
-        }}>kamu-evrak
-          <span aria-hidden="true" style={{ position: "absolute", right: -9, bottom: 2, width: 5, height: 5, borderRadius: "50%", background: R }} />
+        style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "4px 8px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none" }}>
+        <img src="/logo.png" alt="" width="40" height="40" style={{ display: "block", flexShrink: 0, borderRadius: RAD.card }} />
+        <span style={{ position: "relative", ...TYPE.h2, color: PAL.ink }}>kamu-evrak
+          <span aria-hidden="true" style={{ position: "absolute", right: -9, bottom: 2, width: 5, height: 5, borderRadius: RAD.dot, background: R }} />
         </span>
       </button>
 
-      <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2, padding: "0 8px 8px" }}>ÇALIŞMA ALANI</div>
-      <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <div style={{ ...TYPE.meta, color: PAL.mut2, padding: "0 8px 8px" }}>Çalışma alanı</div>
+      <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
         {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} />)}
       </nav>
 
-      <button type="button" onClick={onUpload} disabled={busy} {...focusRing} style={{ cursor: busy ? "not-allowed" : "pointer", marginTop: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: 11, borderRadius: 11, border: "1px dashed rgba(79,124,201,.45)", background: "rgba(79,124,201,.08)", color: "#3a5f8f", fontFamily: SANS, fontSize: 13, fontWeight: 500, opacity: busy ? 0.5 : 1 }}>
+      <button type="button" onClick={onUpload} disabled={busy} {...focusRing}
+        onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
+        style={{
+          cursor: busy ? "not-allowed" : "pointer", marginTop: SP.l, display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
+          padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
+          border: busy ? "1px solid transparent" : `1px solid ${PAL.inputLine}`,
+          background: busy ? PAL.press : PAL.surf, color: busy ? PAL.mut2 : PAL.ink,
+          transition: "background .12s ease-out",
+        }}>
         <Icon.plus /> Yeni evrak yükle
       </button>
 
       {samples.length > 0 && (
-        <div style={{ position: "relative", marginTop: 8 }} onKeyDown={(e) => { if (e.key === "Escape") setShowSamples(false); }}>
+        <div style={{ position: "relative", marginTop: SP.s }} onKeyDown={(e) => { if (e.key === "Escape") setShowSamples(false); }}>
           <button type="button" onClick={() => setShowSamples((v) => !v)} aria-expanded={showSamples} aria-haspopup="listbox" aria-controls="nu-samples" {...focusRing}
             style={{
-              cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-              padding: "10px 10px", borderRadius: 11, fontFamily: MONO, fontSize: 11, letterSpacing: ".2px", color: "#1f6d82",
-              border: `1px solid ${showSamples ? "rgba(47,143,166,.5)" : "rgba(47,143,166,.28)"}`,
-              background: showSamples ? "rgba(47,143,166,.12)" : "rgba(47,143,166,.06)",
-              transition: "background .2s, border-color .2s",
+              cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
+              padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: DERIN.T,
+              border: `1px solid ${showSamples ? PAL.lineHi : PAL.line}`,
+              background: showSamples ? ALFA(T) : "transparent",
+              transition: "background .12s ease-out, border-color .12s ease-out",
             }}>
-            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: T }}>
+            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3 L13.7 8.3 L19 10 L13.7 11.7 L12 17 L10.3 11.7 L5 10 L10.3 8.3 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
             </span>
             <span style={{ whiteSpace: "nowrap" }}>Örnek evrakla dene</span>
-            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginLeft: 1, transition: "transform .25s", transform: showSamples ? "rotate(180deg)" : "rotate(0deg)" }}>
+            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, transition: "transform .15s ease-out", transform: showSamples ? "rotate(180deg)" : "rotate(0deg)" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9 L12 15 L18 9" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </span>
           </button>
@@ -119,32 +118,31 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
             <div id="nu-samples" role="listbox" aria-label="Örnek evraklar"
               style={{
                 position: "absolute", top: "calc(100% + 8px)", left: 0, width: 304, maxHeight: 400, overflowY: "auto",
-                background: "linear-gradient(180deg,#ffffff,#fdfbf7)", border: `1px solid ${PAL.lineHi}`, borderRadius: 14, padding: 7,
-                boxShadow: "0 20px 48px -14px rgba(35,26,18,.28), 0 0 0 1px rgba(47,143,166,.08)",
-                zIndex: 40, animation: "nu-rise .22s ease-out both",
+                background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s,
+                boxShadow: SH.pop, zIndex: 40, animation: "nu-rise .16s ease-out both",
               }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 8px 9px" }}>
-                <span style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "1.6px", color: PAL.mut2 }}>HIZLI BAŞLA</span>
-                <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 9.5, color: PAL.mut3 }}>{samples.length} örnek</span>
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "4px 8px 8px" }}>
+                <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Hızlı başla</span>
+                <span style={{ marginLeft: "auto", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>{samples.length} örnek</span>
               </div>
-              {samples.map((s, i) => (
-                <SampleRow key={s.id} sample={s} index={i} onPick={(x) => { setShowSamples(false); onPickSample(x); }} />
+              {samples.map((s) => (
+                <SampleRow key={s.id} sample={s} onPick={(x) => { setShowSamples(false); onPickSample(x); }} />
               ))}
             </div>
           )}
         </div>
       )}
 
-      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: 10, padding: 10, borderRadius: 11, background: PAL.surfHi, border: `1px solid ${PAL.line}` }}>
-        <span aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: 9, background: `linear-gradient(135deg, ${V}, ${V}cc)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MONO, fontSize: 12, fontWeight: 600, color: "#fbf7f0" }}>{bashHarfler(user?.ad_soyad)}</span>
-        <span style={{ lineHeight: 1.3, minWidth: 0, flex: 1 }}>
-          <span style={{ display: "block", fontSize: 12.5, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
-          <span style={{ display: "block", fontSize: 10.5, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
+      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: SP.m, padding: SP.m, borderRadius: RAD.card, background: PAL.surfHi, border: `1px solid ${PAL.line}` }}>
+        <span aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.meta, fontWeight: 500, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
+        <span style={{ minWidth: 0, flex: 1 }}>
+          <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
+          <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
         </span>
         {onLogout && (
           <button type="button" onClick={onLogout} aria-label="Çıkış yap" title="Çıkış yap" {...focusRing}
-            style={{ flexShrink: 0, width: 30, height: 30, display: "grid", placeItems: "center", borderRadius: 9, cursor: "pointer", color: PAL.mut2, background: "transparent", border: `1px solid ${PAL.line}` }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = "#a23425"; e.currentTarget.style.borderColor = "rgba(201,67,47,.4)"; }}
+            style={{ flexShrink: 0, width: 30, height: 30, display: "grid", placeItems: "center", borderRadius: RAD.ctl, cursor: "pointer", color: PAL.mut2, background: "transparent", border: `1px solid ${PAL.line}`, transition: "color .12s ease-out, border-color .12s ease-out" }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = DERIN.kirmizi; e.currentTarget.style.borderColor = PAL.lineHi; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = PAL.mut2; e.currentTarget.style.borderColor = PAL.line; }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 17l5-5-5-5M20 12H9M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>

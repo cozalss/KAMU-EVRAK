@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from collections.abc import AsyncIterator
 from typing import Any
 from uuid import UUID, uuid4
@@ -180,6 +181,11 @@ async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,
 @rate_limit("20/minute")  # IP-başı limit (/stream ile aynı desen; slowapi yoksa etkisiz)
 async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
     """Hazır metinle blocking pipeline (OCR'sız). HITL açıksa taslakta durup onay bekler."""
+    t0 = time.monotonic()
+
+    def sure() -> int:  # üç dönüş yolu ortak ölçüm
+        return int((time.monotonic() - t0) * 1000)
+
     text, _ = await _ocr_or_text(None, req.evrak_text)
     state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=req.filename)
     if HITL_ENABLED:
@@ -193,12 +199,15 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
             resp = _to_response(dict(snap.values), {})
             resp.onay_bekliyor = True
             resp.thread_id = thread_id
+            resp.sure_ms = sure()
             return resp
         resp = _to_response(out, {})
+        resp.sure_ms = sure()
         await _maybe_persist(out, resp, text, req.filename, await _owner_id_from_request(request))
         return resp
     final = await _get_graph().ainvoke(state)
     resp = _to_response(final, {})
+    resp.sure_ms = sure()
     await _maybe_persist(final, resp, text, req.filename, await _owner_id_from_request(request))
     return resp
 
@@ -238,6 +247,7 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
     filename = file.filename or ""
 
     async def gen() -> AsyncIterator[str]:
+        t0 = time.monotonic()  # uçtan-uca süre (OCR dahil) — sure_ms yanıtta taşınır
         yield _sse({"event": "start", "nodes": ["oku", *PIPELINE_NODES]})
         # OCR'ı akış içinde yap: önce 'oku' CANLI (active) yansın, sonra sonuç (done).
         yield _sse({"event": "node", "node": "oku", "status": "active"})
@@ -281,10 +291,12 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
             resp = _to_response(final_state, ocr_meta)
             resp.onay_bekliyor = True
             resp.thread_id = cfg["configurable"]["thread_id"]
+            resp.sure_ms = int((time.monotonic() - t0) * 1000)
             yield _sse({"event": "done", "result": resp.model_dump()})
             return
         final_state = dict(snap.values)
         resp = _to_response(final_state, ocr_meta)
+        resp.sure_ms = int((time.monotonic() - t0) * 1000)
         await _maybe_persist(final_state, resp, text, filename, await _owner_id_from_request(request))
         yield _sse({"event": "done", "result": resp.model_dump()})
 

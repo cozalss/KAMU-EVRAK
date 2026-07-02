@@ -7,205 +7,172 @@
 ---
 
 **Project:** kamu-evrak
-**Generated:** 2026-06-26 (ui-ux-pro-max) · **Revize/aktif tema:** 2026-07-01
-**Category:** Government/Public Service · **Yön:** "Hero Light" (Açık, herodan türetilmiş pastel)
+**Generated:** 2026-06-26 (ui-ux-pro-max) · **Revize/aktif tema:** 2026-07-02 — **Hero Light v2 "Sakin Ürün"**
+**Category:** Government/Public Service · **Yön:** açık, herodan türetilmiş palet + gerçek-ürün disiplini
 
-> **AKTİF TEMA — HERO LIGHT.** Landing sayfasının hero görseli (`frontend/public/portfolio/hero.webp`
-> — sıcak fildişi zemin + pudra-gül → lavanta → gök mavisi pastel gökyüzü + hero manşetindeki tek
-> mercan kırmızısı nokta) çalışma-alanı temasının **tek renk kaynağıdır.** Token'lar
-> `frontend/src/components/neonUi.jsx`'te (`MONO`, `SANS`, `T`, `V`, `R`, `PAL`, `BANT`,
-> `focusRing`, `SR_ONLY`, `NEON_KEYFRAMES` + atom bileşenler). Uygulama kabuğu `DashboardApp.jsx`
-> bu atomları kullanır; stil **satır-içidir** (CSS sınıf sistemi değil), yalnız
-> `@keyframes` için tek bir `<style>{NEON_KEYFRAMES}</style>` vardır (isim `NEON_KEYFRAMES`
-> tarihseldir — animasyon mekaniği renkten bağımsız, aynen korunur).
+> **AKTİF TEMA — HERO LIGHT v2.** Palet v1 ile bit-aynı (landing hero'sundan türetilmiş sıcak
+> fildişi + gök mavisi/lavanta/mercan). v2 revizyonu **dekorasyon dilini söker**: border-first
+> yüzey, düz dolgular (gradyan/glow sıfır), sentence case, mono yalnız makine verisi, 7 kademeli
+> tip ölçeği. Referans: Geist (kenar/gölge), Radix (tip/radius adımları), IBM Carbon
+> (sentence-case/spacing), GOV.UK (işlevsel renk). Token'lar
+> `frontend/src/components/neonUi.jsx`'te (`MONO, SANS, T, V, R, PAL, BANT, DERIN, DERIN_OF,
+> ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, NEON_KEYFRAMES` + atom bileşenler).
+> Stil **satır-içidir** (CSS sınıf sistemi değil); tek `<style>` yalnız `@keyframes`.
 >
-> **Landing page ayrı kalır.** `frontend/index.html` + `frontend/src/portfolio/**` (hero, nav,
-> bölümler) bu değişiklikten **etkilenmez** — kendi açık/nötr paletini korur, buraya dokunulmaz.
-> Hero'nun rengi yalnız **çalışma alanına (app.html)** referans olarak taşınır.
+> **Landing page ayrı kalır.** `frontend/index.html` + `frontend/src/portfolio/**` bu temadan
+> **etkilenmez** — kendi paletini korur, buraya dokunulmaz.
 >
-> **ESKİ AÇIK TEMA (legacy, yedek, unmounted).** "Kurumsal Devlet" teması (`App.jsx` +
-> `frontend/src/styles/kamu-evrak.css`, Lexend/Source Sans) `main.jsx`'te artık render edilmiyor
-> (yalnız `AuthPage`/`DashboardApp` render edilir). CSS dosyası global reset + sonuç kartı (`rc-*`)
-> ve ajan-akış (`agw-*`) yardımcı stilleri için hâlâ yüklenir; `:root` token'ları Hero Light ile
-> hizalandı (bkz. aşağıdaki tablo) ama sınıf bazlı kurulum genişletilmez.
->
-> **NEON DARK (2026-06-27 → 2026-06-30) artık geçersiz.** Aşağıdaki tablo eski teal/mor neon
-> paletini **Hero Light** değerleriyle değiştirir; MASTER.md'nin önceki revizyonlarında geçen
-> `#2ee6c9`/`#b794ff`/`#121829` gibi hex'ler artık kullanılmaz.
+> **Süperseded:** "Neon dark" (2026-06-27→30) ve "Hero Light v1" (2026-07-01 — Space Grotesk +
+> gradyan/glow/ikon-çipli kart dili). v1'in görsel süslemeleri (kart üstü accent şeridi, radyal
+> köşe ışıması, hover kalkışı, uppercase mono eyebrow, gradyan buton) **artık anti-pattern'dir.**
 
 ---
 
 ## Global Rules
 
-### Color Palette — Hero Light
+### 0. İlkeler
 
-Kaynak: `neonUi.jsx` → `T`, `V`, `R`, `PAL`, `BANT`. Örnekleme: `frontend/public/portfolio/hero.webp`
-piksel ortalaması (blush ~`#efe7e7`, lavanta ~`#e5dce1`, gök mavisi ~`#dbe0e3`, taban krem
-~`#f1eeeb`, kağıt taupe ~`#b3afac`, manşet mürekkebi `#161616`, mercan nokta `#ff3b30`).
+1. **Renk yalnız işlevseldir** (GOV.UK): aksan = eylem/durum; dekorasyon için renk yok.
+2. **Tek derinlik dili** (border-first): statik yüzey = 1px hairline; gerçek gölge yalnız havada
+   duran katman (dropdown/tooltip/modal/toast).
+3. **Sentence case varsayılan**: "GELEN EVRAK" değil "Gelen evrak".
+4. **Mono = makine verisi**, başka hiçbir yerde.
+5. **Hareket = bilgi**: yalnız yüklenme/canlılık sinyali animasyonlu.
+6. **Ölçek dışı değer yazılamaz**: tip 7 kademe (`TYPE`), radius 4 token + nokta (`RAD`),
+   boşluk 7 adım (`SP`), alfa eki yalnız `ALFA()` (`"14"`). Görünüm dosyalarında elle hex = 0.
+
+### Color Palette — Hero Light (v1 ile aynı hex'ler)
 
 | Rol | Hex / değer | Token (`neonUi.jsx`) |
 |------|-------------|----------------------|
-| Birincil aksan (hero gök mavisi, koyulaştırılmış) | `#2f8fa6` | `T` |
-| İkincil aksan (hero lavantası, koyulaştırılmış) | `#8b5cb0` | `V` |
-| İmza aksanı (hero'nun mercan noktası — YALNIZ küçük dokunuşlarda) | `#e0563c` | `R` |
+| Birincil aksan (eylem/durum — dolgu) | `#2f8fa6` | `T` |
+| İkincil aksan (yalnız Görev 2 semantiği: ikon/nokta/vurgu) | `#8b5cb0` | `V` |
+| İmza aksanı (yalnız marka noktası — CTA/çip/dolgu ASLA) | `#e0563c` | `R` |
 | Ana arka plan (sıcak fildişi) | `#f7f3ee` | `PAL.bg` |
-| Derin zemin (sidebar / dropdown / modal) | `#efe6da` | `PAL.bg2` |
-| Kart yüzeyi | `#ffffff` | `PAL.surf` |
-| Yüksek yüzey (hafif koyu leke) | `rgba(35,26,18,.05)` | `PAL.surfHi` |
-| Kenar / çizgi | `rgba(35,26,18,.12)` | `PAL.line` |
-| Güçlü kenar | `rgba(35,26,18,.22)` | `PAL.lineHi` |
-| Metin — başlık (hero manşet siyahı) | `#161616` | `PAL.ink` |
-| Metin — gövde | `#3a3229` | `PAL.ink2` |
-| Metin — soluk / soluk2 / soluk3 | `#6b6255` / `#57503f` / `#8a8172` | `PAL.mut` / `mut2` / `mut3` |
-| Risk — YEŞİL (düşük) | `#2f9e6e` | `BANT.yesil` |
-| Risk — SARI (orta) | `#c98a1f` | `BANT.sari` |
-| Risk — KIRMIZI (yüksek) | `#c9432f` | `BANT.kirmizi` |
+| Derin zemin (sidebar) | `#efe6da` | `PAL.bg2` |
+| Kart yüzeyi / ikincil yüzey | `#ffffff` / `#fdfbf7` | `PAL.surf` / `PAL.surf2` |
+| Kenar / güçlü kenar / form input kenarı | `rgba(35,26,18,.12/.22/.35)` | `PAL.line/lineHi/inputLine` |
+| Hover / basılı-seçili zemin | `rgba(35,26,18,.04/.07)` | `PAL.hov/press` |
+| Metin — başlık / gövde | `#161616` / `#3a3229` | `PAL.ink` / `ink2` |
+| Metin — soluk ×3 | `#6b6255 / #57503f / #8a8172` | `PAL.mut/mut2/mut3` |
+| Koyu dolgu üstü metin | `#fbf7f0` | `PAL.onAccent` |
+| Toast zemini | `#2a251e` | `PAL.inkSurf` |
+| Risk YEŞİL/SARI/KIRMIZI | `#2f9e6e / #c98a1f / #c9432f` | `BANT` |
 
-**Gradyanlar & ışıma:**
-- Birincil buton: `linear-gradient(135deg, <accent>, <accent>cc)`, metin `#fbf7f0` (açık — dolgu artık
-  orta-koyu ton, koyu metin okunmaz), glow `0 8px 20px -10px <accent>99`.
-- Marka wordmark (sidebar/AuthPage): `linear-gradient(100deg, R 0%, V 48%, T 100%)` — hero'nun
-  pudra-gül→lavanta→gök mavisi yayının koyulaştırılmış, okunur metin versiyonu.
-- Kullanıcı avatarı: `linear-gradient(135deg, V, Vcc)`.
-- Odak halkası (`focusRing`): `0 0 0 2px PAL.bg, 0 0 0 4px T`.
+**AA metin türevleri (`DERIN`):** açık zeminde ham `T/V/R/BANT.c` **metin rengi olamaz**
+(kontrast yetersiz). Renkli metin daima `DERIN.T #1f6d82 · DERIN.V #6a4787 · DERIN.R #a23425 ·
+DERIN.yesil #1f7a52 · DERIN.sari #8a5a10 · DERIN.kirmizi #a23425`; ham→türev eşleme
+`DERIN_OF(renk)`. Primary buton dolgusu `DERIN.T`, hover `DERIN.Th #1a5e71`.
 
-**Color Notes:** Sıcak fildişi zemin üzerine **gök mavisi birincil + lavanta ikincil** aksan;
-mercan `R` yalnız imza dokunuşlarında (sidebar wordmark noktası vb.) — buton/CTA rengi DEĞİLDİR
-(kırmızı risk bandıyla karışmasın diye). Renk asla TEK sinyal değildir — her durumda ikon + metin
-eşlik eder (risk bandı: renk + etiket `YEŞİL/SARI/KIRMIZI` + açıklama). Görev ayrımı renkle
-desteklenir (Görev 1 gök mavisi eğilimli, Görev 2 lavanta eğilimli). Kontrast AA hedeflenir
-(ink `#161616` açık zemin üstünde yüksek kontrast).
+**Tayın kuralları:** `T` = tek birincil eylem rengi, **ekran başına 1 primary buton**. `V` =
+yalnız Görev 2 semantiği (asla yüzey dolgusu/geniş alan). `R` = tek imza dokunuşu (marka noktası).
+`BANT` = yalnız gerçek risk durumu. Tint zemin yalnız `ALFA(renk)` (%8). **Gradyan ve renkli
+glow tüm çalışma alanında SIFIRDIR.**
 
-### Typography — Hero Light
+### Typography — 7 kademe (`TYPE`)
 
-- **Heading / UI Font:** Space Grotesk (`SANS = "'Space Grotesk',system-ui,sans-serif"`)
-- **Mono / etiket / veri Font:** IBM Plex Mono (`MONO = "'IBM Plex Mono',ui-monospace,monospace"`)
-- **Mood:** warm, editorial-technical, AI-native, calm command-center, precise, confident
-- **Hosting:** `frontend/app.html` → Google Fonts (`Space Grotesk` 400–700 + `IBM Plex Mono` 400–600,
-  `display=swap`). Eski açık temanın yerel woff2'leri (Lexend / Source Sans 3) yalnız legacy için durur.
+- **UI/metin:** IBM Plex Sans (`SANS`) — 400 gövde · 500 buton/form etiketi · 600 başlık (700 yok).
+- **Veri:** IBM Plex Mono (`MONO`) — 400/500; **yalnız makine verisi:** evrak/kayıt no,
+  tarih-saat damgası, hash, maskeli PII, dosya adı/teknik kimlik (12–13px, tracking 0).
+- **Hosting:** `frontend/app.html` → Google Fonts (`IBM+Plex+Sans:400;500;600` +
+  `IBM+Plex+Mono:400;500`, `display=swap`). Space Grotesk kaldırıldı.
 
-**Kullanım:** Başlık/buton/gövde → `SANS`. Eyebrow, etiket (uppercase + letter-spacing), KV veri satırları,
-alt başlık (subline), sayaç rozetleri → `MONO`.
+| Token | px/lh | Kullanım |
+|---|---|---|
+| `TYPE.meta` | 12/16 | meta satırı, tarih etiketi, çip metni, form etiketi (500) |
+| `TYPE.data` | 13/18 | tablo hücresi, KV, liste ikincil satırı |
+| `TYPE.ui` | 14/20 | **UI varsayılanı** — gövde 400, buton 500, kart başlığı 600 |
+| `TYPE.read` | 16/24 | uzun okuma (özet, taslak metni) |
+| `TYPE.h2` | 20/26·600 | sayfa/bölüm başlığı |
+| `TYPE.num` | 24/28·600 | panel metrikleri (tabular-nums) |
+| `TYPE.h1` | 28/34·600 | yalnız AuthPage başlığı |
 
-### Shape & Radius
+Sayısal kolon/metrik: SANS + `TNUM` (tabular-nums) — metrikte mono yasak. Yarım piksel ve
+tablo-dışı fontSize yasak. Uppercase yalnız: doğal kısaltmalar (PDF, DOCX, EYP, SHA-256, KEP,
+EBYS, TCKN, SDP) + risk kodu `BANT.l` (YEŞİL/SARI/KIRMIZI, mono 12).
 
-| Öğe | Yarıçap |
-|------|---------|
-| Kart (`NeonCard`) | `14px` (üst kenar 2px accent şeridi) |
-| Buton / nav öğesi | `10px` |
-| İkon çipi (büyük, 64px) | `18px` |
-| Rozet / tag | `7–8px` |
-| Avatar / küçük amblem | `9–11px` |
+### Shape & Radius (`RAD`)
 
-### Motion
+`chip:4` durum çipi · `ctl:6` buton/input/dropdown satırı · `card:8` kart/panel ·
+`pop:12` dropdown/tooltip/modal/toast · `dot:"50%"` yalnız gerçek nokta/avatar.
+Yasak: 16+ radius, 999 pill, ara değerler.
 
-Kaynak: `NEON_KEYFRAMES` (tek `<style>` bloğu). Tümü compositor-dostu (`transform`/`opacity`).
+### Kenar / Gölge (`SH`) — border-first
 
-| Keyframe | Amaç |
-|----------|------|
-| `nu-dotpulse` | Canlı durum noktası nabzı |
-| `nu-spin` | Yükleniyor / işleniyor spinner |
-| `nu-scanv` | Dikey tarama çizgisi (OCR/işleme hissi) |
-| `nu-think` | "Düşünüyor" opaklık pulsu |
-| `nu-rise` | İçerik giriş animasyonu (alttan yüksel) |
-| `nu-ring` | Yayılan halka (vurgu) |
+Statik yüzey: `1px solid PAL.line` + en fazla `SH.card` (`0 1px 2px rgba(35,26,18,.05)`).
+Havada duran katman: `SH.pop` (dropdown/tooltip) · `SH.modal` (modal/toast). Renkli boxShadow ve
+textShadow = 0. Form input: `1px solid PAL.inputLine`. `focusRing` (2px bg + 4px T) aynen.
 
-`prefers-reduced-motion: reduce` mutlaka karşılanır (animasyonlar kapanır).
+### Spacing (`SP`) — 7 adım
+
+`4 / 8 / 12 / 16 / 24 / 32 / 48`. Kart iç dolgusu 16 · kart içi öğe arası 8–12 · grid gap 16 ·
+bölümler arası 24 · sayfa çerçevesi `"24px 32px 48px"` (ViewWrap). Serbest değer yazılmaz.
+
+### Motion — hareket = bilgi
+
+Kalan keyframe'ler (3): `nu-spin` (gerçek yükleme) · `nu-think` (canlılık, yalnız opacity) ·
+`nu-rise` (görünüm girişi, tek sefer ~160ms, stagger'sız). Hover'da transform yasak
+(translateY/scale yok) — hover = zemin tonu (`PAL.hov`), 120–160ms ease-out.
+`prefers-reduced-motion: reduce` mutlaka karşılanır.
 
 ---
 
 ## Component Specs (neonUi.jsx atomları)
 
-Tümü satır-içi stil; `T`/`V`/`R`/`PAL` token'larını kullanır. Yeni UI bu atomlardan kurulur.
+- **`ViewWrap`** — `TYPE.h2` başlık + SANS `TYPE.data` alt başlık; `padding:"24px 32px 48px"`.
+- **`NeonCard`** — düz `PAL.surf` + `1px PAL.line` + `RAD.card` + `SH.card`; başlık satırı:
+  kutusuz 16–18px satır-içi ikon (accent yalnız ikon rengi) + SANS 14/600 sentence-case başlık +
+  sağda düz `TYPE.meta PAL.mut` tag metni. Üst şerit/ikon kutusu/gradyan/hover kalkışı YOK.
+  Kart içinde kart yasak — iç gruplama boşluk + gerekirse `1px PAL.line` üst çizgi.
+- **`KV`** — düz `1px PAL.line` alt çizgi; anahtar `TYPE.meta PAL.mut3`, değer SANS `TYPE.data`/500+TNUM.
+- **`Btn`** — primary: düz `DERIN.T` + `PAL.onAccent`, hover `DERIN.Th` · secondary (varsayılan):
+  `#fff` + `1px PAL.inputLine` + `PAL.ink`, hover `PAL.hov` · disabled: `PAL.press`+`PAL.mut2`.
+  36px yükseklik, `RAD.ctl`, SANS 14/500. Ekran başına 1 primary.
+- **`EmptyState`** — kutusuz 24px `PAL.mut` ikon; başlık `TYPE.ui`/600; alt metin `TYPE.data`.
+- **`Icon`** — stroke set + `check/x/alert` (✓/✕/⚠ karakterleri yerine SVG).
+- **`RiskBand`** — "Risk bandı" `TYPE.meta` etiketi + üç düz nokta + `ALFA(BANT)` tint'li mono
+  durum kodu; glow yok. `InfoTip` a11y deseni aynen.
 
-- **`ViewWrap({ id, title, sub, actions, children })`** — görünüm kabuğu: `h2` başlık (`SANS`),
-  `MONO` alt başlık, sağ aksiyon alanı; kaydırılır sayfa (`padding: 26px 32px 48px`).
-- **`NeonCard({ title, tag, tagColor, accent=T, full })`** — `PAL.surf` (beyaz kağıt) zemin,
-  `PAL.line` kenar, **üstte 2px accent şeridi** (`borderTop`), `14px` yarıçap; başlık `MONO`
-  uppercase eyebrow. (İsim tarihseldir — "Neon"Card kalır, görünüm artık açık/kağıt.)
-- **`KV({ k, v, c })`** — anahtar/değer satırı; `MONO`, alt kenar `1px dashed PAL.line`.
-- **`Btn({ children, accent=T, primary, disabled })`** — `primary`: dolu accent gradyan + glow,
-  metin açık `#fbf7f0` (dolgu orta-koyu, koyu metin okunmaz); aksi halde **ghost**: `accent+"14"`
-  zemin, `accent+"55"` kenar, accent metin.
-- **`EmptyState({ icon, title, sub, actions })`** — ortalanmış boş durum; `T` tonlu 64px ikon çipi,
-  anlamlı yönlendirme metni + aksiyon.
-- **`Icon`** — stroke (çizgi) ikon seti: `grid, inbox, spin, doc, book, shield, upload, plus,
-  arrow, chart, clock, scale, route`. `currentColor` ile renklenir (aktifken `T`).
-
-**a11y atomları:** `focusRing` (her tıklanabilir öğeye yayılır — `onFocus/onBlur` box-shadow halka),
-`SR_ONLY` (ekran okuyucu metni).
+**a11y atomları:** `focusRing`, `SR_ONLY`.
 
 ---
 
 ## Naming & Architecture Conventions
 
-- **Tasarım atomları:** `frontend/src/components/neonUi.jsx` (tek kaynak). Renk/font/animasyon
-  buradan import edilir; **hex değer satır-içine elle yazılmaz**, token kullanılır.
-- **Bileşen adlandırma:** kabuk/parça `Neon*` (`NeonSidebar`, `NeonDetay`); bölüm görünümleri
-  `*View` (`PanelView`, `GelenEvrakView`, `TaslaklarView`, `MevzuatView`, `DenetimView`);
-  canlı ajan akışı `CanliAjanAkisi`.
-- **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları. Çalışma alanı kabuğu için CSS sınıf
-  sistemi YOK; yalnız `@keyframes` global `<style>` bloğundadır.
-- **Navigasyon:** `NeonSidebar` öğeleri gerçek `activeView` değiştirir (Panel/Gelen/İşleniyor/
-  Taslaklar/Mevzuat/Denetim).
-- **Legacy köprü:** `rc-*` (sonuç kartı) ve `agw-*` (ajan akış) sınıfları hâlâ `kamu-evrak.css`'te
-  (yalnız unmounted `App.jsx` yolunda render edilir); `:root` token'ları Hero Light ile hizalı.
-  Aktif çalışma alanında (`DashboardApp.jsx`) kullanılmazlar — yeni iş `neonUi.jsx` atomlarından
-  kurulur.
-
----
-
-## Style Guidelines
-
-**Style:** Hero Light (Açık, warm pastel, AI-native) — **Accessible & Ethical** ilkeleri korunur.
-
-**Keywords:** warm ivory surface, hero-derived accent (dusty blue/violet), high contrast dark ink text,
-monospace data, live/real-time feedback, keyboard navigation, screen-reader friendly, focus rings,
-semantic, reduced-motion.
-
-**Best For:** AI ajan panelleri, real-time işleme/komuta merkezi, teknik gösterim (demo), govtech.
-
-**Key Effects:** Belirgin odak halkaları (`T` `4px`), ARIA etiketleri, canlı durum nabzı, tarama/akış
-animasyonları, 44×44px dokunma hedefleri, `prefers-reduced-motion` desteği.
-
-### Page Pattern
-
-**Pattern Name:** Workspace + Live Flow
-
-- **Sol:** kalıcı `NeonSidebar` (marka + işlevsel nav + yükle/örnek).
-- **İçerik:** seçili `*View`; işleme sırasında `CanliAjanAkisi` (canlı ajan akışı = demo yıldızı).
-- **Akış:** Gelen Evrak'tan seç (veya yükle) → İşleniyor (canlı) → sonuç oturum geçmişine → Panel'de özet.
+- Tasarım token'ları **yalnız** `frontend/src/components/neonUi.jsx` — görünüm dosyalarında elle
+  hex/serbest fontSize/serbest radius yazılmaz.
+- Bileşen adlandırma: kabuk/parça `Neon*`, görünümler `*View`, canlı akış `CanliAjanAkisi`
+  (isimler tarihsel).
+- Satır-içi stil + `neonUi` atomları; CSS sınıf sistemi yok; `@keyframes` tek `<style>` bloğunda.
+- Legacy köprü: `rc-*`/`agw-*` sınıfları `kamu-evrak.css`'te yalnız unmounted `App.jsx` için durur.
 
 ---
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ **Neon/dark yüzeyleri geri sızdırmak** — kabuk artık sıcak fildişi (`PAL.bg`) açık zemin.
-- ❌ **Token yerine elle hex** — `T`/`V`/`R`/`PAL`/`BANT` kullan; rastgele renk ekleme.
-- ❌ **`R` (mercan) genel buton/CTA rengi olarak kullanmak** — yalnız imza/dekoratif dokunuşlar;
-  `BANT.kirmizi` (risk) ile karışmasın.
-- ❌ **Emoji ikon** — `neonUi` `Icon` setini (stroke SVG) kullan.
-- ❌ **`cursor:pointer` eksikliği** — tüm tıklanabilirlerde olmalı.
-- ❌ **Görünmez odak durumu** — `focusRing` her etkileşimli öğede.
-- ❌ **Renk = tek sinyal** — ikon + metin + (risk) etiket eşlik eder.
-- ❌ **Layout kaydıran hover** — yalnız `transform`/`opacity` (compositor-dostu).
-- ❌ **`prefers-reduced-motion` yok saymak** — animasyonlar kapanabilmeli.
-- ❌ **Düşük kontrast metin** — açık zeminde AA korunur (ink `#161616`, mut2 `#57503f`).
+- ❌ **Gradyan/glow/radyal blob** — hepsi sıfır; düz dolgu + hairline.
+- ❌ **Kart üstü renkli accent şeridi, ikon çipi kutusu, hover'da kalkan kart** (v1 kalıntısı —
+  "AI yaptı" imzası).
+- ❌ **Uppercase+letterspaced eyebrow etiket** — sentence case; mono etiket dili yok.
+- ❌ **Mono'yu başlık/etiket/buton/paragrafta kullanmak** — yalnız makine verisi.
+- ❌ **Ham `T/V/R/BANT.c`'yi açık zeminde metin rengi yapmak** — `DERIN.*` kullan.
+- ❌ **Çip enflasyonu** — satır başına en fazla 1 semantik durum çipi; kalanı ` · ` ayraçlı düz meta.
+- ❌ **Token yerine elle hex / `+"55"` gibi alfa yapıştırma** — `PAL/DERIN/ALFA`.
+- ❌ **Ölçek dışı fontSize/radius/boşluk** — `TYPE/RAD/SP`.
+- ❌ Emoji ikon · `cursor:pointer` eksikliği · görünmez odak · renk=tek sinyal ·
+  layout kaydıran hover · `prefers-reduced-motion` yok saymak · düşük kontrast.
+- ❌ **`R` (mercan) CTA/çip/dolgu olarak** — yalnız marka noktası.
 
 ---
 
 ## Pre-Delivery Checklist
 
-UI kodu teslim etmeden önce doğrula:
-
-- [ ] Renk/font/animasyon `neonUi.jsx` token'larından (elle hex yok)
-- [ ] Sıcak fildişi yüzey + gök mavisi/lavanta aksan tutarlı (eski neon/koyu yüzey sızmamış)
-- [ ] İkonlar `neonUi` `Icon` setinden (emoji yok)
-- [ ] Tüm tıklanabilirlerde `cursor:pointer`
-- [ ] `focusRing` ile görünür klavye odağı
-- [ ] Renk tek sinyal değil (ikon + metin + etiket)
-- [ ] Açık zeminde metin kontrastı AA (≥ 4.5:1 gövde)
-- [ ] Hover/aktif geçişleri yumuşak (150–300ms), layout kaydırmıyor
-- [ ] `prefers-reduced-motion` karşılanıyor
-- [ ] Responsive: 375px, 768px, 1024px, 1440px — yatay taşma yok
-- [ ] Sabit kabuk arkasına içerik gizlenmiyor
+- [ ] `grep "gradient|textShadow|textTransform"` (çalışma alanı) = 0; renkli glow boxShadow = 0
+- [ ] fontSize ⊆ {12,13,14,16,20,24,28} · borderRadius ⊆ {4,6,8,12,"50%"} · boşluk ⊆ SP
+- [ ] Görünüm dosyalarında elle hex = 0; renkli metin yalnız `DERIN.*` (AA ≥ 4.5)
+- [ ] Mono yalnız makine verisinde; metrik sayılar SANS+TNUM
+- [ ] Sentence case (kısaltma + risk kodu istisna); eyebrow/tracking yok
+- [ ] Ekran başına ≤ 1 primary buton; çip yalnız semantik durum
+- [ ] `focusRing` tüm etkileşimlilerde · `prefers-reduced-motion` çalışıyor · keyframes = {spin, think, rise}
+- [ ] Landing diff'i boş (`index.html`, `src/portfolio/**`) · palet hex'leri bit-değişmemiş
+- [ ] Responsive: 375/768/1024/1440 — yatay taşma yok

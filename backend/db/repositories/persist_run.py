@@ -52,7 +52,7 @@ async def persist_pipeline_run(
             olusturan_id=k.id, baslik=filename or "otomatik koşum", gelis_birim_id=k.birim_id)
         islem = await persist_islem(
             s, gelen_evrak_id=evrak.id, thread_id=response.thread_id or uuid.uuid4().hex,
-            response=response)
+            response=response, sure_ms=getattr(response, "sure_ms", None))
         if state.get("denetim_izi", {}).get("zincir"):
             await persist_denetim(s, islem_id=islem.id, denetim_izi=state["denetim_izi"])
         return islem.id

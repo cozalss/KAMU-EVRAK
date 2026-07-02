@@ -3,32 +3,50 @@
    Kategori operasyonel gruplama için TÜRETİLİR (lib/kategori); güven/tarih işleme sonucu
    oluştuğundan kuyrukta boştur (durum "Yeni" / işlenmişse "İşlendi"). */
 import React, { useMemo } from "react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, SANS, T, V, PAL } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, ALFA, DERIN, DERIN_OF } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter } from "../hooks/useFilter.js";
 import { evrakKategori, kategoriMeta, KATEGORILER, KATEGORI_BIRIM } from "../lib/kategori.js";
 import { BIRIM_LBL } from "./result-cards.jsx";
 
-const GRUP_RENK = { "Vatandaş": T, "Kurum": "#4f7cc9", "Hukuk/Mali": V };
 const KATEGORI_SELECT = [{ value: "", label: "Tüm kategoriler" }, ...KATEGORILER.map((k) => ({ value: k.id, label: k.label }))];
 
 const GELEN_FILTER_CONFIG = {
   search: { enabled: true, placeholder: "Evrak adı, açıklama…" },
   chips: [{ id: "grup", label: "Grup", options: [
-    { value: "Vatandaş", label: "Vatandaş", color: T },
-    { value: "Kurum", label: "Kurum", color: "#4f7cc9" },
-    { value: "Hukuk/Mali", label: "Hukuk/Mali", color: V },
+    { value: "Vatandaş", label: "Vatandaş" },
+    { value: "Kurum", label: "Kurum" },
+    { value: "Hukuk/Mali", label: "Hukuk/Mali" },
   ] }],
   select: [{ id: "kategori", label: "Kategori", options: KATEGORI_SELECT }],
   sort: { enabled: true, default: "ts_desc", options: [
     { value: "ts_desc", label: "Kuyruk sırası" },
-    { value: "name_asc", label: "Ad (A→Z)" },
-    { value: "name_desc", label: "Ad (Z→A)" },
+    { value: "name_asc", label: "Ad (A–Z)" },
+    { value: "name_desc", label: "Ad (Z–A)" },
   ] },
   dataMapping: { search: ["label", "aciklama"], grup: "grup", kategori: "_kategori" },
 };
 
-export default function GelenEvrakView({ samples = [], processedIds, onProcess, onUpload, busy }) {
+/* Yasal süre (SLA) rozeti — backend /sla/onizleme sonucundan (compute_sla tek kaynak).
+   GECİKMİŞ kırmızı, KRİTİK sarı, NORMAL yeşil; tarih okunamadıysa [DOĞRULA]; süre
+   tanımsız türde rozet basılmaz (SlaTriyajCard ile aynı sessizlik kuralı). */
+function SlaRozet({ sla }) {
+  if (!sla || sla.durum === "tanimsiz") return null;
+  if (sla.durum === "tarih_yok") {
+    return <span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut3 }}>[DOĞRULA] tarih</span>;
+  }
+  const renk = sla.durum === "GECIKMIS" ? BANT.kirmizi.c : sla.durum === "KRITIK" ? BANT.sari.c : BANT.yesil.c;
+  const metin = sla.durum === "GECIKMIS" ? `${Math.abs(sla.kalan_gun)} gün gecikti`
+    : sla.durum === "KRITIK" ? `son ${sla.kalan_gun} gün` : `${sla.kalan_gun} gün süre`;
+  return (
+    <span title={`${sla.etiket} — son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat})`}
+      style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), ...TNUM }}>
+      {metin}
+    </span>
+  );
+}
+
+export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy }) {
   const done = processedIds || new Set();
   // Her örneğe operasyonel kategori türet (id ≈ evrak türü + metin anahtar sözcükleri).
   const items = useMemo(() => samples.map((s) => ({
@@ -37,7 +55,7 @@ export default function GelenEvrakView({ samples = [], processedIds, onProcess, 
   const filter = useFilter(items, GELEN_FILTER_CONFIG);
 
   return (
-    <ViewWrap id="gelen-h" title="Gelen Evrak" sub={`${samples.length} evrak kuyrukta · işlemek için seçin`}
+    <ViewWrap id="gelen-h" title="Gelen evrak" sub={`${samples.length} evrak kuyrukta · işlemek için seçin`}
       actions={[<Btn key="u" primary onClick={onUpload} disabled={busy}><Icon.upload /> Yeni evrak yükle</Btn>]}>
       <FilterBar config={GELEN_FILTER_CONFIG} filter={filter} />
 
@@ -45,31 +63,33 @@ export default function GelenEvrakView({ samples = [], processedIds, onProcess, 
         <EmptyState icon={<Icon.inbox />} title="Eşleşen evrak yok"
           sub="Arama veya filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
           {filter.results.map((s) => {
             const idx = samples.indexOf(samples.find((x) => x.id === s.id));
             const isDone = done.has(s.id);
-            const renk = GRUP_RENK[s.grup] || T;
             const kat = kategoriMeta(s._kategori);
             const onerilenBirim = BIRIM_LBL(KATEGORI_BIRIM[s._kategori] || "yazi_isleri_evrak");
             return (
-              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 16px", borderRadius: 12, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
-                <span aria-hidden="true" style={{ width: 40, height: 40, borderRadius: 10, flexShrink: 0, display: "grid", placeItems: "center", background: renk + "18", color: renk, fontFamily: MONO, fontSize: 13, fontWeight: 600 }}>{String(idx + 1).padStart(2, "0")}</span>
+              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
+                <span aria-hidden="true" style={{ width: 40, height: 40, borderRadius: RAD.ctl, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surfHi, color: PAL.mut2, ...TYPE.data, fontWeight: 500, ...TNUM }}>{String(idx + 1).padStart(2, "0")}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-                    <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 600, color: PAL.ink2 }}>{s.label}</span>
-                    {/* Kategori rozeti (operasyonel) */}
-                    <span style={{ fontFamily: MONO, fontSize: 9, letterSpacing: ".3px", padding: "2px 7px", borderRadius: 6, background: kat.color + "1c", color: kat.color, border: `1px solid ${kat.color}3a` }}>{kat.label}</span>
-                    <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: renk + "1a", color: renk }}>{s.grup || "Evrak"}</span>
-                    <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 8px", borderRadius: 7, background: isDone ? "rgba(47,158,110,.14)" : "rgba(79,124,201,.14)", color: isDone ? "#1f7a52" : "#3a5f8f" }}>{isDone ? "İşlendi ✓" : "Yeni"}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+                    <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{s.label}</span>
+                    {/* Durum çipi (işlenme) + yasal süre rozeti (SLA önizleme) */}
+                    <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: isDone ? ALFA(BANT.yesil.c) : ALFA(T), color: isDone ? DERIN.yesil : DERIN.T }}>{isDone ? "İşlendi" : "Yeni"}</span>
+                    <SlaRozet sla={slaMap?.[s.id]} />
                   </div>
-                  <div style={{ fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, marginTop: 3, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {/* Kategori + grup: düz meta metin (operasyonel etiket, durum değil) */}
+                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs, display: "flex", gap: SP.s, flexWrap: "wrap" }}>
+                    <span>{kat.label} · {s.grup || "Evrak"}</span>
+                    <span aria-hidden="true">·</span>
                     <span>{s.aciklama}</span>
                     <span aria-hidden="true" style={{ color: PAL.mut3 }}>· önerilen birim: {onerilenBirim}</span>
                   </div>
                 </div>
-                <span style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut3, flexShrink: 0 }}>E-2026/{String(idx + 1).padStart(4, "0")}</span>
-                <Btn accent={renk} primary={!isDone} onClick={() => onProcess(s)} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
+                <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, flexShrink: 0 }}>E-2026/{String(idx + 1).padStart(4, "0")}</span>
+                {/* Tekrarlanan satır eylemi secondary — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
+                <Btn onClick={() => onProcess(s)} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
                   {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow />
                 </Btn>
               </div>
@@ -78,9 +98,9 @@ export default function GelenEvrakView({ samples = [], processedIds, onProcess, 
         </div>
       )}
 
-      <NeonCard accent="#4f7cc9" style={{ marginTop: 18 }}>
-        <p style={{ margin: 0, fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, lineHeight: 1.6 }}>
-          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: "#3a5f8f" }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
+      <NeonCard style={{ marginTop: SP.l }}>
+        <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>
+          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
         </p>
       </NeonCard>
     </ViewWrap>

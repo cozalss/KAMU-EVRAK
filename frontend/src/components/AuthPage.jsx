@@ -1,9 +1,9 @@
-/* AuthPage — giriş / kayıt ekranı. Sol: marka paneli (editoryal başlık + "uçuşan kağıtlar"
-   motifi — landing hero'nun görsel imzası, CSS-only + istatistik şeridi), sağ: kağıt-yüzeyli
-   form kartı (üstte Giriş/Kayıt segmented tab). Backend auth API'sine useAuth ile bağlanır.
+/* AuthPage — giriş / kayıt ekranı. Sol: marka paneli (düz zemin + editoryal başlık +
+   istatistik şeridi), sağ: kağıt-yüzeyli form kartı (üstte Giriş/Kayıt segmented tab).
+   Backend auth API'sine useAuth ile bağlanır.
    a11y: <form> + <label> + autoComplete + focusRing + aria-live hata + aria-pressed tab. */
 import React, { useEffect, useState } from "react";
-import { PAL, T, V, R, SANS, MONO, Btn, NeonCard, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
+import { PAL, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, NeonCard, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
 
@@ -13,53 +13,29 @@ const STATS = [
   { n: "SHA-256", l: "denetim izi" },
 ];
 
-// "Uçuşan kağıtlar" motifi — landing hero'daki fotoğrafın CSS-only karşılığı (ek asset yok).
-// Sağ-üst kümede, kısmen panel kenarından taşan, farklı boy/açılı "kağıt" dikdörtgenleri.
-const PAPERS = [
-  { top: "4%", right: "22%", w: 78, h: 100, rot: -9, delay: 0 },
-  { top: "-2%", right: "2%", w: 96, h: 124, rot: 7, delay: 70, lines: true },
-  { top: "24%", right: "-4%", w: 72, h: 94, rot: 15, delay: 140 },
-  { top: "30%", right: "34%", w: 88, h: 112, rot: -4, delay: 210, lines: true, dot: true },
-];
-
-function PaperMotif() {
+// Marka yazısı — düz ink metin + kelime sonunda 6px düz R nokta (tek imza dokunuşu).
+function Marka() {
   return (
-    <div aria-hidden="true" style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-      {PAPERS.map((p, i) => (
-        <div key={i} style={{
-          position: "absolute", top: p.top, right: p.right, width: p.w, height: p.h,
-          background: "#fdfbf7", border: `1px solid ${PAL.line}`, borderRadius: 10,
-          boxShadow: "0 14px 26px -16px rgba(35,26,18,.32)",
-          transform: `rotate(${p.rot}deg)`, padding: "12px 11px",
-          animation: "nu-rise-stag .5s cubic-bezier(.2,.8,.2,1) both", animationDelay: `${p.delay}ms`,
-        }}>
-          {p.lines && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
-              <span style={{ display: "block", height: 2, width: "80%", background: PAL.line, borderRadius: 1 }} />
-              <span style={{ display: "block", height: 2, width: "55%", background: PAL.line, borderRadius: 1 }} />
-              <span style={{ display: "block", height: 2, width: "68%", background: PAL.line, borderRadius: 1 }} />
-            </div>
-          )}
-          {p.dot && <span style={{ position: "absolute", bottom: 10, right: 10, width: 6, height: 6, borderRadius: "50%", background: R }} />}
-        </div>
-      ))}
-    </div>
+    <span style={{ display: "inline-flex", alignItems: "baseline", gap: SP.xs }}>
+      <span style={{ ...TYPE.h2, color: PAL.ink }}>kamu-evrak</span>
+      <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: R, flexShrink: 0 }} />
+    </span>
   );
 }
 
 function Field({ label, type = "text", value, onChange, autoComplete, required, children, placeholder }) {
   return (
-    <label style={{ display: "block", marginBottom: 14 }}>
-      <span style={{ display: "block", fontFamily: MONO, fontSize: 10.5, letterSpacing: "1.4px", color: PAL.mut2, marginBottom: 6, textTransform: "uppercase" }}>{label}</span>
+    <label style={{ display: "block", marginBottom: SP.m }}>
+      <span style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut2, marginBottom: SP.xs }}>{label}</span>
       {children || (
         <input
           type={type} value={value} onChange={(e) => onChange(e.target.value)}
           autoComplete={autoComplete} required={required} placeholder={placeholder}
           {...focusRing}
           style={{
-            width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11,
-            background: PAL.surfHi, border: `1px solid ${PAL.line}`,
-            color: PAL.ink, fontFamily: SANS, fontSize: 14, outline: "none", transition: "border-color .2s",
+            width: "100%", boxSizing: "border-box", padding: "8px 12px", borderRadius: RAD.ctl,
+            background: PAL.surf, border: `1px solid ${PAL.inputLine}`,
+            color: PAL.ink, ...TYPE.ui, outline: "none", transition: "border-color .15s ease-out",
           }}
         />
       )}
@@ -71,17 +47,18 @@ function Field({ label, type = "text", value, onChange, autoComplete, required, 
 function ModeTabs({ mode, onChange }) {
   const items = [["giris", "Giriş"], ["kayit", "Kayıt"]];
   return (
-    <div role="group" aria-label="Giriş veya kayıt seçin" style={{ display: "inline-flex", padding: 4, borderRadius: 12, background: PAL.bg2, border: `1px solid ${PAL.line}`, marginBottom: 24, gap: 2 }}>
+    <div role="group" aria-label="Giriş veya kayıt seçin" style={{ display: "inline-flex", padding: SP.xs, borderRadius: RAD.ctl, background: PAL.bg2, border: `1px solid ${PAL.line}`, marginBottom: SP.xl, gap: SP.xs }}>
       {items.map(([id, label]) => {
         const active = mode === id;
         return (
           <button key={id} type="button" onClick={() => onChange(id)} aria-pressed={active} {...focusRing}
             style={{
-              cursor: "pointer", padding: "8px 24px", borderRadius: 9, border: "none",
-              fontFamily: SANS, fontSize: 13, fontWeight: 600,
-              background: active ? "#ffffff" : "transparent", color: active ? PAL.ink : PAL.mut2,
-              boxShadow: active ? "0 2px 8px -2px rgba(35,26,18,.2)" : "none",
-              transition: "background .2s, color .2s, box-shadow .2s",
+              cursor: "pointer", padding: "8px 24px", borderRadius: RAD.chip,
+              border: `1px solid ${active ? PAL.line : "transparent"}`,
+              ...TYPE.ui, fontWeight: 500,
+              background: active ? PAL.surf : "transparent", color: active ? PAL.ink : PAL.mut2,
+              boxShadow: active ? SH.card : "none",
+              transition: "background .15s ease-out, color .15s ease-out",
             }}>{label}</button>
         );
       })}
@@ -131,72 +108,70 @@ export default function AuthPage() {
       {/* Sol — marka paneli (geniş ekran) */}
       <section aria-hidden="true" style={{
         flex: "1 1 0", minWidth: 0, position: "relative", overflow: "hidden", display: "none",
-        padding: "56px 52px", flexDirection: "column", justifyContent: "space-between",
-        background: `radial-gradient(700px 400px at 50% -10%, rgba(224,86,60,.07), transparent 60%), radial-gradient(900px 500px at 12% 8%, rgba(47,143,166,.14), transparent 60%), radial-gradient(800px 600px at 90% 100%, rgba(139,92,176,.14), transparent 55%), ${PAL.bg2}`,
-        borderRight: `1px solid ${PAL.line}`,
+        padding: SP.xxxl, flexDirection: "column", justifyContent: "space-between",
+        background: PAL.bg2, borderRight: `1px solid ${PAL.line}`,
       }} className="ke-brand">
-        <span aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(35,26,18,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(35,26,18,.035) 1px,transparent 1px)", backgroundSize: "44px 44px", maskImage: "radial-gradient(700px 500px at 30% 30%, #000, transparent 75%)" }} />
-        <PaperMotif />
-
-        <div style={{ display: "flex", alignItems: "center", gap: 14, position: "relative" }}>
-          <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: 13, boxShadow: "0 6px 22px -8px rgba(47,143,166,.4)" }} />
-          <span style={{ fontFamily: SANS, fontSize: 25, fontWeight: 700, letterSpacing: "-.02em", textTransform: "uppercase", backgroundImage: `linear-gradient(100deg, ${R} 0%, ${V} 48%, ${T} 100%)`, WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>kamu-evrak</span>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
+          <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: RAD.card }} />
+          <Marka />
         </div>
 
-        <div style={{ position: "relative" }}>
-          <h1 style={{ fontFamily: SANS, fontSize: 56, lineHeight: 1.02, fontWeight: 700, letterSpacing: "-.03em", margin: "0 0 18px", maxWidth: 480, color: PAL.ink }}>
-            Yığından imzaya.<br /><span style={{ color: T }}>Saniyeler</span> içinde.
+        <div>
+          <h1 style={{ ...TYPE.h1, margin: `0 0 ${SP.l}px`, maxWidth: 480, color: PAL.ink }}>
+            Yığından imzaya.<br /><span style={{ color: DERIN.T }}>Saniyeler</span> içinde.
           </h1>
-          <p style={{ fontFamily: SANS, fontSize: 15, color: PAL.mut, maxWidth: 420, lineHeight: 1.6, margin: "0 0 32px" }}>
+          <p style={{ ...TYPE.read, color: PAL.mut, maxWidth: 420, margin: `0 0 ${SP.xxl}px` }}>
             Kamu evrak ve yazışma süreçleri için yapay zekâ ajan destek sistemi. Oku, sınıflandır, mevzuat öner, resmî yazı üret — denetlenebilir biçimde.
           </p>
-          <div style={{ display: "flex", alignItems: "stretch" }}>
+          <div style={{ display: "flex", alignItems: "stretch", animation: "nu-rise .16s ease-out both" }}>
             {STATS.map((s, i) => (
               <React.Fragment key={s.l}>
-                {i > 0 && <span aria-hidden="true" style={{ width: 1, alignSelf: "center", height: 34, background: PAL.line, margin: "0 22px" }} />}
-                <div style={{ animation: "nu-rise-stag .45s ease-out both", animationDelay: `${300 + i * 90}ms` }}>
-                  <div style={{ fontFamily: i === 2 ? MONO : SANS, fontSize: i === 2 ? 19 : 27, fontWeight: 700, color: PAL.ink, letterSpacing: "-.01em", lineHeight: 1 }}>{s.n}</div>
-                  <div style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, marginTop: 7, letterSpacing: ".3px", whiteSpace: "nowrap" }}>{s.l}</div>
+                {i > 0 && <span aria-hidden="true" style={{ width: 1, alignSelf: "center", height: 32, background: PAL.line, margin: `0 ${SP.xl}px` }} />}
+                <div>
+                  <div style={{ ...TYPE.num, color: PAL.ink }}>{s.n}</div>
+                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: SP.s, whiteSpace: "nowrap" }}>{s.l}</div>
                 </div>
               </React.Fragment>
             ))}
           </div>
         </div>
 
-        <div style={{ position: "relative", fontFamily: MONO, fontSize: 10.5, color: PAL.mut3, letterSpacing: ".5px" }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
+        <div style={{ ...TYPE.meta, color: PAL.mut3 }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
       </section>
 
       {/* Sağ — form */}
-      <main style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 22px" }}>
+      <main style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: `${SP.xxl}px ${SP.xl}px` }}>
         <div style={{ width: "100%", maxWidth: 420 }}>
-          <a href="/" {...focusRing} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: MONO, fontSize: 11.5, color: PAL.mut2, textDecoration: "none", marginBottom: 18, borderRadius: 6, padding: "2px 4px" }}>← Ana sayfa</a>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 22 }} className="ke-formlogo">
-            <img src="/logo.png" alt="" width="40" height="40" style={{ borderRadius: 12 }} />
-            <span style={{ fontFamily: SANS, fontSize: 20, fontWeight: 700, textTransform: "uppercase", letterSpacing: "-.02em", color: T }}>kamu-evrak</span>
+          <a href="/" {...focusRing} style={{ display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, textDecoration: "none", marginBottom: SP.l, borderRadius: RAD.ctl }}>
+            <Icon.arrow style={{ transform: "rotate(180deg)" }} />Ana sayfa
+          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.xl }} className="ke-formlogo">
+            <img src="/logo.png" alt="" width="40" height="40" style={{ borderRadius: RAD.card }} />
+            <Marka />
           </div>
 
-          <NeonCard accent={T} style={{ padding: "30px 28px 28px" }}>
+          <NeonCard style={{ padding: SP.xl }}>
             <ModeTabs mode={mode} onChange={changeMode} />
 
-            <h2 style={{ fontFamily: SANS, fontSize: 22, fontWeight: 600, margin: "0 0 6px", letterSpacing: "-.01em", color: PAL.ink }}>
+            <h2 style={{ ...TYPE.h2, margin: `0 0 ${SP.xs}px`, color: PAL.ink }}>
               {kayit ? "Hesap oluştur" : "Tekrar hoş geldiniz"}
             </h2>
-            <p style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, margin: "0 0 22px" }}>
+            <p style={{ ...TYPE.data, color: PAL.mut2, margin: `0 0 ${SP.xl}px` }}>
               {kayit ? "Birim hesabınızı oluşturup evrak akışına başlayın." : "Evrak çalışma alanınıza giriş yapın."}
             </p>
 
             <form onSubmit={submit} noValidate>
               {kayit && (
-                <Field label="Ad Soyad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
+                <Field label="Ad soyad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
               )}
               <Field label="E-posta" type="email" value={form.eposta} onChange={set("eposta")} autoComplete="email" required placeholder="ad.soyad@kurum.gov.tr" />
               {kayit && (
                 <>
                   <Field label="Birim">
                     <select value={form.birim_kod} onChange={(e) => set("birim_kod")(e.target.value)} required {...focusRing}
-                      style={{ width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 11, background: PAL.surfHi, border: `1px solid ${PAL.line}`, color: PAL.ink, fontFamily: SANS, fontSize: 14, outline: "none", cursor: "pointer" }}>
+                      style={{ width: "100%", boxSizing: "border-box", padding: "8px 12px", borderRadius: RAD.ctl, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, color: PAL.ink, ...TYPE.ui, outline: "none", cursor: "pointer" }}>
                       {birimler.length === 0 && <option value="">Yükleniyor…</option>}
-                      {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: "#ffffff" }}>{b.ad}</option>)}
+                      {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: PAL.surf }}>{b.ad}</option>)}
                     </select>
                   </Field>
                   <Field label="Unvan (opsiyonel)" value={form.unvan} onChange={set("unvan")} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
@@ -205,12 +180,12 @@ export default function AuthPage() {
               <Field label="Parola" type="password" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} required placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
 
               {hata && (
-                <div role="alert" aria-live="assertive" style={{ display: "flex", gap: 8, alignItems: "center", padding: "10px 12px", marginBottom: 14, borderRadius: 10, background: "rgba(201,67,47,.08)", border: "1px solid rgba(201,67,47,.35)", color: "#a23425", fontFamily: SANS, fontSize: 12.5 }}>
-                  <span aria-hidden="true">⚠</span><span>{hata}</span>
+                <div role="alert" aria-live="assertive" style={{ display: "flex", gap: SP.s, alignItems: "center", padding: "8px 12px", marginBottom: SP.m, borderRadius: RAD.ctl, background: ALFA(BANT.kirmizi.c), color: DERIN.kirmizi, ...TYPE.data }}>
+                  <span aria-hidden="true" style={{ display: "flex", flexShrink: 0 }}><Icon.alert /></span><span>{hata}</span>
                 </div>
               )}
 
-              <Btn primary onClick={submit} disabled={busy} style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 14, marginTop: 4 }}>
+              <Btn primary onClick={submit} disabled={busy} style={{ width: "100%", justifyContent: "center", padding: SP.m, marginTop: SP.xs }}>
                 {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : (kayit ? "Hesap oluştur" : "Giriş yap")}
               </Btn>
             </form>

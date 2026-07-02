@@ -1,10 +1,11 @@
 /* FilterBar — deklaratif, yeniden-kullanılabilir filtre çubuğu. config'te tanımlı kontroller
    render edilir (arama → çipler → select+sıralama satırı → tarih → aktif-filtre şeridi).
-   filter = useFilter(...) çıktısı. Neon satır-içi stil + tam a11y (label, role, aria-live). */
+   filter = useFilter(...) çıktısı. Hero Light v2 satır-içi stil + tam a11y (label, role, aria-live). */
 import React from "react";
-import { MONO, SANS, T, PAL, BANT, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
 
-const inputBase = { background: PAL.bg2, border: `1px solid ${PAL.line}`, borderRadius: 9, color: PAL.ink2, fontFamily: MONO, fontSize: 12.5, padding: "9px 12px", outline: "none" };
+const inputBase = { background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, color: PAL.ink2, ...TYPE.ui, padding: "8px 12px", outline: "none" };
+const labelStyle = { ...TYPE.meta, fontWeight: 500, color: PAL.mut2 };
 
 // epoch ↔ <input type=date> (YYYY-MM-DD, yerel)
 const toDateInput = (ms) => { if (ms == null) return ""; const d = new Date(ms); const p = (n) => String(n).padStart(2, "0"); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; };
@@ -22,10 +23,10 @@ function FilterInput({ config, filter }) {
       <label htmlFor="flt-search" style={SR_ONLY}>Ara</label>
       <input id="flt-search" type="search" value={filter.filters.search} placeholder={config.search.placeholder || "Ara…"}
         onChange={(e) => filter.setSearch(e.target.value)} {...focusRing}
-        style={{ ...inputBase, width: "100%", paddingRight: 30 }} />
+        style={{ ...inputBase, width: "100%", paddingRight: SP.xxl }} />
       {filter.filters.search && (
         <button type="button" onClick={() => filter.setSearch("")} aria-label="Aramayı temizle" {...focusRing}
-          style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: PAL.mut2, cursor: "pointer", fontSize: 13, padding: 2 }}>✕</button>
+          style={{ position: "absolute", right: SP.s, top: 0, bottom: 0, display: "flex", alignItems: "center", background: "none", border: "none", color: PAL.mut2, cursor: "pointer", padding: 0 }}><Icon.x /></button>
       )}
     </div>
   );
@@ -34,15 +35,15 @@ function FilterInput({ config, filter }) {
 function FilterChips({ group, filter }) {
   const set = filter.filters.chips[group.id] || new Set();
   return (
-    <div role="group" aria-label={group.label} style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-      <span style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, letterSpacing: ".5px" }}>{group.label}:</span>
+    <div role="group" aria-label={group.label} style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+      <span style={labelStyle}>{group.label}:</span>
       {group.options.map((opt) => {
         const on = set.has(opt.value);
         const c = opt.color || BANT[opt.value]?.c || T;
         return (
           <button key={opt.value} type="button" aria-pressed={on} onClick={() => filter.toggleChip(group.id, opt.value)} {...focusRing}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 8, cursor: "pointer", fontFamily: MONO, fontSize: 11, border: `1px solid ${on ? c + "55" : PAL.line}`, background: on ? c + "22" : PAL.bg2, color: on ? c : PAL.mut2 }}>
-            <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: 3, background: c, opacity: on ? 1 : 0.55 }} />{opt.label}
+            style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${on ? "transparent" : PAL.line}`, background: on ? ALFA(c) : PAL.surf, color: on ? DERIN_OF(c) : PAL.mut2, transition: "background .12s ease-out" }}>
+            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: c, opacity: on ? 1 : 0.55, flexShrink: 0 }} />{opt.label}
           </button>
         );
       })}
@@ -52,10 +53,10 @@ function FilterChips({ group, filter }) {
 
 function FilterSelect({ sel, filter }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, minWidth: 190 }}>
-      <label htmlFor={`flt-${sel.id}`} style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, letterSpacing: ".5px" }}>{sel.label}</label>
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, flex: 1, minWidth: 190 }}>
+      <label htmlFor={`flt-${sel.id}`} style={labelStyle}>{sel.label}</label>
       <select id={`flt-${sel.id}`} value={filter.filters.select[sel.id] || ""} onChange={(e) => filter.setSelect(sel.id, e.target.value)} {...focusRing} style={{ ...inputBase, cursor: "pointer" }}>
-        {sel.options.map((o) => <option key={o.value} value={o.value} style={{ background: "#ffffff" }}>{o.label}</option>)}
+        {sel.options.map((o) => <option key={o.value} value={o.value} style={{ background: PAL.surf }}>{o.label}</option>)}
       </select>
     </div>
   );
@@ -63,12 +64,12 @@ function FilterSelect({ sel, filter }) {
 
 function FilterDateRange({ dateRange, filter }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <span style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, letterSpacing: ".5px" }}>{dateRange.label || "Tarih"}</span>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
+      <span style={labelStyle}>{dateRange.label || "Tarih"}</span>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
         <label htmlFor="flt-date-from" style={SR_ONLY}>Başlangıç tarihi</label>
         <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={{ ...inputBase, colorScheme: "light" }} />
-        <span style={{ color: PAL.mut2, fontFamily: MONO }}>—</span>
+        <span style={{ ...TYPE.data, color: PAL.mut2 }}>—</span>
         <label htmlFor="flt-date-to" style={SR_ONLY}>Bitiş tarihi</label>
         <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={{ ...inputBase, colorScheme: "light" }} />
       </div>
@@ -86,15 +87,15 @@ function FilterDatePresets({ filter }) {
   const presets = [["Bugün", 0], ["Son 7 gün", 7], ["Son 30 gün", 30]];
   const aktif = filter.filters.dateFrom != null || filter.filters.dateTo != null;
   return (
-    <div role="group" aria-label="Hızlı tarih filtreleri" style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-      <span style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, letterSpacing: ".5px" }}>Hızlı tarih:</span>
+    <div role="group" aria-label="Hızlı tarih filtreleri" style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+      <span style={labelStyle}>Hızlı tarih:</span>
       {presets.map(([lbl, g]) => (
         <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing}
-          style={{ padding: "5px 10px", borderRadius: 8, cursor: "pointer", fontFamily: MONO, fontSize: 11, border: `1px solid ${PAL.line}`, background: PAL.bg2, color: PAL.mut2 }}>{lbl}</button>
+          style={{ padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, transition: "background .12s ease-out" }}>{lbl}</button>
       ))}
       {aktif && (
         <button type="button" onClick={() => filter.setDateRange(null, null)} aria-label="Tarih filtresini temizle" {...focusRing}
-          style={{ padding: "5px 8px", borderRadius: 8, cursor: "pointer", fontFamily: MONO, fontSize: 11, border: "1px solid transparent", background: "none", color: PAL.mut3, textDecoration: "underline" }}>temizle</button>
+          style={{ padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, border: "1px solid transparent", background: "none", color: PAL.mut3, textDecoration: "underline" }}>Temizle</button>
       )}
     </div>
   );
@@ -102,10 +103,10 @@ function FilterDatePresets({ filter }) {
 
 function FilterSort({ sort, filter }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 190 }}>
-      <label htmlFor="flt-sort" style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, letterSpacing: ".5px" }}>Sıralama</label>
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, minWidth: 190 }}>
+      <label htmlFor="flt-sort" style={labelStyle}>Sıralama</label>
       <select id="flt-sort" value={filter.filters.sortBy} onChange={(e) => filter.setSortBy(e.target.value)} {...focusRing} style={{ ...inputBase, cursor: "pointer" }}>
-        {sort.options.map((o) => <option key={o.value} value={o.value} style={{ background: "#ffffff" }}>{o.label}</option>)}
+        {sort.options.map((o) => <option key={o.value} value={o.value} style={{ background: PAL.surf }}>{o.label}</option>)}
       </select>
     </div>
   );
@@ -117,35 +118,35 @@ function ActiveState({ config, filter }) {
   if (filter.filters.search.trim()) pills.push({ key: "search", label: `“${filter.filters.search.trim()}”`, clear: () => filter.setSearch("") });
   for (const [cid, set] of Object.entries(filter.filters.chips)) for (const v of set) pills.push({ key: `${cid}:${v}`, label: optionLabel(config, cid, v), clear: () => filter.toggleChip(cid, v) });
   for (const [sid, v] of Object.entries(filter.filters.select)) if (v) pills.push({ key: `${sid}:${v}`, label: optionLabel(config, sid, v), clear: () => filter.setSelect(sid, "") });
-  if (filter.filters.dateFrom != null || filter.filters.dateTo != null) pills.push({ key: "date", label: `${toDateInput(filter.filters.dateFrom) || "…"} → ${toDateInput(filter.filters.dateTo) || "…"}`, clear: () => filter.setDateRange(null, null) });
+  if (filter.filters.dateFrom != null || filter.filters.dateTo != null) pills.push({ key: "date", label: `${toDateInput(filter.filters.dateFrom) || "…"} – ${toDateInput(filter.filters.dateTo) || "…"}`, clear: () => filter.setDateRange(null, null) });
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginTop: SP.xs }}>
       {pills.map((p) => (
-        <span key={p.key} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 9px", borderRadius: 7, background: T + "22", border: `1px solid ${T}55`, color: T, fontFamily: MONO, fontSize: 11 }}>
+        <span key={p.key} style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(T), color: DERIN.T, ...TYPE.meta, fontWeight: 500 }}>
           {p.label}
-          <button type="button" onClick={p.clear} aria-label={`Filtre kaldır: ${p.label}`} {...focusRing} style={{ background: "none", border: "none", color: T, cursor: "pointer", fontSize: 12, padding: 0, lineHeight: 1 }}>✕</button>
+          <button type="button" onClick={p.clear} aria-label={`Filtre kaldır: ${p.label}`} {...focusRing} style={{ background: "none", border: "none", color: DERIN.T, cursor: "pointer", padding: 0, display: "flex" }}><Icon.x width={12} height={12} /></button>
         </span>
       ))}
-      <button type="button" onClick={filter.clearAll} {...focusRing} style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut2, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Tüm filtreleri temizle</button>
+      <button type="button" onClick={filter.clearAll} {...focusRing} style={{ ...TYPE.data, color: PAL.mut2, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Tüm filtreleri temizle</button>
     </div>
   );
 }
 
 export default function FilterBar({ config, filter, compact = false, showResultCount = true }) {
   return (
-    <section role="region" aria-labelledby="flt-h" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: 14, padding: compact ? "12px 14px" : "14px 16px", marginBottom: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <h3 id="flt-h" style={{ margin: 0, fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut2, textTransform: "uppercase" }}>Filtreler</h3>
+    <section role="region" aria-labelledby="flt-h" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: compact ? "12px 16px" : SP.l, marginBottom: SP.l, display: "flex", flexDirection: "column", gap: SP.m }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, flexWrap: "wrap" }}>
+        <h3 id="flt-h" style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Filtreler</h3>
         {showResultCount && (
-          <span role="status" aria-live="polite" aria-atomic="true" style={{ fontFamily: MONO, fontSize: 11.5 }}>
-            <strong style={{ color: T }}>{filter.counts.filtered}</strong><span style={{ color: PAL.mut2 }}> / {filter.counts.total} sonuç</span>
+          <span role="status" aria-live="polite" aria-atomic="true" style={{ ...TYPE.data, ...TNUM }}>
+            <strong style={{ color: DERIN.T, fontWeight: 600 }}>{filter.counts.filtered}</strong><span style={{ color: PAL.mut2 }}> / {filter.counts.total} sonuç</span>
           </span>
         )}
       </div>
 
       {config.search?.enabled && (
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap" }}>
           <FilterInput config={config} filter={filter} />
         </div>
       )}
@@ -153,7 +154,7 @@ export default function FilterBar({ config, filter, compact = false, showResultC
       {(config.chips || []).map((g) => <FilterChips key={g.id} group={g} filter={filter} />)}
 
       {((config.select || []).length > 0 || config.sort?.enabled) && (
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end" }}>
+        <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap", alignItems: "flex-end" }}>
           {(config.select || []).map((s) => <FilterSelect key={s.id} sel={s} filter={filter} />)}
           {config.sort?.enabled && <FilterSort sort={config.sort} filter={filter} />}
         </div>

@@ -1,6 +1,6 @@
 /* TaslaklarView — oturumda üretilen resmî yazı taslakları + filtre (arama/tür/birim/sıralama). */
 import React, { useMemo, useState } from "react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, SANS, T, V, PAL, BANT, focusRing } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
@@ -8,11 +8,11 @@ import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx"
 const BASE_CONFIG = {
   search: { enabled: true, placeholder: "Taslak adı…" },
   select: [
-    { id: "evrak_turu", label: "Evrak Türü", options: [] },
-    { id: "hedef_birim", label: "Hedef Birim", options: [] },
+    { id: "evrak_turu", label: "Evrak türü", options: [] },
+    { id: "hedef_birim", label: "Hedef birim", options: [] },
   ],
   sort: { enabled: true, default: "ts_desc", options: [
-    { value: "ts_desc", label: "En yeni" }, { value: "ts_asc", label: "En eski" }, { value: "name_asc", label: "Ad (A→Z)" },
+    { value: "ts_desc", label: "En yeni" }, { value: "ts_asc", label: "En eski" }, { value: "name_asc", label: "Ad (A–Z)" },
   ] },
   dataMapping: { search: ["name"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
 };
@@ -30,7 +30,6 @@ function DraftCard({ h, onUpdate, onDelete, onToast }) {
   const [text, setText] = useState("");
   const [confirmDel, setConfirmDel] = useState(false);
   const [dl, setDl] = useState(false);
-  const red = BANT.kirmizi.c;
 
   const startEdit = () => { setText(cleanDemoText(r.yazi_taslak_md) || ""); setOpen(true); setEditing(true); };
   const save = () => { onUpdate(h.id, text); setEditing(false); };
@@ -61,52 +60,47 @@ function DraftCard({ h, onUpdate, onDelete, onToast }) {
   };
 
   return (
-    <NeonCard title={h.name} tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "taslak"} accent={V}>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10, fontFamily: MONO, fontSize: 10 }}>
-        <span style={{ padding: "2px 8px", borderRadius: 6, background: "rgba(47,143,166,.12)", color: "#1f6d82" }}>{EVRAK_TR(r.evrak_turu)}</span>
-        <span style={{ padding: "2px 8px", borderRadius: 6, background: "rgba(139,92,176,.14)", color: "#6a4787" }}>{BIRIM_LBL(r.hedef_birim)}</span>
-        {editing && <span style={{ padding: "2px 8px", borderRadius: 6, background: `${V}1f`, color: "#6a4787", border: `1px solid ${V}44` }}>düzenleniyor</span>}
+    <NeonCard title={h.name} tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "Taslak"} accent={V}>
+      <div style={{ display: "flex", gap: SP.s, flexWrap: "wrap", alignItems: "center", marginBottom: SP.m }}>
+        <span style={{ ...TYPE.meta, color: PAL.mut }}>{EVRAK_TR(r.evrak_turu)} · {BIRIM_LBL(r.hedef_birim)}</span>
+        {editing && <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(V), color: DERIN.V }}>Düzenleniyor</span>}
       </div>
 
       {editing ? (
         <>
           <textarea value={text} onChange={(e) => setText(e.target.value)} aria-label="Taslak metnini düzenle" spellCheck={false}
-            onFocus={(e) => { e.currentTarget.style.borderColor = V; e.currentTarget.style.boxShadow = `0 0 0 3px ${V}33`; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = PAL.lineHi; e.currentTarget.style.boxShadow = "none"; }}
-            style={{ width: "100%", boxSizing: "border-box", minHeight: 240, resize: "vertical", background: "#ffffff", color: "#2a3346", border: `1px solid ${PAL.lineHi}`, borderRadius: 9, padding: "13px 15px", fontFamily: MONO, fontSize: 10.5, lineHeight: 1.6, outline: "none", transition: "border-color .2s, box-shadow .2s" }} />
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 7 }}>
-            <span style={{ fontFamily: MONO, fontSize: 9.5, color: PAL.mut3 }}>{text.length} karakter</span>
-            <button type="button" onClick={downloadDocx} disabled={dl || !text.trim()} aria-label="Düzenlenen taslağı DOCX olarak indir" title="DOCX indir" {...focusRing}
-              style={{ cursor: dl || !text.trim() ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "7px 13px", borderRadius: 9, border: `1px solid ${T}55`, background: dl || !text.trim() ? "rgba(35,26,18,.05)" : `${T}14`, color: dl || !text.trim() ? PAL.mut2 : T, fontFamily: SANS, fontSize: 12, fontWeight: 600 }}>
-              <INDIR /> {dl ? "indiriliyor…" : "DOCX indir"}
-            </button>
+            {...focusRing}
+            style={{ width: "100%", boxSizing: "border-box", minHeight: 240, resize: "vertical", background: PAL.surf, color: PAL.ink2, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "12px 16px", ...TYPE.read, outline: "none" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginTop: SP.s }}>
+            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>{text.length} karakter</span>
+            <Btn onClick={downloadDocx} disabled={dl || !text.trim()} ariaLabel="Düzenlenen taslağı DOCX olarak indir" title="DOCX indir">
+              <INDIR /> {dl ? "İndiriliyor…" : "DOCX indir"}
+            </Btn>
           </div>
         </>
       ) : (
-        <pre style={{ margin: 0, background: "#ffffff", borderRadius: 9, padding: "13px 15px", fontFamily: MONO, fontSize: 10.5, color: "#3a4252", whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6, maxHeight: open ? "none" : 150, overflow: "hidden" }}>
+        <pre style={{ margin: 0, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: open ? "none" : 150, overflow: "hidden" }}>
           {cleanDemoText(r.yazi_taslak_md)}
         </pre>
       )}
 
-      <div style={{ display: "flex", gap: 9, marginTop: 11, flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ display: "flex", gap: SP.s, marginTop: SP.m, flexWrap: "wrap", alignItems: "center" }}>
         {editing ? (
           <>
-            <Btn accent={V} primary onClick={save}>Kaydet</Btn>
-            <Btn accent={V} onClick={() => setEditing(false)}>İptal</Btn>
+            <Btn primary onClick={save}>Kaydet</Btn>
+            <Btn onClick={() => setEditing(false)}>İptal</Btn>
           </>
         ) : confirmDel ? (
           <>
-            <span style={{ marginRight: "auto", fontFamily: SANS, fontSize: 12, color: "#a23425" }}>Taslak silinecek — emin misiniz?</span>
-            <button type="button" onClick={() => onDelete(h.id)} {...focusRing}
-              style={{ cursor: "pointer", padding: "9px 15px", borderRadius: 10, border: "none", background: `linear-gradient(135deg,${red},${red}cc)`, color: "#fbf7f0", fontFamily: SANS, fontSize: 12.5, fontWeight: 700, boxShadow: `0 8px 20px -9px ${red}99` }}>Evet, sil</button>
-            <Btn accent={V} onClick={() => setConfirmDel(false)}>Vazgeç</Btn>
+            <span style={{ marginRight: "auto", ...TYPE.data, color: DERIN.kirmizi }}>Taslak silinecek — emin misiniz?</span>
+            <Btn primary accent={BANT.kirmizi.c} onClick={() => onDelete(h.id)}>Evet, sil</Btn>
+            <Btn onClick={() => setConfirmDel(false)}>Vazgeç</Btn>
           </>
         ) : (
           <>
-            <Btn accent={V} primary onClick={startEdit}><KALEM /> Düzenle</Btn>
-            <Btn accent={V} onClick={() => setOpen((o) => !o)}>{open ? "Daralt" : "Tamamını gör"}</Btn>
-            <button type="button" onClick={() => setConfirmDel(true)} aria-label="Taslağı sil" title="Taslağı sil" {...focusRing}
-              style={{ cursor: "pointer", marginLeft: "auto", padding: "9px 14px", borderRadius: 10, border: `1px solid ${red}66`, background: `${red}14`, color: "#a23425", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7 }}><COP /> Sil</button>
+            <Btn primary onClick={startEdit}><KALEM /> Düzenle</Btn>
+            <Btn onClick={() => setOpen((o) => !o)}>{open ? "Daralt" : "Tamamını gör"}</Btn>
+            <Btn onClick={() => setConfirmDel(true)} ariaLabel="Taslağı sil" title="Taslağı sil" style={{ marginLeft: "auto", color: DERIN.kirmizi }}><COP /> Sil</Btn>
           </>
         )}
       </div>
@@ -141,7 +135,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
       {filter.results.length === 0 ? (
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px,1fr))", gap: 16, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px,1fr))", gap: SP.l, alignItems: "start" }}>
           {filter.results.map((h) => <DraftCard key={h.id} h={h} onUpdate={onUpdate} onDelete={onDelete} onToast={onToast} />)}
         </div>
       )}

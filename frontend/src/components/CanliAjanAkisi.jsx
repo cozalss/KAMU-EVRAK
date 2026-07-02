@@ -1,4 +1,4 @@
-/* CanliAjanAkisi — "İşleniyor" görünümü (neon komuta merkezi ana içeriği).
+/* CanliAjanAkisi — "İşleniyor" görünümü (canlı komuta merkezi ana içeriği).
    SADECE gerçek veri: nodes (canlı SSE/JSON) + ProcessResponse. Sahte demo auto-animasyon YOK —
    evrak işlenmiyorsa anlamlı boş durum ("Gelen Evrak'tan seçin veya yükleyin").
    Sidebar kabuğu DashboardApp'te; bu bileşen <main> içine yerleşir.
@@ -8,10 +8,7 @@ import { useMemo } from "react";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
-import { MONO, SANS, T, V, PAL, BANT, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
-
-const ta = (a) => `rgba(47,143,166,${a})`;
-const va = (a) => `rgba(139,92,176,${a})`;
+import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
 
 function nodeTag(n, risk) {
   const d = n.data || {};
@@ -21,13 +18,13 @@ function nodeTag(n, risk) {
     case "siniflandir": return d.tur_confidence != null ? pc(d.tur_confidence) : "tür";
     case "cikar": { const k = d.bilgi_unsurlari ? Object.keys(d.bilgi_unsurlari).length : 0; return k ? `${k} alan` : "çıkar"; }
     case "kanit_baglama": { const s = d.kanit_metadata?.spanlar?.length || 0; return s ? `${s} kanıt` : "kanıt"; }
-    case "eksik_tespit": return (d.eksik_alanlar?.length) ? `${d.eksik_alanlar.length} eksik` : "tam ✓";
+    case "eksik_tespit": return (d.eksik_alanlar?.length) ? `${d.eksik_alanlar.length} eksik` : "tam";
     case "decompose": { const a = d.alt_talepler?.length || 0; return a >= 2 ? `${a} talep` : "tek konu"; }
     case "mevzuat_oner": { const m = d.mevzuat_onerileri?.length || 0; return m ? `${m} mevzuat` : "mevzuat"; }
     case "ozetle": return "özet";
     case "route_birim": return "havale";
     case "yazi_taslak": return d.yazi_turu ? "2646" : "taslak";
-    case "verify": return (d.verify_uyari?.length) ? "uyarı" : "veto ✓";
+    case "verify": return (d.verify_uyari?.length) ? "uyarı" : "veto";
     case "risk_guard": return risk.l;
     case "arsiv": return "SDP";
     case "sla_triyaj": return "süre";
@@ -51,10 +48,10 @@ function buildDrivenFields(r, risk) {
   return [
     ["Evrak türü", `${EVRAK_TR(r.evrak_turu)}${conf}`, PAL.ink2],
     ...spanRows,
-    ["Eksik alan", eksik ? `${eksik} eksik` : "Yok · tam ✓", eksik ? BANT.sari.c : BANT.yesil.c],
-    mev ? ["Mevzuat", cleanDemoText(mev), T] : null,
-    r.hedef_birim ? ["Hedef birim", BIRIM_LBL(r.hedef_birim), V] : null,
-    ["Risk bandı", risk.l, risk.c],
+    ["Eksik alan", eksik ? `${eksik} eksik` : "Yok · tam", eksik ? DERIN.sari : DERIN.yesil],
+    mev ? ["Mevzuat", cleanDemoText(mev), DERIN.T] : null,
+    r.hedef_birim ? ["Hedef birim", BIRIM_LBL(r.hedef_birim), DERIN.V] : null,
+    ["Risk bandı", risk.l, DERIN_OF(risk.c)],
   ].filter(Boolean);
 }
 
@@ -116,7 +113,7 @@ export default function CanliAjanAkisi({
   const doneCount = display.filter((a) => a.status === "done").length;
   const pct = Math.round((doneCount / total) * 100);
   const allDone = !busy && doneCount >= total;
-  const statusText = busy ? "işleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "tamamlandı" : "sırada");
+  const statusText = busy ? "İşleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "Tamamlandı" : "Sırada");
 
   const drivenFields = useMemo(() => (result ? buildDrivenFields(result, risk) : null), [result, risk]);
   const km = result?.kanit_metadata;
@@ -126,8 +123,8 @@ export default function CanliAjanAkisi({
   const decisionReady = !busy && (!!pendingOnay || !!result);
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   const metaLine = buildMetaLine(result, fileMeta);
-  // Sağ panel kartları — neon premium dil (gradyan yüzey + üst aksan + katmanlı gölge), NeonCard ile tutarlı.
-  const card = (accent) => ({ position: "relative", borderRadius: 14, background: "linear-gradient(180deg,#ffffff,#fdfbf7)", border: `1px solid ${PAL.line}`, borderTop: `2px solid ${accent}`, padding: 16, boxShadow: "0 14px 30px -22px rgba(35,26,18,.24)" });
+  // Sağ panel kartları — düz beyaz yüzey + 1px hairline (border-first), NeonCard ile tutarlı.
+  const card = { position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: SP.l, boxShadow: SH.card };
 
   return (
     <>
@@ -142,35 +139,39 @@ export default function CanliAjanAkisi({
       </div>
 
       {/* Üst durum çubuğu */}
-      <header style={{ padding: "15px 24px", borderBottom: `1px solid ${PAL.line}`, background: "rgba(247,243,238,.9)", backdropFilter: "blur(8px)", position: "sticky", top: 0, zIndex: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 13, minWidth: 0 }}>
-            <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: 9, background: "rgba(79,124,201,.12)", border: "1px solid rgba(79,124,201,.3)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5f8f" }}>
+      <header style={{ padding: "16px 24px", borderBottom: `1px solid ${PAL.line}`, background: PAL.bg, position: "sticky", top: 0, zIndex: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
+            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M9 12 L11 14 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </span>
             <span style={{ minWidth: 0 }}>
-              <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 14, color: PAL.ink, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
-              <span style={{ display: "block", fontSize: 11.5, color: PAL.mut2 }}>{metaLine}</span>
+              <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
+              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2 }}>{metaLine}</span>
             </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 11px", borderRadius: 20, background: allDone ? "rgba(47,158,110,.1)" : "rgba(47,143,166,.1)", border: "1px solid " + (allDone ? "rgba(47,158,110,.3)" : "rgba(47,143,166,.28)"), marginLeft: 6, flexShrink: 0 }}>
-              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: allDone ? BANT.yesil.c : T, animation: busy ? "nu-dotpulse 1.4s ease-in-out infinite" : "none" }} />
-              <span style={{ fontFamily: MONO, fontSize: 11, color: allDone ? "#1f7a52" : "#1f6d82" }}>{statusText}</span>
+            <span style={{ display: "flex", alignItems: "center", gap: SP.xs, padding: "2px 8px", borderRadius: RAD.chip, background: allDone ? ALFA(BANT.yesil.c) : ALFA(T), marginLeft: SP.s, flexShrink: 0 }}>
+              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: allDone ? BANT.yesil.c : T, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+              <span style={{ ...TYPE.meta, fontWeight: 500, color: allDone ? DERIN.yesil : DERIN.T, ...TNUM }}>{statusText}</span>
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            <span style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: MONO, fontSize: 10.5, color: PAL.mut2 }}>
-              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 2, background: T }} />Görev 1 · Anla
-              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 2, background: V, marginLeft: 5 }} />Görev 2 · Üret
+          <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+            <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
+              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
+              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
             </span>
-            <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} style={{ cursor: "pointer", padding: "8px 12px", borderRadius: 10, border: `1px solid ${PAL.lineHi}`, background: "rgba(35,26,18,.04)", color: PAL.mut, fontFamily: MONO, fontSize: 12 }} title="Yeni evrak">↻</button>
+            <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} title="Yeni evrak"
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.mut, transition: "background .12s ease-out" }}>
+              <Icon.upload />
+            </button>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 13 }}>
-          {display.map((a) => {
-            const col = a.gorev === 1 ? T : V;
-            return <div key={a.id} style={{ flex: 1, height: 5, borderRadius: 3, background: a.status === "done" || a.status === "active" ? col : "rgba(35,26,18,.12)", boxShadow: a.status === "active" && glow ? `0 0 10px ${col}66` : "none", transform: a.status === "active" ? "scaleY(1.6)" : "none", transition: "all .4s" }} />;
-          })}
-          <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 600, color: PAL.ink2, marginLeft: 10, flexShrink: 0, minWidth: 38, textAlign: "right" }}>{pct}%</span>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
+          <div aria-hidden="true" style={{ flex: 1, height: 4, borderRadius: 2, background: PAL.press, overflow: "hidden" }}>
+            <div style={{ width: `${pct}%`, height: "100%", borderRadius: 2, background: T, transition: "width .4s ease-out" }} />
+          </div>
+          <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flexShrink: 0, minWidth: 38, textAlign: "right", ...TNUM }}>{pct}%</span>
         </div>
       </header>
 
@@ -179,95 +180,89 @@ export default function CanliAjanAkisi({
         <div style={{ minHeight: "100%", minWidth: 1060, display: "grid", gridTemplateColumns: "290px minmax(380px,1fr) 360px" }}>
 
           {/* Kaynak belge */}
-          <div style={{ borderRight: `1px solid ${PAL.line}`, padding: 18, display: "flex", flexDirection: "column" }}>
-            <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2, marginBottom: 12 }}>KAYNAK BELGE</div>
-            <div style={{ position: "relative", borderRadius: 10, overflow: "hidden", background: "#ffffff", border: `1px solid ${PAL.line}`, boxShadow: "0 12px 30px -16px rgba(35,26,18,.24)", minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
-              {busy && <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 2, background: `linear-gradient(90deg,transparent,${T},transparent)`, boxShadow: `0 0 12px ${T}99`, animation: "nu-scanv 2.8s ease-in-out infinite", zIndex: 3 }} />}
+          <div style={{ borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column" }}>
+            <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, marginBottom: SP.m }}>Kaynak belge</div>
+            <div style={{ position: "relative", borderRadius: RAD.card, overflow: "hidden", background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
               {segs ? (
-                <pre style={{ margin: 0, padding: "18px 16px", fontFamily: MONO, fontSize: 10.5, lineHeight: 1.7, color: "#2a3346", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                  {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: "#fde68a", color: "#92400e", borderRadius: 3, padding: "0 2px" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
+                <pre style={{ margin: 0, padding: SP.l, fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                  {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
                 </pre>
               ) : (
-                <div style={{ padding: "20px 18px", fontFamily: MONO, display: "flex", flexDirection: "column", gap: 10, color: "#9aa3b8", fontSize: 11 }}>
-                  <div style={{ height: 7, width: "55%", background: "#e4ddd0", borderRadius: 3 }} />
-                  <div style={{ height: 7, width: "40%", background: "#e4ddd0", borderRadius: 3, marginBottom: 6 }} />
+                <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
+                  <div style={{ height: 8, width: "55%", background: PAL.bg2, borderRadius: RAD.chip, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+                  <div style={{ height: 8, width: "40%", background: PAL.bg2, borderRadius: RAD.chip, marginBottom: SP.xs, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
                   {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Metin işlenecek…"}
                 </div>
               )}
             </div>
-            <div style={{ marginTop: 14, padding: "11px 13px", borderRadius: 11, background: "rgba(47,143,166,.08)", border: "1px solid rgba(47,143,166,.24)", fontSize: 11.5, color: "#1f6d82", display: "flex", gap: 8, alignItems: "flex-start" }}>
+            <div style={{ marginTop: SP.l, padding: SP.m, borderRadius: RAD.card, background: ALFA(T), ...TYPE.meta, color: DERIN.T, display: "flex", gap: SP.s, alignItems: "flex-start" }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill={T} /><circle cx="12" cy="12" r="2.2" fill={T} /><circle cx="18" cy="12" r="2.2" fill={T} /></svg>
               Kişisel veriler (TCKN, telefon) maskelenerek işleniyor — KVKK uyumlu.
             </div>
           </div>
 
-          {/* Ajan izi — neon omurga zaman çizelgesi (dolan ilerleme + akan paket + nefes alan aktif düğüm) */}
-          <div style={{ padding: "18px 22px" }}>
+          {/* Ajan izi — zaman çizelgesi (düz ilerleme rayı + spinner/nokta canlılığı) */}
+          <div style={{ padding: "16px 24px" }}>
             {/* Başlık + kompakt telemetri */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
-              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "2px", color: PAL.mut2 }}>AJAN İZİ · {total} ADIM</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 7, fontFamily: MONO, fontSize: 9.5, letterSpacing: "1px", color: PAL.mut3 }}>
-                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: busy ? T : (doneCount >= total ? BANT.yesil.c : PAL.mut2), boxShadow: busy && glow ? `0 0 8px ${T}` : "none", animation: busy && glow ? "nu-dotpulse 1.4s ease-in-out infinite" : "none" }} />
-                {busy ? "CANLI" : (doneCount >= total ? "TAMAM" : "BEKLEMEDE")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.l }}>
+              <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2 }}>Ajan izi · {total} adım</div>
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
+                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : (doneCount >= total ? BANT.yesil.c : PAL.mut2), animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+                {busy ? "Canlı" : (doneCount >= total ? "Tamam" : "Beklemede")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}
               </div>
             </div>
 
             {/* Omurga + düğümler */}
             <div style={{ position: "relative" }}>
-              {/* OMURGA — sönük taban ray; içinde dolan ilerleme + akan paket. aria-hidden. */}
-              <div aria-hidden="true" style={{ position: "absolute", left: 13, top: 14, bottom: 14, width: 2, borderRadius: 2, background: PAL.line, overflow: "hidden", pointerEvents: "none" }}>
-                <div style={{ position: "absolute", inset: 0, borderRadius: 2, transformOrigin: "top center", transform: `scaleY(${total ? Math.max(doneCount, busy ? 0.04 : 0) / total : 0})`, background: `linear-gradient(180deg, ${T} 0%, ${T} 42%, ${V} 100%)`, boxShadow: glow ? `0 0 10px ${ta(0.5)}` : "none", transition: "transform .6s cubic-bezier(.2,.8,.2,1)" }} />
-                {busy && glow && (() => {
-                  const ai = display.findIndex((a) => a.status === "active");
-                  const flowCol = ai >= 0 ? (display[ai].gorev === 2 ? V : T) : (doneCount < Math.ceil(total / 2) ? T : V);
-                  const flowColA = ai >= 0 ? (display[ai].gorev === 2 ? va : ta) : (doneCount < Math.ceil(total / 2) ? ta : va);
-                  return <span style={{ position: "absolute", left: "50%", top: 0, width: 6, height: 26, marginLeft: -3, borderRadius: 6, background: `linear-gradient(180deg, transparent, ${flowCol}, transparent)`, boxShadow: `0 0 9px 1px ${flowColA(0.75)}`, animation: "nu-pkt 2.2s cubic-bezier(.5,0,.5,1) infinite", willChange: "transform, opacity" }} />;
-                })()}
+              {/* OMURGA — sönük taban ray + düz T ilerleme dolgusu. aria-hidden. */}
+              <div aria-hidden="true" style={{ position: "absolute", left: 13, top: 14, bottom: 14, width: 2, background: PAL.line, overflow: "hidden", pointerEvents: "none" }}>
+                <div style={{ position: "absolute", inset: 0, transformOrigin: "top center", transform: `scaleY(${total ? Math.max(doneCount, busy ? 0.04 : 0) / total : 0})`, background: T, transition: "transform .4s ease-out" }} />
               </div>
 
               {display.map((a, i) => {
-                const isAnla = a.gorev === 1, col = isAnla ? T : V, colA = isAnla ? ta : va;
+                const isAnla = a.gorev === 1, col = isAnla ? T : V;
                 const st = a.status, done = st === "done", active = st === "active", err = st === "error", pending = st === "pending";
                 const prevGorev = i > 0 ? display[i - 1].gorev : null;
-                const group = i === 0 ? "GÖREV 1 · ANLA" : (a.gorev === 2 && prevGorev === 1 ? "GÖREV 2 · ÜRET" : "");
-                const tagCol = a.id === "risk_guard" ? risk.c : col;
-                const tagBg = a.id === "risk_guard" ? risk.c + "22" : colA(0.12);
-                const tagBd = a.id === "risk_guard" ? risk.c + "3a" : colA(0.22);
-                const enterDelay = `${Math.min(i * 50, 640)}ms`;
+                const group = i === 0 ? "Görev 1 · Anla" : (a.gorev === 2 && prevGorev === 1 ? "Görev 2 · Üret" : "");
                 return (
                   <div key={a.id}>
                     {group && (
-                      <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "2px", color: i === 0 ? "#1f6d82" : "#6a4787", margin: (i === 0 ? "0" : "20px") + " 0 10px", paddingLeft: 42, display: "flex", alignItems: "center", gap: 9 }}>
+                      <div style={{ ...TYPE.meta, fontWeight: 500, color: i === 0 ? DERIN.T : DERIN.V, margin: (i === 0 ? "0" : `${SP.xl}px`) + ` 0 ${SP.s}px`, paddingLeft: 28 + SP.m, display: "flex", alignItems: "center", gap: SP.s }}>
                         <span>{group}</span>
-                        <span aria-hidden="true" style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${i === 0 ? ta(0.4) : va(0.4)}, transparent)` }} />
+                        <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
                       </div>
                     )}
-                    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: 14, padding: "9px 12px 9px 0", borderRadius: 12, marginBottom: 2, background: active ? colA(0.08) : "transparent", boxShadow: active && glow ? `inset 0 0 0 1px ${colA(0.26)}, 0 10px 30px -14px ${colA(0.55)}` : "none", transition: "background .4s, box-shadow .4s", animation: glow ? "nu-rise-stag .5s cubic-bezier(.2,.8,.2,1) both" : "none", animationDelay: glow ? enterDelay : "0ms" }}>
-                      {/* DÜĞÜM — omurga üstünde oturan nokta/çember */}
+                    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: `${SP.s}px ${SP.m}px ${SP.s}px 0`, borderRadius: RAD.ctl, marginBottom: SP.xs, background: active ? PAL.press : "transparent", transition: "background .15s ease-out", animation: glow ? "nu-rise .16s ease-out both" : "none" }}>
+                      {/* Aktif satır göstergesi — 2px sol şerit (semantik durum) */}
+                      {active && <span aria-hidden="true" style={{ position: "absolute", left: 0, top: SP.s, bottom: SP.s, width: 2, background: col }} />}
+                      {/* DÜĞÜM — omurga üstünde oturan durum işareti */}
                       <div aria-hidden="true" style={{ position: "relative", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        {active && glow && <span style={{ position: "absolute", left: "50%", top: "50%", width: 26, height: 26, borderRadius: "50%", border: `1.5px solid ${col}`, transform: "translate(-50%,-50%)", animation: "nu-ring 1.6s ease-out infinite", pointerEvents: "none" }} />}
-                        <span style={{ position: "relative", zIndex: 1, width: done || active ? 26 : 14, height: done || active ? 26 : 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MONO, fontSize: 10.5, fontWeight: 700, color: done || active ? "#fbf7f0" : err ? BANT.kirmizi.c : col, background: done || active ? col : err ? "rgba(201,67,47,.14)" : PAL.bg2, border: done || active ? "none" : `2px solid ${err ? BANT.kirmizi.c : pending ? PAL.lineHi : colA(0.6)}`, boxShadow: active && glow ? `0 0 16px 1px ${col}66` : done && glow ? `0 0 9px ${colA(0.5)}` : "none", animation: active && glow ? "nu-breathe 2s ease-in-out infinite" : done && glow ? "nu-pop .42s cubic-bezier(.34,1.56,.64,1) both" : "none", transition: "width .35s cubic-bezier(.34,1.56,.64,1), height .35s cubic-bezier(.34,1.56,.64,1), background .35s, border-color .35s" }}>
+                        <span style={{ position: "relative", zIndex: 1, width: 20, height: 20, borderRadius: RAD.dot, display: "flex", alignItems: "center", justifyContent: "center", background: PAL.bg }}>
                           {done ? (
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7" stroke="#fbf7f0" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                          ) : err ? "✕" : active ? (
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#fbf7f0", animation: glow ? "nu-think 1.1s ease-in-out infinite" : "none" }} />
-                          ) : null}
+                            <Icon.check style={{ color: DERIN.yesil }} />
+                          ) : err ? (
+                            <Icon.x style={{ color: DERIN.kirmizi }} />
+                          ) : active ? (
+                            <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: col, animation: glow ? "nu-think 1.1s ease-in-out infinite" : "none" }} />
+                          ) : (
+                            <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: PAL.bg2, border: `1px solid ${PAL.lineHi}` }} />
+                          )}
                         </span>
                       </div>
 
                       {/* İÇERİK */}
-                      <div style={{ minWidth: 0, paddingTop: 1, opacity: pending ? 0.5 : 1, transition: "opacity .4s" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-                          <span style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, lineHeight: 1.3, color: active ? PAL.ink : done ? PAL.ink2 : PAL.mut2, transition: "color .35s" }}>{a.label}</span>
-                          {a.tag && <span style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 7px", borderRadius: 7, color: tagCol, background: tagBg, border: `1px solid ${tagBd}`, opacity: done || active ? 1 : 0.45, transition: "opacity .35s" }}>{a.tag}</span>}
+                      <div style={{ minWidth: 0, opacity: pending ? 0.5 : 1, transition: "opacity .15s ease-out" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+                          <span style={{ ...TYPE.ui, fontWeight: 500, color: active ? PAL.ink : done ? PAL.ink2 : PAL.mut2, transition: "color .15s ease-out" }}>{a.label}</span>
+                          {a.tag && <span style={{ ...TYPE.meta, ...(a.id === "risk_guard" ? { fontFamily: MONO, fontWeight: 500 } : null), color: a.id === "risk_guard" ? DERIN_OF(risk.c) : PAL.mut, opacity: done || active ? 1 : 0.45, transition: "opacity .15s ease-out", ...TNUM }}>{a.tag}</span>}
                           {active ? (
-                            <span aria-hidden="true" style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 8.5, letterSpacing: "1.5px", color: col, opacity: 0.9, flexShrink: 0, animation: glow ? "nu-think 1.2s ease-in-out infinite" : "none" }}>İŞLENİYOR</span>
+                            <span aria-hidden="true" style={{ marginLeft: "auto", ...TYPE.meta, color: DERIN_OF(col), flexShrink: 0, animation: glow ? "nu-think 1.2s ease-in-out infinite" : "none" }}>İşleniyor</span>
                           ) : (
-                            <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 9, letterSpacing: "1px", color: PAL.mut2, opacity: 0.65, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span>
+                            <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut2, opacity: 0.65, flexShrink: 0, ...TNUM }}>{String(i + 1).padStart(2, "0")}</span>
                           )}
                         </div>
-                        <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 11.5, lineHeight: 1.5, color: done ? (a.id === "risk_guard" ? risk.c : PAL.mut) : active ? PAL.mut : err ? BANT.kirmizi.c : PAL.mut2, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>
-                          {done ? (a.out || "tamamlandı ✓") : active ? "çalışıyor…" : err ? "hata · adım başarısız" : "—"}
+                        <div style={{ marginTop: SP.xs, ...TYPE.data, color: done ? (a.id === "risk_guard" ? DERIN_OF(risk.c) : PAL.mut) : active ? PAL.mut : err ? DERIN.kirmizi : PAL.mut2, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>
+                          {done ? (a.out || "tamamlandı") : active ? "çalışıyor…" : err ? "hata · adım başarısız" : "—"}
                         </div>
                       </div>
                     </div>
@@ -278,42 +273,51 @@ export default function CanliAjanAkisi({
           </div>
 
           {/* Sağ panel: çıkarılan veri + risk + taslak + HITL */}
-          <div style={{ borderLeft: `1px solid ${PAL.line}`, padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={card(T)}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3 }}>ÇIKARILAN VERİ</span>
-                <span style={{ fontFamily: MONO, fontSize: 10, color: BANT.yesil.c, display: "flex", alignItems: "center", gap: 5 }}><span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: "50%", background: BANT.yesil.c }} />maskeli</span>
+          <div style={{ borderLeft: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
+            <div style={card}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: SP.s }}>
+                <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3 }}>Çıkarılan veri</span>
+                <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.yesil, background: ALFA(BANT.yesil.c), padding: "2px 8px", borderRadius: RAD.chip }}>Maskeli</span>
               </div>
-              {(drivenFields || [["Evrak türü", "•••"], ["Konu", "•••"], ["Gönderen", "•••"], ["Risk bandı", "•••"]]).map((d, k) => (
-                <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", padding: "6px 0", borderBottom: `1px dashed ${PAL.line}` }}>
-                  <span style={{ fontSize: 11.5, color: PAL.mut3, fontFamily: MONO }}>{d[0]}</span>
-                  <span style={{ fontFamily: MONO, fontSize: 11.5, color: d[2] || PAL.mut2, fontWeight: 500, textAlign: "right" }}>{d[1]}</span>
+              {(drivenFields || [["Evrak türü", "—"], ["Konu", "—"], ["Gönderen", "—"], ["Risk bandı", "—"]]).map((d, k) => (
+                <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: SP.m, alignItems: "center", padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
+                  <span style={{ ...TYPE.meta, color: PAL.mut3 }}>{d[0]}</span>
+                  <span style={{ ...TYPE.data, color: d[2] || PAL.mut2, fontWeight: 500, textAlign: "right", ...TNUM }}>{d[1]}</span>
                 </div>
               ))}
             </div>
 
-            <div style={card(risk.c)}>
+            <div style={card}>
               <RiskBand band={riskOutcome} lit={lit} />
             </div>
 
-            <div style={{ ...card(V), flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
-              <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "1.5px", color: PAL.mut3, marginBottom: 10 }}>RESMÎ YAZI TASLAĞI</div>
+            <div style={{ ...card, flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+              <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.s }}>Resmî yazı taslağı</div>
               {draftMd ? (
-                <pre style={{ background: "#ffffff", border: `1px solid ${PAL.line}`, borderRadius: 9, padding: "15px 16px", fontFamily: MONO, fontSize: 10.5, color: "#3a4252", flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .5s ease both", lineHeight: 1.6, maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>
+                <pre style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>
               ) : (
-                <div style={{ display: "flex", alignItems: "center", gap: 9, flex: 1, justifyContent: "center", fontSize: 12, color: PAL.mut2, border: "1px dashed rgba(35,26,18,.14)", borderRadius: 9, padding: 20 }}>
-                  <span aria-hidden="true" style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: SP.s, flex: 1, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.xl }}>
+                  <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
                   Taslak, "Yazı Taslağı" adımında üretilecek…
                 </div>
               )}
-              <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 11, fontSize: 10.5, color: PAL.mut2 }}>
-                <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: "50%", background: V, flexShrink: 0 }} />
+              <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m, ...TYPE.meta, color: PAL.mut2 }}>
+                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: V, flexShrink: 0 }} />
                 Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
               </div>
-              <div style={{ display: "flex", gap: 8, marginTop: 9 }}>
-                <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing} style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: 10, borderRadius: 10, border: "none", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: decisionReady ? "#fbf7f0" : PAL.mut2, background: decisionReady ? `linear-gradient(135deg,${V},${V}cc)` : "rgba(35,26,18,.06)", boxShadow: decisionReady ? "0 8px 20px -8px rgba(139,92,176,.5)" : "none" }}><span aria-hidden="true">✓ </span>Onayla &amp; Gönder</button>
-                <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: `1px solid ${PAL.lineHi}`, background: "rgba(35,26,18,.04)", color: decisionReady ? PAL.ink2 : PAL.mut2, fontFamily: SANS, fontSize: 12.5 }}>Düzenle</button>
-                <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing} style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "10px 14px", borderRadius: 10, border: "1px solid " + (decisionReady ? "rgba(201,67,47,.4)" : "rgba(35,26,18,.1)"), background: decisionReady ? "rgba(201,67,47,.08)" : "rgba(35,26,18,.03)", color: decisionReady ? "#a23425" : PAL.mut2, fontFamily: SANS, fontSize: 12.5 }}>Reddet</button>
+              <div style={{ display: "flex", gap: SP.s, marginTop: SP.s }}>
+                <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing}
+                  onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
+                  onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
+                  style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: "none", ...TYPE.ui, fontWeight: 500, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease-out" }}>Onayla &amp; gönder</button>
+                <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing}
+                  onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
+                  onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
+                  style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Düzenle</button>
+                <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing}
+                  onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
+                  onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
+                  style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Reddet</button>
               </div>
             </div>
           </div>

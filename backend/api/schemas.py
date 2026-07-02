@@ -147,6 +147,9 @@ class ProcessResponse(BaseModel):
     page_count: int | None = None
     # OCR güven skoru (0-1) — OCRResponse.confidence'tan taşınır (dosya yolu); metin yolunda None.
     ocr_confidence: float | None = None
+    # Uçtan-uca işlem süresi (ms) — route katmanında ölçülür (Panel süre grafiği kaynağı);
+    # /resume'da None kalır (kısmi segment süresi yanıltıcı olur).
+    sure_ms: int | None = None
 
 
 class OCRResponse(BaseModel):

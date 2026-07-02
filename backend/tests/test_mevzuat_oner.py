@@ -320,7 +320,9 @@ class TestMevzuatOnerRerank:
 
     def test_rerank_model_yok_graceful_none(self, monkeypatch):
         # Arrange — açık ama get_reranker patlar (lib/model yok) → graceful None
+        # (provider varsayılanı 'deepseek' → cross-encoder yolu açıkça seçilir)
         monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", True)
+        monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_PROVIDER", "cross-encoder")
 
         def _boom():
             raise ImportError("sentence-transformers kurulu değil")
@@ -331,7 +333,9 @@ class TestMevzuatOnerRerank:
 
     def test_rerank_aktif_yeniden_siralar(self, monkeypatch):
         # Arrange — fake reranker adayları tersine çevirir → 4982 öne geçer
+        # (provider varsayılanı 'deepseek' → cross-encoder yolu açıkça seçilir)
         monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", True)
+        monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_PROVIDER", "cross-encoder")
         monkeypatch.setattr("retrieval.reranker.get_reranker", _FakeReranker)
         # Act
         out = _maybe_rerank("dilekçe", self._DEDUP)

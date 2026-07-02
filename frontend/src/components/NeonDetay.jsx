@@ -209,6 +209,12 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
             )}
           </div>
           <RiskBand band={band} lit sub="İçerik" />
+          {r.risk_metadata?.aciklama && (
+            <div style={{ flexBasis: "100%", display: "flex", alignItems: "flex-start", gap: SP.s, padding: SP.m, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
+              <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: PAL.mut2 }}><Icon.info width={14} height={14} /></span>
+              <span style={{ ...TYPE.data, color: PAL.ink2 }}>{cleanDemoText(String(r.risk_metadata.aciklama))}</span>
+            </div>
+          )}
         </div>
 
         {/* ============ Görev 1 · Anlama ============ */}
@@ -350,6 +356,13 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
               <Vrow ok={!tutar.length} label={<>Veri tutarlılığı <span style={{ ...TYPE.meta, color: PAL.mut3 }}>(TCKN checksum · tarih · sayı deseni)</span></>} val={tutar.length ? `${tutar.length} uyarı` : "temiz"} />
               {uyari.slice(0, 5).map((u, i) => <div key={i} style={{ marginTop: SP.s, display: "flex", alignItems: "flex-start", gap: SP.s, ...TYPE.data, color: DERIN.sari }}><Icon.alert style={{ flex: "none", marginTop: 2 }} /> {cleanDemoText(String(u))}</div>)}
               {tutar.slice(0, 4).map((u, i) => <div key={"t" + i} style={{ marginTop: SP.s, display: "flex", alignItems: "flex-start", gap: SP.s, ...TYPE.data, color: DERIN.sari }}><Icon.alert style={{ flex: "none", marginTop: 2 }} /> {cleanDemoText(String(u))}</div>)}
+              {r.lint_duzeltme_md && (
+                <div style={{ marginTop: SP.m }}>
+                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>Önerilen düzeltme (Yön. 2646)</div>
+                  <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>Otomatik öneri — memur onayı olmadan uygulanmaz.</div>
+                  <pre style={{ margin: 0, padding: SP.m, fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 200, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{cleanDemoText(String(r.lint_duzeltme_md))}</pre>
+                </div>
+              )}
             </NeonCard>,
 
                 r.bilgilendirme && (

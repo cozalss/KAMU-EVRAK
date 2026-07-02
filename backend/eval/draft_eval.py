@@ -18,6 +18,9 @@ LLM'siz deterministik metrikler:
   - **uydurma-veto false-positive**: verify node'unun "kaynakta yok" uyarısı GERÇEKTEN
     kaynakta olan değeri yanlışça işaretlemiş mi? (docs/06 hedef: false-veto=0)
 
+OPSİYONEL LLM-judge (DRAFT_JUDGE_ENABLED=1, default kapalı): resmî-üslup ekseni
+(resmiyet/kip_uygunlugu/aciklik) — kapalıyken LLM HİÇ çağrılmaz, rapor deterministik.
+
 Çalıştır (PYTHONPATH=...\\backend): python -m eval.draft_eval
 """
 
@@ -26,6 +29,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -35,7 +39,9 @@ with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
 from agents.graph import build_graph
+from agents.nodes._llm_extract import llm_json
 from agents.state import make_initial_state
+from eval.judge import _clamp01
 from eval.stats import fmt_ci, wilson_interval
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "yazi_taslak_gold.jsonl"
@@ -273,6 +279,82 @@ def false_veto_count(verify_uyari: list[str], kaynak: str) -> tuple[int, list[st
     return len(yanlis), yanlis
 
 
+# --- OPSİYONEL resmî-üslup LLM-judge ekseni (DRAFT_JUDGE_ENABLED, default kapalı) ---
+# Ölçüt kaynağı: Resmî Yazışma Yön. 2646 üslup kuralları — m.16 "ifade sade ve anlaşılır
+# olur" + hiyerarşik kapanış (data/mevzuat seed'inden doğrulandı); genel üslup kriterleri
+# [DOĞRULA: m.5] docs/01 §5 (3. tekil/edilgen kip, argo/kısaltma yok, kısa-açık cümle).
+_USLUP_SYSTEM = (
+    "Sen resmî yazışma ÜSLUP hakemisin. Ölçüt: Resmî Yazışmalarda Uygulanacak Usul ve "
+    "Esaslar Hakkında Yönetmelik (CB Kararı 2646) üslup kuralları — ifade sade, "
+    "anlaşılır ve öz olur; resmî kip (3. tekil şahıs/edilgen) kullanılır; kapanış "
+    "muhatabın hiyerarşik konumuna uygundur (alt makama 'Rica ederim', üst/eş makama "
+    "'Arz ederim'); argo, konuşma dili ve gereksiz kısaltma bulunmaz; Türkçe dil "
+    "bilgisine uyulur. Verilen taslak gövdesini ŞU üç ölçütle puanla:\n"
+    "  - resmiyet: dil resmî ve saygın mı? (konuşma dili/argo/samimi hitap yok)\n"
+    "  - kip_uygunlugu: resmî kip + hiyerarşiye uygun kapanış ibaresi doğru mu?\n"
+    "  - aciklik: metin sade, anlaşılır ve öz mü? (dolambaçlı/aşırı uzun cümle yok)\n"
+    "Her ölçüt 0.00–1.00 arası float. 1.0 = kusursuz, 0.0 = berbat.\n\n"
+    "SADECE şu JSON şemasını döndür (başka metin yazma):\n"
+    '{"resmiyet": 0.0..1.0, "kip_uygunlugu": 0.0..1.0, "aciklik": 0.0..1.0, '
+    '"notlar": "kısa gerekçe (max 200 karakter)"}'
+)
+
+# Kapalı-küme eksen adları — LLM çıktısında hiçbiri yoksa şema-dışı sayılır (atlanır).
+_USLUP_EKSENLER = ("resmiyet", "kip_uygunlugu", "aciklik")
+_USLUP_TASLAK_MAX_CHAR = 3000  # prompt bütçesi (taslak gövdesi kısaltılmış)
+
+
+def _uslup_judge_acik() -> bool:
+    """Resmî-üslup LLM-judge gate (default kapalı) — çağrı anında okunur.
+
+    Kapalıyken LLM HİÇ çağrılmaz → tüm draft metrikleri deterministik (CI güvenli).
+    """
+    return os.getenv("DRAFT_JUDGE_ENABLED", "0") == "1"
+
+
+def _uslup_skoru_dogrula(obj: dict | None) -> dict[str, float] | None:
+    """LLM çıktısını kapalı-küme doğrula → eksen sözlüğü; bozuk/şema-dışı → None.
+
+    llm_json zaten hata/timeout/bozuk-JSON'da None döndürür; burada ek olarak beklenen
+    eksenlerin varlığı denetlenir (LLM çıktısına körü körüne güvenilmez).
+    """
+    if not obj or not any(k in obj for k in _USLUP_EKSENLER):
+        return None
+    return {k: _clamp01(obj.get(k, 0.0)) for k in _USLUP_EKSENLER}
+
+
+def _uslup_skorlari(rows: list[dict]) -> list[dict[str, float]]:
+    """Gate açıkken taslak gövdelerini üslup-judge'la — TEK asyncio.run noktası.
+
+    Skorlanamayan satır (LLM hatası/şema-dışı) sessizce atlanır → rapor None-güvenli
+    ortalama üretir; gate kapalı → boş liste (deterministik metrikler aynen).
+    """
+    if not _uslup_judge_acik():
+        return []
+
+    async def _run() -> list[dict[str, float]]:
+        out: list[dict[str, float]] = []
+        for r in rows:
+            user = (f"TASLAK GÖVDESİ (kısaltılmış):\n{r['taslak'][:_USLUP_TASLAK_MAX_CHAR]}\n\n"
+                    "Değerlendir (sadece JSON):")
+            obj = await llm_json(_USLUP_SYSTEM, user, max_tokens=160, temperature=0.0)
+            if (skor := _uslup_skoru_dogrula(obj)) is not None:
+                out.append(skor)
+        return out
+
+    return asyncio.run(_run())
+
+
+def _uslup_rapor(skorlar: list[dict[str, float]]) -> dict:
+    """Üslup-judge rapor alanları — skor yoksa None (gate kapalı/CI deterministik)."""
+    if not skorlar:
+        return {"uslup_judge": None, "uslup_boyutlar": None, "uslup_judge_n": 0}
+    n = len(skorlar)
+    boyutlar = {k: round(sum(s[k] for s in skorlar) / n, 4) for k in _USLUP_EKSENLER}
+    genel = round(sum(sum(s.values()) / len(_USLUP_EKSENLER) for s in skorlar) / n, 4)
+    return {"uslup_judge": genel, "uslup_boyutlar": boyutlar, "uslup_judge_n": n}
+
+
 def evaluate(rows: list[dict]) -> dict:
     """Format-compliance + component checklist + yazi_turu acc + purity + false-veto."""
     run_pipeline(rows)
@@ -326,6 +408,8 @@ def evaluate(rows: list[dict]) -> dict:
         "false_veto_rate": round(false_veto_toplam / veto_uyari_toplam, 4)
         if veto_uyari_toplam else 0.0,
         "false_veto_ornek": false_veto_ornek,
+        # OPSİYONEL resmî-üslup LLM-judge (DRAFT_JUDGE_ENABLED; kapalıyken None).
+        **_uslup_rapor(_uslup_skorlari(rows)),
     }
 
 
@@ -345,6 +429,14 @@ def main() -> int:
           f"(≥{PURITY_MIN}: {res['purity_ok']}/{res['n']})")
     print(f"  Uydurma-veto yanlış-poz : {res['false_veto']}/{res['veto_uyari_toplam']} "
           f"(false-veto-rate {res['false_veto_rate']:.3f}; docs/06 hedef 0)")
+    if res["uslup_judge"] is not None:
+        b = res["uslup_boyutlar"]
+        print(f"  Resmî üslup (LLM-judge) : {res['uslup_judge']:.3f}  "
+              f"(resmiyet {b['resmiyet']:.2f} · kip {b['kip_uygunlugu']:.2f} · "
+              f"açıklık {b['aciklik']:.2f}; n={res['uslup_judge_n']})")
+    else:
+        print("  Resmî üslup (LLM-judge) : — (DRAFT_JUDGE_ENABLED kapalı; "
+              "deterministik format/saflık metrikleri raporlandı)")
     if res["false_veto_ornek"]:
         print("    UYARI — YANLIŞ veto (değer kaynakta VAR ama 'yok' işaretlenmiş):")
         for it in res["false_veto_ornek"][:5]:

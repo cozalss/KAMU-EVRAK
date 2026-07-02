@@ -38,6 +38,7 @@ from agents.config import (
     DECOMPOSE_ENABLED,
     HITL_ENABLED,
     NLI_ENABLED,
+    PARALEL_ANLAMA,
     RISK_GUARD_ENABLED,
     SELF_RAG_ENABLED,
 )
@@ -147,8 +148,16 @@ def build_graph(checkpointer: Any = None) -> Any:
     g.add_node("denetim_izi", denetim_izi_node)
     g.add_node("finalize", finalize_node)
 
+    # Madde 14 — anlama fan-out (ENV-gated, varsayılan AÇIK): cikar yalnız evrak_text okur
+    # (tür bağımlılığı yok) → siniflandir ∥ cikar paralel dallar, kanit_baglama'da fan-in.
+    # Gerçek LLM'de belge başına ~1 çağrı süresi (7-57 sn) kazanılır; mock'ta sonuç seri
+    # koşumla alan-bazında AYNI (test_paralel_anlama). PARALEL_ANLAMA=0 → seri baseline birebir.
     g.add_edge(START, "siniflandir")
-    g.add_edge("siniflandir", "cikar")
+    if PARALEL_ANLAMA:
+        g.add_edge(START, "cikar")
+        g.add_edge("siniflandir", "kanit_baglama")
+    else:
+        g.add_edge("siniflandir", "cikar")
     # kanit_baglama: çıkarılan unsurları (maskeli) metindeki yerine bağla (additive).
     g.add_edge("cikar", "kanit_baglama")
     g.add_edge("kanit_baglama", "eksik_tespit")

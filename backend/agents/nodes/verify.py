@@ -22,13 +22,23 @@ from typing import Any
 
 import structlog
 
-from agents.config import VERIFY_ENABLED, YAZI_ZORUNLU_BOLUMLER
+from agents.config import (
+    LINT_AUTOFIX,
+    VERIFY_ENABLED,
+    VERIFY_GROUNDING_LLM,
+    YAZI_ZORUNLU_BOLUMLER,
+)
+from agents.nodes._llm_extract import llm_json
 from agents.tutarlilik import tutarlilik_kontrol
 from agents.yazi_lint import lint_2646
 from api.pii import mask_pii
 from core.text import tr_lower
 
 log = structlog.get_logger()
+
+# Madde 6 — grounding uyarı sanite sınırları (LLM çıktısına körü körüne güvenilmez).
+_GROUNDING_MAX_IDDIA = 5
+_GROUNDING_MAX_KARAKTER = 200
 
 # Taslaktaki somut tarih / evrak-sayısı (cikar.py ile aynı desen — tutarlı tespit).
 _RE_TARIH = re.compile(r"\b\d{1,2}[.\-/]\d{1,2}[.\-/]\d{4}\b")
@@ -78,6 +88,63 @@ def _uydurma_veto(taslak: str, state: dict[str, Any]) -> list[str]:
     return uyarilar
 
 
+async def _lint_autofix(taslak: str, lint: dict[str, Any],
+                        state: dict[str, Any]) -> str | None:
+    """Madde 2 — lint ihlalleri için LLM düzeltme önerisi (deterministik doğrulamalı).
+
+    Kabul zinciri (LLM'e güvenilmez): (1) çıktı boş-olmayan string; (2) yeniden-lint
+    uyarı sayısı AZALMALI; (3) düzeltme kaynakta olmayan YENİ tarih/sayı içermemeli
+    (_uydurma_veto boş). Herhangi biri tutmazsa öneri sessizce düşürülür — mevcut
+    davranış birebir. Mevcut taslak hiçbir durumda otomatik değişmez (yalnız öneri).
+    """
+    cevap = await llm_json(
+        "Resmî Yazışma Yönetmeliği (CB 2646/2020) format düzelticisisin. Sana bir resmî "
+        "yazı taslağı ve tespit edilmiş format ihlalleri verilecek. YALNIZ işaretli format "
+        "ihlallerini düzelt; içerik/tarih/sayı EKLEME ve DEĞİŞTİRME; yeni bilgi uydurma. "
+        'YALNIZ şu JSON\'u döndür: {"duzeltilmis_taslak": "<düzeltilmiş tam taslak>"}',
+        "TASLAK:\n" + taslak + "\n\nFORMAT İHLALLERİ:\n"
+        + "\n".join(f"- {u}" for u in lint.get("uyari", [])),
+        max_tokens=900,
+    )
+    if not isinstance(cevap, dict):
+        return None
+    duzeltme = cevap.get("duzeltilmis_taslak")
+    if not isinstance(duzeltme, str) or not duzeltme.strip():
+        return None
+    yeni_lint = lint_2646(duzeltme, state.get("yazi_turu", "") or "")
+    if len(yeni_lint.get("uyari", [])) >= len(lint.get("uyari", [])):
+        return None  # iyileşme yok → öneri değersiz
+    if _uydurma_veto(duzeltme, state):
+        return None  # düzeltme yeni somut veri uydurdu → reddet
+    return duzeltme
+
+
+async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
+    """Madde 6 — iddia-düzeyi grounding: taslakta kaynağa dayanmayan somut iddialar.
+
+    GÜVENLİK ASİMETRİSİ: dönen iddialar verify_uyari'ye 'kaynak evrakta yok' imzasıyla
+    EKLENİR (risk_guard otomatik KIRMIZI'ya çevirir); deterministik regex veto hiçbir
+    durumda silinmez/yumuşatılmaz. Girdi maskeli metin (PII sızmaz); çıktı sanite
+    süzgecinden geçer (yalnız string, ≤5 iddia, ≤200 karakter).
+    """
+    kaynak_maskeli = mask_pii(state.get("evrak_text", "") or "").masked_text
+    cevap = await llm_json(
+        "Kamu evrak doğrulama denetçisisin. Taslaktaki her SOMUT iddiayı (kurum adı, kişi, "
+        "mevzuat madde numarası, tutar, taahhüt) kaynak evrakla karşılaştır. YALNIZ kaynakta "
+        "hiçbir biçimde dayanağı olmayan iddiaları listele; biçim farkı (ayraç/format) iddia "
+        'DEĞİLDİR. YALNIZ şu JSON\'u döndür: {"desteklenmeyen_iddialar": ["..."]}',
+        "KAYNAK EVRAK:\n" + kaynak_maskeli[:3000] + "\n\nTASLAK:\n" + taslak[:3000],
+        max_tokens=400,
+    )
+    if not isinstance(cevap, dict) or not isinstance(cevap.get("desteklenmeyen_iddialar"), list):
+        return []
+    temiz = [i.strip()[:_GROUNDING_MAX_KARAKTER]
+             for i in cevap["desteklenmeyen_iddialar"]
+             if isinstance(i, str) and i.strip()]
+    return [f"Taslaktaki iddia kaynak evrakta yok (LLM grounding): {i}"
+            for i in temiz[:_GROUNDING_MAX_IDDIA]]
+
+
 async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     """Taslak format-uyumu + uydurma veto — additive passthrough (state bozmaz)."""
     if not VERIFY_ENABLED:
@@ -106,6 +173,17 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     # S2 — madde-referanslı 2646 lint raporu (kural-kimlikli; risk'e yalnız 'uyari' gider).
     lint = lint_2646(taslak, state.get("yazi_turu", "") or "")
 
+    # Madde 6 — LLM grounding: yalnız uyarı EKLER (bandı sertleştirme yönü serbest;
+    # deterministik veto her durumda üstte kalır). LLM yok/mock/bozuk → hiçbir ek yok.
+    if VERIFY_GROUNDING_LLM:
+        uyarilar += [mask_pii(u).masked_text
+                     for u in await _grounding_iddialar(taslak, state)]
+
+    # Madde 2 — lint auto-fix önerisi: yalnız ihlal VARSA çağrılır (maliyet disiplini).
+    lint_duzeltme: str | None = None
+    if LINT_AUTOFIX and lint.get("uyari"):
+        lint_duzeltme = await _lint_autofix(taslak, lint, state)
+
     notlar = (
         "Doğrulama tamam — format zorunlu bölümleri mevcut, uydurma somut veri yok."
         if not uyarilar
@@ -116,11 +194,14 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
                    f"{len(lint['uyari'])} uyarı; tutarlılık: {len(tutarlilik)} uyarı.")
     out: dict[str, Any] = {"verify_notes": notlar, "verify_uyari": uyarilar,
                            "lint_2646": lint, "tutarlilik_uyari": tutarlilik}
+    if lint_duzeltme:
+        out["lint_duzeltme_md"] = lint_duzeltme
     # format_uyumlu yalnız ZAYIFLATMA yönünde güncellenir (eksik bölüm → False).
     if eksik:
         out["format_uyumlu"] = False
     log.info("verify", eksik=eksik, uydurma=len(uydurma),
-             lint_uyari=len(lint["uyari"]), tutarlilik=len(tutarlilik))
+             lint_uyari=len(lint["uyari"]), tutarlilik=len(tutarlilik),
+             lint_duzeltme=bool(lint_duzeltme))
     return out
 
 

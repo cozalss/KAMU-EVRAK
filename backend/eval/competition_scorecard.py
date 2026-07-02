@@ -35,6 +35,11 @@ _DOC_OUT = _REPO / "docs" / "benchmark" / "scorecard.md"
 _JSON_OUT = _BACKEND / "eval" / "runs" / "competition_scorecard.json"
 
 
+def _fmt_judge(v: object) -> str:
+    """LLM-judge alanını None-güvenli biçimle — gate kapalıyken '—' (CI deterministik)."""
+    return "—" if v is None else f"{float(v):.3f}"  # type: ignore[arg-type]
+
+
 def _git_sha() -> str:
     try:
         out = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=str(_BACKEND),
@@ -80,7 +85,8 @@ def build_scorecard() -> dict:
                      "full_cover_rate": summ["full_cover_rate"], "avg_uzunluk": summ["avg_uzunluk"],
                      "faithfulness_rate": summ["faithfulness_rate"],
                      "faithfulness_ci95": summ["faithfulness_ci95"],
-                     "judge_coverage": summ["judge_coverage"]},
+                     # LLM-judge alanları gate kapalıyken None — .get ile None-güvenli.
+                     "judge_coverage": summ.get("judge_coverage")},
         },
         "gorev2": {
             "yonlendirme": {"top1": route["top1_acc"], "top3": route["top3_acc"],
@@ -92,7 +98,9 @@ def build_scorecard() -> dict:
                             "per_component": draft["per_component"],
                             "false_veto": draft["false_veto"],
                             "false_veto_rate": draft["false_veto_rate"],
-                            "veto_uyari_toplam": draft["veto_uyari_toplam"]},
+                            "veto_uyari_toplam": draft["veto_uyari_toplam"],
+                            # Resmî-üslup LLM-judge (DRAFT_JUDGE_ENABLED kapalıyken None).
+                            "uslup_judge": draft.get("uslup_judge")},
         },
         "etik": {
             "class_consistency": fair["class_consistency"],
@@ -144,7 +152,8 @@ def render_markdown(sc: dict) -> str:
         "",
         "> **Faithfulness** = özetin kaynak evrakta OLMAYAN somut tarih/sayı (halüsinasyon) "
         "içermeme oranı (CLAUDE.md §1). LLM-judge kapsama opsiyonel gate'tir "
-        f"(`SUMMARY_JUDGE_ENABLED`; şu an `{g1['ozet']['judge_coverage']}` — kapalıyken key-fact recall raporlanır).",
+        f"(`SUMMARY_JUDGE_ENABLED`; şu an `{_fmt_judge(g1['ozet'].get('judge_coverage'))}` "
+        "— kapalıyken key-fact recall raporlanır).",
         "",
         f"Zorluk kırılımı (sınıflandırma acc): {s['by_zorluk']} — "
         "stratifikasyon kanıtı (kolay→zor monoton düşüş beklenir).",
@@ -162,6 +171,8 @@ def render_markdown(sc: dict) -> str:
         f"| Yazı Türkçe saflık | {yt['avg_turkish_purity']:.4f} | — |",
         f"| Uydurma-veto yanlış-pozitif | **{yt['false_veto']}/{yt['veto_uyari_toplam']}** "
         f"(oran {yt['false_veto_rate']:.3f}) | — |",
+        f"| Resmî üslup (LLM-judge, `DRAFT_JUDGE_ENABLED`) | "
+        f"{_fmt_judge(yt.get('uslup_judge'))} | — |",
         "",
         "> **Uydurma-veto false-positive** (docs/06 hedef **0**): verify node'unun "
         "\"kaynakta yok\" uyarısının GERÇEKTEN kaynakta var olan değeri yanlış işaretleme oranı. "
@@ -201,12 +212,14 @@ def render_console(sc: dict) -> str:
         f"           Eksik-bilgi    : recall={g1['eksik_bilgi']['recall']:.3f} "
         f"P={g1['eksik_bilgi']['precision']:.3f} Fβ={g1['eksik_bilgi']['f_beta']:.3f}",
         f"           Özet recall    : {g1['ozet']['micro_recall']:.3f} "
-        f"(ort {g1['ozet']['avg_uzunluk']} kelime)",
+        f"(ort {g1['ozet']['avg_uzunluk']} kelime, "
+        f"judge={_fmt_judge(g1['ozet'].get('judge_coverage'))})",
         f"  GÖREV 2 — Yönlendirme   : top1={g2['yonlendirme']['top1']:.3f} "
         f"top3={g2['yonlendirme']['top3']:.3f}",
         f"           Yazı taslağı   : fmt_uyum={yt['format_uyumlu_rate']:.3f} "
         f"bileşen={yt['compliance_rate']:.3f} yazıTür={yt['yazi_turu_acc']:.3f} "
-        f"saflık={yt['avg_turkish_purity']:.4f}",
+        f"saflık={yt['avg_turkish_purity']:.4f} "
+        f"üslupJudge={_fmt_judge(yt.get('uslup_judge'))}",
         f"  ETİK    — Adillik       : sınıf={sc['etik']['class_consistency']:.4f} "
         f"birim={sc['etik']['route_consistency']:.4f}",
         bar,

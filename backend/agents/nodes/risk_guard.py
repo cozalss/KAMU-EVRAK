@@ -11,10 +11,12 @@ Koşullu onay (graph._risk_route): YEŞİL otomatik geçer; SARI/KIRMIZI memur o
 interrupt) düşer. Banka mantığı: küçük havale anında, büyük havale "emin misiniz?". Karar
 hash-chain denetim izine (denetim_izi) düşer → "kim neyi onayladı" → denetlenebilir güven.
 
-Tasarım: DETERMİNİSTİK — bandı `verify`'nin ürettiği sinyallerden (verify_uyari, format_uyumlu)
-+ eksik_alanlar + tür güveni + taslaktaki [DOĞRULA] sayısından türetir. LLM YOK → halüsinasyon
-yok, banttan bant farklı çıkmaz. ADDITIVE: yalnız risk_metadata ekler (state'i bozmaz →
-denetim_izi hash-chain'i kırılmaz). ENV-gated (RISK_GUARD_ENABLED); kapalı → no-op.
+Tasarım: KARAR DETERMİNİSTİK — bandı `verify`'nin ürettiği sinyallerden (verify_uyari,
+format_uyumlu) + eksik_alanlar + tür güveni + taslaktaki [DOĞRULA] sayısından türetir. Kararda
+LLM YOK → halüsinasyon yok, banttan bant farklı çıkmaz. LLM yalnız SUNUMDA: SARI/KIRMIZI'da
+memura sade dil 'aciklama' üretir (config.RISK_ACIKLAMA_LLM; fallback = oneri metni). ADDITIVE:
+yalnız risk_metadata ekler (state'i bozmaz → denetim_izi hash-chain'i kırılmaz). ENV-gated
+(RISK_GUARD_ENABLED); kapalı → no-op.
 
 Çıktı SÖZLEŞMESİ (frontend RiskBandCard ile eşleşir — anahtarlar SABİT):
     risk_metadata = {
@@ -22,6 +24,7 @@ denetim_izi hash-chain'i kırılmaz). ENV-gated (RISK_GUARD_ENABLED); kapalı �
         "skor": float,              # 0..1 (görsel sıralama)
         "gerekceler": list[str],    # bandın NEDEN'leri (memura okunur)
         "oneri": str,               # eylem önerisi
+        "aciklama": str,            # sade dil açıklama (LLM sunum; LLM yoksa = oneri)
     }
 """
 
@@ -31,7 +34,9 @@ from typing import Any
 
 import structlog
 
+from agents import config
 from agents.config import RISK_GUARD_ENABLED, RISK_GUVEN_ESIK
+from agents.nodes._llm_extract import llm_json
 from api.pii import mask_pii
 
 log = structlog.get_logger()
@@ -106,6 +111,47 @@ def compute_risk(
             "oneri": _ONERI["yesil"]}
 
 
+# (4) Doğal dil açıklaması — LLM yalnız SUNAR, karara asla karışmaz. Bant/gerekçe zaten
+# hesaplanmış olarak verilir; prompt bandı değiştirme girişimini yasaklar (yine de çıktının
+# yalnız 'aciklama' alanı okunur → LLM saçmalasa bile karar anahtarlarına dokunamaz).
+_ACIKLAMA_SISTEM = (
+    "Sen bir kamu kurumunda resmî yazı taslaklarının risk bandını memura açıklayan asistansın. "
+    "Bant ve gerekçeler SANA VERİLİR; bunları değiştiremezsin, sorgulamazsın.\n"
+    "GÖREV: 2-3 cümlelik SADE Türkçe açıklama yaz: (1) yazı neden bu banda düştü, "
+    "(2) memurun ilk yapması gereken somut adım.\n"
+    "KESİN KURALLAR: yalnız verilen gerekçeleri kullan; hiçbir bilgi, kanun adı veya madde "
+    "numarası UYDURMA; emoji kullanma.\n"
+    'YALNIZ şu JSON nesnesini döndür: {"aciklama": "<2-3 cümle>"}'
+)
+# Bant kodu → memur diline açılım (LLM girdisi; frontend etiketiyle tutarlı).
+_BANT_TR = {"sari": "SARI (memur incelemesi önerilir)",
+            "kirmizi": "KIRMIZI (memur onayı zorunlu)"}
+
+
+async def _llm_aciklama(bant: str, gerekceler: list[str], evrak_turu: str) -> str | None:
+    """SARI/KIRMIZI bandını memura sade dille açıkla (LLM = sunum katmanı).
+
+    Girdi MASKELİ gerekçelerdir (PII sözleşmesi — ham TCKN/telefon LLM'e sızmaz).
+    LLM yok/mock/hata/bozuk çıktı → None; çağıran _ONERI metnine düşer (memur boş
+    açıklamayla bırakılmaz).
+    """
+    kullanici = (
+        f"Evrak türü: {evrak_turu}\n"
+        f"Risk bandı: {_BANT_TR.get(bant, bant)}\n"
+        "Gerekçeler:\n" + "\n".join(f"- {g}" for g in gerekceler)
+    )
+    obj = await llm_json(_ACIKLAMA_SISTEM, kullanici, max_tokens=220)
+    metin = (obj or {}).get("aciklama")
+    if not isinstance(metin, str) or not metin.strip():
+        return None
+    metin = metin.strip()
+    # Aşırı uzun çıktı sunumu bozar (2-3 cümle sözleşmesi taşmış) → güvenilmez say.
+    if len(metin) > 600:
+        return None
+    # LLM çıktısı da maskelenir — model PII-şekilli token üretse bile arayüze sızmaz.
+    return mask_pii(metin).masked_text
+
+
 async def risk_guard_node(state: dict[str, Any]) -> dict[str, Any]:
     """Risk bandını üret (additive). Koşullu onay graph._risk_route ile bağlanır."""
     if not RISK_GUARD_ENABLED:
@@ -126,7 +172,17 @@ async def risk_guard_node(state: dict[str, Any]) -> dict[str, Any]:
     # birleşiminden türer; uydurma sayı/tarih token'ı TCKN-şekilli olabilir → arayüze/onaya
     # gitmeden maskele (verify tarafı da state'e girmeden maskeler; çift katman savunma).
     meta["gerekceler"] = [mask_pii(g).masked_text for g in meta["gerekceler"]]
-    log.info("risk_guard", bant=meta["bant"], n_gerekce=len(meta["gerekceler"]))
+    # Sade dil açıklama — additive 'aciklama'; bant/skor/gerekceler/oneri LLM'den ETKİLENMEZ.
+    # Yeşilde LLM çağrılmaz (karar temiz, maliyet 0); LLM yok/hata/bozuk → oneri metni
+    # (= _ONERI[bant]) — memur hiçbir durumda yönlendirmesiz kalmaz. Maskeleme SONRASI
+    # çağrılır → LLM'e giden gerekçeler de maskeli (PII sözleşmesi korunur).
+    aciklama = None
+    if meta["bant"] in ("sari", "kirmizi") and config.RISK_ACIKLAMA_LLM:
+        aciklama = await _llm_aciklama(
+            meta["bant"], meta["gerekceler"], state.get("evrak_turu", "belirsiz"))
+    meta["aciklama"] = aciklama or meta["oneri"]
+    log.info("risk_guard", bant=meta["bant"], n_gerekce=len(meta["gerekceler"]),
+             aciklama_llm=aciklama is not None)
     return {"risk_metadata": meta}
 
 

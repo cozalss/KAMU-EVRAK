@@ -23,8 +23,9 @@ class TestMevzuatDogrula:
         assert out == {}
 
     async def test_nli_acik_entailment_isaretler(self, monkeypatch):
-        # Arrange — NLI açık; ilk öneri güçlü, ikinci zayıf entailment
+        # Arrange — NLI açık; model yolu (mDeBERTa; deepseek yolu tests/test_nli_deepseek.py)
         monkeypatch.setattr(md, "NLI_ENABLED", True)
+        monkeypatch.setattr(md, "NLI_PROVIDER", "model")
         monkeypatch.setattr(md, "NLI_ESIK", 0.5)
         skorlar = iter([0.9, 0.2])
         monkeypatch.setattr(md, "_entailment_skor", lambda p, h: next(skorlar))
@@ -41,8 +42,9 @@ class TestMevzuatDogrula:
         assert "DOĞRULA" in nli[1]["etiket"]
 
     async def test_model_yok_graceful_passthrough(self, monkeypatch):
-        # Arrange — NLI açık ama model/lib yok → graceful boş (mevzuat_onerileri korunur)
+        # Arrange — NLI açık (model yolu) ama model/lib yok → graceful boş (öneriler korunur)
         monkeypatch.setattr(md, "NLI_ENABLED", True)
+        monkeypatch.setattr(md, "NLI_PROVIDER", "model")
 
         def _boom(premise, hypothesis):
             raise ImportError("transformers kurulu değil")

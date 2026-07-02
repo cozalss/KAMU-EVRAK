@@ -90,6 +90,9 @@ class EvrakState(TypedDict):
     # çıktısı; risk_guard SARI sinyali olarak tüketir.
     lint_2646: NotRequired[dict[str, Any]]
     tutarlilik_uyari: NotRequired[list[str]]
+    # Madde 2 (2026-07): lint ihlalleri için LLM düzeltme ÖNERİSİ (additive; yeniden-lint +
+    # uydurma-veto doğrulamasından geçmiş). Mevcut taslak ASLA otomatik değişmez.
+    lint_duzeltme_md: NotRequired[str]
 
     # --- Yenilikçilik: Risk bandı (trafik ışığı) + koşullu HITL ---
     # risk_guard_node verify sinyallerini YEŞİL/SARI/KIRMIZI bandına çevirir (deterministik,

@@ -429,6 +429,70 @@ NLI_MODEL = os.getenv("NLI_MODEL", "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli")
 # Entailment olasılığı bu eşiğin altındaysa öneri "desteklenmiyor" → [DOĞRULA] işareti.
 NLI_ESIK = float(os.getenv("NLI_ESIK", "0.5"))
 
+# --- DeepSeek güçlendirme dalgası (2026-07) — LLM destekli ek katmanlar ---
+# TÜMÜ deterministik-fallback sözleşmesine uyar: LLM yok/mock/hata/timeout → mevcut
+# davranış BİREBİR (CI mock'ta hepsi no-op; testler deterministik geçer). Additive
+# katmanlar (yalnız bilgi EKLER) varsayılan AÇIK; her biri tek bayrakla kapatılabilir.
+
+# (1) OCR sonrası LLM imla/diakritik düzeltmesi — yalnız taranmış/düşük güvenli motor
+# yolunda tetiklenir (ölçülü gerekçe: RapidOCR WER %51.4, eval/runs/ocr_eval.json).
+# Sayı/tarih/TCKN'ye dokunmama kuralı prompt + deterministik son-kontrolle güvenceye alınır.
+OCR_LLM_DUZELT = os.getenv("OCR_LLM_DUZELT", "1") == "1"
+
+# (3) Kademeli model (tiered routing): sınıflandırma güveni eşiğin altında veya tür
+# "belirsiz" ise deepseek-reasoner'dan İKİNCİ görüş alınır (yalnız zor vaka → maliyet
+# sınırlı). Reasoner da düşük güven verirse dürüst "belirsiz" kalır (abstention korunur).
+SINIFLANDIR_ESKALASYON = os.getenv("SINIFLANDIR_ESKALASYON", "1") == "1"
+ESKALASYON_MODEL = os.getenv("ESKALASYON_MODEL", "deepseek-reasoner")
+ESKALASYON_TIMEOUT_S = float(os.getenv("ESKALASYON_TIMEOUT_S", "60.0"))
+
+# (4) Risk bandı doğal dil açıklaması — bant/skor/gerekçe DETERMİNİSTİK kalır; LLM
+# yalnız SARI/KIRMIZI'da memura "neden + ilk adım" cümlesi üretir (additive alan).
+RISK_ACIKLAMA_LLM = os.getenv("RISK_ACIKLAMA_LLM", "1") == "1"
+
+# (5) LLM istemci güçlendirme: bozuk JSON'da geri-bildirimli TEK yeniden deneme +
+# süreç-içi LRU yanıt cache'i (sha256(model+system+user); temp 0 çağrılar için güvenli;
+# demo'da aynı örneğe ikinci tıklama ağ turu ödemez).
+LLM_JSON_RETRY = os.getenv("LLM_JSON_RETRY", "1") == "1"
+LLM_CACHE_ENABLED = os.getenv("LLM_CACHE_ENABLED", "1") == "1"
+LLM_CACHE_BOYUT = int(os.getenv("LLM_CACHE_BOYUT", "256"))
+
+# (2) Yön. 2646 lint bulgularının LLM düzeltme önerisi — düzeltilmiş taslak YENİDEN
+# lint + uydurma-veto'dan geçirilir (deterministik doğrulama); iyileşme yoksa öneri
+# düşürülür. Additive: lint_duzeltme_md alanı; mevcut taslak asla otomatik değişmez.
+LINT_AUTOFIX = os.getenv("LINT_AUTOFIX", "1") == "1"
+
+# (6) İddia-düzeyi grounding (uydurma-veto ikinci görüş): taslaktaki kurum/kişi/madde-no/
+# tutar iddiaları kaynağa dayanıyor mu? GÜVENLİK ASİMETRİSİ: LLM bandı yalnız
+# SERTLEŞTİREBİLİR (ek uyarı ekler); deterministik veto tek başına asla silinmez.
+VERIFY_GROUNDING_LLM = os.getenv("VERIFY_GROUNDING_LLM", "1") == "1"
+
+# (7) Rerank sağlayıcısı: "deepseek" (listwise, model indirmez → vitrine girebilir) |
+# "cross-encoder" (bge-reranker, rag extra + ~1.1GB model). RERANK_ENABLED mevcut
+# ana anahtar olarak kalır (varsayılan 0 — baseline saf-BM25 birebir).
+RERANK_PROVIDER = os.getenv("RERANK_PROVIDER", "deepseek")
+
+# (8) CRAG LLM güçlendirme: retrieval evaluator (correct/ambiguous/incorrect) + mevzuat
+# dilinde sorgu yeniden yazımı — yalnız CRAG_ENABLED açıkken ve düşük güven dalında.
+CRAG_LLM = os.getenv("CRAG_LLM", "1") == "1"
+
+# (10) SDP kapalı-küme LLM seçici: deterministik ön-eleme adayları DIŞINA çıkamaz
+# (halüsinasyon imkânsız); sayıdan-okuma önceliği ve [DOĞRULA] bayrağı aynen üstte.
+SDP_LLM_SECICI = os.getenv("SDP_LLM_SECICI", "1") == "1"
+
+# (12) NLI sağlayıcısı: "deepseek" (model indirmez, llm_json entailment) | "model"
+# (mDeBERTa, rag extra). NLI_ENABLED ana anahtarı değişmedi (varsayılan 0).
+NLI_PROVIDER = os.getenv("NLI_PROVIDER", "deepseek")
+
+# (13) Sohbet asistanı: çok-adımlı araç döngüsü (function-calling) + konuşma-geçmişli
+# kompozisyon. Kapalıyken/LLM yokken mevcut tek-tur niyet+şablon akışı birebir.
+SOHBET_ARAC_DONGUSU = os.getenv("SOHBET_ARAC_DONGUSU", "1") == "1"
+SOHBET_MAX_TUR = int(os.getenv("SOHBET_MAX_TUR", "3"))
+
+# (14) Anlama fan-out: siniflandir ∥ cikar paralel dalları (cikar yalnız evrak_text okur —
+# veri bağımlılığı yok; belge başına 1 LLM çağrısı süresi kazanılır). 0 → seri baseline.
+PARALEL_ANLAMA = os.getenv("PARALEL_ANLAMA", "1") == "1"
+
 # Resmî yazı taslağında bulunması beklenen zorunlu bölüm başlıkları (format-compliance).
 # Yön. 2646 / 3071: T.C. başlığı + Sayı + Konu + imza (ad-soyad) blokları.
 YAZI_ZORUNLU_BOLUMLER: tuple[tuple[str, tuple[str, ...]], ...] = (

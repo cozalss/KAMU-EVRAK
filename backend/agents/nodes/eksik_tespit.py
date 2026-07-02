@@ -6,7 +6,10 @@ Zorunlu alan kümesi config.ZORUNLU_ALANLAR (docs/02 §5).
 
 Tasarım: eksik-alan tespiti DETERMİNİSTİK (çıkarılan unsurların VARLIK kontrolü —
 halüsinasyon riski yok, recall-öncelikli). Takip sorusu (clarify) ifadesi LLM ile
-nazik/bağlama-özel zenginleştirilir; LLM yok/hata → sabit Türkçe şablon sorular.
+nazik/bağlama-özel zenginleştirilir; AYNI tek çağrıda evrak metnindeki İÇERİK eksikleri
+(işleme için gereken somut bilgi: adres/dönem/tutar vb.) de istenir ve clarify_questions'a
+EK madde olur — eksik_alanlar listesi bundan ASLA etkilenmez (risk_guard/clarifier
+sözleşmesi). LLM yok/hata → sabit Türkçe şablon sorular.
 """
 
 from __future__ import annotations
@@ -52,11 +55,17 @@ _ALAN_SORU: dict[str, str] = {
     "imza": "İmza bulunmuyor; 3071 m.4 gereği imzasız dilekçe incelenmez.",
 }
 
+# İçerik-eksik maddeleri üst sınırı — taşkın LLM listesi soru listesini boğmasın (UI).
+_MAX_ICERIK = 3
+
 _SYSTEM = (
     "Sen kamu kurumunda eksik evrak için vatandaşa nazik takip sorusu yazan bir asistansın. "
-    "Verilen eksik alan listesi için kısa, resmî-nazik Türkçe sorular üret. Mevzuat maddesi "
-    "UYDURMA. Çıktı SADECE şu JSON, başka metin YOK:\n"
-    '{"clarify_questions": ["soru 1", "soru 2"]}'
+    "Verilen eksik alan listesi için kısa, resmî-nazik Türkçe sorular üret ('sorular'). "
+    "Ayrıca evrak METNİNİ incele: bu evrak türünü işleme almak için içerikte eksik kalan "
+    "SOMUT bilgiler varsa (ör. olay yeri/adresi, dönem, tutar, başvuru numarası) bunları "
+    "'icerik_eksikleri' altında kısa nazik istek cümleleri olarak yaz; yoksa boş liste döndür. "
+    "Mevzuat maddesi UYDURMA. Çıktı SADECE şu JSON, başka metin YOK:\n"
+    '{"sorular": ["soru 1"], "icerik_eksikleri": ["istek 1"]}'
 )
 
 
@@ -72,28 +81,47 @@ def _fallback_sorular(eksik: list[str]) -> list[str]:
     return [_ALAN_SORU[a] for a in eksik if a in _ALAN_SORU]
 
 
-async def _llm_sorular(eksik: list[str], turu: str) -> list[str] | None:
-    """LLM ile bağlama-özel nazik takip soruları; geçersiz/boş → None (fallback)."""
+def _icerik_eksikleri(obj: dict[str, Any]) -> list[str]:
+    """LLM'in içerik-eksik önerileri: yalnız temiz string'ler, üst sınırlı (additive)."""
+    items = obj.get("icerik_eksikleri")
+    if not isinstance(items, list):
+        return []
+    temiz = [s.strip() for s in items if isinstance(s, str) and s.strip()]
+    return temiz[:_MAX_ICERIK]
+
+
+async def _llm_sorular(eksik: list[str], turu: str, metin: str) -> list[str] | None:
+    """LLM ile nazik takip soruları + içerik-eksik EK maddeleri (AYNI tek çağrı).
+
+    'sorular' geçersiz/boşsa çıktının TAMAMI güvensiz sayılır → None (şablon fallback;
+    içerik önerileri de düşer — bozuk çıktıya kısmi güven yok). Eski 'clarify_questions'
+    anahtarı tolerans için kabul edilir (geriye uyum).
+    """
     etiketler = ", ".join(_ALAN_SORU.get(a, a) for a in eksik)
-    obj = await llm_json(_SYSTEM, f"Evrak türü: {turu}\nEksik alanlar: {etiketler}",
-                         max_tokens=300)
+    user = f"Evrak türü: {turu}\nEksik alanlar: {etiketler}\nEvrak metni:\n{metin[:2000]}"
+    obj = await llm_json(_SYSTEM, user, max_tokens=400)
     if obj is None:
         return None
-    items = obj.get("clarify_questions")
+    items = obj.get("sorular")
+    if not isinstance(items, list):
+        items = obj.get("clarify_questions")
     if not isinstance(items, list):
         return None
     sorular = [s.strip() for s in items if isinstance(s, str) and s.strip()]
-    return sorular or None
+    if not sorular:
+        return None
+    return sorular + _icerik_eksikleri(obj)
 
 
 async def eksik_tespit_node(state: dict[str, Any]) -> dict[str, Any]:
     """Tür-bağımlı zorunlu alanlardan eksikleri tespit et + takip sorusu üret."""
     unsurlar = state.get("bilgi_unsurlari") or {}
     turu = state.get("evrak_turu", "belirsiz")
+    metin = state.get("evrak_text", "") or ""
     mevcut: set[str] = {alan for key, alan in _UNSUR_TO_ALAN.items() if unsurlar.get(key)}
     eksik = [a for a in _zorunlu_for(turu) if a not in mevcut]
 
-    sorular = await _llm_sorular(eksik, turu) if eksik else []
+    sorular = await _llm_sorular(eksik, turu, metin) if eksik else []
     if eksik and not sorular:
         sorular = _fallback_sorular(eksik)
 

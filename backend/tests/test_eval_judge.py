@@ -1,8 +1,9 @@
-"""LLM-as-Judge + Ragas shim testleri — saf parse/clamp/sampling + MockLLM evaluate.
+"""LLM-as-Judge (kamu-evrak ÖZET hakemliği) testleri — parse/clamp/sampling + evaluate.
 
-eval/judge.py: deterministik yardımcılar (_parse_judge_json, _clamp01, should_sample,
-JudgeScore.overall) + LLMJudge.evaluate (MockLLM ile, ağsız). Mock dispatch judge
-prompt'unu tanır ({"faithful":..., "complete":..., "tone":...}).
+eval/judge.py: (kısaltılmış evrak metni, üretilen özet) → {"kapsama","sadakat","kisalik",
+"notlar"} JSON skoru. Deterministik yardımcılar (_parse_judge_json, _clamp01, should_sample,
+JudgeScore.overall) + LLMJudge.evaluate üç yolla kanıtlanır: sahte LLM (iyi çıktı),
+sahte LLM (hata/bozuk JSON → güvenli sıfır), MockLLM (ağsız, deterministik).
 AAA deseni; LLM_MODE=mock (conftest).
 """
 
@@ -10,81 +11,120 @@ from __future__ import annotations
 
 import pytest
 
+from agents.llm import LLMResponse
+from eval import judge as judge_mod
 from eval.judge import (
     JudgeScore,
     LLMJudge,
     _clamp01,
     _parse_judge_json,
-    ragas_faithfulness,
     should_sample,
 )
 
 
-class TestJudgeScore:
-    """JudgeScore ağırlıklı ortalama + dict serileştirme."""
+class _SahteLLM:
+    """Kayıt tutan sahte LLM — iyi/bozuk çıktı ve hata yolunu simüle eder."""
 
-    def test_overall_agirlikli_ortalama(self):
-        # Arrange — faithful 0.5x, complete 0.3x, tone 0.2x
-        score = JudgeScore(faithful=1.0, complete=0.0, tone=0.0, notes="")
-        # Act + Assert — overall = 0.5
+    def __init__(self, content: str = "", exc: Exception | None = None) -> None:
+        self.content = content
+        self.exc = exc
+        self.cagri = 0
+        self.son_kwargs: dict = {}
+
+    async def chat(self, messages, **kwargs):
+        self.cagri += 1
+        self.son_kwargs = kwargs
+        if self.exc is not None:
+            raise self.exc
+        return LLMResponse(content=self.content)
+
+
+_IYI_JSON = '{"kapsama": 0.9, "sadakat": 0.8, "kisalik": 0.7, "notlar": "iyi özet"}'
+
+
+class TestJudgeScore:
+    """JudgeScore ağırlıklı ortalama + dict serileştirme (sadakat en ağır eksen)."""
+
+    def test_overall_sadakat_en_agir(self):
+        # Arrange — sadakat 0.5x (kamu evrakta halüsinasyon kritik)
+        score = JudgeScore(kapsama=0.0, sadakat=1.0, kisalik=0.0, notlar="")
+        # Act + Assert
         assert score.overall() == 0.5
+
+    def test_overall_kapsama_agirligi(self):
+        # Arrange — kapsama 0.3x
+        score = JudgeScore(kapsama=1.0, sadakat=0.0, kisalik=0.0, notlar="")
+        # Act + Assert
+        assert score.overall() == 0.3
 
     def test_overall_tum_kusursuz_bir(self):
         # Arrange + Act + Assert
         assert JudgeScore(1.0, 1.0, 1.0, "").overall() == 1.0
 
-    def test_to_dict_overall_icerir(self):
+    def test_to_dict_tum_alanlar_ve_overall(self):
         # Arrange
         d = JudgeScore(0.8, 0.6, 0.4, "test").to_dict()
-        # Assert — tüm alanlar + türetilmiş overall
-        assert d["faithful"] == 0.8
-        assert d["notes"] == "test"
+        # Assert — tüm eksenler + türetilmiş overall
+        assert d["kapsama"] == 0.8
+        assert d["sadakat"] == 0.6
+        assert d["kisalik"] == 0.4
+        assert d["notlar"] == "test"
         assert "overall" in d
 
 
 class TestParseJudgeJson:
-    """_parse_judge_json — fence-strip + tolerant + güvenli default."""
+    """_parse_judge_json — fence-strip + tolerant + güvenli default + kapalı-küme."""
 
     def test_temiz_json_parse(self):
-        # Arrange
-        raw = '{"faithful": 0.9, "complete": 0.8, "tone": 0.7, "notes": "iyi"}'
-        # Act
-        s = _parse_judge_json(raw)
+        # Arrange + Act
+        s = _parse_judge_json(_IYI_JSON)
         # Assert
-        assert s.faithful == 0.9
-        assert s.notes == "iyi"
+        assert s.kapsama == 0.9
+        assert s.sadakat == 0.8
+        assert s.kisalik == 0.7
+        assert s.notlar == "iyi özet"
 
     def test_markdown_fence_temizlenir(self):
         # Arrange — ```json ... ``` çitli çıktı
-        raw = '```json\n{"faithful": 0.5, "complete": 0.5, "tone": 0.5, "notes": "x"}\n```'
+        raw = f"```json\n{_IYI_JSON}\n```"
         # Act
         s = _parse_judge_json(raw)
         # Assert
-        assert s.faithful == 0.5
+        assert s.kapsama == 0.9
 
     def test_gecersiz_json_sifir_default(self):
         # Arrange — parse edilemez
         s = _parse_judge_json("bu json değil {{{")
         # Assert — tüm skorlar 0.0, açıklayıcı not
-        assert s.faithful == 0.0
-        assert "parse" in s.notes.lower()
+        assert s.kapsama == 0.0
+        assert s.sadakat == 0.0
+        assert "parse" in s.notlar.lower()
+
+    def test_sema_disi_json_sifir_default(self):
+        # Arrange — geçerli JSON ama beklenen eksenlerden HİÇBİRİ yok (MockLLM default'u)
+        s = _parse_judge_json('{"domain": "kira", "confidence": 0.85}')
+        # Assert — LLM çıktısına körü körüne güvenilmez (kapalı-küme doğrulama)
+        assert s.kapsama == 0.0
+        assert s.sadakat == 0.0
+        assert "şema" in s.notlar.lower()
 
     def test_notlar_200_char_sinirli(self):
         # Arrange — çok uzun not
         uzun = "a" * 500
-        raw = f'{{"faithful": 1, "complete": 1, "tone": 1, "notes": "{uzun}"}}'
+        raw = f'{{"kapsama": 1, "sadakat": 1, "kisalik": 1, "notlar": "{uzun}"}}'
         # Act
         s = _parse_judge_json(raw)
         # Assert
-        assert len(s.notes) <= 200
+        assert len(s.notlar) <= 200
 
     def test_eksik_alan_sifira_dusur(self):
-        # Arrange — tone yok
-        raw = '{"faithful": 0.6, "complete": 0.4, "notes": "kismi"}'
+        # Arrange — kisalik yok (diğer eksenler var → şema geçerli)
+        raw = '{"kapsama": 0.6, "sadakat": 0.4, "notlar": "kismi"}'
         # Act
         s = _parse_judge_json(raw)
         # Assert
-        assert s.tone == 0.0
+        assert s.kisalik == 0.0
+        assert s.kapsama == 0.6
 
 
 class TestClamp01:
@@ -123,49 +163,79 @@ class TestShouldSample:
 
 
 class TestLLMJudgeEvaluate:
-    """LLMJudge.evaluate — MockLLM ile (ağsız); boş girdi guard + mock judge skoru."""
+    """LLMJudge.evaluate — boş girdi guard + sahte LLM (iyi/hata/bozuk) + mock yolu."""
 
-    async def test_bos_soru_sifir_skor(self):
-        # Arrange
-        judge = LLMJudge()
+    async def test_bos_evrak_sifir_skor_llm_cagrilmaz(self, monkeypatch):
+        # Arrange — boş evrak metni; LLM çağrılırsa sahte sayaç artar
+        sahte = _SahteLLM(content=_IYI_JSON)
+        monkeypatch.setattr(judge_mod, "get_llm_for_model", lambda m: sahte)
         # Act
-        s = await judge.evaluate("", ["kaynak"], "cevap")
-        # Assert — LLM çağrılmadan guard
-        assert s.faithful == 0.0
-        assert "boş" in s.notes.lower()
+        s = await LLMJudge().evaluate("", "özet var")
+        # Assert — guard LLM'e gitmeden döner
+        assert s.kapsama == 0.0
+        assert "boş" in s.notlar.lower()
+        assert sahte.cagri == 0
 
-    async def test_bos_cevap_sifir_skor(self):
-        # Arrange
-        judge = LLMJudge()
-        # Act
-        s = await judge.evaluate("soru?", ["kaynak"], "")
+    async def test_bos_ozet_sifir_skor(self):
+        # Arrange + Act
+        s = await LLMJudge().evaluate("evrak metni", "")
         # Assert
-        assert s.complete == 0.0
+        assert s.sadakat == 0.0
 
-    async def test_mock_judge_skoru_doner(self):
-        # Arrange — mock dispatch 'faithful'+'complete' system prompt'unu tanır
-        judge = LLMJudge()
+    async def test_sahte_llm_iyi_json_parse_edilir(self, monkeypatch):
+        # Arrange — sahte LLM geçerli judge JSON'u döndürür
+        sahte = _SahteLLM(content=_IYI_JSON)
+        monkeypatch.setattr(judge_mod, "get_llm_for_model", lambda m: sahte)
         # Act
-        s = await judge.evaluate("Soru?", ["[1] kaynak metni"], "Bu bir cevap.")
-        # Assert — mock skor parse edilir (0.85/0.75/0.80)
-        assert 0.0 <= s.faithful <= 1.0
-        assert s.overall() > 0.0
+        s = await LLMJudge().evaluate("Evrak metni: kira yardımı dilekçesi.", "Kira yardımı özeti.")
+        # Assert — yeni yol çalışır
+        assert s.kapsama == 0.9
+        assert s.sadakat == 0.8
+        assert s.kisalik == 0.7
+        assert sahte.cagri == 1
 
-    async def test_kaynaksiz_baglam_calisir(self):
-        # Arrange — boş kaynak listesi → "(kaynak yok)" placeholder
-        judge = LLMJudge()
+    async def test_deepseek_chat_json_mode_temp_sifir(self, monkeypatch):
+        # Arrange — model + çağrı parametre sözleşmesi (deepseek-chat, json_mode, temp 0)
+        yakalanan: dict = {}
+        sahte = _SahteLLM(content=_IYI_JSON)
+
+        def _fake_get(model):
+            yakalanan["model"] = model
+            return sahte
+
+        monkeypatch.setattr(judge_mod, "get_llm_for_model", _fake_get)
         # Act
-        s = await judge.evaluate("Soru?", [], "Cevap.")
-        # Assert — yine de skor döner (LLM çağrısı yapılır)
+        await LLMJudge().evaluate("evrak", "özet")
+        # Assert
+        assert yakalanan["model"] == "deepseek-chat"
+        assert sahte.son_kwargs["json_mode"] is True
+        assert sahte.son_kwargs["temperature"] == 0.0
+
+    async def test_llm_hatasi_sifir_skor(self, monkeypatch):
+        # Arrange — LLM patlar → güvenli sıfır (fallback sözleşmesi)
+        sahte = _SahteLLM(exc=RuntimeError("bağlantı yok"))
+        monkeypatch.setattr(judge_mod, "get_llm_for_model", lambda m: sahte)
+        # Act
+        s = await LLMJudge().evaluate("evrak", "özet")
+        # Assert
+        assert s.kapsama == 0.0
+        assert "hata" in s.notlar.lower()
+
+    async def test_bozuk_json_sifir_skor(self, monkeypatch):
+        # Arrange — LLM bozuk çıktı döndürür → parse güvenli sıfır
+        sahte = _SahteLLM(content="özür dilerim, JSON üretemedim {{{")
+        monkeypatch.setattr(judge_mod, "get_llm_for_model", lambda m: sahte)
+        # Act
+        s = await LLMJudge().evaluate("evrak", "özet")
+        # Assert
+        assert s.kapsama == 0.0
+        assert s.overall() == 0.0
+
+    async def test_mock_modda_gecerli_skor_doner(self):
+        # Arrange — LLM_MODE=mock (conftest): ağsız, deterministik; MockLLM şema-dışı
+        # JSON döndürse bile evaluate JudgeScore sözleşmesini korur (çökmez).
+        s = await LLMJudge().evaluate("Evrak metni.", "Özet metni.")
+        # Assert
         assert isinstance(s, JudgeScore)
-
-
-class TestRagasFaithfulness:
-    """ragas_faithfulness shim — ragas kurulu değilse None (graceful)."""
-
-    async def test_ragas_yoksa_none(self):
-        # Arrange + Act — ragas paketi yüklü değil (varsayım) → None
-        # NOT: ragas kurulu OLABİLİR; o durumda float döner. İki dalı da kabul et.
-        sonuc = await ragas_faithfulness("Soru?", ["kaynak"], "Cevap.")
-        # Assert — None (yok) veya 0..1 float (kuruluysa MockLLM faithful)
-        assert sonuc is None or (0.0 <= sonuc <= 1.0)
+        assert 0.0 <= s.kapsama <= 1.0
+        assert 0.0 <= s.overall() <= 1.0

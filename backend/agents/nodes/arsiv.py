@@ -18,8 +18,9 @@ işareti taşır (CLAUDE.md §1 — şüpheli kod uydurulmaz).
         "sdp_adi": str, "sdp_gerekce": str, "sdp_adaylari": list[dict],
     }
 
-SDP seçim önceliği: evrak sayısından okunan kod > içerik eşleşmesi (sdp_katalog,
-gerekçeli + aday listeli) > config kaba kodu (eski davranış, fallback).
+SDP seçim önceliği: evrak sayısından okunan kod > kapalı-küme LLM seçimi
+(SDP_LLM_SECICI açık + gerçek LLM varsa; aday havuzu dışına ÇIKAMAZ) > içerik
+eşleşmesi (sdp_katalog, gerekçeli + aday listeli) > config kaba kodu (fallback).
 """
 
 from __future__ import annotations
@@ -28,6 +29,7 @@ from typing import Any
 
 import structlog
 
+from agents import config
 from agents.config import (
     EVRAK_TO_SDP,
     birim_tr,
@@ -35,7 +37,8 @@ from agents.config import (
     saklama_suresi,
     sdp_kodu,
 )
-from agents.sdp_katalog import sdp_adi, sdp_onerileri
+from agents.nodes._llm_extract import llm_json, real_llm
+from agents.sdp_katalog import llm_aday_havuzu, sdp_adi, sdp_onerileri
 
 log = structlog.get_logger()
 
@@ -87,11 +90,53 @@ def _konu_for(unsurlar: dict[str, Any]) -> str:
 _DOGRULA_ANA_HIZMET = " [DOĞRULA: kuruma-özgü ana hizmet kodu]"
 
 
-def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, Any]:
-    """SDP kodu + ad + gerekçe + aday listesi (öncelik: sayıdan > içerik > config kaba kod).
+async def _sdp_llm_secimi(
+    parcalar: list[str], turu: str, adaylar: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Kapalı-küme LLM seçimi: aday havuzu dışındaki kod REDDEDİLİR → None (det. yol).
+
+    Havuz = deterministik top-10 + tür kaba-kodu (eşleşme yoksa kaba kod + genel kodlar) —
+    LLM yalnız bu küme içinden seçer, halüsinasyon kodu Python doğrulamasında elenir.
+    Mock/anahtarsız/hata/timeout/bozuk-çıktı → None (mevcut deterministik seçim birebir).
+    """
+    if real_llm() is None:
+        return None  # mock/anahtarsız → eski yol (CI testleri deterministik kalır)
+    havuz = llm_aday_havuzu(parcalar, turu, sdp_kodu(turu))
+    if not havuz:
+        return None  # katalog yüklenememiş → mevcut graceful fallback zinciri
+    liste = "\n".join(
+        f"- {a['kod']}: {a['ad']} (anahtarlar: {', '.join(a['anahtar']) or '-'})"
+        for a in havuz
+    )
+    icerik = " ".join(p for p in parcalar if p)[:900]
+    obj = await llm_json(
+        system=(
+            "Sen bir kamu kurumunda Standart Dosya Planı (2005/7) uzmanısın. Evrak için "
+            "SADECE aday listesindeki SDP kodlarından EN UYGUN olanı seç; liste dışına çıkma."
+        ),
+        user=(
+            f"EVRAK TÜRÜ: {evrak_turu_tr(turu)}\n\nADAY SDP KODLARI (kod: ad):\n{liste}\n\n"
+            f"EVRAK İÇERİĞİ (maskeli):\n{icerik}\n\n"
+            'Yalnız şu JSON: {"kod":"<aday_kod>","gerekce":"<tek cümle Türkçe gerekçe>"}'
+        ),
+        max_tokens=160,
+    )
+    kod = str((obj or {}).get("kod") or "").strip()
+    kayit = next((a for a in havuz if a["kod"] == kod), None)
+    if kayit is None:
+        return None  # liste-dışı/boş kod → deterministik fallback
+    gerekce = str(obj.get("gerekce") or "").strip() or kayit["ad"]
+    log.info("arsiv_sdp_llm", turu=turu, kod=kod, havuz=len(havuz))
+    # Ana-hizmet [DOĞRULA] bayrağı mevcut kuralla AYNEN uygulanır (CLAUDE.md §1).
+    return {"kod": kod + (_DOGRULA_ANA_HIZMET if kayit["dogrula"] else ""),
+            "ad": kayit["ad"], "gerekce": f"LLM seçimi: {gerekce}", "adaylar": adaylar}
+
+
+async def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, Any]:
+    """SDP kodu + ad + gerekçe + aday listesi (öncelik: sayıdan > LLM > içerik > kaba kod).
 
     İçerik girdileri MASKELİ alanlardan gelir (konu/talep/özet) → PII katalog eşlemesine
-    sızmaz. Aday listesi her durumda döner (UI şeffaflığı: "neden bu kod?").
+    (ve LLM prompt'una) sızmaz. Aday listesi her durumda döner (UI şeffaflığı: "neden bu kod?").
     """
     unsurlar = state.get("bilgi_unsurlari") or {}
     # NOT: unsurlar["talep"] bool işarettir (metin değil) → eşlemeye KATILMAZ
@@ -103,6 +148,9 @@ def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, Any]:
         return {"kod": okunan, "ad": sdp_adi(okunan),
                 "gerekce": "Evrak sayısından okundu (DETSİS-SDP-kayıt deseni).",
                 "adaylar": adaylar}
+    # Kapalı-küme LLM seçici (bayrak call-time okunur → test/ENV ile anahtarlanabilir).
+    if config.SDP_LLM_SECICI and (secim := await _sdp_llm_secimi(parcalar, turu, adaylar)):
+        return secim
     if adaylar:
         a = adaylar[0]
         kod = a["kod"] + (_DOGRULA_ANA_HIZMET if a["dogrula"] else "")
@@ -125,7 +173,7 @@ async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
 
     sayi = str(unsurlar.get("sayi") or "")
     tarih = str(unsurlar.get("tarih") or "") or _TARIH_BELIRSIZ
-    secim = _sdp_secimi(turu, sayi, state)
+    secim = await _sdp_secimi(turu, sayi, state)
     kod = secim["kod"]
 
     metadata: dict[str, Any] = {

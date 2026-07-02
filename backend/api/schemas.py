@@ -118,6 +118,8 @@ class ProcessResponse(BaseModel):
     # S2 — Yönetmelik-2646 lint raporu ({kurallar,uyari,ozet}) + veri-tutarlılık uyarıları.
     lint_2646: dict = Field(default_factory=dict)
     tutarlilik_uyari: list[str] = Field(default_factory=list)
+    # Madde 2 — lint ihlalleri için LLM düzeltme önerisi (doğrulanmış; boş = öneri yok).
+    lint_duzeltme_md: str = ""
     # S6 — işleme profili rozeti: kvkk-onprem (veri kurumdan çıkmaz) | mock | bulut.
     llm_profil: str = ""
     bilgilendirme: str = ""

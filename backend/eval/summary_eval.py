@@ -9,7 +9,9 @@ docs/06 birincil: LLM-judge kapsama; ikincil: key-fact recall + **faithfulness**
   2. **faithfulness** (sadakat): özet, kaynak evrak metninde OLMAYAN somut iddia
      (tarih/evrak-sayısı) içeriyor mu? Halüsinasyon sayacı (kamu evrakta KRİTİK).
      LLM'siz deterministik: özet tarih/sayı tokenları kaynak metinde var mı?
-  3. LLM-judge OPSİYONEL stub: LLM yoksa key-fact'e düşer (gate, default kapalı).
+  3. LLM-judge OPSİYONEL (SUMMARY_JUDGE_ENABLED=1, default kapalı): eval/judge.py
+     özet hakemi (kapsama/sadakat/kısalık, deepseek-chat) rapora judge_* ekler;
+     gate kapalı → judge HİÇ çağrılmaz, key-fact'e düşer (CI deterministik).
 
 Çalıştır (PYTHONPATH=...\\backend): python -m eval.summary_eval
 """
@@ -30,6 +32,7 @@ with contextlib.suppress(Exception):
 
 from agents.graph import build_graph
 from agents.state import make_initial_state
+from eval.judge import JudgeScore, LLMJudge
 from eval.stats import fmt_ci, wilson_interval
 
 GOLD = Path(__file__).resolve().parent.parent.parent / "data" / "synthetic" / "ozet_gold.jsonl"
@@ -40,8 +43,15 @@ _RE_TARIH = re.compile(r"\b\d{1,2}[.\-/]\d{1,2}[.\-/]\d{4}\b")
 _RE_SAYI = re.compile(r"\bE?-?\d{6,}[-/.\d]*\b")
 # PII maskesi (özet [TCKN]/[TEL] üretir) — somut-sayı sadakat kontrolünden muaf.
 _RE_MASKE = re.compile(r"\[TCKN\]|\[TEL\]|\*{2,}")
-# Özetleme LLM-judge gate (default kapalı): gerçek LLM'siz key-fact'e düşer.
-SUMMARY_JUDGE_ENABLED = os.getenv("SUMMARY_JUDGE_ENABLED", "0") == "1"
+
+
+def _judge_acik() -> bool:
+    """Özetleme LLM-judge gate (default kapalı) — çağrı anında okunur.
+
+    Import anında donmuş sabit yerine çalışma anı env okuması: test/CI monkeypatch
+    güvenli + gate kapalıyken judge yolu HİÇ açılmaz (deterministik key-fact kalır).
+    """
+    return os.getenv("SUMMARY_JUDGE_ENABLED", "0") == "1"
 
 
 def load_gold(path: Path = GOLD) -> list[dict]:
@@ -93,33 +103,40 @@ def faithfulness(ozet: str, kaynak: str) -> tuple[bool, list[str]]:
     return (not ihlaller), ihlaller
 
 
-def _llm_judge_coverage(ozet: str, unsurlar: list[str], kaynak: str) -> float | None:
-    """OPSİYONEL LLM-judge kapsama skoru (0..1). LLM yok/gate kapalı → None (key-fact'e düş).
+def _judge_skorlari(rows: list[dict]) -> list[JudgeScore]:
+    """SUMMARY_JUDGE_ENABLED=1 iken TÜM satırları LLM-judge'la (docs/06 birincil kanca).
 
-    docs/06 birincil metrik "LLM-judge kapsama" için kanca. Gerçek bir LLM gate'i
-    (SUMMARY_JUDGE_ENABLED=1 + anahtar) bağlanana kadar stub None döndürür; harness
-    bu durumda deterministik key-fact recall'ı raporlar (anahtarsız demo bozulmaz).
+    Async-uyumlu: satır başına run_until_complete yerine TEK asyncio.run noktası
+    (kırılgan get_event_loop yok). Gate kapalı → boş liste, judge HİÇ çağrılmaz;
+    harness deterministik key-fact recall'ı raporlar (anahtarsız demo/CI bozulmaz).
     """
-    if not SUMMARY_JUDGE_ENABLED:
-        return None
-    try:  # gerçek LLM-judge yolu (opt-in, gate'li) — yoksa sessizce key-fact'e düş
-        from agents.nodes._llm_extract import llm_json
-    except Exception:
-        return None
-    system = (
-        "Sen bir özet kalite hakemisin. Özetin, kaynak evrakın kilit unsurlarını "
-        "ne kadar kapsadığını 0..1 arası puanla. Çıktı SADECE JSON: "
-        '{"kapsama": <0..1>}'
-    )
-    user = f"Kilit unsurlar: {', '.join(map(str, unsurlar))}\n\nÖzet:\n{ozet}\n\nKaynak:\n{kaynak[:2000]}"
-    try:
-        obj = asyncio.get_event_loop().run_until_complete(
-            llm_json(system, user, max_tokens=60, temperature=0.0))
-    except Exception:
-        return None
-    if obj and isinstance(obj.get("kapsama"), (int, float)):
-        return max(0.0, min(1.0, float(obj["kapsama"])))
-    return None
+    if not _judge_acik():
+        return []
+    judge = LLMJudge()
+
+    async def _run() -> list[JudgeScore]:
+        return [await judge.evaluate(r["metin"], r["ozet"]) for r in rows]
+
+    return asyncio.run(_run())
+
+
+def _judge_rapor(skorlar: list[JudgeScore]) -> dict:
+    """Judge eksen ortalamaları → rapor alanları; skor yoksa None (deterministik CI).
+
+    judge_coverage = kapsama ortalaması (eski alan adıyla geriye-uyum; scorecard okur).
+    """
+    if not skorlar:
+        return {"judge_coverage": None, "judge_kapsama": None, "judge_sadakat": None,
+                "judge_kisalik": None, "judge_n": 0}
+    n = len(skorlar)
+    kapsama = round(sum(s.kapsama for s in skorlar) / n, 4)
+    return {
+        "judge_coverage": kapsama,
+        "judge_kapsama": kapsama,
+        "judge_sadakat": round(sum(s.sadakat for s in skorlar) / n, 4),
+        "judge_kisalik": round(sum(s.kisalik for s in skorlar) / n, 4),
+        "judge_n": n,
+    }
 
 
 def evaluate(rows: list[dict]) -> dict:
@@ -130,7 +147,6 @@ def evaluate(rows: list[dict]) -> dict:
     uzunluklar: list[int] = []
     uzun_ozet = full_cover = sadik = 0
     ihlal_ornek: list[dict] = []
-    judge_scores: list[float] = []
     for r in rows:
         ozet = r["ozet"]
         cov, tot = key_fact_recall(ozet, r["anahtar_unsurlar"])
@@ -142,8 +158,6 @@ def evaluate(rows: list[dict]) -> dict:
         sadik += int(sadik_mi)
         if ihlaller and len(ihlal_ornek) < 10:
             ihlal_ornek.append({"id": r.get("id"), "ihlaller": ihlaller})
-        if (js := _llm_judge_coverage(ozet, r["anahtar_unsurlar"], r["metin"])) is not None:
-            judge_scores.append(js)
         wc = len(ozet.split())
         uzunluklar.append(wc)
         uzun_ozet += int(wc > MAX_OZET_KELIME)
@@ -158,8 +172,8 @@ def evaluate(rows: list[dict]) -> dict:
         "faithfulness_rate": round(sadik / n, 4) if n else 1.0,
         "faithfulness_ci95": [round(flo, 3), round(fhi, 3)],
         "faithful": sadik, "ihlal_ornek": ihlal_ornek,
-        "judge_coverage": round(sum(judge_scores) / len(judge_scores), 4) if judge_scores else None,
-        "judge_n": len(judge_scores),
+        # LLM-judge alanları (gate açıkken dolu; kapalıyken None → rapor deterministik).
+        **_judge_rapor(_judge_skorlari(rows)),
         "avg_uzunluk": round(sum(uzunluklar) / n, 1) if n else 0.0,
         "uzun_ozet": uzun_ozet, "total_cov": total_cov, "total_unsur": total_unsur,
     }
@@ -183,7 +197,9 @@ def main() -> int:
         for it in res["ihlal_ornek"][:5]:
             print(f"      [{it['id']}] {it['ihlaller']}")
     if res["judge_coverage"] is not None:
-        print(f"  LLM-judge kapsama     : {res['judge_coverage']:.3f}  (n={res['judge_n']})")
+        print(f"  LLM-judge             : kapsama {res['judge_kapsama']:.3f}  "
+              f"sadakat {res['judge_sadakat']:.3f}  kısalık {res['judge_kisalik']:.3f}  "
+              f"(n={res['judge_n']})")
     else:
         print("  LLM-judge kapsama     : — (gate kapalı; key-fact recall'a düşüldü)")
     print(f"  Ort. özet uzunluk     : {res['avg_uzunluk']} kelime  "

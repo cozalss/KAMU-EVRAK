@@ -25,6 +25,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from agents import config as _cfg
 from agents.llm import ChatMessage
 from agents.nodes._llm_extract import LLM_NODE_TIMEOUT_S, llm_json, llm_text, real_llm
 from agents.sohbet_niyet import (
@@ -37,6 +38,7 @@ from agents.sohbet_niyet import (
     sablon_yanit,
 )
 from api.routes import mevzuat as mevzuat_katalog_mod
+from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
 from db.repositories.mevzuat_repo import hybrid_ara
@@ -106,6 +108,12 @@ class SohbetYanit(BaseModel):
     # Mevzuat kaynak çipleri: [{dosya, no, baslik, madde_no}] — UI tıklayınca
     # /mevzuat/icerik/{dosya} okuma modalını ilgili maddede açar (additive alan).
     mevzuat_kaynaklari: list[dict[str, Any]] | None = None
+
+
+def _gecmis_metni(gecmis: list[SohbetMesaj]) -> str:
+    """Kompozisyon/döngü bağlamı için sohbet geçmişi — son 6 mesaj, satır başına ≤300
+    karakter kırpma (bağlam şişmesin; 'peki bunların kaçı kırmızı?' takipleri bağlam kazansın)."""
+    return "\n".join(f"{m.rol}: {m.icerik[:300]}" for m in gecmis[-6:])
 
 
 def _parametre_temizle(obj: dict[str, Any], mesaj: str) -> dict[str, Any]:
@@ -275,20 +283,51 @@ def _mevzuat_kaynaklari(intent: str, veri: Any) -> list[dict[str, Any]] | None:
     return kaynaklar[:5] or None
 
 
-async def _yanit_kompoze(mesaj: str, intent: str, veri: Any) -> tuple[str, bool]:
+def _kompoz_user(mesaj: str, veri: Any, gecmis_metni: str = "") -> str:
+    """Kompozisyon LLM'ine giden kullanıcı içeriği — geçmiş + soru + araç verisi.
+    Madde 13: geçmiş dahil → takip soruları ('peki bunların kaçı kırmızı?') bağlam kazanır."""
+    veri_json = json.dumps(veri, ensure_ascii=False, default=str)[:4000] if veri else "[]"
+    onek = f"Önceki konuşma:\n{gecmis_metni}\n\n" if gecmis_metni else ""
+    return f"{onek}Kullanıcı sorusu: {mesaj}\n\nSistem verisi (JSON):\n{veri_json}"
+
+
+async def _yanit_kompoze(
+    mesaj: str, intent: str, veri: Any, gecmis_metni: str = "",
+) -> tuple[str, bool]:
     """(yanit, llm_kullanildi) — bilgi tabanı > LLM > şablon sırasıyla."""
     if intent == "site_yardim":
         return bilgi_yaniti(mesaj) or sablon_yanit(intent, None), False
     if intent == "selamlama":
         return sablon_yanit(intent, None), False
     if intent in KAYIT_TURU or intent == "genel":
-        veri_json = json.dumps(veri, ensure_ascii=False, default=str)[:4000] if veri else "[]"
         txt = await llm_text(
-            _KOMPOZ_SYSTEM, f"Kullanıcı sorusu: {mesaj}\n\nSistem verisi (JSON):\n{veri_json}",
-            max_tokens=400)
+            _KOMPOZ_SYSTEM, _kompoz_user(mesaj, veri, gecmis_metni), max_tokens=400)
         if txt:
             return txt, True
     return sablon_yanit(intent, veri), False
+
+
+async def _veri_getir(
+    istek: SohbetIstek, user: Any, session: AsyncSession, intent: str,
+    parametreler: dict[str, Any],
+) -> tuple[str, Any, bool]:
+    """(intent, veri, dongu_llm) — Madde 13 araç döngüsü birincil, klasik tek-tur fallback.
+
+    SOHBET_ARAC_DONGUSU açıkken LLM güdümlü döngü denenir; protokole uymayan LLM
+    (mock/bozuk) ya da araçsız dönüş → klasik araci_calistir yolu BİREBİR. Döngü
+    farklı bir araç seçtiyse intent onunla güncellenir (kart/görünüm tutarlılığı).
+    """
+    if _cfg.SOHBET_ARAC_DONGUSU:
+        async def _cal(arac: str, parametreler_ham: dict[str, Any]) -> Any:
+            # LLM parametreleri mevcut doğrulamadan geçer (şema dışı değer sızmaz).
+            return await araci_calistir(
+                session, user.id, arac, _parametre_temizle(parametreler_ham, istek.mesaj))
+
+        dongu = await arac_dongusu(
+            istek.mesaj, _gecmis_metni(istek.gecmis), _cal, _cfg.SOHBET_MAX_TUR)
+        if dongu is not None:
+            return dongu[0], dongu[1], True
+    return intent, await araci_calistir(session, user.id, intent, parametreler), False
 
 
 def _kart_kayitlari(intent: str, veri: Any) -> list[dict[str, Any]] | None:
@@ -390,19 +429,22 @@ async def sohbet(istek: SohbetIstek, user: CurrentUser, session: Session) -> Soh
         return await _onay_baslat(intent, user, session)
 
     veri: Any = None
+    dongu_llm = False
     if intent in KAYIT_TURU:
         try:
-            veri = await araci_calistir(session, user.id, intent, niyet["parametreler"])
+            intent, veri, dongu_llm = await _veri_getir(
+                istek, user, session, intent, niyet["parametreler"])
         except Exception as exc:  # DB/arama hatası sohbeti düşürmesin (500 yerine özürlü yanıt)
             log.warning("sohbet_arac_hatasi", intent=intent, error=type(exc).__name__)
             return SohbetYanit(
                 yanit="Kayıtlara şu an ulaşamadım — lütfen biraz sonra tekrar deneyin.",
                 intent=intent, kaynak="fallback")
 
-    yanit, llm_kompoz = await _yanit_kompoze(istek.mesaj, intent, veri)
+    yanit, llm_kompoz = await _yanit_kompoze(
+        istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis))
     kart, gorunum = KAYIT_TURU.get(intent, (None, None))
     kayitlar = _kart_kayitlari(intent, veri)
-    log.info("sohbet", intent=intent, llm=llm_niyet or llm_kompoz,
+    log.info("sohbet", intent=intent, llm=llm_niyet or llm_kompoz or dongu_llm,
              n_kayit=len(kayitlar) if kayitlar else None)
     return SohbetYanit(
         yanit=yanit,
@@ -410,7 +452,7 @@ async def sohbet(istek: SohbetIstek, user: CurrentUser, session: Session) -> Soh
         kayitlar=kayitlar,
         kayit_turu=kart if kayitlar else None,
         oneri_gorunum=gorunum,
-        kaynak="llm" if (llm_niyet or llm_kompoz) else "fallback",
+        kaynak="llm" if (llm_niyet or llm_kompoz or dongu_llm) else "fallback",
         mevzuat_kaynaklari=_mevzuat_kaynaklari(intent, veri),
     )
 
@@ -423,24 +465,25 @@ def _sse(payload: dict[str, Any]) -> str:
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
 
-async def _kompoz_akisi(mesaj: str, intent: str, veri: Any) -> AsyncIterator[tuple[str, str]]:
+async def _kompoz_akisi(
+    mesaj: str, intent: str, veri: Any, gecmis_metni: str = "",
+) -> AsyncIterator[tuple[str, str]]:
     """('delta'|'kaynak', metin) akışı — gerçek LLM token-token, yoksa tek parça şablon."""
     if intent not in KAYIT_TURU and intent != "genel":  # bilgi tabanı/şablon yolları tek parça
-        yanit, _ = await _yanit_kompoze(mesaj, intent, veri)
+        yanit, _ = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni)
         yield "delta", yanit
         yield "kaynak", "fallback"
         return
     llm = real_llm()
     if llm is None or not hasattr(llm, "chat_stream"):
-        yanit, llm_kompoz = await _yanit_kompoze(mesaj, intent, veri)
+        yanit, llm_kompoz = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni)
         yield "delta", yanit
         yield "kaynak", "llm" if llm_kompoz else "fallback"
         return
-    veri_json = json.dumps(veri, ensure_ascii=False, default=str)[:4000] if veri else "[]"
     kuyruk: asyncio.Queue[str] = asyncio.Queue()
     task = asyncio.create_task(llm.chat_stream(
         messages=[ChatMessage(role="system", content=_KOMPOZ_SYSTEM),
-                  ChatMessage(role="user", content=f"Kullanıcı sorusu: {mesaj}\n\nSistem verisi (JSON):\n{veri_json}")],
+                  ChatMessage(role="user", content=_kompoz_user(mesaj, veri, gecmis_metni))],
         temperature=0.2, max_tokens=400, on_token=kuyruk.put_nowait))
     akti, hata, son = False, False, time.monotonic() + LLM_NODE_TIMEOUT_S
     while True:
@@ -474,11 +517,13 @@ async def sohbet_stream(istek: SohbetIstek, user: CurrentUser, session: Session)
         intent = niyet["intent"]
         if intent in ("taslak_onayla", "taslak_reddet"):
             hazir = await _onay_baslat(intent, user, session)
+    dongu_llm = False
     if hazir is None:
         veri: Any = None
         if intent in KAYIT_TURU:
             try:
-                veri = await araci_calistir(session, user.id, intent, niyet["parametreler"])
+                intent, veri, dongu_llm = await _veri_getir(
+                    istek, user, session, intent, niyet["parametreler"])
             except Exception as exc:
                 log.warning("sohbet_arac_hatasi", intent=intent, error=type(exc).__name__)
                 hazir = SohbetYanit(
@@ -504,14 +549,15 @@ async def sohbet_stream(istek: SohbetIstek, user: CurrentUser, session: Session)
                     "mevzuat_kaynaklari": _mevzuat_kaynaklari(intent, veri)})
         parcalar: list[str] = []
         kaynak = "fallback"
-        async for tur, icerik in _kompoz_akisi(istek.mesaj, intent, veri):
+        async for tur, icerik in _kompoz_akisi(
+                istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis)):
             if tur == "delta":
                 parcalar.append(icerik)
                 yield _sse({"event": "delta", "t": icerik})
             else:
                 kaynak = icerik
         yield _sse({"event": "done",
-                    "kaynak": "llm" if (llm_niyet or kaynak == "llm") else "fallback",
+                    "kaynak": "llm" if (llm_niyet or dongu_llm or kaynak == "llm") else "fallback",
                     "yanit": "".join(parcalar)})
     return StreamingResponse(gen(), media_type="text/event-stream")
 

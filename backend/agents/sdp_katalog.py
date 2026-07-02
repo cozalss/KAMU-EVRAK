@@ -64,6 +64,45 @@ def sdp_adi(kod: str) -> str:
     return ""
 
 
+def _kayit(kod: str) -> dict[str, Any] | None:
+    """Kod → katalog kaydı (LLM aday havuzu katalog-dışı kodu sunmasın diye)."""
+    for k in _katalog():
+        if k["kod"] == kod:
+            return k
+    return None
+
+
+def llm_aday_havuzu(
+    parcalar: list[str], evrak_turu: str, kaba_kod: str, top_k: int = 10
+) -> list[dict[str, Any]]:
+    """SDP kapalı-küme LLM seçicisi için aday havuzu ({kod, ad, anahtar, dogrula}).
+
+    Taban: deterministik sdp_onerileri (top_k) + tür kaba-kodu (config eşleniği).
+    Keyword eşleşmesi HİÇ aday vermediyse tür kaba-kodu + genel (ortak aralık) kodlar
+    havuz olur — LLM'e her durumda KAPALI küme gider; katalogda olmayan kod (bilinmeyen
+    kaba kod dahil) havuza giremez, seçim doğrulaması bu havuza karşı yapılır.
+    """
+    kodlar = [a["kod"] for a in sdp_onerileri(parcalar, evrak_turu, top_k=top_k)]
+    if not kodlar:
+        kodlar = [kaba_kod] + [k["kod"] for k in _katalog() if k.get("aralik") == "ortak"]
+    elif kaba_kod not in kodlar:
+        kodlar.append(kaba_kod)
+
+    havuz: list[dict[str, Any]] = []
+    for kod in dict.fromkeys(kodlar):  # sıra-koruyan tekilleştirme
+        k = _kayit(kod)
+        if k is None:
+            continue  # kapalı küme disiplini: katalog-dışı kod LLM'e sunulmaz
+        havuz.append({
+            "kod": k["kod"],
+            "ad": k["ad"],
+            "anahtar": list(k.get("anahtar", ())),
+            # Ana hizmet aralığı (100-599) HER ZAMAN kuruma özgü → doğrulama şart.
+            "dogrula": bool(k.get("dogrula")) or k.get("aralik") == "ana_hizmet",
+        })
+    return havuz
+
+
 def sdp_onerileri(
     parcalar: list[str], evrak_turu: str, top_k: int = 3
 ) -> list[dict[str, Any]]:
@@ -94,4 +133,4 @@ def sdp_onerileri(
     return adaylar[:top_k]
 
 
-__all__ = ("katalog_kodlari", "sdp_adi", "sdp_onerileri")
+__all__ = ("katalog_kodlari", "llm_aday_havuzu", "sdp_adi", "sdp_onerileri")

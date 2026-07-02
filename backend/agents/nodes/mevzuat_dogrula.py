@@ -8,9 +8,11 @@ korunur; jüriye şeffaf). Bu, CLAUDE.md §1 (alakasız/uydurma madde önerme) i
 semantik kanıttır.
 
 Tasarım (rerank deseni): ENV-gated (NLI_ENABLED, varsayılan KAPALI → baseline birebir korunur).
-Açıkken model/lib (transformers + mDeBERTa-v3-xnli, rag extra) yoksa GRACEFUL passthrough
-(WARN log, boş dict → mevzuat_onerileri olduğu gibi kalır). Additive: yalnız `mevzuat_nli`
-ek alanı yazar; mevzuat_onerileri'ne DOKUNMAZ (operator.add reducer duplikasyonunu önler).
+Sağlayıcı (NLI_PROVIDER, madde 12): "deepseek" (varsayılan — llm_json entailment, model
+İNDİRMEZ; öneri başına 1 mini çağrı) | "model" (mDeBERTa, rag extra — eski yol birebir).
+LLM yok/mock/bozuk-çıktı veya model/lib yoksa GRACEFUL passthrough (boş dict →
+mevzuat_onerileri olduğu gibi kalır). Additive: yalnız `mevzuat_nli` ek alanı yazar;
+mevzuat_onerileri'ne DOKUNMAZ (operator.add reducer duplikasyonunu önler).
 
 Çıktı: {"mevzuat_nli": [{"baslik", "entailment": bool, "skor": float, "etiket": str}, ...]}
 """
@@ -21,7 +23,8 @@ from typing import Any
 
 import structlog
 
-from agents.config import NLI_ENABLED, NLI_ESIK, NLI_MODEL
+from agents.config import NLI_ENABLED, NLI_ESIK, NLI_MODEL, NLI_PROVIDER
+from agents.nodes._llm_extract import llm_json, real_llm
 
 log = structlog.get_logger()
 
@@ -60,6 +63,70 @@ def _hypothesis(state: dict[str, Any]) -> str:
     return (state.get("evrak_text", "") or "")[:300]
 
 
+def _premise(oneri: dict[str, Any]) -> str:
+    """Öneriden premise metni (snippet öncelikli; yoksa başlık)."""
+    return str(oneri.get("snippet") or oneri.get("baslik") or "")
+
+
+# DeepSeek yolu premise bütçesi: mini çağrı maliyeti sınırlı kalsın (öneri başına 1 çağrı).
+_DS_PREMISE_KR = 400
+
+_DS_SYSTEM = (
+    "Sen bir doğal dil çıkarımı (NLI) hakemisin. Verilen MEVZUAT MADDESİ (öncül), verilen "
+    "EVRAK TALEBİ iddiasını (hipotez) anlamsal olarak DESTEKLİYOR mu? Yalnız şu JSON: "
+    '{"entailment": true/false, "skor": <0.0-1.0 destek olasılığı>}'
+)
+
+
+def _gecerli_skor(obj: Any) -> float | None:
+    """LLM çıktısını kapalı-küme doğrula → [0..1] skor; bozuk → None (körü körüne güvenme).
+
+    skor alanı bozuk/eksik ama entailment kararı NET bool ise keskin skora (1.0/0.0) düşülür —
+    tek alan bozulması bütün doğrulamayı düşürmesin; ikisi de bozuksa passthrough.
+    """
+    if not isinstance(obj, dict):
+        return None
+    skor = obj.get("skor")
+    if isinstance(skor, (int, float)) and not isinstance(skor, bool) and 0.0 <= float(skor) <= 1.0:
+        return float(skor)
+    ent = obj.get("entailment")
+    if isinstance(ent, bool):
+        return 1.0 if ent else 0.0
+    return None
+
+
+async def _skorlar_deepseek(oneriler: list[dict[str, Any]], hyp: str) -> list[float] | None:
+    """DeepSeek entailment (llm_json — model indirmez). LLM yok/mock/bozuk → None (passthrough)."""
+    if real_llm() is None:
+        return None  # mock/anahtarsız → LLM yolu hiç açılmaz (CI deterministik, sessiz passthrough)
+    skorlar: list[float] = []
+    for o in oneriler:
+        obj = await llm_json(
+            _DS_SYSTEM,
+            f"MEVZUAT MADDESİ (öncül):\n{_premise(o)[:_DS_PREMISE_KR]}\n\n"
+            f"EVRAK TALEBİ (hipotez): {hyp}",
+            max_tokens=80,
+        )
+        skor = _gecerli_skor(obj)
+        if skor is None:  # bozuk/şema-dışı çıktı → mevcut sessiz passthrough (öneriler korunur)
+            log.warning("mevzuat_dogrula.deepseek_bozuk_passthrough", baslik=o.get("baslik"))
+            return None
+        skorlar.append(skor)
+    return skorlar
+
+
+def _skorlar_model(oneriler: list[dict[str, Any]], hyp: str) -> list[float] | None:
+    """mDeBERTa yolu (eski davranış birebir): model/lib yok → None (graceful passthrough)."""
+    try:
+        return [_entailment_skor(_premise(o), hyp) for o in oneriler]
+    except Exception as exc:  # transformers/model yok → graceful passthrough
+        log.warning(
+            "mevzuat_dogrula.nli_unavailable_fallback", hata=str(exc),
+            not_="NLI modeli yok (transformers + rag extra gerekir) → doğrulama atlandı.",
+        )
+        return None
+
+
 async def mevzuat_dogrula_node(state: dict[str, Any]) -> dict[str, Any]:
     """Mevzuat önerilerini NLI entailment ile gerekçelendir (ENV-gated, graceful, additive)."""
     if not NLI_ENABLED:
@@ -68,24 +135,21 @@ async def mevzuat_dogrula_node(state: dict[str, Any]) -> dict[str, Any]:
     if not oneriler:
         return {}
     hyp = _hypothesis(state)
-    try:
-        sonuc: list[dict[str, Any]] = []
-        for o in oneriler:
-            premise = str(o.get("snippet") or o.get("baslik") or "")
-            skor = _entailment_skor(premise, hyp)
-            gecerli = skor >= NLI_ESIK
-            sonuc.append({
-                "baslik": o.get("baslik"),
-                "entailment": gecerli,
-                "skor": round(float(skor), 3),
-                "etiket": "destekleniyor" if gecerli else "[DOĞRULA: anlamsal destek zayıf]",
-            })
-    except Exception as exc:  # transformers/model yok → graceful passthrough
-        log.warning(
-            "mevzuat_dogrula.nli_unavailable_fallback", hata=str(exc),
-            not_="NLI modeli yok (transformers + rag extra gerekir) → doğrulama atlandı.",
-        )
-        return {}
+    if NLI_PROVIDER == "deepseek":
+        skorlar = await _skorlar_deepseek(oneriler, hyp)
+    else:
+        skorlar = _skorlar_model(oneriler, hyp)
+    if skorlar is None:
+        return {}  # sağlayıcı kullanılamadı → passthrough (mevzuat_onerileri olduğu gibi)
+    sonuc: list[dict[str, Any]] = []
+    for o, skor in zip(oneriler, skorlar, strict=True):
+        gecerli = skor >= NLI_ESIK
+        sonuc.append({
+            "baslik": o.get("baslik"),
+            "entailment": gecerli,
+            "skor": round(float(skor), 3),
+            "etiket": "destekleniyor" if gecerli else "[DOĞRULA: anlamsal destek zayıf]",
+        })
     log.info("mevzuat_dogrula", n=len(sonuc),
              gecerli=sum(1 for s in sonuc if s["entailment"]))
     return {"mevzuat_nli": sonuc}

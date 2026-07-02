@@ -1,4 +1,4 @@
-"""BGE-Reranker-v2-m3 wrapper — cross-encoder reranking.
+"""BGE-Reranker-v2-m3 wrapper — cross-encoder reranking + DeepSeek listwise rerank.
 
 Hybrid search ilk aşamada top-50 aday getirir (BM25 + dense + RRF).
 Reranker bu 50 adayı tek tek query-document score'larıyla değerlendirir,
@@ -8,14 +8,21 @@ Türkçe hukuk için kritik: dense embedder "anlam benzerliği" verir,
 cross-encoder gerçek "soru-belge alakası" verir → +%26-31 nDCG.
 
 Model: BAAI/bge-reranker-v2-m3 (568M params, multilingual, ~1.1GB)
+
+Alternatif sağlayıcı (config.RERANK_PROVIDER="deepseek"): model İNDİRMEZ —
+BM25 adayları tek llm_json çağrısında listwise sıralanır (dosya sonu bölümü).
 """
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
+import threading
+from concurrent.futures import TimeoutError as FuturesTimeout
 from dataclasses import dataclass
 from functools import cached_property
+from typing import Any
 
 import structlog
 
@@ -174,3 +181,126 @@ def get_reranker() -> Reranker:
     if _reranker_singleton is None:
         _reranker_singleton = Reranker()
     return _reranker_singleton
+
+
+# ---------------------------------------------------------------------------
+# DeepSeek listwise rerank (config.RERANK_PROVIDER="deepseek") — model İNDİRMEZ.
+# Cross-encoder her adayı TEK TEK skorlar; listwise ise TÜM aday listesini bir
+# çağrıda görür ve karşılaştırmalı sıralar → {"sira": [aday numaraları]}.
+# KAPALI KÜME (CLAUDE.md güvensizlik ilkesi): dönen numaralar aday kümesinin
+# alt kümesi olmalı; ihlal/boş/bozuk çıktı → None → çağıran BM25 sırasını AYNEN
+# korur (deterministik fallback sözleşmesi — mock/CI bu yola hiç girmez).
+# ---------------------------------------------------------------------------
+
+_LISTWISE_SYSTEM = (
+    "Sen kamu evrak yönetim sisteminde mevzuat alaka sıralayıcısısın. Sana bir "
+    "evrak konusu/sorgusu ve numaralı mevzuat maddesi adayları verilir. Adayları "
+    "evrak konusuna göre EN ALAKALIDAN en aza sırala; konuyla ilgisi olmayan "
+    "adayları listeye alma (eleme serbest). YALNIZ şu JSON nesnesini döndür: "
+    '{"sira": [aday numaraları]}. Numaralar verilen adaylardan olmalı; açıklama '
+    "ekleme, yeni numara uydurma."
+)
+# Prompt bütçesi: 30 aday × ~220 karakter ≈ 6.6K karakter — tek ucuz çağrı.
+_LISTWISE_SNIPPET_CHARS = 200
+_LISTWISE_QUERY_CHARS = 600
+_LISTWISE_MAX_TOKENS = 160  # yalnız numara listesi döner — küçük tavan yeterli
+_LISTWISE_TIMEOUT_PAY_S = 5.0  # llm_json kendi timeout'unu yönetir; bu dış emniyet payı
+
+# _maybe_rerank SENKRON zincirde (crag de paylaşır) çalışır ama llm_json async.
+# Her çağrıda asyncio.run ile YENİ loop açmak httpx bağlantı havuzundaki keep-alive
+# bağlantıları kapanmış loop'lara bağlardı (2. çağrıdan itibaren RuntimeError).
+# Tek KALICI arka-plan loop tüm listwise çağrılarını aynı loop'ta tutar.
+_listwise_loop: asyncio.AbstractEventLoop | None = None
+_listwise_kilit = threading.Lock()
+
+
+def _kalici_loop() -> asyncio.AbstractEventLoop:
+    """Listwise LLM çağrıları için kalıcı arka-plan event loop (daemon thread)."""
+    global _listwise_loop
+    with _listwise_kilit:
+        if _listwise_loop is None or _listwise_loop.is_closed():
+            loop = asyncio.new_event_loop()
+            threading.Thread(
+                target=loop.run_forever, name="deepseek-listwise-loop", daemon=True,
+            ).start()
+            _listwise_loop = loop
+    return _listwise_loop
+
+
+def _sira_dogrula(obj: Any, n_aday: int) -> list[int] | None:
+    """LLM 'sira' çıktısını KAPALI KÜMEYE karşı doğrula → 0-tabanlı indeks listesi.
+
+    LLM çıktısına körü körüne güvenilmez: dict/liste değil, boş, sayı olmayan öğe
+    veya aday aralığı (1..N) dışında numara → None (çağıran BM25 sırasını korur).
+    Tekrar eden numara teke indirilir (alt-küme özelliği bozulmaz).
+    """
+    if not isinstance(obj, dict) or not isinstance(obj.get("sira"), list):
+        return None
+    indeksler: list[int] = []
+    gorulen: set[int] = set()
+    for ham in obj["sira"]:
+        # bool, int'in alt tipi — True/False'u numara saymak sessiz hata olurdu.
+        if isinstance(ham, bool) or not isinstance(ham, (int, str)):
+            return None
+        try:
+            no = int(ham)
+        except ValueError:
+            return None
+        if not 1 <= no <= n_aday:
+            return None  # kapalı-küme ihlali → çıktının tamamı reddedilir
+        if no in gorulen:
+            continue
+        gorulen.add(no)
+        indeksler.append(no - 1)
+    return indeksler or None
+
+
+async def _listwise_sira_iste(query: str, adaylar: list[dict]) -> list[int] | None:
+    """Numaralı aday listesini DeepSeek'e ver → doğrulanmış 0-tabanlı sıra (veya None)."""
+    # Lazy import: agents bağımlılığı yalnız bu yolda (retrieval paketi hafif kalır).
+    from agents.nodes._llm_extract import llm_json
+
+    satirlar = []
+    for i, aday in enumerate(adaylar, start=1):
+        baslik = " ".join(str(aday.get("baslik", "")).split())
+        snippet = " ".join(str(aday.get("snippet", "")).split())[:_LISTWISE_SNIPPET_CHARS]
+        satirlar.append(f"{i}. {baslik} — {snippet}")
+    user = (
+        f"Evrak konusu/sorgusu:\n{query[:_LISTWISE_QUERY_CHARS]}\n\n"
+        "Mevzuat adayları:\n" + "\n".join(satirlar)
+    )
+    obj = await llm_json(
+        _LISTWISE_SYSTEM, user, max_tokens=_LISTWISE_MAX_TOKENS, temperature=0.0,
+    )
+    return _sira_dogrula(obj, len(adaylar))
+
+
+def deepseek_listwise_sirala(
+    query: str,
+    adaylar: list[dict],
+    *,
+    timeout_s: float | None = None,
+) -> list[int] | None:
+    """DeepSeek listwise rerank — adayların YENİ sırası (0-tabanlı indeks) veya None.
+
+    adaylar: {"baslik": str, "snippet": str} dict'leri (numara otomatik 1..N verilir).
+    None = rerank uygulanamadı (mock/anahtarsız LLM, timeout, kapalı-küme ihlali,
+    boş/bozuk çıktı) → çağıran BM25 sırasını AYNEN korur. Alt-küme dönebilir
+    (alakasız adaylar elenmiş olabilir). Skor ÜRETMEZ — skorlar çağıranda korunur.
+    """
+    if not adaylar:
+        return None
+    from agents.nodes._llm_extract import LLM_NODE_TIMEOUT_S, real_llm
+
+    if real_llm() is None:
+        return None  # mock modda rerank HİÇ denenmez (CI/test deterministik kalır)
+    beklet = (timeout_s if timeout_s is not None else LLM_NODE_TIMEOUT_S) + _LISTWISE_TIMEOUT_PAY_S
+    gelecek = asyncio.run_coroutine_threadsafe(
+        _listwise_sira_iste(query, adaylar), _kalici_loop(),
+    )
+    try:
+        return gelecek.result(timeout=beklet)
+    except FuturesTimeout:
+        gelecek.cancel()
+        log.warning("reranker.deepseek_listwise_timeout", timeout_s=beklet)
+        return None

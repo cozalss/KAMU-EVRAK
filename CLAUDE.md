@@ -88,9 +88,17 @@ Demo 15 (real-time avantaj) · Yenilikçilik/Özgünlük/Ticarileşme 15.
 
 Çekirdek anlama/üretim node'ları **gerçek LLM (DeepSeek, `LLM_MODE=openai`,
 `deepseek-chat`)** kullanır — **sınıflandır · bilgi çıkar · çok-konulu ayır · eksik tespit ·
-özetle · yazı taslağı · birim yönlendir · bilgilendir** (8 node, belge başına ~8 çağrı).
-Her node'da LLM yok/mock/hata/timeout → **deterministik fallback** (keyword/regex/şablon):
-mock modda uçtan-uca akış ayakta kalır, CI testleri deterministik geçer. **Mevzuat öner =
-BM25 RAG** (LLM yok, lokal seed birincil); CRAG/Self-RAG/multi_query ENV-gated (varsayılan
-kapalı). Maliyet ~$0.001/belge (DeepSeek). Eval: `eval/` (mock-taban ölçer; metrik →
-puanlama eşleme, bkz. `docs/06-eval-harness.md`).
+özetle · yazı taslağı · birim yönlendir · bilgilendir** (8 çekirdek node). 2026-07
+güçlendirme dalgası (14 madde, hepsi ENV-gated + deterministik fallback'li): OCR imla
+düzeltme (`OCR_LLM_DUZELT`, WER %51→%29) · sınıflandırmada `deepseek-reasoner`
+eskalasyonu (`SINIFLANDIR_ESKALASYON`) · risk bandı doğal dil açıklaması · llm_json
+parse-retry + LRU cache · 2646 lint auto-fix önerisi (`LINT_AUTOFIX`) · iddia-düzeyi
+grounding (`VERIFY_GROUNDING_LLM`, yalnız bandı sertleştirir) · DeepSeek listwise rerank
+(`RERANK_PROVIDER=deepseek`, Recall@1 0.65→1.00) · CRAG LLM grader+rewrite · decompose
+kapalı-küme tür/birim · SDP kapalı-küme seçici · NLI `NLI_PROVIDER=deepseek` ·
+eval LLM-judge (özet+üslup, default kapalı) · sohbet araç döngüsü (`SOHBET_ARAC_DONGUSU`,
+maks 3 tur + geçmiş) · anlama fan-out (`PARALEL_ANLAMA`, sınıflandır ∥ çıkar).
+Her LLM noktasında yok/mock/hata/timeout → **deterministik fallback**: mock modda uçtan-uca
+akış ayakta kalır, CI deterministik geçer. **Mevzuat öner = BM25 RAG birincil** (LLM yalnız
+rerank/doğrulama katmanı); risk bandı KARARI daima deterministik (LLM yalnız sunar/sertleştirir).
+Maliyet ~$0.001-0.002/belge. Eval: `eval/` (bkz. `docs/06-eval-harness.md`).

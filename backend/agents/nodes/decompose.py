@@ -9,9 +9,10 @@ Tasarım (CLAUDE.md §1-2):
 - DETERMİNİSTİK çekirdek: bağlaç/numara bazlı segmentasyon + keyword zenginleştirme
   (mock/CI'da anahtarsız, tekrarlanabilir). Halüsinasyon yok — tür/birim tablo dışıysa
   makul varsayılan (uydurma yok). Süre yalnız mevzuatta tanımlı (EVRAK_TO_SURE).
-- LLM İYİLEŞTİRME (openai modunda): few-shot JSON ile daha iyi segmentasyon; başarısız
-  olursa deterministik segmente düşer (graceful). LLM yalnız ÇOK-talep sinyalinde çağrılır
-  (tek-konulu evrakta ek maliyet yok).
+- LLM İYİLEŞTİRME (openai modunda): few-shot JSON ile daha iyi segmentasyon + AYNI tek
+  çağrıda tur/birim önerisi (kapalı-küme EVRAK_TURLERI/BIRIMLER doğrulamalı; tablo dışı
+  değer O ALAN için keyword yoluna düşer). Başarısız olursa deterministik segmente düşer
+  (graceful). LLM yalnız ÇOK-talep sinyalinde çağrılır (tek-konulu evrakta ek maliyet yok).
 - PII: alt-talep özeti `mask_pii` ile maskelenir (ham TCKN/telefon arayüze ulaşmaz).
 - ENV-gated (DECOMPOSE_ENABLED): kapalıyken node grafta yok → baseline birebir korunur.
   Additive — birincil tür/birim/yönlendirme/özet/taslak DEĞİŞMEZ; yalnız alt_talepler eklenir.
@@ -33,8 +34,10 @@ from typing import Any
 import structlog
 
 from agents.config import (
+    BIRIMLER,
     EVRAK_TO_BIRIM,
     EVRAK_TO_YAZI,
+    EVRAK_TURLERI,
     EVRAK_TURU_TR,
     birim_tr,
 )
@@ -94,11 +97,18 @@ _SINYAL_KOK: tuple[str, ...] = tuple(
     kok for _, koks in _NIYET for kok in koks
 )
 
+# Segmentasyonla birlikte tur/birim de AYNI tek çağrıda istenir (ek çağrı/maliyet yok);
+# kapalı-küme doğrulaması Python tarafında (_llm_talep) — LLM çıktısına körü körüne güvenilmez.
 _LLM_SYSTEM = (
     "Sen bir kamu evrak ayrıştırma asistanısın. Verilen dilekçe/başvuru metnindeki "
     "BİRBİRİNDEN AYRI istekleri ayrı maddelere böl. Her madde TEK somut isteği içersin "
     "(onarım, itiraz, bilgi talebi vb.). Tek istek varsa tek madde döndür. Uydurma EKLEME; "
-    'her maddeyi metnin kendi ifadesiyle yaz. SADECE şu JSON: {"talepler": ["istek 1", "istek 2"]}'
+    "her maddenin 'metin' alanını metnin kendi ifadesiyle yaz. 'tur' YALNIZ şunlardan biri: "
+    + ", ".join(EVRAK_TURLERI)
+    + ". 'birim' YALNIZ şunlardan biri: "
+    + ", ".join(BIRIMLER)
+    + '. SADECE şu JSON: {"talepler": [{"metin": "istek 1", "tur": "talep", '
+    '"birim": "ilgili_teknik_daire"}]}'
 )
 
 
@@ -145,15 +155,37 @@ def _heuristik_segment(text: str) -> list[str]:
     return segs
 
 
-async def _llm_segment(text: str) -> list[str] | None:
-    """LLM ile segmentle (openai modu). Geçersiz/yok → None (heuristiğe düşülür)."""
-    obj = await llm_json(_LLM_SYSTEM, text[:4000], max_tokens=400)
+def _llm_talep(item: Any) -> dict[str, Any] | None:
+    """LLM maddesini normalize et: metin zorunlu; tur/birim KAPALI-KÜME doğrulamalı.
+
+    Tablo dışı tur/birim None'a düşer → _enrich o ALAN için keyword yolunu kullanır
+    (segment bazında fallback; uydurma sınıf/birim asla arayüze ulaşmaz). Eski düz-string
+    şeması da kabul edilir (geriye uyum — tur/birim tamamen keyword'den).
+    """
+    if isinstance(item, str):
+        item = {"metin": item}
+    if not isinstance(item, dict):
+        return None
+    metin = str(item.get("metin") or "").strip()
+    if len(metin) < _MIN_SEG:
+        return None
+    tur, birim = item.get("tur"), item.get("birim")
+    return {
+        "metin": metin,
+        "tur": tur if tur in EVRAK_TURLERI else None,
+        "birim": birim if birim in BIRIMLER else None,
+    }
+
+
+async def _llm_segment(text: str) -> list[dict[str, Any]] | None:
+    """LLM ile segmentle + tur/birim önerisi al (TEK çağrı). Geçersiz/yok → None (heuristiğe düşülür)."""
+    obj = await llm_json(_LLM_SYSTEM, text[:4000], max_tokens=600)
     if not isinstance(obj, dict):
         return None
     talepler = obj.get("talepler")
     if not isinstance(talepler, list):
         return None
-    temiz = [str(t).strip() for t in talepler if isinstance(t, str) and len(str(t).strip()) >= _MIN_SEG]
+    temiz = [t for t in (_llm_talep(item) for item in talepler) if t]
     return temiz or None
 
 
@@ -178,10 +210,17 @@ def _segment_birim(seg: str, tur: str) -> str:
     return EVRAK_TO_BIRIM.get(tur, "yazi_isleri_evrak")
 
 
-def _enrich(seg: str, tarih_str: str, bugun: date) -> dict[str, Any]:
-    """Bir segmenti tür+birim+yazı türü+yasal süre ile zenginleştir (PII maskeli özet)."""
-    tur = _segment_turu(seg)
-    birim = _segment_birim(seg, tur)
+def _enrich(
+    seg: str, tarih_str: str, bugun: date, *,
+    tur: str | None = None, birim: str | None = None,
+) -> dict[str, Any]:
+    """Bir segmenti tür+birim+yazı türü+yasal süre ile zenginleştir (PII maskeli özet).
+
+    tur/birim: LLM'in kapalı-küme DOĞRULANMIŞ önerisi (varsa); None → keyword yolu
+    (alan bazında fallback). Yazı türü + SLA türetimi HER ZAMAN deterministik (config).
+    """
+    tur = tur or _segment_turu(seg)
+    birim = birim or _segment_birim(seg, tur)
     sla = compute_sla(tur, tarih_str, bugun)
     if sla.get("sure"):
         cevap = f"{sla['sure']} ({sla['mevzuat']})"
@@ -227,14 +266,17 @@ async def decompose_node(state: dict[str, Any]) -> dict[str, Any]:
     if not _coklu_sinyal(govde):
         return {"alt_talepler": []}  # tek-konulu → LLM çağrısı yapma
 
-    segs = await _llm_segment(govde)
-    if not segs or len(segs) < 2:
-        segs = _heuristik_segment(govde)
-    if len(segs) < 2:
-        return {"alt_talepler": []}
-
     tarih_str = str(unsurlar.get("tarih") or "")  # tüm metni GEÇİRME (yanlış tarih riski); yoksa tarih_yok
-    alt = [_enrich(s, tarih_str, bugun) for s in segs]
+    talepler = await _llm_segment(govde)
+    if talepler and len(talepler) >= 2:
+        # LLM segmenti + (doğrulanmışsa) tur/birim önerisi; None alanlar keyword'e düşer.
+        alt = [_enrich(t["metin"], tarih_str, bugun, tur=t["tur"], birim=t["birim"])
+               for t in talepler]
+    else:
+        segs = _heuristik_segment(govde)
+        if len(segs) < 2:
+            return {"alt_talepler": []}
+        alt = [_enrich(s, tarih_str, bugun) for s in segs]
     log.info("decompose", n_alt=len(alt), birimler=[a["birim"] for a in alt])
     return {"alt_talepler": alt}
 

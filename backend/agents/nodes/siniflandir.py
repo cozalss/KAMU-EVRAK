@@ -3,7 +3,9 @@
 Akış (CLAUDE.md v2.3): few-shot LLM JSON-schema çıktı BİRİNCİL (kapalı-küme
 config.EVRAK_TURLERI); LLM yok/mock/hata → keyword-heuristik fallback (deterministik,
 anahtarsız demo çalışır). Düşük güvende "belirsiz" (abstention — kendi-tanımlı
-kapalı-küme F1 manipülasyon algısını önle; docs/02 §1).
+kapalı-küme F1 manipülasyon algısını önle; docs/02 §1). Kademeli model (ENV-gated,
+config.SINIFLANDIR_ESKALASYON): düşük güven/belirsiz'de deepseek-reasoner İKİNCİ
+görüşü — yalnız N==1 yolunda; reasoner da emin değilse abstention aynen korunur.
 """
 
 from __future__ import annotations
@@ -13,15 +15,20 @@ import re
 from collections import Counter
 from typing import Any
 
+import httpx
 import structlog
 
 from agents.config import (
+    ESKALASYON_MODEL,
+    ESKALASYON_TIMEOUT_S,
     EVRAK_TURLERI,
     EVRAK_TURU_TR,
     SELF_CONSISTENCY_ESIK,
     SELF_CONSISTENCY_N,
+    SINIFLANDIR_ESKALASYON,
 )
-from agents.nodes._llm_extract import llm_json
+from agents.llm import ChatMessage, get_llm_for_model
+from agents.nodes._llm_extract import llm_json, parse_json_object
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -456,6 +463,49 @@ def _from_llm(obj: dict[str, Any]) -> dict[str, Any] | None:
     return {"evrak_turu": turu, "tur_confidence": conf, "tur_reasoning": reasoning}
 
 
+# _llm_extract._LLM_FALLBACK_EXCEPTIONS ile aynı sözleşme: yalnız geçici/altyapı
+# hataları yutulur (timeout/ağ/anahtarsız/parse-öncesi); gerçek bug'lar (TypeError vb.)
+# propagate eder, CancelledError dahil edilmez.
+_ESKALASYON_FALLBACK_EXC = (
+    asyncio.TimeoutError, httpx.HTTPError, ConnectionError, ValueError, RuntimeError,
+)
+
+
+async def _eskalasyon_ikinci_gorus(raw: str) -> dict[str, Any] | None:
+    """Kademeli model (config 3): düşük güven/belirsiz'de reasoner'dan İKİNCİ görüş.
+
+    Aynı system prompt kullanılır (görev tanımı değişmez; yalnız model güçlenir).
+    İstemci chat() API'si timeout parametresi almadığından _llm_extract.llm_json ile
+    aynı mekanizma uygulanır: asyncio.wait_for + ESKALASYON_TIMEOUT_S (reasoner uzun
+    düşünür → node bütçesinden ayrı). Geçerli kapalı-küme türü + eşik üstü güven
+    dönerse sonuç; belirsiz/geçersiz/hata/timeout → None (mevcut sonuç aynen kalır).
+    """
+    client = get_llm_for_model(ESKALASYON_MODEL)
+    try:
+        resp = await asyncio.wait_for(
+            client.chat(
+                messages=[ChatMessage(role="system", content=_SYSTEM),
+                          ChatMessage(role="user", content=raw[:6000])],
+                temperature=0.0,
+                max_tokens=400,
+                json_mode=True,
+            ),
+            timeout=ESKALASYON_TIMEOUT_S,
+        )
+    except _ESKALASYON_FALLBACK_EXC as exc:
+        log.warning("siniflandir_eskalasyon_failed",
+                    error=str(exc) or type(exc).__name__, exc_type=type(exc).__name__)
+        return None
+    obj = parse_json_object(resp.content)
+    result = _from_llm(obj) if obj is not None else None
+    # _from_llm eşik-altı güveni zaten 'belirsiz'e çevirir → burada belirsiz =
+    # "reasoner da emin değil": ikinci görüş kullanılmaz, dürüst abstention korunur.
+    if result is None or result["evrak_turu"] == "belirsiz":
+        return None
+    result["tur_reasoning"] = f"{result['tur_reasoning']} [eskalasyon]"
+    return result
+
+
 async def _self_consistency(raw: str) -> dict[str, Any] | None:
     """Self-consistency abstention (Wang 2023, M2): SELF_CONSISTENCY_N bağımsız örnek →
     çoğunluk oyu. Uzlaşı oranı SELF_CONSISTENCY_ESIK altındaysa (örnekler çelişiyor =
@@ -501,6 +551,16 @@ async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
 
     obj = await llm_json(_SYSTEM, raw[:6000], max_tokens=200)
     if obj is not None and (result := _from_llm(obj)) is not None:
+        # Kademeli model: LLM düşük güven/belirsiz döndüyse (_from_llm eşik-altını
+        # zaten 'belirsiz'e çevirdi → tek koşul yeter) reasoner ikinci görüşü alınır.
+        # YALNIZ N==1 yolunda: self-consistency zaten pahalı çok-örnek yoludur, üstüne
+        # eskalasyon maliyeti bindirilmez. Mock modda LLM sonucu oluşmaz → dal kapalı.
+        if (result["evrak_turu"] == "belirsiz" and SINIFLANDIR_ESKALASYON
+                and SELF_CONSISTENCY_N == 1
+                and (esk := await _eskalasyon_ikinci_gorus(raw)) is not None):
+            log.info("siniflandir", turu=esk["evrak_turu"],
+                     conf=esk["tur_confidence"], source="llm+eskalasyon")
+            return esk
         log.info("siniflandir", turu=result["evrak_turu"],
                  conf=result["tur_confidence"], source="llm")
         return result

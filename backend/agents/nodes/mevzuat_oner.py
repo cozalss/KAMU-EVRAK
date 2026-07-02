@@ -38,6 +38,7 @@ from agents.config import (
     EVRAK_TURU_TR,
     RERANK_CAND_N,
     RERANK_ENABLED,
+    RERANK_PROVIDER,
 )
 from core.text import tr_lower
 from retrieval.chunker import chunk_mevzuat
@@ -266,23 +267,73 @@ def _retrieval_query(state: dict[str, Any]) -> str:
     return " ".join(p for p in (boosted, body) if p)
 
 
+def _deepseek_rerank(
+    query: str, deduped: list[tuple[float, dict[str, Any]]]
+) -> list[dict[str, Any]] | None:
+    """DeepSeek listwise rerank — SKORLAR KORUNUR, yalnız sıra/eleme değişir.
+
+    BM25 dedup'lu top-N aday numaralı (başlık + kısaltılmış snippet) listeyle tek
+    llm_json çağrısına verilir; dönen {"sira": [...]} KAPALI KÜME doğrulamasından
+    geçer (retrieval.reranker.deepseek_listwise_sirala). None → caller BM25 sırasına
+    AYNEN devam eder (mock/hata/ihlal/boş — deterministik fallback sözleşmesi).
+    """
+    if deduped[0][0] < _MIN_RAW_SCORE:
+        return None  # zayıf retrieval'a LLM harcanmaz → BM25 yolu config fallback'ini uygular
+    cands = deduped[:RERANK_CAND_N]
+    adaylar = [
+        {"baslik": _baslik(chunk), "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS]}
+        for _skor, chunk in cands
+    ]
+    try:
+        from retrieval.reranker import deepseek_listwise_sirala
+
+        sira = deepseek_listwise_sirala(query, adaylar)
+    except Exception as exc:  # LLM köprüsü/beklenmedik hata → BM25'e graceful düş
+        log.warning(
+            "mevzuat_oner.rerank_unavailable_fallback", hata=str(exc),
+            not_="DeepSeek listwise rerank başarısız → BM25 sıralaması.",
+        )
+        return None
+    if sira is None:
+        return None  # mock / kapalı-küme ihlali / boş çıktı → BM25 sırası aynen
+    log.info(
+        "mevzuat_oner.rerank_active",
+        motor="deepseek-listwise", n_aday=len(cands), n_sonuc=min(len(sira), _TOP_K),
+    )
+    max_score = cands[0][0] or 1.0  # deduped azalan sıralı → BM25 lider skoru
+    return [{
+        "baslik": _baslik(chunk),
+        "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
+        "score": round(skor / max_score, 3),   # BM25 max-normalize (skor korunur)
+        "raw_score": round(skor, 3),           # boost'lu ham BM25 (skor korunur)
+        "rerank": True,
+    } for skor, chunk in (cands[i] for i in sira[:_TOP_K])]
+
+
 def _maybe_rerank(
     query: str, deduped: list[tuple[float, dict[str, Any]]]
 ) -> list[dict[str, Any]] | None:
-    """İki-aşamalı retrieve-then-rerank: BM25 adaylarını cross-encoder ile yeniden sırala.
+    """İki-aşamalı retrieve-then-rerank: BM25 adaylarını yeniden sırala.
+
+    Sağlayıcı seçimi (config.RERANK_PROVIDER):
+      - "deepseek"      → listwise LLM rerank (_deepseek_rerank; model indirmez).
+      - "cross-encoder" → bge-reranker-v2-m3 (aşağıdaki yol, birebir korunur).
 
     Dönüş sözleşmesi:
-      - None  → rerank KAPALI (RERANK_ENABLED=0) veya model/lib yok → caller BM25'e düşer
-                (baseline davranış birebir korunur).
-      - []    → rerank AÇIK ama tüm adaylar RERANK_SCORE_MIN altında (kapsam-dışı) →
-                uydurma yerine REDDET (caller config fallback'e düşer).
-      - liste → rerank sonucu öneri dict'leri (score = cross-encoder alaka 0-1).
+      - None  → rerank KAPALI (RERANK_ENABLED=0) veya model/LLM yok/hata/kapalı-küme
+                ihlali → caller BM25'e düşer (baseline davranış birebir korunur).
+      - []    → (yalnız cross-encoder) rerank AÇIK ama tüm adaylar RERANK_SCORE_MIN
+                altında (kapsam-dışı) → uydurma yerine REDDET (caller config fallback).
+      - liste → rerank sonucu öneri dict'leri (cross-encoder: score=alaka 0-1;
+                deepseek: BM25 skorları korunur, yalnız sıra/eleme değişir).
 
     Graceful: sentence-transformers/torch/model yoksa (rag extra kurulu değil) WARN
     loglar ve None döner → demo/CI saf-BM25 ile çalışmaya devam eder.
     """
     if not RERANK_ENABLED or not deduped:
         return None
+    if RERANK_PROVIDER == "deepseek":
+        return _deepseek_rerank(query, deduped)
     try:
         from retrieval.reranker import get_reranker
 

@@ -105,6 +105,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         lint_2646=state.get("lint_2646", {}),
         tutarlilik_uyari=[mask_pii(u).masked_text
                           for u in state.get("tutarlilik_uyari", [])],
+        lint_duzeltme_md=state.get("lint_duzeltme_md", ""),
         llm_profil=llm_profil(),
         bilgilendirme=state.get("bilgilendirme", ""),
         arsiv_metadata=state.get("arsiv_metadata", {}),
@@ -323,7 +324,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),
         "verify": ("format_uyumlu", "verify_uyari", "verify_notes",
-                   "lint_2646", "tutarlilik_uyari"),
+                   "lint_2646", "tutarlilik_uyari", "lint_duzeltme_md"),
         # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).
         "risk_guard": ("risk_metadata",),
         # self_rag / onay_kapisi (ENV-gated): SSE'de boş kalmasın.

@@ -28,6 +28,7 @@ ENV:
     OCR_PDF_MAX_PAGES=10                    (DoS/latency guard)
     OCR_PDF_DPI=200                         (tarama render çözünürlüğü)
     OCR_RAPIDOCR_REC_MODEL / OCR_RAPIDOCR_KEYS  (Latin model — tam diakritik)
+    OCR_LLM_DUZELT=1 (agents.config)        (taranmış/RapidOCR çıktısında LLM imla düzeltmesi)
 """
 
 from __future__ import annotations
@@ -35,6 +36,7 @@ from __future__ import annotations
 import asyncio
 import io
 import os
+import re
 import threading
 import time
 from dataclasses import dataclass
@@ -142,6 +144,9 @@ class OCRResult:
     # PDF sayfa sayısı (görselde 1). Çok-sayfa belgede istemci "3 sayfa işlendi"
     # gösterebilir; sayfa-cap aşıldıysa kullanıcı eksik metni anlar.
     page_count: int = 1
+    # LLM imla/diakritik düzeltmesi UYGULANDI mı (additive işaret — UI/denetim
+    # şeffaflığı). Ham metin korunmuşsa (bayrak kapalı / mock / LLM hata / red) False.
+    llm_duzeltildi: bool = False
 
 
 # --------------------------------------------------------------------------
@@ -204,6 +209,10 @@ async def extract_text(
     else:
         result = await _image_ocr(image_bytes, lang, chosen, auto=auto)
 
+    # OCR sonrası LLM imla/diakritik düzeltmesi — yalnız hata-eğilimli motor yolunda
+    # (taranmış-PDF/RapidOCR); kabul kararı deterministik son-kontrolde (LLM'e güvenilmez).
+    result = await _llm_imla_duzelt(result)
+
     elapsed_ms = int((time.perf_counter() - start) * 1000)
     return OCRResult(
         text=result.text,
@@ -214,6 +223,7 @@ async def extract_text(
         error=result.error,
         confidence=result.confidence,
         page_count=result.page_count,
+        llm_duzeltildi=result.llm_duzeltildi,
     )
 
 
@@ -239,6 +249,82 @@ async def _docx_text(docx_bytes: bytes, lang: str) -> OCRResult:
         text=text, engine="docx-text", lang=lang, n_chars=len(text), elapsed_ms=0,
         error=None if text else "Word belgesinde metin bulunamadı",
     )
+
+
+# --------------------------------------------------------------------------
+#  OCR sonrası LLM imla/diakritik düzeltmesi (DeepSeek dalgası 2026-07, madde 1)
+# --------------------------------------------------------------------------
+# Yalnız hata-eğilimli motor yolları düzeltilir (gerekçe: RapidOCR WER %51.4,
+# eval/runs/ocr_eval.json). Dijital PDF / .docx / .txt / bulut-vision zaten
+# temiz metin verir → LLM dokunuşu risk getirir, kazanım getirmez.
+
+_RAKAM_RE = re.compile(r"\d+")
+# Girdi tavanı: bu boyutu aşan metinde LLM çıktısı max_tokens'ta kesilir ve oran
+# kontrolü zaten reddederdi → çağrıyı hiç yapmayıp maliyeti/gecikmeyi sıfırla.
+_DUZELT_MAX_CHARS = int(os.getenv("OCR_LLM_DUZELT_MAX_CHARS", "12000"))
+_DUZELT_SYSTEM = (
+    "Bu OCR çıktısındaki Türkçe imla/diakritik hatalarını düzelt; içerik EKLEME/ÇIKARMA; "
+    "sayıları, tarihleri, TCKN/telefon gibi kimlik dizilerini AYNEN koru; "
+    "yalnız düzeltilmiş metni döndür."
+)
+
+
+def _duzeltme_hedefi_mi(engine: str) -> bool:
+    """Motor düzeltme kapsamında mı? Yalnız RapidOCR + taranmış-PDF yolları."""
+    return engine == "rapidocr" or engine.startswith("pdf-scan-")
+
+
+def _duzeltme_kabul(ham: str, duzeltilmis: str) -> bool:
+    """Deterministik son-kontrol — LLM çıktısına körü körüne güvenilmez.
+
+    Red koşulları: rakam dizileri (\\d+) kümesi ham metinle AYNI değil (tarih/TCKN/
+    telefon bozulmuş demektir) VEYA uzunluk oranı [0.7, 1.3] dışında (içerik
+    eklenmiş/çıkarılmış demektir). Reddedilirse ham metin kullanılır.
+    """
+    if not duzeltilmis.strip():
+        return False
+    if set(_RAKAM_RE.findall(duzeltilmis)) != set(_RAKAM_RE.findall(ham)):
+        return False
+    oran = len(duzeltilmis) / len(ham)
+    return 0.7 <= oran <= 1.3
+
+
+async def _llm_imla_duzelt(result: OCRResult) -> OCRResult:
+    """OCR sonucunu (uygunsa) LLM imla/diakritik düzeltmesinden geçir.
+
+    Sözleşme: bayrak kapalı / uygun olmayan motor / LLM yok/mock/hata/timeout /
+    son-kontrol reddi → ham sonuç BİREBİR döner. Kabulde yalnız text değişir +
+    llm_duzeltildi=True (additive işaret; engine/confidence/page_count aynı kalır).
+    """
+    # multimodal → agents import döngüsü riskine karşı lazy (fonksiyon-içi) import.
+    from agents import config
+    if not config.OCR_LLM_DUZELT:
+        return result
+    if not result.text or result.error or not _duzeltme_hedefi_mi(result.engine):
+        return result
+    if len(result.text) > _DUZELT_MAX_CHARS:
+        log.info("ocr_llm_duzelt_atlandi", neden="metin_cok_uzun", n_chars=len(result.text))
+        return result
+    from agents.nodes import _llm_extract
+    # Çıktı ≈ girdi uzunluğunda (Türkçe ~2.5-3 karakter/token) → tavan girdiye göre.
+    # Timeout OCR bütçesinin 2 katı (tam-belge üretimi; Qwen-VL yolu ile simetrik).
+    duzeltilmis = await _llm_extract.llm_text(
+        _DUZELT_SYSTEM, result.text,
+        max_tokens=min(8192, max(600, len(result.text))),
+        temperature=0.0, timeout_s=OCR_TIMEOUT_S * 2,
+    )
+    if duzeltilmis is None:  # mock/hata/timeout/boş → deterministik fallback
+        return result
+    duzeltilmis = _normalize_ocr_text(duzeltilmis)
+    if not _duzeltme_kabul(result.text, duzeltilmis):
+        log.warning("ocr_llm_duzelt_red", engine=result.engine,
+                    ham_n=len(result.text), yeni_n=len(duzeltilmis))
+        return result
+    log.info("ocr_llm_duzelt_uygulandi", engine=result.engine,
+             ham_n=len(result.text), yeni_n=len(duzeltilmis))
+    result.text = duzeltilmis
+    result.llm_duzeltildi = True
+    return result
 
 
 def _use_cloud_ocr() -> bool:

@@ -9,7 +9,14 @@ Yalnız stdlib (`unicodedata`) kullanır → her yerde (policy/node/api) güvenl
 
 from __future__ import annotations
 
+import re
 import unicodedata
+
+# Yön. 2646 m.11 — Sayı üç bileşeni: DETSİS(6+ hane) - SDP kodu - kayıt no ('-' ayraçlı,
+# elektronik belgede 'E-' önekli). 6+ hane eşiği ISO-tarih ("2026-07-02") yanlış-pozitifini
+# eler ve cikar/verify'daki mevcut sayı desenleriyle hizalıdır. Tek kaynak: yazi_lint +
+# tutarlilik buradan import eder (DRY).
+SAYI_UC_BILESEN_RE = re.compile(r"E?-?\d{6,}-[\d.]+-\d+")
 
 
 def tr_lower(s: str) -> str:
@@ -50,4 +57,4 @@ def sanitize_text(text: str) -> str:
     return text
 
 
-__all__ = ("sanitize_text", "tr_lower")
+__all__ = ("SAYI_UC_BILESEN_RE", "sanitize_text", "tr_lower")

@@ -33,6 +33,7 @@ from typing import Any
 import structlog
 
 from agents.config import (
+    ATIF_GENISLET_ENABLED,
     EVRAK_TO_MEVZUAT,
     EVRAK_TURU_TR,
     RERANK_CAND_N,
@@ -338,12 +339,27 @@ def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
     if not top or top[0][0] < _MIN_RAW_SCORE:
         return []  # zayıf retrieval → config fallback (recall-koruyucu)
     max_score = top[0][0] or 1.0
-    return [{
+    oneriler = [{
         "baslik": _baslik(chunk),
         "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
         "score": round(score / max_score, 3),
         "raw_score": round(score, 3),
     } for score, chunk in top]
+    # S7 — GraphRAG-lite (ENV-gated): top sonuçların atıf verdiği mevzuattan 1-hop ek aday.
+    if ATIF_GENISLET_ENABLED:
+        from retrieval.atif_grafi import atif_ek_adaylar
+
+        for score, chunk in atif_ek_adaylar(top, deduped):
+            oneriler.append({
+                "baslik": _baslik(chunk),
+                "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
+                "score": round(score / max_score, 3),
+                "raw_score": round(score, 3),
+                "atif_genisletme": True,
+            })
+        if len(oneriler) > len(top):
+            log.info("mevzuat_oner.atif_genisletme", n_ek=len(oneriler) - len(top))
+    return oneriler
 
 
 def _apply_boost(

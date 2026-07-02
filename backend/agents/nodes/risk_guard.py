@@ -63,6 +63,8 @@ def compute_risk(
     tur_confidence: float,
     evrak_turu: str,
     taslak: str,
+    lint_uyari: list[str] | None = None,
+    tutarlilik_uyari: list[str] | None = None,
 ) -> dict[str, Any]:
     """verify sinyalleri + tamlık → risk bandı (SAF, deterministik).
 
@@ -90,6 +92,12 @@ def compute_risk(
     elif tur_confidence is not None and tur_confidence < RISK_GUVEN_ESIK:
         # 0.0 dahil — "hiç güven yok" da SARI'dır (falsy tuzağına düşme).
         sari.append(f"Düşük sınıflandırma güveni ({tur_confidence:.2f})")
+    # S2 — 2646 lint kesin ihlalleri + veri-tutarlılık uyarıları SARI sinyalidir
+    # (lint 'bilgi' seviyesi buraya HİÇ gelmez — yazi_lint yalnız 'uyari' listesini verir).
+    for u in lint_uyari or []:
+        sari.append(f"Format (2646 lint): {u}")
+    for u in tutarlilik_uyari or []:
+        sari.append(f"Tutarlılık: {u}")
 
     if sari:
         return {"bant": "sari", "skor": _SKOR["sari"], "gerekceler": sari, "oneri": _ONERI["sari"]}
@@ -111,9 +119,12 @@ async def risk_guard_node(state: dict[str, Any]) -> dict[str, Any]:
         tur_confidence=1.0 if _conf is None else float(_conf),
         evrak_turu=state.get("evrak_turu", "belirsiz"),
         taslak=state.get("yazi_taslak_md", "") or "",
+        lint_uyari=(state.get("lint_2646") or {}).get("uyari", []),
+        tutarlilik_uyari=state.get("tutarlilik_uyari", []) or [],
     )
-    # PII güvenliği (CLAUDE.md §2): gerekçeler verify_uyari'dan türer; uydurma sayı/tarih
-    # token'ı TCKN-şekilli olabilir → arayüze/onaya gitmeden maskele.
+    # PII güvenliği (CLAUDE.md §2): gerekçeler verify_uyari + lint_uyari + tutarlilik_uyari
+    # birleşiminden türer; uydurma sayı/tarih token'ı TCKN-şekilli olabilir → arayüze/onaya
+    # gitmeden maskele (verify tarafı da state'e girmeden maskeler; çift katman savunma).
     meta["gerekceler"] = [mask_pii(g).masked_text for g in meta["gerekceler"]]
     log.info("risk_guard", bant=meta["bant"], n_gerekce=len(meta["gerekceler"]))
     return {"risk_metadata": meta}

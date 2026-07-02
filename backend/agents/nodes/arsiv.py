@@ -14,7 +14,12 @@ işareti taşır (CLAUDE.md §1 — şüpheli kod uydurulmaz).
     arsiv_metadata = {
         "sdp_kodu": str, "saklama_suresi": str, "konu": str,
         "sayi": str, "tarih": str, "birim": str,
+        # S1 (2026-07) — içerik-tabanlı otomatik SDP atama (additive):
+        "sdp_adi": str, "sdp_gerekce": str, "sdp_adaylari": list[dict],
     }
+
+SDP seçim önceliği: evrak sayısından okunan kod > içerik eşleşmesi (sdp_katalog,
+gerekçeli + aday listeli) > config kaba kodu (eski davranış, fallback).
 """
 
 from __future__ import annotations
@@ -26,9 +31,11 @@ import structlog
 from agents.config import (
     EVRAK_TO_SDP,
     birim_tr,
+    evrak_turu_tr,
     saklama_suresi,
     sdp_kodu,
 )
+from agents.sdp_katalog import sdp_adi, sdp_onerileri
 
 log = structlog.get_logger()
 
@@ -77,6 +84,39 @@ def _konu_for(unsurlar: dict[str, Any]) -> str:
     return _KONU_BELIRSIZ
 
 
+_DOGRULA_ANA_HIZMET = " [DOĞRULA: kuruma-özgü ana hizmet kodu]"
+
+
+def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, Any]:
+    """SDP kodu + ad + gerekçe + aday listesi (öncelik: sayıdan > içerik > config kaba kod).
+
+    İçerik girdileri MASKELİ alanlardan gelir (konu/talep/özet) → PII katalog eşlemesine
+    sızmaz. Aday listesi her durumda döner (UI şeffaflığı: "neden bu kod?").
+    """
+    unsurlar = state.get("bilgi_unsurlari") or {}
+    # NOT: unsurlar["talep"] bool işarettir (metin değil) → eşlemeye KATILMAZ
+    # (str(True)="True" gürültüsü); sinyal konu + maskeli özetten gelir.
+    parcalar = [str(unsurlar.get("konu") or ""), str(state.get("ozet") or "")]
+    adaylar = sdp_onerileri(parcalar, turu)
+
+    if sayi and (okunan := _sdp_from_sayi(sayi)):
+        return {"kod": okunan, "ad": sdp_adi(okunan),
+                "gerekce": "Evrak sayısından okundu (DETSİS-SDP-kayıt deseni).",
+                "adaylar": adaylar}
+    if adaylar:
+        a = adaylar[0]
+        kod = a["kod"] + (_DOGRULA_ANA_HIZMET if a["dogrula"] else "")
+        if a["eslesen"]:
+            gerekce = "Eşleşen ifade: " + ", ".join(a["eslesen"])
+            if a["tur_uyumu"]:
+                gerekce += f" · tür uyumu ({evrak_turu_tr(turu)})"
+        else:
+            gerekce = f"Anahtar ifade yok; tür eşlemesinden kaba kod ({evrak_turu_tr(turu)})."
+        return {"kod": kod, "ad": a["ad"], "gerekce": gerekce, "adaylar": adaylar}
+    return {"kod": _sdp_kodu_for(turu, sayi), "ad": "",
+            "gerekce": "Katalog eşleşmesi yok; tür-bazlı kaba kod (config).", "adaylar": []}
+
+
 async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
     """SDP 2005/7 tabanlı arşiv metadata üret (additive — verify→arsiv→finalize)."""
     turu = state.get("evrak_turu", "belirsiz")
@@ -85,10 +125,14 @@ async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
 
     sayi = str(unsurlar.get("sayi") or "")
     tarih = str(unsurlar.get("tarih") or "") or _TARIH_BELIRSIZ
-    kod = _sdp_kodu_for(turu, sayi)
+    secim = _sdp_secimi(turu, sayi, state)
+    kod = secim["kod"]
 
     metadata: dict[str, Any] = {
         "sdp_kodu": kod,
+        "sdp_adi": secim["ad"],
+        "sdp_gerekce": secim["gerekce"],
+        "sdp_adaylari": secim["adaylar"],
         "saklama_suresi": saklama_suresi(turu),
         "konu": _konu_for(unsurlar),
         "sayi": sayi or f"{kod} (DETSİS+kayıt no kurum sisteminde atanır)",

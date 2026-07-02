@@ -21,7 +21,7 @@ import structlog
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 
-from agents.config import HITL_ENABLED
+from agents.config import HITL_ENABLED, llm_profil
 from agents.graph import PIPELINE_NODES, build_graph
 from agents.state import make_initial_state
 from api.mevzuat_zenginlestir import zenginlestir_mevzuat
@@ -101,6 +101,10 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         # olabilir) → API sınırında maskele (savunma derinliği; risk_guard gerekçeleri de maskeli).
         verify_uyari=[mask_pii(u).masked_text for u in state.get("verify_uyari", [])],
         verify_notes=mask_pii(state.get("verify_notes", "") or "").masked_text,
+        lint_2646=state.get("lint_2646", {}),
+        tutarlilik_uyari=[mask_pii(u).masked_text
+                          for u in state.get("tutarlilik_uyari", [])],
+        llm_profil=llm_profil(),
         bilgilendirme=state.get("bilgilendirme", ""),
         arsiv_metadata=state.get("arsiv_metadata", {}),
         sla_metadata=state.get("sla_metadata", {}),
@@ -306,7 +310,8 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),
-        "verify": ("format_uyumlu", "verify_uyari", "verify_notes"),
+        "verify": ("format_uyumlu", "verify_uyari", "verify_notes",
+                   "lint_2646", "tutarlilik_uyari"),
         # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).
         "risk_guard": ("risk_metadata",),
         # self_rag / onay_kapisi (ENV-gated): SSE'de boş kalmasın.

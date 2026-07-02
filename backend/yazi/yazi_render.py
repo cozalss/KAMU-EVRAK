@@ -162,7 +162,8 @@ def build_context(
     return YaziContext(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
-        konu=str(unsurlar.get("konu", "") or ""),
+        # m.13: konunun sonuna nokta konulmaz → çıkarılan konudaki kuyruk noktası atılır.
+        konu=str(unsurlar.get("konu", "") or "").strip().rstrip("."),
         metin=metin,
         muhatap=muhatap,
         ilgi_tarih=str(unsurlar.get("tarih", "") or ""),

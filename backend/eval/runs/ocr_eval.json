@@ -1,0 +1,31 @@
+{
+  "n_belge": 3,
+  "ort_cer": 0.1123,
+  "ort_wer": 0.5141,
+  "belgeler": [
+    {
+      "belge": "taranmis_bilgi_edinme.pdf",
+      "motor": "pdf-scan-rapidocr",
+      "cer": 0.0949,
+      "wer": 0.4386,
+      "n_char_gold": 393,
+      "n_char_ocr": 375
+    },
+    {
+      "belge": "taranmis_dilekce.pdf",
+      "motor": "pdf-scan-rapidocr",
+      "cer": 0.123,
+      "wer": 0.5946,
+      "n_char_gold": 508,
+      "n_char_ocr": 480
+    },
+    {
+      "belge": "taranmis_fatura.pdf",
+      "motor": "pdf-scan-rapidocr",
+      "cer": 0.119,
+      "wer": 0.5091,
+      "n_char_gold": 405,
+      "n_char_ocr": 355
+    }
+  ]
+}

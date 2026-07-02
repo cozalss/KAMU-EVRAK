@@ -61,6 +61,9 @@ function ScoreBar({ rank, m }) {
         {guven && (
           <span aria-label={`Güven seviyesi: ${guven}`} style={{ fontFamily: MONO, fontSize: 9, letterSpacing: ".5px", textTransform: "uppercase", color: gc, background: gc + "1c", border: `1px solid ${gc}44`, borderRadius: 6, padding: "2px 6px" }}>{guven} güven</span>
         )}
+        {m.atif_genisletme && (
+          <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ fontFamily: MONO, fontSize: 9, letterSpacing: ".5px", color: "#6a4787", background: "rgba(139,92,176,.12)", border: "1px solid rgba(139,92,176,.32)", borderRadius: 6, padding: "2px 6px" }}>atıf grafiğinden</span>
+        )}
         {pct > 0 && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11, fontWeight: 600, color: low ? BANT.sari.c : "#1f6d82", minWidth: 42, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>%{pct}</span>}
       </div>
       {pct > 0 && (
@@ -131,7 +134,17 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
   const eksik = r.eksik_alanlar || [];
   const clarify = r.clarify_questions || [];
   const uyari = r.verify_uyari || [];
+  // S2/S4 — 2646 lint raporu + veri-tutarlılık uyarıları (verify additive çıktıları).
+  const tutar = r.tutarlilik_uyari || [];
+  const lint = r.lint_2646 || {};
+  const lintKurallar = Array.isArray(lint.kurallar) ? lint.kurallar : [];
+  const lintUyariSay = (lint.uyari || []).length;
+  // S4 — çıkarılan bilgi unsurları tablosu (yalnız dolu string alanlar; PII maskeli gelir).
+  const unsurRows = Object.entries(r.bilgi_unsurlari || {})
+    .filter(([, v]) => typeof v === "string" && v.trim())
+    .slice(0, 12);
   const arsiv = r.arsiv_metadata || {};
+  const sdpAdaylar = Array.isArray(arsiv.sdp_adaylari) ? arsiv.sdp_adaylari : [];
   const sla = r.sla_metadata || {};
   const den = r.denetim_izi || {};
   const denAdimlar = Array.isArray(den.zincir) ? den.zincir : (Array.isArray(den.adimlar) ? den.adimlar : []);
@@ -173,6 +186,14 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
             <Fact k="Eksik kontrol" v={eksik.length ? `${eksik.length} eksik` : "tam ✓"} c={eksik.length ? BANT.sari.c : BANT.yesil.c} icon={<Icon.shield />} />
             {sInfo && <Fact k="Yasal süre" v={sInfo.label} c={sInfo.color} glow={sInfo.color === BANT.kirmizi.c} icon={<Icon.clock />} />}
             {hasChain && <Fact k="Denetim izi" v={denAdimlar.length ? `${denAdimlar.length} adım ✓` : "SHA-256 ✓"} c="#8ff0e0" glow icon={<Icon.shield />} />}
+            {r.llm_profil && (
+              <Fact
+                k="İşleme profili"
+                v={r.llm_profil === "kvkk-onprem" ? "KVKK · veri yerinde" : r.llm_profil === "mock" ? "Deterministik (LLM'siz)" : "Bulut LLM"}
+                c={r.llm_profil === "kvkk-onprem" ? BANT.yesil.c : PAL.ink2}
+                icon={<Icon.shield />}
+              />
+            )}
           </div>
           <div style={{ position: "relative" }}><RiskBand band={band} lit sub="İÇERİK" /></div>
         </div>
@@ -196,6 +217,37 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                       </div>
                     </div>
                   ))}
+                </div>
+              </NeonCard>
+            )}
+
+            {r.ozet && (
+              <NeonCard title="Özet" tag="Görev 1.6" accent={T} icon={<Icon.info />}>
+                <p style={{ margin: 0, fontFamily: SANS, fontSize: 13, color: PAL.ink2, lineHeight: 1.7 }}>{cleanDemoText(r.ozet)}</p>
+                <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 9.5, color: PAL.mut3 }}>Kısa öz — kişisel veriler özetten önce maskelenir (KVKK).</div>
+              </NeonCard>
+            )}
+
+            {unsurRows.length > 0 && (
+              <NeonCard title="Bilgi Unsurları" tag="KVKK maskeli" tagColor={T} accent={T} icon={<Icon.doc />}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                  {unsurRows.map(([k, v]) => {
+                    const maskeli = k.endsWith("_maskeli");
+                    const etiket = k.replace(/_maskeli$/, "").replace(/_/g, " ");
+                    return (
+                      <div key={k} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "6px 2px", borderBottom: `1px dashed ${PAL.line}` }}>
+                        <span style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: ".8px", textTransform: "uppercase", color: PAL.mut2, flex: "none" }}>{etiket}</span>
+                        <span style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+                          <span style={{ fontFamily: MONO, fontSize: 11.5, color: PAL.ink2, fontVariantNumeric: "tabular-nums", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 240 }}>{cleanDemoText(String(v))}</span>
+                          {maskeli && <span style={{ flex: "none", fontFamily: MONO, fontSize: 8, letterSpacing: "1px", color: "#1f6d82", background: "rgba(47,143,166,.1)", border: "1px solid rgba(47,143,166,.3)", borderRadius: 5, padding: "1px 5px" }}>MASKELİ</span>}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, fontFamily: MONO, fontSize: 9.5, color: PAL.mut3 }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke={T} strokeWidth="1.6" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={T} strokeWidth="1.6" /></svg>
+                  Ham TCKN/telefon sistemde tutulmaz — çıkarım anında maskelenir (KVKK).
                 </div>
               </NeonCard>
             )}
@@ -234,7 +286,21 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
             <NeonCard title="Arşiv · Yasal Süre · Denetim İzi" accent={T} icon={<Icon.grid />} full>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: "0 22px" }}>
                 <div>
-                  {arsiv.sdp_kodu && <KV k="SDP kodu (2005/7)" v={<span style={{ fontVariantNumeric: "tabular-nums" }}>{String(arsiv.sdp_kodu)}</span>} c="#d7c4ff" />}
+                  {arsiv.sdp_kodu && <KV k="SDP kodu (2005/7)" v={<span style={{ fontVariantNumeric: "tabular-nums" }}>{String(arsiv.sdp_kodu)}{arsiv.sdp_adi ? ` · ${arsiv.sdp_adi}` : ""}</span>} c="#d7c4ff" />}
+                  {arsiv.sdp_gerekce && (
+                    <div style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut2, lineHeight: 1.5, margin: "2px 0 8px", padding: "6px 9px", borderRadius: 8, background: "rgba(47,143,166,.05)", border: "1px solid rgba(47,143,166,.16)" }}>
+                      <span style={{ color: "#1f6d82" }}>Otomatik atama:</span> {cleanDemoText(String(arsiv.sdp_gerekce))}
+                    </div>
+                  )}
+                  {sdpAdaylar.length > 1 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, margin: "0 0 8px" }}>
+                      {sdpAdaylar.map((a, i) => (
+                        <span key={a.kod} title={a.ad} aria-label={`SDP adayı: ${a.kod} ${a.ad || ""}`} style={{ fontFamily: MONO, fontSize: 9.5, padding: "2px 7px", borderRadius: 6, background: i === 0 ? "rgba(47,143,166,.12)" : "rgba(35,26,18,.04)", border: `1px solid ${i === 0 ? "rgba(47,143,166,.32)" : PAL.line}`, color: i === 0 ? "#1f6d82" : PAL.mut2, fontVariantNumeric: "tabular-nums" }}>
+                          {a.kod} · {Number.isFinite(Number(a.skor)) ? Number(a.skor).toFixed(1) : "–"}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   {(arsiv.saklama_suresi || arsiv.saklama) && <KV k="Saklama süresi" v={String(arsiv.saklama_suresi || arsiv.saklama)} />}
                   <SlaBullet info={sInfo} />
                 </div>
@@ -260,11 +326,32 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
           <GorevLabel n="2" t="ÜRETİM" color={V} count="üretim ajanları ✓" />
           <div style={grid}>
 
-            <NeonCard title="Doğrulama · Kalite Kapısı" tag={uyari.length ? `${uyari.length} uyarı` : "uyumlu ✓"} tagColor={uyari.length ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
+            <NeonCard title="Doğrulama · Kalite Kapısı" tag={uyari.length + tutar.length ? `${uyari.length + tutar.length} uyarı` : "uyumlu ✓"} tagColor={uyari.length + tutar.length ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
               <Vrow ok={!uyari.length} label={<>Uydurma-veto <span style={{ color: PAL.mut3, fontSize: 10 }}>(halüsinasyon kontrolü)</span></>} val={uyari.length ? `${uyari.length} işaret` : "temiz ✓"} />
               <Vrow ok={!!r.format_uyumlu} label="Format (Yön. 2646)" val={r.format_uyumlu ? "uyumlu ✓" : "kontrol"} />
-              {uyari.slice(0, 5).map((u, i) => <div key={i} style={{ marginTop: 6, fontFamily: MONO, fontSize: 10.5, color: "#fde68a", lineHeight: 1.4 }}>⚠ {cleanDemoText(String(u))}</div>)}
+              <Vrow ok={!tutar.length} label={<>Veri tutarlılığı <span style={{ color: PAL.mut3, fontSize: 10 }}>(TCKN checksum · tarih · sayı deseni)</span></>} val={tutar.length ? `${tutar.length} uyarı` : "temiz ✓"} />
+              {uyari.slice(0, 5).map((u, i) => <div key={i} style={{ marginTop: 6, fontFamily: MONO, fontSize: 10.5, color: "#8a5a10", lineHeight: 1.4 }}>⚠ {cleanDemoText(String(u))}</div>)}
+              {tutar.slice(0, 4).map((u, i) => <div key={"t" + i} style={{ marginTop: 6, fontFamily: MONO, fontSize: 10.5, color: "#8a5a10", lineHeight: 1.4 }}>⚠ {cleanDemoText(String(u))}</div>)}
             </NeonCard>
+
+            {lintKurallar.length > 0 && (
+              <NeonCard title="Yönetmelik-2646 Lint" tag={`${lint.ozet?.gecti ?? 0}/${lintKurallar.length} kural ✓`} tagColor={lintUyariSay ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
+                <p style={{ margin: "0 0 10px", fontFamily: MONO, fontSize: 10.5, color: PAL.mut2, lineHeight: 1.5 }}>Taslak, Resmî Yazışma Yönetmeliği (CB 2646/2020) kurallarından madde madde geçirilir.</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                  {lintKurallar.map((k) => {
+                    const renk = k.durum === "gecti" ? BANT.yesil.c : k.durum === "uyari" ? BANT.sari.c : PAL.mut2;
+                    const isaret = k.durum === "gecti" ? "✓" : k.durum === "uyari" ? "!" : "i";
+                    return (
+                      <div key={k.kural} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "5px 2px" }}>
+                        <span aria-hidden="true" style={{ width: 16, height: 16, borderRadius: "50%", flex: "none", marginTop: 1, display: "grid", placeItems: "center", fontFamily: MONO, fontSize: 9.5, fontWeight: 700, color: "#fbf7f0", background: renk }}>{isaret}</span>
+                        <span style={{ flex: "none", fontFamily: MONO, fontSize: 9.5, color: "#6a4787", background: "rgba(139,92,176,.1)", border: "1px solid rgba(139,92,176,.26)", borderRadius: 5, padding: "1px 6px", marginTop: 1 }}>{k.madde}</span>
+                        <span style={{ fontFamily: SANS, fontSize: 11.5, color: k.durum === "uyari" ? "#8a5a10" : PAL.ink2, lineHeight: 1.45 }}>{cleanDemoText(String(k.mesaj))}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </NeonCard>
+            )}
 
             {r.bilgilendirme && (
               <NeonCard title="Bilgilendirme" accent={V} icon={<Icon.info />}>
@@ -289,6 +376,7 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                 <button onClick={() => onDownload?.("pdf")} disabled={!canDownload || downloading === "pdf"} {...dlBtnHover} style={{ cursor: canDownload ? "pointer" : "not-allowed", padding: "10px 17px", borderRadius: 11, border: "1px solid transparent", fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: canDownload ? "#fbf7f0" : PAL.mut2, background: canDownload ? `linear-gradient(135deg,${V},${V}cc)` : "rgba(35,26,18,.05)", boxShadow: canDownload ? "0 10px 24px -10px rgba(139,92,176,.45)" : "none", transition: "transform .2s" }}>{downloading === "pdf" ? "indiriliyor…" : "PDF indir"}</button>
                 <button onClick={() => onDownload?.("docx")} disabled={!canDownload || downloading === "docx"} {...dlBtnHover} style={{ cursor: canDownload ? "pointer" : "not-allowed", padding: "10px 17px", borderRadius: 11, border: "1px solid " + (canDownload ? "rgba(139,92,176,.4)" : "rgba(35,26,18,.1)"), fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: canDownload ? "#6a4787" : PAL.mut2, background: canDownload ? "rgba(139,92,176,.1)" : "rgba(35,26,18,.03)", transition: "transform .2s" }}>{downloading === "docx" ? "indiriliyor…" : "DOCX indir"}</button>
+                <button onClick={() => onDownload?.("eyp")} disabled={!canDownload || downloading === "eyp"} {...dlBtnHover} title="EYP 2.0 (e-Yazışma Teknik Rehberi) uyumlu paket iskeleti — EBYS'ye doğrudan girebilir" style={{ cursor: canDownload ? "pointer" : "not-allowed", padding: "10px 17px", borderRadius: 11, border: "1px solid " + (canDownload ? "rgba(47,143,166,.4)" : "rgba(35,26,18,.1)"), fontFamily: SANS, fontSize: 12.5, fontWeight: 600, color: canDownload ? "#1f6d82" : PAL.mut2, background: canDownload ? "rgba(47,143,166,.1)" : "rgba(35,26,18,.03)", transition: "transform .2s" }}>{downloading === "eyp" ? "hazırlanıyor…" : "EYP 2.0 paketi"}</button>
                 {!canDownload && <span style={{ fontFamily: MONO, fontSize: 10.5, color: PAL.mut2 }}>İndirme için örnek evrak metni gerekir (dosya yolunda metin sunucuda tutulmaz).</span>}
               </div>
             </NeonCard>

@@ -36,6 +36,25 @@ class YaziRenderRequest(BaseModel):
     title: str = Field("", max_length=255)
 
 
+class YaziEypRequest(BaseModel):
+    """EYP 2.0-uyumlu paket iskeleti indirme isteği (S5 — ticarileşme/EBYS köprüsü).
+
+    Hızlı yol: frontend elindeki taslak + sonuç üstverisini gönderir (pipeline YOK).
+    Yavaş yol: yalnız evrak_text gelirse pipeline koşulur (taslak endpoint deseni).
+    """
+
+    evrak_text: str = Field("", max_length=MAX_EVRAK_CHARS)
+    taslak_md: str = Field("", max_length=MAX_EVRAK_CHARS)
+    filename: str = Field("", max_length=255)
+    konu: str = Field("", max_length=500)
+    yazi_turu: str = Field("", max_length=50)
+    sdp_kodu: str = Field("", max_length=120)
+    sdp_adi: str = Field("", max_length=200)
+    hedef_birim: str = Field("", max_length=200)
+    ilgi_tarih: str = Field("", max_length=40)
+    ilgi_sayi: str = Field("", max_length=120)
+
+
 class OnayResumeRequest(BaseModel):
     """HITL memur onay kararı — duraklamış pipeline'ı sürdürür (Görev 2 yenilikçilik)."""
 
@@ -57,6 +76,8 @@ class MevzuatOneriSchema(BaseModel):
     dogrula: bool = False         # başlık/snippet'te [DOĞRULA] işareti
     nli_etiket: str = ""          # NLI açıksa: "destekleniyor" / "[DOĞRULA: anlamsal destek zayıf]"
     yururluk: str = ""            # başlıkta zaten var olan sürüm/yürürlük (uydurma yok)
+    # S7 — GraphRAG-lite: öneri, top sonucun atıf verdiği mevzuattan 1-hop genişletmeyle geldi.
+    atif_genisletme: bool = False
 
 
 class AltTalepSchema(BaseModel):
@@ -94,6 +115,11 @@ class ProcessResponse(BaseModel):
     format_uyumlu: bool = False
     verify_uyari: list[str] = Field(default_factory=list)
     verify_notes: str = ""
+    # S2 — Yönetmelik-2646 lint raporu ({kurallar,uyari,ozet}) + veri-tutarlılık uyarıları.
+    lint_2646: dict = Field(default_factory=dict)
+    tutarlilik_uyari: list[str] = Field(default_factory=list)
+    # S6 — işleme profili rozeti: kvkk-onprem (veri kurumdan çıkmaz) | mock | bulut.
+    llm_profil: str = ""
     bilgilendirme: str = ""
     # Yenilikçilik — Arşivleme (SDP 2005/7) metadata (frontend bununla eşleşir).
     arsiv_metadata: dict = Field(default_factory=dict)
@@ -135,5 +161,5 @@ class OCRResponse(BaseModel):
 
 
 __all__ = ("MAX_EVRAK_CHARS", "AltTalepSchema", "MevzuatOneriSchema", "OCRResponse",
-           "OnayResumeRequest", "ProcessRequest", "ProcessResponse", "YaziRenderRequest",
-           "YaziTaslakRequest")
+           "OnayResumeRequest", "ProcessRequest", "ProcessResponse", "YaziEypRequest",
+           "YaziRenderRequest", "YaziTaslakRequest")

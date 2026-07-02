@@ -85,6 +85,11 @@ class EvrakState(TypedDict):
     format_uyumlu: NotRequired[bool]        # resmî yazı zorunlu-alan checklist
     verify_notes: NotRequired[str]
     verify_uyari: NotRequired[list[str]]    # uydurma-veto + format eksik uyarıları
+    # S2 (2026-07): Yönetmelik-2646 lint raporu ({kurallar, uyari, ozet} — yazi_lint.py)
+    # + kaynak evrak veri-tutarlılık uyarıları (tutarlilik.py). İkisi de verify additive
+    # çıktısı; risk_guard SARI sinyali olarak tüketir.
+    lint_2646: NotRequired[dict[str, Any]]
+    tutarlilik_uyari: NotRequired[list[str]]
 
     # --- Yenilikçilik: Risk bandı (trafik ışığı) + koşullu HITL ---
     # risk_guard_node verify sinyallerini YEŞİL/SARI/KIRMIZI bandına çevirir (deterministik,

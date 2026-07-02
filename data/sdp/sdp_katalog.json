@@ -1,0 +1,94 @@
+{
+  "kaynak": "Başbakanlık Genelgesi 2005/7 (RG 25766, 24.03.2005) kod aralıkları + proje kürasyonu (agents/config.EVRAK_TO_SDP, docs/01-02). Ana hizmet (100-599) kodları kuruma özgüdür; alt-kod adları kurumun Saklama Süreli Standart Dosya Planı'nda doğrulanmalıdır.",
+  "surum": "2026-07",
+  "kodlar": [
+    {
+      "kod": "000",
+      "ad": "Genel",
+      "aralik": "ortak",
+      "anahtar": [],
+      "turler": ["belirsiz", "tutanak"],
+      "dogrula": false
+    },
+    {
+      "kod": "010",
+      "ad": "Mevzuat işleri ve genel yazışma",
+      "aralik": "ortak",
+      "anahtar": ["mevzuat", "yönetmelik hükmü", "genel yazışma"],
+      "turler": ["dilekce", "ust_yazi", "cevabi_yazi"],
+      "dogrula": false
+    },
+    {
+      "kod": "020",
+      "ad": "Olurlar ve onaylar",
+      "aralik": "ortak",
+      "anahtar": ["olur", "makam onayı", "muvafakat"],
+      "turler": ["genelge_talimat_olur"],
+      "dogrula": false
+    },
+    {
+      "kod": "040",
+      "ad": "Faaliyet raporları",
+      "aralik": "ortak",
+      "anahtar": ["faaliyet raporu", "denetim raporu", "inceleme raporu"],
+      "turler": ["rapor"],
+      "dogrula": false
+    },
+    {
+      "kod": "045",
+      "ad": "Görüş ve mütalaalar",
+      "aralik": "ortak",
+      "anahtar": ["görüş", "mütalaa", "hukuki kanaat"],
+      "turler": ["gorus_mutalaa"],
+      "dogrula": false
+    },
+    {
+      "kod": "100",
+      "ad": "Ana hizmet başvuru ve işlemleri (kuruma özgü)",
+      "aralik": "ana_hizmet",
+      "anahtar": ["ruhsat", "imar", "iskan", "hizmet talebi"],
+      "turler": ["basvuru", "talep"],
+      "dogrula": true
+    },
+    {
+      "kod": "622",
+      "ad": "Halkla ilişkiler — görüş, öneri, şikâyet ve ihbar başvuruları",
+      "aralik": "yardimci",
+      "anahtar": ["şikayet", "şikâyet", "ihbar", "öneri", "vatandaş başvurusu"],
+      "turler": ["sikayet", "ihbar"],
+      "dogrula": false
+    },
+    {
+      "kod": "622.03",
+      "ad": "Bilgi edinme başvuruları (4982)",
+      "aralik": "yardimci",
+      "anahtar": ["bilgi edinme", "4982"],
+      "turler": ["bilgi_edinme"],
+      "dogrula": false
+    },
+    {
+      "kod": "622.04",
+      "ad": "CİMER başvuruları",
+      "aralik": "yardimci",
+      "anahtar": ["cimer"],
+      "turler": ["cimer"],
+      "dogrula": false
+    },
+    {
+      "kod": "640",
+      "ad": "Hukuk işleri",
+      "aralik": "yardimci",
+      "anahtar": ["dava", "icra", "tebligat", "müzekkere", "mahkeme", "haciz"],
+      "turler": ["tebligat", "dava_evraki", "icra_evraki", "muzekkere"],
+      "dogrula": false
+    },
+    {
+      "kod": "841",
+      "ad": "Bütçe ve malî işler",
+      "aralik": "yardimci",
+      "anahtar": ["fatura", "tahakkuk", "bütçe", "harcama", "ödeme emri belgesi"],
+      "turler": ["fatura"],
+      "dogrula": false
+    }
+  ]
+}

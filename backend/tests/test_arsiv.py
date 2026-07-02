@@ -11,7 +11,11 @@ from agents.config import EVRAK_TO_SDP, sdp_kodu
 from agents.nodes.arsiv import _sdp_from_sayi, arsiv_node
 
 # arsiv_metadata sözleşmesi (frontend ile eşleşir) — anahtar kümesi DEĞİŞMEMELİ.
-_SOZLESME_ANAHTARLARI = {"sdp_kodu", "saklama_suresi", "konu", "sayi", "tarih", "birim"}
+# S1 (2026-07): içerik-tabanlı SDP atama additive anahtarları (sdp_adi/gerekce/adaylari).
+_SOZLESME_ANAHTARLARI = {
+    "sdp_kodu", "saklama_suresi", "konu", "sayi", "tarih", "birim",
+    "sdp_adi", "sdp_gerekce", "sdp_adaylari",
+}
 
 
 # ---------------------------------------------------------------------------

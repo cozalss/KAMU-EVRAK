@@ -23,6 +23,9 @@ from typing import Any
 import structlog
 
 from agents.config import VERIFY_ENABLED, YAZI_ZORUNLU_BOLUMLER
+from agents.tutarlilik import tutarlilik_kontrol
+from agents.yazi_lint import lint_2646
+from api.pii import mask_pii
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -80,24 +83,44 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     if not VERIFY_ENABLED:
         return {}  # no-op: grafta var ama kapalı (baseline davranış korunur)
 
+    # S2 — kaynak evrak veri-tutarlılığı taslaktan bağımsız denetlenir (TCKN checksum,
+    # gelecek tarih, m.11 sayı deseni); taslak yoksa da raporlanır.
+    # PII güvenliği (CRITICAL guard): uyarı metinleri TCKN-şekilli ham sayı taşıyabilir
+    # ve /process_doc/stream ara SSE event'leri _to_response maskesini ATLAR → maskeleme
+    # state'e girmeden BURADA yapılır (risk_guard.gerekceler ile aynı desen) — REST, SSE,
+    # DB persist ve her gelecek tüketici otomatik korunur.
+    tutarlilik = [mask_pii(u).masked_text for u in tutarlilik_kontrol(
+        state.get("evrak_text", "") or "", state.get("bilgi_unsurlari") or {}
+    )]
+
     taslak = state.get("yazi_taslak_md", "") or ""
     if not taslak:
-        return {"verify_notes": "Taslak bulunamadı — doğrulama atlandı.", "verify_uyari": []}
+        return {"verify_notes": "Taslak bulunamadı — doğrulama atlandı.",
+                "verify_uyari": [], "tutarlilik_uyari": tutarlilik}
 
     eksik = _eksik_bolumler(tr_lower(taslak))
     uydurma = _uydurma_veto(taslak, state)
-    uyarilar = uydurma + [f"Eksik bölüm: {e}" for e in eksik]
+    # Uydurma-veto mesajları taslaktaki HAM tarih/sayı token'ını içerir (TCKN-şekilli
+    # olabilir) → SSE'ye maskesiz gitmesin diye state'e girmeden maskelenir.
+    uyarilar = [mask_pii(u).masked_text for u in uydurma] + [f"Eksik bölüm: {e}" for e in eksik]
+    # S2 — madde-referanslı 2646 lint raporu (kural-kimlikli; risk'e yalnız 'uyari' gider).
+    lint = lint_2646(taslak, state.get("yazi_turu", "") or "")
 
     notlar = (
         "Doğrulama tamam — format zorunlu bölümleri mevcut, uydurma somut veri yok."
         if not uyarilar
         else f"Doğrulama {len(uyarilar)} uyarı buldu: " + " | ".join(uyarilar)
     )
-    out: dict[str, Any] = {"verify_notes": notlar, "verify_uyari": uyarilar}
+    if lint["uyari"] or tutarlilik:
+        notlar += (f" 2646 lint: {lint['ozet']['gecti']} kural geçti, "
+                   f"{len(lint['uyari'])} uyarı; tutarlılık: {len(tutarlilik)} uyarı.")
+    out: dict[str, Any] = {"verify_notes": notlar, "verify_uyari": uyarilar,
+                           "lint_2646": lint, "tutarlilik_uyari": tutarlilik}
     # format_uyumlu yalnız ZAYIFLATMA yönünde güncellenir (eksik bölüm → False).
     if eksik:
         out["format_uyumlu"] = False
-    log.info("verify", eksik=eksik, uydurma=len(uydurma))
+    log.info("verify", eksik=eksik, uydurma=len(uydurma),
+             lint_uyari=len(lint["uyari"]), tutarlilik=len(tutarlilik))
     return out
 
 

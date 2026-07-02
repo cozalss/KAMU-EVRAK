@@ -22,7 +22,12 @@ from fastapi.responses import Response
 from agents.graph import build_graph
 from agents.state import make_initial_state
 from api.middleware.ratelimit import rate_limit
-from api.schemas import MAX_EVRAK_CHARS, YaziRenderRequest, YaziTaslakRequest
+from api.schemas import (
+    MAX_EVRAK_CHARS,
+    YaziEypRequest,
+    YaziRenderRequest,
+    YaziTaslakRequest,
+)
 
 log = structlog.get_logger()
 router = APIRouter(prefix="/yazi", tags=["yazi"])
@@ -137,6 +142,67 @@ async def yazi_render(
         content=data,
         media_type=media_type,
         headers={"Content-Disposition": f'attachment; filename="{fallback}"'},
+    )
+
+
+async def _eyp_meta_from_pipeline(req: YaziEypRequest) -> tuple[dict[str, Any], str]:
+    """Yavaş yol: evrak metnini pipeline'dan geçir → (üstveri meta, taslak_md)."""
+    text = (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS]
+    if not text:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            "Taslak metni veya evrak metni gerekli")
+    state = make_initial_state(text, filename=req.filename)
+    try:
+        final = await _get_graph().ainvoke(state)
+    except Exception as exc:
+        log.error("yazi_eyp_pipeline_failed", error=str(exc) or type(exc).__name__)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            "Paket üretilemedi") from exc
+    arsiv = final.get("arsiv_metadata", {}) or {}
+    unsur = final.get("bilgi_unsurlari", {}) or {}
+    meta = {
+        "filename": req.filename,
+        "konu": unsur.get("konu", ""),
+        "yazi_turu": final.get("yazi_turu", ""),
+        "sdp_kodu": arsiv.get("sdp_kodu", ""),
+        "sdp_adi": arsiv.get("sdp_adi", ""),
+        "hedef_birim": final.get("hedef_birim", ""),
+        "ilgi_tarih": unsur.get("tarih", ""),
+        "ilgi_sayi": unsur.get("sayi", ""),
+    }
+    return meta, final.get("yazi_taslak_md", "") or ""
+
+
+@router.post("/eyp")
+@rate_limit("30/minute")
+async def yazi_eyp(request: Request, req: YaziEypRequest) -> Response:
+    """Taslağı EYP 2.0-uyumlu yazışma paketi İSKELETİ (ZIP) olarak indir (S5).
+
+    Hızlı yol: frontend sonuç üstverisini gönderdiyse pipeline koşulmaz. Yalnız
+    evrak_text geldiyse pipeline koşulur ve üstveri state'ten derlenir.
+    """
+    from yazi.eyp import build_eyp_paket
+
+    taslak_md = (req.taslak_md or "").strip()
+    if taslak_md:
+        meta: dict[str, Any] = req.model_dump(exclude={"evrak_text", "taslak_md"})
+    else:
+        meta, taslak_md = await _eyp_meta_from_pipeline(req)
+
+    # PDF üret (varsa pakete PDF girer; render altyapısı yoksa düz metinle devam).
+    pdf: bytes | None = None
+    try:
+        from yazi.renderer import render_text_bytes
+        pdf = render_text_bytes(taslak_md, "pdf", title="Resmî Yazı Taslağı") or None
+    except Exception:
+        pdf = None
+
+    data = build_eyp_paket(meta, taslak_md=taslak_md, pdf_bytes=pdf)
+    log.info("yazi_eyp_download", n_bytes=len(data), pdf=bool(pdf))
+    return Response(
+        content=data,
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="eyp-paket-taslak.zip"'},
     )
 
 

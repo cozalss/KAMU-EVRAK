@@ -243,10 +243,26 @@ export function usePipeline() {
     }
     setDownloading(format);
     let url = "";
+    const isEyp = format === "eyp";
     try {
       // HIZLI YOL: taslak zaten üretildiyse pipeline'ı (≈8 LLM çağrısı) TEKRAR çalıştırma —
       // mevcut metni doğrudan render et (/yazi/render). Yalnız taslak yoksa pipeline'a düş.
-      const res = md
+      // EYP: sonuç üstverisi (SDP/birim/ilgi) elimizdeyse paket pipeline'sız kurulur (S5).
+      const res = isEyp
+        ? await fetch("/yazi/eyp", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(md ? {
+              taslak_md: md,
+              konu: result?.bilgi_unsurlari?.konu || "",
+              yazi_turu: result?.yazi_turu || "",
+              sdp_kodu: result?.arsiv_metadata?.sdp_kodu || "",
+              sdp_adi: result?.arsiv_metadata?.sdp_adi || "",
+              hedef_birim: result?.hedef_birim || "",
+              ilgi_tarih: result?.bilgi_unsurlari?.tarih || "",
+              ilgi_sayi: result?.bilgi_unsurlari?.sayi || "",
+            } : { evrak_text: evrakText }),
+          })
+        : md
         ? await fetch(`/yazi/render?format=${encodeURIComponent(format)}`, {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text: md, title: "Resmî Yazı Taslağı" }),
@@ -260,11 +276,11 @@ export function usePipeline() {
       url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `resmi-yazi-taslak.${format}`;
+      a.download = isEyp ? "eyp-paket-taslak.zip" : `resmi-yazi-taslak.${format}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      showToast(`Taslak ${format.toUpperCase()} olarak indirildi.`);
+      showToast(isEyp ? "EYP 2.0 yazışma paketi (ZIP) indirildi." : `Taslak ${format.toUpperCase()} olarak indirildi.`);
     } catch (err) {
       showToast(err?.message || "Taslak indirilemedi — backend çalışıyor mu?");
     } finally {

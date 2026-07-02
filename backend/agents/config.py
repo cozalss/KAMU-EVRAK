@@ -277,21 +277,67 @@ EVRAK_TO_YAZI: dict[str, str] = {
     "belirsiz": "cevabi_yazi",                    # güvenli varsayılan
 }
 
+# --- S6: KVKK / on-prem modu — "veri kurumdan çıkmaz" profili ---
+# Dayanak: 2019/12 sayılı CB Genelgesi (kritik veri yurtiçinde) + KVKK Üretken YZ
+# Rehberi (Kas 2025, hassas veri için yerinde açık model önerisi). KVKK_MODU=1 →
+# LLM istekleri LOKAL OpenAI-uyumlu sunucuya zorlanır (Ollama varsayılanı
+# http://localhost:11434/v1; KVKK_BASE_URL/KVKK_MODEL ile değiştirilebilir). Bulut
+# base-url .env'de tanımlı olsa bile EZİLİR — mod açıkken dışarı istek çıkmaz.
+# Mevcut LLM_MODE=openai yolu yeniden kullanılır (profil, kod dalı değil); Ollama
+# anahtar istemez → OPENAI_API_KEY yoksa dolgu değer konur (bulut anahtarı gerekmez).
+#
+# KAPSAM UYARISI (bilinçli cross-cutting etki): OPENAI_BASE_URL/OPENAI_API_KEY,
+# core.openai_compat üzerinden LLM'e EK OLARAK bulut OCR/STT/TTS istemcileri
+# tarafından da okunur → KVKK modu açıkken BÜTÜN bulut çağrıları lokale döner.
+# Bu bir yan etki değil, modun amacıdır ("hiçbir istek kurumdan çıkmaz").
+# Davranış İLK IMPORT anında sabitlenir (config her yerde import edilir; süreç
+# başına bir kez) — test kapsamı: tests/test_kvkk_modu.py subprocess senaryosu.
+KVKK_MODU = os.getenv("KVKK_MODU", "0") == "1"
+if KVKK_MODU:
+    os.environ["OPENAI_BASE_URL"] = os.getenv("KVKK_BASE_URL", "http://localhost:11434/v1")
+    os.environ["OPENAI_LLM_MODEL"] = os.getenv("KVKK_MODEL", "llama3.1:8b")
+    os.environ.setdefault("OPENAI_API_KEY", "ollama-lokal")
+    os.environ.setdefault("LLM_MODE", "openai")
+
 # --- LLM modu (ADALET ile aynı desen) ---
 LLM_MODE = os.getenv("LLM_MODE", "mock").lower()  # mock | openai | llamacpp
+
+
+def llm_profil() -> str:
+    """UI rozeti için işleme profili: kvkk-onprem | mock | bulut (S6 şeffaflık)."""
+    if KVKK_MODU:
+        return "kvkk-onprem"
+    if LLM_MODE == "mock":
+        return "mock"
+    return "bulut"
+
+# --- S3: Vitrin (jüri demo) modu — TEK anahtar, kapalı hazineleri birlikte açar ---
+# VITRIN_MODU=1 → clarifier (dur-ve-sor) + HITL onay kapısı + self-consistency (N=3)
+# + CRAG birlikte açılır. Yalnız MODEL BAĞIMLILIĞI OLMAYANLAR vitrine girer
+# (RERANK/NLI ağır model ister → bireysel bayrakla açılır). Bireysel ENV HER ZAMAN
+# kazanır: VITRIN_MODU=1 + HITL_ENABLED=0 → HITL kapalı. Varsayılan 0 → baseline/CI
+# birebir korunur (827 test bayraksız topolojiyi sabitler).
+VITRIN_MODU = os.getenv("VITRIN_MODU", "0") == "1"
+
+
+def _bayrak(ad: str, *, vitrin_acik: bool, env=os.environ) -> bool:
+    """ENV bayrağı çözümü: bireysel değer > vitrin varsayılanı > kapalı (SAF, test edilir)."""
+    return env.get(ad, "1" if vitrin_acik else "0") == "1"
+
 
 # --- Görev 2: doğrulama (verify) + dur-ve-sor (clarifier) ENV bayrakları ---
 # verify_node grafta her zaman var; KAPATILIRSA no-op passthrough (state bozulmaz).
 VERIFY_ENABLED = os.getenv("VERIFY_ENABLED", "1") == "1"
-# clarifier dur-ve-sor dalı: VARSAYILAN KAPALI → baseline akış (taslak hep üretilir) korunur.
-CLARIFY_STOP_ENABLED = os.getenv("CLARIFY_STOP_ENABLED", "0") == "1"
+# clarifier dur-ve-sor dalı: baseline KAPALI; vitrin modunda AÇIK (şartname Görev 2.5
+# "eksik bilgi isteme" maddesinin dur-ve-sor karşılığı — demo/jüri akışında açık olmalı).
+CLARIFY_STOP_ENABLED = _bayrak("CLARIFY_STOP_ENABLED", vitrin_acik=VITRIN_MODU)
 
 # HITL (human-in-the-loop) memur onay kapısı: LangGraph interrupt() ile DURUR; memur
 # ONAYLA/DÜZENLE/REDDET. interrupt() bir checkpointer ister. VARSAYILAN KAPALI → baseline
 # (checkpointer'sız, kesintisiz) compile + akış birebir korunur. Açıkken onay_kapisi node'u
 # verify/risk_guard SONRASINA girer (memur riski görerek onaylar); RISK_GUARD ile KOŞULLU
 # (yeşil otomatik geçer, sarı/kırmızı durur); graf InMemorySaver ile derlenir.
-HITL_ENABLED = os.getenv("HITL_ENABLED", "0") == "1"
+HITL_ENABLED = _bayrak("HITL_ENABLED", vitrin_acik=VITRIN_MODU)
 
 # --- Yenilikçilik: ENV-gated SOTA öz-düzeltme node'ları (CRAG + Self-RAG) ---
 # İKİSİ DE VARSAYILAN KAPALI → baseline akış birebir korunur (141 test değişmez).
@@ -299,7 +345,11 @@ HITL_ENABLED = os.getenv("HITL_ENABLED", "0") == "1"
 #
 # CRAG (Corrective RAG): mevzuat_oner retrieval güveni düşükse (top skor < eşik veya
 # 0 sonuç) sorguyu genişletip BM25'i yeniden çağırır → daha iyi mevzuat önerisi.
-CRAG_ENABLED = os.getenv("CRAG_ENABLED", "0") == "1"
+CRAG_ENABLED = _bayrak("CRAG_ENABLED", vitrin_acik=VITRIN_MODU)
+# GraphRAG-lite (S7): BM25 top sonuçlarının METNİNDEN atıf verilen kanunlara 1-hop
+# genişletme ("önerilen madde, atıf verdiği mevzuatla gelir"). Deterministik/modelsiz →
+# vitrine dahil; baseline'da kapalı (retrieval eval sabit kalır).
+ATIF_GENISLET_ENABLED = _bayrak("ATIF_GENISLET_ENABLED", vitrin_acik=VITRIN_MODU)
 # CRAG düzeltme eşiği: normalize güven (0..1) bu değerin altındaysa düzeltme tetiklenir.
 CRAG_CONF_ESIK = float(os.getenv("CRAG_CONF_ESIK", "0.55"))
 # Ham BM25 referans eşiği: top raw_score bu değere ulaşırsa "tam güven" (1.0) sayılır;
@@ -315,7 +365,7 @@ SELF_RAG_ENABLED = os.getenv("SELF_RAG_ENABLED", "0") == "1"
 # örneklenir; örnekler arası UZLAŞI yoksa (oran < _CONSENSUS_ESIK) dürüst "belirsiz" döner —
 # "zor" vakalarda gerçek abstention. VARSAYILAN 1 (KAPALI → ek LLM çağrısı/maliyet YOK).
 # Demo/jüri için SELF_CONSISTENCY_N=3 yeter; N çağrı = N× maliyet (mock'ta etkisiz).
-SELF_CONSISTENCY_N = int(os.getenv("SELF_CONSISTENCY_N", "1"))
+SELF_CONSISTENCY_N = int(os.getenv("SELF_CONSISTENCY_N", "3" if VITRIN_MODU else "1"))
 SELF_CONSISTENCY_ESIK = float(os.getenv("SELF_CONSISTENCY_ESIK", "0.6"))
 
 # Çok-konulu evrak ayrıştırma (decompose) — tek dilekçedeki birden çok istek alt-taleplere

@@ -56,6 +56,7 @@ def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
             "dayanak": dayanak, "guven": guven, "inceleme_oner": incele,
             "dogrula": dogrula, "nli_etiket": (n.get("etiket", "") if n else ""),
             "yururluk": _yururluk(baslik),
+            "atif_genisletme": bool(o.get("atif_genisletme")),
         })
     return out
 

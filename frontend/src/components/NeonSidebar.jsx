@@ -1,7 +1,7 @@
 /* NeonSidebar — çalışma alanı navigasyonu. Her öğe GERÇEK görünüm değiştirir (activeView).
    "Yeni evrak yükle" + "Örnek evrakla dene" dropdown girişi. Klavye erişilebilir (button + focusRing). */
 import React, { useState } from "react";
-import { T, V, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
+import { MONO, T, V, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
 
 const NAV = [
   { id: "panel", label: "Panel", icon: "grid" },
@@ -64,7 +64,7 @@ function bashHarfler(ad) {
   return ((p[0]?.[0] || "") + (p[1]?.[0] || p[0]?.[1] || "")).toUpperCase() || "?";
 }
 
-function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, onPalet }) {
   const [showSamples, setShowSamples] = useState(false);
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
@@ -131,6 +131,20 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
             </div>
           )}
         </div>
+      )}
+
+      {/* Komut paleti kısayolu — keşfedilebilirlik (Ctrl+K her yerden de açar). */}
+      {onPalet && (
+        <button type="button" onClick={onPalet} {...focusRing}
+          onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+          style={{ cursor: "pointer", marginTop: SP.s, display: "flex", alignItems: "center", gap: SP.s, padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: PAL.mut2, border: `1px solid ${PAL.line}`, background: "transparent", transition: "background .12s ease-out" }}>
+          <span aria-hidden="true" style={{ display: "flex", flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+          </span>
+          <span style={{ flex: 1, textAlign: "left" }}>Komut paleti</span>
+          <kbd style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "1px 6px" }}>Ctrl K</kbd>
+        </button>
       )}
 
       <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: SP.m, padding: SP.m, borderRadius: RAD.card, background: PAL.surfHi, border: `1px solid ${PAL.line}` }}>

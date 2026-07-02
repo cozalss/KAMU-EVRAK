@@ -4,6 +4,7 @@
    RiskBand) + bütünlük çipi. Data-viz: mevzuat skor barları (ilgililik eşiği), SLA çizgi+nokta,
    SHA-256 hash zinciri, doğrulanan alan çipleri, resmî yazı kâğıt önizleme. Tümü GERÇEK ProcessResponse. */
 import { cloneElement } from "react";
+import { diffLines } from "diff";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Btn, Icon } from "./neonUi.jsx";
 
@@ -358,9 +359,9 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
               {tutar.slice(0, 4).map((u, i) => <div key={"t" + i} style={{ marginTop: SP.s, display: "flex", alignItems: "flex-start", gap: SP.s, ...TYPE.data, color: DERIN.sari }}><Icon.alert style={{ flex: "none", marginTop: 2 }} /> {cleanDemoText(String(u))}</div>)}
               {r.lint_duzeltme_md && (
                 <div style={{ marginTop: SP.m }}>
-                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>Önerilen düzeltme (Yön. 2646)</div>
-                  <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>Otomatik öneri — memur onayı olmadan uygulanmaz.</div>
-                  <pre style={{ margin: 0, padding: SP.m, fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 200, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{cleanDemoText(String(r.lint_duzeltme_md))}</pre>
+                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>Önerilen düzeltme (Yön. 2646) — mevcut taslakla fark</div>
+                  <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>Otomatik öneri — memur onayı olmadan uygulanmaz. Eklenen satır "+", çıkarılan satır "−" ile işaretlidir.</div>
+                  <DuzeltmeDiff eski={cleanDemoText(String(r.yazi_taslak_md || ""))} yeni={cleanDemoText(String(r.lint_duzeltme_md))} />
                 </div>
               )}
             </NeonCard>,
@@ -416,6 +417,33 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
         </section>
       </div>
     </section>
+  );
+}
+
+/* 2646 düzeltme önerisi — mevcut taslakla satır-diff (jsdiff): memur NEYİN değiştiğini görür,
+   HITL şeffaflığının somut hâli. Renk tek sinyal değil (+/− önekleri); eski taslak yoksa düz
+   metin fallback'i. */
+function DuzeltmeDiff({ eski, yeni }) {
+  const satirStil = { fontFamily: MONO, fontSize: 12, lineHeight: "18px", whiteSpace: "pre-wrap", wordBreak: "break-word" };
+  if (!eski) {
+    return <pre style={{ margin: 0, padding: SP.m, ...satirStil, color: PAL.ink2, maxHeight: 240, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{yeni}</pre>;
+  }
+  const parcalar = diffLines(eski, yeni);
+  return (
+    <div aria-label="Önerilen düzeltme farkı — eklenen satırlar artı, çıkarılan satırlar eksi işaretli"
+      style={{ maxHeight: 240, overflow: "auto", padding: "8px 0", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
+      {parcalar.map((p, i) => {
+        const renk = p.added ? DERIN.yesil : p.removed ? DERIN.kirmizi : PAL.ink2;
+        const bg = p.added ? ALFA(BANT.yesil.c) : p.removed ? ALFA(BANT.kirmizi.c) : "transparent";
+        const onek = p.added ? "+" : p.removed ? "−" : " ";
+        return p.value.replace(/\n$/, "").split("\n").map((satir, j) => (
+          <div key={`${i}-${j}`} style={{ display: "flex", gap: SP.s, padding: "1px 12px", background: bg }}>
+            <span aria-hidden="true" style={{ ...satirStil, color: renk, flexShrink: 0, width: 10, textAlign: "center" }}>{onek}</span>
+            <span style={{ ...satirStil, color: renk, minWidth: 0, ...(p.removed ? { textDecoration: "line-through", textDecorationColor: PAL.lineHi } : null) }}>{satir || " "}</span>
+          </div>
+        ));
+      })}
+    </div>
   );
 }
 

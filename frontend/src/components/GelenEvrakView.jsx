@@ -2,7 +2,8 @@
    Örnek evraklar "gelen evrak"; tıkla → İşleniyor'da uçtan-uca işlenir.
    Kategori operasyonel gruplama için TÜRETİLİR (lib/kategori); güven/tarih işleme sonucu
    oluştuğundan kuyrukta boştur (durum "Yeni" / işlenmişse "İşlendi"). */
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, ALFA, DERIN, DERIN_OF } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter } from "../hooks/useFilter.js";
@@ -12,7 +13,8 @@ import { BIRIM_LBL } from "./result-cards.jsx";
 const KATEGORI_SELECT = [{ value: "", label: "Tüm kategoriler" }, ...KATEGORILER.map((k) => ({ value: k.id, label: k.label }))];
 
 const GELEN_FILTER_CONFIG = {
-  search: { enabled: true, placeholder: "Evrak adı, açıklama…" },
+  // fuzzy: diakritik/yazım hatası affeden arama (fuse.js) — "dilekce" → "Dilekçe".
+  search: { enabled: true, placeholder: "Evrak adı, açıklama…", fuzzy: true },
   chips: [{ id: "grup", label: "Grup", options: [
     { value: "Vatandaş", label: "Vatandaş" },
     { value: "Kurum", label: "Kurum" },
@@ -25,6 +27,8 @@ const GELEN_FILTER_CONFIG = {
     { value: "name_desc", label: "Ad (Z–A)" },
   ] },
   dataMapping: { search: ["label", "aciklama"], grup: "grup", kategori: "_kategori" },
+  // Kayıtlı görünüm (Paperless saved-views hafif hâli): memurun kuyruk filtresi yenilemede korunur.
+  persistKey: "gelen",
 };
 
 /* Yasal süre (SLA) rozeti — backend /sla/onizleme sonucundan (compute_sla tek kaynak).
@@ -46,13 +50,35 @@ function SlaRozet({ sla }) {
   );
 }
 
-export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy }) {
+export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy, hedef = null, onHedefAcildi }) {
   const done = processedIds || new Set();
   // Her örneğe operasyonel kategori türet (id ≈ evrak türü + metin anahtar sözcükleri).
   const items = useMemo(() => samples.map((s) => ({
     ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: s.id, text: s.text }),
   })), [samples]);
   const filter = useFilter(items, GELEN_FILTER_CONFIG);
+  const [listeRef] = useAutoAnimate();   // filtre/işleme değişince satırlar akıcı girer-çıkar
+
+  // Panel SLA satırından hedefli geliş: satırı görünüre kaydır + kısa süre vurgula.
+  // Hedef aktif filtreye takılıysa filtreler temizlenir (bir sonraki render'da bulunur);
+  // kuyruğa hiç yoksa (gönderilmiş) hedef sessizce tüketilir.
+  const rowRefs = useRef(new Map());
+  const [vurgu, setVurgu] = useState(null);
+  useEffect(() => {
+    if (!hedef) return undefined;
+    const el = rowRefs.current.get(hedef);
+    if (el) {
+      const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      el.scrollIntoView({ behavior: az ? "auto" : "smooth", block: "center" });
+      setVurgu(hedef);
+      onHedefAcildi?.();
+      const t = setTimeout(() => setVurgu(null), 2600);
+      return () => clearTimeout(t);
+    }
+    if (filter.hasActiveFilters) { filter.clearAll(); return undefined; }
+    onHedefAcildi?.();
+    return undefined;
+  }, [hedef, filter.results]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ViewWrap id="gelen-h" title="Gelen evrak" sub={`${samples.length} evrak kuyrukta · işlemek için seçin`}
@@ -63,14 +89,17 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
         <EmptyState icon={<Icon.inbox />} title="Eşleşen evrak yok"
           sub="Arama veya filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
+        <div ref={listeRef} style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
           {filter.results.map((s) => {
             const idx = samples.indexOf(samples.find((x) => x.id === s.id));
             const isDone = done.has(s.id);
             const kat = kategoriMeta(s._kategori);
             const onerilenBirim = BIRIM_LBL(KATEGORI_BIRIM[s._kategori] || "yazi_isleri_evrak");
+            const vurgulu = vurgu === s.id;
             return (
-              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
+              <div key={s.id}
+                ref={(el) => { if (el) rowRefs.current.set(s.id, el); else rowRefs.current.delete(s.id); }}
+                style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: vurgulu ? ALFA(T) : PAL.surf, border: `1px solid ${vurgulu ? T : PAL.line}`, transition: "background .3s ease-out, border-color .3s ease-out" }}>
                 <span aria-hidden="true" style={{ width: 40, height: 40, borderRadius: RAD.ctl, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surfHi, color: PAL.mut2, ...TYPE.data, fontWeight: 500, ...TNUM }}>{String(idx + 1).padStart(2, "0")}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>

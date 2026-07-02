@@ -4,35 +4,108 @@
    Sidebar kabuğu DashboardApp'te; bu bileşen <main> içine yerleşir.
    Üst-bar (dosya meta + ilerleme) + 3-panel (kaynak ↔ ajan izi ↔ çıkarılan/risk/taslak+HITL)
    + altında NeonDetay (tüm ajan çıktıları, sayfa aşağı kaydıkça). */
-import { useMemo } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
-import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
+import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
 
-function nodeTag(n, risk) {
-  const d = n.data || {};
-  const pc = (x) => `%${Math.round((Number(x) || 0) * 100)}`;
-  switch (n.id) {
-    case "oku": return d.ocr_confidence != null ? pc(d.ocr_confidence) : "OCR";
-    case "siniflandir": return d.tur_confidence != null ? pc(d.tur_confidence) : "tür";
-    case "cikar": { const k = d.bilgi_unsurlari ? Object.keys(d.bilgi_unsurlari).length : 0; return k ? `${k} alan` : "çıkar"; }
-    case "kanit_baglama": { const s = d.kanit_metadata?.spanlar?.length || 0; return s ? `${s} kanıt` : "kanıt"; }
-    case "eksik_tespit": return (d.eksik_alanlar?.length) ? `${d.eksik_alanlar.length} eksik` : "tam";
-    case "decompose": { const a = d.alt_talepler?.length || 0; return a >= 2 ? `${a} talep` : "tek konu"; }
-    case "mevzuat_oner": { const m = d.mevzuat_onerileri?.length || 0; return m ? `${m} mevzuat` : "mevzuat"; }
-    case "ozetle": return "özet";
-    case "route_birim": return "havale";
-    case "yazi_taslak": return d.yazi_turu ? "2646" : "taslak";
-    case "verify": return (d.verify_uyari?.length) ? "uyarı" : "veto";
-    case "risk_guard": return risk.l;
-    case "arsiv": return "SDP";
-    case "sla_triyaj": return "süre";
-    case "denetim_izi": return "SHA-256";
-    case "finalize": return "denetim";
-    default: return "";
-  }
+/* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———
+   Her ajan bir istasyon; Görev 1 = T hattı, Görev 2 = V hattı. Ray, adımlar tamamlandıkça
+   istasyondan istasyona hat rengiyle dolar; iki hat arasındaki kesikli parça aktarmadır
+   (Görev 1 çıktısı Görev 2'ye devreder). Düz dolgu + hairline (gradyan/glow yok); renk tek
+   sinyal değil — durum her zaman işaret + metinle de verilir. Geometri: 28px oluk, ray x=13. */
+const HAT = { x: 13, w: 2, merkez: 16 };
+
+/* Oluk içi dikey ray parçası: dolu = hat rengi, boş = hairline, kesikli = aktarma. */
+const Ray = ({ top, height, bottom, filled, col, dashed }) => (
+  <span aria-hidden="true" style={dashed
+    ? { position: "absolute", left: HAT.x, width: 0, top, height, bottom, borderLeft: `2px dashed ${PAL.lineHi}` }
+    : { position: "absolute", left: HAT.x, width: HAT.w, top, height, bottom, background: filled ? col : PAL.line, transition: "background .3s ease-out" }} />
+);
+
+/* İstasyon işareti — dolu disk (bitti/hata) · halka (çalışıyor) · ara durak (sırada, ray arkadan geçer). */
+function HatDurak({ st, col }) {
+  const orta = { position: "absolute", left: 0, width: 28, display: "flex", justifyContent: "center" };
+  if (st === "pending") return <span aria-hidden="true" style={{ ...orta, top: 11 }}><span style={{ width: 10, height: 10, borderRadius: RAD.dot, background: PAL.bg, border: `1px solid ${PAL.lineHi}` }} /></span>;
+  if (st === "active") return (
+    <span aria-hidden="true" style={{ ...orta, top: 8 }}>
+      <span style={{ width: 16, height: 16, borderRadius: RAD.dot, background: PAL.bg, border: `2px solid ${col}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ width: 6, height: 6, borderRadius: RAD.dot, background: col, animation: "nu-think 1.1s ease-in-out infinite" }} />
+      </span>
+    </span>
+  );
+  const Ic = st === "error" ? Icon.x : Icon.check;
+  return (
+    <span aria-hidden="true" style={{ ...orta, top: 8 }}>
+      <span style={{ width: 16, height: 16, borderRadius: RAD.dot, background: st === "error" ? BANT.kirmizi.c : col, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Ic width={10} height={10} />
+      </span>
+    </span>
+  );
 }
+
+/* Hat başlığı — terminal roundeli (hat no) + görev adı + ince ayraç + adım sayısı.
+   aktarma: Görev 1 → 2 geçişindeki kesikli ray (çıktı devri). girisAktif: ilk istasyona girildi. */
+function HatTerminal({ n, col, count, aktarma, girisAktif, glow, delay }) {
+  const pt = aktarma ? SP.xl : 0;
+  return (
+    <div style={{ position: "relative", padding: `${pt}px 0 ${SP.s}px`, animation: glow ? `nu-rise .18s ease-out ${delay}ms both` : "none" }}>
+      {aktarma && <Ray top={0} height={pt + 4} dashed />}
+      <Ray top={pt + 22} bottom={0} filled={girisAktif} col={col} />
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, height: 24 }}>
+        <span style={{ width: 28, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+          <span aria-hidden="true" style={{ position: "relative", width: 20, height: 20, borderRadius: RAD.dot, background: col, color: PAL.onAccent, fontFamily: SANS, fontSize: 12, lineHeight: "20px", fontWeight: 600, textAlign: "center", ...TNUM }}>{n}</span>
+        </span>
+        <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(col), flexShrink: 0 }}>{n === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
+        <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
+        <span style={{ ...TYPE.meta, color: PAL.mut3, flexShrink: 0, ...TNUM }}>{count} adım</span>
+      </div>
+    </div>
+  );
+}
+
+/* Tek istasyon satırı — oluk (ray + durak) + içerik (ad · süre · sıra no · çıktı özeti). */
+function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow }) {
+  const done = a.status === "done", active = a.status === "active", err = a.status === "error";
+  const durakCol = a.id === "risk_guard" && done ? risk.c : col;
+  const ms = a.t1 - a.t0;
+  const sure = done && Number.isFinite(ms) && ms >= 50 ? `${(ms / 1000).toFixed(1)}s` : null;
+  const altYazi = done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "hata · adım başarısız" : (a.desc || "—");
+  const altRenk = err ? DERIN.kirmizi : done ? (a.id === "risk_guard" ? DERIN_OF(risk.c) : PAL.mut) : active ? PAL.mut : PAL.mut2;
+  return (
+    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 12px 6px 0", borderRadius: RAD.ctl, background: active ? ALFA(col) : "transparent", transition: "background .25s ease-out", animation: glow ? `nu-rise .18s ease-out ${Math.min(i * 28, 420)}ms both` : "none" }}>
+      <div style={{ position: "relative", minHeight: 40 }}>
+        {hasTop && <Ray top={0} height={HAT.merkez} filled={topFill} col={col} />}
+        {hasBot && <Ray top={HAT.merkez} bottom={0} filled={done} col={col} />}
+        <HatDurak st={a.status} col={durakCol} />
+      </div>
+      <div style={{ minWidth: 0, opacity: a.status === "pending" ? 0.55 : 1, transition: "opacity .2s ease-out" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
+          <span style={{ ...TYPE.ui, fontWeight: 500, color: active ? PAL.ink : done ? PAL.ink2 : PAL.mut2, transition: "color .15s ease-out", minWidth: 0 }}>{a.label}</span>
+          {active ? (
+            <span aria-hidden="true" style={{ marginLeft: "auto", ...TYPE.meta, fontWeight: 500, color: DERIN_OF(col), flexShrink: 0, animation: glow ? "nu-think 1.2s ease-in-out infinite" : "none" }}>işleniyor</span>
+          ) : (
+            <span style={{ marginLeft: "auto", display: "flex", alignItems: "baseline", gap: SP.s, flexShrink: 0, fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3, ...TNUM }}>
+              {sure && <span>{sure}</span>}
+              <span style={{ opacity: 0.8 }}>{String(i + 1).padStart(2, "0")}</span>
+            </span>
+          )}
+        </div>
+        <div style={{ marginTop: 2, ...TYPE.data, color: altRenk, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>{altYazi}</div>
+      </div>
+    </div>
+  );
+}
+
+/* Hat sonu — son istasyondan çıkan kısa ray + terminüs çubuğu (hat tamamlanınca dolar). */
+const HatSon = ({ col, done }) => (
+  <div aria-hidden="true" style={{ position: "relative", height: 12 }}>
+    <Ray top={0} height={6} filled={done} col={col} />
+    <span style={{ position: "absolute", top: 6, left: HAT.x - 4, width: 10, height: 4, borderRadius: RAD.chip, background: done ? col : PAL.lineHi, transition: "background .3s ease-out" }} />
+  </div>
+);
 
 function buildDrivenFields(r, risk) {
   const conf = r.tur_confidence != null ? ` · %${Math.round(r.tur_confidence * 100)}` : "";
@@ -80,39 +153,113 @@ function buildMetaLine(r, fileMeta) {
   return parts.join(" · ");
 }
 
+/* Boş durum + sürükle-bırak (react-dropzone): dosya bu alana bırakılınca doğrudan işleme
+   başlar; tıklama davranışı butonlarda kalır (noClick — yanlışlıkla dosya seçici açılmaz).
+   Kabul edilen türler backend ACCEPT listesiyle birebir. */
+const DROP_KABUL = {
+  "application/pdf": [".pdf"], "image/png": [".png"], "image/jpeg": [".jpg", ".jpeg"],
+  "image/webp": [".webp"], "image/tiff": [".tiff"], "text/plain": [".txt"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+};
+
+function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop }) {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    multiple: false, noClick: true, noKeyboard: true, accept: DROP_KABUL,
+    onDrop: (kabul) => { if (kabul?.[0]) onFileDrop(kabul[0]); },
+  });
+  return (
+    <div {...getRootProps()} style={{ display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "calc(100vh - 1px)", padding: "0 24px", outline: "none", border: `2px dashed ${isDragActive ? T : "transparent"}`, background: isDragActive ? ALFA(T) : "transparent", transition: "background .15s ease-out, border-color .15s ease-out" }}>
+      <input {...getInputProps()} aria-hidden="true" />
+      <EmptyState
+        icon={<Icon.spin />}
+        title={isDragActive ? "Bırakın — işleme başlasın" : "İşlenecek evrak seçilmedi"}
+        sub={isDragActive
+          ? "PDF, görsel (PNG/JPG/WEBP/TIFF), DOCX veya TXT kabul edilir."
+          : "Gelen Evrak kuyruğundan bir evrak seçin, yeni bir belge yükleyin ya da dosyayı bu alana sürükleyip bırakın. Seçtiğiniz evrak burada uçtan-uca, canlı olarak işlenir."}
+        actions={[
+          <Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>,
+          <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
+        ]}
+      />
+    </div>
+  );
+}
+
+/* Kaynak belge paneli — PDF yüklendiyse gerçek sayfa görüntüsü (react-pdf, tembel yüklenir,
+   ana bundle büyümez) ile çıkarım-vurgulu metin arasında sekme; PDF yoksa eski davranış
+   birebir. Kendi hook'ları kendi gövdesinde (CanliAjanAkisi'nin erken-dönüş deseni bozulmaz). */
+const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
+
+function KaynakBelge({ fileUrl, segs, busy, glow }) {
+  const [sekme, setSekme] = useState("belge");
+  const pdfGoster = !!fileUrl && (sekme === "belge" || !segs);
+  const SekmeBtn = ({ id, label }) => (
+    <button type="button" onClick={() => setSekme(id)} aria-pressed={sekme === id} {...focusRing}
+      style={{ cursor: "pointer", padding: "2px 10px", borderRadius: RAD.chip, border: `1px solid ${sekme === id ? T : PAL.line}`, background: sekme === id ? ALFA(T) : PAL.surf, color: sekme === id ? DERIN.T : PAL.mut2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
+      {label}
+    </button>
+  );
+  return (
+    <div style={{ borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
+        <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, flex: 1 }}>Kaynak belge</span>
+        {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" /><SekmeBtn id="metin" label="Metin" /></>)}
+      </div>
+      <div style={{ position: "relative", borderRadius: RAD.card, overflow: "hidden", background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, minHeight: 300, aspectRatio: (segs || fileUrl) ? "auto" : "1 / 1.34" }}>
+        {pdfGoster ? (
+          <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
+            <PdfOnizleme fileUrl={fileUrl} />
+          </Suspense>
+        ) : segs ? (
+          <pre style={{ margin: 0, padding: SP.l, fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+            {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
+          </pre>
+        ) : (
+          <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
+            <div style={{ height: 8, width: "55%", background: PAL.bg2, borderRadius: RAD.chip, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+            <div style={{ height: 8, width: "40%", background: PAL.bg2, borderRadius: RAD.chip, marginBottom: SP.xs, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+            {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Metin işlenecek…"}
+          </div>
+        )}
+      </div>
+      <div style={{ marginTop: SP.l, padding: SP.m, borderRadius: RAD.card, background: ALFA(T), ...TYPE.meta, color: DERIN.T, display: "flex", gap: SP.s, alignItems: "flex-start" }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill={T} /><circle cx="12" cy="12" r="2.2" fill={T} /><circle cx="18" cy="12" r="2.2" fill={T} /></svg>
+        Kişisel veriler (TCKN, telefon) maskelenerek işleniyor — KVKK uyumlu.
+      </div>
+    </div>
+  );
+}
+
 export default function CanliAjanAkisi({
   nodes = [], result = null, busy = false, started = false,
   riskOutcome = "yesil", fileMeta = null, pendingOnay = null,
   onApprove = () => {}, onEdit = () => {}, onReject = () => {},
   onDownload = () => {}, downloading = "", canDownload = false,
-  onUpload = () => {}, onGoInbox = () => {}, glow = true,
+  onUpload = () => {}, onGoInbox = () => {}, glow = true, fileUrl = "", onFileDrop = () => {},
 }) {
-  // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok).
+  // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok) + sürükle-bırak yükleme alanı.
   if (!started) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "calc(100vh - 1px)", padding: "0 24px" }}>
-        <EmptyState
-          icon={<Icon.spin />}
-          title="İşlenecek evrak seçilmedi"
-          sub="Gelen Evrak kuyruğundan bir evrak seçin ya da yeni bir belge yükleyin. Seçtiğiniz evrak burada uçtan-uca, canlı olarak işlenir."
-          actions={[
-            <Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>,
-            <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
-          ]}
-        />
-      </div>
-    );
+    return <BosDurumDropzone onGoInbox={onGoInbox} onUpload={onUpload} onFileDrop={onFileDrop} />;
   }
 
   const risk = BANT[riskOutcome] || BANT.yesil;
   const display = nodes.map((n) => ({
     id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
-    out: summarize(n.id, n.data), tag: nodeTag(n, risk), t1: n.t1,
+    out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
   }));
   const total = display.length || 1;
   const doneCount = display.filter((a) => a.status === "done").length;
   const pct = Math.round((doneCount / total) * 100);
   const allDone = !busy && doneCount >= total;
+  // Uçtan-uca gerçek koşum süresi (usePipeline t0/t1 damgaları; yoksa sessizce gizlenir).
+  const toplamSn = (() => {
+    if (!allDone) return null;
+    const t0s = display.map((a) => a.t0).filter(Number.isFinite);
+    const t1s = display.map((a) => a.t1).filter(Number.isFinite);
+    if (!t0s.length || !t1s.length) return null;
+    const sn = (Math.max(...t1s) - Math.min(...t0s)) / 1000;
+    return sn >= 0.1 ? `${sn < 10 ? sn.toFixed(1) : Math.round(sn)} sn` : null;
+  })();
   const statusText = busy ? "İşleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "Tamamlandı" : "Sırada");
 
   const drivenFields = useMemo(() => (result ? buildDrivenFields(result, risk) : null), [result, risk]);
@@ -179,96 +326,41 @@ export default function CanliAjanAkisi({
       <section style={{ minHeight: "calc(100vh - 132px)" }}>
         <div style={{ minHeight: "100%", minWidth: 1060, display: "grid", gridTemplateColumns: "290px minmax(380px,1fr) 360px" }}>
 
-          {/* Kaynak belge */}
-          <div style={{ borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column" }}>
-            <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, marginBottom: SP.m }}>Kaynak belge</div>
-            <div style={{ position: "relative", borderRadius: RAD.card, overflow: "hidden", background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, minHeight: 300, aspectRatio: segs ? "auto" : "1 / 1.34" }}>
-              {segs ? (
-                <pre style={{ margin: 0, padding: SP.l, fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                  {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
-                </pre>
-              ) : (
-                <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
-                  <div style={{ height: 8, width: "55%", background: PAL.bg2, borderRadius: RAD.chip, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-                  <div style={{ height: 8, width: "40%", background: PAL.bg2, borderRadius: RAD.chip, marginBottom: SP.xs, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-                  {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Metin işlenecek…"}
-                </div>
-              )}
-            </div>
-            <div style={{ marginTop: SP.l, padding: SP.m, borderRadius: RAD.card, background: ALFA(T), ...TYPE.meta, color: DERIN.T, display: "flex", gap: SP.s, alignItems: "flex-start" }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill={T} /><circle cx="12" cy="12" r="2.2" fill={T} /><circle cx="18" cy="12" r="2.2" fill={T} /></svg>
-              Kişisel veriler (TCKN, telefon) maskelenerek işleniyor — KVKK uyumlu.
-            </div>
-          </div>
+          {/* Kaynak belge — PDF sayfa görüntüsü (varsa) / çıkarım-vurgulu metin */}
+          <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} />
 
-          {/* Ajan izi — zaman çizelgesi (düz ilerleme rayı + spinner/nokta canlılığı) */}
+          {/* Ajan izi — evrak hattı: istasyonlu hat şeması (Görev 1 hattı → aktarma → Görev 2 hattı) */}
           <div style={{ padding: "16px 24px" }}>
-            {/* Başlık + kompakt telemetri */}
+            {/* Başlık + kompakt telemetri (koşum bitince uçtan-uca gerçek süre) */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.l }}>
               <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2 }}>Ajan izi · {total} adım</div>
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
                 <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : (doneCount >= total ? BANT.yesil.c : PAL.mut2), animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-                {busy ? "Canlı" : (doneCount >= total ? "Tamam" : "Beklemede")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}
+                {busy ? "Canlı" : (doneCount >= total ? "Tamam" : "Beklemede")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}{toplamSn ? ` · ${toplamSn}` : ""}
               </div>
             </div>
 
-            {/* Omurga + düğümler */}
+            {/* Hat şeması — terminal roundeli + istasyonlar + aktarma + terminüs */}
             <div style={{ position: "relative" }}>
-              {/* OMURGA — sönük taban ray + düz T ilerleme dolgusu. aria-hidden. */}
-              <div aria-hidden="true" style={{ position: "absolute", left: 13, top: 14, bottom: 14, width: 2, background: PAL.line, overflow: "hidden", pointerEvents: "none" }}>
-                <div style={{ position: "absolute", inset: 0, transformOrigin: "top center", transform: `scaleY(${total ? Math.max(doneCount, busy ? 0.04 : 0) / total : 0})`, background: T, transition: "transform .4s ease-out" }} />
-              </div>
-
               {display.map((a, i) => {
-                const isAnla = a.gorev === 1, col = isAnla ? T : V;
-                const st = a.status, done = st === "done", active = st === "active", err = st === "error", pending = st === "pending";
-                const prevGorev = i > 0 ? display[i - 1].gorev : null;
-                const group = i === 0 ? "Görev 1 · Anla" : (a.gorev === 2 && prevGorev === 1 ? "Görev 2 · Üret" : "");
+                const col = a.gorev === 2 ? V : T;
+                const prev = i > 0 ? display[i - 1] : null;
+                const next = display[i + 1];
+                const terminal = !prev || prev.gorev !== a.gorev;
+                const hasTop = !!prev && prev.gorev === a.gorev;
+                const hasBot = !next || next.gorev === a.gorev;
                 return (
                   <div key={a.id}>
-                    {group && (
-                      <div style={{ ...TYPE.meta, fontWeight: 500, color: i === 0 ? DERIN.T : DERIN.V, margin: (i === 0 ? "0" : `${SP.xl}px`) + ` 0 ${SP.s}px`, paddingLeft: 28 + SP.m, display: "flex", alignItems: "center", gap: SP.s }}>
-                        <span>{group}</span>
-                        <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
-                      </div>
+                    {terminal && (
+                      <HatTerminal n={a.gorev} col={col} count={display.filter((x) => x.gorev === a.gorev).length}
+                        aktarma={i > 0} girisAktif={a.status !== "pending"} glow={glow} delay={Math.min(i * 28, 420)} />
                     )}
-                    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: `${SP.s}px ${SP.m}px ${SP.s}px 0`, borderRadius: RAD.ctl, marginBottom: SP.xs, background: active ? PAL.press : "transparent", transition: "background .15s ease-out", animation: glow ? "nu-rise .16s ease-out both" : "none" }}>
-                      {/* Aktif satır göstergesi — 2px sol şerit (semantik durum) */}
-                      {active && <span aria-hidden="true" style={{ position: "absolute", left: 0, top: SP.s, bottom: SP.s, width: 2, background: col }} />}
-                      {/* DÜĞÜM — omurga üstünde oturan durum işareti */}
-                      <div aria-hidden="true" style={{ position: "relative", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <span style={{ position: "relative", zIndex: 1, width: 20, height: 20, borderRadius: RAD.dot, display: "flex", alignItems: "center", justifyContent: "center", background: PAL.bg }}>
-                          {done ? (
-                            <Icon.check style={{ color: DERIN.yesil }} />
-                          ) : err ? (
-                            <Icon.x style={{ color: DERIN.kirmizi }} />
-                          ) : active ? (
-                            <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: col, animation: glow ? "nu-think 1.1s ease-in-out infinite" : "none" }} />
-                          ) : (
-                            <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: PAL.bg2, border: `1px solid ${PAL.lineHi}` }} />
-                          )}
-                        </span>
-                      </div>
-
-                      {/* İÇERİK */}
-                      <div style={{ minWidth: 0, opacity: pending ? 0.5 : 1, transition: "opacity .15s ease-out" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-                          <span style={{ ...TYPE.ui, fontWeight: 500, color: active ? PAL.ink : done ? PAL.ink2 : PAL.mut2, transition: "color .15s ease-out" }}>{a.label}</span>
-                          {a.tag && <span style={{ ...TYPE.meta, ...(a.id === "risk_guard" ? { fontFamily: MONO, fontWeight: 500 } : null), color: a.id === "risk_guard" ? DERIN_OF(risk.c) : PAL.mut, opacity: done || active ? 1 : 0.45, transition: "opacity .15s ease-out", ...TNUM }}>{a.tag}</span>}
-                          {active ? (
-                            <span aria-hidden="true" style={{ marginLeft: "auto", ...TYPE.meta, color: DERIN_OF(col), flexShrink: 0, animation: glow ? "nu-think 1.2s ease-in-out infinite" : "none" }}>İşleniyor</span>
-                          ) : (
-                            <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut2, opacity: 0.65, flexShrink: 0, ...TNUM }}>{String(i + 1).padStart(2, "0")}</span>
-                          )}
-                        </div>
-                        <div style={{ marginTop: SP.xs, ...TYPE.data, color: done ? (a.id === "risk_guard" ? DERIN_OF(risk.c) : PAL.mut) : active ? PAL.mut : err ? DERIN.kirmizi : PAL.mut2, animation: active && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }}>
-                          {done ? (a.out || "tamamlandı") : active ? "çalışıyor…" : err ? "hata · adım başarısız" : "—"}
-                        </div>
-                      </div>
-                    </div>
+                    <HatIstasyon a={a} i={i} col={col} risk={risk} hasTop={hasTop}
+                      topFill={!!prev && prev.status === "done"} hasBot={hasBot} glow={glow} />
                   </div>
                 );
               })}
+              {display.length > 0 && <HatSon col={display[display.length - 1].gorev === 2 ? V : T} done={allDone} />}
             </div>
           </div>
 

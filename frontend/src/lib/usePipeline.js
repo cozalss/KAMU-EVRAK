@@ -8,6 +8,7 @@
    POST + sahte animasyon kaldırıldı; backend .txt'i text-plain olarak kabul eder).
    + HITL resume (/process_doc/resume) + taslak indirme (/yazi/taslak). */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast as sonnerToast } from "sonner";
 import { authFetch } from "./authApi.js";
 import { DEFAULT_NODE_IDS, makeNode } from "./nodeMeta.js";
 
@@ -32,6 +33,10 @@ export function usePipeline() {
   const [pendingOnay, setPendingOnay] = useState(null);
   // canRetry'i ref yerine state'ten türet (ref render'da güvenilir okunmaz).
   const [hasRun, setHasRun] = useState(false);
+  // Yüklenen PDF'in object-URL'i → Kaynak belge panelinde gerçek sayfa önizlemesi
+  // (react-pdf). Yalnız PDF'te dolar; yeni koşumda/unmount'ta revoke edilir (bellek).
+  const [fileUrl, setFileUrl] = useState("");
+  const fileUrlRef = useRef("");
 
   const stepTimers = useRef([]);
   const toastTimer = useRef(null);
@@ -49,9 +54,13 @@ export function usePipeline() {
     abortRef.current?.abort();   // yarıda kalan SSE reader döngüsünü kapat
     clearTimers();
     clearTimeout(toastTimer.current);
+    if (fileUrlRef.current) URL.revokeObjectURL(fileUrlRef.current);
   }, [clearTimers]);
 
+  // Görsel bildirim sonner'a (katmanlı/istiflenen toast, DashboardApp'te <Toaster>);
+  // toast state'i YALNIZ ekran okuyucu canlı bölgesini besler (SR_ONLY, davranış korunur).
   const showToast = useCallback((msg) => {
+    sonnerToast(msg);
     clearTimeout(toastTimer.current);
     setToast(msg);
     toastTimer.current = setTimeout(() => setToast(""), 3200);
@@ -65,6 +74,9 @@ export function usePipeline() {
     setError("");
     setEvrakText("");
     setPendingOnay(null);
+    if (fileUrlRef.current) URL.revokeObjectURL(fileUrlRef.current);
+    fileUrlRef.current = "";
+    setFileUrl("");
   }, [clearTimers]);
 
   // SSE event işleyici (dosya + örnek — tek yol). Bir node bitince sıradakini aktifle.
@@ -151,6 +163,11 @@ export function usePipeline() {
     setHasRun(true);
     setSelectedSample(null);
     setFileMeta({ name: file.name, size: file.size, kind: "file" });
+    if (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) {
+      const url = URL.createObjectURL(file);
+      fileUrlRef.current = url;
+      setFileUrl(url);
+    }
     lastRun.current = { kind: "file", file };
     await streamRun(file);
   }, [reset, streamRun]);
@@ -270,7 +287,7 @@ export function usePipeline() {
   const canRetry = hasRun;
 
   return {
-    nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay,
+    nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
     runFile: runFileValidated, runSample, resume, retry, download, showToast, dismissError, canRetry,
   };
 }

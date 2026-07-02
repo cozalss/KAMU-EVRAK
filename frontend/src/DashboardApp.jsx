@@ -4,6 +4,9 @@
    Akış: Gelen Evrak'tan seç (veya yükle) → İşleniyor (canlı) → sonuç geçmişe → Panel'de özet.
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
@@ -15,6 +18,8 @@ import NeonSidebar from "./components/NeonSidebar.jsx";
 // result-cards) zaten usePipeline→nodeMeta zinciriyle ana bundle'da olduğundan ilk yük
 // indirmesine pratikte ağırlık eklemez.
 import PanelView from "./components/PanelView.jsx";
+// Komut paleti (cmdk) eager: Ctrl+K'ye ilk basışta gecikmesiz açılmalı; paket küçük (~10KB gz).
+import KomutPaleti from "./components/KomutPaleti.jsx";
 // Diğer görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir
 // aynı kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar
 // her zaman görünür (nav) olduğundan eager kalır.
@@ -43,9 +48,22 @@ const draftsFromHistory = (items) =>
     name: x.name || "Kalıcı taslak",
   }));
 
+// Frontend seçimi → DB onay kararı etiketi (karar_repo._KARAR ile birebir; duzenle
+// nihai karar DEĞİLDİR — evrak "karar bekleyen"de kalır, damgalanmaz).
+const KARAR_ETIKET = { onayla: "onaylandi", reddet: "reddedildi" };
+
+// Görünüm geçişini View Transitions API ile sar: destekleyen tarayıcıda yumuşak
+// çapraz-erime; destek yoksa ya da kullanıcı hareket azaltmışsa DÜZ geçiş (birebir eski
+// davranış). flushSync: React güncellemesi geçiş kare-yakalaması içinde senkron uygulanmalı.
+const gecisle = (fn) => {
+  const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  if (!document.startViewTransition || az) { fn(); return; }
+  document.startViewTransition(() => { flushSync(fn); });
+};
+
 export default function DashboardApp() {
   const {
-    nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading,
+    nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
     runFile, runSample, resume, download, showToast, dismissError, canRetry, retry,
   } = usePipeline();
 
@@ -67,6 +85,10 @@ export default function DashboardApp() {
   // Sohbet kaynak çipi → Mevzuat görünümü + okuma modalı köprüsü. MevzuatView tembel
   // yüklendiğinden window-event yerine state taşınır; view mount olunca hedefi tüketir.
   const [mevzuatHedef, setMevzuatHedef] = useState(null);
+  // Panel SLA satırı "İşle" → Gelen Evrak'ta o evrakı vurgula+kaydır (aynı hedef deseni).
+  const [gelenHedef, setGelenHedef] = useState(null);
+  // Komut paleti (Ctrl+K) — görünüm/eylem/örnek işleme tek kutudan.
+  const [paletAcik, setPaletAcik] = useState(false);
   // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
   const [slaMap, setSlaMap] = useState(null);
   const fileRef = useRef(null);
@@ -131,47 +153,48 @@ export default function DashboardApp() {
     }
   }, [showToast]);
 
-  // Sayfa yenilendiğinde kalıcı DB geçmişini yeniden kur. Pipeline sonucu yine canlı state'e
-  // eklenir; bu yükleme yalnız açılışta DB'den son kayıtları geri getirir.
+  // Sayfa yenilendiğinde kalıcı DB geçmişini yeniden kur (react-query: 3 deneme + üstel
+  // geri çekilme — uzak Supabase'in DNS düşmelerine dayanıklı; provider varsayılanları
+  // main.jsx'te). Pipeline sonucu yine canlı state'e eklenir; bu yükleme açılışta bir kez
+  // koşar (staleTime: Infinity + odak-refetch kapalı → canlı eklemeler ezilmez).
+  const islemlerQ = useQuery({
+    queryKey: ["islemler", user?.id],
+    queryFn: () => apiGet("/islemler?limit=100"),
+    enabled: !!user,
+  });
   useEffect(() => {
-    if (!user) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const data = await apiGet("/islemler?limit=100");
-        if (cancelled) return;
-        const items = Array.isArray(data?.kayitlar) ? data.kayitlar : [];
-        setHistory(items);
-        setDrafts(draftsFromHistory(items));
-      } catch (err) {
-        console.warn("Kalıcı işlem geçmişi alınamadı", err);
-      }
+    if (islemlerQ.error) { console.warn("Kalıcı işlem geçmişi alınamadı", islemlerQ.error); return; }
+    if (!islemlerQ.data) return;
+    const items = Array.isArray(islemlerQ.data.kayitlar) ? islemlerQ.data.kayitlar : [];
+    setHistory(items);
+    setDrafts(draftsFromHistory(items));
+  }, [islemlerQ.data, islemlerQ.error]);
 
-      try {
-        const data = await apiGet("/giden-evrak?limit=100");
-        if (cancelled) return;
-        const rows = Array.isArray(data?.kayitlar) ? data.kayitlar : [];
-        setOutbox(rows.map((r) => ({
-          id: r.giden_no || r.id,
-          kaynak_evrak_adi: r.kaynak_evrak_adi || "Kalıcı kayıt",
-          gonderim_tarihi: Date.parse(r.gonderim_tarihi || "") || Date.now(),
-          evrak_turu: r.evrak_turu || "",
-          tur: r.yazi_turu_kod || r.tur || "",
-          konu: r.konu || "—",
-          alici_birim: r.alici_birim || "",
-          risk: r.risk || "yesil",
-          durum: r.durum || "gonderildi",
-          taslak: r.taslak || "",
-          memor_adi: user.ad_soyad || "Memur",
-          memor_unvan: user.unvan || "",
-          son_hash: r.son_hash || "",
-        })));
-      } catch (err) {
-        console.warn("Kalıcı giden evrak alınamadı", err);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [user]);
+  const gidenQ = useQuery({
+    queryKey: ["giden-evrak", user?.id],
+    queryFn: () => apiGet("/giden-evrak?limit=100"),
+    enabled: !!user,
+  });
+  useEffect(() => {
+    if (gidenQ.error) { console.warn("Kalıcı giden evrak alınamadı", gidenQ.error); return; }
+    if (!gidenQ.data || !user) return;
+    const rows = Array.isArray(gidenQ.data.kayitlar) ? gidenQ.data.kayitlar : [];
+    setOutbox(rows.map((r) => ({
+      id: r.giden_no || r.id,
+      kaynak_evrak_adi: r.kaynak_evrak_adi || "Kalıcı kayıt",
+      gonderim_tarihi: Date.parse(r.gonderim_tarihi || "") || Date.now(),
+      evrak_turu: r.evrak_turu || "",
+      tur: r.yazi_turu_kod || r.tur || "",
+      konu: r.konu || "—",
+      alici_birim: r.alici_birim || "",
+      risk: r.risk || "yesil",
+      durum: r.durum || "gonderildi",
+      taslak: r.taslak || "",
+      memor_adi: user.ad_soyad || "Memur",
+      memor_unvan: user.unvan || "",
+      son_hash: r.son_hash || "",
+    })));
+  }, [gidenQ.data, gidenQ.error, user]);
 
   // history/outbox her değiştiğinde (DB reconcile VEYA canlı işlem sonucu eklenince) optimistik
   // önbelleği tazele → bir sonraki refresh son veriyi ANINDA gösterir. Yazma seyrek (kesikli
@@ -185,13 +208,17 @@ export default function DashboardApp() {
   useEffect(() => {
     if (result && result !== lastResultRef.current) {
       lastResultRef.current = result;
+      const pa = pendingApprovalRef.current;
+      // HITL resume ile gelen sonuç: karar zaten verilmiş → geçmişe damgalı yaz ("Karar
+      // bekleyen" sayacı bu alandan okur; duzenle nihai karar değildir, damgalanmaz).
+      const karar = pa ? KARAR_ETIKET[pa.secim] || "" : "";
       const name = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
       setHistory((h) => [{
         id: `${Date.now()}-${h.length}-${name}`, name, kind: fileMeta?.kind, ts: Date.now(),
         evrak_turu: result.evrak_turu, hedef_birim: result.hedef_birim,
-        bant: result.risk_metadata?.bant, result,
+        bant: result.risk_metadata?.bant,
+        result: karar ? { ...result, onay_durumu: result.onay_durumu || karar } : result,
       }, ...h]);
-      const pa = pendingApprovalRef.current;
       if (pa) {
         pendingApprovalRef.current = null;
         if (pa.secim === "duzenle") {
@@ -211,40 +238,89 @@ export default function DashboardApp() {
   // sabitken nodes saniyede onlarca kez değişir) sidebar gereksiz yere yeniden render olmaz.
   // Hash ataması geçmişe KAYIT ekler → geri/ileri tuşu görünümler arasında gezinir.
   const goView = useCallback((v) => {
-    setActiveView(v);
+    gecisle(() => setActiveView(v));
     if (hashView() !== v) window.location.hash = v;
   }, []);
 
   // Geri/ileri tuşu (popstate→hashchange): hash'teki görünüme dön. Görünüm-dışı hash'ler
   // (ör. skip-link "#nu-main") yok sayılır; boş hash = geçmişin ilk kaydı → panel.
+  // Görünüm zaten aktifse hash olayını atla → goView'un tetiklediği hashchange ikinci bir
+  // view-transition başlatmasın (çift geçiş görünmezdi ama gereksiz kare yakalamaydı).
+  const activeViewRef = useRef(activeView);
+  useEffect(() => { activeViewRef.current = activeView; }, [activeView]);
   useEffect(() => {
     if (!VIEWS.has(hashView())) window.history.replaceState(null, "", "#panel");
     const onHash = () => {
       const h = hashView();
-      if (VIEWS.has(h)) setActiveView(h);
-      else if (!h) setActiveView("panel");
+      const hedefView = VIEWS.has(h) ? h : (!h ? "panel" : null);
+      if (hedefView && hedefView !== activeViewRef.current) gecisle(() => setActiveView(hedefView));
     };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
   const mevzuatAc = useCallback((hedef) => { setMevzuatHedef(hedef); goView("mevzuat"); }, [goView]);
+  // Panel'den evrak-hedefli geçiş: id string ise vurgu hedefi kur (buton onClick'in event
+  // nesnesi geçirmesine karşı tip koruması), her durumda Gelen Evrak'a git.
+  const goInbox = useCallback((hedefId) => {
+    if (typeof hedefId === "string") setGelenHedef(hedefId);
+    goView("gelen");
+  }, [goView]);
 
-  // İşlenmemiş kuyruk için SLA rozetleri — statik örnek seti için BİR kez hesaplanır.
-  // Backend yoksa sessizce atlanır (rozetler görünmez, kuyruk aynen çalışır).
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/sla/onizleme", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ogeler: SAMPLE_DOCS.map((s) => ({ id: s.id, tur: s.id, metin: s.text })) }),
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((d) => {
-        if (cancelled) return;
-        setSlaMap(Object.fromEntries((d.sonuclar || []).map((x) => [x.id, x.sla_metadata])));
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
+  // Oturum geçmişinde HITL kararını damgala (Panel "Karar bekleyen" düşsün; DB zaten
+  // persistDecision ile yazıldı — refresh'te islem_listele aynı alanı döndürür).
+  const stampDecision = useCallback((res, secim) => {
+    const karar = KARAR_ETIKET[secim];
+    if (!karar || !res) return;
+    setHistory((h) => h.map((x) => (
+      x.result === res || (res.islem_id && x.result?.islem_id === res.islem_id)
+        ? { ...x, result: { ...x.result, onay_durumu: karar } } : x)));
   }, []);
+
+  // Ctrl+K / Cmd+K → komut paleti (input odaklıyken de çalışır; tarayıcı aramasını bastırır).
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        setPaletAcik((v) => !v);
+      } else if (e.key === "Escape") {
+        setPaletAcik(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  const paletAc = useCallback(() => setPaletAcik(true), []);
+
+  // SLA eskalasyonu (Zammad deseni): kuyruk SLA önizlemesi gelince kritik/gecikmiş varsa
+  // BİR kez uyar — panel açılmadan da memurun haberi olsun.
+  const slaUyariRef = useRef(false);
+  useEffect(() => {
+    if (slaUyariRef.current || !slaMap) return;
+    const acil = Object.values(slaMap).filter((s) => s?.durum === "GECIKMIS" || s?.durum === "KRITIK").length;
+    if (acil > 0) {
+      slaUyariRef.current = true;
+      showToast(`${acil} evrakın yasal süresi kritik ya da geçmiş — Panel'den önceliklendirin.`);
+    }
+  }, [slaMap, showToast]);
+
+  // İşlenmemiş kuyruk için SLA rozetleri — statik örnek seti için BİR kez hesaplanır
+  // (react-query: geçici ağ hatasında kendini toparlar). Backend yoksa sessizce atlanır
+  // (rozetler görünmez, kuyruk aynen çalışır).
+  const slaQ = useQuery({
+    queryKey: ["sla-onizleme"],
+    queryFn: async () => {
+      const r = await fetch("/sla/onizleme", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ogeler: SAMPLE_DOCS.map((s) => ({ id: s.id, tur: s.id, metin: s.text })) }),
+      });
+      if (!r.ok) throw new Error(`İstek başarısız (${r.status})`);
+      return r.json();
+    },
+  });
+  useEffect(() => {
+    if (!slaQ.data) return;
+    setSlaMap(Object.fromEntries((slaQ.data.sonuclar || []).map((x) => [x.id, x.sla_metadata])));
+  }, [slaQ.data]);
 
   // Panel "süresi yaklaşan" kartı: kuyruktaki (henüz gönderilmemiş) örneklerin SLA'sı.
   const kuyrukSla = slaMap
@@ -264,12 +340,12 @@ export default function DashboardApp() {
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
   const onApprove = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "onayla", fileMeta }; resume("onayla"); }
-    else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); goView("giden"); }
+    else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); stampDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onReject = () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; resume("reddet"); }
-    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); goView("giden"); }
+    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); stampDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onEdit = () => {
@@ -280,8 +356,8 @@ export default function DashboardApp() {
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
   let view;
-  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} user={user} />;
-  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} />;
+  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
+  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
@@ -293,6 +369,7 @@ export default function DashboardApp() {
       onApprove={onApprove} onEdit={onEdit} onReject={onReject}
       onDownload={download} downloading={downloading} canDownload={!!evrakText}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
+      fileUrl={fileUrl} onFileDrop={runFile}
     />
   );
 
@@ -306,15 +383,20 @@ export default function DashboardApp() {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} onPalet={paletAc} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>
         </main>
 
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
-        {toast && <Toast msg={toast} />}
+        {/* sonner: katmanlı/istiflenen bildirimler — eski tek-toast görünümüyle aynı dil (koyu yüzey). */}
+        <Toaster position="bottom-center" duration={3200} gap={8} visibleToasts={3}
+          toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onAccent, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
+
+        <KomutPaleti acik={paletAcik} onKapat={() => setPaletAcik(false)} onNavigate={goView} onUpload={triggerUpload}
+          samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} onPickSample={processSample} busy={busy} />
 
         {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
       </div>
@@ -329,12 +411,6 @@ function ViewFallback() {
     <div aria-hidden="true" style={{ flex: 1, display: "grid", placeItems: "center", minHeight: "60vh", ...TYPE.data, color: PAL.mut2 }}>
       yükleniyor…
     </div>
-  );
-}
-
-function Toast({ msg }) {
-  return (
-    <div aria-hidden="true" style={{ position: "fixed", bottom: SP.xl, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: PAL.inkSurf, color: PAL.onAccent, padding: "12px 16px", borderRadius: RAD.pop, boxShadow: SH.modal, ...TYPE.ui, fontWeight: 500 }}>{msg}</div>
   );
 }
 

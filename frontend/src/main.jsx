@@ -1,8 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DashboardApp from "./DashboardApp.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import { AuthProvider, useAuth } from "./lib/useAuth.jsx";
+
+// Uzak Supabase DNS'i ara ara düşüyor → DB okumaları 3 deneme + üstel geri çekilme ile
+// kendini toparlar. 401/403/404 YENİDEN DENENMEZ (auth/izin hatası ağla düzelmez; mesaj
+// deseni authApi.parseError'un "İstek başarısız (NNN)" biçimidir). Odak-refetch kapalı:
+// oturum geçmişi canlı eklemelerle büyür, odak yenilemesi onları ezmemeli.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      retry: (count, err) => count < 3 && !/\((401|403|404)\)/.test(String(err?.message)),
+    },
+  },
+});
 import { PAL, T, SANS, MONO } from "./components/neonUi.jsx";
 import "./styles/fonts.css";
 import "./styles/kamu-evrak.css";   // global reset + result-cards yardımcı stilleri
@@ -29,8 +44,10 @@ function Splash() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <Root />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Root />
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

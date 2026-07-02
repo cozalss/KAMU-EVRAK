@@ -26,7 +26,7 @@ class TestAtifEkAdaylar:
     def test_atif_verilen_mevzuattan_ek_aday(self):
         # Arrange — top: 7201 maddesi 3071'e atıf veriyor; havuzda 3071 chunk'ı var
         top = [(10.0, _chunk("7201 Tebligat Kanunu", 1, "3071 sayılı Kanun uyarınca tebliğ"))]
-        havuz = top + [(4.0, _chunk("3071 Dilekçe Hakkı Kanunu", 4, "dilekçede bulunması zorunlu"))]
+        havuz = [*top, (4.0, _chunk("3071 Dilekçe Hakkı Kanunu", 4, "dilekçede bulunması zorunlu"))]
         # Act
         ekler = atif_ek_adaylar(top, havuz)
         # Assert
@@ -36,7 +36,7 @@ class TestAtifEkAdaylar:
     def test_kendi_mevzuati_ek_sayilmaz(self):
         # Arrange — atıf kendi kanununa (7201) → genişletme YOK
         top = [(10.0, _chunk("7201 Tebligat Kanunu", 1, "7201 sayılı Kanun m.10"))]
-        havuz = top + [(4.0, _chunk("7201 Tebligat Kanunu", 10, "ikinci madde"))]
+        havuz = [*top, (4.0, _chunk("7201 Tebligat Kanunu", 10, "ikinci madde"))]
         # Act / Assert
         assert atif_ek_adaylar(top, havuz) == []
 
@@ -51,7 +51,8 @@ class TestAtifEkAdaylar:
     def test_k_ek_siniri_ve_no_basina_tek(self):
         # Arrange — iki farklı atıf + havuzda aynı kanundan iki chunk → no başına tek, en çok k_ek
         top = [(10.0, _chunk("7201 Tebligat Kanunu", 1, "3071 sayılı Kanun ve 4982 sayılı Kanun"))]
-        havuz = top + [
+        havuz = [
+            *top,
             (6.0, _chunk("3071 Dilekçe Hakkı Kanunu", 4, "")),
             (5.0, _chunk("3071 Dilekçe Hakkı Kanunu", 7, "")),
             (3.0, _chunk("4982 Bilgi Edinme Kanunu", 11, "")),

@@ -177,7 +177,7 @@ class TestGroundingLLM:
         assert len(grounding) == 5
         assert any("a" * 200 in u for u in grounding)
         assert all("a" * 201 not in u for u in grounding)
-        assert not any("f" == u for u in grounding)  # 6. iddia kesildi
+        assert not any(u == "f" for u in grounding)  # 6. iddia kesildi
 
     async def test_llm_none_yalniz_regex_veto(self, acik):
         # Arrange — LLM hata/timeout (None) → temiz taslakta uyarı üretilmez

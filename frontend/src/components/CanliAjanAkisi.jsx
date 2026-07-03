@@ -2,8 +2,8 @@
    SADECE gerçek veri: nodes (canlı SSE/JSON) + ProcessResponse. Sahte demo auto-animasyon YOK —
    evrak işlenmiyorsa anlamlı boş durum ("Gelen Evrak'tan seçin veya yükleyin").
    Sidebar kabuğu DashboardApp'te; bu bileşen <main> içine yerleşir.
-   Üst-bar (dosya meta + ilerleme) + 3-panel (kaynak ↔ ajan izi ↔ çıkarılan/risk/taslak+HITL)
-   + altında NeonDetay (tüm ajan çıktıları, sayfa aşağı kaydıkça). */
+   Üst-bar (dosya meta + ilerleme) + 3-panel: SOL kaynak belge + ajan izi ↔ ORTA ayrıntılı
+   sonuç (NeonDetay gömülü; koşum sürerken bekleme durumu) ↔ SAĞ çıkarılan/risk/taslak+HITL. */
 import { lazy, Suspense, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
@@ -14,8 +14,9 @@ import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP
 
 /* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———
    Her ajan bir istasyon; Görev 1 = T hattı, Görev 2 = V hattı. Ray, adımlar tamamlandıkça
-   istasyondan istasyona hat rengiyle dolar; iki hat arasındaki kesikli parça aktarmadır
-   (Görev 1 çıktısı Görev 2'ye devreder). Düz dolgu + hairline (gradyan/glow yok); renk tek
+   istasyondan istasyona hat rengiyle dolar. İki hat tek kart yüzeyinde yaşar: panel genişse
+   yan yana (metro şeması), darsa alt alta; Görev 2'nin başındaki kesikli parça aktarmadır
+   (Görev 1 çıktısı bu hatta devreder). Düz dolgu + hairline (gradyan/glow yok); renk tek
    sinyal değil — durum her zaman işaret + metinle de verilir. Geometri: 28px oluk, ray x=13. */
 const HAT = { x: 13, w: 2, merkez: 16 };
 
@@ -47,13 +48,14 @@ function HatDurak({ st, col }) {
   );
 }
 
-/* Hat başlığı — terminal roundeli (hat no) + görev adı + ince ayraç + adım sayısı.
-   aktarma: Görev 1 → 2 geçişindeki kesikli ray (çıktı devri). girisAktif: ilk istasyona girildi. */
-function HatTerminal({ n, col, count, aktarma, girisAktif, glow, delay }) {
-  const pt = aktarma ? SP.xl : 0;
+/* Hat başlığı — terminal roundeli (hat no) + görev adı + ince ayraç + adım sayısı ve hat süresi.
+   devir: Görev 2 hattının başındaki kesikli giriş (Görev 1 çıktısı bu hatta devreder).
+   girisAktif: ilk istasyona girildi. */
+function HatTerminal({ n, col, count, sure, devir, girisAktif, glow }) {
+  const pt = devir ? SP.m : 0;
   return (
-    <div style={{ position: "relative", padding: `${pt}px 0 ${SP.s}px`, animation: glow ? `nu-rise .18s ease-out ${delay}ms both` : "none" }}>
-      {aktarma && <Ray top={0} height={pt + 4} dashed />}
+    <div style={{ position: "relative", padding: `${pt}px 0 ${SP.s}px`, animation: glow ? "nu-rise .18s ease-out both" : "none" }}>
+      {devir && <Ray top={0} height={pt + 2} dashed />}
       <Ray top={pt + 22} bottom={0} filled={girisAktif} col={col} />
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, height: 24 }}>
         <span style={{ width: 28, display: "flex", justifyContent: "center", flexShrink: 0 }}>
@@ -61,7 +63,7 @@ function HatTerminal({ n, col, count, aktarma, girisAktif, glow, delay }) {
         </span>
         <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(col), flexShrink: 0 }}>{n === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
         <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
-        <span style={{ ...TYPE.meta, color: PAL.mut3, flexShrink: 0, ...TNUM }}>{count} adım</span>
+        <span style={{ ...TYPE.meta, color: PAL.mut3, flexShrink: 0, ...TNUM }}>{count} adım{sure ? ` · ${sure}` : ""}</span>
       </div>
     </div>
   );
@@ -76,7 +78,7 @@ function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow }) {
   const altYazi = done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "hata · adım başarısız" : (a.desc || "—");
   const altRenk = err ? DERIN.kirmizi : done ? (a.id === "risk_guard" ? DERIN_OF(risk.c) : PAL.mut) : active ? PAL.mut : PAL.mut2;
   return (
-    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 12px 6px 0", borderRadius: RAD.ctl, background: active ? ALFA(col) : "transparent", transition: "background .25s ease-out", animation: glow ? `nu-rise .18s ease-out ${Math.min(i * 28, 420)}ms both` : "none" }}>
+    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 8px 6px 0", borderRadius: RAD.ctl, background: active ? ALFA(col) : "transparent", transition: "background .25s ease-out", animation: glow ? `nu-rise .18s ease-out ${Math.min(i * 28, 420)}ms both` : "none" }}>
       <div style={{ position: "relative", minHeight: 40 }}>
         {hasTop && <Ray top={0} height={HAT.merkez} filled={topFill} col={col} />}
         {hasBot && <Ray top={HAT.merkez} bottom={0} filled={done} col={col} />}
@@ -107,6 +109,27 @@ const HatSon = ({ col, done }) => (
     <span style={{ position: "absolute", top: 6, left: HAT.x - 4, width: 10, height: 4, borderRadius: RAD.chip, background: done ? col : PAL.lineHi, transition: "background .3s ease-out" }} />
   </div>
 );
+
+/* Tek hat (görev fazı) — terminal başlığı + istasyonlar + terminüs. Kart içindeki grid geniş
+   panelde iki hattı yan yana koyar (metro şeması), darda alt alta yığar. Terminüs, hattın
+   kendi istasyonları bitince dolar (Görev 1 hattı, Görev 2'yi beklemez); istasyon numarası
+   global sıradır (01–16) — iki hat tek koşumun parçaları. */
+function HatFaz({ n, items, risk, glow }) {
+  const col = n === 2 ? V : T;
+  const ms = items.reduce((s, a) => (a.status === "done" && Number.isFinite(a.t1 - a.t0) ? s + (a.t1 - a.t0) : s), 0);
+  const sure = ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
+  return (
+    <div style={{ minWidth: 0 }}>
+      <HatTerminal n={n} col={col} count={items.length} sure={sure} devir={n === 2}
+        girisAktif={items[0]?.status !== "pending"} glow={glow} />
+      {items.map((a, j) => (
+        <HatIstasyon key={a.id} a={a} i={a.sira} col={col} risk={risk} hasTop={j > 0}
+          topFill={j > 0 && items[j - 1].status === "done"} hasBot glow={glow} />
+      ))}
+      <HatSon col={col} done={items.length > 0 && items.every((a) => a.status === "done")} />
+    </div>
+  );
+}
 
 function buildDrivenFields(r, risk) {
   const conf = r.tur_confidence != null ? ` · %${Math.round(r.tur_confidence * 100)}` : "";
@@ -201,7 +224,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow }) {
     </button>
   );
   return (
-    <div style={{ flex: "1 1 260px", minWidth: 0, borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
         <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, flex: 1 }}>Kaynak belge</span>
         {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" /><SekmeBtn id="metin" label="Metin" /></>)}
@@ -244,10 +267,11 @@ export default function CanliAjanAkisi({
   }
 
   const risk = BANT[riskOutcome] || BANT.yesil;
-  const display = nodes.map((n) => ({
+  const display = nodes.map((n, i) => ({
     id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
-    out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
+    out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1, sira: i,
   }));
+  const gorevler = [...new Set(display.map((a) => a.gorev))];
   const total = display.length || 1;
   const doneCount = display.filter((a) => a.status === "done").length;
   const pct = Math.round((doneCount / total) * 100);
@@ -271,7 +295,7 @@ export default function CanliAjanAkisi({
   const decisionReady = !busy && (!!pendingOnay || !!result);
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   const metaLine = buildMetaLine(result, fileMeta);
-  // Sağ panel kartları — düz beyaz yüzey + 1px hairline (border-first), NeonCard ile tutarlı.
+  // Panel kartları (ajan izi + sağ sütun) — düz beyaz yüzey + 1px hairline (border-first), NeonCard ile tutarlı.
   const card = { position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: SP.l, boxShadow: SH.card };
 
   return (
@@ -323,47 +347,50 @@ export default function CanliAjanAkisi({
         </div>
       </header>
 
-      {/* 3 panel — komuta merkezi. flex-wrap: geniş ekranda yan yana (kaynak · iz · çıktı),
-          dar ekranda paneller alt alta düşer → yatay taşma yok (sabit minWidth kaldırıldı). */}
+      {/* 3 panel — komuta merkezi. flex-wrap: geniş ekranda yan yana (kaynak+iz · ayrıntılı
+          sonuç · çıktı), dar ekranda paneller alt alta düşer → yatay taşma yok. */}
       <section style={{ minHeight: "calc(100vh - 132px)" }}>
         <div style={{ minHeight: "100%", display: "flex", flexWrap: "wrap" }}>
 
-          {/* Kaynak belge — PDF sayfa görüntüsü (varsa) / çıkarım-vurgulu metin */}
-          <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} />
+          {/* Sol sütun — kaynak belge + altında ajan izi (dar sütunda hatlar dikey yığılır) */}
+          <div style={{ flex: "1 1 320px", minWidth: 0, borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
+            <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} />
 
-          {/* Ajan izi — evrak hattı: istasyonlu hat şeması (Görev 1 hattı → aktarma → Görev 2 hattı) */}
-          <div style={{ flex: "99 1 380px", minWidth: 0, padding: "16px 24px" }}>
-            {/* Başlık + kompakt telemetri (koşum bitince uçtan-uca gerçek süre) */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.l }}>
-              <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2 }}>Ajan izi · {total} adım</div>
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
-                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : (doneCount >= total ? BANT.yesil.c : PAL.mut2), animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-                {busy ? "Canlı" : (doneCount >= total ? "Tamam" : "Beklemede")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}{toplamSn ? ` · ${toplamSn}` : ""}
+            {/* Ajan izi — evrak hattı kartı: Görev 1 (T) ve Görev 2 (V) hatları; kart başlığında canlı telemetri */}
+            <section aria-label="Ajan izi" style={card}>
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.l, flexWrap: "wrap" }}>
+                <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.route /></span>
+                <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Ajan izi</h3>
+                <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut, ...TNUM, flexShrink: 0 }}>
+                  <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : (allDone ? BANT.yesil.c : PAL.mut2), animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+                  {busy ? "Canlı" : (allDone ? "Tamam" : "Beklemede")} · {String(doneCount).padStart(2, "0")}/{total} · %{pct}{toplamSn ? ` · ${toplamSn}` : ""}
+                </span>
               </div>
-            </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", columnGap: SP.xl, rowGap: SP.s }}>
+                {gorevler.map((g) => (
+                  <HatFaz key={g} n={g} items={display.filter((a) => a.gorev === g)} risk={risk} glow={glow} />
+                ))}
+              </div>
+            </section>
+          </div>
 
-            {/* Hat şeması — terminal roundeli + istasyonlar + aktarma + terminüs */}
-            <div style={{ position: "relative" }}>
-              {display.map((a, i) => {
-                const col = a.gorev === 2 ? V : T;
-                const prev = i > 0 ? display[i - 1] : null;
-                const next = display[i + 1];
-                const terminal = !prev || prev.gorev !== a.gorev;
-                const hasTop = !!prev && prev.gorev === a.gorev;
-                const hasBot = !next || next.gorev === a.gorev;
-                return (
-                  <div key={a.id}>
-                    {terminal && (
-                      <HatTerminal n={a.gorev} col={col} count={display.filter((x) => x.gorev === a.gorev).length}
-                        aktarma={i > 0} girisAktif={a.status !== "pending"} glow={glow} delay={Math.min(i * 28, 420)} />
-                    )}
-                    <HatIstasyon a={a} i={i} col={col} risk={risk} hasTop={hasTop}
-                      topFill={!!prev && prev.status === "done"} hasBot={hasBot} glow={glow} />
-                  </div>
-                );
-              })}
-              {display.length > 0 && <HatSon col={display[display.length - 1].gorev === 2 ? V : T} done={allDone} />}
-            </div>
+          {/* Orta panel — ayrıntılı sonuç (tüm ajan çıktıları); koşum sürerken bekleme durumu */}
+          <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px" }}>
+            {result ? (
+              <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
+                <NeonDetay embedded result={result} onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
+              </HataSiniri>
+            ) : (
+              <div style={{ ...card, minHeight: 320, display: "flex" }}>
+                <EmptyState
+                  icon={busy ? <Icon.spin /> : <Icon.doc />}
+                  title={busy ? "Ayrıntılı sonuç hazırlanıyor" : "Ayrıntılı sonuç burada görünecek"}
+                  sub={busy
+                    ? "Ajanlar çalışıyor — koşum bitince Görev 1 (anlama) ve Görev 2 (üretim) çıktılarının tamamı burada açılır."
+                    : "Evrak işlenmeye başlayınca tüm ajan çıktıları bu panelde toplanır."}
+                />
+              </div>
+            )}
           </div>
 
           {/* Sağ panel: çıkarılan veri + risk + taslak + HITL */}
@@ -417,13 +444,6 @@ export default function CanliAjanAkisi({
           </div>
         </div>
       </section>
-
-      {/* Ayrıntılı sonuç — sayfa aşağı kaydıkça tüm ajan çıktıları */}
-      {result && (
-        <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-          <NeonDetay result={result} onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
-        </HataSiniri>
-      )}
     </>
   );
 }

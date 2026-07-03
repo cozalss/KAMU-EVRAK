@@ -1,9 +1,11 @@
-/* NeonDetay — komuta merkezinin ALTINDA açılan ayrıntılı sonuç bölümü (yarışma-kalitesi).
+/* NeonDetay — ayrıntılı sonuç bölümü (yarışma-kalitesi). Komuta merkezinin ORTA panelinde
+   gömülü yaşar (embedded); istenirse tam-genişlik bölüm olarak da çizilebilir.
    Hero Light v2 "Sakin Ürün" + gözlemlenebilirlik-aracı bilgi mimarisi (Langfuse/Braintrust/
    Vercel/Stripe desenleri): en üstte HÜKÜM ŞERİDİ (tek bakışta sonuç + telemetri), solda
-   yapışkan bölüm navigasyonu (scroll-spy), Görev 1 (anlama, teal) / Görev 2 (üretim, lavanta)
-   grupları, kopyalanabilir SHA-256 zinciri, NLI destekli mevzuat satırları, kâğıt-görünümlü
-   resmî yazı önizleme. Tümü GERÇEK ProcessResponse. Yaprak bileşenler: NeonDetayParts.jsx */
+   yapışkan bölüm navigasyonu (scroll-spy, yalnız yeterli alanda), Görev 1 (anlama, teal) /
+   Görev 2 (üretim, lavanta) grupları, kopyalanabilir SHA-256 zinciri, NLI destekli mevzuat
+   satırları, kâğıt-görünümlü resmî yazı önizleme. Tümü GERÇEK ProcessResponse.
+   Yaprak bileşenler: NeonDetayParts.jsx */
 import { cloneElement, useEffect, useState } from "react";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Btn, Icon, focusRing } from "./neonUi.jsx";
@@ -91,9 +93,10 @@ function BolumRay() {
 /* İşleme süresi biçimi — metrik: SANS + TNUM (mono yasak). */
 const sureFmt = (ms) => (ms >= 1000 ? `${(ms / 1000).toFixed(1)} sn` : `${ms} ms`);
 
-export default function NeonDetay({ result, onDownload, downloading, canDownload }) {
+export default function NeonDetay({ result, onDownload, downloading, canDownload, embedded = false }) {
   const r = result;
-  const wide = useWide();
+  // Gömülü modda panel sütunu dardır → bölüm rayı ancak çok geniş pencerede açılır.
+  const wide = useWide(embedded ? "(min-width: 1560px)" : "(min-width: 1180px)");
   if (!r) return null;
 
   const alt = (r.alt_talepler || []).filter(Boolean);
@@ -140,8 +143,10 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
   const verifiedShow = verified.slice(0, 8);
 
   return (
-    <section aria-labelledby="cak-detay-h" style={{ borderTop: `1px solid ${PAL.line}`, background: PAL.bg2, padding: "24px 24px 48px" }}>
-      <div style={{ maxWidth: 1320, margin: "0 auto" }}>
+    <section aria-labelledby="cak-detay-h" style={embedded
+      ? { minWidth: 0 }
+      : { borderTop: `1px solid ${PAL.line}`, background: PAL.bg2, padding: "24px 24px 48px" }}>
+      <div style={embedded ? { minWidth: 0 } : { maxWidth: 1320, margin: "0 auto" }}>
         <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.l }}>
           <div>
             <h2 id="cak-detay-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>Ayrıntılı sonuç · Tüm ajan çıktıları</h2>

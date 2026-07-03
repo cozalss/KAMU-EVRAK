@@ -6,13 +6,14 @@
    gorev: 1 = Görev-1 (Anla/Çıkar), 2 = Görev-2 (Üret/Yönlendir).
    summarize/nodeDataFromResult: AgentFlowGraph + App.jsx'ten taşındı, yeni node'larla genişletildi. */
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR } from "../components/result-cards.jsx";
+import { slaInfo } from "../components/NeonDetayParts.jsx";
 
 // Her node için kısa TR etiket + görev + açıklama. (İkon dashboard'da numara ile gösterilir.)
 export const NODE_META = {
   oku:            { label: "Oku (OCR)",       gorev: 1, desc: "PDF/görsel/Word → metin" },
   siniflandir:    { label: "Sınıflandır",     gorev: 1, desc: "Evrak türü" },
   cikar:          { label: "Bilgi Çıkar",     gorev: 1, desc: "Gönderen/tarih/sayı/konu" },
-  kanit_baglama:  { label: "Kanıt Bağla",     gorev: 1, desc: "Çıkarımı metne demirle" },
+  kanit_baglama:  { label: "Kanıt Bağla",     gorev: 1, desc: "Çıkarımı metindeki kanıta bağla" },
   eksik_tespit:   { label: "Eksik Tespit",    gorev: 1, desc: "Zorunlu alan (3071 m.4)" },
   decompose:      { label: "Çok-Konulu Ayır", gorev: 1, desc: "Alt-taleplere böl" },
   mevzuat_oner:   { label: "Mevzuat Öner",    gorev: 1, desc: "İlgili mevzuat" },
@@ -27,7 +28,7 @@ export const NODE_META = {
   self_rag:       { label: "Öz-RAG Denetim",  gorev: 2, desc: "Yanıt yeterlilik denetimi" },
   onay_kapisi:    { label: "Memur Onayı",     gorev: 2, desc: "Koşullu HITL kapısı" },
   arsiv:          { label: "Arşivle (SDP)",   gorev: 2, desc: "Saklama planı 2005/7" },
-  sla_triyaj:     { label: "Yasal Süre",      gorev: 2, desc: "SLA triyaj (gün)" },
+  sla_triyaj:     { label: "Yasal Süre",      gorev: 2, desc: "Yasal cevap süresi triyajı" },
   denetim_izi:    { label: "Denetim İzi",     gorev: 2, desc: "SHA-256 hash-zincir" },
   finalize:       { label: "Bilgilendir",     gorev: 2, desc: "Bilgilendirme + eksik talebi" },
 };
@@ -59,7 +60,7 @@ export function summarize(id, d) {
   switch (id) {
     case "oku": {
       const conf = d.ocr_confidence != null ? ` · %${pct(d.ocr_confidence)} güven` : "";
-      return `${d.engine || "metin"} · ${d.n_chars ?? 0} krk${conf}`;
+      return `${d.engine || "metin"} · ${d.n_chars ?? 0} karakter${conf}`;
     }
     case "siniflandir":
       return d.evrak_turu ? `${EVRAK_TR(d.evrak_turu)} · %${pct(d.tur_confidence)}` : "";
@@ -97,7 +98,7 @@ export function summarize(id, d) {
       return n ? `${n} soru` : "bilgi tam";
     }
     case "yazi_taslak":
-      return d.yazi_turu ? `${YAZI_TR(d.yazi_turu)}${d.format_uyumlu ? " · format uyumlu" : ""}` : (d.format_uyumlu ? "taslak" : "taslak");
+      return d.yazi_turu ? `${YAZI_TR(d.yazi_turu)}${d.format_uyumlu ? " · format uyumlu" : ""}` : "taslak";
     case "verify": {
       const n = (d.verify_uyari || []).length;
       if (n) return `${n} uyarı`;
@@ -118,12 +119,16 @@ export function summarize(id, d) {
       return sdp ? `SDP ${sdp}` : "arşivlendi";
     }
     case "sla_triyaj": {
-      const durum = d.sla_metadata?.durum;
-      const gun = d.sla_metadata?.kalan_gun ?? d.sla_metadata?.sure_gun;
-      return durum ? `${durum}${gun != null ? ` · ${gun}g` : ""}` : "";
+      // slaInfo = UI genelinin tek etiket kaynağı ("Gecikmiş · -1g") — ham enum ("GECIKMIS")
+      // ekrana sızmaz; bilinmeyen durum (tanimsiz) okunur küçük harfe çevrilir.
+      const info = slaInfo(d.sla_metadata);
+      return info ? info.label.replace(/^TANIMSIZ$/i, "tanımsız") : "";
     }
-    case "denetim_izi":
-      return d.denetim_izi ? "SHA-256 zincir" : "";
+    case "denetim_izi": {
+      const zincir = d.denetim_izi?.zincir || d.denetim_izi?.adimlar;
+      const n = Array.isArray(zincir) ? zincir.length : 0;
+      return d.denetim_izi ? (n ? `${n} halka · SHA-256` : "SHA-256 zincir") : "";
+    }
     case "finalize": return "bilgilendirme hazır";
     default: return "";
   }

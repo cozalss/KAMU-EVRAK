@@ -51,7 +51,7 @@
 
 - **Aktif kabuk:** `DashboardApp.jsx` → `NeonSidebar` + görünümler (`PanelView`, `GelenEvrakView`,
   `TaslaklarView`, `MevzuatView`, `DenetimView`) + canlı `CanliAjanAkisi` (demo yıldızı).
-- **Renk (token):** birincil aksan gök mavisi `T=#2f8fa6`, ikincil lavanta `V=#8b5cb0`, imza mercanı
+- **Renk (token):** birincil aksan gök mavisi `T=#2f8fa6`, ikincil mühür moru `V=#8e3d66`, imza mercanı
   `R=#e0563c` (yalnız küçük dokunuşlar — genel CTA rengi değil); zemin `PAL.bg=#f7f3ee` /
   `PAL.bg2=#efe6da`; metin `PAL.ink=#161616` / `ink2=#3a3229`; risk bandı `BANT` (yeşil `#2f9e6e` /
   sarı `#c98a1f` / kırmızı `#c9432f`). **Hex'i elle yazma, token kullan.**

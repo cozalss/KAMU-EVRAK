@@ -31,9 +31,9 @@
   --g1: #2f8fa6;            /* Görev 1 (Anla) — hero gök mavisi */
   --g1-soft: #dcecf0;
   --g1-ink: #1f6d82;        /* metin için koyu ton */
-  --g2: #8b5cb0;             /* Görev 2 (Üret) — hero lavanta */
-  --g2-soft: #ece3f2;
-  --g2-ink: #6a4787;
+  --g2: #8e3d66;             /* Görev 2 (Üret) — mühür moru (neonUi V ile hizalı) */
+  --g2-soft: #f0e2ea;
+  --g2-ink: #74304f;
 
   /* --- semantik durum --- */
   --ok: #2f9e6e;     --ok-soft: #dcf3e8;   --ok-ink: #1f7a52;

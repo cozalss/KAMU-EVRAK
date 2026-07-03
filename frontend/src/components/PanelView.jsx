@@ -1,7 +1,6 @@
 /* PanelView — açılış paneli. Oturum özeti: işlenen evrak, karar bekleyen (gerçek HITL sayısı),
-   kuyruk SLA dağılımı + eskalasyon listesi, tür/risk/birim dağılımı, işlem süresi + otomasyon
-   kazancı, son işlemler. Tüm sayılar gerçek veriden (oturum + DB reconcile); tek varsayım
-   otomasyon kartındaki manuel süredir ve ekranda "varsayım" olarak işaretlidir. */
+   kuyruk SLA dağılımı + eskalasyon listesi, tür/risk/birim dağılımı, işlem süresi,
+   son işlemler. Tüm sayılar gerçek veriden (oturum + DB reconcile). */
 import React from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -9,11 +8,6 @@ import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, 
 import { EVRAK_TR, BIRIM_LBL } from "./result-cards.jsx";
 
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
-
-// Otomasyon kazancı varsayımı: bir evrakın elle okunup sınıflandırılması, özetlenmesi ve
-// cevap taslağının yazılması için ortalama memur süresi (dk). ÖLÇÜM DEĞİL — kart üzerinde
-// "varsayım" diye açıkça işaretlenir; ajan süreleri ise gerçek ölçümdür (sure_ms).
-const MANUEL_DK_VARSAYIM = 15;
 
 /* Karar bekleyen: taslağı üretilmiş ama memur kararı (onayla/reddet) verilmemiş işlemler.
    duzenle nihai karar değildir → bekleyende kalır. pendingOnay = canlı HITL duraklaması. */
@@ -154,44 +148,6 @@ function SureGrafik({ history }) {
   );
 }
 
-/* Otomasyon kazancı — ölçülen ajan süresi vs manuel varsayım karşılaştırması + toplam
-   tahmini kazanım. Varsayım ekranda açıkça işaretlenir (dürüstlük). */
-function KazancKart({ history }) {
-  const olculer = history.map((h) => h.result?.sure_ms).filter((ms) => Number.isFinite(ms) && ms > 0);
-  if (olculer.length === 0) {
-    return <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Kazanım, süre ölçümü olan işlemlerden hesaplanır — bir evrak işleyin.</p>;
-  }
-  const toplamMs = olculer.reduce((a, x) => a + x, 0);
-  const ortSn = toplamMs / olculer.length / 1000;
-  const kazancDk = Math.max(0, olculer.length * MANUEL_DK_VARSAYIM - toplamMs / 60000);
-  const ajanPct = Math.max(1, Math.min(100, (ortSn / (MANUEL_DK_VARSAYIM * 60)) * 100));
-  const Cizgi = ({ label, deger, pct, renk }) => (
-    <div style={{ marginBottom: SP.s }}>
-      <div style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>
-        <span>{label}</span><span style={{ color: DERIN_OF(renk), fontWeight: 500, ...TNUM }}>{deger}</span>
-      </div>
-      <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${pct}%`, background: renk, borderRadius: RAD.chip }} />
-      </div>
-    </div>
-  );
-  return (
-    <>
-      <div style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
-        <span style={{ ...TYPE.num, color: PAL.ink, ...TNUM }}>≈ {Math.round(kazancDk)} dk</span>
-        <span style={{ ...TYPE.meta, color: PAL.mut }}>tahmini kazanım · {olculer.length} işlem</span>
-      </div>
-      <div style={{ marginTop: SP.m }}>
-        <Cizgi label={`Manuel işlem (varsayım, ~${MANUEL_DK_VARSAYIM} dk/evrak)`} deger={`${MANUEL_DK_VARSAYIM} dk`} pct={100} renk={PAL.lineHi} />
-        <Cizgi label="Ajan işleme (gerçek ölçüm, ortalama)" deger={`${ortSn.toFixed(1)} sn`} pct={ajanPct} renk={T} />
-      </div>
-      <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.meta, color: PAL.mut3 }}>
-        Manuel süre sektör varsayımıdır; ajan süreleri sistemin gerçek ölçümüdür (sure_ms).
-      </p>
-    </>
-  );
-}
-
 export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], draftCount = 0, pendingOnay = false, onGoInbox, onUpload, user }) {
   const n = history.length;
   const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
@@ -260,10 +216,6 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
 
           <NeonCard title="İşlem süresi" accent={T}>
             <SureGrafik history={history} />
-          </NeonCard>
-
-          <NeonCard title="Otomasyon kazancı" accent={T}>
-            <KazancKart history={history} />
           </NeonCard>
 
           <NeonCard title="Son işlemler" accent={T} full>

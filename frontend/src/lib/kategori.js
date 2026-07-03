@@ -11,7 +11,7 @@ export const KATEGORILER = [
   { id: "imar_ruhsat", label: "İmar / Ruhsat", color: "#c97c12" },
   { id: "mali_vergi", label: "Mali İşler / Vergi", color: "#2f9e6e" },
   { id: "zabita", label: "Zabıta", color: "#d9566a" },
-  { id: "hukuk_itiraz", label: "Hukuk / İtiraz", color: "#8b5cb0" },
+  { id: "hukuk_itiraz", label: "Hukuk / İtiraz", color: "#8e3d66" },
   { id: "insan_kaynaklari", label: "İnsan Kaynakları", color: "#5fa8c9" },
   { id: "diger", label: "Diğer", color: "#8a8172" },
   { id: "siniflanmamis", label: "Sınıflandırılmamış", color: "#6b6255" },

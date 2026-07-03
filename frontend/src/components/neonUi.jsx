@@ -9,7 +9,10 @@ import React, { useState, useId } from "react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
 export const SANS = "'IBM Plex Sans','Segoe UI',system-ui,sans-serif";
-export const T = "#2f8fa6", V = "#8b5cb0", R = "#e0563c";
+/* V (Görev 2 semantiği): lavanta → MÜHÜR moru (2026-07 revizyonu). Pastel "AI moru"ndan
+   çıkış; ıstampa/mühür mürekkebi — resmî evrak dünyasının kendi rengi. Radix ruby/plum
+   koyuluğunda; ivory zeminde dolgu 6.3:1, DERIN.V metin 8.3:1 (AA). */
+export const T = "#2f8fa6", V = "#8e3d66", R = "#e0563c";
 export const PAL = {
   bg: "#f7f3ee", bg2: "#efe6da", surf: "#ffffff", surf2: "#fdfbf7", surfHi: "rgba(35,26,18,.05)",
   line: "rgba(35,26,18,.12)", lineHi: "rgba(35,26,18,.22)",
@@ -26,7 +29,7 @@ export const BANT = {
 /* Açık zemin üstünde AA kontrastlı metin/dolgu türevleri — ham T/V/R/BANT.c açık zeminde
    metin rengi OLAMAZ (T ≈3.2:1). Th = primary buton hover'ı. */
 export const DERIN = {
-  T: "#1f6d82", Th: "#1a5e71", V: "#6a4787", R: "#a23425",
+  T: "#1f6d82", Th: "#1a5e71", V: "#74304f", R: "#a23425",
   yesil: "#1f7a52", sari: "#8a5a10", kirmizi: "#a23425",
 };
 /* Ham aksan → AA metin türevi eşlemesi (bilinmeyen renk aynen döner). */
@@ -66,12 +69,18 @@ export const focusRing = {
 export const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 };
 
 /* Hareket = bilgi: spin (gerçek yükleme) · think (canlılık, yalnız opacity) · rise (görünüm girişi, tek sefer).
+   SAHNE istisnası (canlı ajan izi — CanliAjanAkisi): akis (ray üzerinde akan ışık; Magic UI
+   "animated beam" / Aceternity "tracing beam" deseninden uyarlama) · pop (istasyon tamamlanma
+   vuruşu). Yalnız canlı koşum sahnesinde; reduced-motion hepsini söndürür.
    ::view-transition — görünüm geçişi çapraz-erimesi kısa tutulur (DashboardApp.gecisle;
    reduced-motion'da geçiş zaten hiç başlatılmaz). */
 export const NEON_KEYFRAMES = `
 @keyframes nu-spin{to{transform:rotate(360deg)}}
 @keyframes nu-think{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes nu-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nu-akis{to{background-position:0 20px}}
+@keyframes nu-tara{from{background-position:-48px 0}to{background-position:calc(100% + 48px) 0}}
+@keyframes nu-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:1}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 `;

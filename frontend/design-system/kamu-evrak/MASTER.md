@@ -10,8 +10,10 @@
 **Generated:** 2026-06-26 (ui-ux-pro-max) · **Revize/aktif tema:** 2026-07-02 — **Hero Light v2 "Sakin Ürün"**
 **Category:** Government/Public Service · **Yön:** açık, herodan türetilmiş palet + gerçek-ürün disiplini
 
-> **AKTİF TEMA — HERO LIGHT v2.** Palet v1 ile bit-aynı (landing hero'sundan türetilmiş sıcak
-> fildişi + gök mavisi/lavanta/mercan). v2 revizyonu **dekorasyon dilini söker**: border-first
+> **AKTİF TEMA — HERO LIGHT v2.** Palet landing hero'sundan türetilmiş sıcak fildişi + gök
+> mavisi/mercan; **2026-07 revizyonu:** Görev-2 ikincili lavanta → mühür moru (`V #8e3d66`,
+> "AI pasteli"nden çıkış — T/R/nötr/BANT hex'leri v1 ile bit-aynı kaldı).
+> v2 revizyonu **dekorasyon dilini söker**: border-first
 > yüzey, düz dolgular (gradyan/glow sıfır), sentence case, mono yalnız makine verisi, 7 kademeli
 > tip ölçeği. Referans: Geist (kenar/gölge), Radix (tip/radius adımları), IBM Carbon
 > (sentence-case/spacing), GOV.UK (işlevsel renk). Token'lar
@@ -46,7 +48,7 @@
 | Rol | Hex / değer | Token (`neonUi.jsx`) |
 |------|-------------|----------------------|
 | Birincil aksan (eylem/durum — dolgu) | `#2f8fa6` | `T` |
-| İkincil aksan (yalnız Görev 2 semantiği: ikon/nokta/vurgu) | `#8b5cb0` | `V` |
+| İkincil aksan (yalnız Görev 2 semantiği: ikon/nokta/vurgu) — mühür moru (2026-07: lavanta `#8b5cb0` → mühür; "AI pasteli"nden çıkış, GOV.UK işlevsel renk ilkesi) | `#8e3d66` | `V` |
 | İmza aksanı (yalnız marka noktası — CTA/çip/dolgu ASLA) | `#e0563c` | `R` |
 | Ana arka plan (sıcak fildişi) | `#f7f3ee` | `PAL.bg` |
 | Derin zemin (sidebar) | `#efe6da` | `PAL.bg2` |
@@ -60,7 +62,7 @@
 | Risk YEŞİL/SARI/KIRMIZI | `#2f9e6e / #c98a1f / #c9432f` | `BANT` |
 
 **AA metin türevleri (`DERIN`):** açık zeminde ham `T/V/R/BANT.c` **metin rengi olamaz**
-(kontrast yetersiz). Renkli metin daima `DERIN.T #1f6d82 · DERIN.V #6a4787 · DERIN.R #a23425 ·
+(kontrast yetersiz). Renkli metin daima `DERIN.T #1f6d82 · DERIN.V #74304f · DERIN.R #a23425 ·
 DERIN.yesil #1f7a52 · DERIN.sari #8a5a10 · DERIN.kirmizi #a23425`; ham→türev eşleme
 `DERIN_OF(renk)`. Primary buton dolgusu `DERIN.T`, hover `DERIN.Th #1a5e71`.
 
@@ -174,5 +176,5 @@ Kalan keyframe'ler (3): `nu-spin` (gerçek yükleme) · `nu-think` (canlılık, 
 - [ ] Sentence case (kısaltma + risk kodu istisna); eyebrow/tracking yok
 - [ ] Ekran başına ≤ 1 primary buton; çip yalnız semantik durum
 - [ ] `focusRing` tüm etkileşimlilerde · `prefers-reduced-motion` çalışıyor · keyframes = {spin, think, rise}
-- [ ] Landing diff'i boş (`index.html`, `src/portfolio/**`) · palet hex'leri bit-değişmemiş
+- [ ] Landing diff'i boş (`index.html`, `src/portfolio/**`) · T/R/nötr/BANT hex'leri bit-değişmemiş (V = mühür moru `#8e3d66`, 2026-07)
 - [ ] Responsive: 375/768/1024/1440 — yatay taşma yok

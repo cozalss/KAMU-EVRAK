@@ -13,7 +13,7 @@ Kamu kurumuna gelen evrakı **okuyan, sınıflandıran, eksiğini bulan, mevzuat
 yazı taslağını hazırlayan** çok-ajanlı (LangGraph) sistem — belge başına **~10 sn ve ~$0.001**;
 **anahtarsız/offline modda dahi uçtan uca çalışır**, insan onayı olmadan hiçbir yazı çıkmaz.
 
-**Hızlı gezinme:** [2 dakikada demo](#-2-dakikada-demo) · [Hızlı başlangıç](#-hızlı-başlangıç-anahtar-gerekmez) ·
+**Hızlı gezinme:** [Hızlı başlangıç](#-hızlı-başlangıç-anahtar-gerekmez) ·
 [Mimari](#-mimari) · [Şartname eşlemesi](#-şartname--rubrik-eşlemesi) · [Skorlar](#-değerlendirme-sonuçları-dürüst) ·
 [Neden farklı](#-neden-farklı)
 
@@ -24,26 +24,6 @@ yazı taslağını hazırlayan** çok-ajanlı (LangGraph) sistem — belge baş�
   doğru birime yönlendir → bilgilendir → gerekirse eksik bilgi iste
 
 Lisans **MIT**, AGPL bağımlılığı yok (PDF için PyMuPDF yerine `pypdfium2`).
-
----
-
-## 🎬 2 dakikada demo
-
-Jüri için önerilen izleme sırası (`VITRIN_MODU=1`, canlı SSE akışı):
-
-| Zaman | Ne izlenir | Neden önemli |
-|---|---|---|
-| 0:00 | Çok-konulu dilekçe yüklenir → **16 ajan istasyonu canlı yanar** (vitrin profili; varsayılan 15, en çok 20 node) | Gerçek zamanlı çok-ajanlı akış (şartnamedeki "real-time avantaj") |
-| 0:15 | **PII anında maskelenir** (TCKN `123******01`) — ham veri buluta gitmez | KVKK; kişisel veri koruması tasarımın içinde |
-| 0:30 | Tek dilekçe **3 alt-talebe bölünür**, her biri ayrı birim + yasal süre alır | Çok-konulu ayrıştırma — memurun "3 kez fotokopi" derdi |
-| 0:50 | Mevzuat önerileri **ilgililik skoru + anlamsal destek (NLI)** ile gelir | Kaynak gösteren, doğrulanabilir öneri |
-| 1:10 | Resmî yazı taslağı **token-token** yazılır, 2646 lint kural kural işler | Görev 2 kalitesi ölçülebilir |
-| 1:30 | **Risk bandı** yanar (🟡 → memur onayı durur) → Onayla / Düzenle / Reddet | HITL: yapay zekâ önerir, memur karar verir |
-| 1:50 | Ayrıntılı sonuç: **SHA-256 denetim zinciri** (kopyalanabilir), SLA son tarihi, SDP dosya kodu, **EYP 2.0 paketi** indirilir | Denetlenebilirlik + EBYS'ye giren gerçek çıktı |
-
-Canlı akış kesilirse: `LLM_MODE=mock` aynı demoyu **internetsiz** koşar (bkz. [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md)).
-
-🎥 **Demo videosu:** *(başvuru teslimiyle eklenecek — yukarıdaki koreografinin ekran kaydı)*
 
 ---
 
@@ -169,7 +149,7 @@ profilinde açılır; açıldığında o da LLM'li sürümüyle koşar.)
 
 Puanlama boyutlarına göre nereye bakmalı: **Yöntem & Teknik (35)** → [Mimari](#-mimari) +
 [`docs/method.md`](docs/method.md) · **Uygulama başarımı (35)** → [Skorlar](#-değerlendirme-sonuçları-dürüst) ·
-**Demo (15)** → [2 dakikada demo](#-2-dakikada-demo) · **Yenilikçilik & ticarileşme (15)** →
+**Demo (15)** → [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md) · **Yenilikçilik & ticarileşme (15)** →
 [Neden farklı](#-neden-farklı) + [`docs/ticarileşme.md`](docs/ticarileşme.md).
 Tam matris: [`docs/sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md).
 

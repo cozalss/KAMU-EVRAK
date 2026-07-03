@@ -412,5 +412,11 @@ BEGIN
   END LOOP;
 END $$;
 
+-- RLS policy tek başına yetmez: PostgREST rollerinin tablo-düzeyi SELECT GRANT'ı da gerekir
+-- (Supabase default privilege'ları pooler üzerinden uygulanan şemada devreye girmeyebilir).
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT ON evrak_turu, yazi_turu, birim, mevzuat, mevzuat_madde, mevzuat_chunk
+    TO anon, authenticated;
+
 -- H-4: parola_hash / e_imza_yetkisi PostgREST rollerine asla görünmesin.
 REVOKE SELECT (parola_hash, e_imza_yetkisi) ON kullanici FROM anon, authenticated;

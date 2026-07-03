@@ -9,6 +9,7 @@ import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
+import HataSiniri from "./HataSiniri.jsx";
 import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
 
 /* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———
@@ -200,7 +201,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow }) {
     </button>
   );
   return (
-    <div style={{ borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column" }}>
+    <div style={{ flex: "1 1 260px", minWidth: 0, borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
         <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, flex: 1 }}>Kaynak belge</span>
         {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" /><SekmeBtn id="metin" label="Metin" /></>)}
@@ -322,15 +323,16 @@ export default function CanliAjanAkisi({
         </div>
       </header>
 
-      {/* 3 panel — komuta merkezi */}
+      {/* 3 panel — komuta merkezi. flex-wrap: geniş ekranda yan yana (kaynak · iz · çıktı),
+          dar ekranda paneller alt alta düşer → yatay taşma yok (sabit minWidth kaldırıldı). */}
       <section style={{ minHeight: "calc(100vh - 132px)" }}>
-        <div style={{ minHeight: "100%", minWidth: 1060, display: "grid", gridTemplateColumns: "290px minmax(380px,1fr) 360px" }}>
+        <div style={{ minHeight: "100%", display: "flex", flexWrap: "wrap" }}>
 
           {/* Kaynak belge — PDF sayfa görüntüsü (varsa) / çıkarım-vurgulu metin */}
           <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} />
 
           {/* Ajan izi — evrak hattı: istasyonlu hat şeması (Görev 1 hattı → aktarma → Görev 2 hattı) */}
-          <div style={{ padding: "16px 24px" }}>
+          <div style={{ flex: "99 1 380px", minWidth: 0, padding: "16px 24px" }}>
             {/* Başlık + kompakt telemetri (koşum bitince uçtan-uca gerçek süre) */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.l }}>
               <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2 }}>Ajan izi · {total} adım</div>
@@ -365,7 +367,7 @@ export default function CanliAjanAkisi({
           </div>
 
           {/* Sağ panel: çıkarılan veri + risk + taslak + HITL */}
-          <div style={{ borderLeft: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
+          <div style={{ flex: "1 1 330px", minWidth: 0, borderLeft: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
             <div style={card}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: SP.s }}>
                 <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3 }}>Çıkarılan veri</span>
@@ -417,7 +419,11 @@ export default function CanliAjanAkisi({
       </section>
 
       {/* Ayrıntılı sonuç — sayfa aşağı kaydıkça tüm ajan çıktıları */}
-      {result && <NeonDetay result={result} onDownload={onDownload} downloading={downloading} canDownload={canDownload} />}
+      {result && (
+        <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
+          <NeonDetay result={result} onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
+        </HataSiniri>
+      )}
     </>
   );
 }

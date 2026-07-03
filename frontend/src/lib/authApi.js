@@ -157,3 +157,7 @@ export async function apiGet(path) {
 export async function apiPost(path, body) {
   return apiFetch(path, { method: "POST", body });
 }
+
+export async function apiDelete(path) {
+  return apiFetch(path, { method: "DELETE" });
+}

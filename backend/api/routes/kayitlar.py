@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.deps import CurrentUser, require_role
 from db.models import Birim, Kullanici
-from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
+from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder, taslak_sil
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
     gelen_evrak_listele,
@@ -119,6 +119,25 @@ async def denetim_dogrula(islem_id: uuid.UUID, _user: CurrentUser, session: Sess
 class OnaylaRequest(BaseModel):
     secim: str = Field("onayla", pattern="^(onayla|duzenle|reddet)$")
     gerekce: str = Field("", max_length=2000)
+
+
+@router.delete("/islem/{islem_id}/taslak")
+async def taslak_sil_endpoint(
+    islem_id: uuid.UUID, session: Session,
+    kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
+) -> dict:
+    """Karar bekleyen taslağı KALICI sil — işlem kaydı ve denetim izi korunur.
+
+    Karar verilmiş taslak 409 döner (Giden Evrak bütünlüğü). Frontend 'Sil' butonu
+    bunu çağırır; böylece silinen taslak sayfa yenilenince DB'den geri gelmez.
+    """
+    try:
+        if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
+        return await taslak_sil(session, islem_id=islem_id)
+    except KararError as e:
+        kod = status.HTTP_404_NOT_FOUND if e.kod == "taslak_yok" else status.HTTP_409_CONFLICT
+        raise HTTPException(kod, e.mesaj) from e
 
 
 @router.post("/islem/{islem_id}/onayla")

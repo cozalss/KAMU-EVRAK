@@ -8,7 +8,7 @@ import { flushSync } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
-import { apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
+import { apiDelete, apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { PAL, DERIN, SANS, TYPE, RAD, SP, SH, ALFA, BANT, Icon, focusRing, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
@@ -39,10 +39,12 @@ const ChatbotWidget = lazy(() => import("./components/ChatbotWidget.jsx"));
 const VIEWS = new Set(["panel", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
 const hashView = () => window.location.hash.slice(1);
 
-// DB geçmişinden taslak listesi türet (yazi_taslak_md olanlar). Hem açılış hidrasyonunda
-// hem de DB reconcile'ında aynı eşlemeyi kullan → iki yol tutarlı kalsın.
+// DB geçmişinden taslak listesi türet: taslağı ÜRETİLMİŞ ve henüz KARAR VERİLMEMİŞ işlemler
+// (onaylanmış/reddedilmiş işlemler Giden Evrak'a düşer — burada tekrar taslak sayılmaz;
+// Panel'deki "karar bekleyen" tanımıyla birebir aynı süzgeç). Hem açılış hidrasyonunda
+// hem de DB reconcile'ında aynı eşleme → iki yol tutarlı kalsın.
 const draftsFromHistory = (items) =>
-  (items || []).filter((x) => x.result?.yazi_taslak_md).map((x) => ({
+  (items || []).filter((x) => x.result?.yazi_taslak_md && !x.result?.onay_durumu).map((x) => ({
     ...x,
     id: `db-taslak-${x.id}`,
     name: x.name || "Kalıcı taslak",
@@ -64,7 +66,7 @@ const gecisle = (fn) => {
 export default function DashboardApp() {
   const {
     nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
-    runFile, runSample, resume, download, showToast, dismissError, canRetry, retry,
+    runFile, runSample, resume, download, showToast, dismissError, canRetry, retry, runBase,
   } = usePipeline();
 
   const { user, logout } = useAuth();
@@ -328,7 +330,22 @@ export default function DashboardApp() {
 
   // Taslak düzenle (metni güncelle) / sil — Taslaklar görünümünden çağrılır.
   const updateDraft = useCallback((id, md) => setDrafts((d) => d.map((x) => (x.id === id ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x))), []);
-  const deleteDraft = useCallback((id) => setDrafts((d) => d.filter((x) => x.id !== id)), []);
+  // Taslak silme KALICIDIR: DB taslakları (db-taslak-<islem_id>) backend'de de silinir —
+  // sayfa yenilenince geri gelmez. Oturumluk ("Düzenle" ile eklenen) taslak yalnız state'ten düşer.
+  const deleteDraft = useCallback(async (id) => {
+    setDrafts((d) => d.filter((x) => x.id !== id));   // optimistik kaldır
+    const islemId = String(id).startsWith("db-taslak-") ? String(id).slice("db-taslak-".length) : null;
+    if (!islemId) return;
+    try {
+      await apiDelete(`/islem/${encodeURIComponent(islemId)}/taslak`);
+      // history reconcile'ında geri dirilmesin: ilgili kaydın taslağını da düşür.
+      setHistory((h) => h.map((x) =>
+        (x.id === islemId ? { ...x, result: { ...x.result, yazi_taslak_md: "" } } : x)));
+    } catch (err) {
+      console.warn("Taslak DB'den silinemedi", err);
+      showToast("Taslak kalıcı silinemedi — sayfa yenilenince geri gelebilir.");
+    }
+  }, [showToast]);
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFile(f); };
   const triggerUpload = useCallback(() => { goView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy, goView]);
   const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); goView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample, goView]);
@@ -362,7 +379,7 @@ export default function DashboardApp() {
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (
     <CanliAjanAkisi
-      nodes={nodes} result={data} busy={busy} started={started}
+      nodes={nodes} result={data} busy={busy} started={started} runBase={runBase}
       riskOutcome={riskOutcome} fileMeta={fileMeta} pendingOnay={pendingOnay}
       onApprove={onApprove} onEdit={onEdit} onReject={onReject}
       onDownload={download} downloading={downloading} canDownload={!!evrakText}

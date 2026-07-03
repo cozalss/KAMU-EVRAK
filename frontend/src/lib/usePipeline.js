@@ -68,6 +68,7 @@ export function usePipeline() {
 
   const reset = useCallback(() => {
     clearTimers();
+    sawTerminal.current = false;
     runStart.current = performance.now();
     setNodes(freshNodes());
     setResult(null);
@@ -79,8 +80,13 @@ export function usePipeline() {
     setFileUrl("");
   }, [clearTimers]);
 
+  // Akış terminal event (done/error) gördü mü? — akış kapanınca sessiz boş duruma düşmeyi
+  // önleyen emniyet kemeri (aşağıda streamRun sonu). reset() her koşumda sıfırlar.
+  const sawTerminal = useRef(false);
+
   // SSE event işleyici (dosya + örnek — tek yol). Bir node bitince sıradakini aktifle.
   const handleEvent = useCallback((ev) => {
+    if (ev.event === "done" || ev.event === "error") sawTerminal.current = true;
     if (ev.event === "start") {
       // start.nodes DİNAMİK — backend ENV ne döndürürse onu kur (R1). İlki aktif.
       const ids = Array.isArray(ev.nodes) && ev.nodes.length ? ev.nodes : DEFAULT_NODE_IDS;
@@ -134,18 +140,30 @@ export function usePipeline() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buf = "";
+      const parseChunk = (chunk) => {
+        const line = chunk.split("\n").find((l) => l.startsWith("data:"));
+        if (!line) return;
+        try { handleEvent(JSON.parse(line.slice(5).trim())); }
+        catch { /* yarım satır — sonraki chunk'ta tamamlanır */ }
+      };
       for (;;) {
         const { value, done } = await reader.read();
         if (done) break;
         buf += decoder.decode(value, { stream: true });
         const parts = buf.split("\n\n");
         buf = parts.pop() || "";
-        for (const chunk of parts) {
-          const line = chunk.split("\n").find((l) => l.startsWith("data:"));
-          if (!line) continue;
-          try { handleEvent(JSON.parse(line.slice(5).trim())); }
-          catch { /* yarım satır — sonraki chunk'ta tamamlanır */ }
-        }
+        parts.forEach(parseChunk);
+      }
+      // KRİTİK: akış kapandı — decoder'ı boşalt ve tamponda kalan SON event'i de işle.
+      // Sonucu taşıyan `done` event'i kapanış chunk'ında ayraçsız gelebilir; eski kod onu
+      // atıyordu → sonuç yok + hata yok + busy=false = sessiz boş ekran (görülen hata).
+      buf += decoder.decode();
+      buf.split("\n\n").forEach(parseChunk);
+      // Emniyet kemeri: akış terminal event (done/error) vermeden kapandıysa bunu
+      // kullanıcıya söyle — sessizce boş duruma dönme.
+      if (!sawTerminal.current) {
+        setError("İşlem sonucu alınamadı — bağlantı erken kapandı. Yeniden deneyin.");
+        setNodes((prev) => prev.map((n) => (n.status === "active" ? { ...n, status: "error" } : n)));
       }
     } catch (err) {
       if (err?.name === "AbortError") return;   // unmount/iptal — sessizce çık
@@ -289,5 +307,8 @@ export function usePipeline() {
   return {
     nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
     runFile: runFileValidated, runSample, resume, retry, download, showToast, dismissError, canRetry,
+    // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
+    // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).
+    runBase: runStart.current,
   };
 }

@@ -75,4 +75,27 @@ async def onayla_ve_gonder(
     return {"karar": karar, "giden_no": giden_no}
 
 
-__all__ = ("KararError", "onayla_ve_gonder")
+async def taslak_sil(session: AsyncSession, *, islem_id: uuid.UUID) -> dict:
+    """İşleme ait KARAR BEKLEYEN taslağı kalıcı sil (kullanıcının 'Sil' eylemi).
+
+    Yalnız taslak satır(lar)ı silinir — işlem kaydı ve denetim izi (Sayıştay/KVKK)
+    dokunulmaz kalır. Karar verilmiş (onay satırı olan) taslak İMHA EDİLEMEZ →
+    KararError('karar_verildi'); bekleyen onay satırları taslakla CASCADE düşer.
+    """
+    taslaklar = list((await session.scalars(
+        select(Taslak).where(Taslak.islem_id == islem_id))).all())
+    if not taslaklar:
+        raise KararError("taslak_yok", "Bu işleme ait taslak bulunamadı.")
+    karar_var = await session.scalar(
+        select(Onay.id).where(
+            Onay.taslak_id.in_([t.id for t in taslaklar]),
+            Onay.karar != "bekliyor").limit(1))
+    if karar_var is not None:
+        raise KararError("karar_verildi", "Karar verilmiş taslak silinemez — Giden Evrak kaydına bağlı.")
+    for t in taslaklar:
+        await session.delete(t)
+    await session.commit()
+    return {"silindi": True, "adet": len(taslaklar)}
+
+
+__all__ = ("KararError", "onayla_ve_gonder", "taslak_sil")

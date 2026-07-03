@@ -87,6 +87,8 @@ export default function DashboardApp() {
   const [mevzuatHedef, setMevzuatHedef] = useState(null);
   // Panel SLA satırı "İşle" → Gelen Evrak'ta o evrakı vurgula+kaydır (aynı hedef deseni).
   const [gelenHedef, setGelenHedef] = useState(null);
+  // Onay kartı "Düzenle" → Taslaklar'da o taslağı doğrudan düzenleme modunda aç (aynı hedef deseni).
+  const [taslakHedef, setTaslakHedef] = useState(null);
   // Komut paleti (Ctrl+K) — görünüm/eylem/örnek işleme tek kutudan.
   const [paletAcik, setPaletAcik] = useState(false);
   // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
@@ -130,17 +132,23 @@ export default function DashboardApp() {
   };
 
   // "Düzenle" → taslağı Taslaklar kuyruğuna ekle (YALNIZ kullanıcı Düzenle dediğinde;
-  // aynı sonuç iki kez eklenmez). Taslak yoksa (yazi_taslak_md boş) eklenmez.
+  // aynı sonuç iki kez eklenmez, ikinci basışta mevcut taslağın id'si döner). Taslak yoksa
+  // (yazi_taslak_md boş) eklenmez. Dönüş: taslak id (hedefli açılış için) ya da false.
   const pushDraft = (res, fm) => {
-    if (!res || !res.yazi_taslak_md || draftedRef.current.has(res)) return false;
+    if (!res || !res.yazi_taslak_md) return false;
+    if (draftedRef.current.has(res)) {
+      const mevcut = drafts.find((x) => x.result === res);
+      return mevcut ? mevcut.id : false;
+    }
     draftedRef.current.add(res);
     const name = fm?.kind === "sample" ? (fm.label || fm.name) : (fm?.name || "evrak");
+    const id = `T-${Date.now()}-${name}`;
     setDrafts((d) => [{
-      id: `T-${Date.now()}-${d.length}-${name}`, name, kind: fm?.kind, ts: Date.now(),
+      id, name, kind: fm?.kind, ts: Date.now(),
       evrak_turu: res.evrak_turu, hedef_birim: res.hedef_birim,
       bant: res.risk_metadata?.bant, result: res,
     }, ...d]);
-    return true;
+    return id;
   };
 
   const persistDecision = useCallback(async (res, secim) => {
@@ -222,7 +230,8 @@ export default function DashboardApp() {
       if (pa) {
         pendingApprovalRef.current = null;
         if (pa.secim === "duzenle") {
-          pushDraft(result, fileMeta);
+          const taslakId = pushDraft(result, fileMeta);
+          if (taslakId) setTaslakHedef(taslakId);
           showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi.");
           goView("taslaklar");
         } else {
@@ -291,18 +300,6 @@ export default function DashboardApp() {
   }, []);
   const paletAc = useCallback(() => setPaletAcik(true), []);
 
-  // SLA eskalasyonu (Zammad deseni): kuyruk SLA önizlemesi gelince kritik/gecikmiş varsa
-  // BİR kez uyar — panel açılmadan da memurun haberi olsun.
-  const slaUyariRef = useRef(false);
-  useEffect(() => {
-    if (slaUyariRef.current || !slaMap) return;
-    const acil = Object.values(slaMap).filter((s) => s?.durum === "GECIKMIS" || s?.durum === "KRITIK").length;
-    if (acil > 0) {
-      slaUyariRef.current = true;
-      showToast(`${acil} evrakın yasal süresi kritik ya da geçmiş — Panel'den önceliklendirin.`);
-    }
-  }, [slaMap, showToast]);
-
   // İşlenmemiş kuyruk için SLA rozetleri — statik örnek seti için BİR kez hesaplanır
   // (react-query: geçici ağ hatasında kendini toparlar). Backend yoksa sessizce atlanır
   // (rozetler görünmez, kuyruk aynen çalışır).
@@ -349,8 +346,9 @@ export default function DashboardApp() {
     else showToast("Önce bir evrak işleyin.");
   };
   const onEdit = () => {
-    if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; resume("duzenle"); }
-    else if (pushDraft(result, fileMeta)) { showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); goView("taslaklar"); }
+    if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; resume("duzenle"); return; }
+    const taslakId = pushDraft(result, fileMeta);
+    if (taslakId) { setTaslakHedef(taslakId); showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); goView("taslaklar"); }
     else showToast("Önce taslak üreten bir evrak işleyin.");
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
@@ -359,7 +357,7 @@ export default function DashboardApp() {
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
-  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} />;
+  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (

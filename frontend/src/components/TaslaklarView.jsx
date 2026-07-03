@@ -1,5 +1,5 @@
 /* TaslaklarView — oturumda üretilen resmî yazı taslakları + filtre (arama/tür/birim/sıralama). */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
@@ -23,7 +23,7 @@ const INDIR = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
 
 /* Tek taslak kartı — görüntüle / düzenle (yaz → kaydet) / sil (onaylı). Düzenleme durumu kart-yereldir;
    kaydet/sil üst duruma (DashboardApp.drafts) yansır. */
-function DraftCard({ h, onUpdate, onDelete, onToast }) {
+function DraftCard({ h, onUpdate, onDelete, onToast, autoEdit = false, onAutoEditDone }) {
   const r = h.result;
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -33,6 +33,17 @@ function DraftCard({ h, onUpdate, onDelete, onToast }) {
 
   const startEdit = () => { setText(cleanDemoText(r.yazi_taslak_md) || ""); setOpen(true); setEditing(true); };
   const save = () => { onUpdate(h.id, text); setEditing(false); };
+
+  // Onay kartından "Düzenle" ile hedefli geliş: kart doğrudan düzenleme modunda açılır +
+  // görünüre kaydırılır. Hedef bir kez tüketilir (sonraki ziyaretlerde normal açılır).
+  const kartRef = useRef(null);
+  useEffect(() => {
+    if (!autoEdit) return;
+    startEdit();
+    onAutoEditDone?.();
+    const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    kartRef.current?.scrollIntoView({ behavior: az ? "auto" : "smooth", block: "start" });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Düzenlenen metni DOĞRUDAN DOCX indir (pipeline yok → /yazi/render). Elde edilen gövde olduğu gibi.
   const downloadDocx = async () => {
@@ -60,6 +71,7 @@ function DraftCard({ h, onUpdate, onDelete, onToast }) {
   };
 
   return (
+    <div ref={kartRef}>
     <NeonCard title={h.name} tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "Taslak"} accent={V}>
       <div style={{ display: "flex", gap: SP.s, flexWrap: "wrap", alignItems: "center", marginBottom: SP.m }}>
         <span style={{ ...TYPE.meta, color: PAL.mut }}>{EVRAK_TR(r.evrak_turu)} · {BIRIM_LBL(r.hedef_birim)}</span>
@@ -105,11 +117,18 @@ function DraftCard({ h, onUpdate, onDelete, onToast }) {
         )}
       </div>
     </NeonCard>
+    </div>
   );
 }
 
-export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () => {}, onDelete = () => {}, onToast = () => {} }) {
+export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () => {}, onDelete = () => {}, onToast = () => {}, hedef = null, onHedefAcildi }) {
   // drafts: yalnız "Düzenle" ile ayrılmış taslaklar (her biri result.yazi_taslak_md taşır).
+  // hedef: onay kartından "Düzenle" ile gelinen taslağın id'si → o kart düzenleme modunda açılır.
+
+  // Hedef listede yoksa (silinmiş vb.) sessizce tüket — sonraki ziyarette yanlış kart açılmasın.
+  useEffect(() => {
+    if (hedef && !drafts.some((d) => d.id === hedef)) onHedefAcildi?.();
+  }, [hedef, drafts, onHedefAcildi]);
   const config = useMemo(() => ({
     ...BASE_CONFIG,
     select: [
@@ -136,7 +155,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px,1fr))", gap: SP.l, alignItems: "start" }}>
-          {filter.results.map((h) => <DraftCard key={h.id} h={h} onUpdate={onUpdate} onDelete={onDelete} onToast={onToast} />)}
+          {filter.results.map((h) => <DraftCard key={h.id} h={h} onUpdate={onUpdate} onDelete={onDelete} onToast={onToast} autoEdit={h.id === hedef} onAutoEditDone={onHedefAcildi} />)}
         </div>
       )}
     </ViewWrap>

@@ -12,6 +12,7 @@ import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, 
 import {
   Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
   CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, PaperSheet,
+  ZamanSelalesi, HamVeriCekmece, KanitAlinti,
 } from "./NeonDetayParts.jsx";
 
 /* Bölüm düzeni — kartlar dikey ritimde: tam-genişlik satırlar + dengeli sütun grubu. */
@@ -102,10 +103,27 @@ function BolumRay({ ustOfset = SP.xl }) {
 /* İşleme süresi biçimi — metrik: SANS + TNUM (mono yasak). */
 const sureFmt = (ms) => (ms >= 1000 ? `${(ms / 1000).toFixed(1)} sn` : `${ms} ms`);
 
-export default function NeonDetay({ result, onDownload, downloading, canDownload, embedded = false }) {
+/* Unsur anahtarı ↔ kanıt span etiketi eşleme: span etiketleri insan dili ("T.C. Kimlik No",
+   "Gönderen"), unsur anahtarları makine dili ("tckn", "gonderen") → Türkçe harf katlamalı
+   normalize edip karşılaştır. */
+const trKatla = (s) => String(s).toLocaleLowerCase("tr-TR")
+  .replace(/ö/g, "o").replace(/ü/g, "u").replace(/ç/g, "c")
+  .replace(/ş/g, "s").replace(/ğ/g, "g").replace(/ı/g, "i")
+  .replace(/[^a-z0-9]/g, "");
+function kanitSpanBul(spanlar, anahtar) {
+  const hedef = trKatla(anahtar.replace(/_maskeli$/, ""));
+  return (spanlar || []).find((sp) => {
+    const l = trKatla(sp?.label || "");
+    return l === hedef || (hedef === "tckn" && l.includes("kimlik")) || (l === "tckn" && hedef.includes("kimlik"));
+  }) || null;
+}
+
+export default function NeonDetay({ result, onDownload, downloading, canDownload, embedded = false, zamanlar = null }) {
   const r = result;
   // Gömülü modda panel sütunu dardır → bölüm rayı ancak çok geniş pencerede açılır.
   const wide = useWide(embedded ? "(min-width: 1560px)" : "(min-width: 1180px)");
+  // Ham veri çekmecesi — {baslik, veri} | null (LangSmith span-detail deseni).
+  const [hamVeri, setHamVeri] = useState(null);
   if (!r) return null;
 
   const alt = (r.alt_talepler || []).filter(Boolean);
@@ -161,12 +179,22 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
             <h2 id="cak-detay-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>Ayrıntılı sonuç · Tüm ajan çıktıları</h2>
             <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>Görev 1 (anlama) + Görev 2 (üretim) — değiştirilemez denetim iziyle.</p>
           </div>
-          {hasChain && (
-            <Chip c={butunluk ? T : BANT.sari.c} label={butunluk ? "Bütünlük doğrulandı, SHA-256 zinciri tutarlı" : "Bütünlük doğrulanamadı"}>
-              {butunluk ? <Icon.check width={12} height={12} /> : <Icon.alert width={12} height={12} />}
-              {butunluk ? "Bütünlük doğrulandı · SHA-256" : "Bütünlük doğrulanamadı"}
-            </Chip>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+            {hasChain && (
+              <Chip c={butunluk ? T : BANT.sari.c} label={butunluk ? "Bütünlük doğrulandı, SHA-256 zinciri tutarlı" : "Bütünlük doğrulanamadı"}>
+                {butunluk ? <Icon.check width={12} height={12} /> : <Icon.alert width={12} height={12} />}
+                {butunluk ? "Bütünlük doğrulandı · SHA-256" : "Bütünlük doğrulanamadı"}
+              </Chip>
+            )}
+            {/* Ham veri — tüm ProcessResponse JSON'u (teknik şeffaflık; içerik KVKK-maskeli) */}
+            <button type="button" onClick={() => setHamVeri({ baslik: "İşlem sonucu · ham veri", veri: r })}
+              title="İşlem sonucunun ham JSON çıktısını gör" {...focusRing}
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
+              <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 12 }}>{"{ }"}</span> Ham veri
+            </button>
+          </div>
         </header>
 
         {/* ============ Hüküm şeridi — tek bakışta sonuç + telemetri ============ */}
@@ -219,22 +247,59 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                   <span style={{ ...TYPE.data, color: PAL.ink2 }}>{cleanDemoText(String(r.risk_metadata.aciklama))}</span>
                 </div>
               )}
-              {riskGerekce.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, marginTop: riskGerekce.length && r.risk_metadata?.aciklama ? SP.s : 0 }}>
-                  {riskGerekce.map((g, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
-                      <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: BANT[band]?.c || BANT.yesil.c, flex: "none", marginTop: 6 }} />
-                      {cleanDemoText(String(g))}
-                    </div>
-                  ))}
-                </div>
-              )}
+              {riskGerekce.length > 0 && (() => {
+                /* Risk skoru kırılımı (Phoenix "explanation" deseni): skor gerekçelere eşit
+                   bölünür (backend gerekçe-başına ağırlık vermez — dürüst yaklaşım) →
+                   her satırda katkı çubuğu + yüzde. */
+                const skor = Number(r.risk_metadata?.skor);
+                const pay = Number.isFinite(skor) && skor > 0 ? skor / riskGerekce.length : null;
+                return (
+                  <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, marginTop: riskGerekce.length && r.risk_metadata?.aciklama ? SP.s : 0 }}>
+                    {riskGerekce.map((g, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
+                        <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: BANT[band]?.c || BANT.yesil.c, flex: "none" }} />
+                        <span style={{ flex: 1, minWidth: 0 }}>{cleanDemoText(String(g))}</span>
+                        {pay != null && (
+                          <>
+                            <span aria-hidden="true" style={{ width: 110, height: 6, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden", flexShrink: 0 }}>
+                              <span style={{ display: "block", height: "100%", width: `${Math.min(100, Math.round(pay * 100))}%`, background: BANT[band]?.c || BANT.yesil.c, borderRadius: RAD.chip }} />
+                            </span>
+                            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, width: 34, textAlign: "right", flexShrink: 0 }}>%{Math.round(pay * 100)}</span>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                    {pay != null && (
+                      <div style={{ ...TYPE.meta, color: PAL.mut3, marginTop: 2 }}>Skor katkıları eşit bölüşümle gösterilir — toplam risk skoru: {skor}</div>
+                    )}
+                  </div>
+                );
+              })()}
               {r.risk_metadata?.oneri && r.risk_metadata.oneri !== r.risk_metadata.aciklama && (
                 <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}><span style={{ color: PAL.mut3 }}>Önerilen eylem:</span> {cleanDemoText(String(r.risk_metadata.oneri))}</div>
               )}
             </div>
           )}
         </div>
+
+        {/* ============ Koşum zaman şelalesi (Langfuse waterfall) — yalnız canlı oturum
+            koşumlarında (zaman damgaları geçmiş DB kayıtlarında taşınmaz) ============ */}
+        {(() => {
+          const gecerli = (zamanlar || []).filter((z) => Number.isFinite(z.t0) && Number.isFinite(z.t1) && z.t1 >= z.t0);
+          if (gecerli.length < 3) return null;
+          const toplamSn = (Math.max(...gecerli.map((z) => z.t1)) - Math.min(...gecerli.map((z) => z.t0))) / 1000;
+          return (
+            <NeonCard title="Koşum zaman çizelgesi" tag={`${toplamSn < 10 ? toplamSn.toFixed(1) : Math.round(toplamSn)} sn · ${gecerli.length} ajan`}
+              accent={T} icon={<Icon.clock />} style={{ marginBottom: SP.xl }}>
+              <ZamanSelalesi zamanlar={gecerli}
+                onSec={(z) => setHamVeri({ baslik: `${z.label} · ham çıktı`, veri: z.data ?? null })} />
+              <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut3 }}>
+                Barlar ajanların gerçek başlangıç/bitiş zamanlarıdır — üst üste binenler paralel çalışan dallardır
+                (sınıflandır ∥ çıkar, mevzuat ∥ özet). Bir bara tıklayın → ajanın ham çıktısı.
+              </p>
+            </NeonCard>
+          );
+        })()}
 
         {/* ============ Gövde: yapışkan bölüm rayı + içerik ============ */}
         <div style={{ display: "flex", gap: SP.xl, alignItems: "flex-start" }}>
@@ -283,14 +348,21 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                           {unsurRows.map(([k, v]) => {
                             const maskeli = k.endsWith("_maskeli");
                             const etiket = k.replace(/_maskeli$/, "").replace(/_/g, " ");
+                            // Kanıt popover'ı: unsur ↔ kaynak span eşleşmesi (hover/odakla açılır).
+                            const span = kanitSpanBul(r.kanit_metadata?.spanlar, k);
                             return (
-                              <div key={k} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: SP.m, padding: "6px 2px", borderBottom: `1px solid ${PAL.line}` }}>
-                                <span style={{ ...TYPE.meta, color: PAL.mut2, flex: "none" }}>{etiket}</span>
-                                <span style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
-                                  <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.ink2, ...TNUM, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{cleanDemoText(String(v))}</span>
-                                  {maskeli && <Chip c={T} label="Bu alan KVKK gereği maskelendi">Maskeli</Chip>}
+                              <KanitAlinti key={k} span={span} metin={r.kanit_metadata?.metin || ""}>
+                                <span style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: SP.m, padding: "6px 2px", borderBottom: `1px solid ${PAL.line}`, cursor: span ? "help" : "default" }}>
+                                  <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: PAL.mut2, flex: "none" }}>
+                                    {span && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ color: DERIN.T }}><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.7" /><path d="M9 12 L11 14 L15 9.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                                    {etiket}
+                                  </span>
+                                  <span style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
+                                    <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.ink2, ...TNUM, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{cleanDemoText(String(v))}</span>
+                                    {maskeli && <Chip c={T} label="Bu alan KVKK gereği maskelendi">Maskeli</Chip>}
+                                  </span>
                                 </span>
-                              </div>
+                              </KanitAlinti>
                             );
                           })}
                         </div>
@@ -481,6 +553,9 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
           </div>
         </div>
       </div>
+
+      {/* Ham veri çekmecesi — üst şeritteki { } düğmesi ya da şelale barı tıklaması açar */}
+      {hamVeri && <HamVeriCekmece baslik={hamVeri.baslik} veri={hamVeri.veri} onKapat={() => setHamVeri(null)} />}
     </section>
   );
 }

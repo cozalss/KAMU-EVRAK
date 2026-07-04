@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing, Icon, KV } from "./neonUi.jsx";
+import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV } from "./neonUi.jsx";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
 export const Chip = ({ c = T, title, label, children }) => (
@@ -155,59 +155,159 @@ export function CopyChip({ deger, kisa, label }) {
   );
 }
 
-/* SHA-256 zincir adımı özeti — veri dict'inden kısa "k: v" dizisi (mono, makine verisi). */
-function veriOzet(veri) {
-  if (!veri || typeof veri !== "object") return "";
-  return Object.entries(veri).slice(0, 3)
-    .map(([k, v]) => `${k}: ${typeof v === "object" ? JSON.stringify(v) : String(v)}`)
-    .join(" · ").slice(0, 96);
-}
-
-/* Denetim izi zinciri — dikey omurga + halka başına adım adı + kısa hash (kopyalanabilir) +
-   mühürlenen veri özeti. "Her halka öncekini mühürler" görünür kanıta dönüşür. */
+/* Denetim izi zinciri — BAĞLI BLOKLAR: her halka bir mini blok (adım + kopyalanabilir hash),
+   halkalar bağ okuyla zincirlenir, uçta bütünlük kilidi. "Her halka öncekini mühürler"
+   blok-zincir diliyle görünür kanıta dönüşür. Uzun zincir kendi rayında yatay kayar. */
 export function ZincirStepper({ zincir, kokHash, butunluk }) {
-  const [tum, setTum] = useState(false);
   // Backend `denetim_izi` düz dict (Pydantic iç doğrulaması yok) → bozuk halka render'ı düşürmesin.
   const halkalar = (zincir || []).filter((h) => h && typeof h === "object");
-  const rows = tum ? halkalar : halkalar.slice(0, 6);
-  const kalan = halkalar.length - rows.length;
   return (
     <div>
-      <div style={{ position: "relative", paddingLeft: 18 }}>
-        <span aria-hidden="true" style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 1, background: PAL.lineHi }} />
-        {rows.map((h, i) => {
-          const son = i === halkalar.length - 1;
-          return (
-            <div key={i} style={{ position: "relative", padding: "5px 0" }}>
-              <span aria-hidden="true" style={{ position: "absolute", left: -18, top: 10, width: 9, height: 9, borderRadius: RAD.dot, background: son ? BANT.yesil.c : PAL.surf, border: `1.5px solid ${son ? BANT.yesil.c : PAL.lineHi}` }} />
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-                <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{cleanDemoText(String(h.adim || `adım ${i + 1}`)).replace(/_/g, " ")}</span>
-                {h.hash && <CopyChip deger={h.hash} kisa={`${String(h.hash).slice(0, 10)}…`} label={`${h.adim || "adım"} hash değerini kopyala`} />}
+      <div style={{ display: "flex", alignItems: "stretch", overflowX: "auto", paddingBottom: SP.s }}>
+        {halkalar.map((h, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+            <div style={{ minWidth: 118, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "8px 10px" }}>
+              <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.ink2, marginBottom: 4, maxWidth: 132, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {cleanDemoText(String(h.adim || `adım ${i + 1}`)).replace(/_/g, " ")}
               </div>
-              {veriOzet(h.veri) && <div style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(veriOzet(h.veri))}</div>}
+              {h.hash
+                ? <CopyChip deger={h.hash} kisa={`${String(h.hash).slice(0, 8)}…`} label={`${h.adim || "adım"} hash değerini kopyala`} />
+                : <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3 }}>—</span>}
             </div>
-          );
-        })}
+            <span aria-hidden="true" style={{ display: "flex", padding: "0 4px", color: PAL.mut3 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12h14m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+          </div>
+        ))}
+        {/* Zincir ucu — bütünlük kilidi */}
+        <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: SP.s, background: ALFA(butunluk ? BANT.yesil.c : BANT.kirmizi.c), border: `1px solid ${butunluk ? BANT.yesil.c : BANT.kirmizi.c}`, borderRadius: RAD.card, padding: "8px 12px" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke={butunluk ? DERIN.yesil : DERIN.kirmizi} strokeWidth="1.7" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={butunluk ? DERIN.yesil : DERIN.kirmizi} strokeWidth="1.7" /></svg>
+          <span style={{ ...TYPE.meta, fontWeight: 600, color: butunluk ? DERIN.yesil : DERIN.kirmizi, whiteSpace: "nowrap" }}>
+            {butunluk ? "Bütünlük doğrulandı" : "Doğrulanamadı"}
+          </span>
+        </div>
       </div>
-      {kalan > 0 && (
-        <button type="button" onClick={() => setTum(true)} {...focusRing}
-          onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-          style={{ cursor: "pointer", marginTop: SP.xs, padding: "4px 8px", border: "none", background: "transparent", borderRadius: RAD.ctl, ...TYPE.meta, fontWeight: 500, color: DERIN.T, transition: "background .12s ease-out" }}>
-          +{kalan} halka daha göster
-        </button>
-      )}
       {kokHash && (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginTop: SP.s, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
           <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Kök hash</span>
           <CopyChip deger={kokHash} kisa={`${String(kokHash).slice(0, 16)}…`} label="Kök hash değerini panoya kopyala" />
-          <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: butunluk ? DERIN.yesil : DERIN.kirmizi }}>
-            {butunluk ? <Icon.check width={12} height={12} /> : <Icon.alert width={12} height={12} />}
-            {butunluk ? "zincir tutarlı" : "zincir doğrulanamadı"}
-          </span>
+          <span style={{ ...TYPE.meta, color: PAL.mut3 }}>— her halka bir önceki halkanın hash'ini mühürler; tek karakter değişse zincir kopar.</span>
         </div>
       )}
     </div>
+  );
+}
+
+/* ——— Koşum zaman şelalesi (Langfuse waterfall deseni) ———
+   Her ajanın GERÇEK başlangıç/bitişi ortak zaman ekseninde yatay bar; paralel dallar
+   (sınıflandır ∥ çıkar, mevzuat ∥ özet) üst üste binen barlarla kendini gösterir.
+   zamanlar: [{id,label,gorev,t0,t1,data}] — koşuma göreli ms (canlı oturum). onSec: bar
+   tıklaması → o ajanın ham çıktısı (HamVeriCekmece). Süre verisi yoksa hiç çizilmez. */
+export function ZamanSelalesi({ zamanlar = [], onSec }) {
+  const gecerli = zamanlar.filter((z) => Number.isFinite(z.t0) && Number.isFinite(z.t1) && z.t1 >= z.t0);
+  if (gecerli.length < 3) return null;
+  const t0min = Math.min(...gecerli.map((z) => z.t0));
+  const toplam = Math.max(1, Math.max(...gecerli.map((z) => z.t1)) - t0min);
+  const pct = (v) => ((v - t0min) / toplam) * 100;
+  return (
+    <div>
+      {gecerli.map((z) => {
+        const col = z.gorev === 2 ? V : T;
+        const sol = pct(z.t0);
+        const gen = Math.max(0.6, pct(z.t1) - pct(z.t0));
+        const sn = (z.t1 - z.t0) / 1000;
+        return (
+          <button key={z.id} type="button" onClick={onSec ? () => onSec(z) : undefined} {...focusRing}
+            title={`${z.label} · ${sn >= 0.05 ? `${sn.toFixed(1)} sn` : "anlık"}${onSec ? " — ham çıktıyı gör" : ""}`}
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+            style={{ display: "grid", gridTemplateColumns: "148px 1fr 48px", gap: SP.s, alignItems: "center", width: "100%", padding: "3px 6px", border: "none", background: "transparent", borderRadius: RAD.ctl, cursor: onSec ? "pointer" : "default", textAlign: "left", transition: "background .12s ease-out" }}>
+            <span style={{ ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{z.label}</span>
+            <span style={{ position: "relative", height: 10, background: PAL.surfHi, borderRadius: RAD.chip, overflow: "hidden" }}>
+              <span style={{ position: "absolute", top: 0, bottom: 0, left: `${sol}%`, width: `${gen}%`, minWidth: 3, background: col, borderRadius: RAD.chip }} />
+            </span>
+            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, textAlign: "right" }}>{sn >= 0.05 ? `${sn.toFixed(1)}s` : "—"}</span>
+          </button>
+        );
+      })}
+      <div style={{ display: "grid", gridTemplateColumns: "148px 1fr 48px", gap: SP.s, marginTop: 2, padding: "0 6px" }}>
+        <span />
+        <span style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>
+          <span>0 sn</span><span>{(toplam / 2000).toFixed(1)} sn</span><span>{(toplam / 1000).toFixed(1)} sn</span>
+        </span>
+        <span />
+      </div>
+    </div>
+  );
+}
+
+/* ——— Ham veri çekmecesi (LangSmith/Phoenix span-detail deseni) ———
+   Sağdan kayan panel: seçilen ajanın ya da tüm sonucun ham JSON'u — teknik şeffaflık.
+   İçerik zaten KVKK-maskeli pipeline çıktısıdır. Esc/dış-tık kapatır, kopyala düğmeli. */
+export function HamVeriCekmece({ baslik, veri, onKapat }) {
+  const kapatRef = useRef(null);
+  const [ok, setOk] = useState(false);
+  useEffect(() => {
+    kapatRef.current?.focus();
+    const esc = (e) => { if (e.key === "Escape") { e.stopPropagation(); onKapat(); } };
+    document.addEventListener("keydown", esc);
+    return () => document.removeEventListener("keydown", esc);
+  }, [onKapat]);
+  const json = JSON.stringify(veri ?? { not: "Bu ajan için ham veri yok (yalnız canlı koşumda taşınır)." }, null, 2);
+  const kopyala = async () => {
+    try { await navigator.clipboard.writeText(json); setOk(true); setTimeout(() => setOk(false), 1400); } catch { /* pano izni yok */ }
+  };
+  return (
+    <div role="presentation" onClick={onKapat} style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 90, background: "rgba(22,22,22,.35)" }}>
+      <aside role="dialog" aria-modal="true" aria-label={baslik} onClick={(e) => e.stopPropagation()}
+        style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "min(520px, 94vw)", background: PAL.surf, borderLeft: `1px solid ${PAL.lineHi}`, boxShadow: SH.modal, display: "flex", flexDirection: "column", animation: "nu-rise .16s ease-out both" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "12px 16px", borderBottom: `1px solid ${PAL.line}` }}>
+          <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 13, color: DERIN.T }}>{"{ }"}</span>
+          <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{baslik}</h3>
+          <button type="button" onClick={kopyala} {...focusRing}
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+            style={{ cursor: "pointer", padding: "5px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: ok ? DERIN.yesil : PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
+            {ok ? "Kopyalandı" : "JSON kopyala"}
+          </button>
+          <button ref={kapatRef} type="button" onClick={onKapat} aria-label="Kapat (Esc)" {...focusRing}
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+            style={{ cursor: "pointer", width: 28, height: 28, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.mut, transition: "background .12s ease-out" }}>
+            <Icon.x />
+          </button>
+        </div>
+        <pre style={{ flex: 1, overflow: "auto", margin: 0, padding: SP.l, background: PAL.surf2, fontFamily: MONO, fontSize: 12, lineHeight: 1.65, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{json}</pre>
+      </aside>
+    </div>
+  );
+}
+
+/* ——— Kanıt alıntısı ———
+   Bilgi unsuru satırının üzerine gelince (veya klavye odağında) kaynak belgedeki kanıt
+   pasajı vurgulu mini popover'da açılır — "çıkarım uydurma değil, işte yeri" kanıtı. */
+export function KanitAlinti({ span, metin, children }) {
+  const [acik, setAcik] = useState(false);
+  if (!span || !metin) return children;
+  const bas = Math.max(0, (span.start | 0) - 90);
+  const son = Math.min(metin.length, (span.end | 0) + 90);
+  return (
+    <span style={{ position: "relative", display: "block" }} tabIndex={0}
+      onMouseEnter={() => setAcik(true)} onMouseLeave={() => setAcik(false)}
+      onFocus={() => setAcik(true)} onBlur={() => setAcik(false)}
+      onKeyDown={(e) => { if (e.key === "Escape") setAcik(false); }}>
+      {children}
+      {acik && (
+        <span role="tooltip" style={{ position: "absolute", bottom: "calc(100% + 6px)", right: 0, width: "min(340px, 82vw)", zIndex: 70, display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.pop, padding: "10px 12px", animation: "nu-rise .14s ease-out both" }}>
+          <span style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: 4 }}>Kaynak belgeden kanıt</span>
+          <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.mut, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+            {bas > 0 ? "…" : ""}{metin.slice(bas, span.start | 0)}
+            <mark style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{metin.slice(span.start | 0, span.end | 0)}</mark>
+            {metin.slice(span.end | 0, son)}{son < metin.length ? "…" : ""}
+          </span>
+        </span>
+      )}
+    </span>
   );
 }
 

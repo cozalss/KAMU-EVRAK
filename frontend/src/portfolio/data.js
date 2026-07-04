@@ -17,27 +17,38 @@ export const NAV_LINKS = [
 ];
 
 // Pipeline yetenekleri (Görev 1 → Görev 2) — sticky-stacked kartlar.
-// Etiketler doğrulanmış sayılara dayanır. Görseller placeholder.
+// Etiketler doğrulanmış sayılara dayanır. Görseller GERÇEK uygulama ekran
+// görüntüleridir (public/portfolio/app-*.png — çalışma alanından çekildi).
 export const PROJECTS = [
+  {
+    title: "Komuta Paneli",
+    tags: ["Canlı Metrikler", "Yasal Süre Takibi"],
+    image: "/portfolio/app-panel.png",
+  },
   {
     title: "Oku & Sınıflandır",
     tags: ["OCR", "19 Evrak Türü"],
-    image: "/portfolio/proje-1.webp",
+    image: "/portfolio/app-gelen-evrak.png",
   },
   {
     title: "Bilgi Çıkar & Eksik Tespit",
     tags: ["Bilgi Çıkarımı", "PII Maskeleme"],
-    image: "/portfolio/proje-2.webp",
+    image: "/portfolio/app-ayrintili-sonuc.png",
   },
   {
     title: "Mevzuat Önerisi",
     tags: ["Akıllı Arama", "233 Mevzuat"],
-    image: "/portfolio/proje-3.webp",
+    image: "/portfolio/app-mevzuat.png",
   },
   {
     title: "Resmî Yazı & Havale",
     tags: ["6 Şablon", "9 Birim"],
-    image: "/portfolio/proje-4.webp",
+    image: "/portfolio/app-taslak.png",
+  },
+  {
+    title: "Giden Evrak & Denetim İzi",
+    tags: ["SHA-256 Zincir", "Karar Memurda"],
+    image: "/portfolio/app-giden-evrak.png",
   },
 ];
 

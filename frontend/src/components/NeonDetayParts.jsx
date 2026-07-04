@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV } from "./neonUi.jsx";
+import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV } from "./neonUi.jsx";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
 export const Chip = ({ c = T, title, label, children }) => (
@@ -194,91 +194,6 @@ export function ZincirStepper({ zincir, kokHash, butunluk }) {
           <span style={{ ...TYPE.meta, color: PAL.mut3 }}>— her halka bir önceki halkanın hash'ini mühürler; tek karakter değişse zincir kopar.</span>
         </div>
       )}
-    </div>
-  );
-}
-
-/* ——— Koşum zaman şelalesi (Langfuse waterfall deseni) ———
-   Her ajanın GERÇEK başlangıç/bitişi ortak zaman ekseninde yatay bar; paralel dallar
-   (sınıflandır ∥ çıkar, mevzuat ∥ özet) üst üste binen barlarla kendini gösterir.
-   zamanlar: [{id,label,gorev,t0,t1,data}] — koşuma göreli ms (canlı oturum). onSec: bar
-   tıklaması → o ajanın ham çıktısı (HamVeriCekmece). Süre verisi yoksa hiç çizilmez. */
-export function ZamanSelalesi({ zamanlar = [], onSec }) {
-  const gecerli = zamanlar.filter((z) => Number.isFinite(z.t0) && Number.isFinite(z.t1) && z.t1 >= z.t0);
-  if (gecerli.length < 3) return null;
-  const t0min = Math.min(...gecerli.map((z) => z.t0));
-  const toplam = Math.max(1, Math.max(...gecerli.map((z) => z.t1)) - t0min);
-  const pct = (v) => ((v - t0min) / toplam) * 100;
-  return (
-    <div>
-      {gecerli.map((z) => {
-        const col = z.gorev === 2 ? V : T;
-        const sol = pct(z.t0);
-        const gen = Math.max(0.6, pct(z.t1) - pct(z.t0));
-        const sn = (z.t1 - z.t0) / 1000;
-        return (
-          <button key={z.id} type="button" onClick={onSec ? () => onSec(z) : undefined} {...focusRing}
-            title={`${z.label} · ${sn >= 0.05 ? `${sn.toFixed(1)} sn` : "anlık"}${onSec ? " — ham çıktıyı gör" : ""}`}
-            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-            style={{ display: "grid", gridTemplateColumns: "148px 1fr 48px", gap: SP.s, alignItems: "center", width: "100%", padding: "3px 6px", border: "none", background: "transparent", borderRadius: RAD.ctl, cursor: onSec ? "pointer" : "default", textAlign: "left", transition: "background .12s ease-out" }}>
-            <span style={{ ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{z.label}</span>
-            <span style={{ position: "relative", height: 10, background: PAL.surfHi, borderRadius: RAD.chip, overflow: "hidden" }}>
-              <span style={{ position: "absolute", top: 0, bottom: 0, left: `${sol}%`, width: `${gen}%`, minWidth: 3, background: col, borderRadius: RAD.chip }} />
-            </span>
-            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, textAlign: "right" }}>{sn >= 0.05 ? `${sn.toFixed(1)}s` : "—"}</span>
-          </button>
-        );
-      })}
-      <div style={{ display: "grid", gridTemplateColumns: "148px 1fr 48px", gap: SP.s, marginTop: 2, padding: "0 6px" }}>
-        <span />
-        <span style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>
-          <span>0 sn</span><span>{(toplam / 2000).toFixed(1)} sn</span><span>{(toplam / 1000).toFixed(1)} sn</span>
-        </span>
-        <span />
-      </div>
-    </div>
-  );
-}
-
-/* ——— Ham veri çekmecesi (LangSmith/Phoenix span-detail deseni) ———
-   Sağdan kayan panel: seçilen ajanın ya da tüm sonucun ham JSON'u — teknik şeffaflık.
-   İçerik zaten KVKK-maskeli pipeline çıktısıdır. Esc/dış-tık kapatır, kopyala düğmeli. */
-export function HamVeriCekmece({ baslik, veri, onKapat }) {
-  const kapatRef = useRef(null);
-  const [ok, setOk] = useState(false);
-  useEffect(() => {
-    kapatRef.current?.focus();
-    const esc = (e) => { if (e.key === "Escape") { e.stopPropagation(); onKapat(); } };
-    document.addEventListener("keydown", esc);
-    return () => document.removeEventListener("keydown", esc);
-  }, [onKapat]);
-  const json = JSON.stringify(veri ?? { not: "Bu ajan için ham veri yok (yalnız canlı koşumda taşınır)." }, null, 2);
-  const kopyala = async () => {
-    try { await navigator.clipboard.writeText(json); setOk(true); setTimeout(() => setOk(false), 1400); } catch { /* pano izni yok */ }
-  };
-  return (
-    <div role="presentation" onClick={onKapat} style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 90, background: "rgba(22,22,22,.35)" }}>
-      <aside role="dialog" aria-modal="true" aria-label={baslik} onClick={(e) => e.stopPropagation()}
-        style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: "min(520px, 94vw)", background: PAL.surf, borderLeft: `1px solid ${PAL.lineHi}`, boxShadow: SH.modal, display: "flex", flexDirection: "column", animation: "nu-rise .16s ease-out both" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "12px 16px", borderBottom: `1px solid ${PAL.line}` }}>
-          <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 13, color: DERIN.T }}>{"{ }"}</span>
-          <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{baslik}</h3>
-          <button type="button" onClick={kopyala} {...focusRing}
-            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-            style={{ cursor: "pointer", padding: "5px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: ok ? DERIN.yesil : PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
-            {ok ? "Kopyalandı" : "JSON kopyala"}
-          </button>
-          <button ref={kapatRef} type="button" onClick={onKapat} aria-label="Kapat (Esc)" {...focusRing}
-            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-            style={{ cursor: "pointer", width: 28, height: 28, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.mut, transition: "background .12s ease-out" }}>
-            <Icon.x />
-          </button>
-        </div>
-        <pre style={{ flex: 1, overflow: "auto", margin: 0, padding: SP.l, background: PAL.surf2, fontFamily: MONO, fontSize: 12, lineHeight: 1.65, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{json}</pre>
-      </aside>
     </div>
   );
 }

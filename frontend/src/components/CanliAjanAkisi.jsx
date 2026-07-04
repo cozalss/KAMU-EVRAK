@@ -504,8 +504,6 @@ export default function CanliAjanAkisi({
     // risk_guard istasyonu KENDİ bandını taşır — koşum sırasında genel sonuç bandı henüz
     // oluşmadığından node verisi tek doğru kaynak (backend ile birebir uyum).
     bant: n.data?.risk_metadata?.bant || null,
-    // Ham SSE çıktısı — NeonDetay zaman şelalesi + ham veri çekmecesi bunları kullanır.
-    data: n.data ?? null,
   }));
   const gorevler = [...new Set(display.map((a) => a.gorev))];
   const total = display.length || 1;
@@ -630,7 +628,7 @@ export default function CanliAjanAkisi({
               <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px", display: "flex", flexDirection: "column" }}>
                 {result ? (
                   <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-                    <NeonDetay embedded result={result} zamanlar={display}
+                    <NeonDetay embedded result={result}
                       onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
                   </HataSiniri>
                 ) : izKart}

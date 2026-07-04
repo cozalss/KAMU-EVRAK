@@ -11,8 +11,7 @@ import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx"
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Btn, Icon, focusRing } from "./neonUi.jsx";
 import {
   Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
-  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, PaperSheet,
-  ZamanSelalesi, HamVeriCekmece, KanitAlinti,
+  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, PaperSheet, KanitAlinti,
 } from "./NeonDetayParts.jsx";
 
 /* Bölüm düzeni — kartlar dikey ritimde: tam-genişlik satırlar + dengeli sütun grubu. */
@@ -118,12 +117,10 @@ function kanitSpanBul(spanlar, anahtar) {
   }) || null;
 }
 
-export default function NeonDetay({ result, onDownload, downloading, canDownload, embedded = false, zamanlar = null }) {
+export default function NeonDetay({ result, onDownload, downloading, canDownload, embedded = false }) {
   const r = result;
   // Gömülü modda panel sütunu dardır → bölüm rayı ancak çok geniş pencerede açılır.
   const wide = useWide(embedded ? "(min-width: 1560px)" : "(min-width: 1180px)");
-  // Ham veri çekmecesi — {baslik, veri} | null (LangSmith span-detail deseni).
-  const [hamVeri, setHamVeri] = useState(null);
   if (!r) return null;
 
   const alt = (r.alt_talepler || []).filter(Boolean);
@@ -186,14 +183,6 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                 {butunluk ? "Bütünlük doğrulandı · SHA-256" : "Bütünlük doğrulanamadı"}
               </Chip>
             )}
-            {/* Ham veri — tüm ProcessResponse JSON'u (teknik şeffaflık; içerik KVKK-maskeli) */}
-            <button type="button" onClick={() => setHamVeri({ baslik: "İşlem sonucu · ham veri", veri: r })}
-              title="İşlem sonucunun ham JSON çıktısını gör" {...focusRing}
-              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
-              <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 12 }}>{"{ }"}</span> Ham veri
-            </button>
           </div>
         </header>
 
@@ -281,25 +270,6 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
             </div>
           )}
         </div>
-
-        {/* ============ Koşum zaman şelalesi (Langfuse waterfall) — yalnız canlı oturum
-            koşumlarında (zaman damgaları geçmiş DB kayıtlarında taşınmaz) ============ */}
-        {(() => {
-          const gecerli = (zamanlar || []).filter((z) => Number.isFinite(z.t0) && Number.isFinite(z.t1) && z.t1 >= z.t0);
-          if (gecerli.length < 3) return null;
-          const toplamSn = (Math.max(...gecerli.map((z) => z.t1)) - Math.min(...gecerli.map((z) => z.t0))) / 1000;
-          return (
-            <NeonCard title="Koşum zaman çizelgesi" tag={`${toplamSn < 10 ? toplamSn.toFixed(1) : Math.round(toplamSn)} sn · ${gecerli.length} ajan`}
-              accent={T} icon={<Icon.clock />} style={{ marginBottom: SP.xl }}>
-              <ZamanSelalesi zamanlar={gecerli}
-                onSec={(z) => setHamVeri({ baslik: `${z.label} · ham çıktı`, veri: z.data ?? null })} />
-              <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut3 }}>
-                Barlar ajanların gerçek başlangıç/bitiş zamanlarıdır — üst üste binenler paralel çalışan dallardır
-                (sınıflandır ∥ çıkar, mevzuat ∥ özet). Bir bara tıklayın → ajanın ham çıktısı.
-              </p>
-            </NeonCard>
-          );
-        })()}
 
         {/* ============ Gövde: yapışkan bölüm rayı + içerik ============ */}
         <div style={{ display: "flex", gap: SP.xl, alignItems: "flex-start" }}>
@@ -391,7 +361,7 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                       {eksik.length === 0 && clarify.length === 0 ? (
                         <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.m, borderRadius: RAD.card, background: ALFA(BANT.yesil.c), color: DERIN.yesil, ...TYPE.data }}>
                           <Icon.check width={16} height={16} style={{ flex: "none", marginTop: 1 }} />
-                          <span>Zorunlu alanlar <strong style={{ color: PAL.ink, fontWeight: 600 }}>eksiksiz</strong> — evrak işleme alınabilir (3071 s.K. m.4). Eksik unsur yok; resmî yazı taslağı doğrudan hazırlandı.</span>
+                          <span>Zorunlu alanlar <strong style={{ color: PAL.ink, fontWeight: 600 }}>eksiksiz</strong> — evrak işleme alınabilir. Eksik unsur yok; resmî yazı taslağı doğrudan hazırlandı.</span>
                         </div>
                       ) : (
                         <div style={{ display: "flex", flexDirection: "column", gap: SP.s }}>
@@ -553,9 +523,6 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
           </div>
         </div>
       </div>
-
-      {/* Ham veri çekmecesi — üst şeritteki { } düğmesi ya da şelale barı tıklaması açar */}
-      {hamVeri && <HamVeriCekmece baslik={hamVeri.baslik} veri={hamVeri.veri} onKapat={() => setHamVeri(null)} />}
     </section>
   );
 }

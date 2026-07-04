@@ -93,7 +93,9 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         clarify_questions=state.get("clarify_questions", []),
         mevzuat_onerileri=zenginlestir_mevzuat(state),  # B2: güven/dayanak/[DOĞRULA] yüzeye çıkar
         mevzuat_nli=state.get("mevzuat_nli", []),
-        ozet=state.get("ozet", ""),
+        # LLM özet yolu ham evrak metnini görür → TCKN/telefon kaçağına karşı sınırda maskele
+        # (deterministik fallback zaten maskeli; burada savunma derinliği).
+        ozet=mask_pii(state.get("ozet", "") or "").masked_text,
         hedef_birim=state.get("hedef_birim", ""),
         birim_alternatifleri=state.get("birim_alternatifleri", []),
         yazi_turu=state.get("yazi_turu", ""),

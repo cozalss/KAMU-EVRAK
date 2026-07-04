@@ -221,7 +221,7 @@ function MenuIcerik({ user, satirRefs, hareketAzalt, onHareketAzalt, onPalet, on
   );
 }
 
-export default function HesapMenu({ user, onLogout, onPalet, hareketAzalt = false, onHareketAzalt }) {
+export default function HesapMenu({ user, onLogout, onPalet, hareketAzalt = false, onHareketAzalt, dar = false }) {
   const [acik, setAcik] = useState(false);
   const [modal, setModal] = useState(null);   // "profil" | "yardim" | "kvkk"
   const kokRef = useRef(null);
@@ -261,20 +261,25 @@ export default function HesapMenu({ user, onLogout, onPalet, hareketAzalt = fals
 
   return (
     <div ref={kokRef} style={{ position: "relative", marginTop: "auto" }} onKeyDown={acik ? klavye : undefined}>
-      {/* Tetik — mevcut kullanıcı kartının tıklanabilir hâli */}
+      {/* Tetik — kullanıcı kartı; daraltılmış rayda yalnız avatar (title + aynı aria) */}
       <button type="button" ref={tetikRef} onClick={() => setAcik((v) => !v)}
-        aria-haspopup="menu" aria-expanded={acik} aria-label={`Hesap menüsü — ${user?.ad_soyad || "kullanıcı"}`} {...focusRing}
+        aria-haspopup="menu" aria-expanded={acik} aria-label={`Hesap menüsü — ${user?.ad_soyad || "kullanıcı"}`}
+        title={dar ? `Hesap menüsü — ${user?.ad_soyad || "kullanıcı"}` : undefined} {...focusRing}
         onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.hov : PAL.surfHi; }}
-        style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", gap: SP.m, padding: SP.m, borderRadius: RAD.card, background: acik ? PAL.hov : PAL.surfHi, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, textAlign: "left", transition: "background .12s ease-out, border-color .12s ease-out" }}>
+        style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: dar ? "center" : "flex-start", gap: SP.m, padding: dar ? SP.s : SP.m, borderRadius: RAD.card, background: acik ? PAL.hov : PAL.surfHi, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, textAlign: "left", transition: "background .12s ease-out, border-color .12s ease-out" }}>
         <span aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.meta, fontWeight: 500, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
-        <span style={{ minWidth: 0, flex: 1 }}>
-          <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
-          <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
-        </span>
-        <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut2, transition: "transform .15s ease-out", transform: acik ? "rotate(180deg)" : "none" }}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 15 L12 9 L18 15" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </span>
+        {!dar && (
+          <>
+            <span style={{ minWidth: 0, flex: 1 }}>
+              <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
+              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
+            </span>
+            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut2, transition: "transform .15s ease-out", transform: acik ? "rotate(180deg)" : "none" }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 15 L12 9 L18 15" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+          </>
+        )}
       </button>
 
       {/* Menü — kart üstüne açılır */}

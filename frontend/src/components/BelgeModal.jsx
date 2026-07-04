@@ -6,13 +6,14 @@
    önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik gösterilir (KVKK). */
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { MONO, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
+import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
 
 /* Karartı üstü açık düğme — modal üst şeridindeki eylemler (PDF/DOCX indir) Kapat ile aynı dil. */
-export function ScrimDugme({ onClick, disabled, children, title }) {
+export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ariaLabel, ariaPressed }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled} title={title} {...focusRing}
+    <button type="button" onClick={onClick} onMouseDown={onMouseDown} disabled={disabled} title={title} aria-label={ariaLabel} aria-pressed={ariaPressed} {...focusRing}
       onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = "rgba(251,247,240,.18)"; }}
       onMouseLeave={(e) => { if (!disabled) e.currentTarget.style.background = "rgba(251,247,240,.10)"; }}
       style={{ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onAccent, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
@@ -30,6 +31,36 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
   const [metinD, setMetinD] = useState(metin);
   const [kapatUyari, setKapatUyari] = useState(false);
   const kirli = duzenlenebilir && metinD !== metin;
+
+  // Sesle dikte — "canlı bölge" (liveRef) konuşulan ama henüz kesinleşmemiş metnin kâğıttaki
+  // aralığını tutar: her ara-sonuç o aralığı günceller (konuştukça kâğıda akar), kesinleşince
+  // aralık kalıcı metne dönüşür ve bir sonraki cümle için sıfırlanır. Dikte başlarken (mic
+  // düğmesine ilk basışta) imleç konumu yakalanır; sonrasında aralık kendi kendini ilerletir.
+  const liveRef = useRef({ start: 0, len: 0 });
+  // NOT: setMetinD'i fonksiyonel updater olarak ÇAĞIRMIYORUZ — React StrictMode (main.jsx)
+  // geliştirmede updater'ları saflık kontrolü için iki kez çağırır; updater içinde liveRef gibi
+  // bir side-effect olsaydı ikinci çağrı zaten ilerlemiş ref'i okur ve imleç yanlış konuma
+  // sıçrardı (canlı yazı "üste atma" hatası). Bunun yerine mevcut render'ın kapadığı metinD'yi
+  // doğrudan okuyup TEK, düz bir setMetinD(yeniMetin) çağrısı yapıyoruz.
+  const sesSonucu = (parca, { finalMi }) => {
+    if (!parca.trim() && !finalMi) return;
+    const { start, len } = liveRef.current;
+    const b = Math.min(start, metinD.length);
+    const s = Math.min(b + len, metinD.length);
+    const bosluk = len === 0 && b > 0 && !/\s/.test(metinD[b - 1] || "") ? " " : "";
+    const ekIcerik = finalMi ? `${bosluk}${parca.trim()} ` : `${bosluk}${parca}`;
+    liveRef.current = finalMi ? { start: b + ekIcerik.length, len: 0 } : { start: b, len: ekIcerik.length };
+    setMetinD(metinD.slice(0, b) + ekIcerik + metinD.slice(s));
+    setKapatUyari(false);
+    // İmleci canlı bölgenin sonuna taşı — konuştukça imleç metnin ardından ilerler.
+    const konum = liveRef.current.start + liveRef.current.len;
+    requestAnimationFrame(() => {
+      const el = alanRef.current;
+      el?.focus();
+      el?.setSelectionRange(konum, konum);
+    });
+  };
+  const stt = useSpeechToText({ lang: "tr-TR", onSonuc: sesSonucu });
 
   // Kapatma isteği — kaydedilmemiş değişiklik varsa kapatmak yerine uyarı şeridi açılır.
   const kapatIstegi = () => { if (kirli) { setKapatUyari(true); return; } onKapat(); };
@@ -66,6 +97,28 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
             {duzenlenebilir && (
               <span style={{ ...TYPE.meta, ...TNUM, color: "rgba(251,247,240,.72)" }}>{metinD.length} karakter</span>
             )}
+            {duzenlenebilir && stt.destekleniyor && (
+              <ScrimDugme
+                // Odak metin alanından hiç ayrılmasın (imleç görünür kalsın) — buton tıklaması
+                // varsayılan odak-kapma davranışını burada iptal eder, click yine de tetiklenir.
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  if (!stt.dinliyor) {
+                    const el = alanRef.current;
+                    const pos = Math.min(el ? el.selectionStart : metinD.length, metinD.length);
+                    liveRef.current = { start: pos, len: 0 };
+                  }
+                  stt.toggle();
+                }}
+                ariaPressed={stt.dinliyor}
+                ariaLabel={stt.dinliyor ? "Dikteyi durdur" : "Sesle dikte et"}
+                title={stt.dinliyor ? "Dikteyi durdur" : "Sesle dikte et (Türkçe)"}>
+                {stt.dinliyor && (
+                  <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: BANT.kirmizi.c, animation: "nu-think 1.1s infinite" }} />
+                )}
+                <Icon.mic width={13} height={13} /> {stt.dinliyor ? "Dinliyor…" : "Sesle yaz"}
+              </ScrimDugme>
+            )}
             {duzenlenebilir && onIndir && (
               <ScrimDugme onClick={() => onIndir(metinD)} title="Düzenlenen metni DOCX indir">DOCX indir</ScrimDugme>
             )}
@@ -83,6 +136,10 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
             </button>
           </span>
         </div>
+
+        {duzenlenebilir && stt.hata && (
+          <div role="alert" style={{ ...TYPE.data, fontWeight: 500, color: BANT.kirmizi.c, textAlign: "center" }}>{stt.hata}</div>
+        )}
 
         {/* Kaydedilmemiş değişiklik koruması — kapatma denendiğinde net seçenekler */}
         {kapatUyari && kirli && (

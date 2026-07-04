@@ -50,16 +50,15 @@ yeterlilik ölçer (NLP/agent/LLM). Bunlar geçilmeden 27 Tmz gelmez.
 ## 5. ✅ Uygunluk Kontrol Listesi (§5 + s.4) — diskalifiye riski
 
 - [x] ✅ Takım **tam 4 kişi** + 1 kaptan — **şart sağlandı** (diskalifiye riski kapandı).
-- [ ] Her üye 18+; lise/önlisans/lisans/YL/doktora/açıköğretim/mezun.
-- [ ] Her kişi **yalnız bir takımda** (birden fazla başvuru → tümü geçersiz).
-- [ ] **TAKP çatısı altındaki Doğal Dil İşleme projesinde aktif görevli** (kişi/danışman/
-      akademisyen/öğrencisi) **YOK**. *(Not: kodu TAKP GitHub'a yüklemek bu kapsama girmez —
-      karıştırma.)*
-- [ ] **Aynı projeyle eşzamanlı başka TEKNOFEST başvurusu YOK.** *(ADALET-AGENT bu veya benzer
-      projeyle başka bir yarışmada kullanılıyorsa kamu-evrak ayrı/yeterince farklı olmalı —
-      teyit et.)*
-- [ ] Son 2 yıl **üst üste** TYDA/Türkçe DİY'de dereceyle ödül alan takım/üye YOK.
-- [ ] Önceki yıllarda diskalifiye/etik ihlali YOK.
+- [x] ✅ Her üye 18+; lise/önlisans/lisans/YL/doktora/açıköğretim/mezun. *(ekip teyidi 2026-07-04)*
+- [x] ✅ Her kişi **yalnız bir takımda** (birden fazla başvuru → tümü geçersiz). *(ekip teyidi 2026-07-04)*
+- [x] ✅ **TAKP çatısı altındaki Doğal Dil İşleme projesinde aktif görevli** (kişi/danışman/
+      akademisyen/öğrencisi) **YOK**. *(ekip teyidi 2026-07-04; not: kodu TAKP GitHub'a yüklemek bu
+      kapsama girmez — karıştırma.)*
+- [x] ✅ **Aynı projeyle eşzamanlı başka TEKNOFEST başvurusu YOK.** *(ekip teyidi 2026-07-04;
+      ADALET-AGENT'tan ayrı/yeterince farklı depo — port haritası `docs/04`.)*
+- [x] ✅ Son 2 yıl **üst üste** TYDA/Türkçe DİY'de dereceyle ödül alan takım/üye YOK. *(ekip teyidi 2026-07-04)*
+- [x] ✅ Önceki yıllarda diskalifiye/etik ihlali YOK. *(ekip teyidi 2026-07-04)*
 
 ## 6. Teslim formatı (§7-8) — eksik bırakılırsa puan/eleme
 

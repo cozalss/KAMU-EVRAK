@@ -10,15 +10,27 @@
 
 **Durum lejantı:** ✅ Karşılandı (kanıtlı) · 🟡 Kısmen / koşullu · ⚠️ Açık iş / gelecek faz · **KIRMIZI: diskalifiye riski** · ⛔ Henüz yok
 
-**Canlı doğrulanmış kalite kapıları (2026-06-26):** backend `uv run python -m pytest -q` →
-**655 passed, 3 warnings**; frontend `npm.cmd run build` → **başarılı**. Mock karne:
-sınıflandırma macro-F1 **0.9493** / accuracy **0.9491**, eksik-bilgi recall **0.9948**,
-özet recall **0.9810** / faithfulness **1.0000**, routing Top-1 **0.9630** / Top-3 **0.9815**,
-taslak bileşen tam-uyum **1.0000** (216/216), taslak tür **1.0000**, Türkçe saflık **1.0000**, false-veto **0**,
-fairness **1.0000**. Taslak `format_uyumlu_rate=**1.0000**` (kalite kapısı KAPANDI; `eval/draft_eval.py` ile
-canlı doğrulandı). Mevzuat retrieval **gerçek BM25Okapi** (rank-bm25 çekirdek bağımlılık; **233 mevzuat / 1506 madde-chunk** korpus; canlı Recall@1 **0.625** [0.39, 0.82] / Recall@3 **0.875** [0.64, 0.97], n=16 — korpus 22× büyüdü, distraktör artışıyla top-1 düştü, top-3 güçlü).
-**Dürüstlük notu:** manşet skorlar `LLM_MODE=mock` tabandır; gerçek-LLM (gpt-4o) dürüst held-out **~0.91**
-(`docs/benchmark/llm-heldout.md`). Mock held-out set-1 EZBER (taban değil); leak-free taban = mock set-2 **0.69** + gpt-4o.
+**Canlı doğrulanmış kalite kapıları (2026-07-04):** backend `uv run python -m pytest -q` →
+**1160 passed**; frontend `npm.cmd run build` → **başarılı**.
+
+**Tek dürüst skor cümlesi (manşet — üç dokümanda [`scorecard.md`](benchmark/scorecard.md),
+[`llm-heldout.md`](benchmark/llm-heldout.md) aynı):** Üretim modeli **DeepSeek-chat**;
+**dairesel-olmayan held-out**'ta (n=108, 2 bağımsız set) sınıflandırma macro-F1 **~0.89**
+(0.864 / 0.907) ve yönlendirme Top-1 **0.907**; **in-domain referans** (n=54,
+`eval.competition_scorecard`) sınıflandırma macro-F1 **0.817**, yönlendirme Top-1 **0.852**,
+eksik-bilgi recall **0.739**, özet recall **0.712** / faithfulness **1.000**, taslak
+`format_uyumlu_rate`=**1.000** ve bileşen tam-uyum=**1.000** (216/216 tarihsel doğrulama),
+Türkçe saflık **0.9998**, false-veto **0**, fairness **0.944**. Mevzuat retrieval **gerçek
+BM25Okapi** (233 mevzuat / 1506 madde-chunk korpus; Recall@1 **0.625** / Recall@3 **0.875**, n=16).
+
+**Dürüstlük notu — jüri-güven riski KAPATILDI (2026-07-04):** Önceki manşet (mock-mod macro-F1
+0.9493) **kaldırıldı** — mock heuristik o test setine uyarlanmıştı (ezber, taban değil).
+Ayrıca **28 Haziran'da eklenen LLM-tabanlı `route_birim`** hiç held-out'ta ölçülmeden üretime
+girmiş ve yönlendirme Top-1'i deterministik tablonun (0.907) çok altına (0.54-0.59) düşürdüğü
+tespit edilip **düzeltildi** (bilinen türde deterministik otoriter, LLM yalnız `'belirsiz'`
+türde) — kanıt ve A/B detayı `docs/benchmark/llm-heldout.md`. gpt-4o sayıları (önceki üretim
+modeli) sınıflandırma için çapraz-referans olarak korunur; yönlendirme için artık geçerli
+değildir (o ölçüm de düzeltme-öncesi koda aitti).
 
 ---
 
@@ -33,10 +45,11 @@ canlı doğrulandı). Mevzuat retrieval **gerçek BM25Okapi** (rank-bm25 çekird
 | G1.5 | **İlgili mevzuat / yazışma kuralı önerme** | `mevzuat_oner` node: madde-bazlı **BM25 retrieval** (233 mevzuat / 1506 madde-chunk korpus) + statik config fallback; şüpheli madde `[DOĞRULA:]` | `backend/agents/nodes/mevzuat_oner.py`, `data/mevzuat/*.txt`, `scripts/seed_mevzuat.py`; `docs/method.md §3` | ✅ |
 | G1.6 | **Özetleme** | `ozetle` node: LLM/mT5 key-fact odaklı kısa özet; faithfulness (halüsinasyon-yok) ölçülür | `backend/agents/nodes/ozetle.py`; `eval/summary_eval.py`; karne: özet faithfulness **1.000** | ✅ |
 
-**Görev 1 ölçüm (GERÇEK pipeline, `LLM_MODE=mock` taban):** sınıflandırma macro-F1 **0.9493** /
-accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet key-fact recall
-**0.9810**; özet faithfulness **1.0000**. Kanıt: `docs/benchmark/scorecard.md` ·
-`python -m eval.competition_scorecard`.
+**Görev 1 ölçüm (GERÇEK pipeline, DeepSeek-chat, in-domain n=54):** sınıflandırma macro-F1
+**0.817** / accuracy **0.796** [0.671, 0.882]; eksik-bilgi recall(β=2) **0.739**; özet key-fact
+recall **0.712**; özet faithfulness **1.000**. **Dairesel-olmayan held-out** (n=108, 2 bağımsız
+set): macro-F1 **~0.89** (0.864 / 0.907) — bkz. `docs/benchmark/llm-heldout.md`. Kanıt:
+`docs/benchmark/scorecard.md` · `python -m eval.competition_scorecard`.
 
 ---
 
@@ -50,10 +63,12 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 | G2.4 | **Kullanıcıyı bilgilendirme** | `finalize` node: **DeepSeek** ile özet + havale birimi + mevzuat + eksik bilgi kompozisyonu (deterministik fallback); her çıktıda **yasal disclaimer** | `backend/agents/nodes/finalize.py`; ekran: `docs/img/03-sonuc.png` (Bilgilendirme bloğu) | ✅ |
 | G2.5 | **Eksik bilgi isteme** (taslak öncesi) | `clarifier` dur-ve-sor dalı (ENV `CLARIFY_STOP_ENABLED`): kritik alan eksikse taslak ÜRETMEDEN takip sorusu döndürür | `backend/agents/nodes/clarifier.py`, `agents/graph.py` (`_clarify_route`); `docs/method.md §5` | ✅ |
 
-**Görev 2 ölçüm (mock taban):** yönlendirme Top-1 (uçtan-uca) **0.9630** [0.929, 0.981] / Top-3
-**0.9815**; yazı bileşen tam-uyum **1.0000** (216/216); yazı türü **1.0000**; Türkçe saflık **1.0000**;
-**uydurma-veto yanlış-pozitif 0/216** (anti-halüsinasyon kapısı sağlıklı); `format_uyumlu_rate=**1.0000**`
-(kalite kapısı KAPANDI — `eval/draft_eval.py` ile canlı doğrulandı). Kanıt: `docs/benchmark/scorecard.md`.
+**Görev 2 ölçüm (GERÇEK pipeline, DeepSeek-chat, in-domain n=54):** yönlendirme Top-1 (uçtan-uca)
+**0.852** [0.734, 0.923] / Top-3 **0.963**; **dairesel-olmayan held-out** (n=108, 2 bağımsız set)
+Top-1 **0.907** (her iki sette aynı — `route_birim` düzeltmesi sonrası, bkz. `llm-heldout.md`);
+yazı bileşen tam-uyum **1.000**; yazı türü **0.833**; Türkçe saflık **0.9998**; **uydurma-veto
+yanlış-pozitif 0/140** (anti-halüsinasyon kapısı sağlıklı); `format_uyumlu_rate=**1.000**`
+(kalite kapısı KAPANDI). Kanıt: `docs/benchmark/scorecard.md`.
 
 ---
 
@@ -62,15 +77,17 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 | Kriter (puan) | Bizim kanıtımız | KANIT | Durum |
 |---|---|---|---|
 | **Yöntem ve Teknik Yaklaşım (35)** | Çok-ajanlı koşullu-kenarlı LangGraph (10 node) + deterministik-taban/ENV-gated-SOTA katmanı + uydurma-yasağı mimari kısıt + recall-öncelikli kamu disiplini; ablasyon (McNemar p + bootstrap CI) | `docs/method.md`, `agents/graph.py`, `eval/ablation_eval.py`, `docs/benchmark/ablation.md` | ✅ |
-| **Uygulama (35)** | 5 alt-kalem birebir ölçüldü: sınıflandırma doğruluğu, yönlendirme başarımı, özetleme, yazı şablon kalitesi, eksik-bilgi tespiti — Wilson %95 CI'lı. Taslak `format_uyumlu_rate=1.0` (kapı KAPANDI). Manşet=mock; gerçek-LLM held-out gpt-4o **~0.91** | `docs/06-eval-harness.md`, `docs/benchmark/scorecard.md`, `docs/benchmark/llm-heldout.md`, `eval/competition_scorecard.py` | ✅ |
+| **Uygulama (35)** | 5 alt-kalem birebir ölçüldü: sınıflandırma doğruluğu, yönlendirme başarımı, özetleme, yazı şablon kalitesi, eksik-bilgi tespiti — Wilson %95 CI'lı. Taslak `format_uyumlu_rate=1.0` (kapı KAPANDI). Manşet=DeepSeek-chat in-domain (macro-F1 0.817); dairesel-olmayan held-out **~0.89** | `docs/06-eval-harness.md`, `docs/benchmark/scorecard.md`, `docs/benchmark/llm-heldout.md`, `eval/competition_scorecard.py` | ✅ |
 | **Demo (15)** | Canlı SSE Ajan Akış Şeması (node'lar gerçek-zamanlı "yanar"); 5 örnek evrak tek-tıkla; internet-kesinti offline yedeği | `frontend/src/components/agent-flow/`, `docs/demo-senaryosu.md`; ekran: `docs/img/02-akis.png` | ✅ |
 | **Yenilikçilik / Özgünlük / Ticarileşme (15)** | **Asıl farklılaşma DİSİPLİN:** anti-halüsinasyon deterministik veto (false-veto 0), PII-önce-maskeleme (KVKK ürün-artısı), gerçek BM25 mevzuat RAG, reprodüke-edilebilir dürüst held-out (artefakt + BCa CI), SDP arşiv metadata. ENV-gated CRAG/Self-RAG (Yan 2024 / Asai 2023) **uygulandı + ablasyonla ölçüldü** → küçük korpusta **anlamlı DEĞİL** (dürüst negatif sonuç; manşet iddia değil) | `agents/nodes/verify.py`, `api/pii.py`, `mevzuat_oner.py`, `arsiv.py`; `eval/ablation_eval.py`; `docs/method.md §6` | ✅ |
 | **Real-time üretim avantajı (§8 Demo)** | SSE streaming TTFT + node-by-node canlı akış (sabit SLA iddia edilmez; "düşünen sistem" hissi) | `api/routes/process_doc.py` (`/process_doc/stream`); `docs/06-eval-harness.md` (latency) | ✅ |
 
 > **100 puan anlatısı:** Yöntem (35), Demo (15) ve Yenilikçilik/Ticarileşme (15) kanıtlı; Uygulama (35)
 > tarafında sınıflandırma/yönlendirme/özet/eksik-bilgi/taslak-format **hepsi ölçüldü ve geçti**
-> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 233 mevzuat/1506 chunk, Recall@1 0.625 / Recall@3 0.875, n=16). Manşet skorlar mock taban; gerçek-LLM
-> (gpt-4o) dürüst held-out ~0.91 ayrıca raporlanır — abartı yok, kapalı risk jüriden saklanmaz.
+> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 233 mevzuat/1506 chunk, Recall@1 0.625 / Recall@3 0.875, n=16).
+> Manşet skorlar **üretim modeli DeepSeek-chat**, in-domain (n=54); **dairesel-olmayan held-out**
+> (n=108, 2 bağımsız set) macro-F1 ~0.89 / yönlendirme Top-1 0.907 ayrıca raporlanır — abartı yok,
+> kapalı risk jüriden saklanmaz (bkz. `route_birim` düzeltmesi, `docs/benchmark/llm-heldout.md`).
 
 ---
 
@@ -94,9 +111,9 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 
 | # | Şartname isteri | Bizim karşılığımız | KANIT | Durum |
 |---|---|---|---|---|
-| E.1 | **Yanlılıktan arındırılmış / kapsayıcı** | Counterfactual fairness: farklı isim/cinsiyet sahte-PII varyantında sınıflandırma/routing tutarlılık kontrolü | `eval/fairness_eval.py`; karne: sınıf tutarlılığı **1.0000** [0.974, 1.000], birim tutarlılığı **1.0000** | ✅ |
+| E.1 | **Yanlılıktan arındırılmış / kapsayıcı** | Counterfactual fairness: farklı isim/cinsiyet sahte-PII varyantında sınıflandırma/routing tutarlılık kontrolü | `eval/fairness_eval.py`; karne (DeepSeek-chat, n=54): sınıf tutarlılığı **0.9444** [0.819, 0.985], birim tutarlılığı **0.9444** | ✅ |
 | E.2 | **Sonuç manipülasyonu / jüriyi yanıltma yok** | Kapalı-küme F1 değil resmî-kaynaklı taksonomi (docs/02); blind etiketleme planı; mock-vs-LLM ayrımı saklanmaz | `docs/data-card.md §4` (blind), `docs/method.md §2.1` (dairesellik uyarısı) | ✅ |
-| E.3 | **Uydurma / halüsinasyon engeli** | `verify` node uydurma kurum/tarih/sayı/madde veto; şüpheli→`[DOĞRULA:]`; her çıktıda disclaimer | `backend/agents/nodes/verify.py`; karne: uydurma-veto FP **0/216** | ✅ |
+| E.3 | **Uydurma / halüsinasyon engeli** | `verify` node uydurma kurum/tarih/sayı/madde veto; şüpheli→`[DOĞRULA:]`; her çıktıda disclaimer | `backend/agents/nodes/verify.py`; karne (n=54): uydurma-veto FP **0/140** | ✅ |
 
 ---
 
@@ -105,12 +122,12 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 | # | Şartname isteri | Durum | Not |
 |---|---|---|---|
 | F.1 | **Takım tam 4 kişi + 1 kaptan** | ✅ | **Ekip 4 kişi (kaptan dahil) — şart sağlandı.** Diskalifiye riski KAPANDI. |
-| F.2 | Her üye 18+, öğrenci/mezun | 🟡 | Ekip tarafından teyit edilecek (idari). |
-| F.3 | Her kişi yalnız bir takımda | 🟡 | Teyit edilecek (idari). |
-| F.4 | TAKP NLP projesinde aktif görevli YOK | 🟡 | Teyit edilecek (kodu TAKP GitHub'a yüklemek bu kapsama girmez). |
-| F.5 | Aynı projeyle eşzamanlı başka TEKNOFEST başvurusu YOK | 🟡 | kamu-evrak, ADALET-AGENT'tan **ayrı/yeterince farklı** depo (port haritası `docs/04`); teyit edilmeli. |
-| F.6 | Son 2 yıl üst üste TYDA ödülü YOK | 🟡 | Teyit edilecek (idari). |
-| F.7 | Önceki diskalifiye/etik ihlali YOK | 🟡 | Teyit edilecek (idari). |
+| F.2 | Her üye 18+, öğrenci/mezun | ✅ | Ekip tarafından teyit edildi (2026-07-04). |
+| F.3 | Her kişi yalnız bir takımda | ✅ | Ekip tarafından teyit edildi (2026-07-04). |
+| F.4 | TAKP NLP projesinde aktif görevli YOK | ✅ | Ekip tarafından teyit edildi (2026-07-04); kodu TAKP GitHub'a yüklemek bu kapsama girmez. |
+| F.5 | Aynı projeyle eşzamanlı başka TEKNOFEST başvurusu YOK | ✅ | Ekip tarafından teyit edildi (2026-07-04); kamu-evrak, ADALET-AGENT'tan ayrı/yeterince farklı depo (port haritası `docs/04`). |
+| F.6 | Son 2 yıl üst üste TYDA ödülü YOK | ✅ | Ekip tarafından teyit edildi (2026-07-04). |
+| F.7 | Önceki diskalifiye/etik ihlali YOK | ✅ | Ekip tarafından teyit edildi (2026-07-04). |
 
 ---
 
@@ -123,6 +140,8 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 | AÇ.3 | **Blind insan-etiketli gold** | Otomatik üretilen gold etiketleri bağımsız kişi onayından geçmeli (etik §13.1) | Hafta 1-2 | ⚠️ |
 | AÇ.4 | **TAKP yükleme / idari teyitler** | Başvuru anı işlemi ve kişi uygunluğu ekip tarafından teyit edilmeli | Başvuru öncesi | 🟡 |
 | AÇ.5 | **Canlı OCR uçtan-uca genişletme** | Demo örnek-evrak yolu çalışır; farklı tarama/foto kaliteleriyle geniş saha provası yapılmalı | Finalist fazı | 🟡 |
+| AÇ.6 | ~~`route_birim` LLM-routing regresyonu~~ | 2026-07-04: held-out'ta ilk kez ölçüldü, Top-1 0.907→0.54-0.59 düştüğü bulundu — **ÇÖZÜLDÜ** (bilinen türde deterministik otoriter) | — | ✅ |
+| AÇ.7 | **Tam n=108 DeepSeek held-out** (düzeltilmiş kod) | Şimdilik yalnız n=54 dengeli alt-örneklem ölçüldü (hız/maliyet); tam 108 henüz koşulmadı | Başvuru öncesi (opsiyonel) | 🟡 |
 
 ---
 
@@ -133,12 +152,13 @@ accuracy **0.9491** [0.911, 0.971]; eksik-bilgi recall(β=2) **0.9948**; özet k
 - **Puanlama 4/4 kriter izlenebilir** (Yöntem 35 / Uygulama 35 / Demo 15 / Yenilikçilik 15); Uygulama'da açık teknik kalite kapısı YOK
 - **Teslim formatı 9 madde:** 8 ✅ + 1 🟡 (TAKP yükleme=başvuru anı)
 - **Etik 3/3 ✅**
-- **Uygunluk listesi 7 madde:** **F.1 ✅ (takım 4 kişi)** + 6 idari-teyit (🟡) — **KIRMIZI YOK**
+- **Uygunluk listesi 7/7 madde ✅** (ekip tarafından 2026-07-04'te teyit edildi) — **KIRMIZI YOK**
 
-**Kalan açıklar (dürüst):** blind insan-etiketli gold (etik §13.1), leak-free 3. held-out mock taban,
-gerçek-LLM (gpt-4o) held-out koşu artefaktının commit'lenmesi, başvuru anı TAKP/idari teyitleri.
+**Kalan açıklar (dürüst):** blind insan-etiketli gold (etik §13.1), tam n=108 DeepSeek held-out
+(düzeltilmiş kod — şimdilik n=54 ile doğrulandı), TAKP GitHub kod teslimi (D.2).
 
-> **Durum:** İdari kırmızı KAPANDI (takım 4) ve format kalite kapısı KAPANDI. Kalan işler teknik-olgunluk
-> (reprodüksiyon artefaktı, leak-free taban) ve başvuru-anı idari teyitler — hiçbiri diskalifiye riski değil.
+> **Durum:** İdari kırmızı KAPANDI (takım 4) ve format kalite kapısı KAPANDI. F.1-F.7 uygunluk listesi
+> **tam teyitli**. Kalan işler yalnız teknik-olgunluk (reprodüksiyon artefaktı, leak-free taban) ve
+> TAKP GitHub'a kod teslimi — hiçbiri diskalifiye riski değil.
 > En kritik teknik açık: taslak-format kalite kapısı; kapanana kadar yazı taslağı başarımı abartılmadan,
 > bileşen/tür/Türkçe saflık ve false-veto metrikleriyle sınırlı sunulur.

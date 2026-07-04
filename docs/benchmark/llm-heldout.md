@@ -3,21 +3,59 @@
 > Set: `data/synthetic/heldout_gold.jsonl` (108 evrak, **örtük/dolaylı ifade**, gen_synthetic'ten
 > farklı şablon/sözlük → keyword sızıntısı yok). Ölçüm: gerçek LangGraph pipeline `build_graph().ainvoke`.
 
-> ### 🔄 ÜRETİM MODELİ: DeepSeek-V4 (`deepseek-chat`) — 2026-06-27
+> ### ✅ GÜNCEL DURUM (2026-07-04) — ÜRETİM MODELİ DeepSeek-chat, `route_birim` düzeltmesi sonrası
+>
+> **Tek dürüst cümle:** Üretim modeli **DeepSeek-chat**; dairesel-olmayan held-out'ta (n=108, 2 bağımsız
+> set, dengeli n=54+n=54 alt-örneklem) sınıflandırma macro-F1 **~0.89** (set1 0.864 / set2 0.907),
+> yönlendirme Top-1 **0.907** (iki sette de aynı); in-domain referans (n=54, `docs/benchmark/scorecard.md`)
+> macro-F1 **0.817**, yönlendirme Top-1 **0.852**.
+>
+> | Metrik (DeepSeek-chat, post-fix) | Held-out set1 (n=54) | Held-out set2 (n=54) |
+> |---|---|---|
+> | Sınıflandırma accuracy (sıkı) | 0.870 | 0.907 |
+> | Sınıflandırma macro-F1 (sıkı) | 0.864 | 0.907 |
+> | Operasyonel accuracy | 0.907 | 0.963 |
+> | **Yönlendirme Top-1 (uçtan-uca)** | **0.907** | **0.907** |
+> | Yönlendirme Top-3 | 0.907 | 0.907 |
+>
+> **Neden "post-fix" vurgusu kritik:** 2026-06-28'de (`cd48d25`) `route_birim` node'una serbest-seçimli
+> LLM akıl-yürütmesi eklendi. Bu, **hiç held-out'ta ölçülmeden** üretime girdi. 2026-07-04'te ilk kez
+> ölçüldüğünde yönlendirme Top-1 **0.537–0.593**'e düşmüş bulundu (aşağıdaki eski gpt-4o/n=22 sayıları
+> hep bu node'un ÖNCESİNDEKİ saf deterministik haliyle ölçülmüştü — bkz. tarihler). A/B ile kanıtlandı
+> (aynı 108 belge, yalnız `route_birim` LLM çağrısı açık/kapalı): deterministik **0.907** vs serbest-LLM
+> **0.54-0.59**. Düzeltme: bilinen türde deterministik karar otoriter kalır, LLM yalnız `'belirsiz'`
+> türde (tür sinyali hiç yokken) devreye girer — `backend/agents/nodes/route_birim.py`. Düzeltme
+> sonrası her iki sette de Top-1 **0.907**'ye döndü (yukarıdaki tablo). pytest 1160 yeşil.
+>
+> Artefaktlar: [`heldout_deepseek_set1_n54.json`](../../backend/eval/runs/heldout_deepseek_set1_n54.json) ·
+> [`heldout_deepseek_set2_n54.json`](../../backend/eval/runs/heldout_deepseek_set2_n54.json) (düzeltme
+> ÖNCESİ, LLM-routing bozukken) · aynı isimlerin `_fixed` sürümleri (düzeltme SONRASI, LLM açık,
+> Top-1 0.907 doğrulandı) · `_detroute` sürümleri (saf deterministik A/B kanıtı).
+> **Not (örneklem büyüklüğü):** hız/maliyet için n=54 (dengeli, 18 sınıftan 3'er) kullanıldı — tam
+> n=108 tekrar aşağıdaki gpt-4o/n=22 bölümündeki komutla üretilebilir, henüz DeepSeek ile tam
+> 108'lik koşu yapılmadı (dürüst açık iş).
+
+> ### 🔄 ÜRETİM MODELİ: DeepSeek-V4 (`deepseek-chat`) — 2026-06-27 (tarihsel, yukarıdaki güncel durum esastır)
 >
 > Proje **DeepSeek-V4'e geçti**: OpenAI-uyumlu (**kod değişikliği yok** — `OPENAI_BASE_URL=https://api.deepseek.com`),
 > **ucuz** (V4 Flash $0.14/$0.28 per 1M — gpt-4o-mini'den de ucuz) ve **güçlü Türkçe**.
 >
-> **Held-out ön-ölçüm (n=22, dağıtılmış örneklem):** sıkı accuracy **0.955** (21/22) · macro-F1 **0.933**
-> [BCa CI 0.875–1.0] · operasyonel **1.000** · routing Top-1 **0.955** → gpt-4o'nun (n=108) **0.935**'iyle
-> **aynı seviyede ya da üstünde**. Artefakt: `backend/eval/runs/heldout_deepseek_quick.json`.
+> **Held-out ön-ölçüm (n=22, dağıtılmış örneklem, `route_birim` düzeltmesi ÖNCESİ kod):** sıkı accuracy
+> **0.955** (21/22) · macro-F1 **0.933** [BCa CI 0.875–1.0] · operasyonel **1.000** · routing Top-1
+> **0.955** → gpt-4o'nun (n=108) **0.935**'iyle **aynı seviyede ya da üstünde**. Artefakt:
+> `backend/eval/runs/heldout_deepseek_quick.json`. **Bu ölçüm de `route_birim` LLM-serbest kararından
+> ÖNCEKİ (saf deterministik) koda aittir** — yukarıdaki güncel n=54×2 tablosuyla tutarlı.
 >
-> ⚠️ **Dürüstlük:** n=22 küçük örneklem → güven aralığı geniş; **tam 108-evrak ölçümü sonraki adımdır**.
-> Komut (`.env` DeepSeek'e ayarlı; ek bayrak yok):
+> ⚠️ **Dürüstlük:** n=22 küçük örneklem → güven aralığı geniş; **tam 108-evrak ölçümü** (DeepSeek,
+> düzeltilmiş kod) hâlâ açık iş. Komut (`.env` DeepSeek'e ayarlı; ek bayrak yok):
 > `cd backend && python -m eval.heldout_eval --set heldout --dump eval/runs/heldout_deepseek_set1.json`
 >
 > Aşağıdaki **gpt-4o** tabloları **çapraz-referans** olarak korunur (tam 108-evrak, artefakt-destekli,
-> reprodüke-edilebilir) — önceki üretim modeli + bağımsız doğrulama.
+> reprodüke-edilebilir) — önceki üretim modeli + bağımsız doğrulama. **Artık üretimde DEĞİL** (üretim
+> = DeepSeek-chat); gpt-4o sayıları da `route_birim` düzeltmesinden ÖNCEKİ koda ait olduğundan
+> yönlendirme Top-1 (~0.94-0.95) güncel kodla doğrudan karşılaştırılamaz — sınıflandırma sayıları
+> (macro-F1 ~0.91-0.93) hâlâ geçerli çapraz-referanstır (route_birim değişikliği sınıflandırmayı
+> etkilemedi).
 
 > ### ⚠️ DÜRÜSTLÜK GÜNCELLEMESİ (2026-06-26) — mock taban ARTIK güvenilir değil
 >

@@ -71,6 +71,7 @@ def build_scorecard() -> dict:
     return {
         "git_sha": _git_sha(),
         "llm_mode": os.getenv("LLM_MODE", "mock").lower(),
+        "llm_model": os.getenv("OPENAI_LLM_MODEL", ""),
         "evrak_turu_sayisi": len(EVRAK_TURLERI),
         "birim_sayisi": len(BIRIMLER),
         "gorev1": {
@@ -112,21 +113,36 @@ def build_scorecard() -> dict:
     }
 
 
+def _mod_disclaimer(llm_mode: str, llm_model: str) -> str:
+    """LLM_MODE'a göre doğru uyarı — mock/gerçek karışmasın (jüri-güven riski)."""
+    if llm_mode == "mock":
+        return (
+            "> **Skorlar MOCK tabandır:** LLM_MODE=mock'ta siniflandir/route keyword-heuristik "
+            "fallback'i koşar. Bu metrikler TAVAN değil TABAN — gerçek LLM modu (openai/llamacpp) "
+            "yükseltir. Burada KRİTİK olan, eval'in mock taksonomiyi değil GERÇEK LangGraph "
+            "pipeline'ını (siniflandir→cikar→eksik_tespit→route_birim→ozetle→yazi_taslak) ölçmesidir."
+        )
+    model_etiket = f"`{llm_model}`" if llm_model else f"`LLM_MODE={llm_mode}`"
+    return (
+        f"> **Skorlar GERÇEK LLM ({model_etiket}) ile ölçülmüştür** — mock/keyword-heuristik "
+        "fallback koşmadı. Bu, üretim modunun beklenen gerçek başarımıdır (tavan değil, "
+        "güncel ölçüm); dairesel-olmayan (held-out) doğrulama için `docs/benchmark/llm-heldout.md`'ye bakın."
+    )
+
+
 def render_markdown(sc: dict) -> str:
     g1, g2 = sc["gorev1"], sc["gorev2"]
     s = g1["siniflandirma"]
     yt = g2["yazi_taslak"]
+    model_sfx = f", model=`{sc['llm_model']}`" if sc.get("llm_model") else ""
     lines: list[str] = [
         "# TEKNOFEST 2026 — 1. Senaryo Yarışma Karnesi",
         "",
         "> Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · "
         "`python -m eval.competition_scorecard` ile üretilir "
-        f"(commit `{sc['git_sha']}`, LLM_MODE=`{sc['llm_mode']}`).",
+        f"(commit `{sc['git_sha']}`, LLM_MODE=`{sc['llm_mode']}`{model_sfx}).",
         "",
-        "> **Skorlar MOCK tabandır:** LLM_MODE=mock'ta siniflandir/route keyword-heuristik "
-        "fallback'i koşar. Bu metrikler TAVAN değil TABAN — gerçek LLM modu (openai/llamacpp) "
-        "yükseltir. Burada KRİTİK olan, eval'in mock taksonomiyi değil GERÇEK LangGraph "
-        "pipeline'ını (siniflandir→cikar→eksik_tespit→route_birim→ozetle→yazi_taslak) ölçmesidir.",
+        _mod_disclaimer(sc["llm_mode"], sc.get("llm_model", "")),
         "",
         f"Kanonik taksonomi: **{sc['evrak_turu_sayisi']} evrak türü** "
         f"(config.EVRAK_TURLERI; 'belirsiz' abstention dahil), **{sc['birim_sayisi']} birim** "
@@ -189,9 +205,11 @@ def render_markdown(sc: dict) -> str:
         "---",
         "",
         "> Bu karne GERÇEK LangGraph pipeline'ını ölçer (mock taksonomi değil). "
-        "Mock-LLM modunda deterministik (keyword/regex/eşik) fallback koşar → her commit'te "
-        "CI regresyon kapısı olabilir. **Mock skorlar tavan DEĞİL tabandır.** "
-        "Wilson %95 güven aralıkları küçük-N belirsizliğini dürüstçe gösterir.",
+        + ("Mock-LLM modunda deterministik (keyword/regex/eşik) fallback koşar → her commit'te "
+           "CI regresyon kapısı olabilir. **Mock skorlar tavan DEĞİL tabandır.** "
+           if sc["llm_mode"] == "mock" else
+           f"Bu koşu gerçek `{sc['llm_mode']}` modeliyle ölçülmüştür (mock fallback koşmadı). ")
+        + "Wilson %95 güven aralıkları küçük-N belirsizliğini dürüstçe gösterir.",
         "",
     ]
     return "\n".join(lines)
@@ -202,10 +220,13 @@ def render_console(sc: dict) -> str:
     s = g1["siniflandirma"]
     yt = g2["yazi_taslak"]
     bar = "=" * 66
+    mod_etiket = ("mock skorlar TABAN, tavan değil" if sc["llm_mode"] == "mock"
+                  else f"GERÇEK {sc.get('llm_model') or sc['llm_mode']} ölçümü, mock DEĞİL")
     return "\n".join([
         f"\n{bar}",
-        f"  TEKNOFEST 1. SENARYO KARNESİ  (commit {sc['git_sha']}, LLM_MODE={sc['llm_mode']})",
-        "  [GERÇEK pipeline ölçümü — mock skorlar TABAN, tavan değil]",
+        f"  TEKNOFEST 1. SENARYO KARNESİ  (commit {sc['git_sha']}, LLM_MODE={sc['llm_mode']}"
+        + (f", model={sc['llm_model']})" if sc.get("llm_model") else ")"),
+        f"  [GERÇEK pipeline ölçümü — {mod_etiket}]",
         bar,
         f"  GÖREV 1 — Sınıflandırma : acc={s['accuracy']:.3f} macroF1={s['macro_f1']:.3f} "
         f"abstain={s['abstention_rate']:.0%}",

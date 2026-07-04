@@ -193,6 +193,7 @@ export const Icon = {
   check: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 12.5 L10 17.5 L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>,
   x: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>,
   alert: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 4 L21 19 H3 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M12 10 V14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="16.6" r="1" fill="currentColor" /></svg>,
+  mic: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" /><path d="M6 11 a6 6 0 0 0 12 0 M12 17 V21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
 };
 
 /* InfoTip — erişilebilir "ⓘ" ipucu. Hover + klavye odağıyla açılır, Esc/blur kapatır.

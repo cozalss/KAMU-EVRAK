@@ -1,41 +1,42 @@
 {
-  "git_sha": "b371a26",
+  "git_sha": "1532a37",
   "llm_mode": "openai",
+  "llm_model": "deepseek-chat",
   "evrak_turu_sayisi": 19,
   "birim_sayisi": 9,
   "gorev1": {
     "siniflandirma": {
-      "accuracy": 0.662,
-      "macro_f1": 0.6656,
+      "accuracy": 0.7963,
+      "macro_f1": 0.8171,
       "accuracy_ci95": [
-        0.597,
-        0.722
+        0.671,
+        0.882
       ],
       "abstention_rate": 0.0,
       "by_zorluk": {
-        "kolay": 0.75,
+        "kolay": 0.944,
         "orta": 0.722,
-        "zor": 0.514
+        "zor": 0.722
       }
     },
     "eksik_bilgi": {
       "precision": 1.0,
-      "recall": 0.5492,
-      "f_beta": 0.6036,
+      "recall": 0.7391,
+      "f_beta": 0.7798,
       "beta": 2.0,
       "recall_ci95": [
-        0.479,
-        0.618
+        0.597,
+        0.844
       ]
     },
     "ozet": {
-      "micro_recall": 0.867,
-      "macro_recall": 0.8557,
-      "full_cover_rate": 0.6852,
-      "avg_uzunluk": 20.7,
+      "micro_recall": 0.7123,
+      "macro_recall": 0.7253,
+      "full_cover_rate": 0.3519,
+      "avg_uzunluk": 19.4,
       "faithfulness_rate": 1.0,
       "faithfulness_ci95": [
-        0.983,
+        0.934,
         1.0
       ],
       "judge_coverage": null
@@ -43,45 +44,46 @@
   },
   "gorev2": {
     "yonlendirme": {
-      "top1": 0.7731,
-      "top3": 0.9167,
+      "top1": 0.8519,
+      "top3": 0.963,
       "top1_ci95": [
-        0.713,
-        0.824
+        0.734,
+        0.923
       ]
     },
     "yazi_taslak": {
       "format_uyumlu_rate": 1.0,
       "compliance_rate": 1.0,
-      "yazi_turu_acc": 0.9815,
-      "avg_turkish_purity": 0.9996,
+      "yazi_turu_acc": 0.8333,
+      "avg_turkish_purity": 0.9998,
       "per_component": {
         "tc_baslik": 1.0,
         "sayi": 1.0,
         "konu": 1.0,
-        "ilgi": 0.852,
+        "ilgi": 0.759,
         "imza_bloku": 1.0,
         "kapanis": 1.0
       },
       "false_veto": 0,
       "false_veto_rate": 0.0,
-      "veto_uyari_toplam": 0
+      "veto_uyari_toplam": 140,
+      "uslup_judge": null
     }
   },
   "etik": {
-    "class_consistency": 0.8889,
+    "class_consistency": 0.9444,
     "route_consistency": 0.9444,
     "class_consistency_ci95": [
-      0.827,
-      0.93
+      0.819,
+      0.985
     ]
   },
   "n": {
-    "siniflandirma": 216,
-    "yonlendirme": 216,
-    "eksik": 216,
-    "ozet": 216,
-    "taslak": 216,
-    "adillik": 144
+    "siniflandirma": 54,
+    "yonlendirme": 54,
+    "eksik": 54,
+    "ozet": 54,
+    "taslak": 54,
+    "adillik": 36
   }
 }

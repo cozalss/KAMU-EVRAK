@@ -12,6 +12,26 @@ import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
+import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
+
+/* Büyüt ikonu (dört köşe ok) — belge panellerinin A4 modal tetikleyicisi. */
+const BuyutIkon = (p) => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
+    <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/* Panel başlığındaki küçük "büyüt" düğmesi — Kaynak belge / taslak kartlarında ortak. */
+function BuyutDugme({ onClick, label }) {
+  return (
+    <button type="button" onClick={onClick} aria-label={label} title="Büyüt (A4 görünüm)" {...focusRing}
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: "background .12s ease-out" }}>
+      <BuyutIkon />
+    </button>
+  );
+}
 import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
 
 /* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———
@@ -417,9 +437,14 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop }) {
    birebir. Kendi hook'ları kendi gövdesinde (CanliAjanAkisi'nin erken-dönüş deseni bozulmaz). */
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
 
-function KaynakBelge({ fileUrl, segs, busy, glow }) {
+function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut }) {
   const [sekme, setSekme] = useState("belge");
   const pdfGoster = !!fileUrl && (sekme === "belge" || !segs);
+  // İçerik hazırsa panel tıklanabilir → A4 modal (klavye: Enter/Space).
+  const tiklanabilir = !!onBuyut && (!!fileUrl || !!segs);
+  const acKlavye = (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onBuyut(); }
+  };
   const SekmeBtn = ({ id, label }) => (
     <button type="button" onClick={() => setSekme(id)} aria-pressed={sekme === id} {...focusRing}
       style={{ cursor: "pointer", padding: "2px 10px", borderRadius: RAD.chip, border: `1px solid ${sekme === id ? T : PAL.line}`, background: sekme === id ? ALFA(T) : PAL.surf, color: sekme === id ? DERIN.T : PAL.mut2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
@@ -431,8 +456,11 @@ function KaynakBelge({ fileUrl, segs, busy, glow }) {
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
         <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, flex: 1 }}>Kaynak belge</span>
         {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" /><SekmeBtn id="metin" label="Metin" /></>)}
+        {tiklanabilir && <BuyutDugme onClick={onBuyut} label="Kaynak belgeyi A4 görünümde büyüt" />}
       </div>
-      <div style={{ position: "relative", borderRadius: RAD.card, overflow: "hidden", background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, minHeight: 300, aspectRatio: (segs || fileUrl) ? "auto" : "1 / 1.34" }}>
+      <div
+        {...(tiklanabilir ? { role: "button", tabIndex: 0, onClick: onBuyut, onKeyDown: acKlavye, title: "Büyüt (A4 görünüm)", ...focusRing } : {})}
+        style={{ position: "relative", borderRadius: RAD.card, overflow: "hidden", background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, minHeight: 300, aspectRatio: (segs || fileUrl) ? "auto" : "1 / 1.34", cursor: tiklanabilir ? "zoom-in" : "default" }}>
         {pdfGoster ? (
           <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
             <PdfOnizleme fileUrl={fileUrl} />
@@ -476,6 +504,8 @@ export default function CanliAjanAkisi({
     // risk_guard istasyonu KENDİ bandını taşır — koşum sırasında genel sonuç bandı henüz
     // oluşmadığından node verisi tek doğru kaynak (backend ile birebir uyum).
     bant: n.data?.risk_metadata?.bant || null,
+    // Ham SSE çıktısı — NeonDetay zaman şelalesi + ham veri çekmecesi bunları kullanır.
+    data: n.data ?? null,
   }));
   const gorevler = [...new Set(display.map((a) => a.gorev))];
   const total = display.length || 1;
@@ -493,6 +523,8 @@ export default function CanliAjanAkisi({
   })();
   const statusText = busy ? "İşleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "Tamamlandı" : "Sırada");
 
+  // A4 belge modalı — "kaynak" | "taslak" | null (paneller tıklanınca açılır).
+  const [belgeModal, setBelgeModal] = useState(null);
   const drivenFields = useMemo(() => (result ? buildDrivenFields(result, risk) : null), [result, risk]);
   const km = result?.kanit_metadata;
   const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
@@ -589,7 +621,7 @@ export default function CanliAjanAkisi({
 
               {/* Sol sütun — kaynak belge; sonuç geldikten sonra altına ajan izi iner */}
               <div style={{ flex: "1 1 320px", minWidth: 0, borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
-                <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} />
+                <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} onBuyut={() => setBelgeModal("kaynak")} />
                 {result && izKart}
               </div>
 
@@ -598,7 +630,8 @@ export default function CanliAjanAkisi({
               <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px", display: "flex", flexDirection: "column" }}>
                 {result ? (
                   <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-                    <NeonDetay embedded result={result} onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
+                    <NeonDetay embedded result={result} zamanlar={display}
+                      onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
                   </HataSiniri>
                 ) : izKart}
               </div>
@@ -624,9 +657,15 @@ export default function CanliAjanAkisi({
 
             {/* Kart içerik boyunda kalır (flex:1 yok) — taslak bitince altta boş beyazlık uzamaz. */}
             <div style={{ ...card, display: "flex", flexDirection: "column" }}>
-              <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.s }}>Resmî yazı taslağı</div>
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.s }}>
+                <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, flex: 1 }}>Resmî yazı taslağı</span>
+                {draftMd && <BuyutDugme onClick={() => setBelgeModal("taslak")} label="Resmî yazı taslağını A4 görünümde büyüt" />}
+              </div>
               {draftMd ? (
-                <pre style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>
+                <pre role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
+                  onClick={() => setBelgeModal("taslak")}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setBelgeModal("taslak"); } }}
+                  style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420, cursor: "zoom-in" }}>{cleanDemoText(draftMd)}</pre>
               ) : (
                 <div style={{ display: "flex", alignItems: "center", gap: SP.s, flex: 1, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.xl }}>
                   <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
@@ -657,6 +696,23 @@ export default function CanliAjanAkisi({
           </section>
         );
       })()}
+
+      {/* A4 belge modalları — kaynak belge (maskeli metin / gerçek PDF sayfası) + resmî yazı
+          taslağı (PDF/DOCX indirme kısayollu). Tetikleyiciler: panel tıklaması / büyüt düğmesi. */}
+      <BelgeModal acik={belgeModal === "kaynak"} baslik="Kaynak belge" dosyaAdi={fileLabel} mono
+        metin={km?.metin || ""} fileUrl={fileUrl} onKapat={() => setBelgeModal(null)} />
+      <BelgeModal acik={belgeModal === "taslak"} baslik="Resmî yazı taslağı" dosyaAdi={fileLabel}
+        metin={draftMd ? cleanDemoText(draftMd) : ""} onKapat={() => setBelgeModal(null)}
+        eylemler={draftMd ? (
+          <>
+            <ScrimDugme onClick={() => onDownload("pdf")} disabled={!canDownload || downloading === "pdf"} title="Resmî yazıyı PDF indir">
+              {downloading === "pdf" ? "indiriliyor…" : "PDF indir"}
+            </ScrimDugme>
+            <ScrimDugme onClick={() => onDownload("docx")} disabled={!canDownload || downloading === "docx"} title="Resmî yazıyı DOCX indir">
+              {downloading === "docx" ? "indiriliyor…" : "DOCX"}
+            </ScrimDugme>
+          </>
+        ) : null} />
     </>
   );
 }

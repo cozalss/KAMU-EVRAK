@@ -11,7 +11,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 const MAX_SAYFA = 8; // dar panelde makul kaydırma; kalanı sayaçla belirtilir
 
-export default function PdfOnizleme({ fileUrl }) {
+export default function PdfOnizleme({ fileUrl, tam = false }) {
+  // tam: A4 modal görünümü — iç kaydırma/yükseklik siniri YOK (modal kendisi kayar),
+  // TÜM sayfalar alt alta akar. Varsayılan (false): dar panel modu (460px + ilk 8 sayfa).
   const kutu = useRef(null);
   const [genislik, setGenislik] = useState(0);
   const [sayfaSayisi, setSayfaSayisi] = useState(0);
@@ -27,9 +29,9 @@ export default function PdfOnizleme({ fileUrl }) {
   if (hata) {
     return <div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF önizlemesi açılamadı — metin sekmesinden devam edebilirsiniz.</div>;
   }
-  const gosterilen = Math.min(sayfaSayisi || 0, MAX_SAYFA);
+  const gosterilen = tam ? (sayfaSayisi || 0) : Math.min(sayfaSayisi || 0, MAX_SAYFA);
   return (
-    <div ref={kutu} style={{ maxHeight: 460, overflowY: "auto", background: PAL.surf }}>
+    <div ref={kutu} style={tam ? { background: PAL.surf } : { maxHeight: 460, overflowY: "auto", background: PAL.surf }}>
       <Document
         file={fileUrl}
         onLoadSuccess={(pdf) => setSayfaSayisi(pdf.numPages)}
@@ -44,7 +46,7 @@ export default function PdfOnizleme({ fileUrl }) {
       </Document>
       {sayfaSayisi > 0 && (
         <div style={{ padding: "6px 12px", borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
-          {sayfaSayisi} sayfa{sayfaSayisi > MAX_SAYFA ? ` · ilk ${MAX_SAYFA} sayfa gösteriliyor` : ""}
+          {sayfaSayisi} sayfa{!tam && sayfaSayisi > MAX_SAYFA ? ` · ilk ${MAX_SAYFA} sayfa gösteriliyor` : ""}
         </div>
       )}
     </div>

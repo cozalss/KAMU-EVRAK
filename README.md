@@ -1,6 +1,6 @@
 # kamu-evrak — Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi
 
-[![CI](https://github.com/cozalss/kamu-evrak/actions/workflows/ci.yml/badge.svg)](https://github.com/cozalss/kamu-evrak/actions/workflows/ci.yml)
+[![CI](https://github.com/cozalss/TasnifX-TeknoFest/actions/workflows/ci.yml/badge.svg)](https://github.com/cozalss/TasnifX-TeknoFest/actions/workflows/ci.yml)
 ![Testler](https://img.shields.io/badge/testler-1066%20(77%20mod%C3%BCl)-2f9e6e.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)

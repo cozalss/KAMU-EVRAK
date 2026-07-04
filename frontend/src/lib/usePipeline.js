@@ -86,7 +86,12 @@ export function usePipeline() {
 
   // SSE event işleyici (dosya + örnek — tek yol). Bir node bitince sıradakini aktifle.
   const handleEvent = useCallback((ev) => {
-    if (ev.event === "done" || ev.event === "error") sawTerminal.current = true;
+    if (ev.event === "done" || ev.event === "error") {
+      sawTerminal.current = true;
+      // busy'yi AKIŞ KAPANIŞINI beklemeden düşür: backend `done`dan sonra DB persist için
+      // akışı açık tutar (~saniyeler); sayaç/HITL butonları bunu beklemesin.
+      setBusy(false);
+    }
     if (ev.event === "start") {
       // start.nodes DİNAMİK — backend ENV ne döndürürse onu kur (R1). İlki aktif.
       const ids = Array.isArray(ev.nodes) && ev.nodes.length ? ev.nodes : DEFAULT_NODE_IDS;
@@ -121,6 +126,12 @@ export function usePipeline() {
       setNodes((prev) => prev.map((n) =>
         (n.status === "pending" || n.status === "active")
           ? { ...n, status: "done", t0: n.t0 ?? t, t1: t } : n));
+    } else if (ev.event === "persist") {
+      // `done`dan SONRA gelen islem_id (backend persist'i sonuca ertelendi) — sonucu SIĞ
+      // merge ile zenginleştir (iç nesne referansları korunur; DashboardApp aynı-koşum
+      // tespiti buna dayanır). Aynı islem_id tekrar gelirse no-op (gereksiz render yok).
+      if (ev.islem_id) setResult((prev) => (
+        prev && prev.islem_id !== ev.islem_id ? { ...prev, islem_id: ev.islem_id } : prev));
     } else if (ev.event === "error") {
       setError(ev.message || "İşleme hatası");
       setNodes((prev) => prev.map((n) => (n.status === "active" ? { ...n, status: "error", t1: elapsed() } : n)));

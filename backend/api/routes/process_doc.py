@@ -11,6 +11,7 @@ compile-once; lazy singleton ile cache'lenir.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import time
@@ -155,6 +156,45 @@ async def _owner_id_from_request(request: Request) -> UUID | None:
         ) from None
 
 
+async def _persist_sonrasi(request: Request, state: dict[str, Any],
+                           response: ProcessResponse, kaynak_metin: str,
+                           filename: str) -> str:
+    """Persist + owner çözümü TEK kapıdan: DB_PERSIST kapalıyken owner sorgusu da atlanır
+    (eski kod, persist kapalıyken bile koşulsuz bir uzak DB turu atıyordu — Supabase soğuk
+    havuzunda ~20 sn). Akış gövdesinde 401 dönülemez (başlıklar gitti) → token hatası
+    loglanır, persist sistem kullanıcısına düşer, akış ölmez."""
+    if os.getenv("DB_PERSIST", "0") != "1":
+        return ""
+    try:
+        owner_id = await _owner_id_from_request(request)
+    except HTTPException as exc:
+        log.warning("persist_owner_dogrulama_hatasi", detail=str(exc.detail)[:100])
+        owner_id = None
+    return await _maybe_persist(state, response, kaynak_metin, filename, owner_id)
+
+
+# Arka plan persist görevlerine GÜÇLÜ referans: event loop task'lara yalnız weak-ref tutar —
+# istemci `done`dan hemen sonra koparsa generator çerçevesi yıkılır, referanssız task GC'ye
+# gidebilirdi (asyncio docs uyarısı). Bitince set'ten düşer; sessiz hata loglanır.
+_persist_tasks: set[asyncio.Task] = set()
+
+
+def _persist_task_bitti(task: asyncio.Task) -> None:
+    _persist_tasks.discard(task)
+    if not task.cancelled() and task.exception() is not None:
+        log.warning("persist_task_hata", hata=str(task.exception())[:200])
+
+
+def _persist_task_baslat(request: Request, state: dict[str, Any],
+                         response: ProcessResponse, kaynak_metin: str,
+                         filename: str) -> asyncio.Task:
+    task = asyncio.create_task(
+        _persist_sonrasi(request, state, response, kaynak_metin, filename))
+    _persist_tasks.add(task)
+    task.add_done_callback(_persist_task_bitti)
+    return task
+
+
 async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,
                          kaynak_metin: str, filename: str,
                          owner_id: UUID | None = None) -> str:
@@ -204,12 +244,12 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
             return resp
         resp = _to_response(out, {})
         resp.sure_ms = sure()
-        await _maybe_persist(out, resp, text, req.filename, await _owner_id_from_request(request))
+        await _persist_sonrasi(request, out, resp, text, req.filename)
         return resp
     final = await _get_graph().ainvoke(state)
     resp = _to_response(final, {})
     resp.sure_ms = sure()
-    await _maybe_persist(final, resp, text, req.filename, await _owner_id_from_request(request))
+    await _persist_sonrasi(request, final, resp, text, req.filename)
     return resp
 
 
@@ -298,8 +338,15 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
         final_state = dict(snap.values)
         resp = _to_response(final_state, ocr_meta)
         resp.sure_ms = int((time.monotonic() - t0) * 1000)
-        await _maybe_persist(final_state, resp, text, filename, await _owner_id_from_request(request))
+        # SONUÇ ÖNCE: `done` persist'i BEKLEMEZ — uzak Supabase (soğuk havuz) yazımı
+        # sonucu ~20 sn geciktiriyordu. islem_id sonradan `persist` event'iyle tamamlanır.
         yield _sse({"event": "done", "result": resp.model_dump()})
+        # shield + _persist_tasks referansı: istemci `done`'dan hemen sonra koparsa
+        # generator iptali await'i keser ama görev tamamlanır (kayıt kaybolmaz).
+        islem_id = await asyncio.shield(
+            _persist_task_baslat(request, final_state, resp, text, filename))
+        if islem_id:
+            yield _sse({"event": "persist", "islem_id": islem_id})
 
     return StreamingResponse(gen(), media_type="text/event-stream")
 

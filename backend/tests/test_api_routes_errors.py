@@ -100,6 +100,47 @@ class TestProcessDocStream:
         assert '"event":' in resp.text
 
 
+class TestStreamPersistSirasi:
+    """SSE sözleşmesi: `done` DB persist'i BEKLEMEZ (uzak Supabase sonucu geciktirmesin);
+    islem_id sonradan `persist` event'iyle tamamlanır."""
+
+    def test_done_persistten_once_islem_id_persist_eventinde(
+            self, client: TestClient, monkeypatch: pytest.MonkeyPatch):
+        # Arrange — persist açık + sahte persist (uzak DB yok; sabit islem_id döner)
+        from api.routes import process_doc as pd
+        monkeypatch.setenv("DB_PERSIST", "1")
+
+        async def sahte_persist(state, response, kaynak_metin, filename, owner_id=None):
+            return "ISLEM-TEST-42"
+        monkeypatch.setattr(pd, "_maybe_persist", sahte_persist)
+        metin = ("Konu: park aydınlatma talebi. Mahalle parkına aydınlatma "
+                 "yapılmasını arz ederim. Ad-Soyad: Ali Veli, imza.")
+        files = {"file": ("evrak.txt", io.BytesIO(metin.encode("utf-8")), "text/plain")}
+        # Act
+        resp = client.post("/process_doc/stream", files=files)
+        # Assert — done, persist'ten ÖNCE gelir; persist event'i islem_id taşır
+        govde = resp.text
+        done_idx = govde.find('"event": "done"')
+        persist_idx = govde.find('"event": "persist"')
+        assert done_idx != -1, "done event'i yok"
+        assert persist_idx != -1, "persist event'i yok"
+        assert done_idx < persist_idx, "done, persist'ten önce yayınlanmalı"
+        assert '"islem_id": "ISLEM-TEST-42"' in govde
+
+    def test_persist_kapaliyken_persist_eventi_yok(
+            self, client: TestClient, monkeypatch: pytest.MonkeyPatch):
+        # Arrange — DB_PERSIST kapalı → persist event'i hiç yayınlanmaz, done yine gelir
+        monkeypatch.setenv("DB_PERSIST", "0")
+        metin = ("Konu: park aydınlatma talebi. Mahalle parkına aydınlatma "
+                 "yapılmasını arz ederim. Ad-Soyad: Ali Veli, imza.")
+        files = {"file": ("evrak.txt", io.BytesIO(metin.encode("utf-8")), "text/plain")}
+        # Act
+        resp = client.post("/process_doc/stream", files=files)
+        # Assert
+        assert '"event": "done"' in resp.text
+        assert '"event": "persist"' not in resp.text
+
+
 # ---------------------------------------------------------------------------
 # /multimodal/ocr — normal yol + sözleşme
 # ---------------------------------------------------------------------------

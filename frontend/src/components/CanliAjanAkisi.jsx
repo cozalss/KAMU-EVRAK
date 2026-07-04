@@ -69,7 +69,9 @@ function HatTerminal({ n, col, count, sure, devir, girisAktif, glow, akis }) {
   const pt = devir ? SP.m : 0;
   return (
     <div style={{ position: "relative", padding: `${pt}px 0 ${SP.s}px`, animation: glow ? "nu-rise .18s ease-out both" : "none" }}>
-      {devir && <Ray top={0} height={pt + 2} dashed />}
+      {/* Aktarma kesiği yukarı taşar (-10): alt alta dizilimde Görev 1 terminüsünün hemen
+          altından başlayıp rozete kadar iner — arada kopuk boşluk kalmaz. */}
+      {devir && <Ray top={-(SP.s + 2)} height={pt + SP.s + 4} dashed />}
       <Ray top={pt + 22} bottom={0} filled={girisAktif} col={col} akis={akis} />
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, height: 24 }}>
         <span style={{ width: 28, display: "flex", justifyContent: "center", flexShrink: 0 }}>
@@ -97,8 +99,10 @@ function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akis }) {
   return (
     <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 8px 6px 0", borderRadius: RAD.ctl, background: active ? ALFA(col) : "transparent", boxShadow: active && akis ? `inset 0 0 0 1px ${col}, ${SH.card}` : "none", transition: "background .25s ease-out, box-shadow .25s ease-out", animation: glow ? `nu-rise .18s ease-out ${Math.min(i * 28, 420)}ms both` : "none" }}>
       <div style={{ position: "relative", minHeight: 40 }}>
-        {hasTop && <Ray top={0} height={HAT.merkez} filled={topFill} col={col} akis={akis} />}
-        {hasBot && <Ray top={HAT.merkez} bottom={0} filled={done} col={col} akis={akis} />}
+        {/* Ray parçaları satırın 6px dikey dolgusuna taşar (-6) → istasyonlar arası boru
+            kopukluğu kalmaz, hat kesintisiz akar. */}
+        {hasTop && <Ray top={-6} height={HAT.merkez + 6} filled={topFill} col={col} akis={akis} />}
+        {hasBot && <Ray top={HAT.merkez} bottom={-6} filled={done} col={col} akis={akis} />}
         <HatDurak st={a.status} col={durakCol} />
       </div>
       <div style={{ minWidth: 0, opacity: a.status === "pending" ? 0.55 : 1, transition: "opacity .2s ease-out" }}>
@@ -131,7 +135,7 @@ const HatSon = ({ col, done, akis }) => (
    panelde iki hattı yan yana koyar (metro şeması), darda alt alta yığar. Terminüs, hattın
    kendi istasyonları bitince dolar (Görev 1 hattı, Görev 2'yi beklemez); istasyon numarası
    global sıradır (01–16) — iki hat tek koşumun parçaları. */
-function HatFaz({ n, items, risk, glow, sahne }) {
+function HatFaz({ n, items, risk, glow, sahne, sonHat = true }) {
   const col = n === 2 ? V : T;
   const ms = items.reduce((s, a) => (a.status === "done" && Number.isFinite(a.t1 - a.t0) ? s + (a.t1 - a.t0) : s), 0);
   const sure = ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
@@ -143,10 +147,14 @@ function HatFaz({ n, items, risk, glow, sahne }) {
       <HatTerminal n={n} col={col} count={items.length} sure={sure} devir={n === 2}
         girisAktif={items[0]?.status !== "pending"} glow={glow} akis={akis} />
       {items.map((a, j) => (
-        <HatIstasyon key={a.id} a={a} i={a.sira} col={col} risk={risk} hasTop={j > 0}
-          topFill={j > 0 && items[j - 1].status === "done"} hasBot glow={glow} akis={akis} />
+        /* hasTop ilk istasyonda da açık: terminal rayından gelen hat, istasyona kesintisiz girer. */
+        <HatIstasyon key={a.id} a={a} i={a.sira} col={col} risk={risk} hasTop
+          topFill={j === 0 ? a.status !== "pending" : items[j - 1].status === "done"}
+          hasBot glow={glow} akis={akis} />
       ))}
-      <HatSon col={col} done={fazDone} akis={akis} />
+      {/* Terminüs yalnız koşumun GERÇEK sonunda — devreden hat (Görev 1) bitmez,
+          kesikli aktarmayla sonraki hatta bağlanır (metro dili). */}
+      {sonHat && <HatSon col={col} done={fazDone} akis={akis} />}
     </div>
   );
 }
@@ -568,7 +576,8 @@ export default function CanliAjanAkisi({
               /* Sonuç sonrası (sol sütun): dikey metro şeması — dar sütuna uyar. */
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 460px))", justifyContent: "center", columnGap: SP.xxxl, rowGap: SP.s }}>
                 {gorevler.map((g) => (
-                  <HatFaz key={g} n={g} items={display.filter((a) => a.gorev === g)} risk={risk} glow={glow} sahne={false} />
+                  <HatFaz key={g} n={g} items={display.filter((a) => a.gorev === g)} risk={risk} glow={glow} sahne={false}
+                    sonHat={g === gorevler[gorevler.length - 1]} />
                 ))}
               </div>
             )}
@@ -613,7 +622,8 @@ export default function CanliAjanAkisi({
               <RiskBand band={riskOutcome} lit={lit} />
             </div>
 
-            <div style={{ ...card, flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+            {/* Kart içerik boyunda kalır (flex:1 yok) — taslak bitince altta boş beyazlık uzamaz. */}
+            <div style={{ ...card, display: "flex", flexDirection: "column" }}>
               <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.s }}>Resmî yazı taslağı</div>
               {draftMd ? (
                 <pre style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420 }}>{cleanDemoText(draftMd)}</pre>

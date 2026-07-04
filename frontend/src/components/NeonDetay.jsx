@@ -49,13 +49,20 @@ function useWide(q = "(min-width: 1180px)") {
 }
 
 /* Bölüm navigasyonu (Linear/Stripe detay-sayfası deseni) — yapışkan ray + scroll-spy. */
+/* col: görev bölümleri hat rengini taşır (Görev 1 = T, Görev 2 = V) — rayda nokta +
+   aktif durumda kendi hat renginde çubuk/metin; izleme şeridiyle aynı renk dili. */
 const SECS = [
   { id: "det-ozet", l: "Özet" },
-  { id: "det-g1", l: "Görev 1 · Anlama" },
-  { id: "det-g2", l: "Görev 2 · Üretim" },
+  { id: "det-g1", l: "Görev 1 · Anlama", col: T },
+  { id: "det-g2", l: "Görev 2 · Üretim", col: V },
   { id: "det-yazi", l: "Resmî yazı" },
 ];
-function BolumRay() {
+/* Üst durum çubuğu (CanliAjanAkisi header) sticky ve ~90px yüksek — gömülü modda ray ve
+   bölüm scroll-hedefleri onun ALTINA yapışmalı; yoksa rayın üst linkleri çubuğun arkasında
+   gizli kalır (görülen hata: "Görev 1 yok"). */
+const YAPISKAN_UST = 112;   // üst çubuk ~88px + nefes
+
+function BolumRay({ ustOfset = SP.xl }) {
   const [aktif, setAktif] = useState("det-ozet");
   useEffect(() => {
     const els = SECS.map((s) => document.getElementById(s.id)).filter(Boolean);
@@ -73,15 +80,17 @@ function BolumRay() {
     document.getElementById(id)?.scrollIntoView({ behavior: az ? "auto" : "smooth", block: "start" });
   };
   return (
-    <nav aria-label="Sonuç bölümleri" style={{ position: "sticky", top: SP.xl, width: 168, flex: "none", display: "flex", flexDirection: "column", gap: 2 }}>
+    <nav aria-label="Sonuç bölümleri" style={{ position: "sticky", top: ustOfset, width: 168, flex: "none", display: "flex", flexDirection: "column", gap: 2 }}>
       <span style={{ ...TYPE.meta, color: PAL.mut3, padding: "0 10px", marginBottom: SP.xs }}>Bölümler</span>
       {SECS.map((s) => {
         const on = aktif === s.id;
+        const hat = s.col || T;   // görev bölümü kendi hat rengini taşır; diğerleri T
         return (
           <button key={s.id} type="button" onClick={() => git(s.id)} aria-current={on ? "true" : undefined} {...focusRing}
             onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = on ? PAL.press : "transparent"; }}
-            style={{ cursor: "pointer", textAlign: "left", padding: "6px 10px", border: "none", borderLeft: `2px solid ${on ? T : "transparent"}`, borderRadius: `0 ${RAD.ctl}px ${RAD.ctl}px 0`, background: on ? PAL.press : "transparent", ...TYPE.data, fontWeight: on ? 500 : 400, color: on ? DERIN.T : PAL.mut2, transition: "background .12s ease-out" }}>
+            style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.s, textAlign: "left", padding: "6px 10px", border: "none", borderLeft: `2px solid ${on ? hat : "transparent"}`, borderRadius: `0 ${RAD.ctl}px ${RAD.ctl}px 0`, background: on ? PAL.press : "transparent", ...TYPE.data, fontWeight: on ? 500 : 400, color: on ? DERIN_OF(hat) : PAL.mut2, transition: "background .12s ease-out" }}>
+            {s.col && <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: s.col, flexShrink: 0 }} />}
             {s.l}
           </button>
         );
@@ -161,7 +170,7 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
         </header>
 
         {/* ============ Hüküm şeridi — tek bakışta sonuç + telemetri ============ */}
-        <div id="det-ozet" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "16px 24px", marginBottom: SP.xl, boxShadow: SH.card, animation: "nu-rise .16s ease-out both" }}>
+        <div id="det-ozet" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "16px 24px", marginBottom: SP.xl, boxShadow: SH.card, animation: "nu-rise .16s ease-out both", scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl }}>
           <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap", justifyContent: "space-between" }}>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
@@ -229,11 +238,11 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
 
         {/* ============ Gövde: yapışkan bölüm rayı + içerik ============ */}
         <div style={{ display: "flex", gap: SP.xl, alignItems: "flex-start" }}>
-          {wide && <BolumRay />}
+          {wide && <BolumRay ustOfset={embedded ? YAPISKAN_UST : SP.xl} />}
           <div style={{ flex: 1, minWidth: 0 }}>
 
             {/* ============ Görev 1 · Anlama ============ */}
-            <section id="det-g1" aria-label="Görev 1 · Anlama" style={{ marginBottom: SP.xxl, scrollMarginTop: SP.xl }}>
+            <section id="det-g1" aria-label="Görev 1 · Anlama" style={{ marginBottom: SP.xxl, scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl }}>
               <GorevLabel n="1" t="Anlama" color={T} count="anlama ajanları" />
               <div style={STACK}>
 
@@ -379,7 +388,7 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
             </section>
 
             {/* ============ Görev 2 · Üretim ============ */}
-            <section id="det-g2" aria-label="Görev 2 · Üretim" style={{ scrollMarginTop: SP.xl }}>
+            <section id="det-g2" aria-label="Görev 2 · Üretim" style={{ scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl }}>
               <GorevLabel n="2" t="Üretim" color={V} count="üretim ajanları" />
               <div style={STACK}>
 
@@ -448,7 +457,7 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                   ]}
                 />
 
-                <div id="det-yazi" style={{ scrollMarginTop: SP.xl }}>
+                <div id="det-yazi" style={{ scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl }}>
                   <NeonCard title="Resmî yazı taslağı" tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "taslak"} accent={V} icon={<Icon.doc />}>
                     {r.yazi_taslak_md && (
                       <PaperSheet

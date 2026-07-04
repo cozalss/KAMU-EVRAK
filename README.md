@@ -302,7 +302,16 @@ ile verilir. Diğer uçlar: `/sohbet` + `/sohbet/stream` (asistan), `/sla/onizle
 
 ## 👥 Takım
 
-*(Başvuru teslimiyle doldurulacak: takım adı · üyeler · danışman · iletişim)*
+**TasnifX** — TEKNOFEST 2026 Yapay Zeka Dil Ajanları Yarışması, "Kamu Evrak ve Resmî Yazışma
+Süreçleri İçin Çok Ajanlı (Multi-Agent) Akıllı Destek Sistemi" kategorisi.
+Başvuru: 04 Temmuz 2026 (Takım ID 1001572 · Başvuru ID 5372496).
+
+- cem özal
+- Gizem Fatma Kılıç
+- Ecem Tüysüz
+- Can Eltayeb
+
+**Danışman:** Sevgi Koyuncu Tunç
 
 ## Lisans
 

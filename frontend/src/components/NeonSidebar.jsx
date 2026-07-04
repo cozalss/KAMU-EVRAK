@@ -1,7 +1,9 @@
 /* NeonSidebar — çalışma alanı navigasyonu. Her öğe GERÇEK görünüm değiştirir (activeView).
-   "Yeni evrak yükle" + "Örnek evrakla dene" dropdown girişi. Klavye erişilebilir (button + focusRing). */
+   "Yeni evrak yükle" + "Örnek evrakla dene" dropdown girişi. Klavye erişilebilir (button + focusRing).
+   Tabandaki kullanıcı kartı HesapMenu'ye devredildi (profil/tercih/yardım/KVKK/çıkış tek menüde). */
 import React, { useState } from "react";
-import { MONO, T, V, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
+import { MONO, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
+import HesapMenu from "./HesapMenu.jsx";
 
 const NAV = [
   { id: "panel", label: "Panel", icon: "grid" },
@@ -57,14 +59,7 @@ function SampleRow({ sample, onPick }) {
   );
 }
 
-const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sistem: "Sistem" };
-
-function bashHarfler(ad) {
-  const p = (ad || "").trim().split(/\s+/).filter(Boolean);
-  return ((p[0]?.[0] || "") + (p[1]?.[0] || p[0]?.[1] || "")).toUpperCase() || "?";
-}
-
-function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, onPalet }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, onPalet, hareketAzalt = false, onHareketAzalt }) {
   const [showSamples, setShowSamples] = useState(false);
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start" }}>
@@ -147,21 +142,8 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
         </button>
       )}
 
-      <div style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: SP.m, padding: SP.m, borderRadius: RAD.card, background: PAL.surfHi, border: `1px solid ${PAL.line}` }}>
-        <span aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.meta, fontWeight: 500, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
-        <span style={{ minWidth: 0, flex: 1 }}>
-          <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
-          <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
-        </span>
-        {onLogout && (
-          <button type="button" onClick={onLogout} aria-label="Çıkış yap" title="Çıkış yap" {...focusRing}
-            style={{ flexShrink: 0, width: 30, height: 30, display: "grid", placeItems: "center", borderRadius: RAD.ctl, cursor: "pointer", color: PAL.mut2, background: "transparent", border: `1px solid ${PAL.line}`, transition: "color .12s ease-out, border-color .12s ease-out" }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = DERIN.kirmizi; e.currentTarget.style.borderColor = PAL.lineHi; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = PAL.mut2; e.currentTarget.style.borderColor = PAL.line; }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 17l5-5-5-5M20 12H9M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </button>
-        )}
-      </div>
+      <HesapMenu user={user} onLogout={onLogout} onPalet={onPalet}
+        hareketAzalt={hareketAzalt} onHareketAzalt={onHareketAzalt} />
     </aside>
   );
 }

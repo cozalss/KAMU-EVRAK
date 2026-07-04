@@ -93,6 +93,16 @@ export default function DashboardApp() {
   const [taslakHedef, setTaslakHedef] = useState(null);
   // Komut paleti (Ctrl+K) — görünüm/eylem/örnek işleme tek kutudan.
   const [paletAcik, setPaletAcik] = useState(false);
+  // Hesap menüsü tercihi: canlı ajan izi animasyonlarını azalt (CanliAjanAkisi glow'u).
+  // Kalıcı (localStorage) — OS prefers-reduced-motion'dan bağımsız, kullanıcının site tercihi.
+  const [hareketAzalt, setHareketAzalt] = useState(() => {
+    try { return localStorage.getItem("ke-hareket-azalt") === "1"; } catch { return false; }
+  });
+  const toggleHareketAzalt = useCallback(() => setHareketAzalt((v) => {
+    const yeni = !v;
+    try { localStorage.setItem("ke-hareket-azalt", yeni ? "1" : "0"); } catch { /* özel mod — tercih oturumluk kalır */ }
+    return yeni;
+  }), []);
   // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
   const [slaMap, setSlaMap] = useState(null);
   const fileRef = useRef(null);
@@ -217,6 +227,19 @@ export default function DashboardApp() {
   // HITL kararı damgalanmışsa (resume sonrası) Giden Evrak kaydını burada kur (resume async).
   useEffect(() => {
     if (result && result !== lastResultRef.current) {
+      const onceki = lastResultRef.current;
+      // SSE `persist` event'i AYNI koşumu yalnız islem_id ile zenginleştirir (usePipeline
+      // shallow-merge → iç nesneler referans-eş; farklı koşumlar taze JSON.parse nesneleri
+      // taşıdığından referans eşitliği koşumlar arası imkânsız). Bu yeni koşum DEĞİL:
+      // geçmişe ikinci kayıt açma; mevcut kaydı tazele ki stampDecision islem_id bulsun.
+      // (onceki.islem_id koşulu YOK — tekrarlanan persist event'i de idempotent kalır.)
+      if (onceki && result.islem_id
+          && result.denetim_izi === onceki.denetim_izi
+          && result.bilgi_unsurlari === onceki.bilgi_unsurlari) {
+        lastResultRef.current = result;
+        setHistory((h) => h.map((x) => (x.result === onceki ? { ...x, result } : x)));
+        return;
+      }
       lastResultRef.current = result;
       const pa = pendingApprovalRef.current;
       // HITL resume ile gelen sonuç: karar zaten verilmiş → geçmişe damgalı yaz ("Karar
@@ -384,7 +407,7 @@ export default function DashboardApp() {
       onApprove={onApprove} onEdit={onEdit} onReject={onReject}
       onDownload={download} downloading={downloading} canDownload={!!evrakText}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
-      fileUrl={fileUrl} onFileDrop={runFile}
+      fileUrl={fileUrl} onFileDrop={runFile} glow={!hareketAzalt}
     />
   );
 
@@ -398,7 +421,7 @@ export default function DashboardApp() {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} onPalet={paletAc} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} onPalet={paletAc} hareketAzalt={hareketAzalt} onHareketAzalt={toggleHareketAzalt} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>

@@ -1,0 +1,654 @@
+{
+  "set": "heldout",
+  "gold_dosya": "heldout_gold_n54.jsonl",
+  "tarih": "2026-07-04T16:52:11.777143+00:00",
+  "llm_mode": "openai",
+  "model": "deepseek-chat",
+  "metrikler": {
+    "n": 54,
+    "correct": 47,
+    "accuracy": 0.8704,
+    "accuracy_ci95": [
+      0.756,
+      0.936
+    ],
+    "macro_f1": 0.8636,
+    "macro_f1_ci95_bca": [
+      0.812,
+      0.98
+    ],
+    "operational_accuracy": 0.9074,
+    "operational_accuracy_ci95": [
+      0.801,
+      0.96
+    ],
+    "operational_correct": 49,
+    "operational_macro_f1": 0.8535,
+    "per_class": {
+      "basvuru": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "bilgi_edinme": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "cevabi_yazi": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "cimer": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "dava_evraki": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "dilekce": {
+        "precision": 0.375,
+        "recall": 1.0,
+        "f1": 0.545,
+        "support": 3
+      },
+      "fatura": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "genelge_talimat_olur": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "gorus_mutalaa": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "icra_evraki": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "ihbar": {
+        "precision": 1.0,
+        "recall": 0.333,
+        "f1": 0.5,
+        "support": 3
+      },
+      "muzekkere": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "rapor": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "sikayet": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "talep": {
+        "precision": 1.0,
+        "recall": 0.333,
+        "f1": 0.5,
+        "support": 3
+      },
+      "tebligat": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "tutanak": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "ust_yazi": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      }
+    },
+    "abstention_rate": 0.0,
+    "abstention_count": 0,
+    "confusion": [
+      [
+        "sikayet",
+        "dilekce",
+        3
+      ],
+      [
+        "ihbar",
+        "sikayet",
+        2
+      ],
+      [
+        "talep",
+        "dilekce",
+        2
+      ]
+    ],
+    "n_classes": 19,
+    "route_top1": 49,
+    "route_top1_acc": 0.9074,
+    "route_top1_ci95": [
+      0.801,
+      0.96
+    ],
+    "route_top3": 49,
+    "route_top3_acc": 0.9074
+  },
+  "tahminler": [
+    {
+      "metin": "T.C. ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI\n\nTarih   : 01.11.2027\nSayı    : E-22052987-890.99-7400\nKonu    : kaldırımdaki bozukluk\n\nBu meselede mağduriyetimin sonlandırılmasını içtenlikle is",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. TARIM VE ORMAN BAKANLIĞI\n\nTarih   : 27.02.2027\nSayı    : E-60382865-342.99-2270\nKonu    : mahalle aydınlatması\n\nMahallemizdeki sorunun çözümü için elinizden geleni yapacağınıza inanıyorum.\n\nAd-So",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 08.12.2027\nSayı    : E-97600138-158.99-7436\nKonu    : mahalle aydınlatması\n\nSöz konusu durumun düzeltilmesi yönünde adım atılmasını rica ediyorum.\n\nAd-Soy",
+      "gercek": "dilekce",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "VAKIFLAR GENEL MÜDÜRLÜĞÜ\n\nTarih   : 28.01.2027\nSayı    : E-65769476-215.99-6215\nKonu    : öğrenim desteği\n\nŞartları sağladığımı düşünerek hakkımın tesisini talep etmekteyim.\n\nAd-Soyad: Aras Keskin\nT.C",
+      "gercek": "basvuru",
+      "tahmin": "basvuru",
+      "conf": 0.8,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 25.06.2027\nSayı    : E-35023730-502.99-3607\nKonu    : tesis kullanım hakkı\n\nMevzuatın öngördüğü izin için gerekli incelemenin yapılmasını arz ederim.\n\nAd-Soyad: Ar",
+      "gercek": "basvuru",
+      "tahmin": "basvuru",
+      "conf": 0.8,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 20.01.2027\nSayı    : E-64365281-662.99-8362\n\nŞartları sağladığımı düşünerek hakkımın tesisini talep etmekteyim.\n\nAd-Soyad: Nehir Taş\nT.C. Kimlik No: 36730",
+      "gercek": "basvuru",
+      "tahmin": "basvuru",
+      "conf": 0.8,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. TARIM VE ORMAN BAKANLIĞI\n\nTarih   : 25.10.2027\nSayı    : E-19594562-564.99-1032\nKonu    : çevredeki olumsuzluk\n\nKomşumuzun davranışları huzurumuzu kaçırıyor, bir an önce müdahale edilmesini istiy",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 14.01.2027\nSayı    : E-66038942-517.99-4460\n\nDefalarca bildirmeme rağmen sonuç alamadım, bu kez yetkililerin harekete geçmesini umuyorum.\n\nAd-Soyad: Mira Güneş\nT.C",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 22.06.2027\nSayı    : E-46746087-670.99-3504\nKonu    : hizmet aksaması\n\nYapılan işten hiç memnun değilim; bu konunun üzerine gidilmesini talep ediyorum.\n\nAd-Soyad: ",
+      "gercek": "sikayet",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n\nTarih   : 04.11.2027\nSayı    : E-11632923-421.99-6166\nKonu    : izinsiz faaliyet\n\nÇalışanların güvenliğini tehlikeye atan uygulamaları sizlere aktarmak istiyorum.\n\nA",
+      "gercek": "ihbar",
+      "tahmin": "sikayet",
+      "conf": 0.8,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": false
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 18.01.2027\nSayı    : E-69862234-879.99-6997\nKonu    : güvenlik açığı\n\nKayıt altına alınmadan çalıştırılan kişiler olduğunu bilgilerinize sunuyorum.\n\nAd-So",
+      "gercek": "ihbar",
+      "tahmin": "ihbar",
+      "conf": 0.85,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 08.07.2027\nSayı    : E-64042066-637.99-3921\nKonu    : izinsiz faaliyet\n\nÇalışanların güvenliğini tehlikeye atan uygulamaları sizlere aktarmak istiyorum.\n\nAd-Soyad:",
+      "gercek": "ihbar",
+      "tahmin": "sikayet",
+      "conf": 0.8,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": false
+    },
+    {
+      "metin": "KARAYOLLARI GENEL MÜDÜRLÜĞÜ\n\nTarih   : 06.06.2027\nSayı    : E-62582053-168.99-3882\nKonu    : görüşme isteği\n\nEk kaynağın ayrılması yönünde değerlendirme yapılmasını arz ederim.\n\nAd-Soyad: Toprak Yavuz",
+      "gercek": "talep",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 06.03.2027\nSayı    : E-97290471-989.99-9880\n\nPersonelin görevlendirilmesi hususunda gerekenin yapılmasını istiyorum.\n\nAd-Soyad: Naz Çetin\nT.C. Kimlik No: 42",
+      "gercek": "talep",
+      "tahmin": "dilekce",
+      "conf": 0.8,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": false
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 22.10.2027\nSayı    : E-36133047-169.99-6816\nKonu    : görüşme isteği\n\nAracın geçici olarak tahsis edilmesini umuyorum.\n\nAd-Soyad: Alp Bilgin\nT.C. Kimlik No:",
+      "gercek": "talep",
+      "tahmin": "talep",
+      "conf": 0.75,
+      "beklenen_birim": "ilgili_teknik_daire",
+      "tahmin_birim": "ilgili_teknik_daire",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. TARIM VE ORMAN BAKANLIĞI\n\nTarih   : 16.06.2027\nSayı    : E-81707055-132.99-6249\n\nYapılan harcamalara dair kayıtların açıklanmasını istemekteyim.\n\nAd-Soyad: Ela Çetin\nT.C. Kimlik No: 624******86\nİ",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.85,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 04.02.2027\nSayı    : E-34224201-739.99-8585\nKonu    : harcama dökümü\n\nSaklı bulunan dosyadaki verilere ulaşma talebimi iletiyorum.\n\nAd-Soyad: Defne Sönmez\nT",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.85,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n\nTarih   : 16.01.2027\nSayı    : E-19817022-423.99-2313\n\nSaklı bulunan dosyadaki verilere ulaşma talebimi iletiyorum.\n\nAd-Soyad: Toprak Tunç\nT.C. Kimlik No: 75637",
+      "gercek": "bilgi_edinme",
+      "tahmin": "bilgi_edinme",
+      "conf": 0.85,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI\n\nTarih   : 21.08.2027\nSayı    : E-94132806-682.99-4491\nKonu    : altyapı sorunu\n\nElektronik başvuru kanalından ulaştırdığım meselenin takibe alınm",
+      "gercek": "cimer",
+      "tahmin": "cimer",
+      "conf": 0.8,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 26.08.2027\nSayı    : E-20448265-616.99-5134\nKonu    : erişim güçlüğü\n\nÇevrim içi ilettiğim talebime bir an önce dönüş yapılmasını bekliyorum.\n\nAd-Soyad: Eym",
+      "gercek": "cimer",
+      "tahmin": "cimer",
+      "conf": 0.8,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "KAMU İHALE KURUMU\n\nTarih   : 19.06.2027\nSayı    : E-99129209-161.99-5322\nKonu    : altyapı sorunu\n\nDevletin tek kapı başvuru hattından gönderdiğim talebin sonuçlandırılmasını istiyorum.\n\nAd-Soyad: Alp",
+      "gercek": "cimer",
+      "tahmin": "cimer",
+      "conf": 0.85,
+      "beklenen_birim": "basin_halkla_iliskiler_cimer",
+      "tahmin_birim": "basin_halkla_iliskiler_cimer",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. TARIM VE ORMAN BAKANLIĞI\n\nTarih   : 02.04.2027\nSayı    : E-46351511-418.99-3993\nKonu    : iş birliği\n\nİlgili çalışmanın koordinasyonu için gerekli belgeler ekte gönderilmektedir.\n\nİmza: Yusuf Sar",
+      "gercek": "ust_yazi",
+      "tahmin": "ust_yazi",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 27.10.2027\nSayı    : E-87340857-177.99-4201\n\nİlişikte sunulan belgenin gereği yapılmak üzere makamınıza takdim edilmiştir.\n\nİmza: Defne Tekin / e-imza",
+      "gercek": "ust_yazi",
+      "tahmin": "ust_yazi",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n\nTarih   : 28.03.2027\nSayı    : E-58572621-760.99-8285\nKonu    : iş birliği\n\nHazırlanan çalışmanın değerlendirilmesi amacıyla tarafınıza iletilmesi uygun görülmüştür.",
+      "gercek": "ust_yazi",
+      "tahmin": "ust_yazi",
+      "conf": 0.8,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 16.05.2027\nSayı    : E-79417363-134.99-3923\nKonu    : inceleme çıktısı\n\nSorduğunuz konuyla ilgili kurumumuzun yaklaşımı tarafınıza bildirilmektedir.\n\nİmza",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI\n\nTarih   : 08.02.2027\nSayı    : E-41368184-310.99-2142\nKonu    : inceleme çıktısı\n\nSorduğunuz konuyla ilgili kurumumuzun yaklaşımı tarafınıza bild",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n\nTarih   : 13.07.2027\nSayı    : E-44253867-107.99-7889\nKonu    : inceleme çıktısı\n\nYazınızda dile getirilen soruya karşılık hazırladığımız açıklama ektedir.\n\nİmz",
+      "gercek": "cevabi_yazi",
+      "tahmin": "cevabi_yazi",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 18.12.2027\nSayı    : E-12021637-620.99-5479\nKonu    : karar duyurusu\n\nİşbu yazı ile söz konusu idari işlem tarafınıza resmen duyurulmaktadır.\n\nİmza: Demir T",
+      "gercek": "tebligat",
+      "tahmin": "tebligat",
+      "conf": 0.9,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "VAKIFLAR GENEL MÜDÜRLÜĞÜ\n\nTarih   : 24.03.2027\nSayı    : E-39873616-546.99-8050\n\nMuhataba yapılan bu resmi bildirim ile sürecin işlemeye başladığı duyurulur.\n\nİmza: Azra Eren / e-imza",
+      "gercek": "tebligat",
+      "tahmin": "tebligat",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 15.01.2027\nSayı    : E-12301794-279.99-8932\nKonu    : yükümlülük bildirimi\n\nKararın size ulaştırıldığı tarihten itibaren süreniz başlayacaktır.\n\nİmza: Toprak Taş /",
+      "gercek": "tebligat",
+      "tahmin": "tebligat",
+      "conf": 0.9,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 15.04.2027\nSayı    : E-83053668-570.99-4454\nKonu    : uyuşmazlık beyanı\n\nYargılamanın görüldüğü merci nezdinde ileri sürdüğümüz iddialar ektedir.\n\nİmza: Duru Taş /",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n\nTarih   : 04.09.2027\nSayı    : E-65955119-950.99-3934\nKonu    : savunma sunumu\n\nEsas hakkındaki savunmamızın duruşmada dikkate alınmasını talep ederiz.\n\nİmza: E",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. TARIM VE ORMAN BAKANLIĞI\n\nTarih   : 15.06.2027\nSayı    : E-16656728-186.99-6536\nKonu    : savunma sunumu\n\nKarara karşı bir üst mercie taşıdığımız itirazımızın incelenmesini isteriz.\n\nİmza: Alp Ya",
+      "gercek": "dava_evraki",
+      "tahmin": "dava_evraki",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n\nTarih   : 24.09.2027\nSayı    : E-36696779-551.99-2891\n\nBorçlunun banka hesaplarına bloke konulması hususunda gereğini rica ederiz.\n\nİmza: Toprak Güler / e-imza",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n\nTarih   : 22.09.2027\nSayı    : E-81632750-381.99-5530\nKonu    : alacak tahsili\n\nTakip dosyamız kapsamında borçluya ait taşınmazın kaydına şerh konulmasını talep eder",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "VAKIFLAR GENEL MÜDÜRLÜĞÜ\n\nTarih   : 14.04.2027\nSayı    : E-50654463-959.99-6619\nKonu    : alacak tahsili\n\nBorçlunun malvarlığına el konulması yönünde gerekli işlemlerin yürütülmesini rica ederiz.\n\nİmz",
+      "gercek": "icra_evraki",
+      "tahmin": "icra_evraki",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "KARAYOLLARI GENEL MÜDÜRLÜĞÜ\n\nTarih   : 01.02.2027\nSayı    : E-95050332-102.99-3729\nKonu    : bilgi celbi\n\nİlgili esas dosyası için ihtiyaç duyulan bilginin makamımıza gönderilmesi rica olunur.\n\nİmza: ",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "KARAYOLLARI GENEL MÜDÜRLÜĞÜ\n\nTarih   : 26.11.2027\nSayı    : E-21996770-431.99-1361\n\nYürütülen iş kapsamında kurumunuzdaki belgelerin örneklerine ihtiyacımız bulunmaktadır.\n\nİmza: Poyraz Güler / e-imza",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.8,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 19.10.2027\nSayı    : E-30159097-589.99-7052\nKonu    : kayıt isteme\n\nBir kişinin güncel ikamet bilgisinin dosyamıza bildirilmesi hususunda gereği rica olunur",
+      "gercek": "muzekkere",
+      "tahmin": "muzekkere",
+      "conf": 0.85,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI\n\nTarih   : 22.02.2027\nSayı    : E-24576399-127.99-3712\nKonu    : hizmet bedeli\n\nKesilen belge uyarınca tahsilatımızın gerçekleştirilmesini bekliyo",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.85,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 07.03.2027\nSayı    : E-21758065-702.99-7695\nKonu    : hizmet bedeli\n\nVerilen hizmet karşılığında düzenlenen belgeye istinaden tutarın hesabımıza aktarılma",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.85,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n\nTarih   : 22.01.2027\nSayı    : E-70870707-268.99-3169\nKonu    : hak ediş\n\nYapılan iş karşılığı doğan alacağın bütçeden karşılanması arz olunur.\n\nİmza: Kuzey Taş / e-",
+      "gercek": "fatura",
+      "tahmin": "fatura",
+      "conf": 0.85,
+      "beklenen_birim": "mali_strateji_sgb",
+      "tahmin_birim": "mali_strateji_sgb",
+      "dogru": true
+    },
+    {
+      "metin": "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n\nTarih   : 16.10.2027\nSayı    : E-46292145-923.99-9293\nKonu    : teslim kaydı\n\nOlay yerinde yapılan tespitler taraflarca imza altına alınarak kayda geçirilmiştir.\n\nİm",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "VAKIFLAR GENEL MÜDÜRLÜĞÜ\n\nTarih   : 02.09.2027\nSayı    : E-98529845-123.99-5588\nKonu    : yerinde tespit\n\nAşağıdaki hususlar hazır bulunanlar huzurunda belgelendirilmiştir.\n\nİmza: Poyraz Güneş / e-imz",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n\nTarih   : 13.12.2027\nSayı    : E-93943466-827.99-9028\n\nSayım esnasında belirlenenler ilgililerce tutulan belgeye işlenmiştir.\n\nİmza: Berra Yalçın / e-imza",
+      "gercek": "tutanak",
+      "tahmin": "tutanak",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "GENÇLİK VE SPOR BAKANLIĞI\n\nTarih   : 01.05.2027\nSayı    : E-55065205-164.99-7654\nKonu    : saha bulgusu\n\nDönem boyunca gerçekleştirilen faaliyetler özetlenerek değerlendirmeye sunulmuştur.\n\nİmza: Topr",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.85,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "KARAYOLLARI GENEL MÜDÜRLÜĞÜ\n\nTarih   : 03.02.2027\nSayı    : E-26323871-216.99-8612\n\nİzleme sürecinde elde edilen veriler değerlendirilerek görüşe bağlanmıştır.\n\nİmza: Aras Mutlu / e-imza",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.85,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI\n\nTarih   : 02.08.2027\nSayı    : E-90952027-654.99-8678\nKonu    : dönem değerlendirmesi\n\nYürütülen çalışmanın bulguları ve önerileri aşağıda ayrınt",
+      "gercek": "rapor",
+      "tahmin": "rapor",
+      "conf": 0.85,
+      "beklenen_birim": "teftis_ic_denetim",
+      "tahmin_birim": "teftis_ic_denetim",
+      "dogru": true
+    },
+    {
+      "metin": "DEVLET SU İŞLERİ GENEL MÜDÜRLÜĞÜ\n\nTarih   : 23.10.2027\nSayı    : E-97852137-973.99-9228\n\nTazminat hesabında izlenecek yol konusunda hukuki kanaatinize ihtiyaç duyulmaktadır.\n\nİmza: Kuzey Çetin / e-imz",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.9,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "KAMU İHALE KURUMU\n\nTarih   : 18.10.2027\nSayı    : E-27093105-839.99-3014\nKonu    : hukuki değerlendirme isteği\n\nTazminat hesabında izlenecek yol konusunda hukuki kanaatinize ihtiyaç duyulmaktadır.\n\nİm",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.9,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞI\n\nTarih   : 26.10.2027\nSayı    : E-87839563-848.99-6029\n\nMevzuatın bu hükmünün nasıl yorumlanması gerektiğine dair görüşünüzü rica ederiz.\n\nİmza: D",
+      "gercek": "gorus_mutalaa",
+      "tahmin": "gorus_mutalaa",
+      "conf": 0.9,
+      "beklenen_birim": "hukuk_musavirligi",
+      "tahmin_birim": "hukuk_musavirligi",
+      "dogru": true
+    },
+    {
+      "metin": "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nTarih   : 24.05.2027\nSayı    : E-54112503-715.99-8572\nKonu    : uygulama esası\n\nAşağıda belirtilen uygulamanın yürürlüğe konulması makamınızın onayına arz olunur.\n\n",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "KAMU İHALE KURUMU\n\nTarih   : 01.05.2027\nSayı    : E-33732018-794.99-1566\nKonu    : teşkilat duyurusu\n\nTüm birimlerce uyulması gereken esasların duyurulması hususunda gereğini arz ederim.\n\nİmza: Berra ",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    },
+    {
+      "metin": "KARAYOLLARI GENEL MÜDÜRLÜĞÜ\n\nTarih   : 15.10.2027\nSayı    : E-42019561-813.99-8370\n\nBelirtilen düzenlemenin uygulanması için makam onayının alınması arz olunur.\n\nİmza: Yusuf Sarı / e-imza",
+      "gercek": "genelge_talimat_olur",
+      "tahmin": "genelge_talimat_olur",
+      "conf": 0.85,
+      "beklenen_birim": "yazi_isleri_evrak",
+      "tahmin_birim": "yazi_isleri_evrak",
+      "dogru": true
+    }
+  ]
+}

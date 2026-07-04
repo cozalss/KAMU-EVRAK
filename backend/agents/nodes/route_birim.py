@@ -126,20 +126,24 @@ def _birim_listesi() -> str:
 
 
 async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Birim yönlendirme — GERÇEK LLM (DeepSeek) birincil, deterministik fallback.
+    """Birim yönlendirme — deterministik birincil (bilinen tür), LLM yalnız 'belirsiz' türde.
 
-    LLM evrak metni + türü + birim listesinden en uygun birimi akıl-yürütmeyle seçer;
-    yalnız geçerli birim kodu döndürürse kullanılır. LLM yok/mock/hata/geçersiz → mevcut
-    config + içerik heuristiği aynen çalışır (mock testleri deterministik kalır).
+    M-fix (2026-07-04): held-out A/B (n=108, 2 bağımsız set, DeepSeek) kanıtladı — bilinen
+    türde LLM'e serbest bırakılan seçim yönlendirme Top-1'i 0.91'den 0.54-0.59'a düşürüyor
+    (900 karakterlik metinden departman tahmini, config+içerik-keyword heuristiği kadar
+    isabetli değil). Bilinen türde deterministik zaten güçlü ve ölçülmüş; LLM yalnız tür
+    sinyali hiç yokken ('belirsiz') çağrılır — hem isabeti korur hem gereksiz çağrıyı keser.
     """
     det = _route_deterministik(state)
     if "route_birim" in LLM_ATLA_NODELAR:
         return det  # vitrin hız profili: danışma çağrısı atlanır — deterministik hedef kalır
+    turu = state.get("evrak_turu", "belirsiz")
+    if turu != "belirsiz":
+        return det  # bilinen tür → deterministik kanıtlı-daha-isabetli (bkz. docstring)
     llm = real_llm()
     if llm is None:
         return det  # mock/anahtarsız → deterministik (CI testleri bunu bekler)
 
-    turu = state.get("evrak_turu", "belirsiz")
     text = (state.get("evrak_text", "") or "")[:900]
     obj = await llm_json(
         system=(

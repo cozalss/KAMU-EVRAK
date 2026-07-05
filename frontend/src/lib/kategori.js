@@ -68,6 +68,3 @@ export function evrakKategori({ evrak_turu = "", birim = "", konu = "", text = "
   if (t === "belirsiz" || !t) return "siniflanmamis";
   return "diger"; // ust_yazi, rapor, tutanak, genelge_talimat_olur vb.
 }
-
-/* useFilter chip/select için option listesi (renkli). */
-export const KATEGORI_OPTIONS = KATEGORILER.map((k) => ({ value: k.id, label: k.label, color: k.color }));

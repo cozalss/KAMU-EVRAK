@@ -286,28 +286,3 @@ export const Icon = {
   ),
 };
 
-export const SB_NAV = [
-  { id: "new", label: "Yeni sohbet", icon: "pencil" },
-  { id: "search", label: "Sohbetlerde ara", icon: "search" },
-  { id: "library", label: "Kaynaklar", icon: "book" },
-  { id: "projects", label: "Dosyalarım", icon: "grid" },
-];
-
-// 8 sivil hukuk alanı — backend Domain literal'i ile birebir (id eşleşmeli).
-// Hesap menüsü "Hangi konularda" haritası + erişilebilirlik tercih çipleri kullanır.
-export const CIVIL_DOMAINS = [
-  { id: "tuketici", label: "Tüketici", icon: "cart", ex: "İnternetten aldığım ürün ayıplı çıktı, iade hakkım var mı?" },
-  { id: "isHukuku", label: "İş", icon: "bag", ex: "İşten çıkarıldım, kıdem tazminatım ne kadar olur?" },
-  { id: "kira", label: "Kira", icon: "home", ex: "Ev sahibim fahiş kira zammı istiyor, yasal sınır nedir?" },
-  { id: "icra", label: "İcra", icon: "coin", ex: "Hakkımda icra takibi başlatıldı, nasıl itiraz ederim?" },
-  { id: "trafik", label: "Trafik", icon: "car", ex: "Trafik cezasına hangi sürede ve nasıl itiraz edebilirim?" },
-  { id: "vergi", label: "Vergi", icon: "coin", ex: "Vergi cezası tebliğ edildi, dava açma sürem ne kadar?" },
-  { id: "tapu", label: "Tapu", icon: "home", ex: "Tapuda hatalı kayıt var, düzeltme için ne yapmalıyım?" },
-  { id: "idari", label: "İdari", icon: "scale", ex: "İdari işleme karşı nasıl dava açılır, süre nedir?" },
-];
-
-// Kapsam DIŞI — bilerek reddedilen alanlar (etik kırmızı çizgi, dürüst iletişim).
-export const OUT_OF_SCOPE = [
-  { label: "Ceza hukuku", why: "Uzmanlık ve yüksek risk gerektirir — yetkin değiliz." },
-  { label: "Aile hukuku", why: "Boşanma/nafaka/velayet etik açıdan hassas." },
-];

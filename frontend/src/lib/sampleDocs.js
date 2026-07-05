@@ -251,5 +251,3 @@ Birim Amiri
 e-imza`,
   },
 ];
-
-export default SAMPLE_DOCS;

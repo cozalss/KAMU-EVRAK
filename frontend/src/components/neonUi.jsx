@@ -198,7 +198,7 @@ export const Icon = {
 
 /* InfoTip — erişilebilir "ⓘ" ipucu. Hover + klavye odağıyla açılır, Esc/blur kapatır.
    children = ipucu gövdesi (JSX). a11y: buton + role=tooltip + aria-describedby. */
-export function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
+function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const show = () => setOpen(true);

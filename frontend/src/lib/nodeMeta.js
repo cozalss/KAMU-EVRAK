@@ -4,12 +4,12 @@
    burada hepsinin etiketi tanımlı, böylece "bilinmeyen node" boş satır olmaz (R1/R7).
 
    gorev: 1 = Görev-1 (Anla/Çıkar), 2 = Görev-2 (Üret/Yönlendir).
-   summarize/nodeDataFromResult: AgentFlowGraph + App.jsx'ten taşındı, yeni node'larla genişletildi. */
+   summarize: AgentFlowGraph + App.jsx'ten taşındı, yeni node'larla genişletildi. */
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR } from "../components/result-cards.jsx";
 import { slaInfo } from "../components/NeonDetayParts.jsx";
 
 // Her node için kısa TR etiket + görev + açıklama. (İkon dashboard'da numara ile gösterilir.)
-export const NODE_META = {
+const NODE_META = {
   oku:            { label: "Oku (OCR)",       gorev: 1, desc: "PDF/görsel/Word → metin" },
   siniflandir:    { label: "Sınıflandır",     gorev: 1, desc: "Evrak türü" },
   cikar:          { label: "Bilgi Çıkar",     gorev: 1, desc: "Gönderen/tarih/sayı/konu" },
@@ -131,31 +131,5 @@ export function summarize(id, d) {
     }
     case "finalize": return "bilgilendirme hazır";
     default: return "";
-  }
-}
-
-/* ProcessResponse'tan bir node için SSE'ye eşdeğer özet veri çıkar (sample JSON yolu animasyonu). */
-export function nodeDataFromResult(id, r, nChars = 0) {
-  switch (id) {
-    case "oku": return { engine: "metin", n_chars: nChars, page_count: 1 };
-    case "siniflandir": return { evrak_turu: r.evrak_turu, tur_confidence: r.tur_confidence };
-    case "cikar": return { bilgi_unsurlari: r.bilgi_unsurlari };
-    case "kanit_baglama": return { kanit_metadata: r.kanit_metadata };
-    case "eksik_tespit": return { eksik_alanlar: r.eksik_alanlar };
-    case "decompose": return { alt_talepler: r.alt_talepler || [] };
-    case "mevzuat_oner": return { mevzuat_onerileri: r.mevzuat_onerileri };
-    case "ozetle": return { ozet: r.ozet };
-    case "route_birim": return { hedef_birim: r.hedef_birim };
-    case "yazi_taslak": return { yazi_turu: r.yazi_turu, format_uyumlu: !!r.yazi_taslak_md };
-    case "verify": return {
-      format_uyumlu: r.format_uyumlu === undefined ? !!r.yazi_taslak_md : r.format_uyumlu,
-      verify_uyari: r.verify_uyari || [],
-    };
-    case "risk_guard": return { risk_metadata: r.risk_metadata };
-    case "arsiv": return { arsiv_metadata: r.arsiv_metadata };
-    case "sla_triyaj": return { sla_metadata: r.sla_metadata };
-    case "denetim_izi": return { denetim_izi: r.denetim_izi };
-    case "finalize": return {};
-    default: return null;
   }
 }

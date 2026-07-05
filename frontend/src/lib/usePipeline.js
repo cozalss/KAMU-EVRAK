@@ -17,7 +17,7 @@ const ACCEPT = ".pdf,.png,.jpg,.jpeg,.webp,.tiff,.docx,.txt";
 
 const freshNodes = () => DEFAULT_NODE_IDS.map(makeNode);
 
-export { MAX_UPLOAD_MB, ACCEPT };
+export { ACCEPT };
 
 export function usePipeline() {
   const [nodes, setNodes] = useState(freshNodes);

@@ -75,5 +75,3 @@ export function useTypewriter(text, { cps = DEFAULT_CPS, enabled = true } = {}) 
   const done = count >= full.length;
   return { shown, done, animating: animate && !done };
 }
-
-export default useTypewriter;

@@ -168,7 +168,7 @@ def _alt_taslaklar(islem_id, talepler, alt_talep_rows, yazi_kods) -> list[Taslak
     de aynı enumerate ile kurar) → zip güvenli. Flush SONRASI çağrılmalı (alt.id dolu olsun).
     """
     rows: list[Taslak] = []
-    for t, alt in zip(talepler, alt_talep_rows):
+    for t, alt in zip(talepler, alt_talep_rows, strict=True):
         if not t.yazi_taslak_md or t.yazi_turu not in yazi_kods:
             continue
         rows.append(Taslak(

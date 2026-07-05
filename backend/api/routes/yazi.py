@@ -107,14 +107,37 @@ async def yazi_taslak(
     )
 
 
+_MAX_UNSUR_CHARS = 300  # bilgi_unsurlari tekil alan sınırı (DoS + enjeksiyon guard)
+
+
+def _sanitize_line(v: str, max_len: int = _MAX_UNSUR_CHARS) -> str:
+    """Tek-satır resmî yazı alanına (konu/muhatap/ilgi) basılacak metni güvenli hâle getirir.
+
+    Satır sonu/kontrol karakterleri (\\r\\n\\t vb.) boşluğa çevrilir — aksi hâlde istemci
+    konu/gönderen gibi alanlara \\n enjekte ederek taslağa SAHTE "Sayı :" veya karar
+    satırı ekleyebilirdi (SIFIR UYDURMA ilkesi: istemci girdisi olduğu gibi güvenilmez).
+    Uzunluk ayrıca sınırlanır (evrak_text dışındaki alanlarda üst sınır yoktu).
+    """
+    return re.sub(r"[\r\n\t\x00-\x1f]+", " ", v).strip()[:max_len]
+
+
 def _skaler_unsurlar(d: dict) -> dict:
-    """İstemciden gelen bilgi_unsurlari'ndan yalnız düz skalerleri geçir.
+    """İstemciden gelen bilgi_unsurlari'ndan yalnız GÜVENLİ düz skalerleri geçir.
 
     _muhatap/_ilgi_satirlari str bekler; iç içe dict/list gelirse str(dict) çöpü
     muhatap satırına sızardı. bool'lar (imza var vb.) muhatap üretiminde anlamsız → elenir.
+    String değerler _sanitize_line'dan geçirilir (satır enjeksiyonu + uzunluk guard).
     """
-    return {k: v for k, v in (d or {}).items()
-            if isinstance(v, (str, int, float)) and not isinstance(v, bool)}
+    out: dict[str, Any] = {}
+    for k, v in (d or {}).items():
+        if isinstance(v, bool) or not isinstance(v, (str, int, float)):
+            continue
+        if isinstance(v, str):
+            v = _sanitize_line(v)
+            if not v:
+                continue
+        out[k] = v
+    return out
 
 
 @router.post("/taslak-turu")
@@ -134,8 +157,9 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     if not text:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Evrak metni boş")
     unsurlar = _skaler_unsurlar(req.bilgi_unsurlari)
-    muhatap = (birim_tr(req.hedef_birim)
-               if req.yazi_turu == "ust_yazi" and req.hedef_birim else None)
+    hedef_birim = _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else ""
+    muhatap = (birim_tr(hedef_birim)
+               if req.yazi_turu == "ust_yazi" and hedef_birim else None)
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
         ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap)

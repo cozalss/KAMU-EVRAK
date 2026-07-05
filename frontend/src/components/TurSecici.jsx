@@ -12,7 +12,11 @@ const YAZI_TUR_SECENEK = [
 
 export default function TurSecici({ secili, onerilen, uretilen, onSec, pasif = false }) {
   return (
-    <div role="group" aria-label="Resmî yazı türü seç" style={{ display: "flex", flexWrap: "wrap", gap: SP.xs, marginBottom: SP.s }}>
+    <div role="group" aria-label="Resmî yazı türü seç"
+      style={{
+        display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))",
+        gap: SP.xs, marginBottom: SP.s,
+      }}>
       {YAZI_TUR_SECENEK.map(([tur, kisa]) => {
         const on = tur === secili;
         const bekliyor = uretilen === tur;
@@ -24,17 +28,14 @@ export default function TurSecici({ secili, onerilen, uretilen, onSec, pasif = f
             onMouseEnter={(e) => { if (!on && !kilitli) e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = on ? ALFA(V) : PAL.surf; }}
             style={{
-              cursor: on || kilitli ? "default" : "pointer", display: "inline-flex", alignItems: "center", gap: 5,
-              padding: "4px 10px", minHeight: 26, borderRadius: RAD.chip,
+              cursor: on || kilitli ? "default" : "pointer", display: "flex", alignItems: "center",
+              justifyContent: "center", gap: 5, whiteSpace: "nowrap",
+              padding: "4px 8px", minHeight: 26, borderRadius: RAD.chip,
               border: `1px solid ${on ? DERIN.V : PAL.inputLine}`,
               background: on ? ALFA(V) : PAL.surf, ...TYPE.meta, fontWeight: on ? 600 : 400,
               color: kilitli && !bekliyor && !on ? PAL.mut2 : on ? DERIN.V : PAL.ink2,
               transition: "background .12s ease-out",
             }}>
-            {tur === onerilen && (
-              <span aria-hidden="true" title="Sistem önerisi"
-                style={{ width: 5, height: 5, borderRadius: RAD.dot, background: on ? DERIN.V : PAL.mut, flexShrink: 0 }} />
-            )}
             {bekliyor ? (
               <>
                 <span aria-hidden="true" style={{ display: "inline-block", width: 6, height: 6, borderRadius: RAD.dot, background: DERIN.V, animation: "nu-think 1.2s ease-in-out infinite" }} />

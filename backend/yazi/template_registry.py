@@ -1,8 +1,12 @@
 """Resmî yazı template registry — yazı türü → şablon dosyası + insan-okunur ad.
 
 ADALET `dilekce/template_registry.py` deseninden ADAPT: 8 domain × 2 dilekçe
-türü yerine 4 resmî yazı türü (Resmî Yazışmalarda Uygulanacak Usul ve Esaslar
-Hk. Yönetmelik, CB 2646/2020). Şablonlar `data/templates/<turu>.j2`.
+türü yerine 6 resmî yazı türü. Format-genel dayanak (başlık/sayı/konu/muhatap/
+ilgi/imza) Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik'tir
+(CB 2646/2020) — ANCAK "müzekkere"/"görüş-mütalaa" türlerinin KENDİSİ bu
+yönetmelikte ayrı tanımlı DEĞİLDİR (bkz. config.EVRAK_TO_MEVZUAT [DOĞRULA:]
+notu); yalnız genel format kuralları onlara da uygulanır. Şablonlar
+`data/templates/<turu>.j2`.
 
 Bu modül yazı türü adlarının KANONİK kaynağıdır; renderer hangi .j2 dosyasını
 yükleyeceğini buradan öğrenir. Bilinmeyen tür → cevabi_yazi'ya düşülür

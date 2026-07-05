@@ -62,8 +62,14 @@ export const SH = {
   modal: "0 16px 40px -12px rgba(35,26,18,.18), 0 2px 8px rgba(35,26,18,.06)",
 };
 
+/* Yalnız KLAVYE odağında halka göster (:focus-visible) — fare tıklaması da native focus
+   bıraktığı için onFocus her zaman tetiklenirdi; tık sonrası mavi halka "yapışık" kalırdı. */
 export const focusRing = {
-  onFocus: (e) => { e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; },
+  onFocus: (e) => {
+    if (e.currentTarget.matches(":focus-visible")) {
+      e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`;
+    }
+  },
   onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
 };
 export const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 };
@@ -171,6 +177,26 @@ export function EmptyState({ icon, title, sub, actions }) {
       </div>
       {actions && <div style={{ display: "flex", gap: SP.m, marginTop: SP.xs, flexWrap: "wrap", justifyContent: "center" }}>{actions}</div>}
     </div>
+  );
+}
+
+/* Büyüt ikonu (dört köşe ok) — belge panellerinin A4 modal tetikleyicisi (kaynak belge /
+   ana taslak / birim taslağı — hepsi ortak). */
+const BuyutIkon = (p) => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
+    <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/* Panel başlığındaki küçük "büyüt" düğmesi — Kaynak belge / taslak kartlarında ortak. */
+export function BuyutDugme({ onClick, label }) {
+  return (
+    <button type="button" onClick={onClick} aria-label={label} title="Büyüt (A4 görünüm)" {...focusRing}
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: "background .12s ease-out" }}>
+      <BuyutIkon />
+    </button>
   );
 }
 

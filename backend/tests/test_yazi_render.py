@@ -110,6 +110,14 @@ class TestBuildContextAutoFill:
         assert ctx.muhatap == ""
         assert ctx.ilgi_satirlari == ()
 
+    def test_muzekkere_ve_gorus_ilgi_atfi_kurulur(self):
+        # Regresyon: muzekkere.j2/gorus_mutalaa.j2 İlgi bloğu İÇERİR ama build_context
+        # bu iki türe hiç ilgi_satirlari üretmiyordu (şablon bloğu hep boş kalıyordu).
+        unsurlar = {"tarih": "21.06.2026", "sayi": "E-688-329"}
+        for turu in ("muzekkere", "gorus_mutalaa"):
+            ctx = build_context(turu, unsurlar, "gövde")
+            assert ctx.ilgi_satirlari and "21.06.2026" in ctx.ilgi_satirlari[0]
+
 
 class TestMuhatapOverride:
     """ust_yazi (kurum-içi iletim) muhatabı gönderen değil HEDEF BİRİM olmalı."""
@@ -139,6 +147,25 @@ class TestMuhatapOverride:
         # Assert
         assert ctx.muhatap == ""
 
+    def test_muzekkere_vatandas_adi_sizdirmaz(self):
+        # Regresyon: muzekkere kurum-içi/adli bir yazıdır; override yoksa _muhatap()'ın
+        # ürettiği "Sayın <gönderen>" (cevabi-yazı varsayımı) sızmamalı.
+        unsurlar = {"gonderen": "Ayşe Yılmaz"}
+        ctx = build_context("muzekkere", unsurlar, "gövde")
+        assert ctx.muhatap == ""
+        assert "Ayşe Yılmaz" not in ctx.muhatap
+
+    def test_gorus_mutalaa_vatandas_adi_sizdirmaz(self):
+        unsurlar = {"gonderen": "Ayşe Yılmaz"}
+        ctx = build_context("gorus_mutalaa", unsurlar, "gövde")
+        assert ctx.muhatap == ""
+        assert "Ayşe Yılmaz" not in ctx.muhatap
+
+    def test_muzekkere_override_ile_hedef_makam_kullanilir(self):
+        # route_birim/decompose bir hedef birim bulduysa (ör. Hukuk Müşavirliği) o kullanılır.
+        ctx = build_context("muzekkere", {}, "gövde", muhatap_override="Hukuk Müşavirliği")
+        assert ctx.muhatap == "Hukuk Müşavirliği"
+
 
 # ---------------------------------------------------------------------------
 # build_alt_talep_taslaklari — çok-konulu evrakta birim başına ayrı üst yazı
@@ -167,7 +194,7 @@ class TestBuildAltTalepTaslaklari:
         sonuc = await build_alt_talep_taslaklari(alt, {"gonderen": "Ayşe Yılmaz"}, "evrak metni")
         # Assert — her taslak KENDİ birimine muhatap, vatandaşa değil
         assert len(sonuc) == 3
-        for orijinal, taslak in zip(alt, sonuc):
+        for orijinal, taslak in zip(alt, sonuc, strict=True):
             assert taslak["yazi_turu"] == "ust_yazi"
             assert taslak["birim_tr"] in taslak["yazi_taslak_md"]
             assert "Ayşe Yılmaz" not in taslak["yazi_taslak_md"]
@@ -208,6 +235,22 @@ class TestFallbackBody:
         # konu boş → somut konu uydurulmaz; nötr ifade
         body = _fallback_body("cevabi_yazi", "", has_ilgi=False)
         assert "ilgili" in body.lower()
+
+    def test_muzekkere_ve_gorus_ust_yaziyla_ayni_metni_paylasmaz(self):
+        # Regresyon: muzekkere/gorus_mutalaa dal EKSİKTİ → sessizce üst yazı metnine
+        # düşüyordu (iki tür + üst yazı birebir AYNI çıktı üretiyordu).
+        konu = "kayıt celbi"
+        ust_yazi = _fallback_body("ust_yazi", konu, has_ilgi=False)
+        muzekkere = _fallback_body("muzekkere", konu, has_ilgi=False)
+        gorus = _fallback_body("gorus_mutalaa", konu, has_ilgi=False)
+        assert muzekkere != ust_yazi
+        assert gorus != ust_yazi
+        assert muzekkere != gorus
+
+    def test_gorus_mutalaa_hukuki_degerlendirme_dili(self):
+        # gorus_mutalaa.j2'nin kendi varsayılanı "hukuki değerlendirme" çerçevesi bekler.
+        body = _fallback_body("gorus_mutalaa", "sözleşme feshi", has_ilgi=False)
+        assert "hukuki değerlendirme" in body.lower()
 
 
 # ---------------------------------------------------------------------------

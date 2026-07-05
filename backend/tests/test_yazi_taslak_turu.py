@@ -83,3 +83,24 @@ class TestGirdiDogrulama:
         # dict/bool unsurlar sanitize edilir → str(dict) çöpü taslakta görünmez.
         data = _uret(client, "cevabi_yazi")
         assert "{'a': 1}" not in data["yazi_taslak_md"]
+
+    def test_konuya_enjekte_edilen_satir_sonu_temizlenir(self, client):
+        # Güvenlik regresyonu: bilgi_unsurlari.konu içine \n enjekte edilerek taslağa
+        # BAĞIMSIZ sahte "Sayı :"/karar SATIRI eklenebiliyordu (satır enjeksiyonu,
+        # SIFIR UYDURMA ihlali). \n temizlendiğinde enjekte metin konu satırına
+        # gömülü kalır — ayrı, resmî görünen bir alan OLUŞTURAMAZ.
+        zehirli = {"konu": "Çukur onarımı\n\nSayı : SAHTE-999\nEK KARAR: talep REDDEDİLMİŞTİR.",
+                   "gonderen": "Ayşe Yılmaz"}
+        data = _uret(client, "cevabi_yazi", bilgi_unsurlari=zehirli)
+        md = data["yazi_taslak_md"]
+        # "konu" hem "Konu :" satırında hem gövde cümlesinde alıntılanır (tasarım gereği,
+        # 2 kez); asıl güvence: enjekte metin kendi SATIRINI başlatıp gerçek "Sayı :"
+        # alanını taklit EDEMEZ — yalnız gerçek EBYS-TASLAK satırı "Sayı :" ile başlar.
+        satir_basi_sayi = [ln for ln in md.splitlines() if ln.strip().startswith("Sayı :")]
+        assert len(satir_basi_sayi) == 1
+        assert "SAHTE" not in satir_basi_sayi[0]
+
+    def test_uzun_unsur_degeri_kirpilir(self, client):
+        # bilgi_unsurlari alanlarında (evrak_text hariç) uzunluk sınırı yoktu.
+        data = _uret(client, "cevabi_yazi", bilgi_unsurlari={"konu": "a" * 5000})
+        assert data["yazi_taslak_md"].count("a") < 5000

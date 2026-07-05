@@ -15,25 +15,7 @@ import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
 
-/* Büyüt ikonu (dört köşe ok) — belge panellerinin A4 modal tetikleyicisi. */
-const BuyutIkon = (p) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
-    <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-/* Panel başlığındaki küçük "büyüt" düğmesi — Kaynak belge / taslak kartlarında ortak. */
-function BuyutDugme({ onClick, label }) {
-  return (
-    <button type="button" onClick={onClick} aria-label={label} title="Büyüt (A4 görünüm)" {...focusRing}
-      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: "background .12s ease-out" }}>
-      <BuyutIkon />
-    </button>
-  );
-}
-import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
+import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 
 /* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———

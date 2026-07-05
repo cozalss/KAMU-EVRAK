@@ -249,10 +249,16 @@ EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
     # Resmî yazı ailesi → format dayanağı Yön. 2646 (korpus: 2646, 13 chunk).
     "ust_yazi": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
     "cevabi_yazi": ["Resmî Yazışma Yönetmeliği m.15 (İlgi atfı)"],
-    "muzekkere": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
+    # DÜZELTME (2026-07): "müzekkere"/"görüş-mütalaa" ÖNCEDEN yanlışlıkla Yön. 2646'ya
+    # bağlanmıştı — tam metin taranarak doğrulandı: "müzekkere" kelimesi 2646'da HİÇ
+    # geçmiyor; "görüş" yalnız m.33'te (görüş talebine cevap süresi) geçiyor, ayrı bir
+    # yazı-türü/format maddesi yok. docs/02-evrak-taksonomi-routing.md zaten doğru kaynağı
+    # biliyordu (müzekkere: "usul"/teamül, gorus_mutalaa: "Hukuk Müş. Yön.") — burada
+    # sessizce 2646'ya sadeleştirilmişti (mevzuat referansı uydurma, CLAUDE.md §1 ihlali).
+    "muzekkere": ["[DOĞRULA: özel usul/teamül — CB 2646/2020 metninde 'müzekkere' tanımlı değil]"],
     "tutanak": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
     "rapor": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
-    "gorus_mutalaa": ["Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)"],
+    "gorus_mutalaa": ["[DOĞRULA: Hukuk Müşavirliği Yönetmeliği ilgili maddesi — CB 2646/2020 m.33 yalnız görüş talebine cevap süresini düzenler, ayrı yazı türü/format tanımlamaz]"],
     "genelge_talimat_olur": ["Resmî Yazışma Yönetmeliği m.20 (Olur/Onay)"],
 }
 

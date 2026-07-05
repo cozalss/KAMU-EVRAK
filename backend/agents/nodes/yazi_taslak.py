@@ -2,8 +2,9 @@
 
 Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hk. Yönetmelik (CB 2646/2020)
 formatına göre taslak üretir: data/templates/*.j2 (ust_yazi/cevabi_yazi/
-bilgilendirme/olur) jinja2 ile render edilir; metin gövdesi resmî üslupta
-üretilir (LLM varsa get_llm, yoksa deterministik şablon). Eksik alanlar
+bilgilendirme/olur/muzekkere/gorus_mutalaa) jinja2 ile render edilir; metin
+gövdesi resmî üslupta üretilir (LLM varsa get_llm, yoksa deterministik şablon).
+Eksik alanlar
 jüri demosunda Jinja placeholder olarak görünmez; sahte gerçek bilgi yerine nötr
 taslak/EBYS/yetkili makam değerleri kullanılır.
 
@@ -37,7 +38,8 @@ def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
         "cevabi_yazi": "Gereğini rica ederim.",
         "bilgilendirme": "Bilgilerinize arz ederim.",
         "olur": "Olurlarınıza arz ederim.",
-    }.get(yazi_turu, "Gereğini arz ederim.")
+        "gorus_mutalaa": "Bilgilerine arz olunur.",
+    }.get(yazi_turu, "Gereğini arz ederim.")  # muzekkere/ust_yazi bu genel varsayılanı paylaşır
     ortak_baslik = (
         "                                   T.C.\n"
         "                              KAMU KURUMU\n"

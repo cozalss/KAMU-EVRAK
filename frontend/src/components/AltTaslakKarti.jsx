@@ -5,10 +5,11 @@
    - Onayla & gönder / Reddet: gerçek karar (DashboardApp.onAltKarar → Giden Evrak + DB).
    - Düzenle: ana karttaki gibi taslağı TASLAKLAR kuyruğuna ekler ve oraya götürür
      (yerinde textarea YOK — düzenleme tek yerde, TaslaklarView'da yapılır). */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cleanDemoText } from "./result-cards.jsx";
 import TurSecici from "./TurSecici.jsx";
-import { PAL, DERIN, RAD, SP, TYPE, focusRing, Icon } from "./neonUi.jsx";
+import BelgeModal from "./BelgeModal.jsx";
+import { PAL, DERIN, RAD, SP, TYPE, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
 
 const cardStyle = {
   position: "relative", borderRadius: RAD.card, background: PAL.surf,
@@ -26,10 +27,26 @@ export default function AltTaslakKarti({ altTalep, onTurUret, onOnaylaGonder, on
   const [metin, setMetin] = useState(altTalep.yazi_taslak_md || "");
   const [uretilen, setUretilen] = useState("");   // üretimi süren tür ("" = boşta)
   const [durum, setDurum] = useState(null);        // null | "gonderildi" | "reddedildi"
+  const [modalAcik, setModalAcik] = useState(false);   // A4 görünüm büyütme
   const cacheRef = useRef({ [onerilen]: altTalep.yazi_taslak_md || "" });
   const etiket = altTalep.birim_tr || "İlgili birim";
   const bitti = durum != null;
   const rozet = durum && DURUM_ETIKET[durum];
+
+  // CanliAjanAkisi bu bileşeni sıra (index) ile render eder (aynı sıradaki birim kartı
+  // yeni bir evrak koşumunda YENİDEN oluşturulmaz, aynı örnek kalır) — yeni koşumda
+  // `altTalep` (yeni pipeline sonucundan taze bir nesne) değiştiğinde yerel state'i
+  // sıfırla; aksi hâlde önceki evrakın tur/metin/"Gönderildi" rozeti sızardı.
+  useEffect(() => {
+    const yeniOnerilen = altTalep.yazi_turu || "ust_yazi";
+    setTur(yeniOnerilen);
+    setMetin(altTalep.yazi_taslak_md || "");
+    setUretilen("");
+    setDurum(null);
+    setModalAcik(false);
+    cacheRef.current = { [yeniOnerilen]: altTalep.yazi_taslak_md || "" };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [altTalep]);
 
   const secTur = async (yeni) => {
     if (yeni === tur || uretilen || bitti) return;
@@ -55,11 +72,17 @@ export default function AltTaslakKarti({ altTalep, onTurUret, onOnaylaGonder, on
             <Icon.check width={12} height={12} /> {rozet.text}
           </span>
         )}
+        {metin && <BuyutDugme onClick={() => setModalAcik(true)} label={`${etiket} taslağını A4 görünümde büyüt`} />}
       </div>
       <TurSecici secili={tur} onerilen={onerilen} uretilen={uretilen} onSec={secTur} pasif={bitti} />
-      <pre style={{ background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, maxHeight: 320, overflowY: "auto", opacity: uretilen ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
+      <pre role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
+        onClick={() => setModalAcik(true)}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalAcik(true); } }}
+        style={{ background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, maxHeight: 320, overflowY: "auto", cursor: "zoom-in", opacity: uretilen ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
         {cleanDemoText(metin)}
       </pre>
+      <BelgeModal acik={modalAcik} baslik={`Resmî yazı taslağı · ${etiket}`}
+        metin={cleanDemoText(metin)} onKapat={() => setModalAcik(false)} />
       <div style={{ display: "flex", gap: SP.s, marginTop: SP.s }}>
         <button type="button" disabled={kilitli} {...focusRing}
           onClick={() => { if (onOnaylaGonder(metin, tur)) setDurum("gonderildi"); }}

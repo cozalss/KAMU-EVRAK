@@ -425,6 +425,10 @@ export default function DashboardApp() {
     // Dosya yolunda ham metin sunucuda tutulmaz → maskeli kanıt metni yeterli girdi.
     const metin = evrakText || result.kanit_metadata?.metin || "";
     if (!metin) { showToast("Tür değiştirmek için evrak metni gerekli — evrakı yeniden işleyin."); return; }
+    // Bu fetch dönene kadar kullanıcı YENİ bir evrak yükleyebilir (yükleme butonu
+    // kilitlenmiyor) — hangi koşuma ait olduğunu işaretle, dönüşte hâlâ aynı koşumda
+    // mıyız kontrol et; değilse eski sonucu yeni evrakın üstüne YAZMA.
+    const izAtStart = taslakDenetimRef.current;
     setTurUretiliyor(tur);
     try {
       const res = await fetch("/yazi/taslak-turu", {
@@ -436,12 +440,14 @@ export default function DashboardApp() {
       });
       if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
       const data = await res.json();
+      if (!data?.yazi_taslak_md) throw new Error("Taslak üretilemedi — boş yanıt");
+      if (taslakDenetimRef.current !== izAtStart) return;   // bu arada yeni evrak yüklendi
       onbellek[tur] = { yazi_taslak_md: data.yazi_taslak_md, format_uyumlu: data.format_uyumlu };
       applyTaslak(data);
     } catch (err) {
       showToast(err?.message || "Taslak üretilemedi — backend çalışıyor mu?");
     } finally {
-      setTurUretiliyor("");
+      if (taslakDenetimRef.current === izAtStart) setTurUretiliyor("");
     }
   }, [result, evrakText, turUretiliyor, applyTaslak, showToast]);
 
@@ -487,7 +493,9 @@ export default function DashboardApp() {
         }),
       });
       if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
-      return await res.json();
+      const data = await res.json();
+      if (!data?.yazi_taslak_md) throw new Error("Taslak üretilemedi — boş yanıt");
+      return data;
     } catch (err) {
       showToast(err?.message || "Taslak üretilemedi — backend çalışıyor mu?");
       return null;

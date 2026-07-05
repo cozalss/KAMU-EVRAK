@@ -71,6 +71,16 @@ def _fallback_body(yazi_turu: str, konu: str, has_ilgi: bool) -> str:
             "ilgili birim ve kişilerin bilgilendirilmesi gereği duyulmuştur. Konuya "
             "ilişkin açıklamalar aşağıda sunulmuştur."
         )
+    if yazi_turu == "muzekkere":
+        return (
+            f"{konu_ifade} konusuna ilişkin bilgi/belge veya gerekli işlemin yapılması "
+            "hususunda ilgili makamdan gereğinin yerine getirilmesi rica olunur."
+        )
+    if yazi_turu == "gorus_mutalaa":
+        return (
+            f"{konu_ifade} konusuna ilişkin talep edilen hukuki değerlendirme incelenmiş "
+            "olup değerlendirme sonucu aşağıda sunulmuştur."
+        )
     # üst yazı (gönderen makam → muhatap makam)
     if has_ilgi:
         return (
@@ -161,12 +171,19 @@ def build_context(
     verilirse gönderen yerine bu kullanılır. olur türünde hiçbir zaman uygulanmaz.
     """
     turu = resolve_yazi_turu(yazi_turu)
-    # cevabi/üst yazıda ilgi atfı kurulur; olur'da ilgi yoktur, bilgilendirme nötr.
-    ilgi = _ilgi_satirlari(unsurlar) if turu in ("cevabi_yazi", "ust_yazi") else ()
+    # cevabi/üst yazı + müzekkere/görüş de İlgi atfı kurar (şablonları İlgi bloğu içerir);
+    # olur'da ilgi yoktur, bilgilendirme nötr (dağıtım yerlerine, tekil ilgi taşımaz).
+    ilgi = (_ilgi_satirlari(unsurlar)
+            if turu in ("cevabi_yazi", "ust_yazi", "muzekkere", "gorus_mutalaa") else ())
     if turu == "olur":
-        muhatap = ""
+        muhatap = ""  # olur'da muhatap hiçbir zaman render edilmez (Yön. m.20) — override dahil
     elif muhatap_override:
         muhatap = muhatap_override
+    elif turu in ("muzekkere", "gorus_mutalaa"):
+        # _muhatap() vatandaşın adını döner (Yön. m.14 cevabi-yazı varsayımı) — müzekkere/
+        # görüş kurum-içi/hukuki makama gider; hedef makam bilinmiyorsa UYDURULMAZ, şablonun
+        # kendi nötr varsayılanı (MAKAMA / placeholder) devreye girer.
+        muhatap = ""
     else:
         muhatap = _muhatap(unsurlar)
     return YaziContext(

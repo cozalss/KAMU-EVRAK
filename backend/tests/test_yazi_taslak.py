@@ -268,3 +268,81 @@ class TestYaziTaslakDemoSafeDefaults:
             assert "yazi_turu" in sonuc
         except KeyError as e:
             pytest.fail(f"KeyError fırlatıldı: {e} — state eksik alana toleranslı olmalı")
+
+
+# ---------------------------------------------------------------------------
+# ust_yazi muhatabı: hedef BİRİM olmalı, gelen belgenin göndereni DEĞİL
+# ---------------------------------------------------------------------------
+
+
+class TestUstYaziMuhatapBirim:
+    """tutanak/rapor → ust_yazi: muhatap route_birim'in bulduğu hedef birim olmalı."""
+
+    async def test_hedef_birim_varsa_muhatap_birim_olur(self):
+        # Arrange — route_birim zaten çalışmış (hedef_birim state'te var)
+        state = {
+            "evrak_turu": "rapor", "hedef_birim": "teftis_ic_denetim",
+            "bilgi_unsurlari": {"gonderen": "Ayşe Yılmaz", "konu": "denetim raporu"},
+            "evrak_text": "rapor metni",
+        }
+        # Act
+        sonuc = await yazi_taslak_node(state)
+        # Assert — kurum-içi birime yazılır, gönderen kişiye değil
+        assert sonuc["yazi_turu"] == "ust_yazi"
+        assert "Ayşe Yılmaz" not in sonuc["yazi_taslak_md"]
+
+    async def test_hedef_birim_yoksa_eski_davranis(self):
+        # Arrange — route_birim henüz çalışmamış (izole node testi) → geriye uyum
+        state = {
+            "evrak_turu": "rapor",
+            "bilgi_unsurlari": {"gonderen": "Ayşe Yılmaz"},
+            "evrak_text": "rapor metni",
+        }
+        # Act
+        sonuc = await yazi_taslak_node(state)
+        # Assert — hedef_birim yok → eski _muhatap(gonderen) davranışı korunur
+        assert "Sayın Ayşe Yılmaz" in sonuc["yazi_taslak_md"]
+
+
+# ---------------------------------------------------------------------------
+# Çok-konulu evrak: her alt-talep kendi biriminin üst yazı taslağını alır
+# ---------------------------------------------------------------------------
+
+
+class TestCokKonuluAltTaslaklar:
+    """alt_talepler >= 2 → her biri kendi birimine giden ayrı taslak taşımalı."""
+
+    async def test_iki_alt_talep_ayri_taslak_alir(self):
+        # Arrange — Ayşe Yılmaz'ın çukur + su faturası talebi, 2 farklı birim
+        state = {
+            "evrak_turu": "dilekce",
+            "bilgi_unsurlari": {"gonderen": "Ayşe Yılmaz", "konu": "Çeşitli talepler"},
+            "evrak_text": "arz ederim",
+            "alt_talepler": [
+                {"ozet": "çukurun onarılması", "birim_tr": "İlgili Teknik Daire"},
+                {"ozet": "su faturası itirazı", "birim_tr": "Strateji Geliştirme / Mali İşler"},
+            ],
+        }
+        # Act
+        sonuc = await yazi_taslak_node(state)
+        # Assert
+        assert len(sonuc["alt_talepler"]) == 2
+        for taslak in sonuc["alt_talepler"]:
+            assert taslak["yazi_taslak_md"]
+            assert taslak["birim_tr"] in taslak["yazi_taslak_md"]
+            assert "Ayşe Yılmaz" not in taslak["yazi_taslak_md"]
+        # Tekil (geriye-uyum) alanlar birleşik/vatandaşa-yönelik taslak DEĞİL, ilk birimi taşır.
+        assert sonuc["yazi_turu"] == "ust_yazi"
+        assert sonuc["yazi_taslak_md"] == sonuc["alt_talepler"][0]["yazi_taslak_md"]
+        assert "Ayşe Yılmaz" not in sonuc["yazi_taslak_md"]
+
+    async def test_tek_alt_talep_alani_eklenmez(self):
+        # Arrange — < 2 alt-talep → alt_talepler alanı state'e YENİDEN yazılmaz
+        state = {
+            "evrak_turu": "dilekce", "bilgi_unsurlari": {}, "evrak_text": "",
+            "alt_talepler": [{"ozet": "tek talep", "birim_tr": "İlgili Teknik Daire"}],
+        }
+        # Act
+        sonuc = await yazi_taslak_node(state)
+        # Assert
+        assert "alt_talepler" not in sonuc

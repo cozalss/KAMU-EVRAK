@@ -253,6 +253,9 @@ CREATE TABLE IF NOT EXISTS mevzuat_oneri (
 CREATE TABLE IF NOT EXISTS taslak (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     islem_id              UUID NOT NULL REFERENCES islem(id) ON DELETE CASCADE,
+    -- Çok-konulu evrakta bu taslağın hangi alt-talebe (birime) ait olduğu; NULL = tek-konulu
+    -- evrakın tekil/whole-document taslağı (geriye uyum — eski satırlar hep NULL).
+    alt_talep_id          UUID REFERENCES alt_talep(id) ON DELETE SET NULL,
     yazi_turu_kod         TEXT NOT NULL REFERENCES yazi_turu(kod) ON DELETE RESTRICT,
     konu                  TEXT NOT NULL DEFAULT '',
     metin_md              TEXT NOT NULL,
@@ -264,6 +267,9 @@ CREATE TABLE IF NOT EXISTS taslak (
     guncellendi           TIMESTAMPTZ,                           -- L-4
     olusturuldu           TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- CREATE TABLE IF NOT EXISTS yeni sütunu VAR OLAN tabloya eklemez (yalnız fresh apply'de
+-- işe yarar) → önceden apply edilmiş DB'ler için idempotent ALTER (2026-07 eklentisi).
+ALTER TABLE taslak ADD COLUMN IF NOT EXISTS alt_talep_id UUID REFERENCES alt_talep(id) ON DELETE SET NULL;
 CREATE TABLE IF NOT EXISTS onay (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     taslak_id        UUID NOT NULL REFERENCES taslak(id) ON DELETE CASCADE,

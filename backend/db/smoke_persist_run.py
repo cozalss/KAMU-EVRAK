@@ -18,7 +18,7 @@ import sys
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select, text
 
-from db.models import GelenEvrak, Islem, Kullanici
+from db.models import GelenEvrak, GidenEvrak, Islem, Kullanici, Taslak
 from db.repositories import dogrula_denetim
 from db.session import engine, session_factory
 from main import app
@@ -38,9 +38,16 @@ async def _son_islem_dogrula() -> dict:
 
 
 async def _temizle():
+    """E-AUTO-* test evraklarını sil. giden_evrak.taslak_id ON DELETE RESTRICT'tir →
+    bu koşum (veya önceki bir koşum) taslağı onayla_ve_gonder ile gönderdiyse önce
+    giden_evrak satırı silinmeli, yoksa gelen_evrak silme FK ihlaliyle patlar."""
     async with session_factory() as s:
         await s.rollback()
         await s.execute(text("SET LOCAL app.denetim_silmeye_izin = 'on'"))
+        taslak_ids = select(Taslak.id).join(Islem, Islem.id == Taslak.islem_id).join(
+            GelenEvrak, GelenEvrak.id == Islem.gelen_evrak_id
+        ).where(GelenEvrak.evrak_no.like("E-AUTO-%"))
+        await s.execute(delete(GidenEvrak).where(GidenEvrak.taslak_id.in_(taslak_ids)))
         await s.execute(delete(GelenEvrak).where(GelenEvrak.evrak_no.like("E-AUTO-%")))
         await s.execute(delete(Kullanici).where(Kullanici.eposta == _SISTEM))
         await s.commit()

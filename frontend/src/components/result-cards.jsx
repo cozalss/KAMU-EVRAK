@@ -33,6 +33,7 @@ const BIRIM_TR = {
 const YAZI_TURU_TR = {
   ust_yazi: "Üst Yazı", cevabi_yazi: "Cevabi Yazı",
   bilgilendirme: "Bilgilendirme Yazısı", olur: "Olur / Onay Yazısı",
+  muzekkere: "Müzekkere", gorus_mutalaa: "Görüş / Mütalaa",
 };
 
 // bilgi_unsurlari anahtarları → Türkçe alan adı + PII (maskeli) işareti.

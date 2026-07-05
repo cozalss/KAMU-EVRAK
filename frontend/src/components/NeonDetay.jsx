@@ -8,10 +8,10 @@
    Yaprak bileşenler: NeonDetayParts.jsx */
 import { cloneElement, useEffect, useState } from "react";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Btn, Icon, focusRing } from "./neonUi.jsx";
+import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Icon, focusRing } from "./neonUi.jsx";
 import {
   Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
-  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, PaperSheet, KanitAlinti,
+  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti,
 } from "./NeonDetayParts.jsx";
 
 /* Bölüm düzeni — kartlar dikey ritimde: tam-genişlik satırlar + dengeli sütun grubu. */
@@ -55,7 +55,6 @@ const SECS = [
   { id: "det-ozet", l: "Özet" },
   { id: "det-g1", l: "Görev 1 · Anlama", col: T },
   { id: "det-g2", l: "Görev 2 · Üretim", col: V },
-  { id: "det-yazi", l: "Resmî yazı" },
 ];
 /* Üst durum çubuğu (CanliAjanAkisi header) sticky ve ~90px yüksek — gömülü modda ray ve
    bölüm scroll-hedefleri onun ALTINA yapışmalı; yoksa rayın üst linkleri çubuğun arkasında
@@ -117,7 +116,7 @@ function kanitSpanBul(spanlar, anahtar) {
   }) || null;
 }
 
-export default function NeonDetay({ result, onDownload, downloading, canDownload, embedded = false }) {
+export default function NeonDetay({ result, embedded = false }) {
   const r = result;
   // Gömülü modda panel sütunu dardır → bölüm rayı ancak çok geniş pencerede açılır.
   const wide = useWide(embedded ? "(min-width: 1560px)" : "(min-width: 1180px)");
@@ -498,24 +497,6 @@ export default function NeonDetay({ result, onDownload, downloading, canDownload
                     ),
                   ]}
                 />
-
-                <div id="det-yazi" style={{ scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl }}>
-                  <NeonCard title="Resmî yazı taslağı" tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "taslak"} accent={V} icon={<Icon.doc />}>
-                    {r.yazi_taslak_md && (
-                      <PaperSheet
-                        metin={r.yazi_taslak_md}
-                        dosyaAdi={`${r.yazi_turu ? YAZI_TR(r.yazi_turu).toLocaleLowerCase("tr-TR").replace(/\s+/g, "-") : "taslak"}.docx · Yön. 2646`}
-                        formatOk={!!r.format_uyumlu}
-                      />
-                    )}
-                    <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-                      <Btn primary onClick={() => onDownload?.("pdf")} disabled={!canDownload || downloading === "pdf"}>{downloading === "pdf" ? "indiriliyor…" : "PDF indir"}</Btn>
-                      <Btn onClick={() => onDownload?.("docx")} disabled={!canDownload || downloading === "docx"}>{downloading === "docx" ? "indiriliyor…" : "DOCX indir"}</Btn>
-                      <Btn onClick={() => onDownload?.("eyp")} disabled={!canDownload || downloading === "eyp"} title="EYP 2.0 (e-Yazışma Teknik Rehberi) uyumlu paket iskeleti — EBYS'ye doğrudan girebilir">{downloading === "eyp" ? "hazırlanıyor…" : "EYP 2.0 paketi"}</Btn>
-                      {!canDownload && <span style={{ ...TYPE.meta, color: PAL.mut2 }}>İndirme için örnek evrak metni gerekir (dosya yolunda metin sunucuda tutulmaz).</span>}
-                    </div>
-                  </NeonCard>
-                </div>
 
               </div>
             </section>

@@ -9,9 +9,12 @@ import datetime as _dt
 import uuid
 
 from api.schemas import AltTalepSchema
+from db.models import AltTalep
 from db.repositories.islem_repo import (
     _alt_talepler,
+    _alt_taslaklar,
     _bilgi_unsurlari,
+    _coklu_taslak,
     _kanit_spanlar,
     _risk,
     _sla,
@@ -92,3 +95,44 @@ def test_sla_durum_buyuk_harf_map():
     assert sl is not None and sl.durum == "normal"
     assert sl.son_tarih == _dt.date(2026, 7, 27) and sl.kalan_gun == 30
     assert _sla(_IID, {}) is None
+
+
+# --- çok-konulu evrak: her alt-talebin KENDİ taslağı, alt_talep_id ile bağlı --------------
+
+
+def test_coklu_taslak_iki_taslak_metinliyse_true():
+    talepler = [
+        AltTalepSchema(ozet="A", yazi_taslak_md="metin A"),
+        AltTalepSchema(ozet="B", yazi_taslak_md="metin B"),
+    ]
+    assert _coklu_taslak(_Sonuc(talepler)) is True
+
+
+def test_coklu_taslak_tek_talepte_false():
+    assert _coklu_taslak(_Sonuc([AltTalepSchema(ozet="A", yazi_taslak_md="metin A")])) is False
+
+
+def test_coklu_taslak_metin_yoksa_false():
+    talepler = [AltTalepSchema(ozet="A"), AltTalepSchema(ozet="B")]
+    assert _coklu_taslak(_Sonuc(talepler)) is False
+
+
+def test_alt_taslaklar_alt_talep_id_ile_esler_ve_metinsizi_atlar():
+    alt1, alt2 = AltTalep(id=uuid.uuid4()), AltTalep(id=uuid.uuid4())
+    talepler = [
+        AltTalepSchema(ozet="çukur", yazi_turu="ust_yazi",
+                       yazi_taslak_md="Birim 1 taslağı", format_uyumlu=True),
+        AltTalepSchema(ozet="fatura", yazi_turu="ust_yazi", yazi_taslak_md=""),  # taslak yok → atlanır
+    ]
+    rows = _alt_taslaklar(_IID, talepler, [alt1, alt2], {"ust_yazi"})
+    assert len(rows) == 1
+    assert rows[0].alt_talep_id == alt1.id
+    assert rows[0].metin_md == "Birim 1 taslağı" and rows[0].format_uyumlu is True
+    assert rows[0].konu == "çukur"
+
+
+class _Sonuc:
+    """ProcessResponse'un _coklu_taslak için gereken tek alanının minimal test çifti."""
+
+    def __init__(self, alt_talepler):
+        self.alt_talepler = alt_talepler

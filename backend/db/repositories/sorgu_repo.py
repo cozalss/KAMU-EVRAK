@@ -140,13 +140,28 @@ async def taslak_listele(session: AsyncSession, *, owner_id: uuid.UUID,
 
 async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
                         limit: int = 50, offset: int = 0) -> list[dict]:
-    """Kalıcı işlem geçmişi — frontend session-state şekline yakın, tek sorguda özet."""
+    """Kalıcı işlem geçmişi — frontend session-state şekline yakın, tek sorguda özet.
+
+    Çok-konulu evrakta bir işlemin BİRDEN ÇOK taslağı olabilir (bkz. taslak.alt_talep_id) —
+    düz outerjoin bu durumda işlem satırını çoğaltırdı. Bunun yerine her işlem için TEK
+    "temsilci" taslak seçilir: önce tekil/whole-doc taslak (alt_talep_id IS NULL), yoksa
+    en erken oluşturulan birim taslağı (liste özetinde tek satır/tek taslak metni yeterli;
+    tüm birim taslakları taslak_listele()'de zaten ayrı ayrı görünür).
+    """
     limit, offset = _clamp(limit, offset)
+    temsilci_taslak_id = (
+        select(Taslak.id)
+        .where(Taslak.islem_id == Islem.id)
+        .order_by(Taslak.alt_talep_id.is_(None).desc(), Taslak.olusturuldu.asc())
+        .limit(1)
+        .correlate(Islem)
+        .scalar_subquery()
+    )
     rows = (await session.execute(
         select(Islem, GelenEvrak, Birim.kod, Taslak, DenetimIzi)
         .join(GelenEvrak, GelenEvrak.id == Islem.gelen_evrak_id)
         .outerjoin(Birim, Birim.id == Islem.hedef_birim_id)
-        .outerjoin(Taslak, Taslak.islem_id == Islem.id)
+        .outerjoin(Taslak, Taslak.id == temsilci_taslak_id)
         .outerjoin(DenetimIzi, DenetimIzi.islem_id == Islem.id)
         .where(GelenEvrak.olusturan_id == owner_id)
         .order_by(Islem.baslangic.desc())

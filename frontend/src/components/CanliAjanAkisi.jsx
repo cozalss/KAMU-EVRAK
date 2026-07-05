@@ -9,10 +9,11 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
-import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
+import AltTaslakKarti from "./AltTaslakKarti.jsx";
 
 /* Büyüt ikonu (dört köşe ok) — belge panellerinin A4 modal tetikleyicisi. */
 const BuyutIkon = (p) => (
@@ -33,6 +34,7 @@ function BuyutDugme({ onClick, label }) {
   );
 }
 import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand } from "./neonUi.jsx";
+import TurSecici from "./TurSecici.jsx";
 
 /* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———
    Her ajan bir istasyon; Görev 1 = T hattı, Görev 2 = V hattı. Ray, adımlar tamamlandıkça
@@ -488,7 +490,9 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut }) {
 export default function CanliAjanAkisi({
   nodes = [], result = null, busy = false, started = false, runBase = 0,
   riskOutcome = "yesil", fileMeta = null, pendingOnay = null,
-  onApprove = () => {}, onEdit = () => {}, onReject = () => {},
+  onApprove = () => {}, onEdit = () => {}, onReject = () => {}, onAltKarar = () => {},
+  onAltTurUret = () => null, onAltDuzenle = () => {},
+  onTurSec = () => {}, turUretiliyor = "", onerilenTur = "",
   onDownload = () => {}, downloading = "", canDownload = false,
   onUpload = () => {}, onGoInbox = () => {}, glow = true, fileUrl = "", onFileDrop = () => {},
 }) {
@@ -527,6 +531,8 @@ export default function CanliAjanAkisi({
   const km = result?.kanit_metadata;
   const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
   const draftMd = result?.yazi_taslak_md;
+  // Çok-konulu evrakta birim başına ayrı üst yazı taslağı — her biri kendi HITL kararını taşır.
+  const altTaslaklar = (result?.alt_talepler || []).filter((a) => a?.yazi_taslak_md);
   const lit = display.find((a) => a.id === "risk_guard")?.status === "done";
   const decisionReady = !busy && (!!pendingOnay || !!result);
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
@@ -628,8 +634,7 @@ export default function CanliAjanAkisi({
               <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px", display: "flex", flexDirection: "column" }}>
                 {result ? (
                   <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-                    <NeonDetay embedded result={result}
-                      onDownload={onDownload} downloading={downloading} canDownload={canDownload} />
+                    <NeonDetay embedded result={result} />
                   </HataSiniri>
                 ) : izKart}
               </div>
@@ -653,42 +658,62 @@ export default function CanliAjanAkisi({
               <RiskBand band={riskOutcome} lit={lit} />
             </div>
 
-            {/* Kart içerik boyunda kalır (flex:1 yok) — taslak bitince altta boş beyazlık uzamaz. */}
-            <div style={{ ...card, display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.s }}>
-                <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, flex: 1 }}>Resmî yazı taslağı</span>
-                {draftMd && <BuyutDugme onClick={() => setBelgeModal("taslak")} label="Resmî yazı taslağını A4 görünümde büyüt" />}
-              </div>
-              {draftMd ? (
-                <pre role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
-                  onClick={() => setBelgeModal("taslak")}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setBelgeModal("taslak"); } }}
-                  style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420, cursor: "zoom-in" }}>{cleanDemoText(draftMd)}</pre>
-              ) : (
-                <div style={{ display: "flex", alignItems: "center", gap: SP.s, flex: 1, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.xl }}>
-                  <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
-                  Taslak, "Yazı Taslağı" adımında üretilecek…
+            {/* Çok-konulu evrakta (>=2 birim) taslak, kaynak belgeye uygun N adet birim
+                bazlı üst yazıya dönüşür; tekil "genel taslak" kartı KARIŞIKLIK yaratmasın
+                diye o durumda hiç gösterilmez — yalnız birim kartları (aşağıda) görünür. */}
+            {altTaslaklar.length < 2 && (
+              <div style={{ ...card, display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.s }}>
+                  <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, flex: 1 }}>Resmî yazı taslağı{result?.yazi_turu ? ` · ${YAZI_TR(result.yazi_turu)}` : ""}</span>
+                  {draftMd && <BuyutDugme onClick={() => setBelgeModal("taslak")} label="Resmî yazı taslağını A4 görünümde büyüt" />}
                 </div>
-              )}
-              <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m, ...TYPE.meta, color: PAL.mut2 }}>
-                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: V, flexShrink: 0 }} />
-                Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
+                {draftMd && (
+                  <TurSecici secili={result?.yazi_turu} onerilen={onerilenTur}
+                    uretilen={turUretiliyor} onSec={onTurSec} />
+                )}
+                {draftMd ? (
+                  <pre role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
+                    onClick={() => setBelgeModal("taslak")}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setBelgeModal("taslak"); } }}
+                    style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420, cursor: "zoom-in", opacity: turUretiliyor ? 0.55 : 1, transition: "opacity .15s ease-out" }}>{cleanDemoText(draftMd)}</pre>
+                ) : (
+                  <div style={{ display: "flex", alignItems: "center", gap: SP.s, flex: 1, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.xl }}>
+                    <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
+                    Taslak, "Yazı Taslağı" adımında üretilecek…
+                  </div>
+                )}
+                <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m, ...TYPE.meta, color: PAL.mut2 }}>
+                  <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: V, flexShrink: 0 }} />
+                  Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
+                </div>
+                <div style={{ display: "flex", gap: SP.s, marginTop: SP.s }}>
+                  <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing}
+                    onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
+                    onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
+                    style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: "none", ...TYPE.ui, fontWeight: 500, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease-out" }}>Onayla &amp; gönder</button>
+                  <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing}
+                    onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
+                    onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
+                    style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Düzenle</button>
+                  <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing}
+                    onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
+                    onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
+                    style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Reddet</button>
+                </div>
               </div>
-              <div style={{ display: "flex", gap: SP.s, marginTop: SP.s }}>
-                <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing}
-                  onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
-                  onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
-                  style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: "none", ...TYPE.ui, fontWeight: 500, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease-out" }}>Onayla &amp; gönder</button>
-                <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing}
-                  onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
-                  onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
-                  style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Düzenle</button>
-                <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing}
-                  onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
-                  onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
-                  style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Reddet</button>
-              </div>
-            </div>
+            )}
+
+            {/* Çok-konulu evrak — kaynak belgeden çıkan HER birim için ayrı yazı kartı:
+                tür kutucukları + Onayla&Gönder/Düzenle/Reddet, hepsi bağımsız (Giden
+                Evrak'a gerçekten yazar — bkz. DashboardApp.onAltKarar/pushOutbox). sira
+                1-tabanlı: backend'in /islem/{id}/alt-talep/{sira}/onayla'sıyla birebir. */}
+            {altTaslaklar.map((a, i) => (
+              <AltTaslakKarti key={i} altTalep={a}
+                onTurUret={(tur) => onAltTurUret(a, tur)}
+                onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", i + 1, tur)}
+                onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", i + 1, tur)}
+                onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, i + 1)} />
+            ))}
           </div>
             </div>
           </section>

@@ -13,7 +13,13 @@ from __future__ import annotations
 
 from yazi.models import YaziContext
 from yazi.renderer import detect_eksik_format, render_metin, render_yazi
-from yazi.yazi_render import _fallback_body, _ilgi_satirlari, _muhatap, build_context
+from yazi.yazi_render import (
+    _fallback_body,
+    _ilgi_satirlari,
+    _muhatap,
+    build_alt_talep_taslaklari,
+    build_context,
+)
 
 # ---------------------------------------------------------------------------
 # build_context — otomatik doldurma (placeholder azaltma)
@@ -103,6 +109,77 @@ class TestBuildContextAutoFill:
         # Assert
         assert ctx.muhatap == ""
         assert ctx.ilgi_satirlari == ()
+
+
+class TestMuhatapOverride:
+    """ust_yazi (kurum-içi iletim) muhatabı gönderen değil HEDEF BİRİM olmalı."""
+
+    def test_ust_yazida_override_gonderenin_onune_gecer(self):
+        # Arrange — gonderen dolu olsa da (gelen dilekçenin sahibi) üst yazı BİRİME gider
+        unsurlar = {"gonderen": "Ayşe Yılmaz", "konu": "çukur onarımı"}
+        # Act
+        ctx = build_context("ust_yazi", unsurlar, "gövde", muhatap_override="İlgili Teknik Daire")
+        # Assert
+        assert ctx.muhatap == "İlgili Teknik Daire"
+        assert "Ayşe Yılmaz" not in ctx.muhatap
+
+    def test_override_yoksa_eski_davranis_korunur(self):
+        # Arrange — geriye uyum: override verilmezse gonderen muhatap olur
+        unsurlar = {"gonderen": "Ayşe Yılmaz"}
+        # Act
+        ctx = build_context("ust_yazi", unsurlar, "gövde")
+        # Assert
+        assert ctx.muhatap == "Sayın Ayşe Yılmaz"
+
+    def test_olurda_override_yok_sayilir(self):
+        # Arrange — olur türünde muhatap hiçbir zaman render edilmez (Yön. m.20)
+        unsurlar = {"gonderen": "Emine Acar"}
+        # Act
+        ctx = build_context("olur", unsurlar, "teklif", muhatap_override="İlgili Birime")
+        # Assert
+        assert ctx.muhatap == ""
+
+
+# ---------------------------------------------------------------------------
+# build_alt_talep_taslaklari — çok-konulu evrakta birim başına ayrı üst yazı
+# ---------------------------------------------------------------------------
+
+
+class TestBuildAltTalepTaslaklari:
+    """Her alt-talep kendi birimine giden ayrı üst yazı taslağı almalı."""
+
+    async def test_tek_konulu_degismeden_doner(self):
+        # Arrange — < 2 alt-talep → ek işlem/maliyet yok
+        alt = [{"ozet": "çukur onarımı", "birim_tr": "İlgili Teknik Daire"}]
+        # Act
+        sonuc = await build_alt_talep_taslaklari(alt, {}, "evrak metni")
+        # Assert
+        assert sonuc == alt
+
+    async def test_coklu_konu_her_biri_kendi_birimine_yazilir(self):
+        # Arrange — Ayşe Yılmaz'ın 3 farklı talebi, 3 farklı birim
+        alt = [
+            {"ozet": "çukurun onarılması", "birim_tr": "İlgili Teknik Daire"},
+            {"ozet": "su faturası itirazı", "birim_tr": "Strateji Geliştirme / Mali İşler"},
+            {"ozet": "iş başvurusu sonucu", "birim_tr": "İnsan Kaynakları / Personel Dairesi"},
+        ]
+        # Act
+        sonuc = await build_alt_talep_taslaklari(alt, {"gonderen": "Ayşe Yılmaz"}, "evrak metni")
+        # Assert — her taslak KENDİ birimine muhatap, vatandaşa değil
+        assert len(sonuc) == 3
+        for orijinal, taslak in zip(alt, sonuc):
+            assert taslak["yazi_turu"] == "ust_yazi"
+            assert taslak["birim_tr"] in taslak["yazi_taslak_md"]
+            assert "Ayşe Yılmaz" not in taslak["yazi_taslak_md"]
+            assert taslak["ozet"] == orijinal["ozet"]
+
+    async def test_birim_bilgisi_yoksa_notr_muhatap(self):
+        # Arrange — birim_tr eksik → uydurma yok, nötr ifade
+        alt = [{"ozet": "talep 1"}, {"ozet": "talep 2"}]
+        # Act
+        sonuc = await build_alt_talep_taslaklari(alt, {}, "")
+        # Assert
+        assert all("İlgili Birime" in t["yazi_taslak_md"] for t in sonuc)
 
 
 # ---------------------------------------------------------------------------

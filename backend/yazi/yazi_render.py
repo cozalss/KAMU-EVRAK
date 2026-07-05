@@ -148,17 +148,27 @@ def _ilgi_satirlari(unsurlar: dict[str, Any]) -> tuple[str, ...]:
 
 def build_context(
     yazi_turu: str, unsurlar: dict[str, Any], metin: str,
+    *, muhatap_override: str | None = None,
 ) -> YaziContext:
     """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (demo-safe).
 
     Çıkarılan unsurlardan azami otomatik doldurma (Yön. 2646): konu, muhatap
     (gönderen→cevap muhatabı), ilgi (gelen belge tarih/sayı). Bilinmeyen alanlar
     (idare/birim/imza/OUR sayısı) nötr taslak değerlerle gösterilir; uydurma yok.
+
+    muhatap_override: üst yazıda (kurum-içi iletim) muhatap gelen belgenin GÖNDEREN'i
+    değil HEDEF BİRİM'dir (Yön. m.14) — route_birim/decompose'un bulduğu birim adı
+    verilirse gönderen yerine bu kullanılır. olur türünde hiçbir zaman uygulanmaz.
     """
     turu = resolve_yazi_turu(yazi_turu)
     # cevabi/üst yazıda ilgi atfı kurulur; olur'da ilgi yoktur, bilgilendirme nötr.
     ilgi = _ilgi_satirlari(unsurlar) if turu in ("cevabi_yazi", "ust_yazi") else ()
-    muhatap = "" if turu == "olur" else _muhatap(unsurlar)
+    if turu == "olur":
+        muhatap = ""
+    elif muhatap_override:
+        muhatap = muhatap_override
+    else:
+        muhatap = _muhatap(unsurlar)
     return YaziContext(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
@@ -174,4 +184,32 @@ def build_context(
     )
 
 
-__all__ = ("build_body", "build_context")
+async def build_alt_talep_taslaklari(
+    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], evrak_text: str,
+) -> list[dict[str, Any]]:
+    """Çok-konulu evrakta HER alt-talep için ayrı üst yazı taslağı (kuruma yönlendirme).
+
+    Tek ortak cevabi_yazi vatandaşa gitmez; her alt-talep KENDİ hedef birimine
+    (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
+    < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
+    """
+    if len(alt_talepler) < 2:
+        return list(alt_talepler)
+    from yazi.renderer import render_yazi
+
+    out: list[dict[str, Any]] = []
+    for item in alt_talepler:
+        ozet = str(item.get("ozet", "") or "")
+        muhatap = str(item.get("birim_tr", "") or "") or "İlgili Birime"
+        child_unsurlar = {**unsurlar, "konu": ozet}
+        metin = await build_body("ust_yazi", child_unsurlar, ozet)
+        ctx = build_context("ust_yazi", child_unsurlar, metin, muhatap_override=muhatap)
+        result = render_yazi(ctx)
+        out.append({
+            **item, "yazi_turu": "ust_yazi",
+            "yazi_taslak_md": result.metin, "format_uyumlu": result.format_uyumlu,
+        })
+    return out
+
+
+__all__ = ("build_alt_talep_taslaklari", "build_body", "build_context")

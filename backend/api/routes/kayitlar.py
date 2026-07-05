@@ -13,9 +13,16 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.schemas import MAX_EVRAK_CHARS
 from auth.deps import CurrentUser, require_role
 from db.models import Birim, Kullanici
-from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder, taslak_sil
+from db.repositories import (
+    KararError,
+    dogrula_denetim,
+    onayla_ve_gonder,
+    onayla_ve_gonder_alt_talep,
+    taslak_sil,
+)
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
     gelen_evrak_listele,
@@ -119,6 +126,10 @@ async def denetim_dogrula(islem_id: uuid.UUID, _user: CurrentUser, session: Sess
 class OnaylaRequest(BaseModel):
     secim: str = Field("onayla", pattern="^(onayla|duzenle|reddet)$")
     gerekce: str = Field("", max_length=2000)
+    # Memur kartta tür kutucuğuyla farklı tür seçtiyse: seçilen tür + o türle üretilen
+    # metin — DB'deki taslak karar ANINDA güncellenir (gerçekten gönderilen içerik saklanır).
+    yazi_turu: str = Field("", pattern="^(|ust_yazi|cevabi_yazi|bilgilendirme|olur|muzekkere|gorus_mutalaa)$")
+    metin: str = Field("", max_length=MAX_EVRAK_CHARS)
 
 
 @router.delete("/islem/{islem_id}/taslak")
@@ -151,9 +162,31 @@ async def onayla(
             raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
         return await onayla_ve_gonder(
             session, islem_id=islem_id, kullanici_id=kullanici.id,
-            secim=req.secim, gerekce=req.gerekce)
+            secim=req.secim, gerekce=req.gerekce, yazi_turu=req.yazi_turu, metin=req.metin)
     except KararError as e:
         kod = status.HTTP_404_NOT_FOUND if e.kod == "taslak_yok" else status.HTTP_409_CONFLICT
+        raise HTTPException(kod, e.mesaj) from e
+
+
+@router.post("/islem/{islem_id}/alt-talep/{sira}/onayla")
+async def alt_talep_onayla(
+    islem_id: uuid.UUID, sira: int, req: OnaylaRequest, session: Session,
+    kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
+) -> dict:
+    """Çok-konulu evrakta TEK bir alt-talebin (birim) taslağı için bağımsız HITL kararı.
+
+    `sira` frontend'deki alt_talepler listesindeki 1-tabanlı sıradır (decompose ile aynı
+    sıra). Her birim kendi Onay + GidenEvrak zincirine sahiptir (bkz. karar_repo).
+    """
+    try:
+        if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
+        return await onayla_ve_gonder_alt_talep(
+            session, islem_id=islem_id, sira=sira, kullanici_id=kullanici.id,
+            secim=req.secim, gerekce=req.gerekce, yazi_turu=req.yazi_turu, metin=req.metin)
+    except KararError as e:
+        kod = (status.HTTP_404_NOT_FOUND if e.kod in ("taslak_yok", "alt_talep_yok")
+               else status.HTTP_409_CONFLICT)
         raise HTTPException(kod, e.mesaj) from e
 
 

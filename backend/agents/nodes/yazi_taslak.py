@@ -24,7 +24,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TO_YAZI
+from agents.config import EVRAK_TO_YAZI, birim_tr
 
 log = structlog.get_logger()
 
@@ -66,19 +66,41 @@ def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
     return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin + "\n", "format_uyumlu": True}
 
 
+def _coklu_cikti(alt_out: list[dict[str, Any]]) -> dict[str, Any]:
+    """Çok-konulu (>=2 birim) çıktı — tekil alanlar geriye-uyum için ilk birimi taşır."""
+    ilk = alt_out[0]
+    log.info("yazi_taslak_coklu", n_birim=len(alt_out), birimler=[a.get("birim") for a in alt_out])
+    return {
+        "yazi_turu": ilk["yazi_turu"], "yazi_taslak_md": ilk["yazi_taslak_md"],
+        "format_uyumlu": ilk["format_uyumlu"], "alt_talepler": alt_out,
+    }
+
+
 async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Resmî yazı taslağı (metin + PDF/DOCX) üret — jinja2 + resmî-üslup gövde."""
+    """Resmî yazı taslağı (metin + PDF/DOCX) üret — jinja2 + resmî-üslup gövde.
+
+    Çok-konulu evrakta (alt_talepler >= 2) birleşik taslak HİÇ üretilmez — her
+    alt-talep kendi hedef birimine giden bağımsız bir üst yazı alır (bkz.
+    yazi_render.build_alt_talep_taslaklari); tekil yazi_taslak_md alanı geriye
+    uyum için ilk birim taslağını taşır, asıl N taslak alt_talepler içindedir.
+    """
     turu = state.get("evrak_turu", "belirsiz")
     yazi_turu = EVRAK_TO_YAZI.get(turu, "cevabi_yazi")
     unsurlar = state.get("bilgi_unsurlari") or {}
     evrak_text = state.get("evrak_text", "") or ""
+    alt_talepler = state.get("alt_talepler") or []
+    # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
+    hedef_muhatap = birim_tr(state.get("hedef_birim", "")) if yazi_turu == "ust_yazi" else None
 
     try:
         from yazi.renderer import render_yazi
-        from yazi.yazi_render import build_body, build_context
+        from yazi.yazi_render import build_alt_talep_taslaklari, build_body, build_context
 
+        alt_out = await build_alt_talep_taslaklari(alt_talepler, unsurlar, evrak_text)
+        if len(alt_out) >= 2:
+            return _coklu_cikti(alt_out)
         metin = await build_body(yazi_turu, unsurlar, evrak_text)
-        ctx = build_context(yazi_turu, unsurlar, metin)
+        ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap)
         result = render_yazi(ctx)
     except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
         log.warning("yazi_taslak_fallback", err=str(exc))

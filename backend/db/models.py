@@ -258,6 +258,9 @@ class MevzuatOneri(UUIDPk, Base):
 class Taslak(UUIDPk, Olusturuldu, Base):
     __tablename__ = "taslak"
     islem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("islem.id", ondelete="CASCADE"))
+    # Çok-konulu evrakta bu taslağın ait olduğu alt-talep (birim); NULL = tekil/whole-doc taslak.
+    alt_talep_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("alt_talep.id", ondelete="SET NULL"))
     yazi_turu_kod: Mapped[str] = mapped_column(ForeignKey("yazi_turu.kod", ondelete="RESTRICT"))
     konu: Mapped[str] = mapped_column(Text, server_default="")
     metin_md: Mapped[str] = mapped_column(Text)

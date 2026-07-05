@@ -66,7 +66,7 @@ const gecisle = (fn) => {
 export default function DashboardApp() {
   const {
     nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
-    runFile, runSample, resume, download, showToast, dismissError, canRetry, retry, runBase,
+    runFile, runSample, resume, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
   } = usePipeline();
 
   const { user, logout } = useAuth();
@@ -163,10 +163,14 @@ export default function DashboardApp() {
     return id;
   };
 
+  // Seçilen tür + metin de gönderilir: memur tür kutucuğuyla taslağı değiştirdiyse
+  // DB'deki taslak karar anında güncellenir → kalıcı kayıt gönderilen içeriği yansıtır.
   const persistDecision = useCallback(async (res, secim) => {
     if (!res?.islem_id || secim === "duzenle") return;
     try {
-      await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, { secim });
+      await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, {
+        secim, yazi_turu: res.yazi_turu || "", metin: res.yazi_taslak_md || "",
+      });
     } catch (err) {
       console.warn("Onay/giden evrak DB'ye yazılamadı", err);
       showToast("Evrak oturumda görünüyor; DB onay kaydı yazılamadı.");
@@ -393,6 +397,126 @@ export default function DashboardApp() {
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
+  // ---- Yazı türü seçimi (şartname: üst yazı / cevabi / bilgilendirme / alternatif tür) ----
+  // Pipeline'ın önerdiği tür + tür başına üretilen taslaklar koşum-içi önbelleğe alınır
+  // (chip'ler arası anında geçiş; aynı tür için LLM'e ikinci kez gidilmez). Yeni koşum
+  // sinyali = denetim_izi referansının değişmesi (applyTaslak/persist merge'i onu korur).
+  const taslakCacheRef = useRef({});
+  const taslakOnerilenRef = useRef("");
+  const taslakDenetimRef = useRef(null);
+  const altDraftRef = useRef({});   // birim kartı "Düzenle" → sira başına TEK sanal sonuç (dedup)
+  const [turUretiliyor, setTurUretiliyor] = useState("");
+  useEffect(() => {
+    const iz = result?.denetim_izi || null;
+    if (!result || iz === taslakDenetimRef.current) return;
+    taslakDenetimRef.current = iz;
+    taslakOnerilenRef.current = result.yazi_turu || "";
+    taslakCacheRef.current = result.yazi_taslak_md
+      ? { [result.yazi_turu]: { yazi_taslak_md: result.yazi_taslak_md, format_uyumlu: result.format_uyumlu } }
+      : {};
+    altDraftRef.current = {};
+    setTurUretiliyor("");
+  }, [result]);
+
+  const secTaslakTuru = useCallback(async (tur) => {
+    if (!result || tur === result.yazi_turu || turUretiliyor) return;
+    const onbellek = taslakCacheRef.current;
+    if (onbellek[tur]) { applyTaslak({ yazi_turu: tur, ...onbellek[tur] }); return; }
+    // Dosya yolunda ham metin sunucuda tutulmaz → maskeli kanıt metni yeterli girdi.
+    const metin = evrakText || result.kanit_metadata?.metin || "";
+    if (!metin) { showToast("Tür değiştirmek için evrak metni gerekli — evrakı yeniden işleyin."); return; }
+    setTurUretiliyor(tur);
+    try {
+      const res = await fetch("/yazi/taslak-turu", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          evrak_text: metin, yazi_turu: tur,
+          bilgi_unsurlari: result.bilgi_unsurlari || {}, hedef_birim: result.hedef_birim || "",
+        }),
+      });
+      if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
+      const data = await res.json();
+      onbellek[tur] = { yazi_taslak_md: data.yazi_taslak_md, format_uyumlu: data.format_uyumlu };
+      applyTaslak(data);
+    } catch (err) {
+      showToast(err?.message || "Taslak üretilemedi — backend çalışıyor mu?");
+    } finally {
+      setTurUretiliyor("");
+    }
+  }, [result, evrakText, turUretiliyor, applyTaslak, showToast]);
+
+  // Çok-konulu evrakta HER birim kartının kendi Onayla&Gönder/Reddet kararı — ana sonuçtan
+  // o birime özgü alanlarla (hedef/tür/metin) türetilmiş TEK KULLANIMLIK bir "sanal sonuç"
+  // Giden Evrak'a yazılır. `sira` (1-tabanlı, alt_talepler listesindeki konum) backend'in
+  // /islem/{id}/alt-talep/{sira}/onayla'sına gider — o birimin KENDİ taslak/onay/giden_evrak
+  // zincirini bağımsız günceller (bkz. karar_repo.onayla_ve_gonder_alt_talep). `tur` kartta
+  // kutucuklardan seçilen yazı türüdür (kart taslağı o türe göre yeniden üretilmiş olabilir).
+  const onAltKarar = (altTalep, metinGuncel, secim, sira, tur) => {
+    const sanalSonuc = {
+      ...result,
+      hedef_birim: altTalep.birim_tr || altTalep.birim || result?.hedef_birim,
+      yazi_turu: tur || altTalep.yazi_turu || "ust_yazi",
+      yazi_taslak_md: metinGuncel,
+      format_uyumlu: altTalep.format_uyumlu,
+      bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet },
+    };
+    if (!pushOutbox(sanalSonuc, fileMeta, secim)) return false;
+    if (result?.islem_id && secim !== "duzenle") {
+      apiPost(`/islem/${encodeURIComponent(result.islem_id)}/alt-talep/${sira}/onayla`, {
+        secim, yazi_turu: sanalSonuc.yazi_turu || "", metin: metinGuncel || "",
+      }).catch((err) => { console.warn("Birim kararı DB'ye yazılamadı", err); });
+    }
+    const etiket = altTalep.birim_tr || "İlgili birim";
+    showToast(secim === "reddet" ? `${etiket} — reddedildi, Giden Evrak'a kaydedildi.` : `${etiket} — gönderildi, Giden Evrak'a eklendi.`);
+    return true;
+  };
+
+  // Birim kartında tür kutucuğu seçildi → o birimin taslağını SEÇİLEN türle yeniden üret.
+  // Girdi = alt-talebin kendi özeti (segment); muhatap birimi backend belirler (Yön. m.14).
+  // Dönüş: taslak verisi ya da null (hata toast'la bildirilir; kart eski taslağında kalır).
+  const uretAltTaslakTuru = useCallback(async (altTalep, tur) => {
+    const metin = altTalep.ozet || evrakText || result?.kanit_metadata?.metin || "";
+    if (!metin) { showToast("Tür değiştirmek için talep metni gerekli — evrakı yeniden işleyin."); return null; }
+    try {
+      const res = await fetch("/yazi/taslak-turu", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          evrak_text: metin, yazi_turu: tur,
+          bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet || "" },
+          hedef_birim: altTalep.birim || "",
+        }),
+      });
+      if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
+      return await res.json();
+    } catch (err) {
+      showToast(err?.message || "Taslak üretilemedi — backend çalışıyor mu?");
+      return null;
+    }
+  }, [result, evrakText, showToast]);
+
+  // Birim kartı "Düzenle" → ana karttaki onEdit ile aynı davranış: taslağı Taslaklar
+  // kuyruğuna ekle ve oraya git (yerinde düzenleme yok — düzenleme tek yerde yapılır).
+  // sira başına TEK sanal sonuç (altDraftRef) → ikinci basış mevcut taslağa götürür.
+  const onAltDuzenle = (altTalep, metin, tur, sira) => {
+    const ref = altDraftRef.current;
+    if (!ref[sira]) {
+      ref[sira] = {
+        ...result,
+        hedef_birim: altTalep.birim_tr || altTalep.birim || result?.hedef_birim,
+        yazi_turu: tur || altTalep.yazi_turu || "ust_yazi",
+        yazi_taslak_md: metin,
+        format_uyumlu: altTalep.format_uyumlu,
+        bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet },
+      };
+    }
+    const taslakId = pushDraft(ref[sira], fileMeta);
+    if (taslakId) {
+      setTaslakHedef(taslakId);
+      showToast(`${altTalep.birim_tr || "İlgili birim"} taslağı düzenlemeye alındı — Taslaklar'a eklendi.`);
+      goView("taslaklar");
+    }
+  };
+
   let view;
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
@@ -404,7 +528,9 @@ export default function DashboardApp() {
     <CanliAjanAkisi
       nodes={nodes} result={data} busy={busy} started={started} runBase={runBase}
       riskOutcome={riskOutcome} fileMeta={fileMeta} pendingOnay={pendingOnay}
-      onApprove={onApprove} onEdit={onEdit} onReject={onReject}
+      onApprove={onApprove} onEdit={onEdit} onReject={onReject} onAltKarar={onAltKarar}
+      onAltTurUret={uretAltTaslakTuru} onAltDuzenle={onAltDuzenle}
+      onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
       onDownload={download} downloading={downloading} canDownload={!!evrakText}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
       fileUrl={fileUrl} onFileDrop={runFile} glow={!hareketAzalt}

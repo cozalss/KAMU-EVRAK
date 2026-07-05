@@ -26,6 +26,20 @@ class YaziTaslakRequest(BaseModel):
     filename: str = Field("", max_length=255)
 
 
+class TaslakTuruRequest(BaseModel):
+    """Seçilen resmî yazı TÜRÜ için taslağı yeniden üretme isteği (şartname: üst yazı /
+    cevabi yazı / bilgilendirme / alternatif tür seçilebilmeli).
+
+    Pipeline TEKRAR koşulmaz: frontend elindeki bilgi unsurları + evrak metniyle yalnız
+    gövde-üretim + render katmanı çağrılır (1 LLM çağrısı; mock'ta deterministik).
+    """
+
+    evrak_text: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
+    yazi_turu: str = Field(..., pattern="^(ust_yazi|cevabi_yazi|bilgilendirme|olur|muzekkere|gorus_mutalaa)$")
+    bilgi_unsurlari: dict = Field(default_factory=dict)
+    hedef_birim: str = Field("", max_length=100)   # birim kodu — ust_yazi muhatabı için
+
+
 class YaziRenderRequest(BaseModel):
     """Düzenlenmiş taslak metnini DOĞRUDAN PDF/DOCX'e render etme isteği (pipeline YOK).
 
@@ -94,6 +108,9 @@ class AltTalepSchema(BaseModel):
     yazi_turu: str = ""
     cevap_suresi: str = ""        # "30 gün (3071 s.K. m.7)" vb.
     sla_durum: str = ""           # NORMAL | GECIKMIS | KRITIK | tanimsiz | tarih_yok
+    # Bu alt-talebin KENDİ hedef birimine yönlendirilen üst yazı taslağı (>= 2 alt-talepte dolu).
+    yazi_taslak_md: str = ""
+    format_uyumlu: bool = False
 
 
 class ProcessResponse(BaseModel):

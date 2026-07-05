@@ -147,13 +147,36 @@ def _konu(response) -> str:
 
 
 def _taslak(islem_id, response, yazi_kods) -> Taslak | None:
-    """yazi_taslak_md varsa + yazı türü geçerliyse taslak satırı (1 islem → 1 taslak)."""
+    """Tek-konulu evrakta yazi_taslak_md varsa taslak satırı (1 islem → 1 taslak)."""
     if not response.yazi_taslak_md or response.yazi_turu not in yazi_kods:
         return None
     return Taslak(
         islem_id=islem_id, yazi_turu_kod=response.yazi_turu, konu=_konu(response),
         metin_md=response.yazi_taslak_md, format_uyumlu=response.format_uyumlu,
     )
+
+
+def _coklu_taslak(response) -> bool:
+    """Çok-konulu (>=2 birim, en az biri taslak metni taşıyor) → N ayrı taslak yazılır."""
+    return len(response.alt_talepler) >= 2 and any(t.yazi_taslak_md for t in response.alt_talepler)
+
+
+def _alt_taslaklar(islem_id, talepler, alt_talep_rows, yazi_kods) -> list[Taslak]:
+    """Çok-konulu evrakta HER alt-talebin kendi birimine giden taslağı (alt_talep_id bağlı).
+
+    `talepler` ve `alt_talep_rows` AYNI sırada birebir eşleşir (_alt_talepler her ikisini
+    de aynı enumerate ile kurar) → zip güvenli. Flush SONRASI çağrılmalı (alt.id dolu olsun).
+    """
+    rows: list[Taslak] = []
+    for t, alt in zip(talepler, alt_talep_rows):
+        if not t.yazi_taslak_md or t.yazi_turu not in yazi_kods:
+            continue
+        rows.append(Taslak(
+            islem_id=islem_id, alt_talep_id=alt.id, yazi_turu_kod=t.yazi_turu,
+            konu=(t.ozet or "")[:500], metin_md=t.yazi_taslak_md,
+            format_uyumlu=t.format_uyumlu,
+        ))
+    return rows
 
 
 def _sla(islem_id, meta: dict) -> SlaTakip | None:
@@ -202,13 +225,17 @@ async def persist_islem(
 
     session.add_all(_bilgi_unsurlari(islem.id, response.bilgi_unsurlari))
     session.add_all(_kanit_spanlar(islem.id, response.kanit_metadata))
-    session.add_all(_alt_talepler(islem.id, response.alt_talepler, evrak_kods, yazi_kods, birimler))
+    alt_talep_rows = _alt_talepler(islem.id, response.alt_talepler, evrak_kods, yazi_kods, birimler)
+    session.add_all(alt_talep_rows)
     session.add_all(_mevzuat_oneri(islem.id, response.mevzuat_onerileri))
     if (r := _risk(islem.id, response.risk_metadata)) is not None:
         session.add(r)
     if (sl := _sla(islem.id, response.sla_metadata)) is not None:
         session.add(sl)
-    if (ts := _taslak(islem.id, response, yazi_kods)) is not None:
+    if _coklu_taslak(response):
+        await session.flush()  # alt_talep_rows[i].id doldurulsun (taslak.alt_talep_id için)
+        session.add_all(_alt_taslaklar(islem.id, response.alt_talepler, alt_talep_rows, yazi_kods))
+    elif (ts := _taslak(islem.id, response, yazi_kods)) is not None:
         session.add(ts)
 
     await session.commit()

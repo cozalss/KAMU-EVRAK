@@ -24,6 +24,7 @@ from agents.state import make_initial_state
 from api.middleware.ratelimit import rate_limit
 from api.schemas import (
     MAX_EVRAK_CHARS,
+    TaslakTuruRequest,
     YaziEypRequest,
     YaziRenderRequest,
     YaziTaslakRequest,
@@ -104,6 +105,53 @@ async def yazi_taslak(
         media_type=media_type,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+def _skaler_unsurlar(d: dict) -> dict:
+    """İstemciden gelen bilgi_unsurlari'ndan yalnız düz skalerleri geçir.
+
+    _muhatap/_ilgi_satirlari str bekler; iç içe dict/list gelirse str(dict) çöpü
+    muhatap satırına sızardı. bool'lar (imza var vb.) muhatap üretiminde anlamsız → elenir.
+    """
+    return {k: v for k, v in (d or {}).items()
+            if isinstance(v, (str, int, float)) and not isinstance(v, bool)}
+
+
+@router.post("/taslak-turu")
+@rate_limit("30/minute")
+async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str, Any]:
+    """Memurun SEÇTİĞİ yazı türü için taslağı yeniden üret (şartname: tür seçilebilmeli).
+
+    Pipeline koşulmaz — yalnız gövde üretimi (LLM varsa; mock'ta deterministik şablon)
+    + jinja render. ust_yazi'da muhatap gönderen değil hedef birimdir (Yön. m.14).
+    PDF/DOCX üretilmez (metin yeterli; indirme /yazi/render'dan yapılır).
+    """
+    from agents.config import birim_tr
+    from yazi.renderer import render_yazi
+    from yazi.yazi_render import build_body, build_context
+
+    text = (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS]
+    if not text:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Evrak metni boş")
+    unsurlar = _skaler_unsurlar(req.bilgi_unsurlari)
+    muhatap = (birim_tr(req.hedef_birim)
+               if req.yazi_turu == "ust_yazi" and req.hedef_birim else None)
+    try:
+        metin = await build_body(req.yazi_turu, unsurlar, text)
+        ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap)
+        result = render_yazi(ctx, formats=frozenset())
+    except Exception as exc:
+        log.error("yazi_taslak_turu_failed", error=str(exc) or type(exc).__name__)
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, "Taslak üretilemedi") from exc
+
+    log.info("yazi_taslak_turu", yazi_turu=result.yazi_turu,
+             format_uyumlu=result.format_uyumlu)
+    return {
+        "yazi_turu": result.yazi_turu,
+        "yazi_taslak_md": result.metin,
+        "format_uyumlu": result.format_uyumlu,
+    }
 
 
 @router.post("/render")

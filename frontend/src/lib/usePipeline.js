@@ -315,9 +315,22 @@ export function usePipeline() {
   const dismissError = useCallback(() => setError(""), []);
   const canRetry = hasRun;
 
+  // Memur farklı yazı TÜRÜ seçti → yeni üretilen taslağı sonuca işle. Yalnız üç taslak
+  // alanı değişir; iç nesne referansları (denetim_izi/bilgi_unsurlari) AYNEN korunur —
+  // DashboardApp'in result-effect'i bunu "aynı koşumun zenginleşmesi" sayar (yeni geçmiş
+  // kaydı açılmaz), download/onay akışları da otomatik seçili taslağı kullanır.
+  const applyTaslak = useCallback((patch) => {
+    setResult((r) => (r ? {
+      ...r,
+      yazi_turu: patch.yazi_turu,
+      yazi_taslak_md: patch.yazi_taslak_md,
+      format_uyumlu: !!patch.format_uyumlu,
+    } : r));
+  }, []);
+
   return {
     nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
-    runFile: runFileValidated, runSample, resume, retry, download, showToast, dismissError, canRetry,
+    runFile: runFileValidated, runSample, resume, retry, download, showToast, dismissError, canRetry, applyTaslak,
     // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
     // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).
     runBase: runStart.current,

@@ -18,16 +18,38 @@ const queryClient = new QueryClient({
     },
   },
 });
-import { PAL, T, SANS, MONO } from "./components/neonUi.jsx";
+import { PAL, T, SANS, MONO, THEME_CSS } from "./components/neonUi.jsx";
 import "./styles/fonts.css";
 import "./styles/kamu-evrak.css";   // global reset + result-cards yardımcı stilleri
+
+// Açık/koyu mod tercihi: kalıcı (localStorage), yoksa OS prefers-color-scheme. Kök <html>
+// [data-theme] alır (THEME_CSS bunu :root[data-theme="dark"] ile seçer) — Splash/AuthPage/
+// DashboardApp'in hepsi aynı dokümanı paylaştığından tek noktadan (Root) uygulanır.
+const TEMA_ANAHTAR = "ke-tema";
+function useTema() {
+  const [tema, setTemaState] = React.useState(() => {
+    try {
+      const kayitli = localStorage.getItem(TEMA_ANAHTAR);
+      if (kayitli === "dark" || kayitli === "light") return kayitli;
+    } catch { /* özel mod — OS tercihine düş */ }
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+  React.useEffect(() => {
+    document.documentElement.setAttribute("data-theme", tema);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", tema === "dark" ? "#17140d" : "#f7f3ee");
+    try { localStorage.setItem(TEMA_ANAHTAR, tema); } catch { /* özel mod — tercih oturumluk kalır */ }
+  }, [tema]);
+  const toggleTema = React.useCallback(() => setTemaState((v) => (v === "dark" ? "light" : "dark")), []);
+  return [tema, toggleTema];
+}
 
 // Oturum kapısı: loading → Splash · anon → AuthPage (giriş/kayıt) · auth → DashboardApp (evrak).
 function Root() {
   const { status } = useAuth();
+  const [tema, toggleTema] = useTema();
   if (status === "loading") return <Splash />;
   if (status !== "auth") return <AuthPage />;
-  return <DashboardApp />;
+  return <DashboardApp tema={tema} onTemaDegistir={toggleTema} />;
 }
 
 function Splash() {
@@ -35,7 +57,7 @@ function Splash() {
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: PAL.bg, color: PAL.ink, fontFamily: SANS }}>
       <style>{"@keyframes ke-spin{to{transform:rotate(360deg)}}"}</style>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-        <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", border: "3px solid rgba(46,230,201,.25)", borderTopColor: T, animation: "ke-spin .8s linear infinite" }} />
+        <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", border: `3px solid color-mix(in srgb, ${T} 25%, transparent)`, borderTopColor: T, animation: "ke-spin .8s linear infinite" }} />
         <span style={{ fontFamily: MONO, fontSize: 12, letterSpacing: "1px", color: PAL.mut2 }}>Oturum doğrulanıyor…</span>
       </div>
     </div>
@@ -44,6 +66,7 @@ function Splash() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <style>{THEME_CSS}</style>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Root />

@@ -12,33 +12,69 @@ export const SANS = "'IBM Plex Sans','Segoe UI',system-ui,sans-serif";
 /* V (Görev 2 semantiği): lavanta → MÜHÜR moru (2026-07 revizyonu). Pastel "AI moru"ndan
    çıkış; ıstampa/mühür mürekkebi — resmî evrak dünyasının kendi rengi. Radix ruby/plum
    koyuluğunda; ivory zeminde dolgu 6.3:1, DERIN.V metin 8.3:1 (AA). */
-export const T = "#2f8fa6", V = "#8e3d66", R = "#e0563c";
+/* Renk token'ları CSS custom property üzerinden okunur (bkz. THEME_CSS altta) — açık/koyu
+   mod aynı JS sabitleriyle çalışır, yalnız kök elemandaki [data-theme] değeri değişir. */
+export const T = "var(--ke-t)", V = "var(--ke-v)", R = "var(--ke-r)";
 export const PAL = {
-  bg: "#f7f3ee", bg2: "#efe6da", surf: "#ffffff", surf2: "#fdfbf7", surfHi: "rgba(35,26,18,.05)",
-  line: "rgba(35,26,18,.12)", lineHi: "rgba(35,26,18,.22)",
-  ink: "#161616", ink2: "#3a3229", mut: "#6b6255", mut2: "#57503f", mut3: "#8a8172",
-  hov: "rgba(35,26,18,.04)", press: "rgba(35,26,18,.07)",
-  inputLine: "rgba(35,26,18,.35)", onAccent: "#fbf7f0", inkSurf: "#2a251e",
+  bg: "var(--ke-bg)", bg2: "var(--ke-bg2)", surf: "var(--ke-surf)", surf2: "var(--ke-surf2)", surfHi: "var(--ke-surf-hi)",
+  line: "var(--ke-line)", lineHi: "var(--ke-line-hi)",
+  ink: "var(--ke-ink)", ink2: "var(--ke-ink2)", mut: "var(--ke-mut)", mut2: "var(--ke-mut2)", mut3: "var(--ke-mut3)",
+  hov: "var(--ke-hov)", press: "var(--ke-press)",
+  inputLine: "var(--ke-input-line)", onAccent: "var(--ke-on-accent)", inkSurf: "var(--ke-ink-surf)",
+  scrim: "var(--ke-scrim)",
 };
 export const BANT = {
-  yesil: { c: "#2f9e6e", l: "YEŞİL", t: "Düşük risk" },
-  sari: { c: "#c98a1f", l: "SARI", t: "Orta risk" },
-  kirmizi: { c: "#c9432f", l: "KIRMIZI", t: "Yüksek risk" },
+  yesil: { c: "var(--ke-bant-yesil)", l: "YEŞİL", t: "Düşük risk" },
+  sari: { c: "var(--ke-bant-sari)", l: "SARI", t: "Orta risk" },
+  kirmizi: { c: "var(--ke-bant-kirmizi)", l: "KIRMIZI", t: "Yüksek risk" },
 };
 
 /* Açık zemin üstünde AA kontrastlı metin/dolgu türevleri — ham T/V/R/BANT.c açık zeminde
-   metin rengi OLAMAZ (T ≈3.2:1). Th = primary buton hover'ı. */
+   metin rengi OLAMAZ (T ≈3.2:1). Th = primary buton hover'ı. Koyu modda THEME_CSS ayrı
+   AA-güvenli değer taşır (T/PAL ile aynı var() deseni). */
 export const DERIN = {
-  T: "#1f6d82", Th: "#1a5e71", V: "#74304f", R: "#a23425",
-  yesil: "#1f7a52", sari: "#8a5a10", kirmizi: "#a23425",
+  T: "var(--ke-derin-t)", Th: "var(--ke-derin-th)", V: "var(--ke-derin-v)", R: "var(--ke-derin-r)",
+  yesil: "var(--ke-derin-yesil)", sari: "var(--ke-derin-sari)", kirmizi: "var(--ke-derin-kirmizi)",
 };
 /* Ham aksan → AA metin türevi eşlemesi (bilinmeyen renk aynen döner). */
 export const DERIN_OF = (c) => ({
   [T]: DERIN.T, [V]: DERIN.V, [R]: DERIN.R,
   [BANT.yesil.c]: DERIN.yesil, [BANT.sari.c]: DERIN.sari, [BANT.kirmizi.c]: DERIN.kirmizi,
 }[c] || c);
-/* Tek izinli alfa eki: %8 tint zemin (çip/seçili durum). Başka alfa-yapıştırma yok. */
-export const ALFA = (hex) => hex + "14";
+/* Tek izinli alfa eki: %8 tint zemin (çip/seçili durum). color-mix — hex ve var() girdisiyle
+   aynı çalışır (eski hex+"14" eki var() dizgesinde kırılırdı). Başka alfa-yapıştırma yok. */
+export const ALFA = (c) => `color-mix(in srgb, ${c} 8%, transparent)`;
+
+/* Açık/koyu mod değerleri — kök [data-theme] ile seçilir (main.jsx Root ayarlar; kalıcı
+   tercih localStorage "ke-tema", yoksa OS prefers-color-scheme). Hex YALNIZ burada yazılır;
+   PAL/T/V/R/BANT/DERIN hep var() üzerinden okur — görünüm dosyaları hiç değişmeden iki modda
+   da çalışır. */
+export const THEME_CSS = `
+:root{
+  --ke-t:#2f8fa6; --ke-v:#8e3d66; --ke-r:#e0563c;
+  --ke-bg:#f7f3ee; --ke-bg2:#efe6da; --ke-surf:#ffffff; --ke-surf2:#fdfbf7; --ke-surf-hi:rgba(35,26,18,.05);
+  --ke-line:rgba(35,26,18,.12); --ke-line-hi:rgba(35,26,18,.22);
+  --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#8a8172;
+  --ke-hov:rgba(35,26,18,.04); --ke-press:rgba(35,26,18,.07);
+  --ke-input-line:rgba(35,26,18,.35); --ke-on-accent:#fbf7f0; --ke-ink-surf:#2a251e; --ke-scrim:rgba(35,26,18,.35);
+  --ke-shadow-rgb:35,26,18;
+  --ke-bant-yesil:#2f9e6e; --ke-bant-sari:#c98a1f; --ke-bant-kirmizi:#c9432f;
+  --ke-derin-t:#1f6d82; --ke-derin-th:#1a5e71; --ke-derin-v:#74304f; --ke-derin-r:#a23425;
+  --ke-derin-yesil:#1f7a52; --ke-derin-sari:#8a5a10; --ke-derin-kirmizi:#a23425;
+}
+:root[data-theme="dark"]{
+  --ke-t:#4db6cf; --ke-v:#c97fa3; --ke-r:#ff7a5c;
+  --ke-bg:#17140d; --ke-bg2:#100d08; --ke-surf:#221c14; --ke-surf2:#1d1811; --ke-surf-hi:rgba(255,255,255,.05);
+  --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.18);
+  --ke-ink:#f2ece0; --ke-ink2:#d6cdbc; --ke-mut:#a89d8a; --ke-mut2:#c1b7a1; --ke-mut3:#7c7260;
+  --ke-hov:rgba(255,255,255,.05); --ke-press:rgba(255,255,255,.08);
+  --ke-input-line:rgba(255,255,255,.32); --ke-on-accent:#16130d; --ke-ink-surf:#2b2418; --ke-scrim:rgba(0,0,0,.5);
+  --ke-shadow-rgb:0,0,0;
+  --ke-bant-yesil:#4cbf8a; --ke-bant-sari:#e0a83f; --ke-bant-kirmizi:#e2604a;
+  --ke-derin-t:#7ecbdd; --ke-derin-th:#92d6e6; --ke-derin-v:#e2a8c4; --ke-derin-r:#ffa088;
+  --ke-derin-yesil:#7ad9ae; --ke-derin-sari:#f0c168; --ke-derin-kirmizi:#f0917e;
+}
+`;
 
 /* Tip ölçeği — bu tablo dışında fontSize yazılmaz. Sayısal kolonlarda TNUM eklenir. */
 export const TYPE = {
@@ -57,9 +93,9 @@ export const RAD = { chip: 4, ctl: 6, card: 8, pop: 12, dot: "50%" };
 export const SP = { xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32, xxxl: 48 };
 /* Gölge yalnız havada duran katman: card=en fazla bu (opsiyonel) · pop=dropdown/tooltip · modal=modal/toast. */
 export const SH = {
-  card: "0 1px 2px rgba(35,26,18,.05)",
-  pop: "0 4px 12px -2px rgba(35,26,18,.10), 0 1px 3px rgba(35,26,18,.05)",
-  modal: "0 16px 40px -12px rgba(35,26,18,.18), 0 2px 8px rgba(35,26,18,.06)",
+  card: "0 1px 2px rgba(var(--ke-shadow-rgb),.05)",
+  pop: "0 4px 12px -2px rgba(var(--ke-shadow-rgb),.10), 0 1px 3px rgba(var(--ke-shadow-rgb),.05)",
+  modal: "0 16px 40px -12px rgba(var(--ke-shadow-rgb),.18), 0 2px 8px rgba(var(--ke-shadow-rgb),.06)",
 };
 
 /* Yalnız KLAVYE odağında halka göster (:focus-visible) — fare tıklaması da native focus
@@ -204,7 +240,7 @@ export function BuyutDugme({ onClick, label }) {
 export const Icon = {
   grid: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /></svg>,
   inbox: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 5 H20 M12 8 V15 M9 12 L12 15 L15 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 19 H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  spin: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke={T + "40"} strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke={T} strokeWidth="2" strokeLinecap="round" /></svg>,
+  spin: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke={`color-mix(in srgb, ${T} 25%, transparent)`} strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke={T} strokeWidth="2" strokeLinecap="round" /></svg>,
   doc: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M8 9 H16 M8 13 H16 M8 17 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   book: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 4 H19 V20 H5 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8 H15 M9 12 H15 M9 16 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   shield: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M8.5 12 L11 14.5 L15.5 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
@@ -287,7 +323,7 @@ export function RiskBand({ band = "yesil", lit = true, sub }) {
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 10px", borderRadius: RAD.card, background: PAL.surfHi, border: `1px solid ${PAL.line}`, width: "fit-content" }}>
           {RISK_ORDER.map((key) => {
             const on = lit && band === key;
-            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 12, height: 12, borderRadius: RAD.dot, background: on ? BANT[key].c : "rgba(35,26,18,.08)", border: "1px solid " + (on ? BANT[key].c : PAL.lineHi), transition: "background .15s ease-out" }} />;
+            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 12, height: 12, borderRadius: RAD.dot, background: on ? BANT[key].c : PAL.press, border: "1px solid " + (on ? BANT[key].c : PAL.lineHi), transition: "background .15s ease-out" }} />;
           })}
         </div>
       </div>

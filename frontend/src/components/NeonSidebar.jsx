@@ -82,7 +82,7 @@ function SampleRow({ sample, onPick }) {
   );
 }
 
-function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, onPalet, hareketAzalt = false, onHareketAzalt }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, onPalet, tema, onTemaDegistir }) {
   const [showSamples, setShowSamples] = useState(false);
   // Daraltılmış ikon-ray modu (ChatGPT sidebar-toggle deseni) — tercih kalıcı (localStorage).
   const [dar, setDar] = useState(() => {
@@ -202,7 +202,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
       )}
 
       <HesapMenu user={user} onLogout={onLogout} onPalet={onPalet}
-        hareketAzalt={hareketAzalt} onHareketAzalt={onHareketAzalt} dar={dar} />
+        tema={tema} onTemaDegistir={onTemaDegistir} dar={dar} />
     </aside>
   );
 }

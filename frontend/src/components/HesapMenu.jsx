@@ -19,7 +19,7 @@ function bashHarfler(ad) {
    (24 viewBox, 1.6-1.8 stroke, round cap) satır-içi tanımlanır (NeonSidebar deseni). */
 const MIC = {
   kisi: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" strokeWidth="1.6" /><path d="M5 20 C5 16.5 8 14.5 12 14.5 C16 14.5 19 16.5 19 20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  hareket: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12 H9 L11 7 L13 17 L15 12 H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  tema: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M12 3.5 A8.5 8.5 0 0 1 12 20.5 Z" fill="currentColor" /></svg>,
   yardim: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M9.6 9.3 C9.6 7.9 10.7 7 12 7 C13.3 7 14.4 7.9 14.4 9.2 C14.4 11 12 11.2 12 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><circle cx="12" cy="16.4" r="1" fill="currentColor" /></svg>,
   kvkk: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 L19 6 V11 C19 15.5 16 19.2 12 21 C8 19.2 5 15.5 5 11 V6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 11.5 L11.2 13.7 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
   cikis: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 17l5-5-5-5M20 12H9M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>,
@@ -60,7 +60,7 @@ function Kip({ baslik, onKapat, children }) {
   };
   return createPortal(
     <div role="presentation" onClick={onKapat} onKeyDown={klavye}
-      style={{ position: "fixed", inset: 0, zIndex: 320, background: "rgba(35,26,18,.35)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div role="dialog" aria-modal="true" aria-label={baslik} onClick={(e) => e.stopPropagation()}
         style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, animation: "nu-rise .16s ease-out" }}>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "14px 16px", borderBottom: `1px solid ${PAL.line}` }}>
@@ -182,7 +182,7 @@ const Anahtar = ({ acik }) => (
 );
 
 /* Açık menü paneli — kimlik başlığı + satırlar (HesapMenu gövdesi <50 satır kalsın diye ayrı). */
-function MenuIcerik({ user, satirRefs, hareketAzalt, onHareketAzalt, onPalet, onLogout, sec, modalAc }) {
+function MenuIcerik({ user, satirRefs, tema, onTemaDegistir, onPalet, onLogout, sec, modalAc }) {
   const ayrac = <div role="separator" aria-hidden="true" style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />;
   return (
     <div role="menu" aria-label="Hesap menüsü"
@@ -202,9 +202,9 @@ function MenuIcerik({ user, satirRefs, hareketAzalt, onHareketAzalt, onPalet, on
       {ayrac}
       <MenuSatir ref={(el) => { satirRefs.current[0] = el; }} ikon={MIC.kisi} label="Profil bilgileri"
         onClick={() => modalAc("profil")} />
-      <MenuSatir ref={(el) => { satirRefs.current[1] = el; }} ikon={MIC.hareket} label="Animasyonları azalt"
-        role="menuitemcheckbox" checked={hareketAzalt} sag={<Anahtar acik={hareketAzalt} />}
-        onClick={() => onHareketAzalt?.()} />
+      <MenuSatir ref={(el) => { satirRefs.current[1] = el; }} ikon={MIC.tema} label="Koyu görünüm"
+        role="menuitemcheckbox" checked={tema === "dark"} sag={<Anahtar acik={tema === "dark"} />}
+        onClick={() => onTemaDegistir?.()} />
       {onPalet && (
         <MenuSatir ref={(el) => { satirRefs.current[2] = el; }} ikon={MIC.palet} label="Komut paleti"
           sag={<kbd style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "0 6px", flexShrink: 0 }}>Ctrl K</kbd>}
@@ -221,7 +221,7 @@ function MenuIcerik({ user, satirRefs, hareketAzalt, onHareketAzalt, onPalet, on
   );
 }
 
-export default function HesapMenu({ user, onLogout, onPalet, hareketAzalt = false, onHareketAzalt, dar = false }) {
+export default function HesapMenu({ user, onLogout, onPalet, tema, onTemaDegistir, dar = false }) {
   const [acik, setAcik] = useState(false);
   const [modal, setModal] = useState(null);   // "profil" | "yardim" | "kvkk"
   const kokRef = useRef(null);
@@ -284,8 +284,8 @@ export default function HesapMenu({ user, onLogout, onPalet, hareketAzalt = fals
 
       {/* Menü — kart üstüne açılır */}
       {acik && (
-        <MenuIcerik user={user} satirRefs={satirRefs} hareketAzalt={hareketAzalt}
-          onHareketAzalt={onHareketAzalt} onPalet={onPalet} onLogout={onLogout}
+        <MenuIcerik user={user} satirRefs={satirRefs} tema={tema}
+          onTemaDegistir={onTemaDegistir} onPalet={onPalet} onLogout={onLogout}
           sec={sec} modalAc={(m) => { kapat(false); setModal(m); }} />
       )}
 

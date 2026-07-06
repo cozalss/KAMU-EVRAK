@@ -35,7 +35,7 @@ export default function KomutPaleti({ acik, onKapat, onNavigate, onUpload, sampl
     ["mevzuat", "Mevzuat", Icon.book], ["denetim", "Denetim izi", Icon.shield],
   ];
   return (
-    <div role="presentation" onClick={onKapat} style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(35,26,18,.35)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "12vh 24px 24px" }}>
+    <div role="presentation" onClick={onKapat} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "12vh 24px 24px" }}>
       <style>{CMDK_STYLE}</style>
       <div role="dialog" aria-modal="true" aria-label="Komut paleti" onClick={(e) => e.stopPropagation()}
         style={{ width: "min(560px,100%)", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s ease-out" }}>

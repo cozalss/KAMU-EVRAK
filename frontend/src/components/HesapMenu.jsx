@@ -1,9 +1,10 @@
 /* HesapMenu — sidebar tabanındaki kullanıcı kartı + hesap açılır menüsü (ChatGPT hesap
    menüsü deseninin kamu-evrak uyarlaması). Kart tetiktir; menü YUKARI açılır. Her öğe
    GERÇEK aksiyon: profil/yardım/KVKK modalları, hareket azaltma tercihi (canlı ajan izi
-   animasyonları), komut paleti, oturumu kapat. Renk/tip/radius yalnız neonUi token'ları.
+   animasyonları), denetim izine geçiş (Sayıştay/KVKK kanıtı — günlük iş akışının önünde
+   durmasın diye ana NAV'da değil burada), oturumu kapat. Renk/tip/radius yalnız neonUi token'ları.
    Klavye: Esc + ok tuşları + Home/End; dış tık kapatır; kapanınca odak tetiğe döner.
-   Scrim/dialog deseni KomutPaleti/MevzuatView ile birebir (rgba scrim + RAD.pop + SH.modal). */
+   Scrim/dialog deseni MevzuatView ile birebir (rgba scrim + RAD.pop + SH.modal). */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
@@ -23,7 +24,6 @@ const MIC = {
   yardim: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M9.6 9.3 C9.6 7.9 10.7 7 12 7 C13.3 7 14.4 7.9 14.4 9.2 C14.4 11 12 11.2 12 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><circle cx="12" cy="16.4" r="1" fill="currentColor" /></svg>,
   kvkk: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 L19 6 V11 C19 15.5 16 19.2 12 21 C8 19.2 5 15.5 5 11 V6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 11.5 L11.2 13.7 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
   cikis: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 17l5-5-5-5M20 12H9M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-  palet: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>,
 };
 
 /* Durum çipi — semantik renk + metin (renk tek sinyal değil). */
@@ -32,7 +32,7 @@ const Cip = ({ renk, zemin, children }) => (
 );
 
 /* Kip (modal) — scrim + dialog; Esc kapatır, açılışta kapat butonu odaklanır, gövde
-   kaydırması kilitlenir (KomutPaleti modal disiplini). PORTAL ŞART: sidebar position:sticky
+   kaydırması kilitlenir. PORTAL ŞART: sidebar position:sticky
    olduğundan kendi stacking context'ini kurar — fixed+zIndex bile içeride hapsolur ve
    ana içerik kartları modalın üstünde boyanırdı (görülen hata); body'ye taşınır. */
 function Kip({ baslik, onKapat, children }) {
@@ -45,9 +45,6 @@ function Kip({ baslik, onKapat, children }) {
   }, []);
   const klavye = (e) => {
     if (e.key === "Escape") { e.stopPropagation(); onKapat(); return; }
-    // Modal açıkken Ctrl+K paleti AÇMASIN — iki eşzamanlı aria-modal katman oluşurdu
-    // (DashboardApp'in window dinleyicisine ulaşmadan burada yutulur).
-    if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); e.stopPropagation(); return; }
     // Focus trap: Tab/Shift+Tab diyalog içinde döner — aria-modal sözleşmesi (arkadaki
     // scrim'li içeriğe klavyeyle çıkılmaz).
     if (e.key === "Tab") {
@@ -131,8 +128,7 @@ function YardimKip({ onKapat }) {
         </div>
       ))}
       <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, margin: `${SP.l}px 0 ${SP.xs}px` }}>Klavye kısayolları</div>
-      <Kisayol k="Ctrl K" a="Komut paleti — görünüm, eylem ve örnek evrak tek kutudan" />
-      <Kisayol k="Esc" a="Açık menü, palet ve pencereleri kapatır" />
+      <Kisayol k="Esc" a="Açık menü ve pencereleri kapatır" />
       <Kisayol k="Tab" a="Tüm denetimlerde klavye gezinmesi (odak halkasıyla)" />
     </Kip>
   );
@@ -182,7 +178,7 @@ const Anahtar = ({ acik }) => (
 );
 
 /* Açık menü paneli — kimlik başlığı + satırlar (HesapMenu gövdesi <50 satır kalsın diye ayrı). */
-function MenuIcerik({ user, satirRefs, tema, onTemaDegistir, onPalet, onLogout, sec, modalAc }) {
+function MenuIcerik({ user, satirRefs, tema, onTemaDegistir, onDenetimAc, onLogout, sec, modalAc }) {
   const ayrac = <div role="separator" aria-hidden="true" style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />;
   return (
     <div role="menu" aria-label="Hesap menüsü"
@@ -205,13 +201,10 @@ function MenuIcerik({ user, satirRefs, tema, onTemaDegistir, onPalet, onLogout, 
       <MenuSatir ref={(el) => { satirRefs.current[1] = el; }} ikon={MIC.tema} label="Koyu görünüm"
         role="menuitemcheckbox" checked={tema === "dark"} sag={<Anahtar acik={tema === "dark"} />}
         onClick={() => onTemaDegistir?.()} />
-      {onPalet && (
-        <MenuSatir ref={(el) => { satirRefs.current[2] = el; }} ikon={MIC.palet} label="Komut paleti"
-          sag={<kbd style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "0 6px", flexShrink: 0 }}>Ctrl K</kbd>}
-          onClick={sec(onPalet)} />
-      )}
-      <MenuSatir ref={(el) => { satirRefs.current[3] = el; }} ikon={MIC.yardim} label="Yardım ve kısayollar"
+      <MenuSatir ref={(el) => { satirRefs.current[2] = el; }} ikon={MIC.yardim} label="Yardım ve kısayollar"
         onClick={() => modalAc("yardim")} />
+      <MenuSatir ref={(el) => { satirRefs.current[3] = el; }} ikon={<Icon.shield width={15} height={15} />} label="Denetim izi"
+        onClick={sec(onDenetimAc)} />
       <MenuSatir ref={(el) => { satirRefs.current[4] = el; }} ikon={MIC.kvkk} label="KVKK ve gizlilik"
         onClick={() => modalAc("kvkk")} />
       {ayrac}
@@ -221,7 +214,7 @@ function MenuIcerik({ user, satirRefs, tema, onTemaDegistir, onPalet, onLogout, 
   );
 }
 
-export default function HesapMenu({ user, onLogout, onPalet, tema, onTemaDegistir, dar = false }) {
+export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDegistir, dar = false }) {
   const [acik, setAcik] = useState(false);
   const [modal, setModal] = useState(null);   // "profil" | "yardim" | "kvkk"
   const kokRef = useRef(null);
@@ -255,8 +248,6 @@ export default function HesapMenu({ user, onLogout, onPalet, tema, onTemaDegisti
     else if (e.key === "Tab") setAcik(false);   // odak doğal akışına döner
   };
 
-  // Satır ref'leri sabit indeksli (MenuIcerik); koşullu satır (palet) unmount olunca React
-  // ref(null) çağırır, klavye gezinmesi filter(Boolean) ile boşluğu atlar.
   const sec = (eylem) => () => { kapat(false); eylem?.(); };
 
   return (
@@ -285,7 +276,7 @@ export default function HesapMenu({ user, onLogout, onPalet, tema, onTemaDegisti
       {/* Menü — kart üstüne açılır */}
       {acik && (
         <MenuIcerik user={user} satirRefs={satirRefs} tema={tema}
-          onTemaDegistir={onTemaDegistir} onPalet={onPalet} onLogout={onLogout}
+          onTemaDegistir={onTemaDegistir} onDenetimAc={onDenetimAc} onLogout={onLogout}
           sec={sec} modalAc={(m) => { kapat(false); setModal(m); }} />
       )}
 

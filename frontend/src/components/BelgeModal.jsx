@@ -16,7 +16,7 @@ export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ar
     <button type="button" onClick={onClick} onMouseDown={onMouseDown} disabled={disabled} title={title} aria-label={ariaLabel} aria-pressed={ariaPressed} {...focusRing}
       onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = "rgba(251,247,240,.18)"; }}
       onMouseLeave={(e) => { if (!disabled) e.currentTarget.style.background = "rgba(251,247,240,.10)"; }}
-      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onAccent, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
+      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onInk, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
       {children}
     </button>
   );
@@ -91,7 +91,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
 
         {/* Üst şerit — başlık + dosya kimliği + eylemler + kapat */}
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-          <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onAccent }}>{baslik}</span>
+          <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>{baslik}</span>
           {dosyaAdi && <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{dosyaAdi}</span>}
           <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
             {duzenlenebilir && (
@@ -136,7 +136,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
             <button ref={kapatRef} type="button" onClick={kapatIstegi} aria-label={duzenlenebilir ? "Vazgeç ve kapat (Esc)" : "Kapat (Esc)"} {...focusRing}
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(251,247,240,.18)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(251,247,240,.10)"; }}
-              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onAccent, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onInk, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
               <Icon.x width={12} height={12} /> {duzenlenebilir ? "Vazgeç" : "Kapat"}
             </button>
           </span>

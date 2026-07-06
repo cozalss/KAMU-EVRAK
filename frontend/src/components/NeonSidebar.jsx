@@ -1,8 +1,10 @@
 /* NeonSidebar — çalışma alanı navigasyonu. Her öğe GERÇEK görünüm değiştirir (activeView).
    "Yeni evrak yükle" + "Örnek evrakla dene" dropdown girişi. Klavye erişilebilir (button + focusRing).
-   Tabandaki kullanıcı kartı HesapMenu'ye devredildi (profil/tercih/yardım/KVKK/çıkış tek menüde). */
-import React, { useState } from "react";
-import { MONO, SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
+   Tabandaki kullanıcı kartı HesapMenu'ye devredildi (profil/tercih/yardım/denetim izi/KVKK/çıkış
+   tek menüde) — Denetim izi günlük iş akışının önünde durmasın diye ana NAV'da DEĞİL, burada. */
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
+import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
 
 const NAV = [
@@ -12,7 +14,6 @@ const NAV = [
   { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
   { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },
   { id: "mevzuat", label: "Mevzuat", icon: "book" },
-  { id: "denetim", label: "Denetim izi", icon: "shield" },
 ];
 
 /* Panel daralt/genişlet ikonu — ChatGPT kenar çubuğu toggle'ının çizgi-dili muadili. */
@@ -82,7 +83,7 @@ function SampleRow({ sample, onPick }) {
   );
 }
 
-function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, onPalet, tema, onTemaDegistir }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSample, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, tema, onTemaDegistir }) {
   const [showSamples, setShowSamples] = useState(false);
   // Daraltılmış ikon-ray modu (ChatGPT sidebar-toggle deseni) — tercih kalıcı (localStorage).
   const [dar, setDar] = useState(() => {
@@ -94,6 +95,32 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
     if (yeni) setShowSamples(false);   // ray moduna inerken açık dropdown sarkmasın
     return yeni;
   });
+
+  // Örnek-evrak dropdown'ı body'ye taşınır (createPortal) — aside position:sticky KENDİ
+  // stacking context'ini kurar (HesapMenu'deki Kip yorumuyla aynı sorun): içeride kalan
+  // mutlak konumlu panel, z-index'i ne olursa olsun ana içerik kartlarının ALTINDA
+  // boyanıyordu (görülen hata — "kutular birbirine giriyor"). Tetik butonun ekran
+  // konumuna göre fixed'le konumlanır.
+  const samplesTetikRef = useRef(null);
+  const samplesPopRef = useRef(null);
+  const [samplesRect, setSamplesRect] = useState(null);
+  useLayoutEffect(() => {
+    if (!showSamples) return undefined;
+    const konumla = () => setSamplesRect(samplesTetikRef.current?.getBoundingClientRect() || null);
+    konumla();
+    window.addEventListener("resize", konumla);
+    return () => window.removeEventListener("resize", konumla);
+  }, [showSamples]);
+  useEffect(() => {
+    if (!showSamples) return undefined;
+    const dinle = (e) => {
+      if (samplesTetikRef.current?.contains(e.target) || samplesPopRef.current?.contains(e.target)) return;
+      setShowSamples(false);
+    };
+    document.addEventListener("pointerdown", dinle);
+    return () => document.removeEventListener("pointerdown", dinle);
+  }, [showSamples]);
+
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: dar ? 64 : 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: dar ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
       <div style={{ display: "flex", flexDirection: dar ? "column" : "row", alignItems: "center", gap: dar ? SP.s : SP.xs, paddingBottom: SP.l }}>
@@ -142,13 +169,8 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
 
       {samples.length > 0 && (
         <div style={{ position: "relative", marginTop: SP.s }} onKeyDown={(e) => { if (e.key === "Escape") setShowSamples(false); }}>
-          <button type="button"
-            onClick={() => {
-              // Rayda önce genişle, sonra listeyi aç (dar kolonda yüzen panel ana içerik
-              // kartlarının altında kalabiliyor — ChatGPT'nin daraltılmış-ray davranışı).
-              if (dar) { darDegistir(); setShowSamples(true); return; }
-              setShowSamples((v) => !v);
-            }}
+          <button type="button" ref={samplesTetikRef}
+            onClick={() => setShowSamples((v) => !v)}
             aria-expanded={showSamples} aria-haspopup="listbox" aria-controls="nu-samples"
             aria-label={dar ? "Örnek evrakla dene" : undefined} title={dar ? "Örnek evrakla dene" : undefined} {...focusRing}
             style={{
@@ -168,12 +190,13 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
               </span>
             )}
           </button>
-          {showSamples && (
-            <div id="nu-samples" role="listbox" aria-label="Örnek evraklar"
+          {showSamples && samplesRect && createPortal(
+            <div ref={samplesPopRef} id="nu-samples" role="listbox" aria-label="Örnek evraklar"
               style={{
-                position: "absolute", top: "calc(100% + 8px)", left: 0, width: 304, maxHeight: 400, overflowY: "auto",
+                position: "fixed", top: samplesRect.bottom + 8, left: samplesRect.left, width: 304,
+                maxHeight: Math.min(400, window.innerHeight - samplesRect.bottom - 16), overflowY: "auto",
                 background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s,
-                boxShadow: SH.pop, zIndex: 40, animation: "nu-rise .16s ease-out both",
+                boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s ease-out both",
               }}>
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "4px 8px 8px" }}>
                 <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Hızlı başla</span>
@@ -182,26 +205,13 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
               {samples.map((s) => (
                 <SampleRow key={s.id} sample={s} onPick={(x) => { setShowSamples(false); onPickSample(x); }} />
               ))}
-            </div>
+            </div>,
+            document.body,
           )}
         </div>
       )}
 
-      {/* Komut paleti kısayolu — keşfedilebilirlik (Ctrl+K her yerden de açar). */}
-      {onPalet && (
-        <button type="button" onClick={onPalet} aria-label={dar ? "Komut paleti (Ctrl K)" : undefined} title={dar ? "Komut paleti (Ctrl K)" : undefined} {...focusRing}
-          onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-          style={{ cursor: "pointer", marginTop: SP.s, display: "flex", alignItems: "center", justifyContent: dar ? "center" : "flex-start", gap: SP.s, padding: dar ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: PAL.mut2, border: `1px solid ${PAL.line}`, background: "transparent", transition: "background .12s ease-out" }}>
-          <span aria-hidden="true" style={{ display: "flex", flexShrink: 0 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-          </span>
-          {!dar && <span style={{ flex: 1, textAlign: "left" }}>Komut paleti</span>}
-          {!dar && <kbd style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "1px 6px" }}>Ctrl K</kbd>}
-        </button>
-      )}
-
-      <HesapMenu user={user} onLogout={onLogout} onPalet={onPalet}
+      <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}
         tema={tema} onTemaDegistir={onTemaDegistir} dar={dar} />
     </aside>
   );

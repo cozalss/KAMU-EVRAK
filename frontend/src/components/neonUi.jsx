@@ -20,7 +20,7 @@ export const PAL = {
   line: "var(--ke-line)", lineHi: "var(--ke-line-hi)",
   ink: "var(--ke-ink)", ink2: "var(--ke-ink2)", mut: "var(--ke-mut)", mut2: "var(--ke-mut2)", mut3: "var(--ke-mut3)",
   hov: "var(--ke-hov)", press: "var(--ke-press)",
-  inputLine: "var(--ke-input-line)", onAccent: "var(--ke-on-accent)", inkSurf: "var(--ke-ink-surf)",
+  inputLine: "var(--ke-input-line)", onAccent: "var(--ke-on-accent)", onInk: "var(--ke-on-ink)", inkSurf: "var(--ke-ink-surf)",
   scrim: "var(--ke-scrim)",
 };
 export const BANT = {
@@ -57,18 +57,26 @@ export const THEME_CSS = `
   --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#8a8172;
   --ke-hov:rgba(35,26,18,.04); --ke-press:rgba(35,26,18,.07);
   --ke-input-line:rgba(35,26,18,.35); --ke-on-accent:#fbf7f0; --ke-ink-surf:#2a251e; --ke-scrim:rgba(35,26,18,.35);
+  /* --ke-on-ink: dark modda YENİDEN TANIMLANMAZ — kasıtlı. inkSurf (toast) ve modal karartı
+     (BelgeModal scrim'i) HER İKİ modda da hep koyu kalır; üstündeki metin de hep açık kalmalı.
+     --ke-on-accent bunun için YANLIŞ token'dı: DERIN.*-dolgulu buton metni için tema-tersine
+     akar (koyu modda karartı+onAccent ikisi de koyulaşıp metin kayboluyordu — 2026-07 bulgusu). */
+  --ke-on-ink:#fbf7f0;
   --ke-shadow-rgb:35,26,18;
   --ke-bant-yesil:#2f9e6e; --ke-bant-sari:#c98a1f; --ke-bant-kirmizi:#c9432f;
   --ke-derin-t:#1f6d82; --ke-derin-th:#1a5e71; --ke-derin-v:#74304f; --ke-derin-r:#a23425;
   --ke-derin-yesil:#1f7a52; --ke-derin-sari:#8a5a10; --ke-derin-kirmizi:#a23425;
 }
 :root[data-theme="dark"]{
+  /* 2026-07 revizyonu #2: ilk düzeltme hâlâ "gri/kahverengi" okundu (kullanıcı geri
+     bildirimi) — bg/bg2 neredeyse SAF SİYAHA çekildi (sıcaklık payı minimuma indi),
+     surf/surf2 okunabilirlik için net bir adım yukarıda tutuldu. */
   --ke-t:#4db6cf; --ke-v:#c97fa3; --ke-r:#ff7a5c;
-  --ke-bg:#17140d; --ke-bg2:#100d08; --ke-surf:#221c14; --ke-surf2:#1d1811; --ke-surf-hi:rgba(255,255,255,.05);
-  --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.18);
+  --ke-bg:#050403; --ke-bg2:#000000; --ke-surf:#161310; --ke-surf2:#0b0906; --ke-surf-hi:rgba(255,255,255,.06);
+  --ke-line:rgba(255,255,255,.14); --ke-line-hi:rgba(255,255,255,.24);
   --ke-ink:#f2ece0; --ke-ink2:#d6cdbc; --ke-mut:#a89d8a; --ke-mut2:#c1b7a1; --ke-mut3:#7c7260;
-  --ke-hov:rgba(255,255,255,.05); --ke-press:rgba(255,255,255,.08);
-  --ke-input-line:rgba(255,255,255,.32); --ke-on-accent:#16130d; --ke-ink-surf:#2b2418; --ke-scrim:rgba(0,0,0,.5);
+  --ke-hov:rgba(255,255,255,.06); --ke-press:rgba(255,255,255,.09);
+  --ke-input-line:rgba(255,255,255,.32); --ke-on-accent:#050403; --ke-ink-surf:#1c1811; --ke-scrim:rgba(0,0,0,.65);
   --ke-shadow-rgb:0,0,0;
   --ke-bant-yesil:#4cbf8a; --ke-bant-sari:#e0a83f; --ke-bant-kirmizi:#e2604a;
   --ke-derin-t:#7ecbdd; --ke-derin-th:#92d6e6; --ke-derin-v:#e2a8c4; --ke-derin-r:#ffa088;

@@ -18,8 +18,6 @@ import NeonSidebar from "./components/NeonSidebar.jsx";
 // result-cards) zaten usePipeline→nodeMeta zinciriyle ana bundle'da olduğundan ilk yük
 // indirmesine pratikte ağırlık eklemez.
 import PanelView from "./components/PanelView.jsx";
-// Komut paleti (cmdk) eager: Ctrl+K'ye ilk basışta gecikmesiz açılmalı; paket küçük (~10KB gz).
-import KomutPaleti from "./components/KomutPaleti.jsx";
 // Diğer görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir
 // aynı kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar
 // her zaman görünür (nav) olduğundan eager kalır.
@@ -91,8 +89,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const [gelenHedef, setGelenHedef] = useState(null);
   // Onay kartı "Düzenle" → Taslaklar'da o taslağı doğrudan düzenleme modunda aç (aynı hedef deseni).
   const [taslakHedef, setTaslakHedef] = useState(null);
-  // Komut paleti (Ctrl+K) — görünüm/eylem/örnek işleme tek kutudan.
-  const [paletAcik, setPaletAcik] = useState(false);
   // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
   const [slaMap, setSlaMap] = useState(null);
   const fileRef = useRef(null);
@@ -303,21 +299,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       x.result === res || (res.islem_id && x.result?.islem_id === res.islem_id)
         ? { ...x, result: { ...x.result, onay_durumu: karar } } : x)));
   }, []);
-
-  // Ctrl+K / Cmd+K → komut paleti (input odaklıyken de çalışır; tarayıcı aramasını bastırır).
-  useEffect(() => {
-    const onKey = (e) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
-        e.preventDefault();
-        setPaletAcik((v) => !v);
-      } else if (e.key === "Escape") {
-        setPaletAcik(false);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-  const paletAc = useCallback(() => setPaletAcik(true), []);
 
   // İşlenmemiş kuyruk için SLA rozetleri — statik örnek seti için BİR kez hesaplanır
   // (react-query: geçici ağ hatasında kendini toparlar). Backend yoksa sessizce atlanır
@@ -577,7 +558,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} onPalet={paletAc} tema={tema} onTemaDegistir={onTemaDegistir} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>
@@ -586,11 +567,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
         {/* sonner: katmanlı/istiflenen bildirimler — eski tek-toast görünümüyle aynı dil (koyu yüzey). */}
         <Toaster position="bottom-center" duration={3200} gap={8} visibleToasts={3}
-          toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onAccent, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
+          toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onInk, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
-
-        <KomutPaleti acik={paletAcik} onKapat={() => setPaletAcik(false)} onNavigate={goView} onUpload={triggerUpload}
-          samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} onPickSample={processSample} busy={busy} />
 
         {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
       </div>

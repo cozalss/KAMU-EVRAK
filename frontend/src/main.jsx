@@ -36,7 +36,7 @@ function useTema() {
   });
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", tema);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", tema === "dark" ? "#17140d" : "#f7f3ee");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", tema === "dark" ? "#050403" : "#f7f3ee");
     try { localStorage.setItem(TEMA_ANAHTAR, tema); } catch { /* özel mod — tercih oturumluk kalır */ }
   }, [tema]);
   const toggleTema = React.useCallback(() => setTemaState((v) => (v === "dark" ? "light" : "dark")), []);

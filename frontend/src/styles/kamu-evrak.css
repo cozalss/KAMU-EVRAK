@@ -67,6 +67,88 @@
   --rc-step: 65ms;
 }
 
+/* --- koyu mod (dark) ---------------------------------------------------
+   rc- ve agw- önekli sınıflar (sonuç kartları + ajan akış şeması) bu
+   dosyanın kendi token setini kullanır — neonUi.jsx'in --ke- önekli CSS
+   custom property'leriyle AYNI isimler değil. Bu blok olmadan (2026-07'ye
+   kadar) koyu modda bu kartlar HER ZAMAN açık renklerde (beyaz yüzey,
+   pastel kenarlık) kalıyordu — tek hex kaynağı yine --ke- (main.jsx
+   THEME_CSS); burada yalnız devrediyoruz. */
+:root[data-theme="dark"] {
+  --bg: var(--ke-bg);
+  --bg-2: var(--ke-bg2);
+  --surface: var(--ke-surf);
+  --surface-2: var(--ke-surf2);
+  --surface-3: color-mix(in srgb, var(--ke-surf2) 55%, var(--ke-bg));
+  --ink: var(--ke-ink);
+  --ink-2: var(--ke-ink2);
+  --muted: var(--ke-mut);
+  --line: var(--ke-line);
+  --line-strong: var(--ke-line-hi);
+
+  /* brand/brand-2 kasıtlı DEĞİŞMEZ: logo rozeti gradyanı (beyaz ikon üstü) koyu petrol
+     tonuyla iki modda da okunaklı — parlak --ke-t beyaz metinle çakışırdı. */
+
+  --accent: var(--ke-derin-t);
+  --accent-hover: var(--ke-derin-th);
+  --accent-soft: color-mix(in srgb, var(--ke-t) 18%, var(--ke-surf));
+  --accent-ink: var(--ke-derin-t);
+
+  --g1: var(--ke-derin-t);
+  --g1-soft: color-mix(in srgb, var(--ke-t) 18%, var(--ke-surf));
+  --g1-ink: var(--ke-derin-t);
+  --g2: var(--ke-derin-v);
+  --g2-soft: color-mix(in srgb, var(--ke-v) 18%, var(--ke-surf));
+  --g2-ink: var(--ke-derin-v);
+
+  --ok: var(--ke-derin-yesil);
+  --ok-soft: color-mix(in srgb, var(--ke-bant-yesil) 18%, var(--ke-surf));
+  --ok-ink: var(--ke-derin-yesil);
+  --warn: var(--ke-derin-sari);
+  --warn-soft: color-mix(in srgb, var(--ke-bant-sari) 18%, var(--ke-surf));
+  --warn-ink: var(--ke-derin-sari);
+  --danger: var(--ke-derin-kirmizi);
+  --danger-soft: color-mix(in srgb, var(--ke-bant-kirmizi) 18%, var(--ke-surf));
+  --danger-ink: var(--ke-derin-kirmizi);
+
+  --shadow-sm: 0 1px 2px rgba(var(--ke-shadow-rgb), .28), 0 1px 3px rgba(var(--ke-shadow-rgb), .22);
+  --shadow-md: 0 4px 14px -2px rgba(var(--ke-shadow-rgb), .36), 0 2px 6px -2px rgba(var(--ke-shadow-rgb), .22);
+  --shadow-lg: 0 18px 44px -14px rgba(var(--ke-shadow-rgb), .5), 0 6px 14px -6px rgba(var(--ke-shadow-rgb), .26);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--ke-t) 32%, transparent);
+}
+
+/* Yukarıdaki token devri kapsamayan bir avuç KAÇAK hex (var() değil, satır-içi sabit) —
+   yalnız bunlar için nokta atışı geçersiz kılma. Özgüllük (:root[data-theme]+sınıf ≥3
+   sınıf-düzeyi puan) orijinal kuralları (çoğu 2 puan) otomatik ezer, sıra önemsiz. */
+:root[data-theme="dark"] .rc-ic,
+:root[data-theme="dark"] .rc-badge-pii,
+:root[data-theme="dark"] .rc-chip-tur,
+:root[data-theme="dark"] .rc-chip-sure,
+:root[data-theme="dark"] .rc-chip-acil,
+:root[data-theme="dark"] .rc-chip-warn,
+:root[data-theme="dark"] .rc-chip-review,
+:root[data-theme="dark"] .rc-onay-risk.rc-risk-sari,
+:root[data-theme="dark"] .rc-onay-risk.rc-risk-kirmizi {
+  border-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+:root[data-theme="dark"] .rc-info,
+:root[data-theme="dark"] .rc-clarify-banner,
+:root[data-theme="dark"] .agw-figure.is-complete {
+  border-color: var(--line-strong);
+}
+:root[data-theme="dark"] .rc-info .rc-ic,
+:root[data-theme="dark"] .rc-clarify-banner-ic {
+  background: var(--surface-2);
+}
+:root[data-theme="dark"] .rc-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+:root[data-theme="dark"] .rc-onay-ok,
+:root[data-theme="dark"] .rc-onay-red {
+  /* dolgu artık --ok/--danger DERIN (koyu modda AÇIK tonlar) → beyaz değil, on-accent metin */
+  color: var(--ke-on-accent);
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {

@@ -455,8 +455,8 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut }) {
           </pre>
         ) : (
           <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
-            <div style={{ height: 8, width: "55%", background: PAL.bg2, borderRadius: RAD.chip, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-            <div style={{ height: 8, width: "40%", background: PAL.bg2, borderRadius: RAD.chip, marginBottom: SP.xs, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+            <div style={{ height: 8, width: "55%", background: PAL.press, borderRadius: RAD.chip, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
+            <div style={{ height: 8, width: "40%", background: PAL.press, borderRadius: RAD.chip, marginBottom: SP.xs, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
             {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Metin işlenecek…"}
           </div>
         )}

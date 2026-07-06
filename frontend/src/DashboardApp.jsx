@@ -63,7 +63,7 @@ const gecisle = (fn) => {
   document.startViewTransition(() => { flushSync(fn); });
 };
 
-export default function DashboardApp() {
+export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
     nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
     runFile, runSample, resume, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
@@ -93,16 +93,6 @@ export default function DashboardApp() {
   const [taslakHedef, setTaslakHedef] = useState(null);
   // Komut paleti (Ctrl+K) — görünüm/eylem/örnek işleme tek kutudan.
   const [paletAcik, setPaletAcik] = useState(false);
-  // Hesap menüsü tercihi: canlı ajan izi animasyonlarını azalt (CanliAjanAkisi glow'u).
-  // Kalıcı (localStorage) — OS prefers-reduced-motion'dan bağımsız, kullanıcının site tercihi.
-  const [hareketAzalt, setHareketAzalt] = useState(() => {
-    try { return localStorage.getItem("ke-hareket-azalt") === "1"; } catch { return false; }
-  });
-  const toggleHareketAzalt = useCallback(() => setHareketAzalt((v) => {
-    const yeni = !v;
-    try { localStorage.setItem("ke-hareket-azalt", yeni ? "1" : "0"); } catch { /* özel mod — tercih oturumluk kalır */ }
-    return yeni;
-  }), []);
   // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
   const [slaMap, setSlaMap] = useState(null);
   const fileRef = useRef(null);
@@ -166,7 +156,7 @@ export default function DashboardApp() {
   // Seçilen tür + metin de gönderilir: memur tür kutucuğuyla taslağı değiştirdiyse
   // DB'deki taslak karar anında güncellenir → kalıcı kayıt gönderilen içeriği yansıtır.
   const persistDecision = useCallback(async (res, secim) => {
-    if (!res?.islem_id || secim === "duzenle") return;
+    if (!res?.islem_id) return;
     try {
       await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, {
         secim, yazi_turu: res.yazi_turu || "", metin: res.yazi_taslak_md || "",
@@ -395,6 +385,35 @@ export default function DashboardApp() {
     if (taslakId) { setTaslakHedef(taslakId); showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); goView("taslaklar"); }
     else showToast("Önce taslak üreten bir evrak işleyin.");
   };
+  // Taslaklar kuyruğundaki bir taslağı SON METNİYLE Giden Evrak'a yolla (durum "duzenlendi" →
+  // GidenEvrakView'da "Düzenlenerek gönderildi"). karar_repo._KARAR bunu backend'de zaten
+  // destekliyordu, yalnız frontend'den hiç tetiklenmiyordu (Taslaklar'da tek eylemler
+  // Kaydet/İndir/Sil'di — düzenlemenin gönderilecek bir sonu yoktu).
+  // NOT: KARAR_ETIKET/stampDecision'daki "duzenle" BAŞKA bir anlam taşır (onay kartında
+  // "Düzenle" = henüz karar verilmedi, damgalanmaz) — o yüzden history damgası burada
+  // KARAR_ETIKET'e dokunmadan doğrudan yazılır, iki anlam birbirine karışmasın.
+  const sendDraft = (draft, metinGuncel) => {
+    const res = { ...draft.result, yazi_taslak_md: metinGuncel };
+    const fm = { kind: draft.kind, name: draft.name, label: draft.name };
+    if (!pushOutbox(res, fm, "duzenle")) { showToast("Gönderilemedi — taslak zaten gönderilmiş olabilir."); return; }
+    setDrafts((d) => d.filter((x) => x.id !== draft.id));
+    if (res._altSira) {
+      // Alt-talep kökenli: birimin KENDİ onayla uç noktasına gider — ana işlemin karar
+      // damgası (aşağıdaki dal) burada DEĞİŞMEZ, o birimin kararı diğerlerini etkilemez.
+      apiPost(`/islem/${encodeURIComponent(res.islem_id)}/alt-talep/${res._altSira}/onayla`, {
+        secim: "duzenle", yazi_turu: res.yazi_turu || "", metin: metinGuncel || "",
+      }).catch((err) => console.warn("Birim kararı DB'ye yazılamadı", err));
+    } else {
+      const islemId = res.islem_id || (String(draft.id).startsWith("db-taslak-") ? String(draft.id).slice("db-taslak-".length) : null);
+      if (islemId) {
+        persistDecision({ ...res, islem_id: islemId }, "duzenle");
+        setHistory((h) => h.map((x) => (
+          x.result === res || x.result?.islem_id === islemId ? { ...x, result: { ...x.result, onay_durumu: "duzenlendi" } } : x)));
+      }
+    }
+    showToast("Taslak düzenlenerek gönderildi — Giden Evrak'a eklendi.");
+    goView("giden");
+  };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
   // ---- Yazı türü seçimi (şartname: üst yazı / cevabi / bilgilendirme / alternatif tür) ----
@@ -515,6 +534,9 @@ export default function DashboardApp() {
         yazi_taslak_md: metin,
         format_uyumlu: altTalep.format_uyumlu,
         bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet },
+        // Taslaklar'dan gönderilirken HANGİ birimin alt-talebi olduğunu bilelim (bkz. sendDraft) —
+        // aksi hâlde ana işlemin taslağıymış gibi yanlış uç noktaya/duruma gönderilir.
+        _altSira: sira,
       };
     }
     const taslakId = pushDraft(ref[sira], fileMeta);
@@ -529,7 +551,7 @@ export default function DashboardApp() {
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
-  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
+  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (
@@ -541,7 +563,7 @@ export default function DashboardApp() {
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
       onDownload={download} downloading={downloading} canDownload={!!evrakText}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
-      fileUrl={fileUrl} onFileDrop={runFile} glow={!hareketAzalt}
+      fileUrl={fileUrl} onFileDrop={runFile}
     />
   );
 
@@ -555,7 +577,7 @@ export default function DashboardApp() {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} onPalet={paletAc} hareketAzalt={hareketAzalt} onHareketAzalt={toggleHareketAzalt} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} onPalet={paletAc} tema={tema} onTemaDegistir={onTemaDegistir} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>

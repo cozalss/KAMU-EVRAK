@@ -39,7 +39,7 @@ const BASE_CONFIG = {
   sort: { enabled: true, default: "ts_desc", options: [
     { value: "ts_desc", label: "En yeni" }, { value: "ts_asc", label: "En eski" }, { value: "name_asc", label: "Ad (A–Z)" },
   ] },
-  dataMapping: { search: ["name"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
+  dataMapping: { search: ["name", "konu"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
 };
 
 const KALEM = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z M14 6l4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -79,7 +79,7 @@ const COP = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" a
 /* Tek taslak kartı — başlık KONU (kartları ayırt eden bilgi), meta satırı, gövdenin ilk
    paragrafından zarif satır-kesmeli kâğıt önizleme, sakin metin-eylemler. Düzenleme yüzeyi
    TEK: ortadaki A4 kâğıt modalı (BelgeModal) — kart önizler ve tetikler. */
-function DraftCard({ h, onEdit, onDelete }) {
+function DraftCard({ h, onEdit, onDelete, onSend }) {
   const r = h.result;
   const [confirmDel, setConfirmDel] = useState(false);
   const { konu, govde } = taslakOzeti(r.yazi_taslak_md);
@@ -115,6 +115,7 @@ function DraftCard({ h, onEdit, onDelete }) {
         ) : (
           <>
             <KartEylem onClick={() => onEdit(h.id)} ariaLabel={`${konu || h.name} taslağını düzenle`}><KALEM /> Düzenle</KartEylem>
+            <KartEylem onClick={() => onSend(h, r.yazi_taslak_md)} renk={DERIN.yesil} ariaLabel={`${konu || h.name} taslağını gönder`}><Icon.arrow width={13} height={13} /> Gönder</KartEylem>
             {tarih && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 12, color: PAL.mut3, ...TNUM }}>{tarih}</span>}
             <KartEylem onClick={() => setConfirmDel(true)} renk={DERIN.kirmizi} ariaLabel="Taslağı sil"><COP /> Sil</KartEylem>
           </>
@@ -124,7 +125,7 @@ function DraftCard({ h, onEdit, onDelete }) {
   );
 }
 
-export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () => {}, onDelete = () => {}, onToast = () => {}, hedef = null, onHedefAcildi }) {
+export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () => {}, onDelete = () => {}, onSend = () => {}, onToast = () => {}, hedef = null, onHedefAcildi }) {
   // drafts: yalnız "Düzenle" ile ayrılmış taslaklar (her biri result.yazi_taslak_md taşır).
   // hedef: onay kartından "Düzenle" ile gelinen taslağın id'si → A4 düzenleme modalı doğrudan açılır.
   const [duzenleId, setDuzenleId] = useState(null);
@@ -144,7 +145,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
       { ...BASE_CONFIG.select[1], options: [{ value: "", label: "Tüm birimler" }, ...deriveOptions(drafts, "hedef_birim", BIRIM_LBL)] },
     ],
   }), [drafts]);
-  const filter = useFilter(drafts, config);
+  // Arama, kartta görünen KONU başlığını da taramalı (yalnız h.name yetmez — bkz. taslakOzeti).
+  const aramaKaynagi = useMemo(() => drafts.map((d) => ({ ...d, konu: taslakOzeti(d.result?.yazi_taslak_md).konu })), [drafts]);
+  const filter = useFilter(aramaKaynagi, config);
 
   if (drafts.length === 0) {
     return (
@@ -163,7 +166,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px,1fr))", gap: SP.l, alignItems: "start" }}>
-          {filter.results.map((h) => <DraftCard key={h.id} h={h} onEdit={setDuzenleId} onDelete={onDelete} />)}
+          {filter.results.map((h) => <DraftCard key={h.id} h={h} onEdit={setDuzenleId} onDelete={onDelete} onSend={onSend} />)}
         </div>
       )}
 
@@ -174,6 +177,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
           metin={cleanDemoText(aktif.result.yazi_taslak_md) || ""}
           onKapat={() => setDuzenleId(null)}
           onKaydet={(t) => { onUpdate(aktif.id, t); onToast("Taslak güncellendi."); setDuzenleId(null); }}
+          onGonder={(t) => { onSend(aktif, t); setDuzenleId(null); }}
           onIndir={(t) => docxIndir(t, aktif.name, onToast)} />
       )}
     </ViewWrap>

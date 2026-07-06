@@ -87,7 +87,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
 
       {filter.results.length === 0 ? (
         <EmptyState icon={<Icon.inbox />} title="Eşleşen evrak yok"
-          sub="Arama veya filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
+          sub="Arama veya filtre ölçütlerinizi gevşetin." />
       ) : (
         <div ref={listeRef} style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
           {filter.results.map((s) => {

@@ -21,7 +21,7 @@ function FilterInput({ config, filter }) {
   return (
     <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
       <label htmlFor="flt-search" style={SR_ONLY}>Ara</label>
-      <input id="flt-search" type="search" value={filter.filters.search} placeholder={config.search.placeholder || "Ara…"}
+      <input id="flt-search" type="text" value={filter.filters.search} placeholder={config.search.placeholder || "Ara…"}
         onChange={(e) => filter.setSearch(e.target.value)} {...focusRing}
         style={{ ...inputBase, width: "100%", paddingRight: SP.xxl }} />
       {filter.filters.search && (

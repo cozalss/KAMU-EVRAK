@@ -22,7 +22,7 @@ export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ar
   );
 }
 
-export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onIndir = null }) {
+export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null }) {
   const kapatRef = useRef(null);
   const alanRef = useRef(null);
   const oncekiOdak = useRef(null);
@@ -125,6 +125,11 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
             {duzenlenebilir && (
               <ScrimDugme onClick={() => onKaydet?.(metinD)} disabled={!kirli} title={kirli ? "Değişiklikleri kaydet" : "Değişiklik yok"}>
                 <Icon.check width={12} height={12} /> Kaydet
+              </ScrimDugme>
+            )}
+            {duzenlenebilir && onGonder && (
+              <ScrimDugme onClick={() => onGonder(metinD)} title="Kaydet ve Giden Evrak'a gönder">
+                <Icon.arrow width={12} height={12} /> Gönder
               </ScrimDugme>
             )}
             {eylemler}

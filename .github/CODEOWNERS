@@ -1,0 +1,3 @@
+# Tüm dosyaların sahibi repo sahibi — branch protection'da "Require review from
+# Code Owners" açıkken her PR YALNIZ @cozalss onayıyla merge edilebilir.
+* @cozalss

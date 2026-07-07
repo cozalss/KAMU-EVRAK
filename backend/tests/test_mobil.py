@@ -48,6 +48,8 @@ def test_oturum_olustur_ve_durum_bekliyor():
     assert data["aday_urller"]
     assert data["mobil_url"] == data["aday_urller"][0]
     assert all(data["oturum_id"] in u for u in data["aday_urller"])
+    # Self-test alanı her yanıtta bulunur (CI'da 8000'de sunucu yok → False olabilir; tip sözleşmesi).
+    assert isinstance(data["erisilebilir"], bool)
     r = client.get(f"/mobil/{data['oturum_id']}/durum")
     assert r.status_code == 200
     assert r.json()["durum"] == "bekliyor"
@@ -58,6 +60,16 @@ def test_mobil_base_url_env_tek_aday(monkeypatch):
     monkeypatch.setenv("MOBIL_BASE_URL", "http://ornek-taban:9999")
     data = _olustur()
     assert data["aday_urller"] == [f"http://ornek-taban:9999/mobil/{data['oturum_id']}"]
+
+
+def test_aday_filtrele_sanal_adaptor_eler():
+    """192.168/10 aday varken 172.16-31 (WSL/Hyper-V sanal ağı) listeden düşer;
+    yalnız-172'li gerçek kurumsal ağda liste aynen korunur."""
+    assert mobil_mod._aday_filtrele(["192.168.0.18", "172.29.16.1"]) == ["192.168.0.18"]
+    assert mobil_mod._aday_filtrele(["10.0.0.5", "172.20.1.1"]) == ["10.0.0.5"]
+    assert mobil_mod._aday_filtrele(["172.16.4.2", "172.17.0.1"]) == ["172.16.4.2", "172.17.0.1"]
+    # Hotspot senaryosu: iki gerçek aday da kalır (Ethernet + Windows hotspot adaptörü).
+    assert mobil_mod._aday_filtrele(["192.168.0.18", "192.168.137.1"]) == ["192.168.0.18", "192.168.137.1"]
 
 
 def test_mobil_sayfa_gelir_ve_html():

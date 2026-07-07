@@ -7,7 +7,7 @@
    + Tab tuzağı. Poll: setTimeout zinciri; await sonrası iptal kontrolü (yarış kapalı). */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
-import { PAL, T, TYPE, RAD, SP, SH, MONO, Btn, Icon, focusRing } from "./neonUi.jsx";
+import { PAL, T, TYPE, RAD, SP, SH, MONO, BANT, DERIN, ALFA, Btn, Icon, focusRing } from "./neonUi.jsx";
 
 const POLL_MS = 1500;
 const MAKS_ARDISIK_HATA = 8;   // ~12 sn sunucu sessizliği → kullanıcıya söyle, sessiz dönme
@@ -152,6 +152,18 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
               bu ekranda ajanların canlı işleyişini izleyin.{" "}
               <b>Telefon, bilgisayarla aynı Wi-Fi ağında olmalı.</b>
             </p>
+            {/* Backend self-test: sunucu kendi LAN IP'sinden kendine bağlanamadıysa telefonlar
+                da bağlanamaz (tipik neden: --reload varsayılanı 127.0.0.1). Arızayı jüri
+                anında değil QR açılırken göster. */}
+            {oturum.erisilebilir === false && (
+              <p role="alert" style={{ margin: 0, padding: SP.m, borderRadius: RAD.card, textAlign: "left",
+                                       border: `1px solid ${BANT.kirmizi.c}`, background: ALFA(BANT.kirmizi.c),
+                                       ...TYPE.data, color: DERIN.kirmizi }}>
+                <b>Telefonlar bu sunucuya erişemeyebilir</b> — backend yalnız bu bilgisayardan
+                erişilebilir görünüyor. <code style={{ fontFamily: MONO }}>scripts\demo-mobil.ps1</code>{" "}
+                ile (0.0.0.0) başlatın.
+              </p>
+            )}
             {/* QR: her temada beyaz zemin + koyu modül — tarayıcı kameraları için en garantili kontrast. */}
             <div style={{ alignSelf: "center", background: "#fff", padding: 14, borderRadius: RAD.card,
                           border: `1px solid ${PAL.line}` }}>
@@ -168,7 +180,9 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
                   style={{ fontFamily: MONO, ...TYPE.meta, color: PAL.ink2, background: PAL.surf,
                            border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "5px 8px", cursor: "pointer" }}>
                   {adaylar.map((u, i) => (
-                    <option key={u} value={i}>{u.replace(/^https?:\/\//, "").replace(/\/mobil\/.*$/, "")}</option>
+                    <option key={u} value={i}>
+                      {u.replace(/^https?:\/\//, "").replace(/\/mobil\/.*$/, "")}{i === 0 ? " (önerilen)" : ""}
+                    </option>
                   ))}
                 </select>
                 <span>— telefon bağlanamazsa diğerini deneyin</span>

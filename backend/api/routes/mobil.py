@@ -56,6 +56,7 @@ class OturumYanit(BaseModel):
     oturum_id: str
     mobil_url: str                      # birincil (varsayılan rota) — QR açılışta bunu kodlar
     aday_urller: list[str] = []         # tüm arayüzler; çoklu ağda modal seçici sunar
+    erisilebilir: bool = True           # self-test: LAN IP'den sunucuya TCP açılabildi mi
     ttl_s: int
 
 
@@ -124,11 +125,22 @@ def _ozel_ip_mi(ip: str) -> bool:
     return False
 
 
+def _aday_filtrele(ipler: list[str]) -> list[str]:
+    """Sanal adaptör eleme: 192.168.x/10.x aday VARKEN 172.16-31.x'leri düşür.
+
+    Windows'ta 172.16-31 aralığı pratikte hemen hep WSL/Hyper-V/Docker sanal ağıdır —
+    telefon oraya asla erişemez; listede durması kullanıcıyı ölü seçeneğe yönlendirir.
+    Gerçek 172'li kurumsal ağda ise 192.168/10 adayı zaten olmaz → liste aynen kalır.
+    """
+    gercek = [ip for ip in ipler if ip.startswith(("192.168.", "10."))]
+    return gercek if gercek else ipler
+
+
 def _aday_ipler() -> list[str]:
     """Telefonun erişebileceği aday IP'ler — varsayılan rota önde, diğer arayüzler ardında.
 
-    Çoklu arayüz senaryosu (Ethernet + Wi-Fi/hotspot): varsayılan rota yanlış arayüzü
-    gösterebilir; tüm adaylar dönerse masaüstü modalı ağ seçici sunar, QR anında yenilenir.
+    Çoklu arayüz senaryosu (Ethernet + Wi-Fi hotspot 192.168.137.x): varsayılan rota
+    yanlış arayüzü gösterebilir; adaylar dönerse masaüstü modalı ağ seçici sunar.
     """
     adaylar: list[str] = []
     vars_ip = _varsayilan_ip()
@@ -141,7 +153,7 @@ def _aday_ipler() -> list[str]:
                 adaylar.append(ip)
     except OSError:
         pass
-    return adaylar or [vars_ip]
+    return _aday_filtrele(adaylar) or [vars_ip]
 
 
 def _mobil_tabanlar(request: Request) -> list[str]:
@@ -151,6 +163,21 @@ def _mobil_tabanlar(request: Request) -> list[str]:
         return [env]
     port = request.url.port or 8000
     return [f"http://{ip}:{port}" for ip in _aday_ipler()]
+
+
+def _dinleme_testi(ip: str, port: int) -> bool:
+    """SELF-TEST: sunucu LAN IP'sinden erişilebiliyor mu? (kendine gerçek TCP bağlantısı)
+
+    En sinsi demo arızasını QR AÇILIRKEN yakalar: backend `--reload` varsayılanıyla
+    (127.0.0.1) başlatıldıysa sayfa masaüstünde çalışır ama TELEFONLAR asla erişemez —
+    bu test False döner, modal kırmızı uyarı gösterir. (Güvenlik duvarını ölçemez;
+    o, demo-mobil.ps1'in işi.)
+    """
+    try:
+        with socket.create_connection((ip, port), timeout=0.8):
+            return True
+    except OSError:
+        return False
 
 
 # 30/dk: MAX_AKTIF_OTURUM (20) tavanı asıl fren — hız sınırı yalnız spam'e karşı,
@@ -166,12 +193,23 @@ async def oturum_olustur(request: Request) -> OturumYanit:
                                 "Aktif eşleme oturumu tavanına ulaşıldı; biraz sonra deneyin.")
         oid = secrets.token_urlsafe(16)
         _OTURUMLAR[oid] = MobilOturum()
-    # Senkron socket keşfi thread'de — event loop bloklanmaz (oturum başına 1 kez).
-    tabanlar = await asyncio.to_thread(_mobil_tabanlar, request)
+    # Senkron socket işleri (keşif + self-test) thread'de — event loop bloklanmaz.
+    def _kesif() -> tuple[list[str], bool]:
+        tabanlar = _mobil_tabanlar(request)
+        ilk = tabanlar[0]
+        if ilk.startswith("http://"):
+            hostport = ilk.removeprefix("http://").split("/")[0]
+            host, _, port_s = hostport.partition(":")
+            erisim = _dinleme_testi(host, int(port_s or "80"))
+        else:
+            erisim = True   # env ile verilen https taban — kendine bağlanma testi anlamsız
+        return tabanlar, erisim
+
+    tabanlar, erisilebilir = await asyncio.to_thread(_kesif)
     urller = [f"{taban}/mobil/{oid}" for taban in tabanlar]
-    log.info("mobil_oturum_olustu", oturum=oid[:8], aday=len(urller))
+    log.info("mobil_oturum_olustu", oturum=oid[:8], aday=len(urller), erisim=erisilebilir)
     return OturumYanit(oturum_id=oid, mobil_url=urller[0], aday_urller=urller,
-                       ttl_s=OTURUM_TTL_S)
+                       erisilebilir=erisilebilir, ttl_s=OTURUM_TTL_S)
 
 
 @router.get("/{oturum_id}/durum", response_model=DurumYanit,
@@ -463,14 +501,36 @@ _SAYFA_HTML = """<!doctype html>
 
     sCek.hidden = true; sGonder.hidden = false; adim2.className = "adim on";
 
-    // Önizleme YALNIZ görsel gerçekten yüklenirse (HEIC vb. çözülmezse dosya kartı) —
-    // eski sürümdeki "alt-text kutusu" hatasının düzeltmesi.
-    var url = URL.createObjectURL(f);
-    img.onload = function () { kutu.style.display = "block"; };
-    img.onerror = function () { URL.revokeObjectURL(url); gosterCip(f); };
-    if (f.type && f.type.indexOf("image/") === 0) { img.src = url; } else { gosterCip(f); }
+    var pdfMi = (f.type === "application/pdf") || /\.pdf$/i.test(f.name || "");
+    if (pdfMi) { gosterCip(f); gonder(f); return; }
 
-    gonder(f);
+    // GÖRSELLER: canvas ile JPEG'e dönüştür + uzun kenarı sınırla. İki kuşu birden vurur:
+    //  1) iPhone galeriden HEIC seçilirse sunucu 415 verirdi — Safari HEIC'i decode eder,
+    //     canvas JPEG üretir → her telefonda kabul edilir format.
+    //  2) 12MP foto ~6-8MB yerine ~0.5MB gider → zayıf salon Wi-Fi'ında kat kat hızlı,
+    //     OCR için de fazlasıyla yeterli çözünürlük.
+    // Decode edilemezse (bozuk/egzotik dosya) orijinal upload'a düşülür — akış asla kilitlenmez.
+    var url = URL.createObjectURL(f);
+    var resim = new Image();
+    resim.onload = function () {
+      img.src = url; kutu.style.display = "block";   // önizleme: decode başarılı → güvenli
+      try {
+        var MAKS_KENAR = 2200;
+        var olcek = Math.min(1, MAKS_KENAR / Math.max(resim.naturalWidth, resim.naturalHeight));
+        var k = document.createElement("canvas");
+        k.width = Math.round(resim.naturalWidth * olcek);
+        k.height = Math.round(resim.naturalHeight * olcek);
+        k.getContext("2d").drawImage(resim, 0, 0, k.width, k.height);
+        k.toBlob(function (blob) {
+          if (blob && blob.size > 0) {
+            var ad = (f.name || "belge").replace(/\.[^.]+$/, "") + ".jpg";
+            gonder(new File([blob], ad, { type: "image/jpeg" }));
+          } else { gonder(f); }
+        }, "image/jpeg", 0.85);
+      } catch (e) { gonder(f); }
+    };
+    resim.onerror = function () { URL.revokeObjectURL(url); gosterCip(f); gonder(f); };
+    resim.src = url;
   });
 
   function gosterCip(f) {
@@ -500,6 +560,8 @@ _SAYFA_HTML = """<!doctype html>
       }
     };
     x.onerror = function () { hata("Bağlantı hatası — laptop ile aynı Wi-Fi ağında olduğunuzdan emin olun."); };
+    x.timeout = 120000;   // asılı kalmasın: zayıf ağda bile 120 sn yeter, sonra net hata
+    x.ontimeout = function () { hata("Yükleme zaman aşımına uğradı — Wi-Fi sinyalinizi kontrol edip tekrar deneyin."); };
     x.send(fd);
   }
 })();

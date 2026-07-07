@@ -8,6 +8,7 @@ Burada yalnız /mobil API sözleşmesi test edilir (pipeline'a dokunmaz).
 from __future__ import annotations
 
 import io
+import socket
 
 import pytest
 from fastapi.testclient import TestClient
@@ -70,6 +71,53 @@ def test_aday_filtrele_sanal_adaptor_eler():
     assert mobil_mod._aday_filtrele(["172.16.4.2", "172.17.0.1"]) == ["172.16.4.2", "172.17.0.1"]
     # Hotspot senaryosu: iki gerçek aday da kalır (Ethernet + Windows hotspot adaptörü).
     assert mobil_mod._aday_filtrele(["192.168.0.18", "192.168.137.1"]) == ["192.168.0.18", "192.168.137.1"]
+
+
+def _dinleyen_soket() -> socket.socket:
+    """127.0.0.1'de gerçek bir dinleyici — CI-güvenli (dış arayüz gerekmez)."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("127.0.0.1", 0))
+    s.listen(1)
+    return s
+
+
+def test_erisim_tanisi_dinleyen_sunucuda_bos():
+    """connect başarılı → tanı yok (erişilebilir)."""
+    srv = _dinleyen_soket()
+    try:
+        assert mobil_mod._erisim_tanisi("127.0.0.1", srv.getsockname()[1]) == ""
+    finally:
+        srv.close()
+
+
+def test_erisim_tanisi_bos_portta_dinlemiyor():
+    """connect başarısız + porta bind BAŞARILI → o arayüzde dinleyen yok: 'dinlemiyor'
+    (tipik: backend 127.0.0.1'e bağlı eski süreç ya da --host'suz uvicorn CLI)."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("127.0.0.1", 0))
+    bos_port = s.getsockname()[1]
+    s.close()
+    assert mobil_mod._erisim_tanisi("127.0.0.1", bos_port) == "dinlemiyor"
+
+
+def test_erisim_tanisi_port_dolu_ama_baglanilamiyorsa_engelleniyor(monkeypatch):
+    """Güvenlik duvarı simülasyonu: port GERÇEKTEN dinleniyor ama connect kesiliyor →
+    bind EADDRINUSE ile düşer → 'engelleniyor' (reçete: demo-mobil.ps1 / izin kuralı)."""
+    srv = _dinleyen_soket()
+    monkeypatch.setattr(mobil_mod, "_dinleme_testi", lambda ip, port: False)
+    try:
+        assert mobil_mod._erisim_tanisi("127.0.0.1", srv.getsockname()[1]) == "engelleniyor"
+    finally:
+        srv.close()
+
+
+def test_oturum_yaniti_erisim_tanisini_tasir(monkeypatch):
+    """API sözleşmesi: self-test başarısızsa yanıt hem bayrağı hem AYIRICI tanıyı taşır —
+    frontend banner'ı nedene göre doğru reçeteyi gösterir."""
+    monkeypatch.setattr(mobil_mod, "_erisim_tanisi", lambda ip, port: "engelleniyor")
+    data = _olustur()
+    assert data["erisilebilir"] is False
+    assert data["erisim_tanisi"] == "engelleniyor"
 
 
 def test_mobil_sayfa_gelir_ve_html():

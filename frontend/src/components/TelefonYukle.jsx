@@ -153,15 +153,37 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
               <b>Telefon, bilgisayarla aynı Wi-Fi ağında olmalı.</b>
             </p>
             {/* Backend self-test: sunucu kendi LAN IP'sinden kendine bağlanamadıysa telefonlar
-                da bağlanamaz (tipik neden: --reload varsayılanı 127.0.0.1). Arızayı jüri
-                anında değil QR açılırken göster. */}
+                da bağlanamaz. erisim_tanisi nedeni AYIRIR → doğru reçete: "dinlemiyor" =
+                127.0.0.1'e bağlı (eski süreç / --host'suz uvicorn CLI), "engelleniyor" =
+                güvenlik duvarı. Arızayı jüri anında değil QR açılırken göster. */}
             {oturum.erisilebilir === false && (
               <p role="alert" style={{ margin: 0, padding: SP.m, borderRadius: RAD.card, textAlign: "left",
                                        border: `1px solid ${BANT.kirmizi.c}`, background: ALFA(BANT.kirmizi.c),
                                        ...TYPE.data, color: DERIN.kirmizi }}>
-                <b>Telefonlar bu sunucuya erişemeyebilir</b> — backend yalnız bu bilgisayardan
-                erişilebilir görünüyor. <code style={{ fontFamily: MONO }}>scripts\demo-mobil.ps1</code>{" "}
-                ile (0.0.0.0) başlatın.
+                {oturum.erisim_tanisi === "dinlemiyor" ? (
+                  <>
+                    <b>Backend LAN'da dinlemiyor</b> — büyük olasılıkla kapatılmamış eski bir
+                    backend 127.0.0.1'de çalışıyor. Port 8000'deki süreci kapatın
+                    (<code style={{ fontFamily: MONO }}>netstat -ano | findstr :8000</code>) ve{" "}
+                    <code style={{ fontFamily: MONO }}>backend</code> klasöründe{" "}
+                    <code style={{ fontFamily: MONO }}>uv run main.py</code> ile yeniden başlatın.
+                  </>
+                ) : oturum.erisim_tanisi === "engelleniyor" ? (
+                  <>
+                    <b>Güvenlik duvarı bağlantıyı engelliyor görünüyor</b> — backend LAN'da
+                    dinliyor ama erişim kesiliyor. Bir kez yönetici PowerShell'de{" "}
+                    <code style={{ fontFamily: MONO }}>scripts\demo-mobil.ps1</code> çalıştırın
+                    (8000 için kalıcı izin kuralı ekler); Windows izin penceresi çıkarsa
+                    "İzin Ver" deyin.
+                  </>
+                ) : (
+                  <>
+                    <b>Telefonlar bu sunucuya erişemeyebilir</b> — backend yalnız bu
+                    bilgisayardan erişilebilir görünüyor.{" "}
+                    <code style={{ fontFamily: MONO }}>scripts\demo-mobil.ps1</code> ile
+                    (0.0.0.0) başlatın.
+                  </>
+                )}
               </p>
             )}
             {/* QR: her temada beyaz zemin + koyu modül — tarayıcı kameraları için en garantili kontrast. */}

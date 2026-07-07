@@ -58,6 +58,7 @@ class OturumYanit(BaseModel):
     mobil_url: str                      # birincil (varsayılan rota) — QR açılışta bunu kodlar
     aday_urller: list[str] = []         # tüm arayüzler; çoklu ağda modal seçici sunar
     erisilebilir: bool = True           # self-test: LAN IP'den sunucuya TCP açılabildi mi
+    erisim_tanisi: str = ""             # self-test başarısızsa NEDEN: "dinlemiyor" | "engelleniyor"
     ttl_s: int
 
 
@@ -169,16 +170,37 @@ def _mobil_tabanlar(request: Request) -> list[str]:
 def _dinleme_testi(ip: str, port: int) -> bool:
     """SELF-TEST: sunucu LAN IP'sinden erişilebiliyor mu? (kendine gerçek TCP bağlantısı)
 
-    En sinsi demo arızasını QR AÇILIRKEN yakalar: backend `--reload` varsayılanıyla
-    (127.0.0.1) başlatıldıysa sayfa masaüstünde çalışır ama TELEFONLAR asla erişemez —
-    bu test False döner, modal kırmızı uyarı gösterir. (Güvenlik duvarını ölçemez;
-    o, demo-mobil.ps1'in işi.)
+    En sinsi demo arızasını QR AÇILIRKEN yakalar: backend 127.0.0.1'e bağlıysa sayfa
+    masaüstünde çalışır ama TELEFONLAR asla erişemez — bu test False döner, modal
+    kırmızı uyarı gösterir. (Hairpin'i filtrelemeyen güvenlik duvarı yapılandırmalarını
+    kaçırabilir; nedeni _erisim_tanisi ayrıştırır, kalıcı çözüm demo-mobil.ps1'dedir.)
     """
     try:
         with socket.create_connection((ip, port), timeout=0.8):
             return True
     except OSError:
         return False
+
+
+def _erisim_tanisi(ip: str, port: int) -> str:
+    """Self-test + arıza AYIRICI tanısı: "" erişilebilir · "dinlemiyor" · "engelleniyor".
+
+    connect başarısız ama porta bind EDİLEBİLİYORSA o arayüzde dinleyen yok →
+    backend yalnız 127.0.0.1'de (kapatılmamış eski süreç ya da --host'suz uvicorn
+    CLI): "dinlemiyor". bind de düşerse (EADDRINUSE) dinleyen VAR ama bağlantı
+    kesiliyor → tipik Windows Güvenlik Duvarı reddi: "engelleniyor". Banner bu
+    tanıya göre DOĞRU reçeteyi gösterir (yanlış reçete = jüri önünde kayıp dakikalar).
+    """
+    if _dinleme_testi(ip, port):
+        return ""
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        probe.bind((ip, port))
+        return "dinlemiyor"
+    except OSError:
+        return "engelleniyor"
+    finally:
+        probe.close()
 
 
 # 30/dk: MAX_AKTIF_OTURUM (20) tavanı asıl fren — hız sınırı yalnız spam'e karşı,
@@ -195,22 +217,23 @@ async def oturum_olustur(request: Request) -> OturumYanit:
         oid = secrets.token_urlsafe(16)
         _OTURUMLAR[oid] = MobilOturum()
     # Senkron socket işleri (keşif + self-test) thread'de — event loop bloklanmaz.
-    def _kesif() -> tuple[list[str], bool]:
+    def _kesif() -> tuple[list[str], str]:
         tabanlar = _mobil_tabanlar(request)
         ilk = tabanlar[0]
         if ilk.startswith("http://"):
             hostport = ilk.removeprefix("http://").split("/")[0]
             host, _, port_s = hostport.partition(":")
-            erisim = _dinleme_testi(host, int(port_s or "80"))
+            tani = _erisim_tanisi(host, int(port_s or "80"))
         else:
-            erisim = True   # env ile verilen https taban — kendine bağlanma testi anlamsız
-        return tabanlar, erisim
+            tani = ""   # env ile verilen https taban — kendine bağlanma testi anlamsız
+        return tabanlar, tani
 
-    tabanlar, erisilebilir = await asyncio.to_thread(_kesif)
+    tabanlar, tani = await asyncio.to_thread(_kesif)
     urller = [f"{taban}/mobil/{oid}" for taban in tabanlar]
-    log.info("mobil_oturum_olustu", oturum=oid[:8], aday=len(urller), erisim=erisilebilir)
+    log.info("mobil_oturum_olustu", oturum=oid[:8], aday=len(urller),
+             erisim=not tani, tani=tani or "-")
     return OturumYanit(oturum_id=oid, mobil_url=urller[0], aday_urller=urller,
-                       erisilebilir=erisilebilir, ttl_s=OTURUM_TTL_S)
+                       erisilebilir=not tani, erisim_tanisi=tani, ttl_s=OTURUM_TTL_S)
 
 
 @router.get("/{oturum_id}/durum", response_model=DurumYanit,

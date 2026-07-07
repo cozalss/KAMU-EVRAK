@@ -13,6 +13,7 @@ ADALET-AGENT main.py deseninden ADAPT (lifespan/health/CORS KEEP; ağır preload
 from __future__ import annotations
 
 import os
+import socket
 from contextlib import asynccontextmanager
 from typing import Any
 
@@ -139,6 +140,20 @@ def _dev_host_port() -> tuple[str, int]:
     return host, port
 
 
+def _port_bos_mu(host: str, port: int) -> bool:
+    """Boot ön-kontrolü: port bağlanabilir mi? Doluysa uvicorn'un bind hatası reload
+    gürültüsünde kaybolabiliyor; en sık neden kapatılmamış ESKİ backend süreci —
+    istekleri o (çoğunlukla 127.0.0.1'e bağlı) süreç karşılar, telefonlar erişemez."""
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        probe.bind((host, port))
+        return True
+    except OSError:
+        return False
+    finally:
+        probe.close()
+
+
 if __name__ == "__main__":
     import uvicorn
 
@@ -148,4 +163,9 @@ if __name__ == "__main__":
         # (güvenilmeyen ağda UVICORN_HOST=127.0.0.1 ile kısıtlanır).
         log.warning("dev_lan_bind", host=_host, port=_port,
                     not_="tüm ağ arayüzlerinden erişilebilir — telefonla QR yükleme için gerekli")
+    if not _port_bos_mu(_host, _port):
+        log.error("port_dolu", host=_host, port=_port,
+                  not_=f"{_port} portunu başka bir süreç tutuyor (muhtemelen kapatılmamış eski "
+                       f"backend) — bu kopya BAĞLANAMAYACAK. Kapatın: "
+                       f"netstat -ano | findstr :{_port}  →  taskkill /PID <pid> /F")
     uvicorn.run("main:app", host=_host, port=_port, reload=True)

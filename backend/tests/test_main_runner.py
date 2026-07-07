@@ -7,9 +7,11 @@ UVICORN_HOST/PORT ile ezilebilir, bozuk girdi sessizce güvenli varsayılana dö
 
 from __future__ import annotations
 
+import socket
+
 import pytest
 
-from main import _dev_host_port
+from main import _dev_host_port, _port_bos_mu
 
 
 @pytest.fixture(autouse=True)
@@ -52,3 +54,17 @@ def test_bos_host_guvenli_varsayilana_doner(monkeypatch):
     # .env'de 'UVICORN_HOST=' (değersiz satır) → boş string binding hatası vermesin
     monkeypatch.setenv("UVICORN_HOST", "   ")
     assert _dev_host_port()[0] == "0.0.0.0"
+
+
+def test_port_bos_mu_dolu_ve_bos_portu_ayirt_eder():
+    """Boot ön-kontrolü: eski backend portu tutuyorsa uvicorn'un bind hatası reload
+    gürültüsünde kayboluyor — dolu portu boot ANINDA net raporlayabilmeliyiz."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("127.0.0.1", 0))
+    s.listen(1)
+    port = s.getsockname()[1]
+    try:
+        assert _port_bos_mu("127.0.0.1", port) is False
+    finally:
+        s.close()
+    assert _port_bos_mu("127.0.0.1", port) is True

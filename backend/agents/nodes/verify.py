@@ -24,14 +24,15 @@ import structlog
 
 from agents.config import (
     LINT_AUTOFIX,
+    MAKAM_LLM,
     VERIFY_ENABLED,
     VERIFY_GROUNDING_LLM,
     YAZI_ZORUNLU_BOLUMLER,
     birim_tr,
 )
-from agents.nodes._llm_extract import llm_json
+from agents.nodes._llm_extract import llm_json, real_llm
 from agents.tutarlilik import tutarlilik_kontrol
-from agents.yazi_lint import lint_2646
+from agents.yazi_lint import _makam_seviyesi, kurum_gorunumlu, lint_2646
 from api.pii import mask_pii
 from core.text import tr_lower
 
@@ -121,6 +122,29 @@ async def _lint_autofix(taslak: str, lint: dict[str, Any],
     return duzeltme
 
 
+async def _makam_seviye_llm(makam_adi: str) -> int | None:
+    """Katman B — tablo çözemeyen makam adının kademesini LLM'den kapalı-küme (1-8) al.
+
+    Mock/anahtar yok/parse hatası/aralık dışı → None (katman tamamen susar). Sonuç
+    lint'te YALNIZ 'bilgi' üretir — bu yardımcı hiçbir koşulda banda dokunamaz.
+    """
+    if not MAKAM_LLM or real_llm() is None:
+        return None
+    cevap = await llm_json(
+        "Türk kamu idaresi makam kademesi sınıflandırıcısısın. Verilen birim/kurum "
+        "adının hiyerarşi kademesini döndür: 1=Cumhurbaşkanlığı, 2=TBMM, 3=Bakanlık, "
+        "4=Bakan Yardımcılığı/Müsteşarlık, 5=Genel Müdürlük/Valilik/Başkanlık/Rektörlük, "
+        "6=Daire/İl Müdürlüğü/Kaymakamlık/Belediye, 7=İlçe-Şube Müdürlüğü, 8=Şeflik. "
+        'YALNIZ şu JSON\'u döndür: {"kademe": <1-8>}; emin değilsen {"kademe": 0}.',
+        f"MAKAM ADI: {makam_adi}",
+        max_tokens=30,
+    )
+    if not isinstance(cevap, dict):
+        return None
+    kademe = cevap.get("kademe")
+    return kademe if isinstance(kademe, int) and 1 <= kademe <= 8 else None
+
+
 def _lint_muhatabi(state: dict[str, Any]) -> str:
     """m.16 hiyerarşi denetimi için muhatap — render'ın muhatap mantığının aynası.
 
@@ -193,8 +217,16 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     uyarilar = [mask_pii(u).masked_text for u in uydurma] + [f"Eksik bölüm: {e}" for e in eksik]
     # S2 — madde-referanslı 2646 lint raporu (kural-kimlikli; risk'e yalnız 'uyari' gider).
     # muhatap: render'ın muhatap mantığıyla AYNI (yön hatası = sahte m.16 uyarısı üretir).
+    # Katman B: muhatap KURUM görünümlü ama tablo çözemiyorsa LLM kademe tahmini
+    # (yalnız 'bilgi' üretebilir) — tablo çözüyorsa hiç sorulmaz (maliyet + öncelik).
+    muhatap = _lint_muhatabi(state)
+    seviye_llm = None
+    # LLM'e YALNIZ kurum-görünümlü ama tablo-çözümsüz adlar sorulur (vatandaş adına
+    # boşa çağrı yok; tablo çözüyorsa öncelik zaten deterministik katmanda).
+    if muhatap and _makam_seviyesi(muhatap) is None and kurum_gorunumlu(muhatap):
+        seviye_llm = await _makam_seviye_llm(muhatap)
     lint = lint_2646(taslak, state.get("yazi_turu", "") or "",
-                     muhatap_makam=_lint_muhatabi(state))
+                     muhatap_makam=muhatap, muhatap_seviye_llm=seviye_llm)
 
     # Madde 6 — LLM grounding: yalnız uyarı EKLER (bandı sertleştirme yönü serbest;
     # deterministik veto her durumda üstte kalır). LLM yok/mock/bozuk → hiçbir ek yok.

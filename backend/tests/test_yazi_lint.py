@@ -326,3 +326,86 @@ class TestTumBirimlerKapsanir:
             # hiçbir gerçek yönlendirme hedefinde sessizce sönmez
             oneri = kapanis_onerisi("YAZI İŞLERİ BİRİMİ", gorunen_ad)
             assert oneri is not None, f"çözülemedi: {slug} → {gorunen_ad}"
+
+
+class TestTabloGenisletme:
+    """Katman A — yaygın kamu birimi türleri deterministik tabloda."""
+
+    def test_buyuksehir_ile_ilce_belediyesi_ayrisir(self):
+        # Büyükşehir (5) > ilçe belediyesi (6): büyükşehirden ilçe belediyesine rica.
+        oneri = kapanis_onerisi("Ankara Büyükşehir Belediye Başkanlığı",
+                                "Çankaya Belediye Başkanlığı")
+        assert oneri is not None and oneri[0] == "rica ederim"
+
+    def test_bolge_mudurlugu_tasra_kademesi(self):
+        # Genel müdürlükten (5) bölge müdürlüğüne (6) rica.
+        oneri = kapanis_onerisi("Devlet Su İşleri Genel Müdürlüğü",
+                                "DSİ 5. Bölge Müdürlüğü")
+        assert oneri is not None and oneri[0] == "rica ederim"
+
+    def test_bashekimlik_ve_genel_sekreterlik(self):
+        # İl sağlık müdürlüğü (6) ↔ başhekimlik (6): eş → arz.
+        oneri = kapanis_onerisi("İl Sağlık Müdürlüğü", "Şehir Hastanesi Başhekimliği")
+        assert oneri is not None and oneri[0] == "arz ederim"
+        # Rektörlükten (5) genel sekreterliğe (6) rica.
+        oneri = kapanis_onerisi("Üniversite Rektörlüğü", "Üniversite Genel Sekreterliği")
+        assert oneri is not None and oneri[0] == "rica ederim"
+
+    def test_il_ilce_muftulugu_regexle_ayrisir(self):
+        # il/ilçe regex'i müftülüğe genellendi: il müftülüğü (6) > ilçe müftülüğü (7).
+        oneri = kapanis_onerisi("İzmir İl Müftülüğü", "Karşıyaka İlçe Müftülüğü")
+        assert oneri is not None and oneri[0] == "rica ederim"
+
+    def test_enstitu_ve_fakulte(self):
+        oneri = kapanis_onerisi("Fen Bilimleri Enstitüsü", "Üniversite Rektörlüğü")
+        assert oneri is not None and oneri[0] == "arz ederim"
+
+
+class TestLlmKademeFallback:
+    """Katman B — tablo çözemezse LLM tahmini YALNIZ 'bilgi' üretir (asla uyari)."""
+
+    def test_llm_seviyesi_bilgi_uretir_uyari_uretmez(self):
+        # Tablo 'Atom Enerjisi Kurumu Acayip Ofisi'ni çözemez; LLM kademe=5 verdi diyelim.
+        # Taslak ters kalıp ('rica') taşısa bile durum en fazla BİLGİ olur (bant güvenliği).
+        rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi",
+                          muhatap_makam="Acayip Ofisi Kurumu",
+                          muhatap_seviye_llm=5)
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
+        assert m16["durum"] == "bilgi"
+        assert "arz" in m16["mesaj"].lower()          # beklenen kalıp söylenir
+        assert not any("m.16" in u for u in rapor["uyari"])  # ASLA uyari listesine girmez
+
+    def test_tablo_cozuyorsa_llm_tahmini_yok_sayilir(self):
+        # Deterministik çözüm varken LLM tahmini davranışı DEĞİŞTİREMEZ (uyari kalır).
+        rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi",
+                          muhatap_makam="Personel Genel Müdürlüğü",
+                          muhatap_seviye_llm=8)
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
+        assert m16["durum"] == "uyari"  # tablo: üst makam, taslak 'rica' → gerçek ihlal
+
+
+class TestSeffaflikNotu:
+    """Katman C — kurum-görünümlü çözümsüz muhatapta 'elle doğrula' bilgi notu;
+    vatandaş adında sessizlik (gürültü yok)."""
+
+    def test_kurum_gorunumlu_cozumsuz_bilgi_notu(self):
+        rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi",
+                          muhatap_makam="Türkiye Uzay Ajansı Yörünge Ofisi Kurumu")
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
+        assert m16["durum"] == "bilgi"
+        assert "elle" in m16["mesaj"].lower() or "doğrula" in m16["mesaj"].lower()
+
+    def test_vatandas_muhatapta_sessiz(self):
+        # Kişi adı kurum ipucu taşımaz → eski davranış (varlık kontrolü gecti), not yok.
+        rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi", muhatap_makam="Ayşe Yılmaz")
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
+        assert m16["durum"] == "gecti"
+        assert "elle" not in m16["mesaj"].lower()
+
+
+class TestVerifyLlmKademe:
+    def test_mock_modda_llm_kademe_none(self):
+        # CI/mock: LLM yok → tahmin None → katman B tamamen susar (deterministik fallback).
+        import asyncio
+        from agents.nodes.verify import _makam_seviye_llm
+        assert asyncio.run(_makam_seviye_llm("Acayip Ofisi Kurumu")) is None

@@ -473,6 +473,11 @@ LINT_AUTOFIX = os.getenv("LINT_AUTOFIX", "1") == "1"
 # SERTLEŞTİREBİLİR (ek uyarı ekler); deterministik veto tek başına asla silinmez.
 VERIFY_GROUNDING_LLM = os.getenv("VERIFY_GROUNDING_LLM", "1") == "1"
 
+# m.16 kademe fallback'i: tablo çözemeyen muhatap makamın kademesini LLM kapalı-küme
+# (1-8) tahmin eder. TERS ASİMETRİ: tahmin YALNIZ 'bilgi' notu üretir, asla 'uyari'/
+# SARI — yanlış tahmin yanlış NOT olur, yanlış BANT olamaz. Mock/anahtar yok → susar.
+MAKAM_LLM = os.getenv("MAKAM_LLM", "1") == "1"
+
 # (7) Rerank sağlayıcısı: "deepseek" (listwise, model indirmez → vitrine girebilir) |
 # "cross-encoder" (bge-reranker, rag extra + ~1.1GB model). RERANK_ENABLED mevcut
 # ana anahtar olarak kalır (varsayılan 0 — baseline saf-BM25 birebir).

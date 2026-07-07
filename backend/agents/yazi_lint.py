@@ -40,26 +40,35 @@ _MAKAM_SEVIYE: tuple[tuple[str, int], ...] = (
     ("büyük millet meclisi", 2), ("tbmm", 2),
     ("bakan yardımcı", 4), ("müsteşar", 4),
     ("bakanlığ", 3), ("bakanlık", 3),
-    ("genel müdür yardımcı", 6), ("daire başkan", 6),
+    ("büyükşehir belediye başkan", 5), ("büyükşehir belediye", 5),
+    ("genel müdür yardımcı", 6), ("daire başkan", 6), ("belediye başkan", 6),
     ("dairesi", 6), ("kaymakaml", 6), ("dekanl", 6),
     ("müşavirli", 6), ("teftiş", 6), ("iç denetim", 6), ("strateji", 6),
     ("halkla ilişkiler", 6), ("cimer", 6),
+    ("bölge müdürlüğü", 6), ("başhekiml", 6), ("genel sekreterl", 6),
+    ("enstitü", 6), ("fakülte", 6), ("müftülü", 6),
     ("genel müdürlü", 5), ("genel müdür", 5), ("valili", 5), ("rektörlü", 5),
     ("başkanlığ", 5), ("başkanı", 5),
     ("şube müdürlüğü", 7), ("yazı işleri", 7),
     ("müdürlüğ", 7), ("müdürlük", 7),
     ("şefli", 8),
-    # En genel kalıp EN SONDA: route_birim slug'ları ("ilgili_teknik_daire") ancak
-    # daha özgül hiçbir kalıp eşleşmezse buraya düşer.
-    ("daire", 6),
+    # En genel kalıplar EN SONDA: yalnız daha özgül hiçbir kalıp eşleşmezse düşer.
+    ("belediye", 6), ("daire", 6),
 )
 
 # Gerçek adlarda kademe sözcüğüyle tür sözcüğü ARAYA konu alır ("İl Milli Eğitim
 # Müdürlüğü") — birebir "il müdürlüğü" kalıbı hiç eşleşmez (denetçi bulgusu). Regex
-# adayları tablodan DAHA ÖZGÜL sayılır (çakışmada kazanır).
+# adayları tablodan DAHA ÖZGÜL sayılır (çakışmada kazanır). Müftülük de aynı desende.
 _MAKAM_REGEX: tuple[tuple[re.Pattern[str], int], ...] = (
-    (re.compile(r"\bilçe\b[^,;.\n]{0,40}?müdürlüğ"), 7),
-    (re.compile(r"\bil\b[^,;.\n]{0,40}?müdürlüğ"), 6),
+    (re.compile(r"\bilçe\b[^,;.\n]{0,40}?m(?:üdürlüğ|üftülüğ)"), 7),
+    (re.compile(r"\bil\b[^,;.\n]{0,40}?m(?:üdürlüğ|üftülüğ)"), 6),
+)
+
+# Katman C (şeffaflık) ipuçları: muhatap KURUM görünümlüyse ama kademesi çözülemediyse
+# "elle doğrula" bilgi notu üretilir; kişi adında (vatandaş) sessiz kalınır.
+_KURUM_IPUCLARI = tuple(i for i in _MAKAM_IPUCLARI if i != "sayın ") + (
+    "kurul", "belediye", "üniversite", "enstitü", "ajans", "komutanlığ",
+    "başsavcılığ", "mahkeme", "müftülü",
 )
 
 # Resmî üsluba aykırı gündelik kalıplar — yalnız TARTIŞMASIZ olanlar; sözcük-sınırlı
@@ -98,6 +107,14 @@ def _makam_seviyesi(metin: str) -> int | None:
     return min(ortusen, key=lambda a: a[2])[3]
 
 
+def _beklenen_kalip(g: int, m: int) -> tuple[str, str]:
+    """Kademe çiftinden beklenen kapanış → (kalıp, gerekçe). m.16: eş/üst arz, alt rica."""
+    if m <= g:
+        yon = "üst" if m < g else "eş"
+        return "arz ederim", f"muhatap {yon} makam → arz (m.16)"
+    return "rica ederim", "muhatap alt makam → rica (m.16)"
+
+
 def kapanis_onerisi(gonderen_makam: str, muhatap_makam: str) -> tuple[str, str] | None:
     """Hiyerarşiye göre doğru kapanış kalıbı → (kalıp, gerekçe); makam çözülemezse None.
 
@@ -107,10 +124,7 @@ def kapanis_onerisi(gonderen_makam: str, muhatap_makam: str) -> tuple[str, str] 
     m = _makam_seviyesi(muhatap_makam)
     if g is None or m is None:
         return None
-    if m <= g:
-        yon = "üst" if m < g else "eş"
-        return "arz ederim", f"muhatap {yon} makam → arz (m.16)"
-    return "rica ederim", "muhatap alt makam → rica (m.16)"
+    return _beklenen_kalip(g, m)
 
 
 def _kural(kural: str, madde: str, durum: str, mesaj: str) -> dict[str, str]:
@@ -265,27 +279,70 @@ def _kapanis_hiyerarsi(low: str, gonderen: str, muhatap: str) -> dict[str, str] 
                   f"Kapanış kalıbı yok — {gerekce}: '{beklenen.capitalize()}' eklenmeli.")
 
 
+def _kapanis_llm_bilgi(low: str, antet: str, muhatap: str,
+                       seviye_llm: int | None) -> dict[str, str] | None:
+    """Katman B — tablo çözemedi, LLM kademe tahmini var: YALNIZ 'bilgi' üretir.
+
+    Bant güvenliği asimetrisi: LLM tahmini hiçbir koşulda 'uyari' (SARI) yaratamaz —
+    yanlış tahmin en kötü ihtimalle yanlış bir NOT olur, yanlış bir bant olmaz.
+    """
+    g = _makam_seviyesi(antet)
+    if g is None or seviye_llm is None or not 1 <= seviye_llm <= 8:
+        return None
+    beklenen, gerekce = _beklenen_kalip(g, seviye_llm)
+    kuyruk = low[-300:]
+    ters = "rica ederim" if beklenen == "arz ederim" else "arz ederim"
+    if beklenen in kuyruk and ters not in kuyruk:
+        mesaj = f"Kapanış LLM kademe tahminiyle uyumlu — {gerekce} (banda etkisiz)."
+    else:
+        mesaj = (f"Kapanış beklenenle uyuşmuyor olabilir — {gerekce}: "
+                 f"'{beklenen.capitalize()}' önerilir (kademe LLM tahmini; banda etkisiz).")
+    return _kural("L-M16-kapanis", "m.16", "bilgi", mesaj)
+
+
+def kurum_gorunumlu(ad: str) -> bool:
+    """Ad bir KURUM/makam gibi mi görünüyor? (vatandaş kişi adlarını dışarıda bırakır)
+    Katman C notu ve verify'ın LLM-çağrı guard'ı aynı ölçütü paylaşır."""
+    low = tr_lower(ad)
+    return any(ipucu in low for ipucu in _KURUM_IPUCLARI)
+
+
+def _kapanis_belirsiz_notu(low: str, muhatap: str) -> dict[str, str] | None:
+    """Katman C — muhatap KURUM görünümlü ama kademesi çözülemedi: sessiz sönme yerine
+    'elle doğrula' bilgi notu. Kişi adında (vatandaş) None → eski davranış sürer."""
+    if not kurum_gorunumlu(muhatap):
+        return None
+    varlik = "mevcut" if ("arz ederim" in low[-300:] or "rica ederim" in low[-300:]) else "eksik"
+    return _kural("L-M16-kapanis", "m.16", "bilgi",
+                  f"Muhatap makamın kademesi çözülemedi — kapanış {varlik}; "
+                  "arz/rica seçimini elle doğrulayın (m.16).")
+
+
 _KURALLAR = (_k_baslik, _k_sayi, _k_tarih, _k_konu, _k_muhatap, _k_ilgi, _k_kapanis,
              _k_imza, _k_olur, _k_yasak_ifade)
 
 _ANTET_SATIR = 6  # gönderen makam taslağın kendi antetinden (ilk satırlar) çözülür
 
 
-def lint_2646(taslak: str, yazi_turu: str = "", *, muhatap_makam: str = "") -> dict[str, Any]:
+def lint_2646(taslak: str, yazi_turu: str = "", *, muhatap_makam: str = "",
+              muhatap_seviye_llm: int | None = None) -> dict[str, Any]:
     """Taslağı 2646 kurallarından geçir → {kurallar, uyari, ozet} (SAF/deterministik).
 
-    muhatap_makam verilirse (ör. route_birim'in hedef_birim'i) kapanış kuralı
-    hiyerarşi-farkında çalışır: gönderen makam taslağın antetinden çözülür,
-    beklenen kalıp ('arz'/'rica') muhatapla karşılaştırılır. Makamlardan biri
-    çözülemezse varlık kontrolüne düşülür — yanlış-pozitif uyarı üretilmez.
+    muhatap_makam verilirse kapanış kuralı üç katmanla çalışır (öncelik sırasıyla):
+      1) TABLO — deterministik kademe çözümü; ihlalde 'uyari' yetkisi YALNIZ bu katmanda.
+      2) LLM tahmini (muhatap_seviye_llm) — yalnız 'bilgi' üretir, asla 'uyari'.
+      3) Şeffaflık — kurum görünümlü ama çözümsüz muhatapta 'elle doğrula' bilgi notu.
+    Hiçbiri tutmazsa (ör. vatandaş muhatap) varlık kontrolüne düşülür — sessiz ve doğru.
     """
     low = tr_lower(taslak)
     kurallar = [k for f in _KURALLAR if (k := f(taslak, low, yazi_turu)) is not None]
     if muhatap_makam:
         antet = "\n".join(taslak.splitlines()[:_ANTET_SATIR])
-        hiyerarsik = _kapanis_hiyerarsi(low, antet, muhatap_makam)
-        if hiyerarsik is not None:
-            kurallar = [hiyerarsik if k["kural"] == "L-M16-kapanis" else k for k in kurallar]
+        yeni = (_kapanis_hiyerarsi(low, antet, muhatap_makam)
+                or _kapanis_llm_bilgi(low, antet, muhatap_makam, muhatap_seviye_llm)
+                or _kapanis_belirsiz_notu(low, muhatap_makam))
+        if yeni is not None:
+            kurallar = [yeni if k["kural"] == "L-M16-kapanis" else k for k in kurallar]
     uyari = [k["mesaj"] for k in kurallar if k["durum"] == "uyari"]
     ozet = {d: sum(1 for k in kurallar if k["durum"] == d) for d in ("gecti", "uyari", "bilgi")}
     return {"kurallar": kurallar, "uyari": uyari, "ozet": ozet}

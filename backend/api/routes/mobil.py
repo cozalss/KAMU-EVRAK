@@ -127,22 +127,36 @@ def _ozel_ip_mi(ip: str) -> bool:
     return False
 
 
-def _aday_filtrele(ipler: list[str]) -> list[str]:
-    """Sanal adaptör eleme: 192.168.x/10.x aday VARKEN 172.16-31.x'leri düşür.
+# iOS Kişisel Erişim Noktası yıllardır fiilen bu /28 alt-ağını dağıtır (belgesiz Apple
+# davranışı; iOS 17.2/18'de sapmalar görüldü — imza "kesin" değil, muafiyet gerekçesidir:
+# yanlış-muafiyetin maliyeti seçicide 1 ölü satır, yanlış-elemenin maliyeti bağlanamayan telefon).
+IPHONE_HOTSPOT_PREFIX = "172.20.10."
 
-    Windows'ta 172.16-31 aralığı pratikte hemen hep WSL/Hyper-V/Docker sanal ağıdır —
-    telefon oraya asla erişemez; listede durması kullanıcıyı ölü seçeneğe yönlendirir.
-    Gerçek 172'li kurumsal ağda ise 192.168/10 adayı zaten olmaz → liste aynen kalır.
+
+def _aday_filtrele(ipler: list[str], koru: str = "") -> list[str]:
+    """Sanal adaptör eleme: 192.168.x/10.x aday VARKEN imzasız 172.16-31.x'leri düşür.
+
+    Windows'ta 192.168/10'lu gerçek ağ varken 172.16-31 pratikte hemen hep WSL/Hyper-V/
+    Docker sanal ağıdır — telefon oraya erişemez; listede durması ölü seçenek üretir.
+    İKİ MUAFİYET elenmez: (1) iPhone hotspot imzası 172.20.10.x, (2) `koru`
+    (varsayılan-rota IP'si — internete ÇIKAN arayüz, sanal varsayılamaz). Muafiyetler
+    eleme dalını AÇMAZ: yalnız-172'li gerçek kurumsal ağda (tether/VPN rotalı dahil)
+    liste AYNEN kalır — aksi, erişilebilir kurumsal IP'yi düşürürdü (skeptik bulgusu).
+    Her dal YENİ liste döner (aliasing tuzağı: çağıran sonucu mutasyona uğratabilir).
     """
-    gercek = [ip for ip in ipler if ip.startswith(("192.168.", "10."))]
-    return gercek if gercek else ipler
+    if not any(ip.startswith(("192.168.", "10.")) for ip in ipler):
+        return list(ipler)
+    return [ip for ip in ipler
+            if ip == koru or ip.startswith(("192.168.", "10.", IPHONE_HOTSPOT_PREFIX))]
 
 
 def _aday_ipler() -> list[str]:
     """Telefonun erişebileceği aday IP'ler — varsayılan rota önde, diğer arayüzler ardında.
 
-    Çoklu arayüz senaryosu (Ethernet + Wi-Fi hotspot 192.168.137.x): varsayılan rota
-    yanlış arayüzü gösterebilir; adaylar dönerse masaüstü modalı ağ seçici sunar.
+    Varsayılan-rota IP'si BİRİNCİL kalır: trafiği fiilen taşıyan tek ampirik sinyal odur
+    (hotspot-imzalı adayı öne almak VPN/kurumsal-VLAN'da erişilemez IP'yi yükseltir —
+    skeptik bulgusu). Çoklu arayüzde (Ethernet + hotspot) doğru aday listededir; modal
+    "Ağ:" seçicisi tek dokunuşla düzeltir.
     """
     adaylar: list[str] = []
     vars_ip = _varsayilan_ip()
@@ -155,7 +169,7 @@ def _aday_ipler() -> list[str]:
                 adaylar.append(ip)
     except OSError:
         pass
-    return _aday_filtrele(adaylar) or [vars_ip]
+    return _aday_filtrele(adaylar, koru=vars_ip) or [vars_ip]
 
 
 def _mobil_tabanlar(request: Request) -> list[str]:

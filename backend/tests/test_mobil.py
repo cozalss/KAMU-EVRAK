@@ -67,10 +67,63 @@ def test_aday_filtrele_sanal_adaptor_eler():
     """192.168/10 aday varken 172.16-31 (WSL/Hyper-V sanal ağı) listeden düşer;
     yalnız-172'li gerçek kurumsal ağda liste aynen korunur."""
     assert mobil_mod._aday_filtrele(["192.168.0.18", "172.29.16.1"]) == ["192.168.0.18"]
-    assert mobil_mod._aday_filtrele(["10.0.0.5", "172.20.1.1"]) == ["10.0.0.5"]
+    assert mobil_mod._aday_filtrele(["10.0.0.5", "172.21.1.1"]) == ["10.0.0.5"]
     assert mobil_mod._aday_filtrele(["172.16.4.2", "172.17.0.1"]) == ["172.16.4.2", "172.17.0.1"]
     # Hotspot senaryosu: iki gerçek aday da kalır (Ethernet + Windows hotspot adaptörü).
     assert mobil_mod._aday_filtrele(["192.168.0.18", "192.168.137.1"]) == ["192.168.0.18", "192.168.137.1"]
+
+
+def test_aday_filtrele_iphone_hotspot_elenmez():
+    """iPhone Kişisel Erişim Noktası HER ZAMAN 172.20.10.0/28 dağıtır — bu imza sanal
+    adaptör DEĞİLDİR. PC'de ölü bir 192.168.x sanal adaptör (VirtualBox vb.) varken
+    gerçek hotspot IP'sinin elenmesi QR'ı ölü IP'ye kilitliyordu."""
+    assert "172.20.10.2" in mobil_mod._aday_filtrele(["172.20.10.2", "192.168.56.1"])
+    # İmza dışı 172'ler (WSL/Docker) yine elenir — koruma yalnız /28 imzasına özgü.
+    assert mobil_mod._aday_filtrele(["172.29.16.1", "172.20.10.2", "192.168.56.1"]) == [
+        "172.20.10.2", "192.168.56.1"]
+
+
+def test_aday_filtrele_varsayilan_rota_ip_asla_elenmez():
+    """Varsayılan-rota IP'si internete ÇIKAN arayüzdür — sanal-adaptör varsayımıyla
+    elenemez (örn. gerçek kurumsal/VPN 172'li ağ + makinede 192.168.x sanal adaptör)."""
+    assert mobil_mod._aday_filtrele(["172.29.5.1", "192.168.56.1"], koru="172.29.5.1") == [
+        "172.29.5.1", "192.168.56.1"]
+
+
+def test_aday_filtrele_yalniz_172_agda_liste_aynen_kalir_koru_ile_de():
+    """Skeptik bulgusu (S11): yalnız-172'li kurumsal ağ + telefon tether'ı (koru =
+    172.20.10.x rota) → kurumsal IP DÜŞMEMELİ; muafiyetler eleme dalını açmaz.
+    Eleme dalı yalnız listede 192.168/10 adayı varken çalışır (eski no-op sözleşmesi)."""
+    assert mobil_mod._aday_filtrele(["172.20.10.2", "172.18.4.20"], koru="172.20.10.2") == [
+        "172.20.10.2", "172.18.4.20"]
+    # VPN varyantı (S12): koru imzasız 172'li olsa da yalnız-172 liste aynen kalır.
+    assert mobil_mod._aday_filtrele(["172.31.0.5", "172.18.4.20"], koru="172.31.0.5") == [
+        "172.31.0.5", "172.18.4.20"]
+
+
+def test_aday_filtrele_daima_yeni_liste_doner():
+    """Aliasing regresyonu (review bulgusu): her dal YENİ liste dönmeli — çağıranın
+    mutasyonu girdiyle paylaşılan nesneyi sessizce değiştirmesin."""
+    girdi_eleme = ["192.168.0.18", "172.29.16.1"]
+    girdi_noop = ["172.16.4.2", "172.17.0.1"]   # 192.168/10 yok → no-op dalı
+    assert mobil_mod._aday_filtrele(girdi_eleme) is not girdi_eleme
+    assert mobil_mod._aday_filtrele(girdi_noop) is not girdi_noop
+    assert mobil_mod._aday_filtrele([]) == []
+
+
+def test_aday_ipler_hotspot_listede_rota_birincil(monkeypatch):
+    """Senaryo: PC hem Ethernet'te (internet, varsayılan rota) hem iPhone hotspot'una
+    bağlı. Varsayılan-rota IP'si BİRİNCİL kalır (tek ampirik sinyal — skeptik bulgusu:
+    hotspot'u öne almak VPN/VLAN'da erişilemez IP yükseltir); hotspot adayı listede
+    durur, modal seçicisi tek dokunuşla geçirir. Eski kod hotspot'u tamamen ELİYORDU."""
+    monkeypatch.setattr(mobil_mod, "_varsayilan_ip", lambda: "192.168.0.18")
+    monkeypatch.setattr(
+        mobil_mod.socket, "getaddrinfo",
+        lambda *a, **k: [(None, None, None, "", ("172.20.10.2", 0)),
+                         (None, None, None, "", ("192.168.0.18", 0))])
+    adaylar = mobil_mod._aday_ipler()
+    assert adaylar[0] == "192.168.0.18"
+    assert "172.20.10.2" in adaylar
 
 
 def _dinleyen_soket() -> socket.socket:

@@ -21,6 +21,7 @@ from typing import Any
 import structlog
 
 from agents.config import YAZI_TURU_TR
+
 # Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
 from agents.yazi_lint import kapanis_onerisi
 from yazi.models import _DEMO_DEFAULTS, YaziContext

@@ -178,31 +178,31 @@ class TestLintHiyerarsiKapanis:
         # ama taslak 'rica ederim' ile bitiyor → m.16 uyarısı.
         rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi",
                           muhatap_makam="Personel Genel Müdürlüğü")
-        m16 = [k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis"][0]
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
         assert m16["durum"] == "uyari"
         assert "arz" in m16["mesaj"].lower()
 
     def test_dogru_kapanis_hiyerarsi_dogrulanir(self):
         taslak = _UYUMLU_CEVABI.replace("Gereğini rica ederim.", "Gereğini arz ederim.")
         rapor = lint_2646(taslak, "cevabi_yazi", muhatap_makam="Personel Genel Müdürlüğü")
-        m16 = [k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis"][0]
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
         assert m16["durum"] == "gecti"
 
     def test_muhatap_verilmezse_eski_davranis(self):
         # Geriye uyumluluk: parametre yoksa varlık kontrolü aynen sürer.
         rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")
-        m16 = [k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis"][0]
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
         assert m16["durum"] == "gecti"
 
     def test_dagitimli_arz_ve_rica_gecer(self):
         taslak = _UYUMLU_CEVABI.replace("Gereğini rica ederim.", "Gereğini arz ve rica ederim.")
         rapor = lint_2646(taslak, "cevabi_yazi", muhatap_makam="Personel Genel Müdürlüğü")
-        m16 = [k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis"][0]
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
         assert m16["durum"] == "gecti"
 
     def test_muhatap_cozulemezse_varlik_kontrolune_duser(self):
         rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi", muhatap_makam="Sayın Ayşe Yılmaz")
-        m16 = [k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis"][0]
+        m16 = next(k for k in rapor["kurallar"] if k["kural"] == "L-M16-kapanis")
         assert m16["durum"] == "gecti"  # hiyerarşi bilinmiyor → yanlış-pozitif uyarı YOK
 
 
@@ -212,20 +212,20 @@ class TestLintYasakIfade:
             "İlgi yazıda belirtilen husus değerlendirilmiştir.",
             "İlgi yazıda belirtilen husus değerlendirilmiştir. İyi çalışmalar dileriz.")
         rapor = lint_2646(taslak, "cevabi_yazi")
-        uslup = [k for k in rapor["kurallar"] if k["kural"] == "L-USLUP-yasak"][0]
+        uslup = next(k for k in rapor["kurallar"] if k["kural"] == "L-USLUP-yasak")
         assert uslup["durum"] == "uyari"
         assert "iyi çalışmalar" in uslup["mesaj"].lower()
 
     def test_temiz_taslakta_yasak_ifade_yok(self):
         rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")
-        uslup = [k for k in rapor["kurallar"] if k["kural"] == "L-USLUP-yasak"][0]
+        uslup = next(k for k in rapor["kurallar"] if k["kural"] == "L-USLUP-yasak")
         assert uslup["durum"] == "gecti"
 
     def test_yasak_ifade_madde_uydurmaz(self):
         # CLAUDE.md disiplini: üslup kuralı korpustaki bir maddeye ATIF YAPMAZ.
         taslak = _UYUMLU_CEVABI + "\nKolay gelsin."
         rapor = lint_2646(taslak, "cevabi_yazi")
-        uslup = [k for k in rapor["kurallar"] if k["kural"] == "L-USLUP-yasak"][0]
+        uslup = next(k for k in rapor["kurallar"] if k["kural"] == "L-USLUP-yasak")
         assert not uslup["madde"].startswith("m.")
 
 
@@ -407,5 +407,6 @@ class TestVerifyLlmKademe:
     def test_mock_modda_llm_kademe_none(self):
         # CI/mock: LLM yok → tahmin None → katman B tamamen susar (deterministik fallback).
         import asyncio
+
         from agents.nodes.verify import _makam_seviye_llm
         assert asyncio.run(_makam_seviye_llm("Acayip Ofisi Kurumu")) is None

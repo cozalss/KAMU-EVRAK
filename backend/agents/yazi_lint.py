@@ -66,7 +66,8 @@ _MAKAM_REGEX: tuple[tuple[re.Pattern[str], int], ...] = (
 
 # Katman C (şeffaflık) ipuçları: muhatap KURUM görünümlüyse ama kademesi çözülemediyse
 # "elle doğrula" bilgi notu üretilir; kişi adında (vatandaş) sessiz kalınır.
-_KURUM_IPUCLARI = tuple(i for i in _MAKAM_IPUCLARI if i != "sayın ") + (
+_KURUM_IPUCLARI = (
+    *(i for i in _MAKAM_IPUCLARI if i != "sayın "),
     "kurul", "belediye", "üniversite", "enstitü", "ajans", "komutanlığ",
     "başsavcılığ", "mahkeme", "müftülü",
 )

@@ -26,13 +26,13 @@ Telefonun erişebilmesi için backend LAN'a açık dinlemeli:
 
 from __future__ import annotations
 
+import asyncio
 import os
 import secrets
 import socket
 import threading
 import time
 from dataclasses import dataclass, field
-from functools import lru_cache
 
 import structlog
 from fastapi import APIRouter, HTTPException, Request, status
@@ -54,7 +54,8 @@ IZINLI_UZANTILAR = {".pdf", ".png", ".jpg", ".jpeg", ".webp", ".tiff"}
 
 class OturumYanit(BaseModel):
     oturum_id: str
-    mobil_url: str
+    mobil_url: str                      # birincil (varsayılan rota) — QR açılışta bunu kodlar
+    aday_urller: list[str] = []         # tüm arayüzler; çoklu ağda modal seçici sunar
     ttl_s: int
 
 
@@ -94,12 +95,12 @@ def _purge_ve_al(oturum_id: str | None = None) -> MobilOturum | None:
         return _OTURUMLAR.get(oturum_id) if oturum_id else None
 
 
-@lru_cache(maxsize=1)
-def _lan_ip() -> str:
-    """Makinenin LAN IP'si (UDP connect numarası — paket gitmez). Bulunamazsa localhost.
+def _varsayilan_ip() -> str:
+    """Varsayılan rotanın IP'si (UDP connect numarası — paket gitmez). Bulunamazsa localhost.
 
-    lru_cache: senkron socket çağrısı event loop'ta her istekte koşmasın — demo
-    makinesinde IP süreç ömrü boyunca sabit (değişirse MOBIL_BASE_URL ile ezilir).
+    CACHE YOK — bilerek: personel ağ değiştirince (ofis Wi-Fi → hotspot) bir sonraki
+    QR açılışı TAZE IP almalı; bayat IP "bazı telefonlarda açılmıyor"un baş nedeniydi.
+    Yalnız oturum açılışında koşar (modal başına 1 kez, 30/dk sınırlı) → maliyet yok.
     """
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -109,13 +110,47 @@ def _lan_ip() -> str:
         return "127.0.0.1"
 
 
-def _mobil_base(request: Request) -> str:
-    """QR'a yazılacak taban URL. MOBIL_BASE_URL env öncelikli (hotspot/çoklu arayüz)."""
+def _ozel_ip_mi(ip: str) -> bool:
+    """RFC1918 özel aralık mı? (loopback/APIPA hariç — telefonun erişebileceği adresler)."""
+    if ip.startswith(("127.", "169.254.")):
+        return False
+    if ip.startswith(("192.168.", "10.")):
+        return True
+    if ip.startswith("172."):
+        try:
+            return 16 <= int(ip.split(".")[1]) <= 31
+        except (IndexError, ValueError):
+            return False
+    return False
+
+
+def _aday_ipler() -> list[str]:
+    """Telefonun erişebileceği aday IP'ler — varsayılan rota önde, diğer arayüzler ardında.
+
+    Çoklu arayüz senaryosu (Ethernet + Wi-Fi/hotspot): varsayılan rota yanlış arayüzü
+    gösterebilir; tüm adaylar dönerse masaüstü modalı ağ seçici sunar, QR anında yenilenir.
+    """
+    adaylar: list[str] = []
+    vars_ip = _varsayilan_ip()
+    if _ozel_ip_mi(vars_ip):
+        adaylar.append(vars_ip)
+    try:
+        for bilgi in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+            ip = bilgi[4][0]
+            if _ozel_ip_mi(ip) and ip not in adaylar:
+                adaylar.append(ip)
+    except OSError:
+        pass
+    return adaylar or [vars_ip]
+
+
+def _mobil_tabanlar(request: Request) -> list[str]:
+    """QR'a yazılabilecek taban URL'ler (öncelik sırasıyla). MOBIL_BASE_URL env tek başına ezer."""
     env = os.getenv("MOBIL_BASE_URL", "").rstrip("/")
     if env:
-        return env
+        return [env]
     port = request.url.port or 8000
-    return f"http://{_lan_ip()}:{port}"
+    return [f"http://{ip}:{port}" for ip in _aday_ipler()]
 
 
 # 30/dk: MAX_AKTIF_OTURUM (20) tavanı asıl fren — hız sınırı yalnız spam'e karşı,
@@ -131,8 +166,11 @@ async def oturum_olustur(request: Request) -> OturumYanit:
                                 "Aktif eşleme oturumu tavanına ulaşıldı; biraz sonra deneyin.")
         oid = secrets.token_urlsafe(16)
         _OTURUMLAR[oid] = MobilOturum()
-    log.info("mobil_oturum_olustu", oturum=oid[:8])
-    return OturumYanit(oturum_id=oid, mobil_url=f"{_mobil_base(request)}/mobil/{oid}",
+    # Senkron socket keşfi thread'de — event loop bloklanmaz (oturum başına 1 kez).
+    tabanlar = await asyncio.to_thread(_mobil_tabanlar, request)
+    urller = [f"{taban}/mobil/{oid}" for taban in tabanlar]
+    log.info("mobil_oturum_olustu", oturum=oid[:8], aday=len(urller))
+    return OturumYanit(oturum_id=oid, mobil_url=urller[0], aday_urller=urller,
                        ttl_s=OTURUM_TTL_S)
 
 
@@ -392,7 +430,7 @@ _SAYFA_HTML = """<!doctype html>
     </section>
   </main>
 
-  <footer><b>TEKNOFEST 2026</b><span class="nokta"></span>Aynı Wi-Fi ağında olun<span class="nokta"></span><span class="mono">KVKK · sentetik veri</span></footer>
+  <footer><b>TEKNOFEST 2026</b><span class="nokta"></span>__AG_NOTU__<span class="nokta"></span><span class="mono">KVKK · sentetik veri</span></footer>
 
 <script>
 (function () {
@@ -493,8 +531,12 @@ async def mobil_sayfa(oturum_id: str) -> HTMLResponse:
     if o is None or o.durum != "bekliyor":
         return HTMLResponse(_HATA_HTML.replace("__CSS__", _SAYFA_CSS),
                             status_code=status.HTTP_410_GONE)
+    # Tünel modunda (MOBIL_BASE_URL public https) "aynı Wi-Fi" şartı yoktur — notu uyarla.
+    ag_notu = ("İnternet üzerinden bağlı" if os.getenv("MOBIL_BASE_URL")
+               else "Aynı Wi-Fi ağında olun")
     sayfa = (_SAYFA_HTML
              .replace("__CSS__", _SAYFA_CSS)
              .replace("__OTURUM__", oturum_id)
-             .replace("__MAXBAYT__", str(MAX_UPLOAD_BYTES)))
+             .replace("__MAXBAYT__", str(MAX_UPLOAD_BYTES))
+             .replace("__AG_NOTU__", ag_notu))
     return HTMLResponse(sayfa)

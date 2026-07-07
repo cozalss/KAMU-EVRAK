@@ -13,8 +13,10 @@ const POLL_MS = 1500;
 const MAKS_ARDISIK_HATA = 8;   // ~12 sn sunucu sessizliği → kullanıcıya söyle, sessiz dönme
 
 export default function TelefonYukleModal({ onClose, onFile, showToast }) {
-  const [oturum, setOturum] = useState(null);    // {oturum_id, mobil_url}
+  const [oturum, setOturum] = useState(null);    // {oturum_id, mobil_url, aday_urller}
   const [durum, setDurum] = useState("kurulum"); // kurulum|bekliyor|aliniyor|suresi_doldu|indirme_hatasi|hata
+  // Çoklu ağ arayüzü (Ethernet+Wi-Fi): seçilen aday URL — QR bunu kodlar, değişince anında yenilenir.
+  const [urlIdx, setUrlIdx] = useState(0);
   const kapatRef = useRef(null);
   const kutuRef = useRef(null);
   const oncekiOdak = useRef(null);
@@ -34,6 +36,7 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
       const j = await r.json();
       if (bittiRef.current) return;
       setOturum(j);
+      setUrlIdx(0);
       setDurum("bekliyor");
     } catch {
       if (!bittiRef.current) setDurum("hata");
@@ -139,27 +142,47 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
           <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut }}>Eşleme oturumu açılıyor…</p>
         )}
 
-        {(durum === "bekliyor" || durum === "aliniyor") && oturum && (
+        {(durum === "bekliyor" || durum === "aliniyor") && oturum && (() => {
+          const adaylar = oturum.aday_urller?.length ? oturum.aday_urller : [oturum.mobil_url];
+          const seciliUrl = adaylar[Math.min(urlIdx, adaylar.length - 1)];
+          return (
           <>
             <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut2, textAlign: "left" }}>
               Telefonunuzla QR'ı okutun, fiziksel belgenin fotoğrafını çekin —
-              bu ekranda ajanların canlı işleyişini izleyin. <b>Aynı Wi-Fi ağında olun.</b>
+              bu ekranda ajanların canlı işleyişini izleyin.{" "}
+              <b>Telefon, bilgisayarla aynı Wi-Fi ağında olmalı.</b>
             </p>
             {/* QR: her temada beyaz zemin + koyu modül — tarayıcı kameraları için en garantili kontrast. */}
             <div style={{ alignSelf: "center", background: "#fff", padding: 14, borderRadius: RAD.card,
                           border: `1px solid ${PAL.line}` }}>
               {/* level="M": orta hata düzeltme — uzaktan/parlamada okutmada L'den toleranslı
                   (resmî react-qr-code önerisi); kısa URL'de yoğunluk artışı ihmal edilebilir. */}
-              <QRCode value={oturum.mobil_url} size={196} bgColor="#ffffff" fgColor="#161616" level="M" />
+              <QRCode value={seciliUrl} size={196} bgColor="#ffffff" fgColor="#161616" level="M" />
             </div>
+            {/* Çoklu ağ arayüzü: telefon bağlanamıyorsa büyük olasılıkla QR yanlış arayüzün
+                IP'sini kodladı — seçici ile diğer ağ denenir, QR anında yenilenir. */}
+            {adaylar.length > 1 && (
+              <label style={{ display: "flex", alignItems: "center", gap: SP.s, justifyContent: "center", ...TYPE.meta, color: PAL.mut }}>
+                Ağ:
+                <select value={urlIdx} onChange={(e) => setUrlIdx(Number(e.target.value))} {...focusRing}
+                  style={{ fontFamily: MONO, ...TYPE.meta, color: PAL.ink2, background: PAL.surf,
+                           border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "5px 8px", cursor: "pointer" }}>
+                  {adaylar.map((u, i) => (
+                    <option key={u} value={i}>{u.replace(/^https?:\/\//, "").replace(/\/mobil\/.*$/, "")}</option>
+                  ))}
+                </select>
+                <span>— telefon bağlanamazsa diğerini deneyin</span>
+              </label>
+            )}
             <code style={{ fontFamily: MONO, ...TYPE.meta, color: PAL.mut, wordBreak: "break-all" }}>
-              {oturum.mobil_url}
+              {seciliUrl}
             </code>
             <p role="status" aria-live="polite" style={{ margin: 0, ...TYPE.meta, color: durum === "aliniyor" ? PAL.ink : PAL.mut }}>
               {durum === "aliniyor" ? "Fotoğraf alındı — işlemeye veriliyor…" : "Telefondan yükleme bekleniyor…"}
             </p>
           </>
-        )}
+          );
+        })()}
 
         {durum === "suresi_doldu" && (
           <>

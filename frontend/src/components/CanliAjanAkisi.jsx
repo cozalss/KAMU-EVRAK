@@ -393,7 +393,7 @@ const DROP_KABUL = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
 };
 
-function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop }) {
+function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: false, noClick: true, noKeyboard: true, accept: DROP_KABUL,
     onDrop: (kabul) => { if (kabul?.[0]) onFileDrop(kabul[0]); },
@@ -410,6 +410,7 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop }) {
         actions={[
           <Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>,
           <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
+          <Btn key="t" onClick={onTelefon}><Icon.phone /> Telefonla çek</Btn>,
         ]}
       />
     </div>
@@ -477,10 +478,11 @@ export default function CanliAjanAkisi({
   onTurSec = () => {}, turUretiliyor = "", onerilenTur = "",
   onDownload = () => {}, downloading = "", canDownload = false,
   onUpload = () => {}, onGoInbox = () => {}, glow = true, fileUrl = "", onFileDrop = () => {},
+  onTelefon = () => {},
 }) {
   // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok) + sürükle-bırak yükleme alanı.
   if (!started) {
-    return <BosDurumDropzone onGoInbox={onGoInbox} onUpload={onUpload} onFileDrop={onFileDrop} />;
+    return <BosDurumDropzone onGoInbox={onGoInbox} onUpload={onUpload} onFileDrop={onFileDrop} onTelefon={onTelefon} />;
   }
 
   const risk = BANT[riskOutcome] || BANT.yesil;
@@ -555,6 +557,15 @@ export default function CanliAjanAkisi({
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
             </span>
+            {/* Telefonla çek — işlem sürerken kapalı: one-shot indirme busy'de sessizce
+                düşer (dosya kaybı); tamamlanınca yeni evrak telefondan da eklenebilsin. */}
+            <button onClick={onTelefon} disabled={busy} aria-label="Telefonla evrak çek" {...focusRing}
+              title={busy ? "İşlem sürerken telefonla yükleme başlatılamaz" : "Telefonla çek"}
+              onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+              style={{ cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: busy ? PAL.mut3 : PAL.mut, transition: "background .12s ease-out" }}>
+              <Icon.phone />
+            </button>
             <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} title="Yeni evrak"
               onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}

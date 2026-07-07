@@ -13,12 +13,14 @@ from starlette.responses import Response
 
 # Basit CSP — Swagger UI (jsdelivr CDN) + inline stil/script için gerekli minimum.
 # API JSON döndürdüğü için sıkı; /docs'u kırmamak adına CDN'e izin verilir.
+# Google Fonts (googleapis stil + gstatic font): /mobil telefon sayfası IBM Plex yükler
+# (marka fontu); font CDN'i script çalıştıramaz — eklenen yüzey minimal.
 _CSP = (
     "default-src 'self'; "
     "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
-    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; "
     "img-src 'self' data: https:; "
-    "font-src 'self' https://cdn.jsdelivr.net; "
+    "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com; "
     "connect-src 'self'; "
     "frame-ancestors 'none'; "
     "base-uri 'self'; "

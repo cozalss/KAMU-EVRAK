@@ -30,6 +30,8 @@ const DenetimView = lazy(() => import("./components/DenetimView.jsx"));
 // Sohbet asistanı (FAB + panel) — her görünümde sağ altta; tembel: yalnız kabuk yüklendikten
 // sonra iner, ilk yük bundle'ına ağırlık eklemez. Spec: docs/09-sohbet-asistani.md
 const ChatbotWidget = lazy(() => import("./components/ChatbotWidget.jsx"));
+// Telefonla evrak çekme (QR eşleme) — yalnız açılınca iner (react-qr-code ana bundle'a girmez).
+const TelefonYukleModal = lazy(() => import("./components/TelefonYukle.jsx"));
 
 // Görünüm ↔ URL hash eşlemesi (app.html#gelen). Görünüm geçişleri tarayıcı geçmişine yazılır →
 // fare/tarayıcı "geri" tuşu landing'e fırlatmak yerine ÖNCEKİ GÖRÜNÜME döner; yenilemede
@@ -68,6 +70,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   } = usePipeline();
 
   const { user, logout } = useAuth();
+  // Telefonla çek (QR) modalı — dosya telefondan gelince runFile mevcut SSE akışını başlatır.
+  const [telefonAcik, setTelefonAcik] = useState(false);
   // Optimistik açılış: son bilinen panel verisini (history/outbox) localStorage'dan ANINDA kur
   // → refresh'te boş→dolu ("Henüz evrak işlenmedi") flash'ı yok. Arka plandaki DB fetch (aşağıdaki
   // effect) uzak Supabase'ten tazeleyip günceller; değişince persist effect önbelleği yeniler.
@@ -544,7 +548,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
       onDownload={download} downloading={downloading} canDownload={!!evrakText}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
-      fileUrl={fileUrl} onFileDrop={runFile}
+      fileUrl={fileUrl} onFileDrop={runFile} onTelefon={() => setTelefonAcik(true)}
     />
   );
 
@@ -571,6 +575,16 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
 
         {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
+
+        {telefonAcik && (
+          <Suspense fallback={null}>
+            <TelefonYukleModal
+              onClose={() => setTelefonAcik(false)}
+              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); runFile(f); }}
+              showToast={showToast}
+            />
+          </Suspense>
+        )}
       </div>
     </>
   );

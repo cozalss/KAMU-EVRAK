@@ -36,6 +36,9 @@ export default defineConfig({
       "/islem": { target: "http://localhost:8000", changeOrigin: true },
       "/sohbet": { target: "http://localhost:8000", changeOrigin: true },
       "/sla": { target: "http://localhost:8000", changeOrigin: true },
+      // Telefonla evrak yükleme (QR eşleme) — masaüstü poll/oturum çağrıları.
+      // (Telefon, QR'daki LAN IP ile backend'e DOĞRUDAN bağlanır; proxy'ye uğramaz.)
+      "/mobil": { target: "http://localhost:8000", changeOrigin: true },
     },
   },
 });

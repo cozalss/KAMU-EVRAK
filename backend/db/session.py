@@ -10,6 +10,7 @@ from __future__ import annotations
 import os
 from collections.abc import AsyncIterator
 
+import structlog
 from dotenv import find_dotenv, load_dotenv
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -20,9 +21,28 @@ from sqlalchemy.pool import NullPool
 
 load_dotenv(find_dotenv(usecwd=True))
 
-_URL = os.environ.get("DATABASE_URL", "")
-if not _URL:
-    raise RuntimeError("DATABASE_URL tanımsız (.env). Supabase bağlantı dizgesi gerekli.")
+
+def _url_yukle() -> str:
+    """DATABASE_URL .env'den; yoksa geçerli-sözdizimli placeholder (taze klon boot'u).
+
+    Eski import-time RuntimeError, .env'siz `uv run main.py`'yi çökertiyordu. Engine lazy
+    bağlanır (NullPool) → placeholder ile API/pipeline tam çalışır; persist/auth ilk DB
+    kullanımında hızlı, yakalanan hatayla düşer (.env.example kopyalanmış durumla birebir;
+    process_doc persist'i zaten db_persist_hata ile yutuyor). Alembic/seed araçlarının
+    kendi fail-fast'leri korunur — yalnız uygulama boot'u yumuşatıldı.
+    """
+    url = os.environ.get("DATABASE_URL", "").strip()
+    if url:
+        return url
+    structlog.get_logger().warning(
+        "database_url_yok",
+        etki="DB persist + login çalışmaz (API/pipeline/mobil QR tam çalışır)",
+        cozum="Supabase bağlantısı için .env'e DATABASE_URL ekle (bkz. backend/db/README.md)",
+    )
+    return "postgresql+asyncpg://kamu:kamu@localhost:5432/kamu_evrak_yok"
+
+
+_URL = _url_yukle()
 
 # Supavisor transaction pooler: prepared statement YOK → cache kapat, pooler havuzlar.
 engine = create_async_engine(

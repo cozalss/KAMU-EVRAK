@@ -3,7 +3,11 @@
 TEKNOFEST 2026 Yapay Zeka Dil Ajanları Yarışması — 1. Senaryo.
 ADALET-AGENT main.py deseninden ADAPT (lifespan/health/CORS KEEP; ağır preload opsiyonel).
 
-Çalıştır:  uv run uvicorn main:app --reload  (backend/ dizininde)
+Çalıştır:  uv run main.py  (backend/ dizininde)
+  Varsayılan 0.0.0.0:8000 + reload — telefonla QR evrak yükleme (mobil QR) kutudan çıktığı
+  gibi çalışır; .env'e gerek yok, UVICORN_HOST/UVICORN_PORT ile ezilebilir. uvicorn CLI'yi
+  doğrudan kullanacaksan LAN erişimi için --host 0.0.0.0 vermeyi unutma (CLI varsayılanı
+  127.0.0.1'dir ve telefonlar erişemez).
 """
 
 from __future__ import annotations
@@ -113,3 +117,35 @@ async def health() -> dict[str, Any]:
 @app.get("/")
 async def root() -> dict[str, str]:
     return {"app": "kamu-evrak", "scenario": "TEKNOFEST 2026 — 1. Senaryo", "docs": "/docs"}
+
+
+def _dev_host_port() -> tuple[str, int]:
+    """Dev sunucu bind adresi — mobil QR sözleşmesi: varsayılan LAN'a açık (0.0.0.0).
+
+    Bilinçli tasarım: LAN binding'i uv'nin --env-file zincirine BAĞLI DEĞİL. O zincir
+    kırılgandı — .env'de tırnaksız özel karakterli tek satır uv'nin dosyanın tamamını
+    sessizce atlamasına, UVICORN_HOST'un düşmesine ve telefonların erişememesine yol
+    açıyordu. Varsayılan burada, kodda: .env olmasa da taze klonda telefon erişir.
+    Güvenilmeyen ağda UVICORN_HOST=127.0.0.1 ile kısıtlanır; bozuk girdi güvenli
+    varsayılana döner (demo boot asla kırılmaz).
+    """
+    host = os.getenv("UVICORN_HOST", "").strip() or "0.0.0.0"
+    try:
+        port = int(os.getenv("UVICORN_PORT", "8000"))
+    except ValueError:
+        port = 8000
+    if not 1 <= port <= 65535:
+        port = 8000
+    return host, port
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    _host, _port = _dev_host_port()
+    if _host == "0.0.0.0":  # mobil QR sözleşmesi (bkz. _dev_host_port)
+        # LAN'a açık dinleme her boot'ta TERMİNALDE görünsün — docstring'de gömülü kalmasın
+        # (güvenilmeyen ağda UVICORN_HOST=127.0.0.1 ile kısıtlanır).
+        log.warning("dev_lan_bind", host=_host, port=_port,
+                    not_="tüm ağ arayüzlerinden erişilebilir — telefonla QR yükleme için gerekli")
+    uvicorn.run("main:app", host=_host, port=_port, reload=True)

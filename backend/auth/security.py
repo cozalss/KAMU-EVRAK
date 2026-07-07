@@ -1,6 +1,10 @@
 """Parola hash (argon2id) + JWT imzalama/doğrulama. Saf, yan-etkisiz (DB yok).
 
-SIFIR HARDCODED SECRET (CLAUDE.md): AUTH_JWT_SECRET .env'den. Eksikse import-time hata.
+SIFIR HARDCODED SECRET (CLAUDE.md): AUTH_JWT_SECRET .env'den. Yoksa her süreçte TAZE
+rastgele geçici secret (sabit fallback değil) + yüksek sesli uyarı — taze klon
+`uv run main.py` ile .env'siz açılabilsin (eski import-time RuntimeError, README'yi
+harfiyen izleyen herkesi boot'ta çökertiyordu). Bedeli: restart'ta oturumlar düşer,
+çok-worker kurulumda token'lar worker'lar arası geçmez → ÜRETİMDE AUTH_JWT_SECRET ZORUNLU.
 Refresh token ham saklanmaz; SHA-256 hash'i oturum tablosunda tutulur (db tarafı).
 """
 from __future__ import annotations
@@ -8,18 +12,32 @@ from __future__ import annotations
 import datetime as _dt
 import hashlib
 import os
+import secrets as _secrets
 import uuid
 
 import jwt
+import structlog
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv(usecwd=True))
 
-_SECRET = os.environ.get("AUTH_JWT_SECRET", "")
-if not _SECRET:
-    raise RuntimeError("AUTH_JWT_SECRET tanımsız (.env) — JWT imzalanamaz.")
+
+def _secret_yukle() -> str:
+    """AUTH_JWT_SECRET .env'den; yoksa geçici kriptografik-rastgele secret (dev/demo)."""
+    s = os.environ.get("AUTH_JWT_SECRET", "").strip()
+    if s:
+        return s
+    structlog.get_logger().warning(
+        "auth_jwt_secret_gecici",
+        etki="oturumlar süreç restart'ında geçersizleşir; çok-worker'da token geçmez",
+        cozum="kalıcı oturum için .env'e AUTH_JWT_SECRET ekle (örn. `openssl rand -hex 32`)",
+    )
+    return _secrets.token_hex(32)
+
+
+_SECRET = _secret_yukle()
 _ALG = "HS256"
 _ACCESS_TTL = _dt.timedelta(minutes=int(os.getenv("AUTH_ACCESS_TTL_MIN", "15")))
 _REFRESH_TTL = _dt.timedelta(days=int(os.getenv("AUTH_REFRESH_TTL_DAYS", "7")))

@@ -33,8 +33,9 @@ Lisans **MIT**, AGPL bağımlılığı yok (PDF için PyMuPDF yerine `pypdfium2`
 # Backend — LLM anahtarı GEREKMEZ (mock mod, deterministik)
 cd backend
 uv sync
-cp ../.env.example ../.env
-uv run --env-file .env uvicorn main:app --reload      # http://localhost:8000/docs
+cp ../.env.example ../.env            # opsiyonel: gerçek LLM/DB için doldur
+uv run main.py                        # http://localhost:8000/docs — reload açık,
+                                      # telefonla QR yükleme için LAN'a açık (0.0.0.0)
 
 # Frontend
 cd ../frontend
@@ -53,6 +54,14 @@ VITRIN_MODU=1        # demo profili: HITL + clarifier + CRAG + hız (belge ~10 s
 ```
 
 Gereksinimler: **Python 3.11+ · [uv](https://docs.astral.sh/uv/) · Node 20+** (yalnız frontend) — GPU gerekmez.
+
+> **Telefonla QR yükleme:** backend LAN'a açık başlar; Windows ilk açılışta güvenlik duvarı
+> penceresi gösterirse **"İzin Ver"** deyin (sorun sürerse `scripts/demo-mobil.ps1`).
+> Telefon, bilgisayarla **aynı Wi-Fi/hotspot** ağında olmalı (misafir ağlarında cihazlar
+> birbirini göremeyebilir — garantili yol: telefon hotspot'u).
+>
+> **Panel girişi (login):** kullanıcı hesapları PostgreSQL/Supabase ister — kurulum ve seed
+> adımları: [`backend/db/README.md`](backend/db/README.md). DB olmadan API + `/docs` tam çalışır.
 Testler: `cd backend && uv run python -m pytest -q` (**1066 test · 77 modül**, CI'da mock modda koşar) ·
 Mevzuat RAG ağır ekleri (opsiyonel): `uv sync --extra rag`
 

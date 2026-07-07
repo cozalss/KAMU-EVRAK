@@ -93,7 +93,7 @@ Filtre çıkarımı deterministik de çalışır: "reddedilen" → `durum=redded
 
 - Backend test: `cd backend && uv run pytest tests/test_sohbet.py -q`
 - Backend lint: `cd backend && uv run ruff check .`
-- Backend dev: `cd backend && uv run uvicorn main:app --reload`
+- Backend dev: `cd backend && uv run main.py`
 - Frontend dev: `cd frontend && npm run dev` (Vite proxy'ye `/sohbet` eklenir)
 
 ## 5 · Dosya Planı

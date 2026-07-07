@@ -20,8 +20,9 @@ Güvenlik (jüri salonunda açık LAN varsayımı):
   - kamera erişimi <input capture> ile → getUserMedia yok, HTTPS gerekmez (HTTP LAN yeter)
 
 Telefonun erişebilmesi için backend LAN'a açık dinlemeli:
-  uv run uvicorn main:app --host 0.0.0.0   (QR, LAN IP'sini otomatik bulur;
-  hotspot/çoklu-arayüz kurulumunda MOBIL_BASE_URL env ile ezilebilir.)
+  uv run main.py   (standart komut; varsayılan 0.0.0.0 — QR, LAN IP'sini otomatik bulur;
+  hotspot/çoklu-arayüz kurulumunda MOBIL_BASE_URL env ile ezilebilir. uvicorn CLI ile
+  başlatıyorsan --host 0.0.0.0 vermek zorunludur.)
 """
 
 from __future__ import annotations

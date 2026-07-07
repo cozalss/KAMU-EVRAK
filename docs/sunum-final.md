@@ -157,7 +157,7 @@
 ## D. Sunum Öncesi Kontrol Listesi (sunan ekip için)
 
 - [ ] PPTX + PDF export hazır; `docs/img/01-04.png` + `demo.gif` gömülü.
-- [ ] Backend mock modda ayakta (`uv run uvicorn main:app --port 8000`); `/health` 200.
+- [ ] Backend mock modda ayakta (`uv run main.py`); `/health` 200 + telefon QR self-test yeşil.
 - [ ] Frontend ayakta (`npm run dev` veya `dist/` + `npm run preview`).
 - [ ] 5 örnek evrak tek-tıkla çalışıyor; DOCX/PDF indirme test edildi.
 - [ ] **İnternet-kesinti provası:** Wi-Fi kapalıyken demo baştan sona koşturuldu.

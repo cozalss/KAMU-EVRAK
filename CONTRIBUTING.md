@@ -19,7 +19,7 @@ cd backend
 uv sync                 # çekirdek iskelet (hafif; model indirmesi yok)
 uv sync --extra dev     # + test/lint (pytest, ruff, faker)
 cp ../.env.example ../.env   # LLM_MODE=mock yeterli (anahtar gerekmez)
-uv run --env-file .env uvicorn main:app --reload   # http://localhost:8000/docs
+uv run main.py               # http://localhost:8000/docs — reload + LAN (mobil QR)
 ```
 
 Opsiyonel ağır bileşenler (CI'da kurulmaz):

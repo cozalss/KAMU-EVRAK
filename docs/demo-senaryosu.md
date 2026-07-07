@@ -15,7 +15,7 @@
 # 1) Backend — mock modda (anahtar GEREKMEZ; node'lar deterministik fallback'e düşer)
 cd backend
 cp ../.env.example ../.env          # LLM_MODE=mock yeterli
-uv run uvicorn main:app --port 8000 # http://localhost:8000/docs
+uv run main.py                      # http://localhost:8000/docs — LAN açık (telefon QR çalışır)
 
 # 2) Frontend — saf React/Vite (ek dep yok)
 cd ../frontend

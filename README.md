@@ -34,7 +34,7 @@ Lisans **MIT**, AGPL bağımlılığı yok (PDF için PyMuPDF yerine `pypdfium2`
 cd backend
 uv sync
 cp ../.env.example ../.env
-uv run uvicorn main:app --reload      # http://localhost:8000/docs
+uv run --env-file .env uvicorn main:app --reload      # http://localhost:8000/docs
 
 # Frontend
 cd ../frontend

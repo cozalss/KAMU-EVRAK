@@ -9,7 +9,7 @@
 | Klasör | Dil | Çalıştır |
 |--------|-----|----------|
 | `frontend/` | JS (Vite + React) | `npm install` → `npm run dev` |
-| `backend/` | Python 3.11 (FastAPI + LangGraph) | `uv run uvicorn main:app --reload` |
+| `backend/` | Python 3.11 (FastAPI + LangGraph) | `uv run --env-file .env uvicorn main:app --reload` |
 | `backend/agents/` | Pipeline node'ları (Görev 1+2) | — |
 | `backend/multimodal/` | OCR (PDF/görsel/Word) — KEEP | — |
 | `backend/retrieval/` | Mevzuat RAG (KEEP, opsiyonel) | — |

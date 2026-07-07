@@ -7,6 +7,9 @@ venv/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+# pytest-cov artifact'i — içine yerel MUTLAK YOLLAR gömer (kullanıcı adı sızıntısı)
+.coverage
+.coverage.*
 # NOT: uv.lock COMMIT EDİLİR (reprodüke-edilebilir build + CI `uv sync --frozen` için gerekli).
 
 # Ortam / gizli
@@ -68,3 +71,10 @@ data/backups/
 
 # Claude Code yerel izin/ayar dosyası (makineye özel, repoya girmez)
 .claude/settings.local.json
+
+# MCP sunucu konfigürasyonu — makineye özel (Supabase project_ref gibi altyapı
+# detayı taşır; public repoya gerekmez)
+.mcp.json
+
+# Şartname OCR/scratch dökümleri — resmî PDF zaten takipli, çalışma kopyaları girmez
+/scratch_*.txt

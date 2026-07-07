@@ -31,8 +31,8 @@ Taksonomi TEK KAYNAK (agents.config) — uydurma sınıf YOK.
 Çıktı (data/synthetic/heldout2_gold.jsonl):
   her satır {id, evrak_turu, metin, beklenen_birim, beklenen_yazi_turu, kaynak:"heldout2"}
 
-Çalıştır (mutlak yol):
-    python "C:\\Users\\cemmo\\Desktop\\kamu evrak\\scripts\\gen_heldout2.py"
+Çalıştır (repo kökünden):
+    python scripts/gen_heldout2.py
 """
 
 from __future__ import annotations

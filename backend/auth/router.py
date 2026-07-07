@@ -2,6 +2,10 @@
 
 Hata eşlemesi: AuthError.kod → HTTP (409 eposta_kayitli, 404 birim_yok, 401 kimlik/oturum).
 İstemci IP + User-Agent oturum kaydına yazılır (denetim). Şartname Görev güvenliği.
+
+Hız sınırı (güvenlik denetimi HIGH-1): bu uçlar auth'suz açık ve giris/kayit kasıtlı-pahalı
+argon2 koşturur → sınırsız istek = parola deneme + CPU-DoS. Sıkı IP-başı limitler; meşru
+kullanıcı akışına bol yeter (login 5/dk, refresh access-TTL'de ~1 kez).
 """
 from __future__ import annotations
 
@@ -11,6 +15,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.middleware.ratelimit import rate_limit
 from auth import service
 from auth.deps import CurrentUser
 from auth.schemas import (
@@ -56,7 +61,8 @@ def _istemci(req: Request) -> tuple[str | None, str | None]:
 
 
 @router.post("/kayit", response_model=KullaniciOut, status_code=status.HTTP_201_CREATED)
-async def kayit(req: KayitRequest, session: Session) -> KullaniciOut:
+@rate_limit("3/minute")
+async def kayit(req: KayitRequest, request: Request, session: Session) -> KullaniciOut:
     try:
         k = await service.kayit(
             session, eposta=req.eposta, parola=req.parola, ad_soyad=req.ad_soyad,
@@ -67,6 +73,7 @@ async def kayit(req: KayitRequest, session: Session) -> KullaniciOut:
 
 
 @router.post("/giris", response_model=TokenResponse)
+@rate_limit("5/minute")
 async def giris(req: GirisRequest, request: Request, session: Session) -> TokenResponse:
     ip, ua = _istemci(request)
     try:
@@ -78,6 +85,7 @@ async def giris(req: GirisRequest, request: Request, session: Session) -> TokenR
 
 
 @router.post("/yenile", response_model=TokenResponse)
+@rate_limit("5/minute")
 async def yenile(req: YenileRequest, request: Request, session: Session) -> TokenResponse:
     ip, ua = _istemci(request)
     try:
@@ -89,7 +97,8 @@ async def yenile(req: YenileRequest, request: Request, session: Session) -> Toke
 
 
 @router.post("/cikis", status_code=status.HTTP_204_NO_CONTENT)
-async def cikis(req: YenileRequest, session: Session) -> None:
+@rate_limit("10/minute")
+async def cikis(req: YenileRequest, request: Request, session: Session) -> None:
     await service.cikis(session, refresh_token=req.refresh_token)
 
 

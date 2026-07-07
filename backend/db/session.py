@@ -34,6 +34,9 @@ def _url_yukle() -> str:
     url = os.environ.get("DATABASE_URL", "").strip()
     if url:
         return url
+    # Üretim kapısı — auth.security._secret_yukle ile aynı gerekçe: maskeleme yerine fail-fast.
+    if os.environ.get("APP_ENV", "").strip().lower() in ("prod", "production"):
+        raise RuntimeError("DATABASE_URL zorunlu (APP_ENV=production) — bkz. backend/db/README.md.")
     structlog.get_logger().warning(
         "database_url_yok",
         etki="DB persist + login çalışmaz (API/pipeline/mobil QR tam çalışır)",

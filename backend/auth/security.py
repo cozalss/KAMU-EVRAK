@@ -25,10 +25,17 @@ load_dotenv(find_dotenv(usecwd=True))
 
 
 def _secret_yukle() -> str:
-    """AUTH_JWT_SECRET .env'den; yoksa geçici kriptografik-rastgele secret (dev/demo)."""
+    """AUTH_JWT_SECRET .env'den; yoksa geçici kriptografik-rastgele secret (dev/demo).
+
+    ÜRETİM KAPISI: APP_ENV=production'da fallback YOK — geçici secret çok-worker
+    kurulumda aralıklı 401'lere yol açar ve yanlış-konfigürasyonu maskeler; fail-fast doğrusu.
+    """
     s = os.environ.get("AUTH_JWT_SECRET", "").strip()
     if s:
         return s
+    if os.environ.get("APP_ENV", "").strip().lower() in ("prod", "production"):
+        raise RuntimeError(
+            "AUTH_JWT_SECRET zorunlu (APP_ENV=production) — üret: `openssl rand -hex 32`.")
     structlog.get_logger().warning(
         "auth_jwt_secret_gecici",
         etki="oturumlar süreç restart'ında geçersizleşir; çok-worker'da token geçmez",

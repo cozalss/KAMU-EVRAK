@@ -94,12 +94,16 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
 # Production default: low-latency profile; deep retrieval compose/env ile açılır.
 # Sprint-5 W16: SCHEDULER_ENABLED=1 default (APScheduler RG + Yargıtay cron).
 # Test/CI'da SCHEDULER_ENABLED=0 ile devre dışı bırakılabilir.
+# APP_ENV=production → AUTH_JWT_SECRET + DATABASE_URL ZORUNLU (fail-fast; dev'in geçici-secret
+# fallback'i üretimde kapalı — çok-worker'da aralıklı 401 maskesini önler). Yerel compose
+# APP_ENV=dev ile ezer.
 ENV HYDE_ENABLED=0 \
     MULTI_QUERY_ENABLED=0 \
     ELIGIBILITY_ENABLED=0 \
     DEBATE_LLM_ON_RETRY=0 \
     LLM_MODE=mock \
     SCHEDULER_ENABLED=1 \
-    SCHEDULER_TIMEZONE=Europe/Istanbul
+    SCHEDULER_TIMEZONE=Europe/Istanbul \
+    APP_ENV=production
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

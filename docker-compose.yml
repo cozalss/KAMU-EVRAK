@@ -9,6 +9,11 @@ services:
     ports:
       - "8000:8000"
     environment:
+      # Yerel yığın dev modunda koşar (imaj varsayılanı production → fail-fast ister);
+      # gerçek konuşlandırmada APP_ENV=production + AUTH_JWT_SECRET/DATABASE_URL ver.
+      - APP_ENV=${APP_ENV:-dev}
+      - AUTH_JWT_SECRET=${AUTH_JWT_SECRET:-}
+      - DATABASE_URL=${DATABASE_URL:-}
       - LLM_MODE=${LLM_MODE:-mock}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - OCR_ENGINE=${OCR_ENGINE:-rapidocr}

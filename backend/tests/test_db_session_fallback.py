@@ -25,3 +25,13 @@ def test_yoksa_gecerli_placeholder_doner(monkeypatch):
 def test_bos_deger_yok_sayilir(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "   ")
     assert _url_yukle().startswith("postgresql+asyncpg://")
+
+
+def test_uretimde_eksik_url_fail_fast(monkeypatch):
+    # Placeholder üretimde yanlış-konfigürasyonu maskelemesin (auth._secret_yukle ile aynı kapı)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.setenv("APP_ENV", "production")
+    import pytest as _pytest
+
+    with _pytest.raises(RuntimeError, match="DATABASE_URL"):
+        _url_yukle()

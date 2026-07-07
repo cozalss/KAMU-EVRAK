@@ -31,6 +31,87 @@ _MAKAM_IPUCLARI = (
 )
 _KONU_MAX = 100
 
+# Makam kademe tablosu — kamuya açık devlet teşkilat yapısından derlendi (düşük sayı =
+# yüksek yetki). Tablo sırası = özgüllük sırası (çakışan eşleşmelerde erken kalıp
+# kazanır: "daire başkan" 6, generic "başkanlığ" 5'i ezer). Çözülemeyen makam → None →
+# hiyerarşi denetimi SUSAR (yanlış-pozitif SARI üretmeme ilkesi).
+_MAKAM_SEVIYE: tuple[tuple[str, int], ...] = (
+    ("cumhurbaşkan", 1),
+    ("büyük millet meclisi", 2), ("tbmm", 2),
+    ("bakan yardımcı", 4), ("müsteşar", 4),
+    ("bakanlığ", 3), ("bakanlık", 3),
+    ("genel müdür yardımcı", 6), ("daire başkan", 6),
+    ("dairesi", 6), ("kaymakaml", 6), ("dekanl", 6),
+    ("müşavirli", 6), ("teftiş", 6), ("iç denetim", 6), ("strateji", 6),
+    ("halkla ilişkiler", 6), ("cimer", 6),
+    ("genel müdürlü", 5), ("genel müdür", 5), ("valili", 5), ("rektörlü", 5),
+    ("başkanlığ", 5), ("başkanı", 5),
+    ("şube müdürlüğü", 7), ("yazı işleri", 7),
+    ("müdürlüğ", 7), ("müdürlük", 7),
+    ("şefli", 8),
+    # En genel kalıp EN SONDA: route_birim slug'ları ("ilgili_teknik_daire") ancak
+    # daha özgül hiçbir kalıp eşleşmezse buraya düşer.
+    ("daire", 6),
+)
+
+# Gerçek adlarda kademe sözcüğüyle tür sözcüğü ARAYA konu alır ("İl Milli Eğitim
+# Müdürlüğü") — birebir "il müdürlüğü" kalıbı hiç eşleşmez (denetçi bulgusu). Regex
+# adayları tablodan DAHA ÖZGÜL sayılır (çakışmada kazanır).
+_MAKAM_REGEX: tuple[tuple[re.Pattern[str], int], ...] = (
+    (re.compile(r"\bilçe\b[^,;.\n]{0,40}?müdürlüğ"), 7),
+    (re.compile(r"\bil\b[^,;.\n]{0,40}?müdürlüğ"), 6),
+)
+
+# Resmî üsluba aykırı gündelik kalıplar — yalnız TARTIŞMASIZ olanlar; sözcük-sınırlı
+# aranır ("hayırlı işlere vesile", "görüşmek üzere toplantı" gibi MEŞRU resmî kullanımlar
+# listeden bilinçli ÇIKARILDI — denetçi kanıtlı yanlış-pozitif). Yönetmelik korpusunda
+# birebir madde karşılığı ANILMAZ (uydurma yasak); kural "üslup" etiketiyle raporlanır.
+_YASAK_IFADELER = ("iyi çalışmalar", "kolay gelsin", "selamlar", "sevgiler",
+                   "iyi günler dilerim")
+_YASAK_RE = tuple((ifade, re.compile(rf"\b{re.escape(ifade)}\b")) for ifade in _YASAK_IFADELER)
+
+
+def _makam_seviyesi(metin: str) -> int | None:
+    """Metindeki makam kademesini çöz; hiçbir kalıp eşleşmezse None.
+
+    Türk kurum adları soldan sağa ana-kurum→alt-birim okunur ("Sağlık Bakanlığı …
+    Genel Müdürlüğü") → EN SAĞDAKİ eşleşme en özgül birimdir; ÇAKIŞAN aralıklarda
+    tablo sırası (özgül kalıp önce) kazanır ("cumhurbaşkanlığı" içindeki "başkanlığ"
+    gibi iç eşleşmeler üst kalıba yenilir). Alt çizgi → boşluk (slug normalizasyonu).
+    """
+    low = tr_lower(metin).replace("_", " ")
+    adaylar: list[tuple[int, int, int, int]] = []   # (başlangıç, bitiş, özgüllük, seviye)
+    for sira, (rx, seviye) in enumerate(_MAKAM_REGEX):
+        son = None
+        for m in rx.finditer(low):
+            son = m
+        if son is not None:
+            adaylar.append((son.start(), son.end(), sira - len(_MAKAM_REGEX), seviye))
+    for sira, (kalip, seviye) in enumerate(_MAKAM_SEVIYE):
+        poz = low.rfind(kalip)
+        if poz >= 0:
+            adaylar.append((poz, poz + len(kalip), sira, seviye))
+    if not adaylar:
+        return None
+    en_sag = max(adaylar, key=lambda a: a[1])
+    ortusen = [a for a in adaylar if a[0] < en_sag[1] and a[1] > en_sag[0]]
+    return min(ortusen, key=lambda a: a[2])[3]
+
+
+def kapanis_onerisi(gonderen_makam: str, muhatap_makam: str) -> tuple[str, str] | None:
+    """Hiyerarşiye göre doğru kapanış kalıbı → (kalıp, gerekçe); makam çözülemezse None.
+
+    Kural (m.16): eş ve üst makama "arz ederim", alt makama "rica ederim".
+    """
+    g = _makam_seviyesi(gonderen_makam)
+    m = _makam_seviyesi(muhatap_makam)
+    if g is None or m is None:
+        return None
+    if m <= g:
+        yon = "üst" if m < g else "eş"
+        return "arz ederim", f"muhatap {yon} makam → arz (m.16)"
+    return "rica ederim", "muhatap alt makam → rica (m.16)"
+
 
 def _kural(kural: str, madde: str, durum: str, mesaj: str) -> dict[str, str]:
     return {"kural": kural, "madde": madde, "durum": durum, "mesaj": mesaj}
@@ -144,17 +225,70 @@ def _k_olur(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
                   "Olur yazısında büyük harflerle OLUR bloğu bulunamadı (m.20).")
 
 
+def _k_yasak_ifade(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
+    # Sözcük-sınırlı arama: "iyi çalışmaların değerlendirilmesi" gibi ekli/bileşik
+    # kullanımlar eşleşmez — yalnız kalıbın kendisi uyarı üretir.
+    bulunan = [ifade for ifade, rx in _YASAK_RE if rx.search(low)]
+    if bulunan:
+        return _kural("L-USLUP-yasak", "üslup", "uyari",
+                      "Resmî yazışma üslubuna aykırı ifade: " + ", ".join(f"'{b}'" for b in bulunan))
+    return _kural("L-USLUP-yasak", "üslup", "gecti", "Resmî üsluba aykırı gündelik kalıp yok.")
+
+
+def _kapanis_hiyerarsi(low: str, gonderen: str, muhatap: str) -> dict[str, str] | None:
+    """Kapanışı makam hiyerarşisine göre değerlendir; makamlar çözülemezse None (sus).
+
+    'Arz ve rica ederim' dağıtımlı yazı kabulüdür; 'arz/rica' bölü'lü biçim tek kalıba
+    indirilmelidir (bilgi). Beklenenin tersi kalıp → kesin m.16 uyarısı.
+    """
+    oneri = kapanis_onerisi(gonderen, muhatap)
+    if oneri is None:
+        return None
+    beklenen, gerekce = oneri
+    # Kapanış belgenin KUYRUĞUNDA aranır — gövdede alıntılanan ilgi yazının kendi
+    # "arz ederim"i gerçek kapanışı maskelemesin (denetçi bulgusu; imza bloğu payı).
+    low = low[-300:]
+    if "arz ve rica ederim" in low:
+        return _kural("L-M16-kapanis", "m.16", "gecti",
+                      "Dağıtımlı kapanış ('arz ve rica ederim') mevcut (m.16).")
+    if "arz/rica" in low:
+        return _kural("L-M16-kapanis", "m.16", "bilgi",
+                      f"'arz/rica' tek kalıba indirilmeli — {gerekce}: '{beklenen}'.")
+    if beklenen in low:
+        return _kural("L-M16-kapanis", "m.16", "gecti",
+                      f"Kapanış hiyerarşiyle doğrulandı — {gerekce}.")
+    ters = "rica ederim" if beklenen == "arz ederim" else "arz ederim"
+    if ters in low:
+        return _kural("L-M16-kapanis", "m.16", "uyari",
+                      f"Kapanış '{ters}' yanlış — {gerekce}: '{beklenen.capitalize()}' kullanılmalı.")
+    return _kural("L-M16-kapanis", "m.16", "uyari",
+                  f"Kapanış kalıbı yok — {gerekce}: '{beklenen.capitalize()}' eklenmeli.")
+
+
 _KURALLAR = (_k_baslik, _k_sayi, _k_tarih, _k_konu, _k_muhatap, _k_ilgi, _k_kapanis,
-             _k_imza, _k_olur)
+             _k_imza, _k_olur, _k_yasak_ifade)
+
+_ANTET_SATIR = 6  # gönderen makam taslağın kendi antetinden (ilk satırlar) çözülür
 
 
-def lint_2646(taslak: str, yazi_turu: str = "") -> dict[str, Any]:
-    """Taslağı 2646 kurallarından geçir → {kurallar, uyari, ozet} (SAF/deterministik)."""
+def lint_2646(taslak: str, yazi_turu: str = "", *, muhatap_makam: str = "") -> dict[str, Any]:
+    """Taslağı 2646 kurallarından geçir → {kurallar, uyari, ozet} (SAF/deterministik).
+
+    muhatap_makam verilirse (ör. route_birim'in hedef_birim'i) kapanış kuralı
+    hiyerarşi-farkında çalışır: gönderen makam taslağın antetinden çözülür,
+    beklenen kalıp ('arz'/'rica') muhatapla karşılaştırılır. Makamlardan biri
+    çözülemezse varlık kontrolüne düşülür — yanlış-pozitif uyarı üretilmez.
+    """
     low = tr_lower(taslak)
     kurallar = [k for f in _KURALLAR if (k := f(taslak, low, yazi_turu)) is not None]
+    if muhatap_makam:
+        antet = "\n".join(taslak.splitlines()[:_ANTET_SATIR])
+        hiyerarsik = _kapanis_hiyerarsi(low, antet, muhatap_makam)
+        if hiyerarsik is not None:
+            kurallar = [hiyerarsik if k["kural"] == "L-M16-kapanis" else k for k in kurallar]
     uyari = [k["mesaj"] for k in kurallar if k["durum"] == "uyari"]
     ozet = {d: sum(1 for k in kurallar if k["durum"] == d) for d in ("gecti", "uyari", "bilgi")}
     return {"kurallar": kurallar, "uyari": uyari, "ozet": ozet}
 
 
-__all__ = ("lint_2646",)
+__all__ = ("kapanis_onerisi", "lint_2646")

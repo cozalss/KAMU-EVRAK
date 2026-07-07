@@ -364,3 +364,28 @@ class TestDraftEvalFormatSkoru:
         yanlis = "Sayın Ali Veli\n...\nOLUR\n"
         # Act / Assert
         assert check_olur_yapisi(yanlis) is False
+
+
+class TestKapanisHiyerarsi:
+    """m.16 — kapanış, muhatap makam hiyerarşisine göre OTOMATİK seçilir (rakip analizi
+    sonrası eklendi). Muhatap çözülemezse (vatandaş) tür varsayılanı korunur."""
+
+    def test_cevabi_yazida_ust_makama_arz_secilir(self):
+        # cevabi_yazi varsayılanı 'rica' — ama muhatap (Valilik) üst makam → arz'a çevrilir
+        ctx = build_context("cevabi_yazi", {"gonderen": "Ankara Valiliği"}, "gövde")
+        assert ctx.kapanis == "Gereğini arz ederim."
+
+    def test_ust_yazida_alt_makama_rica_secilir(self):
+        # Gönderen birim (yazı işleri, müdürlük düzeyi) → muhatap şeflik (alt) → rica
+        ctx = build_context("ust_yazi", {}, "gövde", muhatap_override="Evrak Kayıt Şefliği")
+        assert ctx.kapanis == "Gereğini rica ederim."
+
+    def test_vatandas_muhatapta_varsayilan_korunur(self):
+        # Makam çözülemez (kişi adı) → tür varsayılanı aynen kalır (yanlış seçim yok)
+        ctx = build_context("cevabi_yazi", {"gonderen": "Ayşe Yılmaz"}, "gövde")
+        assert ctx.kapanis == "Gereğini rica ederim."
+
+    def test_bilgilendirme_kapanisina_dokunulmaz(self):
+        # 'Bilgilerinize arz ederim.' kalıbı türe özgü — hiyerarşi override uygulanmaz
+        ctx = build_context("bilgilendirme", {"gonderen": "Ankara Valiliği"}, "gövde")
+        assert ctx.kapanis == "Bilgilerinize arz ederim."

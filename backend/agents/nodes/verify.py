@@ -27,6 +27,7 @@ from agents.config import (
     VERIFY_ENABLED,
     VERIFY_GROUNDING_LLM,
     YAZI_ZORUNLU_BOLUMLER,
+    birim_tr,
 )
 from agents.nodes._llm_extract import llm_json
 from agents.tutarlilik import tutarlilik_kontrol
@@ -111,12 +112,32 @@ async def _lint_autofix(taslak: str, lint: dict[str, Any],
     duzeltme = cevap.get("duzeltilmis_taslak")
     if not isinstance(duzeltme, str) or not duzeltme.strip():
         return None
-    yeni_lint = lint_2646(duzeltme, state.get("yazi_turu", "") or "")
+    yeni_lint = lint_2646(duzeltme, state.get("yazi_turu", "") or "",
+                          muhatap_makam=_lint_muhatabi(state))
     if len(yeni_lint.get("uyari", [])) >= len(lint.get("uyari", [])):
         return None  # iyileşme yok → öneri değersiz
     if _uydurma_veto(duzeltme, state):
         return None  # düzeltme yeni somut veri uydurdu → reddet
     return duzeltme
+
+
+def _lint_muhatabi(state: dict[str, Any]) -> str:
+    """m.16 hiyerarşi denetimi için muhatap — render'ın muhatap mantığının aynası.
+
+    ust_yazi kurum-içi iletimdir → muhatap hedef birim; cevabi_yazi gelen yazıya
+    cevaptır → muhatap evrakın GÖNDERENİ (vatandaşsa makam çözülmez, denetim susar).
+    Diğer türlerde muhatap makamı belirsiz → boş dön (yanlış karşılaştırma sahte
+    m.16 uyarısı üretir — runtime'da yakalanan yön hatasının düzeltmesi).
+    """
+    turu = state.get("yazi_turu", "") or ""
+    if turu == "ust_yazi":
+        # render'la birebir aynı kaynak (yazi_taslak: birim_tr) — HAM slug makam
+        # çözücünün kalıplarını taşımaz, 9 birimin 8'inde denetimi sessizce söndürür.
+        return birim_tr(state.get("hedef_birim", "") or "")
+    if turu == "cevabi_yazi":
+        unsur = state.get("bilgi_unsurlari") or {}
+        return str(unsur.get("gonderen", "") or "")
+    return ""
 
 
 async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
@@ -171,7 +192,9 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     # olabilir) → SSE'ye maskesiz gitmesin diye state'e girmeden maskelenir.
     uyarilar = [mask_pii(u).masked_text for u in uydurma] + [f"Eksik bölüm: {e}" for e in eksik]
     # S2 — madde-referanslı 2646 lint raporu (kural-kimlikli; risk'e yalnız 'uyari' gider).
-    lint = lint_2646(taslak, state.get("yazi_turu", "") or "")
+    # muhatap: render'ın muhatap mantığıyla AYNI (yön hatası = sahte m.16 uyarısı üretir).
+    lint = lint_2646(taslak, state.get("yazi_turu", "") or "",
+                     muhatap_makam=_lint_muhatabi(state))
 
     # Madde 6 — LLM grounding: yalnız uyarı EKLER (bandı sertleştirme yönü serbest;
     # deterministik veto her durumda üstte kalır). LLM yok/mock/bozuk → hiçbir ek yok.

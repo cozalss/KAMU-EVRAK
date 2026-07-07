@@ -21,7 +21,9 @@ from typing import Any
 import structlog
 
 from agents.config import YAZI_TURU_TR
-from yazi.models import YaziContext
+# Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
+from agents.yazi_lint import kapanis_onerisi
+from yazi.models import _DEMO_DEFAULTS, YaziContext
 from yazi.template_registry import default_kapanis, resolve_yazi_turu
 
 log = structlog.get_logger()
@@ -84,8 +86,10 @@ def _fallback_body(yazi_turu: str, konu: str, has_ilgi: bool) -> str:
     # üst yazı (gönderen makam → muhatap makam)
     if has_ilgi:
         return (
+            # "arz/rica" bölü'lü biçim m.16'ya aykırı (tek kalıp seçilir) — üst yazı
+            # muhatabı eş/üst makam kabulüyle registry kapanışıyla tutarlı: arz.
             f"İlgi yazı ile bildirilen {konu_ifade} konusuna ilişkin gerekli iş ve "
-            "işlemlerin yapılması hususunda gereğini arz/rica ederim."
+            "işlemlerin yapılması hususunda gereğini arz ederim."
         )
     return (
         f"{konu_ifade} konusuna ilişkin gerekli iş ve işlemlerin yürütülmesini "
@@ -186,6 +190,15 @@ def build_context(
         muhatap = ""
     else:
         muhatap = _muhatap(unsurlar)
+    # m.16 — kapanış muhatap makam hiyerarşisine göre OTOMATİK seçilir: yalnız
+    # "Gereğini … ederim." kalıplı türlerde ve muhatap makamı çözülebiliyorsa
+    # (vatandaş/bilinmeyen → tür varsayılanı korunur; yanlış seçim riski yok).
+    # Gönderen = şablon antetindeki birim (models._DEMO_DEFAULTS ile aynı kaynak).
+    kapanis = default_kapanis(turu)
+    if muhatap and turu in ("ust_yazi", "cevabi_yazi", "muzekkere"):
+        oneri = kapanis_onerisi(_DEMO_DEFAULTS["birim_adi"], muhatap)
+        if oneri:
+            kapanis = f"Gereğini {oneri[0]}."
     return YaziContext(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
@@ -196,7 +209,7 @@ def build_context(
         ilgi_tarih=str(unsurlar.get("tarih", "") or ""),
         ilgi_sayi=str(unsurlar.get("sayi", "") or ""),
         ilgi_satirlari=ilgi,
-        kapanis=default_kapanis(turu),
+        kapanis=kapanis,
         olur_alanlari=_olcu_meta(unsurlar) if turu == "olur" else {},
     )
 

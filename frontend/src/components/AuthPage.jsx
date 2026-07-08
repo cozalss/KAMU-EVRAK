@@ -23,13 +23,34 @@ function Marka() {
   );
 }
 
-function Field({ label, type = "text", value, onChange, autoComplete, required, children, placeholder }) {
+function toTitleCaseTurkish(str) {
+  if (!str) return "";
+  return str
+    .split(" ")
+    .map((word) => {
+      if (!word) return "";
+      const firstChar = word.charAt(0);
+      const rest = word.slice(1);
+      let upperFirst;
+      if (firstChar === "i") {
+        upperFirst = "İ";
+      } else if (firstChar === "ı") {
+        upperFirst = "I";
+      } else {
+        upperFirst = firstChar.toLocaleUpperCase("tr-TR");
+      }
+      return upperFirst + rest.toLocaleLowerCase("tr-TR");
+    })
+    .join(" ");
+}
+
+function Field({ label, type = "text", value, onChange, onBlur, autoComplete, required, children, placeholder }) {
   return (
     <label style={{ display: "block", marginBottom: SP.m }}>
       <span style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut2, marginBottom: SP.xs }}>{label}</span>
       {children || (
         <input
-          type={type} value={value} onChange={(e) => onChange(e.target.value)}
+          type={type} value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur}
           autoComplete={autoComplete} required={required} placeholder={placeholder}
           {...focusRing}
           style={{
@@ -90,7 +111,9 @@ export default function AuthPage() {
     setBusy(true);
     try {
       if (kayit) {
-        await register({ eposta: form.eposta, parola: form.parola, ad_soyad: form.ad_soyad, birim_kod: form.birim_kod, unvan: form.unvan });
+        const formattedAdSoyad = toTitleCaseTurkish(form.ad_soyad).trim();
+        const formattedUnvan = toTitleCaseTurkish(form.unvan).trim();
+        await register({ eposta: form.eposta, parola: form.parola, ad_soyad: formattedAdSoyad, birim_kod: form.birim_kod, unvan: formattedUnvan });
       } else {
         await login(form.eposta, form.parola);
       }
@@ -162,7 +185,7 @@ export default function AuthPage() {
 
             <form onSubmit={submit} noValidate>
               {kayit && (
-                <Field label="Ad soyad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
+                <Field label="Ad soyad" value={form.ad_soyad} onChange={(val) => set("ad_soyad")(toTitleCaseTurkish(val))} autoComplete="name" required placeholder="Ayşe Yılmaz" />
               )}
               <Field label="E-posta" type="email" value={form.eposta} onChange={set("eposta")} autoComplete="email" required placeholder="ad.soyad@kurum.gov.tr" />
               {kayit && (
@@ -174,7 +197,7 @@ export default function AuthPage() {
                       {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: PAL.surf }}>{b.ad}</option>)}
                     </select>
                   </Field>
-                  <Field label="Unvan (opsiyonel)" value={form.unvan} onChange={set("unvan")} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
+                  <Field label="Unvan (opsiyonel)" value={form.unvan} onChange={(val) => set("unvan")(toTitleCaseTurkish(val))} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
                 </>
               )}
               <Field label="Parola" type="password" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} required placeholder={kayit ? "En az 8 karakter" : "••••••••"} />

@@ -12,14 +12,14 @@ export default function Projects() {
           style={{ top: `${24 + i * 28}px` }}
         >
           <article
-            className="relative overflow-hidden rounded-3xl"
-            style={{ height: "800px" }}
+            className="relative overflow-hidden rounded-3xl h-[320px] sm:h-[450px] md:h-[600px] lg:h-[700px] xl:h-[800px]"
           >
             {/* Background image spanning the card. */}
             <img
               src={project.image}
               alt={project.title}
               className="absolute inset-0 h-full w-full object-cover"
+              style={{ objectPosition: "left top" }}
             />
             <div className="absolute inset-0 bg-black/20" />
 

@@ -92,6 +92,56 @@ function Field({ label, type = "text", value, onChange, onBlur, autoComplete, re
   );
 }
 
+// Göz ikonları — parola görünürlük düğmesi (neonUi ikon setinde yok, yerel). Gizli durumda
+// soluk göz + eğik çizgi ("kapalı"); görünür durumda net göz + gözbebeği.
+const GozIkon = {
+  ac: (p) => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
+      <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="2.6" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  ),
+  kapa: (p) => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
+      <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" opacity=".5" />
+      <circle cx="12" cy="12" r="2.6" stroke="currentColor" strokeWidth="1.6" opacity=".5" />
+      <path d="M4 4 L20 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  ),
+};
+
+// Parola alanı — Field ile aynı görünüm + sağ içinde parolayı göster/gizle göz düğmesi.
+// Kendi göster state'i vardır (her örnek bağımsız). a11y: aria-pressed + aria-label; düğme
+// odağı almaz (mousedown preventDefault) → input imleci/odacı korunur.
+function ParolaField({ label, value, onChange, autoComplete, placeholder }) {
+  const [goster, setGoster] = useState(false);
+  return (
+    <label style={{ display: "block", marginBottom: SP.m }}>
+      <span style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut2, marginBottom: SP.xs }}>{label}</span>
+      <span style={{ position: "relative", display: "block" }}>
+        <input
+          type={goster ? "text" : "password"} value={value} onChange={(e) => onChange(e.target.value)}
+          autoComplete={autoComplete} required placeholder={placeholder}
+          {...focusRing}
+          style={{
+            width: "100%", boxSizing: "border-box", padding: "8px 42px 8px 12px", borderRadius: RAD.ctl,
+            background: PAL.surf, border: `1px solid ${PAL.inputLine}`,
+            color: PAL.ink, ...TYPE.ui, outline: "none", transition: "border-color .15s ease-out",
+          }}
+        />
+        <button type="button" onClick={() => setGoster((g) => !g)} onMouseDown={(e) => e.preventDefault()}
+          aria-label={goster ? "Parolayı gizle" : "Parolayı göster"} aria-pressed={goster}
+          title={goster ? "Parolayı gizle" : "Parolayı göster"} {...focusRing}
+          onMouseEnter={(e) => { e.currentTarget.style.color = PAL.ink2; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = PAL.mut2; }}
+          style={{ position: "absolute", right: 5, top: "50%", transform: "translateY(-50%)", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, padding: 0, border: "none", background: "transparent", color: PAL.mut2, cursor: "pointer", borderRadius: RAD.ctl, transition: "color .12s ease-out" }}>
+          {goster ? <GozIkon.kapa /> : <GozIkon.ac />}
+        </button>
+      </span>
+    </label>
+  );
+}
+
 // Segmented Giriş/Kayıt seçici — alt metin-link yerine üstte, kararlı bir tab deseni.
 function ModeTabs({ mode, onChange }) {
   const items = [["giris", "Giriş"], ["kayit", "Kayıt"]];
@@ -122,9 +172,10 @@ export default function AuthPage() {
   const [birimler, setBirimler] = useState([]);
   const [hata, setHata] = useState("");
   const [busy, setBusy] = useState(false);
+  const [sifreNot, setSifreNot] = useState(false);     // "şifremi unuttum" yönlendirme notu açık mı
   const kayit = mode === "kayit";
   const set = (k) => (v) => setForm((f) => ({ ...f, [k]: v }));
-  const changeMode = (id) => { setMode(id); setHata(""); };
+  const changeMode = (id) => { setMode(id); setHata(""); setSifreNot(false); };
 
   useEffect(() => {
     birimleriGetir().then((b) => {
@@ -231,7 +282,21 @@ export default function AuthPage() {
                   <Field label="Unvan (opsiyonel)" value={form.unvan} onChange={(val) => set("unvan")(toTitleCaseTurkish(val))} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
                 </>
               )}
-              <Field label="Parola" type="password" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} required placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
+              <ParolaField label="Parola" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
+
+              {!kayit && (
+                <div style={{ marginTop: `-${SP.xs}px`, marginBottom: SP.m, textAlign: "right" }}>
+                  <button type="button" onClick={() => setSifreNot((v) => !v)} aria-expanded={sifreNot} {...focusRing}
+                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer", ...TYPE.data, fontWeight: 500, color: DERIN.T, borderRadius: RAD.chip }}>
+                    Şifremi unuttum?
+                  </button>
+                  {sifreNot && (
+                    <p role="status" style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut2, textAlign: "left" }}>
+                      Parolanızı sıfırlamak için birim yöneticinize ya da sistem yöneticinize başvurun.
+                    </p>
+                  )}
+                </div>
+              )}
 
               {hata && (
                 <div role="alert" aria-live="assertive" style={{ display: "flex", gap: SP.s, alignItems: "center", padding: "8px 12px", marginBottom: SP.m, borderRadius: RAD.ctl, background: ALFA(BANT.kirmizi.c), color: DERIN.kirmizi, ...TYPE.data }}>

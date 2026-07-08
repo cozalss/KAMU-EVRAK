@@ -345,8 +345,9 @@ CREATE INDEX IF NOT EXISTS ix_onay_taslak          ON onay(taslak_id, karar);
 CREATE INDEX IF NOT EXISTS ix_giden_birim          ON giden_evrak(alici_birim_id, gonderim_tarihi DESC);
 CREATE INDEX IF NOT EXISTS ix_giden_durum_risk     ON giden_evrak(durum, risk);
 CREATE INDEX IF NOT EXISTS ix_giden_tarih          ON giden_evrak(gonderim_tarihi);
--- M-6: çift-gönderim guard (reddedilmemiş taslak yalnız bir kez gönderilir).
-CREATE UNIQUE INDEX IF NOT EXISTS ix_giden_taslak_uniq ON giden_evrak(taslak_id) WHERE durum <> 'reddedildi';
+-- M-6 + 0002: çift-gönderim guard — bir taslağa İKİNCİ giden_evrak kaydı KOŞULSUZ engellenir
+-- (eskiden yalnız durum<>reddedildi kısmi kısıttı; reddet çift-tıklama/ikinci-sekmeye açıktı).
+CREATE UNIQUE INDEX IF NOT EXISTS ix_giden_taslak_uniq ON giden_evrak(taslak_id);
 CREATE INDEX IF NOT EXISTS ix_denetim_adim         ON denetim_adimi(islem_id, sira);
 CREATE INDEX IF NOT EXISTS ix_islem_risk           ON risk_degerlendirme(bant);
 CREATE INDEX IF NOT EXISTS ix_bildirim_kullanici   ON bildirim(kullanici_id, okundu, olusturuldu DESC);  -- M-4

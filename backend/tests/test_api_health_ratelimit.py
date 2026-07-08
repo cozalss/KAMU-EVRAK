@@ -36,7 +36,8 @@ class TestHealthLlmActive:
         assert body["status"] == "ok"
         assert "llm_mode" in body
         assert body["llm_active"] == "mock"
-        assert isinstance(body["pipeline_nodes"], list) and body["pipeline_nodes"]
+        # Node adlarının tam listesi ARTIK dönmez (iç mimari keşfini daraltır) — yalnız sayı.
+        assert isinstance(body["pipeline_node_sayisi"], int) and body["pipeline_node_sayisi"] > 0
 
     def test_active_llm_openai_client_eslesir(self, monkeypatch: pytest.MonkeyPatch):
         # Arrange — get_llm gerçek OpenAIClient döndürürse "openai" raporlanmalı

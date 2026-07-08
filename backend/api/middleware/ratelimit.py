@@ -70,7 +70,9 @@ def setup_rate_limiting(app: Any) -> bool:
     slowapi yoksa hiçbir şey yapmaz (False döner) → boot kırılmaz.
     """
     if not (_SLOWAPI_AVAILABLE and _limiter is not None):
-        log.info("rate_limit_disabled", reason="slowapi_not_installed")
+        # WARNING (INFO değil): kırık bir venv'de slowapi eksikse IP-başı hız sınırlaması
+        # (/kayit, /giris vb.) sessizce devre dışı kalır — rutin boot gürültüsüne karışmasın.
+        log.warning("rate_limit_disabled", reason="slowapi_not_installed")
         return False
     app.state.limiter = _limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

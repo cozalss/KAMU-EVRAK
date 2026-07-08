@@ -38,6 +38,19 @@ router = APIRouter(tags=["kayitlar"])
 
 Session = Annotated[AsyncSession, Depends(get_session)]
 
+# KararError.kod → HTTP durum kodu. "yetkisiz" (sahiplik yok) BİLEREK 404 döner (403 değil) —
+# kaynağın var olup başkasına ait olduğunu sızdırmaz (mevcut islem_detay ön-kontrolüyle aynı disiplin).
+_KARAR_HTTP_KOD = {
+    "taslak_yok": status.HTTP_404_NOT_FOUND,
+    "alt_talep_yok": status.HTTP_404_NOT_FOUND,
+    "yetkisiz": status.HTTP_404_NOT_FOUND,
+    "giden_no_uretilemedi": status.HTTP_503_SERVICE_UNAVAILABLE,
+}
+
+
+def _karar_http_kod(kod: str) -> int:
+    return _KARAR_HTTP_KOD.get(kod, status.HTTP_409_CONFLICT)
+
 
 @router.get("/referans/birimler")
 async def birimler(session: Session) -> dict:
@@ -145,10 +158,9 @@ async def taslak_sil_endpoint(
     try:
         if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
-        return await taslak_sil(session, islem_id=islem_id)
+        return await taslak_sil(session, islem_id=islem_id, owner_id=kullanici.id)
     except KararError as e:
-        kod = status.HTTP_404_NOT_FOUND if e.kod == "taslak_yok" else status.HTTP_409_CONFLICT
-        raise HTTPException(kod, e.mesaj) from e
+        raise HTTPException(_karar_http_kod(e.kod), e.mesaj) from e
 
 
 @router.post("/islem/{islem_id}/onayla")
@@ -162,10 +174,10 @@ async def onayla(
             raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
         return await onayla_ve_gonder(
             session, islem_id=islem_id, kullanici_id=kullanici.id,
-            secim=req.secim, gerekce=req.gerekce, yazi_turu=req.yazi_turu, metin=req.metin)
+            secim=req.secim, gerekce=req.gerekce, yazi_turu=req.yazi_turu, metin=req.metin,
+            owner_id=kullanici.id)
     except KararError as e:
-        kod = status.HTTP_404_NOT_FOUND if e.kod == "taslak_yok" else status.HTTP_409_CONFLICT
-        raise HTTPException(kod, e.mesaj) from e
+        raise HTTPException(_karar_http_kod(e.kod), e.mesaj) from e
 
 
 @router.post("/islem/{islem_id}/alt-talep/{sira}/onayla")
@@ -183,11 +195,10 @@ async def alt_talep_onayla(
             raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
         return await onayla_ve_gonder_alt_talep(
             session, islem_id=islem_id, sira=sira, kullanici_id=kullanici.id,
-            secim=req.secim, gerekce=req.gerekce, yazi_turu=req.yazi_turu, metin=req.metin)
+            secim=req.secim, gerekce=req.gerekce, yazi_turu=req.yazi_turu, metin=req.metin,
+            owner_id=kullanici.id)
     except KararError as e:
-        kod = (status.HTTP_404_NOT_FOUND if e.kod in ("taslak_yok", "alt_talep_yok")
-               else status.HTTP_409_CONFLICT)
-        raise HTTPException(kod, e.mesaj) from e
+        raise HTTPException(_karar_http_kod(e.kod), e.mesaj) from e
 
 
 __all__ = ("router",)

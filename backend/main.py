@@ -46,11 +46,18 @@ async def lifespan(app: FastAPI):
         log.info("shutdown")
 
 
+_APP_ENV_PROD = os.getenv("APP_ENV", "").strip().lower() in ("prod", "production")
+
 app = FastAPI(
     title="kamu-evrak — Akıllı Agent Destek Sistemi",
     description="Kamu evrak ve yazışma süreçleri için çok-ajanlı yapay zeka (TEKNOFEST 2026, 1. Senaryo)",
     version="0.1.0",
     lifespan=lifespan,
+    # Swagger/ReDoc/OpenAPI şeması prod'da kapalı — iç API yüzeyinin/mimarinin keşfini
+    # daraltır (ECC LOW: /docs kimliksiz erişilebiliyordu). Demo/dev'de açık kalır.
+    docs_url=None if _APP_ENV_PROD else "/docs",
+    redoc_url=None if _APP_ENV_PROD else "/redoc",
+    openapi_url=None if _APP_ENV_PROD else "/openapi.json",
 )
 
 # Güvenlik başlıkları — her yanıta nosniff/DENY/Referrer-Policy/CSP (clickjacking + MIME guard).
@@ -59,10 +66,20 @@ app.add_middleware(SecurityHeadersMiddleware)
 # CORS — frontend dev sunucusu (Vite :5173) erişebilsin. Origin'ler ENV'den (prod'da
 # gerçek alan adı). Metod/başlık wildcard yerine SPESİFİK → credentials'lı isteklerde
 # saldırı yüzeyi daralır (API yalnız GET/POST + Content-Type/Authorization kullanır).
-_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+# CORS_ORIGINS=* + allow_credentials=True BİRLİKTE asla kurulmaz: Starlette bu kombinasyonda
+# '*' yerine gelen Origin'i AYNEN yansıtır (allow_all + credentials) → fiilen her origin'e
+# credentials'lı erişim açılır, sessizce "çalışır" görünür (ECC HIGH). AUTH_JWT_SECRET/
+# DATABASE_URL ile aynı fail-fast disiplini: yanlış konfigürasyon boot'ta durur.
+_origins = [o.strip() for o in
+            os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+            if o.strip()]
+if "*" in _origins:
+    raise RuntimeError(
+        "CORS_ORIGINS='*' allow_credentials=True ile birlikte kullanılamaz — "
+        "spesifik origin listesi ver (virgülle ayrılmış).")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in _origins if o.strip()],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
@@ -105,13 +122,18 @@ def _active_llm() -> str:
 
 @app.get("/health")
 async def health() -> dict[str, Any]:
-    """Sağlık kontrolü — istenen LLM modu + GERÇEK aktif client + pipeline node sayısı."""
+    """Sağlık kontrolü — istenen LLM modu + GERÇEK aktif client + pipeline node SAYISI.
+
+    Node adlarının tam listesi dönmez (iç pipeline mimarisinin keşfini kolaylaştırır,
+    kimliksiz erişilebilir bir endpoint için gereksiz bilgi — ECC LOW); sayı boyut/health
+    sinyali için yeterli.
+    """
     from agents.graph import PIPELINE_NODES
     return {
         "status": "ok",
         "llm_mode": LLM_MODE,          # istenen mod (ENV)
         "llm_active": _active_llm(),   # gerçek client (sessiz-fallback görünür)
-        "pipeline_nodes": list(PIPELINE_NODES),
+        "pipeline_node_sayisi": len(PIPELINE_NODES),
     }
 
 
@@ -158,7 +180,16 @@ if __name__ == "__main__":
     import uvicorn
 
     _host, _port = _dev_host_port()
-    if _host == "0.0.0.0":  # mobil QR sözleşmesi (bkz. _dev_host_port)
+    # AUTH_JWT_SECRET/DATABASE_URL/CORS_ORIGINS ile aynı disiplin: gerçek prod ortamı
+    # (APP_ENV=production) `uv run main.py` ile DOĞRUDAN çalıştırılırsa (sanctioned yol
+    # Dockerfile CMD'dir, --reload YOK) reload+LAN-açık bind'i sessizce miras almaz —
+    # dosya-izleyici + gereksiz geniş bind prod'a taşınmaz (ECC MEDIUM).
+    _reload = not _APP_ENV_PROD
+    if _APP_ENV_PROD and _host == "0.0.0.0":
+        log.warning("prod_lan_bind_dikkat", host=_host, port=_port,
+                    not_="APP_ENV=production + host=0.0.0.0 — LAN-QR yalnız demo/dev içindir; "
+                         "gerçek üretimde UVICORN_HOST ile daraltın veya Dockerfile CMD kullanın")
+    elif _host == "0.0.0.0":  # mobil QR sözleşmesi (bkz. _dev_host_port)
         # LAN'a açık dinleme her boot'ta TERMİNALDE görünsün — docstring'de gömülü kalmasın
         # (güvenilmeyen ağda UVICORN_HOST=127.0.0.1 ile kısıtlanır).
         log.warning("dev_lan_bind", host=_host, port=_port,
@@ -168,4 +199,4 @@ if __name__ == "__main__":
                   not_=f"{_port} portunu başka bir süreç tutuyor (muhtemelen kapatılmamış eski "
                        f"backend) — bu kopya BAĞLANAMAYACAK. Kapatın: "
                        f"netstat -ano | findstr :{_port}  →  taskkill /PID <pid> /F")
-    uvicorn.run("main:app", host=_host, port=_port, reload=True)
+    uvicorn.run("main:app", host=_host, port=_port, reload=_reload)

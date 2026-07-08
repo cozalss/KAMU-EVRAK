@@ -141,6 +141,40 @@ class TestStreamPersistSirasi:
         assert '"event": "persist"' not in resp.text
 
 
+class TestResumePersist:
+    """resume() artık process()/process_stream() ile AYNI persist kapısından geçer —
+    daha önce memur kararı (HITL'in var olma sebebi) hiç DB'ye yazılmıyordu (regresyon testi).
+    Gerçek graf/checkpointer devre dışı bırakılır (LLM_MODE=mock'ta bile DB gerektirmesin);
+    yalnız resume()'un _persist_sonrasi'yi DOĞRU argümanlarla çağırdığı kanıtlanır."""
+
+    def test_resume_persist_sonrasini_dogru_argumanlarla_cagirir(
+            self, client: TestClient, monkeypatch: pytest.MonkeyPatch):
+        # Arrange — sahte graf: resume edilen state, orijinal evrak_text/filename'i taşır
+        # (OnayResumeRequest bunları taşımaz; LangGraph checkpoint'i korur — bkz. process_doc.py).
+        from api.routes import process_doc as pd
+
+        class _SahteGraph:
+            async def ainvoke(self, komut, cfg):
+                return {"evrak_text": "Konu: izin talebi.", "filename": "izin.txt",
+                        "onay_durumu": "onaylandı", "yazi_taslak_md": "..."}
+
+        cagrildi = {}
+
+        async def _sahte_persist_sonrasi(request, state, response, kaynak_metin, filename):
+            cagrildi.update({"kaynak_metin": kaynak_metin, "filename": filename})
+            return "ISLEM-TEST-99"
+
+        monkeypatch.setattr(pd, "HITL_ENABLED", True)
+        monkeypatch.setattr(pd, "_get_hitl_graph", lambda: _SahteGraph())
+        monkeypatch.setattr(pd, "_persist_sonrasi", _sahte_persist_sonrasi)
+        # Act
+        resp = client.post("/process_doc/resume", json={"thread_id": "t1", "secim": "onayla"})
+        # Assert — persist ARTIK çağrılıyor, orijinal metin/dosya adıyla
+        assert resp.status_code == 200
+        assert cagrildi["kaynak_metin"] == "Konu: izin talebi."
+        assert cagrildi["filename"] == "izin.txt"
+
+
 # ---------------------------------------------------------------------------
 # /multimodal/ocr — normal yol + sözleşme
 # ---------------------------------------------------------------------------

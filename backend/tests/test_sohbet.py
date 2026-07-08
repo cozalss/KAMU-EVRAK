@@ -398,7 +398,11 @@ class TestSohbetOnayAkisi:
             uygulanan.update({"islem_id": islem_id, "secim": secim})
             return {"durum": "gonderildi"}
 
+        async def _sahte_islem_detay(session, islem_id, owner_id=None):
+            return {"id": str(islem_id)}   # sahiplik bulundu (DB yok)
+
         monkeypatch.setattr(sohbet_mod, "onayi_uygula", _sahte_uygula)
+        monkeypatch.setattr(sohbet_mod, "islem_detay", _sahte_islem_detay)
         baglam = {"eylem": "onayla", "islem_id": "11111111-1111-1111-1111-111111111111",
                   "ad": "Park dilekçesi"}
         # Act — kullanıcı teyit eder
@@ -409,6 +413,26 @@ class TestSohbetOnayAkisi:
         assert uygulanan["secim"] == "onayla"
         assert body["onay_bekleyen"] is None
         assert "onayla" in body["yanit"].lower() or "gönder" in body["yanit"].lower()
+
+    def test_teyit_baskasinin_islemini_uygulamaz(self, auth_client: TestClient, monkeypatch):
+        """IDOR koruması: islem_detay sahiplik bulamazsa onayi_uygula HİÇ çağrılmaz
+        (kayitlar.py'deki REST onay rotasıyla aynı owner_id kontrolü — regresyon testi)."""
+        from api.routes import sohbet as sohbet_mod
+
+        async def _patlar(session, kullanici, islem_id, secim):  # çağrılmamalı
+            raise AssertionError("başkasının işlemi onaylanmamalı (IDOR)")
+
+        async def _sahiplik_yok(session, islem_id, owner_id=None):
+            return None   # başka kullanıcıya ait / bulunamayan işlem
+
+        monkeypatch.setattr(sohbet_mod, "onayi_uygula", _patlar)
+        monkeypatch.setattr(sohbet_mod, "islem_detay", _sahiplik_yok)
+        baglam = {"eylem": "onayla", "islem_id": "22222222-2222-2222-2222-222222222222",
+                  "ad": "Başkasının taslağı"}
+        resp = auth_client.post("/sohbet", json={"mesaj": "evet", "onay_baglam": baglam})
+        assert resp.status_code == 200
+        body = resp.json()
+        assert "bulunamadı" in body["yanit"].lower()
 
     def test_teyit_vazgec_eylemi_uygulamaz(self, auth_client: TestClient, monkeypatch):
         from api.routes import sohbet as sohbet_mod

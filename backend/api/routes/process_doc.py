@@ -272,7 +272,14 @@ async def resume(request: Request, req: OnayResumeRequest) -> ProcessResponse:
         log.warning("hitl_resume_failed", error=str(exc) or type(exc).__name__)
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, "Onay oturumu bulunamadı veya süresi doldu") from exc
-    return _to_response(final, {})
+    resp = _to_response(final, {})
+    # process()/process_stream() ile aynı kalıcılaştırma kapısı — memur kararı burada
+    # kesinleşir (HITL'in var olma sebebi budur), o yüzden persist EN ÇOK burada gerekli.
+    # OnayResumeRequest kaynak metni/dosya adını taşımaz; LangGraph checkpoint'i thread
+    # boyunca korur → resume edilen state'ten (make_initial_state ile başta yazılmıştı) alınır.
+    await _persist_sonrasi(
+        request, final, resp, final.get("evrak_text", ""), final.get("filename", ""))
+    return resp
 
 
 @router.post("/stream")

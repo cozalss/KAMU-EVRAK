@@ -1,8 +1,13 @@
 """HITL karar persistence (Faz 4) — onay + giden_evrak (outbox).
 
 Memur taslağı onaylar/düzenler/reddeder → onay satırı yazılır; reddedilmediyse
-giden_evrak (E-G-YYYY/NNNN) üretilir. Çift-gönderim DB partial-unique ile engellenir
-(giden_evrak.taslak_id, durum<>reddedildi). risk + son_hash islem'den taşınır.
+giden_evrak (E-G-YYYY/NNNN) üretilir. Çift-gönderim DB UNIQUE(taslak_id) ile engellenir
+(bkz. migration 0002 — eskiden yalnız durum<>reddedildi kısmi kısıttı, reddet çift-tıklama/
+ikinci-sekmeye açıktı). risk + son_hash islem'den taşınır.
+
+Sahiplik: owner_id verilirse (route'lar HER ZAMAN verir) işlemin GERÇEKTEN o kullanıcıya
+ait olduğu burada, TEK yerde doğrulanır — yalnız çağıran route'a güvenmek (IDOR) yerine
+repo'nun kendisi kapı bekçiliği yapar; yeni bir çağıran noktası kontrolü unutsa bile korunur.
 
 Çok-konulu evrakta HER alt-talep (birim) kendi taslağına, dolayısıyla kendi bağımsız
 onay/giden_evrak zincirine sahiptir (taslak.alt_talep_id ile bağlı) — bkz.
@@ -13,12 +18,15 @@ from __future__ import annotations
 import datetime as _dt
 import uuid
 
+import structlog
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import (
     AltTalep,
     DenetimIzi,
+    GelenEvrak,
     GidenEvrak,
     Islem,
     Onay,
@@ -27,17 +35,36 @@ from db.models import (
     YaziTuru,
 )
 
+log = structlog.get_logger()
+
 # Frontend seçimi → onay_karari + giden_durumu enum.
 _KARAR = {"onayla": "onaylandi", "duzenle": "duzenlendi", "reddet": "reddedildi"}
 _GIDEN = {"onaylandi": "gonderildi", "duzenlendi": "duzenlendi", "reddedildi": "reddedildi"}
+_GIDEN_NO_DENEME = 3   # giden_no çakışmasında (bkz. _giden_no) sınırlı tekrar
 
 
 class KararError(Exception):
-    """kod: 'taslak_yok' | 'alt_talep_yok' | 'zaten_gonderildi'."""
+    """kod: 'taslak_yok' | 'alt_talep_yok' | 'zaten_gonderildi' | 'yetkisiz' | 'giden_no_uretilemedi'."""
 
     def __init__(self, kod: str, mesaj: str) -> None:
         super().__init__(mesaj)
         self.kod, self.mesaj = kod, mesaj
+
+
+async def _sahiplik_dogrula(session: AsyncSession, islem_id: uuid.UUID, owner_id: uuid.UUID | None) -> None:
+    """owner_id verildiyse işlemin GERÇEKTEN o kullanıcıya ait olduğunu doğrular (IDOR kapısı).
+
+    kayitlar.py'deki route-seviyeli islem_detay(...,owner_id=...) ön-kontrolüyle AYNI join —
+    burada tekrarlanması, o ön-kontrolü unutan/atlayan bir çağıranın (bkz. denetim bulgusu:
+    sohbet.py) da korunmasını sağlar. owner_id=None (iç/sistem çağrısı) → kontrol atlanır.
+    """
+    if owner_id is None:
+        return
+    bulundu = await session.scalar(
+        select(Islem.id).join(GelenEvrak, GelenEvrak.id == Islem.gelen_evrak_id)
+        .where(Islem.id == islem_id, GelenEvrak.olusturan_id == owner_id))
+    if bulundu is None:
+        raise KararError("yetkisiz", "Bu işlem bulunamadı veya erişim yetkiniz yok.")
 
 
 async def _giden_no(session: AsyncSession) -> str:
@@ -83,46 +110,65 @@ async def _karar_ve_giden(
     """
     await _taslak_guncelle(session, taslak, yazi_turu, metin)
     karar = _KARAR.get(secim, "onaylandi")
-    session.add(Onay(
-        taslak_id=taslak.id, karar=karar, karar_veren_id=kullanici_id,
-        gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.UTC)))
-
-    # Karar arşivi: onay/duzenle gönderim, red ise reddedildi kaydı olarak giden_evrak'a düşer.
-    # Çift-gönderim kontrolü (partial-unique zaten korur; erken net hata için).
-    if karar != "reddedildi":
-        mevcut = await session.scalar(
-            select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id,
-                                        GidenEvrak.durum != "reddedildi"))
-        if mevcut is not None:
-            raise KararError("zaten_gonderildi", "Bu taslak zaten gönderilmiş.")
     islem = await session.get(Islem, islem_id)
     risk = await session.scalar(
         select(RiskDegerlendirme.bant).where(RiskDegerlendirme.islem_id == islem_id))
     izi = await session.get(DenetimIzi, islem_id)
-    giden_no = await _giden_no(session)
-    session.add(GidenEvrak(
-        giden_no=giden_no, taslak_id=taslak.id,
-        kaynak_evrak_id=islem.gelen_evrak_id if islem else None,
-        konu=taslak.konu,
-        alici_birim_id=alici_birim_id or (islem.hedef_birim_id if islem else None),
-        yazi_turu_kod=taslak.yazi_turu_kod, risk=risk,
-        durum=_GIDEN.get(karar, "gonderildi"), gonderen_id=kullanici_id,
-        son_hash=izi.son_hash if izi else None))
 
-    await session.commit()
-    return {"karar": karar, "giden_no": giden_no}
+    # Karar arşivi: aynı taslağa İKİNCİ karar (onayla/duzenle/reddet FARK ETMEZ) atılamaz.
+    # Eskiden yalnız onayla/duzenle korunuyordu ("if karar != 'reddedildi'") — reddet çift-
+    # tıklama/ikinci-sekme/ağ tekrarına açıktı (aynı taslak iki kez reddedilebiliyor, hatta
+    # ONAYLANMIŞ bir taslak sonradan ayrıca "reddedilebiliyordu"). Uygulama-seviyeli erken
+    # kontrol + DB'nin KOŞULSUZ UNIQUE(taslak_id) kısıtı (migration 0002) birlikte korur.
+    for deneme in range(_GIDEN_NO_DENEME):
+        mevcut = await session.scalar(
+            select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id))
+        if mevcut is not None:
+            raise KararError("zaten_gonderildi", "Bu taslak için zaten bir karar verilmiş.")
+        session.add(Onay(
+            taslak_id=taslak.id, karar=karar, karar_veren_id=kullanici_id,
+            gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.UTC)))
+        # giden_no: SELECT count()+format TOCTOU'ya açık (iki eşzamanlı karar aynı numarayı
+        # üretebilir) — DB'nin UNIQUE(giden_no) kısıtı çarpışmayı yakalar; burada sınırlı
+        # tekrarla şeffaf toparlanır (kullanıcıya ham 500 sızdırmaz).
+        giden_no = await _giden_no(session)
+        session.add(GidenEvrak(
+            giden_no=giden_no, taslak_id=taslak.id,
+            kaynak_evrak_id=islem.gelen_evrak_id if islem else None,
+            konu=taslak.konu,
+            alici_birim_id=alici_birim_id or (islem.hedef_birim_id if islem else None),
+            yazi_turu_kod=taslak.yazi_turu_kod, risk=risk,
+            durum=_GIDEN.get(karar, "gonderildi"), gonderen_id=kullanici_id,
+            son_hash=izi.son_hash if izi else None))
+        try:
+            await session.commit()
+            return {"karar": karar, "giden_no": giden_no}
+        except IntegrityError as exc:
+            await session.rollback()
+            # Yarışı kaybettik: ya giden_no çakıştı (tekrar dene) ya da taslak eşzamanlı
+            # başka bir kararla ZATEN gönderildi (net 409 ile bildir, ham 500 sızdırma).
+            yarisan = await session.scalar(
+                select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id))
+            if yarisan is not None:
+                raise KararError(
+                    "zaten_gonderildi", "Bu taslak için zaten bir karar verilmiş.") from exc
+            log.warning("giden_no_carpisma", deneme=deneme + 1)
+    raise KararError("giden_no_uretilemedi", "Giden evrak numarası üretilemedi — tekrar deneyin.")
 
 
 async def onayla_ve_gonder(
     session: AsyncSession, *, islem_id: uuid.UUID, kullanici_id: uuid.UUID,
     secim: str = "onayla", gerekce: str = "", yazi_turu: str = "", metin: str = "",
+    owner_id: uuid.UUID | None = None,
 ) -> dict:
     """Taslağı onayla/düzenle/reddet → onay (+ giden_evrak). Döner: {karar, giden_no?}.
 
     Tek-konulu evrak için (işlemin EN SON sürümlü taslağı hedeflenir — geriye uyum).
     Çok-konulu evrakta birim-bazlı karar için onayla_ve_gonder_alt_talep kullanılır.
     yazi_turu/metin: memurun karttan seçtiği tür + o türle üretilen metin (opsiyonel).
+    owner_id: verilirse işlemin GERÇEKTEN o kullanıcıya ait olduğu burada doğrulanır (IDOR kapısı).
     """
+    await _sahiplik_dogrula(session, islem_id, owner_id)
     taslak = await session.scalar(
         select(Taslak).where(Taslak.islem_id == islem_id)
         .order_by(Taslak.surum.desc()).limit(1))
@@ -136,13 +182,16 @@ async def onayla_ve_gonder(
 async def onayla_ve_gonder_alt_talep(
     session: AsyncSession, *, islem_id: uuid.UUID, sira: int, kullanici_id: uuid.UUID,
     secim: str = "onayla", gerekce: str = "", yazi_turu: str = "", metin: str = "",
+    owner_id: uuid.UUID | None = None,
 ) -> dict:
     """Çok-konulu evrakta TEK bir alt-talebin (birim) taslağını onayla/düzenle/reddet.
 
     `sira` = alt_talep.sira (1-tabanlı, frontend'deki listedeki sıra ile birebir — decompose
     ile aynı sırayla üretilir). GidenEvrak bu alt-talebin KENDİ hedef birimine yazılır.
     yazi_turu/metin: memurun karttan seçtiği tür + o türle üretilen metin (opsiyonel).
+    owner_id: verilirse işlemin GERÇEKTEN o kullanıcıya ait olduğu burada doğrulanır (IDOR kapısı).
     """
+    await _sahiplik_dogrula(session, islem_id, owner_id)
     alt = await session.scalar(
         select(AltTalep).where(AltTalep.islem_id == islem_id, AltTalep.sira == sira))
     if alt is None:
@@ -156,13 +205,17 @@ async def onayla_ve_gonder_alt_talep(
         yazi_turu=yazi_turu, metin=metin)
 
 
-async def taslak_sil(session: AsyncSession, *, islem_id: uuid.UUID) -> dict:
+async def taslak_sil(
+    session: AsyncSession, *, islem_id: uuid.UUID, owner_id: uuid.UUID | None = None,
+) -> dict:
     """İşleme ait KARAR BEKLEYEN taslağı kalıcı sil (kullanıcının 'Sil' eylemi).
 
     Yalnız taslak satır(lar)ı silinir — işlem kaydı ve denetim izi (Sayıştay/KVKK)
     dokunulmaz kalır. Karar verilmiş (onay satırı olan) taslak İMHA EDİLEMEZ →
     KararError('karar_verildi'); bekleyen onay satırları taslakla CASCADE düşer.
+    owner_id: verilirse işlemin GERÇEKTEN o kullanıcıya ait olduğu burada doğrulanır (IDOR kapısı).
     """
+    await _sahiplik_dogrula(session, islem_id, owner_id)
     taslaklar = list((await session.scalars(
         select(Taslak).where(Taslak.islem_id == islem_id))).all())
     if not taslaklar:

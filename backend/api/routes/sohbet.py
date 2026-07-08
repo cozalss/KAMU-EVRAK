@@ -45,6 +45,7 @@ from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
     gelen_evrak_listele,
     giden_evrak_listele,
+    islem_detay,
     islem_listele,
     panel_istatistik,
     taslak_listele,
@@ -358,7 +359,7 @@ async def onayi_uygula(
     """Teyit edilmiş kararı uygula (onayla_ve_gonder). Monkeypatch noktası."""
     return await onayla_ve_gonder(
         session, islem_id=uuid.UUID(islem_id), kullanici_id=kullanici.id,
-        secim=secim, gerekce="Sohbet asistanı üzerinden teyitle")
+        secim=secim, gerekce="Sohbet asistanı üzerinden teyitle", owner_id=kullanici.id)
 
 
 async def _onay_teyidini_isle(
@@ -381,6 +382,10 @@ async def _onay_teyidini_isle(
                            intent=intent, kaynak="fallback")
     if _ROL_HIYERARSI.get(getattr(user, "rol", ""), 0) < _ROL_HIYERARSI["memur"]:
         return SohbetYanit(yanit="Bu eylem için yetkiniz bulunmuyor.", intent=intent, kaynak="fallback")
+    # IDOR koruması: kayitlar.py'deki REST onay rotasıyla BİREBİR aynı sahiplik kontrolü —
+    # onayla_ve_gonder işlemin sahibini doğrulamaz, bu kontrol çağıran tarafın sorumluluğunda.
+    if await islem_detay(session, uuid.UUID(islem_id), owner_id=user.id) is None:
+        return SohbetYanit(yanit="İşlem bulunamadı.", intent=intent, kaynak="fallback")
     try:
         await onayi_uygula(session, user, islem_id, eylem)
     except KararError as e:

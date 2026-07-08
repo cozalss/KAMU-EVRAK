@@ -36,6 +36,18 @@ def _secret_yukle() -> str:
     if os.environ.get("APP_ENV", "").strip().lower() in ("prod", "production"):
         raise RuntimeError(
             "AUTH_JWT_SECRET zorunlu (APP_ENV=production) — üret: `openssl rand -hex 32`.")
+    _worker_sayisi = os.environ.get("WEB_CONCURRENCY", "").strip()
+    if _worker_sayisi and _worker_sayisi != "1":
+        # Her worker AYRI rastgele secret üretir (bu fonksiyon süreç başına bir kez çalışır)
+        # → aynı token'ı imzalayan worker'a denk gelmeyen istek 401 alır; belirtisi "bazen
+        # oturum açılıyor bazen açılmıyor" gibi görünür, kolayca auth bug'ıyla karıştırılır.
+        structlog.get_logger().warning(
+            "auth_jwt_secret_coklu_worker_riski",
+            worker_sayisi=_worker_sayisi,
+            etki="her worker FARKLI geçici secret üretir — token'lar worker'lar arası geçersiz, "
+                 "aralıklı 401 (kesikli auth hatası gibi görünür)",
+            cozum="çoklu-worker'da .env'e AUTH_JWT_SECRET zorunlu (örn. `openssl rand -hex 32`)",
+        )
     structlog.get_logger().warning(
         "auth_jwt_secret_gecici",
         etki="oturumlar süreç restart'ında geçersizleşir; çok-worker'da token geçmez",

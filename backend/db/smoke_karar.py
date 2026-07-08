@@ -1,6 +1,10 @@
 """Faz 4 smoke — taslak otomatik persist + onay + giden_evrak + çift-gönderim guard.
 
 CI'da DEĞİL (canlı). islem(+taslak) → onayla_ve_gonder → giden_evrak; tekrar → guard.
+Denetim bulgusu düzeltmeleri (2026-07): (a) çift-gönderim guard'ı ARTIK reddet dahil TÜM
+karar türlerini kapsar (eskiden yalnız onayla/duzenle korunuyordu — aynı taslak iki kez
+reddedilebiliyordu); (b) onayla_ve_gonder owner_id alır — başkasının işlemine karar
+verilemez (IDOR kapısı repo'nun kendisinde, yalnız çağıran route'ta değil).
 Temizlik FK sırası: giden_evrak → gelen_evrak(cascade) → kullanıcı.
 Çalıştır: uv run python -m db.smoke_karar
 """
@@ -18,16 +22,19 @@ from db.repositories import KararError, evrak_olustur, onayla_ve_gonder, persist
 from db.session import engine, session_factory
 
 _EPOSTA = "smoke.karar@kamu-evrak.local"
+_EPOSTA_BASKA = "smoke.karar.baska@kamu-evrak.local"
 _EVRAK_NO = "E-SMOKE-KARAR/0001"
+_EVRAK_NO_2 = "E-SMOKE-KARAR/0002"
 
 
 async def _temizle(s):
-    uid = await s.scalar(select(Kullanici.id).where(Kullanici.eposta == _EPOSTA))
-    if uid:
-        await s.execute(delete(GidenEvrak).where(GidenEvrak.gonderen_id == uid))
-        await s.execute(delete(GelenEvrak).where(GelenEvrak.olusturan_id == uid))
-        await s.execute(delete(Kullanici).where(Kullanici.id == uid))
-        await s.commit()
+    for eposta in (_EPOSTA, _EPOSTA_BASKA):
+        uid = await s.scalar(select(Kullanici.id).where(Kullanici.eposta == eposta))
+        if uid:
+            await s.execute(delete(GidenEvrak).where(GidenEvrak.gonderen_id == uid))
+            await s.execute(delete(GelenEvrak).where(GelenEvrak.olusturan_id == uid))
+            await s.execute(delete(Kullanici).where(Kullanici.id == uid))
+            await s.commit()
 
 
 def _yanit() -> ProcessResponse:
@@ -45,6 +52,9 @@ async def main() -> int:
         k = await service.kayit(s, eposta=_EPOSTA, parola="Smoke.Karar.1!",
                                 ad_soyad="Smoke Yetkili", birim_kod=birim.kod)
         k.rol = "yetkili"  # onaylama yetkisi
+        baska = await service.kayit(s, eposta=_EPOSTA_BASKA, parola="Smoke.Karar.2!",
+                                    ad_soyad="Smoke Başkası", birim_kod=birim.kod)
+        baska.rol = "yetkili"
         await s.commit()
         evrak = await evrak_olustur(s, evrak_no=_EVRAK_NO, ocr_metni="... maskeli ...",
                                     olusturan_id=k.id, gelis_birim_id=birim.id)
@@ -60,7 +70,7 @@ async def main() -> int:
         ng = await s.scalar(select(func.count()).select_from(GidenEvrak).where(GidenEvrak.gonderen_id == k.id))
         no = await s.scalar(select(func.count()).select_from(Onay))
 
-        # 3) çift-gönderim guard
+        # 3) çift-gönderim guard (onayla → onayla, mevcut davranış)
         guard = False
         try:
             await onayla_ve_gonder(s, islem_id=islem.id, kullanici_id=k.id, secim="onayla")
@@ -69,10 +79,37 @@ async def main() -> int:
             guard = e.kod == "zaten_gonderildi"
             print(f"3. çift-gönderim engellendi ({e.kod})")
 
-        ok = t == 1 and sonuc["giden_no"] and ng == 1 and guard
-        print(f"4. doğrulama: giden_evrak={ng} taslak={t} guard={guard}")
+        # 4) DÜZELTME: reddet → reddet artık da engellenir (eskiden partial-unique index
+        # 'reddedildi' durumunu HARİÇ tutuyordu → aynı taslak iki kez reddedilebiliyordu).
+        evrak2 = await evrak_olustur(s, evrak_no=_EVRAK_NO_2, ocr_metni="... maskeli ...",
+                                     olusturan_id=k.id, gelis_birim_id=birim.id)
+        islem2 = await persist_islem(s, gelen_evrak_id=evrak2.id, thread_id="karar-2",
+                                     response=_yanit())
+        await onayla_ve_gonder(s, islem_id=islem2.id, kullanici_id=k.id, secim="reddet")
+        reddet_guard = False
+        try:
+            await onayla_ve_gonder(s, islem_id=islem2.id, kullanici_id=k.id, secim="reddet")
+        except KararError as e:
+            await s.rollback()
+            reddet_guard = e.kod == "zaten_gonderildi"
+        print(f"4. çift-reddet engellendi: {reddet_guard} (beklenen True — ÖNCEDEN False'tu)")
+
+        # 5) DÜZELTME: owner_id verilip işlem BAŞKASINA aitse "yetkisiz" ile reddedilir (IDOR).
+        idor_engellendi = False
+        try:
+            await onayla_ve_gonder(s, islem_id=islem2.id, kullanici_id=baska.id,
+                                   secim="onayla", owner_id=baska.id)
+        except KararError as e:
+            await s.rollback()
+            idor_engellendi = e.kod == "yetkisiz"
+        print(f"5. IDOR engellendi (başkasının işlemi): {idor_engellendi} (beklenen True)")
+
+        ok = (t == 1 and sonuc["giden_no"] and ng == 1 and guard
+              and reddet_guard and idor_engellendi)
+        print(f"6. doğrulama: giden_evrak={ng} taslak={t} guard={guard} "
+              f"reddet_guard={reddet_guard} idor_engellendi={idor_engellendi}")
         await _temizle(s)
-        print("5. temizlik OK (giden→gelen→kullanıcı)")
+        print("7. temizlik OK (giden→gelen→kullanıcı)")
     await engine.dispose()
     print("\nSONUÇ:", "✅ FAZ 4 (taslak/onay/giden) ÇALIŞIYOR" if ok else "⚠️ kontrol et")
     return 0 if ok else 2

@@ -49,31 +49,36 @@ async def main() -> int:
     async with session_factory() as s:
         await _temizle(s)
         birim = await s.scalar(select(Birim).limit(1))
+        birim_id, birim_kod = birim.id, birim.kod   # düz değer olarak yakala — rollback
+        # sonrası ORM nesnesi expire olur; async'te expired attribute erişimi
+        # MissingGreenlet ile patlar (bkz. adım 3 rollback'i). Düz UUID/str hep güvenli.
         k = await service.kayit(s, eposta=_EPOSTA, parola="Smoke.Karar.1!",
-                                ad_soyad="Smoke Yetkili", birim_kod=birim.kod)
+                                ad_soyad="Smoke Yetkili", birim_kod=birim_kod)
         k.rol = "yetkili"  # onaylama yetkisi
         baska = await service.kayit(s, eposta=_EPOSTA_BASKA, parola="Smoke.Karar.2!",
-                                    ad_soyad="Smoke Başkası", birim_kod=birim.kod)
+                                    ad_soyad="Smoke Başkası", birim_kod=birim_kod)
         baska.rol = "yetkili"
         await s.commit()
+        k_id, baska_id = k.id, baska.id
         evrak = await evrak_olustur(s, evrak_no=_EVRAK_NO, ocr_metni="... maskeli ...",
-                                    olusturan_id=k.id, gelis_birim_id=birim.id)
+                                    olusturan_id=k_id, gelis_birim_id=birim_id)
         islem = await persist_islem(s, gelen_evrak_id=evrak.id, thread_id="karar-1",
                                     response=_yanit())
+        islem_id = islem.id
         # 1) taslak otomatik oluştu mu?
-        t = await s.scalar(select(func.count()).select_from(Taslak).where(Taslak.islem_id == islem.id))
+        t = await s.scalar(select(func.count()).select_from(Taslak).where(Taslak.islem_id == islem_id))
         print(f"1. taslak otomatik persist: {t} (beklenen 1)")
 
         # 2) onayla → giden_evrak
-        sonuc = await onayla_ve_gonder(s, islem_id=islem.id, kullanici_id=k.id, secim="onayla")
+        sonuc = await onayla_ve_gonder(s, islem_id=islem_id, kullanici_id=k_id, secim="onayla")
         print(f"2. onayla → karar={sonuc['karar']} giden_no={sonuc['giden_no']}")
-        ng = await s.scalar(select(func.count()).select_from(GidenEvrak).where(GidenEvrak.gonderen_id == k.id))
+        ng = await s.scalar(select(func.count()).select_from(GidenEvrak).where(GidenEvrak.gonderen_id == k_id))
         no = await s.scalar(select(func.count()).select_from(Onay))
 
         # 3) çift-gönderim guard (onayla → onayla, mevcut davranış)
         guard = False
         try:
-            await onayla_ve_gonder(s, islem_id=islem.id, kullanici_id=k.id, secim="onayla")
+            await onayla_ve_gonder(s, islem_id=islem_id, kullanici_id=k_id, secim="onayla")
         except KararError as e:
             await s.rollback()
             guard = e.kod == "zaten_gonderildi"
@@ -82,13 +87,14 @@ async def main() -> int:
         # 4) DÜZELTME: reddet → reddet artık da engellenir (eskiden partial-unique index
         # 'reddedildi' durumunu HARİÇ tutuyordu → aynı taslak iki kez reddedilebiliyordu).
         evrak2 = await evrak_olustur(s, evrak_no=_EVRAK_NO_2, ocr_metni="... maskeli ...",
-                                     olusturan_id=k.id, gelis_birim_id=birim.id)
+                                     olusturan_id=k_id, gelis_birim_id=birim_id)
         islem2 = await persist_islem(s, gelen_evrak_id=evrak2.id, thread_id="karar-2",
                                      response=_yanit())
-        await onayla_ve_gonder(s, islem_id=islem2.id, kullanici_id=k.id, secim="reddet")
+        islem2_id = islem2.id
+        await onayla_ve_gonder(s, islem_id=islem2_id, kullanici_id=k_id, secim="reddet")
         reddet_guard = False
         try:
-            await onayla_ve_gonder(s, islem_id=islem2.id, kullanici_id=k.id, secim="reddet")
+            await onayla_ve_gonder(s, islem_id=islem2_id, kullanici_id=k_id, secim="reddet")
         except KararError as e:
             await s.rollback()
             reddet_guard = e.kod == "zaten_gonderildi"
@@ -97,8 +103,8 @@ async def main() -> int:
         # 5) DÜZELTME: owner_id verilip işlem BAŞKASINA aitse "yetkisiz" ile reddedilir (IDOR).
         idor_engellendi = False
         try:
-            await onayla_ve_gonder(s, islem_id=islem2.id, kullanici_id=baska.id,
-                                   secim="onayla", owner_id=baska.id)
+            await onayla_ve_gonder(s, islem_id=islem2_id, kullanici_id=baska_id,
+                                   secim="onayla", owner_id=baska_id)
         except KararError as e:
             await s.rollback()
             idor_engellendi = e.kod == "yetkisiz"

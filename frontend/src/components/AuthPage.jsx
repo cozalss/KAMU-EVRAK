@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { PAL, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, NeonCard, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
+import CanliIslemAkisiKarti from "./CanliIslemAkisiKarti.jsx";
 
 const STATS = [
   { n: "16", l: "ajanlı analiz" },
@@ -143,9 +144,10 @@ export default function AuthPage() {
           <h1 style={{ ...TYPE.h1, margin: `0 0 ${SP.l}px`, maxWidth: 480, color: PAL.ink }}>
             Yığından imzaya.<br /><span style={{ color: DERIN.T }}>Saniyeler</span> içinde.
           </h1>
-          <p style={{ ...TYPE.read, color: PAL.mut, maxWidth: 420, margin: `0 0 ${SP.xxl}px` }}>
+          <p style={{ ...TYPE.read, color: PAL.mut, maxWidth: 420, margin: `0 0 ${SP.xl}px` }}>
             Kamu evrak ve yazışma süreçleri için yapay zekâ ajan destek sistemi. Oku, sınıflandır, mevzuat öner, resmî yazı üret — denetlenebilir biçimde.
           </p>
+          <CanliIslemAkisiKarti />
           <div style={{ display: "flex", alignItems: "stretch", animation: "nu-rise .16s ease-out both" }}>
             {STATS.map((s, i) => (
               <React.Fragment key={s.l}>

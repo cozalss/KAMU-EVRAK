@@ -11,6 +11,7 @@ import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import NeonDetay from "./NeonDetay.jsx";
+import AjanAdimDetay from "./AjanAdimDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
@@ -90,8 +91,9 @@ function HatTerminal({ n, col, count, sure, devir, girisAktif, glow, akis }) {
 }
 
 /* Tek istasyon satırı — oluk (ray + durak) + içerik (ad · süre · sıra no · çıktı özeti).
-   Aktif satır SAHNE'de spot alır: tint zemin + hat renginde iç çerçeve + hafif gölge. */
-function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akis }) {
+   Aktif satır SAHNE'de spot alır: tint zemin + hat renginde iç çerçeve + hafif gölge.
+   Satır TIKLANABİLİR (role=button + klavye): adım detay modalını açar (AjanAdimDetay). */
+function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akis, onDetay }) {
   const done = a.status === "done", active = a.status === "active", err = a.status === "error";
   // Risk istasyonunun rengi node'un KENDİ bandından; yoksa genel sonuç bandına düşer.
   const nodeBant = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant] : null;
@@ -100,8 +102,20 @@ function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akis }) {
   const sure = done && Number.isFinite(ms) && ms >= 50 ? `${(ms / 1000).toFixed(1)}s` : null;
   const altYazi = done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "hata · adım başarısız" : (a.desc || "—");
   const altRenk = err ? DERIN.kirmizi : done ? (a.id === "risk_guard" ? DERIN_OF((nodeBant || risk).c) : PAL.mut) : active ? PAL.mut : PAL.mut2;
+  const zemin = active ? ALFA(col) : "transparent";
+  const spotGolge = active && akis ? `inset 0 0 0 1px ${col}, ${SH.card}` : "none";
   return (
-    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 8px 6px 0", borderRadius: RAD.ctl, background: active ? ALFA(col) : "transparent", boxShadow: active && akis ? `inset 0 0 0 1px ${col}, ${SH.card}` : "none", transition: "background .25s ease-out, box-shadow .25s ease-out", animation: glow ? `nu-rise .18s ease-out ${Math.min(i * 28, 420)}ms both` : "none" }}>
+    /* aria-label YOK: role=button adını içerikten alır (ad + süre + çıktı özeti ekran
+       okuyucuya aynen gider); "detayını aç" ipucu title'da. focusRing'in onBlur'u gölgeyi
+       "none"a çeker — aktif satırın spot iç gölgesi blur'da GERİ yüklenir (DOM mutasyonunu
+       React fark etmez, aynı string'e diff çıkmaz). */
+    <div role="button" tabIndex={0} onClick={onDetay} title={`${a.label} — adım detayını aç`}
+      {...focusRing}
+      onBlur={(e) => { e.currentTarget.style.boxShadow = spotGolge; }}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDetay(); } }}
+      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = zemin; }}
+      style={{ cursor: "pointer", position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 8px 6px 0", borderRadius: RAD.ctl, background: zemin, boxShadow: spotGolge, transition: "background .25s ease-out, box-shadow .25s ease-out", animation: glow ? `nu-rise .18s ease-out ${Math.min(i * 28, 420)}ms both` : "none" }}>
       <div style={{ position: "relative", minHeight: 40 }}>
         {/* Ray parçaları satırın 6px dikey dolgusuna taşar (-6) → istasyonlar arası boru
             kopukluğu kalmaz, hat kesintisiz akar. */}
@@ -139,7 +153,7 @@ const HatSon = ({ col, done, akis }) => (
    panelde iki hattı yan yana koyar (metro şeması), darda alt alta yığar. Terminüs, hattın
    kendi istasyonları bitince dolar (Görev 1 hattı, Görev 2'yi beklemez); istasyon numarası
    global sıradır (01–16) — iki hat tek koşumun parçaları. */
-function HatFaz({ n, items, risk, glow, sahne, sonHat = true }) {
+function HatFaz({ n, items, risk, glow, sahne, sonHat = true, onDetay }) {
   const col = n === 2 ? V : T;
   const ms = items.reduce((s, a) => (a.status === "done" && Number.isFinite(a.t1 - a.t0) ? s + (a.t1 - a.t0) : s), 0);
   const sure = ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
@@ -154,7 +168,7 @@ function HatFaz({ n, items, risk, glow, sahne, sonHat = true }) {
         /* hasTop ilk istasyonda da açık: terminal rayından gelen hat, istasyona kesintisiz girer. */
         <HatIstasyon key={a.id} a={a} i={a.sira} col={col} risk={risk} hasTop
           topFill={j === 0 ? a.status !== "pending" : items[j - 1].status === "done"}
-          hasBot glow={glow} akis={akis} />
+          hasBot glow={glow} akis={akis} onDetay={() => onDetay(a.sira)} />
       ))}
       {/* Terminüs yalnız koşumun GERÇEK sonunda — devreden hat (Görev 1) bitmez,
           kesikli aktarmayla sonraki hatta bağlanır (metro dili). */}
@@ -192,9 +206,11 @@ function SahneTelemetri({ busy, allDone, doneCount, total, pct, toplamSn, runBas
    çıktı çipleri. Sonuç geldikten sonra sol sütunda dikey metro şeması kullanılır (dar sütun). */
 function SahneNokta({ a, col }) {
   // Risk istasyonu kendi bandının rengini alır (backend node verisiyle birebir).
+  // title YOK: nokta artık IstasyonSeridi'de buton içinde yaşar — tooltip butondan gelir
+  // (iç title dıştakini gölgeliyordu).
   const dotCol = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : col;
   if (a.status === "active") return (
-    <span title={a.label} style={{ position: "relative", width: 16, height: 16, flexShrink: 0 }}>
+    <span style={{ position: "relative", width: 16, height: 16, flexShrink: 0 }}>
       <svg width="16" height="16" viewBox="0 0 20 20" style={{ position: "absolute", top: 0, left: 0, animation: "nu-spin 1s linear infinite" }}>
         <circle cx="10" cy="10" r="7.5" stroke={PAL.line} strokeWidth="3.5" fill={PAL.surf} />
         <path d="M10 2.5 A7.5 7.5 0 0 1 17.5 10" stroke={dotCol} strokeWidth="3.5" fill="none" strokeLinecap="round" />
@@ -203,7 +219,7 @@ function SahneNokta({ a, col }) {
   );
   const done = a.status === "done", err = a.status === "error";
   return (
-    <span key={a.status} title={a.label} style={{ width: done || err ? 12 : 9, height: done || err ? 12 : 9, borderRadius: RAD.dot, background: err ? BANT.kirmizi.c : (done ? dotCol : PAL.bg), border: done || err ? "none" : `1px solid ${PAL.lineHi}`, flexShrink: 0, animation: done ? "nu-pop .3s ease-out both" : "none" }} />
+    <span key={a.status} style={{ width: done || err ? 12 : 9, height: done || err ? 12 : 9, borderRadius: RAD.dot, background: err ? BANT.kirmizi.c : (done ? dotCol : PAL.bg), border: done || err ? "none" : `1px solid ${PAL.lineHi}`, flexShrink: 0, animation: done ? "nu-pop .3s ease-out both" : "none" }} />
   );
 }
 
@@ -219,8 +235,9 @@ const SahneBag = ({ filled, col, dashed, akis }) => (
   </span>
 );
 
-/* Yatay istasyon şeridi — roundel + noktalar + bağlar; hat rengi göreve göre döner. */
-function IstasyonSeridi({ display, glow }) {
+/* Yatay istasyon şeridi — roundel + noktalar + bağlar; hat rengi göreve göre döner.
+   Noktalar tıklanabilir: adım detay modalını açar (canlı koşumda da). */
+function IstasyonSeridi({ display, glow, onDetay }) {
   const parcalar = [];
   display.forEach((a, i) => {
     const col = a.gorev === 2 ? V : T;
@@ -234,7 +251,15 @@ function IstasyonSeridi({ display, glow }) {
       );
       parcalar.push(<SahneBag key={`rb${a.gorev}`} filled={a.status !== "pending"} col={col} akis={glow} />);
     }
-    parcalar.push(<SahneNokta key={a.id} a={a} col={col} />);
+    parcalar.push(
+      <button key={a.id} type="button" onClick={() => onDetay(a.sira)} title={`${a.label} — detay`}
+        aria-label={`${a.label} — adım detayını aç`} {...focusRing}
+        onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, padding: 0, background: "transparent", border: "none", borderRadius: RAD.dot, flexShrink: 0, transition: "background .12s ease-out" }}>
+        <SahneNokta a={a} col={col} />
+      </button>
+    );
     if (next) parcalar.push(
       <SahneBag key={`b${a.id}`} filled={a.status === "done"} col={next.gorev === 2 ? V : T}
         dashed={next.gorev !== a.gorev} akis={glow} />
@@ -306,8 +331,9 @@ function YanKart({ a, rol, sag }) {
   );
 }
 
-/* Sahne gövdesi — şerit + (önceki | spot | sıradaki) + tamamlanan çıktı çipleri. */
-function SahneAkis({ display, total, glow, runBase }) {
+/* Sahne gövdesi — şerit + (önceki | spot | sıradaki) + tamamlanan çıktı çipleri.
+   Şerit noktaları + çıktı çipleri tıklanabilir: adım detay modalını açar. */
+function SahneAkis({ display, total, glow, runBase, onDetay }) {
   const aktifIdx = display.findIndex((x) => x.status === "active");
   let sonBiten = -1;
   display.forEach((x, i) => { if (x.status === "done") sonBiten = i; });
@@ -318,7 +344,7 @@ function SahneAkis({ display, total, glow, runBase }) {
     /* Sahne içeriği ortalanmış okuma sütununda toplanır — kart tam genişlik kalır ama
        16 istasyon dev ekranda uçlara gerilip seyrelmez. */
     <div style={{ display: "flex", flexDirection: "column", gap: SP.xl, width: "100%", maxWidth: 1080, margin: "0 auto" }}>
-      <IstasyonSeridi display={display} glow={glow} />
+      <IstasyonSeridi display={display} glow={glow} onDetay={onDetay} />
       <div style={{ display: "flex", alignItems: "stretch", gap: SP.l, flexWrap: "wrap", justifyContent: "center", padding: `${SP.s}px 0` }}>
         <YanKart a={display[merkezIdx - 1]} rol="önceki" />
         {merkez && <MerkezKart a={merkez} total={total} glow={glow} runBase={runBase} />}
@@ -326,11 +352,16 @@ function SahneAkis({ display, total, glow, runBase }) {
       </div>
       {bitenler.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, justifyContent: "center" }}>
+          {/* Çipte aria-label YOK — adı içeriğinden gelir (ad + çıktı özeti SR'a aynen gider) */}
           {bitenler.map((x) => (
-            <span key={x.id} style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "3px 10px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, background: PAL.surf, ...TYPE.meta, color: PAL.mut, maxWidth: 280, animation: glow ? "nu-pop .3s ease-out both" : "none" }}>
+            <button key={x.id} type="button" onClick={() => onDetay(x.sira)} title={`${x.label} — adım detayını aç`}
+              {...focusRing}
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "3px 10px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, background: PAL.surf, ...TYPE.meta, color: PAL.mut, maxWidth: 280, transition: "background .12s ease-out", animation: glow ? "nu-pop .3s ease-out both" : "none" }}>
               <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(x.gorev === 2 ? V : T) }}><Icon.check width={11} height={11} /></span>
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}{x.out ? ` · ${x.out}` : ""}</span>
-            </span>
+            </button>
           ))}
         </div>
       )}
@@ -488,6 +519,9 @@ export default function CanliAjanAkisi({
   const risk = BANT[riskOutcome] || BANT.yesil;
   const display = nodes.map((n, i) => ({
     id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
+    // data: SSE node yükü OLDUĞU GİBİ taşınır — adım detay modalı (AjanAdimDetay) zengin
+    // görünümü bundan kurar (canlı koşumda result henüz yokken tek veri kaynağı budur).
+    data: n.data || null,
     out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1, sira: i,
     // risk_guard istasyonu KENDİ bandını taşır — koşum sırasında genel sonuç bandı henüz
     // oluşmadığından node verisi tek doğru kaynak (backend ile birebir uyum).
@@ -511,6 +545,8 @@ export default function CanliAjanAkisi({
 
   // A4 belge modalı — "kaynak" | "taslak" | null (paneller tıklanınca açılır).
   const [belgeModal, setBelgeModal] = useState(null);
+  // Ajan izi adım detay modalı — display index'i (istasyon/nokta/çip tıklanınca açılır).
+  const [detayIdx, setDetayIdx] = useState(null);
   const drivenFields = useMemo(() => (result ? buildDrivenFields(result, risk) : null), [result, risk]);
   const km = result?.kanit_metadata;
   const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
@@ -600,13 +636,13 @@ export default function CanliAjanAkisi({
             </div>
             {sahne ? (
               /* Koşum sahnesi: yatay istasyon şeridi + aktif ajan spotu + çıktı çipleri. */
-              <SahneAkis display={display} total={total} glow={glow} runBase={runBase} />
+              <SahneAkis display={display} total={total} glow={glow} runBase={runBase} onDetay={setDetayIdx} />
             ) : (
               /* Sonuç sonrası (sol sütun): dikey metro şeması — dar sütuna uyar. */
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 460px))", justifyContent: "center", columnGap: SP.xxxl, rowGap: SP.s }}>
                 {gorevler.map((g) => (
                   <HatFaz key={g} n={g} items={display.filter((a) => a.gorev === g)} risk={risk} glow={glow} sahne={false}
-                    sonHat={g === gorevler[gorevler.length - 1]} />
+                    sonHat={g === gorevler[gorevler.length - 1]} onDetay={setDetayIdx} />
                 ))}
               </div>
             )}
@@ -712,6 +748,13 @@ export default function CanliAjanAkisi({
           </section>
         );
       })()}
+
+      {/* Ajan izi adım detayı — istasyon/nokta/çip tıklanınca; ←/→ ile adımlar arasında
+          gezinilir. Koşum CANLI sürerken de açılabilir (içerik node bittikçe dolar). */}
+      {detayIdx != null && display[detayIdx] && (
+        <AjanAdimDetay idx={detayIdx} display={display} result={result}
+          onKapat={() => setDetayIdx(null)} onGit={setDetayIdx} />
+      )}
 
       {/* A4 belge modalları — kaynak belge (maskeli metin / gerçek PDF sayfası) + resmî yazı
           taslağı (PDF/DOCX indirme kısayollu). Tetikleyiciler: panel tıklaması / büyüt düğmesi. */}

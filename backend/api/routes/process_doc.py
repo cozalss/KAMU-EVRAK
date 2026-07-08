@@ -356,7 +356,8 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
 def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
     """SSE node event'i için kompakt özet (büyük alanları kısalt)."""
     keys = {
-        "siniflandir": ("evrak_turu", "tur_confidence"),
+        # tur_reasoning: ajanın "neden bu tür" gerekçesi — adım detay modalında gösterilir.
+        "siniflandir": ("evrak_turu", "tur_confidence", "tur_reasoning"),
         "cikar": ("bilgi_unsurlari",),
         "kanit_baglama": ("kanit_metadata",),
         "eksik_tespit": ("eksik_alanlar",),
@@ -368,7 +369,8 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         # NLI atıf-gerekçelendirme (ENV-gated): entailment işaretleri SSE'ye taşınsın.
         "mevzuat_dogrula": ("mevzuat_nli",),
         "ozetle": ("ozet",),
-        "route_birim": ("hedef_birim",),
+        # birim_reasoning + alternatifler: "neden bu birim" gerekçesi + değerlendirilen adaylar.
+        "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri"),
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),

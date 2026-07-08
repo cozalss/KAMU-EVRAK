@@ -3,7 +3,7 @@
    Backend auth API'sine useAuth ile bağlanır.
    a11y: <form> + <label> + autoComplete + focusRing + aria-live hata + aria-pressed tab. */
 import React, { useEffect, useState } from "react";
-import { PAL, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
+import { PAL, T, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
 import AjanSahnesi from "./AjanSahnesi.jsx";
@@ -13,6 +13,33 @@ const STATS = [
   { n: "233", l: "mevzuat kaynağı" },
   { n: "SHA-256", l: "denetim izi" },
 ];
+
+// Sol panel atmosferi — düz bg2 yerine dokulu, sakin bir zemin. Gradyan/glow DEĞİL; mevcut
+// nokta-doku diliyle (CanliAjanAkisi belge zemini) tutarlı, token'dan türetilir.
+//  1) blueprint nokta-grid: kenarlarda belirir, merkezde içeriğin arkasında radyal MASKE ile
+//     silinir → kompozisyonu çerçeveler, metnin arkasını kalabalıklaştırmaz.
+//  2) çok hafif kağıt grain: dokunsal "resmî kağıt" hissi (fractalNoise, %5 multiply).
+// aria-hidden + pointer-events:none, z0; içerik z1'e kaldırılır.
+const GRAIN = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
+const NOKTA_MASKE = "radial-gradient(115% 82% at 50% 44%, transparent 33%, #000 82%)";
+
+function PanelAtmosfer() {
+  return (
+    <>
+      <div aria-hidden="true" style={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        backgroundImage: `radial-gradient(color-mix(in srgb, ${T} 24%, transparent) 1px, transparent 1.7px)`,
+        backgroundSize: "26px 26px",
+        WebkitMaskImage: NOKTA_MASKE, maskImage: NOKTA_MASKE,
+      }} />
+      <div aria-hidden="true" style={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        backgroundImage: `url("${GRAIN}")`, backgroundSize: "140px 140px",
+        opacity: 0.05, mixBlendMode: "multiply",
+      }} />
+    </>
+  );
+}
 
 // Marka yazısı — düz ink metin + kelime sonunda 6px düz R nokta (tek imza dokunuşu).
 function Marka() {
@@ -126,7 +153,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: PAL.bg, color: PAL.ink, fontFamily: SANS }}>
+    <div className="ke-auth-root" style={{ display: "flex", background: PAL.bg, color: PAL.ink, fontFamily: SANS }}>
       <style>{NEON_KEYFRAMES}</style>
 
       {/* Sol — showcase (IG konsepti uyarlaması): amblem sol-üstte, ORTADA başlık + hero olarak
@@ -137,12 +164,13 @@ export default function AuthPage() {
         padding: SP.xxxl, gridTemplateRows: "auto 1fr auto", gap: SP.xl,
         background: PAL.bg2, borderRight: `1px solid ${PAL.line}`,
       }} className="ke-show">
-        <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
+        <PanelAtmosfer />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.m }}>
           <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: RAD.card }} />
           <Marka />
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", minHeight: 0 }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", minHeight: 0 }}>
           <h1 style={{ ...TYPE.h1, maxWidth: 520, margin: `0 0 ${SP.m}px`, color: PAL.ink, textWrap: "balance" }}>
             Gelen evrakı okur, <span style={{ color: DERIN.T }}>resmî yazıyı</span> yazar.
           </h1>
@@ -163,7 +191,7 @@ export default function AuthPage() {
           </div>
         </div>
 
-        <div style={{ textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
+        <div style={{ position: "relative", zIndex: 1, textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
       </section>
 
       {/* Sağ — giriş rayı: beyaz yüzey + dar form kolonu (IG'deki sağ giriş paneli). */}
@@ -218,8 +246,21 @@ export default function AuthPage() {
         </div>
       </aside>
 
-      {/* Geniş ekran: showcase grid + sabit giriş rayı (≥920px) */}
-      <style>{`@media(min-width:1100px){.ke-show{display:grid!important}.ke-formlogo{display:none!important}.ke-login{flex:0 0 480px!important}}`}</style>
+      {/* Geniş ekran: showcase grid + sabit giriş rayı (≥1100px).
+          Monitöre-uyarlı ölçek: sayfa 1920px'de "tam" görünecek şekilde tasarlandı; daha geniş
+          ekranlarda (2K/4K) içerik ortada küçük kalmasın diye tüm sayfayı --z ile orantılı büyütür.
+          zoom×100vh/100vw taşmasını önlemek için genişlik+yükseklik aynı --z ile telafi edilir;
+          media query'ler viewport'a bakar (element zoom'undan etkilenmez), zoom desteklenmezse
+          --z yok sayılır → sayfa mevcut 1.0 ölçekte render olur (güvenli fallback). */}
+      <style>{`
+        .ke-auth-root{ --z:1; zoom:1; width:100%; min-height:calc(100vh / var(--z)); }
+        @media(min-width:1100px){ .ke-show{display:grid!important} .ke-formlogo{display:none!important} .ke-login{flex:0 0 480px!important} }
+        @media(min-width:2100px){ .ke-auth-root{ --z:1.15; zoom:1.15 } }
+        @media(min-width:2400px){ .ke-auth-root{ --z:1.32; zoom:1.32 } }
+        @media(min-width:2900px){ .ke-auth-root{ --z:1.5;  zoom:1.5  } }
+        @media(min-width:3300px){ .ke-auth-root{ --z:1.68; zoom:1.68 } }
+        @media(min-width:3700px){ .ke-auth-root{ --z:1.9;  zoom:1.9  } }
+      `}</style>
     </div>
   );
 }

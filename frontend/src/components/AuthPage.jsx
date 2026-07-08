@@ -3,10 +3,10 @@
    Backend auth API'sine useAuth ile bağlanır.
    a11y: <form> + <label> + autoComplete + focusRing + aria-live hata + aria-pressed tab. */
 import React, { useEffect, useState } from "react";
-import { PAL, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, NeonCard, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
+import { PAL, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
-import CanliIslemAkisiKarti from "./CanliIslemAkisiKarti.jsx";
+import AjanSahnesi from "./AjanSahnesi.jsx";
 
 const STATS = [
   { n: "16", l: "ajanlı analiz" },
@@ -129,26 +129,28 @@ export default function AuthPage() {
     <div style={{ minHeight: "100vh", display: "flex", background: PAL.bg, color: PAL.ink, fontFamily: SANS }}>
       <style>{NEON_KEYFRAMES}</style>
 
-      {/* Sol — marka paneli (geniş ekran) */}
+      {/* Sol — showcase (IG konsepti uyarlaması): amblem sol-üstte, ORTADA başlık + hero olarak
+          canlı işlem akışı (IG'deki fotoğraf kolajının yerine), altta stat şeridi. Koyu/gradyan/
+          fotoğraf DEĞİL — Hero Light v2 disipliniyle render edilir; grid auto·1fr·auto. */}
       <section aria-hidden="true" style={{
         flex: "1 1 0", minWidth: 0, position: "relative", overflow: "hidden", display: "none",
-        padding: SP.xxxl, flexDirection: "column", justifyContent: "space-between",
+        padding: SP.xxxl, gridTemplateRows: "auto 1fr auto", gap: SP.xl,
         background: PAL.bg2, borderRight: `1px solid ${PAL.line}`,
-      }} className="ke-brand">
+      }} className="ke-show">
         <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
           <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: RAD.card }} />
           <Marka />
         </div>
 
-        <div>
-          <h1 style={{ ...TYPE.h1, margin: `0 0 ${SP.l}px`, maxWidth: 480, color: PAL.ink }}>
-            Yığından imzaya.<br /><span style={{ color: DERIN.T }}>Saniyeler</span> içinde.
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", minHeight: 0 }}>
+          <h1 style={{ ...TYPE.h1, maxWidth: 520, margin: `0 0 ${SP.m}px`, color: PAL.ink, textWrap: "balance" }}>
+            Gelen evrakı okur, <span style={{ color: DERIN.T }}>resmî yazıyı</span> yazar.
           </h1>
-          <p style={{ ...TYPE.read, color: PAL.mut, maxWidth: 420, margin: `0 0 ${SP.xl}px` }}>
-            Kamu evrak ve yazışma süreçleri için yapay zekâ ajan destek sistemi. Oku, sınıflandır, mevzuat öner, resmî yazı üret — denetlenebilir biçimde.
+          <p style={{ ...TYPE.read, color: PAL.mut, maxWidth: 480, margin: `0 0 ${SP.xxl}px`, textWrap: "balance" }}>
+            16 uzman ajan evrakı okur, sınıflandırır, mevzuatı eşler ve resmî yazı taslağını hazırlar — her adım denetlenebilir, memur onayına hazır.
           </p>
-          <CanliIslemAkisiKarti />
-          <div style={{ display: "flex", alignItems: "stretch", animation: "nu-rise .16s ease-out both" }}>
+          <AjanSahnesi />
+          <div style={{ display: "flex", alignItems: "stretch", paddingTop: SP.l, borderTop: `1px solid ${PAL.line}`, animation: "nu-rise .16s ease-out both" }}>
             {STATS.map((s, i) => (
               <React.Fragment key={s.l}>
                 {i > 0 && <span aria-hidden="true" style={{ width: 1, alignSelf: "center", height: 32, background: PAL.line, margin: `0 ${SP.xl}px` }} />}
@@ -161,13 +163,13 @@ export default function AuthPage() {
           </div>
         </div>
 
-        <div style={{ ...TYPE.meta, color: PAL.mut3 }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
+        <div style={{ textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
       </section>
 
-      {/* Sağ — form */}
-      <main style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: `${SP.xxl}px ${SP.xl}px` }}>
-        <div style={{ width: "100%", maxWidth: 420 }}>
-          <a href="/" {...focusRing} style={{ display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, textDecoration: "none", marginBottom: SP.l, borderRadius: RAD.ctl }}>
+      {/* Sağ — giriş rayı: beyaz yüzey + dar form kolonu (IG'deki sağ giriş paneli). */}
+      <aside className="ke-login" style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", background: PAL.surf, padding: `${SP.xxl}px ${SP.xl}px` }}>
+        <div style={{ width: "100%", maxWidth: 384 }}>
+          <a href="/" {...focusRing} style={{ display: "flex", width: "fit-content", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, textDecoration: "none", marginBottom: SP.l, borderRadius: RAD.ctl }}>
             <Icon.arrow style={{ transform: "rotate(180deg)" }} />Ana sayfa
           </a>
           <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.xl }} className="ke-formlogo">
@@ -175,8 +177,7 @@ export default function AuthPage() {
             <Marka />
           </div>
 
-          <NeonCard style={{ padding: SP.xl }}>
-            <ModeTabs mode={mode} onChange={changeMode} />
+          <ModeTabs mode={mode} onChange={changeMode} />
 
             <h2 style={{ ...TYPE.h2, margin: `0 0 ${SP.xs}px`, color: PAL.ink }}>
               {kayit ? "Hesap oluştur" : "Tekrar hoş geldiniz"}
@@ -214,12 +215,11 @@ export default function AuthPage() {
                 {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : (kayit ? "Hesap oluştur" : "Giriş yap")}
               </Btn>
             </form>
-          </NeonCard>
         </div>
-      </main>
+      </aside>
 
-      {/* Geniş ekranda marka panelini göster (≥920px) */}
-      <style>{`@media(min-width:920px){.ke-brand{display:flex!important}.ke-formlogo{display:none!important}}`}</style>
+      {/* Geniş ekran: showcase grid + sabit giriş rayı (≥920px) */}
+      <style>{`@media(min-width:1100px){.ke-show{display:grid!important}.ke-formlogo{display:none!important}.ke-login{flex:0 0 480px!important}}`}</style>
     </div>
   );
 }

@@ -441,7 +441,7 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
         actions={[
           <Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>,
           <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
-          <Btn key="t" onClick={onTelefon}><Icon.phone /> Telefonla çek</Btn>,
+          <Btn key="t" onClick={onTelefon}><Icon.phone /> Telefonla yükle</Btn>,
         ]}
       />
     </div>
@@ -595,8 +595,8 @@ export default function CanliAjanAkisi({
             </span>
             {/* Telefonla çek — işlem sürerken kapalı: one-shot indirme busy'de sessizce
                 düşer (dosya kaybı); tamamlanınca yeni evrak telefondan da eklenebilsin. */}
-            <button onClick={onTelefon} disabled={busy} aria-label="Telefonla evrak çek" {...focusRing}
-              title={busy ? "İşlem sürerken telefonla yükleme başlatılamaz" : "Telefonla çek"}
+            <button onClick={onTelefon} disabled={busy} aria-label="Telefonla evrak yükle" {...focusRing}
+              title={busy ? "İşlem sürerken telefonla yükleme başlatılamaz" : "Telefonla yükle"}
               onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
               style={{ cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: busy ? PAL.mut3 : PAL.mut, transition: "background .12s ease-out" }}>

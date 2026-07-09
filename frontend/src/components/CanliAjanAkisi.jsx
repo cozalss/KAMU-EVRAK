@@ -683,9 +683,16 @@ export default function CanliAjanAkisi({
               ))}
             </div>
 
-            <div style={card}>
-              <RiskBand band={riskOutcome} lit={lit} />
-            </div>
+            {/* Sonuç geldikten sonra bu kart NeonDetay'ın hüküm şeridindeki RiskBand ile
+                birebir aynı bilgiyi tekrarlar (bkz. NeonDetay.jsx "sub='İçerik'" örneği) —
+                orada gerekçe/skor kırılımı da var, o yüzden kanonik gösterim odur. Bu kart
+                yalnız canlı koşum sırasında (result yokken, risk_guard adımı ilerledikçe) tek
+                risk göstergesi olarak kalır. */}
+            {!result && (
+              <div style={card}>
+                <RiskBand band={riskOutcome} lit={lit} />
+              </div>
+            )}
 
             {/* Çok-konulu evrakta (>=2 birim) taslak, kaynak belgeye uygun N adet birim
                 bazlı üst yazıya dönüşür; tekil "genel taslak" kartı KARIŞIKLIK yaratmasın

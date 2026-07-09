@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV } from "./neonUi.jsx";
+import { slaKonum } from "../lib/detayYorum.js";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
 export const Chip = ({ c = T, title, label, children }) => (
@@ -32,16 +33,16 @@ export const GorevLabel = ({ n, t, color, count }) => (
   </div>
 );
 
-/* yasal süre durumu → renk + etiket + ray konumu. */
+/* yasal süre durumu → renk + etiket (çizelge konumu slaKonum'dan GERÇEK tarihlerle gelir). */
 export function slaInfo(sla) {
   const d = (sla?.durum || "").toLocaleUpperCase("tr-TR");
   const kg = sla?.kalan_gun;
   const gun = kg != null ? ` · ${kg}g` : "";
   if (!d) return null;
-  if (d.includes("GEC")) return { label: `Gecikmiş${gun}`, color: BANT.kirmizi.c, marker: 0.92 };
-  if (d.includes("KRİT") || d.includes("KRIT")) return { label: `Kritik${gun}`, color: BANT.sari.c, marker: 0.75 };
-  if (d.includes("NORMAL")) return { label: `Normal${gun}`, color: BANT.yesil.c, marker: 0.4 };
-  return { label: sla.durum, color: PAL.mut, marker: null };
+  if (d.includes("GEC")) return { label: `Gecikmiş${gun}`, color: BANT.kirmizi.c };
+  if (d.includes("KRİT") || d.includes("KRIT")) return { label: `Kritik${gun}`, color: BANT.sari.c };
+  if (d.includes("NORMAL")) return { label: `Normal${gun}`, color: BANT.yesil.c };
+  return { label: sla.durum, color: PAL.mut };
 }
 
 /* Alt-talep SLA durumu → bant rengi (decompose çıktısındaki sla_durum alanı). */
@@ -107,21 +108,40 @@ export function MevzuatRow({ rank, m, nli, ilk }) {
   );
 }
 
-/* Yasal süre paneli — durum çipi + konum rayı + somut tarihler (başlangıç → son tarih) +
-   yasal dayanak. Tarih = makine verisi (mono); "son tarih" jüri için en somut kanıt. */
+/* Yasal süre paneli — durum çipi + GERÇEK tarihlerden hesaplanan zaman çizelgesi (dolgu =
+   geçen süre, işaret = bugün, uçlar = başvuru/son tarih) + somut tarihler + yasal dayanak.
+   Tarih = makine verisi (mono); "son tarih" jüri için en somut kanıt. Konum slaKonum'dan —
+   sabit yüzde yok; tarih hesaplanamazsa çizelge hiç çizilmez (yanlış görsel iddia olmaz). */
 export function SlaPanel({ sla, info }) {
   if (!info) return <KV k="Yasal süre durumu" v="tanımsız" c={PAL.mut2} />;
   const dc = DERIN_OF(info.color);
+  const konum = slaKonum(sla);
+  const kalanEtiket = konum
+    ? (konum.kalan >= 0 ? `bugün · ${konum.kalan} gün kaldı` : `bugün · ${-konum.kalan} gün gecikti`)
+    : null;
+  // Uçlardaki "bugün" etiketi kart dışına taşmasın — yalnız ETİKET kelepçelenir, nokta gerçek konumda.
+  const etiketSol = konum ? Math.min(86, Math.max(14, konum.oran * 100)) : 0;
   return (
     <div style={{ margin: "8px 0 4px", paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.m }}>
         <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Yasal süre durumu</span>
         <span style={{ ...TYPE.meta, fontWeight: 500, color: dc, background: ALFA(info.color), borderRadius: RAD.chip, padding: "2px 8px", ...TNUM }}>{info.label}</span>
       </div>
-      <div style={{ position: "relative", height: 4, background: PAL.press }}>
-        {info.marker != null && <span aria-hidden="true" style={{ position: "absolute", top: -3, left: `${info.marker * 100}%`, width: 10, height: 10, borderRadius: RAD.dot, background: info.color, transform: "translateX(-50%)" }} />}
-      </div>
-      <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3, display: "flex", justifyContent: "space-between" }}><span>başvuru</span><span>yasal süre</span><span>bugün</span></div>
+      {konum && (
+        <div role="img" aria-label={`Yasal süre çizelgesi: başvuru ${sla.baslangic}, cevap son tarihi ${sla.son_tarih}; ${konum.toplam} günlük sürenin ${konum.gecen} günü geçti, ${konum.kalan >= 0 ? `${konum.kalan} gün kaldı` : `${-konum.kalan} gün gecikti`}.`}>
+          <div aria-hidden="true" style={{ position: "relative", height: 16, marginBottom: 2 }}>
+            <span style={{ position: "absolute", left: `${etiketSol}%`, transform: "translateX(-50%)", ...TYPE.meta, fontWeight: 500, color: dc, whiteSpace: "nowrap", ...TNUM }}>{kalanEtiket}</span>
+          </div>
+          <div aria-hidden="true" style={{ position: "relative", height: 6, background: PAL.press, borderRadius: RAD.chip }}>
+            <span style={{ position: "absolute", inset: 0, width: `${konum.oran * 100}%`, background: info.color, borderRadius: RAD.chip }} />
+            <span style={{ position: "absolute", top: -3, left: `${konum.oran * 100}%`, width: 12, height: 12, borderRadius: "50%", background: info.color, border: `2px solid ${PAL.surf}`, transform: "translateX(-50%)", boxShadow: SH.card }} />
+          </div>
+          <div aria-hidden="true" style={{ marginTop: SP.xs, display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut3 }}>
+            <span>başvuru <span style={{ fontFamily: MONO, ...TNUM }}>{sla.baslangic}</span></span>
+            <span>son tarih <span style={{ fontFamily: MONO, ...TNUM, color: dc }}>{sla.son_tarih}</span></span>
+          </div>
+        </div>
+      )}
       <div style={{ marginTop: SP.m, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px,1fr))", gap: `${SP.s}px ${SP.l}px` }}>
         {sla?.baslangic && <span><span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Başlangıç</span><span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.ink2, ...TNUM }}>{sla.baslangic}</span></span>}
         {sla?.sure && <span><span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Yasal süre</span><span style={{ ...TYPE.data, color: PAL.ink2, ...TNUM }}>{sla.sure}</span></span>}

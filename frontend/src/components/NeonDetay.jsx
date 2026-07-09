@@ -13,6 +13,10 @@ import {
   Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
   CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti,
 } from "./NeonDetayParts.jsx";
+import {
+  hukumYorum, ozetDipnot, unsurEtiket, eksikYorum, mevzuatDipnot,
+  birimDipnot, denetimDipnot, lintGiris, decomposeGiris,
+} from "../lib/detayYorum.js";
 
 /* Bölüm düzeni — kartlar dikey ritimde: tam-genişlik satırlar + dengeli sütun grubu. */
 const STACK = { display: "flex", flexDirection: "column", gap: SP.l };
@@ -152,9 +156,12 @@ export default function NeonDetay({ result, embedded = false }) {
   const turGuven = Number(r.tur_confidence) > 0 ? Math.round(Number(r.tur_confidence) * 100) : null;
   const ocrGuven = r.ocr_confidence != null && Number.isFinite(Number(r.ocr_confidence)) ? Math.round(Number(r.ocr_confidence) * 100) : null;
 
-  // Hüküm (verdict) — tüm kalite sinyallerinin tek cümlelik özeti (Vercel deploy başlığı deseni).
-  const kontrolSay = uyari.length + tutar.length + eksik.length;
-  const sorunsuz = kontrolSay === 0;
+  // Duruma-uygun anlatı katmanı (detayYorum motoru) — statik iddia yok, hepsi state-türevli.
+  const hy = hukumYorum(r);
+  const uy = unsurEtiket(r);
+  const ey = eksikYorum(r);
+  const dy = denetimDipnot(butunluk, denAdimlar.length);
+  const TON = { yesil: DERIN.yesil, sari: DERIN.sari, kirmizi: DERIN.kirmizi };
 
   // Doğrulanan zorunlu alanlar (kanıtlı çıkarım etiketleri → fallback bilgi_unsurlari anahtarları).
   const verified = [];
@@ -190,12 +197,10 @@ export default function NeonDetay({ result, embedded = false }) {
           <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap", justifyContent: "space-between" }}>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-                <span aria-hidden="true" style={{ display: "flex", color: sorunsuz ? DERIN.yesil : DERIN.sari }}>
-                  {sorunsuz ? <Icon.check width={18} height={18} /> : <Icon.alert width={18} height={18} />}
+                <span aria-hidden="true" style={{ display: "flex", color: TON[hy.ton] || DERIN.sari }}>
+                  {hy.ton === "yesil" ? <Icon.check width={18} height={18} /> : <Icon.alert width={18} height={18} />}
                 </span>
-                <span role="status" style={{ ...TYPE.h2, color: PAL.ink }}>
-                  {sorunsuz ? "İşlem sorunsuz tamamlandı" : `İşlem tamamlandı · ${kontrolSay} kontrol noktası`}
-                </span>
+                <span role="status" style={{ ...TYPE.h2, color: PAL.ink }}>{hy.baslik}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", marginTop: SP.s }}>
                 {r.islem_id && (
@@ -208,7 +213,8 @@ export default function NeonDetay({ result, embedded = false }) {
                 {denAdimlar.length > 0 && <span style={{ ...TYPE.data, color: PAL.mut2, ...TNUM }}>{denAdimlar.length} zincir halkası</span>}
               </div>
             </div>
-            <RiskBand band={band} lit sub="İçerik" />
+            {/* Bant yalnız risk_guard gerçekten çalıştıysa çizilir — yokluk yeşil sayılmaz. */}
+            {r.risk_metadata?.bant && <RiskBand band={band} lit sub="İçerik" />}
           </div>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", marginTop: SP.l, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
@@ -282,7 +288,7 @@ export default function NeonDetay({ result, embedded = false }) {
 
                 {alt.length >= 2 && (
                   <NeonCard title="Çok-konulu ayrıştırma" tag={`${alt.length} alt-talep`} accent={T} icon={<Icon.route />}>
-                    <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>Tek dilekçedeki ayrı istekler bölünüp her biri uygun birime ayrı havale edildi.</p>
+                    <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>{decomposeGiris(alt)}</p>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: SP.s }}>
                       {alt.map((a, i) => {
                         const asla = a.sla_durum ? slaInfo({ durum: a.sla_durum }) : null;
@@ -307,12 +313,12 @@ export default function NeonDetay({ result, embedded = false }) {
                     r.ozet && (
                       <NeonCard key="ozet" title="Özet" tag="Görev 1.6" accent={T} icon={<Icon.info />}>
                         <p style={{ margin: 0, ...TYPE.read, color: PAL.ink2 }}>{cleanDemoText(r.ozet).replace(/\*\*/g, "")}</p>
-                        <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>Kısa öz — kişisel veriler özetten önce maskelenir (KVKK).</div>
+                        <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{ozetDipnot(r)}</div>
                       </NeonCard>
                     ),
 
                     unsurRows.length > 0 && (
-                      <NeonCard key="unsur" title="Bilgi unsurları" tag="KVKK maskeli" tagColor={T} accent={T} icon={<Icon.doc />}>
+                      <NeonCard key="unsur" title="Bilgi unsurları" tag={uy.tag} tagColor={T} accent={T} icon={<Icon.doc />}>
                         <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
                           {unsurRows.map(([k, v]) => {
                             const maskeli = k.endsWith("_maskeli");
@@ -351,7 +357,7 @@ export default function NeonDetay({ result, embedded = false }) {
                         )}
                         <div style={{ marginTop: SP.m, display: "flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: PAL.mut3 }}>
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke={T} strokeWidth="1.6" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={T} strokeWidth="1.6" /></svg>
-                          Ham TCKN/telefon sistemde tutulmaz — çıkarım anında maskelenir (KVKK).
+                          {uy.dipnot}
                         </div>
                       </NeonCard>
                     ),
@@ -360,10 +366,11 @@ export default function NeonDetay({ result, embedded = false }) {
                       {eksik.length === 0 && clarify.length === 0 ? (
                         <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.m, borderRadius: RAD.card, background: ALFA(BANT.yesil.c), color: DERIN.yesil, ...TYPE.data }}>
                           <Icon.check width={16} height={16} style={{ flex: "none", marginTop: 1 }} />
-                          <span>Zorunlu alanlar <strong style={{ color: PAL.ink, fontWeight: 600 }}>eksiksiz</strong> — evrak işleme alınabilir. Eksik unsur yok; resmî yazı taslağı doğrudan hazırlandı.</span>
+                          <span>{ey.metin}</span>
                         </div>
                       ) : (
                         <div style={{ display: "flex", flexDirection: "column", gap: SP.s }}>
+                          <div style={{ ...TYPE.data, fontWeight: 500, color: DERIN.sari }}>{ey.metin}</div>
                           {eksik.map((e, i) => <div key={"e" + i} style={{ ...TYPE.data, color: DERIN.sari }}>• {cleanDemoText(String(e))}</div>)}
                           {clarify.map((q, i) => <div key={"q" + i} style={{ ...TYPE.data, color: PAL.ink2, background: ALFA(BANT.sari.c), borderRadius: RAD.card, padding: "8px 12px" }}>{cleanDemoText(String(q))}</div>)}
                         </div>
@@ -384,7 +391,7 @@ export default function NeonDetay({ result, embedded = false }) {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           {mev.map((m, i) => <MevzuatRow key={i} rank={i + 1} m={m} nli={nliMap.get(m.baslik)} ilk={i === 0} />)}
                         </div>
-                        <div style={{ marginTop: SP.xs, ...TYPE.meta, color: PAL.mut3 }}>%60 ilgililik eşiği — altı düşük alaka (amber). Anlamsal destek NLI entailment ile ölçülür.</div>
+                        <div style={{ marginTop: SP.xs, ...TYPE.meta, color: PAL.mut3 }}>{mevzuatDipnot(r)}</div>
                       </NeonCard>
                     ),
                   ]}
@@ -416,9 +423,9 @@ export default function NeonDetay({ result, embedded = false }) {
                     hasChain && (
                       <NeonCard key="denetim" title="Denetim izi · SHA-256" tag={denAdimlar.length ? `${denAdimlar.length} halka` : null} accent={T} icon={<Icon.shield />}>
                         <ZincirStepper zincir={denAdimlar} kokHash={den.kok_hash} butunluk={butunluk} />
-                        <div style={{ ...TYPE.meta, color: PAL.mut3, marginTop: SP.m, display: "flex", alignItems: "center", gap: SP.xs }}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke={BANT.yesil.c} strokeWidth="1.6" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={BANT.yesil.c} strokeWidth="1.6" /></svg>
-                          Değiştirilemez — her halka bir öncekinin hash'ini içerir (tamper-evident)
+                        <div style={{ ...TYPE.meta, color: dy.ton === "yesil" ? PAL.mut3 : DERIN.sari, marginTop: SP.m, display: "flex", alignItems: "center", gap: SP.xs }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke={butunluk ? BANT.yesil.c : BANT.sari.c} strokeWidth="1.6" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={butunluk ? BANT.yesil.c : BANT.sari.c} strokeWidth="1.6" /></svg>
+                          {dy.metin}
                         </div>
                       </NeonCard>
                     ),
@@ -486,13 +493,13 @@ export default function NeonDetay({ result, embedded = false }) {
                             </span>
                           </div>
                         )}
-                        <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>Sıralama içerik sinyali + birim görev alanı eşleşmesiyle yapılır; nihai havale memur onayındadır.</div>
+                        <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{cleanDemoText(birimDipnot(r))}</div>
                       </NeonCard>
                     ),
 
                     lintKurallar.length > 0 && (
                       <NeonCard key="lint" title="Yönetmelik-2646 lint" tag={`${lint.ozet?.gecti ?? 0}/${lintKurallar.length} kural`} tagColor={lintUyariSay ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
-                        <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>Taslak, Resmî Yazışma Yönetmeliği (CB 2646/2020) kurallarından madde madde geçirilir.</p>
+                        <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>{lintGiris(lint)}</p>
                         <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
                           {lintKurallar.map((k, i) => {
                             const renk = k.durum === "gecti" ? DERIN.yesil : k.durum === "uyari" ? DERIN.sari : PAL.mut2;

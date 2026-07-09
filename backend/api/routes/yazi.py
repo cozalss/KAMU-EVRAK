@@ -241,15 +241,22 @@ async def yazi_dogrula(request: Request, req: YaziDogrulaRequest) -> dict[str, A
 
     talimat = _sanitize_line(req.talimat, 500) if req.talimat else ""
     revize_edildi = False
+    revize_degisiklikler: list[str] = []
+    revize_uygulanamayan = ""
     if talimat:
-        from yazi.yazi_render import revize_taslak
+        from yazi.yazi_render import revize_taslak_yapili
 
-        yeni = await revize_taslak(taslak, talimat)
-        if yeni:
-            yeni = yeni.strip()[:MAX_EVRAK_CHARS]
+        # Kaynak evrak özeti verilir ki eklenecek atıf/tarih/sayı kaynaktan alınsın;
+        # kaynakta yoksa model eklemeyi reddeder ve nedeni 'uygulanamayan'da döner.
+        yapili = await revize_taslak_yapili(
+            taslak, talimat, evrak_ozet=(req.evrak_text or "")[:1200])
+        if yapili:
+            revize_uygulanamayan = yapili["uygulanamayan"]
+            yeni = yapili["metin"].strip()[:MAX_EVRAK_CHARS]
             if yeni and yeni != taslak:
                 taslak = yeni
                 revize_edildi = True
+                revize_degisiklikler = yapili["degisiklikler"]
 
     state: dict[str, Any] = {
         "evrak_text": (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS],
@@ -272,12 +279,15 @@ async def yazi_dogrula(request: Request, req: YaziDogrulaRequest) -> dict[str, A
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Doğrulama başarısız") from exc
 
     log.info("yazi_dogrula", revize_edildi=revize_edildi, talimat=bool(talimat),
+             n_degisiklik=len(revize_degisiklikler),
              uyari=len(v.get("verify_uyari", [])),
              bant=(r.get("risk_metadata") or {}).get("bant"))
 
     return {
         "taslak_md": taslak,
         "revize_edildi": revize_edildi,
+        "revize_degisiklikler": revize_degisiklikler,
+        "revize_uygulanamayan": revize_uygulanamayan,
         "verify_notes": v.get("verify_notes", ""),
         "verify_uyari": v.get("verify_uyari", []),
         "tutarlilik_uyari": v.get("tutarlilik_uyari", []),

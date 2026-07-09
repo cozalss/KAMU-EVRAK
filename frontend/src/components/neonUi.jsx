@@ -270,6 +270,7 @@ export const Icon = {
   alert: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 4 L21 19 H3 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M12 10 V14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="16.6" r="1" fill="currentColor" /></svg>,
   mic: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" /><path d="M6 11 a6 6 0 0 0 12 0 M12 17 V21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
   sparkle: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 3 L13.6 9.4 L20 11 L13.6 12.6 L12 19 L10.4 12.6 L4 11 L10.4 9.4 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>,
+  undo: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M8 6 L4 10 L8 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 10 H14.5 A5 5 0 0 1 14.5 20 H10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
 };
 
 /* InfoTip — erişilebilir "ⓘ" ipucu. Hover + klavye odağıyla açılır, Esc/blur kapatır.

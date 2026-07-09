@@ -5,9 +5,8 @@
    tetikleyiciye döner, açıkken body scroll kilitlenir. PDF kaynaklarda gerçek sayfa
    önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik gösterilir (KVKK). */
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { MONO, PAL, DERIN, DERIN_OF, T, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, Btn, focusRing } from "./neonUi.jsx";
-import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
-import { cleanDemoText } from "./result-cards.jsx";
+import { MONO, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
+import RevizePaneli from "./RevizePaneli.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
@@ -34,33 +33,10 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
   const [kapatUyari, setKapatUyari] = useState(false);
   const kirli = duzenlenebilir && metinD !== metin;
 
-  // AI ile revize et — doğal-dil talimatla taslağı DeepSeek'e düzenlet, sonucu diff olarak
-  // göster, memur Uygula/Vazgeç ile onaylar (HITL — AI hiçbir zaman doğrudan uygulamaz).
-  const [talimat, setTalimat] = useState("");
-  const [revizeBusy, setRevizeBusy] = useState(false);
-  const [revizeOneri, setRevizeOneri] = useState(null);
-  const [revizeHata, setRevizeHata] = useState(null);
-  const revizeIste = async () => {
-    if (!talimat.trim() || revizeBusy) return;
-    setRevizeBusy(true);
-    setRevizeHata(null);
-    setRevizeOneri(null);
-    try {
-      const sonuc = await onRevize(metinD, talimat.trim());
-      if (sonuc?.revize_edildi && sonuc.taslak_md) {
-        // metinD (eski) TaslaklarView'da cleanDemoText'ten geçmiş halde geliyor — AI'nin ham
-        // cevabı (yeni) aynı temizlikten geçmezse aynı içerik bile satır-diff'te "değişti"
-        // görünüyordu ([DOĞRULA:...]/şablon-slot metni + boşluk normalizasyonu asimetrisi).
-        setRevizeOneri(cleanDemoText(sonuc.taslak_md));
-      } else {
-        setRevizeHata("Talimat uygulanamadı — taslakla ilgisiz olabilir ya da AI şu an kullanılamıyor.");
-      }
-    } catch {
-      setRevizeHata("Revizyon isteği başarısız oldu — bağlantıyı kontrol edip tekrar deneyin.");
-    } finally {
-      setRevizeBusy(false);
-    }
-  };
+  // AI ile revize et — tüm akış (talimat, öneri diff'i, çok-turlu geliştirme, geri al)
+  // RevizePaneli'nde yaşar (HITL — AI hiçbir zaman doğrudan uygulamaz). Burada yalnız
+  // "öneri açık mı" bilgisi tutulur: öneri incelenirken A4 kâğıt gizlenir (yığılma önlenir).
+  const [revizeOneriAcik, setRevizeOneriAcik] = useState(false);
 
   // Gönder — onGonder artık /yazi/dogrula'dan geçtiği için ağ turu içerir (eskiden
   // senkron pushOutbox'tı). Busy koruması olmadan hızlı çift tıklama aynı taslak için
@@ -196,42 +172,18 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
           </div>
         )}
 
-        {/* AI ile revize et — doğal-dil talimat, öneri diff olarak gösterilir, memur onaylar */}
-        {duzenlenebilir && onRevize && !revizeOneri && (
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", padding: "10px 14px", borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.card }}>
-            <Icon.sparkle width={15} height={15} style={{ color: DERIN_OF(T), flexShrink: 0 }} />
-            <input value={talimat} onChange={(e) => { setTalimat(e.target.value); setRevizeHata(null); }}
-              onKeyDown={(e) => { if (e.key === "Enter") revizeIste(); }}
-              placeholder="AI ile revize et — örn. “daha resmi yap”, “507 sayılı kanuna atıf ekle”"
-              aria-label="Taslak revizyon talimatı" disabled={revizeBusy} {...focusRing}
-              style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "7px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
-            <Btn onClick={revizeIste} disabled={!talimat.trim() || revizeBusy}>
-              {revizeBusy ? <><Icon.spin width={13} height={13} /> Düşünüyor…</> : "Revize et"}
-            </Btn>
-          </div>
-        )}
-        {revizeHata && (
-          <div role="alert" style={{ ...TYPE.data, color: DERIN.kirmizi, textAlign: "center" }}>{revizeHata}</div>
-        )}
-        {revizeOneri && (
-          <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.modal }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
-              <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>AI önerisi — talimat: “{talimat}”</span>
-              <span style={{ display: "flex", gap: SP.s }}>
-                <Btn onClick={() => setRevizeOneri(null)}>Vazgeç</Btn>
-                <Btn primary onClick={() => { setMetinD(revizeOneri); setRevizeOneri(null); setTalimat(""); setKapatUyari(false); }}>
-                  <Icon.check width={12} height={12} /> Uygula
-                </Btn>
-              </span>
-            </div>
-            <DuzeltmeDiff eski={metinD} yeni={revizeOneri} />
-          </div>
+        {/* AI ile revize et — hazır talimatlar, sesle talimat, değişiklik özeti, kalite
+            kapıları, çok-turlu geliştirme ve geri-al ile tam akış RevizePaneli'nde. */}
+        {duzenlenebilir && onRevize && (
+          <RevizePaneli metin={metinD} onRevize={onRevize}
+            onUygula={(yeni) => { setMetinD(yeni); setKapatUyari(false); }}
+            onOneriDegisti={setRevizeOneriAcik} />
         )}
 
         {/* A4 kâğıt — inceleme bekleyen bir AI önerisi varken gizlenir: aynı (henüz
             değişmemiş) metni hem diff'te hem burada tekrar göstermek yığılma yaratıyordu,
             diff kartına da daha az yer bırakıyordu. Uygula/Vazgeç sonrası kâğıt geri döner. */}
-        {!revizeOneri && (
+        {!revizeOneriAcik && (
           <div style={{ background: PAL.surf, borderRadius: RAD.chip, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
             {fileUrl ? (
               <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>

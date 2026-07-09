@@ -112,10 +112,15 @@ class TestAiRevizyon:
         data = r.json()
         assert data["revize_edildi"] is False
         assert data["taslak_md"] == _TAM_TASLAK
+        # Yapılandırılmış revizyon alanları her yanıtta bulunur (frontend sözleşmesi).
+        assert data["revize_degisiklikler"] == []
+        assert data["revize_uygulanamayan"] == ""
 
     def test_talimatsiz_istekte_revize_edildi_false(self, client):
-        r = _dogrula(client, _TAM_TASLAK)
-        assert r.json()["revize_edildi"] is False
+        data = _dogrula(client, _TAM_TASLAK).json()
+        assert data["revize_edildi"] is False
+        assert data["revize_degisiklikler"] == []
+        assert data["revize_uygulanamayan"] == ""
 
 
 class TestGuvenlik:

@@ -1,20 +1,27 @@
-"""yazi_render.revize_taslak — AI-destekli doğal-dil taslak revizyonu.
+"""yazi_render.revize_taslak / revize_taslak_yapili — AI-destekli doğal-dil taslak revizyonu.
 
 Sözleşme: LLM yok/mock/hata → None (çağıran orijinal taslağı korur). Ayrıca iki ek
 güvenlik kapısı: (1) taslak _REVIZE_MAX_TASLAK_CHARS'ı aşarsa LLM'e hiç gitmeden
 reddedilir (eski kod taslağı [:4000] sessizce kesip kuyruğu kaybediyordu); (2) LLM
-çıktısı girdiden şüpheli biçimde kısaysa (olası kesilme/çöküş) reddedilir. AAA deseni,
-mock modda deterministik.
+çıktısı girdiden şüpheli biçimde kısaysa (olası kesilme/çöküş) reddedilir. Yapılandırılmış
+yol (revize_taslak_yapili) ek olarak değişiklik özeti + uygulanamayan açıklaması döndürür;
+JSON bozulursa düz-metin yola düşer. AAA deseni, mock modda deterministik.
 """
 
 from __future__ import annotations
+
+import json
 
 import pytest
 
 import agents.nodes._llm_extract as ext
 from agents.llm import ChatMessage, LLMResponse, MockLLM
 from agents.nodes._llm_extract import cache_temizle
-from yazi.yazi_render import _REVIZE_MAX_TASLAK_CHARS, revize_taslak
+from yazi.yazi_render import (
+    _REVIZE_MAX_TASLAK_CHARS,
+    revize_taslak,
+    revize_taslak_yapili,
+)
 
 
 class SayacLLM:
@@ -102,3 +109,76 @@ class TestRevizeTaslakKesilmeKoruma:
         monkeypatch.setattr(ext, "get_llm", lambda: SayacLLM("Kısaltıldı."))
         sonuc = await revize_taslak(kisa, "kısalt")
         assert sonuc == "Kısaltıldı."
+
+
+def _json_cevap(taslak, degisiklikler=None, uygulanamayan=""):
+    return json.dumps({"taslak": taslak, "degisiklikler": degisiklikler or [],
+                       "uygulanamayan": uygulanamayan}, ensure_ascii=False)
+
+
+class TestRevizeTaslakYapili:
+    """Yapılandırılmış revizyon: metin + değişiklik özeti + uygulanamayan açıklaması."""
+
+    async def test_json_yaniti_yapili_sonuc_dondurur(self, monkeypatch):
+        # Arrange
+        beklenen = _TASLAK.replace("Gereğini arz ederim.", "Gereğinin yapılmasını arz ederim.")
+        cevap = _json_cevap(beklenen, ["Arz ifadesi resmîleştirildi"])
+        monkeypatch.setattr(ext, "get_llm", lambda: SayacLLM(cevap))
+        # Act
+        sonuc = await revize_taslak_yapili(_TASLAK, "daha resmi yap")
+        # Assert
+        assert sonuc == {"metin": beklenen,
+                         "degisiklikler": ["Arz ifadesi resmîleştirildi"],
+                         "uygulanamayan": ""}
+
+    async def test_uygulanamayan_aciklamasi_gecirilir(self, monkeypatch):
+        # Model taslağı DEĞİŞTİRMEDEN uydurma-reddini açıklayabilir (SIFIR UYDURMA).
+        cevap = _json_cevap(_TASLAK, [], "507 sayılı kanun kaynak evrakta geçmiyor")
+        monkeypatch.setattr(ext, "get_llm", lambda: SayacLLM(cevap))
+        sonuc = await revize_taslak_yapili(_TASLAK, "507 sayılı kanuna atıf ekle")
+        assert sonuc["metin"] == _TASLAK
+        assert "507" in sonuc["uygulanamayan"]
+
+    async def test_kaynak_ozeti_prompta_girer(self, monkeypatch):
+        llm = SayacLLM(_json_cevap(_TASLAK))
+        monkeypatch.setattr(ext, "get_llm", lambda: llm)
+        await revize_taslak_yapili(_TASLAK, "ilgiye atıf ekle", evrak_ozet="01.06.2026 tarihli dilekçe")
+        assert "01.06.2026 tarihli dilekçe" in llm.gecmis[0][-1].content
+
+    async def test_bozuk_json_duz_metin_yola_duser(self, monkeypatch):
+        # llm_json parse edemez (retry dahil) → revize_taslak (düz metin) devralır;
+        # özet alanları boş döner ama özellik tamamen kaybolmaz.
+        monkeypatch.setattr(ext, "get_llm", lambda: SayacLLM("Bu bir JSON değil, düz revize metni."))
+        sonuc = await revize_taslak_yapili(_TASLAK, "daha resmi yap")
+        assert sonuc == {"metin": "Bu bir JSON değil, düz revize metni.",
+                         "degisiklikler": [], "uygulanamayan": ""}
+
+    async def test_mock_modda_none(self, monkeypatch):
+        # Mock'un konu-bazlı sabit JSON'u revizyon değildir — yola hiç girilmez.
+        monkeypatch.setattr(ext, "get_llm", lambda: MockLLM())
+        assert await revize_taslak_yapili(_TASLAK, "daha resmi yap") is None
+
+    async def test_asiri_uzun_taslak_reddedilir(self, monkeypatch):
+        llm = SayacLLM(_json_cevap("x"))
+        monkeypatch.setattr(ext, "get_llm", lambda: llm)
+        assert await revize_taslak_yapili("A" * (_REVIZE_MAX_TASLAK_CHARS + 1), "kısalt") is None
+        assert llm.call_count == 0
+
+    async def test_supheli_kisa_json_taslagi_reddedilir(self, monkeypatch):
+        # JSON geçerli ama taslak alanı girdinin küçük bir kesri → kesilme kapısı JSON
+        # yolunda da çalışır; düz-metin fallback de aynı kısa cevabı verir → None.
+        uzun_taslak = _TASLAK + "\n\n" + "Ek açıklama satırı. " * 10
+        monkeypatch.setattr(ext, "get_llm", lambda: SayacLLM(_json_cevap("kısa")))
+        assert await revize_taslak_yapili(uzun_taslak, "daha resmi yap") is None
+
+    async def test_llm_ozet_alanlari_temizlenir_ve_sinirlanir(self, monkeypatch):
+        # degisiklikler: str-olmayan/boş elenir, en çok 5 madde; satır sonları tek satıra iner.
+        cevap = json.dumps({
+            "taslak": _TASLAK + " (revize)",
+            "degisiklikler": ["a\nb", "", 42, "c", "d", "e", "f", "g"],
+            "uygulanamayan": "x\r\ny",
+        }, ensure_ascii=False)
+        monkeypatch.setattr(ext, "get_llm", lambda: SayacLLM(cevap))
+        sonuc = await revize_taslak_yapili(_TASLAK, "düzenle")
+        assert sonuc["degisiklikler"] == ["a b", "c", "d", "e", "f"]
+        assert sonuc["uygulanamayan"] == "x y"

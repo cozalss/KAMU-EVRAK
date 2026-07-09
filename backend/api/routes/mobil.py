@@ -447,7 +447,7 @@ _SAYFA_HTML = """<!doctype html>
   </header>
 
   <nav class="adimlar" aria-label="Adımlar">
-    <span class="adim on" id="a1"><b>1</b> Çek</span><span class="cizgi"></span>
+    <span class="adim on" id="a1"><b>1</b> Seç/Çek</span><span class="cizgi"></span>
     <span class="adim" id="a2"><b>2</b> Gönder</span><span class="cizgi"></span>
     <span class="adim" id="a3"><b>3</b> Büyük ekranda izle</span>
   </nav>
@@ -455,9 +455,9 @@ _SAYFA_HTML = """<!doctype html>
   <main class="kart">
     <!-- ÇEK -->
     <section id="s-cek">
-      <h1>Belgeyi çekin</h1>
-      <p class="aciklama" style="margin:6px 0 14px">Fiziksel evrakın fotoğrafını çekin —
-         saniyeler içinde büyük ekranda 12 yapay zekâ ajanının işlediğini izleyin.</p>
+      <h1>Belge seçin veya çekin</h1>
+      <p class="aciklama" style="margin:6px 0 14px">Fiziksel evrakın fotoğrafını çekin veya dosya yükleyin —
+         saniyeler içinde büyük ekranda 16 yapay zekâ ajanının işlediğini izleyin.</p>
       <label class="vizor">
         <span class="kose sa" aria-hidden="true"></span><span class="kose sb" aria-hidden="true"></span>
         <span class="kose aa" aria-hidden="true"></span><span class="kose ab" aria-hidden="true"></span>
@@ -467,8 +467,8 @@ _SAYFA_HTML = """<!doctype html>
             <circle cx="12" cy="13" r="3.4" stroke="#fff" stroke-width="1.7"/></svg>
         </span>
         <span class="cta">Fotoğraf çek / dosya seç</span>
-        <span class="ipucu">Belgeyi düz bir zeminde, iyi ışıkta çekin</span>
-        <input id="dosya" type="file" accept="image/*,.pdf" capture="environment">
+        <span class="ipucu">Fotoğraf çekmek için iyi ışıkta ve düz bir zeminde tutun</span>
+        <input id="dosya" type="file" accept="image/*,.pdf">
       </label>
       <div class="rozetler" style="margin-top:12px">
         <span class="rozet">PDF</span><span class="rozet">PNG · JPG</span>
@@ -499,7 +499,7 @@ _SAYFA_HTML = """<!doctype html>
         </svg>
       </span>
       <h2>Gönderildi</h2>
-      <p>Büyük ekrana bakın — <b>12 yapay zekâ ajanı</b> belgenizi şimdi işliyor:
+      <p>Büyük ekrana bakın — <b>16 yapay zekâ ajanı</b> belgenizi şimdi işliyor:
          tür, eksik bilgi, ilgili mevzuat ve resmî yazı taslağı.</p>
       <p class="not">Yeni bir belge göndermek için büyük ekrandan yeni bir QR kod oluşturup
          tekrar okutun.</p>
@@ -618,7 +618,7 @@ _HATA_HTML = """<!doctype html>
   </header>
   <main class="kart" style="text-align:center">
     <h1>QR kodun süresi dolmuş</h1>
-    <p class="aciklama" style="margin-top:8px">Büyük ekrandaki “Telefonla çek” penceresinden
+    <p class="aciklama" style="margin-top:8px">Büyük ekrandaki “Telefonla yükle” penceresinden
        yeni bir QR kod oluşturup tekrar okutun.</p>
   </main>
   <footer><b>TEKNOFEST 2026</b></footer>

@@ -130,7 +130,7 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
         <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
           <span aria-hidden="true" style={{ color: T, display: "grid", placeItems: "center" }}><Icon.phone /></span>
           <h2 id="ty-baslik" style={{ margin: 0, ...TYPE.h2, color: PAL.ink, flex: 1, textAlign: "left" }}>
-            Telefonla evrak çek
+            Telefonla evrak yükle
           </h2>
           <button ref={kapatRef} type="button" onClick={onClose} aria-label="Pencereyi kapat" {...focusRing}
             style={{ cursor: "pointer", border: `1px solid ${PAL.line}`, background: PAL.surf,
@@ -148,7 +148,7 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
           return (
           <>
             <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut2, textAlign: "left" }}>
-              Telefonunuzla QR'ı okutun, fiziksel belgenin fotoğrafını çekin —
+              Telefonunuzla QR'ı okutun, fotoğraf çekin veya dosya seçin —
               bu ekranda ajanların canlı işleyişini izleyin.{" "}
               <b>Telefon, bilgisayarla aynı Wi-Fi ağında olmalı.</b>
             </p>

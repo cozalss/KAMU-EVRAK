@@ -13,6 +13,7 @@ const NAV = [
   { id: "giden", label: "Giden evrak", icon: "arrow", count: "giden" },
   { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
   { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },
+  { id: "kurul", label: "Bürokrasi Kurulu", icon: "scale" },
   { id: "mevzuat", label: "Mevzuat", icon: "book" },
 ];
 

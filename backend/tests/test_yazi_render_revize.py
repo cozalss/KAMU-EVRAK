@@ -9,12 +9,12 @@ mock modda deterministik.
 
 from __future__ import annotations
 
+import pytest
+
 import agents.nodes._llm_extract as ext
 from agents.llm import ChatMessage, LLMResponse, MockLLM
 from agents.nodes._llm_extract import cache_temizle
 from yazi.yazi_render import _REVIZE_MAX_TASLAK_CHARS, revize_taslak
-
-import pytest
 
 
 class SayacLLM:

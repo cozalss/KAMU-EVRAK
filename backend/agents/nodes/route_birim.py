@@ -16,6 +16,7 @@ import structlog
 
 from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM, LLM_ATLA_NODELAR
 from agents.nodes._llm_extract import llm_json, real_llm
+from agents.servis_birim import oner_servis_birimi
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -125,7 +126,7 @@ def _birim_listesi() -> str:
     return "\n".join(f"- {kod}: {BIRIM_TR.get(kod, kod)}" for kod in BIRIMLER)
 
 
-async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
+async def _route_birim_impl(state: dict[str, Any]) -> dict[str, Any]:
     """Birim yönlendirme — deterministik birincil (bilinen tür), LLM yalnız 'belirsiz' türde.
 
     M-fix (2026-07-04): held-out A/B (n=108, 2 bağımsız set, DeepSeek) kanıtladı — bilinen
@@ -181,6 +182,21 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
         "birim_alternatifleri": sirali[:4],
         "birim_reasoning": f"{BIRIM_TR.get(hedef, hedef)} — {gerekce} (DeepSeek)",
     }
+
+
+async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
+    """Birim yönlendirme + ADDITIVE servis müdürlüğü önerisi.
+
+    Ölçülen 9-birim kararı (`hedef_birim`/`birim_alternatifleri`) `_route_birim_impl`
+    ile AYNEN üretilir (gold/Top-1 etkilenmez). Buna ek olarak evrak İÇERİĞİNDEN somut
+    hizmet müdürlüğü türetilir (agents.servis_birim); eşleşme varsa `servis_birimi`
+    alanı eklenir (danışma sinyali, uydurma yoksa hiç eklenmez).
+    """
+    result = await _route_birim_impl(state)
+    servis = oner_servis_birimi(state.get("evrak_text", "") or "")
+    if servis:
+        result = {**result, "servis_birimi": servis}
+    return result
 
 
 __all__ = ("route_birim_node",)

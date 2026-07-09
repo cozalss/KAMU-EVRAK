@@ -67,6 +67,9 @@ class EvrakState(TypedDict):
     hedef_birim: NotRequired[str]           # BIRIMLER'den biri
     birim_alternatifleri: NotRequired[list[str]]
     birim_reasoning: NotRequired[str]
+    # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi (5393/norm kadro);
+    # {kod, ad, sinyal}. Ölçülen hedef_birim'i DEĞİŞTİRMEZ — danışma katmanı.
+    servis_birimi: NotRequired[dict[str, Any]]
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
     yazi_taslak_md: NotRequired[str]
     yazi_taslak_pdf_bytes: NotRequired[bytes | None]

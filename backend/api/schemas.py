@@ -145,6 +145,8 @@ class ProcessResponse(BaseModel):
     ozet: str = ""
     hedef_birim: str = ""
     birim_alternatifleri: list[str] = Field(default_factory=list)
+    # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi ({kod, ad, sinyal}); danışma.
+    servis_birimi: dict = Field(default_factory=dict)
     yazi_turu: str = ""
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False

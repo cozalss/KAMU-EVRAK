@@ -473,6 +473,19 @@ export default function NeonDetay({ result, embedded = false }) {
                             <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_LBL(b)}</span>
                           </div>
                         ))}
+                        {/* ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi (danışma; eşleşme yoksa gizli) */}
+                        {r.servis_birimi?.ad && (
+                          <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 0 2px", marginTop: SP.xs, borderTop: `1px dashed ${PAL.line}` }}>
+                            <Icon.route width={13} height={13} aria-hidden="true" style={{ color: DERIN_OF(V), flex: "none" }} />
+                            <span style={{ ...TYPE.data, color: PAL.ink2 }}>
+                              <span style={{ color: PAL.mut2 }}>Önerilen müdürlük: </span>
+                              <strong style={{ fontWeight: 600 }}>{r.servis_birimi.ad}</strong>
+                              {Array.isArray(r.servis_birimi.sinyal) && r.servis_birimi.sinyal.length > 0 && (
+                                <span style={{ ...TYPE.meta, color: PAL.mut3 }}> · içerik: {r.servis_birimi.sinyal.join(", ")}</span>
+                              )}
+                            </span>
+                          </div>
+                        )}
                         <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>Sıralama içerik sinyali + birim görev alanı eşleşmesiyle yapılır; nihai havale memur onayındadır.</div>
                       </NeonCard>
                     ),

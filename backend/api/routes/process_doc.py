@@ -98,6 +98,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         ozet=mask_pii(state.get("ozet", "") or "").masked_text,
         hedef_birim=state.get("hedef_birim", ""),
         birim_alternatifleri=state.get("birim_alternatifleri", []),
+        servis_birimi=state.get("servis_birimi") or {},
         yazi_turu=state.get("yazi_turu", ""),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         format_uyumlu=bool(state.get("format_uyumlu", False)),
@@ -377,7 +378,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "mevzuat_dogrula": ("mevzuat_nli",),
         "ozetle": ("ozet",),
         # birim_reasoning + alternatifler: "neden bu birim" gerekçesi + değerlendirilen adaylar.
-        "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri"),
+        "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri", "servis_birimi"),
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu"),

@@ -71,6 +71,8 @@ class EvrakState(TypedDict):
     # {kod, ad, sinyal}. Ölçülen hedef_birim'i DEĞİŞTİRMEZ — danışma katmanı.
     servis_birimi: NotRequired[dict[str, Any]]
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
+    # Dinamik yazı planının (yazi/yazi_plan.py) insan-okunur gerekçesi; boş = statik yol.
+    yazi_plan_notu: NotRequired[str]
     yazi_taslak_md: NotRequired[str]
     yazi_taslak_pdf_bytes: NotRequired[bytes | None]
     yazi_taslak_pdf_filename: NotRequired[str]

@@ -148,6 +148,8 @@ class ProcessResponse(BaseModel):
     # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi ({kod, ad, sinyal}); danışma.
     servis_birimi: dict = Field(default_factory=dict)
     yazi_turu: str = ""
+    # Dinamik yazı planı gerekçesi ("neden bu tür/muhatap"); boş = statik eşleme kullanıldı.
+    yazi_plan_notu: str = ""
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
     verify_uyari: list[str] = Field(default_factory=list)

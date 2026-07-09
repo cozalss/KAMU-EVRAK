@@ -25,7 +25,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TO_YAZI, birim_tr
+from agents.config import EVRAK_TO_YAZI, LLM_ATLA_NODELAR, birim_tr
 
 log = structlog.get_logger()
 
@@ -87,20 +87,32 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     uyum için ilk birim taslağını taşır, asıl N taslak alt_talepler içindedir.
     """
     turu = state.get("evrak_turu", "belirsiz")
-    yazi_turu = EVRAK_TO_YAZI.get(turu, "cevabi_yazi")
+    yazi_turu = EVRAK_TO_YAZI.get(turu, "cevabi_yazi")  # statik taban (fallback + coklu yol)
     unsurlar = state.get("bilgi_unsurlari") or {}
     evrak_text = state.get("evrak_text", "") or ""
     alt_talepler = state.get("alt_talepler") or []
-    # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
-    hedef_muhatap = birim_tr(state.get("hedef_birim", "")) if yazi_turu == "ust_yazi" else None
+    hedef_birim = state.get("hedef_birim", "")
+    plan_notu = ""
 
     try:
         from yazi.renderer import render_yazi
+        from yazi.yazi_plan import yazi_plani
         from yazi.yazi_render import build_alt_talep_taslaklari, build_body, build_context
 
         alt_out = await build_alt_talep_taslaklari(alt_talepler, unsurlar, evrak_text)
         if len(alt_out) >= 2:
             return _coklu_cikti(alt_out)
+        # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
+        # mock/hata/kapalı-küme-dışı/grounded-olmayan-muhatap → None/kısmi düşürme →
+        # statik EVRAK_TO_YAZI + varsayılan muhatap yolu AYNEN devrede kalır.
+        plan = (await yazi_plani(turu, unsurlar, evrak_text, hedef_birim)
+                if "yazi_plan" not in LLM_ATLA_NODELAR else None)
+        if plan:
+            yazi_turu = plan["yazi_turu"]
+            plan_notu = plan["gerekce"]
+        # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
+        hedef_muhatap = (plan or {}).get("muhatap") or (
+            birim_tr(hedef_birim) if yazi_turu == "ust_yazi" else None)
         metin = await build_body(yazi_turu, unsurlar, evrak_text)
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap)
         result = render_yazi(ctx)
@@ -116,6 +128,8 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         "yazi_turu": result.yazi_turu,
         "yazi_taslak_md": result.metin,
         "format_uyumlu": result.format_uyumlu,
+        # Dinamik planın insan-okunur gerekçesi (boş = statik yol kullanıldı) — UI notu.
+        "yazi_plan_notu": plan_notu,
     }
     if result.pdf_bytes:
         out["yazi_taslak_pdf_bytes"] = result.pdf_bytes

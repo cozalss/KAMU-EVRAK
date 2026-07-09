@@ -15,6 +15,7 @@ import AjanAdimDetay from "./AjanAdimDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
+import { Chip } from "./NeonDetayParts.jsx";
 
 import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, RiskBand, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
@@ -577,42 +578,49 @@ export default function CanliAjanAkisi({
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
             <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M9 12 L11 14 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              <Icon.doc width={18} height={18} />
             </span>
             <span style={{ minWidth: 0 }}>
               <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
-              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2 }}>{metaLine}</span>
+              <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{metaLine}</span>
             </span>
-            <span style={{ display: "flex", alignItems: "center", gap: SP.xs, padding: "2px 8px", borderRadius: RAD.chip, background: allDone ? ALFA(BANT.yesil.c) : ALFA(T), marginLeft: SP.s, flexShrink: 0 }}>
-              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: allDone ? BANT.yesil.c : T, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-              <span style={{ ...TYPE.meta, fontWeight: 500, color: allDone ? DERIN.yesil : DERIN.T, ...TNUM }}>{statusText}</span>
+            <span style={{ marginLeft: SP.s, flexShrink: 0 }}>
+              <Chip c={allDone ? BANT.yesil.c : busy ? T : PAL.mut2} label={`Durum: ${statusText}`}>
+                {allDone ? <Icon.check width={12} height={12} />
+                  : busy ? <Icon.spin width={12} height={12} />
+                  : <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: PAL.mut2 }} />}
+                {statusText}
+              </Chip>
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+          <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
             <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
             </span>
-            {/* Telefonla çek — işlem sürerken kapalı: one-shot indirme busy'de sessizce
-                düşer (dosya kaybı); tamamlanınca yeni evrak telefondan da eklenebilsin. */}
-            <button onClick={onTelefon} disabled={busy} aria-label="Telefonla evrak yükle" {...focusRing}
-              title={busy ? "İşlem sürerken telefonla yükleme başlatılamaz" : "Telefonla yükle"}
-              onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-              style={{ cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: busy ? PAL.mut3 : PAL.mut, transition: "background .12s ease-out" }}>
-              <Icon.phone />
-            </button>
-            <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} title="Yeni evrak"
-              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.mut, transition: "background .12s ease-out" }}>
-              <Icon.upload />
-            </button>
+            <span aria-hidden="true" style={{ width: 1, height: 20, background: PAL.line, flexShrink: 0 }} />
+            <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+              {/* Telefonla çek — işlem sürerken kapalı: one-shot indirme busy'de sessizce
+                  düşer (dosya kaybı); tamamlanınca yeni evrak telefondan da eklenebilsin. */}
+              <button onClick={onTelefon} disabled={busy} aria-label="Telefonla evrak yükle" {...focusRing}
+                title={busy ? "İşlem sürerken telefonla yükleme başlatılamaz" : "Telefonla yükle"}
+                onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+                style={{ cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: busy ? PAL.mut3 : PAL.mut, transition: "background .12s ease-out" }}>
+                <Icon.phone />
+              </button>
+              <button onClick={onUpload} aria-label="Yeni evrak yükle" {...focusRing} title="Yeni evrak"
+                onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+                style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.mut, transition: "background .12s ease-out" }}>
+                <Icon.upload />
+              </button>
+            </div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
-          <div aria-hidden="true" style={{ flex: 1, height: 4, borderRadius: 2, background: PAL.press, overflow: "hidden" }}>
-            <div style={{ width: `${pct}%`, height: "100%", borderRadius: 2, background: T, transition: "width .4s ease-out" }} />
+          <div aria-hidden="true" style={{ flex: 1, height: 6, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden" }}>
+            <div style={{ width: `${pct}%`, height: "100%", borderRadius: RAD.chip, background: allDone ? BANT.yesil.c : T, transition: "width .4s ease-out, background .2s ease-out" }} />
           </div>
           <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flexShrink: 0, minWidth: 38, textAlign: "right", ...TNUM }}>{pct}%</span>
         </div>

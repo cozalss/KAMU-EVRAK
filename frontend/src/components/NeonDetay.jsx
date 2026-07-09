@@ -452,8 +452,8 @@ export default function NeonDetay({ result, embedded = false }) {
                     </NeonCard>,
 
                     r.bilgilendirme && (
-                      <NeonCard key="bilgilendirme" title="Bilgilendirme" accent={V} icon={<Icon.info />}>
-                        <p style={{ margin: 0, ...TYPE.data, color: PAL.ink2, whiteSpace: "pre-wrap" }}>{cleanDemoText(r.bilgilendirme).replace(/\*\*/g, "").replace(/\s*##\s*/g, "  ")}</p>
+                      <NeonCard key="bilgilendirme" title="Bilgilendirme" accent={V} icon={<Icon.info />} bodyCenter>
+                        <p style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap" }}>{cleanDemoText(r.bilgilendirme).replace(/\*\*/g, "").replace(/\s*##\s*/g, "  ")}</p>
                       </NeonCard>
                     ),
                   ]}

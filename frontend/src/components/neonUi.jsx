@@ -154,17 +154,21 @@ export function ViewWrap({ id, title, sub, actions, children }) {
 /* Kart — düz beyaz yüzey + 1px hairline (border-first); gölge en fazla SH.card.
    Başlık: satır-içi kutusuz ikon (accent yalnız ikon rengi) + 14/600 sentence-case başlık +
    sağda düz meta metin (tag). Hover'da kalkış YOK. */
-export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, style }) {
+export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, bodyCenter, style }) {
+  // bodyCenter: ColGrid'in stretchLast'ı son kartı komşu sütunla hizalamak için flex:1 verir
+  // (bkz. NeonDetay.jsx) — içerik kısa bir metinse fazla boşluk gövdenin ALTINDA boş kalır.
+  // bodyCenter true'ysa gövde o boşluğu üstlenip içeriği dikeyde ortalar; içerik kartı zaten
+  // doldurduğunda (stretch yoksa) hiçbir görsel farkı yoktur.
   return (
-    <section style={{ position: "relative", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, boxShadow: SH.card, ...style }}>
+    <section style={{ position: "relative", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, boxShadow: SH.card, ...(bodyCenter ? { display: "flex", flexDirection: "column" } : null), ...style }}>
       {title && (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m, flexShrink: 0 }}>
           {icon && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(accent) }}>{icon}</span>}
           <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{title}</h3>
           {tag && <span style={{ marginLeft: "auto", ...TYPE.meta, color: tagColor ? DERIN_OF(tagColor) : PAL.mut, ...TNUM }}>{tag}</span>}
         </div>
       )}
-      <div style={{ position: "relative" }}>{children}</div>
+      <div style={{ position: "relative", ...(bodyCenter ? { flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" } : null) }}>{children}</div>
     </section>
   );
 }

@@ -457,7 +457,7 @@ _SAYFA_HTML = """<!doctype html>
     <section id="s-cek">
       <h1>Belge seçin veya çekin</h1>
       <p class="aciklama" style="margin:6px 0 14px">Fiziksel evrakın fotoğrafını çekin veya dosya yükleyin —
-         saniyeler içinde büyük ekranda 12 yapay zekâ ajanının işlediğini izleyin.</p>
+         saniyeler içinde büyük ekranda 16 yapay zekâ ajanının işlediğini izleyin.</p>
       <label class="vizor">
         <span class="kose sa" aria-hidden="true"></span><span class="kose sb" aria-hidden="true"></span>
         <span class="kose aa" aria-hidden="true"></span><span class="kose ab" aria-hidden="true"></span>
@@ -499,7 +499,7 @@ _SAYFA_HTML = """<!doctype html>
         </svg>
       </span>
       <h2>Gönderildi</h2>
-      <p>Büyük ekrana bakın — <b>12 yapay zekâ ajanı</b> belgenizi şimdi işliyor:
+      <p>Büyük ekrana bakın — <b>16 yapay zekâ ajanı</b> belgenizi şimdi işliyor:
          tür, eksik bilgi, ilgili mevzuat ve resmî yazı taslağı.</p>
       <p class="not">Yeni bir belge göndermek için büyük ekrandan yeni bir QR kod oluşturup
          tekrar okutun.</p>

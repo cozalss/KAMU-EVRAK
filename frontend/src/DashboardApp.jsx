@@ -27,9 +27,8 @@ const GidenEvrakView = lazy(() => import("./components/GidenEvrakView.jsx"));
 const TaslaklarView = lazy(() => import("./components/TaslaklarView.jsx"));
 const MevzuatView = lazy(() => import("./components/MevzuatView.jsx"));
 const DenetimView = lazy(() => import("./components/DenetimView.jsx"));
-// AI Bürokrasi Kurulu — üç ajanın canlı müzakere prototipi (deterministik, backend'siz; faz 2'de
-// gerçek `muzakere` node'una bağlanacak). Tembel: ilk geçişte iner.
-const MuzakereKurulu = lazy(() => import("./components/MuzakereKurulu.jsx"));
+// AI Bürokrasi Kurulu artık ayrı sekme değil — Taslaklar'da taslak-başına modal
+// (TaslaklarView → KurulModal). Eski "kurul" hash'i VIEWS dışına düşer → panel'e döner.
 // Sohbet asistanı (FAB + panel) — her görünümde sağ altta; tembel: yalnız kabuk yüklendikten
 // sonra iner, ilk yük bundle'ına ağırlık eklemez. Spec: docs/09-sohbet-asistani.md
 const ChatbotWidget = lazy(() => import("./components/ChatbotWidget.jsx"));
@@ -39,7 +38,7 @@ const TelefonYukleModal = lazy(() => import("./components/TelefonYukle.jsx"));
 // Görünüm ↔ URL hash eşlemesi (app.html#gelen). Görünüm geçişleri tarayıcı geçmişine yazılır →
 // fare/tarayıcı "geri" tuşu landing'e fırlatmak yerine ÖNCEKİ GÖRÜNÜME döner; yenilemede
 // görünüm korunur. Router bağımlılığı yok (tek kabuk, altı görünüm — hash yeterli).
-const VIEWS = new Set(["panel", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "kurul", "isleniyor"]);
+const VIEWS = new Set(["panel", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
 const hashView = () => window.location.hash.slice(1);
 
 // DB geçmişinden taslak listesi türet: taslağı ÜRETİLMİŞ ve henüz KARAR VERİLMEMİŞ işlemler
@@ -585,7 +584,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
-  else if (activeView === "kurul") view = <MuzakereKurulu />;
   else view = (
     <CanliAjanAkisi
       nodes={nodes} result={data} busy={busy} started={started} runBase={runBase}

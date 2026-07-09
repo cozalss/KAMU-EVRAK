@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, V, PAL, BANT, DERIN, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import BelgeModal from "./BelgeModal.jsx";
+import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 
@@ -79,7 +80,7 @@ const COP = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" a
 /* Tek taslak kartı — başlık KONU (kartları ayırt eden bilgi), meta satırı, gövdenin ilk
    paragrafından zarif satır-kesmeli kâğıt önizleme, sakin metin-eylemler. Düzenleme yüzeyi
    TEK: ortadaki A4 kâğıt modalı (BelgeModal) — kart önizler ve tetikler. */
-function DraftCard({ h, onEdit, onDelete, onSend }) {
+function DraftCard({ h, onEdit, onDelete, onSend, onKurul }) {
   const r = h.result;
   const [confirmDel, setConfirmDel] = useState(false);
   // sendBusy: /yazi/dogrula artık ağ turu içeriyor (eskiden senkron pushOutbox'tı) — koruma
@@ -123,6 +124,10 @@ function DraftCard({ h, onEdit, onDelete, onSend }) {
         ) : (
           <>
             <KartEylem onClick={() => onEdit(h.id)} ariaLabel={`${konu || h.name} taslağını düzenle`}><KALEM /> Düzenle</KartEylem>
+            {/* AI Bürokrasi Kurulu — üç ajan BU taslağı gerçek doğrulama sinyalleriyle tartışır */}
+            <KartEylem onClick={() => onKurul(h.id)} renk={DERIN.V} ariaLabel={`${konu || h.name} taslağı için Bürokrasi Kurulu'nu topla`}>
+              <Icon.scale width={13} height={13} /> Kurulu topla
+            </KartEylem>
             <KartEylem onClick={gonder} disabled={sendBusy} renk={DERIN.yesil} ariaLabel={`${konu || h.name} taslağını gönder`}>
               {sendBusy ? <><Icon.spin width={13} height={13} /> Gönderiliyor…</> : <><Icon.arrow width={13} height={13} /> Gönder</>}
             </KartEylem>
@@ -139,15 +144,22 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
   // drafts: yalnız "Düzenle" ile ayrılmış taslaklar (her biri result.yazi_taslak_md taşır).
   // hedef: onay kartından "Düzenle" ile gelinen taslağın id'si → A4 düzenleme modalı doğrudan açılır.
   const [duzenleId, setDuzenleId] = useState(null);
+  // "Kurulu topla" ile açılan müzakere modalının taslak id'si (koşullu render → taze açılış).
+  const [kurulId, setKurulId] = useState(null);
+  // KARŞILIKLI DIŞLAMA: iki modal aynı anda açılamaz — aksi halde BelgeModal'da kaydedilen
+  // metnin üstüne, kurulun ESKİ result'tan türettiği uzlaşı yazılabilirdi (stale-write).
+  const acDuzenle = (id) => { setKurulId(null); setDuzenleId(id); };
+  const acKurul = (id) => { setDuzenleId(null); setKurulId(id); };
 
   // Hedefli geliş: taslak varsa modalı aç; yoksa hedefi sessizce tüket.
   useEffect(() => {
     if (!hedef) return;
-    if (drafts.some((d) => d.id === hedef)) setDuzenleId(hedef);
+    if (drafts.some((d) => d.id === hedef)) { setKurulId(null); setDuzenleId(hedef); }
     onHedefAcildi?.();
   }, [hedef, drafts, onHedefAcildi]);
 
   const aktif = drafts.find((d) => d.id === duzenleId) || null;
+  const kurulAktif = drafts.find((d) => d.id === kurulId) || null;
   const config = useMemo(() => ({
     ...BASE_CONFIG,
     select: [
@@ -176,7 +188,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px,1fr))", gap: SP.l, alignItems: "start" }}>
-          {filter.results.map((h) => <DraftCard key={h.id} h={h} onEdit={setDuzenleId} onDelete={onDelete} onSend={onSend} />)}
+          {filter.results.map((h) => <DraftCard key={h.id} h={h} onEdit={acDuzenle} onDelete={onDelete} onSend={onSend} onKurul={acKurul} />)}
         </div>
       )}
 
@@ -190,6 +202,20 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
           onGonder={async (t) => { if (await onSend(aktif, t)) setDuzenleId(null); }}
           onIndir={(t) => docxIndir(t, aktif.name, onToast)}
           onRevize={onRevize ? (metinGuncel, talimat) => onRevize(aktif.result, metinGuncel, talimat) : null} />
+      )}
+
+      {/* AI Bürokrasi Kurulu — üç ajan seçilen taslağı gerçek pipeline sinyalleriyle tartışır;
+          "Uzlaşı taslağını uygula" MEMUR kararıdır → taslağa yazılır (updateDraft yolu). */}
+      {kurulAktif && (
+        <KurulModal key={kurulAktif.id}
+          taslakAdi={kurulAktif.name}
+          result={kurulAktif.result}
+          onKapat={() => setKurulId(null)}
+          onUygula={(metin) => {
+            onUpdate(kurulAktif.id, metin);
+            onToast("Kurul uzlaşı taslağı uygulandı — taslak güncellendi.");
+            setKurulId(null);
+          }} />
       )}
     </ViewWrap>
   );

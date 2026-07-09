@@ -11,7 +11,7 @@
 **Durum lejantı:** ✅ Karşılandı (kanıtlı) · 🟡 Kısmen / koşullu · ⚠️ Açık iş / gelecek faz · **KIRMIZI: diskalifiye riski** · ⛔ Henüz yok
 
 **Canlı doğrulanmış kalite kapıları (2026-07-04):** backend `uv run python -m pytest -q` →
-**1160 passed**; frontend `npm.cmd run build` → **başarılı**.
+**1319 passed**; frontend `npm.cmd run build` → **başarılı**.
 
 **Tek dürüst skor cümlesi (manşet — üç dokümanda [`scorecard.md`](benchmark/scorecard.md),
 [`llm-heldout.md`](benchmark/llm-heldout.md) aynı):** Üretim modeli **DeepSeek-chat**;

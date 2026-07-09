@@ -5,7 +5,7 @@
 > **İlişkili:** uyum kanıtı `docs/sartname-uyum-matrisi.md`; yöntem `docs/method.md`; karne `docs/benchmark/scorecard.md`.
 >
 > **Altın kural:** Demo `LLM_MODE=mock` + örnek evraklar ile koşulur → sıfır dış bağımlılık,
-> internet kesintisinden etkilenmez. Skor sunulan her an "**mock taban / gerçek-LLM yükseltir**" denir.
+> internet kesintisinden etkilenmez. Skor sunulan her an "**GERÇEK pipeline · DeepSeek-chat · in-domain (n=54); dairesel-olmayan held-out ayrıca raporlanır**" denir.
 
 ---
 
@@ -17,7 +17,7 @@
 | 0:40–1:40 | **Çözüm + mimari** | İki görev tek LangGraph pipeline; çok-ajan neden? | `docs/img/02-akis.png` (canlı şema) |
 | 1:40–5:40 | **CANLI DEMO** (4 dk) | Uçtan-uca Görev 1 + Görev 2 real-time | Çalışan app (aşağıdaki senaryo) |
 | 5:40–7:10 | **Teknik derinlik** | RAG + verify + ablasyon + istatistik disiplini | `docs/benchmark/scorecard.md` + ablation |
-| 7:10–8:10 | **Dürüst skor** | **gpt-4o 0.935** held-out (dairesel-olmayan, reprodüke-edilebilir artefakt); leak-free mock 0.69 | `heldout_gpt4o_set1.json` + `llm-heldout.md` |
+| 7:10–8:10 | **Dürüst skor** | **DeepSeek-chat macro-F1 ~0.89 / Top-1 0.907** held-out (dairesel-olmayan, reprodüke-edilebilir artefakt); leak-free mock 0.69 | `heldout_deepseek_set*_n54_fixed.json` + `llm-heldout.md` |
 | 8:10–9:10 | **Yenilikçilik + ticarileşme** | PII maskeleme, ENV-gated SOTA, MIT yığın, EBYS/SaaS/on-prem | Ticarileşme slaytı (`ticarileşme.md`) |
 | 9:10–10:00 | **Kapanış** | Durum + yol haritası + güçlü kapanış cümlesi | Kapanış slaytı |
 
@@ -44,14 +44,14 @@
 2. **Problem** — kamu evrak yükü (hacim · süre · format), 3 madde.
 3. **Çözüm + mimari** — iki görev tek pipeline, 10 node diyagramı (`docs/img/02-akis.png`).
 4. **[CANLI DEMO]** — slayt yerine ekran paylaşımı (yedek: `docs/img/` + `demo.gif`).
-5. **Görev 1 sonuçları** — sınıflandırma/çıkarım/eksik/mevzuat/özet + mock-taban skor.
-6. **Görev 2 sonuçları** — yönlendirme/taslak/üslup/bilgilendirme + mock-taban skor.
+5. **Görev 1 sonuçları** — sınıflandırma/çıkarım/eksik/mevzuat/özet + DeepSeek-chat in-domain skor.
+6. **Görev 2 sonuçları** — yönlendirme/taslak/üslup/bilgilendirme + DeepSeek-chat in-domain skor.
 7. **Teknik derinlik** — RAG b=0.3, verify false-veto=0, Wilson CI + McNemar ablasyon.
-8. **Dürüst skor** — held-out **gpt-4o sıkı 0.935 / op. 0.963 / Top-1 0.954 (101/108)**, reprodüke-edilebilir artefakt; leak-free mock taban 0.69.
+8. **Dürüst skor** — dairesel-olmayan held-out **DeepSeek-chat macro-F1 ~0.89 (0.864/0.907) / Top-1 0.907** (n=108, 2 bağımsız set), reprodüke-edilebilir artefakt; leak-free mock taban 0.69.
 9. **Yenilikçilik + ticarileşme** — PII maskeleme, ENV-gated CRAG/Self-RAG, MIT; EBYS entegrasyonu, SaaS/on-prem (`ticarileşme.md`).
-10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), backend 655 test, frontend build; format kapısı + idari yol haritası; kapanış cümlesi.
+10. **Kapanış** — Görev 1 (6/6) + Görev 2 (5/5), backend 1319 test, frontend build; format kapısı + idari yol haritası; kapanış cümlesi.
 
-> **Kapanış cümlesi:** "Çalışan bir sistem, dürüst ölçümler — gpt-4o ile dairesel-olmayan
+> **Kapanış cümlesi:** "Çalışan bir sistem, dürüst ölçümler — DeepSeek-chat ile dairesel-olmayan
 > held-out'ta **~%90 doğruluk** — ve temiz bir MIT lisans getirdik; internet kesilse bile
 > demomuz durmuyor. Teşekkürler."
 
@@ -65,23 +65,25 @@
 ### S1. "Doğruluk skorunuz nedir? Bu sayılar gerçekçi mi?" ⭐ (en kritik)
 
 > **Cevap:** "Dürüst ve **ölçülmüş** bir cevap vereyim — ilerlemeyi aynı zor sette gösterebilirim:
-> Canlı mock karnemiz de güçlü: sınıflandırma macro-F1 **0.9493**, accuracy **0.9491**;
-> yönlendirme Top-1 **0.9630** / Top-3 **0.9815**; eksik-bilgi recall **0.9948**; özet
-> faithfulness **1.0000**; taslak format uyumu **1.0000**; false-veto **0** ve fairness **1.0000**.
+> GERÇEK pipeline (DeepSeek-chat) in-domain karnemiz (n=54): sınıflandırma macro-F1 **0.817**, accuracy **0.796**;
+> yönlendirme Top-1 **0.852** / Top-3 **0.963**; eksik-bilgi recall(β=2) **0.739**; özet
+> faithfulness **1.000**; taslak format uyumu **1.000**; false-veto **0/140** ve fairness **0.944**.
 >
 > 1. **Mock taban (anahtarsız):** `LLM_MODE=mock` — LLM yerine kural-tabanlı keyword/regex fallback.
 >    CI/offline tabanı; **tavan değil.** Leak-free held-out'ta (set-2, heuristiğin uyarlanMADIĞI) sıkı
 >    sadece **0.69** — bunu **gizlemiyoruz**: kural tabanı semantik genellemiyor, değer LLM modunda.
 >    *(Dürüstlük: mock set-1 figürü artık ezber — heuristik o sete uyarlandı; taban olarak kullanmıyoruz.)*
 > 2. **gpt-4o-mini:** Aynı held-out sette **0.61**.
-> 3. **gpt-4o (üretim tavanı) — REPRODÜKE-EDİLEBİLİR ARTEFAKT:** Aynı sette **sıkı accuracy/macro-F1
->    0.935**, **operasyonel 0.963**, **yönlendirme Top-1 0.954 — 108 evrakta 101 doğru** (Wilson %95 CI'lı).
->    Commit'li: `backend/eval/runs/heldout_gpt4o_set1.json` → jüri tek komutla doğrular.
+> 3. **DeepSeek-chat (üretim modeli) — REPRODÜKE-EDİLEBİLİR ARTEFAKT:** Dairesel-olmayan held-out'ta
+>    (n=108, 2 bağımsız set) **sıkı macro-F1 ~0.89 (0.864/0.907)**, **operasyonel ~0.94**,
+>    **yönlendirme Top-1 0.907** (iki sette de aynı). Artefakt: `backend/eval/runs/heldout_deepseek_set*_n54_fixed.json`.
+>    (gpt-4o önceki üretim modeli — sınıflandırma macro-F1 ~0.91 çapraz-ref olarak korunur; yönlendirme
+>    sayısı `route_birim` düzeltmesi öncesi koda ait olduğundan artık geçerli değil.)
 >
 > Kritik nokta — bu held-out **dairesel DEĞİL:** evraklar örtük/dolaylı ifadeyle, gen_synthetic'ten
 > farklı şablon ve sözlükle yazıldı; keyword sızıntısı yok. Yani gerçek genelleme: leak-free mock **0.69
-> → gpt-4o 0.935** (artefakt-destekli). Eval'imiz mock taksonomi değil **gerçek LangGraph pipeline'ı**
-> ölçüyor. Üretim önerimiz açık: `LLM_MODE=openai` + gpt-4o." (Kanıt:
+> → DeepSeek-chat ~0.89** (artefakt-destekli). Eval'imiz mock taksonomi değil **gerçek LangGraph pipeline'ı**
+> ölçüyor. Üretim önerimiz açık: `LLM_MODE=openai` + DeepSeek-chat." (Kanıt:
 > `docs/benchmark/llm-heldout.md`, `docs/benchmark/scorecard.md`, `docs/method.md §2.1`.)
 
 ### S2. "Gerçek kamu verisi mi kullandınız?"
@@ -161,6 +163,6 @@
 - [ ] Frontend ayakta (`npm run dev` veya `dist/` + `npm run preview`).
 - [ ] 5 örnek evrak tek-tıkla çalışıyor; DOCX/PDF indirme test edildi.
 - [ ] **İnternet-kesinti provası:** Wi-Fi kapalıyken demo baştan sona koşturuldu.
-- [ ] Skor sayıları ezberde + "mock taban" ibaresi her seferinde sözlü.
+- [ ] Skor sayıları ezberde + "GERÇEK pipeline · DeepSeek-chat · in-domain; held-out ayrıca" ibaresi her seferinde sözlü.
 - [ ] Zaman provası: 10 dk'yı aşmıyor (demo 4 dk'da bitiyor).
 - [ ] Soru-cevap: yukarıdaki 10 soru ekipçe paylaşıldı (kim hangi konuyu yanıtlıyor).

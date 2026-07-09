@@ -39,13 +39,13 @@ START → siniflandir → cikar → eksik_tespit
 |---|---|---|
 | `oku` (graf-öncesi, API route) | bytes → metin + sayfa + güven | OCR/PDF/Word boru hattı (RapidOCR + pypdfium2 + python-docx) |
 | `siniflandir` | evrak türü (18 + belirsiz) | few-shot LLM birincil; mock'ta anahtar-sözcük/heuristik; düşük güven → `belirsiz` (abstention) |
-| `cikar` | bilgi unsurları + **PII maskeleme** | LLM JSON çıkarımı; TCKN/telefon/IBAN regex maskeleme (`tckn_maskeli`) |
+| `cikar` | bilgi unsurları + **PII maskeleme** | LLM JSON çıkarımı + **kanıt-alıntılı doğrulama** (Chain-of-Verification: `_kanit_gecerli` alıntının kaynak metinde birebir geçtiğini teyit eder → halüsinasyon-önleme); TCKN/telefon/IBAN regex maskeleme (`tckn_maskeli`) |
 | `eksik_tespit` | zorunlu alan → eksik + takip sorusu | tür-bağımlı zorunlu küme (3071 m.4 / resmî-yazı daraltılmış); `clarify_questions` üretir |
 | `mevzuat_oner` | ilgili mevzuat (Görev 1) | madde-bazlı **BM25 retrieval** (korpus) + config statik fallback |
 | `ozetle` | kısa öz özet (Görev 1) | LLM/mT5 özet; anahtar-unsur (key-fact) odaklı |
 | `route_birim` | hedef birim + top-k (Görev 2) | DeepSeek akıl-yürütme; fallback `EVRAK_TO_BIRIM` + sınıflandırıcı; maliyet-ağırlıklı hata değerlendirmesi |
 | `yazi_taslak` | resmî yazı taslağı (Görev 2) | jinja2 iskelet (Yön. 2646 format) + LLM doldurma; zorunlu-bölüm checklist |
-| `verify` | taslak kalite kapısı (Görev 2) | uydurma-veto + format uyarısı; false-veto=0 hedefi |
+| `verify` | taslak kalite kapısı (Görev 2) | uydurma-veto + format uyarısı; false-veto=0 hedefi. **Elle düzenlenen/AI-revize edilen taslak da (`/yazi/dogrula` ucu) HER durumda bu kapıdan + risk-bandından yeniden geçer — bypass yok** |
 | `arsiv` | arşiv metadata (Görev 2) | SDP 2005/7 dosya kodu + saklama süresi |
 | `finalize` | bilgilendirme + clarify (Görev 2) | yanıt kompozisyonu; eksikse soru, tamsa taslak; **hukuki sorumluluk reddi** |
 

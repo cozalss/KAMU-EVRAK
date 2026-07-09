@@ -6,7 +6,7 @@
 > **İçerik kapsamı (§3.1):** proje + mimari + takım özeti + motivasyon.
 >
 > **Sunum disiplini:** Her slaytta tek ana mesaj. Abartma yok — kanıtlanabilir olan gösterilir.
-> Skor sunulduğunda **mock taban** olduğu ve gerçek-LLM modunun yükselttiği **mutlaka** söylenir.
+> Skor sunulduğunda **GERÇEK pipeline · DeepSeek-chat · in-domain (n=54)** ölçümü olduğu ve dairesel-olmayan held-out'un ayrıca raporlandığı **mutlaka** söylenir.
 
 ---
 
@@ -85,18 +85,18 @@ START → siniflandir → cikar → eksik_tespit
 
 **Görsel:** `docs/img/03-sonuc.png` (sonuç kartları — PII maskeli rozet).
 
-| Yetenek | Nasıl | Kanıt (mock taban) |
+| Yetenek | Nasıl | Kanıt (GERÇEK pipeline · DeepSeek-chat · in-domain, n=54) |
 |---|---|---|
-| Tür belirleme | 19 tür taksonomisi + abstention (`belirsiz`) | macro-F1 **0.9493** / acc **0.9491** |
+| Tür belirleme | 19 tür taksonomisi + abstention (`belirsiz`) | macro-F1 **0.817** / acc **0.796** |
 | Bilgi çıkarımı | gönderen/tarih/sayı/konu/talep + **PII maskeleme** | 🛡️ ham TCKN/telefon arayüze ulaşmaz |
-| Eksik tespiti | tür-bağımlı zorunlu-alan (recall-öncelikli) | recall(β=2) **0.9948** |
+| Eksik tespiti | tür-bağımlı zorunlu-alan (recall-öncelikli) | recall(β=2) **0.739** |
 | Mevzuat önerisi | madde-bazlı BM25 (233 mevzuat / 1506 chunk) | Recall@3 **0.875** [0.64, 0.97], n=16 |
-| Özet | key-fact odaklı | recall **0.9810**, faithfulness **1.0000** |
+| Özet | key-fact odaklı | recall **0.712**, faithfulness **1.000** |
 
 > **Konuşma notu (45 sn):** "Görev 1'de evrak türünü buluyoruz, bilgileri çıkarıyoruz — ve
 > kritik: kişisel veriyi backend'de maskeliyoruz, ham TCKN arayüze hiç ulaşmıyor. Eksik bilgiyi
 > recall-öncelikli yakalıyoruz, çünkü kamuda kaçan eksik, yanlış-alarmdan pahalıdır. Mevzuatı
-> öneriyor, özeti çıkarıyoruz. Skorlar mock taban — gerçek-LLM modu yükseltir; birazdan dürüstçe açacağım."
+> öneriyor, özeti çıkarıyoruz. Skorlar gerçek pipeline (DeepSeek-chat) in-domain ölçümü; dairesel-olmayan held-out'u birazdan dürüstçe açacağım."
 
 ---
 
@@ -104,11 +104,11 @@ START → siniflandir → cikar → eksik_tespit
 
 **Görsel:** `docs/img/04-taslak.png` (resmî yazı taslağı + PDF/DOCX indir).
 
-| Yetenek | Nasıl | Kanıt (mock taban) |
+| Yetenek | Nasıl | Kanıt (GERÇEK pipeline · DeepSeek-chat · in-domain, n=54) |
 |---|---|---|
-| Birim yönlendirme | 9 birim eşleme + top-k + güven | Top-1 **0.9630** / Top-3 **0.9815** |
-| Resmî yazı taslağı | Yön. 2646 jinja2 iskelet + LLM doldurma (üst/cevabi/bilgilendirme/olur) | tür doğruluğu **1.0000** |
-| Resmî üslup | zorunlu bölüm checklist + Türkçe saflık | format uyumu **1.0000**, bileşen tam-uyum **1.0000**, saflık **1.0000** |
+| Birim yönlendirme | 9 birim eşleme + top-k + güven | Top-1 **0.852** / Top-3 **0.963** |
+| Resmî yazı taslağı | Yön. 2646 jinja2 iskelet + LLM doldurma (üst/cevabi/bilgilendirme/olur) | tür doğruluğu **0.833** |
+| Resmî üslup | zorunlu bölüm checklist + Türkçe saflık | format uyumu **1.000**, bileşen tam-uyum **1.000**, saflık **0.9998** |
 | Bilgilendirme | özet + birim + mevzuat + disclaimer | her çıktıda yasal disclaimer |
 | Eksik isteme | clarifier dur-ve-sor (kritik alan eksikse taslak yok) | dur-ve-sor dalı |
 
@@ -169,19 +169,19 @@ START → siniflandir → cikar → eksik_tespit
 
 ## Slayt 10 — Kapanış: Durum + Dürüstlük + Sonraki Adım
 
-- **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; backend **655 passed, 3 warnings**;
+- **Hazır:** Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca çalışıyor; backend **1319 passed**;
   frontend build başarılı; CI; güvenlik denetimi (0 CRITICAL).
 - **Dürüst skor beyanı (REPRODÜKE-EDİLEBİLİR ARTEFAKT):** **dairesel-olmayan held-out** sette
-  (örtük ifadeli, farklı sözlük) gpt-4o: **sıkı accuracy/macro-F1 0.935 · operasyonel 0.963 · yönlendirme
-  Top-1 0.954 (101/108)** — repodaki `backend/eval/runs/heldout_gpt4o_set1.json` ile doğrulanabilir.
+  (örtük ifadeli, farklı sözlük) DeepSeek-chat: **sıkı macro-F1 ~0.89 (0.864/0.907) · operasyonel ~0.94 · yönlendirme
+  Top-1 0.907** (n=108, 2 bağımsız set) — repodaki `backend/eval/runs/heldout_deepseek_set*_n54_fixed.json` ile doğrulanabilir.
   Leak-free mock taban (set-2) **0.69**; mock = anahtarsız taban (CI/offline), tavan değil.
 - **Sonraki adım (finalist olunursa):** blind insan-etiketli gold, ablasyon genişletme,
   canlı OCR saha provası ve kuruma özgü EBYS/e-Yazışma entegrasyonu.
 
 > **Konuşma notu (50 sn):** "Kapatırken en önemli şeyi söyleyeyim: dürüstüz ve artık ölçtük.
-> Yayınladığımız mock karne anahtarsız tabandır. Gerçek değeri kasıtlı zor — örtük ifadeli, farklı
-> sözlükle yazılmış — bir held-out sette ölçtük: gpt-4o sıkı accuracy 0.935'e çıkıyor; operasyonel
-> doğruluk 0.963, doğru birime yönlendirme 0.954 (108'de 101). Bu sayıyı repodaki bir artefakta
+> Yayınladığımız karne gerçek pipeline (DeepSeek-chat) in-domain ölçümüdür; mock ise yalnız anahtarsız CI/offline tabandır. Gerçek değeri kasıtlı zor — örtük ifadeli, farklı
+> sözlükle yazılmış — iki bağımsız held-out sette ölçtük: DeepSeek-chat sıkı macro-F1 ~0.89'a (0.864/0.907) çıkıyor; operasyonel
+> doğruluk ~0.94, doğru birime yönlendirme 0.907. Bu sayıyı repodaki bir artefakta
 > bağladık — jüri tek komutla doğrular. Leak-free mock taban ise sadece 0.69; yani ilerleme dairesel
 > değil, aynı zor sette ölçülmüş. Pipeline her modda aynı — değişen sadece kalite. Teşekkürler."
 
@@ -192,5 +192,5 @@ START → siniflandir → cikar → eksik_tespit
 - **Süre hedefi:** ~7 dk anlatım (slayt başı ~40-50 sn) → ön-eleme sunumu kısadır; final 10 dk ayrı (`docs/sunum-final.md`).
 - **Görseller:** `docs/img/01-04.png` slaytlara gömülür; mümkünse `docs/img/demo.gif` Slayt 8'e.
 - **PDF/PPTX:** bu Markdown → slayt aracına aktarılır; her slayt başlık + 3-5 madde + 1 görsel + konuşma notu (notlar PPTX "speaker notes"a).
-- **Kırmızı çizgi:** skor sunulan her slaytta "**mock taban**" ibaresi sözlü tekrarlanır (jüri güveni > yüksek-ama-şişirilmiş sayı).
+- **Kırmızı çizgi:** skor sunulan her slaytta "**GERÇEK pipeline · DeepSeek-chat · in-domain (n=54); held-out ayrıca**" ibaresi sözlü tekrarlanır (jüri güveni > yüksek-ama-şişirilmiş sayı).
 - **İdari hatırlatma:** 4. takım üyesi (uygunluk §5) başvuru öncesi tamamlanmalı — `docs/sartname-uyum-matrisi.md §F.1`.

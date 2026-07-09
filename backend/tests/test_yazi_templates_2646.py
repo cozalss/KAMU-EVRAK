@@ -6,9 +6,10 @@ from __future__ import annotations
 
 import pytest
 
+from agents.config import YAZI_TURLERI
 from yazi.models import YaziContext
 from yazi.renderer import detect_eksik_format, render_metin
-from yazi.template_registry import available_yazi_turleri, default_kapanis
+from yazi.template_registry import available_yazi_turleri, default_kapanis, template_file
 
 
 def _ctx(yazi_turu: str, **kw) -> YaziContext:
@@ -127,3 +128,31 @@ def test_tam_baglam_eksik_format_yok():
     metin = render_metin(ctx)
     # Assert — kalan {{ PLACEHOLDER }} yok
     assert detect_eksik_format(metin) == ()
+
+
+# --- Yeni-tür yayın sigortası: registry ↔ config ↔ dosya + boş-bağlam temizliği ---
+# "Şablon yayınlandığında kusursuz yazabilme" değişmezini KİLİTLER. Yeni bir yazı
+# türü eklenirken üç yer birlikte güncellenmezse (registry / config.YAZI_TURLERI /
+# .j2 dosyası) sistem sessizce cevabi_yazi'ya düşer ya da node-fallback iskeletine
+# iner — çökme değil ama "kusursuz" beklentisini bozan sessiz davranış. Bu testler
+# o sessiz sapmayı CI'da yakalar.
+
+
+def test_registry_config_yazi_turleri_birebir_ortusur():
+    # Registry (renderer'ın kaynağı) ile config.YAZI_TURLERI (pipeline'ın kaynağı)
+    # ıraksarsa yeni tür sessizce devre dışı kalır → burada erken yakala.
+    assert set(available_yazi_turleri()) == set(YAZI_TURLERI)
+
+
+@pytest.mark.parametrize("yazi_turu", available_yazi_turleri())
+def test_her_kayitli_tur_render_edilir_ve_bos_baglamda_temiz(yazi_turu):
+    # Arrange — YALNIZ zorunlu alanlar (tür + tarih); gerisi demo varsayılanına düşer.
+    # Kayıtlı ama .j2 dosyası olmayan bir tür burada TemplateNotFound ile patlar (guard).
+    ctx = YaziContext(yazi_turu=yazi_turu, tarih="09.07.2026")
+    # Act
+    metin = render_metin(ctx)
+    # Assert — hiçbir ham {{ PLACEHOLDER }} kalmamalı (jüri önizlemesinde ham slot görünmez)
+    assert detect_eksik_format(metin) == (), f"{yazi_turu}: ham placeholder kaldı"
+    assert "{{" not in metin and "}}" not in metin
+    # Registry çözümlemesi de dosya köküyle tutarlı olmalı (bilinmeyen → cevabi_yazi düşüşü değil)
+    assert template_file(yazi_turu) == yazi_turu

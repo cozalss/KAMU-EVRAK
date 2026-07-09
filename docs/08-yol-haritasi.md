@@ -14,11 +14,12 @@
 
 ## Güncel teknik durum (canlı doğrulama)
 
-- Backend: `uv run python -m pytest -q` → **655 passed, 3 warnings**.
+- Backend: `uv run python -m pytest -q` → **1319 passed**.
 - Frontend: `npm.cmd run build` → **başarılı**.
-- Mock karne: sınıflandırma macro-F1 **0.9493**, routing Top-1 **0.9630**, eksik-bilgi
-  recall **0.9948**, özet faithfulness **1.0000**, taslak `format_uyumlu_rate` **1.0000**,
-  false-veto **0**, fairness **1.0000**.
+- Karne (GERÇEK pipeline · DeepSeek-chat · in-domain, n=54): sınıflandırma macro-F1 **0.817**,
+  routing Top-1 **0.852**, eksik-bilgi recall(β=2) **0.739**, özet faithfulness **1.000**, taslak
+  `format_uyumlu_rate` **1.000**, false-veto **0/140**, fairness **0.944**. Dairesel-olmayan
+  held-out (n=108, 2 bağımsız set): macro-F1 **~0.89** (0.864/0.907), routing Top-1 **0.907**.
 
 ## Faz 0 — Ön eleme (şimdi → 12 Tmz)  ⚠️ EN ÖNCELİKLİ
 

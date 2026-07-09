@@ -94,16 +94,17 @@ göstermek için açılır; zorunlu değildir.
 
 ## 3. Konuşma noktaları (jüri sorusu gelirse)
 
-- **"Skorlar?"** → `docs/benchmark/scorecard.md` (GERÇEK LangGraph pipeline, mock taban):
-  sınıflandırma macro-F1 **0.9493** / accuracy **0.9491**, yönlendirme Top-1 **0.9630** /
-  Top-3 **0.9815**, eksik-bilgi recall **0.9948**, özet key-fact recall **0.9810**,
-  faithfulness **1.0000**, adillik (counterfactual) **1.0000**, false-veto **0**.
-  "Mock taban — gerçek LLM modu kalite tavanı içindir." %95 Wilson güven aralıkları küçük-N
+- **"Skorlar?"** → `docs/benchmark/scorecard.md` (GERÇEK pipeline · DeepSeek-chat · in-domain, n=54):
+  sınıflandırma macro-F1 **0.817** / accuracy **0.796**, yönlendirme Top-1 **0.852** /
+  Top-3 **0.963**, eksik-bilgi recall(β=2) **0.739**, özet key-fact recall **0.712**,
+  faithfulness **1.000**, adillik (counterfactual) **0.944**, false-veto **0/140**.
+  "Dairesel-olmayan held-out (n=108, 2 bağımsız set): macro-F1 **~0.89** (0.864/0.907), yönlendirme
+  Top-1 **0.907** — üretim modeli DeepSeek-chat." %95 Wilson güven aralıkları küçük-N
   belirsizliğini dürüstçe gösterir. Taslakta `format_uyumlu_rate=1.0`; ham `{{ }}` alanları
   jüri önizlemesinde görünmez.
 - **"Uydurma riski?"** → Mevzuat madde/karar şüpheliyse `[DOĞRULA: ...]` placeholder; verify/risk
   guard uydurma kurum/tarih/sayıyı veto eder; her çıktıda disclaimer.
 - **"KVKK / kişisel veri?"** → TCKN/telefon backend'de maskelenir; ham PII arayüze hiç ulaşmaz
   (kart üstündeki 🛡️ rozet bunun görünür kanıtı).
-- **"Test/build?"** → backend `uv run python -m pytest -q` → **655 passed, 3 warnings**;
+- **"Test/build?"** → backend `uv run python -m pytest -q` → **1319 passed**;
   frontend `npm.cmd run build` → **başarılı**.

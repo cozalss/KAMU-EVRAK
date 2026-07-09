@@ -264,7 +264,14 @@ EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
 
 # --- Evrak türü → üretilmesi gereken resmî yazı türü (araştırma §2) ---
 # TÜM 18 tür AÇIKÇA eşlenir (sessiz cevabi_yazi default'u yok — M6). YAZI_TURLERI:
-# ust_yazi (yeni yazışma/iletim) · cevabi_yazi (karşılık) · bilgilendirme · olur (onay).
+# ust_yazi (iletim: muhatap = HEDEF BİRİM, gönderen değil — yazi_taslak.py) ·
+# cevabi_yazi (gönderene karşılık) · bilgilendirme · olur · muzekkere · gorus_mutalaa.
+#
+# 2026-07-09 düzeltme (kullanıcı canlı demoda yakaladı): fatura/icra/dava/tebligat
+# önceden cevabi_yazi'ydi → sistem ödeme talebine "gönderen kurumun antetine cevap"
+# yazıyordu (saçma). Doğrusu: bu belgeler gönderene YANITLANMAZ, sorumlu birime
+# İLETİM üst yazısı alır (fatura→mali tahakkuk; icra/dava/tebligat→hukuk müşavirliği;
+# hukuki karşılık — itiraz/savunma — otomasyonun değil müşavirliğin işidir).
 EVRAK_TO_YAZI: dict[str, str] = {
     # Vatandaş talebi ailesi → karşılık/bilgilendirme
     "dilekce": "cevabi_yazi", "basvuru": "cevabi_yazi", "talep": "cevabi_yazi",
@@ -272,13 +279,13 @@ EVRAK_TO_YAZI: dict[str, str] = {
     "sikayet": "olur", "ihbar": "olur",          # inceleme/soruşturma → makam oluru
     # Kurum→kurum resmî yazı ailesi
     "ust_yazi": "cevabi_yazi", "cevabi_yazi": "cevabi_yazi",
-    "muzekkere": "cevabi_yazi",                   # kayıt/belge celbine karşılık
+    "muzekkere": "cevabi_yazi",                   # kayıt/belge celbine karşılık (celbedilen kayıt gönderilir)
     "genelge_talimat_olur": "olur",               # düzenleyici işlem → olur/onay
-    # Yargı/icra → hukuk müşavirliği cevabi yazısı
-    "tebligat": "cevabi_yazi", "dava_evraki": "cevabi_yazi", "icra_evraki": "cevabi_yazi",
-    "gorus_mutalaa": "cevabi_yazi",               # hukuki kanaat cevabı
-    # Mali / belge-işlemi → iletim (üst yazı) veya karşılık
-    "fatura": "cevabi_yazi",                      # ödeme/tahakkuk karşılığı
+    # Yargı/icra → hukuk müşavirliğine İLETİM (üst yazı; muhatap=hedef birim)
+    "tebligat": "ust_yazi", "dava_evraki": "ust_yazi", "icra_evraki": "ust_yazi",
+    "gorus_mutalaa": "gorus_mutalaa",             # görüş TALEBİ → görüş/mütalaa yazısıyla yanıtlanır
+    # Mali / belge-işlemi → sorumlu birime iletim
+    "fatura": "ust_yazi",                         # ödeme talebi → mali birime tahakkuk iletimi
     "tutanak": "ust_yazi", "rapor": "ust_yazi",   # tespit/inceleme çıktısı → iletim
     "belirsiz": "cevabi_yazi",                    # güvenli varsayılan
 }

@@ -23,7 +23,7 @@ import structlog
 from agents.config import YAZI_TURU_TR
 
 # Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
-from agents.nodes._llm_extract import llm_text
+from agents.nodes._llm_extract import llm_json, llm_text, real_llm
 from agents.yazi_lint import kapanis_onerisi
 from yazi.models import _DEMO_DEFAULTS, YaziContext
 from yazi.template_registry import default_kapanis, resolve_yazi_turu
@@ -88,15 +88,38 @@ def _fallback_body(yazi_turu: str, konu: str, has_ilgi: bool) -> str:
     # üst yazı (gönderen makam → muhatap makam)
     if has_ilgi:
         return (
-            # "arz/rica" bölü'lü biçim m.16'ya aykırı (tek kalıp seçilir) — üst yazı
-            # muhatabı eş/üst makam kabulüyle registry kapanışıyla tutarlı: arz.
-            f"İlgi yazı ile bildirilen {konu_ifade} konusuna ilişkin gerekli iş ve "
-            "işlemlerin yapılması hususunda gereğini arz ederim."
+            # Gövde kapanış cümlesi İÇERMEZ — şablon kapanışı (m.16) ayrıca basar;
+            # eski "…gereğini arz ederim." kuyruğu şablon kapanışıyla çift görünüyordu.
+            f"İlgi yazı ile bildirilen {konu_ifade} konusuna ilişkin evrak, "
+            "gereği yapılmak üzere ilişikte gönderilmiştir."
         )
     return (
         f"{konu_ifade} konusuna ilişkin gerekli iş ve işlemlerin yürütülmesini "
         "teminen işbu yazı tanzim edilmiştir."
     )
+
+
+# LLM gövdesi talimat ("başlık/imza yazma") verilse de bazen kapanış cümlesi yazar
+# ("Gereğinin yapılması arz olunur." vb.); şablon kapanışı (Yön. m.16) AYRICA
+# bastığından çift kapanış oluşuyordu (2026-07-09, kullanıcı canlı demoda yakaladı).
+# Gövde SONUNDAKİ bağımsız kapanış cümlesi kırpılır; cümle ORTASINDAKİ "arz ederim"
+# ifadesine dokunulmaz (lookbehind: kapanış kendi cümlesi olmalı).
+_KAPANIS_KUYRUK = re.compile(
+    r"(?:(?<=[.!?])|^)\s*(?:"
+    r"Gereğini(?:n)?(?:\s+\S+){0,3}\s+(?:arz|rica)\s+(?:eder(?:im|iz)|olunur)|"
+    r"Bilgiler(?:inize|ine)(?:\s+\S+){0,2}\s+(?:arz|rica)\s+(?:eder(?:im|iz)|olunur)|"
+    r"Olurlarınıza\s+arz\s+eder(?:im|iz)"
+    r")\s*\.?\s*$",
+)
+
+
+def _kapanis_kuyrugu_kirp(body: str) -> str:
+    """Gövde sonundaki bağımsız kapanış cümlesini at (şablon kapanışı ayrıca basar).
+
+    Gövdenin TAMAMI tek kapanış cümlesiyse dokunulmaz (boş gövde daha kötü).
+    """
+    kirpik = _KAPANIS_KUYRUK.sub("", body).rstrip()
+    return kirpik if kirpik else body
 
 
 async def build_body(
@@ -121,7 +144,7 @@ async def build_body(
              ChatMessage(role="user", content=prompt)],
             temperature=0.2, max_tokens=320,
         )
-        body = (resp.content or "").strip()
+        body = _kapanis_kuyrugu_kirp((resp.content or "").strip())
         return body or _fallback_body(yazi_turu, konu, has_ilgi)
     except Exception as exc:  # LLM hata → deterministik fallback (node patlamaz)
         log.warning("yazi_body_llm_failed", err=str(exc))
@@ -150,6 +173,21 @@ _REVIZE_MAX_TASLAK_CHARS = 12_000
 _REVIZE_MAX_TOKENS = 4096
 
 
+def _revize_metin_gecerli(taslak_md: str, metin: str) -> bool:
+    """Revize çıktısı güvenli mi — boş ya da şüpheli-kısalma ise reddet.
+
+    Kaynakta olmayan bir kesilme/çöküş belirtisi: çıktı girdinin küçük bir kesri —
+    talimat açık kısaltma istemiyorsa bu neredeyse hep sessiz kesilme/bozulmadır.
+    Düz-metin ve JSON revizyon yolları AYNI kapıyı paylaşır (eşik tek yerde).
+    """
+    if not metin:
+        return False
+    if len(taslak_md) > 200 and len(metin) < 0.3 * len(taslak_md):
+        log.warning("yazi_revize_supheli_kisalma", n_once=len(taslak_md), n_sonra=len(metin))
+        return False
+    return True
+
+
 async def revize_taslak(taslak_md: str, talimat: str) -> str | None:
     """Mevcut taslağı doğal-dil talimatla revize et (AI-destekli düzenleme).
 
@@ -167,28 +205,123 @@ async def revize_taslak(taslak_md: str, talimat: str) -> str | None:
         f"TASLAK:\n{taslak_md}\n\nREVİZYON TALİMATI:\n{talimat[:500]}",
         max_tokens=_REVIZE_MAX_TOKENS, temperature=0.2,
     )
-    if not metin:
-        return None
-    # Kaynakta olmayan bir kesilme/çöküş belirtisi: çıktı girdinin küçük bir kesri —
-    # talimat açık kısaltma istemiyorsa bu neredeyse hep sessiz kesilme/bozulmadır.
-    if len(taslak_md) > 200 and len(metin) < 0.3 * len(taslak_md):
-        log.warning("yazi_revize_supheli_kisalma", n_once=len(taslak_md), n_sonra=len(metin))
+    if metin is None or not _revize_metin_gecerli(taslak_md, metin):
         return None
     return metin
+
+
+# Yapılandırılmış revizyon — taslakla birlikte "ne değişti" özeti ve talimatın
+# uygulanamayan kısmının açıklaması istenir. Kaynak evrak özeti verilir ki eklenecek
+# atıf/tarih/sayı KAYNAKTAN alınsın; kaynakta yoksa model eklemeyi REDDEDER ve nedenini
+# 'uygulanamayan' alanında söyler (SIFIR UYDURMA ilkesinin kullanıcıya görünür hâli).
+_REVIZE_JSON_SYSTEM = (
+    "Sen bir kamu kurumu yazı işleri uzmanısın. Sana resmî bir yazı taslağı, varsa "
+    "kaynak evrak özeti ve bir REVİZYON TALİMATI verilecek. Talimatı uygulayarak taslağı "
+    "yeniden yaz. Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik "
+    "(CB 2646/2020) üslubunu KORU: 3. tekil/edilgen kip, açık ve resmî dil, argo/kısaltma "
+    "yok. TASLAKTA ZATEN VAR OLAN kurum adı/kişi adı/tarih/sayı/madde numaralarını "
+    "değiştirmeden koru. Talimat yeni somut bilgi (tarih, sayı, madde no, kurum, kişi) "
+    "gerektiriyorsa bunu YALNIZ kaynak evrakta geçiyorsa ekle; kaynakta yoksa o kısmı "
+    "UYGULAMA ve 'uygulanamayan' alanında tek cümleyle nedenini açıkla. Talimat taslakla "
+    "tamamen alakasızsa taslağı olduğu gibi döndür ve nedenini 'uygulanamayan'a yaz. "
+    "YALNIZ şu şemada geçerli JSON döndür: "
+    '{"taslak": "revize edilmiş TAM metin", '
+    '"degisiklikler": ["yapılan her değişiklik için kısa tek cümle (en çok 5)"], '
+    '"uygulanamayan": "talimatın uygulanamayan kısmı ve nedeni; yoksa boş string"}'
+)
+
+
+def _tek_satir(v: str, max_len: int) -> str:
+    """LLM'den gelen özet satırını tek-satıra indir (kontrol karakteri temizliği)."""
+    return re.sub(r"[\r\n\t\x00-\x1f]+", " ", v).strip()[:max_len]
+
+
+def _revize_json_ayikla(cevap: Any, taslak_md: str) -> dict[str, Any] | None:
+    """llm_json çıktısını doğrula ve temizle — bozuksa None (düz-metin yolu devralır).
+
+    Dönen sözlük: {"metin", "degisiklikler", "uygulanamayan"}. degisiklikler en çok
+    5 madde / 200 karakter, uygulanamayan 300 karakter — LLM çıktısı UI'a gitmeden
+    sınırlandırılır (körü körüne güvenilmez, bkz. verify'daki grounding sınırları).
+    """
+    if not isinstance(cevap, dict):
+        return None
+    metin = cevap.get("taslak")
+    if not isinstance(metin, str) or not _revize_metin_gecerli(taslak_md, metin.strip()):
+        return None
+    ham = cevap.get("degisiklikler")
+    degisiklikler = [
+        _tek_satir(d, 200) for d in (ham if isinstance(ham, list) else [])
+        if isinstance(d, str) and d.strip()
+    ][:5]
+    uygulanamayan = cevap.get("uygulanamayan")
+    uygulanamayan = _tek_satir(uygulanamayan, 300) if isinstance(uygulanamayan, str) else ""
+    return {"metin": metin.strip(), "degisiklikler": degisiklikler,
+            "uygulanamayan": uygulanamayan}
+
+
+async def revize_taslak_yapili(
+    taslak_md: str, talimat: str, evrak_ozet: str = "",
+) -> dict[str, Any] | None:
+    """Yapılandırılmış AI revizyonu: yeni metin + değişiklik özeti + uygulanamayan kısmı.
+
+    Önce JSON modu denenir (değişiklik özeti + uydurma-reddi açıklaması); JSON
+    bozuk/geçersizse düz-metin revize_taslak'a düşülür (özet alanları boş döner).
+    revize_taslak sözleşmesi aynen geçerli: LLM yok/mock/hata/aşırı-uzun/şüpheli-kısalma
+    → None, çağıran orijinal taslağı korur. Mock'un konu-bazlı sabit JSON'u revizyon
+    DEĞİLDİR — mock modda JSON yoluna hiç girilmez (real_llm kapısı).
+    """
+    if len(taslak_md) > _REVIZE_MAX_TASLAK_CHARS:
+        log.warning("yazi_revize_taslak_cok_uzun", n_char=len(taslak_md))
+        return None
+    if real_llm() is None:
+        return None
+    kaynak = f"\n\nKAYNAK EVRAK (özet):\n{evrak_ozet[:1200]}" if evrak_ozet.strip() else ""
+    cevap = await llm_json(
+        _REVIZE_JSON_SYSTEM,
+        f"TASLAK:\n{taslak_md}{kaynak}\n\nREVİZYON TALİMATI:\n{talimat[:500]}",
+        max_tokens=_REVIZE_MAX_TOKENS, temperature=0.2,
+    )
+    yapili = _revize_json_ayikla(cevap, taslak_md)
+    if yapili is not None:
+        log.info("yazi_revize_yapili", n_degisiklik=len(yapili["degisiklikler"]),
+                 uygulanamayan=bool(yapili["uygulanamayan"]))
+        return yapili
+    metin = await revize_taslak(taslak_md, talimat)  # düz-metin fallback
+    if metin is None:
+        return None
+    return {"metin": metin, "degisiklikler": [], "uygulanamayan": ""}
+
+
+# Gönderen bir MAKAM/KURUM adı mı (kişi değil)? Kurum adına "Sayın" öneki EKLENMEZ
+# (Yön. m.14: makam adı aynen yazılır; "Sayın" gerçek-kişi nezaket önekidir).
+# LLM çıkarımı bazen antetteki kurumu 'gonderen' olarak verir — "Sayın Gazi
+# Üniversitesi Rektörlüğü" gibi hatalı hitap bu kontrolle önlenir (2026-07-09,
+# kullanıcı canlı demoda yakaladı).
+_KURUM_GOSTERGE = re.compile(
+    r"bakanlı|müdürlü|başkanlı|rektörlü|valili|kaymakaml|belediye|müşavirli|"
+    r"daire|mahkeme|icra|üniversite|kurum|kurul|sekreterli|komutanlı|"
+    r"a\.ş\.|ltd|şti|enstitü|ajans|müftülü|odası",
+)
+
+
+def _kurum_adi_mi(ad: str) -> bool:
+    """Ad bir kurum/makam adı gibi mi görünüyor (kişi adı değil)?"""
+    from core.text import tr_lower
+    return bool(_KURUM_GOSTERGE.search(tr_lower(ad)))
 
 
 def _muhatap(unsurlar: dict[str, Any]) -> str:
     """Cevabi yazıda muhatap = gelen belgenin GÖNDEREN'i (Yön. m.14).
 
     Gelen dilekçe/başvuruyu yazan kişi/kurum, cevabımızın muhatabıdır. Gerçek kişi
-    → "Sayın <Ad Soyad>"; tüzel kişi/kurum → adı aynen. Eksikse boş (demo varsayılanı).
-    Parantezli sıfat ('(İlgili)', '(Vatandaş)') atılır — resmî hitapta yer almaz.
+    → "Sayın <Ad Soyad>"; tüzel kişi/kurum/makam → adı AYNEN ("Sayın" eklenmez).
+    Eksikse boş (demo varsayılanı). Parantezli sıfat ('(İlgili)') atılır.
     """
     gonderen = str(unsurlar.get("gonderen", "") or "").strip()
     if gonderen:
         gonderen = re.sub(r"\s*\([^)]*\)\s*$", "", gonderen).strip()
         if gonderen:
-            return f"Sayın {gonderen}"
+            return gonderen if _kurum_adi_mi(gonderen) else f"Sayın {gonderen}"
     kurum = str(unsurlar.get("kurum", "") or "").strip()
     return kurum  # boşsa YaziContext demo varsayılanı kullanır
 
@@ -293,4 +426,5 @@ async def build_alt_talep_taslaklari(
     return out
 
 
-__all__ = ("build_alt_talep_taslaklari", "build_body", "build_context", "revize_taslak")
+__all__ = ("build_alt_talep_taslaklari", "build_body", "build_context",
+           "revize_taslak", "revize_taslak_yapili")

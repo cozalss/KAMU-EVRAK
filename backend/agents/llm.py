@@ -554,15 +554,25 @@ class OpenAIClient:
         self.model = (model_name or "gpt-4o-mini").strip() or "gpt-4o-mini"
         self.base_url = validated_base_url()
         self.timeout = timeout if timeout is not None else float(os.getenv("OPENAI_LLM_TIMEOUT_S", "120"))
-        self._client: Any = None  # httpx.AsyncClient — process ömrü boyu yeniden kullanılır
+        # httpx.AsyncClient LOOP-BAŞINA (process ömrü boyu tek client YERİNE) — reranker.py'nin
+        # kalıcı arka-plan thread'i (deepseek-listwise-loop) kendi event loop'unda bu singleton'ı
+        # kullanıyor; tek paylaşılan client ilk dokunan loop'a bağlanıp DİĞER loop'lardan gelen
+        # çağrıları "bound to a different event loop" ile kilitliyordu (2026-07 bulgusu — rerank
+        # ve NLI ana pipeline loop'undan çağrıldığında sessizce timeout'a düşüyordu).
+        self._clients: dict[int, Any] = {}
 
     def _ensure_client(self) -> Any:
+        import asyncio
+
         import httpx
 
-        if self._client is None:
+        loop_id = id(asyncio.get_running_loop())
+        client = self._clients.get(loop_id)
+        if client is None:
             # follow_redirects=False: SSRF redirect-bypass sertleştirme (yargi_client deseni).
-            self._client = httpx.AsyncClient(timeout=self.timeout, follow_redirects=False)
-        return self._client
+            client = httpx.AsyncClient(timeout=self.timeout, follow_redirects=False)
+            self._clients[loop_id] = client
+        return client
 
     def _headers(self) -> dict[str, str]:
         # Anahtarı call-time oku (require_api_key) → singleton sonrası set edilse de güncel.
@@ -742,9 +752,16 @@ class OpenAIClient:
         raise last_exc or RuntimeError("openai_stream_unreachable")  # pragma: no cover
 
     async def aclose(self) -> None:
-        if self._client is not None:
-            await self._client.aclose()
-            self._client = None
+        # Yalnız MEVCUT loop'un client'ı güvenle await'lenebilir — başka loop'a bağlı bir
+        # client'ı burada kapatmaya çalışmak aynı "farklı loop'a bağlı" hatasını tekrar eder.
+        # Diğer loop'ların client'ları referanstan düşürülür (GC/süreç sonu temizler).
+        import asyncio
+
+        loop_id = id(asyncio.get_running_loop())
+        client = self._clients.pop(loop_id, None)
+        if client is not None:
+            await client.aclose()
+        self._clients.clear()
 
 
 _singleton: LLMClient | None = None

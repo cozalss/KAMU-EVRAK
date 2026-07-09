@@ -377,16 +377,55 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // NOT: KARAR_ETIKET/stampDecision'daki "duzenle" BAŞKA bir anlam taşır (onay kartında
   // "Düzenle" = henüz karar verilmedi, damgalanmaz) — o yüzden history damgası burada
   // KARAR_ETIKET'e dokunmadan doğrudan yazılır, iki anlam birbirine karışmasın.
-  const sendDraft = (draft, metinGuncel) => {
-    const res = { ...draft.result, yazi_taslak_md: metinGuncel };
+  // /yazi/dogrula ortak çağrısı — hem sendDraft (talimatsız, yalnız doğrulama) hem de
+  // BelgeModal'daki "AI ile revize et" akışı (talimatlı) AYNI uç noktayı, aynı kaynak
+  // bağlamıyla (evrak_text/yazi_turu/bilgi_unsurlari) çağırır. kaynak = draft.result.
+  const dogrulaTaslak = useCallback((kaynak, taslakMd, talimat = "") => apiPost("/yazi/dogrula", {
+    taslak_md: taslakMd,
+    evrak_text: kaynak?.kanit_metadata?.metin || "",  // maskeli kaynak metin (KVKK)
+    yazi_turu: kaynak?.yazi_turu || "",
+    evrak_turu: kaynak?.evrak_turu || "",
+    hedef_birim: kaynak?.hedef_birim || "",
+    bilgi_unsurlari: kaynak?.bilgi_unsurlari || {},
+    talimat,
+  }), []);
+
+  // Elle düzenlenmiş taslak Giden Evrak'a yazılmadan ÖNCE /yazi/dogrula'dan geçirilir —
+  // önceden metinGuncel doğrudan pushOutbox'a gidiyordu, uydurma-veto/2646-lint/risk-bandı
+  // kapılarını hiç görmüyordu (memur elle "09.09.2099" gibi kaynakta olmayan bir tarih
+  // yazsa bile fark edilmeden gönderiliyordu). Doğrulama başarısız olursa GÖNDERİLMEZ —
+  // sessizce eski (doğrulanmamış) davranışa düşülmez.
+  // Dönüş değeri (bool): çağıran (BelgeModal/DraftCard) modalı/kartı ANCAK başarıda
+  // kapatır/serbest bırakır — doğrulama veya gönderim başarısız olursa taslak açık kalır,
+  // memur toast'ı görüp tekrar dener (fire-and-forget geçmişte modalı sessizce kapatıyordu).
+  const sendDraft = async (draft, metinGuncel) => {
+    const kaynak = draft.result || {};
+    let dogrulanan;
+    try {
+      dogrulanan = await dogrulaTaslak(kaynak, metinGuncel);
+    } catch (err) {
+      console.warn("Taslak doğrulanamadı", err);
+      showToast("Taslak doğrulanamadı — bağlantıyı kontrol edip tekrar deneyin.");
+      return false;
+    }
+    const res = {
+      ...kaynak,
+      yazi_taslak_md: dogrulanan.taslak_md,
+      verify_uyari: dogrulanan.verify_uyari,
+      verify_notes: dogrulanan.verify_notes,
+      tutarlilik_uyari: dogrulanan.tutarlilik_uyari,
+      format_uyumlu: dogrulanan.format_uyumlu,
+      lint_2646: dogrulanan.lint_2646,
+      risk_metadata: dogrulanan.risk_metadata || kaynak.risk_metadata,
+    };
     const fm = { kind: draft.kind, name: draft.name, label: draft.name };
-    if (!pushOutbox(res, fm, "duzenle")) { showToast("Gönderilemedi — taslak zaten gönderilmiş olabilir."); return; }
+    if (!pushOutbox(res, fm, "duzenle")) { showToast("Gönderilemedi — taslak zaten gönderilmiş olabilir."); return false; }
     setDrafts((d) => d.filter((x) => x.id !== draft.id));
     if (res._altSira) {
       // Alt-talep kökenli: birimin KENDİ onayla uç noktasına gider — ana işlemin karar
       // damgası (aşağıdaki dal) burada DEĞİŞMEZ, o birimin kararı diğerlerini etkilemez.
       apiPost(`/islem/${encodeURIComponent(res.islem_id)}/alt-talep/${res._altSira}/onayla`, {
-        secim: "duzenle", yazi_turu: res.yazi_turu || "", metin: metinGuncel || "",
+        secim: "duzenle", yazi_turu: res.yazi_turu || "", metin: res.yazi_taslak_md || "",
       }).catch((err) => console.warn("Birim kararı DB'ye yazılamadı", err));
     } else {
       const islemId = res.islem_id || (String(draft.id).startsWith("db-taslak-") ? String(draft.id).slice("db-taslak-".length) : null);
@@ -396,8 +435,12 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           x.result === res || x.result?.islem_id === islemId ? { ...x, result: { ...x.result, onay_durumu: "duzenlendi" } } : x)));
       }
     }
-    showToast("Taslak düzenlenerek gönderildi — Giden Evrak'a eklendi.");
+    const yeniUyari = (dogrulanan.verify_uyari || []).length;
+    showToast(yeniUyari
+      ? `Taslak gönderildi — doğrulama ${yeniUyari} uyarı buldu, Giden Evrak'ta inceleyin.`
+      : "Taslak düzenlenerek gönderildi — Giden Evrak'a eklendi.");
     goView("giden");
+    return true;
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
@@ -536,7 +579,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
-  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
+  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (

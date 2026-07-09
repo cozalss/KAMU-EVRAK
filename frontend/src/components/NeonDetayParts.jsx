@@ -233,11 +233,11 @@ export function DuzeltmeDiff({ eski, yeni }) {
   // downloading vb. üst-state değişimlerinde tam metin diff'i yeniden hesaplanmasın.
   const parcalar = useMemo(() => (eski ? diffLines(eski, yeni) : []), [eski, yeni]);
   if (!eski) {
-    return <pre style={{ margin: 0, padding: SP.m, ...satirStil, color: PAL.ink2, maxHeight: 240, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{yeni}</pre>;
+    return <pre style={{ margin: 0, padding: SP.m, ...satirStil, color: PAL.ink2, maxHeight: 480, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{yeni}</pre>;
   }
   return (
     <div aria-label="Önerilen düzeltme farkı — eklenen satırlar artı, çıkarılan satırlar eksi işaretli"
-      style={{ maxHeight: 240, overflow: "auto", padding: "8px 0", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
+      style={{ maxHeight: 480, overflow: "auto", padding: "8px 0", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
       {parcalar.map((p, i) => {
         const renk = p.added ? DERIN.yesil : p.removed ? DERIN.kirmizi : PAL.ink2;
         const bg = p.added ? ALFA(BANT.yesil.c) : p.removed ? ALFA(BANT.kirmizi.c) : "transparent";

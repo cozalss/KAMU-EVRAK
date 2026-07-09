@@ -69,6 +69,24 @@ class YaziEypRequest(BaseModel):
     ilgi_sayi: str = Field("", max_length=120)
 
 
+class YaziDogrulaRequest(BaseModel):
+    """Taslağı (opsiyonel doğal-dil revizyon sonrası) verify+risk_guard'dan yeniden geçirme
+    isteği — HITL onayına SUNULMADAN önce güvenlik kapılarının atlanmadığından emin olunur.
+
+    talimat boşsa yalnız doğrulama yapılır (elle düzenlenmiş taslak — bkz. sendDraft bug fix);
+    doluysa önce DeepSeek taslağı talimata göre revize eder, sonra revize edilmiş metin
+    doğrulanır. Revizyon başarısız/LLM yoksa orijinal taslak DEĞİŞTİRİLMEDEN doğrulanır.
+    """
+
+    taslak_md: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
+    evrak_text: str = Field("", max_length=MAX_EVRAK_CHARS)
+    yazi_turu: str = Field("", max_length=50)
+    evrak_turu: str = Field("", max_length=50)
+    hedef_birim: str = Field("", max_length=100)
+    bilgi_unsurlari: dict = Field(default_factory=dict)
+    talimat: str = Field("", max_length=500)
+
+
 class OnayResumeRequest(BaseModel):
     """HITL memur onay kararı — duraklamış pipeline'ı sürdürür (Görev 2 yenilikçilik)."""
 

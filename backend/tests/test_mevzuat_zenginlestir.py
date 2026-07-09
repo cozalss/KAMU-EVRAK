@@ -50,3 +50,31 @@ def test_yururluk_basliktan_parse_uydurmaz():
     # sürüm YOK → boş (uydurmaz)
     out2 = zenginlestir_mevzuat(_state([{"baslik": "3071 sayılı Kanun m.4", "score": 0.7}]))
     assert out2[0]["yururluk"] == ""
+
+
+class TestCragDuzeltmesiOnceligi:
+    """CRAG_ENABLED açıkken hesaplanan mevzuat_onerileri_corrected, MevzuatCard'a giden
+    listeye YANSIMALIYDI — regresyon: önceden yalnız ham mevzuat_onerileri okunuyordu,
+    CRAG'in düzeltmesi kullanıcıya hiç gösterilmiyordu (yalnız finalize'ın bir cümlelik
+    özetinde görünüyordu).
+    """
+
+    def test_corrected_liste_varsa_o_kullanilir(self):
+        ham = [{"baslik": "Yanlış Kanun m.1", "score": 0.3}]
+        duzeltilmis = [{"baslik": "Doğru Kanun m.5", "score": 0.85}]
+        state = {"mevzuat_onerileri": ham, "mevzuat_onerileri_corrected": duzeltilmis,
+                 "mevzuat_nli": [], "bilgi_unsurlari": {"konu": "test"}}
+        out = zenginlestir_mevzuat(state)
+        assert [o["baslik"] for o in out] == ["Doğru Kanun m.5"]
+
+    def test_corrected_yoksa_ham_listeye_duser(self):
+        out = zenginlestir_mevzuat(_state([{"baslik": "Ham Kanun m.2", "score": 0.7}]))
+        assert out[0]["baslik"] == "Ham Kanun m.2"
+
+    def test_corrected_bos_listeyse_ham_listeye_duser(self):
+        # CRAG çalıştı ama düzeltme gerekmedi → boş liste; ham korunmalı, [] ile ezilmemeli.
+        state = {"mevzuat_onerileri": [{"baslik": "Ham Kanun m.3", "score": 0.7}],
+                 "mevzuat_onerileri_corrected": [], "mevzuat_nli": [],
+                 "bilgi_unsurlari": {"konu": "test"}}
+        out = zenginlestir_mevzuat(state)
+        assert out[0]["baslik"] == "Ham Kanun m.3"

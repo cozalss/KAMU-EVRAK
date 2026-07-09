@@ -36,8 +36,14 @@ def _guven(score: float, dogrula: bool, nli_destek: bool | None) -> tuple[str, b
 
 
 def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
-    """state.mevzuat_onerileri → şeffaflık alanları eklenmiş liste (additive; sıra korunur)."""
-    oneriler = state.get("mevzuat_onerileri") or []
+    """state.mevzuat_onerileri → şeffaflık alanları eklenmiş liste (additive; sıra korunur).
+
+    CRAG düzeltmesi varsa ONU kullanır (finalize_node ile aynı öncelik: corrected → ham).
+    Önceki hâli yalnız ham mevzuat_onerileri'ni okuyordu — CRAG_ENABLED açıkken düzeltilmiş
+    liste hesaplanıyor ama kullanıcıya gösterilen kart (MevzuatCard) hiç görmüyordu; CRAG'in
+    tek etkisi finalize'ın bir cümlelik bilgilendirme metniyle sınırlı kalıyordu.
+    """
+    oneriler = state.get("mevzuat_onerileri_corrected") or state.get("mevzuat_onerileri") or []
     nli = {str(n.get("baslik", "")): n for n in (state.get("mevzuat_nli") or [])}
     konu = str((state.get("bilgi_unsurlari") or {}).get("konu") or "").strip()
     dayanak = f"“{konu}” talebi" if konu else "evrak içeriği"

@@ -45,22 +45,30 @@ _SYSTEM = (
     "- gonderen: gönderen kişi adı-soyadı veya tüzel kişi (ör. 'Ad-Soyad:' satırı)\n"
     "- kurum: gönderen/muhatap kurum adı (T.C. başlık satırından, varsa)\n"
     "- konu: evrakın konusu (kısa öz; 'Konu:' satırı yoksa gövdeden çıkar)\n"
-    "- talep: evrakta somut bir talep/istek/arz var mı? (true/false)\n"
-    "- iletisim_adres: açık bir iletişim/tebligat adresi var mı? (true/false)\n"
-    "- imza: imza/e-imza/'arz ederim' kapanışı var mı? (true/false)\n\n"
+    "- talep/iletisim_adres/imza: her biri {\"deger\": true/false, \"kanit\": \"...\"} biçiminde "
+    "döndür. deger=true ise kanit alanına metinden BİREBİR (aynen, parafraz etmeden) "
+    "alıntılanmış kısa bir ifade yaz; deger=false ise kanit null.\n\n"
     "KURALLAR:\n"
     "- gonderen yalnız metinde AÇIKÇA yazan ad-soyad/kurumdur; tahmin etme.\n"
-    "- talep, gövde dolaylı olsa da gerçek bir istek varsa true ('çözülmesini umuyorum' = true).\n"
+    "- talep: dolaylı olsa da gerçek bir istek/arz varsa true (ör. 'çözülmesini umuyorum'). "
+    "Yüzeysel bakma, metinde gerçek bir talep ifadesi olup olmadığını dikkatle ARA.\n"
     "- iletisim_adres yalnız gerçek bir adres/iletişim satırı varsa true.\n"
+    "- imza yalnız imza/e-imza/kapanış ifadesi varsa true.\n"
+    "- kanit metinde GEÇMEYEN bir ifadeyse deger=false say (uydurmaktansa false de).\n"
     "- TCKN, telefon, tarih, sayı çıkarma — bunlar ayrıca regex ile işlenir, ATLAMA.\n\n"
     "ÖRNEK:\n"
     'Metin: "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\\nKonu: tesis izni\\nKaydımın oluşturulmasını '
     'istiyorum.\\nAd-Soyad: Naz Tekin\\nTCKN: ..."\n'
     '→ {"gonderen": "Naz Tekin", "kurum": "Sanayi ve Teknoloji Bakanlığı", '
-    '"konu": "tesis izni", "talep": true, "iletisim_adres": false, "imza": false}\n\n'
+    '"konu": "tesis izni", '
+    '"talep": {"deger": true, "kanit": "Kaydımın oluşturulmasını istiyorum"}, '
+    '"iletisim_adres": {"deger": false, "kanit": null}, '
+    '"imza": {"deger": false, "kanit": null}}\n\n'
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
-    '{"gonderen": null, "kurum": null, "konu": null, "talep": false, '
-    '"iletisim_adres": false, "imza": false}'
+    '{"gonderen": null, "kurum": null, "konu": null, '
+    '"talep": {"deger": false, "kanit": null}, '
+    '"iletisim_adres": {"deger": false, "kanit": null}, '
+    '"imza": {"deger": false, "kanit": null}}'
 )
 
 
@@ -116,15 +124,47 @@ def _regex_unsurlar(text: str) -> dict[str, Any]:
     return unsurlar
 
 
-def _merge_llm(unsurlar: dict[str, Any], obj: dict[str, Any]) -> None:
-    """LLM yapısal alanlarını birleştir (regex'i ezmeden; serbest-metin PII-scrub'lanır)."""
+def _kanit_gecerli(kanit: Any, text: str) -> bool:
+    """Kanıt span'ı kaynak metinde GERÇEKTEN geçiyor mu? (uydurma-karşıtı doğrulama).
+
+    Boşluk/büyük-küçük harf farkına toleranslı, ama alıntı kaynakta yoksa asla true dönmez —
+    LLM'in kanıt-alıntısına 'güvenilmez, doğrulanır' ilkesi (bkz. verify.py grounding deseni).
+    Minimum 15 karakter + en az 2 kelime şartı: kısa/tek-kelimelik alıntılar ("için", "arz
+    e") kaynakta hemen her zaman TESADÜFEN geçer — gerçek bir kanıt değil, sahte-pozitif
+    "topraklama" riski.
+    """
+    if not isinstance(kanit, str):
+        return False
+    kanit_norm = re.sub(r"\s+", " ", kanit).strip().casefold()
+    if len(kanit_norm) < 15 or kanit_norm.count(" ") < 1:
+        return False
+    return kanit_norm in re.sub(r"\s+", " ", text).casefold()
+
+
+def _merge_llm(unsurlar: dict[str, Any], obj: dict[str, Any], text: str) -> None:
+    """LLM yapısal alanlarını birleştir (regex'i ezmeden; serbest-metin PII-scrub'lanır).
+
+    talep/iletisim_adres/imza: {"deger": bool, "kanit": str|null} kanıt-alıntılı biçimde gelir
+    (Chain-of-Verification deseni). Eksik-bilgi F-beta(β=2) eval'inde bu üç alan çıplak
+    boolean'ken precision 1.0 / recall 0.739 ölçülmüştü — model tek örneğe kalıp eşleştirip
+    dolaylı sinyalleri kaçırıyordu. Artık deger bayrağı false olsa bile kanıt kaynak metinde
+    GERÇEKTEN doğrulanıyorsa true sayılır (recall-öncelikli — kamuda FN>FP); kanıt yoksa/
+    uydurmaysa yine false — recall'a ağırlık verir ama uydurmayı asla kabul etmez.
+    """
     for key in ("gonderen", "kurum", "konu"):
         val = obj.get(key)
         if isinstance(val, str) and val.strip() and not unsurlar.get(key):
             unsurlar[key] = _scrub_pii(val.strip()[:160])
     for key in ("talep", "iletisim_adres", "imza"):
-        if obj.get(key) is True and not unsurlar.get(key):
+        if unsurlar.get(key):
+            continue  # regex zaten tespit etti
+        alan = obj.get(key)
+        if isinstance(alan, dict):
+            if _kanit_gecerli(alan.get("kanit"), text):
+                unsurlar[key] = True
+        elif alan is True:  # eski çıplak-boolean şekli (LLM şema dışına çıkarsa) — geriye uyum
             unsurlar[key] = True
+            log.warning("cikar_kanitsiz_boolean_fallback", alan=key)
 
 
 async def cikar_node(state: dict[str, Any]) -> dict[str, Any]:
@@ -135,7 +175,7 @@ async def cikar_node(state: dict[str, Any]) -> dict[str, Any]:
     obj = await llm_json(_SYSTEM, text[:6000], max_tokens=300)
     source = "regex"
     if obj is not None:
-        _merge_llm(unsurlar, obj)
+        _merge_llm(unsurlar, obj, text)
         source = "llm+regex"
 
     log.info("cikar", alanlar=list(unsurlar), pii=bool(unsurlar.get("pii_var")), source=source)

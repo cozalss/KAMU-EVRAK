@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 
-from agents.nodes.cikar import _mask, _regex_unsurlar, _scrub_pii, cikar_node
+from agents.nodes.cikar import _kanit_gecerli, _mask, _merge_llm, _regex_unsurlar, _scrub_pii, cikar_node
 
 # TCKN formatı: 11 haneli, ilk rakam 1-9
 _TCKN_RE = re.compile(r"\b[1-9]\d{10}\b")
@@ -165,6 +165,98 @@ class TestRegexUnsurlar:
         unsurlar = _regex_unsurlar(metin)
         # Assert
         assert isinstance(unsurlar, dict)
+
+
+# ---------------------------------------------------------------------------
+# _kanit_gecerli() + _merge_llm() — kanıt-alıntılı extraction (eksik-bilgi recall düzeltmesi)
+# ---------------------------------------------------------------------------
+
+
+class TestKanitGecerli:
+    """Kanıt span'ı kaynak metinde gerçekten geçiyor mu — uydurma-karşıtı doğrulama."""
+
+    def test_metinde_gecen_kanit_gecerli(self):
+        # Arrange
+        metin = "Kaydımın oluşturulmasını istiyorum. Ad-Soyad: Naz Tekin"
+        # Act / Assert
+        assert _kanit_gecerli("Kaydımın oluşturulmasını istiyorum", metin) is True
+
+    def test_bosluk_ve_buyuk_kucuk_harf_toleransli(self):
+        # Arrange — kaynakta fazladan boşluk/satır sonu, kanıt tek boşluklu
+        metin = "Kaydımın   oluşturulmasını\nistiyorum."
+        # Act / Assert
+        assert _kanit_gecerli("kaydımın oluşturulmasını istiyorum", metin) is True
+
+    def test_metinde_olmayan_kanit_gecersiz(self):
+        # Arrange — LLM'in uydurduğu bir alıntı
+        metin = "Konu: izin talebi."
+        # Act / Assert
+        assert _kanit_gecerli("bu kısım metinde hiç yok", metin) is False
+
+    def test_cok_kisa_kanit_gecersiz(self):
+        # Arrange — anlamsız kısa alıntıya güvenilmez (yanlış-pozitif riski)
+        metin = "ev"
+        # Act / Assert
+        assert _kanit_gecerli("ev", metin) is False
+
+    def test_null_kanit_gecersiz(self):
+        # Act / Assert
+        assert _kanit_gecerli(None, "herhangi bir metin") is False
+
+    def test_string_olmayan_kanit_gecersiz(self):
+        # Act / Assert
+        assert _kanit_gecerli(True, "herhangi bir metin") is False
+
+
+class TestMergeLlmKanit:
+    """_merge_llm: kanıt-alıntılı {deger, kanit} biçimi + geriye uyum."""
+
+    def test_kanit_gerceklenmisse_deger_false_olsa_bile_true_sayilir(self):
+        # Arrange — recall-öncelikli: deger=false ama kanit metinde gerçekten var
+        unsurlar: dict = {}
+        metin = "Sonuçlanmasını rica ederim, mağduriyetim giderilsin."
+        obj = {"talep": {"deger": False, "kanit": "mağduriyetim giderilsin"}}
+        # Act
+        _merge_llm(unsurlar, obj, metin)
+        # Assert
+        assert unsurlar.get("talep") is True
+
+    def test_uydurma_kanit_true_saymaz(self):
+        # Arrange — deger=true ama kanit kaynakta yok → uydurma, reddedilir
+        unsurlar: dict = {}
+        metin = "Konu: bilgi talebi."
+        obj = {"talep": {"deger": True, "kanit": "metinde olmayan bir ifade parçası"}}
+        # Act
+        _merge_llm(unsurlar, obj, metin)
+        # Assert
+        assert unsurlar.get("talep") is not True
+
+    def test_eski_ciplak_boolean_seklinde_geriye_uyum(self):
+        # Arrange — model şema dışına çıkıp eski düz-boolean dönerse yine kabul edilir
+        unsurlar: dict = {}
+        obj = {"imza": True}
+        # Act
+        _merge_llm(unsurlar, obj, "herhangi bir metin")
+        # Assert
+        assert unsurlar.get("imza") is True
+
+    def test_regex_zaten_tespit_ettiyse_llm_ezmez(self):
+        # Arrange — regex zaten True koymuş, LLM'in kanıtsız/çelişkili çıktısı üzerine yazmaz
+        unsurlar: dict = {"imza": True}
+        obj = {"imza": {"deger": False, "kanit": None}}
+        # Act
+        _merge_llm(unsurlar, obj, "herhangi bir metin")
+        # Assert
+        assert unsurlar.get("imza") is True
+
+    def test_kanit_yoksa_false_kalir(self):
+        # Arrange
+        unsurlar: dict = {}
+        obj = {"iletisim_adres": {"deger": False, "kanit": None}}
+        # Act
+        _merge_llm(unsurlar, obj, "herhangi bir metin")
+        # Assert
+        assert "iletisim_adres" not in unsurlar
 
 
 # ---------------------------------------------------------------------------

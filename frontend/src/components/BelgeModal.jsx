@@ -5,7 +5,9 @@
    tetikleyiciye döner, açıkken body scroll kilitlenir. PDF kaynaklarda gerçek sayfa
    önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik gösterilir (KVKK). */
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { MONO, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
+import { MONO, PAL, DERIN, DERIN_OF, T, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, Btn, focusRing } from "./neonUi.jsx";
+import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
+import { cleanDemoText } from "./result-cards.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
@@ -22,7 +24,7 @@ export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ar
   );
 }
 
-export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null }) {
+export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null }) {
   const kapatRef = useRef(null);
   const alanRef = useRef(null);
   const oncekiOdak = useRef(null);
@@ -31,6 +33,45 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
   const [metinD, setMetinD] = useState(metin);
   const [kapatUyari, setKapatUyari] = useState(false);
   const kirli = duzenlenebilir && metinD !== metin;
+
+  // AI ile revize et — doğal-dil talimatla taslağı DeepSeek'e düzenlet, sonucu diff olarak
+  // göster, memur Uygula/Vazgeç ile onaylar (HITL — AI hiçbir zaman doğrudan uygulamaz).
+  const [talimat, setTalimat] = useState("");
+  const [revizeBusy, setRevizeBusy] = useState(false);
+  const [revizeOneri, setRevizeOneri] = useState(null);
+  const [revizeHata, setRevizeHata] = useState(null);
+  const revizeIste = async () => {
+    if (!talimat.trim() || revizeBusy) return;
+    setRevizeBusy(true);
+    setRevizeHata(null);
+    setRevizeOneri(null);
+    try {
+      const sonuc = await onRevize(metinD, talimat.trim());
+      if (sonuc?.revize_edildi && sonuc.taslak_md) {
+        // metinD (eski) TaslaklarView'da cleanDemoText'ten geçmiş halde geliyor — AI'nin ham
+        // cevabı (yeni) aynı temizlikten geçmezse aynı içerik bile satır-diff'te "değişti"
+        // görünüyordu ([DOĞRULA:...]/şablon-slot metni + boşluk normalizasyonu asimetrisi).
+        setRevizeOneri(cleanDemoText(sonuc.taslak_md));
+      } else {
+        setRevizeHata("Talimat uygulanamadı — taslakla ilgisiz olabilir ya da AI şu an kullanılamıyor.");
+      }
+    } catch {
+      setRevizeHata("Revizyon isteği başarısız oldu — bağlantıyı kontrol edip tekrar deneyin.");
+    } finally {
+      setRevizeBusy(false);
+    }
+  };
+
+  // Gönder — onGonder artık /yazi/dogrula'dan geçtiği için ağ turu içerir (eskiden
+  // senkron pushOutbox'tı). Busy koruması olmadan hızlı çift tıklama aynı taslak için
+  // iki Giden Evrak kaydı açabilirdi; çağıran (TaslaklarView) da yalnız BAŞARIDA
+  // modalı kapatır — doğrulama başarısız olursa taslak açık kalır, toast görülür.
+  const [gonderBusy, setGonderBusy] = useState(false);
+  const gonderIste = async () => {
+    if (gonderBusy || !onGonder) return;
+    setGonderBusy(true);
+    try { await onGonder(metinD); } finally { setGonderBusy(false); }
+  };
 
   // Sesle dikte — "canlı bölge" (liveRef) konuşulan ama henüz kesinleşmemiş metnin kâğıttaki
   // aralığını tutar: her ara-sonuç o aralığı günceller (konuştukça kâğıda akar), kesinleşince
@@ -123,13 +164,13 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
               <ScrimDugme onClick={() => onIndir(metinD)} title="Düzenlenen metni DOCX indir">DOCX indir</ScrimDugme>
             )}
             {duzenlenebilir && (
-              <ScrimDugme onClick={() => onKaydet?.(metinD)} disabled={!kirli} title={kirli ? "Değişiklikleri kaydet" : "Değişiklik yok"}>
+              <ScrimDugme onClick={() => onKaydet?.(metinD)} disabled={!kirli || gonderBusy} title={kirli ? "Değişiklikleri kaydet" : "Değişiklik yok"}>
                 <Icon.check width={12} height={12} /> Kaydet
               </ScrimDugme>
             )}
             {duzenlenebilir && onGonder && (
-              <ScrimDugme onClick={() => onGonder(metinD)} title="Kaydet ve Giden Evrak'a gönder">
-                <Icon.arrow width={12} height={12} /> Gönder
+              <ScrimDugme onClick={gonderIste} disabled={gonderBusy} title="Doğrula, kaydet ve Giden Evrak'a gönder">
+                {gonderBusy ? <><Icon.spin width={12} height={12} /> Gönderiliyor…</> : <><Icon.arrow width={12} height={12} /> Gönder</>}
               </ScrimDugme>
             )}
             {eylemler}
@@ -155,26 +196,62 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
           </div>
         )}
 
-        {/* A4 kâğıt — 1:1.414 oranında en az bir tam sayfa; uzun içerik sayfayı uzatır */}
-        <div style={{ background: PAL.surf, borderRadius: RAD.chip, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
-          {fileUrl ? (
-            <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
-              <PdfOnizleme fileUrl={fileUrl} tam />
-            </Suspense>
-          ) : duzenlenebilir ? (
-            /* Kâğıt üzerinde doğrudan yazım — çerçevesiz alan, belge hissi bozulmaz. */
-            <textarea ref={alanRef} value={metinD}
-              onChange={(e) => { setMetinD(e.target.value); setKapatUyari(false); }}
-              aria-label="Resmî yazı taslağı metni" spellCheck={false}
-              style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "vertical", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
-          ) : (
-            <div style={mono
-              ? { fontFamily: MONO, fontSize: 13, lineHeight: 1.85, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }
-              : { ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-              {metin || "İçerik henüz hazır değil."}
+        {/* AI ile revize et — doğal-dil talimat, öneri diff olarak gösterilir, memur onaylar */}
+        {duzenlenebilir && onRevize && !revizeOneri && (
+          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", padding: "10px 14px", borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.card }}>
+            <Icon.sparkle width={15} height={15} style={{ color: DERIN_OF(T), flexShrink: 0 }} />
+            <input value={talimat} onChange={(e) => { setTalimat(e.target.value); setRevizeHata(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") revizeIste(); }}
+              placeholder="AI ile revize et — örn. “daha resmi yap”, “507 sayılı kanuna atıf ekle”"
+              aria-label="Taslak revizyon talimatı" disabled={revizeBusy} {...focusRing}
+              style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "7px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
+            <Btn onClick={revizeIste} disabled={!talimat.trim() || revizeBusy}>
+              {revizeBusy ? <><Icon.spin width={13} height={13} /> Düşünüyor…</> : "Revize et"}
+            </Btn>
+          </div>
+        )}
+        {revizeHata && (
+          <div role="alert" style={{ ...TYPE.data, color: DERIN.kirmizi, textAlign: "center" }}>{revizeHata}</div>
+        )}
+        {revizeOneri && (
+          <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.modal }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
+              <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>AI önerisi — talimat: “{talimat}”</span>
+              <span style={{ display: "flex", gap: SP.s }}>
+                <Btn onClick={() => setRevizeOneri(null)}>Vazgeç</Btn>
+                <Btn primary onClick={() => { setMetinD(revizeOneri); setRevizeOneri(null); setTalimat(""); setKapatUyari(false); }}>
+                  <Icon.check width={12} height={12} /> Uygula
+                </Btn>
+              </span>
             </div>
-          )}
-        </div>
+            <DuzeltmeDiff eski={metinD} yeni={revizeOneri} />
+          </div>
+        )}
+
+        {/* A4 kâğıt — inceleme bekleyen bir AI önerisi varken gizlenir: aynı (henüz
+            değişmemiş) metni hem diff'te hem burada tekrar göstermek yığılma yaratıyordu,
+            diff kartına da daha az yer bırakıyordu. Uygula/Vazgeç sonrası kâğıt geri döner. */}
+        {!revizeOneri && (
+          <div style={{ background: PAL.surf, borderRadius: RAD.chip, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
+            {fileUrl ? (
+              <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
+                <PdfOnizleme fileUrl={fileUrl} tam />
+              </Suspense>
+            ) : duzenlenebilir ? (
+              /* Kâğıt üzerinde doğrudan yazım — çerçevesiz alan, belge hissi bozulmaz. */
+              <textarea ref={alanRef} value={metinD}
+                onChange={(e) => { setMetinD(e.target.value); setKapatUyari(false); }}
+                aria-label="Resmî yazı taslağı metni" spellCheck={false}
+                style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "vertical", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
+            ) : (
+              <div style={mono
+                ? { fontFamily: MONO, fontSize: 13, lineHeight: 1.85, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }
+                : { ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                {metin || "İçerik henüz hazır değil."}
+              </div>
+            )}
+          </div>
+        )}
 
         <div style={{ ...TYPE.meta, color: "rgba(251,247,240,.62)", textAlign: "center" }}>
           {duzenlenebilir ? "Esc vazgeçer — kaydedilmemiş değişiklikte önce sorar" : "Kapatmak için Esc'e basın ya da dışarı tıklayın"}

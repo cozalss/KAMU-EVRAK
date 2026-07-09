@@ -23,6 +23,7 @@ import structlog
 from agents.config import YAZI_TURU_TR
 
 # Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
+from agents.nodes._llm_extract import llm_text
 from agents.yazi_lint import kapanis_onerisi
 from yazi.models import _DEMO_DEFAULTS, YaziContext
 from yazi.template_registry import default_kapanis, resolve_yazi_turu
@@ -125,6 +126,55 @@ async def build_body(
     except Exception as exc:  # LLM hata → deterministik fallback (node patlamaz)
         log.warning("yazi_body_llm_failed", err=str(exc))
         return _fallback_body(yazi_turu, konu, has_ilgi)
+
+
+_REVIZE_SYSTEM = (
+    "Sen bir kamu kurumu yazı işleri uzmanısın. Sana resmî bir yazı taslağı ve bir "
+    "REVİZYON TALİMATI verilecek. Talimatı uygulayarak taslağı yeniden yaz. "
+    "Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik (CB 2646/2020) "
+    "üslubunu KORU: 3. tekil/edilgen kip, açık ve resmî dil, argo/kısaltma yok. "
+    "TASLAKTA ZATEN VAR OLAN kurum adı/kişi adı/tarih/sayı/madde numaralarını "
+    "değiştirmeden koru; talimat açıkça istemedikçe YENİ somut kurum/kişi/tarih/sayı/madde "
+    "UYDURMA. Talimat taslakla alakasızsa veya imkansızsa taslağı OLDUĞU GİBİ döndür. "
+    "Yalnız revize edilmiş tam gövde metnini döndür — açıklama, tırnak, başlık ekleme."
+)
+
+
+# Taslak bu sınırı aşarsa revizyon REDDEDİLİR (None) — prompt/çıktı kesip taslağın
+# kuyruğunu sessizce düşürmek yerine özelliği o istek için kapatmak tercih edilir.
+# Gerçek resmî yazı gövdeleri (2-4 cümle + standart üst/alt bilgi) bu sınırın çok
+# altında kalır; MAX_EVRAK_CHARS (kaynak evrak için 50k) burada KASITLI kullanılmaz.
+_REVIZE_MAX_TASLAK_CHARS = 12_000
+# Çıktı, girdiyle aynı büyüklük mertebesinde olmalı — 2-4x pay taslağın tamamını
+# (üst yazı + gövde + imza) döndürebilmesi için.
+_REVIZE_MAX_TOKENS = 4096
+
+
+async def revize_taslak(taslak_md: str, talimat: str) -> str | None:
+    """Mevcut taslağı doğal-dil talimatla revize et (AI-destekli düzenleme).
+
+    Yalnız en-iyi-çaba (best-effort): LLM yok/mock/hata/taslak-çok-uzun/şüpheli-kısalma
+    → None döner, çağıran taraf (api/routes/yazi.py::yazi_dogrula) revizyonu
+    UYGULAMADAN orijinal taslağı olduğu gibi verify/risk_guard'dan geçirir. Sahte bir
+    "revize edilmiş" metin ASLA üretilmez — özellik o an kullanılamaz sayılır (memur
+    açıkça bilgilendirilir), taslak sessizce bozulmaz/kesilmez.
+    """
+    if len(taslak_md) > _REVIZE_MAX_TASLAK_CHARS:
+        log.warning("yazi_revize_taslak_cok_uzun", n_char=len(taslak_md))
+        return None
+    metin = await llm_text(
+        _REVIZE_SYSTEM,
+        f"TASLAK:\n{taslak_md}\n\nREVİZYON TALİMATI:\n{talimat[:500]}",
+        max_tokens=_REVIZE_MAX_TOKENS, temperature=0.2,
+    )
+    if not metin:
+        return None
+    # Kaynakta olmayan bir kesilme/çöküş belirtisi: çıktı girdinin küçük bir kesri —
+    # talimat açık kısaltma istemiyorsa bu neredeyse hep sessiz kesilme/bozulmadır.
+    if len(taslak_md) > 200 and len(metin) < 0.3 * len(taslak_md):
+        log.warning("yazi_revize_supheli_kisalma", n_once=len(taslak_md), n_sonra=len(metin))
+        return None
+    return metin
 
 
 def _muhatap(unsurlar: dict[str, Any]) -> str:
@@ -243,4 +293,4 @@ async def build_alt_talep_taslaklari(
     return out
 
 
-__all__ = ("build_alt_talep_taslaklari", "build_body", "build_context")
+__all__ = ("build_alt_talep_taslaklari", "build_body", "build_context", "revize_taslak")

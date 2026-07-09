@@ -9,6 +9,7 @@ AAA deseni; LLM_MODE=mock (conftest, fixture singleton sıfırlar).
 
 from __future__ import annotations
 
+import asyncio
 import json
 from typing import Any
 
@@ -432,10 +433,38 @@ class TestOpenAIClientChat:
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
         c = OpenAIClient(model="gpt-4o-mini")
         c._ensure_client()
-        # Act — kapatma sonrası _client None
+        # Act — kapatma sonrası mevcut loop'un client'ı temizlenir
         await c.aclose()
         # Assert
-        assert c._client is None
+        assert c._clients == {}
+
+    def test_farkli_loop_ayri_client_alir(self, monkeypatch):
+        # Arrange — reranker'ın kalıcı arka-plan loop'u ile ana loop AYNI client'ı
+        # paylaşmamalı (2026-07 bulgusu: paylaşılan client ilk dokunan loop'a bağlanıp
+        # diğer loop'lardan gelen çağrıları "farklı loop'a bağlı" hatasıyla kilitliyordu).
+        # Düz (async OLMAYAN) test: iki AYRI loop'u sırayla run_until_complete ile
+        # sürüyoruz — pytest-asyncio'nun kendi loop'u zaten çalışırken içe içe loop
+        # çalıştırılamaz (RuntimeError), bu yüzden testin kendisi senkron kalmalı.
+        monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+        c = OpenAIClient(model="gpt-4o-mini")
+
+        async def _al() -> Any:
+            return c._ensure_client()
+
+        loop_a = asyncio.new_event_loop()
+        try:
+            client_a = loop_a.run_until_complete(_al())
+        finally:
+            loop_a.close()
+        loop_b = asyncio.new_event_loop()
+        try:
+            client_b = loop_b.run_until_complete(_al())
+        finally:
+            loop_b.close()
+
+        # Assert — iki farklı loop, iki AYRI httpx.AsyncClient (çapraz-loop kilitlenmesi yok).
+        assert client_a is not client_b
+        assert len(c._clients) == 2
 
 
 # ---------------------------------------------------------------------------

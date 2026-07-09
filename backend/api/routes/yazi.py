@@ -25,6 +25,7 @@ from api.middleware.ratelimit import rate_limit
 from api.schemas import (
     MAX_EVRAK_CHARS,
     TaslakTuruRequest,
+    YaziDogrulaRequest,
     YaziEypRequest,
     YaziRenderRequest,
     YaziTaslakRequest,
@@ -215,6 +216,75 @@ async def yazi_render(
         media_type=media_type,
         headers={"Content-Disposition": f'attachment; filename="{fallback}"'},
     )
+
+
+@router.post("/dogrula")
+@rate_limit("20/minute")
+async def yazi_dogrula(request: Request, req: YaziDogrulaRequest) -> dict[str, Any]:
+    """Taslağı (opsiyonel doğal-dil revizyon sonrası) verify+risk_guard'dan yeniden geçir.
+
+    HITL onayına sunulmadan/Giden Evrak'a yazılmadan ÖNCE bu uçtan geçilmesi gerekir:
+    memurun elle düzenlediği taslak önceden doğrudan pushOutbox'a gidiyor, verify (uydurma-
+    veto/2646-lint) ve risk_guard kapılarını atlıyordu. talimat verilirse önce DeepSeek
+    taslağı revize eder (yazi_render.revize_taslak — LLM yok/hata → orijinal taslak
+    değiştirilmeden korunur), ardından (revize edilmiş ya da orijinal) metin doğrulanır.
+
+    GÜVEN SINIRI: hem taslak_md hem evrak_text/bilgi_unsurlari bu uçta İSTEMCİDEN gelir —
+    uydurma-veto burada yalnız "taslak, istemcinin kendi verdiği kaynakla tutarlı mı" der,
+    kaynağın GERÇEK evrağı yansıttığını doğrulamaz. Dönen risk_metadata/format_uyumlu bu
+    yüzden sunucu-taraflı bir onay jetonu DEĞİLDİR — ileride otomatik onay/inceleme-atlama
+    için kullanılmamalı.
+    """
+    taslak = req.taslak_md.strip()[:MAX_EVRAK_CHARS]
+    if not taslak:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Taslak metni boş")
+
+    talimat = _sanitize_line(req.talimat, 500) if req.talimat else ""
+    revize_edildi = False
+    if talimat:
+        from yazi.yazi_render import revize_taslak
+
+        yeni = await revize_taslak(taslak, talimat)
+        if yeni:
+            yeni = yeni.strip()[:MAX_EVRAK_CHARS]
+            if yeni and yeni != taslak:
+                taslak = yeni
+                revize_edildi = True
+
+    state: dict[str, Any] = {
+        "evrak_text": (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS],
+        "bilgi_unsurlari": _skaler_unsurlar(req.bilgi_unsurlari),
+        "yazi_taslak_md": taslak,
+        "yazi_turu": req.yazi_turu,
+        "evrak_turu": req.evrak_turu or "belirsiz",
+        "hedef_birim": _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else "",
+    }
+
+    from agents.nodes.risk_guard import risk_guard_node
+    from agents.nodes.verify import verify_node
+
+    try:
+        v = await verify_node(state)
+        state.update(v)
+        r = await risk_guard_node(state)
+    except Exception as exc:
+        log.error("yazi_dogrula_failed", error=str(exc) or type(exc).__name__)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Doğrulama başarısız") from exc
+
+    log.info("yazi_dogrula", revize_edildi=revize_edildi, talimat=bool(talimat),
+             uyari=len(v.get("verify_uyari", [])),
+             bant=(r.get("risk_metadata") or {}).get("bant"))
+
+    return {
+        "taslak_md": taslak,
+        "revize_edildi": revize_edildi,
+        "verify_notes": v.get("verify_notes", ""),
+        "verify_uyari": v.get("verify_uyari", []),
+        "tutarlilik_uyari": v.get("tutarlilik_uyari", []),
+        "format_uyumlu": v.get("format_uyumlu", True),
+        "lint_2646": v.get("lint_2646"),
+        "risk_metadata": r.get("risk_metadata"),
+    }
 
 
 async def _eyp_meta_from_pipeline(req: YaziEypRequest) -> tuple[dict[str, Any], str]:

@@ -64,12 +64,12 @@ function taslakOzeti(md) {
 }
 
 /* Sakin metin-düğme — kart altındaki eylemler (buton kutusu enflasyonu yerine). */
-function KartEylem({ onClick, renk = DERIN.T, ariaLabel, children }) {
+function KartEylem({ onClick, renk = DERIN.T, ariaLabel, disabled, children }) {
   return (
-    <button type="button" onClick={onClick} aria-label={ariaLabel} {...focusRing}
-      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+    <button type="button" onClick={onClick} disabled={disabled} aria-label={ariaLabel} {...focusRing}
+      onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "5px 10px", border: "none", background: "transparent", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: renk, transition: "background .12s ease-out" }}>
+      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "5px 10px", border: "none", background: "transparent", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: renk, opacity: disabled ? 0.55 : 1, transition: "background .12s ease-out" }}>
       {children}
     </button>
   );
@@ -82,8 +82,16 @@ const COP = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" a
 function DraftCard({ h, onEdit, onDelete, onSend }) {
   const r = h.result;
   const [confirmDel, setConfirmDel] = useState(false);
+  // sendBusy: /yazi/dogrula artık ağ turu içeriyor (eskiden senkron pushOutbox'tı) — koruma
+  // olmadan hızlı çift tıklama aynı taslak için iki Giden Evrak kaydı açabilir.
+  const [sendBusy, setSendBusy] = useState(false);
   const { konu, govde } = taslakOzeti(r.yazi_taslak_md);
   const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
+  const gonder = async () => {
+    if (sendBusy) return;
+    setSendBusy(true);
+    try { await onSend(h, r.yazi_taslak_md); } finally { setSendBusy(false); }
+  };
 
   return (
     <NeonCard title={konu || h.name} tag={r.yazi_turu ? YAZI_TR(r.yazi_turu) : "Taslak"} accent={V} icon={<Icon.doc width={16} height={16} />}>
@@ -115,7 +123,9 @@ function DraftCard({ h, onEdit, onDelete, onSend }) {
         ) : (
           <>
             <KartEylem onClick={() => onEdit(h.id)} ariaLabel={`${konu || h.name} taslağını düzenle`}><KALEM /> Düzenle</KartEylem>
-            <KartEylem onClick={() => onSend(h, r.yazi_taslak_md)} renk={DERIN.yesil} ariaLabel={`${konu || h.name} taslağını gönder`}><Icon.arrow width={13} height={13} /> Gönder</KartEylem>
+            <KartEylem onClick={gonder} disabled={sendBusy} renk={DERIN.yesil} ariaLabel={`${konu || h.name} taslağını gönder`}>
+              {sendBusy ? <><Icon.spin width={13} height={13} /> Gönderiliyor…</> : <><Icon.arrow width={13} height={13} /> Gönder</>}
+            </KartEylem>
             {tarih && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 12, color: PAL.mut3, ...TNUM }}>{tarih}</span>}
             <KartEylem onClick={() => setConfirmDel(true)} renk={DERIN.kirmizi} ariaLabel="Taslağı sil"><COP /> Sil</KartEylem>
           </>
@@ -125,7 +135,7 @@ function DraftCard({ h, onEdit, onDelete, onSend }) {
   );
 }
 
-export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () => {}, onDelete = () => {}, onSend = () => {}, onToast = () => {}, hedef = null, onHedefAcildi }) {
+export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () => {}, onDelete = () => {}, onSend = () => {}, onRevize = null, onToast = () => {}, hedef = null, onHedefAcildi }) {
   // drafts: yalnız "Düzenle" ile ayrılmış taslaklar (her biri result.yazi_taslak_md taşır).
   // hedef: onay kartından "Düzenle" ile gelinen taslağın id'si → A4 düzenleme modalı doğrudan açılır.
   const [duzenleId, setDuzenleId] = useState(null);
@@ -177,8 +187,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
           metin={cleanDemoText(aktif.result.yazi_taslak_md) || ""}
           onKapat={() => setDuzenleId(null)}
           onKaydet={(t) => { onUpdate(aktif.id, t); onToast("Taslak güncellendi."); setDuzenleId(null); }}
-          onGonder={(t) => { onSend(aktif, t); setDuzenleId(null); }}
-          onIndir={(t) => docxIndir(t, aktif.name, onToast)} />
+          onGonder={async (t) => { if (await onSend(aktif, t)) setDuzenleId(null); }}
+          onIndir={(t) => docxIndir(t, aktif.name, onToast)}
+          onRevize={onRevize ? (metinGuncel, talimat) => onRevize(aktif.result, metinGuncel, talimat) : null} />
       )}
     </ViewWrap>
   );

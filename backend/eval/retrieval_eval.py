@@ -105,16 +105,31 @@ def _beklenen_nolar(row: dict[str, Any]) -> set[str]:
 
 
 async def _oner(row: dict[str, Any]) -> list[dict[str, Any]]:
-    """Tek altın satır için mevzuat_oner node'unu çalıştır → öneri listesi."""
+    """Tek altın satır için GERÇEK graf kuyruğunu çalıştır (mevzuat_oner → [crag?] →
+    [mevzuat_dogrula?]) → nihai öneri listesi.
+
+    Önceki hâli yalnız mevzuat_oner_node'u izole çağırıyordu — CRAG_ENABLED/NLI_ENABLED
+    env bayrakları açık olsa bile crag/mevzuat_dogrula HİÇ tetiklenmiyordu (agents/graph.py
+    dışında koşulduğu için), "kalite modu" ölçümü aslında yalnız rerank'ı ölçüyordu.
+    Nihai liste seçimi api/mevzuat_zenginlestir.py ile AYNI öncelik: corrected → ham
+    (kullanıcının gerçekte gördüğü listeyle tutarlı ölçüm).
+    """
+    from agents.config import CRAG_ENABLED, NLI_ENABLED
+    from agents.nodes.crag import crag_node
+    from agents.nodes.mevzuat_dogrula import mevzuat_dogrula_node
     from agents.nodes.mevzuat_oner import mevzuat_oner_node
 
-    state = {
+    state: dict[str, Any] = {
         "evrak_turu": row.get("evrak_turu", "belirsiz"),
         "bilgi_unsurlari": {"konu": row.get("konu", "")},
         "evrak_text": row.get("metin", ""),
     }
-    out = await mevzuat_oner_node(state)
-    return out.get("mevzuat_onerileri") or []
+    state.update(await mevzuat_oner_node(state))
+    if CRAG_ENABLED:
+        state.update(await crag_node(state))
+    if NLI_ENABLED:
+        state.update(await mevzuat_dogrula_node(state))
+    return state.get("mevzuat_onerileri_corrected") or state.get("mevzuat_onerileri") or []
 
 
 def _ilk_dogru_rank(oneriler: list[dict[str, Any]], beklenen: set[str]) -> int:

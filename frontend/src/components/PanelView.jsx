@@ -116,6 +116,37 @@ function SlaDagilimKart({ kuyrukSla, onGoInbox }) {
   );
 }
 
+/* Birim bazlı gecikme — İŞLENMİŞ (havale edilmiş) evraklardan yasal süresi GECİKMİŞ/KRİTİK
+   olanları hedef birime göre toplar. "Hangi birimde kaç geciken/kritik evrak var" tek bakışta;
+   gecikme yoksa dürüst yeşil not (SlaDagilimKart ile aynı sessizlik/dürüstlük deseni). */
+function BirimGecikmeKart({ rows }) {
+  const [ref] = useAutoAnimate();
+  const varmi = rows.length > 0;
+  return (
+    <NeonCard title="Birim bazlı gecikme" accent={varmi ? BANT.kirmizi.c : BANT.yesil.c} tag="havale + yasal süre" icon={<Icon.clock />}>
+      {varmi ? (
+        <div ref={ref}>
+          {rows.map(([birim, e]) => (
+            <div key={birim} style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
+              <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{birim}</span>
+              {e.gecikmis > 0 && (
+                <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(BANT.kirmizi.c), background: ALFA(BANT.kirmizi.c), borderRadius: RAD.chip, padding: "2px 8px", ...TNUM }}>{e.gecikmis} gecikmiş</span>
+              )}
+              {e.kritik > 0 && (
+                <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(BANT.sari.c), background: ALFA(BANT.sari.c), borderRadius: RAD.chip, padding: "2px 8px", ...TNUM }}>{e.kritik} kritik</span>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: DERIN.yesil }}>
+          <Icon.check width={14} height={14} /> İşlenen evraklarda birim bazlı gecikme yok.
+        </div>
+      )}
+    </NeonCard>
+  );
+}
+
 /* İşlem süresi kartı içeriği — hero sayı (tüm ölçümlerin ortalaması) + son koşumların
    mini sütunları. Süre verisi sure_ms hattından gelir; eski kayıtlarda null → dürüst not. */
 function SureGrafik({ history }) {
@@ -160,6 +191,20 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
   const birimler = {};
   for (const h of history) { if (h.hedef_birim) { const b = BIRIM_LBL(h.hedef_birim); birimler[b] = (birimler[b] || 0) + 1; } }
   const birimList = Object.entries(birimler).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  // Birim bazlı gecikme: yalnız yasal süresi GECİKMİŞ/KRİTİK olan işlenmiş evraklar, hedef birime göre.
+  const birimGecikme = {};
+  for (const h of history) {
+    const durum = h.result?.sla_metadata?.durum;
+    if ((durum === "GECIKMIS" || durum === "KRITIK") && h.hedef_birim) {
+      const b = BIRIM_LBL(h.hedef_birim);
+      const e = birimGecikme[b] || { gecikmis: 0, kritik: 0 };
+      if (durum === "GECIKMIS") e.gecikmis++; else e.kritik++;
+      birimGecikme[b] = e;
+    }
+  }
+  const birimGecikmeList = Object.entries(birimGecikme)
+    .sort((a, b) => (b[1].gecikmis - a[1].gecikmis) || (b[1].kritik - a[1].kritik))
+    .slice(0, 6);
   const guvenler = history.map((h) => h.result?.tur_confidence).filter((x) => Number.isFinite(x) && x > 0);
   const ortGuven = guvenler.length ? Math.round((guvenler.reduce((a, x) => a + x, 0) / guvenler.length) * 100) : null;
   const [sonRef] = useAutoAnimate();   // yeni işlem satırı akıcı girer (auto-animate)
@@ -213,6 +258,8 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
               <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>Görev 2 yönlendirmesi — en çok havale alan birimler.</p>
             )}
           </NeonCard>
+
+          <BirimGecikmeKart rows={birimGecikmeList} />
 
           <NeonCard title="İşlem süresi" accent={T}>
             <SureGrafik history={history} />

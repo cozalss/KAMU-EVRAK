@@ -7,8 +7,10 @@ ve {GECİKMİŞ / KRİTİK / NORMAL} bandı üretir → demo'da kırmızı "GEC�
 
 Tasarım: DETERMİNİSTİK (config.EVRAK_TO_SURE tablosu + tarih aritmetiği) — LLM yok,
 halüsinasyon yok. Süreler yalnız mevzuatta AÇIKÇA tanımlı olanlar (CLAUDE.md §1);
-tanımsız tür → "tanımsız" (uydurma süre üretilmez). İş günü hesabı hafta sonunu atlar;
-resmî/dini tatiller süreyi daha da uzatabilir (not düşülür, uydurulmaz).
+tanımsız tür → "tanımsız" (uydurma süre üretilmez). İş günü hesabı hafta sonuna EK
+olarak resmî tatilleri (2429 sabit + Diyanet dini bayram) de atlar (agents.resmi_tatil
+tek kaynak). Takvim-günü türleri (3071 dilekçe 30 gün) sayımda tatilleri İÇERİR, ANCAK
+son günü tatile/hafta sonuna denk gelirse izleyen ilk iş gününe uzar (2429 m.3 / HMK m.93).
 
 `compute_sla` SAF + test-edilebilir (bugün enjekte edilir); node `date.today()` verir.
 
@@ -33,6 +35,7 @@ from typing import Any
 import structlog
 
 from agents.config import EVRAK_TO_SURE
+from agents.resmi_tatil import is_calisma_gunu, sonraki_calisma_gunu
 
 log = structlog.get_logger()
 
@@ -63,12 +66,16 @@ def _parse_tarih(s: str) -> date | None:
 
 
 def _add_is_gunu(baslangic: date, n: int) -> date:
-    """baslangic + n iş günü (hafta sonu atlanır). Resmî tatil hariç (not: süreyi uzatır)."""
+    """baslangic + n iş günü — hafta sonu VE resmî tatil (2429 + dini bayram) atlanır.
+
+    4982 m.11 "on beş iş günü" hesabı: tatile denk gelen günler sayılmaz → son tarih
+    ileri kayar (agents.resmi_tatil tek kaynak; takvim-günü türleri bundan etkilenmez).
+    """
     cur = baslangic
     eklenen = 0
     while eklenen < n:
         cur += timedelta(days=1)
-        if cur.weekday() < 5:  # Pzt-Cuma
+        if is_calisma_gunu(cur):
             eklenen += 1
     return cur
 
@@ -91,6 +98,10 @@ def compute_sla(turu: str, tarih_str: str, bugun: date) -> dict[str, Any]:
                 "son_tarih": None, "kalan_gun": None, "baslangic": None,
                 "sure": sure_str, "mevzuat": ref}
     son = _add_is_gunu(baslangic, gun) if is_gunu else baslangic + timedelta(days=gun)
+    # 2429 m.3 + HMK m.93 (data/mevzuat/2429...txt): sürenin SON GÜNÜ hafta tatili/resmî
+    # tatile rastlarsa süre izleyen ilk iş günü mesai bitiminde biter → son ileri kayar.
+    # Takvim-günü türleri dahil geçerli; iş-günü türlerinde son zaten çalışma günü (no-op).
+    son = sonraki_calisma_gunu(son)
     kalan = (son - bugun).days
     if kalan < 0:
         durum = "GECIKMIS"

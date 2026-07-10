@@ -16,6 +16,7 @@ import {
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum, mevzuatDipnot,
   birimDipnot, denetimDipnot, lintGiris, decomposeGiris,
+  riskGerekceYorum, riskSkorYorum,
 } from "../lib/detayYorum.js";
 
 /* Bölüm düzeni — kartlar dikey ritimde: tam-genişlik satırlar + dengeli sütun grubu. */
@@ -120,7 +121,9 @@ function kanitSpanBul(spanlar, anahtar) {
   }) || null;
 }
 
-export default function NeonDetay({ result, embedded = false }) {
+/* onMevzuatAc({dosya, maddeNo}) — öneri satırından mevzuat okuma modalına köprü (DashboardApp
+   state'i taşır; window-event yok). Verilmezse başlıklar düz metin kalır (gömülü/izole kullanım). */
+export default function NeonDetay({ result, embedded = false, onMevzuatAc = null }) {
   const r = result;
   // Gömülü modda panel sütunu dardır → bölüm rayı ancak çok geniş pencerede açılır.
   const wide = useWide(embedded ? "(min-width: 1560px)" : "(min-width: 1180px)");
@@ -233,47 +236,74 @@ export default function NeonDetay({ result, embedded = false }) {
             )}
           </div>
 
-          {(r.risk_metadata?.aciklama || riskGerekce.length > 0) && (
-            <div style={{ marginTop: SP.l, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
-              {r.risk_metadata?.aciklama && (
-                <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s }}>
-                  <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: PAL.mut2 }}><Icon.info width={14} height={14} /></span>
-                  <span style={{ ...TYPE.data, color: PAL.ink2 }}>{cleanDemoText(String(r.risk_metadata.aciklama))}</span>
-                </div>
-              )}
-              {riskGerekce.length > 0 && (() => {
-                /* Risk skoru kırılımı (Phoenix "explanation" deseni): skor gerekçelere eşit
-                   bölünür (backend gerekçe-başına ağırlık vermez — dürüst yaklaşım) →
-                   her satırda katkı çubuğu + yüzde. */
-                const skor = Number(r.risk_metadata?.skor);
-                const pay = Number.isFinite(skor) && skor > 0 ? skor / riskGerekce.length : null;
-                return (
-                  <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, marginTop: riskGerekce.length && r.risk_metadata?.aciklama ? SP.s : 0 }}>
-                    {riskGerekce.map((g, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
-                        <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: BANT[band]?.c || BANT.yesil.c, flex: "none" }} />
-                        <span style={{ flex: 1, minWidth: 0 }}>{cleanDemoText(String(g))}</span>
-                        {pay != null && (
-                          <>
-                            <span aria-hidden="true" style={{ width: 110, height: 6, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden", flexShrink: 0 }}>
-                              <span style={{ display: "block", height: "100%", width: `${Math.min(100, Math.round(pay * 100))}%`, background: BANT[band]?.c || BANT.yesil.c, borderRadius: RAD.chip }} />
-                            </span>
-                            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, width: 34, textAlign: "right", flexShrink: 0 }}>%{Math.round(pay * 100)}</span>
-                          </>
-                        )}
-                      </div>
-                    ))}
-                    {pay != null && (
-                      <div style={{ ...TYPE.meta, color: PAL.mut3, marginTop: 2 }}>Skor katkıları eşit bölüşümle gösterilir — toplam risk skoru: {skor}</div>
-                    )}
+          {(r.risk_metadata?.aciklama || riskGerekce.length > 0) && (() => {
+            /* Risk kırılımı memur diliyle sunulur: ham backend gerekçesi makine sözleşmesidir
+               (risk_guard/muzakere/eval aynı stringe bakar) → çevirisi detayYorum'da yapılır,
+               ham metin "Teknik ayrıntı" katlanabilir bölümünde birebir korunur (bilgi kaybı yok).
+               Çubuk = backend'in gerekçe-başına ağırlığı (ciddiyet × ölçülen isabet); gerekçe
+               sayısına BÖLÜNMEZ — bkz. agents/risk_agirlik.py + eval/risk_calibration.py. */
+            const yorumlar = riskGerekce.map((g) => riskGerekceYorum(String(g))).filter(Boolean);
+            const sy = riskSkorYorum(Number(r.risk_metadata?.skor), r.risk_metadata?.katkilar,
+              band, r.risk_metadata?.kalibrasyon);
+            const bantC = BANT[band]?.c || BANT.yesil.c;
+            return (
+              <div style={{ marginTop: SP.l, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
+                {r.risk_metadata?.aciklama && (
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s }}>
+                    <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: PAL.mut2 }}><Icon.info width={14} height={14} /></span>
+                    <span style={{ ...TYPE.data, color: PAL.ink2 }}>{cleanDemoText(String(r.risk_metadata.aciklama))}</span>
                   </div>
-                );
-              })()}
-              {r.risk_metadata?.oneri && r.risk_metadata.oneri !== r.risk_metadata.aciklama && (
-                <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}><span style={{ color: PAL.mut3 }}>Önerilen eylem:</span> {cleanDemoText(String(r.risk_metadata.oneri))}</div>
-              )}
-            </div>
-          )}
+                )}
+                {yorumlar.length > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, marginTop: r.risk_metadata?.aciklama ? SP.s : 0 }}>
+                    {yorumlar.map((y, i) => {
+                      const pay = sy?.paylar?.[i];   // bu nedenin KENDİ ağırlığı (bölünmemiş)
+                      return (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2 }}>
+                          <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: bantC, flex: "none" }} />
+                          {/* Çevrilemeyen (beklenmedik) şekilde ham metin gösterilir → cleanDemoText yalnız orada. */}
+                          <span style={{ flex: 1, minWidth: 0 }}>{y.cevrildi ? y.sade : cleanDemoText(y.sade)}</span>
+                          {pay != null && (
+                            <>
+                              <span aria-hidden="true" style={{ width: 110, height: 6, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden", flexShrink: 0 }}>
+                                <span style={{ display: "block", height: "100%", width: `${Math.min(100, pay)}%`, background: bantC, borderRadius: RAD.chip }} />
+                              </span>
+                              <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, width: 34, textAlign: "right", flexShrink: 0 }} title={`Bu nedenin ağırlığı: %${pay}`}>%{pay}</span>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {sy && (
+                  <div style={{ ...TYPE.meta, color: PAL.mut3, marginTop: SP.s }}>
+                    <span style={{ color: PAL.ink2 }}>{sy.baslik}.</span> {sy.not}
+                    {sy.kalibrasyonNot && <> {sy.kalibrasyonNot}</>}
+                  </div>
+                )}
+                {r.risk_metadata?.oneri && r.risk_metadata.oneri !== r.risk_metadata.aciklama && (
+                  <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}><span style={{ color: PAL.mut3 }}>Ne yapmalısınız:</span> {cleanDemoText(String(r.risk_metadata.oneri))}</div>
+                )}
+                {(yorumlar.some((y) => y.cevrildi) || sy) && (
+                  <details style={{ marginTop: SP.s }}>
+                    <summary
+                      {...focusRing}
+                      style={{ ...TYPE.meta, color: PAL.mut3, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, borderRadius: RAD.ctl, outline: "none" }}
+                    >
+                      Teknik ayrıntı (sistem kaydı)
+                    </summary>
+                    <div style={{ marginTop: SP.xs, padding: SP.s, background: PAL.surfHi, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", gap: SP.xs }}>
+                      {yorumlar.map((y, i) => (
+                        <code key={i} style={{ ...TYPE.meta, fontFamily: MONO, color: PAL.mut2, wordBreak: "break-word" }}>{y.teknik}</code>
+                      ))}
+                      {sy && <code style={{ ...TYPE.meta, fontFamily: MONO, color: PAL.mut3, wordBreak: "break-word" }}>{sy.teknik}</code>}
+                    </div>
+                  </details>
+                )}
+              </div>
+            );
+          })()}
         </div>
 
         {/* ============ Gövde: yapışkan bölüm rayı + içerik ============ */}
@@ -389,9 +419,15 @@ export default function NeonDetay({ result, embedded = false }) {
                     mev.length > 0 && (
                       <NeonCard key="mev" title="İlgili mevzuat" tag={`${mev.length} öneri`} accent={T} icon={<Icon.book />}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          {mev.map((m, i) => <MevzuatRow key={i} rank={i + 1} m={m} nli={nliMap.get(m.baslik)} ilk={i === 0} />)}
+                          {mev.map((m, i) => <MevzuatRow key={i} rank={i + 1} m={m} nli={nliMap.get(m.baslik)} ilk={i === 0} onAc={onMevzuatAc} />)}
                         </div>
-                        <div style={{ marginTop: SP.xs, ...TYPE.meta, color: PAL.mut3 }}>{mevzuatDipnot(r)}</div>
+                        {/* Görev 2 sözleşmesi: öneriler taslak metnine OTOMATİK girmez — yanlış madde
+                            resmî yazıya sessizce sızmasın (CLAUDE.md §1). Atfı memur yazar. */}
+                        <div style={{ marginTop: SP.m, display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.s, borderRadius: RAD.card, background: ALFA(T), ...TYPE.meta, color: PAL.ink2 }}>
+                          <Icon.info width={13} height={13} style={{ flex: "none", marginTop: 1, color: DERIN.T }} />
+                          <span>Bu öneriler bilgi amaçlıdır; yazı taslağına otomatik eklenmez. Atıf yapacaksanız maddeyi açıp doğrulayın.</span>
+                        </div>
+                        <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{mevzuatDipnot(r)}</div>
                       </NeonCard>
                     ),
                   ]}

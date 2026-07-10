@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum,
   mevzuatDipnot, birimDipnot, denetimDipnot, lintGiris, decomposeGiris, slaKonum,
+  riskGerekceYorum, riskSkorYorum, kanunNo,
 } from "./detayYorum.js";
 
 /* ---- hukumYorum: hüküm şeridi başlığı risk bandını da hesaba katar ---- */
@@ -108,20 +109,60 @@ test("clarify_stop → taslağın bilgiler tamamlanınca hazırlanacağı söyle
   assert.match(e.metin, /tamamlanınca hazırlanacak/);
 });
 
-/* ---- mevzuatDipnot: eşik/NLI/CRAG iddiaları yalnız veri varsa ---- */
-test("mevzuat: hepsi eşik üstü + NLI yok → NLI iddiası YOK", () => {
-  const d = mevzuatDipnot({ mevzuat_onerileri: [{ baslik: "a", score: 1 }, { baslik: "b", score: 0.8 }] });
-  assert.match(d, /2 önerinin tamamı/);
+/* ---- mevzuatDipnot: skor GÖRELİ olduğu söylenir; NLI/CRAG iddiaları yalnız veri varsa ---- */
+test("mevzuat: yüzdenin göreli olduğu söylenir, eski eşik totolojisi kalkar", () => {
+  const d = mevzuatDipnot({ mevzuat_onerileri: [{ baslik: "3071 a", score: 1 }, { baslik: "3071 b", score: 0.8 }] });
+  assert.match(d, /görelidir/);
+  assert.doesNotMatch(d, /eşiğin/);        // "tamamı %60 eşiğinin üzerinde" iddiası artık YOK
   assert.doesNotMatch(d, /NLI/);
 });
 
-test("mevzuat: karışık skor + NLI var → eşik altı sayısı + NLI cümlesi", () => {
+test("mevzuat: inceleme sayısı gerçek bayraklardan; NLI verisi varsa anılır", () => {
   const d = mevzuatDipnot({
-    mevzuat_onerileri: [{ baslik: "a", score: 1 }, { baslik: "b", score: 0.4 }],
-    mevzuat_nli: [{ baslik: "a" }],
+    mevzuat_onerileri: [
+      { baslik: "3071 a", score: 1, inceleme_oner: false },
+      { baslik: "3071 b", score: 0.4, inceleme_oner: true },
+    ],
+    mevzuat_nli: [{ baslik: "3071 a" }],
   });
-  assert.match(d, /1 tanesi .*eşiğin altında/);
+  assert.match(d, /2 öneriden 1 tanesi için insan incelemesi/);
   assert.match(d, /NLI/);
+});
+
+test("mevzuat: hiç inceleme bayrağı yoksa o cümle kurulmaz", () => {
+  const d = mevzuatDipnot({ mevzuat_onerileri: [{ baslik: "3071 a", score: 1, inceleme_oner: false }] });
+  assert.doesNotMatch(d, /insan incelemesi/);
+});
+
+/* Farklı kanunlardan gelen öneriler ALTERNATİF olabilir — sistem hangisinin uygulanacağını
+   bilemez; uydurmak yerine memuru doğrulamaya yönlendirir (CLAUDE.md §1). */
+test("mevzuat: tek kanundan gelen öneriler → çoklu-mevzuat uyarısı YOK", () => {
+  const d = mevzuatDipnot({
+    mevzuat_onerileri: [{ baslik: "2004 icra iflas kanunu m.60" }, { baslik: "2004 icra iflas kanunu m.168" }],
+  });
+  assert.doesNotMatch(d, /ayrı mevzuattan/);
+});
+
+test("mevzuat: farklı kanunlar → seçim uyarısı, ama hangisi diye İDDİA etmez", () => {
+  const d = mevzuatDipnot({
+    mevzuat_onerileri: [
+      { baslik: "7155 abonelik sozlesmesi para alacaklari takip kanunu m.3" },
+      { baslik: "2004 icra iflas kanunu m.168" },
+      { baslik: "2004 icra iflas kanunu m.60" },
+    ],
+  });
+  assert.match(d, /2 ayrı mevzuattan/);      // 7155 + 2004 — sondaki "m.168" kanun no DEĞİL
+  assert.match(d, /sistem karar vermez/);
+});
+
+test("mevzuat: sondaki madde no kanun no sanılmaz", () => {
+  assert.equal(kanunNo("2004 icra iflas kanunu m.168"), "2004");
+  assert.equal(kanunNo("2005-7 standart dosya plani m.1"), "2005-7");
+  assert.equal(kanunNo("Resmî Yazışma Yönetmeliği (CB 2646/2020)"), ""); // numarasız → sayıma girmez
+});
+
+test("mevzuat: öneri yoksa boş dipnot (uydurma cümle yok)", () => {
+  assert.equal(mevzuatDipnot({ mevzuat_onerileri: [] }), "");
 });
 
 test("mevzuat: CRAG düzeltme uygulandıysa güven değişimiyle söylenir", () => {
@@ -283,6 +324,99 @@ test("slaKonum: tarih eksik/bozuksa null — sabit konum UYDURULMAZ", () => {
   assert.equal(slaKonum({ son_tarih: "09.07.2026", kalan_gun: 5 }), null);
   assert.equal(slaKonum({ baslangic: "bozuk", son_tarih: "09.07.2026", kalan_gun: 5 }), null);
   assert.equal(slaKonum(), null);
+});
+
+/* ---- riskGerekceYorum: makine gerekçesi → memur dili; ham metin ASLA kaybolmaz ---- */
+const GROUNDING = "Uydurma şüphesi — Taslaktaki iddia kaynak evrakta yok (LLM grounding): T.C. KAMU KURUMU";
+
+test("gerekce: LLM grounding iddiası sade dile çevrilir, iddia metni korunur", () => {
+  const y = riskGerekceYorum(GROUNDING);
+  assert.equal(y.cevrildi, true);
+  assert.match(y.sade, /T\.C\. KAMU KURUMU/);      // iddianın kendisi kaybolmaz
+  assert.match(y.sade, /evrakta bulunamadı/);
+  assert.doesNotMatch(y.sade, /grounding|LLM/i);    // jargon memura gösterilmez
+  assert.equal(y.teknik, GROUNDING);                // ham metin birebir saklanır
+});
+
+test("gerekce: uydurma tarih/sayı 'doğrulayın' sinyalini korur", () => {
+  const t = riskGerekceYorum("Uydurma şüphesi — Taslaktaki '99.99.9999' tarihi kaynak evrakta yok (doğrulayın).");
+  assert.match(t.sade, /99\.99\.9999/);
+  assert.match(t.sade, /tarihi/);
+  assert.match(t.sade, /doğrulayın/i);
+  const s = riskGerekceYorum("Uydurma şüphesi — Taslaktaki '5000' sayısı kaynak evrakta yok (doğrulayın).");
+  assert.match(s.sade, /5000/);
+  assert.match(s.sade, /sayısı/);
+});
+
+test("gerekce: [DOĞRULA] işareti — köşeli parantez üretilmez (cleanDemoText tuzağı)", () => {
+  const y = riskGerekceYorum("3 alan doğrulanmalı ([DOĞRULA] işareti)");
+  assert.match(y.sade, /3 alan/);
+  assert.doesNotMatch(y.sade, /\[/);   // cleanDemoText bunu "Kontrol:" diye yeniden yazardı
+});
+
+test("gerekce: düşük güven 0..1 skoru yüzdeye çevrilir", () => {
+  const y = riskGerekceYorum("Düşük sınıflandırma güveni (0.42)");
+  assert.match(y.sade, /%42/);
+  assert.doesNotMatch(y.sade, /0\.42/);
+});
+
+test("gerekce: sarı sinyallerin her biri bilgi kaybetmeden çevrilir", () => {
+  assert.match(riskGerekceYorum("Eksik bölüm: İmza bloğu (ad-soyad/unvan)").sade, /İmza bloğu/);
+  assert.match(riskGerekceYorum("Eksik zorunlu bilgi: tarih, konu").sade, /tarih, konu/);
+  assert.match(riskGerekceYorum("Format (2646 lint): Konu satırı yok").sade, /Konu satırı yok/);
+  assert.match(riskGerekceYorum("Tutarlılık: tarih sırası bozuk").sade, /tarih sırası bozuk/);
+  assert.match(riskGerekceYorum("Evrak türü belirsiz (sınıflandırma abstention)").sade, /türünü belirleyemedi/);
+  assert.doesNotMatch(riskGerekceYorum("Evrak türü belirsiz (sınıflandırma abstention)").sade, /abstention/i);
+});
+
+test("gerekce: tanınmayan şekil aynen gösterilir (uydurma çeviri yok)", () => {
+  const ham = "Beklenmedik yeni backend sinyali xyz";
+  const y = riskGerekceYorum(ham);
+  assert.equal(y.sade, ham);
+  assert.equal(y.cevrildi, false);
+});
+
+test("gerekce: boş/null girdi null döner", () => {
+  assert.equal(riskGerekceYorum(""), null);
+  assert.equal(riskGerekceYorum(), null);
+});
+
+/* ---- riskSkorYorum: 0..1 ölçülmüş skor → yüzde + seviye; çubuk = gerekçenin KENDİ ağırlığı ---- */
+test("skor: çubuklar backend katkılarından gelir, gerekçe sayısına BÖLÜNMEZ", () => {
+  const y = riskSkorYorum(0.87, [0.82, 0.29], "kirmizi", "olculdu");
+  assert.match(y.baslik, /%87/);
+  assert.match(y.baslik, /en yüksek/);
+  assert.deepEqual(y.paylar, [82, 29]);   // ağır neden büyük çubuk
+  assert.match(y.teknik, /0\.87/);
+});
+
+test("skor: REGRESYON — eşit bölüşüm iddiası artık yok", () => {
+  const y = riskSkorYorum(0.9, [0.82, 0.82, 0.82, 0.82], "kirmizi", "olculdu");
+  assert.doesNotMatch(y.not, /eşit olarak paylaştır/);
+  // 4 gerekçe var ama çubuk 0.9/4=%23'e düşmüyor
+  assert.deepEqual(y.paylar, [82, 82, 82, 82]);
+});
+
+test("skor: çubukların toplamı puana eşit değildir — bu açıkça söylenir", () => {
+  const y = riskSkorYorum(0.87, [0.82, 0.29], "kirmizi", "olculdu");
+  assert.match(y.not, /toplamı puana eşit değil/);
+});
+
+test("skor: kalibrasyon durumu memura bildirilir (gizlenmez)", () => {
+  assert.match(riskSkorYorum(0.5, [0.5], "sari", "olculdu").kalibrasyonNot, /ölçülerek/);
+  assert.match(riskSkorYorum(0.5, [0.5], "sari", "onsel").kalibrasyonNot, /ölçülmedi/);
+  assert.match(riskSkorYorum(0.5, [0.5], "sari", "kismi").kalibrasyonNot, /bir kısmı ölçüldü/);
+});
+
+test("skor: katkı yoksa çubuk uydurulmaz", () => {
+  const y = riskSkorYorum(0.5, undefined, "sari", "onsel");
+  assert.deepEqual(y.paylar, []);
+});
+
+test("skor: geçersiz/sıfır skor null döner (uydurma yüzde yok)", () => {
+  assert.equal(riskSkorYorum(NaN, [0.3], "sari"), null);
+  assert.equal(riskSkorYorum(0, [], "yesil"), null);
+  assert.equal(riskSkorYorum(undefined, [], "yesil"), null);
 });
 
 /* ---- null-güvenlik: boş state hiçbir fonksiyonu düşürmez ---- */

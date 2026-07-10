@@ -13,10 +13,12 @@ from typing import ClassVar
 from agents.config import EVRAK_TO_MEVZUAT
 from agents.nodes.mevzuat_oner import (
     _baslik,
+    _dedup,
     _from_config,
     _load_index,
     _maybe_rerank,
     _retrieval_query,
+    _snippet,
     _tokenize,
     mevzuat_oner_node,
 )
@@ -28,6 +30,14 @@ def _state(turu: str, konu: str, evrak_text: str) -> dict:
         "bilgi_unsurlari": {"konu": konu},
         "evrak_text": evrak_text,
     }
+
+
+# Korpus retrieval'ı tetikleyecek kadar somut metin (çok kısa metinde config fallback'e düşer).
+_UZUN_DILEKCE = (
+    "İşbu dilekçemle, tarafıma ait imar durumu belgesinin düzenlenmesini talep ediyorum. "
+    "Dilekçemin 3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun kapsamında "
+    "değerlendirilmesini ve sonucundan yazılı olarak bilgilendirilmemi arz ederim."
+)
 
 
 # ---------------------------------------------------------------------------
@@ -351,3 +361,98 @@ class TestMevzuatOnerRerank:
         monkeypatch.setattr("agents.nodes.mevzuat_oner.RERANK_ENABLED", True)
         # Act + Assert
         assert _maybe_rerank("dilekçe", []) is None
+
+
+# ---------------------------------------------------------------------------
+# Şeffaflık alanları — norm_score (güven bandının kaynağı) + kaynak doğrulama bağı
+# ---------------------------------------------------------------------------
+
+
+class TestSeffaflikAlanlari:
+    """`score` GÖRELİ (top daima 1.0); mutlak sinyal `norm_score`, kaynak bağı kaynak_dosya."""
+
+    async def test_top1_score_daima_1_0_bu_yuzden_mutlak_degil(self):
+        # Bu test, `score`u mutlak alaka sanan her tüketiciye karşı bir sözleşmedir.
+        out = await mevzuat_oner_node(_state("dilekce", "izin talebi", _UZUN_DILEKCE))
+        oneriler = out["mevzuat_onerileri"]
+        assert oneriler[0]["score"] == 1.0
+
+    async def test_norm_score_uretilir_ve_pozitif(self):
+        out = await mevzuat_oner_node(_state("dilekce", "izin talebi", _UZUN_DILEKCE))
+        for oneri in out["mevzuat_onerileri"]:
+            assert oneri["norm_score"] > 0
+            # norm = raw / sorgu_token → ham skordan KÜÇÜK (payda >1 token)
+            assert oneri["norm_score"] < oneri["raw_score"]
+
+    async def test_kaynak_dosya_ve_madde_no_dolu(self):
+        out = await mevzuat_oner_node(_state("dilekce", "izin talebi", _UZUN_DILEKCE))
+        ilk = out["mevzuat_onerileri"][0]
+        assert ilk["kaynak_dosya"] and " " not in ilk["kaynak_dosya"]
+        assert not ilk["kaynak_dosya"].endswith(".txt")   # katalog anahtarı (uzantısız)
+
+    async def test_config_fallback_norm_score_tasimaz(self):
+        """Statik eşleme retrieval değildir → mutlak bant iddia edilemez."""
+        for oneri in _from_config("dilekce"):
+            assert "norm_score" not in oneri
+
+
+# ---------------------------------------------------------------------------
+# Snippet — kelime ortasından kesme yok (memur yarım maddeyi doğrulayamaz)
+# ---------------------------------------------------------------------------
+
+
+class TestSnippetSiniri:
+    def test_kisa_metin_oldugu_gibi(self):
+        assert _snippet("Madde 1 — Kısa hüküm.") == "Madde 1 — Kısa hüküm."
+
+    def test_cumle_sinirinda_kesilir(self):
+        metin = ("Madde 60 — Ödeme emri ve içeriği. " + "Takip talebi şartları taşır. " * 8
+                 + "Son cümle buraya düşmez.")
+        out = _snippet(metin)
+        assert out.endswith(" …")
+        assert out.rstrip(" …").endswith(".")     # cümle sonunda kesildi
+
+    def test_kelime_ortasindan_kesmez(self):
+        # Cümle sonu hiç yok → kelime sınırına düşer; yarım kelime bırakmaz.
+        metin = "kambiyo senedi vadesi " * 40
+        out = _snippet(metin)
+        assert out.endswith(" …")
+        govde = out[:-2].rstrip()
+        assert not govde.endswith("kam") and govde.split()[-1] in {"kambiyo", "senedi", "vadesi"}
+
+    def test_ust_sinir_asilmaz(self):
+        out = _snippet("a" * 500)
+        assert len(out) <= 282 + 2   # _SNIPPET_CHARS + " …"
+
+
+# ---------------------------------------------------------------------------
+# Ek/Geçici madde kimliği — "Ek Madde 1" ile "Madde 1" AYNI madde_no'yu taşır
+# (13 kanunda çakışma). madde_tur olmadan dedup/başlık/link yanlış maddeyi hedefler.
+# ---------------------------------------------------------------------------
+
+
+class TestMaddeTurKimligi:
+    def test_baslik_ek_madde_onekli(self):
+        assert _baslik({"mevzuat": "2985 toplu konut kanunu", "madde_no": 1, "madde_tur": "ek"}) \
+            == "2985 toplu konut kanunu ek m.1"
+
+    def test_baslik_gecici_madde_onekli(self):
+        assert _baslik({"mevzuat": "X kanunu", "madde_no": 2, "madde_tur": "gecici"}) \
+            == "X kanunu geç. m.2"
+
+    def test_baslik_normal_madde_oneksiz(self):
+        assert _baslik({"mevzuat": "X kanunu", "madde_no": 1, "madde_tur": "madde"}) == "X kanunu m.1"
+        # madde_tur hiç yoksa da normal madde gibi davranır (geriye uyum)
+        assert _baslik({"mevzuat": "X kanunu", "madde_no": 1}) == "X kanunu m.1"
+
+    def test_dedup_ek_ve_normal_ayni_no_ayrilir(self):
+        """REGRESYON: (mevzuat, madde_no) anahtarı 'Madde 1' ile 'Ek Madde 1'i birbirine eziyordu."""
+        normal = {"mevzuat": "2985 toplu konut kanunu", "madde_no": 1, "madde_tur": "madde"}
+        ek = {"mevzuat": "2985 toplu konut kanunu", "madde_no": 1, "madde_tur": "ek"}
+        out = _dedup([(9.0, normal), (7.0, ek)])
+        assert len(out) == 2   # ikisi de KORUNUR — biri diğerini elemez
+
+    def test_dedup_gercek_tekrari_hala_indirger(self):
+        c = {"mevzuat": "X", "madde_no": 5, "madde_tur": "madde"}
+        out = _dedup([(9.0, c), (3.0, dict(c))])
+        assert len(out) == 1 and out[0][0] == 9.0   # en yüksek skor kalır

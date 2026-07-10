@@ -27,8 +27,14 @@ class MevzuatOneri(TypedDict):
     baslik: str          # "3071 sayılı Dilekçe Hakkı Kanunu m.4"
     snippet: NotRequired[str]
     url: NotRequired[str]
-    score: NotRequired[float]       # max-normalize (top≈1.0)
+    score: NotRequired[float]       # max-normalize (top≈1.0) — GÖRELİ sıra, mutlak alaka DEĞİL
     raw_score: NotRequired[float]   # normalizasyon öncesi ham BM25 (CRAG mutlak-kalite sinyali)
+    # raw_score / sorgu_token_sayısı — belgeler arası karşılaştırılabilir TEK mutlak sinyal.
+    # Güven bandı bundan türetilir (eval/mevzuat_guven_kalibrasyon.py: top-1 AUC 0.964).
+    norm_score: NotRequired[float]
+    kaynak_dosya: NotRequired[str]  # katalog anahtarı → /mevzuat/icerik/{dosya} (doğrulama bağı)
+    madde_no: NotRequired[str | None]
+    madde_tur: NotRequired[str | None]  # "madde"|"ek"|"gecici" → ek≠normal madde (link doğruluğu)
 
 
 class EvrakState(TypedDict):
@@ -102,7 +108,9 @@ class EvrakState(TypedDict):
     # --- Yenilikçilik: Risk bandı (trafik ışığı) + koşullu HITL ---
     # risk_guard_node verify sinyallerini YEŞİL/SARI/KIRMIZI bandına çevirir (deterministik,
     # tek-yazıcı → plain). Koşullu HITL: sarı/kırmızı → memur onayı, yeşil → otomatik geç.
-    # Anahtarlar SABİT (frontend RiskBandCard eşleşir): bant/skor/gerekceler/oneri.
+    # Anahtarlar SABİT (frontend RiskBandCard eşleşir):
+    #   bant/skor/gerekceler/katkilar/kalibrasyon/oneri (+ risk_guard_node 'aciklama' ekler).
+    # skor = noisy-OR(ciddiyet × ölçülen isabet) — bkz. agents/risk_agirlik.py; bandı ETKİLEMEZ.
     risk_metadata: NotRequired[dict[str, Any]]
 
     # --- Yenilikçilik: Arşivleme (SDP 2005/7) metadata (Görev kapsamı + yenilikçilik) ---

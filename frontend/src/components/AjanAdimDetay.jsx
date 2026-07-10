@@ -73,7 +73,8 @@ const Olcum = ({ k, v, c = PAL.ink, mono }) => (
   </div>
 );
 
-/* İnce oran barı — MevzuatRow skor barı dili (4px, düz dolgu, opsiyonel eşik çentiği). */
+/* İnce oran barı — 4px, düz dolgu, opsiyonel eşik çentiği. (MevzuatRow'un barında çentik YOK:
+   oradaki skor lidere GÖRELİdir, üzerine mutlak eşik çizmek anlamsızdı — kaldırıldı.) */
 const OranBar = ({ oran, fill = DERIN.T, esik, label }) => (
   <div style={{ position: "relative", height: 4, background: PAL.press, marginTop: SP.s }} role="img" aria-label={label}>
     <div style={{ height: "100%", width: `${Math.max(0, Math.min(100, oran))}%`, background: fill, transition: "width .3s ease-out" }} />
@@ -343,10 +344,11 @@ function RiskDetay({ d, r }) {
         <Gerekce c={BANT[bant].c}>{cleanDemoText(String(meta.aciklama || meta.oneri))}</Gerekce>
       )}
       <RiskBand band={bant} lit />
+      {/* Skor = noisy-OR(ciddiyet × ölçülen isabet) — beklenen zarar; olasılık DEĞİL. */}
       {Number.isFinite(Number(meta.skor)) && (
         <div style={{ marginTop: SP.m }}>
-          <div style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>Risk skoru: {Number(meta.skor).toFixed(1)} / 1.0</div>
-          <OranBar oran={pct(meta.skor)} fill={BANT[bant].c} label={`Risk skoru ${meta.skor}`} />
+          <div style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>Risk puanı: %{pct(meta.skor)}</div>
+          <OranBar oran={pct(meta.skor)} fill={BANT[bant].c} label={`Risk puanı yüzde ${pct(meta.skor)}`} />
         </div>
       )}
       {gerekceler.length > 0 && (

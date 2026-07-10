@@ -52,10 +52,20 @@ _TOP_K = 3
 _MIN_QUERY_LEN = 8  # çok kısa metinde retrieval gürültülü → statik'e düş
 _MIN_CHUNK_CHARS = 40
 _SNIPPET_CHARS = 280
+# Snippet kelime ORTASINDAN kesilmemeli ("...senedin kambiyo va") — memur yarım maddeyi
+# doğrulayamaz. Cümle sınırı bu kadar geriye giderse snippet aşırı kısalır → kelime sınırı.
+_SNIPPET_MIN_CHARS = 160
+_CUMLE_SONU_RE = re.compile(r"[.;:!?]\s")
 _WORD_RE = re.compile(r"[0-9a-zçğıöşü]+")
 # Çok zayıf eşleşmeyi (sorgu hiçbir maddeye iyi değmedi) öneriden ele: ham BM25 top
 # skoru bunun ALTINDAysa retrieval gürültülü kabul edilir → config fallback'e düşülür.
-# Gold dağılımı: güçlü eşleşmeler ham≈17-40; gürültü <~3. Çok düşük tutulur (recall önce).
+#
+# DİKKAT — bu eşik pratikte HİÇ ateşlenmez ve kasıtlı olarak öyle bırakıldı.
+# Eski yorum "güçlü ham≈17-40, gürültü <~3" diyordu; eval/mevzuat_guven_kalibrasyon.py
+# ile ÖLÇÜLDÜ: gerçek ham skorlar 24-237 aralığında (BM25 skoru sorgu uzunluğuyla
+# ölçeklendiği için belgeler arası karşılaştırılamaz). Yani mutlak ham eşik burada
+# anlamlı bir kapı değildir; recall'ı korumak için düşük bırakılır. Zayıf eşleşmeyi
+# KULLANICIYA bildirme işi `norm_score` bandına devredildi (api/mevzuat_zenginlestir).
 _MIN_RAW_SCORE = 1.0
 
 # BM25 uzunluk-normalizasyonu (b). Varsayılan 0.75 KISA madde korpusunda kısa+genel
@@ -95,6 +105,40 @@ def _tokenize(s: str) -> list[str]:
     return [t for t in _WORD_RE.findall(tr_lower(norm)) if t not in _STOPWORDS]
 
 
+def _snippet(metin: str) -> str:
+    """Madde metnini CÜMLE (yoksa kelime) sınırında kes + '…' işaretle.
+
+    Ham `[:280]` dilimi kelimeyi ortadan bölüyordu; maddenin anlamı çoğu kez kuyruktaki
+    süre/istisna cümlesinde olduğundan yarım kelime memuru yanıltır. Sınır arayışı:
+    son cümle sonu → yoksa son boşluk → ikisi de çok geriye düşerse ham kesme.
+    """
+    govde = (metin or "").strip()
+    if len(govde) <= _SNIPPET_CHARS:
+        return govde
+    kirpik = govde[:_SNIPPET_CHARS]
+    cumle_sonu = max((m.end() for m in _CUMLE_SONU_RE.finditer(kirpik)), default=-1)
+    if cumle_sonu >= _SNIPPET_MIN_CHARS:
+        return kirpik[:cumle_sonu].rstrip() + " …"
+    bosluk = kirpik.rfind(" ")
+    return kirpik[: bosluk if bosluk >= _SNIPPET_MIN_CHARS else _SNIPPET_CHARS].rstrip() + " …"
+
+
+def _kaynak_dosya(chunk: dict[str, Any]) -> str:
+    """Chunk → katalog dosya anahtarı (uzantısız), yoksa "".
+
+    Öneri satırından mevzuat okuma modalına atlamak (/mevzuat/icerik/{dosya}) için tek
+    doğrulanabilir bağ. Seed indekste `kaynak_dosya` var; runtime chunk'ında etiket
+    ("3071 dilekce hakki kanunu") boşluk→_ ile dosya adına döner.
+    """
+    kaynak = str(chunk.get("kaynak_dosya", "") or "")
+    if kaynak.endswith(".txt"):
+        return kaynak[:-4]
+    if kaynak:
+        return kaynak
+    etiket = str(chunk.get("mevzuat", "") or "").strip()
+    return etiket.replace(" ", "_") if etiket else ""
+
+
 def _chunks_from_corpus(src_dir: Path) -> list[dict[str, Any]]:
     """Korpus *.txt → madde-bazlı chunk kayıtları (seed indeksi yoksa runtime)."""
     kayitlar: list[dict[str, Any]] = []
@@ -118,6 +162,7 @@ def _chunks_from_corpus(src_dir: Path) -> list[dict[str, Any]]:
                 continue
             kayitlar.append({
                 "mevzuat": etiket,
+                "kaynak_dosya": path.name,   # seed indeksle parite (öneri → okuma modalı bağı)
                 "madde_no": chunk.metadata.get("madde_no"),
                 "text": govde,
             })
@@ -232,12 +277,19 @@ def _score(query: str, chunks: tuple[dict[str, Any], ...]) -> list[tuple[float, 
     return [r for r in ranked if r[0] > 0]
 
 
+# Madde türü → başlık öneki. "Ek Madde 1" ve normal "Madde 1" AYNI madde_no'yu taşır
+# (13 kanunda çakışma var, örn. 2985 toplu konut) → önek olmadan başlık belirsiz kalır ve
+# dedup/link yanlış maddeyi hedefler. Önek ayrımı bu belirsizliği kapatır.
+_MADDE_TUR_ONEK = {"ek": "ek m.", "gecici": "geç. m."}
+
+
 def _baslik(chunk: dict[str, Any]) -> str:
-    """Chunk metadata'sından öneri başlığı: madde_no varsa 'm.<no>', yoksa [DOĞRULA:]."""
+    """Chunk metadata'sından öneri başlığı: madde_no varsa 'm.<no>' (ek/geçici önekli), yoksa [DOĞRULA:]."""
     mevzuat = str(chunk.get("mevzuat", "")).strip() or "mevzuat"
     madde_no = chunk.get("madde_no")
     if madde_no is not None:
-        return f"{mevzuat} m.{madde_no}"
+        onek = _MADDE_TUR_ONEK.get(str(chunk.get("madde_tur") or ""), "m.")
+        return f"{mevzuat} {onek}{madde_no}"
     return f"{mevzuat} [DOĞRULA: madde no]"
 
 
@@ -267,6 +319,36 @@ def _retrieval_query(state: dict[str, Any]) -> str:
     return " ".join(p for p in (boosted, body) if p)
 
 
+def _oneri(
+    chunk: dict[str, Any], *, score: float, raw: float, q_token: int, **ek: Any
+) -> dict[str, Any]:
+    """Tek öneri kaydı — tüm retrieval yollarının ORTAK kurucusu (alan sözleşmesi tek yerde).
+
+    `score`      : max-normalize (top≈1.0) — YALNIZ göreli sıralama sinyali, mutlak alaka DEĞİL.
+    `raw_score`  : tür-boost'lu ham BM25 — sorgu uzunluğuyla ölçeklenir, belgeler arası
+                   karşılaştırılamaz (CRAG mutlak-kalite sinyali olarak kullanılır).
+    `norm_score` : raw_score / sorgu_token_sayısı — uzunluk düzeltmesi; belgeler arası
+                   karşılaştırılabilir TEK mutlak sinyal. Güven bandı bundan türetilir
+                   (eval/mevzuat_guven_kalibrasyon.py: top-1 AUC 0.964).
+    """
+    return {
+        "baslik": _baslik(chunk),
+        "snippet": _snippet(str(chunk.get("text", ""))),
+        "kaynak_dosya": _kaynak_dosya(chunk),
+        "madde_no": chunk.get("madde_no"),
+        "madde_tur": chunk.get("madde_tur"),   # "madde"|"ek"|"gecici" → doğru maddeye link (ek≠normal)
+        "score": round(score, 3),
+        "raw_score": round(raw, 3),
+        "norm_score": round(raw / q_token, 3) if q_token > 0 else 0.0,
+        **ek,
+    }
+
+
+def _q_token(query: str) -> int:
+    """Sorgunun (stopword'süz) token sayısı — norm_score paydası."""
+    return len(_tokenize(query))
+
+
 def _deepseek_rerank(
     query: str, deduped: list[tuple[float, dict[str, Any]]]
 ) -> list[dict[str, Any]] | None:
@@ -281,7 +363,7 @@ def _deepseek_rerank(
         return None  # zayıf retrieval'a LLM harcanmaz → BM25 yolu config fallback'ini uygular
     cands = deduped[:RERANK_CAND_N]
     adaylar = [
-        {"baslik": _baslik(chunk), "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS]}
+        {"baslik": _baslik(chunk), "snippet": _snippet(str(chunk.get("text", "")))}
         for _skor, chunk in cands
     ]
     try:
@@ -301,13 +383,11 @@ def _deepseek_rerank(
         motor="deepseek-listwise", n_aday=len(cands), n_sonuc=min(len(sira), _TOP_K),
     )
     max_score = cands[0][0] or 1.0  # deduped azalan sıralı → BM25 lider skoru
-    return [{
-        "baslik": _baslik(chunk),
-        "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
-        "score": round(skor / max_score, 3),   # BM25 max-normalize (skor korunur)
-        "raw_score": round(skor, 3),           # boost'lu ham BM25 (skor korunur)
-        "rerank": True,
-    } for skor, chunk in (cands[i] for i in sira[:_TOP_K])]
+    q_token = _q_token(query)
+    return [
+        _oneri(chunk, score=skor / max_score, raw=skor, q_token=q_token, rerank=True)
+        for skor, chunk in (cands[i] for i in sira[:_TOP_K])
+    ]
 
 
 def _maybe_rerank(
@@ -339,7 +419,8 @@ def _maybe_rerank(
 
         cands = [
             {"text": c.get("text", ""), "mevzuat": c.get("mevzuat", ""),
-             "madde_no": c.get("madde_no"), "score": float(s)}
+             "kaynak_dosya": c.get("kaynak_dosya", ""),
+             "madde_no": c.get("madde_no"), "madde_tur": c.get("madde_tur"), "score": float(s)}
             for s, c in deduped[:RERANK_CAND_N]
         ]
         results = get_reranker().rerank(query, cands, top_k=_TOP_K)
@@ -353,14 +434,19 @@ def _maybe_rerank(
         "mevzuat_oner.rerank_active",
         motor="bge-reranker-v2-m3", n_aday=len(cands), n_sonuc=len(results),
     )
-    return [{
-        "baslik": _baslik({"mevzuat": r.metadata.get("mevzuat", ""),
-                           "madde_no": r.metadata.get("madde_no")}),
-        "snippet": str(r.text)[:_SNIPPET_CHARS],
-        "score": round(float(r.score), 3),            # cross-encoder alaka (0-1)
-        "raw_score": round(float(r.original_score), 3),  # taşınan BM25 ham skoru
-        "rerank": True,
-    } for r in results]
+    q_token = _q_token(query)
+    # NOT: bu yolda `score` cross-encoder alakasıdır (0-1, MUTLAK) — diğer yollardaki
+    # max-normalize skordan farklı anlam taşır; `norm_score` yine ham BM25'ten türer.
+    return [
+        _oneri(
+            {"mevzuat": r.metadata.get("mevzuat", ""),
+             "kaynak_dosya": r.metadata.get("kaynak_dosya", ""),
+             "madde_no": r.metadata.get("madde_no"),
+             "madde_tur": r.metadata.get("madde_tur"), "text": r.text},
+            score=float(r.score), raw=float(r.original_score), q_token=q_token, rerank=True,
+        )
+        for r in results
+    ]
 
 
 def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
@@ -390,24 +476,20 @@ def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
     if not top or top[0][0] < _MIN_RAW_SCORE:
         return []  # zayıf retrieval → config fallback (recall-koruyucu)
     max_score = top[0][0] or 1.0
-    oneriler = [{
-        "baslik": _baslik(chunk),
-        "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
-        "score": round(score / max_score, 3),
-        "raw_score": round(score, 3),
-    } for score, chunk in top]
+    q_token = _q_token(query)
+    oneriler = [
+        _oneri(chunk, score=score / max_score, raw=score, q_token=q_token)
+        for score, chunk in top
+    ]
     # S7 — GraphRAG-lite (ENV-gated): top sonuçların atıf verdiği mevzuattan 1-hop ek aday.
     if ATIF_GENISLET_ENABLED:
         from retrieval.atif_grafi import atif_ek_adaylar
 
-        for score, chunk in atif_ek_adaylar(top, deduped):
-            oneriler.append({
-                "baslik": _baslik(chunk),
-                "snippet": str(chunk.get("text", ""))[:_SNIPPET_CHARS],
-                "score": round(score / max_score, 3),
-                "raw_score": round(score, 3),
-                "atif_genisletme": True,
-            })
+        oneriler += [
+            _oneri(chunk, score=score / max_score, raw=score, q_token=q_token,
+                   atif_genisletme=True)
+            for score, chunk in atif_ek_adaylar(top, deduped)
+        ]
         if len(oneriler) > len(top):
             log.info("mevzuat_oner.atif_genisletme", n_ek=len(oneriler) - len(top))
     return oneriler
@@ -430,11 +512,15 @@ def _apply_boost(
 def _dedup(
     ranked: list[tuple[float, dict[str, Any]]]
 ) -> list[tuple[float, dict[str, Any]]]:
-    """Aynı (mevzuat, madde_no) çiftini tek öneriye indir (en yüksek skorlu kalır)."""
-    gorulen: set[tuple[str, Any]] = set()
+    """Aynı (mevzuat, madde_no, madde_tur) üçlüsünü tek öneriye indir (en yüksek skorlu kalır).
+
+    madde_tur anahtara DAHİL: "Madde 1" ile "Ek Madde 1" aynı madde_no'yu taşır (13 kanunda
+    çakışma) → tür anahtardan çıkarılırsa biri diğerini sessizce eler ve yanlış madde önerilir.
+    """
+    gorulen: set[tuple[str, Any, Any]] = set()
     out: list[tuple[float, dict[str, Any]]] = []
     for score, chunk in ranked:
-        anahtar = (str(chunk.get("mevzuat", "")), chunk.get("madde_no"))
+        anahtar = (str(chunk.get("mevzuat", "")), chunk.get("madde_no"), chunk.get("madde_tur"))
         if anahtar in gorulen:
             continue
         gorulen.add(anahtar)

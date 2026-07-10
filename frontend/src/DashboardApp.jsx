@@ -594,6 +594,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       onDownload={download} downloading={downloading} canDownload={!!evrakText}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
       fileUrl={fileUrl} onFileDrop={runFile} onTelefon={() => setTelefonAcik(true)}
+      onMevzuatAc={mevzuatAc}
     />
   );
 

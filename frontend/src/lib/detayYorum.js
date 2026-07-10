@@ -8,8 +8,6 @@
 const RESMI_TURLER = new Set([
   "ust_yazi", "cevabi_yazi", "muzekkere", "tebligat", "genelge_talimat_olur", "gorus_mutalaa",
 ]);
-const ILGILILIK_ESIK = 0.6; // MevzuatRow amber eşiğiyle aynı
-
 /* Backend alanı dizi olmalı ama sözleşme dışı şekil (string/obje) sayı uydurmasın. */
 const dizi = (x) => (Array.isArray(x) ? x : []);
 
@@ -115,15 +113,32 @@ export function eksikYorum(r = {}) {
   return { durum: "tam", metin };
 }
 
-/** Mevzuat kartı dipnotu — eşik sayımı gerçek skorlardan; NLI/CRAG yalnız veri varsa anılır. */
+/* Korpus etiketi kanun numarasıyla BAŞLAR ("2004 icra iflas kanunu m.60" → "2004").
+   Sondaki "m.168" bir kanun no değildir → başlangıç çıpası (^) şart. Numarasız statik
+   başlıklar ("Resmî Yazışma Yönetmeliği (CB 2646/2020)") "" döner, sayıma girmez. */
+const KANUN_NO_RE = /^\s*(\d{1,4}(?:[-/]\d+)?)\b/;
+export const kanunNo = (baslik) =>
+  (String(baslik ?? "").match(KANUN_NO_RE)?.[1] || "").replace("/", "-");
+
+/** Mevzuat kartı dipnotu — skorun GÖRELİ olduğunu söyler; NLI/CRAG yalnız veri varsa anılır.
+    Eski hâli "N önerinin tamamı %60 eşiğinin üzerinde" diyordu: `score` max-normalize
+    olduğundan (lider daima 1.0) bu neredeyse totolojiydi ve kalite ölçüyormuş gibi okunuyordu.
+    Güven artık kalibre `norm_score` bandından gelir (bkz. api/mevzuat_zenginlestir.py). */
 export function mevzuatDipnot(r = {}) {
   const mev = dizi(r.mevzuat_onerileri).filter(Boolean);
-  const skorlu = mev.filter((m) => Number.isFinite(Number(m.score)));
-  const alti = skorlu.filter((m) => Number(m.score) < ILGILILIK_ESIK).length;
-  const parca = [];
-  if (!skorlu.length) parca.push("Öneriler BM25 sözcüksel eşleşmeyle sıralanır.");
-  else if (!alti) parca.push(`${mev.length} önerinin tamamı %${ILGILILIK_ESIK * 100} ilgililik eşiğinin üzerinde.`);
-  else parca.push(`${mev.length} öneriden ${alti} tanesi %${ILGILILIK_ESIK * 100} eşiğin altında — düşük alaka (amber).`);
+  if (!mev.length) return "";
+  const parca = ["Sıralama BM25 sözcüksel eşleşmeyle yapılır; yüzde ilk öneriye görelidir, mutlak alaka ölçüsü değildir."];
+
+  const incele = mev.filter((m) => m.inceleme_oner).length;
+  if (incele) parca.push(`${mev.length} öneriden ${incele} tanesi için insan incelemesi önerilir.`);
+
+  // Farklı kanunlardan gelen öneriler birlikte değil ALTERNATİF olabilir. Hangisinin
+  // uygulanacağı hukuki karardır — sistem bunu bilemez; iddia etmez, doğrulamaya yönlendirir.
+  const kanunlar = new Set(mev.map((m) => kanunNo(m.baslik)).filter(Boolean));
+  if (kanunlar.size > 1) {
+    parca.push(`Öneriler ${kanunlar.size} ayrı mevzuattan geliyor; hangisinin uygulanacağına sistem karar vermez — maddeyi açıp doğrulayın.`);
+  }
+
   if (dizi(r.mevzuat_nli).length) parca.push("Anlamsal destek NLI (entailment) ile ölçüldü.");
   if (r.crag_corrected) {
     const o = Number(r.crag_guven_oncesi), s = Number(r.crag_guven_sonrasi);
@@ -185,6 +200,91 @@ export function slaKonum(sla = {}) {
   if (toplam <= 0) return null;
   const gecen = toplam - kalan;   // bugün = son_tarih − kalan_gun
   return { oran: Math.min(1, Math.max(0, gecen / toplam)), gecen: Math.max(0, gecen), toplam, kalan };
+}
+
+/* ---- Risk bandı sunum katmanı ------------------------------------------------------------
+   Backend gerekçeleri MAKİNE SÖZLEŞMESİDİR: risk_guard._UYDURMA_IMZA, muzakere.js regex'i ve
+   eval/draft_eval.py aynı stringlere göre eşleşir → burada yalnız GÖRÜNÜM çevrilir, ham metin
+   `teknik` alanında birebir korunur (bilgi kaybı yok). Tanınmayan şekil aynen gösterilir —
+   uydurma çeviri yapılmaz. Girdi, risk_guard'da zaten PII-maskelenmiş gelir. */
+
+const tirnak = (s) => `“${String(s).trim()}”`;
+
+/* Sıra önemli: uydurma kuralları 'Uydurma şüphesi — ' önekiyle daha spesifik olduğu için üstte. */
+const GEREKCE_KURAL = [
+  [/^Uydurma şüphesi — Taslaktaki iddia kaynak evrakta yok \(LLM grounding\):\s*(.+)$/i,
+    (m) => `Taslakta geçen ${tirnak(m[1])} ifadesi, yüklediğiniz evrakta bulunamadı — yapay zekâ bu bilgiyi kendiliğinden eklemiş olabilir.`],
+  [/^Uydurma şüphesi — Taslaktaki '(.+?)' (tarihi|sayısı) kaynak evrakta yok/i,
+    (m) => `Taslakta geçen ${tirnak(m[1])} ${m[2]}, yüklediğiniz evrakta bulunamadı — göndermeden önce doğrulayın.`],
+  [/^Eksik bölüm:\s*(.+)$/i,
+    (m) => `Resmî yazıda bulunması gereken ${tirnak(m[1])} bölümü taslakta yok.`],
+  [/^Resmî yazı zorunlu format bölümleri eksik$/i,
+    () => "Taslak, resmî yazının zorunlu bölümlerini eksiksiz taşımıyor."],
+  [/^(\d+) alan doğrulanmalı \(\[DOĞRULA\] işareti\)$/i,
+    (m) => `Taslakta ${m[1]} alan “DOĞRULA” işaretiyle bırakıldı; bu bilgileri sizin doğrulamanız gerekiyor.`],
+  [/^Eksik zorunlu bilgi:\s*(.+)$/i,
+    (m) => `Evrakta bulunması zorunlu şu bilgiler eksik: ${m[1]}.`],
+  [/^Evrak türü belirsiz \(sınıflandırma abstention\)$/i,
+    () => "Sistem evrakın türünü belirleyemedi; emin olmadığı için tahmin yürütmedi."],
+  [/^Düşük sınıflandırma güveni \(([\d.]+)\)$/i,
+    (m) => `Sistem evrak türünü tahmin etti ama emin değil (güven: %${Math.round(Number(m[1]) * 100)}).`],
+  [/^Format \(2646 lint\):\s*(.+)$/i,
+    (m) => `Resmî yazışma biçim kuralına uymayan nokta: ${m[1]}`],
+  [/^Tutarlılık:\s*(.+)$/i,
+    (m) => `Evraktaki bilgiler birbiriyle uyuşmuyor: ${m[1]}`],
+  [/^Tüm doğrulamalar temiz/i,
+    () => "Tüm kontroller temiz — bilgiler evraktan geldi, biçim tam, uydurma bilgi yok."],
+];
+
+/** Tek risk gerekçesi → {sade, teknik, cevrildi}. Tanınmayan şekilde sade = teknik = ham. */
+export function riskGerekceYorum(gerekce) {
+  const ham = String(gerekce ?? "").trim();
+  if (!ham) return null;
+  for (const [desen, cevir] of GEREKCE_KURAL) {
+    const m = desen.exec(ham);
+    if (m) return { sade: cevir(m), teknik: ham, cevrildi: true };
+  }
+  return { sade: ham, teknik: ham, cevrildi: false };
+}
+
+const BANT_SEVIYE = { yesil: "en düşük seviye", sari: "orta seviye", kirmizi: "en yüksek seviye" };
+
+/* Skorun ne kadarının ölçüme dayandığı memurdan GİZLENMEZ (backend risk_metadata.kalibrasyon). */
+const KALIBRASYON_NOT = {
+  olculdu: "Ağırlıklar, sistemin geçmiş belgelerdeki isabet oranı ölçülerek belirlendi.",
+  kismi: "Ağırlıkların bir kısmı ölçüldü; kalanı henüz ölçülmemiş öngörü değeridir.",
+  onsel: "Ağırlıklar henüz ölçülmedi; bunlar öngörü değerleridir.",
+  temiz: null,
+};
+
+/** Ham 0..1 risk skoru → memurun bildiği yüzde + seviye adı. Skor yoksa/0 ise null (yüzde uydurulmaz).
+
+    `katkilar`: backend'in gerekçe-başına ağırlığı (ciddiyet × ölçülen isabet). Çubuk = o
+    nedenin KENDİ ağırlığı; gerekçe sayısına BÖLÜNMEZ. (Eski davranış eşit bölüyordu → kanıt
+    arttıkça çubuklar küçülüyor, hafif sarı belge ağır kırmızıdan büyük görünüyordu.)
+    Toplamları skora eşit değildir: skor noisy-OR birleşimidir, toplamsal değil. */
+export function riskSkorYorum(skor, katkilar, bant, kalibrasyon) {
+  const s = Number(skor);
+  if (!Number.isFinite(s) || s <= 0) return null;
+  const paylar = Array.isArray(katkilar)
+    ? katkilar.map((k) => (Number.isFinite(Number(k)) ? Math.round(Number(k) * 100) : null))
+    : [];
+  const seviye = BANT_SEVIYE[bant] || null;
+  const coklu = paylar.filter((p) => p != null).length > 1;
+  return {
+    yuzde: Math.round(s * 100),
+    paylar,
+    seviye,
+    baslik: `Risk puanı: %${Math.round(s * 100)}${seviye ? ` (${seviye})` : ""}`,
+    not: coklu
+      ? "Her çubuk, o nedenin kendi ağırlığıdır (ne kadar ciddi olduğu × sistemin o konudaki isabet oranı). "
+        + "Toplam puan bu nedenlerin birleşimidir; bir neden bile doğruysa belge riskli sayıldığı için çubukların toplamı puana eşit değildir."
+      : "Çubuk, bu nedenin ağırlığıdır: ne kadar ciddi olduğu × sistemin bu konudaki isabet oranı.",
+    kalibrasyonNot: KALIBRASYON_NOT[kalibrasyon] ?? null,
+    teknik: `ham risk skoru: ${s} · noisy-OR birleşimi`
+      + (paylar.length ? ` · gerekçe ağırlıkları: ${katkilar.join(", ")}` : "")
+      + (kalibrasyon ? ` · kalibrasyon: ${kalibrasyon}` : ""),
+  };
 }
 
 /** Çok-konulu ayrıştırma girişi — alt-talep ve birim sayısı gerçekten sayılır. */

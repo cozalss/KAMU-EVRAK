@@ -510,7 +510,7 @@ export default function CanliAjanAkisi({
   onTurSec = () => {}, turUretiliyor = "", onerilenTur = "",
   onDownload = () => {}, downloading = "", canDownload = false,
   onUpload = () => {}, onGoInbox = () => {}, glow = true, fileUrl = "", onFileDrop = () => {},
-  onTelefon = () => {},
+  onTelefon = () => {}, onMevzuatAc = null,
 }) {
   // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok) + sürükle-bırak yükleme alanı.
   if (!started) {
@@ -671,7 +671,7 @@ export default function CanliAjanAkisi({
               <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px", display: "flex", flexDirection: "column" }}>
                 {result ? (
                   <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-                    <NeonDetay embedded result={result} />
+                    <NeonDetay embedded result={result} onMevzuatAc={onMevzuatAc} />
                   </HataSiniri>
                 ) : izKart}
               </div>

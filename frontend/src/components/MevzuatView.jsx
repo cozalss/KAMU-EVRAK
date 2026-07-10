@@ -46,29 +46,43 @@ const KATEGORI_ACIKLAMA = {
   "Diğer": "Belirli bir gruba atanmamış mevzuat.",
 };
 
-/* RAG öneri başlığı ("3071 dilekce hakki kanunu m.4") → katalog dosyası + madde no.
-   Etiket, dosya adının boşluklu hâlidir (backend _baslik sözleşmesi); katalogda yoksa null. */
-function oneriHedef(hamBaslik, dosyalar) {
-  const ham = String(hamBaslik || "");
+/* RAG önerisi → katalog dosyası + madde no + tür. Backend artık `kaynak_dosya`/`madde_no`/
+   `madde_tur` gönderir (chunk metadata'sından gelen DOĞRULANABİLİR bağ) — onu tercih ederiz.
+   `madde_tur` şart: "Ek Madde 1" ve normal "Madde 1" aynı no'yu taşır; modal doğru bloğu
+   ancak tür ile ayırır. Alanları taşımayan eski/statik öneriler için başlıktan türetmeye
+   düşülür ("3071 dilekce hakki kanunu m.4" → dosya adı sözleşmesi). Katalogda yoksa null. */
+function oneriHedef(m, dosyalar) {
+  const maddeNo = (x) => (x != null && x !== "" && Number.isFinite(Number(x)) ? Number(x) : null);
+  const dogrudan = String(m?.kaynak_dosya || "");
+  if (dogrudan && dosyalar.has(dogrudan)) {
+    return { dosya: dogrudan, maddeNo: maddeNo(m.madde_no), maddeTur: m.madde_tur || "madde" };
+  }
+  const ham = String(m?.baslik || "");
   const madde = ham.match(/\s+m\.(\d+)\s*$/i);
   const etiket = ham.replace(/\s+m\.\d+\s*$/i, "").replace(/\s*\[DOĞRULA:.*$/i, "").trim();
   const dosya = etiket.replace(/\s+/g, "_");
   if (!dosyalar.has(dosya)) return null;
-  return { dosya, maddeNo: madde ? Number(madde[1]) : null };
+  return { dosya, maddeNo: madde ? Number(madde[1]) : null, maddeTur: "madde" };
 }
 
 /* Ham mevzuat metni → bloklar: künye-sonrası giriş notu + "Madde N — ..." blokları. */
+/* Backend chunker (_MADDE_HEADER_RE) ile aynı önek dili — "Ek Madde 1" / "Geçici Madde 2"
+   ayrı blok olmalı. Tanınmazsa ek/geçici metni bir önceki maddenin gövdesine yapışır ve
+   "Ek Madde 1" ile normal "Madde 1" aynı no'yu paylaştığından vurgu yanlış bloğa gider. */
+const MADDE_BASLIK_RE = /^(?:(Ek)\s+|(Geçici)\s+)?Madde\s+(\d+)/i;
+const maddeTurBul = (m) => (m[1] ? "ek" : m[2] ? "gecici" : "madde");
+
 function maddeAyir(metin) {
   const satirlar = String(metin || "").split("\n").slice(2); // 1-2. satır başlık+künye (modal başlığında)
   const bloklar = [];
-  let aktif = { no: null, baslik: "", parcalar: [] };
+  let aktif = { no: null, tur: null, baslik: "", parcalar: [] };
   const kapat = () => {
     const govde = aktif.parcalar.join("\n").replace(/\n{3,}/g, "\n\n").trim();
-    if (aktif.baslik || govde) bloklar.push({ no: aktif.no, baslik: aktif.baslik, govde });
+    if (aktif.baslik || govde) bloklar.push({ no: aktif.no, tur: aktif.tur, baslik: aktif.baslik, govde });
   };
   for (const satir of satirlar) {
-    const m = satir.match(/^Madde\s+(\d+)/);
-    if (m) { kapat(); aktif = { no: Number(m[1]), baslik: satir.trim(), parcalar: [] }; }
+    const m = satir.match(MADDE_BASLIK_RE);
+    if (m) { kapat(); aktif = { no: Number(m[3]), tur: maddeTurBul(m), baslik: satir.trim(), parcalar: [] }; }
     else aktif.parcalar.push(satir);
   }
   kapat();
@@ -96,7 +110,7 @@ const ICERIK_CACHE = new Map(); // dosya → içerik yanıtı (modal her açıl�
 
 /* Okuma modalı — ortada dar panel, arka plan blurlanır; yalnız seçilen mevzuat okunur.
    Esc / dış tıklama / kapat düğmesi kapatır; açılışta odak kapat butonuna, gövde kaydırması kilitlenir. */
-function OkumaModal({ dosya, maddeNo, onClose }) {
+function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
   const [icerik, setIcerik] = useState(ICERIK_CACHE.get(dosya) || null); // null=yükleniyor, "hata", {...}
   const [deneme, setDeneme] = useState(0);
   const closeRef = useRef(null);
@@ -163,7 +177,7 @@ function OkumaModal({ dosya, maddeNo, onClose }) {
               <div style={{ marginTop: SP.m }}><Btn onClick={() => setDeneme((n) => n + 1)}>Tekrar dene</Btn></div>
             </div>
           )}
-          {bloklar.map((b, i) => <MaddeBlok key={i} blok={b} vurgulu={maddeNo != null && b.no === maddeNo} anchorRef={maddeRef} />)}
+          {bloklar.map((b, i) => <MaddeBlok key={i} blok={b} vurgulu={maddeNo != null && b.no === maddeNo && b.tur === maddeTur} anchorRef={maddeRef} />)}
         </div>
       </div>
     </div>
@@ -194,7 +208,7 @@ function KatalogKart({ m, onAc }) {
 
 /* Oturumda RAG'in önerdiği kaynak — katalogda karşılığı varsa tıklanınca ilgili maddeye açılır. */
 function OneriSatir({ m, dosyalar, onAc }) {
-  const hedef = oneriHedef(m.baslik, dosyalar);
+  const hedef = oneriHedef(m, dosyalar);
   const govde = (
     <>
       <div style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{cleanDemoText(m.baslik)}</div>
@@ -337,7 +351,7 @@ export default function MevzuatView({ history = [], hedef = null, onHedefAcildi 
   // hedef her tıklamada yeni nesne gelir; tüketilince temizletilir (aynı çip tekrar çalışsın).
   useEffect(() => {
     if (hedef?.dosya) {
-      ac({ dosya: hedef.dosya, maddeNo: hedef.maddeNo ?? null });
+      ac({ dosya: hedef.dosya, maddeNo: hedef.maddeNo ?? null, maddeTur: hedef.maddeTur || "madde" });
       onHedefAcildi?.();
     }
   }, [hedef, ac, onHedefAcildi]);
@@ -479,7 +493,7 @@ export default function MevzuatView({ history = [], hedef = null, onHedefAcildi 
         gruplar.map(([ad, uyeler]) => <KategoriGrup key={ad} ad={ad} mevzuatlar={uyeler} onAc={ac} />)
       ))}
 
-      {secili && <OkumaModal dosya={secili.dosya} maddeNo={secili.maddeNo} onClose={kapat} />}
+      {secili && <OkumaModal dosya={secili.dosya} maddeNo={secili.maddeNo} maddeTur={secili.maddeTur} onClose={kapat} />}
     </ViewWrap>
   );
 }

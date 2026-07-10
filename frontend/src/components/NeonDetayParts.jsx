@@ -57,35 +57,76 @@ export function subSlaRenk(durum) {
 /* Güven seviyesi → AA metin rengi (renk tek sinyal değil, metin de var). */
 const GUVEN_RENK = { yüksek: DERIN.T, orta: DERIN.sari, düşük: DERIN.kirmizi };
 
-/* Mevzuat öneri satırı — skor barı (eşik çentikli) + NLI anlamsal destek + güven + dayanak +
-   yürürlük + "insan incelemesi". Satır listesi; kart-içinde-kart yok (hairline ayraç üstte). */
-export function MevzuatRow({ rank, m, nli, ilk }) {
+/* Güven çipi tooltip'i — bandın gold sette ÖLÇÜLEN isabeti (api/mevzuat_zenginlestir
+   `guven_isabet`; yalnız İLK öneride doludur, çünkü ölçüm yalnız orada temiz). Ölçüm
+   yoksa oran İDDİA EDİLMEZ; bandın neden verildiği söylenir. Sıra önemli: en spesifik
+   gerekçe (NLI-veto → [DOĞRULA] → ölçülü bant → ölçüsüz bant → statik) önce gelir. */
+function guvenBaslik(m) {
+  if (m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA")) {
+    return "NLI ölçtü: madde, talebi anlamsal olarak desteklemiyor — bu yüzden düşük güven.";
+  }
+  if (m.dogrula) return "Madde no şüpheli ([DOĞRULA] işareti) — bant 'yüksek' olamaz, memur teyidi gerekir.";
+  const oran = Number(m.guven_isabet);
+  if (Number.isFinite(oran)) {
+    return `Bu bandın altın sette ölçülen ilk-sıra isabeti: %${Math.round(oran * 100)}. `
+      + "Bant, sorgu uzunluğuna göre düzeltilmiş BM25 skorundan (norm_score) gelir.";
+  }
+  if (m.norm_score != null) {
+    return "Bant, sorgu uzunluğuna göre düzeltilmiş BM25 skorundan (norm_score) gelir. "
+      + "Ölçülmüş isabet oranı yalnız ilk öneri için geçerlidir, bu satır için iddia edilmez.";
+  }
+  return "Statik tür→mevzuat eşlemesinden geldi (retrieval yok) — ölçülmüş isabet oranı yok.";
+}
+
+/* Mevzuat öneri satırı — GÖRELİ skor barı + kalibre güven çipi + NLI anlamsal destek +
+   eşleşme gerekçesi + yürürlük + "insan incelemesi". Başlık, kaynak mevzuat metnine açılır.
+
+   Tasarım notu (dürüstlük): `score` max-normalize olduğundan ilk satır DAİMA %100'dür —
+   bu bir kalite ölçüsü değil, sıralama artefaktıdır. Bu yüzden yüzde açıkça "göreli" diye
+   etiketlenir, amber/kırmızı sinyal ise skordan DEĞİL kalibre `guven` bandından gelir. */
+export function MevzuatRow({ rank, m, nli, ilk, onAc }) {
   const pct = Math.round((Number(m.score) || 0) * 100);
-  const low = pct > 0 && pct < 60;
-  const fill = low ? DERIN.sari : DERIN.T;
   const guven = m.guven || "";
   const gc = GUVEN_RENK[guven] || PAL.mut2;
+  const zayif = guven === "düşük";
+  const fill = zayif ? DERIN.kirmizi : (guven === "orta" ? DERIN.sari : DERIN.T);
   const title = cleanDemoText(m.baslik);
   const snippet = m.snippet ? cleanDemoText(m.snippet) : null;
-  const dayanak = m.dayanak ? cleanDemoText(m.dayanak) : "";
+  const gerekce = m.eslesme_gerekcesi ? cleanDemoText(m.eslesme_gerekcesi) : "";
   const nliPct = nli && Number.isFinite(Number(nli.skor)) ? Math.round(Number(nli.skor) * 100) : null;
+  const acilir = !!(m.kaynak_dosya && onAc);
+  const ac = () => onAc({ dosya: m.kaynak_dosya, maddeNo: m.madde_no ? Number(m.madde_no) : null, maddeTur: m.madde_tur || "madde" });
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: "10px 0 12px", borderTop: ilk ? "none" : `1px solid ${PAL.line}` }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
         <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{rank}.</span>
-        <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{title}</span>
+        {acilir ? (
+          <button type="button" onClick={ac} aria-haspopup="dialog" {...focusRing}
+            title="Maddenin tam metnini aç — öneriyi kaynağında doğrulayın"
+            style={{ ...TYPE.data, fontWeight: 500, color: DERIN.T, background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left", textDecoration: "underline", textUnderlineOffset: 2 }}>
+            {title}
+          </button>
+        ) : (
+          <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{title}</span>
+        )}
         {guven && (
-          <span aria-label={`Güven seviyesi: ${guven}`} style={{ ...TYPE.meta, fontWeight: 500, color: gc, background: ALFA(GUVEN_RENK[guven] || PAL.mut2), borderRadius: RAD.chip, padding: "2px 8px" }}>{guven} güven</span>
+          <span title={guvenBaslik(m)} aria-label={`Güven seviyesi: ${guven}`} style={{ ...TYPE.meta, fontWeight: 500, color: gc, background: ALFA(GUVEN_RENK[guven] || PAL.mut2), borderRadius: RAD.chip, padding: "2px 8px" }}>{guven} güven</span>
         )}
         {m.atif_genisletme && (
           <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>
         )}
-        {pct > 0 && <span style={{ marginLeft: "auto", ...TYPE.data, fontWeight: 500, color: fill, minWidth: 42, textAlign: "right", ...TNUM }}>%{pct}</span>}
+        {pct > 0 && (
+          <span title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir — onu güven bandı verir."
+            style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>
+            %{pct} <span style={{ color: PAL.mut }}>göreli</span>
+          </span>
+        )}
       </div>
       {pct > 0 && (
-        <div style={{ position: "relative", height: 4, background: PAL.press }} role="img" aria-label={`İlgililik skoru yüzde ${pct}${low ? " — eşiğin altında" : ""}`}>
+        <div style={{ position: "relative", height: 4, background: PAL.press }} role="img"
+          aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? ` — güven bandı: ${guven}` : ""}`}>
           <div style={{ height: "100%", width: `${pct}%`, background: fill }} />
-          <div aria-hidden="true" title="%60 ilgililik eşiği" style={{ position: "absolute", top: -2, bottom: -2, left: "60%", width: 1, background: PAL.lineHi }} />
         </div>
       )}
       {snippet && <div style={{ ...TYPE.data, color: PAL.mut2 }}>{snippet}</div>}
@@ -95,10 +136,10 @@ export function MevzuatRow({ rank, m, nli, ilk }) {
             Anlamsal destek (NLI): %{nliPct} — {nli.entailment ? "madde talebi destekliyor" : "destek zayıf, insan doğrulaması önerilir"}
           </div>
         )}
-        {dayanak && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Dayanak:</span> {dayanak}</div>}
+        {gerekce && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Eşleşme gerekçesi:</span> {gerekce}</div>}
         {m.yururluk && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Yürürlük:</span> {m.yururluk}</div>}
         {m.inceleme_oner && (
-          <div style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: DERIN.sari, marginTop: 1 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: zayif ? DERIN.kirmizi : DERIN.sari, marginTop: 1 }}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
             İnsan incelemesi önerilir{m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA") ? " · anlamsal destek zayıf" : ""}
           </div>

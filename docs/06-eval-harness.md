@@ -28,6 +28,77 @@ var/yok · DistilBERT-kademe var/yok → her A/B McNemar p + bootstrap CI. Dür�
 "+5pp ama p=0.31 → **anlamlı DEĞİL**" raporla (jüri güveni). **Error-propagation:** Görev2
 yönlendirmeye gold-tür vs tahmin-tür besleme A/B.
 
+## Mevzuat güven bandı kalibrasyonu (`eval/mevzuat_guven_kalibrasyon.py`)
+
+"İlgili mevzuat" kartındaki **güven çipi** eskiden max-normalize `score`tan geliyordu. `score`
+liderin kendine bölünmesiyle üretilir (`mevzuat_oner._from_corpus`) → **top-1 daima 1.0** →
+çip retrieval kalitesinden **bağımsız olarak** daima "yüksek güven" yazıyordu. Altın sette
+ölçülen gerçek top-1 isabeti ise **0.598**: rozet her 5 evrakın 2'sinde yanılıyor, memura
+bunu söylemiyordu. Aynı gerekçeyle kartın "%60 ilgililik eşiği" çentiği de kaldırıldı —
+göreli bir çubuğun üzerinde mutlak eşik çizmek anlamsızdı.
+
+Ölçülen sinyal: **`norm_score = raw_score / sorgu_token_sayısı`** (uzunluk-düzeltilmiş BM25).
+Ham BM25 sorgu uzunluğuyla ölçeklenir → belgeler arası karşılaştırılamaz; token sayısına
+bölünce karşılaştırılabilir olur. Aday sinyallerin ayırt ediciliği (AUC, top-1 doğru/yanlış):
+
+| sinyal | AUC |
+|---|---|
+| `raw_score` (ham BM25) | 0.877 |
+| **`raw_score / sorgu_token`** | **0.964** ← seçilen |
+| `raw1/raw2` (lider marjı) | 0.717 |
+
+Bantlar ve **ölçülen** isabetleri (n=204 evrak, taban 0.598):
+
+| bant | kenar | n | ölçülen top-1 isabet |
+|---|---|---|---|
+| yüksek | `norm ≥ 1.40` | 103 | **0.971** |
+| orta | `1.20 ≤ norm < 1.40` | 32 | 0.562 |
+| düşük | `norm < 1.20` | 69 | **0.058** → insan incelemesi |
+
+```
+uv run python -m eval.mevzuat_guven_kalibrasyon           # bantları yeniden ölç
+uv run python -m eval.mevzuat_guven_kalibrasyon --json    # CI
+```
+
+Sabitler `api/mevzuat_zenginlestir._BANT_ISABET` içindedir; **korpus ya da BM25 parametreleri
+(k1/b/tür-boost) değişirse burada yeniden ölçülüp güncellenmelidir**, aksi halde "yüksek güven"
+iddiası dayanaksız kalır. Ölçülen isabet arayüzde **yalnız ilk öneriye** iliştirilir: altın set
+her evrak için ~tek beklenen kanun listeler, dolayısıyla "bu öneri doğru mu?" sorusu ancak
+top-1'de temiz ölçülebilir (alt sıralarda bant gösterilir, oran iddia edilmez). `[DOĞRULA]`
+işaretli öneri hiçbir koşulda "yüksek" olamaz; NLI "destek yok" derse bant düşüğe çekilir.
+
+## Risk skoru kalibrasyonu (`eval/risk_calibration.py`)
+
+Risk bandı **kararı** deterministik kural zinciridir ve ölçümden etkilenmez (CLAUDE.md).
+Ölçülen şey **skor**: `ağırlık(tip) = ciddiyet × isabet`, belge skoru `1 − Π(1 − ağırlıkᵢ)`
+(noisy-OR → kanıt arttıkça monoton artar). Sözleşme: `agents/risk_agirlik.py`.
+
+**Sinyaller iki epistemik türdür — kalibrasyonun temeli budur:**
+
+| Tür | Örnek | isabet | Neden |
+|---|---|---|---|
+| **Gözlem** | TCKN checksum tutmuyor · `[DOĞRULA]` işareti · 2646 lint ihlali · format checklist | **1.0 (ölçülmez)** | Deterministik olgu; tahmin değil. "Ölçtük" demek sahte hassasiyet olurdu. |
+| **Çıkarım** | uydurma iddia (LLM grounding) · uydurma tarih/sayı · eksik bölüm · eksik zorunlu alan · düşük tür güveni | **ölçülür** | Sinyal bir tahmindir, yanılabilir → bağımsız oracle ile sayılır. |
+
+Her çıkarım sinyali, **kendi mantığından bağımsız** bir oracle ile yargılanır (yoksa dairesel olur):
+uydurma → değer kaynak evrakta gerçekten var mı; eksik bölüm → bağımsız 2646 regex bölümü
+buluyor mu; eksik zorunlu → tahmin gold `eksik_alanlar` ile kesişiyor mu; düşük güven →
+tahmin gold türden farklı mı. Ağırlığa **Wilson %95 alt sınırı** yazılır (az örnekte şişmesin);
+ölçülmeyen çıkarım tipi `önsel 0.70` + `kalibrasyon: onsel` bayrağıyla arayüzde açıkça belirtilir.
+PII maskeli değerler (`123***50`) oracle ile çözülemez → ölçüme alınmaz.
+
+**Skor bir olasılık DEĞİLDİR** (ciddiyetle çarpılmıştır → *beklenen zarar*). Kalibre edilebilir
+büyüklük ayrı bir fonksiyondur: `kusur_olasiligi` = yalnız isabetlerin noisy-OR'u. Brier ve
+güvenilirlik eğrisi **onun** üzerinde hesaplanır; skoru 0/1 etiketle Brier'e sokmak kategori hatasıdır.
+
+```
+uv run python -m eval.risk_calibration            # mock (ücretsiz, deterministik)
+uv run python -m eval.risk_calibration --llm      # grounding/uydurma sinyalleri de ölçülür
+```
+Çıktı `eval/runs/risk_calibration.json` → `risk_agirlik.py` otomatik okur; dosya yoksa
+sistem önsel ağırlıklarla ayakta kalır. **Ölçüm koşulu rapora yazılır** (`llm_mode`): mock ve
+gerçek-LLM koşuları farklı çıkarım yollarını ölçer, karıştırılmaz.
+
 ## Fairness (etik §13.1)
 
 Farklı isim/cinsiyet/bölge sahte-PII varyantlarında sınıflandırma/routing **tutarlılık** kontrolü

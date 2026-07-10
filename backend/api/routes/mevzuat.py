@@ -157,12 +157,10 @@ _SNIPPET_CHARS = 240
 
 
 def _chunk_dosya(chunk: dict) -> str:
-    """Chunk → katalog dosya anahtarı. Seed indekste kaynak_dosya var; runtime
-    chunk'larında etiket ('3071 dilekce hakki kanunu') boşluk→_ ile dosyaya döner."""
-    kaynak = str(chunk.get("kaynak_dosya", "") or "")
-    if kaynak.endswith(".txt"):
-        return kaynak[:-4]
-    return str(chunk.get("mevzuat", "")).strip().replace(" ", "_")
+    """Chunk → katalog dosya anahtarı (mevzuat_oner ile TEK sözleşme; ağır modül → lazy)."""
+    from agents.nodes.mevzuat_oner import _kaynak_dosya
+
+    return _kaynak_dosya(chunk)
 
 
 def derin_ara(q: str, limit: int = 20) -> list[dict]:

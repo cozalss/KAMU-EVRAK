@@ -120,14 +120,23 @@ class MevzuatOneriSchema(BaseModel):
     baslik: str
     snippet: str | None = None
     url: str | None = None
-    score: float = 0.0
+    score: float = 0.0            # max-normalize: top DAİMA 1.0 → GÖRELİ sıra, mutlak alaka DEĞİL
+    raw_score: float | None = None    # tür-boost'lu ham BM25 (sorgu uzunluğuna bağlı)
+    norm_score: float | None = None   # raw_score / sorgu_token — güven bandının kaynağı
     # B2 — şeffaflık (kaynak göstermeyen öneri = güven kaybı). Hepsi türetilmiş/doğrulanabilir.
-    dayanak: str = ""              # "hangi talebe dayanıyor" (evrak konusu)
-    guven: str = ""               # "yüksek" | "orta" | "düşük"
+    # NOT: eski adı `dayanak`tı. İdari Türkçede "dayanak" = işlemin HUKUKİ MESNEDİ; bu alan
+    # ise önerinin hangi SORGUDAN geldiğini söyler → memur tersten okuyordu, yeniden adlandırıldı.
+    eslesme_gerekcesi: str = ""    # "bu öneri hangi talep/aramadan geldi"
+    guven: str = ""               # "yüksek" | "orta" | "düşük" (norm_score bandından, kalibre)
+    guven_isabet: float | None = None  # bandın gold sette ÖLÇÜLEN top-1 isabeti (tooltip kanıtı)
     inceleme_oner: bool = False    # düşük güven / [DOĞRULA] → insan incelemesi önerilir
     dogrula: bool = False         # başlık/snippet'te [DOĞRULA] işareti
     nli_etiket: str = ""          # NLI açıksa: "destekleniyor" / "[DOĞRULA: anlamsal destek zayıf]"
     yururluk: str = ""            # başlıkta zaten var olan sürüm/yürürlük (uydurma yok)
+    # Öneriyi kaynağında doğrulama bağı — /mevzuat/icerik/{kaynak_dosya}, ilgili maddeye atlar.
+    kaynak_dosya: str = ""
+    madde_no: str | None = None
+    madde_tur: str | None = None   # "madde"|"ek"|"gecici" → modal doğru maddeyi vurgular (ek≠normal)
     # S7 — GraphRAG-lite: öneri, top sonucun atıf verdiği mevzuattan 1-hop genişletmeyle geldi.
     atif_genisletme: bool = False
 

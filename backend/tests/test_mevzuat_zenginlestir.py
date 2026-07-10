@@ -1,7 +1,9 @@
 """B2 — mevzuat öneri şeffaflık zenginleştirme (saf, deterministik).
 
-Güven seviyesi (skor/[DOĞRULA]/NLI önceliği), dayanak cümlesi, başlıktan yürürlük parse,
-insan-incelemesi bayrağı. SIFIR UYDURMA: yürürlük yalnız başlıkta zaten varsa.
+Güven seviyesi (norm_score bandı / [DOĞRULA] / NLI önceliği), eşleşme gerekçesi, başlıktan
+yürürlük parse, insan-incelemesi bayrağı. SIFIR UYDURMA: yürürlük yalnız başlıkta zaten varsa.
+
+Bant kenarları eval/mevzuat_guven_kalibrasyon.py ile ÖLÇÜLDÜ (top-1 AUC 0.964).
 """
 from __future__ import annotations
 
@@ -13,7 +15,54 @@ def _state(oneriler, nli=None, konu="imar durumu"):
             "bilgi_unsurlari": {"konu": konu}}
 
 
-def test_yuksek_guven_skordan():
+class TestKalibreBant:
+    """Güven, max-normalize `score`tan DEĞİL mutlak `norm_score`tan gelir.
+
+    Regresyon: `score` liderin kendine bölünmesiyle üretilir → top-1 daima 1.0 → çip
+    retrieval kalitesinden bağımsız olarak daima "yüksek güven" yazıyordu (gerçek top-1
+    isabeti 0.60). Aşağıdaki testler bu bağı kalıcı olarak koparır.
+    """
+
+    def test_top1_score_1_0_olsa_da_zayif_norm_dusuk_guven(self):
+        # ESKİ DAVRANIŞ: score=1.0 → "yüksek". Ölçüm: norm<1.20 bandında isabet 0.058.
+        out = zenginlestir_mevzuat(_state([{"baslik": "X m.1", "score": 1.0, "norm_score": 0.9}]))
+        assert out[0]["guven"] == "düşük"
+        assert out[0]["inceleme_oner"] is True
+
+    def test_yuksek_bant_olculen_isabeti_tasir(self):
+        out = zenginlestir_mevzuat(_state([{"baslik": "X m.1", "score": 1.0, "norm_score": 1.62}]))
+        assert out[0]["guven"] == "yüksek" and out[0]["inceleme_oner"] is False
+        assert out[0]["guven_isabet"] == 0.971   # tooltip'te gösterilen KANIT
+
+    def test_orta_bant_kenarlari(self):
+        orta = zenginlestir_mevzuat(_state([{"baslik": "X", "score": 1.0, "norm_score": 1.25}]))
+        assert orta[0]["guven"] == "orta" and orta[0]["guven_isabet"] == 0.562
+        # kenar tam üstü → yüksek (>= karşılaştırması)
+        kenar = zenginlestir_mevzuat(_state([{"baslik": "X", "score": 1.0, "norm_score": 1.40}]))
+        assert kenar[0]["guven"] == "yüksek"
+
+    def test_olculen_isabet_yalniz_ilk_oneriye_ilistirilir(self):
+        """Altın set ~tek beklenen kanun listeler → 'doğru mu?' yalnız ilk sırada temiz ölçülür.
+
+        0.971'i 3. sıradaki öneriye iliştirmek, düzeltilen hatanın (ölçülmemiş sayıyı
+        kesinlikmiş gibi göstermek) tekrarı olurdu. Bant gösterilir, oran gösterilmez.
+        """
+        out = zenginlestir_mevzuat(_state([
+            {"baslik": "A m.1", "score": 1.0, "norm_score": 2.39},
+            {"baslik": "B m.2", "score": 0.96, "norm_score": 2.28},
+        ]))
+        assert out[0]["guven"] == out[1]["guven"] == "yüksek"   # bant ikisinde de geçerli
+        assert out[0]["guven_isabet"] == 0.971                  # ölçüm ilk sırada
+        assert out[1]["guven_isabet"] is None                   # ikinci sırada İDDİA YOK
+
+    def test_norm_score_yoksa_statik_skora_duser(self):
+        """config fallback (retrieval yok) → eski skor eşikleri; ölçülen isabet İDDİA EDİLMEZ."""
+        out = zenginlestir_mevzuat(_state([{"baslik": "3071 s.K. m.4", "score": 0.5}]))
+        assert out[0]["guven"] == "orta"
+        assert out[0]["guven_isabet"] is None
+
+
+def test_yuksek_guven_statik_skordan():
     out = zenginlestir_mevzuat(_state([{"baslik": "3071 s.K. m.4", "score": 0.82}]))
     assert out[0]["guven"] == "yüksek" and out[0]["inceleme_oner"] is False
 
@@ -30,17 +79,50 @@ def test_dogrula_isareti_orta_ve_inceleme():
     assert out[0]["guven"] == "orta" and out[0]["inceleme_oner"] is True
 
 
+def test_dogrula_yuksek_bandi_da_kelepceler():
+    """[DOĞRULA] işaretli öneri, norm_score ne olursa olsun 'yüksek güven' olamaz."""
+    out = zenginlestir_mevzuat(
+        _state([{"baslik": "Y [DOĞRULA: madde no]", "score": 1.0, "norm_score": 2.4}])
+    )
+    assert out[0]["guven"] == "orta" and out[0]["inceleme_oner"] is True
+    assert out[0]["guven_isabet"] is None   # bant artık bu öneriyi tarif etmiyor
+
+
 def test_nli_destek_yok_en_zayif():
     nli = [{"baslik": "Z", "entailment": False, "skor": 0.2, "etiket": "[DOĞRULA: anlamsal destek zayıf]"}]
-    out = zenginlestir_mevzuat(_state([{"baslik": "Z", "score": 0.9}], nli=nli))
-    # NLI > skor: anlamsal destek yoksa skor yüksek olsa da düşük + inceleme
+    out = zenginlestir_mevzuat(_state([{"baslik": "Z", "score": 0.9, "norm_score": 2.0}], nli=nli))
+    # NLI > bant: anlamsal destek yoksa norm_score yüksek olsa da düşük + inceleme
     assert out[0]["guven"] == "düşük" and out[0]["inceleme_oner"] is True
+    assert out[0]["guven_isabet"] is None
     assert out[0]["nli_etiket"].startswith("[DOĞRULA")
 
 
-def test_dayanak_konudan():
+def test_eslesme_gerekcesi_konudan_ve_hukuki_dayanak_iddia_etmez():
     out = zenginlestir_mevzuat(_state([{"baslik": "A", "score": 0.7}], konu="ruhsat başvurusu"))
-    assert "ruhsat başvurusu" in out[0]["dayanak"]
+    gerekce = out[0]["eslesme_gerekcesi"]
+    assert "ruhsat başvurusu" in gerekce
+    assert "arandı" in gerekce          # "hangi sorgudan geldi" — mesnet iddiası değil
+    assert "dayanak" not in out[0]      # eski yanıltıcı alan adı kaldırıldı
+
+
+def test_konu_yoksa_gerekce_evrak_icerigi():
+    out = zenginlestir_mevzuat(_state([{"baslik": "A", "score": 0.7}], konu=""))
+    assert out[0]["eslesme_gerekcesi"] == "evrak içeriğinden arandı"
+
+
+def test_kaynak_dosya_ve_madde_no_dogrulama_bagi_tasinir():
+    """Öneri satırından mevzuat metnine atlayabilmek için kaynak bağı korunmalı."""
+    out = zenginlestir_mevzuat(_state([{
+        "baslik": "2004 icra iflas kanunu m.60", "score": 1.0, "norm_score": 1.7,
+        "kaynak_dosya": "2004_icra_iflas_kanunu", "madde_no": 60,
+    }]))
+    assert out[0]["kaynak_dosya"] == "2004_icra_iflas_kanunu"
+    assert out[0]["madde_no"] == "60"     # şema str bekler (int gelse de normalize edilir)
+
+
+def test_kaynak_bagi_yoksa_bos_string_none():
+    out = zenginlestir_mevzuat(_state([{"baslik": "A", "score": 0.5}]))
+    assert out[0]["kaynak_dosya"] == "" and out[0]["madde_no"] is None
 
 
 def test_yururluk_basliktan_parse_uydurmaz():

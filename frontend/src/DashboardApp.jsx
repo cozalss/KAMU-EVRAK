@@ -18,6 +18,9 @@ import NeonSidebar from "./components/NeonSidebar.jsx";
 // result-cards) zaten usePipeline→nodeMeta zinciriyle ana bundle'da olduğundan ilk yük
 // indirmesine pratikte ağırlık eklemez.
 import PanelView from "./components/PanelView.jsx";
+// Mevzuat okuma modalı ("kağıt") — global overlay: ayrıntılı sonuç ekranı + sohbet çipi
+// mevzuata tıklayınca SAYFA DEĞİŞTİRMEDEN üstte açılır. Hafif (yalnız neonUi bağımlı) → eager.
+import { OkumaModal } from "./components/MevzuatOkuma.jsx";
 // Diğer görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir
 // aynı kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar
 // her zaman görünür (nav) olduğundan eager kalır.
@@ -88,9 +91,9 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const [sentSampleIds, setSentSampleIds] = useState(() => new Set());
   const [outbox, setOutbox] = useState(() => cachedDash?.outbox || []);
   const [drafts, setDrafts] = useState(() => draftsFromHistory(cachedDash?.history));   // DB/önbellek taslakları + "Düzenle" ile eklenenler
-  // Sohbet kaynak çipi → Mevzuat görünümü + okuma modalı köprüsü. MevzuatView tembel
-  // yüklendiğinden window-event yerine state taşınır; view mount olunca hedefi tüketir.
-  const [mevzuatHedef, setMevzuatHedef] = useState(null);
+  // Mevzuat okuma modalı hedefi ({dosya, maddeNo, maddeTur} | null). Ayrıntılı sonuç kartından
+  // ya da sohbet çipinden set edilir → global OkumaModal açılır (sayfa değişmez, üstte "kağıt").
+  const [okumaHedef, setOkumaHedef] = useState(null);
   // Panel SLA satırı "İşle" → Gelen Evrak'ta o evrakı vurgula+kaydır (aynı hedef deseni).
   const [gelenHedef, setGelenHedef] = useState(null);
   // Onay kartı "Düzenle" → Taslaklar'da o taslağı doğrudan düzenleme modunda aç (aynı hedef deseni).
@@ -288,7 +291,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
-  const mevzuatAc = useCallback((hedef) => { setMevzuatHedef(hedef); goView("mevzuat"); }, [goView]);
+  // Mevzuata tıklanınca Mevzuat sayfasına GİTMEZ — bulunduğun ekranın üstünde okuma modalı açar.
+  const mevzuatAc = useCallback((hedef) => setOkumaHedef(hedef), []);
   // Panel'den evrak-hedefli geçiş: id string ise vurgu hedefi kur (buton onClick'in event
   // nesnesi geçirmesine karşı tip koruması), her durumda Gelen Evrak'a git.
   const goInbox = useCallback((hedefId) => {
@@ -582,7 +586,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
-  else if (activeView === "mevzuat") view = <MevzuatView history={history} hedef={mevzuatHedef} onHedefAcildi={() => setMevzuatHedef(null)} />;
+  else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (
     <CanliAjanAkisi
@@ -621,6 +625,12 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
 
         {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
+
+        {/* Global mevzuat okuma modalı — hangi görünümde olursan ol üstte açılır (view değişmez). */}
+        {okumaHedef && (
+          <OkumaModal dosya={okumaHedef.dosya} maddeNo={okumaHedef.maddeNo}
+            maddeTur={okumaHedef.maddeTur} onClose={() => setOkumaHedef(null)} />
+        )}
 
         {telefonAcik && (
           <Suspense fallback={null}>

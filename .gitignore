@@ -78,3 +78,10 @@ data/backups/
 
 # Şartname OCR/scratch dökümleri — resmî PDF zaten takipli, çalışma kopyaları girmez
 /scratch_*.txt
+
+# dev-only kurul render preview harness (commit edilmez)
+frontend/kurul-preview.html
+frontend/src/kurul-preview.jsx
+kurul-debate-full.png
+*.playwright-preview.png
+kurul-*.png

@@ -20,6 +20,7 @@ Güven sınırı + sıfır-uydurma (CLAUDE.md §1):
 from __future__ import annotations
 
 import re
+from collections.abc import AsyncIterator
 from typing import Any
 
 import structlog
@@ -390,40 +391,39 @@ def _uzlasi_gecerli(orijinal: str, uzlasi: str) -> bool:
     return True
 
 
-async def kurul_muzakere(
-    taslak_md: str, *, meta: dict[str, Any], sinyaller: dict[str, Any],
-) -> dict[str, Any] | None:
-    """DeepSeek roundtable → normalize edilmiş kurgu; LLM yok/mock/hata/parse-fail → None.
-
-    Dönen (frontend muzakere kurgusu şekliyle uyumlu, kaynak='llm'):
-      {kaynak, karar, turlar, oneriler, uzlasi_metni, uzlasi_degisti, uzlasi_uygulanabilir}
-    Karar sunucuda deterministik; uzlaşı metni revize-guard'dan geçer (sahte revizyon yok).
-    """
+def _kurul_hazirla(
+    taslak_md: str, meta: dict[str, Any], sinyaller: dict[str, Any],
+) -> tuple[str, int, str, str] | None:
+    """Guard + ortak hazırlık → (bant, itiraz, karar, user); LLM yok / taslak uzun → None.
+    KARAR daima SUNUCU sinyalinden (istemci mevzuat_nli karara girmez — adversarial bulgu)."""
     if real_llm() is None:
         return None
     if len(taslak_md) > _REVIZE_MAX_TASLAK_CHARS:
         log.warning("kurul_taslak_cok_uzun", n_char=len(taslak_md))
         return None
-
-    # KARAR daima SUNUCU sinyalinden — istemci mevzuat_nli KARARA girmez (yalnız prompt bağlamı);
-    # aksi hâlde istemci nli:[] göndererek şerhi uzlaşıya yumuşatabilirdi (adversarial bulgu).
     bant = str((sinyaller.get("risk_metadata") or {}).get("bant") or "")
     itiraz = _itiraz_sayisi(sinyaller)
     karar = kurul_karar(bant, itiraz)
-
     user = (
         f"GÜNCEL TASLAK:\n{taslak_md}\n\n"
         f"GERÇEK DOĞRULAMA SİNYALLERİ:\n{_sinyal_ozeti(sinyaller, meta)}"
     )
-    # ÇAĞRI 1 — AÇILIŞ turu: bağımsız ilk pozisyonlar (temp↑ → çeşitlilik; sıcak roller ayrışsın).
-    # Kısa (3 cümle) → kısa timeout: yavaş açılış çağrı-2 bütçesini yemeden hızlı fallback'e düşer.
-    obj0 = await llm_json(_SYSTEM_ACILIS, user, max_tokens=_ACILIS_TOKENS, temperature=0.5, timeout_s=15.0)
-    acilis = _normalize_turlar(obj0.get("turlar") if isinstance(obj0, dict) else None, tur=0)
-    if not acilis:
-        return None  # açılış yoksa müzakere kurulamaz → deterministik fallback
+    return bant, itiraz, karar, user
 
-    # ÇAĞRI 2 — ÇAPRAZ-ELEŞTİRİ + yakınsama + öneriler. GERÇEK açılışı transkript olarak görür →
-    # genuine yanıt (tek çağrıda self-debate anlaşmaya çökerdi). Öneriler yalnız buradan gelir.
+
+async def _kurul_acilis(user: str) -> list[dict[str, Any]] | None:
+    """ÇAĞRI 1 — AÇILIŞ turu: bağımsız ilk pozisyonlar (temp↑ → çeşitlilik; kısa timeout →
+    yavaş açılış çağrı-2 bütçesini yemeden hızlı fallback'e düşer). Boş → None."""
+    obj0 = await llm_json(_SYSTEM_ACILIS, user, max_tokens=_ACILIS_TOKENS, temperature=0.5, timeout_s=15.0)
+    return _normalize_turlar(obj0.get("turlar") if isinstance(obj0, dict) else None, tur=0) or None
+
+
+async def _kurul_sonuc(
+    taslak_md: str, *, sinyaller: dict[str, Any], bant: str, karar: str, itiraz: int,
+    acilis: list[dict[str, Any]], user: str,
+) -> dict[str, Any] | None:
+    """ÇAĞRI 2 — ÇAPRAZ-ELEŞTİRİ + yakınsama + öneriler. GERÇEK açılışı transkript olarak görür →
+    genuine yanıt (tek çağrıda self-debate anlaşmaya çökerdi). Öneriler → deterministik anchored-edit."""
     transkript = "\n".join(f"{_AD.get(t['who'], t['who'])}: {t['text']}" for t in acilis)
     user2 = f"{user}\n\nAÇILIŞ TURU (üyelerin ilk pozisyonları):\n{transkript}"
     obj2 = await llm_json(_SYSTEM_MUZAKERE, user2, max_tokens=_MAKS_TOKENS, temperature=0.45)
@@ -438,8 +438,7 @@ async def kurul_muzakere(
         return None  # boş/kullanışsız çıktı → deterministik fallback daha iyi
 
     # Revize taslağı = grounded çapalı editlerin DETERMİNİSTİK toplamı, NE FAZLA NE EKSİK.
-    # LLM'in holistik yeniden-yazımı KULLANILMAZ (attribution kopar + uydurma sızabilir —
-    # adversarial bulgu). regex-vs-llm: LLM yargı verir, mekanik dönüşümü sunucu yapar.
+    # LLM'in holistik yeniden-yazımı KULLANILMAZ (attribution kopar + uydurma sızabilir).
     satirlar = taslak_md.split("\n")
     editler = [
         e for o in ham_oneriler
@@ -454,32 +453,60 @@ async def kurul_muzakere(
         uzlasi_metni = taslak_md
         uygulanan_id = set()
 
-    # DÜRÜST bayrak = ATTRIBUTION (öneri UYGULANAN bir edit üretti mi) — metin-içermeden DEĞİL
-    # (newline-katlama/ekle-yan-etkisi false-pozitif verirdi). Yeni liste kurulur (in-place mutasyon yok);
-    # transient _capa/_yeni düşürülür (frontend yalnız tip/kaynak/metin/uygulanabilir görür).
+    # DÜRÜST bayrak = ATTRIBUTION (öneri UYGULANAN bir edit üretti mi) — metin-içermeden DEĞİL.
     oneriler = [
         {k: v for k, v in o.items() if k not in ("_capa", "_yeni")} | {"uygulanabilir": id(o) in uygulanan_id}
         for o in ham_oneriler
     ]
     uzlasi_degisti = uzlasi_metni.strip() != taslak_md.strip()
-
-    # Turlar = AÇILIŞ (tur 0) + ÇAPRAZ-ELEŞTİRİ (tur 1) + Moderatör/Birim Amiri kapanış (tur 2).
-    # Moderatör risk bandını DETERMİNİSTİK sahiplenir (LLM üretmez) — sahte oybirliği yerine gerçek risk.
+    # Turlar = AÇILIŞ (0) + ÇAPRAZ-ELEŞTİRİ (1) + Moderatör/Birim Amiri (2, deterministik risk sesi).
     turlar = [*acilis, *capraz, {**_birim_amiri_turu(bant), "tur": 2}]
 
     log.info("kurul_muzakere", karar=karar, n_acilis=len(acilis), n_capraz=len(capraz),
              n_oneri=len(oneriler), n_edit=len(uygulanan), uzlasi_degisti=uzlasi_degisti, itiraz=itiraz)
     return {
-        "kaynak": "llm",
-        "karar": karar,
-        "turlar": turlar,
-        "oneriler": oneriler,
-        "uzlasi_metni": uzlasi_metni,
-        "uzlasi_degisti": uzlasi_degisti,
-        # Revize taslağı her bantta uygulanabilir (yüksek riskte bile: revizyon riski GİDERİR,
-        # ör. dayanaksız iddiayı çıkarır). Karar yalnız risk ROZETİ; sevk/mühür töreni yok.
+        "kaynak": "llm", "karar": karar, "turlar": turlar, "oneriler": oneriler,
+        "uzlasi_metni": uzlasi_metni, "uzlasi_degisti": uzlasi_degisti,
+        # Revize her bantta uygulanabilir (yüksek riskte bile: revizyon riski GİDERİR). Karar yalnız rozet.
         "uzlasi_uygulanabilir": uzlasi_degisti,
     }
 
 
-__all__ = ("KURUL_UYELERI", "kurul_karar", "kurul_muzakere")
+async def kurul_muzakere(
+    taslak_md: str, *, meta: dict[str, Any], sinyaller: dict[str, Any],
+) -> dict[str, Any] | None:
+    """DeepSeek 2-çağrılı debate (açılış → çapraz-eleştiri) → tam kurgu; LLM yok/mock/hata → None.
+    Karar sunucuda deterministik; öneriler anchored-edit'ten geçer (sahte/uydurma revizyon yok)."""
+    hz = _kurul_hazirla(taslak_md, meta, sinyaller)
+    if hz is None:
+        return None
+    bant, itiraz, karar, user = hz
+    acilis = await _kurul_acilis(user)
+    if not acilis:
+        return None
+    return await _kurul_sonuc(taslak_md, sinyaller=sinyaller, bant=bant, karar=karar,
+                              itiraz=itiraz, acilis=acilis, user=user)
+
+
+async def kurul_muzakere_stream(
+    taslak_md: str, *, meta: dict[str, Any], sinyaller: dict[str, Any],
+) -> AsyncIterator[tuple[str, dict[str, Any]]]:
+    """CANLI AKIŞ: ('acilis', {turlar}) [açılış hazır olunca ~8s] → ('sonuc', tam kurgu) [çapraz
+    hazır olunca] yield eder. LLM yok/hata → hiçbir şey yield etmez (çağıran deterministik fallback'e
+    düşer). Davranış kurul_muzakere ile birebir aynı çağrı sırası (aynı llm_json dizisi) — yalnız
+    ara sonucu yayar, böylece frontend açılışı beklemeden animasyona başlar (dead-wait kalkar)."""
+    hz = _kurul_hazirla(taslak_md, meta, sinyaller)
+    if hz is None:
+        return
+    bant, itiraz, karar, user = hz
+    acilis = await _kurul_acilis(user)
+    if not acilis:
+        return
+    yield "acilis", {"turlar": acilis}
+    sonuc = await _kurul_sonuc(taslak_md, sinyaller=sinyaller, bant=bant, karar=karar,
+                               itiraz=itiraz, acilis=acilis, user=user)
+    if sonuc:
+        yield "sonuc", sonuc
+
+
+__all__ = ("KURUL_UYELERI", "kurul_karar", "kurul_muzakere", "kurul_muzakere_stream")

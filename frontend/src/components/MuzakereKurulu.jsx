@@ -17,7 +17,7 @@ import { MONO, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, S
 import { ScrimDugme } from "./BelgeModal.jsx";
 import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara } from "../lib/muzakere.js";
-import { apiPost } from "../lib/authApi.js";
+import { apiStream } from "../lib/authApi.js";
 
 const KURUL_FETCH_TIMEOUT_MS = 55000;   // çok-turlu debate = 2 LLM çağrısı (açılış + çapraz) → daha uzun tavan
 
@@ -286,26 +286,30 @@ function TaslakKarti({ draft, revize }) {
   );
 }
 
-/* Müzakere sahnesi — animasyon state'inin TEK sahibi. Çağıran, oynatma/taslak değişince
-   key verir → sahne sıfırdan kurulur (effect-içi reset ve eski-kare sızıntısı yoktur). */
-function KurulSahnesi({ kurgu, az, onUygula }) {
+/* Müzakere sahnesi — animasyon state'inin TEK sahibi. CANLI AKIŞ: kurgu.turlar akışla büyür
+   (açılış → +çapraz), reveal restart ETMEDEN devam eder (`akan`=stream sürüyor). Key yalnız
+   kaynak değişince (llm↔deterministik) verilir → aynı akış içinde remount yok. */
+function KurulSahnesi({ kurgu, az, onUygula, akan = false }) {
   const aksan = aksanRenk(kurgu.risk);
   const riskRozet = RISK[kurgu.risk] || null;
   const TURLAR = kurgu.turlar;
+  const turlarRef = useRef(TURLAR); turlarRef.current = TURLAR;   // effect daima en güncel turları görür
+  const akanRef = useRef(akan); akanRef.current = akan;
   const [turnIdx, setTurnIdx] = useState(az ? TURLAR.length : 0);   // açığa çıkmış tur sayısı
   const [speaking, setSpeaking] = useState(null);                    // o an "yazan" üye id'si
   const [draft, setDraft] = useState(() => (az ? nihaiTaslak(kurgu) : kurgu.taslak.map((l) => ({ ...l }))));
   const [votes, setVotes] = useState(() => (az ? Object.fromEntries(TURLAR.filter((t) => t.oy).map((t) => [t.who, true])) : {}));
-  const [done, setDone] = useState(az);
+  const [done, setDone] = useState(az && !akan);
   const feedRef = useRef(null);
 
   useEffect(() => {
-    if (az) return undefined;                                        // reduced-motion → son kare statik
+    if (az) return undefined;                                        // reduced-motion → aşağıdaki senkron effect
     let alive = true, timer, i = 0;
     const step = () => {
       if (!alive) return;
-      if (i < TURLAR.length) {
-        const t = TURLAR[i];
+      const TT = turlarRef.current;
+      if (i < TT.length) {
+        const t = TT[i];
         setSpeaking(t.who);                                          // önce "yazıyor…"
         timer = setTimeout(() => {
           if (!alive) return;
@@ -316,13 +320,23 @@ function KurulSahnesi({ kurgu, az, onUygula }) {
           i += 1;
           timer = setTimeout(step, READ);
         }, THINK);
+      } else if (akanRef.current) {
+        setSpeaking(null);                                           // turlar bitti, AKIŞ sürüyor → yeni tur bekle
+        timer = setTimeout(step, 350);
       } else {
-        setDone(true);
+        setDone(true);                                               // akış bitti + hepsi açıldı → tamam
       }
     };
     timer = setTimeout(step, 500);
     return () => { alive = false; clearTimeout(timer); };
-  }, [az, TURLAR]);
+  }, [az]);                                                          // append restart ETMEZ (turlarRef ile okunur)
+
+  // Reduced-motion: turlar büyüdükçe hepsini statik göster; akış bitince tamam.
+  useEffect(() => {
+    if (!az) return;
+    setTurnIdx(TURLAR.length);
+    setDone(!akan);
+  }, [az, TURLAR, akan]);
 
   // Yeni balon/yazıyor gelince akışı en alta kaydır (canlı sohbet hissi).
   useEffect(() => { feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight, behavior: az ? "auto" : "smooth" }); }, [turnIdx, speaking, az]);
@@ -426,6 +440,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   // (yerel.toplanamaz) ağ turu atlanır; LLM yok/mock/hata → yerel kurgu (mock ayakta).
   const [durum, setDurum] = useState(() => (result?.yazi_taslak_md ? "yukleniyor" : "hazir"));
   const [kurgu, setKurgu] = useState(yerel);
+  const [akan, setAkan] = useState(false);   // canlı akış: turlar hâlâ büyüyor (açılış→çapraz)
   const kapatRef = useRef(null);
   const oncekiOdak = useRef(null);
   // BelgeModal deseni: onKapat çoğu zaman inline arrow gelir (her render'da yeni kimlik) —
@@ -434,38 +449,46 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   const kapatIstegiRef = useRef(onKapat);
   useEffect(() => { kapatIstegiRef.current = onKapat; });
 
-  // DeepSeek kurul müzakeresini çek — başarı: sunucu kurgusu; hata/mock/deterministik: yerel.
+  // DeepSeek kurul müzakeresini CANLI AKIŞLA (SSE) çek — açılış turları hazır olunca (~3s)
+  // ANINDA animasyona başlar (dead-wait yok), çapraz-eleştiri gelince eklenir. LLM yok/hata/
+  // timeout → deterministik TAM debate (mock ayakta, uç asla kilitlenmez).
   useEffect(() => {
-    if (!result?.yazi_taslak_md) { setKurgu(yerel); setDurum("hazir"); return undefined; }
+    if (!result?.yazi_taslak_md) { setKurgu(yerel); setDurum("hazir"); setAkan(false); return undefined; }
     let alive = true;
-    setDurum("yukleniyor");
-    // Ağ turu üst sınırı: apiPost timeout desteklemiyor → yarış. Timeout/hata/mock → yerel motor
-    // (modal "toplanıyor"da asılı kalmaz — mock hızlı döner, yalnız gerçek ağ takılması etkilenir).
-    const zamanAsimi = new Promise((res) => setTimeout(() => res("__timeout__"), KURUL_FETCH_TIMEOUT_MS));
-    const istek = apiPost("/yazi/kurul", {
-      taslak_md: result.yazi_taslak_md,
-      evrak_text: result.evrak_text || "",
-      yazi_turu: result.yazi_turu || "",
-      evrak_turu: result.evrak_turu || "",
-      hedef_birim: result.hedef_birim || "",
-      bilgi_unsurlari: result.bilgi_unsurlari || {},
-      mevzuat_onerileri: result.mevzuat_onerileri || [],
-      mevzuat_nli: result.mevzuat_nli || [],
-    });
-    Promise.race([istek, zamanAsimi])
-      .then((data) => {
-        if (!alive) return;
-        const gecerli = data && data !== "__timeout__";
-        // LLM kurgusu birincil. Deterministik dönerse sunucunun TAZE hesapladığı sinyalleri
-        // (data.sinyaller) yerel motora besle — result.* bayat olabilir (düzenleme sonrası
-        // updateDraft sinyalleri güncellemez; sunucu taslaktan yeniden hesaplar). Yoksa yerel.
-        const sunucu = gecerli && sunucuKurgusu(data, result);
-        const sinyaller = gecerli && data.sinyaller;
-        setKurgu(sunucu || (sinyaller ? muzakereKurgusu({ ...result, ...sinyaller }) : yerel));
-        setDurum("hazir");
-      })
-      .catch(() => { if (alive) { setKurgu(yerel); setDurum("hazir"); } });
-    return () => { alive = false; };
+    const ac = new AbortController();
+    setDurum("yukleniyor"); setAkan(false);
+    let bant = "";                       // 'sinyaller' olayından risk bandı (kısmi kurguya renk verir)
+    let acildi = false, sonucGeldi = false;
+    const govde = {
+      taslak_md: result.yazi_taslak_md, evrak_text: result.evrak_text || "",
+      yazi_turu: result.yazi_turu || "", evrak_turu: result.evrak_turu || "",
+      hedef_birim: result.hedef_birim || "", bilgi_unsurlari: result.bilgi_unsurlari || {},
+      mevzuat_onerileri: result.mevzuat_onerileri || [], mevzuat_nli: result.mevzuat_nli || [],
+    };
+    // Açılış üst sınırda gelmezse deterministik motora düş (ağ takılması demo'yu kilitlemesin).
+    const zamanAsimi = setTimeout(() => {
+      if (alive && !acildi) { ac.abort(); setKurgu(yerel); setDurum("hazir"); }
+    }, KURUL_FETCH_TIMEOUT_MS);
+
+    apiStream("/yazi/kurul/akis", govde, (olay) => {
+      if (!alive) return;
+      if (olay.tip === "sinyaller") {
+        bant = ((olay.sinyaller || {}).risk_metadata || {}).bant || "";
+      } else if (olay.tip === "acilis") {
+        acildi = true;
+        // Kısmi kurgu = yalnız açılış turları → HEMEN oynatmaya başla (canlı akış).
+        const kismi = sunucuKurgusu({ kaynak: "llm", turlar: olay.turlar, oneriler: [], sinyaller: { risk_metadata: { bant } } }, result);
+        if (kismi) { setKurgu(kismi); setDurum("hazir"); setAkan(true); }
+      } else if (olay.tip === "sonuc") {
+        sonucGeldi = true;
+        const tam = sunucuKurgusu({ ...olay, sinyaller: { risk_metadata: { bant } } }, result);
+        if (tam) setKurgu(tam);
+        setAkan(false);
+      }
+    }, ac.signal)
+      .then(() => { if (alive) { clearTimeout(zamanAsimi); setAkan(false); if (!sonucGeldi) { setKurgu(yerel); setDurum("hazir"); } } })
+      .catch(() => { if (alive) { clearTimeout(zamanAsimi); setAkan(false); if (!sonucGeldi) { setKurgu(yerel); setDurum("hazir"); } } });
+    return () => { alive = false; clearTimeout(zamanAsimi); ac.abort(); };
   }, [result, yerel]);
 
   useEffect(() => {
@@ -511,6 +534,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
               key={kurgu.kaynak}
               kurgu={kurgu}
               az={az}
+              akan={akan}
               onUygula={onUygula ? () => onUygula(kurguUzlasiMetni(kurgu)) : null}
             />
           )}

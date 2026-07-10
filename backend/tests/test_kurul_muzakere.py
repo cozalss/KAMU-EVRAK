@@ -382,6 +382,23 @@ class TestDebate:
         _debate_llm(monkeypatch, {"turlar": []}, {"turlar": [{"uye": "hukukcu", "soz": "x"}], "oneriler": []})
         assert await kurul.kurul_muzakere(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL) is None
 
+    async def test_stream_acilis_sonra_sonuc(self, monkeypatch):
+        # CANLI AKIŞ: önce 'acilis' (açılış turları) sonra 'sonuc' (tam kurgu) yield edilir.
+        muz = {"turlar": [{"uye": "hukukcu", "yanit": "taslakci", "tutum": "karsi", "soz": "Tarih uydurma."}],
+               "oneriler": [{"tip": "cikar", "dayanak": "verify", "capa": "Sayın Elif Doğan", "aciklama": "a"}]}
+        _debate_llm(monkeypatch, _ACILIS, muz)
+        olaylar = [(ad, veri) async for ad, veri in
+                   kurul.kurul_muzakere_stream(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL)]
+        assert [a for a, _ in olaylar] == ["acilis", "sonuc"]
+        assert len(olaylar[0][1]["turlar"]) == 3                 # 3 açılış turu önce gelir
+        assert olaylar[1][1]["kaynak"] == "llm" and olaylar[1][1]["turlar"]   # sonra tam kurgu
+        assert "Sayın Elif Doğan" not in olaylar[1][1]["uzlasi_metni"]        # grounding stream'de de korunur
+
+    async def test_stream_acilis_yoksa_bos(self, monkeypatch):
+        _debate_llm(monkeypatch, {"turlar": []}, {"turlar": [{"uye": "hukukcu", "soz": "x"}], "oneriler": []})
+        olaylar = [x async for x in kurul.kurul_muzakere_stream(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL)]
+        assert olaylar == []   # açılış yoksa hiçbir şey yayılmaz → frontend deterministik fallback
+
     async def test_muzakere_bozuksa_none(self, monkeypatch):
         _debate_llm(monkeypatch, _ACILIS, None)
         assert await kurul.kurul_muzakere(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL) is None

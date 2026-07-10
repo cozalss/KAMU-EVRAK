@@ -12,12 +12,13 @@ PDF/DOCX render kütüphaneleri varsa bytes döner.
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any
 
 import structlog
 from fastapi import APIRouter, HTTPException, Query, Request, status
-from fastapi.responses import Response
+from fastapi.responses import Response, StreamingResponse
 
 from agents.graph import build_graph
 from agents.state import make_initial_state
@@ -307,45 +308,19 @@ async def yazi_kurul(request: Request, req: KurulRequest) -> dict[str, Any]:
     güvenmez, /yazi/dogrula güven-sınırıyla aynı ilke). LLM yok/mock/hata → {kaynak:
     "deterministik"} (frontend muzakere.js'e düşer, mock ayakta). Uç asla 500 vermez.
     """
-    from agents.nodes.risk_guard import risk_guard_node
-    from agents.nodes.verify import verify_node
     from yazi.kurul import kurul_muzakere
 
     taslak = req.taslak_md.strip()[:MAX_EVRAK_CHARS]
     if not taslak:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Taslak metni boş")
 
-    # Girdi kurulumu + sinyal hesabı TEK try içinde — "uç asla 500 vermez" garantisi tam
-    # (ileride buraya eklenen atıcı bir çağrı da deterministik fallback'e düşer).
+    # Girdi kurulumu + sinyal hesabı TEK try içinde — "uç asla 500 vermez" garantisi tam.
     try:
-        state: dict[str, Any] = {
-            "evrak_text": (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS],
-            "bilgi_unsurlari": _skaler_unsurlar(req.bilgi_unsurlari),
-            "yazi_taslak_md": taslak,
-            "yazi_turu": req.yazi_turu,
-            "evrak_turu": req.evrak_turu or "belirsiz",
-            "hedef_birim": _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else "",
-        }
-        # Sinyaller SUNUCUDA yeniden hesaplanır (grounding + karar otoritesi istemciye bağlı değil).
-        v = await verify_node(state)
-        state.update(v)
-        r = await risk_guard_node(state)
+        sinyaller, meta = await _kurul_sinyal_meta(req, taslak)
     except Exception as exc:
         log.error("kurul_sinyal_failed", error=str(exc) or type(exc).__name__)
         return {"kaynak": "deterministik"}  # sinyal yoksa frontend deterministik motora düşer
 
-    sinyaller = {
-        "verify_uyari": v.get("verify_uyari", []),
-        "lint_2646": v.get("lint_2646") or {},
-        "tutarlilik_uyari": v.get("tutarlilik_uyari", []),
-        "risk_metadata": r.get("risk_metadata") or {},
-    }
-    meta = {
-        "yazi_turu": req.yazi_turu, "evrak_turu": req.evrak_turu,
-        "hedef_birim": req.hedef_birim, "bilgi_unsurlari": state["bilgi_unsurlari"],
-        "evrak_text": state["evrak_text"],
-        "mevzuat": req.mevzuat_onerileri, "nli": req.mevzuat_nli,
-    }
     try:
         kurgu = await kurul_muzakere(taslak, meta=meta, sinyaller=sinyaller)
     except Exception as exc:
@@ -359,6 +334,75 @@ async def yazi_kurul(request: Request, req: KurulRequest) -> dict[str, Any]:
     log.info("yazi_kurul", karar=kurgu["karar"], n_tur=len(kurgu["turlar"]),
              n_oneri=len(kurgu["oneriler"]), uzlasi=kurgu["uzlasi_degisti"])
     return {**kurgu, "sinyaller": sinyaller}
+
+
+async def _kurul_sinyal_meta(req: KurulRequest, taslak: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Taslaktan verify+risk_guard sinyallerini SUNUCUDA yeniden hesapla (grounding + karar
+    otoritesi istemciye bağlı değil) → (sinyaller, meta). /kurul ve /kurul/akis ortak kullanır."""
+    from agents.nodes.risk_guard import risk_guard_node
+    from agents.nodes.verify import verify_node
+
+    state: dict[str, Any] = {
+        "evrak_text": (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS],
+        "bilgi_unsurlari": _skaler_unsurlar(req.bilgi_unsurlari),
+        "yazi_taslak_md": taslak,
+        "yazi_turu": req.yazi_turu,
+        "evrak_turu": req.evrak_turu or "belirsiz",
+        "hedef_birim": _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else "",
+    }
+    v = await verify_node(state)
+    state.update(v)
+    r = await risk_guard_node(state)
+    sinyaller = {
+        "verify_uyari": v.get("verify_uyari", []),
+        "lint_2646": v.get("lint_2646") or {},
+        "tutarlilik_uyari": v.get("tutarlilik_uyari", []),
+        "risk_metadata": r.get("risk_metadata") or {},
+    }
+    meta = {
+        "yazi_turu": req.yazi_turu, "evrak_turu": req.evrak_turu,
+        "hedef_birim": req.hedef_birim, "bilgi_unsurlari": state["bilgi_unsurlari"],
+        "evrak_text": state["evrak_text"],
+        "mevzuat": req.mevzuat_onerileri, "nli": req.mevzuat_nli,
+    }
+    return sinyaller, meta
+
+
+def _sse(payload: dict[str, Any]) -> str:
+    """JSON → SSE 'data:' satırı (process_doc deseni)."""
+    return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+
+@router.post("/kurul/akis")
+@rate_limit("15/minute")  # LLM roundtable — çift çağrı, sıkı limit
+async def yazi_kurul_akis(request: Request, req: KurulRequest) -> StreamingResponse:
+    """AI Bürokrasi Kurulu — CANLI AKIŞ (SSE). Debate turlar hazır oldukça yayılır (dead-wait yok):
+    'sinyaller' (hemen) → 'acilis' (~açılış çağrısı biter) → 'sonuc' (~çapraz çağrısı biter) → 'done'.
+    LLM yok/hata → yalnız sinyaller+done; frontend deterministik muzakere.js'e düşer (mock ayakta).
+    Uç asla 500 vermez: taslak boş → 422 (stream başlamadan); gerisi generator içinde yutulur."""
+    from yazi.kurul import kurul_muzakere_stream
+
+    taslak = req.taslak_md.strip()[:MAX_EVRAK_CHARS]
+    if not taslak:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Taslak metni boş")
+
+    async def gen() -> Any:
+        try:
+            sinyaller, meta = await _kurul_sinyal_meta(req, taslak)
+        except Exception as exc:
+            log.error("kurul_akis_sinyal_failed", error=str(exc) or type(exc).__name__)
+            yield _sse({"tip": "deterministik"})   # sinyal bile yok → frontend yerel motora düşer
+            return
+        # Sinyaller ERKEN yayılır → frontend deterministik fallback'i hazırlar (LLM gelmezse anında oynar).
+        yield _sse({"tip": "sinyaller", "sinyaller": sinyaller})
+        try:
+            async for tip, veri in kurul_muzakere_stream(taslak, meta=meta, sinyaller=sinyaller):
+                yield _sse({"tip": tip, **veri})
+        except Exception as exc:
+            log.error("kurul_akis_muzakere_failed", error=str(exc) or type(exc).__name__)
+        yield _sse({"tip": "done"})
+
+    return StreamingResponse(gen(), media_type="text/event-stream")
 
 
 async def _eyp_meta_from_pipeline(req: YaziEypRequest) -> tuple[dict[str, Any], str]:

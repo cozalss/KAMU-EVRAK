@@ -158,6 +158,36 @@ export async function apiPost(path, body) {
   return apiFetch(path, { method: "POST", body });
 }
 
+/* SSE POST — canlı akış (text/event-stream). Her 'data: {...}' satırı JSON parse edilip
+   onEvent'e verilir; stream bitince resolve. Ağ/HTTP hatası → reject (çağıran fallback'e düşer).
+   AbortSignal ile iptal edilebilir (modal kapanınca). */
+export async function apiStream(path, body, onEvent, signal) {
+  const res = await authFetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
+    body: JSON.stringify(body),
+    signal,
+  });
+  if (!res.ok || !res.body) throw new Error(await parseError(res));
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    let idx;
+    while ((idx = buf.indexOf("\n\n")) !== -1) {
+      const line = buf.slice(0, idx).split("\n").find((l) => l.startsWith("data:"));
+      buf = buf.slice(idx + 2);
+      const json = line ? line.slice(5).trim() : "";
+      if (json) {
+        try { onEvent(JSON.parse(json)); } catch { /* bozuk olay atlanır */ }
+      }
+    }
+  }
+}
+
 export async function apiDelete(path) {
   return apiFetch(path, { method: "DELETE" });
 }

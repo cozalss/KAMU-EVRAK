@@ -48,7 +48,7 @@ function Root() {
   const { status } = useAuth();
   const [tema, toggleTema] = useTema();
   if (status === "loading") return <Splash />;
-  if (status !== "auth") return <AuthPage />;
+  if (status !== "auth") return <AuthPage tema={tema} onTemaDegistir={toggleTema} />;
   return <DashboardApp tema={tema} onTemaDegistir={toggleTema} />;
 }
 

@@ -165,7 +165,7 @@ function ModeTabs({ mode, onChange }) {
   );
 }
 
-export default function AuthPage() {
+export default function AuthPage({ tema, onTemaDegistir }) {
   const { login, register } = useAuth();
   const [mode, setMode] = useState("giris");           // "giris" | "kayit"
   const [form, setForm] = useState({ eposta: "", parola: "", ad_soyad: "", birim_kod: "", unvan: "" });
@@ -248,9 +248,30 @@ export default function AuthPage() {
       {/* Sağ — giriş rayı: beyaz yüzey + dar form kolonu (IG'deki sağ giriş paneli). */}
       <aside className="ke-login" style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", background: PAL.surf, padding: `${SP.xxl}px ${SP.xl}px` }}>
         <div style={{ width: "100%", maxWidth: 384 }}>
-          <a href="/" {...focusRing} style={{ display: "flex", width: "fit-content", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, textDecoration: "none", marginBottom: SP.l, borderRadius: RAD.ctl }}>
-            <Icon.arrow style={{ transform: "rotate(180deg)" }} />Ana sayfa
-          </a>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: SP.l }}>
+            <a href="/" {...focusRing} style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, textDecoration: "none", borderRadius: RAD.ctl }}>
+              <Icon.arrow style={{ transform: "rotate(180deg)" }} />Ana sayfa
+            </a>
+            <button type="button" onClick={() => onTemaDegistir?.()} {...focusRing} title={tema === "dark" ? "Açık moda geç" : "Koyu moda geç"}
+              style={{ display: "flex", alignItems: "center", gap: SP.xs, border: "none", background: "none", cursor: "pointer", padding: "4px 8px", borderRadius: RAD.chip, color: PAL.mut2, transition: "color .12s ease-out" }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = PAL.ink; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = PAL.mut2; }}
+            >
+              {tema === "dark" ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              )}
+              <span style={{ ...TYPE.meta, color: "inherit" }}>
+                {tema === "dark" ? "Açık Görünüm" : "Koyu Görünüm"}
+              </span>
+            </button>
+          </div>
           <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.xl }} className="ke-formlogo">
             <img src="/logo.png" alt="" width="40" height="40" style={{ borderRadius: RAD.card }} />
             <Marka />

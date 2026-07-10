@@ -205,7 +205,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
       )}
 
       {/* AI Bürokrasi Kurulu — üç ajan seçilen taslağı gerçek pipeline sinyalleriyle tartışır;
-          "Uzlaşı taslağını uygula" MEMUR kararıdır → taslağa yazılır (updateDraft yolu). */}
+          "Revize taslağını uygula" MEMUR kararıdır → taslağa yazılır (updateDraft yolu). */}
       {kurulAktif && (
         <KurulModal key={kurulAktif.id}
           taslakAdi={kurulAktif.name}
@@ -213,7 +213,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
           onKapat={() => setKurulId(null)}
           onUygula={(metin) => {
             onUpdate(kurulAktif.id, metin);
-            onToast("Kurul uzlaşı taslağı uygulandı — taslak güncellendi.");
+            onToast("Kurul revize taslağı uygulandı — taslak güncellendi.");
             setKurulId(null);
           }} />
       )}

@@ -87,6 +87,26 @@ class YaziDogrulaRequest(BaseModel):
     talimat: str = Field("", max_length=500)
 
 
+class KurulRequest(BaseModel):
+    """AI Bürokrasi Kurulu müzakere isteği — GÜNCEL taslak + bağlam.
+
+    Sunucu verify+risk_guard'ı taslaktan YENİDEN hesaplar (istemci sinyaline güvenmez);
+    mevzuat/nli yalnız danışma bağlamıdır. LLM yok/mock/hata → deterministik fallback
+    (frontend muzakere.js) — bu uç asla 500'le demoyu düşürmez.
+    """
+
+    taslak_md: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
+    evrak_text: str = Field("", max_length=MAX_EVRAK_CHARS)
+    yazi_turu: str = Field("", max_length=50)
+    evrak_turu: str = Field("", max_length=50)
+    hedef_birim: str = Field("", max_length=100)
+    bilgi_unsurlari: dict = Field(default_factory=dict)
+    # Danışma bağlamı (yalnız prompt) — başlıklar sunucuda temizlenir/kısaltılır, KARARA girmez.
+    # Liste boyutu sınırlı (DoS/prompt-şişme guard); başlık atıf lisansı DEĞİL, yalnız bağlam.
+    mevzuat_onerileri: list = Field(default_factory=list, max_length=20)
+    mevzuat_nli: list = Field(default_factory=list, max_length=20)
+
+
 class OnayResumeRequest(BaseModel):
     """HITL memur onay kararı — duraklamış pipeline'ı sürdürür (Görev 2 yenilikçilik)."""
 

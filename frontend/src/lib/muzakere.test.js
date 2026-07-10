@@ -5,7 +5,7 @@
    A1-A6: adversarial doğrulama bulgularının regresyon kilitleri. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { muzakereKurgusu, uzlasiMetni, ORNEK_KURGU } from "./muzakere.js";
+import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, ORNEK_KURGU } from "./muzakere.js";
 
 const TASLAK = "T.C.\nANKARA VALİLİĞİ\n\nSayı : E-2026/1502\nKonu : Bilgi Edinme Başvurusu\n\nİşbu talebinize binaen bilgiler değerlendirilmiştir.\n\nBilgilerinize saygıyla sunulur.";
 
@@ -48,15 +48,15 @@ test("A2: zayıf NLI seslendirilince oybirliği YOK — şerhe düşer, 'Dayanak
     mevzuat_nli: [{ baslik: "4982 sayılı Bilgi Edinme Hakkı Kanunu m.11", skor: 0.3, entailment: false }],
   });
   assert.ok(zayif.turlar.some((t) => t.who === "hukukcu" && /anlamsal desteği zayıf/i.test(t.text)));
-  assert.equal(zayif.karar, "serhli");
+  assert.ok(zayif.oneriler.some((o) => o.kaynak === "nli"));   // itiraz öneriye geçer
   assert.ok(zayif.turlar.every((t) => !/Dayanak sağlam|doğrulaması geçti/.test(t.text)));
   const nlisiz = muzakereKurgusu({ ...R_TEMIZ, mevzuat_nli: [] });
   assert.ok(nlisiz.turlar.every((t) => !/NLI/i.test(t.text)));
 });
 
-test("A2b: yeşil bant + verify uyarısı → yine şerhli (çözülmemiş itirazla mühür yok)", () => {
+test("A2b: verify uyarısı → çıkar önerisi üretilir (revize kurulu, verdict değil)", () => {
   const k = muzakereKurgusu({ ...R_TEMIZ, verify_uyari: ["'5018' kaynak evrakta geçmiyor"] });
-  assert.equal(k.karar, "serhli");
+  assert.ok(k.oneriler.some((o) => o.tip === "cikar" && o.kaynak === "verify"));
 });
 
 test("A3: üslup kuralı UYARI verdiyse Vatandaş Avukatı 'itirazım yok' DİYEMEZ", () => {
@@ -113,44 +113,96 @@ test("A5: düşük güven / [DOĞRULA] işaretli öneriye 'Dayanak sağlam' denm
     mevzuat_onerileri: [{ baslik: "657 sayılı Kanun m.125 [DOĞRULA: yürürlük]", guven: "düşük", inceleme_oner: true }],
     mevzuat_nli: [],
   });
-  assert.equal(k.karar, "uzlasti"); // itiraz yok — ama sağlamlık iddiası da yok
   assert.ok(k.turlar.every((t) => !/Dayanak sağlam/.test(t.text)));
   assert.ok(k.turlar.some((t) => /insan doğrulaması kaydıyla/.test(t.text)));
 });
 
-/* ---- A6: sayılan her uyarı müzakereye yansır ---- */
-test("A6: tutarlılık uyarısı seslendirilir (kaynak: tutarlilik) ve şerhe sayılır", () => {
+/* ---- A6: sayılan her uyarı müzakereye + öneriye yansır ---- */
+test("A6: tutarlılık uyarısı seslendirilir (kaynak: tutarlilik) ve öneriye geçer", () => {
   const k = muzakereKurgusu({ ...R_TEMIZ, tutarlilik_uyari: ["TCKN checksum geçmiyor"] });
   assert.ok(k.turlar.some((t) => t.kaynak === "tutarlilik" && t.text.includes("TCKN checksum")));
-  assert.equal(k.karar, "serhli");
+  assert.ok(k.oneriler.some((o) => o.kaynak === "tutarlilik"));
 });
 
-/* ---- karar: bant + çözülmemiş itiraz ---- */
-test("yeşil bant + sıfır uyarı → oybirliği (3 oy) ve temiz dayanak anılır", () => {
+/* ---- REVİZYON KURULU: karar/sevk/mühür töreni YOK, çıktı revize taslağıdır ---- */
+test("hiçbir turda 'sevk/mühür/memur onayına sunulur' töreni geçmez", () => {
+  for (const bant of ["yesil", "sari", "kirmizi"]) {
+    const k = muzakereKurgusu({ ...R_TEMIZ, risk_metadata: { bant } });
+    assert.ok(k.turlar.every((t) => !/mühür|memur onayına sevk|onayına sunul/i.test(t.text)), `bant=${bant}`);
+  }
+});
+
+test("risk alanı bandı taşır (rozet); kırmızıda bile revize önerisi üretilir", () => {
+  const k = muzakereKurgusu({ ...R_TEMIZ, risk_metadata: { bant: "kirmizi" },
+    verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): oğlumun iş başvurusu"] });
+  assert.equal(k.risk, "kirmizi");
+  assert.ok(k.oneriler.length > 0);   // sevk yok — kurul yine öneri/revize üretir
+});
+
+test("uydurma-veto iddiası → ÇIKAR önerisi uygulanabilir + revize taslakta o satır silinir", () => {
+  const taslakMd = "Sayı : E-1\nKonu : Test\n\nSokaktaki çukur onarılmalıdır.\noğlumun iş başvurusu sonucunu istiyorum.\n\nGereğini arz ederim.";
+  const k = muzakereKurgusu({
+    ...R_TEMIZ, yazi_taslak_md: taslakMd,
+    verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): oğlumun iş başvurusu sonucunu istiyorum"],
+  });
+  const cikar = k.oneriler.find((o) => o.tip === "cikar");
+  assert.ok(cikar && cikar.uygulanabilir);
+  const revize = uzlasiMetni(k);
+  assert.doesNotMatch(revize, /oğlumun iş başvurusu/);   // dayanaksız satır revize taslaktan çıktı
+  assert.match(revize, /Sokaktaki çukur/);               // gerçek talep korundu
+  assert.equal(k.uzlasi_uygulanabilir, true);
+});
+
+test("wrong-removal #1: benzer satırlarda YALNIZ tam eşleşen çıkar; meşru satır KORUNUR", () => {
+  const taslakMd = "Sayı : E-1\n\nSöz konusu talebiniz mevzuat hükümleri çerçevesinde uygun görülmüştür.\nSöz konusu talebiniz mevzuat hükümleri çerçevesinde reddedilmiştir 5000 TL.\n\nGereğini arz ederim.";
+  const k = muzakereKurgusu({
+    ...R_TEMIZ, yazi_taslak_md: taslakMd,
+    verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): Söz konusu talebiniz mevzuat hükümleri çerçevesinde reddedilmiştir 5000 TL"],
+  });
+  const revize = uzlasiMetni(k);
+  assert.match(revize, /uygun görülmüştür/);       // meşru onay satırı korundu
+  assert.doesNotMatch(revize, /reddedilmiştir 5000/); // uydurma satır çıktı
+});
+
+test("wrong-removal #2: kısa/genel parça (belirsiz) HİÇBİR satırı silmez", () => {
+  const taslakMd = "Sayı : E-1\n\nSokaktaki çukurun onarılması talep edilmektedir.\nEk olarak 2.500.000 TL ödenek istiyorum.\n\nGereğini arz ederim.";
+  const k = muzakereKurgusu({
+    ...R_TEMIZ, yazi_taslak_md: taslakMd,
+    verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): onarılması"],
+  });
+  const revize = uzlasiMetni(k);
+  assert.match(revize, /çukurun onarılması/);   // meşru talep silinmedi (belirsiz eşleşme → kaldırma yok)
+  const cikar = k.oneriler.find((o) => o.tip === "cikar");
+  assert.ok(cikar && !cikar.uygulanabilir);     // öneri yalnız rehber, otomatik uygulanmaz
+});
+
+test("nihaiTaslak == uzlasi_metni (çıkar editleri dahil — tutarsızlık yok)", () => {
+  const taslakMd = "Sayı : E-1\n\nGerçek talep buradadır.\nUydurma iddia kaldırılmalıdır tamamen.\n\nGereğini arz ederim.";
+  const k = muzakereKurgusu({
+    ...R_TEMIZ, yazi_taslak_md: taslakMd,
+    verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): Uydurma iddia kaldırılmalıdır tamamen"],
+  });
+  assert.equal(nihaiTaslak(k).map((l) => l.metin).join("\n"), k.uzlasi_metni);
+});
+
+test("temiz evrak (değişiklik yok) → uzlasi_uygulanabilir false, revize = orijinal", () => {
   const k = muzakereKurgusu(R_TEMIZ);
-  assert.equal(k.karar, "uzlasti");
-  assert.equal(k.turlar.filter((t) => t.oy).length, 3);
-  assert.ok(k.turlar.some((t) => /Dayanak sağlam: 4982/.test(t.text)));
-});
-
-test("sarı bant → şerhli uzlaşı", () => {
-  const k = muzakereKurgusu({ ...R_TEMIZ, risk_metadata: { bant: "sari" } });
-  assert.equal(k.karar, "serhli");
-});
-
-test("kırmızı bant → uzlaşı YOK, memur onayına sevk (mühür basılmaz)", () => {
-  const k = muzakereKurgusu({ ...R_TEMIZ, risk_metadata: { bant: "kirmizi" } });
-  assert.equal(k.karar, "sevk");
-  assert.ok(k.turlar.some((t) => /memur onayına/.test(t.text)));
-  assert.equal(k.turlar.filter((t) => t.oy).length, 0);
+  assert.equal(k.uzlasi_uygulanabilir, false);
+  assert.equal(uzlasiMetni(k), R_TEMIZ.yazi_taslak_md);
 });
 
 /* ---- fallback'ler dürüst ---- */
-test("result yok → etiketli örnek senaryo", () => {
+test("result yok → etiketli örnek senaryo (yeni revize sözleşmesi, mühür/uzlaşı dili yok)", () => {
   const k = muzakereKurgusu(null);
   assert.equal(k.kaynak, "ornek");
   assert.ok(k.turlar.length >= 6);
   assert.equal(k, ORNEK_KURGU);
+  // Reframe sözleşmesi: alanlar tam + revize uygulanabilir + verdict dili yok.
+  assert.equal(k.uzlasi_uygulanabilir, true);
+  assert.equal(k.degisiklik, 2);
+  assert.ok(k.oneriler.length === 2);
+  assert.ok(k.turlar.every((t) => !/mühür|uzlaşı taslağı|onayına sunul/i.test(t.text)));
+  assert.match(uzlasiMetni(k), /Başvurunuz üzerine/);   // örnek revize gerçekten uygulanmış
 });
 
 test("result var ama taslak yok → kurul toplanamaz (uydurma müzakere yok)", () => {
@@ -207,6 +259,51 @@ test("uzlasiMetni: editler uygulanmış tam metin döner (taslağa yazılabilir)
 test("uzlasiMetni: edit yoksa metin taslağın aynısıdır", () => {
   const k = muzakereKurgusu(R_TEMIZ);
   assert.equal(uzlasiMetni(k), TASLAK);
+});
+
+/* ---- sunucuKurgusu: /yazi/kurul LLM yanıtını kurgu şekline normalize eder ---- */
+const R_MIN = { yazi_taslak_md: TASLAK, yazi_turu: "cevabi_yazi" };
+
+test("sunucu: kaynak!=llm → null (deterministik fallback tetiklenir)", () => {
+  assert.equal(sunucuKurgusu({ kaynak: "deterministik" }, R_MIN), null);
+  assert.equal(sunucuKurgusu(null, R_MIN), null);
+});
+
+test("sunucu: geçerli LLM yanıtı → kurgu (turlar/oneriler/karar/uzlasi)", () => {
+  const data = {
+    kaynak: "llm", karar: "serhli",
+    turlar: [{ who: "hukukcu", kaynak: "verify", text: "Dayanaksız ifade var." }],
+    oneriler: [{ tip: "cikar", kaynak: "verify", metin: "fazla tahakkuk çıkarılmalı", uygulanabilir: false }],
+    uzlasi_metni: TASLAK.replace("İşbu talebinize binaen", "Başvurunuz üzerine"),
+    uzlasi_degisti: true, uzlasi_uygulanabilir: true,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  assert.equal(k.kaynak, "llm");
+  assert.equal(k.risk, "sari");   // karar 'serhli' → rozet 'sari' (verdict değil)
+  assert.equal(k.turlar[0].who, "hukukcu");
+  assert.equal(k.oneriler[0].tip, "cikar");
+  assert.match(k.uzlasi_metni, /Başvurunuz üzerine/);
+  assert.equal(k.uzlasi_uygulanabilir, true);
+  assert.ok(k.taslak.length > 0);   // sağ panel için taslak satırları result'tan
+});
+
+test("sunucu: bozuk üye/tip savunmacı düşürülür; geçersiz karar → risk boş (rozet yok)", () => {
+  const data = {
+    kaynak: "llm", karar: "saçma",
+    turlar: [{ who: "baskan", text: "x" }, { who: "vatandas", kaynak: "uslup", text: "Dil sade." }],
+    oneriler: [{ tip: "sil", metin: "x" }, { tip: "duzelt", kaynak: "lint_2646", metin: "m.15 düzelt" }],
+    uzlasi_metni: TASLAK,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  assert.ok(k.turlar.every((t) => ["taslakci", "hukukcu", "vatandas"].includes(t.who)));
+  assert.ok(k.oneriler.every((o) => ["duzelt", "ekle", "cikar"].includes(o.tip)));
+  assert.equal(k.risk, "");   // tanınmayan karar + sinyal yok → rozet çizilmez
+});
+
+test("sunucu: uzlasi_metni yoksa result taslağına düşer, uygulanabilir false", () => {
+  const k = sunucuKurgusu({ kaynak: "llm", karar: "uzlasti", turlar: [{ who: "taslakci", text: "ok" }], oneriler: [] }, R_MIN);
+  assert.equal(k.uzlasi_metni, TASLAK);
+  assert.equal(k.uzlasi_uygulanabilir, false);
 });
 
 test("null-güvenlik: bozuk şekiller motoru düşürmez", () => {

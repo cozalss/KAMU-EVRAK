@@ -2,10 +2,10 @@
    Taslak kartında "Kurulu topla" → KurulModal açılır: üç kurul üyesi O taslağın GERÇEK
    pipeline sinyalleri (verify uydurma-veto · lint-2646 · NLI · tutarlılık · risk bandı)
    üzerinden müzakere eder — Taslakçı savunur, Hukukçu mevzuat/format itirazlarını yürütür,
-   Vatandaş Avukatı üslup denetiminin gerçek sonucunu konuşur; itirazlar taslağa UYGULANIR,
-   karar risk bandı + çözülmemiş itiraza bağlıdır (oybirliği / ŞERHLİ uzlaşı / mühürsüz sevk).
-   Uzlaşıda değişiklik varsa "Uzlaşı taslağını uygula" MEMUR ONAYIYLA taslağın üzerine yazar
-   (HITL — kurul hiçbir zaman doğrudan uygulamaz).
+   Vatandaş Avukatı üslup denetiminin gerçek sonucunu konuşur; itirazlar taslağa UYGULANIR ve
+   kurul bir REVİZE TASLAĞI üretir. Verdict/mühür/sevk töreni YOK — risk yalnız küçük rozet.
+   Değişiklik varsa "Revize taslağını uygula" MEMUR ONAYIYLA (önce→sonra diff görünür) taslağın
+   üzerine yazar (HITL — kurul hiçbir zaman doğrudan uygulamaz).
 
    Kurgu motoru: src/lib/muzakere.js (saf, node --test'li). Animasyon state'i KurulSahnesi'nde
    yaşar; modal her açılış/oynatışta sahneyi key ile sıfırdan kurar (eski-kare sızıntısı yok).
@@ -15,7 +15,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MONO, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn } from "./neonUi.jsx";
 import { ScrimDugme } from "./BelgeModal.jsx";
-import { muzakereKurgusu, editUygula, nihaiTaslak, uzlasiMetni } from "../lib/muzakere.js";
+import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
+import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara } from "../lib/muzakere.js";
+import { apiPost } from "../lib/authApi.js";
+
+const KURUL_FETCH_TIMEOUT_MS = 30000;   // LLM roundtable ağ turu üst sınırı → aşılırsa yerel motor
 
 // Kişi (vatandaş) ikonu — neonUi setinde yok, yerel.
 const KisiIkon = (p) => (
@@ -33,7 +37,7 @@ const KURUL = [
 ];
 const UYE = Object.fromEntries(KURUL.map((k) => [k.id, k]));
 
-const THINK = 900, READ = 1700, SEAL = 800;
+const THINK = 900, READ = 1700;
 
 // vurgu tipi → aksan rengi + rozet etiketi (kaynağına sadık: format ≠ sadeleştirme).
 const VURGU = {
@@ -50,12 +54,14 @@ const TIP = {
 };
 const TIP_SIRA = ["cikar", "ekle", "duzelt"];   // en sert eylem en üstte
 
-// Karar → durum çipi + mühür görünümü + kapanış bandı (risk_guard sözleşmesiyle hizalı).
-const KARAR = {
-  uzlasti: { durum: "Uzlaşıldı · mühürlendi", renk: BANT.yesil.c, muhur: "UZLAŞILDI", muhurCol: V, bant: "Kurul oybirliğiyle uzlaştı — uzlaşı taslağı mühürlendi." },
-  serhli: { durum: "Şerhli uzlaşı · mühürlendi", renk: BANT.sari.c, muhur: "ŞERHLİ UZLAŞI", muhurCol: BANT.sari.c, bant: "Kurul şerhle uzlaştı — kalan uyarılar memur incelemesine not düşüldü." },
-  sevk: { durum: "Memur onayına sevk", renk: BANT.kirmizi.c, muhur: null, muhurCol: null, bant: "Kurul uzlaşamadı — kırmızı risk nedeniyle dosya mühürsüz olarak memur onayına sevk edildi." },
+// Risk bandı → küçük ROZET (verdict/mühür/sevk töreni YOK — kurulun çıktısı revize taslağıdır).
+const RISK = {
+  yesil: { etiket: "Düşük risk", c: BANT.yesil.c },
+  sari: { etiket: "Dikkat", c: BANT.sari.c },
+  kirmizi: { etiket: "Yüksek risk", c: BANT.kirmizi.c },
 };
+// Sahne aksan rengi: risk varsa onun rengi, yoksa mühür moru (üretim hattı).
+const aksanRenk = (risk) => RISK[risk]?.c || V;
 
 function useAzHareket() {
   const [az, setAz] = useState(() => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
@@ -135,29 +141,17 @@ function Yaziyor({ uye }) {
   );
 }
 
-// Uzlaşı mührü — taslak kartına basılan yuvarlak ıstampa; şerhli uzlaşıda sarı ton.
-function Muhur({ az, etiket, col }) {
-  return (
-    <div aria-hidden="true" style={{ position: "absolute", top: 18, right: 18, width: 92, height: 92, zIndex: 3, color: col, transform: "rotate(-9deg)", animation: az ? "none" : "nu-pop .4s ease-out both" }}>
-      <span style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2.5px solid ${col}`, opacity: 0.9 }} />
-      <span style={{ position: "absolute", inset: 8, borderRadius: "50%", border: `1px solid ${col}`, opacity: 0.6 }} />
-      <span style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 1 }}>
-        <span style={{ fontFamily: MONO, fontSize: 8, letterSpacing: ".5px", opacity: 0.85 }}>KURUL</span>
-        <Icon.check width={22} height={22} />
-        <span style={{ fontFamily: MONO, fontSize: 7.5, letterSpacing: ".4px", opacity: 0.85, textAlign: "center" }}>{etiket}</span>
-      </span>
-    </div>
-  );
-}
-
-/* Kurul Tutanağı — tartışmanın SONUCU: taslakta neyin düzeltilmesi/eklenmesi/çıkarılması
-   gerektiği, tip-renkli satırlar + kaynak sinyal rozetiyle (her öneri izlenebilir).
-   Edit-destekli düzeltmeler müzakerede taslağa işlenmiştir; kalıcı yazım MEMUR kararıdır. */
-function KurulTutanagi({ kurgu, kararUi, az, onUygula }) {
+/* Kurul Tutanağı — REVİZYON ÖNERİSİ: taslakta neyin düzeltilmesi/eklenmesi/çıkarılması
+   gerektiği (tip-renkli + kaynak sinyal rozetli), sonra uygulanacak revize taslağının
+   önce→sonra farkı. Kalıcı yazım MEMUR kararıdır (HITL) — kurul kendiliğinden uygulamaz. */
+function KurulTutanagi({ kurgu, aksan, az, onUygula }) {
   const oneriler = Array.isArray(kurgu.oneriler) ? kurgu.oneriler : [];
   const sirali = TIP_SIRA.flatMap((t) => oneriler.filter((o) => o.tip === t));
-  const editSayisi = kurgu.turlar.filter((t) => t.edit).length;
-  const uygulanabilir = kurgu.karar !== "sevk" && editSayisi > 0 && !!onUygula;
+  const uygulanabilir = !!onUygula && !!kurgu.uzlasi_uygulanabilir;
+  // GÖRÜNÜR ONAY (HITL): revize taslağı memura uygulamadan ÖNCE önce→sonra farkıyla gösterilir.
+  const diff = kurgu.uzlasi_uygulanabilir
+    ? { eski: (kurgu.taslak || []).map((l) => l.metin).join("\n"), yeni: kurgu.uzlasi_metni || "" }
+    : null;
   const sayim = TIP_SIRA
     .map((t) => ({ t, n: oneriler.filter((o) => o.tip === t).length }))
     .filter((x) => x.n)
@@ -165,17 +159,16 @@ function KurulTutanagi({ kurgu, kararUi, az, onUygula }) {
     .join(" · ");
 
   return (
-    <section aria-label="Kurul tutanağı" style={{ marginTop: SP.l, background: PAL.surf, border: `1px solid ${PAL.line}`, borderTop: `2px solid ${kararUi.renk}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l, animation: az ? "none" : "nu-rise .25s ease-out both" }}>
+    <section aria-label="Kurul tutanağı" style={{ marginTop: SP.l, background: PAL.surf, border: `1px solid ${PAL.line}`, borderTop: `2px solid ${aksan}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l, animation: az ? "none" : "nu-rise .25s ease-out both" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: sirali.length ? SP.m : 0 }}>
-        <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(kararUi.renk) }}><Icon.scale /></span>
-        <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kurul tutanağı</h3>
-        <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(kararUi.renk), background: ALFA(kararUi.renk), borderRadius: RAD.chip, padding: "2px 8px" }}>{kararUi.durum}</span>
+        <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(aksan) }}><Icon.scale /></span>
+        <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kurul tutanağı · revize önerisi</h3>
         {sayim && <span style={{ marginLeft: "auto", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>{sayim}</span>}
       </div>
 
       {sirali.length === 0 ? (
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: DERIN.yesil }}>
-          <Icon.check width={15} height={15} /> Kurul değişiklik önermedi — taslak olduğu gibi uygun görüldü.
+          <Icon.check width={15} height={15} /> Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü.
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -188,7 +181,7 @@ function KurulTutanagi({ kurgu, kararUi, az, onUygula }) {
                   {o.metin}
                   {o.uygulanabilir && (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: SP.s, ...TYPE.meta, fontWeight: 500, color: DERIN.yesil }}>
-                      <Icon.check width={11} height={11} /> müzakerede işlendi
+                      <Icon.check width={11} height={11} /> revize taslağa işlendi
                     </span>
                   )}
                 </span>
@@ -199,34 +192,37 @@ function KurulTutanagi({ kurgu, kararUi, az, onUygula }) {
         </div>
       )}
 
-      {(uygulanabilir || kurgu.karar === "sevk") && (
+      {/* Revize taslağı → uygulamadan ÖNCE önce→sonra farkı (görünür HITL onayı) */}
+      {diff && (
+        <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
+          <div style={{ ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>Kurulun hazırladığı revize taslağı — mevcut taslakla fark</div>
+          <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>Eklenen satır “+”, çıkarılan satır “−” ile işaretlidir. Onaylamadan uygulanmaz.</div>
+          <DuzeltmeDiff eski={diff.eski} yeni={diff.yeni} />
+        </div>
+      )}
+
+      {uygulanabilir && (
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
-          {kurgu.karar === "sevk" ? (
-            <span style={{ ...TYPE.data, color: DERIN.kirmizi }}>Mühür basılmadı — tutanak, dosyayla birlikte memur onayına sunulur.</span>
-          ) : (
-            <>
-              <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Kalıcı yazım memur kararıdır — kurul hiçbir değişikliği kendiliğinden uygulamaz.</span>
-              <span style={{ marginLeft: "auto" }}>
-                <Btn primary accent={kararUi.renk} onClick={onUygula}>
-                  <Icon.check /> Uzlaşı taslağını uygula ({editSayisi} düzeltme)
-                </Btn>
-              </span>
-            </>
-          )}
+          <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Kalıcı yazım memur kararıdır — kurul hiçbir değişikliği kendiliğinden uygulamaz.</span>
+          <span style={{ marginLeft: "auto" }}>
+            <Btn primary accent={aksan} onClick={onUygula}>
+              <Icon.check /> Revize taslağını uygula
+            </Btn>
+          </span>
         </div>
       )}
     </section>
   );
 }
 
-// Taslak kartı — satırlar; müzakerede değişen satır aksanla vurgulanır; uzlaşıda mühür.
-function TaslakKarti({ draft, sealed, kararUi, az }) {
+// Taslak kartı — müzakere sürerken orijinal, kurul revize önerdiyse REVİZE taslağı gösterir.
+function TaslakKarti({ draft, revize }) {
   return (
     <div style={{ position: "relative", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
-        <span aria-hidden="true" style={{ display: "flex", color: DERIN.T }}><Icon.doc /></span>
-        <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Resmî yazı taslağı</h3>
-        <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3 }}>{sealed ? "uzlaşı taslağı" : "müzakere ediliyor"}</span>
+        <span aria-hidden="true" style={{ display: "flex", color: revize ? DERIN.V : DERIN.T }}><Icon.doc /></span>
+        <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{revize ? "Kurulun revize taslağı" : "Resmî yazı taslağı"}</h3>
+        <span style={{ marginLeft: "auto", ...TYPE.meta, color: revize ? DERIN_OF(V) : PAL.mut3 }}>{revize ? "önerilen sürüm" : "müzakere ediliyor"}</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: SP.s, maxHeight: 440, overflowY: "auto" }}>
         {draft.map((l) => {
@@ -239,7 +235,6 @@ function TaslakKarti({ draft, sealed, kararUi, az }) {
           );
         })}
       </div>
-      {sealed && kararUi.muhur && <Muhur az={az} etiket={kararUi.muhur} col={kararUi.muhurCol} />}
     </div>
   );
 }
@@ -247,16 +242,14 @@ function TaslakKarti({ draft, sealed, kararUi, az }) {
 /* Müzakere sahnesi — animasyon state'inin TEK sahibi. Çağıran, oynatma/taslak değişince
    key verir → sahne sıfırdan kurulur (effect-içi reset ve eski-kare sızıntısı yoktur). */
 function KurulSahnesi({ kurgu, az, onUygula }) {
-  // KARAR girdileri modül-seviyesi sabit nesnelerdir → kararUi/muhur referansı render'lar
-  // arasında kararlıdır; effect bağımlılığında güvenle kullanılır (taze nesne DEĞİL).
-  const kararUi = KARAR[kurgu.karar] || KARAR.uzlasti;
+  const aksan = aksanRenk(kurgu.risk);
+  const riskRozet = RISK[kurgu.risk] || null;
   const TURLAR = kurgu.turlar;
   const [turnIdx, setTurnIdx] = useState(az ? TURLAR.length : 0);   // açığa çıkmış tur sayısı
   const [speaking, setSpeaking] = useState(null);                    // o an "yazan" üye id'si
   const [draft, setDraft] = useState(() => (az ? nihaiTaslak(kurgu) : kurgu.taslak.map((l) => ({ ...l }))));
   const [votes, setVotes] = useState(() => (az ? Object.fromEntries(TURLAR.filter((t) => t.oy).map((t) => [t.who, true])) : {}));
   const [done, setDone] = useState(az);
-  const [sealed, setSealed] = useState(az && !!kararUi.muhur);
   const feedRef = useRef(null);
 
   useEffect(() => {
@@ -278,26 +271,31 @@ function KurulSahnesi({ kurgu, az, onUygula }) {
         }, THINK);
       } else {
         setDone(true);
-        if (kararUi.muhur) timer = setTimeout(() => { if (alive) setSealed(true); }, SEAL);
       }
     };
     timer = setTimeout(step, 500);
     return () => { alive = false; clearTimeout(timer); };
-  }, [az, TURLAR, kararUi.muhur]);
+  }, [az, TURLAR]);
 
   // Yeni balon/yazıyor gelince akışı en alta kaydır (canlı sohbet hissi).
   useEffect(() => { feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight, behavior: az ? "auto" : "smooth" }); }, [turnIdx, speaking, az]);
 
   const gorunenTurlar = useMemo(() => TURLAR.slice(0, turnIdx), [TURLAR, turnIdx]);
-  const durum = done ? kararUi.durum : "Müzakere sürüyor";
-  const durumRenk = done ? kararUi.renk : T;
+  // Başlık: revizyon çıktısı odaklı (verdict değil). Bitince revize var mı yok mu söyler.
+  const degisiklikN = kurgu.degisiklik || (kurgu.oneriler || []).filter((o) => o.uygulanabilir).length;
+  const durum = !done ? "Müzakere sürüyor"
+    : kurgu.uzlasi_uygulanabilir ? `Revize önerisi hazır${degisiklikN ? ` · ${degisiklikN} değişiklik` : ""}` : "Değişiklik önerilmedi";
+  const durumRenk = done ? aksan : T;
+  // Bitince sağ panelde REVİZE taslağını göster (memur uygulayacağı sürümü görür).
+  const revizeGoster = done && kurgu.uzlasi_uygulanabilir;
+  const gosterilenDraft = revizeGoster ? metniSatirlara(kurgu.uzlasi_metni || "", "r") : draft;
 
   return (
     <div>
       {/* Ekran okuyucu için canlı müzakere duyurusu */}
       <div role="status" aria-live="polite" aria-atomic="true" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>
         {speaking ? `${UYE[speaking].ad} söz alıyor` : turnIdx > 0 ? `${UYE[TURLAR[turnIdx - 1].who].ad}: ${TURLAR[turnIdx - 1].text}` : ""}
-        {done ? ` — ${kararUi.bant}` : ""}
+        {done ? ` — ${durum}` : ""}
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: SP.m }}>
@@ -305,6 +303,11 @@ function KurulSahnesi({ kurgu, az, onUygula }) {
           <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: durumRenk, animation: !done && !az ? "nu-think 1.3s ease-in-out infinite" : "none" }} />
           {durum}
         </span>
+        {riskRozet && (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, fontWeight: 500, color: DERIN_OF(riskRozet.c), background: ALFA(riskRozet.c), borderRadius: RAD.chip, padding: "4px 10px" }}>
+            <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: riskRozet.c }} /> {riskRozet.etiket}
+          </span>
+        )}
       </div>
 
       <KurulSirasi speaking={speaking} votes={votes} />
@@ -321,29 +324,51 @@ function KurulSahnesi({ kurgu, az, onUygula }) {
             {gorunenTurlar.map((t, i) => <Balon key={`${i}-${t.who}`} uye={UYE[t.who]} text={t.text} kaynak={t.kaynak} />)}
             {speaking && <Yaziyor uye={UYE[speaking]} />}
             {done && (
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(kararUi.renk), ...TYPE.data, color: DERIN_OF(kararUi.renk), fontWeight: 500, animation: az ? "none" : "nu-rise .2s ease-out both" }}>
-                {kurgu.karar === "sevk" ? <Icon.alert /> : <Icon.check />} {kararUi.bant}
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(aksan), ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s ease-out both" }}>
+                <Icon.check /> {kurgu.uzlasi_uygulanabilir
+                  ? "Kurul revize taslağını hazırladı — memur onayına sunuluyor."
+                  : "Kurul taslakta değişiklik önermedi."}
               </div>
             )}
           </div>
         </div>
 
-        {/* Sağ — müzakere ile evrilen taslak */}
-        <TaslakKarti draft={draft} sealed={sealed} kararUi={kararUi} az={az} />
+        {/* Sağ — müzakere sürerken orijinal, bitince kurulun REVİZE taslağı */}
+        <TaslakKarti draft={gosterilenDraft} revize={revizeGoster} />
       </div>
 
       {/* Tartışmanın sonucu — tutanak yalnız müzakere bitince açılır (canlı gerilim korunur) */}
-      {done && <KurulTutanagi kurgu={kurgu} kararUi={kararUi} az={az} onUygula={onUygula} />}
+      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} />}
     </div>
   );
 }
 
-/* KurulModal — Taslaklar'dan "Kurulu topla" ile açılan müzakere katmanı (BelgeModal a11y
-   deseni). onUygula(metin): memur "Uzlaşı taslağını uygula" derse uzlaşı metni verilir —
+/* KurulModal — Taslaklar'dan "Kurulu topla" ile açılan revizyon katmanı (BelgeModal a11y
+   deseni). onUygula(metin): memur "Revize taslağını uygula" derse kurulun revize metni verilir —
    çağıran taslağa yazar (updateDraft) ve modalı kapatır. */
+// Kurul toplanıyor — DeepSeek roundtable ağ turu sürerken üç üye "okuyor" durumu.
+function KurulYukleniyor({ az }) {
+  return (
+    <div style={{ padding: "36px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: SP.m }}>
+      <div style={{ display: "flex", gap: SP.s }}>
+        {KURUL.map((u, i) => (
+          <span key={u.id} aria-hidden="true" style={{ width: 40, height: 40, borderRadius: RAD.dot, background: ALFA(u.col), border: `1.5px solid ${u.col}`, color: DERIN_OF(u.col), display: "flex", alignItems: "center", justifyContent: "center", animation: az ? "none" : "nu-think 1.2s ease-in-out infinite", animationDelay: `${i * 0.18}s` }}>
+            <u.Ikon />
+          </span>
+        ))}
+      </div>
+      <span style={{ ...TYPE.data, color: PAL.mut2 }}>Kurul toplanıyor — üyeler taslağı okuyor ve müzakereye hazırlanıyor…</span>
+    </div>
+  );
+}
+
 export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygula = null }) {
   const az = useAzHareket();
-  const kurgu = useMemo(() => muzakereKurgusu(result || null), [result]);
+  const yerel = useMemo(() => muzakereKurgusu(result || null), [result]);
+  // LLM birincil (DeepSeek roundtable), deterministik yerel motor fallback. Taslaksız evrakta
+  // (yerel.toplanamaz) ağ turu atlanır; LLM yok/mock/hata → yerel kurgu (mock ayakta).
+  const [durum, setDurum] = useState(() => (result?.yazi_taslak_md ? "yukleniyor" : "hazir"));
+  const [kurgu, setKurgu] = useState(yerel);
   const kapatRef = useRef(null);
   const oncekiOdak = useRef(null);
   // BelgeModal deseni: onKapat çoğu zaman inline arrow gelir (her render'da yeni kimlik) —
@@ -351,6 +376,30 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   // Ref-dolaylama ile effect YALNIZ mount/unmount'ta koşar, kapatma daima güncel callback'i çağırır.
   const kapatIstegiRef = useRef(onKapat);
   useEffect(() => { kapatIstegiRef.current = onKapat; });
+
+  // DeepSeek kurul müzakeresini çek — başarı: sunucu kurgusu; hata/mock/deterministik: yerel.
+  useEffect(() => {
+    if (!result?.yazi_taslak_md) { setKurgu(yerel); setDurum("hazir"); return undefined; }
+    let alive = true;
+    setDurum("yukleniyor");
+    // Ağ turu üst sınırı: apiPost timeout desteklemiyor → yarış. Timeout/hata/mock → yerel motor
+    // (modal "toplanıyor"da asılı kalmaz — mock hızlı döner, yalnız gerçek ağ takılması etkilenir).
+    const zamanAsimi = new Promise((res) => setTimeout(() => res("__timeout__"), KURUL_FETCH_TIMEOUT_MS));
+    const istek = apiPost("/yazi/kurul", {
+      taslak_md: result.yazi_taslak_md,
+      evrak_text: result.evrak_text || "",
+      yazi_turu: result.yazi_turu || "",
+      evrak_turu: result.evrak_turu || "",
+      hedef_birim: result.hedef_birim || "",
+      bilgi_unsurlari: result.bilgi_unsurlari || {},
+      mevzuat_onerileri: result.mevzuat_onerileri || [],
+      mevzuat_nli: result.mevzuat_nli || [],
+    });
+    Promise.race([istek, zamanAsimi])
+      .then((data) => { if (alive) { setKurgu((data && data !== "__timeout__" && sunucuKurgusu(data, result)) || yerel); setDurum("hazir"); } })
+      .catch(() => { if (alive) { setKurgu(yerel); setDurum("hazir"); } });
+    return () => { alive = false; };
+  }, [result, yerel]);
 
   useEffect(() => {
     oncekiOdak.current = document.activeElement;
@@ -375,22 +424,27 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
           <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>AI Bürokrasi Kurulu</span>
           {taslakAdi && <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{taslakAdi}</span>}
-          <span style={{ ...TYPE.meta, color: "rgba(251,247,240,.6)" }}>üç ajan, taslağın gerçek doğrulama sinyalleri üzerinden müzakere eder</span>
+          <span style={{ ...TYPE.meta, color: "rgba(251,247,240,.6)" }}>
+            {kurgu.kaynak === "llm" ? "DeepSeek uzman ajanları taslağı müzakere eder" : "üç ajan, taslağın gerçek doğrulama sinyalleri üzerinden müzakere eder"}
+          </span>
           <span style={{ marginLeft: "auto" }}>
             <ScrimDugme onClick={onKapat} ariaLabel="Kurulu kapat"><Icon.x width={13} height={13} /> Kapat</ScrimDugme>
           </span>
         </div>
 
         <div style={{ background: PAL.bg, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.l }}>
-          {kurgu.toplanamaz ? (
+          {durum === "yukleniyor" ? (
+            <KurulYukleniyor az={az} />
+          ) : kurgu.toplanamaz ? (
             <div style={{ padding: "40px 20px", textAlign: "center", ...TYPE.data, color: PAL.mut2 }}>
               Bu taslak için kurul toplanamıyor — müzakere edilecek yazı metni bulunamadı.
             </div>
           ) : (
             <KurulSahnesi
+              key={kurgu.kaynak}
               kurgu={kurgu}
               az={az}
-              onUygula={onUygula ? () => onUygula(uzlasiMetni(kurgu)) : null}
+              onUygula={onUygula ? () => onUygula(kurguUzlasiMetni(kurgu)) : null}
             />
           )}
         </div>

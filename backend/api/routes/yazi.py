@@ -24,6 +24,7 @@ from agents.state import make_initial_state
 from api.middleware.ratelimit import rate_limit
 from api.schemas import (
     MAX_EVRAK_CHARS,
+    KurulRequest,
     TaslakTuruRequest,
     YaziDogrulaRequest,
     YaziEypRequest,
@@ -295,6 +296,69 @@ async def yazi_dogrula(request: Request, req: YaziDogrulaRequest) -> dict[str, A
         "lint_2646": v.get("lint_2646"),
         "risk_metadata": r.get("risk_metadata"),
     }
+
+
+@router.post("/kurul")
+@rate_limit("15/minute")  # LLM roundtable — indirme uçlarından daha pahalı, sıkı limit
+async def yazi_kurul(request: Request, req: KurulRequest) -> dict[str, Any]:
+    """AI Bürokrasi Kurulu: GÜNCEL taslağı DeepSeek çok-ajanlı müzakeresinden geçir.
+
+    Sunucu sinyalleri (verify + risk_guard) taslaktan YENİDEN hesaplar (istemci sinyaline
+    güvenmez, /yazi/dogrula güven-sınırıyla aynı ilke). LLM yok/mock/hata → {kaynak:
+    "deterministik"} (frontend muzakere.js'e düşer, mock ayakta). Uç asla 500 vermez.
+    """
+    from agents.nodes.risk_guard import risk_guard_node
+    from agents.nodes.verify import verify_node
+    from yazi.kurul import kurul_muzakere
+
+    taslak = req.taslak_md.strip()[:MAX_EVRAK_CHARS]
+    if not taslak:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Taslak metni boş")
+
+    # Girdi kurulumu + sinyal hesabı TEK try içinde — "uç asla 500 vermez" garantisi tam
+    # (ileride buraya eklenen atıcı bir çağrı da deterministik fallback'e düşer).
+    try:
+        state: dict[str, Any] = {
+            "evrak_text": (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS],
+            "bilgi_unsurlari": _skaler_unsurlar(req.bilgi_unsurlari),
+            "yazi_taslak_md": taslak,
+            "yazi_turu": req.yazi_turu,
+            "evrak_turu": req.evrak_turu or "belirsiz",
+            "hedef_birim": _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else "",
+        }
+        # Sinyaller SUNUCUDA yeniden hesaplanır (grounding + karar otoritesi istemciye bağlı değil).
+        v = await verify_node(state)
+        state.update(v)
+        r = await risk_guard_node(state)
+    except Exception as exc:
+        log.error("kurul_sinyal_failed", error=str(exc) or type(exc).__name__)
+        return {"kaynak": "deterministik"}  # sinyal yoksa frontend deterministik motora düşer
+
+    sinyaller = {
+        "verify_uyari": v.get("verify_uyari", []),
+        "lint_2646": v.get("lint_2646") or {},
+        "tutarlilik_uyari": v.get("tutarlilik_uyari", []),
+        "risk_metadata": r.get("risk_metadata") or {},
+    }
+    meta = {
+        "yazi_turu": req.yazi_turu, "evrak_turu": req.evrak_turu,
+        "hedef_birim": req.hedef_birim, "bilgi_unsurlari": state["bilgi_unsurlari"],
+        "evrak_text": state["evrak_text"],
+        "mevzuat": req.mevzuat_onerileri, "nli": req.mevzuat_nli,
+    }
+    try:
+        kurgu = await kurul_muzakere(taslak, meta=meta, sinyaller=sinyaller)
+    except Exception as exc:
+        log.error("kurul_muzakere_failed", error=str(exc) or type(exc).__name__)
+        kurgu = None
+
+    if kurgu is None:
+        # LLM yok/mock/hata → frontend deterministik muzakere.js kullanır (sinyaller de döner).
+        return {"kaynak": "deterministik", "sinyaller": sinyaller}
+
+    log.info("yazi_kurul", karar=kurgu["karar"], n_tur=len(kurgu["turlar"]),
+             n_oneri=len(kurgu["oneriler"]), uzlasi=kurgu["uzlasi_degisti"])
+    return {**kurgu, "sinyaller": sinyaller}
 
 
 async def _eyp_meta_from_pipeline(req: YaziEypRequest) -> tuple[dict[str, Any], str]:

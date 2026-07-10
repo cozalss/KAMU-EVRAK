@@ -21,11 +21,20 @@ yalnız risk_metadata ekler (state'i bozmaz → denetim_izi hash-chain'i kırıl
 Çıktı SÖZLEŞMESİ (frontend RiskBandCard ile eşleşir — anahtarlar SABİT):
     risk_metadata = {
         "bant": "yesil"|"sari"|"kirmizi",
-        "skor": float,              # 0..1 (görsel sıralama)
+        "skor": float,              # 0..1 — ÖLÇÜLMÜŞ (risk_agirlik.noisy_or)
         "gerekceler": list[str],    # bandın NEDEN'leri (memura okunur)
+        "katkilar": list[float],    # gerekceler[i]'nin KENDİ ağırlığı (çubuk yüksekliği)
+        "kalibrasyon": str,         # "olculdu"|"kismi"|"onsel"|"temiz" — skorun statüsü
         "oneri": str,               # eylem önerisi
         "aciklama": str,            # sade dil açıklama (LLM sunum; LLM yoksa = oneri)
     }
+
+SKOR ARTIK SABİT DEĞİL. Eskiden banda göre sabitti ({yesil:0.1, sari:0.5, kirmizi:0.9}) ve
+arayüz onu gerekçe sayısına bölüyordu → kanıt arttıkça çubuk küçülüyor, hafif SARI belge
+ağır KIRMIZI'dan büyük görünüyordu. Şimdi skor = noisy-OR(ciddiyet × ÖLÇÜLEN isabet);
+ayrıntı + kalibrasyon yöntemi: `agents/risk_agirlik.py` + `eval/risk_calibration.py`.
+BANT KARARI DEĞİŞMEDİ: aşağıdaki kural sırası (uydurma > eksik/belirsiz > temiz) aynen
+korunur — skor bandı asla değiştirmez, yalnız onu ölçer.
 """
 
 from __future__ import annotations
@@ -37,6 +46,7 @@ import structlog
 from agents import config
 from agents.config import RISK_GUARD_ENABLED, RISK_GUVEN_ESIK
 from agents.nodes._llm_extract import llm_json
+from agents.risk_agirlik import skor_ve_katkilar
 from api.pii import mask_pii
 
 log = structlog.get_logger()
@@ -45,12 +55,29 @@ log = structlog.get_logger()
 _UYDURMA_IMZA = "kaynak evrakta yok"
 _EKSIK_IMZA = "Eksik bölüm"
 
+# Memura DOĞRUDAN hitap eden eylem cümleleri (arayüzde "Ne yapmalısınız:" satırı). Jargon yok:
+# 'yayın-hazır', 'HITL', 'grounding' gibi terimler burada geçmez — okuyucu yazılımcı değil memurdur.
 _ONERI: dict[str, str] = {
-    "yesil": "Yayın-hazır — içerik kaynaktan, format tam; memur onayına gerek yok.",
-    "sari": "Memur incelemesi önerilir — eksik/belirsiz noktalar var; gönderim öncesi göz atın.",
-    "kirmizi": "Memur onayı ZORUNLU — uydurma şüphesi yakalandı; teyit edilmeden gönderilmemeli.",
+    "yesil": "Bu taslak gönderilmeye hazır: bilgiler evraktan geldi, biçim kuralları tam. "
+             "Ayrıca onaylamanıza gerek yok.",
+    "sari": "Göndermeden önce taslağı bir kez okuyun: eksik veya belirsiz noktalar var. "
+            "Aşağıdaki nedenleri tek tek kontrol edin.",
+    "kirmizi": "Bu taslağı onaylamadan göndermeyin. Yapay zekâ, evrakta bulunmayan bilgiler "
+               "eklemiş olabilir; aşağıdaki her maddeyi evrakla karşılaştırıp düzeltin.",
 }
-_SKOR: dict[str, float] = {"yesil": 0.1, "sari": 0.5, "kirmizi": 0.9}
+def _bant_sonuc(bant: str, gerekceler: list[str]) -> dict[str, Any]:
+    """Bant + gerekçelerden ÖLÇÜLMÜŞ skor/katkı üret (bant kararı çağırana aittir).
+
+    YEŞİL'de gerekçe bir risk sinyali değil, bilgi cümlesidir ("tüm doğrulamalar temiz")
+    → skor 0.0, çubuk yok. Aksi hâlde taksonomi ağırlıklarıyla noisy-OR.
+    """
+    if bant == "yesil":
+        return {"bant": bant, "skor": 0.0, "gerekceler": gerekceler,
+                "katkilar": [0.0] * len(gerekceler), "kalibrasyon": "temiz",
+                "oneri": _ONERI[bant]}
+    skor, katkilar, kalibrasyon = skor_ve_katkilar(gerekceler)
+    return {"bant": bant, "skor": skor, "gerekceler": gerekceler, "katkilar": katkilar,
+            "kalibrasyon": kalibrasyon, "oneri": _ONERI[bant]}
 
 # Zorunlu-alan anahtarı → kısa Türkçe etiket (risk gerekçesi okunur olsun; ham anahtar gösterilmez).
 _ALAN_TR: dict[str, str] = {
@@ -80,8 +107,7 @@ def compute_risk(
     uydurma = [u for u in uyarilar if _UYDURMA_IMZA in u]
     if uydurma:
         gerekceler = [f"Uydurma şüphesi — {u}" for u in uydurma]
-        return {"bant": "kirmizi", "skor": _SKOR["kirmizi"],
-                "gerekceler": gerekceler, "oneri": _ONERI["kirmizi"]}
+        return _bant_sonuc("kirmizi", gerekceler)
 
     sari: list[str] = [u for u in uyarilar if u.startswith(_EKSIK_IMZA)]
     if format_uyumlu is False and not sari:
@@ -105,20 +131,25 @@ def compute_risk(
         sari.append(f"Tutarlılık: {u}")
 
     if sari:
-        return {"bant": "sari", "skor": _SKOR["sari"], "gerekceler": sari, "oneri": _ONERI["sari"]}
-    return {"bant": "yesil", "skor": _SKOR["yesil"],
-            "gerekceler": ["Tüm doğrulamalar temiz — kaynaktan, format tam, uydurma yok."],
-            "oneri": _ONERI["yesil"]}
+        return _bant_sonuc("sari", sari)
+    return _bant_sonuc(
+        "yesil", ["Tüm doğrulamalar temiz — kaynaktan, format tam, uydurma yok."])
 
 
 # (4) Doğal dil açıklaması — LLM yalnız SUNAR, karara asla karışmaz. Bant/gerekçe zaten
 # hesaplanmış olarak verilir; prompt bandı değiştirme girişimini yasaklar (yine de çıktının
 # yalnız 'aciklama' alanı okunur → LLM saçmalasa bile karar anahtarlarına dokunamaz).
 _ACIKLAMA_SISTEM = (
-    "Sen bir kamu kurumunda resmî yazı taslaklarının risk bandını memura açıklayan asistansın. "
+    "Sen bir kamu kurumunda çalışan memura, hazırlanan resmî yazı taslağındaki sorunu anlatan "
+    "asistansın. Karşındaki kişi YAZILIM BİLMEZ ve bu ekranı ilk kez kullanıyor.\n"
     "Bant ve gerekçeler SANA VERİLİR; bunları değiştiremezsin, sorgulamazsın.\n"
-    "GÖREV: 2-3 cümlelik SADE Türkçe açıklama yaz: (1) yazı neden bu banda düştü, "
-    "(2) memurun ilk yapması gereken somut adım.\n"
+    "GÖREV: 2-3 cümlelik açıklama yaz: (1) taslakta ne sorun var, (2) memurun ilk yapması "
+    "gereken somut adım.\n"
+    "DİL KURALLARI: Memura 'siz' diye hitap et (\"kontrol etmelisiniz\"), üçüncü tekil "
+    "resmî dil kurma (\"memurun ... gerekmektedir\" YASAK). Kısa ve gündelik cümleler kur.\n"
+    "ŞU TERİMLERİ ASLA KULLANMA: risk bandı, skor, grounding, LLM, model, yapay zekâ modeli, "
+    "abstention, prompt, sınıflandırma, lint, validasyon. Bunların yerine gündelik karşılığını "
+    "yaz (ör. 'taslakta yazan ama evrakınızda bulunmayan bilgi').\n"
     "KESİN KURALLAR: yalnız verilen gerekçeleri kullan; hiçbir bilgi, kanun adı veya madde "
     "numarası UYDURMA; emoji kullanma.\n"
     'YALNIZ şu JSON nesnesini döndür: {"aciklama": "<2-3 cümle>"}'

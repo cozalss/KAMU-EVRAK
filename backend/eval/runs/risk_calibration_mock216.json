@@ -1,0 +1,58 @@
+{
+  "uretim": {
+    "tarih": "2026-07-10T14:24:32+00:00",
+    "llm_mode": "mock",
+    "korpus": "evrak_class_gold.jsonl",
+    "n_belge": 216
+  },
+  "tipler": {
+    "eksik_zorunlu": {
+      "n": 168,
+      "dogru": 167,
+      "isabet": 0.994,
+      "isabet_alt": 0.9671,
+      "yontem": "bagimsiz-oracle (Wilson %95 alt sinir)"
+    }
+  },
+  "gozlem_tipler": [
+    "dogrula_isareti",
+    "format_eksik",
+    "lint_2646",
+    "tutarlilik"
+  ],
+  "olculmeyen_cikarim_tipler": [
+    "bilinmeyen",
+    "dusuk_guven",
+    "eksik_bolum",
+    "tur_belirsiz",
+    "uydurma_deger",
+    "uydurma_grounding"
+  ],
+  "sinirlar": [
+    "isabet yalnız bağımsız oracle'ı olan ÇIKARIM tiplerinde ölçüldü; kalanı önsel (0.70).",
+    "gözlem tipleri (tutarlilik/lint/[DOĞRULA]/format) deterministik olgudur → isabet 1.0.",
+    "PII maskeli değerler ('123***50') oracle ile çözülemez → ölçüme alınmadı.",
+    "Korpus sentetiktir; gerçek EBYS dağılımı farklı olabilir.",
+    "Brier yalnız en az bir ÖLÇÜLEBİLİR sinyali olan (ya da hiç sinyali olmayan) belgelerde hesaplanır; yalnız gözlem sinyali taşıyan belgeler dışarıda kalır."
+  ],
+  "kalibrasyon": {
+    "olculen_buyukluk": "kusur_olasiligi (skor DEĞİL — skor beklenen zarardır)",
+    "brier": 0.0056,
+    "n_belge": 198,
+    "pozitif_oran": 0.8434,
+    "guvenilirlik": [
+      {
+        "kova": "0.0-0.2",
+        "n": 30,
+        "ortalama_olasilik": 0.0,
+        "gozlenen_kusur_orani": 0.0
+      },
+      {
+        "kova": "0.8-1.0",
+        "n": 168,
+        "ortalama_olasilik": 0.9671,
+        "gozlenen_kusur_orani": 0.994
+      }
+    ]
+  }
+}

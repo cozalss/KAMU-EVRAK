@@ -101,4 +101,8 @@ maks 3 tur + geçmiş) · anlama fan-out (`PARALEL_ANLAMA`, sınıflandır ∥ �
 Her LLM noktasında yok/mock/hata/timeout → **deterministik fallback**: mock modda uçtan-uca
 akış ayakta kalır, CI deterministik geçer. **Mevzuat öner = BM25 RAG birincil** (LLM yalnız
 rerank/doğrulama katmanı); risk bandı KARARI daima deterministik (LLM yalnız sunar/sertleştirir).
+Risk **skoru** sabit değil **ölçülmüştür**: `ağırlık = ciddiyet × isabet`, belge skoru noisy-OR
+(`agents/risk_agirlik.py`); isabet `eval/risk_calibration.py`'de bağımsız oracle'la sayılıp Wilson
+alt sınırı olarak yazılır. Gözlem sinyalleri (checksum/lint/`[DOĞRULA]`) ölçülmez → isabet 1.0.
+Skor bir olasılık DEĞİL, beklenen zarardır; kalibre edilen ayrı büyüklük `kusur_olasiligi`'dır.
 Maliyet ~$0.001-0.002/belge. Eval: `eval/` (bkz. `docs/06-eval-harness.md`).

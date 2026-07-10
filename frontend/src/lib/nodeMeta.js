@@ -105,10 +105,11 @@ export function summarize(id, d) {
       return d.format_uyumlu === false ? "format uyarısı" : "doğrulandı";
     }
     case "risk_guard": {
+      // skor = noisy-OR(ciddiyet × ölçülen isabet) → yüzde sunulur; ham 0..1 memura bir şey demez.
       const bant = d.risk_metadata?.bant;
-      const skor = d.risk_metadata?.skor;
+      const skor = Number(d.risk_metadata?.skor);
       const tr = { yesil: "yeşil", sari: "sarı", kirmizi: "kırmızı" }[bant];
-      return bant ? `${tr || bant}${skor != null ? ` (skor ${skor})` : ""}` : "";
+      return bant ? `${tr || bant}${Number.isFinite(skor) ? ` (risk %${Math.round(skor * 100)})` : ""}` : "";
     }
     case "self_rag":
       return d.self_rag_tam ? "yanıt yeterli" : "eksik tespit edildi";

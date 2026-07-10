@@ -65,9 +65,35 @@ class TestComputeRiskBant:
         assert _risk(u)["bant"] == "kirmizi"
 
     def test_cikti_anahtarlari_sabit(self):
-        # frontend RiskBandCard ile eşleşen SABİT anahtarlar
-        assert set(_risk()) == {"bant", "skor", "gerekceler", "oneri"}
+        # frontend RiskBandCard ile eşleşen SABİT anahtarlar (+ ölçülmüş skor alanları)
+        assert set(_risk()) == {"bant", "skor", "gerekceler", "katkilar", "kalibrasyon", "oneri"}
         assert isinstance(_risk()["gerekceler"], list)
+
+    def test_katkilar_gerekcelerle_hizali(self):
+        # her gerekçenin KENDİ ağırlığı var → arayüz çubuğu gerekçe sayısına bölmez
+        m = _risk(["Taslaktaki '5' sayısı kaynak evrakta yok (doğrulayın)."])
+        assert len(m["katkilar"]) == len(m["gerekceler"])
+        assert all(0.0 <= k <= 1.0 for k in m["katkilar"])
+
+    def test_skor_kanit_arttikca_artar(self):
+        """Regresyon: eski davranışta 1 uydurma da 9 uydurma da sabit 0.9 idi."""
+        u = "Taslaktaki '{}' sayısı kaynak evrakta yok (doğrulayın)."
+        tek = _risk([u.format(111111)])
+        dokuz = _risk([u.format(100000 + i) for i in range(9)])
+        assert tek["bant"] == dokuz["bant"] == "kirmizi"   # bant KARARI değişmedi
+        assert dokuz["skor"] > tek["skor"]
+
+    def test_kirmizi_skoru_sari_skorundan_yuksek(self):
+        """Regresyon: hafif sarı belge (%50) ağır kırmızıdan (%22) büyük görünüyordu."""
+        kirmizi = _risk(["Taslaktaki '5' sayısı kaynak evrakta yok (doğrulayın)."])
+        sari = _risk(["Eksik bölüm: İmza/Ad-Soyad"])
+        assert kirmizi["skor"] > sari["skor"]
+        assert max(kirmizi["katkilar"]) > max(sari["katkilar"])
+
+    def test_yesil_skoru_sifir(self):
+        m = _risk()
+        assert m["bant"] == "yesil" and m["skor"] == 0.0
+        assert m["kalibrasyon"] == "temiz"
 
 
 # ---------------------------------------------------------------------------

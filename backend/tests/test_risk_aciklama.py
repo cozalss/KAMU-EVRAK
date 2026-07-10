@@ -153,13 +153,15 @@ class TestKararLLMdenBagimsiz:
         sonuc = await risk_guard_node(_sari_state())
         meta = sonuc["risk_metadata"]
         assert meta["bant"] == "sari"
-        assert meta["skor"] == 0.5
+        # Skor LLM'den DEĞİL, deterministik ağırlık tablosundan gelir (sahte 0.0 yutulmaz).
+        assert meta["skor"] > 0.0
         assert meta["oneri"] == _ONERI["sari"]
         assert meta["gerekceler"] != ["hepsi temiz"]
         assert any("imza" in g for g in meta["gerekceler"])
 
     async def test_mevcut_anahtarlar_korunur(self, monkeypatch):
-        # additive sözleşme: 4 sabit anahtar + yalnız 'aciklama' eklenir
+        # additive sözleşme: deterministik anahtarlar + yalnız 'aciklama' eklenir
         _sahte_llm(monkeypatch, {"aciklama": "açıklama"})
         sonuc = await risk_guard_node(_sari_state())
-        assert set(sonuc["risk_metadata"]) == {"bant", "skor", "gerekceler", "oneri", "aciklama"}
+        assert set(sonuc["risk_metadata"]) == {
+            "bant", "skor", "gerekceler", "katkilar", "kalibrasyon", "oneri", "aciklama"}

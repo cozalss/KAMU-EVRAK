@@ -495,7 +495,7 @@ class TestSertlestirme:
         assert "kırmızı" in amir[0]["text"]                 # bant=kirmizi → kırmızı sözü
         yesil = await kurul.kurul_muzakere(FABRIK_TASLAK, meta=FABRIK_META,
                                            sinyaller={**FABRIK_SINYAL, "risk_metadata": {"bant": "yesil"}})
-        assert "yeşil" in [t for t in yesil["turlar"] if t["who"] == "birim_amiri"][0]["text"]
+        assert "yeşil" in next(t for t in yesil["turlar"] if t["who"] == "birim_amiri")["text"]
 
     def test_atiflar_yaygin_turkce_formlari_yakalar(self):
         # CRITICAL: 1-2 haneli CBK ("3 sayılı"), ters madde ("125 inci maddesi"), "m.11", "madde-4".

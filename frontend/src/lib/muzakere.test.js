@@ -306,6 +306,122 @@ test("sunucu: uzlasi_metni yoksa result taslağına düşer, uygulanabilir false
   assert.equal(k.uzlasi_uygulanabilir, false);
 });
 
+test("KOHERANS: uzlaşı == taslak ise HİÇBİR öneri 'işlendi' işaretlenmez (bildirilen bug kilidi)", () => {
+  // Bug: LLM 7 öneriyi uygulanabilir:true döndürüyor ama uzlasi_metni == orijinal →
+  // UI 7 yeşil 'revize taslağa işlendi' gösterir ama revize taslağı/diff/uygula YOK.
+  // Sözleşme: revize yoksa 'işlendi' rozeti olamaz — motor sınırda savunmacı düzeltir.
+  const data = {
+    kaynak: "llm", karar: "sevk",
+    turlar: [{ who: "hukukcu", kaynak: "verify", text: "Tarihler kaynakta yok." }],
+    oneriler: [
+      { tip: "cikar", kaynak: "verify", metin: "09.07.2026 çıkarılmalı", uygulanabilir: true },
+      { tip: "cikar", kaynak: "verify", metin: "Sayın Elif Doğan çıkarılmalı", uygulanabilir: true },
+      { tip: "ekle", kaynak: "dayanak", metin: "657 dayanağı eklenmeli", uygulanabilir: true },
+    ],
+    uzlasi_metni: TASLAK, uzlasi_degisti: false, uzlasi_uygulanabilir: false,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  assert.equal(k.uzlasi_uygulanabilir, false);
+  assert.ok(k.oneriler.every((o) => !o.uygulanabilir), "revize yokken 'işlendi' rozeti kalmamalı");
+  assert.equal(k.degisiklik, 0);
+});
+
+test("KOHERANS: uzlaşı gerçekten değiştiyse uygulanabilir öneriler korunur", () => {
+  const data = {
+    kaynak: "llm", karar: "serhli",
+    turlar: [{ who: "hukukcu", kaynak: "verify", text: "Dayanaksız satır var." }],
+    oneriler: [
+      { tip: "cikar", kaynak: "verify", metin: "uydurma satır çıkarılmalı", uygulanabilir: true },
+      { tip: "duzelt", kaynak: "uslup", metin: "üslup tavsiyesi", uygulanabilir: false },
+    ],
+    uzlasi_metni: TASLAK.replace("İşbu talebinize binaen", "Başvurunuz üzerine"),
+    uzlasi_degisti: true, uzlasi_uygulanabilir: true,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  assert.equal(k.uzlasi_uygulanabilir, true);
+  assert.equal(k.oneriler.filter((o) => o.uygulanabilir).length, 1);
+});
+
+/* ---- Birim Amiri (4. üye): risk bandını sahiplenen deterministik kapanış sesi ---- */
+test("Birim Amiri kapanışta konuşur; sözü risk bandından deterministik türer", () => {
+  const kirmizi = muzakereKurgusu({ ...R_TEMIZ, risk_metadata: { bant: "kirmizi" } });
+  const amir = kirmizi.turlar.filter((t) => t.who === "birim_amiri");
+  assert.equal(amir.length, 1);
+  assert.equal(amir[0].kaynak, "risk_guard");
+  assert.match(amir[0].text, /kırmızı/);
+  assert.match(muzakereKurgusu(R_TEMIZ).turlar.find((t) => t.who === "birim_amiri").text, /yeşil/);
+});
+
+test("sunucu: backend'in eklediği birim_amiri turu korunur (filtrelenmez)", () => {
+  const data = {
+    kaynak: "llm", karar: "sevk",
+    turlar: [{ who: "hukukcu", kaynak: "verify", text: "İtiraz var." },
+             { who: "birim_amiri", kaynak: "risk_guard", text: "Risk bandı kırmızı — teyit gerek." }],
+    oneriler: [], uzlasi_metni: TASLAK, uzlasi_uygulanabilir: false,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  const amir = k.turlar.find((t) => t.who === "birim_amiri");
+  assert.ok(amir && amir.kaynak === "risk_guard");
+  assert.equal(amir.tur, 2);   // tur'suz gelse bile moderatör → 'Karar' turu (açılışta gösterilmez)
+});
+
+/* ---- Çok-turlu DEBATE: açılış (tur 0) → çapraz-eleştiri (tur 1, yanit+tutum) → moderatör (tur 2) ---- */
+test("DEBATE: deterministik motor çok-turlu üretir — 3 açılış + çapraz-eleştiri + moderatör", () => {
+  const k = muzakereKurgusu({ ...R_TEMIZ, verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): oğlumun iş başvurusu"] });
+  assert.deepEqual([...new Set(k.turlar.map((t) => t.tur))].sort(), [0, 1, 2]);   // üç tur var
+  const acilis = k.turlar.filter((t) => t.tur === 0);
+  assert.equal(acilis.length, 3);   // üç üye açılışı
+  assert.deepEqual(acilis.map((t) => t.who), ["taslakci", "hukukcu", "vatandas"]);
+  assert.ok(k.turlar.some((t) => t.who === "birim_amiri" && t.tur === 2));
+});
+
+test("DEBATE: çapraz-eleştiri turları AD'la yanıt + duruş taşır (yanit/tutum)", () => {
+  const k = muzakereKurgusu({ ...R_TEMIZ, verify_uyari: ["'5018' kaynak evrakta geçmiyor"] });
+  const capraz = k.turlar.filter((t) => t.tur === 1 && t.yanit);
+  assert.ok(capraz.length > 0);
+  assert.ok(capraz.every((t) => ["taslakci", "hukukcu", "vatandas"].includes(t.yanit)));
+  assert.ok(capraz.every((t) => ["katil", "karsi", "gelistir"].includes(t.tutum)));
+  // Hukukçu, Taslakçı'nın savunmasına karşı çıkar
+  assert.ok(k.turlar.some((t) => t.who === "hukukcu" && t.yanit === "taslakci" && t.tutum === "karsi"));
+});
+
+test("DEBATE: Vatandaş çapraz-turu — üslup sinyaliyle geliştirir; sinyalsizde temelsiz iddia yapmaz", () => {
+  // üslup UYARISI var → gelistir + sadeleştirme (grounded)
+  const uslupVar = muzakereKurgusu({ ...R_TEMIZ,
+    lint_2646: { kurallar: [{ kural: "L-USLUP-yasak", madde: "üslup", durum: "uyari", mesaj: "'kolay gelsin' aykırı." }], uyari: ["x"] } });
+  const vu = uslupVar.turlar.find((t) => t.who === "vatandas" && t.tur === 1);
+  assert.ok(vu && vu.tutum === "gelistir" && /sadeleştirme/.test(vu.text));
+  // üslup sinyali YOK ama başka itiraz var → katil (doğrulama çekincesine katılır), TEMELSİZ üslup iddiası YOK
+  const uslupYok = muzakereKurgusu({ ...R_TEMIZ, verify_uyari: ["'5018' kaynak evrakta geçmiyor"], lint_2646: {} });
+  const vk = uslupYok.turlar.find((t) => t.who === "vatandas" && t.tur === 1);
+  assert.ok(vk && vk.tutum === "katil");
+  assert.doesNotMatch(vk.text, /dil.*ağır|sadeleştirme|hitap dili/);   // uydurma üslup bulgusu yok
+});
+
+test("DEBATE: örnek senaryo (result yok) da çok-turlu debate — açılış+çapraz+moderatör", () => {
+  const k = muzakereKurgusu(null);
+  assert.deepEqual([...new Set(k.turlar.map((t) => t.tur))].sort(), [0, 1, 2]);
+  assert.ok(k.turlar.some((t) => t.tur === 1 && t.tutum === "katil"));   // biri ikna oldu (durum-geçişi)
+});
+
+test("DEBATE: sunucu kurgusu tur/yanit/tutum'u KORUR (backend debate şeması)", () => {
+  const data = {
+    kaynak: "llm", karar: "serhli",
+    turlar: [
+      { who: "taslakci", kaynak: "muzakere", text: "Taslağı hazırladım.", tur: 0 },
+      { who: "hukukcu", kaynak: "muzakere", text: "Karşı çıkıyorum.", tur: 1, yanit: "taslakci", tutum: "karsi" },
+      { who: "birim_amiri", kaynak: "risk_guard", text: "Risk düşük.", tur: 2 },
+    ],
+    oneriler: [], uzlasi_metni: TASLAK, uzlasi_uygulanabilir: false,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  assert.equal(k.turlar[0].tur, 0);
+  assert.equal(k.turlar[1].tur, 1);
+  assert.equal(k.turlar[1].yanit, "taslakci");
+  assert.equal(k.turlar[1].tutum, "karsi");
+  assert.equal(k.turlar[2].tur, 2);
+});
+
 test("null-güvenlik: bozuk şekiller motoru düşürmez", () => {
   const k = muzakereKurgusu({ yazi_taslak_md: TASLAK, verify_uyari: "bozuk", lint_2646: 7, mevzuat_nli: {} });
   assert.ok(Array.isArray(k.turlar) && k.turlar.length > 0);

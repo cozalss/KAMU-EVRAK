@@ -33,6 +33,18 @@ const MAKS_ITIRAZ = 2;   // tur başına sinyal üst sınırı — müzakere tem
 const mevzuatTemiz = (m) => m && m.baslik && m.guven !== "düşük" && !m.inceleme_oner
   && !m.dogrula && !/\[DOĞRULA/.test(String(m.baslik));
 
+// Birim Amiri (4. üye) sözü DETERMİNİSTİK — gerçek risk bandından türer (LLM üretmez). Backend
+// yazi/kurul.py::_RISK_SOZ ile birebir; risk sesi LLM/istemci yolunda asla halüsinasyon olmaz.
+const RISK_SOZ = {
+  kirmizi: "Risk bandı kırmızı — doğrulanamayan/uydurma bilgi şüphesi var. Bu yazı memur teyidi olmadan gönderilmemeli; kuruldaki revize düzeltmelerini destekliyorum.",
+  sari: "Risk bandı sarı — çekinceler giderilmeden gönderime çıkmamalı; revize sonrası tekrar değerlendirilmeli.",
+  yesil: "Risk bandı yeşil — biçim ve dayanak yönünden gönderime engel görmüyorum; revize önerileri son hâli güçlendirir.",
+};
+const birimAmiriTuru = (bant) => ({
+  who: "birim_amiri", kaynak: "risk_guard",
+  text: RISK_SOZ[bant] || "Risk değerlendirmesi için yeterli sinyal yok; gönderim öncesi memur kontrolü önerilir.",
+});
+
 /** yazi_taslak_md → satır listesi ({id, metin, sabit}). */
 function taslakSatirlari(md) {
   return String(md).split("\n").map((metin, i) => ({ id: `s${i}`, metin, sabit: SABIT_SATIR.test(metin) }));
@@ -126,16 +138,31 @@ export function muzakereKurgusu(r) {
   // Müzakere turları tempo için üst-sınırlı; tutanak sinyallerin TAMAMINI kaydeder.
   const oneriler = [];
   const yazi = YAZI_TR[r.yazi_turu] || "resmî yazı";
+  // Çok-turlu DEBATE (mock/fallback yol da gerçek tartışma hissetsin — araştırma-hizalı):
+  // T0=açılış (bağımsız pozisyon) · T1=çapraz-eleştiri (yanit+tutum) · moderatör=tur 2.
+  const T0 = (who, kaynak, text) => turlar.push({ who, kaynak, text, tur: 0 });
+  const T1 = (who, kaynak, text, yanit, tutum, extra) =>
+    turlar.push({ who, kaynak, text, tur: 1, ...(yanit ? { yanit } : {}), ...(tutum ? { tutum } : {}), ...(extra || {}) });
+  const itirazN = verify.length + kuralUyari.length + lintFallback.length + nliZayif.length + tutar.length;
 
-  // 1 — Taslakçı açılışı: yalnız r'den bilinenler. Mevzuat, öneri OLARAK anılır — taslağın
-  // o maddeye atıf yaptığı iddia edilmez (öneri gelen evrak içindir).
-  turlar.push({
-    who: "taslakci", kaynak: "yazi_taslak",
-    text: `Taslağı ${yazi} olarak Yönetmelik-2646 formatında hazırladım.`
+  // ---- TUR 0 — AÇILIŞLAR (üç üye bağımsız ilk pozisyon; çeşitlilik en yüksek burada) ----
+  T0("taslakci", "yazi_taslak",
+    `Taslağı ${yazi} olarak Yönetmelik-2646 formatında hazırladım.`
       + (r.format_uyumlu ? " Zorunlu bölümler tam." : "")
-      + (mev[0] ? ` Mevzuat ajanının önerdiği dayanak: ${mev[0].baslik}.` : ""),
-  });
+      + (mev[0] ? ` Mevzuat ajanının önerdiği dayanak: ${mev[0].baslik}.` : ""));
+  T0("hukukcu", "muzakere", itirazN
+    ? `İlk incelemede ${itirazN} doğrulama/biçim çekincem var; kanıtla zorlanmadıkça bunları geçmem.`
+    : "Doğrulama sinyalleri temiz görünüyor; yine de dayanağı ve biçimi tek tek sınayacağım.");
+  // Vatandaş açılışı = üslup denetiminin GERÇEK sonucu (üç durum, uydurma yok).
+  if (uslupUyari.length) {
+    T0("vatandas", "lint_2646", `Üslup denetimi uyarı verdi: ${uslupUyari[0].mesaj || uslupUyari[0].kural} — resmî yazıda gündelik kalıp kalamaz.`);
+  } else if (kurallar.some((k) => k.durum === "gecti" && USLUP_DESENI.test(`${k.kural || ""} ${k.madde || ""}`))) {
+    T0("vatandas", "lint_2646", "Üslup denetimi temiz — dil resmî ama anlaşılır, vatandaş açısından itirazım yok.");
+  } else {
+    T0("vatandas", "lint_2646", "Üslup denetiminden bu evrak için bulgu gelmedi — dil hakkında görüş bildirmiyorum.");
+  }
 
+  // ---- TUR 1 — ÇAPRAZ-ELEŞTİRİ (Hukukçu, Taslakçı'nın savunmasına AD'la karşı çıkar) ----
   // 2 — Hukukçu itirazları: her sinyal KENDİ TÜRÜNÜN diliyle (uydurma ≠ eksik bölüm).
   verify.slice(0, MAKS_ITIRAZ).forEach((u) => {
     const text = UYDURMA_DESENI.test(u)
@@ -143,7 +170,7 @@ export function muzakereKurgusu(r) {
       : EKSIK_BOLUM_DESENI.test(u)
         ? `Doğrulama uyarısı — ${u}; Yönetmelik-2646 gereği tamamlanmalı.`
         : `Doğrulama uyarısı: ${u}`;
-    turlar.push({ who: "hukukcu", kaynak: "verify", text });
+    T1("hukukcu", "verify", text, "taslakci", "karsi");
   });
   verify.forEach((u) => {
     if (UYDURMA_DESENI.test(u)) {
@@ -159,46 +186,45 @@ export function muzakereKurgusu(r) {
     }
   });
   formatUyari.slice(0, MAKS_ITIRAZ).forEach((k) =>
-    turlar.push({ who: "hukukcu", kaynak: "lint_2646", text: `Yönetmelik-2646 ${k.madde ? `${k.madde} ` : ""}uyarısı: ${k.mesaj || k.kural}` }));
+    T1("hukukcu", "lint_2646", `Yönetmelik-2646 ${k.madde ? `${k.madde} ` : ""}uyarısı: ${k.mesaj || k.kural}`, "taslakci", "karsi"));
   kuralUyari.forEach((k) =>
     oneriler.push({ tip: "duzelt", kaynak: "lint_2646", metin: `${k.madde ? `${k.madde}: ` : ""}${k.mesaj || k.kural}` }));
   lintFallback.slice(0, MAKS_ITIRAZ).forEach((u) =>
-    turlar.push({ who: "hukukcu", kaynak: "lint_2646", text: `Yönetmelik-2646 denetimi uyarı veriyor: ${u}` }));
+    T1("hukukcu", "lint_2646", `Yönetmelik-2646 denetimi uyarı veriyor: ${u}`, "taslakci", "karsi"));
   lintFallback.forEach((u) => oneriler.push({ tip: "duzelt", kaynak: "lint_2646", metin: u }));
   nliZayif.slice(0, 1).forEach((n) =>
-    turlar.push({
-      who: "hukukcu", kaynak: "nli",
-      text: `${n.baslik} atfının anlamsal desteği zayıf${Number.isFinite(Number(n.skor)) ? ` (NLI %${Math.round(Number(n.skor) * 100)})` : ""} — dayanağı güçlendirin ya da insan doğrulaması isteyin.`,
-    }));
+    T1("hukukcu", "nli",
+      `${n.baslik} atfının anlamsal desteği zayıf${Number.isFinite(Number(n.skor)) ? ` (NLI %${Math.round(Number(n.skor) * 100)})` : ""} — dayanağı güçlendirin ya da insan doğrulaması isteyin.`,
+      "taslakci", "karsi"));
   nliZayif.forEach((n) =>
     oneriler.push({ tip: "duzelt", kaynak: "nli", metin: `${n.baslik} atfının anlamsal desteği zayıf — dayanak güçlendirilmeli ya da atıf değiştirilmeli.` }));
   tutar.slice(0, 1).forEach((u) =>
-    turlar.push({ who: "hukukcu", kaynak: "tutarlilik", text: `Veri tutarlılığı uyarısı: ${u} — kaynak evrak alanları kontrol edilmeli.` }));
+    T1("hukukcu", "tutarlilik", `Veri tutarlılığı uyarısı: ${u} — kaynak evrak alanları kontrol edilmeli.`, "taslakci", "karsi"));
   tutar.forEach((u) => oneriler.push({ tip: "duzelt", kaynak: "tutarlilik", metin: `Veri tutarlılığı: ${u} — kaynak evrak alanları kontrol edilmeli.` }));
 
   // 3 — Düzeltme editleri: 2646 düzeltmesi Hukukçu'nun işidir (format sözleşmesi);
   // "dil sadeleştirildi" iddiası yalnız gerçek üslup sinyali olsaydı yapılabilirdi — yapılmaz.
   editler.forEach((e) => {
-    turlar.push({
-      who: "hukukcu", kaynak: "lint_duzeltme",
-      text: e.vurgu === "dayanak"
+    T1("hukukcu", "lint_duzeltme",
+      e.vurgu === "dayanak"
         ? `Dayanak eksik yazılmış — 2646 düzeltme önerisini taslağa uyguluyorum: "${e.yeni.trim().slice(0, 70)}"`
         : `Yönetmelik-2646 format düzeltmesini taslağa uyguluyorum: "${e.yeni.trim().slice(0, 70)}"`,
-      edit: e,
-    });
+      "taslakci", "karsi", { edit: e });
     oneriler.push({
       tip: "duzelt", kaynak: "lint_duzeltme", uygulanabilir: true,
       metin: `Satır düzeltmesi hazır: "${e.yeni.trim().slice(0, 90)}" — müzakerede taslağa işlendi.`,
     });
   });
 
-  // 4 — Vatandaş Avukatı: üslup denetiminin GERÇEK sonucunu konuşur (üç durum, uydurma yok).
-  if (uslupUyari.length) {
-    turlar.push({ who: "vatandas", kaynak: "lint_2646", text: `Üslup denetimi uyarı verdi: ${uslupUyari[0].mesaj || uslupUyari[0].kural} — resmî yazıda gündelik kalıp kalamaz.` });
-  } else if (kurallar.some((k) => k.durum === "gecti" && USLUP_DESENI.test(`${k.kural || ""} ${k.madde || ""}`))) {
-    turlar.push({ who: "vatandas", kaynak: "lint_2646", text: "Üslup denetimi temiz — dil resmî ama anlaşılır, vatandaş açısından itirazım yok." });
-  } else {
-    turlar.push({ who: "vatandas", kaynak: "lint_2646", text: "Üslup denetiminden bu evrak için bulgu gelmedi — dil hakkında görüş bildirmiyorum." });
+  // 4 — Vatandaş Avukatı çapraz-katkısı (yalnız GERÇEK itiraz varsa): üslup SİNYALİ varsa dili
+  // gündeme getirerek GELİŞTİRİR; sinyal yoksa TEMELSİZ üslup iddiası yapmaz — Hukukçu'nun
+  // doğrulama çekincesine vatandaş gözüyle KATILIR (grounded; A3b sözleşmesiyle uyumlu).
+  if (itirazN) {
+    T1("vatandas", uslupUyari.length ? "uslup" : "muzakere",
+      uslupUyari.length
+        ? "Hukukçu'nun çekincelerine ek olarak dil de ağır; sadeleştirme vatandaş açısından şart."
+        : "Hukukçu'nun çekincelerine katılıyorum; vatandaş olarak doğrulanmamış bilgi güven vermez.",
+      "hukukcu", uslupUyari.length ? "gelistir" : "katil");
   }
 
   // Revize taslağı = tüm uygulanabilir editler (çıkar/düzelt) işlenmiş hâl. Kurulun ÇIKTISI budur.
@@ -214,17 +240,17 @@ export function muzakereKurgusu(r) {
   const oneriOzet = oneriler.length
     ? `${oneriler.length} değişiklik önerdik${degisiklik ? ` (${degisiklik} tanesi revize taslağa işlendi)` : ""}.`
     : "Taslakta değişiklik gerektiren bir bulgu görmedik.";
-  turlar.push({
-    who: "hukukcu", kaynak: "muzakere",
-    text: mevzuatTemiz(mev[0]) ? `Dayanak (${mev[0].baslik}) yerinde; itirazlarımı önerilere geçirdim.`
-      : mev[0] ? "Dayanak önerisi insan doğrulaması kaydıyla not edildi." : "Dayanak yönünden ek itirazım yok.",
-  });
-  turlar.push({
-    who: "taslakci", kaynak: "yazi_taslak",
-    text: uzlasi_uygulanabilir
+  // Yakınsama (tur 1 kapanışı): Hukukçu itirazlarını özetler, Taslakçı AD'la yanıt verir (kabul/savunma).
+  T1("hukukcu", "muzakere",
+    mevzuatTemiz(mev[0]) ? `Dayanak (${mev[0].baslik}) yerinde; itirazlarımı önerilere geçirdim.`
+      : mev[0] ? "Dayanak önerisi insan doğrulaması kaydıyla not edildi." : "Dayanak yönünden ek itirazım yok.");
+  T1("taslakci", "yazi_taslak",
+    uzlasi_uygulanabilir
       ? `Önerileri değerlendirdim — ${oneriOzet} Revize taslağı hazırladım; kararı memur verir.`
       : `${oneriOzet} Taslak bu hâliyle gönderime uygun görünüyor.`,
-  });
+    "hukukcu", uzlasi_uygulanabilir ? "katil" : "karsi");
+  // Moderatör/Birim Amiri (tur 2): risk bandını sahiplenen deterministik kapanış sesi.
+  turlar.push({ ...birimAmiriTuru(bant), tur: 2 });
 
   return {
     kaynak: "gercek", toplanamaz: false, taslak, turlar, oneriler,
@@ -233,7 +259,8 @@ export function muzakereKurgusu(r) {
 }
 
 const KARAR_KUME = new Set(["uzlasti", "serhli", "sevk"]);
-const UYE_KUME = new Set(["taslakci", "hukukcu", "vatandas"]);
+const UYE_KUME = new Set(["taslakci", "hukukcu", "vatandas", "birim_amiri"]);
+const TUTUM_KUME = new Set(["katil", "karsi", "gelistir"]);   // çapraz-tur duruşu (backend _TUTUM ikizi)
 
 /** Düz metni taslak satırlarına böl (sabit-satır bayrağı dahil) — sunucu/örnek/revize ortak. */
 export function metniSatirlara(md, prefix = "s") {
@@ -247,7 +274,13 @@ export function sunucuKurgusu(data, result = {}) {
   if (!data || data.kaynak !== "llm") return null;
   const turlar = dizi(data.turlar)
     .filter((t) => t && UYE_KUME.has(t.who) && typeof t.text === "string" && t.text.trim())
-    .map((t) => ({ who: t.who, kaynak: t.kaynak || "muzakere", text: t.text }));
+    .map((t) => ({
+      who: t.who, kaynak: t.kaynak || "muzakere", text: t.text,
+      // debate turu (açılış/çapraz/moderatör); yoksa moderatör→karar(2), diğerleri→açılış(0).
+      tur: [0, 1, 2].includes(t.tur) ? t.tur : (t.who === "birim_amiri" ? 2 : 0),
+      ...(UYE_KUME.has(t.yanit) && t.yanit !== t.who ? { yanit: t.yanit } : {}),
+      ...(TUTUM_KUME.has(t.tutum) ? { tutum: t.tutum } : {}),
+    }));
   const oneriler = dizi(data.oneriler)
     .filter((o) => o && ["duzelt", "ekle", "cikar"].includes(o.tip) && typeof o.metin === "string" && o.metin.trim())
     .map((o) => ({ tip: o.tip, kaynak: o.kaynak || "muzakere", metin: o.metin, uygulanabilir: !!o.uygulanabilir }));
@@ -255,17 +288,25 @@ export function sunucuKurgusu(data, result = {}) {
   const taslakMd = String(result.yazi_taslak_md || "");
   const uzlasi = typeof data.uzlasi_metni === "string" && data.uzlasi_metni.trim()
     ? data.uzlasi_metni : taslakMd;
+  const revizeVar = uzlasi.trim() !== taslakMd.trim();
+  const uzlasiUyg = !!data.uzlasi_uygulanabilir && revizeVar;
+  // KOHERANS guard (sınır savunması). Öneri-BAŞINA doğruluk (hangi öneri gerçekten uygulandı)
+  // sunucunun GÜVEN SINIRIdır: yazi/kurul.py attribution ile uygulanabilir'i UYGULANAN edit'ten
+  // türetir (metin-içermeden değil). Burada yalnız TÜMÜNE karşı savunma: revize taslağı YOKSA
+  // hiçbir öneri "işlendi" olamaz — sunucu regrese olsa/eski istemci bağlansa bile UI revizesiz
+  // "revize taslağa işlendi" rozeti göstermez (bildirilen bug sınıfının UI-tarafı kilidi).
+  const oneriKoherans = revizeVar ? oneriler : oneriler.map((o) => ({ ...o, uygulanabilir: false }));
   return {
     kaynak: "llm",
     toplanamaz: false,
     taslak: metniSatirlara(taslakMd),
     turlar,
-    oneriler,
+    oneriler: oneriKoherans,
     // Risk yalnız rozet — SUNUCU bandı otoriter; yoksa LLM karar etiketinden türet.
     risk: (obj(data.sinyaller).risk_metadata || {}).bant || (KARAR_KUME.has(data.karar) ? BANT_RISK[data.karar] : ""),
-    degisiklik: oneriler.filter((o) => o.uygulanabilir).length,
+    degisiklik: oneriKoherans.filter((o) => o.uygulanabilir).length,
     uzlasi_metni: uzlasi,
-    uzlasi_uygulanabilir: !!data.uzlasi_uygulanabilir && uzlasi.trim() !== taslakMd.trim(),
+    uzlasi_uygulanabilir: uzlasiUyg,
   };
 }
 
@@ -294,14 +335,24 @@ const ORNEK_TASLAK = [
   { id: "kapanis", metin: "Bilgilerinize saygıyla sunulur.", sabit: true },
 ];
 const ORNEK_TURLAR = [
-  { who: "taslakci", kaynak: "ornek", text: "Taslağı Yön. 2646 formatında hazırladım. 4982 sayılı Kanun kapsamında 15 iş günü içinde yanıt öngörülüyor." },
-  { who: "hukukcu", kaynak: "ornek", text: "Dayanağın zayıf. Başvuru 3071 sayılı Kanun m.4 dilekçe hakkına dayanıyor; ancak süre için madde yok — 4982 m.11 açıkça yazılmalı.",
+  // Tur 0 — açılışlar (üç üye bağımsız ilk pozisyon)
+  { who: "taslakci", kaynak: "ornek", tur: 0, text: "Taslağı Yön. 2646 formatında hazırladım. 4982 sayılı Kanun kapsamında 15 iş günü içinde yanıt öngörülüyor." },
+  { who: "hukukcu", kaynak: "ornek", tur: 0, text: "İlk bakışta süre için açık bir madde göremiyorum; dayanağı yakından sınayacağım." },
+  { who: "vatandas", kaynak: "ornek", tur: 0, text: "Dil ilk okumada ağır geldi; vatandaş gözüyle sadeleştirme gerekebilir." },
+  // Tur 1 — çapraz-eleştiri (ajanlar birbirine AD'la yanıt verir: karşı-çık / geliştir / kabul)
+  { who: "hukukcu", kaynak: "ornek", tur: 1, yanit: "taslakci", tutum: "karsi",
+    text: "Dayanağın zayıf. Başvuru 3071 sayılı Kanun m.4 dilekçe hakkına dayanıyor; ancak süre için madde yok — 4982 m.11 açıkça yazılmalı.",
     edit: { satirId: "govde2", yeni: "Söz konusu bilgiler, 4982 sayılı Kanun'un 11. maddesi uyarınca 15 iş günü içinde tarafınıza iletilecektir.", vurgu: "dayanak" } },
-  { who: "vatandas", kaynak: "ornek", text: "Dil çok ağır. 'İşbu talebinize binaen' vatandaşı yıldırır — 'Başvurunuz üzerine' demek yeterli, üstelik daha anlaşılır.",
+  { who: "vatandas", kaynak: "ornek", tur: 1, yanit: "taslakci", tutum: "karsi",
+    text: "Dil çok ağır. 'İşbu talebinize binaen' vatandaşı yıldırır — 'Başvurunuz üzerine' demek yeterli, üstelik daha anlaşılır.",
     edit: { satirId: "govde1", yeni: "Başvurunuz üzerine, talep ettiğiniz bilgiler 4982 sayılı Bilgi Edinme Kanunu kapsamında değerlendirilmiştir.", vurgu: "sade" } },
-  { who: "taslakci", kaynak: "ornek", text: "Sadeleştirmeyi kabul ediyorum; resmî üslup kapanışta korunuyor. m.11 dayanağını da ekledim." },
-  { who: "hukukcu", kaynak: "ornek", text: "m.11 dayanağı eklendi, dil sadeleşti — itirazlarımı revize taslağa geçirdim." },
-  { who: "taslakci", kaynak: "ornek", text: "Revize taslağı hazır — 2 değişiklik işlendi; kararı memur verir." },
+  { who: "taslakci", kaynak: "ornek", tur: 1, yanit: "vatandas", tutum: "katil",
+    text: "Sadeleştirmeyi kabul ediyorum; resmî üslup kapanışta korunuyor. Hukukçu'nun m.11 dayanağını da ekledim." },
+  { who: "hukukcu", kaynak: "ornek", tur: 1, yanit: "taslakci", tutum: "katil",
+    text: "m.11 dayanağı eklendi, dil sadeleşti — itirazlarımı revize taslağa geçirdim." },
+  { who: "taslakci", kaynak: "ornek", tur: 1, text: "Revize taslağı hazır — 2 değişiklik işlendi; kararı memur verir." },
+  // Tur 2 — moderatör
+  { who: "birim_amiri", kaynak: "risk_guard", tur: 2, text: "Risk bandı düşük — dayanak eklendi, dil sadeleşti; bu revize hâliyle gönderime engel görmüyorum." },
 ];
 // Örnek revize metni = turlar editleri ORNEK_TASLAK'a uygulanmış hâl (sözleşme gerçek kurguyla bir).
 const _ornekRevize = ORNEK_TURLAR.reduce((d, t) => (t.edit ? editUygula(d, t.edit) : d), ORNEK_TASLAK.map((l) => ({ ...l })));

@@ -12,14 +12,14 @@
    Modal a11y BelgeModal deseni: role=dialog + aria-modal, Esc ve dış-tık kapatır, açılışta
    odak kapat düğmesine, kapanışta tetikleyiciye döner, body scroll kilitlenir.
    prefers-reduced-motion → son (karar) kare statik; turlar aria-live ile duyurulur. */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { MONO, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn } from "./neonUi.jsx";
 import { ScrimDugme } from "./BelgeModal.jsx";
 import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara } from "../lib/muzakere.js";
 import { apiPost } from "../lib/authApi.js";
 
-const KURUL_FETCH_TIMEOUT_MS = 30000;   // LLM roundtable ağ turu üst sınırı → aşılırsa yerel motor
+const KURUL_FETCH_TIMEOUT_MS = 55000;   // çok-turlu debate = 2 LLM çağrısı (açılış + çapraz) → daha uzun tavan
 
 // Kişi (vatandaş) ikonu — neonUi setinde yok, yerel.
 const KisiIkon = (p) => (
@@ -30,14 +30,28 @@ const KisiIkon = (p) => (
 );
 
 // Kurul üyeleri ↔ gerçek pipeline ajanları eşlemesi (rol satırında görünür — dürüst kurgu).
+// Birim Amiri = 4. üye: risk_guard bandını sahiplenen kapanış sesi; rengi DİNAMİK (üstündeki
+// riskin rengini taşır — semantik: amir riskin rengini giyer), sözü backend'de deterministik.
 const KURUL = [
   { id: "taslakci", ad: "Taslakçı", rol: "yazı ajanı · taslağı savunur", col: T, Ikon: Icon.doc },
   { id: "hukukcu", ad: "Hukukçu", rol: "verify + 2646 + NLI · itiraz yürütür", col: V, Ikon: Icon.scale },
   { id: "vatandas", ad: "Vatandaş Avukatı", rol: "üslup denetimi · vatandaş gözü", col: R, Ikon: KisiIkon },
+  { id: "birim_amiri", ad: "Birim Amiri", rol: "risk bandı · gönderim kararı", col: V, Ikon: Icon.shield, dinamik: true },
 ];
 const UYE = Object.fromEntries(KURUL.map((k) => [k.id, k]));
+// Dinamik-renkli üye (Birim Amiri) sahnenin risk aksanını taşır; diğerleri sabit token rengi.
+const uyeGor = (id, aksan) => (UYE[id]?.dinamik ? { ...UYE[id], col: aksan } : UYE[id]);
 
 const THINK = 900, READ = 1700;
+
+// Debate turu → şerit etiketi (açılış → çapraz eleştiri → karar). Turlar arası geçişte gösterilir.
+const TUR_ETIKET = { 0: "Açılış turu", 1: "Çapraz eleştiri", 2: "Karar" };
+// Çapraz-tur duruşu → çapraz-referans ipucu (kime · nasıl): karşı çıkıyor / katılıyor / geliştiriyor.
+const TUTUM_META = {
+  karsi: { etiket: "karşı çıkıyor", col: BANT.kirmizi.c },
+  katil: { etiket: "katılıyor", col: BANT.yesil.c },
+  gelistir: { etiket: "geliştiriyor", col: T },
+};
 
 // vurgu tipi → aksan rengi + rozet etiketi (kaynağına sadık: format ≠ sadeleştirme).
 const VURGU = {
@@ -91,11 +105,13 @@ function Avatar({ uye, size = 34, aktif, oy }) {
   );
 }
 
-// Kurul sırası — 3 üye kartı; konuşan üye vurgulanır, oy verenlerde tik.
-function KurulSirasi({ speaking, votes }) {
+// Kurul sırası — üye kartları; konuşan üye vurgulanır, oy verenlerde tik. Birim Amiri kartı
+// sahnenin risk aksanını taşır (uyeGor ile dinamik renk).
+function KurulSirasi({ speaking, votes, aksan }) {
   return (
     <div style={{ display: "flex", gap: SP.s, flexWrap: "wrap" }}>
-      {KURUL.map((u) => {
+      {KURUL.map((base) => {
+        const u = uyeGor(base.id, aksan);
         const aktif = speaking === u.id;
         return (
           <div key={u.id} style={{ flex: "1 1 150px", minWidth: 0, display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: aktif ? ALFA(u.col) : PAL.surf, border: `1px solid ${aktif ? u.col : PAL.line}`, boxShadow: aktif ? SH.card : "none", transition: "background .2s ease-out, border-color .2s ease-out" }}>
@@ -111,17 +127,36 @@ function KurulSirasi({ speaking, votes }) {
   );
 }
 
-// Tek konuşma balonu — avatar + ad + metin + kaynak sinyal rozeti (izlenebilirlik).
-function Balon({ uye, text, kaynak }) {
+// Debate tur şeridi — turlar arası geçişte "Açılış turu / Çapraz eleştiri / Karar" ayıracı.
+function TurSeridi({ tur }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: SP.s, margin: "2px 2px" }}>
+      <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
+      <span style={{ ...TYPE.meta, fontWeight: 600, color: PAL.mut2 }}>{TUR_ETIKET[tur]}</span>
+      <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
+    </div>
+  );
+}
+
+// Tek konuşma balonu — avatar + ad + ÇAPRAZ-REFERANS çipi (@kime · duruş) + metin + kaynak rozeti.
+// Çapraz-referans = debate'in görünür dinamizmi: kimin kime karşı çıktığı/katıldığı (durum-geçişi).
+function Balon({ uye, t, aksan }) {
+  const hedef = t.yanit ? uyeGor(t.yanit, aksan) : null;   // dinamik renk (Birim Amiri hedef olursa risk aksanı)
+  const tm = t.tutum ? TUTUM_META[t.tutum] : null;
   return (
     <div style={{ display: "flex", gap: SP.s, animation: "nu-rise .2s ease-out both" }}>
       <Avatar uye={uye} size={30} />
       <div style={{ minWidth: 0, flex: 1, background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `2px solid ${uye.col}`, borderRadius: RAD.card, padding: "8px 12px", boxShadow: SH.card }}>
-        <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: 2 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: 2 }}>
           <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(uye.col) }}>{uye.ad}</span>
-          {kaynak && kaynak !== "ornek" && <span style={{ fontFamily: MONO, fontSize: 10, lineHeight: "14px", color: PAL.mut3 }}>· {kaynak}</span>}
+          {hedef && tm && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 3, ...TYPE.meta, fontWeight: 500, color: DERIN_OF(tm.col), background: ALFA(tm.col), borderRadius: RAD.chip, padding: "1px 8px" }}>
+              <Icon.arrow width={9} height={9} /> {hedef.ad} · {tm.etiket}
+            </span>
+          )}
+          {t.kaynak && !["ornek", "muzakere"].includes(t.kaynak) && <span style={{ fontFamily: MONO, fontSize: 10, lineHeight: "14px", color: PAL.mut3 }}>· {t.kaynak}</span>}
         </span>
-        <span style={{ ...TYPE.data, color: PAL.ink2 }}>{text}</span>
+        <span style={{ ...TYPE.data, color: PAL.ink2 }}>{t.text}</span>
       </div>
     </div>
   );
@@ -157,13 +192,19 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula }) {
     .filter((x) => x.n)
     .map((x) => `${x.n} ${TIP[x.t].etiket.toLocaleLowerCase("tr-TR")}`)
     .join(" · ");
+  const uygulanan = oneriler.filter((o) => o.uygulanabilir).length;   // grounded işlenen öneri sayısı
 
   return (
     <section aria-label="Kurul tutanağı" style={{ marginTop: SP.l, background: PAL.surf, border: `1px solid ${PAL.line}`, borderTop: `2px solid ${aksan}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l, animation: az ? "none" : "nu-rise .25s ease-out both" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: sirali.length ? SP.m : 0 }}>
         <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(aksan) }}><Icon.scale /></span>
         <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kurul tutanağı · revize önerisi</h3>
-        {sayim && <span style={{ marginLeft: "auto", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>{sayim}</span>}
+        {oneriler.length > 0 && (
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.s, ...TNUM }}>
+            {uygulanan > 0 && <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN.yesil }}>{uygulanan} işlendi</span>}
+            {sayim && <span style={{ ...TYPE.meta, color: PAL.mut3 }}>{sayim}</span>}
+          </span>
+        )}
       </div>
 
       {sirali.length === 0 ? (
@@ -179,9 +220,15 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula }) {
                 <span style={{ flex: "none", marginTop: 1, ...TYPE.meta, fontWeight: 600, color: DERIN_OF(t.col), background: ALFA(t.col), borderRadius: RAD.chip, padding: "2px 8px", minWidth: 52, textAlign: "center" }}>{t.etiket}</span>
                 <span style={{ flex: 1, minWidth: 0, ...TYPE.data, color: PAL.ink2 }}>
                   {o.metin}
-                  {o.uygulanabilir && (
+                  {/* DÜRÜST bayrak: grounded uygulandıysa "işlendi" (yeşil), yoksa "tavsiye" (nötr) —
+                      revize taslağa işlendi rozeti YALNIZ diff'te gerçekten değişen öneride görünür. */}
+                  {o.uygulanabilir ? (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: SP.s, ...TYPE.meta, fontWeight: 500, color: DERIN.yesil }}>
                       <Icon.check width={11} height={11} /> revize taslağa işlendi
+                    </span>
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: SP.s, ...TYPE.meta, fontWeight: 500, color: PAL.mut3 }}>
+                      tavsiye · memur değerlendirir
                     </span>
                   )}
                 </span>
@@ -310,7 +357,7 @@ function KurulSahnesi({ kurgu, az, onUygula }) {
         )}
       </div>
 
-      <KurulSirasi speaking={speaking} votes={votes} />
+      <KurulSirasi speaking={speaking} votes={votes} aksan={aksan} />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: SP.l, marginTop: SP.l, alignItems: "start" }}>
         {/* Sol — canlı müzakere akışı */}
@@ -321,8 +368,18 @@ function KurulSahnesi({ kurgu, az, onUygula }) {
             <span style={{ marginLeft: "auto", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>{Math.min(turnIdx, TURLAR.length)}/{TURLAR.length} tur</span>
           </div>
           <div ref={feedRef} style={{ display: "flex", flexDirection: "column", gap: SP.m, maxHeight: 420, overflowY: "auto", paddingRight: SP.xs }}>
-            {gorunenTurlar.map((t, i) => <Balon key={`${i}-${t.who}`} uye={UYE[t.who]} text={t.text} kaynak={t.kaynak} />)}
-            {speaking && <Yaziyor uye={UYE[speaking]} />}
+            {/* Turlar kaynağında SIRALI-GRUPLU gelir (motor [*acilis,*capraz,moderatör]; sunucu da
+                aynı sırada) — şerit bu bitişik-tur değişimine göre çizilir; ara-sıralama gerekmez. */}
+            {gorunenTurlar.map((t, i) => {
+              const yeniTur = TUR_ETIKET[t.tur] && (i === 0 || gorunenTurlar[i - 1].tur !== t.tur);
+              return (
+                <Fragment key={`${i}-${t.who}`}>
+                  {yeniTur && <TurSeridi tur={t.tur} />}
+                  <Balon uye={uyeGor(t.who, aksan)} t={t} aksan={aksan} />
+                </Fragment>
+              );
+            })}
+            {speaking && <Yaziyor uye={uyeGor(speaking, aksan)} />}
             {done && (
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(aksan), ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s ease-out both" }}>
                 <Icon.check /> {kurgu.uzlasi_uygulanabilir
@@ -396,7 +453,17 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
       mevzuat_nli: result.mevzuat_nli || [],
     });
     Promise.race([istek, zamanAsimi])
-      .then((data) => { if (alive) { setKurgu((data && data !== "__timeout__" && sunucuKurgusu(data, result)) || yerel); setDurum("hazir"); } })
+      .then((data) => {
+        if (!alive) return;
+        const gecerli = data && data !== "__timeout__";
+        // LLM kurgusu birincil. Deterministik dönerse sunucunun TAZE hesapladığı sinyalleri
+        // (data.sinyaller) yerel motora besle — result.* bayat olabilir (düzenleme sonrası
+        // updateDraft sinyalleri güncellemez; sunucu taslaktan yeniden hesaplar). Yoksa yerel.
+        const sunucu = gecerli && sunucuKurgusu(data, result);
+        const sinyaller = gecerli && data.sinyaller;
+        setKurgu(sunucu || (sinyaller ? muzakereKurgusu({ ...result, ...sinyaller }) : yerel));
+        setDurum("hazir");
+      })
       .catch(() => { if (alive) { setKurgu(yerel); setDurum("hazir"); } });
     return () => { alive = false; };
   }, [result, yerel]);

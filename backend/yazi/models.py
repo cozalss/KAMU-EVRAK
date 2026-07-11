@@ -43,6 +43,20 @@ def _demo_muhatap(yazi_turu: str) -> str:
     return "İlgili Makama"
 
 
+def sablon_iskelet_degerleri() -> frozenset[str]:
+    """Render'ın DETERMİNİSTİK yerleştirdiği placeholder ('iskelet') değerleri.
+
+    Bu değerler evraktan ÇIKARILMAZ; sistem boş zorunlu alanları (idare/birim/sayı/
+    imza/makam + demo muhatap) doldurmak için koyar (bkz. `_DEMO_DEFAULTS`, `jinja_vars`).
+    Şablon mobilyasıdır, LLM hallüsinasyonu değildir → iddia-düzeyi grounding denetimi
+    (agents/nodes/verify.py) bunları "kaynakta yok → uydurma şüphesi" diye işaretlememeli;
+    aksi halde TEMİZ taslak yanlışlıkla KIRMIZI banda çevrilir. Tek kaynak burasıdır
+    (verify.py import eder) → placeholder listesi değişince muafiyet kendiliğinden hizalanır.
+    """
+    return frozenset(_DEMO_DEFAULTS.values()) | {
+        _demo_muhatap("cevabi_yazi"), _demo_muhatap("bilgilendirme")}
+
+
 def _demo_ilgi_satiri(tarih: str, sayi: str) -> str:
     tarih = tarih.strip()
     sayi = sayi.strip()
@@ -187,4 +201,4 @@ class YaziResult:
     docx_filename: str = ""
 
 
-__all__ = ("YaziContext", "YaziResult")
+__all__ = ("YaziContext", "YaziResult", "sablon_iskelet_degerleri")

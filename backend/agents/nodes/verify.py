@@ -35,12 +35,80 @@ from agents.tutarlilik import tutarlilik_kontrol
 from agents.yazi_lint import _makam_seviyesi, kurum_gorunumlu, lint_2646
 from api.pii import mask_pii
 from core.text import tr_lower
+from yazi.models import sablon_iskelet_degerleri
 
 log = structlog.get_logger()
 
 # Madde 6 — grounding uyarı sanite sınırları (LLM çıktısına körü körüne güvenilmez).
 _GROUNDING_MAX_IDDIA = 5
 _GROUNDING_MAX_KARAKTER = 200
+
+# Madde 6 — grounding YANLIŞ-POZİTİF süzgeci (SOMUT-ANCHOR modeli).
+# Gerçek-LLM demosunda: grounding LLM, render'ın DETERMİNİSTİK koyduğu placeholder'ı
+# (bugün tarihi, EBYS-TASLAK, KAMU KURUMU antet, imza bloğu), KAYNAKTA ZATEN geçen
+# içeriği (LLM'in kendi hatası) ve standart resmî üslup kalıplarını "kaynakta yok →
+# uydurma" sanıp risk_guard'ı KIRMIZI'ya çeviriyor → TEMİZ taslak jüri önünde damgalanıyor.
+# Model (yüzey kelimeye değil somut çekirdeğe bakar → verbose/değişken LLM ifadelerine sağlam):
+# bir iddia YALNIZ "somut, kaynağa DAYANMAYAN anchor" (sayı/tarih VEYA özel ad) taşıyorsa
+# gerçek uydurmadır. Anchor kaynakta geçiyorsa / bugünün tarihiyse / şablon değeriyse
+# GROUNDED'dır. Deterministik tarih/sayı vetosu (aşağıda) her durumda ayrıca korunur.
+_ISKELET_KAPANIS: frozenset[str] = frozenset({
+    "t.c.", "işlem tesis edilmiştir",
+    "gereğini rica ederim", "gereğini arz ederim", "bilgilerinize arz ederim",
+    "bilgilerine arz olunur", "olurlarınıza arz ederim", "bilgilerinize arz olunur",
+    "mevcut mevzuat hükümleri çerçevesinde", "gerekli değerlendirme yapılmıştır",
+    "ebys onayı öncesinde oluşturulmuştur", "yukarıda arz edilen",
+    "uygun görülmesini olurlarınıza arz ederim",
+})
+# LLM işaretlediği ifadeyi TIRNAKLA gösterir; çekirdek muhakemesi o ifade üzerindedir.
+_RE_ALINTI = re.compile(r"[\"'‘’“”«»]([^\"'‘’“”«»\n]{2,150})[\"'‘’“”«»]")
+_RE_SAYISAL = re.compile(r"\d[\d.\-/]*")
+# Türkçe büyük harfler — özel ad (baş-harf) tespiti için (i̇→İ, ı→I ayrımı korunur).
+_TR_BUYUK = frozenset("ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ")
+
+
+def _norm_ws(s: str) -> str:
+    """tr_lower + boşluk sıkıştır + çevreleyen tırnak/noktalama kırp (kaynak/ifade eşleme)."""
+    return re.sub(r"\s+", " ", tr_lower(s)).strip(" '\"‘’“”«».,:;()")
+
+
+def _ifade_gercek_uydurma(ifade: str, kaynak_norm: str,
+                          iskelet_sirali: list[str], bugun: str) -> bool:
+    """İşaretlenen ifade GERÇEK uydurma mı — somut, kaynağa DAYANMAYAN anchor taşır mı?
+
+    Anchor = sayı/tarih VEYA özel ad (baş-harfi büyük, ilk sözcük cümle-başı → hariç).
+    Anchor kaynakta geçiyorsa / bugünün tarihiyse / şablon değeriyse GROUNDED sayılır.
+    Somut un-grounded anchor yoksa (yalnız register/kalıp ya da tümü grounded) → uydurma
+    DEĞİL (False). Yüzey kelimesine değil somut çekirdeğe baktığı için LLM'in verbose/
+    değişken ifadelerine karşı sağlamdır (güvenlik asimetrisi: gerçek uydurma korunur).
+    """
+    sl = _norm_ws(ifade)
+    if not sl or sl in kaynak_norm:
+        return False  # boş ya da kaynakta birebir → grounded
+    r = sl
+    for dl in iskelet_sirali:  # longest-first: kısa değer uzun ifadeyi fragmanlayamaz
+        if dl in r:
+            r = r.replace(dl, " ")
+    r = r.replace(bugun, " ")
+    for num in _RE_SAYISAL.findall(r):  # kaynağa/bugüne dayanmayan sayı/tarih → uydurma
+        if len(num) >= 2 and num not in kaynak_norm:
+            return True
+    for w in ifade.split()[1:]:  # özel ad (ilk sözcük cümle-başı olabilir → atla)
+        wc = w.strip(" '\"‘’“”«».,:;()")
+        if len(wc) >= 2 and wc[0] in _TR_BUYUK:
+            wl = tr_lower(wc)
+            if wl not in kaynak_norm and not any(wl in dl for dl in iskelet_sirali):
+                return True  # kaynağa dayanmayan özel ad → uydurma
+    return False  # somut un-grounded anchor yok → register/grounded → yanlış-pozitif
+
+
+def _grounding_yanlis_pozitif_mi(iddia: str, iskelet_sirali: list[str],
+                                 kaynak_norm: str, bugun: str) -> bool:
+    """İddia tamamen yanlış-pozitif mi (→ düş)? İşaretli ifadelerin (tırnaklı) HİÇBİRİ
+    gerçek uydurma değilse yanlış-pozitiftir. Tırnaklı ifade yoksa tüm iddia değerlendirilir."""
+    parcalar = _RE_ALINTI.findall(iddia) or [iddia]
+    return not any(_ifade_gercek_uydurma(p, kaynak_norm, iskelet_sirali, bugun)
+                   for p in parcalar)
 
 # Taslaktaki somut tarih / evrak-sayısı (cikar.py ile aynı desen — tutarlı tespit).
 _RE_TARIH = re.compile(r"\b\d{1,2}[.\-/]\d{1,2}[.\-/]\d{4}\b")
@@ -171,21 +239,42 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     EKLENİR (risk_guard otomatik KIRMIZI'ya çevirir); deterministik regex veto hiçbir
     durumda silinmez/yumuşatılmaz. Girdi maskeli metin (PII sızmaz); çıktı sanite
     süzgecinden geçer (yalnız string, ≤5 iddia, ≤200 karakter).
+
+    YANLIŞ-POZİTİF SÜZGECİ: render'ın deterministik koyduğu placeholder'lar (bugünün tarihi,
+    EBYS-TASLAK, KAMU KURUMU/YAZI İŞLERİ BİRİMİ antet, Yetkili İmza/Birim Yetkilisi, demo
+    muhatap), KAYNAKTA zaten geçen içerik ve standart resmî kalıplar UYDURMA DEĞİLDİR; hem
+    prompt'ta yasaklanır hem de somut-anchor modeliyle deterministik süzülür
+    (`_grounding_yanlis_pozitif_mi`) — LLM prompt'u dinlemese de temiz taslak KIRMIZI olmaz.
     """
     kaynak_maskeli = mask_pii(state.get("evrak_text", "") or "").masked_text
     cevap = await llm_json(
         "Kamu evrak doğrulama denetçisisin. Taslaktaki her SOMUT iddiayı (kurum adı, kişi, "
         "mevzuat madde numarası, tutar, taahhüt) kaynak evrakla karşılaştır. YALNIZ kaynakta "
         "hiçbir biçimde dayanağı olmayan iddiaları listele; biçim farkı (ayraç/format) iddia "
-        'DEĞİLDİR. YALNIZ şu JSON\'u döndür: {"desteklenmeyen_iddialar": ["..."]}',
+        "DEĞİLDİR. Şablon iskeleti UYDURMA DEĞİLDİR, LİSTELEME: T.C. başlığı; giden yazının "
+        "tarihi (bugünün tarihi); jenerik/placeholder kurum-birim-sayı-imza-makam ('KAMU "
+        "KURUMU', 'YAZI İŞLERİ BİRİMİ', 'EBYS-TASLAK', 'Yetkili İmza', 'Birim Yetkilisi', "
+        "'İlgili Makama'); ve standart resmî kapanış/işlem kalıpları ('gereğini arz ederim', "
+        "'işlem tesis edilmiştir' vb.). YALNIZ kaynaktaki bir kişi/kurum/olayla ÇELİŞEN veya "
+        'kaynakta hiç olmayan SOMUT bir olgu uydurulduysa listele. Şu JSON\'u döndür: '
+        '{"desteklenmeyen_iddialar": ["..."]}',
         "KAYNAK EVRAK:\n" + kaynak_maskeli[:3000] + "\n\nTASLAK:\n" + taslak[:3000],
         max_tokens=400,
     )
     if not isinstance(cevap, dict) or not isinstance(cevap.get("desteklenmeyen_iddialar"), list):
         return []
+    # Yanlış-pozitif süzgeci — somut-anchor modeli (tek kaynak: yazi.models). Şablon
+    # değerleri longest-first sıralı (fragman bırakmaz → deterministik); kaynak grounding
+    # için HAM evrak metni kullanılır (maskeli değil — yalnız karşılaştırma, emit edilmez).
+    iskelet_sirali = sorted(
+        (tr_lower(d) for d in (sablon_iskelet_degerleri() | _ISKELET_KAPANIS)),
+        key=len, reverse=True)
+    kaynak_norm = _norm_ws(state.get("evrak_text", "") or "")
+    bugun = date.today().strftime("%d.%m.%Y")
     temiz = [i.strip()[:_GROUNDING_MAX_KARAKTER]
              for i in cevap["desteklenmeyen_iddialar"]
-             if isinstance(i, str) and i.strip()]
+             if isinstance(i, str) and i.strip()
+             and not _grounding_yanlis_pozitif_mi(i, iskelet_sirali, kaynak_norm, bugun)]
     return [f"Taslaktaki iddia kaynak evrakta yok (LLM grounding): {i}"
             for i in temiz[:_GROUNDING_MAX_IDDIA]]
 

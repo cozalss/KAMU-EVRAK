@@ -12,6 +12,8 @@ AAA deseni; LLM_MODE=mock (conftest).
 
 from __future__ import annotations
 
+from datetime import date
+
 import pytest
 
 import agents.nodes.verify as verify_mod
@@ -165,19 +167,25 @@ class TestGroundingLLM:
         assert _UYDURMA_IMZA in eslesen[0]
 
     async def test_sanite_liste_5_ile_sinirli_uzunlar_kirpilir(self, acik):
-        # Arrange — string olmayan atılır, 200+ karakter kırpılır, en çok 5 iddia
+        # Arrange — string olmayan/boş atılır, 200+ karakter kırpılır, en çok 5 iddia.
+        # Somut-anchor süzgecini GEÇEN iddialar kullanılır (özel ad: '<X> Valiliği/Müdürlüğü'
+        # kaynakta yok → gerçek uydurma sayılır) ki sanite sınırları fiilen sınansın.
         acik.setattr(verify_mod, "LINT_AUTOFIX", False)
         acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
-        iddialar = [42, "", "a" * 300, "b", "c", "d", "e", "f"]
+        iddialar = [42, "",
+                    "Ankara Valiliği onayı alınmıştır " + "x" * 300,
+                    "Bursa Müdürlüğü kararı", "Konya Dairesi görüşü",
+                    "İzmir Kurulu talebi", "Adana Başkanlığı yazısı",
+                    "Sivas Ofisi onayı"]  # 6 geçerli → 5'e kırpılır
         acik.setattr(verify_mod, "llm_json", _fake_llm({"desteklenmeyen_iddialar": iddialar}))
         # Act
         out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
         # Assert
         grounding = [u for u in out["verify_uyari"] if _UYDURMA_IMZA in u]
-        assert len(grounding) == 5
-        assert any("a" * 200 in u for u in grounding)
-        assert all("a" * 201 not in u for u in grounding)
-        assert not any(u == "f" for u in grounding)  # 6. iddia kesildi
+        assert len(grounding) == 5                                # 5-cap
+        assert any("x" * 150 in u for u in grounding)             # uzun iddia korunur
+        assert all("x" * 201 not in u for u in grounding)         # 200'e kırpıldı
+        assert not any("Sivas Ofisi" in u for u in grounding)     # 6. iddia kesildi
 
     async def test_llm_none_yalniz_regex_veto(self, acik):
         # Arrange — LLM hata/timeout (None) → temiz taslakta uyarı üretilmez
@@ -230,3 +238,84 @@ class TestGroundingLLM:
         out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
         # Assert
         assert out["verify_uyari"] == []
+
+
+# ---------------------------------------------------------------------------
+# GÖREV B2 — grounding iskelet muafiyeti (şablon-mobilyası yanlış-pozitif kilidi)
+#
+# Gerçek-LLM demosunda yakalanan hata: grounding LLM, render'ın DETERMİNİSTİK
+# yerleştirdiği placeholder'ları (bugünün tarihi, EBYS-TASLAK, KAMU KURUMU / YAZI
+# İŞLERİ BİRİMİ antet, Yetkili İmza / Birim Yetkilisi imza bloğu, standart resmî
+# kapanış kalıpları) "kaynakta yok → uydurma" sanıyor. Her biri risk_guard'ı KIRMIZI'ya
+# çeviriyor → TEMİZ taslak jüri önünde "uydurma şüphesi / KIRMIZI" damgalanıyor.
+# Muafiyet YALNIZ şablon-iskeleti içindir; gerçek somut uydurma (özel ad/eylem/tutar)
+# ve deterministik tarih/sayı vetosu HER DURUMDA korunur (güvenlik asimetrisi).
+# ---------------------------------------------------------------------------
+# Gerçek DeepSeek çıktısından birebir alınan 5 yanlış-pozitif iddia (şablon-mobilyası).
+_ISKELET_IDDIALARI = [
+    f"Taslakta '{date.today().strftime('%d.%m.%Y')}' tarihi belirtilmiş, "
+    "kaynakta bu tarih yok.",
+    "Taslakta 'EBYS-TASLAK' sayı numarası belirtilmiş, kaynakta bu sayı yok.",
+    "Taslakta 'Kamu Kurumu' ve 'Yazı İşleri Birimi' ifadeleri geçiyor, "
+    "kaynakta bu kurum/birim yok.",
+    "Taslakta 'Yetkili İmza' ve 'Birim Yetkilisi' ifadeleri geçiyor, "
+    "kaynakta bu unvanlar yok.",
+    "Taslakta 'mevcut mevzuat hükümleri çerçevesinde işlem tesis edilmiştir' "
+    "ifadesi geçiyor, kaynakta bu ifade yok.",
+]
+
+
+class TestGroundingIskeletMuafiyeti:
+    async def test_iskelet_placeholder_iddialari_dusurulur(self, acik):
+        # Arrange — grounding LLM yalnız şablon-mobilyası hakkında iddia üretir
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json",
+                     _fake_llm({"desteklenmeyen_iddialar": _ISKELET_IDDIALARI}))
+        # Act
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        # Assert — hiçbir iskelet iddiası uyarıya/risk imzasına dönüşmez → banda dokunmaz
+        assert out["verify_uyari"] == []
+        assert not any(_UYDURMA_IMZA in u for u in out["verify_uyari"])
+
+    async def test_gercek_uydurma_iskelet_muafiyetinden_gecmez(self, acik):
+        # Arrange — iskelet iddiaları + ARALARINDA gerçek bir somut uydurma
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        gercek = "Ankara Valiliği tarafından onay alınmıştır"
+        acik.setattr(verify_mod, "llm_json", _fake_llm(
+            {"desteklenmeyen_iddialar": [*_ISKELET_IDDIALARI, gercek]}))
+        # Act
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        # Assert — YALNIZ gerçek uydurma kalır, KIRMIZI imzasıyla
+        grounding = [u for u in out["verify_uyari"] if _UYDURMA_IMZA in u]
+        assert len(grounding) == 1
+        assert gercek in grounding[0]
+
+    async def test_iskelet_deger_iceren_gercek_iddia_korunur(self, acik):
+        # Arrange — iddia bir iskelet değeri (Kamu Kurumu) İÇERİR ama asıl uydurma
+        # somut bir taahhüt/tutardır → şablon-baskın değil → KORUNUR (aşırı-eleme kilidi)
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        bundled = "Taslakta 'Kamu Kurumu 500.000 TL ödeme taahhüt etmiştir' iddiası var"
+        acik.setattr(verify_mod, "llm_json",
+                     _fake_llm({"desteklenmeyen_iddialar": [bundled]}))
+        # Act
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        # Assert — bundled uydurma korunur (güvenlik asimetrisi)
+        assert any(_UYDURMA_IMZA in u and "ödeme taahhüt" in u for u in out["verify_uyari"])
+
+    async def test_iskelet_muaf_ama_deterministik_veto_yine_durur(self, acik):
+        # Arrange — LLM yalnız iskelet iddiası verse bile taslaktaki uydurma tarih
+        # deterministik veto ile YAKALANIR (muafiyet deterministik katmanı etkilemez)
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json",
+                     _fake_llm({"desteklenmeyen_iddialar": [_ISKELET_IDDIALARI[0]]}))
+        taslak = TEMIZ + "\n99.12.2099 tarihli."
+        # Act
+        out = await verify_node({"yazi_taslak_md": taslak, "evrak_text": KAYNAK})
+        # Assert — deterministik veto silinmez; iskelet iddiası düşer
+        assert any("99.12.2099" in u and _UYDURMA_IMZA in u for u in out["verify_uyari"])
+        assert not any("EBYS-TASLAK" in u or "tarihi belirtilmiş" in u
+                       for u in out["verify_uyari"])

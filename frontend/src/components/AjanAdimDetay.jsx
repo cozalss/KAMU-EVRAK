@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import {
   Chip, MevzuatRow, SlaPanel, slaInfo, subSlaRenk, ZincirStepper, Vrow, CopyChip, KanitAlinti,
+  BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
 import {
   MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV, RiskBand,
@@ -420,8 +421,11 @@ function DenetimDetay({ d, r }) {
   return <ZincirStepper zincir={zincir} kokHash={den.kok_hash} butunluk={den.butunluk !== false} />;
 }
 
-function FinalizeDetay({ r }) {
-  const bilg = r?.bilgilendirme;
+function FinalizeDetay({ d, r }) {
+  // SSE node.data birincil (canlı akışta finalize biter bitmez dolar); yoksa final sonuç.
+  const yapisal = d?.bilgilendirme_yapisal || r?.bilgilendirme_yapisal;
+  if (yapisal?.surum) return <BilgilendirmeYapisal y={yapisal} />;
+  const bilg = d?.bilgilendirme || r?.bilgilendirme;
   if (!bilg) return <Not t="Bilgilendirme metni uçtan-uca sonuçla birlikte hazırlanır." />;
   return <p style={{ margin: 0, ...TYPE.data, color: PAL.ink2, whiteSpace: "pre-wrap" }}>{cleanDemoText(String(bilg)).replace(/\*\*/g, "").replace(/\s*##\s*/g, "  ")}</p>;
 }

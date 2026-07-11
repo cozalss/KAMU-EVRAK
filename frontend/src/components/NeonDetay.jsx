@@ -11,7 +11,7 @@ import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx"
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Icon, focusRing } from "./neonUi.jsx";
 import {
   Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
-  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti,
+  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti, BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum, mevzuatDipnot,
@@ -495,8 +495,12 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                     </NeonCard>,
 
                     r.bilgilendirme && (
-                      <NeonCard key="bilgilendirme" title="Bilgilendirme" accent={V} icon={<Icon.info />} bodyCenter>
-                        <p style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap" }}>{cleanDemoText(r.bilgilendirme).replace(/\*\*/g, "").replace(/\s*##\s*/g, "  ")}</p>
+                      // Yapısal bildirim (GOV.UK ne-oldu/sırada/yapılacak) varsa onu render et;
+                      // eski kayıtlar (yapı öncesi persist) düz metin fallback'inde kalır.
+                      <NeonCard key="bilgilendirme" title="Bilgilendirme" accent={V} icon={<Icon.info />} bodyCenter={!r.bilgilendirme_yapisal?.surum}>
+                        {r.bilgilendirme_yapisal?.surum
+                          ? <BilgilendirmeYapisal y={r.bilgilendirme_yapisal} />
+                          : <p style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap" }}>{cleanDemoText(r.bilgilendirme).replace(/\*\*/g, "").replace(/\s*##\s*/g, "  ")}</p>}
                       </NeonCard>
                     ),
                   ]}

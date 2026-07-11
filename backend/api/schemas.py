@@ -191,6 +191,8 @@ class ProcessResponse(BaseModel):
     # S6 — işleme profili rozeti: kvkk-onprem (veri kurumdan çıkmaz) | mock | bulut.
     llm_profil: str = ""
     bilgilendirme: str = ""
+    # Yapısal bildirim (GOV.UK ne-oldu/sırada/yapılacak deseni) — metin bundan render edilir.
+    bilgilendirme_yapisal: dict = Field(default_factory=dict)
     # Yenilikçilik — Arşivleme (SDP 2005/7) metadata (frontend bununla eşleşir).
     arsiv_metadata: dict = Field(default_factory=dict)
     # Yenilikçilik — Yasal süre / SLA triyaj metadata (GECİKMİŞ/KRİTİK rozeti).

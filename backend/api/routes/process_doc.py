@@ -113,6 +113,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         lint_duzeltme_md=state.get("lint_duzeltme_md", ""),
         llm_profil=llm_profil(),
         bilgilendirme=state.get("bilgilendirme", ""),
+        bilgilendirme_yapisal=state.get("bilgilendirme_yapisal", {}),
         arsiv_metadata=state.get("arsiv_metadata", {}),
         sla_metadata=state.get("sla_metadata", {}),
         denetim_izi=state.get("denetim_izi", {}),
@@ -393,7 +394,8 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "arsiv": ("arsiv_metadata",),
         "sla_triyaj": ("sla_metadata",),
         "denetim_izi": ("denetim_izi",),
-        "finalize": (),
+        # finalize: yapısal bildirim SSE'ye taşınsın (adım detayı canlı akışta boş kalmasın).
+        "finalize": ("bilgilendirme", "bilgilendirme_yapisal"),
     }.get(node, ())
     return {k: slice_.get(k) for k in keys if k in slice_}
 

@@ -149,6 +149,7 @@ class EvrakState(TypedDict):
     # --- Çıkış ---
     response: NotRequired[str]              # kullanıcıya özet bilgilendirme
     bilgilendirme: NotRequired[str]
+    bilgilendirme_yapisal: NotRequired[dict[str, Any]]  # GOV.UK 3'lü yapı (finalize)
     errors: Annotated[list[str], operator.add]
 
 

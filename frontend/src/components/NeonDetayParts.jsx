@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV } from "./neonUi.jsx";
+import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
 import { slaKonum } from "../lib/detayYorum.js";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
@@ -359,6 +359,106 @@ export function PaperSheet({ metin, dosyaAdi, formatOk }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ---------- Bilgilendirme — yapısal işlem sonucu bildirimi ----------
+   Backend finalize node'unun `bilgilendirme_yapisal` çıktısını render eder. Desen
+   araştırma-temelli (docs/arastirma bildirim-normlari): GOV.UK service-manual 3'lü
+   bildirim yapısı (ne oldu → sırada ne var → ne yapılmalı) + confirmation-pages
+   (süreç açık mı, açık tarihli süre) + NN/g system-status (durum görünür, sonraki
+   eylem net) + 3071 m.7 / 4982 m.12 gerekçe-itiraz zorunluları (notlar bölümü). */
+
+/* Bölüm ayracı — kart içinde kart yasak (MASTER): hairline üst çizgi + meta etiket. */
+function BilgiBolum({ t, children }) {
+  return (
+    <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
+      {t && <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.s }}>{t}</div>}
+      {children}
+    </div>
+  );
+}
+
+export function BilgilendirmeYapisal({ y }) {
+  const eksikMi = y.durum === "eksik";
+  // Yalnız bilinen durumlar renk alır; sözleşmeye eklenecek 3. durum nötr'e düşer (güvenli büyüme).
+  const durumRenk = eksikMi ? BANT.sari.c : y.durum === "hazir" ? BANT.yesil.c : PAL.mut;
+  const durumEtiket = y.durum_etiket || (eksikMi ? "Eksik bilgi bekleniyor" : "Evrak işleme hazır");
+  const sureRenk = subSlaRenk(y.sure?.durum);
+  // Şema bare-dict (schemas.py) → hiçbir alanın şekline güvenme: dizi + eleman guard'ları.
+  const sirada = (Array.isArray(y.sirada) ? y.sirada : []).filter((a) => a && typeof a === "object");
+  const maddeler = Array.isArray(y.yapilacak?.maddeler) ? y.yapilacak.maddeler : [];
+  const notlar = Array.isArray(y.notlar) ? y.notlar : [];
+  return (
+    <div>
+      {/* Durum — renk tek sinyal değil: ikon + metin (a11y). Satırda tek semantik çip. */}
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
+        <Chip c={durumRenk} label={`İşlem durumu: ${durumEtiket}`}>
+          {eksikMi ? <Icon.alert width={12} height={12} /> : <Icon.check width={12} height={12} />}
+          {durumEtiket}
+        </Chip>
+        {y.ne_oldu_kaynak === "llm" && <span style={{ ...TYPE.meta, color: PAL.mut3 }}>anlatı: yapay zekâ · iskelet: kural tabanlı</span>}
+      </div>
+
+      {/* Ne oldu — tek paragraf anlatı (gerekçe/dayanak cümle içinde görünür). */}
+      <p style={{ margin: 0, ...TYPE.read, color: PAL.ink2 }}>{cleanDemoText(String(y.ne_oldu || ""))}</p>
+
+      {/* Sırada ne var — tamamlanan + bekleyen adımlar; yasal son tarih adım detayında,
+          gecikme/kritiklik AA renkle vurgulanır (belirsiz "yakında" yok, açık tarih var). */}
+      {sirada.length > 0 && (
+        <BilgiBolum t="Sırada ne var">
+          {/* role=list: WebKit, list-style:none'da liste semantiğini düşürür (VoiceOver). */}
+          <ol role="list" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            {sirada.map((a, i) => {
+              const tamam = a.durum === "tamam";
+              // Gecikme vurgusu backend'in AÇIK `sureli` bayrağına bağlı (metin sözleşmesi değil).
+              const sureli = sureRenk && a.sureli;
+              return (
+                <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "5px 0" }}>
+                  <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2, color: tamam ? DERIN.yesil : PAL.mut3 }}>
+                    {tamam ? <Icon.check width={13} height={13} /> : <Icon.clock width={13} height={13} />}
+                  </span>
+                  <span style={{ minWidth: 0 }}>
+                    <span style={{ ...TYPE.data, color: tamam ? PAL.mut2 : PAL.ink2, fontWeight: tamam ? 400 : 500 }}>{cleanDemoText(String(a.adim))}</span>
+                    {a.detay && (
+                      <span style={{ display: "block", ...TYPE.meta, color: sureli ? DERIN_OF(sureRenk) : PAL.mut3, fontWeight: sureli ? 500 : 400, ...TNUM }}>
+                        {cleanDemoText(String(a.detay))}
+                      </span>
+                    )}
+                  </span>
+                  <span style={SR_ONLY}>{tamam ? "(tamamlandı)" : "(bekliyor)"}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </BilgiBolum>
+      )}
+
+      {/* Ne yapılmalı — eksik maddeler + eylemsizliğin sonucu (tek birincil istek). */}
+      {maddeler.length > 0 && (
+        <BilgiBolum t={`Evrakın işleme alınabilmesi için tamamlanması gerekenler (${maddeler.length})`}>
+          {maddeler.map((m, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "3px 0", ...TYPE.data, color: DERIN.sari }}>
+              <Icon.alert width={13} height={13} style={{ flexShrink: 0, marginTop: 2 }} />
+              <span>{cleanDemoText(String(m))}</span>
+            </div>
+          ))}
+          {y.yapilacak?.sonuc && <div style={{ marginTop: SP.s, ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{cleanDemoText(String(y.yapilacak.sonuc))}</div>}
+        </BilgiBolum>
+      )}
+
+      {/* Mevzuat hatırlatmaları — koşullu, doğrulanmış dayanak (4982 m.12-13 / 3071 m.7). */}
+      {notlar.length > 0 && (
+        <BilgiBolum>
+          {notlar.map((n, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
+              <Icon.scale width={13} height={13} style={{ flexShrink: 0, marginTop: 1 }} />
+              <span>{cleanDemoText(String(n))}</span>
+            </div>
+          ))}
+        </BilgiBolum>
+      )}
     </div>
   );
 }

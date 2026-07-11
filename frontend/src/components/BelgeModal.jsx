@@ -23,7 +23,7 @@ export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ar
   );
 }
 
-export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null }) {
+export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null }) {
   const kapatRef = useRef(null);
   const alanRef = useRef(null);
   const oncekiOdak = useRef(null);
@@ -199,7 +199,13 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", mo
               <div style={mono
                 ? { fontFamily: MONO, fontSize: 13, lineHeight: 1.85, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }
                 : { ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                {metin || "İçerik henüz hazır değil."}
+                {/* Çıkarım vurguları A4'te de korunur — panel ile aynı sarı <mark> dili
+                    (kaynak belgede vurgulanan unsurlar büyütünce de görünür kalır). */}
+                {segmentler && segmentler.length
+                  ? segmentler.map((sg, i) => sg.mark
+                      ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{sg.t}</mark>
+                      : <span key={i}>{sg.t}</span>)
+                  : (metin || "İçerik henüz hazır değil.")}
               </div>
             )}
           </div>

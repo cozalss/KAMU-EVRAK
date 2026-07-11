@@ -53,6 +53,12 @@ log = structlog.get_logger()
 
 # verify_uyari içindeki uydurma sinyalinin imzası (verify.py _uydurma_veto mesajı).
 _UYDURMA_IMZA = "kaynak evrakta yok"
+# LLM grounding imzası (verify.py _grounding_iddialar). DETERMİNİSTİK veto (regex tarih/sayı)
+# ile AYRIŞTIRILIR: grounding gürültülü/olasılıksal bir çıkarımdır → tek başına KIRMIZI yapmaz,
+# yalnız SARI (memur incelesin) sinyali verir. Bant kararı deterministik kalır (bkz. modül
+# başlığı + memory: 'çıkarımsal sinyal bandı deterministik-dışı süremez'). Deterministik veto
+# (somut tarih/sayı) KIRMIZI olmaya devam eder — jüri-görünür anti-halüsinasyon sinyali korunur.
+_GROUNDING_IMZA = "(LLM grounding)"
 _EKSIK_IMZA = "Eksik bölüm"
 
 # Memura DOĞRUDAN hitap eden eylem cümleleri (arayüzde "Ne yapmalısınız:" satırı). Jargon yok:
@@ -104,12 +110,18 @@ def compute_risk(
     hem uydurma hem eksik varsa KIRMIZI (CLAUDE.md §1 — somut uydurma en yüksek risk).
     """
     uyarilar = verify_uyari or []
-    uydurma = [u for u in uyarilar if _UYDURMA_IMZA in u]
+    # KIRMIZI YALNIZ deterministik veto ile: regex somut tarih/sayı uydurma (güvenilir).
+    # LLM grounding imzalı ('(LLM grounding)') sinyaller BURADA DIŞLANIR → aşağıda SARI olur
+    # (olasılıksal çıkarım temiz taslağı KIRMIZI'ya çeviremez — yanlış-pozitif jüri riski biter).
+    uydurma = [u for u in uyarilar if _UYDURMA_IMZA in u and _GROUNDING_IMZA not in u]
     if uydurma:
         gerekceler = [f"Uydurma şüphesi — {u}" for u in uydurma]
         return _bant_sonuc("kirmizi", gerekceler)
 
     sari: list[str] = [u for u in uyarilar if u.startswith(_EKSIK_IMZA)]
+    # LLM grounding (olasılıksal) → SARI: memura "AI şu ifadeyi kaynakta bulamadı, kontrol
+    # edin" der; bant deterministik değil ama incelemeye çağırır (asla otomatik KIRMIZI).
+    sari += [f"AI incelemesi — {u}" for u in uyarilar if _GROUNDING_IMZA in u]
     if format_uyumlu is False and not sari:
         sari.append("Resmî yazı zorunlu format bölümleri eksik")
     dogrula = taslak.count("[DOĞRULA")

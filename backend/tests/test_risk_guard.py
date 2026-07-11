@@ -64,6 +64,21 @@ class TestComputeRiskBant:
         u = ["Taslaktaki '5' sayısı kaynak evrakta yok (doğrulayın).", "Eksik bölüm: imza"]
         assert _risk(u)["bant"] == "kirmizi"
 
+    def test_llm_grounding_sari_kirmizi_degil(self):
+        # LLM grounding (olasılıksal çıkarım) → SARI, KIRMIZI DEĞİL — temiz taslak yanlış-pozitif
+        # bir grounding iddiasıyla artık KIRMIZI'ya çevrilmez (bant kararı deterministik kalır).
+        u = ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): Ankara Valiliği onayı alınmıştır"]
+        sonuc = _risk(u)
+        assert sonuc["bant"] == "sari"
+        assert any("AI incelemesi" in g for g in sonuc["gerekceler"])
+
+    def test_deterministik_veto_grounding_yaninda_yine_kirmizi(self):
+        # Deterministik veto (somut tarih/sayı) LLM grounding ile BİRLİKTE → KIRMIZI baskın
+        # (jüri-görünür anti-halüsinasyon sinyali korunur; yalnız grounding-tek-başına düştü).
+        u = ["Taslaktaki '99.99.9999' tarihi kaynak evrakta yok (doğrulayın).",
+             "Taslaktaki iddia kaynak evrakta yok (LLM grounding): X kurumu"]
+        assert _risk(u)["bant"] == "kirmizi"
+
     def test_cikti_anahtarlari_sabit(self):
         # frontend RiskBandCard ile eşleşen SABİT anahtarlar (+ ölçülmüş skor alanları)
         assert set(_risk()) == {"bant", "skor", "gerekceler", "katkilar", "kalibrasyon", "oneri"}

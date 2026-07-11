@@ -46,7 +46,7 @@ jobs:
         run: uv run pytest -q
 
   frontend:
-    name: Frontend (build)
+    name: Frontend (test + build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -64,6 +64,9 @@ jobs:
 
       - name: Bağımlılıkları kur (lock'a sadık)
         run: npm ci
+
+      - name: Saf-mantık testleri (node --test, bağımlılıksız)
+        run: npm test
 
       - name: Üretim derlemesi (Vite)
         run: npm run build

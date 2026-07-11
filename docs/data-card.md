@@ -93,7 +93,7 @@ Sentetik evraktan ayrı; **kamuya açık mevzuat metni** (mevzuat.gov.tr): **233
 Yönetimi + çok-alanlı genişletme (vergi, belediye, çevre, sosyal güvenlik, ceza...). Madde-başlıklı özet
 (lafzî tam metin değil); madde no'lar çapraz doğrulanır, şüpheli → `[DOĞRULA:]`. Mahkeme
 kararları YALNIZ mevzuat-eşleştirme referansı; **eğitim/demo evrakı değil**. Kart:
-`data/mevzuat/README.md`. Seed: `scripts/seed_mevzuat.py` → **233 mevzuat / 1506 madde-chunk**.
+`data/mevzuat/README.md`. Seed: `scripts/seed_mevzuat.py` → **233 mevzuat / 1508 madde-chunk**.
 
 ## 6. Lisans ve kullanım hakları beyanı (şartname §6.5, §7)
 

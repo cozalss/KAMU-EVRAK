@@ -21,7 +21,7 @@
 eksik-bilgi recall **0.739**, özet recall **0.712** / faithfulness **1.000**, taslak
 `format_uyumlu_rate`=**1.000** ve bileşen tam-uyum=**1.000** (216/216 tarihsel doğrulama),
 Türkçe saflık **0.9998**, false-veto **0**, fairness **0.944**. Mevzuat retrieval **gerçek
-BM25Okapi** (233 mevzuat / 1506 madde-chunk korpus; Recall@1 **0.625** / Recall@3 **0.875**, n=16).
+BM25Okapi** (233 mevzuat / 1508 madde-chunk korpus; Recall@1 **0.688** / Recall@3 **0.875** / MRR 0.760, n=16, 11 Tem 2026 yeniden ölçüm).
 
 **Dürüstlük notu — jüri-güven riski KAPATILDI (2026-07-04):** Önceki manşet (mock-mod macro-F1
 0.9493) **kaldırıldı** — mock heuristik o test setine uyarlanmıştı (ezber, taban değil).
@@ -42,7 +42,7 @@ değildir (o ölçüm de düzeltme-öncesi koda aitti).
 | G1.2 | **Evrak türü belirleme** (sınıflandırma) | `siniflandir` node: 19 tür taksonomisi (18 + `belirsiz` abstention); few-shot LLM birincil, mock'ta keyword heuristik | `backend/agents/nodes/siniflandir.py`, `agents/config.py` (`EVRAK_TURLERI`); `docs/02-evrak-taksonomi-routing.md §1` | ✅ |
 | G1.3 | **Bilgi unsurlarını çıkarma** (gönderen/tarih/sayı/konu/talep) | `cikar` node: LLM JSON çıkarımı + regex; **PII maskeleme** (TCKN/telefon/IBAN) çıkarım sonrası, dış çağrı öncesi | `backend/agents/nodes/cikar.py`; ekran: `docs/img/03-sonuc.png` (maskeli rozet) | ✅ |
 | G1.4 | **Eksik bilgileri tespit etme** | `eksik_tespit` node: tür-bağımlı zorunlu-alan şeması (3071 m.4 / resmî-yazı daraltılmış); recall-öncelikli (F-beta β=2) | `backend/agents/nodes/eksik_tespit.py`, `config.ZORUNLU_ALANLAR`; `docs/06-eval-harness.md` | ✅ |
-| G1.5 | **İlgili mevzuat / yazışma kuralı önerme** | `mevzuat_oner` node: madde-bazlı **BM25 retrieval** (233 mevzuat / 1506 madde-chunk korpus) + statik config fallback; şüpheli madde `[DOĞRULA:]` | `backend/agents/nodes/mevzuat_oner.py`, `data/mevzuat/*.txt`, `scripts/seed_mevzuat.py`; `docs/method.md §3` | ✅ |
+| G1.5 | **İlgili mevzuat / yazışma kuralı önerme** | `mevzuat_oner` node: madde-bazlı **BM25 retrieval** (233 mevzuat / 1508 madde-chunk korpus) + statik config fallback; şüpheli madde `[DOĞRULA:]` | `backend/agents/nodes/mevzuat_oner.py`, `data/mevzuat/*.txt`, `scripts/seed_mevzuat.py`; `docs/method.md §3` | ✅ |
 | G1.6 | **Özetleme** | `ozetle` node: LLM/mT5 key-fact odaklı kısa özet; faithfulness (halüsinasyon-yok) ölçülür | `backend/agents/nodes/ozetle.py`; `eval/summary_eval.py`; karne: özet faithfulness **1.000** | ✅ |
 
 **Görev 1 ölçüm (GERÇEK pipeline, DeepSeek-chat, in-domain n=54):** sınıflandırma macro-F1
@@ -84,7 +84,7 @@ yanlış-pozitif 0/140** (anti-halüsinasyon kapısı sağlıklı); `format_uyum
 
 > **100 puan anlatısı:** Yöntem (35), Demo (15) ve Yenilikçilik/Ticarileşme (15) kanıtlı; Uygulama (35)
 > tarafında sınıflandırma/yönlendirme/özet/eksik-bilgi/taslak-format **hepsi ölçüldü ve geçti**
-> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 233 mevzuat/1506 chunk, Recall@1 0.625 / Recall@3 0.875, n=16).
+> (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 233 mevzuat/1508 chunk, Recall@1 0.688 / Recall@3 0.875, n=16).
 > Manşet skorlar **üretim modeli DeepSeek-chat**, in-domain (n=54); **dairesel-olmayan held-out**
 > (n=108, 2 bağımsız set) macro-F1 ~0.89 / yönlendirme Top-1 0.907 ayrıca raporlanır — abartı yok,
 > kapalı risk jüriden saklanmaz (bkz. `route_birim` düzeltmesi, `docs/benchmark/llm-heldout.md`).

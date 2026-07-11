@@ -1,7 +1,7 @@
 # kamu-evrak — Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi
 
 [![CI](https://github.com/cozalss/TasnifX-TeknoFest/actions/workflows/ci.yml/badge.svg)](https://github.com/cozalss/TasnifX-TeknoFest/actions/workflows/ci.yml)
-![Testler](https://img.shields.io/badge/testler-1066%20(77%20mod%C3%BCl)-2f9e6e.svg)
+![Testler](https://img.shields.io/badge/testler-1516%20py%20%2B%20104%20js-2f9e6e.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![LangGraph](https://img.shields.io/badge/LangGraph-20%20node%20multi--agent-1c3d5a.svg)
@@ -62,7 +62,8 @@ Gereksinimler: **Python 3.11+ · [uv](https://docs.astral.sh/uv/) · Node 20+** 
 >
 > **Panel girişi (login):** kullanıcı hesapları PostgreSQL/Supabase ister — kurulum ve seed
 > adımları: [`backend/db/README.md`](backend/db/README.md). DB olmadan API + `/docs` tam çalışır.
-Testler: `cd backend && uv run python -m pytest -q` (**1066 test · 77 modül**, CI'da mock modda koşar) ·
+Testler: `cd backend && uv run python -m pytest -q` (**1516 test · 92 modül**, CI'da mock modda koşar) ·
+frontend saf-mantık testleri: `cd frontend && npm test` (**104 test**, `node --test`, bağımlılıksız) ·
 Mevzuat RAG ağır ekleri (opsiyonel): `uv sync --extra rag`
 
 ---
@@ -125,13 +126,16 @@ profilinde açılır; açıldığında o da LLM'li sürümüyle koşar.)
 | | |
 |---|---|
 | 🧩 **Çok-konulu ayrıştırma** | Tek dilekçedeki birden çok istek alt-taleplere bölünür; her biri ayrı **tür + birim + yasal süre** alır → otomatik havale — [`nodes/decompose.py`](backend/agents/nodes/decompose.py) |
-| 🚦 **Risk bandı + koşullu onay** | Üretilen yazıya trafik ışığı: 🟢 otomatik geçer, 🟡🔴 memur onayına durur (`interrupt()` + checkpointer) — [`nodes/risk_guard.py`](backend/agents/nodes/risk_guard.py) |
+| 🚦 **Ölçülmüş risk bandı + koşullu onay** | Üretilen yazıya trafik ışığı: 🟢 otomatik geçer, 🟡🔴 memur onayına durur (`interrupt()` + checkpointer). Skor sabit katsayı değil **ölçüm**: `ağırlık = ciddiyet × isabet`, isabet bağımsız oracle'la sayılıp Wilson alt sınırı olarak yazılır, belge skoru noisy-OR — [`agents/risk_agirlik.py`](backend/agents/risk_agirlik.py) · [`eval/risk_calibration.py`](backend/eval/risk_calibration.py) |
+| 🏛️ **Bürokrasi Kurulu (çok-turlu müzakere)** | Hukuk + üslup + vatandaş-odaklılık + birim amiri perspektifli ajanlar taslağı **gerçek çok-turlu DEBATE** ile tartışır; öneriler çapalı-düzenleme (anchored-edit) olarak deterministik uygulanır, turlar SSE ile canlı açılır — [`agents/kurul.py`](backend/agents/kurul.py) |
+| 📏 **Yönetmelik-lafzı dayanaklı 2646 denetimi** | 13 kural (başlık/sayı/ilgi/muhatap/kapanış/imza/ek/dağıtım…) — her bulgu yönetmelik **maddesinin gerçek lafzını** (mevzuat.gov.tr PDF'inden doğrulanmış korpus) + somut düzeltme önerisini taşır; çıkarımsal sinyal asla yanlış-pozitif SARI üretmez — [`agents/yazi_lint.py`](backend/agents/yazi_lint.py) |
+| 📣 **Yapısal vatandaş bilgilendirmesi** | GOV.UK 3'lü desen (*ne oldu / sırada ne var / ne yapmalısınız*): iskelet deterministik, LLM yalnız tek paragrafı yazar ve **uydurma-guard'dan** (belge-dışı ad/sayı veto) geçer; 4982 itiraz yolu + 3071 gerekçe hakkı notları otomatik — [`nodes/finalize.py`](backend/agents/nodes/finalize.py) |
 | 💬 **Sohbet asistanı (araç döngülü)** | "Gecikmiş evraklarım hangileri?" → **15 niyet, 10 kullanıcı-kapsamlı veri aracı**, çok-adımlı JSON araç döngüsü (maks. 3 tur), SSE stream, onay/reddet el-sıkışması — [`api/routes/sohbet.py`](backend/api/routes/sohbet.py) · [`docs/09`](docs/09-sohbet-asistani.md) |
 | 🗂️ **SDP otomatik dosya kodu** | Devlet Teşkilatı **Standart Dosya Planı (2005/7)** kodunu gerekçesiyle otomatik atar (TR'de emsalini bilmiyoruz) — [`agents/sdp_katalog.py`](backend/agents/sdp_katalog.py) |
 | 📦 **EYP 2.0 paket çıktısı** | e-Yazışma Teknik Rehberi uyumlu paket iskeleti (ÜstYazı + Üstveri + SHA-512) → EBYS'ye doğrudan girebilir — [`yazi/eyp.py`](backend/yazi/eyp.py) |
 | 🛡️ **PII maskeleme** | TCKN / telefon / IBAN bulut çağrısından **önce** maskelenir; ham kişisel veri sistemde tutulmaz |
 | 🚫 **Anti-halüsinasyon** | Deterministik uydurma-veto (**false-veto = 0**) + NLI atıf-gerekçelendirme; emin olunmayan madde `[DOĞRULA:]` işaretli |
-| 📚 **Gerçek RAG + atıf grafiği** | 233 mevzuat / 1506 madde-chunk üzerinde **BM25** + model-indirmesiz DeepSeek listwise rerank + **GraphRAG-lite**: maddenin atıf verdiği mevzuata 1-hop genişleme — [`retrieval/atif_grafi.py`](backend/retrieval/atif_grafi.py) |
+| 📚 **Gerçek RAG + atıf grafiği** | 233 mevzuat / 1508 madde-chunk üzerinde **BM25** + model-indirmesiz DeepSeek listwise rerank + **GraphRAG-lite**: maddenin atıf verdiği mevzuata 1-hop genişleme — [`retrieval/atif_grafi.py`](backend/retrieval/atif_grafi.py) |
 | ⏰ **Yasal süre triyajı + eskalasyon** | Mevzuat-dayanaklı cevap süresi (3071 m.7 = 30 gün, 4982 m.11 = 15 iş günü) → GECİKMİŞ/KRİTİK rozetleri, kuyruk SLA önizlemesi — [`api/routes/sla.py`](backend/api/routes/sla.py) |
 | 🔗 **Denetim izi** | Tamper-evident **SHA-256 hash-zinciri**: her halka öncekini mühürler; arayüzde halka halka incelenebilir + kopyalanabilir — [`nodes/denetim_izi.py`](backend/agents/nodes/denetim_izi.py) |
 | 🔎 **Kanıt-vurgu** | Çıkarılan her unsurun ham (maskeli) evraktaki yeri işaretli — "bunu nereden buldun?" sorusuna görsel cevap |
@@ -170,21 +174,25 @@ Tüm ölçümler **gerçek LangGraph pipeline'ını** koşar (`build_graph().ain
 modu ve veri setidir. Held-out setler örtük ifadeli, üretim sözlüğünden **farklı** evraklardır
 (keyword sızıntısı yok). Tüm artefaktlar repodadır — sayılar yeniden üretilebilir.
 
-### Held-out (görülmemiş evrak) — üretim modeli DeepSeek (`deepseek-chat`)
+### Held-out (görülmemiş evrak, n=108 = 2×54) — üretim modeli DeepSeek (`deepseek-chat`)
 
-| Metrik | DeepSeek n=22 (ön-ölçüm) | gpt-4o n=108 (çapraz-referans) |
+| Metrik | Set-1 (n=54) | Set-2 (n=54) |
 |---|---|---|
-| Sınıflandırma accuracy (sıkı) | **0.955** | 0.935 [Wilson CI 0.872–0.968] |
-| Sınıflandırma macro-F1 (sıkı) | **0.933** [BCa CI 0.875–1.0] | 0.935 [BCa CI 0.881–0.978] |
-| Operasyonel accuracy *(işlem-eşdeğer tür grubu doğru)* | **1.000** | 0.963 |
-| Yönlendirme Top-1 | **0.955** | 0.954 |
+| Sınıflandırma accuracy (sıkı, 19 sınıf) | 0.870 | **0.907** |
+| Sınıflandırma macro-F1 (sıkı) | 0.864 | **0.907** |
+| Operasyonel accuracy *(işlem-eşdeğer tür grubu doğru)* | 0.907 | **0.963** |
+| Yönlendirme Top-1 | **0.907** | **0.907** |
 
-Artefaktlar: [`heldout_deepseek_quick.json`](backend/eval/runs/heldout_deepseek_quick.json) ·
-[`heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json) ·
+Artefaktlar: [`heldout_deepseek_set1_n54_fixed.json`](backend/eval/runs/heldout_deepseek_set1_n54_fixed.json) ·
+[`heldout_deepseek_set2_n54_fixed.json`](backend/eval/runs/heldout_deepseek_set2_n54_fixed.json) ·
 detay [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
 
-> ⚠️ **Dürüstlük:** DeepSeek ölçümü küçük örneklem (n=22) → CI geniş; tam n=108 koşusu yol
-> haritasında. gpt-4o satırı önceki üretim modelinin tam-set çapraz-referansıdır.
+> ⚠️ **Dürüstlük:** `_fixed` sonekli artefaktlar route_birim düzeltmesi SONRASI koşulardır;
+> aynı klasördeki `_n54.json` dosyaları düzeltme-öncesi tarihsel kayıttır (Top-1 0.537/0.593) —
+> ikisini de siliyor değil, yan yana saklıyoruz. Önceki üretim modeli gpt-4o'nun tam-set
+> çapraz-referansı ([`heldout_gpt4o_set1.json`](backend/eval/runs/heldout_gpt4o_set1.json))
+> sınıflandırmada ~0.93 ile uyumludur; routing satırları düzeltme öncesine ait olduğundan
+> artık referans verilmez.
 
 ### Geniş in-domain karne (n=216, gerçek LLM, kasıtlı zor set)
 
@@ -214,7 +222,9 @@ tanımları: [`docs/06-eval-harness.md`](docs/06-eval-harness.md)).
   > kıyaslanamaz.** Aynı held-out ailesinde gerçek LLM 0.935'e çıkar (set-1, n=108); mock'un
   > 216'lık zor setteki koşusu ve tam aynı-set DeepSeek karşılaştırması yol haritasındadır.
 - **OCR** (taranmış PDF, RapidOCR): CER **0.112** / WER 0.514 (n=3) — [`ocr_eval.json`](backend/eval/runs/ocr_eval.json)
-- **Mevzuat retrieval**: Recall@1 0.625 / Recall@3 **0.875** (n=16; ölçüm: [`docs/method.md`](docs/method.md))
+- **Mevzuat retrieval** (BM25, yeniden-üretilebilir: `uv run python -m eval.retrieval_eval`):
+  Recall@1 0.688 / Recall@3 **0.875** / MRR 0.760 (n=16, 11 Tem 2026 yeniden ölçüm; üstüne
+  DeepSeek listwise rerank + NLI katmanı biner — ölçüm tanımı: [`docs/method.md`](docs/method.md))
 - **İstatistik altyapısı**: Wilson CI + exact McNemar + bootstrap-BCa, saf Python — [`eval/stats.py`](backend/eval/stats.py)
 - **KamuEvrak-Bench**: 6 görevli, %100 sentetik, veri-kartlı bench paketi — [`bench/`](bench/)
 
@@ -324,4 +334,5 @@ Başvuru: 04 Temmuz 2026 (Takım ID 1001572 · Başvuru ID 5372496).
 
 ## Lisans
 
-[MIT](LICENSE) © kamu-evrak ekibi · Katkı: [CONTRIBUTING.md](CONTRIBUTING.md)
+[MIT](LICENSE) © kamu-evrak ekibi · Katkı: [CONTRIBUTING.md](CONTRIBUTING.md) ·
+Sürüm geçmişi: [CHANGELOG.md](CHANGELOG.md)

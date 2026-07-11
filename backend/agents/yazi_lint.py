@@ -232,7 +232,18 @@ def _k_sayi(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
                       "Sayı bileşenleri tam ancak hazırlama-süreci öneki yok — elektronik "
                       "belgede başına 'E-' eklenir (m.11).",
                       oneri="Belge EBYS'de üretilecekse sayının başına 'E-' ibaresini ekleyin.")
-    if "{{" in satir or "ebys" in tr_lower(satir) or "taslak" in tr_lower(satir):
+    # Taslak yer tutucu Sayı: köşeli placeholder ('E-[DETSİS No]-903-[Kayıt No]', SDP
+    # konu-kodlu — yazi.sdp_plani), jinja ya da 'ebys/taslak' → EBYS kayıtta dolar (uyari değil).
+    # Köşeli parantez '[...]' TAM placeholder aranır (tek başına stray '[' desen ihlalini
+    # sessizce bilgi'ye düşürmesin — review LOW bulgusu).
+    yer_tutucu = ("{{" in satir or re.search(r"\[[^\]]+\]", satir)
+                  or "ebys" in tr_lower(satir) or "taslak" in tr_lower(satir))
+    if yer_tutucu:
+        # SDP yapısı (E-…-<konu kodu>-…) varsa m.11-yapılı olduğunu POZİTİF vurgula.
+        if re.search(r"e-.+-\d{2,3}(?:\.\d+)?-", tr_lower(satir)):
+            return _kural("L-M11-sayi", "m.11", "bilgi",
+                          "Sayı m.11 yapısında (E-DETSİS-dosya kodu-kayıt); DETSİS ve kayıt "
+                          "numarası EBYS kayıt anında atanır — taslakta yer tutucu (m.11).")
         return _kural("L-M11-sayi", "m.11", "bilgi",
                       "Sayı EBYS kayıt anında atanır — taslakta yer tutucu (m.11).")
     return _kural("L-M11-sayi", "m.11", "uyari",
@@ -429,6 +440,55 @@ def _k_olur(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
                         "yazıp altına tarih ve onay makamı imza bloğunu ekleyin.")
 
 
+# m.22 — koordinasyon/iş birliği ipuçları (gövdede geçerse 'Koordinasyon:' bloğu beklenir).
+_KOORD_RE = re.compile(r"\bkoordinasyon\b|\biş ?birliği\b|\bgörüş alınarak\b|\bmüştereken\b")
+# m.25 — geçerli gizlilik dereceleri (UZUN-ÖNCE: 'HİZMETE ÖZEL' 'ÖZEL'den, 'ÇOK GİZLİ'
+# 'GİZLİ'den önce denensin). Büyük harf konvansiyonu yanlış-eşleşmeyi azaltır. 'ÖZEL' negatif
+# ileri-bakışı: 'ÖZEL İDARE(Sİ)' (İl Özel İdaresi — yaygın kurum adı) gizlilik derecesi
+# sanılmaz (review bulgusu; yalnız 'gecti' mesajını yanlış kurar, banda etkisiz ama yanıltıcı).
+_GIZLILIK_RE = re.compile(r"\b(ÇOK GİZLİ|HİZMETE ÖZEL|GİZLİ|ÖZEL(?!\s*İDARE))\b")
+# str.title() Türkçe İ'yi bozar (combining nokta) → sabit görüntü eşlemesi (4 kapalı-küme derece).
+_GIZLILIK_TR = {"ÇOK GİZLİ": "Çok Gizli", "HİZMETE ÖZEL": "Hizmete Özel",
+                "GİZLİ": "Gizli", "ÖZEL": "Özel"}
+
+
+def _k_paraf(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
+    """m.21 — Paraf. Elektronik belgede paraf/onay zinciri EBYS'de tutulur → taslakta ayrı
+    paraf bölümü BEKLENMEZ; bu e-belge için DOĞRU durumdur (geçti). Fiziksel 'Paraf:' bloğu
+    varsa da geçti. Hiçbir koşulda 'uyari' üretmez (bant güvenliği)."""
+    if _etiket_satiri(taslak, "paraf") is not None:
+        return _kural("L-M21-paraf", "m.21", "gecti", "Paraf bölümü mevcut (m.21).")
+    return _kural("L-M21-paraf", "m.21", "gecti",
+                  "Elektronik belgede paraf/onay zinciri EBYS'de tutulur — taslakta ayrı "
+                  "paraf bölümü gerekmez (m.21).")
+
+
+def _k_koordinasyon(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
+    """m.22 — koşullu: 'Koordinasyon:' bloğu varsa geçti; gövde iş birliğinden söz edip blok
+    yoksa bilgi; hiçbiri yoksa kural üretilmez (çoğu yazıda koordinasyon yoktur — m.18/19 deseni)."""
+    if _etiket_satiri(taslak, "koordinasyon") is not None:
+        return _kural("L-M22-koordinasyon", "m.22", "gecti", "Koordinasyon bölümü mevcut (m.22).")
+    if _KOORD_RE.search(low):
+        return _kural("L-M22-koordinasyon", "m.22", "bilgi",
+                      "Gövde iş birliği/koordinasyondan söz ediyor ancak 'Koordinasyon:' bölümü "
+                      "görünmüyor — imza öncesi başka birimle hazırlandıysa eklenir (m.22).",
+                      oneri="Belge başka birimle iş birliğiyle hazırlandıysa parafın altına "
+                            "'Koordinasyon:' başlığıyla ilgili personelin unvan-ad-soyadını ekleyin.")
+    return None
+
+
+def _k_gizlilik(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
+    """m.25 — Gizlilik derecesi. Geçerli derece (Çok Gizli/Gizli/Özel/Hizmete Özel) belgede
+    işaretliyse geçti; yoksa belge TASNİF DIŞIDIR (gizlilik derecesi taşımaz) → yine geçti.
+    Her iki durum da kurala UYGUN (m.25) → 'uyari' üretmez (bant güvenliği)."""
+    m = _GIZLILIK_RE.search(taslak)
+    if m is not None:
+        return _kural("L-M25-gizlilik", "m.25", "gecti",
+                      f"Gizlilik derecesi belirtilmiş: {_GIZLILIK_TR[m.group(1)]} (m.25).")
+    return _kural("L-M25-gizlilik", "m.25", "gecti",
+                  "Belge tasnif dışı — gizlilik derecesi taşımıyor (m.25).")
+
+
 def _k_yasak_ifade(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     # Sözcük-sınırlı arama: "iyi çalışmaların değerlendirilmesi" gibi ekli/bileşik
     # kullanımlar eşleşmez — yalnız kalıbın kendisi uyarı üretir.
@@ -510,7 +570,8 @@ def _kapanis_belirsiz_notu(low: str, muhatap: str) -> dict[str, str] | None:
 
 
 _KURALLAR = (_k_baslik, _k_sayi, _k_tarih, _k_konu, _k_muhatap, _k_ilgi, _k_kapanis,
-             _k_imza, _k_ek, _k_dagitim, _k_olur, _k_sureli, _k_yasak_ifade)
+             _k_imza, _k_ek, _k_dagitim, _k_olur, _k_paraf, _k_koordinasyon,
+             _k_gizlilik, _k_sureli, _k_yasak_ifade)
 
 _ANTET_SATIR = 6  # gönderen makam taslağın kendi antetinden (ilk satırlar) çözülür
 

@@ -534,6 +534,48 @@ function LintSatiri({ k }) {
 /* Bozuk öğede anahtar çakışması (key=undefined) satır state'ini karıştırmasın. */
 const lintAnahtar = (k, i, onek) => k.kural || `${k.madde ?? "?"}-${onek}${i}`;
 
+/* Uyumluluk ölçeri lejant noktası — renk TEK sinyal değil (a11y): nokta + etiket + sayı. */
+function LintNokta({ renk, etiket }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+      <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: renk, flexShrink: 0 }} />
+      {etiket}
+    </span>
+  );
+}
+
+/* Uyumluluk ölçeri — Lighthouse/CI 'audit score' deseni: segmentli çubuk (geçti yeşil ·
+   bilgi nötr · uyarı sarı, sayıya orantılı) + üstte 'karşılanan/toplam' + kesin-ihlal
+   durumu, altta erişilebilir lejant. Çubuk role=img + özet aria-label; MASTER disiplini
+   (hairline zemin, gradyan/glow yok, semantik renk). */
+function LintOlcer({ gecti, bilgi, uyari }) {
+  const toplam = gecti + bilgi + uyari;
+  if (!toplam) return null;
+  const seg = [
+    { n: gecti, c: BANT.yesil.c }, { n: bilgi, c: PAL.mut3 }, { n: uyari, c: BANT.sari.c },
+  ].filter((s) => s.n > 0);
+  return (
+    <div style={{ marginBottom: SP.s }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: SP.s, marginBottom: 6 }}>
+        <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink }}>{gecti}/{toplam} kural karşılandı</span>
+        <span style={{ ...TYPE.meta, color: uyari ? DERIN.sari : DERIN.yesil, fontWeight: 500, flexShrink: 0 }}>
+          {uyari ? `${uyari} uyarı` : "kesin ihlal yok"}
+        </span>
+      </div>
+      <div role="img"
+        aria-label={`Yönetmelik 2646 denetimi: ${toplam} kuraldan ${gecti} karşılandı, ${bilgi} bilgi notu, ${uyari} uyarı.`}
+        style={{ display: "flex", height: 6, borderRadius: 3, overflow: "hidden", background: PAL.line, gap: 1.5 }}>
+        {seg.map((s, i) => <div key={i} style={{ flex: s.n, background: s.c }} />)}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: SP.m, marginTop: 6, ...TYPE.meta, color: PAL.mut2 }}>
+        <LintNokta renk={BANT.yesil.c} etiket={`${gecti} geçti`} />
+        {bilgi > 0 && <LintNokta renk={PAL.mut3} etiket={`${bilgi} bilgi notu`} />}
+        {uyari > 0 && <LintNokta renk={BANT.sari.c} etiket={`${uyari} uyarı`} />}
+      </div>
+    </div>
+  );
+}
+
 export function Lint2646Karti({ lint, giris }) {
   // Gruplama saf mantıkta (lintGrupla — test edilir); bilinmeyen durum diger'e düşer,
   // sessiz kaybolmaz (kart etiketi kural sayısıyla tutarlı kalır).
@@ -546,7 +588,9 @@ export function Lint2646Karti({ lint, giris }) {
   const bulgu = uyari.length + bilgi.length + diger.length;
   return (
     <div>
-      {giris && <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>{giris}</p>}
+      {/* Görsel uyumluluk ölçeri (bar + lejant) — eski düz-metin 'giris' özetinin yerini alır. */}
+      <LintOlcer gecti={gecti.length} bilgi={bilgi.length} uyari={uyari.length + diger.length} />
+      {giris && <p style={{ margin: "0 0 8px", ...TYPE.meta, color: PAL.mut2 }}>{giris}</p>}
       <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
         {uyari.map((k, i) => <LintSatiri key={lintAnahtar(k, i, "u")} k={k} />)}
         {bilgi.map((k, i) => <LintSatiri key={lintAnahtar(k, i, "b")} k={k} />)}

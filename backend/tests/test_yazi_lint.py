@@ -625,3 +625,77 @@ class TestVerifyLlmKademe:
 
         from agents.nodes.verify import _makam_seviye_llm
         assert asyncio.run(_makam_seviye_llm("Acayip Ofisi Kurumu")) is None
+
+
+class TestYeniKurallarM21M22M25:
+    """m.21 Paraf · m.22 Koordinasyon · m.25 Gizlilik — gerçek 2646 unsurları (korpus dayanaklı)."""
+
+    def test_paraf_e_belgede_gecti_uyari_yok(self):
+        # m.21: e-belgede paraf EBYS'de tutulur → geçti (asla uyari — bant güvenliği)
+        k = next(k for k in lint_2646("T.C.\nSayı : E-1-010-1  01.07.2026\nRica ederim.\nX",
+                                      "")["kurallar"] if k["kural"] == "L-M21-paraf")
+        assert k["durum"] == "gecti"
+        assert k.get("dayanak")  # korpus m.21 lafzı
+
+    def test_gizlilik_tasnif_disi_gecti(self):
+        # m.25: gizlilik ibaresi yok → belge tasnif dışı → geçti
+        k = next(k for k in lint_2646("T.C.\nKonu : x\nRica ederim.", "")["kurallar"]
+                 if k["kural"] == "L-M25-gizlilik")
+        assert k["durum"] == "gecti"
+        assert "tasnif dışı" in k["mesaj"].lower()
+
+    def test_gizlilik_derece_isareti_taninir(self):
+        # m.25: geçerli derece işaretliyse belirtilmiş olarak geçer (uzun-önce: HİZMETE ÖZEL)
+        k = next(k for k in lint_2646("T.C.\nHİZMETE ÖZEL\nKonu : x\nRica ederim.", "")["kurallar"]
+                 if k["kural"] == "L-M25-gizlilik")
+        assert k["durum"] == "gecti"
+        assert "Hizmete Özel" in k["mesaj"]
+
+    def test_ozel_idaresi_gizlilik_sanilmaz(self):
+        # Regresyon (review MEDIUM): 'İl Özel İdaresi' yaygın kurum adı → gizlilik derecesi
+        # DEĞİL; belge tasnif dışı raporlanmalı ('Özel' yanlış-eşleşmesi negatif ileri-bakışla önlendi).
+        k = next(k for k in lint_2646("T.C.\nANKARA İLİ ÖZEL İDARESİ\nKonu : x\nRica ederim.",
+                                      "")["kurallar"] if k["kural"] == "L-M25-gizlilik")
+        assert k["durum"] == "gecti"
+        assert "tasnif dışı" in k["mesaj"].lower()
+
+    def test_paraf_blok_varsa_gecti(self):
+        # m.21: fiziksel 'Paraf:' bloğu varsa geçti (etiket-dalı kapsamı)
+        k = next(k for k in lint_2646("T.C.\nKonu : x\nRica ederim.\nParaf : Uzman A.Y.",
+                                      "")["kurallar"] if k["kural"] == "L-M21-paraf")
+        assert k["durum"] == "gecti"
+        assert "mevcut" in k["mesaj"]
+
+    def test_koordinasyon_blok_varsa_gecti(self):
+        # m.22: 'Koordinasyon:' bloğu varsa geçti (etiket-dalı kapsamı)
+        k = next(k for k in lint_2646("T.C.\nKonu : x\nRica ederim.\nKoordinasyon : Şb.Md. B.C.",
+                                      "")["kurallar"] if k["kural"] == "L-M22-koordinasyon")
+        assert k["durum"] == "gecti"
+
+    def test_koordinasyon_kosullu_uretilir(self):
+        # m.22: koordinasyon sözü yok → kural HİÇ üretilmez (m.18/19 deseni)
+        kurallar = lint_2646("T.C.\nKonu : x\nRica ederim.", "")["kurallar"]
+        assert not any(k["kural"] == "L-M22-koordinasyon" for k in kurallar)
+        # gövde 'iş birliği' der ama blok yok → bilgi (uyari değil)
+        k = next(k for k in lint_2646("T.C.\nKonu : x\nİlgili birimle iş birliği yapılmıştır.\n"
+                                      "Rica ederim.", "")["kurallar"]
+                 if k["kural"] == "L-M22-koordinasyon")
+        assert k["durum"] == "bilgi"
+
+    def test_yeni_kurallar_banda_dokunmaz(self):
+        # Bant güvenliği: yeni üç kural hiçbir temiz taslakta 'uyari' (SARI) üretmez
+        rapor = lint_2646("T.C.\nSayı : E-1-010-1  01.07.2026\nKonu : x\nRica ederim.\nAyşe YILMAZ", "")
+        yeni = [k for k in rapor["kurallar"]
+                if k["kural"] in {"L-M21-paraf", "L-M22-koordinasyon", "L-M25-gizlilik"}]
+        assert all(k["durum"] != "uyari" for k in yeni)
+
+
+class TestSdpSayiRegresyon:
+    def test_sdp_konu_kodlu_sayi_bilgi_uyari_degil(self):
+        # Regresyon: SDP Sayı'sı 'E-[DETSİS No]-903-[Kayıt No]' m.11-yapılı yer tutucudur →
+        # bilgi (uyari DEĞİL); aksi halde SDP güçlendirmesi lint'te SARI üretirdi.
+        from agents.yazi_lint import lint_2646
+        t = "T.C.\nSayı : E-[DETSİS No]-903-[Kayıt No]  11.07.2026\nKonu : x\nRica ederim."
+        k = next(k for k in lint_2646(t, "")["kurallar"] if k["kural"] == "L-M11-sayi")
+        assert k["durum"] == "bilgi"
+        assert "m.11 yapısında" in k["mesaj"]

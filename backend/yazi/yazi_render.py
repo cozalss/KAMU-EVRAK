@@ -346,7 +346,7 @@ def _ilgi_satirlari(unsurlar: dict[str, Any]) -> tuple[str, ...]:
 
 def build_context(
     yazi_turu: str, unsurlar: dict[str, Any], metin: str,
-    *, muhatap_override: str | None = None,
+    *, muhatap_override: str | None = None, sdp_kodu: str = "",
 ) -> YaziContext:
     """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (demo-safe).
 
@@ -394,8 +394,36 @@ def build_context(
         ilgi_sayi=str(unsurlar.get("sayi", "") or ""),
         ilgi_satirlari=ilgi,
         kapanis=kapanis,
+        sdp=sdp_kodu,  # Yön. m.11 Sayı konu-kodu (yazi.sdp_plani; boşsa Sayı placeholder kalır)
         olur_alanlari=_olcu_meta(unsurlar) if turu == "olur" else {},
     )
+
+
+def ts13298_ust_veri(
+    yazi_turu: str, konu: str, sdp: dict[str, str] | None, sayi: str, tarih: str,
+    *, ivedilik: str = "",
+) -> dict[str, Any]:
+    """TS 13298 (EBYS) Bölüm 4 — belgeye eşlik eden STANDART üst-veri (metadata) bloğu.
+
+    EBYS'lerin ortak dili: belge türü, konu, dosya planı kodu (SDP), güvenlik kodu, tarih ve
+    sayı. Yalnız GROUNDED alanlar üretilir — saklama süresi vb. kaynakta yoksa eklenmez
+    (uydurma yok). Güvenlik kodu varsayılan "Tasnif Dışı" (belgede gizlilik derecesi
+    işaretlenmemişse Gizlilik Yönetmeliği'nin en düşük seviyesi). EYP köprüsü + UI bunu kullanır.
+    """
+    uv: dict[str, Any] = {
+        "belge_turu": YAZI_TURU_TR.get(yazi_turu, yazi_turu),
+        "konu": konu or "",
+        "tarih": tarih,
+        "sayi": sayi,
+        "guvenlik_kodu": "Tasnif Dışı",
+        "standart": "TS 13298 / Yön. 2646",
+    }
+    if sdp:
+        uv["dosya_plani_kodu"] = sdp["kod"]
+        uv["dosya_plani_adi"] = sdp["baslik"]
+    if ivedilik:
+        uv["ivedilik_derecesi"] = ivedilik
+    return uv
 
 
 async def build_alt_talep_taslaklari(
@@ -427,4 +455,4 @@ async def build_alt_talep_taslaklari(
 
 
 __all__ = ("build_alt_talep_taslaklari", "build_body", "build_context",
-           "revize_taslak", "revize_taslak_yapili")
+           "revize_taslak", "revize_taslak_yapili", "ts13298_ust_veri")

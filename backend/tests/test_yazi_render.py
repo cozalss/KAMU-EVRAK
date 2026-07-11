@@ -19,6 +19,7 @@ from yazi.yazi_render import (
     _muhatap,
     build_alt_talep_taslaklari,
     build_context,
+    ts13298_ust_veri,
 )
 
 # ---------------------------------------------------------------------------
@@ -389,3 +390,37 @@ class TestKapanisHiyerarsi:
         # 'Bilgilerinize arz ederim.' kalıbı türe özgü — hiyerarşi override uygulanmaz
         ctx = build_context("bilgilendirme", {"gonderen": "Ankara Valiliği"}, "gövde")
         assert ctx.kapanis == "Bilgilerinize arz ederim."
+
+
+# ---------------------------------------------------------------------------
+# SDP (Yön. m.11 Sayı konu-kodu) + TS 13298 üst-veri entegrasyonu
+# ---------------------------------------------------------------------------
+class TestSdpUstVeri:
+    def test_sdp_kodu_sayi_satirini_m11_yapisina_koyar(self):
+        # Arrange / Act
+        ctx = build_context("ust_yazi", {"konu": "Nakil talebi"}, "gövde", sdp_kodu="903")
+        metin = render_metin(ctx)
+        # Assert — Sayı 'EBYS-TASLAK' değil, m.11-yapılı gerçek SDP kodu
+        assert ctx.sdp == "903"
+        assert "E-[DETSİS No]-903-[Kayıt No]" in metin
+        assert "EBYS-TASLAK" not in metin
+
+    def test_sdp_yoksa_ebys_taslak_placeholder_korunur(self):
+        # Additivity: sdp_kodu boş → bugünkü davranış birebir (EBYS-TASLAK)
+        ctx = build_context("ust_yazi", {"konu": "x"}, "gövde", sdp_kodu="")
+        assert "EBYS-TASLAK" in render_metin(ctx)
+
+    def test_ts13298_ust_veri_grounded_alanlar(self):
+        uv = ts13298_ust_veri("cevabi_yazi", "Nakil talebi",
+                              {"kod": "903", "baslik": "Atama İşleri"},
+                              "E-[DETSİS No]-903-[Kayıt No]", "11.07.2026")
+        assert uv["dosya_plani_kodu"] == "903"
+        assert uv["dosya_plani_adi"] == "Atama İşleri"
+        assert uv["guvenlik_kodu"] == "Tasnif Dışı"
+        assert "TS 13298" in uv["standart"]
+
+    def test_ts13298_ust_veri_sdp_yoksa_dosya_plani_alani_yok(self):
+        # SDP None → uydurma alan üretilmez (dosya_plani_kodu hiç yok)
+        uv = ts13298_ust_veri("ust_yazi", "x", None, "EBYS-TASLAK", "11.07.2026")
+        assert "dosya_plani_kodu" not in uv
+        assert uv["guvenlik_kodu"] == "Tasnif Dışı"

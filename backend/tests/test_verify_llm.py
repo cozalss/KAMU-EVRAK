@@ -363,6 +363,48 @@ class TestGroundingIskeletMuafiyeti:
         out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
         assert out["verify_uyari"] == []  # hiçbiri banda dokunmaz
 
+    async def test_sdp_sayi_satiri_dusurulur(self, acik):
+        # Yön. m.11 SDP Sayı satırı (yazi.sdp_plani) deterministik konur; '930' konu-kodu
+        # kaynakta olmasa da UYDURMA DEĞİLDİR → grounding banda dokunmamalı (whole-Sayı muaf).
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm({"desteklenmeyen_iddialar": [
+            "Sayı : E-[DETSİS No]-930-[Kayıt No]",
+            "Taslakta 'E-[DETSİS No]-930-[Kayıt No]' sayısı geçmektedir, kaynakta yok",
+        ]}))
+        out = await verify_node({
+            "yazi_taslak_md": TEMIZ + "\nSayı : E-[DETSİS No]-930-[Kayıt No]",
+            "evrak_text": KAYNAK,
+            "ust_veri": {"dosya_plani_kodu": "930", "sayi": "E-[DETSİS No]-930-[Kayıt No]"}})
+        assert not any(_UYDURMA_IMZA in u for u in out["verify_uyari"])
+
+    async def test_bugunun_yili_yil_celiskisi_iddiasi_dusurulur(self, acik):
+        # Giden yazı tarihi = bugün; LLM bazen tarihi tırnaksız + yıla ayrı atıfla işaretliyor
+        # ('...2026 tarihi kaynakla çelişiyor'). Bugünün YILI grounded → banda dokunmaz.
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        yil = date.today().strftime("%Y")
+        acik.setattr(verify_mod, "llm_json", _fake_llm({"desteklenmeyen_iddialar": [
+            f"Taslakta {date.today().strftime('%d.%m.%Y')} tarihi kullanılmış, kaynakta tarih "
+            f"yok; kaynak 2019 yılına atıf yapıyor, {yil} tarihi kaynakla çelişiyor.",
+        ]}))
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": "2019 yılı raporu."})
+        assert not any(_UYDURMA_IMZA in u for u in out["verify_uyari"])
+
+    async def test_sdp_kodune_esit_fabrike_sayi_yine_yakalanir(self, acik):
+        # Güvenlik asimetrisi (review CRITICAL-1): belgenin SDP kodu '930' olsa BİLE, gövdede
+        # geçen fabrike bir '930 TL tutarı' grounding'de DÜŞMEMELİ — SDP kodu kaynak_sayilar'a
+        # eklenmez; yalnız TÜM Sayı öbeği muaftır, bare kod değil.
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm({"desteklenmeyen_iddialar": [
+            "Taslakta 930 TL tutarı belirtilmiş, kaynakta böyle bir tutar geçmiyor",
+        ]}))
+        out = await verify_node({
+            "yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK,
+            "ust_veri": {"dosya_plani_kodu": "930", "sayi": "E-[DETSİS No]-930-[Kayıt No]"}})
+        assert any(_UYDURMA_IMZA in u and "930 TL" in u for u in out["verify_uyari"])
+
     async def test_fabrike_sayi_korunur_grounded_sayi_dususturulur(self, acik):
         # Tam-token grounding: fabrike '9998887' korunur; kaynaktaki 'E-1234567'e karşılık
         # gelen '1234567' altdizge YANLIŞ-grounded olmaz — biri tutulur biri düşer.

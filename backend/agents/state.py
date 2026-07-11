@@ -79,6 +79,8 @@ class EvrakState(TypedDict):
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
     # Dinamik yazı planının (yazi/yazi_plan.py) insan-okunur gerekçesi; boş = statik yol.
     yazi_plan_notu: NotRequired[str]
+    # TS 13298 üst-veri (EBYS metadata): belge türü + konu + SDP kodu/adı + güvenlik + tarih/sayı.
+    ust_veri: NotRequired[dict[str, Any]]
     yazi_taslak_md: NotRequired[str]
     yazi_taslak_pdf_bytes: NotRequired[bytes | None]
     yazi_taslak_pdf_filename: NotRequired[str]

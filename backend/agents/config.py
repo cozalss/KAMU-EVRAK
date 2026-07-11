@@ -480,6 +480,12 @@ LINT_AUTOFIX = os.getenv("LINT_AUTOFIX", "1") == "1"
 # SERTLEŞTİREBİLİR (ek uyarı ekler); deterministik veto tek başına asla silinmez.
 VERIFY_GROUNDING_LLM = os.getenv("VERIFY_GROUNDING_LLM", "1") == "1"
 
+# SDP (Standart Dosya Planı) konu-kodu önerisi — Yön. 2646 m.11 Sayı satırının konu-kodu
+# bileşenini evrak türü + konudan DETERMİNİSTİK seçer (yazi/sdp_plani, 2005/7 Genelge Ortak
+# Alanlar). Taslak Sayı'sı "EBYS-TASLAK" placeholder'ından m.11-yapılı gerçek koda kavuşur.
+# Kapalı-küme + deterministik → kapatılırsa (SDP_ONERI=0) render bugünküyle BİREBİR aynı.
+SDP_ONERI = os.getenv("SDP_ONERI", "1") == "1"
+
 # m.16 kademe fallback'i: tablo çözemeyen muhatap makamın kademesini LLM kapalı-küme
 # (1-8) tahmin eder. TERS ASİMETRİ: tahmin YALNIZ 'bilgi' notu üretir, asla 'uyari'/
 # SARI — yanlış tahmin yanlış NOT olur, yanlış BANT olamaz. Mock/anahtar yok → susar.

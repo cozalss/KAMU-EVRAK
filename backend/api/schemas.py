@@ -179,6 +179,8 @@ class ProcessResponse(BaseModel):
     yazi_turu: str = ""
     # Dinamik yazı planı gerekçesi ("neden bu tür/muhatap"); boş = statik eşleme kullanıldı.
     yazi_plan_notu: str = ""
+    # TS 13298 üst-veri (EBYS metadata) — belge türü/konu/SDP kodu+adı/güvenlik/tarih/sayı.
+    ust_veri: dict = Field(default_factory=dict)
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
     verify_uyari: list[str] = Field(default_factory=list)

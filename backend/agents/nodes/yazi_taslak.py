@@ -25,7 +25,8 @@ from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TO_YAZI, LLM_ATLA_NODELAR, birim_tr
+from agents.config import EVRAK_TO_YAZI, LLM_ATLA_NODELAR, SDP_ONERI, birim_tr
+from yazi.sdp_plani import sdp_bul
 
 log = structlog.get_logger()
 
@@ -97,7 +98,12 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     try:
         from yazi.renderer import render_yazi
         from yazi.yazi_plan import yazi_plani
-        from yazi.yazi_render import build_alt_talep_taslaklari, build_body, build_context
+        from yazi.yazi_render import (
+            build_alt_talep_taslaklari,
+            build_body,
+            build_context,
+            ts13298_ust_veri,
+        )
 
         alt_out = await build_alt_talep_taslaklari(alt_talepler, unsurlar, evrak_text)
         if len(alt_out) >= 2:
@@ -114,8 +120,14 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         hedef_muhatap = (plan or {}).get("muhatap") or (
             birim_tr(hedef_birim) if yazi_turu == "ust_yazi" else None)
         metin = await build_body(yazi_turu, unsurlar, evrak_text)
-        ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap)
+        # SDP konu-kodu (Yön. m.11): evrak türü + konudan deterministik → Sayı satırı m.11-yapılı
+        # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
+        konu = str(unsurlar.get("konu", "") or "")
+        sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
+        ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
+                            sdp_kodu=(sdp or {}).get("kod", ""))
         result = render_yazi(ctx)
+        sayi_satiri = ctx.jinja_vars().get("sayi_satiri", "")
     except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
         log.warning("yazi_taslak_fallback", err=str(exc))
         return _fallback_taslak(yazi_turu, str(unsurlar.get("konu", "") or ""))
@@ -130,6 +142,10 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         "format_uyumlu": result.format_uyumlu,
         # Dinamik planın insan-okunur gerekçesi (boş = statik yol kullanıldı) — UI notu.
         "yazi_plan_notu": plan_notu,
+        # TS 13298 üst-veri (EBYS metadata) — belge türü + konu + SDP + güvenlik + tarih/sayı.
+        "ust_veri": ts13298_ust_veri(
+            result.yazi_turu, konu, sdp, sayi_satiri,
+            date.today().strftime("%d.%m.%Y")),
     }
     if result.pdf_bytes:
         out["yazi_taslak_pdf_bytes"] = result.pdf_bytes

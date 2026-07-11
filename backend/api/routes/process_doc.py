@@ -101,6 +101,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         servis_birimi=state.get("servis_birimi") or {},
         yazi_turu=state.get("yazi_turu", ""),
         yazi_plan_notu=state.get("yazi_plan_notu", ""),
+        ust_veri=state.get("ust_veri", {}),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         format_uyumlu=bool(state.get("format_uyumlu", False)),
         # PII güvenliği: uydurma-veto uyarıları somut tarih/sayı token'ı içerir (TCKN-şekilli
@@ -383,7 +384,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri", "servis_birimi"),
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
-        "yazi_taslak": ("yazi_turu", "format_uyumlu", "yazi_plan_notu"),
+        "yazi_taslak": ("yazi_turu", "format_uyumlu", "yazi_plan_notu", "ust_veri"),
         "verify": ("format_uyumlu", "verify_uyari", "verify_notes",
                    "lint_2646", "tutarlilik_uyari", "lint_duzeltme_md"),
         # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).

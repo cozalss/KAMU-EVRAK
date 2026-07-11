@@ -315,17 +315,26 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     # değerleri longest-first sıralı (fragman bırakmaz); eşit uzunlukta ikincil alfabetik
     # anahtar → PYTHONHASHSEED'den TAM bağımsız (deterministik). Kaynak grounding için HAM
     # evrak metni kullanılır (maskeli değil — yalnız karşılaştırma, emit edilmez).
-    # Grounded küme = şablon iskeleti + kapanış kalıpları + KAPALI-KÜME birim adları
-    # (taslak yönlendirme kararıyla hedef birimi adlandırır — bu bir routing kararıdır,
-    # kaynakta olmasa da uydurma değil; 9 config birim adı sonlu ve bilinir).
+    # Grounded küme = şablon iskeleti + kapanış kalıpları + KAPALI-KÜME birim adları +
+    # bu belgenin deterministik Sayı satırı (yönlendirme/SDP kararı — kaynakta olmasa da
+    # uydurma değil; 'E-[DETSİS No]-930-[Kayıt No]' tümüyle şablon mobilyasıdır).
+    sayi_str = str((state.get("ust_veri") or {}).get("sayi") or "")
     iskelet_kaynak = (sablon_iskelet_degerleri() | _ISKELET_KAPANIS
-                      | {birim_tr(k) for k in BIRIMLER})
+                      | {birim_tr(k) for k in BIRIMLER}
+                      | ({sayi_str} if sayi_str else set()))
     # İddialarla AYNI normalizasyon (_norm_ws) → 'Başvurunuz.' sondaki nokta uyuşmazlığı olmaz.
     iskelet_sirali = sorted({n for d in iskelet_kaynak if d and (n := _norm_ws(d))},
                             key=lambda s: (-len(s), s))
     kaynak_norm = _norm_ws(state.get("evrak_text", "") or "")
     kaynak_sayilar = frozenset(_RE_SAYISAL.findall(kaynak_norm))  # tam-token grounding
-    bugunler = (date.today().strftime("%d.%m.%Y"), date.today().strftime("%Y-%m-%d"))
+    # NOT: SDP kodu (ör. '930') kaynak_sayilar'a EKLENMEZ — eklenirse claim'de geçen HERHANGİ
+    # bir '930' (fabrike tutar/madde) yanlışlıkla grounded sayılıp gerçek uydurma DÜŞERdi
+    # (güvenlik asimetrisi ihlali). Sayı satırı zaten TÜM-ÖBEK olarak iskelet_kaynak'ta muaf.
+    # Giden yazı tarihi = BUGÜN → tam tarih (iki format) + bare YIL grounded. LLM bazen
+    # tarihi tırnaksız + yıla ayrı atıfla işaretliyor ('...2026 tarihi kaynakla çelişiyor');
+    # yıl da giden-yazı tarihinin meşru bileşeni → sayı-anchor'ında uydurma sayılmamalı.
+    _bugun = date.today()
+    bugunler = (_bugun.strftime("%d.%m.%Y"), _bugun.strftime("%Y-%m-%d"), _bugun.strftime("%Y"))
     temiz = [i.strip()[:_GROUNDING_MAX_KARAKTER]
              for i in cevap["desteklenmeyen_iddialar"]
              if isinstance(i, str) and i.strip()

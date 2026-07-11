@@ -145,10 +145,15 @@ class YaziContext:
         görünür ve resmî format içinde tutar.
         """
         out: dict[str, Any] = {"tarih": self.tarih, "yazi_turu": self.yazi_turu}
-        # Sayı oto-kompoze (Yön. m.11): üç bileşen de varsa E-DETSİS-SDP-KAYIT (uydurma yok).
+        # Sayı oto-kompoze (Yön. m.11: E-DETSİS-SDP-KAYIT). SDP kodu konudan türetilir
+        # (yazi.sdp_plani); DETSİS/kayıt no kuruma/EBYS'ye özgü (taslakta bilinmez) → köşeli
+        # placeholder ile m.11 YAPISI korunur, gerçek konu-kodu görünür. Kod yoksa aşağıdaki
+        # scalar döngüsü 'EBYS-TASLAK' nötr varsayılanına düşer (uydurma yok).
         sayi = self.sayi_satiri
-        if not sayi and self.detsis and self.sdp and self.kayit_no:
-            sayi = f"E-{self.detsis}-{self.sdp}-{self.kayit_no}"
+        if not sayi and self.sdp:
+            detsis = self.detsis or "[DETSİS No]"
+            kayit = self.kayit_no or "[Kayıt No]"
+            sayi = f"E-{detsis}-{self.sdp}-{kayit}"
         scalar_fields = (
             "konu", "metin", "muhatap", "ilgi_tarih", "ilgi_sayi", "kapanis",
             "idare_adi", "birim_adi", "sayi_satiri", "detsis", "sdp", "kayit_no",

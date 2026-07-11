@@ -319,3 +319,47 @@ class TestGroundingIskeletMuafiyeti:
         assert any("99.12.2099" in u and _UYDURMA_IMZA in u for u in out["verify_uyari"])
         assert not any("EBYS-TASLAK" in u or "tarihi belirtilmiş" in u
                        for u in out["verify_uyari"])
+
+    # --- Güvenlik asimetrisi: gerçek uydurmayı SUSTURMAMA (adversaryal review kilidi) ---
+    async def test_tek_sozcuk_alintili_ozel_ad_korunur(self, acik):
+        # Tırnaklı TEK sözcük özel ad — ifade cümle değil çekirdektir, ilk sözcük atlanmaz.
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm(
+            {"desteklenmeyen_iddialar": ["Taslakta 'Öztürk' adı geçiyor, kaynakta bu kişi yok."]}))
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        assert any(_UYDURMA_IMZA in u and "Öztürk" in u for u in out["verify_uyari"])
+
+    async def test_altdizge_grounding_yanlis_eslesme_korunur(self, acik):
+        # 'Aydın' (fabrike ad) kaynaktaki 'aydınlatma' içinde altdizge — sözcük-sınırı ile
+        # YANLIŞLIKLA grounded sayılmaz → gerçek uydurma korunur.
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm(
+            {"desteklenmeyen_iddialar": ["Taslakta 'Aydın' adlı kişi geçiyor, kaynakta yok."]}))
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        assert any(_UYDURMA_IMZA in u and "Aydın" in u for u in out["verify_uyari"])
+
+    async def test_iyelik_kesmesi_regex_hijack_korunur(self, acik):
+        # Türkçe iyelik kesmesi ('Kaya'nın) ayraç sanılıp gerçek ad kaçmamalı → tüm-iddia
+        # yolu 'Kaya'yı yakalar (regex-hijack kilidi).
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm(
+            {"desteklenmeyen_iddialar": ["Belgede Kaya'nın devrettiği belirtilmiş, kaynakta yok."]}))
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        assert any(_UYDURMA_IMZA in u and "Kaya" in u for u in out["verify_uyari"])
+
+    async def test_fabrike_sayi_korunur_grounded_sayi_dususturulur(self, acik):
+        # Tam-token grounding: fabrike '9998887' korunur; kaynaktaki 'E-1234567'e karşılık
+        # gelen '1234567' altdizge YANLIŞ-grounded olmaz — biri tutulur biri düşer.
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm({"desteklenmeyen_iddialar": [
+            "Taslakta '9998887' sayısı geçiyor, kaynakta yok.",
+            "Taslakta '1234567' sayısı geçiyor.",  # kaynakta (E-1234567) → grounded, düşer
+        ]}))
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        grounding = [u for u in out["verify_uyari"] if _UYDURMA_IMZA in u]
+        assert any("9998887" in u for u in grounding)          # fabrike sayı korunur
+        assert not any("1234567" in u for u in grounding)      # grounded sayı düşer

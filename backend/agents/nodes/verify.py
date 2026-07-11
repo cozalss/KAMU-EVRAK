@@ -60,55 +60,80 @@ _ISKELET_KAPANIS: frozenset[str] = frozenset({
     "ebys onayı öncesinde oluşturulmuştur", "yukarıda arz edilen",
     "uygun görülmesini olurlarınıza arz ederim",
 })
-# LLM işaretlediği ifadeyi TIRNAKLA gösterir; çekirdek muhakemesi o ifade üzerindedir.
-_RE_ALINTI = re.compile(r"[\"'‘’“”«»]([^\"'‘’“”«»\n]{2,150})[\"'‘’“”«»]")
-_RE_SAYISAL = re.compile(r"\d[\d.\-/]*")
+# Çevreleyen tırnak/noktalama (tek kaynak — _norm_ws + özel-ad kırpma aynı kümeyi kullanır).
+_STRIP_CH = " '\"‘’“”«».,:;()"
+# LLM işaretlediği ifadeyi TIRNAKLA gösterir. Tırnak SÖZCÜK SINIRINDA olmalı (açılış öncesi
+# boşluk/başlangıç, kapanış sonrası boşluk/noktalama) → Türkçe iyelik kesmesi ('Kaya'nın)
+# yanlışlıkla ayraç sayılmaz (aksi halde gerçek ad kaçırılırdı — regex-hijack).
+_RE_ALINTI = re.compile(
+    r"(?:(?<=\s)|^)['‘\"“«]([^'‘’\"“”«»\n]{2,150}?)['’\"”»](?=\s|[.,;:)]|$)")
+_RE_SAYISAL = re.compile(r"\d[\d.\-/]*\d|\d")
 # Türkçe büyük harfler — özel ad (baş-harf) tespiti için (i̇→İ, ı→I ayrımı korunur).
 _TR_BUYUK = frozenset("ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ")
 
 
 def _norm_ws(s: str) -> str:
     """tr_lower + boşluk sıkıştır + çevreleyen tırnak/noktalama kırp (kaynak/ifade eşleme)."""
-    return re.sub(r"\s+", " ", tr_lower(s)).strip(" '\"‘’“”«».,:;()")
+    return re.sub(r"\s+", " ", tr_lower(s)).strip(_STRIP_CH)
 
 
-def _ifade_gercek_uydurma(ifade: str, kaynak_norm: str,
-                          iskelet_sirali: list[str], bugun: str) -> bool:
+def _kaynakta_var(token: str, kaynak_norm: str) -> bool:
+    """token kaynakta SÖZCÜK-SINIRLI geçiyor mu? Substring değil sınır eşleşmesi — 'aydın'
+    fabrikasyonu kaynaktaki 'aydınlatma' içinde YANLIŞLIKLA grounded sayılmasın (\\w Unicode:
+    Türkçe harf + rakam sınırı doğru çeker). Boş token güvenli tarafta grounded (True)."""
+    if not token:
+        return True
+    return re.search(rf"(?<!\w){re.escape(token)}(?!\w)", kaynak_norm) is not None
+
+
+def _ifade_gercek_uydurma(ifade: str, kaynak_norm: str, kaynak_sayilar: frozenset[str],
+                          iskelet_sirali: list[str], bugunler: tuple[str, ...]) -> bool:
     """İşaretlenen ifade GERÇEK uydurma mı — somut, kaynağa DAYANMAYAN anchor taşır mı?
 
-    Anchor = sayı/tarih VEYA özel ad (baş-harfi büyük, ilk sözcük cümle-başı → hariç).
-    Anchor kaynakta geçiyorsa / bugünün tarihiyse / şablon değeriyse GROUNDED sayılır.
-    Somut un-grounded anchor yoksa (yalnız register/kalıp ya da tümü grounded) → uydurma
-    DEĞİL (False). Yüzey kelimesine değil somut çekirdeğe baktığı için LLM'in verbose/
-    değişken ifadelerine karşı sağlamdır (güvenlik asimetrisi: gerçek uydurma korunur).
-    """
+    Anchor = sayı/tarih VEYA özel ad (baş-harfi büyük). Anchor kaynakta SÖZCÜK-SINIRLI
+    geçiyorsa / bugünün tarihiyse / şablon değeriyse GROUNDED sayılır. Somut un-grounded
+    anchor yoksa → uydurma DEĞİL (False). İLK-SÖZCÜK: yalnız ÇOK-sözcüklü ifadede atlanır —
+    orada baş-harf büyüklüğü cümle-başı olabilir ('Gelişmelerden ayrıca...' register kalıbı);
+    TEK-sözcüklü ifadede sözcük çekirdeğin kendisidir ('Öztürk' → yakalanır). Somut-çekirdeğe
+    baktığı için LLM'in verbose/değişken ifadelerine sağlamdır. SINIR: yalnız-niteliksel uydurma
+    (ad/sayı içermeyen soyut taahhüt) burada yakalanmaz — node kapsamı somut kurum/tarih/sayı;
+    HITL memur onayı yedek katmandır."""
     sl = _norm_ws(ifade)
-    if not sl or sl in kaynak_norm:
-        return False  # boş ya da kaynakta birebir → grounded
+    if not sl or _kaynakta_var(sl, kaynak_norm):
+        return False  # boş ya da kaynakta birebir (sınırlı) → grounded
     r = sl
     for dl in iskelet_sirali:  # longest-first: kısa değer uzun ifadeyi fragmanlayamaz
         if dl in r:
             r = r.replace(dl, " ")
-    r = r.replace(bugun, " ")
-    for num in _RE_SAYISAL.findall(r):  # kaynağa/bugüne dayanmayan sayı/tarih → uydurma
-        if len(num) >= 2 and num not in kaynak_norm:
+    for b in bugunler:  # giden yazı tarihi (birden çok format) → grounded
+        r = r.replace(b, " ")
+    # Sayı/tarih anchor: TAM token eşleşmesi (substring değil) — fabrikasyon '2026' kaynaktaki
+    # '01.03.2026' içine sızıp grounded görünmesin; gerçek fabrike tutar/sayı yakalanır.
+    for num in _RE_SAYISAL.findall(r):
+        if len(num) >= 2 and num not in kaynak_sayilar:
             return True
-    for w in ifade.split()[1:]:  # özel ad (ilk sözcük cümle-başı olabilir → atla)
-        wc = w.strip(" '\"‘’“”«».,:;()")
+    kelimeler = ifade.split()
+    # Çok-sözcüklüde ilk sözcük cümle-başı olabilir → atla; tek sözcüklüde çekirdektir → tut.
+    aday_kelimeler = kelimeler[1:] if len(kelimeler) > 1 else kelimeler
+    for w in aday_kelimeler:  # özel ad anchor
+        wc = w.strip(_STRIP_CH)
         if len(wc) >= 2 and wc[0] in _TR_BUYUK:
             wl = tr_lower(wc)
-            if wl not in kaynak_norm and not any(wl in dl for dl in iskelet_sirali):
+            if not _kaynakta_var(wl, kaynak_norm) and not any(wl in dl for dl in iskelet_sirali):
                 return True  # kaynağa dayanmayan özel ad → uydurma
     return False  # somut un-grounded anchor yok → register/grounded → yanlış-pozitif
 
 
 def _grounding_yanlis_pozitif_mi(iddia: str, iskelet_sirali: list[str],
-                                 kaynak_norm: str, bugun: str) -> bool:
-    """İddia tamamen yanlış-pozitif mi (→ düş)? İşaretli ifadelerin (tırnaklı) HİÇBİRİ
-    gerçek uydurma değilse yanlış-pozitiftir. Tırnaklı ifade yoksa tüm iddia değerlendirilir."""
-    parcalar = _RE_ALINTI.findall(iddia) or [iddia]
-    return not any(_ifade_gercek_uydurma(p, kaynak_norm, iskelet_sirali, bugun)
-                   for p in parcalar)
+                                 kaynak_norm: str, kaynak_sayilar: frozenset[str],
+                                 bugunler: tuple[str, ...]) -> bool:
+    """İddia tamamen yanlış-pozitif mi (→ düş)? Tırnaklı ifade(ler) varsa YALNIZ onlar
+    değerlendirilir (ifade = işaretlenen çekirdek); tırnak yoksa/regex ayıramazsa (Türkçe
+    iyelik kesmesi vb.) tüm iddia değerlendirilir. Hiçbir aday gerçek uydurma değilse yanlış-pozitiftir."""
+    adaylar = _RE_ALINTI.findall(iddia) or [iddia]
+    return not any(
+        _ifade_gercek_uydurma(p, kaynak_norm, kaynak_sayilar, iskelet_sirali, bugunler)
+        for p in adaylar)
 
 # Taslaktaki somut tarih / evrak-sayısı (cikar.py ile aynı desen — tutarlı tespit).
 _RE_TARIH = re.compile(r"\b\d{1,2}[.\-/]\d{1,2}[.\-/]\d{4}\b")
@@ -264,17 +289,20 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     if not isinstance(cevap, dict) or not isinstance(cevap.get("desteklenmeyen_iddialar"), list):
         return []
     # Yanlış-pozitif süzgeci — somut-anchor modeli (tek kaynak: yazi.models). Şablon
-    # değerleri longest-first sıralı (fragman bırakmaz → deterministik); kaynak grounding
-    # için HAM evrak metni kullanılır (maskeli değil — yalnız karşılaştırma, emit edilmez).
+    # değerleri longest-first sıralı (fragman bırakmaz); eşit uzunlukta ikincil alfabetik
+    # anahtar → PYTHONHASHSEED'den TAM bağımsız (deterministik). Kaynak grounding için HAM
+    # evrak metni kullanılır (maskeli değil — yalnız karşılaştırma, emit edilmez).
     iskelet_sirali = sorted(
         (tr_lower(d) for d in (sablon_iskelet_degerleri() | _ISKELET_KAPANIS)),
-        key=len, reverse=True)
+        key=lambda s: (-len(s), s))
     kaynak_norm = _norm_ws(state.get("evrak_text", "") or "")
-    bugun = date.today().strftime("%d.%m.%Y")
+    kaynak_sayilar = frozenset(_RE_SAYISAL.findall(kaynak_norm))  # tam-token grounding
+    bugunler = (date.today().strftime("%d.%m.%Y"), date.today().strftime("%Y-%m-%d"))
     temiz = [i.strip()[:_GROUNDING_MAX_KARAKTER]
              for i in cevap["desteklenmeyen_iddialar"]
              if isinstance(i, str) and i.strip()
-             and not _grounding_yanlis_pozitif_mi(i, iskelet_sirali, kaynak_norm, bugun)]
+             and not _grounding_yanlis_pozitif_mi(
+                 i, iskelet_sirali, kaynak_norm, kaynak_sayilar, bugunler)]
     return [f"Taslaktaki iddia kaynak evrakta yok (LLM grounding): {i}"
             for i in temiz[:_GROUNDING_MAX_IDDIA]]
 

@@ -112,9 +112,19 @@ _LLM_SYSTEM = (
 )
 
 
+# Numaralı liste maddesi ('1) ' / '2. ' vb.) — satır-içi de yakalar. _AYRAC'ın numaralı
+# desenleri YALNIZ '\n'-çapalıydı; _govde metni tek satıra düzleştirdiği için o desenler
+# govde'de ASLA eşleşmiyordu → numaralı çok-konulu evrak sessizce decompose EDİLMİYORDU.
+# ≥2 işaret aranır (tek '(madde 5)' referansı yanlış tetiklemesin); 'm.11' gibi dayanak
+# atfı eşleşmez (rakamdan hemen sonra ayraç + boşluk gerekir, 'm.' önekinde boşluk yok).
+_NUMARALI_MADDE = re.compile(r"(?:(?<=\s)|^)\d{1,2}[.)]\s")
+
+
 def _coklu_sinyal(text: str) -> bool:
-    """Metinde çok-talep işareti var mı (ayraç ya da ≥2 farklı niyet kökü)."""
+    """Metinde çok-talep işareti var mı (ayraç · ≥2 numaralı madde · ≥2 farklı niyet kökü)."""
     if _AYRAC.search(text):
+        return True
+    if len(_NUMARALI_MADDE.findall(text)) >= 2:
         return True
     t = tr_lower(text)
     return sum(1 for kok in set(_SINYAL_KOK) if kok in t) >= 2
@@ -147,11 +157,16 @@ def _govde(text: str) -> str:
 
 def _heuristik_segment(text: str) -> list[str]:
     """Bağlaç/numara bazlı böl → istek taşıyan, yeterince uzun segmentler."""
+    # Düzleşmiş govde'de numaralı liste (≥2 madde) _AYRAC'a takılmaz → önce onu böl,
+    # sonra her bloğu bağlaçtan ayır (deterministik yol da numaralı listeyi ayrıştırsın).
+    bloklar = (_NUMARALI_MADDE.split(text)
+               if len(_NUMARALI_MADDE.findall(text)) >= 2 else [text])
     segs: list[str] = []
-    for parca in _AYRAC.split(text):
-        s = parca.strip(" ,;.\n\t-—")
-        if len(s) >= _MIN_SEG and _talep_iceriyor(s):
-            segs.append(s)
+    for blok in bloklar:
+        for parca in _AYRAC.split(blok):
+            s = parca.strip(" ,;.\n\t-—")
+            if len(s) >= _MIN_SEG and _talep_iceriyor(s):
+                segs.append(s)
     return segs
 
 

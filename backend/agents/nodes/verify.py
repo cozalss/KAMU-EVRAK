@@ -23,6 +23,7 @@ from typing import Any
 import structlog
 
 from agents.config import (
+    BIRIMLER,
     LINT_AUTOFIX,
     MAKAM_LLM,
     VERIFY_ENABLED,
@@ -68,6 +69,8 @@ _STRIP_CH = " '\"‘’“”«».,:;()"
 _RE_ALINTI = re.compile(
     r"(?:(?<=\s)|^)['‘\"“«]([^'‘’\"“”«»\n]{2,150}?)['’\"”»](?=\s|[.,;:)]|$)")
 _RE_SAYISAL = re.compile(r"\d[\d.\-/]*\d|\d")
+# Türkçe kesme işareti varyantları — özel ad kökünü ekten ayırır ('Kaya'nın' → 'Kaya').
+_RE_KESME = re.compile(r"['‘’`´]")
 # Türkçe büyük harfler — özel ad (baş-harf) tespiti için (i̇→İ, ı→I ayrımı korunur).
 _TR_BUYUK = frozenset("ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ")
 
@@ -101,9 +104,14 @@ def _ifade_gercek_uydurma(ifade: str, kaynak_norm: str, kaynak_sayilar: frozense
     sl = _norm_ws(ifade)
     if not sl or _kaynakta_var(sl, kaynak_norm):
         return False  # boş ya da kaynakta birebir (sınırlı) → grounded
+    # Bu iddiada GERÇEKTEN geçen şablon öbeklerinin sözcükleri grounded sayılır (TAM-öbek:
+    # 'Dairesi'/'Müdürlüğü' gibi ortak son ek tek başına muaf OLMAZ — yalnız tam birim/şablon
+    # adı geçerse). Öbek ayrıca sayı taraması için artık metinden çıkarılır (longest-first).
     r = sl
-    for dl in iskelet_sirali:  # longest-first: kısa değer uzun ifadeyi fragmanlayamaz
+    grounded_kelimeler: set[str] = set()
+    for dl in iskelet_sirali:
         if dl in r:
+            grounded_kelimeler.update(dl.split())
             r = r.replace(dl, " ")
     for b in bugunler:  # giden yazı tarihi (birden çok format) → grounded
         r = r.replace(b, " ")
@@ -113,14 +121,29 @@ def _ifade_gercek_uydurma(ifade: str, kaynak_norm: str, kaynak_sayilar: frozense
         if len(num) >= 2 and num not in kaynak_sayilar:
             return True
     kelimeler = ifade.split()
-    # Çok-sözcüklüde ilk sözcük cümle-başı olabilir → atla; tek sözcüklüde çekirdektir → tut.
-    aday_kelimeler = kelimeler[1:] if len(kelimeler) > 1 else kelimeler
-    for w in aday_kelimeler:  # özel ad anchor
+    # CÜMLE-BAŞI sözcükleri özel ad anchor'ı sayma — Türkçe her cümle başını büyük harfle
+    # yazar ('Söz konusu...', 'Bu husus...'), bunlar özel ad değildir. Cümle başı = ilk sözcük
+    # VEYA önceki sözcük cümle sonlandırıcıyla biten sözcük. (Tek sözcüklü ifade çekirdektir → tutulur.)
+    atla = set()
+    if len(kelimeler) > 1:
+        atla.add(0)
+        for i in range(1, len(kelimeler)):
+            if kelimeler[i - 1].rstrip("\"'’»)").endswith((".", "!", "?", ":")):
+                atla.add(i)
+    for i, w in enumerate(kelimeler):  # özel ad anchor
+        if i in atla:
+            continue
         wc = w.strip(_STRIP_CH)
-        if len(wc) >= 2 and wc[0] in _TR_BUYUK:
-            wl = tr_lower(wc)
-            if not _kaynakta_var(wl, kaynak_norm) and not any(wl in dl for dl in iskelet_sirali):
-                return True  # kaynağa dayanmayan özel ad → uydurma
+        if len(wc) < 2 or wc[0] not in _TR_BUYUK:
+            continue
+        wl = tr_lower(wc)
+        # Türkçe özel adlar eki apostroftan SONRA alır ('Kaya'nın', 'Ankara'da') → kökü
+        # (apostrof öncesi) de kaynakla karşılaştır; kaynaktaki 'Kaya' suffikslenince kaçmasın.
+        kok = _RE_KESME.split(wl, 1)[0]
+        if (_kaynakta_var(wl, kaynak_norm) or wl in grounded_kelimeler
+                or (kok != wl and len(kok) >= 2 and _kaynakta_var(kok, kaynak_norm))):
+            continue  # kaynağa/şablona dayanıyor → grounded
+        return True  # kaynağa dayanmayan özel ad → uydurma
     return False  # somut un-grounded anchor yok → register/grounded → yanlış-pozitif
 
 
@@ -292,9 +315,14 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     # değerleri longest-first sıralı (fragman bırakmaz); eşit uzunlukta ikincil alfabetik
     # anahtar → PYTHONHASHSEED'den TAM bağımsız (deterministik). Kaynak grounding için HAM
     # evrak metni kullanılır (maskeli değil — yalnız karşılaştırma, emit edilmez).
-    iskelet_sirali = sorted(
-        (tr_lower(d) for d in (sablon_iskelet_degerleri() | _ISKELET_KAPANIS)),
-        key=lambda s: (-len(s), s))
+    # Grounded küme = şablon iskeleti + kapanış kalıpları + KAPALI-KÜME birim adları
+    # (taslak yönlendirme kararıyla hedef birimi adlandırır — bu bir routing kararıdır,
+    # kaynakta olmasa da uydurma değil; 9 config birim adı sonlu ve bilinir).
+    iskelet_kaynak = (sablon_iskelet_degerleri() | _ISKELET_KAPANIS
+                      | {birim_tr(k) for k in BIRIMLER})
+    # İddialarla AYNI normalizasyon (_norm_ws) → 'Başvurunuz.' sondaki nokta uyuşmazlığı olmaz.
+    iskelet_sirali = sorted({n for d in iskelet_kaynak if d and (n := _norm_ws(d))},
+                            key=lambda s: (-len(s), s))
     kaynak_norm = _norm_ws(state.get("evrak_text", "") or "")
     kaynak_sayilar = frozenset(_RE_SAYISAL.findall(kaynak_norm))  # tam-token grounding
     bugunler = (date.today().strftime("%d.%m.%Y"), date.today().strftime("%Y-%m-%d"))

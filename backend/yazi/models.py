@@ -54,7 +54,15 @@ def sablon_iskelet_degerleri() -> frozenset[str]:
     (verify.py import eder) → placeholder listesi değişince muafiyet kendiliğinden hizalanır.
     """
     return frozenset(_DEMO_DEFAULTS.values()) | {
-        _demo_muhatap("cevabi_yazi"), _demo_muhatap("bilgilendirme")}
+        _demo_muhatap("cevabi_yazi"), _demo_muhatap("bilgilendirme")} | _SABLON_FORMAT
+
+
+# Render'ın her taslağa koyduğu standart format öğeleri (Yön. 2646 bölüm etiketleri +
+# demo ilgi-satırı) — kaynakta olmasa da UYDURMA DEĞİLDİR; grounding bunları işaretlemesin.
+_SABLON_FORMAT: frozenset[str] = frozenset({
+    "İlgi", "Konu", "Sayı", "Ek", "Ekler", "Dağıtım", "Başvurunuz.",
+    "tarihli başvurunuz.", "sayılı başvurunuz.", "tarihli ve", "sayılı yazınız.",
+})
 
 
 def _demo_ilgi_satiri(tarih: str, sayi: str) -> str:

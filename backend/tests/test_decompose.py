@@ -10,6 +10,7 @@ from datetime import date
 
 from agents.nodes.decompose import (
     _coklu_sinyal,
+    _govde,
     _heuristik_segment,
     _segment_birim,
     _segment_turu,
@@ -102,6 +103,27 @@ class TestTekKonuluPassthrough:
     def test_baglac_coklu_sinyali_tetikler(self):
         # Arrange / Act / Assert — 'ayrıca' bağlacı çok-talep işareti
         assert _coklu_sinyal(_COK_KONULU) is True
+
+    def test_numarali_liste_gate_tetikler_ama_numarasiz_tetiklemez(self):
+        # Regresyon (izole): _govde metni tek satıra düzleştirir; _AYRAC'ın '\n'-çapalı
+        # numaralı desenleri govde'de ASLA eşleşmiyordu → numaralı çok-konulu evrak sessizce
+        # decompose EDİLMİYORDU. Sinyal YALNIZ numaralı işaretten gelir (numarasız → tetiklenmez).
+        metin = ("Konu: İki husus\n\n"
+                 "1) Personelin izin talebinin onaylanmasını arz ederim,\n"
+                 "2) Biriminize ait aracın bakımının yaptırılmasını arz ederim.")
+        assert _coklu_sinyal(_govde(metin)) is True
+        numarasiz = _govde(metin).replace("1) ", "").replace("2) ", "")
+        assert _coklu_sinyal(numarasiz) is False  # izolasyon: sinyal numaralardan
+
+    def test_numarali_liste_heuristik_iki_segmente_boler(self):
+        # Numaralı liste (düzleşmiş) deterministik yolda da ≥2 segmente ayrılır.
+        metin = ("1) Su faturasındaki hatanın düzeltilmesini talep ediyorum, "
+                 "2) Sokaktaki çukurun onarılmasını istiyorum.")
+        assert len(compute_decomposition(metin, {}, _BUGUN)) >= 2
+
+    def test_tek_numarali_madde_yanlis_tetiklemez(self):
+        # Tek 'm.5' benzeri dayanak atfı çok-talep sinyali DEĞİL (≥2 işaret gerekir).
+        assert _coklu_sinyal("Talebiniz 2926 sayılı Kanun m.5 uyarınca değerlendirilmiştir.") is False
 
 
 # ---------------------------------------------------------------------------

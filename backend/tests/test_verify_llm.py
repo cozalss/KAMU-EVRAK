@@ -350,6 +350,19 @@ class TestGroundingIskeletMuafiyeti:
         out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
         assert any(_UYDURMA_IMZA in u and "Kaya" in u for u in out["verify_uyari"])
 
+    async def test_routing_birim_adi_ve_ilgi_satiri_dusurulur(self, acik):
+        # Taslak, yönlendirme kararıyla hedef birimi + standart ilgi-satırını adlandırır;
+        # bunlar kaynakta olmasa da UYDURMA DEĞİLDİR (kapalı-küme birim + şablon format).
+        acik.setattr(verify_mod, "LINT_AUTOFIX", False)
+        acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)
+        acik.setattr(verify_mod, "llm_json", _fake_llm({"desteklenmeyen_iddialar": [
+            "Yazı İşleri / Genel Evrak Müdürlüğü",
+            "İlgi : Başvurunuz.",
+            "Taslakta 'Hukuk Müşavirliği' birimi geçiyor, kaynakta yok.",
+        ]}))
+        out = await verify_node({"yazi_taslak_md": TEMIZ, "evrak_text": KAYNAK})
+        assert out["verify_uyari"] == []  # hiçbiri banda dokunmaz
+
     async def test_fabrike_sayi_korunur_grounded_sayi_dususturulur(self, acik):
         # Tam-token grounding: fabrike '9998887' korunur; kaynaktaki 'E-1234567'e karşılık
         # gelen '1234567' altdizge YANLIŞ-grounded olmaz — biri tutulur biri düşer.

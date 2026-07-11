@@ -108,7 +108,10 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
   const started = busy || !!result || !!error || !!pendingOnay;
   const data = result || pendingOnay;
-  const riskOutcome = data?.risk_metadata?.bant || "yesil";
+  // Canlı koşumda nihai sonuç yokken bant SSE risk_guard adımından okunur — yoksa sağ
+  // panel varsayılan YEŞİL gösterirken adım çipi SARI diyebiliyordu (tutarsızlık bulgusu).
+  const canliBant = nodes?.find?.((n) => n.id === "risk_guard")?.data?.risk_metadata?.bant;
+  const riskOutcome = data?.risk_metadata?.bant || canliBant || "yesil";
   const draftCount = drafts.length;
   const inboxCount = Math.max(0, SAMPLE_DOCS.length - sentSampleIds.size);
   const gidenCount = outbox.filter((o) => o.durum === "gonderildi").length;

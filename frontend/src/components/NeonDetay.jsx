@@ -70,16 +70,36 @@ const YAPISKAN_UST = 112;   // üst çubuk ~88px + nefes
 function BolumRay({ ustOfset = SP.xl }) {
   const [aktif, setAktif] = useState("det-ozet");
   useEffect(() => {
+    // Konum-tabanlı scroll-spy: aktif bölüm = başlığı okuma çizgisini (yapışkan çubuk
+    // altı) EN SON geçen bölüm. Eski IO bandı (%15-35) son bölüm kısaysa hiç tetiklenmiyordu
+    // (klasik son-bölüm hatası — "Görev 2'ye gelmiyor" bulgusu); sayfa dibi fallback'i de var.
     const els = SECS.map((s) => document.getElementById(s.id)).filter(Boolean);
-    if (!els.length || typeof IntersectionObserver === "undefined") return undefined;
-    const io = new IntersectionObserver((ents) => {
-      const gorunur = ents.filter((e) => e.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      if (gorunur[0]) setAktif(gorunur[0].target.id);
-    }, { rootMargin: "-15% 0px -65% 0px" });
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+    if (!els.length) return undefined;
+    let raf = 0;
+    const hesapla = () => {
+      raf = 0;
+      const cizgi = ustOfset + 24;
+      let id = els[0].id;
+      for (const el of els) {
+        if (el.getBoundingClientRect().top <= cizgi) id = el.id;
+      }
+      // Sayfa dibi: son bölüm çizgide asla duramayacak kadar kısa olsa bile aktifleşir.
+      const kok = document.scrollingElement || document.documentElement;
+      if (window.innerHeight + window.scrollY >= kok.scrollHeight - 4) {
+        id = els[els.length - 1].id;
+      }
+      setAktif(id);
+    };
+    const iste = () => { if (!raf) raf = requestAnimationFrame(hesapla); };
+    hesapla();
+    window.addEventListener("scroll", iste, { passive: true });
+    window.addEventListener("resize", iste, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", iste);
+      window.removeEventListener("resize", iste);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [ustOfset]);
   const git = (id) => {
     const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
     document.getElementById(id)?.scrollIntoView({ behavior: az ? "auto" : "smooth", block: "start" });

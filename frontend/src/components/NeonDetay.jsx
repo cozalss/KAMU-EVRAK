@@ -457,14 +457,33 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                 <ColGrid
                   left={[
                     <NeonCard key="arsiv" title="Arşiv · Yasal süre" accent={T} icon={<Icon.grid />}>
-                      {arsiv.sdp_kodu && <KV k="SDP kodu (2005/7)" v={<span style={TNUM}>{String(arsiv.sdp_kodu)}{arsiv.sdp_adi ? ` · ${arsiv.sdp_adi}` : ""}</span>} c={DERIN.V} />}
+                      {/* Arşiv sınıflandırma — SDP kodu + saklama süresi yan yana mini-stat
+                          (SLA alt-ızgarasıyla aynı desen → kart içi tutarlılık; süresiz
+                          evrakta kart sparse/düz görünmesin diye stat düzeni). */}
+                      {(arsiv.sdp_kodu || arsiv.saklama_suresi || arsiv.saklama) && (
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px,1fr))", gap: `${SP.s}px ${SP.l}px` }}>
+                          {arsiv.sdp_kodu && (
+                            <span>
+                              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Dosya planı · SDP (2005/7)</span>
+                              <span style={{ ...TYPE.data, fontWeight: 600, color: DERIN.V, ...TNUM }}>{String(arsiv.sdp_kodu)}</span>
+                              {arsiv.sdp_adi && <span style={{ ...TYPE.meta, color: PAL.mut2 }}> · {cleanDemoText(String(arsiv.sdp_adi))}</span>}
+                            </span>
+                          )}
+                          {(arsiv.saklama_suresi || arsiv.saklama) && (
+                            <span>
+                              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Saklama süresi</span>
+                              <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2, ...TNUM }}>{String(arsiv.saklama_suresi || arsiv.saklama)}</span>
+                            </span>
+                          )}
+                        </div>
+                      )}
                       {arsiv.sdp_gerekce && (
-                        <div style={{ ...TYPE.meta, color: PAL.mut2, margin: "8px 0" }}>
+                        <div style={{ ...TYPE.meta, color: PAL.mut2, margin: "8px 0 0" }}>
                           <span style={{ color: DERIN.T }}>Otomatik atama:</span> {cleanDemoText(String(arsiv.sdp_gerekce))}
                         </div>
                       )}
                       {sdpAdaylar.length > 1 && (
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, margin: "0 0 8px" }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, margin: "8px 0 0" }}>
                           {sdpAdaylar.map((a, i) => (
                             <span key={a.kod || i} title={a.ad} aria-label={`SDP adayı: ${a.kod} ${a.ad || ""}`} style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: i === 0 ? DERIN.T : PAL.mut2, ...TNUM }}>
                               {a.kod} · {Number.isFinite(Number(a.skor)) ? Number(a.skor).toFixed(1) : "–"}
@@ -472,7 +491,6 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                           ))}
                         </div>
                       )}
-                      {(arsiv.saklama_suresi || arsiv.saklama) && <KV k="Saklama süresi" v={String(arsiv.saklama_suresi || arsiv.saklama)} />}
                       <SlaPanel sla={sla} info={sInfo} />
                     </NeonCard>,
                   ]}

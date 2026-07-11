@@ -154,7 +154,21 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc }) {
    Tarih = makine verisi (mono); "son tarih" jüri için en somut kanıt. Konum slaKonum'dan —
    sabit yüzde yok; tarih hesaplanamazsa çizelge hiç çizilmez (yanlış görsel iddia olmaz). */
 export function SlaPanel({ sla, info }) {
-  if (!info) return <KV k="Yasal süre durumu" v="tanımsız" c={PAL.mut2} />;
+  // Süreye tabi OLMAYAN evrak (fatura/olur vb.) — 'tanımsız' hata gibi okunuyordu; artık
+  // 'tabi değil' + açıklama (bu normal ve doğru durum; süre takibi yapılmaz).
+  if (!info) {
+    return (
+      <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: SP.m }}>
+          <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Yasal cevap süresi</span>
+          <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, background: PAL.press, borderRadius: RAD.chip, padding: "2px 8px" }}>tabi değil</span>
+        </div>
+        <div style={{ marginTop: SP.xs, ...TYPE.meta, color: PAL.mut3 }}>
+          Bu evrak türü için yasal cevap süresi tanımlı değil — süre takibi yapılmaz.
+        </div>
+      </div>
+    );
+  }
   const dc = DERIN_OF(info.color);
   const konum = slaKonum(sla);
   const kalanEtiket = konum

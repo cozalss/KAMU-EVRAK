@@ -541,7 +541,7 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                     lintKurallar.length > 0 && (
                       // Durum-gruplu, iki-seviye açılır denetim (satır → yönetmelik lafzı
                       // + düzeltme) — gövde Lint2646Karti'da (NeonDetayParts).
-                      <NeonCard key="lint" title="Yönetmelik-2646 lint" tag={`${lint.ozet?.gecti ?? 0}/${lintKurallar.length} kural`} tagColor={lintUyariSay ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
+                      <NeonCard key="lint" title="Yazışma kuralları denetimi (Yön. 2646)" tag={`${lint.ozet?.gecti ?? 0}/${lintKurallar.length} kural`} tagColor={lintUyariSay ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
                         <Lint2646Karti lint={lint} giris={lintGiris(lint)} />
                       </NeonCard>
                     ),

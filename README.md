@@ -53,7 +53,8 @@ OPENAI_API_KEY=sk-...
 VITRIN_MODU=1        # demo profili: HITL + clarifier + CRAG + hız (belge ~10 sn)
 ```
 
-Gereksinimler: **Python 3.11+ · [uv](https://docs.astral.sh/uv/) · Node 20+** (yalnız frontend) — GPU gerekmez.
+Gereksinimler: **Python 3.11+ · [uv](https://docs.astral.sh/uv/) · Node 22+** (yalnız frontend;
+dev/build Node 20'de de çalışır, `npm test` glob'u Node 21+ ister) — GPU gerekmez.
 
 > **Telefonla QR yükleme:** backend LAN'a açık başlar; Windows ilk açılışta güvenlik duvarı
 > penceresi gösterirse **"İzin Ver"** deyin (sorun sürerse `scripts/demo-mobil.ps1`).

@@ -41,9 +41,10 @@ class TestLintUyumluTaslak:
     def test_kural_sozlesmesi(self):
         # Arrange / Act
         rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")
-        # Assert — her kural {kural, madde, durum, mesaj} taşır
+        # Assert — çekirdek alanlar zorunlu; dayanak (yönetmelik lafzı) + oneri opsiyonel
         for k in rapor["kurallar"]:
-            assert set(k) == {"kural", "madde", "durum", "mesaj"}
+            assert {"kural", "madde", "durum", "mesaj"} <= set(k)
+            assert set(k) <= {"kural", "madde", "durum", "mesaj", "dayanak", "oneri"}
             assert k["durum"] in {"gecti", "uyari", "bilgi"}
 
 
@@ -105,6 +106,220 @@ class TestLintBilgiSeviyesi:
         sayi_kurali = next(k for k in rapor["kurallar"] if k["kural"] == "L-M11-sayi")
         assert sayi_kurali["durum"] == "bilgi"
         assert not any("m.11" in u for u in rapor["uyari"])
+
+
+class TestArastirmaDogrulamaliKurallar:
+    """mevzuat.gov.tr 21.5.2646 PDF'i doğrudan okunarak doğrulanan kurallar: E/Z/O
+    öneki (m.11 f.1) · her noktalama yasak (m.13 f.1) · kurum muhataba 'Sayın'
+    yazılmaz (m.14 f.2-3) · ilgide tarih+sayı (m.15 f.6) · 'arz/rica ederim' GEÇERLİ
+    dağıtımlı kapanış (m.16 f.12-b) · ad-SOYAD (m.17 f.2) · Ek (m.18) · Dağıtım (m.19)
+    · süreli ibare ACELE/GÜNLÜDÜR (m.26). Bant güvenliği: heuristik/çıkarımsal olanlar
+    yalnız 'bilgi'; 'uyari' yalnız belge-içi kesin çelişkide."""
+
+    def test_sayida_onek_yoksa_bilgi(self):
+        # Arrange — üç bileşen tam ama E/Z/O öneki yok → bilgi (fiziksel belge meşru)
+        taslak = _UYUMLU_CEVABI.replace("E-45678257-622.03-12345", "45678257-622.03-12345")
+        # Act
+        k = next(k for k in lint_2646(taslak, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-M11-sayi")
+        # Assert
+        assert k["durum"] == "bilgi"
+        assert "E-" in k["mesaj"] or "önek" in k["mesaj"].lower()
+
+    def test_kurum_muhataba_sayin_uyari(self):
+        # Arrange — m.14 f.2: idare/makam adına 'Sayın' yazılmaz (yalnız gerçek kişiye)
+        taslak = _UYUMLU_CEVABI.replace("İLGİLİ MAKAMA", "Sayın Ankara Valiliği")
+        # Act
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        # Assert
+        assert any("m.14" in u and "Sayın" in u for u in rapor["uyari"])
+
+    def test_gercek_kisiye_sayin_uyari_uretmez(self):
+        # Arrange — m.14 f.3: gerçek kişiye 'Sayın' + ad Soyad-BÜYÜK doğru kullanım
+        taslak = _UYUMLU_CEVABI.replace("İLGİLİ MAKAMA", "Sayın Ayşe YILMAZ")
+        # Act
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        # Assert
+        assert not any("Sayın" in u for u in rapor["uyari"])
+
+    def test_ilgide_tarih_ve_sayi_yoksa_uyari(self):
+        # Arrange — m.15 f.6: ilgide belgenin tarihi ve sayısı belirtilir
+        taslak = _UYUMLU_CEVABI.replace(
+            "İlgi : 15.06.2026 tarihli ve E-11112222-622.03-99 sayılı yazınız.",
+            "İlgi : yazınız.")
+        # Act
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        # Assert
+        assert any("m.15" in u for u in rapor["uyari"])
+
+    def test_ilgide_tarih_var_sayi_yok_bilgi(self):
+        # Arrange — vatandaş dilekçesinin kayıt sayısı olmayabilir → uyarı değil bilgi
+        taslak = _UYUMLU_CEVABI.replace(
+            "İlgi : 15.06.2026 tarihli ve E-11112222-622.03-99 sayılı yazınız.",
+            "İlgi : 15.06.2026 tarihli dilekçeniz.")
+        # Act
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        k = next(k for k in rapor["kurallar"] if k["kural"] == "L-M15-ilgi")
+        # Assert
+        assert k["durum"] == "bilgi"
+        assert not any("m.15" in u for u in rapor["uyari"])
+
+    def test_arz_rica_bolu_gecerli_dagitimli_kapanis(self):
+        # Arrange — m.16 f.12-b: '… arz/rica ederim.' YÖNETMELİKÇE GEÇERLİ dağıtımlı
+        # kapanıştır (eski davranış 'tek kalıba indirilmeli' bilgisi üretiyordu — bug).
+        taslak = _UYUMLU_CEVABI.replace("Gereğini rica ederim.", "Gereğini arz/rica ederim.")
+        # Act
+        k = next(k for k in lint_2646(taslak, "cevabi_yazi",
+                                      muhatap_makam="Personel Genel Müdürlüğü")["kurallar"]
+                 if k["kural"] == "L-M16-kapanis")
+        # Assert
+        assert k["durum"] == "gecti"
+
+    def test_imza_ad_soyad_bicimi_dogrulanir(self):
+        # Arrange — m.17 f.2: ad ilk harfi büyük, SOYAD büyük ("Ad SOYAD" uyumlu)
+        k = next(k for k in lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-M17-imza")
+        # Assert
+        assert k["durum"] == "gecti"
+        assert "biçim" in k["mesaj"].lower()
+
+    def test_imza_bicimi_farkliysa_bilgi(self):
+        # Arrange — "AD SOYAD" (ikisi de büyük) → heuristik not; ASLA uyari (bant güvenliği)
+        taslak = _UYUMLU_CEVABI.replace("Ad SOYAD", "AD SOYAD")
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        k = next(k for k in rapor["kurallar"] if k["kural"] == "L-M17-imza")
+        # Assert
+        assert k["durum"] == "bilgi"
+        assert not any("m.17" in u for u in rapor["uyari"])
+
+    def test_ek_referansi_var_blok_yok_bilgi(self):
+        # Arrange — m.18: gövde 'ekte' diyor ama Ek bloğu yok. 'ekte' alıntı da olabilir
+        # (vatandaşın dilekçe eki, başka belgenin eki) → kesin çelişki DEĞİL → bilgi,
+        # asla uyari (bant güvenliği — adversarial review bulgusu).
+        taslak = _UYUMLU_CEVABI.replace(
+            "İlgi yazıda belirtilen husus değerlendirilmiştir.",
+            "İlgi yazıda belirtilen husus değerlendirilmiş olup sonuç raporu ekte sunulmuştur.")
+        # Act
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        k = next(k for k in rapor["kurallar"] if k["kural"] == "L-M18-ek")
+        # Assert
+        assert k["durum"] == "bilgi"
+        assert not any("m.18" in u for u in rapor["uyari"])
+
+    def test_kanun_eki_referansi_m18_tetiklemez(self):
+        # Arrange — "5018 sayılı Kanunun ek-3 maddesi" mevzuat ekidir, belge eki değil
+        taslak = _UYUMLU_CEVABI.replace(
+            "İlgi yazıda belirtilen husus değerlendirilmiştir.",
+            "5018 sayılı Kanunun ek-3 maddesi kapsamında değerlendirme yapılmıştır.")
+        # Act / Assert — m.18 kuralı hiç üretilmez
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        assert not any(k["kural"] == "L-M18-ek" for k in rapor["kurallar"])
+
+    def test_govde_alintisinda_sayin_kurum_uyari_uretmez(self):
+        # Arrange — gövdede BAŞKA belgenin hitabı alıntılanıyor; muhatap bölgesi dışı →
+        # m.14 uyarısı üretmemeli (adversarial review bulgusu: tüm belge taranıyordu)
+        taslak = _UYUMLU_CEVABI.replace(
+            "İlgi yazıda belirtilen husus değerlendirilmiştir.",
+            "Başvurunuzda yer alan\nSayın Ankara Valiliği\nhitabı incelenmiştir.")
+        # Act
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        # Assert
+        assert not any("Sayın" in u for u in rapor["uyari"])
+
+    def test_ek_blogu_varsa_gecti(self):
+        # Arrange
+        taslak = _UYUMLU_CEVABI.replace(
+            "İlgi yazıda belirtilen husus değerlendirilmiştir.",
+            "Sonuç raporu ekte sunulmuştur.") + "\nEk: Sonuç raporu (2 sayfa)\n"
+        # Act
+        k = next(k for k in lint_2646(taslak, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-M18-ek")
+        # Assert
+        assert k["durum"] == "gecti"
+
+    def test_ek_referansi_yoksa_kural_uretilmez(self):
+        # Arrange / Act — ek geçmeyen belgede m.18 kuralı hiç görünmez (gürültü yok)
+        rapor = lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")
+        # Assert
+        assert not any(k["kural"] == "L-M18-ek" for k in rapor["kurallar"])
+
+    def test_dagitimli_kapanista_dagitim_bloku_yoksa_bilgi(self):
+        # Arrange — 'arz ve rica' → çok muhatap ÇIKARIMI; kesin değil → bilgi, uyari değil
+        taslak = _UYUMLU_CEVABI.replace("Gereğini rica ederim.", "Gereğini arz ve rica ederim.")
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        k = next(k for k in rapor["kurallar"] if k["kural"] == "L-M19-dagitim")
+        # Assert
+        assert k["durum"] == "bilgi"
+        assert not any("m.19" in u for u in rapor["uyari"])
+
+    def test_dagitim_blogu_varsa_gecti(self):
+        # Arrange
+        taslak = (_UYUMLU_CEVABI.replace("Gereğini rica ederim.", "Gereğini arz ve rica ederim.")
+                  + "\nDağıtım:\nGereği: Personel Genel Müdürlüğü\n")
+        k = next(k for k in lint_2646(taslak, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-M19-dagitim")
+        # Assert
+        assert k["durum"] == "gecti"
+
+    def test_sureli_ibare_bilgi_notu(self):
+        # Arrange — m.26: ACELE/GÜNLÜDÜR ibaresi varsa yerleşim hatırlatması (bilgi)
+        taslak = "GÜNLÜDÜR\n" + _UYUMLU_CEVABI
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        k = next(k for k in rapor["kurallar"] if k["kural"] == "L-M26-sureli")
+        # Assert
+        assert k["durum"] == "bilgi"
+        assert not any(kk["kural"] == "L-M26-sureli"
+                       for kk in lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")["kurallar"])
+
+    def test_konu_sonu_diger_noktalama_uyari(self):
+        # Arrange — m.13 f.1: 'herhangi bir noktalama işareti konulmaksızın' (yalnız nokta değil)
+        taslak = _UYUMLU_CEVABI.replace("Konu : Bilgi edinme başvurusu",
+                                        "Konu : Bilgi edinme başvurusu?")
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        # Assert
+        assert any("m.13" in u for u in rapor["uyari"])
+
+    def test_konu_sonu_parantez_de_noktalamadir(self):
+        # Arrange — Unicode P* kategorisi: parantez/tire de 'herhangi bir noktalama'dır
+        taslak = _UYUMLU_CEVABI.replace("Konu : Bilgi edinme başvurusu",
+                                        "Konu : Bilgi edinme başvurusu)")
+        rapor = lint_2646(taslak, "cevabi_yazi")
+        # Assert
+        assert any("m.13" in u for u in rapor["uyari"])
+
+    def test_imza_vekalet_eki_gecti(self):
+        # Arrange — m.17 f.10: vekâleten imzada ad SOYAD'ın altına/yanına 'V.' eklenir
+        taslak = _UYUMLU_CEVABI.replace("Ad SOYAD", "Ad SOYAD V.")
+        k = next(k for k in lint_2646(taslak, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-M17-imza")
+        # Assert
+        assert k["durum"] == "gecti"
+
+
+class TestDayanakVeOneri:
+    """Her kural yönetmelik LAFZI (dayanak — korpustan, uydurma imkânsız) ve ihlalde
+    somut düzeltme önerisi (oneri) taşır — ESLint 'why + how to fix' deseni."""
+
+    def test_madde_kurali_dayanak_tasir(self):
+        # Arrange / Act
+        k = next(k for k in lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-M10-baslik")
+        # Assert — dayanak korpustaki m.10 lafzından gelir
+        assert "T.C." in k.get("dayanak", "")
+
+    def test_uyari_kurali_oneri_tasir(self):
+        # Arrange — T.C. başlıksız taslak → m.10 uyarısı somut düzeltme önerir
+        rapor = lint_2646("Sayı : E-1234567-010-1  01.07.2026\nKonu : Test\nRica ederim.\nX", "")
+        k = next(k for k in rapor["kurallar"] if k["kural"] == "L-M10-baslik")
+        # Assert
+        assert k["durum"] == "uyari" and k.get("oneri")
+
+    def test_uslup_kurali_dayanaksiz_kalabilir(self):
+        # Arrange / Act — üslup kuralının korpusta birebir maddesi yok → dayanak boş/yok
+        k = next(k for k in lint_2646(_UYUMLU_CEVABI, "cevabi_yazi")["kurallar"]
+                 if k["kural"] == "L-USLUP-yasak")
+        # Assert — uydurma dayanak atanmamış
+        assert not k.get("dayanak")
 
 
 class TestRiskEntegrasyonu:

@@ -12,6 +12,7 @@ import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, 
 import {
   Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
   CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti, BilgilendirmeYapisal,
+  Lint2646Karti,
 } from "./NeonDetayParts.jsx";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum, mevzuatDipnot,
@@ -538,21 +539,10 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                     ),
 
                     lintKurallar.length > 0 && (
+                      // Durum-gruplu, iki-seviye açılır denetim (satır → yönetmelik lafzı
+                      // + düzeltme) — gövde Lint2646Karti'da (NeonDetayParts).
                       <NeonCard key="lint" title="Yönetmelik-2646 lint" tag={`${lint.ozet?.gecti ?? 0}/${lintKurallar.length} kural`} tagColor={lintUyariSay ? BANT.sari.c : BANT.yesil.c} accent={V} icon={<Icon.shield />}>
-                        <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>{lintGiris(lint)}</p>
-                        <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
-                          {lintKurallar.map((k, i) => {
-                            const renk = k.durum === "gecti" ? DERIN.yesil : k.durum === "uyari" ? DERIN.sari : PAL.mut2;
-                            const Isaret = k.durum === "gecti" ? Icon.check : k.durum === "uyari" ? Icon.alert : Icon.info;
-                            return (
-                              <div key={k.kural || i} style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "4px 0" }}>
-                                <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: renk }}><Isaret width={14} height={14} /></span>
-                                <span style={{ flex: "none", fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: DERIN.V, marginTop: 1 }}>{k.madde}</span>
-                                <span style={{ ...TYPE.data, color: k.durum === "uyari" ? DERIN.sari : PAL.ink2 }}>{cleanDemoText(String(k.mesaj))}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
+                        <Lint2646Karti lint={lint} giris={lintGiris(lint)} />
                       </NeonCard>
                     ),
                   ]}

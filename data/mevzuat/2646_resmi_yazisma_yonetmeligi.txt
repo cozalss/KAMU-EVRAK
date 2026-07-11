@@ -17,10 +17,11 @@ idareye ait olduğunu gösterir.
 
 Madde 11 — Sayı ve evrak kayıt numarası
 Sayı bilgisi başlığın son satırından itibaren iki satır boşluk bırakılarak ve sayfanın
-solundan başlanarak "Sayı:" ifadesiyle yazılır. Sayı; Detsis numarası, Standart Dosya
-Planı kodu ve evrak kayıt numarasından oluşur ve bunlar kısa çizgi (-) ile birbirinden
-ayrılır. Elektronik ortamda hazırlanan belgelerde sayının başına "E-" ibaresi eklenir.
-Örnek: E-45678257-622.03-12345.
+solundan başlanarak "Sayı:" ifadesiyle yazılır. Sayı sırasıyla; belgenin hazırlanma
+sürecini ifade eden ibare (elektronik ortam için "E", zorunlu hâller için "Z",
+olağanüstü durumlar için "O"), DETSİS'te belirtilen Türkiye Cumhuriyeti Devlet
+Teşkilatı Numarası, standart dosya planı kodu ile kayıt numarasından oluşur ve
+bunların arasına kısa çizgi işareti (-) konulur. Örnek: E-45678257-622.03-12345.
 
 Madde 12 — Tarih
 Tarih, belgenin yetkili amir tarafından imzalanarak onaylandığı zamanı belirtir. Tarih,
@@ -29,9 +30,9 @@ bulunduğu satırda, sayfanın sağ kenarında yer alır.
 
 Madde 13 — Konu
 Konu, "Konu:" ifadesinden sonra başlar ve belgenin konusunu özetleyici biçimde, sayı
-ile aynı hizada, sayının bir satır altına yazılır. Konu, serbest bırakılan kısımda
-satır ortalanmadan ve sonuna nokta konulmadan yazılır; başlıktaki "T.C." hizasını
-geçmez.
+ile aynı hizada, sayının bir satır altına yazılır. Belgenin konusu, yazı alanının
+dikey orta hizasını geçmeyecek biçimde ve sonuna herhangi bir noktalama işareti
+konulmaksızın yazılır.
 
 Madde 14 — Muhatap
 Muhatap, belgenin gönderildiği idareyi veya kişiyi ifade eder. Konunun son satırından
@@ -67,16 +68,15 @@ bırakılarak ve sayfanın solundan başlanarak yazılır. Eklerin sayısı bird
 numaralandırılır ve her ekin adı ile sayfa sayısı parantez içinde belirtilir.
 
 Madde 19 — Dağıtım
-Dağıtım, belgenin "Gereği" ve "Bilgi" için gönderildiği yerlerin protokol sırasına
-göre belirtildiği bölümdür ve "Dağıtım:" ifadesiyle "Ek"in altına, "Ek" yoksa imzanın
-altına yazılır. Gereği ve bilgi için dağıtım yapılması durumunda "Gereği:" ve "Bilgi:"
-alt başlıkları yazılır.
+Dağıtım, belgenin gereği ve bilgi için gönderildiği yerlerin belirtildiği bölümdür ve
+"Dağıtım:" ifadesiyle "Ek"in altına, "Ek" yoksa imzanın altına yazılır. Gereği ve
+bilgi için dağıtım yapılması durumunda "Gereği:" ve "Bilgi:" alt başlıkları yazılır.
 
 Madde 20 — Olur
 Makam oluru alınması durumunda, metnin bitiminden sonra uygun boşluk bırakılarak ve
-sayfa ortalanarak büyük harflerle "OLUR" yazılır. "OLUR"un altına tarih ve onay
-makamının adı, soyadı ile unvanını içeren imza bloğu yer alır. Üst makamdan alınan
-onay "OLUR", alt makam onayı "Uygundur" biçiminde gösterilir.
+yazı alanının ortasına büyük harflerle "OLUR" yazılır. "OLUR"un altına tarih ve onay
+makamının adı, soyadı ile unvanını içeren imza bloğu yer alır. Oluru teklif eden ara
+kademe onayı "Uygun görüşle arz ederim." ibaresiyle gösterilir.
 
 Madde 21 — Paraf
 Paraf, belgenin idare içindeki onay sürecinde yer alanların belgeyi inceleyip
@@ -88,3 +88,15 @@ Madde 22 — Koordinasyon
 Belgenin imzalanmadan önce idare içindeki başka birimlerle iş birliği yapılarak
 hazırlanması gerektiğinde, koordinasyonu sağlayan personelin unvanı, adı ve soyadı
 "Koordinasyon:" ifadesinden sonra, parafın altına yazılır.
+
+Madde 25 — Gizlilik dereceli belge ve gizlilik dereceleri
+Gizlilik dereceli belgelerde gizlilik derecesi ("Çok Gizli", "Gizli", "Özel",
+"Hizmete Özel") belge üzerinde belirtilir; gizlilik derecesi olmayan belgeler
+gizlilik derecesi taşımaz.
+
+Madde 26 — Süreli yazışmalar ve kişiye özel belgeler
+Süreli yazışmalarda "ACELE" veya "GÜNLÜDÜR" ibaresine yazı alanının sağ üst
+köşesinde kırmızı renkli olarak yer verilir; "GÜNLÜDÜR" ibaresi taşıyan belgelere
+cevap verilmesi gereken süre ya da tarih metin içinde belirtilir. Birden fazla
+sayfalı belgelerde ibare yalnız birinci sayfada gösterilir. "KİŞİYE ÖZEL" ibaresi
+taşıyan belgeler yalnız muhatabına teslim edilir.

@@ -1,18 +1,24 @@
 """Yönetmelik-2646 lint — resmî yazı taslağının MADDE-REFERANSLI format denetimi.
 
 verify.py'nin kaba 4-bölüm kontrolünün (YAZI_ZORUNLU_BOLUMLER) üstüne kural-kimlikli,
-madde-atıflı denetim katmanı: her kural {kural, madde, durum, mesaj} üretir → UI'da
-"neden uyumlu/uyumsuz" şeffaflığı + risk bandına ölçülü sinyal.
+madde-atıflı denetim katmanı: her kural {kural, madde, durum, mesaj [, dayanak, oneri]}
+üretir → UI'da "neden uyumlu/uyumsuz" şeffaflığı + risk bandına ölçülü sinyal.
+`dayanak` = yönetmeliğin İLGİLİ MADDE LAFZI (korpustan — uydurma imkânsız);
+`oneri` = ihlalde somut düzeltme adımı (ESLint "why + how to fix" deseni).
 
-Madde referansları data/mevzuat/2646_resmi_yazisma_yonetmeligi.txt (m.10-20, mevzuat.gov.tr
-21.5.2646 ile çapraz doğrulanmış korpus) ile sınırlıdır — korpusta olmayan madde ANILMAZ
-(CLAUDE.md §1: referans uydurma yasak).
+Madde referansları data/mevzuat/2646_resmi_yazisma_yonetmeligi.txt (m.10-26) ile
+sınırlıdır — korpusta olmayan madde ANILMAZ (CLAUDE.md §1: referans uydurma yasak).
+Kural lafızları mevzuat.gov.tr 21.5.2646 PDF'i doğrudan okunarak doğrulanmıştır
+(2026-07 araştırması): E/Z/O öneki m.11 f.1 · her noktalama yasak m.13 f.1 · kurum
+muhataba "Sayın" yazılmaz m.14 f.2-3 · ilgide tarih+sayı m.15 f.6 · "arz/rica ederim"
+GEÇERLİ dağıtımlı kapanış m.16 f.12-b · ad-SOYAD m.17 f.2 · Ek m.18 · Dağıtım m.19 ·
+ACELE/GÜNLÜDÜR m.26.
 
 Durum semantiği (risk bandı güvenliği):
     gecti  → kural sağlandı.
-    uyari  → kesin format ihlali → risk_guard SARI sinyali alır.
-    bilgi  → banda ETKİSİZ not: EBYS kayıt anında dolacak alan (ör. Sayı placeholder)
-             ya da zayıf-heuristik tespit (ör. muhatap ipucu) — yanlış-pozitif SARI üretmez.
+    uyari  → KESİN format ihlali (belge-içi çelişki dahil) → risk_guard SARI sinyali.
+    bilgi  → banda ETKİSİZ not: EBYS kayıt anında dolacak alan, zayıf-heuristik tespit
+             ya da çıkarımsal eksik — yanlış-pozitif SARI üretmez.
 
 DETERMİNİSTİK (regex/dizgi) — LLM yok; mock/CI'da birebir aynı çıktı.
 """
@@ -20,9 +26,54 @@ DETERMİNİSTİK (regex/dizgi) — LLM yok; mock/CI'da birebir aynı çıktı.
 from __future__ import annotations
 
 import re
+import unicodedata
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from core.text import SAYI_UC_BILESEN_RE, tr_lower
+
+# --- Yönetmelik lafzı (dayanak) — korpustan, tek kaynak -----------------------
+_KORPUS_YOLU = (Path(__file__).resolve().parents[2]
+                / "data" / "mevzuat" / "2646_resmi_yazisma_yonetmeligi.txt")
+_MADDE_BASLIK_RE = re.compile(r"^Madde (\d+) — (.+)$")
+_DAYANAK_MAX = 300  # UI açılır satırında okunur uzunluk; kelime sınırında kırpılır
+
+
+@lru_cache(maxsize=1)
+def _madde_metinleri() -> dict[str, str]:
+    """Korpus → {"m.NN": "Başlık — lafız"} haritası; okunamazsa boş (lint yine çalışır).
+
+    NOT: süreç ömrü boyunca cache'lenir — korpus .txt'si düzenlenirse dayanak metni
+    ancak süreç yeniden başlayınca tazelenir (uvicorn --reload .txt izlemez).
+    """
+    try:
+        ham = _KORPUS_YOLU.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        # Bozuk/eksik korpus dayanak özelliğini söndürür, lint'i ASLA düşürmez —
+        # bu fonksiyon her kuraldan çağrılır ve verify pipeline'ının içindedir.
+        return {}
+    out: dict[str, str] = {}
+    no, parcalar = None, []
+    for satir in ham.splitlines():
+        m = _MADDE_BASLIK_RE.match(satir)
+        if m:
+            if no is not None:
+                out[no] = " ".join(parcalar).strip()
+            no, parcalar = f"m.{m.group(1)}", [f"{m.group(2)} —"]
+        elif no is not None and satir.strip():
+            parcalar.append(satir.strip())
+    if no is not None:
+        out[no] = " ".join(parcalar).strip()
+    return out
+
+
+def _dayanak_metni(madde: str) -> str:
+    """Kuralın yönetmelik lafzı (kırpılmış); korpusta yoksa boş — dayanak UYDURULMAZ."""
+    metin = _madde_metinleri().get(madde, "")
+    if len(metin) <= _DAYANAK_MAX:
+        return metin
+    return metin[:_DAYANAK_MAX].rsplit(" ", 1)[0] + "…"
 
 _RE_TARIH = re.compile(r"\b\d{2}\.\d{2}\.\d{4}\b")
 _MAKAM_IPUCLARI = (
@@ -128,8 +179,16 @@ def kapanis_onerisi(gonderen_makam: str, muhatap_makam: str) -> tuple[str, str] 
     return _beklenen_kalip(g, m)
 
 
-def _kural(kural: str, madde: str, durum: str, mesaj: str) -> dict[str, str]:
-    return {"kural": kural, "madde": madde, "durum": durum, "mesaj": mesaj}
+def _kural(kural: str, madde: str, durum: str, mesaj: str,
+           oneri: str = "") -> dict[str, str]:
+    k = {"kural": kural, "madde": madde, "durum": durum, "mesaj": mesaj}
+    # dayanak yalnız gerçek madde referansında ("üslup" gibi etiketlerde uydurulmaz).
+    dayanak = _dayanak_metni(madde) if madde.startswith("m.") else ""
+    if dayanak:
+        k["dayanak"] = dayanak
+    if oneri:
+        k["oneri"] = oneri
+    return k
 
 
 def _satir_bul(taslak: str, onek: str) -> str | None:
@@ -153,41 +212,73 @@ def _etiket_satiri(taslak: str, etiket: str) -> str | None:
 def _k_baslik(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     if "t.c." in low or "t.c" in low.split("\n")[0]:
         return _kural("L-M10-baslik", "m.10", "gecti", "T.C. başlığı mevcut.")
-    return _kural("L-M10-baslik", "m.10", "uyari", "T.C. başlığı bulunamadı (m.10 — antet).")
+    return _kural("L-M10-baslik", "m.10", "uyari", "T.C. başlığı bulunamadı (m.10 — antet).",
+                  oneri="Belgenin en üstüne ortalanmış 'T.C.' satırı ve altına idare adını "
+                        "büyük harflerle ekleyin.")
 
 
 def _k_sayi(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     satir = _etiket_satiri(taslak, "sayı") or _etiket_satiri(taslak, "sayi")
     if satir is None:
-        return _kural("L-M11-sayi", "m.11", "uyari", "Sayı satırı bulunamadı (m.11).")
+        return _kural("L-M11-sayi", "m.11", "uyari", "Sayı satırı bulunamadı (m.11).",
+                      oneri="Başlığın altına, sayfanın solundan 'Sayı:' satırı ekleyin "
+                            "(önek-DETSİS-SDP-kayıt, '-' ayraçlı).")
     if SAYI_UC_BILESEN_RE.search(satir):
-        return _kural("L-M11-sayi", "m.11", "gecti",
-                      "Sayı üç bileşenli (DETSİS-SDP-kayıt, m.11).")
+        # m.11 f.1: hazırlama süreci öneki E (elektronik) / Z (zorunlu hâl) / O (olağanüstü).
+        if re.search(r"\b[EZO]-\d", satir):
+            return _kural("L-M11-sayi", "m.11", "gecti",
+                          "Sayı m.11 desenine uygun (önek-DETSİS-SDP-kayıt).")
+        return _kural("L-M11-sayi", "m.11", "bilgi",
+                      "Sayı bileşenleri tam ancak hazırlama-süreci öneki yok — elektronik "
+                      "belgede başına 'E-' eklenir (m.11).",
+                      oneri="Belge EBYS'de üretilecekse sayının başına 'E-' ibaresini ekleyin.")
     if "{{" in satir or "ebys" in tr_lower(satir) or "taslak" in tr_lower(satir):
         return _kural("L-M11-sayi", "m.11", "bilgi",
                       "Sayı EBYS kayıt anında atanır — taslakta yer tutucu (m.11).")
     return _kural("L-M11-sayi", "m.11", "uyari",
-                  "Sayı satırı m.11 desenine (DETSİS-SDP-kayıt, '-' ayraçlı) uymuyor.")
+                  "Sayı satırı m.11 desenine (DETSİS-SDP-kayıt, '-' ayraçlı) uymuyor.",
+                  oneri="Sayıyı 'E-12345678-622.03-1234' örneğindeki biçimde düzenleyin.")
 
 
 def _k_tarih(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     if _RE_TARIH.search(taslak):
         return _kural("L-M12-tarih", "m.12", "gecti", "gg.aa.yyyy biçimli tarih mevcut (m.12).")
-    return _kural("L-M12-tarih", "m.12", "uyari", "gg.aa.yyyy biçimli tarih bulunamadı (m.12).")
+    return _kural("L-M12-tarih", "m.12", "uyari", "gg.aa.yyyy biçimli tarih bulunamadı (m.12).",
+                  oneri="Sayı satırının sağ kenarına gg.aa.yyyy biçiminde tarih ekleyin.")
+
+
+# m.13 f.1: "sonuna HERHANGİ BİR noktalama işareti konulmaksızın" → Unicode P* kategorisi
+# (nokta/virgül gibi sabit liste değil — parantez, tire, tırnak da noktalamadır).
+def _noktalama_mi(ch: str) -> bool:
+    return unicodedata.category(ch).startswith("P")
 
 
 def _k_konu(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     satir = _etiket_satiri(taslak, "konu")
     if satir is None:
-        return _kural("L-M13-konu", "m.13", "uyari", "Konu satırı bulunamadı (m.13).")
+        return _kural("L-M13-konu", "m.13", "uyari", "Konu satırı bulunamadı (m.13).",
+                      oneri="Sayının bir satır altına 'Konu:' satırı ekleyin.")
     metin = satir.split(":", 1)[1].strip() if ":" in satir else ""
-    if metin.endswith("."):
+    if metin and _noktalama_mi(metin[-1]):
         return _kural("L-M13-konu", "m.13", "uyari",
-                      "Konunun sonuna nokta konulmaz (m.13).")
+                      "Konunun sonuna noktalama işareti konulmaz (m.13).",
+                      oneri="Konu satırının sonundaki noktalama işaretini kaldırın.")
     if len(metin) > _KONU_MAX:
         return _kural("L-M13-konu", "m.13", "bilgi",
-                      f"Konu özetleyici olmalı (m.13) — {len(metin)} karakter.")
+                      f"Konu özetleyici olmalı (m.13) — {len(metin)} karakter.",
+                      oneri="Konuyu yazı alanının dikey orta hizasını geçmeyecek biçimde kısaltın.")
     return _kural("L-M13-konu", "m.13", "gecti", "Konu satırı m.13'e uygun.")
+
+
+def _muhatap_bolgesi(taslak: str) -> list[str]:
+    """Muhatabın YAPISAL konumu (m.14: konudan sonra 2-4 satır) — gövde alıntıları
+    ('Başvurunuzda: Sayın X Valiliği ...') bu pencerenin DIŞINDA kalır; tüm belgeyi
+    taramak yanlış-pozitif SARI üretiyordu (adversarial review bulgusu)."""
+    satirlar = taslak.splitlines()
+    for i, s in enumerate(satirlar):
+        if re.match(r"^\s*konu\s*:", tr_lower(s)):
+            return satirlar[i + 1 : i + 7]
+    return satirlar[:10]  # Konu yoksa belge başı (antet + kimlik bölgesi)
 
 
 def _k_muhatap(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
@@ -196,19 +287,48 @@ def _k_muhatap(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
     if "{{ muhatap" in low:
         return _kural("L-M14-muhatap", "m.14", "bilgi",
                       "Muhatap yer tutucu — gönderim öncesi doldurulmalı (m.14).")
+    # m.14 f.2-3: "Sayın" YALNIZ gerçek kişiye; idare/makam adına yazılmaz (kesin ihlal).
+    # Yalnız muhatap bölgesinde aranır — gövde alıntısı bandı etkileyemez.
+    sayin_satir = next((s for s in _muhatap_bolgesi(taslak)
+                        if tr_lower(s).strip().startswith("sayın ")), None)
+    if sayin_satir is not None and kurum_gorunumlu(sayin_satir):
+        return _kural("L-M14-muhatap", "m.14", "uyari",
+                      "Muhatap idare/makam adına 'Sayın' yazılmaz — 'Sayın' yalnız gerçek "
+                      "kişi muhatapta kullanılır (m.14).",
+                      oneri="'Sayın' ibaresini kaldırın; idare adını büyük harflerle ve yönelme "
+                            "ekiyle yazın (ör. '… VALİLİĞİNE').")
     if any(ipucu in low for ipucu in _MAKAM_IPUCLARI):
         return _kural("L-M14-muhatap", "m.14", "gecti", "Muhatap satırı mevcut (m.14).")
     return _kural("L-M14-muhatap", "m.14", "bilgi",
-                  "Muhatap ipucu bulunamadı (heuristik) — kontrol edin (m.14).")
+                  "Muhatap ipucu bulunamadı (heuristik) — kontrol edin (m.14).",
+                  oneri="Konudan sonra sayfa ortalanmış muhatap satırı ekleyin.")
 
 
 def _k_ilgi(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
     if yazi_turu != "cevabi_yazi":
         return None
-    if _etiket_satiri(taslak, "ilgi"):
-        return _kural("L-M15-ilgi", "m.15", "gecti", "İlgi atfı mevcut (m.15).")
-    return _kural("L-M15-ilgi", "m.15", "uyari",
-                  "Cevabi yazıda İlgi zorunlu — cevaplanan yazı ilgi (a) olarak gösterilir (m.15).")
+    satir = _etiket_satiri(taslak, "ilgi")
+    if satir is None:
+        return _kural("L-M15-ilgi", "m.15", "uyari",
+                      "Cevabi yazıda İlgi zorunlu — cevaplanan yazı ilgi (a) olarak "
+                      "gösterilir (m.15).",
+                      oneri="Muhataptan sonra 'İlgi:' satırı ekleyip cevaplanan belgenin tarihi "
+                            "ve sayısını belirtin.")
+    # m.15 f.6: ilgide belgenin tarihi ve sayısı belirtilir. Vatandaş dilekçesinin kayıt
+    # sayısı olmayabilir → yalnız İKİSİ de yoksa kesin ihlal; sayı eksikse bilgi notu.
+    satir_low = tr_lower(satir)
+    tarih_var = bool(_RE_TARIH.search(satir))
+    sayi_var = bool(SAYI_UC_BILESEN_RE.search(satir)) or "sayılı" in satir_low
+    if not tarih_var and not sayi_var:
+        return _kural("L-M15-ilgi", "m.15", "uyari",
+                      "İlgide cevaplanan belgenin tarihi ve sayısı belirtilmeli (m.15).",
+                      oneri="İlgi satırına belgenin tarihini (gg.aa.yyyy) ve sayısını ekleyin.")
+    if not sayi_var:
+        return _kural("L-M15-ilgi", "m.15", "bilgi",
+                      "İlgide tarih var, belge sayısı görünmüyor — kayıt sayısı biliniyorsa "
+                      "eklenir (m.15).",
+                      oneri="Cevaplanan belgenin kayıt sayısı biliniyorsa ilgiye ekleyin.")
+    return _kural("L-M15-ilgi", "m.15", "gecti", "İlgi atfı tarih ve sayıyla mevcut (m.15).")
 
 
 def _k_kapanis(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
@@ -216,7 +336,15 @@ def _k_kapanis(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
         return _kural("L-M16-kapanis", "m.16", "gecti",
                       "Hiyerarşiye uygun kapanış kalıbı mevcut (m.16).")
     return _kural("L-M16-kapanis", "m.16", "uyari",
-                  "Kapanış kalıbı yok — alt makama 'Rica ederim', üst/eş makama 'Arz ederim' (m.16).")
+                  "Kapanış kalıbı yok — alt makama 'Rica ederim', üst/eş makama 'Arz ederim' (m.16).",
+                  oneri="Metnin son paragrafını hiyerarşiye uygun 'Arz ederim.' / 'Rica ederim.' "
+                        "kalıbıyla bitirin.")
+
+
+# m.17 f.2: ad ilk harfi büyük diğerleri küçük, SOYAD büyük harflerle ("Ayşe YILMAZ");
+# f.10: vekâleten imzada sona "V." eklenebilir ("Ayşe YILMAZ V.").
+_AD_SOYAD_RE = re.compile(
+    r"^[A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)*\s+[A-ZÇĞİÖŞÜ]{2,}(?:\s+V\.)?$")
 
 
 def _k_imza(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
@@ -224,11 +352,70 @@ def _k_imza(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     if poz < 0:
         return _kural("L-M17-imza", "m.17", "bilgi",
                       "Kapanış bulunamadığı için imza bloğu değerlendirilemedi (m.17).")
-    kuyruk = taslak[poz:].splitlines()[1:]
-    if any(satir.strip() for satir in kuyruk):
-        return _kural("L-M17-imza", "m.17", "gecti", "İmza bloğu mevcut (m.17).")
-    return _kural("L-M17-imza", "m.17", "uyari",
-                  "Kapanıştan sonra imza bloğu (ad-soyad/unvan) bulunamadı (m.17).")
+    kuyruk = [s.strip() for s in taslak[poz:].splitlines()[1:] if s.strip()]
+    if not kuyruk:
+        return _kural("L-M17-imza", "m.17", "uyari",
+                      "Kapanıştan sonra imza bloğu (ad-soyad/unvan) bulunamadı (m.17).",
+                      oneri="Kapanıştan sonra sağa hizalı ad Soyad-BÜYÜK ve altına unvan ekleyin.")
+    if _AD_SOYAD_RE.match(kuyruk[0]):
+        return _kural("L-M17-imza", "m.17", "gecti",
+                      "İmza bloğu mevcut — ad Soyad-BÜYÜK biçimi uygun (m.17).")
+    # Biçim heuristik: yer tutucu/unvan-önce dizilimler meşru olabilir → asla uyari.
+    return _kural("L-M17-imza", "m.17", "bilgi",
+                  "İmza bloğu var — ad ilk harfi büyük, soyadı BÜYÜK yazılır (m.17); "
+                  "biçimi kontrol edin.",
+                  oneri="İmza satırını 'Ayşe YILMAZ' örneğindeki ad Soyad-BÜYÜK biçimine getirin.")
+
+
+def _k_ek(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
+    """m.18 — koşullu: belge ek'ten söz etmiyorsa ve blok yoksa kural hiç üretilmez.
+
+    'ekte/ekli/ekinde' geçişi bu belgenin KENDİ eki olmayabilir (vatandaşın dilekçe eki
+    alıntısı, başka belgenin eki) → kesin çelişki İDDİA EDİLMEZ; bilgi notu (bant
+    güvenliği — adversarial review bulgusu). 'ek-N' deseni hiç aranmaz: mevzuat ekidir
+    ("Kanunun ek-3 maddesi"), belge eki değil.
+    """
+    blok = _etiket_satiri(taslak, "ek")
+    referans = re.search(r"\bekte\b|\bekli\b|\bekinde\b", low)
+    if blok is not None:
+        return _kural("L-M18-ek", "m.18", "gecti", "Ek bloğu mevcut (m.18).")
+    if referans:
+        return _kural("L-M18-ek", "m.18", "bilgi",
+                      "Gövde ek'ten söz ediyor ancak 'Ek:' bloğu görünmüyor — bu belgeye ek "
+                      "konacaksa 'Ek:' başlığı gerekir (m.18).",
+                      oneri="Belgeye ek eklenecekse imza bölümünün altına 'Ek:' başlığıyla ek "
+                            "listesini (adı + sayfa sayısı) ekleyin.")
+    return None
+
+
+def _k_dagitim(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
+    """m.19 — koşullu: dağıtımlı kapanış çok-muhatap ÇIKARIMIDIR → eksikte yalnız bilgi."""
+    blok = _etiket_satiri(taslak, "dağıtım") or _etiket_satiri(taslak, "dagitim")
+    dagitimli = "arz ve rica ederim" in low or "arz/rica ederim" in low
+    if blok is not None:
+        return _kural("L-M19-dagitim", "m.19", "gecti", "Dağıtım bölümü mevcut (m.19).")
+    if dagitimli:
+        return _kural("L-M19-dagitim", "m.19", "bilgi",
+                      "Kapanış dağıtımlı ('arz ve rica') ancak 'Dağıtım:' bölümü görünmüyor — "
+                      "birden fazla muhatap varsa eklenir (m.19).",
+                      oneri="İmzanın (Ek varsa Ek'in) altına 'Dağıtım:' bölümü ekleyip 'Gereği:' "
+                            "ve 'Bilgi:' başlıklarıyla muhatapları listeleyin.")
+    return None
+
+
+# m.26: süreli yazışma ibareleri — yalnız ibare belgede geçiyorsa yerleşim hatırlatması.
+_SURELI_RE = re.compile(r"\b(ACELE|GÜNLÜDÜR|KİŞİYE ÖZEL)\b")
+
+
+def _k_sureli(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
+    m = _SURELI_RE.search(taslak)
+    if m is None:
+        return None
+    return _kural("L-M26-sureli", "m.26", "bilgi",
+                  f"'{m.group(1)}' ibaresi tespit edildi — yazı alanının sağ üst köşesinde "
+                  "kırmızı renkli yer alır; GÜNLÜDÜR'de cevap süresi metinde belirtilir (m.26).",
+                  oneri="İbarenin sağ üst köşede kırmızı yazıldığını ve (GÜNLÜDÜR ise) cevap "
+                        "süresinin metinde belirtildiğini kontrol edin.")
 
 
 def _k_olur(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
@@ -237,7 +424,9 @@ def _k_olur(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
     if "OLUR" in taslak:
         return _kural("L-M20-olur", "m.20", "gecti", "OLUR bloğu mevcut (m.20).")
     return _kural("L-M20-olur", "m.20", "uyari",
-                  "Olur yazısında büyük harflerle OLUR bloğu bulunamadı (m.20).")
+                  "Olur yazısında büyük harflerle OLUR bloğu bulunamadı (m.20).",
+                  oneri="Metnin bitiminden sonra yazı alanının ortasına büyük harflerle 'OLUR' "
+                        "yazıp altına tarih ve onay makamı imza bloğunu ekleyin.")
 
 
 def _k_yasak_ifade(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
@@ -246,7 +435,8 @@ def _k_yasak_ifade(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
     bulunan = [ifade for ifade, rx in _YASAK_RE if rx.search(low)]
     if bulunan:
         return _kural("L-USLUP-yasak", "üslup", "uyari",
-                      "Resmî yazışma üslubuna aykırı ifade: " + ", ".join(f"'{b}'" for b in bulunan))
+                      "Resmî yazışma üslubuna aykırı ifade: " + ", ".join(f"'{b}'" for b in bulunan),
+                      oneri="Gündelik kalıbı kaldırın veya resmî karşılığıyla değiştirin.")
     return _kural("L-USLUP-yasak", "üslup", "gecti", "Resmî üsluba aykırı gündelik kalıp yok.")
 
 
@@ -263,12 +453,12 @@ def _kapanis_hiyerarsi(low: str, gonderen: str, muhatap: str) -> dict[str, str] 
     # Kapanış belgenin KUYRUĞUNDA aranır — gövdede alıntılanan ilgi yazının kendi
     # "arz ederim"i gerçek kapanışı maskelemesin (denetçi bulgusu; imza bloğu payı).
     low = low[-300:]
-    if "arz ve rica ederim" in low:
+    # m.16 f.12-b: dağıtımlı yazışma "… arz ve rica ederim." VEYA "… arz/rica ederim."
+    # ibaresiyle bitirilir — her iki biçim de yönetmelikçe geçerlidir (mevzuat.gov.tr
+    # PDF doğrulaması; eski 'tek kalıba indir' bilgisi yanlıştı).
+    if "arz ve rica ederim" in low or "arz/rica ederim" in low:
         return _kural("L-M16-kapanis", "m.16", "gecti",
-                      "Dağıtımlı kapanış ('arz ve rica ederim') mevcut (m.16).")
-    if "arz/rica" in low:
-        return _kural("L-M16-kapanis", "m.16", "bilgi",
-                      f"'arz/rica' tek kalıba indirilmeli — {gerekce}: '{beklenen}'.")
+                      "Dağıtımlı kapanış mevcut — üst/eş ve alt makamlara birlikte (m.16).")
     if beklenen in low:
         return _kural("L-M16-kapanis", "m.16", "gecti",
                       f"Kapanış hiyerarşiyle doğrulandı — {gerekce}.")
@@ -320,7 +510,7 @@ def _kapanis_belirsiz_notu(low: str, muhatap: str) -> dict[str, str] | None:
 
 
 _KURALLAR = (_k_baslik, _k_sayi, _k_tarih, _k_konu, _k_muhatap, _k_ilgi, _k_kapanis,
-             _k_imza, _k_olur, _k_yasak_ifade)
+             _k_imza, _k_ek, _k_dagitim, _k_olur, _k_sureli, _k_yasak_ifade)
 
 _ANTET_SATIR = 6  # gönderen makam taslağın kendi antetinden (ilk satırlar) çözülür
 

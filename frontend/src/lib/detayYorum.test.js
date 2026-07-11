@@ -5,9 +5,32 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum,
-  mevzuatDipnot, birimDipnot, denetimDipnot, lintGiris, decomposeGiris, slaKonum,
+  mevzuatDipnot, birimDipnot, denetimDipnot, lintGiris, lintGrupla, decomposeGiris, slaKonum,
   riskGerekceYorum, riskSkorYorum, kanunNo,
 } from "./detayYorum.js";
+
+/* ---- lintGrupla: durum gruplama + bilinmeyen durum düşmez + varsayılan açılım ---- */
+test("lintGrupla: durumlara ayırır, bilinmeyen durum diger kovasına gider", () => {
+  const g = lintGrupla([
+    { kural: "a", durum: "uyari" }, { kural: "b", durum: "gecti" },
+    { kural: "c", durum: "bilgi" }, { kural: "d", durum: "tuhaf" }, { kural: "e" },
+  ]);
+  assert.equal(g.uyari.length, 1);
+  assert.equal(g.gecti.length, 1);
+  assert.equal(g.bilgi.length, 1);
+  assert.equal(g.diger.length, 2); // bilinmeyen + durumsuz — sessiz düşme YOK
+  assert.equal(g.varsayilanAcik, false);
+});
+
+test("lintGrupla: bulgu yoksa geçti listesi varsayılan açık", () => {
+  const g = lintGrupla([{ kural: "a", durum: "gecti" }, { kural: "b", durum: "gecti" }]);
+  assert.equal(g.varsayilanAcik, true);
+});
+
+test("lintGrupla: bozuk girdi (dizi değil / null öğe) güvenle süzülür", () => {
+  assert.equal(lintGrupla(undefined).gecti.length, 0);
+  assert.equal(lintGrupla([null, "x", 7, { kural: "a", durum: "gecti" }]).gecti.length, 1);
+});
 
 /* ---- hukumYorum: hüküm şeridi başlığı risk bandını da hesaba katar ---- */
 test("hukum: temiz + yeşil bant → sorunsuz", () => {

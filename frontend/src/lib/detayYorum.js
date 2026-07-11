@@ -185,6 +185,17 @@ export function lintGiris(lint = {}) {
   return `Resmî Yazışma Yönetmeliği (CB 2646/2020) denetimi: ${kurallar.length} kuraldan ${gecti} geçti, ${uyariN} uyarı — uyarılı maddeler aşağıda işaretli.`;
 }
 
+/** 2646 lint kurallarını durum gruplarına ayır (Lint2646Karti'nın saf mantığı).
+ *  Bilinmeyen/eksik `durum` sessizce DÜŞMEZ → `diger` kovasına girer (kart etiketi ile
+ *  satır sayısı tutarlı kalır). `varsayilanAcik`: bulgu yoksa geçti listesi açık başlar. */
+export function lintGrupla(kurallar) {
+  const temiz = (Array.isArray(kurallar) ? kurallar : []).filter((k) => k && typeof k === "object");
+  const grup = { uyari: [], bilgi: [], gecti: [], diger: [] };
+  for (const k of temiz) (grup[k.durum] || grup.diger).push(k);
+  const bulgu = grup.uyari.length + grup.bilgi.length + grup.diger.length;
+  return { ...grup, varsayilanAcik: bulgu === 0 };
+}
+
 const parseTrTarih = (s) => {
   const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(String(s || "").trim());
   return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null;

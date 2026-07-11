@@ -2,11 +2,11 @@
    Ayrı dosya: NeonDetay <800 satır kalsın; parçalar tek başına test edilebilir.
    Desen kaynağı: Langfuse/Braintrust (skor barı + eşik), Stripe (mono kimlik + kopyala),
    Vercel checks (kalite kapısı satırı), Phoenix (atıf satırı + kaynak alt-satırı). */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
-import { slaKonum } from "../lib/detayYorum.js";
+import { lintGrupla, slaKonum } from "../lib/detayYorum.js";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
 export const Chip = ({ c = T, title, label, children }) => (
@@ -459,6 +459,117 @@ export function BilgilendirmeYapisal({ y }) {
           ))}
         </BilgiBolum>
       )}
+    </div>
+  );
+}
+
+/* ---------- Yönetmelik-2646 lint — durum-gruplu, iki-seviye açılır denetim ----------
+   Desen araştırma-temelli (docs/arastirma lint-ux): satır anatomisi = kimlik + durum +
+   mesaj + NEDEN (yönetmelik lafzı, korpustan) + NASIL düzeltilir (Lighthouse/axe/ESLint
+   "why + how to fix"); gruplama duruma göre (uyarı üstte, geçti tek özet satırda —
+   Lighthouse "Passed audits" deseni); açılır katman TAM İKİ SEVİYE (NN/g progressive
+   disclosure: daha derini kullanıcıyı kaybettirir). Renk hiç tek sinyal değil. */
+
+const LINT_RENK = { gecti: DERIN.yesil, uyari: DERIN.sari, bilgi: PAL.mut2 };
+const LINT_IKON = { gecti: Icon.check, uyari: Icon.alert, bilgi: Icon.info };
+
+/* Aşağı/yukarı ok — açılır satır göstergesi (chevron). */
+const LintOk = ({ acik }) => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+    style={{ flexShrink: 0, transform: acik ? "rotate(180deg)" : "none", transition: "transform .12s ease-out" }}>
+    <path d="M6 9 L12 15 L18 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/* Tek kural satırı: kapalı = ikon + madde + mesaj; açık (+1 seviye) = lafız + düzeltme.
+   a11y: buton adı = görünür içerik (madde + mesaj) — aria-label ile EZİLMEZ (bulgu metni
+   ekran okuyucuda kaybolur, WCAG 2.5.3); durum aria-expanded + aria-controls ile. */
+function LintSatiri({ k }) {
+  const [acik, setAcik] = useState(false);
+  const detayId = useId();
+  const renk = LINT_RENK[k.durum] || PAL.mut2;
+  const Isaret = LINT_IKON[k.durum] || Icon.info;
+  const detayVar = !!(k.dayanak || k.oneri);
+  const icerik = (
+    <>
+      <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: renk }}><Isaret width={14} height={14} /></span>
+      <span style={{ flex: "none", fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: DERIN.V, marginTop: 1 }}>{String(k.madde ?? "")}</span>
+      <span style={{ ...TYPE.data, color: k.durum === "uyari" ? DERIN.sari : PAL.ink2, textAlign: "left" }}>{cleanDemoText(String(k.mesaj ?? ""))}</span>
+      {detayVar && <span style={{ marginLeft: "auto", color: PAL.mut3, display: "flex", alignItems: "center" }}><LintOk acik={acik} /></span>}
+    </>
+  );
+  if (!detayVar) {
+    return <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "4px 0" }}>{icerik}</div>;
+  }
+  return (
+    <div>
+      <button type="button" onClick={() => setAcik((v) => !v)} aria-expanded={acik}
+        aria-controls={acik ? detayId : undefined}
+        {...focusRing}
+        onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        style={{ cursor: "pointer", display: "flex", alignItems: "flex-start", gap: SP.s, padding: "4px 6px", margin: "0 -6px", width: "calc(100% + 12px)", background: "transparent", border: "none", borderRadius: RAD.ctl, transition: "background .12s ease-out" }}>
+        {icerik}
+        <span style={SR_ONLY}>— yönetmelik lafzı ve düzeltme önerisi</span>
+      </button>
+      {acik && (
+        <div id={detayId} style={{ margin: `2px 0 ${SP.s}px 22px` }}>
+          {k.dayanak && (
+            <div style={{ borderLeft: `2px solid ${PAL.lineHi}`, paddingLeft: SP.m, ...TYPE.meta, color: PAL.mut2 }}>
+              <span style={{ color: PAL.mut3, fontWeight: 500 }}>Yönetmelik lafzı: </span>
+              {cleanDemoText(String(k.dayanak))}
+            </div>
+          )}
+          {k.oneri && (
+            <div style={{ marginTop: SP.xs, ...TYPE.meta, color: DERIN.T }}>
+              <span style={{ fontWeight: 500 }}>Nasıl düzeltilir: </span>{cleanDemoText(String(k.oneri))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Bozuk öğede anahtar çakışması (key=undefined) satır state'ini karıştırmasın. */
+const lintAnahtar = (k, i, onek) => k.kural || `${k.madde ?? "?"}-${onek}${i}`;
+
+export function Lint2646Karti({ lint, giris }) {
+  // Gruplama saf mantıkta (lintGrupla — test edilir); bilinmeyen durum diger'e düşer,
+  // sessiz kaybolmaz (kart etiketi kural sayısıyla tutarlı kalır).
+  const { uyari, bilgi, gecti, diger, varsayilanAcik } = lintGrupla(lint?.kurallar);
+  // Her şey geçtiyse özet satırı varsayılan AÇIK (boş görünen kart yerine yeşil liste);
+  // bulgu varsa daraltılır — memur önce kırığı görür (Lighthouse deseni). Kullanıcı
+  // dokunana kadar VERİDEN türetilir (in-place result güncellemesinde ters kalmaz).
+  const [gectiSecim, setGectiSecim] = useState(null);
+  const gectiAcik = gectiSecim ?? varsayilanAcik;
+  const bulgu = uyari.length + bilgi.length + diger.length;
+  return (
+    <div>
+      {giris && <p style={{ margin: "0 0 8px", ...TYPE.data, color: PAL.mut2 }}>{giris}</p>}
+      <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
+        {uyari.map((k, i) => <LintSatiri key={lintAnahtar(k, i, "u")} k={k} />)}
+        {bilgi.map((k, i) => <LintSatiri key={lintAnahtar(k, i, "b")} k={k} />)}
+        {diger.map((k, i) => <LintSatiri key={lintAnahtar(k, i, "d")} k={k} />)}
+        {gecti.length > 0 && (
+          <div style={bulgu ? { marginTop: SP.xs, paddingTop: SP.s, borderTop: `1px solid ${PAL.line}` } : null}>
+            <button type="button" onClick={() => setGectiSecim(!gectiAcik)} aria-expanded={gectiAcik}
+              {...focusRing}
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.s, padding: "4px 6px", margin: "0 -6px", width: "calc(100% + 12px)", background: "transparent", border: "none", borderRadius: RAD.ctl, transition: "background .12s ease-out" }}>
+              <span aria-hidden="true" style={{ display: "flex", flex: "none", color: DERIN.yesil }}><Icon.check width={14} height={14} /></span>
+              <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{gecti.length} kural geçti</span>
+              <span style={{ marginLeft: "auto", color: PAL.mut3, display: "flex", alignItems: "center" }}><LintOk acik={gectiAcik} /></span>
+            </button>
+            {gectiAcik && (
+              <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, marginTop: SP.xs }}>
+                {gecti.map((k, i) => <LintSatiri key={lintAnahtar(k, i, "g")} k={k} />)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

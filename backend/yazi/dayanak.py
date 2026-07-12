@@ -176,4 +176,4 @@ def dayanak_uygula(taslak_md: str, secili: list) -> str:
     return "\n".join([*lines[:yer], *blok_satir, "", *lines[yer:]])
 
 
-__all__ = ("dayanak_blok", "dayanak_blogunu_cikar", "dayanak_uygula")
+__all__ = ("dayanak_blogunu_cikar", "dayanak_blok", "dayanak_uygula")

@@ -97,7 +97,7 @@ class TestCokAtif:
     def test_devam_satiri_9_bosluk_degil(self):
         # Devam satırı (10 boşluk) kapanış anchor'ıyla (tam 9) çakışmamalı.
         md = dayanak_uygula(_BASE, _SECILI)
-        devam = [ln for ln in md.split("\n") if ln.strip().startswith("b)")][0]
+        devam = next(ln for ln in md.split("\n") if ln.strip().startswith("b)"))
         girinti = len(devam) - len(devam.lstrip(" "))
         assert girinti == 10
 

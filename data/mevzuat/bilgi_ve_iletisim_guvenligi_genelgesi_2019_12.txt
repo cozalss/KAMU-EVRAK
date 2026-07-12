@@ -1,0 +1,49 @@
+Bilgi ve İletişim Güvenliği Tedbirleri Genelgesi (2019/12)
+Cumhurbaşkanlığı Genelgesi 2019/12 — RG 06.07.2019/30823 — YÜRÜRLÜKTE (Bilgi ve İletişim Güvenliği Rehberi CBDDO koordinasyonunda hazırlanır ve www.cbddo.gov.tr'de yayımlanır)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2019/07/20190706-10.pdf
+
+Bu metin, kamuya açık Cumhurbaşkanlığı Genelgesinin numaralı tedbir maddelerinin birebir
+metninden/yakın-lafzî alıntısından derlenmiştir. Madde metinleri resmigazete.gov.tr resmî
+kaynağından çapraz doğrulanmıştır (CLAUDE.md §1). Genelge, kamu kurumlarında üretilen/işlenen
+evrakın gizlilik dereceleri, kritik verinin yurt içinde saklanması, kurumsal e-posta ile
+yazışma ve EBYS/e-yazışma güvenliği bakımından temel dayanaktır; gizlilik dereceli evrakın
+işlenmesi ve iletilmesinde uyulacak asgari tedbirleri belirler.
+
+Madde 1 — Kritik verinin yurt içinde saklanması
+Nüfus, sağlık ve iletişim kayıt bilgileri ile genetik ve biyometrik veriler gibi kritik bilgi
+ve veriler yurt içinde güvenli bir şekilde depolanacaktır. Bu tedbir, kamu evrakında yer alan
+kişisel/kritik verilerin sınır dışı sistemlerde tutulmasını yasaklar.
+
+Madde 2 — Kritik verinin güvenli ağda tutulması ve log kaydı
+Kamu kurum ve kuruluşlarında yer alan kritik veriler, internete kapalı ve fiziksel güvenliği
+sağlanmış bir ortamda bulunan güvenli bir ağda tutulacak, bu ağda kullanılacak cihazlara
+erişim kontrollü olarak sağlanacak ve log kayıtları değiştirilmeye karşı önlem alınarak
+saklanacaktır.
+
+Madde 3 — Bulut depolama sınırı
+Kamu kurum ve kuruluşlarına ait veriler, kurumların kendi özel sistemleri veya kurum
+kontrolündeki yerli hizmet sağlayıcılar hariç bulut depolama hizmetlerinde saklanmayacaktır.
+
+Madde 5 — Sosyal medya üzerinden paylaşım yasağı
+Sosyal medya üzerinden gizlilik dereceli veri paylaşımı ve haberleşme yapılmayacaktır. Gizlilik
+dereceli evrak, kurum dışı sosyal medya/mesajlaşma kanallarıyla iletilemez.
+
+Madde 12 — Arka kapı taahhütnamesi
+Temin edilecek yazılım ve donanımların "arka kapı" olarak nitelendirilen güvenlik açıklığı
+içermediğine dair üretici ve/veya tedarikçiden taahhütname alınacaktır.
+
+Madde 18 — Kamu e-posta sistemleri
+Kamu e-posta sistemlerinin ayarları güvenli olacak biçimde yapılandırılacak, e-posta sunucuları
+ülkemizde ve kurumun kontrolünde bulundurulacak ve sunucular arasındaki iletişimin şifreli
+olarak yapılması sağlanacaktır. Bu tedbir, kurumsal yazışmada kullanılan e-posta altyapısının
+güvenlik esasını belirler.
+
+Madde 19 — Kurumsal e-posta kullanımı
+Kurumsal olmayan şahsi e-posta adreslerinden kurumsal iletişim yapılmayacak, kurumsal
+e-postalar şahsi amaçlarla kullanılmayacaktır. Resmî yazışma yalnız kurumsal hesaplar
+üzerinden yürütülür.
+
+Madde 20 — Yurt içi iletişim trafiği
+Haberleşme hizmeti sağlamak üzere yetkilendirilmiş işletmeciler Türkiye'de internet değişim
+noktası kurmakla yükümlüdür; yurt içi iletişim trafiğinin yurt dışına çıkarılmamasına yönelik
+tedbirler alınacaktır.

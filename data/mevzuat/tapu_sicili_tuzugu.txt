@@ -1,0 +1,26 @@
+Tapu Sicili Tüzüğü
+Bakanlar Kurulu Kararının Tarihi: 22/7/2013, No: 2013/5150 · Dayandığı Kanun: 22/11/2001 tarih ve 4721 sayılı Türk Medeni Kanunu (m.913, 997, 998, 1000, 1012, 1017) · Yayımlandığı Resmî Gazete: 17/8/2013, Sayı: 28738 · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/2.5.20135150.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Tapu Sicili Tüzüğü (BKK 2013/5150, RG 17/8/2013-28738), 4721 sayılı Türk Medeni Kanunu'nun öngördüğü tapu sicillerinin düzenli tutulmasına ilişkin usul ve esasları belirleyen, hâlen yürürlükte olan temel düzenleyici işlemdir. Kamu evrak ve yazışma süreçleri bakımından; yazılı istem/istem belgesi zorunluluğu, kimlik ve yetki doğrulama usulleri, elektronik ortamda başvuru imkânı, istemin reddinde tebligat ve itiraz süreleri ile kayıt düzeltme rejimi doğrudan ilgilidir. Aşağıdaki maddeler, tapu müdürlüklerine yapılan başvuruların şekli, belgelendirilmesi, reddi ve düzeltilmesi süreçlerine ışık tutmaktadır.
+
+MADDE 13 — Elektronik ortamda işlem yapılması
+Genel Müdürlük tarafından belirlenecek resmî şekle tabi olmayan belge ve kayıt örneği verilmesi gibi işlemler, elektronik ortamda başvuru yapılarak ve elektronik imza dahil diğer kimlik doğrulama yöntemleri kullanılarak tamamlanabilir.
+
+MADDE 16 — İstem
+Kanunlarda veya Tüzükte belirlenen istisnalar dışında yazılı istem olmadıkça tapu sicili üzerinde işlem yapılamaz. Müdürlüklere yapılacak her türlü tapu işlemi isteminde başvuru istem belgesi düzenlenir. Kayıt sorgulaması istemlerinde TC kimlik numarası veya taşınmazın ada/parsel numarasının belirtilmesi zorunludur; aksi hâlde istem reddedilir.
+
+MADDE 18 — Hak sahibinin belirlenmesi
+İstem, müdür veya görevlendirdiği tapu görevlisi tarafından incelenir ve istemin hak sahibi tarafından yapılıp yapılmadığı belirlenir. Kimlik doğrulaması TC kimlik numaralı nüfus cüzdanıyla yapılır; istem vekâleten yapılmışsa 1512 sayılı Noterlik Kanununa göre düzenlenmiş, işlemi yapmaya yetkili olduğunu içeren vekâletname; tüzel kişi adına yapılmışsa yetki belgesi ve imza sirküleri aranır.
+
+MADDE 22 — İstem belgesi düzenlenmesi
+Sözleşme düzenlenmesini gerektirmeyen işlemlerde, istem sahibinin kimlik ve yerleşim yeri bilgilerini içeren istem belgesi düzenlenir. İşlemi hazırlama ve kontrol etme görevleri aynı kişide birleşemez (tek personelli müdürlükler hariç); eksiklik/yanlışlık giderilmeden imza aşamasına geçilmez; belge müdürlük mührüyle onanır ve üzerinde silinti-kazıntı-çıkıntı yapılamaz.
+
+MADDE 26 — İstemin reddedilmesi
+Mevzuata ve Tüzüğe uygun olmayan istemler, gerekçesi, itiraz yeri ve süresi belirtilerek geciktirilmeden reddedilir. Ret kararı istem sahibine elden veya 7201 sayılı Tebligat Kanunu hükümlerine göre tebliğ edilir. Tebliğ tarihinden itibaren 15 gün içinde bağlı bulunulan bölge müdürlüğüne, bölge müdürlüğü kararına karşı da 15 gün içinde Genel Müdürlüğe itiraz edilebilir.
+
+MADDE 74 — Ana veya yardımcı siciller üzerindeki düzeltmeler
+Kütük, yevmiye defteri ve yardımcı sicillerde belgelere aykırı basit yazım hatası tespit edilirse müdür tarafından, nedeni düzeltmeler sicilinde açıklanarak resen düzeltilir. Belgelere aykırı tescil veya esaslı yazım hatasının düzeltilmesi için ilgililerin yazılı oluru gerekir; olur alınamazsa durum beyanlar sütununda belirtilerek 659 sayılı KHK hükümlerine göre işlem yapılır.
+
+MADDE 88 — Belgelerin elden takibi ve şekli
+Kamu kurum ve kuruluşları, mahkemeler, icra müdürlükleri, bankalar ve özel hukuk tüzel kişileri tarafından düzenlenen, aynî veya kişisel hakkı sona erdirecek nitelikteki belgeler tapu işlemi için elden ibraz edilemez; bu belgeler 7201 sayılı Tebligat Kanunu hükümlerine göre müdürlüklere tebliğ edilir. Bu belgelerde silinti, kazıntı ve çıkıntı yapılamaz.

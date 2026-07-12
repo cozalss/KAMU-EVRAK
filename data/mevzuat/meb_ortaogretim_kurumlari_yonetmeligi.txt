@@ -1,0 +1,23 @@
+Millî Eğitim Bakanlığı Ortaöğretim Kurumları Yönetmeliği
+Mevzuat Bilgi Sistemi No: 18812 · RG: 07.09.2013 tarih, 28758 sayı · Dayanak: 222 (İlköğretim ve Eğitim K.), 1739 (Millî Eğitim Temel K.), 2429 (Ulusal Bayram ve Genel Tatiller K.), 3308 (Mesleki Eğitim K.), 5580 (Özel Öğretim Kurumları K.), 6331 (İş Sağlığı ve Güvenliği K.), 5490 (Nüfus Hizmetleri K.), 573 sayılı KHK (Özel Eğitim) ve 1 sayılı Cumhurbaşkanlığı Kararnamesi m.301 · YÜRÜRLÜKTE (2013'ten bu yana çok kez değiştirilerek güncelliğini korumuştur)
+Kaynak: https://mevzuat.gov.tr/mevzuat?MevzuatNo=18812&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Millî Eğitim Bakanlığı Ortaöğretim Kurumları Yönetmeliği, resmî ve özel ortaöğretim kurumlarının eğitim-öğretim, yönetim ve işleyişine ilişkin usul ve esasları düzenleyen, 2013'ten bu yana güncellenerek yürürlükte kalan temel bir idari düzenlemedir. Kamu evrak ve yazışma süreçleri açısından; öğrenci kayıt/nakil başvurularının dilekçe veya e-Devlet üzerinden idareye ulaştırılması, e-Okul sistemi üzerinden resmî bildirim ve tebligat yapılması ile okul müdürünün resmî belge onaylama yetkisi, kamu kurumlarındaki dijital evrak akışına somut bir örnek sunar.
+
+MADDE 1 — Amaç
+Bu Yönetmeliğin amacı, Millî Eğitim Bakanlığına bağlı resmî ve özel örgün ortaöğretim kurumlarında eğitim, öğretim, yönetim ve işleyişe ilişkin usul ve esasları düzenlemektir.
+
+MADDE 3 — Dayanak
+Yönetmelik; 222 sayılı İlköğretim ve Eğitim Kanunu, 1739 sayılı Millî Eğitim Temel Kanunu, 2429 sayılı Ulusal Bayram ve Genel Tatiller Hakkında Kanun, 3308 sayılı Mesleki Eğitim Kanunu, 5580 sayılı Özel Öğretim Kurumları Kanunu, 6331 sayılı İş Sağlığı ve Güvenliği Kanunu, 5490 sayılı Nüfus Hizmetleri Kanunu, 573 sayılı Özel Eğitim Hakkında Kanun Hükmünde Kararname ve 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesinin 301 inci maddesine dayanılarak hazırlanmıştır.
+
+MADDE 4 — Tanımlar (e-Okul / e-Mesem / e-Portfolyo)
+e-Okul: eğitim, öğretim ve yönetimle ilgili iş ve işlemlerin elektronik ortamda yürütüldüğü ve bilgilerin muhafaza edildiği sistemdir. e-Mesem: mesleki eğitim merkezi programı uygulayan okul/kurumlar için aynı işlevi gören elektronik sistemdir. e-Portfolyo: öğrencilerin gelişimlerinin izlendiği, başarı/yetenek/beceri belgelerinin tutulduğu elektronik dosyadır. Bu tanımlar, kurumun resmî evrak/kayıt işlemlerinin dayandığı elektronik altyapıyı belirler.
+
+MADDE 36 — Devam-devamsızlık ve ilişik kesme
+Devamsızlık yapan öğrenciler ders öğretmeni tarafından yoklama fişine, ilgili müdür yardımcısı tarafından e-Okul/e-Mesem sistemine işlenir. Devamsızlık durumu velisine posta, e-posta veya diğer iletişim araçlarıyla bildirilir/tebliğ edilir. Özürsüz devamsızlığı 10 günü, toplamda 30 günü aşan öğrenciler ders puanları ne olursa olsun başarısız sayılır; özür belgesi veya yazılı veli beyanı özür gününü takip eden en geç 5 iş günü içinde okul yönetimine verilir ve e-Okul sistemine işlenir (zorunlu hallerde okul yönetimince 20 iş gününü aşmamak üzere uzatılabilir).
+
+MADDE 38 — Kontenjan belirleme, başvuru ve değerlendirme
+Nakil ve geçiş başvuruları veli tarafından öğrencinin bulunduğu okul müdürlüğüne dilekçe ile veya e-Devlet üzerinden yapılır; başvuru dönemleri yönetmelikte ayrıca belirlenmiştir. Naklen gidilecek okul müdürlüğü, başvuruların bitimini izleyen ilk iş günü içinde değerlendirmeyi e-Okul sistemi üzerinden sonuçlandırır; sonuç aynı gün okulda ilan edilir ve velilere e-Okul sistemiyle bildirilir.
+
+MADDE 78 — Müdür, görev, yetki ve sorumlulukları
+Okul müdürü, kanun/yönetmelik/yönerge/genelge çerçevesinde eğitim-öğretim ve yönetim hizmetlerinden birinci derece sorumludur. Yetkileri arasında yıllık planları inceleyip onaylamak, haftalık ders programlarını onaylamak ve diploma, usta öğreticilik, ustalık, işyeri açma, kalfalık, öğrenim durum belgesi, sözleşme ve benzeri resmî belgeleri onaylamak yer alır; ortak kullanım protokollerini imzalayıp bir örneğini üst makama göndermek de müdürün yazışma/evrak yetkisi kapsamındadır.

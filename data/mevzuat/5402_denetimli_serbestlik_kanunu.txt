@@ -1,0 +1,23 @@
+Denetimli Serbestlik Hizmetleri Kanunu
+5402 sayılı Kanun — Kabul: 3.7.2005, RG: 20.7.2005 / Sayı 25881; adı 6291 sayılı Kanun m.6 ile 5.4.2012'de "Denetimli Serbestlik ve Yardım Merkezleri ile Koruma Kurulları Kanunu"ndan "Denetimli Serbestlik Hizmetleri Kanunu"na değiştirilmiştir; ayrı bir dayanak mevzuatı yoktur (doğrudan TBMM kanunu) — YÜRÜRLÜKTE (son değişiklik 28.3.2023 tarih 7445 sayılı Kanun)
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5402.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 5402 sayılı Denetimli Serbestlik Hizmetleri Kanunu, denetimli serbestlik müdürlükleri ile koruma kurullarının kuruluş, görev ve çalışma esaslarını; yükümlülere uygulanacak programları ve idari işlemlere karşı şikâyet/itiraz yollarını düzenleyen temel kanundur. Kamu evrak ve yazışma süreçleri açısından, müdürlük-yükümlü bildirimleri (m.5), idari işlemlere karşı infaz hâkimliğine başvuru usulü (m.18) ve yönetmelik/teşkilatlanma için öngörülen yasal süreler (m.27, Geçici m.1 ve m.3) bakımından doğrudan referans niteliğindedir.
+
+Madde 5 — Yükümlülük
+Hakkında bir tedbire hükmedilen kişi, karara uygun olarak müdürlüğün hazırladığı programa ve denetimli serbestlik görevlilerinin bu kapsamdaki uyarı ve önerilerine uymak ve katlanmak zorundadır — yükümlü ile idare arasındaki bildirim/yazışma ilişkisinin yasal temelini oluşturur.
+
+Madde 12/A — Uyuşturucu veya uyarıcı madde kullananlar hakkında uygulanacak tedavi ve/veya denetimli serbestlik tedbirlerine ilişkin görevler
+TCK m.191 kapsamında Cumhuriyet savcısınca denetimli serbestlik veya tedavi ve denetimli serbestlik tedbiri verilen şüpheliye müdürlükçe uygulanacak yükümlülükleri (tedavi, program katılımı, yer/bölge ve etkinlik kısıtları, uyuşturucu testi vb.) ve bu işlemlere karşı öngörülen şikâyet/başvuru yolunu düzenler (Ek: 28/3/2023-7445/27. md.; 5.4.2023'te yürürlüğe girmiştir).
+
+Madde 18 — Şikâyet ve itiraz
+Müdürlükler ile koruma kurullarının idari nitelikteki eylem ve işlemlerine karşı infaz hâkimliğine şikâyette bulunulabilir; bu Kanun uygulaması kapsamında verilen hâkim kararlarına ve kanunun gösterdiği hallerde mahkeme kararlarına karşı itiraz yolu açıktır.
+
+Madde 27 — Yönetmelik
+Bu Kanunun yürürlüğe girdiği tarihten itibaren altı ay içinde, ilgili kamu kurum ve kuruluşlarının görüşleri alınarak Adalet Bakanlığınca yönetmelik hazırlanacağını öngörür.
+
+Geçici Madde 1 — Teşkilatlanma süresi
+Denetimli serbestlik ve yardım merkezleri ile koruma kurullarının teşkilatlanmasının, Kanunun yürürlüğe girdiği tarihten itibaren altı ay içinde tamamlanmasını öngörür.
+
+Geçici Madde 3 — Geçici görevlendirme süresi
+Geçici görevlendirmelerin altı ay süreyle yapılabileceğini, bu sürenin bir defaya mahsus olmak üzere altı aya kadar uzatılabileceğini düzenler.

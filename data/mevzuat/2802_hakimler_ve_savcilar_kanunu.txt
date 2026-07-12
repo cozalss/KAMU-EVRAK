@@ -1,0 +1,26 @@
+Hâkimler ve Savcılar Kanunu
+Kanun No: 2802 · Kabul Tarihi: 24.02.1983 · RG: 26.02.1983 / Sayı 17971 · Dayanak: TBMM tarafından kabul edilmiş temel kanun (metinde ayrı bir dayanak maddesi belirtilmemiştir; 1982 Anayasası m.140 hâkim/savcı mesleğine ilişkin hükümlerle ilişkilidir) · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2802&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 2802 sayılı Hâkimler ve Savcılar Kanunu, hâkim ve savcıların mesleğe kabulünden atama, sicil, disiplin ve teftişine kadar tüm özlük süreçlerini düzenleyen temel kanundur ve adli/idari yargı teşkilatının işleyişinin hukuki omurgasını oluşturur. Kanunun sicil-özlük dosyası, tebliğ süreleri ve müfettiş yetkilerine ilişkin hükümleri, kamu evrakının kayıt, gizlilik ve süreye bağlı işlem esaslarına doğrudan örnek teşkil ettiğinden bu sistemde referans kaynak olarak kullanılmaktadır.
+
+Madde 42 — Atamalarda görev yerine hareket ve işe başlama süresi
+Aynı yerdeki göreve atananlar atama emrinin tebliğ edildiği gün, başka yerdeki göreve atananlar ise tebliğ tarihinden itibaren onbeş (15) gün içinde o yere hareket ederek yol süresini izleyen iş gününde göreve başlamak zorundadır. Kanuni izin kullanırken atananlarda süre izin bitiminden, yetkili vekil bırakılanlarda ise yerine atananın gelmesi veya yetkinin kaldırıldığının tebliği tarihinden başlar. Atama emri tebliğ edilince yolluklar ödeme emri aranmaksızın derhal ödenir.
+
+Madde 58 — Sicil ve özlük dosyaları
+Hâkim ve savcılara sicil numarası verilir; haklarında gizli ve açık sicil dosyalarıyla ayrıca bir özlük dosyası tutulur. Bu madde, meslek mensuplarına ilişkin resmî evrakın nasıl kayıt altına alınacağının temel çerçevesini kurar.
+
+Madde 59 — Gizli sicil
+Her hâkim ve savcı için ayrı bir gizli sicil dosyası tutulur; bu dosyaya yetkililerce düzenlenen sicil raporları ile müfettişlerce verilen hâl kâğıtları ve mal beyannameleri konulur. Kişisel ve hassas nitelikteki evrakın erişim ve saklama rejimini düzenler. (Resmî madde başlığı 'Gizli sicil'dir.)
+
+Madde 60 — Açık sicil ve özlük dosyası
+Açık sicil dosyasına ilgilinin kimliği, öğrenim durumu, bildiği yabancı dil, mesleki eser ve yazıları, aile durumu, görev yaptığı yerler, terfileri, izin/rapor, mesleğe kabul, disiplin ve ceza kovuşturması gibi bilgi ve belgeler işlenir. Kamu görevlisine ait resmî evrakın hangi kalemlerden oluşacağını somutlaştırır.
+
+Madde 61 — Sicil vermeye yetkili olanlar ve uygulanacak ilkeler
+Hâkimlik ve savcılık mesleğinde bulunanlara sicil vermeye yetkili makamlar ile bu konuda uygulanacak ilkeler ve sicil formlarının şekli yönetmelikle belirlenir; yetki ve usul buna göre işler.
+
+Madde 73 — Yeniden inceleme ve itiraz
+Hâkim ve savcılar hakkında verilen disiplin cezalarına ilişkin kararın tebliğinden itibaren on (10) gün içinde yetkili mercie yazılı olarak yeniden inceleme/itiraz talebinde bulunulabilir; itiraz üzerine verilen kararlar kesindir. Tebliğ tarihinden başlayan başvuru süresine örnek teşkil eder.
+
+Madde 101 — Adalet müfettişlerinin yetkileri
+Adalet müfettişleri, araştırma, inceleme ve soruşturmalarda gerek gördükleri kişileri yeminle dinleyebilir, gerektiğinde istinabe yoluna başvurabilir; ilgili kamu kurum, kurul ve kuruluşları ile kişiler müfettişlerin istediği her türlü bilgi ve belgeyi vermekle yükümlüdür.

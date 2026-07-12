@@ -1,0 +1,20 @@
+Yargıtay Kanunu
+Kanun No: 2797 · Kabul Tarihi: 4/2/1983 · RG: 8.2.1983 - Sayı 17953 · Dayanak: T.C. Anayasası m.154 · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2797&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 2797 sayılı Yargıtay Kanunu, Türkiye'nin en yüksek adli yargı mercii olan Yargıtay'ın kuruluşunu, teşkilat yapısını ve işleyişini düzenleyen temel kanundur. Kamu evrak ve yazışma süreçleri açısından kanun; dosyaların dairelere dağıtımı/iş bölümü (m.14), başvuruların süre ve şekil yönünden ön incelemesi (m.40), Genel Sekreterlik (m.23) ile yazı işleri bürolarının evrak-kayıt sorumluluğu (m.53) ve kararların Resmî Gazete'de yayım/emsal bildirim usulleri (m.58) bakımından referans alınır. 1983'ten bu yana güncellenerek yürürlükte kalmıştır.
+
+Madde 14 — Daireler ve iş bölümü
+Hukuk daireleri ile ceza daireleri kendi aralarında iş bölümü esasına göre çalışır. Daireler arasındaki iş bölümü karar tasarısı Başkanlar Kurulunca hazırlanır ve toplantı tarihinden yedi gün önce ilan edilmek kaydıyla Büyük Genel Kurulun onayına sunulur; Büyük Genel Kurul tasarıyı aynen ya da değiştirerek onaylar. Adliye mahkemelerince gönderilen dosyalar, temyiz dilekçesinde gösterilen daire ile bağlı kalınmaksızın 14. maddeye göre yapılan iş bölümüne göre görevli daireye gönderilir. Kamu evrak sürecinde bir dosyanın hangi daireye yönlendirileceğini belirleyen temel yetki hükmüdür.
+
+Madde 23 — Genel Sekreterin görevleri
+Genel Sekreter, yönetim işlerinde Birinci Başkanın yardımcısıdır ve Birinci Başkanın vereceği yönetim ve yazı işlerini yürütür; Yargıtay üyeleri arasından Birinci Başkanca iki yıl için seçilir (süre dolmadan Birinci Başkanın kararıyla veya görevinin bitmesiyle sona erebilir; bir kez daha seçilebilir). Genel Sekretere, gerektiğinde birinci sınıfa ayrılmış tetkik hâkimlerinden yardımcılar ve genel sekreterlik hizmetleri için yeteri kadar memur verilir. Kurumsal evrak/yazışma yönetiminin idari sorumluluk merkezidir.
+
+Madde 40 — Dairelerde ön inceleme
+Yargıtay incelemesi için dairelere gelen dosyalar bekletilmeksizin görev ve iş bölümü, temyiz kabiliyetinin bulunup bulunmadığı, temyiz isteminin süresi içinde yapılıp yapılmadığı, temyiz şartı ve diğer usul eksiklikleri yönünden ön incelemeye tâbi tutulur; eksiklik saptanan dosyalar dairede öncelikle incelenip karara bağlanır. Hukuk ve Ceza Genel Kurulları çalışmalarında da uygulanır. Başvuru/evrakın süre ve şekil yönünden ilk denetiminin yasal dayanağıdır.
+
+Madde 53 — Yazı işleri büroları
+Birinci Başkanlıkta, Yargıtay dairelerinde ve kurullarında birer, Cumhuriyet Başsavcılığında yeteri kadar yazı işleri bürosu kurulur; büroda bir yazı işleri müdürü, yeteri kadar yazı işleri müdür yardımcısı, memur, kâtip, mübaşir ve odacı bulunur. Yazı işleri müdürü, büronun birinci derecede sorumlu görevlisi olup büro işlerinin (evrak kaydı, dosyalama, yazışma) düzenli yürütülmesini sağlar ve İç Yönetmelikte belirtilen görevleri yapar.
+
+Madde 58 — Kararların Resmî Gazete'de yayımı
+Bu Kanun hükümlerine göre alınacak ilke kararları, yapılacak yönetmelikler, içtihadı birleştirme kararları ile Birinci Başkanlıkça emsal teşkil edebileceği belirlenen Hukuk ve Ceza Genel Kurulu kararları Resmî Gazete'de yayımlanır. Yargıtay içtihadı birleştirme kararları benzer hukuki konularda Yargıtay Genel Kurullarını, dairelerini ve adliye mahkemelerini bağlar; resmî ilan/yayın yoluyla emsal bildirimini düzenler.

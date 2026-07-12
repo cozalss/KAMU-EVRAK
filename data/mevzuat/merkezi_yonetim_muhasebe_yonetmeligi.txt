@@ -1,0 +1,23 @@
+Merkezi Yönetim Muhasebe Yönetmeliği
+27/12/2014 tarihli ve 29218 mükerrer sayılı Resmî Gazete; Dayanak: 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.49, 178 sayılı KHK m.11, 3/12/2014 tarihli ve 2014/7052 sayılı Bakanlar Kurulu Kararıyla yürürlüğe konulan Genel Yönetim Muhasebe Yönetmeliği; en son değişiklik 23/02/2024-32469 RG — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20357&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Bu Yönetmelik, merkezî yönetim kapsamındaki kamu idarelerinde muhasebe kayıt ve işlemlerinin tekdüzen, saydam ve hesap verilebilir biçimde yürütülmesini düzenler. Her mali işlemin mutlaka bir muhasebeleştirme belgesiyle (ödeme emri belgesi veya muhasebe işlem fişi) kayda geçirilmesi zorunluluğu, kamu evrak/belge yönetimi süreçleriyle doğrudan bağlantılıdır. 5018 sayılı Kanun'a dayanan ve 2014'ten bu yana yürürlükte olan düzenleme, en son 2024 yılında kısmen güncellenmiştir.
+
+MADDE 1 — Amaç
+Merkezî yönetim kapsamındaki kamu idarelerinin hesap ve kayıt düzeninde saydamlık, hesap verilebilirlik ve tekdüzenin sağlanması; işlemlerin sağlıklı ve güvenilir bir sistem içinde muhasebeleştirilmesi ile kesin hesabın çıkarılmasına temel oluşturmak amaçlanmıştır.
+
+MADDE 2 — Kapsam
+Bu Yönetmelik, merkezî yönetim kapsamındaki kamu idarelerinin muhasebe kayıt ve işlemlerini kapsar.
+
+MADDE 3 — Dayanak
+Yönetmelik; 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanununun 49 uncu maddesine, 178 sayılı Maliye Bakanlığının Teşkilat ve Görevleri Hakkında Kanun Hükmünde Kararnamenin 11 inci maddesine ve 3/12/2014 tarihli ve 2014/7052 sayılı Bakanlar Kurulu Kararıyla yürürlüğe konulan Genel Yönetim Muhasebe Yönetmeliğine dayanılarak hazırlanmıştır.
+
+MADDE 4 — Tanımlar
+Yönetmelikte geçen kavramlar (aynı bütçeli kamu idaresi, Bakanlık, basit ortalama yöntem, bütçe geliri/gideri, muhasebe birimi/yetkilisi vb.) tanımlanmıştır.
+
+MADDE 5 — Yevmiye sistemi, muhasebeleştirme belgeleri ve açılış kayıtları
+Gerçekleşen işlemler; ödeme emri belgesi veya muhasebe işlem fişi gibi muhasebeleştirme belgeleriyle kaydedilir, belge olmadan kayıt yapılmaz. İşlemler tarih ve sıra numarasına göre yevmiye defterine kaydedilir; bu tarih ve numaralar büyük defter ile yardımcı hesap defterlerine yapılacak kayıtlara da esas alınır. Açılış kayıtları da bu esaslara göre yapılır.
+
+MADDE 6 — Kullanılacak defterler ve kayıt düzeni
+Muhasebe işlemlerinde yevmiye defteri, büyük defter, kasa defteri ve gerek görülen yardımcı hesap defterleri kullanılır; kayıt düzeni bu defterler üzerinden yürütülür.

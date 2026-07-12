@@ -1,0 +1,20 @@
+Mekânsal Planlar Yapım Yönetmeliği
+14/6/2014 tarih ve 29030 sayılı RG · Dayanak: 3194 sayılı İmar Kanunu m.5, m.8, m.44 + 644 sayılı KHK m.2 (1 sayılı CBK ile devralınmıştır) · Son değişiklik: 22/1/2026 tarih ve 33145 sayılı RG · YÜRÜRLÜKTE
+Kaynak: https://resmigazete.gov.tr/eskiler/2014/06/20140614-2.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Mekânsal Planlar Yapım Yönetmeliği, ülke genelinde mekânsal strateji planından imar planına kadar tüm plan kademelerinin hazırlanma, kurumlar arası görüş alma, onay, ilan ve itiraz süreçlerini tek çatı altında düzenler. Kamu kurumları arasındaki otuz günlük görüş bildirme süresi ve planların askı-itiraz-kesinleşme takvimi, resmî evrak ve süre takibi açısından doğrudan referans niteliğindedir.
+
+MADDE 1 — Amaç
+Fiziki, doğal, tarihi ve kültürel değerleri korumak ve geliştirmek, koruma ve kullanma dengesini sağlamak, ülke, bölge ve şehir düzeyinde sürdürülebilir kalkınmayı desteklemek, yaşam kalitesi yüksek, sağlıklı ve güvenli çevreler oluşturmak üzere hazırlanan, arazi kullanım ve yapılaşma kararları getiren mekânsal planların yapımına ve uygulanmasına ilişkin usul ve esasları belirlemektir.
+
+MADDE 2 — Kapsam
+Bu Yönetmelik; her tür ve ölçekteki mekânsal planlar ile bu planlara ilişkin revizyon, ilave ve değişikliklerin yapılmasına ve incelenmesine, mekânsal planlar ile özel amaçlı plan ve projelere yönelik usul ve esasları kapsar.
+
+MADDE 8 — Araştırma ve analiz — kurum/kuruluş görüş süresi
+Mekânsal planların, plan değişikliklerinin, revizyon ve ilavelerin hazırlanması sürecinde kamu kurum ve kuruluşlarından veri, görüş ve öneri istenir. Kurum ve kuruluşlar görüşlerini en geç otuz gün içinde bildirmek zorundadır; görüş verilmesi için inceleme, etüt ve analiz gibi uzun süreli çalışma gerektiren hallerde ilgili kurum ve kuruluşça talep edilmesi üzerine otuz günü geçmemek üzere ilave süre verilebilir. Bu süre içinde görüş bildirilmezse plan hakkında olumsuz görüş bulunmadığı kabul edilir.
+
+MADDE 32 — Planların onaylanması ve yürürlüğe girmesi
+Çevre düzeni planı, nazım imar planı ve uygulama imar planları ile bunlara ilişkin revizyon, ilave ve değişiklikler idarelerin karar mercilerince onaylanarak yürürlüğe girer. Onaylanan planlar için Plan İşlem Numarası alınması zorunludur. Kesinleşmemiş çevre düzeni planının kısımlarını kapsayan imar planları onaylanamaz. Kesinleşen planların her paftasına Plan İşlem Numarası ile onay tarih ve sayısı yazılarak mühürlenir; uygulama imar planı kesinleşmeden imar uygulaması yapılamaz.
+
+MADDE 33 — Planların ilanı, itirazlar ve kesinleşmesi
+Onaylanan çevre düzeni planı ve imar planları, onaylandığı tarihten itibaren en geç on beş iş günü içinde otuz gün süreyle herkesin görebileceği şekilde idarelerce belirlenen ilan yerlerinde asılmak suretiyle ve idarelerin internet sayfalarında eş zamanlı olarak ilan edilir; askıya çıkarma ve indirme işlemlerine ilişkin tutanaklar ilgili birim amiri dahil iki imza ile düzenlenir. Planlara otuz günlük ilan (askı) süresi içinde idareye itiraz edilebilir; itirazlar idarece değerlendirilir, reddedilmesi halinde plan bu ret kararı tarihinde, itiraz edilmemesi halinde ise askı süresinin sonunda kesinleşir.

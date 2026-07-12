@@ -1,0 +1,56 @@
+Bilgi Edinme Hakkı Kanununun Uygulanmasına İlişkin Esas ve Usuller Hakkında Yönetmelik
+BKK 2004/7189 (Karar tarihi 19.04.2004) — Dayanak 4982 sayılı Kanun m.31 — RG 27.04.2004/25445 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20047189&MevzuatTur=21&MevzuatTertip=5
+
+Bu metin, kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları ve süreler mevzuat.gov.tr resmî kaynağından çapraz
+doğrulanmıştır (CLAUDE.md §1). Yönetmelik, 4982 sayılı Bilgi Edinme Hakkı Kanununu
+somutlaştırır: başvuru usulü, erişim süresi (on beş / otuz iş günü), ret ve gerekçe,
+Bilgi Edinme Değerlendirme Kuruluna itiraz ve istisna bilgiler. Gelen bilgi edinme evrakının
+eksik-tespiti ve cevap süresinin hesaplanmasında doğrudan dayanaktır.
+
+Madde 9 — Gerçek kişilerin başvurusu
+Gerçek kişiler tarafından yapılacak bilgi edinme başvurusu; başvuru sahibinin adı, soyadı,
+imzası ile oturma yeri veya iş adresini içeren dilekçeyle, istenen bilgi veya belgenin bulunduğu
+kurum ve kuruluşa yapılır. Dilekçede ayrıca istenen bilgi veya belge açıkça belirtilir.
+
+Madde 10 — Elektronik ve diğer araçlarla başvuru
+Bilgi edinme başvurusu; kişinin kimliğinin ve imzasının veya yazının kimden neşet ettiğinin
+tespitine yarayacak başka bilgilerin yasal olarak belirlenebilir olması kaydıyla elektronik
+ortamda veya diğer iletişim araçlarıyla da yapılabilir.
+
+Madde 12 — İstenecek bilgi veya belgenin niteliği
+Bilgi edinme başvurusu, başvurulan kurum ve kuruluşların ellerinde bulunan veya görevleri gereği
+bulunması gereken bilgi veya belgelere ilişkin olmalıdır. Kurum ve kuruluşlar; ayrı veya özel bir
+çalışma, araştırma, inceleme ya da analiz neticesinde oluşturulabilecek türden bir bilgi veya belge
+için yapılacak başvurular ile tekemmül etmemiş bir işleme ilişkin bilgi veya belge için yapılacak
+başvurulara olumsuz cevap verebilir.
+
+Madde 16 — İstenen bilgi veya belgelerin belirsizliği
+Başvuru dilekçesi veya formuyla istenen bilgi veya belgeler yeterince açık ve anlaşılır değilse,
+kurum ve kuruluşlar başvurunun hangi nedenlerle yeterince açık ve anlaşılır olmadığını başvuru
+sahibine bildirebilir ve ek bilgiler sunmasını isteyebilir. Bu takdirde 20 nci maddedeki on beş
+günlük süre, belirtilen noksanlıkların tam olarak giderildiği tarihten itibaren işlemeye başlar.
+
+Madde 17 — Başka kurumu ilgilendiren başvuru
+İstenen bilgi veya belge, başvurulan kurum ve kuruluştan başka bir yerde bulunuyorsa, başvuru
+dilekçesi bu kurum ve kuruluşa gönderilir ve durum ilgiliye yazılı olarak bildirilir.
+
+Madde 20 — Erişim süresi
+Kurum ve kuruluşlar, başvuru üzerine istenen bilgi veya belgeye erişimi on beş iş günü içinde
+sağlar. İstenen bilgi veya belgenin başvurulan kurum içindeki başka bir birimden sağlanması,
+başka bir kurumun görüşünün alınmasının gerekmesi veya içeriğin birden fazla kurumu
+ilgilendirmesi durumunda erişim otuz iş günü içinde sağlanır; sürenin uzatılması ve gerekçesi,
+on beş iş günlük sürenin bitiminden önce başvurana yazılı olarak bildirilir.
+
+Madde 22 — Bilgi ve belgeye erişim ücreti
+(Değişik birinci fıkra: 31.10.2005-2005/9585 K.) Kurum ve kuruluşlar, elektronik posta yoluyla
+erişim sağlananlar dahil, erişimine olanak sağladıkları bilgi veya belgeler için başvuru sahibinden,
+bilgi veya belgelere erişimin gerektirdiği inceleme, araştırma, kopyalama, postalama ve diğer
+maliyet unsurları ile orantılı ölçüde ücret tahsil edebilir.
+
+Madde 24 — İtiraz usulü
+Bilgi edinme istemi reddedilen başvuru sahibi, yargı yoluna başvurmadan önce, kararın
+tebliğinden itibaren on beş gün içinde Bilgi Edinme Değerlendirme Kuruluna itiraz edebilir.
+Kurula itiraz, başvuru sahibinin idari yargıya başvurma süresini durdurur; Kurul kararını
+otuz iş günü içinde verir.

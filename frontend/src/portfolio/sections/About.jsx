@@ -33,7 +33,7 @@ export default function About() {
             kamu-evrak, gelen resmî evrakı uçtan uca işleyen, 20 otomatik işlem
             adımından oluşan bir yapay zekâ sistemidir. OCR ile okur, 19 evrak
             türünü sınıflandırır, bilgi unsurlarını çıkarıp eksikleri tespit eder,
-            233 mevzuat / 1506 madde korpusundan akıllı arama ile ilgili maddeleri
+            304 mevzuat / 1916 madde korpusundan akıllı arama ile ilgili maddeleri
             önerir ve özetler. Ardından Resmî Yazışma Yönetmeliği'ne uygun taslağı
             hazırlar, doğru birime yönlendirir ve kullanıcıyı bilgilendirir.
             Kişisel veriler buluta gitmeden maskelenir; her karar değiştirilemez

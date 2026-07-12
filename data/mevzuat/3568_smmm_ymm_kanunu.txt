@@ -1,0 +1,23 @@
+Serbest Muhasebeci Mali Müşavirlik ve Yeminli Mali Müşavirlik Kanunu
+Kanun No: 3568 · Kabul Tarihi: 1.6.1989 · RG: 13.6.1989 / Sayı 20194 · Dayanak: Anayasa m.135 (kamu kurumu niteliğinde meslek kuruluşu) · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3568&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 3568 sayılı Kanun, serbest muhasebeci mali müşavirlik ve yeminli mali müşavirlik mesleklerinin icra şartlarını, meslek odaları ile TÜRMOB'un teşkilat ve denetim esaslarını, meslek mensuplarının tasdik yetkisini ve disiplin rejimini düzenler. Kamu evrak süreçleri açısından öne çıkan yönü, özel sektör kaynaklı mali tabloların yeminli mali müşavir tasdikiyle kamu idaresi nezdinde \"incelenmiş belge\" statüsü kazanmasıdır (Madde 12); ayrıca meslek mensuplarının suç teşkil eden hususları yetkili mercilere bildirme mecburiyeti (Madde 3, 43) ve disiplin cezalarının yazılı bildirim usulü (Madde 48), resmi yazışma ve belge güvenilirliği ilkeleriyle doğrudan ilişkilidir.
+
+Madde 3 — Meslek unvanlarının haksız kullanılması ve ihbar mecburiyeti
+Kanunen yetkisi olmayanların 'serbest muhasebeci mali müşavir' veya 'yeminli mali müşavir' unvanını ya da bunlara benzer unvan/ibare/remizleri kullanması yasaktır. Odalar, bu yasağa aykırı davranışları öğrendiklerinde Cumhuriyet Savcılığına bildirmek mecburiyetindedir; savcılık tahkikatın sonucunu odaya ve ilgililere bildirir.
+
+Madde 4 — Meslek mensubu olabilmenin genel şartları
+T.C. vatandaşı olmak, medeni hakları kullanma ehliyetine sahip bulunmak, kamu haklarından mahrum bulunmamak, TCK m.53 kapsamındaki süreler geçmiş olsa bile belirli ağır suçlardan (zimmet, irtikâp, rüşvet, sahtecilik, güveni kötüye kullanma vb.) mahkûm olmamak, ceza veya disiplin soruşturması sonucu memuriyetten çıkarılmamış olmak ve meslek şeref ve haysiyetine uymayan durumu bulunmamak şartları aranır.
+
+Madde 5 — Serbest muhasebeci mali müşavir olabilmenin özel şartları
+İlgili alanlarda (hukuk, iktisat, maliye, işletme, muhasebe vb.) en az lisans mezuniyeti, en az üç yıl staj, serbest muhasebeci mali müşavirlik sınavını kazanmış olma ve serbest muhasebeci mali müşavirlik ruhsatını (yetki belgesini) almış olma şartları aranır.
+
+Madde 12 — Yeminli mali müşavirlerin tasdik yetkisi ve kamu idaresiyle ilişkisi
+Yeminli mali müşavirler, mali tablo ve beyannamelerin mevzuata ve muhasebe standartlarına uygunluğunu tasdik eder. Kanunları gereği kamu kurum ve kuruluşlarına verilen tasdikli mali tablolar, kamu idaresinin yetkili memurlarınca tasdik kapsamı ölçüsünde incelenmiş belge sayılır; idarenin teftiş/inceleme yetkisi saklıdır. Tasdikin yanlış olması halinde meslek mensubu, tasdik kapsamıyla sınırlı olmak üzere mükellefle birlikte müştereken ve müteselsilen sorumludur; sorumluluk raporu düzenlenmeden önce yazılı savunma istenir.
+
+Madde 43 — Sır saklama yükümlülüğü ve suç ihbarı zorunluluğu
+Meslek mensupları ve yanlarında çalışanlar, işleri dolayısıyla öğrendikleri bilgi ve sırları ifşa edemez; ancak suç teşkil eden hallerin yetkili mercilere duyurulması mecburidir. Adli veya idari her türlü inceleme/soruşturma bu yasağın dışındadır; tanıklık sır ifşası sayılmaz. Hüküm oda ve birlik personeli hakkında da uygulanır.
+
+Madde 48 — Disiplin cezaları
+Mesleğin vakar ve onuruna aykırı davranan, görevini kusurlu yapan veya güveni sarsan meslek mensuplarına uyarma (yazı ile bildirilir), kınama (yazı ile bildirilir), geçici olarak mesleki faaliyetten alıkoyma, yeminli sıfatını kaldırma veya meslekten çıkarma cezaları verilir. Savunması alınmadan meslek mensubuna disiplin cezası verilemez; disiplin kurulunun verdiği süre içinde savunma yapılmayanlar bu haktan vazgeçmiş sayılır. Cezalar, kesinleştiğinin meslek mensubuna bildirilmesinden sonra uygulanır.

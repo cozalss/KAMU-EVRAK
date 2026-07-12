@@ -1,0 +1,46 @@
+Kamu Hizmetlerinin Sunumunda Uyulacak Usul ve Esaslara İlişkin Yönetmelik
+BKK 2009/15169 (Karar tarihi 29.06.2009) — Dayanak 3056 sayılı Kanun — RG 31.07.2009/27305 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=200915169&MevzuatTur=3&MevzuatTertip=5
+
+Bu metin, kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları ve süreler mevzuat.gov.tr resmî kaynağından çapraz
+doğrulanmıştır (CLAUDE.md §1). Yönetmelik, başvuruların ilk kademeden sonuçlandırılması, hizmet
+standartları tablosu, başvuruda istenen belgeler (beyan esası ve gereksiz belge istenmemesi),
+e-Devlet Kapısı üzerinden hizmet sunumu ve başvuruda eksiklik giderme bakımından temel dayanaktır;
+gelen başvuru evrakının eksik-tespiti ve cevap süresinin belirlenmesiyle doğrudan ilgilidir.
+
+Madde 3 — İlk kademeden sonuçlandırma
+Kamu hizmetlerinin, başvuru yapılan ilk kademeden sunulması ve sonuçlandırılması, başvuru mercii
+ile karar/onay mercii arasında birden fazla kademe oluşturulmaması esastır. İdare, başvuruların
+doğrudan kamu hizmetini sunan birime yapılmasını ve ilk kademede sonuçlandırılmasını sağlamak için
+gerekli tedbirleri alır.
+
+Madde 5 — Hizmet envanteri ve duyuru
+İdare, sunduğu hizmetlere ilişkin bilgileri ve mevzuatı basılı ya da elektronik ortamda duyurur.
+İdare, sunduğu kamu hizmetlerinin envanterini oluşturarak kurumsal internet sayfasında ve e-Devlet
+Kapısında en güncel şekliyle yayımlar.
+
+Madde 6 — Hizmet standartları tablosu
+İdareler hizmet standartlarını oluşturur. Hizmet standartları tablosunda; hizmetin adı, başvuruda
+istenen belgeler, hizmetin ne kadar sürede tamamlanacağı ve şikâyet mercilerine ilişkin bilgiler
+yer alır. Bu tablo; hizmeti doğrudan sunan birimlerce vatandaşların kolayca görebileceği panolarda,
+kurumsal internet sayfalarında ve e-Devlet Kapısında duyurulur.
+
+Madde 8 — Başvuruda istenen belgeler
+İdare, başvuru sahibinden istediği bilgi ve belgelerle ilgili düzenlemelerinde; düzenlemeleri beyan
+esas alınacak şekilde hazırlar, zorunlu olmadıkça işlemin tekemmül aşamasına kadar belge talep etmez
+ve idarenin görevi gereği kendisinde bulunan bilgi ve belgeler ile başka idarelerden temin
+edebileceği belgeleri başvuru sahibinden istemez.
+
+Madde 11 — Kurum içi ve kurum dışı görüş yazıları
+Kurum içi ve kurum dışı görüş, bilgi ve belge talep yazıları günlü yazılır. İlgili mevzuattaki özel
+hükümler saklı kalmak kaydıyla, idareler belge taleplerini en geç beş gün, bilgi ve görüş taleplerini
+ise en geç on beş gün içinde yerine getirir; bilgi ve görüş yazıları için on beş günü geçmemek üzere
+ek süre kullanılabilir. Bu yazışmalar elektronik ortamda da yapılabilir.
+
+Madde 12 — Başvurunun kabulü ve sonuçlandırılması
+Bizzat yapılan başvurular sırasında başvuru incelenir; anında giderilebilecek eksiklikler yazışmaya
+gerek kalmadan tamamlattırılır ve talebi hâlinde başvuru sahibine alındı belgesi verilir. Sonradan
+tespit edilen eksiklikler başvuru sahibine bildirilir. Başvurular hizmet standartlarında belirtilen
+süre içinde sonuçlandırılır; sonucun olumsuz olması durumunda ilgiliye gerekçesi bildirilir, varsa
+itiraz mercii ve süresi gösterilir.

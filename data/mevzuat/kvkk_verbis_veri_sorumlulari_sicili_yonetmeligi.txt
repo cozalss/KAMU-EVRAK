@@ -1,0 +1,28 @@
+Veri Sorumluları Sicili Hakkında Yönetmelik (VERBİS) — KVKK
+Kişisel Verileri Koruma Kurumu Yönetmeliği — RG 30.12.2017/30286 — Dayanak 6698 sayılı KVKK m.16 — YÜRÜRLÜKTE
+Kaynak: https://www.kvkk.gov.tr/Icerik/5442/VERI-SORUMLULARI-SICILI-HAKKINDA-YONETMELIK
+
+Bu metin, kamuya açık Yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî
+alıntı/özettir. Madde numaraları ve RG bilgisi kvkk.gov.tr resmî kaynağından çapraz doğrulanmıştır
+(CLAUDE.md §1). Yönetmelik, 6698 sayılı Kanunun 16 ncı maddesindeki Veri Sorumluları Sicili (VERBİS)
+kayıt yükümlülüğünü somutlaştırır: kişisel veri işleyen kurumların sicile kaydı, bildirilecek bilgiler
+ve veri güvenliği tedbirleri. Kamu evrakında yer alan kişisel verilerin işlenme envanteri ve
+maskelenmesiyle doğrudan ilişkilidir.
+
+Madde 8 — Kayıt yükümlülüğünün başlangıcı
+Kişisel verileri işleyen gerçek ve tüzel kişi veri sorumluları, kişisel verileri işlemeye başlamadan
+önce Veri Sorumluları Siciline (VERBİS) kaydolmakla yükümlüdür. Kurul, işlenen kişisel verinin
+niteliği ve sayısı, veri işlemenin kanundan kaynaklanması veya üçüncü kişilere aktarılması gibi
+ölçütleri esas alarak kayıt yükümlülüğüne istisna getirebilir ve kayıt tarihlerini belirler.
+
+Madde 9 — Kayıt yükümlülüğü kapsamında iletilecek bilgiler
+Sicile kayıt kapsamında; veri sorumlusunun ve varsa temsilcisinin kimlik ve adres bilgileri, kişisel
+verilerin işlenme amaçları, veri konusu kişi grubu ve grupları ile bu kişilere ait veri kategorileri,
+verilerin aktarılabileceği alıcı grupları, azami saklama süreleri ile veri güvenliğine ilişkin alınan
+teknik ve idari tedbirler iletilir. Bu bilgiler, kişisel veri işleme envanterine dayanılarak hazırlanır.
+
+Madde 11 — Veri sorumlusu, temsilcisi ve irtibat kişisinin yükümlülükleri
+Veri sorumlusu ve varsa temsilcisi, Sicile iletilen bilgilerin doğru, eksiksiz ve güncel olmasından
+sorumludur; bilgilerde değişiklik olması hâlinde bunu gecikmeksizin Sicile bildirir. İrtibat kişisi,
+veri sorumlusu ile Kurum arasındaki iletişimi sağlar. Kamu evrakında yer alan kişisel verilerin
+işlenme envanteri ve maskelenmesi, bu yükümlülüklerin uygulamasıyla ilgilidir.

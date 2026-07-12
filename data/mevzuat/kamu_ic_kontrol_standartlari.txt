@@ -1,0 +1,44 @@
+Kamu İç Kontrol Standartları Tebliği
+Maliye Bakanlığı Tebliği — RG 26.12.2007/26738 — Dayanak 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.55-67 — YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2007/12/20071226-21.htm
+
+Bu metin, kamuya açık Tebliğin (telifsiz resmî mevzuat) hükümlerinden ve ekindeki standart
+tablosundan derlenmiş yakın-lafzî alıntı/özettir. Bileşen adları ve standartların 1-18
+numaralandırması resmigazete.gov.tr resmî kaynağından çapraz doğrulanmıştır (CLAUDE.md §1);
+KOS/RDS/KFS/BİS/İS kısaltmaları Hazine ve Maliye Bakanlığı iç kontrol uyum rehberlerinde kullanılan
+yerleşik kodlardır. Tebliğ, 5018 sayılı Kanunun başta 55, 56 ve 57 nci maddeleri olmak üzere iç
+kontrole ilişkin hükümleri (iç kontrolün tanımı, amaçları, malî yönetim ve kontrol sisteminin
+bileşenleri) uyarınca kamu idarelerinin iç kontrol sistemlerini kurarken, izlerken ve
+değerlendirirken esas alacakları asgari standartları belirler. Bu metin madde değil BİLEŞEN ve
+STANDART yapısıyla düzenlenmiştir; mali/denetim evrakının ve ön malî kontrol işlemlerinin
+yönlendirilmesinde dayanaktır.
+
+İç kontrol; kurumun amaçlarına ulaşması, mevzuata uygunluk, malî ve malî olmayan bilginin
+güvenilirliği ve varlıkların korunması için makul güvence sağlayan; kontrol ortamı, risk
+değerlendirmesi, kontrol faaliyetleri, bilgi ve iletişim ile izleme olmak üzere beş bileşenden
+oluşan bir yönetim aracıdır. Kamu İç Kontrol Standartları 5 bileşen altında 18 standarttan oluşur.
+
+Bileşen 1 — Kontrol Ortamı (KOS)
+İç kontrolün temelini oluşturan bileşendir; idarenin etik değerleri, organizasyon yapısı ve insan
+kaynağı buna dayanır. Standartlar: KOS 1 Etik Değerler ve Dürüstlük, KOS 2 Misyon Organizasyon Yapısı
+ve Görevler, KOS 3 Personelin Yeterliliği ve Performansı, KOS 4 Yetki Devri.
+
+Bileşen 2 — Risk Değerlendirmesi (RDS)
+İdarenin amaç ve hedeflerine yönelik risklerin belirlenmesi ve değerlendirilmesidir. Standartlar:
+RDS 5 Planlama ve Programlama, RDS 6 Risklerin Belirlenmesi ve Değerlendirilmesi.
+
+Bileşen 3 — Kontrol Faaliyetleri (KFS)
+Risklerin yönetilmesi amacıyla belirlenen ve uygulanan politika ve prosedürlerdir. Standartlar:
+KFS 7 Kontrol Stratejileri ve Yöntemleri, KFS 8 Prosedürlerin Belirlenmesi ve Belgelendirilmesi,
+KFS 9 Görevler Ayrılığı, KFS 10 Hiyerarşik Kontroller, KFS 11 Faaliyetlerin Sürekliliği, KFS 12 Bilgi
+Sistemleri Kontrolleri.
+
+Bileşen 4 — Bilgi ve İletişim (BİS)
+Gerekli bilginin ihtiyaç duyan birim ve kişilere zamanında ulaştırılmasıdır. Standartlar:
+BİS 13 Bilgi ve İletişim, BİS 14 Raporlama, BİS 15 Kayıt ve Dosyalama Sistemi, BİS 16 Hata Usulsüzlük
+ve Yolsuzlukların Bildirilmesi. Kayıt ve dosyalama ile hata/usulsüzlük bildirimi, evrak ve yazışma
+düzeniyle doğrudan ilgilidir.
+
+Bileşen 5 — İzleme (İS)
+İç kontrol sisteminin kalitesinin değerlendirilmesidir. Standartlar: İS 17 İç Kontrolün
+Değerlendirilmesi, İS 18 İç Denetim.

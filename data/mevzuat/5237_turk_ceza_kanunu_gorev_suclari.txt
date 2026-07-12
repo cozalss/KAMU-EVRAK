@@ -1,0 +1,50 @@
+Türk Ceza Kanunu — Kamu İdaresinin Güvenilirliğine ve İşleyişine Karşı Suçlar (kamu görevlisi görev suçları, seçili maddeler)
+Kanun No: 5237 (Kabul: 26.09.2004, RG 12.10.2004/25611) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5237.pdf
+
+Bu metin, kamuya açık Kanunun (telifsiz resmî mevzuat) yalnız kamu görevlisi görev suçlarına
+ilişkin SEÇİLİ maddelerinin metinlerinden derlenmiş yakın-lafzî alıntıdır. Madde numaraları
+mevzuat.gov.tr resmî kaynağından (1.5.5237) çapraz doğrulanmıştır (CLAUDE.md §1). Bu maddeler,
+kuruma gelen şikâyet/ihbar/soruşturma evrakının yönlendirilmesinde ve resmî işlemlerde görev
+suçlarının hukuki karşılığının belirlenmesinde dayanaktır. Resmî belgede sahtecilik suçları
+ayrı korpus dosyasında (5237 belgede sahtecilik) ele alınmıştır.
+
+Madde 247 — Zimmet
+Görevi nedeniyle zilyedliği kendisine devredilmiş olan veya koruma ve gözetimiyle yükümlü olduğu
+malı kendisinin veya başkasının zimmetine geçiren kamu görevlisi, beş yıldan on iki yıla kadar
+hapis cezası ile cezalandırılır. Suçun, zimmetin açığa çıkmamasını sağlamaya yönelik hileli
+davranışlarla işlenmesi hâlinde ceza yarı oranında artırılır.
+
+Madde 250 — İrtikâp
+Görevinin sağladığı nüfuzu kötüye kullanmak suretiyle kendisine veya başkasına yarar sağlanmasına
+veya bu yolda vaatte bulunulmasına bir kimseyi icbar eden kamu görevlisi cezalandırılır. Yarar
+sağlanmasının hileli davranışlarla kişinin hatasından yararlanılarak gerçekleştirilmesi (ikna
+suretiyle irtikâp) ayrıca düzenlenmiştir.
+
+Madde 252 — Rüşvet
+Görevinin ifasıyla ilgili bir işi yapması veya yapmaması için, doğrudan veya aracılar vasıtasıyla
+bir kamu görevlisine veya göstereceği bir başka kişiye menfaat sağlayan kişi ve bu menfaati kabul
+eden kamu görevlisi rüşvet suçundan cezalandırılır. Rüşvet konusunda anlaşmaya varılması hâlinde
+suç tamamlanmış gibi cezaya hükmolunur.
+
+Madde 257 — Görevi kötüye kullanma
+Kanunda ayrıca suç olarak tanımlanan hâller dışında, görevinin gereklerine aykırı hareket etmek
+suretiyle kişilerin mağduriyetine veya kamunun zararına neden olan ya da kişilere haksız bir
+menfaat sağlayan kamu görevlisi cezalandırılır. Görevin gereklerini yapmakta ihmal veya
+gecikme göstermek suretiyle aynı sonuçlara neden olmak da bu madde kapsamındadır.
+
+Madde 258 — Göreve ilişkin sırrın açıklanması
+Görevi nedeniyle kendisine verilen veya aynı nedenle öğrendiği ve gizli kalması gereken belgeleri,
+kararları ve emirleri ve diğer tebligatı açıklayan veya bunların dışında olsa bile gizli kalması
+gereken bilgileri açıklayan kamu görevlisi cezalandırılır. Bu madde, gizlilik dereceli evrakın
+korunması yükümlülüğünün ceza yaptırımıdır.
+
+Madde 259 — Kamu görevlisinin ticareti
+Yürüttüğü görevin sağladığı nüfuzdan yararlanarak, bir başkasına mal veya hizmet satmaya çalışan
+kamu görevlisi cezalandırılır. Görevin tarafsız ve dürüst yürütülmesini korur.
+
+Madde 279 — Kamu görevlisinin suçu bildirmemesi
+Kamu adına soruşturma ve kovuşturmayı gerektiren bir suçun işlendiğini göreviyle bağlantılı olarak
+öğrenip de yetkili makamlara bildirimde bulunmayı ihmal eden veya bu hususta gecikme gösteren
+kamu görevlisi cezalandırılır. Bu madde, göreviyle bağlantılı olarak öğrenilen suçlarda ihbar
+yükümlülüğünün dayanağıdır.

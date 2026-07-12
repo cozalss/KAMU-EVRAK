@@ -1,0 +1,26 @@
+Türk Parasının Kıymetini Koruma Hakkında Kanun
+Kanun No: 1567 · Kabul Tarihi: 20/2/1930 · RG: 25/2/1930, Sayı 1433 · Tertip 3 · Dayanak: 1930 tarihli çerçeve kanun; 703 sayılı KHK ile "İcra Vekilleri Heyeti/Bakanlar Kurulu" ibareleri Cumhurbaşkanlığı hükümet sistemine uyarlanmıştır · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=1567&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 1567 sayılı Türk Parasının Kıymetini Koruma Hakkında Kanun, Türkiye'nin kambiyo rejimini, döviz ve kıymetli maden işlemlerinin denetimini ve dış ticaret ödeme araçlarına ilişkin yetkilendirmeleri düzenleyen 1930 tarihli çerçeve kanundur. Kamu kurumlarınca yürütülen izin başvurusu, resmî ilan/yayım ve ihbar-soruşturma süreçlerinde başvurulan temel dayanaklardan biri olduğundan, kamu evrak ve yazışma süreçlerinde ilgili mevzuat referansı olarak yer almaktadır.
+
+Madde 1 — Cumhurbaşkanının kambiyo ve dış ticaret düzenleme yetkisi
+Kambiyo, nukut, esham ve tahvilat alım satımı ve kıymetli madenler ve kıymetli taşlarla bunlardan mamul veya bunları muhtevi her nevi eşya ve kıymetlerin alım satımı, kıymetli madenlerin rafinajı ile tüm bu eşya ve kıymetlerin, ticari senetlerin ve tediyeyi temine yarayan her türlü vasıta ve vesikaların memleketten ihracı veya memlekete ithalinin tanzim ve tahdidine ve Türk Parasının kıymetinin korunması zımnında kararlar ittihazına Cumhurbaşkanı salahiyetlidir. (Özgün metinde 'Bakanlar Kurulu' olan ibare 703 sayılı KHK ile 'Cumhurbaşkanı' olarak uyarlanmıştır.)
+
+Madde 2 — Kararların Resmî Gazete'de yayımı ve yürürlüğe giriş usulü
+Bu kararlar (Türk Parası Kıymetini Koruma) başlığı altında Resmî Gazete ile ve ilgili Bakanlığın münasip göreceği diğer neşir vasıtalarıyla neşir ve ilan olunur; kararın metninde ayrı bir yürürlük (mer'iyet) tarihi varsa o tarihten, yoksa Resmî Gazete ile neşredildiğinin ertesi gününden itibaren yürürlüğe girer. Kamu evrak/duyuru süreçleri açısından resmî ilan usulünü düzenler.
+
+Madde 3 — Ceza hükümleri, idari para cezası ve gecikme faizi
+Cumhurbaşkanı kararlarına aykırı davrananlara idari para cezası uygulanır; yetkisiz faaliyet halinde belirlenen aralıkta ceza ve geçici işyeri kapatma öngörülür, hükmolunan idari para cezasına gecikme faizi uygulanır. İhbar ve soruşturma usulüne ilişkin hükümler içerir.
+
+Madde 4 — Hazine ve Maliye Bakanlığından izin alma zorunluluğu (başvuru)
+Ticari amaçla döviz alım satımı, Borsa İstanbul Kıymetli Madenler Piyasasında üyelik, kıymetli maden rafinajı ve Kimberley Süreci Sertifika Sistemi faaliyetleri gibi işler için Hazine ve Maliye Bakanlığından izin/başvuru şartı getirir; Bakanlığa izin iptali ve faaliyet bölgesi belirleme yetkisi tanır.
+
+Ek Madde 1 — Vergi müfettişleri ve Hazine kontrolörlerinin tetkik-tahkik yetkisi
+Vergi Müfettişleri ve Vergi Müfettiş Yardımcıları, Hazine kontrolörleri ve stajyer Hazine kontrolörleri ile kambiyo murakabe mercileri, kanun hükümlerine aykırı hareket edenler hakkında tetkikat ve tahkikat yapma; ceza muhakemesi usulüne göre arama ve sorgulama dahil inceleme yetkisine sahiptir.
+
+Ek Madde 3 — İhbar edenlere ikramiye verilmesi
+Kanuna aykırı fiilleri ihbar edenlere ve suç delillerinin tespitinde hizmeti görülenlere hangi hallerde ikramiye verileceği ile ikramiye miktar ve nispeti Cumhurbaşkanı kararıyla tespit olunur; ikramiye tahsil edilen cezanın belirli bir yüzdesini (azami %45) aşamaz.
+
+Geçici Madde 1 — Bankalarca ihbar prosedürü ve süre
+Bildirilmemiş ihracat hesaplarını belirli bir süre (60 gün) içinde bildiren bankalar için idari para cezası uygulanmaz; karar verilmekle birlikte henüz kesinleşmemiş ya da kesinleşmiş olup henüz ödenmemiş idari para cezası kararları bütün neticeleriyle ortadan kalkar.

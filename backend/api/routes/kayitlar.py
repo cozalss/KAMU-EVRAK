@@ -1,7 +1,7 @@
 """Kalıcı kayıt görünümleri — REST (Faz 7). Frontend'i oturum-state yerine DB'den besler.
 
 Tümü auth-korumalı (get_current_user). FilterBar parametreleri query string ile.
-Mevzuat araması gerçek seed korpusta (233 mevzuat / 1506 chunk) çalışır.
+Mevzuat araması gerçek seed korpusta (304 mevzuat / 1916 chunk) çalışır.
 """
 from __future__ import annotations
 

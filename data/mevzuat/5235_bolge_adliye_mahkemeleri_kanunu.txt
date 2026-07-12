@@ -1,0 +1,26 @@
+Adlî Yargı İlk Derece Mahkemeleri ile Bölge Adliye Mahkemelerinin Kuruluş, Görev ve Yetkileri Hakkında Kanun
+Kanun No: 5235 · Kabul Tarihi: 26.9.2004 · RG: 07.10.2004, Sayı 25606 — YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2004/10/20041007.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 5235 sayılı Kanun, Türkiye'de adlî yargı ilk derece mahkemeleri ile bölge adliye (istinaf) mahkemelerinin kuruluşunu, görev ve yetkilerini düzenleyen temel örgütlenme kanunudur. Kanun; hukuk ve ceza mahkemelerinin yargı çevresini, Cumhuriyet başsavcılığı teşkilatını ve — kamu evrak süreçleri açısından özellikle önemli olan — her mahkeme ve başsavcılıkta kurulması zorunlu "yazı işleri müdürlüğü" hükmünü (Md. 24) içerir. Kamu kurumları arası evrak/dosya sevkiyatı ve başvuru yönlendirmesi bu Kanunun belirlediği yargı çevresi ve müdürlük yapısı üzerinden işler.
+
+Madde 7 — Hukuk mahkemelerinin yargı çevresi
+Hukuk mahkemelerinin yargı çevresi, bulundukları il merkezi ve ilçeler ile bunlara adlî yönden bağlanan ilçelerin idari sınırlarıdır. Büyükşehirlerde yargı çevresi, Adalet Bakanlığının önerisi üzerine Hâkimler ve Savcılar Yüksek Kurulunca belirlenir. Kamu evrak/başvuru akışında bir dilekçe veya evrakın hangi mahkeme/yazı işleri müdürlüğüne yönlendirileceğini belirleyen temel yetki (yer) kuralıdır.
+
+Madde 17 — Cumhuriyet başsavcılığının görevleri
+Cumhuriyet başsavcılığının görevleri: (1) kamu davası açılıp açılmayacağına karar vermek üzere soruşturma yapmak/yaptırmak, (2) yargılama faaliyetlerini kamu adına izlemek, katılmak ve gerektiğinde kanun yollarına başvurmak, (3) kesinleşen mahkeme kararlarının yerine getirilmesiyle ilgili işlemleri yapmak/izlemek, (4) kanunlarla verilen diğer görevler.
+
+Madde 21 — Cumhuriyet savcılarının yetkisi ve soruşturma evrakının gönderilmesi
+Cumhuriyet savcıları, bulundukları il/ilçenin idari sınırları içinde yetkilidir. Ağır ceza mahkemesi yargı çevresindeki Cumhuriyet başsavcılıkları, kendi yetki alanlarında yürüttükleri soruşturmaları tamamladıktan sonra düşünce yazısına soruşturma evrakını ekleyerek ilgili ağır ceza mahkemesi Cumhuriyet başsavcılığına gönderir — doğrudan evrak/dosya sevk hükmüdür.
+
+Madde 23 — Adlî yargı ilk derece mahkemesi adalet komisyonu
+Ağır ceza mahkemelerinin bulunduğu yargı çevresinde görev yapmak üzere bir adlî yargı ilk derece mahkemesi adalet komisyonu kurulur; kuruluş şekli, görev ve yetkileri hakkında 24.2.1983 tarihli ve 2802 sayılı Hâkimler ve Savcılar Kanununun ilgili hükümleri uygulanır.
+
+Madde 24 — Müdürlükler (yazı işleri müdürlüğü)
+Her mahkemede bir yazı işleri müdürlüğü kurulur. Her Cumhuriyet başsavcılığında yazı işleri müdürlüğü ile Adalet Bakanlığınca gerekli görülen yerlerde ayrıca idari, mali ve teknik işlerle ilgili müdürlükler kurulur; her müdürlükte bir müdür ile yeterli sayıda memur bulunur. Kamu evrak/yazışma süreçleriyle en doğrudan bağlantılı hükümdür.
+
+Madde 38 — Daire başkanlarının görevleri (bölge adliye mahkemesi)
+Bölge adliye mahkemesi daire başkanları; dairede uyumlu/verimli/düzenli çalışmayı, işlerin makul sürede karara bağlanmasını sağlar, dosya raporlama işlerini düzenler ve dairede görevli yazı işleri müdürlüğünün işleyişini denetler, personel hakkında disiplin cezalarını uygular.
+
+Madde 40 — Bölge adliye mahkemesi Cumhuriyet başsavcısının görevleri
+Bölge adliye mahkemesi Cumhuriyet başsavcısı; bölge adliye mahkemesine gelen ceza davalarına ilişkin hüküm/karar dosyalarının incelenerek yazılı düşünceyle birlikte ilgili daireye gönderilmesini sağlar, duruşmalara katılımı düzenler ve Cumhuriyet başsavcılığı müdürlüklerini (yazı işleri dahil) denetler/denetletir.

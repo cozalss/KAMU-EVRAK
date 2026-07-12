@@ -1,0 +1,26 @@
+Sivil Savunma Kanunu
+Kanun No: 7126 · Kabul: 9/6/1958 · RG: 13/6/1958 - Sayı 9931 · Düstur: Tertip 3, Cilt 39, s.1098 · Yürürlük: 28/2/1959 · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=7126&MevzuatTur=1&MevzuatTertip=3
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 7126 sayılı Sivil Savunma Kanunu, 1958 yılından bu yana yürürlükte olan ve doğal afet, büyük yangın ile olağanüstü hâllere karşı sivil halkın korunmasına yönelik teşkilatlanma, planlama, mükellefiyet ve bildirim esaslarını düzenleyen temel bir kamu güvenliği mevzuatıdır. Kanun, resmi makamlara belirli sürelerde bildirim yapma (muhtarların mükellef listesini 30 gün içinde bildirmesi gibi), planların çok kademeli onay sürecinden geçmesi ve vali/kaymakamların denetim yetkisi gibi hükümleriyle kamu evrak ve yazışma süreçleriyle doğrudan kesişir. 2009'da AFAD'ın kurulmasıyla kurumsal atıflar güncellenmiş, kanun boyunca münferit maddeler mülga edilmiş olsa da kanun madde gövdesi büyük ölçüde özgün hâliyle yürürlüktedir.
+
+Madde 4 — Bakanlıklar arası işbirliği ve yazışma çerçevesi
+Kanun kapsamına giren hizmet ve faaliyetlerin İçişleri Bakanlığınca planlanması ve icrası sırasında diğer bakanlıklarla yapılacak işbirliği ve karşılıklı yardım hususlarının Cumhurbaşkanınca çıkarılan yönetmelikle tespit olunacağını hükme bağlar — kurumlar arası resmi koordinasyonun usul çerçevesidir.
+
+Madde 13 — Mükellefiyet ve mükellef listesinin bildirimi
+15 yaşını bitirmiş ve 65 yaşını bitirmemiş (askerlikle ilgisi olmayan) tüm kadın ve erkek yurttaşları sivil savunma hizmetinde görevlendirilmekle mükellef kılar. Mükelleflerin yoklama/muayene/görevlendirme usulleri yönetmelikle belirlenir. Kritik evrak/süre hükmü: sivil savunma hizmetine seçilecek mükelleflerin isim listeleri ile yer değiştirme halleri, ilgili muhtarlıklarca EN GEÇ 30 GÜN içinde Sivil Savunma Genel Müdürlüğü (bugün AFAD/İl AFAD Müdürlüğü) makamlarına verilir ve bildirilir.
+
+Madde 18 — Tahliye planlarının hazırlanma ve onay süreci
+Hazırlanan tahliye planları Milli Güvenlik Kurulunun tasvibine arz olunur; tasdik olunan planların yürürlüğe konulmasına Cumhurbaşkanı karar verir. Hassas/tehlikeli bölgelerdeki halkın tahliyesinin planlanması ve uygulanmasında valiler, planların kendi illerini ilgilendiren kısımlarını uygulamakla mükelleftir — çok kademeli resmi onay/yürürlük zinciri.
+
+Madde 21 — Vali ve kaymakamların planlama ve denetim yetkisi
+Hassas bölgeler içerisinde bulunan vilayet ve kazaların vali ve kaymakamları, mevcut mevzuata ve alacakları emir/direktiflere göre sivil savunma teşkilat, tesisat, hizmet ve faaliyetlerini planlamak ve gerçekleştirmekle mükelleftir; bu hizmet ve faaliyetleri her safhada icra, takip ve denetlemeye yetkilidir.
+
+Madde 44 — Görev ve mükellefiyeti yerine getirmeyenler hakkında takibat
+Kanunla yüklenen görev ve mükellefiyetleri yerine getirmeyen gerçek/tüzel kişiler ile resmi veya özel daire, müessese, teşekküllerin sorumlu organları hakkında genel hükümlere göre takibat yapılır. Vali ve kaymakamlar hakkında takibat açılması İçişleri Bakanının iznine bağlıdır — yetkili makam/izin usulü.
+
+Madde 53 — Muhtarların bildirim yükümlülüğü ve idari yaptırım
+Hassas bölgelerde, Madde 13'te sayılan mükelleflerin tam listesini talep hâlinde ilgili makamlara bildirmeyen ve değişiklikleri süresi (30 gün) içinde merciine haber vermeyen mahalle/köy muhtarlarına idari para cezası verilir (miktar tutarları güncel değildir, güncel tutar için ilgili mevzuata bakılmalı); idari para cezalarını mahalli mülki amir verir.
+
+Ek Madde 9 — Kamu ve özel kuruluşların yangın önleme planı zorunluluğu
+Kamu kurum ve kuruluşları ile özel kuruluşlar; yangınla mücadele için ekip kurmak, yangın önleme ve söndürme planlarını hazırlamak ve gerekli araç-gereç-malzemeyi hazır bulundurmakla yükümlüdür. Uygulama esasları Cumhurbaşkanınca çıkarılan yönetmelikle düzenlenir — kurum içi planlama/dokümantasyon zorunluluğu.

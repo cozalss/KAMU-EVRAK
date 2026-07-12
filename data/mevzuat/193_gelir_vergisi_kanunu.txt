@@ -1,0 +1,23 @@
+Gelir Vergisi Kanunu (G.V.K.)
+No: 193 · Kabul: 31/12/1960 · RG: 6/1/1961 - Sayı 10700 · Düstur: Tertip 4, Cilt 1, s.850 · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.4.193.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 193 sayılı Gelir Vergisi Kanunu, gerçek kişilerin gelirlerinin vergilendirilmesini düzenleyen ve 1961'den bu yana yürürlükte olan temel vergi kanunudur. Beyanname türleri, verilme süreleri, vergi tevkifatı sorumluluğu ve mahsup-iade başvuru usulüne ilişkin hükümleriyle, mükellef ile vergi idaresi arasındaki resmi evrak ve yazışma süreçlerine somut örnekler sunar.
+
+Madde 84 — Beyanname çeşitleri
+Gelir Vergisi beyanları yıllık, muhtasar ve münferit olmak üzere üç beyanname türüyle yapılır: yıllık beyanname bir takvim yılında elde edilen tüm kazanç ve iratların toplanıp vergi dairesine bildirilmesi, muhtasar beyanname işverenler/tevkifat yapanların kestikleri vergilerin toplu bildirimi, münferit beyanname ise dar mükelleflerin tevkif edilmemiş kazançlarının bildirimi içindir. Kamu evrak süreçleri açısından, vatandaş-devlet arası resmi bildirim/başvuru evrakının tipolojisini tanımlar.
+
+Madde 92 — Yıllık beyannamenin verilme zamanı ve yeri
+Bir takvim yılına ait yıllık beyanname, izleyen yılın Mart ayının başından 25. günü akşamına kadar tam mükellefiyette vergiyi tarha yetkili vergi dairesine, dar mükellefiyette ilgili yer vergi dairesine verilir VEYA taahhütlü olarak posta ile gönderilir. Memleketi terk edenler için terkten önceki 15 gün, ölüm halinde ölüm tarihinden itibaren 4 ay içinde verilme kuralı ayrıca düzenlenmiştir. Resmi evrakın teslim usulü (elden/posta) ve kesin süre açısından doğrudan örnek teşkil eder.
+
+Madde 94 — Vergi tevkifatı — sorumlular ve yetki
+Kamu idare ve müesseseleri, iktisadi kamu müesseseleri, ticaret şirketleri, dernek/vakıflar, kooperatifler ve belirli gerçek kişiler; hizmet erbabına ve serbest meslek erbabına yaptıkları ödemelerden gelir vergisine mahsuben tevkifat yapmakla mecburdur. Kamu kurumlarının vergi kesme/bildirme YETKİ ve sorumluluğunu düzenleyen temel maddedir.
+
+Madde 98 — Muhtasar beyannamenin verilme zamanı
+94. madde gereği tevkifat yapmaya mecbur olanlar, bir ay içinde yaptıkları ödemeler ile kestikleri vergileri, ertesi ayın 23. günü akşamına kadar ilgili vergi dairesine bildirmek zorundadır; yıl sonu mevduat faizi tevkifatı için bu süre bir ay uzar. 10 ve daha az işçi çalıştıranlar önceden bildirmek şartıyla üçer aylık (Ocak/Nisan/Temmuz/Ekim) verebilir. Periyodik resmi bildirim süresine somut örnektir.
+
+Madde 100 — Genel bütçeye dahil idare ve müesseselerde beyanname muafiyeti
+Genel bütçeye dahil idare ve müesseseler, yaptıkları vergi tevkifatı için ayrıca beyanname vermez. Kamu kurumları arası evrak/bildirim yükünü azaltan, kurumlar-arası yazışma muafiyetine doğrudan örnek bir hükümdür.
+
+Madde 121 — Vergi tevkifatının mahsubu (mahsup ve iade başvurusu)
+Yıllık beyannamede gösterilen gelire dahil kazanç ve iratlardan kesilmiş vergiler, beyanname üzerinden hesaplanan vergiden mahsup edilir; mahsup edilen tutar fazla ise fark vergi dairesince mükellefe TEBLİĞ edilir ve mükellefin tebliğ tarihinden itibaren BİR YIL içindeki MÜRACAATI üzerine iade olunur. Maliye Bakanlığı iade usulünü (mahsuben/nakden, belge, teminat) belirlemeye yetkilidir. Tebliğ-başvuru-süre üçlüsünü birebir içeren, kamu evrak sürecine en yakın maddelerden biridir.

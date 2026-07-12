@@ -1,0 +1,23 @@
+Ölçüler ve Ayar Kanunu
+3516 sayılı Kanun · Kabul: 11.01.1989 · RG: 21.01.1989, Sayı 20056 · TBMM yasama yetkisi (dayanak: özel bir Anayasa maddesi zikredilmez) · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3516&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 3516 sayılı Ölçüler ve Ayar Kanunu, Türkiye'de kullanılan her türlü ölçü ve ölçü aletinin uluslararası birimler sistemine uygun, doğru ve ayarlı olmasını; bunların muayene, damgalama ve belgelendirme süreçlerini düzenleyen temel sanayi/ticaret mevzuatıdır. Resmî evrak ve yazışma süreçleri açısından kanun; ölçüm cihazlarına ilişkin ruhsat, yetki belgesi ve muayene/damgalama belgelerinin sınıflandırılmasında ve ilgili idari birime (Sanayi ve Teknoloji Bakanlığı taşra teşkilatı, belediye ölçüler ve ayar birimleri) yönlendirilmesinde referans oluşturur. 1989'dan bu yana çeşitli değişikliklerle güncellenerek yürürlükte kalmıştır.
+
+Madde 4 — Tarifler
+Kanunda geçen temel terimleri tanımlar: Bakanlık (kanunun yetkili idaresi — kabulünde Sanayi ve Ticaret Bakanlığı), uluslararası birimler sistemi, ölçü, ölçü aleti, umumi ayar işareti ve damga. Yetkili idarenin ve uygulanacak birim sisteminin çerçevesini çizdiği için kamu yazışmalarında muhatap/otorite tespiti açısından temel maddedir.
+
+Madde 6 — Uluslararası Birimlerin Kullanılması
+Resmî ve özel sözleşmelerde, her türlü evrak, belge ve ilanlar ile miktar belirten etiketlerde ve kanunlara göre tutulan defterlerde uluslararası birimler sisteminin kullanılması zorunlu tutulur — resmî evrak/yazışma içeriğine doğrudan atıf yapan nadir hükümlerden biridir.
+
+Madde 7 — Marka Kaydı ile Tip ve Sistemin Onaylanması
+Ölçü veya ölçü aleti imal eden kişi ya da firmalara ait özel markanın kolay okunur ve silinmez biçimde alet üzerine işlenmesi ve Bakanlığa kaydettirilmesi zorunludur; belirli ölçü aleti tiplerinin muayene ve damgadan önce tip/sistem onayına bağlanmasını öngören bir başvuru/kayıt sürecidir.
+
+Madde 10 — Tamir ve Ayar Yetki Belgesi
+Sayaç ayar istasyonları ile ölçü ve ölçü aletleri tamir ve ayar atölyelerinde çalışacak kişilere, Bakanlıkça çıkarılacak yönetmelikte belirlenen usul ve esaslara göre yetki belgesi verilir — ruhsat/belgelendirme sürecine örnek.
+
+Madde 13 — Damgalama veya Damga Yerine Belge Verilmesi
+İlk, periyodik ve stok muayenelerinde doğru oldukları anlaşılan ölçü ve ölçü aletleri, damgalanmaya elverişli bulundukları takdirde damgalanır; damgalanmaya elverişli olmayanlar için damga yerine geçmek üzere bir belge düzenlenir — idari işlemin belgeye bağlanmasına dair somut hüküm.
+
+Madde 20 — Kontrol Yetkisi
+Bakanlık Ölçüler ve Ayar Teşkilatı memurları ile belediye memurları, ölçü ve ölçü aletlerine ilişkin işlemlerin kontrolünü yapmaya yetkilidir — denetim/yetki dağılımını gösterir.

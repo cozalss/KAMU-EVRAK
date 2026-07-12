@@ -87,13 +87,16 @@ kişi(ler)ce doğrulanmalı; taksonomi resmî kaynağa dayalı (docs/02), kendi-
 
 ## 5. Mevzuat korpusu (`data/mevzuat/`) — ayrı, kamuya açık
 
-Sentetik evraktan ayrı; **kamuya açık mevzuat metni** (mevzuat.gov.tr): **233 mevzuat**
-(kanun + yönetmelik + CBK); çekirdek Resmî Yazışma Yön. 2646, Dilekçe 3071, Bilgi Edinme
-4982, Tebligat 7201, SDP 2005/7, 657 DMK, 4734 Kamu İhale, 2577 İYUK, 5018 Kamu Mali
-Yönetimi + çok-alanlı genişletme (vergi, belediye, çevre, sosyal güvenlik, ceza...). Madde-başlıklı özet
-(lafzî tam metin değil); madde no'lar çapraz doğrulanır, şüpheli → `[DOĞRULA:]`. Mahkeme
-kararları YALNIZ mevzuat-eşleştirme referansı; **eğitim/demo evrakı değil**. Kart:
-`data/mevzuat/README.md`. Seed: `scripts/seed_mevzuat.py` → **233 mevzuat / 1508 madde-chunk**.
+Sentetik evraktan ayrı; **kamuya açık mevzuat metni** (mevzuat.gov.tr): **304 mevzuat**
+(kanun + yönetmelik + CBK + genelge + tebliğ); çekirdek Resmî Yazışma Yön. 2646, Dilekçe 3071,
+Bilgi Edinme 4982, Tebligat 7201, SDP 2005/7, 657 DMK, 4734 Kamu İhale, 2577 İYUK, 5018 Kamu Mali
+Yönetimi + çok-alanlı genişletme (vergi, belediye, çevre, sosyal güvenlik, ceza...) + 2026-07
+yazışma/dijital-devlet omurgası (Anayasa seçili md., 2019/12 Bilgi ve İletişim Güvenliği Genelgesi,
+bilgi edinme + e-imza uygulama yönetmelikleri, TCK görev suçları, KVKK aydınlatma/VERBİS, kamu
+hizmetlerinin sunumu, iç kontrol standartları). Madde-başlıklı özet (lafzî tam metin değil); madde
+no'lar çapraz doğrulanır, şüpheli → `[DOĞRULA:]`. Mahkeme kararları YALNIZ mevzuat-eşleştirme
+referansı; **eğitim/demo evrakı değil**. Kart: `data/mevzuat/README.md`. Seed:
+`backend/scripts/seed_mevzuat.py` → **304 mevzuat / 1916 madde-chunk**.
 
 ## 6. Lisans ve kullanım hakları beyanı (şartname §6.5, §7)
 

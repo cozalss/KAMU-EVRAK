@@ -1,0 +1,26 @@
+Belediye Meclisi Çalışma Yönetmeliği
+RG: 09.10.2005 / Sayı 25961 · Dayanak: 3.7.2005 tarihli ve 5393 sayılı Belediye Kanunu m.19 · YÜRÜRLÜKTE
+Kaynak: https://resmigazete.gov.tr/eskiler/2005/10/20051009-3.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Belediye Meclisi Çalışma Yönetmeliği, 5393 sayılı Belediye Kanunu'na dayanılarak belediye meclislerinin toplantı, görüşme, karar alma ve komisyon çalışma usullerini düzenleyen, kamuya açık ve yürürlükteki bir yönetmeliktir. Gündemin üyelere ve halka duyurulma süresi, meclis tutanak/karar yazım disiplini, kararların kesinleşme ve mülki idare amirine bildirim süreleri ile komisyon rapor süreleri gibi hükümleriyle, belediye kurumsal evrak akışı ve resmî yazışma süreçleriyle doğrudan kesişir; bu nedenle kamu evrak yönetimi bağlamında referans mevzuat olarak değerlendirilmiştir.
+
+Madde 8 — Toplantı gündemi ve duyurulması
+Meclis gündemi belediye başkanınca belirlenir ve üyelere toplantı gününden en az üç gün önce; yazılı, posta, telefon, faks, elektronik posta veya belediyenin internet sitesi gibi ispatlanabilir bir yöntemle bildirilir. Gündem ayrıca gazete, hoparlör, radyo, televizyon gibi araçlarla halka da duyurulur — bu, kamu evrakının 'tebliğ/duyuru süresi' açısından örnek teşkil eden bir maddedir.
+
+Madde 11 — Görüşmeler ve yönetimi
+Belediye başkanına veya meclis başkanlığına hitaben verilen dilekçe/önergeler başkan tarafından kabul edilip meclise sunulur; başkan yoklama yapar, söz sırasını ve konuşma sürelerini (konu başına en çok on dakika; komisyon/parti grupları için yirmi dakika) düzenler, meclisteki konuşmalar başkana hitaben yapılır. Bu madde, meclise yapılan yazılı başvuruların işleme alınma usulünü ve görüşme yönetimini düzenler.
+
+Madde 16 — Tutanak düzenlenmesi ve kararların yazılması
+Toplantıdaki görüşmeler katip üyeler/görevlilerce tutanağa geçirilir ve başkanlık divanınca imzalanır; kararlar bu tutanaklara dayanılarak yazılır, başkan ve katip üyelerce imzalanır. Her takvim yılı başından itibaren sırasıyla numaralandırılan kararlar dosyalanarak muhafaza edilir ve bir sonraki toplantıda üyelere dağıtılır — meclis evrakının resmî kayıt/numaralandırma disiplinini gösterir.
+
+Madde 17 — Meclis kararlarının kesinleşmesi
+Belediye başkanı, hukuka aykırı bulduğu meclis kararına büyükşehir belediyelerinde yedi, diğer belediyelerde beş gün içinde gerekçesini belirterek yeniden görüşülmek üzere iade edebilir; meclis salt çoğunlukla ısrar ederse karar kesinleşir. Başkan bu süre içinde işlem yapmazsa karar kendiliğinden kesinleşir — idari itiraz/yeniden görüşme süresine somut örnek.
+
+Madde 18 — Meclis kararlarının yürürlüğe girmesi
+Kesinleşen meclis kararlarının tam metni yedi gün içinde mülki idare amirine (vali/kaymakam) gönderilir ve ayrıca halka duyurulur; vali veya kaymakama gönderilmeyen kararlar yürürlüğe giremez. İdari makam, teslim aldığı kararları usulüne uygun bir deftere kaydederek muhafaza eder — üst makama resmî evrak gönderim ve kayıt yükümlülüğünü düzenler.
+
+Madde 21 — İhtisas komisyonlarının oluşumu ve çalışma süresi
+Meclis üyeleri arasından nisbî çoğunlukla üç-beş (büyükşehirlerde beş-dokuz) üyeli ihtisas komisyonları bir yıl için kurulur; plan-bütçe ve imara ilişkin konular komisyon incelemesinden geçmeden meclis kararına bağlanamaz. Komisyonlar, kendilerine havale edilen işleri en geç beş iş günü, meclis toplantı dönemi dışında görüşülenleri ise en geç on üç iş günü içinde sonuçlandırıp rapor sunar — komisyon havale/rapor süresine dair somut yasal süre örneği.
+
+Madde 22 — Denetim komisyonunun oluşumu ve süresi
+Meclis her yıl ocak ayı toplantısında, üyeleri arasından gizli oyla ve nisbî çoğunlukla üç-beş kişilik bir denetim komisyonu oluşturur (nüfusu on binin üzerindeki belediyelerde). Denetim komisyonu çalışmasını en geç kırk beş iş günü içinde tamamlayıp raporunu mart ayı sonuna kadar meclis başkanlığına sunar — belediye iç denetim sürecinin yasal süre çerçevesini gösterir.

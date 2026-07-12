@@ -1,0 +1,20 @@
+İl Genel Meclisi Çalışma Yönetmeliği
+RG: 09.10.2005/25961 · Dayanak: 22.02.2005 tarihli ve 5302 sayılı İl Özel İdaresi Kanunu m.11 (İçişleri Bakanlığı) · YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2005/10/20051009-4.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Bu yönetmelik, il genel meclislerinin toplantı, gündem, tutanak ve karar süreçlerini; özellikle gündemin üyelere kanıtlanabilir yöntemlerle bildirilmesi, dilekçe kabulü, tutanak tutulması ve kararların süresi içinde valiye gönderilip kesinleşmesi gibi resmî evrak ve yazışma disiplinini düzenler. 5302 sayılı İl Özel İdaresi Kanunu'na dayanan ve 2005'ten bu yana yürürlükte kalan bu düzenleme, yerel yönetim yazışma süreçlerinde süre ve şekil şartlarına somut bir örnek sunar.
+
+Madde 6 — Meclis toplantıları
+Meclis her ayın ilk haftasında toplanır ve ara vermeden tamamlanır (ilk hafta tümüyle resmî tatile denk gelirse takip eden ilk çalışma günü toplantı günü olur). Toplantı süresi bütçenin görüşüldüğü toplantılarda 20 günü, diğer toplantılarda 5 günü aşamaz; bu süreler uzatılamaz ve olağanüstü toplantı yapılamaz. Görüşülecek konu yoksa meclis gündemsiz toplanmaz; gündeme alınacak konu çıkmazsa toplantı kapatılır.
+
+Madde 8 — Toplantı gündemi ve duyurulması
+Gündem meclis başkanınca belirlenir; genel sekreterlik, toplantıdan en az 3 gün önce üyelere imza karşılığı teslim, taahhütlü posta, telefon, faks, özel idare web sitesi veya e-posta gibi ispat edici yöntemlerden biriyle bildirir (telefonla bildirimde imzalı tutanak düzenlenir). Gündem ayrıca ilan panosu, gazete, internet, radyo/TV gibi yollarla halka da duyurulur. Vali'nin yazıyla bildirdiği gündem talepleri meclis başkanınca gündeme eklenir.
+
+Madde 11 — Görüşmeler ve yönetim
+Başkan yoklama yaptırıp yeter sayı bulunduğunda birleşimi açar; bir önceki tutanaktaki maddi hatalar meclis kararıyla düzeltilip başkanlık divanınca imzalanır. Başkan, meclise sunulacak yazılı dilekçeleri kabul edip meclise sunar. Üyelerin gündem dışı söz talebi yazılı olarak başkana bildirilir; söz verip vermeme ve süre belirleme yetkisi başkana aittir; konuşma süreleri (üye 10 dk, komisyon/parti grubu 20 dk) sınırlıdır.
+
+Madde 16 — Tutanak düzenlenmesi ve kararların yazılması
+Meclis görüşmeleri katip üyeler veya divan sorumluluğundaki görevlilerce tutanağa geçirilir ve başkanlık divanınca imzalanır (toplantılar ayrıca meclis kararıyla sesli/görüntülü kayda alınabilir). Kararlar tutanağa dayanılarak yazılır, başkan ve katip üyelerce imzalanır; her yıl 1'den başlayan sıra numarası alır ve bir sonraki toplantıda üyelere dağıtılıp dosyasında saklanır.
+
+Madde 17 — Meclis kararlarının kesinleşmesi ve yürürlüğe girmesi
+Alınan kararların tam metni başkanca en geç 5 gün içinde valiye gönderilir. Vali, hukuka aykırı gördüğü kararı gerekçesiyle birlikte 7 gün içinde yeniden görüşülmek üzere meclise iade edebilir; meclis üye tam sayısının salt çoğunluğuyla ısrar ederse karar kesinleşir. Yeniden görüşülmesi istenmeyen kararlar 7 günlük sürenin sonunda, valiye hiç gönderilmeyenler ise hiçbir zaman yürürlüğe girmez. Kesinleşen karar özetleri 7 gün içinde halka duyurulur.

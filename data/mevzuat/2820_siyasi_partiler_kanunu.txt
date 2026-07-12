@@ -1,0 +1,20 @@
+Siyasi Partiler Kanunu
+Kanun No: 2820 · Kabul: 22.4.1983 · RG: 24.4.1983 / Sayı 18027 · Dayanak: T.C. Anayasası (m.68-69, siyasi parti kurma hakkı) · YÜRÜRLÜKTE (bazı maddeleri sonraki kanunlarla — örn. 4445, 4778, 5735, 6529 — değiştirilmiş/mülga; eski madde 9 mülga)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2820.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 2820 sayılı Siyasi Partiler Kanunu, siyasi partilerin kuruluşundan kapatılmasına kadar tüm süreçlerini düzenleyen temel kanundur ve 1983'ten bu yana çok sayıda değişiklikle güncellenerek yürürlükte kalmıştır. Kamu evrak süreçleri açısından kanun; resmî kuruluş bildirisi/dosyası verilmesi, kamu kurumlarında sicil dosyası tutulması, organ değişikliklerinin süreli yazılı bildirimi ve kurumsal 'gelen-giden evrak kayıt defteri' tutma zorunluluğu gibi somut örnekler barındırır. Bu yönüyle resmî başvuru, bildirim ve kayıt disiplinine dair kamu yönetimi pratiklerini gösteren referans niteliğindedir.
+
+Madde 8 — Partilerin kurulması (kuruluş ve tüzelkişilik kazanma)
+Siyasi partiler, milletvekili seçilme yeterliğine sahip en az otuz Türk vatandaşı tarafından kurulur. Parti, kurucuların ad-soyad, doğum yeri/tarihi, öğrenim, meslek ve ikametgah bilgilerini içeren imzalı kuruluş bildirisi ile nüfus kayıt örneği, adli sicil belgesi, kurucu-olabilme beyannamesi, parti tüzüğü ve programının İçişleri Bakanlığına verilmesiyle tüzelkişilik kazanır. Kamu evrak sürecinde: resmî bir kamu kurumuna (İçişleri Bakanlığı) sunulacak standart bir başvuru/bildiri dosyası ve eklerinin somut listesini gösterir.
+
+Madde 10 — Siyasi parti sicili (Cumhuriyet Başsavcılığında tutulan dosya)
+Cumhuriyet Başsavcılığınca her parti için bir sicil dosyası tutulur; bu dosyada kuruluş bildirisi ve ekleri, merkez/il/ilçe/belde organlarında görev alanların onaylı listeleri, partinin yönetmelik ve yayınları ile üye listeleri saklanır. Kamu kurumunda resmî evrak/dosya kaydının nasıl yapılandırıldığına dair somut bir örnek sunar (sicil dosyası = kurumsal arşiv kaydı).
+
+Madde 31 — Teşkilatın merkezleri
+Merkez teşkilatı Ankara il merkezinde, il ve ilçe teşkilatları ilgili il/ilçe merkezlerinde, belde teşkilatları ise belediye teşkilatı bulunan yerlerde kurulur. Yazışma/tebligat adresinin yetki ve yer bakımından hangi idari kademeye bağlı olduğunu gösterir.
+
+Madde 33 — Organlarda görev alanların ilgili makamlara (mülki amirliğe) bildirilmesi
+Parti kongreleri hariç, her kademedeki parti organına veya tüzükte belirtilen bir göreve getirilenlerin kimlik ve iletişim bilgileri, seçim veya atanmadan başlayarak onbeş gün içinde yazı ile o yerin en büyük mülki amirliğine bildirilir. Kamu evrak açısından somut bir süreli-bildirim (mühlet) ve resmî yazı yükümlülüğü örneğidir.
+
+Madde 60 — Tutulacak defter ve kayıtlar
+Her kademedeki parti organları üye kayıt defteri, karar defteri, gelen ve giden evrak kayıt defteri, gelir ve gider defteri ile demirbaş eşya defteri tutmak zorundadır. Karar defteri kararları tarih ve numara sırasıyla içerir; kararlar oylamaya katılanlarca imzalanır. 'Gelen ve giden evrak kayıt defteri' ibaresi, kamu evrak/yazışma yönetimiyle doğrudan örtüşen en somut hükümdür.

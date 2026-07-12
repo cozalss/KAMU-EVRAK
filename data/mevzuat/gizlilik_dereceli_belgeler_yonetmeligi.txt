@@ -1,0 +1,44 @@
+Gizlilik Dereceli Belgelerde Uygulanacak Usul ve Esaslar Hakkında Yönetmelik
+Cumhurbaşkanı Kararı (Karar Sayısı 5529, Karar tarihi 25.04.2022) — RG 26.04.2022/31821 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=5529&MevzuatTur=21&MevzuatTertip=5
+
+Bu metin, kamuya açık Yönetmeliğin (telifsiz resmî mevzuat) hükümlerinden derlenmiş yakın-lafzî
+alıntı/özettir. Gizlilik dereceleri ve temel işlemler resmigazete.gov.tr resmî kaynağından çapraz
+doğrulanmıştır (CLAUDE.md §1). Bu metin madde değil DERECE ve İŞLEM yapısıyla düzenlenmiştir (madde
+numaraları tarama-kaynaklı metinden birebir doğrulanamadığı için asserte edilmez). Yönetmelik, kamu
+kurum ve kuruluşlarında üretilen/işlenen evrakın gizlilik derecelendirilmesini, işaretlenmesini,
+saklanmasını, gönderilmesini ve yok edilmesini düzenler; resmî yazışmada gizlilik derecesinin
+belirlenmesi ve 2019/12 sayılı Bilgi ve İletişim Güvenliği Genelgesi ile birlikte evrak gizlilik
+zincirinin temel dayanağıdır.
+
+Gizlilik dereceleri — üç millî gizlilik derecesi
+Bu Yönetmelik ÜÇ millî gizlilik derecesi belirler; belge ve bilgiler, açıklanması hâlinde doğuracağı
+zararın ağırlığına göre bu derecelerden birini taşır:
+- ÇOK GİZLİ: açıklanması hâlinde millî güvenliğe, ülkenin menfaatlerine veya prestijine hayatî derecede
+  zarar verecek nitelikteki bilgi ve belgeler.
+- GİZLİ: açıklanması millî güvenliğe veya ülke menfaatlerine ciddi/önemli zarar verecek bilgi ve belgeler.
+- HİZMETE ÖZEL: çok gizli veya gizli derecesiyle korunması gerekmeyen ancak bilmesi gerekenler dışındakilere
+  verilmemesi gereken bilgi ve belgeler.
+Bu Yönetmelikle önceki mevzuattaki "ÖZEL" gizlilik derecesi kaldırılmıştır; ÖZEL gizlilik dereceli mevcut
+belgeler, idarece bir yıl içinde yapılacak değerlendirmeyle GİZLİ derecesine yükseltilmezse HİZMETE ÖZEL
+gizlilik dereceli belge işlemi görür.
+
+Gizlilik derecesi verme yetkisi ve sorumluluğu
+Gizlilik derecesi, belgeyi/bilgiyi üreten makam tarafından, içeriğin gerektirdiği en düşük derece esas
+alınarak verilir. Gereğinden yüksek derece verilmemesi ve derecenin ihtiyaç kalmadığında düşürülmesi/kaldırılması
+esastır; derecelendirme yetkisi ve sorumluluğu ilgili amirdedir.
+
+İşaretleme (damgalama)
+Gizlilik dereceli belgeler; her sayfasının üst ve alt ortasına derecesini gösterecek şekilde damgalanır/işaretlenir.
+Çoğaltma, dağıtım ve fihristlemede derece korunur; nüsha ve kopya sayısı ile dağıtım yeri kayda geçirilir.
+
+Saklama, gönderme ve erişim
+Gizlilik dereceli belgeler; derecelerine uygun güvenlikte, kilitli ve erişimi denetlenen ortamlarda saklanır.
+Gönderme, çift zarf usulü ve derecesine uygun taşıma/iletim yöntemiyle yapılır; belgeye yalnız "bilmesi
+gereken" ve yetkilendirilmiş kişiler erişebilir. Elektronik ortamda tutulan gizlilik dereceli belgeler için
+2019/12 sayılı Genelge ve ilgili güvenlik tedbirleri uygulanır.
+
+Yok etme (imha)
+Saklama süresi dolan veya muhafazasına gerek kalmayan gizlilik dereceli belgeler, içeriğinin geri
+getirilemeyecek şekilde ve tutanağa bağlanarak imha edilir; imha, yetkili komisyon marifetiyle ve derecesine
+uygun güvenlik önlemleriyle yapılır. Arşivlik nitelikteki belgeler için Devlet Arşiv Hizmetleri mevzuatı saklıdır.

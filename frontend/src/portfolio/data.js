@@ -37,7 +37,7 @@ export const PROJECTS = [
   },
   {
     title: "Mevzuat Önerisi",
-    tags: ["Akıllı Arama", "233 Mevzuat"],
+    tags: ["Akıllı Arama", "304 Mevzuat"],
     image: "/portfolio/app-mevzuat.png",
   },
   {
@@ -60,7 +60,7 @@ export const FAQS = [
   },
   {
     q: "Mevzuat önerileri nasıl üretiliyor?",
-    a: "233 mevzuat / 1506 madde içeren veri tabanı üzerinde akıllı arama ile ilgili maddeler getirilir. Uydurma madde verilmez; şüpheli atıf doğrulama için işaretlenir.",
+    a: "304 mevzuat / 1916 madde içeren veri tabanı üzerinde akıllı arama ile ilgili maddeler getirilir. Uydurma madde verilmez; şüpheli atıf doğrulama için işaretlenir.",
   },
   {
     q: "Resmî yazı taslağını kim hazırlıyor?",

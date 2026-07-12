@@ -1,0 +1,23 @@
+Ateşli Silahlar ve Bıçaklar ile Diğer Aletler Hakkında Kanun
+Kanun No: 6136 · Kabul: 10/7/1953 · RG: 15/7/1953 - Sayı 8458 · Yürürlük: 15/8/1953 · Dayanak: doğrudan kanun (TBMM'nin asli yasama yetkisiyle kabulü; üst dayanak bir başka kanun/KHK değil) · Son değişiklik: 30/11/2024 tarih ve 7533 sayılı Kanun · YÜRÜRLÜKTE
+Kaynak: https://mevzuat.gov.tr/MevzuatMetin/1.3.6136.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 6136 sayılı Ateşli Silahlar ve Bıçaklar ile Diğer Aletler Hakkında Kanun, ateşli silah ve mermilerin yurda girişi, imali, alım-satımı, taşınması ve bulundurulması ile saldırı amaçlı bıçak ve benzeri aletlerin denetimini düzenleyen temel güvenlik mevzuatıdır. Kanun, ruhsat/izin başvurusu, süreli geçerlilik, bildirim yükümlülüğü ve yetkili makam (Vali/İçişleri Bakanlığı) unsurlarıyla kamu evrak ve izin süreçlerine doğrudan örnek teşkil eder. Kaynak: mevzuat.gov.tr.
+
+Madde 4 — Yapım yasağı ve izin istisnası
+Ülke içinde saldırı ve savunmada kullanılmak üzere özel olarak yapılmış kama, hançer, sustalı çakı gibi bıçaklar ile ok, mızrak, süngü, gürz vb. aletlerin yapımı yasaktır. Ancak sanat veya meslek icrası için zorunlu olanların yapımına İçişleri Bakanlığınca çıkarılacak yönetmelik çerçevesinde izin verilebilir — kamu idaresinin başvuru üzerine izin belgesi (evrak) düzenlediği tipik bir örnektir.
+
+Madde 5 — Yasaklı alet/silahın satış-taşıma-bulundurma yasağı ve izin vesikası
+4 üncü maddenin birinci fıkrası kapsamındaki bıçak ve aletlerin satılması, satın alınması, taşınması ve bulundurulması yasaktır; 7 nci maddenin ilgili bendi uyarınca İçişleri Vekaletince (Bakanlığınca) tespit edilecek esaslar dairesinde Vali veya Kaymakamlar tarafından verilecek izin vesikasını haiz olanlar istisna tutulur — vesika/izin belgesi süreci doğrudan kamu evrakı niteliğindedir.
+
+Madde 6 — Ruhsatın geçerlilik süresi, bildirim ve yenileme yükümlülüğü
+Taşıma ve bulundurma ruhsatları, yenileme harcı alınmak kaydıyla beş yıl için geçerlidir. Ruhsatın veriliş sebebinin ortadan kalkması hâlinde ruhsat sahibi durumu, ruhsatı veren makama altı ay içinde bildirmekle yükümlüdür; bildirmeyenler ile süresi dolduğu hâlde altı ay içinde yeniletmeyenlerin ruhsatı iptal edilir. Şartları taşıyanlara idari para cezası ödemeleri kaydıyla yeniden ruhsat verilebilir; bu cezayı vermeye mülki amir yetkilidir. Bu madde kamu evrak süreçlerindeki 'süre' ve 'yetkili makam' unsurlarının doğrudan örneğidir.
+
+Madde 7 — Ateşli silah taşıma yetkisi ve ruhsat/izin verme makamı
+Ateşli silahları yalnızca kanunda sayılan sınırlı kişi/kategoriler (üst düzey kamu görevlileri ve eski görevliler, özel kanunlarına göre yetkili olanlar, Cumhurbaşkanı kararıyla belirlenen kamu kurumu mensupları vb.) taşıyabilir. Cumhurbaşkanınca çıkarılan yönetmelikte belirlenecek esaslara göre valiler tarafından taşıma izin vesikası verilir; İçişleri Bakanı bu yetkisini yazılı olarak Bakan Yardımcılarına veya il valilerine kısmen ya da tamamen devredebilir — yetki devri ve başvuru değerlendirme sürecinin merkezi maddesidir.
+
+Madde 9 — Ruhsatın geri alınması
+Silah bulundurma/taşıma ruhsatını haiz kişinin bu silahla suç işlemesi, muhafazasındaki ihmal veya kusur nedeniyle başkası tarafından suç işlenmesi ya da intihar/intihara teşebbüs edilmesi hâllerinde ruhsat (vesika) geri alınır ve bir daha verilmez. Silahı ikinci kez çalınan veya kaybedilen kişiye, yeni müracaatında yalnızca tek bir silah için ruhsat verilebilir.
+
+Ek Geçici Madde 2 — Sporda kullanılan silahlar için başvuru süresi
+Kanun kapsamına alınan ve İçişleri ile Gençlik ve Spor Bakanlıklarınca müştereken çıkarılacak yönetmelikte belirlenecek, sporda kullanılan ve önceden ruhsata tabi olmayan ateşli yivli silahları elinde bulunduranlar, kanunun yürürlüğe girdiği tarihten itibaren altı ay içinde müracaat ederek 7 nci madde esaslarına göre ruhsat almakla yükümlüdür (23/6/1981 tarih ve 2478 sayılı Kanun'un 10 uncu maddesiyle eklenmiştir) — somut bir 'başvuru süresi' örneğidir.

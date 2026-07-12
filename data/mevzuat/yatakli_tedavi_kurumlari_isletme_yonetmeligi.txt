@@ -1,0 +1,26 @@
+Yataklı Tedavi Kurumları İşletme Yönetmeliği
+Bakanlar Kurulu Kararı 10.9.1982 No: 8/5319 · RG 13.1.1983-17927 Mükerrer (Düstur Tertip 5, Cilt 22, Sayfa 2889) · Dayanak: 3.11.1973 tarih 7/7387 sayılı Kararname ile yürürlüğe giren önceki Yönetmeliği yürürlükten kaldırarak yerine geçmiştir (m.195) · YÜRÜRLÜKTE (Madde 141 gibi münferit hükümler 24.3.2021-31433 C.K. 3739/1 ile mülga; yönetmeliğin bütünü yürürlüktedir; en kapsamlı değişiklik 1.4.2005-2005/8720 K.)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/3.5.85319.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Yataklı Tedavi Kurumları İşletme Yönetmeliği (BKK 10.9.1982-8/5319; RG 13.1.1983-17927 Mükerrer), Sağlık Bakanlığına bağlı hastane ve sağlık kurumlarının işleyiş esaslarını, personelin görev-yetki-sorumluluklarını ve hasta kabul, poliklinik, kurul, arşiv ve kayıt süreçlerini düzenleyen kamuya açık bir idari mevzuattır. Kamu evrak süreçleri açısından; hasta başvurularının kayda alınması, sağlık kurulu raporu ve itiraz süreçlerinde dilekçe/resmi yazı zorunluluğu ile merkezi tıbbi arşiv ve resmi kayıt defterlerinin (sayfa numaralama, mühür, imza) düzenlenmesine ilişkin hükümleriyle doğrudan ilişkilidir.
+
+Madde 11 — Poliklinik başvuru sırası ve öncelik
+Polikliniğe başvuran hastalara sıra numarası verilir; muayene buna göre yapılır. Ağır, acil, yaşlı hastalarla sakatlar ve adli vakalar için sıra gözetilmez; adli vakalara ve geçici/kesin raporların düzenlenmesine öncelik tanınır. Sağlık ocağı, verem savaş, ana-çocuk sağlığı, trahom dispanserleri gibi koruyucu sağlık kuruluşlarından veya daha küçük bir tedavi kurumu/tabip tarafından tıbbi zorunlulukla sevkli hastalara da öncelik verilir; bunlardan yatırılmayanlara yapılan işlemler ve tavsiye edilen tedaviler ait oldukları kuruluşa bildirilir.
+
+Madde 15 — Laboratuvar istek kâğıdı ve resmi evrakla gönderim
+Laboratuvara muayene materyalleri, ilgili poliklinik ve klinik tabipleri tarafından usulüne uygun doldurulmuş laboratuvar istek kâğıtları (Ek 14 Form 65 / Ek 13 Form 64) ile; diğer sağlık kurumlarından ise resmi evrak ile gönderilir. Laboratuvar hizmetleri tutulacak bir deftere kaydedilir (Ek 48 Form 107).
+
+Madde 26 — Sağlık kurulu raporu başvuru şartı — dilekçe/resmi yazı
+Sağlık kurulu raporu düzenlenebilmesi için; mahalli en büyük idari amir tarafından havale edilmiş bir dilekçenin bulunması veya kişinin kurumunun resmi yazısı ile gönderilmesi ya da yatan/polikliniğe müracaat eden hastalardan lüzum görülenler için ilgili uzmanınca baştabipliğe yapılan yazılı teklifin baştabiplikçe havalesi gerekir — rapor süreci yazılı/resmi bir başvuru belgesine bağlanır.
+
+Madde 27 — Kurul kararı kaydı, sayfa numaralama, mühür ve imza
+Sağlık kurulu kararları, önceden hastane baştabipliğince her sayfası numaralanıp mühürlenmiş bir deftere (Ek 53 Form 112) kaydedilir. Kurul üyeleri deftere kaydedilen rapor suretlerini imzalar; karara muhalefet edenler nedenlerini raporun kurumda kalan nüshasına ve deftere yazarak imzalar. İlgiliye verilecek veya kurumuna gönderilecek rapor nüshaları, muhalefet nedeni yazılmadan kurula katılan bütün üyelerce imzalanır. Kararın oybirliği veya çoğunlukla verildiği raporun karar bölümüne yazılır.
+
+Madde 29 — Sağlık kurulu kararına itiraz dilekçesi süreci
+Bir sağlık kurulu kararına hasta, yasal temsilcisi veya çalıştığı kurumu itiraz ederse; itiraz dilekçesi o yerin en büyük mülki amirliğince ilk raporun tasdikli bir örneği ile birlikte en yakın başka bir sağlık kuruluna gönderilir. Birinci ve ikinci rapor kararları aynı olursa karar kesinleşir; çelişki halinde hasta Bakanlığın saptayacağı bir hakem hastaneye gönderilir ve bu hastane sağlık kurulunun kararı kesindir.
+
+Madde 32 — Merkezi Tıbbi Arşiv
+Her yataklı tedavi kurumunda bir merkezi tıbbi arşiv kurulur; bütün servislerin ve olanaklar ölçüsünde polikliniklerin işi biten dosyaları, bilimsel çalışmalar ve istatistik değerlendirmeler bir sıra ve düzen içinde muhafaza edilir (Ek 21 Form 72). Dosyanın çabuk bulunması için isim, hastalık ve protokol numarasına göre kartoteks sistemleri uygulanır; merkezi arşivin çalışma şekli ile tüm kayıtların bilgisayar ortamında tutulabilmesine ilişkin usul ve esaslar Yönerge ile belirlenir (Değişik son fıkra: 2005/8720 K.).
+
+Madde 53 — Hasta kabul hizmetlerinin kapsamı
+Yataklı tedavi kurumlarında hasta kabul işleri; hasta yatırılması, çıkarılması ve diğer kurumlara nakledilmesi ile ölen ve doğanların kayıt vesair işlerini ve ölenlerin eşyalarının tereke hâkimliğine gönderilmesi işlemlerini kapsar.

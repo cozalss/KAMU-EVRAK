@@ -1,0 +1,48 @@
+Güvenlik Soruşturması ve Arşiv Araştırması Kanunu
+Kanun No: 7315 (Kabul: 07.04.2021, RG 17.04.2021/31457) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7315.pdf
+
+Bu metin, kamuya açık Kanunun (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî
+alıntı/özettir. Madde numaraları resmigazete.gov.tr / mevzuat.gov.tr resmî kaynağından çapraz
+doğrulanmıştır (CLAUDE.md §1). Kanun, kamu görevine atanacaklar hakkında yapılacak güvenlik
+soruşturması ve arşiv araştırması evrakının dayanağıdır; hangi kadrolara hangi araştırmanın
+yapılacağını, yetkili makamları, Değerlendirme Komisyonunu ve işlenen kişisel verilerin
+saklanma/imha sürelerini belirler (2019/12 sayılı Bilgi ve İletişim Güvenliği Genelgesinin güvenlik
+soruşturması/personel güvenliği tedbirleriyle ilişkilidir).
+
+Madde 1 — Amaç ve kapsam
+Bu Kanunun amacı, güvenlik soruşturması ve arşiv araştırmasının yapılmasına ve elde edilecek
+verilerin kullanılmasına ilişkin temel ilkeleri belirlemektir. Kanun, güvenlik soruşturması ve
+arşiv araştırması yapılmasını ve bu kapsamda kişisel veri işlenmesini düzenler.
+
+Madde 3 — Arşiv araştırması ve güvenlik soruşturması yapılacaklar
+Arşiv araştırması, statüsü veya çalıştırma şekline bağlı olmaksızın ilk defa veya yeniden kamu
+görevine atanacaklar hakkında yapılır. Güvenlik soruşturması ve arşiv araştırması ise; kurum ve
+kuruluşlarda yetkili olmayan kişilerin bilgi sahibi olması sakıncalı görülen birimler ile Genelkurmay
+Başkanlığı, Savunma, Emniyet, Jandarma, Sahil Güvenlik, MİT, ceza infaz kurumları, istihbarat ve
+gizlilik dereceli birimlerde çalışacaklar ile üst kademe kamu yöneticileri için yapılır.
+
+Madde 4 — Arşiv araştırması
+Arşiv araştırması; kişinin adli sicil kaydının, kolluk kuvvetleri tarafından hâlen aranıp aranmadığının,
+hakkında kesinleşmiş mahkeme kararlarının ve hakkında devam eden ya da sonuçlanmış soruşturma/kovuşturma
+bilgilerinin mevcut kayıtlardan tespit edilmesidir.
+
+Madde 5 — Güvenlik soruşturması
+Güvenlik soruşturması; arşiv araştırmasındaki hususlara ek olarak kişinin görevine devamına engel
+olabilecek nitelikteki terör örgütleri veya suç işlemek amacıyla kurulan örgütlerle irtibatı ve bu
+örgütlerin faaliyetlerine katılımına ilişkin istihbari bilgi ve belgelerin araştırılmasını kapsar.
+
+Madde 6 — Soruşturmayı ve araştırmayı yapacak birimler
+Güvenlik soruşturması ve arşiv araştırması, Millî İstihbarat Teşkilatı Başkanlığı, Emniyet Genel
+Müdürlüğü ve mahallî mülki idare amirlikleri tarafından yapılır. Talep eden makam ve birimler ancak
+kanunda belirtilen kişisel verileri talep edebilir.
+
+Madde 7 — Değerlendirme Komisyonu
+Güvenlik soruşturması ve arşiv araştırması sonucu elde edilen verilerin değerlendirilmesi amacıyla,
+ilgili kurum ve kuruluş bünyesinde Değerlendirme Komisyonu kurulur. Komisyon, verileri objektif ölçütlere
+göre değerlendirir ve sonucu yazılı olarak ilgili makama sunar.
+
+Madde 10 — Kişisel verilerin saklanması ve silinmesi
+Güvenlik soruşturması ve arşiv araştırması kapsamında işlenen kişisel veriler, işlem amacının ortadan
+kalkması hâlinde ve her hâlde işlendiği tarihten itibaren iki yılın sonunda silinir ve yok edilir.
+Bu veriler, işleme amacı dışında kullanılamaz.

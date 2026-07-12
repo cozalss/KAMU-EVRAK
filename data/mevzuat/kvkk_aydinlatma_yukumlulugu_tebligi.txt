@@ -1,0 +1,23 @@
+Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ (KVKK)
+Kişisel Verileri Koruma Kurumu Tebliği — RG 10.03.2018/30356 — Dayanak 6698 sayılı KVKK m.22 (Kurul görevleri); somutlaştırdığı yükümlülük m.10 (aydınlatma) — YÜRÜRLÜKTE
+Kaynak: https://www.kvkk.gov.tr/Icerik/5443/AYDINLATMA-YUKUMLULUGUNUN-YERINE-GETIRILMESINDE-UYULACAK-USUL-VE-ESASLAR-HAKKINDA-TEBLIG
+
+Bu metin, kamuya açık Tebliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî
+alıntı/özettir. Madde numaraları ve RG bilgisi kvkk.gov.tr resmî kaynağından çapraz doğrulanmıştır
+(CLAUDE.md §1). Tebliğ, 6698 sayılı Kanunun 10 uncu maddesindeki aydınlatma yükümlülüğünü
+somutlaştırır: gelen evrakta yer alan kişisel verilerin (TCKN, telefon, ad-soyad, adres) işlenmesinde
+ilgili kişinin bilgilendirilmesi ilkelerinin dayanağıdır ve sistemin PII maskeleme davranışıyla
+doğrudan ilişkilidir.
+
+Madde 4 — Aydınlatma yükümlülüğünün kapsamı
+Veri sorumlusu ya da yetkilendirdiği kişi, 6698 sayılı Kanunun 10 uncu maddesi çerçevesinde ilgili
+kişiyi; veri sorumlusunun ve varsa temsilcisinin kimliği, kişisel verilerin hangi amaçla işleneceği,
+kimlere ve hangi amaçla aktarılabileceği, toplama yöntemi ve hukuki sebebi ile ilgili kişinin
+Kanunun 11 inci maddesinde sayılan hakları konusunda bilgilendirir.
+
+Madde 5 — Usul ve esaslar
+Aydınlatma yükümlülüğü, ilgili kişinin talebi olup olmadığına bakılmaksızın yerine getirilir.
+Aydınlatma; açık, anlaşılır ve ilgili kişinin kolayca erişebileceği şekilde yapılır; genel nitelikli
+ve muğlak ifadelerden kaçınılır. Aydınlatma yükümlülüğünün yerine getirildiğinin ispatı veri
+sorumlusuna aittir. Aydınlatma yükümlülüğünün yerine getirilmesi, açık rızanın alınması şartına
+bağlı değildir; aydınlatma ile açık rızanın alınması işlemleri ayrı ayrı yerine getirilir.

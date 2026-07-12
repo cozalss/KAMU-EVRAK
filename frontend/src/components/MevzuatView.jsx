@@ -8,11 +8,13 @@ import { ViewWrap, NeonCard, EmptyState, Icon, Btn, MONO, T, V, PAL, DERIN, ALFA
 import { cleanDemoText } from "./result-cards.jsx";
 import { OkumaModal } from "./MevzuatOkuma.jsx";
 
-/* Sistemin dayandığı çekirdek mevzuat — katalogda etiketlenir + listede öne alınır. */
-const CEKIRDEK_NO = new Set(["3071", "4982", "7201", "2646", "5018", "2005-7", "6698"]);
+/* Sistemin dayandığı çekirdek mevzuat — katalogda etiketlenir + listede öne alınır.
+   2709 = Anayasa (dilekçe/bilgi edinme üst-normu, m.74); 2026-07 genişletmesiyle eklendi. */
+const CEKIRDEK_NO = new Set(["2709", "3071", "4982", "7201", "2646", "5018", "2005-7", "6698"]);
 
 /* Backend kapalıyken (statik dağıtım / demo) asgari referans listesi — eski davranış. */
 const STATIK_KATALOG = [
+  { no: "AY 2709", ad: "Türkiye Cumhuriyeti Anayasası (seçili md.)", aciklama: "Dilekçe/bilgi edinme hakkı (m.74), başvuru yollarının bildirilmesi (m.40), idari işleme karşı yargı yolu (m.125) — evrak haklarının üst normu." },
   { no: "3071 s.K.", ad: "Dilekçe Hakkının Kullanılmasına Dair Kanun", aciklama: "Zorunlu unsurlar (ad-soyad, imza, adres) ve 30 günlük cevap süresi (m.4, m.7)." },
   { no: "4982 s.K.", ad: "Bilgi Edinme Hakkı Kanunu", aciklama: "Bilgi/belge taleplerinde 15 iş günü cevap süresi ve istisnalar." },
   { no: "7201 s.K.", ad: "Tebligat Kanunu", aciklama: "Resmî tebligat usulü; dava açma sürelerinin başlangıcı." },
@@ -27,7 +29,7 @@ const trLower = (s) => String(s || "").toLocaleLowerCase("tr");
 /* Kategori başlığı altındaki tek satırlık rehber — personelin grubu tanıması için.
    Anahtarlar backend _KATEGORI_KURALLARI adlarıyla birebir; eksik ad = açıklamasız grup. */
 const KATEGORI_ACIKLAMA = {
-  "İdari Usul & Yazışma": "Dilekçe, bilgi edinme, tebligat, resmî yazışma, arşiv, e-imza — günlük evrak işinin temeli.",
+  "İdari Usul & Yazışma": "Anayasal haklar, dilekçe, bilgi edinme, tebligat, resmî yazışma, arşiv, e-imza ve bilgi güvenliği — günlük evrak işinin temeli.",
   "Vergi & Kamu Maliyesi": "Vergi kanunları, harçlar, amme alacakları, kamu ihalesi ve mali yönetim.",
   "Sağlık": "Sağlık hizmetleri, meslek kanunları (hekim/eczacı/hemşire), hasta hakları.",
   "Yargı & Adalet": "Usul kanunları, icra-iflas, ceza ve infaz, arabuluculuk, adli meslekler.",

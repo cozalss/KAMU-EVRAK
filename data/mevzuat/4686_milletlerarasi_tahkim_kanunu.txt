@@ -1,0 +1,23 @@
+Milletlerarası Tahkim Kanunu
+4686 sayılı Kanun · Kabul: 21/6/2001 · RG: 5/7/2001, Sayı 24453 · Dayanak: yok (özgün kanun; 7101 s. Kanun m.53-54 ile 15/3/2018'de kısmi değişiklik, RG 30361) · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.4686.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 4686 sayılı Milletlerarası Tahkim Kanunu, yabancılık unsuru taşıyan ve tahkim yeri Türkiye olarak belirlenen uyuşmazlıklarda uygulanacak tahkim usul ve esaslarını; tahkim anlaşmasının şekli, hakem seçimi, yargılama usulü, karar ve iptal davası süreçlerini düzenler. 2001'den bu yana yürürlükte olup kamuya açık resmî metni mevzuat.gov.tr üzerinden erişilebilir. Bu bölüm, kanunun evrak/yazışma şekil şartları, süreli başvurular ve yetkili mahkeme belirlemesine ilişkin hükümlerini, kamu evrak süreçleriyle bağlantısı bakımından özetler.
+
+Madde 3 — Tahkimde görevli ve yetkili mahkeme, müdahalenin sınırı
+Bu Kanunda mahkeme tarafından yapılacağı belirtilen işlerde, davalının yerleşim yeri veya olağan oturma yeri ya da işyerinin bulunduğu yer asliye hukuk mahkemesi; davalının Türkiye'de böyle bir yeri yoksa İstanbul Asliye Hukuk Mahkemesi görevli ve yetkilidir. Milletlerarası tahkimden kaynaklanan sorunlarda mahkemeler yalnızca bu Kanun hükümlerine göre müdahale edebilir.
+
+Madde 4 — Tahkim anlaşmasının tanımı ve şekli
+Tahkim anlaşması yazılı şekilde yapılır. Yazılı şekil şartı; taraflarca imzalanmış bir belgeyle veya taraflar arasında teati edilen mektup, telgraf, teleks, faks gibi bir iletişim aracıyla ya da elektronik ortama geçirilmiş olmakla, ya da dava dilekçesinde ileri sürülen tahkim anlaşması iddiasına cevap dilekçesinde itiraz edilmemesiyle yerine getirilmiş sayılır.
+
+Madde 10 — Davanın açıldığı tarih, tahkim süresi, dava ve cevap dilekçesi
+Tahkim davası, hakem seçimi için başvurulduğu veya tahkim talebinin karşı tarafça alındığı tarihte açılmış sayılır; taraflar aksini kararlaştırmadıkça esas hakkında karar bir yıl içinde verilir. Davacı; tarafların ad/unvan/adresi, tahkim şartı veya sözleşmesi, uyuşmazlığın konusu ve istemini içeren dava dilekçesini, davalı da cevap dilekçesini hakem veya hakem kuruluna sunar.
+
+Madde 14 — Kararın şekli ve içeriği, düzeltilmesi, yorumu ve tamamlanması, yazılı bildirimlerin alınması
+Hakem kararı taraflara bildirilir; taraflar bildirimden itibaren otuz gün içinde maddî hata düzeltmesi veya yorum isteyebilir, tamamlayıcı karar altmış gün içinde verilir. Aksi kararlaştırılmadıkça herhangi bir yazılı bildirim, gönderilenin yerleşim yerine, olağan oturma yerine, iş yerine veya posta adresine teslim edildiği tarihte alınmış sayılır (bu hüküm mahkemelerce yapılan tebligata uygulanmaz).
+
+Madde 15 — İptal davası ve hakem kararlarının icra edilebilir hâle gelmesi
+Hakem kararına karşı yalnızca iptal davası açılabilir; 7101 sayılı Kanun değişikliğiyle (15/3/2018) iptal davası, 3. madde uyarınca yetkili asliye hukuk mahkemesinin bulunduğu yer yönünden yetkili bölge adliye mahkemesinde, kararın taraflara bildirildiği tarihten itibaren otuz gün içinde açılır ve öncelikle-ivedilikle görülür. İptal sebepleri arasında tahkim anlaşmasının geçersizliği, hakem seçim usulüne uyulmaması, yetki aşımı, taraf eşitliği ilkesinin gözetilmemesi ve kararın kamu düzenine aykırı olması sayılmıştır.
+
+Ek Madde 1 — Uyuşmazlığın konusuna göre görevli mahkeme
+(Ek: 28/2/2018-7101/54 md.) Bu Kanunda asliye hukuk mahkemesine verilen görev ve yetkiler, uyuşmazlığın konusuna göre asliye hukuk veya asliye ticaret mahkemesi tarafından kullanılır.

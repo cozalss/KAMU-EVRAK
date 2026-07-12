@@ -1,0 +1,23 @@
+Karayolu Taşıma Yönetmeliği
+RG: 08.01.2018/30295 · Dayanak: 10/7/2003-4925 sayılı Karayolu Taşıma Kanunu + 26/9/2011-655 sayılı KHK · YÜRÜRLÜKTE (üzerinde çok sayıda değişiklik yapılmıştır)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2018/01/20180108-1.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Karayolu Taşıma Yönetmeliği, karayoluyla yolcu ve eşya taşımacılığı yapan işletmelerin yetki belgesi alma, yenileme ve faaliyet süreçlerini düzenleyen, 4925 sayılı Karayolu Taşıma Kanunu'na dayanan temel ikincil mevzuattır. Başvuru belgeleri, inceleme ve yenileme süreleri gibi hükümleriyle, ulaştırma sektöründeki resmî evrak ve yazışma süreçlerinin sınıflandırılmasında ve yönlendirilmesinde doğrudan referans oluşturur.
+
+MADDE 15 — Yetki belgesi almak ve yenilemek için gerekli belgeler
+Yetki belgesi almak veya yenilemek isteyenlerden istenecek belgeleri düzenler: başvuru dilekçesi, kimlik doğrulama bilgileri, ticaret sicili/oda kaydı, ticaret sicili gazetesi ve diğer belgeler; belgelerin Bakanlığa sunulması zorunludur ve başvurunun elektronik ortamda yapılabilmesine imkân tanır.
+
+MADDE 16 — Yetki belgelerinin verilmesi
+Yapılan başvurunun Bakanlıkça en geç 15 gün içinde incelenmesini; belgelerin mevzuata uygun ve noksansız olması ve öngörülen şartların sağlanması hâlinde yetki belgesinin düzenlenip verilmesini, belge ücretinin ödendiği tarihin veriliş tarihi sayılmasını ve yetki belgesinde yer alacak bilgileri belirler.
+
+MADDE 17 — Yetki belgelerinin süresi
+Bu Yönetmelik kapsamında verilen ve yenilenen yetki belgelerinin süresinin 5 yıl olduğunu; 19 uncu maddedeki doksan günlük süre içinde yenilenmesi hâlinde kalan sürenin yeni belgenin geçerlilik süresine ekleneceğini hükme bağlar.
+
+MADDE 18 — Yetki belgesi alanların faaliyete başlama veya faaliyeti kendi istekleri ile bırakmaları
+Yetki belgesi sahibinin belgeyi aldıktan sonra faaliyete başlama zorunluluğunu ve faaliyetini kendi isteğiyle sona erdirmek isteyenlerin Bakanlığa yazılı başvuru ile izleyeceği bildirim/iptal prosedürünü düzenler.
+
+MADDE 19 — Yetki belgelerinin yenilenmesi
+Yetki belgesi geçerlilik süresinin bitiminden 90 gün önce veya bitiminden itibaren 540 gün içinde yenileme başvurusu yapılabileceğini; bu süre geçirildiğinde belgenin geçersiz sayılacağını ve varsa idari uyarıların bulunması hâlinde belgenin yenilenemeyeceğini düzenler.
+
+MADDE 21 — Gerçek kişinin ölümü hâlinde yetki belgesinin durumu
+Gerçek kişi yetki belgesi sahibinin ölümü hâlinde faaliyetin durdurulacağını; mirasçıların kullanılmayan süreye ilişkin ücret iadesini talep edebileceğini ya da yetki belgesinin sürdürülebilmesi için öngörülen süre (iki yıl) içinde gerekli şartları yerine getirerek belgeyi kendi adlarına düzenletebileceklerini düzenler.

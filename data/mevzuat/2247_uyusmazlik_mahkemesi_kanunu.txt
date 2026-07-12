@@ -1,0 +1,29 @@
+Uyuşmazlık Mahkemesinin Kuruluş ve İşleyişi Hakkında Kanun
+2247 sayılı Kanun (Kabul: 12.06.1979) — RG: 22.06.1979 / Sayı 16674 — Dayanak: Anayasa m.158 (Uyuşmazlık Mahkemesi) — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2247.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 2247 sayılı Kanun, adli ve idari yargı mercileri arasındaki görev ve hüküm uyuşmazlıklarını çözen Uyuşmazlık Mahkemesi'nin kuruluş ve işleyiş usullerini düzenler. Kamu kurumlarının dava dosyası sevki, dilekçe/tebligat süreleri ve başvuru şekli bakımından resmi yazışma disiplinine doğrudan referans oluşturur.
+
+Madde 10 — Olumlu Görev Uyuşmazlığı Çıkarma
+Adli veya idari yargı merciinde açılan davada ileri sürülen görev itirazının reddi üzerine, ilgili Cumhuriyet Başsavcısı (adli yargı) veya Danıştay Başkanunsözcüsü (idari yargı) tarafından görev konusunun Uyuşmazlık Mahkemesince incelenmesi istenerek olumlu görev uyuşmazlığı çıkarılır; itirazın hukuk mahkemelerinde en geç birinci oturumda, idari yargıda dilekçe ve savunma evresi tamamlanmadan ileri sürülmüş ve yargı yerinin kendini görevli görmüş olması şarttır.
+
+Madde 12 — Yargı Merciince Yapılacak İşlemler — Başvuru Süresi
+Görev itirazında bulunan kişi veya makam, itirazın reddine ilişkin kararın verildiği (gerekiyorsa tebliğ edildiği) tarihten başlayarak onbeş gün içinde, uyuşmazlık çıkarılmasını istemeye yetkili makama sunulmak üzere iki nüsha dilekçeyi itirazı reddeden yargı merciine verir; bu merci dilekçenin bir nüshasını yedi gün içinde cevap için karşı tarafa tebliğ eder. Bir davada uyuşmazlık çıkarılması için yalnız bir kez başvurulabilir.
+
+Madde 13 — Uyuşmazlık Çıkarma İsteminde Yetkili Makamca Yapılacak İşlemler
+Başvuruyu inceleyen yetkili makam, uyuşmazlık çıkarmaya yer olmadığı sonucuna varır veya 12. maddedeki onbeş günlük sürenin geçirildiğini tespit ederse istemi reddeder (bu karar kesindir); aksi halde en geç on gün içinde düzenleyeceği gerekçeli düşünce yazısını dilekçe ve ekleriyle birlikte Uyuşmazlık Mahkemesine gönderir ve durumu ilgili yargı merciine bildirir.
+
+Madde 14 — Olumsuz Görev Uyuşmazlığı
+Adli ve idari yargı mercilerinin, tarafları, konusu ve sebebi aynı olan davada kendilerini görevsiz görmeleri ve bu kararların kesin veya kesinleşmiş olması halinde olumsuz görev uyuşmazlığı doğar; giderilmesi istemi ancak davanın taraflarınca ileri sürülebilir.
+
+Madde 15 — Olumsuz Uyuşmazlıkta Dosyanın Gönderilmesi
+Olumsuz görev uyuşmazlıklarında, son görevsizlik kararını veren yargı mercii, kararın kesinleşmesinden sonra taraflardan birinin istemi üzerine, ilk görevsizlik kararına ait dava dosyasını da temin ederek dosyayı Uyuşmazlık Mahkemesine gönderir ve görevli yargı merciinin belirlenmesini ister.
+
+Madde 19 — Yargı Mercilerinin Doğrudan Başvurusu
+Adli veya idari yargı mercilerinden birinin kesin ya da kesinleşmiş görevsizlik kararı üzerine kendisine gelen davayı incelemeye başlayan veya incelemekte olan yargı mercii, görevsizlik kararı veren merciin görevli olduğu kanısına varırsa, görevli merciin belirlenmesi için gerekçeli bir kararla Uyuşmazlık Mahkemesine başvurur ve işin incelenmesini erteler.
+
+Madde 24 — Hüküm Uyuşmazlığı
+1. maddede gösterilen yargı mercilerince görevle ilgili olmaksızın kesin olarak verilmiş, aynı konu ve sebebe ilişkin, taraflarından en az biri aynı olan kararlar arasındaki çelişki yüzünden hakkın yerine getirilmesi olanaksız hale gelmişse hüküm uyuşmazlığı vardır; ilgili kişi veya makam Uyuşmazlık Mahkemesine başvurarak giderilmesini isteyebilir.
+
+Madde 34 — Vergi ve Harç Bağışıklığı
+Uyuşmazlık Mahkemesinde karara bağlanacak işler için verilecek dilekçe, layiha, yazı veya belgelerden; mahkemenin işlemlerinden, kararlarından veya mahkemece ya da mahkemeden istenecek belge/karar örneklerinden herhangi bir vergi veya harç alınmaz.

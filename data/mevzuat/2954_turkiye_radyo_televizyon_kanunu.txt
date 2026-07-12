@@ -1,0 +1,17 @@
+Türkiye Radyo ve Televizyon Kanunu
+Kanun No: 2954 · Kabul: 11.11.1983 · RG: 14.11.1983 / Sayı 18221 · Dayanak: Anayasa m.133 (TRT'nin özerkliği ve tarafsızlığı) · YÜRÜRLÜKTE — kısmî mülga: RTYK hükümleri 3984 s. Kanun (1994); örgütsel maddeler (m.11 çoğu, m.12, m.31) 703 s. KHK (09.07.2018) ile yürürlükten kaldırılmıştır
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=2954&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 2954 sayılı Türkiye Radyo ve Televizyon Kanunu, Anayasa'da (m.133) özerkliği ve tarafsızlığı güvence altına alınan TRT'nin kuruluş, organ ve işleyiş esaslarını düzenler. Kanunun ana gövdesi yürürlükte olmakla birlikte örgütsel bir kısım maddesi 1994'te 3984 sayılı Kanun (RTYK) ve 2018'de 703 sayılı KHK ile yürürlükten kaldırılmıştır. Kamu evrak/yazışma açısından en işlevsel hükümler; Genel Müdürlüğün yetki-yazışma çerçevesi (m.13), yayınla ilgili düzeltme-cevap başvurularının süreli usulü (m.27: 7 gün başvuru / 3 gün yayın) ve yayın metinlerinin 75 gün saklanma yükümlülüğüdür (m.29) — bunlar kamu kurumu-vatandaş arasındaki süreli başvuru/yanıt evrak akışına somut bir model sunar.
+
+Madde 1 — Amaç
+Kanunun amacı; radyo ve televizyon istasyonlarının kurulması, işletilmesi ve yayınlarının düzenlenmesi ile Anayasa'da özerkliği ve tarafsızlığı hükme bağlanan Türkiye Radyo-Televizyon Kurumu (TRT)'na ilişkin esas ve usulleri belirlemektir.
+
+Madde 13 — Kurum Genel Müdürlüğü
+Kanunun 13. maddesi ("Kurum Genel Müdürlüğü") TRT Genel Müdürünün atanmasını, niteliklerini, görev süresini, mali haklarını ve yerine vekâlet usulünü düzenler. Genel Müdür, Kurumun günlük işletme ve temsil yetkisini, dolayısıyla resmî yazışma/imza yetkisini elinde bulundurur. (Not: atama usulüne ilişkin fıkralar 2018 Cumhurbaşkanlığı sistemine geçişte üst kademe kamu yöneticileri rejimine göre güncellenmiştir; madde başlığı ve mali haklara ilişkin çekirdek hükümler yürürlüktedir.)
+
+Madde 27 — Düzeltme ve cevap hakkı
+Yayında şeref ve haysiyetine dokunulan veya kendisiyle ilgili gerçeğe aykırı husus bulunan kişi, yayın tarihinden başlayarak yedi gün içinde düzeltme ve cevap metnini TRT'ye göndermek zorundadır; Kurum bunu Genel Müdürlükçe alınmasından başlayarak üç gün içinde yayınlamakla yükümlüdür. Süresinde yayınlanmaz veya usulüne aykırı yayınlanırsa ilgili kişi, süresi içinde sulh ceza hâkimliğine başvurarak düzeltme ve cevabın yayınlanmasını isteyebilir. Süreler (7 gün başvuru / 3 gün yayın) resmî konsolide metinle teyit edilmiştir — evrak/başvuru/süre açısından kanundaki en somut idari usul maddesidir.
+
+Madde 29 — Metin ve tespitlerin saklanması
+Yayınlanan haber ve program metinleri/kayıtları (metin ve tespitler), yayın tarihinden başlayarak yetmişbeş (75) gün süre ile Kurum tarafından saklanır — arşivleme/evrak muhafaza yükümlülüğüne örnektir. Saklama süresi (75 gün) resmî konsolide metinle teyit edilmiştir.

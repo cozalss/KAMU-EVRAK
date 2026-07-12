@@ -1,0 +1,41 @@
+Kişisel Sağlık Verileri Hakkında Yönetmelik
+Sağlık Bakanlığı Yönetmeliği — Dayanak 3359 sayılı Kanun m.3/f, m.9 ve 1 sayılı CBK; 6698 sayılı KVKK ile uyumlu — RG 21.06.2019/30808 — YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2019/06/20190621-3.htm
+
+Bu metin, kamuya açık Yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî
+alıntı/özettir. Madde numaraları resmigazete.gov.tr resmî kaynağından çapraz doğrulanmıştır (CLAUDE.md §1).
+Yönetmelik, kişisel sağlık verilerinin (özel nitelikli veri) işlenmesi, erişimi, aktarımı ve güvenliğini
+6698 sayılı KVKK ile uyumlu olarak düzenler; sağlık evrakında yer alan hasta verilerinin işlenmesi ve
+maskelenmesiyle doğrudan ilgilidir. e-Nabız ve merkezî sağlık veri sistemi bu Yönetmeliğe dayanır.
+
+Madde 5 — Genel ilke ve esaslar
+Kişisel sağlık verilerinin işlenmesinde 6698 sayılı Kanunun 4 üncü maddesindeki genel ilkeler (hukuka
+uygunluk, dürüstlük, doğruluk ve güncellik, belirli/açık/meşru amaç, ölçülülük ve amaçla sınırlı saklama)
+başta olmak üzere Kanun ve ilgili mevzuat hükümleri uygulanır. Bakanlık, verileri merkezî bir sistemde
+kayıt altına alacak elektronik altyapıyı kurabilir.
+
+Madde 6 — Sağlık personelinin verilere erişimi
+Sağlık personeli, kişisel sağlık verilerine ancak sunduğu sağlık hizmetinin gerektirdiği ölçüde erişebilir.
+e-Nabız hesabı bulunan kişiler, verilerine kimlerin erişebileceğine ilişkin gizlilik tercihlerini belirleyebilir.
+
+Madde 10 — Avukatların erişimi
+Bir kişinin sağlık verilerinin avukatına aktarılabilmesi için, düzenlenmiş vekâletnamede kişinin sağlık
+verilerinin işlenmesine ve avukata aktarılmasına ilişkin açık rızasının bulunması gerekir.
+
+Madde 11 — Ölünün sağlık verilerine erişim
+Ölmüş bir kişinin sağlık verilerine, veraset ilâmını ibraz eden yasal mirasçıları erişebilir. Kişisel sağlık
+verileri, ilgili mevzuatta öngörülen süre neyse o kadar, her hâlde en az yirmi yıl süreyle saklanır.
+
+Madde 14 — Verinin imha edilmesi
+Kişisel sağlık verilerinin silinmesi, yok edilmesi veya anonim hâle getirilmesinde, Kişisel Verilerin
+Silinmesi, Yok Edilmesi veya Anonim Hâle Getirilmesi Hakkında Yönetmelik hükümleri uygulanır.
+
+Madde 15 — Aktarım şartları
+Kişisel sağlık verilerinin yurt içinde aktarılmasında 6698 sayılı Kanunun 8 inci, yurt dışına aktarılmasında
+9 uncu maddesi uygulanır. Kurumlar arası aktarım protokolleri, güvenli veri paylaşım altyapısı (KamuNET vb.)
+üzerinden yürütülür.
+
+Madde 18 — Veri güvenliğine ilişkin yükümlülükler
+Veri sorumlusu, kişisel sağlık verilerinin güvenliğini sağlamak için gerekli teknik ve idari tedbirleri alır;
+bu tedbirlerin belirlenmesinde Kişisel Verileri Koruma Kurumunca yayımlanan Kişisel Veri Güvenliği Rehberi
+esas alınır. Erişim yetkilendirmesi, maskeleme ve kayıt (log) tutma bu yükümlülüğün uygulamasıdır.

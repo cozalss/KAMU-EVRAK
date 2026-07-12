@@ -1,0 +1,23 @@
+Devlet Su İşleri Genel Müdürlüğünce Yürütülen Hizmetler Hakkında Kanun
+No: 6200 · Kabul: 18/12/1953 · RG: 25/12/1953 Sayı: 8592 · Dayanak: — (müstakil kuruluş kanunu) · YÜRÜRLÜKTE (kısmen mülga; son ek: 11/6/2026-7584 sy. Kanun)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.3.6200.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 6200 sayılı Devlet Su İşleri Genel Müdürlüğünce Yürütülen Hizmetler Hakkında Kanun, 1953'ten beri yürürlükte olan ve DSİ'nin sulama, taşkın koruma, arazi toplulaştırması, hidroelektrik ve su yapıları denetimi gibi hizmetlerini düzenleyen temel kuruluş kanunudur. Kanunun teşkilat/görev hükümlerinin çoğu 2011 ve 2018 KHK'leriyle mülga edilip ilgili teşkilat mevzuatına taşınmış olsa da, tahakkuk-tebligat usulleri, süre rejimleri, idari para cezası tebliğ/itiraz mekanizması ve arazi toplulaştırması gibi hükümleri hâlâ yürürlüktedir ve kamu kurumları arası resmî bildirim/tebligat süreçlerine somut örnekler sunar. Bu kanun, resmî yazışma ve süre disiplini açısından \"Çevre, Orman &amp; Su\" alanındaki uygulamalara referans oluşturur.
+
+Madde 31 — Sulanan arazinin tespiti, tahakkuk cetvelleri ve ihtiyar heyetine tebligat
+Sulama şebekesi içindeki arazi her sene mahallinde tespit edilip kadastro planlarına işlenir. Tespiti yapacak memurların köyde bulunacağı gün, bir hafta önceden köy ihtiyar heyetine YAZI ile bildirilir; bu tebligat arazi sahiplerine yapılmış sayılır (ihtiyar heyeti köylüye ilan etmekle yükümlüdür). Mesaha cetvelleri tespit memurları ve ihtiyar heyetince imzalanıp mühürlenir, bölge müdürlüğünce tasdik ile kesinleşir. (c)-(d) fıkralarındaki tebligat tarihinden itibaren BİR AY içinde ilgililer bölge müdürlüğüne itiraz edebilir; bölge müdürünün kararı kesindir (katidir). Tahakkuk cetvellerinin birer örneği köylerde ihtiyar heyetine, kasaba/şehirlerde belediyeye tebliğ edilir ve ayrıca mutat ilan yerlerine asılır; bu da arazi sahiplerine yapılmış tebliğ sayılır.
+
+Madde 32 — Tahakkuk eden borçların ödeme süresi ve gecikmede tahsil
+Tahakkuk eden borçlar, ilgili bakanlıkça (KHK-703 ile Cumhurbaşkanınca) tespit edilen taksit ve süreler içinde ödenir. Süresi içinde ödenmeyen meblağ, Genel Müdürlük teşkilatı tarafından %10 fazlasıyla ve 6183 sayılı Amme Alacaklarının Tahsil Usulü Hakkında Kanun hükümlerine göre tahsil olunur.
+
+Madde 35 — Uyuşmazlıklarda sulh yetkisi (parasal eşiğe göre kademeli yetki)
+(Değişik: 29/3/2011-6215/7 md.) Genel Müdürlüğün görev alanına giren işlerden doğan, henüz yargıya/hakeme/icraya intikal etmemiş uyuşmazlıkların sulh yoluyla çözümünde, davadan/icra takibinden vazgeçmede, sözleşme değişikliği veya feshinde: 1.000.000 TL'ye kadar olanlarda Genel Müdür; 1.000.001-10.000.000 TL arasında Genel Müdürün teklifiyle Bakan; 10.000.001 TL üzerinde ise Cumhurbaşkanı yetkilidir. Parasal sınırlar her yıl merkezi yönetim bütçe kanununda gösterilir.
+
+Ek Madde 6 — İdari para cezalarının tebliği ve itiraz süresi
+(Ek: 10/9/2014-6552/88 md.) Su yapılarının denetimine ilişkin bu Kanuna göre verilen idari para cezalarına ilişkin kararlar, 11/2/1959 tarihli ve 7201 sayılı TEBLİGAT KANUNU hükümlerine göre tebliğ edilir. Bu cezalara karşı tebliğinden itibaren OTUZ GÜN içinde yetkili idare mahkemesine itiraz edilebilir. İdari para cezaları tebliğinden itibaren bir ay içinde ödenir.
+
+Ek Madde 9 — Arazi toplulaştırmasında ilan usulü ve tebliğ karinesi, dava açma süresi
+(Ek: 19/4/2018-7139/7 md.) Arazi toplulaştırma ve tarla içi geliştirme hizmetlerine ilişkin duyurular DSİ/proje idaresinin internet sayfasında ve köy/mahalle muhtarlığında OTUZ GÜN süreyle ilan ettirilir; bu ilanlar ilgili gerçek ve tüzel kişilere ŞAHSEN TEBLİĞ EDİLMİŞ sayılır. Toplulaştırma sonuçlarına karşı tescil tarihinden itibaren ON YIL içinde dava açılabilir; bu davalar mahkemelerce öncelikle görüşülüp sonuçlandırılır.
+
+Ek Madde 17 — Kurumların DSİ'yi bilgilendirme ve koruyucu tedbir yükümlülüğü
+(Ek: 11/6/2026-7584/8 md.) İl özel idareleri, belediyeler ve bağlı kuruluşları, köy tüzel kişilikleri ile diğer kamu kurum ve kuruluşları, su yapılarından kaynaklanabilecek kaza/kayıpların önlenmesi için kendi görev ve sorumlulukları dahilinde koruyucu güvenlik tedbirlerini alır ve bu konuda DSİ'yi BİLGİLENDİRİR. DSİ tesislerinin imar planı kapsamına alınması veya meskûn mahal sınırlarına girmesi halinde koruyucu tedbirler ilgili belediye/il özel idaresince alınır; amaç dışı kullanımdan doğan zararlardan kullanan kurum/kişi sorumludur.

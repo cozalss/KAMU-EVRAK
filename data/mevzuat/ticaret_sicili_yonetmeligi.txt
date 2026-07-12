@@ -1,0 +1,26 @@
+Ticaret Sicili Yönetmeliği
+BKK 2012/4093, 19.12.2012 · RG 27.01.2013/28541 · Dayanak: 6102 sayılı TTK m.26 · YÜRÜRLÜKTE (bazı fıkraları sonraki değişikliklerle değişik/mülga; yönetmeliğin bütünü yürürlüktedir)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2013/01/20130127-9.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Ticaret Sicili Yönetmeliği, 6102 sayılı Türk Ticaret Kanunu'na dayanılarak 2013 yılında yürürlüğe konmuş ve ticaret sicili müdürlüklerinin kuruluş-işleyişini, MERSİS üzerinden elektronik tescil işlemlerini, başvuru/itiraz sürelerini ve tebligat usulünü düzenleyen temel idari mevzuattır. Kamu evrak ve resmî yazışma süreçleriyle ilişkisi; standart başvuru dilekçesi biçimi, sabit süre rejimleri (15 gün/30 gün/8 gün) ve Tebligat Kanunu'na atıflı resmî bildirim mekanizması üzerinden kurulur.
+
+Madde 23 — Başvuru, içerik ve şekil
+Müdürlüğe başvuru yazılı veya elektronik ortamda yapılır. Dilekçede talep açıkça belirtilir ve tescili istenen olgular gösterilir; dayanak belgelerin asılları veya onaylı örnekleri dilekçeye eklenir. Elektronik başvurularda dilekçe ve belgeler noterce onaylanmış veya güvenli elektronik imzayla imzalanmışsa ayrıca kimlik tespiti aranmaz; aksi halde müdür imza karşılaştırması yapar.
+
+Madde 25 — Zaman unsurunun belirlenmesi (MERSİS zaman damgası)
+Elektronik ortamda yapılan işlemlerde tescil tarihi, MERSİS üzerinden gerçekleştirilen güvenli elektronik imzaya eklenen zaman damgasındaki tarihtir. Elektronik yolla yapılan başvurularda da başvuru anının belirlenmesinde MERSİS'teki tarih esas alınır.
+
+Madde 28 — Sicil işlemlerinin tabi olduğu hükümler
+Sicile ait tescil, değişiklik ve silinme işlemleri Kanun ve bu Yönetmelik hükümlerine göre yapılır. Müdürlüğün tescile ilişkin kararları ile tescile davetleri, 11/2/1959 tarihli ve 7201 sayılı Tebligat Kanunu hükümlerine göre tebliğ edilir.
+
+Madde 33 — Süre
+Kanunda ve Yönetmelikte aksi düzenlenmedikçe tescili isteme süresi onbeş gündür; müdürlüğün yetki çevresi dışında oturanlar için bu süre bir aydır. Tescili gerektiren olgunun bir belge veya iznin alınmasına bağlı olduğu hallerde süre, o belgenin düzenlendiği veya iznin alındığı tarihten başlar.
+
+Madde 36 — Tescile davet ve ceza
+Müdürlük, tescili gerekli bir olgunun tescil ettirilmediğini öğrenirse ilgilileri otuz gün içinde tescil başvurusunda bulunmaya veya tescili gerektiren sebeplerin bulunmadığını ispat etmeye çağırır. Süresinde başvuru yapılmaz veya gösterilen sebep yeterli görülmezse müdürlük durumu, sicilin bulunduğu yerdeki ticari davalara bakmakla görevli asliye ticaret mahkemesine bildirir.
+
+Madde 39 — İtiraz
+İlgililer, müdürlüğün tescil, değişiklik veya terkin taleplerine ilişkin kararlarına karşı tebliğ tarihinden itibaren sekiz gün içinde sicilin bulunduğu yerdeki asliye ticaret mahkemesine dilekçe ile itiraz edebilir. Mahkeme incelemesi sonunda tescili gerekli görürse müdürlüğe tescili emreder, aksi halde talebi reddeder.
+
+Madde 42 — Gerçek ve tüzel kişilerin unvan ve işletmelerini tescil ettirme yükümlülüğü
+Her tacir bir ticaret unvanı seçmeye ve işletmesini, merkezinin bulunduğu yer ticaret siciline tescil ve ilan ettirmeye, kullanacağı ticaret unvanını ve bu unvan altında atılmış imzasını müdürlüğe vermeye mecburdur. Tacir tüzel kişi ise, onun adına imzaya yetkili kimselerin imzaları da müdürlüğe verilir. Tescil için Kanun ve bu Yönetmelikte öngörülen genel süre uygulanır (bkz. Madde 33 — onbeş gün).

@@ -1,0 +1,20 @@
+TANIK KORUMA KANUNU
+Kanun No: 5726 · Kabul Tarihi: 27/12/2007 · RG: 05.01.2008 / Sayı 26747 · Yürürlük: yayımından 6 ay sonra (05.07.2008) · YÜRÜRLÜKTE
+Kaynak: https://resmigazete.gov.tr/eskiler/2008/01/20080105-1.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 5726 sayılı Tanık Koruma Kanunu, ceza yargılamasında tanıklık nedeniyle hayatı veya malvarlığı ciddi tehlikeye giren kişilere ve yakınlarına uygulanacak koruma tedbirlerinin usul ve esaslarını düzenler. Karar içeriği, gizlilik, kayıt/tutanak, belge saklama ve başvuru-inceleme süreçlerine ilişkin hükümleriyle, hassas kişisel verilerin resmi evrak akışında korunmasına dair kamu kurumları için doğrudan uygulanabilir bir çerçeve sunar. 05.07.2008 tarihinde yürürlüğe giren Kanun, 23. maddesindeki kısmi mülga dışında halen tam yürürlüktedir.
+
+Madde 6 — Karar verme mercileri ve gerekçe zorunluluğu
+Tanık koruma tedbiri kararını soruşturma evresinde Cumhuriyet savcısı, kovuşturma evresinde tanığın istemi üzerine veya re'sen mahkeme verir; karardan önce kolluk ve diğer birimlerin hazırladığı değerlendirme raporları dikkate alınır. Gecikmesinde sakınca bulunan hâllerde, tanığın isteminin bulunması koşuluyla kolluk amiri yazılı emriyle geçici tedbir alabilir, bu durum gecikmeksizin Cumhuriyet savcısına bildirilir. Tedbir istemlerinde gerekçe ve karara dayanak hukuki/fiili nedenlerin gösterilmesi zorunludur — resmi başvuru evrakının asgari içerik şartını belirler.
+
+Madde 7 — Tanık koruma tedbiri kararının zorunlu unsurları
+Tedbir kararında yer alması zorunlu unsurları sayar: korunan kişinin açık kimlik/adres bilgileri, tanıklık konusu olay ve buna ilişkin bilgiler, tedbirin şekli ve süresi, kararın istem üzerine mi re'sen mi verildiği, hukuki/fiili dayanak sebepleri, tanık anlatımının sağladığı/sağlayacağı fayda ve olayla sınırlı-orantılı diğer hususlar. Resmi kararın standart evrak şablonunu düzenler.
+
+Madde 8 — Tedbirin süresi, yeniden değerlendirme ve bildirim
+Tedbirlerin süresine, değiştirilmesine, kaldırılmasına veya devamına, kararı uygulayan makam/mercilerce re'sen veya ilgilinin istemi üzerine, kararın uygulandığı tarihten başlamak üzere en geç birer yıl aralıklarla karar verilir. Koruma birimi her yıl (veya gerektiğinde önceden) uygulama ve takip raporu düzenleyip karar merciine gönderir. Bu maddeye göre alınan kararlar, hakkında tedbir uygulanan tanığa gecikmeksizin bildirilir — periyodik raporlama ve tebliğ yükümlülüğünü içerir.
+
+Madde 10 — Gizlilik, kayıt/tutanak ve belge saklama esasları
+Kararlar gizlilik esaslarına uygun verilir; tanığın beyanı farklı bir isim altında tutanağa kaydedilir ve sonraki işlemler bu isimle yürütülür, tutanak ilgili savcı/hâkim ile zabıt kâtibince imzalanır. Kararlara ayrı bir karar numarası verilir; tanığın gerçek kimlik/adres bilgileri ile koruma kararı ayrı bir kartonda muhafaza edilir. Karar ve belgeler soruşturma evresinde Cumhuriyet başsavcılığınca, kovuşturma evresinde mahkemece gizlilik esaslarına uygun saklanır ve soruşturma/kovuşturma konusu suç dışında başka bir makam veya mercie gönderilemez — evrak gizliliği ve arşivleme kurallarını doğrudan düzenleyen en ilgili madde.
+
+Madde 14 — Tanık Koruma Kurulunun görev ve yetkileri
+Kurul; Kanunda öngörülen belirli tedbirlere, sürelerine, değiştirilmesine ve kaldırılmasına karar verir, kararları ilgili koruma birimine gönderir, Kanun kapsamındaki kişilerin ve diğer kişi/kamu kurum-kuruluşlarının yapacağı başvuru veya şikâyetleri inceleyip sonuçlandırır, alınan tedbirlerin uygulanmasını denetler. Başvuru/şikâyet inceleme ve karar iletim sürecinin merkezi maddesidir.

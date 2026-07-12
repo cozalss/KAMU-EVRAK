@@ -1,0 +1,20 @@
+Hâkimler ve Savcılar Kurulu Kanunu
+Kanun No: 6087 · Kabul: 11.12.2010 · RG: 18.12.2010/27789 · Dayanak: Anayasa m.159 · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6087.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Bu kanun, hâkim ve savcıların mesleğe kabul, atama, yükselme ve disiplin işlemlerini yürüten Hâkimler ve Savcılar Kurulunun kuruluş, görev ve çalışma usullerini düzenler; Anayasa m.159'a dayanır. Kurul kararlarının biçimi, tebliğ/itiraz süreleri ve Genel Sekreterliğin evrak-arşiv-UYAP kullanımına ilişkin hükümleri nedeniyle kamu evrak ve resmî yazışma süreçleriyle doğrudan kesişir.
+
+Madde 4 — Kurulun görevleri
+Kurulun görevleri arasında; bir mahkemenin kaldırılması veya yargı çevresinin değiştirilmesi konusundaki Bakanlık tekliflerini karara bağlamak, hâkim ve savcılarla ilgili olarak mesleğe kabul, atama, nakil, geçici yetki verme, yükselme, kadro dağıtma, disiplin cezası verme ve görevden uzaklaştırma işlemlerini yapmak yer alır — kamu evrak süreçlerinde birim/yetki tespiti açısından temel referans maddedir.
+
+Madde 10 — Genel Sekreterliğin oluşumu ve görevleri
+Kurulun idari ve mali işleri ile sekreterya hizmetlerini yürüten Genel Sekreterlik; hâkim ve savcıların sicillerini ve şahsi dosyalarını tutar (bent c), arşiv hizmetlerini yürütür (bent ç), izin/emeklilik ve özlük işlemlerini yürütür. 10/2-g bendi, Kurulun görev alanıyla ilgili hususlarda Ulusal Yargı Ağı Bilişim Sisteminin (UYAP) kullanılmasının sağlanmasını öngörür — evrak/dosya yönetimi ve elektronik ortam açısından doğrudan ilgilidir.
+
+Madde 14 — Teftiş Kurulunun oluşumu ve görevleri
+Teftiş Kurulu; Teftiş Kurulu Başkanı, üç başkan yardımcısı ile yeteri kadar başmüfettiş ve müfettiş ve bürolardan oluşur; Başkanın gözetiminde Kurul adına görev yapar. Teftiş Kurulunun görevleri arasında (m.14/4-a); adlî ve idarî yargı hâkim ve savcılarının görevlerini kanun ve diğer mevzuata (hâkimler için idarî nitelikteki genelgelere) uygun olarak yapıp yapmadıklarını denetlemek, görevlerinden dolayı veya görevleri sırasında suç işleyip işlemediklerini, hâl ve eylemlerinin sıfat ve görev icaplarına uyup uymadığını araştırmak ve gerektiğinde inceleme/soruşturma işlemlerini yapmak yer alır.
+
+Madde 32 — Kurul kararları ve tutanaklar
+Genel Kurul ve dairelerde görüşülen işler tutanağa bağlanır ve yapılan işlemler bir kararla tespit edilir. Kararlarda konunun, varsa iddia ve savunmanın özeti; kararın ve varsa karşı oyun gerekçesi; karara karşı başvurulabilecek kanun yolları, mercileri ve süresi gösterilir. Kurulca gerekli görülen kararlar Resmî Gazetede; disipline ilişkin kararlar ise kişisel verilerin korunması kaydıyla Kurulun internet sitesinde yayımlanır — resmî karar/yazışma biçimi ve KVK dengesi açısından örnek maddedir.
+
+Madde 33 — Yeniden inceleme, itiraz ve yargı yolu
+Genel Kurulun ilk defa aldığı kararlara karşı Başkan veya ilgililer, tebliğ tarihinden itibaren on gün içinde Genel Kuruldan yeniden inceleme talebinde bulunabilir; bu talep üzerine verilen kararlar kesindir. Dairelerin yeniden inceleme kararlarına karşı on gün içinde Genel Kurula itiraz edilebilir; itiraz üzerine verilen kararlar kesindir. Süreli başvuru/itiraz usulüne somut bir örnektir (10 günlük süre).

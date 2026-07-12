@@ -1,0 +1,46 @@
+Türkiye Cumhuriyeti Anayasası (seçili maddeler — dilekçe, bilgi edinme, başvuru ve idari işlem hakları)
+Anayasa (Kanun No: 2709, Kabul: 18.10.1982; halkoylaması 07.11.1982; RG 09.11.1982/17863 Mükerrer) — YÜRÜRLÜKTE (2001/2010/2017 değişiklikleri dahil)
+Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2709.pdf
+
+Bu metin kamuya açık Anayasanın (telifsiz resmî metin) yalnız kamu evrakı/yazışma
+süreçleriyle doğrudan ilgili SEÇİLİ maddelerinin madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları ve hükümler mevzuat.gov.tr (1.5.2709) resmî
+kaynağından çapraz doğrulanmıştır (CLAUDE.md §1). Anayasa, resmî yazı ve idari işlem
+gerekçelerinde en üst normdur: dilekçe/bilgi edinme hakkı (m.74), başvuru yollarının
+bildirilmesi (m.40) ve idari işleme karşı yargı yolu (m.125), gelen evrakın haklarını
+ve idarenin cevap yükümlülüğünü belirleyen dayanaktır.
+
+Madde 36 — Hak arama hürriyeti
+Herkes, meşru vasıta ve yollardan faydalanmak suretiyle yargı mercileri önünde davacı
+veya davalı olarak iddia ve savunma ile adil yargılanma hakkına sahiptir. Hiçbir mahkeme,
+görev ve yetkisi içindeki davaya bakmaktan kaçınamaz. Bu hüküm, idareye yapılan
+başvurunun reddi hâlinde kişinin yargıya erişiminin anayasal güvencesidir.
+
+Madde 40 — Temel hak ve hürriyetlerin korunması
+Anayasa ile tanınmış hak ve hürriyetleri ihlal edilen herkes, yetkili makama geciktirilmeden
+başvurma imkânının sağlanmasını isteme hakkına sahiptir. Devlet, işlemlerinde, ilgili
+kişilerin hangi kanun yolları ve mercilere başvuracağını ve sürelerini belirtmek zorundadır
+(2001 değişikliğiyle eklenen fıkra). Bu yükümlülük, idari işlem/ret yazılarında itiraz mercii
+ve süresinin gösterilmesinin anayasal temelidir.
+
+Madde 74 — Dilekçe, bilgi edinme ve kamu denetçisine başvurma hakkı
+Vatandaşlar ve karşılıklılık esası gözetilmek kaydıyla Türkiye'de ikamet eden yabancılar
+kendileriyle veya kamu ile ilgili dilek ve şikâyetleri hakkında, yetkili makamlara ve Türkiye
+Büyük Millet Meclisine yazı ile başvurma hakkına sahiptir. Kendileriyle ilgili başvurmaların
+sonucu, gecikmeksizin dilekçe sahiplerine yazılı olarak bildirilir. Herkes, bilgi edinme ve
+kamu denetçisine başvurma hakkına sahiptir (2010 değişikliğiyle eklenen fıkralar). 3071
+sayılı Dilekçe Kanunu, 4982 sayılı Bilgi Edinme Kanunu ve 6328 sayılı Kamu Denetçiliği
+Kanunu bu maddenin uygulama kanunlarıdır.
+
+Madde 125 — Yargı yolu
+İdarenin her türlü eylem ve işlemlerine karşı yargı yolu açıktır. İdari işlemlere karşı açılacak
+davalarda süre, yazılı bildirim tarihinden başlar. İdare, kendi eylem ve işlemlerinden doğan
+zararı ödemekle yükümlüdür. Bu madde, tebligat/bildirim tarihinin dava açma süresinin
+başlangıcı olmasının ve idari işlemin gerekçeli olması gereğinin anayasal dayanağıdır.
+
+Madde 129 — Görev ve sorumlulukları
+Memurlar ve diğer kamu görevlileri Anayasa ve kanunlara sadık kalarak faaliyette bulunmakla
+yükümlüdür. Memurlar ve diğer kamu görevlileri ile kamu kurumu niteliğindeki meslek
+kuruluşları ve bunların üst kuruluşları mensuplarına savunma hakkı tanınmadıkça disiplin
+cezası verilemez. Disiplin kararları yargı denetimi dışında bırakılamaz. Bu hüküm, memur
+disiplin evrakında savunma alma zorunluluğunun anayasal güvencesidir.

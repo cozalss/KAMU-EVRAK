@@ -1,0 +1,23 @@
+Mahalli İdareler Bütçe ve Muhasebe Yönetmeliği
+RG: 27/05/2016 tarih ve 29724 (Mükerrer) sayı · Dayanak: 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.49, 5302 sayılı İl Özel İdaresi Kanunu m.48, 5393 sayılı Belediye Kanunu m.65, 5355 sayılı Mahalli İdare Birlikleri Kanunu m.18 ve 22, 2014/7052 sayılı Bakanlar Kurulu Kararıyla yürürlüğe konulan Genel Yönetim Muhasebe Yönetmeliği · YÜRÜRLÜKTE (son değişiklik: 31/03/2026 tarih ve 33210 sayılı RG)
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2016/05/20160527M1-1.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Bu yönetmelik, il özel idaresi, belediye, bağlı idare ve mahalli idare birliklerinin bütçe hazırlama, kesin hesap çıkarma ve muhasebe kayıt süreçlerinde uyacakları usul, esas ve standartları düzenler. Ödeme Emri Belgesi ve Muhasebe İşlem Fişi gibi resmi belge tiplerini, bunların elektronik ortamda düzenlenmesine ilişkin yetkiyi ve kurumlar arası bütçe evrakının gönderim sürelerini tanımlaması nedeniyle, kamu evrak ve yazışma süreçlerine dair mali idare örnekleri barındırır.
+
+MADDE 24 — Bütçe tasarısı
+Mali hizmetler birimi, diğer birimlerden gelen gider tekliflerini birleştirip gelir bütçesini ve izleyen iki yılın gelir tahminlerini hazırlayarak, bütçe ilke ve hedefleri doğrultusunda kurumun bütçe tasarısını oluşturur; birimlerden gelen ayrıntılı harcama programları da dikkate alınarak kurumun ayrıntılı harcama ve finansman programı bütçe tasarısına eklenir. Bu madde, birimler arası bilgi/evrak toplama ve konsolidasyon sürecinin usulünü kurar.
+
+MADDE 25 — Bütçe tasarısının Bakanlığa gönderilmesi
+Encümene sunulan bütçe tasarısı ve izleyen iki yıla ait gelir-gider tahminleri ile önceki ve içinde bulunulan yıla ait bütçe gerçekleşmeleri, Bakanlığa belirlenecek şekil ve içerikte Eylül ayının ilk haftası içinde gönderilir. Bakanlık, bütçe rakamlarının elektronik ortamda gönderilmesini isteyebilir — kurumlar arası resmi evrak/veri akışının süresini ve elektronik ortam seçeneğini düzenleyen doğrudan bir maddedir.
+
+MADDE 40 — Bütçe kesin hesabının düzenlenmesi ve görüşülmesi
+Kesin hesap; mali hizmetler birimi tarafından mali yılın bitiminden itibaren hazırlanarak, üst yönetici tarafından il özel idarelerinde Mart, belediyelerde Nisan ayı içinde encümene sunulur. Kesin hesabın hazırlanma, sunulma ve görüşülme süreleri ile yetkili/sorumlu makamları belirler; kamu evrakının (kesin hesap cetvelleri) resmi teslim/görüşme takvimine örnektir.
+
+MADDE 43 — Yevmiye sistemi, muhasebeleştirme belgeleri ve açılış kayıtları
+İşlemler yevmiye tarih ve numarası sırasına göre ve maddeler halinde yevmiye defterine günlük olarak kaydedilir; hesap döneminin başında (1)'den başlayıp dönem sonuna kadar devam eden numara verilir. Bütçeden nakden veya mahsuben yapılan harcamalar 'Ödeme Emri Belgesi', diğer işlemler ise 'Muhasebe İşlem Fişi' ile muhasebeleştirilir. Bu belgelerin elektronik ortamda farklı şekil ve içerikte düzenlenmesine ilişkin hususları belirlemeye Bakanlık (Hazine ve Maliye Bakanlığı) yetkilidir. Kamu evrak sisteminin çekirdek belge tiplerini (ödeme emri, işlem fişi) ve elektronik belge yetkisini tanımlayan en doğrudan maddedir.
+
+MADDE 44 — Kullanılacak defterler ve kayıt düzeni
+Bu Yönetmeliğin uygulanmasında yevmiye defteri, büyük defter, kasa defteri ve yardımcı hesap defterleri kullanılır; büyük defter, yevmiye defterinde kayda geçirilmiş işlemleri usulüne göre hesaplara dağıtan ve tasnifli biçimde toplayan defterdir. Resmi kayıt/defter düzeninin biçimsel çerçevesini kurar.
+
+MADDE 50 — Hesaba ilişkin işlemler
+Kasa hesabına ilişkin işlemleri düzenler; tahsilatlarda iki nüsha Alındı Belgesi düzenlenir, muhasebe (yetkilisi) mutemetlerince tahsil olunan paralar miktarı ne olursa olsun en geç yedi günde bir ilgili muhasebe birimi veznesine yatırılır ve kasa, günlük resmi çalışma süresinin bitiminden bir saat önce kapatılır. Tahsilat belgelerinin nüsha sayısı, teslim süresi ve mutemetlik sorumluluğunu düzenleyen madde — evrak/belge akışının somut süre taahhüdüne örnektir.

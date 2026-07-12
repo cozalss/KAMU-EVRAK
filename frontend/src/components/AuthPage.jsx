@@ -10,7 +10,7 @@ import AjanSahnesi from "./AjanSahnesi.jsx";
 
 const STATS = [
   { n: "16", l: "ajanlı analiz" },
-  { n: "233", l: "mevzuat kaynağı" },
+  { n: "304", l: "mevzuat kaynağı" },
   { n: "SHA-256", l: "denetim izi" },
 ];
 

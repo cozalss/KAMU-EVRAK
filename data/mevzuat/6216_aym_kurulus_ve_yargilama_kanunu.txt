@@ -1,0 +1,23 @@
+Anayasa Mahkemesinin Kuruluşu ve Yargılama Usulleri Hakkında Kanun
+Kanun No: 6216 · Kabul Tarihi: 30/3/2011 · RG: 3/4/2011, Sayı 27894 · Dayanak: T.C. Anayasası m.146-153 · YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2011/04/20110403.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 6216 sayılı Kanun, Anayasa Mahkemesinin kuruluşu, görevleri ve yargılama usullerini; özellikle bireysel başvuru yolunun şekil şartlarını, başvuru sürelerini ve başvuru evrakındaki eksikliklerin tamamlanması usulünü düzenleyen temel kanundur. Kamu kurumlarınca yürütülen evrak ve yazışma süreçlerinde, vatandaşın Anayasa Mahkemesine başvuru hakkını kullanabilmesi için gerekli süre, şekil ve mercii şartlarına ilişkin başvurulacak resmî referans kaynağıdır.
+
+Madde 37 — İptal davası açma süresi
+Cumhurbaşkanlığı kararnameleri, Türkiye Büyük Millet Meclisi İçtüzüğü veya bunların belirli madde ve hükümlerinin şekil ve esas, kanunların ise yalnızca esas yönünden Anayasaya aykırılığı iddiasıyla doğrudan iptal davası açma hakkı, ilgili düzenlemenin Resmî Gazetede yayımlanmasından itibaren altmış gün geçmesiyle düşer; yalnızca şekil bakımından aykırılık iddiasıyla açılacak iptal davalarında bu süre on gündür.
+
+Madde 45 — Bireysel başvuru hakkı
+Herkes, Anayasada güvence altına alınmış ve Avrupa İnsan Hakları Sözleşmesi ile buna ek Türkiye'nin taraf olduğu protokoller kapsamındaki temel hak ve özgürlüklerinden birinin kamu gücü tarafından, ihlal edildiği iddiasıyla Anayasa Mahkemesine başvurabilir; bu başvuru ancak olağan kanun yolları tüketildikten sonra yapılabilir.
+
+Madde 46 — Bireysel başvuru hakkına sahip olanlar
+Bireysel başvuru ancak ihlale yol açtığı ileri sürülen işlem, eylem ya da ihmal nedeniyle güncel ve kişisel bir hakkı doğrudan etkilenenler tarafından yapılabilir; kamu tüzel kişileri bireysel başvuru yapamaz, özel hukuk tüzel kişileri ise yalnızca kendi tüzel kişiliğine ait hakların ihlal edildiği gerekçesiyle başvurabilir.
+
+Madde 47 — Bireysel başvuru usulü
+Bireysel başvurular, Kanunda ve İçtüzükte belirtilen şartlara uygun olarak doğrudan ya da mahkemeler veya yurt dışı temsilcilikler aracılığıyla yapılabilir ve harca tabidir; başvuru, başvuru yollarının tüketildiği (öngörülmemişse ihlalin öğrenildiği) tarihten itibaren otuz gün içinde yapılmalıdır. Başvuru evrakında eksiklik bulunması hâlinde Mahkeme yazı işleri, eksikliğin giderilmesi için başvurucuya veya vekiline onbeş günü geçmemek üzere süre verir; haklı bir mazeret nedeniyle süresinde başvurulamamışsa mazeretin kalktığı tarihten itibaren onbeş gün içinde, mazereti belgeleyen delillerle birlikte başvuru yapılabilir.
+
+Madde 48 — Bireysel başvuruların kabul edilebilirlik şartları ve incelenmesi
+Bireysel başvurunun kabul edilebilirlik incelemesi komisyonlarca yapılır; açıkça dayanaktan yoksun başvurular ile Anayasanın uygulanması ve yorumlanması açısından önem taşımayan ve başvurucunun önemli bir zarara uğramadığı başvurular hakkında kabul edilemezlik kararı verilebilir.
+
+Madde 49 — Esas hakkındaki inceleme
+Kabul edilebilirliğine karar verilen bireysel başvurular bölümlerce esastan incelenir; inceleme sırasında ilgili taraflardan bilgi, belge ve delil istenebilir, gerekli görüldüğünde duruşma yapılabilir; kabul edilebilirlik kararının bir örneği bilgi için Adalet Bakanlığına gönderilir ve Bakanlık gerekli görürse görüşünü yazılı olarak Mahkemeye bildirebilir.

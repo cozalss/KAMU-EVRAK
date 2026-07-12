@@ -1,0 +1,20 @@
+Çek Kanunu
+5941 sayılı Kanun · Kabul: 14/12/2009 · RG: 20/12/2009 - Sayı 27438 · Dayanak: doğrudan TBMM kanunu (3167 sayılı eski Çek Kanunu'nu yürürlükten kaldırmıştır) · YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2009/12/20091220-6.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 5941 sayılı Çek Kanunu, çek defterlerinin düzenlenmesinden çek hesabı açılışına, ibraz ve ödeme sürecinden karşılıksız çek halinde uygulanacak yaptırımlara kadar çek hukukunun temel çerçevesini oluşturur. Kanun, bankalar ile Gelir İdaresi Başkanlığı, Cumhuriyet başsavcılığı ve Türkiye Cumhuriyet Merkez Bankası arasındaki resmî bildirim, tebligat ve süre yükümlülüklerini somut biçimde düzenlediğinden, kamu kurumları arası evrak ve yazışma süreçlerine ilişkin örnek uygulamalar barındırır.
+
+Madde 1 — Amaç ve kapsam
+Kanunun amacı; çek defterlerinin içeriği, çek düzenlenmesi ve kullanımı, çek hamillerinin korunması ve kayıt dışı ekonominin denetim altına alınmasına ilişkin esasları belirlemek; çekin karşılıksız çıkması ve diğer yükümlülüklere aykırılık hallerinde uygulanacak yaptırımları düzenlemektir. Kanunda hüküm bulunmayan hallerde genel hükümler uygulanır.
+
+Madde 2 — Bankanın araştırma yükümlülüğü, çek hesapları ve çek defterleri
+Bankalar çek hesabı açtırmak isteyenin yasaklı olup olmadığını araştırmakla yükümlüdür; kimlik, adres, vergi kimlik numarası ve sicil kayıtlarını alır ve hesap kapandıktan sonra 10 yıl saklar. Çek hesabı açılması için ilgili kişi, tacir/esnaf durumunu ve çek yasağı bulunmadığını bankaya YAZILI BEYANLA bildirir. Çek defterinin her yaprağına hesap numarası, şube adı, hesap sahibinin adı/soyadı ve vergi kimlik numarası yazılır — resmî evrak/form üzerindeki zorunlu bilgi unsurlarına örnek teşkil eder.
+
+Madde 3 — İbraz, ödeme, çekin karşılıksız olduğunun tespiti ve gecikme cezası
+Çekin bankaya ibrazı, 'karşılıksızdır' işleminin usulü, kısmi ödeme halinde çekin ön/arka yüzü onaylı fotokopisinin hamile verilmesi ve bankanın ödemeyi geciktirmesi halinde her gün için binde üç gecikme cezası öngörülür. Süreye bağlı işlem ve belgeleme (fotokopi saklama, imza alma) yükümlülükleri içerir.
+
+Madde 4 — Bankaların bildirim yükümlülüğü
+Hamiline çek hesabı sahiplerine ait bilgiler bankalarca dönemsel olarak Gelir İdaresi Başkanlığı'na ELEKTRONİK ORTAMDA bildirilir. Bankalar, hamiline çek yaprağı kullanılmadan çek düzenlendiğini tespit ederse, mevcut delilleriyle birlikte durumu TESPİT TARİHİNDEN İTİBAREN EN GEÇ BİR HAFTA İÇİNDE Cumhuriyet başsavcılığına ve Gelir İdaresi Başkanlığına bildirmekle yükümlüdür — kamu kurumlarına resmî bildirim süresine somut örnek.
+
+Madde 5 — Ceza sorumluluğu, çek düzenleme ve çek hesabı açma yasağı
+Karşılıksız çek keşide eden kişi hakkında hamilin şikâyeti üzerine adli para cezasına hükmolunur. Çek düzenleme ve çek hesabı açma yasağı kararı ilgilinin bildirdiği adrese 7201 sayılı Tebligat Kanunu m.35 uyarınca derhal TEBLİĞ EDİLİR. Yasaklı kişi, kararın tebliğinden itibaren ON GÜN İÇİNDE elindeki çekleri liste halinde muhatap bankaya bildirmekle yükümlüdür. Yasağa ilişkin bilgiler güvenli elektronik imzayla UYAP aracılığıyla Türkiye Cumhuriyet Merkez Bankası'na elektronik ortamda bildirilir; itiraz, karar kaldırma ve yeniden bildirim/yayım usulleri de bu maddede düzenlenir — tebligat, süre ve resmî bildirim zincirine doğrudan örnek.

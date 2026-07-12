@@ -30,29 +30,53 @@ _NO_RE = re.compile(r"^\d[\d-]*$")  # "3071", "2005-7" numara; "atik..." gibi ö
 
 # Konu/tema sınıflandırması — dosya adı üzerinde anahtar-kelime kuralları, İLK eşleşme
 # kazanır (sıra çakışma çözer: örn. "basin_is"→Çalışma, Kültür'deki "basin"den önce;
-# "tutun_urunleri_zarar"→Sağlık, Ekonomi'deki "tutun"dan önce). 233 dosyanın tamamı
+# "tutun_urunleri_zarar"→Sağlık, Ekonomi'deki "tutun"dan önce). 304 dosyanın tamamı
 # elden geçirilerek kalibre edildi; test: bilinen eşleşmeler + "Diğer" ≤ 12.
 _KATEGORI_KURALLARI: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("İdari Usul & Yazışma", (
         "dilekce", "bilgi_edinme", "tebligat", "resmi_yazisma", "dosya_plani", "evrak",
         "arsiv", "elektronik_imza", "elektronik_posta", "cimer", "kvkk", "muhur",
         "mevzuat_hazirlama", "kamu_denetciligi", "etik_kurulu",
+        # 2026-07 genişletme: Anayasa (dilekçe/bilgi edinme üst-normu), bilgi/iletişim
+        # güvenliği genelgesi (evrak gizlilik/e-yazışma), kamu hizmetlerinin sunumu
+        # (başvuru/hizmet standartları). Anahtarlar distinktif — mevcut korpusla çakışmaz.
+        "anayasa", "iletisim_guvenligi", "hizmetlerinin_sunumu",
+        # 2026-07 Batch 9: gizlilik dereceli belgeler (evrak gizlilik zinciri) + etik
+        # davranış ilkeleri yönetmeliği (5176 uygulama).
+        "gizlilik", "etik_davranis",
     )),
     ("Vergi & Kamu Maliyesi", (
         "vergi", "harclar", "damga", "amme_alacaklari", "kamu_mali", "ihale",
         "belediye_gelirleri", "tasinir_mal", "tasinmaz_tahsis",
+        "ic_kontrol",  # 2026-07: Kamu İç Kontrol Standartları (5018 ikincil, mali kontrol)
+        # 2026-07 Batch 9: harcama belgeleri (ödeme evrakı belge standardı) + iç denetçi
+        # çalışma usulü (5018 iç denetim ikincil).
+        "harcama_belgeleri", "ic_denetci",
+        # 2026-07 Batch 10: kamu zararlarının tahsili + ön ödeme (avans/kredi) — 5018 ikincil.
+        "kamu_zarar", "on_odeme",
+        # 2026-07 Batch 11: SMMM/YMM + merkezi/mahalli muhasebe + kamu gözetimi (mali/denetim).
+        "smmm", "musavir", "muhasebe",
     )),
     ("Sağlık", (
         "tababet", "ispenciyari", "hifzissihha", "organ_doku", "saglik_hizmetleri",
         "aile_hekimligi", "eczaci", "hemsire", "kan_ve_kan", "seriri",
         "tutun_urunleri_zarar", "hasta_haklari",
+        "saglik_verileri",  # 2026-07 Batch 9: Kişisel Sağlık Verileri Yönetmeliği (KVKK sağlık)
+        "hastane", "yatakli_tedavi",  # 2026-07 Batch 11: özel hastaneler + yataklı tedavi kurumları
     )),
     ("Yargı & Adalet", (
         "icra_iflas", "yargilama", "mahkeme", "muhakeme", "ceza", "infaz", "adli_sicil",
         "arabuluculuk", "bilirkisilik", "avukatlik", "noterlik", "kabahatler", "medeni",
         "borclar", "abonelik",
+        # 2026-07 Batch 11: yüksek yargı + adli kurumlar + milletlerarası hukuk.
+        "danistay", "yargitay", "hakimler", "denetimli_serbestlik", "adli_tip",
+        "tanik_koruma", "milletlerarasi_ozel", "tahkim",
     )),
-    ("Kamu Personeli", ("memur", "harcirah", "mal_bildirimi", "khk")),
+    ("Kamu Personeli", (
+        "memur", "harcirah", "mal_bildirimi", "khk",
+        # 2026-07 Batch 10: görevde yükselme/unvan değişikliği + sözleşmeli personel (657 4/B).
+        "gorevde_yukselme", "sozlesmeli_personel",
+    )),
     ("Çalışma, Sosyal Güvenlik & Aile", (
         "is_kanunu", "deniz_is", "basin_is", "is_sagligi", "issizlik", "sosyal",
         "emekli", "sendika", "is_kurumu", "isgucu", "aylik_baglanmasi", "engelliler",
@@ -63,26 +87,33 @@ _KATEGORI_KURALLARI: tuple[tuple[str, tuple[str, ...]], ...] = (
     )),
     ("Güvenlik & Kamu Düzeni", (
         "asker", "teror", "kacakcilik", "ozel_guvenlik", "toplanti", "kimlik_bildirme",
+        "guvenlik_sorusturmasi",  # 2026-07 Batch 9: Güvenlik Soruşturması Kanunu 7315
+        # 2026-07 Batch 11: kolluk/güvenlik teşkilat + silah + sivil savunma
+        # (jandarma/emniyet "teskilat"tan önce burada yakalanmalı — bu yüzden 8. sırada).
+        "polis", "jandarma", "emniyet", "atesli_silah", "sahil_guvenlik", "sivil_savunma",
     )),
     ("Tarım, Hayvancılık & Gıda", (
         "tarim", "veteriner", "tohum", "islahci", "mera", "avcilig", "sebze_meyve",
         "su_urunleri", "sulama", "hayvan_islahi", "toprak",
+        "gida",  # 2026-07 Batch 11: Türk Gıda Kodeksi Yönetmeliği
     )),
     ("Çevre, Orman & Su", (
         "cevre", "atik", "orman", "milli_park", "sulak", "hava_kirliligi", "gurultu",
         "hayvanlari_koruma", "su_kirliligi", "su_tahsis", "yeralti_su", "sular_hakkinda",
         "ambalaj",
+        "su_isleri",  # 2026-07 Batch 11: Devlet Su İşleri (DSİ) Kanunu
     )),
     ("İmar, Şehircilik & Afet", (
         "imar", "yapi_", "kat_mulkiyeti", "tapu", "kadastro", "kamulastirma",
         "toplu_konut", "gecekondu", "afet", "kiyi", "yipranan",
+        "mekansal", "yangindan",  # 2026-07 Batch 11: mekânsal planlar + binaların yangından korunması
     )),
     ("Enerji & Madencilik", (
         "maden", "petrol", "dogal_gaz", "elektrik_piyasasi", "yenilenebilir", "enerji",
         "jeotermal",
     )),
     ("Ulaştırma & Haberleşme", (
-        "trafik", "karayolu", "havacilik", "denizde", "liman", "haberlesme", "posta",
+        "trafik", "karayolu", "karayollari", "havacilik", "denizde", "liman", "haberlesme", "posta",
     )),
     ("Kültür, Turizm & Medya", (
         "basin", "radyo", "internet", "fikir", "sinema", "turizm", "seyahat", "kultur",
@@ -92,12 +123,17 @@ _KATEGORI_KURALLARI: tuple[tuple[str, tuple[str, ...]], ...] = (
         "banka", "sigorta", "sermaye", "finansal", "ticaret", "tuketici", "rekabet",
         "kooperatif", "gumruk", "ithalat", "serbest_bolge", "kosgeb", "sanayi",
         "yatirim", "ozellestirme", "tutun", "perakende", "tasfiye", "sinai",
+        # 2026-07 Batch 11: çek + kambiyo (TPKKK) + ölçüler/ayar + TSE. "cek_kanunu"
+        # ("cek" değil — 'gecekondu' ile çakışmaması için).
+        "cek_kanunu", "turk_parasi", "olculer", "turk_standardlari",
     )),
     ("Kamu Yönetimi & Yerel İdare", (
         "cumhurbaskanligi", "teskilat", "il_idaresi", "il_ozel", "belediye",
         "buyuksehir", "mahalli", "iski", "diyanet", "sayistay", "istatistik", "secim",
         "bayram", "nufus", "vatandaslig", "pasaport", "yabancilar", "kamu_konutlari",
         "tasit_kanunu", "isyeri_acma",
+        # 2026-07 Batch 11: siyasi partiler + üst kademe atama CBK + il genel meclisi.
+        "siyasi_partiler", "ust_kademe", "il_genel_meclisi",
     )),
 )
 _DIGER = "Diğer"

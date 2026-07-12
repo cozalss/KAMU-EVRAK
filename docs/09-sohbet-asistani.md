@@ -142,7 +142,7 @@ Filtre çıkarımı deterministik de çalışır: "reddedilen" → `durum=redded
   bitmez) → `delta` (LLM token'ları, `chat_stream`) → `done` (kaynak + tam yanıt). LLM
   yok/hata/timeout → tek parça şablon delta'sı (aynı sözleşme). Frontend birincil olarak
   akışı kullanır; başarısızsa düz `POST /sohbet`'e düşer.
-- **Yeni niyetler:** `mevzuat_katalog` (233 kayıt + kategoriler; dosya-tabanlı, DB'siz) ·
+- **Yeni niyetler:** `mevzuat_katalog` (304 kayıt + kategoriler; dosya-tabanlı, DB'siz) ·
   `mevzuat_icerik` (kanun no/ada göre tam metin özeti) · `islem_detay` (tek işlemin
   ayrıntısı) · `denetim_dogrula` (hash zinciri bütünlük kontrolü) · `taslak_onayla` /
   `taslak_reddet` (HITL aksiyonu).

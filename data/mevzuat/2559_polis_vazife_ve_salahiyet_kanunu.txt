@@ -1,0 +1,23 @@
+Polis Vazife ve Salâhiyet Kanunu
+Kanun No: 2559 · Kabul Tarihi: 4/7/1934 · RG: 14/7/1934, Sayı 2751 (Düstur Tertip 3, Cilt 15, s.575) · Dayanak: genel kolluk (idari) yetki kanunu, Anayasa m.123/166 çerçevesinde İçişleri Bakanlığı/EGM teşkilat mevzuatıyla birlikte uygulanır · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/MevzuatMetin/1.3.2559.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 2559 sayılı Polis Vazife ve Salâhiyet Kanunu, Türk kolluk teşkilatının genel görev ve yetkilerini — durdurma, kimlik sorma, arama, yakalama, ifade alma ve kayıt tutma dâhil — 1934'ten bu yana düzenleyen temel çerçeve kanundur. Kamu evrak ve yazışma süreçleri açısından önemi, kolluk işlemlerinin yazılı emir, yazılı bildirim ve resmî kayıt zorunluluğuna bağlanmış olmasından gelir; bu nedenle idari işlemin belgelendirilmesi ve süre/usul güvenceleri bakımından referans niteliği taşır.
+
+Madde 1 — Polisin genel görevi
+Polis; asayiş-i amme, şahıs ve tasarruf emniyetini, mesken masuniyetini korur, halkın ırz-can-malını muhafaza ve ammenin istirahatini temin eder; yardım isteyenlerle yardıma muhtaç çocuk, alil ve acizlere yardımcı olur; kanun, Cumhurbaşkanlığı kararnameleri ve ilgili mevzuatın verdiği görevleri yerine getirir.
+
+Madde 4/A — Durdurma ve kimlik sorma (Ek: 2/6/2007-5681/1 md.; değ. 6638/2015)
+Polis; suç/kabahat işlenmesini önlemek, failleri yakalamak, kimlik tespiti yapmak, hakkında yakalama emri veya zorla getirme kararı bulunanları belirlemek ya da kişi/toplum güvenliğine yönelik bir tehlikeyi önlemek amacıyla kişileri ve araçları durdurabilir; durdurma yetkisinin kullanılabilmesi için polisin tecrübesine ve içinde bulunulan durumdan edindiği izlenime dayanan makul bir sebep aranır, keyfî uygulamaya yol açacak şekilde kullanılamaz.
+
+Madde 5 — Parmak izi ve fotoğrafların kayda alınması
+Silah ruhsatı, sürücü belgesi veya pasaport (ya da pasaport yerine geçen belge) için başvuranlar; kolluk veya özel güvenlik görevlisi olarak istihdam edilecekler; Türk vatandaşlığına başvuranlar; sığınma talebinde bulunanlar ve gözaltına alınanlardan parmak izi ve fotoğraf alınır. Alınan veriler, ait olduğu kişinin kimlik bilgileriyle birlikte ne zaman ve kim tarafından alındığı belirtilerek bu amaca özgü sisteme kaydedilip saklanır; kayıtlar kimlik tespiti, suç önleme, soruşturma ve kovuşturmada hâkim, Cumhuriyet savcısı ve kolluk tarafından kullanılabilir.
+
+Madde 9 — Önleme araması — mülkî amirin yazılı emri
+Polis; tehlikenin veya suç işlenmesinin önlenmesi amacıyla usulüne göre verilmiş sulh ceza hâkimi kararı veya gecikmesinde sakınca bulunan hâllerde mülkî amirin (illerde vali/yetkilendirdiği yardımcısı, ilçelerde kaymakam) vereceği yazılı emirle kişilerin üstünü, araçlarını, özel kâğıtlarını ve eşyasını arayabilir. Arama talep yazısında makul sebepler gerekçeleriyle gösterilir; arama kararında/emrinde aramanın sebebi, konusu-kapsamı, yapılacağı yer, zaman ve geçerlilik süresi belirtilir.
+
+Madde 13 — Yakalama sebebinin yazılı bildirilmesi
+Yakalanan kişiye yakalama sebebi her hâlde yazılı, bunun mümkün olmadığı hâllerde sözlü olarak derhal bildirilir; toplu işlenen suçlarda bildirim en geç kişinin hâkim huzuruna çıkarılmasına kadar yapılır.
+
+Madde 15 — İfade alma için çağırma
+Polis, yürüttüğü tahkikat sırasında ifadesine başvurulması gereken kişileri çağırır ve gerekli hususları sorar. 2015 değişikliğiyle, mağdur, şikâyetçi veya tanığın talebi hâlinde ifadenin ikametgâh veya işyerinde de alınabileceği ve bu hususun usullerinin İçişleri Bakanlığınca belirleneceği eklenmiştir.

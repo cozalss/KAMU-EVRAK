@@ -1,0 +1,26 @@
+Mal Alımı İhaleleri Uygulama Yönetmeliği
+RG: 4 Mart 2009, Sayı 27159 (Mükerrer) · Dayanak: 4734 sayılı Kamu İhale Kanunu m.53 · en son değ. 30 Temmuz 2025/32971 · YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=12917&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Mal Alımı İhaleleri Uygulama Yönetmeliği, 4734 sayılı Kamu İhale Kanunu'na dayanılarak hazırlanmış ve kamu idarelerinin mal alımı ihalelerinde uygulayacağı ilan, doküman, bildirim/tebligat ve komisyon kurma usullerini düzenleyen temel ikincil mevzuattır. Yönetmelik, ihale sürecindeki resmî yazışma ve evrak akışını (özellikle EKAP üzerinden bildirim ve zeyilname usulünü) doğrudan biçimlendirdiği için kamu evrak yönetimi süreçleriyle yakından ilişkilidir.
+
+Madde 6 — Bildirim ve tebligat esasları
+İdare; aday, istekli ve istekli olabileceklere bildirimleri esas olarak EKAP üzerinden yapar. EKAP ile bildirim yapılamayan zorunlu hallerde 4734 sayılı Kanun m.65/1-a'daki usuller (iadeli taahhütlü posta, elden imza karşılığı, faks) uygulanır; postada tebliğ tarihi mektubun ulaştığı tarih, faksta bildirim tarihi aynı gün idarece teyit edilmek kaydıyla bildirim tarihidir. Aday/istekliler EKAP dışında idareyle elektronik araç ve faksla yazışamaz.
+
+Madde 19 — İhale ve ön yeterlik ilanı
+İlanların 4734 sayılı Kanunun 13. maddesindeki usul ve sürelere, ekli standart ilan formlarına uygun hazırlanması ve ilan metninde bulunması zorunlu asgari hususlar düzenlenmiştir.
+
+Madde 21 — İlan ve davet süresinin kısaltılması
+İhale ilanı/daveti elektronik araçlarla yapıldığında sürelerden indirim (7 gün) uygulanabileceği; ön ilan yapılmışsa 40 günlük ilan süresinin belirli koşullarda 24 güne kadar kısaltılabileceği düzenlenmiştir.
+
+Madde 23 — İhale ve ön yeterlik dokümanının görülmesi ve satın alınması
+Doküman idarenin ilanda belirttiği yerde bedelsiz görülebilir; EKAP üzerinden e-imzalı indirilebilir; basılı doküman satışı yapılacaksa bedelinin belirlenme ve ödeme usulü düzenlenmiştir.
+
+Madde 24 — İhale ve ön yeterlik dokümanında değişiklik veya açıklama yapılması (zeyilname)
+İlandan sonra dokümanda değişiklik yapılamaz kuralına istisna: idarece tespit edilen veya yazılı bildirilen maddi/zorunlu hatalar zeyilname ile giderilebilir; zeyilname EKAP üzerinden dokümanın parçası olarak yayımlanır ve ihale/son başvuru tarihinden en az 10 gün önce ilgililere ulaşacak şekilde bildirilir.
+
+Madde 25 — İhale veya son başvuru saatinden önce ihalenin iptal edilmesi
+İdarenin gerekli gördüğü veya mevzuata aykırılık tespit ettiği hallerde ihale saatinden önce ihalenin iptal edilebileceği, iptal kararının aynı usulle ilan edilerek başvuru/teklif sahiplerine bildirileceği düzenlenmiştir.
+
+Madde 17 — İhale komisyonunun kurulması
+İhale yetkilisince, ilan veya davet tarihini izleyen en geç 3 gün içinde ihale komisyonunun oluşturulacağı; komisyonun görev, yetki ve çalışma usulü düzenlenmiştir.

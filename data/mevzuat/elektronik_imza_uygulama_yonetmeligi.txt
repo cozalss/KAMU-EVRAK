@@ -1,0 +1,47 @@
+Elektronik İmza Kanununun Uygulanmasına İlişkin Usul ve Esaslar Hakkında Yönetmelik
+RG 06.01.2005/25692 — Dayanak 5070 sayılı Elektronik İmza Kanunu (15.01.2004) — Yürütme: Bilgi Teknolojileri ve İletişim Kurumu (BTK) — YÜRÜRLÜKTE (2006/2021 değişiklikleriyle)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=7224&MevzuatTur=7&MevzuatTertip=5
+
+Bu metin, kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
+yakın-lafzî alıntıdır. Madde numaraları mevzuat.gov.tr resmî kaynağından çapraz doğrulanmıştır
+(CLAUDE.md §1). Yönetmelik, 5070 sayılı Elektronik İmza Kanununu somutlaştırır: elektronik
+sertifika hizmet sağlayıcı (ESHS) bildirim ve sertifikasyon süreçleri, nitelikli elektronik
+sertifika, zaman damgası ve yabancı sertifika. Güvenli elektronik imzanın elle atılan imza ile
+aynı hukuki sonucu doğurması (5070 m.5) ilkesi, resmî yazışmada e-imzanın dayanağıdır.
+
+Madde 1 — Amaç
+Bu Yönetmeliğin amacı; elektronik imzanın hukuki ve teknik yönleri ile uygulanmasına ilişkin
+usul ve esasları düzenlemektir. Elektronik sertifika hizmet sağlayıcılarının faaliyetleri ile
+nitelikli elektronik sertifikaya ilişkin süreçleri kapsar.
+
+Madde 3 — Dayanak
+Bu Yönetmelik, 15.01.2004 tarihli ve 5070 sayılı Elektronik İmza Kanununa dayanılarak
+hazırlanmıştır. Kanunda yer alan tanım ve hükümlerin uygulanmasına ilişkin ayrıntıları belirler.
+
+Madde 5 — Temel ilkeler
+Yönetmeliğin uygulanmasında objektiflik, gizlilik, güvenilirlik ve süreklilik gibi temel ilkeler
+göz önüne alınır. Elektronik sertifika hizmetleri bu ilkelere uygun olarak yürütülür.
+
+Madde 6 — ESHS olma ve bildirim
+Kamu kurum ve kuruluşları ile gerçek veya özel hukuk tüzel kişileri, elektronik sertifika hizmet
+sağlayıcısı (ESHS) olmadan önce Kuruma (BTK) bildirimde bulunur. Bildirim, faaliyete başlamadan
+önce yapılır ve gerekli bilgi ve belgeleri içerir.
+
+Madde 15 — Nitelikli elektronik sertifika sahibinin yükümlülükleri
+Nitelikli elektronik sertifika sahibi; imza oluşturma verisini yalnızca kendi kontrolünde
+tutmak ve başkalarınca kullanılmasına engel olmakla, imza oluşturma verisinin gizliliğinden
+şüpheye düştüğünde ESHS'yi bilgilendirmekle yükümlüdür.
+
+Madde 16 — Üçüncü kişilerin yükümlülükleri
+Üçüncü kişiler; imzayı doğrularken, sertifikanın "nitelikli elektronik sertifika" olup
+olmadığını, geçerliliğini ve iptal durumunu kontrol etmekle yükümlüdür. Bu kontrol, imzaya
+hukuki güvenin dayanağıdır.
+
+Madde 31 — Zaman damgası hizmeti
+Elektronik sertifika hizmet sağlayıcı, zaman damgası ve ilgili hizmetleri sağlamakla yükümlüdür.
+Zaman damgası, bir elektronik verinin üretildiği/işlendiği zamanın doğruluğunu tespit ve tevsik
+eden kayıttır ve elektronik evrakın zaman bakımından delil değerini sağlar.
+
+Madde 32 — Yabancı elektronik sertifikalar
+Yabancı elektronik sertifikaların hukuki sonuçlarına ve kabul edilmesine ilişkin esaslar,
+uluslararası anlaşmalar ve karşılıklılık ilkesi çerçevesinde belirlenir.

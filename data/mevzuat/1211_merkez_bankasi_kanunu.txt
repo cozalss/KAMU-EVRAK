@@ -1,0 +1,26 @@
+Türkiye Cumhuriyet Merkez Bankası Kanunu
+1211 sayılı Kanun · Kabul: 14/1/1970 · RG: 26/1/1970 - Sayı 13409 · YÜRÜRLÜKTE (güncel: 4651/2001, 6111/2011, KHK-703/2018, 7186/2019, 7351/2022 değişiklikleriyle)
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=1211&MevzuatTur=1&MevzuatTertip=5
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 1211 sayılı Türkiye Cumhuriyet Merkez Bankası Kanunu, TCMB'nin kuruluşunu, temel amacını (fiyat istikrarı) ve organlarını düzenleyen, 1970'ten bu yana yürürlükte olan temel kuruluş kanunudur. Kamu kurumları arası resmî bilgi/belge akışı, dönemsel raporlama süreleri (m.42-43) ve sır saklama yükümlülüğü (m.35) bakımından kamu evrak ve yazışma süreçlerine doğrudan emsal teşkil eder.
+
+Madde 1 — Kuruluş ve unvan
+Türkiye'de banknot ihracı imtiyazına münhasıran sahip olmak üzere "Türkiye Cumhuriyet Merkez Bankası" unvanı altında anonim şirket olarak bir banka kurulmuştur. Kanunda hüküm bulunmayan hâllerde Banka özel hukuk hükümlerine tabidir.
+
+Madde 4 — Temel görev ve yetkiler
+Bankanın temel amacı fiyat istikrarını sağlamaktır; para politikasını ve araçlarını doğrudan kendisi belirler. Açık piyasa işlemleri, döviz/altın rezerv yönetimi, ödeme sistemleri kurma, zorunlu karşılık belirleme ve bankalar ile mali kurumlardan bilgi/istatistik isteme yetkisi bu maddede sayılmıştır.
+
+Madde 35 — Sır saklama ve sorumluluk
+Banka mensupları, görevleri dolayısıyla öğrendikleri Bankaya veya Banka ile ilişkili kişi ve kurumlara ait sırların gizliliğine uymak ve bunları kanunen yetkili kılınan mercilerden başkasına açıklamamakla yükümlüdür. Bu yükümlülük Bankadan ayrılma hâlinde de devam eder.
+
+Madde 41 — Mali ve ekonomik müşavirlik, mali ajanlık ve haznedarlık
+Banka, Hükümetin mali ve ekonomik istişare organıdır; para ve kredi politikası konusunda Hükümetçe istenecek hususlarda mütalaa beyan eder. Devletin milletlerarası mali ilişkilerinde Bankaya Hükümetin mali ajanlığı verilebilir; Hazine'nin tahsilat, tediyat ve para nakil/havale işlemlerini yürütür.
+
+Madde 42 — Özel denetim ve kamuoyunun aydınlatılması
+Cumhurbaşkanı Bankanın işlem ve hesaplarını denetlettirebilir. Başkan (Guvernör), her yıl nisan ve ekim aylarında Cumhurbaşkanına Banka faaliyetleri ve para politikası hakkında rapor sunar; Banka yılda iki defa TBMM Plan ve Bütçe Komisyonunu bilgilendirir. Enflasyon hedefine ulaşılamaması hâlinde nedenler Hükümete yazılı olarak bildirilir ve kamuoyuna açıklanır.
+
+Madde 43 — Bilgi isteme yetkisi, bankaların bilanço ve raporları
+Türkiye'de faaliyette bulunan bankalar, özel finans kurumları ve Bankaca uygun görülecek diğer mali kurumlar; yıllık bilanço, kâr-zarar hesabı ve denetim raporlarını genel kurul/düzenlenme tarihinden itibaren en geç bir ay içinde Bankaya vermekle yükümlüdür. Banka bu kurumlardan her türlü bilgi ve belgeyi isteyebilir; süresinde veya doğru bilgi vermeyenlerin işlemlerini sınırlayabilir ya da durdurabilir.
+
+Madde 44 — Gerçek ve tüzel kişilerden bilgi isteme yetkisi
+Banka, döviz pozisyonunu etkileyen işlemleri izlemek amacıyla belirleyeceği gerçek ve tüzel kişilerden her türlü bilgi ve belgeyi istemeye yetkilidir. İstenecek bilgi/belgenin kapsamı, toplanma ve izlenme yöntemi ile paylaşım usulünü Banka belirler; destek hizmeti kuruluşu çalışanları hakkında da m.35 sır saklama hükmü uygulanır.

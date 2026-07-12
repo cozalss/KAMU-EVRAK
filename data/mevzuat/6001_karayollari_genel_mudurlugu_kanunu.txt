@@ -1,0 +1,26 @@
+Karayolları Genel Müdürlüğünün Hizmetleri Hakkında Kanun (2010-2018 arası ve RG'deki orijinal adı: Karayolları Genel Müdürlüğünün Teşkilat ve Görevleri Hakkında Kanun)
+Kanun No: 6001 · Kabul T.: 25/6/2010 · RG: 13/7/2010 - Sayı 27640 · Ad değişikliği dayanağı: 703 sayılı KHK m.76 (2/7/2018, RG 9/7/2018-30473 mükerrer) · Tertip 5 · YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2010/07/20100713-1.htm ; güncel/konsolide metin: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.6001.pdf
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). 6001 sayılı Kanun, Karayolları Genel Müdürlüğü'nün görev alanını ve hizmet esaslarını (güzergâh planlaması, kamulaştırma, geçiş ücreti uygulamaları, üçüncü kişi tesisat izinleri) düzenleyen ve 2010'dan bu yana yürürlükte olan temel mevzuattır. 2018'de 703 sayılı KHK ile kanunun adı ve teşkilata ilişkin bazı hükümleri güncellenmiş, ancak hizmet ve yetki maddeleri yürürlükte kalmıştır. Bu kanun; başvuru/itiraz süreleri, tebligat sonrası ödeme süreleri ve yetki devri kademeleri bakımından kamu kurumu-vatandaş/idare yazışma süreçlerine dolaylı örnekler sunar.
+
+Madde 1 — Amaç ve kapsam
+Kanunun amacı; karayollarının kalkınma planları çerçevesinde, ekonomik gelişmeye uygun, güvenli ve çevreye duyarlı biçimde yapılması, bakımı, işletilmesi ve ilgili altyapının geliştirilmesi ile Karayolları Genel Müdürlüğünün teşkilat, görev ve çalışma esaslarının düzenlenmesidir.
+
+Madde 5 — Teşkilat yapısı (merkez-taşra)
+Genel Müdürlük merkez ve taşra teşkilatından oluşur. Taşra teşkilatı bölge müdürlükleri ile bunlara bağlı teknik/idari şube müdürlükleri, başmühendislik ve şefliklerden meydana gelir — resmî yazışmalarda muhatap/birim tespiti için teşkilat hiyerarşisini gösterir. (Not: 2018 sonrası teşkilata ilişkin bazı hükümler CBK'lara devredilmiştir; güncel teşkilat için 1 sayılı CBK ile birlikte okunmalıdır.)
+
+Madde 19 — Karayolu güzergâhı tespiti ve belediyeye bildirim/itiraz süresi
+Genel Müdürlük otoyol, Devlet ve il yolları güzergâh planlarını hazırlayıp ilgili belediye ve mücavir alan sınırları içindeki kurumlara bildirir; ilgili kurumların bu planlara itirazlarını en geç otuz gün içinde bildirmesi öngörülür (idari başvuru/itiraz süresine örnek).
+
+Madde 22 — Kamulaştırma yetkisi
+Genel Müdürlük, görev alanına giren karayolu yapım, bakım, geliştirme ve çevre düzenlemesi işleri için gerekli taşınmazları kamulaştırmaya yetkilidir; kamulaştırılan taşınmazlar Hazine adına tescil edilir.
+
+Madde 24 — Karayolu sınırları içinde tesisat kurulması izni
+Karayolu sınırları içinde su, kanalizasyon, doğalgaz ve petrol boru hatları ile elektrik ve haberleşme hatları gibi her türlü tesisatın kurulması, yenilenmesi veya yerinin değiştirilmesi Genel Müdürlüğün iznine tabidir — üçüncü kişi/kurumların Genel Müdürlüğe yazılı izin başvurusu yapması gerekliliğine dayanak maddedir.
+
+Madde 26 — Uyuşmazlıklarda sulh yolu ve parasal yetki sınırları
+Genel Müdürlük ile kamu kurum/kuruluşları veya gerçek/tüzel kişiler arasında henüz yargıya intikal etmemiş uyuşmazlıklarda sulh yoluyla çözüm parasal sınırlara göre kademeli yetkiye tabidir (orijinal metinde belirli tutara kadar Genel Müdür, üstünde Bakan, en üst kademede Bakanlar Kurulu; 2018 sonrası üst irade Cumhurbaşkanıdır) — yetki devri/imza yetkisi bakımından örnek maddedir.
+
+Madde 30 — Geçiş ücreti, tebliğ ve ödeme süresi, idari para cezası
+Ücretli geçiş sistemlerinde geçiş ücretini ödemeden geçiş yapanlara, ödenmeyen geçiş ücreti ile birlikte idari para cezası uygulanır; tebliğ tarihinden itibaren belirlenen süre içinde ödeme yapılması öngörülür; süresinde ödenmemesi ilave yaptırım doğurur — tebligat ve ödeme/başvuru süresine somut örnek maddedir.

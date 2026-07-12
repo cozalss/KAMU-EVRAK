@@ -1,0 +1,29 @@
+Sosyal Sigorta İşlemleri Yönetmeliği
+RG: 12.05.2010 / Sayı 27579 · Dayanak: 5510 sayılı Sosyal Sigortalar ve Genel Sağlık Sigortası Kanunu m.107 · YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2010/05/20100512-3.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Sosyal Sigorta İşlemleri Yönetmeliği, 5510 sayılı Kanun kapsamında işveren ve sigortalıların Sosyal Güvenlik Kurumu'na yapacağı bildirim, başvuru ve belge ibrazı süreçlerinin usul ve sürelerini belirleyen temel düzenlemedir. İşe giriş/çıkış bildirgeleri, işyeri bildirgesi, iş kazası/meslek hastalığı bildirimleri gibi konularda hem elektronik (e-sigorta) hem fiziki evrak akışını tanımlaması nedeniyle kamu evrak ve yazışma süreçlerine doğrudan örnek teşkil eder. Yönetmelik hâlen yürürlükte olup güncel hâliyle referans alınmalıdır.
+
+Madde 5 — Bilgi ve belgelerin Kuruma verilme usulü ile zorunluluk hali
+Kurum, Kanun veya Yönetmelik gereği verilecek her türlü belge/bilgilerin e-sigorta (elektronik) ortamda gönderilmesini gerçek kişiler ile kamu/özel hukuk tüzel kişileri için zorunlu tutmaya veya bu zorunluluğu kaldırmaya yetkilidir; kağıt ortamda verilen belgeler de işleme alınabilir.
+
+Madde 11 — Sigortalılığın başlangıcı ve bildirim yükümlülüğü
+Kanunun 4/1-a bendi kapsamındaki sigortalılar için hak ve yükümlülükler çalışmaya/mesleki eğitime/zorunlu staja başlama tarihinden itibaren başlar; işverene Kanunda öngörülen sürelerde Kuruma bildirim yükümlülüğü yükler.
+
+Madde 12 — Sigortalıların kendilerini bildirmesi
+4/1-a kapsamındaki sigortalılar, çalışmaya başladıkları tarihten itibaren en geç bir ay içinde, örneği Ek-3'te yer alan sigortalı bildirim belgesiyle doğrudan veya internet/benzeri ortamda Kuruma başvurup bildirimde bulunur.
+
+Madde 25 — Sigortalı işten ayrılış bildirgesi
+Sigortalılığın sona ermesine ilişkin bildirim, ilgili Ek-5/Ek-5A formuyla, sigortalılığın sona ermesini takip eden on gün içinde e-sigorta ortamında Kuruma yapılır.
+
+Madde 27 — İşyeri bildirgesi
+Sigortalı çalıştıran, işyeri devralan veya işyeri kendisine intikal eden işveren, Kanunun 11. maddesindeki sürede vermekle yükümlü olduğu işyeri bildirgesini Kuruma e-sigorta ile göndermek zorundadır.
+
+Madde 29 — İşyeri bildirgesi ile birlikte verilecek diğer belgeler
+İşveren; yerleşim (adres) belgesi, imza sirküleri gibi belgeleri bir ay içinde Kuruma elden veya posta yoluyla vermekle yükümlüdür; tüzel kişiler için ticaret sicili gazetesi, ortaklıklar için noter onaylı sözleşme, ihale/inşaat işlerinde sözleşme veya yapı ruhsatı fotokopisi de aranır.
+
+Madde 35 — İş kazasının bildirimi ve bildirim süresi
+İş kazası geçiren sigortalı için işveren, kazayı yetkili kolluk kuvvetlerine derhal, Kuruma ise en geç kazadan sonraki üç iş günü içinde bildirmekle yükümlüdür.
+
+Madde 36 — Meslek hastalığının tespiti, bildirimi ve bildirim süresi
+Sigortalının meslek hastalığına tutulduğunun sağlık kurulu raporu ve dayanağı tıbbi belgelerle tespiti; Kurumca gerekli görülmesi halinde işyeri denetim raporlarıyla da desteklenerek üç iş günü içinde bildirim usulü düzenlenir.

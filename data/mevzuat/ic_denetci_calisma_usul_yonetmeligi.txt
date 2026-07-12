@@ -1,0 +1,44 @@
+İç Denetçilerin Çalışma Usul ve Esasları Hakkında Yönetmelik
+BKK 2006/10654 (Karar tarihi 26.06.2006) — Dayanak 5018 sayılı Kanun (İç Denetim, m.63-67) — RG 12.07.2006/26226 — YÜRÜRLÜKTE
+Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=200610654&MevzuatTur=21&MevzuatTertip=5
+
+Bu metin, kamuya açık Yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî
+alıntı/özettir. Madde numaraları resmigazete.gov.tr resmî kaynağından çapraz doğrulanmıştır (CLAUDE.md §1).
+Yönetmelik, 5018 sayılı Kanunun iç denetime ilişkin hükümlerinin uygulanmasını düzenler; iç denetim
+raporu ve evrakının hazırlanması, denetçinin bağımsızlığı ve raporlamayla ilgilidir. Kamu İç Kontrol
+Standartları Tebliği ile birlikte iç kontrol/iç denetim zincirini tamamlar.
+
+Madde 5 — İç denetim faaliyetinin amacı
+İç denetim; kamu idaresinin çalışmalarına değer katmak ve geliştirmek için kaynakların ekonomiklik,
+etkililik ve verimlilik esaslarına göre yönetilip yönetilmediğini değerlendirmek ve rehberlik yapmak
+amacıyla yürütülen bağımsız ve nesnel bir güvence sağlama ve danışmanlık faaliyetidir.
+
+Madde 8 — İç denetimin uygulanması (denetim türleri)
+İç denetim; uygunluk denetimi (işlemlerin mevzuata uygunluğu), performans denetimi (etkinlik, ekonomiklik,
+verimlilik), malî denetim (hesap ve işlemlerin doğruluğu ve malî sistemin güvenilirliği), bilgi teknolojisi
+denetimi (elektronik bilgi sistemlerinin sürekliliği ve güvenilirliği) ve sistem denetimi (faaliyet ve
+kontrol sisteminin çözümlenmesi) türlerinde yürütülür.
+
+Madde 15 — İç denetçinin görevleri
+İç denetçi; nesnel risk analizlerine dayanarak kamu idaresinin yönetim ve kontrol yapılarını değerlendirmek,
+kaynakların etkili/ekonomik/verimli kullanımını incelemek, harcama sonrası yasal uygunluk denetimini yapmak,
+malî işlem ve kararların amaç ve politikalara uygunluğunu denetlemek ve denetim sonuçlarını raporlayarak
+izlemekle görevlidir.
+
+Madde 16 — İç denetçinin yetkileri
+İç denetçi, denetim konusuyla ilgili her türlü bilgi, belge ve kayıtları görmek, incelemek ve bunların
+onaylı örneklerini almak; ilgililerden yazılı ve sözlü bilgi istemek ve gerekli yardımı talep etmek
+yetkisine sahiptir.
+
+Madde 25 — İç denetçilerin bağımsızlığı
+İç denetçiler, iç denetim faaliyetine ilişkin görevlerini yerine getirirken bağımsız olarak hareket eder.
+İç denetime tabi birimlerin faaliyetlerinin yürütülmesinde denetçilere görev verilemez.
+
+Madde 27 — İç denetçilerin güvencesi
+İç denetçilere, bu Yönetmelikte ve iç denetim yönergesinde belirtilen görevler dışında hiçbir görev
+verilemez ve yaptırılamaz; iç denetçiler istekleri dışında başka bir göreve atanamaz.
+
+Madde 43 — Raporlama ilkeleri
+İç denetim faaliyetinin sonuçları, bulgu, öneri ve ilgili birimin görüşlerini içeren bir raporla kayıt
+altına alınır. Rapor; açık, tarafsız, kanıtlara dayalı, yapıcı ve zamanlı olur. (Raporların ilgili birim
+yöneticisine ve üst yöneticiye sunulması m.44'te düzenlenir.)

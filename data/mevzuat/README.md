@@ -233,3 +233,89 @@ Chunk'lama `retrieval/chunker.py` (KEEP) `MADDE_PATTERN` ile madde-bazlı yapıl
 | Terörle Mücadele Kanunu | 3713 | `3713_terorle_mucadele_kanunu.txt` | 3 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.3713.pdf |
 | Nakdi Tazminat ve Aylık Bağlanması Hakkında Kanun | 2330 | `2330_nakdi_tazminat_ve_aylik_baglanmasi_kanunu.txt` | 6 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.2330.pdf |
 | Terör ve Terörle Mücadeleden Doğan Zararların Karşılanması Hakkında Kanun | 5233 | `5233_teror_zararlarinin_karsilanmasi_kanunu.txt` | 8 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5233.pdf |
+
+## 2026-07 Genişletme Batch 8 — yazışma/evrak/dijital-devlet omurgası + foundational atıflar (9 mevzuat)
+
+> Boşluk analiziyle (233 mevzuatlık korpus üzerinde) tespit edilen, yarışma alanının tam
+> merkezindeki eksikler: dilekçe/bilgi edinme üst-normu, evrak gizlilik/e-yazışma güvenliği,
+> bilgi edinme + e-imza uygulama yönetmelikleri, kamu görevlisi görev suçları, PII (KVKK ikincil),
+> dijital hizmet sunumu ve iç kontrol. **Korpus 233 → 242 mevzuat (1508 → 1556 chunk).** Madde
+> no'ları ve künyeler mevzuat.gov.tr / resmigazete.gov.tr resmî metinlerinden çapraz doğrulandı
+> ve bağımsız adversarial doğrulama (fable) turundan geçirilerek 5 madde-atıf/künye düzeltmesi
+> uygulandı. Yeniden indeksleme: `python backend/scripts/seed_mevzuat.py` (kanonik seed — indeks
+> `mevzuat_sayisi` + `madde_tur` alanlarını korur). Kategori: 4 distinktif anahtar eklendi
+> (`anayasa`, `iletisim_guvenligi`, `hizmetlerinin_sunumu`, `ic_kontrol`); "Diğer" sepeti 0/12.
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Türkiye Cumhuriyeti Anayasası (seçili md.: 36/40/74/125/129) | 2709 | `anayasa_secili_maddeler.txt` | 5 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.2709.pdf |
+| Bilgi ve İletişim Güvenliği Tedbirleri Genelgesi | 2019/12 | `bilgi_ve_iletisim_guvenligi_genelgesi_2019_12.txt` | 8 | https://www.resmigazete.gov.tr/eskiler/2019/07/20190706-10.pdf |
+| Bilgi Edinme Hakkı Kanununun Uygulanmasına İlişkin Esas ve Usuller Hakkında Yönetmelik | 2004/7189 (BKK) | `bilgi_edinme_uygulama_yonetmeligi.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=20047189&MevzuatTur=21&MevzuatTertip=5 |
+| Elektronik İmza Kanununun Uygulanmasına İlişkin Usul ve Esaslar Hakkında Yönetmelik | RG 25692 | `elektronik_imza_uygulama_yonetmeligi.txt` | 8 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=7224&MevzuatTur=7&MevzuatTertip=5 |
+| Türk Ceza Kanunu — Kamu Görevlisi Görev Suçları (247/250/252/257/258/259/279) | 5237 | `5237_turk_ceza_kanunu_gorev_suclari.txt` | 7 | https://www.mevzuat.gov.tr/mevzuatmetin/1.5.5237.pdf |
+| Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ (KVKK) | RG 30356 | `kvkk_aydinlatma_yukumlulugu_tebligi.txt` | 2 | https://www.kvkk.gov.tr/Icerik/5443/AYDINLATMA-YUKUMLULUGUNUN-YERINE-GETIRILMESINDE-UYULACAK-USUL-VE-ESASLAR-HAKKINDA-TEBLIG |
+| Veri Sorumluları Sicili Hakkında Yönetmelik (VERBİS) | RG 30286 | `kvkk_verbis_veri_sorumlulari_sicili_yonetmeligi.txt` | 3 | https://www.kvkk.gov.tr/Icerik/5442/VERI-SORUMLULARI-SICILI-HAKKINDA-YONETMELIK |
+| Kamu Hizmetlerinin Sunumunda Uyulacak Usul ve Esaslara İlişkin Yönetmelik | 2009/15169 (BKK) | `kamu_hizmetlerinin_sunumu_yonetmeligi.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=200915169&MevzuatTur=3&MevzuatTertip=5 |
+| Kamu İç Kontrol Standartları Tebliği | RG 26738 | `kamu_ic_kontrol_standartlari.txt` | — | https://www.resmigazete.gov.tr/eskiler/2007/12/20071226-21.htm |
+
+## 2026-07 Genişletme Batch 9 — evrak gizlilik/güvenlik + etik/mali/denetim + sağlık PII (6 mevzuat)
+
+> Boşluk analiziyle (242 mevzuatlık korpus üzerinde) tespit edilen eksikler: evrak gizlilik dereceleri,
+> personel güvenlik soruşturması, etik davranış ilkeleri, ödeme/harcama evrakı belge standardı, iç denetim
+> ve sağlık verisi PII. **Korpus 242 → 248 mevzuat (1556 → 1592 chunk).** Madde no'ları ve künyeler
+> resmî metinlerden çapraz doğrulandı + bağımsız adversarial (fable) tur uygulandı (5 madde/künye
+> düzeltmesi: etik künye+m.9, harcama m.5 nüsha, gizlilik RG tarihi+derece sayısı). **Not:** aday listesindeki
+> Cumhurbaşkanlığı Dijital Dönüşüm Ofisi (CBK 48) EKLENMEDİ — 28.03.2025 tarihli 183 sayılı CBK ile
+> kapatıldığından (mülga) güncel mevzuat olarak sunulamaz. Kategori: 6 distinktif anahtar eklendi
+> (`gizlilik`, `guvenlik_sorusturmasi`, `etik_davranis`, `harcama_belgeleri`, `ic_denetci`, `saglik_verileri`);
+> "Diğer" sepeti 0/12.
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Gizlilik Dereceli Belgelerde Uygulanacak Usul ve Esaslar Hakkında Yönetmelik | CB 5529 | `gizlilik_dereceli_belgeler_yonetmeligi.txt` | — | https://www.resmigazete.gov.tr/eskiler/2022/04/20220426-11.pdf |
+| Güvenlik Soruşturması ve Arşiv Araştırması Kanunu | 7315 | `7315_guvenlik_sorusturmasi_kanunu.txt` | 7 | https://www.mevzuat.gov.tr/MevzuatMetin/1.5.7315.pdf |
+| Kamu Görevlileri Etik Davranış İlkeleri ile Başvuru Usul ve Esasları Hakkında Yönetmelik | RG 25785 | `etik_davranis_ilkeleri_yonetmeligi.txt` | 7 | https://www.resmigazete.gov.tr/eskiler/2005/04/20050413-6.htm |
+| Merkezi Yönetim Harcama Belgeleri Yönetmeliği | RG 26040 3.mük. | `merkezi_yonetim_harcama_belgeleri_yonetmeligi.txt` | 7 | https://www.resmigazete.gov.tr/eskiler/2005/12/20051231M3-2.htm |
+| İç Denetçilerin Çalışma Usul ve Esasları Hakkında Yönetmelik | BKK 2006/10654 | `ic_denetci_calisma_usul_yonetmeligi.txt` | 7 | https://www.resmigazete.gov.tr/eskiler/2006/07/20060712-6.htm |
+| Kişisel Sağlık Verileri Hakkında Yönetmelik | RG 30808 | `kisisel_saglik_verileri_yonetmeligi.txt` | 7 | https://www.resmigazete.gov.tr/eskiler/2019/06/20190621-3.htm |
+
+## 2026-07 Genişletme Batch 10 — personel atama/nakil/özlük + mali işlem evrakı (6 mevzuat)
+
+> Boşluk analiziyle (248 mevzuatlık korpus) tespit edilen eksikler: personel yer değiştirme/nakil, görevde
+> yükselme, sözleşmeli personel, mal bildirimi (yönetmelik), kamu zararı tahsili ve ön ödeme. **Korpus 248 →
+> 254 mevzuat (1592 → 1623 chunk).** Madde no'ları/künyeler resmî konsolide metinlerden çapraz doğrulandı +
+> bağımsız adversarial (fable) tur uygulandı (Sözleşmeli Personel künyesi 6/4197→**7/15754** düzeltildi;
+> Kamu Zararları RG 26323→**26324** + m.3/m.7/m.16 güncellendi). **Not:** ilk aday listesindeki **Ön Ödeme
+> 2005/9913 mülga** çıktı (2025'te CK 9600 ile kaldırıldı) → dosya **güncel CK 9600 (RG 15.03.2025/32842)**
+> künyesiyle yazıldı. Kategori: 4 anahtar eklendi (`gorevde_yukselme`, `sozlesmeli_personel`, `kamu_zarar`,
+> `on_odeme`); "Diğer" 0/12.
+
+| Mevzuat | No | Dosya | Madde | Kaynak |
+|---|---|---|---|---|
+| Devlet Memurlarının Yer Değiştirme Suretiyle Atanmalarına İlişkin Yönetmelik | BKK 83/6525 | `devlet_memurlari_yer_degistirme_yonetmeligi.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=836525&MevzuatTur=21&MevzuatTertip=5 |
+| Görevde Yükselme ve Unvan Değişikliği Esaslarına Dair Genel Yönetmelik | BKK 99/12647 | `gorevde_yukselme_unvan_degisikligi_yonetmeligi.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=9912647&MevzuatTur=21&MevzuatTertip=5 |
+| Sözleşmeli Personel Çalıştırılmasına İlişkin Esaslar | BKK 7/15754 | `sozlesmeli_personel_calistirilmasi_esaslari.txt` | 5 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=715754&MevzuatTur=21&MevzuatTertip=5 |
+| Mal Bildiriminde Bulunulması Hakkında Yönetmelik | BKK 90/748 | `mal_bildirimi_yonetmeligi.txt` | 6 | https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=90748&MevzuatTur=3&MevzuatTertip=5 |
+| Kamu Zararlarının Tahsiline İlişkin Usul ve Esaslar Hakkında Yönetmelik | BKK 2006/11058 | `kamu_zararlarinin_tahsili_yonetmeligi.txt` | 8 | https://www.resmigazete.gov.tr/eskiler/2006/10/20061019-13.htm |
+| Ön Ödeme Usul ve Esasları Hakkında Yönetmelik | CK 9600 (2025) | `on_odeme_usul_esaslari_yonetmeligi.txt` | — | https://www.resmigazete.gov.tr/eskiler/2025/03/20250315.htm |
+
+## 2026-07 Genişletme Batch 11 — çok-alanlı derinleştirme, çok-ajanlı workflow (50 mevzuat)
+
+> **Korpus 254 → 304 mevzuat (1623 → 1916 chunk).** Bu tur, **L3 çok-ajanlı workflow** ile üretildi: 52 aday
+> için paralel **araştır (sonnet) → adversarial doğrula (opus)** pipeline'ı (102 ajan, ~7.8M token). Her ajan
+> yürürlük/mülga kontrolü yaptı, resmî kaynaktan (mevzuat.gov.tr / resmigazete.gov.tr, pdftotext) gerçek madde
+> no'larını çıkardı; güvenilir doğrulayamadığında **madde uydurmak yerine betimsel** döndü (2 dosya). **2 aday
+> mülga çıkıp otomatik elendi** (yükseköğretim öğrenci disiplin yön., aday memur yetiştirme yön.). Adversarial
+> aşama 22 kayıtta düzeltme uyguladı (ör. TRT'de yanlış bir madde çıkarıldı). Eval regresyonsuz (Recall@3 0.875
+> korundu); "Diğer" sepeti 0. Kategori: ~30 distinktif anahtar eklendi (çakışma-kontrollü; ör. `cek_kanunu` —
+> `gecekondu` çakışmasını önlemek için).
+>
+> **Alan kırılımı (50):** Yargı & Adalet 12 (Danıştay 2575, Yargıtay 2797, AYM 6216, HSK 6087, Hâkimler-Savcılar
+> 2802, Bölge Adliye 5235, Uyuşmazlık Mah. 2247, Denetimli Serbestlik 5402, Adli Tıp 2659, Tanık Koruma 5726,
+> MÖHUK 5718, Tahkim 4686) · Vergi & Maliye 6 (Gelir Vergisi 193, SMMM/YMM 3568, Mal/Hizmet/Yapım İhale Uygulama
+> Yön., Merkezi Muhasebe Yön.) · Güvenlik 6 (PVSK 2559, Jandarma 2803, Emniyet 3201, Ateşli Silahlar 6136, Sahil
+> Güvenlik 2692, Sivil Savunma 7126) · Ekonomi 6 (Merkez Bankası 1211, Çek 5941, TPKKK 1567, Ölçüler-Ayar 3516,
+> TSE 132, Kamu Gözetimi 660) · Kamu Yönetimi/Yerel 6 (Mahalli İdareler Bütçe-Muhasebe, Belediye/İl Genel Meclisi
+> Çalışma, Siyasi Partiler 2820, Milletvekili Seçimi 2839, Üst Kademe Atama CBK-3, TRT 2954) · İmar 3 (Mekânsal
+> Planlar, Binaların Yangından Korunması, Tapu Sicili Tüzüğü) · Sağlık 2 · Ulaştırma 3 · Eğitim 1 · Tarım 1
+> (Türk Gıda Kodeksi) · Çevre-Su 1 (DSİ 6200). Tam liste: indeks + `/mevzuat/katalog`.

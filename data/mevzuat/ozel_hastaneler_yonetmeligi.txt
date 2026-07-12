@@ -1,0 +1,26 @@
+Özel Hastaneler Yönetmeliği
+RG 30.01.2025/32798 · Dayanak: 2219 sayılı Hususi Hastaneler Kanunu; 3359 sayılı Sağlık Hizmetleri Temel Kanunu m.3, m.9, ek m.11, ek m.15, ek m.19; 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında CB Kararnamesi m.355, m.508 · YÜRÜRLÜKTE
+Kaynak: https://www.resmigazete.gov.tr/eskiler/2025/01/20250130-9.htm
+
+Bu metin, kamuya açık mevzuatın (telifsiz resmî mevzuat) madde metinlerinden derlenmiş yakın-lafzî alıntı/özettir. Madde numaraları ve künye mevzuat.gov.tr / resmigazete.gov.tr resmî kaynağından çapraz doğrulanmış ve bağımsız adversarial doğrulamadan geçirilmiştir (CLAUDE.md §1: madde no uydurulmaz; şüpheli hüküm [DOĞRULA:] taşır). Özel Hastaneler Yönetmeliği, gerçek kişi veya özel hukuk tüzel kişilerine ait özel hastanelerin açılış, ruhsatlandırma, faaliyet izni, personel, teknik donanım ve denetim şartlarını düzenleyen temel sağlık mevzuatıdır. 30 Ocak 2025'te yürürlüğe giren güncel metin, hastane açılış sürecini EKİP elektronik sistemi üzerinden yürütülen ön izin-ruhsat-faaliyet izin belgesi olmak üzere üç aşamalı ve süreye bağlı bir idari izin zincirine oturtur. Bu yapı, kamu evrak ve yazışma süreçlerinde başvuru takibi, eksik evrak bildirimi, süre yönetimi ve yetkili birime yönlendirme senaryoları için doğrudan uygulanabilir bir örnek teşkil eder.
+
+MADDE 4 — Tanımlar
+Yönetmelikte geçen Bakanlık, EKİP (elektronik başvuru/izin sistemi), Faaliyet izin belgesi, Genel Müdür, Müdürlük, özel hastane, ruhsat, sağlık personeli ve uzmanlık dalı gibi terimler tanımlanır. Yönetmelik genelinde başvuru ve bildirim süreçleri EKİP üzerinden yürütülür.
+
+MADDE 9 — Ön izin başvurusu
+Hastane açılışı, tadilat veya ek bina öncesi ön izin zorunludur; başvuru EKİP sistemi üzerinden yapılır. Evrak eksikliği en geç 13 gün içinde bildirilir, Bakanlık değerlendirmesi en geç 30 gün içinde sonuçlanır; ön izinden itibaren 2 yıl içinde ruhsat sürecine geçilmesi gerekir.
+
+MADDE 10 — Ruhsat başvurusu
+Ön izin tarihinden itibaren 3 yıl içinde ruhsat alınması zorunludur. Başvuru EKİP üzerinden yapılır; yerinde inceleme en geç 15 iş günü içinde tamamlanır ve sonuç aynı sürede Bakanlığa iletilerek ruhsatlandırma yapılır.
+
+MADDE 11 — Faaliyet izin belgesi başvurusu
+Ruhsat alındıktan sonra faaliyet izin belgesi başvurusu EKİP üzerinden yapılır; belge en geç 15 iş günü içinde düzenlenir. Ruhsat tarihinden itibaren 6 ay içinde hasta kabulüne başlanması zorunludur.
+
+MADDE 14 — Ruhsat bilgilerinde değişiklik bildirimi
+Ruhsat bilgilerinde meydana gelen değişikliklerin Müdürlüğe bildirilmesi zorunludur; bildirim Bakanlıkça değerlendirilir. Adres değişikliği hâlinde ruhsat ve faaliyet izin belgesi, belge bedeli alınmaksızın yeniden düzenlenir.
+
+MADDE 41 — Denetim
+Özel hastaneler, Ek-2'de yer alan denetim, sorgu ve idari yaptırım formu kullanılarak ve Özel Sağlık Tesislerinin Denetimi Hakkında Yönetmelik hükümlerine uygun biçimde denetime tabi tutulur.
+
+MADDE 42 — Tıbbi endikasyon ve uygulama denetimi
+Sunulan sağlık hizmetinin tıbbi endikasyon ve uygulamalara uygunluğunun tespiti amacıyla denetim yapılır; denetim komisyonları kurulur, sonuçlar raporlanır ve uygun görülmesi hâlinde Bakanlık onayı ile işleme konulur (idari yaptırım/rapor süreci).

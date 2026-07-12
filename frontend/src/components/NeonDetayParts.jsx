@@ -1,7 +1,7 @@
 /* NeonDetayParts — NeonDetay'ın yaprak bileşenleri (Hero Light v2 "Sakin Ürün").
    Ayrı dosya: NeonDetay <800 satır kalsın; parçalar tek başına test edilebilir.
-   Desen kaynağı: Langfuse/Braintrust (skor barı + eşik), Stripe (mono kimlik + kopyala),
-   Vercel checks (kalite kapısı satırı), Phoenix (atıf satırı + kaynak alt-satırı). */
+   Desen kaynağı: Langfuse/Braintrust (skor barı + eşik + kalite kapısı satırı),
+   Stripe (mono kimlik + kopyala), Phoenix (atıf satırı + kaynak alt-satırı). */
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";

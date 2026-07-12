@@ -1,7 +1,7 @@
 /* NeonDetay — ayrıntılı sonuç bölümü (yarışma-kalitesi). Komuta merkezinin ORTA panelinde
    gömülü yaşar (embedded); istenirse tam-genişlik bölüm olarak da çizilebilir.
    Hero Light v2 "Sakin Ürün" + gözlemlenebilirlik-aracı bilgi mimarisi (Langfuse/Braintrust/
-   Vercel/Stripe desenleri): en üstte HÜKÜM ŞERİDİ (tek bakışta sonuç + telemetri), solda
+   Stripe desenleri): en üstte HÜKÜM ŞERİDİ (tek bakışta sonuç + telemetri), solda
    yapışkan bölüm navigasyonu (scroll-spy, yalnız yeterli alanda), Görev 1 (anlama, teal) /
    Görev 2 (üretim, lavanta) grupları, kopyalanabilir SHA-256 zinciri, NLI destekli mevzuat
    satırları, kâğıt-görünümlü resmî yazı önizleme. Tümü GERÇEK ProcessResponse.

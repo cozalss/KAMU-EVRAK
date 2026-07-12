@@ -295,6 +295,13 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     (`_grounding_yanlis_pozitif_mi`) — LLM prompt'u dinlemese de temiz taslak KIRMIZI olmaz.
     """
     kaynak_maskeli = mask_pii(state.get("evrak_text", "") or "").masked_text
+    # Memurun kutucukla eklediği DAYANAK bloğu (yazi.dayanak) LLM'e GÖSTERİLMEZ: bu bloktaki
+    # atıflar LLM üretimi değil, memurun korpustan SEÇTİĞİ referanslardır (insan-küreli, HITL) →
+    # anti-halüsinasyon denetimi LLM üretimi GÖVDEyi hedefler. Blok ayrıştırılınca meşru atıf
+    # 'uydurma' sayılmaz VE istemci-kontrollü hiçbir metin grounding'e girmez (güvenli; bkz.
+    # dayanak_blogunu_cikar). Deterministik uydurma-veto (6+ hane/tarih) taslağın TAMAMINA uygulanır.
+    from yazi.dayanak import dayanak_blogunu_cikar
+    taslak_govde = dayanak_blogunu_cikar(taslak)
     cevap = await llm_json(
         "Kamu evrak doğrulama denetçisisin. Taslaktaki her SOMUT iddiayı (kurum adı, kişi, "
         "mevzuat madde numarası, tutar, taahhüt) kaynak evrakla karşılaştır. YALNIZ kaynakta "
@@ -306,7 +313,7 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
         "'işlem tesis edilmiştir' vb.). YALNIZ kaynaktaki bir kişi/kurum/olayla ÇELİŞEN veya "
         'kaynakta hiç olmayan SOMUT bir olgu uydurulduysa listele. Şu JSON\'u döndür: '
         '{"desteklenmeyen_iddialar": ["..."]}',
-        "KAYNAK EVRAK:\n" + kaynak_maskeli[:3000] + "\n\nTASLAK:\n" + taslak[:3000],
+        "KAYNAK EVRAK:\n" + kaynak_maskeli[:3000] + "\n\nTASLAK:\n" + taslak_govde[:3000],
         max_tokens=400,
     )
     if not isinstance(cevap, dict) or not isinstance(cevap.get("desteklenmeyen_iddialar"), list):

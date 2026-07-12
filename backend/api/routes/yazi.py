@@ -27,6 +27,7 @@ from api.schemas import (
     MAX_EVRAK_CHARS,
     KurulRequest,
     TaslakTuruRequest,
+    YaziDayanakRequest,
     YaziDogrulaRequest,
     YaziEypRequest,
     YaziRenderRequest,
@@ -181,6 +182,41 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     }
 
 
+@router.post("/dayanak")
+@rate_limit("60/minute")  # deterministik + LLM'siz → tür-seçiminden daha gevşek limit
+async def yazi_dayanak(request: Request, req: YaziDayanakRequest) -> dict[str, Any]:
+    """Memurun kutucukla seçtiği mevzuatı taslağa DAYANAK olarak işle (deterministik).
+
+    Görev 2 kurgusu: işaretlenen madde(ler) kapanıştan önce "Dayanak" bloğu olarak yazıya
+    işlenir; seçim boşalınca base AYNEN döner (bire bir undo). LLM/pipeline YOK → anlık,
+    ucuz, deterministik. Gövde metni DEĞİŞMEZ (yalnız atıf bloğu eklenir/çıkarılır).
+    SIFIR UYDURMA: yalnız panelde görünen `baslik` taşınır (bkz. yazi.dayanak).
+    """
+    from yazi.dayanak import dayanak_uygula
+    from yazi.renderer import detect_eksik_format
+
+    # NOT strip(): antet ("        T.C.") ortalaması ve kapanış girintisi (anchor) korunmalı —
+    # yalnız boşluk guard'ı + uzunluk sınırı uygulanır (base bire bir korunur).
+    if not req.taslak_md.strip():
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Taslak metni boş")
+    taslak = req.taslak_md[:MAX_EVRAK_CHARS]
+    try:
+        yeni = dayanak_uygula(taslak, req.secili_mevzuat)
+    except Exception as exc:
+        log.error("yazi_dayanak_failed", error=str(exc) or type(exc).__name__)
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, "Dayanak işlenemedi") from exc
+
+    n = sum(1 for m in (req.secili_mevzuat or [])
+            if isinstance(m, dict) and str(m.get("baslik") or "").strip())
+    log.info("yazi_dayanak", n_secili=n, degisti=(yeni != taslak))
+    return {
+        "yazi_taslak_md": yeni,
+        "format_uyumlu": not detect_eksik_format(yeni),
+        "dayanak_sayisi": n,
+    }
+
+
 @router.post("/render")
 @rate_limit("30/minute")
 async def yazi_render(
@@ -268,6 +304,8 @@ async def yazi_dogrula(request: Request, req: YaziDogrulaRequest) -> dict[str, A
         "evrak_turu": req.evrak_turu or "belirsiz",
         "hedef_birim": _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else "",
     }
+    # NOT: dayanak bloğu memur-küreli atıftır → grounding LLM'ine gövde-dışı verilir
+    # (verify.dayanak_blogunu_cikar). İstemci-kontrollü "whitelist" YOK — güvenli by construction.
 
     from agents.nodes.risk_guard import risk_guard_node
     from agents.nodes.verify import verify_node

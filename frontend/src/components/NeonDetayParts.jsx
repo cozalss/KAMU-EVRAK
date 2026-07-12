@@ -84,7 +84,7 @@ function guvenBaslik(m) {
    Tasarım notu (dürüstlük): `score` max-normalize olduğundan ilk satır DAİMA %100'dür —
    bu bir kalite ölçüsü değil, sıralama artefaktıdır. Bu yüzden yüzde açıkça "göreli" diye
    etiketlenir, amber/kırmızı sinyal ise skordan DEĞİL kalibre `guven` bandından gelir. */
-export function MevzuatRow({ rank, m, nli, ilk, onAc }) {
+export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = null }) {
   const pct = Math.round((Number(m.score) || 0) * 100);
   const guven = m.guven || "";
   const gc = GUVEN_RENK[guven] || PAL.mut2;
@@ -96,54 +96,75 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc }) {
   const nliPct = nli && Number.isFinite(Number(nli.skor)) ? Math.round(Number(nli.skor) * 100) : null;
   const acilir = !!(m.kaynak_dosya && onAc);
   const ac = () => onAc({ dosya: m.kaynak_dosya, maddeNo: m.madde_no ? Number(m.madde_no) : null, maddeTur: m.madde_tur || "madde" });
+  // Kutucuk kurgusu: onSec verilirse madde yazıya dayanak olarak İŞARETLENEBİLİR (canlı akış).
+  // Verilmezse (gömülü/legacy) satır salt-okunur kalır. İşaretli satır ince sol-aksan + tint alır.
+  const secilebilir = !!onSec;
+  const toggle = () => onSec && onSec(!secili);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: "10px 0 12px", borderTop: ilk ? "none" : `1px solid ${PAL.line}` }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-        <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{rank}.</span>
-        {acilir ? (
-          <button type="button" onClick={ac} aria-haspopup="dialog" {...focusRing}
-            title="Maddenin tam metnini aç — öneriyi kaynağında doğrulayın"
-            style={{ ...TYPE.data, fontWeight: 500, color: DERIN.T, background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left", textDecoration: "underline", textUnderlineOffset: 2 }}>
-            {title}
-          </button>
-        ) : (
-          <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{title}</span>
-        )}
-        {guven && (
-          <span title={guvenBaslik(m)} aria-label={`Güven seviyesi: ${guven}`} style={{ ...TYPE.meta, fontWeight: 500, color: gc, background: ALFA(GUVEN_RENK[guven] || PAL.mut2), borderRadius: RAD.chip, padding: "2px 8px" }}>{guven} güven</span>
-        )}
-        {m.atif_genisletme && (
-          <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>
-        )}
-        {pct > 0 && (
-          <span title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir — onu güven bandı verir."
-            style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>
-            %{pct} <span style={{ color: PAL.mut }}>göreli</span>
-          </span>
-        )}
-      </div>
-      {pct > 0 && (
-        <div style={{ position: "relative", height: 4, background: PAL.press }} role="img"
-          aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? ` — güven bandı: ${guven}` : ""}`}>
-          <div style={{ height: "100%", width: `${pct}%`, background: fill }} />
-        </div>
+    <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "10px 0 12px", borderTop: ilk ? "none" : `1px solid ${PAL.line}`, ...(secili ? { paddingLeft: SP.s, borderLeft: `2px solid ${T}`, background: ALFA(T) } : null) }}>
+      {secilebilir && (
+        <button type="button" role="checkbox" aria-checked={secili} onClick={toggle}
+          onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); } }}
+          aria-label={`${secili ? "Resmî yazıdan çıkar" : "Resmî yazıya dayanak olarak ekle"}: ${title}`}
+          title={secili ? "Yazıya dayanak olarak işlendi — çıkarmak için tıklayın" : "Bu maddeyi resmî yazıya dayanak olarak işle"}
+          {...focusRing}
+          style={{ flex: "none", marginTop: 1, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: RAD.chip, border: `1.5px solid ${secili ? T : PAL.inputLine}`, background: secili ? T : PAL.surf, color: PAL.onAccent, cursor: "pointer", padding: 0, transition: "background .12s ease-out, border-color .12s ease-out" }}>
+          {secili && <Icon.check width={12} height={12} />}
+        </button>
       )}
-      {snippet && <div style={{ ...TYPE.data, color: PAL.mut2 }}>{snippet}</div>}
-      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {nliPct != null && (
-          <div style={{ ...TYPE.meta, color: nli.entailment ? DERIN.T : DERIN.sari, ...TNUM }}>
-            Anlamsal destek (NLI): %{nliPct} — {nli.entailment ? "madde talebi destekliyor" : "destek zayıf, insan doğrulaması önerilir"}
+      <div style={{ display: "flex", flexDirection: "column", gap: SP.s, flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+          <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{rank}.</span>
+          {acilir ? (
+            <button type="button" onClick={ac} aria-haspopup="dialog" {...focusRing}
+              title="Maddenin tam metnini aç — öneriyi kaynağında doğrulayın"
+              style={{ ...TYPE.data, fontWeight: 500, color: DERIN.T, background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left", textDecoration: "underline", textUnderlineOffset: 2 }}>
+              {title}
+            </button>
+          ) : (
+            <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{title}</span>
+          )}
+          {guven && (
+            <span title={guvenBaslik(m)} aria-label={`Güven seviyesi: ${guven}`} style={{ ...TYPE.meta, fontWeight: 500, color: gc, background: ALFA(GUVEN_RENK[guven] || PAL.mut2), borderRadius: RAD.chip, padding: "2px 8px" }}>{guven} güven</span>
+          )}
+          {m.atif_genisletme && (
+            <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>
+          )}
+          {pct > 0 && (
+            <span title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir — onu güven bandı verir."
+              style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>
+              %{pct} <span style={{ color: PAL.mut }}>göreli</span>
+            </span>
+          )}
+        </div>
+        {pct > 0 && (
+          <div style={{ position: "relative", height: 4, background: PAL.press }} role="img"
+            aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? ` — güven bandı: ${guven}` : ""}`}>
+            <div style={{ height: "100%", width: `${pct}%`, background: fill }} />
           </div>
         )}
-        {gerekce && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Eşleşme gerekçesi:</span> {gerekce}</div>}
-        {m.yururluk && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Yürürlük:</span> {m.yururluk}</div>}
-        {m.inceleme_oner && (
-          <div style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: zayif ? DERIN.kirmizi : DERIN.sari, marginTop: 1 }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-            İnsan incelemesi önerilir{m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA") ? " · anlamsal destek zayıf" : ""}
-          </div>
-        )}
+        {snippet && <div style={{ ...TYPE.data, color: PAL.mut2 }}>{snippet}</div>}
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {nliPct != null && (
+            <div style={{ ...TYPE.meta, color: nli.entailment ? DERIN.T : DERIN.sari, ...TNUM }}>
+              Anlamsal destek (NLI): %{nliPct} — {nli.entailment ? "madde talebi destekliyor" : "destek zayıf, insan doğrulaması önerilir"}
+            </div>
+          )}
+          {gerekce && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Eşleşme gerekçesi:</span> {gerekce}</div>}
+          {m.yururluk && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Yürürlük:</span> {m.yururluk}</div>}
+          {m.inceleme_oner && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: zayif ? DERIN.kirmizi : DERIN.sari, marginTop: 1 }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+              İnsan incelemesi önerilir{m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA") ? " · anlamsal destek zayıf" : ""}
+            </div>
+          )}
+          {secili && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: DERIN.T, marginTop: 1 }}>
+              <Icon.check width={11} height={11} /> Resmî yazıya dayanak olarak işlendi
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

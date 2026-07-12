@@ -511,6 +511,7 @@ export default function CanliAjanAkisi({
   onDownload = () => {}, downloading = "", canDownload = false,
   onUpload = () => {}, onGoInbox = () => {}, glow = true, fileUrl = "", onFileDrop = () => {},
   onTelefon = () => {}, onMevzuatAc = null,
+  onMevzuatSec = null, seciliMevzuat = [], dayanakUretiliyor = false,
 }) {
   // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok) + sürükle-bırak yükleme alanı.
   if (!started) {
@@ -671,7 +672,8 @@ export default function CanliAjanAkisi({
               <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px", display: "flex", flexDirection: "column" }}>
                 {result ? (
                   <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-                    <NeonDetay embedded result={result} onMevzuatAc={onMevzuatAc} />
+                    <NeonDetay embedded result={result} onMevzuatAc={onMevzuatAc}
+                      onMevzuatSec={onMevzuatSec} seciliMevzuat={seciliMevzuat} />
                   </HataSiniri>
                 ) : izKart}
               </div>
@@ -719,7 +721,7 @@ export default function CanliAjanAkisi({
                   <pre role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
                     onClick={() => setBelgeModal("taslak")}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setBelgeModal("taslak"); } }}
-                    style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420, cursor: "zoom-in", opacity: turUretiliyor ? 0.55 : 1, transition: "opacity .15s ease-out" }}>{cleanDemoText(draftMd)}</pre>
+                    style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "12px 16px", ...TYPE.data, color: PAL.ink2, flex: 1, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, animation: "nu-rise .16s ease-out both", maxHeight: 420, cursor: "zoom-in", opacity: (turUretiliyor || dayanakUretiliyor) ? 0.55 : 1, transition: "opacity .15s ease-out" }}>{cleanDemoText(draftMd)}</pre>
                 ) : (
                   <div style={{ display: "flex", alignItems: "center", gap: SP.s, flex: 1, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.xl }}>
                     <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />

@@ -87,6 +87,20 @@ class YaziDogrulaRequest(BaseModel):
     talimat: str = Field("", max_length=500)
 
 
+class YaziDayanakRequest(BaseModel):
+    """Seçili mevzuatı taslağa DETERMİNİSTİK dayanak bloğu olarak işleme (kutucuk kurgusu).
+
+    Pipeline/LLM YOK — base taslağa kapanış-öncesi atıf bloğu yerleştirilir (yazi.dayanak).
+    Boş seçim → base AYNEN döner (bire bir undo). Frontend base'i ayrı tutar → bu uç her
+    çağrıda TEMİZ base ile gelir (blok yine de idempotent şekilde sökülüp yeniden kurulur).
+    """
+
+    taslak_md: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
+    # Seçili öneriler (MevzuatOneriSchema alt kümesi; yalnız `baslik` kullanılır, gerisi yok sayılır).
+    secili_mevzuat: list = Field(default_factory=list, max_length=20)
+    yazi_turu: str = Field("", max_length=50)   # yalnız loglama/telemetri
+
+
 class KurulRequest(BaseModel):
     """AI Bürokrasi Kurulu müzakere isteği — GÜNCEL taslak + bağlam.
 

@@ -143,8 +143,11 @@ function kanitSpanBul(spanlar, anahtar) {
 }
 
 /* onMevzuatAc({dosya, maddeNo}) — öneri satırından mevzuat okuma modalına köprü (DashboardApp
-   state'i taşır; window-event yok). Verilmezse başlıklar düz metin kalır (gömülü/izole kullanım). */
-export default function NeonDetay({ result, embedded = false, onMevzuatAc = null }) {
+   state'i taşır; window-event yok). Verilmezse başlıklar düz metin kalır (gömülü/izole kullanım).
+   onMevzuatSec(m, checked) + seciliMevzuat — kutucuk kurgusu: işaretlenen madde resmî yazıya
+   dayanak olarak işlenir (DashboardApp /yazi/dayanak ile taslağı yeniden kurar). Verilmezse
+   kutucuk gösterilmez (öneriler salt-okunur). */
+export default function NeonDetay({ result, embedded = false, onMevzuatAc = null, onMevzuatSec = null, seciliMevzuat = [] }) {
   const r = result;
   // Gömülü modda panel sütunu dardır → bölüm rayı ancak çok geniş pencerede açılır.
   const wide = useWide(embedded ? "(min-width: 1560px)" : "(min-width: 1180px)");
@@ -437,20 +440,34 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                     </NeonCard>,
                   ]}
                   right={[
-                    mev.length > 0 && (
-                      <NeonCard key="mev" title="İlgili mevzuat" tag={`${mev.length} öneri`} accent={T} icon={<Icon.book />}>
+                    mev.length > 0 && (() => {
+                      // Kutucuk kurgusu: işaretli maddeler resmî yazıya "Dayanak" bloğu olarak işlenir.
+                      // Seçim başlıkla eşlenir (nliMap ile aynı anahtar) — çıkarınca taslak geri alınır.
+                      const seciliSet = new Set((seciliMevzuat || []).map((x) => x && x.baslik).filter(Boolean));
+                      const secSay = mev.filter((m) => seciliSet.has(m.baslik)).length;
+                      const secilebilir = !!onMevzuatSec;
+                      return (
+                      <NeonCard key="mev" title="İlgili mevzuat" tag={secSay ? `${mev.length} öneri · ${secSay} işlendi` : `${mev.length} öneri`} tagColor={secSay ? DERIN.T : undefined} accent={T} icon={<Icon.book />}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          {mev.map((m, i) => <MevzuatRow key={i} rank={i + 1} m={m} nli={nliMap.get(m.baslik)} ilk={i === 0} onAc={onMevzuatAc} />)}
+                          {mev.map((m, i) => (
+                            <MevzuatRow key={i} rank={i + 1} m={m} nli={nliMap.get(m.baslik)} ilk={i === 0} onAc={onMevzuatAc}
+                              secili={seciliSet.has(m.baslik)}
+                              onSec={secilebilir ? (checked) => onMevzuatSec(m, checked) : null} />
+                          ))}
                         </div>
-                        {/* Görev 2 sözleşmesi: öneriler taslak metnine OTOMATİK girmez — yanlış madde
-                            resmî yazıya sessizce sızmasın (CLAUDE.md §1). Atfı memur yazar. */}
+                        {/* Görev 2 sözleşmesi (kutucuk kurgusu): öneri OTOMATİK girmez; memur kutucukla
+                            İŞARETLERSE dayanak olarak yazıya işlenir, çıkarınca geri alınır. Yanlış madde
+                            sessizce sızmaz — atıf daima memurun açık seçimidir (CLAUDE.md §1). */}
                         <div style={{ marginTop: SP.m, display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.s, borderRadius: RAD.card, background: ALFA(T), ...TYPE.meta, color: PAL.ink2 }}>
                           <Icon.info width={13} height={13} style={{ flex: "none", marginTop: 1, color: DERIN.T }} />
-                          <span>Bu öneriler bilgi amaçlıdır; yazı taslağına otomatik eklenmez. Atıf yapacaksanız maddeyi açıp doğrulayın.</span>
+                          <span>{secilebilir
+                            ? "Öneriler otomatik eklenmez. Kutucuğu işaretlediğiniz madde(ler) resmî yazıya dayanak olarak işlenir; işareti kaldırınca taslak geri alınır. Atıftan önce maddeyi açıp doğrulayın."
+                            : "Bu öneriler bilgi amaçlıdır; yazı taslağına otomatik eklenmez. Atıf yapacaksanız maddeyi açıp doğrulayın."}</span>
                         </div>
                         <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{mevzuatDipnot(r)}</div>
                       </NeonCard>
-                    ),
+                      );
+                    })(),
                   ]}
                 />
 

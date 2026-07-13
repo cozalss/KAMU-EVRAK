@@ -124,7 +124,7 @@ function Belge({ belge, bitti, isliyor, katli, zarfli, ucus, az }) {
   return (
     <div style={{ flex: `0 0 ${A4_W}px`, position: "relative", height: A4_H, perspective: 900, willChange: "transform, opacity",
       transform: ucus ? "translateX(-480px) rotate(-10deg)" : "translateX(0) rotate(0)", opacity: ucus ? 0 : 1,
-      transition: ucus ? "transform .7s cubic-bezier(.55,.06,.9,.3), opacity .7s ease-in" : "none" }}>
+      transition: ucus ? "transform .7s cubic-bezier(.55,.06,.9,.3), opacity .7s ease-out" : "none" }}>
       {/* Kağıt — katlanınca üçe iner (scaleY .34, merkez orijin). z: zarfa girerken arka gövde
           ile kapak arasında kalır (z2). */}
       <div style={{ position: "relative", height: A4_H, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, boxShadow: SH.card, overflow: "hidden", transformOrigin: "center", zIndex: 2,

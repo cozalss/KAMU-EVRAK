@@ -63,6 +63,8 @@ export const THEME_CSS = `
      akar (koyu modda karartı+onAccent ikisi de koyulaşıp metin kayboluyordu — 2026-07 bulgusu). */
   --ke-on-ink:#fbf7f0;
   --ke-shadow-rgb:35,26,18;
+  /* Güçlü özel easing eğrileri (emil-design-eng) — yerleşik ease-* zayıf; mod-bağımsız (dark'ta ezilmez). */
+  --ke-ease-out:cubic-bezier(0.23,1,0.32,1); --ke-ease-in-out:cubic-bezier(0.77,0,0.175,1);
   --ke-bant-yesil:#2f9e6e; --ke-bant-sari:#c98a1f; --ke-bant-kirmizi:#c9432f;
   --ke-derin-t:#1f6d82; --ke-derin-th:#1a5e71; --ke-derin-v:#74304f; --ke-derin-r:#a23425;
   --ke-derin-yesil:#1f7a52; --ke-derin-sari:#8a5a10; --ke-derin-kirmizi:#a23425;
@@ -95,6 +97,10 @@ export const TYPE = {
   h1: { fontFamily: SANS, fontSize: 28, lineHeight: "34px", fontWeight: 600, letterSpacing: "-.015em" },
 };
 export const TNUM = { fontVariantNumeric: "tabular-nums" };
+/* Güçlü easing token'ları (emil-design-eng) — yerleşik ease-* zayıftır, "kasıtlı" hissi vermez.
+   out: giriş/çıkış + press feedback (hızlı başlar, tepkisel) · inOut: ekran-içi hareket/morph.
+   Hover/renk geçişleri "ease" kalır (Emil kararı). Değerler THEME_CSS'te (mod-bağımsız). */
+export const EASE = { out: "var(--ke-ease-out)", inOut: "var(--ke-ease-in-out)" };
 /* Radius: chip=durum çipi · ctl=buton/input · card=kart/panel · pop=dropdown/modal/toast. */
 export const RAD = { chip: 4, ctl: 6, card: 8, pop: 12, dot: "50%" };
 /* Boşluk ölçeği — serbest değer yazılmaz. */
@@ -132,6 +138,10 @@ export const NEON_KEYFRAMES = `
 @keyframes nu-tara{from{background-position:-48px 0}to{background-position:calc(100% + 48px) 0}}
 @keyframes nu-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:1}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
+/* Press feedback (emil-design-eng): tıklanabilir öğe basılınca hafif scale(.97) — arayüz
+   kullanıcıyı "duyuyor" hissi. Opt-in (yalnız data-press taşıyanlar); :active durum stili
+   olduğundan reduced-motion'da anında (animasyonsuz) uygulanır — hareket değil geri bildirimdir. */
+[data-press]:active:not(:disabled){transform:scale(.97)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 `;
 
@@ -186,7 +196,9 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
   const fill = DERIN_OF(accent);
   const base = {
     cursor: disabled ? "not-allowed" : "pointer", padding: "8px 14px", minHeight: 36,
-    borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out",
+    borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
+    // Emil: hover/renk = "ease"; press feedback (scale) = güçlü ease-out, 100–160ms.
+    transition: `background .12s ease, filter .12s ease, transform .14s ${EASE.out}`,
     display: "inline-flex", alignItems: "center", gap: SP.s, border: "1px solid transparent",
   };
   const skin = disabled
@@ -205,7 +217,7 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
     else e.currentTarget.style.background = PAL.surf;
   };
   return (
-    <button type="button" onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title}
+    <button type="button" onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title} data-press=""
       onMouseEnter={onEnter} onMouseLeave={onLeave} {...focusRing} style={{ ...base, ...skin, ...style }}>
       {children}
     </button>
@@ -239,10 +251,10 @@ const BuyutIkon = (p) => (
 /* Panel başlığındaki küçük "büyüt" düğmesi — Kaynak belge / taslak kartlarında ortak. */
 export function BuyutDugme({ onClick, label }) {
   return (
-    <button type="button" onClick={onClick} aria-label={label} title="Büyüt (A4 görünüm)" {...focusRing}
+    <button type="button" onClick={onClick} aria-label={label} title="Büyüt (A4 görünüm)" {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: "background .12s ease-out" }}>
+      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: `background .12s ease, transform .14s ${EASE.out}` }}>
       <BuyutIkon />
     </button>
   );

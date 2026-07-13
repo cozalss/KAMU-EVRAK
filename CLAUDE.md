@@ -61,6 +61,11 @@
   boşluk `SP` · gölge `SH` (border-first: statik yüzey 1px hairline) · açık zeminde renkli metin
   yalnız `DERIN.*` (AA) · tint zemin yalnız `ALFA()`. **Gradyan/glow/uppercase-eyebrow/hover-kalkış
   sıfır** — sentence case varsayılan; çip yalnız semantik durum; ekran başına 1 primary buton.
+- **Hareket zanaatı (emil-design-eng, 2026-07-13):** güçlü easing token'ları `EASE.out/inOut`
+  (yerleşik `ease-*` zayıf) + **press feedback**: tıklanabilir öğe `:active`'te `scale(0.97)`
+  (`data-press=""` opt-in; kural `NEON_KEYFRAMES`'te). Hover transform hâlâ yasak — press serbest
+  (hareket=bilgi). Detay: `design-system/kamu-evrak/MASTER.md` Motion bölümü. Skill'ler
+  `~/.claude/skills/`'te kurulu (emil-design-eng · apple-design · review/improve-animations).
 - **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
   `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`
   (isim tarihsel — animasyon mekaniği renkten bağımsız).

@@ -733,18 +733,18 @@ export default function CanliAjanAkisi({
                   Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
                 </div>
                 <div style={{ display: "flex", gap: SP.s, marginTop: SP.s }}>
-                  <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing}
+                  <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing} data-press=""
                     onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
                     onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
-                    style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: "none", ...TYPE.ui, fontWeight: 500, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease-out" }}>Onayla &amp; gönder</button>
-                  <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing}
+                    style={{ flex: 1, cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: "none", ...TYPE.ui, fontWeight: 500, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>Onayla &amp; gönder</button>
+                  <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing} data-press=""
                     onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
                     onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
-                    style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Düzenle</button>
-                  <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing}
+                    style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>Düzenle</button>
+                  <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing} data-press=""
                     onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
                     onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
-                    style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>Reddet</button>
+                    style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 14px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>Reddet</button>
                 </div>
               </div>
             )}

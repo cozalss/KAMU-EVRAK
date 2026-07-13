@@ -5,7 +5,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
+import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
 import { lintGrupla, slaKonum } from "../lib/detayYorum.js";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
@@ -108,8 +108,8 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
           onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); } }}
           aria-label={`${secili ? "Resmî yazıdan çıkar" : "Resmî yazıya dayanak olarak ekle"}: ${title}`}
           title={secili ? "Yazıya dayanak olarak işlendi — çıkarmak için tıklayın" : "Bu maddeyi resmî yazıya dayanak olarak işle"}
-          {...focusRing}
-          style={{ flex: "none", marginTop: 1, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: RAD.chip, border: `1.5px solid ${secili ? T : PAL.inputLine}`, background: secili ? T : PAL.surf, color: PAL.onAccent, cursor: "pointer", padding: 0, transition: "background .12s ease-out, border-color .12s ease-out" }}>
+          {...focusRing} data-press=""
+          style={{ flex: "none", marginTop: 1, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: RAD.chip, border: `1.5px solid ${secili ? T : PAL.inputLine}`, background: secili ? T : PAL.surf, color: PAL.onAccent, cursor: "pointer", padding: 0, transition: `background .12s ease, border-color .12s ease, transform .14s ${EASE.out}` }}>
           {secili && <Icon.check width={12} height={12} />}
         </button>
       )}
@@ -241,10 +241,10 @@ export function CopyChip({ deger, kisa, label }) {
     timer.current = setTimeout(() => setOk(false), 1400);
   };
   return (
-    <button type="button" onClick={kopyala} aria-label={label || "Değeri panoya kopyala"} title={ok ? "Kopyalandı" : "Panoya kopyala"} {...focusRing}
+    <button type="button" onClick={kopyala} aria-label={label || "Değeri panoya kopyala"} title={ok ? "Kopyalandı" : "Panoya kopyala"} {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf2; }}
-      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: ok ? DERIN.yesil : PAL.mut2, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "2px 8px", transition: "background .12s ease-out", ...TNUM }}>
+      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: ok ? DERIN.yesil : PAL.mut2, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "2px 8px", transition: `background .12s ease, transform .14s ${EASE.out}`, ...TNUM }}>
       {ok ? <Icon.check width={11} height={11} /> : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.7" /><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>}
       {ok ? "kopyalandı" : kisa}
     </button>

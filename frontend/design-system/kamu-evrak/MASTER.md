@@ -18,7 +18,7 @@
 > tip ölçeği. Referans: Geist (kenar/gölge), Radix (tip/radius adımları), IBM Carbon
 > (sentence-case/spacing), GOV.UK (işlevsel renk). Token'lar
 > `frontend/src/components/neonUi.jsx`'te (`MONO, SANS, T, V, R, PAL, BANT, DERIN, DERIN_OF,
-> ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, NEON_KEYFRAMES` + atom bileşenler).
+> ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, NEON_KEYFRAMES` + atom bileşenler).
 > Stil **satır-içidir** (CSS sınıf sistemi değil); tek `<style>` yalnız `@keyframes`.
 >
 > **Landing page ayrı kalır.** `frontend/index.html` + `frontend/src/portfolio/**` bu temadan
@@ -113,9 +113,18 @@ bölümler arası 24 · sayfa çerçevesi `"24px 32px 48px"` (ViewWrap). Serbest
 ### Motion — hareket = bilgi
 
 Kalan keyframe'ler (3): `nu-spin` (gerçek yükleme) · `nu-think` (canlılık, yalnız opacity) ·
-`nu-rise` (görünüm girişi, tek sefer ~160ms, stagger'sız). Hover'da transform yasak
+`nu-rise` (görünüm girişi, tek sefer ~160ms, stagger'sız). **Hover'da** transform yasak
 (translateY/scale yok) — hover = zemin tonu (`PAL.hov`), 120–160ms ease-out.
-`prefers-reduced-motion: reduce` mutlaka karşılanır.
+
+**Press feedback (emil-design-eng, 2026-07-13):** tıklanabilir öğe **basılınca** (`:active`)
+`scale(0.97)` — "arayüz kullanıcıyı duyuyor" geri bildirimi (hareket=bilgi; hover değil press,
+yasağı çiğnemez). Opt-in: öğeye `data-press=""` + transition'a `transform` eklenir;
+kural `NEON_KEYFRAMES`'te `[data-press]:active:not(:disabled){transform:scale(.97)}`. Kullananlar:
+`Btn`, `BuyutDugme`, `CopyChip`, HITL butonları (Onayla/Düzenle/Reddet), mevzuat seçim kutucuğu.
+**Easing token'ları (`EASE`):** güçlü özel eğriler — `EASE.out cubic-bezier(0.23,1,0.32,1)`
+(giriş/çıkış + press) · `EASE.inOut cubic-bezier(0.77,0,0.175,1)` (ekran-içi hareket); yerleşik
+`ease-*` zayıf sayılır. Hover/renk geçişi `ease` kalır. `prefers-reduced-motion: reduce` mutlaka
+karşılanır (press `:active` durum stili olduğundan orada anında/animasyonsuz uygulanır).
 
 ---
 

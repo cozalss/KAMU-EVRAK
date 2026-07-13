@@ -22,6 +22,11 @@ const YAZI_TR = {
   olur: "olur yazısı", muzekkere: "müzekkere", gorus_mutalaa: "görüş yazısı",
 };
 const SABIT_SATIR = /^(T\.C\.|Sayı\s*:|Konu\s*:|İlgi\s*:)/;
+// T.C./Konu ASLA dokunulmaz; Sayı/İlgi (+ diğer etiketli alanlar) SİLİNMEZ, doldurulacak yer
+// tutucuya çevrilir — kurul.py _KORUNAN_SATIR / _ETIKET_SATIR ikizi (taslak gönderime-hazır kalır).
+const KORUNAN_SATIR = /^(T\.C\.|Konu\s*:)/;
+const ETIKET_SATIR = /^(Sayı|İlgi|Koordinasyon|Belge Doğrulama Kodu)\s*:\s*/i;
+const DOGRULA_YER_TUTUCU = "[DOĞRULA: kaynak evrakta doğrulanamadı]";
 const DAYANAK_DESENI = /\b(sayılı|madde|m\.\s?\d)/i;
 // verify_uyari karışık listedir: uydurma-veto ("kaynak evrakta yok/geçmiyor") + format eksikleri
 // ("Eksik bölüm: …"). Blanket "uydurma" suçlaması YASAK — sinyal türüne göre konuşulur.
@@ -89,21 +94,26 @@ export function nihaiTaslak(kurgu) {
 
 // Uydurma-veto uyarısından dayanaksız iddiayı ayıkla: "…(LLM grounding): <iddia>" → <iddia>.
 const _UYDURMA_IDDIA = /kaynak evrakta yok \(LLM grounding\):\s*(.+?)\s*$/i;
-/** Dayanaksız iddiayı içeren taslak satırını bul — YALNIZ TEK KESİN eşleşmede kaldır (yanlış
+/** Dayanaksız iddiayı içeren taslak satırı için edit üret — YALNIZ TEK KESİN eşleşmede (yanlış
     satır silme guard'ı, adversarial bulgu): iddia satırı tümüyle alıntılıyor VEYA iddia satırın
-    çoğunu (≥%60) kaplıyor; birden çok/hiç eşleşme → null (öneri rehber kalır, otomatik silmez). */
-function _cikarSatirId(taslak, uyari) {
+    çoğunu (≥%60) kaplıyor; birden çok/hiç eşleşme → null (öneri rehber kalır, otomatik uygulanmaz).
+    Etiketli alan satırı (Sayı/İlgi/…) SİLİNMEZ — alan adı korunarak '[DOĞRULA: …]' yer tutucusuyla
+    değiştirilir (taslak gönderime-hazır KALIR — boş alan değil, görünür TODO); T.C./Konu hiç dokunulmaz. */
+function _cikarEdit(taslak, uyari) {
   const m = _UYDURMA_IDDIA.exec(String(uyari || ""));
   if (!m) return null;
   const iddia = trKatla(m[1]);
   if (iddia.length < 12) return null;   // çok kısa iddia belirsiz — kaldırma yok
   const eslesme = taslak.filter((l) => {
-    if (l.sabit) return false;
+    if (KORUNAN_SATIR.test(l.metin)) return false;
     const satir = trKatla(l.metin);
     if (satir.length < 8) return false;
     return iddia.includes(satir) || (satir.includes(iddia) && iddia.length >= 0.6 * satir.length);
   });
-  return eslesme.length === 1 ? eslesme[0].id : null;
+  if (eslesme.length !== 1) return null;
+  const hedef = eslesme[0];
+  const etiket = ETIKET_SATIR.exec(hedef.metin);
+  return etiket ? { satirId: hedef.id, yeni: `${etiket[0]}${DOGRULA_YER_TUTUCU}` } : { satirId: hedef.id, sil: true };
 }
 
 /** Revize taslağının düz metni — "Revize taslağını uygula" ile taslağın üzerine yazılır.
@@ -174,10 +184,13 @@ export function muzakereKurgusu(r) {
   });
   verify.forEach((u) => {
     if (UYDURMA_DESENI.test(u)) {
-      // Dayanaksız iddia içeren satırı revize taslaktan ÇIKAR (uygulanabilir edit) — bulunabilirse.
-      const satirId = _cikarSatirId(taslak, u);
-      const oneri = { tip: "cikar", kaynak: "verify", metin: `${u} — dayanaksız ifade taslaktan çıkarılmalı.` };
-      if (satirId) { oneri.uygulanabilir = true; oneri.edit = { satirId, sil: true }; }
+      // Dayanaksız iddia içeren satır: etiketli alansa (Sayı/İlgi/…) SİLİNMEZ, '[DOĞRULA]' yer
+      // tutucusuyla değiştirilir (taslak gönderime-hazır kalır); değilse revize taslaktan çıkarılır.
+      const edit = _cikarEdit(taslak, u);
+      const oneri = edit && edit.yeni
+        ? { tip: "duzelt", kaynak: "verify", metin: `${u} — alan doğrulanamadığından '[DOĞRULA]' ile işaretlendi.` }
+        : { tip: "cikar", kaynak: "verify", metin: `${u} — dayanaksız ifade taslaktan çıkarılmalı.` };
+      if (edit) { oneri.uygulanabilir = true; oneri.edit = edit; }
       oneriler.push(oneri);
     } else if (EKSIK_BOLUM_DESENI.test(u)) {
       oneriler.push({ tip: "ekle", kaynak: "verify", metin: `${u.replace(EKSIK_BOLUM_DESENI, "").replace(/^[:\s]+/, "")} bölümü eklenmeli (Yön. 2646).` });
@@ -285,9 +298,14 @@ export function sunucuKurgusu(data, result = {}) {
     .filter((o) => o && ["duzelt", "ekle", "cikar"].includes(o.tip) && typeof o.metin === "string" && o.metin.trim())
     .map((o) => ({ tip: o.tip, kaynak: o.kaynak || "muzakere", metin: o.metin, uygulanabilir: !!o.uygulanabilir }));
   if (!turlar.length && !oneriler.length) return null;   // boş → yerel motor daha iyi
-  const taslakMd = String(result.yazi_taslak_md || "");
+  // trim() — sunucu (/yazi/kurul route) taslak_md'yi .strip() ile alır; kurul burada HESAPLAR
+  // ve uzlasi_metni'yi o kırpılmış tabandan üretir. İstemci burada kırpmazsa, taslakMd'nin
+  // sondaki "\n"si (result.yazi_taslak_md ham hâlinde kalır) uzlasi_metni'de YOKTUR → tek satır
+  // (imza/unvan) hiç düzenlenmediği hâlde jsdiff'te sahte "kaldırıldı+eklendi" çifti olarak
+  // görünür (adversarial bulgu: sondaki-satır asimetrisi, gerçek edit değil).
+  const taslakMd = String(result.yazi_taslak_md || "").trim();
   const uzlasi = typeof data.uzlasi_metni === "string" && data.uzlasi_metni.trim()
-    ? data.uzlasi_metni : taslakMd;
+    ? data.uzlasi_metni.trim() : taslakMd;
   const revizeVar = uzlasi.trim() !== taslakMd.trim();
   const uzlasiUyg = !!data.uzlasi_uygulanabilir && revizeVar;
   // KOHERANS guard (sınır savunması). Öneri-BAŞINA doğruluk (hangi öneri gerçekten uygulandı)

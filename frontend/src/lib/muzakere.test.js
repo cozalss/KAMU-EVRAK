@@ -153,6 +153,21 @@ test("uydurma-veto iddiası → ÇIKAR önerisi uygulanabilir + revize taslakta 
   assert.equal(k.uzlasi_uygulanabilir, true);
 });
 
+test("uydurma-veto etiketli alanı (İlgi/Sayı) hedeflerse SİLİNMEZ — '[DOĞRULA]' yer tutucusuna çevrilir (taslak gönderime-hazır kalır)", () => {
+  const taslakMd = "T.C.\nKAMU KURUMU\n\nSayı : E-1\nKonu : Test\n\nİlgi : 14.06.2026 tarihli ve E-1156 sayılı yazınız.\n\nGerçek talep buradadır.\n\nGereğini arz ederim.";
+  const k = muzakereKurgusu({
+    ...R_TEMIZ, yazi_taslak_md: taslakMd,
+    verify_uyari: ["Taslaktaki iddia kaynak evrakta yok (LLM grounding): İlgi : 14.06.2026 tarihli ve E-1156 sayılı yazınız."],
+  });
+  const oneri = k.oneriler.find((o) => o.kaynak === "verify" && /İlgi/.test(o.metin));
+  assert.equal(oneri.tip, "duzelt", "etiketli alan artık DÜZELT olarak raporlanmalı, ÇIKAR değil");
+  assert.ok(oneri.uygulanabilir);
+  const revize = uzlasiMetni(k);
+  assert.match(revize, /^İlgi : \[DOĞRULA: /m);    // alan adı korunur, yalnız değer yer tutucuyla değişir
+  assert.doesNotMatch(revize, /14\.06\.2026 tarihli ve E-1156/); // doğrulanamayan içerik kalmadı
+  assert.match(revize, /Gerçek talep buradadır/);  // gövde etkilenmedi
+});
+
 test("wrong-removal #1: benzer satırlarda YALNIZ tam eşleşen çıkar; meşru satır KORUNUR", () => {
   const taslakMd = "Sayı : E-1\n\nSöz konusu talebiniz mevzuat hükümleri çerçevesinde uygun görülmüştür.\nSöz konusu talebiniz mevzuat hükümleri çerçevesinde reddedilmiştir 5000 TL.\n\nGereğini arz ederim.";
   const k = muzakereKurgusu({
@@ -304,6 +319,26 @@ test("sunucu: uzlasi_metni yoksa result taslağına düşer, uygulanabilir false
   const k = sunucuKurgusu({ kaynak: "llm", karar: "uzlasti", turlar: [{ who: "taslakci", text: "ok" }], oneriler: [] }, R_MIN);
   assert.equal(k.uzlasi_metni, TASLAK);
   assert.equal(k.uzlasi_uygulanabilir, false);
+});
+
+test("sunucu: result.yazi_taslak_md sondaki '\\n' ile gelse de dokunulmayan son satır uzlasi_metni ile birebir eşleşir (sahte kaldır+ekle satırı önlenir)", () => {
+  // process_doc yazi_taslak_md'yi HAM (sondaki '\n' dahil) döner; /yazi/kurul route ise
+  // taslak_md'yi .strip() ederek işler → uzlasi_metni o kırpılmış tabandan üretilir, sondaki
+  // '\n' YOKTUR. Yalnız ORTADAKİ bir satır değişti — SON satıra (imza/unvan) hiç dokunulmadı.
+  const taslakMdHam = `${TASLAK}\n`;
+  const uzlasi = TASLAK.replace("İşbu talebinize binaen bilgiler değerlendirilmiştir.",
+    "Başvurunuz üzerine talep ettiğiniz bilgiler değerlendirilmiştir.");
+  const data = {
+    kaynak: "llm", karar: "uzlasti",
+    turlar: [{ who: "vatandas", kaynak: "uslup", text: "Ağır kalıp sadeleştirildi." }],
+    oneriler: [{ tip: "duzelt", kaynak: "uslup", metin: "Gövde sadeleştirildi.", uygulanabilir: true }],
+    uzlasi_metni: uzlasi, uzlasi_degisti: true, uzlasi_uygulanabilir: true,
+  };
+  const k = sunucuKurgusu(data, { yazi_taslak_md: taslakMdHam, yazi_turu: "cevabi_yazi" });
+  assert.equal(k.taslak.length, TASLAK.split("\n").length, "sondaki boş satır display'e sızmamalı");
+  const eskiSonSatir = k.taslak[k.taslak.length - 1].metin;
+  const yeniSonSatir = k.uzlasi_metni.split("\n").pop();
+  assert.equal(eskiSonSatir, yeniSonSatir, "dokunulmayan son satır iki tarafta da BİREBİR aynı olmalı");
 });
 
 test("KOHERANS: uzlaşı == taslak ise HİÇBİR öneri 'işlendi' işaretlenmez (bildirilen bug kilidi)", () => {

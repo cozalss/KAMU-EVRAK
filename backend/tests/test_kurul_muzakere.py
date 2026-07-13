@@ -215,6 +215,20 @@ class TestCapaliEditler:
         assert r["uzlasi_degisti"] is True
         assert r["uzlasi_uygulanabilir"] is True
 
+    async def test_cikar_etiketli_alani_silmez_dogrula_yer_tutucusuna_cevirir(self, monkeypatch):
+        # Taslak gönderime-hazır KALMALI: doğrulanamayan Sayı/İlgi alanı SİLİNMEZ, alan adı
+        # korunarak '[DOĞRULA: …]' ile işaretlenir (kullanıcı isteği — cikar bir alanı yok etmemeli).
+        _capali_llm(monkeypatch, _fake_capali([
+            {"tip": "cikar", "dayanak": "verify", "capa": "İlgi : 25.05.2026 tarihli başvurunuz.",
+             "aciklama": "'İlgi' tarihi kaynak evrakta yok, çıkarılmalı."},
+        ]))
+        r = await kurul.kurul_muzakere(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL)
+        assert r["oneriler"][0]["tip"] == "duzelt"             # gerçekte uygulanan işlem — rozet artık 'Düzelt'
+        assert r["oneriler"][0]["uygulanabilir"] is True
+        assert "İlgi : 25.05.2026" not in r["uzlasi_metni"]    # doğrulanamayan içerik kalmadı
+        assert "İlgi : [DOĞRULA: kaynak evrakta doğrulanamadı]" in r["uzlasi_metni"]  # alan KORUNDU
+        assert len(r["uzlasi_metni"].split("\n")) == len(FABRIK_TASLAK.split("\n"))   # satır sayısı SABİT
+
     async def test_duzelt_satiri_yeni_ile_degistirir(self, monkeypatch):
         _capali_llm(monkeypatch, _fake_capali([
             {"tip": "duzelt", "dayanak": "uslup", "capa": "Gereğini rica ederim.",
@@ -282,9 +296,11 @@ class TestCapaliEditler:
         assert len(uygulanan) == 2                              # yalnız iki çözülür-çıkar
         assert "Sayın Elif Doğan" not in uz
         assert "İlgi : 25.05.2026" not in uz
+        assert "İlgi : [DOĞRULA:" in uz                         # etiketli alan SİLİNMEDİ, yer tutucuya çevrildi
         assert "657 sayılı Kanun" not in uz                     # ekle tavsiye → enjekte edilmedi
-        # in-diff invariant: revize, orijinalin tam olarak iki satır eksiği (satır sayısı 2 azaldı)
-        assert len(uz.split("\n")) == len(ta.split("\n")) - 2
+        # in-diff invariant: "Sayın Elif Doğan" (etiketsiz) TAM SATIR silindi (-1); "İlgi :" (etiketli
+        # alan) SİLİNMEDİ, yerinde '[DOĞRULA]' yer tutucusuyla değişti (satır sayısı sabit) → toplam -1.
+        assert len(uz.split("\n")) == len(ta.split("\n")) - 1
         assert r["uzlasi_degisti"] is True
 
     async def test_uydurma_taslak_gercek_grounded_revize_uretir(self, monkeypatch):

@@ -300,6 +300,12 @@ def _cikar_sinyalli(satir: str, sinyaller: dict[str, Any]) -> bool:
 # Yapısal satır — biçimin taşıyıcısı; risk sinyali işaretlese bile ASLA çıkarılmaz (duzelt olabilir).
 _KORUNAN_SATIR = re.compile(r"^\s*(T\.C\.|Konu\s*:)", re.IGNORECASE)
 
+# Etiketli alan satırı (Yön. 2646 zorunlu/yaygın alanlar) — cikar bu satırı TAMAMEN SİLMEZ,
+# DOLDURULACAK yer tutucuya çevirir: taslak yapısal olarak eksiksiz/gönderime-yakın kalır,
+# memur eksik alanı "yok olmuş" değil "tamamlanacak" olarak görür ([DOĞRULA] deseni, CLAUDE.md §1).
+_ETIKET_SATIR = re.compile(r"^\s*(Sayı|İlgi|Koordinasyon|Belge Doğrulama Kodu)\s*:\s*", re.IGNORECASE)
+_DOGRULA_YER_TUTUCU = "[DOĞRULA: kaynak evrakta doğrulanamadı]"
+
 
 def _capali_edit(
     oneri: dict[str, Any], satirlar: list[str], taslak_md: str, sinyaller: dict[str, Any],
@@ -307,8 +313,10 @@ def _capali_edit(
     """Öneriyi grounded bir edit'e çöz (uygulanabilirse) ya da None (tavsiye kalır).
 
     cikar = tam satır sil — YALNIZ (a) çapa satırın ≥%60'ı, (b) yapısal DEĞİL, (c) gerçek sinyalin
-            işaretlediği içerik. duzelt = satırı 'yeni' ile değiştir — 'yeni' uydurma olgu (sayı/tarih/
-            ad/atıf) EKLEMEZ. ekle = yeni içerik enjeksiyonu (uydurma riski) → ASLA otomatik.
+            işaretlediği içerik; ETİKETLİ ALAN satırıysa (Sayı/İlgi/…) silinmez, alan adı korunarak
+            '[DOĞRULA: …]' yer tutucusuyla değiştirilir (taslak gönderime-hazır KALIR — boş alan
+            değil, görünür TODO). duzelt = satırı 'yeni' ile değiştir — 'yeni' uydurma olgu (sayı/
+            tarih/ad/atıf) EKLEMEZ. ekle = yeni içerik enjeksiyonu (uydurma riski) → ASLA otomatik.
     Dönen edit `oneri`yi taşır (attribution) — uygulanabilirlik metin-çıkarımıyla DEĞİL, hangi
     önerinin hangi edit'i ürettiğiyle belirlenir.
     """
@@ -323,6 +331,10 @@ def _capali_edit(
     if tip == "cikar":
         if kapsam < _CIKAR_MIN_KAPSAM or _KORUNAN_SATIR.match(satir) or not _cikar_sinyalli(satir, sinyaller):
             return None
+        etiket = _ETIKET_SATIR.match(satir)
+        if etiket:
+            oneri["tip"] = "duzelt"   # gerçekte uygulanan işlemi yansıt (rozet artık 'Düzelt')
+            return {"idx": idx, "op": "duzelt", "yeni": f"{etiket.group(0)}{_DOGRULA_YER_TUTUCU}", "oneri": oneri}
         return {"idx": idx, "op": "cikar", "oneri": oneri}
     yeni = oneri.get("_yeni", "")
     if not yeni or _katla(yeni) == _katla(satir) or _yeni_uydurma(taslak_md, yeni):

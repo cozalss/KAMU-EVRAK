@@ -181,7 +181,11 @@ export function usePipeline() {
       setError(err?.message || "Bağlantı hatası — backend çalışıyor mu?");
       setNodes((prev) => prev.map((n) => (n.status === "active" ? { ...n, status: "error" } : n)));
     } finally {
-      setBusy(false);
+      // Bu çağrı hâlâ GÜNCEL akış mı? `done` sonrası busy=false olsa da reader persist
+      // event'ini beklerken açık kalır; bu sırada YENİ bir koşum başlarsa (abortRef'i
+      // kendi controller'ıyla değiştirip bunu iptal eder) bu ESKİ akışın finally'si
+      // yeni koşumun busy=true'sunu sessizce ezmemeli (regresyon: çakışan ikinci koşum).
+      if (abortRef.current === ctrl) setBusy(false);
     }
   }, [handleEvent]);
 

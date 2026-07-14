@@ -36,7 +36,7 @@ class TaslakTuruRequest(BaseModel):
 
     evrak_text: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
     yazi_turu: str = Field(..., pattern="^(ust_yazi|cevabi_yazi|bilgilendirme|olur|muzekkere|gorus_mutalaa)$")
-    bilgi_unsurlari: dict = Field(default_factory=dict)
+    bilgi_unsurlari: dict = Field(default_factory=dict, max_length=50)  # DoS-guard: anahtar sayısı sınırlı
     hedef_birim: str = Field("", max_length=100)   # birim kodu — ust_yazi muhatabı için
 
 
@@ -83,7 +83,7 @@ class YaziDogrulaRequest(BaseModel):
     yazi_turu: str = Field("", max_length=50)
     evrak_turu: str = Field("", max_length=50)
     hedef_birim: str = Field("", max_length=100)
-    bilgi_unsurlari: dict = Field(default_factory=dict)
+    bilgi_unsurlari: dict = Field(default_factory=dict, max_length=50)  # DoS-guard: anahtar sayısı sınırlı
     talimat: str = Field("", max_length=500)
 
 
@@ -114,7 +114,7 @@ class KurulRequest(BaseModel):
     yazi_turu: str = Field("", max_length=50)
     evrak_turu: str = Field("", max_length=50)
     hedef_birim: str = Field("", max_length=100)
-    bilgi_unsurlari: dict = Field(default_factory=dict)
+    bilgi_unsurlari: dict = Field(default_factory=dict, max_length=50)  # DoS-guard: anahtar sayısı sınırlı
     # Danışma bağlamı (yalnız prompt) — başlıklar sunucuda temizlenir/kısaltılır, KARARA girmez.
     # Liste boyutu sınırlı (DoS/prompt-şişme guard); başlık atıf lisansı DEĞİL, yalnız bağlam.
     mevzuat_onerileri: list = Field(default_factory=list, max_length=20)

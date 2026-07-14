@@ -47,14 +47,20 @@ async def persist_pipeline_run(
         if k is None or not k.aktif:
             k = await _sistem_kullanici(s)
         masked = (response.kanit_metadata or {}).get("metin") or mask_pii(kaynak_metin).masked_text
+        # evrak/islem/denetim TEK transaction'da: her biri eskiden kendi commit'ini
+        # atıyordu — ara adım (ör. persist_islem) hata verirse önceki commit'ler (evrak)
+        # DB'de yetim kalıcı kalıyordu (regresyon bulgusu). commit=False + tek final
+        # commit ile ya hepsi ya hiçbiri yazılır.
         evrak = await evrak_olustur(
             s, evrak_no=f"E-AUTO-{uuid.uuid4().hex[:10]}", ocr_metni=(masked or "")[:50_000],
-            olusturan_id=k.id, baslik=filename or "otomatik koşum", gelis_birim_id=k.birim_id)
+            olusturan_id=k.id, baslik=filename or "otomatik koşum", gelis_birim_id=k.birim_id,
+            commit=False)
         islem = await persist_islem(
             s, gelen_evrak_id=evrak.id, thread_id=response.thread_id or uuid.uuid4().hex,
-            response=response, sure_ms=getattr(response, "sure_ms", None))
+            response=response, sure_ms=getattr(response, "sure_ms", None), commit=False)
         if state.get("denetim_izi", {}).get("zincir"):
-            await persist_denetim(s, islem_id=islem.id, denetim_izi=state["denetim_izi"])
+            await persist_denetim(s, islem_id=islem.id, denetim_izi=state["denetim_izi"], commit=False)
+        await s.commit()
         return islem.id
 
 

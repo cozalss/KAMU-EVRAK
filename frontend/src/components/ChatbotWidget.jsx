@@ -77,7 +77,7 @@ function KaynakCip({ kaynak, onMevzuatAc, onClose }) {
 }
 
 /* Mesaj balonu — kullanıcı sağda (T tint zemin), asistan solda (yüzey + hairline). */
-function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc }) {
+function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor }) {
   const kullanici = m.rol === "kullanici";
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: kullanici ? "flex-end" : "flex-start", gap: SP.s, animation: "nu-rise .16s ease-out both" }}>
@@ -103,12 +103,15 @@ function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc }) {
       )}
       {m.onay_bekleyen && !m.onay_kullanildi && (
         <div style={{ display: "flex", gap: SP.s }}>
-          <button type="button" {...focusRing} onClick={() => onTeyit(m, true)}
-            style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.data, fontWeight: 500, color: PAL.onAccent, background: DERIN.T, border: "none", borderRadius: RAD.ctl, padding: "8px 12px", transition: "background .12s ease-out" }}>
+          {/* Başka bir mesaj akışta iken (bekliyor) devre dışı: aksi halde onTeyit balonu
+              hemen "kullanıldı" işaretler ama gonder() kendi bekliyor kontrolünde isteği
+              sessizce atlar — karar hiç gönderilmeden kaybolurdu (regresyon bulgusu). */}
+          <button type="button" {...focusRing} disabled={bekliyor} onClick={() => onTeyit(m, true)}
+            style={{ cursor: bekliyor ? "not-allowed" : "pointer", opacity: bekliyor ? 0.5 : 1, display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.data, fontWeight: 500, color: PAL.onAccent, background: DERIN.T, border: "none", borderRadius: RAD.ctl, padding: "8px 12px", transition: "background .12s ease-out" }}>
             <Icon.check /> Evet, uygula
           </button>
-          <button type="button" {...focusRing} onClick={() => onTeyit(m, false)}
-            style={{ cursor: "pointer", ...TYPE.data, fontWeight: 500, color: PAL.ink, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "8px 12px", transition: "background .12s ease-out" }}>
+          <button type="button" {...focusRing} disabled={bekliyor} onClick={() => onTeyit(m, false)}
+            style={{ cursor: bekliyor ? "not-allowed" : "pointer", opacity: bekliyor ? 0.5 : 1, ...TYPE.data, fontWeight: 500, color: PAL.ink, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "8px 12px", transition: "background .12s ease-out" }}>
             Vazgeç
           </button>
         </div>
@@ -280,7 +283,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
 
           {/* Mesajlar */}
           <div ref={listeRef} aria-live="polite" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m }}>
-            {mesajlar.map((m, i) => <Balon key={i} m={m} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} />)}
+            {mesajlar.map((m, i) => <Balon key={i} m={m} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
             {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <Yaziyor />}
             {ilkAcilis && !bekliyor && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, marginTop: SP.xs }}>

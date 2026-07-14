@@ -56,6 +56,23 @@ async def suresi_dolmus(session: AsyncSession, *, simdi: _dt.datetime | None = N
     return dolmus
 
 
+async def yetim_gelen_evrak(session: AsyncSession) -> list[dict]:
+    """Hiç işlemi (Islem) olmayan gelen_evrak — persist_islem hiç çalışmamış/yarım kalmış
+    kayıtlar (ör. eski atomik-olmayan persist yarım kesintisi).
+
+    suresi_dolmus() Islem'e INNER JOIN yaptığından bu kayıtlar oraya HİÇ girmez → saklama
+    süresi taraması onları göremez, otomatik imha/anonimleştirme sonsuza dek atlar
+    (regresyon bulgusu). Burada AYRI yüzeye çıkar — yalnız görünürlük/rapor amaçlı; tür
+    bilinmediğinden (Islem yok → evrak_turu_kod yok) otomatik imhaya DAHİL EDİLMEZ, elle
+    incelemeye bırakılır (imha_job.py raporu).
+    """
+    rows = (await session.execute(
+        select(GelenEvrak.id, GelenEvrak.evrak_no, GelenEvrak.olusturuldu)
+        .outerjoin(Islem, Islem.gelen_evrak_id == GelenEvrak.id)
+        .where(Islem.id.is_(None)))).all()
+    return [{"id": r.id, "evrak_no": r.evrak_no, "olusturuldu": r.olusturuldu} for r in rows]
+
+
 async def anonimlestir(session: AsyncSession, *, evrak_id: uuid.UUID) -> None:
     """İçeriği sil, kayıt iskeletini koru (denetim izi/işlem zinciri bozulmaz — KVKK anonim)."""
     await session.execute(update(GelenEvrak).where(GelenEvrak.id == evrak_id)
@@ -87,4 +104,4 @@ async def imha_uygula(session: AsyncSession, *, simdi: _dt.datetime | None = Non
             "evraklar": [d["evrak_no"] for d in dolmus]}
 
 
-__all__ = ("anonimlestir", "imha_uygula", "saklama_yil", "sil", "suresi_dolmus")
+__all__ = ("anonimlestir", "imha_uygula", "saklama_yil", "sil", "suresi_dolmus", "yetim_gelen_evrak")

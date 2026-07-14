@@ -34,6 +34,7 @@ ENV:
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
 import io
 import os
 import re
@@ -89,6 +90,22 @@ OCREngine = Literal["tesseract", "rapidocr", "qwen-vl", "auto"]
 DEFAULT_ENGINE = os.getenv("OCR_ENGINE", "rapidocr").lower()
 OCR_TIMEOUT_S = float(os.getenv("OCR_TIMEOUT_S", "30"))
 OCR_LANG = os.getenv("OCR_LANG", "tur")
+
+# asyncio.wait_for(...) zaman aşımında yalnız AWAIT'i iptal eder — Python'da çalışan bir
+# thread zorla durdurulamaz, alttaki iş (pypdfium2/Tesseract/RapidOCR) arka planda sürer ve
+# worker'ı bırakmaz. Paylaşımlı VARSAYILAN executor'da bu, birkaç patolojik dosyanın TÜM
+# uygulamanın (process_doc/stream dahil) diğer to_thread çağrılarını açlığa düşürmesi
+# demekti (regresyon bulgusu). Ayrılmış, sınırlı bir havuz bu etkiyi OCR'a izole eder —
+# thread leak'i ortadan kaldırmaz (Python'da mümkün değil) ama blast radius'u sınırlar.
+_OCR_MAX_WORKERS = int(os.getenv("OCR_MAX_WORKERS", "4"))
+_ocr_executor = concurrent.futures.ThreadPoolExecutor(
+    max_workers=_OCR_MAX_WORKERS, thread_name_prefix="ocr-worker")
+
+
+async def _to_ocr_thread(fn, *args):
+    """asyncio.to_thread ikizi — paylaşımlı varsayılan yerine ayrılmış OCR havuzunu kullanır."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(_ocr_executor, fn, *args)
 # Görsel-OCR sağlayıcı (v2.3 — bulut serbest): auto = OPENAI_API_KEY varsa OpenAI vision
 # (gpt-4o-mini, yüksek Türkçe doğruluğu), yoksa lokal motor. openai = her zaman bulut dene.
 # local = tam-lokal (gizlilik/offline). YALNIZ görsel/taranmış sayfayı etkiler; dijital PDF
@@ -231,7 +248,7 @@ async def _docx_text(docx_bytes: bytes, lang: str) -> OCRResult:
     """Word (.docx) → metin (python-docx; bloklayıcı parse → to_thread + timeout)."""
     try:
         raw = await asyncio.wait_for(
-            asyncio.to_thread(extract_docx_text, docx_bytes), timeout=OCR_TIMEOUT_S,
+            _to_ocr_thread(extract_docx_text, docx_bytes), timeout=OCR_TIMEOUT_S,
         )
     except TimeoutError:
         return OCRResult(
@@ -404,7 +421,7 @@ async def _pdf_ocr(
     # motorlarıyla simetrik olarak timeout-korumalı (event loop'u bekletme).
     try:
         text, page_count = await asyncio.wait_for(
-            asyncio.to_thread(extract_pdf_text, pdf_bytes), timeout=OCR_TIMEOUT_S,
+            _to_ocr_thread(extract_pdf_text, pdf_bytes), timeout=OCR_TIMEOUT_S,
         )
     except TimeoutError:
         return OCRResult(
@@ -423,7 +440,7 @@ async def _pdf_ocr(
     # Metin katmanı yok/yetersiz → taranmış. Sayfaları render et + OCR.
     try:
         images = await asyncio.wait_for(
-            asyncio.to_thread(render_pdf_to_images, pdf_bytes), timeout=OCR_TIMEOUT_S,
+            _to_ocr_thread(render_pdf_to_images, pdf_bytes), timeout=OCR_TIMEOUT_S,
         )
     except TimeoutError:
         return OCRResult(
@@ -501,7 +518,7 @@ async def _rapidocr_ocr(image_bytes: bytes, lang: str) -> OCRResult:
     """RapidOCR (onnxruntime) — timeout-korumalı async wrapper."""
     try:
         text, conf, err = await asyncio.wait_for(
-            asyncio.to_thread(rapidocr_image, image_bytes), timeout=OCR_TIMEOUT_S,
+            _to_ocr_thread(rapidocr_image, image_bytes), timeout=OCR_TIMEOUT_S,
         )
     except TimeoutError:
         return OCRResult(
@@ -565,7 +582,7 @@ async def _tesseract_ocr(image_bytes: bytes, lang: str) -> OCRResult:
             return "", "OCR işlenemedi", None
 
     try:
-        text, err, conf = await asyncio.wait_for(asyncio.to_thread(_do), timeout=OCR_TIMEOUT_S)
+        text, err, conf = await asyncio.wait_for(_to_ocr_thread(_do), timeout=OCR_TIMEOUT_S)
     except TimeoutError:
         return OCRResult(
             text="", engine="tesseract", lang=lang, n_chars=0,
@@ -664,7 +681,7 @@ async def _qwen_vl_ocr(image_bytes: bytes, lang: str) -> OCRResult:
 
     try:
         text, err = await asyncio.wait_for(
-            asyncio.to_thread(_do), timeout=OCR_TIMEOUT_S * 2,
+            _to_ocr_thread(_do), timeout=OCR_TIMEOUT_S * 2,
         )
     except TimeoutError:
         return OCRResult(

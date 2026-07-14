@@ -61,8 +61,11 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
   const [sonUygulanan, setSonUygulanan] = useState(null); // { onceki, yeni, talimatlar }
   const girisRef = useRef(null);
 
-  // Üst bileşen (BelgeModal) öneri açıkken A4 kâğıdı gizler — durumu bildir.
-  useEffect(() => { onOneriDegisti?.(!!oneri); }, [oneri, onOneriDegisti]);
+  // Üst bileşen (BelgeModal) öneri açıkken A4 kâğıdı gizler — durumu bildir. `busy` de
+  // dahil: istek beklerken kâğıt hâlâ düzenlenebilir kalırsa memurun o sırada yaptığı elle
+  // düzeltme, öneri (ESKİ metne göre üretilmiş) "Uygula"da sessizce silinirdi (regresyon
+  // bulgusu) — kâğıt istek başladığı andan itibaren kilitlenir, yarış penceresi kapanır.
+  useEffect(() => { onOneriDegisti?.(!!oneri || busy); }, [oneri, busy, onOneriDegisti]);
 
   // Bekleme sayacı — uzun LLM turlarında sistemin canlı olduğu görünür kalır.
   useEffect(() => {

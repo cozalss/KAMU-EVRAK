@@ -84,6 +84,14 @@ class TestGirdiDogrulama:
         data = _uret(client, "cevabi_yazi")
         assert "{'a': 1}" not in data["yazi_taslak_md"]
 
+    def test_asiri_buyuk_bilgi_unsurlari_422(self, client):
+        # REGRESYON: bilgi_unsurlari dict'i DoS-guard'sızdı — auth'suz uçta yüz binlerce
+        # anahtarlı gövde kabul edilebiliyordu (bkz. diğer str/list alanlardaki max_length).
+        r = client.post("/yazi/taslak-turu", json={
+            "evrak_text": _EVRAK, "yazi_turu": "cevabi_yazi",
+            "bilgi_unsurlari": {str(i): i for i in range(51)}})
+        assert r.status_code == 422
+
     def test_konuya_enjekte_edilen_satir_sonu_temizlenir(self, client):
         # Güvenlik regresyonu: bilgi_unsurlari.konu içine \n enjekte edilerek taslağa
         # BAĞIMSIZ sahte "Sayı :"/karar SATIRI eklenebiliyordu (satır enjeksiyonu,

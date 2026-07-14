@@ -43,6 +43,21 @@ def cloud_enabled() -> bool:
     return bool(openai_api_key())
 
 
+def _sayisal_ip(host: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None:
+    """host standart nokta-ondalık/iki-nokta IP mi, YA DA decimal/hex TEK-SAYI IP gösterimi
+    mi (ör. '2852039166' == 169.254.169.254)? Bazı resolver/istemciler ikisini de gerçek
+    IP'ye çözer; yalnız standart biçimi tanımak link-local/IMDS engelini format
+    değişikliğiyle atlatılabilir kılıyordu (regresyon bulgusu). DNS adıysa None döner."""
+    try:
+        return ipaddress.ip_address(host)
+    except ValueError:
+        pass
+    try:
+        return ipaddress.ip_address(int(host, 0))  # '0x'/'0o'/'0b' önekini otomatik algılar
+    except ValueError:
+        return None
+
+
 def validated_base_url() -> str:
     """OPENAI_BASE_URL'i şema/host açısından doğrula (SSRF sertleştirme — file://, gopher:// reddet).
     Azure/proxy override için http/https serbest."""
@@ -53,14 +68,11 @@ def validated_base_url() -> str:
     host = (parsed.hostname or "").lower()
     if host in _BLOCKED_HOSTS:
         raise ValueError(f"OPENAI_BASE_URL engellendi (metadata host): {host!r}")
-    try:  # IP ise link-local/IMDS aralığını engelle (kimlik-bilgisi hırsızlığı vektörü)
-        addr = ipaddress.ip_address(host)
-        if any(addr in net for net in _LINK_LOCAL_NETS):
-            raise ValueError(f"OPENAI_BASE_URL engellendi (link-local/IMDS): {host!r}")
-    except ValueError as exc:
-        if "engellendi" in str(exc):
-            raise  # bizim engelimiz → yeniden fırlat
-        # host bir IP değil (DNS adı) → ipaddress ValueError; normal, devam et
+    # IP ise (standart ya da sayısal-tek-token biçimde) link-local/IMDS aralığını engelle
+    # (kimlik-bilgisi hırsızlığı vektörü); gerçek DNS adıysa (_sayisal_ip None döner) serbest.
+    addr = _sayisal_ip(host)
+    if addr is not None and any(addr in net for net in _LINK_LOCAL_NETS):
+        raise ValueError(f"OPENAI_BASE_URL engellendi (link-local/IMDS): {host!r}")
     return raw
 
 

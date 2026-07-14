@@ -180,9 +180,11 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
             onOneriDegisti={setRevizeOneriAcik} />
         )}
 
-        {/* A4 kâğıt — inceleme bekleyen bir AI önerisi varken gizlenir: aynı (henüz
-            değişmemiş) metni hem diff'te hem burada tekrar göstermek yığılma yaratıyordu,
-            diff kartına da daha az yer bırakıyordu. Uygula/Vazgeç sonrası kâğıt geri döner. */}
+        {/* A4 kâğıt — AI revizyonu İSTENDİĞİ ANDAN (busy) inceleme bitene kadar gizlenir:
+            aynı (henüz değişmemiş) metni hem diff'te hem burada tekrar göstermek yığılma
+            yaratıyordu; ayrıca istek sürerken kâğıt açık kalsaydı memurun o sırada yaptığı
+            elle düzeltme "Uygula"da sessizce silinirdi (ESKİ metne göre üretilmiş öneri
+            üzerine yazardı). Uygula/Vazgeç sonrası kâğıt geri döner. */}
         {!revizeOneriAcik && (
           <div style={{ background: PAL.surf, borderRadius: RAD.chip, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
             {fileUrl ? (

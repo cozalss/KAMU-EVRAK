@@ -11,7 +11,7 @@ from __future__ import annotations
 import asyncio
 import sys
 
-from db.repositories.imha_repo import imha_uygula, suresi_dolmus
+from db.repositories.imha_repo import imha_uygula, suresi_dolmus, yetim_gelen_evrak
 from db.session import engine, session_factory
 
 
@@ -19,6 +19,13 @@ async def main() -> int:
     uygula = "--uygula" in sys.argv
     yontem = "sil" if "--sil" in sys.argv else "anonimlestir"
     async with session_factory() as s:
+        yetim = await yetim_gelen_evrak(s)
+        if yetim:
+            print(f"⚠️  İşlemi (Islem) hiç oluşmamış {len(yetim)} yetim gelen_evrak kaydı var "
+                  "— saklama süresi taramasına GİRMEZ, otomatik imha edilmez, elle inceleyin:")
+            for y in yetim:
+                print(f"  {y['evrak_no']:20} olusturuldu={y['olusturuldu'].date()}")
+            print()
         dolmus = await suresi_dolmus(s)
         print(f"Saklama süresi dolan evrak: {len(dolmus)}")
         for d in dolmus:

@@ -120,6 +120,25 @@ class TestValidatedBaseUrl:
         with pytest.raises(ValueError, match="link-local|IMDS"):
             validated_base_url()
 
+    def test_ondalik_kodlu_ip_engellenir(self, monkeypatch):
+        # REGRESYON: '2852039166' == 169.254.169.254 (decimal-encoded IP) — ipaddress
+        # modülü bunu standart dize biçiminde tanımayıp 'DNS adı' sayıyor, link-local
+        # engeli format değişikliğiyle atlatılabiliyordu.
+        monkeypatch.setenv("OPENAI_BASE_URL", "http://2852039166/latest")
+        with pytest.raises(ValueError, match="link-local|IMDS"):
+            validated_base_url()
+
+    def test_onaltilik_kodlu_ip_engellenir(self, monkeypatch):
+        # REGRESYON: '0xA9FEA9FE' == 169.254.169.254 (hex-encoded IP).
+        monkeypatch.setenv("OPENAI_BASE_URL", "http://0xA9FEA9FE/latest")
+        with pytest.raises(ValueError, match="link-local|IMDS"):
+            validated_base_url()
+
+    def test_gercek_dns_adi_sayisal_sanilmaz(self, monkeypatch):
+        # Sayısal-host kontrolü gerçek DNS adlarını etkilememeli (yanlış-pozitif yok).
+        monkeypatch.setenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+        assert validated_base_url() == "https://api.openai.com/v1"
+
 
 class TestRetryDelay:
     """_retry_delay — exponential backoff + Retry-After saygısı + cap."""

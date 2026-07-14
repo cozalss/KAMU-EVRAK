@@ -114,10 +114,13 @@ def compute_risk(
     # LLM grounding imzalı ('(LLM grounding)') sinyaller BURADA DIŞLANIR → aşağıda SARI olur
     # (olasılıksal çıkarım temiz taslağı KIRMIZI'ya çeviremez — yanlış-pozitif jüri riski biter).
     uydurma = [u for u in uyarilar if _UYDURMA_IMZA in u and _GROUNDING_IMZA not in u]
-    if uydurma:
-        gerekceler = [f"Uydurma şüphesi — {u}" for u in uydurma]
-        return _bant_sonuc("kirmizi", gerekceler)
+    gerekceler = [f"Uydurma şüphesi — {u}" for u in uydurma]
 
+    # NOT: sari sinyalleri UYDURMA VARKEN DE hesaplanır — eskiden erken return bunları hiç
+    # toplamıyordu, bu yüzden aynı belgede hem uydurma hem çok sayıda eksik/belirsiz sinyal
+    # varsa skor yalnız uydurmadan türer ve "kanıt arttıkça skor monoton artar" ilkesi bozulurdu
+    # (kırmızı bir belge sarıdan sayısal olarak düşük skor gösterebiliyordu — regresyon bulgusu).
+    # Bant kararı DEĞİŞMEDİ (uydurma > eksik/belirsiz > temiz); yalnız skora giren kanıt tamlaştı.
     sari: list[str] = [u for u in uyarilar if u.startswith(_EKSIK_IMZA)]
     # LLM grounding (olasılıksal) → SARI: memura "AI şu ifadeyi kaynakta bulamadı, kontrol
     # edin" der; bant deterministik değil ama incelemeye çağırır (asla otomatik KIRMIZI).
@@ -142,6 +145,8 @@ def compute_risk(
     for u in tutarlilik_uyari or []:
         sari.append(f"Tutarlılık: {u}")
 
+    if uydurma:
+        return _bant_sonuc("kirmizi", gerekceler + sari)
     if sari:
         return _bant_sonuc("sari", sari)
     return _bant_sonuc(

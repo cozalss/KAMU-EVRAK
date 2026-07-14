@@ -297,6 +297,11 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   }, []);
   // Mevzuata tıklanınca Mevzuat sayfasına GİTMEZ — bulunduğun ekranın üstünde okuma modalı açar.
   const mevzuatAc = useCallback((hedef) => setOkumaHedef(hedef), []);
+  // Kararlı referans (GidenEvrakView.DetayModal ile aynı desen) — inline arrow her render'da
+  // yeni referans olurdu; OkumaModal'ın [onClose] efekti bu yüzden canlı akış sırasında
+  // (SSE node event'leri DashboardApp'i sık render ettirir) defalarca tetiklenip odağı
+  // sürekli kapat düğmesine geri çekiyordu (regresyon bulgusu — modal klavye/SR ile kullanılamaz).
+  const okumaKapat = useCallback(() => setOkumaHedef(null), []);
   // Panel'den evrak-hedefli geçiş: id string ise vurgu hedefi kur (buton onClick'in event
   // nesnesi geçirmesine karşı tip koruması), her durumda Gelen Evrak'a git.
   const goInbox = useCallback((hedefId) => {
@@ -659,7 +664,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
   let view;
   if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
-  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} />;
+  else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} uid={user?.id} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
@@ -706,7 +711,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         {/* Global mevzuat okuma modalı — hangi görünümde olursan ol üstte açılır (view değişmez). */}
         {okumaHedef && (
           <OkumaModal dosya={okumaHedef.dosya} maddeNo={okumaHedef.maddeNo}
-            maddeTur={okumaHedef.maddeTur} onClose={() => setOkumaHedef(null)} />
+            maddeTur={okumaHedef.maddeTur} onClose={okumaKapat} />
         )}
 
         {telefonAcik && (

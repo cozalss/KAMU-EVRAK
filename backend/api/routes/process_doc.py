@@ -84,6 +84,14 @@ async def _ocr_or_text(
     return (evrak_text or ""), {}
 
 
+def _mask_bilgilendirme_yapisal(y: dict[str, Any]) -> dict[str, Any]:
+    """`bilgilendirme_yapisal.ne_oldu` serbest-metindir (şablon veya LLM-üretimi) — ozet/
+    verify_notes ile aynı savunma derinliği; yapının geri kalanı sabit/tipli veridir."""
+    if not isinstance(y, dict) or not y.get("ne_oldu"):
+        return y
+    return {**y, "ne_oldu": mask_pii(y["ne_oldu"]).masked_text}
+
+
 def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResponse:
     return ProcessResponse(
         evrak_turu=state.get("evrak_turu", "belirsiz"),
@@ -113,8 +121,10 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
                           for u in state.get("tutarlilik_uyari", [])],
         lint_duzeltme_md=state.get("lint_duzeltme_md", ""),
         llm_profil=llm_profil(),
-        bilgilendirme=state.get("bilgilendirme", ""),
-        bilgilendirme_yapisal=state.get("bilgilendirme_yapisal", {}),
+        # "ozet" alanındaki maskeleme mantığının ikizi: bilgilendirme metni state["ozet"]'i
+        # harfiyen içerir (finalize._metin) → API sınırında aynı savunma derinliği.
+        bilgilendirme=mask_pii(state.get("bilgilendirme", "") or "").masked_text,
+        bilgilendirme_yapisal=_mask_bilgilendirme_yapisal(state.get("bilgilendirme_yapisal", {})),
         arsiv_metadata=state.get("arsiv_metadata", {}),
         sla_metadata=state.get("sla_metadata", {}),
         denetim_izi=state.get("denetim_izi", {}),

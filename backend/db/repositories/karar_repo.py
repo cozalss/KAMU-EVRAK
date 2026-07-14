@@ -115,6 +115,18 @@ async def _karar_ve_giden(
         select(RiskDegerlendirme.bant).where(RiskDegerlendirme.islem_id == islem_id))
     izi = await session.get(DenetimIzi, islem_id)
 
+    # session.rollback() (aşağıda IntegrityError'da) ORM nesnelerini expire eder
+    # (expire_on_commit=False yalnız commit'i kapsar, rollback'i DEĞİL) — retry döngüsünde
+    # taslak/islem/izi nesnelerine TEKRAR erişmek AsyncSession'da senkron lazy-reload
+    # gerektirir ve MissingGreenlet ile çöker (regresyon bulgusu). Döngüden ÖNCE düz
+    # değerlere kopyala; döngü artık nesnelere değil bu değerlere bakar.
+    taslak_id = taslak.id
+    taslak_konu = taslak.konu
+    taslak_yazi_turu_kod = taslak.yazi_turu_kod
+    islem_gelen_evrak_id = islem.gelen_evrak_id if islem else None
+    islem_hedef_birim_id = islem.hedef_birim_id if islem else None
+    izi_son_hash = izi.son_hash if izi else None
+
     # Karar arşivi: aynı taslağa İKİNCİ karar (onayla/duzenle/reddet FARK ETMEZ) atılamaz.
     # Eskiden yalnız onayla/duzenle korunuyordu ("if karar != 'reddedildi'") — reddet çift-
     # tıklama/ikinci-sekme/ağ tekrarına açıktı (aynı taslak iki kez reddedilebiliyor, hatta
@@ -122,24 +134,24 @@ async def _karar_ve_giden(
     # kontrol + DB'nin KOŞULSUZ UNIQUE(taslak_id) kısıtı (migration 0002) birlikte korur.
     for deneme in range(_GIDEN_NO_DENEME):
         mevcut = await session.scalar(
-            select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id))
+            select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak_id))
         if mevcut is not None:
             raise KararError("zaten_gonderildi", "Bu taslak için zaten bir karar verilmiş.")
         session.add(Onay(
-            taslak_id=taslak.id, karar=karar, karar_veren_id=kullanici_id,
+            taslak_id=taslak_id, karar=karar, karar_veren_id=kullanici_id,
             gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.UTC)))
         # giden_no: SELECT count()+format TOCTOU'ya açık (iki eşzamanlı karar aynı numarayı
         # üretebilir) — DB'nin UNIQUE(giden_no) kısıtı çarpışmayı yakalar; burada sınırlı
         # tekrarla şeffaf toparlanır (kullanıcıya ham 500 sızdırmaz).
         giden_no = await _giden_no(session)
         session.add(GidenEvrak(
-            giden_no=giden_no, taslak_id=taslak.id,
-            kaynak_evrak_id=islem.gelen_evrak_id if islem else None,
-            konu=taslak.konu,
-            alici_birim_id=alici_birim_id or (islem.hedef_birim_id if islem else None),
-            yazi_turu_kod=taslak.yazi_turu_kod, risk=risk,
+            giden_no=giden_no, taslak_id=taslak_id,
+            kaynak_evrak_id=islem_gelen_evrak_id,
+            konu=taslak_konu,
+            alici_birim_id=alici_birim_id or islem_hedef_birim_id,
+            yazi_turu_kod=taslak_yazi_turu_kod, risk=risk,
             durum=_GIDEN.get(karar, "gonderildi"), gonderen_id=kullanici_id,
-            son_hash=izi.son_hash if izi else None))
+            son_hash=izi_son_hash))
         try:
             await session.commit()
             return {"karar": karar, "giden_no": giden_no}
@@ -148,7 +160,7 @@ async def _karar_ve_giden(
             # Yarışı kaybettik: ya giden_no çakıştı (tekrar dene) ya da taslak eşzamanlı
             # başka bir kararla ZATEN gönderildi (net 409 ile bildir, ham 500 sızdırma).
             yarisan = await session.scalar(
-                select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak.id))
+                select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak_id))
             if yarisan is not None:
                 raise KararError(
                     "zaten_gonderildi", "Bu taslak için zaten bir karar verilmiş.") from exc

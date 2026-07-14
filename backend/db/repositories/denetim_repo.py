@@ -18,12 +18,13 @@ from db.models import DenetimAdimi, DenetimIzi
 
 
 async def persist_denetim(
-    session: AsyncSession, *, islem_id: uuid.UUID, denetim_izi: dict,
+    session: AsyncSession, *, islem_id: uuid.UUID, denetim_izi: dict, commit: bool = True,
 ) -> DenetimIzi | None:
     """denetim_izi meta'sını (zincir + kök/son hash) DB'ye yazar. Boş zincir → None.
 
     Şema: kok_hash = genesis (zincirin ilk öncekisi); son_hash = tüm akışın parmak izi
     (meta['kok_hash'] = son halka hash'i). 1:1 islem (PK islem_id) → tek kez yazılır.
+    commit=False: bkz. islem_repo.evrak_olustur — persist_pipeline_run'ın tek-transaction'ı için.
     """
     zincir = (denetim_izi or {}).get("zincir") or []
     if not zincir:
@@ -42,8 +43,11 @@ async def persist_denetim(
         )
         for i, e in enumerate(zincir)
     ])
-    await session.commit()
-    await session.refresh(izi)
+    if commit:
+        await session.commit()
+        await session.refresh(izi)
+    else:
+        await session.flush()
     return izi
 
 

@@ -12,7 +12,10 @@ import { BIRIM_LBL } from "./result-cards.jsx";
 
 const KATEGORI_SELECT = [{ value: "", label: "Tüm kategoriler" }, ...KATEGORILER.map((k) => ({ value: k.id, label: k.label }))];
 
-const GELEN_FILTER_CONFIG = {
+// persistKey uid ile SUFFIX'lenir (bkz. çağıran) — sabit "gelen" anahtarı paylaşılan/kiosk
+// tarayıcıda farklı memurlar arasında arama metni + çip/sıralama seçimini sızdırıyordu
+// (authApi.tokens.clear() de bu anahtara dokunmuyordu — regresyon bulgusu).
+const GELEN_FILTER_CONFIG_BASE = {
   // fuzzy: diakritik/yazım hatası affeden arama (fuse.js) — "dilekce" → "Dilekçe".
   search: { enabled: true, placeholder: "Evrak adı, açıklama…", fuzzy: true },
   chips: [{ id: "grup", label: "Grup", options: [
@@ -27,8 +30,6 @@ const GELEN_FILTER_CONFIG = {
     { value: "name_desc", label: "Ad (Z–A)" },
   ] },
   dataMapping: { search: ["label", "aciklama"], grup: "grup", kategori: "_kategori" },
-  // Kayıtlı görünüm (Paperless saved-views hafif hâli): memurun kuyruk filtresi yenilemede korunur.
-  persistKey: "gelen",
 };
 
 /* Yasal süre (SLA) rozeti — backend /sla/onizleme sonucundan (compute_sla tek kaynak).
@@ -50,13 +51,18 @@ function SlaRozet({ sla }) {
   );
 }
 
-export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy, hedef = null, onHedefAcildi }) {
+export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy, hedef = null, onHedefAcildi, uid = null }) {
   const done = processedIds || new Set();
   // Her örneğe operasyonel kategori türet (id ≈ evrak türü + metin anahtar sözcükleri).
   const items = useMemo(() => samples.map((s) => ({
     ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: s.id, text: s.text }),
   })), [samples]);
-  const filter = useFilter(items, GELEN_FILTER_CONFIG);
+  // Kayıtlı görünüm (Paperless saved-views hafif hâli) kullanıcıya özel — uid yoksa (henüz
+  // yüklenmedi) kalıcılık atlanır, başka kullanıcının filtresi asla uygulanmaz.
+  const filterConfig = useMemo(() => ({
+    ...GELEN_FILTER_CONFIG_BASE, persistKey: uid ? `gelen-${uid}` : undefined,
+  }), [uid]);
+  const filter = useFilter(items, filterConfig);
   const [listeRef] = useAutoAnimate();   // filtre/işleme değişince satırlar akıcı girer-çıkar
 
   // Panel SLA satırından hedefli geliş: satırı görünüre kaydır + kısa süre vurgula.

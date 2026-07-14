@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import pytest
 
+import agents.nodes.ozetle as ozetle_mod
 import agents.nodes.self_rag as self_rag_mod
 from agents.nodes._llm_extract import parse_json_object
 from agents.nodes.clarifier import clarifier_node, kritik_eksikler
@@ -21,9 +22,10 @@ from agents.nodes.mevzuat_oner import (
     _normalize_madde_refs,
     _tokenize,
 )
-from agents.nodes.ozetle import _fallback_ozet, _redact_pii, ozetle_node
+from agents.nodes.ozetle import _fallback_ozet, ozetle_node
 from agents.nodes.self_rag import _alan_dolu, _eksik_alanlar, _mevzuat_dolu, self_rag_node
 from agents.nodes.siniflandir import _from_llm, _heuristik, siniflandir_node
+from api.pii import mask_pii
 
 
 # ---------------------------------------------------------------------------
@@ -130,16 +132,15 @@ class TestFromLlm:
 class TestOzetleFallback:
     def test_redact_tckn(self):
         # Arrange — 11 haneli geçerli TCKN
-        out = _redact_pii("Başvuran 12345678901 numaralı")
+        out = mask_pii("Başvuran 12345678901 numaralı").masked_text
         # Assert
-        assert "[TCKN]" in out
         assert "12345678901" not in out
 
     def test_redact_telefon(self):
         # Arrange
-        out = _redact_pii("Tel: 0555 123 45 67")
+        out = mask_pii("Tel: 0555 123 45 67").masked_text
         # Assert
-        assert "[TEL]" in out
+        assert "0555 123 45 67" not in out
 
     def test_fallback_ozet_tur_konu(self):
         # Arrange
@@ -168,6 +169,19 @@ class TestOzetleFallback:
         # Assert
         assert out["ozet"]
         assert "Dilekçe" in out["ozet"]
+
+    async def test_node_llm_ozeti_de_maskeler(self, monkeypatch):
+        # Arrange — REGRESYON: LLM yolu fallback'in aksine hiç maskeleme uygulamıyordu;
+        # LLM evrak metnindeki TCKN'yi özetinde tekrarlarsa ham sızmamalı.
+        async def _sahte_llm(system, user, **kwargs):
+            return {"ozet": "Başvuran 12345678901 TCKN ile başvurmuştur."}
+
+        monkeypatch.setattr(ozetle_mod, "llm_json", _sahte_llm)
+        # Act
+        out = await ozetle_node({"evrak_text": "herhangi bir evrak metni",
+                                 "evrak_turu": "dilekce", "bilgi_unsurlari": {}})
+        # Assert
+        assert "12345678901" not in out["ozet"]
 
 
 # ---------------------------------------------------------------------------

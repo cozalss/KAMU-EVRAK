@@ -15,6 +15,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth import security
 from db.models import Birim, Kullanici, Oturum
 
+# Bilinmeyen e-posta yolunda zamanlama-sızıntısını azaltmak için kullanılır (giris()).
+# SABİT (modül yüklenirken BİR KEZ hesaplanır) — her istekte hash_parola() ile YENİDEN
+# üretmek taze salt + TAM argon2 hash maliyeti demekti; bu da bilinmeyen-e-posta yolunu
+# yanlış-parola yolundan (yalnız 1x verify) ~2 kat YAVAŞ yapıp e-posta varlığını daha da
+# ayırt edilebilir kılıyordu (regresyon bulgusu — niyetin tam tersi). Sabit hash + yalnız
+# verify() → her iki yol da TEK argon2 maliyetine eşitlenir.
+_SAHTE_HASH = security.hash_parola("zamanlama-sizintisi-icin-sabit-sahte-parola")
+
 
 class AuthError(Exception):
     """kod: 'eposta_kayitli' | 'birim_yok' | 'kimlik_hatali' | 'pasif' | 'oturum_gecersiz'."""
@@ -68,9 +76,11 @@ async def giris(session: AsyncSession, *, eposta: str, parola: str,
                 ) -> tuple[Kullanici, str, str, int]:
     kullanici = await session.scalar(
         select(Kullanici).where(Kullanici.eposta == eposta.lower()))
-    # Zamanlama-sızıntısını azalt: kullanıcı yoksa da hash doğrula (sabit-zaman benzeri).
+    # Zamanlama-sızıntısını azalt: kullanıcı yoksa da hash doğrula (sabit-zaman benzeri) —
+    # SABİT _SAHTE_HASH kullanılır (her seferinde yeniden hash_parola() üretmek gerçek
+    # yoldan daha YAVAŞ yapıyordu, bkz. modül başı not).
     if kullanici is None:
-        security.parola_dogrula(parola, security.hash_parola("x" * 12))
+        security.parola_dogrula(parola, _SAHTE_HASH)
         raise AuthError("kimlik_hatali", "E-posta veya parola hatalı.")
     if not security.parola_dogrula(parola, kullanici.parola_hash):
         raise AuthError("kimlik_hatali", "E-posta veya parola hatalı.")

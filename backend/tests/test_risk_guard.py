@@ -105,6 +105,20 @@ class TestComputeRiskBant:
         assert kirmizi["skor"] > sari["skor"]
         assert max(kirmizi["katkilar"]) > max(sari["katkilar"])
 
+    def test_kirmizida_sari_sinyaller_de_skora_katilir(self):
+        """Regresyon: erken return uydurma varken sari sinyalleri (eksik alan/düşük güven/
+        [DOĞRULA]) hiç toplamıyordu — aynı derecede uydurma içeren ama ayrıca çok sayıda
+        eksik/belirsiz sinyali OLAN bir belge, yalnız uydurması olan belgeyle AYNI (daha
+        düşük değil) skor göstermeliydi ama monoton artmalıydı; olmuyordu."""
+        tek_uydurma = ["Taslaktaki '5' sayısı kaynak evrakta yok (doğrulayın)."]
+        cok_sinyal = _risk(tek_uydurma, eksik=["imza", "tarih"], conf=0.1,
+                            turu="belirsiz", taslak="[DOĞRULA: madde] " + _TEMIZ)
+        yalniz = _risk(tek_uydurma)
+        assert cok_sinyal["bant"] == yalniz["bant"] == "kirmizi"   # bant KARARI değişmedi
+        assert cok_sinyal["skor"] > yalniz["skor"]
+        assert len(cok_sinyal["gerekceler"]) > len(yalniz["gerekceler"])
+        assert any("Eksik zorunlu bilgi" in g for g in cok_sinyal["gerekceler"])
+
     def test_yesil_skoru_sifir(self):
         m = _risk()
         assert m["bant"] == "yesil" and m["skor"] == 0.0

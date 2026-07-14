@@ -58,7 +58,12 @@ export function useFilter(items, config) {
   const [search, setSearchState] = useState(kayitli?.search || "");
   const [chips, setChips] = useState(() => {
     const m = {};
-    for (const c of config?.chips || []) m[c.id] = new Set(kayitli?.chips?.[c.id] || []);
+    for (const c of config?.chips || []) {
+      // Kalıcı veri şekli doğrulanmadan Set'e verilmesin — dizi değilse (bozuk/eski
+      // şema kalıntısı) new Set(nonArray) TypeError fırlatıp ilk render'ı çökertirdi.
+      const kayitliChip = kayitli?.chips?.[c.id];
+      m[c.id] = new Set(Array.isArray(kayitliChip) ? kayitliChip : []);
+    }
     return m;
   });
   const [select, setSelectState] = useState(() => {

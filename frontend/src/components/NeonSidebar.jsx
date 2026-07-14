@@ -169,13 +169,17 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
 
       {samples.length > 0 && (
         <div style={{ position: "relative", marginTop: SP.s }} onKeyDown={(e) => { if (e.key === "Escape") setShowSamples(false); }}>
-          <button type="button" ref={samplesTetikRef}
+          {/* busy iken devre dışı ("Yeni evrak yükle" ile aynı desen): aksi halde bir akış
+              sürerken seçilen örnek GERÇEKTE işlenmeden (onPickSample → runSample busy
+              kontrolünde atlanır) 'İşlendi' rozetiyle işaretlenebiliyordu (regresyon bulgusu). */}
+          <button type="button" ref={samplesTetikRef} disabled={busy}
             onClick={() => setShowSamples((v) => !v)}
             aria-expanded={showSamples} aria-haspopup="listbox" aria-controls="nu-samples"
             aria-label={dar ? "Örnek evrakla dene" : undefined} title={dar ? "Örnek evrakla dene" : undefined} {...focusRing}
             style={{
-              cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
-              padding: dar ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: DERIN.T,
+              cursor: busy ? "not-allowed" : "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
+              padding: dar ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: busy ? PAL.mut2 : DERIN.T,
+              opacity: busy ? 0.6 : 1,
               border: `1px solid ${showSamples ? PAL.lineHi : PAL.line}`,
               background: showSamples ? ALFA(T) : "transparent",
               transition: "background .12s ease-out, border-color .12s ease-out",

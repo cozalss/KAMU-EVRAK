@@ -42,17 +42,26 @@ async def evrak_olustur(
     session: AsyncSession, *, evrak_no: str, ocr_metni: str, olusturan_id: uuid.UUID,
     baslik: str = "", kaynak: str = "yukleme", ocr_engine: str | None = None,
     ocr_confidence: float | None = None, sayfa_sayisi: int | None = None,
-    gelis_birim_id: uuid.UUID | None = None,
+    gelis_birim_id: uuid.UUID | None = None, commit: bool = True,
 ) -> GelenEvrak:
-    """Yeni gelen evrak satırı (ocr_metni MASKELİ olmalı — KVKK)."""
+    """Yeni gelen evrak satırı (ocr_metni MASKELİ olmalı — KVKK).
+
+    commit=False: yalnız flush (evrak.id doldurulur), commit ÇAĞIRANA bırakılır —
+    persist_pipeline_run birden çok yazımı (evrak+islem+denetim) TEK transaction'da
+    toplar; her biri ayrı commit atarsa ara adım hatasında önceki commit'ler DB'de
+    kalıcı kalır (yetim kayıt — regresyon bulgusu).
+    """
     evrak = GelenEvrak(
         evrak_no=evrak_no, baslik=baslik, kaynak=kaynak, ocr_metni=ocr_metni,
         ocr_engine=ocr_engine, ocr_confidence=ocr_confidence, sayfa_sayisi=sayfa_sayisi,
         gelis_birim_id=gelis_birim_id, olusturan_id=olusturan_id,
     )
     session.add(evrak)
-    await session.commit()
-    await session.refresh(evrak)
+    if commit:
+        await session.commit()
+        await session.refresh(evrak)
+    else:
+        await session.flush()
     return evrak
 
 
@@ -196,8 +205,12 @@ def _sla(islem_id, meta: dict) -> SlaTakip | None:
 async def persist_islem(
     session: AsyncSession, *, gelen_evrak_id: uuid.UUID, thread_id: str,
     response: ProcessResponse, durum: str = "tamamlandi", sure_ms: int | None = None,
+    commit: bool = True,
 ) -> Islem:
-    """ProcessResponse'u islem + normalize tablolara yazar (tek transaction)."""
+    """ProcessResponse'u islem + normalize tablolara yazar.
+
+    commit=False: bkz. evrak_olustur — persist_pipeline_run'ın tek-transaction'ı için.
+    """
     evrak_kods, yazi_kods, birimler = await _lookups(session)
     islem = Islem(
         gelen_evrak_id=gelen_evrak_id, thread_id=thread_id, durum=durum,
@@ -238,8 +251,11 @@ async def persist_islem(
     elif (ts := _taslak(islem.id, response, yazi_kods)) is not None:
         session.add(ts)
 
-    await session.commit()
-    await session.refresh(islem)
+    if commit:
+        await session.commit()
+        await session.refresh(islem)
+    else:
+        await session.flush()
     return islem
 
 

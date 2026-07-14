@@ -89,7 +89,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
   return (
     <ViewWrap id="gelen-h" title="Gelen evrak" sub={`${samples.length} evrak kuyrukta · işlemek için seçin`}
       actions={[<Btn key="u" primary onClick={onUpload} disabled={busy}><Icon.upload /> Yeni evrak yükle</Btn>]}>
-      <FilterBar config={GELEN_FILTER_CONFIG} filter={filter} />
+      <FilterBar config={filterConfig} filter={filter} />
 
       {filter.results.length === 0 ? (
         <EmptyState icon={<Icon.inbox />} title="Eşleşen evrak yok"

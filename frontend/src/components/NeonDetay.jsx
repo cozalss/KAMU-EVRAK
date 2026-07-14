@@ -10,7 +10,7 @@ import { cloneElement, useEffect, useState } from "react";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Icon, focusRing } from "./neonUi.jsx";
 import {
-  Chip, Fact, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
+  Chip, Fact, StatTile, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
   CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti, BilgilendirmeYapisal,
   Lint2646Karti,
 } from "./NeonDetayParts.jsx";
@@ -175,11 +175,19 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
   const den = r.denetim_izi || {};
   const denAdimlar = Array.isArray(den.zincir) ? den.zincir : (Array.isArray(den.adimlar) ? den.adimlar : []);
   const band = r.risk_metadata?.bant || "yesil";
+  const bantC = BANT[band]?.c || BANT.yesil.c;   // hüküm şeridi + gerekçe bloğu ortak kullanır
   const riskGerekce = Array.isArray(r.risk_metadata?.gerekceler) ? r.risk_metadata.gerekceler.filter(Boolean).slice(0, 4) : [];
   const sInfo = slaInfo(sla);
   const hasChain = denAdimlar.length > 0 || !!den.kok_hash;
   const butunluk = den.butunluk !== false;
   const birimAday = (r.birim_alternatifleri || []).filter(Boolean).filter((b) => b !== r.hedef_birim).slice(0, 3);
+  // Hüküm şeridi birim göstergesi: BÜYÜK değer = LLM'in içerikten seçtiği somut gerçek birim
+  // (servis_birimi.ad), yoksa deterministik genel kategori (hedef_birim, ölçülü 9-set) fallback.
+  // Genel kategori LLM biriminden farklıysa küçük "genel kategori:" bağlam satırı görünür.
+  const genelBirim = r.hedef_birim ? BIRIM_LBL(r.hedef_birim) : "";
+  const llmBirimAd = r.servis_birimi?.ad || "";
+  const buyukBirim = llmBirimAd || genelBirim;
+  const birimBaglamGoster = !!llmBirimAd && llmBirimAd !== genelBirim;
   const turGuven = Number(r.tur_confidence) > 0 ? Math.round(Number(r.tur_confidence) * 100) : null;
   const ocrGuven = r.ocr_confidence != null && Number.isFinite(Number(r.ocr_confidence)) ? Math.round(Number(r.ocr_confidence) * 100) : null;
 
@@ -229,24 +237,44 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                 </span>
                 <span role="status" style={{ ...TYPE.h2, color: PAL.ink }}>{hy.baslik}</span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", marginTop: SP.s }}>
-                {r.islem_id && (
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs }}>
-                    <span style={{ ...TYPE.meta, color: PAL.mut3 }}>İşlem no</span>
-                    <CopyChip deger={r.islem_id} kisa={String(r.islem_id).slice(0, 14)} label="İşlem numarasını panoya kopyala" />
-                  </span>
-                )}
-                {r.sure_ms != null && <span style={{ ...TYPE.data, color: PAL.mut2, ...TNUM }}>işleme {sureFmt(r.sure_ms)}</span>}
-                {denAdimlar.length > 0 && <span style={{ ...TYPE.data, color: PAL.mut2, ...TNUM }}>{denAdimlar.length} zincir halkası</span>}
-              </div>
             </div>
             {/* Bant yalnız risk_guard gerçekten çalıştıysa çizilir — yokluk yeşil sayılmaz. */}
             {r.risk_metadata?.bant && <RiskBand band={band} lit sub="İçerik" />}
           </div>
 
+          {/* ============ Glanceable katman — "bu evrak ne / nereye gidiyor" 2 büyük olgu.
+              MASTER.md: TYPE.num = panel metrikleri; hüküm şeridinde yalnız BU ikisi büyür,
+              geri kalanı (aşağıda) küçük kalır — enflasyon değil, tekli önceliklendirme. ============ */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: SP.xxl, marginTop: SP.l }}>
+            <StatTile k="Evrak türü" v={EVRAK_TR(r.evrak_turu)} sub={turGuven != null ? `%${turGuven} güven` : null} icon={<Icon.doc />} />
+            {r.hedef_birim && (
+              // Değerler yukarıda türetildi (dosya deseni: derived const'lar return öncesi).
+              // sub düz string — StatTile zaten TYPE.meta/PAL.mut3 ile sarar (çift sarma yok).
+              <StatTile k="Yönlendirilecek birim" v={buyukBirim} c={V} icon={<Icon.route />}
+                sub={birimBaglamGoster ? `genel kategori: ${genelBirim}` : null} />
+            )}
+          </div>
+
+          {/* ============ "Ne yapmalısınız" — ikinci soruya doğrudan cevap; artık gerekçe
+              bloğunun dibinde soluk metin değil, hükmün hemen altında bant rengiyle vurgulu. ============ */}
+          {r.risk_metadata?.oneri && (
+            // Kart içinde kart yasak (NeonDetayParts.jsx:137) — yalnız tint zemin, kenarlık yok;
+            // dosyadaki diğer ALFA(...) uyarı kutularıyla aynı desen (satır ~439/447/479).
+            // İkon banda göre değişir: yeşilde "sorun yok" onayı, sarı/kırmızıda gerçek uyarı —
+            // Icon.alert'i her bantta göstermek renk=tek sinyal ilkesini bozardı.
+            <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", marginTop: SP.l, padding: SP.m, borderRadius: RAD.card, background: ALFA(bantC) }}>
+              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2, color: DERIN_OF(bantC) }}>
+                {band === "yesil" ? <Icon.check width={15} height={15} /> : <Icon.alert width={15} height={15} />}
+              </span>
+              <span style={{ minWidth: 0 }}>
+                <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink }}>Ne yapmalısınız</span>
+                <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, marginTop: 2 }}>{cleanDemoText(String(r.risk_metadata.oneri))}</span>
+              </span>
+            </div>
+          )}
+
+          {/* ============ İkincil olgular + audit meta — küçük, düşük vurgulu; ilgilenen kazar. ============ */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", marginTop: SP.l, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
-            <Fact k="Evrak türü" v={turGuven != null ? `${EVRAK_TR(r.evrak_turu)} · %${turGuven}` : EVRAK_TR(r.evrak_turu)} c={PAL.ink2} icon={<Icon.doc />} />
-            {r.hedef_birim && <Fact k="Hedef birim" v={BIRIM_LBL(r.hedef_birim)} c={V} icon={<Icon.route />} />}
             <Fact k="Eksik kontrol" v={eksik.length ? `${eksik.length} eksik` : "tam"} c={eksik.length ? BANT.sari.c : BANT.yesil.c} icon={<Icon.shield />} />
             {sInfo && <Fact k="Yasal süre" v={sInfo.label} c={sInfo.color} icon={<Icon.clock />} />}
             {ocrGuven != null && <Fact k="OCR güveni" v={`%${ocrGuven}`} c={ocrGuven >= 80 ? BANT.yesil.c : BANT.sari.c} icon={<Icon.doc />} />}
@@ -258,6 +286,14 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                 icon={<Icon.shield />}
               />
             )}
+            {r.islem_id && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs }}>
+                <span style={{ ...TYPE.meta, color: PAL.mut3 }}>İşlem no</span>
+                <CopyChip deger={r.islem_id} kisa={String(r.islem_id).slice(0, 14)} label="İşlem numarasını panoya kopyala" />
+              </span>
+            )}
+            {r.sure_ms != null && <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>işleme {sureFmt(r.sure_ms)}</span>}
+            {denAdimlar.length > 0 && <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{denAdimlar.length} zincir halkası</span>}
           </div>
 
           {(r.risk_metadata?.aciklama || riskGerekce.length > 0) && (() => {
@@ -265,14 +301,17 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                (risk_guard/muzakere/eval aynı stringe bakar) → çevirisi detayYorum'da yapılır,
                ham metin "Teknik ayrıntı" katlanabilir bölümünde birebir korunur (bilgi kaybı yok).
                Çubuk = backend'in gerekçe-başına ağırlığı (ciddiyet × ölçülen isabet); gerekçe
-               sayısına BÖLÜNMEZ — bkz. agents/risk_agirlik.py + eval/risk_calibration.py. */
+               sayısına BÖLÜNMEZ — bkz. agents/risk_agirlik.py + eval/risk_calibration.py.
+               "Ne yapmalısınız" burada TEKRAR EDİLMEZ — üstte hükmün hemen altında zaten vurgulu. */
             const yorumlar = riskGerekce.map((g) => riskGerekceYorum(String(g))).filter(Boolean);
             const sy = riskSkorYorum(Number(r.risk_metadata?.skor), r.risk_metadata?.katkilar,
               band, r.risk_metadata?.kalibrasyon);
-            const bantC = BANT[band]?.c || BANT.yesil.c;
             return (
               <div style={{ marginTop: SP.l, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
-                {r.risk_metadata?.aciklama && (
+                {/* aciklama sık sık oneri ile AYNI string'tir (backend: aciklama = llm_aciklama or
+                    oneri; yeşilde LLM hiç çağrılmaz) — oneri üstte zaten vurgulandıysa burada
+                    tekrar basılmaz (2026-07-14 review: aynı cümle iki kez görünüyordu). */}
+                {r.risk_metadata?.aciklama && r.risk_metadata.aciklama !== r.risk_metadata?.oneri && (
                   <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s }}>
                     <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: PAL.mut2 }}><Icon.info width={14} height={14} /></span>
                     <span style={{ ...TYPE.data, color: PAL.ink2 }}>{cleanDemoText(String(r.risk_metadata.aciklama))}</span>
@@ -301,13 +340,7 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                   </div>
                 )}
                 {sy && (
-                  <div style={{ ...TYPE.meta, color: PAL.mut3, marginTop: SP.s }}>
-                    <span style={{ color: PAL.ink2 }}>{sy.baslik}.</span> {sy.not}
-                    {sy.kalibrasyonNot && <> {sy.kalibrasyonNot}</>}
-                  </div>
-                )}
-                {r.risk_metadata?.oneri && r.risk_metadata.oneri !== r.risk_metadata.aciklama && (
-                  <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}><span style={{ color: PAL.mut3 }}>Ne yapmalısınız:</span> {cleanDemoText(String(r.risk_metadata.oneri))}</div>
+                  <div style={{ ...TYPE.meta, color: PAL.ink2, marginTop: SP.s }}>{sy.baslik}.</div>
                 )}
                 {(yorumlar.some((y) => y.cevrildi) || sy) && (
                   <details style={{ marginTop: SP.s }}>
@@ -318,6 +351,12 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                       Teknik ayrıntı (sistem kaydı)
                     </summary>
                     <div style={{ marginTop: SP.xs, padding: SP.s, background: PAL.surfHi, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", gap: SP.xs }}>
+                      {/* Skor metodolojisi (çubuk = ne demek, kalibrasyon durumu) burada — ana
+                          görünüm sadeleşsin diye buraya taşındı; bilgi kaybolmadı, yalnız isteyerek
+                          açılır (2026-07-14 kullanıcı geri bildirimi: "sade ve etkili olmalı"). */}
+                      {sy && (sy.not || sy.kalibrasyonNot) && (
+                        <div style={{ ...TYPE.meta, color: PAL.mut2 }}>{sy.not}{sy.kalibrasyonNot && <> {sy.kalibrasyonNot}</>}</div>
+                      )}
                       {yorumlar.map((y, i) => (
                         <code key={i} style={{ ...TYPE.meta, fontFamily: MONO, color: PAL.mut2, wordBreak: "break-word" }}>{y.teknik}</code>
                       ))}
@@ -576,12 +615,13 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                             <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_LBL(b)}</span>
                           </div>
                         ))}
-                        {/* ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi (danışma; eşleşme yoksa gizli) */}
+                        {/* ADDITIVE: LLM'in içerikten seçtiği somut gerçek birim (kurum dairesi
+                            veya hizmet müdürlüğü); büyük göstergede birincil, burada gerekçesiyle. */}
                         {r.servis_birimi?.ad && (
                           <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 0 2px", marginTop: SP.xs, borderTop: `1px dashed ${PAL.line}` }}>
                             <Icon.route width={13} height={13} aria-hidden="true" style={{ color: DERIN_OF(V), flex: "none" }} />
                             <span style={{ ...TYPE.data, color: PAL.ink2 }}>
-                              <span style={{ color: PAL.mut2 }}>Önerilen müdürlük: </span>
+                              <span style={{ color: PAL.mut2 }}>İçerikten önerilen birim: </span>
                               <strong style={{ fontWeight: 600 }}>{r.servis_birimi.ad}</strong>
                               {Array.isArray(r.servis_birimi.sinyal) && r.servis_birimi.sinyal.length > 0 && (
                                 <span style={{ ...TYPE.meta, color: PAL.mut3 }}> · içerik: {r.servis_birimi.sinyal.join(", ")}</span>

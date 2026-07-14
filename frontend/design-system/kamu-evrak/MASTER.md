@@ -86,7 +86,7 @@ glow tüm çalışma alanında SIFIRDIR.**
 | `TYPE.ui` | 14/20 | **UI varsayılanı** — gövde 400, buton 500, kart başlığı 600 |
 | `TYPE.read` | 16/24 | uzun okuma (özet, taslak metni) |
 | `TYPE.h2` | 20/26·600 | sayfa/bölüm başlığı |
-| `TYPE.num` | 24/28·600 | panel metrikleri (tabular-nums) |
+| `TYPE.num` | 24/28·600 | panel metrikleri (tabular-nums) + hüküm şeridi karar-kritik olgu (StatTile — evrak türü, hedef birim: 3-5sn'de kavranması gereken tek-iki değer; enflasyon yasak, satır başına ≤2) |
 | `TYPE.h1` | 28/34·600 | yalnız AuthPage başlığı |
 
 Sayısal kolon/metrik: SANS + `TNUM` (tabular-nums) — metrikte mono yasak. Yarım piksel ve

@@ -24,6 +24,23 @@ export const Fact = ({ k, v, c = PAL.ink2, icon }) => (
   </span>
 );
 
+/* Büyük glanceable istatistik — hüküm şeridinin "3-5 saniyede kavra" katmanı. Fact'ten
+   (14/500 küçük olgu) farkı: değer TYPE.num (24/600, MASTER: "panel metrikleri") — memur ilk
+   bakışta yalnız bunu okur. Yalnız hüküm şeridindeki 1-2 karar-kritik olguya ayrılır (evrak
+   türü, hedef birim); enflasyon riski var — Fact'in yerine geçmez. */
+export const StatTile = ({ k, v, sub, c = PAL.ink, icon }) => (
+  <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, minWidth: 0 }}>
+    {icon && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 3, color: DERIN_OF(c) }}>{icon}</span>}
+    <span style={{ minWidth: 0 }}>
+      <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, marginBottom: 2 }}>{k}</span>
+      {/* wordBreak: eşlenmemiş/ham fallback anahtarı (boşluksuz snake_case) da güvenle sarmalı —
+          gerçek etiketler (EVRAK_TR/BIRIM_LBL) tek satıra sığar, bu yalnız savunma. */}
+      <span style={{ display: "block", ...TYPE.num, color: DERIN_OF(c), maxWidth: 420, wordBreak: "break-word" }}>{v}</span>
+      {sub && <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, marginTop: 2 }}>{sub}</span>}
+    </span>
+  </div>
+);
+
 /* Görev bölüm etiketi — 12/500 sentence case + düz hairline ayraç. */
 export const GorevLabel = ({ n, t, color, count }) => (
   <div style={{ display: "flex", alignItems: "center", gap: SP.m, margin: "0 0 12px" }}>

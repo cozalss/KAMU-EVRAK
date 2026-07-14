@@ -719,7 +719,10 @@ export default function CanliAjanAkisi({
         );
         return (
           <section style={{ minHeight: "calc(100vh - 132px)" }}>
-            <div style={{ minHeight: "100%", display: "flex", flexWrap: "wrap" }}>
+            {/* minHeight:100% YALNIZ sonuç yokken (boş/koşum) — kolonlar viewport'u doldursun.
+                Sonuç varken KALDIRILIR: aksi halde alttaki tam-genişlik taslak bandı section'ı
+                büyütüp bu flex satırını da 100%'e şişiriyor → merkez sütun altında ~940px boşluk. */}
+            <div style={{ minHeight: result ? undefined : "100%", display: "flex", flexWrap: "wrap" }}>
 
               {/* Sol sütun — kaynak belge; sonuç geldikten sonra altına ajan izi iner */}
               <div style={{ flex: "1 1 320px", minWidth: 0, borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
@@ -728,25 +731,33 @@ export default function CanliAjanAkisi({
               </div>
 
               {/* Orta panel — koşum sürerken canlı ajan izi (panel üstünde tam genişlik,
-                  içerik boyu beyaz dikdörtgen); sonuç gelince ayrıntılı sonuç */}
-              {/* Alt dolgu 96px: sağ-altta sabit sohbet FAB'ının (ChatbotWidget, ~82px erişim)
-                  son satırı (Reddet/HITL) örtmesini önler — içerik FAB'ın üstünde kalır. */}
-              <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px 96px", display: "flex", flexDirection: "column", gap: SP.l }}>
+                  içerik boyu beyaz dikdörtgen); sonuç gelince ayrıntılı sonuç.
+                  Görev 2 taslağı buradan ÇIKARILDI → aşağıda tam-genişlik banda taşındı. */}
+              <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px 40px", display: "flex", flexDirection: "column", gap: SP.l }}>
                 {result ? (
                   <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
                     <NeonDetay embedded result={result} onMevzuatAc={onMevzuatAc}
                       onMevzuatSec={onMevzuatSec} seciliMevzuat={seciliMevzuat} />
                   </HataSiniri>
                 ) : izKart}
-                {/* Resmî yazı taslağı + HITL — Görev 2 (üretim) çıktısı: ayrıntılı sonucun
-                    (Görev 2'nin) ALTINA yerleşir. Sağ sütun kaldırıldı; taslak buraya taşındı. */}
-                {result && taslakBlok}
               </div>
 
           {/* Sağ sütun tümüyle kaldırıldı (kullanıcı isteği): sonuçta çıkarılan veri merkezde
-              kanonik (duplikasyondu) + taslak Görev 2 altında; koşumda da gereksiz görüldü.
-              Sayfa artık HER durumda 2 sütun: sol (kaynak + ajan izi) · merkez (ajan izi/sonuç). */}
+              kanonik (duplikasyondu) + taslak Görev 2 altında; koşumda da gereksiz görüldü. */}
             </div>
+
+            {/* Görev 2 (ÜRETİM) çıktısı — TAM GENİŞLİK: resmî yazı taslağı iki sütunu da kapsar.
+                Merkez sütunda kaldığında sol kaynak/ajan-izi sütununun offset'iyle sağa kaymış,
+                "arayüz kartı" gibi duruyordu; burada sayfanın tamamını kaplayınca belge ortada,
+                temiz ve prominan durur → memur doğrudan "üretilen resmî yazı"yı görür (Görev 2).
+                Alt dolgu 96px: sağ-alt sohbet FAB'ı (ChatbotWidget ~82px) HITL satırını örtmesin. */}
+            {result && (
+              <div style={{ borderTop: `1px solid ${PAL.line}`, background: PAL.bg2, padding: "24px clamp(16px,4vw,56px) 96px" }}>
+                <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+                  {taslakBlok}
+                </div>
+              </div>
+            )}
           </section>
         );
       })()}

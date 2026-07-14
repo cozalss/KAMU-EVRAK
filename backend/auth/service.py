@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import datetime as _dt
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -96,8 +96,19 @@ async def yenile(session: AsyncSession, *, refresh_token: str, ip: str | None = 
     kullanici = await session.get(Kullanici, oturum.kullanici_id)
     if kullanici is None or not kullanici.aktif:
         raise AuthError("oturum_gecersiz", "Kullanıcı pasif veya silinmiş.")
-    # ROTATION: eski oturumu iptal et, yenisini aç (tek kullanımlık refresh).
-    oturum.iptal = True
+    # ROTATION: eski oturumu iptal et, yenisini aç (tek kullanımlık refresh). Yukarıdaki
+    # SELECT'ten sonra koşulsuz `oturum.iptal = True` yazmak TOCTOU yarışına açıktı: aynı
+    # refresh token'la eşzamanlı iki çağrı ikisi de "iptal=false" okuyup ikisi de rotasyonu
+    # tamamlayabiliyordu (özellikle uzak DB'de round-trip gecikmesiyle sıkça) — tek-kullanımlık
+    # garantisi kağıt üstünde kalıyordu. Koşullu UPDATE ile atomik: Postgres satır kilidi
+    # eşzamanlı ikinci çağrıyı ilkinin commit'ine kadar bloklar, WHERE yeniden değerlendirilince
+    # rowcount=0 döner → kaybeden kesin 401 alır, tek bir çağrı gerçekten kazanır.
+    sonuc = await session.execute(
+        update(Oturum).where(Oturum.id == oturum.id, Oturum.iptal.is_(False)).values(iptal=True)
+    )
+    if sonuc.rowcount != 1:
+        await session.rollback()
+        raise AuthError("oturum_gecersiz", "Oturum bulunamadı veya iptal edilmiş.")
     return await _oturum_ac(session, kullanici, ip, user_agent)
 
 

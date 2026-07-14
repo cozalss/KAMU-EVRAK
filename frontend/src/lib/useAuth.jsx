@@ -30,10 +30,20 @@ export function AuthProvider({ children }) {
         cachedUser.set(ben);
         setStatus("auth");
       } catch {
-        tokens.clear();
         if (iptal) return;
-        setUser(null);
-        setStatus("anon");
+        // token'lar hâlâ localStorage'da mı? tryRefresh yalnız KESİN geçersiz oturumda
+        // (401 oturum_gecersiz) temizler; ağ hatası/429/5xx gibi geçici durumlarda
+        // dokunmaz. Token duruyorsa bu geçicidir — oturumu bozma (hızlı art arda
+        // reload'da yarışan refresh çağrılarından biri kaybedip geçerli oturumu
+        // öldürmesin diye).
+        if (!tokens.access()) {
+          setUser(null);
+          setStatus("anon");
+        } else if (cachedUser.get()) {
+          setStatus("auth"); // önbellekli kullanıcıyla optimistik oturum korunur
+        } else {
+          setStatus("anon"); // önbellek de yok — doğrulanamadı, ama token sonraki denemede dursun
+        }
       }
     })();
     return () => {

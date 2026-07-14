@@ -100,24 +100,37 @@ async function apiFetch(path, { method = "GET", body, auth = true } = {}) {
   return res.json();
 }
 
+// Eşzamanlı 401'ler (açılışta benKimim + islemler + giden-evrak aynı anda tetiklenir,
+// StrictMode'da iki kat) aynı refresh token'ı paylaşır; refresh tek kullanımlıktır
+// (backend rotasyon) — yarışan her çağrı ayrı /auth/yenile atarsa kaybeden(ler) geçerli
+// bir oturumu geçersiz sanıp token'ları siler. Tek-uçuş kilidi: eşzamanlı çağrılar aynı
+// promise'i bekler, tek istek gider.
+let refreshInFlight = null;
+
 async function tryRefresh() {
-  try {
-    const res = await fetch("/auth/yenile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh_token: tokens.refresh() }),
-    });
-    if (!res.ok) {
-      tokens.clear();
-      return false;
+  if (refreshInFlight) return refreshInFlight;
+  refreshInFlight = (async () => {
+    try {
+      const res = await fetch("/auth/yenile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: tokens.refresh() }),
+      });
+      if (res.status === 401) {
+        tokens.clear(); // sunucu oturumu kesin geçersiz/iptal saydı — kalıcı çıkış doğru
+        return false;
+      }
+      if (!res.ok) return false; // 429/5xx/vb. geçici hata — oturumu bozma, bir sonrakinde tekrar denenir
+      const data = await res.json();
+      tokens.set(data.access_token, data.refresh_token);
+      return true;
+    } catch {
+      return false; // ağ hatası — geçici, token'lara dokunma
+    } finally {
+      refreshInFlight = null;
     }
-    const data = await res.json();
-    tokens.set(data.access_token, data.refresh_token);
-    return true;
-  } catch {
-    tokens.clear();
-    return false;
-  }
+  })();
+  return refreshInFlight;
 }
 
 /* ---- Auth ---- */

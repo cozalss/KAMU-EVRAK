@@ -14,9 +14,9 @@ from typing import Any
 
 import structlog
 
-from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM, LLM_ATLA_NODELAR
+from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM, LLM_ATLA_NODELAR, SERVIS_BIRIM_LLM
 from agents.nodes._llm_extract import llm_json, real_llm
-from agents.servis_birim import oner_servis_birimi
+from agents.servis_birim import oner_servis_birimi, oner_servis_birimi_llm
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -188,12 +188,18 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
     """Birim yönlendirme + ADDITIVE servis müdürlüğü önerisi.
 
     Ölçülen 9-birim kararı (`hedef_birim`/`birim_alternatifleri`) `_route_birim_impl`
-    ile AYNEN üretilir (gold/Top-1 etkilenmez). Buna ek olarak evrak İÇERİĞİNDEN somut
-    hizmet müdürlüğü türetilir (agents.servis_birim); eşleşme varsa `servis_birimi`
-    alanı eklenir (danışma sinyali, uydurma yoksa hiç eklenmez).
+    ile AYNEN üretilir (gold/Top-1 etkilenmez — LLM'e serbest bırakınca 0.91→0.54 düştüğü
+    ölçülmüştü, bkz. _route_birim_impl docstring). Buna ek olarak evrak İÇERİĞİNDEN somut
+    ("gerçek") hizmet müdürlüğü türetilir: LLM BİRİNCİL (SERVIS_BIRIM_LLM, kapalı-küme —
+    yalnız agents.servis_birim.SERVIS_BIRIM_TR'den seçer), LLM kapalı/mock/anahtarsız/hata/
+    geçersiz-kod → kök-anahtar eşleşmesi devreye girer. Eşleşme yoksa `servis_birimi` hiç
+    eklenmez (danışma sinyali; uydurma müdürlük üretilmez, resmî havale hedef_birim'dedir).
     """
     result = await _route_birim_impl(state)
-    servis = oner_servis_birimi(state.get("evrak_text", "") or "")
+    text = state.get("evrak_text", "") or ""
+    servis = await oner_servis_birimi_llm(text) if SERVIS_BIRIM_LLM else None
+    if servis is None:
+        servis = oner_servis_birimi(text)
     if servis:
         result = {**result, "servis_birimi": servis}
     return result

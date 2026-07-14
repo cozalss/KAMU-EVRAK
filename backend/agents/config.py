@@ -491,6 +491,15 @@ SDP_ONERI = os.getenv("SDP_ONERI", "1") == "1"
 # SARI — yanlış tahmin yanlış NOT olur, yanlış BANT olamaz. Mock/anahtar yok → susar.
 MAKAM_LLM = os.getenv("MAKAM_LLM", "1") == "1"
 
+# Servis/hizmet müdürlüğü önerisi (agents.servis_birim — "gerçek" 11 belediye müdürlüğü,
+# 5393 s.K. taksonomisi) LLM BİRİNCİL, kök-anahtar eşleşmesi fallback. Kapalı-küme (arsiv.py
+# _sdp_llm_secimi deseniyle aynı): LLM yalnız SERVIS_BIRIM_TR havuzundan seçer, havuz-dışı/
+# boş/mock/hata → None → deterministik oner_servis_birimi devreye girer (uydurma müdürlük
+# ÜRETİLMEZ). NOT: ölçülen 9-birim yönlendirmesi (hedef_birim/route_birim) bu bayraktan
+# ETKİLENMEZ — o alanda LLM'e serbest bırakma held-out A/B'de Top-1'i 0.91→0.54'e düşürmüştü
+# (route_birim.py:132 docstring); bilinçli olarak dokunulmadı.
+SERVIS_BIRIM_LLM = os.getenv("SERVIS_BIRIM_LLM", "1") == "1"
+
 # (7) Rerank sağlayıcısı: "deepseek" (listwise, model indirmez → vitrine girebilir) |
 # "cross-encoder" (bge-reranker, rag extra + ~1.1GB model). RERANK_ENABLED mevcut
 # ana anahtar olarak kalır (varsayılan 0 — baseline saf-BM25 birebir).

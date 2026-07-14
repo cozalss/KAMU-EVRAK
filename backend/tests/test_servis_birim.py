@@ -8,7 +8,20 @@ from __future__ import annotations
 
 import pytest
 
-from agents.servis_birim import oner_servis_birimi
+import agents.servis_birim as sb
+from agents.servis_birim import (
+    SERVIS_BIRIM_TR,
+    TAM_BIRIM_KATALOG,
+    oner_servis_birimi,
+    oner_servis_birimi_llm,
+)
+
+
+def _sahte_llm(payload):
+    """llm_json imzasında sabit payload döndüren sahte async LLM."""
+    async def _fake(system, user, **kwargs):
+        return payload
+    return _fake
 
 
 class TestOnerServisBirimi:
@@ -48,6 +61,70 @@ class TestOnerServisBirimi:
         sonuc = oner_servis_birimi(metin)
         # Assert — sinyal listesi kısa tutulur (UI ipucu)
         assert sonuc is not None and len(sonuc["sinyal"]) <= 3
+
+
+class TestTamBirimKatalog:
+    """LLM'in seçebileceği kombine katalog: kurum daireleri + hizmet müdürlükleri."""
+
+    def test_katalog_kurum_ve_mudurluk_birlesimi(self):
+        # kurum-düzeyi daire (BIRIM_TR) + somut müdürlük (SERVIS_BIRIM_TR) birlikte
+        from agents.config import BIRIM_TR
+        assert "hukuk_musavirligi" in TAM_BIRIM_KATALOG  # kurum dairesi
+        assert "zabita" in TAM_BIRIM_KATALOG  # hizmet müdürlüğü
+        # her müdürlük + her kurum dairesi kataloğa dahil
+        for kod in SERVIS_BIRIM_TR:
+            assert kod in TAM_BIRIM_KATALOG
+        for kod in BIRIM_TR:
+            assert kod in TAM_BIRIM_KATALOG
+        # TAM boyut = 9 + 11 (çakışma YOK) — gelecekte bir anahtar çakışması sessizce
+        # birim düşürürse bu assertion kırılır (zayıf ">=" bunu kaçırırdı).
+        assert len(TAM_BIRIM_KATALOG) == len(BIRIM_TR) + len(SERVIS_BIRIM_TR)
+
+
+class TestOnerServisBirimiLlm:
+    """LLM-birincil birim seçimi (kapalı-küme, gerçek-anahtar varken)."""
+
+    async def test_llm_kurum_dairesi_secebilir(self, monkeypatch):
+        # Arrange — gerçek LLM varmış gibi + kurum dairesi (hukuk) seçiyor
+        monkeypatch.setattr(sb, "real_llm", lambda: object())
+        monkeypatch.setattr(sb, "llm_json",
+                            _sahte_llm({"kod": "hukuk_musavirligi", "sinyal": ["dava", "haciz"]}))
+        # Act
+        out = await oner_servis_birimi_llm("Mahkeme kararı ve icra takibi hakkında.")
+        # Assert — kurum dairesi de dönebilir (katalog genişledi)
+        assert out is not None
+        assert out["kod"] == "hukuk_musavirligi"
+        assert out["ad"] == TAM_BIRIM_KATALOG["hukuk_musavirligi"]
+        assert out["sinyal"] == ["dava", "haciz"]
+
+    async def test_llm_hizmet_mudurlugu_secebilir(self, monkeypatch):
+        # Arrange
+        monkeypatch.setattr(sb, "real_llm", lambda: object())
+        monkeypatch.setattr(sb, "llm_json",
+                            _sahte_llm({"kod": "zabita", "sinyal": ["gürültü"]}))
+        # Act
+        out = await oner_servis_birimi_llm("Gece geç saatte gürültü şikâyeti.")
+        # Assert
+        assert out is not None and out["kod"] == "zabita"
+
+    async def test_havuz_disi_kod_reddedilir(self, monkeypatch):
+        # Arrange — LLM uydurma/havuz-dışı kod dönerse elenir (deterministik fallback'e düşer)
+        monkeypatch.setattr(sb, "real_llm", lambda: object())
+        monkeypatch.setattr(sb, "llm_json",
+                            _sahte_llm({"kod": "uydurma_birim_xyz", "sinyal": ["x"]}))
+        # Act + Assert
+        assert await oner_servis_birimi_llm("herhangi bir metin") is None
+
+    async def test_bos_kod_none(self, monkeypatch):
+        monkeypatch.setattr(sb, "real_llm", lambda: object())
+        monkeypatch.setattr(sb, "llm_json", _sahte_llm({"kod": "", "sinyal": []}))
+        assert await oner_servis_birimi_llm("hiçbirine uymuyor") is None
+
+    async def test_mock_modda_none_deterministige_birakir(self, monkeypatch):
+        # Arrange — real_llm None (mock/anahtarsız) → LLM yolu hiç açılmaz
+        monkeypatch.setattr(sb, "real_llm", lambda: None)
+        # Act + Assert — None → route_birim keyword fallback'e düşer (CI deterministik)
+        assert await oner_servis_birimi_llm("Sokaktaki çukurun onarımı.") is None
 
 
 class TestRouteBirimAdditive:

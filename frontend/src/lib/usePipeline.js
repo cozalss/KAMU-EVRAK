@@ -220,9 +220,12 @@ export function usePipeline() {
   }, [reset, streamRun]);
 
   // ---------- HITL resume ----------
+  // Döner: true = karar backend'e işlendi (result-effect damgayı tüketir), false = başarısız/
+  // no-op. Çağıran (DashboardApp) false'ta pendingApprovalRef'i TEMİZLEMELİ — aksi halde bayat
+  // karar bir sonraki ilgisiz koşuma sızıp onaylanmamış evrakı Giden Evrak'a gönderir.
   const resume = useCallback(async (secim, metin = "", gerekce = "") => {
     const p = pendingOnay;
-    if (!p?.thread_id) return;
+    if (!p?.thread_id) return false;
     setBusy(true);
     try {
       const res = await authFetch("/process_doc/resume", {
@@ -235,8 +238,10 @@ export function usePipeline() {
       setPendingOnay(null);
       setResult(final);
       showToast(secim === "reddet" ? "Taslak reddedildi." : secim === "duzenle" ? "Düzenleme onaylandı." : "Taslak onaylandı.");
+      return true;
     } catch (err) {
       showToast(err?.message || "Onay gönderilemedi — backend çalışıyor mu?");
+      return false;
     } finally {
       setBusy(false);
     }
@@ -251,7 +256,11 @@ export function usePipeline() {
 
   // ---------- C) Taslağı PDF/DOCX indir → /yazi/taslak ----------
   const download = useCallback(async (format) => {
-    const md = result?.yazi_taslak_md;
+    // Taslak kaynağı: result (yeşil/karar sonrası) VEYA pendingOnay (HITL beklerken). Dosya
+    // yükleme yolunda evrakText boştur ama taslak result.yazi_taslak_md'de vardır → taslağı
+    // buradan al, evrakText'e bağlanma (aksi halde yüklenen dosyada indirme çalışmıyordu).
+    const src = result || pendingOnay;
+    const md = src?.yazi_taslak_md;
     if (!md && !evrakText) {
       showToast("İndirme için önce bir evrak işleyin.");
       return;
@@ -268,13 +277,13 @@ export function usePipeline() {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify(md ? {
               taslak_md: md,
-              konu: result?.bilgi_unsurlari?.konu || "",
-              yazi_turu: result?.yazi_turu || "",
-              sdp_kodu: result?.arsiv_metadata?.sdp_kodu || "",
-              sdp_adi: result?.arsiv_metadata?.sdp_adi || "",
-              hedef_birim: result?.hedef_birim || "",
-              ilgi_tarih: result?.bilgi_unsurlari?.tarih || "",
-              ilgi_sayi: result?.bilgi_unsurlari?.sayi || "",
+              konu: src?.bilgi_unsurlari?.konu || "",
+              yazi_turu: src?.yazi_turu || "",
+              sdp_kodu: src?.arsiv_metadata?.sdp_kodu || "",
+              sdp_adi: src?.arsiv_metadata?.sdp_adi || "",
+              hedef_birim: src?.hedef_birim || "",
+              ilgi_tarih: src?.bilgi_unsurlari?.tarih || "",
+              ilgi_sayi: src?.bilgi_unsurlari?.sayi || "",
             } : { evrak_text: evrakText }),
           })
         : md
@@ -304,7 +313,7 @@ export function usePipeline() {
       if (url) { const u = url; setTimeout(() => URL.revokeObjectURL(u), 1500); }
       setDownloading("");
     }
-  }, [evrakText, result, showToast]);
+  }, [evrakText, result, pendingOnay, showToast]);
 
   // Dosya doğrula + çalıştır.
   const runFileValidated = useCallback((file) => {

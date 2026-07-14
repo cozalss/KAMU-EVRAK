@@ -241,7 +241,10 @@ export default function MevzuatView({ history = [] }) {
     const t = setTimeout(() => {
       fetch(`/mevzuat/derin-ara?q=${encodeURIComponent(q)}&limit=30`)
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-        .then((d) => { if (!iptal) setDerin(d); })
+        // Şekil doğrula: aşağıdaki render derin.sonuclar.length/.map çağırır — backend 200 ama
+        // beklenmedik gövde (sonuclar yok/null/dizi değil) dönerse guard'sız erişim TypeError
+        // fırlatıp TÜM Mevzuat görünümünü beyaz ekrana düşürürdü. Dizi değilse boş sonuç say.
+        .then((d) => { if (!iptal) setDerin(d && Array.isArray(d.sonuclar) ? d : { q, sonuclar: [] }); })
         .catch(() => { if (!iptal) setDerin("hata"); })
         .finally(() => { if (!iptal) setDerinBekliyor(false); });
     }, 350);

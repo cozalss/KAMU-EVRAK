@@ -492,6 +492,17 @@ export default function CanliAjanAkisi({
   onTelefon = () => {}, onMevzuatAc = null,
   onMevzuatSec = null, seciliMevzuat = [], dayanakUretiliyor = false,
 }) {
+  // Rules of Hooks: TÜM hook'lar KOŞULSUZ ve fonksiyonun EN başında olmalı — aşağıdaki
+  // `if (!started) return` erken çıkışı bu hook'lardan SONRA gelirse `started` false→true
+  // olduğunda (kullanıcı "İşle"ye basınca — demonun merkez akışı) React "Rendered more
+  // hooks than during the previous render" ile ÇÖKER. Bu yüzden burada, erken return'den önce.
+  // A4 belge modalı — "kaynak" | "taslak" | null (paneller tıklanınca açılır).
+  const [belgeModal, setBelgeModal] = useState(null);
+  // Ajan izi adım detay modalı — display index'i (istasyon/nokta/çip tıklanınca açılır).
+  const [detayIdx, setDetayIdx] = useState(null);
+  const km = result?.kanit_metadata;
+  const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
+
   // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok) + sürükle-bırak yükleme alanı.
   if (!started) {
     return <BosDurumDropzone onGoInbox={onGoInbox} onUpload={onUpload} onFileDrop={onFileDrop} onTelefon={onTelefon} />;
@@ -524,15 +535,15 @@ export default function CanliAjanAkisi({
   })();
   const statusText = busy ? "İşleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "Tamamlandı" : "Sırada");
 
-  // A4 belge modalı — "kaynak" | "taslak" | null (paneller tıklanınca açılır).
-  const [belgeModal, setBelgeModal] = useState(null);
-  // Ajan izi adım detay modalı — display index'i (istasyon/nokta/çip tıklanınca açılır).
-  const [detayIdx, setDetayIdx] = useState(null);
-  const km = result?.kanit_metadata;
-  const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
   const draftMd = result?.yazi_taslak_md;
   // Çok-konulu evrakta birim başına ayrı üst yazı taslağı — her biri kendi HITL kararını taşır.
-  const altTaslaklar = (result?.alt_talepler || []).filter((a) => a?.yazi_taslak_md);
+  // Her karta ORİJİNAL 1-tabanlı sira'yı ekle: backend /alt-talep/{sira}/onayla, alt_talep'in
+  // TAM listedeki (result.alt_talepler) konumunu bekler. Aşağıda yazi_taslak_md'siz olanlar
+  // filtrelenir; filtrelenmiş index'i sira olarak göndermek (eski hata) bir önceki alt_talep
+  // taslaksızsa sira'yı kaydırıp kararı YANLIŞ birime işliyordu (workflow bulgusu).
+  const altTaslaklar = (result?.alt_talepler || [])
+    .map((a, i) => ({ a, sira: i + 1 }))
+    .filter((x) => x.a?.yazi_taslak_md);
   const decisionReady = !busy && (!!pendingOnay || !!result);
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   const metaLine = buildMetaLine(result, fileMeta);
@@ -697,12 +708,12 @@ export default function CanliAjanAkisi({
                 </div>
               </div>
             )}
-            {altTaslaklar.map((a, i) => (
-              <AltTaslakKarti key={i} altTalep={a}
+            {altTaslaklar.map(({ a, sira }) => (
+              <AltTaslakKarti key={sira} altTalep={a}
                 onTurUret={(tur) => onAltTurUret(a, tur)}
-                onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", i + 1, tur)}
-                onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", i + 1, tur)}
-                onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, i + 1)} />
+                onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", sira, tur)}
+                onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", sira, tur)}
+                onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, sira)} />
             ))}
           </>
         );

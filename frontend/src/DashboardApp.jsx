@@ -66,7 +66,13 @@ const KARAR_ETIKET = { onayla: "onaylandi", reddet: "reddedildi" };
 const gecisle = (fn) => {
   const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
   if (!document.startViewTransition || az) { fn(); return; }
-  document.startViewTransition(() => { flushSync(fn); });
+  const t = document.startViewTransition(() => { flushSync(fn); });
+  // Hızlı ard arda geçişte (sunucu görünümler arası hızlı tıklarsa) önceki geçiş SKIP edilir
+  // ve .ready/.finished promise'leri "Transition was skipped" ile REJECT olur — yakalanmazsa
+  // unhandled rejection (uncaught exception) olarak konsola düşer. Geçiş görsel; reddi yut.
+  t?.ready?.catch(() => {});
+  t?.finished?.catch(() => {});
+  t?.updateCallbackDone?.catch(() => {});
 };
 
 export default function DashboardApp({ tema, onTemaDegistir }) {
@@ -369,18 +375,21 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
   // HITL açık → kararı damgala + resume (outbox kaydı result-effect'te). HITL kapalı → mevcut
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
-  const onApprove = () => {
-    if (pendingOnay) { pendingApprovalRef.current = { secim: "onayla", fileMeta }; resume("onayla"); }
+  // HITL kararı: ref'i damgala + resume. resume BAŞARISIZ olursa (backend 500/kopuk bağlantı)
+  // ref'i HEMEN temizle — yoksa bayat karar bir sonraki ilgisiz koşumun result-effect'ine
+  // sızıp o (onaylanmamış) evrakı sahte "onaylandı" ile Giden Evrak'a gönderir (workflow bulgusu).
+  const onApprove = async () => {
+    if (pendingOnay) { pendingApprovalRef.current = { secim: "onayla", fileMeta }; if (!(await resume("onayla"))) pendingApprovalRef.current = null; }
     else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); stampDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
-  const onReject = () => {
-    if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; resume("reddet"); }
+  const onReject = async () => {
+    if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; if (!(await resume("reddet"))) pendingApprovalRef.current = null; }
     else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); stampDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
-  const onEdit = () => {
-    if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; resume("duzenle"); return; }
+  const onEdit = async () => {
+    if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; if (!(await resume("duzenle"))) pendingApprovalRef.current = null; return; }
     const taslakId = pushDraft(result, fileMeta);
     if (taslakId) { setTaslakHedef(taslakId); showToast("Taslak düzenlemeye alındı — Taslaklar'a eklendi."); goView("taslaklar"); }
     else showToast("Önce taslak üreten bir evrak işleyin.");
@@ -676,7 +685,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       onApprove={onApprove} onEdit={onEdit} onReject={onReject} onAltKarar={onAltKarar}
       onAltTurUret={uretAltTaslakTuru} onAltDuzenle={onAltDuzenle}
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
-      onDownload={download} downloading={downloading} canDownload={!!evrakText}
+      onDownload={download} downloading={downloading} canDownload={!!evrakText || !!data?.yazi_taslak_md}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
       fileUrl={fileUrl} onFileDrop={runFile} onTelefon={() => setTelefonAcik(true)}
       onMevzuatAc={mevzuatAc}

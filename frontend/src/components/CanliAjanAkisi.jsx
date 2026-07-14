@@ -712,19 +712,33 @@ export default function CanliAjanAkisi({
             {/* Çok-konulu açıklama şeridi — N ayrı birim kartının NEDEN olduğunu tek cümlede
                 çerçeveler (memur "tekrarlı kart yığını" değil "N birime N ayrı yazı" görür). */}
             {altTaslaklar.length >= 2 && (
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: `2px ${SP.xs}px` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: `2px ${SP.xs}px`, flexWrap: "wrap" }}>
                 <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.V }}><Icon.doc /></span>
                 <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Çok-konulu evrak · {altTaslaklar.length} ayrı birim</span>
                 <span style={{ ...TYPE.meta, color: PAL.mut2 }}>— her birim için ayrı resmî yazı taslağı; kararı tek tek verin</span>
               </div>
             )}
-            {altTaslaklar.map(({ a, sira }, i) => (
-              <AltTaslakKarti key={sira} altTalep={a} sira={i + 1} toplam={altTaslaklar.length}
-                onTurUret={(tur) => onAltTurUret(a, tur)}
-                onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", sira, tur)}
-                onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", sira, tur)}
-                onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, sira)} />
-            ))}
+            {/* YAN YANA responsive grid — her birim ayrı kolon (auto-fit, min 340px) → 2-3 kolon.
+                Kartlar artık dikey yığılıp karışmıyor; ayırt edici konu + numara ile taranır. */}
+            {altTaslaklar.length >= 2 ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: SP.m, alignItems: "stretch" }}>
+                {altTaslaklar.map(({ a, sira }, i) => (
+                  <AltTaslakKarti key={sira} altTalep={a} sira={i + 1}
+                    onTurUret={(tur) => onAltTurUret(a, tur)}
+                    onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", sira, tur)}
+                    onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", sira, tur)}
+                    onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, sira)} />
+                ))}
+              </div>
+            ) : (
+              altTaslaklar.map(({ a, sira }, i) => (
+                <AltTaslakKarti key={sira} altTalep={a} sira={i + 1}
+                  onTurUret={(tur) => onAltTurUret(a, tur)}
+                  onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", sira, tur)}
+                  onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", sira, tur)}
+                  onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, sira)} />
+              ))
+            )}
           </>
         );
         return (
@@ -763,7 +777,9 @@ export default function CanliAjanAkisi({
                 Alt dolgu 96px: sağ-alt sohbet FAB'ı (ChatbotWidget ~82px) HITL satırını örtmesin. */}
             {result && (
               <div style={{ borderTop: `1px solid ${PAL.line}`, background: PAL.bg2, padding: "24px clamp(16px,4vw,56px) 96px" }}>
-                <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+                {/* Çok-konulu grid daha geniş nefes ister (2-3 kolon) → 1400; tek taslak belge
+                    okuma kolonu (~800) için 1000'de ortalı kalır. */}
+                <div style={{ maxWidth: altTaslaklar.length >= 2 ? 1400 : 1000, margin: "0 auto" }}>
                   {taslakBlok}
                 </div>
               </div>

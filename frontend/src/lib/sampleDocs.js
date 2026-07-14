@@ -1,7 +1,10 @@
 /* Denenebilir örnek evrak metinleri — backend OCR'sız JSON yolu (/process_doc) için.
    TÜMÜ SAHTE veri (CLAUDE.md §2 / şartname §6.5): isim/TCKN/telefon/IBAN uydurma; gerçek
-   kişi veya kurumla eşleşmez. İnternetten gerçek evrak ÇEKİLMEDİ (gerçek-PII riski); format
-   2646 sayılı Yönetmelik'e göre gerçekçi, içerik %100 kurgudur.
+   kişi veya kurumla eşleşmez. Format 2646 sayılı Yönetmelik'e göre gerçekçi, içerik %100
+   kurgudur. "Gerçek dilekçe şablonlarından uyarlanmış" işaretli örnekler (aşağıda ayrı
+   bölümde), kamuya açık dilekçe-örneği/hukuk sitelerindeki BOŞ ŞABLON metinlerin (ad/TCKN/
+   adres alanları zaten doldurulmamış) gövde diline ve yapısına dayanır — kaynakta gerçek
+   kişiye ait doldurulmuş bir dilekçe YOKTU; tüm kimlik alanları buradan itibaren kurgu.
 
    Demo (15p): jüri dosya bulmadan tek tıkla sistemin HER özelliğini canlı işletir. Her örnek
    pipeline'ın farklı bir davranışını sergiler; id = geçerli config.EVRAK_TURLERI değeri
@@ -200,6 +203,115 @@ ederim.
 Adı Soyadı: Ali Vural
 Telefon: 0555 777 88 99
 E-posta: ali.vural@ornekmail.com`,
+  },
+
+  // ---------- Gerçek dilekçe şablonlarından uyarlanmış (bkz. dosya başı not) ----------
+  {
+    id: "sikayet_gurultu",
+    label: "Gürültü Şikâyeti",
+    icon: "alert",
+    grup: "Vatandaş",
+    aciklama: "2872 Çevre Kanunu — gürültü kirliliği şikâyeti → Zabıta · SLA: tanımsız",
+    text: `T.C.
+BAĞCILAR BELEDİYE BAŞKANLIĞINA
+İSTANBUL
+
+Tarih: 11.07.2026
+Konu: Gürültü kirliliği şikâyeti
+
+İkamet ettiğim binanın alt katında faaliyet gösteren eğlence mekânından
+kaynaklanan aşırı ve sürekli gürültü nedeniyle özellikle gece saatlerinde
+huzursuzluk yaşamaktayım. Mekân işletmecisi defalarca sözlü olarak
+uyarılmasına rağmen gürültü seviyesi düşürülmemiştir. 2872 sayılı Çevre
+Kanunu ve Gürültü Kontrol Yönetmeliği kapsamında gerekli gürültü ölçümünün
+yapılarak yasal işlem başlatılmasını talep ederim.
+
+Adı Soyadı: Hüseyin Arslan
+T.C. Kimlik No: 32165498770
+Adres: Yıldıztepe Mahallesi, Papatya Sokak No: 14/3, Bağcılar / İSTANBUL
+Telefon: 0555 234 56 78
+İmza`,
+  },
+  {
+    id: "talep_yol_tamiri",
+    label: "Yol / Kaldırım Tamiri Talebi",
+    icon: "pencil",
+    grup: "Vatandaş",
+    aciklama: "Fen İşleri'ne asfalt-kaldırım yenileme talebi → İmar/Ruhsat · SLA: tanımsız",
+    text: `T.C.
+ODUNPAZARI BELEDİYE BAŞKANLIĞINA
+Fen İşleri Müdürlüğüne
+ESKİŞEHİR
+
+Tarih: 08.07.2026
+Konu: Yol ve kaldırım yapımı talebi
+
+Belediyenizin hizmet bölgesinde bulunan sokakta ikamet etmekteyim.
+Sokağımızın asfalt yüzeyi ve kaldırımları; yapılan altyapı çalışmaları,
+iklim şartları ve araç trafiği nedeniyle büyük ölçüde yıpranmış olup
+araç ve yaya geçiş güvenliğini tehlikeye sokmaktadır. Belediyenizin
+hizmet planlaması dahilinde sokağımızdaki yol ve kaldırım yüzeyinin
+yenilenmesi hususunda gereğinin yapılmasını arz ve talep ederim.
+
+Adı Soyadı: Burak Şen
+T.C. Kimlik No: 65498712330
+Adres: Cumhuriyet Mahallesi, Menekşe Sokak No: 22, Odunpazarı / ESKİŞEHİR
+Telefon: 0555 456 78 90
+İmza`,
+  },
+  {
+    id: "sikayet_sokak_hayvani",
+    label: "Başıboş Hayvan Şikâyeti",
+    icon: "alert",
+    grup: "Vatandaş",
+    aciklama: "5199 Hayvanları Koruma Kanunu m.6 — sahipsiz köpek şikâyeti · SLA: tanımsız",
+    text: `T.C.
+AKDENİZ BELEDİYE BAŞKANLIĞINA
+Veteriner İşleri Müdürlüğüne
+MERSİN
+
+Tarih: 12.07.2026
+Konu: Başıboş sokak köpekleri hakkında şikâyet
+
+Mahallemizdeki park ve sokaklarda dolaşan başıboş köpekler nedeniyle
+gerek kendimiz gerekse çocuklarımız dışarıda yürümekten tedirginlik
+duymaktayız. Söz konusu köpeklerin zaman zaman geçen kişilere doğru
+saldırgan tavırlar sergilediği de gözlenmektedir. 5199 sayılı Hayvanları
+Koruma Kanunu'nun 6. maddesi uyarınca sahipsiz hayvanların ilgili
+bakımevine götürülerek gerekli sağlık ve güvenlik tedbirlerinin
+alınmasını talep ederim.
+
+Adı Soyadı: Emine Koç
+T.C. Kimlik No: 74185296302
+Adres: Barış Mahallesi, Leylak Sokak No: 6, Akdeniz / MERSİN
+Telefon: 0555 345 67 89
+İmza`,
+  },
+  {
+    id: "talep_aydinlatma",
+    label: "Sokak Aydınlatması Arızası",
+    icon: "pencil",
+    grup: "Vatandaş",
+    aciklama: "Arızalı aydınlatma direği bildirimi/talebi → İmar/Ruhsat · SLA: tanımsız",
+    text: `T.C.
+NİLÜFER BELEDİYE BAŞKANLIĞINA
+BURSA
+
+Tarih: 06.07.2026
+Konu: Sokak aydınlatması arıza bildirimi ve talebi
+
+İkamet ettiğim sokaktaki aydınlatma direği uzun süredir arızalı olup
+akşam saatlerinden itibaren sokağımız tamamen karanlıkta kalmaktadır.
+Bu durum hem yaya güvenliği hem de asayiş açısından ciddi endişe
+yaratmaktadır. Söz konusu arızanın en kısa sürede giderilmesi, mümkün
+değilse bölgeye yeni bir aydınlatma direği yerleştirilmesi hususunda
+gereğinin yapılmasını rica ederim.
+
+Adı Soyadı: Derya Aksoy
+T.C. Kimlik No: 15975348620
+Adres: Konak Mahallesi, Nilüfer Caddesi No: 31/2, Nilüfer / BURSA
+Telefon: 0555 567 89 01
+İmza`,
   },
 
   // ---------- Kurum → kurum (SLA: vatandaş süresi yok → tanımsız) ----------

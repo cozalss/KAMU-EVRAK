@@ -1,16 +1,11 @@
-/* CanliAjanAkisi — "İşleniyor" görünümü (canlı komuta merkezi ana içeriği).
-   SADECE gerçek veri: nodes (canlı SSE/JSON) + ProcessResponse. Sahte demo auto-animasyon YOK —
-   evrak işlenmiyorsa anlamlı boş durum ("Gelen Evrak'tan seçin veya yükleyin").
-   Sidebar kabuğu DashboardApp'te; bu bileşen <main> içine yerleşir.
-   Üst-bar (dosya meta + ilerleme) + 3-panel: SOL kaynak belge ↔ ORTA dinamik sahne ↔ SAĞ
-   çıkarılan/risk/taslak+HITL. Orta panel koşum sürerken CANLI AJAN İZİ kartını gösterir
-   (demo yıldızı); sonuç gelince iz kartı sol sütuna (kaynak belge altı) iner ve orta paneli
-   Ayrıntılı sonuç (NeonDetay gömülü) devralır. */
+/* CanliAjanAkisi — "İşleniyor" görünümü.
+   Gerçek SSE verisini tek bir canlı işlem odağında sunar; kaynak belge her zaman yan tarafta
+   erişilebilir. İşlem bittiğinde doğrudan memur kararı için ayrıntılı sonuç ve taslağa geçer. */
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
-import NeonDetay from "./NeonDetay.jsx";
+import SonucCalismaAlani from "./SonucCalismaAlani.jsx";
 import AjanAdimDetay from "./AjanAdimDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
@@ -21,7 +16,7 @@ import { Chip } from "./NeonDetayParts.jsx";
 import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 
-/* ——— Evrak hattı: ajan izi, metro hat şeması dilinde ———
+/* ——— İşlem adımları: metro hat şeması dili ———
    Her ajan bir istasyon; Görev 1 = T hattı, Görev 2 = V hattı. Ray, adımlar tamamlandıkça
    istasyondan istasyona hat rengiyle dolar. İki hat tek kart yüzeyinde yaşar: panel genişse
    yan yana (metro şeması), darsa alt alta; Görev 2'nin başındaki kesikli parça aktarmadır
@@ -155,7 +150,7 @@ const HatSon = ({ col, done, akis }) => (
    panelde iki hattı yan yana koyar (metro şeması), darda alt alta yığar. Terminüs, hattın
    kendi istasyonları bitince dolar (Görev 1 hattı, Görev 2'yi beklemez); istasyon numarası
    global sıradır (01–16) — iki hat tek koşumun parçaları. */
-function HatFaz({ n, items, risk, glow, sahne, sonHat = true, onDetay }) {
+function _HatFaz({ n, items, risk, glow, sahne, sonHat = true, onDetay }) {
   const col = n === 2 ? V : T;
   const ms = items.reduce((s, a) => (a.status === "done" && Number.isFinite(a.t1 - a.t0) ? s + (a.t1 - a.t0) : s), 0);
   const sure = ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
@@ -270,46 +265,6 @@ function IstasyonSeridi({ display, glow, onDetay }) {
   return <div style={{ display: "flex", alignItems: "center", gap: SP.xs, margin: `${SP.xs}px 0 0` }}>{parcalar}</div>;
 }
 
-/* Sonuç sonrası ajan izi — TEK SATIR yatay metro, HER istasyon ADIYLA (kullanıcı isteği:
-   çıplak nokta değil, isimli + güzel). Ray renkli segmentlerle akar: Görev 1 = T (teal),
-   Görev 2 = V (mühür); görev geçişi kesikli "aktarma". Her istasyon: renkli ✓ nokta (tıkla→detay)
-   + adım no (mono/TNUM) + kısa ad. Sığmazsa yatay kayar; press feedback + reduced-motion güvenli. */
-function IzSatiriLabelli({ display, onDetay }) {
-  const son = display.length - 1;
-  const yari = (aktarma, renk) => (
-    <span aria-hidden="true" style={{ flex: 1, height: 2, alignSelf: "center",
-      ...(renk === null ? {} : aktarma ? { borderTop: `2px dashed ${PAL.lineHi}` } : { background: renk }) }} />
-  );
-  return (
-    <div style={{ display: "flex", alignItems: "flex-start", overflowX: "auto", paddingBottom: SP.xs }}>
-      {display.map((a, i) => {
-        const col = a.gorev === 2 ? V : T;
-        const err = a.status === "error", done = a.status === "done";
-        const bantC = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : null;
-        const dotC = err ? BANT.kirmizi.c : (bantC || col);
-        const prev = display[i - 1], next = display[i + 1];
-        const solAktarma = i > 0 && prev.gorev !== a.gorev;
-        const sagAktarma = i < son && next && next.gorev !== a.gorev;
-        return (
-          <div key={a.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: "1 1 80px", minWidth: 66, animation: `nu-rise .2s var(--ke-ease-out) ${Math.min(i * 22, 320)}ms both` }}>
-            <div style={{ display: "flex", alignItems: "center", width: "100%", height: 20 }}>
-              {yari(solAktarma, i === 0 ? null : col)}
-              <button type="button" onClick={() => onDetay(a.sira)} title={`${a.label} — detay`}
-                aria-label={`${a.label} — adım ${a.sira + 1}, detayını aç`} {...focusRing} data-press=""
-                style={{ cursor: "pointer", flexShrink: 0, width: 20, height: 20, padding: 0, border: "none", borderRadius: RAD.dot, background: dotC, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", transition: "transform .14s var(--ke-ease-out)" }}>
-                {err ? <Icon.x width={12} height={12} /> : done ? <Icon.check width={12} height={12} /> : <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: PAL.onAccent }} />}
-              </button>
-              {yari(sagAktarma, i === son ? null : col)}
-            </div>
-            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, marginTop: SP.s }}>{String(a.sira + 1).padStart(2, "0")}</span>
-            <span style={{ ...TYPE.meta, color: PAL.ink2, textAlign: "center", lineHeight: "15px", marginTop: 2, maxWidth: 92, wordBreak: "break-word" }} title={a.label}>{a.label}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 /* Aktif ajan spot kartı — büyük halka/disk + ad + canlı açıklama + gerçek-zaman süre.
    Canlı süre = (performance.now() - runBase) - t0 (t0 koşuma göreli; taban runBase);
    yalnız aktifken 300ms'de bir işler. */
@@ -361,7 +316,7 @@ function MerkezKart({ a, total, glow, runBase }) {
 }
 
 /* Yan kart — önceki/sıradaki adımın sessiz özeti. */
-function YanKart({ a, rol, sag }) {
+function _YanKart({ a, rol, sag }) {
   if (!a) return <span aria-hidden="true" style={{ flex: "1 1 140px" }} />;
   const bitti = a.status === "done";
   return (
@@ -381,32 +336,18 @@ function SahneAkis({ display, total, glow, runBase, onDetay }) {
   display.forEach((x, i) => { if (x.status === "done") sonBiten = i; });
   const merkezIdx = aktifIdx >= 0 ? aktifIdx : (sonBiten >= 0 ? sonBiten : 0);
   const merkez = display[merkezIdx];
-  const bitenler = display.filter((x) => x.status === "done" && x.sira !== merkezIdx);
   return (
-    /* Sahne içeriği ortalanmış okuma sütununda toplanır — kart tam genişlik kalır ama
-       16 istasyon dev ekranda uçlara gerilip seyrelmez. */
-    <div style={{ display: "flex", flexDirection: "column", gap: SP.xl, width: "100%", maxWidth: 1080, margin: "0 auto" }}>
-      <IstasyonSeridi display={display} glow={glow} onDetay={onDetay} />
-      <div style={{ display: "flex", alignItems: "stretch", gap: SP.l, flexWrap: "wrap", justifyContent: "center", padding: `${SP.s}px 0` }}>
-        <YanKart a={display[merkezIdx - 1]} rol="önceki" />
-        {merkez && <MerkezKart a={merkez} total={total} glow={glow} runBase={runBase} />}
-        <YanKart a={display[merkezIdx + 1]} rol="sıradaki" sag />
-      </div>
-      {bitenler.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, justifyContent: "center" }}>
-          {/* Çipte aria-label YOK — adı içeriğinden gelir (ad + çıktı özeti SR'a aynen gider) */}
-          {bitenler.map((x) => (
-            <button key={x.id} type="button" onClick={() => onDetay(x.sira)} title={`${x.label} — adım detayını aç`}
-              {...focusRing}
-              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "3px 10px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, background: PAL.surf, ...TYPE.meta, color: PAL.mut, maxWidth: 280, transition: "background .12s ease-out", animation: glow ? "nu-pop .3s ease-out both" : "none" }}>
-              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(x.gorev === 2 ? V : T) }}><Icon.check width={11} height={11} /></span>
-              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}{x.out ? ` · ${x.out}` : ""}</span>
-            </button>
-          ))}
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.l, width: "100%", maxWidth: 880, margin: "0 auto" }}>
+      {merkez && <MerkezKart a={merkez} total={total} glow={glow} runBase={runBase} />}
+      <div style={{ padding: `${SP.l}px ${SP.m}px ${SP.m}px`, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.m }}>
+          <span style={{ ...TYPE.meta, color: PAL.mut2 }}>İşlem aşamaları</span>
+          <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{String(merkezIdx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
         </div>
-      )}
+        <div style={{ overflowX: "auto", paddingBottom: SP.xs }}>
+          <IstasyonSeridi display={display} glow={glow} onDetay={onDetay} />
+        </div>
+      </div>
     </div>
   );
 }
@@ -432,7 +373,6 @@ function buildMetaLine(r, fileMeta) {
   if (fileMeta?.kind === "file" && fileMeta.size) parts.push(`${(fileMeta.size / (1024 * 1024)).toFixed(1)} MB`);
   else if (fileMeta?.kind === "sample") parts.push(`${fileMeta.size} karakter`);
   if (r?.ocr_confidence != null) parts.push(`OCR %${Math.round(r.ocr_confidence * 100)}`);
-  parts.push(fileMeta?.kind === "file" ? "/process_doc/stream" : "/process_doc");
   return parts.join(" · ");
 }
 
@@ -474,7 +414,7 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
    birebir. Kendi hook'ları kendi gövdesinde (CanliAjanAkisi'nin erken-dönüş deseni bozulmaz). */
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
 
-function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut }) {
+function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAksiyon = null }) {
   const [sekme, setSekme] = useState("belge");
   const pdfGoster = !!fileUrl && (sekme === "belge" || !segs);
   // İçerik hazırsa panel tıklanabilir → A4 modal (klavye: Enter/Space).
@@ -490,19 +430,19 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut }) {
   );
   return (
     // A4 KART (kullanıcı isteği: kaynak belge de taslak gibi A4) — başlık şeridi + beyaz A4
-    // sayfası tint "masa" üstünde + KVKK alt şeridi; resmî yazı taslağı kartıyla BİREBİR desen,
-    // height:100% ile satırdaki diğer sütunlarla eşit boy.
+    // sayfası tint "masa" üstünde; height:100% ile satırdaki diğer sütunlarla eşit boy.
     <div style={{ display: "flex", flexDirection: "column", minWidth: 0, height: "100%", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, overflow: "hidden" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
         <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.doc /></span>
-        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 60 }}>Kaynak belge</span>
+        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 60 }}>Okunan belge</span>
+        {ekAksiyon}
         {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" /><SekmeBtn id="metin" label="Metin" /></>)}
-        {tiklanabilir && <BuyutDugme onClick={onBuyut} label="Kaynak belgeyi A4 görünümde büyüt" />}
+        {tiklanabilir && <BuyutDugme onClick={onBuyut} label="Okunan belgeyi A4 görünümde büyüt" />}
       </div>
-      <div style={{ flex: 1, background: PAL.bg2, padding: `${SP.l}px ${SP.m}px ${SP.xl}px`, display: "flex", minHeight: 0 }}>
+      <div style={{ flex: 1, background: PAL.surf2, padding: `${SP.m}px ${SP.s}px ${SP.m}px`, display: "flex", minHeight: 0, ...(compact ? { overflowY: "auto" } : null) }}>
         <div
           {...(tiklanabilir ? { role: "button", tabIndex: 0, onClick: onBuyut, onKeyDown: acKlavye, title: "Büyüt (A4 görünüm)", ...focusRing } : {})}
-          style={{ flex: 1, minWidth: 0, maxWidth: 760, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+          style={{ flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
           {pdfGoster ? (
             <Suspense fallback={<div style={{ ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
               <PdfOnizleme fileUrl={fileUrl} />
@@ -520,17 +460,13 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut }) {
           )}
         </div>
       </div>
-      <div style={{ padding: `${SP.s}px ${SP.l}px ${SP.m}px`, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: DERIN.T, display: "flex", gap: SP.s, alignItems: "flex-start" }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="6" cy="12" r="2.2" fill={T} /><circle cx="12" cy="12" r="2.2" fill={T} /><circle cx="18" cy="12" r="2.2" fill={T} /></svg>
-        Kişisel veriler (TCKN, telefon) maskelenerek işleniyor — KVKK uyumlu.
-      </div>
     </div>
   );
 }
 
 export default function CanliAjanAkisi({
   nodes = [], result = null, busy = false, started = false, runBase = 0,
-  riskOutcome = "yesil", fileMeta = null, pendingOnay = null,
+  fileMeta = null, pendingOnay = null,
   onApprove = () => {}, onEdit = () => {}, onReject = () => {}, onAltKarar = () => {},
   onAltTurUret = () => null, onAltDuzenle = () => {},
   onTurSec = () => {}, turUretiliyor = "", onerilenTur = "",
@@ -545,7 +481,7 @@ export default function CanliAjanAkisi({
   // hooks than during the previous render" ile ÇÖKER. Bu yüzden burada, erken return'den önce.
   // A4 belge modalı — "kaynak" | "taslak" | null (paneller tıklanınca açılır).
   const [belgeModal, setBelgeModal] = useState(null);
-  // Ajan izi adım detay modalı — display index'i (istasyon/nokta/çip tıklanınca açılır).
+  // İşlem adımı detay modalı — display index'i (istasyon/nokta tıklanınca açılır).
   const [detayIdx, setDetayIdx] = useState(null);
   // Çok-konulu taslak pager konumu — yeni koşum başlayınca (runBase değişince) ilk taslağa döner;
   // aksi halde bir önceki evrakın kaldığı sayfada açılır kalırdı (kafa karıştırıcı).
@@ -559,7 +495,9 @@ export default function CanliAjanAkisi({
     return <BosDurumDropzone onGoInbox={onGoInbox} onUpload={onUpload} onFileDrop={onFileDrop} onTelefon={onTelefon} />;
   }
 
-  const display = nodes.map((n, i) => ({
+  // Denetim zinciri arka planda üretilmeye devam eder; memurun iş akışını kalabalıklaştırmamak
+  // için bu görünümde bir adım ya da panel olarak sunulmaz.
+  const display = nodes.filter((n) => n.id !== "denetim_izi").map((n, i) => ({
     id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
     // data: SSE node yükü OLDUĞU GİBİ taşınır — adım detay modalı (AjanAdimDetay) zengin
     // görünümü bundan kurar (canlı koşumda result henüz yokken tek veri kaynağı budur).
@@ -582,7 +520,7 @@ export default function CanliAjanAkisi({
     const sn = (Math.max(...t1s) - Math.min(...t0s)) / 1000;
     return sn >= 0.1 ? `${sn < 10 ? sn.toFixed(1) : Math.round(sn)} sn` : null;
   })();
-  const statusText = busy ? "İşleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "Tamamlandı" : "Sırada");
+  const statusText = busy ? "İşleniyor · " + String(doneCount).padStart(2, "0") + "/" + total : (allDone ? "İşlem tamamlandı" : "Hazır");
 
   const draftMd = result?.yazi_taslak_md;
   // Çok-konulu evrakta birim başına ayrı üst yazı taslağı — her biri kendi HITL kararını taşır.
@@ -596,7 +534,7 @@ export default function CanliAjanAkisi({
   const decisionReady = !busy && (!!pendingOnay || !!result);
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   const metaLine = buildMetaLine(result, fileMeta);
-  // Panel kartları (ajan izi + sağ sütun) — düz beyaz yüzey + 1px hairline (border-first), NeonCard ile tutarlı.
+  // Panel kartları — düz beyaz yüzey + 1px hairline (border-first), NeonCard ile tutarlı.
   const card = { position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: SP.l, boxShadow: SH.card };
 
   return (
@@ -606,7 +544,7 @@ export default function CanliAjanAkisi({
         {(() => {
           const ai = display.findIndex((a) => a.status === "active");
           if (ai >= 0) return `${display[ai].label} çalışıyor — adım ${ai + 1} / ${total}`;
-          if (allDone) return `İşleme tamamlandı — ${total} ajan başarıyla yürütüldü.`;
+          if (allDone) return `İşlem tamamlandı — ${total} işlem adımı başarıyla yürütüldü.`;
           return "";
         })()}
       </div>
@@ -622,21 +560,21 @@ export default function CanliAjanAkisi({
               <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
               <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{metaLine}</span>
             </span>
-            <span style={{ marginLeft: SP.s, flexShrink: 0 }}>
+            {!result && <span style={{ marginLeft: SP.s, flexShrink: 0 }}>
               <Chip c={allDone ? BANT.yesil.c : busy ? T : PAL.mut2} label={`Durum: ${statusText}`}>
                 {allDone ? <Icon.check width={12} height={12} />
                   : busy ? <Icon.spin width={12} height={12} />
                   : <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: PAL.mut2 }} />}
                 {statusText}
               </Chip>
-            </span>
+            </span>}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
-            <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
+            {!result && <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
               <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
-            </span>
-            <span aria-hidden="true" style={{ width: 1, height: 20, background: PAL.line, flexShrink: 0 }} />
+            </span>}
+            {!result && <span aria-hidden="true" style={{ width: 1, height: 20, background: PAL.line, flexShrink: 0 }} />}
             <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
               {/* Telefonla çek — işlem sürerken kapalı: one-shot indirme busy'de sessizce
                   düşer (dosya kaybı); tamamlanınca yeni evrak telefondan da eklenebilsin. */}
@@ -656,38 +594,46 @@ export default function CanliAjanAkisi({
             </div>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
+        {!result && <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
           <div aria-hidden="true" style={{ flex: 1, height: 6, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden" }}>
             <div style={{ width: `${pct}%`, height: "100%", borderRadius: RAD.chip, background: allDone ? BANT.yesil.c : T, transition: "width .28s var(--ke-ease-out), background .2s ease" }} />
           </div>
           <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flexShrink: 0, minWidth: 38, textAlign: "right", ...TNUM }}>{pct}%</span>
-        </div>
+        </div>}
       </header>
 
-      {/* 3 panel — komuta merkezi. flex-wrap: geniş ekranda yan yana, dar ekranda alt alta.
-          Ajan izi kartı DİNAMİK konumlanır: koşum sürerken (sonuç yok) ORTA panelde sahne
-          alır — canlı demo yıldızı; sonuç gelince SOL sütuna (kaynak belge altı) iner ve
-          orta paneli Ayrıntılı sonuç devralır. */}
+      {/* İşlem merkezi: canlı durumda kaynak belgeyle yan yana, sonuçta karar yüzeyiyle devam eder. */}
       {(() => {
-        const sahne = !result;   // koşum sahnesi: iz ortada, akan ışık + spot + nokta-ızgara zemin
-        const izKart = (
-          <section aria-label="Ajan izi" style={sahne
-            ? { ...card, width: "100%", backgroundImage: `radial-gradient(${ALFA(T)} 1px, transparent 1.5px)`, backgroundSize: "22px 22px" }
-            : card}>
-            <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.l, flexWrap: "wrap" }}>
-              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.route /></span>
-              <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Ajan izi</h3>
+        const islemKart = (
+          <section aria-label="İşlem durumu" style={{
+            ...card,
+            width: "100%",
+            minHeight: 440,
+            padding: "clamp(20px, 3vw, 32px)",
+            backgroundImage: `radial-gradient(${ALFA(T)} 1px, transparent 1.5px)`,
+            backgroundSize: "24px 24px",
+          }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: SP.m, flexWrap: "wrap", marginBottom: SP.xl }}>
+              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T, paddingTop: 2 }}><Icon.sparkle /></span>
+              <div style={{ minWidth: 180, flex: "1 1 260px" }}>
+                <span style={{ display: "block", ...TYPE.meta, fontFamily: MONO, letterSpacing: ".08em", color: DERIN.T, fontWeight: 600 }}>
+                  {busy ? "CANLI İŞLEM" : "İŞLEM ÖZETİ"}
+                </span>
+                <h3 style={{ margin: "4px 0 0", ...TYPE.h2, color: PAL.ink }}>
+                  {busy ? "Belgeniz dikkatle inceleniyor" : "Belge incelemeye hazır"}
+                </h3>
+                <p style={{ margin: "6px 0 0", ...TYPE.data, color: PAL.mut, maxWidth: 620 }}>
+                  Sistem gerekli bilgileri çıkarıyor, ilgili kontrolleri tamamlıyor ve memur incelemesi için hazırlıyor.
+                </p>
+              </div>
               <SahneTelemetri busy={busy} allDone={allDone} doneCount={doneCount} total={total}
                 pct={pct} toplamSn={toplamSn} runBase={runBase} glow={glow} />
             </div>
-            {sahne ? (
-              /* Koşum sahnesi: yatay istasyon şeridi + aktif ajan spotu + çıktı çipleri. */
-              <SahneAkis display={display} total={total} glow={glow} runBase={runBase} onDetay={setDetayIdx} />
-            ) : (
-              /* Sonuç sonrası: TEK SATIR yatay istasyon şeridi (kullanıcı isteği — kocaman dikey
-                 metro yerine kompakt satır). Nokta tıklanınca adım detayı açılır; sığmazsa yatay kayar. */
-              <IzSatiriLabelli display={display} onDetay={setDetayIdx} />
-            )}
+            <SahneAkis display={display} total={total} glow={glow} runBase={runBase} onDetay={setDetayIdx} />
+            <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut2 }}>
+              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : BANT.yesil.c, animation: busy && glow ? "nu-think 1.3s ease-in-out infinite" : "none" }} />
+              Her simge bir işlem aşamasını gösterir; ayrıntısını görmek için seçebilirsiniz.
+            </div>
           </section>
         );
         // Resmî yazı taslağı + HITL kararı = Görev 2 (üretim) çıktısı. Tek yerde tanımlanır;
@@ -696,7 +642,7 @@ export default function CanliAjanAkisi({
         const taslakBlok = (
           <>
             {altTaslaklar.length < 2 && (
-              <div style={{ ...card, display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
+              <div className="sc-draft-card" style={{ ...card, display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
                 {/* Başlık şeridi — ikon + başlık · tür seçici (dropdown, ikincil) · A4 büyüt.
                     Tür artık başlıkta metin değil; dropdown'da (belge ile ağırlıkta yarışmaz). */}
                 <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
@@ -711,12 +657,12 @@ export default function CanliAjanAkisi({
                 {/* Kağıt tezgahı — beyaz A4 sayfası tint "masa" üstünde yüzer, ortalı, gerçek A4
                     oranında (~800px) okunur kolon. Belge = kartın TEK yükseltilmiş katmanı (SH.pop);
                     başlık/seçici/footer düz kalır → hiyerarşi net, belge kahraman. */}
-                <div style={{ background: PAL.bg2, padding: `${SP.l}px ${SP.m}px ${SP.xl}px` }}>
+                <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
                   {draftMd ? (
-                    <div role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
+                    <div className="sc-document-paper" role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
                       onClick={() => setBelgeModal("taslak")}
                       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setBelgeModal("taslak"); } }}
-                      style={{ maxWidth: 760, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: (turUretiliyor || dayanakUretiliyor) ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
+                      style={{ maxWidth: 860, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: (turUretiliyor || dayanakUretiliyor) ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
                       <pre style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0 }}>{cleanDemoText(draftMd)}</pre>
                     </div>
                   ) : (
@@ -729,26 +675,22 @@ export default function CanliAjanAkisi({
                 {/* HITL karar footer — belge kolonuyla hizalı (max 800, ortalı). Tek primary
                     (Onayla ve gönder, sağda); Düzenle secondary; Reddet SOLDA düşük-vurgu (ghost)
                     → sonuçlu eylem onaydan uzak (NN/g: consequential ≠ benign yan yana). */}
-                <div style={{ padding: `${SP.m}px ${SP.l}px ${SP.l}px`, borderTop: `1px solid ${PAL.line}` }}>
+                <div className="sc-decision-footer" style={{ borderTop: `1px solid ${PAL.line}` }}>
                   <div style={{ maxWidth: 800, margin: "0 auto" }}>
-                  <div id="cak-hitl-desc" style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
-                    <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: V, flexShrink: 0 }} />
-                    Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s }}>
-                    <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" aria-describedby="cak-hitl-desc" {...focusRing} data-press=""
+                  <div className="sc-action-row">
+                    <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" {...focusRing} data-press=""
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 12px", minHeight: 36, borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>Reddet</button>
-                    <span style={{ flex: 1 }} />
-                    <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" aria-describedby="cak-hitl-desc" {...focusRing} data-press=""
+                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 14px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.x /> Reddet</button>
+                    <span className="sc-action-spacer" />
+                    <button onClick={onEdit} disabled={!decisionReady} aria-label="Taslağı düzenle" {...focusRing} data-press=""
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
                       onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
-                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 16px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>Düzenle</button>
-                    <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" aria-describedby="cak-hitl-desc" {...focusRing} data-press=""
+                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 16px", minHeight: 42, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.edit /> Düzenle</button>
+                    <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" {...focusRing} data-press=""
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
                       onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
-                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "8px 20px", minHeight: 36, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 500, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>Onayla ve gönder</button>
+                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 20px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 600, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.send /> Onayla ve gönder</button>
                   </div>
                   </div>
                 </div>
@@ -777,42 +719,32 @@ export default function CanliAjanAkisi({
         return (
           <section style={{ minHeight: result ? undefined : "calc(100vh - 132px)" }}>
             {result ? (
-              /* ============ SONUÇ — DİKEY AKIŞ (kullanıcı isteği: sol sütun kaldırıldı → çift
-                 TAM GENİŞLİĞE yayılır, taslak genişleyince kısalır, boşluk kapanır).
-                 ÜST: kaynak belge · ORTA: ayrıntılı sonuç [hüküm | resmî yazı taslağı, EŞİT BOY]
-                 + Görev 1/2 detay · ALT: ajan izi. Çok-konulu evrakta (2026-07-15 kullanıcı
-                 isteği) pager de AYNI üst satırda yaşar — ayrı bir alt banda düşürülmez, sol/sağ
-                 butonlar kaynak belge + hüküm kartının YANINDA durur. ============ */
-              <div style={{ display: "flex", flexDirection: "column", gap: SP.l, padding: "16px 24px 40px", minWidth: 0 }}>
-                {/* ÜST SATIR (NeonDetay içinde): 1) kaynak belge · 2) ayrıntılı sonuç · 3) resmî
-                    yazı taslağı (tek taslak ya da çok-konulu pager) — eşit boy; altında Görev 1/2
-                    detay tam genişlik. */}
-                <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
-                  <NeonDetay embedded result={result} onMevzuatAc={onMevzuatAc}
+              /* Sonuç: panel sayfanın içinde kalır; yalnız taslak/bilgi/kontrol düğmeleri
+                 kendi popup pencerelerini açar. */
+              <div className="sc-result-page">
+                <HataSiniri baslik="Sonuç ekranı gösterilemedi">
+                  <SonucCalismaAlani result={result} onMevzuatAc={onMevzuatAc}
                     onMevzuatSec={onMevzuatSec} seciliMevzuat={seciliMevzuat}
-                    solPanel={<KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} onBuyut={() => setBelgeModal("kaynak")} />}
+                    solPanel={<KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} compact onBuyut={() => setBelgeModal("kaynak")} />}
                     yanTaslak={taslakBlok} />
                 </HataSiniri>
-                {/* ALT — ajan izi (demo/denetim izi; sonucun altında) */}
-                {izKart}
               </div>
             ) : (
-              /* ============ KOŞUM / BOŞ — mevcut düzen: sol kaynak belge, orta canlı ajan izi
-                 sahnesi (demo yıldızı). Sonuç gelince yukarıdaki dikey akışa geçilir. ============ */
-              <div style={{ minHeight: "100%", display: "flex", flexWrap: "wrap" }}>
-                <div style={{ flex: "1 1 320px", minWidth: 0, borderRight: `1px solid ${PAL.line}`, padding: SP.l, display: "flex", flexDirection: "column", gap: SP.l }}>
+              /* Canlı işlem: tek odak noktası solda, kaynak belge yan tarafta her zaman erişilebilir. */
+              <div style={{ minHeight: "100%", display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: SP.l, padding: "24px clamp(16px, 3vw, 40px) 40px", maxWidth: 1540, margin: "0 auto" }}>
+                <div style={{ flex: "2 1 640px", minWidth: 0, display: "flex" }}>
+                  {islemKart}
+                </div>
+                <aside aria-label="Kaynak belge" style={{ flex: "1 1 340px", minWidth: 0, display: "flex" }}>
                   <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} onBuyut={() => setBelgeModal("kaynak")} />
-                </div>
-                <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px 40px", display: "flex", flexDirection: "column", gap: SP.l }}>
-                  {izKart}
-                </div>
+                </aside>
               </div>
             )}
           </section>
         );
       })()}
 
-      {/* Ajan izi adım detayı — istasyon/nokta/çip tıklanınca; ←/→ ile adımlar arasında
+      {/* İşlem adımı detayı — istasyon/nokta tıklanınca; ←/→ ile adımlar arasında
           gezinilir. Koşum CANLI sürerken de açılabilir (içerik node bittikçe dolar). */}
       {detayIdx != null && display[detayIdx] && (
         <AjanAdimDetay idx={detayIdx} display={display} result={result}

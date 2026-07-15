@@ -89,6 +89,15 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
   const [dar, setDar] = useState(() => {
     try { return localStorage.getItem("nu-sidebar-dar") === "1"; } catch { return false; }
   });
+  const [mobil, setMobil] = useState(() => window.matchMedia?.("(max-width: 720px)")?.matches ?? false);
+  useEffect(() => {
+    const sorgu = window.matchMedia?.("(max-width: 720px)");
+    if (!sorgu) return undefined;
+    const guncelle = (e) => setMobil(e.matches);
+    sorgu.addEventListener?.("change", guncelle);
+    return () => sorgu.removeEventListener?.("change", guncelle);
+  }, []);
+  const kompakt = dar || mobil;
   const darDegistir = () => setDar((v) => {
     const yeni = !v;
     try { localStorage.setItem("nu-sidebar-dar", yeni ? "1" : "0"); } catch { /* özel mod — tercih oturumluk kalır */ }
@@ -122,14 +131,14 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
   }, [showSamples]);
 
   return (
-    <aside aria-label="Çalışma alanı navigasyonu" style={{ width: dar ? 64 : 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: dar ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
-      <div style={{ display: "flex", flexDirection: dar ? "column" : "row", alignItems: "center", gap: dar ? SP.s : SP.xs, paddingBottom: SP.l }}>
-        <button type="button" onClick={() => onNavigate("panel")} title={dar ? "KAMU-EVRAK — Panel" : undefined}
+    <aside aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
+      <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
+        <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "KAMU-EVRAK — Panel" : undefined}
           onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; }}
           onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
-          style={{ display: "flex", alignItems: "center", gap: SP.s, padding: dar ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none", minWidth: 0 }}>
-          <img src="/logo.png" alt="" width={dar ? 32 : 36} height={dar ? 32 : 36} style={{ display: "block", flexShrink: 0, borderRadius: RAD.card }} />
-          {!dar && (
+          style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none", minWidth: 0 }}>
+          <img src="/logo.png" alt="" width={kompakt ? 32 : 36} height={kompakt ? 32 : 36} style={{ display: "block", flexShrink: 0, borderRadius: RAD.card }} />
+          {!kompakt && (
             /* Logotype — marka istisnası olarak büyük harf; imza noktası akış İÇİNDE durur,
                toggle düğmesiyle asla çakışmaz. */
             <span style={{ display: "flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
@@ -139,32 +148,32 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
           )}
         </button>
         {/* Daralt/genişlet — ChatGPT panel-toggle muadili */}
-        <button type="button" onClick={darDegistir} aria-expanded={!dar}
+        {!mobil && <button type="button" onClick={darDegistir} aria-expanded={!dar}
           aria-label={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"}
           title={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"} {...focusRing}
           onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
           style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, marginLeft: dar ? 0 : "auto", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, flexShrink: 0, transition: "background .12s ease-out" }}>
           <PanelIkon />
-        </button>
+        </button>}
       </div>
 
-      {!dar && <div style={{ ...TYPE.meta, color: PAL.mut2, padding: "0 8px 8px" }}>Çalışma alanı</div>}
+      {!kompakt && <div style={{ ...TYPE.meta, color: PAL.mut2, padding: "0 8px 8px" }}>Çalışma alanı</div>}
       <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
-        {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={dar} />)}
+        {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={kompakt} />)}
       </nav>
 
-      <button type="button" onClick={onUpload} disabled={busy} aria-label={dar ? "Yeni evrak yükle" : undefined} title={dar ? "Yeni evrak yükle" : undefined} {...focusRing}
+      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing}
         onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
         onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
         style={{
           cursor: busy ? "not-allowed" : "pointer", marginTop: SP.l, display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
-          padding: dar ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
+          padding: kompakt ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
           border: busy ? "1px solid transparent" : `1px solid ${PAL.inputLine}`,
           background: busy ? PAL.press : PAL.surf, color: busy ? PAL.mut2 : PAL.ink,
           transition: "background .12s ease-out",
         }}>
-        <Icon.plus />{!dar && " Yeni evrak yükle"}
+        <Icon.plus />{!kompakt && " Yeni evrak yükle"}
       </button>
 
       {samples.length > 0 && (
@@ -175,10 +184,10 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
           <button type="button" ref={samplesTetikRef} disabled={busy}
             onClick={() => setShowSamples((v) => !v)}
             aria-expanded={showSamples} aria-haspopup="listbox" aria-controls="nu-samples"
-            aria-label={dar ? "Örnek evrakla dene" : undefined} title={dar ? "Örnek evrakla dene" : undefined} {...focusRing}
+            aria-label={kompakt ? "Örnek evrakla dene" : undefined} title={kompakt ? "Örnek evrakla dene" : undefined} {...focusRing}
             style={{
               cursor: busy ? "not-allowed" : "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
-              padding: dar ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: busy ? PAL.mut2 : DERIN.T,
+              padding: kompakt ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: busy ? PAL.mut2 : DERIN.T,
               opacity: busy ? 0.6 : 1,
               border: `1px solid ${showSamples ? PAL.lineHi : PAL.line}`,
               background: showSamples ? ALFA(T) : "transparent",
@@ -187,8 +196,8 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
             <span aria-hidden="true" style={{ display: "flex", flexShrink: 0 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3 L13.7 8.3 L19 10 L13.7 11.7 L12 17 L10.3 11.7 L5 10 L10.3 8.3 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
             </span>
-            {!dar && <span style={{ whiteSpace: "nowrap" }}>Örnek evrakla dene</span>}
-            {!dar && (
+            {!kompakt && <span style={{ whiteSpace: "nowrap" }}>Örnek evrakla dene</span>}
+            {!kompakt && (
               <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, transition: "transform .15s ease-out", transform: showSamples ? "rotate(180deg)" : "rotate(0deg)" }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9 L12 15 L18 9" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </span>
@@ -216,7 +225,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
       )}
 
       <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}
-        tema={tema} onTemaDegistir={onTemaDegistir} dar={dar} />
+        tema={tema} onTemaDegistir={onTemaDegistir} dar={kompakt} />
     </aside>
   );
 }

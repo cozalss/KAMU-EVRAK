@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { cleanDemoText } from "./result-cards.jsx";
 import TurSecici from "./TurSecici.jsx";
 import BelgeModal from "./BelgeModal.jsx";
-import { PAL, V, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
+import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
 
 /* Pager ok düğmesi — başlık şeridine gömülü (ayrı üst satır AÇMAZ, kartın dış kutusu komşu
    kolonlarla aynı y'de başlamalı). onPrev/onNext verilmezse AltTaslakKarti bunu hiç render etmez. */
@@ -55,7 +55,6 @@ export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGond
     setDurum(null);
     setModalAcik(false);
     cacheRef.current = { [yeniOnerilen]: altTalep.yazi_taslak_md || "" };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [altTalep]);
 
   const secTur = async (yeni) => {
@@ -73,9 +72,8 @@ export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGond
   };
 
   const kilitli = bitti || !!uretilen;
-  const desc = `alt-taslak-${sira || 0}-hitl`;
   return (
-    <div style={{ position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+    <div className="sc-draft-card" style={{ position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
       {/* Başlık şeridi — [◀ pager] ikon + "Resmî yazı taslağı" · tür seçici · A4 büyüt [pager ▶].
           Ana taslak başlığıyla BİREBİR aynı; yalnız pager okları eklenir (onPrev/onNext varsa). */}
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
@@ -97,11 +95,11 @@ export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGond
 
       {/* Kağıt tezgahı — beyaz A4 sayfası tint "masa" üstünde yüzer, ortalı, TAM metin (kırpma
           yok — 2026-07-15 kullanıcı isteği). Ana taslak kağıt bloğuyla aynı ölçüler/gölge. */}
-      <div style={{ background: PAL.bg2, padding: `${SP.l}px ${SP.m}px ${SP.xl}px` }}>
-        <div role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
+      <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
+        <div className="sc-document-paper" role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
           onClick={() => setModalAcik(true)}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalAcik(true); } }}
-          style={{ maxWidth: 760, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: uretilen ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
+          style={{ maxWidth: 860, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: uretilen ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
           <pre style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0 }}>{cleanDemoText(metin)}</pre>
         </div>
       </div>
@@ -113,29 +111,25 @@ export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGond
           gönder, sağda); Düzenle secondary; Reddet SOLDA düşük-vurgu (ghost). Karar verilince
           footer kaldırılır (kart soluk + başlıktaki rozet kalır — bkz. AltTaslakPager mount notu). */}
       {!bitti && (
-        <div style={{ padding: `${SP.m}px ${SP.l}px ${SP.l}px`, borderTop: `1px solid ${PAL.line}` }}>
-          <div style={{ maxWidth: 760, margin: "0 auto" }}>
-            <div id={desc} style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
-              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: V, flexShrink: 0 }} />
-              Yapay zekâ <strong style={{ color: PAL.ink2, fontWeight: 600 }}>öneriyor</strong> — yetkili memur <strong style={{ color: PAL.ink2, fontWeight: 600 }}>karar verir</strong> (HITL)
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s }}>
-              <button type="button" disabled={kilitli} aria-describedby={desc} {...focusRing}
+        <div className="sc-decision-footer" style={{ borderTop: `1px solid ${PAL.line}` }}>
+          <div style={{ maxWidth: 860, margin: "0 auto" }}>
+            <div className="sc-action-row">
+              <button type="button" disabled={kilitli} {...focusRing}
                 onClick={() => { if (onReddet(metin, tur)) setDurum("reddedildi"); }}
                 onMouseEnter={(e) => { if (!kilitli) e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                style={{ cursor: kilitli ? "default" : "pointer", padding: "8px 12px", minHeight: 36, borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: kilitli ? PAL.mut2 : DERIN.kirmizi, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                Reddet
+                style={{ cursor: kilitli ? "default" : "pointer", padding: "9px 14px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: kilitli ? PAL.mut2 : DERIN.kirmizi, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+                <Icon.x /> Reddet
               </button>
-              <span style={{ flex: 1 }} />
-              <button type="button" disabled={kilitli} onClick={() => onDuzenle(metin, tur)} aria-describedby={desc} {...focusRing}
-                style={{ cursor: kilitli ? "default" : "pointer", padding: "8px 16px", minHeight: 36, borderRadius: RAD.ctl, border: `1px solid ${kilitli ? PAL.line : PAL.inputLine}`, background: PAL.surf, color: kilitli ? PAL.mut2 : PAL.ink, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                Düzenle
+              <span className="sc-action-spacer" />
+              <button type="button" disabled={kilitli} onClick={() => onDuzenle(metin, tur)} {...focusRing}
+                style={{ cursor: kilitli ? "default" : "pointer", padding: "9px 16px", minHeight: 42, borderRadius: RAD.ctl, border: `1px solid ${kilitli ? PAL.line : PAL.inputLine}`, background: PAL.surf, color: kilitli ? PAL.mut2 : PAL.ink, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+                <Icon.edit /> Düzenle
               </button>
               <button type="button" disabled={kilitli} {...focusRing} data-press=""
                 onClick={() => { if (onOnaylaGonder(metin, tur)) setDurum("gonderildi"); }}
-                style={{ cursor: kilitli ? "default" : "pointer", padding: "8px 20px", minHeight: 36, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 500, color: kilitli ? PAL.mut2 : PAL.onAccent, background: kilitli ? PAL.press : DERIN.T, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                Onayla ve gönder
+                style={{ cursor: kilitli ? "default" : "pointer", padding: "9px 20px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 600, color: kilitli ? PAL.mut2 : PAL.onAccent, background: kilitli ? PAL.press : DERIN.T, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+                <Icon.send /> Onayla ve gönder
               </button>
             </div>
           </div>

@@ -2,21 +2,21 @@
    gömülü yaşar (embedded); istenirse tam-genişlik bölüm olarak da çizilebilir.
    Hero Light v2 "Sakin Ürün" + gözlemlenebilirlik-aracı bilgi mimarisi (Langfuse/Braintrust/
    Stripe desenleri): en üstte HÜKÜM ŞERİDİ (tek bakışta sonuç + telemetri), solda
-   yapışkan bölüm navigasyonu (scroll-spy, yalnız yeterli alanda), Görev 1 (anlama, teal) /
-   Görev 2 (üretim, lavanta) grupları, kopyalanabilir SHA-256 zinciri, NLI destekli mevzuat
-   satırları, kâğıt-görünümlü resmî yazı önizleme. Tümü GERÇEK ProcessResponse.
+   yapışkan bölüm navigasyonu (scroll-spy, yalnız yeterli alanda), belge analizi (teal) /
+   taslak ve yönlendirme (lavanta) grupları, NLI destekli mevzuat satırları ve kâğıt-görünümlü
+   resmî yazı önizlemesi. Tümü GERÇEK ProcessResponse.
    Yaprak bileşenler: NeonDetayParts.jsx */
 import { cloneElement, useEffect, useState } from "react";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Icon, focusRing } from "./neonUi.jsx";
+import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, RiskBand, Icon, focusRing } from "./neonUi.jsx";
 import {
   Chip, HukumDurak, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
-  CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti, BilgilendirmeYapisal,
+  DuzeltmeDiff, Vrow, KanitAlinti, BilgilendirmeYapisal,
   Lint2646Karti,
 } from "./NeonDetayParts.jsx";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum, mevzuatDipnot,
-  birimDipnot, denetimDipnot, lintGiris, decomposeGiris,
+  birimDipnot, lintGiris, decomposeGiris,
   riskGerekceYorum, riskSkorYorum,
 } from "../lib/detayYorum.js";
 
@@ -59,8 +59,8 @@ function useWide(q = "(min-width: 1180px)") {
    aktif durumda kendi hat renginde çubuk/metin; izleme şeridiyle aynı renk dili. */
 const SECS = [
   { id: "det-ozet", l: "Özet" },
-  { id: "det-g1", l: "Görev 1 · Anlama", col: T },
-  { id: "det-g2", l: "Görev 2 · Üretim", col: V },
+  { id: "det-g1", l: "Belge analizi", col: T },
+  { id: "det-g2", l: "Taslak ve yönlendirme", col: V },
 ];
 /* Üst durum çubuğu (CanliAjanAkisi header) sticky ve ~90px yüksek — gömülü modda ray ve
    bölüm scroll-hedefleri onun ALTINA yapışmalı; yoksa rayın üst linkleri çubuğun arkasında
@@ -124,9 +124,6 @@ function BolumRay({ ustOfset = SP.xl }) {
   );
 }
 
-/* İşleme süresi biçimi — metrik: SANS + TNUM (mono yasak). */
-const sureFmt = (ms) => (ms >= 1000 ? `${(ms / 1000).toFixed(1)} sn` : `${ms} ms`);
-
 /* Unsur anahtarı ↔ kanıt span etiketi eşleme: span etiketleri insan dili ("T.C. Kimlik No",
    "Gönderen"), unsur anahtarları makine dili ("tckn", "gonderen") → Türkçe harf katlamalı
    normalize edip karşılaştır. */
@@ -172,14 +169,10 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
   // arsiv_metadata / lint_2646 backend'de düz dict (iç doğrulama yok) → bozuk öğe render'ı düşürmesin.
   const sdpAdaylar = (Array.isArray(arsiv.sdp_adaylari) ? arsiv.sdp_adaylari : []).filter((a) => a && typeof a === "object");
   const sla = r.sla_metadata || {};
-  const den = r.denetim_izi || {};
-  const denAdimlar = Array.isArray(den.zincir) ? den.zincir : (Array.isArray(den.adimlar) ? den.adimlar : []);
   const band = r.risk_metadata?.bant || "yesil";
   const bantC = BANT[band]?.c || BANT.yesil.c;   // hüküm şeridi + gerekçe bloğu ortak kullanır
   const riskGerekce = Array.isArray(r.risk_metadata?.gerekceler) ? r.risk_metadata.gerekceler.filter(Boolean).slice(0, 4) : [];
   const sInfo = slaInfo(sla);
-  const hasChain = denAdimlar.length > 0 || !!den.kok_hash;
-  const butunluk = den.butunluk !== false;
   const birimAday = (r.birim_alternatifleri || []).filter(Boolean).filter((b) => b !== r.hedef_birim).slice(0, 3);
   // Hüküm şeridi birim göstergesi: BÜYÜK değer = LLM'in içerikten seçtiği somut gerçek birim
   // (servis_birimi.ad), yoksa deterministik genel havale birimi (hedef_birim, ölçülü 9-set) fallback.
@@ -191,7 +184,6 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
   const buyukBirim = llmBirimAd || genelBirim;
   const birimBaglamGoster = !!llmBirimAd && llmBirimAd !== genelBirim;
   const turGuven = Number(r.tur_confidence) > 0 ? Math.round(Number(r.tur_confidence) * 100) : null;
-  const ocrGuven = r.ocr_confidence != null && Number.isFinite(Number(r.ocr_confidence)) ? Math.round(Number(r.ocr_confidence) * 100) : null;
 
   // Duruma-uygun anlatı katmanı (detayYorum motoru) — statik iddia yok, hepsi state-türevli.
   const hy = hukumYorum(r);
@@ -201,7 +193,6 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
   const hukumDetay = hukumKuyruk.join(" · ");
   const uy = unsurEtiket(r);
   const ey = eksikYorum(r);
-  const dy = denetimDipnot(butunluk, denAdimlar.length);
   const TON = { yesil: DERIN.yesil, sari: DERIN.sari, kirmizi: DERIN.kirmizi };
 
   // Doğrulanan zorunlu alanlar (kanıtlı çıkarım etiketleri → fallback bilgi_unsurlari anahtarları).
@@ -218,29 +209,17 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
       ? { minWidth: 0 }
       : { borderTop: `1px solid ${PAL.line}`, background: PAL.bg2, padding: "24px 24px 48px" }}>
       <div style={embedded ? { minWidth: 0 } : { maxWidth: 1320, margin: "0 auto" }}>
-        <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.l }}>
-          <div>
-            <h2 id="cak-detay-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>Ayrıntılı sonuç · Tüm ajan çıktıları</h2>
-            <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>Görev 1 (anlama) + Görev 2 (üretim) — değiştirilemez denetim iziyle.</p>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-            {hasChain && (
-              <Chip c={butunluk ? T : BANT.sari.c} label={butunluk ? "Bütünlük doğrulandı, SHA-256 zinciri tutarlı" : "Bütünlük doğrulanamadı"}>
-                {butunluk ? <Icon.check width={12} height={12} /> : <Icon.alert width={12} height={12} />}
-                {butunluk ? "Bütünlük doğrulandı · SHA-256" : "Bütünlük doğrulanamadı"}
-              </Chip>
-            )}
-          </div>
+        <header style={{ marginBottom: SP.xl }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: DERIN.yesil, fontFamily: MONO, fontWeight: 600, letterSpacing: ".06em" }}>
+            <Icon.check width={13} height={13} /> SONUÇ HAZIR
+          </span>
+          <h2 id="cak-detay-h" style={{ margin: "6px 0 0", ...TYPE.h2, color: PAL.ink }}>İnceleme ve karar</h2>
+          <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>Önerilen yönlendirmeyi ve taslağı gözden geçirip kararınızı verin.</p>
         </header>
 
-        {/* ============ Üst SATIR (kullanıcı isteği): "1) Kaynak belge · 2) Ayrıntılı sonuç ·
-            3) Resmî yazı taslağı" — kaynak → analiz → çıktı akışı, EŞİT BOY. CanliAjanAkisi
-            solPanel (kaynak belge) + yanTaslak (resmî yazı) geçer. İkisi de yoksa tek sütun
-            (hüküm şeridi tam genişlik, önceki davranış birebir). Dar ekranda auto-fit yığar. ============ */}
-        <div style={{ display: "grid", gridTemplateColumns: (solPanel || yanTaslak) ? "repeat(auto-fit, minmax(min(320px,100%), 1fr))" : "1fr", gap: SP.xl, alignItems: (solPanel || yanTaslak) ? "stretch" : "start", marginBottom: SP.xl }}>
-        {/* 1) Kaynak belge */}
-        {solPanel && <div style={{ minWidth: 0 }}>{solPanel}</div>}
-        {/* 2) Ayrıntılı sonuç (hüküm şeridi) — İLK GÖRÜLEN kart (2026-07-15 redesign).
+        {/* Önce karar özeti ve taslak yan yana: memurun ilk bakışta ihtiyaç duyduğu iki yüzey. */}
+        <div style={{ display: "grid", gridTemplateColumns: yanTaslak ? "repeat(auto-fit, minmax(min(360px,100%), 1fr))" : "1fr", gap: SP.l, alignItems: "stretch", marginBottom: SP.xl }}>
+        {/* Karar özeti — İLK GÖRÜLEN kart.
             Eski hâli ortalanmış küçük bir blok + üst/alt asılı boşluktu; yeni kompozisyon
             kartın TÜM boyunu 3 bölgeye dağıtır: ÜSTTE hüküm (tonlu disk + sonuç + risk bandı
             satırı), ORTADA evrak→birim güzergâh rayı (dikey ağırlık merkezi, flex:1 ortalar),
@@ -315,11 +294,9 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
               </div>
             )}
 
-            {/* İkincil olgular + risk kırılımı hüküm şeridinden ÇIKARILDI (personelin ilk gördüğü
-                ekran sade kalsın — kullanıcı isteği): Eksik kontrol→Görev 1 "Eksik bilgi kontrolü",
-                Yasal süre→"Arşiv · Yasal süre", zincir halkası→"Denetim izi" (zaten oralarda);
-                İşleme profili/İşlem no/süre/OCR→"Denetim izi" künyesi; risk nedenleri→Görev 2
-                "Risk değerlendirmesi" kartı. Hüküm şeridi hâlâ YALNIZ: hüküm + tür + birim + "Ne yapmalısınız". */}
+            {/* İkincil olgular ve risk gerekçeleri ilk karar yüzeyinden ayrıdır: eksik bilgi,
+                mevzuat, yasal süre ve ayrıntılı değerlendirmeler aşağıdaki inceleme alanlarında
+                kalır. Hüküm şeridi yalnız sonucu, türü, birimi ve önerilen eylemi taşır. */}
 
           </div>
         </div>
@@ -327,14 +304,18 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
         {yanTaslak && <div style={{ minWidth: 0 }}>{yanTaslak}</div>}
         </div>
 
+        {/* Kaynak belge karar yüzeyinin altında kalır: gerektiğinde kanıt kontrolü için erişilir,
+            ancak taslak ve karar eylemleriyle ilk bakışta rekabet etmez. */}
+        {solPanel && <section aria-label="Kaynak belge" style={{ marginBottom: SP.xl }}>{solPanel}</section>}
+
         {/* ============ Gövde: yapışkan bölüm rayı + içerik ============ */}
         <div style={{ display: "flex", gap: SP.xl, alignItems: "flex-start" }}>
           {wide && <BolumRay ustOfset={embedded ? YAPISKAN_UST : SP.xl} />}
           <div style={{ flex: 1, minWidth: 0 }}>
 
-            {/* ============ Görev 1 · Anlama ============ */}
-            <section id="det-g1" aria-label="Görev 1 · Anlama" style={{ marginBottom: SP.xxl, scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl, animation: "nu-rise .18s var(--ke-ease-out) both" }}>
-              <GorevLabel n="1" t="Anlama" color={T} count="anlama ajanları" />
+            {/* ============ Belge analizi ============ */}
+            <section id="det-g1" aria-label="Belge analizi" style={{ marginBottom: SP.xxl, scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl, animation: "nu-rise .18s var(--ke-ease-out) both" }}>
+              <GorevLabel n="1" t="Belge analizi" color={T} count="inceleme alanları" />
               <div style={STACK}>
 
                 {alt.length >= 2 && (
@@ -508,37 +489,15 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                       <SlaPanel sla={sla} info={sInfo} />
                     </NeonCard>,
                   ]}
-                  right={[
-                    hasChain && (
-                      <NeonCard key="denetim" title="Denetim izi · SHA-256" tag={denAdimlar.length ? `${denAdimlar.length} halka` : null} accent={T} icon={<Icon.shield />}>
-                        <ZincirStepper zincir={denAdimlar} kokHash={den.kok_hash} butunluk={butunluk} />
-                        <div style={{ ...TYPE.meta, color: dy.ton === "yesil" ? PAL.mut3 : DERIN.sari, marginTop: SP.m, display: "flex", alignItems: "center", gap: SP.xs }}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke={butunluk ? BANT.yesil.c : BANT.sari.c} strokeWidth="1.6" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke={butunluk ? BANT.yesil.c : BANT.sari.c} strokeWidth="1.6" /></svg>
-                          {dy.metin}
-                        </div>
-                        {/* İşlem künyesi — hüküm şeridinden taşındı (ilk ekran sade kalsın):
-                            işleme profili · OCR güveni · süre · işlem no. Denetim/telemetri burada toplanır. */}
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px", alignItems: "center", marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut3 }}>
-                          {r.llm_profil && <span>İşleme: {r.llm_profil === "kvkk-onprem" ? "KVKK · veri yerinde" : r.llm_profil === "mock" ? "Deterministik" : "Bulut LLM"}</span>}
-                          {ocrGuven != null && <span style={{ ...TNUM }}>OCR %{ocrGuven}</span>}
-                          {r.sure_ms != null && <span style={{ ...TNUM }}>işleme {sureFmt(r.sure_ms)}</span>}
-                          {r.islem_id && (
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs }}>
-                              İşlem no <CopyChip deger={r.islem_id} kisa={String(r.islem_id).slice(0, 14)} label="İşlem numarasını panoya kopyala" />
-                            </span>
-                          )}
-                        </div>
-                      </NeonCard>
-                    ),
-                  ]}
+                  right={[]}
                 />
 
               </div>
             </section>
 
-            {/* ============ Görev 2 · Üretim ============ */}
-            <section id="det-g2" aria-label="Görev 2 · Üretim" style={{ scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl, animation: "nu-rise .18s var(--ke-ease-out) 40ms both" }}>
-              <GorevLabel n="2" t="Üretim" color={V} count="üretim ajanları" />
+            {/* ============ Taslak ve yönlendirme ============ */}
+            <section id="det-g2" aria-label="Taslak ve yönlendirme" style={{ scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl, animation: "nu-rise .18s var(--ke-ease-out) 40ms both" }}>
+              <GorevLabel n="2" t="Taslak ve yönlendirme" color={V} count="karar destekleri" />
               <div style={STACK}>
 
                 <ColGrid

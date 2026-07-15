@@ -18,7 +18,7 @@ export default function TurSecici({ secili, onerilen, uretilen, onSec, pasif = f
   const kilitli = !!uretilen || pasif;
   return (
     <label style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, minWidth: 0 }}>
-      <span style={{ ...TYPE.meta, color: PAL.mut2, flexShrink: 0 }}>Tür</span>
+      <span style={{ ...TYPE.meta, color: PAL.mut2, flexShrink: 0 }}>Yazı türü</span>
       <span style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
         <select
           value={secili}
@@ -31,7 +31,7 @@ export default function TurSecici({ secili, onerilen, uretilen, onSec, pasif = f
             ...TYPE.meta, fontWeight: 600, color: kilitli ? PAL.mut2 : DERIN.V,
             background: kilitli ? PAL.surf2 : ALFA(V),
             border: `1px solid ${kilitli ? PAL.line : DERIN.V}`,
-            borderRadius: RAD.chip, padding: "4px 24px 4px 10px", minHeight: 26,
+            borderRadius: RAD.chip, padding: "5px 26px 5px 10px", minHeight: 30,
             cursor: kilitli ? "default" : "pointer", outline: "none",
           }}>
           {YAZI_TUR_SECENEK.map(([tur, kisa]) => (

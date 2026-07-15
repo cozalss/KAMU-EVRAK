@@ -115,10 +115,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
   const started = busy || !!result || !!error || !!pendingOnay;
   const data = result || pendingOnay;
-  // Canlı koşumda nihai sonuç yokken bant SSE risk_guard adımından okunur — yoksa sağ
-  // panel varsayılan YEŞİL gösterirken adım çipi SARI diyebiliyordu (tutarsızlık bulgusu).
-  const canliBant = nodes?.find?.((n) => n.id === "risk_guard")?.data?.risk_metadata?.bant;
-  const riskOutcome = data?.risk_metadata?.bant || canliBant || "yesil";
   const draftCount = drafts.length;
   const inboxCount = Math.max(0, SAMPLE_DOCS.length - sentSampleIds.size);
   const gidenCount = outbox.filter((o) => o.durum === "gonderildi").length;
@@ -681,7 +677,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   else view = (
     <CanliAjanAkisi
       nodes={nodes} result={data} busy={busy} started={started} runBase={runBase}
-      riskOutcome={riskOutcome} fileMeta={fileMeta} pendingOnay={pendingOnay}
+      fileMeta={fileMeta} pendingOnay={pendingOnay}
       onApprove={onApprove} onEdit={onEdit} onReject={onReject} onAltKarar={onAltKarar}
       onAltTurUret={uretAltTaslakTuru} onAltDuzenle={onAltDuzenle}
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}

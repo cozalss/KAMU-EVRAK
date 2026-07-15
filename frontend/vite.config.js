@@ -2,6 +2,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 
+const apiTarget = process.env.VITE_API_TARGET || "http://localhost:8000";
+
 // Backend (FastAPI :8000) proxy — SSE dahil.
 export default defineConfig({
   plugins: [react()],
@@ -20,25 +22,25 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/process_doc": { target: "http://localhost:8000", changeOrigin: true },
-      "/multimodal": { target: "http://localhost:8000", changeOrigin: true },
-      "/yazi": { target: "http://localhost:8000", changeOrigin: true },
-      "/health": { target: "http://localhost:8000", changeOrigin: true },
+      "/process_doc": { target: apiTarget, changeOrigin: true },
+      "/multimodal": { target: apiTarget, changeOrigin: true },
+      "/yazi": { target: apiTarget, changeOrigin: true },
+      "/health": { target: apiTarget, changeOrigin: true },
       // DB API (Faz 7) — auth + kalıcı kayıt görünümleri.
-      "/auth": { target: "http://localhost:8000", changeOrigin: true },
-      "/panel": { target: "http://localhost:8000", changeOrigin: true },
-      "/mevzuat": { target: "http://localhost:8000", changeOrigin: true },
-      "/referans": { target: "http://localhost:8000", changeOrigin: true },
-      "/gelen-evrak": { target: "http://localhost:8000", changeOrigin: true },
-      "/giden-evrak": { target: "http://localhost:8000", changeOrigin: true },
-      "/taslaklar": { target: "http://localhost:8000", changeOrigin: true },
-      "/islemler": { target: "http://localhost:8000", changeOrigin: true },
-      "/islem": { target: "http://localhost:8000", changeOrigin: true },
-      "/sohbet": { target: "http://localhost:8000", changeOrigin: true },
-      "/sla": { target: "http://localhost:8000", changeOrigin: true },
+      "/auth": { target: apiTarget, changeOrigin: true },
+      "/panel": { target: apiTarget, changeOrigin: true },
+      "/mevzuat": { target: apiTarget, changeOrigin: true },
+      "/referans": { target: apiTarget, changeOrigin: true },
+      "/gelen-evrak": { target: apiTarget, changeOrigin: true },
+      "/giden-evrak": { target: apiTarget, changeOrigin: true },
+      "/taslaklar": { target: apiTarget, changeOrigin: true },
+      "/islemler": { target: apiTarget, changeOrigin: true },
+      "/islem": { target: apiTarget, changeOrigin: true },
+      "/sohbet": { target: apiTarget, changeOrigin: true },
+      "/sla": { target: apiTarget, changeOrigin: true },
       // Telefonla evrak yükleme (QR eşleme) — masaüstü poll/oturum çağrıları.
       // (Telefon, QR'daki LAN IP ile backend'e DOĞRUDAN bağlanır; proxy'ye uğramaz.)
-      "/mobil": { target: "http://localhost:8000", changeOrigin: true },
+      "/mobil": { target: apiTarget, changeOrigin: true },
     },
   },
 });

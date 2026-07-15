@@ -18,8 +18,6 @@ from api.pii import mask_pii
 
 log = structlog.get_logger()
 
-_MAX_OZET = 280
-
 _SYSTEM = (
     "Sen kamu evrakını özetleyen bir asistansın. Verilen evrakı tek paragrafta, en fazla "
     "2-3 cümlede, resmî ve olgusal bir dille özetle. SADECE metinde geçenleri yaz — "
@@ -39,10 +37,8 @@ def _kilit_unsurlar(unsurlar: dict[str, Any]) -> str:
 
 
 def _fallback_ozet(text: str, turu: str, konu: str | None) -> str:
-    """Deterministik özet (LLM yok/hata) — tür + konu + ilk cümleler kısaltma (PII redakteli)."""
+    """Deterministik özet (LLM yok/hata) — tür + konu + ana gövde (PII redakteli)."""
     govde = " ".join(mask_pii(text).masked_text.split())
-    if len(govde) > _MAX_OZET:
-        govde = govde[:_MAX_OZET].rsplit(" ", 1)[0] + "…"
     parcalar = [f"**{evrak_turu_tr(turu)}**"]
     if konu:
         parcalar.append(f"Konu: {konu}")

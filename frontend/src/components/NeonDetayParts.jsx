@@ -24,20 +24,38 @@ export const Fact = ({ k, v, c = PAL.ink2, icon }) => (
   </span>
 );
 
-/* Büyük glanceable istatistik — hüküm şeridinin "3-5 saniyede kavra" katmanı. Fact'ten
-   (14/500 küçük olgu) farkı: değer TYPE.num (24/600, MASTER: "panel metrikleri") — memur ilk
-   bakışta yalnız bunu okur. Yalnız hüküm şeridindeki 1-2 karar-kritik olguya ayrılır (evrak
-   türü, hedef birim); enflasyon riski var — Fact'in yerine geçmez. */
-export const StatTile = ({ k, v, sub, c = PAL.ink, icon }) => (
-  <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, minWidth: 0 }}>
-    {icon && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 3, color: DERIN_OF(c) }}>{icon}</span>}
-    <span style={{ minWidth: 0 }}>
-      <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, marginBottom: 2 }}>{k}</span>
-      {/* wordBreak: eşlenmemiş/ham fallback anahtarı (boşluksuz snake_case) da güvenle sarmalı —
-          gerçek etiketler (EVRAK_TR/BIRIM_LBL) tek satıra sığar, bu yalnız savunma. */}
-      <span style={{ display: "block", ...TYPE.num, color: DERIN_OF(c), maxWidth: 420, wordBreak: "break-word" }}>{v}</span>
+/* Hüküm güzergâhı durağı — hüküm şeridinin "3-5 saniyede kavra" katmanı (StatTile'ın yerini
+   aldı, 2026-07-15 redesign). Düz yığın yerine dikey RAY: solda hat-renkli ikonlu durak +
+   sonraki durağa hairline bağlantı (son durakta yok) → "evrak okundu → birime yönlendi"
+   güzergâh anlatısı. Değer TYPE.num (MASTER: "panel metrikleri") — memur ilk bakışta yalnız
+   bunu okur; yalnız hüküm şeridindeki 1-2 karar-kritik olguya ayrılır, enflasyon yasak.
+   hat = ray/ikon rengi (Görev semantiği: anlama T, üretim V) · c = değer rengi ·
+   meter = 0-100 → değer altında mini güven ölçeği (risk pay çubuklarıyla aynı desen). */
+export const HukumDurak = ({ k, v, sub, c = PAL.ink, hat = T, icon, son = false, meter = null }) => (
+  <div style={{ display: "flex", gap: SP.l, minWidth: 0 }}>
+    <span aria-hidden="true" style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: RAD.dot, border: `1px solid ${PAL.line}`, background: PAL.surf2, color: DERIN_OF(hat) }}>
+        {icon}
+      </span>
+      {!son && <span style={{ flex: 1, width: 1, minHeight: 20, background: PAL.line, marginTop: SP.xs }} />}
+    </span>
+    <span style={{ minWidth: 0, flex: 1, paddingTop: 2, paddingBottom: son ? 0 : SP.xl }}>
+      <span style={{ display: "block", ...TYPE.ui, color: PAL.mut3, marginBottom: 2 }}>{k}</span>
+      {/* Değer TYPE.disp (2026-07-15: kullanıcı isteği "yazılar büyük olsun" — kart tam-boy,
+          tipografi ona ölçeklendi). wordBreak: eşlenmemiş/ham fallback anahtarı (boşluksuz
+          snake_case) da güvenle sarmalı — gerçek etiketler (EVRAK_TR/BIRIM_LBL) sığar. */}
+      <span style={{ display: "block", ...TYPE.disp, color: DERIN_OF(c), maxWidth: 560, wordBreak: "break-word" }}>{v}</span>
       {/* sub = içerik/bağlam (alan-adı DEĞİL) → mut3 yerine mut2: etikete (mut3) göre bir kademe belirgin, rol ayrışır. */}
-      {sub && <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2, marginTop: 2 }}>{sub}</span>}
+      {(sub || meter != null) && (
+        <span style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, minWidth: 0 }}>
+          {meter != null && (
+            <span style={{ width: 72, height: 5, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden", flexShrink: 0 }}>
+              <span style={{ display: "block", height: "100%", width: `${Math.max(0, Math.min(100, meter))}%`, background: DERIN_OF(hat), borderRadius: RAD.chip }} />
+            </span>
+          )}
+          {sub && <span style={{ ...TYPE.data, color: PAL.mut2, ...TNUM, minWidth: 0 }}>{sub}</span>}
+        </span>
+      )}
     </span>
   </div>
 );

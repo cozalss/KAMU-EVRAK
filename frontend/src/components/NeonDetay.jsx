@@ -10,7 +10,7 @@ import { cloneElement, useEffect, useState } from "react";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Icon, focusRing } from "./neonUi.jsx";
 import {
-  Chip, StatTile, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
+  Chip, HukumDurak, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
   CopyChip, ZincirStepper, DuzeltmeDiff, Vrow, KanitAlinti, BilgilendirmeYapisal,
   Lint2646Karti,
 } from "./NeonDetayParts.jsx";
@@ -195,6 +195,10 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
 
   // Duruma-uygun anlatı katmanı (detayYorum motoru) — statik iddia yok, hepsi state-türevli.
   const hy = hukumYorum(r);
+  // Hüküm başlığı " · " ayracından bölünür (yalnız SUNUM — motor metni değişmez): ana hüküm
+  // büyük, kontrol-noktası/onay kuyruğu tonlu ikinci satır. Yeşilde kuyruk zaten yoktur.
+  const [hukumAna, ...hukumKuyruk] = String(hy.baslik).split(" · ");
+  const hukumDetay = hukumKuyruk.join(" · ");
   const uy = unsurEtiket(r);
   const ey = eksikYorum(r);
   const dy = denetimDipnot(butunluk, denAdimlar.length);
@@ -236,67 +240,88 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
         <div style={{ display: "grid", gridTemplateColumns: (solPanel || yanTaslak) ? "repeat(auto-fit, minmax(min(320px,100%), 1fr))" : "1fr", gap: SP.xl, alignItems: (solPanel || yanTaslak) ? "stretch" : "start", marginBottom: SP.xl }}>
         {/* 1) Kaynak belge */}
         {solPanel && <div style={{ minWidth: 0 }}>{solPanel}</div>}
-        {/* 2) Ayrıntılı sonuç (hüküm şeridi) */}
-        <div id="det-ozet" style={{ display: "flex", flexDirection: "column", justifyContent: yanTaslak ? "center" : "flex-start", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "20px 24px 24px", boxShadow: SH.card, animation: "nu-rise .16s var(--ke-ease-out) both", scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl }}>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap", justifyContent: "space-between" }}>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-                <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: TON[hy.ton] || DERIN.sari }}>
-                  {hy.ton === "yesil" ? <Icon.check width={22} height={22} /> : <Icon.alert width={22} height={22} />}
-                </span>
-                {/* Hüküm = şeridin en karar-kritik ögesi → TYPE.num ile stat değerleriyle boy paritesinde
-                    (MASTER: num "hüküm şeridi karar-kritik olgu"yu kapsar); üst konum + semantik ikon lider yapar. */}
-                <span role="status" style={{ ...TYPE.num, color: PAL.ink }}>{hy.baslik}</span>
-              </div>
-            </div>
-            {/* Bant yalnız risk_guard gerçekten çalıştıysa çizilir — yokluk yeşil sayılmaz. */}
-            {r.risk_metadata?.bant && <RiskBand band={band} lit sub="İçerik" />}
-          </div>
+        {/* 2) Ayrıntılı sonuç (hüküm şeridi) — İLK GÖRÜLEN kart (2026-07-15 redesign).
+            Eski hâli ortalanmış küçük bir blok + üst/alt asılı boşluktu; yeni kompozisyon
+            kartın TÜM boyunu 3 bölgeye dağıtır: ÜSTTE hüküm (tonlu disk + sonuç + risk bandı
+            satırı), ORTADA evrak→birim güzergâh rayı (dikey ağırlık merkezi, flex:1 ortalar),
+            ALTTA "Ne yapmalısınız" (marginTop:auto ile alt kenara sabit). Üst 3px şerit hüküm
+            tonunu taşır (renk tek sinyal değil — ikon+metin+RiskBand aynı bilgiyi söyler).
+            Bölgeler 0/50/100ms nu-rise kademesiyle girer (tek sefer, reduced-motion söner). */}
+        <div id="det-ozet" style={{ display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out) both", scrollMarginTop: embedded ? YAPISKAN_UST : SP.xl, minWidth: 0 }}>
+          <span aria-hidden="true" style={{ height: 3, background: TON[hy.ton] || DERIN.sari, flexShrink: 0 }} />
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "20px 24px 24px", minWidth: 0 }}>
 
-          {/* ============ Glanceable katman — "bu evrak ne / nereye gidiyor" 2 büyük olgu.
-              MASTER.md: TYPE.num = panel metrikleri; hüküm şeridinde yalnız BU ikisi büyür.
-              DİKEY yığın (2026-07-15 redesign): dar yarı-genişlikte yan-yana sıkışıp küçük
-              görünüyordu; alt alta tam-satır + hairline ayraç → değerler nefes alır, "ilk bakış"
-              okunurluğu artar, kart taslakla daha dengeli boyda durur. ============ */}
-          <div style={{ display: "flex", flexDirection: "column", gap: SP.l, marginTop: SP.l }}>
-            <StatTile k="Evrak türü" v={EVRAK_TR(r.evrak_turu)} sub={turGuven != null ? `%${turGuven} güven` : null} icon={<Icon.doc />} />
-            {r.hedef_birim && (
-              // Değerler yukarıda türetildi (dosya deseni: derived const'lar return öncesi).
-              // sub düz string — StatTile zaten TYPE.meta/PAL.mut3 ile sarar (çift sarma yok).
-              <div style={{ paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
-                <StatTile k="Yönlendirilecek birim" v={buyukBirim} c={V} icon={<Icon.route />}
-                  sub={birimBaglamGoster ? `genel havale birimi: ${genelBirim}` : null} />
+            {/* ── 1) Hüküm — ilk okunan satır. Başlık " · " ayracından bölünür: ana hüküm
+                TYPE.num (karar-kritik boy paritesi, MASTER), kontrol/onay kuyruğu tonlu
+                ikinci satır — uzun amber/kırmızı başlıklar tek dev satır olarak sarmaz. */}
+            <div style={{ animation: "nu-rise .18s var(--ke-ease-out) both" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: SP.l }}>
+                {/* Tonlu durum diski — Chip ile aynı dil (yalnız ALFA tint, kenarlık yok);
+                    nu-pop = tamamlanma vuruşu (RiskBand aktif noktasıyla aynı desen). */}
+                <span aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: RAD.dot, background: ALFA(BANT[hy.ton]?.c || BANT.sari.c), color: TON[hy.ton] || DERIN.sari, flexShrink: 0, animation: "nu-pop .3s var(--ke-ease-out) both" }}>
+                  {hy.ton === "yesil" ? <Icon.check width={24} height={24} /> : <Icon.alert width={24} height={24} />}
+                </span>
+                <span style={{ minWidth: 0 }}>
+                  <span style={{ display: "block", ...TYPE.ui, color: PAL.mut3, marginBottom: 2 }}>İşlem sonucu</span>
+                  {/* Lider satır TYPE.disp — ekranın tek "display" ögesi (neonUi tip ölçeği notu). */}
+                  <span role="status" style={{ display: "block", ...TYPE.disp, color: PAL.ink }}>
+                    {hukumAna}
+                    {hukumDetay && <span style={{ display: "block", ...TYPE.ui, fontWeight: 500, color: TON[hy.ton] || DERIN.sari, marginTop: SP.xs }}>{hukumDetay}</span>}
+                  </span>
+                </span>
+              </div>
+              {/* Bant yalnız risk_guard gerçekten çalıştıysa çizilir — yokluk yeşil sayılmaz.
+                  Tam-genişlik telemetri satırı: dar yarı-genişlikte başlığın yanında sıkışıp
+                  sarmıyor, kendi hairline-ayrılmış rayında duruyor. */}
+              {r.risk_metadata?.bant && (
+                <div style={{ marginTop: SP.l, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
+                  <RiskBand band={band} lit sub="İçerik" />
+                </div>
+              )}
+            </div>
+
+            {/* ── 2) Güzergâh — "bu evrak ne / nereye gidiyor" 2 karar-kritik olgu, dikey
+                durak rayında (HukumDurak): okundu (T, anlama) → yönlendirildi (V, üretim).
+                flex:1 + ortalama: eşit-boy modunda (yanTaslak) kartın orta ağırlık merkezi —
+                boşluk asılı kalmaz, kompozisyona dağılır. MASTER: TYPE.num yalnız bu ikisi. */}
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", margin: `${SP.xl}px 0 0`, animation: "nu-rise .18s var(--ke-ease-out) 50ms both" }}>
+              <HukumDurak k="Evrak türü" v={EVRAK_TR(r.evrak_turu)} hat={T} icon={<Icon.doc width={18} height={18} />}
+                meter={turGuven} sub={turGuven != null ? `%${turGuven} güven` : null} son={!r.hedef_birim} />
+              {r.hedef_birim && (
+                // Değerler yukarıda türetildi (dosya deseni: derived const'lar return öncesi).
+                // sub düz string — HukumDurak zaten TYPE.data/PAL.mut2 ile sarar (çift sarma yok).
+                <HukumDurak k="Yönlendirilecek birim" v={buyukBirim} c={V} hat={V} icon={<Icon.route width={17} height={17} />}
+                  sub={birimBaglamGoster ? `genel havale birimi: ${genelBirim}` : null} son />
+              )}
+            </div>
+
+            {/* ── 3) "Ne yapmalısınız" — ikinci soruya doğrudan cevap; marginTop:auto kartın
+                ALT kenarına sabitler (üstte hüküm, ortada güzergâh, altta eylem). */}
+            {r.risk_metadata?.oneri && (
+              // Kart içinde kart yasak (NeonDetayParts.jsx:137) — yalnız tint zemin, kenarlık yok;
+              // dosyadaki diğer ALFA(...) uyarı kutularıyla aynı desen (satır ~439/447/479).
+              // İkon banda göre değişir: yeşilde "sorun yok" onayı, sarı/kırmızıda gerçek uyarı —
+              // Icon.alert'i her bantta göstermek renk=tek sinyal ilkesini bozardı.
+              <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", marginTop: "auto", paddingTop: SP.xl, animation: "nu-rise .18s var(--ke-ease-out) 100ms both" }}>
+                <div style={{ flex: 1, display: "flex", gap: SP.m, alignItems: "flex-start", padding: SP.l, borderRadius: RAD.card, background: ALFA(bantC), minWidth: 0 }}>
+                  <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 3, color: DERIN_OF(bantC) }}>
+                    {band === "yesil" ? <Icon.check width={17} height={17} /> : <Icon.alert width={17} height={17} />}
+                  </span>
+                  <span style={{ minWidth: 0 }}>
+                    <span style={{ display: "block", ...TYPE.read, fontWeight: 600, color: PAL.ink }}>Ne yapmalısınız</span>
+                    <span style={{ display: "block", ...TYPE.read, color: PAL.ink2, marginTop: 2 }}>{cleanDemoText(String(r.risk_metadata.oneri))}</span>
+                  </span>
+                </div>
               </div>
             )}
+
+            {/* İkincil olgular + risk kırılımı hüküm şeridinden ÇIKARILDI (personelin ilk gördüğü
+                ekran sade kalsın — kullanıcı isteği): Eksik kontrol→Görev 1 "Eksik bilgi kontrolü",
+                Yasal süre→"Arşiv · Yasal süre", zincir halkası→"Denetim izi" (zaten oralarda);
+                İşleme profili/İşlem no/süre/OCR→"Denetim izi" künyesi; risk nedenleri→Görev 2
+                "Risk değerlendirmesi" kartı. Hüküm şeridi hâlâ YALNIZ: hüküm + tür + birim + "Ne yapmalısınız". */}
+
           </div>
-
-          {/* ============ "Ne yapmalısınız" — ikinci soruya doğrudan cevap; artık gerekçe
-              bloğunun dibinde soluk metin değil, hükmün hemen altında bant rengiyle vurgulu. ============ */}
-          {/* Esnek boşluk — eşit-boy modunda (yanTaslak) "Ne yapmalısınız"ı kartın ALT kenarına
-              iter: üstte değerler, altta eylem → çift eşit boyda, boşluk kart içinde dengeli
-              dağılır (dışarıda asılı boşluk kalmaz). Tek-sütun modda minHeight kadar sabit boşluk. */}
-          {r.risk_metadata?.oneri && (
-            // Kart içinde kart yasak (NeonDetayParts.jsx:137) — yalnız tint zemin, kenarlık yok;
-            // dosyadaki diğer ALFA(...) uyarı kutularıyla aynı desen (satır ~439/447/479).
-            // İkon banda göre değişir: yeşilde "sorun yok" onayı, sarı/kırmızıda gerçek uyarı —
-            // Icon.alert'i her bantta göstermek renk=tek sinyal ilkesini bozardı.
-            <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", marginTop: SP.l, padding: SP.m, borderRadius: RAD.card, background: ALFA(bantC) }}>
-              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2, color: DERIN_OF(bantC) }}>
-                {band === "yesil" ? <Icon.check width={15} height={15} /> : <Icon.alert width={15} height={15} />}
-              </span>
-              <span style={{ minWidth: 0 }}>
-                <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Ne yapmalısınız</span>
-                <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, marginTop: 2 }}>{cleanDemoText(String(r.risk_metadata.oneri))}</span>
-              </span>
-            </div>
-          )}
-
-          {/* İkincil olgular + risk kırılımı hüküm şeridinden ÇIKARILDI (personelin ilk gördüğü
-              ekran sade kalsın — kullanıcı isteği): Eksik kontrol→Görev 1 "Eksik bilgi kontrolü",
-              Yasal süre→"Arşiv · Yasal süre", zincir halkası→"Denetim izi" (zaten oralarda);
-              İşleme profili/İşlem no/süre/OCR→"Denetim izi" künyesi; risk nedenleri→Görev 2
-              "Risk değerlendirmesi" kartı. Hüküm şeridi artık YALNIZ: hüküm + tür + birim + "Ne yapmalısınız". */}
-
         </div>
         {/* SAĞ yarı — resmî yazı taslağı (yalnız CanliAjanAkisi geçince). */}
         {yanTaslak && <div style={{ minWidth: 0 }}>{yanTaslak}</div>}

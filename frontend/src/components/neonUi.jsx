@@ -95,6 +95,9 @@ export const TYPE = {
   h2: { fontFamily: SANS, fontSize: 20, lineHeight: "26px", fontWeight: 600, letterSpacing: "-.01em" },
   num: { fontFamily: SANS, fontSize: 24, lineHeight: "28px", fontWeight: 600, letterSpacing: "-.015em", fontVariantNumeric: "tabular-nums" },
   h1: { fontFamily: SANS, fontSize: 28, lineHeight: "34px", fontWeight: 600, letterSpacing: "-.015em" },
+  /* disp: tam-boy hüküm kartının lider olguları (ilk görülen ekran, 2026-07-15) — h1'in
+     üstü; YALNIZ hüküm + 2 karar-kritik değer (tür, birim). Başlık/metin için kullanılmaz. */
+  disp: { fontFamily: SANS, fontSize: 36, lineHeight: "42px", fontWeight: 600, letterSpacing: "-.02em", fontVariantNumeric: "tabular-nums" },
 };
 export const TNUM = { fontVariantNumeric: "tabular-nums" };
 /* Güçlü easing token'ları (emil-design-eng) — yerleşik ease-* zayıftır, "kasıtlı" hissi vermez.

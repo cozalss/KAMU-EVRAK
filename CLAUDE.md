@@ -57,7 +57,7 @@
   sarı `#c98a1f` / kırmızı `#c9432f`). **Hex'i elle yazma, token kullan.**
 - **Font:** IBM Plex Sans (`SANS`, tüm UI/metin) + IBM Plex Mono (`MONO`, **yalnız makine
   verisi**: evrak no, tarih damgası, hash, maskeli PII, dosya adı) — `app.html` Google Fonts.
-- **v2 disiplini:** tip ölçeği `TYPE` (12/13/14/16/20/24/28) · radius `RAD` (4/6/8/12/"50%") ·
+- **v2 disiplini:** tip ölçeği `TYPE` (12/13/14/16/20/24/28 + `disp` 36 yalnız hüküm kartı liderleri) · radius `RAD` (4/6/8/12/"50%") ·
   boşluk `SP` · gölge `SH` (border-first: statik yüzey 1px hairline) · açık zeminde renkli metin
   yalnız `DERIN.*` (AA) · tint zemin yalnız `ALFA()`. **Gradyan/glow/uppercase-eyebrow/hover-kalkış
   sıfır** — sentence case varsayılan; çip yalnız semantik durum; ekran başına 1 primary buton.

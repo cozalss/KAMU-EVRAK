@@ -14,7 +14,8 @@ yazı taslağını hazırlayan** çok-ajanlı (LangGraph) sistem — belge baş�
 **anahtarsız/offline modda dahi uçtan uca çalışır**, insan onayı olmadan hiçbir yazı çıkmaz.
 
 **Hızlı gezinme:** [Hızlı başlangıç](#-hızlı-başlangıç-anahtar-gerekmez) ·
-[Mimari](#-mimari) · [Şartname eşlemesi](#-şartname--rubrik-eşlemesi) · [Skorlar](#-değerlendirme-sonuçları-dürüst) ·
+[Mimari](#-mimari) · [Proje yapısı](#-proje-yapısı) · [Şartname eşlemesi](#-şartname--rubrik-eşlemesi) ·
+[Puanlama](#-puanlama-kriterleri) · [Skorlar](#-değerlendirme-sonuçları-dürüst) ·
 [Neden farklı](#-neden-farklı)
 
 - **Görev 1 — Anla:** oku (OCR/metin) → türü sınıflandır (19 tür) → bilgi çıkar (PII maskeli) →
@@ -122,6 +123,77 @@ profilinde açılır; açıldığında o da LLM'li sürümüyle koşar.)
 
 ---
 
+## 🧩 İki zorunlu görev — uçtan uca akış
+
+Şartname §9, ikisi de eksiksiz koşmadan sistemi "tamamlanmamış" sayar. Aşağıdaki akış,
+bir evrakın yüklenmesinden nihai yazının çıkmasına kadar geçen gerçek adımları gösterir
+(HITL yalnız 🟡/🔴 risk bandında devreye girer — 🟢 otomatik geçer):
+
+```mermaid
+sequenceDiagram
+    actor V as Vatandaş / Memur
+    participant API as FastAPI (/process_doc)
+    participant OCR as OCR<br/>(pypdfium2 + RapidOCR)
+    participant G1 as Görev 1 · Anlama
+    participant G2 as Görev 2 · Üretim
+    participant HITL as Memur onayı
+
+    V->>API: Evrak yükle (PDF · görsel · Word · metin)
+    API->>OCR: metne çevir
+    OCR-->>API: temiz metin
+    API->>G1: sınıflandır ∥ çıkar → eksik tespit → mevzuat öner ∥ özetle
+    G1-->>API: tür + unsurlar (PII maskeli) + eksik liste + mevzuat + özet
+    API->>G2: birim yönlendir → yazı taslağı (Yön. 2646) → doğrula → risk bandı
+    G2-->>API: taslak + risk (🟢/🟡/🔴)
+    alt risk 🟡 sarı veya 🔴 kırmızı
+        API->>HITL: onay iste (interrupt() + checkpointer)
+        HITL-->>API: onayla / düzelt / reddet
+    end
+    API-->>V: yanıt + DOCX / PDF / EYP 2.0 + SHA-256 denetim izi
+```
+
+Kod karşılığı ve kanıt için: [Şartname / rubrik eşlemesi](#-şartname--rubrik-eşlemesi).
+
+---
+
+## 🗂️ Proje yapısı
+
+```mermaid
+graph TD
+    ROOT["kamu-evrak/"]
+    ROOT --> BE["backend/ — FastAPI + LangGraph (Python 3.11)"]
+    ROOT --> FE["frontend/ — React 18 + Vite"]
+    ROOT --> DATA["data/ — sentetik evrak · şablon · mevzuat"]
+    ROOT --> DOCS["docs/ — mimari, eval, uyum dokümanları"]
+    ROOT --> BENCH["bench/ — KamuEvrak-Bench paketi"]
+    ROOT --> SCRIPTS["scripts/ — demo, eval, veri üretim"]
+
+    BE --> BE1["agents/nodes/ — 20 LangGraph node"]
+    BE --> BE2["api/routes/ — 9 REST/SSE uç dosyası"]
+    BE --> BE3["retrieval/ — 12 dosya: BM25 + rerank + GraphRAG-lite"]
+    BE --> BE4["yazi/ — 9 dosya: resmî yazı render + EYP 2.0"]
+    BE --> BE5["eval/ — 15 metrik harness"]
+    BE --> BE6["multimodal/ — OCR (pypdfium2 + RapidOCR)"]
+
+    FE --> FE1["src/components/ — 27 bileşen"]
+    FE --> FE2["src/components/agent-flow/ — canlı ajan şeması"]
+```
+
+| Klasör | İçerik | Örnek dosyalar |
+|---|---|---|
+| [`backend/agents/nodes/`](backend/agents/nodes/) | 20 LangGraph node — pipeline'ın kalbi | `siniflandir.py` · `mevzuat_oner.py` · `verify.py` · `yazi_taslak.py` |
+| [`backend/api/routes/`](backend/api/routes/) | REST + SSE uçları | `process_doc.py` · `sohbet.py` · `sla.py` · `mevzuat.py` · `yazi.py` |
+| [`backend/retrieval/`](backend/retrieval/) | Mevzuat RAG altyapısı | `hybrid_search.py` · `reranker.py` · `atif_grafi.py` (GraphRAG-lite) |
+| [`backend/yazi/`](backend/yazi/) | Resmî yazı render + EYP 2.0 paketi | `renderer.py` · `dayanak.py` · `eyp.py` · `sdp_plani.py` |
+| [`backend/eval/`](backend/eval/) | 15 metrik harness | `competition_scorecard.py` · `heldout_eval.py` · `stats.py` |
+| [`backend/multimodal/`](backend/multimodal/) | OCR (offline, AGPL-free) | `ocr.py` |
+| [`frontend/src/components/`](frontend/src/components/) | 27 React bileşeni + canlı ajan akışı | `PanelView.jsx` · `CanliAjanAkisi.jsx` · `MuzakereKurulu.jsx` |
+| [`data/`](data/) | %100 sentetik evrak, Jinja2 şablon, mevzuat korpus | `synthetic/` · `templates/` · `mevzuat/` |
+| [`docs/`](docs/) | Mimari, eval, uyum dokümanları | [`03-mimari.md`](docs/03-mimari.md) · [`sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md) |
+| [`bench/`](bench/) | KamuEvrak-Bench (6 görev, veri kartlı) | [`bench/README.md`](bench/README.md) |
+
+---
+
 ## ✨ Öne çıkanlar (her iddia koda bağlı)
 
 | | |
@@ -161,11 +233,28 @@ profilinde açılır; açıldığında o da LLM'li sürümüyle koşar.)
 | G2 · Birim yönlendir | `route_birim` — 9 birim, top-k + alternatifler | [`nodes/route_birim.py`](backend/agents/nodes/route_birim.py) |
 | G2 · Kullanıcıyı bilgilendir | `finalize` + sohbet asistanı | [`api/routes/sohbet.py`](backend/api/routes/sohbet.py) |
 
-Puanlama boyutlarına göre nereye bakmalı: **Yöntem & Teknik (35)** → [Mimari](#-mimari) +
-[`docs/method.md`](docs/method.md) · **Uygulama başarımı (35)** → [Skorlar](#-değerlendirme-sonuçları-dürüst) ·
-**Demo (15)** → [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md) · **Yenilikçilik & ticarileşme (15)** →
-[Neden farklı](#-neden-farklı) + [`docs/ticarileşme.md`](docs/ticarileşme.md).
 Tam matris: [`docs/sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md).
+
+---
+
+## 🏆 Puanlama kriterleri
+
+Şartname 100 puanı dört boyuta böler; her biri README'de somut kanıta bağlanır:
+
+```mermaid
+pie showData title Puanlama (100 puan)
+    "Yöntem & Teknik (35)" : 35
+    "Uygulama başarımı (35)" : 35
+    "Demo — gerçek zamanlı (15)" : 15
+    "Yenilikçilik / Özgünlük / Ticarileşme (15)" : 15
+```
+
+| Boyut | Puan | Nereye bak |
+|---|---|---|
+| Yöntem & Teknik | 35 | [Mimari](#-mimari) + [`docs/method.md`](docs/method.md) |
+| Uygulama başarımı | 35 | [Değerlendirme sonuçları](#-değerlendirme-sonuçları-dürüst) |
+| Demo (gerçek zamanlı avantaj) | 15 | [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md) |
+| Yenilikçilik / Özgünlük / Ticarileşme | 15 | [Neden farklı](#-neden-farklı) + [`docs/ticarileşme.md`](docs/ticarileşme.md) |
 
 ---
 
@@ -173,7 +262,16 @@ Tam matris: [`docs/sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md).
 
 Tüm ölçümler **gerçek LangGraph pipeline'ını** koşar (`build_graph().ainvoke`); fark yalnız LLM
 modu ve veri setidir. Held-out setler örtük ifadeli, üretim sözlüğünden **farklı** evraklardır
-(keyword sızıntısı yok). Tüm artefaktlar repodadır — sayılar yeniden üretilebilir.
+(keyword sızıntısı yok — aşağıdaki ayrım kasıtlı ve ölçülüdür). Tüm artefaktlar repodadır —
+sayılar yeniden üretilebilir.
+
+```mermaid
+flowchart LR
+    SOZLUK["Prompt / kural sözlüğü<br/>(üretim kelime dağarcığı)"] -. "keyword sızıntısı YOK" .-> HELDOUT
+    HELDOUT["Held-out set (n=108)<br/>örtük ifadeli, görülmemiş evrak"] --> PIPE["build_graph().ainvoke()<br/>gerçek pipeline — mock değil"]
+    PIPE --> METRIK["accuracy · macro-F1 · Top-1<br/>Wilson CI + exact McNemar"]
+    METRIK --> ART["git-sha damgalı artefakt<br/>eval/runs/*.json"]
+```
 
 ### Held-out (görülmemiş evrak, n=108 = 2×54) — üretim modeli DeepSeek (`deepseek-chat`)
 
@@ -249,6 +347,17 @@ tanımları: [`docs/06-eval-harness.md`](docs/06-eval-harness.md)).
 
 `.env` → `LLM_MODE`. OpenAI-uyumlu istemci `base_url` ile DeepSeek/OpenAI/Azure'a bağlanır — kod değişikliği yok.
 
+```mermaid
+flowchart LR
+    ENV[".env → LLM_MODE"] --> MOCK["mock (varsayılan)<br/>keyword + regex, anahtar yok"]
+    ENV --> OPENAI["openai<br/>DeepSeek / OpenAI / Azure"]
+    ENV --> LLAMA["llamacpp<br/>lokal Qwen GGUF"]
+    MOCK --> FALLBACK{{"Her katmanda deterministik<br/>fallback garantisi"}}
+    OPENAI --> FALLBACK
+    LLAMA --> FALLBACK
+    FALLBACK --> AKIS["Pipeline hiç durmaz<br/>(anahtar yok / hata / timeout dahil)"]
+```
+
 | Mod | LLM | Anahtar | Ne için |
 |---|---|---|---|
 | `mock` (varsayılan) | yok — keyword+regex | gerekmez | demo / CI / offline; skor tabanı |
@@ -262,6 +371,21 @@ veri kurumdan çıkmaz).
 ---
 
 ## 🔌 API (curl)
+
+```mermaid
+sequenceDiagram
+    participant C as İstemci
+    participant API as FastAPI
+
+    C->>API: POST /process_doc (evrak_text)
+    API-->>C: 200 sonuç (veya onay_bekliyor:true)
+
+    C->>API: POST /process_doc/stream (file, multipart)
+    API-->>C: SSE — OCR + node event'leri (canlı)
+
+    C->>API: POST /process_doc/resume (karar)
+    API-->>C: nihai yanıt + DOCX / PDF / EYP
+```
 
 ```bash
 # Hazır metinle (OCR'sız)

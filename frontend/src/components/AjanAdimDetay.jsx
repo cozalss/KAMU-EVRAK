@@ -7,7 +7,7 @@
    Veri: node.data (SSE _node_summary) birincil; yoksa result alanlarına düşer — koşum
    CANLI sürerken de açılabilir, adım bittiğinde içerik kendiliğinden zenginleşir. */
 import { useEffect, useRef } from "react";
-import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import {
   Chip, MevzuatRow, SlaPanel, slaInfo, subSlaRenk, ZincirStepper, Vrow, CopyChip, KanitAlinti,
   BilgilendirmeYapisal,
@@ -213,7 +213,7 @@ function DecomposeDetay({ d, r }) {
       <div key={i} style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", padding: "8px 0", borderBottom: `1px solid ${PAL.line}` }}>
         <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{i + 1}.</span>
         <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flex: 1, minWidth: 160 }}>{cleanDemoText(String(a.konu || a.ozet || "alt-talep"))}</span>
-        {a.birim && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.V }}>{BIRIM_LBL(a.birim)}</span>}
+        {a.birim && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.V }}>{BIRIM_GOSTER(a.birim, a.tur)}</span>}
         {slaC && <Chip c={slaC} label={`Yasal süre: ${a.sla_durum}`}>{String(a.sla_durum).toLocaleLowerCase("tr-TR")}</Chip>}
       </div>
     );
@@ -269,7 +269,7 @@ function RouteDetay({ d, r }) {
       {neden && <Gerekce c={V}>{cleanDemoText(String(neden))}</Gerekce>}
       <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
         <span aria-hidden="true" style={{ display: "flex", color: DERIN.V }}><Icon.route width={20} height={20} /></span>
-        <Olcum k="Önerilen birim (havale)" v={BIRIM_LBL(birim)} c={DERIN.V} />
+        <Olcum k="Önerilen birim (havale)" v={BIRIM_GOSTER(birim, d.evrak_turu || r?.evrak_turu)} c={DERIN.V} />
       </div>
       {alternatifler.length > 0 && (
         <div style={{ marginTop: SP.m }}>
@@ -277,7 +277,7 @@ function RouteDetay({ d, r }) {
           {alternatifler.map((b, i) => (
             <div key={b} style={{ display: "flex", gap: SP.s, alignItems: "baseline", padding: "4px 0", borderBottom: `1px solid ${PAL.line}` }}>
               <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{i + 2}.</span>
-              <span style={{ ...TYPE.data, color: PAL.mut }}>{BIRIM_LBL(b)}</span>
+              <span style={{ ...TYPE.data, color: PAL.mut }}>{BIRIM_GOSTER(b, d.evrak_turu || r?.evrak_turu)}</span>
             </div>
           ))}
         </div>

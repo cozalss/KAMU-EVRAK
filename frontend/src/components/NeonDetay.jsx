@@ -7,7 +7,7 @@
    satırları, kâğıt-görünümlü resmî yazı önizleme. Tümü GERÇEK ProcessResponse.
    Yaprak bileşenler: NeonDetayParts.jsx */
 import { cloneElement, useEffect, useState } from "react";
-import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, NeonCard, KV, RiskBand, Icon, focusRing } from "./neonUi.jsx";
 import {
   Chip, Fact, StatTile, GorevLabel, slaInfo, subSlaRenk, MevzuatRow, SlaPanel,
@@ -182,9 +182,11 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
   const butunluk = den.butunluk !== false;
   const birimAday = (r.birim_alternatifleri || []).filter(Boolean).filter((b) => b !== r.hedef_birim).slice(0, 3);
   // Hüküm şeridi birim göstergesi: BÜYÜK değer = LLM'in içerikten seçtiği somut gerçek birim
-  // (servis_birimi.ad), yoksa deterministik genel kategori (hedef_birim, ölçülü 9-set) fallback.
-  // Genel kategori LLM biriminden farklıysa küçük "genel kategori:" bağlam satırı görünür.
-  const genelBirim = r.hedef_birim ? BIRIM_LBL(r.hedef_birim) : "";
+  // (servis_birimi.ad), yoksa deterministik genel havale birimi (hedef_birim, ölçülü 9-set) fallback.
+  // Genel havale birimi LLM biriminden farklıysa küçük "genel havale birimi:" bağlam satırı görünür.
+  // BIRIM_GOSTER: basin_halkla_iliskiler_cimer kovasında "CİMER" yalnız evrak GERÇEKTEN CİMER/
+  // bilgi-edinme türündeyse gösterilir; düz dilekçede halkla ilişkiler/başvuru-kayıt kanalı (yanlış CİMER yok).
+  const genelBirim = r.hedef_birim ? BIRIM_GOSTER(r.hedef_birim, r.evrak_turu) : "";
   const llmBirimAd = r.servis_birimi?.ad || "";
   const buyukBirim = llmBirimAd || genelBirim;
   const birimBaglamGoster = !!llmBirimAd && llmBirimAd !== genelBirim;
@@ -251,7 +253,7 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
               // Değerler yukarıda türetildi (dosya deseni: derived const'lar return öncesi).
               // sub düz string — StatTile zaten TYPE.meta/PAL.mut3 ile sarar (çift sarma yok).
               <StatTile k="Yönlendirilecek birim" v={buyukBirim} c={V} icon={<Icon.route />}
-                sub={birimBaglamGoster ? `genel kategori: ${genelBirim}` : null} />
+                sub={birimBaglamGoster ? `genel havale birimi: ${genelBirim}` : null} />
             )}
           </div>
 
@@ -390,7 +392,7 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                             <div style={{ ...TYPE.data, color: PAL.ink2, marginBottom: SP.s }}>{cleanDemoText(a.ozet || "")}</div>
                             <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
                               <span style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0 }}>
-                                {[a.tur_tr || (a.tur && EVRAK_TR(a.tur)), a.birim_tr || (a.birim && BIRIM_LBL(a.birim)), a.yazi_turu && YAZI_TR(a.yazi_turu), a.cevap_suresi && cleanDemoText(a.cevap_suresi)].filter(Boolean).join(" · ")}
+                                {[a.tur_tr || (a.tur && EVRAK_TR(a.tur)), (a.birim && BIRIM_GOSTER(a.birim, a.tur)) || a.birim_tr, a.yazi_turu && YAZI_TR(a.yazi_turu), a.cevap_suresi && cleanDemoText(a.cevap_suresi)].filter(Boolean).join(" · ")}
                               </span>
                               {asla && subSlaRenk(a.sla_durum) && <Chip c={subSlaRenk(a.sla_durum)} label={`Bu alt-talebin yasal süre durumu: ${asla.label}`}>{asla.label}</Chip>}
                             </div>
@@ -604,7 +606,7 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                       <NeonCard key="birim" title="Birim yönlendirme" tag={birimAday.length ? `${birimAday.length + 1} aday değerlendirildi` : null} accent={V} icon={<Icon.route />}>
                         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
                           <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>1.</span>
-                          <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{BIRIM_LBL(r.hedef_birim)}</span>
+                          <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2 }}>{BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}</span>
                           <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, fontWeight: 500, color: DERIN.V }}>
                             <Icon.check width={12} height={12} /> havale edildi
                           </span>
@@ -612,7 +614,7 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                         {birimAday.map((b, i) => (
                           <div key={b} style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
                             <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{i + 2}.</span>
-                            <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_LBL(b)}</span>
+                            <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_GOSTER(b, r.evrak_turu)}</span>
                           </div>
                         ))}
                         {/* ADDITIVE: LLM'in içerikten seçtiği somut gerçek birim (kurum dairesi

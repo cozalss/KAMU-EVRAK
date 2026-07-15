@@ -106,7 +106,12 @@ BIRIM_TR: dict[str, str] = {
     "mali_strateji_sgb": "Strateji Geliştirme / Mali İşler",
     "bilgi_islem": "Bilgi İşlem Dairesi",
     "destek_idari_hizmetler": "Destek / İdari Hizmetler Dairesi",
-    "basin_halkla_iliskiler_cimer": "Basın-Halkla İlişkiler / CİMER Birimi",
+    # NOT: Bu kova dilekçe + bilgi-edinme + CİMER başvurularını birlikte tutar (EVRAK_TO_BIRIM).
+    # Etiket "CİMER"i ARTIK KOŞULSUZ İDDİA ETMEZ — düz dilekçe CİMER'den gelmediği hâlde her
+    # dilekçede "CİMER Birimi" görünüyordu (yanlış). Varsayılan hiçbir zaman-yanlış olmayan
+    # halkla ilişkiler/başvuru-kayıt kanalıdır; CİMER/Bilgi-Edinme ETİKETİ yalnız evrak GERÇEKTEN
+    # o türdeyse gösterilir (frontend BIRIM_GOSTER). Kod/rota (basin_halkla_iliskiler_cimer) sabit.
+    "basin_halkla_iliskiler_cimer": "Basın-Halkla İlişkiler / Başvuru-Kayıt",
     "teftis_ic_denetim": "Teftiş / İç Denetim",
     "ilgili_teknik_daire": "İlgili Teknik / Ana Hizmet Dairesi",
 }
@@ -549,6 +554,27 @@ def evrak_turu_tr(key: str) -> str:
 
 def birim_tr(key: str) -> str:
     return BIRIM_TR.get(key, key)
+
+
+def birim_goster(hedef_birim: str, evrak_turu: str) -> str:
+    """Hedef birim (deterministik 9-set) İÇERİK-DUYARLI gösterim etiketi — yalnız BİLDİRİM/ÖZET.
+
+    basin_halkla_iliskiler_cimer kovası dilekçe + bilgi-edinme + CİMER'i birlikte tutar. Kullanıcı
+    kuralı: "CİMER yalnızca dilekçe CİMER'den geldiyse". Varsayılan etiket (birim_tr) artık hiçbir
+    zaman-yanlış olmayan halkla ilişkiler/başvuru-kayıt kanalıdır; evrak GERÇEKTEN cimer/bilgi_edinme
+    türündeyse etiket o kanala YÜKSELTİLİR. Ölçülen hedef_birim KODU/rotası DEĞİŞMEZ.
+
+    GÜVENLİK: yalnız kullanıcıya gösterilen bildirim/özet metninde kullanılır. Üretilen YAZI gövdesi
+    (yazi_taslak muhatabı) ve verify grounding allow-set'i (BIRIMLER üzerinden birim_tr) DAİMA nötr
+    birim_tr kullanır — böylece taslaktaki birim adı grounding kümesiyle birebir tutar (yükseltilmiş
+    etiket yazıya hiç girmez; zaten CİMER kovası ust_yazi'ya rota almaz). Frontend BIRIM_GOSTER eşi.
+    """
+    if hedef_birim == "basin_halkla_iliskiler_cimer":
+        if evrak_turu == "cimer":
+            return "CİMER / Halkla İlişkiler Birimi"
+        if evrak_turu == "bilgi_edinme":
+            return "Bilgi Edinme / Halkla İlişkiler Birimi"
+    return birim_tr(hedef_birim)
 
 
 def sdp_kodu(turu: str) -> str:

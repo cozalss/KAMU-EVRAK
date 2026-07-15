@@ -27,7 +27,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import LLM_ATLA_NODELAR, YAZI_TURU_TR, birim_tr, evrak_turu_tr
+from agents.config import LLM_ATLA_NODELAR, YAZI_TURU_TR, birim_goster, evrak_turu_tr
 from agents.nodes._llm_extract import llm_text
 
 log = structlog.get_logger()
@@ -275,7 +275,9 @@ def _llm_facts(state: dict[str, Any], turu: str, birim: str,
 async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
     """Görev 1+2 sonuçlarını yapısal bildirimde topla (metin yapıdan render edilir)."""
     turu = evrak_turu_tr(state.get("evrak_turu", "belirsiz"))
-    birim = birim_tr(state.get("hedef_birim", "yazi_isleri_evrak"))
+    # İÇERİK-DUYARLI birim etiketi (bildirim metni): düz dilekçe için "Başvuru-Kayıt" (yanlış CİMER
+    # yok); yalnız evrak GERÇEKTEN cimer/bilgi_edinme türündeyse "CİMER"/"Bilgi Edinme" yükseltmesi.
+    birim = birim_goster(state.get("hedef_birim", "yazi_isleri_evrak"), state.get("evrak_turu", ""))
     eksik = state.get("eksik_alanlar") or []
     sorular = state.get("clarify_questions") or []
     # CRAG düzeltme yaptıysa düzeltilmiş öneriler tercih edilir (yoksa baseline liste).

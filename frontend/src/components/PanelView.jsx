@@ -5,7 +5,7 @@ import React from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, ALFA, DERIN, DERIN_OF, PAL, BANT } from "./neonUi.jsx";
-import { EVRAK_TR, BIRIM_LBL } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
 
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
 
@@ -275,7 +275,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
                   <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
                   {bekliyor && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.sari, background: ALFA(BANT.sari.c), borderRadius: RAD.chip, padding: "2px 8px", flexShrink: 0 }}>karar bekliyor</span>}
                   <span style={{ ...TYPE.meta, color: PAL.mut }}>{EVRAK_TR(h.evrak_turu)}</span>
-                  <span style={{ ...TYPE.meta, color: DERIN.V, textAlign: "right" }}>{BIRIM_LBL(h.hedef_birim)}</span>
+                  <span style={{ ...TYPE.meta, color: DERIN.V, textAlign: "right" }}>{BIRIM_GOSTER(h.hedef_birim, h.evrak_turu)}</span>
                   <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 400, color: PAL.mut2, flexShrink: 0 }}>{fmtTime(h.ts)}</span>
                 </div>
               );

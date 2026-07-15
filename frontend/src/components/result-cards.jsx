@@ -26,7 +26,9 @@ const BIRIM_TR = {
   mali_strateji_sgb: "Strateji Geliştirme / Mali İşler",
   bilgi_islem: "Bilgi İşlem Dairesi",
   destek_idari_hizmetler: "Destek / İdari Hizmetler Dairesi",
-  basin_halkla_iliskiler_cimer: "Basın-Halkla İlişkiler / CİMER Birimi",
+  // Kova dilekçe + bilgi-edinme + CİMER'i birlikte tutar; varsayılan etiket "CİMER"i KOŞULSUZ
+  // İDDİA ETMEZ (düz dilekçe CİMER'den gelmedi) — CİMER/Bilgi-Edinme yükseltmesi BIRIM_GOSTER'de.
+  basin_halkla_iliskiler_cimer: "Basın-Halkla İlişkiler / Başvuru-Kayıt",
   teftis_ic_denetim: "Teftiş / İç Denetim",
   ilgili_teknik_daire: "İlgili Teknik / Ana Hizmet Dairesi",
 };
@@ -58,6 +60,19 @@ const UNSUR_ORDER = [
 const EVRAK_TR = (k) => EVRAK_TURU_TR[k] || k || "—";
 const BIRIM_LBL = (k) => BIRIM_TR[k] || k || "—";
 const YAZI_TR = (k) => YAZI_TURU_TR[k] || k || "";
+
+// Hedef birim (deterministik 9-set) İÇERİK-DUYARLI gösterim etiketi. basin_halkla_iliskiler_cimer
+// kovası dilekçe + bilgi-edinme + CİMER'i birlikte tutar. Kullanıcı kuralı: "CİMER yalnızca
+// dilekçe CİMER'den geldiyse". Varsayılan etiket (BIRIM_LBL) artık hiçbir zaman-yanlış olmayan
+// halkla ilişkiler/başvuru-kayıt kanalıdır; evrak GERÇEKTEN cimer/bilgi_edinme türündeyse etiketi
+// o kanala YÜKSELTİRİZ. Ölçülen hedef_birim KODU/rotası DEĞİŞMEZ — yalnız insan-okur etiket bağlama göre.
+const BIRIM_GOSTER = (kod, evrakTuru) => {
+  if (kod === "basin_halkla_iliskiler_cimer") {
+    if (evrakTuru === "cimer") return "CİMER / Halkla İlişkiler Birimi";
+    if (evrakTuru === "bilgi_edinme") return "Bilgi Edinme / Halkla İlişkiler Birimi";
+  }
+  return BIRIM_LBL(kod);
+};
 
 // XSS guard — mevzuat linki yalnız http/https olsun; javascript:/data: vb. reddedilir.
 // Reddedilirse null döner → çağıran link yerine düz metin gösterir.
@@ -1042,5 +1057,5 @@ export default ResultCards;
 export {
   OnayPaneli, ClarifyBanner, EvrakTuruCard, CikarilanAlanlarCard, KanitVurguCard, EksikBilgiCard, MevzuatCard,
   BirimCard, YaziTaslakCard, DogrulamaCard, ArsivBilgisiCard, SlaTriyajCard, DecomposeCard, RiskBandCard, DenetimIziCard, BilgilendirmeCard,
-  EVRAK_TR, BIRIM_LBL, YAZI_TR, EKSIK_TR, safeUrl, cleanDemoText, normalizeDraftForDemo,
+  EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, EKSIK_TR, safeUrl, cleanDemoText, normalizeDraftForDemo,
 };

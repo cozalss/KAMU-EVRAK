@@ -6,7 +6,7 @@ import FilterBar from "./FilterBar.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
-import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 
 /* Düzenlenen metni DOĞRUDAN DOCX indir (pipeline yok → /yazi/render). Gövde olduğu gibi. */
 async function docxIndir(text, name, onToast) {
@@ -99,7 +99,7 @@ function DraftCard({ h, onEdit, onDelete, onSend, onKurul }) {
       <div style={{ display: "flex", gap: SP.s, alignItems: "baseline", flexWrap: "wrap", marginBottom: SP.m, minWidth: 0 }}>
         <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, flexShrink: 0 }}>{h.name}</span>
         <span style={{ ...TYPE.meta, color: PAL.mut3, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {EVRAK_TR(r.evrak_turu)} · {BIRIM_LBL(r.hedef_birim)}
+          {EVRAK_TR(r.evrak_turu)} · {BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}
         </span>
       </div>
 

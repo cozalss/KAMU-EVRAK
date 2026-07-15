@@ -15,6 +15,7 @@ import AjanAdimDetay from "./AjanAdimDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
+import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 
 import { MONO, SANS, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
@@ -546,6 +547,10 @@ export default function CanliAjanAkisi({
   const [belgeModal, setBelgeModal] = useState(null);
   // Ajan izi adım detay modalı — display index'i (istasyon/nokta/çip tıklanınca açılır).
   const [detayIdx, setDetayIdx] = useState(null);
+  // Çok-konulu taslak pager konumu — yeni koşum başlayınca (runBase değişince) ilk taslağa döner;
+  // aksi halde bir önceki evrakın kaldığı sayfada açılır kalırdı (kafa karıştırıcı).
+  const [altIdx, setAltIdx] = useState(0);
+  useEffect(() => { setAltIdx(0); }, [runBase]);
   const km = result?.kanit_metadata;
   const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
 
@@ -749,27 +754,15 @@ export default function CanliAjanAkisi({
                 </div>
               </div>
             )}
-            {/* Çok-konulu açıklama şeridi — N ayrı birim kartının NEDEN olduğunu tek cümlede
-                çerçeveler (memur "tekrarlı kart yığını" değil "N birime N ayrı yazı" görür). */}
-            {altTaslaklar.length >= 2 && (
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: `2px ${SP.xs}px`, flexWrap: "wrap" }}>
-                <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.V }}><Icon.doc /></span>
-                <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Çok-konulu evrak · {altTaslaklar.length} ayrı birim</span>
-                <span style={{ ...TYPE.meta, color: PAL.mut2 }}>— her birim için ayrı resmî yazı taslağı; kararı tek tek verin</span>
-              </div>
-            )}
-            {/* YAN YANA responsive grid — her birim ayrı kolon (auto-fit, min 340px) → 2-3 kolon.
-                Kartlar artık dikey yığılıp karışmıyor; ayırt edici konu + numara ile taranır. */}
+            {/* Tek-taslak pager (2026-07-15: kullanıcı isteği — grid uzun dikey scroll
+                yaratıyordu; sonra: kartın üstünde ayrı bir şerit/ok satırı kaynak belge ve hüküm
+                kartıyla HİZAYI bozuyordu). Ok butonları artık AltTaslakKarti'nin KENDİ başlık
+                satırında yaşar (üstte ayrı satır yok) → kartın dış kutusu diğer iki kolonla aynı
+                y'de başlar. Her kart mounted kalır (AltTaslakPager içinde display:none), onay/red
+                rozeti navigasyonda kaybolmaz. Tek alt-talep varsa pager gereksiz — doğrudan kart basılır. */}
             {altTaslaklar.length >= 2 ? (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: SP.m, alignItems: "stretch" }}>
-                {altTaslaklar.map(({ a, sira }, i) => (
-                  <AltTaslakKarti key={sira} altTalep={a} sira={i + 1}
-                    onTurUret={(tur) => onAltTurUret(a, tur)}
-                    onOnaylaGonder={(metin, tur) => onAltKarar(a, metin, "onayla", sira, tur)}
-                    onReddet={(metin, tur) => onAltKarar(a, metin, "reddet", sira, tur)}
-                    onDuzenle={(metin, tur) => onAltDuzenle(a, metin, tur, sira)} />
-                ))}
-              </div>
+              <AltTaslakPager altTaslaklar={altTaslaklar} idx={altIdx} onIdx={setAltIdx}
+                onTurUret={onAltTurUret} onKarar={onAltKarar} onDuzenle={onAltDuzenle} />
             ) : (
               altTaslaklar.map(({ a, sira }, i) => (
                 <AltTaslakKarti key={sira} altTalep={a} sira={i + 1}
@@ -787,15 +780,18 @@ export default function CanliAjanAkisi({
               /* ============ SONUÇ — DİKEY AKIŞ (kullanıcı isteği: sol sütun kaldırıldı → çift
                  TAM GENİŞLİĞE yayılır, taslak genişleyince kısalır, boşluk kapanır).
                  ÜST: kaynak belge · ORTA: ayrıntılı sonuç [hüküm | resmî yazı taslağı, EŞİT BOY]
-                 + Görev 1/2 detay · ALT: ajan izi. ============ */
+                 + Görev 1/2 detay · ALT: ajan izi. Çok-konulu evrakta (2026-07-15 kullanıcı
+                 isteği) pager de AYNI üst satırda yaşar — ayrı bir alt banda düşürülmez, sol/sağ
+                 butonlar kaynak belge + hüküm kartının YANINDA durur. ============ */
               <div style={{ display: "flex", flexDirection: "column", gap: SP.l, padding: "16px 24px 40px", minWidth: 0 }}>
                 {/* ÜST SATIR (NeonDetay içinde): 1) kaynak belge · 2) ayrıntılı sonuç · 3) resmî
-                    yazı taslağı — eşit boy; altında Görev 1/2 detay tam genişlik. */}
+                    yazı taslağı (tek taslak ya da çok-konulu pager) — eşit boy; altında Görev 1/2
+                    detay tam genişlik. */}
                 <HataSiniri baslik="Ayrıntılı sonuç gösterilemedi">
                   <NeonDetay embedded result={result} onMevzuatAc={onMevzuatAc}
                     onMevzuatSec={onMevzuatSec} seciliMevzuat={seciliMevzuat}
                     solPanel={<KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={glow} onBuyut={() => setBelgeModal("kaynak")} />}
-                    yanTaslak={altTaslaklar.length < 2 ? taslakBlok : null} />
+                    yanTaslak={taslakBlok} />
                 </HataSiniri>
                 {/* ALT — ajan izi (demo/denetim izi; sonucun altında) */}
                 {izKart}
@@ -809,15 +805,6 @@ export default function CanliAjanAkisi({
                 </div>
                 <div style={{ flex: "99 1 480px", minWidth: 0, padding: "16px 24px 40px", display: "flex", flexDirection: "column", gap: SP.l }}>
                   {izKart}
-                </div>
-              </div>
-            )}
-
-            {/* Çok-konulu (N ayrı birim) taslak grid'i GENİŞ nefes ister → tam-genişlik bantta kalır. */}
-            {result && altTaslaklar.length >= 2 && (
-              <div style={{ borderTop: `1px solid ${PAL.line}`, background: PAL.bg2, padding: "24px clamp(16px,4vw,56px) 96px" }}>
-                <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-                  {taslakBlok}
                 </div>
               </div>
             )}

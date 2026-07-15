@@ -308,7 +308,7 @@ function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
       {open && (
         <span role="tooltip" id={id}
           style={{ position: "absolute", top: "100%", [align === "right" ? "right" : "left"]: 0, paddingTop: SP.s, width, zIndex: 60, cursor: "default" }}>
-          <span style={{ display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: "12px 14px", boxShadow: SH.pop, ...TYPE.data, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400 }}>
+          <span style={{ display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: "12px 14px", boxShadow: SH.pop, ...TYPE.data, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, animation: "nu-rise .14s var(--ke-ease-out) both" }}>
             {children}
           </span>
         </span>
@@ -350,7 +350,7 @@ export function RiskBand({ band = "yesil", lit = true, sub }) {
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 10px", borderRadius: RAD.card, background: PAL.surfHi, border: `1px solid ${PAL.line}`, width: "fit-content" }}>
           {RISK_ORDER.map((key) => {
             const on = lit && band === key;
-            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 12, height: 12, borderRadius: RAD.dot, background: on ? BANT[key].c : PAL.press, border: "1px solid " + (on ? BANT[key].c : PAL.lineHi), transition: "background .15s ease-out" }} />;
+            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 12, height: 12, borderRadius: RAD.dot, background: on ? BANT[key].c : PAL.press, border: "1px solid " + (on ? BANT[key].c : PAL.lineHi), transition: "background .15s ease-out", animation: on ? "nu-pop .3s var(--ke-ease-out) both" : "none" }} />;
           })}
         </div>
       </div>

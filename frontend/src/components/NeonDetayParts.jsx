@@ -36,7 +36,8 @@ export const StatTile = ({ k, v, sub, c = PAL.ink, icon }) => (
       {/* wordBreak: eşlenmemiş/ham fallback anahtarı (boşluksuz snake_case) da güvenle sarmalı —
           gerçek etiketler (EVRAK_TR/BIRIM_LBL) tek satıra sığar, bu yalnız savunma. */}
       <span style={{ display: "block", ...TYPE.num, color: DERIN_OF(c), maxWidth: 420, wordBreak: "break-word" }}>{v}</span>
-      {sub && <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, marginTop: 2 }}>{sub}</span>}
+      {/* sub = içerik/bağlam (alan-adı DEĞİL) → mut3 yerine mut2: etikete (mut3) göre bir kademe belirgin, rol ayrışır. */}
+      {sub && <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2, marginTop: 2 }}>{sub}</span>}
     </span>
   </div>
 );
@@ -156,9 +157,9 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
           )}
         </div>
         {pct > 0 && (
-          <div style={{ position: "relative", height: 4, background: PAL.press }} role="img"
+          <div style={{ position: "relative", height: 4, background: PAL.press, borderRadius: RAD.chip }} role="img"
             aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? ` — güven bandı: ${guven}` : ""}`}>
-            <div style={{ height: "100%", width: `${pct}%`, background: fill }} />
+            <div style={{ height: "100%", width: `${pct}%`, background: fill, borderRadius: RAD.chip }} />
           </div>
         )}
         {snippet && <div style={{ ...TYPE.data, color: PAL.mut2 }}>{snippet}</div>}
@@ -227,7 +228,7 @@ export function SlaPanel({ sla, info }) {
           </div>
           <div aria-hidden="true" style={{ position: "relative", height: 6, background: PAL.press, borderRadius: RAD.chip }}>
             <span style={{ position: "absolute", inset: 0, width: `${konum.oran * 100}%`, background: info.color, borderRadius: RAD.chip }} />
-            <span style={{ position: "absolute", top: -3, left: `${konum.oran * 100}%`, width: 12, height: 12, borderRadius: "50%", background: info.color, border: `2px solid ${PAL.surf}`, transform: "translateX(-50%)", boxShadow: SH.card }} />
+            <span style={{ position: "absolute", top: -3, left: `${konum.oran * 100}%`, width: 12, height: 12, borderRadius: RAD.dot, background: info.color, border: `2px solid ${PAL.surf}`, transform: "translateX(-50%)", boxShadow: SH.card }} />
           </div>
           <div aria-hidden="true" style={{ marginTop: SP.xs, display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut3 }}>
             <span>başvuru <span style={{ fontFamily: MONO, ...TNUM }}>{sla.baslangic}</span></span>
@@ -326,7 +327,7 @@ export function KanitAlinti({ span, metin, children }) {
       onKeyDown={(e) => { if (e.key === "Escape") setAcik(false); }}>
       {children}
       {acik && (
-        <span role="tooltip" style={{ position: "absolute", bottom: "calc(100% + 6px)", right: 0, width: "min(340px, 82vw)", zIndex: 70, display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.pop, padding: "10px 12px", animation: "nu-rise .14s ease-out both" }}>
+        <span role="tooltip" style={{ position: "absolute", bottom: "calc(100% + 6px)", right: 0, width: "min(340px, 82vw)", zIndex: 70, display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.pop, padding: "10px 12px", animation: "nu-rise .14s var(--ke-ease-out) both" }}>
           <span style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: 4 }}>Kaynak belgeden kanıt</span>
           <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.mut, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
             {bas > 0 ? "…" : ""}{metin.slice(bas, span.start | 0)}
@@ -590,7 +591,7 @@ const lintAnahtar = (k, i, onek) => k.kural || `${k.madde ?? "?"}-${onek}${i}`;
 function LintNokta({ renk, etiket }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-      <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: renk, flexShrink: 0 }} />
+      <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: renk, flexShrink: 0 }} />
       {etiket}
     </span>
   );
@@ -616,7 +617,7 @@ function LintOlcer({ gecti, bilgi, uyari }) {
       </div>
       <div role="img"
         aria-label={`Yönetmelik 2646 denetimi: ${toplam} kuraldan ${gecti} karşılandı, ${bilgi} bilgi notu, ${uyari} uyarı.`}
-        style={{ display: "flex", height: 6, borderRadius: 3, overflow: "hidden", background: PAL.line, gap: 1.5 }}>
+        style={{ display: "flex", height: 6, borderRadius: RAD.chip, overflow: "hidden", background: PAL.press, gap: 2 }}>
         {seg.map((s, i) => <div key={i} style={{ flex: s.n, background: s.c }} />)}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: SP.m, marginTop: 6, ...TYPE.meta, color: PAL.mut2 }}>

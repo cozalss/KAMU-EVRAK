@@ -57,7 +57,7 @@ const KABARCIKLAR = [
 
 const KEYFRAMES = `
 @keyframes as-tarama{0%{transform:translateY(-44px)}100%{transform:translateY(${A4_H + 8}px)}}
-@keyframes as-oku{0%,72%,100%{background:var(--ke-press)}16%{background:color-mix(in srgb, ${T} 44%, var(--ke-press))}}
+@keyframes as-oku{0%,72%,100%{opacity:0}16%{opacity:1}}
 @keyframes as-giris{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes as-muhur{0%{opacity:0;transform:translate(-50%,-50%) scale(1.9) rotate(-16deg)}55%{opacity:1}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-9deg)}}
 @keyframes as-zarf-gel{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -122,7 +122,9 @@ function Zarf() {
 // zarf. Kağıt mühürden sonra KATLANIR (scaleY transition); tüm sahne UÇUŞ'ta sola kayıp solar.
 function Belge({ belge, bitti, isliyor, katli, zarfli, ucus, az }) {
   return (
-    <div style={{ flex: `0 0 ${A4_W}px`, position: "relative", height: A4_H, perspective: 900, willChange: "transform, opacity",
+    /* willChange KALICI verilmez — sahne sürekli döngüde olduğundan katman promosyonu
+       hiç bırakılmıyordu; uçuş transition'ı kendi katmanını zaten kuruyor. */
+    <div style={{ flex: `0 0 ${A4_W}px`, position: "relative", height: A4_H, perspective: 900,
       transform: ucus ? "translateX(-480px) rotate(-10deg)" : "translateX(0) rotate(0)", opacity: ucus ? 0 : 1,
       transition: ucus ? "transform .7s cubic-bezier(.55,.06,.9,.3), opacity .7s ease-out" : "none" }}>
       {/* Kağıt — katlanınca üçe iner (scaleY .34, merkez orijin). z: zarfa girerken arka gövde
@@ -137,9 +139,13 @@ function Belge({ belge, bitti, isliyor, katli, zarfli, ucus, az }) {
           <span style={{ display: "block", height: 7, width: "56%", margin: "0 auto 7px", borderRadius: 2, background: PAL.lineHi }} />
           <span style={{ display: "block", height: 7, width: "34%", margin: "0 auto 18px", borderRadius: 2, background: PAL.line }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {/* OCR pırıltısı: zemin statik, tint katmanının OPACITY'si anime — background
+                animasyonu 12 satırı her karede yeniden boyatıyordu (paint, jank). */}
             {SATIRLAR.map((w, i) => w === 0
               ? <span key={i} aria-hidden="true" style={{ height: 7 }} />
-              : <span key={i} aria-hidden="true" style={{ height: 7, width: `${w}%`, borderRadius: 2, background: PAL.press, animation: `as-oku 3s ease-in-out ${(i * 3 / SATIRLAR.length).toFixed(2)}s infinite` }} />)}
+              : <span key={i} aria-hidden="true" style={{ position: "relative", display: "block", height: 7, width: `${w}%`, borderRadius: 2, background: PAL.press, overflow: "hidden" }}>
+                  <span style={{ position: "absolute", inset: 0, borderRadius: 2, background: `color-mix(in srgb, ${T} 44%, var(--ke-press))`, opacity: 0, animation: `as-oku 3s ease-in-out ${(i * 3 / SATIRLAR.length).toFixed(2)}s infinite` }} />
+                </span>)}
           </div>
         </div>
         {/* Tarama ışını — yalnız işlerken tarar; bitince (mühür) durur. */}

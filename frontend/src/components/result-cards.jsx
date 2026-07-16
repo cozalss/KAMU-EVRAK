@@ -643,8 +643,18 @@ function YaziTaslakCard({ yaziTuru, taslakMd, onToast, onDownload, downloading, 
         aria-live="off"
         aria-busy={animating}
       >
-        {shown}
-        {animating && <span className="rc-caret rc-caret-pre" aria-hidden="true" />}
+        {/* Daktilo sırasında sizer overlay: görünmez TAM metin son boyutu kilitler,
+            akan metin üstünde mutlak konumda → kutu frame-başı büyümez, sayfa geneli
+            reflow tetiklenmez (jank fix). */}
+        {animating ? (
+          <span style={{ position: "relative", display: "block" }}>
+            <span aria-hidden="true" style={{ visibility: "hidden" }}>{draft.display}</span>
+            <span style={{ position: "absolute", inset: 0 }}>
+              {shown}
+              <span className="rc-caret rc-caret-pre" aria-hidden="true" />
+            </span>
+          </span>
+        ) : shown}
       </pre>
       {(draft.fields.length > 0 || draft.reviewNotes.length > 0) && (
         <div className="rc-taslak-review" role="note" aria-label="Taslak tamamlama notları">
@@ -976,10 +986,23 @@ function BilgilendirmeCard({ text }) {
         <span className="rc-ic" aria-hidden="true"><Icon.megaphone /></span>
         <h3 id="rc-info-h" className="rc-card-title">Bilgilendirme</h3>
       </header>
-      {/* Görsel daktilo katmanı — ekran okuyucudan gizli; tam metin sr-only'de. */}
+      {/* Görsel daktilo katmanı — ekran okuyucudan gizli; tam metin sr-only'de.
+          Daktilo sırasında sizer overlay: görünmez TAM metin son boyutu kilitler,
+          akan metin üstünde mutlak konumda → kutu frame-başı büyümez (reflow/jank fix). */}
       <div className={"rc-info-body" + (animating ? " is-typing" : "")} aria-hidden="true">
-        {shown.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
-        {animating && <span className="rc-caret" aria-hidden="true" />}
+        {animating ? (
+          /* overflow:hidden — caret satırı yazımın sonunda sizer yüksekliğini bir-iki
+             saniye aşabiliyor; taşan caret kart padding'ine sarkmasın. */
+          <div style={{ position: "relative", overflow: "hidden" }}>
+            <div aria-hidden="true" style={{ visibility: "hidden" }}>
+              {safe.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
+            </div>
+            <div style={{ position: "absolute", inset: 0 }}>
+              {shown.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
+              <span className="rc-caret" aria-hidden="true" />
+            </div>
+          </div>
+        ) : shown.split("\n\n").map((para, i) => <p key={i}>{renderInlineBold(para)}</p>)}
       </div>
       <p className="rc-sr">{safe}</p>
     </article>

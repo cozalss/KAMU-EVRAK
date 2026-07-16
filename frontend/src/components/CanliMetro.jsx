@@ -265,11 +265,12 @@ export function MerkezKart({ a, total, glow, runBase }) {
 
 /* Aurora — kart arkasında T/V tonlarında yavaşça gezinen iki bulanık ışık lekesi (Epik
    istisna; metin kontrastını bozmayacak kadar soluk). pointer-events yok; reduced-motion'da
-   durur (statik soluk leke kalır). */
+   durur (statik soluk leke kalır). Yumuşaklık blur filtresiyle DEĞİL çok-duraklı gradyanla:
+   animasyonlu elemanda filter, dev dokuyu her karede yeniden kompozit ettiriyordu (jank). */
 export const Aurora = () => (
   <div aria-hidden="true" style={{ position: "absolute", inset: 0, overflow: "hidden", borderRadius: RAD.card, pointerEvents: "none" }}>
-    <span style={{ position: "absolute", top: "-12%", left: "-8%", width: 380, height: 380, borderRadius: RAD.dot, background: `radial-gradient(circle, ${GLOW(T, 14)}, transparent 65%)`, filter: "blur(42px)", animation: "nu-gezin 17s var(--ke-ease-in-out) infinite alternate" }} />
-    <span style={{ position: "absolute", bottom: "-16%", right: "-6%", width: 420, height: 420, borderRadius: RAD.dot, background: `radial-gradient(circle, ${GLOW(V, 12)}, transparent 65%)`, filter: "blur(48px)", animation: "nu-gezin 23s var(--ke-ease-in-out) infinite alternate-reverse" }} />
+    <span style={{ position: "absolute", top: "-12%", left: "-8%", width: 380, height: 380, borderRadius: RAD.dot, background: `radial-gradient(circle, ${GLOW(T, 13)} 0%, ${GLOW(T, 9)} 34%, ${GLOW(T, 4)} 56%, transparent 74%)`, animation: "nu-gezin 17s var(--ke-ease-in-out) infinite alternate" }} />
+    <span style={{ position: "absolute", bottom: "-16%", right: "-6%", width: 420, height: 420, borderRadius: RAD.dot, background: `radial-gradient(circle, ${GLOW(V, 11)} 0%, ${GLOW(V, 8)} 34%, ${GLOW(V, 4)} 56%, transparent 74%)`, animation: "nu-gezin 23s var(--ke-ease-in-out) infinite alternate-reverse" }} />
   </div>
 );
 

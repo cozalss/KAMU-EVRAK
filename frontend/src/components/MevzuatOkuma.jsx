@@ -88,7 +88,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
   }, [bloklar, maddeNo]);
 
   return (
-    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
+    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
       <div role="dialog" aria-modal="true" aria-labelledby="mevzuat-okuma-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu}
         style={{ width: "min(760px,100%)", maxHeight: "86vh", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out)" }}>
         <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.m, padding: "16px 24px 12px", borderBottom: `1px solid ${PAL.line}`, flexShrink: 0 }}>

@@ -57,7 +57,7 @@ function Kip({ baslik, onKapat, children }) {
   };
   return createPortal(
     <div role="presentation" onClick={onKapat} onKeyDown={klavye}
-      style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div role="dialog" aria-modal="true" aria-label={baslik} onClick={(e) => e.stopPropagation()}
         style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, animation: "nu-rise .16s var(--ke-ease-out)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "14px 16px", borderBottom: `1px solid ${PAL.line}` }}>

@@ -64,7 +64,9 @@ export function useTypewriter(text, { cps = DEFAULT_CPS, enabled = true } = {}) 
       if (!start) start = ts;
       const elapsed = (ts - start) / 1000; // s
       const next = Math.min(total, Math.floor(elapsed * cps));
-      setCount(next);
+      // Aynı değerde React bail-out devreye girer — karakter ilerlemeyen frame'ler
+      // (düşük cps) render tetiklemez.
+      setCount((c) => (c === next ? c : next));
       if (next < total) rafRef.current = requestAnimationFrame(step);
     };
     rafRef.current = requestAnimationFrame(step);

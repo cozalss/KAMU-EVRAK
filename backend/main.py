@@ -154,7 +154,7 @@ async def _db_ping(timeout_s: float = 2.0) -> bool:
 
     try:
         return await asyncio.wait_for(_ping(), timeout=timeout_s)
-    except Exception as exc:  # noqa: BLE001 — sağlık sinyali: her hata db_ok=False demektir
+    except Exception as exc:  # sağlık sinyali: her hata db_ok=False demektir
         log.warning("health_db_ping_hata", hata=str(exc)[:200])
         return False
 

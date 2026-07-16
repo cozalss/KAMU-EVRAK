@@ -50,8 +50,11 @@ class TestParalelTopoloji:
     """build_graph — bayrağa göre fan-out/seri kenarlar."""
 
     def test_paralel_acik_fanout_kenarlari(self, monkeypatch):
-        # Arrange — fan-out açık
+        # Arrange — fan-out açık (PARALEL_TRIYAJ kapalı: bu test ANLAMA fan-out ŞEKLİNİ
+        # sabitler; triyaj açıkken tür fan-in'i kanit yerine triyaj hedeflerine kayar —
+        # o topolojinin kilidi test_paralel_hiz.py'dedir).
         monkeypatch.setattr(graph_mod, "PARALEL_ANLAMA", True)
+        monkeypatch.setattr(graph_mod, "PARALEL_TRIYAJ", False)
         # Act
         edges = _kenarlar(build_graph())
         # Assert — START her iki dala; seri siniflandir→cikar kenarı YOK; fan-in kanit_baglama
@@ -64,6 +67,7 @@ class TestParalelTopoloji:
     def test_paralel_kapali_seri_baseline_birebir(self, monkeypatch):
         # Arrange — bayrak kapalı → mevcut seri kenarlar birebir
         monkeypatch.setattr(graph_mod, "PARALEL_ANLAMA", False)
+        monkeypatch.setattr(graph_mod, "PARALEL_TRIYAJ", False)
         # Act
         edges = _kenarlar(build_graph())
         # Assert — baseline zincir; START'tan cikar'a doğrudan kenar YOK

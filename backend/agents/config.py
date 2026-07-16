@@ -539,6 +539,27 @@ SOHBET_MAX_TUR = int(os.getenv("SOHBET_MAX_TUR", "3"))
 # veri bağımlılığı yok; belge başına 1 LLM çağrısı süresi kazanılır). 0 → seri baseline.
 PARALEL_ANLAMA = os.getenv("PARALEL_ANLAMA", "1") == "1"
 
+# (15) Hız dalgası (2026-07-16) — KALİTE SABİT, gecikme düşer: LLM çağrılarının sayısı,
+# prompt'ları ve karar mantığı DEĞİŞMEZ; yalnız birbirinin çıktısını okumayan çağrıların
+# sıralı beklemesi kaldırılır. Hepsi ENV-gated; 0 → baseline topoloji/davranış birebir
+# (mock'ta iki modun sonucu alan bazında AYNI — tests/test_paralel_hiz.py).
+#
+# (15a) Triyaj fan-out: kanit_baglama/decompose tür OKUMAZ (yalnız evrak_text + unsurlar)
+# → siniflandir'ı beklemeden koşar; tür okuyan danışma çağrıları (eksik takip-sorusu +
+# mevzuat + özet) ile servis-birimi önerisi TEK fan-out'ta paralel (fan-in route_birim).
+PARALEL_TRIYAJ = os.getenv("PARALEL_TRIYAJ", "1") == "1"
+# (15b) Kapanış fan-out: arsiv (SDP seçimi) yazı/risk çıktısı OKUMAZ → risk_guard dalıyla
+# paralel (fan-in sla_triyaj); HITL onay kapısı sla SONRASINA kayar (bant kararı yine
+# verify sinyallerinden — arşiv/SLA METADATA üretimi onay kararını etkilemez).
+PARALEL_KAPANIS = os.getenv("PARALEL_KAPANIS", "1") == "1"
+# (15c) Yazı planı ∥ gövde: gövde statik türle plana paralel üretilir; plan FARKLI tür
+# seçerse gövde o türle YENİDEN üretilir → çıktı seri yolla birebir; tipik yolda
+# (plan statik türü doğrular) bir tam LLM-çağrısı süresi kazanılır.
+YAZI_PLAN_PARALEL = os.getenv("YAZI_PLAN_PARALEL", "1") == "1"
+# (15d) Verify içi paralel: LLM grounding ∥ (makam-kademe → lint → autofix) zinciri —
+# iki dal birbirinin çıktısını okumaz; uyarı listesi sırası seri yolla aynı tutulur.
+VERIFY_PARALEL = os.getenv("VERIFY_PARALEL", "1") == "1"
+
 # Resmî yazı taslağında bulunması beklenen zorunlu bölüm başlıkları (format-compliance).
 # Yön. 2646 / 3071: T.C. başlığı + Sayı + Konu + imza (ad-soyad) blokları.
 YAZI_ZORUNLU_BOLUMLER: tuple[tuple[str, tuple[str, ...]], ...] = (

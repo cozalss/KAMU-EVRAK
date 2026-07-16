@@ -128,23 +128,41 @@ class TestOnerServisBirimiLlm:
 
 
 class TestRouteBirimAdditive:
-    async def test_route_birim_servis_ekler_hedefi_degistirmez(self):
+    # NOT (hız dalgası 15a): PARALEL_TRIYAJ açıkken servis önerisi route_birim'de DEĞİL
+    # ayrı paralel node'dadır (nodes/servis_birim_oneri.py; graf kilidi test_paralel_hiz).
+    # Bu sınıf BASELINE (bayrak kapalı) sözleşmesini sabitler → bayrak testte kapatılır.
+
+    async def test_route_birim_servis_ekler_hedefi_degistirmez(self, monkeypatch):
         # Arrange — belediyeye çukur onarımı dilekçesi (bilinen tür → deterministik hedef)
+        import agents.nodes.route_birim as route_mod
         from agents.config import EVRAK_TO_BIRIM
-        from agents.nodes.route_birim import route_birim_node
+        monkeypatch.setattr(route_mod, "PARALEL_TRIYAJ", False)
         state = {"evrak_turu": "dilekce", "evrak_text": "Sokaktaki çukurun asfaltla onarılması talebi."}
         # Act
-        out = await route_birim_node(state)
+        out = await route_mod.route_birim_node(state)
         # Assert — ölçülen hedef config ile AYNI (additive katman bozmadı) + servis eklendi
         assert out["hedef_birim"] == EVRAK_TO_BIRIM["dilekce"]
         assert out["servis_birimi"]["kod"] == "fen_isleri"
 
-    async def test_route_birim_eslesme_yoksa_servis_alani_yok(self):
-        # Arrange — saf kurum→kurum yazı (hizmet-müdürlüğü sinyali yok)
+    async def test_route_birim_triyaj_acikken_servis_ayri_nodda(self):
+        # Arrange — bayrak açık (varsayılan): route servis EKLEMEZ, ayrı node üretir
         from agents.nodes.route_birim import route_birim_node
+        from agents.nodes.servis_birim_oneri import servis_birim_oneri_node
+        state = {"evrak_turu": "dilekce", "evrak_text": "Sokaktaki çukurun asfaltla onarılması talebi."}
+        # Act
+        route_out = await route_birim_node(state)
+        servis_out = await servis_birim_oneri_node(state)
+        # Assert — aynı sonuç, farklı üretici (paralel dal); hedef değişmedi
+        assert "servis_birimi" not in route_out
+        assert servis_out["servis_birimi"]["kod"] == "fen_isleri"
+
+    async def test_route_birim_eslesme_yoksa_servis_alani_yok(self, monkeypatch):
+        # Arrange — saf kurum→kurum yazı (hizmet-müdürlüğü sinyali yok); baseline yol
+        import agents.nodes.route_birim as route_mod
+        monkeypatch.setattr(route_mod, "PARALEL_TRIYAJ", False)
         state = {"evrak_turu": "ust_yazi", "evrak_text": "Adres kayıt sistemi güncelleme çalışmaları hakkında."}
         # Act
-        out = await route_birim_node(state)
+        out = await route_mod.route_birim_node(state)
         # Assert — servis_birimi hiç eklenmez (uydurma yok)
         assert "servis_birimi" not in out
         assert out["hedef_birim"]  # ölçülen hedef yine üretilir

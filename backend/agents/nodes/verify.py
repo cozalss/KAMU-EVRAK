@@ -16,6 +16,7 @@ LLM opsiyoneldir; varsayılan saf-deterministik (anahtarsız demo deterministik 
 
 from __future__ import annotations
 
+import asyncio
 import re
 from datetime import date
 from typing import Any
@@ -28,6 +29,7 @@ from agents.config import (
     MAKAM_LLM,
     VERIFY_ENABLED,
     VERIFY_GROUNDING_LLM,
+    VERIFY_PARALEL,
     YAZI_ZORUNLU_BOLUMLER,
     birim_tr,
 )
@@ -380,25 +382,35 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     # muhatap: render'ın muhatap mantığıyla AYNI (yön hatası = sahte m.16 uyarısı üretir).
     # Katman B: muhatap KURUM görünümlü ama tablo çözemiyorsa LLM kademe tahmini
     # (yalnız 'bilgi' üretebilir) — tablo çözüyorsa hiç sorulmaz (maliyet + öncelik).
-    muhatap = _lint_muhatabi(state)
-    seviye_llm = None
-    # LLM'e YALNIZ kurum-görünümlü ama tablo-çözümsüz adlar sorulur (vatandaş adına
-    # boşa çağrı yok; tablo çözüyorsa öncelik zaten deterministik katmanda).
-    if muhatap and _makam_seviyesi(muhatap) is None and kurum_gorunumlu(muhatap):
-        seviye_llm = await _makam_seviye_llm(muhatap)
-    lint = lint_2646(taslak, state.get("yazi_turu", "") or "",
-                     muhatap_makam=muhatap, muhatap_seviye_llm=seviye_llm)
+    async def _lint_zinciri() -> tuple[dict[str, Any], str | None]:
+        """makam-kademe → lint → autofix zinciri (grounding'den bağımsız dal)."""
+        muhatap = _lint_muhatabi(state)
+        seviye_llm = None
+        # LLM'e YALNIZ kurum-görünümlü ama tablo-çözümsüz adlar sorulur (vatandaş adına
+        # boşa çağrı yok; tablo çözüyorsa öncelik zaten deterministik katmanda).
+        if muhatap and _makam_seviyesi(muhatap) is None and kurum_gorunumlu(muhatap):
+            seviye_llm = await _makam_seviye_llm(muhatap)
+        lint = lint_2646(taslak, state.get("yazi_turu", "") or "",
+                         muhatap_makam=muhatap, muhatap_seviye_llm=seviye_llm)
+        # Madde 2 — lint auto-fix önerisi: yalnız ihlal VARSA çağrılır (maliyet disiplini).
+        duzeltme: str | None = None
+        if LINT_AUTOFIX and lint.get("uyari"):
+            duzeltme = await _lint_autofix(taslak, lint, state)
+        return lint, duzeltme
 
     # Madde 6 — LLM grounding: yalnız uyarı EKLER (bandı sertleştirme yönü serbest;
     # deterministik veto her durumda üstte kalır). LLM yok/mock/bozuk → hiçbir ek yok.
-    if VERIFY_GROUNDING_LLM:
-        uyarilar += [mask_pii(u).masked_text
-                     for u in await _grounding_iddialar(taslak, state)]
-
-    # Madde 2 — lint auto-fix önerisi: yalnız ihlal VARSA çağrılır (maliyet disiplini).
-    lint_duzeltme: str | None = None
-    if LINT_AUTOFIX and lint.get("uyari"):
-        lint_duzeltme = await _lint_autofix(taslak, lint, state)
+    if VERIFY_PARALEL and VERIFY_GROUNDING_LLM:
+        # Hız 15d: grounding ∥ lint zinciri — iki dal birbirinin çıktısını okumaz
+        # (grounding taslak+kaynak; lint taslak+muhatap). Uyarı sırası seri yolla aynı.
+        (lint, lint_duzeltme), grounding = await asyncio.gather(
+            _lint_zinciri(), _grounding_iddialar(taslak, state))
+        uyarilar += [mask_pii(u).masked_text for u in grounding]
+    else:
+        lint, lint_duzeltme = await _lint_zinciri()
+        if VERIFY_GROUNDING_LLM:
+            uyarilar += [mask_pii(u).masked_text
+                         for u in await _grounding_iddialar(taslak, state)]
 
     notlar = (
         "Doğrulama tamam — format zorunlu bölümleri mevcut, uydurma somut veri yok."

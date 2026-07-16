@@ -20,12 +20,19 @@ node ASLA patlamaz; en kötü ihtimalde format_uyumlu=False + iskelet metin.
 
 from __future__ import annotations
 
+import asyncio
 from datetime import date
 from typing import Any
 
 import structlog
 
-from agents.config import EVRAK_TO_YAZI, LLM_ATLA_NODELAR, SDP_ONERI, birim_tr
+from agents.config import (
+    EVRAK_TO_YAZI,
+    LLM_ATLA_NODELAR,
+    SDP_ONERI,
+    YAZI_PLAN_PARALEL,
+    birim_tr,
+)
 from yazi.sdp_plani import sdp_bul
 
 log = structlog.get_logger()
@@ -111,15 +118,34 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
         # mock/hata/kapalı-küme-dışı/grounded-olmayan-muhatap → None/kısmi düşürme →
         # statik EVRAK_TO_YAZI + varsayılan muhatap yolu AYNEN devrede kalır.
-        plan = (await yazi_plani(turu, unsurlar, evrak_text, hedef_birim)
-                if "yazi_plan" not in LLM_ATLA_NODELAR else None)
+        plan_atla = "yazi_plan" in LLM_ATLA_NODELAR
+        if YAZI_PLAN_PARALEL and not plan_atla:
+            # Hız 15c — plan ∥ gövde: gövde STATİK türle plana paralel üretilir; plan
+            # farklı tür seçerse gövde o türle YENİDEN üretilir → çıktı seri yolla birebir
+            # (aynı prompt'lar), tipik yolda (plan statik türü doğrular) ~1 çağrı kazanılır.
+            # Mock'ta plan None + gövde deterministik → davranış/çağrı sayısı birebir.
+            plan_gorevi = asyncio.create_task(
+                yazi_plani(turu, unsurlar, evrak_text, hedef_birim))
+            try:
+                metin = await build_body(yazi_turu, unsurlar, evrak_text)
+            except BaseException:
+                plan_gorevi.cancel()
+                raise
+            plan = await plan_gorevi
+            if plan and plan["yazi_turu"] != yazi_turu:
+                log.info("yazi_plan_tur_degisti", statik=yazi_turu, plan=plan["yazi_turu"])
+                metin = await build_body(plan["yazi_turu"], unsurlar, evrak_text)
+        else:
+            plan = None if plan_atla else await yazi_plani(
+                turu, unsurlar, evrak_text, hedef_birim)
+            metin = await build_body(
+                plan["yazi_turu"] if plan else yazi_turu, unsurlar, evrak_text)
         if plan:
             yazi_turu = plan["yazi_turu"]
             plan_notu = plan["gerekce"]
         # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
         hedef_muhatap = (plan or {}).get("muhatap") or (
             birim_tr(hedef_birim) if yazi_turu == "ust_yazi" else None)
-        metin = await build_body(yazi_turu, unsurlar, evrak_text)
         # SDP konu-kodu (Yön. m.11): evrak türü + konudan deterministik → Sayı satırı m.11-yapılı
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")

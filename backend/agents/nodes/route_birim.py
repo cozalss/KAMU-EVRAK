@@ -14,7 +14,14 @@ from typing import Any
 
 import structlog
 
-from agents.config import BIRIM_TR, BIRIMLER, EVRAK_TO_BIRIM, LLM_ATLA_NODELAR, SERVIS_BIRIM_LLM
+from agents.config import (
+    BIRIM_TR,
+    BIRIMLER,
+    EVRAK_TO_BIRIM,
+    LLM_ATLA_NODELAR,
+    PARALEL_TRIYAJ,
+    SERVIS_BIRIM_LLM,
+)
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.servis_birim import oner_servis_birimi, oner_servis_birimi_llm
 from core.text import tr_lower
@@ -194,8 +201,15 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
     yalnız agents.servis_birim.SERVIS_BIRIM_TR'den seçer), LLM kapalı/mock/anahtarsız/hata/
     geçersiz-kod → kök-anahtar eşleşmesi devreye girer. Eşleşme yoksa `servis_birimi` hiç
     eklenmez (danışma sinyali; uydurma müdürlük üretilmez, resmî havale hedef_birim'dedir).
+
+    Hız dalgası 15a (PARALEL_TRIYAJ): servis önerisi yalnız evrak_text okuduğundan ayrı
+    paralel node'a alındı (nodes/servis_birim_oneri.py) — bilinen türde bu node artık saf
+    deterministik (~0 ms), Görev-2 zinciri ~1 LLM-çağrısı erken başlar. Bayrak kapalıyken
+    baseline birebir: servis çağrısı burada, sırayla.
     """
     result = await _route_birim_impl(state)
+    if PARALEL_TRIYAJ:
+        return result  # servis önerisi triyaj fan-out'unda (servis_birim_oneri_node)
     text = state.get("evrak_text", "") or ""
     servis = await oner_servis_birimi_llm(text) if SERVIS_BIRIM_LLM else None
     if servis is None:

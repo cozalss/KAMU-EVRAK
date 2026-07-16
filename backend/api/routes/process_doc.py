@@ -24,7 +24,7 @@ from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 
 from agents.config import HITL_ENABLED, llm_profil
-from agents.graph import PIPELINE_NODES, build_graph
+from agents.graph import GIZLI_NODELAR, PIPELINE_NODES, build_graph
 from agents.state import make_initial_state
 from api.mevzuat_zenginlestir import zenginlestir_mevzuat
 from api.middleware.ratelimit import rate_limit
@@ -342,6 +342,10 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
                 for node, slice_ in update.items():
                     if node == "__interrupt__":
                         continue  # interrupt aşağıda snap.next ile ele alınır
+                    if node in GIZLI_NODELAR:
+                        # Gizli yardımcı dallar (servis_birim) adım listesinde yok →
+                        # event yayma; çıktıları (servis_birimi) final sonuçla taşınır.
+                        continue
                     yield _sse({"event": "node", "node": node, "status": "done",
                                 "data": _node_summary(node, slice_ or {})})
         except Exception as exc:

@@ -39,6 +39,8 @@ from agents.config import (
     HITL_ENABLED,
     NLI_ENABLED,
     PARALEL_ANLAMA,
+    PARALEL_KAPANIS,
+    PARALEL_TRIYAJ,
     RISK_GUARD_ENABLED,
     SELF_RAG_ENABLED,
 )
@@ -58,6 +60,7 @@ from agents.nodes.ozetle import ozetle_node
 from agents.nodes.risk_guard import risk_guard_node
 from agents.nodes.route_birim import route_birim_node
 from agents.nodes.self_rag import self_rag_node
+from agents.nodes.servis_birim_oneri import servis_birim_oneri_node
 from agents.nodes.siniflandir import siniflandir_node
 from agents.nodes.sla_triyaj import sla_triyaj_node
 from agents.nodes.verify import verify_node
@@ -84,12 +87,23 @@ def _pipeline_nodes() -> tuple[str, ...]:
         nodes.append("risk_guard")   # trafik ışığı bandı (verify sonrası)
     if SELF_RAG_ENABLED:
         nodes.append("self_rag")
-    if HITL_ENABLED:
+    if HITL_ENABLED and not PARALEL_KAPANIS:
         nodes.append("onay_kapisi")  # KOŞULLU memur onayı (risk sarı/kırmızı → dur)
     # additive yenilikçilik node'ları: arsiv (SDP) → sla_triyaj (yasal süre) →
     # denetim_izi (hash-chain). … → arsiv → sla_triyaj → denetim_izi → finalize.
-    nodes += ["arsiv", "sla_triyaj", "denetim_izi", "finalize"]
+    nodes += ["arsiv", "sla_triyaj"]
+    if HITL_ENABLED and PARALEL_KAPANIS:
+        # Hız 15b: kapanış fan-out'unda onay kapısı sla SONRASINDA (arsiv ∥ risk dalları
+        # sla_triyaj'da birleşir, KOŞULLU onay birleşimden sonra) — sıra etiketi de kayar.
+        nodes.append("onay_kapisi")
+    nodes += ["denetim_izi", "finalize"]
     return tuple(nodes)
+
+
+# SSE/UI'da GÖSTERİLMEYEN yardımcı graf node'ları: adım listesi (PIPELINE_NODES) ve
+# frontend akış şeridi değişmesin diye event'leri process_doc akışında süzülür; çıktıları
+# (servis_birimi) final state ile taşınır. Yeni gizli yardımcı node buraya eklenir.
+GIZLI_NODELAR: frozenset[str] = frozenset({"servis_birim"})
 
 
 # SSE / Ajan Akış Şeması için node sıra etiketleri (frontend topology ile eşleşir).
@@ -148,31 +162,57 @@ def build_graph(checkpointer: Any = None) -> Any:
     g.add_node("denetim_izi", denetim_izi_node)
     g.add_node("finalize", finalize_node)
 
+    # DİKKAT — LangGraph çok-ebeveyn birleşimi: kaynaklar AYRI add_edge çağrılarıyla
+    # bağlanırsa hedef "hepsi bitince BİR KEZ" değil "HER kaynak bitişinde bir kez" koşar.
+    # Dengesiz dal derinliklerinde bu ÇİFT KOŞUM demektir (2026-07-16 ölçüldü: CRAG açıkken
+    # route_birim + tüm Görev-2 kuyruğu 2× koşuyordu → 2× LLM maliyeti/süresi). Fan-in
+    # noktaları bu yüzden LİSTE formundadır: add_edge([kaynaklar], hedef) = bariyer.
+
     # Madde 14 — anlama fan-out (ENV-gated, varsayılan AÇIK): cikar yalnız evrak_text okur
-    # (tür bağımlılığı yok) → siniflandir ∥ cikar paralel dallar, kanit_baglama'da fan-in.
-    # Gerçek LLM'de belge başına ~1 çağrı süresi (7-57 sn) kazanılır; mock'ta sonuç seri
-    # koşumla alan-bazında AYNI (test_paralel_anlama). PARALEL_ANLAMA=0 → seri baseline birebir.
+    # (tür bağımlılığı yok) → siniflandir ∥ cikar paralel dallar. PARALEL_ANLAMA=0 → seri.
     g.add_edge(START, "siniflandir")
     if PARALEL_ANLAMA:
         g.add_edge(START, "cikar")
-        g.add_edge("siniflandir", "kanit_baglama")
     else:
         g.add_edge("siniflandir", "cikar")
-    # kanit_baglama: çıkarılan unsurları (maskeli) metindeki yerine bağla (additive).
-    g.add_edge("cikar", "kanit_baglama")
-    g.add_edge("kanit_baglama", "eksik_tespit")
-    # Decompose (ENV-gated): çok-konulu evrakı alt-taleplere böl (additive). Açıkken paralel
-    # fan-out kaynağı eksik_tespit yerine decompose olur; kapalıyken node grafta YOK →
-    # baseline (eksik_tespit → mevzuat_oner ∥ ozetle) birebir korunur.
-    fanout_src = "eksik_tespit"
-    if DECOMPOSE_ENABLED:
-        g.add_node("decompose", decompose_node)
-        g.add_edge("eksik_tespit", "decompose")
-        fanout_src = "decompose"
-    # Fan-out: mevzuat önerisi + özet paralel (state reducer'ları fan-in birleştirir).
-    g.add_edge(fanout_src, "mevzuat_oner")
-    g.add_edge(fanout_src, "ozetle")
-    g.add_edge("ozetle", "route_birim")
+
+    if PARALEL_TRIYAJ:
+        # Hız 15a — triyaj fan-out: kanit_baglama/decompose TÜR OKUMAZ (yalnız evrak_text +
+        # bilgi_unsurlari) → siniflandir'ı beklemeden koşarlar (siniflandir en yavaş tekil
+        # çağrı; decompose LLM'i onun gölgesinde biter). Tür okuyan danışma hedefleri
+        # (eksik takip-sorusu + mevzuat + özet) siniflandir + gövde dalının BARİYERLİ
+        # birleşiminden fan-out olur; fan-in route_birim.
+        g.add_edge("cikar", "kanit_baglama")
+        fanout_src = "kanit_baglama"
+        if DECOMPOSE_ENABLED:
+            g.add_node("decompose", decompose_node)
+            g.add_edge("kanit_baglama", "decompose")
+            fanout_src = "decompose"
+        for hedef in ("eksik_tespit", "mevzuat_oner", "ozetle"):
+            if PARALEL_ANLAMA:
+                g.add_edge([fanout_src, "siniflandir"], hedef)
+            else:  # siniflandir zaten zincirin başında (seri) → tek kaynak yeter
+                g.add_edge(fanout_src, hedef)
+        # Servis müdürlüğü önerisi YALNIZ evrak_text okur → en baştan ayrı danışma dalı
+        # (route_birim'den taşındı; o node artık bilinen türde saf deterministik).
+        g.add_node("servis_birim", servis_birim_oneri_node)
+        g.add_edge(START, "servis_birim")
+        route_kaynaklar = ["eksik_tespit", "ozetle", "servis_birim"]
+    else:
+        # Baseline birebir: kanit fan-in → eksik → [decompose] → mevzuat ∥ ozetle.
+        if PARALEL_ANLAMA:
+            g.add_edge(["siniflandir", "cikar"], "kanit_baglama")
+        else:
+            g.add_edge("cikar", "kanit_baglama")
+        g.add_edge("kanit_baglama", "eksik_tespit")
+        fanout_src = "eksik_tespit"
+        if DECOMPOSE_ENABLED:
+            g.add_node("decompose", decompose_node)
+            g.add_edge("eksik_tespit", "decompose")
+            fanout_src = "decompose"
+        g.add_edge(fanout_src, "mevzuat_oner")
+        g.add_edge(fanout_src, "ozetle")
+        route_kaynaklar = ["ozetle"]
 
     # Mevzuat dalı kuyruğu: mevzuat_oner → [crag?] → [mevzuat_dogrula?] → route_birim.
     # İkisi de ENV-gated; kapalıyken node grafta YOK → baseline (mevzuat_oner→route_birim) korunur.
@@ -187,7 +227,9 @@ def build_graph(checkpointer: Any = None) -> Any:
         g.add_node("mevzuat_dogrula", mevzuat_dogrula_node)
         g.add_edge(mevzuat_tail, "mevzuat_dogrula")
         mevzuat_tail = "mevzuat_dogrula"
-    g.add_edge(mevzuat_tail, "route_birim")
+    route_kaynaklar.append(mevzuat_tail)
+    # Fan-in BARİYERİ (çift-koşum fix'i): route_birim tüm kaynaklar bitince BİR KEZ koşar.
+    g.add_edge(route_kaynaklar, "route_birim")
 
     if CLARIFY_STOP_ENABLED:
         # Dur-ve-sor dalı (ENV-gated): kritik eksikte taslak ÜRETMEDEN kullanıcıdan
@@ -220,25 +262,43 @@ def build_graph(checkpointer: Any = None) -> Any:
         g.add_edge(tail, "self_rag")
         tail = "self_rag"
 
-    if HITL_ENABLED:
-        # Memur onay kapısı (interrupt() — checkpointer ŞART → build_graph(checkpointer=...)).
-        # RISK_GUARD ile KOŞULLU: yeşil → otomatik geç (arsiv); sarı/kırmızı → onay_kapisi → arsiv.
-        # RISK_GUARD yoksa KOŞULSUZ (her taslak onaya). Kapalıyken node grafta YOK → baseline birebir.
-        g.add_node("onay_kapisi", onay_kapisi_node)
-        if RISK_GUARD_ENABLED:
-            g.add_conditional_edges(tail, _risk_route,
-                                    {"onay_kapisi": "onay_kapisi", "arsiv": "arsiv"})
+    if PARALEL_KAPANIS:
+        # Hız 15b — kapanış fan-out: arsiv yazı/risk çıktısı OKUMAZ (tür + unsurlar +
+        # hedef_birim + özet) → risk dalıyla PARALEL koşar, sla_triyaj bariyerinde birleşir.
+        # KOŞULLU onay birleşimden SONRA: bant kararı yine verify sinyallerinden — arşiv/SLA
+        # METADATA üretimi onay kararını etkilemez; denetim izi + bilgilendirme onaydan sonra.
+        g.add_edge("verify", "arsiv")
+        g.add_edge([tail, "arsiv"] if tail != "verify" else "arsiv", "sla_triyaj")
+        if HITL_ENABLED:
+            g.add_node("onay_kapisi", onay_kapisi_node)
+            if RISK_GUARD_ENABLED:
+                # _risk_route "arsiv" etiketi = "yeşil, otomatik geç" — burada geçiş denetim'e.
+                g.add_conditional_edges("sla_triyaj", _risk_route,
+                                        {"onay_kapisi": "onay_kapisi", "arsiv": "denetim_izi"})
+            else:
+                g.add_edge("sla_triyaj", "onay_kapisi")
+            g.add_edge("onay_kapisi", "denetim_izi")
         else:
-            g.add_edge(tail, "onay_kapisi")
-        g.add_edge("onay_kapisi", "arsiv")
+            g.add_edge("sla_triyaj", "denetim_izi")
     else:
-        g.add_edge(tail, "arsiv")
-
-    # arsiv: SDP 2005/7 arşiv metadata kapısı (additive — yenilikçilik). verify/self_rag
-    # sonrası, finalize öncesi çalışır → bilgilendirmeye arşiv satırı eklenebilir.
-    g.add_edge("arsiv", "sla_triyaj")
-    # sla_triyaj: yasal süre triyajı (additive, deterministik) → GECİKMİŞ/KRİTİK rozeti.
-    g.add_edge("sla_triyaj", "denetim_izi")
+        if HITL_ENABLED:
+            # Memur onay kapısı (interrupt() — checkpointer ŞART → build_graph(checkpointer=...)).
+            # RISK_GUARD ile KOŞULLU: yeşil → otomatik geç (arsiv); sarı/kırmızı → onay_kapisi →
+            # arsiv. RISK_GUARD yoksa KOŞULSUZ (her taslak onaya). Kapalıyken node grafta YOK.
+            g.add_node("onay_kapisi", onay_kapisi_node)
+            if RISK_GUARD_ENABLED:
+                g.add_conditional_edges(tail, _risk_route,
+                                        {"onay_kapisi": "onay_kapisi", "arsiv": "arsiv"})
+            else:
+                g.add_edge(tail, "onay_kapisi")
+            g.add_edge("onay_kapisi", "arsiv")
+        else:
+            g.add_edge(tail, "arsiv")
+        # arsiv: SDP 2005/7 arşiv metadata kapısı (additive — yenilikçilik). verify/self_rag
+        # sonrası, finalize öncesi çalışır → bilgilendirmeye arşiv satırı eklenebilir.
+        g.add_edge("arsiv", "sla_triyaj")
+        # sla_triyaj: yasal süre triyajı (additive, deterministik) → GECİKMİŞ/KRİTİK rozeti.
+        g.add_edge("sla_triyaj", "denetim_izi")
     # denetim_izi: tamper-evident SHA-256 hash-chain (additive) → Sayıştay/KVKK denetim izi.
     g.add_edge("denetim_izi", "finalize")
     g.add_edge("finalize", END)
@@ -247,4 +307,4 @@ def build_graph(checkpointer: Any = None) -> Any:
     return g.compile(checkpointer=checkpointer)
 
 
-__all__ = ("PIPELINE_NODES", "build_graph")
+__all__ = ("GIZLI_NODELAR", "PIPELINE_NODES", "build_graph")

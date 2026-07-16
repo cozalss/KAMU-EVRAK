@@ -45,7 +45,7 @@ function PanelAtmosfer() {
 function Marka() {
   return (
     <span style={{ display: "inline-flex", alignItems: "baseline", gap: SP.xs }}>
-      <span style={{ ...TYPE.h2, color: PAL.ink }}>kamu-evrak</span>
+      <span style={{ ...TYPE.h2, letterSpacing: ".04em", color: PAL.ink }}>KAMU-EVRAK</span>
       <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: R, flexShrink: 0 }} />
     </span>
   );

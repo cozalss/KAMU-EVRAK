@@ -146,7 +146,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
             /* Logotype — marka istisnası olarak büyük harf; imza noktası akış İÇİNDE durur,
                toggle düğmesiyle asla çakışmaz. */
             <span style={{ display: "flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
-              <span style={{ fontFamily: SANS, fontSize: 16, lineHeight: "24px", fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap" }}>kamu-evrak</span>
+              <span style={{ fontFamily: SANS, fontSize: 16, lineHeight: "24px", fontWeight: 600, letterSpacing: ".04em", color: PAL.ink, whiteSpace: "nowrap" }}>KAMU-EVRAK</span>
               <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: R, flexShrink: 0 }} />
             </span>
           )}

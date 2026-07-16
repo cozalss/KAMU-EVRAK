@@ -312,17 +312,25 @@ export const Icon = {
   undo: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M8 6 L4 10 L8 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 10 H14.5 A5 5 0 0 1 14.5 20 H10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
 };
 
-/* MarkaKaro — çalışma alanı marka işareti: resmî belge + onay mührü vektörü, border-first
-   karo (PAL.surf zemin + hairline + T stroke, imza noktası R). Neon gradyanlı logo.png'nin
-   yerine geçti (jüri turu 2: "AI-yapımı uygulama ikonu klişesi" — ürün kimliğinin tersiydi).
-   logo.png landing/favicon'da yaşamaya devam eder; çalışma alanı bu karoyu kullanır. */
+/* MarkaKaro — çalışma alanı marka işareti: "Havale" amblemi (2026-07-17 logo seçimi,
+   Konsept 1) — gelen belge üç birime yönleniyor; uç noktalar T/V/R (risk bandı çağrışımı).
+   Border-first karo korunur (PAL.surf zemin + hairline). Önceki belge+onay-mührü stroke
+   ikonunun yerine geçti; bağımsız dosya eşi public/logo-kamu-evrak.svg (app.html favicon).
+   logo.png landing'de yaşamaya devam eder; çalışma alanı bu karoyu kullanır. */
 export function MarkaKaro({ size = 36, nokta = true }) {
-  const ic = Math.round(size * 0.62);
+  const ic = Math.round(size * 0.72);
   return (
-    <span aria-hidden="true" style={{ position: "relative", width: size, height: size, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.card, color: DERIN.T }}>
-      <svg width={ic} height={ic} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M7 3h7l4 4v9.5a1.5 1.5 0 0 1-1.5 1.5H7a1.5 1.5 0 0 1-1.5-1.5V4.5A1.5 1.5 0 0 1 7 3z" />
-        <path d="M14 3v4h4M8.5 13.5l2 2 4-4.2" />
+    <span aria-hidden="true" style={{ position: "relative", width: size, height: size, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.card }}>
+      <svg width={ic} height={ic} viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="5" width="9" height="14" rx="2" fill={T} />
+        <rect x="5" y="8" width="5" height="1.3" rx=".65" fill={PAL.surf} opacity=".92" />
+        <rect x="5" y="10.6" width="3.6" height="1.3" rx=".65" fill={PAL.surf} opacity=".92" />
+        <path d="M12 12 C15 12 15 7.5 17.5 7.5" stroke={T} strokeWidth="1.3" strokeLinecap="round" />
+        <path d="M12 12 H17.5" stroke={T} strokeWidth="1.3" strokeLinecap="round" />
+        <path d="M12 12 C15 12 15 16.5 17.5 16.5" stroke={T} strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx="19.6" cy="7.5" r="1.45" fill={T} />
+        <circle cx="19.6" cy="12" r="1.45" fill={V} />
+        <circle cx="19.6" cy="16.5" r="1.45" fill={R} />
       </svg>
       {nokta && <span style={{ position: "absolute", right: -2, top: -2, width: Math.max(6, Math.round(size * 0.17)), height: Math.max(6, Math.round(size * 0.17)), borderRadius: RAD.dot, background: R, border: `1.5px solid ${PAL.bg}` }} />}
     </span>

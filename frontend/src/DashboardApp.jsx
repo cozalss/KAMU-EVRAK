@@ -575,7 +575,9 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     showToast(yeniUyari
       ? `Taslak gönderildi — doğrulama ${yeniUyari} uyarı buldu, Giden Evrak'ta inceleyin.`
       : "Taslak düzenlenerek gönderildi — Giden evraka eklendi.");
-    goView("giden");
+    // Giden'e navigasyon YOK (2026-07-17 triyaj tasarımı): kullanıcı kuyrukta kalır,
+    // seçim otomatik sıradakine geçer — 61 kararlık oturumda her gönderimde Giden'e
+    // ışınlanıp geri dönmek momentum kırıyordu. Toast zaten Giden'i işaret eder.
     return true;
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
@@ -790,7 +792,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   else if (activeView === "islenen") view = <IslenenEvrakView history={history} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} onDuzenle={goIslenenDuzenle} onMevzuatAc={mevzuatAc} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} uid={user?.id} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
-  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
+  else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onGoOutbox={() => goView("giden")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
   else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
   else view = (

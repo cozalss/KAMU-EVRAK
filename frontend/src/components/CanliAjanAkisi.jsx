@@ -302,24 +302,10 @@ export default function CanliAjanAkisi({
                   <Icon.x width={13} height={13} /> İptal
                 </button>
               )}
-              {/* Telefonla çek — işlem sürerken kapalı: one-shot indirme busy'de sessizce
-                  düşer (dosya kaybı); tamamlanınca yeni evrak telefondan da eklenebilsin. */}
-              <button onClick={onTelefon} disabled={busy} aria-label="Telefonla evrak yükle" {...focusRing} data-press=""
-                title={busy ? "İşlem sürerken telefonla yükleme başlatılamaz" : "Telefonla yükle"}
-                onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-                style={{ cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: busy ? PAL.mut3 : PAL.mut, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                <Icon.phone />
-              </button>
-              {/* Koşum sürerken kapalı — eskiden aktif görünüp seçilen dosyayı sessizce yok
-                  sayıyordu (usePipeline busy no-op'u; jüri bulgusu). */}
-              <button onClick={onUpload} disabled={busy} aria-label="Yeni evrak yükle" {...focusRing} data-press=""
-                title={busy ? "İşlem sürerken yeni evrak başlatılamaz — önce İptal edin" : "Yeni evrak"}
-                onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-                style={{ cursor: busy ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: busy ? PAL.mut3 : PAL.mut, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                <Icon.upload />
-              </button>
+              {/* Evrak yükleme (dosya + telefon) eylemleri BURADA YOK: ikisi de sidebar'da
+                  kalıcı olarak duruyor ("Yeni evrak yükle" / "Örnek evrakla dene") ve boş
+                  durumda dropzone zaten sunuyor. Aynı eylemi başlıkta tekrarlamak gürültüydü.
+                  İptal kalır — akışa özgü, başka yerde karşılığı yok. */}
             </div>
           </div>
         </div>

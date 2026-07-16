@@ -231,13 +231,10 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
   const ortGuven = guvenler.length ? Math.round((guvenler.reduce((a, x) => a + x, 0) / guvenler.length) * 100) : null;
   const [sonRef] = useAutoAnimate();   // yeni işlem satırı akıcı girer (auto-animate)
 
+  // Başlıkta eylem YOK: "Gelen evrak" hem sidebar'da hem de aşağıdaki istatistik kartında,
+  // "Yeni evrak yükle" sidebar'da zaten duruyor. Aynı eylemi sağ üstte tekrarlamak gürültüydü.
   return (
-    <ViewWrap id="panel-h" title="Panel" sub={`Hoş geldiniz, ${user?.ad_soyad || "memur"} · ${new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}`}
-      actions={[
-        // Panel'in tek primary'si boş-durumdaki CTA — başlık eylemleri secondary kalır.
-        <Btn key="g" onClick={onGoInbox}><Icon.inbox /> Gelen evrak ({inboxCount})</Btn>,
-        <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
-      ]}>
+    <ViewWrap id="panel-h" title="Panel" sub={`Hoş geldiniz, ${user?.ad_soyad || "memur"} · ${new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}`}>
       {/* Kart → görünüm eşlemesi kurgu ayrımını izler: İşlenen ve Üretilen taslak (birikimli
           sayılar) → İşlenen evrak arşivi; Gönderilen → Giden. Karar-bekleyen çalışması
           Taslaklar'da yaşar (sidebar rozeti sayıyı zaten taşır — panelde ayrı kart gürültüydü);

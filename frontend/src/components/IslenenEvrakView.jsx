@@ -512,9 +512,9 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
     );
   }
 
+  // Başlıkta eylem YOK: "Yeni evrak yükle" sidebar'da kalıcı duruyor — burada tekrarı gürültüydü.
   return (
-    <ViewWrap id="islenen-h" title="İşlenen evrak" sub="Evrak sicil defteri — işlenen her kayıt karar durumuyla"
-      actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]}>
+    <ViewWrap id="islenen-h" title="İşlenen evrak" sub="Evrak sicil defteri — işlenen her kayıt karar durumuyla">
       <BentoSeridi items={items} filter={filter} ortSn={ortSn} />
       <AracCubugu filter={filter} turSecenek={turSecenek} birimSecenek={birimSecenek} />
 

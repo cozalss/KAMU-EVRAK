@@ -9,11 +9,6 @@ import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
 
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
 
-/* Karar bekleyen: taslağı üretilmiş ama memur kararı (onayla/reddet) verilmemiş işlemler.
-   duzenle nihai karar değildir → bekleyende kalır. pendingOnay = canlı HITL duraklaması. */
-const kararBekleyenSay = (history, pendingOnay) =>
-  history.filter((h) => h.result?.yazi_taslak_md && !h.result?.onay_durumu).length + (pendingOnay ? 1 : 0);
-
 function Stat({ label, value, accent, icon, onClick, ariaLabel }) {
   // Sıfır sayaç soluk (jüri: 4 kalın "0" panel ölü doğuruyordu); onClick verilirse kart
   // gerçek buton olur ("karar bekleyen" → Taslaklar — yarım kalan işe dönüş yolu).
@@ -204,10 +199,9 @@ function SureGrafik({ history }) {
   );
 }
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], draftCount = 0, pendingOnay = false, onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoTaslaklar = () => {}, onGoGiden = () => {}, onUpload, user }) {
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onUpload, user }) {
   const n = history.length;
   const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
-  const kararBekleyen = kararBekleyenSay(history, pendingOnay);
   // Birikimli üretim: karar durumundan bağımsız, taslak üretilmiş TÜM işlemler (jüri T6:
   // eski sayaç gönderimde düşüyor ve "Karar bekleyen"in kopyasıydı).
   const uretilenTaslak = history.filter((h) => h.result?.yazi_taslak_md).length;
@@ -245,14 +239,14 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
       ]}>
       {/* Kart → görünüm eşlemesi kurgu ayrımını izler: İşlenen ve Üretilen taslak (birikimli
-          sayılar) → İşlenen evrak arşivi; Karar bekleyen (çalışma kuyruğu, draftCount ile bire
-          bir) → Taslaklar; Gönderilen → Giden. Denetim izi HesapMenu'den açılır (nav'da değil). */}
+          sayılar) → İşlenen evrak arşivi; Gönderilen → Giden. Karar-bekleyen çalışması
+          Taslaklar'da yaşar (sidebar rozeti sayıyı zaten taşır — panelde ayrı kart gürültüydü);
+          durum kırılımı İşlenen evrak görünümünün özet şeridinde. */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px,1fr))", gap: SP.l, marginBottom: SP.xl }}>
         <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel="İşlenen evrak listesini aç" />
         <Stat label="Gelen evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç" />
         <Stat label="Üretilen taslak" value={uretilenTaslak} accent={V} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel="Üretilen taslakları işlenen evrak listesinde gör" />
         <Stat label="Gönderilen evrak" value={gonderilen} accent={T} icon={<Icon.arrow />} onClick={onGoGiden} ariaLabel="Giden evrak arşivini aç" />
-        <Stat label="Karar bekleyen" value={kararBekleyen} accent={kararBekleyen ? BANT.sari.c : undefined} icon={<Icon.clock />} onClick={onGoTaslaklar} ariaLabel="Karar bekleyen taslakları aç" />
       </div>
 
       {kuyrukSla.length > 0 && <SlaDagilimKart kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} onIsle={onIsle} />}

@@ -280,7 +280,11 @@ export const Aurora = () => (
    saklanır, yalnız GÖSTERİM sıralanır; toplam ek gecikme ~3.6 sn ile sınırlandı
    (real-time avantaj korunur). Hata/HITL/reduced-motion'da anında yetişir. */
 export function useSahneTempo(nodes, { pendingOnay = null, glow = true } = {}) {
-  const [reveal, setReveal] = useState(0);
+  // Başlangıç = mount ANINDAKİ gerçek tamamlanma sayısı: tempo yalnız CANLI gelen
+  // tamamlanmaları sıralar. useState(0) ile başlamak, başka görünüme geçip dönüldüğünde
+  // (remount) bitmiş koşumu baştan "yeniden işliyormuş" gibi oynatıyordu — kullanıcı
+  // bulgusu: sekme dönüşünde sahte koşum + sayaç.
+  const [reveal, setReveal] = useState(() => nodes.reduce((s, n) => s + (n.status === "done" ? 1 : 0), 0));
   const sonVurus = useRef(0);
   const trueDone = nodes.reduce((s, n) => s + (n.status === "done" ? 1 : 0), 0);
   const hataVar = nodes.some((n) => n.status === "error");
@@ -383,9 +387,11 @@ function SeritNokta({ a, col }) {
 }
 
 /* Yarım ray parçası — her istasyon hücresi kendi sol/sağ ray yarısını taşır; bitişik
-   hücreler kesintisiz tek hat okunur. bos: hattın gerçek ucu (parça çizilmez). */
+   hücreler kesintisiz tek hat okunur. bos: hattın gerçek ucu (parça çizilmez).
+   Radius YOK: yuvarlak uçlar her ek yerinde "kapanmış boru" okunuyordu — parçalar
+   düz uçla birbirine yaslanır, şerit boydan boya TEK boru görünür. */
 const YarimRay = ({ filled, col, bos }) => (
-  <span aria-hidden="true" style={{ flex: 1, minWidth: 6, height: 3, borderRadius: 1.5, alignSelf: "center", background: bos ? "transparent" : (filled ? col : PAL.line), transition: "background .3s ease" }} />
+  <span aria-hidden="true" style={{ flex: 1, minWidth: 6, height: 3, alignSelf: "center", background: bos ? "transparent" : (filled ? col : PAL.line), transition: "background .3s ease" }} />
 );
 
 export function AkisSeridi({ display, onDetay }) {
@@ -394,16 +400,26 @@ export function AkisSeridi({ display, onDetay }) {
     const col = a.gorev === 2 ? V : T;
     const prev = display[i - 1];
     const gorevBasi = i === 0 || (prev && prev.gorev !== a.gorev);
-    // Hat başı roundeli — istasyonlarla aynı iki katlı düzen (üstte işaret, altta ad);
-    // Görev 2 roundeline kesikli AKTARMA girişi (Görev 1 bitince hat rengine döner).
+    // Hat başı roundeli — istasyonlarla aynı iki katlı düzen (üstte işaret, altta ad).
+    // Roundel RAYA OTURUR: blok etiket kadar geniş olduğundan işaret satırı tam genişlik
+    // ray taşır — solda Görev 2'de kesikli AKTARMA (Görev 1 bitince hat rengine döner,
+    // akışın en başında boş), sağda hattın ilk parçası. Komşu hücrelerin yarım-raylarıyla
+    // uç uca eklenir → şerit boydan boya kesintisiz TEK boru okunur (boru kapanması yok).
     if (gorevBasi) {
       parcalar.push(
-        <div key={`g${a.gorev}`} style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "0 4px" }}>
-          <span style={{ display: "flex", alignItems: "center", height: 24 }}>
-            {a.gorev === 2 && <span aria-hidden="true" style={{ width: 18, borderTop: `2px dashed ${prev?.status === "done" ? col : PAL.lineHi}`, marginRight: SP.xs, transition: "border-color .3s ease" }} />}
-            <span aria-hidden="true" style={{ width: 18, height: 18, borderRadius: RAD.dot, background: col, color: PAL.onAccent, fontFamily: SANS, fontSize: 11, lineHeight: "18px", fontWeight: 600, textAlign: "center", ...TNUM }}>{a.gorev}</span>
+        <div key={`g${a.gorev}`} style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <span style={{ display: "flex", alignItems: "center", width: "100%", height: 24 }}>
+            {a.gorev === 2 && prev
+              ? <span aria-hidden="true" style={{ flex: 1, minWidth: 14, borderTop: `2px dashed ${prev.status === "done" ? col : PAL.lineHi}`, transition: "border-color .3s ease" }} />
+              : <span aria-hidden="true" style={{ flex: 1 }} />}
+            <span aria-hidden="true" style={{ width: 18, height: 18, borderRadius: RAD.dot, background: col, color: PAL.onAccent, fontFamily: SANS, fontSize: 11, lineHeight: "18px", fontWeight: 600, textAlign: "center", flexShrink: 0, ...TNUM }}>{a.gorev}</span>
+            <YarimRay filled={a.status !== "pending"} col={col} />
           </span>
-          <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(col), whiteSpace: "nowrap" }}>{a.gorev === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
+          {/* İki satır: üstte "Görev N", altında faz adı — istasyon adlarıyla aynı düşey ritim. */}
+          <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(col), whiteSpace: "nowrap", padding: "0 6px", textAlign: "center" }}>
+            Görev {a.gorev}
+            <span style={{ display: "block", fontWeight: 400 }}>{a.gorev === 2 ? "Üret" : "Anla"}</span>
+          </span>
         </div>
       );
     }

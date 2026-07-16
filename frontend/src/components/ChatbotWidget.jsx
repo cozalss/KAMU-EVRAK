@@ -11,7 +11,7 @@ import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing 
 
 const GORUNUM_ETIKET = {
   gelen: "Gelen evrak", giden: "Giden evrak", taslaklar: "Taslaklar",
-  mevzuat: "Mevzuat", denetim: "Denetim", panel: "Panel",
+  mevzuat: "Mevzuat", denetim: "Denetim", panel: "Panel", islenen: "İşlenen evrak",
 };
 const ONERILER = [
   "Son gelen evraklar", "Reddedilen giden evraklar", "Kaç evrak işledik?",

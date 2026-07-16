@@ -1,7 +1,9 @@
 /* DashboardApp — kamu-evrak neon çalışma alanı kabuğu + oturum kurgusu.
-   Sidebar (işlevsel nav) + görünüm anahtarlama (Panel/Gelen/İşleniyor/Taslaklar/Mevzuat/Denetim).
-   usePipeline tek evrak işler; sonuçlar OTURUM GEÇMİŞİNE eklenir → Panel/Taslaklar/Denetim beslenir.
+   Sidebar (işlevsel nav) + görünüm anahtarlama (Panel/İşlenen/Gelen/İşleniyor/Taslaklar/Giden/Mevzuat/Denetim).
+   usePipeline tek evrak işler; sonuçlar OTURUM GEÇMİŞİNE eklenir → Panel/İşlenen/Taslaklar/Denetim beslenir.
    Akış: Gelen Evrak'tan seç (veya yükle) → İşleniyor (canlı) → sonuç geçmişe → Panel'de özet.
+   Kurgu ayrımı: İşlenen = tüm işlemlerin arşivi (karar durumuyla) · Taslaklar = yalnız karar
+   bekleyen taslak çalışma kuyruğu · Giden = gönderilmiş arşiv.
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
@@ -26,6 +28,7 @@ import { OkumaModal } from "./components/MevzuatOkuma.jsx";
 // aynı kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar
 // her zaman görünür (nav) olduğundan eager kalır.
 const CanliAjanAkisi = lazy(() => import("./components/CanliAjanAkisi.jsx"));
+const IslenenEvrakView = lazy(() => import("./components/IslenenEvrakView.jsx"));
 const GelenEvrakView = lazy(() => import("./components/GelenEvrakView.jsx"));
 const GidenEvrakView = lazy(() => import("./components/GidenEvrakView.jsx"));
 const TaslaklarView = lazy(() => import("./components/TaslaklarView.jsx"));
@@ -42,7 +45,7 @@ const TelefonYukleModal = lazy(() => import("./components/TelefonYukle.jsx"));
 // Görünüm ↔ URL hash eşlemesi (app.html#gelen). Görünüm geçişleri tarayıcı geçmişine yazılır →
 // fare/tarayıcı "geri" tuşu landing'e fırlatmak yerine ÖNCEKİ GÖRÜNÜME döner; yenilemede
 // görünüm korunur. Router bağımlılığı yok (tek kabuk, altı görünüm — hash yeterli).
-const VIEWS = new Set(["panel", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
+const VIEWS = new Set(["panel", "islenen", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
 const hashView = () => window.location.hash.slice(1);
 
 // DB geçmişinden taslak listesi türet: taslağı ÜRETİLMİŞ ve henüz KARAR VERİLMEMİŞ işlemler
@@ -310,6 +313,16 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     if (typeof hedefId === "string") setGelenHedef(hedefId);
     goView("gelen");
   }, [goView]);
+
+  // İşlenen evrak listesinden "Taslaklar'da düzenle": karar bekleyen işlemin taslağı zaten
+  // drafts kuyruğundadır (draftsFromHistory aynı süzgeç) — eşleşen taslağı hedefli aç.
+  // Eşleşme yoksa (oturumluk kayıt henüz taslağa ayrılmadıysa) Taslaklar'a düz geçilir.
+  const goIslenenDuzenle = useCallback((h) => {
+    const d = drafts.find((x) => x.result === h.result
+      || (h.result?.islem_id && x.result?.islem_id === h.result.islem_id));
+    if (d) setTaslakHedef(d.id);
+    goView("taslaklar");
+  }, [drafts, goView]);
 
   // Oturum geçmişinde HITL kararını damgala (Panel "Karar bekleyen" düşsün; DB zaten
   // persistDecision ile yazıldı — refresh'te islem_listele aynı alanı döndürür).
@@ -668,7 +681,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   };
 
   let view;
-  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onIsle={(id) => { const sec = SAMPLE_DOCS.find((x) => x.id === id); if (sec) processSample(sec); }} onGoTaslaklar={() => goView(pendingOnay ? "isleniyor" : "taslaklar")} onGoGiden={() => goView("giden")} onGoDenetim={() => goView("denetim")} onUpload={triggerUpload} user={user} />;
+  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onIsle={(id) => { const sec = SAMPLE_DOCS.find((x) => x.id === id); if (sec) processSample(sec); }} onGoIslenen={() => goView("islenen")} onGoTaslaklar={() => goView(pendingOnay ? "isleniyor" : "taslaklar")} onGoGiden={() => goView("giden")} onUpload={triggerUpload} user={user} />;
+  else if (activeView === "islenen") view = <IslenenEvrakView history={history} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} onDuzenle={goIslenenDuzenle} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} uid={user?.id} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;

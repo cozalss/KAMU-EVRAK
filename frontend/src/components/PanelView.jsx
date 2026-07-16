@@ -204,7 +204,7 @@ function SureGrafik({ history }) {
   );
 }
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], draftCount = 0, pendingOnay = false, onGoInbox, onIsle = () => {}, onGoTaslaklar = () => {}, onGoGiden = () => {}, onGoDenetim = () => {}, onUpload, user }) {
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], draftCount = 0, pendingOnay = false, onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoTaslaklar = () => {}, onGoGiden = () => {}, onUpload, user }) {
   const n = history.length;
   const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
   const kararBekleyen = kararBekleyenSay(history, pendingOnay);
@@ -244,10 +244,13 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         <Btn key="g" onClick={onGoInbox}><Icon.inbox /> Gelen evrak ({inboxCount})</Btn>,
         <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
       ]}>
+      {/* Kart → görünüm eşlemesi kurgu ayrımını izler: İşlenen ve Üretilen taslak (birikimli
+          sayılar) → İşlenen evrak arşivi; Karar bekleyen (çalışma kuyruğu, draftCount ile bire
+          bir) → Taslaklar; Gönderilen → Giden. Denetim izi HesapMenu'den açılır (nav'da değil). */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px,1fr))", gap: SP.l, marginBottom: SP.xl }}>
-        <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} onClick={onGoDenetim} ariaLabel="İşlem geçmişini (Denetim) aç" />
+        <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel="İşlenen evrak listesini aç" />
         <Stat label="Gelen evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç" />
-        <Stat label="Üretilen taslak" value={uretilenTaslak} accent={V} icon={<Icon.doc />} onClick={onGoTaslaklar} ariaLabel="Taslakları aç" />
+        <Stat label="Üretilen taslak" value={uretilenTaslak} accent={V} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel="Üretilen taslakları işlenen evrak listesinde gör" />
         <Stat label="Gönderilen evrak" value={gonderilen} accent={T} icon={<Icon.arrow />} onClick={onGoGiden} ariaLabel="Giden evrak arşivini aç" />
         <Stat label="Karar bekleyen" value={kararBekleyen} accent={kararBekleyen ? BANT.sari.c : undefined} icon={<Icon.clock />} onClick={onGoTaslaklar} ariaLabel="Karar bekleyen taslakları aç" />
       </div>
@@ -293,7 +296,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
             <SureGrafik history={history} />
           </NeonCard>
 
-          <NeonCard title="Son işlemler" accent={T} full>
+          <NeonCard title="Son işlemler" accent={T} full tag={`son ${Math.min(history.length, 6)} / ${n}`}>
             <div ref={sonRef}>
             {history.slice(0, 6).map((h) => {
               const bekliyor = h.result?.yazi_taslak_md && !h.result?.onay_durumu;
@@ -309,6 +312,13 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
               );
             })}
             </div>
+            {/* Arşiv köprüsü — SlaDagilimKart'ın "N evrak daha" düğmesiyle aynı sakin desen. */}
+            <button type="button" onClick={onGoIslenen} {...focusRing} data-press=""
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+              style={{ cursor: "pointer", width: "100%", padding: "8px 0", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+              Tüm işlenen evrakı gör
+            </button>
           </NeonCard>
         </div>
       )}

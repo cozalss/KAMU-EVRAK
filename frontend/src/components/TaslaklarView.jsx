@@ -1,5 +1,7 @@
-/* TaslaklarView — oturumda üretilen resmî yazı taslakları + filtre (arama/tür/birim/sıralama).
-   Düzenleme A4 kâğıt modalında yapılır (BelgeModal duzenlenebilir) — kart yalnız önizler. */
+/* TaslaklarView — KARAR BEKLEYEN taslakların çalışma kuyruğu: yalnız taslak oluşturma/
+   düzenleme/gönderme (kurgu ayrımı: işlenen evrak arşivi IslenenEvrakView'da, gönderilmişler
+   GidenEvrakView'da). Filtre (arama/tür/birim/sıralama); düzenleme A4 kâğıt modalında yapılır
+   (BelgeModal duzenlenebilir) — kart yalnız önizler. */
 import React, { useEffect, useMemo, useState } from "react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, V, PAL, BANT, DERIN, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
@@ -182,7 +184,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
   }
 
   return (
-    <ViewWrap id="taslak-h" title="Taslaklar" sub={`${drafts.length} resmî yazı taslağı · düzenleme bekliyor`}>
+    <ViewWrap id="taslak-h" title="Taslaklar" sub={`${drafts.length} taslak karar bekliyor · düzenleyin, kurula danışın ya da gönderin`}>
       <FilterBar config={config} filter={filter} />
       {filter.results.length === 0 ? (
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />

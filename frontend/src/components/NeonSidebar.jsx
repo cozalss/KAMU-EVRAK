@@ -7,8 +7,12 @@ import { createPortal } from "react-dom";
 import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
 
+// Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
+// birikimli arşive "iş bekliyor" rozeti yanlış sinyal olur) → Gelen (kuyruk) → İşleniyor
+// (canlı) → Taslaklar (karar bekleyen çalışma kuyruğu) → Giden (gönderilmiş) → Mevzuat.
 const NAV = [
   { id: "panel", label: "Panel", icon: "grid" },
+  { id: "islenen", label: "İşlenen evrak", icon: "shield" },
   { id: "gelen", label: "Gelen evrak", icon: "inbox", badge: true },
   { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
   { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },

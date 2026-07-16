@@ -36,9 +36,18 @@ def _kilit_unsurlar(unsurlar: dict[str, Any]) -> str:
     return "; ".join(parts)
 
 
+# Fallback özet gövdesi bu boyu aşarsa kelime sınırında kırpılır: tam gövdeyi
+# aynen döndüren çıktı "özet" değildir (LLM'siz modda da kısa öz sözleşmesi korunur).
+_FALLBACK_OZET_CHARS = 280
+
+
 def _fallback_ozet(text: str, turu: str, konu: str | None) -> str:
-    """Deterministik özet (LLM yok/hata) — tür + konu + ana gövde (PII redakteli)."""
+    """Deterministik özet (LLM yok/hata) — tür + konu + KISALTILMIŞ gövde (PII redakteli)."""
     govde = " ".join(mask_pii(text).masked_text.split())
+    if len(govde) > _FALLBACK_OZET_CHARS:
+        kirpik = govde[:_FALLBACK_OZET_CHARS]
+        bosluk = kirpik.rfind(" ")  # kelime ortasından kesme (yarım kelime yanıltır)
+        govde = kirpik[: bosluk if bosluk > 0 else _FALLBACK_OZET_CHARS].rstrip() + " …"
     parcalar = [f"**{evrak_turu_tr(turu)}**"]
     if konu:
         parcalar.append(f"Konu: {konu}")

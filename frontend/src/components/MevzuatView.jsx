@@ -14,7 +14,7 @@ const CEKIRDEK_NO = new Set(["2709", "3071", "4982", "7201", "2646", "5018", "20
 
 /* Backend kapalıyken (statik dağıtım / demo) asgari referans listesi — eski davranış. */
 const STATIK_KATALOG = [
-  { no: "AY 2709", ad: "Türkiye Cumhuriyeti Anayasası (seçili md.)", aciklama: "Dilekçe/bilgi edinme hakkı (m.74), başvuru yollarının bildirilmesi (m.40), idari işleme karşı yargı yolu (m.125) — evrak haklarının üst normu." },
+  { no: "AY 2709", ad: "Türkiye Cumhuriyeti Anayasası (seçili md.)", aciklama: "Dilekçe/bilgi edinme hakkı (m.74), başvuru yollarının bildirilmesi (m.40), idari işleme karşı yargı yolu (m.125); evrak haklarının üst normu." },
   { no: "3071 s.K.", ad: "Dilekçe Hakkının Kullanılmasına Dair Kanun", aciklama: "Zorunlu unsurlar (ad-soyad, imza, adres) ve 30 günlük cevap süresi (m.4, m.7)." },
   { no: "4982 s.K.", ad: "Bilgi Edinme Hakkı Kanunu", aciklama: "Bilgi/belge taleplerinde 15 iş günü cevap süresi ve istisnalar." },
   { no: "7201 s.K.", ad: "Tebligat Kanunu", aciklama: "Resmî tebligat usulü; dava açma sürelerinin başlangıcı." },
@@ -29,7 +29,7 @@ const trLower = (s) => String(s || "").toLocaleLowerCase("tr");
 /* Kategori başlığı altındaki tek satırlık rehber — personelin grubu tanıması için.
    Anahtarlar backend _KATEGORI_KURALLARI adlarıyla birebir; eksik ad = açıklamasız grup. */
 const KATEGORI_ACIKLAMA = {
-  "İdari Usul & Yazışma": "Anayasal haklar, dilekçe, bilgi edinme, tebligat, resmî yazışma, arşiv, e-imza ve bilgi güvenliği — günlük evrak işinin temeli.",
+  "İdari Usul & Yazışma": "Anayasal haklar, dilekçe, bilgi edinme, tebligat, resmî yazışma, arşiv, e-imza ve bilgi güvenliği; günlük evrak işinin temeli.",
   "Vergi & Kamu Maliyesi": "Vergi kanunları, harçlar, amme alacakları, kamu ihalesi ve mali yönetim.",
   "Sağlık": "Sağlık hizmetleri, meslek kanunları (hekim/eczacı/hemşire), hasta hakları.",
   "Yargı & Adalet": "Usul kanunları, icra-iflas, ceza ve infaz, arabuluculuk, adli meslekler.",
@@ -80,11 +80,12 @@ function KatalogKart({ m, onAc }) {
       <span style={{ minWidth: 0, flex: 1 }}>
         <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
           {m.no && <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: DERIN.T }}>{m.no}</span>}
-          {cekirdek && <span style={{ ...TYPE.meta, color: PAL.mut }}>Çekirdek</span>}
+          {cekirdek && <span style={{ ...TYPE.meta, color: PAL.mut }} title="Sınıflandırma ve yasal süre kurallarının dayandığı çekirdek mevzuat">Çekirdek</span>}
           <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{m.madde_sayisi > 0 ? `${m.madde_sayisi} madde` : "tam metin"}</span>
         </span>
         <span style={{ display: "block", marginTop: SP.xs, ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{m.baslik}</span>
-        {m.kunye && <span style={{ display: "block", marginTop: SP.xs, ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.kunye}</span>}
+        {/* Künye 2 satıra sarar — RG tarihi/sayısı gibi atomik değerler ortadan kesilmez (jüri T8). */}
+        {m.kunye && <span title={m.kunye} style={{ marginTop: SP.xs, ...TYPE.meta, color: PAL.mut2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{m.kunye}</span>}
       </span>
     </button>
   );
@@ -149,6 +150,7 @@ function AramaModSecici({ modu, onSec }) {
     <div role="group" aria-label="Arama modu" style={{ display: "inline-flex", padding: 2, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surfHi }}>
       {secenekler.map(([k, ad]) => (
         <button key={k} type="button" onClick={() => onSec(k)} aria-pressed={modu === k} {...focusRing}
+          onBlur={(e) => { e.currentTarget.style.boxShadow = modu === k ? SH.card : "none"; }}
           style={{ cursor: "pointer", padding: "5px 12px", borderRadius: RAD.chip, border: "none",
             background: modu === k ? PAL.surf : "transparent", color: modu === k ? DERIN.T : PAL.mut2,
             ...TYPE.meta, fontWeight: modu === k ? 600 : 500, boxShadow: modu === k ? SH.card : "none",
@@ -184,7 +186,7 @@ function StatikKatalog() {
   return (
     <>
       <p role="status" style={{ margin: "0 0 12px", ...TYPE.data, color: PAL.mut2 }}>
-        Canlı katalog yüklenemedi — çekirdek referans listesi gösteriliyor. Tam metin okuma için backend gerekli.
+        Canlı katalog yüklenemedi — çekirdek referans listesi gösteriliyor. Tam metin şu anda alınamıyor; katalog özeti gösteriliyor.
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start" }}>
         {STATIK_KATALOG.map((k) => (
@@ -289,7 +291,7 @@ export default function MevzuatView({ history = [] }) {
   }, [kategoriler, listelenen]);
 
   return (
-    <ViewWrap id="mevzuat-h" title="Mevzuat" sub="Sistemdeki tüm mevzuat konu gruplarıyla — kategori seç veya ara, kartı aç, tam metni oku.">
+    <ViewWrap id="mevzuat-h" title="Mevzuat" sub="Sistemdeki 304 mevzuat kaynağı konu gruplarına ayrılmış olarak listelenir. Kategori seçin veya arayın; karta tıklayınca tam metin açılır.">
       {onerilen.length > 0 && (
         <NeonCard title="Bu oturumda önerilen mevzuat (RAG)" tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: SP.l }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px,1fr))", gap: SP.m }}>
@@ -311,7 +313,7 @@ export default function MevzuatView({ history = [] }) {
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
           <AramaModSecici modu={aramaModu} onSec={setAramaModu} />
           <input type="search" value={filtre} onChange={(e) => setFiltre(e.target.value)}
-            placeholder={aramaModu === "derin" ? "Madde metninde ara — ör. dilekçede zorunlu şartlar…" : "Kanun adı, numara veya konu ara…"}
+            placeholder={aramaModu === "derin" ? "Madde metninde ara: dilekçede zorunlu şartlar…" : "Kanun adı, numara veya konu ara…"}
             aria-label={aramaModu === "derin" ? "Mevzuat maddelerinin içinde ara" : "Mevzuat kataloğunda ara"} {...focusRing}
             style={{ width: "min(360px,100%)", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, ...TYPE.ui, color: PAL.ink, outline: "none" }} />
         </div>
@@ -328,11 +330,11 @@ export default function MevzuatView({ history = [] }) {
           </div>
         ) : derin === "hata" ? (
           <div role="alert" style={{ ...TYPE.data, color: PAL.ink2, padding: "8px 0" }}>
-            Arama yapılamadı — backend çalışıyor mu?
+            Arama şu anda yapılamıyor. Bağlantınızı kontrol edip tekrar deneyin.
           </div>
         ) : derin && derin.sonuclar.length === 0 ? (
           <EmptyState icon={<Icon.book />} title="Eşleşen madde yok"
-            sub={`"${filtre.trim()}" için madde metinlerinde sonuç bulunamadı — farklı terimlerle deneyin.`}
+            sub={`"${filtre.trim()}" için madde metinlerinde sonuç bulunamadı. Farklı terimlerle deneyin.`}
             actions={<Btn onClick={() => setFiltre("")}>Aramayı temizle</Btn>} />
         ) : derin ? (
           <div aria-live="polite" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
@@ -364,7 +366,7 @@ export default function MevzuatView({ history = [] }) {
       {aramaModu === "katalog" && Array.isArray(katalog) && (listelenen.length === 0 ? (
         <EmptyState icon={<Icon.book />} title="Eşleşen mevzuat yok"
           sub={filtre.trim()
-            ? `"${filtre.trim()}" için ${kategori ? `${kategori} grubunda` : "katalogda"} sonuç bulunamadı — kanun adı veya numarasıyla deneyin.`
+            ? `"${filtre.trim()}" için ${kategori ? `${kategori} grubunda` : "katalogda"} sonuç bulunamadı. Kanun adı veya numarasıyla deneyin.`
             : "Bu grupta gösterilecek mevzuat yok."}
           actions={<Btn onClick={() => { setFiltre(""); setKategori(""); }}>Filtreleri temizle</Btn>} />
       ) : (

@@ -51,10 +51,11 @@ export const ALFA = (c) => `color-mix(in srgb, ${c} 8%, transparent)`;
    da çalışır. */
 export const THEME_CSS = `
 :root{
+  color-scheme:light;
   --ke-t:#2f8fa6; --ke-v:#8e3d66; --ke-r:#e0563c;
   --ke-bg:#f7f3ee; --ke-bg2:#efe6da; --ke-surf:#ffffff; --ke-surf2:#fdfbf7; --ke-surf-hi:rgba(35,26,18,.05);
   --ke-line:rgba(35,26,18,.12); --ke-line-hi:rgba(35,26,18,.22);
-  --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#8a8172;
+  --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#7a7060;
   --ke-hov:rgba(35,26,18,.04); --ke-press:rgba(35,26,18,.07);
   --ke-input-line:rgba(35,26,18,.35); --ke-on-accent:#fbf7f0; --ke-ink-surf:#2a251e; --ke-scrim:rgba(35,26,18,.35);
   /* --ke-on-ink: dark modda YENİDEN TANIMLANMAZ — kasıtlı. inkSurf (toast) ve modal karartı
@@ -63,20 +64,23 @@ export const THEME_CSS = `
      akar (koyu modda karartı+onAccent ikisi de koyulaşıp metin kayboluyordu — 2026-07 bulgusu). */
   --ke-on-ink:#fbf7f0;
   --ke-shadow-rgb:35,26,18;
-  /* Güçlü özel easing eğrileri (emil-design-eng) — yerleşik ease-* zayıf; mod-bağımsız (dark'ta ezilmez). */
+  /* Güçlü özel easing eğrileri (emil-design-eng) — yerleşik ease-* zayıf; mod-bağımsız (dark'ta ezilmez).
+     spring: geri tepmeli (back-out) — yalnız SAHNE tamamlanma/ateşleme vuruşları. */
   --ke-ease-out:cubic-bezier(0.23,1,0.32,1); --ke-ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --ke-ease-spring:cubic-bezier(0.34,1.56,0.64,1);
   --ke-bant-yesil:#2f9e6e; --ke-bant-sari:#c98a1f; --ke-bant-kirmizi:#c9432f;
   --ke-derin-t:#1f6d82; --ke-derin-th:#1a5e71; --ke-derin-v:#74304f; --ke-derin-r:#a23425;
   --ke-derin-yesil:#1f7a52; --ke-derin-sari:#8a5a10; --ke-derin-kirmizi:#a23425;
 }
 :root[data-theme="dark"]{
+  color-scheme:dark;
   /* 2026-07 revizyonu #2: ilk düzeltme hâlâ "gri/kahverengi" okundu (kullanıcı geri
      bildirimi) — bg/bg2 neredeyse SAF SİYAHA çekildi (sıcaklık payı minimuma indi),
      surf/surf2 okunabilirlik için net bir adım yukarıda tutuldu. */
   --ke-t:#4db6cf; --ke-v:#c97fa3; --ke-r:#ff7a5c;
   --ke-bg:#050403; --ke-bg2:#000000; --ke-surf:#161310; --ke-surf2:#0b0906; --ke-surf-hi:rgba(255,255,255,.06);
   --ke-line:rgba(255,255,255,.14); --ke-line-hi:rgba(255,255,255,.24);
-  --ke-ink:#f2ece0; --ke-ink2:#d6cdbc; --ke-mut:#a89d8a; --ke-mut2:#c1b7a1; --ke-mut3:#7c7260;
+  --ke-ink:#f2ece0; --ke-ink2:#d6cdbc; --ke-mut:#a89d8a; --ke-mut2:#c1b7a1; --ke-mut3:#8d8370;
   --ke-hov:rgba(255,255,255,.06); --ke-press:rgba(255,255,255,.09);
   --ke-input-line:rgba(255,255,255,.32); --ke-on-accent:#050403; --ke-ink-surf:#1c1811; --ke-scrim:rgba(0,0,0,.65);
   --ke-shadow-rgb:0,0,0;
@@ -103,7 +107,7 @@ export const TNUM = { fontVariantNumeric: "tabular-nums" };
 /* Güçlü easing token'ları (emil-design-eng) — yerleşik ease-* zayıftır, "kasıtlı" hissi vermez.
    out: giriş/çıkış + press feedback (hızlı başlar, tepkisel) · inOut: ekran-içi hareket/morph.
    Hover/renk geçişleri "ease" kalır (Emil kararı). Değerler THEME_CSS'te (mod-bağımsız). */
-export const EASE = { out: "var(--ke-ease-out)", inOut: "var(--ke-ease-in-out)" };
+export const EASE = { out: "var(--ke-ease-out)", inOut: "var(--ke-ease-in-out)", spring: "var(--ke-ease-spring)" };
 /* Radius: chip=durum çipi · ctl=buton/input · card=kart/panel · pop=dropdown/modal/toast. */
 export const RAD = { chip: 4, ctl: 6, card: 8, pop: 12, dot: "50%" };
 /* Boşluk ölçeği — serbest değer yazılmaz. */
@@ -127,18 +131,34 @@ export const focusRing = {
 };
 export const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 };
 
+/* Odak döngüsü — aria-modal diyaloglarda Tab'ı içeride tutar (WCAG 2.4.3; jüri bulgusu:
+   odak scrim arkasındaki görünmez içeriğe kaçıyordu). Diyalog KÖK öğesine onKeyDown olarak
+   bağlanır; mevcut Escape işleyicileriyle yan yana çalışır. */
+export const odakDongusu = (e) => {
+  if (e.key !== "Tab") return;
+  const odaklanir = e.currentTarget.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+  if (!odaklanir.length) return;
+  const ilk = odaklanir[0], son = odaklanir[odaklanir.length - 1];
+  if (e.shiftKey && document.activeElement === ilk) { e.preventDefault(); son.focus(); }
+  else if (!e.shiftKey && document.activeElement === son) { e.preventDefault(); ilk.focus(); }
+};
+
 /* Hareket = bilgi: spin (gerçek yükleme) · think (canlılık, yalnız opacity) · rise (görünüm girişi, tek sefer).
-   SAHNE istisnası (canlı ajan izi — CanliAjanAkisi): akis (ray üzerinde akan ışık; Magic UI
-   "animated beam" / Aceternity "tracing beam" deseninden uyarlama) · pop (istasyon tamamlanma
-   vuruşu). Yalnız canlı koşum sahnesinde; reduced-motion hepsini söndürür.
+   SAHNE istisnası (canlı ajan izi — CanliAjanAkisi): iz (aktif istasyona giren rayda süzülen
+   tek ışık; Aceternity "tracing beam" uyarlaması) · pop (istasyon tamamlanma vuruşu) ·
+   halka (tamamlanmada tek seferlik dışa yayılan halka). Yalnız canlı koşum sahnesinde;
+   reduced-motion hepsini söndürür.
    ::view-transition — görünüm geçişi çapraz-erimesi kısa tutulur (DashboardApp.gecisle;
    reduced-motion'da geçiş zaten hiç başlatılmaz). */
 export const NEON_KEYFRAMES = `
 @keyframes nu-spin{to{transform:rotate(360deg)}}
 @keyframes nu-think{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes nu-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes nu-akis{to{background-position:0 20px}}
-@keyframes nu-tara{from{background-position:-48px 0}to{background-position:calc(100% + 48px) 0}}
+@keyframes nu-iz{from{transform:translateY(-22px)}to{transform:translateY(100%)}}
+@keyframes nu-halka{from{transform:scale(.55);opacity:.65}to{transform:scale(2.2);opacity:0}}
+@keyframes nu-gezin{from{transform:translate3d(0,0,0)}to{transform:translate3d(64px,44px,0)}}
 @keyframes nu-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:1}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 /* Press feedback (emil-design-eng): tıklanabilir öğe basılınca hafif scale(.97) — arayüz
@@ -151,7 +171,7 @@ export const NEON_KEYFRAMES = `
 /* Görünüm kabuğu — başlık + alt başlık + içerik (kaydırılır sayfa). */
 export function ViewWrap({ id, title, sub, actions, children }) {
   return (
-    <section aria-labelledby={id} style={{ padding: "24px 32px 48px", minHeight: "calc(100vh - 1px)" }}>
+    <section aria-labelledby={id} style={{ padding: "24px 32px 96px", minHeight: "calc(100vh - 1px)" }}>
       <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
         <div>
           <h2 id={id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{title}</h2>
@@ -195,7 +215,7 @@ export const KV = ({ k, v, c = PAL.ink2 }) => (
 
 /* Buton — primary: düz DERIN dolgu (ekran başına 1) · varsayılan (secondary): beyaz zemin +
    koyu ink kenar · disabled: baskı zemin. Gradyan/glow yok; hover yalnız zemin tonu (120ms). */
-export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabel, title, style }) {
+export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabel, title, style, type = "button" }) {
   const fill = DERIN_OF(accent);
   const base = {
     cursor: disabled ? "not-allowed" : "pointer", padding: "8px 14px", minHeight: 36,
@@ -220,7 +240,7 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
     else e.currentTarget.style.background = PAL.surf;
   };
   return (
-    <button type="button" onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title} data-press=""
+    <button type={type} onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title} data-press=""
       onMouseEnter={onEnter} onMouseLeave={onLeave} {...focusRing} style={{ ...base, ...skin, ...style }}>
       {children}
     </button>
@@ -267,7 +287,9 @@ export function BuyutDugme({ onClick, label }) {
 export const Icon = {
   grid: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /></svg>,
   inbox: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 5 H20 M12 8 V15 M9 12 L12 15 L15 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 19 H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  spin: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke={`color-mix(in srgb, ${T} 25%, transparent)`} strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke={T} strokeWidth="2" strokeLinecap="round" /></svg>,
+  /* spin: animasyon OPT-IN (donuk prop'u false + gerçek yükleme) — "hareket = bilgi" kuralı:
+     boşta dönen spinner sahte etkinlik sinyaliydi (jüri bulgusu). donuk=true → statik halka. */
+  spin: ({ donuk, ...p } = {}) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: donuk ? "none" : "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke={`color-mix(in srgb, ${T} 25%, transparent)`} strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke={T} strokeWidth="2" strokeLinecap="round" /></svg>,
   doc: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M8 9 H16 M8 13 H16 M8 17 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   book: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 4 H19 V20 H5 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8 H15 M9 12 H15 M9 16 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   shield: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M8.5 12 L11 14.5 L15.5 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
@@ -289,6 +311,23 @@ export const Icon = {
   sparkle: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 3 L13.6 9.4 L20 11 L13.6 12.6 L12 19 L10.4 12.6 L4 11 L10.4 9.4 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>,
   undo: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M8 6 L4 10 L8 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 10 H14.5 A5 5 0 0 1 14.5 20 H10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
 };
+
+/* MarkaKaro — çalışma alanı marka işareti: resmî belge + onay mührü vektörü, border-first
+   karo (PAL.surf zemin + hairline + T stroke, imza noktası R). Neon gradyanlı logo.png'nin
+   yerine geçti (jüri turu 2: "AI-yapımı uygulama ikonu klişesi" — ürün kimliğinin tersiydi).
+   logo.png landing/favicon'da yaşamaya devam eder; çalışma alanı bu karoyu kullanır. */
+export function MarkaKaro({ size = 36, nokta = true }) {
+  const ic = Math.round(size * 0.62);
+  return (
+    <span aria-hidden="true" style={{ position: "relative", width: size, height: size, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.card, color: DERIN.T }}>
+      <svg width={ic} height={ic} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 3h7l4 4v9.5a1.5 1.5 0 0 1-1.5 1.5H7a1.5 1.5 0 0 1-1.5-1.5V4.5A1.5 1.5 0 0 1 7 3z" />
+        <path d="M14 3v4h4M8.5 13.5l2 2 4-4.2" />
+      </svg>
+      {nokta && <span style={{ position: "absolute", right: -2, top: -2, width: Math.max(6, Math.round(size * 0.17)), height: Math.max(6, Math.round(size * 0.17)), borderRadius: RAD.dot, background: R, border: `1.5px solid ${PAL.bg}` }} />}
+    </span>
+  );
+}
 
 /* InfoTip — erişilebilir "ⓘ" ipucu. Hover + klavye odağıyla açılır, Esc/blur kapatır.
    children = ipucu gövdesi (JSX). a11y: buton + role=tooltip + aria-describedby. */
@@ -324,9 +363,9 @@ function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
 
 const RISK_ORDER = ["yesil", "sari", "kirmizi"];
 const RISK_DESC = {
-  yesil: "Düşük risk — taslak yayına hazır; rutin memur onayı yeterli.",
-  sari: "Orta risk — yayından önce memur incelemesi önerilir.",
-  kirmizi: "Yüksek risk — dikkatli memur kararı gerekir; otomatik gönderim durur.",
+  yesil: "Düşük risk: taslak yayına hazır; rutin memur onayı yeterli.",
+  sari: "Orta risk: yayından önce memur incelemesi önerilir.",
+  kirmizi: "Yüksek risk: dikkatli memur kararı gerekir; otomatik gönderim durur.",
 };
 
 /* RiskBand — açıklamalı (tooltip'li) risk göstergesi. CanliAjanAkisi + NeonDetay ortak kullanır.
@@ -355,7 +394,7 @@ export function RiskBand({ band = "yesil", lit = true, sub }) {
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 10px", borderRadius: RAD.card, background: PAL.surfHi, border: `1px solid ${PAL.line}`, width: "fit-content" }}>
           {RISK_ORDER.map((key) => {
             const on = lit && band === key;
-            return <span key={key} aria-hidden="true" title={`${BANT[key].l} — ${BANT[key].t}`} style={{ width: 12, height: 12, borderRadius: RAD.dot, background: on ? BANT[key].c : PAL.press, border: "1px solid " + (on ? BANT[key].c : PAL.lineHi), transition: "background .15s ease-out", animation: on ? "nu-pop .3s var(--ke-ease-out) both" : "none" }} />;
+            return <span key={key} aria-hidden="true" title={`${BANT[key].l}: ${BANT[key].t}`} style={{ width: 12, height: 12, borderRadius: RAD.dot, background: on ? BANT[key].c : PAL.press, border: "1px solid " + (on ? BANT[key].c : PAL.lineHi), transition: "background .15s ease-out", animation: on ? "nu-pop .3s var(--ke-ease-out) both" : "none" }} />;
           })}
         </div>
       </div>

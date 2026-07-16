@@ -25,7 +25,7 @@ async function docxIndir(text, name, onToast) {
     document.body.appendChild(a); a.click(); a.remove();
     onToast?.("Taslak DOCX olarak indirildi.");
   } catch (e) {
-    onToast?.(e?.message || "İndirme başarısız — backend çalışıyor mu?");
+    onToast?.(e?.message || "İndirme tamamlanamadı. Lütfen tekrar deneyin.");
   } finally {
     if (url) { const u = url; setTimeout(() => URL.revokeObjectURL(u), 1500); }
   }
@@ -117,7 +117,7 @@ function DraftCard({ h, onEdit, onDelete, onSend, onKurul }) {
       <div style={{ display: "flex", gap: SP.xs, marginTop: SP.s, alignItems: "center" }}>
         {confirmDel ? (
           <>
-            <span style={{ marginRight: "auto", ...TYPE.data, color: DERIN.kirmizi }}>Taslak silinecek — emin misiniz?</span>
+            <span style={{ marginRight: "auto", ...TYPE.data, color: DERIN.kirmizi }}>Taslak silinecek. Emin misiniz?</span>
             <Btn primary accent={BANT.kirmizi.c} onClick={() => onDelete(h.id)}>Evet, sil</Btn>
             <Btn onClick={() => setConfirmDel(false)}>Vazgeç</Btn>
           </>
@@ -175,8 +175,8 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
     return (
       <ViewWrap id="taslak-h" title="Taslaklar" sub="Üretilen resmî yazı taslakları">
         <EmptyState icon={<Icon.doc />} title="Henüz taslak ayrılmadı"
-          sub="Onay kartında “Düzenle” seçtiğinizde, ilgili resmî yazı taslağı düzenlenmek üzere burada listelenir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>]} />
+          sub="İşleniyor görünümündeki onay kartında “Düzenle” seçtiğinizde ya da önceki oturumlardan karar bekleyen bir taslak bulunduğunda, resmî yazı taslağı burada listelenir."
+          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
       </ViewWrap>
     );
   }
@@ -213,7 +213,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onUpdate = () =>
           onKapat={() => setKurulId(null)}
           onUygula={(metin) => {
             onUpdate(kurulAktif.id, metin);
-            onToast("Kurul revize taslağı uygulandı — taslak güncellendi.");
+            onToast("Kurul revize taslağı uygulandı; taslak güncellendi.");
             setKurulId(null);
           }} />
       )}

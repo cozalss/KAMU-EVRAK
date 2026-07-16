@@ -37,10 +37,11 @@ export const SAMPLE_DOCS = [
   // ---------- VİTRİN: çok-konulu dilekçe (decompose → 3 birim) ----------
   {
     id: "cok_konulu",
+    konu: "Çukur onarımı, su faturası itirazı ve iş başvurusu hk.",
     label: "Çok-Konulu Dilekçe",
     icon: "route",
     grup: "Vatandaş",
-    aciklama: "Tek dilekçe → 3 ayrı iş → otomatik bölünüp ayrı birimlere havale (VİTRİN)",
+    aciklama: "İçinde üç ayrı talep var: çukur onarımı, su faturası itirazı ve iş başvurusu takibi",
     text: `T.C.
 KEÇİÖREN BELEDİYE BAŞKANLIĞINA
 ANKARA
@@ -63,10 +64,11 @@ Telefon: 0555 123 45 67
   // ---------- Vatandaş → kurum (SLA bantları burada yayılır) ----------
   {
     id: "dilekce",
+    konu: "Park aydınlatma direği onarım talebi",
     label: "Dilekçe (süre içinde)",
     icon: "pencil",
     grup: "Vatandaş",
-    aciklama: "Zorunlu alanlar tam + PII maskeli → temiz cevabi yazı · SLA: NORMAL",
+    aciklama: "Başvuru eksiksiz görünüyor, cevabi yazı bekleniyor",
     text: `T.C.
 ÇANKAYA BELEDİYE BAŞKANLIĞINA
 ANKARA
@@ -86,10 +88,11 @@ Telefon: 0555 123 45 67
   },
   {
     id: "basvuru",
+    konu: "İşyeri açma ve çalışma ruhsatı başvurusu",
     label: "İşyeri Ruhsat Başvurusu",
     icon: "pencil",
     grup: "Vatandaş",
-    aciklama: "İşyeri açma ve çalışma ruhsatı başvurusu → İmar/Ruhsat · SLA: KRİTİK",
+    aciklama: "Yeni işyeri için ruhsat başvurusu, ekleri tam",
     text: `T.C.
 YENİMAHALLE BELEDİYE BAŞKANLIĞINA
 ANKARA
@@ -109,10 +112,11 @@ Telefon: 0555 321 76 54
   },
   {
     id: "bilgi_edinme",
+    konu: "2025 yılı yapı ruhsatı istatistikleri bilgi talebi",
     label: "Bilgi Edinme (süresi geçti)",
     icon: "search",
     grup: "Vatandaş",
-    aciklama: "4982 sayılı Kanun → bilgilendirme yazısı · SLA: GECİKMİŞ (15 iş günü)",
+    aciklama: "4982 kapsamında yazılı bilgi istiyor",
     text: `T.C.
 ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞINA
 
@@ -131,20 +135,22 @@ Adres: Bahçelievler Mahallesi, 7. Sokak No: 3, Bahçelievler / İSTANBUL
   },
   {
     id: "sikayet",
+    konu: "Temizlik araçlarının sabah gürültüsü şikâyeti",
     label: "Şikâyet (eksik bilgi)",
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "Zorunlu alan eksik → dur-ve-sor (clarify) tetiklenir · SLA: tarih yok [DOĞRULA]",
+    aciklama: "İmza ve iletişim bilgisi eksik görünüyor",
     text: `Belediyeye bağlı temizlik araçları sabahın çok erken saatlerinde yüksek
 sesle çalışıp mahalleliyi rahatsız etmektedir. Bu durumdan dolayı şikâyetçiyim.
 Gereken işlemin yapılmasını istiyorum.`,
   },
   {
     id: "ihbar",
+    konu: "Ruhsatsız yapı ihbarı (Şenlik Mahallesi)",
     label: "Kaçak Yapı İhbarı",
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "3194 İmar Kanunu — kaçak yapı ihbarı → inceleme/olur · SLA: NORMAL",
+    aciklama: "Komşu parselde ruhsatsız kat çıkıldığı bildiriliyor, yerinde bakılmalı",
     text: `T.C.
 PENDİK BELEDİYE BAŞKANLIĞINA
 İSTANBUL
@@ -163,10 +169,11 @@ Adres: Kurtköy Mahallesi, Çınar Sokak No: 9, Pendik / İSTANBUL
   },
   {
     id: "talep",
+    konu: "Personel yıllık izin talebi",
     label: "İzin Talebi (süresi geçti)",
     icon: "file",
-    grup: "Vatandaş",
-    aciklama: "657 sayılı Kanun — personel izin talebi → İnsan Kaynakları · SLA: GECİKMİŞ",
+    grup: "Kurum",
+    aciklama: "Memur 14 gün yıllık izin istiyor",
     text: `T.C.
 İL SAĞLIK MÜDÜRLÜĞÜNE
 İZMİR
@@ -185,10 +192,11 @@ Görev: Sağlık Memuru
   },
   {
     id: "cimer",
+    konu: "CİMER başvurusu (toplu taşıma sefer sıklığı)",
     label: "CİMER Başvurusu",
     icon: "search",
     grup: "Vatandaş",
-    aciklama: "CİMER üzerinden başvuru → bilgilendirme · SLA: KRİTİK",
+    aciklama: "CİMER'den düştü; akşam otobüs seferlerinin artırılması isteniyor",
     text: `CİMER — Cumhurbaşkanlığı İletişim Merkezi
 Başvuru Türü: Talep/İstek
 
@@ -208,10 +216,11 @@ E-posta: ali.vural@ornekmail.com`,
   // ---------- Gerçek dilekçe şablonlarından uyarlanmış (bkz. dosya başı not) ----------
   {
     id: "sikayet_gurultu",
+    konu: "Gece çalışan işyeri gürültü şikâyeti",
     label: "Gürültü Şikâyeti",
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "2872 Çevre Kanunu — gürültü kirliliği şikâyeti → Zabıta · SLA: tanımsız",
+    aciklama: "Gece çalışan işyerinden gürültü şikâyeti, tekrar eden başvuru",
     text: `T.C.
 BAĞCILAR BELEDİYE BAŞKANLIĞINA
 İSTANBUL
@@ -234,10 +243,11 @@ Telefon: 0555 234 56 78
   },
   {
     id: "talep_yol_tamiri",
+    konu: "Asfalt ve kaldırım yenileme talebi",
     label: "Yol / Kaldırım Tamiri Talebi",
     icon: "pencil",
     grup: "Vatandaş",
-    aciklama: "Fen İşleri'ne asfalt-kaldırım yenileme talebi → İmar/Ruhsat · SLA: tanımsız",
+    aciklama: "Mahalle muhtarı asfalt ve kaldırım yenileme istiyor",
     text: `T.C.
 ODUNPAZARI BELEDİYE BAŞKANLIĞINA
 Fen İşleri Müdürlüğüne
@@ -261,10 +271,11 @@ Telefon: 0555 456 78 90
   },
   {
     id: "sikayet_sokak_hayvani",
+    konu: "Sahipsiz hayvan bildirimi (Gül Sokak)",
     label: "Başıboş Hayvan Şikâyeti",
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "5199 Hayvanları Koruma Kanunu m.6 — sahipsiz köpek şikâyeti · SLA: tanımsız",
+    aciklama: "Sahipsiz köpekler için 5199 kapsamında önlem isteniyor",
     text: `T.C.
 AKDENİZ BELEDİYE BAŞKANLIĞINA
 Veteriner İşleri Müdürlüğüne
@@ -289,10 +300,11 @@ Telefon: 0555 345 67 89
   },
   {
     id: "talep_aydinlatma",
+    konu: "Arızalı sokak aydınlatması bildirimi",
     label: "Sokak Aydınlatması Arızası",
     icon: "pencil",
     grup: "Vatandaş",
-    aciklama: "Arızalı aydınlatma direği bildirimi/talebi → İmar/Ruhsat · SLA: tanımsız",
+    aciklama: "Üç gündür yanmayan sokak lambası bildirimi",
     text: `T.C.
 NİLÜFER BELEDİYE BAŞKANLIĞINA
 BURSA
@@ -317,10 +329,11 @@ Telefon: 0555 567 89 01
   // ---------- Kurum → kurum (SLA: vatandaş süresi yok → tanımsız) ----------
   {
     id: "ust_yazi",
+    konu: "Adres kayıt sistemi güncelleme çalışmaları",
     label: "Üst Yazı",
     icon: "landmark",
     grup: "Kurum",
-    aciklama: "Kurumlar arası yeni resmî yazışma → Yazı İşleri / Genel Evrak",
+    aciklama: "Bakanlıktan gelen adres kayıt yazısı, kayda alınacak",
     text: `T.C.
 İÇİŞLERİ BAKANLIĞI
 Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü
@@ -341,10 +354,11 @@ e-imza`,
   },
   {
     id: "muzekkere",
+    konu: "Sigortalılık kayıtlarının celbi müzekkeresi",
     label: "Müzekkere",
     icon: "file",
     grup: "Kurum",
-    aciklama: "Kurumlar arası bilgi/kayıt celbi → Hukuk Müşavirliği",
+    aciklama: "SGK dava dosyası için kayıt celbi istiyor",
     text: `T.C.
 SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI
 Hukuk Müşavirliği
@@ -365,10 +379,11 @@ e-imza`,
   },
   {
     id: "gorus_mutalaa",
+    konu: "Doğrudan temin hakkında hukuki görüş istemi",
     label: "Görüş / Mütalaa",
     icon: "scale",
     grup: "Kurum",
-    aciklama: "Hukuki mütalaa talebi (4734 doğrudan temin) → Hukuk Müşavirliği",
+    aciklama: "4734 sayılı Kanun kapsamında hukuki mütalaa talebi",
     text: `T.C.
 SANAYİ VE TEKNOLOJİ BAKANLIĞI
 Strateji Geliştirme Başkanlığı
@@ -388,10 +403,11 @@ e-imza`,
   },
   {
     id: "genelge_talimat_olur",
+    konu: "Kurum içi genelge (makam oluru)",
     label: "Genelge / Olur",
     icon: "landmark",
     grup: "Kurum",
-    aciklama: "Kurum içi genelge / makam oluru → Yazı İşleri / üst yönetim",
+    aciklama: "Kurum içi genelge; makam oluru gerektirir",
     text: `T.C.
 GENÇLİK VE SPOR BAKANLIĞI
 Personel Genel Müdürlüğü
@@ -413,10 +429,11 @@ e-imza`,
   // ---------- Hukuk / mali (PII: IBAN maskeleme; SLA tanımsız) ----------
   {
     id: "tebligat",
+    konu: "Yıkım kararı tebligatı",
     label: "Tebligat",
     icon: "mail",
     grup: "Hukuk/Mali",
-    aciklama: "7201 sayılı Kanun — yıkım kararı bildirimi → Hukuk Müşavirliği",
+    aciklama: "7201 sayılı Kanun kapsamında yıkım kararı tebligatı",
     text: `T.C.
 KEÇİÖREN BELEDİYE BAŞKANLIĞI
 İmar ve Şehircilik Müdürlüğü
@@ -438,10 +455,11 @@ e-imza`,
   },
   {
     id: "icra_evraki",
+    konu: "Ödeme emri ve haciz ihbarnamesi",
     label: "İcra / Haciz (IBAN)",
     icon: "receipt",
     grup: "Hukuk/Mali",
-    aciklama: "2004 İcra ve İflas Kanunu — ödeme emri + IBAN maskeleme · 10 yıl saklama",
+    aciklama: "2004 sayılı İcra ve İflas Kanunu kapsamında ödeme emri; mali kayıtlar 10 yıl saklanır",
     text: `T.C.
 ANKARA 14. İCRA DAİRESİ
 
@@ -463,10 +481,11 @@ e-imza`,
   },
   {
     id: "dava_evraki",
+    konu: "İdari yargı ara kararı (savunma istemi)",
     label: "Dava Evrakı (mahkeme)",
     icon: "scale",
     grup: "Hukuk/Mali",
-    aciklama: "İdari yargı — mahkeme ara kararı / savunma istemi → Hukuk Müşavirliği",
+    aciklama: "Mahkeme savunma istiyor, süre işliyor",
     text: `T.C.
 ANKARA 5. İDARE MAHKEMESİ
 
@@ -485,10 +504,11 @@ e-imza`,
   },
   {
     id: "fatura",
+    konu: "Mal ve hizmet bedeli ödeme talebi",
     label: "Fatura / Ödeme (IBAN)",
     icon: "card",
     grup: "Hukuk/Mali",
-    aciklama: "Mal/hizmet bedeli ödemesi + IBAN maskeleme → Mali İşler",
+    aciklama: "Tedarikçi fatura bedelinin ödenmesini talep ediyor",
     text: `T.C.
 GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ
 Strateji Geliştirme Daire Başkanlığına
@@ -512,10 +532,11 @@ e-imza`,
   // ---------- Diğer / abstention (belirsiz → düşük güven / soru) ----------
   {
     id: "rapor",
+    konu: "Denetim ve inceleme raporu",
     label: "İnceleme Raporu",
     icon: "file",
     grup: "Kurum",
-    aciklama: "Denetim/inceleme raporu → ilgili birim (SLA tanımsız)",
+    aciklama: "Teftiş raporu geldi, gereği için dağıtılacak",
     text: `T.C.
 TARIM VE ORMAN BAKANLIĞI
 İl Müdürlüğü — İnceleme Heyeti
@@ -535,10 +556,11 @@ e-imza`,
   },
   {
     id: "belirsiz",
+    konu: "Konusu belirsiz başvuru",
     label: "Belirsiz İçerik",
     icon: "alert",
     grup: "Kurum",
-    aciklama: "Muğlak/eksik içerik → sistem 'belirsiz' der (abstention testi)",
+    aciklama: "İçeriği belirsiz başvuru; tür ataması memur onayına bırakılır",
     text: `Merhaba,
 
 Geçen hafta konuştuğumuz konuyla ilgili olarak, sizden bir an önce dönüş

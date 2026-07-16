@@ -13,7 +13,7 @@ import {
   BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
 import {
-  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV, RiskBand,
+  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV, RiskBand, odakDongusu,
 } from "./neonUi.jsx";
 
 const pct = (x) => Math.round((Number(x) || 0) * 100);
@@ -25,7 +25,7 @@ const ACIKLAMA = {
   oku: "Belge (PDF, görsel veya Word) makine tarafından okunabilir metne çevrilir; taranmış belgelerde OCR devreye girer.",
   siniflandir: "Evrak metni incelenir ve belge türü (dilekçe, tebligat, üst yazı…) güven skoruyla birlikte belirlenir.",
   cikar: "Gönderen, tarih, sayı, konu gibi bilgi unsurları yapılandırılmış alanlara çıkarılır; kişisel veriler (TCKN, telefon) maskelenir.",
-  kanit_baglama: "Çıkarılan her alan, kaynak belgedeki tam konumuna bağlanır — çıkarım uydurma değil, yeri gösterilebilir.",
+  kanit_baglama: "Çıkarılan her alan, kaynak belgedeki tam konumuna bağlanır; çıkarım uydurma değil, yeri gösterilebilir.",
   eksik_tespit: "Zorunlu bilgi unsurları denetlenir (3071 m.4); eksik alanlar sonraki adımlarda kullanıcıdan istenmek üzere işaretlenir.",
   decompose: "Evrak birden fazla konu veya talep içeriyorsa alt-taleplere bölünür; her alt-talep kendi birimine yönlendirilir.",
   mevzuat_oner: "İlgili mevzuat BM25 tabanlı aramayla önerilir; yapay zekâ yalnız yeniden sıralama ve doğrulama katmanıdır.",
@@ -34,14 +34,14 @@ const ACIKLAMA = {
   ozetle: "Evrakın kısa ve öz bir yönetici özeti üretilir.",
   route_birim: "Evrak içeriğine göre sorumlu birime havale önerisi üretilir.",
   clarifier: "Kritik bilgi eksikse akış durdurulur ve kullanıcıya tamamlayıcı soru sorulur (dur-ve-sor).",
-  yazi_taslak: "Resmî yazışma kurallarına (Yön. 2646) uygun cevap taslağı üretilir — üst yazı, cevabi, bilgilendirme veya olur.",
-  verify: "Taslak; uydurma iddia, format ve tutarlılık yönünden denetlenir — sorunlar uyarıya dönüşür.",
+  yazi_taslak: "Resmî yazışma kurallarına (Yön. 2646) uygun cevap taslağı üretilir: üst yazı, cevabi, bilgilendirme veya olur.",
+  verify: "Taslak; uydurma iddia, format ve tutarlılık yönünden denetlenir; sorunlar uyarıya dönüşür.",
   risk_guard: "Taslağın yayın güvenliği trafik ışığı bandına oturtulur; band kararı deterministik kurallarladır, yapay zekâ yalnız açıklamayı yazar.",
   self_rag: "Üretilen yanıtın talebi tam karşılayıp karşılamadığı öz-denetimden geçirilir.",
-  onay_kapisi: "Koşullu insan onayı kapısı — riskli durumda akış, memur kararına kadar bekletilir.",
+  onay_kapisi: "Koşullu insan onayı kapısı; riskli durumda akış, memur kararına kadar bekletilir.",
   arsiv: "Evrak, Standart Dosya Planı (2005/7) konu koduna göre arşivlenir ve saklama süresi belirlenir.",
   sla_triyaj: "Yasal cevap süresi hesaplanır; kalan güne göre normal, kritik veya gecikmiş triyajı yapılır.",
-  denetim_izi: "Her adımın çıktısı SHA-256 hash-zinciriyle mühürlenir — tek karakter değişse zincir kopar (denetlenebilirlik).",
+  denetim_izi: "Her adımın çıktısı SHA-256 hash-zinciriyle mühürlenir; tek karakter değişse zincir kopar (denetlenebilirlik).",
   finalize: "Kullanıcıya sonuç bilgilendirmesi hazırlanır; eksik bilgi varsa talep metni de eklenir.",
 };
 
@@ -157,7 +157,7 @@ function CikarDetay({ d, r }) {
     <>
       {bu.pii_var && (
         <div style={{ marginBottom: SP.s }}>
-          <Chip c={BANT.yesil.c} label="Kişisel veriler maskelendi"><Icon.shield width={12} height={12} /> PII maskelendi — KVKK</Chip>
+          <Chip c={BANT.yesil.c} label="Kişisel veriler maskelendi"><Icon.shield width={12} height={12} /> PII maskelendi (KVKK)</Chip>
         </div>
       )}
       {alanlar.map(([k, v]) => (
@@ -206,7 +206,7 @@ function EksikDetay({ d, r }) {
 
 function DecomposeDetay({ d, r }) {
   const alt = dizi(d.alt_talepler ?? r?.alt_talepler);
-  if (alt.length < 2) return <Not t="Evrak tek konulu — alt-taleplere bölme gerekmedi." />;
+  if (alt.length < 2) return <Not t="Evrak tek konulu; alt-taleplere bölme gerekmedi." />;
   return alt.map((a, i) => {
     const slaC = subSlaRenk(a.sla_durum);
     return (
@@ -233,7 +233,7 @@ function CragDetay({ d }) {
   const once = d.crag_guven_oncesi, sonra = d.crag_guven_sonrasi;
   return (
     <>
-      <Vrow ok={!d.crag_corrected} label={d.crag_corrected ? "Getirim yetersiz bulundu — sorgu yeniden yazıldı" : "Getirim yeterli bulundu"} val={d.crag_corrected ? "düzeltildi" : "geçti"} />
+      <Vrow ok={!d.crag_corrected} label={d.crag_corrected ? "Getirim yetersiz bulundu; sorgu yeniden yazıldı" : "Getirim yeterli bulundu"} val={d.crag_corrected ? "düzeltildi" : "geçti"} />
       {once != null && (
         <div style={{ marginTop: SP.s }}>
           <div style={{ ...TYPE.meta, color: PAL.mut3 }}>Getirim güveni: %{pct(once)}{sonra != null ? ` → %${pct(sonra)}` : ""}</div>
@@ -288,7 +288,7 @@ function RouteDetay({ d, r }) {
 
 function ClarifierDetay({ d, r }) {
   const sorular = dizi(d.clarify_questions ?? r?.clarify_questions);
-  if (!sorular.length) return <Vrow ok label="Bilgi tam — soru gerekmedi" val="geçti" />;
+  if (!sorular.length) return <Vrow ok label="Bilgi tam, soru gerekmedi" val="geçti" />;
   return sorular.map((q, i) => (
     <div key={i} style={{ ...TYPE.data, color: PAL.ink2, background: ALFA(BANT.sari.c), borderRadius: RAD.card, padding: "8px 12px", marginBottom: SP.s }}>{cleanDemoText(String(q))}</div>
   ));
@@ -530,8 +530,8 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
   );
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={`${a.label} — adım detayı`} onClick={onKapat}
-      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrim, overflowY: "auto", padding: "48px 16px", animation: "nu-rise .16s ease-out both" }}>
+    <div role="dialog" aria-modal="true" aria-label={`${a.label}: adım detayı`} onClick={onKapat} onKeyDown={odakDongusu}
+      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrim, overflowY: "auto", padding: "48px 16px", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       <div onClick={(e) => e.stopPropagation()}
         style={{ width: "min(680px, 96vw)", margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl }}>
 
@@ -543,7 +543,7 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
               {/* key={a.id}: adım değişince başlık taze girişle gelir */}
-              <h2 key={a.id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink, animation: "nu-rise .16s ease-out both" }}>{a.label}</h2>
+              <h2 key={a.id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink, animation: "nu-rise .16s var(--ke-ease-out) both" }}>{a.label}</h2>
               <DurumCip st={a.status} col={bantC || col} />
             </div>
             <div style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
@@ -569,16 +569,18 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
 
         {/* Çıktı ve gerekçe — node-tipine özel zengin görünüm: ajanın kararı + NEDENİ
             (gerekçe bloğu / kurallar / kanıt). Canlı koşumda kendiliğinden dolar. */}
-        <Bolum t="Çıktı ve gerekçe" sag={a.status === "done" && a.out ? a.out : undefined}>
+        {/* sağ etiket yok: a.out zaten başlık meta satırında + gövde alanlarında — üçüncü
+            kopya küçük modalda gürültüydü (jüri bulgusu). */}
+        <Bolum t="Çıktı ve gerekçe">
           {calismadi ? (
-            <Not t="Bu adım henüz çalışmadı — sıra geldiğinde çıktısı burada görünür." />
+            <Not t="Bu adım henüz çalışmadı; sıra geldiğinde çıktısı burada görünür." />
           ) : a.status === "error" ? (
             <div role="alert" style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 12px", background: ALFA(BANT.kirmizi.c), border: `1px solid ${BANT.kirmizi.c}`, borderRadius: RAD.card, ...TYPE.data, fontWeight: 500, color: DERIN.kirmizi }}>
               <Icon.alert /> Adım hatayla sonuçlandı — koşum bu noktada kesildi.
             </div>
           ) : (
             /* key={a.id}: adım değişince gövde taze girişle gelir */
-            <div key={a.id} style={{ animation: "nu-rise .16s ease-out both" }}>
+            <div key={a.id} style={{ animation: "nu-rise .16s var(--ke-ease-out) both" }}>
               {a.status === "active" && !a.data && (
                 <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.s, ...TYPE.data, color: DERIN_OF(col) }}>
                   <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: col, animation: "nu-think 1.2s ease-in-out infinite" }} />

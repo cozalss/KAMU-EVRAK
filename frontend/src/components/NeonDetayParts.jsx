@@ -63,7 +63,7 @@ export const HukumDurak = ({ k, v, sub, c = PAL.ink, hat = T, icon, son = false,
 /* Görev bölüm etiketi — 12/500 sentence case + düz hairline ayraç. */
 export const GorevLabel = ({ n, t, color, count }) => (
   <div style={{ display: "flex", alignItems: "center", gap: SP.m, margin: "0 0 12px" }}>
-    <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(color), flex: "none" }}>Görev {n} — {t}</span>
+    <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(color), flex: "none" }}>Görev {n} · {t}</span>
     <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
     {count && <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>{count}</span>}
   </div>
@@ -100,9 +100,9 @@ const GUVEN_RENK = { yüksek: DERIN.T, orta: DERIN.sari, düşük: DERIN.kirmizi
    gerekçe (NLI-veto → [DOĞRULA] → ölçülü bant → ölçüsüz bant → statik) önce gelir. */
 function guvenBaslik(m) {
   if (m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA")) {
-    return "NLI ölçtü: madde, talebi anlamsal olarak desteklemiyor — bu yüzden düşük güven.";
+    return "NLI ölçtü: madde, talebi anlamsal olarak desteklemiyor; bu yüzden düşük güven.";
   }
-  if (m.dogrula) return "Madde no şüpheli ([DOĞRULA] işareti) — bant 'yüksek' olamaz, memur teyidi gerekir.";
+  if (m.dogrula) return "Madde no şüpheli (doğrulama işareti); bant 'yüksek' olamaz, memur teyidi gerekir.";
   const oran = Number(m.guven_isabet);
   if (Number.isFinite(oran)) {
     return `Bu bandın altın sette ölçülen ilk-sıra isabeti: %${Math.round(oran * 100)}. `
@@ -112,7 +112,7 @@ function guvenBaslik(m) {
     return "Bant, sorgu uzunluğuna göre düzeltilmiş BM25 skorundan (norm_score) gelir. "
       + "Ölçülmüş isabet oranı yalnız ilk öneri için geçerlidir, bu satır için iddia edilmez.";
   }
-  return "Statik tür→mevzuat eşlemesinden geldi (retrieval yok) — ölçülmüş isabet oranı yok.";
+  return "Statik tür→mevzuat eşlemesinden geldi (getirim yok); ölçülmüş isabet oranı yok.";
 }
 
 /* Mevzuat öneri satırı — GÖRELİ skor barı + kalibre güven çipi + NLI anlamsal destek +
@@ -144,7 +144,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
         <button type="button" role="checkbox" aria-checked={secili} onClick={toggle}
           onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); } }}
           aria-label={`${secili ? "Resmî yazıdan çıkar" : "Resmî yazıya dayanak olarak ekle"}: ${title}`}
-          title={secili ? "Yazıya dayanak olarak işlendi — çıkarmak için tıklayın" : "Bu maddeyi resmî yazıya dayanak olarak işle"}
+          title={secili ? "Yazıya dayanak olarak işlendi; çıkarmak için tıklayın" : "Bu maddeyi resmî yazıya dayanak olarak işle"}
           {...focusRing} data-press=""
           style={{ flex: "none", marginTop: 1, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: RAD.chip, border: `1.5px solid ${secili ? T : PAL.inputLine}`, background: secili ? T : PAL.surf, color: PAL.onAccent, cursor: "pointer", padding: 0, transition: `background .12s ease, border-color .12s ease, transform .14s ${EASE.out}` }}>
           {secili && <Icon.check width={12} height={12} />}
@@ -155,7 +155,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
           <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{rank}.</span>
           {acilir ? (
             <button type="button" onClick={ac} aria-haspopup="dialog" {...focusRing}
-              title="Maddenin tam metnini aç — öneriyi kaynağında doğrulayın"
+              title="Maddenin tam metnini aç; öneriyi kaynağında doğrulayın"
               style={{ ...TYPE.data, fontWeight: 500, color: DERIN.T, background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left", textDecoration: "underline", textUnderlineOffset: 2 }}>
               {title}
             </button>
@@ -169,7 +169,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
             <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>
           )}
           {!sade && pct > 0 && (
-            <span title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir — onu güven bandı verir."
+            <span title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir; onu güven bandı verir."
               style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>
               %{pct} <span style={{ color: PAL.mut }}>göreli</span>
             </span>
@@ -177,7 +177,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
         </div>
         {!sade && pct > 0 && (
           <div style={{ position: "relative", height: 4, background: PAL.press, borderRadius: RAD.chip }} role="img"
-            aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? ` — güven bandı: ${guven}` : ""}`}>
+            aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? `; güven bandı: ${guven}` : ""}`}>
             <div style={{ height: "100%", width: `${pct}%`, background: fill, borderRadius: RAD.chip }} />
           </div>
         )}
@@ -185,7 +185,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {!sade && nliPct != null && (
             <div style={{ ...TYPE.meta, color: nli.entailment ? DERIN.T : DERIN.sari, ...TNUM }}>
-              Anlamsal destek (NLI): %{nliPct} — {nli.entailment ? "madde talebi destekliyor" : "destek zayıf, insan doğrulaması önerilir"}
+              Anlamsal destek (NLI): %{nliPct} · {nli.entailment ? "madde talebi destekliyor" : "destek zayıf, insan doğrulaması önerilir"}
             </div>
           )}
           {!sade && gerekce && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Eşleşme gerekçesi:</span> {gerekce}</div>}
@@ -369,7 +369,7 @@ export function DuzeltmeDiff({ eski, yeni }) {
     return <pre style={{ margin: 0, padding: SP.m, ...satirStil, color: PAL.ink2, maxHeight: 480, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{yeni}</pre>;
   }
   return (
-    <div aria-label="Önerilen düzeltme farkı — eklenen satırlar artı, çıkarılan satırlar eksi işaretli"
+    <div aria-label="Önerilen düzeltme farkı: eklenen satırlar artı, çıkarılan satırlar eksi işaretli"
       style={{ maxHeight: 480, overflow: "auto", padding: "8px 0", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
       {parcalar.map((p, i) => {
         const renk = p.added ? DERIN.yesil : p.removed ? DERIN.kirmizi : PAL.ink2;

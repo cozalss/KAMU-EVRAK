@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, useEffect, useMemo, useState } from "react";
+import { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import {
@@ -40,6 +40,7 @@ import {
   NeonCard,
   Icon,
   focusRing,
+  odakDongusu,
 } from "./neonUi.jsx";
 
 const arr = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);
@@ -199,7 +200,14 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
   const riskEtiket = r.risk_metadata?.bant ? `${band === "sari" ? "sarı" : band === "kirmizi" ? "kırmızı" : "yeşil"} risk bandı` : "risk bandı yok";
   const durumSatiri = kuyruk.length ? kuyruk.join(" · ") : riskEtiket;
   const evrakTuru = EVRAK_TR(r.evrak_turu);
-  const yonlendirilenBirim = r.hedef_birim ? BIRIM_GOSTER(r.hedef_birim, r.evrak_turu) : "Belirlenmedi";
+  // Çok-konulu evrakta tek birim adı yanıltıcı (jüri bulgusu: üç yüzey üç farklı birim
+  // gösterip çelişki gibi okunuyordu) — hüküm, dağıtımın kendisini söyler; alt-talep
+  // muhatapları taslak kartlarında etiketlidir.
+  const altSayisi = arr(r.alt_talepler).length;
+  const yonlendirilenBirim = altSayisi >= 2
+    ? `${altSayisi} alt-talep · ayrı birimlere dağıtım`
+    : (r.hedef_birim ? BIRIM_GOSTER(r.hedef_birim, r.evrak_turu) : "Belirlenmedi");
+  const birimTitle = r.hedef_birim ? `Genel havale: ${BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}` : undefined;
   const riskAciklama = RISK_BAND_HELP[band] || RISK_BAND_HELP.yesil;
   const kontroleGit = () => {
     setRiskHelpOpen(false);
@@ -225,7 +233,8 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
       aria-labelledby="sc-decision-title"
       style={{ borderColor: PAL.line, background: PAL.surf, boxShadow: SH.card }}
     >
-      <span className="sc-decision-accent" aria-hidden="true" style={{ background: TON[hy.ton] || DERIN.sari }} />
+      {/* Kart üstü renkli accent şeridi kaldırıldı (MASTER.md anti-pattern; bant bilgisi
+          zaten durum satırı + çip ile veriliyor — jüri bulgusu). */}
       <div className="sc-decision-strip-main">
         <span
           className="sc-decision-icon"
@@ -272,7 +281,7 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
           </div>
           <div>
             <dt>Yönlendirilen birim</dt>
-            <dd>{yonlendirilenBirim}</dd>
+            <dd title={birimTitle}>{yonlendirilenBirim}</dd>
           </div>
         </dl>
         <p className="sc-decision-strip-note" style={{ color: PAL.mut2 }}>{kararAciklama}</p>
@@ -346,6 +355,8 @@ function ExtractedInfoQuickCard({ r, onOpen }) {
 }
 
 function QuickReviewSection({ r, band, bantC, onOpen }) {
+  // Özet kartı bu bölümden kaldırıldı (kullanıcı isteği, 2026-07-16) — özet, kaynak belge
+  // panelindeki "Özet" takas görünümünde yaşamaya devam eder; ilk kart risk değerlendirmesi.
   return (
     <section className="sc-quick-review-section" aria-labelledby="sc-quick-review-title">
       <div className="sc-review-heading">
@@ -513,13 +524,21 @@ function RequiredFieldsPanel({ r }) {
 }
 
 function DetailModal({ type, r, onClose }) {
+  // Odak yönetimi (WCAG 2.4.3 — jüri T9): açılışta kapat düğmesine odak, kapanışta
+  // tetikleyiciye iade; Tab döngüsü odakDongusu ile diyalog içinde kalır.
+  const kapatRef = useRef(null);
   useEffect(() => {
     if (!type) return undefined;
+    const onceki = document.activeElement;
+    kapatRef.current?.focus();
     const onKey = (event) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (onceki && document.contains(onceki)) onceki.focus();
+    };
   }, [type, onClose]);
 
   if (!type) return null;
@@ -537,6 +556,7 @@ function DetailModal({ type, r, onClose }) {
         aria-modal="true"
         aria-labelledby="sc-detail-modal-title"
         style={{ background: PAL.surf, borderColor: PAL.line, boxShadow: SH.modal }}
+        onKeyDown={odakDongusu}
         onMouseDown={(event) => event.stopPropagation()}
       >
         <header className="sc-detail-modal-header" style={{ borderBottomColor: PAL.line, background: PAL.bg }}>
@@ -548,6 +568,7 @@ function DetailModal({ type, r, onClose }) {
             </span>
           </span>
           <button
+            ref={kapatRef}
             type="button"
             onClick={onClose}
             aria-label="Pencereyi kapat"
@@ -787,7 +808,7 @@ function RoutingCard({ r, birimAday }) {
         <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "8px 0 2px", marginTop: SP.xs, borderTop: `1px dashed ${PAL.line}` }}>
           <Icon.route width={13} height={13} style={{ color: DERIN_OF(V), flex: "none", marginTop: 2 }} />
           <span style={{ ...TYPE.data, color: PAL.ink2 }}>
-            <span style={{ color: PAL.mut2 }}>İçerikten önerilen birim: </span>
+            <span style={{ color: PAL.mut2 }}>İçerik sinyalinden havale önerisi (kayıt birimi üzerinden): </span>
             <strong style={{ fontWeight: 700 }}>{r.servis_birimi.ad}</strong>
             {arr(r.servis_birimi.sinyal).length > 0 && <span style={{ ...TYPE.meta, color: PAL.mut3 }}> · içerik: {arr(r.servis_birimi.sinyal).join(", ")}</span>}
           </span>
@@ -820,6 +841,7 @@ export default function SonucCalismaAlani({
   seciliMevzuat = [],
   solPanel = null,
   yanTaslak = null,
+  altAkis = null,
 }) {
   const [popup, setPopup] = useState(null);
   const [sourceView, setSourceView] = useState("belge");
@@ -909,6 +931,10 @@ export default function SonucCalismaAlani({
             )}
           </div>
         </section>
+
+        {/* "Satır gibi" ajan akışı özeti — sayfanın en altı (kullanıcı isteği, 2026-07-16).
+            İçerik CanliAjanAkisi'nden hazır gelir (display + adım detay modal bağı orada). */}
+        {altAkis}
       </div>
 
       <DetailModal type={popup} r={r} onClose={() => setPopup(null)} />

@@ -241,13 +241,21 @@ EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
     "sikayet": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.7 (otuz gün içinde gerekçeli cevap)"],
     "ihbar": ["3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.3-7 (başvuru ve sonucun bildirimi)"],
     "bilgi_edinme": ["4982 sayılı Bilgi Edinme Hakkı Kanunu (15 iş günü; m.16-17 red sebepleri)"],
-    "cimer": ["5690 sayılı CİMER Cumhurbaşkanlığı Kararnamesi"],
-    # Yargı/icra → 2577 İYUK (korpus: m.7) + 2004 İİK (korpus: m.60/62/78 — 2026-06
+    # 5690 = Cumhurbaşkanı KARARI sayısı (CİMER Yönetmeliği, RG 04.06.2022/31856) —
+    # Kararname (CBK) DEĞİL; korpus dosyası 5690_cimer_cb_kararnamesi.txt ile uyumlu.
+    "cimer": ["Cumhurbaşkanlığı İletişim Merkezi (CİMER) Yönetmeliği (CB Kararı 5690)"],
+    # Yargı/icra/tebliğ → 2577 İYUK (korpus: m.7) + 2004 İİK (korpus: m.60/62/78 — 2026-06
     # genişletme ile eklendi, doğrulandı) + 7201 tebliğ (korpus: 7201).
     "dava_evraki": ["2577 sayılı İdari Yargılama Usulü Kanunu m.7 (dava açma süresi; idare mah. altmış gün)"],
     "icra_evraki": [
         "2004 sayılı İcra ve İflas Kanunu m.60 (ödeme emri), m.62 (itiraz), m.78 (haciz)",
         "7201 sayılı Tebligat Kanunu (icra evrakının tebliği)",
+    ],
+    # 2026-07 boşluk taraması: tebligat ANAHTARSIZDI → boost/domain-genişletme almıyor,
+    # eval kaçışlarının 7/10'u bu türdeydi (7201 korpusta olduğu hâlde gürültü altında).
+    "tebligat": [
+        "7201 sayılı Tebligat Kanunu (tebliğ usulü)",
+        "Elektronik Tebligat Yönetmeliği (e-tebligat)",
     ],
     # Mali evrak → 5018 (korpus: m.33-34 gerçekleştirme/ödeme emri doğrulandı).
     "fatura": ["5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.33-34 (gerçekleştirme ve ödeme emri belgesi)"],

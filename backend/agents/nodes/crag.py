@@ -37,11 +37,15 @@ from agents.config import (
     CRAG_ENABLED,
     CRAG_LLM,
     CRAG_RAW_ESIK,
-    EVRAK_TO_MEVZUAT,
     EVRAK_TURU_TR,
 )
 from agents.nodes._llm_extract import llm_json, real_llm
-from agents.nodes.mevzuat_oner import _MIN_QUERY_LEN, _from_config, _from_corpus
+from agents.nodes.mevzuat_oner import (
+    _MIN_QUERY_LEN,
+    _domain_terimleri,
+    _from_config,
+    _from_corpus,
+)
 
 log = structlog.get_logger()
 
@@ -100,8 +104,10 @@ def _genisletilmis_sorgu(state: dict[str, Any]) -> str:
     turu_key = (state.get("evrak_turu", "") or "").strip()
     turu = EVRAK_TURU_TR.get(turu_key, turu_key)
     # Türe ait statik mevzuat başlıkları sorguya domain-sinyali ekler (örn. "Dilekçe
-    # Hakkı", "Bilgi Edinme") → korpusta doğru maddeye yönelir.
-    domain_terimler = " ".join(EVRAK_TO_MEVZUAT.get(turu_key, []))
+    # Hakkı", "Bilgi Edinme") → korpusta doğru maddeye yönelir. Hijyen mevzuat_oner
+    # ile ortak: madde atıfları ("m.4"→"madde4" her kanunla eşleşir) ve [DOĞRULA:]
+    # meta-notları sorguya girmez.
+    domain_terimler = _domain_terimleri(turu_key)
     body = (state.get("evrak_text", "") or "")[:600]
     return " ".join(p for p in (turu, konu, domain_terimler, body) if p).strip()
 

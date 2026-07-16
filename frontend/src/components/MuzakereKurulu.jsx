@@ -13,7 +13,7 @@
    odak kapat düğmesine, kapanışta tetikleyiciye döner, body scroll kilitlenir.
    prefers-reduced-motion → son (karar) kare statik; turlar aria-live ile duyurulur. */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { MONO, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn } from "./neonUi.jsx";
+import { MONO, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu } from "./neonUi.jsx";
 import { ScrimDugme } from "./BelgeModal.jsx";
 import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara } from "../lib/muzakere.js";
@@ -97,7 +97,7 @@ function Avatar({ uye, size = 34, aktif, oy }) {
         <uye.Ikon />
       </span>
       {oy && (
-        <span style={{ position: "absolute", right: -3, bottom: -3, width: 15, height: 15, borderRadius: RAD.dot, background: BANT.yesil.c, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", border: `1.5px solid ${PAL.surf}`, animation: "nu-pop .3s ease-out both" }}>
+        <span style={{ position: "absolute", right: -3, bottom: -3, width: 15, height: 15, borderRadius: RAD.dot, background: BANT.yesil.c, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", border: `1.5px solid ${PAL.surf}`, animation: "nu-pop .3s var(--ke-ease-out) both" }}>
           <Icon.check width={9} height={9} />
         </span>
       )}
@@ -144,7 +144,7 @@ function Balon({ uye, t, aksan }) {
   const hedef = t.yanit ? uyeGor(t.yanit, aksan) : null;   // dinamik renk (Birim Amiri hedef olursa risk aksanı)
   const tm = t.tutum ? TUTUM_META[t.tutum] : null;
   return (
-    <div style={{ display: "flex", gap: SP.s, animation: "nu-rise .2s ease-out both" }}>
+    <div style={{ display: "flex", gap: SP.s, animation: "nu-rise .2s var(--ke-ease-out) both" }}>
       <Avatar uye={uye} size={30} />
       <div style={{ minWidth: 0, flex: 1, background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `2px solid ${uye.col}`, borderRadius: RAD.card, padding: "8px 12px", boxShadow: SH.card }}>
         <span style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: 2 }}>
@@ -195,7 +195,7 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula }) {
   const uygulanan = oneriler.filter((o) => o.uygulanabilir).length;   // grounded işlenen öneri sayısı
 
   return (
-    <section aria-label="Kurul tutanağı" style={{ marginTop: SP.l, background: PAL.surf, border: `1px solid ${PAL.line}`, borderTop: `2px solid ${aksan}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l, animation: az ? "none" : "nu-rise .25s ease-out both" }}>
+    <section aria-label="Kurul tutanağı" style={{ marginTop: SP.l, background: PAL.surf, border: `1px solid ${PAL.line}`, borderTop: `2px solid ${aksan}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l, animation: az ? "none" : "nu-rise .25s var(--ke-ease-out) both" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: sirali.length ? SP.m : 0 }}>
         <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(aksan) }}><Icon.scale /></span>
         <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kurul tutanağı · revize önerisi</h3>
@@ -395,9 +395,9 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false }) {
             })}
             {speaking && <Yaziyor uye={uyeGor(speaking, aksan)} />}
             {done && (
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(aksan), ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s ease-out both" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(aksan), ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s var(--ke-ease-out) both" }}>
                 <Icon.check /> {kurgu.uzlasi_uygulanabilir
-                  ? "Kurul revize taslağını hazırladı — memur onayına sunuluyor."
+                  ? "Kurul revize taslağını hazırladı; memur onayına sunuluyor."
                   : "Kurul taslakta değişiklik önermedi."}
               </div>
             )}
@@ -506,8 +506,8 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   }, []);
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="AI Bürokrasi Kurulu" onClick={onKapat}
-      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px", animation: "nu-rise .16s ease-out both" }}>
+    <div role="dialog" aria-modal="true" aria-label="AI Bürokrasi Kurulu" onClick={onKapat} onKeyDown={odakDongusu}
+      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       <div onClick={(e) => e.stopPropagation()} style={{ width: "min(1060px, 96vw)", margin: "0 auto", display: "flex", flexDirection: "column", gap: SP.m }}>
 
         {/* Üst şerit — başlık + taslak kimliği + kapat (BelgeModal dili) */}

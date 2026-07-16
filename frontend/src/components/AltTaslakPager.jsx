@@ -43,7 +43,7 @@ export default function AltTaslakPager({ altTaslaklar, idx, onIdx, onTurUret, on
     <div role="group" aria-label={`Taslak gezinme — ${guvenliIdx + 1} / ${altTaslaklar.length}`} onKeyDown={tusla}>
       {altTaslaklar.map((x, i) => (
         <div key={x.sira} aria-hidden={i !== guvenliIdx} style={{ display: i === guvenliIdx ? "block" : "none" }}>
-          <AltTaslakKarti altTalep={x.a} sira={i + 1}
+          <AltTaslakKarti altTalep={x.a} sira={i + 1} toplam={altTaslaklar.length}
             onPrev={() => onIdx(guvenliIdx - 1)} prevDisabled={guvenliIdx === 0}
             onNext={() => onIdx(guvenliIdx + 1)} nextDisabled={guvenliIdx === son}
             onTurUret={(tur) => onTurUret(x.a, tur)}

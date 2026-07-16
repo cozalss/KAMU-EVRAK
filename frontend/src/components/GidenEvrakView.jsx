@@ -2,7 +2,7 @@
    (arama/risk/durum çip + tür/birim select + tarih + sıralama) + detay modalı.
    outbox: DashboardApp session state (Onayla&Gönder → giden evrak). */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, PAL, BANT, TYPE, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, PAL, BANT, TYPE, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
@@ -33,8 +33,8 @@ const BASE_CONFIG = {
       { value: "reddedildi", label: "Reddedildi", color: BANT.kirmizi.c },
     ] },
     { id: "sla", label: "Yasal süre", options: [
-      { value: "GECIKMIS", label: "Süresi geçmiş", color: BANT.kirmizi.c },
-      { value: "KRITIK", label: "Süre yaklaşıyor", color: BANT.sari.c },
+      { value: "GECIKMIS", label: "Gecikmiş", color: BANT.kirmizi.c },
+      { value: "KRITIK", label: "Kritik", color: BANT.sari.c },
     ] },
   ],
   select: [
@@ -45,7 +45,7 @@ const BASE_CONFIG = {
   dateRange: { enabled: true, label: "Gönderim tarihi" },
   datePresets: { enabled: true },
   sort: { enabled: true, default: "ts_desc", options: [
-    { value: "ts_desc", label: "En yeni önce" }, { value: "ts_asc", label: "En eski bekleyenler" },
+    { value: "ts_desc", label: "En yeni önce" }, { value: "ts_asc", label: "En eski önce" },
     { value: "risk_desc", label: "Risk (yüksek–düşük)" }, { value: "birim_asc", label: "Birim (A–Z)" },
   ] },
   dataMapping: { search: ["konu", "kaynak_evrak_adi", "id"], risk: "risk", durum: "durum", sla: "sla_durum", kategori: "_kategori", tur: "tur", birim: "alici_birim", dateField: "gonderim_tarihi" },
@@ -62,7 +62,7 @@ function DetayModal({ item, onClose }) {
   if (!item) return null;
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.l, marginBottom: SP.l }}>
           <div>
             <h2 id="giden-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{item.id}</h2>
@@ -82,9 +82,9 @@ function DetayModal({ item, onClose }) {
           <KV k="Sınıflandırma güveni" v={fmtGuven(item.guven) || "—"} c={item.guven >= 0.5 ? DERIN.T : PAL.mut2} />
           <KV k="Risk bandı" v={BANT[item.risk]?.l || "—"} c={DERIN_OF(BANT[item.risk]?.c)} />
           <KV k="Durum" v={DURUM_TR[item.durum] || item.durum} c={DERIN_OF(DURUM_RENK[item.durum])} />
-          {item.sla_durum && <KV k="Yasal süre" v={item.sla_durum === "GECIKMIS" ? "Süresi geçmiş" : item.sla_durum === "KRITIK" ? "Süre yaklaşıyor" : item.sla_durum} c={item.sla_durum === "GECIKMIS" ? DERIN.kirmizi : item.sla_durum === "KRITIK" ? DERIN.sari : PAL.mut2} />}
+          {item.sla_durum && <KV k="Yasal süre" v={item.sla_durum === "GECIKMIS" ? "Gecikmiş" : item.sla_durum === "KRITIK" ? "Kritik" : item.sla_durum} c={item.sla_durum === "GECIKMIS" ? DERIN.kirmizi : item.sla_durum === "KRITIK" ? DERIN.sari : PAL.mut2} />}
           {item.evrak_tarihi && <KV k="Evrak / dilekçe tarihi" v={item.evrak_tarihi} />}
-          <KV k="Gönderen memur" v={`${item.memor_adi} · ${item.memor_unvan}`} />
+          <KV k="Gönderen memur" v={[item.memor_adi, item.memor_unvan].filter(Boolean).join(" · ")} />
           <KV k="Gönderim tarihi" v={fmtTime(item.gonderim_tarihi)} />
           {item.son_hash && <KV k="Denetim hash" v={String(item.son_hash).slice(0, 22) + "…"} c={DERIN.yesil} />}
         </div>
@@ -118,9 +118,9 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
   if (outbox.length === 0) {
     return (
       <ViewWrap id="giden-h" title="Giden evrak" sub="Onaylanıp gönderilen resmî yazılar">
-        <EmptyState icon={<Icon.arrow />} title="Henüz gönderilen evrak yok"
-          sub="Bir evrakı işleyip İşleniyor görünümünde 'Onayla & Gönder' dediğinizde, üretilen resmî yazı buraya — değiştirilemez denetim iziyle — düşer."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrak'ı aç</Btn>]} />
+        <EmptyState icon={<Icon.send />} title="Henüz gönderilen evrak yok"
+          sub="Bir evrakı işleyip İşleniyor görünümünde “Onayla ve gönder” dediğinizde, onayladığınız yazılar, değiştirilemez denetim iziyle birlikte burada listelenir."
+          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
       </ViewWrap>
     );
   }
@@ -131,7 +131,7 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
       <FilterBar config={config} filter={filter} />
 
       {filter.results.length === 0 ? (
-        <EmptyState icon={<Icon.arrow />} title="Eşleşen evrak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
+        <EmptyState icon={<Icon.send />} title="Eşleşen evrak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
           {filter.results.map((item) => {

@@ -59,7 +59,7 @@ function Kip({ baslik, onKapat, children }) {
     <div role="presentation" onClick={onKapat} onKeyDown={klavye}
       style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div role="dialog" aria-modal="true" aria-label={baslik} onClick={(e) => e.stopPropagation()}
-        style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, animation: "nu-rise .16s ease-out" }}>
+        style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, animation: "nu-rise .16s var(--ke-ease-out)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "14px 16px", borderBottom: `1px solid ${PAL.line}` }}>
           <h2 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1 }}>{baslik}</h2>
           <button type="button" ref={kapatRef} onClick={onKapat} aria-label="Kapat" {...focusRing}
@@ -118,9 +118,9 @@ function YardimKip({ onKapat }) {
     <Kip baslik="Yardım ve kısayollar" onKapat={onKapat}>
       <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.xs }}>Üç adımda evrak işleme</div>
       {[
-        ["1", "Gelen Evrak'tan seçin, yeni belge yükleyin ya da örnek evrakla deneyin."],
-        ["2", "Canlı ajan izini izleyin — Görev 1 evrakı anlar, Görev 2 resmî yazıyı üretir."],
-        ["3", "Taslağı onaylayın, düzenleyin ya da reddedin — karar her zaman memurundur (HITL)."],
+        ["1", "Gelen evraktan seçin, yeni belge yükleyin ya da örnek evrakla deneyin."],
+        ["2", "Canlı ajan izini izleyin: Görev 1 evrakı anlar, Görev 2 resmî yazıyı üretir."],
+        ["3", "Taslağı onaylayın, düzenleyin ya da reddedin; karar her zaman memurundur (HITL)."],
       ].map(([n, s]) => (
         <div key={n} style={{ display: "flex", gap: SP.m, padding: "6px 0", alignItems: "flex-start" }}>
           <span aria-hidden="true" style={{ width: 20, height: 20, flexShrink: 0, borderRadius: RAD.dot, background: ALFA(T), color: DERIN.T, ...TYPE.meta, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", ...TNUM }}>{n}</span>
@@ -182,7 +182,7 @@ function MenuIcerik({ user, satirRefs, tema, onTemaDegistir, onDenetimAc, onLogo
   const ayrac = <div role="separator" aria-hidden="true" style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />;
   return (
     <div role="menu" aria-label="Hesap menüsü"
-      style={{ position: "absolute", bottom: "calc(100% + 8px)", left: 0, width: 236, background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s ease-out both" }}>
+      style={{ position: "absolute", bottom: "calc(100% + 8px)", left: 0, width: 236, background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       {/* Kimlik başlığı — etkileşimsiz; menu rolünün erişilebilirlik ağacına satır olarak girmesin */}
       <div role="presentation" style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.s}px 10px ${SP.m}px` }}>
         <span aria-hidden="true" style={{ width: 36, height: 36, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.ui, fontWeight: 600, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
@@ -254,8 +254,8 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
     <div ref={kokRef} style={{ position: "relative", marginTop: "auto" }} onKeyDown={acik ? klavye : undefined}>
       {/* Tetik — kullanıcı kartı; daraltılmış rayda yalnız avatar (title + aynı aria) */}
       <button type="button" ref={tetikRef} onClick={() => setAcik((v) => !v)}
-        aria-haspopup="menu" aria-expanded={acik} aria-label={`Hesap menüsü — ${user?.ad_soyad || "kullanıcı"}`}
-        title={dar ? `Hesap menüsü — ${user?.ad_soyad || "kullanıcı"}` : undefined} {...focusRing}
+        aria-haspopup="menu" aria-expanded={acik} aria-label={`Hesap menüsü: ${user?.ad_soyad || "kullanıcı"}`}
+        title={dar ? `Hesap menüsü: ${user?.ad_soyad || "kullanıcı"}` : undefined} {...focusRing}
         onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.hov : PAL.surfHi; }}
         style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: dar ? "center" : "flex-start", gap: SP.m, padding: dar ? SP.s : SP.m, borderRadius: RAD.card, background: acik ? PAL.hov : PAL.surfHi, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, textAlign: "left", transition: "background .12s ease-out, border-color .12s ease-out" }}>

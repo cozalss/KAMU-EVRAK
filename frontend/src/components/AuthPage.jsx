@@ -3,7 +3,7 @@
    Backend auth API'sine useAuth ile bağlanır.
    a11y: <form> + <label> + autoComplete + focusRing + aria-live hata + aria-pressed tab. */
 import React, { useEffect, useState } from "react";
-import { PAL, T, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, Icon, focusRing, NEON_KEYFRAMES } from "./neonUi.jsx";
+import { PAL, T, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, Icon, focusRing, NEON_KEYFRAMES, MarkaKaro } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
 import AjanSahnesi from "./AjanSahnesi.jsx";
@@ -11,7 +11,7 @@ import AjanSahnesi from "./AjanSahnesi.jsx";
 const STATS = [
   { n: "16", l: "ajanlı analiz" },
   { n: "304", l: "mevzuat kaynağı" },
-  { n: "SHA-256", l: "denetim izi" },
+  { n: "22", l: "örnek evrak senaryosu" },
 ];
 
 // Sol panel atmosferi — düz bg2 yerine dokulu, sakin bir zemin. Gradyan/glow DEĞİL; mevcut
@@ -51,26 +51,6 @@ function Marka() {
   );
 }
 
-function toTitleCaseTurkish(str) {
-  if (!str) return "";
-  return str
-    .split(" ")
-    .map((word) => {
-      if (!word) return "";
-      const firstChar = word.charAt(0);
-      const rest = word.slice(1);
-      let upperFirst;
-      if (firstChar === "i") {
-        upperFirst = "İ";
-      } else if (firstChar === "ı") {
-        upperFirst = "I";
-      } else {
-        upperFirst = firstChar.toLocaleUpperCase("tr-TR");
-      }
-      return upperFirst + rest.toLocaleLowerCase("tr-TR");
-    })
-    .join(" ");
-}
 
 function Field({ label, type = "text", value, onChange, onBlur, autoComplete, required, children, placeholder }) {
   return (
@@ -151,6 +131,7 @@ function ModeTabs({ mode, onChange }) {
         const active = mode === id;
         return (
           <button key={id} type="button" onClick={() => onChange(id)} aria-pressed={active} {...focusRing}
+            onBlur={(e) => { e.currentTarget.style.boxShadow = active ? SH.card : "none"; }}
             style={{
               cursor: "pointer", padding: "8px 24px", borderRadius: RAD.chip,
               border: `1px solid ${active ? PAL.line : "transparent"}`,
@@ -190,8 +171,8 @@ export default function AuthPage({ tema, onTemaDegistir }) {
     setBusy(true);
     try {
       if (kayit) {
-        const formattedAdSoyad = toTitleCaseTurkish(form.ad_soyad).trim();
-        const formattedUnvan = toTitleCaseTurkish(form.unvan).trim();
+        const formattedAdSoyad = form.ad_soyad.trim();
+        const formattedUnvan = form.unvan.trim();
         await register({ eposta: form.eposta, parola: form.parola, ad_soyad: formattedAdSoyad, birim_kod: form.birim_kod, unvan: formattedUnvan });
       } else {
         await login(form.eposta, form.parola);
@@ -217,7 +198,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
       }} className="ke-show">
         <PanelAtmosfer />
         <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.m }}>
-          <img src="/logo.png" alt="" width="46" height="46" style={{ borderRadius: RAD.card }} />
+          <MarkaKaro size={46} nokta={false} />
           <Marka />
         </div>
 
@@ -226,10 +207,10 @@ export default function AuthPage({ tema, onTemaDegistir }) {
             Gelen evrakı okur, <span style={{ color: DERIN.T }}>resmî yazıyı</span> yazar.
           </h1>
           <p style={{ ...TYPE.read, color: PAL.mut, maxWidth: 480, margin: `0 0 ${SP.xxl}px`, textWrap: "balance" }}>
-            16 uzman ajan evrakı okur, sınıflandırır, mevzuatı eşler ve resmî yazı taslağını hazırlar — her adım denetlenebilir, memur onayına hazır.
+            16 uzman ajan evrakı okur, sınıflandırır, mevzuatı eşler ve resmî yazı taslağını hazırlar; her adım denetlenebilir, memur onayına hazır.
           </p>
           <AjanSahnesi />
-          <div style={{ display: "flex", alignItems: "stretch", paddingTop: SP.l, borderTop: `1px solid ${PAL.line}`, animation: "nu-rise .16s ease-out both" }}>
+          <div style={{ display: "flex", alignItems: "stretch", paddingTop: SP.l, borderTop: `1px solid ${PAL.line}`, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
             {STATS.map((s, i) => (
               <React.Fragment key={s.l}>
                 {i > 0 && <span aria-hidden="true" style={{ width: 1, alignSelf: "center", height: 32, background: PAL.line, margin: `0 ${SP.xl}px` }} />}
@@ -242,7 +223,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
           </div>
         </div>
 
-        <div style={{ position: "relative", zIndex: 1, textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>Güvenli · Denetlenebilir · Kurumsal yapay zekâ</div>
+        <div style={{ position: "relative", zIndex: 1, textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>Her adım SHA-256 denetim zinciriyle imzalanır; karar daima memurda kalır</div>
       </section>
 
       {/* Sağ — giriş rayı: beyaz yüzey + dar form kolonu (IG'deki sağ giriş paneli). */}
@@ -268,12 +249,12 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                 </svg>
               )}
               <span style={{ ...TYPE.meta, color: "inherit" }}>
-                {tema === "dark" ? "Açık Görünüm" : "Koyu Görünüm"}
+                {tema === "dark" ? "Açık görünüm" : "Koyu görünüm"}
               </span>
             </button>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.xl }} className="ke-formlogo">
-            <img src="/logo.png" alt="" width="40" height="40" style={{ borderRadius: RAD.card }} />
+            <MarkaKaro size={40} nokta={false} />
             <Marka />
           </div>
 
@@ -286,9 +267,10 @@ export default function AuthPage({ tema, onTemaDegistir }) {
               {kayit ? "Birim hesabınızı oluşturup evrak akışına başlayın." : "Evrak çalışma alanınıza giriş yapın."}
             </p>
 
+            <h1 style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>kamu-evrak çalışma alanına giriş</h1>
             <form onSubmit={submit} noValidate>
               {kayit && (
-                <Field label="Ad soyad" value={form.ad_soyad} onChange={(val) => set("ad_soyad")(toTitleCaseTurkish(val))} autoComplete="name" required placeholder="Ayşe Yılmaz" />
+                <Field label="Ad soyad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
               )}
               <Field label="E-posta" type="email" value={form.eposta} onChange={set("eposta")} autoComplete="email" required placeholder="ad.soyad@kurum.gov.tr" />
               {kayit && (
@@ -300,7 +282,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                       {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: PAL.surf }}>{b.ad}</option>)}
                     </select>
                   </Field>
-                  <Field label="Unvan (opsiyonel)" value={form.unvan} onChange={(val) => set("unvan")(toTitleCaseTurkish(val))} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
+                  <Field label="Unvan (opsiyonel)" value={form.unvan} onChange={set("unvan")} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
                 </>
               )}
               <ParolaField label="Parola" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
@@ -309,7 +291,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                 <div style={{ marginTop: `-${SP.xs}px`, marginBottom: SP.m, textAlign: "right" }}>
                   <button type="button" onClick={() => setSifreNot((v) => !v)} aria-expanded={sifreNot} {...focusRing}
                     style={{ background: "none", border: "none", padding: 0, cursor: "pointer", ...TYPE.data, fontWeight: 500, color: DERIN.T, borderRadius: RAD.chip }}>
-                    Şifremi unuttum?
+                    Parolamı unuttum?
                   </button>
                   {sifreNot && (
                     <p role="status" style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut2, textAlign: "left" }}>
@@ -325,7 +307,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                 </div>
               )}
 
-              <Btn primary onClick={submit} disabled={busy} style={{ width: "100%", justifyContent: "center", padding: SP.m, marginTop: SP.xs }}>
+              <Btn primary type="submit" disabled={busy} style={{ width: "100%", justifyContent: "center", padding: SP.m, marginTop: SP.xs }}>
                 {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : (kayit ? "Hesap oluştur" : "Giriş yap")}
               </Btn>
             </form>

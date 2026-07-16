@@ -56,7 +56,7 @@
 | Kenar / güçlü kenar / form input kenarı | `rgba(35,26,18,.12/.22/.35)` | `PAL.line/lineHi/inputLine` |
 | Hover / basılı-seçili zemin | `rgba(35,26,18,.04/.07)` | `PAL.hov/press` |
 | Metin — başlık / gövde | `#161616` / `#3a3229` | `PAL.ink` / `ink2` |
-| Metin — soluk ×3 | `#6b6255 / #57503f / #8a8172` | `PAL.mut/mut2/mut3` |
+| Metin — soluk ×3 | `#6b6255 / #57503f / #7a7060` | `PAL.mut/mut2/mut3` (mut3 2026-07-16: `#8a8172`→`#7a7060`, 12px metinde AA) |
 | Koyu dolgu üstü metin | `#fbf7f0` | `PAL.onAccent` |
 | Toast zemini | `#2a251e` | `PAL.inkSurf` |
 | Risk YEŞİL/SARI/KIRMIZI | `#2f9e6e / #c98a1f / #c9432f` | `BANT` |
@@ -113,9 +113,16 @@ bölümler arası 24 · sayfa çerçevesi `"24px 32px 48px"` (ViewWrap). Serbest
 
 ### Motion — hareket = bilgi
 
-Kalan keyframe'ler (3): `nu-spin` (gerçek yükleme) · `nu-think` (canlılık, yalnız opacity) ·
-`nu-rise` (görünüm girişi, tek sefer ~160ms, stagger'sız). **Hover'da** transform yasak
-(translateY/scale yok) — hover = zemin tonu (`PAL.hov`), 120–160ms ease-out.
+Çekirdek keyframe'ler (3): `nu-spin` (gerçek yükleme) · `nu-think` (canlılık, yalnız opacity) ·
+`nu-rise` (görünüm girişi, tek sefer ~160ms, stagger'sız). **SAHNE Epik istisnası** (yalnız
+CanliAjanAkisi/CanliMetro canlı koşum sahnesi; 2026-07-16 kullanıcı onayıyla "sakinlik" bu
+sahnede esnetildi — çekirdek tema değişmedi): `nu-iz` (aktif istasyona giren rayda çift ışık
+kuyruğu) · `nu-pop` (tamamlanma vuruşu, spring easing) · `nu-halka` (tek seferlik dışa yayılan
+ışıklı halka) · `nu-gezin` (kart arkası aurora sürüklenmesi) + hat renginde düşük-alfa **glow**
+(`color-mix ≤%55`) ve ray/aurora'da gradyan + `NumberFlow` sayaç yuvarlanması + `EASE.spring`.
+Bu sahne DIŞINDA glow/gradyan yasağı aynen sürer. Hepsi reduced-motion'da söner.
+**Hover'da** transform yasak (translateY/scale yok) — hover = zemin tonu (`PAL.hov`),
+120–160ms ease-out.
 
 **Press feedback (emil-design-eng, 2026-07-13):** tıklanabilir öğe **basılınca** (`:active`)
 `scale(0.97)` — "arayüz kullanıcıyı duyuyor" geri bildirimi (hareket=bilgi; hover değil press,
@@ -185,6 +192,6 @@ karşılanır (press `:active` durum stili olduğundan orada anında/animasyonsu
 - [ ] Mono yalnız makine verisinde; metrik sayılar SANS+TNUM
 - [ ] Sentence case (kısaltma + risk kodu istisna); eyebrow/tracking yok
 - [ ] Ekran başına ≤ 1 primary buton; çip yalnız semantik durum
-- [ ] `focusRing` tüm etkileşimlilerde · `prefers-reduced-motion` çalışıyor · keyframes = {spin, think, rise}
+- [ ] `focusRing` tüm etkileşimlilerde · `prefers-reduced-motion` çalışıyor · keyframes = {spin, think, rise} + sahne {iz, pop, halka, gezin}
 - [ ] Landing diff'i boş (`index.html`, `src/portfolio/**`) · T/R/nötr/BANT hex'leri bit-değişmemiş (V = mühür moru `#8e3d66`, 2026-07)
 - [ ] Responsive: 375/768/1024/1440 — yatay taşma yok

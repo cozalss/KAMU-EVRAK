@@ -67,7 +67,7 @@ function KaynakCip({ kaynak, onMevzuatAc, onClose }) {
   const etiket = [kaynak.no && `${kaynak.no}`, kaynak.baslik, kaynak.madde_no != null && `m.${kaynak.madde_no}`]
     .filter(Boolean).join(" · ");
   return (
-    <button type="button" {...focusRing} title={`${kaynak.baslik} — tam metni oku`}
+    <button type="button" {...focusRing} title={`${kaynak.baslik}: tam metni oku`}
       onClick={() => { onMevzuatAc?.({ dosya: kaynak.dosya, maddeNo: kaynak.madde_no ?? null }); onClose(); }}
       style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, maxWidth: "100%", ...TYPE.meta, fontWeight: 500, color: DERIN.V, background: ALFA(V), border: "none", borderRadius: RAD.chip, padding: "4px 10px", transition: "background .12s ease-out" }}>
       <Icon.book width={12} height={12} />
@@ -80,7 +80,7 @@ function KaynakCip({ kaynak, onMevzuatAc, onClose }) {
 function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor }) {
   const kullanici = m.rol === "kullanici";
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: kullanici ? "flex-end" : "flex-start", gap: SP.s, animation: "nu-rise .16s ease-out both" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: kullanici ? "flex-end" : "flex-start", gap: SP.s, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       <div style={{
         maxWidth: "88%", padding: "8px 12px", borderRadius: RAD.pop, ...TYPE.ui,
         ...(kullanici
@@ -145,6 +145,19 @@ function Yaziyor() {
 
 export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
   const [acik, setAcik] = useState(false);
+  // Kaydırma sırasında FAB küçülüp soluklaşır (satır eylemlerini örtmesin — jüri bulgusu);
+  // durunca 500ms sonra geri gelir. capture:true iç scroll konteynerlerini de yakalar.
+  const [kayiyor, setKayiyor] = useState(false);
+  useEffect(() => {
+    let t = null;
+    const h = () => {
+      setKayiyor(true);
+      clearTimeout(t);
+      t = setTimeout(() => setKayiyor(false), 500);
+    };
+    document.addEventListener("scroll", h, { capture: true, passive: true });
+    return () => { document.removeEventListener("scroll", h, { capture: true }); clearTimeout(t); };
+  }, []);
   const [mesajlar, setMesajlar] = useState([KARSILAMA]);
   const [girdi, setGirdi] = useState("");
   const [bekliyor, setBekliyor] = useState(false);
@@ -261,7 +274,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
             display: "flex", flexDirection: "column", overflow: "hidden",
             background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop,
             boxShadow: SH.modal,
-            animation: "nu-rise .16s ease-out both",
+            animation: "nu-rise .16s var(--ke-ease-out) both",
           }}>
           {/* Başlık */}
           <header style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", background: PAL.surf, borderBottom: `1px solid ${PAL.line}` }}>
@@ -282,7 +295,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
           </header>
 
           {/* Mesajlar */}
-          <div ref={listeRef} aria-live="polite" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m }}>
+          <div ref={listeRef} role="log" aria-live="polite" aria-atomic="false" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m }}>
             {mesajlar.map((m, i) => <Balon key={i} m={m} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
             {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <Yaziyor />}
             {ilkAcilis && !bekliyor && (
@@ -327,7 +340,12 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
           borderRadius: RAD.dot, border: "none", cursor: "pointer", display: "grid", placeItems: "center",
           background: DERIN.T, color: PAL.onAccent,
           boxShadow: SH.pop,
-          transition: "background .12s ease-out",
+          // Kaydırma sırasında küçül+soluklaş: liste eylemlerinin üstünü örtmesin (panel
+          // açıkken davranış devre dışı — konuşma sürerken FAB sabit kalır).
+          opacity: kayiyor && !acik ? 0.3 : 1,
+          transform: kayiyor && !acik ? "scale(.72)" : "scale(1)",
+          transformOrigin: "bottom right",
+          transition: "background .12s ease-out, opacity .2s ease, transform .25s var(--ke-ease-out)",
         }}>
         {acik ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>

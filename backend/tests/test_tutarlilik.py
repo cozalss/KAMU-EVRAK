@@ -38,10 +38,11 @@ class TestTutarlilikKontrol:
     def test_gecersiz_11_hane_uyari_ve_maske(self):
         # Arrange / Act
         uyarilar = tutarlilik_kontrol(f"TCKN: {_GECERSIZ_11_HANE}", {}, bugun=_BUGUN)
-        # Assert — uyarı var AMA ham numara mesajda YOK (kısmi maske)
+        # Assert — uyarı var AMA ham numara mesajda YOK; maske belge paneliyle bit-aynı
+        # format (11 hane → 3 açık + 6 yıldız + 2 açık; 2026-07 jüri bulgusu: format birliği).
         assert len(uyarilar) == 1
         assert _GECERSIZ_11_HANE not in uyarilar[0]
-        assert "123****01" in uyarilar[0]
+        assert "123******01" in uyarilar[0]
 
     def test_telefon_degerlendirilmez(self):
         # Arrange — 0'la başlayan 11 hane = telefon → aday değil

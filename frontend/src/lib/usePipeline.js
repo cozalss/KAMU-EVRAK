@@ -254,6 +254,19 @@ export function usePipeline() {
     else if (last.kind === "sample") runSample(last.sample);
   }, [runFile, runSample]);
 
+  // ---------- Koşumu İPTAL et (kullanıcı eylemi) ----------
+  // Abort altyapısı zaten vardı (unmount + çakışan koşum) ama kullanıcıya açık değildi.
+  // sawTerminal işaretlenir ki streamRun'ın emniyet kemeri iptali "İşleme hatası" sanmasın;
+  // AbortError dalı sessizce çıkar. busy düşünce started=false → boş duruma dönülür;
+  // lastRun durduğundan "Tekrar dene" ile aynı evrak yeniden başlatılabilir.
+  const cancelRun = useCallback(() => {
+    if (!abortRef.current) return;
+    sawTerminal.current = true;
+    abortRef.current.abort();
+    setBusy(false);
+    showToast("İşlem iptal edildi.");
+  }, [showToast]);
+
   // ---------- C) Taslağı PDF/DOCX indir → /yazi/taslak ----------
   const download = useCallback(async (format) => {
     // Taslak kaynağı: result (yeşil/karar sonrası) VEYA pendingOnay (HITL beklerken). Dosya
@@ -343,7 +356,7 @@ export function usePipeline() {
 
   return {
     nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
-    runFile: runFileValidated, runSample, resume, retry, download, showToast, dismissError, canRetry, applyTaslak,
+    runFile: runFileValidated, runSample, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
     // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
     // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).
     runBase: runStart.current,

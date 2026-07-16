@@ -4,7 +4,7 @@
 import React from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, ALFA, DERIN, DERIN_OF, PAL, BANT } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
 
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
@@ -14,17 +14,29 @@ const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { da
 const kararBekleyenSay = (history, pendingOnay) =>
   history.filter((h) => h.result?.yazi_taslak_md && !h.result?.onay_durumu).length + (pendingOnay ? 1 : 0);
 
-function Stat({ label, value, accent, icon }) {
-  return (
-    <NeonCard>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
-        <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: accent ? DERIN_OF(accent) : PAL.mut }}>{icon}</span>
-        <div>
-          {/* number-flow: sayı değişince odometre geçişi (prefers-reduced-motion'a kendisi uyar). */}
-          <div style={{ ...TYPE.num, color: PAL.ink }}>{typeof value === "number" ? <NumberFlow value={value} /> : value}</div>
-          <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs }}>{label}</div>
-        </div>
+function Stat({ label, value, accent, icon, onClick, ariaLabel }) {
+  // Sıfır sayaç soluk (jüri: 4 kalın "0" panel ölü doğuruyordu); onClick verilirse kart
+  // gerçek buton olur ("karar bekleyen" → Taslaklar — yarım kalan işe dönüş yolu).
+  const sifir = value === 0;
+  const govde = (
+    <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
+      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: sifir ? PAL.mut3 : (accent ? DERIN_OF(accent) : PAL.mut) }}>{icon}</span>
+      <div>
+        {/* number-flow: sayı değişince odometre geçişi (prefers-reduced-motion'a kendisi uyar). */}
+        <div style={{ ...TYPE.num, color: sifir ? PAL.mut3 : PAL.ink }}>{typeof value === "number" ? <NumberFlow value={value} /> : value}</div>
+        <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs }}>{label}</div>
       </div>
+    </div>
+  );
+  if (!onClick) return <NeonCard>{govde}</NeonCard>;
+  return (
+    <NeonCard style={{ padding: 0 }}>
+      <button type="button" onClick={onClick} aria-label={ariaLabel || label} {...focusRing} data-press=""
+        onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        style={{ cursor: "pointer", display: "block", width: "100%", textAlign: "left", padding: SP.l, background: "transparent", border: "none", borderRadius: RAD.card, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+        {govde}
+      </button>
     </NeonCard>
   );
 }
@@ -48,30 +60,34 @@ function BarList({ rows, color }) {
 
 /* Süresi yaklaşan/geçen kuyruk evrağı satırı — yasal dayanak + son tarih + hedefli eylem
    ("İşle" o evrakı Gelen Evrak'ta vurgulayıp kaydırır). */
-function SlaSatir({ x, onGoInbox }) {
+function SlaSatir({ x, onIsle }) {
   const gecikmis = x.sla.durum === "GECIKMIS";
   const renk = gecikmis ? BANT.kirmizi.c : BANT.sari.c;
   const kalanTxt = gecikmis ? `${Math.abs(x.sla.kalan_gun)} gün gecikti` : `son ${x.sla.kalan_gun} gün`;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "8px 0", borderBottom: `1px solid ${PAL.line}` }}>
       <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: renk, flexShrink: 0 }} />
-      <span title={`${x.sla.etiket} — dayanak: ${x.sla.mevzuat}`} style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
-      <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(renk), ...TNUM }}>{kalanTxt}</span>
+      <span style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
+        <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
+        <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.sla.mevzuat}</span>
+      </span>
+      <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), flexShrink: 0, ...TNUM }}>{kalanTxt}</span>
       {x.sla.son_tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, flexShrink: 0 }}>son: {x.sla.son_tarih}</span>}
-      <Btn onClick={() => onGoInbox(x.id)} ariaLabel={`${x.label} evrakını kuyruğa git ve işle`} style={{ padding: "4px 10px" }}>İşle <Icon.arrow /></Btn>
+      <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "4px 10px" }}>İşle <Icon.arrow /></Btn>
     </div>
   );
 }
 
 /* Kuyruk SLA dağılımı — tek yığın çubuk (normal/kritik/gecikmiş/tanımsız) + sayaçlar +
    eskalasyon listesi. Kuyruğun genel sağlığı tek bakışta; acil yoksa dürüst yeşil not. */
-function SlaDagilimKart({ kuyrukSla, onGoInbox }) {
+function SlaDagilimKart({ kuyrukSla, onGoInbox, onIsle }) {
   const [acilRef] = useAutoAnimate();   // satırlar işlendikçe akıcı giriş/çıkış
-  const say = { normal: 0, kritik: 0, gecikmis: 0, diger: 0 };
+  const say = { normal: 0, kritik: 0, gecikmis: 0, tarihYok: 0, diger: 0 };
   for (const x of kuyrukSla) {
     if (x.sla.durum === "NORMAL") say.normal++;
     else if (x.sla.durum === "KRITIK") say.kritik++;
     else if (x.sla.durum === "GECIKMIS") say.gecikmis++;
+    else if (x.sla.durum === "tarih_yok") say.tarihYok++;   // Gelen'deki çip ile aynı sözlük
     else say.diger++;
   }
   const acil = kuyrukSla
@@ -81,7 +97,8 @@ function SlaDagilimKart({ kuyrukSla, onGoInbox }) {
     { c: BANT.yesil.c, n: say.normal, l: "normal takvim" },
     { c: BANT.sari.c, n: say.kritik, l: "kritik" },
     { c: BANT.kirmizi.c, n: say.gecikmis, l: "gecikmiş" },
-    { c: PAL.lineHi, n: say.diger, l: "süre tanımsız" },
+    { c: PAL.mut3, n: say.tarihYok, l: "tarih doğrulanmalı" },
+    { c: PAL.mut, n: say.diger, l: "süre tanımsız" },
   ].filter((d) => d.n > 0);
   const toplam = kuyrukSla.length || 1;
   const accent = say.gecikmis ? BANT.kirmizi.c : say.kritik ? BANT.sari.c : BANT.yesil.c;
@@ -101,15 +118,23 @@ function SlaDagilimKart({ kuyrukSla, onGoInbox }) {
       {acil.length > 0 ? (
         <div style={{ marginTop: SP.m }}>
           <p style={{ margin: "0 0 4px", ...TYPE.meta, color: PAL.mut2 }}>
-            Yasal cevap süresi dolan/dolmak üzere olan evraklar — dayanak için satır üzerine gelin.
+            Yasal cevap süresi dolan/dolmak üzere olan evraklar; yasal dayanak her satırın altında yazılıdır.
           </p>
           <div ref={acilRef}>
-            {acil.slice(0, 5).map((x) => <SlaSatir key={x.id} x={x} onGoInbox={onGoInbox} />)}
+            {acil.slice(0, 5).map((x) => <SlaSatir key={x.id} x={x} onIsle={onIsle} />)}
+            {acil.length > 5 && (
+              <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
+                onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                style={{ cursor: "pointer", width: "100%", padding: "8px 0", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+                {acil.length - 5} evrak daha; tümünü kuyruğun aciliyet sırasında görün
+              </button>
+            )}
           </div>
         </div>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m, ...TYPE.data, color: DERIN.yesil }}>
-          <Icon.check width={14} height={14} /> Kuyruğun tamamı normal takvimde — eskalasyon gerekmiyor.
+          <Icon.check width={14} height={14} /> Kuyruğun tamamı normal takvimde; eskalasyon gerekmiyor.
         </div>
       )}
     </NeonCard>
@@ -154,7 +179,7 @@ function SureGrafik({ history }) {
     .map((h) => ({ name: h.name, ms: h.result?.sure_ms }))
     .filter((x) => Number.isFinite(x.ms) && x.ms > 0);
   if (olculer.length === 0) {
-    return <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Süre verisi bu oturumdan itibaren toplanıyor — bir evrak işleyin.</p>;
+    return <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Süre verisi bu oturumdan itibaren toplanıyor; bir evrak işleyin.</p>;
   }
   const son = olculer.slice(0, 10).reverse(); // eski → yeni (soldan sağa zaman)
   const ort = olculer.reduce((a, x) => a + x.ms, 0) / olculer.length;
@@ -179,10 +204,13 @@ function SureGrafik({ history }) {
   );
 }
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], draftCount = 0, pendingOnay = false, onGoInbox, onUpload, user }) {
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], draftCount = 0, pendingOnay = false, onGoInbox, onIsle = () => {}, onGoTaslaklar = () => {}, onGoGiden = () => {}, onGoDenetim = () => {}, onUpload, user }) {
   const n = history.length;
   const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
   const kararBekleyen = kararBekleyenSay(history, pendingOnay);
+  // Birikimli üretim: karar durumundan bağımsız, taslak üretilmiş TÜM işlemler (jüri T6:
+  // eski sayaç gönderimde düşüyor ve "Karar bekleyen"in kopyasıydı).
+  const uretilenTaslak = history.filter((h) => h.result?.yazi_taslak_md).length;
   const risk = { yesil: 0, sari: 0, kirmizi: 0 };
   for (const h of history) if (risk[h.bant] != null) risk[h.bant]++;
   const turler = {};
@@ -217,19 +245,19 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         <Btn key="u" onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>,
       ]}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px,1fr))", gap: SP.l, marginBottom: SP.xl }}>
-        <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} />
-        <Stat label="Bekleyen kuyruk" value={inboxCount} icon={<Icon.inbox />} />
-        <Stat label="Üretilen taslak" value={draftCount} accent={V} icon={<Icon.scale />} />
-        <Stat label="Gönderilen evrak" value={gonderilen} accent={BANT.yesil.c} icon={<Icon.arrow />} />
-        <Stat label="Karar bekleyen" value={kararBekleyen} accent={kararBekleyen ? BANT.sari.c : undefined} icon={<Icon.clock />} />
+        <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} onClick={onGoDenetim} ariaLabel="İşlem geçmişini (Denetim) aç" />
+        <Stat label="Gelen evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç" />
+        <Stat label="Üretilen taslak" value={uretilenTaslak} accent={V} icon={<Icon.doc />} onClick={onGoTaslaklar} ariaLabel="Taslakları aç" />
+        <Stat label="Gönderilen evrak" value={gonderilen} accent={T} icon={<Icon.arrow />} onClick={onGoGiden} ariaLabel="Giden evrak arşivini aç" />
+        <Stat label="Karar bekleyen" value={kararBekleyen} accent={kararBekleyen ? BANT.sari.c : undefined} icon={<Icon.clock />} onClick={onGoTaslaklar} ariaLabel="Karar bekleyen taslakları aç" />
       </div>
 
-      {kuyrukSla.length > 0 && <SlaDagilimKart kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} />}
+      {kuyrukSla.length > 0 && <SlaDagilimKart kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} onIsle={onIsle} />}
 
       {n === 0 ? (
         <EmptyState icon={<Icon.chart />} title="Henüz evrak işlenmedi"
-          sub="Gelen Evrak kuyruğundan bir evrak seçerek ya da yeni bir belge yükleyerek başlayın. İşlenen her evrak burada özetlenir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrak'ı aç</Btn>]} />
+          sub="Gelen evrak kuyruğundan bir evrak seçerek ya da yeni bir belge yükleyerek başlayın. İşlenen her evrak burada özetlenir."
+          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px,1fr))", gap: SP.l, alignItems: "start" }}>
           <NeonCard title="Risk dağılımı" accent={T}>
@@ -255,7 +283,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
           <NeonCard title="Birim dağılımı" accent={V} tag="havale edilen">
             <BarList rows={birimList} color={V} />
             {birimList.length > 0 && (
-              <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>Görev 2 yönlendirmesi — en çok havale alan birimler.</p>
+              <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>Görev 2 yönlendirmesi: en çok havale alan birimler.</p>
             )}
           </NeonCard>
 

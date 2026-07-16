@@ -3,7 +3,7 @@
    ayrıntılı sonuç ekranı + sohbet çipi) AYNI modalı kullansın; kod tek yerde dursun.
    Kaynak: /mevzuat/icerik/{dosya} (backend beyaz-listeli dosya adı). */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Icon, Btn, MONO, V, PAL, DERIN, ALFA, TYPE, RAD, SP, SH, focusRing } from "./neonUi.jsx";
+import { Icon, Btn, MONO, V, PAL, DERIN, ALFA, TYPE, RAD, SP, SH, focusRing, odakDongusu } from "./neonUi.jsx";
 
 /* Ham mevzuat metni → bloklar: künye-sonrası giriş notu + "Madde N — ..." blokları.
    Backend chunker (_MADDE_HEADER_RE) ile aynı önek dili — "Ek Madde 1" / "Geçici Madde 2"
@@ -89,8 +89,8 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
 
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="mevzuat-okuma-h" onClick={(e) => e.stopPropagation()}
-        style={{ width: "min(760px,100%)", maxHeight: "86vh", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s ease-out" }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="mevzuat-okuma-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu}
+        style={{ width: "min(760px,100%)", maxHeight: "86vh", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out)" }}>
         <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.m, padding: "16px 24px 12px", borderBottom: `1px solid ${PAL.line}`, flexShrink: 0 }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
@@ -115,7 +115,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
           )}
           {icerik === "hata" && (
             <div role="alert" style={{ ...TYPE.data, color: PAL.ink2, padding: "8px 0" }}>
-              Tam metin alınamadı — backend çalışıyor mu?
+              Tam metin şu anda alınamıyor. Lütfen tekrar deneyin.
               <div style={{ marginTop: SP.m }}><Btn onClick={() => setDeneme((n) => n + 1)}>Tekrar dene</Btn></div>
             </div>
           )}

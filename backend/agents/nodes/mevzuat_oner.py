@@ -301,19 +301,42 @@ _QUERY_BOOST = 3
 _EVRAK_TEXT_CHARS = 600
 
 
+def _domain_terimleri(turu_key: str) -> str:
+    """Türün EVRAK_TO_MEVZUAT başlıklarından sorgu-genişletme terimleri (hijyenli).
+
+    Başlıklar sorguya OLDUĞU GİBİ giremez (ölçüldü, eval kaçışları):
+      1. "m.4" atıfı "madde4" tokenine dönüşüp ×_QUERY_BOOST ağırlıkla HER kanunun
+         4. maddesiyle eşleşir (5176 etik kurulu m.4, dilekçe-ailesi sorgularında
+         içeriği ezdi → talep→657/4734 tam kaçış).
+      2. Kanun NUMARASI kanunun kendi maddelerinde GEÇMEZ; yalnız onu adıyla anan
+         çapraz-atıf chunk'larıyla eşleşir (5690 CİMER m.1 "...Kanun (3071)" alıntısı
+         dilekçe sorgusunda 3071 m.4'ü geçti). Doğru kanuna yönlendirme numaranın işi
+         değil _apply_boost'un işidir (etiket eşleşmesi) → numara sorguya girmez.
+      3. "[DOĞRULA: ...]" girdileri başlık değil meta-nottur → atlanır.
+    Geriye kanun adı/domain kelimeleri kalır ("Dilekçe", "Tebligat", "Bilgi Edinme").
+    """
+    parcalar = [
+        _KANUN_NO_RE.sub(" ", _MADDE_REF_RE.sub(" ", baslik))
+        for baslik in EVRAK_TO_MEVZUAT.get(turu_key, [])
+        if not baslik.startswith("[DOĞRULA")
+    ]
+    return " ".join(" ".join(parcalar).split())
+
+
 def _retrieval_query(state: dict[str, Any]) -> str:
     """Sorgu: (konu+tür+domain-terim) ağırlıklı + metnin ilk bölümü (PII'siz).
 
     Tür anahtarı (`dilekce`) yerine Türkçe etiketi (`Dilekçe`) kullanılır → korpus
     metnindeki diakritikli terim ("dilekçe") ile eşleşir. Türe ait statik mevzuat
     başlıklarındaki domain terimleri (örn. "Tebligat", "Bilgi Edinme") de eklenir →
-    BM25 doğru kanuna yönelir (sorgu-genişletme).
+    BM25 doğru kanuna yönelir (sorgu-genişletme). Madde atıfları/DOĞRULA notları
+    eklenMEZ (_domain_terimleri hijyeni).
     """
     unsurlar = state.get("bilgi_unsurlari") or {}
     konu = str(unsurlar.get("konu", "") or "").strip()
     turu_key = (state.get("evrak_turu", "") or "").strip()
     turu = EVRAK_TURU_TR.get(turu_key, turu_key)
-    domain = " ".join(EVRAK_TO_MEVZUAT.get(turu_key, []))
+    domain = _domain_terimleri(turu_key)
     boosted = " ".join(f"{konu} {turu} {domain}".split() * _QUERY_BOOST).strip()
     body = (state.get("evrak_text", "") or "")[:_EVRAK_TEXT_CHARS]
     return " ".join(p for p in (boosted, body) if p)

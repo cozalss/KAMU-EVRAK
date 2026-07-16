@@ -53,8 +53,11 @@ def tutarlilik_kontrol(
 
     for aday in sorted(set(_RE_TCKN_ADAYI.findall(evrak_text or ""))):
         if not tckn_checksum_gecerli(aday):
+            # Maske, belge panelindeki PII maskesiyle bit-aynı format (uzunluk korunur):
+            # 11 hane → 3 açık + 6 yıldız + 2 açık. Farklı formatlar tutarsızlık okunuyordu.
+            maske = f"{aday[:3]}{'*' * (len(aday) - 5)}{aday[-2:]}"
             uyarilar.append(
-                f"11 haneli kimlik-benzeri numara ({aday[:3]}****{aday[-2:]}) TCKN "
+                f"11 haneli kimlik-benzeri numara ({maske}) TCKN "
                 "doğrulamasını (checksum) geçmiyor — yazım hatası ya da şüpheli olabilir."
             )
 

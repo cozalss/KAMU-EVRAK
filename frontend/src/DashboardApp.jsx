@@ -78,7 +78,7 @@ const gecisle = (fn) => {
 export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
     nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
-    runFile, runSample, resume, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
+    runFile, runSample, resume, cancelRun, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
   } = usePipeline();
 
   const { user, logout } = useAuth();
@@ -134,7 +134,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       konu: res.bilgi_unsurlari?.konu || res.alt_talepler?.[0]?.ozet || "—",
       alici_birim: res.hedef_birim, risk: res.risk_metadata?.bant || "yesil",
       durum, taslak: res.yazi_taslak_md || "",
-      memor_adi: "M. Yılmaz", memor_unvan: "Yetkili memur",
+      memor_adi: user?.ad_soyad || "Memur", memor_unvan: user?.unvan || "",
       // Liste zenginleştirme (kategori filtresi + satır): güven / evrak tarihi / SLA durumu.
       guven: typeof res.tur_confidence === "number" ? res.tur_confidence : null,
       evrak_tarihi: res.bilgi_unsurlari?.tarih || "",
@@ -267,7 +267,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         } else {
           pushOutbox(result, fileMeta, pa.secim);
           persistDecision(result, pa.secim);
-          showToast(pa.secim === "reddet" ? "Reddedildi — Giden Evrak'a kaydedildi." : "Evrak gönderildi — Giden Evrak'a eklendi.");
+          showToast(pa.secim === "reddet" ? "Reddedildi — Giden evraka kaydedildi." : "Evrak gönderildi — Giden evraka eklendi.");
         }
       }
     }
@@ -343,7 +343,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // Panel "süresi yaklaşan" kartı: kuyruktaki (henüz gönderilmemiş) örneklerin SLA'sı.
   const kuyrukSla = slaMap
     ? SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))
-        .map((s) => ({ id: s.id, label: s.label, sla: slaMap[s.id] }))
+        .map((s) => ({ id: s.id, label: s.konu || s.label, sla: slaMap[s.id] }))
         .filter((x) => x.sla)
     : [];
 
@@ -381,7 +381,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   };
   const onReject = async () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; if (!(await resume("reddet"))) pendingApprovalRef.current = null; }
-    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); stampDecision(result, "reddet"); showToast("Reddedildi — Giden Evrak'a kaydedildi (denetim izi)."); goView("giden"); }
+    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); stampDecision(result, "reddet"); showToast("Reddedildi — Giden evraka kaydedildi (denetim izi)."); goView("giden"); }
     else showToast("Önce bir evrak işleyin.");
   };
   const onEdit = async () => {
@@ -460,7 +460,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     const yeniUyari = (dogrulanan.verify_uyari || []).length;
     showToast(yeniUyari
       ? `Taslak gönderildi — doğrulama ${yeniUyari} uyarı buldu, Giden Evrak'ta inceleyin.`
-      : "Taslak düzenlenerek gönderildi — Giden Evrak'a eklendi.");
+      : "Taslak düzenlenerek gönderildi — Giden evraka eklendi.");
     goView("giden");
     return true;
   };
@@ -612,7 +612,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       }).catch((err) => { console.warn("Birim kararı DB'ye yazılamadı", err); });
     }
     const etiket = altTalep.birim_tr || "İlgili birim";
-    showToast(secim === "reddet" ? `${etiket} — reddedildi, Giden Evrak'a kaydedildi.` : `${etiket} — gönderildi, Giden Evrak'a eklendi.`);
+    showToast(secim === "reddet" ? `${etiket} — reddedildi, Giden evraka kaydedildi.` : `${etiket} — gönderildi, Giden evraka eklendi.`);
     return true;
   };
 
@@ -668,7 +668,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   };
 
   let view;
-  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onUpload={triggerUpload} user={user} />;
+  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} draftCount={draftCount} pendingOnay={!!pendingOnay} onGoInbox={goInbox} onIsle={(id) => { const sec = SAMPLE_DOCS.find((x) => x.id === id); if (sec) processSample(sec); }} onGoTaslaklar={() => goView(pendingOnay ? "isleniyor" : "taslaklar")} onGoGiden={() => goView("giden")} onGoDenetim={() => goView("denetim")} onUpload={triggerUpload} user={user} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} uid={user?.id} />;
   else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
@@ -682,7 +682,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       onAltTurUret={uretAltTaslakTuru} onAltDuzenle={onAltDuzenle}
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
       onDownload={download} downloading={downloading} canDownload={!!evrakText || !!data?.yazi_taslak_md}
-      onUpload={triggerUpload} onGoInbox={() => goView("gelen")}
+      onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onCancel={cancelRun}
       fileUrl={fileUrl} onFileDrop={runFile} onTelefon={() => setTelefonAcik(true)}
       onMevzuatAc={mevzuatAc}
       onMevzuatSec={secMevzuat} seciliMevzuat={seciliMevzuat} dayanakUretiliyor={dayanakUretiliyor}

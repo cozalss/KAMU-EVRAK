@@ -4,11 +4,17 @@
    oluştuğundan kuyrukta boştur (durum "Yeni" / işlenmişse "İşlendi"). */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, ALFA, DERIN, DERIN_OF } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, ALFA, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
+import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import { useFilter } from "../hooks/useFilter.js";
 import { evrakKategori, kategoriMeta, KATEGORILER, KATEGORI_BIRIM } from "../lib/kategori.js";
 import { BIRIM_LBL } from "./result-cards.jsx";
+import { SAMPLE_DOCS } from "../lib/sampleDocs.js";
+
+// Kalıcı kayıt numarası: evrakın SAMPLE_DOCS içindeki özgün konumu (id → no). Kuyruk
+// filtrelense/gönderilse de numara değişmez (kayıt no değişmezliği — jüri bulgusu).
+const EVRAK_NO = new Map(SAMPLE_DOCS.map((s, i) => [s.id, i + 1]));
 
 const KATEGORI_SELECT = [{ value: "", label: "Tüm kategoriler" }, ...KATEGORILER.map((k) => ({ value: k.id, label: k.label }))];
 
@@ -22,14 +28,20 @@ const GELEN_FILTER_CONFIG_BASE = {
     { value: "Vatandaş", label: "Vatandaş" },
     { value: "Kurum", label: "Kurum" },
     { value: "Hukuk/Mali", label: "Hukuk/Mali" },
+  ] }, { id: "sla", label: "Yasal süre", options: [
+    { value: "GECIKMIS", label: "Gecikmiş", color: BANT.kirmizi.c },
+    { value: "KRITIK", label: "Kritik", color: BANT.sari.c },
+    { value: "tarih_yok", label: "Tarih doğrulanmalı", color: PAL.mut3 },
+    { value: "tanimsiz", label: "Süre tanımsız", color: PAL.mut },
   ] }],
   select: [{ id: "kategori", label: "Kategori", options: KATEGORI_SELECT }],
-  sort: { enabled: true, default: "ts_desc", options: [
+  sort: { enabled: true, default: "sla_asc", options: [
+    { value: "sla_asc", label: "Yasal süre (en acil önce)" },
     { value: "ts_desc", label: "Kuyruk sırası" },
     { value: "name_asc", label: "Ad (A–Z)" },
     { value: "name_desc", label: "Ad (Z–A)" },
   ] },
-  dataMapping: { search: ["label", "aciklama"], grup: "grup", kategori: "_kategori" },
+  dataMapping: { search: ["konu", "label", "aciklama"], grup: "grup", sla: "_slaDurum", kategori: "_kategori" },
 };
 
 /* Yasal süre (SLA) rozeti — backend /sla/onizleme sonucundan (compute_sla tek kaynak).
@@ -38,13 +50,14 @@ const GELEN_FILTER_CONFIG_BASE = {
 function SlaRozet({ sla }) {
   if (!sla || sla.durum === "tanimsiz") return null;
   if (sla.durum === "tarih_yok") {
-    return <span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut3 }}>[DOĞRULA] tarih</span>;
+    // Makine işareti ("[DOĞRULA]") yerine memur dili — iç etiket UI'a sızmaz (jüri bulgusu).
+    return <span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut2 }}>tarih doğrulanmalı</span>;
   }
   const renk = sla.durum === "GECIKMIS" ? BANT.kirmizi.c : sla.durum === "KRITIK" ? BANT.sari.c : BANT.yesil.c;
   const metin = sla.durum === "GECIKMIS" ? `${Math.abs(sla.kalan_gun)} gün gecikti`
     : sla.durum === "KRITIK" ? `son ${sla.kalan_gun} gün` : `${sla.kalan_gun} gün süre`;
   return (
-    <span title={`${sla.etiket} — son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat})`}
+    <span title={`${sla.etiket}; son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat})`}
       style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), ...TNUM }}>
       {metin}
     </span>
@@ -54,9 +67,13 @@ function SlaRozet({ sla }) {
 export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy, hedef = null, onHedefAcildi, uid = null }) {
   const done = processedIds || new Set();
   // Her örneğe operasyonel kategori türet (id ≈ evrak türü + metin anahtar sözcükleri).
+  // _slaGun: aciliyet sıralamasının anahtarı (Panel'in öğrettiği triyaj modeli artık
+  // kuyruğun VARSAYILAN sırası — jüri bulgusu: gecikmiş evrak 22 satırda göz ile aranıyordu).
   const items = useMemo(() => samples.map((s) => ({
     ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: s.id, text: s.text }),
-  })), [samples]);
+    _slaGun: Number.isFinite(slaMap?.[s.id]?.kalan_gun) ? slaMap[s.id].kalan_gun : null,
+    _slaDurum: slaMap?.[s.id]?.durum || "",
+  })), [samples, slaMap]);
   // Kayıtlı görünüm (Paperless saved-views hafif hâli) kullanıcıya özel — uid yoksa (henüz
   // yüklenmedi) kalıcılık atlanır, başka kullanıcının filtresi asla uygulanmaz.
   const filterConfig = useMemo(() => ({
@@ -70,6 +87,9 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
   // kuyruğa hiç yoksa (gönderilmiş) hedef sessizce tüketilir.
   const rowRefs = useRef(new Map());
   const [vurgu, setVurgu] = useState(null);
+  // Önizleme: memur evrakı İŞLEMEDEN önce okuyabilmeli (jüri bulgusu — "önce oku, sonra
+  // işle" temel akıştı; tek eylem kara kutuya çeviriyordu). Satır tıklaması A4 modal açar.
+  const [onizle, setOnizle] = useState(null);
   useEffect(() => {
     if (!hedef) return undefined;
     const el = rowRefs.current.get(hedef);
@@ -97,19 +117,24 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
       ) : (
         <div ref={listeRef} style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
           {filter.results.map((s) => {
-            const idx = samples.indexOf(samples.find((x) => x.id === s.id));
+            const no = EVRAK_NO.get(s.id) ?? 0;
             const isDone = done.has(s.id);
             const kat = kategoriMeta(s._kategori);
             const onerilenBirim = BIRIM_LBL(KATEGORI_BIRIM[s._kategori] || "yazi_isleri_evrak");
             const vurgulu = vurgu === s.id;
             return (
               <div key={s.id}
+                onClick={() => setOnizle(s)}
+                onMouseEnter={(e) => { if (!vurgulu) e.currentTarget.style.background = PAL.hov; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = vurgulu ? "color-mix(in srgb, var(--ke-t) 8%, transparent)" : PAL.surf; }}
                 ref={(el) => { if (el) rowRefs.current.set(s.id, el); else rowRefs.current.delete(s.id); }}
-                style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: vurgulu ? ALFA(T) : PAL.surf, border: `1px solid ${vurgulu ? T : PAL.line}`, transition: "background .3s ease-out, border-color .3s ease-out" }}>
-                <span aria-hidden="true" style={{ width: 40, height: 40, borderRadius: RAD.ctl, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surfHi, color: PAL.mut2, ...TYPE.data, fontWeight: 500, ...TNUM }}>{String(idx + 1).padStart(2, "0")}</span>
+                style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: vurgulu ? ALFA(T) : PAL.surf, border: `1px solid ${vurgulu ? T : PAL.line}`, transition: "background .2s ease-out, border-color .3s ease-out" }}>
+                <span aria-hidden="true" title={kat.label} style={{ width: 40, height: 40, borderRadius: RAD.ctl, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surfHi, color: PAL.mut2 }}>{(Icon[kat.icon] || Icon.doc)({})}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-                    <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{s.label}</span>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); setOnizle(s); }} {...focusRing} data-press=""
+                      title={`${s.label}: evrakı önizle`}
+                      style={{ cursor: "pointer", padding: 0, background: "transparent", border: "none", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, textAlign: "left" }}>{s.konu || s.label}</button>
                     {/* Durum çipi (işlenme) + yasal süre rozeti (SLA önizleme) */}
                     <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: isDone ? ALFA(BANT.yesil.c) : ALFA(T), color: isDone ? DERIN.yesil : DERIN.T }}>{isDone ? "İşlendi" : "Yeni"}</span>
                     <SlaRozet sla={slaMap?.[s.id]} />
@@ -119,12 +144,14 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
                     <span>{kat.label} · {s.grup || "Evrak"}</span>
                     <span aria-hidden="true">·</span>
                     <span>{s.aciklama}</span>
-                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>· önerilen birim: {onerilenBirim}</span>
+                    {/* Önerilen birim SR'a da okunur (Görev 2 çıktısı — aria-hidden yanlıştı);
+                        ayraç ayrı span'de: satır kırılımında başa düşmez (jüri bulgusu). */}
+                    <span style={{ display: "block", width: "100%", color: PAL.mut2 }}>önerilen birim: {onerilenBirim}</span>
                   </div>
                 </div>
-                <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, flexShrink: 0 }}>E-2026/{String(idx + 1).padStart(4, "0")}</span>
+                <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, flexShrink: 0 }}>E-2026/{String(no).padStart(4, "0")}</span>
                 {/* Tekrarlanan satır eylemi secondary — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
-                <Btn onClick={() => onProcess(s)} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
+                <Btn onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
                   {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow />
                 </Btn>
               </div>
@@ -138,6 +165,16 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
           Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
         </p>
       </NeonCard>
+
+      {/* Salt-okunur evrak önizleme (satır tıklaması) — "önce oku, sonra işle" akışı;
+          İşle birincil eylem olarak modal içinde de sunulur. */}
+      <BelgeModal acik={!!onizle} baslik="Evrak önizleme" dosyaAdi={onizle?.label || ""} mono
+        metin={onizle?.text || ""} onKapat={() => setOnizle(null)}
+        eylemler={onizle ? (
+          <ScrimDugme onClick={() => { const sec = onizle; setOnizle(null); onProcess(sec); }} disabled={busy} title="Bu evrakı işle">
+            {done.has(onizle.id) ? "Yeniden işle" : "İşle"}
+          </ScrimDugme>
+        ) : null} />
     </ViewWrap>
   );
 }

@@ -36,7 +36,7 @@ export default function DenetimView({ history = [], onGoInbox }) {
       <ViewWrap id="denetim-h" title="Denetim izi" sub="Değiştirilemez işlem kayıtları (SHA-256)">
         <EmptyState icon={<Icon.shield />} title="Henüz denetim kaydı yok"
           sub="İşlenen her evrak için değiştirilemez bir SHA-256 hash-zinciri oluşturulur ve burada listelenir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen Evrak'ı aç</Btn>]} />
+          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
       </ViewWrap>
     );
   }

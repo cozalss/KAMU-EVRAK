@@ -36,14 +36,15 @@ function FilterChips({ group, filter }) {
   const set = filter.filters.chips[group.id] || new Set();
   return (
     <div role="group" aria-label={group.label} style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-      <span style={labelStyle}>{group.label}:</span>
+      <span style={labelStyle}>{group.label}</span>
       {group.options.map((opt) => {
         const on = set.has(opt.value);
-        const c = opt.color || BANT[opt.value]?.c || T;
+        const c = opt.color || BANT[opt.value]?.c || null;
         return (
           <button key={opt.value} type="button" aria-pressed={on} onClick={() => filter.toggleChip(group.id, opt.value)} {...focusRing}
-            style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${on ? "transparent" : PAL.line}`, background: on ? ALFA(c) : PAL.surf, color: on ? DERIN_OF(c) : PAL.mut2, transition: "background .12s ease-out" }}>
-            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: c, opacity: on ? 1 : 0.55, flexShrink: 0 }} />{opt.label}
+            style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${on ? "transparent" : PAL.line}`, background: on ? ALFA(c || PAL.inkSurf) : PAL.surf, color: on ? (c ? DERIN_OF(c) : PAL.ink) : PAL.mut2, transition: "background .12s ease-out" }}>
+            {/* Nokta yalnız SEMANTİK renk taşıyorsa — süs noktası yok (jüri T6). */}
+            {c && <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: c, opacity: on ? 1 : 0.55, flexShrink: 0 }} />}{opt.label}
           </button>
         );
       })}
@@ -68,10 +69,10 @@ function FilterDateRange({ dateRange, filter }) {
       <span style={labelStyle}>{dateRange.label || "Tarih"}</span>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
         <label htmlFor="flt-date-from" style={SR_ONLY}>Başlangıç tarihi</label>
-        <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={{ ...inputBase, colorScheme: "light" }} />
+        <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={{ ...inputBase }} />
         <span style={{ ...TYPE.data, color: PAL.mut2 }}>—</span>
         <label htmlFor="flt-date-to" style={SR_ONLY}>Bitiş tarihi</label>
-        <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={{ ...inputBase, colorScheme: "light" }} />
+        <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={{ ...inputBase }} />
       </div>
     </div>
   );
@@ -88,7 +89,7 @@ function FilterDatePresets({ filter }) {
   const aktif = filter.filters.dateFrom != null || filter.filters.dateTo != null;
   return (
     <div role="group" aria-label="Hızlı tarih filtreleri" style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-      <span style={labelStyle}>Hızlı tarih:</span>
+      <span style={labelStyle}>Hızlı tarih</span>
       {presets.map(([lbl, g]) => (
         <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing}
           style={{ padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, transition: "background .12s ease-out" }}>{lbl}</button>

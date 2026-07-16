@@ -10,10 +10,11 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from agents.config import EVRAK_TO_MEVZUAT
+from agents.config import EVRAK_TO_MEVZUAT, EVRAK_TO_YAZI
 from agents.nodes.mevzuat_oner import (
     _baslik,
     _dedup,
+    _domain_terimleri,
     _from_config,
     _load_index,
     _maybe_rerank,
@@ -291,6 +292,95 @@ class TestMevzuatOnerRankingIyilestirme:
         # Assert
         assert "madde4" in t1
         assert "madde4" in t2
+
+
+# ---------------------------------------------------------------------------
+# Domain sorgu-genişletme hijyeni — config başlıkları sorguya OLDUĞU GİBİ girince
+# "m.4" → "madde4" tokeni HER kanunun 4. maddesiyle eşleşiyor (5176 etik kurulu m.4,
+# dilekçe-ailesi sorgularında öne geçti; eval'de talep→657/4734 tamamen kaçtı) ve
+# muzekkere/gorus_mutalaa'nın "[DOĞRULA: ...]" meta-notu sorguya sızıyordu.
+# ---------------------------------------------------------------------------
+
+
+class TestDomainTerimHijyeni:
+    def test_madde_referansi_domain_teriminden_elenir(self):
+        # Arrange + Act — dilekce başlığı "m.4 (zorunlu unsurlar)" taşır
+        terimler = _domain_terimleri("dilekce")
+        # Assert — kanun adı kalır, madde-atıfı sorguya girmez
+        assert "Dilekçe" in terimler
+        assert "madde4" not in _tokenize(terimler)
+
+    def test_dogrula_notu_domain_terimine_girmez(self):
+        # Arrange + Act — muzekkere girdisi başlık değil "[DOĞRULA: ...]" meta-notudur
+        terimler = _domain_terimleri("muzekkere")
+        # Assert
+        assert "DOĞRULA" not in terimler
+
+    def test_retrieval_query_madde_token_uretmez(self):
+        # Arrange — konu/gövde boş → sorgu yalnız tür+domain teriminden kurulur
+        state = _state("dilekce", "", "")
+        # Act
+        query = _retrieval_query(state)
+        # Assert — config'ten sızan "madde4" tokeni yok (evrak metnindeki atıflar serbest)
+        assert "madde4" not in _tokenize(query)
+
+    def test_kanun_numarasi_domain_teriminden_elenir(self):
+        # Kanun no kanunun KENDİ maddelerinde geçmez; yalnız onu adıyla anan çapraz-atıf
+        # chunk'larıyla eşleşir (5690 CİMER m.1 "...Kanun (3071)" alıntısı dilekçe
+        # sorgusunda 3071'i geçti). Numara sorguya girmez — yönlendirme boost'un işi.
+        terimler = _domain_terimleri("dilekce")
+        assert "3071" not in terimler
+
+    def test_tebligat_domain_terimi_ve_boost_kapsami(self):
+        # Arrange + Act — tebligat eşlemesi eklendi (eksikti → boost/genişletme almıyordu)
+        from agents.nodes.mevzuat_oner import _beklenen_kanun_nolari
+
+        terimler = _domain_terimleri("tebligat")
+        # Assert — domain kelimesi sorguda, kanun no boost kümesinde
+        assert "Tebligat" in terimler
+        assert "7201" in _beklenen_kanun_nolari("tebligat")
+
+
+class TestEvrakToMevzuatKapsami:
+    def test_tum_uretilen_turler_mevzuat_eslemesi_tasir(self):
+        """Kapalı-döngü kör noktası korumalı: EVRAK_TO_YAZI'daki her tür (belirsiz hariç)
+        EVRAK_TO_MEVZUAT'ta anahtar taşımalı — anahtarı olmayan tür retrieval boost'undan
+        ve domain genişletmeden SESSİZCE düşer (tebligat regresyonu, eval'de 7/10 kaçış)."""
+        eksik = set(EVRAK_TO_YAZI) - {"belirsiz"} - set(EVRAK_TO_MEVZUAT)
+        assert not eksik, f"EVRAK_TO_MEVZUAT eksik tür: {sorted(eksik)}"
+
+
+class TestIcerikSinyaliBoostaEzilmez:
+    async def test_talep_yillik_izin_657_top3(self):
+        # Arrange — eval mg_personel_izin_01 regresyonu: talep türünün 3071 domain
+        # gürültüsü ("madde4" ×3) içerik sinyalini (657 yıllık izin) tamamen eziyordu.
+        state = _state(
+            "talep",
+            "yıllık izin talebi",
+            "Devlet memuru olarak hizmet süresi on yıldan fazla olduğum için "
+            "yıllık izin talebimde bulunuyorum. İzin sürelerinin hizmet yılına "
+            "göre hesaplanmasını arz ederim.",
+        )
+        # Act
+        out = await mevzuat_oner_node(state)
+        # Assert — 657 (Devlet Memurları Kanunu) top-3'te görünür
+        basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
+        assert any("657" in b for b in basliklar), basliklar
+
+    async def test_tebligat_7201_top1(self):
+        # Arrange — tebligat eşlemesi + boost sonrası 7201 baş sıraya gelmeli
+        # (eval'de kabahatler/DSİ gürültüsünün altında kalıyordu).
+        state = _state(
+            "tebligat",
+            "vergi ihbarnamesi tebliği",
+            "Aşağıda belirtilen muhataba vergi ihbarnamesinin tebliğ edilmesi, "
+            "tebliğ tarihinin bildirilmesi hususunda gereğini arz ederim.",
+        )
+        # Act
+        out = await mevzuat_oner_node(state)
+        # Assert
+        basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
+        assert basliklar and "7201" in basliklar[0], basliklar
 
 
 # ---------------------------------------------------------------------------

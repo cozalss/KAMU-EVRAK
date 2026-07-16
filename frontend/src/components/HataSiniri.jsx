@@ -26,7 +26,7 @@ export default class HataSiniri extends Component {
           <span aria-hidden="true" style={{ display: "flex", flex: "none", marginTop: 1, color: DERIN.sari }}><Icon.alert width={16} height={16} /></span>
           <span style={{ ...TYPE.data, color: PAL.mut2 }}>
             <strong style={{ color: PAL.ink2, fontWeight: 600 }}>{this.props.baslik || "Bu bölüm gösterilemedi"}</strong>
-            {" — "}beklenmedik veri nedeniyle görselleştirme atlandı. İşlem sonucu ve sayfanın geri kalanı etkilenmez; ayrıntı tarayıcı konsolunda.
+            {": "}beklenmedik veri nedeniyle görselleştirme atlandı. İşlem sonucu ve sayfanın geri kalanı etkilenmez; ayrıntı tarayıcı konsolunda.
           </span>
         </div>
       );

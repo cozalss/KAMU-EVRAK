@@ -34,7 +34,7 @@ const DURUM_ETIKET = {
   reddedildi: { text: "Reddedildi", color: "kirmizi" },
 };
 
-export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGonder, onReddet, onDuzenle, onPrev = null, onNext = null, prevDisabled = false, nextDisabled = false }) {
+export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, onOnaylaGonder, onReddet, onDuzenle, onPrev = null, onNext = null, prevDisabled = false, nextDisabled = false }) {
   const onerilen = altTalep.yazi_turu || "ust_yazi";
   const [tur, setTur] = useState(onerilen);
   const [metin, setMetin] = useState(altTalep.yazi_taslak_md || "");
@@ -79,7 +79,13 @@ export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGond
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
         {onPrev && <PagerOk onClick={onPrev} disabled={prevDisabled} label="Önceki taslağa git" />}
         <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.V }}><Icon.doc /></span>
-        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 120 }}>Resmî yazı taslağı</span>
+        <span style={{ flex: 1, minWidth: 120 }}>
+          <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Resmî yazı taslağı</span>
+          {/* Çok-konulu "wow" görünür olsun (jüri bulgusu): konum + muhatap birim başlıkta. */}
+          <span style={{ display: "block", marginTop: 1, ...TYPE.meta, color: DERIN.V, fontWeight: 500 }}>
+            {toplam >= 2 ? `Taslak ${sira}/${toplam} · ` : ""}{etiket}
+          </span>
+        </span>
         {rozet ? (
           <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(BANT[rozet.color]?.c || DERIN[rozet.color]), ...TYPE.meta, fontWeight: 500, color: DERIN[rozet.color] }}>
             <Icon.check width={12} height={12} /> {rozet.text}
@@ -96,9 +102,8 @@ export default function AltTaslakKarti({ altTalep, sira, onTurUret, onOnaylaGond
       {/* Kağıt tezgahı — beyaz A4 sayfası tint "masa" üstünde yüzer, ortalı, TAM metin (kırpma
           yok — 2026-07-15 kullanıcı isteği). Ana taslak kağıt bloğuyla aynı ölçüler/gölge. */}
       <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
-        <div className="sc-document-paper" role="button" tabIndex={0} title="Büyüt (A4 görünüm)" {...focusRing}
+        <div className="sc-document-paper" title="Büyüt (A4 görünüm)"
           onClick={() => setModalAcik(true)}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalAcik(true); } }}
           style={{ maxWidth: 860, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: uretilen ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
           <pre style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0 }}>{cleanDemoText(metin)}</pre>
         </div>

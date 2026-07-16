@@ -5,7 +5,7 @@
    tetikleyiciye döner, açıkken body scroll kilitlenir. PDF kaynaklarda gerçek sayfa
    önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik gösterilir (KVKK). */
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { MONO, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
+import { MONO, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing, odakDongusu } from "./neonUi.jsx";
 import RevizePaneli from "./RevizePaneli.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
@@ -102,8 +102,8 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
   if (!acik) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={baslik} onClick={kapatIstegi}
-      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px", animation: "nu-rise .16s ease-out both" }}>
+    <div role="dialog" aria-modal="true" aria-label={baslik} onClick={kapatIstegi} onKeyDown={odakDongusu}
+      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       <div onClick={(e) => e.stopPropagation()} style={{ width: "min(760px, 96vw)", margin: "0 auto", display: "flex", flexDirection: "column", gap: SP.m }}>
 
         {/* Üst şerit — başlık + dosya kimliği + eylemler + kapat */}
@@ -214,7 +214,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
         )}
 
         <div style={{ ...TYPE.meta, color: "rgba(251,247,240,.62)", textAlign: "center" }}>
-          {duzenlenebilir ? "Esc vazgeçer — kaydedilmemiş değişiklikte önce sorar" : "Kapatmak için Esc'e basın ya da dışarı tıklayın"}
+          {duzenlenebilir ? "Esc vazgeçer; kaydedilmemiş değişiklikte önce sorar" : "Kapatmak için Esc'e basın ya da dışarı tıklayın"}
         </div>
       </div>
     </div>

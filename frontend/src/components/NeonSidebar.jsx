@@ -4,15 +4,15 @@
    tek menüde) — Denetim izi günlük iş akışının önünde durmasın diye ana NAV'da DEĞİL, burada. */
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
-import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
+import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
 
 const NAV = [
   { id: "panel", label: "Panel", icon: "grid" },
   { id: "gelen", label: "Gelen evrak", icon: "inbox", badge: true },
-  { id: "giden", label: "Giden evrak", icon: "arrow", count: "giden" },
   { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
   { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },
+  { id: "giden", label: "Giden evrak", icon: "arrow", count: "giden" },
   { id: "mevzuat", label: "Mevzuat", icon: "book" },
 ];
 
@@ -41,7 +41,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
       {dar ? (
         /* İkon-ray modu: yalnız ikon; rozet/canlılık sağ-üst köşede küçük nokta olarak. */
         <span style={{ position: "relative", display: "flex" }}>
-          <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic />}</span>
+          <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>
           {(showBadge || canli) && (
             <span aria-hidden="true" style={{ position: "absolute", top: -3, right: -5, width: 7, height: 7, borderRadius: RAD.dot, background: T, animation: canli ? "nu-think 1.2s ease-in-out infinite" : "none" }} />
           )}
@@ -49,7 +49,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
       ) : (
         <>
           <span style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-            <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic />}</span>{item.label}
+            <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>{item.label}
           </span>
           {canli
             ? <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, border: `2px solid ${PAL.line}`, borderTopColor: T, animation: "nu-spin .8s linear infinite", marginLeft: "auto" }} />
@@ -65,13 +65,13 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
 function SampleRow({ sample, onPick }) {
   const [hover, setHover] = useState(false);
   return (
-    <button type="button" role="option" aria-selected="false" title={sample.aciklama} onClick={() => onPick(sample)}
+    <button type="button" title={sample.aciklama} onClick={() => onPick(sample)}
       onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} {...focusRing}
       style={{
         cursor: "pointer", width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: SP.m,
         padding: SP.s, borderRadius: RAD.ctl, border: "none",
         background: hover ? PAL.hov : "transparent", transition: "background .12s ease-out",
-        animation: "nu-rise .16s ease-out both",
+        animation: "nu-rise .16s var(--ke-ease-out) both",
       }}>
       <span aria-hidden="true" style={{ flexShrink: 0, display: "flex", color: hover ? DERIN.T : PAL.mut2, transition: "color .12s ease-out" }}><Icon.doc /></span>
       <span style={{ minWidth: 0, flex: 1 }}>
@@ -133,16 +133,16 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
       <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
-        <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "KAMU-EVRAK — Panel" : undefined}
+        <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined}
           onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; }}
           onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
           style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none", minWidth: 0 }}>
-          <img src="/logo.png" alt="" width={kompakt ? 32 : 36} height={kompakt ? 32 : 36} style={{ display: "block", flexShrink: 0, borderRadius: RAD.card }} />
+          <MarkaKaro size={kompakt ? 32 : 36} nokta={kompakt} />
           {!kompakt && (
             /* Logotype — marka istisnası olarak büyük harf; imza noktası akış İÇİNDE durur,
                toggle düğmesiyle asla çakışmaz. */
             <span style={{ display: "flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
-              <span style={{ fontFamily: SANS, fontSize: 16, lineHeight: "24px", fontWeight: 600, letterSpacing: ".02em", color: PAL.ink, whiteSpace: "nowrap" }}>KAMU-EVRAK</span>
+              <span style={{ fontFamily: SANS, fontSize: 16, lineHeight: "24px", fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap" }}>kamu-evrak</span>
               <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: R, flexShrink: 0 }} />
             </span>
           )}
@@ -183,7 +183,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
               kontrolünde atlanır) 'İşlendi' rozetiyle işaretlenebiliyordu (regresyon bulgusu). */}
           <button type="button" ref={samplesTetikRef} disabled={busy}
             onClick={() => setShowSamples((v) => !v)}
-            aria-expanded={showSamples} aria-haspopup="listbox" aria-controls="nu-samples"
+            aria-expanded={showSamples} aria-haspopup="true" aria-controls="nu-samples"
             aria-label={kompakt ? "Örnek evrakla dene" : undefined} title={kompakt ? "Örnek evrakla dene" : undefined} {...focusRing}
             style={{
               cursor: busy ? "not-allowed" : "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
@@ -194,7 +194,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
               transition: "background .12s ease-out, border-color .12s ease-out",
             }}>
             <span aria-hidden="true" style={{ display: "flex", flexShrink: 0 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3 L13.7 8.3 L19 10 L13.7 11.7 L12 17 L10.3 11.7 L5 10 L10.3 8.3 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
             </span>
             {!kompakt && <span style={{ whiteSpace: "nowrap" }}>Örnek evrakla dene</span>}
             {!kompakt && (
@@ -204,12 +204,12 @@ function NeonSidebar({ activeView, onNavigate, onUpload, samples = [], onPickSam
             )}
           </button>
           {showSamples && samplesRect && createPortal(
-            <div ref={samplesPopRef} id="nu-samples" role="listbox" aria-label="Örnek evraklar"
+            <div ref={samplesPopRef} id="nu-samples" role="group" aria-label="Örnek evraklar"
               style={{
                 position: "fixed", top: samplesRect.bottom + 8, left: samplesRect.left, width: 304,
                 maxHeight: Math.min(400, window.innerHeight - samplesRect.bottom - 16), overflowY: "auto",
                 background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s,
-                boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s ease-out both",
+                boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s var(--ke-ease-out) both",
               }}>
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "4px 8px 8px" }}>
                 <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Hızlı başla</span>

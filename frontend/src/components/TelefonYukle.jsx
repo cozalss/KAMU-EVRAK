@@ -243,7 +243,7 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
         {durum === "hata" && (
           <>
             <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut }}>
-              Sunucuya ulaşılamıyor — backend çalışıyor mu? (Telefon erişimi için{" "}
+              Sunucuya ulaşılamıyor. (Telefon erişimi için{" "}
               <code style={{ fontFamily: MONO }}>--host 0.0.0.0</code>)
             </p>
             <Btn onClick={oturumKur}>Tekrar dene</Btn>

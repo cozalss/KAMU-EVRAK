@@ -32,6 +32,12 @@ function compareBy(sortBy, dateField) {
     case "birim_asc": return (a, b) => birimOf(a).localeCompare(birimOf(b), "tr-TR");
     case "risk_desc": return (a, b) => (RISK_ORDER[riskOf(b)] || 0) - (RISK_ORDER[riskOf(a)] || 0);
     case "risk_asc": return (a, b) => (RISK_ORDER[riskOf(a)] || 0) - (RISK_ORDER[riskOf(b)] || 0);
+    // Yasal süre aciliyeti: kalan gün küçük (gecikmiş = negatif) önce; süresi tanımsız en sona.
+    case "sla_asc": return (a, b) => {
+      const av = Number.isFinite(a._slaGun) ? a._slaGun : Infinity;
+      const bv = Number.isFinite(b._slaGun) ? b._slaGun : Infinity;
+      return av - bv;
+    };
     default: return null;
   }
 }

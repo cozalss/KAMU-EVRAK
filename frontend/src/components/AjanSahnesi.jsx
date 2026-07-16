@@ -11,7 +11,7 @@
    prefers-reduced-motion: zamanlayıcı hiç başlamaz, mühürlü tamamlanmış kare sabit gösterilir —
    global reduced-motion kuralı CSS animasyonlarını da söndürür. */
 import { useEffect, useState } from "react";
-import { MONO, T, V, R, PAL, DERIN, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon } from "./neonUi.jsx";
+import { MONO, SANS, T, V, R, PAL, DERIN, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon } from "./neonUi.jsx";
 
 // 16 çekirdek node — her biri "ne yaptığını anlatan" kısa not ile (graph.py topolojisiyle hizalı).
 const AJANLAR = [
@@ -50,7 +50,7 @@ const BELGELER = [
 const SATIRLAR = [90, 74, 0, 84, 96, 68, 88, 0, 92, 60, 82, 70];
 // Belge üzerinde beliren çıkarım kabarcıkları — hangi düğümden SONRA görünür + konum (A4 içi, px).
 const KABARCIKLAR = [
-  { sonra: 2, etiket: "Tür", alan: "tur", yer: { top: 26, left: 118 } },
+  { sonra: 2, etiket: "Tür", alan: "tur", yer: { top: 46, left: 118 } },
   { sonra: 7, etiket: "Birim", alan: "birim", yer: { top: 176, left: 108 } },
   { sonra: 11, etiket: "Risk", deger: "YEŞİL", bant: true, yer: { top: 306, left: 126 } },
 ];
@@ -113,7 +113,7 @@ function Zarf() {
       {/* Kapak — üstten kapanan koyu kraft üçgen (3B) */}
       <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: flapH, transformOrigin: "top center", clipPath: "polygon(0 0, 100% 0, 50% 100%)", background: ZARF_KAPAK, borderRadius: `${RAD.ctl}px ${RAD.ctl}px 0 0`, boxShadow: `inset 0 -1px 0 ${ZARF_KENAR}`, animation: "as-kapak .55s .15s ease-out both", backfaceVisibility: "hidden" }} />
       {/* Mum mühür — kapak ucunda, kapak kapandıktan sonra basılır */}
-      <span style={{ position: "absolute", left: "50%", top: tip - 9, marginLeft: -9, width: 18, height: 18, borderRadius: "50%", background: R, border: `1px solid color-mix(in srgb, ${R} 55%, #000)`, boxShadow: `0 1px 2px rgba(60,45,20,.35)`, animation: "nu-pop .3s .6s ease-out both" }} />
+      <span style={{ position: "absolute", left: "50%", top: tip - 9, marginLeft: -9, width: 18, height: 18, borderRadius: "50%", background: R, border: `1px solid color-mix(in srgb, ${R} 55%, #000)`, boxShadow: `0 1px 2px rgba(60,45,20,.35)`, animation: "nu-pop .3s .6s var(--ke-ease-out) both" }} />
     </div>
   );
 }
@@ -131,8 +131,8 @@ function Belge({ belge, bitti, isliyor, katli, zarfli, ucus, az }) {
         transform: katli ? "scaleY(.34)" : "scaleY(1)", transition: "transform .6s cubic-bezier(.7,0,.3,1)" }}>
         <div style={{ padding: "16px 18px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
-            <span style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut3 }}>T.C. · EVRAK</span>
-            <span style={{ fontFamily: MONO, fontSize: 10, color: PAL.mut3 }}>{belge.evrak}</span>
+            <span style={{ fontFamily: SANS, fontSize: 12, letterSpacing: ".32px", color: PAL.mut3 }}>T.C. · EVRAK</span>
+            <span style={{ fontFamily: SANS, fontSize: 12, letterSpacing: ".32px", color: PAL.mut3 }}>{belge.evrak}</span>
           </div>
           <span style={{ display: "block", height: 7, width: "56%", margin: "0 auto 7px", borderRadius: 2, background: PAL.lineHi }} />
           <span style={{ display: "block", height: 7, width: "34%", margin: "0 auto 18px", borderRadius: 2, background: PAL.line }} />
@@ -165,7 +165,7 @@ function Durum({ durum }) {
   }
   if (durum === "done") {
     return (
-      <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, background: DERIN.T, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, animation: "nu-pop .3s ease-out both" }}>
+      <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, background: DERIN.T, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, animation: "nu-pop .3s var(--ke-ease-out) both" }}>
         <Icon.check width={8} height={8} />
       </span>
     );
@@ -179,7 +179,7 @@ function AjanSatiri({ a, durum, not }) {
     <div style={{ display: "flex", alignItems: "center", gap: SP.s, height: 22, padding: "0 8px", borderRadius: RAD.chip, background: aktif ? ALFA(T) : "transparent", boxShadow: aktif ? `inset 2px 0 0 ${DERIN.T}` : "none", transition: "background .2s ease-out" }}>
       <Durum durum={durum} />
       <span style={{ ...TYPE.meta, fontWeight: aktif ? 600 : 500, color: durum === "pending" ? PAL.mut3 : PAL.ink2, whiteSpace: "nowrap" }}>{a.ad}</span>
-      <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, color: PAL.mut3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>{not}</span>
+      <span style={{ marginLeft: "auto", fontFamily: SANS, fontSize: 12, letterSpacing: ".32px", color: PAL.mut3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>{not}</span>
     </div>
   );
 }
@@ -222,7 +222,7 @@ function Ray({ node, tamam, belge }) {
 function Kabarcik({ k, belge }) {
   const deger = k.alan ? belge[k.alan] : k.deger;
   return (
-    <div aria-hidden="true" style={{ position: "absolute", top: k.yer.top, left: k.yer.left, zIndex: 5, display: "flex", flexDirection: "column", gap: 2, padding: "7px 11px", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.pop, animation: "nu-pop .34s ease-out both" }}>
+    <div aria-hidden="true" style={{ position: "absolute", top: k.yer.top, left: k.yer.left, zIndex: 5, display: "flex", flexDirection: "column", gap: 2, padding: "7px 11px", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.pop, animation: "nu-pop .34s var(--ke-ease-out) both" }}>
       <span style={{ ...TYPE.meta, color: PAL.mut3 }}>{k.etiket}</span>
       {k.bant
         ? <span style={{ fontFamily: MONO, fontSize: 11, fontWeight: 500, color: DERIN.yesil, ...TNUM }}>{deger}</span>
@@ -284,7 +284,7 @@ export default function AjanSahnesi() {
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}`, opacity: ucus ? 0 : 1, transition: "opacity .5s ease-out" }}>
           <span style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut3, ...TNUM }}>
-            {bitti ? `sha256: ${belge.sha}` : `düğüm ${String(node).padStart(2, "0")}/${N} · ${AJANLAR[Math.min(node, N) - 1].id}`}
+            {bitti ? `sha256: ${belge.sha}` : `adım ${String(node).padStart(2, "0")}/${N} · ${AJANLAR[Math.min(node, N) - 1].ad}`}
           </span>
           {bitti
             ? <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.yesil, background: ALFA(BANT.yesil.c), padding: "2px 8px", borderRadius: RAD.chip, ...TNUM }}>{BANT.yesil.l}</span>

@@ -112,12 +112,12 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
         // Model taslağı değiştirmeden nedenini açıkladıysa (uydurma-reddi) nedeni göster.
         setHata(s?.revize_uygulanamayan
           ? `Revizyon uygulanmadı — ${s.revize_uygulanamayan}`
-          : "Talimat uygulanamadı — taslakla ilgisiz olabilir ya da AI şu an kullanılamıyor.");
+          : "Talimat uygulanamadı; taslakla ilgisiz olabilir ya da AI şu an kullanılamıyor.");
       }
     } catch (err) {
       setHata(/429|limit/i.test(String(err?.message || ""))
-        ? "Art arda çok istek gönderildi — birkaç saniye bekleyip tekrar deneyin."
-        : "Revizyon isteği başarısız oldu — bağlantıyı kontrol edip tekrar deneyin.");
+        ? "Art arda çok istek gönderildi. Birkaç saniye bekleyip tekrar deneyin."
+        : "Revizyon isteği başarısız oldu. Bağlantıyı kontrol edip tekrar deneyin.");
     } finally {
       setBusy(false);
     }
@@ -160,7 +160,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
                 <input ref={girisRef} value={talimat}
                   onChange={(e) => { setTalimat(e.target.value); setHata(null); }}
                   onKeyDown={(e) => { if (e.key === "Enter") revizeIste(); }}
-                  placeholder="AI ile revize et — örn. “ilgi yazıya atıf yap”, “gerekçeyi güçlendir”"
+                  placeholder="AI ile revize et (örn. “ilgi yazıya atıf yap”, “gerekçeyi güçlendir”)"
                   aria-label="Taslak revizyon talimatı" {...focusRing}
                   style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "7px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
                 {stt.destekleniyor && (
@@ -199,7 +199,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
         <div role="status" style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", padding: "8px 12px", borderRadius: RAD.ctl, background: PAL.surf, border: `1px solid ${BANT.yesil.c}`, boxShadow: SH.card }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.data, fontWeight: 500, color: DERIN.yesil, flex: 1, minWidth: 0 }}>
             <Icon.check width={13} height={13} style={{ flexShrink: 0 }} />
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Revizyon uygulandı — “{sonUygulanan.talimatlar[sonUygulanan.talimatlar.length - 1]}”</span>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Revizyon uygulandı; “{sonUygulanan.talimatlar[sonUygulanan.talimatlar.length - 1]}”</span>
           </span>
           <Btn onClick={geriAl}><Icon.undo width={12} height={12} /> Geri al</Btn>
         </div>
@@ -212,7 +212,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
 
       {/* Öneri kartı — kalite kapıları + değişiklik özeti + diff + çok-turlu geliştirme */}
       {oneri && (
-        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.modal, animation: "nu-rise .16s ease-out both" }}>
+        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.modal, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
             <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
               AI önerisi — {oneri.zincir.map((z) => `“${z}”`).join(" → ")}
@@ -269,7 +269,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
                 <input value={gelistirTalimat}
                   onChange={(e) => { setGelistirTalimat(e.target.value); setHata(null); }}
                   onKeyDown={(e) => { if (e.key === "Enter") gelistir(); }}
-                  placeholder="Öneriyi geliştir — örn. “son paragrafı biraz daha kısalt”"
+                  placeholder="Öneriyi geliştir (örn. “son paragrafı biraz daha kısalt”)"
                   aria-label="Öneri üzerine ek revizyon talimatı" {...focusRing}
                   style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "6px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
                 <Btn onClick={gelistir} disabled={!gelistirTalimat.trim()}>Tekrar revize et</Btn>

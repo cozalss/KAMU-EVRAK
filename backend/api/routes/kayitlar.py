@@ -21,6 +21,7 @@ from db.repositories import (
     dogrula_denetim,
     onayla_ve_gonder,
     onayla_ve_gonder_alt_talep,
+    taslak_metnini_guncelle,
     taslak_sil,
 )
 from db.repositories.mevzuat_repo import hybrid_ara
@@ -145,20 +146,49 @@ class OnaylaRequest(BaseModel):
     metin: str = Field("", max_length=MAX_EVRAK_CHARS)
 
 
+class TaslakGuncelleRequest(BaseModel):
+    metin: str = Field(..., min_length=1, max_length=MAX_EVRAK_CHARS)
+    yazi_turu: str = Field("", pattern="^(|ust_yazi|cevabi_yazi|bilgilendirme|olur|muzekkere|gorus_mutalaa)$")
+    sira: int | None = Field(None, ge=1)   # çok-konulu: yalnız o birimin taslağı
+
+
+@router.patch("/islem/{islem_id}/taslak")
+async def taslak_guncelle_endpoint(
+    islem_id: uuid.UUID, req: TaslakGuncelleRequest, session: Session,
+    kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
+) -> dict:
+    """Karar VERMEDEN taslak metnini kalıcı güncelle (Taslaklar 'Kaydet' / Kurul 'uygula').
+
+    Denetim bulgusu: 'Kaydet ve kapat' yalnız oturum state'ine yazıyordu — refresh'te
+    memurun düzenlemesi kayboluyordu. Karar verilmiş taslak 409 döner.
+    """
+    try:
+        if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
+        return await taslak_metnini_guncelle(
+            session, islem_id=islem_id, metin=req.metin, yazi_turu=req.yazi_turu,
+            owner_id=kullanici.id, sira=req.sira)
+    except KararError as e:
+        raise HTTPException(_karar_http_kod(e.kod), e.mesaj) from e
+
+
 @router.delete("/islem/{islem_id}/taslak")
 async def taslak_sil_endpoint(
     islem_id: uuid.UUID, session: Session,
     kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
+    sira: Annotated[int | None, Query(ge=1)] = None,
 ) -> dict:
     """Karar bekleyen taslağı KALICI sil — işlem kaydı ve denetim izi korunur.
 
     Karar verilmiş taslak 409 döner (Giden Evrak bütünlüğü). Frontend 'Sil' butonu
     bunu çağırır; böylece silinen taslak sayfa yenilenince DB'den geri gelmez.
+    sira verilirse (çok-konulu evrak) yalnız o birimin taslağı silinir — kardeş birim
+    taslaklarına dokunulmaz.
     """
     try:
         if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
-        return await taslak_sil(session, islem_id=islem_id, owner_id=kullanici.id)
+        return await taslak_sil(session, islem_id=islem_id, owner_id=kullanici.id, sira=sira)
     except KararError as e:
         raise HTTPException(_karar_http_kod(e.kod), e.mesaj) from e
 

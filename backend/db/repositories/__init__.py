@@ -12,11 +12,12 @@ from db.repositories.karar_repo import (
     KararError,
     onayla_ve_gonder,
     onayla_ve_gonder_alt_talep,
+    taslak_metnini_guncelle,
     taslak_sil,
 )
 
 __all__ = (
     "KararError", "dogrula_denetim", "evrak_olustur", "imha_uygula",
     "onayla_ve_gonder", "onayla_ve_gonder_alt_talep", "persist_denetim",
-    "persist_islem", "saklama_yil", "suresi_dolmus", "taslak_sil",
+    "persist_islem", "saklama_yil", "suresi_dolmus", "taslak_metnini_guncelle", "taslak_sil",
 )

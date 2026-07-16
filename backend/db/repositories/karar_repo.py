@@ -217,8 +217,44 @@ async def onayla_ve_gonder_alt_talep(
         yazi_turu=yazi_turu, metin=metin)
 
 
+async def taslak_metnini_guncelle(
+    session: AsyncSession, *, islem_id: uuid.UUID, metin: str, yazi_turu: str = "",
+    owner_id: uuid.UUID | None = None, sira: int | None = None,
+) -> dict:
+    """KARAR VERMEDEN taslak metnini/türünü kalıcı güncelle (memurun 'Kaydet' eylemi).
+
+    Denetim bulgusu: frontend'in 'Kaydet ve kapat' butonu yalnız oturum state'ine
+    yazıyordu — memur düzenleyip göndermeden sayfayı yenilerse emeği kayboluyordu ve
+    'Kaydet' sözü tutulmuyordu. Karar verilmiş taslak güncellenemez (Giden Evrak
+    bütünlüğü — onaydaki _taslak_guncelle yolundan farklı olarak burada karar YOK).
+    Hedef seçimi onayla_ve_gonder ile birebir: sira verilirse o alt-talebin taslağı,
+    yoksa işlemin EN SON sürümlü taslağı. Döner: {guncellendi, surum}.
+    """
+    await _sahiplik_dogrula(session, islem_id, owner_id)
+    if sira is not None:
+        alt = await session.scalar(
+            select(AltTalep).where(AltTalep.islem_id == islem_id, AltTalep.sira == sira))
+        if alt is None:
+            raise KararError("alt_talep_yok", "Bu sıradaki alt-talep bulunamadı.")
+        taslak = await session.scalar(select(Taslak).where(Taslak.alt_talep_id == alt.id))
+    else:
+        taslak = await session.scalar(
+            select(Taslak).where(Taslak.islem_id == islem_id)
+            .order_by(Taslak.surum.desc()).limit(1))
+    if taslak is None:
+        raise KararError("taslak_yok", "Bu işleme ait taslak bulunamadı.")
+    karar_var = await session.scalar(
+        select(Onay.id).where(Onay.taslak_id == taslak.id, Onay.karar != "bekliyor").limit(1))
+    if karar_var is not None:
+        raise KararError("karar_verildi", "Karar verilmiş taslak güncellenemez — Giden Evrak kaydına bağlı.")
+    await _taslak_guncelle(session, taslak, yazi_turu, metin)
+    await session.commit()
+    return {"guncellendi": True, "surum": taslak.surum}
+
+
 async def taslak_sil(
     session: AsyncSession, *, islem_id: uuid.UUID, owner_id: uuid.UUID | None = None,
+    sira: int | None = None,
 ) -> dict:
     """İşleme ait KARAR BEKLEYEN taslağı kalıcı sil (kullanıcının 'Sil' eylemi).
 
@@ -226,10 +262,20 @@ async def taslak_sil(
     dokunulmaz kalır. Karar verilmiş (onay satırı olan) taslak İMHA EDİLEMEZ →
     KararError('karar_verildi'); bekleyen onay satırları taslakla CASCADE düşer.
     owner_id: verilirse işlemin GERÇEKTEN o kullanıcıya ait olduğu burada doğrulanır (IDOR kapısı).
+    sira: verilirse (çok-konulu evrak) YALNIZ o alt-talebin (birim) taslağı hedeflenir —
+    eskiden birim kartındaki 'Sil' işlemin TÜM taslaklarını imha ediyordu (kardeş birim
+    taslakları sessizce gidiyordu) ve HERHANGİ bir kardeşin kararı tüm silmeyi 409'luyordu
+    (adversarial-verify bulgusu). Karar kontrolü de yalnız hedeflenen taslaklarla sınırlıdır.
     """
     await _sahiplik_dogrula(session, islem_id, owner_id)
-    taslaklar = list((await session.scalars(
-        select(Taslak).where(Taslak.islem_id == islem_id))).all())
+    stmt = select(Taslak).where(Taslak.islem_id == islem_id)
+    if sira is not None:
+        alt = await session.scalar(
+            select(AltTalep).where(AltTalep.islem_id == islem_id, AltTalep.sira == sira))
+        if alt is None:
+            raise KararError("alt_talep_yok", "Bu sıradaki alt-talep bulunamadı.")
+        stmt = select(Taslak).where(Taslak.alt_talep_id == alt.id)
+    taslaklar = list((await session.scalars(stmt)).all())
     if not taslaklar:
         raise KararError("taslak_yok", "Bu işleme ait taslak bulunamadı.")
     karar_var = await session.scalar(
@@ -244,4 +290,5 @@ async def taslak_sil(
     return {"silindi": True, "adet": len(taslaklar)}
 
 
-__all__ = ("KararError", "onayla_ve_gonder", "onayla_ve_gonder_alt_talep", "taslak_sil")
+__all__ = ("KararError", "onayla_ve_gonder", "onayla_ve_gonder_alt_talep",
+           "taslak_metnini_guncelle", "taslak_sil")

@@ -134,7 +134,29 @@ async def health() -> dict[str, Any]:
         "llm_mode": LLM_MODE,          # istenen mod (ENV)
         "llm_active": _active_llm(),   # gerçek client (sessiz-fallback görünür)
         "pipeline_node_sayisi": len(PIPELINE_NODES),
+        "db_ok": await _db_ping(),     # DB erişimi (eskiden hiç test edilmiyordu — sahte "ok")
     }
+
+
+async def _db_ping(timeout_s: float = 2.0) -> bool:
+    """Kısa timeout'lu SELECT 1 — DB kopuksa /health yine 200 döner ama db_ok=False
+    (izleme sinyali; endpoint'in kendisi DB'ye rehin kalmaz)."""
+    import asyncio
+
+    from sqlalchemy import text
+
+    from db.session import session_factory
+
+    async def _ping() -> bool:
+        async with session_factory() as s:
+            await s.execute(text("SELECT 1"))
+        return True
+
+    try:
+        return await asyncio.wait_for(_ping(), timeout=timeout_s)
+    except Exception as exc:  # noqa: BLE001 — sağlık sinyali: her hata db_ok=False demektir
+        log.warning("health_db_ping_hata", hata=str(exc)[:200])
+        return False
 
 
 @app.get("/")
@@ -195,8 +217,10 @@ if __name__ == "__main__":
         log.warning("dev_lan_bind", host=_host, port=_port,
                     not_="tüm ağ arayüzlerinden erişilebilir — telefonla QR yükleme için gerekli")
     if not _port_bos_mu(_host, _port):
+        # NOT: mesajda '→' gibi cp1254-dışı karakter KULLANMA — Windows konsolunda (cp1254)
+        # structlog print'i UnicodeEncodeError ile çöker ve asıl hatayı maskeler (canlı bulgu).
         log.error("port_dolu", host=_host, port=_port,
                   not_=f"{_port} portunu başka bir süreç tutuyor (muhtemelen kapatılmamış eski "
-                       f"backend) — bu kopya BAĞLANAMAYACAK. Kapatın: "
-                       f"netstat -ano | findstr :{_port}  →  taskkill /PID <pid> /F")
+                       f"backend) -- bu kopya BAĞLANAMAYACAK. Kapatın: "
+                       f"netstat -ano | findstr :{_port}  sonra  taskkill /PID <pid> /F")
     uvicorn.run("main:app", host=_host, port=_port, reload=_reload)

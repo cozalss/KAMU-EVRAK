@@ -211,11 +211,14 @@ export function usePipeline() {
     setBusy(true);
     setHasRun(true);
     setSelectedSample(sample.id);
-    setFileMeta({ id: sample.id, name: `${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
+    // Dosya adı "ornek-" öneklidir: DB'de gelen_evrak.baslik bu addır ve kuyruk durumu
+    // (lib/kuyrukDurumu) isimden geri eşlenir — kullanıcının KENDİ yüklediği "dilekce.txt"
+    // gibi bir dosya örnekle karışmasın (yanlış-pozitif kuyruktan düşürme; verify bulgusu).
+    setFileMeta({ id: sample.id, name: `ornek-${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
     setEvrakText(sample.text);
     lastRun.current = { kind: "sample", sample };
     // Örnek metni .txt dosyasına sarılır → backend text-plain dalıyla OCR'sız kabul eder.
-    const file = new File([sample.text], `${sample.id}.txt`, { type: "text/plain" });
+    const file = new File([sample.text], `ornek-${sample.id}.txt`, { type: "text/plain" });
     await streamRun(file);
   }, [reset, streamRun]);
 

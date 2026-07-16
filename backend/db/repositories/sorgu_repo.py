@@ -29,8 +29,31 @@ def _clamp(limit: int, offset: int) -> tuple[int, int]:
     return max(1, min(limit, _MAX_LIMIT)), max(0, offset)
 
 
+def onay_durumu_turet(
+    taslak_islem: dict[uuid.UUID, uuid.UUID], onaylar: list,
+) -> tuple[dict[uuid.UUID, object], set[uuid.UUID]]:
+    """İşlem-düzeyi onay durumu: (islem_id → en son karar onayı, karar BEKLEYEN islem_id'ler).
+
+    Kural: işlemin taslağı varsa ve HEPSİNE karar verilmişse → en son karar; herhangi bir
+    taslağı kararsızsa → karar bekliyor (çok-konuluda kısmî karar işlemi "bitti" saymaz).
+    `onaylar` kronolojik ARTAN sırada verilmeli (sonuncu kazanır). Saf fonksiyon —
+    tests/test_sorgu_onay_turet.py'de DB'siz doğrulanır.
+    """
+    kararli_taslak: set[uuid.UUID] = set()
+    son_onay: dict[uuid.UUID, object] = {}
+    for o in onaylar:
+        if o.karar != "bekliyor" and o.taslak_id in taslak_islem:
+            kararli_taslak.add(o.taslak_id)
+            son_onay[taslak_islem[o.taslak_id]] = o
+    bekleyen = {iid for tid, iid in taslak_islem.items() if tid not in kararli_taslak}
+    return {iid: o for iid, o in son_onay.items() if iid not in bekleyen}, bekleyen
+
+
 async def panel_istatistik(session: AsyncSession, *, owner_id: uuid.UUID) -> dict:
-    """Panel kartları — sayımlar + risk/tür dağılımı (SQL agregasyon)."""
+    """Panel kartları — sayımlar + risk/tür dağılımı (SQL agregasyon).
+
+    NOT: sayımlar aynı AsyncSession üzerinde SIRALI koşar (SQLAlchemy async session
+    eşzamanlı sorgu desteklemez — asyncio.gather burada MissingGreenlet üretir)."""
     async def say_gelen() -> int:
         return int(await session.scalar(
             select(func.count()).select_from(GelenEvrak)
@@ -123,12 +146,24 @@ async def giden_evrak_listele(session: AsyncSession, *, owner_id: uuid.UUID,
 
 async def taslak_listele(session: AsyncSession, *, owner_id: uuid.UUID,
                          limit: int = 20, offset: int = 0) -> list[dict]:
+    """Yalnız KARAR BEKLEYEN taslaklar — karar verilmiş (onaylanmış/reddedilmiş/düzenlenerek
+    gönderilmiş) taslak Giden Evrak'ın konusudur; eskiden süresiz burada da listeleniyordu
+    (sağlık taraması bulgusu). NOT EXISTS ile: onay(taslak_id) üzerinde DB-düzeyi UNIQUE
+    yok (yalnız uygulama-düzeyi teklik — karar_repo tek yazım noktası); outer-join+filtre
+    o varsayıma yaslanırdı, NOT EXISTS satır çoğaltamaz (review bulgusu)."""
     limit, offset = _clamp(limit, offset)
+    kararli = (
+        select(Onay.id)
+        .where(Onay.taslak_id == Taslak.id, Onay.karar != "bekliyor")
+        .correlate(Taslak)
+        .exists()
+    )
     rows = (await session.execute(
         select(Taslak)
         .join(Islem, Islem.id == Taslak.islem_id)
         .join(GelenEvrak, GelenEvrak.id == Islem.gelen_evrak_id)
         .where(GelenEvrak.olusturan_id == owner_id)
+        .where(~kararli)
         .order_by(Taslak.olusturuldu.desc()).limit(limit).offset(offset)
     )).scalars().all()
     return [{
@@ -168,19 +203,25 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
         .limit(limit)
         .offset(offset)
     )).all()
-    # taslak → EN SON onay kararı (tek toplu sorgu; outer-join yapılsaydı birden çok onay
-    # satırı işlem satırlarını çoğaltırdı). Kronolojik artan sırada yazılır → sonuncu kazanır.
-    taslak_ids = [t.id for _, _, _, t, _ in rows if t is not None]
-    onaylar: dict[uuid.UUID, Onay] = {}
-    if taslak_ids:
-        onay_rows = (await session.execute(
-            select(Onay).where(Onay.taslak_id.in_(taslak_ids))
-            .order_by(Onay.karar_zamani.asc().nullsfirst()))).scalars()
-        for o in onay_rows:
-            onaylar[o.taslak_id] = o
+    # Onay durumu işlemin TÜM taslakları üzerinden türetilir — eskiden yalnız temsilci
+    # taslağın onayına bakılıyordu; karar BAŞKA taslağa yazılmışsa (ör. çok-konulu evrak,
+    # sürüm farkı) işlem sonsuza dek "karar bekliyor" görünüyor, silinen/gönderilen taslak
+    # refresh'te taslak kuyruğuna GERİ diriliyordu (kullanıcı bulgusu).
+    islem_ids = [i.id for i, _, _, _, _ in rows]
+    islem_onay: dict[uuid.UUID, Onay] = {}
+    bekleyen_islemler: set[uuid.UUID] = set()
+    if islem_ids:
+        tid2islem = {tid: iid for tid, iid in (await session.execute(
+            select(Taslak.id, Taslak.islem_id).where(Taslak.islem_id.in_(islem_ids)))).all()}
+        onay_rows = []
+        if tid2islem:
+            onay_rows = list((await session.execute(
+                select(Onay).where(Onay.taslak_id.in_(list(tid2islem)))
+                .order_by(Onay.karar_zamani.asc().nullsfirst()))).scalars())
+        islem_onay, bekleyen_islemler = onay_durumu_turet(tid2islem, onay_rows)
     items: list[dict] = []
     for islem, evrak, birim_kod, taslak, denetim in rows:
-        onay = onaylar.get(taslak.id) if taslak is not None else None
+        onay = islem_onay.get(islem.id)
         denetim_izi = {}
         if denetim is not None:
             denetim_izi = {
@@ -213,7 +254,9 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
             "kanit_metadata": islem.kanit_metadata or {},
             "alt_talepler": [],
             "risk_metadata": islem.risk_metadata or {},
-            "onay_bekliyor": False,
+            # Gerçek değer: işlemin karar bekleyen taslağı var mı (eskiden sabit False —
+            # dead/yanıltıcı alandı; sağlık taraması bulgusu).
+            "onay_bekliyor": islem.id in bekleyen_islemler,
             "thread_id": islem.thread_id or "",
             # Gerçek HITL kararı (onaylandi/duzenlendi/reddedildi) — Panel "Karar bekleyen"
             # ve sohbet "onaylanabilir işlem" bundan beslenir; karar yoksa boş kalır.

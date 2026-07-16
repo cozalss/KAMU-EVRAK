@@ -334,6 +334,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_oturum_token  ON oturum(refresh_token_hash)
 CREATE INDEX IF NOT EXISTS ix_oturum_kullanici     ON oturum(kullanici_id, gecerli_son DESC);
 CREATE INDEX IF NOT EXISTS ix_gelen_evrak_birim    ON gelen_evrak(gelis_birim_id, olusturuldu DESC);
 CREATE INDEX IF NOT EXISTS ix_gelen_evrak_atanan   ON gelen_evrak(atanan_kullanici_id);
+CREATE INDEX IF NOT EXISTS ix_gelen_olusturan_tarih ON gelen_evrak(olusturan_id, olusturuldu DESC);  -- liste sorguları owner-filtreli (migration 0003)
 CREATE INDEX IF NOT EXISTS ix_evrak_eki_gelen      ON evrak_eki(gelen_evrak_id);           -- L-5
 CREATE INDEX IF NOT EXISTS ix_islem_evrak          ON islem(gelen_evrak_id);
 CREATE INDEX IF NOT EXISTS ix_islem_durum          ON islem(durum, baslangic DESC);
@@ -342,9 +343,11 @@ CREATE INDEX IF NOT EXISTS ix_adim_islem           ON islem_adimi(islem_id, sira
 CREATE INDEX IF NOT EXISTS ix_oneri_islem          ON mevzuat_oneri(islem_id);
 CREATE INDEX IF NOT EXISTS ix_taslak_islem         ON taslak(islem_id);
 CREATE INDEX IF NOT EXISTS ix_onay_taslak          ON onay(taslak_id, karar);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_onay_taslak_uniq ON onay(taslak_id);  -- 1 taslak = 1 karar (migration 0004)
 CREATE INDEX IF NOT EXISTS ix_giden_birim          ON giden_evrak(alici_birim_id, gonderim_tarihi DESC);
 CREATE INDEX IF NOT EXISTS ix_giden_durum_risk     ON giden_evrak(durum, risk);
 CREATE INDEX IF NOT EXISTS ix_giden_tarih          ON giden_evrak(gonderim_tarihi);
+CREATE INDEX IF NOT EXISTS ix_giden_gonderen_tarih ON giden_evrak(gonderen_id, gonderim_tarihi DESC);  -- liste sorguları owner-filtreli (migration 0003)
 -- M-6 + 0002: çift-gönderim guard — bir taslağa İKİNCİ giden_evrak kaydı KOŞULSUZ engellenir
 -- (eskiden yalnız durum<>reddedildi kısmi kısıttı; reddet çift-tıklama/ikinci-sekmeye açıktı).
 CREATE UNIQUE INDEX IF NOT EXISTS ix_giden_taslak_uniq ON giden_evrak(taslak_id);

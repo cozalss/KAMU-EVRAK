@@ -55,9 +55,14 @@ async def persist_pipeline_run(
             s, evrak_no=f"E-AUTO-{uuid.uuid4().hex[:10]}", ocr_metni=(masked or "")[:50_000],
             olusturan_id=k.id, baslik=filename or "otomatik koşum", gelis_birim_id=k.birim_id,
             commit=False)
+        # Gerçek işlem durumu: HITL onay kapısında bekleyen koşum "onay_bekliyor" yazılır —
+        # eskiden durum hiç iletilmiyordu, her kayıt koşulsuz "tamamlandi" görünüyordu
+        # (enum değeri şemada var ama pratikte hiç kullanılmıyordu — sağlık taraması bulgusu).
         islem = await persist_islem(
             s, gelen_evrak_id=evrak.id, thread_id=response.thread_id or uuid.uuid4().hex,
-            response=response, sure_ms=getattr(response, "sure_ms", None), commit=False)
+            response=response, sure_ms=getattr(response, "sure_ms", None),
+            durum=("onay_bekliyor" if getattr(response, "onay_bekliyor", False) else "tamamlandi"),
+            commit=False)
         if state.get("denetim_izi", {}).get("zincir"):
             await persist_denetim(s, islem_id=islem.id, denetim_izi=state["denetim_izi"], commit=False)
         await s.commit()

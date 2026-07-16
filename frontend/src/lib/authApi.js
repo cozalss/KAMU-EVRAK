@@ -204,3 +204,7 @@ export async function apiStream(path, body, onEvent, signal) {
 export async function apiDelete(path) {
   return apiFetch(path, { method: "DELETE" });
 }
+
+export async function apiPatch(path, body) {
+  return apiFetch(path, { method: "PATCH", body });
+}

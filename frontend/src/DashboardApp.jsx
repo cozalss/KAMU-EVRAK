@@ -7,13 +7,14 @@
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { createSekans, mevzuatAnahtar, mevzuatOzet, sonrakiSecim } from "./lib/dayanakSecim.js";
-import { apiDelete, apiGet, apiPost, cachedDashboard } from "./lib/authApi.js";
+import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
+import { sampleAdIndex, kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
 import { PAL, DERIN, SANS, TYPE, RAD, SP, SH, ALFA, BANT, Icon, focusRing, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
@@ -63,6 +64,10 @@ const draftsFromHistory = (items) =>
 // nihai karar DEĞİLDİR — evrak "karar bekleyen"de kalır, damgalanmaz).
 const KARAR_ETIKET = { onayla: "onaylandi", reddet: "reddedildi" };
 
+// Örnek evrak (dosya adı `${id}.txt` / etiket) → id — kuyruk durumunu DB geçmişinden
+// türetmek için (bkz. lib/kuyrukDurumu): gönderilmiş örnek refresh'te kuyruğa GERİ DÜŞMEZ.
+const SAMPLE_AD_ID = sampleAdIndex(SAMPLE_DOCS);
+
 // Görünüm geçişini View Transitions API ile sar: destekleyen tarayıcıda yumuşak
 // çapraz-erime; destek yoksa ya da kullanıcı hareket azaltmışsa DÜZ geçiş (birebir eski
 // davranış). flushSync: React güncellemesi geçiş kare-yakalaması içinde senkron uygulanmalı.
@@ -85,6 +90,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   } = usePipeline();
 
   const { user, logout } = useAuth();
+  const queryClient = useQueryClient();   // karar sonrası DB gerçeğiyle tazeleme (invalidate)
   // Telefonla çek (QR) modalı — dosya telefondan gelince runFile mevcut SSE akışını başlatır.
   const [telefonAcik, setTelefonAcik] = useState(false);
   // Optimistik açılış: son bilinen panel verisini (history/outbox) localStorage'dan ANINDA kur
@@ -94,11 +100,20 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // Açılış görünümü URL hash'inden (yenilemede görünüm korunur); geçersiz/boş → panel.
   const [activeView, setActiveView] = useState(() => (VIEWS.has(hashView()) ? hashView() : "panel"));
   const [history, setHistory] = useState(() => cachedDash?.history || []);
-  const [processedIds, setProcessedIds] = useState(() => new Set());
+  // Kuyruk durumu KALICI kayıttan türetilir (lib/kuyrukDurumu): açılışta önbellekten
+  // (hem türetim hem doğrudan kaydedilmiş set'ler — /islemler limit=100 penceresinden
+  // düşen eski kararlar da korunur; verify bulgusu), arkada DB fetch'inden (islemlerQ).
+  const [processedIds, setProcessedIds] = useState(() => new Set([
+    ...(cachedDash?.processedSamples || []),
+    ...kuyrukDurumuTuret(cachedDash?.history, SAMPLE_AD_ID).processed,
+  ]));
   // Onaylanıp/reddedilip Giden Evrak'a düşen örnekler (id) → artık işlenmiş VE gitmiş
   // sayılır, Gelen Evrak kuyruğunda görünmez ("Düzenle" ile taslağa alınanlar hariç,
   // onlar henüz gönderilmediği için kuyrukta kalır).
-  const [sentSampleIds, setSentSampleIds] = useState(() => new Set());
+  const [sentSampleIds, setSentSampleIds] = useState(() => new Set([
+    ...(cachedDash?.sentSamples || []),
+    ...kuyrukDurumuTuret(cachedDash?.history, SAMPLE_AD_ID).sent,
+  ]));
   const [outbox, setOutbox] = useState(() => cachedDash?.outbox || []);
   const [drafts, setDrafts] = useState(() => draftsFromHistory(cachedDash?.history));   // DB/önbellek taslakları + "Düzenle" ile eklenenler
   // Mevzuat okuma modalı hedefi ({dosya, maddeNo, maddeTur} | null). Ayrıntılı sonuç kartından
@@ -127,11 +142,19 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const pushOutbox = (res, fm, secim) => {
     if (!res || sentRef.current.has(res)) return false;
     sentRef.current.add(res);
-    if (fm?.kind === "sample" && fm.id) setSentSampleIds((s) => new Set(s).add(fm.id));
+    // Örnek eşleme İKİ yoldan: canlı koşumda fm.id (kind=sample), DB'den hidre edilmiş
+    // taslakta ise kind "yukleme"dir — dosya adı/etiket üzerinden geri eşlenir; aksi halde
+    // DB taslağı gönderilen örnek Gelen kuyruğunda kalmaya devam ediyordu.
+    const sampleId = (fm?.kind === "sample" && fm.id) || SAMPLE_AD_ID.get(fm?.name || "") || null;
+    if (sampleId) setSentSampleIds((s) => new Set(s).add(sampleId));
     const name = fm?.kind === "sample" ? (fm.label || fm.name) : (fm?.name || "evrak");
     const durum = secim === "reddet" ? "reddedildi" : secim === "duzenle" ? "duzenlendi" : "gonderildi";
     setOutbox((o) => [{
+      // GEÇİCİ numara — gerçek giden_no backend /onayla yanıtından gelir ve persistDecision
+      // satırı islem_id ile eşleyip günceller (eskiden oturum sayacından üretilen numara
+      // DB'deki resmî numaradan SAPABİLİYORDU ve refresh'e dek ekranda kalıyordu — denetim bulgusu).
       id: `E-G-${new Date().getFullYear()}/${String(o.length + 1).padStart(4, "0")}`,
+      islem_id: res.islem_id || null,
       kaynak_evrak_adi: name, gonderim_tarihi: Date.now(),
       evrak_turu: res.evrak_turu, tur: res.yazi_turu,
       konu: res.bilgi_unsurlari?.konu || res.alt_talepler?.[0]?.ozet || "—",
@@ -167,19 +190,36 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     return id;
   };
 
+  // done→persist arası (~20-27 sn soğuk Supabase) islem_id henüz yok — bu pencerede verilen
+  // karar eskiden SESSİZCE DB'siz kalıyordu (adversarial-verify bulgusu: 2. refresh'te evrak
+  // kuyruğa geri düşüyordu). Artık karar beklemeye alınır; persist merge'i gelince yazılır.
+  const bekleyenKararRef = useRef(new Map());   // result → secim
   // Seçilen tür + metin de gönderilir: memur tür kutucuğuyla taslağı değiştirdiyse
   // DB'deki taslak karar anında güncellenir → kalıcı kayıt gönderilen içeriği yansıtır.
   const persistDecision = useCallback(async (res, secim) => {
-    if (!res?.islem_id) return;
+    if (!res) return;
+    if (!res.islem_id) { bekleyenKararRef.current.set(res, secim); return; }
     try {
-      await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, {
+      const yanit = await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, {
         secim, yazi_turu: res.yazi_turu || "", metin: res.yazi_taslak_md || "",
       });
+      // Gerçek resmî numara: optimistik satırın geçici numarasını DB'nin giden_no'suyla
+      // değiştir (islem_id eşleşmesi; persist-penceresi akışında islem_id'siz açılan satır
+      // için en yeni numarasız satıra düşülür). Ardından giden listesi DB gerçeğiyle tazelenir.
+      if (yanit?.giden_no) {
+        setOutbox((o) => {
+          const hedef = o.find((x) => x.islem_id === res.islem_id)
+            || o.find((x) => !x.islem_id);
+          return hedef ? o.map((x) => (x === hedef
+            ? { ...x, id: yanit.giden_no, islem_id: res.islem_id } : x)) : o;
+        });
+        queryClient.invalidateQueries({ queryKey: ["giden-evrak"] });
+      }
     } catch (err) {
       console.warn("Onay/giden evrak DB'ye yazılamadı", err);
       showToast("Evrak oturumda görünüyor; DB onay kaydı yazılamadı.");
     }
-  }, [showToast]);
+  }, [queryClient, showToast]);
 
   // Sayfa yenilendiğinde kalıcı DB geçmişini yeniden kur (react-query: 3 deneme + üstel
   // geri çekilme — uzak Supabase'in DNS düşmelerine dayanıklı; provider varsayılanları
@@ -196,6 +236,11 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     const items = Array.isArray(islemlerQ.data.kayitlar) ? islemlerQ.data.kayitlar : [];
     setHistory(items);
     setDrafts(draftsFromHistory(items));
+    // Kuyruk durumunu DB gerçeğiyle BİRLEŞTİR (union): canlı oturumda işaretlenenler
+    // korunur, geçmiş oturumların kararları da yansır → gönderilmiş örnek geri düşmez.
+    const { processed, sent } = kuyrukDurumuTuret(items, SAMPLE_AD_ID);
+    if (processed.size) setProcessedIds((p) => new Set([...p, ...processed]));
+    if (sent.size) setSentSampleIds((s) => new Set([...s, ...sent]));
   }, [islemlerQ.data, islemlerQ.error]);
 
   const gidenQ = useQuery({
@@ -228,8 +273,13 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // önbelleği tazele → bir sonraki refresh son veriyi ANINDA gösterir. Yazma seyrek (kesikli
   // olaylar), stream sırasında tetiklenmez.
   useEffect(() => {
-    if (user?.id) cachedDashboard.set(user.id, { history, outbox });
-  }, [history, outbox, user]);
+    if (user?.id) cachedDashboard.set(user.id, {
+      history, outbox,
+      // Kuyruk set'leri de saklanır: /islemler limit penceresinden düşmüş eski kararlar
+      // (aynı tarayıcıda) kaybolmaz — türetim + saklama birlikte kullanılır.
+      processedSamples: [...processedIds], sentSamples: [...sentSampleIds],
+    });
+  }, [history, outbox, processedIds, sentSampleIds, user]);
 
   // Sonuç kesinleşince oturum geçmişine ekle (Panel/Taslaklar/Denetim/Mevzuat bundan beslenir).
   // HITL kararı damgalanmışsa (resume sonrası) Giden Evrak kaydını burada kur (resume async).
@@ -246,6 +296,18 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           && result.bilgi_unsurlari === onceki.bilgi_unsurlari) {
         lastResultRef.current = result;
         setHistory((h) => h.map((x) => (x.result === onceki ? { ...x, result } : x)));
+        // Taslaklar da tazelenir — persist'ten ÖNCE "Düzenle" ile ayrılan taslak eskiden
+        // islem_id'siz kalıyordu (deleteDraft sessiz no-op → refresh'te dirilme; verify bulgusu).
+        setDrafts((d) => d.map((x) => (x.result === onceki ? { ...x, result } : x)));
+        // Dedup ref'leri yeni referansı da tanısın (çift gönderim/çift taslak koruması sürsün).
+        if (draftedRef.current.has(onceki)) draftedRef.current.add(result);
+        if (sentRef.current.has(onceki)) sentRef.current.add(result);
+        // Persist penceresinde verilmiş bekleyen karar varsa ŞİMDİ DB'ye yaz.
+        const bekleyenSecim = bekleyenKararRef.current.get(onceki);
+        if (bekleyenSecim) {
+          bekleyenKararRef.current.delete(onceki);
+          persistDecision(result, bekleyenSecim);
+        }
         return;
       }
       lastResultRef.current = result;
@@ -361,23 +423,58 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     : [];
 
   // Taslak düzenle (metni güncelle) / sil — Taslaklar görünümünden çağrılır.
-  const updateDraft = useCallback((id, md) => setDrafts((d) => d.map((x) => (x.id === id ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x))), []);
-  // Taslak silme KALICIDIR: DB taslakları (db-taslak-<islem_id>) backend'de de silinir —
-  // sayfa yenilenince geri gelmez. Oturumluk ("Düzenle" ile eklenen) taslak yalnız state'ten düşer.
+  // Güncelleme KALICIDIR: oturum state'i anında (optimistik), DB PATCH arkada — eskiden
+  // "Kaydet ve kapat" yalnız state'e yazıyordu, refresh'te memurun düzenlemesi kayboluyordu
+  // (denetim bulgusu). islem_id çözümü deleteDraft ile aynı; çok-konuluda _altSira iletilir.
+  const updateDraft = useCallback((id, md) => {
+    const draft = drafts.find((x) => x.id === id);
+    setDrafts((d) => d.map((x) => (x.id === id ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x)));
+    const islemId = String(id).startsWith("db-taslak-")
+      ? String(id).slice("db-taslak-".length)
+      : draft?.result?.islem_id || null;
+    if (!islemId) return;
+    apiPatch(`/islem/${encodeURIComponent(islemId)}/taslak`, {
+      metin: md, yazi_turu: draft?.result?.yazi_turu || "",
+      ...(draft?.result?._altSira ? { sira: draft.result._altSira } : {}),
+    }).then(() => {
+      // history reconcile'ı eski metni geri getirmesin: ilgili kaydı da tazele.
+      setHistory((h) => h.map((x) =>
+        (x.id === islemId || x.result?.islem_id === islemId
+          ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x)));
+    }).catch((err) => {
+      console.warn("Taslak DB'ye kaydedilemedi", err);
+      showToast("Değişiklik oturumda kaldı — DB'ye kaydedilemedi, göndermeden önce tekrar deneyin.");
+    });
+  }, [drafts, showToast]);
+  // Taslak silme KALICIDIR: islem_id'si bilinen HER taslak (DB'den hidre edilen
+  // db-taslak-<islem_id> VEYA oturumda "Düzenle" ile ayrılan — persist event'i islem_id
+  // taşır) backend'de de silinir — sayfa yenilenince geri gelmez. Eskiden yalnız db-taslak-
+  // öneki siliniyordu; oturumluk taslağın DB kaydı duruyor, refresh'te geri diriliyordu.
   const deleteDraft = useCallback(async (id) => {
+    const draft = drafts.find((x) => x.id === id);
+    const islemId = String(id).startsWith("db-taslak-")
+      ? String(id).slice("db-taslak-".length)
+      : draft?.result?.islem_id || null;
+    // Çok-konulu birim taslağı (_altSira): backend'de YALNIZ o birimin taslağı silinir —
+    // sira'sız çağrı işlemin tüm taslaklarını imha ederdi (kardeş kartlar sessizce giderdi).
+    const altSira = draft?.result?._altSira || null;
     setDrafts((d) => d.filter((x) => x.id !== id));   // optimistik kaldır
-    const islemId = String(id).startsWith("db-taslak-") ? String(id).slice("db-taslak-".length) : null;
     if (!islemId) return;
     try {
-      await apiDelete(`/islem/${encodeURIComponent(islemId)}/taslak`);
-      // history reconcile'ında geri dirilmesin: ilgili kaydın taslağını da düşür.
-      setHistory((h) => h.map((x) =>
-        (x.id === islemId ? { ...x, result: { ...x.result, yazi_taslak_md: "" } } : x)));
+      await apiDelete(`/islem/${encodeURIComponent(islemId)}/taslak${altSira ? `?sira=${altSira}` : ""}`);
+      // history reconcile'ında geri dirilmesin: ilgili kaydın taslağını da düşür (yalnız
+      // TAM silmede — birim taslağı silmede işlemin temsilci metni durur, refresh netleştirir).
+      // İki id biçimi de kapsanır: DB kaydı (x.id = islem uuid) + oturum kaydı (result.islem_id).
+      if (!altSira) {
+        setHistory((h) => h.map((x) =>
+          (x.id === islemId || x.result?.islem_id === islemId
+            ? { ...x, result: { ...x.result, yazi_taslak_md: "" } } : x)));
+      }
     } catch (err) {
       console.warn("Taslak DB'den silinemedi", err);
       showToast("Taslak kalıcı silinemedi — sayfa yenilenince geri gelebilir.");
     }
-  }, [showToast]);
+  }, [drafts, showToast]);
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFile(f); };
   const triggerUpload = useCallback(() => { goView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy, goView]);
   const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); goView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample, goView]);
@@ -461,7 +558,11 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       // damgası (aşağıdaki dal) burada DEĞİŞMEZ, o birimin kararı diğerlerini etkilemez.
       apiPost(`/islem/${encodeURIComponent(res.islem_id)}/alt-talep/${res._altSira}/onayla`, {
         secim: "duzenle", yazi_turu: res.yazi_turu || "", metin: res.yazi_taslak_md || "",
-      }).catch((err) => console.warn("Birim kararı DB'ye yazılamadı", err));
+      }).then(() => queryClient.invalidateQueries({ queryKey: ["giden-evrak"] }))
+        .catch((err) => {
+          console.warn("Birim kararı DB'ye yazılamadı", err);
+          showToast("Evrak oturumda görünüyor; birim kararı DB'ye yazılamadı.");
+        });
     } else {
       const islemId = res.islem_id || (String(draft.id).startsWith("db-taslak-") ? String(draft.id).slice("db-taslak-".length) : null);
       if (islemId) {
@@ -622,7 +723,11 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     if (result?.islem_id && secim !== "duzenle") {
       apiPost(`/islem/${encodeURIComponent(result.islem_id)}/alt-talep/${sira}/onayla`, {
         secim, yazi_turu: sanalSonuc.yazi_turu || "", metin: metinGuncel || "",
-      }).catch((err) => { console.warn("Birim kararı DB'ye yazılamadı", err); });
+      }).then(() => queryClient.invalidateQueries({ queryKey: ["giden-evrak"] }))
+        .catch((err) => {
+          console.warn("Birim kararı DB'ye yazılamadı", err);
+          showToast("Evrak oturumda görünüyor; birim kararı DB'ye yazılamadı.");
+        });
     }
     const etiket = altTalep.birim_tr || "İlgili birim";
     showToast(secim === "reddet" ? `${etiket} — reddedildi, Giden evraka kaydedildi.` : `${etiket} — gönderildi, Giden evraka eklendi.`);

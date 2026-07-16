@@ -6,6 +6,7 @@
    token'ları; z-index FAB 150 / panel 160 (Toast 200 üstte kalır).
    Spec: docs/09-sohbet-asistani.md */
 import React, { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
 
@@ -144,6 +145,7 @@ function Yaziyor() {
 }
 
 export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
+  const queryClient = useQueryClient();   // teyit sonrası panel/giden senkronu
   const [acik, setAcik] = useState(false);
   // Kaydırma sırasında FAB küçülüp soluklaşır (satır eylemlerini örtmesin — jüri bulgusu);
   // durunca 500ms sonra geri gelir. capture:true iç scroll konteynerlerini de yakalar.
@@ -255,9 +257,16 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
   };
 
   // HITL teyit butonları — bağlamı geri göndererek eylemi uygula/iptal et.
-  const onTeyit = (m, evet) => {
+  // "Evet" DB'ye gerçek karar yazar (sohbet.py → onayla_ve_gonder) — Panel/Taslaklar/Giden
+  // ekranları eskiden F5'e dek eski durumu gösteriyordu (denetim bulgusu): kararın ardından
+  // islemler + giden-evrak sorguları invalidate edilir, DashboardApp effect'leri DB gerçeğini kurar.
+  const onTeyit = async (m, evet) => {
     setMesajlar((ms) => ms.map((x) => (x === m ? { ...x, onay_kullanildi: true } : x)));
-    gonder(evet ? "evet" : "vazgeç", m.onay_bekleyen);
+    await gonder(evet ? "evet" : "vazgeç", m.onay_bekleyen);
+    if (evet) {
+      queryClient.invalidateQueries({ queryKey: ["islemler"] });
+      queryClient.invalidateQueries({ queryKey: ["giden-evrak"] });
+    }
   };
 
   const ilkAcilis = mesajlar.length <= 1;

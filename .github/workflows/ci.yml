@@ -31,6 +31,10 @@ jobs:
       - name: uv kur + Python 3.11 ayarla
         uses: astral-sh/setup-uv@v6
         with:
+          # Pin şart: pyproject repo kökünde değil backend/'de — sürüm pinlenmeyince
+          # setup-uv "latest"i GitHub API'den soruyor ve API arızasında CI düşüyordu
+          # (2026-07-17 koşumu). Yerel geliştirme sürümüyle hizalı tut.
+          version: "0.11.16"
           python-version: "3.11"
           enable-cache: true
           # Backend lock dosyası değişince cache yenilensin.

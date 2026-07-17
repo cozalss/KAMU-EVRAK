@@ -1,66 +1,100 @@
-/* PanelView — açılış paneli. Oturum özeti: işlenen evrak, karar bekleyen (gerçek HITL sayısı),
-   kuyruk SLA dağılımı + eskalasyon listesi, tür/risk/birim dağılımı, işlem süresi,
-   son işlemler. Tüm sayılar gerçek veriden (oturum + DB reconcile). */
-import React from "react";
+/* PanelView — "SABAH BRİFİ" (2026-07-17 yeniden kurgu): amirin masasına bırakılmış tek
+   sayfalık brif. Üç kuşak, alan asimetrisiyle hiyerarşi (4 eş stat + 6 eş kart "template"
+   imzasıydı — Baremetrics/Stripe/gov.uk araştırması + emil/apple lensi, 3 paralel ajan):
+   · R1 KAHRAMAN (8 kol): kuyruk yasal süre brifi — paneldeki tek gerçek "şimdi davran"
+     sinyali; ekranın tek primary'si burada. Acil yoksa tek satırlık pozitif banda çöker
+     (ilk yaklaşan süre ufkuyla). Sağ ray (4 kol): devam eden iş (en eski bekleyen taslak
+     + gelen kuyruk önizlemesi).
+   · R2 AKIŞ NABZI (12 kol): tek yüzeyde hairline ayraçlı 4 ölçü + düne-göre delta +
+     7 günlük sparkline (throughput'ta azalış kırmızı DEĞİL — yavaş gün azar değildir).
+   · R3-R4 GÖZLEM: tek "Dağılım" yüzeyi (3 iç kolon) + birim gecikme; zaman-gruplu işlem
+     feed'i + işlem süresi. Tüm sayılar gerçek veriden (oturum + DB reconcile). */
+import { useEffect, useMemo, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
+import { GUN_MS, gunBasi, gunlukSeri } from "../lib/gunlukSeri.js";
 
-const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
+const fmtSaat = (ts) => { try { return new Date(ts).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
+const fmtGunSaat = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
 
-function Stat({ label, value, accent, icon, onClick, ariaLabel }) {
-  // Sıfır sayaç soluk (jüri: 4 kalın "0" panel ölü doğuruyordu); onClick verilirse kart
-  // gerçek buton olur ("karar bekleyen" → Taslaklar — yarım kalan işe dönüş yolu).
-  const sifir = value === 0;
-  const govde = (
-    <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
-      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: sifir ? PAL.mut3 : (accent ? DERIN_OF(accent) : PAL.mut) }}>{icon}</span>
-      <div>
-        {/* number-flow: sayı değişince odometre geçişi (prefers-reduced-motion'a kendisi uyar). */}
-        <div style={{ ...TYPE.num, color: sifir ? PAL.mut3 : PAL.ink }}>{typeof value === "number" ? <NumberFlow value={value} /> : value}</div>
-        <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs }}>{label}</div>
-      </div>
-    </div>
-  );
-  if (!onClick) return <NeonCard>{govde}</NeonCard>;
+/* Geniş ekran eşiği — altında bento kolonları tam genişliğe yığılır. */
+function useGenisEkran() {
+  const [genis, setGenis] = useState(() => typeof window !== "undefined" && !!window.matchMedia?.("(min-width: 1024px)").matches);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return undefined;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setGenis(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return genis;
+}
+
+/* ---------- R2: Akış nabzı ---------- */
+
+const OK_YUKARI = (p) => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const OK_ASAGI = (p) => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+
+/* 7 günlük sparkline — sessiz bağlam çizgisi (1.5px PAL.mut3), tek vurgu son gün noktası
+   (T + 2px yüzey halkası). Dolgu/eksen/animasyon yok; <2 aktif gün varsa hiç çizilmez
+   (yarım grafik "bozuk" okunur). */
+function Sparkline({ seri, aktifGun }) {
+  if (aktifGun < 2) return null;
+  const W = 64, H = 24, max = Math.max(1, ...seri);
+  const nokta = seri.map((v, i) => [4 + (i * (W - 8)) / 6, H - 4 - (v / max) * (H - 8)]);
+  const yol = nokta.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+  const son = nokta[6];
   return (
-    <NeonCard style={{ padding: 0 }}>
-      <button type="button" onClick={onClick} aria-label={ariaLabel || label} {...focusRing} data-press=""
-        onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-        style={{ cursor: "pointer", display: "block", width: "100%", textAlign: "left", padding: SP.l, background: "transparent", border: "none", borderRadius: RAD.card, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-        {govde}
-      </button>
-    </NeonCard>
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d={yol} fill="none" style={{ stroke: PAL.mut3 }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={son[0]} cy={son[1]} r="3" style={{ fill: T, stroke: PAL.surf }} strokeWidth="2" />
+    </svg>
   );
 }
 
-/* Yatay sayım çubukları (tür/birim dağılımı ortak deseni) — en çok görülen ilk sırada. */
-function BarList({ rows, color }) {
-  if (!rows.length) return <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>—</p>;
-  const max = rows[0][1] || 1;
-  return rows.map(([label, c]) => (
-    <div key={label} title={`${label}: ${c} evrak`} style={{ marginBottom: SP.m }}>
-      <div style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>
-        <span style={{ color: PAL.ink2, fontWeight: 500 }}>{label}</span>
-        <span style={{ color: DERIN_OF(color), fontWeight: 500, ...TNUM }}>{c}</span>
-      </div>
-      <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${Math.round((c / max) * 100)}%`, background: color, borderRadius: RAD.chip, transition: "width .15s ease-out" }} />
-      </div>
-    </div>
-  ));
+/* Akış hücresi — sayı (NumberFlow, sıfır soluk) + etiket + düne-göre delta + sparkline.
+   Throughput deltasında azalış PAL.mut2 (yavaş gün başarısızlık değil); artış DERIN.yesil. */
+function AkisHucre({ label, value, icon, onClick, ariaLabel, gunluk, ilk, genis, i }) {
+  const sifir = value === 0;
+  const delta = gunluk ? gunluk.bugunN - gunluk.dunN : null;
+  const ayrac = genis ? (ilk ? "none" : `1px solid ${PAL.line}`) : (i % 2 === 1 ? `1px solid ${PAL.line}` : "none");
+  return (
+    <button type="button" onClick={onClick} aria-label={ariaLabel || label} {...focusRing} data-press=""
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      style={{ cursor: "pointer", textAlign: "left", padding: `${SP.l}px ${SP.xl}px`, background: "transparent",
+        border: "none", borderLeft: ayrac, borderTop: !genis && i >= 2 ? `1px solid ${PAL.line}` : "none", borderRadius: RAD.ctl,
+        display: "flex", alignItems: "center", gap: SP.m, minWidth: 0, transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: sifir ? PAL.mut3 : PAL.mut }}>{icon}</span>
+      <span style={{ minWidth: 0, flex: 1 }}>
+        <span style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
+          <span style={{ ...TYPE.num, color: sifir ? PAL.mut3 : PAL.ink, ...TNUM }}><NumberFlow value={value} /></span>
+          {delta != null && gunluk.aktifGun >= 2 && delta !== 0 && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 2, ...TYPE.meta, fontWeight: 500, color: delta > 0 ? DERIN.yesil : PAL.mut2, ...TNUM }}>
+              {delta > 0 ? <OK_YUKARI /> : <OK_ASAGI />}{delta > 0 ? `+${delta}` : delta} düne göre
+            </span>
+          )}
+        </span>
+        <span style={{ display: "block", ...TYPE.meta, color: PAL.mut, marginTop: 2 }}>{label}</span>
+      </span>
+      {gunluk && <Sparkline seri={gunluk.seri} aktifGun={gunluk.aktifGun} />}
+    </button>
+  );
 }
 
-/* Süresi yaklaşan/geçen kuyruk evrağı satırı — yasal dayanak + son tarih + hedefli eylem
-   ("İşle" o evrakı Gelen Evrak'ta vurgulayıp kaydırır). */
+/* ---------- R1: Kahraman (kuyruk yasal süre brifi) + sağ ray ---------- */
+
+/* Süresi yaklaşan/geçen kuyruk evrağı satırı — yasal dayanak + son tarih + satır-içi İşle
+   (secondary; doğrudan pipeline'a sokar). */
 function SlaSatir({ x, onIsle }) {
   const gecikmis = x.sla.durum === "GECIKMIS";
   const renk = gecikmis ? BANT.kirmizi.c : BANT.sari.c;
-  const kalanTxt = gecikmis ? `${Math.abs(x.sla.kalan_gun)} gün gecikti` : `son ${x.sla.kalan_gun} gün`;
+  const kalanTxt = gecikmis ? `${Math.abs(x.sla.kalan_gun)} gün gecikti`
+    : x.sla.kalan_gun === 0 ? "son gün bugün" : `son ${x.sla.kalan_gun} gün`;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "8px 0", borderBottom: `1px solid ${PAL.line}` }}>
+    <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "8px 0", borderTop: `1px solid ${PAL.line}` }}>
       <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: renk, flexShrink: 0 }} />
       <span style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
         <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
@@ -73,10 +107,31 @@ function SlaSatir({ x, onIsle }) {
   );
 }
 
-/* Kuyruk SLA dağılımı — tek yığın çubuk (normal/kritik/gecikmiş/tanımsız) + sayaçlar +
-   eskalasyon listesi. Kuyruğun genel sağlığı tek bakışta; acil yoksa dürüst yeşil not. */
-function SlaDagilimKart({ kuyrukSla, onGoInbox, onIsle }) {
-  const [acilRef] = useAutoAnimate();   // satırlar işlendikçe akıcı giriş/çıkış
+/* Yığın şerit — kuyruğun süre kompozisyonu; dilimler arası 2px yüzey boşluğu (kenar çizgisi
+   değil, boşluk ayırır). */
+function SlaSerit({ dilimler, toplam }) {
+  return (
+    <>
+      <div role="img" aria-label={dilimler.map((d) => `${d.n} ${d.l}`).join(", ")}
+        style={{ display: "flex", gap: 2, height: 8 }}>
+        {dilimler.map((d) => <span key={d.l} style={{ width: `${(d.n / toplam) * 100}%`, minWidth: 4, background: d.c, borderRadius: RAD.chip }} />)}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.l}px`, marginTop: SP.s }}>
+        {dilimler.map((d) => (
+          <span key={d.l} style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
+            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: d.c }} />{d.n} {d.l}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/* Kahraman kart — durum makinesi: acil>0 → tam brif (sayı + şerit + satırlar + ekranın tek
+   primary'si). Acil=0 → tek satırlık pozitif banda çöker; sükûnetin kendisi ödül (yeşil
+   dolgu bandı yok — renk kutlama için değil) + "ilk yaklaşan süre" ufku. */
+function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
+  const [acilRef] = useAutoAnimate();
   const say = { normal: 0, kritik: 0, gecikmis: 0, tarihYok: 0, diger: 0 };
   for (const x of kuyrukSla) {
     if (x.sla.durum === "NORMAL") say.normal++;
@@ -96,49 +151,144 @@ function SlaDagilimKart({ kuyrukSla, onGoInbox, onIsle }) {
     { c: PAL.mut, n: say.diger, l: "süre tanımsız" },
   ].filter((d) => d.n > 0);
   const toplam = kuyrukSla.length || 1;
-  const accent = say.gecikmis ? BANT.kirmizi.c : say.kritik ? BANT.sari.c : BANT.yesil.c;
-  return (
-    <NeonCard title="Kuyruk yasal süre durumu" tag={`${kuyrukSla.length} evrak`} accent={accent} icon={<Icon.clock />} style={{ marginBottom: SP.xl }}>
-      <div role="img" aria-label={dilimler.map((d) => `${d.n} ${d.l}`).join(", ")}
-        style={{ display: "flex", height: 8, borderRadius: RAD.chip, overflow: "hidden", background: PAL.surfHi }}>
-        {dilimler.map((d) => <span key={d.l} style={{ width: `${(d.n / toplam) * 100}%`, background: d.c }} />)}
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.l}px`, marginTop: SP.s }}>
-        {dilimler.map((d) => (
-          <span key={d.l} style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
-            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: d.c }} />{d.n} {d.l}
+
+  if (acil.length === 0) {
+    // Pozitif hâl: temizken bile bir sonraki ufku göstermek güven verir.
+    const yaklasan = kuyrukSla
+      .filter((x) => x.sla.durum === "NORMAL" && Number.isFinite(x.sla.kalan_gun))
+      .sort((a, b) => a.sla.kalan_gun - b.sla.kalan_gun)[0];
+    return (
+      <section aria-label="Kuyruk yasal süre durumu" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: `${SP.l}px ${SP.xl}px` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", color: DERIN.yesil }}><Icon.check width={16} height={16} /></span>
+          <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kuyruğun tamamı normal takvimde</span>
+          <span style={{ ...TYPE.data, color: PAL.mut, ...TNUM }}>
+            {yaklasan ? `İlk yaklaşan süre: ${yaklasan.sla.son_tarih || `${yaklasan.sla.kalan_gun} gün`} — ${yaklasan.label}` : "Eskalasyon gerekmiyor."}
           </span>
-        ))}
+        </div>
+        <div style={{ marginTop: SP.m }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
+      </section>
+    );
+  }
+
+  return (
+    <section aria-label="Bugünün brifi — kuyruk yasal süre durumu" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.xl }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
+        <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(say.gecikmis ? BANT.kirmizi.c : BANT.sari.c) }}><Icon.clock width={18} height={18} /></span>
+        <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flex: 1, minWidth: 200 }}>
+          <span style={{ ...TYPE.num, color: say.gecikmis ? DERIN.kirmizi : DERIN.sari, ...TNUM }}><NumberFlow value={acil.length} /></span>
+          <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>evrakın yasal süresi doldu ya da kritik</span>
+          <span style={{ ...TYPE.meta, color: PAL.mut2, ...TNUM }}>· {kuyrukSla.length} evraklık kuyrukta</span>
+        </span>
+        {/* Ekranın tek primary'si: en acil evrakı doğrudan pipeline'a sokar. */}
+        <Btn primary onClick={() => onIsle(acil[0].id)} ariaLabel={`En acil evrak: ${acil[0].label} — hemen işle`}>
+          En acil evrakı işle <Icon.arrow />
+        </Btn>
       </div>
-      {acil.length > 0 ? (
-        <div style={{ marginTop: SP.m }}>
-          <p style={{ margin: "0 0 4px", ...TYPE.meta, color: PAL.mut2 }}>
-            Yasal cevap süresi dolan/dolmak üzere olan evraklar; yasal dayanak her satırın altında yazılıdır.
-          </p>
-          <div ref={acilRef}>
-            {acil.slice(0, 5).map((x) => <SlaSatir key={x.id} x={x} onIsle={onIsle} />)}
-            {acil.length > 5 && (
-              <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
-                onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                style={{ cursor: "pointer", width: "100%", padding: "8px 0", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                {acil.length - 5} evrak daha; tümünü kuyruğun aciliyet sırasında görün
-              </button>
-            )}
-          </div>
+      <div style={{ marginTop: SP.l }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
+      <div style={{ marginTop: SP.m }}>
+        <p style={{ margin: "0 0 4px", ...TYPE.meta, color: PAL.mut2 }}>
+          Yasal cevap süresi dolan/dolmak üzere olan evraklar; yasal dayanak her satırın altında yazılıdır.
+        </p>
+        <div ref={acilRef}>
+          {acil.slice(0, 5).map((x) => <SlaSatir key={x.id} x={x} onIsle={onIsle} />)}
+          {acil.length > 5 && (
+            <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+              style={{ cursor: "pointer", width: "100%", padding: "8px 0", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+              {acil.length - 5} evrak daha; tümünü kuyruğun aciliyet sırasında görün
+            </button>
+          )}
         </div>
-      ) : (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m, ...TYPE.data, color: DERIN.yesil }}>
-          <Icon.check width={14} height={14} /> Kuyruğun tamamı normal takvimde; eskalasyon gerekmiyor.
+      </div>
+    </section>
+  );
+}
+
+/* Sağ ray karosu — sayaç değil İŞ-PARÇASI önizlemesi ("yarım kalan işine dön" hikâyesi;
+   sidebar rozeti sayıyı zaten taşıyor — kopyalamıyoruz). */
+function RayKart({ icon, baslik, onClick, ariaLabel, children }) {
+  return (
+    <button type="button" onClick={onClick} aria-label={ariaLabel} {...focusRing} data-press=""
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+      style={{ cursor: "pointer", textAlign: "left", display: "block", width: "100%", background: PAL.surf,
+        border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l,
+        transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+      <span style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.s }}>
+        <span aria-hidden="true" style={{ display: "flex", color: PAL.mut }}>{icon}</span>
+        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{baslik}</span>
+        <span aria-hidden="true" style={{ marginLeft: "auto", display: "flex", color: PAL.mut3 }}><Icon.arrow width={14} height={14} /></span>
+      </span>
+      {children}
+    </button>
+  );
+}
+
+/* ---------- R3: Dağılım (tek yüzey, 3 iç kolon) ---------- */
+
+function BarList({ rows, color }) {
+  if (!rows.length) return <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>—</p>;
+  const max = rows[0][1] || 1;
+  return rows.map(([label, c]) => (
+    <div key={label} title={`${label}: ${c} evrak`} style={{ marginBottom: SP.m }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: SP.s, ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>
+        <span style={{ color: PAL.ink2, fontWeight: 500, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
+        <span style={{ color: DERIN_OF(color), fontWeight: 500, ...TNUM, flexShrink: 0 }}>{c}</span>
+      </div>
+      <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${Math.round((c / max) * 100)}%`, background: color, borderRadius: RAD.chip, transition: "width .15s ease-out" }} />
+      </div>
+    </div>
+  ));
+}
+
+function DagilimYuzeyi({ n, risk, turList, birimList, ortGuven, genis }) {
+  if (n < 3) {
+    return (
+      <NeonCard title="Dağılım" accent={T} icon={<Icon.chart width={16} height={16} />}>
+        <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Dağılım özeti 3 işlemden sonra oluşur — {3 - n} evrak kaldı.</p>
+      </NeonCard>
+    );
+  }
+  const kolonStil = (i) => ({ minWidth: 0, paddingLeft: genis && i > 0 ? SP.l : 0, borderLeft: genis && i > 0 ? `1px solid ${PAL.line}` : "none",
+    paddingTop: !genis && i > 0 ? SP.l : 0, borderTop: !genis && i > 0 ? `1px solid ${PAL.line}` : "none" });
+  return (
+    <NeonCard title="Dağılım" accent={T} icon={<Icon.chart width={16} height={16} />} tag={ortGuven != null ? `ort. güven %${ortGuven}` : undefined}>
+      <div style={{ display: "grid", gridTemplateColumns: genis ? "repeat(3, 1fr)" : "1fr", gap: SP.l }}>
+        <div style={kolonStil(0)}>
+          <p style={{ margin: `0 0 ${SP.s}px`, ...TYPE.meta, color: PAL.mut3 }}>Risk bandı</p>
+          {["yesil", "sari", "kirmizi"].map((k) => {
+            const pct = n ? Math.round((risk[k] / n) * 100) : 0;
+            return (
+              <div key={k} style={{ marginBottom: SP.m }}>
+                <div style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>
+                  <span style={{ color: DERIN_OF(BANT[k].c), fontWeight: 500 }}>{BANT[k].l} · {BANT[k].t}</span><span style={{ ...TNUM }}>{risk[k]} (%{pct})</span>
+                </div>
+                <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${pct}%`, background: BANT[k].c, borderRadius: RAD.chip, transition: "width .15s ease-out" }} />
+                </div>
+              </div>
+            );
+          })}
         </div>
-      )}
+        <div style={kolonStil(1)}>
+          <p style={{ margin: `0 0 ${SP.s}px`, ...TYPE.meta, color: PAL.mut3 }}>Evrak türü</p>
+          <BarList rows={turList} color={V} />
+        </div>
+        <div style={kolonStil(2)}>
+          <p style={{ margin: `0 0 ${SP.s}px`, ...TYPE.meta, color: PAL.mut3 }}>Havale edilen birim</p>
+          <BarList rows={birimList} color={V} />
+          {birimList.length > 0 && <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>Görev 2 yönlendirmesi: en çok havale alan birimler.</p>}
+        </div>
+      </div>
     </NeonCard>
   );
 }
 
-/* Birim bazlı gecikme — İŞLENMİŞ (havale edilmiş) evraklardan yasal süresi GECİKMİŞ/KRİTİK
-   olanları hedef birime göre toplar. "Hangi birimde kaç geciken/kritik evrak var" tek bakışta;
-   gecikme yoksa dürüst yeşil not (SlaDagilimKart ile aynı sessizlik/dürüstlük deseni). */
+/* Birim bazlı gecikme — işlenmiş evraklardan GECİKMİŞ/KRİTİK olanlar birime göre;
+   yoksa dürüst yeşil not. */
 function BirimGecikmeKart({ rows }) {
   const [ref] = useAutoAnimate();
   const varmi = rows.length > 0;
@@ -167,8 +317,8 @@ function BirimGecikmeKart({ rows }) {
   );
 }
 
-/* İşlem süresi kartı içeriği — hero sayı (tüm ölçümlerin ortalaması) + son koşumların
-   mini sütunları. Süre verisi sure_ms hattından gelir; eski kayıtlarda null → dürüst not. */
+/* ---------- R4: İşlem süresi + zaman-gruplu feed ---------- */
+
 function SureGrafik({ history }) {
   const olculer = history
     .map((h) => ({ name: h.name, ms: h.result?.sure_ms }))
@@ -199,120 +349,233 @@ function SureGrafik({ history }) {
   );
 }
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onUpload, user }) {
-  const n = history.length;
-  const gonderilen = outbox.filter((o) => o.durum === "gonderildi").length;
-  // Birikimli üretim: karar durumundan bağımsız, taslak üretilmiş TÜM işlemler (jüri T6:
-  // eski sayaç gönderimde düşüyor ve "Karar bekleyen"in kopyasıydı).
-  const uretilenTaslak = history.filter((h) => h.result?.yazi_taslak_md).length;
-  const risk = { yesil: 0, sari: 0, kirmizi: 0 };
-  for (const h of history) if (risk[h.bant] != null) risk[h.bant]++;
-  const turler = {};
-  for (const h of history) { const t = EVRAK_TR(h.evrak_turu); turler[t] = (turler[t] || 0) + 1; }
-  const turList = Object.entries(turler).sort((a, b) => b[1] - a[1]).slice(0, 6);
-  const birimler = {};
-  for (const h of history) { if (h.hedef_birim) { const b = BIRIM_LBL(h.hedef_birim); birimler[b] = (birimler[b] || 0) + 1; } }
-  const birimList = Object.entries(birimler).sort((a, b) => b[1] - a[1]).slice(0, 5);
-  // Birim bazlı gecikme: yalnız yasal süresi GECİKMİŞ/KRİTİK olan işlenmiş evraklar, hedef birime göre.
-  const birimGecikme = {};
-  for (const h of history) {
-    const durum = h.result?.sla_metadata?.durum;
-    if ((durum === "GECIKMIS" || durum === "KRITIK") && h.hedef_birim) {
-      const b = BIRIM_LBL(h.hedef_birim);
-      const e = birimGecikme[b] || { gecikmis: 0, kritik: 0 };
-      if (durum === "GECIKMIS") e.gecikmis++; else e.kritik++;
-      birimGecikme[b] = e;
-    }
-  }
-  const birimGecikmeList = Object.entries(birimGecikme)
-    .sort((a, b) => (b[1].gecikmis - a[1].gecikmis) || (b[1].kritik - a[1].kritik))
-    .slice(0, 6);
-  const guvenler = history.map((h) => h.result?.tur_confidence).filter((x) => Number.isFinite(x) && x > 0);
-  const ortGuven = guvenler.length ? Math.round((guvenler.reduce((a, x) => a + x, 0) / guvenler.length) * 100) : null;
-  const [sonRef] = useAutoAnimate();   // yeni işlem satırı akıcı girer (auto-animate)
-
-  // Başlıkta eylem YOK: "Gelen evrak" hem sidebar'da hem de aşağıdaki istatistik kartında,
-  // "Yeni evrak yükle" sidebar'da zaten duruyor. Aynı eylemi sağ üstte tekrarlamak gürültüydü.
+/* Feed satırı — durum noktası + ad + tek semantik çip + tür/birim + mono saat. */
+function FeedSatir({ h, onGoIslenen, bugunGrubu }) {
+  const bekliyor = h.result?.yazi_taslak_md && !h.result?.onay_durumu;
   return (
-    <ViewWrap id="panel-h" title="Panel" sub={`Hoş geldiniz, ${user?.ad_soyad || "memur"} · ${new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}`}>
-      {/* Kart → görünüm eşlemesi kurgu ayrımını izler: İşlenen ve Üretilen taslak (birikimli
-          sayılar) → İşlenen evrak arşivi; Gönderilen → Giden. Karar-bekleyen çalışması
-          Taslaklar'da yaşar (sidebar rozeti sayıyı zaten taşır — panelde ayrı kart gürültüydü);
-          durum kırılımı İşlenen evrak görünümünün özet şeridinde. */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px,1fr))", gap: SP.l, marginBottom: SP.xl }}>
-        <Stat label="İşlenen evrak" value={n} accent={T} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel="İşlenen evrak listesini aç" />
-        <Stat label="Gelen evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç" />
-        <Stat label="Üretilen taslak" value={uretilenTaslak} accent={V} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel="Üretilen taslakları işlenen evrak listesinde gör" />
-        <Stat label="Gönderilen evrak" value={gonderilen} accent={T} icon={<Icon.arrow />} onClick={onGoGiden} ariaLabel="Giden evrak arşivini aç" />
+    <button type="button" onClick={onGoIslenen} aria-label={`${h.name} — işlenen evrak arşivinde gör`} {...focusRing} data-press=""
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, width: "100%", textAlign: "left",
+        padding: "8px 4px", background: "transparent", border: "none", borderTop: `1px solid ${PAL.line}`,
+        transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+      <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: BANT[h.bant]?.c || PAL.mut2, flexShrink: 0 }} />
+      <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
+      {bekliyor && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.sari, background: ALFA(BANT.sari.c), borderRadius: RAD.chip, padding: "2px 8px", flexShrink: 0 }}>karar bekliyor</span>}
+      <span style={{ ...TYPE.meta, color: PAL.mut, flexShrink: 0 }}>{EVRAK_TR(h.evrak_turu)}</span>
+      <span style={{ ...TYPE.meta, color: DERIN.V, textAlign: "right", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{BIRIM_GOSTER(h.hedef_birim, h.evrak_turu)}</span>
+      {/* Grup zaten günü söylüyor — bugün yalnız saat; eski gruplarda gün+saat.
+          ts geçersizse boş (fmtGunSaat(0) 1970 basıyordu). */}
+      <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, flexShrink: 0, ...TNUM }}>{Number.isFinite(h.ts) ? (bugunGrubu ? fmtSaat(h.ts) : fmtGunSaat(h.ts)) : ""}</span>
+    </button>
+  );
+}
+
+function SonIslemlerFeed({ history, n, onGoIslenen }) {
+  const [sonRef] = useAutoAnimate();
+  // Zaman-gruplu feed: liste → hikâye ("bugün 9 işlem yaptın").
+  const gruplar = useMemo(() => {
+    const bugun = gunBasi(Date.now());
+    const g = { bugun: [], dun: [], eski: [] };
+    for (const h of history.slice(0, 8)) {
+      const t = Number.isFinite(h.ts) ? gunBasi(h.ts) : 0;
+      if (t === bugun) g.bugun.push(h);
+      else if (t === bugun - GUN_MS) g.dun.push(h);
+      else g.eski.push(h);
+    }
+    return [["Bugün", g.bugun, true], ["Dün", g.dun, false], ["Daha eski", g.eski, false]].filter(([, list]) => list.length > 0);
+  }, [history]);
+  return (
+    <NeonCard title="Son işlemler" accent={T} tag={`son ${Math.min(history.length, 8)} / ${n}`}>
+      {/* Başlıklar ve satırlar aynı konteynerin DOĞRUDAN çocukları — auto-animate yalnız
+          doğrudan çocukları izler; grup sarmalayıcısı yeni satır girişini görünmez kılıyordu. */}
+      <div ref={sonRef}>
+        {gruplar.flatMap(([etiket, list, bugunGrubu]) => [
+          <div key={`grup-${etiket}`} style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut3, padding: "6px 4px 2px", ...TNUM }}>
+            <span>{etiket}</span><span>{list.length}</span>
+          </div>,
+          ...list.map((h) => <FeedSatir key={h.id} h={h} onGoIslenen={onGoIslenen} bugunGrubu={bugunGrubu} />),
+        ])}
       </div>
+      <button type="button" onClick={onGoIslenen} {...focusRing} data-press=""
+        onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+        style={{ cursor: "pointer", width: "100%", padding: "8px 0", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+        Tüm işlenen evrakı gör
+      </button>
+    </NeonCard>
+  );
+}
 
-      {kuyrukSla.length > 0 && <SlaDagilimKart kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} onIsle={onIsle} />}
+/* ---------- Ana görünüm ---------- */
 
-      {n === 0 ? (
-        <EmptyState icon={<Icon.chart />} title="Henüz evrak işlenmedi"
-          sub="Gelen evrak kuyruğundan bir evrak seçerek ya da yeni bir belge yükleyerek başlayın. İşlenen her evrak burada özetlenir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px,1fr))", gap: SP.l, alignItems: "start" }}>
-          <NeonCard title="Risk dağılımı" accent={T}>
-            {["yesil", "sari", "kirmizi"].map((k) => {
-              const pct = n ? Math.round((risk[k] / n) * 100) : 0;
-              return (
-                <div key={k} style={{ marginBottom: SP.m }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>
-                    <span style={{ color: DERIN_OF(BANT[k].c), fontWeight: 500 }}>{BANT[k].l} · {BANT[k].t}</span><span style={{ ...TNUM }}>{risk[k]} (%{pct})</span>
-                  </div>
-                  <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: BANT[k].c, borderRadius: RAD.chip, transition: "width .15s ease-out" }} />
-                  </div>
-                </div>
-              );
-            })}
-          </NeonCard>
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onGoTaslaklar = null, onUpload, user }) {
+  const genis = useGenisEkran();
+  const n = history.length;
+  const gonderilenler = useMemo(() => outbox.filter((o) => o.durum === "gonderildi"), [outbox]);
+  // Birikimli üretim: karar durumundan bağımsız, taslak üretilmiş TÜM işlemler (jüri T6).
+  const taslaklilar = useMemo(() => history.filter((h) => h.result?.yazi_taslak_md), [history]);
+  const { risk, turList, birimList, birimGecikmeList, ortGuven } = useMemo(() => {
+    const risk = { yesil: 0, sari: 0, kirmizi: 0 };
+    const turler = {}, birimler = {}, birimGecikme = {};
+    const guvenler = [];
+    for (const h of history) {
+      if (risk[h.bant] != null) risk[h.bant]++;
+      const t = EVRAK_TR(h.evrak_turu); turler[t] = (turler[t] || 0) + 1;
+      if (h.hedef_birim) { const b = BIRIM_LBL(h.hedef_birim); birimler[b] = (birimler[b] || 0) + 1; }
+      const durum = h.result?.sla_metadata?.durum;
+      if ((durum === "GECIKMIS" || durum === "KRITIK") && h.hedef_birim) {
+        const b = BIRIM_LBL(h.hedef_birim);
+        const e = birimGecikme[b] || { gecikmis: 0, kritik: 0 };
+        if (durum === "GECIKMIS") e.gecikmis++; else e.kritik++;
+        birimGecikme[b] = e;
+      }
+      const g = h.result?.tur_confidence;
+      if (Number.isFinite(g) && g > 0) guvenler.push(g);
+    }
+    return {
+      risk,
+      turList: Object.entries(turler).sort((a, b) => b[1] - a[1]).slice(0, 4),
+      birimList: Object.entries(birimler).sort((a, b) => b[1] - a[1]).slice(0, 4),
+      birimGecikmeList: Object.entries(birimGecikme)
+        .sort((a, b) => (b[1].gecikmis - a[1].gecikmis) || (b[1].kritik - a[1].kritik))
+        .slice(0, 6),
+      ortGuven: guvenler.length ? Math.round((guvenler.reduce((a, x) => a + x, 0) / guvenler.length) * 100) : null,
+    };
+  }, [history]);
 
-          <NeonCard title="Evrak türü dağılımı" accent={V} tag={ortGuven != null ? `ort. güven %${ortGuven}` : undefined} tagColor={T}>
-            <BarList rows={turList} color={V} />
-          </NeonCard>
+  // Akış nabzı serileri (7 gün) — delta/sparkline ham ts'lerden; Gelen'in tarihsel verisi
+  // yok (kuyruk anlık durum) → o hücrede dürüstçe yalnız sayı.
+  const akisIslenen = useMemo(() => gunlukSeri(history.map((h) => h.ts)), [history]);
+  const akisTaslak = useMemo(() => gunlukSeri(taslaklilar.map((h) => h.ts)), [taslaklilar]);
+  // Outbox'ta zaman alanı gonderim_tarihi'dir (ts değil) — Number epoch, iki hidrasyon
+  // yolunda da (pushOutbox + DB) garanti. Yanlış alan sparkline'ı sessizce öldürüyordu.
+  const akisGiden = useMemo(() => gunlukSeri(gonderilenler.map((o) => o.gonderim_tarihi)), [gonderilenler]);
 
-          <NeonCard title="Birim dağılımı" accent={V} tag="havale edilen">
-            <BarList rows={birimList} color={V} />
-            {birimList.length > 0 && (
-              <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>Görev 2 yönlendirmesi: en çok havale alan birimler.</p>
+  // Sağ ray: en eski karar bekleyen taslak — "yarım kalan işine dön".
+  const enEskiBekleyen = useMemo(() => {
+    const bekleyen = history.filter((h) => h.result?.yazi_taslak_md && !h.result?.onay_durumu);
+    if (!bekleyen.length) return null;
+    const h = [...bekleyen].sort((a, b) => (a.ts || 0) - (b.ts || 0))[0];
+    const gun = Number.isFinite(h.ts) ? Math.floor((gunBasi(Date.now()) - gunBasi(h.ts)) / GUN_MS) : 0;
+    return { h, gun, toplam: bekleyen.length };
+  }, [history]);
+
+  // Sıradaki kuyruk evrağı — ray önizlemesi için (süresi en yakın; kalan_gun'suzlar sona).
+  const siradakiKuyruk = useMemo(() => {
+    if (!kuyrukSla.length) return null;
+    return [...kuyrukSla].sort((a, b) => (a.sla.kalan_gun ?? Infinity) - (b.sla.kalan_gun ?? Infinity))[0];
+  }, [kuyrukSla]);
+
+  // Manşet: pasif selam değil brifin ilk cümlesi.
+  const acilN = useMemo(() => kuyrukSla.filter((x) => x.sla.durum === "GECIKMIS" || x.sla.durum === "KRITIK").length, [kuyrukSla]);
+  // Ek-bağımsız kalıp ("N tanesi") — "N'i" eki sayıya göre değişir (2'si/3'ü/6'sı),
+  // sabit ek jüri-görünür manşette gramer hatası üretiyordu.
+  const manset = kuyrukSla.length > 0
+    ? `Hoş geldiniz, ${user?.ad_soyad || "memur"} · kuyrukta ${kuyrukSla.length} evrak${acilN > 0 ? `, ${acilN} tanesi yasal süresinde acil` : ", tamamı normal takvimde"}`
+    : `Hoş geldiniz, ${user?.ad_soyad || "memur"} · ${new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}`;
+
+  const span = (kol) => ({ gridColumn: genis ? `span ${kol}` : "1 / -1", minWidth: 0 });
+
+  // Gerçek sıfır: hiç işlem yok VE kuyruk boş → tek boş durum; iskelet kart dizmek "ölü panel".
+  if (n === 0 && inboxCount === 0 && kuyrukSla.length === 0) {
+    return (
+      <ViewWrap id="panel-h" title="Panel" sub={manset}>
+        <EmptyState icon={<Icon.chart />} title="Kuyruk boş"
+          sub="Yeni bir belge yükleyerek başlayın — işlenen her evrak burada özetlenir."
+          actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]} />
+      </ViewWrap>
+    );
+  }
+
+  return (
+    <ViewWrap id="panel-h" title="Panel" sub={manset}>
+      {/* Giriş: tek nefes — nu-rise yalnız konteynere, kart kart stagger yok. */}
+      <div style={{ display: "grid", gridTemplateColumns: genis ? "repeat(12, 1fr)" : "1fr", gap: SP.l, alignItems: "start", animation: `nu-rise .16s ${EASE.out} both` }}>
+
+        {/* R1 — kahraman + sağ ray (kuyruk SLA'sı yoksa kahraman hiç görünmez; kuyruk yine çalışır) */}
+        {kuyrukSla.length > 0 && (
+          <div style={span(8)}>
+            <KahramanBrif kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} onIsle={onIsle} />
+          </div>
+        )}
+        <div style={{ ...span(kuyrukSla.length > 0 ? 4 : 12), display: "grid", gridTemplateColumns: kuyrukSla.length > 0 || !genis ? "1fr" : "1fr 1fr", gap: SP.l }}>
+          {/* Devam eden iş — kurgu ayrımı: karar çalışması Taslaklar'da yaşar; burada sayaç
+              değil en eski bekleyenin önizlemesi (sidebar rozetini kopyalamaz). */}
+          {/* "toplam X bekleyen" YOK — history süzgeci sidebar rozetinin drafts sayısıyla
+              (alt-taslaklar) sapabiliyor; aynı ekranda iki farklı sayı güven kırar. */}
+          {enEskiBekleyen && (
+            <RayKart icon={<Icon.edit width={15} height={15} />} baslik="Devam eden iş"
+              onClick={onGoTaslaklar || onGoIslenen}
+              ariaLabel={`Devam eden iş: ${enEskiBekleyen.h.name}, ${enEskiBekleyen.gun > 0 ? `${enEskiBekleyen.gun} gündür karar bekliyor` : "bugün taslağı hazırlandı"} — Taslaklar'ı aç`}>
+              <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{enEskiBekleyen.h.name}</span>
+              <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
+                {enEskiBekleyen.gun > 0 ? `${enEskiBekleyen.gun} gündür karar bekliyor` : "bugün taslağı hazırlandı"}
+              </span>
+            </RayKart>
+          )}
+          {/* Sayaç değil önizleme: sıradaki (süresi en yakın) evrakın adı; sayı R2'nin işi. */}
+          <RayKart icon={<Icon.inbox width={15} height={15} />} baslik="Gelen kuyruk"
+            onClick={() => onGoInbox()}
+            ariaLabel={inboxCount > 0 ? (siradakiKuyruk ? `Gelen kuyruk, sıradaki: ${siradakiKuyruk.label} — kuyruğu aç` : `Gelen kuyrukta ${inboxCount} evrak — kuyruğu aç`) : "Gelen kuyruk boş"}>
+            {inboxCount > 0 ? (
+              siradakiKuyruk ? (
+                <>
+                  <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>sıradaki: {siradakiKuyruk.label}</span>
+                  <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>{inboxCount} evrak işlenmeyi bekliyor</span>
+                </>
+              ) : (
+                <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, ...TNUM }}>{inboxCount} evrak işlenmeyi bekliyor</span>
+              )
+            ) : (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.data, color: DERIN.yesil }}>
+                <Icon.check width={13} height={13} /> Kuyruk boş
+              </span>
             )}
-          </NeonCard>
-
-          <BirimGecikmeKart rows={birimGecikmeList} />
-
-          <NeonCard title="İşlem süresi" accent={T}>
-            <SureGrafik history={history} />
-          </NeonCard>
-
-          <NeonCard title="Son işlemler" accent={T} full tag={`son ${Math.min(history.length, 6)} / ${n}`}>
-            <div ref={sonRef}>
-            {history.slice(0, 6).map((h) => {
-              const bekliyor = h.result?.yazi_taslak_md && !h.result?.onay_durumu;
-              return (
-                <div key={h.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "8px 0", borderBottom: `1px solid ${PAL.line}` }}>
-                  <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: BANT[h.bant]?.c || PAL.mut2, flexShrink: 0 }} />
-                  <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
-                  {bekliyor && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.sari, background: ALFA(BANT.sari.c), borderRadius: RAD.chip, padding: "2px 8px", flexShrink: 0 }}>karar bekliyor</span>}
-                  <span style={{ ...TYPE.meta, color: PAL.mut }}>{EVRAK_TR(h.evrak_turu)}</span>
-                  <span style={{ ...TYPE.meta, color: DERIN.V, textAlign: "right" }}>{BIRIM_GOSTER(h.hedef_birim, h.evrak_turu)}</span>
-                  <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 400, color: PAL.mut2, flexShrink: 0 }}>{fmtTime(h.ts)}</span>
-                </div>
-              );
-            })}
-            </div>
-            {/* Arşiv köprüsü — SlaDagilimKart'ın "N evrak daha" düğmesiyle aynı sakin desen. */}
-            <button type="button" onClick={onGoIslenen} {...focusRing} data-press=""
-              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-              style={{ cursor: "pointer", width: "100%", padding: "8px 0", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-              Tüm işlenen evrakı gör
-            </button>
-          </NeonCard>
+          </RayKart>
         </div>
-      )}
+
+        {/* R2 — akış nabzı: tek yüzey, 4 ölçü. Kart eşlemesi kurgu ayrımını izler:
+            İşlenen + Üretilen taslak → İşlenen arşivi; Gönderilen → Giden.
+            overflow:hidden YOK — focusRing dışa taşan halka çizer, kırpılırsa klavye odağı
+            görünmez olur. aria-label sayıyı da taşır — salt eylem etiketi panelin ana
+            verisini ekran okuyucudan gizliyordu (review bulgusu). */}
+        {n > 0 && (
+          <div style={{ ...span(12), background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
+            display: "grid", gridTemplateColumns: genis ? "repeat(4, 1fr)" : "repeat(2, 1fr)" }}>
+            <AkisHucre label="İşlenen evrak" value={n} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel={`${n} işlenen evrak — arşivi aç`} gunluk={akisIslenen} ilk genis={genis} i={0} />
+            <AkisHucre label="Gelen evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel={`${inboxCount} gelen evrak — kuyruğu aç`} gunluk={null} genis={genis} i={1} />
+            <AkisHucre label="Üretilen taslak" value={taslaklilar.length} icon={<Icon.edit />} onClick={onGoIslenen} ariaLabel={`${taslaklilar.length} üretilen taslak — işlenen arşivinde gör`} gunluk={akisTaslak} genis={genis} i={2} />
+            <AkisHucre label="Gönderilen evrak" value={gonderilenler.length} icon={<Icon.send />} onClick={onGoGiden} ariaLabel={`${gonderilenler.length} gönderilen evrak — Giden arşivini aç`} gunluk={akisGiden} genis={genis} i={3} />
+          </div>
+        )}
+
+        {/* R3 + R4 — gözlem kuşağı: kahramanın arkasındaki sakin koro. */}
+        {n === 0 ? (
+          <div style={span(12)}>
+            <EmptyState icon={<Icon.chart />} title="Henüz evrak işlenmedi"
+              sub="Kuyruktan bir evrak işlediğinizde akış, dağılım ve süre özetleri burada oluşur."
+              actions={[<Btn key="g" onClick={() => onGoInbox()}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
+          </div>
+        ) : (
+          <>
+            <div style={span(8)}>
+              <DagilimYuzeyi n={n} risk={risk} turList={turList} birimList={birimList} ortGuven={ortGuven} genis={genis} />
+            </div>
+            <div style={span(4)}>
+              <BirimGecikmeKart rows={birimGecikmeList} />
+            </div>
+            <div style={span(8)}>
+              <SonIslemlerFeed history={history} n={n} onGoIslenen={onGoIslenen} />
+            </div>
+            <div style={span(4)}>
+              <NeonCard title="İşlem süresi" accent={T} icon={<Icon.clock width={16} height={16} />}>
+                <SureGrafik history={history} />
+              </NeonCard>
+            </div>
+          </>
+        )}
+      </div>
     </ViewWrap>
   );
 }

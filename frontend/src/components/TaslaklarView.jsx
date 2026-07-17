@@ -7,7 +7,7 @@
    Düzenleme yüzeyi TEK kalır: A4 kâğıt modalı (BelgeModal); kurul = KurulModal. */
 import { useEffect, useMemo, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, Btn, EmptyState, Icon, MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing } from "./neonUi.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
@@ -180,7 +180,7 @@ function KararPaneli({ h, konu, govde, genis, sendBusy, onDuzenle, onKurul, onGo
           )}
         </div>
         <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", marginTop: SP.xs }}>
-          <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3 }}>{h.name}</span>
+          <span style={{ fontFamily: SANS, fontSize: 12, color: PAL.mut3 }}>{h.name}</span>
           {tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, ...TNUM }}>{tarih}</span>}
           <span style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {EVRAK_TR(r.evrak_turu)} · {BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}{r.yazi_turu ? ` · ${YAZI_TR(r.yazi_turu)}` : ""}

@@ -13,7 +13,7 @@
    odak kapat düğmesine, kapanışta tetikleyiciye döner, body scroll kilitlenir.
    prefers-reduced-motion → son (karar) kare statik; turlar aria-live ile duyurulur. */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { MONO, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu } from "./neonUi.jsx";
+import { MONO, SANS, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu } from "./neonUi.jsx";
 import { ScrimDugme } from "./BelgeModal.jsx";
 import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara } from "../lib/muzakere.js";
@@ -291,7 +291,7 @@ function TaslakKarti({ draft, revize }) {
           const v = l.vurgu ? VURGU[l.vurgu] : null;
           return (
             <div key={l.id} style={{ padding: v ? "6px 10px" : "2px 0", borderRadius: RAD.ctl, background: v ? ALFA(v.col) : "transparent", borderLeft: v ? `2px solid ${v.col}` : "none", transition: "background .3s ease-out" }}>
-              <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: l.sabit ? PAL.mut2 : PAL.ink2, whiteSpace: "pre-wrap" }}>{l.metin}</span>
+              <span style={{ fontFamily: SANS, fontSize: 13, lineHeight: "18px", color: l.sabit ? PAL.mut2 : PAL.ink2, whiteSpace: "pre-wrap" }}>{l.metin}</span>
               {v && <span style={{ display: "block", marginTop: 3, ...TYPE.meta, fontWeight: 500, color: DERIN_OF(v.col) }}>✎ {v.etiket}</span>}
             </div>
           );
@@ -567,7 +567,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
         {/* Üst şerit — başlık + taslak kimliği + kapat (BelgeModal dili) */}
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
           <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>AI Bürokrasi Kurulu</span>
-          {taslakAdi && <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{taslakAdi}</span>}
+          {taslakAdi && <span style={{ fontFamily: SANS, fontSize: 13, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{taslakAdi}</span>}
           <span style={{ ...TYPE.meta, color: "rgba(251,247,240,.6)" }}>
             {kurgu.kaynak === "llm" ? "DeepSeek uzman ajanları taslağı müzakere eder" : "üç ajan, taslağın gerçek doğrulama sinyalleri üzerinden müzakere eder"}
           </span>

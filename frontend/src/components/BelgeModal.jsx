@@ -5,7 +5,7 @@
    tetikleyiciye döner, açıkken body scroll kilitlenir. PDF kaynaklarda gerçek sayfa
    önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik gösterilir (KVKK). */
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { MONO, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing, odakDongusu } from "./neonUi.jsx";
+import { SANS, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, focusRing, odakDongusu } from "./neonUi.jsx";
 import RevizePaneli from "./RevizePaneli.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
@@ -118,7 +118,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
         {/* Üst şerit — başlık + dosya kimliği + eylemler + kapat */}
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
           <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>{baslik}</span>
-          {dosyaAdi && <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{dosyaAdi}</span>}
+          {dosyaAdi && <span style={{ fontFamily: SANS, fontSize: 12, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{dosyaAdi}</span>}
           <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
             {duzenlenebilir && (
               <span style={{ ...TYPE.meta, ...TNUM, color: "rgba(251,247,240,.72)" }}>{metinD.length} karakter</span>
@@ -208,7 +208,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                 style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "vertical", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
             ) : (
               <div style={mono
-                ? { fontFamily: MONO, fontSize: 13, lineHeight: 1.85, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }
+                ? { fontFamily: SANS, fontSize: 13, lineHeight: 1.85, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }
                 : { ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                 {/* Çıkarım vurguları A4'te de korunur — panel ile aynı sarı <mark> dili
                     (kaynak belgede vurgulanan unsurlar büyütünce de görünür kalır). */}

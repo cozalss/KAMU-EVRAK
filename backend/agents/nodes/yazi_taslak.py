@@ -34,6 +34,7 @@ from agents.config import (
     YAZI_PLAN_PARALEL,
     birim_tr,
 )
+from agents.servis_birim import SERVIS_BIRIM_TR
 from yazi.sdp_plani import sdp_bul
 
 log = structlog.get_logger()
@@ -154,8 +155,12 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")
         sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
+        # Antet birimi = evrağın konusuna göre tespit edilen spesifik müdürlük (servis_birimi
+        # → "Fen İşleri Müdürlüğü" gibi); boşsa build_context KURUM_BIRIM env / jenerik'e düşer.
+        # Her evrakta sabit "Yazı İşleri" yerine konuya göre değişir (kullanıcı bulgusu).
+        hazirlayan = SERVIS_BIRIM_TR.get(state.get("servis_birimi", ""), "")
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
-                            sdp_kodu=(sdp or {}).get("kod", ""))
+                            sdp_kodu=(sdp or {}).get("kod", ""), hazirlayan_birim=hazirlayan)
         result = render_yazi(ctx)
         sayi_satiri = ctx.jinja_vars().get("sayi_satiri", "")
     except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet

@@ -36,6 +36,7 @@ from agents.config import (
 )
 from agents.karar_grounding import karar_grounding_veto
 from agents.nodes._llm_extract import llm_json, real_llm
+from agents.servis_birim import SERVIS_BIRIM_TR
 from agents.tutarlilik import tutarlilik_kontrol
 from agents.yazi_lint import _makam_seviyesi, kurum_gorunumlu, lint_2646
 from api.pii import mask_pii
@@ -330,8 +331,10 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     # bu belgenin deterministik Sayı satırı (yönlendirme/SDP kararı — kaynakta olmasa da
     # uydurma değil; 'E-[DETSİS No]-930-[Kayıt No]' tümüyle şablon mobilyasıdır).
     sayi_str = str((state.get("ust_veri") or {}).get("sayi") or "")
+    # Antet birimi (servis_birimi → "Fen İşleri Müdürlüğü") sistem-tespitli meşru değerdir,
+    # kaynakta geçmese de UYDURMA DEĞİL → grounding muafiyetine eklenir (9-birim ile aynı desen).
     iskelet_kaynak = (sablon_iskelet_degerleri() | _ISKELET_KAPANIS
-                      | {birim_tr(k) for k in BIRIMLER}
+                      | {birim_tr(k) for k in BIRIMLER} | set(SERVIS_BIRIM_TR.values())
                       | ({sayi_str} if sayi_str else set()))
     # İddialarla AYNI normalizasyon (_norm_ws) → 'Başvurunuz.' sondaki nokta uyuşmazlığı olmaz.
     iskelet_sirali = sorted({n for d in iskelet_kaynak if d and (n := _norm_ws(d))},

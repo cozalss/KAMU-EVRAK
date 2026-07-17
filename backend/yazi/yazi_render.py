@@ -390,6 +390,7 @@ def _ilgi_satirlari(unsurlar: dict[str, Any]) -> tuple[str, ...]:
 def build_context(
     yazi_turu: str, unsurlar: dict[str, Any], metin: str,
     *, muhatap_override: str | None = None, sdp_kodu: str = "",
+    hazirlayan_birim: str = "",
 ) -> YaziContext:
     """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (demo-safe).
 
@@ -420,15 +421,21 @@ def build_context(
     # m.16 — kapanış muhatap makam hiyerarşisine göre OTOMATİK seçilir: yalnız
     # "Gereğini … ederim." kalıplı türlerde ve muhatap makamı çözülebiliyorsa
     # (vatandaş/bilinmeyen → tür varsayılanı korunur; yanlış seçim riski yok).
-    # Gönderen = şablon antetindeki birim (models._DEMO_DEFAULTS ile aynı kaynak).
+    # Antet birimi = belgeyi HAZIRLAYAN birim: evrağın konusuna göre tespit edilen spesifik
+    # belediye müdürlüğü (servis_birimi → "Fen İşleri Müdürlüğü" gibi). Boşsa jinja_vars
+    # _DEMO_DEFAULTS'a düşer (KURUM_BIRIM env / jenerik) — her evrakta aynı birim yerine
+    # konuya göre değişir (kullanıcı bulgusu: "birim hep aynı"). Kapanış makam-seviyesi de
+    # bu birimden hesaplanır (tutarlılık).
+    gonderen_birim = hazirlayan_birim.strip() or _DEMO_DEFAULTS["birim_adi"]
     kapanis = default_kapanis(turu)
     if muhatap and turu in ("ust_yazi", "cevabi_yazi", "muzekkere"):
-        oneri = kapanis_onerisi(_DEMO_DEFAULTS["birim_adi"], muhatap)
+        oneri = kapanis_onerisi(gonderen_birim, muhatap)
         if oneri:
             kapanis = f"Gereğini {oneri[0]}."
     return YaziContext(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
+        birim_adi=hazirlayan_birim.strip(),  # boşsa jinja_vars _DEMO_DEFAULTS'a düşer
         # m.13: konunun sonuna nokta konulmaz → çıkarılan konudaki kuyruk noktası atılır.
         konu=str(unsurlar.get("konu", "") or "").strip().rstrip("."),
         metin=metin,

@@ -1,0 +1,21 @@
+@KURUM: Ankara Elektrik Gaz ve Otobüs İşletme Genel Müdürlüğü (EGO)
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu
+@KAYNAK_KIMLIK: teskilat/ego/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: ankara-ego
+@NOT: [DOĞRULA: güncel teşkilat şeması] — Ankara metrosunun bazı hatları ayrı bir iştirak tarafından işletiliyor olabilir; müdürlük adları genel bilgiye dayanır, yönlendirme öncesi güncel EGO teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Hat ve Sefer Planlama Şube Müdürlüğü
+GÖREV: Ankara otobüs, Ankaray ve metro hat-sefer planlamasını yürütür; hat/sefer sıklığı şikayetleri bu birime yönlendirilir.
+
+BİRİM: Elektronik Ücret Toplama ve Kart İşlemleri Şube Müdürlüğü
+GÖREV: Ankarakart bakiye, iade ve indirimli kart başvurularını karşılar.
+
+BİRİM: Kayıp Eşya Bürosu
+GÖREV: Otobüs, Ankaray ve metroda unutulan veya kaybolan eşyaların teslim/iade işlemlerini yürütür.
+
+BİRİM: Müşteri İlişkileri Şube Müdürlüğü
+GÖREV: Şoför/personel davranışı, araç ve istasyon temizliği gibi yolcu şikayetlerini karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Trafik kazası ve tazminat taleplerine ilişkin hukuki süreçleri yürütür.

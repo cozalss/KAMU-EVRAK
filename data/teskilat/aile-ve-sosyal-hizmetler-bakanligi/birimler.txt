@@ -1,0 +1,32 @@
+@KURUM: Aile ve Sosyal Hizmetler Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/aile-ve-sosyal-hizmetler-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: ashb, aile-bakanligi, sosyal-hizmetler-bakanligi
+
+BİRİM: Çocuk Hizmetleri Genel Müdürlüğü
+GÖREV: Koruma altına alma, çocuk evi/yurt yerleştirme, evlat edindirme ve çocuk istismarı ihbar başvurularını yürütür.
+
+BİRİM: Engelli ve Yaşlı Hizmetleri Genel Müdürlüğü
+GÖREV: Engelli sağlık kurulu raporu itirazı, evde bakım aylığı, huzurevi yerleştirme ve engelli/yaşlı bakım hizmeti başvurularını karşılar.
+
+BİRİM: Kadının Statüsü Genel Müdürlüğü
+GÖREV: Kadına yönelik şiddet ihbar/başvuruları, ŞÖNİM yönlendirmesi ve kadın istihdamı destek programlarına ilişkin yazışmaları yürütür.
+
+BİRİM: Sosyal Yardımlar Genel Müdürlüğü
+GÖREV: Sosyal yardım başvurusu (nakdi yardım, engelli/yaşlı aylığı), muhtaçlık tespiti ve Sosyal Yardımlaşma ve Dayanışma Vakfı yönlendirme işlemlerini yürütür.
+
+BİRİM: Aile ve Toplum Hizmetleri Genel Müdürlüğü
+GÖREV: Aile danışmanlığı, evlilik öncesi eğitim, aile arabuluculuğu ve toplum merkezi hizmet başvurularını karşılar.
+
+BİRİM: Şehit Yakınları ve Gaziler Genel Müdürlüğü
+GÖREV: Şehit yakını/gazi aylığı, gazi kimlik belgesi ve şehit/gazi yakınlarına yönelik sosyal destek başvurularını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: AB fonlu sosyal politika projeleri ve uluslararası aile/sosyal hizmet işbirliği yazışmalarını yürütür.

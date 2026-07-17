@@ -1,0 +1,21 @@
+@KURUM: Gelir İdaresi Başkanlığı
+@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Gelir İdaresi Başkanlığı); 5345 sayılı Kanun
+@KAYNAK_KIMLIK: teskilat/gelir-idaresi-baskanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: gib, vergi-dairesi-baskanligi, vergi-dairesi-mudurlugu
+@NOT: Vergi dairesi başkanlığı/müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi GİB il teşkilatı sayfasından doğrulanmalıdır.
+
+BİRİM: Mükellef Hizmetleri Daire Başkanlığı
+GÖREV: Vergi mükellefiyeti tesis, mükellef kaydı güncelleme ve beyanname verme süreçlerine ilişkin başvuruları karşılar. Mükellef bilgilendirme ve vergi kimlik numarası taleplerini yürütür.
+
+BİRİM: Tahsilat ve İhtilaflı İşler Daire Başkanlığı
+GÖREV: Vergi borcu sorgulama, vergi borcu yapılandırma/taksitlendirme başvuruları ile vergi ihtilaflarına ilişkin uzlaşma taleplerini sonuçlandırır. İtiraz dilekçelerinin idari süreçte değerlendirilmesinden sorumludur.
+
+BİRİM: Denetim ve Uyum Yönetimi Daire Başkanlığı
+GÖREV: Risk analizi, mükellef uyum değerlendirmesi ve yaygın-yoğun vergi denetimlerinin koordinasyonunu yürütür. Kayıt dışı ekonomi ihbarlarını inceler. [DOĞRULA: kapsamlı vergi incelemesi Hazine ve Maliye Bakanlığı Vergi Denetim Kurulu Başkanlığının görev alanındadır]
+
+BİRİM: Vergi Dairesi Başkanlığı / Vergi Dairesi Müdürlüğü
+GÖREV: İl/ilçe düzeyinde tahakkuk, tahsilat, beyanname kabulü ve vergi borcu yapılandırma başvurularını doğrudan işleme alır. Mükellef dilekçelerinin ilk muhatabıdır.
+
+BİRİM: Motorlu Taşıtlar Vergisi Servisi
+GÖREV: MTV tahakkuk, ödeme ve borç sorgulama işlemlerini vergi dairesi bünyesinde yürütür; araç sahiplerinin vergi itirazlarını değerlendirir. [DOĞRULA: MTV işlemleri vergi dairesi müdürlükleri bünyesindeki servislerce, büyük illerde ihtisas motorlu taşıtlar vergi dairelerince yürütülür]

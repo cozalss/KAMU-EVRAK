@@ -1,0 +1,156 @@
+"""Kaynak-doğrulamalı birim yönlendirme ajanı (route_birim'in ROUTE_AJAN yolu).
+
+Akış (kullanıcı mimarisi):
+  konu anla → resmî kaynakta ara (kaynak_ara: offline korpus + opsiyonel web) →
+  görev tanımlarını karşılaştır → muhatap kurumun görevinde mi? değilse YETKİLİ kurumu bul →
+  seç → ÜÇLÜ grounding (kurum + birim + görev-konu) → doğrulandıysa hedef, değilse DÜRÜST fallback.
+
+Güvenlik sözleşmeleri:
+  - Uydurma/başka-kurum birimi ASLA otomatik çıkmaz (yalnız kaynak_ara adayları + üçlü grounding).
+  - Kaynak-doğrulanamazsa hedef_birim=None + hedef_kategori(eski 9-set) + insan_onayi_gerekli=True.
+  - DeepSeek'e giden metin KVKK-maskeli (isim [AD] + TCKN/telefon/IBAN). LLM yok/mock → deterministik
+    aday seçimi (en yüksek skorlu kuruma-özel aday); CI determinizmi korunur.
+"""
+from __future__ import annotations
+
+from typing import Any
+
+import structlog
+
+from agents.config import ROUTE_AJAN_MAX_TUR
+from agents.kurum_kimlik import ad_to_kurum, muhatap_kurum_tespit
+from agents.nodes._llm_extract import llm_json, real_llm
+from agents.resmi_kaynak import kaynak_ara, uclu_grounding
+from api.pii import mask_for_llm
+
+log = structlog.get_logger()
+
+_SYSTEM = (
+    "Sen bir kamu evrak havale uzmanısın. Görevin: evrakı GERÇEKTE var olan, YETKİLİ birime "
+    "yönlendirmek. Sana verilen aday birimler resmî teşkilat kaynağından gelir; SADECE bu "
+    "listeden seçebilirsin, birim UYDURMA. Önce şunu değerlendir: bu talep muhatap kurumun "
+    "görev alanında mı? Değilse (ör. sokak/cadde aydınlatması elektrik dağıtım şirketinin, "
+    "trafik ışığı/karayolu farklı kurumun görevidir) yetki='DISARIDA' de ve gerçek yetkili "
+    "kurumun ADINI yaz. Muhatabın görevindeyse yetki='ICERIDE' ve listeden en uygun birimi seç."
+)
+
+
+def _aday_listesi(adaylar: list[dict[str, Any]]) -> str:
+    """LLM prompt'u için aday birimler (ad + görev özeti). Yalnız bunlar seçilebilir."""
+    satirlar = []
+    for a in adaylar[:6]:
+        gorev = (a.get("gorev") or "")[:180]
+        satirlar.append(f"- {a.get('birim_ad')}: {gorev}")
+    return "\n".join(satirlar) if satirlar else "(aday birim bulunamadı)"
+
+
+async def _llm_sec(
+    masked_text: str, konu: str, yetkili: dict[str, Any], adaylar: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """DeepSeek: yetki içeride mi + hangi birim (kapalı-küme: yalnız aday listesinden)."""
+    return await llm_json(
+        system=_SYSTEM,
+        user=(
+            f"MUHATAP/YETKİLİ KURUM: {yetkili.get('ad') or '(bilinmiyor)'}\n"
+            f"EVRAK KONUSU: {konu}\n\n"
+            f"ADAY BİRİMLER (yalnız bunlardan seç, adı BİREBİR kopyala):\n{_aday_listesi(adaylar)}\n\n"
+            f"EVRAK METNİ (maskeli):\n{masked_text[:900]}\n\n"
+            'Yalnız şu JSON: {"yetki":"ICERIDE|DISARIDA",'
+            '"yetkili_kurum_adi":"<DISARIDA ise gerçek yetkili kurum adı, değilse boş>",'
+            '"secilen_birim":"<ICERIDE ise aday listesinden BİREBİR birim adı, değilse boş>",'
+            '"gerekce":"<tek cümle Türkçe gerekçe>"}'
+        ),
+        max_tokens=260,
+    )
+
+
+def _kaynak_kunye(aday: dict[str, Any]) -> dict[str, Any]:
+    """KaynakKaydi'yi state'e yazılacak künyeye indir (transient skor hariç değil — audit için tut)."""
+    return {k: aday[k] for k in (
+        "birim_ad", "gorev", "kaynak_kurum", "kurum_slug", "belge_basligi",
+        "url_veya_belge_kimligi", "erisim_tarihi", "metin_parcasi", "icerik_hash",
+        "kaynak_tipi",
+    ) if k in aday}
+
+
+async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, Any]:
+    """Kaynak-doğrulamalı yönlendirme. det = _route_deterministik(state) (kategori köprüsü)."""
+    bilgi = state.get("bilgi_unsurlari") or {}
+    muhatap = muhatap_kurum_tespit(state.get("evrak_text", "") or "", bilgi)
+    yetkili = dict(muhatap)
+    konu = (bilgi.get("konu") or "").strip()
+    isim = bilgi.get("gonderen")
+    masked = mask_for_llm(state.get("evrak_text", "") or "", isim)
+    if not konu:
+        konu = masked[:300]
+
+    kategori = det.get("hedef_birim")  # eski 9-set kategori (dürüst fallback köprüsü)
+    llm = real_llm()
+    secilen: dict[str, Any] | None = None
+    gerekce = ""
+    yetki_disari = False
+
+    for tur_i in range(max(1, ROUTE_AJAN_MAX_TUR)):
+        adaylar = kaynak_ara(yetkili.get("slug", ""), konu, tur=yetkili.get("tur", ""))
+        if llm is None:
+            # Deterministik: en yüksek skorlu kuruma-özel aday (mock/CI — eskalasyon yok).
+            ozel = [a for a in adaylar if a.get("kaynak_tipi") == "kurum_ozel"]
+            secilen = ozel[0] if ozel else None
+            break
+        obj = await _llm_sec(masked, konu, yetkili, adaylar)
+        if not obj:
+            break
+        if obj.get("yetki") == "DISARIDA" and tur_i < ROUTE_AJAN_MAX_TUR - 1:
+            yk = ad_to_kurum((obj.get("yetkili_kurum_adi") or "").strip())
+            if yk.get("slug") and yk["slug"] != yetkili.get("slug"):
+                yetkili = dict(yk)
+                yetki_disari = True
+                gerekce = (obj.get("gerekce") or "").strip()
+                continue  # yeni yetkili kurumda tekrar ara
+        sb = (obj.get("secilen_birim") or "").strip()
+        secilen = next((a for a in adaylar if (a.get("birim_ad") or "") == sb), None)
+        gerekce = (obj.get("gerekce") or "").strip() or gerekce
+        break
+
+    base: dict[str, Any] = {"muhatap_kurum": muhatap, "yetkili_kurum": yetkili}
+
+    # ÜÇLÜ grounding — yalnız kuruma-özel kaynak + kurum/birim/görev-konu birlikte doğrulanırsa.
+    if secilen and uclu_grounding(secilen, konu, yetkili.get("slug", "")):
+        ad = secilen["birim_ad"]
+        kaynak = secilen.get("kaynak_kurum", "")
+        belge = secilen.get("belge_basligi", "")
+        neden = gerekce or f"görev tanımı evrak konusuyla örtüşüyor"
+        log.info("route_ajan.dogrulandi", birim=ad, kurum=kaynak, yetki_disari=yetki_disari)
+        return {
+            **base,
+            "hedef_birim": ad,
+            "hedef_birim_kaynak": _kaynak_kunye(secilen),
+            "hedef_kategori": kategori,
+            "durum": "kaynak_dogrulandi",
+            "insan_onayi_gerekli": False,
+            "birim_alternatifleri": det.get("birim_alternatifleri", []),
+            "birim_reasoning": f"{ad} — {neden} (kaynak: {kaynak} · {belge}) [DeepSeek+kaynak]",
+        }
+
+    # DÜRÜST fallback — kaynak-doğrulanamadı (REVİZYON 4): eski 9-set GERÇEK birim değil, öneri.
+    parcalar = []
+    if yetki_disari and yetkili.get("ad") and yetkili["slug"] != muhatap.get("slug"):
+        parcalar.append(f"Yetkili kurum: {yetkili['ad']}")
+    if secilen and secilen.get("birim_ad"):
+        tip = "kuruma-özel" if secilen.get("kaynak_tipi") == "kurum_ozel" else "jenerik aday"
+        parcalar.append(f"Öneri ({tip}, doğrulanmadı): {secilen['birim_ad']}")
+    parcalar.append("Resmî kaynakla doğrulanamadı — memur onayı gerekli.")
+    log.info("route_ajan.fallback", muhatap=muhatap.get("slug"), yetki_disari=yetki_disari,
+             kategori=kategori)
+    return {
+        **base,
+        "hedef_birim": None,
+        "hedef_kategori": kategori,
+        "durum": "fallback_onerisi",
+        "insan_onayi_gerekli": True,
+        "birim_alternatifleri": det.get("birim_alternatifleri", []),
+        "birim_reasoning": " · ".join(parcalar),
+    }
+
+
+__all__ = ("route_ajan",)

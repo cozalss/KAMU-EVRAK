@@ -1,7 +1,7 @@
 {# Cevabi yazı — üst yazı iskeleti + İlgi atfı (Yön. 2646 m.15) + e-imza (m.23).
    Sıra: başlık → sayı/tarih → [ivedilik/gizlilik] → konu → muhatap → ilgi → metin →
    kapanış → imza → [koordinasyon] → ek → dağıtım → [e-imza] → [iletişim]. #}
-{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot -%}
+{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot %}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
@@ -14,6 +14,7 @@ Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * ([2, 73 - (sayi_satiri
 İlgi : {% if ilgi_satirlari %}{% for ilgi in ilgi_satirlari %}{% if loop.index0 %}       {% endif %}{{ ilgi }}
 {% endfor %}{% else %}{{ ilgi_tarih | default("{{ İLGİ TARİH }}") }} tarihli ve {{ ilgi_sayi | default("{{ İLGİ SAYI }}") }} sayılı yazınız.
 {% endif %}
+
 {{ metin | default("İlgi yazıda belirtilen konuya ilişkin {{ DEĞERLENDİRME / SONUÇ }}.") }}
 
 {{ " " * 9 }}{{ kapanis | default("Gereğini rica ederim.") }}

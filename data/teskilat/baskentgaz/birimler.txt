@@ -1,0 +1,18 @@
+@KURUM: Başkentgaz - Başkent Doğalgaz Dağıtım Gayrimenkul Yatırım Ortaklığı A.Ş.
+@BELGE: 4646 sayılı Doğal Gaz Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/baskentgaz/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: baskentgaz, baskent-dogalgaz-dagitim, baskent-gaz
+@NOT: Hizmet bölgesi Ankara ili doğalgaz dağıtım lisans sahasıyla sınırlıdır.
+
+BİRİM: Abone İşleri
+GÖREV: Yeni doğalgaz aboneliği başvurusu, abonelik sözleşmesi düzenleme, abone bilgi güncelleme ve abonelik iptal-nakil taleplerini yürütür.
+
+BİRİM: Arıza ve Acil Müdahale
+GÖREV: Gaz kaçağı ihbarı (187 acil hattı), doğalgaz kesintisi ve basınç düşüklüğü şikâyetlerine acil müdahale eder; planlı-plansız kesinti duyurularını yapar.
+
+BİRİM: Sayaç ve Fatura İşleri
+GÖREV: Sayaç okuma, fatura itirazı, tahakkuk hatası düzeltme, sayaç değişimi ve güvence bedeli iadesi başvurularını sonuçlandırır.
+
+BİRİM: İç Tesisat ve Proje Onay
+GÖREV: Bina iç tesisat projelerinin onayı, servis kutusu bağlantısı, tesisat kontrolü ve iç tesisat firma yetkilendirme işlemlerini yürütür.

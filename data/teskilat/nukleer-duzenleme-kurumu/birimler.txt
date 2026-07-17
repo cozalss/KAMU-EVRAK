@@ -1,0 +1,24 @@
+@KURUM: Nükleer Düzenleme Kurumu
+@BELGE: 7381 sayılı Nükleer Düzenleme Kanunu
+@KAYNAK_KIMLIK: teskilat/nukleer-duzenleme-kurumu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: ndk, turkiye-nukleer-duzenleme-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlıklarının adı yönetmelik değişikliğiyle güncellenmiş olabilir.
+
+BİRİM: Nükleer Güvenlik Dairesi Başkanlığı
+GÖREV: Nükleer tesislerin (Akkuyu Nükleer Güç Santrali dahil) güvenlik lisanslama ve denetim süreçlerini yürütür.
+
+BİRİM: Radyasyondan Korunma Dairesi Başkanlığı
+GÖREV: Radyasyon kaynaklarının kullanımı, radyasyon güvenliği lisansları ve radyasyona maruziyet ihbar/şikayetlerini değerlendirir.
+
+BİRİM: Lisanslama ve Belgelendirme Dairesi Başkanlığı
+GÖREV: Nükleer ve radyasyon uygulamalarına ilişkin lisans, izin ve belge başvurularını inceler.
+
+BİRİM: Denetim Dairesi Başkanlığı
+GÖREV: Lisans sahibi tesis ve kuruluşların mevzuata uygunluğunu yerinde denetler.
+
+BİRİM: Acil Durum Dairesi Başkanlığı
+GÖREV: Nükleer ve radyolojik acil durum planlarının hazırlanması ve acil durum ihbarlarının değerlendirilmesinden sorumludur.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Kurum kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.

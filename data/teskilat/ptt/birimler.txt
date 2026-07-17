@@ -1,0 +1,15 @@
+@KURUM: Posta ve Telgraf Teşkilatı Anonim Şirketi (PTT A.Ş.)
+@BELGE: 6475 sayılı Posta Hizmetleri Kanunu
+@KAYNAK_KIMLIK: teskilat/ptt/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: ptt-as, ptt-merkez-mudurlugu
+@NOT: Merkez müdürlüğü/şube birimleri jenerik şablon olarak listelenmiştir; il/ilçe bazında resmî iletişim bilgisi PTT şube sayfasından doğrulanmalıdır. Şirket içi daire başkanlığı adları zaman içinde değişebilmektedir; [DOĞRULA: güncel organizasyon şeması].
+
+BİRİM: Posta ve Kargo Dairesi Başkanlığı
+GÖREV: Posta ve kargo gönderi süreçlerinin işletilmesi; gönderi kayıp/hasar şikâyetleri, teslimat gecikmesi ve tazminat talebi başvurularını sonuçlandırır. [DOĞRULA: dairenin güncel adı]
+
+BİRİM: PTTBank Dairesi Başkanlığı
+GÖREV: PTTBank havale, hesap açma/kapatma, emekli maaşı ödeme ve banka kartı işlemlerine ilişkin şikâyet ve talepleri karşılar. [DOĞRULA: bankacılık hizmet biriminin güncel adı]
+
+BİRİM: PTT Merkez Müdürlüğü
+GÖREV: İl/ilçe düzeyinde posta/kargo gönderisi kabul, PTTBank işlemleri ve gönderi takip taleplerinin ilk muhatabıdır. Vatandaş şikâyetlerinin ilgili daire başkanlığına yönlendirilmesinden sorumludur.

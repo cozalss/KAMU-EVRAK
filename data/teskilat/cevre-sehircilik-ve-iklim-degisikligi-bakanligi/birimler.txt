@@ -1,0 +1,33 @@
+@KURUM: Çevre, Şehircilik ve İklim Değişikliği Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/cevre-sehircilik-ve-iklim-degisikligi-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: cevre-bakanligi, csb, cevre-ve-sehircilik-bakanligi
+@NOT: Tapu ve Kadastro Genel Müdürlüğü bakanlığa bağlı ayrı bir kuruluş, İklim Değişikliği Başkanlığı ise bakanlığa bağlı ayrı bir başkanlıktır; her ikisi de evrak yönlendirme kolaylığı için bu listede yer almaktadır. Milli Emlak Genel Müdürlüğü bakanlığın hizmet birimidir. Taşra teşkilatı il müdürlükleri ve kadastro müdürlükleri üzerinden yürütülür.
+
+BİRİM: Mekânsal Planlama Genel Müdürlüğü
+GÖREV: İmar planları, çevre düzeni planları ve mekânsal strateji planlarının onayı, plan itirazlarının değerlendirilmesi ve imar mevzuatına ilişkin başvuruları yürütür.
+
+BİRİM: Yerel Yönetimler Genel Müdürlüğü
+GÖREV: Belediyeler ve il özel idarelerinin kuruluş, sınır, bütçe ve personel işlemlerini izler; köylere hizmet götürme birlikleri ve mahalli idare birlikleri ile ilgili başvuruları değerlendirir.
+
+BİRİM: Çevre Yönetimi Genel Müdürlüğü
+GÖREV: Hava, su ve toprak kirliliği şikâyetleri, atık yönetimi, gürültü kirliliği ve çevre izinlerine ilişkin başvuruları değerlendirir.
+
+BİRİM: ÇED, İzin ve Denetim Genel Müdürlüğü
+GÖREV: Çevresel Etki Değerlendirmesi (ÇED) süreçlerini, çevre izin ve lisans başvurularını ve tesislerin çevre denetimini yürütür.
+
+BİRİM: Yapı İşleri Genel Müdürlüğü
+GÖREV: Kamu yapılarının etüt-proje ve inşaat işleri, yapı denetim mevzuatı uygulamaları ve bina deprem güvenliğine ilişkin başvuruları yürütür.
+
+BİRİM: İklim Değişikliği Başkanlığı
+GÖREV: Sera gazı emisyon envanteri ve izleme, ulusal iklim değişikliği stratejisi ve karbon piyasası düzenlemelerine ilişkin başvuruları yürütür.
+
+BİRİM: Tapu ve Kadastro Genel Müdürlüğü
+GÖREV: Tapu sicili işlemleri, taşınmaz mülkiyet devri, ipotek tesisi, kadastro tespit ve itiraz başvurularını yürütür.
+
+BİRİM: Milli Emlak Genel Müdürlüğü
+GÖREV: Hazineye ait taşınmazların kiralama, satış ve tahsis işlemleri; kamu arazileri üzerindeki işgal ve ecrimisil başvurularını değerlendirir.
+
+BİRİM: Altyapı ve Kentsel Dönüşüm Hizmetleri Genel Müdürlüğü
+GÖREV: 6306 sayılı Kanun kapsamında riskli yapı tespiti, kentsel dönüşüm süreçleri ve altyapı yatırımlarına ilişkin başvuruları yürütür.

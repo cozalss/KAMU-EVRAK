@@ -1,0 +1,21 @@
+@KURUM: Tapu ve Kadastro Genel Müdürlüğü
+@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Tapu ve Kadastro Genel Müdürlüğü); 2644 sayılı Tapu Kanunu; 3402 sayılı Kadastro Kanunu
+@KAYNAK_KIMLIK: teskilat/tapu-ve-kadastro-genel-mudurlugu/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: tkgm, tapu-mudurlugu, kadastro-mudurlugu
+@NOT: Tapu/kadastro müdürlüğü birimleri jenerik şablon olarak listelenmiştir; il/ilçe bazında resmî iletişim bilgisi TKGM il müdürlüğü sayfasından doğrulanmalıdır.
+
+BİRİM: Tapu Dairesi Başkanlığı
+GÖREV: Taşınmaz mülkiyet devri, ipotek tesisi/fekki, şerh ve beyanlar ile miras intikali işlemlerine ilişkin merkezi politika ve mevzuat uygulamasını yürütür.
+
+BİRİM: Kadastro Dairesi Başkanlığı
+GÖREV: Parsel tespiti, kadastro yenileme, aplikasyon ve sınırlandırma işlemlerine ilişkin teknik standartları belirler ve itiraz süreçlerini yönetir.
+
+BİRİM: Yabancı İşler Dairesi Başkanlığı
+GÖREV: Yabancı uyruklu gerçek/tüzel kişilerin taşınmaz edinimi, tapu devri ve mütekabiliyet kontrolü işlemlerini yürütür.
+
+BİRİM: Tapu Müdürlüğü
+GÖREV: İl/ilçe düzeyinde tapu devri, ipotek tesisi/fekki, şerh, terkin ve intikal işlemlerini doğrudan işleme alır. Vatandaş ve noter taleplerinin ilk muhatabıdır.
+
+BİRİM: Kadastro Müdürlüğü
+GÖREV: İl/ilçe düzeyinde parsel ölçüm, kadastro tespit tutanağı düzenleme ve aplikasyon (sınır gösterme) taleplerini karşılar. Kadastro itirazlarının ilk incelemesini yapar.

@@ -35,8 +35,9 @@ class TestRouteBirimAtlama:
         monkeypatch.setattr(route_mod, "LLM_ATLA_NODELAR", frozenset())
         monkeypatch.setattr(route_mod, "real_llm", lambda: None)
         state = {"evrak_turu": "dilekce", "evrak_text": "izin talebi", "bilgi_unsurlari": {}}
-        # Act / Assert
-        assert (await route_mod.route_birim_node(state))["hedef_birim"]
+        # Act / Assert — bir yönlendirme kararı üretilir (doğrulanmış birim adı VEYA fallback kategori)
+        out = await route_mod.route_birim_node(state)
+        assert out.get("hedef_birim") or out.get("hedef_kategori")
 
 
 class TestFinalizeAtlama:

@@ -1,0 +1,15 @@
+@KURUM: Anayasa Mahkemesi
+@BELGE: 6216 sayılı Anayasa Mahkemesinin Kuruluşu ve Yargılama Usulleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/anayasa-mahkemesi/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: aym, anayasa-mahkemesi-baskanligi
+@NOT: Anayasa Mahkemesi yüksek yargı organıdır; bireysel başvurular Bireysel Başvuru Bürosuna, norm denetimi (iptal davası/itiraz) başvuruları norm denetimi yazı işlerine yöneliktir. [DOĞRULA: güncel teşkilat şeması; 'Norm Denetimi Yazı İşleri Müdürlüğü' birim adı AYM İçtüzüğü/resmî teşkilat şemasından teyit edilmeli]
+
+BİRİM: Bireysel Başvuru Bürosu
+GÖREV: Anayasa m.148 kapsamında bireysel başvuru kabulü, kabul edilebilirlik ön incelemesi, harç ve eksiklik tamamlama bildirimi.
+
+BİRİM: Norm Denetimi Yazı İşleri Müdürlüğü
+GÖREV: İptal davası ve itiraz yoluyla norm denetimi başvurularının kabulü, dosya sorgulama ve karar örneği talebi.
+
+BİRİM: Genel Sekreterlik
+GÖREV: Anayasa Mahkemesi genel evrak kayıt ve havale, idari yazışma koordinasyonu, kurul kararlarına ilişkin yazışmalar.

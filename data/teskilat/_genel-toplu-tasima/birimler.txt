@@ -1,0 +1,20 @@
+@KURUM: [JENERİK ŞABLON — Büyükşehir/İl Toplu Taşıma İşletmesi]
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu / 5393 sayılı Belediye Kanunu
+@KAYNAK_KIMLIK: teskilat/_genel-toplu-tasima/gorev-tanimi
+@ERISIM: 2026-07-18
+@NOT: YALNIZ ADAY ŞABLONDUR — gerçek bir kurumu temsil etmez, kuruma özel alias atanmaz. Kuruma özgü teşkilat dosyası (örn. iett, ego, eshot, burulas, metro-istanbul) yoksa, yönlendirme öncesi bu birim adlarının hedef kurumun güncel teşkilat şemasında karşılığı olup olmadığı mutlaka [DOĞRULA] edilmelidir.
+
+BİRİM: Hat Planlama
+GÖREV: Toplu taşıma hat güzergahı, durak yeri ve hat değişikliği taleplerini değerlendirir.
+
+BİRİM: Sefer-İşletme
+GÖREV: Sefer sıklığı, sefer iptali/gecikmesi ve araç kapasitesi şikayetlerini karşılar.
+
+BİRİM: Kart-Ücret İşlemleri
+GÖREV: Ulaşım kartı bakiye/iade, indirimli kart başvurusu ve ücret itirazlarını yürütür.
+
+BİRİM: Kayıp Eşya
+GÖREV: Araçta veya istasyonda unutulan eşyaların teslim ve iade işlemlerini yürütür.
+
+BİRİM: Müşteri İlişkileri
+GÖREV: Personel davranışı, araç/istasyon temizliği gibi genel yolcu şikayetlerini karşılar.

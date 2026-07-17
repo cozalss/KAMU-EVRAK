@@ -1,0 +1,18 @@
+@KURUM: Kıyı Emniyeti Genel Müdürlüğü (KEGM)
+@BELGE: 655 sayılı Ulaştırma, Denizcilik ve Haberleşme Bakanlığının Teşkilat ve Görevleri Hakkında Kanun Hükmünde Kararname
+@KAYNAK_KIMLIK: teskilat/kiyi-emniyeti-genel-mudurlugu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: kegm
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlığı adları genel bilgiye dayanır, yönlendirme öncesi güncel KEGM teşkilat şemasından teyit edilmelidir. 655 sayılı KHK 2018 sonrası Cumhurbaşkanlığı kararname sistemiyle büyük ölçüde yürürlükten kalkmıştır; kurumun güncel görev dayanağı da teyit edilmelidir.
+
+BİRİM: Fenerler ve Seyir Yardımcıları Dairesi Başkanlığı
+GÖREV: Fener, şamandıra ve deniz seyir yardımcı işaretlerinin kurulumu, bakımı ve arıza bildirimlerini yürütür.
+
+BİRİM: Romorkaj ve Kurtarma Dairesi Başkanlığı
+GÖREV: Liman ve boğazlarda romorkaj (yedekleme), kurtarma ve yardım hizmetlerini yürütür; gemi arızası veya kaza sonrası kurtarma talepleri bu birime gider.
+
+BİRİM: Deniz Trafik Dairesi Başkanlığı
+GÖREV: Boğazlarda gemi trafik yönetimi (VTS), seyir güvenliği ve trafik ihlali bildirimlerini karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Deniz kazası, çatışma ve tazminat taleplerine ilişkin hukuki süreçleri yürütür.

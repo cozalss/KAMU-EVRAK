@@ -1,0 +1,27 @@
+@KURUM: Enerji ve Tabii Kaynaklar Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/enerji-ve-tabii-kaynaklar-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: etkb, enerji-bakanligi
+@NOT: Maden ve Petrol İşleri Genel Müdürlüğü (MAPEG) mevzuatta özel bütçeli bağlı kuruluş statüsündedir; evrak yönlendirme amacıyla Bakanlık teşkilatı içinde listelenmiştir. Yenilenebilir Enerji Genel Müdürlüğü kaldırılmış olup görevleri Enerji İşleri Genel Müdürlüğüne devredilmiştir.
+
+BİRİM: Enerji İşleri Genel Müdürlüğü
+GÖREV: Elektrik/doğal gaz piyasası proje onayı, enerji verimliliği belgelendirme ve verimlilik artırıcı proje (VAP) destekleri, yenilenebilir enerji (GES/RES) kapasite tahsisi ve yenilenebilir enerji kaynak alanı (YEKA) başvuruları ile enerji tesisleri arıza/şikâyet başvurularını yürütür.
+
+BİRİM: Maden ve Petrol İşleri Genel Müdürlüğü
+GÖREV: Maden ruhsatı başvurusu/devri, petrol arama-işletme ruhsatı ve maden sahası ihtilaf başvurularını değerlendirir.
+
+BİRİM: Nükleer Enerji ve Uluslararası Projeler Genel Müdürlüğü
+GÖREV: Nükleer enerji santrali proje koordinasyonu ve uluslararası enerji iş birliği yazışmalarını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı
+GÖREV: AB enerji mevzuat uyumu ve uluslararası enerji projeleri dış ilişkiler yazışmalarını yürütür.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bakanlık bilgi sistemleri, e-Devlet entegrasyonu ve veri güvenliği ile ilgili başvuruları karşılar.

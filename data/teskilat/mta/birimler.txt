@@ -1,0 +1,18 @@
+@KURUM: Maden Tetkik ve Arama Genel Müdürlüğü
+@BELGE: 2804 sayılı Maden Tetkik ve Arama Genel Müdürlüğü Kanunu
+@KAYNAK_KIMLIK: teskilat/mta/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: maden-tetkik-ve-arama-genel-mudurlugu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Jeotermal Kaynaklar ve Doğal Mineralli Sular Dairesi Başkanlığı
+GÖREV: Jeotermal kaynak arama ruhsatı destek başvuruları, jeotermal sondaj talebi ve doğal mineralli su kaynağı inceleme dilekçelerini yürütür.
+
+BİRİM: Maden Etüt ve Arama Dairesi Başkanlığı
+GÖREV: Maden arama ruhsatı öncesi jeolojik etüt talepleri, maden yatağı bilgi talebi ve arama sonucu itirazlarını değerlendirir.
+
+BİRİM: Sondaj Dairesi Başkanlığı
+GÖREV: Su sondajı, jeotermal sondaj ve maden sondaj hizmet taleplerini karşılar; sondaj hizmet ücreti itirazlarını sonuçlandırır.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Ruhsat ret/iptal kararlarına karşı itiraz ve dava dilekçelerinde kurumu temsil eder.

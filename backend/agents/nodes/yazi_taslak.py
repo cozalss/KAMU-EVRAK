@@ -34,24 +34,70 @@ from agents.config import (
     YAZI_PLAN_PARALEL,
     birim_tr,
 )
+from agents.kurum_kimlik import (
+    antet_idare_adi,
+    antet_idare_secimi,
+    gorus_muhatabi,
+    hitap_eki,
+    muhatap_kurum_tespit,
+    muzekkere_muhatabi,
+)
 from agents.servis_birim import SERVIS_BIRIM_TR
 from yazi.sdp_plani import sdp_bul
 
 log = structlog.get_logger()
 
 
-def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
+def _antet_idare(state: dict[str, Any], yazi_turu: str) -> str:
+    """Antet İDARE satırı = evrakın muhatap kurumu (dinamik kurum kimliği).
+
+    Seçim kuralı kurum_kimlik.antet_idare_secimi'nde: hitap-ekli tespit her türde bizim
+    kurum; nominatif dış-kurum başlığı (icra/mahkeme göndereni) antet OLMAZ → env'e düşer.
+    Tespit boşsa route ajanının kaynak-doğrulamalı muhatap_kurum'u kurum-İÇİ türlerde
+    yedek olarak kullanılır.
+    """
+    idare = antet_idare_secimi(
+        state.get("evrak_text", "") or "", state.get("bilgi_unsurlari") or {}, yazi_turu)
+    if idare:
+        return idare
+    kurum = state.get("muhatap_kurum")
+    if yazi_turu in ("gorus_mutalaa", "olur") and isinstance(kurum, dict) and kurum.get("ad"):
+        return antet_idare_adi(kurum)
+    return ""
+
+
+def _hazirlayan_birim(state: dict[str, Any], yazi_turu: str) -> str:
+    """Antet BİRİM satırı = taslağı hazırlayan birim (Yön. m.10 üçüncü satır).
+
+    Öncelik: kaynak-doğrulanmış hedef birim (evrakı cevaplayacak gerçek birim; ust_yazi
+    HARİÇ — orada hedef birim MUHATAP'tır, gönderen olamaz) → içerikten türetilen servis
+    müdürlüğü (dict {kod, ad, sinyal}; eski kod-string biçimi de tolere edilir) → boş
+    (render KURUM_BIRIM env / tür-özgü varsayılana düşer).
+    """
+    if yazi_turu != "ust_yazi" and state.get("durum") == "kaynak_dogrulandi":
+        hedef = state.get("hedef_birim")
+        if isinstance(hedef, str) and hedef.strip():
+            return hedef.strip()
+    servis = state.get("servis_birimi") or {}
+    if isinstance(servis, dict):
+        return str(servis.get("ad", "") or "")
+    return SERVIS_BIRIM_TR.get(str(servis), "")
+
+
+def _fallback_taslak(yazi_turu: str, konu: str, evrak_text: str = "") -> dict[str, Any]:
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
     konu_satir = konu if konu else "Başvuru değerlendirmesi"
     tarih = date.today().strftime("%d.%m.%Y")
-    # Kurum kimliği ENV'den (models._DEMO_DEFAULTS ile aynı kaynak); boşsa jenerik demo korunur.
-    idare = os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
-    birim = os.getenv("KURUM_BIRIM", "").strip() or "YAZI İŞLERİ BİRİMİ"
+    # Kurum kimliği: önce evraktan deterministik tespit (dinamik antet iskelette de
+    # çalışsın), yoksa ENV (models._DEMO_DEFAULTS ile aynı kaynak), yoksa jenerik demo.
+    idare = (antet_idare_adi(muhatap_kurum_tespit(evrak_text, None))
+             or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU")
+    birim = os.getenv("KURUM_BIRIM", "").strip() or "Yazı İşleri Birimi"
     kapanis = {
         "cevabi_yazi": "Gereğini rica ederim.",
         "bilgilendirme": "Bilgilerinize arz ederim.",
         "olur": "Olurlarınıza arz ederim.",
-        "gorus_mutalaa": "Bilgilerine arz olunur.",
+        "gorus_mutalaa": "Bilgi ve gereğini arz ederim.",
     }.get(yazi_turu, "Gereğini arz ederim.")  # muzekkere/ust_yazi bu genel varsayılanı paylaşır
     ortak_baslik = (
         "                                   T.C.\n"
@@ -75,7 +121,7 @@ def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
             "                                              Yetkili Makam"
         )
     else:
-        muhatap = "Dağıtım yerlerine" if yazi_turu == "bilgilendirme" else "İlgili Makama"
+        muhatap = "DAĞITIM YERLERİNE" if yazi_turu == "bilgilendirme" else "İlgili Makama"
         ilgi = "" if yazi_turu == "bilgilendirme" else "\nİlgi : Başvurunuz.\n"
         metin = f"{ortak_baslik}                          {muhatap}\n{ilgi}\n{govde}\n\n         {kapanis}\n{imza}"
     return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin + "\n", "format_uyumlu": True}
@@ -104,7 +150,10 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     unsurlar = state.get("bilgi_unsurlari") or {}
     evrak_text = state.get("evrak_text", "") or ""
     alt_talepler = state.get("alt_talepler") or []
-    hedef_birim = state.get("hedef_birim", "")
+    # Kaynak-doğrulamalı ajan köprüsü (muhatap/plan yolu): hedef_birim doğrulanmış GERÇEK
+    # birim adı (serbest-metin) VEYA fallback'te None → hedef_kategori (eski 9-set) etiketine
+    # köprülenir; böylece üst-yazı muhatabı (m.14/2) ve plan boş kalmaz. birim_tr passthrough.
+    hedef_birim = state.get("hedef_birim") or state.get("hedef_kategori") or ""
     plan_notu = ""
 
     try:
@@ -149,23 +198,46 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             yazi_turu = plan["yazi_turu"]
             plan_notu = plan["gerekce"]
         # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
-        hedef_muhatap = (plan or {}).get("muhatap") or (
-            birim_tr(hedef_birim) if yazi_turu == "ust_yazi" else None)
+        # gorus_mutalaa = görüşü TALEP EDEN birime m.14/2 hitap biçimiyle — plan muhatabı
+        # da AYNI biçim kapısından geçer (gerçek-LLM yolunda eksiz/karışık-kasa kalıyordu).
+        plan_muhatap = (plan or {}).get("muhatap") or ""
+        gonderen = str(unsurlar.get("gonderen", "") or "")
+        if yazi_turu == "gorus_mutalaa":
+            hedef_muhatap = gorus_muhatabi(evrak_text, plan_muhatap) or None
+        elif yazi_turu == "muzekkere":
+            # m.14/2 hitap biçimli + yargı/idari-iç ayrımı (kaynaktan; plan güvenilmez).
+            hedef_muhatap = muzekkere_muhatabi(evrak_text, gonderen) or None
+        elif yazi_turu == "ust_yazi":
+            # m.14/2: hedef birim muhatabı BÜYÜK + yönelme eki ("...MÜDÜRLÜĞÜNE").
+            hedef_muhatap = plan_muhatap or (
+                hitap_eki(birim_tr(hedef_birim)) if hedef_birim else None)
+        else:
+            hedef_muhatap = plan_muhatap or None
         # SDP konu-kodu (Yön. m.11): evrak türü + konudan deterministik → Sayı satırı m.11-yapılı
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")
         sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
-        # Antet birimi = evrağın konusuna göre tespit edilen spesifik müdürlük (servis_birimi
-        # → "Fen İşleri Müdürlüğü" gibi); boşsa build_context KURUM_BIRIM env / jenerik'e düşer.
-        # Her evrakta sabit "Yazı İşleri" yerine konuya göre değişir (kullanıcı bulgusu).
-        hazirlayan = SERVIS_BIRIM_TR.get(state.get("servis_birimi", ""), "")
+        # Antet = dinamik kurum kimliği (idare evraktan tespit; her evrakta sabit tek kurum
+        # değil — kullanıcı bulgusu) + hazırlayan birim (kaynak-doğrulanmış hedef birim →
+        # konuya göre servis müdürlüğü → env/tür varsayılanı).
+        idare = _antet_idare(state, yazi_turu)
+        hazirlayan = _hazirlayan_birim(state, yazi_turu)
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
-                            sdp_kodu=(sdp or {}).get("kod", ""), hazirlayan_birim=hazirlayan)
+                            sdp_kodu=(sdp or {}).get("kod", ""),
+                            hazirlayan_birim=hazirlayan, idare_adi=idare)
         result = render_yazi(ctx)
-        sayi_satiri = ctx.jinja_vars().get("sayi_satiri", "")
+        jinja = ctx.jinja_vars()
+        sayi_satiri = jinja.get("sayi_satiri", "")
+        # Sistem-tespitli antet/muhatap değerleri — verify grounding muafiyeti bunları
+        # "kaynakta yok → uydurma" saymasın diye state ile taşınır (Sayı satırı deseni).
+        antet_meta = {
+            "idare": jinja.get("idare_adi", ""), "birim": jinja.get("birim_adi", ""),
+            "muhatap": jinja.get("muhatap", ""),
+        }
     except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
         log.warning("yazi_taslak_fallback", err=str(exc))
-        return _fallback_taslak(yazi_turu, str(unsurlar.get("konu", "") or ""))
+        return _fallback_taslak(
+            yazi_turu, str(unsurlar.get("konu", "") or ""), evrak_text)
 
     log.info(
         "yazi_taslak", turu=turu, yazi_turu=result.yazi_turu,
@@ -177,6 +249,8 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         "format_uyumlu": result.format_uyumlu,
         # Dinamik planın insan-okunur gerekçesi (boş = statik yol kullanıldı) — UI notu.
         "yazi_plan_notu": plan_notu,
+        # Sistem-tespitli antet künyesi (grounding muafiyeti + UI şeffaflığı).
+        "antet_meta": antet_meta,
         # TS 13298 üst-veri (EBYS metadata) — belge türü + konu + SDP + güvenlik + tarih/sayı.
         "ust_veri": ts13298_ust_veri(
             result.yazi_turu, konu, sdp, sayi_satiri,

@@ -1,0 +1,33 @@
+@KURUM: İçişleri Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/icisleri-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: icisleri, ib, mulkiye
+@NOT: Emniyet Genel Müdürlüğü (trafik, asayiş, pasaport), Jandarma Genel Komutanlığı (kırsal asayiş), Göç İdaresi Başkanlığı (yabancılar, ikamet izni, uluslararası koruma) ve AFAD (afet ve acil durum) İçişleri Bakanlığına bağlı kuruluşlardır; bu dosyada yer alan ana hizmet birimlerinden farklı ele alınmalıdır. Belediyeler ve il özel idarelerine ilişkin merkezi iş ve işlemler 2018'den bu yana Çevre, Şehircilik ve İklim Değişikliği Bakanlığı Yerel Yönetimler Genel Müdürlüğünce yürütülür; bu konudaki evrak o bakanlığa yönlendirilir.
+
+BİRİM: İller İdaresi Genel Müdürlüğü
+GÖREV: Mülki idare bölümlerinin (il, ilçe) kurulması ve sınır işlemleri, valilik ve kaymakamlık iş ve işlemlerinin koordinasyonu, toplantı ve gösteri yürüyüşü izinleri, olağanüstü hal ve genel güvenlik koordinasyonu ile ilgili başvuruları yürütür.
+
+BİRİM: Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü
+GÖREV: Doğum, ölüm, evlenme, boşanma gibi nüfus olaylarının tescili, kimlik kartı (TC Kimlik Kartı) ve nüfus cüzdanı işlemleri, MERNİS kayıtları, Türk vatandaşlığına alınma ve vatandaşlıktan çıkma başvurularını yürütür.
+
+BİRİM: Sivil Toplumla İlişkiler Genel Müdürlüğü
+GÖREV: Dernek kuruluşu, tüzük değişikliği ve fesih işlemleri, dernek denetimi, yardım toplama izinleri ve kamu yararına çalışan dernek statüsü başvurularını yürütür.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlığın e-Devlet entegrasyonu, bilişim altyapısı, veri güvenliği ve elektronik başvuru sistemlerinin kurulup işletilmesinden sorumludur.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlık personeli ile mülki idare amirlerinin atama, nakil, terfi ve özlük işlemlerini; personel şikâyet ve itiraz başvurularını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık bütçesinin hazırlanması, stratejik plan ve performans programı çalışmaları, iç kontrol ve mali izleme faaliyetlerini yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin hukuki görüş verme, dava ve icra takibi, mevzuat inceleme başvurularını değerlendirir.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Bakanlığın idari, mali ve lojistik destek hizmetlerini; taşınır-taşınmaz yönetimi ve satın alma süreçlerini yürütür.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bilgi edinme başvuruları, basın açıklamaları ve vatandaş-kurum iletişimi ile ilgili talepleri karşılar.

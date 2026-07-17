@@ -1,0 +1,21 @@
+@KURUM: Diyanet İşleri Başkanlığı
+@BELGE: 633 sayılı Diyanet İşleri Başkanlığı Kuruluş ve Görevleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/diyanet-isleri-baskanligi/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: diyanet
+@NOT: İl/ilçe müftülüğü ve cami görevlisi kadro/atama süreçleri il bazında değişebilir. [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Din Hizmetleri Genel Müdürlüğü
+GÖREV: Cami ve mescitlerde ibadet hizmetlerinin yürütülmesi, imam-hatip/müezzin görevlendirme ve cami görevlisi şikâyet/talep dilekçelerini değerlendirir. Vaaz, hutbe ve dini rehberlik hizmetlerine ilişkin başvuruların merkezi muhatabıdır.
+
+BİRİM: Hac ve Umre Hizmetleri Genel Müdürlüğü
+GÖREV: Hac ve umre kayıt/kura başvuruları, kontenjan itirazları, kafile organizasyonu ve hacı adayı şikâyet dilekçelerini sonuçlandırır.
+
+BİRİM: Eğitim Hizmetleri Genel Müdürlüğü
+GÖREV: Kur'an kursu açma/kayıt talepleri, din görevlisi yetiştirme ve hizmet içi eğitim programlarına ilişkin başvuruları yürütür.
+
+BİRİM: İl Müftülüğü
+GÖREV: İl düzeyinde din hizmetleri koordinasyonu, cami görevlisi atama/nakil talepleri ve vatandaş dilekçelerinin ilk kabul ve yönlendirme merciidir.
+
+BİRİM: İlçe Müftülüğü
+GÖREV: İlçe düzeyinde cami ve din görevlisi iş ve işlemleri ile yerel ibadet hizmeti taleplerini karşılar; muhtarlık/belediye ile birlikte nikah kıyma sürecine destek verir.

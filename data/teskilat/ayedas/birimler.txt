@@ -1,0 +1,21 @@
+@KURUM: İstanbul Anadolu Yakası Elektrik Dağıtım A.Ş.
+@BELGE: 6446 sayılı Elektrik Piyasası Kanunu; Genel Aydınlatma Yönetmeliği
+@KAYNAK_KIMLIK: teskilat/ayedas/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: ayedas, ayedas-a-s, anadolu-yakasi-elektrik-dagitim, istanbul-anadolu-yakasi-elektrik-dagitim
+@NOT: yalnız aday üretme amaçlı; kuruma-özel resmî kaynak yerine geçmez; yaygın kısaltma AYEDAŞ
+
+BİRİM: Bölge İşletme Müdürlüğü
+GÖREV: Elektrik arızası, planlı/plansız kesinti, orta-alçak gerilim hat bakım-onarımı ve acil saha müdahalesi taleplerini karşılar. Hizmet bölgesi: İstanbul Anadolu Yakası.
+
+BİRİM: Genel Aydınlatma Birimi
+GÖREV: Sokak, cadde, park ve meydan aydınlatma arızası ile genel aydınlatma bakım-onarım ve yeni aydınlatma tesisi başvurularını yürütür (Genel Aydınlatma Yönetmeliği kapsamında).
+
+BİRİM: Abone ve Müşteri Hizmetleri Müdürlüğü
+GÖREV: Yeni bağlantı/abonelik başvurusu, sayaç okuma-değişim-mühür itirazı, tarife ve fatura itirazlarını karşılar.
+
+BİRİM: Yatırım ve Şebeke Planlama Müdürlüğü
+GÖREV: Şebeke yatırım programı, yeni hat/trafo tesisi, kapasite artırım ve toplu konut şebeke genişletme taleplerini değerlendirir.
+
+BİRİM: Kesinti ve Arıza İhbar Merkezi
+GÖREV: 7/24 arıza-kesinti ihbarlarını alır, saha ekiplerine yönlendirir ve planlı kesinti duyurularını koordine eder.

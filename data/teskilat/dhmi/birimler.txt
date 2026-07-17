@@ -1,0 +1,21 @@
+@KURUM: Devlet Hava Meydanları İşletmesi Genel Müdürlüğü (DHMİ)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname
+@KAYNAK_KIMLIK: teskilat/dhmi/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: devlet-hava-meydanlari-isletmesi
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlığı adları genel bilgiye dayanır, yönlendirme öncesi güncel DHMİ teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Havaalanları Dairesi Başkanlığı
+GÖREV: Havalimanı terminal işletmesi, yolcu hizmetleri ve terminal içi altyapıdan sorumludur; havalimanında kaybolan bagaj/eşya şikayetleri bu birime yönlendirilir.
+
+BİRİM: Hava Trafik Dairesi Başkanlığı
+GÖREV: Hava trafik kontrol hizmetleri, slot (iniş-kalkış) tahsisi ve hava sahası düzenlemelerini yürütür.
+
+BİRİM: Elektronik, Elektrik ve Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Seyrüsefer yardımcı cihazları, radar ve terminal teknik altyapı arıza bildirimlerini yönetir.
+
+BİRİM: Müşteri Hizmetleri ve Yolcu Hakları Birimi
+GÖREV: Uçuş gecikmesi, iptali, yer hizmetleri şikayeti ve yolcu hakları başvurularını karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Havalimanı işletmesinden doğan tazminat taleplerini ve idari itirazları yürütür.

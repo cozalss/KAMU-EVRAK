@@ -1,0 +1,21 @@
+@KURUM: Türkiye İnsan Hakları ve Eşitlik Kurumu
+@BELGE: 6701 sayılı Türkiye İnsan Hakları ve Eşitlik Kurumu Kanunu
+@KAYNAK_KIMLIK: teskilat/tihek/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: turkiye-insan-haklari-ve-esitlik-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Ayrımcılıkla Mücadele ve Eşitlik Dairesi Başkanlığı
+GÖREV: Cinsiyet, ırk, din, engellilik gibi nedenlerle ayrımcılığa uğradığını iddia eden kişilerin başvurularını inceler.
+
+BİRİM: İnsan Hakları İhlalleri Başvuru İnceleme Dairesi Başkanlığı
+GÖREV: Kamu idareleri ve özel kişilerce gerçekleştirildiği iddia edilen insan hakları ihlali başvurularını değerlendirir.
+
+BİRİM: Ulusal Önleme Mekanizması Dairesi Başkanlığı
+GÖREV: Gözaltı, cezaevi ve alıkoyma yerlerinde işkence ve kötü muamelenin önlenmesine yönelik ziyaret ve inceleme faaliyetlerini yürütür.
+
+BİRİM: Uluslararası İlişkiler ve AB Dairesi Başkanlığı
+GÖREV: Uluslararası insan hakları mekanizmaları ve Avrupa Birliği ile koordinasyonu yürütür.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.

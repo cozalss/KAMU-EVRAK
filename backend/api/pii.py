@@ -13,6 +13,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from core.text import tr_lower
+
 # IBAN ÖNCE (TR + 24 hane; içindeki hane dizilerini maskeler) → sonra TCKN → sonra telefon.
 _RE_IBAN = re.compile(r"\bTR\d{2}(?:\s?\d{4}){5}\s?\d{2}\b", re.IGNORECASE)
 _RE_TCKN = re.compile(r"\b[1-9]\d{10}\b")               # 11 hane
@@ -60,4 +62,43 @@ def has_pii(text: str) -> bool:
     )
 
 
-__all__ = ("MaskResult", "has_pii", "mask_pii")
+def _redact_isim(text: str, isim: str | None) -> str:
+    """Gönderen ad-soyadını metinden [AD] ile redakte et (case-insensitive, Türkçe-güvenli).
+
+    Yönlendirme için isim bilgi taşımaz → kısmi yıldız yerine TAM redaksiyon (ilk-3-harf
+    sızıntısı yok). isim yok/<3 → dokunma. Tam ad + her token'ı (≥3 harf) redakte edilir;
+    tr_lower ile eşleşme (re.IGNORECASE Türkçe İ/ı'yı kaçırır). En uzun önce (kısmi bölme yok).
+    """
+    if not isim or not isinstance(isim, str):
+        return text
+    isim = isim.strip()
+    if len(isim) < 3:
+        return text
+    parcalar = sorted(
+        {isim, *[t for t in isim.split() if len(t) >= 3]},
+        key=len, reverse=True,
+    )
+    out = text
+    for parca in parcalar:
+        hedef = tr_lower(parca)
+        low = tr_lower(out)
+        idx = low.find(hedef)
+        while idx != -1:
+            out = out[:idx] + "[AD]" + out[idx + len(hedef):]
+            low = tr_lower(out)
+            idx = low.find(hedef, idx + len("[AD]"))
+    return out
+
+
+def mask_for_llm(text: str, isim: str | None = None) -> str:
+    """LLM'e/web'e göndermeden ÖNCE tam maskeleme: kişi adı [AD] + TCKN/telefon/IBAN yıldız.
+
+    İsim ÖNCE redakte edilir (numara maskesinin ürettiği yıldızları isim taraması bozmasın),
+    sonra mask_pii sayıları maskeler. KVKK: dış servise (DeepSeek/web) ham PII gitmez.
+    """
+    if not isinstance(text, str) or not text:
+        return text if isinstance(text, str) else ""
+    return mask_pii(_redact_isim(text, isim)).masked_text
+
+
+__all__ = ("MaskResult", "has_pii", "mask_for_llm", "mask_pii")

@@ -1,0 +1,15 @@
+@KURUM: Türkiye Taşkömürü Kurumu (TTK)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname; 3213 sayılı Maden Kanunu
+@KAYNAK_KIMLIK: teskilat/ttk/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: ttk, turkiye-taskomuru
+@NOT: [DOĞRULA: güncel teşkilat şeması] — Zonguldak havzası müessese müdürlüğü (Kozlu, Karadon, Üzülmez, Amasra) adları resmi şemadan teyit edilmeli.
+
+BİRİM: Üretim Dairesi Başkanlığı (Zonguldak Havzası)
+GÖREV: Zonguldak havzasında yer altı taşkömürü üretim ocağı işletmesi, üretim kapasitesi ve galeri bakım dilekçelerini karşılar. Ocak çevresinde çökme ve maden ocağı güvenliği ihbarlarını değerlendirir.
+
+BİRİM: İş Sağlığı ve Güvenliği Dairesi Başkanlığı
+GÖREV: Maden işçi sağlığı, iş kazası bildirimi ve grizu-gaz güvenliği dilekçelerini yönetir. Ocak içi güvenlik denetimi ve işçi sağlığı şikayetlerini karşılar.
+
+BİRİM: Sondaj ve Maden Makineleri Dairesi Başkanlığı
+GÖREV: Yer altı sondaj, galeri açma ve maden makineleri bakım-onarım dilekçelerini karşılar. Ekipman arızası ve teknik destek taleplerini değerlendirir.

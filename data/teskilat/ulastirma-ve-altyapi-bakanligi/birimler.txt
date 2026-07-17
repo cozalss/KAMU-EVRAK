@@ -1,0 +1,36 @@
+@KURUM: Ulaştırma ve Altyapı Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/ulastirma-ve-altyapi-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: ulastirma-bakanligi, uab
+@NOT: Karayolları Genel Müdürlüğü (6001 sayılı Kanun) ve Sivil Havacılık Genel Müdürlüğü mevzuatta ayrı tüzel kişiliğe sahip bağlı/ilgili kuruluş statüsündedir; evrak yönlendirme amacıyla Bakanlık teşkilatı içinde listelenmiştir.
+
+BİRİM: Karayolları Genel Müdürlüğü
+GÖREV: Devlet ve il yolları yapım/bakım-onarım, karayolu kamulaştırma, geçiş yolu izin belgesi ve yol arızası/hasar ihbarı başvurularını yürütür.
+
+BİRİM: Altyapı Yatırımları Genel Müdürlüğü
+GÖREV: Demiryolu, liman ve büyük altyapı yatırım projelerinin planlama, ihale ve yapım takibi başvurularını karşılar.
+
+BİRİM: Denizcilik Genel Müdürlüğü
+GÖREV: Gemi sicil, bağlama kütüğü kaydı, liman başkanlığı işlemleri ve deniz taşımacılığı yetki belgesi başvurularını yürütür.
+
+BİRİM: Sivil Havacılık Genel Müdürlüğü
+GÖREV: Hava taşıyıcı işletme ruhsatı, uçuşa elverişlilik belgesi, havaalanı işletme izni ve yolcu şikâyeti başvurularını değerlendirir.
+
+BİRİM: Ulaştırma Hizmetleri Düzenleme Genel Müdürlüğü
+GÖREV: Karayolu taşımacılığı yetki belgeleri (C, K, L vb. türler), taşıt kartı ve lojistik işletme izin başvurularını yürütür.
+
+BİRİM: Haberleşme Genel Müdürlüğü
+GÖREV: Elektronik haberleşme altyapısı, uydu ve kablo işletmeciliği izin/lisans başvuruları ile posta hizmetleri şikâyetlerini karşılar.
+
+BİRİM: Tehlikeli Mal ve Kombine Taşımacılık Düzenleme Genel Müdürlüğü
+GÖREV: Tehlikeli madde taşımacılığı faaliyet belgesi, sürücü eğitim sertifikası (ADR/SRC5) işlemleri, taşıma güvenliği denetim ve kombine taşımacılık başvurularını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve yatırım programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlık personeli atama, nakil ve özlük işlemlerine ilişkin başvuruları yürütür.

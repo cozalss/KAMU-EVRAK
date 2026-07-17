@@ -1,0 +1,21 @@
+@KURUM: Aras Elektrik Dağıtım A.Ş.
+@BELGE: 6446 sayılı Elektrik Piyasası Kanunu; Genel Aydınlatma Yönetmeliği
+@KAYNAK_KIMLIK: teskilat/aras-elektrik-dagitim/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: aras-edas, aras-elektrik-dagitim-a-s
+@NOT: yalnız aday üretme amaçlı; kuruma-özel resmî kaynak yerine geçmez
+
+BİRİM: Bölge İşletme Müdürlüğü
+GÖREV: Elektrik arızası, planlı/plansız kesinti, orta-alçak gerilim hat bakım-onarımı ve acil saha müdahalesi taleplerini karşılar. Hizmet bölgesi: Erzurum, Kars, Ağrı, Ardahan, Iğdır, Erzincan, Bayburt.
+
+BİRİM: Genel Aydınlatma Birimi
+GÖREV: Sokak, cadde, park ve meydan aydınlatma arızası ile genel aydınlatma bakım-onarım ve yeni aydınlatma tesisi başvurularını yürütür (Genel Aydınlatma Yönetmeliği kapsamında).
+
+BİRİM: Abone ve Müşteri Hizmetleri Müdürlüğü
+GÖREV: Yeni bağlantı/abonelik başvurusu, sayaç okuma-değişim-mühür itirazı, tarife ve fatura itirazlarını karşılar.
+
+BİRİM: Yatırım ve Şebeke Planlama Müdürlüğü
+GÖREV: Şebeke yatırım programı, yeni hat/trafo tesisi, kapasite artırım ve kırsal/dağlık bölge elektrifikasyon taleplerini değerlendirir.
+
+BİRİM: Kesinti ve Arıza İhbar Merkezi
+GÖREV: 7/24 arıza-kesinti ihbarlarını alır, saha ekiplerine yönlendirir; kış dönemi kar/fırtına kaynaklı kesinti duyurularını koordine eder.

@@ -1,0 +1,15 @@
+@KURUM: Yargıtay
+@BELGE: 2797 sayılı Yargıtay Kanunu
+@KAYNAK_KIMLIK: teskilat/yargitay/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: yargitay, yargitay-baskanligi
+@NOT: Yargıtay yüksek yargı organıdır; bireysel dava dosyası temyiz incelemesi ilgili hukuk/ceza dairesine, idari/genel yazışma Genel Sekreterliğe yöneliktir. [DOĞRULA: güncel teşkilat şeması ve daire dağılımı]
+
+BİRİM: Yargıtay Cumhuriyet Başsavcılığı
+GÖREV: Temyiz dilekçelerinin ilk incelemesi ve tebliğname düzenleme, olağanüstü kanun yollarına (Yargıtay Cumhuriyet Başsavcısının itirazı, kanun yararına bozma) ilişkin başvuruların değerlendirilmesi.
+
+BİRİM: İlgili Hukuk veya Ceza Dairesi Yazı İşleri Müdürlüğü
+GÖREV: Temyiz incelemesi bekleyen dosya sorgulama, içtihat ve emsal karar örneği talebi.
+
+BİRİM: Genel Sekreterlik
+GÖREV: Yargıtay genel evrak kayıt ve havale, idari yazışma koordinasyonu, Birinci Başkanlık Kurulu kararlarına ilişkin yazışmalar.

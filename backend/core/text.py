@@ -28,6 +28,15 @@ def tr_lower(s: str) -> str:
     return s.replace("İ", "i").replace("I", "ı").lower()
 
 
+def tr_upper(s: str) -> str:
+    """Türkçe-doğru büyük harf: i→İ, ı→I.
+
+    Python `str.upper()` "i"yi "I" yapar (Türkçe'de "İ" olmalı) ve "ı"yı "I"ya çevirirken
+    ayrımı kaybeder. Önce i/ı eşlenir, sonra upper(). Resmî yazışma antet/hitap (Yön. m.10/14)
+    büyük harf kuralı için tek kaynak (kurum_kimlik ve yazi.models ayrı ayrı türetmesin)."""
+    return s.replace("i", "İ").replace("ı", "I").upper()
+
+
 # Latin-1-in-UTF-8 Mojibake: PDF/Word kaynaklı evraklarda sık görülür.
 _MOJIBAKE_FIXES = (
     ("Ã§", "ç"), ("Ã‡", "Ç"),

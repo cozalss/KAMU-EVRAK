@@ -1,0 +1,18 @@
+@KURUM: Karayolları Genel Müdürlüğü
+@BELGE: 6001 sayılı Karayolları Genel Müdürlüğünün Teşkilat ve Görevleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/karayollari-genel-mudurlugu/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: kgm, karayollari-bolge-mudurlugu
+@NOT: Bölge müdürlüğü birimi jenerik şablon olarak listelenmiştir; bölge bazında resmî iletişim bilgisi KGM bölge müdürlüğü sayfasından doğrulanmalıdır. HGS ihlal itirazı süreç detayları [DOĞRULA: ilgili bölge müdürlüğü/işletme birimi] işaretiyle kaydedilmiştir.
+
+BİRİM: Karayolları Bölge Müdürlüğü
+GÖREV: Devlet ve il yolları bakım-onarım, kar mücadelesi ve yol güzergâhı arıza/şikâyet bildirimlerini karşılar. Bölgesindeki otoyol ve köprü işletme sorunlarının ilk muhatabıdır.
+
+BİRİM: Program ve İzleme Dairesi Başkanlığı
+GÖREV: Yol yapım/bakım programlarının planlanması, yatırım önceliklendirmesi ve proje izleme faaliyetlerini yürütür.
+
+BİRİM: Trafik Güvenliği Dairesi Başkanlığı
+GÖREV: Kara yolu trafik güvenliği düzenlemeleri, işaretleme/sinyalizasyon standartları ve kaza kara noktası iyileştirme çalışmalarını yürütür.
+
+BİRİM: İşletmeler Dairesi Başkanlığı
+GÖREV: KGM tarafından işletilen otoyol ve köprülerde geçiş ücreti tahsilatı ile HGS/OGS geçiş ihlali ve geçiş ücreti itiraz başvurularını karşılar. [DOĞRULA: HGS ihlal itirazlarının merkez/bölge teşkilatındaki hangi alt birim tarafından sonuçlandırıldığı]

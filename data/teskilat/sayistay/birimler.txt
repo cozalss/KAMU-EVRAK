@@ -1,0 +1,21 @@
+@KURUM: Sayıştay
+@BELGE: 6085 sayılı Sayıştay Kanunu
+@KAYNAK_KIMLIK: teskilat/sayistay/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: sayistay-baskanligi
+@NOT: [DOĞRULA: güncel teşkilat şeması] — dairelerin hangi kamu idaresini denetlediği yönetmelikle belirlenir ve zaman içinde değişebilir.
+
+BİRİM: Denetim Grup Başkanlığı
+GÖREV: Genel bütçe, özel bütçe ve döner sermayeli kamu idarelerinin mali işlem ve hesaplarının düzenlilik ve performans denetimini yürütür.
+
+BİRİM: Daireler Kurulu
+GÖREV: Dairelerce verilen kesin hükümlere karşı temyiz öncesi içtihat birliğini sağlar; daireler arası uyuşmazlıkları karara bağlar.
+
+BİRİM: Temyiz Kurulu
+GÖREV: Sayıştay dairelerinin sorumluluk (yargılama) kararlarına karşı yapılan temyiz başvurularını inceler.
+
+BİRİM: Rapor Değerlendirme Kurulu
+GÖREV: Denetçiler tarafından düzenlenen denetim raporlarını değerlendirerek dairelere sevk eder.
+
+BİRİM: Başkanlık Genel Sekreterliği
+GÖREV: Kurumun idari, mali ve personel işlerini yürütür; vatandaş ve kamu idarelerinden gelen ihbar/şikayet dilekçelerinin ilgili daireye yönlendirilmesini sağlar.

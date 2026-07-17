@@ -1,0 +1,27 @@
+@KURUM: Adliye İç Birimleri (jenerik şablon)
+@BELGE: 5271 sayılı Ceza Muhakemesi Kanunu, 2004 sayılı İcra ve İflas Kanunu, 2802 sayılı Hakimler ve Savcılar Kanunu (jenerik şablon)
+@KAYNAK_KIMLIK: teskilat/_genel-adliye/sablon
+@ERISIM: 2026-07-18
+@ALIAS: adliye, adalet-sarayi
+@NOT: Adliyeye yapılan başvurular dosya/konu türüne göre ilgili kaleme havale edilir. Bu şablon YALNIZCA aday üretme amaçlıdır; kuruma-özel resmî kaynak yerine geçmez; mahkemeler ve savcılık bağımsız yargı organlarıdır, güncel adliye teşkilat şeması adliye başsavcılığından teyit edilmelidir.
+
+BİRİM: Cumhuriyet Başsavcılığı
+GÖREV: Suç duyurusu ve şikayet dilekçelerinin kabulü, soruşturma başlatma ve yürütme, iddianame düzenleme, adli kolluk koordinasyonu.
+
+BİRİM: Ceza Mahkemeleri Yazı İşleri Müdürlüğü
+GÖREV: Ceza dava dosyası açma ve takip, duruşma günü tebligatı, karar ve tutanak düzenleme, sanık/müşteki dilekçe kabulü.
+
+BİRİM: Hukuk Mahkemeleri Yazı İşleri Müdürlüğü
+GÖREV: Hukuk dava dosyası açma ve takip, duruşma günü tebligatı, dilekçe ve delil kabulü, ilam ve karar düzenleme.
+
+BİRİM: İcra Dairesi
+GÖREV: İcra takibi başlatma, haciz talebi, borç ödeme ve taksitlendirme başvuruları, dosya kapama ve harç işlemleri.
+
+BİRİM: Adli Sicil Bürosu
+GÖREV: Sabıka kaydı ve arşiv kaydı belgesi düzenleme, adli sicil bilgisi güncelleme ve itiraz başvuruları.
+
+BİRİM: Adli Destek ve Mağdur Hizmetleri Müdürlüğü
+GÖREV: Mağdur ve tanık destek hizmetleri, adli görüşme odası randevusu, çocuk ve kadın mağdurlara psikososyal destek yönlendirmesi.
+
+BİRİM: Nöbetçi Sulh Ceza Hakimliği
+GÖREV: Gözaltı ve tutuklama kararları, arama-el koyma talepleri, itiraz başvuruları, acil ve nöbetçi adli işlemler.

@@ -20,10 +20,12 @@ from agents.config import (
     EVRAK_TO_BIRIM,
     LLM_ATLA_NODELAR,
     PARALEL_TRIYAJ,
+    ROUTE_AJAN,
     SERVIS_BIRIM_LLM,
 )
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.servis_birim import oner_servis_birimi, oner_servis_birimi_llm
+from api.pii import mask_for_llm
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -207,16 +209,36 @@ async def route_birim_node(state: dict[str, Any]) -> dict[str, Any]:
     deterministik (~0 ms), Görev-2 zinciri ~1 LLM-çağrısı erken başlar. Bayrak kapalıyken
     baseline birebir: servis çağrısı burada, sırayla.
     """
-    result = await _route_birim_impl(state)
+    result = await _route_birim(state)
     if PARALEL_TRIYAJ:
         return result  # servis önerisi triyaj fan-out'unda (servis_birim_oneri_node)
     text = state.get("evrak_text", "") or ""
-    servis = await oner_servis_birimi_llm(text) if SERVIS_BIRIM_LLM else None
+    isim = (state.get("bilgi_unsurlari") or {}).get("gonderen")
+    # KVKK: servis müdürlüğü LLM önerisi de DeepSeek'e gider → metin maskeli (isim+numara).
+    servis = await oner_servis_birimi_llm(mask_for_llm(text, isim)) if SERVIS_BIRIM_LLM else None
     if servis is None:
-        servis = oner_servis_birimi(text)
+        servis = oner_servis_birimi(text)  # deterministik yerel — maskesiz kalabilir
     if servis:
         result = {**result, "servis_birimi": servis}
     return result
+
+
+async def _route_birim(state: dict[str, Any]) -> dict[str, Any]:
+    """Kaynak-doğrulamalı ajan (ROUTE_AJAN) birincil; yok/hata → eski _route_birim_impl.
+
+    Ajan lazy import edilir (resmi_kaynak/kurum_kimlik ağırlığı yalnız gerektiğinde yüklenir;
+    LLM_ATLA_NODELAR vitrin profilinde ajan hiç çalışmaz — deterministik hedef korunur).
+    """
+    if not ROUTE_AJAN or "route_birim" in LLM_ATLA_NODELAR:
+        return await _route_birim_impl(state)
+    try:
+        from agents.nodes.route_ajan import route_ajan
+
+        det = _route_deterministik(state)
+        return await route_ajan(state, det)
+    except Exception as exc:  # ajan hatası → eski deterministik/LLM yola dürüst geri-dönüş
+        log.warning("route_ajan_error_fallback", hata=str(exc))
+        return await _route_birim_impl(state)
 
 
 __all__ = ("route_birim_node",)

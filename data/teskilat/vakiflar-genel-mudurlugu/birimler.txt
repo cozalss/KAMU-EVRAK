@@ -1,0 +1,21 @@
+@KURUM: Vakıflar Genel Müdürlüğü
+@BELGE: 5737 sayılı Vakıflar Kanunu
+@KAYNAK_KIMLIK: teskilat/vakiflar-genel-mudurlugu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: vgm
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Yeni Vakıflar Dairesi Başkanlığı
+GÖREV: Yeni vakıf kurma başvurusu, vakıf senedi tescili ve vakıf sicil kaydı taleplerini yürütür.
+
+BİRİM: Mazbut Vakıflar Dairesi Başkanlığı
+GÖREV: Mazbut vakıf taşınmazlarına ilişkin tahsis, işgal şikâyeti ve mazbut vakıf yönetim dilekçelerini değerlendirir.
+
+BİRİM: Yatırım ve Emlak Dairesi Başkanlığı
+GÖREV: Vakıf taşınmazı kiralama/ihale başvuruları, kira bedeli itirazı ve vakıf gayrimenkul tahsis taleplerini karşılar.
+
+BİRİM: Bölge Vakıflar Müdürlüğü
+GÖREV: İl/bölge düzeyinde vakıf tescil, kira sözleşmesi ve mazbut vakıf şikâyet dilekçelerinin ilk kabul merciidir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Vakıf tescili ret kararları ve kira sözleşmesi uyuşmazlıklarına ilişkin itiraz/dava dilekçelerinde kurumu temsil eder.

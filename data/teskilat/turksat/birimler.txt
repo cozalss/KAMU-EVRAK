@@ -1,0 +1,18 @@
+@KURUM: Türksat Uydu Haberleşme Kablo TV ve İşletme A.Ş.
+@BELGE: 406 sayılı Telgraf ve Telefon Kanunu [DOĞRULA: Türksat bir A.Ş.'dir; kuruluş ve e-Devlet işletme yetkisinin dayanağı (5369 sayılı Evrensel Hizmet Kanunu / ilgili Bakanlar Kurulu kararı) teyit edilmeli]
+@KAYNAK_KIMLIK: teskilat/turksat/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: turksat-as
+@NOT: Şirket içi daire başkanlığı adları zaman içinde değişebilir. [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Uydu Haberleşme ve Kablo TV İşletmeciliği Daire Başkanlığı
+GÖREV: Uydu yayın frekans/kapasite talepleri, kablo TV abonelik şikâyeti ve teknik arıza bildirimlerini yürütür.
+
+BİRİM: e-Devlet Kapısı İşletmeciliği Daire Başkanlığı
+GÖREV: e-Devlet şifresi, e-İmza entegrasyonu ve e-Devlet Kapısı üzerinden hizmet erişim sorunlarına ilişkin teknik destek taleplerini karşılar.
+
+BİRİM: Çağrı Merkezi Müdürlüğü
+GÖREV: e-Devlet Kapısı teknik destek hattı başvuruları, kullanıcı şikâyeti ve arıza kayıt taleplerinin ilk kabul merciidir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Uydu/kablo TV hizmet sözleşmesi uyuşmazlıkları ve teknik hizmet şikâyetine ilişkin dava süreçlerinde kurumu temsil eder.

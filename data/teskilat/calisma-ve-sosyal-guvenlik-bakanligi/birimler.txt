@@ -1,0 +1,30 @@
+@KURUM: Çalışma ve Sosyal Güvenlik Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/calisma-ve-sosyal-guvenlik-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: csgb, calisma-bakanligi
+@NOT: Sosyal Güvenlik Kurumu (SGK, emeklilik ve prim işlemleri) ve Türkiye İş Kurumu (İŞKUR, işe yerleştirme ve işsizlik ödeneği) ayrı tüzel kişiliğe sahip bağlı kuruluşlardır; bu dosyada yer alan ana hizmet birimlerinden farklı ele alınmalıdır.
+
+BİRİM: Çalışma Genel Müdürlüğü
+GÖREV: İş sözleşmeleri, toplu iş sözleşmesi süreçleri, sendikal haklar, kıdem ve ihbar tazminatı mevzuatı ile işçi-işveren uyuşmazlıklarına ilişkin başvuruları yürütür.
+
+BİRİM: İş Sağlığı ve Güvenliği Genel Müdürlüğü
+GÖREV: İşyerlerinde iş sağlığı ve güvenliği denetimi, iş kazası ve meslek hastalığı önleme çalışmaları ile İSG uzmanlığı belgelendirme başvurularını yürütür.
+
+BİRİM: Uluslararası İşgücü Genel Müdürlüğü
+GÖREV: Yabancılara verilecek çalışma izni başvuruları ve göçmen işgücü politikalarına ilişkin işlemleri yürütür.
+
+BİRİM: Dış İlişkiler Genel Müdürlüğü
+GÖREV: Yurt dışında çalışan vatandaşların hak ve hizmetleri, ikili sosyal güvenlik anlaşmaları ve uluslararası kuruluşlarla ilişkilere ilişkin başvuruları yürütür. [DOĞRULA: birim adı 1 sayılı CBK ÇSGB hizmet birimleri listesinden teyit edilmeli; eski "Yurtdışı İşçi Hizmetleri Genel Müdürlüğü" güncel teşkilatta yer almıyor]
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: İş müfettişliği, işyeri denetimleri ve işçi şikâyetlerinin incelenmesine ilişkin başvuruları yürütür.
+
+BİRİM: Avrupa Birliği ve Mali Yardımlar Dairesi Başkanlığı
+GÖREV: AB fonlu istihdam ve sosyal politika projelerinin koordinasyonuna ilişkin başvuruları yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık bütçesi, stratejik plan ve performans programı çalışmalarını yürütür.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Bakanlık personelinin atama, nakil ve özlük işlemlerine ilişkin başvuruları yürütür.

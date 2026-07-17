@@ -1,0 +1,24 @@
+@KURUM: Kişisel Verileri Koruma Kurumu
+@BELGE: 6698 sayılı Kişisel Verilerin Korunması Kanunu
+@KAYNAK_KIMLIK: teskilat/kvkk-kurumu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: kvkk, kisisel-verileri-koruma-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Veri İhlali İnceleme ve Uzlaştırma Dairesi Başkanlığı
+GÖREV: Veri sorumlularının veri ihlali bildirimlerini alır; ilgili kişilerin kişisel veri işleme şikayet ve başvurularını inceler.
+
+BİRİM: Politikalar Dairesi Başkanlığı
+GÖREV: Kişisel verilerin korunmasına ilişkin mevzuat, ikincil düzenleme ve rehber taslaklarını hazırlar.
+
+BİRİM: Veri Sorumluları Sicili Dairesi Başkanlığı
+GÖREV: VERBİS'e kayıt yükümlülüğü ile veri sorumlusu bildirimlerinin takibinden sorumludur.
+
+BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
+GÖREV: Kurumun elektronik başvuru sistemleri ile veri ihlali bildirim altyapısının işletilmesinden sorumludur.
+
+BİRİM: Hukuk Hizmetleri Dairesi Başkanlığı
+GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+
+BİRİM: Uluslararası İlişkiler Dairesi Başkanlığı
+GÖREV: Yurt dışına kişisel veri aktarımı başvuruları ve uluslararası kurumlarla işbirliğini yürütür.

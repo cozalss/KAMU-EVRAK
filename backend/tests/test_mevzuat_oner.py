@@ -16,6 +16,7 @@ from agents.nodes.mevzuat_oner import (
     _dedup,
     _domain_terimleri,
     _from_config,
+    _izin_jurisdiksiyon,
     _load_index,
     _maybe_rerank,
     _retrieval_query,
@@ -381,6 +382,91 @@ class TestIcerikSinyaliBoostaEzilmez:
         # Assert
         basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
         assert basliklar and "7201" in basliklar[0], basliklar
+
+
+class TestIzinJurisdiksiyon:
+    """İzin (dinlenme) jurisdiksiyon yönlendirmesi: aynı 'yıllık izin' ifadesi 657 (memur)/
+    4857 (işçi)/854 (denizci)'de geçer. Biçimsel tür (dilekçe) yanlış kanuna boost verse bile,
+    içerik doğru jurisdiksiyonu seçer + yanıltıcı domain kirliliği bastırılır. Kanıt fixture:
+    data/synthetic/izin_gold.jsonl (izin-özel retrieval Recall@3 1.000, top-1 AUC 1.0).
+    """
+
+    def test_jurisdiksiyon_varsayilan_memur_657(self):
+        # İzin var, açık iş/deniz sinyali YOK → kamu varsayılanı 657
+        assert _izin_jurisdiksiyon("Memur olarak yıllık izin talep ediyorum") == "657"
+        assert _izin_jurisdiksiyon("mazeret izni kullanmak istiyorum") == "657"
+
+    def test_jurisdiksiyon_isci_sinyali_4857(self):
+        # Açık iş-hukuku sinyali → 4857 (memur kanununa kilitlenmez)
+        assert _izin_jurisdiksiyon("İşçi olarak iş sözleşmem gereği yıllık izin") == "4857"
+        assert _izin_jurisdiksiyon("işveren kıdem yıllık ücretli izin alacağı") == "4857"
+
+    def test_jurisdiksiyon_denizci_sinyali_854(self):
+        assert _izin_jurisdiksiyon("gemi adamı olarak deniz iş sözleşmesi yıllık izin") == "854"
+
+    def test_jurisdiksiyon_izin_yoksa_none(self):
+        # İzin terimi yok → yönlendirme yok (saf dilekçe rejimi korunur)
+        assert _izin_jurisdiksiyon("dilekçe hakkı başvurusu, imar durumu belgesi") is None
+
+    def test_jurisdiksiyon_cekimli_formlari_yakalar(self):
+        # REGRESYON (adversarial bulgu): Türkçe iyelik/hâl eki "izin→izn" ünlü düşürür.
+        # Doğal dilekçe dili çekimlidir; yalın substring bunları KAÇIRIYORDU → 657 devre dışı
+        # kalıp panelde 5690/3071 dönüyordu. Çekim kökü ("... izn") hepsini yakalamalı.
+        for cekim in ("yıllık iznimi kullanmak", "yıllık iznini", "yıllık izne ayrılmak",
+                      "ücretsiz iznimi", "aylıksız iznini", "hastalık iznine"):
+            assert _izin_jurisdiksiyon(cekim) == "657", cekim
+
+    def test_jurisdiksiyon_izin_disi_substring_tetiklemez(self):
+        # GÜVENLİK: izin-dışı "izin" ifadeleri jurisdiksiyon tetiklememeli (yanlış-pozitif yok)
+        for disi in ("çevre izni belgesi", "yapı kullanma izni", "özel güvenlik izni",
+                     "silah taşıma izni", "izin belgesi talebi"):
+            assert _izin_jurisdiksiyon(disi) is None, disi
+
+    async def test_memur_yillik_izin_657_top1(self):
+        # Ekran-görüntüsü senaryosu: yıllık izin talebi "dilekçe" sınıflansa da 657 top-1.
+        state = _state(
+            "dilekce", "Yıllık izin talebi",
+            "Müdürlüğünüz bünyesinde memur olarak görev yapmaktayım. 657 sayılı Devlet "
+            "Memurları Kanunu kapsamında hak ettiğim yıllık iznimin kullandırılmasını arz ederim.",
+        )
+        out = await mevzuat_oner_node(state)
+        assert out["mevzuat_onerileri"][0]["baslik"].startswith("657"), \
+            [o["baslik"] for o in out["mevzuat_onerileri"]]
+
+    async def test_isci_yillik_izin_657_ezmez_4857_gelir(self):
+        # FALSE-POSITIVE REGRESYONU (adversarial bulgu): işçi izin uyuşmazlığında 657 (memur
+        # kanunu) doğru kanunu (4857) EZMEMELİ. İş-hukuku sinyali 4857'ye yönlendirir.
+        state = _state(
+            "talep", "yıllık izin alacağı",
+            "İşçi olarak iş sözleşmem kapsamında kullandırılmayan yıllık ücretli iznimin "
+            "işverence ödenmesini talep ediyorum.",
+        )
+        out = await mevzuat_oner_node(state)
+        basliklar = [o["baslik"] for o in out["mevzuat_onerileri"]]
+        # 4857 gelir VE 657'nin üstündedir (memur kanunu işçi uyuşmazlığını ezmez)
+        idx4857 = next((i for i, b in enumerate(basliklar) if "4857" in b), None)
+        idx657 = next((i for i, b in enumerate(basliklar) if "657" in b), None)
+        assert idx4857 is not None, basliklar
+        assert idx657 is None or idx4857 < idx657, basliklar
+
+    async def test_saf_dilekce_izin_yoksa_3071_korunur(self):
+        # REGRESYON: izin sinyali olmayan saf dilekçe hâlâ 3071'i top-1 verir (domain
+        # bastırma yalnız izin tespit edilince devreye girer).
+        state = _state(
+            "dilekce", "dilekçe hakkı başvurusu",
+            "Türk vatandaşları yetkili makamlara dilekçe ile başvurma hakkına sahiptir. "
+            "Dilekçe sahibinin adı soyadı imzası ve adresi zorunludur.",
+        )
+        out = await mevzuat_oner_node(state)
+        assert out["mevzuat_onerileri"][0]["baslik"].startswith("3071"), \
+            [o["baslik"] for o in out["mevzuat_onerileri"]]
+
+    async def test_izin_tespitinde_domain_kirliligi_bastirilir(self):
+        # izin tespit edilince _retrieval_query domain_bastir=True ile kurulur → sorguda
+        # dilekçe domain vokabülü ("Dilekçe Hakkı") ×3 tekrar ETMEZ.
+        state = _state("dilekce", "Yıllık izin talebi", "Memur yıllık izin talebi.")
+        temiz = _retrieval_query(state, domain_bastir=True)
+        assert "Hakkı" not in temiz and "unsurlar" not in temiz, temiz
 
 
 # ---------------------------------------------------------------------------

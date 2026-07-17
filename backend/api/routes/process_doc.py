@@ -107,9 +107,16 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         hedef_birim=state.get("hedef_birim", ""),
         birim_alternatifleri=state.get("birim_alternatifleri", []),
         servis_birimi=state.get("servis_birimi") or {},
+        muhatap_kurum=state.get("muhatap_kurum") or {},
+        yetkili_kurum=state.get("yetkili_kurum") or {},
+        hedef_birim_kaynak=state.get("hedef_birim_kaynak") or {},
+        hedef_kategori=state.get("hedef_kategori"),
+        durum=state.get("durum", ""),
+        insan_onayi_gerekli=bool(state.get("insan_onayi_gerekli", False)),
         yazi_turu=state.get("yazi_turu", ""),
         yazi_plan_notu=state.get("yazi_plan_notu", ""),
         ust_veri=state.get("ust_veri", {}),
+        antet_meta=state.get("antet_meta", {}),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         format_uyumlu=bool(state.get("format_uyumlu", False)),
         # PII güvenliği: uydurma-veto uyarıları somut tarih/sayı token'ı içerir (TCKN-şekilli
@@ -395,10 +402,13 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "mevzuat_dogrula": ("mevzuat_nli",),
         "ozetle": ("ozet",),
         # birim_reasoning + alternatifler: "neden bu birim" gerekçesi + değerlendirilen adaylar.
-        "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri", "servis_birimi"),
+        "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri", "servis_birimi",
+                        "muhatap_kurum", "yetkili_kurum", "hedef_birim_kaynak", "hedef_kategori",
+                        "durum", "insan_onayi_gerekli"),
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
-        "yazi_taslak": ("yazi_turu", "format_uyumlu", "yazi_plan_notu", "ust_veri"),
+        "yazi_taslak": ("yazi_turu", "format_uyumlu", "yazi_plan_notu", "ust_veri",
+                        "antet_meta"),
         "verify": ("format_uyumlu", "verify_uyari", "verify_notes",
                    "lint_2646", "tutarlilik_uyari", "lint_duzeltme_md"),
         # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).

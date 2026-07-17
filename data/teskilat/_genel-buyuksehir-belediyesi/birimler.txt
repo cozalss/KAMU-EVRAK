@@ -1,0 +1,51 @@
+@KURUM: Büyükşehir Belediyesi (Jenerik Şablon)
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu
+@KAYNAK_KIMLIK: teskilat/_genel-buyuksehir-belediyesi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: buyuksehir-belediyesi, buyuksehir, metropol-belediye, buyuksehir-belediye-baskanligi
+@NOT: Bu dosya 5216 sayılı Kanun'a göre büyükşehir belediyelerinde tipik olarak bulunan daire başkanlıklarını listeleyen JENERİK bir şablondur — yalnız aday üretme amaçlı; kuruma-özel resmî kaynak (ilgili büyükşehir belediyesinin güncel teşkilat şeması/yönetmeliği) yerine geçmez. Birim adları ve sayısı belediyeden belediyeye değişebilir.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: Toplu taşıma hatları, otobüs/metro/tramvay işletmeciliği, UKOME (Ulaşım Koordinasyon Merkezi) kararları, toplu taşıma kart/ücret itirazları ve yeni hat/durak talepleriyle ilgilenir.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme, kurtarma, itfaiye raporu talepleri, yangın önleme denetimi ve afet/acil durum müdahalesiyle ilgilenir.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri ruhsat denetimi, kaçak yapı/işgal şikayetleri, seyyar satıcı ve gürültü/çevre kirliliği şikayetlerine karşı belediye zabıta müdahalesini yürütür.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Katı atık toplama, geri dönüşüm, çevre kirliliği şikayetleri, hava/gürültü kirliliği denetimi ve çevre izin/lisans başvurularıyla ilgilenir.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yol yapım/bakım-onarım, kaldırım, alt/üstyapı inşaat işleri ve kamu binası bakım-onarım taleplerini yürütür.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar planı, imar durumu belgesi, yapı ruhsatı, iskan (yapı kullanma izni) başvuruları ve imara aykırılık şikayetleriyle ilgilenir.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Kamulaştırma işlemleri, belediye taşınmaz kira/satış, arsa/arazi tahsis talepleri ve emlak vergisi ile ilgili yönlendirmeleri yürütür.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvuruları, engelli/yaşlı destek hizmetleri, aile danışmanlığı ve dezavantajlı gruplara yönelik sosyal destek programlarını yürütür.
+
+BİRİM: Kültür ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültürel etkinlik, konser/festival organizasyonu, kütüphane hizmetleri ve sanatsal faaliyet destek başvurularıyla ilgilenir.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park, yeşil alan, çocuk oyun alanı yapım-bakımı, ağaç budama/kesim talepleri ve peyzaj düzenlemesiyle ilgilenir.
+
+BİRİM: Altyapı Koordinasyon Dairesi Başkanlığı (AYKOME)
+GÖREV: Yol kazı izinleri, altyapı kuruluşları (su, doğalgaz, elektrik, telekom) arası kazı koordinasyonu ve yol bakım çalışmalarının koordinasyonunu yürütür.
+
+BİRİM: Mezarlıklar Dairesi Başkanlığı
+GÖREV: Defin işlemleri, mezar yeri tahsisi, mezarlık bakım-onarım talepleri ve cenaze hizmetleriyle ilgilenir.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: E-belediye hizmetleri, kurumsal bilgi sistemleri, elektronik başvuru altyapısı ve dijital hizmet arızalarıyla ilgilenir.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Meclis/encümen kararları, evrak kayıt-havale, resmi yazışma süreçleri ve dilekçe/başvuru yönlendirmesini yürütür.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Belediye aleyhine/lehine dava süreçleri, hukuki görüş, itiraz ve icra takibi işlemleriyle ilgilenir.

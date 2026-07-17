@@ -1,0 +1,18 @@
+@KURUM: Emniyet Genel Müdürlüğü
+@BELGE: 3201 sayılı Emniyet Teşkilatı Kanunu
+@KAYNAK_KIMLIK: teskilat/emniyet-genel-mudurlugu/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: egm, il-emniyet-mudurlugu
+@NOT: İl emniyet müdürlüğü şube birimleri jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi EGM il teşkilatı sayfasından doğrulanmalıdır. DİKKAT: Pasaport ve sürücü belgesi düzenleme işlemleri 2 Nisan 2018'den itibaren Nüfus ve Vatandaşlık İşleri Genel Müdürlüğüne (il/ilçe nüfus müdürlükleri) devredilmiştir; bu konudaki evrak EGM'ye değil ilgili nüfus müdürlüğüne yönlendirilmelidir.
+
+BİRİM: Trafik Başkanlığı
+GÖREV: Trafik denetimi, trafik idari para cezaları ve araç tescil süreçlerinin emniyet birimlerince yürütülen kısmına ilişkin merkezi düzenleme yapar. (Sürücü belgesi düzenleme işlemleri nüfus müdürlüklerine devredilmiştir.)
+
+BİRİM: Asayiş Dairesi Başkanlığı
+GÖREV: Genel asayiş olaylarına ilişkin şikâyet ve ihbarların değerlendirilmesi, kayıp/buluntu eşya bildirimleri ve genel güvenlik uygulamalarını yürütür.
+
+BİRİM: İl Emniyet Müdürlüğü Silah ve Patlayıcı Maddeler Şube Müdürlüğü
+GÖREV: Silah taşıma/bulundurma ruhsatı başvuruları, ruhsat yenileme ve iptal işlemlerini il emniyet müdürlüğü bünyesinde yürütür.
+
+BİRİM: İl Emniyet Müdürlüğü Trafik Tescil ve Denetleme Şube Müdürlüğü
+GÖREV: İl düzeyinde emniyette kalan araç tescil işlemleri (çalıntı, plaka ve hurda kayıtları gibi) ile trafik cezalarına ilişkin idari başvuruların ilk kabulünü yapar. (Araç satış/devir işlemleri noterlerce, sürücü belgesi işlemleri nüfus müdürlüklerince yürütülür.)

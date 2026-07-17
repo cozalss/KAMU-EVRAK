@@ -1,0 +1,24 @@
+@KURUM: Rekabet Kurumu
+@BELGE: 4054 sayılı Rekabetin Korunması Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/rekabet-kurumu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: rekabet-kurulu
+@NOT: [DOĞRULA: güncel teşkilat şeması] — sektörel daire başkanlıklarının adı ve kapsamı zaman içinde değişmiştir.
+
+BİRİM: Birleşme ve Devralmalar Dairesi Başkanlığı
+GÖREV: Şirket birleşme ve devralma işlemlerinin izin başvurularını değerlendirir; rekabeti kısıtlayıcı yoğunlaşmaları inceler.
+
+BİRİM: Kartel ve Yerinde İnceleme Dairesi Başkanlığı
+GÖREV: Fiyat sabitleme, bölge/müşteri paylaşımı gibi kartel şikayet ve ihbarlarını inceler; yerinde inceleme (baskın) taleplerini yürütür.
+
+BİRİM: Sektörler Dairesi Başkanlığı
+GÖREV: Hakim durumun kötüye kullanılması ve rekabet ihlali şikayetlerini ilgili sektör (enerji, gıda, hizmetler, sanayi) bazında değerlendirir.
+
+BİRİM: Ekonomik Analiz ve Araştırma Dairesi Başkanlığı
+GÖREV: Şikayet ve başvurulara ilişkin piyasa ve ekonomik etki analizlerini hazırlar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Kurumun stratejik plan, bütçe ve mevzuat taslaklarının hazırlanmasından sorumludur.

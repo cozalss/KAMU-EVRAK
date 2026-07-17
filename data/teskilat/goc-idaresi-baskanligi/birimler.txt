@@ -1,0 +1,18 @@
+@KURUM: Göç İdaresi Başkanlığı
+@BELGE: 6458 sayılı Yabancılar ve Uluslararası Koruma Kanunu; 4 sayılı Cumhurbaşkanlığı Kararnamesi (Göç İdaresi Başkanlığı)
+@KAYNAK_KIMLIK: teskilat/goc-idaresi-baskanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: il-goc-idaresi-mudurlugu
+@NOT: İl göç idaresi müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi Göç İdaresi il müdürlüğü sayfasından doğrulanmalıdır. Türk vatandaşlığı başvuruları Göç İdaresinin değil Nüfus ve Vatandaşlık İşleri Genel Müdürlüğünün (il nüfus ve vatandaşlık müdürlükleri) görev alanıdır.
+
+BİRİM: Yabancılar Genel Müdürlüğü
+GÖREV: Kısa dönem, aile, öğrenci ve uzun dönem ikamet izni başvurularını, ikamet izni uzatma ve iptal işlemlerini sonuçlandırır. Yabancı kimlik numarası tahsisine ilişkin kayıt işlemlerini yürütür.
+
+BİRİM: Uluslararası Koruma Genel Müdürlüğü
+GÖREV: Uluslararası koruma (sığınma) başvurularının kabulü, mülakat süreçleri ve koruma statüsü kararlarını yürütür.
+
+BİRİM: Uyum ve İletişim Genel Müdürlüğü
+GÖREV: Göçmen uyum programları, dil kursu koordinasyonu ve toplumsal uyum projelerini yürütür.
+
+BİRİM: İl Göç İdaresi Müdürlüğü
+GÖREV: İl düzeyinde ikamet izni başvurusu kabulü, yabancı kimlik numarası işlemleri ve uluslararası koruma başvurusu ön kaydını yürütür. Vatandaş/yabancı dilekçelerinin ilgili genel müdürlüğe yönlendirilmesinden sorumludur.

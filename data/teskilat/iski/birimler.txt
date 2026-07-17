@@ -1,0 +1,27 @@
+@KURUM: İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü
+@BELGE: 2560 sayılı İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü Kuruluş ve Görevleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/iski/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: iski, istanbul-su-ve-kanalizasyon-idaresi, istanbul-su-kanalizasyon
+@NOT: [DOĞRULA: Birim listesi 2560 sayılı Kanun'a tabi su idareleri için TİPİK şablondur; İSKİ'nin güncel teşkilat şemasındaki fiilî daire adları farklılaşabilir (ör. Abone İşleri Avrupa/Anadolu bölge daireleri olarak ayrılmıştır) — yönlendirme öncesi iski.istanbul güncel teşkilat şemasıyla doğrula.]
+
+BİRİM: Abone İşleri Dairesi Başkanlığı
+GÖREV: Su aboneliği açma/kapama, yeni abonelik başvurusu, sayaç kontrol ve değişim talepleri, su faturasına itiraz ve tahakkuk düzeltme işlemleriyle ilgilenir; hizmet bölgesi İstanbul il sınırlarıdır.
+
+BİRİM: Su İşletme Dairesi Başkanlığı
+GÖREV: İçmesuyu şebekesinde su arızası, su kesintisi, basınç düşüklüğü ve şebeke bakım-onarım taleplerini karşılar.
+
+BİRİM: Kanalizasyon Dairesi Başkanlığı
+GÖREV: Kanalizasyon tıkanıklığı, foseptik taşması, yağmursuyu şebekesi arızası ve kanal bakım-temizlik talepleriyle ilgilenir.
+
+BİRİM: Atıksu Arıtma Dairesi Başkanlığı
+GÖREV: Atıksu arıtma tesislerinin işletilmesi, sanayi deşarj izin başvuruları ve atıksu kalite denetimini yürütür.
+
+BİRİM: Yatırım ve İnşaat Dairesi Başkanlığı
+GÖREV: Yeni içmesuyu/kanalizasyon şebeke yatırımları, isale hattı inşaatı ve altyapı proje taleplerini yürütür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Tesis ve hat güzergahları için kamulaştırma işlemleri ile taşınmaz tahsis/kira taleplerini yürütür.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Abonelik ve tahakkuk itirazlarına ilişkin dava/icra süreçleri ile hukuki görüş taleplerini yürütür.

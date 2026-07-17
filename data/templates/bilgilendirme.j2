@@ -1,6 +1,6 @@
 {# Bilgilendirme yazısı — üst yazı iskeleti; kapanış "Bilgilerinize arz ederim." (Yön. 2646).
    Birden çok muhataba "Dağıtım yerlerine" + sonda "Dağıtım (Bilgi):"; + e-imza/iletişim (m.23). #}
-{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot -%}
+{% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot %}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
@@ -8,7 +8,10 @@
 Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * ([2, 73 - (sayi_satiri | default("{{ SAYI }}") | length) - (tarih | length)] | max) }}{{ tarih }}
 {% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("{{ KONU }}") }}
 
-                          {{ muhatap | default("Dağıtım yerlerine") }}
+                          {{ muhatap | default("DAĞITIM YERLERİNE") }}
+
+{% if ilgi_satirlari %}İlgi : {% for ilgi in ilgi_satirlari %}{% if loop.index0 %}       {% endif %}{{ ilgi }}
+{% endfor %}{% endif %}
 
 {{ metin | default("{{ BİLGİLENDİRME METNİ }}") }}
 

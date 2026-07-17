@@ -1,0 +1,18 @@
+@KURUM: ESGAZ - Eskişehir Şehiriçi Doğal Gaz Dağıtım Ticaret ve Taahhüt A.Ş.
+@BELGE: 4646 sayılı Doğal Gaz Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/esgaz/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: esgaz, eskisehir-dogalgaz-dagitim, eskisehir-sehirici-dogal-gaz-dagitim
+@NOT: Hizmet bölgesi Eskişehir ili doğalgaz dağıtım lisans sahasıyla sınırlıdır. Belediye şirketi değildir; BOTAŞ kökenli olup 2004'te özelleştirilmiş özel dağıtım şirketidir.
+
+BİRİM: Abone İşleri
+GÖREV: Yeni doğalgaz aboneliği başvurusu, abonelik sözleşmesi düzenleme, abone bilgi güncelleme ve abonelik iptal-nakil taleplerini yürütür.
+
+BİRİM: Arıza ve Acil Müdahale
+GÖREV: Gaz kaçağı ihbarı (187 acil hattı), doğalgaz kesintisi ve basınç düşüklüğü şikâyetlerine acil müdahale eder; planlı-plansız kesinti duyurularını yapar.
+
+BİRİM: Sayaç ve Fatura İşleri
+GÖREV: Sayaç okuma, fatura itirazı, tahakkuk hatası düzeltme, sayaç değişimi ve güvence bedeli iadesi başvurularını sonuçlandırır.
+
+BİRİM: İç Tesisat ve Proje Onay
+GÖREV: Bina iç tesisat projelerinin onayı, servis kutusu bağlantısı, tesisat kontrolü ve iç tesisat firma yetkilendirme işlemlerini yürütür.

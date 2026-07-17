@@ -1,0 +1,27 @@
+@KURUM: Sosyal Güvenlik Kurumu Başkanlığı
+@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Sosyal Güvenlik Kurumu); 5502 sayılı Kanun
+@KAYNAK_KIMLIK: teskilat/sosyal-guvenlik-kurumu/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: sgk, sosyal-guvenlik-il-mudurlugu, sosyal-guvenlik-merkezi
+@NOT: İl müdürlüğü ve merkez birimleri jenerik şablon olarak listelenmiştir; il/ilçe bazında resmî iletişim bilgisi için SGK il müdürlüğü sayfası doğrulanmalıdır.
+
+BİRİM: Emeklilik Hizmetleri Genel Müdürlüğü
+GÖREV: Yaşlılık, malullük ve ölüm aylığı tahsis başvurularını, emeklilik hizmet birleştirme ve borçlanma taleplerini sonuçlandırır. Emekli aylığı bağlanması, aylık yeniden hesaplama ve intibak işlemlerinde yetkilidir.
+
+BİRİM: Sigorta Primleri Genel Müdürlüğü
+GÖREV: İşyeri ve sigortalı tescili, prim borcu sorgulama, prim borcu yapılandırma/taksitlendirme ile prim teşviki başvurularını yürütür. 4A/4B/4C kapsamındaki hizmet dökümü tescil işlemlerinin dayanağını oluşturur.
+
+BİRİM: Genel Sağlık Sigortası Genel Müdürlüğü
+GÖREV: GSS tescil işlemleri, gelir testi başvuruları, GSS prim borcu hesaplama ve sağlık provizyon süreçlerini yönetir. Yeşil kart devri sonrası genel sağlık sigortalılık statüsü belirleme başvurularını karşılar.
+
+BİRİM: Hizmet Sunumu Genel Müdürlüğü
+GÖREV: e-Devlet üzerinden SGK hizmetleri, hizmet dökümü belgesi, borcu yoktur yazısı ve sigortalılık teyidi taleplerini karşılar. Vatandaş başvurularının dijital kanaldan işleme alınmasını koordine eder.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Sigortasız işçi çalıştırma şikâyetleri, işyeri denetim talepleri ve kayıt dışı istihdam ihbarlarını inceler. İşveren uyuşmazlıklarında denetim raporu düzenler.
+
+BİRİM: Sosyal Güvenlik İl Müdürlüğü
+GÖREV: İl düzeyinde emeklilik başvurusu ön incelemesi, hizmet dökümü, 4A/4B/4C işlemleri ve prim borcu başvurularını kabul eder. Vatandaş dilekçelerinin ilgili genel müdürlüğe yönlendirilmesinden sorumludur.
+
+BİRİM: Sosyal Güvenlik Merkezi
+GÖREV: İlçe düzeyinde evrak teslim alma, randevu işlemleri ve basit sorgulama taleplerini karşılayan ilk başvuru noktasıdır. Karmaşık dosyaları il müdürlüğüne yönlendirir.

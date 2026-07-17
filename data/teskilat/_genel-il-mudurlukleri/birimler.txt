@@ -1,0 +1,57 @@
+@KURUM: Valilik / Kaymakamlık Bünyesi İl-İlçe Müdürlükleri (jenerik şablon)
+@BELGE: 5442 sayılı İl İdaresi Kanunu ve ilgili bakanlıkların taşra teşkilatı görev tanımları (jenerik şablon)
+@KAYNAK_KIMLIK: teskilat/_genel-il-mudurlukleri/sablon
+@ERISIM: 2026-07-17
+@ALIAS: il-mudurlukleri, valilik-tasra-mudurlukleri, il-mudurluk
+@NOT: Valilik/Kaymakamlığa yapılan başvurular genellikle bağlı il/ilçe müdürlüklerine havale edilir. Bu şablon YALNIZCA aday üretme amaçlıdır; kuruma-özel resmî kaynak yerine geçmez.
+
+BİRİM: İl/İlçe Millî Eğitim Müdürlüğü
+GÖREV: Okul öncesi, ilk, orta ve ortaöğretim hizmetleri, öğrenci nakil ve kayıt, okul açma-kapama, öğretmen atama ve görevlendirme, denklik, özel öğretim kurumları ruhsatı, burs ve sınav işlemleri.
+
+BİRİM: İl/İlçe Sağlık Müdürlüğü
+GÖREV: Kamu ve özel sağlık kuruluşlarının denetimi, ruhsatlandırma, hasta hakları, sağlık personeli, koruyucu sağlık, bulaşıcı hastalık ve halk sağlığı hizmetleri.
+
+BİRİM: İl Tarım ve Orman Müdürlüğü
+GÖREV: Tarımsal destek ve teşvik, çiftçi kayıt sistemi, gıda güvenliği ve denetimi, hayvancılık, bitki sağlığı, doğa koruma ve av-yaban hayatı, ruhsat ve işletme kayıt işlemleri.
+
+BİRİM: İl Nüfus ve Vatandaşlık Müdürlüğü
+GÖREV: Nüfus kayıt, kimlik kartı, pasaport ve sürücü belgesi başvuruları, adres beyanı ve kayıt, vatandaşlık, evlenme-boşanma tescili, nüfus kayıt örneği ve mavi kart işlemleri.
+
+BİRİM: İl Çevre, Şehircilik ve İklim Değişikliği Müdürlüğü
+GÖREV: Çevre izin ve lisans, ÇED, çevre denetimi, yapı denetimi, imar ve iskân, tapu-kadastro koordinasyonu, milli emlak, iklim ve sıfır atık işlemleri.
+
+BİRİM: Aile ve Sosyal Hizmetler İl Müdürlüğü
+GÖREV: Sosyal yardım, engelli ve yaşlı hizmetleri, çocuk koruma, kadın hizmetleri, sosyal inceleme, evde bakım yardımı işlemleri.
+
+BİRİM: İl Emniyet Müdürlüğü
+GÖREV: Kamu düzeni ve güvenliği, silah ruhsatı, trafik tescil ve denetimi, önleyici ve genel kolluk hizmetleri.
+
+BİRİM: Sosyal Güvenlik İl Müdürlüğü (SGK)
+GÖREV: Sigortalılık tescili, prim tahakkuk ve tahsilatı, emeklilik, sağlık yardımı (GSS), işveren ve hizmet dökümü işlemleri.
+
+BİRİM: Çalışma ve İş Kurumu İl Müdürlüğü (İŞKUR)
+GÖREV: İş arayan ve işveren kaydı, işe yerleştirme, işsizlik ödeneği, mesleki eğitim ve kurs, teşvik işlemleri.
+
+BİRİM: İl Defterdarlığı / Vergi Dairesi
+GÖREV: Vergi tahakkuk ve tahsilatı, mükellefiyet, muhasebe ve saymanlık işlemleri.
+
+BİRİM: Tapu Müdürlüğü
+GÖREV: Taşınmaz tescil, tapu senedi, satış, ipotek, şerh, kadastro ve mülkiyet işlemleri.
+
+BİRİM: İl Kültür ve Turizm Müdürlüğü
+GÖREV: Kültür varlıkları koruma, turizm işletme belgesi, müze ve ören yeri, kültürel etkinlik ve tanıtım işlemleri.
+
+BİRİM: İl Göç İdaresi Müdürlüğü
+GÖREV: İkamet izni başvurusu ve uzatma, yabancılar için çalışma-oturum işlemleri, uluslararası koruma (sığınma/mülteci) başvurusu, geçici koruma kimlik belgesi, insan ticareti mağduru destek, geri gönderme merkezi işlemleri.
+
+BİRİM: Gençlik ve Spor İl Müdürlüğü
+GÖREV: Gençlik merkezi ve kamp faaliyetleri, spor kulübü ve federasyon il temsilciliği tescili, spor tesisi tahsisi ve ruhsatlandırma, amatör spor müsabaka organizasyonu, gençlik projesi destek başvurusu.
+
+BİRİM: Sanayi ve Teknoloji İl Müdürlüğü
+GÖREV: Sanayi sicil belgesi, organize sanayi bölgesi (OSB) koordinasyonu, yatırım teşvik belgesi başvurusu, ölçü ve ayar (metroloji) damgalama-muayene, KOSGEB ve teknoloji geliştirme bölgesi işbirliği.
+
+BİRİM: İl Afet ve Acil Durum Müdürlüğü (AFAD)
+GÖREV: Afet ve acil durum planlama, deprem-sel-heyelan sonrası hasar tespiti, afet yardımı ve geçici barınma başvurusu, sivil savunma ve arama-kurtarma koordinasyonu, afet riskli yapı tespiti.
+
+BİRİM: Ticaret İl Müdürlüğü
+GÖREV: Tüketici hakem heyeti başvurusu ve tüketici şikâyeti, esnaf ve sanatkârlar sicil işlemleri, ölçüler ve ayarlar denetimi, haksız fiyat artışı ve stokçuluk denetimi, e-ticaret ve iç ticaret uyuşmazlıkları.

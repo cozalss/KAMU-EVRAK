@@ -1,0 +1,24 @@
+@KURUM: Bilgi Teknolojileri ve İletişim Kurumu
+@BELGE: 5809 sayılı Elektronik Haberleşme Kanunu
+@KAYNAK_KIMLIK: teskilat/btk/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: bilgi-teknolojileri-ve-iletisim-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Tüketici Hakları Dairesi Başkanlığı
+GÖREV: GSM/internet operatörlerine yönelik fatura itirazı, hatalı kesinti, taahhüt ihlali ve hizmet kalitesi şikayetlerini karşılar; abonelik iptali uyuşmazlıklarını değerlendirir.
+
+BİRİM: Numaralandırma Dairesi Başkanlığı
+GÖREV: Numara taşıma (MNP), telefon numarası tahsisi ve numara portabilitesi başvuru ve şikayetlerini yürütür.
+
+BİRİM: Piyasa Gözetimi ve Denetimi Dairesi Başkanlığı
+GÖREV: Elektronik haberleşme işletmecilerinin mevzuata uygunluğunu denetler; kaçak baz istasyonu ve yetkisiz yayın ihbarlarını inceler.
+
+BİRİM: Yetkilendirme Dairesi Başkanlığı
+GÖREV: İşletmecilere elektronik haberleşme hizmeti sunumu için yetkilendirme ve frekans tahsisi başvurularını değerlendirir.
+
+BİRİM: Siber Güvenlik Dairesi Başkanlığı
+GÖREV: Elektronik haberleşme altyapısına yönelik siber güvenlik ihbar ve olaylarını değerlendirir; USOM koordinasyonunu yürütür.
+
+BİRİM: Hukuk Hizmetleri Dairesi Başkanlığı
+GÖREV: Kurum kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.

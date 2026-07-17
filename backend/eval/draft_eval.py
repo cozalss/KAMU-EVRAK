@@ -76,7 +76,9 @@ _SIRA_BOLUMLERI: tuple[tuple[str, re.Pattern], ...] = (
     ("sayi", re.compile(r"Sayı\s*[:：]", re.IGNORECASE)),
     ("konu", re.compile(r"Konu\s*[:：]", re.IGNORECASE)),
     ("kapanis", re.compile(
-        r"arz ederim|rica ederim|olurlarınıza arz|bilgilerinize arz", re.IGNORECASE)),
+        r"arz ederim|rica ederim|arz olunur|rica olunur|olurlarınıza arz"
+        r"|bilgilerinize arz|bilgilerinize sunulur|bilgilerine arz"
+        r"|arz ve rica ederim|saygılarımla", re.IGNORECASE)),
     # İmza bloğu anahtarı — şablon imza SLOTU, açık "e-imza" etiketi veya
     # demo-güvenli yetkili imza satırı. NOT: çıplak "Müdür/Başkan" KULLANILMAZ;
     # gövde/muhatap metninde geçip sırayı bozar.
@@ -87,17 +89,23 @@ _SIRA_BOLUMLERI: tuple[tuple[str, re.Pattern], ...] = (
 )
 
 # Yazı türü → beklenen resmî kapanış ibaresi (Yön. m.16 hiyerarşik kapanış).
+# m.16/12 tüm meşru kapanış varyantları türe göre: cevabi kuruma "rica/arz ederim",
+# vatandaşa "Bilgilerinize sunulur." (12-e); bilgilendirme kuruma "bilgilerinize arz",
+# dağıtıma "arz ve rica ederim" (12-b), vatandaşa "sunulur"; görüş "arz ederim/olunur".
 _TUR_KAPANIS: dict[str, re.Pattern] = {
-    "cevabi_yazi": re.compile(r"rica ederim", re.IGNORECASE),
-    "ust_yazi": re.compile(r"arz ederim", re.IGNORECASE),
-    "bilgilendirme": re.compile(r"bilgilerinize arz", re.IGNORECASE),
+    "cevabi_yazi": re.compile(r"rica ederim|bilgilerinize sunulur", re.IGNORECASE),
+    "ust_yazi": re.compile(r"arz ederim|rica ederim", re.IGNORECASE),
+    "bilgilendirme": re.compile(
+        r"bilgilerinize arz|arz ve rica ederim|bilgilerinize sunulur", re.IGNORECASE),
     "olur": re.compile(r"olurlarınıza arz", re.IGNORECASE),
+    "muzekkere": re.compile(r"arz ederim|rica ederim", re.IGNORECASE),
+    "gorus_mutalaa": re.compile(r"arz ederim|arz olunur|bilgilerine arz", re.IGNORECASE),
 }
 
 # Muhatap satırı tespiti — "Sayın ..." VEYA "...NE/NA" makam hitabı VEYA placeholder
 # VEYA "Dağıtım yerlerine". olur'da BULUNMAMALI (Yön. m.20).
 _RE_MUHATAP = re.compile(
-    r"Sayın\s+\S|\{\{\s*MUHATAP MAKAM\s*\}\}|Dağıtım yerlerine"
+    r"Sayın\s+\S|\{\{\s*MUHATAP MAKAM\s*\}\}|Dağıtım yerlerine|DAĞITIM YERLERİNE"
     r"|İlgili Makama"
     r"|^\s+\S.*(?:NE|NA|BAŞKANLIĞINA|MÜDÜRLÜĞÜNE|VALİLİĞİNE)\s*$",
     re.IGNORECASE | re.MULTILINE)

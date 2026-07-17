@@ -108,11 +108,11 @@ def test_yeni_turler_render_ve_kayitli(yazi_turu):
 
 
 def test_gorus_mutalaa_kapanis():
-    # Arrange + Act
-    assert default_kapanis("gorus_mutalaa") == "Bilgilerine arz olunur."
+    # Arrange + Act — gerçek kamu pratiği kalıbı (Diyanet Hukuk Müşavirliği örneği, 2026-07-17)
+    assert default_kapanis("gorus_mutalaa") == "Bilgi ve gereğini arz ederim."
     metin = render_metin(_ctx("gorus_mutalaa", muhatap="İlgili Daireye"))
     # Assert
-    assert "Bilgilerine arz olunur." in metin
+    assert "Bilgi ve gereğini arz ederim." in metin
 
 
 # --- Tam bağlam format-uyumlu (placeholder kalmaz) -----------------------

@@ -154,6 +154,12 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     PDF/DOCX üretilmez (metin yeterli; indirme /yazi/render'dan yapılır).
     """
     from agents.config import birim_tr
+    from agents.kurum_kimlik import (
+        antet_idare_secimi,
+        gorus_muhatabi,
+        hitap_eki,
+        muzekkere_muhatabi,
+    )
     from yazi.renderer import render_yazi
     from yazi.yazi_render import build_body, build_context
 
@@ -162,11 +168,27 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Evrak metni boş")
     unsurlar = _skaler_unsurlar(req.bilgi_unsurlari)
     hedef_birim = _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else ""
-    muhatap = (birim_tr(hedef_birim)
-               if req.yazi_turu == "ust_yazi" and hedef_birim else None)
+    if req.yazi_turu == "ust_yazi" and hedef_birim:
+        muhatap = hitap_eki(birim_tr(hedef_birim))  # m.14/2 BÜYÜK + yönelme eki
+    elif req.yazi_turu == "gorus_mutalaa":
+        # Görüşün muhatabı = görüşü talep eden birim (gelen antetten deterministik,
+        # m.14/2 hitap biçimli — pipeline ile TEK ortak kapı: kurum_kimlik.gorus_muhatabi).
+        muhatap = gorus_muhatabi(text) or None
+    elif req.yazi_turu == "muzekkere":
+        # Müzekkere muhatabı: yargı → gönderen makam; idari iç → talep eden birim.
+        muhatap = muzekkere_muhatabi(text, str(unsurlar.get("gonderen", "") or "")) or None
+    else:
+        muhatap = None
+    # Dinamik antet: pipeline ile AYNI seçim kuralı (antet_idare_secimi) — kurum-içi/dışı
+    # ayrımıyla. ust_yazi/müzekkere gibi dış-kurum evrakında başlık GÖNDERENİ gösterir →
+    # bizim antedimiz olamaz, env'e düşer (icra evrakının üst yazısına "İcra Müdürlüğü" basılmaz).
+    idare = antet_idare_secimi(text, unsurlar, req.yazi_turu)
+    hazirlayan = (birim_tr(hedef_birim)
+                  if hedef_birim and req.yazi_turu != "ust_yazi" else "")
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
-        ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap)
+        ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap,
+                            hazirlayan_birim=hazirlayan, idare_adi=idare)
         result = render_yazi(ctx, formats=frozenset())
     except Exception as exc:
         log.error("yazi_taslak_turu_failed", error=str(exc) or type(exc).__name__)

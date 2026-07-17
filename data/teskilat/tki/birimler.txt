@@ -1,0 +1,18 @@
+@KURUM: Türkiye Kömür İşletmeleri Kurumu (TKİ)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname; 3213 sayılı Maden Kanunu
+@KAYNAK_KIMLIK: teskilat/tki/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: tki, turkiye-komur-isletmeleri
+@NOT: [DOĞRULA: güncel teşkilat şeması] — müessese müdürlüğü (Ege, Garp Linyitleri, Ege Linyitleri) adları ve sosyal yardım kömürü dağıtım süreci resmi şemadan teyit edilmeli.
+
+BİRİM: Üretim Dairesi Başkanlığı
+GÖREV: Açık ocak ve yer altı linyit üretim tesisi işletmesi, üretim kapasitesi ve saha bakım dilekçelerini karşılar. Ocak çevresindeki çökme, toz ve çevresel etki ihbarlarını değerlendirir.
+
+BİRİM: Satış ve Pazarlama Dairesi Başkanlığı
+GÖREV: Kömür satışı, teslimat ve fiyat tarifesi dilekçelerini yönetir. Sanayi ve toplu konut kömür tedariki taleplerini karşılar.
+
+BİRİM: Sosyal Yardım Kömürü Koordinasyon Dairesi Başkanlığı
+GÖREV: İhtiyaç sahibi ailelere yapılan ücretsiz kömür yardımı tahsisi, dağıtım ve başvuru dilekçelerini il müdürlükleri ve valilikler kanalıyla yürütür. Kömür yardımı hak sahipliği ve teslim gecikmesi şikayetlerini karşılar.
+
+BİRİM: İhale ve Yatırım Dairesi Başkanlığı
+GÖREV: Rödovans, ihale ve yeni ocak yatırımı dilekçelerini değerlendirir. Sahra devri ve işletme hakkı uyuşmazlığı taleplerini karşılar.

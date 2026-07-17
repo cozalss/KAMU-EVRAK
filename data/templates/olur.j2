@@ -2,7 +2,7 @@
    Akış: başlık → sayı/tarih → [ivedilik/gizlilik] → konu → teklif metni → "...olurlarınıza
    arz ederim." → teklif imza → (varsa ara makam) → "OLUR" → onay tarihi → onay makamı
    → [e-imza] → [iletişim]. #}
-{% from "_makro.j2" import ust_isaretler, eimza_blogu, iletisim_dipnot -%}
+{% from "_makro.j2" import ust_isaretler, eimza_blogu, iletisim_dipnot %}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
                        {{ birim_adi | default("{{ BİRİM ADI }}") }}
@@ -12,7 +12,9 @@ Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * ([2, 73 - (sayi_satiri
 
 {{ metin | default("{{ TEKLİF METNİ }}") }}
 
-{{ " " * 9 }}Yukarıda arz edilen hususun {{ talep | default("uygun görülmesini") }} olurlarınıza arz ederim.
+{% if talep %}{{ " " * 9 }}Yukarıda arz edilen {{ talep }} hususunu olurlarınıza arz ederim.
+{% else %}{{ " " * 9 }}Yukarıda arz edilen hususun uygun görülmesini olurlarınıza arz ederim.
+{% endif %}
 
 {{ " " * 46 }}{{ teklif_eden | default("{{ TEKLİF EDEN }}") }}
 {{ " " * 46 }}{{ teklif_unvan | default("{{ UNVAN }}") }}

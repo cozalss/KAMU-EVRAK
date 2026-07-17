@@ -94,7 +94,10 @@ def run_pipeline(rows: list[dict]) -> None:
             out: dict[str, Any] = await graph.ainvoke(make_initial_state(r["metin"]))
             r["pred"] = out.get("evrak_turu", ABSTAIN_CLASS)
             r["conf"] = float(out.get("tur_confidence", 0.0) or 0.0)
-            r["pred_birim"] = out.get("hedef_birim", "")
+            # Kaynak-doğrulamalı ajan: type-bazlı gold ile karşılaştırma hedef_kategori
+            # (deterministik 9-set köprüsü) üzerinden yapılır; ROUTE_AJAN=0'da hedef_birim koddur.
+            # (Doğrulanmış birim ADI ayrı içerik-bazlı gold ile ölçülür — bu eval type-bazlı.)
+            r["pred_birim"] = out.get("hedef_kategori") or out.get("hedef_birim") or ""
             r["alts"] = list(out.get("birim_alternatifleri") or [])
 
     asyncio.run(_run())

@@ -54,7 +54,8 @@ class TestTurSecimi:
     def test_ust_yazi_muhatap_hedef_birim(self, client):
         # Üst yazı kurum içidir: muhatap gönderen DEĞİL hedef birim olmalı.
         data = _uret(client, "ust_yazi", hedef_birim="ilgili_teknik_daire")
-        assert "İlgili Teknik / Ana Hizmet Dairesi" in data["yazi_taslak_md"]
+        # m.14/2: kurum-içi iletim muhatabı BÜYÜK + yönelme eki.
+        assert "İLGİLİ TEKNİK / ANA HİZMET DAİRESİNE" in data["yazi_taslak_md"]
         assert "Sayın Ayşe Yılmaz" not in data["yazi_taslak_md"]
 
     def test_olur_muhatapsiz(self, client):
@@ -64,8 +65,9 @@ class TestTurSecimi:
         assert "Sayın" not in data["yazi_taslak_md"]
 
     def test_kapanis_ture_gore_degisir(self, client):
-        assert "Gereğini rica ederim." in _uret(client, "cevabi_yazi")["yazi_taslak_md"]
-        assert "Bilgilerinize arz ederim." in _uret(client, "bilgilendirme")["yazi_taslak_md"]
+        # _UNSUR muhatabı vatandaş (Ayşe Yılmaz) → her iki tür de m.16/12-e kişi kapanışı.
+        assert "Bilgilerinize sunulur." in _uret(client, "cevabi_yazi")["yazi_taslak_md"]
+        assert "Bilgilerinize sunulur." in _uret(client, "bilgilendirme")["yazi_taslak_md"]
 
 
 class TestGirdiDogrulama:

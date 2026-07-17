@@ -1,0 +1,39 @@
+@KURUM: Tarım ve Orman Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/tarim-ve-orman-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: tarim-bakanligi, orman-bakanligi, tob
+@NOT: Orman Genel Müdürlüğü mevzuatta ayrı tüzel kişiliğe sahip bağlı kuruluştur; evrak yönlendirme amacıyla Bakanlık teşkilatı içinde listelenmiştir. Su Yönetimi Genel Müdürlüğü ile Doğa Koruma ve Milli Parklar Genel Müdürlüğü ise Bakanlık merkez hizmet birimleridir.
+
+BİRİM: Gıda ve Kontrol Genel Müdürlüğü
+GÖREV: Gıda işletmesi kayıt/onay başvuruları, gıda güvenliği denetim şikâyetleri, veteriner sağlık ve bitki koruma ürünleri ruhsat/izin işlemlerini yürütür.
+
+BİRİM: Bitkisel Üretim Genel Müdürlüğü
+GÖREV: Tohumluk sertifikasyonu, bitkisel üretim destekleri, sera ve örtü altı üretim kayıt başvurularını değerlendirir.
+
+BİRİM: Hayvancılık Genel Müdürlüğü
+GÖREV: Hayvan kayıt sistemi (TÜRKVET) işlemleri, hayvancılık destekleri ve büyük/küçükbaş hayvan yetiştirici belgesi başvurularını yürütür.
+
+BİRİM: Tarım Reformu Genel Müdürlüğü
+GÖREV: Çiftçi Kayıt Sistemi (ÇKS) kaydı, arazi toplulaştırma, tarımsal destekleme ödemeleri ve kırsal kalkınma proje başvurularını yürütür.
+
+BİRİM: Orman Genel Müdürlüğü
+GÖREV: Orman arazisi izin/tahsis, orman ürünleri satışı, orman yangını ihbar ve orman suçu şikâyet başvurularını karşılar.
+
+BİRİM: Su Yönetimi Genel Müdürlüğü
+GÖREV: Su tahsis planlaması, taşkın koruma, sulama suyu ve havza yönetimi konularındaki başvuruları yürütür.
+
+BİRİM: Balıkçılık ve Su Ürünleri Genel Müdürlüğü
+GÖREV: Su ürünleri yetiştiricilik ruhsatı, balıkçı gemisi kayıt/ruhsat işlemleri ve su ürünleri avcılık izin başvurularını değerlendirir.
+
+BİRİM: Tarımsal Araştırmalar ve Politikalar Genel Müdürlüğü
+GÖREV: Tarımsal araştırma enstitüleri koordinasyonu, tohum/damızlık ıslah projeleri ve tarım politikası analiz taleplerini yürütür.
+
+BİRİM: Doğa Koruma ve Milli Parklar Genel Müdürlüğü
+GÖREV: Milli park, tabiat parkı ve av-yaban hayatı izin/ruhsat başvuruları ile doğa koruma alanı ihlal şikâyetlerini karşılar.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programına ilişkin kurumsal yazışmaları yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.

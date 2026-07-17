@@ -1,0 +1,21 @@
+@KURUM: Bursa Ulaşım Toplu Taşıma İşletmesi Anonim Şirketi (BURULAŞ)
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu
+@KAYNAK_KIMLIK: teskilat/burulas/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: bursa-burulas, bursa-ulasim
+@NOT: [DOĞRULA: güncel teşkilat şeması] — müdürlük adları genel bilgiye dayanır, yönlendirme öncesi güncel BURULAŞ teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Hat ve Sefer Planlama Müdürlüğü
+GÖREV: BursaRay (raylı sistem) ve otobüs hat-sefer planlamasını yürütür; sefer sıklığı ve güzergah şikayetleri bu birime yönlendirilir.
+
+BİRİM: Kart ve Ücret İşlemleri Müdürlüğü
+GÖREV: BursaKart bakiye/iade işlemleri ve indirimli kart başvurularını karşılar.
+
+BİRİM: Kayıp Eşya Bürosu
+GÖREV: BursaRay ve otobüste unutulan veya kaybolan eşyaların teslim ve iade işlemlerini yürütür.
+
+BİRİM: Müşteri İlişkileri Müdürlüğü
+GÖREV: Personel davranışı, araç/istasyon temizliği gibi genel yolcu şikayetlerini karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Trafik kazası ve tazminat taleplerine ilişkin hukuki süreçleri yürütür.

@@ -1,0 +1,18 @@
+@KURUM: Cumhurbaşkanlığı Devlet Arşivleri Başkanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/devlet-arsivleri-baskanligi/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: devlet-arsivleri, cumhurbaskanligi-devlet-arsivleri-baskanligi
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Osmanlı Arşivi Daire Başkanlığı
+GÖREV: Osmanlı dönemi arşiv belgesi araştırma izni başvuruları, belge sureti/fotokopi talebi ve tapu-nüfus kaydı arşiv araştırması dilekçelerini yürütür.
+
+BİRİM: Cumhuriyet Arşivi Daire Başkanlığı
+GÖREV: Cumhuriyet dönemi resmi belge araştırma izni, kurum arşiv devri ve akademik araştırma amaçlı belge erişim taleplerini karşılar.
+
+BİRİM: Araştırma Hizmetleri Daire Başkanlığı
+GÖREV: Yerli/yabancı araştırmacı arşiv çalışma izni başvuruları ve okuma salonu kullanım taleplerini sonuçlandırır.
+
+BİRİM: Bilgi İşlem Daire Başkanlığı
+GÖREV: Dijitalleştirilmiş arşiv belgesine elektronik erişim talepleri ve e-Devlet üzerinden belge sureti başvurularının teknik sürecini yürütür.

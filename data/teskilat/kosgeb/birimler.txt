@@ -1,0 +1,18 @@
+@KURUM: Küçük ve Orta Ölçekli İşletmeleri Geliştirme ve Destekleme İdaresi Başkanlığı
+@BELGE: 3624 sayılı Küçük ve Orta Ölçekli İşletmeleri Geliştirme ve Destekleme İdaresi Başkanlığı Kurulması Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/kosgeb/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: kobi-destek-idaresi
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: KOBİ Proje Destek Programı Daire Başkanlığı
+GÖREV: Küçük ve orta ölçekli işletme (KOBİ) destek programı başvuruları, hibe/kredi faiz desteği talepleri ve destek geri ödeme itirazlarını yürütür.
+
+BİRİM: Girişimcilik Destek Programı Daire Başkanlığı
+GÖREV: Yeni girişimci desteği, iş planı değerlendirme ve girişimcilik kredisi başvurusu dilekçelerini sonuçlandırır.
+
+BİRİM: KOSGEB Hizmet Merkezi Müdürlüğü
+GÖREV: İl düzeyinde KOBİ destek başvurularının ilk kabulü, işletme kaydı ve destek programı danışmanlığı taleplerinin yerel muhatabıdır.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Destek geri alma kararlarına karşı itiraz ve dava dilekçelerinde kurumu temsil eder.

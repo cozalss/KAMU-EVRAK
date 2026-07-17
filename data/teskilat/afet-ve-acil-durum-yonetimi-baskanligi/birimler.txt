@@ -1,0 +1,21 @@
+@KURUM: Afet ve Acil Durum Yönetimi Başkanlığı
+@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Afet ve Acil Durum Yönetimi Başkanlığı); 5902 sayılı Kanun
+@KAYNAK_KIMLIK: teskilat/afet-ve-acil-durum-yonetimi-baskanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: afad
+@NOT: İl afet ve acil durum müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi AFAD il müdürlüğü sayfasından doğrulanmalıdır.
+
+BİRİM: Müdahale Dairesi Başkanlığı
+GÖREV: Afet anında acil müdahale, arama-kurtarma koordinasyonu ve acil yardım malzemesi sevkiyatını yönetir.
+
+BİRİM: İyileştirme Dairesi Başkanlığı
+GÖREV: Afet sonrası hasar tespit başvurularını, geçici barınma (konteyner) taleplerini ve afet konutu/kira yardımı başvurularını sonuçlandırır. Afetzede yardım ödeneği süreçlerini yürütür.
+
+BİRİM: Planlama ve Zarar Azaltma Dairesi Başkanlığı
+GÖREV: Risk azaltma planlaması, deprem/afet risk haritalaması ve önleyici tedbir uygulamalarını koordine eder. [DOĞRULA: güncel teşkilat şemasındaki adlandırma — "Planlama ve Risk Azaltma Dairesi Başkanlığı" olarak geçebilir]
+
+BİRİM: Sivil Savunma Dairesi Başkanlığı
+GÖREV: Sığınak yapım standartları, sivil savunma tatbikatları ve sivil savunma mevzuatı uygulamalarını yürütür.
+
+BİRİM: İl Afet ve Acil Durum Müdürlüğü
+GÖREV: İl düzeyinde afet yardımı başvurusu, hasar tespit talebi ve geçici barınma/konteyner tahsisi işlemlerinin ilk kabulünü yapar. Vatandaş dilekçelerinin ilgili daire başkanlığına yönlendirilmesinden sorumludur.

@@ -1,0 +1,21 @@
+@KURUM: İstanbul Elektrik Tramvay ve Tünel İşletmeleri Genel Müdürlüğü (İETT)
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu
+@KAYNAK_KIMLIK: teskilat/iett/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: istanbul-elektrik-tramvay-ve-tunel
+@NOT: [DOĞRULA: güncel teşkilat şeması] — müdürlük adları genel bilgiye dayanır, yönlendirme öncesi güncel İETT teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Hat ve Sefer Planlama Müdürlüğü
+GÖREV: İstanbul otobüs ve metrobüs hat güzergahlarını, sefer sıklığını planlar; hat kaldırma/değiştirme talepleri ve sefer düzensizliği şikayetleri bu birime yönlendirilir.
+
+BİRİM: Ulaşım Koordinasyon ve Kart İşlemleri Müdürlüğü
+GÖREV: İstanbulkart bakiye/iade işlemleri, kart hatası ve indirimli kart (öğrenci/yaşlı/engelli) başvurularını karşılar.
+
+BİRİM: Kayıp Eşya Müdürlüğü
+GÖREV: Otobüs ve metrobüste unutulan veya kaybolan eşyaların teslim ve iade işlemlerini yürütür.
+
+BİRİM: Müşteri İlişkileri ve Halkla İlişkiler Müdürlüğü
+GÖREV: Şoför davranışı, araç temizliği ve durak eksikliği gibi genel yolcu şikayetlerini karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Trafik kazası, yolcu yaralanması ve tazminat taleplerine ilişkin hukuki süreçleri yürütür.

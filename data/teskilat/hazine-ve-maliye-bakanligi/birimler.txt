@@ -1,0 +1,27 @@
+@KURUM: Hazine ve Maliye Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/hazine-ve-maliye-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: hmb, hazine-bakanligi, maliye-bakanligi
+@NOT: Sigorta ve özel emeklilik piyasası düzenlemesi, Sigortacılık ve Özel Emeklilik Düzenleme ve Denetleme Kurumu (SEDDK) tarafından yürütülen ayrı bir kurumsal süreçtir; bu dosya kapsamı dışındadır. Gelir İdaresi Başkanlığı bakanlığa bağlı ayrı bir kuruluştur; vergi evrakının yönlendirilmesi kolaylığı için bu listede yer almaktadır. Merkezi yönetim bütçesinin hazırlanması 2018'den bu yana Cumhurbaşkanlığı Strateji ve Bütçe Başkanlığınca yürütülür; bütçe hazırlığına ilişkin evrak o kuruma yönlendirilir.
+
+BİRİM: Gelir İdaresi Başkanlığı
+GÖREV: Vergi tarh, tahakkuk ve tahsilat işlemleri, vergi beyannameleri, mükellef kayıt işlemleri ve vergi iadesi başvurularını yürütür.
+
+BİRİM: Muhasebat Genel Müdürlüğü
+GÖREV: Kamu muhasebe sistemi, kamu harcama ve ödeme işlemleri ile kamu personeli maaş ve emeklilik ödemelerine ilişkin başvuruları yürütür.
+
+BİRİM: Kamu Finansmanı Genel Müdürlüğü
+GÖREV: Hazine iç ve dış borçlanma işlemleri ile hazine garantisi taleplerine ilişkin başvuruları yürütür.
+
+BİRİM: Vergi Denetim Kurulu Başkanlığı
+GÖREV: Vergi incelemesi, vergi denetimi ve vergi kaçakçılığı soruşturmalarına ilişkin başvuruları yürütür.
+
+BİRİM: Mali Suçları Araştırma Kurulu Başkanlığı (MASAK)
+GÖREV: Kara para aklama ve terörün finansmanıyla mücadele kapsamında şüpheli işlem bildirimlerini inceler.
+
+BİRİM: Kamu Sermayeli Kuruluş ve İşletmeler Genel Müdürlüğü
+GÖREV: Hazine payı bulunan kamu iktisadi teşebbüsleri ve şirketlerin izlenmesine ilişkin başvuruları yürütür.
+
+BİRİM: Dış Ekonomik İlişkiler Genel Müdürlüğü
+GÖREV: Uluslararası mali ilişkiler, uluslararası finans kuruluşlarıyla ilişkiler ve AB mali iş birliği süreçlerine ilişkin başvuruları yürütür. [DOĞRULA: birim adı 1 sayılı CBK HMB hizmet birimleri listesinden teyit edilmeli]

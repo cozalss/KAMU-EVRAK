@@ -1,0 +1,39 @@
+@KURUM: Sanayi ve Teknoloji Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/sanayi-ve-teknoloji-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: sanayi-bakanligi, sanayi-teknoloji-bakanligi, stb
+@NOT: Bağlı/ilgili kuruluşlar (TÜBİTAK, KOSGEB, TSE vb.) ayrı dizinde ele alınır; burada yalnız Bakanlık merkez teşkilatı birimleri listelenmiştir.
+
+BİRİM: Sanayi Genel Müdürlüğü
+GÖREV: Sanayi sicil belgesi düzenleme, imalat sanayii kayıt işlemleri, sanayi işletmelerinin sicil bilgi güncellemeleri ve sanayi envanteri başvurularını yürütür.
+
+BİRİM: Teşvik Uygulama ve Yabancı Sermaye Genel Müdürlüğü
+GÖREV: Yatırım teşvik belgesi başvuruları, teşvik belgesi kapama/revize işlemleri ve yabancı sermayeli şirket kuruluş bildirimlerini değerlendirir.
+
+BİRİM: Sanayi Bölgeleri Genel Müdürlüğü
+GÖREV: Organize sanayi bölgesi (OSB) kuruluş, parsel tahsis ve altyapı başvurularını, ayrıca endüstri bölgesi ve teknoloji geliştirme bölgesi işlemlerini yürütür.
+
+BİRİM: Ar-Ge Teşvikleri Genel Müdürlüğü
+GÖREV: Ar-Ge ve tasarım merkezi belgelendirme başvuruları, Ar-Ge/tasarım harcaması teşvik ve muafiyet talepleri ile teknoloji odaklı sanayi hamlesi programı başvurularını değerlendirir.
+
+BİRİM: Metroloji ve Sanayi Ürünleri Güvenliği Genel Müdürlüğü
+GÖREV: Ölçü ve ölçü aletleri muayene/damgalama itirazları, ürün güvenliği ve piyasa gözetim denetim şikâyetlerini karşılar.
+
+BİRİM: Stratejik Araştırmalar ve Verimlilik Genel Müdürlüğü
+GÖREV: Sanayi ve teknoloji alanında stratejik araştırma/analiz çalışmaları ile işletmelere yönelik verimlilik geliştirme programı ve verimlilik danışmanlık taleplerini yürütür.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlık merkez ve taşra teşkilatı ile bağlı/ilgili kuruluşlar hakkındaki teftiş, inceleme ve şikâyet/ihbar başvurularını değerlendirir.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, performans programı, bütçe ve iç kontrol süreçlerine ilişkin kurumsal yazışmaları yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine karşı açılan dava/itiraz süreçleri ve hukuki görüş talep eden yazışmaları karşılar.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: AB uyum süreci, ikili/çoklu uluslararası sanayi işbirliği ve dış ilişkiler yazışmalarını yürütür.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlık personeline ait atama, nakil, özlük ve disiplin işlemlerine ilişkin başvuruları yürütür.

@@ -1,0 +1,29 @@
+@KURUM: Gençlik ve Spor Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/genclik-ve-spor-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: gsb, genclik-bakanligi, spor-bakanligi
+
+BİRİM: Gençlik Hizmetleri Genel Müdürlüğü
+GÖREV: Gençlik merkezi üyelik, gençlik kampı/projesi başvurusu ve gönüllülük programı işlemlerini yürütür.
+
+BİRİM: Spor Hizmetleri Genel Müdürlüğü
+GÖREV: Spor kulübü tescili, sporcu lisansı, federasyon iş ve işlemleri ile tesis tahsis başvurularını karşılar.
+
+BİRİM: Kredi ve Yurtlar Genel Müdürlüğü
+GÖREV: Yurt başvurusu (KYK), öğrenim/katkı kredisi ve burs başvuruları, yurt disiplin itirazlarını yürütür. [DOĞRULA: kredi/burs ödeme ve tahsilat işlemlerinin güncel kurumsal dağılımı — bir bölümü Hazine ve Maliye Bakanlığına devredilmiş olabilir]
+
+BİRİM: Yatırım ve İşletmeler Genel Müdürlüğü
+GÖREV: Gençlik ve spor tesisi yatırım projeleri, tesis yapım/onarım ve işletme başvuruları ile yatırım koordinasyon yazışmalarını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Bakanlık ve bağlı birimlerin satın alma, taşınır/taşınmaz ve idari destek yazışmalarını yürütür.
+
+BİRİM: Rehberlik ve Denetim Başkanlığı
+GÖREV: Bakanlık merkez/taşra teşkilatı ve bağlı kuruluşlar hakkındaki teftiş, inceleme ve şikâyet başvurularını değerlendirir.

@@ -25,7 +25,9 @@ _REGISTRY: dict[str, TemplateMeta] = {
     "bilgilendirme": ("bilgilendirme", "Bilgilendirme Yazısı", "Bilgilerinize arz ederim."),
     "olur": ("olur", "Olur / Onay Yazısı", "Olurlarınıza arz ederim."),
     "muzekkere": ("muzekkere", "Müzekkere", "Gereğini arz ederim."),
-    "gorus_mutalaa": ("gorus_mutalaa", "Görüş / Mütalaa", "Bilgilerine arz olunur."),
+    # Gerçek kamu pratiğiyle hizalı kapanış (Diyanet Hukuk Müşavirliği görüş yazısı,
+    # birebir doğrulanmış örnek — 2026-07-17 araştırması): "Bilgi ve gereğini arz ederim."
+    "gorus_mutalaa": ("gorus_mutalaa", "Görüş / Mütalaa", "Bilgi ve gereğini arz ederim."),
 }
 
 _FALLBACK = "cevabi_yazi"

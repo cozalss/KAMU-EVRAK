@@ -1,0 +1,18 @@
+@KURUM: Türkiye Petrolleri Anonim Ortaklığı (TPAO)
+@BELGE: 6491 sayılı Türk Petrol Kanunu; 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname
+@KAYNAK_KIMLIK: teskilat/tpao/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: tpao, turkiye-petrolleri
+@NOT: [DOĞRULA: güncel teşkilat şeması] — arama/sondaj/üretim daire başkanlıklarının güncel adları resmi şemadan teyit edilmeli.
+
+BİRİM: Arama Dairesi Başkanlığı
+GÖREV: Petrol ve doğalgaz arama ruhsatı, sismik etüt ve saha araştırması dilekçelerini karşılar. Arama sahası sınırı ve ruhsat sahibi uyuşmazlığı taleplerini değerlendirir.
+
+BİRİM: Sondaj Dairesi Başkanlığı
+GÖREV: Kara ve deniz sondaj faaliyeti, sondaj kulesi güvenliği ve saha erişimi dilekçelerini yönetir. Sondaj çevresi arazi kullanım ve tazminat taleplerini karşılar.
+
+BİRİM: Üretim Dairesi Başkanlığı
+GÖREV: Petrol ve doğalgaz üretim kuyusu işletmesi, üretim kapasitesi ve saha bakım dilekçelerini karşılar. Üretim sahası çevresindeki çevresel etki ihbarlarını değerlendirir.
+
+BİRİM: Ruhsat ve Saha Yönetimi Dairesi Başkanlığı
+GÖREV: Arama-işletme ruhsatı devri, süre uzatımı ve saha sınırı tespiti dilekçelerini yürütür. Ruhsat sahibi değişikliği ve pay devri taleplerini karşılar.

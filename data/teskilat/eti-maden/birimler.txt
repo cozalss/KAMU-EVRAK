@@ -1,0 +1,18 @@
+@KURUM: Eti Maden İşletmeleri Genel Müdürlüğü
+@BELGE: 2840 sayılı Bor Tuzları, Trona ve Asfaltit Madenleri ile Nükleer Enerji Hammaddelerinin İşletilmesini, Linyit ve Demir Sahalarının Bazılarının İadesini Düzenleyen Kanun; 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname
+@KAYNAK_KIMLIK: teskilat/eti-maden/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: eti-maden, etimaden, eti-maden-isletmeleri
+@NOT: [DOĞRULA: güncel teşkilat şeması] — Bandırma, Bigadiç, Kırka, Emet, Kestelek işletme müdürlüğü adları resmi şemadan teyit edilmeli.
+
+BİRİM: Üretim Dairesi Başkanlığı
+GÖREV: Bor madeni ocağı işletmesi, bor ürünleri (boraks, borik asit) üretim tesisi ve saha bakım dilekçelerini karşılar. İşletme müdürlükleri (Bandırma, Bigadiç, Kırka, Emet, Kestelek) çevresindeki çevresel etki ihbarlarını değerlendirir.
+
+BİRİM: Satış ve Pazarlama Dairesi Başkanlığı
+GÖREV: Bor ürünleri yurt içi ve yurt dışı satışı, ihracat ve fiyat tarifesi dilekçelerini yönetir. Sanayi kullanıcılarının bor hammadde tedarik taleplerini karşılar.
+
+BİRİM: Ar-Ge ve Bor Katma Değer Dairesi Başkanlığı
+GÖREV: Bor bazlı katma değerli ürün geliştirme, ruhsat ve teknoloji transferi dilekçelerini karşılar. Üniversite ve sanayi işbirliği taleplerini değerlendirir.
+
+BİRİM: Ruhsat ve Maden Sahası Yönetimi Dairesi Başkanlığı
+GÖREV: Bor madeni arama-işletme ruhsatı, saha sınırı tespiti ve ruhsat devri dilekçelerini yürütür. Maden sahası uyuşmazlığı ve rödovans taleplerini karşılar.

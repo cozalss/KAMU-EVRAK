@@ -1,0 +1,24 @@
+@KURUM: Kamu İhale Kurumu
+@BELGE: 4734 sayılı Kamu İhale Kanunu; 4735 sayılı Kamu İhale Sözleşmeleri Kanunu
+@KAYNAK_KIMLIK: teskilat/kamu-ihale-kurumu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: kik, kamu-ihale-kurulu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: İtirazen Şikayet Değerlendirme Dairesi Başkanlığı
+GÖREV: İhaleye katılan isteklilerin idare kararına karşı itirazen şikayet başvurularını inceler; ihale sürecinin durdurulması taleplerini değerlendirir.
+
+BİRİM: Düzenleme Dairesi Başkanlığı
+GÖREV: Kamu ihale mevzuatı, tip sözleşme ve şartname düzenlemelerini hazırlar.
+
+BİRİM: Yasaklılık ve Yaptırımlar Dairesi Başkanlığı
+GÖREV: İhalelere katılmaktan yasaklama kararları ile isteklilerin yasaklılık sorgularına ilişkin başvuruları yürütür.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Elektronik Kamu Alımları Platformu (EKAP) üzerinden yapılan başvuru ve bildirimlerin teknik altyapısını işletir.
+
+BİRİM: İnsan Kaynakları ve Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Kurum personeli ve idari destek hizmetlerinin yürütülmesinden sorumludur.

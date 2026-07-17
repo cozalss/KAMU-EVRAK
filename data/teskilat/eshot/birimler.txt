@@ -1,0 +1,21 @@
+@KURUM: İzmir Büyükşehir Belediyesi ESHOT Genel Müdürlüğü (ESHOT)
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu
+@KAYNAK_KIMLIK: teskilat/eshot/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: izmir-eshot
+@NOT: [DOĞRULA: güncel teşkilat şeması] — müdürlük adları genel bilgiye dayanır, yönlendirme öncesi güncel ESHOT teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Hat ve Sefer Planlama Şube Müdürlüğü
+GÖREV: İzmir otobüs hat güzergahı ve sefer sıklığı planlamasını yürütür; hat/sefer şikayetleri bu birime yönlendirilir.
+
+BİRİM: Kart ve Ücret İşlemleri Şube Müdürlüğü
+GÖREV: İzmirim Kart bakiye/iade işlemleri ve indirimli kart başvurularını karşılar.
+
+BİRİM: Kayıp Eşya Bürosu
+GÖREV: Otobüste unutulan veya kaybolan eşyaların teslim ve iade işlemlerini yürütür.
+
+BİRİM: Müşteri İlişkileri Şube Müdürlüğü
+GÖREV: Şoför davranışı, araç temizliği ve genel yolcu şikayetlerini karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Trafik kazası ve tazminat taleplerine ilişkin hukuki süreçleri yürütür.

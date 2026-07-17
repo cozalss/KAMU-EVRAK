@@ -1,0 +1,24 @@
+@KURUM: Radyo ve Televizyon Üst Kurulu
+@BELGE: 6112 sayılı Radyo ve Televizyonların Kuruluş ve Yayın Hizmetleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/rtuk/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: radyo-televizyon-ust-kurulu, radyo-ve-televizyon-ust-kurulu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: İzleyici ve Dinleyici Temsilciliği
+GÖREV: Radyo ve televizyon yayınlarına ilişkin izleyici/dinleyici şikayet ve başvurularını karşılar; yayın ilkelerine aykırılık iddialarını ilk değerlendirmeye alır.
+
+BİRİM: Yayın Denetim Dairesi Başkanlığı
+GÖREV: Radyo, televizyon ve isteğe bağlı yayın hizmetlerinin mevzuata uygunluğunu izler; müstehcenlik, nefret söylemi ve reklam ihlali şikayetlerini inceler.
+
+BİRİM: Lisanslama ve Yetkilendirme Dairesi Başkanlığı
+GÖREV: Yayın kuruluşlarına lisans/yayın iletim yetkisi verilmesi ve yenilenmesi başvurularını değerlendirir.
+
+BİRİM: Reklam ve Tanıtım Dairesi Başkanlığı
+GÖREV: Televizyon ve radyoda yayınlanan reklam ve tanıtım içeriklerinin mevzuata uygunluğunu inceler; yanıltıcı reklam şikayetlerini değerlendirir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Kurumun stratejik plan, bütçe ve mevzuat taslaklarının hazırlanmasından sorumludur.

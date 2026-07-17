@@ -1,0 +1,18 @@
+@KURUM: Türkiye Elektrik Dağıtım Anonim Şirketi (TEDAŞ)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname; 4628 sayılı Elektrik Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/tedas/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: tedas, turkiye-elektrik-dagitim
+@NOT: Fiili elektrik dağıtım işletmeciliği özelleştirilmiştir; bölgesel dağıtım şirketleri (BEDAŞ, AYEDAŞ, DEDAŞ vb.) ayrı özel kuruluşlardır ve bu dosyanın kapsamı dışındadır. TEDAŞ yalnız dağıtım varlıklarının sahipliği, genel aydınlatma koordinasyonu ve kaçak-usulsüz elektrik mevzuatı çerçevesinde merkezi görevleri yürütür. [DOĞRULA: güncel teşkilat şeması] [DOĞRULA: sektör mevzuatı — 2013'te 6446 sayılı Elektrik Piyasası Kanunu yürürlüğe girdi; "4628 sayılı Elektrik Piyasası Kanunu" adının/numarasının güncelliği teyit edilmeli.]
+
+BİRİM: Dağıtım Varlık Yönetimi Dairesi Başkanlığı
+GÖREV: Dağıtım şebekesi taşınır-taşınmaz varlıklarının sahiplik kayıtları, kiralama sözleşmesi ve devir işlemlerine ilişkin dilekçeleri karşılar. Dağıtım şirketleriyle varlık kullanım uyuşmazlıklarını değerlendirir.
+
+BİRİM: Genel Aydınlatma Dairesi Başkanlığı
+GÖREV: Yol, meydan ve kamusal alan genel aydınlatma bedeli, aydınlatma direği arızası ve yeni aydınlatma talebi dilekçelerini yönetir. Belediyeler ve il özel idareleriyle genel aydınlatma koordinasyonunu yürütür.
+
+BİRİM: Kaçak ve Usulsüz Elektrik Enerjisi Kullanımını Önleme Dairesi Başkanlığı
+GÖREV: Kaçak elektrik kullanımı, sayaç müdahalesi ve usulsüz bağlantı ihbarı dilekçelerini mevzuat çerçevesinde değerlendirir. Dağıtım şirketleriyle kaçak-usulsüz tüketim tespit koordinasyonunu yürütür.
+
+BİRİM: Yatırım ve İhale Dairesi Başkanlığı
+GÖREV: Dağıtım şebekesi yatırım programı, ihale ve yapım işi dilekçelerini karşılar. Kamu-özel ortaklığı kapsamındaki dağıtım yatırım taleplerini değerlendirir.

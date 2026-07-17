@@ -1,0 +1,18 @@
+@KURUM: Basın İlan Kurumu
+@BELGE: 195 sayılı Basın İlan Kurumu Teşkiline Dair Kanun
+@KAYNAK_KIMLIK: teskilat/basin-ilan-kurumu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: bik
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: İlan ve Reklam Dairesi Başkanlığı
+GÖREV: Resmi ilan/reklam dağıtım başvuruları, gazete resmi ilan yayın hakkı talebi ve ilan tarife itirazlarını yürütür.
+
+BİRİM: Yayın İşleri Müdürlüğü
+GÖREV: Gazete/dergi resmi ilan yayınlama yeterliliği başvuruları ve yayın listesine kayıt taleplerini değerlendirir.
+
+BİRİM: Tarife ve Fiyat Tespit Komisyonu Sekreterliği
+GÖREV: Resmi ilan tarife tespiti itirazları ve ücret hesaplama uyuşmazlığı dilekçelerini sonuçlandırır.
+
+BİRİM: Şube Müdürlüğü
+GÖREV: İl düzeyinde resmi ilan dağıtım takibi, gazete başvurusu ve yerel ilan şikâyet dilekçelerinin ilk kabul merciidir.

@@ -1,0 +1,24 @@
+@KURUM: Sermaye Piyasası Kurulu
+@BELGE: 6362 sayılı Sermaye Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/spk/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: sermaye-piyasasi-kurulu
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlıklarının adı ve sayısı zaman içinde değişmiştir.
+
+BİRİM: Halka Arz ve Kurumsal Finansman Dairesi Başkanlığı
+GÖREV: Halka arz, sermaye artırımı ve tahvil/bono ihracı başvurularını inceler; izahname ve ihraç belgesi onay sürecini yürütür.
+
+BİRİM: Aracı Kurumlar ve Yatırım Kuruluşları Dairesi Başkanlığı
+GÖREV: Aracı kurum, portföy yönetim şirketi ve yatırım fonlarının kuruluş ve faaliyet iznine ilişkin başvuruları değerlendirir.
+
+BİRİM: Yatırımcı Şikayetleri ve Uyuşmazlık Dairesi Başkanlığı
+GÖREV: Yatırımcıların aracı kurum, banka veya halka açık şirketlerle yaşadığı işlem, hesap ve tazminat uyuşmazlıklarına ilişkin şikayet başvurularını karşılar.
+
+BİRİM: Denetim Dairesi Başkanlığı
+GÖREV: Halka açık şirketler, aracı kurumlar ve borsa üyelerinin sermaye piyasası mevzuatına uygunluğunu denetler; piyasa dolandırıcılığı ve manipülasyon ihbarlarını inceler.
+
+BİRİM: Hukuk İşleri Dairesi Başkanlığı
+GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Kurumun stratejik plan, bütçe ve mevzuat taslaklarının hazırlanmasından sorumludur.

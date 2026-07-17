@@ -102,7 +102,7 @@ class TestYaziTaslakNodeDinamik:
         # Assert — plan statik tabloyu EZDİ + gerekçe API'ye taşındı
         assert out["yazi_turu"] == "gorus_mutalaa"
         assert out["yazi_plan_notu"] == "Hukuki görüş istendiği için görüş yazısı."
-        assert "Bilgilerine arz olunur." in out["yazi_taslak_md"]  # görüş kapanışı
+        assert "Bilgi ve gereğini arz ederim." in out["yazi_taslak_md"]  # görüş kapanışı
 
     async def test_mock_modda_statik_yol_birebir(self, monkeypatch):
         # Arrange — mock: plan None → EVRAK_TO_YAZI statik eşleme aynen (CI deterministik)
@@ -115,4 +115,4 @@ class TestYaziTaslakNodeDinamik:
         # Assert
         assert out["yazi_turu"] == "ust_yazi"          # statik iletim eşlemesi
         assert out["yazi_plan_notu"] == ""              # plan koşmadı
-        assert "Strateji Geliştirme / Mali İşler" in out["yazi_taslak_md"]
+        assert "STRATEJİ GELİŞTİRME / MALİ İŞLER" in out["yazi_taslak_md"]  # m.14/2 BÜYÜK

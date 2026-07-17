@@ -1,0 +1,21 @@
+@KURUM: Türkiye Elektrik İletim Anonim Şirketi (TEİAŞ)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname; 4628 sayılı Elektrik Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/teias/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: teias, turkiye-elektrik-iletim
+@NOT: [DOĞRULA: güncel teşkilat şeması] — bölge müdürlüğü sayısı ve dairelerin güncel adları TEİAŞ resmi teşkilat şemasından teyit edilmeli. [DOĞRULA: sektör mevzuatı — 2013'te 6446 sayılı Elektrik Piyasası Kanunu yürürlüğe girdi; "4628 sayılı Elektrik Piyasası Kanunu" adının/numarasının güncelliği teyit edilmeli.]
+
+BİRİM: İletim Tesisleri Dairesi Başkanlığı
+GÖREV: Yüksek gerilim iletim hattı, trafo merkezi, enerji nakil hattı yapım, bakım ve arıza dilekçelerini karşılar. Direk, iletim koridoru, trafo merkezi kapasite artırımı taleplerini değerlendirir.
+
+BİRİM: Kamulaştırma ve Emlak Dairesi Başkanlığı
+GÖREV: İletim hattı ve trafo merkezi güzergâhında kamulaştırma, irtifak hakkı tesisi, bedel tespiti ve arazi kullanım dilekçelerini yürütür. Enerji nakil hattı geçişi nedeniyle tazminat, kısıtlılık ve taşınmaz uyuşmazlıklarına bakar.
+
+BİRİM: Sistem İşletimi ve Yük Tevzi Dairesi Başkanlığı
+GÖREV: Milli elektrik iletim sisteminin frekans-gerilim dengesi, yük tevzii, arz güvenliği ve şebeke bağlantı taleplerini yönetir. Üretim tesisi bağlantı anlaşması ve sistem kullanım dilekçelerini karşılar.
+
+BİRİM: Ticari İşlemler ve Bağlantı Anlaşmaları Dairesi Başkanlığı
+GÖREV: İletim sistemi kullanım sözleşmesi, bağlantı anlaşması, tarife ve faturalandırma dilekçelerini değerlendirir. Üretici ve dağıtım şirketleriyle bağlantı görüşmelerini yürütür.
+
+BİRİM: Bölge Müdürlükleri (İletim Bakım-İşletme)
+GÖREV: Bölgesindeki iletim hattı arızası, trafo merkezi bakımı ve saha denetimi başvurularını yerinde karşılar. Vatandaş ve kurum dilekçelerinde ilk muhatap bölge müdürlüğüdür; il/ilçe bazlı arıza ihbarı burada işlenir.

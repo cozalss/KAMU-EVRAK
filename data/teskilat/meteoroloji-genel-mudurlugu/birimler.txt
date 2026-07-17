@@ -1,0 +1,18 @@
+@KURUM: Meteoroloji Genel Müdürlüğü
+@BELGE: 6301 sayılı Meteoroloji Genel Müdürlüğü Teşkilat ve Görevleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/meteoroloji-genel-mudurlugu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: mgm, devlet-meteoroloji-isleri-genel-mudurlugu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Hava Tahminleri Dairesi Başkanlığı
+GÖREV: Hava durumu tahmin talepleri, meteorolojik rapor/bülten talepleri ve hava tahmini hatasına ilişkin şikâyet dilekçelerini değerlendirir.
+
+BİRİM: Tarım Meteorolojisi ve İklim Rasatları Dairesi Başkanlığı
+GÖREV: Zirai don uyarısı, kuraklık/iklim verisi talebi ve tarımsal meteoroloji danışmanlık başvurularını yürütür.
+
+BİRİM: Uzaktan Algılama ve Radar Dairesi Başkanlığı
+GÖREV: Radar/uydu verisi talepleri, şiddetli hava olayı (dolu, hortum) bildirim ve inceleme dilekçelerini karşılar.
+
+BİRİM: İl Meteoroloji Müdürlüğü
+GÖREV: İl düzeyinde resmi hava durumu belgesi (adli/sigorta amaçlı) düzenleme talepleri ve yerel meteorolojik veri başvurularının ilk muhatabıdır.

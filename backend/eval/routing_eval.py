@@ -47,7 +47,9 @@ def run_pipeline(rows: list[dict]) -> None:
     async def _run() -> None:
         for r in rows:
             out: dict[str, Any] = await graph.ainvoke(make_initial_state(r["metin"]))
-            r["pred_birim"] = out.get("hedef_birim", "")
+            # Type-bazlı gold ile karşılaştırma hedef_kategori (deterministik 9-set köprüsü)
+            # üzerinden; ROUTE_AJAN=0'da hedef_birim koddur. Doğrulanmış birim ADI ayrı ölçülür.
+            r["pred_birim"] = out.get("hedef_kategori") or out.get("hedef_birim") or ""
             r["alts"] = list(out.get("birim_alternatifleri") or [])
             r["pred_turu"] = out.get("evrak_turu", "belirsiz")
 

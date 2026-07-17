@@ -1,0 +1,30 @@
+@KURUM: Millî Savunma Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/milli-savunma-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: msb, milli-savunma
+@NOT: Türk Silahlı Kuvvetleri komuta kademesi (Genelkurmay, Kuvvet Komutanlıkları) ayrı teşkilat olduğundan burada listelenmemiştir; yalnız Bakanlık merkez teşkilatı sivil birimleri yer alır.
+
+BİRİM: Askeralma Genel Müdürlüğü
+GÖREV: Askerlik erteleme, celp/sevk işlemleri, bedelli askerlik başvurusu ve yoklama kaçağı/bakaya itiraz başvurularını yürütür.
+
+BİRİM: Harita Genel Müdürlüğü
+GÖREV: Resmî harita üretimi, jeodezik veri talebi ve harita/kroki bilgi edinme başvurularını karşılar.
+
+BİRİM: Askeri Fabrikalar Genel Müdürlüğü
+GÖREV: Askeri fabrika üretim/tedarik süreçleri ve savunma sanayii sipariş takip başvurularını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlık sivil memur/işçi personeline ilişkin atama, nakil ve özlük başvurularını yürütür.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Bakanlık merkez ve taşra teşkilatı hakkındaki teftiş, inceleme ve şikâyet/ihbar başvurularını değerlendirir.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Bakanlık satın alma, taşınır/taşınmaz işlemleri ve idari destek hizmetlerine ilişkin yazışmaları yürütür.

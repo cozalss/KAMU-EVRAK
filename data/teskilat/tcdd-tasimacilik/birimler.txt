@@ -1,0 +1,18 @@
+@KURUM: TCDD Taşımacılık Anonim Şirketi
+@BELGE: 6461 sayılı Türkiye Demiryolu Ulaştırmasının Serbestleştirilmesi Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/tcdd-tasimacilik/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: tcdd-tasimacilik-as, tcdd-tasimacilik-a.s
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlığı adları genel bilgiye dayanır, yönlendirme öncesi güncel teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Yolcu Taşımacılığı Dairesi Başkanlığı
+GÖREV: YHT (Yüksek Hızlı Tren), konvansiyonel tren ve bölgesel tren seferlerini planlar; bilet iade, sefer iptali/gecikmesi ve koltuk/kompartıman şikayeti başvuruları bu birime yönlendirilir.
+
+BİRİM: Yük Taşımacılığı Dairesi Başkanlığı
+GÖREV: Demiryolu ile yük/kargo taşıma, vagon tahsisi ve yük tarifesi konularını yürütür; kayıp veya hasarlı yük şikayetleri bu birime gider.
+
+BİRİM: Müşteri İlişkileri ve Bilet Satış Dairesi Başkanlığı
+GÖREV: Bilet satış kanalları, TCDD Taşımacılık mobil/web bilet işlemleri, iade-değişim ve kayıp eşya başvurularını karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Yolcu ve yük taşıma sözleşmesinden doğan tazminat taleplerini ve idari itirazları yürütür.

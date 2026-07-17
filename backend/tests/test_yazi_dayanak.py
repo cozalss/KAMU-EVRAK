@@ -76,9 +76,10 @@ class TestDayanakUcu:
             assert ln in md
 
     def test_kapanistan_once(self, client):
+        # Muhatap vatandaş (Ayşe Yılmaz) → m.16/12-e kişi kapanışı "Bilgilerinize sunulur."
         base = _base(client)
         md = _dayanak(client, base, _SECILI).json()["yazi_taslak_md"]
-        assert md.index("Dayanak :") < md.index("Gereğini rica ederim.")
+        assert md.index("Dayanak :") < md.index("Bilgilerinize sunulur.")
 
     def test_placeholder_sizmaz(self, client):
         base = _base(client)

@@ -1,0 +1,21 @@
+@KURUM: Metro İstanbul Anonim Şirketi
+@BELGE: 5216 sayılı Büyükşehir Belediyesi Kanunu
+@KAYNAK_KIMLIK: teskilat/metro-istanbul/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: metro-istanbul-as, istanbul-metro
+@NOT: [DOĞRULA: güncel teşkilat şeması] — müdürlük adları genel bilgiye dayanır, yönlendirme öncesi güncel Metro İstanbul teşkilat şemasından teyit edilmelidir.
+
+BİRİM: İşletme Müdürlüğü
+GÖREV: İstanbul metro ve raylı sistem hatlarının günlük sefer işletmesinden sorumludur; sefer aksaması ve gecikme şikayetleri bu birime yönlendirilir.
+
+BİRİM: Kart ve Ücret İşlemleri Müdürlüğü
+GÖREV: İstanbulkart bakiye/iade işlemleri ve indirimli kart başvurularını (metro hatları için) karşılar.
+
+BİRİM: Kayıp Eşya Bürosu
+GÖREV: Metro istasyon ve trenlerinde unutulan veya kaybolan eşyaların teslim ve iade işlemlerini yürütür.
+
+BİRİM: Müşteri İlişkileri Müdürlüğü
+GÖREV: Personel davranışı, istasyon temizliği, asansör/yürüyen merdiven arızası gibi yolcu şikayetlerini karşılar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: İstasyon/tren kazası ve tazminat taleplerine ilişkin hukuki süreçleri yürütür.

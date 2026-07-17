@@ -1,0 +1,33 @@
+@KURUM: Ticaret Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/ticaret-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: tb, ticaret, ticaret-bakanligi-tr
+@NOT: Rekabet Kurumu, ürün fiyatlandırma ve piyasa hakimiyeti ihlallerini inceleyen ayrı bir bağımsız idari otoritedir; bu dosya kapsamı dışındadır.
+
+BİRİM: Gümrükler Genel Müdürlüğü
+GÖREV: Gümrük işlemleri, gümrük vergisi tahakkuku, ithalat/ihracat gümrük mevzuatı ve gümrük beyannamesi başvurularını yürütür.
+
+BİRİM: İç Ticaret Genel Müdürlüğü
+GÖREV: Şirket kuruluş ve ticaret sicili işlemleri, perakende ticaret düzenlemeleri ve elektronik ticaret (e-ticaret) mevzuatına ilişkin başvuruları yürütür.
+
+BİRİM: Tüketicinin Korunması ve Piyasa Gözetimi Genel Müdürlüğü
+GÖREV: Tüketici şikâyetleri, tüketici hakem heyeti başvuruları ve ürün güvenliği/piyasa gözetim denetimlerini yürütür.
+
+BİRİM: İhracat Genel Müdürlüğü
+GÖREV: İhracat teşvikleri, ihracatçı birlikleri kaydı ve dış ticaret sermaye şirketi başvurularını yürütür.
+
+BİRİM: Esnaf, Sanatkârlar ve Kooperatifçilik Genel Müdürlüğü
+GÖREV: Esnaf ve sanatkâr sicili, kooperatif kuruluş işlemleri ve esnaf kredi/destek başvurularını yürütür.
+
+BİRİM: İthalat Genel Müdürlüğü
+GÖREV: İthalat rejimi uygulamaları, gözetim ve korunma önlemleri ile damping soruşturması başvurularını yürütür.
+
+BİRİM: Serbest Bölgeler, Yurtdışı Yatırım ve Hizmetler Genel Müdürlüğü
+GÖREV: Serbest bölge faaliyet izinleri ve yurt dışı müteahhitlik hizmetlerine ilişkin başvuruları yürütür.
+
+BİRİM: Gümrükler Muhafaza Genel Müdürlüğü
+GÖREV: Gümrük kapılarında kaçakçılıkla mücadele ve güvenlik denetimine ilişkin başvuruları yürütür.
+
+BİRİM: Uluslararası Anlaşmalar ve Avrupa Birliği Genel Müdürlüğü
+GÖREV: Serbest ticaret anlaşmaları, Dünya Ticaret Örgütü (DTÖ) ilişkileri, AB Gümrük Birliği süreçleri ve ikili ticaret anlaşması müzakerelerine ilişkin başvuruları yürütür.

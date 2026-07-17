@@ -101,7 +101,7 @@ class TestFaturaUcaUca:
         md = out["yazi_taslak_md"]
         # Assert — İLETİM üst yazısı: muhatap MALİ BİRİM; gönderen kuruma "cevap" YOK
         assert out["yazi_turu"] == "ust_yazi"
-        assert "Strateji Geliştirme / Mali İşler" in md
+        assert "STRATEJİ GELİŞTİRME / MALİ İŞLER" in md  # m.14/2 BÜYÜK (ünsüz sonu → eksiz)
         assert "Sayın Gazi Üniversitesi" not in md   # hatalı hitap asla
         # gövde/kapanış çift "arz ederim" içermez (aynı kalıp 2 kez alt alta değil)
         assert md.count("Gereğini arz ederim.") <= 1

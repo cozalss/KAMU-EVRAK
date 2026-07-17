@@ -1,0 +1,21 @@
+@KURUM: Türkiye Bilimsel ve Teknolojik Araştırma Kurumu
+@BELGE: 278 sayılı Türkiye Bilimsel ve Teknolojik Araştırma Kurumu Kurulması Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/tubitak/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: turkiye-bilimsel-ve-teknolojik-arastirma-kurumu
+@NOT: Destek programı kodları (1501, 2211 vb.) ve başvuru koşulları yıllık çağrılarla güncellenir. [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Teknoloji ve Yenilik Destek Programları Başkanlığı (TEYDEB)
+GÖREV: Sanayi Ar-Ge proje destek başvuruları (1501, 1507 vb.), hakem değerlendirme itirazları ve destek ödemesi taleplerini yürütür.
+
+BİRİM: Araştırma Destek Programları Başkanlığı (ARDEB)
+GÖREV: Akademik/bilimsel araştırma proje destek başvuruları, proje izleme raporları ve destek kesintisi itirazlarını değerlendirir.
+
+BİRİM: Bilim İnsanı Destekleme Daire Başkanlığı (BİDEB)
+GÖREV: Lisans/yüksek lisans/doktora bursu (2211, 2205 vb.) başvuruları, burs kesintisi itirazı ve bilim insanı destek programı dilekçelerini sonuçlandırır.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Destek programı ret kararlarına karşı itiraz ve dava dilekçelerinde kurumu temsil eder.
+
+BİRİM: Halkla İlişkiler ve Bilgilendirme Birimi
+GÖREV: Bilgi edinme başvuruları ve genel destek programı bilgilendirme taleplerinin ilk kabul merciidir.

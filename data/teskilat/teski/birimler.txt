@@ -1,0 +1,27 @@
+@KURUM: Tekirdağ Su ve Kanalizasyon İdaresi Genel Müdürlüğü
+@BELGE: 2560 sayılı Kanun (bu Kanun İstanbul için çıkarılmış olup 3305 sayılı Kanun ile diğer büyükşehir belediyelerine teşmil edilmiştir)
+@KAYNAK_KIMLIK: teskilat/teski/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: teski, tekirdag-su-ve-kanalizasyon-idaresi, tekirdag-su-kanalizasyon, tekirdag-teski
+@NOT: [DOĞRULA: Birim listesi 2560 sayılı Kanun'a tabi su idareleri için TİPİK şablondur; TESKİ'nin güncel teşkilat şemasındaki fiilî daire adları farklılaşabilir — yönlendirme öncesi ilgili idarenin resmî internet sitesindeki güncel teşkilat şemasıyla doğrula.]
+
+BİRİM: Abone İşleri Dairesi Başkanlığı
+GÖREV: Su aboneliği açma/kapama, yeni abonelik başvurusu, sayaç kontrol ve değişim talepleri, su faturasına itiraz ve tahakkuk düzeltme işlemleriyle ilgilenir; hizmet bölgesi Tekirdağ il sınırlarıdır.
+
+BİRİM: Su İşletme Dairesi Başkanlığı
+GÖREV: İçmesuyu şebekesinde su arızası, su kesintisi, basınç düşüklüğü ve şebeke bakım-onarım taleplerini karşılar.
+
+BİRİM: Kanalizasyon Dairesi Başkanlığı
+GÖREV: Kanalizasyon tıkanıklığı, foseptik taşması, yağmursuyu şebekesi arızası ve kanal bakım-temizlik talepleriyle ilgilenir.
+
+BİRİM: Atıksu Arıtma Dairesi Başkanlığı
+GÖREV: Atıksu arıtma tesislerinin işletilmesi, sanayi deşarj izin başvuruları ve atıksu kalite denetimini yürütür.
+
+BİRİM: Yatırım ve İnşaat Dairesi Başkanlığı
+GÖREV: Yeni içmesuyu/kanalizasyon şebeke yatırımları, isale hattı inşaatı ve altyapı proje taleplerini yürütür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Tesis ve hat güzergahları için kamulaştırma işlemleri ile taşınmaz tahsis/kira taleplerini yürütür.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Abonelik ve tahakkuk itirazlarına ilişkin dava/icra süreçleri ile hukuki görüş taleplerini yürütür.

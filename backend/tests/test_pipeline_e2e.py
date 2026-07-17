@@ -76,9 +76,13 @@ class TestPipelineTemelDilekce:
         state = make_initial_state(self._ORNEK_DILEKCE)
         # Act
         sonuc = await _graph().ainvoke(state)
-        # Assert
-        assert sonuc.get("hedef_birim"), "hedef_birim boş döndü"
-        assert sonuc["hedef_birim"] in BIRIMLER
+        # Assert — kaynak-doğrulamalı ajan: doğrulanmış birim ADI (serbest-metin) VEYA
+        # dürüst fallback (hedef_birim=None + hedef_kategori eski 9-set).
+        hb = sonuc.get("hedef_birim")
+        if hb:
+            assert isinstance(hb, str) and hb.strip(), "doğrulanmış birim adı boş"
+        else:
+            assert sonuc.get("hedef_kategori") in BIRIMLER, "fallback kategori geçersiz"
 
     async def test_response_dolu(self):
         # Arrange
@@ -218,8 +222,8 @@ class TestPipelineSimayet:
         state = make_initial_state(self._SIKAYET)
         # Act
         sonuc = await _graph().ainvoke(state)
-        # Assert — teftis_ic_denetim veya geçerli başka birim
-        assert sonuc.get("hedef_birim") in BIRIMLER
+        # Assert — doğrulanmış birim adı VEYA fallback kategori (kaynak-doğrulamalı ajan)
+        assert sonuc.get("hedef_birim") or sonuc.get("hedef_kategori") in BIRIMLER
 
 
 # ---------------------------------------------------------------------------
@@ -246,8 +250,8 @@ class TestPipelineBelirsizdegradasyonu:
         state = make_initial_state(self._BELIRSIZ)
         # Act
         sonuc = await _graph().ainvoke(state)
-        # Assert — belirsiz olsa bile geçerli birim döner
-        assert sonuc.get("hedef_birim") in BIRIMLER
+        # Assert — belirsiz olsa bile bir yönlendirme kararı döner (doğrulanmış ad VEYA fallback kategori)
+        assert sonuc.get("hedef_birim") or sonuc.get("hedef_kategori") in BIRIMLER
 
     async def test_belirsiz_response_bos_degil(self):
         # Arrange

@@ -249,9 +249,10 @@ class TestFallbackBody:
         assert muzekkere != gorus
 
     def test_gorus_mutalaa_hukuki_degerlendirme_dili(self):
-        # gorus_mutalaa.j2'nin kendi varsayılanı "hukuki değerlendirme" çerçevesi bekler.
+        # Görüş gövdesi hukuki-görüş dili + kapalı-uçlu cevap çerçevesi taşır (havada kalmaz).
         body = _fallback_body("gorus_mutalaa", "sözleşme feshi", has_ilgi=False)
-        assert "hukuki değerlendirme" in body.lower()
+        assert "hukuki görüş" in body.lower()
+        assert "ayrıca bildirilecektir" in body.lower()
 
 
 # ---------------------------------------------------------------------------
@@ -288,8 +289,14 @@ class TestRenderYaziTumTurler:
         assert "Sayın" not in res.metin
 
     def test_bilgilendirme_kapanisi(self):
+        # _ctx muhatabı gerçek kişi ("Test Kişi" → "Sayın ...") → m.16/12-e kişi kapanışı.
         res = render_yazi(_ctx("bilgilendirme"))
-        assert "Bilgilerinize arz ederim." in res.metin
+        assert "Bilgilerinize sunulur." in res.metin
+
+    def test_bilgilendirme_dagitim_kapanisi(self):
+        # Muhatapsız (DAĞITIM YERLERİNE) bilgilendirme → m.16/12-b dağıtım kapanışı.
+        ctx = build_context("bilgilendirme", {"konu": "Duyuru"}, "gövde metni")
+        assert ctx.kapanis == "Bilgilerini ve gereğini arz ve rica ederim."
 
     def test_ust_yazi_kapanisi(self):
         res = render_yazi(_ctx("ust_yazi"))
@@ -381,10 +388,10 @@ class TestKapanisHiyerarsi:
         ctx = build_context("ust_yazi", {}, "gövde", muhatap_override="Evrak Kayıt Şefliği")
         assert ctx.kapanis == "Gereğini rica ederim."
 
-    def test_vatandas_muhatapta_varsayilan_korunur(self):
-        # Makam çözülemez (kişi adı) → tür varsayılanı aynen kalır (yanlış seçim yok)
+    def test_vatandas_muhatapta_kisi_kapanisi(self):
+        # m.16/12-e: muhatap gerçek kişi → "Bilgilerinize sunulur." (arz/rica makam dili değil)
         ctx = build_context("cevabi_yazi", {"gonderen": "Ayşe Yılmaz"}, "gövde")
-        assert ctx.kapanis == "Gereğini rica ederim."
+        assert ctx.kapanis == "Bilgilerinize sunulur."
 
     def test_bilgilendirme_kapanisina_dokunulmaz(self):
         # 'Bilgilerinize arz ederim.' kalıbı türe özgü — hiyerarşi override uygulanmaz

@@ -36,6 +36,9 @@ from agents.config import (
     ATIF_GENISLET_ENABLED,
     EVRAK_TO_MEVZUAT,
     EVRAK_TURU_TR,
+    IZIN_DENIZ_SINYAL,
+    IZIN_ISCI_SINYAL,
+    IZIN_TERIMLERI,
     RERANK_CAND_N,
     RERANK_ENABLED,
     RERANK_PROVIDER,
@@ -247,6 +250,24 @@ def _beklenen_kanun_nolari(turu: str) -> set[str]:
     return nolar
 
 
+def _izin_jurisdiksiyon(text: str) -> str | None:
+    """İçerik bir izin (dinlenme) matı ise onu düzenleyen kanun no; değilse None.
+
+    Aynı "yıllık izin" ifadesi 657 (memur)/4857 (işçi)/854 (denizci)'de geçer. KAMU evrak
+    sistemi olduğundan varsayılan memurdur (657); yalnız içerikte AÇIK iş-hukuku ya da
+    deniz-iş sinyali varsa özel-hukuk kanununa yönlendirilir → memur izin talebi 657'yi öne
+    alırken işçi/denizci uyuşmazlığı 657'ye yanlış kilitlenmez. Eşleşme tr_lower substring.
+    """
+    q = tr_lower(text)
+    if not any(t in q for t in IZIN_TERIMLERI):
+        return None
+    if any(s in q for s in IZIN_DENIZ_SINYAL):
+        return "854"
+    if any(s in q for s in IZIN_ISCI_SINYAL):
+        return "4857"
+    return "657"
+
+
 # Tür → beklenen-kanun BOOST katsayısı: doğru kanun chunk'ı top skorla çarpılır
 # (ön-filtre yerine ölçekleme → güçlü ham eşleşme hâlâ kazanabilir, dürüstlük).
 # Ölçüldü: 1.6 ile CİMER/dilekçe/tebligat doğru maddesi gürültülü 2646 maddesini geçer.
@@ -323,7 +344,7 @@ def _domain_terimleri(turu_key: str) -> str:
     return " ".join(" ".join(parcalar).split())
 
 
-def _retrieval_query(state: dict[str, Any]) -> str:
+def _retrieval_query(state: dict[str, Any], *, domain_bastir: bool = False) -> str:
     """Sorgu: (konu+tür+domain-terim) ağırlıklı + metnin ilk bölümü (PII'siz).
 
     Tür anahtarı (`dilekce`) yerine Türkçe etiketi (`Dilekçe`) kullanılır → korpus
@@ -331,14 +352,22 @@ def _retrieval_query(state: dict[str, Any]) -> str:
     başlıklarındaki domain terimleri (örn. "Tebligat", "Bilgi Edinme") de eklenir →
     BM25 doğru kanuna yönelir (sorgu-genişletme). Madde atıfları/DOĞRULA notları
     eklenMEZ (_domain_terimleri hijyeni).
+
+    domain_bastir=True: tür-domain genişletmesi (VE Türkçe tür etiketi) sorgudan çıkarılır.
+    İçerik biçimsel türle çeliştiğinde (izin talebi "dilekçe" sınıflanır) tür-domain vokabülü
+    ("Dilekçe Hakkı Kanunu zorunlu unsurlar") 5690/5176/3071'i şişirip doğru izin kanununu
+    boğar → izin tespit edilince (mevzuat_oner_node) yalnız konu+gövde ile aranır.
     """
     unsurlar = state.get("bilgi_unsurlari") or {}
     konu = str(unsurlar.get("konu", "") or "").strip()
+    body = (state.get("evrak_text", "") or "")[:_EVRAK_TEXT_CHARS]
+    if domain_bastir:
+        boosted = " ".join(konu.split() * _QUERY_BOOST).strip()
+        return " ".join(p for p in (boosted, body) if p)
     turu_key = (state.get("evrak_turu", "") or "").strip()
     turu = EVRAK_TURU_TR.get(turu_key, turu_key)
     domain = _domain_terimleri(turu_key)
     boosted = " ".join(f"{konu} {turu} {domain}".split() * _QUERY_BOOST).strip()
-    body = (state.get("evrak_text", "") or "")[:_EVRAK_TEXT_CHARS]
     return " ".join(p for p in (boosted, body) if p)
 
 
@@ -472,7 +501,7 @@ def _maybe_rerank(
     ]
 
 
-def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
+def _from_corpus(query: str, turu: str = "", *, ek_beklenen: frozenset[str] = frozenset()) -> list[dict[str, Any]]:
     """Korpustan retrieval önerileri (boş liste → caller statik'e düşer).
 
     İki aşama: (1) BM25Okapi recall (tür-boost + dedup); (2) opt-in cross-encoder
@@ -488,6 +517,10 @@ def _from_corpus(query: str, turu: str = "") -> list[dict[str, Any]]:
     if not ranked:
         return []
     beklenen = _beklenen_kanun_nolari(turu) if turu else set()
+    # İçerik-sinyali (izin jurisdiksiyonu) türden BAĞIMSIZ eklenir: biçimsel tür yanlış kanuna
+    # boost verse bile, içeriğin işaret ettiği doğru kanun (memur→657/işçi→4857/denizci→854)
+    # boost kümesine katılır. Doğru jurisdiksiyon mevzuat_oner_node'da seçilir.
+    beklenen |= ek_beklenen
     boosted = _apply_boost(ranked, beklenen)
     boosted.sort(key=lambda x: -x[0])
     deduped = _dedup(boosted)
@@ -565,16 +598,24 @@ def _from_config(turu: str) -> list[dict[str, Any]]:
 async def mevzuat_oner_node(state: dict[str, Any]) -> dict[str, Any]:
     """İlgili mevzuatı öner — korpus BM25 retrieval birincil, statik config fallback."""
     turu = state.get("evrak_turu", "belirsiz")
-    query = _retrieval_query(state)
+
+    # İzin (dinlenme) matı mı? Biçimsel tür yanıltıcı olabildiğinden (izin talebi = "dilekçe")
+    # jurisdiksiyon evrak İÇERİĞİNDEN seçilir (konu + gövde). İzinse: (1) doğru kanunu boost'la,
+    # (2) yanıltıcı tür-domain kirliliğini bastır (yalnız konu+gövde ile ara).
+    unsurlar = state.get("bilgi_unsurlari") or {}
+    icerik = f"{unsurlar.get('konu', '') or ''} {(state.get('evrak_text', '') or '')[:_EVRAK_TEXT_CHARS]}"
+    izin_kanun = _izin_jurisdiksiyon(icerik)
+    query = _retrieval_query(state, domain_bastir=bool(izin_kanun))
+    ek_beklenen = frozenset({izin_kanun}) if izin_kanun else frozenset()
 
     oneriler: list[dict[str, Any]] = []
     if len(query) >= _MIN_QUERY_LEN:
-        oneriler = _from_corpus(query, turu)
+        oneriler = _from_corpus(query, turu, ek_beklenen=ek_beklenen)
     kaynak = "corpus" if oneriler else "config"
     if not oneriler:
         oneriler = _from_config(turu)
 
-    log.info("mevzuat_oner", turu=turu, kaynak=kaynak, n=len(oneriler))
+    log.info("mevzuat_oner", turu=turu, kaynak=kaynak, n=len(oneriler), izin_kanun=izin_kanun)
     return {"mevzuat_onerileri": oneriler}
 
 

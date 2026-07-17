@@ -1,0 +1,33 @@
+@KURUM: Sağlık Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/saglik-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: sb, saglik, saglik-bakanligi
+@NOT: Sosyal Güvenlik Kurumu (SGK) sağlık hizmeti bedellerinin ödenmesinden sorumlu ayrı bir kamu kurumudur; bu dosya kapsamı dışındadır. Türkiye İlaç ve Tıbbî Cihaz Kurumu (TİTCK) bakanlığın hizmet birimi değil, bakanlığa bağlı özel bütçeli ayrı bir kurumdur; ilaç/tıbbi cihaz evrakının yönlendirilmesi kolaylığı için bu listede yer almaktadır.
+
+BİRİM: Kamu Hastaneleri Genel Müdürlüğü
+GÖREV: Devlet hastaneleri ve eğitim-araştırma hastanelerinin işletilmesi, hasta hakları başvuruları ve hastane hizmet kalitesi denetimini yürütür.
+
+BİRİM: Halk Sağlığı Genel Müdürlüğü
+GÖREV: Bulaşıcı hastalık kontrolü, aşılama programları, aile hekimliği hizmetleri ve çevre sağlığı denetimine ilişkin başvuruları yürütür.
+
+BİRİM: Sağlık Hizmetleri Genel Müdürlüğü
+GÖREV: Sağlık hizmet sunum standartları, özel sağlık kuruluşu ruhsatlandırma ve sağlık personeli hizmet politikalarına ilişkin başvuruları yürütür.
+
+BİRİM: Acil Sağlık Hizmetleri Genel Müdürlüğü
+GÖREV: 112 acil çağrı merkezi, ambulans hizmetleri ve afet/acil durum sağlık müdahalelerine ilişkin başvuruları yürütür.
+
+BİRİM: Türkiye İlaç ve Tıbbî Cihaz Kurumu (TİTCK)
+GÖREV: İlaç ve tıbbi cihazların ruhsatlandırılması, farmakovijilans bildirimleri ve eczane denetimine ilişkin başvuruları yürütür.
+
+BİRİM: Sağlık Yatırımları Genel Müdürlüğü
+GÖREV: Şehir hastaneleri dahil sağlık tesisi yapım ve yatırım planlaması ile ilgili başvuruları yürütür.
+
+BİRİM: Sağlık Bilgi Sistemleri Genel Müdürlüğü
+GÖREV: e-Nabız ve Merkezi Hekim Randevu Sistemi (MHRS) gibi elektronik sağlık kayıt sistemlerinin işletilmesine ilişkin başvuruları yürütür.
+
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık personel, mali ve idari işlerinin yürütülmesinden sorumludur.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Uluslararası sağlık iş birliği, AB uyum süreçleri ve sınır ötesi sağlık projelerine ilişkin başvuruları yürütür. [DOĞRULA: güncel birim adı 1 sayılı CBK Sağlık Bakanlığı hizmet birimleri listesinden teyit edilmeli]

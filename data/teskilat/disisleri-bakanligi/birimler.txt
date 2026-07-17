@@ -1,0 +1,27 @@
+@KURUM: Dışişleri Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/disisleri-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: mfa, disisleri
+@NOT: Avrupa Birliği Başkanlığı, Bakanlık merkez hizmet birimi değil Bakanlığa bağlı ayrı bir kuruluştur; evrak yönlendirme amacıyla bu listede yer almaktadır.
+
+BİRİM: Konsolosluk İşleri Genel Müdürlüğü
+GÖREV: Pasaport/vize işlemleri, yurt dışında yaşayan vatandaşların konsolosluk kaydı, evlilik/nüfus tescili ve yurt dışı vatandaş hukuki yardım başvurularını yürütür.
+
+BİRİM: Protokol Genel Müdürlüğü
+GÖREV: Yabancı devlet temsilcilikleri akreditasyonu, diplomatik protokol düzenlemeleri ve resmî ziyaret organizasyon yazışmalarını yürütür.
+
+BİRİM: Avrupa Birliği Başkanlığı
+GÖREV: AB üyelik müzakere süreci, mevzuat uyum çalışmaları ve AB fonlu proje koordinasyon yazışmalarını yürütür.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar. [DOĞRULA: hukuk biriminin güncel adı (Hukuk Müşavirliği / Hukuk Hizmetleri Genel Müdürlüğü) 1 sayılı CBK m.139'dan teyit edilmeli]
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlık ve dış temsilcilik personeline ilişkin atama, nakil ve özlük başvurularını yürütür.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bakanlık bilgi sistemleri, e-konsolosluk altyapısı ve veri güvenliği ile ilgili başvuruları karşılar.

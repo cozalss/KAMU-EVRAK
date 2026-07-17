@@ -1,0 +1,18 @@
+@KURUM: Elektrik Üretim Anonim Şirketi (EÜAŞ)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname; 4628 sayılı Elektrik Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/euas/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: euas, elektrik-uretim
+@NOT: [DOĞRULA: güncel teşkilat şeması] — santral bazlı işletme müdürlüğü adları ve daire başkanlıkları resmi şemadan teyit edilmeli. [DOĞRULA: sektör mevzuatı — 2013'te 6446 sayılı Elektrik Piyasası Kanunu yürürlüğe girdi; "4628 sayılı Elektrik Piyasası Kanunu" adının/numarasının güncelliği teyit edilmeli.]
+
+BİRİM: Hidrolik Santraller Dairesi Başkanlığı
+GÖREV: Baraj ve hidroelektrik santral işletmesi, bakım-onarım ve kapasite artırımı dilekçelerini karşılar. Su tutma, taşkın ve santral çevresi dilekçelerinde ilgili işletme müdürlüğüne yönlendirme yapar.
+
+BİRİM: Termik Santraller Dairesi Başkanlığı
+GÖREV: Kömür ve doğalgaz yakıtlı termik santral işletmesi, emisyon ve bakım dilekçelerini değerlendirir. Santral çevresindeki çevresel etki ve arıza ihbarlarını yönetir.
+
+BİRİM: Yenilenebilir Enerji Kaynakları Dairesi Başkanlığı
+GÖREV: Jeotermal, rüzgar ve güneş enerjisi santrali işletme dilekçelerini karşılar. Kamu üretim tesislerinde yenilenebilir kaynak yatırım taleplerini değerlendirir.
+
+BİRİM: Yatırım ve İşletme Koordinasyon Dairesi Başkanlığı
+GÖREV: Yeni santral yatırımı, kapasite artırımı ve işletme lisansı dilekçelerini yönetir. Üretim tesislerinin iletim/dağıtım sistemine bağlantı süreçlerini koordine eder.

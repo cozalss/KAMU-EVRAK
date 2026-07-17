@@ -1,0 +1,27 @@
+@KURUM: Valilik İç Birimleri (jenerik şablon)
+@BELGE: 5442 sayılı İl İdaresi Kanunu ve 3152 sayılı Kanun (jenerik şablon) [DOĞRULA: 3152 sayılı Kanun'un adı ve kapsamı 703 sayılı KHK (2018) ile değişti; İçişleri Bakanlığı teşkilat hükümleri büyük ölçüde 1 sayılı CBK'ya taşındı]
+@KAYNAK_KIMLIK: teskilat/_genel-valilik/sablon
+@ERISIM: 2026-07-17
+@ALIAS: valilik, il-valiligi, valilik-ic-birimleri
+@NOT: Valiliğe doğrudan yapılan başvurular önce iç birimlere, konu bağlı bir il müdürlüğünü ilgilendiriyorsa ilgili il müdürlüğüne havale edilir. Bu şablon YALNIZCA aday üretme amaçlıdır; kuruma-özel resmî kaynak yerine geçmez.
+
+BİRİM: İl Yazı İşleri Müdürlüğü
+GÖREV: Valilik genel evrak kayıt ve dilekçe havale, resmi yazışma koordinasyonu, genelge ve mevzuat takibi, valilik makamı sekretarya işlemleri.
+
+BİRİM: İl İdare Kurulu Müdürlüğü
+GÖREV: Kamu görevlileri hakkında soruşturma izni (4483 sayılı Kanun) işlemleri, il idare kurulu kararları, idari yargı ve disiplin süreçleri.
+
+BİRİM: İl Basın ve Halkla İlişkiler Müdürlüğü
+GÖREV: CİMER (Cumhurbaşkanlığı İletişim Merkezi) il koordinasyonu, vatandaş başvuru ve şikâyet takibi, bilgi edinme başvuruları, basın açıklamaları ve valilik duyuruları.
+
+BİRİM: Hukuk İşleri Şube Müdürlüğü
+GÖREV: Valilik adına dava ve icra takibi, hukuki görüş ve mütalaa verme, sözleşme ve protokol incelemesi, idari itiraz ve dava süreçleri.
+
+BİRİM: İl Sosyal Etüt ve Proje Müdürlüğü
+GÖREV: Kalkınma ve yatırım projeleri izleme, sosyal etüt ve ihtiyaç analizi, SODES (Sosyal Destek Programı) başvuruları, proje değerlendirme ve raporlama.
+
+BİRİM: İl Sivil Toplumla İlişkiler Müdürlüğü
+GÖREV: Dernek kuruluş ve tüzük tescili, dernek denetimi, yardım toplama izni, kamu yararına çalışan dernek statüsü başvurusu, STK koordinasyonu.
+
+BİRİM: İl Planlama ve Koordinasyon Müdürlüğü
+GÖREV: Yatırım programı izleme ve değerlendirme, kalkınma ajansı ve bakanlık yatırımları koordinasyonu, il gelişme planı hazırlığı, istatistiki veri derleme.

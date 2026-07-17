@@ -1,0 +1,18 @@
+@KURUM: Danıştay
+@BELGE: 2575 sayılı Danıştay Kanunu
+@KAYNAK_KIMLIK: teskilat/danistay/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: danistay, danistay-baskanligi
+@NOT: Danıştay yüksek idari yargı ve danışma organıdır; idari işlem/eylem temyiz incelemesi ilgili dava dairesine (istinaf mercii bölge idare mahkemeleridir), imtiyaz şartlaşma-sözleşme incelemesi danışma-inceleme birimlerine yöneliktir. [DOĞRULA: güncel teşkilat şeması, daire dağılımı ve imtiyaz incelemesinde görevli merci (Birinci Daire / İdari İşler Kurulu) dağılımı]
+
+BİRİM: Danıştay Başsavcılığı
+GÖREV: Kanun yararına temyiz başvurularının değerlendirilmesi, idari yargı mevzuatına ilişkin görüş bildirme.
+
+BİRİM: İlgili Dava Dairesi Yazı İşleri Müdürlüğü
+GÖREV: İdari işlem iptali ve tam yargı davalarının temyiz incelemesi, ilk derece görevine giren davaların kabulü, dosya sorgulama ve karar örneği talebi.
+
+BİRİM: İdari İşler Kurulu Sekreterliği
+GÖREV: İmtiyaz şartlaşma ve sözleşme tasarıları hakkında danışma ve inceleme başvuruları.
+
+BİRİM: Genel Sekreterlik
+GÖREV: Danıştay genel evrak kayıt ve havale, idari yazışma koordinasyonu.

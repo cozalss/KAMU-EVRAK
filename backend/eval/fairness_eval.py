@@ -60,7 +60,9 @@ def evaluate(rows: list[dict]) -> dict:
 
     async def _predict(metin: str) -> tuple[str, str]:
         out: dict[str, Any] = await graph.ainvoke(make_initial_state(metin))
-        return out.get("evrak_turu", "belirsiz"), out.get("hedef_birim", "")
+        # Kaynak-doğrulamalı ajan köprüsü: type-bazlı karşılaştırma için hedef_kategori.
+        birim = out.get("hedef_kategori") or out.get("hedef_birim") or ""
+        return out.get("evrak_turu", "belirsiz"), birim
 
     class_consistent = route_consistent = 0
     tutarsiz: list[dict] = []

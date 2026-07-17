@@ -32,7 +32,7 @@ import structlog
 from agents import config
 from agents.config import (
     EVRAK_TO_SDP,
-    birim_tr,
+    etkili_birim,
     evrak_turu_tr,
     saklama_suresi,
     sdp_kodu,
@@ -169,7 +169,8 @@ async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
     """SDP 2005/7 tabanlı arşiv metadata üret (additive — verify→arsiv→finalize)."""
     turu = state.get("evrak_turu", "belirsiz")
     unsurlar = state.get("bilgi_unsurlari") or {}
-    hedef_birim = state.get("hedef_birim", "yazi_isleri_evrak")
+    # Kaynak-doğrulamalı ajan köprüsü: doğrulanmış birim adı, yoksa hedef_kategori etiketi.
+    birim_ad = etkili_birim(state)
 
     sayi = str(unsurlar.get("sayi") or "")
     tarih = str(unsurlar.get("tarih") or "") or _TARIH_BELIRSIZ
@@ -185,10 +186,10 @@ async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
         "konu": _konu_for(unsurlar),
         "sayi": sayi or f"{kod} (DETSİS+kayıt no kurum sisteminde atanır)",
         "tarih": tarih,
-        "birim": birim_tr(hedef_birim),
+        "birim": birim_ad,
     }
     log.info("arsiv", turu=turu, sdp=metadata["sdp_kodu"],
-             saklama=metadata["saklama_suresi"], birim=hedef_birim)
+             saklama=metadata["saklama_suresi"], birim=birim_ad)
     return {"arsiv_metadata": metadata}
 
 

@@ -1,0 +1,36 @@
+@KURUM: Milli Eğitim Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/milli-egitim-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: meb, milli-egitim, egitim-bakanligi
+@NOT: Yükseköğretim Kurulu (YÖK) ayrı bir tüzel kişiliğe sahip olup bu dosya kapsamı dışındadır; üniversitelere ilişkin başvurular ilgili üniversite rektörlüğüne yönlendirilir.
+
+BİRİM: Temel Eğitim Genel Müdürlüğü
+GÖREV: Okul öncesi, ilkokul ve ortaokul düzeyinde eğitim-öğretim politikaları, kayıt-nakil işlemleri ve taşımalı eğitim başvurularını yürütür.
+
+BİRİM: Ortaöğretim Genel Müdürlüğü
+GÖREV: Lise düzeyinde eğitim-öğretim, Anadolu ve fen liseleri kontenjan/nakil işlemleri ile merkezi yerleştirme sürecine ilişkin başvuruları yürütür.
+
+BİRİM: Mesleki ve Teknik Eğitim Genel Müdürlüğü
+GÖREV: Meslek liseleri, mesleki eğitim merkezleri, işyeri staj/beceri eğitimi ve mesleki sertifikasyon başvurularını yürütür.
+
+BİRİM: Özel Öğretim Kurumları Genel Müdürlüğü
+GÖREV: Özel okul, özel öğretim kursu ve etüt merkezi açma-kapama izinleri, kurum ruhsatlandırma ve denetim başvurularını yürütür.
+
+BİRİM: Öğretmen Yetiştirme ve Geliştirme Genel Müdürlüğü
+GÖREV: Öğretmen atama, hizmet içi eğitim ve mesleki gelişim programlarına ilişkin başvuruları yürütür.
+
+BİRİM: Özel Eğitim ve Rehberlik Hizmetleri Genel Müdürlüğü
+GÖREV: Engelli ve özel gereksinimli öğrencilerin eğitimi, Rehberlik Araştırma Merkezi (RAM) değerlendirmeleri ve kaynaştırma eğitimi başvurularını yürütür.
+
+BİRİM: Yükseköğretim ve Yurt Dışı Eğitim Genel Müdürlüğü
+GÖREV: Yurt dışında öğrenim gören öğrenciler, denklik işlemleri ve yurt dışı eğitim burslarına ilişkin başvuruları yürütür.
+
+BİRİM: Hayat Boyu Öğrenme Genel Müdürlüğü
+GÖREV: Halk eğitim merkezleri, yaygın eğitim faaliyetleri ve yetişkinlere yönelik kurs başvurularını yürütür.
+
+BİRİM: Din Öğretimi Genel Müdürlüğü
+GÖREV: İmam hatip okulları, Kur'an kursları ve din kültürü ve ahlak bilgisi dersi müfredatına ilişkin başvuruları yürütür.
+
+BİRİM: Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü
+GÖREV: Merkezi sınavların (LGS ve benzeri) planlanması, uygulanması ve sınav itiraz başvurularının değerlendirilmesini yürütür.

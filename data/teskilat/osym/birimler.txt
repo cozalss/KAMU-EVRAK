@@ -1,0 +1,21 @@
+@KURUM: Ölçme, Seçme ve Yerleştirme Merkezi Başkanlığı
+@BELGE: 6114 sayılı Ölçme, Seçme ve Yerleştirme Merkezi Başkanlığının Teşkilat ve Görevleri Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/osym/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: olcme-secme-yerlestirme-merkezi
+@NOT: Sınav takvimi ve itiraz süreleri her sınav döneminde değişebilir. [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Sınav Hizmetleri Daire Başkanlığı
+GÖREV: YKS, KPSS, ALES ve diğer merkezi sınavların başvuru, uygulama ve sonuç ilan süreçlerini yürütür; sınav iptali ve mağduriyet dilekçelerini değerlendirir.
+
+BİRİM: Ölçme Değerlendirme ve Yerleştirme Araştırmaları Daire Başkanlığı
+GÖREV: Sınav soru itirazları, puan/sonuç itirazları ve yerleştirme (tercih) işlemlerine ilişkin başvuruları inceleyip sonuçlandırır.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Sınav sonucu iptali, soru iptali ve yerleştirme işlemlerine karşı açılan itiraz/dava dilekçelerinde kurumu temsil eder.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Aday başvuru sistemi (AİS), sınav giriş belgesi ve elektronik başvuru hatalarına ilişkin teknik destek taleplerini karşılar.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bilgi edinme başvuruları, kamuoyu duyuruları ve aday şikâyet dilekçelerinin ilk kabul ve yönlendirme merciidir.

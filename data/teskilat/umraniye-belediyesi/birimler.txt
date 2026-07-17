@@ -1,0 +1,47 @@
+@KURUM: Ümraniye Belediyesi
+@BELGE: Belediye Görev ve Çalışma Yönetmeliği (model; 5393 sayılı Belediye Kanunu ve Belediye ve Bağlı Kuruluşları ile Mahalli İdare Birlikleri Norm Kadro İlke ve Standartlarına Dair Yönetmelik esas alınmıştır)
+@KAYNAK_KIMLIK: teskilat/umraniye-belediyesi/gorev-yonetmeligi
+@ERISIM: 2026-07-18
+@NOT: [DOĞRULA: Birim listesi 5393 sayılı Kanun + Norm Kadro Yönetmeliği'ne göre ilçe belediyelerinde TİPİK müdürlüklerdir (İstanbul ili Ümraniye ilçesi); Ümraniye Belediyesi'nin güncel teşkilat şemasındaki fiilî müdürlük adları/sayısı farklılaşabilir — yönlendirme öncesi kurumun resmî sitesindeki güncel teşkilat şemasıyla doğrula.]
+
+BİRİM: Ruhsat ve Denetim Müdürlüğü
+GÖREV: İşyeri açma ve çalışma ruhsatı işlemleri; sıhhi işyeri ruhsatı, gayrisıhhi müessese ruhsatı ve umuma açık istirahat ve eğlence yeri ruhsatı düzenlenmesi. İşyeri açmak isteyen gerçek ve tüzel kişilerin ruhsat başvurularının alınması, gerekli belgelerin (kira sözleşmesi, vergi levhası, yapı kullanma izni) incelenmesi, yerinde denetim yapılması ve ruhsatın verilmesi. Hafta tatili ruhsatı, mesul müdür belgesi, canlı müzik izni işlemleri. Ruhsatsız veya ruhsata aykırı işyerlerinin denetimi, uyarılması, faaliyetten men edilmesi ve ruhsat iptali. İşyeri ruhsat harçlarının tahakkuku.
+
+BİRİM: İmar ve Şehircilik Müdürlüğü
+GÖREV: İmar planlarının uygulanması, imar durumu belgesi düzenlenmesi. Yapı ruhsatı (inşaat ruhsatı) ve yapı kullanma izin belgesi (iskan) verilmesi. Tadilat ve tamirat ruhsatları, kot-kesit ve aplikasyon işlemleri. Kaçak, ruhsatsız ve ruhsata aykırı yapıların tespiti, yıkım ve imar para cezası işlemleri (3194 sayılı İmar Kanunu). Numarataj ve adres işlemleri.
+
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: Yol, asfalt, kaldırım, bordür yapımı, bakımı ve onarımı. Alt yapı ve üst yapı çalışmaları, yağmur suyu hatları, sanat yapıları. Belediye hizmet binaları ve tesislerinin inşaatı, bakımı. Yol çukuru, bozuk kaldırım, çökme gibi altyapı arızalarının giderilmesi.
+
+BİRİM: Zabıta Müdürlüğü
+GÖREV: Belediye emir ve yasaklarının uygulanması, kabahatlerin denetimi. Seyyar satıcı, işgaliye, kaldırım ve yol işgalinin önlenmesi. Pazar yerlerinin düzeni ve denetimi, ölçü-tartı aletleri kontrolü. Gürültü, görüntü ve çevre kirliliği şikâyetlerinin yerinde denetimi. Umuma açık yerlerin genel düzen ve huzur denetimi.
+
+BİRİM: Temizlik İşleri Müdürlüğü
+GÖREV: Evsel katı atık (çöp) toplama ve nakli, cadde ve sokak süpürme temizliği. Konteyner yerleşimi ve bakımı, geri dönüşüm ve ambalaj atığı toplama. Çevre kirliliği ile mücadele, moloz ve hafriyat denetimi, haşere ve ilaçlama.
+
+BİRİM: Park ve Bahçeler Müdürlüğü
+GÖREV: Park, yeşil alan, çocuk oyun alanı ve spor alanlarının yapımı, bakımı ve düzenlenmesi. Ağaçlandırma, budama, çim biçme, sulama ve peyzaj çalışmaları. Ağaç kesim ve budama taleplerinin değerlendirilmesi.
+
+BİRİM: Sosyal Yardım İşleri Müdürlüğü
+GÖREV: İhtiyaç sahibi, muhtaç ve dar gelirli ailelere sosyal yardım (gıda, yakacak, giyim, nakdi yardım) yapılması. Engelli, yaşlı ve yardıma muhtaç vatandaşlara yönelik hizmetler. Sosyal inceleme ve muhtaçlık tespiti.
+
+BİRİM: Yazı İşleri Müdürlüğü
+GÖREV: Genel evrak kayıt, gelen-giden evrak ve havale işlemleri. Belediye meclisi ve encümen gündemi, kararların yazımı, takibi ve arşivlenmesi. Evlendirme (nikâh) işlemleri, resmî yazışma ve dağıtım. Vatandaş dilekçelerinin kayda alınması ve ilgili birime yönlendirilmesi.
+
+BİRİM: Mali Hizmetler Müdürlüğü
+GÖREV: Belediye bütçesinin hazırlanması ve uygulanması, gelir ve gider işlemleri. Emlak vergisi, çevre temizlik vergisi, ilan-reklam vergisi tahakkuk ve tahsilatı. Ödeme, tahakkuk, muhasebe ve harcama işlemleri. Fatura, hak ediş ve ödeme evraklarının işlenmesi.
+
+BİRİM: İnsan Kaynakları ve Eğitim Müdürlüğü
+GÖREV: Belediye personelinin (memur, işçi, sözleşmeli) özlük işlemleri. Atama, nakil, terfi, kadro, derece-kademe, emeklilik işlemleri. Personel izin (yıllık izin, mazeret izni), disiplin ve sicil işlemleri. Hizmet içi eğitim ve personel görevlendirmeleri.
+
+BİRİM: Hukuk İşleri Müdürlüğü
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerinin yürütülmesi, adli ve idari yargı süreçleri. Hukuki görüş ve mütalaa verilmesi, sözleşmelerin incelenmesi. Mahkeme, icra dairesi ve noterden gelen tebligat, müzekkere ve haciz işlemleri.
+
+BİRİM: Emlak ve İstimlak Müdürlüğü
+GÖREV: Belediye taşınmazlarının (arsa, bina) kayıt, tahsis, kiralama, satış ve takas işlemleri. Kamulaştırma (istimlak) ve şerh işlemleri. Ecrimisil, işgal ve tahsis takibi.
+
+BİRİM: Sağlık İşleri ve Veteriner Müdürlüğü
+GÖREV: Halk sağlığı ve hıfzıssıhha hizmetleri, cenaze ve defin işlemleri. Sokak hayvanlarının rehabilitasyonu, kısırlaştırma, aşılama ve sahiplendirme. Başıboş ve sahipsiz hayvan şikâyetleri, veterinerlik hizmetleri.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Müdürlüğü
+GÖREV: CİMER, bilgi edinme (4982 sayılı Kanun) ve halkın belediyeye elektronik başvurularının karşılanması. Vatandaş istek, şikâyet ve önerilerinin (çözüm merkezi, beyaz masa) kayda alınıp ilgili birime iletilmesi ve geri bildirimi. Basın, tanıtım, sosyal medya ve kurumsal iletişim.

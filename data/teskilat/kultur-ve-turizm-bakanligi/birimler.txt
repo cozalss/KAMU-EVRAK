@@ -1,0 +1,32 @@
+@KURUM: Kültür ve Turizm Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/kultur-ve-turizm-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: ktb, kultur-bakanligi, turizm-bakanligi
+
+BİRİM: Kültür Varlıkları ve Müzeler Genel Müdürlüğü
+GÖREV: Tescilli kültür varlığı tadilat/kazı izni, sit alanı statü itirazı ve müze/ören yeri işletme başvurularını yürütür.
+
+BİRİM: Yatırım ve İşletmeler Genel Müdürlüğü
+GÖREV: Turizm işletme belgesi, turizm yatırım belgesi ve konaklama tesisi sınıflandırma başvurularını değerlendirir.
+
+BİRİM: Telif Hakları Genel Müdürlüğü
+GÖREV: Eser sahibi/bandrol başvuruları, fikri mülkiyet ihlali şikâyetleri ve meslek birliği tescil işlemlerini yürütür.
+
+BİRİM: Kütüphaneler ve Yayımlar Genel Müdürlüğü
+GÖREV: Halk kütüphanesi üyelik/hizmet başvuruları, ISBN/ISSN kaydı ve yayın bağış/devir işlemlerini karşılar.
+
+BİRİM: Güzel Sanatlar Genel Müdürlüğü
+GÖREV: Sanat galerisi, sergi/festival desteği ve güzel sanatlar eğitim kurumu başvurularını yürütür.
+
+BİRİM: Tanıtma Genel Müdürlüğü
+GÖREV: Turizm tanıtımı iş birliği, yurt dışı tanıtım ofisi koordinasyonu ve tanıtım materyali destek başvurularını yürütür.
+
+BİRİM: Araştırma ve Eğitim Genel Müdürlüğü
+GÖREV: Kültür-turizm alanında araştırma, eğitim semineri ve turist rehberliği/turizm meslek belgesi başvurularını değerlendirir.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.

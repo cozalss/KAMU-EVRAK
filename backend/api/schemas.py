@@ -186,15 +186,25 @@ class ProcessResponse(BaseModel):
     # Yenilikçilik — NLI atıf-gerekçelendirme (her öneri için entailment işareti).
     mevzuat_nli: list = Field(default_factory=list)
     ozet: str = ""
-    hedef_birim: str = ""
+    # Kaynak-doğrulamalı ajan: doğrulanmış GERÇEK birim adı (serbest-metin) veya None (fallback).
+    hedef_birim: str | None = ""
     birim_alternatifleri: list[str] = Field(default_factory=list)
     # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi ({kod, ad, sinyal}); danışma.
     servis_birimi: dict = Field(default_factory=dict)
+    # Kaynak-doğrulamalı yönlendirme (REVİZYON 1/4/6): kurum kimliği + kaynak künyesi + durum.
+    muhatap_kurum: dict = Field(default_factory=dict)
+    yetkili_kurum: dict = Field(default_factory=dict)
+    hedef_birim_kaynak: dict = Field(default_factory=dict)   # KaynakKaydi (grounding kanıtı)
+    hedef_kategori: str | None = None                        # dürüst fallback köprüsü (eski 9-set)
+    durum: str = ""                                          # "kaynak_dogrulandi" | "fallback_onerisi"
+    insan_onayi_gerekli: bool = False
     yazi_turu: str = ""
     # Dinamik yazı planı gerekçesi ("neden bu tür/muhatap"); boş = statik eşleme kullanıldı.
     yazi_plan_notu: str = ""
     # TS 13298 üst-veri (EBYS metadata) — belge türü/konu/SDP kodu+adı/güvenlik/tarih/sayı.
     ust_veri: dict = Field(default_factory=dict)
+    # Sistem-tespitli antet künyesi {idare, birim, muhatap} — dinamik kurum kimliği.
+    antet_meta: dict = Field(default_factory=dict)
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
     verify_uyari: list[str] = Field(default_factory=list)

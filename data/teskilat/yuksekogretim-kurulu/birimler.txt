@@ -1,0 +1,21 @@
+@KURUM: Yükseköğretim Kurulu Başkanlığı
+@BELGE: 2547 sayılı Yükseköğretim Kanunu
+@KAYNAK_KIMLIK: teskilat/yuksekogretim-kurulu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: yuksekogretim-kurulu-baskanligi
+@NOT: Denklik ve öğretim üyesi atama mevzuatı sık güncellenir; birim adları [DOĞRULA: güncel teşkilat şeması].
+
+BİRİM: Yükseköğretim Yürütme Kurulu
+GÖREV: Üniversiteler arası nakil, program açma/kapatma teklifleri ve denklik başvurularına ilişkin nihai kurul kararlarını verir.
+
+BİRİM: Denklik Birimi
+GÖREV: Yurt dışında alınan lisans/lisansüstü diplomalarının denklik başvurularını inceler, denklik belgesi düzenler veya reddeder; ret kararına itiraz dilekçelerini değerlendirir. [DOĞRULA: birimin güncel adı]
+
+BİRİM: Öğretim Üyesi Atama İşleri Birimi
+GÖREV: Öğretim üyesi kadro ilanı, doçentlik başvuru süreçleri ve akademik atama itirazlarına ilişkin yazışmaları yürütür. [DOĞRULA: birimin güncel adı]
+
+BİRİM: Genel Sekreterlik
+GÖREV: Kurul kararlarının üniversitelere tebliği, üniversite koordinasyon yazışmaları ve vatandaş/öğrenci dilekçelerinin ilk kabul merciidir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Denklik ve akademik atama kararlarına karşı yapılan itiraz ve dava süreçlerinde kurumu temsil eder, hukuki görüş yazıları hazırlar.

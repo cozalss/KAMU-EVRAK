@@ -1,0 +1,33 @@
+@KURUM: Kaymakamlık Bünyesi İlçe Müdürlükleri (jenerik şablon)
+@BELGE: 5442 sayılı İl İdaresi Kanunu ve ilgili bakanlıkların taşra teşkilatı görev tanımları (jenerik şablon)
+@KAYNAK_KIMLIK: teskilat/_genel-kaymakamlik/sablon
+@ERISIM: 2026-07-17
+@ALIAS: kaymakamlik, ilce-kaymakamligi, kaymakamlik-birimleri
+@NOT: Kaymakamlığa doğrudan yapılan başvurular genellikle bağlı ilçe müdürlüklerine veya Sosyal Yardımlaşma ve Dayanışma Vakfı'na (SYDV) havale edilir. Bu şablon YALNIZCA aday üretme amaçlıdır; kuruma-özel resmî kaynak yerine geçmez.
+
+BİRİM: İlçe Yazı İşleri Müdürlüğü
+GÖREV: Dilekçe kayıt ve evrak havale, kaymakamlık genel evrak kayıt, halkla ilişkiler ve bilgi edinme başvuruları, CİMER ilçe koordinasyonu, resmi yazışma ve arşiv işlemleri.
+
+BİRİM: İlçe Nüfus Müdürlüğü
+GÖREV: Nüfus kayıt ve kimlik kartı işlemleri, pasaport ve sürücü belgesi başvuruları, adres beyanı ve yerleşim yeri kaydı, evlenme-boşanma tescili, nüfus kayıt örneği ve veraset ilamı için nüfus bilgisi verme.
+
+BİRİM: İlçe Millî Eğitim Müdürlüğü
+GÖREV: Okul kayıt-nakil işlemleri, öğretmen görevlendirme ve atama, özel öğretim kurumu ve kurs ruhsatlandırma, taşımalı eğitim ve öğrenci burs-yardım başvuruları.
+
+BİRİM: İlçe Sağlık Müdürlüğü
+GÖREV: Aile hekimliği ve toplum sağlığı merkezi hizmetleri, sağlık kuruluşu ruhsatlandırma, bulaşıcı hastalık takibi ve aşılama, halk sağlığı denetimi.
+
+BİRİM: İlçe Müftülüğü
+GÖREV: Cami personeli görevlendirme, hac ve umre kayıt işlemleri, Kur'an kursu açma ve ruhsatlandırma, dini yayın ve vaaz-irşat faaliyetleri, fetva ve dini sorulara cevap hizmeti.
+
+BİRİM: İlçe Tarım ve Orman Müdürlüğü
+GÖREV: Çiftçi kayıt sistemi ve tarımsal destekleme başvurusu, hayvan sağlığı ve kimliklendirme, gıda ve yem denetimi, bitki koruma ve zirai mücadele.
+
+BİRİM: İlçe Emniyet Müdürlüğü / İlçe Jandarma Komutanlığı
+GÖREV: Kamu düzeni ve asayiş, trafik tescil ve denetim, silah ruhsatı ilçe işlemleri, jandarma bölgesinde genel kolluk ve adli hizmetler.
+
+BİRİM: Sosyal Yardımlaşma ve Dayanışma Vakfı (SYDV)
+GÖREV: Muhtaçlık yardımı ve şartlı nakit transferi başvurusu, kömür ve gıda yardımı, eğitim ve engelli yardımı, aşevi ve afet yardımı dağıtımı.
+
+BİRİM: İlçe Tapu Müdürlüğü
+GÖREV: Taşınmaz tescil ve tapu senedi işlemleri, satış-ipotek ve şerh, kadastro güncelleme, mülkiyet ve miras intikal işlemleri.

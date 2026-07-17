@@ -1,0 +1,30 @@
+@KURUM: Üniversite İç Birimleri (jenerik şablon)
+@BELGE: 2547 sayılı Yükseköğretim Kanunu (jenerik şablon)
+@KAYNAK_KIMLIK: teskilat/_genel-universite/sablon
+@ERISIM: 2026-07-18
+@ALIAS: universite, rektorluk
+@NOT: Üniversiteye yapılan başvurular konuya göre ilgili daire başkanlığına havale edilir. Bu şablon YALNIZCA aday üretme amaçlıdır; kuruma-özel resmî kaynak yerine geçmez; her üniversitenin güncel teşkilat şeması rektörlükten teyit edilmelidir.
+
+BİRİM: Öğrenci İşleri Daire Başkanlığı
+GÖREV: Öğrenci kaydı, mezuniyet ve diploma işlemleri, transkript talebi, yatay-dikey geçiş ve kayıt dondurma başvuruları.
+
+BİRİM: Sağlık Kültür ve Spor Daire Başkanlığı
+GÖREV: Öğrenci bursu ve kredi başvuruları, yurt ve yemekhane hizmetleri, kültürel-sportif etkinlik ve öğrenci toplulukları desteği.
+
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Akademik ve idari personel atama, nakil ve özlük işlemleri, izin ve terfi başvuruları.
+
+BİRİM: Genel Sekreterlik
+GÖREV: Üniversite genel evrak kayıt ve havale, senato ve yönetim kurulu kararlarının yazışması, resmi yazışma koordinasyonu.
+
+BİRİM: Bilgi İşlem Daire Başkanlığı
+GÖREV: Öğrenci bilgi sistemi (OBS) erişim sorunları, e-posta ve şifre işlemleri, kampüs ağ ve donanım destek talepleri.
+
+BİRİM: Kütüphane ve Dokümantasyon Daire Başkanlığı
+GÖREV: Kütüphane üyeliği ve ödünç kitap işlemleri, tez ve akademik veri tabanı erişim talepleri, kaynak temin başvuruları.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Üniversite adına dava ve icra takibi, hukuki görüş ve mütalaa verme, disiplin soruşturması hukuki danışmanlığı.
+
+BİRİM: Yapı İşleri ve Teknik Daire Başkanlığı
+GÖREV: Kampüs inşaat ve bakım-onarım işleri, teknik altyapı talepleri, ihale ve yapım işi başvuruları.

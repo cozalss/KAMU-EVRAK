@@ -275,6 +275,36 @@ EVRAK_TO_MEVZUAT: dict[str, list[str]] = {
     "genelge_talimat_olur": ["Resmî Yazışma Yönetmeliği m.20 (Olur/Onay)"],
 }
 
+# --- İzin (dinlenme) hakkı — jurisdiksiyon-duyarlı içerik sinyali ---
+# SORUN (2026-07-17 ekran-görüntüsü + adversarial bulgu): "Yıllık izin talebi" biçimsel
+# olarak "dilekçe" sınıflanır → dilekçe domain-genişletmesi ("Dilekçe Hakkı Kanunu zorunlu
+# unsurlar" ×3) sorguyu kirletip 5690/5176/3071'i şişirir, doğru izin kanununu (657 m.102)
+# top-3 dışına iter; panelde hepsi "düşük güven" görünür. Ama aynı "yıllık izin" ifadesi
+# BİRDEN ÇOK kanunda geçer — 657 (memur) · 4857 (işçi) · 854 (denizci) — dolayısıyla körlemesine
+# 657'ye bağlamak, bir işçi/denizci uyuşmazlığında doğru kanunu (4857/854) ezerdi.
+#
+# ÇÖZÜM: içerikte izin terimi varsa jurisdiksiyon AYIRT EDİLİR. Bu bir KAMU evrak sistemi
+# olduğundan VARSAYILAN memurdur (657); yalnız içerikte açık iş-hukuku ya da deniz-iş sinyali
+# varsa 4857/854'e yönlendirilir. Doğru kanun boost'lanır (mevzuat_oner._apply_boost) VE izin
+# tespit edilince yanıltıcı tür-domain kirliliği bastırılır (mevzuat_oner._retrieval_query).
+# Terimler korpus + 657/4857/854 lafzıyla doğrulanmıştır (grep); tek "izin" kelimesi GİRMEZ
+# (çevre izni / yapı kullanma izni yanlış-pozitif alırdı).
+# Nitelik + izin. Türkçe iyelik/hâl ekleri "izin" kökündeki dar ünlüyü DÜŞÜRÜR
+# (izin→izni/iznimi/iznini/izne/izninde). Doğal dilekçe dili neredeyse hep çekimlidir
+# ("yıllık iznimi kullanmak istiyorum") → yalın "yıllık izin" substring'i bunu KAÇIRIR
+# (adversarial bulgu, 2026-07-17). Bu yüzden her nitelik hem yalın ("... izin") hem de
+# ünlü-düşmüş çekim kökü ("... izn": izni/iznimi/izne/… hepsini yakalar) olarak saklanır.
+_IZIN_NITELIK: tuple[str, ...] = (
+    "yıllık", "yıllık ücretli", "mazeret", "ücretsiz", "aylıksız",
+    "hastalık", "refakat", "doğum", "süt",
+)
+IZIN_TERIMLERI: tuple[str, ...] = tuple(
+    f"{nitelik} {ek}" for nitelik in _IZIN_NITELIK for ek in ("izin", "izn")
+)
+# İş-hukuku sinyali → 4857; deniz-iş sinyali → 854; hiçbiri yoksa varsayılan 657 (memur).
+IZIN_ISCI_SINYAL: tuple[str, ...] = ("işçi", "iş sözleşmesi", "işveren", "kıdem", "4857 sayılı")
+IZIN_DENIZ_SINYAL: tuple[str, ...] = ("gemi adamı", "deniz iş", "armatör", "854 sayılı")
+
 # --- Evrak türü → üretilmesi gereken resmî yazı türü (araştırma §2) ---
 # TÜM 18 tür AÇIKÇA eşlenir (sessiz cevabi_yazi default'u yok — M6). YAZI_TURLERI:
 # ust_yazi (iletim: muhatap = HEDEF BİRİM, gönderen değil — yazi_taslak.py) ·
@@ -517,6 +547,18 @@ MAKAM_LLM = os.getenv("MAKAM_LLM", "1") == "1"
 # (route_birim.py:132 docstring); bilinçli olarak dokunulmadı.
 SERVIS_BIRIM_LLM = os.getenv("SERVIS_BIRIM_LLM", "1") == "1"
 
+# KAYNAK-DOĞRULAMALI YÖNLENDİRME AJANI (route_birim): sabit kapalı-küme yerine DeepSeek
+# evrak konusunu anlar → resmî teşkilat kaynağında (data/teskilat BM25 + opsiyonel web) birim
+# arar → görev tanımlarını karşılaştırır → ÜÇLÜ grounding'le (kurum+birim+görev-konu) doğrular.
+# Kaynak-doğrulanamazsa DÜRÜST fallback: hedef_birim=None + hedef_kategori(eski 9-set) +
+# insan_onayi_gerekli=True (uydurma/başka-kurum birimi ASLA otomatik çıkmaz). Yok/mock/anahtarsız/
+# korpus-yok → mevcut _route_deterministik. ROUTE_AJAN=0 → eski davranış birebir (tam geri-dönüş).
+ROUTE_AJAN = os.getenv("ROUTE_AJAN", "1") == "1"
+ROUTE_AJAN_MAX_TUR = int(os.getenv("ROUTE_AJAN_MAX_TUR", "2"))  # muhatap→yetkili yükseltme turu
+# Hibrit arama web yedeği (REVİZYON 5): kuruma-özel offline kaynak yoksa canlı resmî-kaynak
+# araması ('her yer' motoru). VARSAYILAN KAPALI — offline/CI/mock ilkesi korunur; açıkça açılır.
+ROUTE_WEB_YEDEK = os.getenv("ROUTE_WEB_YEDEK", "0") == "1"
+
 # (7) Rerank sağlayıcısı: "deepseek" (listwise, model indirmez → vitrine girebilir) |
 # "cross-encoder" (bge-reranker, rag extra + ~1.1GB model). RERANK_ENABLED mevcut
 # ana anahtar olarak kalır (varsayılan 0 — baseline saf-BM25 birebir).
@@ -585,8 +627,21 @@ def evrak_turu_tr(key: str) -> str:
     return EVRAK_TURU_TR.get(key, key)
 
 
-def birim_tr(key: str) -> str:
-    return BIRIM_TR.get(key, key)
+def birim_tr(key: str | None) -> str:
+    """Birim kodu → Türkçe ad. Bilinmeyen kod/serbest-metin birim adı → kendisi (passthrough).
+
+    Kaynak-doğrulamalı ajan hedef_birim'i artık serbest-metin gerçek birim adı olabilir
+    (kapalı-küme kodu değil) → passthrough onu olduğu gibi gösterir. None → "" (None-güvenli).
+    9-set dışındaki servis-müdürlüğü kodları ("park_bahceler") da çözülür — ham kod resmî
+    yazı antedine/muhatabına asla basılmaz (2026-07-18 kalite bulgusu). Lazy import:
+    servis_birim config'i import eder, döngü olmaz.
+    """
+    if not key:
+        return ""
+    if key in BIRIM_TR:
+        return BIRIM_TR[key]
+    from agents.servis_birim import TAM_BIRIM_KATALOG
+    return TAM_BIRIM_KATALOG.get(key, key)
 
 
 def birim_goster(hedef_birim: str, evrak_turu: str) -> str:
@@ -608,6 +663,20 @@ def birim_goster(hedef_birim: str, evrak_turu: str) -> str:
         if evrak_turu == "bilgi_edinme":
             return "Bilgi Edinme / Halkla İlişkiler Birimi"
     return birim_tr(hedef_birim)
+
+
+def etkili_birim(state: dict) -> str:
+    """Gösterim/metadata için etkili birim adı — kaynak-doğrulamalı ajan köprüsü.
+
+    Doğrulanmış `hedef_birim` (serbest-metin gerçek birim adı) varsa onu döndürür; yoksa
+    (dürüst fallback: hedef_birim=None) `hedef_kategori`'nin (eski 9-set) içerik-duyarlı
+    etiketini gösterir. Her zaman boş-olmayan string → finalize/arsiv None-güvenli.
+    """
+    hb = state.get("hedef_birim")
+    if hb:
+        return birim_tr(hb)
+    kategori = state.get("hedef_kategori") or "yazi_isleri_evrak"
+    return birim_goster(kategori, state.get("evrak_turu", "") or "")
 
 
 def sdp_kodu(turu: str) -> str:

@@ -69,13 +69,32 @@ class EvrakState(TypedDict):
     self_rag_eksikler: NotRequired[list[str]]  # eksik bulunan çıktı alanları
     self_rag_notu: NotRequired[str]         # okunabilir öz-değerlendirme notu
 
+    # --- Kaynak-doğrulamalı yönlendirme: kurum kimliği (REVİZYON 1) ---
+    # muhatap_kurum: evrakın hitap ettiği kurum (kurum_kimlik.muhatap_kurum_tespit).
+    # yetkili_kurum: işlemin hukuken/idari yetkilisi; başlangıçta = muhatap, route ajanı
+    # talep muhatabın görevinde değilse kurum-DIŞI gerçek yetkiliye günceller. {ad, slug, tur}.
+    muhatap_kurum: NotRequired[dict[str, Any]]
+    yetkili_kurum: NotRequired[dict[str, Any]]
+
     # --- Görev 2: resmî yazı taslaklama + birim yönlendirme ---
-    hedef_birim: NotRequired[str]           # BIRIMLER'den biri
+    hedef_birim: NotRequired[str | None]    # kaynak-doğrulanmış birim ADI; fallback'te None
     birim_alternatifleri: NotRequired[list[str]]
     birim_reasoning: NotRequired[str]
+    # Kaynak-doğrulamalı ajan çıktısı (REVİZYON 6): seçilen birimin tam kaynak künyesi
+    # {birim_ad, gorev, kaynak_kurum, belge_basligi, url_veya_belge_kimligi, erisim_tarihi,
+    #  metin_parcasi, icerik_hash}. Grounding kanıtı + denetim izi.
+    hedef_birim_kaynak: NotRequired[dict[str, Any]]
+    # Ajan başarısız/grounding-fail (REVİZYON 4): eski 9-set kategori GERÇEK birim değil,
+    # yalnız öneri. durum="fallback_onerisi" + insan_onayi_gerekli=True bunu işaretler.
+    hedef_kategori: NotRequired[str | None]
+    durum: NotRequired[str]                  # "kaynak_dogrulandi" | "fallback_onerisi"
+    insan_onayi_gerekli: NotRequired[bool]
     # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi (5393/norm kadro);
     # {kod, ad, sinyal}. Ölçülen hedef_birim'i DEĞİŞTİRMEZ — danışma katmanı.
     servis_birimi: NotRequired[dict[str, Any]]
+    # Sistem-tespitli antet künyesi {idare, birim, muhatap} — dinamik kurum kimliği
+    # (yazi_taslak yazar; verify grounding muafiyeti + UI şeffaflığı okur).
+    antet_meta: NotRequired[dict[str, str]]
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
     # Dinamik yazı planının (yazi/yazi_plan.py) insan-okunur gerekçesi; boş = statik yol.
     yazi_plan_notu: NotRequired[str]

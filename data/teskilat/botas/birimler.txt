@@ -1,0 +1,18 @@
+@KURUM: Boru Hatları ile Petrol Taşıma Anonim Şirketi (BOTAŞ)
+@BELGE: 233 sayılı Kamu İktisadi Teşebbüsleri Hakkında Kanun Hükmünde Kararname; 4646 sayılı Doğal Gaz Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/botas/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: botas
+@NOT: [DOĞRULA: güncel teşkilat şeması] — doğalgaz ve petrol boru hattı daire başkanlıklarının güncel adları resmi şemadan teyit edilmeli.
+
+BİRİM: Doğal Gaz İletim Dairesi Başkanlığı
+GÖREV: Doğalgaz iletim boru hattı, basınç düşürme-ölçüm istasyonu arızası ve şebeke bağlantı dilekçelerini karşılar. İletim hattı güzergâhındaki bakım ve kapasite artırımı taleplerini değerlendirir.
+
+BİRİM: LNG ve Yer Altı Depolama Dairesi Başkanlığı
+GÖREV: Sıvılaştırılmış doğalgaz (LNG) terminali işletmesi ve yer altı doğalgaz depolama tesisi dilekçelerini yönetir. Depolama kapasitesi tahsisi ve terminal erişim taleplerini karşılar.
+
+BİRİM: Ham Petrol ve Petrol Ürünleri Boru Hatları Dairesi Başkanlığı
+GÖREV: Ham petrol ve petrol ürünleri boru hattı (Ceyhan dahil) işletmesi, arıza ve güzergâh dilekçelerini karşılar. Terminal ve depolama tesisi erişim taleplerini değerlendirir.
+
+BİRİM: Kamulaştırma ve Arazi İşlemleri Dairesi Başkanlığı
+GÖREV: Boru hattı güzergâhında kamulaştırma, irtifak hakkı tesisi ve arazi kullanım dilekçelerini yürütür. Boru hattı geçişi nedeniyle tazminat ve taşınmaz uyuşmazlıklarına bakar.

@@ -35,6 +35,7 @@ from agents.config import (
     birim_tr,
 )
 from agents.karar_grounding import karar_grounding_veto
+from agents.kurum_kimlik import antet_idare_adi
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.servis_birim import SERVIS_BIRIM_TR
 from agents.tutarlilik import tutarlilik_kontrol
@@ -62,10 +63,40 @@ _ISKELET_KAPANIS: frozenset[str] = frozenset({
     "t.c.", "işlem tesis edilmiştir",
     "gereğini rica ederim", "gereğini arz ederim", "bilgilerinize arz ederim",
     "bilgilerine arz olunur", "olurlarınıza arz ederim", "bilgilerinize arz olunur",
+    "bilgi ve gereğini arz ederim", "bilgilerinize sunulur",
+    "bilgilerini ve gereğini arz ve rica ederim",
     "mevcut mevzuat hükümleri çerçevesinde", "gerekli değerlendirme yapılmıştır",
     "ebys onayı öncesinde oluşturulmuştur", "yukarıda arz edilen",
     "uygun görülmesini olurlarınıza arz ederim",
 })
+
+
+def _dinamik_antet_muaf(state: dict[str, Any]) -> set[str]:
+    """Dinamik antet/muhatap değerleri — kaynak-doğrulamalı sistem künyesi.
+
+    yazi_taslak `antet_meta`ya idare/birim/muhatap yazar: kurum kimliği evraktan
+    deterministik regex'le VEYA kaynak-doğrulamalı LLM yedeğiyle gelir
+    (kurum_kimlik._llm_kurum_grounded: ayırt-edici token'ı kaynakta geçmeyen LLM kurumu
+    REDDEDİLİR — adversarial V1); birim kaynak-doğrulanmış teşkilattan gelir. Kanonik ek
+    ("Belediyesi", "BAŞKANLIĞINA") kaynakta birebir geçmeyebilir → uydurma sayılmamalı
+    (Sayı satırı / servis-birimi muafiyetiyle aynı güvence). muhatap_kurum/yetkili_kurum/
+    hedef_birim aynı nedenle muaftır.
+    """
+    out: set[str] = set()
+    meta = state.get("antet_meta") or {}
+    if isinstance(meta, dict):
+        out |= {str(v) for v in meta.values() if v}
+    for anahtar in ("muhatap_kurum", "yetkili_kurum"):
+        kurum = state.get(anahtar) or {}
+        ad = str(kurum.get("ad", "") or "") if isinstance(kurum, dict) else ""
+        if ad:
+            out |= {ad, antet_idare_adi({"ad": ad})}
+    hedef = state.get("hedef_birim")
+    if isinstance(hedef, str) and hedef.strip():
+        out.add(hedef.strip())
+    return out
+
+
 # Çevreleyen tırnak/noktalama (tek kaynak — _norm_ws + özel-ad kırpma aynı kümeyi kullanır).
 _STRIP_CH = " '\"‘’“”«».,:;()"
 # LLM işaretlediği ifadeyi TIRNAKLA gösterir. Tırnak SÖZCÜK SINIRINDA olmalı (açılış öncesi
@@ -335,7 +366,8 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     # kaynakta geçmese de UYDURMA DEĞİL → grounding muafiyetine eklenir (9-birim ile aynı desen).
     iskelet_kaynak = (sablon_iskelet_degerleri() | _ISKELET_KAPANIS
                       | {birim_tr(k) for k in BIRIMLER} | set(SERVIS_BIRIM_TR.values())
-                      | ({sayi_str} if sayi_str else set()))
+                      | ({sayi_str} if sayi_str else set())
+                      | _dinamik_antet_muaf(state))
     # İddialarla AYNI normalizasyon (_norm_ws) → 'Başvurunuz.' sondaki nokta uyuşmazlığı olmaz.
     iskelet_sirali = sorted({n for d in iskelet_kaynak if d and (n := _norm_ws(d))},
                             key=lambda s: (-len(s), s))

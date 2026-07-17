@@ -1,0 +1,24 @@
+@KURUM: Bankacılık Düzenleme ve Denetleme Kurumu
+@BELGE: 5411 sayılı Bankacılık Kanunu
+@KAYNAK_KIMLIK: teskilat/bddk/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: bankacilik-duzenleme-ve-denetleme-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlıklarının adı ve sayısı zaman içinde değişmiştir.
+
+BİRİM: Düzenleme Dairesi Başkanlığı
+GÖREV: Bankaların kuruluş, faaliyet izni ve sermaye yeterliliğine ilişkin düzenlemeleri hazırlar; banka kurma ve şube açma başvurularını değerlendirir.
+
+BİRİM: Denetim Dairesi Başkanlığı
+GÖREV: Bankaların mevzuata uygunluğunu yerinde ve uzaktan denetler; şikayet ve ihbar üzerine banka işlemlerini inceler.
+
+BİRİM: Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Bankacılık sektöründeki sistemik risklerin izlenmesi ve erken uyarı sistemlerinin işletilmesinden sorumludur.
+
+BİRİM: Tüketici İlişkileri Dairesi Başkanlığı
+GÖREV: Banka müşterilerinin kredi, kart, hesap işletim ücreti ve haksız kesinti şikayetlerini karşılar; bankalarla tüketici arasındaki uyuşmazlıkları değerlendirir.
+
+BİRİM: Hukuk Dairesi Başkanlığı
+GÖREV: Kurum kararlarına karşı açılan davalar ile idari başvuruları hukuki açıdan değerlendirir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Kurumun stratejik plan, bütçe ve performans programını hazırlar; mevzuat taslaklarına ilişkin koordinasyonu yürütür.

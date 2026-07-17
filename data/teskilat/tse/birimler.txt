@@ -1,0 +1,18 @@
+@KURUM: Türk Standardları Enstitüsü
+@BELGE: 132 sayılı Türk Standardları Enstitüsü Kuruluş Kanunu
+@KAYNAK_KIMLIK: teskilat/tse/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: turk-standardlari-enstitusu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Belgelendirme Merkezi Başkanlığı
+GÖREV: Ürün/sistem uygunluk belgesi (TSE Kalite Uygunluk Belgesi, ISO belgeleri) başvuruları, belge askıya alma itirazları ve yenileme taleplerini yürütür.
+
+BİRİM: Deney ve Kalibrasyon Merkezi Başkanlığı
+GÖREV: Ürün deney/muayene talepleri, laboratuvar test sonucu itirazları ve kalibrasyon hizmeti başvurularını sonuçlandırır.
+
+BİRİM: Muayene Gözetim Merkezi Başkanlığı
+GÖREV: Piyasa gözetim ve denetimi kapsamında muayene talepleri, uygunsuzluk itirazları ve saha denetim şikâyetlerini değerlendirir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Belge iptali/askıya alma kararlarına karşı itiraz ve dava dilekçelerinde kurumu temsil eder.

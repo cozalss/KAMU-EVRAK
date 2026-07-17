@@ -1,0 +1,18 @@
+@KURUM: Türkiye Radyo ve Televizyon Kurumu
+@BELGE: 2954 sayılı Türkiye Radyo ve Televizyon Kanunu
+@KAYNAK_KIMLIK: teskilat/trt/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: turkiye-radyo-ve-televizyon-kurumu
+@NOT: TRT payı elektrik faturası üzerinden tahsil edilir; "bandrol" terminolojisi kaynakta teyit edilmelidir. [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Gelirler ve Paylar Dairesi Başkanlığı
+GÖREV: Elektrik faturası üzerinden tahsil edilen TRT payına itiraz, mükerrer tahsilat şikâyeti ve pay iadesi başvurularını yürütür.
+
+BİRİM: Yayın Denetleme Kurulu
+GÖREV: TRT yayın içeriğine ilişkin şikâyet, düzeltme/cevap hakkı talebi ve yayın ilkeleri ihlali bildirimlerini değerlendirir.
+
+BİRİM: Kurumsal İletişim Dairesi Başkanlığı
+GÖREV: Bilgi edinme başvuruları, izleyici/dinleyici şikâyet dilekçeleri ve yayın programı bilgi taleplerinin ilk kabul merciidir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: TRT payı itirazı ve yayın şikâyetine ilişkin dava süreçlerinde kurumu temsil eder.

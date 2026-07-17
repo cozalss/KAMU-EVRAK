@@ -18,6 +18,8 @@ import os
 from dataclasses import dataclass, field
 from typing import Any
 
+from core.text import tr_upper as _tr_upper  # tek kaynak (Türkçe i→İ, ı→I büyük harf)
+
 # Belgeyi ÜRETEN kurumun kimliği (antet: T.C. / idare / birim). ENV ile yapılandırılır;
 # boş bırakılırsa jenerik demo değeri KORUNUR (baseline riski sıfır). Doldurulunca gerçek
 # kurum yazılır ("KAMU KURUMU" yer tutucusu yerine, ör. NİLÜFER BELEDİYE BAŞKANLIĞI).
@@ -28,7 +30,8 @@ _KURUM_BIRIM = os.getenv("KURUM_BIRIM", "").strip()
 
 _DEMO_DEFAULTS: dict[str, str] = {
     "idare_adi": _KURUM_ADI or "KAMU KURUMU",
-    "birim_adi": _KURUM_BIRIM or "YAZI İŞLERİ BİRİMİ",
+    # Yön. m.10: antette birim adı İLK harfleri büyük yazılır (idare adı BÜYÜK kalır).
+    "birim_adi": _KURUM_BIRIM or "Yazı İşleri Birimi",
     "sayi_satiri": "EBYS-TASLAK",
     "konu": "Başvuru değerlendirmesi",
     "metin": "Konuya ilişkin gerekli değerlendirme yapılmıştır.",
@@ -41,14 +44,22 @@ _DEMO_DEFAULTS: dict[str, str] = {
 }
 
 
-def _tr_upper(s: str) -> str:
-    """Türkçe büyük harf (i→İ, ı→I) — Python upper() 'i'yi 'I' yapar; resmî işaret hatalı olur."""
-    return s.replace("i", "İ").replace("ı", "I").upper()
+from core.text import tr_upper as _tr_upper  # tek kaynak (Türkçe i→İ, ı→I büyük harf)
+
+
+# Tür-özgü antet/imza varsayılanları — jenerik "Yazı İşleri" her türe uymaz: görüş/mütalaa
+# hukuk birimince hazırlanır (şablonun kendi tasarım varsayılanı da buydu; _DEMO_DEFAULTS
+# her zaman dolu geldiği için hiç devreye giremiyordu). Yalnız ilgili alan boşsa kullanılır;
+# değerleri sablon_iskelet_degerleri'ne girer (grounding muafiyeti otomatik hizalanır).
+_TUR_VARSAYILAN: dict[str, dict[str, str]] = {
+    "gorus_mutalaa": {"birim_adi": "Hukuk Müşavirliği", "unvan": "Hukuk Müşaviri"},
+}
 
 
 def _demo_muhatap(yazi_turu: str) -> str:
     if yazi_turu == "bilgilendirme":
-        return "Dağıtım yerlerine"
+        # m.14/6 + CB kılavuzu Örnek 15 birebir: dağıtımlı belge muhatabı BÜYÜK harf.
+        return "DAĞITIM YERLERİNE"
     return "İlgili Makama"
 
 
@@ -62,7 +73,8 @@ def sablon_iskelet_degerleri() -> frozenset[str]:
     aksi halde TEMİZ taslak yanlışlıkla KIRMIZI banda çevrilir. Tek kaynak burasıdır
     (verify.py import eder) → placeholder listesi değişince muafiyet kendiliğinden hizalanır.
     """
-    return frozenset(_DEMO_DEFAULTS.values()) | {
+    tur_degerleri = {v for d in _TUR_VARSAYILAN.values() for v in d.values()}
+    return frozenset(_DEMO_DEFAULTS.values()) | tur_degerleri | {
         _demo_muhatap("cevabi_yazi"), _demo_muhatap("bilgilendirme")} | _SABLON_FORMAT
 
 
@@ -174,7 +186,9 @@ class YaziContext:
                 if name == "muhatap" and self.yazi_turu != "olur":
                     val = _demo_muhatap(self.yazi_turu)
                 else:
-                    val = _DEMO_DEFAULTS.get(name, "")
+                    # Tür-özgü varsayılan (görüş → Hukuk Müşavirliği) genel demo değerinden önce.
+                    val = (_TUR_VARSAYILAN.get(self.yazi_turu, {}).get(name)
+                           or _DEMO_DEFAULTS.get(name, ""))
             if val:
                 out[name] = val
         # Yön. 2646 e-Yazışma / üst işaretler — yalnız verildiğinde geçir (boşsa render edilmez)

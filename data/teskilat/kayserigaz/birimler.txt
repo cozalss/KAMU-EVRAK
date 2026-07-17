@@ -1,0 +1,18 @@
+@KURUM: Kayserigaz - Kayseri Doğalgaz Dağıtım Pazarlama ve Ticaret A.Ş.
+@BELGE: 4646 sayılı Doğal Gaz Piyasası Kanunu
+@KAYNAK_KIMLIK: teskilat/kayserigaz/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: kayserigaz, kayseri-dogalgaz-dagitim, kayseri-gaz, aksa-dogalgaz-kayseri
+@NOT: Hizmet bölgesi Kayseri ili doğalgaz dağıtım lisans sahasıyla sınırlıdır. 2025'te Kayserigaz hisseleri SOCAR Türkiye'den Aksa Doğalgaz'a devredilmiştir; marka/unvan 'Aksa Doğalgaz Kayseri' olarak güncellenmiş olabilir [DOĞRULA: güncel ticaret sicili unvanı ve marka].
+
+BİRİM: Abone İşleri
+GÖREV: Yeni doğalgaz aboneliği başvurusu, abonelik sözleşmesi düzenleme, abone bilgi güncelleme ve abonelik iptal-nakil taleplerini yürütür.
+
+BİRİM: Arıza ve Acil Müdahale
+GÖREV: Gaz kaçağı ihbarı (187 acil hattı), doğalgaz kesintisi ve basınç düşüklüğü şikâyetlerine acil müdahale eder; planlı-plansız kesinti duyurularını yapar.
+
+BİRİM: Sayaç ve Fatura İşleri
+GÖREV: Sayaç okuma, fatura itirazı, tahakkuk hatası düzeltme, sayaç değişimi ve güvence bedeli iadesi başvurularını sonuçlandırır.
+
+BİRİM: İç Tesisat ve Proje Onay
+GÖREV: Bina iç tesisat projelerinin onayı, servis kutusu bağlantısı, tesisat kontrolü ve iç tesisat firma yetkilendirme işlemlerini yürütür.

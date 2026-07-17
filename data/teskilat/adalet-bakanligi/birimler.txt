@@ -1,0 +1,33 @@
+@KURUM: Adalet Bakanlığı
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
+@KAYNAK_KIMLIK: teskilat/adalet-bakanligi/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: adalet, adalet-bakanligi-tr
+@NOT: Mahkemeler ve savcılıklar bağımsız yargı organlarıdır; bireysel dava dosyası talepleri ilgili mahkeme/savcılık kalemine, bu dosyadaki birimler ise bakanlığın idari işlerine yöneliktir.
+
+BİRİM: Ceza İşleri Genel Müdürlüğü
+GÖREV: Ceza mevzuatının uygulanmasına ilişkin görüş verme, cezai konularda adli makamlarla yazışmaların idari koordinasyonu ve ceza muhakemesine ilişkin idari başvuruları yürütür.
+
+BİRİM: Hukuk İşleri Genel Müdürlüğü
+GÖREV: Hukuki görüş verme, kanun tasarısı hazırlık çalışmaları ve uluslararası özel hukuk/tahkim başvurularını yürütür.
+
+BİRİM: Ceza ve Tevkifevleri Genel Müdürlüğü
+GÖREV: Ceza infaz kurumlarının (cezaevi) yönetimi, ceza infaz mevzuatının uygulanması, tutuklu ve hükümlü işlemleri ile infaz koruma memurluğu başvurularını yürütür.
+
+BİRİM: Adli Sicil ve İstatistik Genel Müdürlüğü
+GÖREV: Adli sicil (sabıka) kaydı ve arşiv kaydı belgesi başvuruları ile adalet istatistiklerinin derlenmesini yürütür.
+
+BİRİM: İcra İşleri Dairesi Başkanlığı
+GÖREV: İcra ve iflas dairelerinin idari koordinasyonu, icra memurları işlemleri ve alacak-borç takip süreçlerine ilişkin başvuruları yürütür.
+
+BİRİM: Mevzuat Genel Müdürlüğü
+GÖREV: Mevzuat hazırlama, kanun/tüzük/yönetmelik taslaklarının incelenmesi ve görüş bildirme başvurularını yürütür.
+
+BİRİM: Uluslararası Hukuk ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Suçluların iadesi, adli yardımlaşma, AİHM süreçleri ve uluslararası sözleşmelere ilişkin başvuruları yürütür. [DOĞRULA: güncel adı "Dış İlişkiler ve Avrupa Birliği Genel Müdürlüğü" olabilir; 1 sayılı CBK'dan teyit edilmeli]
+
+BİRİM: Bilgi İşlem Genel Müdürlüğü
+GÖREV: UYAP (Ulusal Yargı Ağı Bilişim Sistemi), e-imza ve elektronik dava takibi altyapısına ilişkin başvuruları yürütür.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Hâkim, savcı ve adalet personelinin atama, nakil ve özlük işlemlerine ilişkin başvuruları yürütür.

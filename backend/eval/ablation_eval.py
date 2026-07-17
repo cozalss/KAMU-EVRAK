@@ -119,7 +119,9 @@ def _skor_sinif(row: dict, out: dict) -> bool:
 
 
 def _skor_birim(row: dict, out: dict) -> bool:
-    return out.get("hedef_birim") == row.get("beklenen_birim")
+    # Type-bazlı gold: hedef_kategori (deterministik 9-set köprüsü); ROUTE_AJAN=0'da hedef_birim koddur.
+    pred = out.get("hedef_kategori") or out.get("hedef_birim")
+    return pred == row.get("beklenen_birim")
 
 
 def _ab_satiri(baslik: str, paired: list[tuple[bool, bool]]) -> dict[str, Any]:

@@ -1,0 +1,21 @@
+@KURUM: Akdeniz Elektrik Dağıtım A.Ş.
+@BELGE: 6446 sayılı Elektrik Piyasası Kanunu; Genel Aydınlatma Yönetmeliği
+@KAYNAK_KIMLIK: teskilat/ck-akdeniz/gorev-tanimi
+@ERISIM: 2026-07-17
+@ALIAS: akdeniz-elektrik-dagitim, ck-akdeniz-elektrik-dagitim-a-s
+@NOT: yalnız aday üretme amaçlı; kuruma-özel resmî kaynak yerine geçmez; CK Enerji grubuna bağlıdır, kamuya dönük marka kullanımı 'CK Enerji Akdeniz Elektrik Dağıtım' şeklindedir [DOĞRULA: güncel ticaret unvanının tam yazımı]
+
+BİRİM: Bölge İşletme Müdürlüğü
+GÖREV: Elektrik arızası, planlı/plansız kesinti, orta-alçak gerilim hat bakım-onarımı ve acil saha müdahalesi taleplerini karşılar. Hizmet bölgesi: Antalya, Burdur, Isparta.
+
+BİRİM: Genel Aydınlatma Birimi
+GÖREV: Sokak, cadde, park ve meydan aydınlatma arızası ile genel aydınlatma bakım-onarım ve yeni aydınlatma tesisi başvurularını yürütür (Genel Aydınlatma Yönetmeliği kapsamında).
+
+BİRİM: Abone ve Müşteri Hizmetleri Müdürlüğü
+GÖREV: Yeni bağlantı/abonelik başvurusu, sayaç okuma-değişim-mühür itirazı, tarife ve fatura itirazlarını karşılar.
+
+BİRİM: Yatırım ve Şebeke Planlama Müdürlüğü
+GÖREV: Şebeke yatırım programı, yeni hat/trafo tesisi, kapasite artırım ve turizm bölgesi/OSB şebeke genişletme taleplerini değerlendirir.
+
+BİRİM: Kesinti ve Arıza İhbar Merkezi
+GÖREV: 7/24 arıza-kesinti ihbarlarını alır, saha ekiplerine yönlendirir ve planlı kesinti duyurularını koordine eder.

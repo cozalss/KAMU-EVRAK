@@ -1,0 +1,21 @@
+@KURUM: Türkiye Cumhuriyeti Devlet Demiryolları İşletmesi Genel Müdürlüğü (TCDD)
+@BELGE: 6461 sayılı Türkiye Demiryolu Ulaştırmasının Serbestleştirilmesi Hakkında Kanun
+@KAYNAK_KIMLIK: teskilat/tcdd/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: tcdd, devlet-demiryollari
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlığı adları genel bilgiye dayanır, yönlendirme öncesi güncel TCDD teşkilat şemasından teyit edilmelidir.
+
+BİRİM: Yol Dairesi Başkanlığı
+GÖREV: Demiryolu hattı, ray, balast ve hemzemin geçit bakım-onarımından sorumludur; hemzemin geçitte kaza, bariyer arızası ve ray bozukluğu şikayetleri bu birime yönlendirilir.
+
+BİRİM: Elektrik ve Elektronik Dairesi Başkanlığı
+GÖREV: Sinyalizasyon, elektrifikasyon ve haberleşme sistemlerinin işletilmesinden sorumludur; hemzemin geçit sinyal arızası ve bariyer otomasyonu şikayetleri bu birime iletilir.
+
+BİRİM: Emlak ve Kamulaştırma Dairesi Başkanlığı
+GÖREV: Demiryolu güzergahındaki taşınmaz mülkiyeti, kamulaştırma bedeli itirazı ve irtifak hakkı taleplerini yürütür; taşınmazından demiryolu geçen vatandaşın başvuruları bu birime gider.
+
+BİRİM: Yatırım ve İnşaat Dairesi Başkanlığı
+GÖREV: Yeni hat yapımı, istasyon inşaatı ve altyapı yatırım projelerinin planlanması ve yürütülmesinden sorumludur.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Demiryolu kazası, tazminat davası ve idari itirazlarla ilgili hukuki süreçleri yürütür.

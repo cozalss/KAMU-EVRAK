@@ -1,0 +1,47 @@
+@KURUM: Genel Belediye Şablonu
+@BELGE: 5393 sayılı Belediye Kanunu ve Norm Kadro Yönetmeliği tipik hizmet müdürlükleri (jenerik şablon)
+@KAYNAK_KIMLIK: teskilat/_genel-belediye/sablon
+@ERISIM: 2026-07-17
+@NOT: Bu şablon YALNIZCA aday üretme ve sorgu genişletme amaçlıdır; kuruma-özel resmî kaynak yerine geçmez, tek başına doğrulanmış hedef değildir (bkz. route ajanı grounding sözleşmesi).
+
+BİRİM: Ruhsat ve Denetim Müdürlüğü
+GÖREV: İşyeri açma ve çalışma ruhsatı, sıhhi ve gayrisıhhi müessese ruhsatı, umuma açık istirahat ve eğlence yeri ruhsatı düzenlenmesi ve denetimi. Ruhsat başvurusu, hafta tatili ruhsatı, ruhsatsız işyeri denetimi ve ruhsat iptali.
+
+BİRİM: İmar ve Şehircilik Müdürlüğü
+GÖREV: İmar planı uygulaması, imar durumu, yapı ruhsatı ve yapı kullanma izni (iskan). Kaçak ve ruhsatsız yapı denetimi, tadilat ruhsatı, numarataj.
+
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: Yol, asfalt, kaldırım, altyapı ve üstyapı yapımı, bakımı ve onarımı. Yol çukuru ve bozuk kaldırım arızalarının giderilmesi.
+
+BİRİM: Zabıta Müdürlüğü
+GÖREV: Belediye emir ve yasakları, kabahat denetimi, seyyar satıcı ve işgaliye, pazar yeri düzeni, gürültü ve çevre şikâyeti denetimi.
+
+BİRİM: Temizlik İşleri Müdürlüğü
+GÖREV: Katı atık ve çöp toplama, cadde-sokak temizliği, geri dönüşüm, çevre kirliliği ile mücadele, ilaçlama.
+
+BİRİM: Park ve Bahçeler Müdürlüğü
+GÖREV: Park, yeşil alan ve çocuk oyun alanı yapımı ve bakımı, ağaçlandırma, budama ve peyzaj.
+
+BİRİM: Sosyal Yardım İşleri Müdürlüğü
+GÖREV: Muhtaç ve dar gelirli ailelere gıda, yakacak, nakdi sosyal yardım; engelli ve yaşlı hizmetleri, muhtaçlık tespiti.
+
+BİRİM: Yazı İşleri Müdürlüğü
+GÖREV: Genel evrak kayıt, gelen-giden evrak havalesi, meclis ve encümen kararları, evlendirme, dilekçe kaydı ve yönlendirme.
+
+BİRİM: Mali Hizmetler Müdürlüğü
+GÖREV: Bütçe, gelir-gider, emlak vergisi ve çevre temizlik vergisi tahakkuk ve tahsilatı, ödeme, fatura ve hak ediş işlemleri.
+
+BİRİM: İnsan Kaynakları ve Eğitim Müdürlüğü
+GÖREV: Personel özlük, atama, nakil, terfi, kadro, izin, disiplin, sicil ve hizmet içi eğitim işlemleri.
+
+BİRİM: Hukuk İşleri Müdürlüğü
+GÖREV: Dava ve icra takibi, hukuki mütalaa, sözleşme incelemesi, mahkeme ve icradan gelen tebligat, müzekkere ve haciz işlemleri.
+
+BİRİM: Emlak ve İstimlak Müdürlüğü
+GÖREV: Belediye taşınmazlarının kayıt, tahsis, kiralama, satış işlemleri; kamulaştırma (istimlak) ve ecrimisil takibi.
+
+BİRİM: Sağlık İşleri ve Veteriner Müdürlüğü
+GÖREV: Halk sağlığı, cenaze ve defin, sokak hayvanları rehabilitasyonu, aşılama ve sahipsiz hayvan şikâyetleri.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Müdürlüğü
+GÖREV: CİMER, bilgi edinme (4982), halkın elektronik başvuruları, istek-şikâyet çözüm merkezi, basın ve kurumsal iletişim.

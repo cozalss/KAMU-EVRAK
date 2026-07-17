@@ -342,8 +342,18 @@ def _k_ilgi(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
     return _kural("L-M15-ilgi", "m.15", "gecti", "İlgi atfı tarih ve sayıyla mevcut (m.15).")
 
 
+# m.16/12 tüm meşru kapanış aileleri: arz/rica (a) + dağıtımlı arz ve rica (b) + gerçek-kişi
+# "Bilgilerinize sunulur./Saygılarımla./İyi dileklerimle." (e) + görüş "arz olunur/bilgilerine
+# arz". "sunulur" tek başına ("bilgilerinize sunulur") gerçek-kişi kapanışıdır (m.16/12-e).
+_KAPANIS_KALIP = (
+    "arz ederim", "rica ederim", "arz olunur", "rica olunur",
+    "arz ve rica ederim", "bilgilerinize sunulur", "bilgilerine arz",
+    "saygılarımla", "iyi dileklerimle",
+)
+
+
 def _k_kapanis(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
-    if "arz ederim" in low or "rica ederim" in low:
+    if any(k in low for k in _KAPANIS_KALIP):
         return _kural("L-M16-kapanis", "m.16", "gecti",
                       "Hiyerarşiye uygun kapanış kalıbı mevcut (m.16).")
     return _kural("L-M16-kapanis", "m.16", "uyari",

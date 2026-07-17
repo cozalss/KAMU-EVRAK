@@ -1,0 +1,30 @@
+@KURUM: Enerji Piyasası Düzenleme Kurumu
+@BELGE: 6446 sayılı Elektrik Piyasası Kanunu; 4646 sayılı Doğal Gaz Piyasası Kanunu; 5307 sayılı Sıvılaştırılmış Petrol Gazları (LPG) Piyasası Kanunu; 6491 sayılı Türk Petrol Kanunu
+@KAYNAK_KIMLIK: teskilat/epdk/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: enerji-piyasasi-duzenleme-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması] — daire başkanlıklarının adı yönetmelik değişikliğiyle güncellenmiş olabilir.
+
+BİRİM: Elektrik Piyasası Dairesi Başkanlığı
+GÖREV: Elektrik üretim, iletim, dağıtım ve tedarik lisanslarına ilişkin başvuruları değerlendirir. Elektrik tarifesi, fatura itirazı, kesinti şikayeti ve dağıtım şirketi uyuşmazlıklarını inceler.
+
+BİRİM: Doğal Gaz Piyasası Dairesi Başkanlığı
+GÖREV: Doğal gaz dağıtım, iletim ve tedarik lisansları ile doğal gaz tarifesi, abonelik ve fatura şikayetlerini değerlendirir.
+
+BİRİM: Petrol Piyasası Dairesi Başkanlığı
+GÖREV: Akaryakıt dağıtım ve bayilik lisansları ile akaryakıt kalitesi, sahtecilik ve fiyat uygulamalarına ilişkin şikayet ve ihbarları inceler.
+
+BİRİM: LPG Piyasası Dairesi Başkanlığı
+GÖREV: LPG (tüpgaz/otogaz) dağıtım ve bayilik lisansları ile LPG güvenliği ve tüketici şikayetlerini değerlendirir.
+
+BİRİM: Tüketici Hizmetleri Dairesi Başkanlığı
+GÖREV: Elektrik, doğal gaz, petrol ve LPG piyasalarında tüketici şikayet başvurularını karşılar; dağıtım/tedarik şirketleriyle uyuşmazlıkları uzlaştırma yoluyla çözer.
+
+BİRİM: Denetim Dairesi Başkanlığı
+GÖREV: Enerji piyasası lisans sahiplerinin mevzuata uygunluğunu denetler; ihbar ve şikayet üzerine yerinde inceleme yapar.
+
+BİRİM: Hukuk Hizmetleri Dairesi Başkanlığı
+GÖREV: Kurum aleyhine açılan davalar ile idari itirazları ve cezai işlemlere karşı başvuruları hukuki açıdan değerlendirir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Kurumun stratejik plan, performans programı ve mevzuat taslaklarını hazırlar; kurum içi mali ve idari koordinasyonu yürütür.

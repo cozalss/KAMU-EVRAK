@@ -137,6 +137,9 @@ class TestRouteBirimAdditive:
         import agents.nodes.route_birim as route_mod
         from agents.config import EVRAK_TO_BIRIM
         monkeypatch.setattr(route_mod, "PARALEL_TRIYAJ", False)
+        # ROUTE_AJAN kapalı → deterministik hedef (bu sınıf additive servis + baseline hedefi test eder;
+        # kaynak-doğrulamalı ajan sözleşmesi test_route_ajan.py'de ayrı doğrulanır).
+        monkeypatch.setattr(route_mod, "ROUTE_AJAN", False)
         state = {"evrak_turu": "dilekce", "evrak_text": "Sokaktaki çukurun asfaltla onarılması talebi."}
         # Act
         out = await route_mod.route_birim_node(state)
@@ -160,6 +163,7 @@ class TestRouteBirimAdditive:
         # Arrange — saf kurum→kurum yazı (hizmet-müdürlüğü sinyali yok); baseline yol
         import agents.nodes.route_birim as route_mod
         monkeypatch.setattr(route_mod, "PARALEL_TRIYAJ", False)
+        monkeypatch.setattr(route_mod, "ROUTE_AJAN", False)  # deterministik baseline yol
         state = {"evrak_turu": "ust_yazi", "evrak_text": "Adres kayıt sistemi güncelleme çalışmaları hakkında."}
         # Act
         out = await route_mod.route_birim_node(state)

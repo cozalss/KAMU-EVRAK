@@ -1,0 +1,18 @@
+@KURUM: Türkiye İstatistik Kurumu
+@BELGE: 5429 sayılı Türkiye İstatistik Kanunu
+@KAYNAK_KIMLIK: teskilat/tuik/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: turkiye-istatistik-kurumu
+@NOT: [DOĞRULA: güncel teşkilat şeması]
+
+BİRİM: Veri Yayımlama Daire Başkanlığı
+GÖREV: Resmi istatistik veri talepleri, yayımlanan veri setinde hata bildirimi ve mikro veri erişim başvurularını yürütür.
+
+BİRİM: Bilgi Edinme ve Halkla İlişkiler Şube Müdürlüğü
+GÖREV: Bilgi edinme başvuruları, kamuoyu istatistik veri talepleri ve anket/araştırma katılım şikâyetlerinin ilk kabul merciidir.
+
+BİRİM: Bölge Müdürlüğü
+GÖREV: İl/bölge düzeyinde anket saha uygulaması, hane halkı araştırması katılım talepleri ve yerel istatistik veri taleplerini karşılar.
+
+BİRİM: Metodoloji ve Standartlar Daire Başkanlığı
+GÖREV: İstatistiki sınıflama (NACE, İBBS vb.) ve metodoloji itirazlarına ilişkin teknik başvuruları değerlendirir.

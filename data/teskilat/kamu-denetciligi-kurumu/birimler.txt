@@ -1,0 +1,21 @@
+@KURUM: Kamu Denetçiliği Kurumu
+@BELGE: 6328 sayılı Kamu Denetçiliği Kurumu Kanunu
+@KAYNAK_KIMLIK: teskilat/kamu-denetciligi-kurumu/gorev-tanimi
+@ERISIM: 2026-07-18
+@ALIAS: ombudsman, kdk
+@NOT: [DOĞRULA: güncel teşkilat şeması] — inceleme birimlerinin ihtisas alanı dağılımı zaman içinde değişmiştir.
+
+BİRİM: Şikayet Başvuru İnceleme Bürosu
+GÖREV: İdarenin işlem, eylem, tutum ve davranışlarına karşı vatandaş şikayet başvurularını ilk kabul ve ön inceleme sürecinde değerlendirir.
+
+BİRİM: Eğitim, Sağlık ve Sosyal Hizmetler İnceleme Birimi
+GÖREV: Eğitim, sağlık ve sosyal güvenlik idarelerine ilişkin şikayet başvurularını inceler ve tavsiye kararı üretir.
+
+BİRİM: Ekonomi, Maliye ve Altyapı İnceleme Birimi
+GÖREV: Vergi, maliye, imar ve altyapı idarelerine ilişkin şikayet başvurularını inceler.
+
+BİRİM: Adalet, İçişleri ve İnsan Hakları İnceleme Birimi
+GÖREV: Kolluk, adalet ve güvenlik idarelerine ilişkin şikayet ve insan hakları ihlali iddialarını inceler.
+
+BİRİM: Hukuk Hizmetleri Birimi
+GÖREV: Kurum kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.

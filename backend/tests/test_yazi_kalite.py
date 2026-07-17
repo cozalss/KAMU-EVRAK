@@ -151,3 +151,310 @@ def test_servis_birimi_grounding_muaf():
     assert "Fen İşleri Müdürlüğü" in SERVIS_BIRIM_TR.values()
     # sablon_iskelet_degerleri kurum kimliğini taşır (kurum adı da muaf).
     assert sablon_iskelet_degerleri()  # non-empty
+
+
+# ---------- dinamik antet: kurum kimliği evraktan (2026-07-17 kullanıcı bulgusu) ----------
+# Antet her evrakta sabit env kurumu ("NİLÜFER ...") yazıyordu; gelen evrakın kurumuna
+# göre değişmeli. Ayrıca servis_birimi dict'e dönünce zengin render yolu TypeError ile
+# fakir iskelete düşüyordu (ekran görüntüsündeki taslak birebir _fallback_taslak çıktısıydı).
+
+_BAKANLIK_EVRAK = """T.C.
+SANAYİ VE TEKNOLOJİ BAKANLIĞI
+Strateji Geliştirme Başkanlığı
+
+Sayı : E-31204765-045-2026/0987
+Tarih: 27.05.2026
+Konu : Doğrudan temin sınırı hakkında hukuki mütalaa talebi
+
+4734 sayılı Kanun'un 22. maddesi kapsamında yıl içinde yapılan doğrudan temin
+alımlarında parasal sınırın hesaplanmasına ilişkin tereddüt oluşmuştur. Konuya
+dair hukuki görüş ve mütalaanızın bildirilmesini arz ederim.
+
+Birim Amiri
+Mali Hizmetler Uzmanı
+e-imza
+"""
+
+_FALLBACK_IMZASI = "EBYS onayı öncesinde oluşturulmuştur"  # yalnız iskelet gövdesinde geçer
+
+
+async def test_servis_birimi_dict_zengin_yolu_dusurmez():
+    """REGRESYON: servis_birimi dict'i ({kod,ad,sinyal}) unhashable-TypeError ile
+    taslağı _fallback_taslak iskeletine düşürüyordu — zengin yol ayakta kalmalı."""
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    out = await yazi_taslak_node({
+        "evrak_turu": "dilekce",
+        "evrak_text": "Sokağımızdaki aydınlatma direğinin onarılmasını arz ederim.",
+        "bilgi_unsurlari": {"konu": "Aydınlatma Direği Onarımı", "tarih": "06.07.2026"},
+        "servis_birimi": {"kod": "fen_isleri", "ad": "Fen İşleri Müdürlüğü",
+                          "sinyal": ["aydınlatma"]},
+    })
+    assert _FALLBACK_IMZASI not in out["yazi_taslak_md"]
+    assert "Fen İşleri Müdürlüğü" in out["yazi_taslak_md"]  # antet birimi konudan
+
+
+async def test_antet_idare_evraktan_tespit():
+    """Bakanlıktan gelen evrakın taslağı bakanlık antedi taşır (sabit env kurumu değil)."""
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    out = await yazi_taslak_node({
+        "evrak_turu": "gorus_mutalaa",
+        "evrak_text": _BAKANLIK_EVRAK,
+        "bilgi_unsurlari": {"konu": "Doğrudan Temin Sınırı Hakkında Hukuki Mütalaa",
+                            "sayi": "E-31204765-045-2026/0987", "tarih": "27.05.2026"},
+    })
+    md = out["yazi_taslak_md"]
+    assert _FALLBACK_IMZASI not in md
+    assert "SANAYİ VE TEKNOLOJİ BAKANLIĞI" in md
+    assert out["antet_meta"]["idare"] == "SANAYİ VE TEKNOLOJİ BAKANLIĞI"
+    # Görüş türünün tür-özgü varsayılanı: hazırlayan birim Hukuk Müşavirliği (m.10 title case).
+    assert "Hukuk Müşavirliği" in md
+    # İlgi gelen belgenin gerçek tarih+sayısını taşır ("Başvurunuz." iskeleti değil — m.15/7).
+    assert "27.05.2026 tarihli ve E-31204765-045-2026/0987 sayılı yazınız." in md
+
+
+async def test_gorus_muhatabi_talep_eden_birim():
+    """Görüş yazısının muhatabı görüşü TALEP EDEN birimdir (m.14; Diyanet örneği deseni)."""
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    out = await yazi_taslak_node({
+        "evrak_turu": "gorus_mutalaa",
+        "evrak_text": _BAKANLIK_EVRAK,
+        "bilgi_unsurlari": {"konu": "Doğrudan Temin Sınırı"},
+    })
+    assert "STRATEJİ GELİŞTİRME BAŞKANLIĞINA" in out["yazi_taslak_md"]
+    assert out["antet_meta"]["muhatap"] == "STRATEJİ GELİŞTİRME BAŞKANLIĞINA"
+
+
+async def test_antet_kurum_tespit_yoksa_env_fallback():
+    """Evrakta kurum kalıbı yoksa antet env/jenerik varsayılanı korur (baseline riski sıfır)."""
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    out = await yazi_taslak_node({
+        "evrak_turu": "dilekce",
+        "evrak_text": "Merhaba, sokağımızda çöpler toplanmıyor. Gereğini arz ederim.",
+        "bilgi_unsurlari": {"konu": "Çöp Toplama"},
+    })
+    assert "KAMU KURUMU" in out["yazi_taslak_md"]  # test ortamında KURUM_ADI env yok
+
+
+async def test_kaynak_dogrulanmis_hedef_birim_antete_yazilir():
+    """Route ajanının kaynak-doğrulanmış birimi antet hazırlayan birimi olur."""
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    out = await yazi_taslak_node({
+        "evrak_turu": "dilekce",
+        "evrak_text": "T.C.\nYENİMAHALLE BELEDİYE BAŞKANLIĞINA\n\nSokak aydınlatması arızalıdır.",
+        "bilgi_unsurlari": {"konu": "Sokak Aydınlatması"},
+        "hedef_birim": "Fen İşleri Müdürlüğü",
+        "durum": "kaynak_dogrulandi",
+    })
+    md = out["yazi_taslak_md"]
+    assert "YENİMAHALLE BELEDİYESİ" in md          # hitaptan tespit edilen idare (m.10 büyük)
+    assert "Fen İşleri Müdürlüğü" in md            # kaynak-doğrulanmış hazırlayan birim
+
+
+def test_hitap_eki_unlu_uyumu():
+    """m.14/2 yönelme eki: arka ünlü → -NA, ön ünlü → -NE; ünsüzle biten ad aynen kalır."""
+    from agents.kurum_kimlik import hitap_eki
+
+    assert hitap_eki("Strateji Geliştirme Başkanlığı") == "STRATEJİ GELİŞTİRME BAŞKANLIĞINA"
+    assert hitap_eki("İnsan Kaynakları Genel Müdürlüğü") == "İNSAN KAYNAKLARI GENEL MÜDÜRLÜĞÜNE"
+    assert hitap_eki("Yenimahalle Belediyesi") == "YENİMAHALLE BELEDİYESİNE"
+    assert hitap_eki("") == ""
+
+
+def test_gonderen_birim_tespit_antetten():
+    """Gelen antette idare satırını izleyen birim satırı tespit edilir; meta satırlar atlanır."""
+    from agents.kurum_kimlik import gonderen_birim_tespit
+
+    assert gonderen_birim_tespit(_BAKANLIK_EVRAK) == "Strateji Geliştirme Başkanlığı"
+    assert gonderen_birim_tespit("T.C.\nANKARA VALİLİĞİ\n\nSayı : 123\nKonu : Test") == ""
+    assert gonderen_birim_tespit("") == ""
+
+
+def test_llm_halusinasyon_kurum_antete_giremez():
+    """Adversarial V1: kaynakta hiç geçmeyen LLM 'kurum' çıkarımı antete/muafiyete SOKULMAZ."""
+    from agents.kurum_kimlik import muhatap_kurum_tespit
+
+    kaynak = "Sokağımızdaki aydınlatma direği arızalıdır. Onarılmasını arz ederim."
+    # Halüsinasyon: 'Yenimahalle' kaynakta yok → boş künye (env fallback devralır).
+    assert muhatap_kurum_tespit(kaynak, {"kurum": "Yenimahalle Belediyesi"})["ad"] == ""
+    # Grounded: ayırt-edici token kaynakta geçiyor (çekim ekiyle) → kabul.
+    kaynak2 = "Yenimahalle'deki evimizin önündeki direk arızalı, belediyeye başvurdum."
+    assert muhatap_kurum_tespit(
+        kaynak2, {"kurum": "Yenimahalle Belediyesi"})["ad"] == "Yenimahalle Belediyesi"
+
+
+def test_gorus_muhatabi_plan_muhatabini_hitap_bicimine_sokar():
+    """Reviewer HIGH: gerçek-LLM yolunda plan muhatabı ('Strateji Geliştirme Başkanlığı',
+    eksiz/karışık kasa) m.14/2 biçimlendirmesini eziyordu — tek biçim kapısı gorus_muhatabi."""
+    from agents.kurum_kimlik import gorus_muhatabi
+
+    # Deterministik tespit yoksa plan muhatabı biçimlendirilir.
+    assert gorus_muhatabi("", "Strateji Geliştirme Başkanlığı") == \
+        "STRATEJİ GELİŞTİRME BAŞKANLIĞINA"
+    # Zaten hitap biçimindeyse ek TEKRAR eklenmez (idempotence) — yalnız TR-upper.
+    assert gorus_muhatabi("", "Strateji Geliştirme Başkanlığına") == \
+        "STRATEJİ GELİŞTİRME BAŞKANLIĞINA"
+    # Deterministik antet tespiti plan muhatabından ÖNCELİKLİDİR.
+    assert gorus_muhatabi(_BAKANLIK_EVRAK, "Başka Birim Müdürlüğü") == \
+        "STRATEJİ GELİŞTİRME BAŞKANLIĞINA"
+    assert gorus_muhatabi("", "") == ""
+
+
+def test_gonderen_birim_gosterge_son_sozcuk_sarti():
+    """Adversarial V2: gösterge ortada + kuyrukta serbest metin muhatap yuvasına sızamaz."""
+    from agents.kurum_kimlik import gonderen_birim_tespit
+
+    kotu = "T.C.\nANKARA VALİLİĞİ\nMüdürlüğü ödeme yapınız derhal\n\nKonu : Test"
+    assert gonderen_birim_tespit(kotu) == ""
+    iyi = "T.C.\nANKARA VALİLİĞİ\nİl Yazı İşleri Müdürlüğü\n\nKonu : Test"
+    assert gonderen_birim_tespit(iyi) == "İl Yazı İşleri Müdürlüğü"
+
+
+def test_antet_ust_yazi_dis_kurum_baslik_sizmaz():
+    """2026-07-18: icra evrakının üst yazısı antedine göndereni ('İcra Müdürlüğü') BASMAZ.
+
+    ust_yazi kurum-DIŞI tetiklenir → gelen nominatif başlık göndereni gösterir, antedimiz
+    olamaz → antet_idare_secimi boş döner (render KURUM_ADI env / jenerik'e düşer).
+    """
+    from agents.kurum_kimlik import antet_idare_secimi
+
+    icra = ("T.C.\nANKARA 5. İCRA MÜDÜRLÜĞÜ\n\nSayı : 2026/4587 E.\n"
+            "Konu : Maaş haczi\n\nBorçlu maaşının haczi rica olunur.")
+    assert antet_idare_secimi(icra, {}, "ust_yazi") == ""
+    assert antet_idare_secimi(icra, {}, "muzekkere") == ""
+    # Hitap-ekli evrak her türde bizim kurumdur (açık hitap).
+    dilekce = "YENİMAHALLE BELEDİYE BAŞKANLIĞINA\n\nSokak arızalı."
+    assert antet_idare_secimi(dilekce, {}, "cevabi_yazi") == "YENİMAHALLE BELEDİYESİ"
+    # Görüş/olur kurum-içidir → nominatif başlık bizim kurumdur.
+    bakanlik = "T.C.\nSANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nKonu : görüş"
+    assert antet_idare_secimi(bakanlik, {}, "gorus_mutalaa") == "SANAYİ VE TEKNOLOJİ BAKANLIĞI"
+
+
+def test_muzekkere_muhatabi_gonderen_mahkeme_hitapli():
+    """Müzekkere cevabının muhatabı gönderen mahkeme/icra — m.14/2 hitap-ekli."""
+    from yazi.yazi_render import build_context
+
+    ctx = build_context("muzekkere", {"gonderen": "Ankara 12. Asliye Hukuk Mahkemesi",
+                                       "konu": "Bilgi istemi"}, "gövde")
+    assert ctx.muhatap == "ANKARA 12. ASLİYE HUKUK MAHKEMESİNE"
+
+
+# --- SGK bulgusu (2026-07-18): idari kurum müzekkeresi → antet DİNAMİK, "KAMU KURUMU" değil ---
+_SGK_MUZEKKERE = """T.C.
+SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI
+Hukuk Müşavirliği
+
+Sayı : E-72615498-640-2026/2210
+Konu : Müzekkere — sigortalılık kayıtlarının celbi
+
+İdaremiz aleyhine açılan davada kullanılmak üzere kişinin kayıtlarının
+Müşavirliğimize gönderilmesi rica ederim.
+"""
+
+
+def test_idari_kurum_muzekkere_antedi_dinamik():
+    """SGK gibi idari kurumun müzekkeresi → antet o kurumdur (KAMU KURUMU'ya düşmez)."""
+    from agents.kurum_kimlik import antet_idare_secimi
+
+    idare = antet_idare_secimi(
+        _SGK_MUZEKKERE, {"kurum": "Sosyal Güvenlik Kurumu Başkanlığı"}, "muzekkere")
+    assert idare == "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI"
+
+
+def test_yargi_kurumu_antedi_env_e_duser():
+    """Mahkeme/icra (YARGI) kurumu ASLA antet olamaz — biz o makam değiliz (env'e düşer)."""
+    from agents.kurum_kimlik import antet_idare_secimi, is_yargi_kurumu
+
+    mahkeme = "T.C.\nANKARA 12. ASLİYE HUKUK MAHKEMESİ\n\nSayı : 2026/456 Esas"
+    assert antet_idare_secimi(mahkeme, {}, "muzekkere") == ""
+    icra = "T.C.\nANKARA 5. İCRA MÜDÜRLÜĞÜ\n\nSayı : 2026/4587 E."
+    assert antet_idare_secimi(icra, {}, "ust_yazi") == ""
+    assert is_yargi_kurumu({"ad": "Ankara 12. Asliye Hukuk Mahkemesi"}) is True
+    assert is_yargi_kurumu({"ad": "Sosyal Güvenlik Kurumu Başkanlığı"}) is False
+
+
+def test_muzekkere_idari_ic_muhatap_talep_eden_birim():
+    """İdari iç müzekkere (SGK) muhatabı = talep eden birim (antet 3. satır), hitap-ekli."""
+    from agents.kurum_kimlik import muzekkere_muhatabi
+
+    assert muzekkere_muhatabi(_SGK_MUZEKKERE, "Sosyal Güvenlik Kurumu Başkanlığı") == \
+        "HUKUK MÜŞAVİRLİĞİNE"
+
+
+def test_muzekkere_yargi_muhatap_gonderen_makam():
+    """Yargı müzekkeresi muhatabı = gönderen makam (mahkeme/icra), hitap-ekli."""
+    from agents.kurum_kimlik import muzekkere_muhatabi
+
+    mah = "T.C.\nANKARA 12. ASLİYE HUKUK MAHKEMESİ\n\nSayı : 2026/456 Esas"
+    assert muzekkere_muhatabi(mah, "Ankara 12. Asliye Hukuk Mahkemesi") == \
+        "ANKARA 12. ASLİYE HUKUK MAHKEMESİNE"
+
+
+def test_muzekkere_muhatap_vatandas_adi_sizdirmaz():
+    """GÜVENLİK: gerçek-kişi gönderen adı müzekkere muhatap yuvasına sızmaz."""
+    from agents.kurum_kimlik import muzekkere_muhatabi
+
+    assert muzekkere_muhatabi("", "Ayşe Yılmaz") == ""
+
+
+def test_gonderen_birim_yapisal_sgk_tespiti():
+    """Yapısal tespit: T.C. sonrası idare + birim — SGK gibi kalıp-dışı kurumda da çalışır."""
+    from agents.kurum_kimlik import gonderen_birim_tespit
+
+    assert gonderen_birim_tespit(_SGK_MUZEKKERE) == "Hukuk Müşavirliği"
+    # Bakanlık (görüş regresyonu) hâlâ çalışır.
+    san = "T.C.\nSANAYİ VE TEKNOLOJİ BAKANLIĞI\nStrateji Geliştirme Başkanlığı\n\nSayı : 1"
+    assert gonderen_birim_tespit(san) == "Strateji Geliştirme Başkanlığı"
+
+
+def test_ilgi_ust_yazi_m15_6_iyelik_ekli():
+    """İletim (ust_yazi) İlgi satırı m.15/6: gönderen idare adı + iyelik eki + 'yazısı'."""
+    from yazi.yazi_render import _ilgi_satirlari
+
+    ilgi = _ilgi_satirlari({"gonderen": "Ankara 5. İcra Müdürlüğü",
+                            "tarih": "10.07.2026", "sayi": "2026/4587 E."}, "ust_yazi")
+    assert ilgi == ("Ankara 5. İcra Müdürlüğünün 10.07.2026 tarihli ve 2026/4587 E. sayılı yazısı.",)
+
+
+def test_bilinmeyen_servis_kodu_antete_sizmaz():
+    """birim_tr 9-set dışı servis kodunu ('park_bahce') Türkçe ada çözer (ham kod sızmaz)."""
+    from agents.config import birim_tr
+
+    assert birim_tr("park_bahce") == "Park ve Bahçeler Müdürlüğü"
+    assert birim_tr("fen_isleri") == "Fen İşleri Müdürlüğü"
+
+
+def test_cevap_konusu_talep_kuyrugu_duser():
+    """Görüş/müzekkere cevabının konusundan SON talep kelimesi düşer; öncesi korunur."""
+    from yazi.yazi_render import _cevap_konusu
+
+    assert _cevap_konusu("Doğrudan Temin Sınırı Hakkında Hukuki Mütalaa Talebi",
+                         "gorus_mutalaa") == "Doğrudan Temin Sınırı Hakkında Hukuki Mütalaa"
+    assert _cevap_konusu("Emlak Vergisi Kayıtları İstemi", "muzekkere") == \
+        "Emlak Vergisi Kayıtları"
+    # olur/cevabi türlerinde dokunulmaz.
+    assert _cevap_konusu("Personel Görevlendirme Talebi", "olur") == \
+        "Personel Görevlendirme Talebi"
+    # Kırpınca <2 sözcük kalırsa dokunma (boş/anlamsız konu üretme).
+    assert _cevap_konusu("Görüş talebi", "gorus_mutalaa") == "Görüş talebi"
+
+
+def test_gorus_fallback_havada_kalmaz():
+    """Görüş fallback gövdesi kapalı-uçlu cevap çerçevesiyle biter (havada kalmaz)."""
+    from yazi.yazi_render import _fallback_body
+
+    g = _fallback_body("gorus_mutalaa", "doğrudan temin sınırı", has_ilgi=True)
+    assert "ayrıca bildirilecektir" in g
+
+
+def test_gorus_mutalaa_tur_varsayilanlari_muaf():
+    """Tür-özgü antet/imza varsayılanları grounding muafiyetinde (KIRMIZI yanlış-pozitif yok)."""
+    from yazi.models import sablon_iskelet_degerleri
+
+    degerler = sablon_iskelet_degerleri()
+    assert "Hukuk Müşavirliği" in degerler
+    assert "Hukuk Müşaviri" in degerler

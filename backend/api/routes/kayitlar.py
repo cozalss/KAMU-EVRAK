@@ -5,6 +5,7 @@ Mevzuat araması gerçek seed korpusta (304 mevzuat / 1916 chunk) çalışır.
 """
 from __future__ import annotations
 
+import os
 import uuid
 from typing import Annotated
 
@@ -38,6 +39,11 @@ from db.session import get_session
 router = APIRouter(tags=["kayitlar"])
 
 Session = Annotated[AsyncSession, Depends(get_session)]
+
+# Taslak oluşturma/düzenleme (memur) ile ONAYLAMA yetkisini ayırma anahtarı (§13: "taslak
+# oluşturmak ile onaylamak ayrı yetki olmalı"). Varsayılan "memur" → mevcut tek-rol demo
+# akışı KORUNUR (bozulmaz); kurum ONAY_MIN_ROL=yetkili ile gerçek ayrımı açar.
+_ONAY_MIN_ROL = os.getenv("ONAY_MIN_ROL", "memur").strip() or "memur"
 
 # KararError.kod → HTTP durum kodu. "yetkisiz" (sahiplik yok) BİLEREK 404 döner (403 değil) —
 # kaynağın var olup başkasına ait olduğunu sızdırmaz (mevcut islem_detay ön-kontrolüyle aynı disiplin).
@@ -196,9 +202,12 @@ async def taslak_sil_endpoint(
 @router.post("/islem/{islem_id}/onayla")
 async def onayla(
     islem_id: uuid.UUID, req: OnaylaRequest, session: Session,
-    kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
+    kullanici: Annotated[Kullanici, Depends(require_role(_ONAY_MIN_ROL))],
 ) -> dict:
-    """HITL kararı (yetkili+) → onay + giden_evrak. Reddedilirse yalnız onay yazılır."""
+    """HITL kararı → onay + giden_evrak. Reddedilirse yalnız onay yazılır.
+
+    Yetki: _ONAY_MIN_ROL (varsayılan 'memur' = mevcut demo; ONAY_MIN_ROL=yetkili ile
+    taslak-oluşturma/onaylama ayrımı, §13)."""
     try:
         if await islem_detay(session, islem_id, owner_id=kullanici.id) is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "İşlem bulunamadı.")
@@ -213,7 +222,7 @@ async def onayla(
 @router.post("/islem/{islem_id}/alt-talep/{sira}/onayla")
 async def alt_talep_onayla(
     islem_id: uuid.UUID, sira: int, req: OnaylaRequest, session: Session,
-    kullanici: Annotated[Kullanici, Depends(require_role("memur"))],
+    kullanici: Annotated[Kullanici, Depends(require_role(_ONAY_MIN_ROL))],
 ) -> dict:
     """Çok-konulu evrakta TEK bir alt-talebin (birim) taslağı için bağımsız HITL kararı.
 

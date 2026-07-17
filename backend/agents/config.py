@@ -378,6 +378,10 @@ if VITRIN_MODU:
 # --- Görev 2: doğrulama (verify) + dur-ve-sor (clarifier) ENV bayrakları ---
 # verify_node grafta her zaman var; KAPATILIRSA no-op passthrough (state bozulmaz).
 VERIFY_ENABLED = os.getenv("VERIFY_ENABLED", "1") == "1"
+# Karar/inceleme grounding: taslakta tamamlanmış "incelenmiştir/uygun bulunmuştur/
+# reddedilmiştir" iddiası kaynakta yoksa deterministik KIRMIZI veto (agents.karar_grounding).
+# _uydurma_veto'nun soyut-taahhüt boşluğunu kapatır; deterministik → mock/CI'da da çalışır.
+KARAR_GROUNDING_ENABLED = os.getenv("KARAR_GROUNDING_ENABLED", "1") == "1"
 # clarifier dur-ve-sor dalı: baseline KAPALI; vitrin modunda AÇIK (şartname Görev 2.5
 # "eksik bilgi isteme" maddesinin dur-ve-sor karşılığı — demo/jüri akışında açık olmalı).
 CLARIFY_STOP_ENABLED = _bayrak("CLARIFY_STOP_ENABLED", vitrin_acik=VITRIN_MODU)

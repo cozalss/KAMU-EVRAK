@@ -25,6 +25,7 @@ import structlog
 
 from agents.config import (
     BIRIMLER,
+    KARAR_GROUNDING_ENABLED,
     LINT_AUTOFIX,
     MAKAM_LLM,
     VERIFY_ENABLED,
@@ -33,6 +34,7 @@ from agents.config import (
     YAZI_ZORUNLU_BOLUMLER,
     birim_tr,
 )
+from agents.karar_grounding import karar_grounding_veto
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.tutarlilik import tutarlilik_kontrol
 from agents.yazi_lint import _makam_seviyesi, kurum_gorunumlu, lint_2646
@@ -375,6 +377,15 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
 
     eksik = _eksik_bolumler(tr_lower(taslak))
     uydurma = _uydurma_veto(taslak, state)
+    # Karar/inceleme grounding — soyut taahhüt uydurması (incelenmiştir/uygun bulunmuştur/
+    # reddedilmiştir kaynakta yokken). _uydurma_veto ile AYNI imza ("kaynak evrakta yok")
+    # → risk_guard KIRMIZI → HITL onayı zorunlu. Deterministik (mock/CI'da da çalışır).
+    if KARAR_GROUNDING_ENABLED:
+        uydurma += karar_grounding_veto(taslak, state.get("evrak_text", "") or "")
+    # NOT: belirsiz_makam_uyari (agents.karar_grounding) tanımlı + test edildi ama verify'a
+    # BAĞLANMADI — mevcut render kurum/imza yapılandırması olmadığında "KAMU KURUMU"/"Yetkili
+    # İmza" placeholder'larını DOĞAL olarak basıyor (§4 yapılandırılmış girdi boşluğu), her
+    # taslağı uyarıyla işaretlerdi. §4 (kullanıcıdan kurum/imza girişi) eklenince etkinleşmeli.
     # Uydurma-veto mesajları taslaktaki HAM tarih/sayı token'ını içerir (TCKN-şekilli
     # olabilir) → SSE'ye maskesiz gitmesin diye state'e girmeden maskelenir.
     uyarilar = [mask_pii(u).masked_text for u in uydurma] + [f"Eksik bölüm: {e}" for e in eksik]

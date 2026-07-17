@@ -8,12 +8,13 @@
 import React, { useState, useId } from "react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
-export const SANS = "'IBM Plex Sans','Segoe UI',system-ui,sans-serif";
-/* DISPLAY (2026-07-17): Bricolage Grotesque — YALNIZ display katmanı (TYPE.h1 görünüm
-   başlıkları + TYPE.disp hüküm liderleri). Gövde/UI Plex kalır ("Sakin Ürün" disiplini);
-   gösteriş başlık kademesinde yaşar. latin-ext (ç/ş/ğ/İ tam) + OFL; app.html Google Fonts.
-   Fallback zinciri SANS ile aynı — font inmezse başlıklar Plex'e düşer, kırılma yok. */
-export const DISPLAY = "'Bricolage Grotesque','IBM Plex Sans','Segoe UI',system-ui,sans-serif";
+// Gövde + UI fontu: Source Sans 3 (kullanıcı tercihi, 2026-07-17) — latin-ext (ç/ş/ğ/İ tam),
+// app.html'de variable font olarak tek dosya iner. İnmezse Segoe UI (Windows sistem) fallback.
+export const SANS = "'Source Sans 3','Segoe UI',system-ui,sans-serif";
+/* DISPLAY: başlık katmanı da Segoe UI (kullanıcı tercihi, 2026-07-17) — tüm arayüz tek
+   ailede. Token korunur (TYPE.h1/disp fontFamily: DISPLAY) ki ileride ayrı bir başlık
+   fontu istenirse tek yerden değişsin; şu an değeri SANS ile birebir aynıdır. */
+export const DISPLAY = "'Segoe UI',system-ui,sans-serif";
 /* V (Görev 2 semantiği): lavanta → MÜHÜR moru (2026-07 revizyonu). Pastel "AI moru"ndan
    çıkış; ıstampa/mühür mürekkebi — resmî evrak dünyasının kendi rengi. Radix ruby/plum
    koyuluğunda; ivory zeminde dolgu 6.3:1, DERIN.V metin 8.3:1 (AA). */

@@ -14,12 +14,21 @@ metin gövdesi node tarafında üretilip `metin` alanına konur.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from typing import Any
 
+# Belgeyi ÜRETEN kurumun kimliği (antet: T.C. / idare / birim). ENV ile yapılandırılır;
+# boş bırakılırsa jenerik demo değeri KORUNUR (baseline riski sıfır). Doldurulunca gerçek
+# kurum yazılır ("KAMU KURUMU" yer tutucusu yerine, ör. NİLÜFER BELEDİYE BAŞKANLIĞI).
+# _DEMO_DEFAULTS.values() grounding muafiyet listesine besleniyor (sablon_iskelet_degerleri)
+# → gerçek kurum adı otomatik "uydurma değil" sayılır, verify KIRMIZI yapmaz.
+_KURUM_ADI = os.getenv("KURUM_ADI", "").strip()
+_KURUM_BIRIM = os.getenv("KURUM_BIRIM", "").strip()
+
 _DEMO_DEFAULTS: dict[str, str] = {
-    "idare_adi": "KAMU KURUMU",
-    "birim_adi": "YAZI İŞLERİ BİRİMİ",
+    "idare_adi": _KURUM_ADI or "KAMU KURUMU",
+    "birim_adi": _KURUM_BIRIM or "YAZI İŞLERİ BİRİMİ",
     "sayi_satiri": "EBYS-TASLAK",
     "konu": "Başvuru değerlendirmesi",
     "metin": "Konuya ilişkin gerekli değerlendirme yapılmıştır.",

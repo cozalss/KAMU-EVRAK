@@ -26,6 +26,61 @@ _RE_TCKN = re.compile(r"\b[1-9]\d{10}\b")                 # 11 haneli — MASKEL
 _RE_TEL = re.compile(r"\b0?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}\b")
 _RE_KONU = re.compile(r"konu\s*[:：]\s*(.+)", re.IGNORECASE)
 _RE_TALEP = re.compile(r"(talep ederim|rica ederim|arz ederim|gereğini|bilgilerinize)", re.IGNORECASE)
+
+# Konu ÖZ olmalı (Yön. 2646 m.13): tam cümle/paragraf değil kısa başlık. Uzun "Konu:" satırı
+# veya dilekçe cümlesi ilk anlamlı öbeğe indirilir (deterministik → her modda çalışır; LLM
+# kısa özü _merge_llm'de bunu ezebilir). İlk cümle-sonlandırıcı/bağlaç öncesi + kelime tavanı.
+_KONU_KESME = re.compile(r"[.;,]|\s(?:olup|için|ancak|çünkü|zira|nedeniyle|dolayısıyla)\s")
+_KONU_MAX_KELIME = 8
+_KONU_MAX_KR = 64
+
+
+def _konu_kisa(ham: str) -> str:
+    """Uzun konu ifadesini kısa öz'e indir (case korunur — özel ad/kısaltma bozulmasın)."""
+    k = re.sub(r"\s+", " ", ham or "").strip().rstrip(".;,: ")
+    if not k:
+        return k
+    if len(k) <= _KONU_MAX_KR and len(k.split()) <= _KONU_MAX_KELIME:
+        return k
+    parca = _KONU_KESME.split(k, maxsplit=1)[0].strip()
+    kelimeler = parca.split()
+    if len(kelimeler) > _KONU_MAX_KELIME:
+        parca = " ".join(kelimeler[:_KONU_MAX_KELIME])
+    return parca.rstrip(".;,: ") or k[:_KONU_MAX_KR]
+
+
+# Çok-talep tespiti (§ kullanıcı: "onarım OLMAZSA yeni direk" gibi tek konu içinde birden çok
+# istek). Koşullu/alternatif bağlaçlar + numaralı maddeler + istek fiilleri → talep cümleleri.
+# bilgi_unsurlari["talep"] tarihsel BOOLEAN kalır (geriye uyum); "talepler" LİSTESİ additive
+# eklenir → build_body gövdeyi tüm taleplerle kurabilir (aksi halde ikinci talep düşüyordu).
+_RE_TALEP_BOL = re.compile(
+    r"(?:\s(?:ayrıca|bir de|bunun yanı sıra|ek olarak|aksi(?:\s+halde|\s+takdirde)?|"
+    r"mümkün\s+(?:değilse|olmazsa|olmaması\s+h(?:âlinde|alinde))|olmaz(?:sa|ise)|"
+    r"alternatif\s+olarak)\s)|(?:;\s*)|(?:\n\s*\d+[.)]\s*)", re.IGNORECASE)
+_RE_ISTEK = re.compile(
+    r"(onar[ıi]l|tamir|gideril|yenile|yeni(?:\s+\w+){0,3}?\s+(?:direk|direği|tesis|kurul)|"
+    r"tesis\s+edil|yerle[şs]tir|düzenlen|incelen|değerlendiril|kald[ıi]r|temin\s+edil|"
+    r"sağlan|yap[ıi]l)", re.IGNORECASE)
+
+
+def _talepleri_cikar(text: str) -> list[str]:
+    """Metinden ayrı istek cümlelerini çıkar (koşullu ikinci talep dahil). Boş → []."""
+    if not text:
+        return []
+    parcalar = [p.strip() for p in _RE_TALEP_BOL.split(text) if p and p.strip()]
+    talepler: list[str] = []
+    gorulen: set[str] = set()
+    for p in parcalar:
+        if not _RE_ISTEK.search(p):
+            continue
+        # Cümle sınırına kırp + fazla uzunları kısalt (öz istek metni).
+        cumle = re.split(r"(?<=[.!?])\s", p, maxsplit=1)[0].strip().rstrip(".;, ")
+        cumle = re.sub(r"\s+", " ", cumle)[:200]
+        anahtar = cumle.lower()[:60]
+        if cumle and anahtar not in gorulen:
+            gorulen.add(anahtar)
+            talepler.append(cumle)
+    return talepler[:5]  # makul üst sınır (belge tek işleme; 5 talep pratikte yeter)
 # Gönderen ad-soyad: "Ad-Soyad: <İsim>" / "Adı Soyadı: <İsim>" satırı (sentetik+gerçek desen).
 # İsim: 2+ baş-harfi büyük Türkçe sözcük; parantezli sıfat (İlgili/Vatandaş) atılır.
 _RE_AD_SOYAD = re.compile(
@@ -110,13 +165,18 @@ def _regex_unsurlar(text: str) -> dict[str, Any]:
     if m := _RE_SAYI.search(redacted):
         unsurlar["sayi"] = m.group(0)
     if m := _RE_KONU.search(redacted):
-        unsurlar["konu"] = m.group(1).strip()[:160]
+        unsurlar["konu"] = _konu_kisa(m.group(1))          # ham satır değil kısa öz (Yön. m.13)
     # Gönderen ad-soyad: "Ad-Soyad: <İsim>" satırı (mock modda LLM yok → eksik-tespit
     # gonderen_ad_soyad'ı yanlış-eksik işaretliyordu; deterministik regex bunu kapatır).
     if m := _RE_AD_SOYAD.search(redacted):
         unsurlar["gonderen"] = m.group(1).strip()[:80]
     if _RE_TALEP.search(text):
         unsurlar["talep"] = True
+    # Talep LİSTESİ (additive; boolean 'talep' korunur) — gövde tüm talepleri yansıtabilsin
+    # (koşullu "onarım olmazsa yeni direk" gibi ikinci talep düşmesin). Maskeli metinden.
+    talepler = _talepleri_cikar(redacted)
+    if talepler:
+        unsurlar["talepler"] = talepler
     if re.search(r"\b(adres|mahalle|cadde|sokak|no:)\b", text, re.IGNORECASE):
         unsurlar["iletisim_adres"] = True
     if re.search(r"\b(imza|e-imza|elektronik imza)\b", text, re.IGNORECASE):
@@ -151,10 +211,19 @@ def _merge_llm(unsurlar: dict[str, Any], obj: dict[str, Any], text: str) -> None
     GERÇEKTEN doğrulanıyorsa true sayılır (recall-öncelikli — kamuda FN>FP); kanıt yoksa/
     uydurmaysa yine false — recall'a ağırlık verir ama uydurmayı asla kabul etmez.
     """
-    for key in ("gonderen", "kurum", "konu"):
+    for key in ("gonderen", "kurum"):
         val = obj.get(key)
         if isinstance(val, str) and val.strip() and not unsurlar.get(key):
             unsurlar[key] = _scrub_pii(val.strip()[:160])
+    # Konu ayrı ele alınır: LLM'in kısa özü, regex'in ham (uzun) konusunu EZEBİLİR — regex
+    # "Konu:" satırının tamamını alıp uzun bırakıyordu. LLM konu daha kısaysa/regex konu
+    # uzunsa LLM tercih edilir; ikisi de _konu_kisa güvenlik ağından geçer.
+    llm_konu = obj.get("konu")
+    if isinstance(llm_konu, str) and llm_konu.strip():
+        aday = _konu_kisa(_scrub_pii(llm_konu.strip()))
+        mevcut = unsurlar.get("konu") or ""
+        if not mevcut or (len(mevcut) > _KONU_MAX_KR and len(aday) < len(mevcut)):
+            unsurlar["konu"] = aday
     for key in ("talep", "iletisim_adres", "imza"):
         if unsurlar.get(key):
             continue  # regex zaten tespit etti

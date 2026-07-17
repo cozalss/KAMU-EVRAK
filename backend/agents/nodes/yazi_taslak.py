@@ -21,6 +21,7 @@ node ASLA patlamaz; en kötü ihtimalde format_uyumlu=False + iskelet metin.
 from __future__ import annotations
 
 import asyncio
+import os
 from datetime import date
 from typing import Any
 
@@ -42,6 +43,9 @@ def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
     konu_satir = konu if konu else "Başvuru değerlendirmesi"
     tarih = date.today().strftime("%d.%m.%Y")
+    # Kurum kimliği ENV'den (models._DEMO_DEFAULTS ile aynı kaynak); boşsa jenerik demo korunur.
+    idare = os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
+    birim = os.getenv("KURUM_BIRIM", "").strip() or "YAZI İŞLERİ BİRİMİ"
     kapanis = {
         "cevabi_yazi": "Gereğini rica ederim.",
         "bilgilendirme": "Bilgilerinize arz ederim.",
@@ -50,8 +54,8 @@ def _fallback_taslak(yazi_turu: str, konu: str) -> dict[str, Any]:
     }.get(yazi_turu, "Gereğini arz ederim.")  # muzekkere/ust_yazi bu genel varsayılanı paylaşır
     ortak_baslik = (
         "                                   T.C.\n"
-        "                              KAMU KURUMU\n"
-        "                         YAZI İŞLERİ BİRİMİ\n\n"
+        f"{idare.center(43).rstrip()}\n"
+        f"{birim.center(43).rstrip()}\n\n"
         f"Sayı : EBYS-TASLAK            {tarih}\n"
         f"Konu : {konu_satir}\n\n"
     )

@@ -43,6 +43,14 @@ async def lifespan(app: FastAPI):
         from agents.llm import aclose_llm
 
         await aclose_llm()
+        # DB engine'i temiz kapat — NullPool sızıntı riski düşük ama asyncpg bağlantı
+        # nesneleri SIGTERM'de düzgün sonlansın (DB denetimi hijyen bulgusu).
+        try:
+            from db.session import engine
+
+            await engine.dispose()
+        except Exception as e:  # pragma: no cover — kapanış best-effort
+            log.warning("engine_dispose_hata", hata=str(e))
         log.info("shutdown")
 
 

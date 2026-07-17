@@ -340,6 +340,9 @@ CREATE INDEX IF NOT EXISTS ix_islem_evrak          ON islem(gelen_evrak_id);
 CREATE INDEX IF NOT EXISTS ix_islem_durum          ON islem(durum, baslangic DESC);
 CREATE INDEX IF NOT EXISTS ix_islem_thread         ON islem(thread_id);
 CREATE INDEX IF NOT EXISTS ix_adim_islem           ON islem_adimi(islem_id, sira);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_alt_talep_islem_sira ON alt_talep(islem_id, sira);  -- bütünlük + FK indeksi (migration 0005)
+CREATE INDEX IF NOT EXISTS ix_bilgi_unsuru_islem   ON bilgi_unsuru(islem_id);            -- FK indeksi (migration 0005)
+CREATE INDEX IF NOT EXISTS ix_kanit_span_islem     ON kanit_span(islem_id);              -- FK indeksi (migration 0005)
 CREATE INDEX IF NOT EXISTS ix_oneri_islem          ON mevzuat_oneri(islem_id);
 CREATE INDEX IF NOT EXISTS ix_taslak_islem         ON taslak(islem_id);
 CREATE INDEX IF NOT EXISTS ix_onay_taslak          ON onay(taslak_id, karar);

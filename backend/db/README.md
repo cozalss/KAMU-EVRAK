@@ -23,6 +23,9 @@ uv run python -m db.seed_mevzuat_db    # mevzuat(233)/madde(1492)/chunk(1506) + 
 uv run alembic stamp 0001_baseline     # mevcut şemayı baseline'a damgala
 # (sıfır DB'de: uv run alembic upgrade head)
 ```
+Migration zinciri: `0001_baseline` → `0002_giden_taslak_uniq` → `0003_owner_liste_idx`
+→ `0004_onay_taslak_uniq` → `0005_alt_talep_uniq_fk_idx` (alt_talep(islem_id,sira) UNIQUE +
+bilgi_unsuru/kanit_span FK indeksleri). Mevcut DB'de: `uv run alembic upgrade head`.
 
 ## Paket
 | Dosya | Sorumluluk |
@@ -43,10 +46,22 @@ uv run alembic stamp 0001_baseline     # mevcut şemayı baseline'a damgala
 ## Güvenlik / KVKK
 - Backend `postgres` ile bağlanır → RLS bypass (yetki **uygulama katmanında**: JWT + repository).
   RLS, Supabase PostgREST `anon` rolüne karşı savunma (hassas tablo = default-deny).
+  **Mimari kısıt:** tüm trafik backend REST'ten geçmeli — frontend'e doğrudan Supabase
+  client (anon-key) erişimi eklenirse bu izolasyon çöker.
 - Ham PII kolonu **yok** — yalnız maskeli (`deger_maskeli`, maskeli `ocr_metni`).
 - `denetim_adimi` append-only (trigger): UPDATE yasak; DELETE yalnız `SET LOCAL
   app.denetim_silmeye_izin='on'` (kontrollü imha / 3473 saklama).
 - `parola_hash`/refresh token saklanmaz (argon2id / SHA-256 hash).
+
+## Dayanıklılık / operasyon (2026-07-17 DB denetimi)
+- **Bağlantı sigortası** (`session.py`): runtime engine `server_settings` ile
+  `statement_timeout=15s` + `idle_in_transaction_session_timeout=10s` (env:
+  `DB_STATEMENT_TIMEOUT_MS`/`DB_IDLE_TX_TIMEOUT_MS`) — sızmış tek transaction free-tier
+  pooler slotlarını süresiz kilitlemesin.
+- **Tam yedek** (`.github/workflows/db-backup.yml`): haftalık `pg_dump -Fc` → GitHub
+  artifact (30 gün). `DATABASE_URL_SYNC` secret'ı ile aktif; yoksa job temiz atlar.
+  Denetim tabloları AYRICA `db.yedek_denetim` ile JSON (Sayıştay kanıtı, ana yedekten bağımsız).
+  Elle: `pg_dump "$DATABASE_URL_SYNC" -Fc -f data/backups/kamu_evrak_$(date +%Y%m%d).dump`
 
 ## Canlı smoke (CI'da değil — `uv run python -m db.<ad>`)
 `smoke_auth` · `smoke_islem` · `smoke_denetim` · `smoke_api` · `smoke_persist_run`

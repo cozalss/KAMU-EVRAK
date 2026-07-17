@@ -1,0 +1,54 @@
+name: DB Yedek (pg_dump)
+
+# Supabase ücretsiz planda otomatik PITR/günlük yedek YOK (yalnız Pro+). Bu workflow
+# haftalık mantıksal dump alıp GitHub artifact olarak saklar (30 gün) — demo öncesi/sırası
+# yanlış DELETE, imha job hatası veya proje duraklamasına karşı ucuz sigorta.
+# Denetim tabloları AYRICA db/yedek_denetim.py ile JSON'a yedeklenir (Sayıştay kanıtı) —
+# bu workflow ANA veriyi (kullanici, gelen_evrak, taslak, giden_evrak…) kapsar.
+#
+# GEREKLİ SECRET: DATABASE_URL_SYNC (session pooler :5432 tam bağlantı dizesi, parola dahil).
+# Secret yoksa job temiz atlar (kırmızı olmaz). GitHub → Settings → Secrets → Actions'tan ekleyin.
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'   # UTC 04:00, her Pazartesi
+  workflow_dispatch:
+
+jobs:
+  backup:
+    name: Mantıksal yedek al
+    runs-on: ubuntu-latest
+    steps:
+      - name: PostgreSQL 17 istemcisini kur
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/pgdg.gpg
+          sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: pg_dump (custom format, sıkıştırmalı)
+        id: dump
+        env:
+          DB_URL: ${{ secrets.DATABASE_URL_SYNC }}
+        run: |
+          if [ -z "$DB_URL" ]; then
+            echo "::notice::DATABASE_URL_SYNC secret'ı yok — yedek atlandı. Ekleyince otomatik aktifleşir."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          mkdir -p backups
+          STAMP=$(date -u +%Y%m%d_%H%M%S)
+          OUT="backups/kamu_evrak_${STAMP}.dump"
+          # -Fc: custom (pg_restore ile seçmeli geri yükleme) · --no-owner/--no-acl: taşınabilir
+          pg_dump "$DB_URL" -Fc --no-owner --no-acl -f "$OUT"
+          echo "file=$OUT" >> "$GITHUB_OUTPUT"
+          ls -lh "$OUT"
+
+      - name: Yedeği artifact olarak yükle (30 gün)
+        if: steps.dump.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-yedek
+          path: ${{ steps.dump.outputs.file }}
+          retention-days: 30

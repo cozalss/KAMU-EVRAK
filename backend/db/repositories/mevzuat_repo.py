@@ -115,6 +115,3 @@ async def semantik_ara(session: AsyncSession, *, q: str, limit: int = 10) -> lis
 
 
 __all__ = ("hybrid_ara", "semantik_ara")
-
-
-__all__ = ("hybrid_ara",)

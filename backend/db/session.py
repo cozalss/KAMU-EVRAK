@@ -48,10 +48,22 @@ def _url_yukle() -> str:
 _URL = _url_yukle()
 
 # Supavisor transaction pooler: prepared statement YOK → cache kapat, pooler havuzlar.
+# server_settings: sızmış/uzun tek transaction free-tier'de tüm pooler slotlarını süresiz
+# tutup komşu istekleri kilitlemesin (DB denetimi bulgusu). statement_timeout tekil sorguyu,
+# idle_in_transaction açık ama boşta kalan transaction'ı sınırlar — env ile ayarlanabilir.
+_STATEMENT_TIMEOUT_MS = os.getenv("DB_STATEMENT_TIMEOUT_MS", "15000").strip()
+_IDLE_TX_TIMEOUT_MS = os.getenv("DB_IDLE_TX_TIMEOUT_MS", "10000").strip()
 engine = create_async_engine(
     _URL,
     poolclass=NullPool,
-    connect_args={"statement_cache_size": 0, "prepared_statement_cache_size": 0},
+    connect_args={
+        "statement_cache_size": 0,
+        "prepared_statement_cache_size": 0,
+        "server_settings": {
+            "statement_timeout": _STATEMENT_TIMEOUT_MS,
+            "idle_in_transaction_session_timeout": _IDLE_TX_TIMEOUT_MS,
+        },
+    },
     echo=os.getenv("SQL_ECHO", "0") == "1",
 )
 

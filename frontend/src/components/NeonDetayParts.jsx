@@ -121,7 +121,7 @@ function guvenBaslik(m) {
    Tasarım notu (dürüstlük): `score` max-normalize olduğundan ilk satır DAİMA %100'dür —
    bu bir kalite ölçüsü değil, sıralama artefaktıdır. Bu yüzden yüzde açıkça "göreli" diye
    etiketlenir, amber/kırmızı sinyal ise skordan DEĞİL kalibre `guven` bandından gelir. */
-export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = null, sade = false }) {
+export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = null, sade = false, inceleme = true }) {
   const pct = Math.round((Number(m.score) || 0) * 100);
   const guven = m.guven || "";
   const gc = GUVEN_RENK[guven] || PAL.mut2;
@@ -190,7 +190,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
           )}
           {!sade && gerekce && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Eşleşme gerekçesi:</span> {gerekce}</div>}
           {!sade && m.yururluk && <div style={{ ...TYPE.meta, color: PAL.mut3 }}><span style={{ color: PAL.mut2 }}>Yürürlük:</span> {m.yururluk}</div>}
-          {m.inceleme_oner && (
+          {inceleme && m.inceleme_oner && (
             <div style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, color: zayif ? DERIN.kirmizi : DERIN.sari, marginTop: 1 }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M16 16l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
               İnsan incelemesi önerilir{m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA") ? " · anlamsal destek zayıf" : ""}

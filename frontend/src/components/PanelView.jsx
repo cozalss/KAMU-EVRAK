@@ -536,7 +536,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         </div>
 
         {/* R2 — akış nabzı: tek yüzey, 4 ölçü. Kart eşlemesi kurgu ayrımını izler:
-            İşlenen + Üretilen taslak → İşlenen arşivi; Gönderilen → Giden.
+            İşlenen → İşlenen arşivi; Üretilen taslak → Taslaklar; Gönderilen → Giden.
             overflow:hidden YOK — focusRing dışa taşan halka çizer, kırpılırsa klavye odağı
             görünmez olur. aria-label sayıyı da taşır — salt eylem etiketi panelin ana
             verisini ekran okuyucudan gizliyordu (review bulgusu). */}
@@ -545,7 +545,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
             display: "grid", gridTemplateColumns: genis ? "repeat(4, 1fr)" : "repeat(2, 1fr)" }}>
             <AkisHucre label="İşlenen evrak" value={n} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel={`${n} işlenen evrak — arşivi aç`} gunluk={akisIslenen} ilk genis={genis} i={0} />
             <AkisHucre label="Gelen evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel={`${inboxCount} gelen evrak — kuyruğu aç`} gunluk={null} genis={genis} i={1} />
-            <AkisHucre label="Üretilen taslak" value={taslaklilar.length} icon={<Icon.edit />} onClick={onGoIslenen} ariaLabel={`${taslaklilar.length} üretilen taslak — işlenen arşivinde gör`} gunluk={akisTaslak} genis={genis} i={2} />
+            <AkisHucre label="Üretilen taslak" value={taslaklilar.length} icon={<Icon.edit />} onClick={onGoTaslaklar || onGoIslenen} ariaLabel={`${taslaklilar.length} üretilen taslak — Taslaklar'ı aç`} gunluk={akisTaslak} genis={genis} i={2} />
             <AkisHucre label="Gönderilen evrak" value={gonderilenler.length} icon={<Icon.send />} onClick={onGoGiden} ariaLabel={`${gonderilenler.length} gönderilen evrak — Giden arşivini aç`} gunluk={akisGiden} genis={genis} i={3} />
           </div>
         )}

@@ -424,13 +424,27 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                       const seciliSet = new Set((seciliMevzuat || []).map((x) => x && x.baslik).filter(Boolean));
                       const secSay = mev.filter((m) => seciliSet.has(m.baslik)).length;
                       const secilebilir = !!onMevzuatSec;
+                      // Dürüstlük sunumu (SonucCalismaAlani.MevzuatCard ile aynı): tüm öneriler
+                      // zayıfsa satır-başı "İnsan incelemesi" spam'ı yerine tek sakin uyarı.
+                      const hepsiZayif = mev.every((m) => (m.guven || "") === "düşük");
                       return (
-                      <NeonCard key="mev" title="İlgili mevzuat" tag={secSay ? `${mev.length} öneri · ${secSay} işlendi` : `${mev.length} öneri`} tagColor={secSay ? DERIN.T : undefined} accent={T} icon={<Icon.book />}>
+                      <NeonCard key="mev" title="İlgili mevzuat" tag={secSay ? `${mev.length} öneri · ${secSay} işlendi` : `${mev.length} öneri`} tagColor={secSay ? DERIN.T : (hepsiZayif ? BANT.sari.c : undefined)} accent={T} icon={<Icon.book />}>
+                        {hepsiZayif && (
+                          <div role="status" style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.m, marginBottom: SP.m, borderRadius: RAD.card, background: ALFA(BANT.sari.c), ...TYPE.data, color: PAL.ink2 }}>
+                            <Icon.alert width={15} height={15} style={{ flex: "none", marginTop: 1, color: DERIN.sari }} aria-hidden="true" />
+                            <span>
+                              <strong style={{ color: DERIN.sari, fontWeight: 600 }}>Güçlü bir mevzuat eşleşmesi bulunamadı.</strong>{" "}
+                              Aşağıdaki öneriler yalnızca sözcüksel benzerlikten geldi (düşük güven) ve bu talebi
+                              doğrudan karşılamayabilir. Dayanak olarak kullanmadan önce ilgili maddeyi açıp el ile doğrulayın.
+                            </span>
+                          </div>
+                        )}
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           {mev.map((m, i) => (
                             <MevzuatRow key={i} rank={i + 1} m={m} nli={nliMap.get(m.baslik)} ilk={i === 0} onAc={onMevzuatAc}
                               secili={seciliSet.has(m.baslik)}
-                              onSec={secilebilir ? (checked) => onMevzuatSec(m, checked) : null} />
+                              onSec={secilebilir ? (checked) => onMevzuatSec(m, checked) : null}
+                              inceleme={!hepsiZayif} />
                           ))}
                         </div>
                         {/* Görev 2 sözleşmesi (kutucuk kurgusu): öneri OTOMATİK girmez; memur kutucukla

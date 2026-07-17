@@ -204,10 +204,22 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
   // gösterip çelişki gibi okunuyordu) — hüküm, dağıtımın kendisini söyler; alt-talep
   // muhatapları taslak kartlarında etiketlidir.
   const altSayisi = arr(r.alt_talepler).length;
+  // Kaynak-doğrulamalı ajan: doğrulanmış GERÇEK birim adı (serbest-metin) veya dürüst fallback
+  // (hedef_birim=None → hedef_kategori önerisi + memur onayı). durum/insan_onayi_gerekli bayrakları.
+  const kaynakDogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
+  const onayGerekli = !!r.insan_onayi_gerekli;
+  const kaynakKunye = r.hedef_birim_kaynak && r.hedef_birim_kaynak.birim_ad ? r.hedef_birim_kaynak : null;
+  const muhatapAd = r.muhatap_kurum?.ad || "";
+  const yetkiliAd = r.yetkili_kurum?.ad || "";
+  const caprazKurum = !!yetkiliAd && !!muhatapAd && r.yetkili_kurum?.slug !== r.muhatap_kurum?.slug;
   const yonlendirilenBirim = altSayisi >= 2
     ? `${altSayisi} alt-talep · ayrı birimlere dağıtım`
-    : (r.hedef_birim ? BIRIM_GOSTER(r.hedef_birim, r.evrak_turu) : "Belirlenmedi");
-  const birimTitle = r.hedef_birim ? `Genel havale: ${BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}` : undefined;
+    : (r.hedef_birim
+        ? BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)
+        : (r.hedef_kategori ? BIRIM_GOSTER(r.hedef_kategori, r.evrak_turu) : "Belirlenmedi"));
+  const birimTitle = kaynakDogrulandi && kaynakKunye
+    ? `Kaynak: ${kaynakKunye.kaynak_kurum} · ${kaynakKunye.belge_basligi}`
+    : (r.hedef_kategori && altSayisi < 2 ? "Öneri — resmî kaynakla doğrulanmadı, memur onayı gerekli" : undefined);
   const riskAciklama = RISK_BAND_HELP[band] || RISK_BAND_HELP.yesil;
   const kontroleGit = () => {
     setRiskHelpOpen(false);
@@ -281,7 +293,37 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
           </div>
           <div>
             <dt>Yönlendirilen birim</dt>
-            <dd title={birimTitle}>{yonlendirilenBirim}</dd>
+            <dd title={birimTitle}>
+              {yonlendirilenBirim}
+              {altSayisi < 2 && kaynakDogrulandi && (
+                <span
+                  style={{ marginLeft: 6, padding: "1px 7px", borderRadius: RAD.chip, ...TYPE.meta,
+                           fontWeight: 500, color: DERIN.yesil, background: ALFA(BANT.yesil.c),
+                           whiteSpace: "nowrap" }}
+                >
+                  ✓ kaynak doğrulandı
+                </span>
+              )}
+              {altSayisi < 2 && !kaynakDogrulandi && onayGerekli && (
+                <span
+                  style={{ marginLeft: 6, padding: "1px 7px", borderRadius: RAD.chip, ...TYPE.meta,
+                           fontWeight: 500, color: DERIN_OF(BANT.sari.c), background: ALFA(BANT.sari.c),
+                           whiteSpace: "nowrap" }}
+                >
+                  memur onayı gerekli
+                </span>
+              )}
+            </dd>
+            {caprazKurum && (
+              <dd style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>
+                muhatap: {muhatapAd} → yetkili: {yetkiliAd}
+              </dd>
+            )}
+            {kaynakDogrulandi && kaynakKunye && (
+              <dd style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>
+                kaynak: {kaynakKunye.kaynak_kurum}
+              </dd>
+            )}
           </div>
         </dl>
         <p className="sc-decision-strip-note" style={{ color: PAL.mut2 }}>{kararAciklama}</p>
@@ -634,15 +676,32 @@ function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliSet }) {
   if (!mev.length) return null;
   const secilebilir = !!onMevzuatSec;
   const secSay = mev.filter((m) => seciliSet.has(m.baslik)).length;
+  // Dürüstlük sunumu: tüm öneriler zayıfsa (hepsi "düşük güven") panel, satır başına
+  // tekrarlayan kırmızı "İnsan incelemesi önerilir" uyarısıyla BAŞARISIZ görünür — oysa
+  // sistem dürüstçe "bu evrak için güçlü eşleşme yok" diyor. O durumu TEK sakin uyarıya
+  // toplar ve satır-başı spam'ı bastırırız (inceleme={false}). Güven SAHTELENMEZ; yalnız
+  // aynı dürüst bilgi bir kez, panik yaratmadan söylenir. Bir öneri bile "orta"/"yüksek"
+  // ise satır-başı ayrımı bilgi taşır → eski davranış korunur.
+  const hepsiZayif = mev.every((m) => (m.guven || "") === "düşük");
   return (
     <NeonCard
       title="Önerilen mevzuat"
       tag={secSay ? `${mev.length} öneri · ${secSay} işlendi` : `${mev.length} öneri`}
-      tagColor={secSay ? DERIN.T : undefined}
+      tagColor={secSay ? DERIN.T : (hepsiZayif ? BANT.sari.c : undefined)}
       accent={T}
       icon={<Icon.book />}
       full
     >
+      {hepsiZayif && (
+        <div role="status" style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.m, marginBottom: SP.m, borderRadius: RAD.card, background: ALFA(BANT.sari.c), ...TYPE.data, color: PAL.ink2 }}>
+          <Icon.alert width={15} height={15} style={{ flex: "none", marginTop: 1, color: DERIN.sari }} aria-hidden="true" />
+          <span>
+            <strong style={{ color: DERIN.sari, fontWeight: 600 }}>Güçlü bir mevzuat eşleşmesi bulunamadı.</strong>{" "}
+            Aşağıdaki öneriler yalnızca sözcüksel benzerlikten geldi (düşük güven) ve bu talebi
+            doğrudan karşılamayabilir. Dayanak olarak kullanmadan önce ilgili maddeyi açıp el ile doğrulayın.
+          </span>
+        </div>
+      )}
       <div style={{ display: "flex", flexDirection: "column" }}>
         {mev.map((m, i) => (
           <MevzuatRow
@@ -654,6 +713,7 @@ function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliSet }) {
             onAc={onMevzuatAc}
             secili={seciliSet.has(m.baslik)}
             onSec={secilebilir ? (checked) => onMevzuatSec(m, checked) : null}
+            inceleme={!hepsiZayif}
           />
         ))}
       </div>

@@ -216,6 +216,7 @@ E-posta: ali.vural@ornekmail.com`,
   // ---------- Gerçek dilekçe şablonlarından uyarlanmış (bkz. dosya başı not) ----------
   {
     id: "sikayet_gurultu",
+    tur: "sikayet",   // id benzersiz anahtar; SLA/kategori GEÇERLİ evrak türünü ister (bug avı bulgusu)
     konu: "Gece çalışan işyeri gürültü şikâyeti",
     label: "Gürültü Şikâyeti",
     icon: "alert",
@@ -243,6 +244,7 @@ Telefon: 0555 234 56 78
   },
   {
     id: "talep_yol_tamiri",
+    tur: "talep",
     konu: "Asfalt ve kaldırım yenileme talebi",
     label: "Yol / Kaldırım Tamiri Talebi",
     icon: "pencil",
@@ -271,6 +273,7 @@ Telefon: 0555 456 78 90
   },
   {
     id: "sikayet_sokak_hayvani",
+    tur: "sikayet",
     konu: "Sahipsiz hayvan bildirimi (Gül Sokak)",
     label: "Başıboş Hayvan Şikâyeti",
     icon: "alert",
@@ -300,6 +303,7 @@ Telefon: 0555 345 67 89
   },
   {
     id: "talep_aydinlatma",
+    tur: "talep",
     konu: "Arızalı sokak aydınlatması bildirimi",
     label: "Sokak Aydınlatması Arızası",
     icon: "pencil",

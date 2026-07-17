@@ -14,6 +14,7 @@ import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RA
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { evrakKategori, kategoriMeta } from "../lib/kategori.js";
+import { sicilGrupla } from "../lib/sicilVaryant.js";
 
 /* Karar durumu tek sözlükten türetilir — Panel sayaçları ve DashboardApp
    draftsFromHistory ile AYNI süzgeç (taslak var + karar yok = bekliyor). */
@@ -366,6 +367,7 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
           <span style={{ fontFamily: MONO, fontSize: 11.5 }}>{item.name}</span>
           {" · "}{EVRAK_TR(item.evrak_turu)}{" · "}{BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)}
           {guven && ` · güven ${guven}`}{sure && ` · ${sure}`}
+          {item.varyantlar?.length > 1 && ` · ${item.varyantlar.length} yazı türü`}
         </span>
         {sla === "GECIKMIS" && <span style={{ ...TYPE.meta, color: DERIN.kirmizi, flexShrink: 0 }}>süresi geçmiş</span>}
         {sla === "KRITIK" && <span style={{ ...TYPE.meta, color: DERIN.sari, flexShrink: 0 }}>süre kritik</span>}
@@ -393,20 +395,31 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
   );
 }
 
-/* ---------- Detay modalı (değişmedi) ---------- */
+/* ---------- Detay modalı ---------- */
 function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
   const closeRef = useRef(null);
+  // Koşumda denenen yazı türleri seçenek çipleri olarak sunulur; null = satırın son
+  // aktif türü (result.yazi_turu). Yeni kayıt açılınca seçim sıfırlanır.
+  const [seciliTur, setSeciliTur] = useState(null);
   useEffect(() => {
+    setSeciliTur(null);
+    // Escape dinleyicisi YALNIZ modal açıkken (bug avı bulgusu): kapalıyken de bağlı
+    // kalınca arama kutusundaki Esc, odağı listedeki eski satıra çalıyordu.
+    if (!item) return undefined;
     closeRef.current?.focus();
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, item]);
   if (!item) return null;
   const r = item.result || {};
   const ozet = cleanDemoText(r.ozet || "").replace(/\*\*/g, "");
   const mevzuat = (r.mevzuat_onerileri || []).slice(0, 3);
   const sure = fmtSure(r.sure_ms);
+  const varyantlar = item.varyantlar || [];
+  const aktif = varyantlar.find((v) => v.yazi_turu === (seciliTur || r.yazi_turu)) || varyantlar[0] || null;
+  const aktifTur = aktif?.yazi_turu ?? r.yazi_turu;
+  const aktifMd = aktif?.yazi_taslak_md ?? r.yazi_taslak_md;
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
       <div role="dialog" aria-modal="true" aria-labelledby="islenen-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
@@ -422,7 +435,7 @@ function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
         </div>
         <div style={{ marginBottom: SP.l }}>
           <KV k="Evrak türü" v={EVRAK_TR(item.evrak_turu)} />
-          {r.yazi_turu && <KV k="Üretilen yazı türü" v={YAZI_TR(r.yazi_turu)} />}
+          {aktifTur && <KV k="Üretilen yazı türü" v={YAZI_TR(aktifTur)} />}
           <KV k="Hedef birim" v={BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)} c={DERIN.V} />
           <KV k="Sınıflandırma güveni" v={fmtGuven(r.tur_confidence) || "—"} c={r.tur_confidence >= 0.5 ? DERIN.T : PAL.mut2} />
           <KV k="Risk bandı" v={BANT[item.bant]?.l || "—"} c={DERIN_OF(BANT[item.bant]?.c)} />
@@ -456,8 +469,20 @@ function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
             ))}
           </div>
         )}
-        {r.yazi_taslak_md && (
-          <pre style={{ margin: 0, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{cleanDemoText(r.yazi_taslak_md)}</pre>
+        {varyantlar.length > 1 && (
+          <div style={{ marginBottom: SP.s }}>
+            <p style={{ margin: `0 0 ${SP.xs}px`, ...TYPE.meta, color: PAL.mut2 }}>Bu evrak için işlenen yazı türleri</p>
+            <div role="group" aria-label="İşlenen yazı türleri" style={{ display: "flex", gap: SP.xs, flexWrap: "wrap" }}>
+              {varyantlar.map((v) => (
+                <Pill key={v.yazi_turu} label={YAZI_TR(v.yazi_turu)} aktif={v.yazi_turu === aktifTur}
+                  ariaLabel={`${YAZI_TR(v.yazi_turu)} taslağını göster`}
+                  onClick={() => setSeciliTur(v.yazi_turu)} />
+              ))}
+            </div>
+          </div>
+        )}
+        {aktifMd && (
+          <pre style={{ margin: 0, background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{cleanDemoText(aktifMd)}</pre>
         )}
         {item._durum === "bekliyor" && (
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: SP.l }}>
@@ -476,7 +501,10 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
   const triggerRef = useRef(null);   // modal kapanınca odak tetikleyen satıra döner (a11y)
   const closeDetay = useCallback(() => { setDetay(null); triggerRef.current?.focus(); }, []);
   const acDetay = useCallback((item, el) => { triggerRef.current = el; setDetay(item); }, []);
-  const items = useMemo(() => history.map((h) => ({
+  // Belge başına TEK sicil satırı (sicilGrupla): eski oturumların yinelenen satırlarında
+  // denenen yazı türleri kaybolmaz, temsilcinin varyant listesine katılır → detay modalı
+  // türleri seçenek çipleri olarak sunar.
+  const items = useMemo(() => sicilGrupla(history).map((h) => ({
     ...h,
     _durum: durumOf(h.result),
     konu: h.result?.bilgi_unsurlari?.konu || h.result?.alt_talepler?.[0]?.ozet || "",

@@ -165,7 +165,7 @@ function AramaModSecici({ modu, onSec }) {
 /* Derin arama sonucu — tıklanınca okuma modalı İLGİLİ MADDEDE açılır. */
 function DerinSonucSatir({ s, onAc }) {
   return (
-    <button type="button" onClick={() => onAc({ dosya: s.dosya, maddeNo: s.madde_no ?? null })}
+    <button type="button" onClick={() => onAc({ dosya: s.dosya, maddeNo: s.madde_no ?? null, maddeTur: s.madde_tur ?? null })}
       aria-haspopup="dialog" {...focusRing}
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}

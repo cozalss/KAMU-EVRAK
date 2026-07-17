@@ -56,7 +56,9 @@
   `PAL.bg2=#efe6da`; metin `PAL.ink=#161616` / `ink2=#3a3229`; risk bandı `BANT` (yeşil `#2f9e6e` /
   sarı `#c98a1f` / kırmızı `#c9432f`). **Hex'i elle yazma, token kullan.**
 - **Font:** IBM Plex Sans (`SANS`, tüm UI/metin) + IBM Plex Mono (`MONO`, **yalnız makine
-  verisi**: evrak no, tarih damgası, hash, maskeli PII, dosya adı) — `app.html` Google Fonts.
+  verisi**: evrak no, tarih damgası, hash, maskeli PII, dosya adı) + Bricolage Grotesque
+  (`DISPLAY`, **yalnız display katmanı**: `TYPE.h1` görünüm başlıkları + `TYPE.disp` hüküm
+  liderleri — gövdeye/UI'a yayılmaz) — `app.html` Google Fonts.
 - **v2 disiplini:** tip ölçeği `TYPE` (12/13/14/16/20/24/28 + `disp` 36 yalnız hüküm kartı liderleri) · radius `RAD` (4/6/8/12/"50%") ·
   boşluk `SP` · gölge `SH` (border-first: statik yüzey 1px hairline) · açık zeminde renkli metin
   yalnız `DERIN.*` (AA) · tint zemin yalnız `ALFA()`. **Gradyan/glow/uppercase-eyebrow/hover-kalkış

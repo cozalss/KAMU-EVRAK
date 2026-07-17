@@ -1,7 +1,7 @@
 /* CanliAjanAkisi — "İşleniyor" görünümü.
    Gerçek SSE verisini tek bir canlı işlem odağında sunar; kaynak belge her zaman yan tarafta
    erişilebilir. İşlem bittiğinde doğrudan memur kararı için ayrıntılı sonuç ve taslağa geçer. */
-import { lazy, Suspense, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
@@ -164,9 +164,11 @@ export default function CanliAjanAkisi({
   const [belgeModal, setBelgeModal] = useState(null);
   // İşlem adımı detay modalı — display index'i (istasyon/nokta tıklanınca açılır).
   const [detayIdx, setDetayIdx] = useState(null);
-  // Çok-konulu taslak pager konumu — pager key={runBase} ile koşuma anahtarlanır (remount
-  // doğal sıfırlar; eski useEffect senkronizasyonu ref-tabanlı runBase'e örtük bağımlıydı).
+  // Çok-konulu taslak pager konumu. DİKKAT: pager'ın key={runBase} remount'u yalnız pager'ı
+  // sıfırlar — altIdx BU bileşenin state'i ve CanliAjanAkisi key'siz mount'lu; yeni koşumda
+  // sıfırlanmayınca pager eski konumdan (örn. 3/3) açılıyordu (bug avı bulgusu) → effect'le sıfırla.
   const [altIdx, setAltIdx] = useState(0);
+  useEffect(() => { setAltIdx(0); }, [runBase]);
   // Sahne animasyonları her zaman açık (kullanıcı kararı, 2026-07-16 — sayfa içi durdurma
   // düğmesi kaldırıldı); prefers-reduced-motion OS düzeyinde yine tümünü söndürür.
   const efGlow = glow;

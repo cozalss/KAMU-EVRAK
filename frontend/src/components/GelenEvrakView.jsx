@@ -70,7 +70,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
   // _slaGun: aciliyet sıralamasının anahtarı (Panel'in öğrettiği triyaj modeli artık
   // kuyruğun VARSAYILAN sırası — jüri bulgusu: gecikmiş evrak 22 satırda göz ile aranıyordu).
   const items = useMemo(() => samples.map((s) => ({
-    ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: s.id, text: s.text }),
+    ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: s.tur || s.id, text: s.text }),
     _slaGun: Number.isFinite(slaMap?.[s.id]?.kalan_gun) ? slaMap[s.id].kalan_gun : null,
     _slaDurum: slaMap?.[s.id]?.durum || "",
   })), [samples, slaMap]);
@@ -98,13 +98,19 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
       el.scrollIntoView({ behavior: az ? "auto" : "smooth", block: "center" });
       setVurgu(hedef);
       onHedefAcildi?.();
-      const t = setTimeout(() => setVurgu(null), 2600);
-      return () => clearTimeout(t);
+      return undefined;
     }
     if (filter.hasActiveFilters) { filter.clearAll(); return undefined; }
     onHedefAcildi?.();
     return undefined;
   }, [hedef, filter.results]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Sönme AYRI efekte: onHedefAcildi parent'ta hedef'i null'layınca üstteki efektin
+  // cleanup'ı zamanlayıcıyı iptal ediyordu → vurgu HİÇ sönmüyordu (bug avı bulgusu).
+  useEffect(() => {
+    if (!vurgu) return undefined;
+    const t = setTimeout(() => setVurgu(null), 2600);
+    return () => clearTimeout(t);
+  }, [vurgu]);
 
   return (
     <ViewWrap id="gelen-h" title="Gelen evrak" sub={`${samples.length} evrak kuyrukta · işlemek için seçin`}

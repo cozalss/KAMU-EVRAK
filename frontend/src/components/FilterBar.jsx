@@ -78,12 +78,14 @@ function FilterDateRange({ dateRange, filter }) {
   );
 }
 
-/* Hızlı tarih ön-ayarları (Bugün / Son 7 / Son 30 gün) — dateRange'i set eder (additive). */
+/* Hızlı tarih ön-ayarları (Bugün / Son 7 / Son 30 gün) — dateRange'i set eder (additive).
+   Üst sınır GÜN SONU (23:59:59.999): tıklama anının Date.now()'u üst sınır olunca, preset
+   aktifken eklenen yeni kayıt "Bugün"de görünmüyordu (bug avı bulgusu); alt sınır gün başı. */
 function FilterDatePresets({ filter }) {
   const uygula = (gun) => {
-    const now = Date.now();
-    if (gun === 0) { const d = new Date(); d.setHours(0, 0, 0, 0); filter.setDateRange(d.getTime(), now); }
-    else filter.setDateRange(now - gun * 86400000, now);
+    const bas = new Date(); bas.setHours(0, 0, 0, 0);
+    const son = new Date(); son.setHours(23, 59, 59, 999);
+    filter.setDateRange(bas.getTime() - gun * 86400000, son.getTime());
   };
   const presets = [["Bugün", 0], ["Son 7 gün", 7], ["Son 30 gün", 30]];
   const aktif = filter.filters.dateFrom != null || filter.filters.dateTo != null;

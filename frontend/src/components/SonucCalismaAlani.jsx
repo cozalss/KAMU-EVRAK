@@ -527,19 +527,29 @@ function DetailModal({ type, r, onClose }) {
   // Odak yönetimi (WCAG 2.4.3 — jüri T9): açılışta kapat düğmesine odak, kapanışta
   // tetikleyiciye iade; Tab döngüsü odakDongusu ile diyalog içinde kalır.
   const kapatRef = useRef(null);
+  // onClose çağrı yerinde inline arrow (her render'da yeni kimlik) — effect ona bağlıyken
+  // modal açıkken HER üst re-render odak kurulumunu yıkıp kuruyordu: odak içerikten kapat
+  // düğmesine çalınıyor, `onceki` kapat düğmesi olunca kapanışta tetikleyiciye iade
+  // sessizce kırılıyordu (bug avı bulgusu). Ref-dolaylama: effect yalnız type'a bağlı.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; });
   useEffect(() => {
     if (!type) return undefined;
     const onceki = document.activeElement;
     kapatRef.current?.focus();
     const onKey = (event) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") onCloseRef.current();
     };
     window.addEventListener("keydown", onKey);
+    // Arkadaki sayfa kaymasın (BelgeModal/KurulModal deseni — eksikti).
+    const eskiOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = eskiOverflow;
       if (onceki && document.contains(onceki)) onceki.focus();
     };
-  }, [type, onClose]);
+  }, [type]);
 
   if (!type) return null;
   const meta = type === "bilgiler"

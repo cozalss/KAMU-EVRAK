@@ -107,6 +107,15 @@ async function apiFetch(path, { method = "GET", body, auth = true } = {}) {
 // promise'i bekler, tek istek gider.
 let refreshInFlight = null;
 
+// Oturum ölümü aboneliği: refresh 401'i token'ları silince UI'ın da "anon"a düşmesi gerekir —
+// önceden hiçbir yol AuthProvider'a haber vermiyordu; kullanıcı ölü oturumda takılı kalıyor,
+// tüm yazma istekleri sessizce 401 yiyordu (bug avı bulgusu). AuthProvider mount'ta abone olur.
+let oturumDustuFn = null;
+export const oturumDustuAbone = (fn) => {
+  oturumDustuFn = fn;
+  return () => { if (oturumDustuFn === fn) oturumDustuFn = null; };
+};
+
 async function tryRefresh() {
   if (refreshInFlight) return refreshInFlight;
   refreshInFlight = (async () => {
@@ -118,6 +127,7 @@ async function tryRefresh() {
       });
       if (res.status === 401) {
         tokens.clear(); // sunucu oturumu kesin geçersiz/iptal saydı — kalıcı çıkış doğru
+        oturumDustuFn?.();
         return false;
       }
       if (!res.ok) return false; // 429/5xx/vb. geçici hata — oturumu bozma, bir sonrakinde tekrar denenir
@@ -185,10 +195,7 @@ export async function apiStream(path, body, onEvent, signal) {
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buf = "";
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buf += decoder.decode(value, { stream: true });
+  const bloklariIsle = () => {
     let idx;
     while ((idx = buf.indexOf("\n\n")) !== -1) {
       const line = buf.slice(0, idx).split("\n").find((l) => l.startsWith("data:"));
@@ -198,6 +205,21 @@ export async function apiStream(path, body, onEvent, signal) {
         try { onEvent(JSON.parse(json)); } catch { /* bozuk olay atlanır */ }
       }
     }
+  };
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    bloklariIsle();
+  }
+  // Kapanış chunk'ı ayraçsız gelebilir (usePipeline'da görülen hata ile aynı sınıf): decoder
+  // flush + tamponda kalan SON event de işlenir — kurul akışının 'sonuc' event'i düşmesin.
+  buf += decoder.decode();
+  bloklariIsle();
+  const sonSatir = buf.split("\n").find((l) => l.startsWith("data:"));
+  const sonJson = sonSatir ? sonSatir.slice(5).trim() : "";
+  if (sonJson) {
+    try { onEvent(JSON.parse(sonJson)); } catch { /* bozuk olay atlanır */ }
   }
 }
 

@@ -9,6 +9,11 @@ import React, { useState, useId } from "react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
 export const SANS = "'IBM Plex Sans','Segoe UI',system-ui,sans-serif";
+/* DISPLAY (2026-07-17): Bricolage Grotesque — YALNIZ display katmanı (TYPE.h1 görünüm
+   başlıkları + TYPE.disp hüküm liderleri). Gövde/UI Plex kalır ("Sakin Ürün" disiplini);
+   gösteriş başlık kademesinde yaşar. latin-ext (ç/ş/ğ/İ tam) + OFL; app.html Google Fonts.
+   Fallback zinciri SANS ile aynı — font inmezse başlıklar Plex'e düşer, kırılma yok. */
+export const DISPLAY = "'Bricolage Grotesque','IBM Plex Sans','Segoe UI',system-ui,sans-serif";
 /* V (Görev 2 semantiği): lavanta → MÜHÜR moru (2026-07 revizyonu). Pastel "AI moru"ndan
    çıkış; ıstampa/mühür mürekkebi — resmî evrak dünyasının kendi rengi. Radix ruby/plum
    koyuluğunda; ivory zeminde dolgu 6.3:1, DERIN.V metin 8.3:1 (AA). */
@@ -98,10 +103,12 @@ export const TYPE = {
   read: { fontFamily: SANS, fontSize: 16, lineHeight: "24px" },
   h2: { fontFamily: SANS, fontSize: 20, lineHeight: "26px", fontWeight: 600, letterSpacing: "-.01em" },
   num: { fontFamily: SANS, fontSize: 24, lineHeight: "28px", fontWeight: 600, letterSpacing: "-.015em", fontVariantNumeric: "tabular-nums" },
-  h1: { fontFamily: SANS, fontSize: 28, lineHeight: "34px", fontWeight: 600, letterSpacing: "-.015em" },
+  /* h1/disp DISPLAY ailesinde (Bricolage Grotesque): görünüm başlıkları + hüküm liderleri
+     karakter kazanır; UI/gövde Plex kalır. Bricolage geniş oturur → tracking hafif sıkı. */
+  h1: { fontFamily: DISPLAY, fontSize: 28, lineHeight: "34px", fontWeight: 600, letterSpacing: "-.02em" },
   /* disp: tam-boy hüküm kartının lider olguları (ilk görülen ekran, 2026-07-15) — h1'in
      üstü; YALNIZ hüküm + 2 karar-kritik değer (tür, birim). Başlık/metin için kullanılmaz. */
-  disp: { fontFamily: SANS, fontSize: 36, lineHeight: "42px", fontWeight: 600, letterSpacing: "-.02em", fontVariantNumeric: "tabular-nums" },
+  disp: { fontFamily: DISPLAY, fontSize: 36, lineHeight: "42px", fontWeight: 600, letterSpacing: "-.025em", fontVariantNumeric: "tabular-nums" },
 };
 export const TNUM = { fontVariantNumeric: "tabular-nums" };
 /* Güçlü easing token'ları (emil-design-eng) — yerleşik ease-* zayıftır, "kasıtlı" hissi vermez.

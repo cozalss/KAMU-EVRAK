@@ -178,8 +178,10 @@ function Yaziyor({ uye }) {
 
 /* Kurul Tutanağı — REVİZYON ÖNERİSİ: taslakta neyin düzeltilmesi/eklenmesi/çıkarılması
    gerektiği (tip-renkli + kaynak sinyal rozetli), sonra uygulanacak revize taslağının
-   önce→sonra farkı. Kalıcı yazım MEMUR kararıdır (HITL) — kurul kendiliğinden uygulamaz. */
-function KurulTutanagi({ kurgu, aksan, az, onUygula }) {
+   önce→sonra farkı. Kalıcı yazım MEMUR kararıdır (HITL) — kurul kendiliğinden uygulamaz.
+   onOneriIsle: "tavsiye" kalan (revizeye işlenmemiş) öneriyi TEK TEK revize taslağa katlar
+   (/yazi/dogrula talimat yolu) — yine yalnız öneriyi işler, kalıcı yazım "uygula"da kalır. */
+function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen = null }) {
   const oneriler = Array.isArray(kurgu.oneriler) ? kurgu.oneriler : [];
   const sirali = TIP_SIRA.flatMap((t) => oneriler.filter((o) => o.tip === t));
   const uygulanabilir = !!onUygula && !!kurgu.uzlasi_uygulanabilir;
@@ -232,6 +234,19 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula }) {
                     </span>
                   )}
                 </span>
+                {/* Tavsiye kalan öneri TEK TIKLA revize taslağa katılır (AI revize yolu) —
+                    aynı anda tek istek (isleyen kilidi); işlenmiş öneride buton yok. */}
+                {!o.uygulanabilir && onOneriIsle && (
+                  <span style={{ flex: "none" }}>
+                    <Btn onClick={() => onOneriIsle(o)} disabled={isleyen != null}
+                      ariaLabel={`Öneriyi revize taslağa işle: ${String(o.metin).slice(0, 60)}`}
+                      style={{ padding: "3px 10px", minHeight: 26 }}>
+                      {isleyen === o
+                        ? <><Icon.spin width={12} height={12} /> İşleniyor…</>
+                        : <><Icon.plus width={12} height={12} /> Taslağa işle</>}
+                    </Btn>
+                  </span>
+                )}
                 <span style={{ flex: "none", fontFamily: MONO, fontSize: 10, lineHeight: "18px", color: PAL.mut3 }}>{o.kaynak}</span>
               </div>
             );
@@ -289,7 +304,7 @@ function TaslakKarti({ draft, revize }) {
 /* Müzakere sahnesi — animasyon state'inin TEK sahibi. CANLI AKIŞ: kurgu.turlar akışla büyür
    (açılış → +çapraz), reveal restart ETMEDEN devam eder (`akan`=stream sürüyor). Key yalnız
    kaynak değişince (llm↔deterministik) verilir → aynı akış içinde remount yok. */
-function KurulSahnesi({ kurgu, az, onUygula, akan = false }) {
+function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, isleyen = null }) {
   const aksan = aksanRenk(kurgu.risk);
   const riskRozet = RISK[kurgu.risk] || null;
   const TURLAR = kurgu.turlar;
@@ -332,11 +347,15 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false }) {
   }, [az]);                                                          // append restart ETMEZ (turlarRef ile okunur)
 
   // Reduced-motion: turlar büyüdükçe hepsini statik göster; akış bitince tamam.
+  // Oy tikleri + taslak editleri de senkronlanır (denetim bulgusu: akışla yeni tur/edit
+  // geldiğinde yalnız balonlar güncelleniyordu — "uzlaştı" tikleri ve sağ panel bayattı).
   useEffect(() => {
     if (!az) return;
     setTurnIdx(TURLAR.length);
+    setVotes(Object.fromEntries(TURLAR.filter((t) => t.oy).map((t) => [t.who, true])));
+    setDraft(nihaiTaslak({ ...kurgu, turlar: TURLAR }));
     setDone(!akan);
-  }, [az, TURLAR, akan]);
+  }, [az, TURLAR, akan, kurgu]);
 
   // Yeni balon/yazıyor gelince akışı en alta kaydır (canlı sohbet hissi).
   useEffect(() => { feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight, behavior: az ? "auto" : "smooth" }); }, [turnIdx, speaking, az]);
@@ -409,7 +428,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false }) {
       </div>
 
       {/* Tartışmanın sonucu — tutanak yalnız müzakere bitince açılır (canlı gerilim korunur) */}
-      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} />}
+      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} onOneriIsle={onOneriIsle} isleyen={isleyen} />}
     </div>
   );
 }
@@ -433,7 +452,7 @@ function KurulYukleniyor({ az }) {
   );
 }
 
-export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygula = null }) {
+export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygula = null, onRevize = null, onToast = () => {} }) {
   const az = useAzHareket();
   const yerel = useMemo(() => muzakereKurgusu(result || null), [result]);
   // LLM birincil (DeepSeek roundtable), deterministik yerel motor fallback. Taslaksız evrakta
@@ -441,6 +460,41 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   const [durum, setDurum] = useState(() => (result?.yazi_taslak_md ? "yukleniyor" : "hazir"));
   const [kurgu, setKurgu] = useState(yerel);
   const [akan, setAkan] = useState(false);   // canlı akış: turlar hâlâ büyüyor (açılış→çapraz)
+  const [isleyen, setIsleyen] = useState(null);   // uçuştaki tek öneri (çift istek kilidi)
+
+  // "Tavsiye" kalan kurul önerisini TEK TEK revize taslağa katla: mevcut etkin metin
+  // (revize varsa o, yoksa orijinal) + öneri, /yazi/dogrula talimat yoluna gider (BelgeModal
+  // "AI ile revize et" ile AYNI uç: uydurma-veto/2646-lint/risk kapılarından geçer). Başarıda
+  // yalnız KURGU güncellenir — kalıcı yazım yine memurun "Revize taslağını uygula" kararıdır.
+  const oneriIsle = async (oneri) => {
+    if (!onRevize || isleyen != null) return;
+    setIsleyen(oneri);
+    try {
+      const taban = kurguUzlasiMetni(kurgu);
+      const talimat = `Kurul önerisini taslağa işle (tip: ${oneri.tip}): ${oneri.metin}`;
+      const dogrulanan = await onRevize(taban, talimat);
+      if (!dogrulanan?.taslak_md) throw new Error("boş yanıt");
+      const degisti = dogrulanan.taslak_md.trim() !== taban.trim();
+      if (degisti) {
+        setKurgu((k) => ({
+          ...k,
+          oneriler: k.oneriler.map((o) => (o === oneri ? { ...o, uygulanabilir: true } : o)),
+          uzlasi_metni: dogrulanan.taslak_md,
+          uzlasi_uygulanabilir: true,
+          degisiklik: (k.degisiklik || 0) + 1,
+        }));
+        onToast("Öneri revize taslağa işlendi — farkı inceleyip uygulayabilirsiniz.");
+      } else {
+        // Dürüstlük: metin değişmediyse "işlendi" rozeti YALANDIR — öneri tavsiye kalır.
+        onToast("Öneri işlendi ancak metinde değişiklik üretmedi — tavsiye olarak kaldı.");
+      }
+    } catch (err) {
+      console.warn("Kurul önerisi taslağa işlenemedi", err);
+      onToast("Öneri taslağa işlenemedi — bağlantıyı kontrol edip tekrar deneyin.");
+    } finally {
+      setIsleyen(null);
+    }
+  };
   const kapatRef = useRef(null);
   const oncekiOdak = useRef(null);
   // BelgeModal deseni: onKapat çoğu zaman inline arrow gelir (her render'da yeni kimlik) —
@@ -536,6 +590,9 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
               az={az}
               akan={akan}
               onUygula={onUygula ? () => onUygula(kurguUzlasiMetni(kurgu)) : null}
+              // Örnek (etiketli kurgu) senaryoda gerçek revize çağrısı anlamsız → buton yok.
+              onOneriIsle={onRevize && kurgu.kaynak !== "ornek" ? oneriIsle : null}
+              isleyen={isleyen}
             />
           )}
         </div>

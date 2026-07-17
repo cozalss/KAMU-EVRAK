@@ -2,7 +2,7 @@
    status: "loading" (açılışta token doğrulanıyor) | "anon" (girişsiz) | "auth" (girişli).
    Açılışta access token varsa /auth/ben ile doğrular; geçersizse anon'a düşer. */
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { benKimim, cachedUser, cikisYap, girisYap, kayitOl, tokens } from "./authApi.js";
+import { benKimim, cachedUser, cikisYap, girisYap, kayitOl, oturumDustuAbone, tokens } from "./authApi.js";
 
 const AuthContext = createContext(null);
 
@@ -50,6 +50,13 @@ export function AuthProvider({ children }) {
       iptal = true;
     };
   }, []);
+
+  // Refresh 401'i (sunucu oturumu kesin geçersiz saydı) token'ları siler — UI da giriş
+  // ekranına dönmeli; önceden status "auth" kalıyor, memur ölü oturumda takılıyordu.
+  useEffect(() => oturumDustuAbone(() => {
+    setUser(null);
+    setStatus("anon");
+  }), []);
 
   const login = useCallback(async (eposta, parola) => {
     await girisYap(eposta, parola);

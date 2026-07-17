@@ -317,14 +317,22 @@ function TaslakDetay({ d, r }) {
 function VerifyDetay({ d, r }) {
   const uyari = dizi(d.verify_uyari ?? r?.verify_uyari);
   const tutarlilik = dizi(d.tutarlilik_uyari ?? r?.tutarlilik_uyari);
-  const lint = dizi(d.lint_2646 ?? r?.lint_2646);
-  const notlar = dizi(d.verify_notes ?? r?.verify_notes);
+  // lint_2646 backend sözleşmesinde DICT'tir ({kurallar, uyari}) — dizi() onu [] yapıyor,
+  // bölüm HİÇ görünmüyordu (bug avı bulgusu; SonucCalismaAlani kartıyla çelişiyordu).
+  const lintHam = d.lint_2646 ?? r?.lint_2646;
+  const lintObj = lintHam && typeof lintHam === "object" && !Array.isArray(lintHam) ? lintHam : null;
+  const lintN = dizi(lintObj?.kurallar).filter((k) => k?.durum === "uyari").length
+    || dizi(lintObj?.uyari).length;
+  // verify_notes STRING'dir — dizi() düşürüyordu; diziye de toleranslı normalize edilir.
+  const notHam = d.verify_notes ?? r?.verify_notes;
+  const notlar = (Array.isArray(notHam) ? notHam : [notHam])
+    .filter((n) => typeof n === "string" && n.trim());
   const uyum = d.format_uyumlu ?? r?.format_uyumlu;
   return (
     <>
       {uyum != null && <Vrow ok={!!uyum} label="Resmî yazışma formatı (Yön. 2646)" val={uyum ? "uyumlu" : "uyarılı"} />}
       <Vrow ok={uyari.length === 0} label="Uydurma iddia / doğrulama denetimi" val={uyari.length ? `${uyari.length} uyarı` : "geçti"} />
-      {lint.length > 0 && <Vrow ok={false} label="2646 biçim önerisi" val={`${lint.length} öneri`} />}
+      {lintN > 0 && <Vrow ok={false} label="2646 biçim önerisi" val={`${lintN} öneri`} />}
       {tutarlilik.length > 0 && <Vrow ok={false} label="Tutarlılık denetimi" val={`${tutarlilik.length} uyarı`} />}
       {[...uyari, ...tutarlilik].map((u, i) => <Madde key={i} c={BANT.sari.c}>{cleanDemoText(String(u))}</Madde>)}
       {notlar.map((n, i) => (

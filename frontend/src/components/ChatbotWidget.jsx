@@ -233,6 +233,21 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
       if (!res.ok || !res.body) throw new Error(`akış ${res.status}`);
       await akisiOku(res);
     } catch {
+      // Onay eylemi taşıyan istek OTOMATİK yeniden gönderilmez (bug avı bulgusu): akış
+      // sunucuda eylemi UYGULAMIŞ olabilir — düz-POST tekrarı aynı onayı ikinci kez işleyip
+      // Giden Evrak'a çift kayıt açardı. Yarım balon kapatılır, karar kullanıcıya bırakılır.
+      if (onayBaglam) {
+        setMesajlar((ms) => [
+          ...ms
+            .filter((m) => !(m.rol === "asistan" && m.akiyor && !m.icerik))
+            .map((m) => (m.akiyor ? { ...m, akiyor: false } : m)),
+          {
+            rol: "asistan", hata: true, tekrar: () => gonder(mesaj, onayBaglam),
+            icerik: "Bağlantı akış sırasında koptu — eylem uygulanmış olabilir. Giden Evrak'ı kontrol edin; uygulanmadıysa Tekrar dene.",
+          },
+        ]);
+        return;
+      }
       try {
         const y = await apiPost("/sohbet", govde);
         setKaynak(y.kaynak);
@@ -240,16 +255,19 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
         setMesajlar((ms) => {
           const s = ms.slice();
           const son = s[s.length - 1];
-          // Akış yarıda kesildiyse boş yer tutucunun üzerine yaz; yoksa yeni balon ekle.
-          if (son?.rol === "asistan" && son.akiyor && !son.icerik) s[s.length - 1] = msg;
+          // Akış yarıda kesildiyse (kısmi içerikli DÂHİL — çift balon olmasın) üzerine yaz.
+          if (son?.rol === "asistan" && son.akiyor) s[s.length - 1] = msg;
           else s.push(msg);
           return s;
         });
       } catch (err2) {
-        setMesajlar((ms) => [...ms, {
-          rol: "asistan", hata: true, tekrar: () => gonder(mesaj, onayBaglam),
-          icerik: `Yanıt alınamadı: ${err2.message || "bağlantı hatası"}`,
-        }]);
+        setMesajlar((ms) => [
+          ...ms.map((m) => (m.akiyor ? { ...m, akiyor: false } : m)),
+          {
+            rol: "asistan", hata: true, tekrar: () => gonder(mesaj, onayBaglam),
+            icerik: `Yanıt alınamadı: ${err2.message || "bağlantı hatası"}`,
+          },
+        ]);
       }
     } finally {
       setBekliyor(false);

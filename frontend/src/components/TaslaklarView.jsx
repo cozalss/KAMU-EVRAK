@@ -36,16 +36,17 @@ async function docxIndir(text, name, onToast) {
   }
 }
 
-/* Kuyruk varsayılanı EN ESKİ ÖNCE — kuyruk adaleti (SLA mantığıyla tutarlı; "En yeni"
-   arşiv sıralamasıdır, karar kuyruğu değil). */
+/* Kuyruk varsayılanı EN YENİ ÖNCE — memurun az önce kuyruğa aldığı taslak listenin başında
+   görünsün (İşlenen→Düzenle akışı; kullanıcı isteği 2026-07-17). SLA/kuyruk adaleti için
+   "En eski önce" seçenekte durur. */
 const BASE_CONFIG = {
   search: { enabled: true, placeholder: "Taslak adı…" },
   select: [
     { id: "evrak_turu", label: "Evrak türü", options: [] },
     { id: "hedef_birim", label: "Hedef birim", options: [] },
   ],
-  sort: { enabled: true, default: "ts_asc", options: [
-    { value: "ts_asc", label: "En eski önce" }, { value: "ts_desc", label: "En yeni önce" }, { value: "name_asc", label: "Ad (A–Z)" },
+  sort: { enabled: true, default: "ts_desc", options: [
+    { value: "ts_desc", label: "En yeni önce" }, { value: "ts_asc", label: "En eski önce" }, { value: "name_asc", label: "Ad (A–Z)" },
   ] },
   dataMapping: { search: ["name", "konu"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
 };
@@ -117,9 +118,6 @@ function AracCubugu({ filter, turSecenek, birimSecenek }) {
           Filtreleri temizle
         </button>
       )}
-      <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
-        <strong style={{ color: DERIN.T, fontWeight: 600 }}>{filter.counts.filtered}</strong> / {filter.counts.total} taslak
-      </span>
     </div>
   );
 }
@@ -158,12 +156,15 @@ function KuyrukSatiri({ h, konu, secili, onSec, onAc, optId, ilk }) {
    okuma kademesini hak eder. */
 function KararPaneli({ h, konu, govde, genis, sendBusy, onDuzenle, onKurul, onGonder, onSil }) {
   const [confirmDel, setConfirmDel] = useState(false);
+  // Gönder de onaylı (confirmDel ikizi): resmî yazı GİDEN EVRAK'a kalıcı yazılır — tek yanlış
+  // tık geri alınamaz kayıt üretmesin; "Gönder" önce onay ister, gönderim onayla başlar.
+  const [confirmSend, setConfirmSend] = useState(false);
   const bant = bantOf(h);
   const uyari = RISK_UYARI[bant];
   const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
   const r = h.result || {};
   // key={secili.id} remount zaten sıfırlar — bu effect, key kalkarsa emniyet kemeri.
-  useEffect(() => setConfirmDel(false), [h.id]);
+  useEffect(() => { setConfirmDel(false); setConfirmSend(false); }, [h.id]);
   return (
     <section aria-label="Karar paneli"
       style={{ position: genis ? "sticky" : "static", top: SP.xl, display: "flex", flexDirection: "column", minWidth: 0,
@@ -202,6 +203,18 @@ function KararPaneli({ h, konu, govde, genis, sendBusy, onDuzenle, onKurul, onGo
             <MetinEylem onClick={onSil} renk={DERIN.kirmizi} ariaLabel="Silmeyi onayla"><COP /> Evet, sil</MetinEylem>
             <Btn onClick={() => setConfirmDel(false)}>Vazgeç</Btn>
           </>
+        ) : confirmSend ? (
+          <>
+            {/* Gönderim onayı — hedef birim açıkça söylenir; onaydan sonra doğrulama kapıları
+                (/yazi/dogrula) koşar, başarısızlıkta onay açık kalır (memur tekrar dener). */}
+            <span style={{ ...TYPE.data, color: PAL.ink2, marginRight: "auto", minWidth: 0 }}>
+              Yazı <strong style={{ fontWeight: 600 }}>{BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}</strong> birimine gönderilecek ve Giden Evrak'a kalıcı kaydedilecek. Emin misiniz?
+            </span>
+            <Btn onClick={() => setConfirmSend(false)} disabled={sendBusy}>Vazgeç</Btn>
+            <Btn primary onClick={onGonder} disabled={sendBusy} ariaLabel={`${konu || h.name} gönderimini onayla`}>
+              {sendBusy ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.check width={14} height={14} /> Onayla</>}
+            </Btn>
+          </>
         ) : (
           <>
             {/* sendBusy TÜM eylemleri kilitler: /yazi/dogrula ağ turu sürerken silme/düzenleme,
@@ -213,8 +226,8 @@ function KararPaneli({ h, konu, govde, genis, sendBusy, onDuzenle, onKurul, onGo
               <Icon.scale width={14} height={14} /> Kurulu topla
             </Btn>
             <Btn onClick={onDuzenle} disabled={sendBusy} ariaLabel={`${konu || h.name} taslağını düzenle`}><KALEM /> Düzenle</Btn>
-            <Btn primary onClick={onGonder} disabled={sendBusy} ariaLabel={`${konu || h.name} taslağını gönder`}>
-              {sendBusy ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.arrow width={14} height={14} /> Gönder</>}
+            <Btn primary onClick={() => setConfirmSend(true)} disabled={sendBusy} ariaLabel={`${konu || h.name} taslağını gönder — önce onay istenir`}>
+              <Icon.arrow width={14} height={14} /> Gönder
             </Btn>
           </>
         )}
@@ -253,10 +266,16 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   const genis = useGenisEkran();
   const [listeRef] = useAutoAnimate();   // karar sonrası satırın kuyruğu terk edişi + FLIP
 
-  // Hedefli geliş: taslak varsa seç + A4 modalını aç; her koşulda hedefi tüket.
+  // Hedefli geliş: ilgili taslak kuyrukta SEÇİLİR ve görünür kılınır — A4 modalı otomatik
+  // AÇILMAZ (kullanıcı bulgusu: "Düzenle" doğrudan kâğıda ışınlıyor, karar paneli atlanıyordu).
+  // Açık modal varsa kapatılır ki seçim görünsün; A4'e geçiş memurun tıkında (satıra Enter /
+  // önizleme). Her koşulda hedef tüketilir.
   useEffect(() => {
     if (!hedef) return;
-    if (drafts.some((d) => d.id === hedef)) { setSeciliId(hedef); setKurulId(null); setDuzenleId(hedef); }
+    if (drafts.some((d) => d.id === hedef)) {
+      setSeciliId(hedef); setKurulId(null); setDuzenleId(null);
+      document.getElementById(optIdOf(hedef))?.scrollIntoView({ block: "nearest" });
+    }
     onHedefAcildi?.();
   }, [hedef, drafts, onHedefAcildi]);
 
@@ -388,6 +407,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
           taslakAdi={kurulAktif.name}
           result={kurulAktif.result}
           onKapat={() => setKurulId(null)}
+          // Tutanaktaki "Taslağa işle" → BelgeModal'ın AI-revize yoluyla AYNI uç (/yazi/dogrula).
+          onRevize={onRevize ? (metinGuncel, talimat) => onRevize(kurulAktif.result, metinGuncel, talimat) : null}
+          onToast={onToast}
           onUygula={(metin) => {
             onUpdate(kurulAktif.id, metin);
             onToast("Kurul revize taslağı uygulandı; taslak güncellendi.");

@@ -12,9 +12,12 @@ const DURUM_TR = { gonderildi: "Gönderildi", reddedildi: "Reddedildi", duzenlen
 const DURUM_RENK = { gonderildi: BANT.yesil.c, reddedildi: BANT.kirmizi.c, duzenlendi: BANT.sari.c };
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR"); } catch { return ""; } };
 const fmtGuven = (g) => (typeof g === "number" && g > 0 ? `%${Math.round(g * 100)}` : "");
-// "bugün" / "N gün önce" (gönderim üstünden geçen süre).
+// "bugün" / "N gün önce" — TAKVİM günü farkı (saat-tabanlı fark dün 18:00'i bugün 09:00'da
+// "bugün" sayıyordu — bug avı bulgusu).
 const gecenSure = (ts) => {
-  const gun = Math.floor((Date.now() - Number(ts || 0)) / 86400000);
+  const simdi = new Date(); simdi.setHours(0, 0, 0, 0);
+  const o = new Date(Number(ts || 0)); o.setHours(0, 0, 0, 0);
+  const gun = Math.round((simdi - o) / 86400000);
   return gun <= 0 ? "bugün" : `${gun} gün önce`;
 };
 const KATEGORI_SELECT = [{ value: "", label: "Tüm kategoriler" }, ...KATEGORILER.map((k) => ({ value: k.id, label: k.label }))];
@@ -32,10 +35,10 @@ const BASE_CONFIG = {
       { value: "duzenlendi", label: "Düzenlenerek", color: BANT.sari.c },
       { value: "reddedildi", label: "Reddedildi", color: BANT.kirmizi.c },
     ] },
-    { id: "sla", label: "Yasal süre", options: [
-      { value: "GECIKMIS", label: "Gecikmiş", color: BANT.kirmizi.c },
-      { value: "KRITIK", label: "Kritik", color: BANT.sari.c },
-    ] },
+    /* "Yasal süre" çipi KALDIRILDI (bug avı bulgusu): sla_durum yalnız oturum satırlarında
+       var — DB'de GidenEvrak tablosu bu kolonu taşımıyor, /giden-evrak döndürmüyor → çip
+       refresh sonrası HİÇBİR kayıtla eşleşmiyordu (ölü filtre yanıltıcı). Satır/detaydaki
+       koşullu "süresi geçmiş" gösterimi kalır; kalıcı filtre için şema değişikliği gerekir. */
   ],
   select: [
     { id: "kategori", label: "Kategori", options: KATEGORI_SELECT },
@@ -53,12 +56,15 @@ const BASE_CONFIG = {
 
 function DetayModal({ item, onClose }) {
   const closeRef = useRef(null);
+  // Escape dinleyicisi YALNIZ modal açıkken (bug avı bulgusu): kapalıyken de bağlı kalınca
+  // arama kutusundaki Esc, odağı listedeki eski satıra çalıyordu.
   useEffect(() => {
+    if (!item) return undefined;
     closeRef.current?.focus();
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, item]);
   if (!item) return null;
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>

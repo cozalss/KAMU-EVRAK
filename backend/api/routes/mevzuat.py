@@ -214,11 +214,15 @@ def derin_ara(q: str, limit: int = 20) -> list[dict]:
     katalog = {k["dosya"]: k for k in _katalog()}
     max_skor = ranked[0][0] or 1.0
     sonuclar: list[dict] = []
-    gorulen: set[tuple[str, int | None]] = set()
+    # Dedup anahtarı madde_tur DAHİL: "Madde 1" ile "Ek Madde 1" aynı madde_no'yu taşır
+    # (13 kanunda çakışma; mevzuat_oner._dedup ile aynı kural) — türsüz anahtar ek maddeyi
+    # sessizce eliyordu, madde_tur alanı da hiç dönmüyordu → okuma modalı yanlış maddeyi
+    # vurguluyordu (bug avı bulgusu).
+    gorulen: set[tuple[str, int | None, str | None]] = set()
     for skor, chunk in ranked:
         dosya = _chunk_dosya(chunk)
         kayit = katalog.get(dosya)
-        anahtar = (dosya, chunk.get("madde_no"))
+        anahtar = (dosya, chunk.get("madde_no"), chunk.get("madde_tur"))
         if kayit is None or anahtar in gorulen:
             continue
         gorulen.add(anahtar)
@@ -228,6 +232,7 @@ def derin_ara(q: str, limit: int = 20) -> list[dict]:
             "no": kayit["no"],
             "baslik": kayit["baslik"],
             "madde_no": chunk.get("madde_no"),
+            "madde_tur": chunk.get("madde_tur"),
             "snippet": metin[:_SNIPPET_CHARS] + ("…" if len(metin) > _SNIPPET_CHARS else ""),
             "skor": round(skor / max_skor, 3),
         })

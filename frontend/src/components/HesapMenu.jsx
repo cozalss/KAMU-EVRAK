@@ -13,7 +13,8 @@ const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sist
 
 function bashHarfler(ad) {
   const p = (ad || "").trim().split(/\s+/).filter(Boolean);
-  return ((p[0]?.[0] || "") + (p[1]?.[0] || p[0]?.[1] || "")).toUpperCase() || "?";
+  // tr-TR: "irfan" → "İ" (locale'siz toUpperCase noktasız ASCII "I" üretiyordu — bug avı bulgusu).
+  return ((p[0]?.[0] || "") + (p[1]?.[0] || p[0]?.[1] || "")).toLocaleUpperCase("tr-TR") || "?";
 }
 
 /* Menü satırı ikonları — neonUi Icon setinde karşılığı olmayanlar, setin çizgi diliyle

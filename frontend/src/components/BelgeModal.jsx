@@ -59,15 +59,24 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
   // bir side-effect olsaydı ikinci çağrı zaten ilerlemiş ref'i okur ve imleç yanlış konuma
   // sıçrardı (canlı yazı "üste atma" hatası). Bunun yerine mevcut render'ın kapadığı metinD'yi
   // doğrudan okuyup TEK, düz bir setMetinD(yeniMetin) çağrısı yapıyoruz.
+  // Aynı `onresult` olayı ≥2 parça taşıyabilir (final + ara): iki senkron çağrı da render
+  // kapanışındaki AYNI metinD'yi okursa ikincisi ilkinin kesinleşen cümlesini eziyordu (bug
+  // avı bulgusu — dikte kaybı). Çözüm: metinD'nin senkron ref aynası — olay içi ardışık
+  // çağrılar günceli okur; StrictMode kaygısı updater'da değil (bu bir olay işleyicisi).
+  const metinDRef = useRef(metinD);
+  useEffect(() => { metinDRef.current = metinD; });   // elle yazım dahil her commit'te aynala
   const sesSonucu = (parca, { finalMi }) => {
     if (!parca.trim() && !finalMi) return;
+    const kaynakMetin = metinDRef.current;
     const { start, len } = liveRef.current;
-    const b = Math.min(start, metinD.length);
-    const s = Math.min(b + len, metinD.length);
-    const bosluk = len === 0 && b > 0 && !/\s/.test(metinD[b - 1] || "") ? " " : "";
+    const b = Math.min(start, kaynakMetin.length);
+    const s = Math.min(b + len, kaynakMetin.length);
+    const bosluk = len === 0 && b > 0 && !/\s/.test(kaynakMetin[b - 1] || "") ? " " : "";
     const ekIcerik = finalMi ? `${bosluk}${parca.trim()} ` : `${bosluk}${parca}`;
     liveRef.current = finalMi ? { start: b + ekIcerik.length, len: 0 } : { start: b, len: ekIcerik.length };
-    setMetinD(metinD.slice(0, b) + ekIcerik + metinD.slice(s));
+    const yeniMetin = kaynakMetin.slice(0, b) + ekIcerik + kaynakMetin.slice(s);
+    metinDRef.current = yeniMetin;
+    setMetinD(yeniMetin);
     setKapatUyari(false);
     // İmleci canlı bölgenin sonuna taşı — konuştukça imleç metnin ardından ilerler.
     const konum = liveRef.current.start + liveRef.current.len;

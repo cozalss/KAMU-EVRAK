@@ -15,6 +15,7 @@ import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/aut
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { sampleAdIndex, kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
+import { ayniKosumMu, varyantBirlestir } from "./lib/sicilVaryant.js";
 import { PAL, DERIN, SANS, TYPE, RAD, SP, SH, ALFA, BANT, Icon, focusRing, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
@@ -53,12 +54,24 @@ const hashView = () => window.location.hash.slice(1);
 // (onaylanmış/reddedilmiş işlemler Giden Evrak'a düşer — burada tekrar taslak sayılmaz;
 // Panel'deki "karar bekleyen" tanımıyla birebir aynı süzgeç). Hem açılış hidrasyonunda
 // hem de DB reconcile'ında aynı eşleme → iki yol tutarlı kalsın.
+// Oturumluk satır id'si sentetiktir (`${Date.now()}-${sıra}-${ad}`) — önbellekten hidre
+// edilince db-taslak- öneki bu sentetik id'yi DB islem id'si sanıp yanlış uca gönderiyordu
+// (bug avı bulgusu: PATCH/DELETE 404, silinen taslak refresh'te diriliyordu). Önek daima
+// GERÇEK islem id'siyle kurulur: result.islem_id (persist merge'i) varsa o, yoksa satır id.
 const draftsFromHistory = (items) =>
   (items || []).filter((x) => x.result?.yazi_taslak_md && !x.result?.onay_durumu).map((x) => ({
     ...x,
-    id: `db-taslak-${x.id}`,
+    id: `db-taslak-${x.result?.islem_id || x.id}`,
     name: x.name || "Kalıcı taslak",
   }));
+
+// Sentetik oturum id deseni (13 hane epoch + sıra + ad) — db-taslak- önekinden ayıklanan
+// kısım buna uyuyorsa DB islem id'si DEĞİLDİR; islem_id çözümü result üzerinden yapılır.
+const SENTETIK_ID = /^\d{13}-\d+-/;
+const islemIdCoz = (id, draft) => {
+  const ek = String(id).startsWith("db-taslak-") ? String(id).slice("db-taslak-".length) : null;
+  return draft?.result?.islem_id || (ek && !SENTETIK_ID.test(ek) ? ek : null);
+};
 
 // Frontend seçimi → DB onay kararı etiketi (karar_repo._KARAR ile birebir; duzenle
 // nihai karar DEĞİLDİR — evrak "karar bekleyen"de kalır, damgalanmaz).
@@ -177,7 +190,10 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     if (!res || !res.yazi_taslak_md) return false;
     if (draftedRef.current.has(res)) {
       const mevcut = drafts.find((x) => x.result === res);
-      return mevcut ? mevcut.id : false;
+      if (mevcut) return mevcut.id;
+      // Kuyruktan silinmiş (deleteDraft ref'i temizlemez) → yeniden eklenebilir olmalı;
+      // aksi hâlde İşlenen'den ikinci "Düzenle" sessiz no-op kalıyordu.
+      draftedRef.current.delete(res);
     }
     draftedRef.current.add(res);
     const name = fm?.kind === "sample" ? (fm.label || fm.name) : (fm?.name || "evrak");
@@ -286,16 +302,15 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   useEffect(() => {
     if (result && result !== lastResultRef.current) {
       const onceki = lastResultRef.current;
-      // SSE `persist` event'i AYNI koşumu yalnız islem_id ile zenginleştirir (usePipeline
-      // shallow-merge → iç nesneler referans-eş; farklı koşumlar taze JSON.parse nesneleri
-      // taşıdığından referans eşitliği koşumlar arası imkânsız). Bu yeni koşum DEĞİL:
-      // geçmişe ikinci kayıt açma; mevcut kaydı tazele ki stampDecision islem_id bulsun.
-      // (onceki.islem_id koşulu YOK — tekrarlanan persist event'i de idempotent kalır.)
-      if (onceki && result.islem_id
-          && result.denetim_izi === onceki.denetim_izi
-          && result.bilgi_unsurlari === onceki.bilgi_unsurlari) {
+      // AYNI koşumun zenginleşmesi (SSE `persist` islem_id'si, yazı türü değişimi, dayanak
+      // eklemesi) — ayniKosumMu iç nesne referans eşitliğine bakar, islem_id ŞART DEĞİL:
+      // persist gecikirken (~20-27 sn) tür değiştiren memur her seçimde İşlenen evrak'a
+      // YENİ satır açıyordu (kullanıcı bulgusu). Bu yeni koşum DEĞİL: geçmişe ikinci kayıt
+      // açma; mevcut kaydı tazele + denenen türü satırın varyant listesine işle.
+      if (ayniKosumMu(onceki, result)) {
         lastResultRef.current = result;
-        setHistory((h) => h.map((x) => (x.result === onceki ? { ...x, result } : x)));
+        setHistory((h) => h.map((x) => (x.result === onceki
+          ? { ...x, result, varyantlar: varyantBirlestir(x, result) } : x)));
         // Taslaklar da tazelenir — persist'ten ÖNCE "Düzenle" ile ayrılan taslak eskiden
         // islem_id'siz kalıyordu (deleteDraft sessiz no-op → refresh'te dirilme; verify bulgusu).
         setDrafts((d) => d.map((x) => (x.result === onceki ? { ...x, result } : x)));
@@ -376,15 +391,21 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     goView("gelen");
   }, [goView]);
 
-  // İşlenen evrak listesinden "Taslaklar'da düzenle": karar bekleyen işlemin taslağı zaten
-  // drafts kuyruğundadır (draftsFromHistory aynı süzgeç) — eşleşen taslağı hedefli aç.
-  // Eşleşme yoksa (oturumluk kayıt henüz taslağa ayrılmadıysa) Taslaklar'a düz geçilir.
-  const goIslenenDuzenle = useCallback((h) => {
+  // İşlenen evrak listesinden "Taslaklar'da düzenle": eşleşen kuyruk taslağı varsa hedefle;
+  // yoksa (canlı oturum kaydı — kuyruk yalnız açık "Düzenle" kararı ya da DB hidrasyonuyla
+  // dolar) taslağı ŞİMDİ kuyruğa ekle. Eskiden düz geçiliyordu ve Taslaklar BOŞ açılıyordu
+  // (kullanıcı bulgusu). DB tarafında taslak zaten islem kaydında — refresh aynı kuyruğu türetir.
+  // Plain fonksiyon (useCallback değil): pushDraft her render tazelenir, bayat closure riski olmasın.
+  const goIslenenDuzenle = (h) => {
     const d = drafts.find((x) => x.result === h.result
       || (h.result?.islem_id && x.result?.islem_id === h.result.islem_id));
-    if (d) setTaslakHedef(d.id);
+    const id = d ? d.id : pushDraft(h.result, { kind: h.kind, name: h.name, label: h.name });
+    if (id) {
+      setTaslakHedef(id);
+      if (!d) showToast("Taslak düzenleme kuyruğuna alındı.");
+    }
     goView("taslaklar");
-  }, [drafts, goView]);
+  };
 
   // Oturum geçmişinde HITL kararını damgala (Panel "Karar bekleyen" düşsün; DB zaten
   // persistDecision ile yazıldı — refresh'te islem_listele aynı alanı döndürür).
@@ -404,7 +425,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     queryFn: async () => {
       const r = await fetch("/sla/onizleme", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ogeler: SAMPLE_DOCS.map((s) => ({ id: s.id, tur: s.id, metin: s.text })) }),
+        body: JSON.stringify({ ogeler: SAMPLE_DOCS.map((s) => ({ id: s.id, tur: s.tur || s.id, metin: s.text })) }),
       });
       if (!r.ok) throw new Error(`İstek başarısız (${r.status})`);
       return r.json();
@@ -429,9 +450,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const updateDraft = useCallback((id, md) => {
     const draft = drafts.find((x) => x.id === id);
     setDrafts((d) => d.map((x) => (x.id === id ? { ...x, result: { ...x.result, yazi_taslak_md: md } } : x)));
-    const islemId = String(id).startsWith("db-taslak-")
-      ? String(id).slice("db-taslak-".length)
-      : draft?.result?.islem_id || null;
+    const islemId = islemIdCoz(id, draft);
     if (!islemId) return;
     apiPatch(`/islem/${encodeURIComponent(islemId)}/taslak`, {
       metin: md, yazi_turu: draft?.result?.yazi_turu || "",
@@ -452,9 +471,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // öneki siliniyordu; oturumluk taslağın DB kaydı duruyor, refresh'te geri diriliyordu.
   const deleteDraft = useCallback(async (id) => {
     const draft = drafts.find((x) => x.id === id);
-    const islemId = String(id).startsWith("db-taslak-")
-      ? String(id).slice("db-taslak-".length)
-      : draft?.result?.islem_id || null;
+    const islemId = islemIdCoz(id, draft);
     // Çok-konulu birim taslağı (_altSira): backend'de YALNIZ o birimin taslağı silinir —
     // sira'sız çağrı işlemin tüm taslaklarını imha ederdi (kardeş kartlar sessizce giderdi).
     const altSira = draft?.result?._altSira || null;
@@ -475,9 +492,26 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       showToast("Taslak kalıcı silinemedi — sayfa yenilenince geri gelebilir.");
     }
   }, [drafts, showToast]);
-  const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFile(f); };
+  // Yeni koşum, persist'i bekleyen eski akışı ABORT eder — bu pencerede verilen karar
+  // (bekleyenKararRef) artık hiç yazılamaz. Sessiz veri kaybı yerine memura açıkça söyle
+  // (bug avı bulgusu: onay toast'ı "gönderildi" demişti ama DB'ye hiç yazılmamıştı).
+  const bekleyenKararUyar = useCallback(() => {
+    if (!bekleyenKararRef.current.size) return;
+    bekleyenKararRef.current.clear();
+    showToast("Önceki evrakın kararı kalıcı kayda yazılamadan yeni işlem başladı — kararı İşlenen evrak'tan yineleyin.");
+  }, [showToast]);
+  const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) { bekleyenKararUyar(); runFile(f); } };
   const triggerUpload = useCallback(() => { goView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy, goView]);
-  const processSample = useCallback((s) => { setProcessedIds((p) => new Set(p).add(s.id)); goView("isleniyor"); if (!busy) runSample(s); }, [busy, runSample, goView]);
+  // "İşlendi" damgası YALNIZ koşum gerçekten başlarsa basılır — busy'de damga + kalıcı
+  // processedSamples yazımı, evrak hiç işlenmeden refresh'ler boyu "İşlendi" gösteriyordu
+  // (bug avı bulgusu). Navigasyon korunur: memur süren akışı görür.
+  const processSample = useCallback((s) => {
+    goView("isleniyor");
+    if (busy) return;
+    bekleyenKararUyar();
+    setProcessedIds((p) => new Set(p).add(s.id));
+    runSample(s);
+  }, [busy, runSample, goView, bekleyenKararUyar]);
 
   // HITL açık → kararı damgala + resume (outbox kaydı result-effect'te). HITL kapalı → mevcut
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
@@ -844,7 +878,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           <Suspense fallback={null}>
             <TelefonYukleModal
               onClose={() => setTelefonAcik(false)}
-              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); runFile(f); }}
+              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); bekleyenKararUyar(); runFile(f); }}
               showToast={showToast}
             />
           </Suspense>

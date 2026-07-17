@@ -13,7 +13,7 @@ import AltTaslakKarti from "./AltTaslakKarti.jsx";
 import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 
-import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
+import { MONO, SANS, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 import NumberFlow from "@number-flow/react";
 /* Metro şeması + sahne bileşenleri CanliMetro.jsx'te yaşar (dosya <800 kuralı + "SAHNE Epik"
@@ -119,7 +119,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
               <PdfOnizleme fileUrl={fileUrl} />
             </Suspense>
           ) : segs ? (
-            <pre style={{ margin: 0, fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", animation: "nu-rise .18s var(--ke-ease-out) both" }}>
+            <pre style={{ margin: 0, fontFamily: SANS, fontSize: 13, lineHeight: 1.7, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", animation: "nu-rise .18s var(--ke-ease-out) both" }}>
               {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, boxDecorationBreak: "clone" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
             </pre>
           ) : (
@@ -272,7 +272,7 @@ export default function CanliAjanAkisi({
               <Icon.doc width={18} height={18} />
             </span>
             <span style={{ minWidth: 0 }}>
-              <h2 style={{ margin: 0, fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
+              <h2 style={{ margin: 0, fontFamily: SANS, fontSize: 14, lineHeight: "18px", color: PAL.ink, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
               <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{metaLine}</span>
             </span>
             {!sonucGoster && <span style={{ marginLeft: SP.s, flexShrink: 0 }}>

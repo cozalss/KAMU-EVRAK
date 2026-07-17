@@ -10,7 +10,7 @@
    Kurgu ayrımı: İşlenen = arşiv/izleme, Taslaklar = çalışma kuyruğu, Giden = gönderilmiş. */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import NumberFlow from "@number-flow/react";
-import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, SANS, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { evrakKategori, kategoriMeta } from "../lib/kategori.js";
@@ -364,7 +364,7 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
           {baslikCase(cleanDemoText(item.konu)) || item.name}
         </span>
         <span style={{ ...TYPE.meta, color: PAL.mut, overflow: "hidden", textOverflow: "ellipsis", flexShrink: 4, minWidth: 0 }}>
-          <span style={{ fontFamily: MONO, fontSize: 11.5 }}>{item.name}</span>
+          <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 500 }}>{item.name}</span>
           {" · "}{EVRAK_TR(item.evrak_turu)}{" · "}{BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)}
           {guven && ` · güven ${guven}`}{sure && ` · ${sure}`}
           {item.varyantlar?.length > 1 && ` · ${item.varyantlar.length} yazı türü`}
@@ -426,7 +426,7 @@ function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.l, marginBottom: SP.l }}>
           <div>
             <h2 id="islenen-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{cleanDemoText(item.konu) || item.name}</h2>
-            <p style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2 }}>{item.name}</p>
+            <p style={{ margin: "4px 0 0", fontFamily: SANS, fontSize: 12, lineHeight: "16px", color: PAL.mut2 }}>{item.name}</p>
           </div>
           <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing}
             style={{ cursor: "pointer", flexShrink: 0, width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.ink2, padding: 0 }}>

@@ -5,7 +5,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
-import { MONO, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
+import { MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
 import { lintGrupla, slaKonum } from "../lib/detayYorum.js";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */
@@ -413,7 +413,7 @@ export function PaperSheet({ metin, dosyaAdi, formatOk }) {
     <div style={{ margin: "0 0 16px", borderRadius: RAD.card, overflow: "hidden", background: PAL.surf2, border: `1px solid ${PAL.line}` }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderBottom: `1px solid ${PAL.line}` }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3h9l5 5v13H5z" stroke={DERIN.V} strokeWidth="1.6" strokeLinejoin="round" /><path d="M14 3v5h5" stroke={DERIN.V} strokeWidth="1.6" /></svg>
-        <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2 }}>{dosyaAdi}</span>
+        <span style={{ fontFamily: SANS, fontSize: 12, lineHeight: "16px", color: PAL.mut2 }}>{dosyaAdi}</span>
         {formatOk && <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, fontWeight: 500, color: DERIN.yesil, background: ALFA(BANT.yesil.c), borderRadius: RAD.chip, padding: "2px 8px" }}><Icon.check width={12} height={12} /> Yön. 2646 uyumlu</span>}
       </div>
       <div style={{ padding: "24px 16px" }}>

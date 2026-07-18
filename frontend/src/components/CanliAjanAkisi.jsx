@@ -119,7 +119,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
               <PdfOnizleme fileUrl={fileUrl} />
             </Suspense>
           ) : segs ? (
-            <pre style={{ margin: 0, fontFamily: SANS, fontSize: 13, lineHeight: 1.7, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", animation: "nu-rise .18s var(--ke-ease-out) both" }}>
+            <pre style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", animation: "nu-rise .18s var(--ke-ease-out) both" }}>
               {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, boxDecorationBreak: "clone" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
             </pre>
           ) : (
@@ -493,7 +493,7 @@ export default function CanliAjanAkisi({
 
       {/* A4 belge modalları — kaynak belge (maskeli metin / gerçek PDF sayfası) + resmî yazı
           taslağı (PDF/DOCX indirme kısayollu). Tetikleyiciler: panel tıklaması / büyüt düğmesi. */}
-      <BelgeModal acik={belgeModal === "kaynak"} baslik="Kaynak belge" dosyaAdi={fileLabel} mono
+      <BelgeModal acik={belgeModal === "kaynak"} baslik="Kaynak belge" dosyaAdi={fileLabel}
         metin={km?.metin || ""} segmentler={segs} fileUrl={fileUrl} onKapat={() => setBelgeModal(null)} />
       <BelgeModal acik={belgeModal === "taslak"} baslik="Resmî yazı taslağı" dosyaAdi={fileLabel}
         metin={draftMd ? cleanDemoText(draftMd) : ""} onKapat={() => setBelgeModal(null)}

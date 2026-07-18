@@ -23,7 +23,7 @@ export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ar
   );
 }
 
-export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, mono = false, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null }) {
+export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null }) {
   const kapatRef = useRef(null);
   const alanRef = useRef(null);
   const oncekiOdak = useRef(null);
@@ -207,9 +207,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                 aria-label="Resmî yazı taslağı metni" spellCheck={false}
                 style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "vertical", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
             ) : (
-              <div style={mono
-                ? { fontFamily: SANS, fontSize: 13, lineHeight: 1.85, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }
-                : { ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <div style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                 {/* Çıkarım vurguları A4'te de korunur — panel ile aynı sarı <mark> dili
                     (kaynak belgede vurgulanan unsurlar büyütünce de görünür kalır). */}
                 {segmentler && segmentler.length

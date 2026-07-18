@@ -264,8 +264,10 @@
   max-width: none;
   margin: 0;
   font-family: var(--font-body);
-  font-size: 18px;
-  line-height: 31px;
+  /* Belge panelleriyle (kaynak/taslak <pre> = TYPE.read) aynı okuma ölçeği:
+     özet, iki A4 belgesinin yanında ikiz olmalı — ayrı boyut garip durur. */
+  font-size: 16px;
+  line-height: 24px;
   overflow-wrap: break-word;
 }
 
@@ -1102,7 +1104,6 @@
   .sc-quick-info-footer { align-items: stretch; flex-direction: column; }
   .sc-quick-info-footer button { width: 100%; }
   .sc-source-summary-paper { padding: 28px 22px; }
-  .sc-source-summary-text { max-width: none; font-size: 16px; line-height: 25px; }
 }
 
 @media (max-width: 460px) {

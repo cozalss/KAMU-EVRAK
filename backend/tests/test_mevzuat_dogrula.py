@@ -62,3 +62,22 @@ class TestMevzuatDogrula:
         out = await md.mevzuat_dogrula_node({"mevzuat_onerileri": []})
         # Assert
         assert out == {}
+
+    async def test_crag_duzeltilmis_liste_dogrulanir(self, monkeypatch):
+        # Arrange — CRAG düzeltmesi uygulanmış: gösterilen liste _corrected altında.
+        # NLI, atılmış eski listeyi DEĞİL düzeltilmiş listeyi doğrulamalı (grounding).
+        monkeypatch.setattr(md, "NLI_ENABLED", True)
+        monkeypatch.setattr(md, "NLI_PROVIDER", "model")
+        monkeypatch.setattr(md, "NLI_ESIK", 0.5)
+        monkeypatch.setattr(md, "_entailment_skor", lambda p, h: 0.9)
+        duzeltilmis = [{"baslik": "4982 bilgi edinme kanunu m.11", "snippet": "On beş iş günü."}]
+        # Act — hem eski (yanlış) hem düzeltilmiş liste state'te; düzeltilmiş kazanmalı
+        out = await md.mevzuat_dogrula_node({
+            "mevzuat_onerileri": _ONERILER,               # eski/atılmış liste
+            "mevzuat_onerileri_corrected": duzeltilmis,   # CRAG düzeltmesi (gösterilen)
+            "bilgi_unsurlari": {"konu": "bilgi edinme"},
+        })
+        # Assert — NLI çıktısı düzeltilmiş listenin başlığını taşımalı (eskiyi değil)
+        nli = out["mevzuat_nli"]
+        assert len(nli) == 1
+        assert nli[0]["baslik"] == "4982 bilgi edinme kanunu m.11"

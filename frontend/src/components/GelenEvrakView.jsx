@@ -174,7 +174,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
 
       {/* Salt-okunur evrak önizleme (satır tıklaması) — "önce oku, sonra işle" akışı;
           İşle birincil eylem olarak modal içinde de sunulur. */}
-      <BelgeModal acik={!!onizle} baslik="Evrak önizleme" dosyaAdi={onizle?.label || ""} mono
+      <BelgeModal acik={!!onizle} baslik="Evrak önizleme" dosyaAdi={onizle?.label || ""}
         metin={onizle?.text || ""} onKapat={() => setOnizle(null)}
         eylemler={onizle ? (
           <ScrimDugme onClick={() => { const sec = onizle; setOnizle(null); onProcess(sec); }} disabled={busy} title="Bu evrakı işle">

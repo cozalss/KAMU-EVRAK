@@ -20,6 +20,7 @@ from fastapi.testclient import TestClient
 
 import main
 from agents import config
+from api.middleware import ratelimit
 from api.routes import sohbet as sohbet_mod
 from api.routes import sohbet_araclar
 from auth.deps import get_current_user
@@ -38,7 +39,14 @@ class _SahteKullanici:
 def auth_client() -> TestClient:
     """Auth bağımlılığı sahte kullanıcıyla değiştirilmiş istemci (DB'siz)."""
     main.app.dependency_overrides[get_current_user] = lambda: _SahteKullanici()
+    # /sohbet artık rate-limitli (20/dk) — suite'te çok çağrı 429'a takılır; limiter'ı
+    # bu route sözleşme testleri için kapat (test_mobil.py deseni).
+    _eski = getattr(ratelimit._limiter, "enabled", None)
+    if ratelimit._limiter is not None:
+        ratelimit._limiter.enabled = False
     yield TestClient(main.app)
+    if ratelimit._limiter is not None and _eski is not None:
+        ratelimit._limiter.enabled = _eski
     main.app.dependency_overrides.pop(get_current_user, None)
 
 

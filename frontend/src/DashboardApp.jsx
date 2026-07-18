@@ -237,6 +237,29 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     }
   }, [queryClient, showToast]);
 
+  // Çok-konulu alt-talep kararı için persist — ana akıştaki persistDecision ile AYNI
+  // done→persist yarışı koruması. islem_id henüz yoksa (~20-27 sn Supabase gecikmesi) karar
+  // beklemeye alınır, persist merge'i gelince yazılır. Eskiden alt-talep yolu bu ağa BAĞLI
+  // DEĞİLDİ: islem_id null'ken apiPost hiç denenmiyor ama başarı toast'ı + outbox commit
+  // yapılıyordu → karar sessizce DB'siz kalıyor, refresh'te audit izinden düşüyordu (bug avı).
+  const bekleyenAltKararRef = useRef(new Map());   // result → [{secim, sira, tur, metin}]
+  const persistAltKarar = useCallback((res, karar) => {
+    if (!res) return;
+    if (!res.islem_id) {
+      const liste = bekleyenAltKararRef.current.get(res) || [];
+      liste.push(karar);
+      bekleyenAltKararRef.current.set(res, liste);
+      return;
+    }
+    apiPost(`/islem/${encodeURIComponent(res.islem_id)}/alt-talep/${karar.sira}/onayla`, {
+      secim: karar.secim, yazi_turu: karar.tur || "", metin: karar.metin || "",
+    }).then(() => queryClient.invalidateQueries({ queryKey: ["giden-evrak"] }))
+      .catch((err) => {
+        console.warn("Birim kararı DB'ye yazılamadı", err);
+        showToast("Evrak oturumda görünüyor; birim kararı DB'ye yazılamadı.");
+      });
+  }, [queryClient, showToast]);
+
   // Sayfa yenilendiğinde kalıcı DB geçmişini yeniden kur (react-query: 3 deneme + üstel
   // geri çekilme — uzak Supabase'in DNS düşmelerine dayanıklı; provider varsayılanları
   // main.jsx'te). Pipeline sonucu yine canlı state'e eklenir; bu yükleme açılışta bir kez
@@ -322,6 +345,12 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         if (bekleyenSecim) {
           bekleyenKararRef.current.delete(onceki);
           persistDecision(result, bekleyenSecim);
+        }
+        // Aynı pencere: çok-konulu alt-talep kararları (birim kartları) de şimdi yazılır.
+        const bekleyenAlt = bekleyenAltKararRef.current.get(onceki);
+        if (bekleyenAlt && bekleyenAlt.length) {
+          bekleyenAltKararRef.current.delete(onceki);
+          bekleyenAlt.forEach((karar) => persistAltKarar(result, karar));
         }
         return;
       }
@@ -756,14 +785,9 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet },
     };
     if (!pushOutbox(sanalSonuc, fileMeta, secim)) return false;
-    if (result?.islem_id && secim !== "duzenle") {
-      apiPost(`/islem/${encodeURIComponent(result.islem_id)}/alt-talep/${sira}/onayla`, {
-        secim, yazi_turu: sanalSonuc.yazi_turu || "", metin: metinGuncel || "",
-      }).then(() => queryClient.invalidateQueries({ queryKey: ["giden-evrak"] }))
-        .catch((err) => {
-          console.warn("Birim kararı DB'ye yazılamadı", err);
-          showToast("Evrak oturumda görünüyor; birim kararı DB'ye yazılamadı.");
-        });
+    // "duzenle" gönderim değildir → persist edilmez; onay/red islem_id yoksa kuyruğa alınır.
+    if (secim !== "duzenle") {
+      persistAltKarar(result, { secim, sira, tur: sanalSonuc.yazi_turu, metin: metinGuncel });
     }
     const etiket = altTalep.birim_tr || "İlgili birim";
     showToast(secim === "reddet" ? `${etiket} — reddedildi, Giden evraka kaydedildi.` : `${etiket} — gönderildi, Giden evraka eklendi.`);

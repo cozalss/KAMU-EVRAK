@@ -26,6 +26,14 @@ export default function PdfOnizleme({ fileUrl, tam = false }) {
     return () => window.removeEventListener("resize", olc);
   }, []);
 
+  // fileUrl değişince eski belgenin hata/sayfa state'ini sıfırla: bileşen kalıcı mount'lu
+  // (KaynakBelge → CanliAjanAkisi, koşumlar arası remount YOK). Aksi halde hatalı PDF'ten
+  // sonra gelen GEÇERLİ PDF için "önizleme açılamadı" kalıcı kalır (bug avı bulgusu).
+  useEffect(() => {
+    setHata(false);
+    setSayfaSayisi(0);
+  }, [fileUrl]);
+
   if (hata) {
     return <div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF önizlemesi açılamadı — metin sekmesinden devam edebilirsiniz.</div>;
   }

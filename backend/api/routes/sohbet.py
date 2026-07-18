@@ -20,7 +20,7 @@ from collections.abc import AsyncIterator
 from typing import Annotated, Any, Literal
 
 import structlog
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -37,6 +37,7 @@ from agents.sohbet_niyet import (
     onay_teyit,
     sablon_yanit,
 )
+from api.middleware.ratelimit import rate_limit
 from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
@@ -423,7 +424,8 @@ async def _onay_baslat(intent: str, user: Any, session: AsyncSession) -> SohbetY
 
 
 @router.post("/sohbet")
-async def sohbet(istek: SohbetIstek, user: CurrentUser, session: Session) -> SohbetYanit:
+@rate_limit("20/minute")  # LLM niyet+yanıt+araç döngüsü — diğer LLM uçlarıyla aynı desen (slowapi yoksa etkisiz)
+async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, session: Session) -> SohbetYanit:
     """Chatbot mesajı → (teyit | aksiyon | niyet + araç + yanıt). Mock modda deterministik."""
     teyit = await _onay_teyidini_isle(istek, user, session)
     if teyit is not None:
@@ -513,7 +515,8 @@ async def _kompoz_akisi(
 
 
 @router.post("/sohbet/stream")
-async def sohbet_stream(istek: SohbetIstek, user: CurrentUser, session: Session) -> StreamingResponse:
+@rate_limit("20/minute")  # LLM akışı (niyet+yanıt+araç döngüsü) — diğer LLM uçlarıyla aynı desen
+async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser, session: Session) -> StreamingResponse:
     """SSE'li sohbet — kayıtlar meta'da hemen iner, yanıt token-token akar (canlı demo)."""
     hazir = await _onay_teyidini_isle(istek, user, session)
     llm_niyet = False

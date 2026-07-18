@@ -131,7 +131,10 @@ async def mevzuat_dogrula_node(state: dict[str, Any]) -> dict[str, Any]:
     """Mevzuat önerilerini NLI entailment ile gerekçelendir (ENV-gated, graceful, additive)."""
     if not NLI_ENABLED:
         return {}  # baseline: NLI kapalı → mevzuat_oner birebir korunur
-    oneriler = state.get("mevzuat_onerileri") or []
+    # CRAG düzeltmesi uygulandıysa gösterilen liste _corrected altındadır (crag.py) —
+    # NLI, kullanıcıya gösterilen listeyi doğrulamalı, atılmış eski listeyi değil.
+    # (finalize/self_rag/mevzuat_zenginlestir ile aynı "corrected-or-original" deseni.)
+    oneriler = state.get("mevzuat_onerileri_corrected") or state.get("mevzuat_onerileri") or []
     if not oneriler:
         return {}
     hyp = _hypothesis(state)

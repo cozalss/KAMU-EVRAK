@@ -44,7 +44,6 @@ _DEMO_DEFAULTS: dict[str, str] = {
 }
 
 
-from core.text import tr_upper as _tr_upper  # tek kaynak (Türkçe i→İ, ı→I büyük harf)
 
 
 # Tür-özgü antet/imza varsayılanları — jenerik "Yazı İşleri" her türe uymaz: görüş/mütalaa

@@ -14,7 +14,7 @@ konusuyla ilişkili görev tanımı AYNI kaynak zincirinde doğrulanırsa kabul 
 from __future__ import annotations
 
 import re
-from typing import Any, Protocol, TypedDict
+from typing import Protocol, TypedDict
 
 from agents.config import ROUTE_WEB_YEDEK
 from agents.nodes.teskilat_ara import _kanonik_slug, kurum_korpusta_var, teskilat_birim_ara

@@ -119,7 +119,7 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
         ad = secilen["birim_ad"]
         kaynak = secilen.get("kaynak_kurum", "")
         belge = secilen.get("belge_basligi", "")
-        neden = gerekce or f"görev tanımı evrak konusuyla örtüşüyor"
+        neden = gerekce or "görev tanımı evrak konusuyla örtüşüyor"
         log.info("route_ajan.dogrulandi", birim=ad, kurum=kaynak, yetki_disari=yetki_disari)
         return {
             **base,

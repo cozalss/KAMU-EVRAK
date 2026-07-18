@@ -209,6 +209,20 @@ class TestBuildAltTalepTaslaklari:
         # Assert
         assert all("İlgili Birime" in t["yazi_taslak_md"] for t in sonuc)
 
+    async def test_hitap_ekli_gonderende_antet_bizim_kurum(self):
+        # Arrange — çok-konulu dilekçe ODUNPAZARI BELEDİYE BAŞKANLIĞINA (hitap-ekli)
+        # yazılmış: biz Odunpazarı'yız, antet KAMU KURUMU/env'e değil bu kuruma düşmeli
+        # (tek-konulu yol antet_idare_secimi kullanır — alt-talep yolu da aynı sözleşmeye uymalı).
+        evrak = "T.C.\nODUNPAZARI BELEDİYE BAŞKANLIĞINA\nFen İşleri Müdürlüğüne\nESKİŞEHİR"
+        alt = [
+            {"ozet": "çukurun onarılması", "birim_tr": "İlgili Teknik Daire"},
+            {"ozet": "iş başvurusu sonucu", "birim_tr": "İnsan Kaynakları / Personel Dairesi"},
+        ]
+        # Act
+        sonuc = await build_alt_talep_taslaklari(alt, {}, evrak)
+        # Assert
+        assert all("ODUNPAZARI BELEDİYE" in t["yazi_taslak_md"] for t in sonuc)
+
 
 # ---------------------------------------------------------------------------
 # _fallback_body — tür-uygun resmî gövde (sadece placeholder değil)

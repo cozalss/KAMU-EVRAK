@@ -620,18 +620,26 @@ async def build_alt_talep_taslaklari(
     Tek ortak cevabi_yazi vatandaşa gitmez; her alt-talep KENDİ hedef birimine
     (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
     < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
+
+    Antet İDARE satırı tek-konulu yolla (yazi_taslak._antet_idare) AYNI sözleşmeyi
+    izler: evrak hitap-ekli bizim kuruma yazılmışsa ("...BAŞKANLIĞINA") antet o
+    kurum olur, aksi halde env/jenerik varsayılana düşer — alt-talep taslakları bu
+    tespiti atlayıp sessizce env'e düşmesin diye burada da hesaplanır.
     """
     if len(alt_talepler) < 2:
         return list(alt_talepler)
+    from agents.kurum_kimlik import antet_idare_secimi
     from yazi.renderer import render_yazi
 
+    idare = antet_idare_secimi(evrak_text, unsurlar, "ust_yazi")
     out: list[dict[str, Any]] = []
     for item in alt_talepler:
         ozet = str(item.get("ozet", "") or "")
         muhatap = str(item.get("birim_tr", "") or "") or "İlgili Birime"
         child_unsurlar = {**unsurlar, "konu": ozet}
         metin = await build_body("ust_yazi", child_unsurlar, ozet)
-        ctx = build_context("ust_yazi", child_unsurlar, metin, muhatap_override=muhatap)
+        ctx = build_context(
+            "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap, idare_adi=idare)
         result = render_yazi(ctx)
         out.append({
             **item, "yazi_turu": "ust_yazi",

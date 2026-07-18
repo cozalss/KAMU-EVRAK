@@ -28,6 +28,10 @@ os.environ.setdefault("EVRAK_LLM_TIMEOUT_S", "5.0")
 os.environ.setdefault("AUTH_JWT_SECRET", "test-only-jwt-secret-not-for-production-0123456789")
 os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://test:test@localhost:5432/test")
 os.environ.setdefault("DATABASE_URL_SYNC", "postgresql+psycopg://test:test@localhost:5432/test")
+# Antet kurum kimliği (KURUM_ADI/KURUM_BIRIM) de aynı nedenle izole edilir: geliştiricinin
+# gerçek .env'i jenerik "KAMU KURUMU" yer tutucusunu varsayan testleri kırmasın.
+os.environ.setdefault("KURUM_ADI", "")
+os.environ.setdefault("KURUM_BIRIM", "")
 
 import pytest  # noqa: E402 (sys.path düzeltmesinden sonra import zorunlu)
 

@@ -917,7 +917,12 @@ export default function SonucCalismaAlani({
   const [sourceView, setSourceView] = useState("belge");
   const r = result;
 
-  useEffect(() => { setSourceView("belge"); }, [r]);
+  // Sekmeyi YALNIZ gerçekten yeni bir koşumda "Belge"ye sıfırla — denetim_izi koşum
+  // kimliğidir ve persist merge'i/applyTaslak zenginleşmesi onu KORUR (yeni üst-düzey result
+  // referansı üretse de). `[r]` demek, ~20-27 sn sonra gelen persist event'inin memurun
+  // seçtiği "Özet" görünümünü sessizce "Belge"ye atmasıydı (bug avı bulgusu).
+  const kosumKimligi = r?.denetim_izi ?? r;
+  useEffect(() => { setSourceView("belge"); }, [kosumKimligi]);
 
   const alt = useMemo(() => arr(r?.alt_talepler), [r?.alt_talepler]);
   const mev = useMemo(() => arr(r?.mevzuat_onerileri), [r?.mevzuat_onerileri]);

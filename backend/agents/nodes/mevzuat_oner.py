@@ -24,6 +24,7 @@ Return sözleşmesi (KEEP): {"mevzuat_onerileri": list[MevzuatOneri]}.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
 from functools import lru_cache
@@ -610,7 +611,11 @@ async def mevzuat_oner_node(state: dict[str, Any]) -> dict[str, Any]:
 
     oneriler: list[dict[str, Any]] = []
     if len(query) >= _MIN_QUERY_LEN:
-        oneriler = _from_corpus(query, turu, ek_beklenen=ek_beklenen)
+        # _from_corpus SENKRON'dur ve rerank (DeepSeek listwise Future.result / cross-encoder
+        # predict) ile çağıran thread'i ~25 sn'ye kadar bloklar. Bu node async ve uvicorn event
+        # loop'unda await edildiğinden, senkron çağrı TÜM eşzamanlı istekleri/SSE akışlarını
+        # dondururdu → to_thread ile worker'a al (deepseek köprüsü kalıcı-loop'a gider, güvenli).
+        oneriler = await asyncio.to_thread(_from_corpus, query, turu, ek_beklenen=ek_beklenen)
     kaynak = "corpus" if oneriler else "config"
     if not oneriler:
         oneriler = _from_config(turu)

@@ -44,7 +44,7 @@ from agents.config import (
 from agents.nodes._llm_extract import llm_json
 from agents.nodes.route_birim import _content_scores
 from agents.nodes.sla_triyaj import compute_sla
-from api.pii import mask_pii
+from api.pii import mask_for_llm, mask_pii
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -194,7 +194,8 @@ def _llm_talep(item: Any) -> dict[str, Any] | None:
 
 async def _llm_segment(text: str) -> list[dict[str, Any]] | None:
     """LLM ile segmentle + tur/birim önerisi al (TEK çağrı). Geçersiz/yok → None (heuristiğe düşülür)."""
-    obj = await llm_json(_LLM_SYSTEM, text[:4000], max_tokens=600)
+    # KVKK: dış servise ham sayısal PII gitmez (içerik/segment anlamı korunur).
+    obj = await llm_json(_LLM_SYSTEM, mask_for_llm(text, None)[:4000], max_tokens=600)
     if not isinstance(obj, dict):
         return None
     talepler = obj.get("talepler")

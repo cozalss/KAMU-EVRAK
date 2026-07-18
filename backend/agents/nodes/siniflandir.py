@@ -29,6 +29,7 @@ from agents.config import (
 )
 from agents.llm import ChatMessage, get_llm_for_model
 from agents.nodes._llm_extract import llm_json, parse_json_object
+from api.pii import mask_for_llm
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -543,13 +544,17 @@ async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
     if not text.strip():
         return {"evrak_turu": "belirsiz", "tur_confidence": 0.0, "tur_reasoning": "boş metin"}
 
+    # KVKK: LLM'e ham sayısal PII gitmez (tür sınıflandırması PII değerine bağlı değil;
+    # keyword heuristiği ham `raw`/`text`'te koşar). isim korunur → içerik bozulmaz.
+    raw_llm = mask_for_llm(raw, None)
+
     # M2 — Self-consistency abstention (ENV-gated; varsayılan KAPALI → tek çağrı/maliyet).
-    if SELF_CONSISTENCY_N > 1 and (sc := await _self_consistency(raw)) is not None:
+    if SELF_CONSISTENCY_N > 1 and (sc := await _self_consistency(raw_llm)) is not None:
         log.info("siniflandir", turu=sc["evrak_turu"], conf=sc["tur_confidence"],
                  source="self-consistency")
         return sc
 
-    obj = await llm_json(_SYSTEM, raw[:6000], max_tokens=200)
+    obj = await llm_json(_SYSTEM, raw_llm[:6000], max_tokens=200)
     if obj is not None and (result := _from_llm(obj)) is not None:
         # Kademeli model: LLM düşük güven/belirsiz döndüyse (_from_llm eşik-altını
         # zaten 'belirsiz'e çevirdi → tek koşul yeter) reasoner ikinci görüşü alınır.

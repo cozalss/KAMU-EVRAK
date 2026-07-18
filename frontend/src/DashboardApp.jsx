@@ -525,8 +525,12 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // (bekleyenKararRef) artık hiç yazılamaz. Sessiz veri kaybı yerine memura açıkça söyle
   // (bug avı bulgusu: onay toast'ı "gönderildi" demişti ama DB'ye hiç yazılmamıştı).
   const bekleyenKararUyar = useCallback(() => {
-    if (!bekleyenKararRef.current.size) return;
+    // Hem tek-karar (bekleyenKararRef) hem çok-konulu alt-talep (bekleyenAltKararRef)
+    // kuyruklarını kontrol et — yeni koşum eski akışı abort ettiğinde ikisi de bir daha
+    // flush edilemez; alt-talep kuyruğu atlanırsa birim kararı sessizce kaybolurdu.
+    if (!bekleyenKararRef.current.size && !bekleyenAltKararRef.current.size) return;
     bekleyenKararRef.current.clear();
+    bekleyenAltKararRef.current.clear();
     showToast("Önceki evrakın kararı kalıcı kayda yazılamadan yeni işlem başladı — kararı İşlenen evrak'tan yineleyin.");
   }, [showToast]);
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) { bekleyenKararUyar(); runFile(f); } };
@@ -632,6 +636,13 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         persistDecision({ ...res, islem_id: islemId }, "duzenle");
         setHistory((h) => h.map((x) => (
           x.result === res || x.result?.islem_id === islemId ? { ...x, result: { ...x.result, onay_durumu: "duzenlendi" } } : x)));
+      } else {
+        // islem_id çözülemedi (persist penceresinde düzenlenmiş oturum taslağı: updateDraft
+        // result nesnesini fork'layıp kimlik bağını kırdığından persist merge islem_id'yi hiç
+        // enjekte edemiyor). Karar DB'ye YAZILAMAZ → sessiz kayıp + sahte "gönderildi" yerine
+        // memuru DÜRÜSTÇE uyar (kök redesign follow-up). Taslak yine oturumda/outbox'ta durur.
+        showToast("Taslak oturumda gönderildi ancak kalıcı kayda yazılamadı — kararı İşlenen evrak'tan yineleyin.");
+        return true;
       }
     }
     const yeniUyari = (dogrulanan.verify_uyari || []).length;

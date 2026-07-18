@@ -338,7 +338,7 @@ export default function MevzuatView({ history = [] }) {
             actions={<Btn onClick={() => setFiltre("")}>Aramayı temizle</Btn>} />
         ) : derin ? (
           <div aria-live="polite" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
-            {derin.sonuclar.map((s) => <DerinSonucSatir key={`${s.dosya}-${s.madde_no}`} s={s} onAc={ac} />)}
+            {derin.sonuclar.map((s) => <DerinSonucSatir key={`${s.dosya}-${s.madde_no}-${s.madde_tur ?? "madde"}`} s={s} onAc={ac} />)}
           </div>
         ) : null
       )}

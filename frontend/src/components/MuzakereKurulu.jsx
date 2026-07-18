@@ -319,6 +319,13 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
 
   useEffect(() => {
     if (az) return undefined;                                        // reduced-motion → aşağıdaki senkron effect
+    // az true→false geçişi (modal açıkken reduced-motion kapatıldı): reduced-motion effect'i
+    // turnIdx'i TURLAR.length yapmıştı → artan reveal'ı 0'dan başlatmadan ÖNCE sıfırla, yoksa
+    // açılmış balonlar setTurnIdx(1) ile çöküp yeniden açılıyordu (bug avı bulgusu).
+    setTurnIdx(0);
+    setVotes({});
+    setDraft(kurgu.taslak.map((l) => ({ ...l })));
+    setDone(false);
     let alive = true, timer, i = 0;
     const step = () => {
       if (!alive) return;
@@ -344,7 +351,8 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
     };
     timer = setTimeout(step, 500);
     return () => { alive = false; clearTimeout(timer); };
-  }, [az]);                                                          // append restart ETMEZ (turlarRef ile okunur)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [az]);                                                          // append/kurgu restart ETMEZ (turlarRef ile okunur; kurgu.taslak yalnız az-flip reset'inde)
 
   // Reduced-motion: turlar büyüdükçe hepsini statik göster; akış bitince tamam.
   // Oy tikleri + taslak editleri de senkronlanır (denetim bulgusu: akışla yeni tur/edit

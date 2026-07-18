@@ -6,6 +6,7 @@ AuthError (kod) → router HTTP'ye çevirir. Async (asyncpg/SQLAlchemy).
 """
 from __future__ import annotations
 
+import asyncio
 import datetime as _dt
 
 from sqlalchemy import select, update
@@ -43,7 +44,9 @@ async def kayit(session: AsyncSession, *, eposta: str, parola: str, ad_soyad: st
     if birim is None:
         raise AuthError("birim_yok", f"Birim bulunamadı: {birim_kod}")
     kullanici = Kullanici(
-        eposta=eposta.lower(), parola_hash=security.hash_parola(parola),
+        # argon2 hash CPU-yoğun (~30ms) → to_thread; async event loop bloklanmasın
+        # (kod tabanının embedding/ocr/hybrid_search'te izlediği desen).
+        eposta=eposta.lower(), parola_hash=await asyncio.to_thread(security.hash_parola, parola),
         ad_soyad=ad_soyad, unvan=unvan, birim_id=birim.id,
     )
     session.add(kullanici)
@@ -79,16 +82,18 @@ async def giris(session: AsyncSession, *, eposta: str, parola: str,
     # Zamanlama-sızıntısını azalt: kullanıcı yoksa da hash doğrula (sabit-zaman benzeri) —
     # SABİT _SAHTE_HASH kullanılır (her seferinde yeniden hash_parola() üretmek gerçek
     # yoldan daha YAVAŞ yapıyordu, bkz. modül başı not).
+    # argon2 verify/hash CPU-yoğun → to_thread ile offload (event loop + eşzamanlı SSE
+    # akışları bloklanmasın); zamanlama-sızıntısı simetrisi korunur (her iki yol da 1x verify).
     if kullanici is None:
-        security.parola_dogrula(parola, _SAHTE_HASH)
+        await asyncio.to_thread(security.parola_dogrula, parola, _SAHTE_HASH)
         raise AuthError("kimlik_hatali", "E-posta veya parola hatalı.")
-    if not security.parola_dogrula(parola, kullanici.parola_hash):
+    if not await asyncio.to_thread(security.parola_dogrula, parola, kullanici.parola_hash):
         raise AuthError("kimlik_hatali", "E-posta veya parola hatalı.")
     if not kullanici.aktif:
         raise AuthError("pasif", "Hesap pasif.")
     # Opsiyonel: argon2 parametre güncellemesi → giriş anında yeniden hashle.
     if security.rehash_gerekli(kullanici.parola_hash):
-        kullanici.parola_hash = security.hash_parola(parola)
+        kullanici.parola_hash = await asyncio.to_thread(security.hash_parola, parola)
     kullanici.son_giris = _now()
     access, refresh, ttl = await _oturum_ac(session, kullanici, ip, user_agent)
     return kullanici, access, refresh, ttl

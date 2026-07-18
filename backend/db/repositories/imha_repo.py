@@ -15,7 +15,7 @@ from sqlalchemy import delete, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from agents.config import saklama_suresi
-from db.models import BilgiUnsuru, GelenEvrak, Islem, KanitSpan
+from db.models import BilgiUnsuru, GelenEvrak, Islem, KanitSpan, Taslak
 
 _ANONIM = "[İMHA EDİLDİ — saklama süresi doldu (KVKK md.7)]"
 _GUN_YIL = 365
@@ -83,6 +83,17 @@ async def anonimlestir(session: AsyncSession, *, evrak_id: uuid.UUID) -> None:
                               .values(deger_maskeli="[anonim]"))
         await session.execute(update(KanitSpan).where(KanitSpan.islem_id.in_(iids))
                               .values(deger="[anonim]"))
+        # Islem'e türetilmiş İÇERİK de anonimleştirilir — ozet/bilgilendirme (özet+bildirim
+        # metni), bilgi_unsurlari (çıkarılan alanlar) ve kanit_metadata (maskeli TAM belge
+        # metni). Yoksa docstring'in "içeriği sil" garantisi kısmi kalıyordu: ocr_metni
+        # silinse de aynı içerik Islem/Taslak'ta erişilebilir duruyordu (bug avı bulgusu).
+        # Struktürel/skor alanları (durum, evrak_turu_kod, risk/sla/arsiv_metadata, süreler)
+        # KORUNUR → denetim iskeleti + istatistik bozulmaz.
+        await session.execute(update(Islem).where(Islem.id.in_(iids))
+                              .values(ozet="", bilgilendirme="", bilgi_unsurlari={}, kanit_metadata={}))
+        # O işlemlere bağlı taslak (resmî yazı) tam metni + konusu da anonimleştirilir.
+        await session.execute(update(Taslak).where(Taslak.islem_id.in_(iids))
+                              .values(metin_md=_ANONIM, konu="[anonim]"))
     await session.commit()
 
 

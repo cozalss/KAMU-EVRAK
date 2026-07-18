@@ -20,6 +20,7 @@ import structlog
 
 from agents.config import ZORUNLU_ALANLAR
 from agents.nodes._llm_extract import llm_json
+from api.pii import mask_for_llm
 
 log = structlog.get_logger()
 
@@ -98,7 +99,8 @@ async def _llm_sorular(eksik: list[str], turu: str, metin: str) -> list[str] | N
     anahtarı tolerans için kabul edilir (geriye uyum).
     """
     etiketler = ", ".join(_ALAN_SORU.get(a, a) for a in eksik)
-    user = f"Evrak türü: {turu}\nEksik alanlar: {etiketler}\nEvrak metni:\n{metin[:2000]}"
+    # KVKK: LLM'e ham sayısal PII gitmez (eksik-alan tespiti değerlere değil varlığa bakar).
+    user = f"Evrak türü: {turu}\nEksik alanlar: {etiketler}\nEvrak metni:\n{mask_for_llm(metin, None)[:2000]}"
     obj = await llm_json(_SYSTEM, user, max_tokens=400)
     if obj is None:
         return None

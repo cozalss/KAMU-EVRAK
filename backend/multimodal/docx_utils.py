@@ -53,11 +53,21 @@ def extract_docx_text(data: bytes) -> str:
     parts: list[str] = [p.text for p in document.paragraphs if p.text and p.text.strip()]
 
     # Tablolar (hukuk belgelerinde sık: taraf/tutar/tarih çizelgeleri) — satır = "a | b | c".
-    # dict.fromkeys: birleşik (merged) hücreler aynı metni tekrarlar → teksilleştir. c.text
-    # bir property (her erişimde XML parse) → walrus ile bir kez oku.
+    # Birleşik (merged) hücreler AYNI `_tc` XML elemanını paylaşır → hücre KİMLİĞİne göre
+    # teksilleştir. (Eski dict.fromkeys metin-DEĞERİne göre dedup ediyordu; birleşik olmayan
+    # ama tesadüfen aynı metni taşıyan sütunları — '0 TL', 'Evet', '-', 'Yok' — sessizce
+    # düşürüp veri kaybına yol açıyordu; bug avı bulgusu.)
     for table in document.tables:
         for row in table.rows:
-            cells = list(dict.fromkeys(t for c in row.cells if (t := c.text.strip())))
+            gorulen: set[int] = set()
+            cells: list[str] = []
+            for c in row.cells:
+                tc_id = id(c._tc)
+                if tc_id in gorulen:
+                    continue
+                gorulen.add(tc_id)
+                if t := c.text.strip():
+                    cells.append(t)
             if cells:
                 parts.append(" | ".join(cells))
 

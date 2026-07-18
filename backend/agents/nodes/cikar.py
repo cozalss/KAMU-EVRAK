@@ -17,6 +17,7 @@ from typing import Any
 import structlog
 
 from agents.nodes._llm_extract import llm_json
+from api.pii import mask_for_llm
 
 log = structlog.get_logger()
 
@@ -241,7 +242,11 @@ async def cikar_node(state: dict[str, Any]) -> dict[str, Any]:
     text = state.get("evrak_text", "")
     unsurlar = _regex_unsurlar(text)  # PII maskeleme HER ZAMAN deterministik
 
-    obj = await llm_json(_SYSTEM, text[:6000], max_tokens=300)
+    # KVKK: dış servise (DeepSeek) ham TCKN/telefon/IBAN GİTMEZ (route_birim.py:218 deseni).
+    # isim=None → ad korunur (LLM gonderen'i çıkarır); yalnız sayısal PII maskelenir → LLM
+    # bunları zaten regex'e bıraktığı için işlevsel kayıp yok.
+    llm_metin = mask_for_llm(text, None)
+    obj = await llm_json(_SYSTEM, llm_metin[:6000], max_tokens=300)
     source = "regex"
     if obj is not None:
         _merge_llm(unsurlar, obj, text)

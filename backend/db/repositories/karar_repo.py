@@ -108,7 +108,6 @@ async def _karar_ve_giden(
     yazi_turu/metin verildiyse (memur kartta tür değiştirdi / metni tazeledi) taslak
     önce güncellenir → Onay ve GidenEvrak gerçekten gönderilen içeriğe bağlanır.
     """
-    await _taslak_guncelle(session, taslak, yazi_turu, metin)
     karar = _KARAR.get(secim, "onaylandi")
     islem = await session.get(Islem, islem_id)
     risk = await session.scalar(
@@ -121,8 +120,6 @@ async def _karar_ve_giden(
     # gerektirir ve MissingGreenlet ile çöker (regresyon bulgusu). Döngüden ÖNCE düz
     # değerlere kopyala; döngü artık nesnelere değil bu değerlere bakar.
     taslak_id = taslak.id
-    taslak_konu = taslak.konu
-    taslak_yazi_turu_kod = taslak.yazi_turu_kod
     islem_gelen_evrak_id = islem.gelen_evrak_id if islem else None
     islem_hedef_birim_id = islem.hedef_birim_id if islem else None
     izi_son_hash = izi.son_hash if izi else None
@@ -137,6 +134,14 @@ async def _karar_ve_giden(
             select(GidenEvrak.id).where(GidenEvrak.taslak_id == taslak_id))
         if mevcut is not None:
             raise KararError("zaten_gonderildi", "Bu taslak için zaten bir karar verilmiş.")
+        # Taslak tür/metin güncellemesi HER denemede yeniden uygulanır: rollback (giden_no
+        # çarpışması) onu geri aldığından, döngü DIŞINDA tek-sefer yapmak GidenEvrak'ı yeni
+        # tür/metne, kalıcı Taslak satırını ESKİ haline bırakıyordu (sessiz audit tutarsızlığı;
+        # bug avı). Taze session.get → rollback'te expire olan nesneye lazy-reload/MissingGreenlet yok.
+        taze_taslak = await session.get(Taslak, taslak_id)
+        await _taslak_guncelle(session, taze_taslak, yazi_turu, metin)
+        taslak_konu = taze_taslak.konu
+        taslak_yazi_turu_kod = taze_taslak.yazi_turu_kod
         session.add(Onay(
             taslak_id=taslak_id, karar=karar, karar_veren_id=kullanici_id,
             gerekce=gerekce or None, karar_zamani=_dt.datetime.now(_dt.UTC)))

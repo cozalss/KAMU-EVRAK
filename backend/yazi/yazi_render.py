@@ -541,6 +541,13 @@ def build_context(
         muhatap = ""
     else:
         muhatap = _muhatap(unsurlar)
+        if turu == "bilgilendirme" and muhatap and not muhatap.startswith("Sayın "):
+            # Bilgilendirme dağıtımlı bir DUYURUDUR (Yön. m.14 cevabi-yazı değil):
+            # gönderen KURUM ise (genelge/talimat gibi) o kurumun direktifini KENDİ
+            # birimlerimize duyuruyoruz — göndereni muhatap yapıp ona "cevap" yazmayız.
+            # Yalnız GERÇEK KİŞİ göndereni (bilgi edinme/CİMER cevabı, "Sayın X") kalır;
+            # kurum ise boşa düşer → şablon "DAĞITIM YERLERİNE" varsayılanına döner.
+            muhatap = ""
     # m.16 — kapanış muhatap makam hiyerarşisine göre OTOMATİK seçilir: yalnız
     # "Gereğini … ederim." kalıplı türlerde ve muhatap makamı çözülebiliyorsa
     # (vatandaş/bilinmeyen → tür varsayılanı korunur; yanlış seçim riski yok).

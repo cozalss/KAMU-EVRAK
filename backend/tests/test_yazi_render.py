@@ -407,10 +407,20 @@ class TestKapanisHiyerarsi:
         ctx = build_context("cevabi_yazi", {"gonderen": "Ayşe Yılmaz"}, "gövde")
         assert ctx.kapanis == "Bilgilerinize sunulur."
 
-    def test_bilgilendirme_kapanisina_dokunulmaz(self):
-        # 'Bilgilerinize arz ederim.' kalıbı türe özgü — hiyerarşi override uygulanmaz
+    def test_bilgilendirme_vatandas_gonderende_kisi_kapanisi(self):
+        # Vatandaş göndereni (bilgi edinme/CİMER cevabı) → gerçek-kişi muhatap KALIR
+        # ("Sayın Ayşe Yılmaz") → m.16/12-e kişi-kapanışı ("Bilgilerinize sunulur.").
+        ctx = build_context("bilgilendirme", {"gonderen": "Ayşe Yılmaz"}, "gövde")
+        assert ctx.muhatap == "Sayın Ayşe Yılmaz"
+        assert ctx.kapanis == "Bilgilerinize sunulur."
+
+    def test_bilgilendirme_kurum_gonderende_dagitim_kapanisina_doner(self):
+        # Kurum göndereni (genelge/talimat gibi) → bilgilendirme DAĞITIM notudur, o
+        # kurumu muhatap ALMAYIZ (build_context'te boşa düşer) → dağıtım kapanışı devreye
+        # girer (2026-07-19 bulgusu: eskiden gönderen kurum yanlışlıkla muhatap oluyordu).
         ctx = build_context("bilgilendirme", {"gonderen": "Ankara Valiliği"}, "gövde")
-        assert ctx.kapanis == "Bilgilerinize arz ederim."
+        assert ctx.muhatap == ""
+        assert ctx.kapanis == "Bilgilerini ve gereğini arz ve rica ederim."
 
 
 # ---------------------------------------------------------------------------

@@ -163,6 +163,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             build_alt_talep_taslaklari,
             build_body,
             build_context,
+            hitap_bicimi,
             ts13298_ust_veri,
         )
 
@@ -212,7 +213,10 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             hedef_muhatap = plan_muhatap or (
                 hitap_eki(birim_tr(hedef_birim)) if hedef_birim else None)
         else:
-            hedef_muhatap = plan_muhatap or None
+            # cevabi_yazi/bilgilendirme: LLM planı çıplak ad döndürebilir ("Mehmet Demir");
+            # _muhatap()'ın "Sayın" kapısından bu yol geçmiyordu (2026-07-19 bulgusu) —
+            # hitap_bicimi ile aynı m.14 kuralına sokulur (kurum aynen, gerçek kişi Sayın).
+            hedef_muhatap = hitap_bicimi(plan_muhatap) if plan_muhatap else None
         # SDP konu-kodu (Yön. m.11): evrak türü + konudan deterministik → Sayı satırı m.11-yapılı
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")

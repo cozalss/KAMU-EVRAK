@@ -414,6 +414,20 @@ def _kurum_adi_mi(ad: str) -> bool:
     return bool(_KURUM_GOSTERGE.search(tr_lower(ad)))
 
 
+def hitap_bicimi(ad: str) -> str:
+    """Muhatap adını m.14 hitap kuralına sokar: gerçek kişi → 'Sayın <Ad>'; kurum aynen.
+
+    `_muhatap()` (evraktan çıkarılan gönderen) İLE dinamik yazı planının (LLM, serbest
+    metin muhatap — yazi_taslak.py) AYNI kapıdan geçmesi için ortak fonksiyon: LLM
+    "Mehmet Demir" gibi çıplak ad döndürebiliyor, "Sayın" eklemeyi unutursa resmî üslup
+    ihlali olur (2026-07-19 bulgusu — plan_muhatap override _muhatap()'ı hiç görmüyordu).
+    """
+    ad = ad.strip()
+    if not ad or ad.startswith("Sayın "):
+        return ad
+    return ad if _kurum_adi_mi(ad) else f"Sayın {ad}"
+
+
 # Görüş/müzekkere cevabının konusundan düşürülecek SON talep kelimesi (yalnız kuyruk):
 # "... Hukuki Mütalaa Talebi" → "... Hukuki Mütalaa". Yalnız son sözcük kırpılır; öncesi
 # ("Hukuki Mütalaa") KORUNUR (cevabın da konusudur).
@@ -446,7 +460,7 @@ def _muhatap(unsurlar: dict[str, Any]) -> str:
     if gonderen:
         gonderen = re.sub(r"\s*\([^)]*\)\s*$", "", gonderen).strip()
         if gonderen:
-            return gonderen if _kurum_adi_mi(gonderen) else f"Sayın {gonderen}"
+            return hitap_bicimi(gonderen)
     kurum = str(unsurlar.get("kurum", "") or "").strip()
     return kurum  # boşsa YaziContext demo varsayılanı kullanır
 
@@ -656,4 +670,4 @@ async def build_alt_talep_taslaklari(
 
 
 __all__ = ("build_alt_talep_taslaklari", "build_body", "build_context",
-           "revize_taslak", "revize_taslak_yapili", "ts13298_ust_veri")
+           "hitap_bicimi", "revize_taslak", "revize_taslak_yapili", "ts13298_ust_veri")

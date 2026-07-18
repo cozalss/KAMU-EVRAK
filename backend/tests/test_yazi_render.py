@@ -19,6 +19,7 @@ from yazi.yazi_render import (
     _muhatap,
     build_alt_talep_taslaklari,
     build_context,
+    hitap_bicimi,
     ts13298_ust_veri,
 )
 
@@ -60,6 +61,24 @@ class TestMuhatapTuretme:
         muhatap = _muhatap({})
         # Assert
         assert muhatap == ""
+
+
+class TestHitapBicimi:
+    """hitap_bicimi: LLM-plan kaynaklı serbest-metin muhatap da _muhatap() ile AYNI m.14
+    kuralından geçsin (2026-07-19 bulgusu: LLM 'Mehmet Demir' dönünce 'Sayın' hiç eklenmiyordu,
+    plan_muhatap → build_context override'ı _muhatap()'ı hiç görmüyordu)."""
+
+    def test_cikta_ad_sayin_alir(self):
+        assert hitap_bicimi("Mehmet Demir") == "Sayın Mehmet Demir"
+
+    def test_kurum_adi_aynen_kalir(self):
+        assert hitap_bicimi("Gençlik ve Spor Bakanlığı") == "Gençlik ve Spor Bakanlığı"
+
+    def test_zaten_sayin_ile_baslayan_tekrar_eklenmez(self):
+        assert hitap_bicimi("Sayın Ayşe Yılmaz") == "Sayın Ayşe Yılmaz"
+
+    def test_bos_ad_bos_doner(self):
+        assert hitap_bicimi("") == ""
 
 
 class TestIlgiTuretme:

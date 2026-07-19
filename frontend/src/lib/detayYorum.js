@@ -227,8 +227,6 @@ const GEREKCE_KURAL = [
     (m) => `Taslakta geçen ${tirnak(m[1])} ifadesi, yüklediğiniz evrakta bulunamadı — yapay zekâ bu bilgiyi kendiliğinden eklemiş olabilir.`],
   [/^Uydurma şüphesi — Taslaktaki '(.+?)' (tarihi|sayısı) kaynak evrakta yok/i,
     (m) => `Taslakta geçen ${tirnak(m[1])} ${m[2]}, yüklediğiniz evrakta bulunamadı — göndermeden önce doğrulayın.`],
-  [/^Demo kurumu uyuşmazlığı: bu belge '(.+?)' kurumuna hitaben düzenlenmiş; aktif kurumunuz '(.+?)'\./i,
-    (m) => `Bu belge ${tirnak(m[1])} kurumuna hitaben yazılmış, aktif kurumunuz ise ${tirnak(m[2])} — antet aktif kurumla oluşturuldu, göndermek engellenmedi. Dilerseniz belgedeki kurumu aktif kurum olarak kullanabilirsiniz.`],
   [/^Eksik bölüm:\s*(.+)$/i,
     (m) => `Resmî yazıda bulunması gereken ${tirnak(m[1])} bölümü taslakta yok.`],
   [/^Resmî yazı zorunlu format bölümleri eksik$/i,

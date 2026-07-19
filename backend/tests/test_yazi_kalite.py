@@ -195,8 +195,10 @@ async def test_servis_birimi_dict_zengin_yolu_dusurmez():
 
 
 async def test_antet_idare_tek_kurum():
-    """TEK-KURUM (19 Tem): bakanlıktan gelen görüş evrağının taslağı bile AKTİF kurum
-    antedi taşır — gelen kurum (bakanlık) antede SIZMAZ (env'e düşer)."""
+    """Bakanlıktan GELEN (nominatif T.C. başlık, hitap-ekli DEĞİL) görüş evrağının taslağı
+    AKTİF kurum antedi taşır — gönderen bakanlık antede SIZMAZ (env'e düşer). Nominatif
+    başlık MUHATABI değil GÖNDERENİ gösterebileceği için efektif_idare_adi bunu güvenilir
+    saymaz (yalnız yönelme-ekli/dative "...BAKANLIĞINA" hitabı otomatik antet olur)."""
     from agents.nodes.yazi_taslak import yazi_taslak_node
 
     out = await yazi_taslak_node({
@@ -259,10 +261,11 @@ async def test_antet_kurum_tespit_yoksa_env_fallback():
 
 
 async def test_kaynak_dogrulanmis_hedef_birim_antete_yazilir():
-    """Route ajanının kaynak-doğrulanmış birimi antet hazırlayan BİRİMİ olur (İDARE değil).
+    """Route ajanının kaynak-doğrulanmış birimi antet hazırlayan BİRİMİ olur (İDARE ayrı eksen).
 
-    TEK-KURUM (19 Tem): antet İDARE = aktif kurum (env); gelen 'YENİMAHALLE BELEDİYESİ'
-    antede sızmaz. BİRİM satırı ise kaynak-doğrulanmış hedef birimden gelir (değişmedi).
+    19 Tem 2. revizyon: belge hitap-ekli olduğundan ('...BAŞKANLIĞINA') antet İDARE'si de
+    belgenin kendi kurumu olur ('Yenimahalle Belediyesi') — BİRİM satırı ise (kaynak-doğrulanmış
+    hedef birim) bundan bağımsız, ayrı bir eksendir, değişmedi.
     """
     from agents.nodes.yazi_taslak import yazi_taslak_node
 
@@ -274,8 +277,8 @@ async def test_kaynak_dogrulanmis_hedef_birim_antete_yazilir():
         "durum": "kaynak_dogrulandi",
     })
     md = out["yazi_taslak_md"]
-    assert "KAMU KURUMU" in md                     # antet İDARE = aktif kurum (tek-kurum)
-    assert "YENİMAHALLE BELEDİYESİ" not in md       # gelen kurum antede sızmaz
+    assert "YENİMAHALLE BELEDİYESİ" in md           # antet İDARE = belgenin kendi kurumu
+    assert "KAMU KURUMU" not in md
     assert "Fen İşleri Müdürlüğü" in md            # kaynak-doğrulanmış hazırlayan birim
 
 
@@ -338,53 +341,44 @@ def test_gonderen_birim_gosterge_son_sozcuk_sarti():
     assert gonderen_birim_tespit(iyi) == "İl Yazı İşleri Müdürlüğü"
 
 
-def test_antet_tek_kurum_gelen_kurum_sizmaz():
-    """TEK-KURUM MODELİ (19 Tem): antet HER ZAMAN aktif kurumdur (env KURUM_ADI).
-
-    Gelen evrağın kurumu (icra/belediye/bakanlık) antede ARTIK SIZMAZ — pipeline
-    idare_adi='' geçer → build_context _DEMO_DEFAULTS env'e düşer. Test ortamında
-    KURUM_ADI boş (conftest) → jenerik 'KAMU KURUMU'. Eski dinamik-antet seçimi kaldırıldı.
-    """
+def test_build_context_bos_idare_adi_env_jeneriğe_duser():
+    """build_context() KENDİSİ doküman tespiti YAPMAZ — çağıran (yazi_taslak_node /
+    api.routes.yazi) kurum_kimlik.efektif_idare_adi ile önceden hesaplayıp geçirir.
+    Burada yalnız boş idare_adi'nin env/jenerik'e düştüğü doğrulanır (test ortamında
+    KURUM_ADI boş → 'KAMU KURUMU')."""
     from yazi.yazi_render import build_context
 
-    # icra üst yazısı: gönderen 'İCRA MÜDÜRLÜĞÜ' antede basılmaz.
     ctx = build_context("ust_yazi", {"konu": "Maaş haczi"}, "gövde", idare_adi="")
     assert ctx.jinja_vars()["idare_adi"] == "KAMU KURUMU"
-    # hitap-ekli belediye dilekçesi de artık antedi EZMEZ (eski davranış geri alındı).
     ctx2 = build_context("cevabi_yazi", {"konu": "Sokak"}, "gövde", idare_adi="")
     assert ctx2.jinja_vars()["idare_adi"] == "KAMU KURUMU"
 
 
-def test_kurum_uyusmazligi_farkli_tur_kirmizi():
-    """Aktif belediye; evrak FARKLI TÜRDE kuruma (müdürlük/bakanlık) hitaben → uyuşmazlık."""
-    from agents.kurum_kimlik import kurum_uyusmazligi
+def test_efektif_idare_adi_hitap_ekli_belge_kazanir():
+    """19 Tem 2. revizyon: belge hitap-ekli bir kuruma yazılmışsa (tür/aktif kurum farketmez)
+    o kurum OTOMATİK kullanılır — sormadan/uyarmadan, eski uyuşmazlık ayrımı KALDIRILDI."""
+    from agents.kurum_kimlik import efektif_idare_adi
 
     aktif = "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
     saglik = "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nRandevu sistemi şikayeti."
-    u = kurum_uyusmazligi(saglik, {}, aktif)
-    assert u is not None and u["tur"] == "mudurluk"
+    assert efektif_idare_adi(saglik, {}, aktif) == "İl Sağlık Müdürlüğü"
     bakanlik = "ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞINA\n\nİmar planı görüşü."
-    assert kurum_uyusmazligi(bakanlik, {}, aktif) is not None
-
-
-def test_kurum_uyusmazligi_ayni_tur_stand_in():
-    """Aktif belediye; evrak BAŞKA bir belediyeye hitaben → aynı tür = stand-in, uyuşmazlık YOK."""
-    from agents.kurum_kimlik import kurum_uyusmazligi
-
-    aktif = "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
+    assert "Bakanlığı" in efektif_idare_adi(bakanlik, {}, aktif)
+    # Aynı tür (belediye↔belediye) için de artık İSTİSNA YOK — belge yine kazanır.
     dilekce = "ODUNPAZARI BELEDİYE BAŞKANLIĞINA\n\nSokağımızdaki yol bozuk."
-    assert kurum_uyusmazligi(dilekce, {}, aktif) is None
+    assert efektif_idare_adi(dilekce, {}, aktif) == "Odunpazarı Belediyesi"
 
 
-def test_kurum_uyusmazligi_yargi_ve_bos_aktif_muaf():
-    """Yargı kurumu DIŞ kaynak → muaf; aktif kurum tanımsızsa (baseline) kontrol yapılmaz."""
-    from agents.kurum_kimlik import kurum_uyusmazligi
+def test_efektif_idare_adi_yargi_ve_hitapsiz_aktif_kuruma_duser():
+    """Yargı kurumu DIŞ kaynak → antet olamaz; hitap-ekli değilse (nominatif/hiç) aktif kuruma düşer."""
+    from agents.kurum_kimlik import efektif_idare_adi
 
     aktif = "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
     icra = "ANKARA 5. İCRA MÜDÜRLÜĞÜNE\n\nSayı : 2026/4587 E."  # hitap-ekli ama yargı
-    assert kurum_uyusmazligi(icra, {}, aktif) is None      # yargı muaf
-    saglik = "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nşikayet."
-    assert kurum_uyusmazligi(saglik, {}, "") is None       # aktif boş → kontrol yok
+    assert efektif_idare_adi(icra, {}, aktif) == aktif
+    hitapsiz = "Merhaba, sokağımızda çöpler toplanmıyor. Gereğini arz ederim."
+    assert efektif_idare_adi(hitapsiz, {}, aktif) == aktif
+    assert efektif_idare_adi(hitapsiz, {}, "") == ""   # aktif de boşsa boş (env'e düşürülür)
 
 
 def test_muzekkere_muhatabi_gonderen_mahkeme_hitapli():

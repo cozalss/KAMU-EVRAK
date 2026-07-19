@@ -41,9 +41,10 @@ class EvrakState(TypedDict):
     # --- Giriş (OCR/route tarafından doldurulur) ---
     evrak_text: str
     filename: NotRequired[str]
-    # Demo/kurum yapılandırması (19 Tem karar revizyonu): istek-bazlı override, boşsa env
-    # KURUM_ADI'ya düşer (yazi_taslak._aktif_kurum_adi). Sabit tek-tenant ZORUNLU DEĞİL —
-    # her demo senaryosu kendi aktif kurumunu geçirebilir (bkz. kurum_kimlik.kurum_uyusmazligi).
+    # Demo/kurum FALLBACK'i (19 Tem 2. revizyon): istek-bazlı override, boşsa env KURUM_ADI'ya
+    # düşer. Yalnız belge açık bir kuruma hitap ETMİYORSA kullanılır — belge hitap-ekli bir
+    # kuruma yazılmışsa (yargı hariç) antet HER ZAMAN o kurumu kullanır, sormadan/uyarmadan
+    # (bkz. kurum_kimlik.efektif_idare_adi — "biz belgeye göre hareket ediyoruz").
     aktif_kurum: NotRequired[str]
     ocr_engine: NotRequired[str]
     page_count: NotRequired[int]
@@ -99,9 +100,6 @@ class EvrakState(TypedDict):
     # Sistem-tespitli antet künyesi {idare, birim, muhatap} — dinamik kurum kimliği
     # (yazi_taslak yazar; verify grounding muafiyeti + UI şeffaflığı okur).
     antet_meta: NotRequired[dict[str, str]]
-    # Demo kurumu uyuşmazlığı meta'sı {belge_kurumu, belge_kurumu_tur, aktif_kurum} | None
-    # (verify yazar) — UI'ın "belgedeki kurumu kullan / mevcut kurumla devam et" seçimi.
-    kurum_uyusmazligi: NotRequired[dict[str, str] | None]
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
     # Dinamik yazı planının (yazi/yazi_plan.py) insan-okunur gerekçesi; boş = statik yol.
     yazi_plan_notu: NotRequired[str]

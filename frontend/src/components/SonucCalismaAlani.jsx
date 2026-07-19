@@ -39,7 +39,6 @@ import {
   SH,
   NeonCard,
   Icon,
-  Btn,
   focusRing,
   odakDongusu,
 } from "./neonUi.jsx";
@@ -186,39 +185,6 @@ function EmptySource() {
       <Icon.doc />
       Kaynak belge bulunamadı
     </div>
-  );
-}
-
-/* Demo kurumu uyuşmazlığı — 19 Tem revizyon: SARI bilgilendirme, KIRMIZI değil (gönderimi
-   engellemez). Belge farklı türde bir kuruma hitaben yazılmışsa memur iki seçenekten birini
-   seçer: belgedeki kurumu aktif kurum yap (antet + koşum yeniden üretilir) ya da mevcut aktif
-   kurumla devam et (kart yalnız bu koşum için kapanır — yeni koşumda dismissed sıfırlanır). */
-function KurumUyusmazlikBanner({ r, onKurumSec }) {
-  const ku = r.kurum_uyusmazligi;
-  const [dismissed, setDismissed] = useState(false);
-  const kosumKimligi = r?.denetim_izi ?? r;
-  useEffect(() => { setDismissed(false); }, [kosumKimligi]);
-  if (!ku || dismissed) return null;
-  const sariKoyu = DERIN_OF(BANT.sari.c);
-  return (
-    <section role="alert" aria-label="Demo kurumu uyuşmazlığı"
-      style={{ display: "flex", alignItems: "flex-start", gap: SP.m, padding: "14px 16px", marginBottom: SP.m, borderRadius: RAD.card, border: `1px solid ${BANT.sari.c}`, background: ALFA(BANT.sari.c) }}>
-      <Icon.alert width={18} height={18} style={{ flex: "none", marginTop: 2, color: sariKoyu }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Demo kurumu uyuşmazlığı</div>
-        <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.ink2 }}>
-          Bu belge <strong style={{ fontWeight: 600 }}>{ku.belge_kurumu}</strong> kurumuna hitaben yazılmış, ancak aktif kurumunuz{" "}
-          <strong style={{ fontWeight: 600 }}>{ku.aktif_kurum}</strong>. Antet ve birim yönlendirmesi aktif kurumla oluşturuldu — göndermek engellenmedi.
-        </p>
-        <div style={{ display: "flex", gap: SP.s, marginTop: SP.m, flexWrap: "wrap" }}>
-          <Btn primary accent={BANT.sari.c} disabled={!onKurumSec}
-            onClick={() => onKurumSec?.(ku.belge_kurumu)}>
-            Belgedeki kurumu aktif kurum olarak kullan
-          </Btn>
-          <Btn onClick={() => setDismissed(true)}>Mevcut aktif kurumla devam et</Btn>
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -961,7 +927,6 @@ export default function SonucCalismaAlani({
   solPanel = null,
   yanTaslak = null,
   altAkis = null,
-  onKurumSec = null,
 }) {
   const [popup, setPopup] = useState(null);
   const [sourceView, setSourceView] = useState("belge");
@@ -1009,7 +974,6 @@ export default function SonucCalismaAlani({
   return (
     <>
       <div className="sc-workspace" aria-label="Belge inceleme sonucu">
-        <KurumUyusmazlikBanner r={r} onKurumSec={onKurumSec} />
         <DecisionCard r={r} eksik={eksik} uyari={uyari} tutar={tutar} />
 
         <div className="sc-result-document-grid">

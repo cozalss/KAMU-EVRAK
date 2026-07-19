@@ -1,9 +1,11 @@
-"""aktif_kurum yapılandırılabilirliği + demo kurumu uyuşmazlığı — uçtan-uca sözleşme.
+"""aktif_kurum fallback + belgeye-göre otomatik kurum seçimi — uçtan-uca sözleşme.
 
-19 Tem revizyon: sabit tek-tenant ZORUNLU DEĞİL. `/process_doc` istek bazlı `aktif_kurum`
-alanı taşır; boşsa env KURUM_ADI'ya düşer (geriye-uyum). Farklı TÜRDE bir kuruma hitaben
-yazılmış evrakta SARI "kurum_uyusmazligi" meta'sı ProcessResponse'a taşınır — KIRMIZI
-DEĞİL, gönderimi engellemez (mock modda deterministik; ağ/LLM yok).
+19 Tem 2. revizyon: "biz belgeye göre hareket ediyoruz" — belge açıkça bir kuruma hitaben
+yazılmışsa (yönelme-ekli, yargı hariç) antet O KURUMU otomatik kullanır; sormadan, uyarı
+vermeden. `aktif_kurum` (istek-bazlı override, boşsa env KURUM_ADI) yalnız belge açık bir
+kurum belirtmediğinde (nominatif/gönderen başlığı ya da hiç kurum tespiti yoksa) fallback'tir.
+Önceki "demo kurumu uyuşmazlığı" SARI bilgilendirmesi (yapılandırılmış meta + iki seçenek)
+TAMAMEN KALDIRILDI — `kurum_uyusmazligi` artık ProcessResponse'da yok.
 """
 
 from __future__ import annotations
@@ -21,6 +23,7 @@ _ODUNPAZARI = (
     "ODUNPAZARI BELEDİYE BAŞKANLIĞINA\n\nSokağımızdaki yol bozuk, tamir talep ederim.\n"
     "Ayşe Yılmaz — imza"
 )
+_HITAPSIZ = "Merhaba, sokağımızda çöpler toplanmıyor. Gereğini arz ederim."
 
 
 @pytest.fixture
@@ -28,16 +31,16 @@ def client() -> TestClient:
     return TestClient(main.app)
 
 
-class TestAktifKurumOverride:
-    def test_aktif_kurum_bossa_env_fallback(self, client: TestClient):
-        # Act — aktif_kurum verilmezse (varsayılan "") davranış eskisiyle AYNI: env'e düşer.
-        res = client.post("/process_doc", json={"evrak_text": _ODUNPAZARI, "filename": "x.txt"})
+class TestAktifKurumFallback:
+    def test_aktif_kurum_bossa_env_fallback_hitapsiz_belgede(self, client: TestClient):
+        # Belge açık bir kuruma hitap etmiyor + aktif_kurum verilmedi → env'e düşer.
+        res = client.post("/process_doc", json={"evrak_text": _HITAPSIZ, "filename": "x.txt"})
         assert res.status_code == 200
         assert res.json()["antet_meta"].get("idare") in ("KAMU KURUMU", "")
 
-    def test_aktif_kurum_istek_bazli_antede_yazilir(self, client: TestClient):
+    def test_aktif_kurum_istek_bazli_hitapsiz_belgede_antede_yazilir(self, client: TestClient):
         res = client.post("/process_doc", json={
-            "evrak_text": _ODUNPAZARI, "filename": "x.txt",
+            "evrak_text": _HITAPSIZ, "filename": "x.txt",
             "aktif_kurum": "Odunpazarı Belediye Başkanlığı",
         })
         assert res.status_code == 200
@@ -45,41 +48,40 @@ class TestAktifKurumOverride:
         assert "ODUNPAZARI BELEDİYE BAŞKANLIĞI" in body["yazi_taslak_md"]
         assert body["antet_meta"]["idare"] == "ODUNPAZARI BELEDİYE BAŞKANLIĞI"
 
+    def test_kurum_uyusmazligi_alani_yaniti_hic_yok(self, client: TestClient):
+        # Eski SARI uyarı/meta mekanizması tamamen kaldırıldı.
+        res = client.post("/process_doc", json={"evrak_text": _SAGLIK_MUD, "filename": "x.txt"})
+        assert res.status_code == 200
+        assert "kurum_uyusmazligi" not in res.json()
 
-class TestKurumUyusmazligiUctanUca:
-    def test_farkli_tur_sari_meta_doldurur(self, client: TestClient):
+
+class TestBelgeyeGoreOtomatikKurum:
+    def test_hitap_ekli_belge_aktif_kurumu_ezer_sessizce(self, client: TestClient):
+        # Belge farklı türde bir kuruma hitaben yazılmış olsa da SORMADAN/UYARMADAN
+        # belgenin kendi kurumu kullanılır — aktif_kurum verilmiş olsa bile.
         res = client.post("/process_doc", json={
             "evrak_text": _SAGLIK_MUD, "filename": "x.txt",
             "aktif_kurum": "Örnekşehir Belediye Başkanlığı",
         })
         assert res.status_code == 200
         body = res.json()
-        assert body["kurum_uyusmazligi"] == {
-            "belge_kurumu": "İl Sağlık Müdürlüğü", "belge_kurumu_tur": "mudurluk",
-            "aktif_kurum": "Örnekşehir Belediye Başkanlığı",
-        }
-        # SARI — gönderim ENGELLENMEZ (KIRMIZI değil).
-        assert body["risk_metadata"]["bant"] == "sari"
-        # Antet yine de aktif kuruma göre (belgedeki kuruma DEĞİL).
-        assert "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI" in body["yazi_taslak_md"]
+        assert "İL SAĞLIK MÜDÜRLÜĞÜ" in body["yazi_taslak_md"]
+        assert body["antet_meta"]["idare"] == "İL SAĞLIK MÜDÜRLÜĞÜ"
+        assert "ÖRNEKŞEHİR" not in body["yazi_taslak_md"]
+        # Hiçbir uyarı/bant zorlaması yok — kurum seçimi sessiz bir otomasyondur.
+        gerekceler = body.get("risk_metadata", {}).get("gerekceler", [])
+        assert not any("uyuşmazlığı" in g for g in gerekceler)
 
-    def test_ayni_tur_stand_in_meta_bos(self, client: TestClient):
+    def test_ayni_tur_belge_de_kendi_kurumunu_kullanir(self, client: TestClient):
+        # Önceki "aynı tür = stand-in, aktif kurum kazanır" ayrımı KALDIRILDI — belge her
+        # zaman kazanır, tür farkı önemsiz. (Kanonik ad "Belediyesi" son-ekiyle kurulur —
+        # kurum_kimlik._kanonik; belgedeki tam "Belediye Başkanlığı" ifadesi değil.)
         res = client.post("/process_doc", json={
             "evrak_text": _ODUNPAZARI, "filename": "x.txt",
             "aktif_kurum": "Örnekşehir Belediye Başkanlığı",
         })
         assert res.status_code == 200
         body = res.json()
-        assert body["kurum_uyusmazligi"] is None
-
-    def test_belgedeki_kurumu_kullan_uyusmazligi_temizler(self, client: TestClient):
-        # "Belgedeki kurumu aktif kurum yap" akışı: aynı evrak, aktif_kurum artık belge
-        # kurumuyla AYNI → uyuşmazlık kaybolur, antet belge kurumuna döner.
-        res = client.post("/process_doc", json={
-            "evrak_text": _SAGLIK_MUD, "filename": "x.txt",
-            "aktif_kurum": "İl Sağlık Müdürlüğü",
-        })
-        assert res.status_code == 200
-        body = res.json()
-        assert body["kurum_uyusmazligi"] is None
-        assert "İL SAĞLIK MÜDÜRLÜĞÜ" in body["yazi_taslak_md"]
+        assert "ODUNPAZARI BELEDİYESİ" in body["yazi_taslak_md"]
+        assert body["antet_meta"]["idare"] == "ODUNPAZARI BELEDİYESİ"
+        assert "ÖRNEKŞEHİR" not in body["yazi_taslak_md"]

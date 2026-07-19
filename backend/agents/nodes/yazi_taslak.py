@@ -35,6 +35,7 @@ from agents.config import (
     birim_tr,
 )
 from agents.kurum_kimlik import (
+    efektif_idare_adi,
     gorus_muhatabi,
     hitap_eki,
     muzekkere_muhatabi,
@@ -69,9 +70,9 @@ def _fallback_taslak(
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
     konu_satir = konu if konu else "Başvuru değerlendirmesi"
     tarih = date.today().strftime("%d.%m.%Y")
-    # Kurum kimliği: aktif kurum (istek-bazlı override, yoksa ENV KURUM_ADI — models._DEMO_
-    # DEFAULTS ile aynı kaynak); evraktan dinamik tespit YAPILMAZ (antet gelen belgeye göre
-    # DEĞİŞMEZ — uyuşmazlık varsa risk_guard SARI bilgilendirme üretir, bkz. kurum_kimlik).
+    # Kurum kimliği: çağıran zaten efektif_idare_adi() ile hesaplayıp geçirir (belge hitap-
+    # ekliyse doküman kurumu, değilse aktif kurum/env) — burada yalnız son ENV/jenerik
+    # fallback'i uygulanır.
     idare = (aktif_kurum or "").strip() or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
     birim = os.getenv("KURUM_BIRIM", "").strip() or "Yazı İşleri Birimi"
     kapanis = {
@@ -136,6 +137,11 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     # köprülenir; böylece üst-yazı muhatabı (m.14/2) ve plan boş kalmaz. birim_tr passthrough.
     hedef_birim = state.get("hedef_birim") or state.get("hedef_kategori") or ""
     plan_notu = ""
+    # Antet İDARE = belge açıkça bir kuruma hitaben yazılmışsa (yönelme-ekli, yargı hariç)
+    # O KURUM otomatik — sormadan/uyarmadan; değilse aktif kurum (istek-bazlı override,
+    # boşsa env KURUM_ADI'ya düşer). "Biz belgeye göre hareket ediyoruz" (19 Tem 2. revizyon).
+    efektif_kurum = efektif_idare_adi(
+        evrak_text, unsurlar, str(state.get("aktif_kurum") or "").strip())
 
     try:
         from yazi.renderer import render_yazi
@@ -149,7 +155,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         )
 
         alt_out = await build_alt_talep_taslaklari(
-            alt_talepler, unsurlar, aktif_kurum=str(state.get("aktif_kurum") or "").strip())
+            alt_talepler, unsurlar, aktif_kurum=efektif_kurum)
         if len(alt_out) >= 2:
             return _coklu_cikti(alt_out)
         # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
@@ -203,15 +209,13 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")
         sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
-        # Antet İDARE = aktif kurum (istek-bazlı override, boşsa build_context env KURUM_ADI'ya
-        # düşer) + hazırlayan BİRİM (kaynak-doğrulanmış hedef birim → konuya göre servis
-        # müdürlüğü → env/tür varsayılanı). Antet gelen belgeye göre DEĞİŞMEZ; uyuşmazlık
-        # varsa verify/risk_guard SARI bilgilendirme üretir (kurum_kimlik.kurum_uyusmazligi).
+        # Antet İDARE = efektif_kurum (yukarıda hesaplandı: belge hitap-ekliyse doküman
+        # kurumu, değilse aktif kurum/env) + hazırlayan BİRİM (kaynak-doğrulanmış hedef
+        # birim → konuya göre servis müdürlüğü → env/tür varsayılanı).
         hazirlayan = _hazirlayan_birim(state, yazi_turu)
-        aktif_kurum = str(state.get("aktif_kurum") or "").strip()
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
                             sdp_kodu=(sdp or {}).get("kod", ""),
-                            hazirlayan_birim=hazirlayan, idare_adi=aktif_kurum)
+                            hazirlayan_birim=hazirlayan, idare_adi=efektif_kurum)
         result = render_yazi(ctx)
         jinja = ctx.jinja_vars()
         sayi_satiri = jinja.get("sayi_satiri", "")
@@ -225,7 +229,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         log.warning("yazi_taslak_fallback", err=str(exc))
         return _fallback_taslak(
             yazi_turu, str(unsurlar.get("konu", "") or ""), evrak_text,
-            aktif_kurum=str(state.get("aktif_kurum") or "").strip())
+            aktif_kurum=efektif_kurum)
 
     log.info(
         "yazi_taslak", turu=turu, yazi_turu=result.yazi_turu,

@@ -225,16 +225,6 @@ export function usePipeline() {
     await streamRun(file, aktifKurum);
   }, [reset, streamRun]);
 
-  // ---------- B2) Aynı evrakı YENİ bir aktif kurumla yeniden işle ("belgedeki kurumu
-  // aktif kurum olarak kullan" düğmesi) — lastRun.current'ı YENİ aktifKurum ile tekrar
-  // çalıştırır; retry() de bundan sonra bu değeri kullanır (state'e yazılmayı beklemez).
-  const runWithAktifKurum = useCallback(async (newAktifKurum) => {
-    const last = lastRun.current;
-    if (!last) return;
-    if (last.kind === "file") await runFile(last.file, newAktifKurum);
-    else if (last.kind === "sample") await runSample(last.sample, newAktifKurum);
-  }, [runFile, runSample]);
-
   // ---------- HITL resume ----------
   // Döner: true = karar backend'e işlendi (result-effect damgayı tüketir), false = başarısız/
   // no-op. Çağıran (DashboardApp) false'ta pendingApprovalRef'i TEMİZLEMELİ — aksi halde bayat
@@ -372,7 +362,7 @@ export function usePipeline() {
 
   return {
     nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
-    runFile: runFileValidated, runSample, runWithAktifKurum, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
+    runFile: runFileValidated, runSample, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
     // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
     // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).
     runBase: runStart.current,

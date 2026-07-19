@@ -155,6 +155,7 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     """
     from agents.config import birim_tr
     from agents.kurum_kimlik import (
+        efektif_idare_adi,
         gorus_muhatabi,
         hitap_eki,
         muzekkere_muhatabi,
@@ -178,15 +179,16 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
         muhatap = muzekkere_muhatabi(text, str(unsurlar.get("gonderen", "") or "")) or None
     else:
         muhatap = None
-    # Antet: aktif kurum (istek-bazlı override, boşsa build_context env KURUM_ADI'ya düşer) —
-    # pipeline (yazi_taslak_node) ile AYNI kural. Evrak başka kuruma hitap etse bile antet
-    # değişmez; uyuşmazlık pipeline'da SARI bilgilendirme olarak işlenir.
+    # Antet: belge hitap-ekli bir kuruma yazılmışsa (yargı hariç) O KURUM otomatik; değilse
+    # aktif kurum (istek-bazlı override, boşsa build_context env KURUM_ADI'ya düşer) — pipeline
+    # (yazi_taslak_node) ile AYNI kural (kurum_kimlik.efektif_idare_adi).
     hazirlayan = (birim_tr(hedef_birim)
                   if hedef_birim and req.yazi_turu != "ust_yazi" else "")
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
+        efektif_kurum = efektif_idare_adi(text, unsurlar, req.aktif_kurum.strip())
         ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap,
-                            hazirlayan_birim=hazirlayan, idare_adi=req.aktif_kurum.strip())
+                            hazirlayan_birim=hazirlayan, idare_adi=efektif_kurum)
         result = render_yazi(ctx, formats=frozenset())
     except Exception as exc:
         log.error("yazi_taslak_turu_failed", error=str(exc) or type(exc).__name__)

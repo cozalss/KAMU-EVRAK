@@ -645,9 +645,9 @@ async def build_alt_talep_taslaklari(
     (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
     < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
 
-    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler: aktif kurum
-    (istek-bazlı override, boşsa build_context env KURUM_ADI'ya düşer); evrak başka kuruma
-    hitap etse bile antet değişmez (uyuşmazlık ayrıca SARI bilgilendirme olarak işlenir).
+    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler: `aktif_kurum`
+    parametresi burada ÖNCEDEN çözülmüş nihai kurum adıdır (bkz. kurum_kimlik.efektif_idare_adi
+    — çağıran, belge hitap-ekliyse doküman kurumunu, değilse aktif kurum/env'i hesaplayıp geçirir).
     """
     if len(alt_talepler) < 2:
         return list(alt_talepler)

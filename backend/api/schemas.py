@@ -211,10 +211,6 @@ class ProcessResponse(BaseModel):
     ust_veri: dict = Field(default_factory=dict)
     # Sistem-tespitli antet künyesi {idare, birim, muhatap} — dinamik kurum kimliği.
     antet_meta: dict = Field(default_factory=dict)
-    # Demo kurumu uyuşmazlığı (SARI): {belge_kurumu, belge_kurumu_tur, aktif_kurum} | None —
-    # gelen belge FARKLI TÜRDE bir kuruma hitaben yazılmışsa dolar; UI "belgedeki kurumu
-    # kullan / mevcut kurumla devam et" seçimini bu alandan kurar (kurum_kimlik.kurum_uyusmazligi).
-    kurum_uyusmazligi: dict | None = None
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
     verify_uyari: list[str] = Field(default_factory=list)

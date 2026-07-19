@@ -100,7 +100,7 @@ const gecisle = (fn) => {
 export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
     nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
-    runFile, runSample, runWithAktifKurum, resume, cancelRun, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
+    runFile, runSample, resume, cancelRun, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
   } = usePipeline();
   const [aktifKurum, setAktifKurum] = useAktifKurum();
 
@@ -548,14 +548,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     runSample(s, aktifKurum);
   }, [busy, runSample, goView, bekleyenKararUyar, aktifKurum]);
 
-  // "Demo kurumu uyuşmazlığı" kartı — "belgedeki kurumu aktif kurum yap": ayarı kalıcı
-  // günceller (localStorage) + AYNI evrakı yeni kurumla anında yeniden işler (antet +
-  // uyuşmazlık kontrolü baştan hesaplanır; kurum içi yönlendirme zaten evrağa göredir).
-  const onKurumSec = useCallback((yeniKurum) => {
-    setAktifKurum(yeniKurum);
-    runWithAktifKurum(yeniKurum);
-  }, [setAktifKurum, runWithAktifKurum]);
-
   // HITL açık → kararı damgala + resume (outbox kaydı result-effect'te). HITL kapalı → mevcut
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
   // HITL kararı: ref'i damgala + resume. resume BAŞARISIZ olursa (backend 500/kopuk bağlantı)
@@ -886,7 +878,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       fileUrl={fileUrl} onFileDrop={(f) => runFile(f, aktifKurum)} onTelefon={() => setTelefonAcik(true)}
       onMevzuatAc={mevzuatAc}
       onMevzuatSec={secMevzuat} seciliMevzuat={seciliMevzuat} dayanakUretiliyor={dayanakUretiliyor}
-      onKurumSec={onKurumSec}
     />
   );
 

@@ -118,7 +118,6 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         yazi_plan_notu=state.get("yazi_plan_notu", ""),
         ust_veri=state.get("ust_veri", {}),
         antet_meta=state.get("antet_meta", {}),
-        kurum_uyusmazligi=state.get("kurum_uyusmazligi"),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         format_uyumlu=bool(state.get("format_uyumlu", False)),
         # PII güvenliği: uydurma-veto uyarıları somut tarih/sayı token'ı içerir (TCKN-şekilli

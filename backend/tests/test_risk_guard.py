@@ -99,72 +99,28 @@ class TestComputeRiskBant:
         assert dokuz["skor"] > tek["skor"]
 
 
-# ---------------------------------------------------------------------------
-# Demo kurumu uyuşmazlığı (19 Tem revizyon) — SARI bilgilendirme + yapılandırılabilir aktif kurum
-# ---------------------------------------------------------------------------
+class TestKurumUyusmazlikKaldirildi:
+    """19 Tem 2. revizyon: kurum uyuşmazlığı SARI sinyali TAMAMEN KALDIRILDI.
+
+    Sistem artık belge açıkça bir kuruma hitaben yazılmışsa (yargı hariç) o kurumu
+    SORMADAN/UYARMADAN kullanır (kurum_kimlik.efektif_idare_adi) — verify hiçbir "Demo
+    kurumu uyuşmazlığı" sinyali üretmez, risk_guard bunu SARI'ya çevirmez.
+    """
+
+    def test_risk_agirlik_taksonomisinde_kurum_uyusmazlik_yok(self):
+        from agents import risk_agirlik
+
+        assert not hasattr(risk_agirlik, "KURUM_UYUSMAZLIK")
+        assert "kurum_uyusmazlik" not in risk_agirlik.CIDDIYET
+
+    def test_verify_kurum_uyusmazlik_uyari_yok(self):
+        from agents.nodes import verify
+
+        assert not hasattr(verify, "_kurum_uyusmazlik_uyari")
 
 
-class TestKurumUyusmazlik:
-    """Gelen evrak aktif kurumdan farklı türde kuruma hitaben → SARI (gönderimi engellemez)."""
-
-    _UYARI = ("Demo kurumu uyuşmazlığı: bu belge 'İl Sağlık Müdürlüğü' kurumuna hitaben "
-              "düzenlenmiş; aktif kurumunuz 'ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI'. Antet aktif "
-              "kurumla oluşturuldu — dilerseniz belgedeki kurumu aktif kurum olarak "
-              "kullanabilirsiniz.")
-
-    def test_uyusmazlik_sari(self):
-        sonuc = _risk([self._UYARI])
-        assert sonuc["bant"] == "sari"
-        assert any("Demo kurumu uyuşmazlığı" in g for g in sonuc["gerekceler"])
-        # "Uydurma şüphesi" öneki ALMAZ — bu bir halüsinasyon değil, yönlendirme bilgilendirmesi.
-        assert not any(g.startswith("Uydurma şüphesi") for g in sonuc["gerekceler"])
-
-    def test_uyusmazlik_gozlem_skoru_orta(self):
-        # Deterministik gözlem (isabet=1.0) × ciddiyet 0.35 (TUR_BELIRSIZ eşdeğeri, SARI-tier).
-        sonuc = _risk([self._UYARI])
-        assert 0.30 <= sonuc["skor"] <= 0.40
-        assert sonuc["kalibrasyon"] in ("gozlem", "olculdu")
-
-    def test_verify_helper_farkli_tur_uretir(self):
-        # verify._kurum_uyusmazlik_uyari: aktif kurum state'ten (öncelik) → farklı tür → uyarı + meta.
-        from agents.nodes.verify import _kurum_uyusmazlik_uyari
-
-        uy, meta = _kurum_uyusmazlik_uyari({
-            "evrak_text": "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nRandevu şikayeti.", "bilgi_unsurlari": {},
-            "aktif_kurum": "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI",
-        })
-        assert len(uy) == 1 and uy[0].startswith("Demo kurumu uyuşmazlığı")
-        assert meta == {"belge_kurumu": "İl Sağlık Müdürlüğü", "belge_kurumu_tur": "mudurluk",
-                        "aktif_kurum": "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"}
-
-    def test_verify_helper_env_fallback(self, monkeypatch):
-        # state.aktif_kurum yoksa env KURUM_ADI'ya düşer (geriye-uyum).
-        from agents.nodes.verify import _kurum_uyusmazlik_uyari
-
-        monkeypatch.setenv("KURUM_ADI", "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI")
-        uy, meta = _kurum_uyusmazlik_uyari(
-            {"evrak_text": "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nRandevu şikayeti.", "bilgi_unsurlari": {}})
-        assert len(uy) == 1 and meta["aktif_kurum"] == "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
-
-    def test_verify_helper_ayni_tur_bos(self):
-        # belediye↔belediye stand-in → uyarı YOK (demo happy-path korunur).
-        from agents.nodes.verify import _kurum_uyusmazlik_uyari
-
-        uy, meta = _kurum_uyusmazlik_uyari({
-            "evrak_text": "ODUNPAZARI BELEDİYE BAŞKANLIĞINA\n\nYol tamiri.", "bilgi_unsurlari": {},
-            "aktif_kurum": "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI",
-        })
-        assert uy == [] and meta is None
-
-    def test_verify_helper_farkli_aktif_kurum_stand_in(self):
-        # aktif_kurum'u DEĞİŞTİRMEK gerçek senaryoyu happy-path yapar (yapılandırılabilirlik).
-        from agents.nodes.verify import _kurum_uyusmazlik_uyari
-
-        uy, meta = _kurum_uyusmazlik_uyari({
-            "evrak_text": "ODUNPAZARI BELEDİYE BAŞKANLIĞINA\n\nYol tamiri.", "bilgi_unsurlari": {},
-            "aktif_kurum": "Odunpazarı Belediye Başkanlığı",
-        })
-        assert uy == [] and meta is None
+class TestSkorRegresyon:
+    """Skor/kalibrasyon genel regresyonları (kurum uyuşmazlığından bağımsız)."""
 
     def test_kirmizi_skoru_sari_skorundan_yuksek(self):
         """Regresyon: hafif sarı belge (%50) ağır kırmızıdan (%22) büyük görünüyordu."""

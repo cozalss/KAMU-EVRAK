@@ -392,17 +392,6 @@ test("gerekce: sarı sinyallerin her biri bilgi kaybetmeden çevrilir", () => {
   assert.doesNotMatch(riskGerekceYorum("Evrak türü belirsiz (sınıflandırma abstention)").sade, /abstention/i);
 });
 
-test("gerekce: demo kurumu uyuşmazlığı sade dile çevrilir, engelleme ima etmez (19 Tem SARI revizyonu)", () => {
-  const ham = "Demo kurumu uyuşmazlığı: bu belge 'İl Sağlık Müdürlüğü' kurumuna hitaben düzenlenmiş; "
-    + "aktif kurumunuz 'Örnekşehir Belediye Başkanlığı'. Antet aktif kurumla oluşturuldu — dilerseniz "
-    + "belgedeki kurumu aktif kurum olarak kullanabilirsiniz.";
-  const y = riskGerekceYorum(ham);
-  assert.equal(y.cevrildi, true);
-  assert.match(y.sade, /İl Sağlık Müdürlüğü/);
-  assert.match(y.sade, /Örnekşehir Belediye Başkanlığı/);
-  assert.doesNotMatch(y.sade, /onay(ı)? zorunlu|engellendi|yanlış kuruma ulaştı/i);   // eski KIRMIZI tonu kalmamalı
-});
-
 test("gerekce: tanınmayan şekil aynen gösterilir (uydurma çeviri yok)", () => {
   const ham = "Beklenmedik yeni backend sinyali xyz";
   const y = riskGerekceYorum(ham);

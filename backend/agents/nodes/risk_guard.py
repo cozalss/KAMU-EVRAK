@@ -4,8 +4,7 @@ Kamu gerçeği: kurum "yapay zeka çıktısını gözden geçirmeden gönderemey
 üretilen resmî yazıya bir TRAFİK IŞIĞI atar ve koşullu onayı tetikler:
 
   🟢 YEŞİL  (yayın-hazır): her şey kaynaktan, format tam, şüphe yok → memur uğraşmaz.
-  🟡 SARI   (memur incelesin): format eksik / [DOĞRULA] / düşük güven / eksik zorunlu alan /
-            demo kurumu uyuşmazlığı (belge farklı türde bir kuruma hitaben yazılmış).
+  🟡 SARI   (memur incelesin): format eksik / [DOĞRULA] / düşük güven / eksik zorunlu alan.
   🔴 KIRMIZI(uydurma şüphesi): verify metinde OLMAYAN somut tarih/sayı yakaladı → onaysız gitmez.
 
 Koşullu onay (graph._risk_route): YEŞİL otomatik geçer; SARI/KIRMIZI memur onayına (onay_kapisi
@@ -54,11 +53,6 @@ log = structlog.get_logger()
 
 # verify_uyari içindeki uydurma sinyalinin imzası (verify.py _uydurma_veto mesajı).
 _UYDURMA_IMZA = "kaynak evrakta yok"
-# Demo kurumu uyuşmazlığı imzası (verify.py _kurum_uyusmazlik_uyari) — 19 Tem revizyon:
-# aktif kurum yapılandırılabilir (sabit tek-tenant zorunlu değil); uyuşmazlık artık SARI
-# bilgilendirmedir (gönderimi engellemez). UI, state["kurum_uyusmazligi"] meta'sından
-# "belgedeki kurumu kullan" / "mevcut kurumla devam et" seçimini sunar.
-_UYUSMAZLIK_IMZA = "Demo kurumu uyuşmazlığı"
 # LLM grounding imzası (verify.py _grounding_iddialar). DETERMİNİSTİK veto (regex tarih/sayı)
 # ile AYRIŞTIRILIR: grounding gürültülü/olasılıksal bir çıkarımdır → tek başına KIRMIZI yapmaz,
 # yalnız SARI (memur incelesin) sinyali verir. Bant kararı deterministik kalır (bkz. modül
@@ -131,9 +125,6 @@ def compute_risk(
     # LLM grounding (olasılıksal) → SARI: memura "AI şu ifadeyi kaynakta bulamadı, kontrol
     # edin" der; bant deterministik değil ama incelemeye çağırır (asla otomatik KIRMIZI).
     sari += [f"AI incelemesi — {u}" for u in uyarilar if _GROUNDING_IMZA in u]
-    # Demo kurumu uyuşmazlığı (19 Tem revizyon): artık gönderimi ENGELLEMEZ, SARI bilgilendirme
-    # (UI "belgedeki kurumu kullan" seçimini state["kurum_uyusmazligi"] meta'sından sunar).
-    sari += [u for u in uyarilar if _UYUSMAZLIK_IMZA in u]
     if format_uyumlu is False and not sari:
         sari.append("Resmî yazı zorunlu format bölümleri eksik")
     dogrula = taslak.count("[DOĞRULA")

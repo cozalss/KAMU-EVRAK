@@ -25,6 +25,7 @@ from agents.config import YAZI_TURU_TR
 # Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
 from agents.nodes._llm_extract import llm_json, llm_text, real_llm
 from agents.yazi_lint import kapanis_onerisi
+from core.text import tr_upper as _tr_upper
 from yazi.models import _DEMO_DEFAULTS, YaziContext
 from yazi.template_registry import default_kapanis, resolve_yazi_turu
 
@@ -588,7 +589,9 @@ def build_context(
     return YaziContext(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
-        idare_adi=idare_adi.strip(),         # boşsa jinja_vars KURUM_ADI env/jenerik'e düşer
+        # Yön. m.10: idare adı BÜYÜK harfle yazılır — çağıran serbest biçimde geçirebilir
+        # (aktif_kurum ayarı karışık harfle girilebilir), burada TEK noktadan normalize edilir.
+        idare_adi=_tr_upper(idare_adi.strip()),  # boşsa jinja_vars KURUM_ADI env/jenerik'e düşer
         birim_adi=hazirlayan_birim.strip(),  # boşsa jinja_vars _DEMO_DEFAULTS'a düşer
         # m.13: konunun sonuna nokta konulmaz → çıkarılan konudaki kuyruk noktası atılır.
         # Görüş/müzekkere CEVABININ konusu, gelen TALEBİN konusudur ama talep-kuyruğu düşer
@@ -634,7 +637,7 @@ def ts13298_ust_veri(
 
 
 async def build_alt_talep_taslaklari(
-    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any],
+    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], aktif_kurum: str = "",
 ) -> list[dict[str, Any]]:
     """Çok-konulu evrakta HER alt-talep için ayrı üst yazı taslağı (kuruma yönlendirme).
 
@@ -642,9 +645,9 @@ async def build_alt_talep_taslaklari(
     (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
     < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
 
-    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler:
-    TEK-KURUM modeli (19 Tem) — idare_adi="" → build_context env KURUM_ADI'ya düşer;
-    evrak başka kuruma hitap etse bile antet değişmez (uyuşmazlık ayrıca KIRMIZI işlenir).
+    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler: aktif kurum
+    (istek-bazlı override, boşsa build_context env KURUM_ADI'ya düşer); evrak başka kuruma
+    hitap etse bile antet değişmez (uyuşmazlık ayrıca SARI bilgilendirme olarak işlenir).
     """
     if len(alt_talepler) < 2:
         return list(alt_talepler)
@@ -657,7 +660,8 @@ async def build_alt_talep_taslaklari(
         child_unsurlar = {**unsurlar, "konu": ozet}
         metin = await build_body("ust_yazi", child_unsurlar, ozet)
         ctx = build_context(
-            "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap, idare_adi="")
+            "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap,
+            idare_adi=aktif_kurum)
         result = render_yazi(ctx)
         out.append({
             **item, "yazi_turu": "ust_yazi",

@@ -178,15 +178,15 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
         muhatap = muzekkere_muhatabi(text, str(unsurlar.get("gonderen", "") or "")) or None
     else:
         muhatap = None
-    # Antet: TEK-KURUM modeli (19 Tem) — idare_adi="" → build_context env KURUM_ADI'ya
-    # düşer; pipeline (yazi_taslak_node) ile AYNI kural. Evrak başka kuruma hitap etse
-    # bile antet değişmez; uyuşmazlık pipeline'da KIRMIZI olarak işlenir.
+    # Antet: aktif kurum (istek-bazlı override, boşsa build_context env KURUM_ADI'ya düşer) —
+    # pipeline (yazi_taslak_node) ile AYNI kural. Evrak başka kuruma hitap etse bile antet
+    # değişmez; uyuşmazlık pipeline'da SARI bilgilendirme olarak işlenir.
     hazirlayan = (birim_tr(hedef_birim)
                   if hedef_birim and req.yazi_turu != "ust_yazi" else "")
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
         ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap,
-                            hazirlayan_birim=hazirlayan, idare_adi="")
+                            hazirlayan_birim=hazirlayan, idare_adi=req.aktif_kurum.strip())
         result = render_yazi(ctx, formats=frozenset())
     except Exception as exc:
         log.error("yazi_taslak_turu_failed", error=str(exc) or type(exc).__name__)

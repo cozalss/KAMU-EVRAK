@@ -139,13 +139,16 @@ export function usePipeline() {
   }, []);
 
   // ---------- SSE akış çekirdeği — dosya + örnek AYNI yolu paylaşır ----------
-  const streamRun = useCallback(async (file) => {
+  // aktifKurum: demo kurumu override (boşsa backend env KURUM_ADI'ya düşer — sabit
+  // tek-tenant zorunlu değil, her koşum kendi aktif kurumunu geçirebilir).
+  const streamRun = useCallback(async (file, aktifKurum = "") => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     try {
       const fd = new FormData();
       fd.append("file", file);
+      if (aktifKurum) fd.append("aktif_kurum", aktifKurum);
       const res = await authFetch("/process_doc/stream", { method: "POST", body: fd, signal: ctrl.signal });
       if (!res.ok || !res.body) throw new Error(`Sunucu hatası (${res.status})`);
       const reader = res.body.getReader();
@@ -190,7 +193,7 @@ export function usePipeline() {
   }, [handleEvent]);
 
   // ---------- A) Dosya → SSE ----------
-  const runFile = useCallback(async (file) => {
+  const runFile = useCallback(async (file, aktifKurum = "") => {
     reset();
     setBusy(true);
     setHasRun(true);
@@ -201,12 +204,12 @@ export function usePipeline() {
       fileUrlRef.current = url;
       setFileUrl(url);
     }
-    lastRun.current = { kind: "file", file };
-    await streamRun(file);
+    lastRun.current = { kind: "file", file, aktifKurum };
+    await streamRun(file, aktifKurum);
   }, [reset, streamRun]);
 
   // ---------- B) Örnek metin → AYNI SSE yolu (canlı node akışı; bloklayan POST kalktı) ----------
-  const runSample = useCallback(async (sample) => {
+  const runSample = useCallback(async (sample, aktifKurum = "") => {
     reset();
     setBusy(true);
     setHasRun(true);
@@ -216,11 +219,21 @@ export function usePipeline() {
     // gibi bir dosya örnekle karışmasın (yanlış-pozitif kuyruktan düşürme; verify bulgusu).
     setFileMeta({ id: sample.id, name: `ornek-${sample.id}.txt`, size: sample.text.length, kind: "sample", label: sample.label });
     setEvrakText(sample.text);
-    lastRun.current = { kind: "sample", sample };
+    lastRun.current = { kind: "sample", sample, aktifKurum };
     // Örnek metni .txt dosyasına sarılır → backend text-plain dalıyla OCR'sız kabul eder.
     const file = new File([sample.text], `ornek-${sample.id}.txt`, { type: "text/plain" });
-    await streamRun(file);
+    await streamRun(file, aktifKurum);
   }, [reset, streamRun]);
+
+  // ---------- B2) Aynı evrakı YENİ bir aktif kurumla yeniden işle ("belgedeki kurumu
+  // aktif kurum olarak kullan" düğmesi) — lastRun.current'ı YENİ aktifKurum ile tekrar
+  // çalıştırır; retry() de bundan sonra bu değeri kullanır (state'e yazılmayı beklemez).
+  const runWithAktifKurum = useCallback(async (newAktifKurum) => {
+    const last = lastRun.current;
+    if (!last) return;
+    if (last.kind === "file") await runFile(last.file, newAktifKurum);
+    else if (last.kind === "sample") await runSample(last.sample, newAktifKurum);
+  }, [runFile, runSample]);
 
   // ---------- HITL resume ----------
   // Döner: true = karar backend'e işlendi (result-effect damgayı tüketir), false = başarısız/
@@ -253,8 +266,8 @@ export function usePipeline() {
   const retry = useCallback(() => {
     const last = lastRun.current;
     if (!last) { setError(""); return; }
-    if (last.kind === "file") runFile(last.file);
-    else if (last.kind === "sample") runSample(last.sample);
+    if (last.kind === "file") runFile(last.file, last.aktifKurum);
+    else if (last.kind === "sample") runSample(last.sample, last.aktifKurum);
   }, [runFile, runSample]);
 
   // ---------- Koşumu İPTAL et (kullanıcı eylemi) ----------
@@ -332,13 +345,13 @@ export function usePipeline() {
   }, [evrakText, result, pendingOnay, showToast]);
 
   // Dosya doğrula + çalıştır.
-  const runFileValidated = useCallback((file) => {
+  const runFileValidated = useCallback((file, aktifKurum = "") => {
     if (!file || busy) return;   // busy iken yeni dosya başlatma (yarış önle)
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
       setError(`Dosya çok büyük (en fazla ${MAX_UPLOAD_MB} MB).`);
       return;
     }
-    runFile(file);
+    runFile(file, aktifKurum);
   }, [runFile, busy]);
 
   const dismissError = useCallback(() => setError(""), []);
@@ -359,7 +372,7 @@ export function usePipeline() {
 
   return {
     nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
-    runFile: runFileValidated, runSample, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
+    runFile: runFileValidated, runSample, runWithAktifKurum, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
     // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
     // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).
     runBase: runStart.current,

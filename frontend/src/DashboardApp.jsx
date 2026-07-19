@@ -10,6 +10,7 @@ import { flushSync } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
+import { useAktifKurum } from "./hooks/useAktifKurum.js";
 import { createSekans, mevzuatAnahtar, mevzuatOzet, sonrakiSecim } from "./lib/dayanakSecim.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { useAuth } from "./lib/useAuth.jsx";
@@ -99,8 +100,9 @@ const gecisle = (fn) => {
 export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
     nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
-    runFile, runSample, resume, cancelRun, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
+    runFile, runSample, runWithAktifKurum, resume, cancelRun, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
   } = usePipeline();
+  const [aktifKurum, setAktifKurum] = useAktifKurum();
 
   const { user, logout } = useAuth();
   const queryClient = useQueryClient();   // karar sonrası DB gerçeğiyle tazeleme (invalidate)
@@ -533,7 +535,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     bekleyenAltKararRef.current.clear();
     showToast("Önceki evrakın kararı kalıcı kayda yazılamadan yeni işlem başladı — kararı İşlenen evrak'tan yineleyin.");
   }, [showToast]);
-  const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) { bekleyenKararUyar(); runFile(f); } };
+  const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) { bekleyenKararUyar(); runFile(f, aktifKurum); } };
   const triggerUpload = useCallback(() => { goView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy, goView]);
   // "İşlendi" damgası YALNIZ koşum gerçekten başlarsa basılır — busy'de damga + kalıcı
   // processedSamples yazımı, evrak hiç işlenmeden refresh'ler boyu "İşlendi" gösteriyordu
@@ -543,8 +545,16 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     if (busy) return;
     bekleyenKararUyar();
     setProcessedIds((p) => new Set(p).add(s.id));
-    runSample(s);
-  }, [busy, runSample, goView, bekleyenKararUyar]);
+    runSample(s, aktifKurum);
+  }, [busy, runSample, goView, bekleyenKararUyar, aktifKurum]);
+
+  // "Demo kurumu uyuşmazlığı" kartı — "belgedeki kurumu aktif kurum yap": ayarı kalıcı
+  // günceller (localStorage) + AYNI evrakı yeni kurumla anında yeniden işler (antet +
+  // uyuşmazlık kontrolü baştan hesaplanır; kurum içi yönlendirme zaten evrağa göredir).
+  const onKurumSec = useCallback((yeniKurum) => {
+    setAktifKurum(yeniKurum);
+    runWithAktifKurum(yeniKurum);
+  }, [setAktifKurum, runWithAktifKurum]);
 
   // HITL açık → kararı damgala + resume (outbox kaydı result-effect'te). HITL kapalı → mevcut
   // sonuçtan senkron Giden Evrak kaydı (onayla/reddet; düzenle yalnız bilgilendirir).
@@ -873,9 +883,10 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
       onDownload={download} downloading={downloading} canDownload={!!evrakText || !!data?.yazi_taslak_md}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onCancel={cancelRun}
-      fileUrl={fileUrl} onFileDrop={runFile} onTelefon={() => setTelefonAcik(true)}
+      fileUrl={fileUrl} onFileDrop={(f) => runFile(f, aktifKurum)} onTelefon={() => setTelefonAcik(true)}
       onMevzuatAc={mevzuatAc}
       onMevzuatSec={secMevzuat} seciliMevzuat={seciliMevzuat} dayanakUretiliyor={dayanakUretiliyor}
+      onKurumSec={onKurumSec}
     />
   );
 
@@ -889,7 +900,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} aktifKurum={aktifKurum} onAktifKurumDegistir={setAktifKurum} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>
@@ -913,7 +924,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           <Suspense fallback={null}>
             <TelefonYukleModal
               onClose={() => setTelefonAcik(false)}
-              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); bekleyenKararUyar(); runFile(f); }}
+              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); bekleyenKararUyar(); runFile(f, aktifKurum); }}
               showToast={showToast}
             />
           </Suspense>

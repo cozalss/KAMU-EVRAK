@@ -63,7 +63,7 @@ BILINMEYEN = "bilinmeyen"
 _TAKSONOMI: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"kaynak evrakta yok \(LLM grounding\)"), UYDURMA_GROUNDING),
     (re.compile(r"kaynak evrakta yok"), UYDURMA_DEGER),
-    (re.compile(r"^Kurum uyuşmazlığı"), KURUM_UYUSMAZLIK),
+    (re.compile(r"^Demo kurumu uyuşmazlığı"), KURUM_UYUSMAZLIK),
     (re.compile(r"^Tutarlılık:"), TUTARLILIK),
     (re.compile(r"^Eksik zorunlu bilgi:"), EKSIK_ZORUNLU),
     (re.compile(r"^Evrak türü belirsiz"), TUR_BELIRSIZ),
@@ -80,9 +80,10 @@ CIDDIYET: dict[str, float] = {
     UYDURMA_GROUNDING: 0.90,
     # Uydurma somut tarih/sayı: tebligat süresi ya da dosya no yanlışsa işlem sakatlanır.
     UYDURMA_DEGER: 0.85,
-    # Kurum uyuşmazlığı: belge farklı türde bir kuruma hitaben düzenlenmiş — aktif kurum
-    # adına düzenlenen yazı yanlış makamı bağlar / belge yanlış kuruma ulaşmış → en ağır.
-    KURUM_UYUSMAZLIK: 0.90,
+    # Demo kurumu uyuşmazlığı: belge farklı türde bir kuruma hitaben düzenlenmiş — SARI
+    # bilgilendirme (19 Tem revizyon: aktif kurum yapılandırılabilir, gönderim engellenmez;
+    # memur "belgedeki kurumu kullan" ile antedi tek tıkla düzeltebilir). TUR_BELIRSIZ ile eşdeğer.
+    KURUM_UYUSMAZLIK: 0.35,
     # Kaynak evrak içi çelişki (TCKN checksum, gelecek tarih) — veri güvenilmez.
     TUTARLILIK: 0.45,
     # 3071 m.4: kritik unsur eksikse dilekçe incelenemez.

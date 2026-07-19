@@ -216,6 +216,23 @@ async def test_antet_idare_tek_kurum():
     assert "27.05.2026 tarihli ve E-31204765-045-2026/0987 sayılı yazınız." in md
 
 
+async def test_antet_aktif_kurum_istek_bazli_override():
+    """19 Tem revizyon: state['aktif_kurum'] doluysa antet ENV'İ EZER — sabit tek-tenant
+    zorunlu değil, her demo senaryosu kendi aktif kurumunu geçirebilir."""
+    from agents.nodes.yazi_taslak import yazi_taslak_node
+
+    out = await yazi_taslak_node({
+        "evrak_turu": "dilekce",
+        "evrak_text": "Merhaba, sokağımızda çöpler toplanmıyor. Gereğini arz ederim.",
+        "bilgi_unsurlari": {"konu": "Çöp Toplama"},
+        "aktif_kurum": "Odunpazarı Belediye Başkanlığı",
+    })
+    md = out["yazi_taslak_md"]
+    assert "ODUNPAZARI BELEDİYE BAŞKANLIĞI" in md
+    assert "KAMU KURUMU" not in md
+    assert out["antet_meta"]["idare"] == "ODUNPAZARI BELEDİYE BAŞKANLIĞI"
+
+
 async def test_gorus_muhatabi_talep_eden_birim():
     """Görüş yazısının muhatabı görüşü TALEP EDEN birimdir (m.14; Diyanet örneği deseni)."""
     from agents.nodes.yazi_taslak import yazi_taslak_node

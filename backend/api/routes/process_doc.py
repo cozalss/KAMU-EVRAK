@@ -20,7 +20,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 import structlog
-from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 
 from agents.config import HITL_ENABLED, llm_profil
@@ -118,6 +118,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         yazi_plan_notu=state.get("yazi_plan_notu", ""),
         ust_veri=state.get("ust_veri", {}),
         antet_meta=state.get("antet_meta", {}),
+        kurum_uyusmazligi=state.get("kurum_uyusmazligi"),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
         format_uyumlu=bool(state.get("format_uyumlu", False)),
         # PII güvenliği: uydurma-veto uyarıları somut tarih/sayı token'ı içerir (TCKN-şekilli
@@ -252,7 +253,8 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
         return int((time.monotonic() - t0) * 1000)
 
     text, _ = await _ocr_or_text(None, req.evrak_text)
-    state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=req.filename)
+    state = make_initial_state(
+        text[:MAX_EVRAK_CHARS], filename=req.filename, aktif_kurum=req.aktif_kurum)
     if HITL_ENABLED:
         thread_id = uuid4().hex
         g = _get_hitl_graph()
@@ -306,13 +308,19 @@ async def resume(request: Request, req: OnayResumeRequest) -> ProcessResponse:
 
 @router.post("/stream")
 @rate_limit("20/minute")  # IP-başı akış limiti (slowapi yoksa etkisiz)
-async def process_stream(request: Request, file: UploadFile = File(...)) -> StreamingResponse:
+async def process_stream(
+    request: Request, file: UploadFile = File(...), aktif_kurum: str = Form(""),
+) -> StreamingResponse:
     """Dosya yükle → OCR + pipeline node event'lerini SSE ile yayınla.
 
     M5: OCR AKIŞ İÇİNDE çalışır → taranmış PDF'te jüri 30s boş ekran görmez; 'oku' node'u
     önce 'active' (canlı), OCR bitince 'done' yayılır. Dosya okuma (hızlı) request
     context'inde kalır ki >20MB'de 413 düzgün HTTP yanıtı olsun; ağır extract_text akışa girer.
+
+    aktif_kurum: demo kurumu override (boşsa env KURUM_ADI'ya düşer — /process_doc ile AYNI
+    sözleşme). Sabit tek-tenant ZORUNLU DEĞİL; her demo senaryosu kendi kurumunu geçirebilir.
     """
+    aktif_kurum = aktif_kurum.strip()[:200]
     data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, "Dosya çok büyük")
@@ -338,7 +346,8 @@ async def process_stream(request: Request, file: UploadFile = File(...)) -> Stre
         if not text.strip():
             yield _sse({"event": "error", "message": "Belgeden metin çıkarılamadı"})
             return
-        state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=filename)
+        state = make_initial_state(
+            text[:MAX_EVRAK_CHARS], filename=filename, aktif_kurum=aktif_kurum)
         # Akış HER ZAMAN checkpointer'lı graf + thread_id: (1) final state get_state ile okunur →
         # LangGraph reducer'ları (operator.add / _merge_dict fan-in) DOĞRU uygulanır — plain
         # dict.update fan-in'i bozardı (HIGH-8); (2) HITL koşullu onayda interrupt PERSIST eder

@@ -155,6 +155,7 @@ export default function CanliAjanAkisi({
   onUpload = () => {}, onGoInbox = () => {}, onCancel = () => {}, glow = true, fileUrl = "", onFileDrop = () => {},
   onTelefon = () => {}, onMevzuatAc = null,
   onMevzuatSec = null, seciliMevzuat = [], dayanakUretiliyor = false,
+  onKurumSec = null,
 }) {
   // Rules of Hooks: TÜM hook'lar KOŞULSUZ ve fonksiyonun EN başında olmalı — aşağıdaki
   // `if (!started) return` erken çıkışı bu hook'lardan SONRA gelirse `started` false→true
@@ -460,7 +461,7 @@ export default function CanliAjanAkisi({
               <div className="sc-result-page">
                 <HataSiniri baslik="Sonuç ekranı gösterilemedi">
                   <SonucCalismaAlani result={result} onMevzuatAc={onMevzuatAc}
-                    onMevzuatSec={onMevzuatSec} seciliMevzuat={seciliMevzuat}
+                    onMevzuatSec={onMevzuatSec} seciliMevzuat={seciliMevzuat} onKurumSec={onKurumSec}
                     solPanel={<KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={efGlow} compact onBuyut={() => setBelgeModal("kaynak")} />}
                     yanTaslak={taslakBlok} altAkis={akisOzet} />
                 </HataSiniri>

@@ -391,32 +391,44 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
             for i in temiz[:_GROUNDING_MAX_IDDIA]]
 
 
-# Kurum uyuşmazlığı sinyalinin imzası — risk_guard bunu KIRMIZI'ya çevirir (uydurma ile
-# AYNI band-zorlama gücü; taksonomi tipi risk_agirlik.KURUM_UYUSMAZLIK). Metin makine
-# sözleşmesidir: değişirse risk_agirlik._TAKSONOMI ve risk_guard._UYUSMAZLIK_IMZA birlikte güncellenir.
-_UYUSMAZLIK_IMZA = "Kurum uyuşmazlığı"
+# Kurum uyuşmazlığı sinyalinin imzası — risk_guard bunu SARI'ya çevirir (19 Tem revizyon:
+# demo kurumu yapılandırılabilir; uyuşmazlık artık gönderimi ENGELLEMEZ, memuru bilgilendirir
+# + UI'a iki seçenek sunar). Metin makine sözleşmesidir: değişirse risk_agirlik._TAKSONOMI,
+# risk_guard._UYUSMAZLIK_IMZA ve frontend detayYorum.GEREKCE_KURAL birlikte güncellenir.
+_UYUSMAZLIK_IMZA = "Demo kurumu uyuşmazlığı"
 
 
-def _kurum_uyusmazlik_uyari(state: dict[str, Any]) -> list[str]:
-    """TEK-KURUM modeli (19 Tem): gelen evrak, aktif kurumdan FARKLI TÜRDE bir kuruma
-    hitaben düzenlenmişse KIRMIZI uyarı üret (deterministik; taslaktan bağımsız).
+def _aktif_kurum_adi(state: dict[str, Any]) -> str:
+    """İstek-bazlı aktif kurum → yoksa env KURUM_ADI (yazi/models._DEMO_DEFAULTS ile aynı kaynak).
 
-    aktif kurum = env KURUM_ADI (yazi/models._DEMO_DEFAULTS ile aynı kaynak). Boşsa
-    (test/baseline) veya uyuşmazlık yoksa → boş liste. Antet DEĞİŞTİRİLMEZ; bu yalnız
-    risk sinyalidir → risk bandı KIRMIZI → onay kapısı gönderimi kilitler.
+    Sabit tek-tenant ZORUNLU DEĞİL (19 Tem revizyon) — her demo senaryosu kendi aktif
+    kurumunu `aktif_kurum` state alanıyla geçirebilir.
     """
-    aktif = os.getenv("KURUM_ADI", "").strip()
+    return str(state.get("aktif_kurum") or os.getenv("KURUM_ADI", "")).strip()
+
+
+def _kurum_uyusmazlik_uyari(state: dict[str, Any]) -> tuple[list[str], dict[str, str] | None]:
+    """Gelen evrak, aktif kurumdan FARKLI TÜRDE bir kuruma hitaben düzenlenmişse SARI uyarı
+    + yapılandırılmış meta üret (deterministik; taslaktan bağımsız).
+
+    aktif kurum boşsa (test/baseline) veya uyuşmazlık yoksa → ([], None). Antet
+    DEĞİŞTİRİLMEZ — bu yalnız bir bilgilendirme sinyalidir; UI memura "belgedeki kurumu
+    aktif kurum yap" / "mevcut kurumla devam et" seçimini `kurum_uyusmazligi` meta'sından sunar.
+    """
+    aktif = _aktif_kurum_adi(state)
     if not aktif:
-        return []
+        return [], None
     yabanci = kurum_uyusmazligi(
         state.get("evrak_text", "") or "", state.get("bilgi_unsurlari") or {}, aktif)
     if not yabanci:
-        return []
-    return [
-        f"{_UYUSMAZLIK_IMZA}: gelen belge '{yabanci['ad']}' kurumuna hitaben düzenlenmiş; "
-        f"işlemi yapan aktif kurum farklı ({aktif}). Antet aktif kuruma göre düzenlendi — "
-        "bu belge büyük olasılıkla yanlış kuruma ulaştı; gönderim onay olmadan yapılamaz."
+        return [], None
+    uyari = [
+        f"{_UYUSMAZLIK_IMZA}: bu belge '{yabanci['ad']}' kurumuna hitaben düzenlenmiş; "
+        f"aktif kurumunuz '{aktif}'. Antet aktif kurumla oluşturuldu — dilerseniz belgedeki "
+        "kurumu aktif kurum olarak kullanabilirsiniz."
     ]
+    meta = {"belge_kurumu": yabanci["ad"], "belge_kurumu_tur": yabanci["tur"], "aktif_kurum": aktif}
+    return uyari, meta
 
 
 async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
@@ -435,12 +447,13 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     )]
 
     # Kurum uyuşmazlığı taslaktan BAĞIMSIZ (gelen evrak vs aktif kurum) → taslak yoksa da raporlanır.
-    uyusmazlik = _kurum_uyusmazlik_uyari(state)
+    uyusmazlik, uyusmazlik_meta = _kurum_uyusmazlik_uyari(state)
 
     taslak = state.get("yazi_taslak_md", "") or ""
     if not taslak:
         return {"verify_notes": "Taslak bulunamadı — doğrulama atlandı.",
-                "verify_uyari": uyusmazlik, "tutarlilik_uyari": tutarlilik}
+                "verify_uyari": uyusmazlik, "tutarlilik_uyari": tutarlilik,
+                "kurum_uyusmazligi": uyusmazlik_meta}
 
     eksik = _eksik_bolumler(tr_lower(taslak))
     uydurma = _uydurma_veto(taslak, state)
@@ -500,7 +513,8 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
         notlar += (f" 2646 lint: {lint['ozet']['gecti']} kural geçti, "
                    f"{len(lint['uyari'])} uyarı; tutarlılık: {len(tutarlilik)} uyarı.")
     out: dict[str, Any] = {"verify_notes": notlar, "verify_uyari": uyarilar,
-                           "lint_2646": lint, "tutarlilik_uyari": tutarlilik}
+                           "lint_2646": lint, "tutarlilik_uyari": tutarlilik,
+                           "kurum_uyusmazligi": uyusmazlik_meta}
     if lint_duzeltme:
         out["lint_duzeltme_md"] = lint_duzeltme
     # format_uyumlu yalnız ZAYIFLATMA yönünde güncellenir (eksik bölüm → False).

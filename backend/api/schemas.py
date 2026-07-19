@@ -17,6 +17,8 @@ class ProcessRequest(BaseModel):
 
     evrak_text: str = Field(..., max_length=MAX_EVRAK_CHARS, min_length=1)
     filename: str = Field("", max_length=255)
+    # Demo/kurum yapılandırması: boşsa env KURUM_ADI'ya düşer (sabit tek-tenant zorunlu değil).
+    aktif_kurum: str = Field("", max_length=200)
 
 
 class YaziTaslakRequest(BaseModel):
@@ -38,6 +40,7 @@ class TaslakTuruRequest(BaseModel):
     yazi_turu: str = Field(..., pattern="^(ust_yazi|cevabi_yazi|bilgilendirme|olur|muzekkere|gorus_mutalaa)$")
     bilgi_unsurlari: dict = Field(default_factory=dict, max_length=50)  # DoS-guard: anahtar sayısı sınırlı
     hedef_birim: str = Field("", max_length=100)   # birim kodu — ust_yazi muhatabı için
+    aktif_kurum: str = Field("", max_length=200)   # /process_doc ile AYNI sözleşme — env fallback
 
 
 class YaziRenderRequest(BaseModel):
@@ -208,6 +211,10 @@ class ProcessResponse(BaseModel):
     ust_veri: dict = Field(default_factory=dict)
     # Sistem-tespitli antet künyesi {idare, birim, muhatap} — dinamik kurum kimliği.
     antet_meta: dict = Field(default_factory=dict)
+    # Demo kurumu uyuşmazlığı (SARI): {belge_kurumu, belge_kurumu_tur, aktif_kurum} | None —
+    # gelen belge FARKLI TÜRDE bir kuruma hitaben yazılmışsa dolar; UI "belgedeki kurumu
+    # kullan / mevcut kurumla devam et" seçimini bu alandan kurar (kurum_kimlik.kurum_uyusmazligi).
+    kurum_uyusmazligi: dict | None = None
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
     verify_uyari: list[str] = Field(default_factory=list)

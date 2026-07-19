@@ -163,15 +163,17 @@ def kurum_uyusmazligi(
     aktif_kurum_adi: str,
 ) -> KurumKimlik | None:
     """Gelen evrak, aktif kurumdan FARKLI TÜRDE bir kuruma hitaben düzenlenmişse o
-    kurumu döndür (kurum uyuşmazlığı → KIRMIZI + gönderim engeli). Yoksa None.
+    kurumu döndür (demo kurumu uyuşmazlığı → SARI bilgilendirme). Yoksa None.
 
-    TEK-KURUM MODELİ (19 Tem mimari kararı): antet HER ZAMAN aktif_kurum'dur (env
-    KURUM_ADI; bkz. yazi/models.py _DEMO_DEFAULTS). Evrak başka bir kuruma hitap etse
-    bile antet DEĞİŞMEZ — bunun yerine bu fonksiyon uyuşmazlığı bildirir; risk katmanı
-    KIRMIZI verir ve onay kapısı gönderimi kilitler.
+    YAPILANDIRILABİLİR AKTİF KURUM MODELİ (19 Tem revizyon): sabit tek-tenant ZORUNLU
+    DEĞİL — her demo senaryosu kendi `aktif_kurum_adi`'sini geçirebilir (istek-bazlı,
+    boşsa env KURUM_ADI; bkz. yazi/models.py _DEMO_DEFAULTS). Uyuşmazlık antedi EZMEZ,
+    yalnız bildirir — risk katmanı SARI verir; UI memura "belgedeki kurumu aktif kurum
+    olarak kullan" / "mevcut kurumla devam et" seçimini bu fonksiyonun döndürdüğü
+    künyeden kurar (agents/nodes/verify.py: _kurum_uyusmazlik_uyari).
 
     Uyuşmazlık ÖLÇÜTÜ (tür-duyarlı, demo pragmatiği):
-    - Aynı TÜR kurum (belediye ↔ belediye): kurgu aktif kurum (Örnekşehir), gerçek örnek
+    - Aynı TÜR kurum (belediye ↔ belediye): kurgu aktif kurum (ör. Örnekşehir), gerçek örnek
       belediyelerin (Odunpazarı/Nilüfer...) yerine geçen stand-in kabul edilir → uyuşmazlık YOK.
     - Farklı TÜR (belediye vs. bakanlık/müdürlük/valilik): gerçek yanlış-kurum riski —
       bir belediye, Sağlık Müdürlüğüne/Bakanlığa hitaben yazılmış evrağı işleyemez → uyuşmazlık.

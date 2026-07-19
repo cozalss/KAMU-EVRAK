@@ -63,14 +63,16 @@ def _hazirlayan_birim(state: dict[str, Any], yazi_turu: str) -> str:
     return SERVIS_BIRIM_TR.get(str(servis), "")
 
 
-def _fallback_taslak(yazi_turu: str, konu: str, evrak_text: str = "") -> dict[str, Any]:
+def _fallback_taslak(
+    yazi_turu: str, konu: str, evrak_text: str = "", aktif_kurum: str = "",
+) -> dict[str, Any]:
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
     konu_satir = konu if konu else "Başvuru değerlendirmesi"
     tarih = date.today().strftime("%d.%m.%Y")
-    # Kurum kimliği: TEK-KURUM modeli — antet HER ZAMAN aktif kurumdur (ENV KURUM_ADI,
-    # models._DEMO_DEFAULTS ile aynı kaynak); evraktan dinamik tespit YAPILMAZ (19 Tem
-    # mimari kararı — evrak başka kuruma hitap etse bile antet değişmez, uyuşmazlık KIRMIZI).
-    idare = os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
+    # Kurum kimliği: aktif kurum (istek-bazlı override, yoksa ENV KURUM_ADI — models._DEMO_
+    # DEFAULTS ile aynı kaynak); evraktan dinamik tespit YAPILMAZ (antet gelen belgeye göre
+    # DEĞİŞMEZ — uyuşmazlık varsa risk_guard SARI bilgilendirme üretir, bkz. kurum_kimlik).
+    idare = (aktif_kurum or "").strip() or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
     birim = os.getenv("KURUM_BIRIM", "").strip() or "Yazı İşleri Birimi"
     kapanis = {
         "cevabi_yazi": "Gereğini rica ederim.",
@@ -146,7 +148,8 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             ts13298_ust_veri,
         )
 
-        alt_out = await build_alt_talep_taslaklari(alt_talepler, unsurlar)
+        alt_out = await build_alt_talep_taslaklari(
+            alt_talepler, unsurlar, aktif_kurum=str(state.get("aktif_kurum") or "").strip())
         if len(alt_out) >= 2:
             return _coklu_cikti(alt_out)
         # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
@@ -200,13 +203,15 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")
         sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
-        # Antet İDARE = TEK-KURUM (idare_adi="" → build_context env KURUM_ADI'ya düşer,
-        # 19 Tem mimari kararı) + hazırlayan BİRİM (kaynak-doğrulanmış hedef birim →
-        # konuya göre servis müdürlüğü → env/tür varsayılanı).
+        # Antet İDARE = aktif kurum (istek-bazlı override, boşsa build_context env KURUM_ADI'ya
+        # düşer) + hazırlayan BİRİM (kaynak-doğrulanmış hedef birim → konuya göre servis
+        # müdürlüğü → env/tür varsayılanı). Antet gelen belgeye göre DEĞİŞMEZ; uyuşmazlık
+        # varsa verify/risk_guard SARI bilgilendirme üretir (kurum_kimlik.kurum_uyusmazligi).
         hazirlayan = _hazirlayan_birim(state, yazi_turu)
+        aktif_kurum = str(state.get("aktif_kurum") or "").strip()
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
                             sdp_kodu=(sdp or {}).get("kod", ""),
-                            hazirlayan_birim=hazirlayan, idare_adi="")
+                            hazirlayan_birim=hazirlayan, idare_adi=aktif_kurum)
         result = render_yazi(ctx)
         jinja = ctx.jinja_vars()
         sayi_satiri = jinja.get("sayi_satiri", "")
@@ -219,7 +224,8 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
         log.warning("yazi_taslak_fallback", err=str(exc))
         return _fallback_taslak(
-            yazi_turu, str(unsurlar.get("konu", "") or ""), evrak_text)
+            yazi_turu, str(unsurlar.get("konu", "") or ""), evrak_text,
+            aktif_kurum=str(state.get("aktif_kurum") or "").strip())
 
     log.info(
         "yazi_taslak", turu=turu, yazi_turu=result.yazi_turu,

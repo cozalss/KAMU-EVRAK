@@ -48,6 +48,7 @@ from typing import Any
 # gerekçe METNİ değişirse iki taraf birlikte güncellenir (metin = makine sözleşmesi).
 UYDURMA_GROUNDING = "uydurma_grounding"
 UYDURMA_DEGER = "uydurma_deger"
+KURUM_UYUSMAZLIK = "kurum_uyusmazlik"
 TUTARLILIK = "tutarlilik"
 EKSIK_ZORUNLU = "eksik_zorunlu"
 TUR_BELIRSIZ = "tur_belirsiz"
@@ -62,6 +63,7 @@ BILINMEYEN = "bilinmeyen"
 _TAKSONOMI: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"kaynak evrakta yok \(LLM grounding\)"), UYDURMA_GROUNDING),
     (re.compile(r"kaynak evrakta yok"), UYDURMA_DEGER),
+    (re.compile(r"^Kurum uyuşmazlığı"), KURUM_UYUSMAZLIK),
     (re.compile(r"^Tutarlılık:"), TUTARLILIK),
     (re.compile(r"^Eksik zorunlu bilgi:"), EKSIK_ZORUNLU),
     (re.compile(r"^Evrak türü belirsiz"), TUR_BELIRSIZ),
@@ -78,6 +80,9 @@ CIDDIYET: dict[str, float] = {
     UYDURMA_GROUNDING: 0.90,
     # Uydurma somut tarih/sayı: tebligat süresi ya da dosya no yanlışsa işlem sakatlanır.
     UYDURMA_DEGER: 0.85,
+    # Kurum uyuşmazlığı: belge farklı türde bir kuruma hitaben düzenlenmiş — aktif kurum
+    # adına düzenlenen yazı yanlış makamı bağlar / belge yanlış kuruma ulaşmış → en ağır.
+    KURUM_UYUSMAZLIK: 0.90,
     # Kaynak evrak içi çelişki (TCKN checksum, gelecek tarih) — veri güvenilmez.
     TUTARLILIK: 0.45,
     # 3071 m.4: kritik unsur eksikse dilekçe incelenemez.
@@ -98,7 +103,9 @@ CIDDIYET: dict[str, float] = {
 #   dogrula_isareti : "[DOĞRULA]" işareti taslakta LİTERAL olarak vardır
 #   lint_2646       : yönetmelik regex kuralı ihlali — metinde ya vardır ya yoktur
 #   format_eksik    : zorunlu bölüm checklist'i (yazi_taslak'ın kendi bayrağı)
-GOZLEM: frozenset[str] = frozenset({TUTARLILIK, DOGRULA_ISARETI, LINT_2646, FORMAT_EKSIK})
+#   kurum_uyusmazlik: hitap-ekli kurum türü ≠ aktif kurum türü — deterministik regex olgusu
+GOZLEM: frozenset[str] = frozenset(
+    {TUTARLILIK, DOGRULA_ISARETI, LINT_2646, FORMAT_EKSIK, KURUM_UYUSMAZLIK})
 
 # ÇIKARIM sinyalinde ölçüm yoksa kullanılan ÖNSEL. Ölçüm DEĞİLDİR; "onsel" ile raporlanır.
 # 0.70: "sinyal 10 kez ateşlenirse ~7'sinde haklıdır" — kalibrasyon bunu yerinden eder.
@@ -208,6 +215,7 @@ __all__ = (
     "FORMAT_EKSIK",
     "GOZLEM",
     "GOZLEM_DURUM",
+    "KURUM_UYUSMAZLIK",
     "LINT_2646",
     "OLCULDU",
     "ONSEL",

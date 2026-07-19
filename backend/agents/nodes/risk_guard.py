@@ -53,6 +53,10 @@ log = structlog.get_logger()
 
 # verify_uyari içindeki uydurma sinyalinin imzası (verify.py _uydurma_veto mesajı).
 _UYDURMA_IMZA = "kaynak evrakta yok"
+# Kurum uyuşmazlığı imzası (verify.py _kurum_uyusmazlik_uyari) — TEK-KURUM modeli (19 Tem):
+# gelen evrak aktif kurumdan farklı türde bir kuruma hitaben düzenlenmiş → DETERMİNİSTİK
+# KIRMIZI (uydurma ile aynı band-zorlama gücü; gerekçe "Uydurma şüphesi" öneki ALMAZ).
+_UYUSMAZLIK_IMZA = "Kurum uyuşmazlığı"
 # LLM grounding imzası (verify.py _grounding_iddialar). DETERMİNİSTİK veto (regex tarih/sayı)
 # ile AYRIŞTIRILIR: grounding gürültülü/olasılıksal bir çıkarımdır → tek başına KIRMIZI yapmaz,
 # yalnız SARI (memur incelesin) sinyali verir. Bant kararı deterministik kalır (bkz. modül
@@ -115,6 +119,9 @@ def compute_risk(
     # (olasılıksal çıkarım temiz taslağı KIRMIZI'ya çeviremez — yanlış-pozitif jüri riski biter).
     uydurma = [u for u in uyarilar if _UYDURMA_IMZA in u and _GROUNDING_IMZA not in u]
     gerekceler = [f"Uydurma şüphesi — {u}" for u in uydurma]
+    # Kurum uyuşmazlığı: deterministik gözlem (hitap-ekli kurum türü ≠ aktif kurum türü) →
+    # KIRMIZI. Uydurma değil (öneksiz gerekçe); band-zorlama gücü aynı → aşağıda birleşir.
+    uyusmazlik = [u for u in uyarilar if _UYUSMAZLIK_IMZA in u]
 
     # NOT: sari sinyalleri UYDURMA VARKEN DE hesaplanır — eskiden erken return bunları hiç
     # toplamıyordu, bu yüzden aynı belgede hem uydurma hem çok sayıda eksik/belirsiz sinyal
@@ -145,8 +152,8 @@ def compute_risk(
     for u in tutarlilik_uyari or []:
         sari.append(f"Tutarlılık: {u}")
 
-    if uydurma:
-        return _bant_sonuc("kirmizi", gerekceler + sari)
+    if uydurma or uyusmazlik:
+        return _bant_sonuc("kirmizi", gerekceler + uyusmazlik + sari)
     if sari:
         return _bant_sonuc("sari", sari)
     return _bant_sonuc(

@@ -194,8 +194,9 @@ async def test_servis_birimi_dict_zengin_yolu_dusurmez():
     assert "Fen İşleri Müdürlüğü" in out["yazi_taslak_md"]  # antet birimi konudan
 
 
-async def test_antet_idare_evraktan_tespit():
-    """Bakanlıktan gelen evrakın taslağı bakanlık antedi taşır (sabit env kurumu değil)."""
+async def test_antet_idare_tek_kurum():
+    """TEK-KURUM (19 Tem): bakanlıktan gelen görüş evrağının taslağı bile AKTİF kurum
+    antedi taşır — gelen kurum (bakanlık) antede SIZMAZ (env'e düşer)."""
     from agents.nodes.yazi_taslak import yazi_taslak_node
 
     out = await yazi_taslak_node({
@@ -206,8 +207,9 @@ async def test_antet_idare_evraktan_tespit():
     })
     md = out["yazi_taslak_md"]
     assert _FALLBACK_IMZASI not in md
-    assert "SANAYİ VE TEKNOLOJİ BAKANLIĞI" in md
-    assert out["antet_meta"]["idare"] == "SANAYİ VE TEKNOLOJİ BAKANLIĞI"
+    assert "KAMU KURUMU" in md                            # antet = aktif kurum (test env boş)
+    assert out["antet_meta"]["idare"] == "KAMU KURUMU"
+    assert "SANAYİ VE TEKNOLOJİ BAKANLIĞI" not in md      # gelen kurum antede sızmaz
     # Görüş türünün tür-özgü varsayılanı: hazırlayan birim Hukuk Müşavirliği (m.10 title case).
     assert "Hukuk Müşavirliği" in md
     # İlgi gelen belgenin gerçek tarih+sayısını taşır ("Başvurunuz." iskeleti değil — m.15/7).
@@ -240,7 +242,11 @@ async def test_antet_kurum_tespit_yoksa_env_fallback():
 
 
 async def test_kaynak_dogrulanmis_hedef_birim_antete_yazilir():
-    """Route ajanının kaynak-doğrulanmış birimi antet hazırlayan birimi olur."""
+    """Route ajanının kaynak-doğrulanmış birimi antet hazırlayan BİRİMİ olur (İDARE değil).
+
+    TEK-KURUM (19 Tem): antet İDARE = aktif kurum (env); gelen 'YENİMAHALLE BELEDİYESİ'
+    antede sızmaz. BİRİM satırı ise kaynak-doğrulanmış hedef birimden gelir (değişmedi).
+    """
     from agents.nodes.yazi_taslak import yazi_taslak_node
 
     out = await yazi_taslak_node({
@@ -251,7 +257,8 @@ async def test_kaynak_dogrulanmis_hedef_birim_antete_yazilir():
         "durum": "kaynak_dogrulandi",
     })
     md = out["yazi_taslak_md"]
-    assert "YENİMAHALLE BELEDİYESİ" in md          # hitaptan tespit edilen idare (m.10 büyük)
+    assert "KAMU KURUMU" in md                     # antet İDARE = aktif kurum (tek-kurum)
+    assert "YENİMAHALLE BELEDİYESİ" not in md       # gelen kurum antede sızmaz
     assert "Fen İşleri Müdürlüğü" in md            # kaynak-doğrulanmış hazırlayan birim
 
 
@@ -314,24 +321,53 @@ def test_gonderen_birim_gosterge_son_sozcuk_sarti():
     assert gonderen_birim_tespit(iyi) == "İl Yazı İşleri Müdürlüğü"
 
 
-def test_antet_ust_yazi_dis_kurum_baslik_sizmaz():
-    """2026-07-18: icra evrakının üst yazısı antedine göndereni ('İcra Müdürlüğü') BASMAZ.
+def test_antet_tek_kurum_gelen_kurum_sizmaz():
+    """TEK-KURUM MODELİ (19 Tem): antet HER ZAMAN aktif kurumdur (env KURUM_ADI).
 
-    ust_yazi kurum-DIŞI tetiklenir → gelen nominatif başlık göndereni gösterir, antedimiz
-    olamaz → antet_idare_secimi boş döner (render KURUM_ADI env / jenerik'e düşer).
+    Gelen evrağın kurumu (icra/belediye/bakanlık) antede ARTIK SIZMAZ — pipeline
+    idare_adi='' geçer → build_context _DEMO_DEFAULTS env'e düşer. Test ortamında
+    KURUM_ADI boş (conftest) → jenerik 'KAMU KURUMU'. Eski dinamik-antet seçimi kaldırıldı.
     """
-    from agents.kurum_kimlik import antet_idare_secimi
+    from yazi.yazi_render import build_context
 
-    icra = ("T.C.\nANKARA 5. İCRA MÜDÜRLÜĞÜ\n\nSayı : 2026/4587 E.\n"
-            "Konu : Maaş haczi\n\nBorçlu maaşının haczi rica olunur.")
-    assert antet_idare_secimi(icra, {}, "ust_yazi") == ""
-    assert antet_idare_secimi(icra, {}, "muzekkere") == ""
-    # Hitap-ekli evrak her türde bizim kurumdur (açık hitap).
-    dilekce = "YENİMAHALLE BELEDİYE BAŞKANLIĞINA\n\nSokak arızalı."
-    assert antet_idare_secimi(dilekce, {}, "cevabi_yazi") == "YENİMAHALLE BELEDİYESİ"
-    # Görüş/olur kurum-içidir → nominatif başlık bizim kurumdur.
-    bakanlik = "T.C.\nSANAYİ VE TEKNOLOJİ BAKANLIĞI\n\nKonu : görüş"
-    assert antet_idare_secimi(bakanlik, {}, "gorus_mutalaa") == "SANAYİ VE TEKNOLOJİ BAKANLIĞI"
+    # icra üst yazısı: gönderen 'İCRA MÜDÜRLÜĞÜ' antede basılmaz.
+    ctx = build_context("ust_yazi", {"konu": "Maaş haczi"}, "gövde", idare_adi="")
+    assert ctx.jinja_vars()["idare_adi"] == "KAMU KURUMU"
+    # hitap-ekli belediye dilekçesi de artık antedi EZMEZ (eski davranış geri alındı).
+    ctx2 = build_context("cevabi_yazi", {"konu": "Sokak"}, "gövde", idare_adi="")
+    assert ctx2.jinja_vars()["idare_adi"] == "KAMU KURUMU"
+
+
+def test_kurum_uyusmazligi_farkli_tur_kirmizi():
+    """Aktif belediye; evrak FARKLI TÜRDE kuruma (müdürlük/bakanlık) hitaben → uyuşmazlık."""
+    from agents.kurum_kimlik import kurum_uyusmazligi
+
+    aktif = "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
+    saglik = "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nRandevu sistemi şikayeti."
+    u = kurum_uyusmazligi(saglik, {}, aktif)
+    assert u is not None and u["tur"] == "mudurluk"
+    bakanlik = "ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞINA\n\nİmar planı görüşü."
+    assert kurum_uyusmazligi(bakanlik, {}, aktif) is not None
+
+
+def test_kurum_uyusmazligi_ayni_tur_stand_in():
+    """Aktif belediye; evrak BAŞKA bir belediyeye hitaben → aynı tür = stand-in, uyuşmazlık YOK."""
+    from agents.kurum_kimlik import kurum_uyusmazligi
+
+    aktif = "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
+    dilekce = "ODUNPAZARI BELEDİYE BAŞKANLIĞINA\n\nSokağımızdaki yol bozuk."
+    assert kurum_uyusmazligi(dilekce, {}, aktif) is None
+
+
+def test_kurum_uyusmazligi_yargi_ve_bos_aktif_muaf():
+    """Yargı kurumu DIŞ kaynak → muaf; aktif kurum tanımsızsa (baseline) kontrol yapılmaz."""
+    from agents.kurum_kimlik import kurum_uyusmazligi
+
+    aktif = "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI"
+    icra = "ANKARA 5. İCRA MÜDÜRLÜĞÜNE\n\nSayı : 2026/4587 E."  # hitap-ekli ama yargı
+    assert kurum_uyusmazligi(icra, {}, aktif) is None      # yargı muaf
+    saglik = "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nşikayet."
+    assert kurum_uyusmazligi(saglik, {}, "") is None       # aktif boş → kontrol yok
 
 
 def test_muzekkere_muhatabi_gonderen_mahkeme_hitapli():
@@ -356,24 +392,24 @@ Müşavirliğimize gönderilmesi rica ederim.
 """
 
 
-def test_idari_kurum_muzekkere_antedi_dinamik():
-    """SGK gibi idari kurumun müzekkeresi → antet o kurumdur (KAMU KURUMU'ya düşmez)."""
-    from agents.kurum_kimlik import antet_idare_secimi
+def test_idari_kurum_muzekkere_antedi_tek_kurum():
+    """TEK-KURUM (19 Tem): idari kurum (SGK) müzekkeresinde bile antet aktif kurumdur.
 
-    idare = antet_idare_secimi(
-        _SGK_MUZEKKERE, {"kurum": "Sosyal Güvenlik Kurumu Başkanlığı"}, "muzekkere")
-    assert idare == "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI"
+    Eski davranış (SGK başlığı antede geçer) KALDIRILDI — antet env'e düşer; SGK adı
+    yalnız muhatap/gönderen alanlarında kullanılır, antet kaynağı DEĞİLDİR.
+    """
+    from yazi.yazi_render import build_context
+
+    ctx = build_context("muzekkere", {"konu": "Kayıt celbi"}, "gövde", idare_adi="")
+    assert ctx.jinja_vars()["idare_adi"] == "KAMU KURUMU"
 
 
-def test_yargi_kurumu_antedi_env_e_duser():
-    """Mahkeme/icra (YARGI) kurumu ASLA antet olamaz — biz o makam değiliz (env'e düşer)."""
-    from agents.kurum_kimlik import antet_idare_secimi, is_yargi_kurumu
+def test_yargi_kurumu_tespiti():
+    """is_yargi_kurumu — mahkeme/icra/savcılık YARGI, idari kurum değil (mismatch muafiyeti)."""
+    from agents.kurum_kimlik import is_yargi_kurumu
 
-    mahkeme = "T.C.\nANKARA 12. ASLİYE HUKUK MAHKEMESİ\n\nSayı : 2026/456 Esas"
-    assert antet_idare_secimi(mahkeme, {}, "muzekkere") == ""
-    icra = "T.C.\nANKARA 5. İCRA MÜDÜRLÜĞÜ\n\nSayı : 2026/4587 E."
-    assert antet_idare_secimi(icra, {}, "ust_yazi") == ""
     assert is_yargi_kurumu({"ad": "Ankara 12. Asliye Hukuk Mahkemesi"}) is True
+    assert is_yargi_kurumu({"ad": "Ankara 5. İcra Müdürlüğü"}) is True
     assert is_yargi_kurumu({"ad": "Sosyal Güvenlik Kurumu Başkanlığı"}) is False
 
 

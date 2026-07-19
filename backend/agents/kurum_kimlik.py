@@ -157,33 +157,37 @@ def is_yargi_kurumu(kurum: KurumKimlik | dict[str, Any] | None) -> bool:
     return bool(ad and _YARGI_GOSTERGE.search(tr_lower(ad)))
 
 
-# Nominatif T.C. başlığının BİZİM kurumumuz sayıldığı türler: kurum-İÇİ yazışma aileleri.
-# Görüş/olur birim→makam arzı; müzekkere idari kurumdan gelirse (SGK gibi) iç bilgi/belge
-# celbidir → o kurumun başlığı bizim antedimizdir. Yargı kurumundan gelen müzekkere DIŞtır
-# (aşağıda is_yargi_kurumu ile ayrılır → antet env'e düşer).
-_IC_YAZISMA_TURLERI = frozenset({"gorus_mutalaa", "olur", "muzekkere"})
-
-
-def antet_idare_secimi(
+def kurum_uyusmazligi(
     evrak_text: str,
     bilgi_unsurlari: dict[str, Any] | None,
-    yazi_turu: str,
-) -> str:
-    """Cevap taslağının antet İDARE satırını DİNAMİK seç — her belgeye göre değişir.
+    aktif_kurum_adi: str,
+) -> KurumKimlik | None:
+    """Gelen evrak, aktif kurumdan FARKLI TÜRDE bir kuruma hitaben düzenlenmişse o
+    kurumu döndür (kurum uyuşmazlığı → KIRMIZI + gönderim engeli). Yoksa None.
 
-    Kural: (1) YARGI kurumu (mahkeme/icra/savcılık) tespiti → ASLA antet olamaz (biz o
-    makam değiliz), env'e düşer; (2) hitap-ekli tespit ("...BAŞKANLIĞINA") her türde bizim
-    kurumdur — evrak bize açıkça hitap ediyor; (3) nominatif başlık kurum-İÇİ türlerde
-    (görüş/olur/müzekkere) bizim kurumdur — idari kurumun (SGK/bakanlık) iç yazışması.
-    Böylece SGK müzekkeresi antedi "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI" olur (dinamik),
-    icra evrakının üst yazısı ise "İCRA MÜDÜRLÜĞÜ" BASMAZ (yargı → env).
+    TEK-KURUM MODELİ (19 Tem mimari kararı): antet HER ZAMAN aktif_kurum'dur (env
+    KURUM_ADI; bkz. yazi/models.py _DEMO_DEFAULTS). Evrak başka bir kuruma hitap etse
+    bile antet DEĞİŞMEZ — bunun yerine bu fonksiyon uyuşmazlığı bildirir; risk katmanı
+    KIRMIZI verir ve onay kapısı gönderimi kilitler.
+
+    Uyuşmazlık ÖLÇÜTÜ (tür-duyarlı, demo pragmatiği):
+    - Aynı TÜR kurum (belediye ↔ belediye): kurgu aktif kurum (Örnekşehir), gerçek örnek
+      belediyelerin (Odunpazarı/Nilüfer...) yerine geçen stand-in kabul edilir → uyuşmazlık YOK.
+    - Farklı TÜR (belediye vs. bakanlık/müdürlük/valilik): gerçek yanlış-kurum riski —
+      bir belediye, Sağlık Müdürlüğüne/Bakanlığa hitaben yazılmış evrağı işleyemez → uyuşmazlık.
+    - Yargı kurumu (mahkeme/icra/savcılık): DIŞ kaynak olarak ayrı ele alınır → muaf.
+    - aktif_kurum tanımsızsa (test/baseline, KURUM_ADI boş): kontrol yapılmaz → None.
+    Yalnız HİTAP-EKLİ (dative) tespitte tetiklenir: evrak açıkça o kuruma yazılmış olmalı.
     """
+    aktif = ad_to_kurum(aktif_kurum_adi or "")
+    if not aktif.get("slug"):
+        return None
     kurum, hitapli = muhatap_kurum_tespit_meta(evrak_text, bilgi_unsurlari)
-    if not kurum.get("ad") or is_yargi_kurumu(kurum):
-        return ""
-    if hitapli or yazi_turu in _IC_YAZISMA_TURLERI:
-        return antet_idare_adi(kurum)
-    return ""
+    if not hitapli or not kurum.get("ad") or is_yargi_kurumu(kurum):
+        return None
+    if kurum.get("slug") == aktif.get("slug") or kurum.get("tur") == aktif.get("tur"):
+        return None
+    return kurum
 
 
 # Antet idare satırından SONRAKİ satırda birim kalıbı (Yön. m.10 üçüncü satır) —
@@ -436,8 +440,8 @@ def muhatap_kurum_tespit_meta(
 
 
 __all__ = (
-    "KurumKimlik", "antet_idare_adi", "antet_idare_secimi", "bos_kurum",
+    "KurumKimlik", "ad_to_kurum", "antet_idare_adi", "bos_kurum",
     "gonderen_birim_tespit", "gorus_muhatabi", "hitap_eki", "is_yargi_kurumu",
-    "iyelik_eki", "muhatap_kurum_tespit", "muhatap_kurum_tespit_meta",
-    "muzekkere_muhatabi",
+    "iyelik_eki", "kurum_uyusmazligi", "muhatap_kurum_tespit",
+    "muhatap_kurum_tespit_meta", "muzekkere_muhatabi",
 )

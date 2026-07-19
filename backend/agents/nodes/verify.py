@@ -17,6 +17,7 @@ LLM opsiyoneldir; varsayılan saf-deterministik (anahtarsız demo deterministik 
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 from datetime import date
 from typing import Any
@@ -35,7 +36,7 @@ from agents.config import (
     birim_tr,
 )
 from agents.karar_grounding import karar_grounding_veto
-from agents.kurum_kimlik import antet_idare_adi
+from agents.kurum_kimlik import antet_idare_adi, kurum_uyusmazligi
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.servis_birim import SERVIS_BIRIM_TR
 from agents.tutarlilik import tutarlilik_kontrol
@@ -390,6 +391,34 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
             for i in temiz[:_GROUNDING_MAX_IDDIA]]
 
 
+# Kurum uyuşmazlığı sinyalinin imzası — risk_guard bunu KIRMIZI'ya çevirir (uydurma ile
+# AYNI band-zorlama gücü; taksonomi tipi risk_agirlik.KURUM_UYUSMAZLIK). Metin makine
+# sözleşmesidir: değişirse risk_agirlik._TAKSONOMI ve risk_guard._UYUSMAZLIK_IMZA birlikte güncellenir.
+_UYUSMAZLIK_IMZA = "Kurum uyuşmazlığı"
+
+
+def _kurum_uyusmazlik_uyari(state: dict[str, Any]) -> list[str]:
+    """TEK-KURUM modeli (19 Tem): gelen evrak, aktif kurumdan FARKLI TÜRDE bir kuruma
+    hitaben düzenlenmişse KIRMIZI uyarı üret (deterministik; taslaktan bağımsız).
+
+    aktif kurum = env KURUM_ADI (yazi/models._DEMO_DEFAULTS ile aynı kaynak). Boşsa
+    (test/baseline) veya uyuşmazlık yoksa → boş liste. Antet DEĞİŞTİRİLMEZ; bu yalnız
+    risk sinyalidir → risk bandı KIRMIZI → onay kapısı gönderimi kilitler.
+    """
+    aktif = os.getenv("KURUM_ADI", "").strip()
+    if not aktif:
+        return []
+    yabanci = kurum_uyusmazligi(
+        state.get("evrak_text", "") or "", state.get("bilgi_unsurlari") or {}, aktif)
+    if not yabanci:
+        return []
+    return [
+        f"{_UYUSMAZLIK_IMZA}: gelen belge '{yabanci['ad']}' kurumuna hitaben düzenlenmiş; "
+        f"işlemi yapan aktif kurum farklı ({aktif}). Antet aktif kuruma göre düzenlendi — "
+        "bu belge büyük olasılıkla yanlış kuruma ulaştı; gönderim onay olmadan yapılamaz."
+    ]
+
+
 async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     """Taslak format-uyumu + uydurma veto — additive passthrough (state bozmaz)."""
     if not VERIFY_ENABLED:
@@ -405,10 +434,13 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
         state.get("evrak_text", "") or "", state.get("bilgi_unsurlari") or {}
     )]
 
+    # Kurum uyuşmazlığı taslaktan BAĞIMSIZ (gelen evrak vs aktif kurum) → taslak yoksa da raporlanır.
+    uyusmazlik = _kurum_uyusmazlik_uyari(state)
+
     taslak = state.get("yazi_taslak_md", "") or ""
     if not taslak:
         return {"verify_notes": "Taslak bulunamadı — doğrulama atlandı.",
-                "verify_uyari": [], "tutarlilik_uyari": tutarlilik}
+                "verify_uyari": uyusmazlik, "tutarlilik_uyari": tutarlilik}
 
     eksik = _eksik_bolumler(tr_lower(taslak))
     uydurma = _uydurma_veto(taslak, state)
@@ -423,7 +455,8 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     # taslağı uyarıyla işaretlerdi. §4 (kullanıcıdan kurum/imza girişi) eklenince etkinleşmeli.
     # Uydurma-veto mesajları taslaktaki HAM tarih/sayı token'ını içerir (TCKN-şekilli
     # olabilir) → SSE'ye maskesiz gitmesin diye state'e girmeden maskelenir.
-    uyarilar = [mask_pii(u).masked_text for u in uydurma] + [f"Eksik bölüm: {e}" for e in eksik]
+    uyarilar = ([mask_pii(u).masked_text for u in uydurma]
+                + uyusmazlik + [f"Eksik bölüm: {e}" for e in eksik])
     # S2 — madde-referanslı 2646 lint raporu (kural-kimlikli; risk'e yalnız 'uyari' gider).
     # muhatap: render'ın muhatap mantığıyla AYNI (yön hatası = sahte m.16 uyarısı üretir).
     # Katman B: muhatap KURUM görünümlü ama tablo çözemiyorsa LLM kademe tahmini

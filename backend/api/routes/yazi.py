@@ -155,7 +155,6 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     """
     from agents.config import birim_tr
     from agents.kurum_kimlik import (
-        antet_idare_secimi,
         gorus_muhatabi,
         hitap_eki,
         muzekkere_muhatabi,
@@ -179,16 +178,15 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
         muhatap = muzekkere_muhatabi(text, str(unsurlar.get("gonderen", "") or "")) or None
     else:
         muhatap = None
-    # Dinamik antet: pipeline ile AYNI seçim kuralı (antet_idare_secimi) — kurum-içi/dışı
-    # ayrımıyla. ust_yazi/müzekkere gibi dış-kurum evrakında başlık GÖNDERENİ gösterir →
-    # bizim antedimiz olamaz, env'e düşer (icra evrakının üst yazısına "İcra Müdürlüğü" basılmaz).
-    idare = antet_idare_secimi(text, unsurlar, req.yazi_turu)
+    # Antet: TEK-KURUM modeli (19 Tem) — idare_adi="" → build_context env KURUM_ADI'ya
+    # düşer; pipeline (yazi_taslak_node) ile AYNI kural. Evrak başka kuruma hitap etse
+    # bile antet değişmez; uyuşmazlık pipeline'da KIRMIZI olarak işlenir.
     hazirlayan = (birim_tr(hedef_birim)
                   if hedef_birim and req.yazi_turu != "ust_yazi" else "")
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
         ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap,
-                            hazirlayan_birim=hazirlayan, idare_adi=idare)
+                            hazirlayan_birim=hazirlayan, idare_adi="")
         result = render_yazi(ctx, formats=frozenset())
     except Exception as exc:
         log.error("yazi_taslak_turu_failed", error=str(exc) or type(exc).__name__)

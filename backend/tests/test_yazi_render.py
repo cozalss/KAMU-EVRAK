@@ -199,7 +199,7 @@ class TestBuildAltTalepTaslaklari:
         # Arrange — < 2 alt-talep → ek işlem/maliyet yok
         alt = [{"ozet": "çukur onarımı", "birim_tr": "İlgili Teknik Daire"}]
         # Act
-        sonuc = await build_alt_talep_taslaklari(alt, {}, "evrak metni")
+        sonuc = await build_alt_talep_taslaklari(alt, {})
         # Assert
         assert sonuc == alt
 
@@ -211,7 +211,7 @@ class TestBuildAltTalepTaslaklari:
             {"ozet": "iş başvurusu sonucu", "birim_tr": "İnsan Kaynakları / Personel Dairesi"},
         ]
         # Act
-        sonuc = await build_alt_talep_taslaklari(alt, {"gonderen": "Ayşe Yılmaz"}, "evrak metni")
+        sonuc = await build_alt_talep_taslaklari(alt, {"gonderen": "Ayşe Yılmaz"})
         # Assert — her taslak KENDİ birimine muhatap, vatandaşa değil
         assert len(sonuc) == 3
         for orijinal, taslak in zip(alt, sonuc, strict=True):
@@ -224,23 +224,21 @@ class TestBuildAltTalepTaslaklari:
         # Arrange — birim_tr eksik → uydurma yok, nötr ifade
         alt = [{"ozet": "talep 1"}, {"ozet": "talep 2"}]
         # Act
-        sonuc = await build_alt_talep_taslaklari(alt, {}, "")
+        sonuc = await build_alt_talep_taslaklari(alt, {})
         # Assert
         assert all("İlgili Birime" in t["yazi_taslak_md"] for t in sonuc)
 
-    async def test_hitap_ekli_gonderende_antet_bizim_kurum(self):
-        # Arrange — çok-konulu dilekçe ODUNPAZARI BELEDİYE BAŞKANLIĞINA (hitap-ekli)
-        # yazılmış: biz Odunpazarı'yız, antet KAMU KURUMU/env'e değil bu kuruma düşmeli
-        # (tek-konulu yol antet_idare_secimi kullanır — alt-talep yolu da aynı sözleşmeye uymalı).
-        evrak = "T.C.\nODUNPAZARI BELEDİYE BAŞKANLIĞINA\nFen İşleri Müdürlüğüne\nESKİŞEHİR"
+    async def test_alt_talep_antet_tek_kurum(self):
+        # TEK-KURUM (19 Tem): gelen dilekçe ODUNPAZARI BELEDİYE BAŞKANLIĞINA yazılmış olsa
+        # bile alt-talep taslaklarının anteti o kuruma DÖNMEZ — aktif kurum (env) kullanılır.
+        # Test ortamında KURUM_ADI boş → jenerik 'KAMU KURUMU'; evrak kurumu antede sızmaz.
         alt = [
             {"ozet": "çukurun onarılması", "birim_tr": "İlgili Teknik Daire"},
             {"ozet": "iş başvurusu sonucu", "birim_tr": "İnsan Kaynakları / Personel Dairesi"},
         ]
-        # Act
-        sonuc = await build_alt_talep_taslaklari(alt, {}, evrak)
-        # Assert
-        assert all("ODUNPAZARI BELEDİYE" in t["yazi_taslak_md"] for t in sonuc)
+        sonuc = await build_alt_talep_taslaklari(alt, {})
+        assert all("KAMU KURUMU" in t["yazi_taslak_md"] for t in sonuc)
+        assert all("ODUNPAZARI BELEDİYE" not in t["yazi_taslak_md"] for t in sonuc)
 
 
 # ---------------------------------------------------------------------------

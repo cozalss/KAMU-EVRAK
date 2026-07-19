@@ -98,6 +98,51 @@ class TestComputeRiskBant:
         assert tek["bant"] == dokuz["bant"] == "kirmizi"   # bant KARARI değişmedi
         assert dokuz["skor"] > tek["skor"]
 
+
+# ---------------------------------------------------------------------------
+# Kurum uyuşmazlığı (TEK-KURUM modeli, 19 Tem) — deterministik KIRMIZI + gönderim engeli
+# ---------------------------------------------------------------------------
+
+
+class TestKurumUyusmazlik:
+    """Gelen evrak aktif kurumdan farklı türde kuruma hitaben → KIRMIZI (uydurma imzası değil)."""
+
+    _UYARI = ("Kurum uyuşmazlığı: gelen belge 'İl Sağlık Müdürlüğü' kurumuna hitaben "
+              "düzenlenmiş; işlemi yapan aktif kurum farklı (ÖRNEKŞEHİR BELEDİYE "
+              "BAŞKANLIĞI). Antet aktif kuruma göre düzenlendi — bu belge büyük "
+              "olasılıkla yanlış kuruma ulaştı; gönderim onay olmadan yapılamaz.")
+
+    def test_uyusmazlik_kirmizi(self):
+        sonuc = _risk([self._UYARI])
+        assert sonuc["bant"] == "kirmizi"
+        # "Uydurma şüphesi" öneki ALMAZ — bu bir halüsinasyon değil, yönlendirme hatasıdır.
+        assert any("Kurum uyuşmazlığı" in g for g in sonuc["gerekceler"])
+        assert not any(g.startswith("Uydurma şüphesi") for g in sonuc["gerekceler"])
+
+    def test_uyusmazlik_gozlem_skoru_yuksek(self):
+        # Deterministik gözlem (isabet=1.0) × ciddiyet 0.90 → skor ≈ 0.90, kalibrasyon 'gozlem'.
+        sonuc = _risk([self._UYARI])
+        assert sonuc["skor"] >= 0.85
+        assert sonuc["kalibrasyon"] in ("gozlem", "olculdu")
+
+    def test_verify_helper_farkli_tur_uretir(self, monkeypatch):
+        # verify._kurum_uyusmazlik_uyari: aktif kurum env'den; farklı tür → uyarı üretir.
+        from agents.nodes.verify import _kurum_uyusmazlik_uyari
+
+        monkeypatch.setenv("KURUM_ADI", "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI")
+        uy = _kurum_uyusmazlik_uyari(
+            {"evrak_text": "İL SAĞLIK MÜDÜRLÜĞÜNE\n\nRandevu şikayeti.", "bilgi_unsurlari": {}})
+        assert len(uy) == 1 and uy[0].startswith("Kurum uyuşmazlığı")
+
+    def test_verify_helper_ayni_tur_bos(self, monkeypatch):
+        # belediye↔belediye stand-in → uyarı YOK (demo happy-path korunur).
+        from agents.nodes.verify import _kurum_uyusmazlik_uyari
+
+        monkeypatch.setenv("KURUM_ADI", "ÖRNEKŞEHİR BELEDİYE BAŞKANLIĞI")
+        uy = _kurum_uyusmazlik_uyari(
+            {"evrak_text": "ODUNPAZARI BELEDİYE BAŞKANLIĞINA\n\nYol tamiri.", "bilgi_unsurlari": {}})
+        assert uy == []
+
     def test_kirmizi_skoru_sari_skorundan_yuksek(self):
         """Regresyon: hafif sarı belge (%50) ağır kırmızıdan (%22) büyük görünüyordu."""
         kirmizi = _risk(["Taslaktaki '5' sayısı kaynak evrakta yok (doğrulayın)."])

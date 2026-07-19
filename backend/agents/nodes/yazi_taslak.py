@@ -35,35 +35,14 @@ from agents.config import (
     birim_tr,
 )
 from agents.kurum_kimlik import (
-    antet_idare_adi,
-    antet_idare_secimi,
     gorus_muhatabi,
     hitap_eki,
-    muhatap_kurum_tespit,
     muzekkere_muhatabi,
 )
 from agents.servis_birim import SERVIS_BIRIM_TR
 from yazi.sdp_plani import sdp_bul
 
 log = structlog.get_logger()
-
-
-def _antet_idare(state: dict[str, Any], yazi_turu: str) -> str:
-    """Antet İDARE satırı = evrakın muhatap kurumu (dinamik kurum kimliği).
-
-    Seçim kuralı kurum_kimlik.antet_idare_secimi'nde: hitap-ekli tespit her türde bizim
-    kurum; nominatif dış-kurum başlığı (icra/mahkeme göndereni) antet OLMAZ → env'e düşer.
-    Tespit boşsa route ajanının kaynak-doğrulamalı muhatap_kurum'u kurum-İÇİ türlerde
-    yedek olarak kullanılır.
-    """
-    idare = antet_idare_secimi(
-        state.get("evrak_text", "") or "", state.get("bilgi_unsurlari") or {}, yazi_turu)
-    if idare:
-        return idare
-    kurum = state.get("muhatap_kurum")
-    if yazi_turu in ("gorus_mutalaa", "olur") and isinstance(kurum, dict) and kurum.get("ad"):
-        return antet_idare_adi(kurum)
-    return ""
 
 
 def _hazirlayan_birim(state: dict[str, Any], yazi_turu: str) -> str:
@@ -88,10 +67,10 @@ def _fallback_taslak(yazi_turu: str, konu: str, evrak_text: str = "") -> dict[st
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
     konu_satir = konu if konu else "Başvuru değerlendirmesi"
     tarih = date.today().strftime("%d.%m.%Y")
-    # Kurum kimliği: önce evraktan deterministik tespit (dinamik antet iskelette de
-    # çalışsın), yoksa ENV (models._DEMO_DEFAULTS ile aynı kaynak), yoksa jenerik demo.
-    idare = (antet_idare_adi(muhatap_kurum_tespit(evrak_text, None))
-             or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU")
+    # Kurum kimliği: TEK-KURUM modeli — antet HER ZAMAN aktif kurumdur (ENV KURUM_ADI,
+    # models._DEMO_DEFAULTS ile aynı kaynak); evraktan dinamik tespit YAPILMAZ (19 Tem
+    # mimari kararı — evrak başka kuruma hitap etse bile antet değişmez, uyuşmazlık KIRMIZI).
+    idare = os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
     birim = os.getenv("KURUM_BIRIM", "").strip() or "Yazı İşleri Birimi"
     kapanis = {
         "cevabi_yazi": "Gereğini rica ederim.",
@@ -167,7 +146,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             ts13298_ust_veri,
         )
 
-        alt_out = await build_alt_talep_taslaklari(alt_talepler, unsurlar, evrak_text)
+        alt_out = await build_alt_talep_taslaklari(alt_talepler, unsurlar)
         if len(alt_out) >= 2:
             return _coklu_cikti(alt_out)
         # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
@@ -221,14 +200,13 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
         konu = str(unsurlar.get("konu", "") or "")
         sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
-        # Antet = dinamik kurum kimliği (idare evraktan tespit; her evrakta sabit tek kurum
-        # değil — kullanıcı bulgusu) + hazırlayan birim (kaynak-doğrulanmış hedef birim →
+        # Antet İDARE = TEK-KURUM (idare_adi="" → build_context env KURUM_ADI'ya düşer,
+        # 19 Tem mimari kararı) + hazırlayan BİRİM (kaynak-doğrulanmış hedef birim →
         # konuya göre servis müdürlüğü → env/tür varsayılanı).
-        idare = _antet_idare(state, yazi_turu)
         hazirlayan = _hazirlayan_birim(state, yazi_turu)
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
                             sdp_kodu=(sdp or {}).get("kod", ""),
-                            hazirlayan_birim=hazirlayan, idare_adi=idare)
+                            hazirlayan_birim=hazirlayan, idare_adi="")
         result = render_yazi(ctx)
         jinja = ctx.jinja_vars()
         sayi_satiri = jinja.get("sayi_satiri", "")

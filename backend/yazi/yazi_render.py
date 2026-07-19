@@ -634,7 +634,7 @@ def ts13298_ust_veri(
 
 
 async def build_alt_talep_taslaklari(
-    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], evrak_text: str,
+    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any],
 ) -> list[dict[str, Any]]:
     """Çok-konulu evrakta HER alt-talep için ayrı üst yazı taslağı (kuruma yönlendirme).
 
@@ -642,17 +642,14 @@ async def build_alt_talep_taslaklari(
     (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
     < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
 
-    Antet İDARE satırı tek-konulu yolla (yazi_taslak._antet_idare) AYNI sözleşmeyi
-    izler: evrak hitap-ekli bizim kuruma yazılmışsa ("...BAŞKANLIĞINA") antet o
-    kurum olur, aksi halde env/jenerik varsayılana düşer — alt-talep taslakları bu
-    tespiti atlayıp sessizce env'e düşmesin diye burada da hesaplanır.
+    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler:
+    TEK-KURUM modeli (19 Tem) — idare_adi="" → build_context env KURUM_ADI'ya düşer;
+    evrak başka kuruma hitap etse bile antet değişmez (uyuşmazlık ayrıca KIRMIZI işlenir).
     """
     if len(alt_talepler) < 2:
         return list(alt_talepler)
-    from agents.kurum_kimlik import antet_idare_secimi
     from yazi.renderer import render_yazi
 
-    idare = antet_idare_secimi(evrak_text, unsurlar, "ust_yazi")
     out: list[dict[str, Any]] = []
     for item in alt_talepler:
         ozet = str(item.get("ozet", "") or "")
@@ -660,7 +657,7 @@ async def build_alt_talep_taslaklari(
         child_unsurlar = {**unsurlar, "konu": ozet}
         metin = await build_body("ust_yazi", child_unsurlar, ozet)
         ctx = build_context(
-            "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap, idare_adi=idare)
+            "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap, idare_adi="")
         result = render_yazi(ctx)
         out.append({
             **item, "yazi_turu": "ust_yazi",

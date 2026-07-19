@@ -998,6 +998,24 @@
   border-radius: 999px;
   overflow: hidden;
 }
+.sc-risk-gauge-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sc-risk-gauge-track {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.sc-risk-gauge-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 400ms var(--ease-out-expo);
+}
 .sc-warning-row {
   display: flex;
   align-items: flex-start;

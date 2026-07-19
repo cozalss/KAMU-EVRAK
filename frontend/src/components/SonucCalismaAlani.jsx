@@ -777,9 +777,21 @@ function RiskCard({ r, band, bantC }) {
   if (!r.risk_metadata?.aciklama && !riskGerekce.length && !r.risk_metadata?.skor) return null;
   const yorumlar = riskGerekce.map((g) => riskGerekceYorum(String(g))).filter(Boolean);
   const skor = riskSkorYorum(Number(r.risk_metadata?.skor), r.risk_metadata?.katkilar, band, r.risk_metadata?.kalibrasyon);
+  const seviyeGoster = skor?.seviye ? skor.seviye[0].toUpperCase() + skor.seviye.slice(1) : null;
 
   return (
     <NeonCard title="Risk değerlendirmesi" tag={BANT[band]?.l} tagColor={bantC} accent={V} icon={<Icon.alert />}>
+      {skor && (
+        <div className="sc-risk-gauge-row" style={{ marginBottom: SP.m }}>
+          <span style={{ ...TYPE.num, color: bantC, flexShrink: 0 }}>%{skor.yuzde}</span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {seviyeGoster && <div style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{seviyeGoster}</div>}
+            <span className="sc-risk-gauge-track" aria-hidden="true" style={{ display: "block", marginTop: 6, background: PAL.press }}>
+              <span className="sc-risk-gauge-fill" style={{ width: `${Math.min(100, skor.yuzde)}%`, background: bantC }} />
+            </span>
+          </div>
+        </div>
+      )}
       {r.risk_metadata?.aciklama && r.risk_metadata.aciklama !== r.risk_metadata?.oneri && (
         <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s }}>
           <Icon.info width={14} height={14} style={{ flex: "none", marginTop: 2, color: PAL.mut2 }} />
@@ -807,16 +819,11 @@ function RiskCard({ r, band, bantC }) {
           })}
         </div>
       )}
-      {skor && <div style={{ ...TYPE.meta, color: PAL.ink2, marginTop: SP.s }}>{skor.baslik}.</div>}
-      {(yorumlar.some((y) => y.cevrildi) || skor) && (
-        <details className="sc-more-details">
-          <summary {...focusRing}>Teknik ayrıntı</summary>
-          <div style={{ marginTop: SP.xs, padding: SP.s, background: PAL.surfHi, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", gap: SP.xs }}>
-            {skor && (skor.not || skor.kalibrasyonNot) && <div style={{ ...TYPE.meta, color: PAL.mut2 }}>{skor.not} {skor.kalibrasyonNot}</div>}
-            {yorumlar.map((yorum, i) => <code key={i} style={{ ...TYPE.meta, fontFamily: MONO, color: PAL.mut2, wordBreak: "break-word" }}>{yorum.teknik}</code>)}
-            {skor && <code style={{ ...TYPE.meta, fontFamily: MONO, color: PAL.mut3, wordBreak: "break-word" }}>{skor.teknik}</code>}
-          </div>
-        </details>
+      {skor && (skor.not || skor.kalibrasyonNot) && (
+        <div className="sc-positive-callout" style={{ marginTop: SP.m, background: PAL.surf2, color: PAL.mut2 }}>
+          <Icon.info width={13} height={13} style={{ flex: "none", marginTop: 1 }} />
+          <span>{skor.not} {skor.kalibrasyonNot}</span>
+        </div>
       )}
     </NeonCard>
   );

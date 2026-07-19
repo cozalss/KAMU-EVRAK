@@ -189,6 +189,9 @@ class ProcessResponse(BaseModel):
     # Kaynak-doğrulamalı ajan: doğrulanmış GERÇEK birim adı (serbest-metin) veya None (fallback).
     hedef_birim: str | None = ""
     birim_alternatifleri: list[str] = Field(default_factory=list)
+    # "Neden bu birim" gerekçe metni (route_ajan/route_birim üretir) — dogrulandi VE
+    # fallback_onerisi dalında YAZILIR; boşsa frontend jenerik dipnota düşer.
+    birim_reasoning: str = ""
     # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi ({kod, ad, sinyal}); danışma.
     servis_birimi: dict = Field(default_factory=dict)
     # Kaynak-doğrulamalı yönlendirme (REVİZYON 1/4/6): kurum kimliği + kaynak künyesi + durum.

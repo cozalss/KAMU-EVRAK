@@ -106,6 +106,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         ozet=mask_pii(state.get("ozet", "") or "").masked_text,
         hedef_birim=state.get("hedef_birim", ""),
         birim_alternatifleri=state.get("birim_alternatifleri", []),
+        birim_reasoning=state.get("birim_reasoning", ""),
         servis_birimi=state.get("servis_birimi") or {},
         muhatap_kurum=state.get("muhatap_kurum") or {},
         yetkili_kurum=state.get("yetkili_kurum") or {},

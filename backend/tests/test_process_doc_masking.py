@@ -39,3 +39,20 @@ class TestBilgilendirmeMaskeleme:
         resp = _to_response(state, {})
         # Assert
         assert resp.bilgilendirme_yapisal == {"durum": "hazir"}
+
+
+class TestBirimReasoningGecer:
+    """route_ajan/route_birim'in ürettiği gerekçe metni API sınırından sızmadan kaybolmasın
+    (ProcessResponse şemasında hiç alan yoktu — state'te vardı, yanıtta hiç görünmüyordu)."""
+
+    def test_birim_reasoning_yanita_gecer(self):
+        # Arrange
+        state = {"birim_reasoning": "İnsan Kaynakları — personel izin sinyali (kaynak: X)."}
+        # Act
+        resp = _to_response(state, {})
+        # Assert
+        assert resp.birim_reasoning == "İnsan Kaynakları — personel izin sinyali (kaynak: X)."
+
+    def test_birim_reasoning_yoksa_bos_string(self):
+        resp = _to_response({}, {})
+        assert resp.birim_reasoning == ""

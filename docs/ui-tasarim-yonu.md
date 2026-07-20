@@ -4,9 +4,17 @@
 > sistem" hissini canlı veren bir arayüz yönü + somut, uygulanabilir animasyon/stil spec'i.
 > Bu belge **frontend ajanının uygulayacağı** sözleşmedir.
 >
-> **DÜRÜSTLÜK KAYDI:** Buradaki her öneri **saf react/react-dom + CSS/SVG** ile, **sıfır ek
-> bağımlılıkla** uygulanabilir (mevcut `frontend/` kuralı). Hiçbir öneri canvas/WebGL/GSAP/
-> framer-motion gerektirmez. Abartı yok: her teknik bilinen, test-edilebilir CSS/SVG kalıbıdır.
+> **DÜRÜSTLÜK KAYDI (2026-06 yazımı):** Buradaki her öneri **saf react/react-dom + CSS/SVG** ile,
+> **sıfır ek bağımlılıkla** uygulanabilir (o zamanki `frontend/` kuralı). Hiçbir öneri
+> canvas/WebGL/GSAP/framer-motion gerektirmez. Abartı yok: her teknik bilinen, test-edilebilir
+> CSS/SVG kalıbıdır.
+>
+> **DÜZELTME (2026-07-20):** Bu belgedeki Ajan Akış Şeması/kart animasyonları hâlâ saf CSS/SVG
+> ile uygulı (§3.1-3.6 aynen geçerli) — ama proje politikası o tarihten sonra genişledi:
+> headless/unstyled etkileşim kütüphaneleri (`motion`/framer-motion dahil) artık izinli, sidebar
+> ve modal animasyonlarında kullanılıyor (bkz. `CHANGELOG.md` [2026-07-20], `MASTER.md`
+> "Etkileşim kütüphanesi katmanı"). "Hiçbir öneri framer-motion gerektirmez" cümlesi artık bu
+> belgenin KAPSAMI için doğru, proje geneli için değil.
 >
 > **RED-LINE (mimari):** Ajan Akış Şeması yalnız **ilerleme** görselleştirir; sonuç (tür/birim/
 > yazı) backend'de üretilir. Animasyonlar veri uydurmaz — yalnız mevcut `status` ve `data`

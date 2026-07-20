@@ -71,6 +71,10 @@
 - **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
   `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`
   (isim tarihsel — animasyon mekaniği renkten bağımsız).
+- **Headless kütüphane katmanı (2026-07-20):** `motion`/Radix (`Dialog`/`DropdownMenu`/
+  `Tooltip`)/`vaul`/`embla-carousel-react`/`lucide-react` — hepsi görünümsüz, `neonUi.jsx`
+  token'larıyla boyanır. **Stilli** kütüphane (kendi CSS/tema getiren) hâlâ yasak. Tam liste +
+  gerekçe: `frontend/design-system/kamu-evrak/MASTER.md`.
 - **Adlandırma:** kabuk/parça `Neon*` (isim tarihsel, görünüm artık açık/kağıt), bölümler `*View`,
   canlı akış `CanliAjanAkisi`.
 - **a11y:** her tıklanabilirde `focusRing` + `cursor:pointer`; renk tek sinyal değil (ikon+metin+etiket);

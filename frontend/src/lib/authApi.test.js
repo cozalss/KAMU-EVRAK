@@ -6,7 +6,7 @@
    SİLMEZ; yalnız kesin 401 (oturum_gecersiz) siler. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { authFetch, apiGet, tokens } from "./authApi.js";
+import { apiStream, authFetch, apiGet, oturumDustuAbone, tokens } from "./authApi.js";
 
 function sahteLocalStorage() {
   const depo = new Map();
@@ -65,4 +65,45 @@ test("refresh'te kesin 401 (oturum_gecersiz) token'ları SİLER", async () => {
 
   await assert.rejects(() => apiGet("/korumali"));
   assert.equal(tokens.refresh(), "", "kesin 401 — refresh token silinmeli (gerçek çıkış)");
+});
+
+test("refresh 401'i oturumDustuAbone dinleyicisini tetikler (ölü oturumda takılı UI regresyonu)", async () => {
+  global.localStorage = sahteLocalStorage();
+  tokens.set("access", "refresh-1");
+  let dustu = 0;
+  const birak = oturumDustuAbone(() => { dustu += 1; });
+
+  global.fetch = async () => ({ ok: false, status: 401, json: async () => ({ detail: "oturum_gecersiz" }) });
+  await assert.rejects(() => apiGet("/korumali"));
+
+  assert.equal(dustu, 1, "kesin 401 → abone tam bir kez haberdar edilmeli (UI anon'a düşer)");
+  birak();
+});
+
+/* apiStream SON-EVENT sözleşmesi (bug avı bulgusu): kapanış chunk'ı '\n\n' ayraçsız
+   gelebilir — flush edilmezse kurul akışının 'sonuc' event'i düşer, modal yarım kalırdı. */
+function sahteSSEGovde(parcalar) {
+  const enc = new TextEncoder();
+  let i = 0;
+  return {
+    getReader: () => ({
+      read: async () => (i < parcalar.length
+        ? { done: false, value: enc.encode(parcalar[i++]) }
+        : { done: true, value: undefined }),
+    }),
+  };
+}
+
+test("apiStream: kapanış chunk'ındaki ayraçsız son event de işlenir", async () => {
+  global.localStorage = sahteLocalStorage();
+  tokens.set("access", "refresh-1");
+  global.fetch = async () => ({ ok: true, status: 200, body: sahteSSEGovde([
+    'data: {"tip":"acilis","n":1}\n\n',
+    'data: {"tip":"sonuc","n":2}',   // ayraç YOK — kapanış chunk'ı
+  ]) });
+
+  const olaylar = [];
+  await apiStream("/yazi/kurul/akis", {}, (e) => olaylar.push(e.tip));
+
+  assert.deepEqual(olaylar, ["acilis", "sonuc"], "son event flush edilmeli — 'sonuc' düşmemeli");
 });

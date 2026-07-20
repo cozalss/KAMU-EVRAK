@@ -43,8 +43,10 @@ export const HukumDurak = ({ k, v, sub, c = PAL.ink, hat = T, icon, son = false,
       <span style={{ display: "block", ...TYPE.ui, color: PAL.mut3, marginBottom: 2 }}>{k}</span>
       {/* Değer TYPE.disp (2026-07-15: kullanıcı isteği "yazılar büyük olsun" — kart tam-boy,
           tipografi ona ölçeklendi). wordBreak: eşlenmemiş/ham fallback anahtarı (boşluksuz
-          snake_case) da güvenle sarmalı — gerçek etiketler (EVRAK_TR/BIRIM_LBL) sığar. */}
-      <span style={{ display: "block", ...TYPE.disp, color: DERIN_OF(c), maxWidth: 560, wordBreak: "break-word" }}>{v}</span>
+          snake_case) da güvenle sarmalı — gerçek etiketler (EVRAK_TR/BIRIM_LBL) sığar.
+          textWrap:"balance" — AuthPage.jsx'teki native CSS deseniyle aynı (bağımlılık yok,
+          evergreen tarayıcı yerleşik) — çok satırlı değerlerde son satırda tek kelime kalmaz. */}
+      <span style={{ display: "block", ...TYPE.disp, color: DERIN_OF(c), maxWidth: 560, wordBreak: "break-word", textWrap: "balance" }}>{v}</span>
       {/* sub = içerik/bağlam (alan-adı DEĞİL) → mut3 yerine mut2: etikete (mut3) göre bir kademe belirgin, rol ayrışır. */}
       {(sub || meter != null) && (
         <span style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, minWidth: 0 }}>

@@ -117,7 +117,9 @@ class TestDerinAra:
 
     def test_sonuc_alan_sozlesmesi(self, client: TestClient):
         s = client.get("/mevzuat/derin-ara", params={"q": "tebligat usulü"}).json()["sonuclar"][0]
-        assert set(s) >= {"dosya", "no", "baslik", "madde_no", "snippet", "skor"}
+        # madde_tur DAHİL (bug avı 2026-07-17): alan dönmeyince okuma modalı "Ek Madde 5"
+        # yerine normal "Madde 5"i vurguluyordu — sözleşmeye sabitlendi.
+        assert set(s) >= {"dosya", "no", "baslik", "madde_no", "madde_tur", "snippet", "skor"}
         assert s["snippet"]
 
     def test_sonuc_dosyalari_katalogda_vardir(self, client: TestClient):
@@ -127,8 +129,10 @@ class TestDerinAra:
         assert sonuclar and all(s["dosya"] in katalog for s in sonuclar)
 
     def test_ayni_madde_tek_kez_gelir(self, client: TestClient):
+        # Dedup anahtarı madde_tur DAHİL: "Madde 1" ile "Ek Madde 1" AYRI kayıtlardır
+        # (13 kanunda no çakışması; mevzuat_oner._dedup ile aynı kural).
         sonuclar = client.get("/mevzuat/derin-ara", params={"q": "bilgi edinme başvurusu süresi"}).json()["sonuclar"]
-        anahtarlar = [(s["dosya"], s["madde_no"]) for s in sonuclar]
+        anahtarlar = [(s["dosya"], s["madde_no"], s.get("madde_tur")) for s in sonuclar]
         assert len(anahtarlar) == len(set(anahtarlar))
 
     def test_bos_ve_anlamsiz_sorgu(self, client: TestClient):

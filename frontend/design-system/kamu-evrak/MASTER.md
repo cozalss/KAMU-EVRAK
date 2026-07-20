@@ -134,6 +134,33 @@ kural `NEON_KEYFRAMES`'te `[data-press]:active:not(:disabled){transform:scale(.9
 `ease-*` zayıf sayılır. Hover/renk geçişi `ease` kalır. `prefers-reduced-motion: reduce` mutlaka
 karşılanır (press `:active` durum stili olduğundan orada anında/animasyonsuz uygulanır).
 
+### Etkileşim kütüphanesi katmanı (2026-07-20 — headless/unstyled, YALNIZ bunlar)
+
+> Önceki kural "yalnız react/react-dom" idi (bkz. `CONTRIBUTING.md`); bu revizyon onu
+> **headless kütüphanelere** genişletti — hiçbiri kendi görünümünü/CSS sınıf sistemini
+> getirmez, hepsi `style` prop'uyla `neonUi.jsx` token'larından boyanır. **Stilli** kütüphane
+> (MUI/Chakra/shadcn/daisyUI vb.) hâlâ yasak — "Stil satır-içidir, CSS sınıf sistemi değil"
+> kuralı bu kütüphanelerle de bozulmaz.
+
+| Kütüphane | Nerede | Verdiği | Token disiplini |
+|---|---|---|---|
+| `motion` (framer-motion) | `NeonSidebar` (aktif-sekme `layoutId`), `BelgeModal` (giriş/çıkış) | Layout/mount animasyonu — CSS `@keyframes`'in yapamadığı "eski konumdan yeni konuma kayma" | `transition.ease` sayısal eşleniği `EASE_BEZIER` (neonUi.jsx) — `EASE`'in JS-tarafı ikizi, aynı kübik-bezier değerleri |
+| `lucide-react` | `Icon.*` (neonUi.jsx) | Tutarlı stroke ikon seti | Tek `strokeWidth={1.75}`; boyutlar eski elle-çizim değerleriyle bit-aynı; `spin` istisna (elle kalır) |
+| `@radix-ui/react-dialog` | `BelgeModal`, `HesapMenu`'nün `Kip` alt-modalları | Odak tuzağı/Esc/dış-tık/scroll-kilidi/odak-iade | Tamamen unstyled; `style` prop'uyla `PAL/RAD/SH` |
+| `@radix-ui/react-dropdown-menu` | `HesapMenu` açılır menüsü | Roving-focus/ok-tuşu/Home-End/tip-ahead | Aynı |
+| `@radix-ui/react-tooltip` | `InfoTip` (Risk bandı) | Popper konumlandırma (viewport-kaçınmalı) | Aynı |
+| `vaul` | `TelefonYukle` | Alttan-açılan panel (Drawer), Radix Dialog üzerine kurulu | Aynı; `Drawer.Handle` `PAL.lineHi` ile boyanır |
+| `embla-carousel-react` | `AltTaslakPager` | Dokunmatik/momentum swipe | Sıfır görsel varlık getirmez — tamamen mevcut `AltTaslakKarti` görünümü |
+
+**MotionConfig:** `DashboardApp.jsx` kökü `<MotionConfig reducedMotion="user">` ile sarılıdır —
+`prefers-reduced-motion` OS ayarı motion'ın TÜM animasyonlarını (mevcut CSS
+`@media (prefers-reduced-motion: reduce)` kuralına ek olarak) otomatik söndürür.
+
+**Portal notu:** Radix `Dialog.Portal`/`DropdownMenu.Portal` varsayılan `document.body`'ye
+portallar — `AltTaslakPager` gibi `transform` uygulayan sarmalayıcıların İÇİNDE render edilen
+eski hand-rolled modallerin yaşadığı "position:fixed ata-transform'a hapsolur" bug sınıfı
+artık **yapısal olarak** oluşamaz (modal DOM'da o ağacın dışında).
+
 ---
 
 ## Component Specs (neonUi.jsx atomları)

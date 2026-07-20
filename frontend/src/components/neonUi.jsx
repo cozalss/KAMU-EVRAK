@@ -5,7 +5,12 @@
    sentence case, mono yalnız makine verisi, 7 kademeli tip ölçeği (TYPE), 4+nokta radius (RAD),
    7 adımlı boşluk (SP). Spec: design-system/kamu-evrak/MASTER.md. Satır-içi stil; tek <style>
    yalnız @keyframes. a11y: focusRing + SR_ONLY + semantik. */
-import React, { useState, useId } from "react";
+import React from "react";
+import * as RTooltip from "@radix-ui/react-tooltip";
+import {
+  LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
+  Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2,
+} from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
 // Gövde + UI fontu: Source Sans 3 (kullanıcı tercihi, 2026-07-17) — latin-ext (ç/ş/ğ/İ tam),
@@ -116,6 +121,10 @@ export const TNUM = { fontVariantNumeric: "tabular-nums" };
    out: giriş/çıkış + press feedback (hızlı başlar, tepkisel) · inOut: ekran-içi hareket/morph.
    Hover/renk geçişleri "ease" kalır (Emil kararı). Değerler THEME_CSS'te (mod-bağımsız). */
 export const EASE = { out: "var(--ke-ease-out)", inOut: "var(--ke-ease-in-out)", spring: "var(--ke-ease-spring)" };
+/* EASE'in motion (framer-motion) sayısal eşleniği — CSS var() JS animasyon motoruna
+   okunamaz, kübik-bezier dizisi ister. Değerler THEME_CSS'teki --ke-ease-* ile BİT-AYNI
+   (tek kaynak orada); yalnız motion'ın transition.ease'i için sayısala çevrilir. */
+export const EASE_BEZIER = { out: [0.23, 1, 0.32, 1], inOut: [0.77, 0, 0.175, 1], spring: [0.34, 1.56, 0.64, 1] };
 /* Radius: chip=durum çipi · ctl=buton/input · card=kart/panel · pop=dropdown/modal/toast. */
 export const RAD = { chip: 4, ctl: 6, card: 8, pop: 12, dot: "50%" };
 /* Boşluk ölçeği — serbest değer yazılmaz. */
@@ -291,33 +300,39 @@ export function BuyutDugme({ onClick, label }) {
   );
 }
 
-/* İkonlar (stroke, çizgi seti). */
+/* İkonlar — lucide-react (ISC lisans, AGPL yasağını çiğnemez). Tek strokeWidth (1.75) BİLİNÇLİ:
+   eski elle-çizim setinde ikon başına değişen kalınlık (1.4–2.0) görsel tutarsızlığın
+   kaynağıydı — kütüphaneye geçişin asıl kazancı "aynı aile" hissi, o yüzden hepsi TEK
+   kalınlıkta. Boyutlar eski width/height değerleriyle BİT-AYNI (çağıran tarafta layout
+   kaymasın — `Icon.doc width={14}` gibi override'lar rest-spread ile hâlâ kazanır).
+   `spin` İSTİSNA: T renkli çift-ton yay + `donuk` prop'u (gerçek yükleme sinyali,
+   "hareket=bilgi" kuralı) — hazır kütüphane ikonunun karşılığı yok, elle çizim korunur. */
 export const Icon = {
-  grid: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.6" /></svg>,
-  inbox: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 5 H20 M12 8 V15 M9 12 L12 15 L15 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 19 H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
+  grid: (p) => <LayoutGrid size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  inbox: (p) => <Inbox size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
   /* spin: animasyon OPT-IN (donuk prop'u false + gerçek yükleme) — "hareket = bilgi" kuralı:
      boşta dönen spinner sahte etkinlik sinyaliydi (jüri bulgusu). donuk=true → statik halka. */
   spin: ({ donuk, ...p } = {}) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ animation: donuk ? "none" : "nu-spin 2.4s linear infinite" }} {...p}><circle cx="12" cy="12" r="8" stroke={`color-mix(in srgb, ${T} 25%, transparent)`} strokeWidth="2" /><path d="M12 4 A8 8 0 0 1 20 12" stroke={T} strokeWidth="2" strokeLinecap="round" /></svg>,
-  doc: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" /><path d="M8 9 H16 M8 13 H16 M8 17 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  book: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 4 H19 V20 H5 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 8 H15 M9 12 H15 M9 16 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  shield: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M8.5 12 L11 14.5 L15.5 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-  upload: (p) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 16 V5 M8 9 L12 5 L16 9 M5 19 H19" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-  phone: (p) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="7" y="2.5" width="10" height="19" rx="2.2" stroke="currentColor" strokeWidth="1.6" /><path d="M10.5 18.5 H13.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  plus: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 5 V19 M5 12 H19" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" /></svg>,
-  arrow: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 12 H19 M13 6 L19 12 L13 18" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-  edit: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 20h4l11-11a2.2 2.2 0 0 0-4-4L4 16v4Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="m13.8 6.2 4 4" stroke="currentColor" strokeWidth="1.7" /></svg>,
-  send: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="m4 4 17 8-17 8 3-8-3-8Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M7 12h14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
-  chart: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 20 V10 M10 20 V4 M16 20 V13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><path d="M3 20 H21" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  clock: (p) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M12 7.5 V12 L15 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  scale: (p) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 4 V20 M7 20 H17 M5 8 H19 M5 8 L3 13 H7 L5 8Z M19 8 L17 13 H21 L19 8Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round" /></svg>,
-  route: (p) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="6" cy="18" r="2.4" stroke="currentColor" strokeWidth="1.6" /><circle cx="18" cy="6" r="2.4" stroke="currentColor" strokeWidth="1.6" /><path d="M8.4 18 H14 a3.5 3.5 0 0 0 0-7 H9.5 a3.5 3.5 0 0 1 0-7 H15.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-  info: (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" /><path d="M12 11 V16.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="7.6" r="1.15" fill="currentColor" /></svg>,
-  check: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 12.5 L10 17.5 L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-  x: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>,
-  alert: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 4 L21 19 H3 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M12 10 V14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /><circle cx="12" cy="16.6" r="1" fill="currentColor" /></svg>,
-  mic: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" /><path d="M6 11 a6 6 0 0 0 12 0 M12 17 V21" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
-  sparkle: (p) => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 3 L13.6 9.4 L20 11 L13.6 12.6 L12 19 L10.4 12.6 L4 11 L10.4 9.4 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>,
-  undo: (p) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M8 6 L4 10 L8 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M4 10 H14.5 A5 5 0 0 1 14.5 20 H10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>,
+  doc: (p) => <FileText size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  book: (p) => <BookOpen size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  shield: (p) => <ShieldCheck size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  upload: (p) => <Upload size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  phone: (p) => <Smartphone size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  plus: (p) => <Plus size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  arrow: (p) => <ArrowRight size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  edit: (p) => <Pencil size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  send: (p) => <Send size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  chart: (p) => <BarChart3 size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  clock: (p) => <Clock size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  scale: (p) => <Scale size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  route: (p) => <Route size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  info: (p) => <Info size={13} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  check: (p) => <Check size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  x: (p) => <X size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  alert: (p) => <TriangleAlert size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  mic: (p) => <Mic size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  sparkle: (p) => <Sparkles size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  undo: (p) => <Undo2 size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
 };
 
 /* MarkaKaro — çalışma alanı marka işareti: "Havale" amblemi (2026-07-17 logo seçimi,
@@ -345,35 +360,29 @@ export function MarkaKaro({ size = 36, nokta = true }) {
   );
 }
 
-/* InfoTip — erişilebilir "ⓘ" ipucu. Hover + klavye odağıyla açılır, Esc/blur kapatır.
-   children = ipucu gövdesi (JSX). a11y: buton + role=tooltip + aria-describedby. */
+/* InfoTip — erişilebilir "ⓘ" ipucu. @radix-ui/react-tooltip: hover + klavye odağıyla açma,
+   Esc'te kapatma, role=tooltip/aria-describedby bağlama kütüphaneden gelir (elle state/id
+   yönetimi kalktı). Popper tabanlı konumlandırma viewport kenarında OTOMATİK kaçınır — eski
+   sabit align="left|right" kenarda taşabiliyordu. Content varsayılan HOVERABLE (WCAG 1.4.13,
+   eski "köprü" paddingTop hack'inin yerini alır). Görünüm birebir eski (PAL/RAD/SH/TYPE). */
 function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
-  const [open, setOpen] = useState(false);
-  const id = useId();
-  const show = () => setOpen(true);
-  const hide = () => setOpen(false);
-  // a11y: trigger=button, role=tooltip + aria-describedby (aria-expanded YOK — tooltip deseni).
-  // Hover + klavye odağıyla açılır; Esc/blur/mouseleave kapatır. Tooltip wrapper'ın
-  // alt-öğesidir + şeffaf paddingTop "köprü" ile aradaki boşlukta kapanma (WCAG 1.4.13 hoverable).
   return (
-    <span style={{ position: "relative", display: "inline-flex", verticalAlign: "middle" }}
-      onMouseEnter={show} onMouseLeave={hide}>
-      <button type="button" aria-label={label} aria-describedby={open ? id : undefined}
-        onFocus={show} onBlur={hide}
-        onKeyDown={(e) => { if (e.key === "Escape") hide(); }}
-        {...focusRing}
-        style={{ cursor: "pointer", width: 24, height: 24, borderRadius: RAD.dot, display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.mut, padding: 0, flexShrink: 0 }}>
-        <Icon.info />
-      </button>
-      {open && (
-        <span role="tooltip" id={id}
-          style={{ position: "absolute", top: "100%", [align === "right" ? "right" : "left"]: 0, paddingTop: SP.s, width, zIndex: 60, cursor: "default" }}>
-          <span style={{ display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: "12px 14px", boxShadow: SH.pop, ...TYPE.data, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, animation: "nu-rise .14s var(--ke-ease-out) both" }}>
+    <RTooltip.Provider delayDuration={200}>
+      <RTooltip.Root>
+        <RTooltip.Trigger asChild>
+          <button type="button" aria-label={label} {...focusRing}
+            style={{ cursor: "pointer", width: 24, height: 24, borderRadius: RAD.dot, display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.mut, padding: 0, flexShrink: 0 }}>
+            <Icon.info />
+          </button>
+        </RTooltip.Trigger>
+        <RTooltip.Portal>
+          <RTooltip.Content side="bottom" align={align === "right" ? "end" : "start"} sideOffset={8} collisionPadding={12}
+            style={{ width, zIndex: 60, background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: "12px 14px", boxShadow: SH.pop, ...TYPE.data, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, animation: "nu-rise .14s var(--ke-ease-out) both" }}>
             {children}
-          </span>
-        </span>
-      )}
-    </span>
+          </RTooltip.Content>
+        </RTooltip.Portal>
+      </RTooltip.Root>
+    </RTooltip.Provider>
   );
 }
 

@@ -82,7 +82,12 @@ npm run build
 
 ### Frontend
 
-- Saf React + Vite; `react`/`react-dom` dışında ek bağımlılık eklemekten kaçının.
+- React + Vite. **2026-07-20 revizyonu:** headless/unstyled etkileşim kütüphaneleri (kendi
+  görünümü/CSS sınıf sistemi getirmeyen — `motion`, Radix primitifleri, `vaul`,
+  `embla-carousel-react`, `lucide-react` gibi) izinlidir; hepsi `neonUi.jsx` token'larıyla
+  satır-içi stillenir. **Stilli** kütüphane (MUI/Chakra/shadcn/daisyUI/Tailwind-component-kit
+  vb. — kendi CSS sınıf sistemini/temasını getiren) hâlâ yasaktır. Detay ve tam liste:
+  `frontend/design-system/kamu-evrak/MASTER.md` "Etkileşim kütüphanesi katmanı".
 - a11y koru: klavye gezinme, ARIA, `prefers-reduced-motion`.
 
 ---

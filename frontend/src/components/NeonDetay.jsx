@@ -242,8 +242,12 @@ export default function NeonDetay({ result, embedded = false, onMevzuatAc = null
                 </span>
                 <span style={{ minWidth: 0 }}>
                   <span style={{ display: "block", ...TYPE.ui, color: PAL.mut3, marginBottom: 2 }}>İşlem sonucu</span>
-                  {/* Lider satır TYPE.disp — ekranın tek "display" ögesi (neonUi tip ölçeği notu). */}
-                  <span role="status" style={{ display: "block", ...TYPE.disp, color: PAL.ink }}>
+                  {/* Lider satır TYPE.disp — ekranın tek "display" ögesi (neonUi tip ölçeği notu).
+                      textWrap:"balance" — AuthPage.jsx'teki aynı native CSS deseni (react-wrap-balancer
+                      YOK: text-wrap:balance evergreen tarayıcılarda zaten yerleşik, JS/bağımlılık
+                      gerekmez — kullanıcı isteğiyle paket önerildi, kod incelemesi sonrası bu
+                      daha iyi/bedava alternatif bulundu). Son satırda "yetim kelime" kalmaz. */}
+                  <span role="status" style={{ display: "block", ...TYPE.disp, color: PAL.ink, textWrap: "balance" }}>
                     {hukumAna}
                     {hukumDetay && <span style={{ display: "block", ...TYPE.ui, fontWeight: 500, color: TON[hy.ton] || DERIN.sari, marginTop: SP.xs }}>{hukumDetay}</span>}
                   </span>

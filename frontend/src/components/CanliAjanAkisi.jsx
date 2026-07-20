@@ -304,10 +304,20 @@ export default function CanliAjanAkisi({
                   <Icon.x width={13} height={13} /> İptal
                 </button>
               )}
-              {/* Evrak yükleme (dosya + telefon) eylemleri BURADA YOK: ikisi de sidebar'da
-                  kalıcı olarak duruyor ("Yeni evrak yükle" / "Örnek evrakla dene") ve boş
-                  durumda dropzone zaten sunuyor. Aynı eylemi başlıkta tekrarlamak gürültüydü.
-                  İptal kalır — akışa özgü, başka yerde karşılığı yok. */}
+              {/* Yeni evrak kısayolları — YALNIZ boşta (!busy). Önceki tasarım "sidebar'da zaten
+                  var" diyordu ama "Telefonla yükle" YALNIZ boş dropzone durumunda (!started)
+                  erişilebilirdi; bir sonuç görüntülenirken (started=true) bu ekrana geri dönüşü
+                  YOKTU — sidebar'ın "Yeni evrak yükle"si native dosya seçiciyi doğrudan açıyor,
+                  seçici iptal edilince memur eski sonuçla burada MAHSUR kalıyordu, tek çıkış
+                  sekme yenilemekti (kullanıcı bulgusu, 2026-07-20). bekleyenKararUyar (DashboardApp)
+                  önceki kararın kalıcı kayda yazılamadığını zaten toast'la uyarıyor — ekstra guard
+                  gerekmez. Düşük-vurgu (Btn secondary): tek primary "Onayla ve gönder" kalır. */}
+              {!busy && (
+                <>
+                  <Btn onClick={onTelefon}><Icon.phone width={14} height={14} /> Telefonla yükle</Btn>
+                  <Btn onClick={onUpload}><Icon.upload width={14} height={14} /> Yeni evrak yükle</Btn>
+                </>
+              )}
             </div>
           </div>
         </div>

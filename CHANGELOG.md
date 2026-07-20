@@ -4,6 +4,54 @@ Biçim [Keep a Changelog](https://keepachangelog.com/tr/) esinlidir; tarihler da
 bazında gruplanır — her satır repodaki gerçek commit'lere dayanır (`git log` ile izlenebilir).
 Sürüm numarası yerine yarışma takvimi milatları kullanılır (TEKNOFEST 2026, 1. Senaryo).
 
+## [2026-07-20] — Frontend etkileşim kütüphanesi dalgası
+
+> **Politika değişikliği:** Frontend'e ilk kez headless/unstyled etkileşim kütüphaneleri
+> eklendi (önceki kural: "yalnız react/react-dom" — bkz. `CONTRIBUTING.md`, `docs/ui-tasarim-yonu.md`
+> düzeltme notları). Hepsi görünümsüz/stilsiz kütüphaneler; renk/tip/radius hâlâ yalnız
+> `neonUi.jsx` token'larından — Hero Light v2 diskiplini bozulmadı.
+
+### Eklendi
+- **`motion`** (framer-motion): sidebar aktif-sekme çizgisi `layoutId` ile sekmeler arası
+  kayıyor; A4 belge pencerelerinin (`BelgeModal`) artık gerçek giriş/çıkış animasyonu var
+  (önceden çıkışta animasyonsuz aniden kapanıyordu).
+- **`lucide-react`**: elle çizilmiş 23 ikonun tamamı tek kütüphaneye taşındı, tek `strokeWidth`
+  ile görsel tutarlılık kazandı (`spin` istisna — T-renkli çift-ton yükleme sinyali elle kaldı).
+- **`@radix-ui/react-tooltip`**: Risk bandı ipucu (`InfoTip`) — konumlandırma artık viewport
+  kenarında otomatik kaçınıyor.
+- **`@radix-ui/react-dialog`** + **`@radix-ui/react-dropdown-menu`**: hesap menüsü
+  (`HesapMenu`) ve A4 pencereler (`BelgeModal`) artık kütüphane-yönetimli odak tuzağı/Esc/
+  klavye gezinme/dış-tık kullanıyor; elle yazılmış doküman-seviyesi dinleyiciler kalktı.
+- **`vaul`**: "Telefonla yükle" artık alttan-açılan panel (Drawer) — dokunsal "telefon" hissi
+  + sürükleyerek kapatma.
+- **`embla-carousel-react`**: çok-konulu evrakta birim taslağı gezinme (`AltTaslakPager`)
+  gerçek dokunmatik/momentum'lu swipe'a geçti; onay/red rozeti mount-koruması ve `inert`
+  tabanlı erişilebilirlik parite korundu.
+- İşleniyor ekranı başlığına iş sürmüyorken "Telefonla yükle"/"Yeni evrak yükle" kısayolları —
+  sonuç görüntülenirken yeni evrağa geçişin hiçbir yolu yoktu (kullanıcı sıkışıp refresh atmak
+  zorunda kalıyordu).
+- Büyük başlıklarda (`TYPE.h1`/`TYPE.disp`) native CSS `text-wrap: balance` — son satırda
+  yetim kelime kalmıyor (bağımlılık gerekmedi, mevcut `AuthPage.jsx` deseni genişletildi).
+
+### Düzeltildi
+- Telefon paneli açılışta yana kayıyordu — elle eklenen `transform: translateX(-50%)` (ortalama
+  için) vaul'un kendi açılma/sürükleme animasyonu transform'uyla çakışıyordu; ortalama
+  `margin: 0 auto`'ya taşındı (transform tamamen vaul'a bırakıldı).
+- Telefon paneli HER hatada (429 oturum tavanı dahil) aynı yanıltıcı "--host 0.0.0.0" mesajını
+  gösteriyordu; artık backend'in ürettiği gerçek `detail` mesajı yüzeye çıkar.
+- React StrictMode'un dev'de mount effect'ini iki kez çalıştırması, her panel açılışında
+  backend'de İKİ eşleme oturumu açıp birini öksüz bırakıyordu — 10 dk TTL'e rağmen normal test
+  kullanımında bile 20'lik oturum tavanını hızla dolduruyordu; `AbortController` ile ilk
+  (kullanılmayacak) istek artık gerçekten iptal ediliyor.
+- Telefon paneli açılış/sürükleme akıcılığı: `willChange:"transform"` (gölgeli öğenin her
+  karede yeniden boyanmasını önler) + "oturum kuruluyor" → "QR hazır" geçişinde içerik
+  yüksekliği aniden büyüyüp panel zıplıyordu (`minHeight` ile giderildi).
+
+### Değerlendirildi, eklenmedi
+- **`@xyflow/react`** (React Flow): mevcut `AgentFlowGraph` sabit 11-düğümlü, WCAG-kapsamlı,
+  özel komet/glow animasyonlu bir SVG — React Flow'un asıl değeri (pan/zoom/sürükle) bu sabit
+  şemada karşılığı yok; swap etmek a11y işini atıp karşılığında kazanç sağlamazdı.
+
 ## [2026-07-10 → 11] — Açıklanabilirlik dalgası
 
 ### Eklendi

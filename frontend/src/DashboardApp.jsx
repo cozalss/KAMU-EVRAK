@@ -9,10 +9,12 @@ import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 
 import { flushSync } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import { MotionConfig } from "motion/react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { useAktifKurum } from "./hooks/useAktifKurum.js";
 import { createSekans, mevzuatAnahtar, mevzuatOzet, sonrakiSecim } from "./lib/dayanakSecim.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
+import { islemIdCoz } from "./lib/taslakId.js";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { sampleAdIndex, kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
@@ -66,13 +68,8 @@ const draftsFromHistory = (items) =>
     name: x.name || "Kalıcı taslak",
   }));
 
-// Sentetik oturum id deseni (13 hane epoch + sıra + ad) — db-taslak- önekinden ayıklanan
-// kısım buna uyuyorsa DB islem id'si DEĞİLDİR; islem_id çözümü result üzerinden yapılır.
-const SENTETIK_ID = /^\d{13}-\d+-/;
-const islemIdCoz = (id, draft) => {
-  const ek = String(id).startsWith("db-taslak-") ? String(id).slice("db-taslak-".length) : null;
-  return draft?.result?.islem_id || (ek && !SENTETIK_ID.test(ek) ? ek : null);
-};
+// islemIdCoz: sentetik oturum id'sini DB islem id'si sanmayan çözümleyici —
+// lib/taslakId.js'te (saf + node:test regresyon testli).
 
 // Frontend seçimi → DB onay kararı etiketi (karar_repo._KARAR ile birebir; duzenle
 // nihai karar DEĞİLDİR — evrak "karar bekleyen"de kalır, damgalanmaz).
@@ -882,7 +879,11 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   );
 
   return (
-    <>
+    // reducedMotion="user": OS "hareketi azalt" açıksa TÜM motion animasyonları (sidebar
+    // aktif-sekme kayması, BelgeModal giriş/çıkışı) anında/animasyonsuz uygulanır — mevcut
+    // global CSS kuralıyla (NEON_KEYFRAMES altındaki @media prefers-reduced-motion) aynı
+    // garanti, motion'a taşınmış hali (o kural motion'ın inline transform'larını kapsamaz).
+    <MotionConfig reducedMotion="user">
       <style>{NEON_KEYFRAMES}</style>
 
       <div style={{
@@ -921,7 +922,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           </Suspense>
         )}
       </div>
-    </>
+    </MotionConfig>
   );
 }
 

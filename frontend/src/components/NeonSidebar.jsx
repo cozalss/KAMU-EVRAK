@@ -4,7 +4,8 @@
    tek menüde) — Denetim izi günlük iş akışının önünde durmasın diye ana NAV'da DEĞİL, burada. */
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
-import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
+import { motion } from "motion/react";
+import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE_BEZIER, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
 
 // Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
@@ -41,7 +42,14 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
       style={active
         ? { ...base, background: ALFA(T), border: "1px solid transparent", color: PAL.ink, fontWeight: 500, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }
         : { ...base, border: "1px solid transparent", background: "transparent", color: PAL.mut, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }}>
-      {active && <span aria-hidden="true" style={{ position: "absolute", left: 0, top: SP.s, bottom: SP.s, width: 2, background: T }} />}
+      {/* Aktif-sekme çizgisi — layoutId paylaşımlı: nav değişince eski konumdan yeni konuma
+          KAYAR (motion "magic move"), sekme sekme "belirir/kaybolur" değil. Ekran-içi hareket
+          → EASE.inOut (MASTER.md Motion bölümü). */}
+      {active && (
+        <motion.span aria-hidden="true" layoutId="nu-nav-active"
+          transition={{ type: "tween", duration: 0.18, ease: EASE_BEZIER.inOut }}
+          style={{ position: "absolute", left: 0, top: SP.s, bottom: SP.s, width: 2, borderRadius: RAD.chip, background: T }} />
+      )}
       {dar ? (
         /* İkon-ray modu: yalnız ikon; rozet/canlılık sağ-üst köşede küçük nokta olarak. */
         <span style={{ position: "relative", display: "flex" }}>

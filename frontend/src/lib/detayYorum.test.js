@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum,
   mevzuatDipnot, birimDipnot, denetimDipnot, lintGiris, lintGrupla, decomposeGiris, slaKonum,
-  riskGerekceYorum, riskSkorYorum, kanunNo,
+  riskGerekceYorum, riskSkorYorum, kanunNo, havaleYorum,
 } from "./detayYorum.js";
 
 /* ---- lintGrupla: durum gruplama + bilinmeyen durum düşmez + varsayılan açılım ---- */
@@ -442,6 +442,113 @@ test("skor: geçersiz/sıfır skor null döner (uydurma yüzde yok)", () => {
   assert.equal(riskSkorYorum(undefined, [], "yesil"), null);
 });
 
+/* ---- havaleYorum: şeridin 1. slotu — "ne yapacağım + kime" ---- */
+const KURUM = (ad, slug) => ({ ad, slug });
+
+test("havale: kaynak doğrulanmış birim → havale, yeşil rozet, kaynak künyesi", () => {
+  const h = havaleYorum({
+    hedef_birim: "Ruhsat ve Denetim Müdürlüğü",
+    durum: "kaynak_dogrulandi",
+    hedef_birim_kaynak: { birim_ad: "Ruhsat ve Denetim Müdürlüğü", kaynak_kurum: "Örnekşehir Belediyesi" },
+  });
+  assert.equal(h.devir, false);
+  assert.equal(h.etiket, "Havale — birim");
+  assert.equal(h.deger, "Ruhsat ve Denetim Müdürlüğü");
+  assert.equal(h.rozet.ton, "yesil");
+  assert.deepEqual(h.alt, ["kaynak: Örnekşehir Belediyesi"]);
+  assert.match(h.gerekce, /Örnekşehir Belediyesi teşkilat kaydından doğrulandı/);
+});
+
+test("havale: doğrulanmamış öneri → '(öneri)' etiketi + memur onayı rozeti + uyarıcı gerekçe", () => {
+  const h = havaleYorum({ hedef_kategori: "basin_halkla_iliskiler_cimer", insan_onayi_gerekli: true });
+  assert.equal(h.etiket, "Havale — birim (öneri)");
+  assert.equal(h.rozet.metin, "memur onayı gerekli");
+  assert.match(h.gerekce, /doğrulanamadı/);
+  assert.match(h.gerekce, /teyit edin/);
+});
+
+test("havale: birim hiç yoksa '(öneri)' DENMEZ, dürüstçe 'Belirlenmedi'", () => {
+  const h = havaleYorum({ insan_onayi_gerekli: true });
+  assert.equal(h.etiket, "Havale — birim");   // olmayan öneriyi öneri diye sunma
+  assert.equal(h.deger, "Belirlenmedi");
+  assert.match(h.gerekce, /tahmin yürütmedi/);
+});
+
+test("havale: çapraz kurum → slot kimlik değiştirir (havale DEĞİL, devir)", () => {
+  const h = havaleYorum({
+    evrak_turu: "dilekce",
+    muhatap_kurum: KURUM("Nilüfer Belediye Başkanlığı", "nilufer-belediyesi"),
+    yetkili_kurum: KURUM("Uludağ Elektrik Dağıtım A.Ş.", "uludag-elektrik-dagitim"),
+    hedef_birim: "Genel Aydınlatma Birimi",
+    durum: "kaynak_dogrulandi",
+  });
+  assert.equal(h.devir, true);
+  assert.equal(h.etiket, "Yetkisizlik — devredilecek kurum");
+  assert.equal(h.deger, "Uludağ Elektrik Dağıtım A.Ş.");   // birim değil, KURUM
+  assert.equal(h.ton, "sari");
+  assert.ok(h.alt.some((s) => s.includes("Nilüfer Belediye Başkanlığı")));
+  assert.match(h.gerekce, /havale değil/);
+  assert.match(h.gerekce, /3071 s\.K\. m\.8/);            // korpusta doğrulanmış madde
+});
+
+test("havale: devir dayanağı türe göre; tanımsız türde madde no UYDURULMAZ", () => {
+  const ortak = {
+    muhatap_kurum: KURUM("A Belediyesi", "a"), yetkili_kurum: KURUM("B Valiliği", "b"),
+  };
+  assert.match(havaleYorum({ ...ortak, evrak_turu: "bilgi_edinme" }).gerekce, /4982 s\.K\. m\.7/);
+  const bilinmeyen = havaleYorum({ ...ortak, evrak_turu: "fatura" }).gerekce;
+  assert.doesNotMatch(bilinmeyen, /s\.K\. m\./);          // uydurma dayanak yok
+  assert.match(bilinmeyen, /devir/);                      // ama eylem yine doğru adlandırılır
+});
+
+test("havale: aynı kurum (slug eşit) çapraz SAYILMAZ", () => {
+  const h = havaleYorum({
+    muhatap_kurum: KURUM("A Belediyesi", "a"), yetkili_kurum: KURUM("A Belediye Başkanlığı", "a"),
+    hedef_birim: "Fen İşleri Müdürlüğü", durum: "kaynak_dogrulandi",
+  });
+  assert.equal(h.devir, false);
+});
+
+test("havale: çok-konulu evrakta tek birim adı basılmaz, dağıtım yazılır", () => {
+  const h = havaleYorum({ alt_talepler: [{ birim: "a" }, { birim: "b" }], hedef_birim: "Fen İşleri" });
+  assert.equal(h.etiket, "Havale — dağıtım");
+  assert.match(h.deger, /2 alt-talep/);
+  assert.equal(h.rozet, null);
+});
+
+test("havale: birim etiketleyici ENJEKTE edilir (görünüm katmanı sızmaz)", () => {
+  const h = havaleYorum({ hedef_birim: "kod_x", durum: "kaynak_dogrulandi",
+    hedef_birim_kaynak: { birim_ad: "x" } }, (kod) => `TR(${kod})`);
+  assert.equal(h.deger, "TR(kod_x)");
+});
+
+test("havale: birim_reasoning varsa gerekçeye girer (hover ardında kalmaz)", () => {
+  const h = havaleYorum({ hedef_kategori: "fen_isleri", birim_reasoning: "yol çukuru sinyali" });
+  assert.match(h.gerekce, /yol çukuru sinyali/);
+});
+
+test("havale: noktasız serbest-metin gerekçe sonraki cümleye YAPIŞMAZ", () => {
+  const h = havaleYorum({
+    evrak_turu: "dilekce", birim_reasoning: "sokak aydınlatması arızası",
+    muhatap_kurum: KURUM("A", "a"), yetkili_kurum: KURUM("B", "b"),
+  });
+  assert.match(h.gerekce, /sokak aydınlatması arızası\. 3071/);   // araya nokta girer
+  // Zaten noktalıysa çift nokta basılmaz.
+  const h2 = havaleYorum({ hedef_kategori: "fen_isleri", birim_reasoning: "yol çukuru." });
+  assert.doesNotMatch(h2.gerekce, /\.\./);
+});
+
+test("havale: vurgu yalnız değerin KENDİSİ alarm olduğunda (devir / belirlenmedi)", () => {
+  const devir = havaleYorum({
+    muhatap_kurum: KURUM("A", "a"), yetkili_kurum: KURUM("B", "b"),
+  });
+  assert.equal(devir.vurgu, true);                                     // kurum dışına çıkıyor
+  assert.equal(havaleYorum({}).vurgu, true);                           // "Belirlenmedi"
+  // Geçerli birim adı alarm değil — belirsizliği rozet taşır, ad okunur kalır.
+  assert.equal(havaleYorum({ hedef_kategori: "fen_isleri", insan_onayi_gerekli: true }).vurgu, false);
+  assert.equal(havaleYorum({ hedef_birim: "X", durum: "kaynak_dogrulandi" }).vurgu, false);
+});
+
 /* ---- null-güvenlik: boş state hiçbir fonksiyonu düşürmez ---- */
 test("null-güvenlik: boş/eksik state'te tüm fonksiyonlar string/obje döner", () => {
   assert.ok(hukumYorum().baslik);
@@ -453,4 +560,6 @@ test("null-güvenlik: boş/eksik state'te tüm fonksiyonlar string/obje döner",
   assert.ok(denetimDipnot().metin);
   assert.equal(typeof lintGiris(), "string");
   assert.equal(typeof decomposeGiris(), "string");
+  assert.ok(havaleYorum().deger);
+  assert.ok(havaleYorum().gerekce);
 });

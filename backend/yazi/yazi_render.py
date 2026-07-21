@@ -211,6 +211,30 @@ def _kapanis_kuyrugu_kirp(body: str) -> str:
     return kirpik if kirpik else body
 
 
+def devir_govdesi(konu: str, dayanak: str = "") -> str:
+    """Yetkisizlik (devir) üst yazısının gövdesi — BİLİNÇLİ OLARAK DETERMİNİSTİK.
+
+    Neden LLM yok: bu bir kalıp yazıdır (görevsizlik belirlemesi + gönderme + bildirim
+    yükümlülüğü). Üretken model burada yalnız uydurma riski ekler, üslup kazancı vermez;
+    ayrıca deterministik olması sayesinde mock/CI'da da üretilir → yol test edilebilir ve
+    demo edilebilir olur (aksi halde yalnız gerçek-LLM koşumunda görünürdü).
+
+    Muhatap bu yazıda YETKİLİ KURUM'dur (üst yazı m.14) → "Kurumunuzca" hitabı doğrudur;
+    kurum-içi üst yazıdaki "Kurumunuzda yazma" yönergesi bu türe uygulanmaz.
+
+    `dayanak` boşsa (tür için doğrulanmış hüküm yok) hükme atıf YAPILMAZ — madde uydurulmaz.
+    """
+    konu_ifade = f'"{konu.strip()}" konulu ' if konu and konu.strip() else ""
+    hukum = f"{dayanak} gereğince b" if dayanak else "B"
+    return (
+        f"İlgi'de kayıtlı {konu_ifade}başvuru Kurumumuz kayıtlarına alınmış olup, yapılan "
+        "değerlendirmede başvuru konusunun Kurumumuzun görev ve yetki alanı dışında kaldığı, "
+        "konunun Kurumunuzun görev alanına girdiği anlaşılmıştır.\n\n"
+        f"{hukum}aşvurunun bir örneği ilişikte gönderilmiş olup, konunun Kurumunuzca "
+        "değerlendirilerek sonucundan başvuru sahibine bilgi verilmesi gerekmektedir."
+    )
+
+
 async def build_body(
     yazi_turu: str, unsurlar: dict[str, Any], evrak_text: str,
 ) -> str:
@@ -671,4 +695,5 @@ async def build_alt_talep_taslaklari(
 
 
 __all__ = ("build_alt_talep_taslaklari", "build_body", "build_context",
-           "hitap_bicimi", "revize_taslak", "revize_taslak_yapili", "ts13298_ust_veri")
+           "devir_govdesi", "hitap_bicimi", "revize_taslak", "revize_taslak_yapili",
+           "ts13298_ust_veri")

@@ -22,6 +22,7 @@ import {
   decomposeGiris,
   riskGerekceYorum,
   riskSkorYorum,
+  havaleYorum,
 } from "../lib/detayYorum.js";
 import {
   MONO,
@@ -188,41 +189,84 @@ function EmptySource() {
   );
 }
 
+const ROZET_RENK = {
+  yesil: { c: DERIN.yesil, bg: ALFA(BANT.yesil.c) },
+  sari: { c: DERIN_OF(BANT.sari.c), bg: ALFA(BANT.sari.c) },
+  kirmizi: { c: DERIN_OF(BANT.kirmizi.c), bg: ALFA(BANT.kirmizi.c) },
+};
+
+/* Karar şeridinin tek meta slotu (havale/devir).
+   Gerekçe artık `title=` native tooltip DEĞİL, klavyeyle açılabilen popover'da: tooltip
+   dokunmatikte hiç görünmüyor, ekran okuyucuda güvenilmiyor ve memura "onayla" derken
+   dayanağı hover ardında bırakıyordu. Tetik bilinçli olarak `dt` içinde — `dd` iki satıra
+   kelepçeli (-webkit-line-clamp + overflow:hidden) olduğu için popover orada kırpılırdı. */
+function MetaSlot({ slot, id, acik, ac }) {
+  const acikMi = acik === id;
+  const rozet = slot.rozet ? ROZET_RENK[slot.rozet.ton] || ROZET_RENK.sari : null;
+  return (
+    <div>
+      <dt>
+        <span>{slot.etiket}</span>
+        <span className="sc-risk-help">
+          <button
+            type="button"
+            className="sc-risk-help-trigger"
+            aria-label={`${slot.etiket} — bu karar neye dayanıyor?`}
+            aria-expanded={acikMi}
+            onClick={() => ac((v) => (v === id ? null : id))}
+            onKeyDown={(e) => { if (e.key === "Escape") ac(null); }}
+            {...focusRing}
+          >
+            ?
+          </button>
+          {acikMi && (
+            <span className="sc-risk-help-popover" role="dialog" aria-label={`${slot.etiket} gerekçesi`}>
+              <span>{slot.gerekce}</span>
+            </span>
+          )}
+        </span>
+      </dt>
+      <dd style={slot.vurgu && slot.ton ? { color: TON[slot.ton] } : undefined}>
+        {slot.deger}
+        {rozet && (
+          <span
+            style={{ marginLeft: 6, padding: "1px 7px", borderRadius: RAD.chip, ...TYPE.meta,
+                     fontWeight: 500, color: rozet.c, background: rozet.bg, whiteSpace: "nowrap" }}
+          >
+            {slot.rozet.ton === "yesil" ? "✓ " : ""}{slot.rozet.metin}
+          </span>
+        )}
+      </dd>
+      {slot.alt.map((satir, i) => (
+        <dd key={`${id}-${i}`} style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{satir}</dd>
+      ))}
+    </div>
+  );
+}
+
 function DecisionCard({ r, eksik, uyari, tutar }) {
-  const [riskHelpOpen, setRiskHelpOpen] = useState(false);
+  // Tek yardım kanalı: aynı anda yalnız bir gerekçe açık ("risk" | "havale" | "sure" | null).
+  const [acikYardim, setAcikYardim] = useState(null);
   const hy = hukumYorum(r);
   const [ana, ...kuyruk] = String(hy.baslik || "İşlem tamamlandı").split(" · ");
   const band = BANT[r.risk_metadata?.bant] ? r.risk_metadata.bant : "yesil";
   const kontrolSayisi = eksik.length + uyari.length + tutar.length + arr(r.lint_2646?.uyari).length;
-  const kararAciklama = kontrolSayisi
-    ? `${kontrolSayisi} kontrol noktası memur incelemesi için işaretlendi.`
-    : "Kontroller temiz; nihai karar yetkili memur tarafından verilir.";
   const riskEtiket = r.risk_metadata?.bant ? `${band === "sari" ? "sarı" : band === "kirmizi" ? "kırmızı" : "yeşil"} risk bandı` : "risk bandı yok";
   const durumSatiri = kuyruk.length ? kuyruk.join(" · ") : riskEtiket;
-  const evrakTuru = EVRAK_TR(r.evrak_turu);
-  // Çok-konulu evrakta tek birim adı yanıltıcı (jüri bulgusu: üç yüzey üç farklı birim
-  // gösterip çelişki gibi okunuyordu) — hüküm, dağıtımın kendisini söyler; alt-talep
-  // muhatapları taslak kartlarında etiketlidir.
-  const altSayisi = arr(r.alt_talepler).length;
-  // Kaynak-doğrulamalı ajan: doğrulanmış GERÇEK birim adı (serbest-metin) veya dürüst fallback
-  // (hedef_birim=None → hedef_kategori önerisi + memur onayı). durum/insan_onayi_gerekli bayrakları.
-  const kaynakDogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
-  const onayGerekli = !!r.insan_onayi_gerekli;
-  const kaynakKunye = r.hedef_birim_kaynak && r.hedef_birim_kaynak.birim_ad ? r.hedef_birim_kaynak : null;
-  const muhatapAd = r.muhatap_kurum?.ad || "";
-  const yetkiliAd = r.yetkili_kurum?.ad || "";
-  const caprazKurum = !!yetkiliAd && !!muhatapAd && r.yetkili_kurum?.slug !== r.muhatap_kurum?.slug;
-  const yonlendirilenBirim = altSayisi >= 2
-    ? `${altSayisi} alt-talep · ayrı birimlere dağıtım`
-    : (r.hedef_birim
-        ? BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)
-        : (r.hedef_kategori ? BIRIM_GOSTER(r.hedef_kategori, r.evrak_turu) : "Belirlenmedi"));
-  const birimTitle = kaynakDogrulandi && kaynakKunye
-    ? `Kaynak: ${kaynakKunye.kaynak_kurum} · ${kaynakKunye.belge_basligi}`
-    : (r.hedef_kategori && altSayisi < 2 ? "Öneri — resmî kaynakla doğrulanmadı, memur onayı gerekli" : undefined);
+  // Şeritte TEK karar slotu: "ne yapacağım + kime" (havale/devir). Saf türetim
+  // lib/detayYorum'da (orada test edilir); birim kodu→ad görünüm işi olduğu için
+  // BIRIM_GOSTER enjekte edilir. Evrak türü (özet+belgede zaten var) ve yasal süre
+  // (aşağıdaki SLA kartında duruyor) şeritten bilinçli olarak çıkarıldı — kullanıcı kararı.
+  const havale = havaleYorum(r, BIRIM_GOSTER);
+  // Not, durum satırının saydığı kontrol noktasını TEKRAR ETMEZ — memurun bir sonraki EYLEMİNİ söyler.
+  const kararAciklama = havale.devir
+    ? "Kurum içi havale yapmayın: yazıyı yetkili kuruma gönderin ve durumu başvurana yazılı bildirin."
+    : kontrolSayisi
+      ? "Havaleyi onaylamadan önce işaretli kontrol noktalarını inceleyin."
+      : "Kontroller temiz; nihai havale kararı yetkili memurundur.";
   const riskAciklama = RISK_BAND_HELP[band] || RISK_BAND_HELP.yesil;
   const kontroleGit = () => {
-    setRiskHelpOpen(false);
+    setAcikYardim(null);
     const hedef = document.getElementById("sc-memur-kontrol");
     if (hedef) {
       window.requestAnimationFrame(() => {
@@ -267,14 +311,14 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
                   type="button"
                   className="sc-risk-help-trigger"
                   aria-label={`${riskEtiket} nedir?`}
-                  aria-expanded={riskHelpOpen}
-                  onClick={() => setRiskHelpOpen((v) => !v)}
-                  onKeyDown={(e) => { if (e.key === "Escape") setRiskHelpOpen(false); }}
+                  aria-expanded={acikYardim === "risk"}
+                  onClick={() => setAcikYardim((v) => (v === "risk" ? null : "risk"))}
+                  onKeyDown={(e) => { if (e.key === "Escape") setAcikYardim(null); }}
                   {...focusRing}
                 >
                   ?
                 </button>
-                {riskHelpOpen && (
+                {acikYardim === "risk" && (
                   <span className="sc-risk-help-popover" role="dialog" aria-label="Risk bandı açıklaması">
                     <span>{riskAciklama}</span>
                     <button type="button" onClick={kontroleGit} {...focusRing}>
@@ -286,45 +330,8 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
             )}
           </span>
         </span>
-        <dl className="sc-decision-strip-meta" aria-label="Belge yönlendirme özeti">
-          <div>
-            <dt>Evrak türü</dt>
-            <dd>{evrakTuru}</dd>
-          </div>
-          <div>
-            <dt>Yönlendirilen birim</dt>
-            <dd title={birimTitle}>
-              {yonlendirilenBirim}
-              {altSayisi < 2 && kaynakDogrulandi && (
-                <span
-                  style={{ marginLeft: 6, padding: "1px 7px", borderRadius: RAD.chip, ...TYPE.meta,
-                           fontWeight: 500, color: DERIN.yesil, background: ALFA(BANT.yesil.c),
-                           whiteSpace: "nowrap" }}
-                >
-                  ✓ kaynak doğrulandı
-                </span>
-              )}
-              {altSayisi < 2 && !kaynakDogrulandi && onayGerekli && (
-                <span
-                  style={{ marginLeft: 6, padding: "1px 7px", borderRadius: RAD.chip, ...TYPE.meta,
-                           fontWeight: 500, color: DERIN_OF(BANT.sari.c), background: ALFA(BANT.sari.c),
-                           whiteSpace: "nowrap" }}
-                >
-                  memur onayı gerekli
-                </span>
-              )}
-            </dd>
-            {caprazKurum && (
-              <dd style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>
-                muhatap: {muhatapAd} → yetkili: {yetkiliAd}
-              </dd>
-            )}
-            {kaynakDogrulandi && kaynakKunye && (
-              <dd style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>
-                kaynak: {kaynakKunye.kaynak_kurum}
-              </dd>
-            )}
-          </div>
+        <dl className="sc-decision-strip-meta" aria-label="Havale kararı">
+          <MetaSlot slot={havale} id="havale" acik={acikYardim} ac={setAcikYardim} />
         </dl>
         <p className="sc-decision-strip-note" style={{ color: PAL.mut2 }}>{kararAciklama}</p>
         {r.risk_metadata?.bant && (

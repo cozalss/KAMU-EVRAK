@@ -156,6 +156,134 @@ export function birimDipnot(r = {}) {
   return "Sıralama içerik sinyali + birim görev alanı eşleşmesiyle yapılır; nihai havale memur onayındadır.";
 }
 
+/* ---- Karar şeridi meta slotu ---------------------------------------------------------------
+   Şeritte TEK karar slotu var: memurun SIRADAKİ EYLEMİ — "ne yapacağım + kime" (havale/devir).
+   Evrak türü (belgede + özet kartında zaten var) ve yasal süre (aşağıdaki SLA kartında duruyor)
+   şeritten bilinçli olarak dışarıda — kullanıcı kararı.
+   Mantık burada SAF tutulur (bileşen yalnız basar) → `node --test` ile ölçülebilir. Birim
+   KODU → görünen ad çevirisi bir GÖRÜNÜM işidir (result-cards.BIRIM_GOSTER, JSX dosyası),
+   bu yüzden import edilmez, ENJEKTE edilir. */
+
+const _3071_M8 = "3071 s.K. m.8 — dilekçe, konusuyla ilgili olmayan bir idari makama verilmişse "
+  + "bu makamca yetkili idari makama gönderilir ve ayrıca dilekçe sahibine durum bildirilir.";
+
+/* Yetkisizlik hâlinde uygulanacak devir hükmü. YALNIZ data/mevzuat korpusunda birebir
+   doğrulanmış maddeler (3071 …:48-50 · 4982 …:37-38). Tanımsız tür → dayanak İDDİA EDİLMEZ
+   (CLAUDE.md §1: madde no uydurulmaz). Anahtar kümesi backend EVRAK_TO_SURE ile hizalı. */
+const DEVIR_DAYANAK = {
+  dilekce: _3071_M8,
+  basvuru: _3071_M8,
+  sikayet: _3071_M8,
+  talep: _3071_M8,
+  ihbar: _3071_M8,
+  cimer: _3071_M8,
+  bilgi_edinme: "4982 s.K. m.7 son cümle — istenen bilgi veya belge başvurulan kurumdan başka "
+    + "bir yerdeyse başvuru dilekçesi o kuruma gönderilir ve durum ilgiliye yazılı bildirilir.",
+};
+
+const NIHAI_KARAR = "Nihai karar yetkili memurundur.";
+
+/* Gerekçe cümleleri boşlukla birleştirilir; serbest-metin parça (birim_reasoning) noktasız
+   gelirse sonraki cümleye yapışıyordu ("…arızası 3071 s.K. m.8 —"). Sonlandırıcı garanti edilir. */
+const nokta = (s) => {
+  const t = String(s || "").trim();
+  return !t || /[.!?…:]$/.test(t) ? t : `${t}.`;
+};
+
+/** Karar slotu — "ne yapacağım + kime".
+    Öncelik sırası ANLAMLIDIR: yetkisizlik (devir) en üstte, çünkü yapılacak iş kurum-içi
+    havale DEĞİLDİR — farklı yazı, farklı muhatap, başvurana ayrıca bildirim. Bu durum eskiden
+    soluk bir alt satıra gömülüydü; artık slotun kimliğini değiştirir.
+    `birimEtiket(kod, evrakTuru)` enjekte edilir; verilmezse kod aynen basılır. */
+export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
+  const muhatap = String(r.muhatap_kurum?.ad || "").trim();
+  const yetkili = String(r.yetkili_kurum?.ad || "").trim();
+  const capraz = !!muhatap && !!yetkili && r.yetkili_kurum?.slug !== r.muhatap_kurum?.slug;
+  const altSayisi = dizi(r.alt_talepler).length;
+  const kaynak = r.hedef_birim_kaynak?.birim_ad ? r.hedef_birim_kaynak : null;
+  const dogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
+  const kod = r.hedef_birim || r.hedef_kategori || "";
+  const birim = kod ? birimEtiket(kod, r.evrak_turu) : "";
+  const reasoning = String(r.birim_reasoning || "").trim();
+
+  if (capraz) {
+    const dayanak = DEVIR_DAYANAK[r.evrak_turu];
+    return {
+      devir: true,
+      etiket: "Yetkisizlik — devredilecek kurum",
+      deger: yetkili,
+      ton: "sari",
+      vurgu: true,   // evrak kurumun DIŞINA çıkıyor — değerin kendisi alarmdır
+      rozet: { metin: "devir yazısı gerekli", ton: "sari" },
+      alt: [
+        `gelen evrak muhatabı: ${muhatap}`,
+        birim ? `yetkili kurumdaki birim: ${birim}` : "",
+      ].filter(Boolean),
+      gerekce: [
+        `Evrak ${muhatap} adına gelmiş, ancak konu ${yetkili} görev alanında görünüyor.`,
+        "Bu hâlde yapılacak işlem kurum içi havale değil, yetkili kuruma göndermedir (devir).",
+        reasoning ? `Sistem gerekçesi: ${nokta(reasoning)}` : "",
+        dayanak || "",
+        NIHAI_KARAR,
+      ].filter(Boolean).join(" "),
+    };
+  }
+
+  if (altSayisi >= 2) {
+    return {
+      devir: false,
+      etiket: "Havale — dağıtım",
+      deger: `${altSayisi} alt-talep · ayrı birimlere`,
+      ton: null,
+      vurgu: false,
+      rozet: null,
+      alt: [],
+      gerekce: `Evrak ${altSayisi} ayrı konu içeriyor; her alt-talep kendi birimine ayrı havale `
+        + `edilir. Tek birim adı yanıltıcı olacağı için burada dağıtımın kendisi yazılır; `
+        + `muhataplar taslak kartlarında etiketlidir. ${NIHAI_KARAR}`,
+    };
+  }
+
+  if (dogrulandi) {
+    return {
+      devir: false,
+      etiket: "Havale — birim",
+      deger: birim,
+      ton: null,
+      vurgu: false,
+      rozet: { metin: "kaynak doğrulandı", ton: "yesil" },
+      alt: kaynak?.kaynak_kurum ? [`kaynak: ${kaynak.kaynak_kurum}`] : [],
+      gerekce: [
+        kaynak?.kaynak_kurum
+          ? `Birim, ${kaynak.kaynak_kurum} teşkilat kaydından doğrulandı${kaynak.belge_basligi ? ` (${kaynak.belge_basligi})` : ""}; görev tanımı evrak konusuyla eşleşti.`
+          : "Birim, resmî teşkilat kaydından doğrulandı; görev tanımı evrak konusuyla eşleşti.",
+        reasoning ? `Sistem gerekçesi: ${nokta(reasoning)}` : "",
+        NIHAI_KARAR,
+      ].filter(Boolean).join(" "),
+    };
+  }
+
+  const belirsiz = !birim;
+  return {
+    devir: false,
+    etiket: belirsiz ? "Havale — birim" : "Havale — birim (öneri)",
+    deger: birim || "Belirlenmedi",
+    ton: "sari",
+    // Geçerli bir birim adı kendi başına alarm DEĞİL — belirsizliği rozet taşır, adı okunur bırak.
+    // "Belirlenmedi" ise değerin kendisi eksikliktir → tonlanır.
+    vurgu: belirsiz,
+    rozet: r.insan_onayi_gerekli ? { metin: "memur onayı gerekli", ton: "sari" } : null,
+    alt: [],
+    gerekce: [
+      belirsiz
+        ? "Sistem yetkili birimi belirleyemedi; emin olmadığı için tahmin yürütmedi."
+        : "Bu birim resmî teşkilat kaydıyla doğrulanamadı — içerik sinyaline dayalı bir öneridir.",
+      reasoning ? `Sistem gerekçesi: ${nokta(reasoning)}` : "",
+      "Havaleyi onaylamadan önce birimi teyit edin.",
+    ].filter(Boolean).join(" "),
+  };
+}
+
 /** Denetim izi dipnotu: {metin, ton} — bütünlük bozuksa 'değiştirilemez' İDDİA EDİLMEZ. */
 export function denetimDipnot(butunluk = true, halkaSay = 0) {
   if (!butunluk) {

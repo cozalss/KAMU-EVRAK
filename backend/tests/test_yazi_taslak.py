@@ -15,7 +15,13 @@ from __future__ import annotations
 import pytest
 
 from agents.config import EVRAK_TO_YAZI, EVRAK_TURLERI, YAZI_TURLERI
-from agents.nodes.yazi_taslak import _fallback_taslak, yazi_taslak_node
+from agents.nodes.yazi_taslak import (
+    _devir_taslagi,
+    _devir_var_mi,
+    _fallback_taslak,
+    yazi_taslak_node,
+)
+from yazi.yazi_render import devir_govdesi
 
 # ---------------------------------------------------------------------------
 # M6 — EVRAK_TO_YAZI TÜM türleri AÇIKÇA eşler (sessiz cevabi_yazi default'u yok)
@@ -346,3 +352,104 @@ class TestCokKonuluAltTaslaklar:
         sonuc = await yazi_taslak_node(state)
         # Assert
         assert "alt_talepler" not in sonuc
+
+
+# ---------------------------------------------------------------------------
+# Yetkisizlik (devir) — evrak muhataba gelmiş ama YETKİLİ kurum farklı → devir yazısı
+# (frontend 'devir yazısı gerekli' işaretiyle eylem-tutarlı; 3071 m.8 / 4982 m.7).
+# ---------------------------------------------------------------------------
+
+
+def _devir_state(evrak_turu="dilekce", konu="sokak aydınlatması arızası"):
+    return {
+        "evrak_turu": evrak_turu,
+        "evrak_text": "T.C.\nNİLÜFER BELEDİYE BAŞKANLIĞINA\n\nKonu: Sokak aydınlatması\n"
+                      "Sokağımızdaki aydınlatma direği arızalı, gereğini arz ederim.",
+        "bilgi_unsurlari": {"konu": konu},
+        "muhatap_kurum": {"ad": "Nilüfer Belediye Başkanlığı", "slug": "nilufer-belediyesi",
+                          "tur": "belediye"},
+        "yetkili_kurum": {"ad": "Uludağ Elektrik Dağıtım A.Ş.",
+                          "slug": "uludag-elektrik-dagitim", "tur": "diger"},
+        "durum": "kaynak_dogrulandi",
+    }
+
+
+class TestDevirTespiti:
+    def test_farkli_slug_devir_sayilir(self):
+        assert _devir_var_mi(_devir_state()) is True
+
+    def test_ayni_slug_devir_degil(self):
+        st = _devir_state()
+        st["yetkili_kurum"] = dict(st["muhatap_kurum"])  # yetkili == muhatap
+        assert _devir_var_mi(st) is False
+
+    def test_yetkili_kurum_yoksa_devir_degil(self):
+        st = _devir_state()
+        st.pop("yetkili_kurum")
+        assert _devir_var_mi(st) is False
+
+    def test_bos_slug_devir_degil(self):
+        st = _devir_state()
+        st["yetkili_kurum"] = {"ad": "X", "slug": ""}
+        assert _devir_var_mi(st) is False
+
+
+class TestDevirGovdesi:
+    def test_dayanakli_govde_maddeye_atif_yapar(self):
+        govde = devir_govdesi("sokak aydınlatması",
+                              "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanunun 8 inci maddesi")
+        assert "3071 sayılı" in govde and "8 inci maddesi" in govde
+        assert "görev ve yetki alanı dışında" in govde
+        assert "başvuru sahibine bilgi verilmesi" in govde  # bildirim yükümlülüğü
+        assert "sokak aydınlatması" in govde
+
+    def test_dayanaksiz_govde_madde_UYDURMAZ(self):
+        govde = devir_govdesi("bir konu", "")  # tanımsız tür → hüküm yok
+        assert "sayılı" not in govde and "madde" not in govde.lower()
+        assert "görev ve yetki alanı dışında" in govde  # devir yine yapılır
+        assert govde[0].isupper()  # cümle düzgün başlar ("Başvurunun...")
+
+    def test_konusuz_govde_bos_tirnak_basmaz(self):
+        govde = devir_govdesi("", "3071 sayılı ... 8 inci maddesi")
+        assert '""' not in govde and "''" not in govde
+
+
+class TestDevirTaslagiNode:
+    async def test_devir_ust_yazi_uretir_yetkili_muhatap(self):
+        sonuc = await yazi_taslak_node(_devir_state())
+        assert sonuc["yazi_turu"] == "ust_yazi"
+        assert sonuc.get("devir") is True
+        md = sonuc["yazi_taslak_md"]
+        # Muhatap = YETKİLİ kurum (üst yazı m.14), büyük harf
+        assert "ULUDAĞ ELEKTRİK DAĞITIM" in md
+        # Antet İDARE = evrakı ALAN kurum (muhatap) — route_ajan tespiti, KAMU KURUMU değil
+        # (antet büyük harfe çevrilir → kasa-duyarsız kontrol)
+        assert "NİLÜFER BELEDİYE" in md.upper()
+        assert "KAMU KURUMU" not in md
+        # 3071 m.8 dayanağı gövdede
+        assert "3071 sayılı" in md
+        # Placeholder sızmaz
+        assert "{{" not in md
+
+    async def test_bilgi_edinme_devir_4982_dayanagi(self):
+        sonuc = await yazi_taslak_node(_devir_state(evrak_turu="bilgi_edinme"))
+        assert "4982 sayılı" in sonuc["yazi_taslak_md"]
+        assert sonuc["devir"] is True
+
+    async def test_tanimsiz_turde_madde_uydurulmaz(self):
+        # 'fatura' EVRAK_TO_DEVIR_DAYANAK'ta yok → devir yapılır ama hükme atıf yok
+        sonuc = await yazi_taslak_node(_devir_state(evrak_turu="fatura"))
+        assert sonuc["devir"] is True
+        assert "sayılı" not in sonuc["yazi_taslak_md"]
+
+    async def test_ayni_kurum_devir_dali_calismaz(self):
+        # yetkili == muhatap → normal akış (devir bayrağı YOK)
+        st = _devir_state()
+        st["yetkili_kurum"] = dict(st["muhatap_kurum"])
+        sonuc = await yazi_taslak_node(st)
+        assert sonuc.get("devir") is not True
+
+    async def test_devir_notu_insan_okunur(self):
+        sonuc = await yazi_taslak_node(_devir_state())
+        assert "Yetkisizlik" in sonuc["yazi_plan_notu"]
+        assert "Uludağ Elektrik" in sonuc["yazi_plan_notu"]

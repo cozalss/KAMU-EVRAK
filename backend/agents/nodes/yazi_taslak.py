@@ -28,6 +28,7 @@ from typing import Any
 import structlog
 
 from agents.config import (
+    EVRAK_TO_DEVIR_DAYANAK,
     EVRAK_TO_YAZI,
     LLM_ATLA_NODELAR,
     SDP_ONERI,
@@ -109,6 +110,76 @@ def _fallback_taslak(
     return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin + "\n", "format_uyumlu": True}
 
 
+def _devir_var_mi(state: dict[str, Any]) -> bool:
+    """Yetkisizlik hâli: evrak muhataba gelmiş ama YETKİLİ kurum farklı (route_ajan tespiti).
+
+    Bu durumda yapılacak iş kurum-içi havale DEĞİL, yetkili kuruma göndermedir (devir):
+    3071 m.8 / 4982 m.7. yetkili_kurum yalnız route_ajan DISARIDA dalında muhataptan
+    farklılaşır; her ikisi de dolu ve slug'lar farklı olmalı.
+    """
+    muhatap = state.get("muhatap_kurum") or {}
+    yetkili = state.get("yetkili_kurum") or {}
+    ms, ys = muhatap.get("slug"), yetkili.get("slug")
+    return bool(ms and ys and ms != ys)
+
+
+async def _devir_taslagi(
+    state: dict[str, Any], efektif_kurum: str,
+) -> dict[str, Any]:
+    """Yetkisizlik → yetkili kuruma DEVİR üst yazısı (deterministik, uydurmasız).
+
+    Frontend `havaleYorum` bu hâli 'devir yazısı gerekli' diye işaretliyordu; taslak da
+    artık gerçekten devir yazısı üretir (üslup/eylem tutarlılığı). Muhatap = yetkili kurum
+    (üst yazı m.14); antet İDARE = evrakı alan kurum (efektif_kurum). Dayanak tür-duyarlı,
+    yoksa hükme atıf yapılmaz (madde uydurulmaz).
+    """
+    from yazi.renderer import render_yazi
+    from yazi.yazi_render import build_context, devir_govdesi, ts13298_ust_veri
+
+    unsurlar = state.get("bilgi_unsurlari") or {}
+    yetkili = state.get("yetkili_kurum") or {}
+    muhatap_kurum = state.get("muhatap_kurum") or {}
+    konu = str(unsurlar.get("konu", "") or "")
+    dayanak = EVRAK_TO_DEVIR_DAYANAK.get(state.get("evrak_turu", ""), "")
+    metin = devir_govdesi(konu, dayanak)
+    # Devir yazısını GÖNDEREN, evrakı alan kurumdur → antet İDARE = muhatap_kurum (route_ajan'ın
+    # güvenilir tespiti); boşsa efektif_kurum'a düş. Muhatap SATIRI ise YETKİLİ kurum (m.14),
+    # BÜYÜK + yönelme eki ("...VALİLİĞİNE"; kısaltmayla biten unvana ek gelmez, büyük harf kalır).
+    idare = str(muhatap_kurum.get("ad", "") or "").strip() or efektif_kurum
+    muhatap = hitap_eki(str(yetkili.get("ad", "") or "")) or "İLGİLİ MAKAMA"
+    ctx = build_context(
+        "ust_yazi", unsurlar, metin, muhatap_override=muhatap,
+        hazirlayan_birim="", idare_adi=idare)
+    result = render_yazi(ctx)
+    jinja = ctx.jinja_vars()
+    log.info("yazi_taslak_devir", muhatap=yetkili.get("slug"), dayanak=bool(dayanak))
+    out: dict[str, Any] = {
+        "yazi_turu": result.yazi_turu,
+        "yazi_taslak_md": result.metin,
+        "format_uyumlu": result.format_uyumlu,
+        "yazi_plan_notu": (
+            f"Yetkisizlik: evrak {idare or 'kurumumuz'} adına gelmiş; konu "
+            f"{yetkili.get('ad', 'yetkili kurum')} görev alanında. "
+            f"{dayanak + ' gereğince devir' if dayanak else 'Yetkili kuruma devir'} yazısı üretildi."
+        ),
+        "devir": True,
+        "antet_meta": {
+            "idare": jinja.get("idare_adi", ""), "birim": jinja.get("birim_adi", ""),
+            "muhatap": jinja.get("muhatap", ""),
+        },
+        "ust_veri": ts13298_ust_veri(
+            result.yazi_turu, konu, None, jinja.get("sayi_satiri", ""),
+            date.today().strftime("%d.%m.%Y")),
+    }
+    if result.pdf_bytes:
+        out["yazi_taslak_pdf_bytes"] = result.pdf_bytes
+        out["yazi_taslak_pdf_filename"] = result.pdf_filename
+    if result.docx_bytes:
+        out["yazi_taslak_docx_bytes"] = result.docx_bytes
+        out["yazi_taslak_docx_filename"] = result.docx_filename
+    return out
+
+
 def _coklu_cikti(alt_out: list[dict[str, Any]]) -> dict[str, Any]:
     """Çok-konulu (>=2 birim) çıktı — tekil alanlar geriye-uyum için ilk birimi taşır."""
     ilk = alt_out[0]
@@ -158,6 +229,10 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             alt_talepler, unsurlar, aktif_kurum=efektif_kurum)
         if len(alt_out) >= 2:
             return _coklu_cikti(alt_out)
+        # Yetkisizlik (tek-konu, farklı yetkili kurum) → devir üst yazısı; plan makinesi
+        # çalıştırılmaz (tür sabittir: ust_yazi, muhatap yetkili kurum, gövde kalıp).
+        if _devir_var_mi(state):
+            return await _devir_taslagi(state, efektif_kurum)
         # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
         # mock/hata/kapalı-küme-dışı/grounded-olmayan-muhatap → None/kısmi düşürme →
         # statik EVRAK_TO_YAZI + varsayılan muhatap yolu AYNEN devrede kalır.

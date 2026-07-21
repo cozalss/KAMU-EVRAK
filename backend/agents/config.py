@@ -225,6 +225,19 @@ EVRAK_TO_SURE: dict[str, tuple[int, bool, str]] = {
     "bilgi_edinme": (15, True, "4982 s.K. m.11 (on beş iş günü)"),
 }
 
+# --- Yetkisizlik (devir) dayanağı: evrak muhatabın görev alanı dışındaysa hangi hükümle
+# yetkili kuruma GÖNDERİLİR. Kaynak metinler data/mevzuat korpusunda birebir mevcut:
+#   3071 m.8  → 3071_dilekce_hakki_kanunu.txt:48-50  ("Dilekçenin ilgili makama gönderilmesi")
+#   4982 m.7  → 4982_bilgi_edinme_kanunu.txt:37-38   (maddenin SON cümlesi)
+# CLAUDE.md §1: madde no uydurulmaz — anahtarı olmayan tür dayanak CÜMLESİ ALMAZ, devir
+# yine yapılır ama yazı hükme atıf yapmaz. Anahtar kümesi EVRAK_TO_SURE ile bilinçli aynı.
+EVRAK_TO_DEVIR_DAYANAK: dict[str, str] = {
+    t: "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanunun 8 inci maddesi"
+    for t in ("dilekce", "basvuru", "sikayet", "talep", "ihbar", "cimer")
+} | {
+    "bilgi_edinme": "4982 sayılı Bilgi Edinme Hakkı Kanununun 7 nci maddesi",
+}
+
 # --- Evrak türü → ilgili mevzuat (araştırma §2; üretimde RAG ile zenginleştirilir) ---
 # NOT (CLAUDE.md §1): madde no'ları mevzuat.gov.tr'de DOĞRULANMALI; şüpheli → [DOĞRULA:].
 # KAPSAM: 18 üretilen türün TAMAMI eşlenir (eski 7 → 18). Boost anahtarı olmayan tür,

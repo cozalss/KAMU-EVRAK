@@ -400,7 +400,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
 
       <KurulSirasi speaking={speaking} votes={votes} aksan={aksan} />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: SP.l, marginTop: SP.l, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%),  1fr))", gap: SP.l, marginTop: SP.l, alignItems: "start" }}>
         {/* Sol — canlı müzakere akışı */}
         <div style={{ background: PAL.bg2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l }}>
           <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>

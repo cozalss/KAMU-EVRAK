@@ -62,12 +62,34 @@ export const cachedDashboard = {
   },
 };
 
+// Alan → Türkçe doğrulama mesajı. FastAPI/pydantic 422'de detail bir dizi olur ve msg
+// ham İNGİLİZCE gelir ("value is not a valid email address: The part after the @-sign…") —
+// Türk memura sızmamalı (Playwright taraması, 2026-07-22). loc = ["body","<alan>"] alan adını
+// verir; kuralları auth/schemas.py'den bilinir (eposta EmailStr · parola min 8 · ad_soyad
+// min 2 · birim_kod min 2). Alan bilinmese de ham İngilizce yerine düz Türkçe döner.
+const ALAN_TR = {
+  eposta: "Geçerli bir e-posta adresi girin (örn. ad.soyad@kurum.gov.tr).",
+  parola: "Parola en az 8 karakter olmalı.",
+  ad_soyad: "Ad soyad en az 2 karakter olmalı.",
+  birim_kod: "Lütfen bir birim seçin.",
+  unvan: "Unvan geçersiz.",
+};
+
+function dogrulamaMesaji(dizi) {
+  // İlk hatalı alanı bul (loc dizisinin SON parçası alan adıdır: ["body","eposta"]).
+  for (const h of dizi) {
+    const alan = Array.isArray(h?.loc) ? h.loc[h.loc.length - 1] : null;
+    if (alan && ALAN_TR[alan]) return ALAN_TR[alan];
+  }
+  return "Girdiğiniz bilgilerde bir hata var — lütfen alanları kontrol edin.";
+}
+
 async function parseError(res) {
   try {
     const body = await res.json();
     const d = body?.detail;
-    if (typeof d === "string") return d;
-    if (Array.isArray(d) && d[0]?.msg) return d[0].msg;
+    if (typeof d === "string") return d;           // backend'in kendi Türkçe mesajı (AuthError)
+    if (Array.isArray(d) && d.length) return dogrulamaMesaji(d);  // pydantic 422 → Türkçeye çevir
   } catch {
     /* gövde JSON değil */
   }

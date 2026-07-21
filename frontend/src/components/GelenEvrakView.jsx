@@ -134,9 +134,12 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
                 onMouseEnter={(e) => { if (!vurgulu) e.currentTarget.style.background = PAL.hov; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = vurgulu ? "color-mix(in srgb, var(--ke-t) 8%, transparent)" : PAL.surf; }}
                 ref={(el) => { if (el) rowRefs.current.set(s.id, el); else rowRefs.current.delete(s.id); }}
-                style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: vurgulu ? ALFA(T) : PAL.surf, border: `1px solid ${vurgulu ? T : PAL.line}`, transition: "background .2s ease-out, border-color .3s ease-out" }}>
+                /* flexWrap + basis: dar ekranda kayıt no + İşle alt satıra iner (ölçüm: 390px'te
+                   metin bloğuna 114px kalıyor, 88 metin 0px'e eziliyordu). Geniş ekranda
+                   marginLeft:auto ile üçlü sağda kalır — görünüm değişmez. */
+                style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: vurgulu ? ALFA(T) : PAL.surf, border: `1px solid ${vurgulu ? T : PAL.line}`, transition: "background .2s ease-out, border-color .3s ease-out", flexWrap: "wrap" }}>
                 <span aria-hidden="true" title={kat.label} style={{ width: 40, height: 40, borderRadius: RAD.ctl, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surfHi, color: PAL.mut2 }}>{(Icon[kat.icon] || Icon.doc)({})}</span>
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: "1 1 220px", minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
                     <button type="button" onClick={(e) => { e.stopPropagation(); setOnizle(s); }} {...focusRing} data-press=""
                       title={`${s.label}: evrakı önizle`}
@@ -155,11 +158,13 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
                     <span style={{ display: "block", width: "100%", color: PAL.mut2 }}>önerilen birim: {onerilenBirim}</span>
                   </div>
                 </div>
-                <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, flexShrink: 0 }}>E-2026/{String(no).padStart(4, "0")}</span>
-                {/* Tekrarlanan satır eylemi secondary — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
-                <Btn onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
-                  {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow />
-                </Btn>
+                <span style={{ display: "flex", alignItems: "center", gap: SP.m, marginLeft: "auto", flexShrink: 0 }}>
+                  <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3 }}>E-2026/{String(no).padStart(4, "0")}</span>
+                  {/* Tekrarlanan satır eylemi secondary — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
+                  <Btn onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
+                    {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow />
+                  </Btn>
+                </span>
               </div>
             );
           })}

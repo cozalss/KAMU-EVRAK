@@ -351,7 +351,7 @@ export function SahneAkis({ display, total, glow, runBase, onDetay }) {
               adım <NumberFlow value={merkezIdx + 1} /> / {total}
             </span>
           </div>
-          <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", columnGap: SP.xxl, rowGap: SP.l, alignItems: "start" }}>
+          <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%),  1fr))", columnGap: SP.xxl, rowGap: SP.l, alignItems: "start" }}>
             {g1.length > 0 && <HatFaz n={1} items={g1} glow={glow} sahne onDetay={onDetay} />}
             {g2.length > 0 && <HatFaz n={2} items={g2} glow={glow} sahne devir={ikiKolon} onDetay={onDetay} />}
           </div>

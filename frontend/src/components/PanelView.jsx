@@ -94,15 +94,20 @@ function SlaSatir({ x, onIsle }) {
   const kalanTxt = gecikmis ? `${Math.abs(x.sla.kalan_gun)} gün gecikti`
     : x.sla.kalan_gun === 0 ? "son gün bugün" : `son ${x.sla.kalan_gun} gün`;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "8px 0", borderTop: `1px solid ${PAL.line}` }}>
+    /* flexWrap + basis'li metin bloğu: dar ekranda (ölçüm: 390px'te satır 441px'e taşıyor,
+       evrak adı 0px'e eziliyordu) çip/tarih/İşle üçlüsü ALT SATIRA iner, ad tam genişliği
+       alır. Geniş ekranda üçlü marginLeft:auto ile hâlâ sağa yaslanır — görünüm bit-aynı. */
+    <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "8px 0", borderTop: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
       <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: renk, flexShrink: 0 }} />
-      <span style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
+      <span style={{ flex: "1 1 200px", minWidth: 0, overflow: "hidden" }}>
         <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
         <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.sla.mevzuat}</span>
       </span>
-      <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), flexShrink: 0, ...TNUM }}>{kalanTxt}</span>
-      {x.sla.son_tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, flexShrink: 0 }}>son: {x.sla.son_tarih}</span>}
-      <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "4px 10px" }}>İşle <Icon.arrow /></Btn>
+      <span style={{ display: "flex", alignItems: "center", gap: SP.m, marginLeft: "auto", flexWrap: "wrap", justifyContent: "flex-end" }}>
+        <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), ...TNUM }}>{kalanTxt}</span>
+        {x.sla.son_tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2 }}>son: {x.sla.son_tarih}</span>}
+        <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "4px 10px" }}>İşle <Icon.arrow /></Btn>
+      </span>
     </div>
   );
 }
@@ -213,7 +218,7 @@ function RayKart({ icon, baslik, onClick, ariaLabel, children }) {
     <button type="button" onClick={onClick} aria-label={ariaLabel} {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ cursor: "pointer", textAlign: "left", display: "block", width: "100%", background: PAL.surf,
+      style={{ cursor: "pointer", textAlign: "left", display: "block", width: "100%", minWidth: 0, background: PAL.surf,
         border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.l,
         transition: `background .12s ease, transform .14s ${EASE.out}` }}>
       <span style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.s }}>

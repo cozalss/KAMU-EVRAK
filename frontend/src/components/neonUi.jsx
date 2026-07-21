@@ -182,13 +182,22 @@ export const NEON_KEYFRAMES = `
    kullanıcıyı "duyuyor" hissi. Opt-in (yalnız data-press taşıyanlar); :active durum stili
    olduğundan reduced-motion'da anında (animasyonsuz) uygulanır — hareket değil geri bildirimdir. */
 [data-press]:active:not(:disabled){transform:scale(.97)}
+/* <details> katlama (MevzuatView kategori grupları): summary marker'ını söndür (kendi
+   chevron'umuz var), açıkken chevron 90° döner, hover'da başlık zemini. Renk/token'dan
+   bağımsız saf mekanik. */
+summary::-webkit-details-marker{display:none}
+summary:hover{background:var(--ke-hov)}
+details[open] > summary .mev-chevron{transform:rotate(90deg)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 `;
 
 /* Görünüm kabuğu — başlık + alt başlık + içerik (kaydırılır sayfa). */
 export function ViewWrap({ id, title, sub, actions, children }) {
   return (
-    <section aria-labelledby={id} style={{ padding: "24px 32px 96px", minHeight: "calc(100vh - 1px)" }}>
+    // Yatay padding responsive: 390px telefonda sabit 32+32=64px, içeriğe kalan genişliğin
+    // %16'sını yiyip satırları sıfır genişliğe eziyordu (ölçüm: Panel 441px/390px taşma).
+    // clamp ile dar ekranda 16px'e iner; ≥800px'te eski 32px değeri BİT-AYNI kalır.
+    <section aria-labelledby={id} style={{ padding: "24px clamp(16px, 4vw, 32px) 96px", minHeight: "calc(100vh - 1px)" }}>
       <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
         <div>
           <h2 id={id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{title}</h2>

@@ -125,21 +125,32 @@ function KategoriCip({ ad, adet, aktif, onSec }) {
   );
 }
 
-/* Kategori grup bölümü — başlık + adet + tek satır rehber + kart ızgarası. */
-function KategoriGrup({ ad, mevzuatlar, onAc }) {
+/* Açılır chevron — <summary> katlama durumunu gösterir (details[open]'da 90° döner). */
+const ChevronSag = (p) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
+    <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/* Kategori grup bölümü — katlanabilir (native <details>). Katalog tek sayfada 304 kayıt =
+   18.7 ekranlık kesintisiz kaydırma (Playwright ölçümü) → memur konu grubunu göz ile
+   arıyordu. <details> ile: klavye/erişilebilirlik native, reduced-motion'da anında,
+   sıfır bağımlılık. Arama/filtre aktifken (acik) tüm gruplar açık gelir — sonuç zaten dar. */
+function KategoriGrup({ ad, mevzuatlar, onAc, acik }) {
   return (
-    <section aria-label={`${ad} mevzuatı`} style={{ marginBottom: SP.xl }}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", marginBottom: SP.xs }}>
+    <details open={acik} aria-label={`${ad} mevzuatı`} style={{ marginBottom: SP.l, borderBottom: `1px solid ${PAL.line}`, paddingBottom: SP.l }}>
+      <summary style={{ cursor: "pointer", listStyle: "none", display: "flex", alignItems: "center", gap: SP.s, padding: "4px 0", borderRadius: RAD.ctl }}>
+        <span aria-hidden="true" style={{ display: "flex", color: PAL.mut2, transition: "transform .15s var(--ke-ease-out)", flexShrink: 0 }} className="mev-chevron"><ChevronSag /></span>
         <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{ad}</h3>
         <span style={{ ...TYPE.meta, color: PAL.mut, ...TNUM }}>{mevzuatlar.length}</span>
-      </div>
+      </summary>
       {KATEGORI_ACIKLAMA[ad] && (
-        <p style={{ margin: "0 0 12px", ...TYPE.data, color: PAL.mut2 }}>{KATEGORI_ACIKLAMA[ad]}</p>
+        <p style={{ margin: "8px 0 12px 24px", ...TYPE.data, color: PAL.mut2 }}>{KATEGORI_ACIKLAMA[ad]}</p>
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px,1fr))", gap: SP.l, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(340px, 100%), 1fr))", gap: SP.l, alignItems: "start", marginTop: SP.s }}>
         {mevzuatlar.map((m) => <KatalogKart key={m.dosya} m={m} onAc={onAc} />)}
       </div>
-    </section>
+    </details>
   );
 }
 
@@ -188,7 +199,7 @@ function StatikKatalog() {
       <p role="status" style={{ margin: "0 0 12px", ...TYPE.data, color: PAL.mut2 }}>
         Canlı katalog yüklenemedi — çekirdek referans listesi gösteriliyor. Tam metin şu anda alınamıyor; katalog özeti gösteriliyor.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(360px, 100%), 1fr))", gap: SP.l, alignItems: "start" }}>
         {STATIK_KATALOG.map((k) => (
           <div key={k.no} style={{ display: "flex", gap: SP.m, padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
             <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.book /></span>
@@ -294,7 +305,7 @@ export default function MevzuatView({ history = [] }) {
     <ViewWrap id="mevzuat-h" title="Mevzuat" sub="Sistemdeki 304 mevzuat kaynağı konu gruplarına ayrılmış olarak listelenir. Kategori seçin veya arayın; karta tıklayınca tam metin açılır.">
       {onerilen.length > 0 && (
         <NeonCard title="Bu oturumda önerilen mevzuat (RAG)" tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: SP.l }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px,1fr))", gap: SP.m }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: SP.m }}>
             {onerilen.map((m, i) => <OneriSatir key={i} m={m} dosyalar={dosyalar} onAc={ac} />)}
           </div>
         </NeonCard>
@@ -337,7 +348,7 @@ export default function MevzuatView({ history = [] }) {
             sub={`"${filtre.trim()}" için madde metinlerinde sonuç bulunamadı. Farklı terimlerle deneyin.`}
             actions={<Btn onClick={() => setFiltre("")}>Aramayı temizle</Btn>} />
         ) : derin ? (
-          <div aria-live="polite" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px,1fr))", gap: SP.l, alignItems: "start", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
+          <div aria-live="polite" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(360px, 100%), 1fr))", gap: SP.l, alignItems: "start", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
             {derin.sonuclar.map((s) => <DerinSonucSatir key={`${s.dosya}-${s.madde_no}-${s.madde_tur ?? "madde"}`} s={s} onAc={ac} />)}
           </div>
         ) : null
@@ -353,7 +364,7 @@ export default function MevzuatView({ history = [] }) {
       )}
 
       {aramaModu === "katalog" && katalog === null && (
-        <div aria-busy="true" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px,1fr))", gap: SP.l }}>
+        <div aria-busy="true" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(340px, 100%), 1fr))", gap: SP.l }}>
           <span role="status" style={SR_ONLY}>Mevzuat kataloğu yükleniyor…</span>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} aria-hidden="true" style={{ height: 104, borderRadius: RAD.card, background: PAL.surfHi, animation: "nu-think 1.6s ease-in-out infinite" }} />
@@ -370,7 +381,12 @@ export default function MevzuatView({ history = [] }) {
             : "Bu grupta gösterilecek mevzuat yok."}
           actions={<Btn onClick={() => { setFiltre(""); setKategori(""); }}>Filtreleri temizle</Btn>} />
       ) : (
-        gruplar.map(([ad, uyeler]) => <KategoriGrup key={ad} ad={ad} mevzuatlar={uyeler} onAc={ac} />)
+        // Açık gelenler: arama/filtre aktifse hepsi (sonuç zaten dar) VEYA tek grup varsa
+        // o. Aksi halde yalnız ilk grup açık; gerisi katlı → memur konu seçip açar.
+        gruplar.map(([ad, uyeler], gi) => (
+          <KategoriGrup key={ad} ad={ad} mevzuatlar={uyeler} onAc={ac}
+            acik={!!filtre.trim() || !!kategori || gruplar.length === 1 || gi === 0} />
+        ))
       ))}
 
       {secili && <OkumaModal dosya={secili.dosya} maddeNo={secili.maddeNo} maddeTur={secili.maddeTur} onClose={kapat} />}

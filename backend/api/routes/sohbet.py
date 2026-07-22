@@ -36,6 +36,7 @@ from agents.sohbet_niyet import (
     fallback_niyet,
     onay_teyit,
     sablon_yanit,
+    talimat_cikar,
 )
 from api.middleware.ratelimit import rate_limit
 from api.routes import mevzuat as mevzuat_katalog_mod
@@ -452,6 +453,78 @@ async def _onay_baslat(intent: str, user: Any, session: AsyncSession) -> SohbetY
         kaynak="fallback")
 
 
+# --------------------------------------------------------------------------
+# Doğal-dil taslak revizyonu — grounded, NON-MUTATING önizleme (yazi_render motoru)
+# --------------------------------------------------------------------------
+async def revize_hedefi_bul(
+    session: AsyncSession, owner_id: Any, q: str = "",
+) -> dict[str, Any] | None:
+    """Revize edilecek taslak — ada göre (yoksa en yeni taslaklı işlem). Monkeypatch noktası."""
+    rows = await islem_listele(session, owner_id=owner_id, limit=10)
+    yeni: dict[str, Any] | None = None
+    for r in rows:
+        res = r.get("result") or {}
+        if not res.get("yazi_taslak_md"):
+            continue
+        aday = {"name": r.get("name"), "taslak_md": res["yazi_taslak_md"],
+                "evrak_ozet": res.get("ozet") or ""}
+        if q and q in (r.get("name") or "").lower():
+            return aday
+        if yeni is None:
+            yeni = aday
+    return yeni
+
+
+async def revize_uygula(
+    taslak_md: str, talimat: str, evrak_ozet: str,
+) -> dict[str, Any] | None:
+    """revize_taslak_yapili sarmalayıcı (grounded; LLM yok/mock → None). Monkeypatch noktası."""
+    from yazi.yazi_render import revize_taslak_yapili
+    return await revize_taslak_yapili(taslak_md, talimat, evrak_ozet=evrak_ozet)
+
+
+async def _revize_isle(istek: SohbetIstek, user: Any, session: AsyncSession) -> SohbetYanit:
+    """Doğal-dil talimatıyla taslağı revize et — kaynaksız değişikliği reddeder, KAYDETMEZ."""
+    intent = "taslak_revize"
+    talimat = talimat_cikar(istek.mesaj)
+    if len(talimat) < 4:
+        return SohbetYanit(
+            yanit=("Taslakta neyi nasıl değiştireyim? Örn. \"taslağı revize et: kapanışı "
+                   "'arz ederim' yap\"."),
+            intent=intent, oneri_gorunum="taslaklar", kaynak="fallback")
+    try:
+        hedef = await revize_hedefi_bul(session, user.id)
+    except Exception as exc:  # DB hatası sohbeti düşürmesin
+        log.warning("sohbet_revize_hedef_hatasi", error=type(exc).__name__)
+        hedef = None
+    if hedef is None:
+        return SohbetYanit(
+            yanit="Revize edilecek bir taslak bulamadım — önce Gelen Evrak'tan bir evrak işleyin.",
+            intent=intent, oneri_gorunum="taslaklar", kaynak="fallback")
+    try:
+        yapili = await revize_uygula(hedef["taslak_md"], talimat, hedef["evrak_ozet"])
+    except Exception as exc:
+        log.warning("sohbet_revize_hatasi", error=type(exc).__name__)
+        yapili = None
+    ad = hedef.get("name") or "Taslak"
+    yeni_metin = (yapili or {}).get("metin", "").strip()
+    if not yeni_metin or yeni_metin == hedef["taslak_md"].strip():
+        return SohbetYanit(
+            yanit=(f"**{ad}** için revizyon uygulanamadı — talimat kaynakta karşılık bulmadı "
+                   "ya da gerçek LLM gerekiyor. Taslağı **Taslaklar** ekranından elle "
+                   "düzenleyebilirsiniz."),
+            intent=intent, oneri_gorunum="taslaklar", kaynak="fallback")
+    parcalar = [f"**{ad}** için önerilen revizyon (henüz kaydedilmedi):"]
+    if degis := (yapili.get("degisiklikler") or []):
+        parcalar.append("\n".join(f"• {d}" for d in degis[:5]))
+    if uygulanamayan := (yapili.get("uygulanamayan") or ""):
+        parcalar.append(f"⚠ Uygulanamayan (kaynakta yok, uydurulmadı): {uygulanamayan}")
+    parcalar.append(f"\n---\n{yeni_metin}")
+    parcalar.append("\nOnaylarsan **Taslaklar** ekranından kaydedip gönderebilirsin.")
+    return SohbetYanit(yanit="\n".join(parcalar), intent=intent,
+                       oneri_gorunum="taslaklar", kaynak="llm")
+
+
 @router.post("/sohbet")
 @rate_limit("20/minute")  # LLM niyet+yanıt+araç döngüsü — diğer LLM uçlarıyla aynı desen (slowapi yoksa etkisiz)
 async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, session: Session) -> SohbetYanit:
@@ -463,6 +536,8 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
     intent = niyet["intent"]
     if intent in ("taslak_onayla", "taslak_reddet"):
         return await _onay_baslat(intent, user, session)
+    if intent == "taslak_revize":
+        return await _revize_isle(istek, user, session)
 
     veri: Any = None
     dongu_llm = False
@@ -554,6 +629,8 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
         intent = niyet["intent"]
         if intent in ("taslak_onayla", "taslak_reddet"):
             hazir = await _onay_baslat(intent, user, session)
+        elif intent == "taslak_revize":
+            hazir = await _revize_isle(istek, user, session)
     dongu_llm = False
     if hazir is None:
         veri: Any = None

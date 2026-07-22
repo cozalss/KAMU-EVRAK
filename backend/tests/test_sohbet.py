@@ -115,6 +115,35 @@ class TestFallbackNiyetV2:
         assert fallback_niyet("son gelen evraklar")["intent"] == "gelen_evrak"
         assert fallback_niyet("reddedilen giden evraklar")["intent"] == "giden_evrak"
 
+    @pytest.mark.parametrize("mesaj", [
+        "taslağı revize et: kapanışı arz ederim yap",
+        "son taslağı düzelt",
+        "yazıyı güncelle",
+        "taslakta hitabı değiştir",
+    ])
+    def test_taslak_revize_soylemleri(self, mesaj):
+        assert fallback_niyet(mesaj)["intent"] == "taslak_revize"
+
+    def test_duzenlenen_liste_revize_olmaz(self):
+        # "düzenlenen taslaklar" liste sorgusu; 'düzelt' emri (farklı kök) değil → taslaklar.
+        assert fallback_niyet("düzenlenen taslaklar")["intent"] == "taslaklar"
+
+
+class TestTalimatCikar:
+    """Revize talimatı ayıklama — ':' sonrası ya da fiil sonrası (Türkçe-güvenli)."""
+
+    def test_iki_nokta_sonrasi_talimat(self):
+        from agents.sohbet_niyet import talimat_cikar
+        assert talimat_cikar("taslağı revize et: kapanışı arz ederim yap") == "kapanışı arz ederim yap"
+
+    def test_iki_noktasiz_fiil_sonrasi_talimat(self):
+        from agents.sohbet_niyet import talimat_cikar
+        assert talimat_cikar("taslağı düzelt hitabı Sayın Valilik yap").startswith("hitabı")
+
+    def test_bos_talimat_kisa_doner(self):
+        from agents.sohbet_niyet import talimat_cikar
+        assert len(talimat_cikar("taslağı revize et")) < 4
+
     def test_onayla_aksiyonu(self):
         assert fallback_niyet("son taslağı onayla")["intent"] == "taslak_onayla"
 
@@ -234,6 +263,74 @@ class TestSlaAraci:
 
         assert [x["name"] for x in sonuc] == ["C", "B"]  # NORMAL elendi; en çok geciken önce
         assert all(x["sla_durum"] in ("GECIKMIS", "KRITIK") for x in sonuc)
+
+
+# ---------------------------------------------------------------------------
+# _revize_isle — doğal-dil taslak revizyonu (grounded, non-mutating önizleme)
+# ---------------------------------------------------------------------------
+class TestRevizeIsle:
+    """Talimat → revize önizleme; kaynaksız değişikliği reddeder, taslağı KAYDETMEZ."""
+
+    def _istek(self, mesaj):
+        from api.routes.sohbet import SohbetIstek
+        return SohbetIstek(mesaj=mesaj)
+
+    def _user(self):
+        from types import SimpleNamespace
+        return SimpleNamespace(id="u1", rol="memur")
+
+    async def test_onizleme_degisiklik_ve_reddi_gosterir(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _hedef(session, owner_id, q=""):
+            return {"name": "İcra yazısı", "taslak_md": "Eski metin.", "evrak_ozet": ""}
+
+        async def _uygula(taslak_md, talimat, evrak_ozet):
+            return {"metin": "Yeni resmî metin.", "degisiklikler": ["kapanış düzeltildi"],
+                    "uygulanamayan": "yeni tarih"}
+
+        monkeypatch.setattr(sohbet_mod, "revize_hedefi_bul", _hedef)
+        monkeypatch.setattr(sohbet_mod, "revize_uygula", _uygula)
+        yanit = await sohbet_mod._revize_isle(
+            self._istek("taslağı revize et: kapanışı düzelt"), self._user(), None)
+        assert yanit.intent == "taslak_revize"
+        assert "Yeni resmî metin" in yanit.yanit
+        assert "kapanış düzeltildi" in yanit.yanit
+        assert "Uygulanamayan" in yanit.yanit
+        assert "kaydedilmedi" in yanit.yanit.lower()  # non-mutating dürüstlüğü
+
+    async def test_bos_talimat_bilgi_ister(self):
+        import api.routes.sohbet as sohbet_mod
+        yanit = await sohbet_mod._revize_isle(
+            self._istek("taslağı revize et"), self._user(), None)
+        assert "neyi nasıl" in yanit.yanit.lower()
+
+    async def test_hedef_taslak_yoksa_uyarir(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _yok(session, owner_id, q=""):
+            return None
+
+        monkeypatch.setattr(sohbet_mod, "revize_hedefi_bul", _yok)
+        yanit = await sohbet_mod._revize_isle(
+            self._istek("taslağı revize et: kapanışı düzelt"), self._user(), None)
+        assert "bulamadım" in yanit.yanit.lower()
+
+    async def test_mock_degisiklik_yoksa_durust_uygulanamadi(self, monkeypatch):
+        # revize_uygula None (mock/LLM yok) → uydurmaz, "uygulanamadı" der.
+        import api.routes.sohbet as sohbet_mod
+
+        async def _hedef(session, owner_id, q=""):
+            return {"name": "T", "taslak_md": "Metin.", "evrak_ozet": ""}
+
+        async def _none(taslak_md, talimat, evrak_ozet):
+            return None
+
+        monkeypatch.setattr(sohbet_mod, "revize_hedefi_bul", _hedef)
+        monkeypatch.setattr(sohbet_mod, "revize_uygula", _none)
+        yanit = await sohbet_mod._revize_isle(
+            self._istek("taslağı revize et: X yap"), self._user(), None)
+        assert "uygulanamadı" in yanit.yanit.lower()
 
 
 # ---------------------------------------------------------------------------

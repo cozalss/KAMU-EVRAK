@@ -20,6 +20,8 @@ NIYETLER = frozenset({
     "taslak_onayla", "taslak_reddet",
     # V3 — SLA/yasal süre sorgusu (sla_triyaj zaten üretir; sohbet yüzeyi eklendi).
     "sla_durum",
+    # V4 — doğal-dil taslak revizyonu (yazi_render.revize_taslak_yapili; grounded, non-mutating).
+    "taslak_revize",
 })
 
 # Veri-intent → (UI kart türü, "Görünüme git" hedefi). Route + frontend sözleşmesi.
@@ -63,6 +65,9 @@ _RE_MEVZUAT_DOLGU = re.compile(
 # V2 tetikleyicileri — aksiyon (emir kipi) / katalog / içerik / detay / denetim.
 _RE_ONAYLA = re.compile(r"\bonayla\b")
 _RE_REDDET = re.compile(r"\breddet\b")
+# V4 — taslak revizyonu emir kipi ("revize et / düzelt / değiştir / güncelle").
+# 'düzelt' ≠ 'düzenle(nen)' (liste filtresi) — farklı kök, çakışmaz.
+_RE_REVIZE = re.compile(r"\b(revize\s*et\w*|revize|düzelt\w*|değiştir\w*|güncelle\w*)\b")
 _RE_DENETIM = re.compile(r"\bdenetim\b.*\bdoğrula\w*|\bdoğrula\w*.*\bdenetim\b|\bdenetim izi")
 _RE_MEVZUAT_NO = re.compile(r"\b(\d{3,5})\s*sayılı\b")
 _RE_ICERIK = re.compile(r"\b(metn?i\w*|tam metin|içeri\w*|oku)\b")
@@ -123,6 +128,8 @@ def fallback_niyet(mesaj: str) -> dict[str, Any]:
         intent = "taslak_onayla"
     elif _RE_REDDET.search(m):          # "reddet" emir; "reddedilen" sıfatı giden listesine gider
         intent = "taslak_reddet"
+    elif _RE_REVIZE.search(m):          # "taslağı düzelt/revize et" — aksiyondan önce liste kelimesini yener
+        intent = "taslak_revize"
     elif _RE_DENETIM.search(m):
         intent = "denetim_dogrula"
     elif _RE_SLA.search(m):             # yasal süre sorgusu liste kelimelerini yener
@@ -161,6 +168,21 @@ def onay_teyit(mesaj: str) -> bool:
     if _RE_TEYIT_OLUMSUZ.search(m):
         return False
     return bool(_RE_TEYIT_OLUMLU.search(m))
+
+
+def talimat_cikar(mesaj: str) -> str:
+    """Revize mesajından doğal-dil talimatı ayıkla (revize_taslak_yapili'ye gider).
+
+    ':' varsa sonrası (\"taslağı revize et: kapanışı arz ederim yap\" → \"kapanışı ...\");
+    yoksa revize fiilinden sonrası. _kucult uzunluğu korur → ham metin ofsetle dilimlenir
+    (Türkçe içerik/harf büyüklüğü bozulmaz). Boş/çok kısa → çağıran talimat ister.
+    """
+    m = (mesaj or "").strip()
+    if ":" in m:
+        return m.split(":", 1)[1].strip()[:500]
+    if mt := _RE_REVIZE.search(_kucult(m)):
+        return m[mt.end():].strip(" :–—-").strip()[:500]
+    return m[:500]
 
 
 # --------------------------------------------------------------------------
@@ -337,5 +359,5 @@ def sablon_yanit(intent: str, veri: Any) -> str:
 
 __all__ = (
     "KAYIT_TURU", "LIMIT_VARSAYILAN", "NIYETLER",
-    "bilgi_yaniti", "fallback_niyet", "onay_teyit", "sablon_yanit",
+    "bilgi_yaniti", "fallback_niyet", "onay_teyit", "sablon_yanit", "talimat_cikar",
 )

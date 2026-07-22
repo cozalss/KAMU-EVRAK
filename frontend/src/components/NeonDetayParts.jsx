@@ -24,53 +24,6 @@ export const Fact = ({ k, v, c = PAL.ink2, icon }) => (
   </span>
 );
 
-/* Hüküm güzergâhı durağı — hüküm şeridinin "3-5 saniyede kavra" katmanı (StatTile'ın yerini
-   aldı, 2026-07-15 redesign). Düz yığın yerine dikey RAY: solda hat-renkli ikonlu durak +
-   sonraki durağa hairline bağlantı (son durakta yok) → "evrak okundu → birime yönlendi"
-   güzergâh anlatısı. Değer TYPE.num (MASTER: "panel metrikleri") — memur ilk bakışta yalnız
-   bunu okur; yalnız hüküm şeridindeki 1-2 karar-kritik olguya ayrılır, enflasyon yasak.
-   hat = ray/ikon rengi (Görev semantiği: anlama T, üretim V) · c = değer rengi ·
-   meter = 0-100 → değer altında mini güven ölçeği (risk pay çubuklarıyla aynı desen). */
-export const HukumDurak = ({ k, v, sub, c = PAL.ink, hat = T, icon, son = false, meter = null }) => (
-  <div style={{ display: "flex", gap: SP.l, minWidth: 0 }}>
-    <span aria-hidden="true" style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
-      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: RAD.dot, border: `1px solid ${PAL.line}`, background: PAL.surf2, color: DERIN_OF(hat) }}>
-        {icon}
-      </span>
-      {!son && <span style={{ flex: 1, width: 1, minHeight: 20, background: PAL.line, marginTop: SP.xs }} />}
-    </span>
-    <span style={{ minWidth: 0, flex: 1, paddingTop: 2, paddingBottom: son ? 0 : SP.xl }}>
-      <span style={{ display: "block", ...TYPE.ui, color: PAL.mut3, marginBottom: 2 }}>{k}</span>
-      {/* Değer TYPE.disp (2026-07-15: kullanıcı isteği "yazılar büyük olsun" — kart tam-boy,
-          tipografi ona ölçeklendi). wordBreak: eşlenmemiş/ham fallback anahtarı (boşluksuz
-          snake_case) da güvenle sarmalı — gerçek etiketler (EVRAK_TR/BIRIM_LBL) sığar.
-          textWrap:"balance" — AuthPage.jsx'teki native CSS deseniyle aynı (bağımlılık yok,
-          evergreen tarayıcı yerleşik) — çok satırlı değerlerde son satırda tek kelime kalmaz. */}
-      <span style={{ display: "block", ...TYPE.disp, color: DERIN_OF(c), maxWidth: 560, wordBreak: "break-word", textWrap: "balance" }}>{v}</span>
-      {/* sub = içerik/bağlam (alan-adı DEĞİL) → mut3 yerine mut2: etikete (mut3) göre bir kademe belirgin, rol ayrışır. */}
-      {(sub || meter != null) && (
-        <span style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, minWidth: 0 }}>
-          {meter != null && (
-            <span style={{ width: 72, height: 5, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden", flexShrink: 0 }}>
-              <span style={{ display: "block", height: "100%", width: `${Math.max(0, Math.min(100, meter))}%`, background: DERIN_OF(hat), borderRadius: RAD.chip }} />
-            </span>
-          )}
-          {sub && <span style={{ ...TYPE.data, color: PAL.mut2, ...TNUM, minWidth: 0 }}>{sub}</span>}
-        </span>
-      )}
-    </span>
-  </div>
-);
-
-/* Görev bölüm etiketi — 12/500 sentence case + düz hairline ayraç. */
-export const GorevLabel = ({ n, t, color, count }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: SP.m, margin: "0 0 12px" }}>
-    <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(color), flex: "none" }}>Görev {n} · {t}</span>
-    <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
-    {count && <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>{count}</span>}
-  </div>
-);
-
 /* yasal süre durumu → renk + etiket (çizelge konumu slaKonum'dan GERÇEK tarihlerle gelir). */
 export function slaInfo(sla) {
   const d = (sla?.durum || "").toLocaleUpperCase("tr-TR");

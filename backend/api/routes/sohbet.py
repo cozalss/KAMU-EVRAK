@@ -71,7 +71,8 @@ _NIYET_SYSTEM = (
     "q'ya yalın arama sorgusu) | mevzuat_katalog (tüm mevzuat listesi/kategoriler) | "
     "mevzuat_icerik (belirli bir kanunun tam metni; mevzuat_no'ya kanun numarası, q'ya adı) | "
     "taslak_onayla (kullanıcı taslağı ONAYLAmak istiyor) | taslak_reddet (taslağı REDDETmek "
-    "istiyor) | site_yardim (sistemin işleyişi/ekranları hakkında soru) | selamlama | genel.\n"
+    "istiyor) | sla_durum (yasal süresi geçmiş/kritik/vadesi yaklaşan evrak sorgusu) | "
+    "site_yardim (sistemin işleyişi/ekranları hakkında soru) | selamlama | genel.\n"
     "durum ∈ ''|gonderildi|duzenlendi|reddedildi; risk ∈ ''|yesil|sari|kirmizi; "
     "limit 1-20 arası tamsayı; mevzuat_no rakam ya da ''.\n"
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
@@ -194,8 +195,34 @@ async def _islem_detay_araci(session: AsyncSession, owner_id: Any, q: str) -> di
         "evrak_turu": r.get("evrak_turu"), "hedef_birim": r.get("hedef_birim"),
         "ozet": (res.get("ozet") or "")[:400], "eksik_alanlar": res.get("eksik_alanlar") or [],
         "sla_durum": (res.get("sla_metadata") or {}).get("durum", ""),
+        # "Neden KIRMIZI / neden bu birim" — gerekçeler zaten üretiliyor, sohbete taşınır (grounded).
+        "risk_aciklama": (res.get("risk_metadata") or {}).get("aciklama", ""),
+        "birim_gerekce": res.get("birim_reasoning", ""),
         "onay_durumu": res.get("onay_durumu", ""),
     }
+
+
+# sla_triyaj bandı: süresi geçmiş / son gün yaklaşan işlemler (chat SLA sorgusu).
+_SLA_KRITIK = ("GECIKMIS", "KRITIK")
+
+
+async def _sla_araci(
+    session: AsyncSession, owner_id: Any, limit: int,
+) -> list[dict[str, Any]]:
+    """Yasal süresi geçmiş/kritik işlemler — en acil önce (sla_metadata zaten üretiliyor)."""
+    rows = await islem_listele(session, owner_id=owner_id, limit=max(limit, 20))
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        meta = (r.get("result") or {}).get("sla_metadata") or {}
+        if meta.get("durum") in _SLA_KRITIK:
+            out.append({
+                "name": r.get("name"), "evrak_turu": r.get("evrak_turu"),
+                "hedef_birim": r.get("hedef_birim"),
+                "sla_durum": meta.get("durum"), "kalan_gun": meta.get("kalan_gun"),
+            })
+    # kalan gün artan (en çok geciken/en az kalan en üstte); None sona.
+    out.sort(key=lambda x: (x.get("kalan_gun") is None, x.get("kalan_gun") or 0))
+    return out[:limit]
 
 
 async def _denetim_araci(session: AsyncSession, owner_id: Any, q: str) -> dict[str, Any] | None:
@@ -219,6 +246,8 @@ async def araci_calistir(
         return _mevzuat_icerik_araci(parametreler.get("mevzuat_no", ""), q)
     if intent == "islem_detay":
         return await _islem_detay_araci(session, owner_id, q)
+    if intent == "sla_durum":
+        return await _sla_araci(session, owner_id, limit)
     if intent == "denetim_dogrula":
         return await _denetim_araci(session, owner_id, q)
     if intent == "gelen_evrak":

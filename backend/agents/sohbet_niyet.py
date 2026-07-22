@@ -18,6 +18,8 @@ NIYETLER = frozenset({
     # V2 — katalog/içerik okuma, işlem detayı, denetim doğrulama, HITL aksiyonları.
     "mevzuat_katalog", "mevzuat_icerik", "islem_detay", "denetim_dogrula",
     "taslak_onayla", "taslak_reddet",
+    # V3 — SLA/yasal süre sorgusu (sla_triyaj zaten üretir; sohbet yüzeyi eklendi).
+    "sla_durum",
 })
 
 # Veri-intent → (UI kart türü, "Görünüme git" hedefi). Route + frontend sözleşmesi.
@@ -32,6 +34,7 @@ KAYIT_TURU = {
     "mevzuat_icerik": ("mevzuat", "mevzuat"),
     "islem_detay": ("islem", "denetim"),
     "denetim_dogrula": (None, "denetim"),
+    "sla_durum": ("islem", "panel"),  # süresi geçen/kritik işlemler → Panel'de SLA rozeti
 }
 
 _LIMIT_MIN, _LIMIT_MAX, LIMIT_VARSAYILAN = 1, 20, 5
@@ -65,6 +68,10 @@ _RE_MEVZUAT_NO = re.compile(r"\b(\d{3,5})\s*sayılı\b")
 _RE_ICERIK = re.compile(r"\b(metn?i\w*|tam metin|içeri\w*|oku)\b")
 _RE_KATALOG = re.compile(r"\b(katalo\w*|liste\w*|hangi|tüm|bütün)\b")  # katalog/kataloğu (yumuşak g)
 _RE_DETAY = re.compile(r"\bdetay\w*\b")
+# SLA / yasal süre — gecikmiş/kritik/vadesi yaklaşan evrak sorgusu (sla_triyaj: GECIKMIS/KRITIK).
+_RE_SLA = re.compile(
+    r"\b(gecik\w*|süresi geç\w*|süre(si)? dol\w*|vade\w*|yasal süre|son gün|kalan (gün|süre)"
+    r"|zamanı geç\w*|deadline|geciken|kritik evrak\w*)\b")
 
 
 def _parametre_cikar(mesaj: str) -> dict[str, Any]:
@@ -118,6 +125,8 @@ def fallback_niyet(mesaj: str) -> dict[str, Any]:
         intent = "taslak_reddet"
     elif _RE_DENETIM.search(m):
         intent = "denetim_dogrula"
+    elif _RE_SLA.search(m):             # yasal süre sorgusu liste kelimelerini yener
+        intent = "sla_durum"
     elif _RE_MEVZUAT_NO.search(m) or (_RE_MEVZUAT.search(m) and _RE_ICERIK.search(m)):
         intent = "mevzuat_icerik"
     elif _RE_MEVZUAT.search(m) and _RE_KATALOG.search(m):
@@ -199,8 +208,14 @@ _BILGI: tuple[tuple[tuple[str, ...], str], ...] = (
      "• **Gelen/giden evrakları** listelemek (\"son gelen evraklar\", \"reddedilen gidenler\")\n"
      "• **Taslakları ve işlem geçmişini** göstermek\n"
      "• **Panel istatistiği** vermek (\"kaç evrak işledik?\")\n"
+     "• **Yasal süre takibi** (\"hangi evrakların süresi geçti?\", \"vadesi yaklaşan işlemler\")\n"
      "• **Mevzuat aramak** (\"KVKK aydınlatma yükümlülüğü\")\n"
      "• **Siteyi anlatmak** (\"risk bandı nedir?\", \"sistem nasıl işliyor?\")"),
+    (("yasal süre", "sla", "gecik", "vade", "deadline", "cevap süre"),
+     "**Yasal süre (SLA)** takibi: her evrakın mevzuat kaynaklı cevap süresi (3071/4982/2429) "
+     "izlenir. \"Süresi geçmiş\" (kırmızı), \"kritik\" (son gün yaklaşıyor) ve \"zamanında\" olarak "
+     "işaretlenir; iş günü + resmî tatil duyarlı hesaplanır. \"Hangi evrakların süresi geçti?\" "
+     "diye sorabilir, Panel'de birim-bazlı gecikme dökümünü görebilirsiniz."),
 )
 
 
@@ -219,7 +234,11 @@ def bilgi_yaniti(mesaj: str) -> str | None:
 _TUR_ETIKET = {
     "gelen_evrak": "gelen evrak", "giden_evrak": "giden evrak",
     "taslaklar": "taslak", "islem_gecmisi": "işlem", "mevzuat_ara": "mevzuat sonucu",
+    "sla_durum": "süresi kritik/geçmiş işlem",
 }
+
+# SLA durum → memura okunur Türkçe etiket (sla_triyaj: GECIKMIS/KRITIK/NORMAL).
+_SLA_ETIKET = {"GECIKMIS": "süresi geçmiş", "KRITIK": "süresi kritik", "NORMAL": "zamanında"}
 
 
 def _kayit_satiri(intent: str, k: dict[str, Any]) -> str:
@@ -230,6 +249,14 @@ def _kayit_satiri(intent: str, k: dict[str, Any]) -> str:
         ekler += [e for e in (k.get("durum"), k.get("alici_birim")) if e]
     elif intent == "islem_gecmisi":
         ekler += [e for e in (k.get("evrak_turu"), k.get("hedef_birim"), k.get("bant")) if e]
+    elif intent == "sla_durum":
+        if durum := _SLA_ETIKET.get(str(k.get("sla_durum") or ""), ""):
+            ekler.append(durum)
+        kalan = k.get("kalan_gun")
+        if kalan is not None:
+            ekler.append(f"kalan {kalan} gün" if kalan >= 0 else f"{abs(kalan)} gün gecikme")
+        if k.get("hedef_birim"):
+            ekler.append(str(k["hedef_birim"]))
     elif intent == "mevzuat_ara" and k.get("madde_no"):
         ekler.append(f"m. {k['madde_no']}")
     tarih = (k.get("olusturuldu") or k.get("gonderim_tarihi") or "")[:10]
@@ -254,9 +281,18 @@ def _sablon_v2(intent: str, veri: Any) -> str | None:
                 + (f"\n\n{veri['metin_ozet']}…" if veri.get("metin_ozet") else ""))
     if intent == "islem_detay":
         eksik = ", ".join(veri.get("eksik_alanlar") or []) or "—"
-        return (f"**{veri.get('name', 'işlem')}** — tür: {veri.get('evrak_turu', '?')}, "
-                f"birim: **{veri.get('hedef_birim') or '—'}**, risk: {veri.get('bant') or '—'}.\n"
-                f"Özet: {veri.get('ozet') or '—'}\nEksik alanlar: {eksik}")
+        satirlar = [
+            f"**{veri.get('name', 'işlem')}** — tür: {veri.get('evrak_turu', '?')}, "
+            f"birim: **{veri.get('hedef_birim') or '—'}**, risk: {veri.get('bant') or '—'}.",
+            f"Özet: {veri.get('ozet') or '—'}",
+            f"Eksik alanlar: {eksik}",
+        ]
+        # "Neden bu risk / neden bu birim" — gerekçeler grounded (uydurmaz), varsa göster.
+        if veri.get("risk_aciklama"):
+            satirlar.append(f"Risk gerekçesi: {veri['risk_aciklama']}")
+        if veri.get("birim_gerekce"):
+            satirlar.append(f"Yönlendirme gerekçesi: {veri['birim_gerekce']}")
+        return "\n".join(satirlar)
     if intent == "denetim_dogrula":
         ad = f" (**{veri['name']}**)" if veri.get("name") else ""
         if veri.get("butunluk"):

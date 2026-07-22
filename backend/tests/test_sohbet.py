@@ -100,6 +100,21 @@ class TestFallbackNiyetV2:
     def test_denetim_dogrula_soylemi(self):
         assert fallback_niyet("son işlemin denetim izini doğrula")["intent"] == "denetim_dogrula"
 
+    @pytest.mark.parametrize("mesaj", [
+        "hangi evrakların süresi geçti",
+        "geciken işlemler",
+        "vadesi yaklaşan evraklar",
+        "yasal süresi dolan dilekçeler",
+        "cevap süresi dolan evraklar",
+    ])
+    def test_sla_durum_soylemleri(self, mesaj):
+        assert fallback_niyet(mesaj)["intent"] == "sla_durum"
+
+    def test_sla_normal_liste_sorgusunu_calmaz(self):
+        # SLA kelimesi içermeyen liste sorgusu SLA'ya kaymamalı (regresyon guard).
+        assert fallback_niyet("son gelen evraklar")["intent"] == "gelen_evrak"
+        assert fallback_niyet("reddedilen giden evraklar")["intent"] == "giden_evrak"
+
     def test_onayla_aksiyonu(self):
         assert fallback_niyet("son taslağı onayla")["intent"] == "taslak_onayla"
 
@@ -165,9 +180,60 @@ class TestSablonYanit:
         assert "Park dilekçesi" in yanit
         assert "FEN" in yanit
 
+    def test_islem_detay_risk_ve_birim_gerekcesi_gosterir(self):
+        # "Neden KIRMIZI / neden bu birim" gerekçeleri varsa yanıta taşınır.
+        veri = {"name": "İcra", "evrak_turu": "icra", "hedef_birim": "HUKUK", "bant": "kirmizi",
+                "ozet": "Ödeme emri.", "eksik_alanlar": [],
+                "risk_aciklama": "Süreli icra evrakı; gecikme hak kaybı doğurur.",
+                "birim_gerekce": "HUKUK — icra takibi (kaynak: teşkilat) [DeepSeek+kaynak]"}
+        yanit = sablon_yanit("islem_detay", veri)
+        assert "hak kaybı" in yanit
+        assert "icra takibi" in yanit
+
+    def test_sla_durum_listesi_durum_ve_kalan_gun_gosterir(self):
+        kayitlar = [
+            {"name": "İcra tebligatı", "evrak_turu": "icra", "hedef_birim": "HUKUK",
+             "sla_durum": "GECIKMIS", "kalan_gun": -3},
+            {"name": "Bilgi başvurusu", "evrak_turu": "bilgi_edinme", "hedef_birim": "YAZI",
+             "sla_durum": "KRITIK", "kalan_gun": 1},
+        ]
+        yanit = sablon_yanit("sla_durum", kayitlar)
+        assert "2" in yanit
+        assert "süresi geçmiş" in yanit          # GECIKMIS etiketi
+        assert "gün gecikme" in yanit             # negatif kalan → gecikme metni
+        assert "kalan 1 gün" in yanit             # KRITIK, pozitif kalan
+
     def test_denetim_dogrula_butunluk_bildirir(self):
         yanit = sablon_yanit("denetim_dogrula", {"butunluk": True, "adim_sayisi": 15})
         assert "bütünlük" in yanit.lower() or "doğrulandı" in yanit.lower()
+
+
+# ---------------------------------------------------------------------------
+# _sla_araci — yasal süre sorgusu (araç filtresi)
+# ---------------------------------------------------------------------------
+class TestSlaAraci:
+    """Yalnız GECIKMIS/KRITIK işlemleri, en acil (en az kalan gün) önce döndürür."""
+
+    async def test_yalniz_kritik_gecikmis_islemler_aciliyet_sirali(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        rows = [
+            {"name": "A", "evrak_turu": "dilekce", "hedef_birim": "FEN",
+             "result": {"sla_metadata": {"durum": "NORMAL", "kalan_gun": 5}}},
+            {"name": "B", "evrak_turu": "icra", "hedef_birim": "HUKUK",
+             "result": {"sla_metadata": {"durum": "KRITIK", "kalan_gun": 1}}},
+            {"name": "C", "evrak_turu": "sikayet", "hedef_birim": "ZABITA",
+             "result": {"sla_metadata": {"durum": "GECIKMIS", "kalan_gun": -4}}},
+        ]
+
+        async def _sahte_listele(session, owner_id, limit):
+            return rows
+
+        monkeypatch.setattr(sohbet_mod, "islem_listele", _sahte_listele)
+        sonuc = await sohbet_mod._sla_araci(session=None, owner_id="u1", limit=5)
+
+        assert [x["name"] for x in sonuc] == ["C", "B"]  # NORMAL elendi; en çok geciken önce
+        assert all(x["sla_durum"] in ("GECIKMIS", "KRITIK") for x in sonuc)
 
 
 # ---------------------------------------------------------------------------

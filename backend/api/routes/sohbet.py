@@ -199,6 +199,10 @@ async def _islem_detay_araci(session: AsyncSession, owner_id: Any, q: str) -> di
         # "Neden KIRMIZI / neden bu birim" — gerekçeler zaten üretiliyor, sohbete taşınır (grounded).
         "risk_aciklama": (res.get("risk_metadata") or {}).get("aciklama", ""),
         "birim_gerekce": res.get("birim_reasoning", ""),
+        # Kanıt şeffaflığı: her çıkarılan değerin KAYNAK metindeki yeri (kanit_baglama span'ları)
+        # → "bu bilgiyi nereden çıkardın" sorusuna grounded cevap (uydurma değil, bulundu).
+        "kanitlar": [{"label": s.get("label") or s.get("alan") or "", "deger": s.get("deger") or ""}
+                     for s in ((res.get("kanit_metadata") or {}).get("spanlar") or [])][:8],
         "onay_durumu": res.get("onay_durumu", ""),
     }
 

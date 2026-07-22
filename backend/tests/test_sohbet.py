@@ -219,6 +219,17 @@ class TestSablonYanit:
         assert "hak kaybı" in yanit
         assert "icra takibi" in yanit
 
+    def test_islem_detay_kanit_seffafligi_gosterir(self):
+        # "bu bilgiyi nereden çıkardın" → çıkarılan değerin kaynak metindeki yeri gösterilir.
+        veri = {"name": "Dilekçe", "evrak_turu": "dilekce", "hedef_birim": "FEN",
+                "bant": "yesil", "ozet": "Talep.", "eksik_alanlar": [],
+                "kanitlar": [{"label": "Tarih", "deger": "15 Temmuz 2026"},
+                             {"label": "Tutar", "deger": "5.000 TL"}]}
+        yanit = sablon_yanit("islem_detay", veri)
+        assert "Kanıt (kaynak metinde bulundu)" in yanit
+        assert "15 Temmuz 2026" in yanit
+        assert "Tutar" in yanit
+
     def test_sla_durum_listesi_durum_ve_kalan_gun_gosterir(self):
         kayitlar = [
             {"name": "İcra tebligatı", "evrak_turu": "icra", "hedef_birim": "HUKUK",
@@ -263,6 +274,29 @@ class TestSlaAraci:
 
         assert [x["name"] for x in sonuc] == ["C", "B"]  # NORMAL elendi; en çok geciken önce
         assert all(x["sla_durum"] in ("GECIKMIS", "KRITIK") for x in sonuc)
+
+
+class TestIslemDetayKanit:
+    """islem_detay aracı kanit_metadata span'larını 'kanitlar' olarak taşır (şeffaflık)."""
+
+    async def test_kanit_spanlari_kanitlara_donusur(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _listele(session, owner_id, limit):
+            return [{
+                "name": "Dilekçe", "evrak_turu": "dilekce", "hedef_birim": "FEN", "bant": "yesil",
+                "result": {
+                    "islem_id": "11111111-1111-1111-1111-111111111111",
+                    "ozet": "Talep.", "eksik_alanlar": [],
+                    "kanit_metadata": {"metin": "…", "spanlar": [
+                        {"start": 5, "end": 10, "alan": "tarih", "label": "Tarih", "deger": "15 Temmuz"},
+                    ]},
+                },
+            }]
+
+        monkeypatch.setattr(sohbet_mod, "islem_listele", _listele)
+        veri = await sohbet_mod._islem_detay_araci(session=None, owner_id="u1", q="")
+        assert veri["kanitlar"] == [{"label": "Tarih", "deger": "15 Temmuz"}]
 
 
 # ---------------------------------------------------------------------------

@@ -314,6 +314,12 @@ def _sablon_v2(intent: str, veri: Any) -> str | None:
             satirlar.append(f"Risk gerekçesi: {veri['risk_aciklama']}")
         if veri.get("birim_gerekce"):
             satirlar.append(f"Yönlendirme gerekçesi: {veri['birim_gerekce']}")
+        # Kanıt şeffaflığı — çıkarılan değerlerin kaynak metinde bulunduğu yer (uydurma değil).
+        if veri.get("kanitlar"):
+            kanit = "; ".join(f"{k['label']}: '{k['deger']}'"
+                              for k in veri["kanitlar"] if k.get("deger") and k.get("label"))
+            if kanit:
+                satirlar.append(f"Kanıt (kaynak metinde bulundu): {kanit}")
         return "\n".join(satirlar)
     if intent == "denetim_dogrula":
         ad = f" (**{veri['name']}**)" if veri.get("name") else ""

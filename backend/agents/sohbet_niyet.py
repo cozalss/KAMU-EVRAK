@@ -22,6 +22,8 @@ NIYETLER = frozenset({
     "sla_durum",
     # V4 — doğal-dil taslak revizyonu (yazi_render.revize_taslak_yapili; grounded, non-mutating).
     "taslak_revize",
+    # V5 — proaktif brifing (dikkat gerektiren işler: SLA kritik + kırmızı taslak + bekleyen onay).
+    "brifing",
 })
 
 # Veri-intent → (UI kart türü, "Görünüme git" hedefi). Route + frontend sözleşmesi.
@@ -37,6 +39,7 @@ KAYIT_TURU = {
     "islem_detay": ("islem", "denetim"),
     "denetim_dogrula": (None, "denetim"),
     "sla_durum": ("islem", "panel"),  # süresi geçen/kritik işlemler → Panel'de SLA rozeti
+    "brifing": (None, "panel"),       # proaktif günün özeti → Panel
 }
 
 _LIMIT_MIN, _LIMIT_MAX, LIMIT_VARSAYILAN = 1, 20, 5
@@ -77,6 +80,10 @@ _RE_DETAY = re.compile(r"\bdetay\w*\b")
 _RE_SLA = re.compile(
     r"\b(gecik\w*|süresi geç\w*|süre(si)? dol\w*|vade\w*|yasal süre|son gün|kalan (gün|süre)"
     r"|zamanı geç\w*|deadline|geciken|kritik evrak\w*)\b")
+# Proaktif brifing — "neye bakmalıyım / bugünün özeti / önceliğim ne".
+_RE_BRIFING = re.compile(
+    r"\b(brifing|brief|günün özeti|bugün ne var|neye bakmalı\w*|önceliğim\w*|önce neye"
+    r"|durum özeti|gündemim|dikkat gerektir\w*)\b")
 
 
 def _parametre_cikar(mesaj: str) -> dict[str, Any]:
@@ -132,6 +139,8 @@ def fallback_niyet(mesaj: str) -> dict[str, Any]:
         intent = "taslak_revize"
     elif _RE_DENETIM.search(m):
         intent = "denetim_dogrula"
+    elif _RE_BRIFING.search(m):         # proaktif brifing — panel 'özet' kelimesinden önce
+        intent = "brifing"
     elif _RE_SLA.search(m):             # yasal süre sorgusu liste kelimelerini yener
         intent = "sla_durum"
     elif _RE_MEVZUAT_NO.search(m) or (_RE_MEVZUAT.search(m) and _RE_ICERIK.search(m)):
@@ -321,6 +330,22 @@ def _sablon_v2(intent: str, veri: Any) -> str | None:
             if kanit:
                 satirlar.append(f"Kanıt (kaynak metinde bulundu): {kanit}")
         return "\n".join(satirlar)
+    if intent == "brifing":
+        sla = veri.get("sla_kritik", 0)
+        onay = veri.get("bekleyen_onay", 0)
+        kirmizi = veri.get("kirmizi_taslak", 0)
+        if not (sla or onay or kirmizi):
+            return "Şu an dikkat gerektiren bir iş görünmüyor — SLA, taslak ve onay kuyruğu temiz. 👍"
+        satir = ["**Dikkat gerektirenler:**"]
+        if sla:
+            satir.append(f"• ⏰ **{sla}** işlemin yasal süresi geçmiş/kritik")
+        if kirmizi:
+            satir.append(f"• 🔴 **{kirmizi}** kırmızı-bant taslak onay bekliyor")
+        if onay:
+            satir.append(f"• ✎ toplam **{onay}** taslak kararınızı bekliyor")
+        if veri.get("en_acil"):
+            satir.append(f"\nÖnce şuna bakın: **{veri['en_acil']}**.")
+        return "\n".join(satir)
     if intent == "denetim_dogrula":
         ad = f" (**{veri['name']}**)" if veri.get("name") else ""
         if veri.get("butunluk"):

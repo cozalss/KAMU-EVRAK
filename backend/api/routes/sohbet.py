@@ -230,6 +230,20 @@ async def _sla_araci(
     return out[:limit]
 
 
+async def _brifing_araci(session: AsyncSession, owner_id: Any) -> dict[str, Any]:
+    """Proaktif brifing — dikkat gerektiren işlerin sayımı (SLA kritik + kırmızı taslak + bekleyen onay)."""
+    sla = await _sla_araci(session, owner_id, limit=50)
+    rows = await islem_listele(session, owner_id=owner_id, limit=50)
+    bekleyen = [r for r in rows
+                if (r.get("result") or {}).get("yazi_taslak_md")
+                and not (r.get("result") or {}).get("onay_durumu")]
+    kirmizi = [r for r in bekleyen if r.get("bant") == "kirmizi"]
+    en_acil = (sla[0]["name"] if sla
+               else (bekleyen[0].get("name") if bekleyen else ""))
+    return {"sla_kritik": len(sla), "bekleyen_onay": len(bekleyen),
+            "kirmizi_taslak": len(kirmizi), "en_acil": en_acil}
+
+
 async def _denetim_araci(session: AsyncSession, owner_id: Any, q: str) -> dict[str, Any] | None:
     r = await _islem_bul(session, owner_id, q)
     if r is None or not (r.get("result") or {}).get("islem_id"):
@@ -253,6 +267,8 @@ async def araci_calistir(
         return await _islem_detay_araci(session, owner_id, q)
     if intent == "sla_durum":
         return await _sla_araci(session, owner_id, limit)
+    if intent == "brifing":
+        return await _brifing_araci(session, owner_id)
     if intent == "denetim_dogrula":
         return await _denetim_araci(session, owner_id, q)
     if intent == "gelen_evrak":

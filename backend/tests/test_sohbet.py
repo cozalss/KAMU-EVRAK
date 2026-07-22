@@ -128,6 +128,16 @@ class TestFallbackNiyetV2:
         # "düzenlenen taslaklar" liste sorgusu; 'düzelt' emri (farklı kök) değil → taslaklar.
         assert fallback_niyet("düzenlenen taslaklar")["intent"] == "taslaklar"
 
+    @pytest.mark.parametrize("mesaj", [
+        "brifing ver", "bugün ne var", "neye bakmalıyım", "önceliğim ne", "dikkat gerektiren işler",
+    ])
+    def test_brifing_soylemleri(self, mesaj):
+        assert fallback_niyet(mesaj)["intent"] == "brifing"
+
+    def test_panel_ozet_brifingden_ayri_kalir(self):
+        # "kaç evrak işledik" sayım sorgusu brifing değil, panel_ozet.
+        assert fallback_niyet("kaç evrak işledik")["intent"] == "panel_ozet"
+
 
 class TestTalimatCikar:
     """Revize talimatı ayıklama — ':' sonrası ya da fiil sonrası (Türkçe-güvenli)."""
@@ -247,6 +257,16 @@ class TestSablonYanit:
         yanit = sablon_yanit("denetim_dogrula", {"butunluk": True, "adim_sayisi": 15})
         assert "bütünlük" in yanit.lower() or "doğrulandı" in yanit.lower()
 
+    def test_brifing_dikkat_gerektirenleri_sayar(self):
+        veri = {"sla_kritik": 3, "bekleyen_onay": 5, "kirmizi_taslak": 2, "en_acil": "İcra yazısı"}
+        yanit = sablon_yanit("brifing", veri)
+        assert "3" in yanit and "2" in yanit and "5" in yanit
+        assert "İcra yazısı" in yanit
+
+    def test_brifing_temiz_kuyruk_olumlu_mesaj(self):
+        yanit = sablon_yanit("brifing", {"sla_kritik": 0, "bekleyen_onay": 0, "kirmizi_taslak": 0})
+        assert "temiz" in yanit.lower() or "dikkat gerektiren bir iş" in yanit.lower()
+
 
 # ---------------------------------------------------------------------------
 # _sla_araci — yasal süre sorgusu (araç filtresi)
@@ -297,6 +317,34 @@ class TestIslemDetayKanit:
         monkeypatch.setattr(sohbet_mod, "islem_listele", _listele)
         veri = await sohbet_mod._islem_detay_araci(session=None, owner_id="u1", q="")
         assert veri["kanitlar"] == [{"label": "Tarih", "deger": "15 Temmuz"}]
+
+
+class TestBrifingAraci:
+    """_brifing_araci: SLA kritik + kırmızı taslak + bekleyen onay sayımı (proaktif)."""
+
+    async def test_dikkat_gerektirenleri_dogru_sayar(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _sla(session, owner_id, limit):
+            return [{"name": "Geciken A"}, {"name": "Kritik B"}]  # 2 SLA kritik
+
+        async def _listele(session, owner_id, limit):
+            return [
+                {"name": "T1", "bant": "kirmizi",
+                 "result": {"yazi_taslak_md": "x", "onay_durumu": ""}},   # bekleyen + kırmızı
+                {"name": "T2", "bant": "yesil",
+                 "result": {"yazi_taslak_md": "y", "onay_durumu": ""}},   # bekleyen
+                {"name": "T3", "bant": "kirmizi",
+                 "result": {"yazi_taslak_md": "z", "onay_durumu": "onaylandi"}},  # karar verilmiş → sayılmaz
+            ]
+
+        monkeypatch.setattr(sohbet_mod, "_sla_araci", _sla)
+        monkeypatch.setattr(sohbet_mod, "islem_listele", _listele)
+        veri = await sohbet_mod._brifing_araci(session=None, owner_id="u1")
+        assert veri["sla_kritik"] == 2
+        assert veri["bekleyen_onay"] == 2      # T1, T2 (T3 kararlı elendi)
+        assert veri["kirmizi_taslak"] == 1     # yalnız T1
+        assert veri["en_acil"] == "Geciken A"  # SLA en acil öncelikli
 
 
 # ---------------------------------------------------------------------------

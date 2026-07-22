@@ -416,9 +416,11 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
             setKurulId(null);
           }}
           // Kurulun kapanışı — memur doğruluğu onaylar → gönder (Giden Evrak) → modal kapanır.
+          // ok döner: başarısızlıkta GonderimeHazir hata gösterip modalı açık tutar (dürüst HITL).
           onGonder={async (metin) => {
             const ok = await gonder(kurulAktif, metin);
             if (ok) { onToast("Kurul onayıyla taslak Giden Evrak'a gönderildi."); setKurulId(null); }
+            return ok;
           }} />
       )}
     </ViewWrap>

@@ -183,17 +183,38 @@ function Yaziyor({ uye }) {
 function GonderimeHazir({ kurgu, aksan, onGonder }) {
   const [teyit, setTeyit] = useState(false);
   const [gonderiyor, setGonderiyor] = useState(false);
+  const [hata, setHata] = useState(false);   // gönderim başarısız → modal açık kalır, tekrar dene
   const revizeVar = !!kurgu.uzlasi_uygulanabilir;
   const finalMetin = revizeVar
     ? (kurgu.uzlasi_metni || "")
     : (kurgu.taslak || []).map((l) => l.metin).join("\n");
+  // Birim Amiri'nin (risk_guard) kapanış sözü — gönderim kararının dayanağı. Akışta gömülüydü;
+  // karar anında memurun önüne getirilir (verdict töreni DEĞİL, kurulun gerekçesi).
+  const amirSoz = (kurgu.turlar || []).filter((t) => t.who === "birim_amiri").slice(-1)[0]?.text || "";
   const gonder = async () => {
     if (gonderiyor) return;
-    setGonderiyor(true);
-    try { await onGonder(finalMetin); } finally { setGonderiyor(false); }
+    setGonderiyor(true); setHata(false);
+    try {
+      const ok = await onGonder(finalMetin);   // TaslaklarView onSend sonucu (bool)
+      if (ok === false) setHata(true);          // başarısız (ağ/karar) → dürüst hata, teyit açık kalır
+    } catch {
+      setHata(true);
+    } finally {
+      setGonderiyor(false);
+    }
   };
   return (
     <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `2px solid ${ALFA(DERIN.yesil)}` }}>
+      {/* Birim Amiri'nin gönderim değerlendirmesi — kararın dayanağı (kurulun gerekçesi). */}
+      {amirSoz && (
+        <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", marginBottom: SP.m, padding: "8px 12px", background: ALFA(aksan), borderRadius: RAD.card, borderLeft: `2px solid ${aksan}` }}>
+          <span aria-hidden="true" style={{ display: "flex", marginTop: 1, color: DERIN_OF(aksan) }}><Icon.shield width={15} height={15} /></span>
+          <span style={{ minWidth: 0, ...TYPE.data, color: PAL.ink2 }}>
+            <span style={{ fontWeight: 600, color: DERIN_OF(aksan) }}>Birim Amiri’nin gönderim değerlendirmesi — </span>
+            {amirSoz}
+          </span>
+        </div>
+      )}
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
         <span aria-hidden="true" style={{ display: "flex", color: DERIN.yesil }}><Icon.shield /></span>
         <span style={{ minWidth: 0, flex: "1 1 260px" }}>
@@ -214,11 +235,15 @@ function GonderimeHazir({ kurgu, aksan, onGonder }) {
             </Btn>
           ) : (
             <span style={{ display: "inline-flex", gap: SP.s, alignItems: "center", flexWrap: "wrap" }}>
-              <span style={{ ...TYPE.meta, color: DERIN.kirmizi, fontWeight: 500 }}>Geri alınamaz — emin misiniz?</span>
+              <span role={hata ? "alert" : undefined} style={{ ...TYPE.meta, color: DERIN.kirmizi, fontWeight: 500 }}>
+                {hata ? "Gönderilemedi — bağlantıyı kontrol edip tekrar deneyin." : "Geri alınamaz — emin misiniz?"}
+              </span>
               <Btn primary accent={DERIN.yesil} onClick={gonder} disabled={gonderiyor} ariaLabel="Evet, Giden Evrak'a gönder">
-                {gonderiyor ? <><Icon.spin width={13} height={13} /> Gönderiliyor…</> : <><Icon.check /> Evet, gönder</>}
+                {gonderiyor
+                  ? <><Icon.spin width={13} height={13} /> Gönderiliyor…</>
+                  : <><Icon.check /> {hata ? "Tekrar dene" : "Evet, gönder"}</>}
               </Btn>
-              <Btn onClick={() => setTeyit(false)} disabled={gonderiyor} ariaLabel="Gönderimden vazgeç">Vazgeç</Btn>
+              <Btn onClick={() => { setTeyit(false); setHata(false); }} disabled={gonderiyor} ariaLabel="Gönderimden vazgeç">Vazgeç</Btn>
             </span>
           )}
         </span>

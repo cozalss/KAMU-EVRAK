@@ -180,7 +180,7 @@ function Yaziyor({ uye }) {
    gönderir (Giden Evrak'a). Geri alınamaz → İKİ ADIMLI onay (KararPaneli deseni).
    finalMetin: revize varsa kurulun revize metni (onay = revizeyi kabul), yoksa mevcut taslak.
    Bu, kurulun "dünyanın en iyisi" olma noktası: müzakere → doğruluk onayı → gönderime hazır. */
-function GonderimeHazir({ kurgu, aksan, onGonder }) {
+function GonderimeHazir({ kurgu, aksan, onGonder, az = false }) {
   const [teyit, setTeyit] = useState(false);
   const [gonderiyor, setGonderiyor] = useState(false);
   const [hata, setHata] = useState(false);   // gönderim başarısız → modal açık kalır, tekrar dene
@@ -204,7 +204,7 @@ function GonderimeHazir({ kurgu, aksan, onGonder }) {
     }
   };
   return (
-    <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `2px solid ${ALFA(DERIN.yesil)}` }}>
+    <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `2px solid ${ALFA(DERIN.yesil)}`, animation: az ? "none" : "nu-rise .28s var(--ke-ease-out) both" }}>
       {/* Birim Amiri'nin gönderim değerlendirmesi — kararın dayanağı (kurulun gerekçesi). */}
       {amirSoz && (
         <div style={{ display: "flex", gap: SP.s, alignItems: "flex-start", marginBottom: SP.m, padding: "8px 12px", background: ALFA(aksan), borderRadius: RAD.card, borderLeft: `2px solid ${aksan}` }}>
@@ -235,7 +235,8 @@ function GonderimeHazir({ kurgu, aksan, onGonder }) {
             </Btn>
           ) : (
             <span style={{ display: "inline-flex", gap: SP.s, alignItems: "center", flexWrap: "wrap" }}>
-              <span role={hata ? "alert" : undefined} style={{ ...TYPE.meta, color: DERIN.kirmizi, fontWeight: 500 }}>
+              <span role={hata ? "alert" : "status"} aria-live={hata ? "assertive" : "polite"}
+                style={{ ...TYPE.meta, color: DERIN.kirmizi, fontWeight: 500 }}>
                 {hata ? "Gönderilemedi — bağlantıyı kontrol edip tekrar deneyin." : "Geri alınamaz — emin misiniz?"}
               </span>
               <Btn primary accent={DERIN.yesil} onClick={gonder} disabled={gonderiyor} ariaLabel="Evet, Giden Evrak'a gönder">
@@ -357,7 +358,7 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
       )}
 
       {/* Kurulun kapanışı — memur doğruluğu onaylar ve gönderime hazırlar (Giden Evrak). */}
-      {onGonder && <GonderimeHazir kurgu={kurgu} aksan={aksan} onGonder={onGonder} />}
+      {onGonder && <GonderimeHazir kurgu={kurgu} aksan={aksan} onGonder={onGonder} az={az} />}
     </section>
   );
 }

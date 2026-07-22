@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { belgeMetniMi, belgeOzetiMd } from "../lib/belgeIsle.js";
 import { mdSatirTipi } from "../lib/mdSatir.js";
+import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
 
 const GORUNUM_ETIKET = {
@@ -166,7 +167,8 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
     document.addEventListener("scroll", h, { capture: true, passive: true });
     return () => { document.removeEventListener("scroll", h, { capture: true }); clearTimeout(t); };
   }, []);
-  const [mesajlar, setMesajlar] = useState([KARSILAMA]);
+  // Sohbet geçmişi localStorage'dan hidre edilir (reload/sekme kalıcılığı; DB gerektirmez).
+  const [mesajlar, setMesajlar] = useState(() => hafizaYukle() ?? [KARSILAMA]);
   const [girdi, setGirdi] = useState("");
   const [bekliyor, setBekliyor] = useState(false);
   const [kaynak, setKaynak] = useState(null);   // son yanıtın kaynağı (llm|fallback) — şeffaflık
@@ -180,7 +182,11 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
   }, [mesajlar, bekliyor, acik]);
   useEffect(() => { if (acik) inputRef.current?.focus(); }, [acik]);
 
+  // Konuşma bitince (akış sürerken değil) geçmişi localStorage'a yaz — reload'da kalıcı.
+  useEffect(() => { if (!bekliyor) hafizaKaydet(mesajlar); }, [mesajlar, bekliyor]);
+
   const kapat = () => { setAcik(false); fabRef.current?.focus(); };
+  const gecmisiTemizle = () => { hafizaTemizle(); setMesajlar([KARSILAMA]); setKaynak(null); inputRef.current?.focus(); };
 
   // Son (akan) asistan balonunu fonksiyonel güncelle — akış sırasında state yarışı olmaz.
   const sonuGuncelle = (fn) => setMesajlar((ms) => {
@@ -351,6 +357,12 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
                 {kaynak && <span style={{ marginLeft: SP.s, color: kaynak === "llm" ? DERIN.T : PAL.mut3 }}>[{kaynak === "llm" ? "canlı model" : "kural tabanlı"}]</span>}
               </div>
             </div>
+            {mesajlar.length > 1 && (
+              <button type="button" aria-label="Sohbet geçmişini temizle" title="Geçmişi temizle" onClick={gecmisiTemizle} {...focusRing}
+                style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7 H20 M9 7 V5 a1 1 0 0 1 1-1 H14 a1 1 0 0 1 1 1 V7 M6 7 L7 19 a2 2 0 0 0 2 2 H15 a2 2 0 0 0 2-2 L18 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
+            )}
             <button type="button" aria-label="Sohbeti kapat" onClick={kapat} {...focusRing}
               style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0 }}>
               <Icon.x />

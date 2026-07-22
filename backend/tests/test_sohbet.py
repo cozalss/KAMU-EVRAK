@@ -138,6 +138,16 @@ class TestFallbackNiyetV2:
         # "kaç evrak işledik" sayım sorgusu brifing değil, panel_ozet.
         assert fallback_niyet("kaç evrak işledik")["intent"] == "panel_ozet"
 
+    @pytest.mark.parametrize("mesaj", [
+        "taslağı kurula sun", "bunu bürokrasi kuruluna sun", "kurul", "müzakereye sun",
+    ])
+    def test_kurula_sun_soylemleri(self, mesaj):
+        assert fallback_niyet(mesaj)["intent"] == "kurula_sun"
+
+    def test_kurulus_kelimesi_kurulu_tetiklemez(self):
+        # 'kuruluş' (kurul\b değil) kurula_sun'a kaymamalı; soru → site_yardim.
+        assert fallback_niyet("sistemin kuruluşu nasıl")["intent"] != "kurula_sun"
+
 
 class TestTalimatCikar:
     """Revize talimatı ayıklama — ':' sonrası ya da fiil sonrası (Türkçe-güvenli)."""
@@ -413,6 +423,63 @@ class TestRevizeIsle:
         yanit = await sohbet_mod._revize_isle(
             self._istek("taslağı revize et: X yap"), self._user(), None)
         assert "uygulanamadı" in yanit.yanit.lower()
+
+
+# ---------------------------------------------------------------------------
+# _kurul_isle — taslağı AI Bürokrasi Kurulu'na sun (karar + öneriler)
+# ---------------------------------------------------------------------------
+class TestKurulIsle:
+    """Kurul kararını render eder; LLM yoksa dürüst yönlendirir; taslak yoksa uyarır."""
+
+    def _istek(self):
+        from api.routes.sohbet import SohbetIstek
+        return SohbetIstek(mesaj="taslağı kurula sun")
+
+    def _user(self):
+        from types import SimpleNamespace
+        return SimpleNamespace(id="u1", rol="memur")
+
+    async def test_karar_ve_onerileri_render_eder(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _hedef(session, owner_id, q=""):
+            return {"name": "Park yazısı", "taslak_md": "T.C. ...", "evrak_ozet": ""}
+
+        async def _kurul(taslak_md, evrak_ozet=""):
+            return {"karar": "serhli", "oneriler": [{"metin": "kapanış ekle"}, {"metin": "tarih düzelt"}],
+                    "uzlasi_degisti": True}
+
+        monkeypatch.setattr(sohbet_mod, "revize_hedefi_bul", _hedef)
+        monkeypatch.setattr(sohbet_mod, "kurul_uygula", _kurul)
+        yanit = await sohbet_mod._kurul_isle(self._istek(), self._user(), None)
+        assert yanit.intent == "kurula_sun"
+        assert "Şerhli" in yanit.yanit
+        assert "kapanış ekle" in yanit.yanit
+        assert "revize önerdi" in yanit.yanit
+
+    async def test_llm_yoksa_durust_yonlendirir(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _hedef(session, owner_id, q=""):
+            return {"name": "T", "taslak_md": "x", "evrak_ozet": ""}
+
+        async def _none(taslak_md, evrak_ozet=""):
+            return None
+
+        monkeypatch.setattr(sohbet_mod, "revize_hedefi_bul", _hedef)
+        monkeypatch.setattr(sohbet_mod, "kurul_uygula", _none)
+        yanit = await sohbet_mod._kurul_isle(self._istek(), self._user(), None)
+        assert "gerçek LLM" in yanit.yanit and "Kurul" in yanit.yanit
+
+    async def test_taslak_yoksa_uyarir(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _yok(session, owner_id, q=""):
+            return None
+
+        monkeypatch.setattr(sohbet_mod, "revize_hedefi_bul", _yok)
+        yanit = await sohbet_mod._kurul_isle(self._istek(), self._user(), None)
+        assert "bulamadım" in yanit.yanit.lower()
 
 
 # ---------------------------------------------------------------------------

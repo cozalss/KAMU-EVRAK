@@ -24,6 +24,8 @@ NIYETLER = frozenset({
     "taslak_revize",
     # V5 — proaktif brifing (dikkat gerektiren işler: SLA kritik + kırmızı taslak + bekleyen onay).
     "brifing",
+    # V6 — taslağı AI Bürokrasi Kurulu müzakeresine sun (yazi.kurul; karar + öneriler).
+    "kurula_sun",
 })
 
 # Veri-intent → (UI kart türü, "Görünüme git" hedefi). Route + frontend sözleşmesi.
@@ -71,6 +73,8 @@ _RE_REDDET = re.compile(r"\breddet\b")
 # V4 — taslak revizyonu emir kipi ("revize et / düzelt / değiştir / güncelle").
 # 'düzelt' ≠ 'düzenle(nen)' (liste filtresi) — farklı kök, çakışmaz.
 _RE_REVIZE = re.compile(r"\b(revize\s*et\w*|revize|düzelt\w*|değiştir\w*|güncelle\w*)\b")
+# V6 — Bürokrasi Kurulu'na sun. \bkurul\b/\bkurula\b tam sözcük ('kuruluş/kurulum' eşleşmez).
+_RE_KURUL = re.compile(r"\b(kurul|kurula|kurula sun\w*|kurula getir\w*|bürokrasi kurul\w*|müzakere\w*)\b")
 _RE_DENETIM = re.compile(r"\bdenetim\b.*\bdoğrula\w*|\bdoğrula\w*.*\bdenetim\b|\bdenetim izi")
 _RE_MEVZUAT_NO = re.compile(r"\b(\d{3,5})\s*sayılı\b")
 _RE_ICERIK = re.compile(r"\b(metn?i\w*|tam metin|içeri\w*|oku)\b")
@@ -137,6 +141,8 @@ def fallback_niyet(mesaj: str) -> dict[str, Any]:
         intent = "taslak_reddet"
     elif _RE_REVIZE.search(m):          # "taslağı düzelt/revize et" — aksiyondan önce liste kelimesini yener
         intent = "taslak_revize"
+    elif _RE_KURUL.search(m):           # "kurula sun / müzakere"
+        intent = "kurula_sun"
     elif _RE_DENETIM.search(m):
         intent = "denetim_dogrula"
     elif _RE_BRIFING.search(m):         # proaktif brifing — panel 'özet' kelimesinden önce

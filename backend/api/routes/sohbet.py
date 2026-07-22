@@ -71,9 +71,12 @@ _NIYET_SYSTEM = (
     "doğrulama) | panel_ozet (sayılar/istatistik) | mevzuat_ara (kanun/yönetmelik araması; "
     "q'ya yalın arama sorgusu) | mevzuat_katalog (tüm mevzuat listesi/kategoriler) | "
     "mevzuat_icerik (belirli bir kanunun tam metni; mevzuat_no'ya kanun numarası, q'ya adı) | "
-    "taslak_onayla (kullanıcı taslağı ONAYLAmak istiyor) | taslak_reddet (taslağı REDDETmek "
-    "istiyor) | sla_durum (yasal süresi geçmiş/kritik/vadesi yaklaşan evrak sorgusu) | "
-    "site_yardim (sistemin işleyişi/ekranları hakkında soru) | selamlama | genel.\n"
+    "taslak_onayla (kullanıcı taslağı ONAYLAyıp göndermek istiyor) | taslak_reddet (taslağı "
+    "REDDETmek istiyor) | taslak_revize (taslağı doğal dille DEĞİŞTİR/DÜZELT/revize et; onay "
+    "değil) | kurula_sun (taslağı AI Bürokrasi KURULU müzakeresine sun; onaylama değil) | "
+    "sla_durum (yasal süresi geçmiş/kritik/vadesi yaklaşan evrak sorgusu) | brifing (bugün "
+    "neye bakmalıyım / dikkat gerektirenlerin proaktif özeti) | site_yardim (sistemin "
+    "işleyişi/ekranları hakkında soru) | selamlama | genel.\n"
     "durum ∈ ''|gonderildi|duzenlendi|reddedildi; risk ∈ ''|yesil|sari|kirmizi; "
     "limit 1-20 arası tamsayı; mevzuat_no rakam ya da ''.\n"
     "Çıktı SADECE şu JSON, başka metin YOK:\n"
@@ -545,6 +548,75 @@ async def _revize_isle(istek: SohbetIstek, user: Any, session: AsyncSession) -> 
                        oneri_gorunum="taslaklar", kaynak="llm")
 
 
+# --------------------------------------------------------------------------
+# AI Bürokrasi Kurulu — taslağı çok-ajanlı müzakereden geçir (yazi.kurul reuse)
+# --------------------------------------------------------------------------
+_KURUL_KARAR_TR = {
+    "sevk": "Sevk (yüksek risk — dikkatli onay)",
+    "serhli": "Şerhli (çözülmemiş itiraz var)",
+    "uzlasti": "Uzlaşı (kurul mutabık)",
+}
+
+
+async def kurul_uygula(taslak_md: str, evrak_ozet: str = "") -> dict[str, Any] | None:
+    """Sunucu sinyalleri (verify+risk_guard) + kurul_muzakere. LLM yok/mock → None. Monkeypatch noktası."""
+    from agents.nodes.risk_guard import risk_guard_node
+    from agents.nodes.verify import verify_node
+    from yazi.kurul import kurul_muzakere
+
+    state: dict[str, Any] = {
+        "yazi_taslak_md": taslak_md, "evrak_text": (evrak_ozet or "")[:2000],
+        "bilgi_unsurlari": {}, "yazi_turu": "", "evrak_turu": "belirsiz", "hedef_birim": "",
+    }
+    v = await verify_node(state)
+    state.update(v)
+    r = await risk_guard_node(state)
+    sinyaller = {
+        "verify_uyari": v.get("verify_uyari", []), "lint_2646": v.get("lint_2646") or {},
+        "tutarlilik_uyari": v.get("tutarlilik_uyari", []),
+        "risk_metadata": r.get("risk_metadata") or {},
+    }
+    meta = {"yazi_turu": "", "evrak_turu": "belirsiz", "hedef_birim": "",
+            "bilgi_unsurlari": {}, "evrak_text": state["evrak_text"], "mevzuat": [], "nli": []}
+    return await kurul_muzakere(taslak_md, meta=meta, sinyaller=sinyaller)
+
+
+async def _kurul_isle(istek: SohbetIstek, user: Any, session: AsyncSession) -> SohbetYanit:
+    """Taslağı Bürokrasi Kurulu'na sun — karar + öne çıkan öneriler; LLM yoksa dürüst yönlendirme."""
+    intent = "kurula_sun"
+    try:
+        hedef = await revize_hedefi_bul(session, user.id)
+    except Exception as exc:
+        log.warning("sohbet_kurul_hedef_hatasi", error=type(exc).__name__)
+        hedef = None
+    if hedef is None:
+        return SohbetYanit(
+            yanit="Kurula sunulacak bir taslak bulamadım — önce Gelen Evrak'tan bir evrak işleyin.",
+            intent=intent, oneri_gorunum="taslaklar", kaynak="fallback")
+    try:
+        kurgu = await kurul_uygula(hedef["taslak_md"], hedef.get("evrak_ozet", ""))
+    except Exception as exc:
+        log.warning("sohbet_kurul_hatasi", error=type(exc).__name__)
+        kurgu = None
+    ad = hedef.get("name") or "Taslak"
+    if not kurgu:
+        return SohbetYanit(
+            yanit=(f"**{ad}** için Bürokrasi Kurulu müzakeresi gerçek LLM gerektirir. "
+                   "**Taslaklar** ekranındaki taslağın **Kurul** düğmesiyle deterministik "
+                   "önizlemeyi (çok-ajanlı müzakere) görebilirsiniz."),
+            intent=intent, oneri_gorunum="taslaklar", kaynak="fallback")
+    karar = _KURUL_KARAR_TR.get(kurgu.get("karar", ""), kurgu.get("karar", "—"))
+    parcalar = [f"**{ad}** — AI Bürokrasi Kurulu kararı: **{karar}**."]
+    oneriler = [o.get("metin", "") for o in (kurgu.get("oneriler") or []) if o.get("metin")][:3]
+    if oneriler:
+        parcalar.append("Öne çıkan itiraz/öneriler:")
+        parcalar += [f"• {o}" for o in oneriler]
+    if kurgu.get("uzlasi_degisti"):
+        parcalar.append("\nKurul revize önerdi — **Taslaklar > Kurul**'dan uygulayabilirsiniz.")
+    return SohbetYanit(yanit="\n".join(parcalar), intent=intent,
+                       oneri_gorunum="taslaklar", kaynak="llm")
+
+
 @router.post("/sohbet")
 @rate_limit("20/minute")  # LLM niyet+yanıt+araç döngüsü — diğer LLM uçlarıyla aynı desen (slowapi yoksa etkisiz)
 async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, session: Session) -> SohbetYanit:
@@ -558,6 +630,8 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
         return await _onay_baslat(intent, user, session)
     if intent == "taslak_revize":
         return await _revize_isle(istek, user, session)
+    if intent == "kurula_sun":
+        return await _kurul_isle(istek, user, session)
 
     veri: Any = None
     dongu_llm = False
@@ -651,6 +725,8 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
             hazir = await _onay_baslat(intent, user, session)
         elif intent == "taslak_revize":
             hazir = await _revize_isle(istek, user, session)
+        elif intent == "kurula_sun":
+            hazir = await _kurul_isle(istek, user, session)
     dongu_llm = False
     if hazir is None:
         veri: Any = None

@@ -176,12 +176,64 @@ function Yaziyor({ uye }) {
   );
 }
 
+/* Gönderime hazır — kurul incelemesinden SONRA memur taslağın doğruluğunu onaylar ve
+   gönderir (Giden Evrak'a). Geri alınamaz → İKİ ADIMLI onay (KararPaneli deseni).
+   finalMetin: revize varsa kurulun revize metni (onay = revizeyi kabul), yoksa mevcut taslak.
+   Bu, kurulun "dünyanın en iyisi" olma noktası: müzakere → doğruluk onayı → gönderime hazır. */
+function GonderimeHazir({ kurgu, aksan, onGonder }) {
+  const [teyit, setTeyit] = useState(false);
+  const [gonderiyor, setGonderiyor] = useState(false);
+  const revizeVar = !!kurgu.uzlasi_uygulanabilir;
+  const finalMetin = revizeVar
+    ? (kurgu.uzlasi_metni || "")
+    : (kurgu.taslak || []).map((l) => l.metin).join("\n");
+  const gonder = async () => {
+    if (gonderiyor) return;
+    setGonderiyor(true);
+    try { await onGonder(finalMetin); } finally { setGonderiyor(false); }
+  };
+  return (
+    <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `2px solid ${ALFA(DERIN.yesil)}` }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+        <span aria-hidden="true" style={{ display: "flex", color: DERIN.yesil }}><Icon.shield /></span>
+        <span style={{ minWidth: 0, flex: "1 1 260px" }}>
+          <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink }}>
+            {revizeVar ? "Kurulun revize taslağı gönderime hazır" : "Taslak kurulca uygun bulundu — gönderime hazır"}
+          </span>
+          <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2 }}>
+            {revizeVar
+              ? "Onaylarsanız revize sürüm doğrulanıp Giden Evrak'a gönderilir."
+              : "Doğruluğunu onaylarsanız Giden Evrak'a gönderilir."}
+          </span>
+        </span>
+        <span style={{ marginLeft: "auto" }}>
+          {!teyit ? (
+            <Btn primary accent={DERIN.yesil} onClick={() => setTeyit(true)}
+              ariaLabel="Taslağı onayla ve gönderime hazırla">
+              <Icon.check /> Onayla ve gönder
+            </Btn>
+          ) : (
+            <span style={{ display: "inline-flex", gap: SP.s, alignItems: "center", flexWrap: "wrap" }}>
+              <span style={{ ...TYPE.meta, color: DERIN.kirmizi, fontWeight: 500 }}>Geri alınamaz — emin misiniz?</span>
+              <Btn primary accent={DERIN.yesil} onClick={gonder} disabled={gonderiyor} ariaLabel="Evet, Giden Evrak'a gönder">
+                {gonderiyor ? <><Icon.spin width={13} height={13} /> Gönderiliyor…</> : <><Icon.check /> Evet, gönder</>}
+              </Btn>
+              <Btn onClick={() => setTeyit(false)} disabled={gonderiyor} ariaLabel="Gönderimden vazgeç">Vazgeç</Btn>
+            </span>
+          )}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 /* Kurul Tutanağı — REVİZYON ÖNERİSİ: taslakta neyin düzeltilmesi/eklenmesi/çıkarılması
    gerektiği (tip-renkli + kaynak sinyal rozetli), sonra uygulanacak revize taslağının
    önce→sonra farkı. Kalıcı yazım MEMUR kararıdır (HITL) — kurul kendiliğinden uygulamaz.
    onOneriIsle: "tavsiye" kalan (revizeye işlenmemiş) öneriyi TEK TEK revize taslağa katlar
-   (/yazi/dogrula talimat yolu) — yine yalnız öneriyi işler, kalıcı yazım "uygula"da kalır. */
-function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen = null }) {
+   (/yazi/dogrula talimat yolu) — yine yalnız öneriyi işler, kalıcı yazım "uygula"da kalır.
+   onGonder: memur doğruluğu onaylayıp gönderir (Giden Evrak) — kurulun kapanış eylemi. */
+function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen = null, onGonder = null }) {
   const oneriler = Array.isArray(kurgu.oneriler) ? kurgu.oneriler : [];
   const sirali = TIP_SIRA.flatMap((t) => oneriler.filter((o) => o.tip === t));
   const uygulanabilir = !!onUygula && !!kurgu.uzlasi_uygulanabilir;
@@ -265,14 +317,22 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
 
       {uygulanabilir && (
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
-          <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Kalıcı yazım memur kararıdır — kurul hiçbir değişikliği kendiliğinden uygulamaz.</span>
+          <span style={{ ...TYPE.meta, color: PAL.mut2 }}>
+            {onGonder
+              ? "İsterseniz yalnız taslağa kaydedip sonra gönderebilirsiniz:"
+              : "Kalıcı yazım memur kararıdır — kurul hiçbir değişikliği kendiliğinden uygulamaz."}
+          </span>
           <span style={{ marginLeft: "auto" }}>
-            <Btn primary accent={aksan} onClick={onUygula}>
-              <Icon.check /> Revize taslağını uygula
+            {/* onGonder varsa primary "Onayla ve gönder"e devredilir → uygula ikincil kalır (tek primary). */}
+            <Btn primary={!onGonder} accent={aksan} onClick={onUygula}>
+              <Icon.check /> {onGonder ? "Yalnız taslağa kaydet" : "Revize taslağını uygula"}
             </Btn>
           </span>
         </div>
       )}
+
+      {/* Kurulun kapanışı — memur doğruluğu onaylar ve gönderime hazırlar (Giden Evrak). */}
+      {onGonder && <GonderimeHazir kurgu={kurgu} aksan={aksan} onGonder={onGonder} />}
     </section>
   );
 }
@@ -304,7 +364,7 @@ function TaslakKarti({ draft, revize }) {
 /* Müzakere sahnesi — animasyon state'inin TEK sahibi. CANLI AKIŞ: kurgu.turlar akışla büyür
    (açılış → +çapraz), reveal restart ETMEDEN devam eder (`akan`=stream sürüyor). Key yalnız
    kaynak değişince (llm↔deterministik) verilir → aynı akış içinde remount yok. */
-function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, isleyen = null }) {
+function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, isleyen = null, onGonder = null }) {
   const aksan = aksanRenk(kurgu.risk);
   const riskRozet = RISK[kurgu.risk] || null;
   const TURLAR = kurgu.turlar;
@@ -436,7 +496,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
       </div>
 
       {/* Tartışmanın sonucu — tutanak yalnız müzakere bitince açılır (canlı gerilim korunur) */}
-      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} onOneriIsle={onOneriIsle} isleyen={isleyen} />}
+      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} onOneriIsle={onOneriIsle} isleyen={isleyen} onGonder={onGonder} />}
     </div>
   );
 }
@@ -460,7 +520,7 @@ function KurulYukleniyor({ az }) {
   );
 }
 
-export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygula = null, onRevize = null, onToast = () => {} }) {
+export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygula = null, onRevize = null, onToast = () => {}, onGonder = null }) {
   const az = useAzHareket();
   const yerel = useMemo(() => muzakereKurgusu(result || null), [result]);
   // LLM birincil (DeepSeek roundtable), deterministik yerel motor fallback. Taslaksız evrakta
@@ -598,9 +658,10 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
               az={az}
               akan={akan}
               onUygula={onUygula ? () => onUygula(kurguUzlasiMetni(kurgu)) : null}
-              // Örnek (etiketli kurgu) senaryoda gerçek revize çağrısı anlamsız → buton yok.
+              // Örnek (etiketli kurgu) senaryoda gerçek revize/gönder çağrısı anlamsız → buton yok.
               onOneriIsle={onRevize && kurgu.kaynak !== "ornek" ? oneriIsle : null}
               isleyen={isleyen}
+              onGonder={onGonder && kurgu.kaynak !== "ornek" ? onGonder : null}
             />
           )}
         </div>

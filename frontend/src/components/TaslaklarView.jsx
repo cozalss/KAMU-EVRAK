@@ -414,6 +414,11 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
             onUpdate(kurulAktif.id, metin);
             onToast("Kurul revize taslağı uygulandı; taslak güncellendi.");
             setKurulId(null);
+          }}
+          // Kurulun kapanışı — memur doğruluğu onaylar → gönder (Giden Evrak) → modal kapanır.
+          onGonder={async (metin) => {
+            const ok = await gonder(kurulAktif, metin);
+            if (ok) { onToast("Kurul onayıyla taslak Giden Evrak'a gönderildi."); setKurulId(null); }
           }} />
       )}
     </ViewWrap>

@@ -40,3 +40,17 @@ export function belgeOzetiMd(resp) {
   }
   return satir.join("\n");
 }
+
+/**
+ * /process_doc/stream SSE olayını sınıfla (canlı pipeline akışı). JSX-bağımsız (node etiketi
+ * çağıranda çözülür → bu lib node --test ile test edilebilir kalır).
+ * @param {Record<string, unknown>} ev
+ * @returns {{tip: "node"|"sonuc"|"hata"|"yoksay", node?: string, sonuc?: object, mesaj?: string}}
+ */
+export function pipelineOlay(ev) {
+  if (!ev || typeof ev !== "object") return { tip: "yoksay" };
+  if (ev.event === "node" && ev.status === "done") return { tip: "node", node: String(ev.node || "") };
+  if (ev.event === "done") return { tip: "sonuc", sonuc: ev.result || {} };
+  if (ev.event === "error") return { tip: "hata", mesaj: String(ev.message || "işleme hatası") };
+  return { tip: "yoksay" };
+}

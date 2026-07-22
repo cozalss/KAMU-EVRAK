@@ -8,7 +8,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
-import { belgeMetniMi, belgeOzetiMd } from "../lib/belgeIsle.js";
+import { belgeMetniMi, belgeOzetiMd, pipelineOlay } from "../lib/belgeIsle.js";
+import { makeNode } from "../lib/nodeMeta.js";
 import { mdSatirTipi } from "../lib/mdSatir.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
@@ -286,8 +287,9 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
     }
   };
 
-  // Belge işle (FAZ 3, Görev 1): yapıştırılan evrak metnini /process_doc'a gönder → tür/özet/
-  // birim/eksik/mevzuat/taslak özeti sohbete düşer. Kısa sorgu değilse dürüst uyarı verir.
+  // Belge işle (FAZ 3, Görev 1): yapıştırılan evrak metnini /process_doc/stream'e (.txt blob)
+  // gönder → pipeline node'ları CANLI akar ("✓ Sınıflandır… ✓ Mevzuat Öner…"), done'da Görev-1
+  // özeti render edilir. "Ajanı izle" demo anı. Kısa sorgu değilse dürüst uyarı verir.
   const belgeYukle = async (metin) => {
     const text = (metin ?? girdi).trim();
     if (!text || bekliyor) return;
@@ -301,16 +303,49 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
     setGirdi("");
     setBekliyor(true);
     const onizleme = text.slice(0, 80) + (text.length > 80 ? "…" : "");
-    setMesajlar((ms) => [...ms, { rol: "kullanici", icerik: `📎 Belge işlensin: ${onizleme}` }]);
+    setMesajlar((ms) => [
+      ...ms,
+      { rol: "kullanici", icerik: `📎 Belge işlensin: ${onizleme}` },
+      { rol: "asistan", icerik: "📄 Belge işleniyor…", akiyor: true },
+    ]);
+    const bitenler = [];
     try {
-      const resp = await apiPost("/process_doc", { evrak_text: text });
-      setKaynak("llm");
-      setMesajlar((ms) => [...ms, { rol: "asistan", icerik: belgeOzetiMd(resp) }]);
+      const fd = new FormData();
+      fd.append("file", new Blob([text], { type: "text/plain" }), "sohbet-evrak.txt");
+      const res = await authFetch("/process_doc/stream", { method: "POST", body: fd });
+      if (!res.ok || !res.body) throw new Error(`akış ${res.status}`);
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf("\n\n")) !== -1) {
+          const satir = buf.slice(0, i).split("\n").find((l) => l.startsWith("data:"));
+          buf = buf.slice(i + 2);
+          if (!satir) continue;
+          let ev;
+          try { ev = JSON.parse(satir.slice(5)); } catch { continue; }
+          const o = pipelineOlay(ev);
+          if (o.tip === "node") {
+            bitenler.push(`✓ ${makeNode(o.node).label}`);
+            sonuGuncelle((son) => ({ ...son, icerik: `📄 Belge işleniyor…\n${bitenler.join("\n")}` }));
+          } else if (o.tip === "sonuc") {
+            setKaynak("llm");
+            sonuGuncelle((son) => ({ ...son, icerik: belgeOzetiMd(o.sonuc), akiyor: false }));
+          } else if (o.tip === "hata") {
+            sonuGuncelle((son) => ({ ...son, icerik: `Belge işlenemedi: ${o.mesaj}`, akiyor: false, hata: true }));
+          }
+        }
+      }
+      sonuGuncelle((son) => ({ ...son, akiyor: false }));
     } catch (err) {
-      setMesajlar((ms) => [...ms, {
-        rol: "asistan", hata: true, tekrar: () => belgeYukle(text),
+      sonuGuncelle((son) => ({
+        ...son, akiyor: false, hata: true, tekrar: () => belgeYukle(text),
         icerik: `Belge işlenemedi: ${err.message || "bağlantı hatası"}`,
-      }]);
+      }));
     } finally {
       setBekliyor(false);
     }

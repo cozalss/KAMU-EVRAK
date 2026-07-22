@@ -3,7 +3,7 @@
    girdinin belge mi sorgu mu olduğunu ayırma. Saf mantık, bileşenden ayrık. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { belgeMetniMi, belgeOzetiMd } from "./belgeIsle.js";
+import { belgeMetniMi, belgeOzetiMd, pipelineOlay } from "./belgeIsle.js";
 
 test("belgeMetniMi: kısa sorgu belge değildir", () => {
   assert.equal(belgeMetniMi("son gelen evraklar"), false);
@@ -40,4 +40,19 @@ test("belgeOzetiMd: eksik alanlar atlanır (satır uydurulmaz)", () => {
   assert.match(md, /belirsiz/);
   assert.doesNotMatch(md, /Özet:/);
   assert.doesNotMatch(md, /mevzuat/);
+});
+
+test("pipelineOlay: node done → {tip:node}", () => {
+  assert.deepEqual(pipelineOlay({ event: "node", node: "siniflandir", status: "done" }),
+    { tip: "node", node: "siniflandir" });
+});
+
+test("pipelineOlay: node active yoksayılır (yalnız done ilerleme satırı)", () => {
+  assert.equal(pipelineOlay({ event: "node", node: "oku", status: "active" }).tip, "yoksay");
+});
+
+test("pipelineOlay: done → sonuç, error → hata", () => {
+  assert.deepEqual(pipelineOlay({ event: "done", result: { evrak_turu: "dilekce" } }),
+    { tip: "sonuc", sonuc: { evrak_turu: "dilekce" } });
+  assert.equal(pipelineOlay({ event: "error", message: "OCR hatası" }).tip, "hata");
 });

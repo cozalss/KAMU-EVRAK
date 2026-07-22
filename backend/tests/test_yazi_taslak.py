@@ -16,7 +16,6 @@ import pytest
 
 from agents.config import EVRAK_TO_YAZI, EVRAK_TURLERI, YAZI_TURLERI
 from agents.nodes.yazi_taslak import (
-    _devir_taslagi,
     _devir_var_mi,
     _fallback_taslak,
     yazi_taslak_node,

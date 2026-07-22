@@ -8,6 +8,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
+import { belgeMetniMi, belgeOzetiMd } from "../lib/belgeIsle.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
 
 const GORUNUM_ETIKET = {
@@ -274,6 +275,36 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
     }
   };
 
+  // Belge işle (FAZ 3, Görev 1): yapıştırılan evrak metnini /process_doc'a gönder → tür/özet/
+  // birim/eksik/mevzuat/taslak özeti sohbete düşer. Kısa sorgu değilse dürüst uyarı verir.
+  const belgeYukle = async (metin) => {
+    const text = (metin ?? girdi).trim();
+    if (!text || bekliyor) return;
+    if (!belgeMetniMi(text)) {
+      setMesajlar((ms) => [...ms, {
+        rol: "asistan",
+        icerik: "İşlemek için evrak metnini (en az birkaç cümle) yapıştırıp 📎 işle deyin.",
+      }]);
+      return;
+    }
+    setGirdi("");
+    setBekliyor(true);
+    const onizleme = text.slice(0, 80) + (text.length > 80 ? "…" : "");
+    setMesajlar((ms) => [...ms, { rol: "kullanici", icerik: `📎 Belge işlensin: ${onizleme}` }]);
+    try {
+      const resp = await apiPost("/process_doc", { evrak_text: text });
+      setKaynak("llm");
+      setMesajlar((ms) => [...ms, { rol: "asistan", icerik: belgeOzetiMd(resp) }]);
+    } catch (err) {
+      setMesajlar((ms) => [...ms, {
+        rol: "asistan", hata: true, tekrar: () => belgeYukle(text),
+        icerik: `Belge işlenemedi: ${err.message || "bağlantı hatası"}`,
+      }]);
+    } finally {
+      setBekliyor(false);
+    }
+  };
+
   // HITL teyit butonları — bağlamı geri göndererek eylemi uygula/iptal et.
   // "Evet" DB'ye gerçek karar yazar (sohbet.py → onayla_ve_gonder) — Panel/Taslaklar/Giden
   // ekranları eskiden F5'e dek eski durumu gösteriyordu (denetim bulgusu): kararın ardından
@@ -340,6 +371,16 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
           {/* Giriş */}
           <form onSubmit={(e) => { e.preventDefault(); gonder(); }}
             style={{ display: "flex", gap: SP.s, padding: SP.m, borderTop: `1px solid ${PAL.line}`, background: PAL.surf }}>
+            <button type="button" aria-label="Belgeyi işle (Görev 1)" title="Yapıştırdığınız evrak metnini işle: tür, özet, birim, mevzuat, taslak"
+              disabled={bekliyor || !girdi.trim()} onClick={() => belgeYukle()} {...focusRing}
+              style={{
+                cursor: bekliyor || !girdi.trim() ? "not-allowed" : "pointer", width: 36, height: 36, borderRadius: RAD.ctl,
+                border: `1px solid ${PAL.inputLine}`, background: PAL.surf,
+                color: bekliyor || !girdi.trim() ? PAL.mut2 : DERIN.T, display: "grid", placeItems: "center", flexShrink: 0,
+                transition: "color .12s ease-out",
+              }}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 7 L9.5 15.5 a2.5 2.5 0 0 1-3.5-3.5 L14 4 a4 4 0 0 1 5.5 5.5 L11 18 a5.5 5.5 0 0 1-7.7-7.7 L11 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
             <input ref={inputRef} type="text" value={girdi} onChange={(e) => setGirdi(e.target.value)}
               placeholder="Evrak sorun, mevzuat arayın…" aria-label="Asistana mesaj yaz"
               maxLength={1000} {...focusRing}

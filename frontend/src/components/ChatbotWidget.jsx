@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { belgeMetniMi, belgeOzetiMd } from "../lib/belgeIsle.js";
+import { mdSatirTipi } from "../lib/mdSatir.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
 
 const GORUNUM_ETIKET = {
@@ -25,10 +26,14 @@ const KARSILAMA = {
     "işlem geçmişinizi gösterebilir, mevzuat arayabilir ve sistemin işleyişini anlatabilirim.",
 };
 
-/* Hafif markdown: **kalın** + satır sonu + "• " madde satırı (kütüphanesiz, result-cards deseni). */
+/* Hafif markdown: **kalın** + satır sonu + "• " madde + "---" yatay ayraç (kütüphanesiz). */
 function Md({ text }) {
   return (text || "").split("\n").map((satir, i) => {
-    const madde = satir.startsWith("• ");
+    const tip = mdSatirTipi(satir);
+    if (tip === "hr") {
+      return <hr key={i} aria-hidden="true" style={{ border: "none", borderTop: `1px solid ${PAL.line}`, margin: "8px 0" }} />;
+    }
+    const madde = tip === "madde";
     const icerik = (madde ? satir.slice(2) : satir).split(/(\*\*[^*]+\*\*)/g).map((p, j) =>
       p.startsWith("**") && p.endsWith("**") ? <strong key={j} style={{ fontWeight: 600, color: PAL.ink }}>{p.slice(2, -2)}</strong> : p);
     return madde

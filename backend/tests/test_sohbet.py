@@ -844,3 +844,39 @@ class TestSohbetSeslendirRoute:
         assert resp.status_code == 200
         assert resp.headers["content-type"] == "audio/mpeg"
         assert resp.content == fake_audio
+
+
+# --------------------------------------------------------------------------
+# Sesli persona — SESLİ mod (sesli=true) kısa/konuşma-dili persona prompt'u kullanır
+# --------------------------------------------------------------------------
+class TestSesliPersona:
+    def test_persona_prompt_ad_ve_uslup_kurallari(self):
+        from api.routes import sohbet as sohbet_mod
+
+        s = sohbet_mod._SESLI_SYSTEM
+        assert sohbet_mod.SESLI_PERSONA_ADI in s          # isimli persona
+        assert "markdown" in s.lower()                     # markdown/madde yasağı sesli için
+        assert "UYDURMA" in s                              # grounding metin moduyla aynı sıkılıkta
+        assert "kısa" in s.lower()                         # spoken kısalık disiplini
+
+    async def test_sesli_yanit_kompoze_dogru_sistem_promptu_secer(self, monkeypatch):
+        from api.routes import sohbet as sohbet_mod
+
+        yakalanan = {}
+
+        async def _sahte_llm_text(system, user, **kw):
+            yakalanan["system"] = system
+            return "Üç evrak var."
+
+        monkeypatch.setattr(sohbet_mod, "llm_text", _sahte_llm_text)
+        # sesli=True → SESLİ persona prompt'u
+        await sohbet_mod._yanit_kompoze("kaç evrak var", "genel", [{"x": 1}], "", True)
+        assert yakalanan["system"] == sohbet_mod._SESLI_SYSTEM
+        # sesli=False → klasik metin prompt'u (regresyon: metin sohbeti değişmedi)
+        await sohbet_mod._yanit_kompoze("kaç evrak var", "genel", [{"x": 1}], "", False)
+        assert yakalanan["system"] == sohbet_mod._KOMPOZ_SYSTEM
+
+    def test_sohbet_stream_sesli_flag_kabul_eder(self, auth_client: TestClient):
+        # sesli=true ile stream 200 döner (mock modda deterministik; şema alanı kabul edilir).
+        resp = auth_client.post("/sohbet/stream", json={"mesaj": "merhaba", "sesli": True})
+        assert resp.status_code == 200

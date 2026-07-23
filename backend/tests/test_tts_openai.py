@@ -131,7 +131,7 @@ class TestTtsOpenaiCagri:
         await tts_openai("selam", timeout_s=5.0)
         # Assert
         assert captured["json"]["model"] == "tts-1"
-        assert captured["json"]["voice"] == "alloy"
+        assert captured["json"]["voice"] == "onyx"   # persona sesi (derin erkek) — varsayılan
 
     async def test_uzun_metin_kirpilir(self, monkeypatch):
         # Arrange — 4000 karakter sınırını aşan metin sessizce değil GÖRÜNÜR kırpılır

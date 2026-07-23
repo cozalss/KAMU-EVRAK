@@ -26,6 +26,9 @@ const DURUM_ETIKET = {
   [DURUM.HAZIR]: "Hazır", [DURUM.DINLIYOR]: "Dinliyor",
   [DURUM.DUSUNUYOR]: "Düşünüyor", [DURUM.KONUSUYOR]: "Yanıtlıyor",
 };
+// Açılış karşılaması — persona (backend SESLI_PERSONA_ADI, varsayılan "Metin") ile eşleşir.
+// Env'de isim değişirse bu metni de güncelle. TTS varsa sesli okunur, yoksa yalnız görünür.
+const KARSILAMA = "Merhaba, ben Metin. Evrak işlerinizde size yardımcı olmak için buradayım. Buyurun, sizi dinliyorum.";
 
 // Düşük opaklıklı grain — düz vektör gradyanı "enerji topu"na çevirir (research §1).
 const GRAIN =
@@ -36,8 +39,7 @@ function azHareketMi() {
     !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 }
 
-export default function SesliGorusme() {
-  const [acik, setAcik] = useState(false);
+export default function SesliGorusme({ acik = false, onKapat }) {
   const [durum, setDurum] = useState(DURUM.HAZIR);
   const [susturuldu, setSusturuldu] = useState(false);
   const [sonUser, setSonUser] = useState("");   // canlı transcript — kullanıcı
@@ -61,7 +63,6 @@ export default function SesliGorusme() {
   const audioElRef = useRef(null);
   const mediaBagliRef = useRef(false);
   const abortRef = useRef(null);
-  const tetikRef = useRef(null);
 
   const orbRef = useRef(null);
   const haloRef = useRef(null);
@@ -101,7 +102,7 @@ export default function SesliGorusme() {
     abortRef.current = ac;
     const res = await authFetch("/sohbet/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mesaj: metin, gecmis: [] }), signal: ac.signal,
+      body: JSON.stringify({ mesaj: metin, gecmis: [], sesli: true }), signal: ac.signal,
     });
     if (!res.ok || !res.body) throw new Error(`akış ${res.status}`);
     const reader = res.body.getReader();
@@ -125,25 +126,28 @@ export default function SesliGorusme() {
   }, []);
 
   // --- TTS (/sohbet/seslendir) → mp3 blob → oynat; analyser'a bağla (barge-in için tap) ---
+  // KRİTİK: sesin ÇALMADIĞI her çıkış (boş metin · ağ · 503 · el yok · play reddi) döngüyü
+  // sürdürmek için dinle() çağırır — aksi halde TTS anahtarı yokken (mevcut durum) yanıt
+  // gösterilir ama tekrar dinlenmez, görüşme takılırdı.
   const seslendir = useCallback(async (metin) => {
     const duz = sesliMetneCevir(metin);
-    if (!duz) { gecir("yanit_bitti"); return; }
+    if (!duz) { gecir("yanit_bitti"); dinle(); return; }
     let res;
     try {
       res = await authFetch("/sohbet/seslendir", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ metin: duz }),
       });
-    } catch { gecir("yanit_bitti"); return; }
+    } catch { gecir("yanit_bitti"); dinle(); return; }
     if (!res.ok) {
-      // TTS anahtarı yok/hatası → metin-only'e düş, döngü sürsün.
+      // TTS anahtarı yok/hatası → metin-only'e düş, döngü SÜRSÜN (tekrar dinle).
       if (res.status === 503) setUyari("Sesli yanıt için OPENAI_TTS_API_KEY gerekli — şimdilik yalnız metin.");
-      gecir("yanit_bitti");
+      gecir("yanit_bitti"); dinle();
       return;
     }
     const blob = await res.blob();
     const el = audioElRef.current;
-    if (!el) { gecir("yanit_bitti"); return; }
+    if (!el) { gecir("yanit_bitti"); dinle(); return; }
     // MediaElementSource ELEMANA BİR KEZ bağlanabilir — AudioContext oturumlar arası YAŞAR
     // (temizle onu kapatmaz), böylece 2. oturumdan sonra createMediaElementSource InvalidState
     // atmaz ve orb TTS genliğine reaksiyon vermeye devam eder (reviewer bulgusu #2).
@@ -166,7 +170,7 @@ export default function SesliGorusme() {
     // Oynatma ORTASINDA hata (decode/ağ) → döngü KONUSUYOR'da kilitlenmesin (#5).
     el.onerror = () => { birak(); if (acikRef.current && durumRef.current === DURUM.KONUSUYOR) { gecir("yanit_bitti"); dinle(); } };
     try { await el.play(); gecir("yanit_basladi"); }
-    catch { birak(); gecir("yanit_bitti"); }
+    catch { birak(); gecir("yanit_bitti"); dinle(); }
   }, [gecir]);
 
   // --- Bir tur: transcript → beyin → seslendir ---
@@ -219,6 +223,14 @@ export default function SesliGorusme() {
     gecir("kes"); dinle();
   }, [gecir, dinle, urlBirak]);
 
+  // --- Açılış karşılaması: persona (Metin) önce SÖZLÜ selam verir, sonra dinlemeye geçer.
+  //     seslendir DUSUNUYOR'dan yanit_basladi ile KONUSUYOR'a döner; ses biterse/yoksa dinle. ---
+  const karsila = useCallback(async () => {
+    setSonYanit(KARSILAMA);
+    setDurum(DURUM.DUSUNUYOR); durumRef.current = DURUM.DUSUNUYOR;
+    await seslendir(KARSILAMA);
+  }, [seslendir]);
+
   // --- Oturum sökme (overlay kapanışı). AudioContext'i KAPATMAZ — oturumlar arası yaşar
   //     (MediaElementSource bir-kez-bağlanma kuralı, #2). Tam kapatma unmount effect'inde. ---
   const temizle = useCallback(() => {
@@ -260,11 +272,11 @@ export default function SesliGorusme() {
       const an = ctx.createAnalyser(); an.fftSize = FFT; an.smoothingTimeConstant = 0.4;
       src.connect(an); micAnalizRef.current = an;         // yalnız analiz — hoparlöre BAĞLANMAZ (echo yok)
       bufRef.current = new Uint8Array(an.fftSize);
-      dinle();
+      karsila();   // persona önce sözlü selam verir, sonra dinlemeye geçer
     } catch {
       if (acikRef.current) setUyari("Mikrofon izni gerekli — tarayıcı çubuğundan izin verip tekrar açın.");
     }
-  }, [dongu, dinle]);
+  }, [dongu, karsila]);
 
   // Component tamamen unmount olunca AudioContext'i kapat (oturum sökme onu koruyordu).
   useEffect(() => () => { try { ctxRef.current?.close(); } catch { /* yoksay */ } }, []);
@@ -277,7 +289,7 @@ export default function SesliGorusme() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [acik]);
 
-  const kapat = useCallback(() => { setAcik(false); setDurum(DURUM.HAZIR); tetikRef.current?.focus(); }, []);
+  const kapat = useCallback(() => { setDurum(DURUM.HAZIR); onKapat?.(); }, [onKapat]);
 
   const susturDegistir = useCallback(() => {
     setSusturuldu((v) => {
@@ -356,20 +368,6 @@ export default function SesliGorusme() {
           </div>
         </div>
       )}
-
-      {/* Tetikleyici — sol-alt (sohbet FAB sağ-altta; çakışmaz). Sakin chrome: düz DERIN.T, glow yok. */}
-      <button ref={tetikRef} type="button" data-press onClick={() => setAcik(true)}
-        aria-label="Sesli görüşme başlat" {...focusRing}
-        onMouseEnter={(e) => { e.currentTarget.style.background = DERIN.Th; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = DERIN.T; }}
-        style={{
-          position: "fixed", left: SP.xl, bottom: SP.xl, zIndex: 150, width: 58, height: 58,
-          borderRadius: "50%", border: "none", cursor: "pointer", display: "grid", placeItems: "center",
-          background: DERIN.T, color: PAL.onAccent, boxShadow: SH.pop,
-          transition: `background .14s ${EASE.out}`,
-        }}>
-        <Icon.audio />
-      </button>
     </>
   );
 }

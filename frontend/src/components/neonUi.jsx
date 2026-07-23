@@ -10,7 +10,7 @@ import * as RTooltip from "@radix-ui/react-tooltip";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2,
-  Volume2, VolumeX, AudioLines, MicOff,
+  AudioLines, MicOff,
 } from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
@@ -350,8 +350,6 @@ export const Icon = {
   alert: (p) => <TriangleAlert size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
   mic: (p) => <Mic size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
   micOff: (p) => <MicOff size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
-  volume: (p) => <Volume2 size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
-  volumeOff: (p) => <VolumeX size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   audio: (p) => <AudioLines size={22} strokeWidth={1.75} aria-hidden="true" {...p} />,
   sparkle: (p) => <Sparkles size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   undo: (p) => <Undo2 size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,

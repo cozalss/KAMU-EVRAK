@@ -11,11 +11,10 @@ import { apiPost, authFetch } from "../lib/authApi.js";
 import { belgeMetniMi, belgeOzetiMd, pipelineOlay } from "../lib/belgeIsle.js";
 import { makeNode } from "../lib/nodeMeta.js";
 import { mdSatirTipi } from "../lib/mdSatir.js";
-import { sesliMetneCevir, sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
+import { sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
+import SesliGorusme from "./SesliGorusme.jsx";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
-
-const SESLI_MOD_ANAHTARI = "ke-sesli-mod";
 
 const GORUNUM_ETIKET = {
   gelen: "Gelen evrak", giden: "Giden evrak", taslaklar: "Taslaklar",
@@ -177,16 +176,15 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
   const [girdi, setGirdi] = useState("");
   const [bekliyor, setBekliyor] = useState(false);
   const [kaynak, setKaynak] = useState(null);   // son yanıtın kaynağı (llm|fallback) — şeffaflık
-  // Sesli mod: opt-in (varsayılan KAPALI — sürpriz ses istemeyen kullanıcıyı rahatsız etmez),
-  // localStorage'da kalıcı. STT (mikrofon) tarayıcı desteklemiyorsa (Firefox vb.) buton hiç
-  // render edilmez — sessiz devre dışı, hata yok.
+  // STT (mikrofon) tarayıcı desteklemiyorsa (Firefox vb.) sesli butonlar hiç render edilmez.
   const sttVar = sttDestekleniyorMu();
-  const [sesliModAcik, setSesliModAcik] = useState(() => {
-    try { return sttVar && window.localStorage.getItem(SESLI_MOD_ANAHTARI) === "1"; } catch { return false; }
-  });
   const [dinliyor, setDinliyor] = useState(false);
+  // Tam-ekran sesli görüşme sahnesi — asistanın İÇİNDEN başlatılır (ayrı FAB yok, kenar
+  // çubuğuyla çakışmasın). Overlay z-index 300 → panel/FAB üstünü kapar; kapanınca odak
+  // başlatan butona döner.
+  const [sesliAcik, setSesliAcik] = useState(false);
+  const sesliBtnRef = useRef(null);
   const tanimaRef = useRef(null);
-  const sesRef = useRef(null);   // çalan TTS <audio> — yeni mikrofon/kapatma barge-in ile keser
   const fabRef = useRef(null);
   const inputRef = useRef(null);
   const listeRef = useRef(null);
@@ -202,47 +200,12 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
 
   const kapat = () => { setAcik(false); fabRef.current?.focus(); };
   const gecmisiTemizle = () => {
-    sesRef.current?.pause();
     hafizaTemizle(); setMesajlar([KARSILAMA]); setKaynak(null); inputRef.current?.focus();
   };
 
-  // Asistan yanıtını backend TTS'e (OpenAI, /sohbet/seslendir) gönderip sesli oynatır.
-  // TTS anahtarı yoksa/hata olursa backend 503 döner — burada SESSİZCE düşülür (metin balonu
-  // zaten ekranda, sohbet asla bozulmaz). Yeni yanıt geldiğinde önceki ses barge-in ile kesilir.
-  const sesliOku = async (yaniMetin) => {
-    const duz = sesliMetneCevir(yaniMetin);
-    if (!duz) return;
-    try {
-      const res = await authFetch("/sohbet/seslendir", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ metin: duz }),
-      });
-      if (!res.ok) return;
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      sesRef.current?.pause();
-      const ses = new Audio(url);
-      ses.onended = () => URL.revokeObjectURL(url);
-      sesRef.current = ses;
-      ses.play().catch(() => {});
-    } catch {
-      /* ağ hatası — sessiz düş, sohbet metni etkilenmez */
-    }
-  };
-
-  const sesliModDegistir = () => {
-    setSesliModAcik((v) => {
-      const yeni = !v;
-      try { window.localStorage.setItem(SESLI_MOD_ANAHTARI, yeni ? "1" : "0"); } catch { /* yoksay */ }
-      if (!yeni) sesRef.current?.pause();
-      return yeni;
-    });
-  };
-
   // Mikrofon push-to-talk: basınca dinlemeye başlar, transcript gelince otomatik gönderir.
-  // Konuşmaya başlarken çalan TTS sesi barge-in ile kesilir (üst üste binmesin).
   const mikrofonBasildi = () => {
     if (dinliyor) { tanimaRef.current?.stop(); return; }
-    sesRef.current?.pause();
     const tanima = sesTanimaOlustur({
       onSonuc: (metin) => gonder(metin),
       onBitti: () => setDinliyor(false),
@@ -281,7 +244,6 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
       } else if (ev.event === "done") {
         setKaynak(ev.kaynak);
         sonuGuncelle((son) => ({ ...son, icerik: ev.yanit || son.icerik, akiyor: false }));
-        if (sesliModAcik && ev.yanit) sesliOku(ev.yanit);
       }
     };
     for (;;) {
@@ -483,11 +445,10 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
               </div>
             </div>
             {sttVar && (
-              <button type="button" aria-label={sesliModAcik ? "Sesli modu kapat" : "Sesli modu aç"}
-                title={sesliModAcik ? "Sesli mod açık — yanıtlar okunur" : "Sesli modu aç"}
-                aria-pressed={sesliModAcik} onClick={sesliModDegistir} {...focusRing}
-                style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: sesliModAcik ? ALFA(T) : "none", color: sesliModAcik ? DERIN.T : PAL.mut, display: "grid", placeItems: "center", padding: 0, transition: "background .12s ease-out" }}>
-                {sesliModAcik ? <Icon.volume /> : <Icon.volumeOff />}
+              <button ref={sesliBtnRef} type="button" data-press aria-label="Sesli görüşme başlat"
+                title="Sesli görüşme — tam ekran, konuşarak sohbet et" onClick={() => setSesliAcik(true)} {...focusRing}
+                style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${ALFA(T)}`, background: ALFA(T), color: DERIN.T, display: "grid", placeItems: "center", padding: 0, transition: "background .12s ease-out" }}>
+                <Icon.audio width={16} height={16} />
               </button>
             )}
             {mesajlar.length > 1 && (
@@ -587,6 +548,9 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="9" cy="9.5" r="1" fill="currentColor" /><circle cx="12.5" cy="9.5" r="1" fill="currentColor" /><circle cx="16" cy="9.5" r="1" fill="currentColor" /></svg>
         )}
       </button>
+
+      {/* Tam-ekran sesli görüşme — asistandan başlatılır; kapanınca odak başlatan butona döner. */}
+      <SesliGorusme acik={sesliAcik} onKapat={() => { setSesliAcik(false); sesliBtnRef.current?.focus(); }} />
     </>
   );
 }

@@ -44,7 +44,6 @@ const DenetimView = lazy(() => import("./components/DenetimView.jsx"));
 // Sohbet asistanı (FAB + panel) — her görünümde sağ altta; tembel: yalnız kabuk yüklendikten
 // sonra iner, ilk yük bundle'ına ağırlık eklemez. Spec: docs/09-sohbet-asistani.md
 const ChatbotWidget = lazy(() => import("./components/ChatbotWidget.jsx"));
-const SesliGorusme = lazy(() => import("./components/SesliGorusme.jsx"));
 // Telefonla evrak çekme (QR eşleme) — yalnız açılınca iner (react-qr-code ana bundle'a girmez).
 const TelefonYukleModal = lazy(() => import("./components/TelefonYukle.jsx"));
 
@@ -922,7 +921,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
 
         {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
-        {user && <Suspense fallback={null}><SesliGorusme /></Suspense>}
 
         {/* Global mevzuat okuma modalı — hangi görünümde olursan ol üstte açılır (view değişmez). */}
         {okumaHedef && (

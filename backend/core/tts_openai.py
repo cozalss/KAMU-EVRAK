@@ -9,7 +9,7 @@ düşer (established deterministik-fallback deseni — bkz. core/openai_compat.p
 ENV:
     OPENAI_TTS_API_KEY=sk-...              (zorunlu — yoksa RuntimeError → çağıran fallback yapar)
     OPENAI_TTS_MODEL=tts-1                 (default; tts-1-hd = daha kaliteli/yavaş/pahalı)
-    OPENAI_TTS_VOICE=alloy                 (alloy|echo|fable|onyx|nova|shimmer)
+    OPENAI_TTS_VOICE=onyx                  (persona sesi; alloy|echo|fable|onyx|nova|shimmer)
     OPENAI_TTS_BASE_URL=https://api.openai.com/v1  (test/proxy override — normalde değiştirilmez)
 """
 
@@ -70,7 +70,9 @@ async def tts_openai(
 
     payload = {
         "model": (model or os.getenv("OPENAI_TTS_MODEL", "tts-1")).strip(),
-        "voice": (voice or os.getenv("OPENAI_TTS_VOICE", "alloy")).strip(),
+        # Persona sesi: derin/sakin erkek (onyx). Env ile değiştirilebilir; TTS'in tek tüketicisi
+        # artık sesli görüşme sahnesi (sohbet-içi sesli-okuma kaldırıldı) → onyx anlamlı varsayılan.
+        "voice": (voice or os.getenv("OPENAI_TTS_VOICE", "onyx")).strip(),
         "input": metin,
         "response_format": "mp3",
     }

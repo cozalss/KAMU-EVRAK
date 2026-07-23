@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 import time
 import uuid
@@ -93,6 +94,25 @@ _KOMPOZ_SYSTEM = (
     "kullanabilirsin. Kayıtları tek tek listele (ad + önemli alanlar)."
 )
 
+# Sesli görüşme persona'sı — SESLİ mod (SesliGorusme sahnesi) `sesli=true` gönderince kullanılır.
+# Metin sohbetten AYRI: yanıt yüksek sesle okunacağı için KISA, konuşma-dili, markdown'sız olmalı;
+# aksi halde madde listeleri/uzun paragraflar sesli okununca robotik/kötü duyulur. İsim env ile
+# değiştirilebilir (SESLI_PERSONA_ADI). Grounding (uydurma yasağı) metin moduyla AYNI sıkılıkta.
+SESLI_PERSONA_ADI = (os.getenv("SESLI_PERSONA_ADI", "").strip() or "Metin")
+_SESLI_SYSTEM = (
+    f"Sen {SESLI_PERSONA_ADI}, bir Türk kamu kurumunun evrak ve yazışma işlerinde deneyimli, "
+    "SESLİ konuşan yardımcı bir asistansın. Kullanıcı seninle sesli konuşuyor ve cevabın "
+    "yüksek sesle okunacak.\n"
+    "ÜSLUP: Sıcak, saygılı ve kendinden emin — deneyimli bir meslektaş gibi doğal konuş. "
+    "ÇOK KISA tut: en fazla iki-üç kısa cümle. Markdown, madde işareti, liste, başlık, yıldız "
+    "veya emoji ASLA kullanma; yalnız düz, akıcı konuşma cümleleri. 'JSON', 'sistem verisi', "
+    "'intent' gibi teknik terimleri kullanıcıya söyleme.\n"
+    "DOĞRULUK: Yalnız sana verilen gerçek verilere dayan — kayıt, sayı, tarih, evrak numarası ya "
+    "da mevzuat maddesi UYDURMA. Veri boşsa bunu dürüstçe ve kısaca söyle. Emin değilsen belirt.\n"
+    "Sayıları konuşma diline uygun ver (ör. 'üç evrak var'). İlgili kaydı adıyla an. Kullanıcı "
+    "seninle yeni tanışıyorsa kendini tek cümleyle tanıtabilirsin, ama her cevapta tekrarlama."
+)
+
 
 class SohbetMesaj(BaseModel):
     rol: Literal["kullanici", "asistan"]
@@ -104,6 +124,8 @@ class SohbetIstek(BaseModel):
     gecmis: list[SohbetMesaj] = Field(default_factory=list, max_length=_GECMIS_MAX)
     # HITL teyit el sıkışması: bir önceki yanıtın onay_bekleyen'i aynen geri gönderilir.
     onay_baglam: dict[str, Any] | None = None
+    # Sesli görüşme modu — açıksa yanıt kompozisyonu SESLİ persona (kısa, konuşma-dili) kullanır.
+    sesli: bool = False
 
 
 class SohbetYanit(BaseModel):
@@ -349,16 +371,18 @@ def _kompoz_user(mesaj: str, veri: Any, gecmis_metni: str = "") -> str:
 
 
 async def _yanit_kompoze(
-    mesaj: str, intent: str, veri: Any, gecmis_metni: str = "",
+    mesaj: str, intent: str, veri: Any, gecmis_metni: str = "", sesli: bool = False,
 ) -> tuple[str, bool]:
-    """(yanit, llm_kullanildi) — bilgi tabanı > LLM > şablon sırasıyla."""
+    """(yanit, llm_kullanildi) — bilgi tabanı > LLM > şablon sırasıyla.
+    sesli=True → SESLİ persona sistem prompt'u (kısa, konuşma-dili, markdown'sız)."""
     if intent == "site_yardim":
         return bilgi_yaniti(mesaj) or sablon_yanit(intent, None), False
     if intent == "selamlama":
         return sablon_yanit(intent, None), False
     if intent in KAYIT_TURU or intent == "genel":
         txt = await llm_text(
-            _KOMPOZ_SYSTEM, _kompoz_user(mesaj, veri, gecmis_metni), max_tokens=400)
+            _SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM,
+            _kompoz_user(mesaj, veri, gecmis_metni), max_tokens=400)
         if txt:
             return txt, True
     return sablon_yanit(intent, veri), False
@@ -674,7 +698,7 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
                 intent=intent, kaynak="fallback")
 
     yanit, llm_kompoz = await _yanit_kompoze(
-        istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis))
+        istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis), istek.sesli)
     kart, gorunum = KAYIT_TURU.get(intent, (None, None))
     kayitlar = _kart_kayitlari(intent, veri)
     log.info("sohbet", intent=intent, llm=llm_niyet or llm_kompoz or dongu_llm,
@@ -699,23 +723,24 @@ def _sse(payload: dict[str, Any]) -> str:
 
 
 async def _kompoz_akisi(
-    mesaj: str, intent: str, veri: Any, gecmis_metni: str = "",
+    mesaj: str, intent: str, veri: Any, gecmis_metni: str = "", sesli: bool = False,
 ) -> AsyncIterator[tuple[str, str]]:
-    """('delta'|'kaynak', metin) akışı — gerçek LLM token-token, yoksa tek parça şablon."""
+    """('delta'|'kaynak', metin) akışı — gerçek LLM token-token, yoksa tek parça şablon.
+    sesli=True → SESLİ persona (kısa, konuşma-dili) kullanılır."""
     if intent not in KAYIT_TURU and intent != "genel":  # bilgi tabanı/şablon yolları tek parça
-        yanit, _ = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni)
+        yanit, _ = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni, sesli)
         yield "delta", yanit
         yield "kaynak", "fallback"
         return
     llm = real_llm()
     if llm is None or not hasattr(llm, "chat_stream"):
-        yanit, llm_kompoz = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni)
+        yanit, llm_kompoz = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni, sesli)
         yield "delta", yanit
         yield "kaynak", "llm" if llm_kompoz else "fallback"
         return
     kuyruk: asyncio.Queue[str] = asyncio.Queue()
     task = asyncio.create_task(llm.chat_stream(
-        messages=[ChatMessage(role="system", content=_KOMPOZ_SYSTEM),
+        messages=[ChatMessage(role="system", content=_SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM),
                   ChatMessage(role="user", content=_kompoz_user(mesaj, veri, gecmis_metni))],
         temperature=0.2, max_tokens=400, on_token=kuyruk.put_nowait))
     akti, son = False, time.monotonic() + LLM_NODE_TIMEOUT_S
@@ -786,7 +811,7 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
         parcalar: list[str] = []
         kaynak = "fallback"
         async for tur, icerik in _kompoz_akisi(
-                istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis)):
+                istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis), istek.sesli):
             if tur == "delta":
                 parcalar.append(icerik)
                 yield _sse({"event": "delta", "t": icerik})

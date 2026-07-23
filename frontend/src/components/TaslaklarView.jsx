@@ -5,9 +5,9 @@
    hedefti; triyajda bilişsel yükü düşüren şey tek seferde TEK karar + kalıcı önizlemedir.
    Kurgu ayrımı: işlenen arşivi IslenenEvrakView (sicil defteri), gönderilmiş GidenEvrakView.
    Düzenleme yüzeyi TEK kalır: A4 kâğıt modalı (BelgeModal); kurul = KurulModal. */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
@@ -92,15 +92,38 @@ function MetinEylem({ onClick, renk = DERIN.T, ariaLabel, disabled, children }) 
 const selectStil = { padding: "6px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, ...TYPE.data, cursor: "pointer" };
 
 /* Kompakt tek-satır araç çubuğu — Gelen Evrak'ın kalıcı FilterBar panelinden bilinçli
-   ayrışma (o panel Gelen'in dili; kuyruk dikey alanı listeye bırakır). */
+   ayrışma (o panel Gelen'in dili; kuyruk dikey alanı listeye bırakır). Arama kutusu Mevzuat
+   sayfasıyla AYNI dilde (ikon + "/" odak kısayolu, 2026-07-23) — uygulama genelinde tek bir
+   "arama" hissi. */
 function AracCubugu({ filter, turSecenek, birimSecenek }) {
   const f = filter.filters;
+  const aramaRef = useRef(null);
+  const [aramaOdakta, setAramaOdakta] = useState(false);
+  useEffect(() => {
+    const dinle = (e) => {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const a = document.activeElement;
+      if (a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable)) return;
+      e.preventDefault();
+      aramaRef.current?.focus();
+    };
+    document.addEventListener("keydown", dinle);
+    return () => document.removeEventListener("keydown", dinle);
+  }, []);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: SP.l }}>
-      <input type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
-        placeholder="Taslak adı, konu…" aria-label="Taslaklarda ara" {...focusRing}
-        style={{ flex: "1 1 180px", maxWidth: 300, padding: "6px 12px", borderRadius: RAD.ctl,
-          border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink, ...TYPE.data }} />
+      <div style={{ position: "relative", flex: "1 1 180px", maxWidth: 300 }}>
+        <span aria-hidden="true" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", display: "flex", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
+        <input ref={aramaRef} type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
+          placeholder="Taslak adı, konu…" aria-label="Taslaklarda ara"
+          onFocus={(e) => { focusRing.onFocus(e); setAramaOdakta(true); }}
+          onBlur={(e) => { focusRing.onBlur(e); setAramaOdakta(false); }}
+          style={{ width: "100%", padding: "6px 12px 6px 34px", borderRadius: RAD.ctl,
+            border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink, ...TYPE.data }} />
+        {!f.search && !aramaOdakta && (
+          <span aria-hidden="true" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", ...TYPE.meta, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "1px 6px", background: PAL.surfHi, pointerEvents: "none" }}>/</span>
+        )}
+      </div>
       <select value={f.select.evrak_turu} onChange={(e) => filter.setSelect("evrak_turu", e.target.value)} aria-label="Evrak türü" {...focusRing} style={selectStil}>
         <option value="">Tüm türler</option>
         {turSecenek.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -123,26 +146,31 @@ function AracCubugu({ filter, turSecenek, birimSecenek }) {
 }
 
 /* Kuyruk satırı — kart DEĞİL: iki satırlık seçilebilir öğe (konu + meta), eylemsiz.
-   Seçili: sol 2px T şeridi + press zemini + 600 başlık (renk tek sinyal olmasın). */
+   Seçili: sol 2px T şeridi + press zemini + 600 başlık (renk tek sinyal olmasın). Ekrandaki
+   demo taslaklar sık sık aynı önekle başlayıp kırpılıyor ("4982 sayılı ... kapsam…" ekran
+   görüntüsünde 6 kez) — title tooltip'i tam metni hover'da verir (MevzuatView künye kırpması
+   ile aynı çözüm); data-press diğer seçim kutucuklarıyla aynı dokunma dili. */
 function KuyrukSatiri({ h, konu, secili, onSec, onAc, optId, ilk }) {
   const bant = bantOf(h);
   const uyari = RISK_UYARI[bant];
   const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
+  const baslik = konu || h.name;
+  const meta = `${YAZI_TR(h.result?.yazi_turu) || "Taslak"} · ${BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu)}`;
   return (
-    <div role="option" id={optId} aria-selected={secili} onClick={onSec} onDoubleClick={onAc}
+    <div role="option" id={optId} aria-selected={secili} onClick={onSec} onDoubleClick={onAc} data-press=""
       style={{ cursor: "pointer", padding: "10px 12px 10px 10px", borderLeft: `2px solid ${secili ? T : "transparent"}`,
-        borderTop: ilk ? "none" : `1px solid ${PAL.line}`, background: secili ? PAL.press : "transparent", transition: "background .12s ease-out" }}
+        borderTop: ilk ? "none" : `1px solid ${PAL.line}`, background: secili ? PAL.press : "transparent", transition: `background .12s ease-out, transform .14s ${EASE.out}` }}
       onMouseEnter={(e) => { if (!secili) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = secili ? PAL.press : "transparent"; }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
-        <span style={{ ...TYPE.ui, fontWeight: secili ? 600 : 500, color: PAL.ink, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {konu || h.name}
+        <span title={baslik} style={{ ...TYPE.ui, fontWeight: secili ? 600 : 500, color: PAL.ink, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {baslik}
         </span>
         {tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, ...TNUM, flexShrink: 0 }}>{tarih}</span>}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.xs, marginTop: 2, minWidth: 0 }}>
-        <span style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {YAZI_TR(h.result?.yazi_turu) || "Taslak"} · {BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu)}
+        <span title={meta} style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {meta}
         </span>
         {uyari && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(BANT[bant].c), flexShrink: 0 }}>· {uyari}</span>}
       </div>

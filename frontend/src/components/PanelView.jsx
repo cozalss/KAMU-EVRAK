@@ -8,7 +8,14 @@
    · R2 AKIŞ NABZI (12 kol): tek yüzeyde hairline ayraçlı 4 ölçü + düne-göre delta +
      7 günlük sparkline (throughput'ta azalış kırmızı DEĞİL — yavaş gün azar değildir).
    · R3-R4 GÖZLEM: tek "Dağılım" yüzeyi (3 iç kolon) + birim gecikme; zaman-gruplu işlem
-     feed'i + işlem süresi. Tüm sayılar gerçek veriden (oturum + DB reconcile). */
+     feed'i + işlem süresi. Tüm sayılar gerçek veriden (oturum + DB reconcile).
+   2026-07-23 cila turu (Stripe/Vercel Analytics + Linear araştırması — "detail-on-demand"):
+   panelin TÜM iç mini-grafikleri (SlaSerit, risk barları, Sparkline, SureGrafik) artık aynı
+   iki dilbilgisi kuralını paylaşır — (1) her segment/nokta native <title> ile hover'da detay
+   verir (yeni bileşen yok, sıfır görsel risk), (2) "güncellik" hep aynı şekilde okunur: bağlam
+   PAL.mut3, en yeni veri T. Sparkline'a taban-kapanan düz %8 ALFA(PAL.mut3) dolgu eklendi (tek
+   izinli alfa eki — gradyan değil) şekil okunurluğu için. Hiçbiri yeni token/hex/radius
+   eklemedi; MASTER.md checklist'i bit-aynı geçerli. */
 import { useEffect, useMemo, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -37,19 +44,29 @@ function useGenisEkran() {
 const OK_YUKARI = (p) => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 const OK_ASAGI = (p) => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 
-/* 7 günlük sparkline — sessiz bağlam çizgisi (1.5px PAL.mut3), tek vurgu son gün noktası
-   (T + 2px yüzey halkası). Dolgu/eksen/animasyon yok; <2 aktif gün varsa hiç çizilmez
-   (yarım grafik "bozuk" okunur). */
+/* 7 günlük sparkline — sessiz bağlam çizgisi (1.5px PAL.mut3) + tabana kapanan düz %8 dolgu
+   (ALFA(PAL.mut3) — gradyan değil, tek izinli alfa eki; "şekil" okunurluğu için), tek vurgu son
+   gün noktası (T + 2px yüzey halkası). Her gün görünmez geniş isabet dairesi + native <title> —
+   Stripe/Vercel Analytics'teki "hover ile detay" alışkanlığı; ekstra görsel öge eklemeden
+   detay-isteğe-bağlı sağlar. <2 aktif gün varsa hiç çizilmez (yarım grafik "bozuk" okunur). */
 function Sparkline({ seri, aktifGun }) {
   if (aktifGun < 2) return null;
-  const W = 64, H = 24, max = Math.max(1, ...seri);
-  const nokta = seri.map((v, i) => [4 + (i * (W - 8)) / 6, H - 4 - (v / max) * (H - 8)]);
+  const W = 64, H = 24, taban = H - 4, max = Math.max(1, ...seri);
+  const nokta = seri.map((v, i) => [4 + (i * (W - 8)) / 6, taban - (v / max) * (H - 8)]);
   const yol = nokta.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+  const dolguYol = `M${nokta[0][0].toFixed(1)},${taban} L${nokta.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" L")} L${nokta[6][0].toFixed(1)},${taban} Z`;
   const son = nokta[6];
+  const gunEtiket = (i) => (i === 6 ? "bugün" : i === 5 ? "dün" : `${6 - i} gün önce`);
   return (
     <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true" style={{ flexShrink: 0 }}>
+      <path d={dolguYol} fill={ALFA(PAL.mut3)} stroke="none" />
       <path d={yol} fill="none" style={{ stroke: PAL.mut3 }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={son[0]} cy={son[1]} r="3" style={{ fill: T, stroke: PAL.surf }} strokeWidth="2" />
+      {nokta.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="6" fill="transparent" pointerEvents="all">
+          <title>{`${gunEtiket(i)}: ${seri[i]}`}</title>
+        </circle>
+      ))}
+      <circle cx={son[0]} cy={son[1]} r="3" pointerEvents="none" style={{ fill: T, stroke: PAL.surf }} strokeWidth="2" />
     </svg>
   );
 }
@@ -119,7 +136,7 @@ function SlaSerit({ dilimler, toplam }) {
     <>
       <div role="img" aria-label={dilimler.map((d) => `${d.n} ${d.l}`).join(", ")}
         style={{ display: "flex", gap: 2, height: 8 }}>
-        {dilimler.map((d) => <span key={d.l} style={{ width: `${(d.n / toplam) * 100}%`, minWidth: 4, background: d.c, borderRadius: RAD.chip }} />)}
+        {dilimler.map((d) => <span key={d.l} title={`${d.l}: ${d.n}`} style={{ width: `${(d.n / toplam) * 100}%`, minWidth: 4, background: d.c, borderRadius: RAD.chip }} />)}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.l}px`, marginTop: SP.s }}>
         {dilimler.map((d) => (
@@ -271,7 +288,7 @@ function DagilimYuzeyi({ n, risk, turList, birimList, ortGuven, genis }) {
                 <div style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>
                   <span style={{ color: DERIN_OF(BANT[k].c), fontWeight: 500 }}>{BANT[k].l} · {BANT[k].t}</span><span style={{ ...TNUM }}>{risk[k]} (%{pct})</span>
                 </div>
-                <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
+                <div title={`${BANT[k].l}: ${risk[k]} (%${pct})`} style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${pct}%`, background: BANT[k].c, borderRadius: RAD.chip, transition: "width .15s ease-out" }} />
                 </div>
               </div>
@@ -342,10 +359,15 @@ function SureGrafik({ history }) {
       </div>
       <div role="img" aria-label={`Son ${son.length} işlemin süreleri, ortalama ${(ort / 1000).toFixed(1)} saniye`}
         style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 56, marginTop: SP.m }}>
-        {son.map((x, i) => (
-          <span key={i} title={`${x.name} — ${(x.ms / 1000).toFixed(1)} sn`}
-            style={{ flex: 1, minWidth: 6, height: `${Math.max(6, Math.round((x.ms / max) * 100))}%`, background: T, borderRadius: `${RAD.chip}px ${RAD.chip}px 0 0`, opacity: 0.9 }} />
-        ))}
+        {/* Güncellik vurgusu Sparkline ile aynı dilbilgisi: bağlam PAL.mut3, son koşum T —
+            panel genelinde "hangisi en yeni" tek görsel dilde okunur (yeni renk/token yok). */}
+        {son.map((x, i) => {
+          const guncel = i === son.length - 1;
+          return (
+            <span key={i} title={`${x.name} — ${(x.ms / 1000).toFixed(1)} sn`}
+              style={{ flex: 1, minWidth: 6, height: `${Math.max(6, Math.round((x.ms / max) * 100))}%`, background: guncel ? T : PAL.mut3, opacity: guncel ? 1 : 0.55, borderRadius: `${RAD.chip}px ${RAD.chip}px 0 0` }} />
+          );
+        })}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut3, marginTop: SP.xs, ...TNUM }}>
         <span>eski</span><span>son {son.length} koşum</span><span>yeni</span>

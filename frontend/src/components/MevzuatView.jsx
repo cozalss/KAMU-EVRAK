@@ -4,7 +4,7 @@
    (/mevzuat/icerik/{dosya}). Oturumda RAG'in önerdiği mevzuat da tıklanınca ilgili
    maddeye kaydırılmış açılır. Backend yoksa statik çekirdek katalog fallback. */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ViewWrap, NeonCard, EmptyState, Icon, Btn, MONO, T, V, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, EmptyState, Icon, Btn, MONO, T, V, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY } from "./neonUi.jsx";
 import { cleanDemoText } from "./result-cards.jsx";
 import { OkumaModal } from "./MevzuatOkuma.jsx";
 
@@ -72,10 +72,10 @@ function oneriHedef(m, dosyalar) {
 function KatalogKart({ m, onAc }) {
   const cekirdek = CEKIRDEK_NO.has(m.no);
   return (
-    <button type="button" onClick={() => onAc({ dosya: m.dosya, maddeNo: null })} aria-haspopup="dialog" {...focusRing}
+    <button type="button" onClick={() => onAc({ dosya: m.dosya, maddeNo: null })} aria-haspopup="dialog" {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ display: "flex", gap: SP.m, alignItems: "flex-start", textAlign: "left", padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, cursor: "pointer", transition: "background .12s ease-out" }}>
+      style={{ display: "flex", gap: SP.m, alignItems: "flex-start", textAlign: "left", padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
       <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.book /></span>
       <span style={{ minWidth: 0, flex: 1 }}>
         <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
@@ -91,7 +91,10 @@ function KatalogKart({ m, onAc }) {
   );
 }
 
-/* Oturumda RAG'in önerdiği kaynak — katalogda karşılığı varsa tıklanınca ilgili maddeye açılır. */
+/* Oturumda RAG'in önerdiği kaynak — katalogda karşılığı varsa tıklanınca ilgili maddeye açılır.
+   Hover/press diğer tıklanabilir kartlarla (KatalogKart/DerinSonucSatir) AYNI dilde — önceden
+   bu kart hover'da sessiz kalıyordu (jüri'nin ilk gördüğü AI-öneri bölgesi tıklanabilirliğini
+   göstermiyordu). */
 function OneriSatir({ m, dosyalar, onAc }) {
   const hedef = oneriHedef(m, dosyalar);
   const govde = (
@@ -103,8 +106,10 @@ function OneriSatir({ m, dosyalar, onAc }) {
   const stil = { borderLeft: `2px solid ${T}`, paddingLeft: SP.m };
   if (!hedef) return <div style={stil}>{govde}</div>;
   return (
-    <button type="button" onClick={() => onAc(hedef)} aria-haspopup="dialog" {...focusRing}
-      style={{ ...stil, display: "block", textAlign: "left", background: "transparent", border: "none", borderLeft: stil.borderLeft, cursor: "pointer", padding: `0 0 0 ${SP.m}px`, width: "100%" }}>
+    <button type="button" onClick={() => onAc(hedef)} aria-haspopup="dialog" {...focusRing} data-press=""
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      style={{ ...stil, display: "block", textAlign: "left", background: "transparent", border: "none", borderLeft: stil.borderLeft, borderRadius: `0 ${RAD.ctl}px ${RAD.ctl}px 0`, cursor: "pointer", padding: `${SP.s}px 0 ${SP.s}px ${SP.m}px`, width: "100%", transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
       {govde}
       <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, marginTop: SP.s, ...TYPE.meta, color: DERIN.T }}>Tam metni oku <Icon.arrow /></span>
     </button>
@@ -114,11 +119,11 @@ function OneriSatir({ m, dosyalar, onAc }) {
 /* Kategori filtre düğmesi — aktifken gök mavisi tint zemin, değilken beyaz yüzey. */
 function KategoriCip({ ad, adet, aktif, onSec }) {
   return (
-    <button type="button" onClick={onSec} aria-pressed={aktif} {...focusRing}
+    <button type="button" onClick={onSec} aria-pressed={aktif} {...focusRing} data-press=""
       style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.chip, border: "1px solid",
         borderColor: aktif ? "transparent" : PAL.line, background: aktif ? ALFA(T) : PAL.surf,
         color: aktif ? DERIN.T : PAL.ink2, ...TYPE.meta, fontWeight: 500,
-        display: "inline-flex", alignItems: "center", gap: SP.s, transition: "background .12s ease-out" }}>
+        display: "inline-flex", alignItems: "center", gap: SP.s, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
       {ad}
       <span style={{ opacity: 0.75, fontWeight: 400, ...TNUM }}>{adet}</span>
     </button>
@@ -160,12 +165,12 @@ function AramaModSecici({ modu, onSec }) {
   return (
     <div role="group" aria-label="Arama modu" style={{ display: "inline-flex", padding: 2, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surfHi }}>
       {secenekler.map(([k, ad]) => (
-        <button key={k} type="button" onClick={() => onSec(k)} aria-pressed={modu === k} {...focusRing}
+        <button key={k} type="button" onClick={() => onSec(k)} aria-pressed={modu === k} {...focusRing} data-press=""
           onBlur={(e) => { e.currentTarget.style.boxShadow = modu === k ? SH.card : "none"; }}
           style={{ cursor: "pointer", padding: "5px 12px", borderRadius: RAD.chip, border: "none",
             background: modu === k ? PAL.surf : "transparent", color: modu === k ? DERIN.T : PAL.mut2,
             ...TYPE.meta, fontWeight: modu === k ? 600 : 500, boxShadow: modu === k ? SH.card : "none",
-            transition: "background .12s ease-out" }}>
+            transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
           {ad}
         </button>
       ))}
@@ -177,10 +182,10 @@ function AramaModSecici({ modu, onSec }) {
 function DerinSonucSatir({ s, onAc }) {
   return (
     <button type="button" onClick={() => onAc({ dosya: s.dosya, maddeNo: s.madde_no ?? null, maddeTur: s.madde_tur ?? null })}
-      aria-haspopup="dialog" {...focusRing}
+      aria-haspopup="dialog" {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ display: "block", width: "100%", textAlign: "left", padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, cursor: "pointer", transition: "background .12s ease-out" }}>
+      style={{ display: "block", width: "100%", textAlign: "left", padding: SP.l, borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
       <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
         {s.no && <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, color: DERIN.T }}>{s.no}</span>}
         <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{s.baslik}</span>
@@ -227,6 +232,22 @@ export default function MevzuatView({ history = [] }) {
   const [derinBekliyor, setDerinBekliyor] = useState(false);
   const [secili, setSecili] = useState(null);     // {dosya, maddeNo} → okuma modalı açık
   const sonOdak = useRef(null);
+  const aramaRef = useRef(null);
+  const [aramaOdakta, setAramaOdakta] = useState(false);
+
+  // "/" ile arama kutusuna odaklan (GitHub/Linear alışkanlığı) — yalnız Mevzuat aktifken
+  // bağlı (mount/unmount ile), başka bir alanda yazarken (input/textarea) müdahale etmez.
+  useEffect(() => {
+    const dinle = (e) => {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const a = document.activeElement;
+      if (a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable)) return;
+      e.preventDefault();
+      aramaRef.current?.focus();
+    };
+    document.addEventListener("keydown", dinle);
+    return () => document.removeEventListener("keydown", dinle);
+  }, []);
 
   useEffect(() => {
     let iptal = false;
@@ -304,7 +325,10 @@ export default function MevzuatView({ history = [] }) {
   return (
     <ViewWrap id="mevzuat-h" title="Mevzuat" sub="Sistemdeki 304 mevzuat kaynağı konu gruplarına ayrılmış olarak listelenir. Kategori seçin veya arayın; karta tıklayınca tam metin açılır.">
       {onerilen.length > 0 && (
-        <NeonCard title="Bu oturumda önerilen mevzuat (RAG)" tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: SP.l }}>
+        // AI-önerisi bölgesi kataloğun geri kalanından zemince ayrışır — tek izinli alfa eki
+        // (ALFA(T), %8 tint); yeni renk/gradyan yok. Görev 1'in RAG çıktısı jürinin ilk gördüğü
+        // öge; sayfanın geri kalanıyla bit-aynı beyaz zeminde kayboluyordu.
+        <NeonCard title="Bu oturumda önerilen mevzuat (RAG)" tag={`${onerilen.length} kaynak`} accent={T} style={{ marginBottom: SP.l, background: ALFA(T) }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: SP.m }}>
             {onerilen.map((m, i) => <OneriSatir key={i} m={m} dosyalar={dosyalar} onAc={ac} />)}
           </div>
@@ -323,10 +347,20 @@ export default function MevzuatView({ history = [] }) {
         )}
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
           <AramaModSecici modu={aramaModu} onSec={setAramaModu} />
-          <input type="search" value={filtre} onChange={(e) => setFiltre(e.target.value)}
-            placeholder={aramaModu === "derin" ? "Madde metninde ara: dilekçede zorunlu şartlar…" : "Kanun adı, numara veya konu ara…"}
-            aria-label={aramaModu === "derin" ? "Mevzuat maddelerinin içinde ara" : "Mevzuat kataloğunda ara"} {...focusRing}
-            style={{ width: "min(360px,100%)", padding: "8px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, ...TYPE.ui, color: PAL.ink, outline: "none" }} />
+          {/* Sol ikon + sağ "/" kısayol ipucu (GitHub/Linear alışkanlığı) — odaklanınca/yazınca
+              ipucu kaybolur, sabit padding sayesinde sıçrama olmaz. */}
+          <div style={{ position: "relative", width: "min(360px,100%)" }}>
+            <span aria-hidden="true" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", display: "flex", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
+            <input ref={aramaRef} type="search" value={filtre} onChange={(e) => setFiltre(e.target.value)}
+              placeholder={aramaModu === "derin" ? "Madde metninde ara: dilekçede zorunlu şartlar…" : "Kanun adı, numara veya konu ara…"}
+              aria-label={aramaModu === "derin" ? "Mevzuat maddelerinin içinde ara" : "Mevzuat kataloğunda ara"}
+              onFocus={(e) => { focusRing.onFocus(e); setAramaOdakta(true); }}
+              onBlur={(e) => { focusRing.onBlur(e); setAramaOdakta(false); }}
+              style={{ width: "100%", padding: "8px 34px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, ...TYPE.ui, color: PAL.ink, outline: "none" }} />
+            {!filtre && !aramaOdakta && (
+              <span aria-hidden="true" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", ...TYPE.meta, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "1px 6px", background: PAL.surfHi, pointerEvents: "none" }}>/</span>
+            )}
+          </div>
         </div>
       </div>
 

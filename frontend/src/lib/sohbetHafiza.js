@@ -23,6 +23,7 @@ export function hazirlaKayit(mesajlar, max = _MAX_TUR) {
     .map((m) => ({
       rol: m.rol,
       icerik: m.icerik,
+      ...(m.karsilama ? { karsilama: true } : {}),  // reload sonrası 'gecmis hariç' filtresi için korunur
       ...(m.kayitlar ? { kayitlar: m.kayitlar, kayit_turu: m.kayit_turu } : {}),
       ...(m.oneri_gorunum ? { oneri_gorunum: m.oneri_gorunum } : {}),
       ...(m.mevzuat_kaynaklari ? { mevzuat_kaynaklari: m.mevzuat_kaynaklari } : {}),

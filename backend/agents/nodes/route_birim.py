@@ -154,7 +154,10 @@ async def _route_birim_impl(state: dict[str, Any]) -> dict[str, Any]:
     if llm is None:
         return det  # mock/anahtarsız → deterministik (CI testleri bunu bekler)
 
-    text = (state.get("evrak_text", "") or "")[:900]
+    # KVKK: birim yönlendirme LLM çağrısına ham TCKN/telefon GİTMEZ (servis_birim ile aynı ilke;
+    # havale türe/konuya bağlıdır, sayısal PII değerine değil). isim korunur → içerik bozulmaz.
+    text = mask_for_llm((state.get("evrak_text", "") or ""),
+                        (state.get("bilgi_unsurlari") or {}).get("gonderen"))[:900]
     obj = await llm_json(
         system=(
             "Sen bir kamu kurumunda evrak havale uzmanısın. Verilen evrakı SADECE listedeki "

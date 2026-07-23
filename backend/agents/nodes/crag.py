@@ -46,6 +46,7 @@ from agents.nodes.mevzuat_oner import (
     _from_config,
     _from_corpus,
 )
+from api.pii import mask_for_llm
 
 log = structlog.get_logger()
 
@@ -113,10 +114,14 @@ def _genisletilmis_sorgu(state: dict[str, Any]) -> str:
 
 
 def _konu_metni(state: dict[str, Any]) -> str:
-    """LLM prompt'ları için evrak konusu — çıkarılan konu birincil, yoksa metin başı."""
+    """LLM prompt'ları için evrak konusu — çıkarılan konu birincil, yoksa metin başı.
+
+    KVKK: yalnız LLM prompt'larında (grader + terimler) kullanılır → metin-başı fallback'i
+    maskeli döner (ham TCKN/telefon DeepSeek'e gitmesin; cikar/route ile aynı ilke).
+    """
     unsurlar = state.get("bilgi_unsurlari") or {}
     konu = str(unsurlar.get("konu", "") or "").strip()
-    return konu or (state.get("evrak_text", "") or "")[:300]
+    return konu or mask_for_llm((state.get("evrak_text", "") or "")[:300], None)
 
 
 async def _llm_grader(
@@ -151,7 +156,8 @@ async def _llm_mevzuat_terimleri(state: dict[str, Any]) -> list[str] | None:
         _TERIM_SYSTEM,
         (f"EVRAK TÜRÜ: {EVRAK_TURU_TR.get(turu_key, turu_key) or 'belirsiz'}\n"
          f"EVRAK KONUSU/TALEBİ: {_konu_metni(state)}\n\n"
-         f"METİN (ilk bölüm):\n{(state.get('evrak_text', '') or '')[:600]}"),
+         # KVKK: ham metin başı DeepSeek'e maskeli gider (TCKN/telefon künye satırları sık).
+         f"METİN (ilk bölüm):\n{mask_for_llm((state.get('evrak_text', '') or '')[:600], None)}"),
         max_tokens=200,
     )
     ham = (obj or {}).get("terimler")

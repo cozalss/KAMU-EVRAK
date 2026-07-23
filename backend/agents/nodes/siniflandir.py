@@ -562,7 +562,7 @@ async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
         # eskalasyon maliyeti bindirilmez. Mock modda LLM sonucu oluşmaz → dal kapalı.
         if (result["evrak_turu"] == "belirsiz" and SINIFLANDIR_ESKALASYON
                 and SELF_CONSISTENCY_N == 1
-                and (esk := await _eskalasyon_ikinci_gorus(raw)) is not None):
+                and (esk := await _eskalasyon_ikinci_gorus(raw_llm)) is not None):  # KVKK: maskeli (raw değil)
             log.info("siniflandir", turu=esk["evrak_turu"],
                      conf=esk["tur_confidence"], source="llm+eskalasyon")
             return esk

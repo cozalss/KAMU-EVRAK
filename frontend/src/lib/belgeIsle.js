@@ -36,7 +36,11 @@ export function belgeOzetiMd(resp) {
     satir.push(`İlgili mevzuat: ${baslik}`);
   }
   if (resp.yazi_taslak_md) {
-    satir.push("✎ Yanıt taslağı üretildi — **Taslaklar** ekranından görüp gönderebilirsiniz.");
+    // HITL: risk bandı yüksekse taslak DB'ye yazılmadı, memur onayı bekliyor → dürüst mesaj
+    // (bug avı 2026-07-23: 'Taslaklar'dan görebilirsiniz' deniyordu ama taslak orada yoktu).
+    satir.push(resp.onay_bekliyor
+      ? "⏸ Risk bandı yüksek — bu taslak **memur onayı** bekliyor; henüz kaydedilmedi."
+      : "✎ Yanıt taslağı üretildi — **Taslaklar** ekranından görüp gönderebilirsiniz.");
   }
   return satir.join("\n");
 }

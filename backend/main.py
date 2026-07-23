@@ -22,6 +22,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from agents.config import LLM_MODE
+from api.middleware.body_size import MaxBodySizeMiddleware
 from api.middleware.ratelimit import setup_rate_limiting
 from api.middleware.security_headers import SecurityHeadersMiddleware
 from api.routes import kayitlar, mevzuat, mobil, multimodal, process_doc, sla, sohbet, yazi
@@ -70,6 +71,9 @@ app = FastAPI(
 
 # Güvenlik başlıkları — her yanıta nosniff/DENY/Referrer-Policy/CSP (clickjacking + MIME guard).
 app.add_middleware(SecurityHeadersMiddleware)
+
+# Gövde-boyutu kapısı — büyük gövde route/parse'tan ÖNCE 413 (auth'suz upload DoS guard, bug avı).
+app.add_middleware(MaxBodySizeMiddleware)
 
 # CORS — frontend dev sunucusu (Vite :5173) erişebilsin. Origin'ler ENV'den (prod'da
 # gerçek alan adı). Metod/başlık wildcard yerine SPESİFİK → credentials'lı isteklerde

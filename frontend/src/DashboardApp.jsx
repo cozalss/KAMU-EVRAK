@@ -68,6 +68,21 @@ const draftsFromHistory = (items) =>
     name: x.name || "Kalıcı taslak",
   }));
 
+// Kayıt kimliği — persist edilince result.islem_id, öncesinde satır id'si (sentetik).
+const _kayitAnahtar = (r) => r?.result?.islem_id || r?.id;
+
+// DB reconcile'ı in-session state ile BİRLEŞTİR (union): DB snapshot'ta OLMAYAN (henüz
+// persist edilmemiş, islem_id'siz) canlı kayıtları KORU; eşleşenlerde DB gerçeğini al.
+// Bug avı 2026-07-23 (CRITICAL): eski `setHistory(items)` tam-değiştirme, mount'ta ateşlenen
+// islemlerQ persist penceresinden (~20-27sn) önce dönünce, az önce işlenen evrakı UI'dan
+// KALICI siliyordu (islem_id yoktu → snapshot içermiyordu → replace ile kayboluyordu). Persist
+// tamamlanınca kayıt islem_id kazanır → sonraki reconcile'da eşleşip DB sürümüne deduplike olur.
+const _reconcileBirlestir = (mevcut, dbYeni) => {
+  const dbAnahtar = new Set((dbYeni || []).map(_kayitAnahtar));
+  const canliEkstra = (mevcut || []).filter((r) => !dbAnahtar.has(_kayitAnahtar(r)));
+  return [...canliEkstra, ...dbYeni];
+};
+
 // islemIdCoz: sentetik oturum id'sini DB islem id'si sanmayan çözümleyici —
 // lib/taslakId.js'te (saf + node:test regresyon testli).
 
@@ -272,8 +287,9 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     if (islemlerQ.error) { console.warn("Kalıcı işlem geçmişi alınamadı", islemlerQ.error); return; }
     if (!islemlerQ.data) return;
     const items = Array.isArray(islemlerQ.data.kayitlar) ? islemlerQ.data.kayitlar : [];
-    setHistory(items);
-    setDrafts(draftsFromHistory(items));
+    // Union: DB gerçeğini al ama henüz persist edilmemiş canlı kayıtları KORU (bkz. _reconcileBirlestir).
+    setHistory((prev) => _reconcileBirlestir(prev, items));
+    setDrafts((prev) => _reconcileBirlestir(prev, draftsFromHistory(items)));
     // Kuyruk durumunu DB gerçeğiyle BİRLEŞTİR (union): canlı oturumda işaretlenenler
     // korunur, geçmiş oturumların kararları da yansır → gönderilmiş örnek geri düşmez.
     const { processed, sent } = kuyrukDurumuTuret(items, SAMPLE_AD_ID);

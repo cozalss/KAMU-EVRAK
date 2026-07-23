@@ -656,7 +656,9 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   return (
     <div role="dialog" aria-modal="true" aria-label="AI Bürokrasi Kurulu" onClick={onKapat} onKeyDown={odakDongusu}
       style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ width: "min(1060px, 96vw)", margin: "0 auto", display: "flex", flexDirection: "column", gap: SP.m }}>
+      {/* ref+tabIndex: açılışta odak diyalog kabına girer (WCAG dialog deseni; bug avı: kapatRef
+          hiçbir öğeye bağlı değildi → focus no-op, odak arka planda kalıyordu). */}
+      <div ref={kapatRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} style={{ width: "min(1060px, 96vw)", margin: "0 auto", outline: "none", display: "flex", flexDirection: "column", gap: SP.m }}>
 
         {/* Üst şerit — başlık + taslak kimliği + kapat (BelgeModal dili) */}
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>

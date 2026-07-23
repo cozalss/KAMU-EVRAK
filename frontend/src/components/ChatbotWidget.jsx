@@ -24,6 +24,7 @@ const ONERILER = [
 ];
 const KARSILAMA = {
   rol: "asistan",
+  karsilama: true,  // kararlı bayrak: reload'da referans-eşitliği bozulur, bu bayrak korunur (bug avı)
   icerik: "Merhaba! Ben **evrak asistanı**. Gelen/giden evraklarınızı listeleyebilir, " +
     "işlem geçmişinizi gösterebilir, mevzuat arayabilir ve sistemin işleyişini anlatabilirim.",
 };
@@ -202,27 +203,34 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
     const reader = res.body.getReader();
     const dec = new TextDecoder();
     let buf = "";
+    // Tek SSE bloğunu işle (döngüde + döngü sonrası kalan için ortak — bug avı: ayraçsız
+    // son 'done' event'i düşüyordu → sessiz yarım yanıt, kaynak rozeti güncellenmiyordu).
+    const islemBlok = (blok) => {
+      const satir = blok.split("\n").find((l) => l.startsWith("data:"));
+      if (!satir) return;
+      let ev;
+      try { ev = JSON.parse(satir.slice(5)); } catch { return; }
+      if (ev.event === "meta") {
+        sonuGuncelle((son) => ({ ...son, kayitlar: ev.kayitlar, kayit_turu: ev.kayit_turu, oneri_gorunum: ev.oneri_gorunum, onay_bekleyen: ev.onay_bekleyen, mevzuat_kaynaklari: ev.mevzuat_kaynaklari }));
+      } else if (ev.event === "delta" && ev.t) {
+        sonuGuncelle((son) => ({ ...son, icerik: (son.icerik || "") + ev.t }));
+      } else if (ev.event === "done") {
+        setKaynak(ev.kaynak);
+        sonuGuncelle((son) => ({ ...son, icerik: ev.yanit || son.icerik, akiyor: false }));
+      }
+    };
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
       buf += dec.decode(value, { stream: true });
       let i;
       while ((i = buf.indexOf("\n\n")) !== -1) {
-        const satir = buf.slice(0, i).split("\n").find((l) => l.startsWith("data:"));
+        islemBlok(buf.slice(0, i));
         buf = buf.slice(i + 2);
-        if (!satir) continue;
-        let ev;
-        try { ev = JSON.parse(satir.slice(5)); } catch { continue; }
-        if (ev.event === "meta") {
-          sonuGuncelle((son) => ({ ...son, kayitlar: ev.kayitlar, kayit_turu: ev.kayit_turu, oneri_gorunum: ev.oneri_gorunum, onay_bekleyen: ev.onay_bekleyen, mevzuat_kaynaklari: ev.mevzuat_kaynaklari }));
-        } else if (ev.event === "delta" && ev.t) {
-          sonuGuncelle((son) => ({ ...son, icerik: (son.icerik || "") + ev.t }));
-        } else if (ev.event === "done") {
-          setKaynak(ev.kaynak);
-          sonuGuncelle((son) => ({ ...son, icerik: ev.yanit || son.icerik, akiyor: false }));
-        }
       }
     }
+    buf += dec.decode();               // flush (kalan çok-baytlı karakter)
+    if (buf.trim()) islemBlok(buf);    // ayraçsız son event'i de işle
     sonuGuncelle((son) => ({ ...son, akiyor: false }));
   };
 
@@ -233,7 +241,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
     setBekliyor(true);
     // gecmis: karşılama + hata balonları hariç son 8 gerçek tur.
     const gecmis = mesajlar
-      .filter((m) => m !== KARSILAMA && !m.hata)
+      .filter((m) => !m.karsilama && !m.hata)  // karşılama (reload'da yeni obje) + hata balonları hariç
       .slice(-8)
       .map((m) => ({ rol: m.rol, icerik: m.icerik.slice(0, 4000) }));
     const govde = { mesaj, gecmis, ...(onayBaglam ? { onay_baglam: onayBaglam } : {}) };
@@ -317,30 +325,47 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = "";
+      let sonucGeldi = false;
+      // Tek SSE bloğunu işle — döngü + döngü sonrası kalan için ortak (bug avı: ayraçsız son
+      // 'done' event'i düşüyordu → özet hiç görünmüyor, balon 'işleniyor…'da kalıyordu).
+      const islemBlok = (blok) => {
+        const satir = blok.split("\n").find((l) => l.startsWith("data:"));
+        if (!satir) return;
+        let ev;
+        try { ev = JSON.parse(satir.slice(5)); } catch { return; }
+        const o = pipelineOlay(ev);
+        if (o.tip === "node") {
+          bitenler.push(`✓ ${makeNode(o.node).label}`);
+          sonuGuncelle((son) => ({ ...son, icerik: `📄 Belge işleniyor…\n${bitenler.join("\n")}` }));
+        } else if (o.tip === "sonuc") {
+          sonucGeldi = true;
+          setKaynak("llm");
+          sonuGuncelle((son) => ({ ...son, icerik: belgeOzetiMd(o.sonuc), akiyor: false }));
+        } else if (o.tip === "hata") {
+          sonucGeldi = true;
+          sonuGuncelle((son) => ({ ...son, icerik: `Belge işlenemedi: ${o.mesaj}`, akiyor: false, hata: true }));
+        }
+      };
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
         buf += dec.decode(value, { stream: true });
         let i;
         while ((i = buf.indexOf("\n\n")) !== -1) {
-          const satir = buf.slice(0, i).split("\n").find((l) => l.startsWith("data:"));
+          islemBlok(buf.slice(0, i));
           buf = buf.slice(i + 2);
-          if (!satir) continue;
-          let ev;
-          try { ev = JSON.parse(satir.slice(5)); } catch { continue; }
-          const o = pipelineOlay(ev);
-          if (o.tip === "node") {
-            bitenler.push(`✓ ${makeNode(o.node).label}`);
-            sonuGuncelle((son) => ({ ...son, icerik: `📄 Belge işleniyor…\n${bitenler.join("\n")}` }));
-          } else if (o.tip === "sonuc") {
-            setKaynak("llm");
-            sonuGuncelle((son) => ({ ...son, icerik: belgeOzetiMd(o.sonuc), akiyor: false }));
-          } else if (o.tip === "hata") {
-            sonuGuncelle((son) => ({ ...son, icerik: `Belge işlenemedi: ${o.mesaj}`, akiyor: false, hata: true }));
-          }
         }
       }
-      sonuGuncelle((son) => ({ ...son, akiyor: false }));
+      buf += dec.decode();               // flush
+      if (buf.trim()) islemBlok(buf);    // ayraçsız son event'i de işle
+      if (!sonucGeldi) {                 // hiç sonuç/hata gelmedi → dürüst yarım-kaldı mesajı
+        sonuGuncelle((son) => ({
+          ...son, akiyor: false, hata: true, tekrar: () => belgeYukle(text),
+          icerik: "Belge işleme yarım kaldı — sonuç alınamadı. Tekrar deneyin.",
+        }));
+      } else {
+        sonuGuncelle((son) => ({ ...son, akiyor: false }));
+      }
     } catch (err) {
       sonuGuncelle((son) => ({
         ...son, akiyor: false, hata: true, tekrar: () => belgeYukle(text),

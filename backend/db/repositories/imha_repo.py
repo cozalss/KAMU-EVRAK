@@ -11,11 +11,15 @@ import datetime as _dt
 import re
 import uuid
 
+import structlog
 from sqlalchemy import delete, select, text, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from agents.config import saklama_suresi
 from db.models import BilgiUnsuru, GelenEvrak, Islem, KanitSpan, Taslak
+
+log = structlog.get_logger()
 
 _ANONIM = "[İMHA EDİLDİ — saklama süresi doldu (KVKK md.7)]"
 _GUN_YIL = 365
@@ -106,13 +110,34 @@ async def sil(session: AsyncSession, *, evrak_id: uuid.UUID) -> None:
 
 async def imha_uygula(session: AsyncSession, *, simdi: _dt.datetime | None = None,
                       yontem: str = "anonimlestir") -> dict:
-    """Süresi dolan tüm evraklara imha uygula. yontem: 'anonimlestir' | 'sil'. Özet döner."""
+    """Süresi dolan tüm evraklara imha uygula. yontem: 'anonimlestir' | 'sil'. Özet döner.
+
+    Dayanıklılık (bug avı 2026-07-23): 'sil' yolunda gönderilmiş/onaylanmış evrak taslak
+    giden_evrak'a RESTRICT FK ile bağlıysa DELETE ForeignKeyViolation atar. Eskiden bu
+    yakalanmıyordu → job traceback ile çöküyor, önceki evraklar silinmiş kalıyor, sonrakiler
+    hiç işlenmiyor, sorunlu kayıt bir daha imha edilemiyordu (KVKK md.7 yükümlülüğü bloke).
+    Artık her kayıt izole: hata → rollback + anonimleştirmeye düş (imha yine karşılanır) +
+    başarısızları raporla. Tek kayıt tüm koşumu düşürmez.
+    """
     dolmus = await suresi_dolmus(session, simdi=simdi)
     islem_fn = sil if yontem == "sil" else anonimlestir
+    basarili: list[str] = []
+    basarisiz: list[str] = []
     for d in dolmus:
-        await islem_fn(session, evrak_id=d["id"])
-    return {"yontem": yontem, "imha_edilen": len(dolmus),
-            "evraklar": [d["evrak_no"] for d in dolmus]}
+        try:
+            await islem_fn(session, evrak_id=d["id"])
+            basarili.append(d["evrak_no"])
+        except IntegrityError:
+            await session.rollback()  # RESTRICT FK (gönderilmiş taslak) → silinemez; anonimleştir
+            try:
+                await anonimlestir(session, evrak_id=d["id"])
+                basarili.append(f"{d['evrak_no']} (silinemedi → anonimleştirildi)")
+            except Exception as exc:
+                await session.rollback()
+                log.warning("imha_kayit_basarisiz", evrak_no=d["evrak_no"], error=type(exc).__name__)
+                basarisiz.append(d["evrak_no"])
+    return {"yontem": yontem, "imha_edilen": len(basarili),
+            "evraklar": basarili, "basarisiz": basarisiz}
 
 
 __all__ = ("anonimlestir", "imha_uygula", "saklama_yil", "sil", "suresi_dolmus", "yetim_gelen_evrak")

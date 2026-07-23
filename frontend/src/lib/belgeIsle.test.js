@@ -35,6 +35,12 @@ test("belgeOzetiMd: boş yanıt dürüst hata döndürür (uydurmaz)", () => {
   assert.match(belgeOzetiMd(null), /işlenemedi/);
 });
 
+test("belgeOzetiMd: onay_bekliyor → 'memur onayı bekliyor' (Taslaklar'a yönlendirmez)", () => {
+  const md = belgeOzetiMd({ evrak_turu: "dilekce", yazi_taslak_md: "T.C. ...", onay_bekliyor: true });
+  assert.match(md, /memur.*onay/i);
+  assert.doesNotMatch(md, /Taslaklar.*görüp gönderebilirsiniz/);
+});
+
 test("belgeOzetiMd: eksik alanlar atlanır (satır uydurulmaz)", () => {
   const md = belgeOzetiMd({ evrak_turu: "belirsiz" });
   assert.match(md, /belirsiz/);

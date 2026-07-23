@@ -12,9 +12,11 @@ fallback'e düşer, çökme olmaz). PII sentetik/sahtedir (CLAUDE.md §2).
 from __future__ import annotations
 
 import agents.nodes.cikar as cikar_mod
+import agents.nodes.crag as crag_mod
 import agents.nodes.decompose as decompose_mod
 import agents.nodes.eksik_tespit as eksik_mod
 import agents.nodes.ozetle as ozetle_mod
+import agents.nodes.route_birim as route_mod
 import agents.nodes.siniflandir as siniflandir_mod
 
 # Sentetik SAHTE PII (checksum-geçerli değil, kurgu — CLAUDE.md §2)
@@ -85,4 +87,40 @@ class TestLlmPiiSizintiGuard:
         monkeypatch.setattr(decompose_mod, "llm_json", fake)
         await decompose_mod.decompose_node({"evrak_text": _METIN})
         assert "user" in kayit, "decompose çok-konulu LLM segmentini çağırmadı — test yolu kırık"
+        _pii_yok(kayit["user"])
+
+    # --- Bug-avı 2026-07-23: yan LLM yolları da maskeli (eskalasyon/route/crag) ---
+
+    async def test_siniflandir_eskalasyon_ham_pii_gitmez(self, monkeypatch):
+        # Birincil LLM 'belirsiz' → reasoner eskalasyonu; ona da maskeli metin gitmeli.
+        kayit = {}
+
+        async def _esk_yakala(raw):
+            kayit["raw"] = raw
+            return None
+
+        async def _fake_llm(system, user, **kwargs):
+            return {"evrak_turu": "belirsiz", "tur_confidence": 0.5}
+
+        monkeypatch.setattr(siniflandir_mod, "llm_json", _fake_llm)
+        monkeypatch.setattr(siniflandir_mod, "_eskalasyon_ikinci_gorus", _esk_yakala)
+        monkeypatch.setattr(siniflandir_mod, "SINIFLANDIR_ESKALASYON", True)
+        monkeypatch.setattr(siniflandir_mod, "SELF_CONSISTENCY_N", 1)
+        await siniflandir_mod.siniflandir_node({"evrak_text": _METIN})
+        assert "raw" in kayit, "eskalasyon tetiklenmedi — test yolu kırık"
+        _pii_yok(kayit["raw"])
+
+    async def test_route_birim_llm_ham_pii_gitmez(self, monkeypatch):
+        kayit, fake = _yakalayan()
+        monkeypatch.setattr(route_mod, "llm_json", fake)
+        monkeypatch.setattr(route_mod, "real_llm", lambda: object())  # LLM dalını aç
+        await route_mod._route_birim_impl({"evrak_text": _METIN, "evrak_turu": "belirsiz"})
+        assert "user" in kayit, "route_birim LLM dalı çağrılmadı — test yolu kırık"
+        _pii_yok(kayit["user"])
+
+    async def test_crag_mevzuat_terimleri_ham_pii_gitmez(self, monkeypatch):
+        kayit, fake = _yakalayan()
+        monkeypatch.setattr(crag_mod, "llm_json", fake)
+        await crag_mod._llm_mevzuat_terimleri({"evrak_text": _METIN, "evrak_turu": "dilekce"})
+        assert "user" in kayit, "crag terimler LLM'i çağrılmadı — test yolu kırık"
         _pii_yok(kayit["user"])

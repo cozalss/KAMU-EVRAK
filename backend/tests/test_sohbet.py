@@ -483,6 +483,35 @@ class TestKurulIsle:
 
 
 # ---------------------------------------------------------------------------
+# Hedef-by-name — onay/revize/kurul kullanıcının andığı taslağı seçer (bug avı 2026-07-23)
+# ---------------------------------------------------------------------------
+class TestHedefByName:
+    def test_hedef_ipucu_komut_kelimelerini_atar(self):
+        from api.routes.sohbet import _hedef_ipucu
+        assert "park" in _hedef_ipucu("Park dilekçesini onayla")
+        assert "icra" in _hedef_ipucu("icra yazısını kurula sun")
+        # revize: ':' sonrası talimat hedef ipucuna karışmaz
+        assert "düzelt" not in _hedef_ipucu("Park taslağını revize et: kapanışı düzelt")
+
+    async def test_onay_hedefi_ada_gore_yoksa_en_yeni(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        async def _listele(session, owner_id, limit):
+            return [
+                {"name": "İcra yazısı", "bant": "kirmizi",
+                 "result": {"yazi_taslak_md": "x", "islem_id": "1", "onay_durumu": ""}},
+                {"name": "Park dilekçesi", "bant": "yesil",
+                 "result": {"yazi_taslak_md": "y", "islem_id": "2", "onay_durumu": ""}},
+            ]
+
+        monkeypatch.setattr(sohbet_mod, "islem_listele", _listele)
+        h0 = await sohbet_mod.onay_hedefi_bul(None, "u1")            # q yok → en yeni
+        assert h0["name"] == "İcra yazısı"
+        h1 = await sohbet_mod.onay_hedefi_bul(None, "u1", "park dilekçesi")  # ada göre
+        assert h1["name"] == "Park dilekçesi" and h1["islem_id"] == "2"
+
+
+# ---------------------------------------------------------------------------
 # bilgi_yaniti — site bilgi tabanı (statik, mevzuat uydurmaz)
 # ---------------------------------------------------------------------------
 class TestBilgiYaniti:
@@ -694,7 +723,7 @@ class TestSohbetOnayAkisi:
         # Arrange — onay hedefi çözümlemesini sahte işlemle değiştir (DB yok).
         from api.routes import sohbet as sohbet_mod
 
-        async def _sahte_hedef(session, owner_id):
+        async def _sahte_hedef(session, owner_id, q=""):
             return {"islem_id": "11111111-1111-1111-1111-111111111111",
                     "name": "Park dilekçesi", "bant": "yesil"}
 

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import time
 import uuid
 from collections.abc import AsyncIterator
@@ -397,13 +398,39 @@ def _kart_kayitlari(intent: str, veri: Any) -> list[dict[str, Any]] | None:
 # --------------------------------------------------------------------------
 # HITL aksiyonları — sohbetten onay/ret (iki adımlı teyit; buton akışıyla aynı kurallar)
 # --------------------------------------------------------------------------
-async def onay_hedefi_bul(session: AsyncSession, owner_id: Any) -> dict[str, Any] | None:
-    """Onaylanabilir en yeni işlem (taslağı olan, kararı verilmemiş). Monkeypatch noktası."""
+# Mesajdan hedef taslak ADI ipucu — komut/dolgu kelimelerini at, kalan (ad parçası) döner.
+# "Park dilekçesini onayla" → "park dilekçesini"; böylece kullanıcının adını andığı taslak
+# 'en yeni' yerine seçilir (bug avı 2026-07-23: yanlış-taslak onayı/gönderimi riski).
+_HEDEF_TEMIZLE = re.compile(
+    r"\b(onayla\w*|reddet\w*|revize\s*et\w*|revize|düzelt\w*|değiştir\w*|güncelle\w*|kurula\s*sun\w*"
+    r"|kurula\s*getir\w*|kurula|kurul|müzakere\w*|sun|gönder\w*|taslağ?ı\w*|taslak\w*|yazıyı|yazı"
+    r"|belge\w*|evrağ?ı\w*|evrak\w*|bu|şu|son|en|lütfen)\b",
+    re.IGNORECASE)
+
+
+def _hedef_ipucu(mesaj: str) -> str:
+    """Hedef taslak adı ipucu (revize'de ':' ÖNCESİ — talimat sonrada kalır)."""
+    once = (mesaj or "").split(":", 1)[0]
+    kalan = _HEDEF_TEMIZLE.sub(" ", once)
+    kalan = re.sub(r"[:\-–—]", " ", kalan)
+    return re.sub(r"\s+", " ", kalan).strip().lower()[:80]
+
+
+async def onay_hedefi_bul(session: AsyncSession, owner_id: Any, q: str = "") -> dict[str, Any] | None:
+    """Onaylanabilir işlem — q verilirse ADA göre, yoksa en yeni (taslaklı, kararsız). Monkeypatch noktası."""
     rows = await islem_listele(session, owner_id=owner_id, limit=10)
-    for r in rows:
-        res = r.get("result") or {}
-        if res.get("yazi_taslak_md") and res.get("islem_id") and not res.get("onay_durumu"):
-            return {"islem_id": res["islem_id"], "name": r.get("name"), "bant": r.get("bant")}
+    adaylar = [r for r in rows
+               if (r.get("result") or {}).get("yazi_taslak_md")
+               and (r.get("result") or {}).get("islem_id")
+               and not (r.get("result") or {}).get("onay_durumu")]
+    if q:  # kullanıcının andığı ada göre seç (substring); yoksa en yeniye düş
+        for r in adaylar:
+            if q in (r.get("name") or "").lower():
+                res = r["result"]
+                return {"islem_id": res["islem_id"], "name": r.get("name"), "bant": r.get("bant")}
+    if adaylar:
+        res = adaylar[0]["result"]
+        return {"islem_id": res["islem_id"], "name": adaylar[0].get("name"), "bant": adaylar[0].get("bant")}
     return None
 
 
@@ -454,10 +481,10 @@ async def _onay_teyidini_isle(
                        oneri_gorunum="giden", kaynak="fallback")
 
 
-async def _onay_baslat(intent: str, user: Any, session: AsyncSession) -> SohbetYanit:
+async def _onay_baslat(intent: str, user: Any, session: AsyncSession, q: str = "") -> SohbetYanit:
     """Aksiyon niyetini teyit sorusuna çevir (eylem HEMEN uygulanmaz — HITL)."""
     try:
-        hedef = await onay_hedefi_bul(session, user.id)
+        hedef = await onay_hedefi_bul(session, user.id, q)
     except Exception as exc:
         log.warning("sohbet_onay_hedef_hatasi", error=type(exc).__name__)
         hedef = None
@@ -516,7 +543,7 @@ async def _revize_isle(istek: SohbetIstek, user: Any, session: AsyncSession) -> 
                    "'arz ederim' yap\"."),
             intent=intent, oneri_gorunum="taslaklar", kaynak="fallback")
     try:
-        hedef = await revize_hedefi_bul(session, user.id)
+        hedef = await revize_hedefi_bul(session, user.id, _hedef_ipucu(istek.mesaj))
     except Exception as exc:  # DB hatası sohbeti düşürmesin
         log.warning("sohbet_revize_hedef_hatasi", error=type(exc).__name__)
         hedef = None
@@ -585,7 +612,7 @@ async def _kurul_isle(istek: SohbetIstek, user: Any, session: AsyncSession) -> S
     """Taslağı Bürokrasi Kurulu'na sun — karar + öne çıkan öneriler; LLM yoksa dürüst yönlendirme."""
     intent = "kurula_sun"
     try:
-        hedef = await revize_hedefi_bul(session, user.id)
+        hedef = await revize_hedefi_bul(session, user.id, _hedef_ipucu(istek.mesaj))
     except Exception as exc:
         log.warning("sohbet_kurul_hedef_hatasi", error=type(exc).__name__)
         hedef = None
@@ -627,7 +654,7 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
     niyet, llm_niyet = await _niyet_tespit(istek.mesaj, istek.gecmis)
     intent = niyet["intent"]
     if intent in ("taslak_onayla", "taslak_reddet"):
-        return await _onay_baslat(intent, user, session)
+        return await _onay_baslat(intent, user, session, _hedef_ipucu(istek.mesaj))
     if intent == "taslak_revize":
         return await _revize_isle(istek, user, session)
     if intent == "kurula_sun":
@@ -690,14 +717,12 @@ async def _kompoz_akisi(
         messages=[ChatMessage(role="system", content=_KOMPOZ_SYSTEM),
                   ChatMessage(role="user", content=_kompoz_user(mesaj, veri, gecmis_metni))],
         temperature=0.2, max_tokens=400, on_token=kuyruk.put_nowait))
-    akti, hata, son = False, False, time.monotonic() + LLM_NODE_TIMEOUT_S
+    akti, son = False, time.monotonic() + LLM_NODE_TIMEOUT_S
     while True:
         if time.monotonic() > son:  # bütçe doldu — kısmi metinle bitir (demo asılı kalmaz)
             task.cancel()
-            hata = not akti
             break
-        if task.done() and kuyruk.empty():
-            hata = task.cancelled() or (task.exception() is not None)
+        if task.done() and kuyruk.empty():  # akış bitti (normal/iptal/istisna) → akti belirler
             break
         try:
             parca = await asyncio.wait_for(kuyruk.get(), timeout=0.25)
@@ -705,7 +730,7 @@ async def _kompoz_akisi(
             continue
         akti = True
         yield "delta", parca
-    if hata and not akti:  # hiç token akmadı → deterministik şablon
+    if not akti:  # hiç token akmadı (hata VEYA boş/whitespace completion) → deterministik şablon
         yield "delta", sablon_yanit(intent, veri)
         yield "kaynak", "fallback"
     else:
@@ -722,7 +747,7 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
         niyet, llm_niyet = await _niyet_tespit(istek.mesaj, istek.gecmis)
         intent = niyet["intent"]
         if intent in ("taslak_onayla", "taslak_reddet"):
-            hazir = await _onay_baslat(intent, user, session)
+            hazir = await _onay_baslat(intent, user, session, _hedef_ipucu(istek.mesaj))
         elif intent == "taslak_revize":
             hazir = await _revize_isle(istek, user, session)
         elif intent == "kurula_sun":

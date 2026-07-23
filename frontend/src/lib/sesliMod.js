@@ -33,19 +33,28 @@ export function sttDestekleniyorMu() {
 /**
  * Push-to-talk ses tanıma nesnesi oluşturur (tr-TR, tek-seferlik sonuç). Desteklenmiyorsa
  * null döner (çağıran mikrofon butonunu hiç göstermez — sessiz devre dışı).
- * @param {{ onSonuc: (metin: string) => void, onBitti?: () => void, onHata?: (e: unknown) => void }} handlers
+ * onAra verilirse anlık (interim) sonuçlar açılır — kullanıcı konuşurken kelimeler canlı akar
+ * (sesli görüşmede "canlı" his); verilmezse yalnız kesin sonuç (metin sohbet mikrofonu böyle).
+ * @param {{ onSonuc: (metin: string) => void, onAra?: (metin: string) => void, onBitti?: () => void, onHata?: (e: unknown) => void }} handlers
  * @returns {{ start: () => void, stop: () => void } | null}
  */
-export function sesTanimaOlustur({ onSonuc, onBitti, onHata }) {
+export function sesTanimaOlustur({ onSonuc, onAra, onBitti, onHata }) {
   if (!sttDestekleniyorMu()) return null;
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const tanima = new Recognition();
   tanima.lang = "tr-TR";
-  tanima.interimResults = false;
+  tanima.interimResults = !!onAra;   // interim yalnız istenirse (opt-in)
   tanima.maxAlternatives = 1;
   tanima.onresult = (e) => {
-    const metin = e.results?.[0]?.[0]?.transcript?.trim();
-    if (metin) onSonuc(metin);
+    let ara = "", son = "";
+    const bas = e.resultIndex ?? 0;
+    for (let i = bas; i < (e.results?.length ?? 0); i++) {
+      const r = e.results[i];
+      const t = r?.[0]?.transcript ?? "";
+      if (r?.isFinal === false) ara += t; else son += t;   // isFinal undefined → kesin (geriye uyum)
+    }
+    if (ara.trim() && onAra) onAra(ara.trim());
+    if (son.trim()) onSonuc(son.trim());
   };
   tanima.onerror = (e) => onHata?.(e);
   tanima.onend = () => onBitti?.();

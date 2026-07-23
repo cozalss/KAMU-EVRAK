@@ -444,13 +444,6 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
                 {kaynak && <span style={{ marginLeft: SP.s, color: kaynak === "llm" ? DERIN.T : PAL.mut3 }}>[{kaynak === "llm" ? "canlı model" : "kural tabanlı"}]</span>}
               </div>
             </div>
-            {sttVar && (
-              <button ref={sesliBtnRef} type="button" data-press aria-label="Sesli görüşme başlat"
-                title="Sesli görüşme — tam ekran, konuşarak sohbet et" onClick={() => setSesliAcik(true)} {...focusRing}
-                style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${ALFA(T)}`, background: ALFA(T), color: DERIN.T, display: "grid", placeItems: "center", padding: 0, transition: "background .12s ease-out" }}>
-                <Icon.audio width={16} height={16} />
-              </button>
-            )}
             {mesajlar.length > 1 && (
               <button type="button" aria-label="Sohbet geçmişini temizle" title="Geçmişi temizle" onClick={gecmisiTemizle} {...focusRing}
                 style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0 }}>
@@ -548,6 +541,24 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="9" cy="9.5" r="1" fill="currentColor" /><circle cx="12.5" cy="9.5" r="1" fill="currentColor" /><circle cx="16" cy="9.5" r="1" fill="currentColor" /></svg>
         )}
       </button>
+
+      {/* Sesli görüşme yuvarlak butonu — sohbet FAB'ının SOLUNDA, chat açıkken belirir
+          (kullanıcı isteği: FAB'a basınca yanında yuvarlak buton → Metin ile sesli görüş). */}
+      {acik && sttVar && (
+        <button ref={sesliBtnRef} type="button" data-press onClick={() => setSesliAcik(true)}
+          aria-label="Kamu Evrak ile sesli görüş" title="Kamu Evrak ile sesli görüş" {...focusRing}
+          onMouseEnter={(e) => { e.currentTarget.style.background = DERIN.Th; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = DERIN.T; }}
+          style={{
+            position: "fixed", right: SP.xl + 58 + SP.m, bottom: SP.xl, zIndex: 150, width: 58, height: 58,
+            borderRadius: RAD.dot, border: "none", cursor: "pointer", display: "grid", placeItems: "center",
+            background: DERIN.T, color: PAL.onAccent, boxShadow: SH.pop,
+            animation: "nu-pop .2s var(--ke-ease-out) both",
+            transition: "background .14s ease-out",
+          }}>
+          <Icon.audio width={23} height={23} />
+        </button>
+      )}
 
       {/* Tam-ekran sesli görüşme — asistandan başlatılır; kapanınca odak başlatan butona döner. */}
       <SesliGorusme acik={sesliAcik} onKapat={() => { setSesliAcik(false); sesliBtnRef.current?.focus(); }} />

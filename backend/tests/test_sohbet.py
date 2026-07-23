@@ -859,6 +859,24 @@ class TestSesliPersona:
         assert "UYDURMA" in s                              # grounding metin moduyla aynı sıkılıkta
         assert "kısa" in s.lower()                         # spoken kısalık disiplini
 
+    def test_persona_prompt_uzmanlik_ve_kalibrasyon(self):
+        """Dünya-standardı uzman: doğrulanmış alan bilgisi + iki-mod grounding + kalibrasyon."""
+        from api.routes import sohbet as sohbet_mod
+
+        s = sohbet_mod._SESLI_SYSTEM
+        # Doğrulanmış mevzuat bilgisi gömülü (memur sorularına güvenle cevap)
+        assert "3071" in s and "otuz gün" in s             # dilekçe süresi
+        assert "4982" in s                                 # bilgi edinme
+        assert "arz" in s and "rica" in s                  # resmî yazışma kapanış hiyerarşisi
+        assert "İlgi" in s or "ilgi" in s                  # ilgi/sayı yapısı
+        # İki-mod grounding: veri sorusu vs bilgi/nasıl sorusu
+        assert "VERİ" in s and ("BİLGİ" in s or "NASIL" in s)
+        # Kalibrasyon: spesifik madde/kod uydurma → doğrulamaya yönlendir
+        assert "2646" in s                                 # spesifik madde no'da temkin
+        assert "doğrula" in s.lower()                       # kaynağa yönlendirme
+        # Bu sistemin işleyişini de anlatabilir
+        assert "Risk bandı" in s or "risk bandı" in s.lower()
+
     async def test_sesli_yanit_kompoze_dogru_sistem_promptu_secer(self, monkeypatch):
         from api.routes import sohbet as sohbet_mod
 
@@ -866,15 +884,18 @@ class TestSesliPersona:
 
         async def _sahte_llm_text(system, user, **kw):
             yakalanan["system"] = system
+            yakalanan["max_tokens"] = kw.get("max_tokens")
             return "Üç evrak var."
 
         monkeypatch.setattr(sohbet_mod, "llm_text", _sahte_llm_text)
-        # sesli=True → SESLİ persona prompt'u
+        # sesli=True → SESLİ persona prompt'u + kısa max_tokens (sesli kısalık güvencesi)
         await sohbet_mod._yanit_kompoze("kaç evrak var", "genel", [{"x": 1}], "", True)
         assert yakalanan["system"] == sohbet_mod._SESLI_SYSTEM
-        # sesli=False → klasik metin prompt'u (regresyon: metin sohbeti değişmedi)
+        assert yakalanan["max_tokens"] == 150
+        # sesli=False → klasik metin prompt'u + normal max_tokens (regresyon: metin sohbeti değişmedi)
         await sohbet_mod._yanit_kompoze("kaç evrak var", "genel", [{"x": 1}], "", False)
         assert yakalanan["system"] == sohbet_mod._KOMPOZ_SYSTEM
+        assert yakalanan["max_tokens"] == 400
 
     def test_sohbet_stream_sesli_flag_kabul_eder(self, auth_client: TestClient):
         # sesli=true ile stream 200 döner (mock modda deterministik; şema alanı kabul edilir).

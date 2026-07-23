@@ -92,3 +92,27 @@ test("sesTanimaOlustur: onerror/onend geçilen handler'lara yönlenir", () => {
   assert.equal(bitti, true);
   delete globalThis.window;
 });
+
+test("sesTanimaOlustur: onAra verilince interim açılır ve interim metni bildirir", () => {
+  class SahteRecognition { start() {} stop() {} }
+  globalThis.window = { SpeechRecognition: SahteRecognition };
+  let ara = null, son = null;
+  const t = sesTanimaOlustur({ onSonuc: (m) => { son = m; }, onAra: (m) => { ara = m; } });
+  assert.equal(t.interimResults, true);
+  // interim (isFinal:false) → onAra, onSonuc değil
+  t.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "merhaba" }], { isFinal: false })] });
+  assert.equal(ara, "merhaba");
+  assert.equal(son, null);
+  // kesin (isFinal:true) → onSonuc
+  t.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: "merhaba dünya" }], { isFinal: true })] });
+  assert.equal(son, "merhaba dünya");
+  delete globalThis.window;
+});
+
+test("sesTanimaOlustur: onAra yoksa interim kapalı (metin sohbet mikrofonu etkilenmez)", () => {
+  class SahteRecognition { start() {} stop() {} }
+  globalThis.window = { SpeechRecognition: SahteRecognition };
+  const t = sesTanimaOlustur({ onSonuc: () => {} });
+  assert.equal(t.interimResults, false);
+  delete globalThis.window;
+});

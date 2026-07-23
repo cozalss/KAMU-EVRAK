@@ -186,6 +186,7 @@ export const NEON_KEYFRAMES = `
 @keyframes ke-orb-b{from{transform:rotate(0) translate(-6%,6%)}to{transform:rotate(-360deg) translate(-6%,6%)}}
 @keyframes ke-orb-c{from{transform:rotate(0) translate(5%,-7%)}to{transform:rotate(360deg) translate(5%,-7%)}}
 @keyframes ke-orb-halka{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.7);opacity:0}}
+@keyframes ke-orb-hue{0%,100%{filter:hue-rotate(-9deg)}50%{filter:hue-rotate(11deg)}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 /* Press feedback (emil-design-eng): tıklanabilir öğe basılınca hafif scale(.97) — arayüz
    kullanıcıyı "duyuyor" hissi. Opt-in (yalnız data-press taşıyanlar); :active durum stili

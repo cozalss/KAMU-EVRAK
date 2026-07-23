@@ -10,6 +10,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { authFetch } from "../lib/authApi.js";
 import { DURUM, rmsGenlik, sonrakiDurum, yumusat } from "../lib/sesGorusme.js";
+import { blobNoktalari, blobYolu } from "../lib/orbCizim.js";
 import { sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { sesliMetneCevir } from "../lib/sesliMod.js";
 import {
@@ -18,7 +19,7 @@ import {
 
 const ORB_BOYUT = "clamp(200px, 38vh, 340px)"; // masaüstü büyük, telefonda sığar
 const FFT = 1024;                 // ~512 bin; research deseni (smoothingTimeConstant 0.4)
-const SCALE_K = 0.2;              // genlik → +%20 scale (fazlası "ucuz" görünür)
+const SCALE_K = 0.13;             // genlik → hafif scale; asıl tepki KENAR sıvı-morph'unda (aş. dongu)
 const NEFES = 0.022;              // idle "nefes" salınımı ±%2.2
 const YUM = 0.15;                 // genlik yumuşatma (exponential) — ham FFT titrek, bu "confident"
 
@@ -26,9 +27,9 @@ const DURUM_ETIKET = {
   [DURUM.HAZIR]: "Hazır", [DURUM.DINLIYOR]: "Dinliyor",
   [DURUM.DUSUNUYOR]: "Düşünüyor", [DURUM.KONUSUYOR]: "Yanıtlıyor",
 };
-// Açılış karşılaması — persona (backend SESLI_PERSONA_ADI, varsayılan "Metin") ile eşleşir.
+// Açılış karşılaması — persona (backend SESLI_PERSONA_ADI, varsayılan "Kamu Evrak") ile eşleşir.
 // Env'de isim değişirse bu metni de güncelle. TTS varsa sesli okunur, yoksa yalnız görünür.
-const KARSILAMA = "Merhaba, ben Metin. Evrak işlerinizde size yardımcı olmak için buradayım. Buyurun, sizi dinliyorum.";
+const KARSILAMA = "Merhaba, ben Kamu Evrak. Belge ve yazışma işlerinizde size yardımcı olmak için buradayım. Buyurun, sizi dinliyorum.";
 
 // Düşük opaklıklı grain — düz vektör gradyanı "enerji topu"na çevirir (research §1).
 const GRAIN =
@@ -63,9 +64,12 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   const audioElRef = useRef(null);
   const mediaBagliRef = useRef(false);
   const abortRef = useRef(null);
+  const gecmisRef = useRef([]);     // çok-turlu konuşma hafızası — takip soruları bağlam kazanır
+  const hataSayacRef = useRef(0);   // ardışık STT hatası (no-speech) — eşikte kullanıcıyı uyar
 
   const orbRef = useRef(null);
   const haloRef = useRef(null);
+  const olcuRef = useRef(0);        // orb px boyutu (clip-path sıvı kenar için ölçülür)
   const dialogRef = useRef(null);
   const urlRef = useRef(null);      // çalan TTS blob URL'i — barge-in/kapatmada revoke edilir
   const micSrcRef = useRef(null);   // mic MediaStreamSource — kapanışta disconnect
@@ -91,8 +95,24 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     const seviye = az ? 0 : seviyeRef.current;   // reduced-motion: hem scale hem halo donuk
     const nefes = az ? 0 : Math.sin(ts / 1800) * NEFES;
     const scale = 1 + nefes + seviye * SCALE_K;
-    if (orbRef.current) orbRef.current.style.transform = `scale(${scale.toFixed(4)})`;
-    if (haloRef.current) haloRef.current.style.opacity = (0.32 + seviye * 0.55).toFixed(3);
+    if (orbRef.current) {
+      orbRef.current.style.transform = `scale(${scale.toFixed(4)})`;
+      // Sıvı kenar — "cam bilye"yi "canlı enerji"ye çeviren asıl öğe: spline+noise blob'u
+      // clip-path olarak sür (mükemmel daire değil, organik dalgalanan hat). Genlik arttıkça
+      // kenar DAHA ÇOK kıpırdar (sadece büyümez — araştırma §2/5). CSS gradyan katmanları korunur.
+      const boyut = olcuRef.current;
+      if (az || !boyut) {
+        orbRef.current.style.clipPath = "none";
+      } else {
+        // r + max amp < 0.5*boyut olmalı: aksi halde overflow:hidden dairesi wobble tepelerini
+        // düzleştirir. r=0.40 + amp≤0.075 = 0.475 < 0.5 → güvenli, kenar tam serbest dalgalanır.
+        const c = boyut / 2, r = boyut * 0.40;
+        const amp = boyut * (0.02 + seviye * 0.055);
+        const pts = blobNoktalari(c, c, r, 10, ts * 0.0011, amp);
+        orbRef.current.style.clipPath = `path('${blobYolu(pts)}')`;
+      }
+    }
+    if (haloRef.current) haloRef.current.style.opacity = (0.3 + seviye * 0.6).toFixed(3);
     rafRef.current = requestAnimationFrame(dongu);
   }, []);
 
@@ -102,7 +122,8 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     abortRef.current = ac;
     const res = await authFetch("/sohbet/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mesaj: metin, gecmis: [], sesli: true }), signal: ac.signal,
+      // Çok-turlu hafıza: bu tura kadarki geçmişi gönder → "peki kaçı acil?" gibi takipler bağlam kazanır.
+      body: JSON.stringify({ mesaj: metin, gecmis: gecmisRef.current, sesli: true }), signal: ac.signal,
     });
     if (!res.ok || !res.body) throw new Error(`akış ${res.status}`);
     const reader = res.body.getReader();
@@ -175,11 +196,15 @@ export default function SesliGorusme({ acik = false, onKapat }) {
 
   // --- Bir tur: transcript → beyin → seslendir ---
   const turIsle = useCallback(async (metin) => {
+    hataSayacRef.current = 0;   // sesim duyuldu → hata sayacını sıfırla
     setSonUser(metin); setSonYanit(""); gecir("sonuc");
     try {
       const yanit = await beyinCagir(metin);
       if (!acikRef.current) return;
       if (!yanit) { gecir("yanit_bitti"); dinle(); return; }
+      // Turu hafızaya ekle (son 8 mesaj — backend şema sınırı) → sonraki tur bağlam taşır.
+      gecmisRef.current = [...gecmisRef.current,
+        { rol: "kullanici", icerik: metin }, { rol: "asistan", icerik: yanit }].slice(-8);
       await seslendir(yanit);
     } catch {
       if (acikRef.current) { setUyari("Yanıt alınamadı — tekrar dinliyorum."); gecir("hata"); dinle(); }
@@ -196,6 +221,7 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     tanimaRef.current = null;
     gecir("dinle");
     const t = sesTanimaOlustur({
+      onAra: (m) => { if (m && durumRef.current === DURUM.DINLIYOR) setSonUser(m); }, // canlı kelimeler
       onSonuc: (m) => { if (m) turIsle(m); },
       onBitti: () => {
         // YALNIZ hâlâ GÜNCEL instance isek yeniden başlat — eski/orphan t kendini restart etmesin.
@@ -203,7 +229,13 @@ export default function SesliGorusme({ acik = false, onKapat }) {
           try { t.start(); } catch { /* zaten çalışıyor */ }
         }
       },
-      onHata: () => { /* izin/ağ — sessiz, kullanıcı tekrar deneyebilir */ },
+      onHata: (e) => {
+        // Sessiz başarısızlık en can sıkıcısı: ardışık no-speech/ağ hatasında eşikte uyar
+        // (izin reddi hariç — o zaten kur() catch'inde ayrı mesaj alır).
+        if (e?.error === "not-allowed") return;
+        hataSayacRef.current += 1;
+        if (hataSayacRef.current >= 3) setUyari("Sizi duyamıyorum — mikrofonunuzu kontrol edip tekrar konuşun.");
+      },
     });
     if (!t) return;
     tanimaRef.current = t;
@@ -251,6 +283,8 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   const kur = useCallback(async () => {
     azHareketRef.current = azHareketMi();
     setUyari(""); setSonUser(""); setSonYanit(""); setSusturuldu(false); susturRef.current = false;
+    gecmisRef.current = [];   // her oturum temiz hafızayla başlar
+    olcuRef.current = orbRef.current?.clientWidth || 0;   // sıvı kenar için orb px boyutu
     rafRef.current = requestAnimationFrame(dongu);
     try {
       // Var olan context'i YENİDEN KULLAN (oturumlar arası yaşar); yoksa/ölüyse yeni kur.
@@ -331,16 +365,21 @@ export default function SesliGorusme({ acik = false, onKapat }) {
             {dusunuyor && !azHareketRef.current && (
               <span aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${T}`, animation: "ke-orb-halka 1.4s var(--ke-ease-out) infinite" }} />
             )}
+            {/* dış aura — geniş, çok yumuşak atmosfer katmanı (derinlik) */}
+            <span aria-hidden="true" style={{ position: "absolute", inset: "-58%", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 40%, transparent 70%)`, filter: "blur(70px)", opacity: .2 }} />
             {/* halo — arkada taşan glow (rAF opacity sürer) */}
             <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-35%", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 45%, transparent 68%)`, filter: "blur(44px)", opacity: .32 }} />
             {/* küre — rAF scale sürer */}
             <span ref={orbRef} aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", willChange: "transform", boxShadow: `inset 0 -14px 44px rgba(0,0,0,.4), inset 0 8px 30px color-mix(in srgb, ${PAL.onInk} 22%, transparent)` }}>
-              {/* taban gökyüzü gradyanı (hero: gök mavisi çekirdek → lavanta → mühür moru kenar) */}
-              <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 38% 32%, ${T} 0%, ${T} 34%, ${V} 74%, color-mix(in srgb, ${V} 55%, #000) 100%)` }} />
+              {/* taban gökyüzü gradyanı (hero: gök mavisi çekirdek → lavanta → mühür moru kenar)
+                  + yavaş hue kayması ("canlı renk", araştırma §2/4 — palet ±10° içinde kalır) */}
+              <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 38% 32%, ${T} 0%, ${T} 34%, ${V} 74%, color-mix(in srgb, ${V} 55%, #000) 100%)`, animation: azHareketRef.current ? "none" : "ke-orb-hue 13s ease-in-out infinite" }} />
               {/* dönen sıvı blob'lar (screen blend → kayan gökyüzü gradyanı: mavi baskın + lavanta + mercan vurgu) */}
               <span style={{ position: "absolute", inset: "-25%", background: `radial-gradient(circle at 50% 50%, ${T} 0%, transparent 58%)`, filter: "blur(24px)", mixBlendMode: "screen", animation: azHareketRef.current ? "none" : "ke-orb-b 21s linear infinite" }} />
               <span style={{ position: "absolute", inset: "-25%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 50%)`, filter: "blur(28px)", mixBlendMode: "screen", opacity: .85, animation: azHareketRef.current ? "none" : "ke-orb-a 16s linear infinite" }} />
               <span style={{ position: "absolute", inset: "-25%", background: `radial-gradient(circle at 50% 50%, ${R} 0%, transparent 42%)`, filter: "blur(30px)", mixBlendMode: "screen", opacity: .4, animation: azHareketRef.current ? "none" : "ke-orb-c 30s linear infinite" }} />
+              {/* dönen ışık süpürmesi (conic) — yüzeyde gezinen specular; "canlı" hissin anahtarı */}
+              <span aria-hidden="true" style={{ position: "absolute", inset: "-8%", borderRadius: "50%", background: `conic-gradient(from 0deg, transparent 0deg, color-mix(in srgb, ${PAL.onInk} 50%, transparent) 24deg, transparent 66deg, transparent 200deg, color-mix(in srgb, ${T} 60%, transparent) 232deg, transparent 300deg)`, filter: "blur(10px)", mixBlendMode: "screen", opacity: .55, animation: azHareketRef.current ? "none" : "nu-spin 8s linear infinite" }} />
               {/* sheen — cam yüzey ışık yansıması */}
               <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 32% 25%, color-mix(in srgb, ${PAL.onInk} 90%, transparent) 0%, transparent 32%)` }} />
               {/* grain */}

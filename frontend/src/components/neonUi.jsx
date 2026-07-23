@@ -9,7 +9,7 @@ import React from "react";
 import * as RTooltip from "@radix-ui/react-tooltip";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
-  Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2,
+  Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
 } from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
@@ -342,6 +342,7 @@ export const Icon = {
   mic: (p) => <Mic size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
   sparkle: (p) => <Sparkles size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   undo: (p) => <Undo2 size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  search: (p) => <Search size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
 };
 
 /* MarkaKaro — çalışma alanı marka işareti: "Havale" amblemi (2026-07-17 logo seçimi,

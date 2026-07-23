@@ -21,8 +21,8 @@ from collections.abc import AsyncIterator
 from typing import Annotated, Any, Literal
 
 import structlog
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -43,6 +43,7 @@ from api.middleware.ratelimit import rate_limit
 from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
+from core.tts_openai import tts_enabled, tts_openai
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
@@ -795,6 +796,30 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
                     "kaynak": "llm" if (llm_niyet or dongu_llm or kaynak == "llm") else "fallback",
                     "yanit": "".join(parcalar)})
     return StreamingResponse(gen(), media_type="text/event-stream")
+
+
+# --------------------------------------------------------------------------
+# Sesli mod — asistan yanıtını OpenAI TTS ile sese çevir (opt-in, push-to-talk).
+# DeepSeek'in TTS'i YOK — core/tts_openai.py bağımsız OPENAI_TTS_API_KEY kullanır (agents/
+# config.py'nin DeepSeek'e yönlendirdiği OPENAI_API_KEY'den AYRI). Anahtar yoksa/hata olursa
+# 503 — frontend sessizce metne düşer, sohbet asla bozulmaz.
+# --------------------------------------------------------------------------
+class SeslendirIstek(BaseModel):
+    metin: str = Field(..., min_length=1, max_length=4000)
+
+
+@router.post("/sohbet/seslendir")
+@rate_limit("15/minute")  # ayrı bulut TTS çağrısı — sohbetten bağımsız, ek maliyetli
+async def sohbet_seslendir(request: Request, istek: SeslendirIstek, user: CurrentUser) -> Response:
+    """Metni OpenAI TTS ile mp3'e çevirir. TTS kapalıysa/hata verirse 503 (frontend sessiz düşer)."""
+    if not tts_enabled():
+        raise HTTPException(status_code=503, detail="Sesli yanıt şu an devre dışı (TTS anahtarı yok).")
+    try:
+        audio = await tts_openai(istek.metin, timeout_s=LLM_NODE_TIMEOUT_S)
+    except Exception as exc:
+        log.warning("sohbet_seslendir_hata", error=type(exc).__name__)
+        raise HTTPException(status_code=503, detail="Sesli yanıt üretilemedi.") from exc
+    return Response(content=audio, media_type="audio/mpeg")
 
 
 __all__ = ("router",)

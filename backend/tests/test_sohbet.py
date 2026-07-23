@@ -797,3 +797,50 @@ class TestSohbetOnayAkisi:
         body = resp.json()
         assert body["onay_bekleyen"] is None
         assert "vazge" in body["yanit"].lower() or "iptal" in body["yanit"].lower()
+
+
+# --------------------------------------------------------------------------
+# /sohbet/seslendir — sesli mod TTS ucu (OpenAI, DeepSeek'ten bağımsız anahtar)
+# --------------------------------------------------------------------------
+class TestSohbetSeslendirRoute:
+    def test_tokensiz_istek_reddedilir(self, client: TestClient):
+        resp = client.post("/sohbet/seslendir", json={"metin": "merhaba"})
+        assert resp.status_code in (401, 403)
+
+    def test_bos_metin_422(self, auth_client: TestClient):
+        resp = auth_client.post("/sohbet/seslendir", json={"metin": ""})
+        assert resp.status_code == 422
+
+    def test_tts_kapaliysa_503(self, auth_client: TestClient, monkeypatch):
+        from api.routes import sohbet as sohbet_mod
+
+        monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: False)
+        resp = auth_client.post("/sohbet/seslendir", json={"metin": "Bilgilerinize sunulur."})
+        assert resp.status_code == 503
+
+    def test_tts_hata_verirse_503(self, auth_client: TestClient, monkeypatch):
+        from api.routes import sohbet as sohbet_mod
+
+        async def _patlar(metin, *, timeout_s):
+            raise RuntimeError("OPENAI_TTS_API_KEY yok")
+
+        monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: True)
+        monkeypatch.setattr(sohbet_mod, "tts_openai", _patlar)
+        resp = auth_client.post("/sohbet/seslendir", json={"metin": "Bilgilerinize sunulur."})
+        assert resp.status_code == 503
+
+    def test_basarili_seslendirme_mp3_doner(self, auth_client: TestClient, monkeypatch):
+        from api.routes import sohbet as sohbet_mod
+
+        fake_audio = b"\xff\xfb\x90fake-mp3"
+
+        async def _sahte_tts(metin, *, timeout_s):
+            assert metin == "Bilgilerinize sunulur."
+            return fake_audio
+
+        monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: True)
+        monkeypatch.setattr(sohbet_mod, "tts_openai", _sahte_tts)
+        resp = auth_client.post("/sohbet/seslendir", json={"metin": "Bilgilerinize sunulur."})
+        assert resp.status_code == 200
+        assert resp.headers["content-type"] == "audio/mpeg"
+        assert resp.content == fake_audio

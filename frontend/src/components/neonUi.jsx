@@ -10,6 +10,7 @@ import * as RTooltip from "@radix-ui/react-tooltip";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2,
+  Volume2, VolumeX, AudioLines, MicOff,
 } from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
@@ -177,6 +178,14 @@ export const NEON_KEYFRAMES = `
 @keyframes nu-halka{from{transform:scale(.55);opacity:.65}to{transform:scale(2.2);opacity:0}}
 @keyframes nu-gezin{from{transform:translate3d(0,0,0)}to{transform:translate3d(64px,44px,0)}}
 @keyframes nu-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:1}}
+/* Sesli görüşme orb'u — SAHNE istisnası (CanliAjanAkisi gibi): iç sıvı-metaball katmanları
+   farklı hız/yönde döner + hafif ötelenir; üst üste blur'lu radial blob'lar kayan bir gradyan
+   olarak okunur. Yalnız transform (compositor); reduced-motion global kural (aşağıda) söndürür.
+   Genlik-tepkili scale/halo AYRI (rAF, JS) sürülür — bu katmanlar core-scale'e dokunmaz. */
+@keyframes ke-orb-a{from{transform:rotate(0) translate(7%,4%)}to{transform:rotate(360deg) translate(7%,4%)}}
+@keyframes ke-orb-b{from{transform:rotate(0) translate(-6%,6%)}to{transform:rotate(-360deg) translate(-6%,6%)}}
+@keyframes ke-orb-c{from{transform:rotate(0) translate(5%,-7%)}to{transform:rotate(360deg) translate(5%,-7%)}}
+@keyframes ke-orb-halka{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.7);opacity:0}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 /* Press feedback (emil-design-eng): tıklanabilir öğe basılınca hafif scale(.97) — arayüz
    kullanıcıyı "duyuyor" hissi. Opt-in (yalnız data-press taşıyanlar); :active durum stili
@@ -340,6 +349,10 @@ export const Icon = {
   x: (p) => <X size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
   alert: (p) => <TriangleAlert size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
   mic: (p) => <Mic size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  micOff: (p) => <MicOff size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  volume: (p) => <Volume2 size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  volumeOff: (p) => <VolumeX size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  audio: (p) => <AudioLines size={22} strokeWidth={1.75} aria-hidden="true" {...p} />,
   sparkle: (p) => <Sparkles size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   undo: (p) => <Undo2 size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
 };

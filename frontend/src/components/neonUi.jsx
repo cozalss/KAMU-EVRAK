@@ -10,7 +10,7 @@ import * as RTooltip from "@radix-ui/react-tooltip";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
-  AudioLines, MicOff,
+  AudioLines, MicOff, CalendarDays, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
@@ -41,6 +41,48 @@ export const BANT = {
   kirmizi: { c: "var(--ke-bant-kirmizi)", l: "KIRMIZI", t: "Yüksek risk" },
 };
 
+/* CAM — yarı saydam "buzlu cam" yüzey (2026-07-25, kullanıcı isteği: takvim kartı).
+   Hero Light'ın VARSAYILANI hâlâ opak PAL.surf'tür; CAM istisna bir ikincil yüzeydir,
+   yeni varsayılan değil — genel kartlara yayma. İki parçası var:
+   · bg  — beyazı kırıp zemin sıcaklığını (PAL.bg) yüzeye taşır. Asıl görsel kazanç budur.
+   · blur — arkasında DESEN olan yerde iş görür; düz zemin üstünde ölçülebilir etkisi yoktur
+            (düz rengin bulanığı yine aynı düz renktir). Kartın kaydırılan içeriğin üstüne
+            geldiği hâller için bırakıldı, bedeli yok.
+   Kenarlık ayrı token (cam-line): opak çizgi saydam yüzeyde sert bir çerçeve gibi okunuyordu. */
+export const CAM = { bg: "var(--ke-cam)", line: "var(--ke-cam-line)", blur: "blur(14px)" };
+
+/* IRIS — SIRALI (sequential) pastel "hologram" rampası (2026-07-25, kullanıcı isteği).
+   NEDEN VAR: süre bar grafiği yeşil→sarı→kırmızı kullanıyordu. Kırmızı-yeşil en yaygın
+   renk körlüğü çiftidir (deuteran/protan; erkeklerin ~%8'i) ve orada hue TEK ayırt edici
+   sinyaldi — erişilebilirlik açığı.
+   ÇÖZÜM: kategorik değil SIRALI rampa. Süre zaten ordinal bir büyüklük; sıralı paletin
+   kuralı bilgiyi hue'ya değil AÇIKLIĞA yüklemektir. Üç adımın açıklığı monoton azalır
+   (gök mavisi → lavanta → pudra gülü), böylece sıralama gri tonlamada, her CVD tipinde ve
+   düşük parlaklıkta da okunur. Hue yalnız ikinci katman.
+   Hue seçimi landing hero'sunun pastel gökyüzünden (CLAUDE.md: hero.webp) türer.
+   BANT (yeşil/sarı/kırmızı) DEĞİŞMEDİ — o, risk bandının hukuki sözlüğü ve her yerde
+   metin etiketiyle birlikte anılıyor (renk tek sinyal değil). IRIS yalnız süre ölçeğidir. */
+export const IRIS = {
+  hizli: { c: "var(--ke-iris-1)", ust: "var(--ke-iris-1b)", kenar: "var(--ke-iris-1k)", l: "hızlı" },
+  orta: { c: "var(--ke-iris-2)", ust: "var(--ke-iris-2b)", kenar: "var(--ke-iris-2k)", l: "orta" },
+  yavas: { c: "var(--ke-iris-3)", ust: "var(--ke-iris-3b)", kenar: "var(--ke-iris-3k)", l: "yavaş" },
+};
+/* Hologram dolgusu — adımın açık ucundan koyu ucuna eğik geçiş. MASTER.md'nin "gradyan yok"
+   kuralına SINIRLI istisna (kullanıcı isteği): yalnız süre barları; metin/yüzey/buton
+   gradyanı hâlâ yasak. Geçiş TEK hue içinde kalır — yanardöner parlama verir ama ikinci bir
+   renk sokmadığı için adımlar arası okuma bozulmaz.
+   Kenarla birlikte kullanılmalı (bkz. IRIS_BAR): pastel dolgu tek başına 1.4.11'i geçmez. */
+export const IRIS_DOLGU = (k) => {
+  const a = IRIS[k] || IRIS.orta;
+  return `linear-gradient(170deg, ${a.ust} 0%, ${a.c} 78%)`;
+};
+/* Bar stili — dolgu + kenar birlikte. Çağıran yerlerde ikisini ayrı yazmak, birinin
+   unutulmasına ve kontrast açığına yol açıyordu; tek çağrıda veriliyor. */
+export const IRIS_BAR = (k) => ({
+  background: IRIS_DOLGU(k),
+  border: `1px solid ${(IRIS[k] || IRIS.orta).kenar}`,
+});
+
 /* Açık zemin üstünde AA kontrastlı metin/dolgu türevleri — ham T/V/R/BANT.c açık zeminde
    metin rengi OLAMAZ (T ≈3.2:1). Th = primary buton hover'ı. Koyu modda THEME_CSS ayrı
    AA-güvenli değer taşır (T/PAL ile aynı var() deseni). */
@@ -70,6 +112,17 @@ export const THEME_CSS = `
   --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#7a7060;
   --ke-hov:rgba(35,26,18,.04); --ke-press:rgba(35,26,18,.07);
   --ke-input-line:rgba(35,26,18,.35); --ke-on-accent:#fbf7f0; --ke-ink-surf:#2a251e; --ke-scrim:rgba(35,26,18,.35);
+  /* cam: yarı saydam yüzey — opak beyaz yerine zeminin sıcaklığını içeri alan kart (bkz. CAM). */
+  --ke-cam:rgba(255,255,255,.55); --ke-cam-line:rgba(35,26,18,.09);
+  /* iris: sıralı pastel rampa (bkz. IRIS). Landing hero'sunun gökyüzünden türer:
+     gök mavisi → lavanta → pudra gülü. ÖLÇÜLDÜ — bağıl parlaklık 0.560 / 0.323 / 0.178,
+     komşu adım kontrastı 1.64 ve 1.64 (eşit adım): sıralama gri tonlamada da okunur.
+     *b = adımın açık ucu (hologram parlaması) · *k = kenar çizgisi.
+     Kenar ŞART: pastel dolgunun kremle kontrastı 1.56:1 (WCAG 1.4.11 bilgi taşıyan grafik
+     için 3:1 ister); kenarlar 3.5–6.2:1 ile eşiği tek başına karşılar, dolgu pastel kalır. */
+  --ke-iris-1:#93cfdd; --ke-iris-1b:#cdeef4; --ke-iris-1k:#3d8ba1;
+  --ke-iris-2:#a68fd0; --ke-iris-2b:#d5c9ec; --ke-iris-2k:#6b52a0;
+  --ke-iris-3:#b25878; --ke-iris-3b:#e0a0b4; --ke-iris-3k:#8f3f60;
   /* --ke-on-ink: dark modda YENİDEN TANIMLANMAZ — kasıtlı. inkSurf (toast) ve modal karartı
      (BelgeModal scrim'i) HER İKİ modda da hep koyu kalır; üstündeki metin de hep açık kalmalı.
      --ke-on-accent bunun için YANLIŞ token'dı: DERIN.*-dolgulu buton metni için tema-tersine
@@ -95,6 +148,13 @@ export const THEME_CSS = `
   --ke-ink:#f2ece0; --ke-ink2:#d6cdbc; --ke-mut:#a89d8a; --ke-mut2:#c1b7a1; --ke-mut3:#8d8370;
   --ke-hov:rgba(255,255,255,.06); --ke-press:rgba(255,255,255,.09);
   --ke-input-line:rgba(255,255,255,.32); --ke-on-accent:#050403; --ke-ink-surf:#1c1811; --ke-scrim:rgba(0,0,0,.65);
+  --ke-cam:rgba(34,29,24,.55); --ke-cam-line:rgba(255,255,255,.10);
+  /* Koyu modda açıklık SIRASI aynı (0.520 / 0.323 / 0.161; adım 1.53 ve 1.77) ama tüm rampa
+     bir tık yukarı: en koyu adım bile zeminden 3.7:1 ayrışır. Kenarlar burada AÇIK uçtur —
+     koyu zeminde koyu kenar görünmez. */
+  --ke-iris-1:#7fcadd; --ke-iris-1b:#a5dcea; --ke-iris-1k:#a8e0ee;
+  --ke-iris-2:#a68fd0; --ke-iris-2b:#b8a6e0; --ke-iris-2k:#c3b0e8;
+  --ke-iris-3:#a85575; --ke-iris-3b:#d894ac; --ke-iris-3k:#e0a0b8;
   --ke-shadow-rgb:0,0,0;
   --ke-bant-yesil:#4cbf8a; --ke-bant-sari:#e0a83f; --ke-bant-kirmizi:#e2604a;
   --ke-derin-t:#7ecbdd; --ke-derin-th:#92d6e6; --ke-derin-v:#e2a8c4; --ke-derin-r:#ffa088;
@@ -176,6 +236,20 @@ export const NEON_KEYFRAMES = `
 @keyframes nu-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes nu-iz{from{transform:translateY(-22px)}to{transform:translateY(100%)}}
 @keyframes nu-halka{from{transform:scale(.55);opacity:.65}to{transform:scale(2.2);opacity:0}}
+/* nu-alarm — çalan çalar saat: hızlı sağa-sola çalkalanma salvosu + duraklama.
+   İlk sürüm (3.2sn'de %12'lik salvo, ease-in-out) fark edilmiyordu: salvo hem çok kısaydı
+   hem de her mikro-adım yumuşatıldığı için "titreme" değil "salınım" gibi okunuyordu.
+   Şimdi: 2sn döngünün %40'ı hareket, açı 18°'ye kadar, geçiş LINEAR — komşu duraklar
+   arasında yumuşatma olmayınca gerçek bir zil titreşimi gibi keskin çıkıyor.
+   Yalnız GERÇEK acil (gecikmiş/kritik) varken bağlanır — hareket=bilgi, süs değil. */
+@keyframes nu-alarm{
+  0%,58%,100%{transform:rotate(0deg)}
+  61%{transform:rotate(-18deg)}64%{transform:rotate(18deg)}
+  67%{transform:rotate(-16deg)}70%{transform:rotate(16deg)}
+  73%{transform:rotate(-12deg)}76%{transform:rotate(12deg)}
+  79%{transform:rotate(-8deg)}82%{transform:rotate(8deg)}
+  85%{transform:rotate(-4deg)}88%{transform:rotate(0deg)}
+}
 @keyframes nu-gezin{from{transform:translate3d(0,0,0)}to{transform:translate3d(64px,44px,0)}}
 @keyframes nu-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:1}}
 /* Sesli görüşme orb'u — SAHNE istisnası (CanliAjanAkisi gibi): iç sıvı-metaball katmanları
@@ -192,6 +266,14 @@ export const NEON_KEYFRAMES = `
    kullanıcıyı "duyuyor" hissi. Opt-in (yalnız data-press taşıyanlar); :active durum stili
    olduğundan reduced-motion'da anında (animasyonsuz) uygulanır — hareket değil geri bildirimdir. */
 [data-press]:active:not(:disabled){transform:scale(.97)}
+/* Hover'da içerik büyümesi — OPT-IN İSTİSNA (kullanıcı isteği 2026-07-25, Panel ölçü
+   hücreleri). MASTER.md'nin genel kuralı hâlâ "hover transform yok"; bu yüzden kural
+   data-hover-buyut taşıyan kabın İÇİNDEKİ data-buyut'a bağlı, gövdeye yayılmıyor.
+   Kalkış (translateY) DEĞİL ölçek: kutu yerinde kalır, yalnız içerik yakınlaşır.
+   Kenarlık/zemin ölçeklenmez (yalnız iç sarmalayıcı) → ızgara hairline'ları kıpırdamaz.
+   reduced-motion'da alttaki genel kural transition'ı zaten kapatır. */
+[data-buyut]{transition:transform .18s var(--ke-ease-out)}
+[data-hover-buyut]:hover [data-buyut]{transform:scale(1.06)}
 /* <details> katlama (MevzuatView kategori grupları): summary marker'ını söndür (kendi
    chevron'umuz var), açıkken chevron 90° döner, hover'da başlık zemini. Renk/token'dan
    bağımsız saf mekanik. */
@@ -210,8 +292,11 @@ export function ViewWrap({ id, title, sub, actions, children }) {
     <section aria-labelledby={id} style={{ padding: "24px clamp(16px, 4vw, 32px) 96px", minHeight: "calc(100vh - 1px)" }}>
       <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
         <div>
-          <h2 id={id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{title}</h2>
-          {sub && <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{sub}</p>}
+          {/* 2026-07-25: h2(20) → h1(28). TYPE.h1 zaten "görünüm başlıkları" için tanımlıydı
+              ama ViewWrap h2 kullanıyordu — token'ın kendi tarifine dönüldü. TÜM görünümleri
+              etkiler (tek başlık bileşeni); sayfadan sayfaya farklı başlık boyu daha kötü. */}
+          <h2 id={id} style={{ margin: 0, ...TYPE.h1, color: PAL.ink }}>{title}</h2>
+          {sub && <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.read, color: PAL.mut2 }}>{sub}</p>}
         </div>
         {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap" }}>{actions}</div>}
       </header>
@@ -339,6 +424,9 @@ export const Icon = {
   phone: (p) => <Smartphone size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
   plus: (p) => <Plus size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   arrow: (p) => <ArrowRight size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  takvim: (p) => <CalendarDays size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  okSol: (p) => <ChevronLeft size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  okSag: (p) => <ChevronRight size={16} strokeWidth={1.75} aria-hidden="true" {...p} />,
   edit: (p) => <Pencil size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   send: (p) => <Send size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   chart: (p) => <BarChart3 size={18} strokeWidth={1.75} aria-hidden="true" {...p} />,

@@ -1,0 +1,58 @@
+@KURUM: Türkiye İstatistik Kurumu
+@BELGE: Türkiye İstatistik Kurumu Başkanlığı Hizmet Birimlerinin Kuruluş, Görev ve Yetkilerine Dair Yönetmelik
+@KAYNAK_KIMLIK: https://www.tuik.gov.tr/media/corporatecontent/tuik-yonetmelik.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+@ALIAS: TÜİK, Türkiye İstatistik Kurumu Başkanlığı
+
+BİRİM: Ağ ve Sistem Yönetimi Daire Başkanlığı
+GÖREV: Kurumun ağ, sistem, veri ve donanım altyapılarını ve veri merkezlerini planlar, kurar ve işletir; veri ve bilginin elektronik güvenliği, gizliliği, yedeklenmesi ve sürekliliği için tedbir alır.
+
+BİRİM: Çevre ve Sürdürülebilir Kalkınma İstatistikleri Daire Başkanlığı
+GÖREV: Çevre istatistiklerini ve çevresel ekonomik hesapları üretir; sürdürülebilir kalkınma göstergelerinin üretilmesi ve izlenmesine ilişkin çalışmaları yürütür.
+
+BİRİM: Demografi İstatistikleri Daire Başkanlığı
+GÖREV: Nüfusun büyüklüğü ve yapısı, göç, nüfus projeksiyonları ve hayat tabloları ile doğum, ölüm, evlenme ve boşanmaya ilişkin istatistik ve göstergeleri üretir.
+
+BİRİM: Veri Yönetişimi Daire Başkanlığı
+GÖREV: Farklı kaynaklardan elde edilen veriyi istatistik üretiminde kullanılabilir hale getirir; kurumsal veriyi analize ve dağıtıma hazırlar, büyük veri ve yapay zeka projelerini yürütür, veri gizliliği standartlarını belirler.
+
+BİRİM: Fiyat İstatistikleri Daire Başkanlığı
+GÖREV: Tüketici fiyat hareketlerini izlemek için istatistik ve endeks üretir; satın alma gücü paritesi göstergelerini hesaplar ve hanehalkı tüketim harcaması istatistiklerini üretir.
+
+BİRİM: İşgücü İstatistikleri Daire Başkanlığı
+GÖREV: Hanehalkı işgücü istatistiklerini; istihdam, işgücü maliyeti, kazanç yapısı ve ücret ile ilgili istatistik ve endeksleri üretir.
+
+BİRİM: Kısa Dönemli İş İstatistikleri Daire Başkanlığı
+GÖREV: Sanayi, inşaat, ticaret ve hizmet sektörlerinin ciro, üretim ve hacim endekslerini ve güven endekslerini hesaplar; üretici fiyat hareketleri için istatistik, gösterge ve endeks üretir.
+
+BİRİM: Sektörel İstatistikler Daire Başkanlığı
+GÖREV: Enerji, ulaştırma ve haberleşme sektörleri ile bina, konut, bilgi toplumu, bilim ve teknolojiye ilişkin istatistikleri üretir.
+
+BİRİM: Sosyal İstatistikler Daire Başkanlığı
+GÖREV: Eğitim, sosyal koruma, kültür, spor, sağlık, ölüm nedeni, adalet, suç ve seçim istatistikleri ile gelir dağılımı, yoksulluk ve yaşam koşulları istatistiklerini üretir.
+
+BİRİM: Tarım İstatistikleri Daire Başkanlığı
+GÖREV: Arazi kullanımı, tarımsal üretim ve tarımsal yapıya ilişkin istatistikleri üretir; tarım sektörü ekonomik hesaplarını yapar ve tarımsal fiyat hareketlerine ilişkin istatistik ve endeks üretir.
+
+BİRİM: Ulusal Hesaplar Daire Başkanlığı
+GÖREV: Gayrisafi yurt içi hasıla ve kurumsal sektör hesaplarını yapar; arz-kullanım ve girdi-çıktı tablolarını, bölgesel hesapları ve genel devlet mali tablolarını oluşturur.
+
+BİRİM: Uluslararası Ticaret İstatistikleri Daire Başkanlığı
+GÖREV: Uluslararası mal ve hizmet ticareti istatistikleri ile endekslerini ve turizm istatistiklerini üretir.
+
+BİRİM: Veri Toplama Daire Başkanlığı
+GÖREV: Veri toplama yöntemlerine ilişkin araştırma ve uygulamaları yürütür; hanehalkı ve işyeri araştırmalarında merkezi veri toplama yöntemlerini uygular ve gerekli idari kayıtları ilgili kurum ve kuruluşlardan temin eder.
+
+BİRİM: Yazılım Daire Başkanlığı
+GÖREV: İstatistik üretimindeki veri toplama, işleme, analiz ve dağıtıma yönelik yazılımları geliştirir ve işletir; kurumsal yazılımların güvenliğini test eder, internet sitesi ve coğrafi bilgi sistemi altyapısını geliştirir.
+
+BİRİM: Yıllık İş İstatistikleri Daire Başkanlığı
+GÖREV: Sanayi, inşaat, ticaret ve hizmet sektörlerinin ekonomik yapısına ilişkin yıllık istatistikleri ve yıllık ürün istatistiklerini üretir; İş Kayıtları Sistemini oluşturur, günceller ve yönetir.
+
+BİRİM: Yöntem Araştırmaları Daire Başkanlığı
+GÖREV: Veri bilimi, veri analizi, istatistik üretiminde kalite denetimi ve veri kalitesi çalışmalarını yürütür; araştırma tasarımı, örnekleme yöntemleri ve soru formu standartlarını belirler.
+
+BİRİM: Bilgi Dağıtım ve İletişim Daire Başkanlığı
+GÖREV: Kurumun dağıtım politikasını belirler ve uygular; veri, bilgi ve yayım taleplerini karşılar, yayın standartlarını ve Ulusal Veri Yayımlama Takvimini yürütür, kütüphane ve dokümantasyon hizmetlerini sağlar.

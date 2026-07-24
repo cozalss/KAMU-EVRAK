@@ -202,8 +202,9 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
   const altSayisi = dizi(r.alt_talepler).length;
   const kaynak = r.hedef_birim_kaynak?.birim_ad ? r.hedef_birim_kaynak : null;
   const dogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
-  const kod = r.hedef_birim || r.hedef_kategori || "";
+  const kod = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || "";
   const birim = kod ? birimEtiket(kod, r.evrak_turu) : "";
+  const kurum = String(r.hedef_kurum_adi || kaynak?.kaynak_kurum || yetkili || muhatap || "").trim();
   const reasoning = String(r.birim_reasoning || "").trim();
 
   if (capraz) {
@@ -247,12 +248,12 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
   if (dogrulandi) {
     return {
       devir: false,
-      etiket: "Havale — birim",
-      deger: birim,
+      etiket: "Havale — kurum / birim",
+      deger: kurum || birim,
       ton: null,
       vurgu: false,
       rozet: { metin: "kaynak doğrulandı", ton: "yesil" },
-      alt: kaynak?.kaynak_kurum ? [`kaynak: ${kaynak.kaynak_kurum}`] : [],
+      alt: kurum ? [`Birim: ${birim}`] : [],
       gerekce: [
         kaynak?.kaynak_kurum
           ? `Birim, ${kaynak.kaynak_kurum} teşkilat kaydından doğrulandı${kaynak.belge_basligi ? ` (${kaynak.belge_basligi})` : ""}; görev tanımı evrak konusuyla eşleşti.`
@@ -266,14 +267,14 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
   const belirsiz = !birim;
   return {
     devir: false,
-    etiket: belirsiz ? "Havale — birim" : "Havale — birim (öneri)",
-    deger: birim || "Belirlenmedi",
+    etiket: belirsiz ? "Havale — kurum / birim" : "Havale — kurum / birim (öneri)",
+    deger: kurum || birim || "Belirlenmedi",
     ton: "sari",
     // Geçerli bir birim adı kendi başına alarm DEĞİL — belirsizliği rozet taşır, adı okunur bırak.
     // "Belirlenmedi" ise değerin kendisi eksikliktir → tonlanır.
     vurgu: belirsiz,
     rozet: r.insan_onayi_gerekli ? { metin: "memur onayı gerekli", ton: "sari" } : null,
-    alt: [],
+    alt: kurum && birim ? [`Birim: ${birim}`] : [],
     gerekce: [
       belirsiz
         ? "Sistem yetkili birimi belirleyemedi; emin olmadığı için tahmin yürütmedi."

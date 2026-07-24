@@ -226,6 +226,30 @@ class TestPipelineSimayet:
         assert sonuc.get("hedef_birim") or sonuc.get("hedef_kategori") in BIRIMLER
 
 
+class TestPipelineBagcilarGurultu:
+    """Ekran görüntüsündeki kritik vakanın tüm hat boyunca tutarlı kalması."""
+
+    async def test_kurum_birim_ve_cevap_taslagi_tutarli(self):
+        metin = (
+            "T.C.\nBAĞCILAR BELEDİYE BAŞKANLIĞINA\nİSTANBUL\n\n"
+            "Tarih: 11.07.2026\nKonu: Gürültü kirliliği şikâyeti\n\n"
+            "Binanın alt katındaki eğlence mekânından kaynaklanan aşırı ve sürekli gürültü "
+            "nedeniyle özellikle gece saatlerinde huzursuzluk yaşıyorum. Gerekli gürültü "
+            "ölçümünün yapılarak yasal işlem başlatılmasını talep ederim.\n"
+            "Başvuran\nAdres: Bağcılar / İSTANBUL\nİmza"
+        )
+        sonuc = await _graph().ainvoke(make_initial_state(metin))
+
+        assert sonuc["evrak_turu"] == "sikayet"
+        assert sonuc["hedef_kurum_adi"] == "Bağcılar Belediyesi"
+        assert sonuc["hedef_birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert sonuc["durum"] == "kaynak_dogrulandi"
+        assert sonuc["yazi_turu"] == "cevabi_yazi"
+        assert sonuc["antet_meta"]["idare"] == "BAĞCILAR BELEDİYESİ"
+        assert sonuc["antet_meta"]["birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert sonuc["arsiv_metadata"]["birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+
+
 # ---------------------------------------------------------------------------
 # Belirsiz metin E2E — güvenli degradasyon
 # ---------------------------------------------------------------------------

@@ -46,6 +46,7 @@ _DESENLER: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("valilik", re.compile(rf"(?P<ad>{_AD})\s+VALİLİĞ\w*")),
     ("kaymakamlik", re.compile(rf"(?P<ad>{_AD})\s+KAYMAKAMLIĞ\w*")),
     ("bakanlik", re.compile(rf"(?P<ad>{_AD})\s+BAKANLIĞ\w*")),
+    ("baskanlik", re.compile(rf"(?P<ad>{_AD})\s+BAŞKANLIĞ\w*")),
     # BAŞSAVCILIĞI, MÜDÜRLÜĞ'ten önce: "... CUMHURİYET BAŞSAVCILIĞINA" özgül kalıp.
     ("bassavcilik", re.compile(rf"(?P<ad>{_AD})\s+CUMHURİYET\s+BAŞSAVCILIĞ\w*")),
     # ÜNİVERSİTESİ (REKTÖRLÜĞÜNE opsiyonel) — "ANKARA ÜNİVERSİTESİ REKTÖRLÜĞÜNE".
@@ -97,6 +98,7 @@ def _kanonik(tur: str, ad_ham: str, buyuk: bool) -> tuple[str, str]:
         "valilik": ("Valiliği", "valiligi"),
         "kaymakamlik": ("Kaymakamlığı", "kaymakamligi"),
         "bakanlik": ("Bakanlığı", "bakanligi"),
+        "baskanlik": ("Başkanlığı", "baskanligi"),
         "bassavcilik": ("Cumhuriyet Başsavcılığı", "cumhuriyet-bassavciligi"),
         "universite": ("Üniversitesi", "universitesi"),
         "mudurluk": ("Müdürlüğü", "mudurlugu"),

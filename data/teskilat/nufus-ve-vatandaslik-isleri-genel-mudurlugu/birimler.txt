@@ -1,0 +1,25 @@
+@KURUM: Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü
+@BELGE: Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü Birim Yönergesi
+@KAYNAK_KIMLIK: https://www.nvi.gov.tr/kurumlar/nvi.gov.tr/mevzuat/nufusmevzuat/yonerge/NVIGMBirim-Yonergesi.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+@ALIAS: NVI, Nüfus ve Vatandaşlık İşleri, NVİ Genel Müdürlüğü
+
+BİRİM: Nüfus Hizmetleri Daire Başkanlığı
+GÖREV: Nüfus mevzuatının uygulanmasındaki işlemleri, evlendirme memurluğu yetkilendirmesini, aile kütüklerinin yenilenmesi taleplerini, nüfus kayıtlarındaki hata ve eksikliklerin düzeltilmesi ile nüfus olaylarına ilişkin tescil işlemlerini yürütür.
+
+BİRİM: Vatandaşlık Hizmetleri Daire Başkanlığı
+GÖREV: Türk vatandaşlığının genel ve istisnai yoldan kazanılması, vatandaşlıktan çıkma, vatandaşlığın kaybı ve yeniden kazanılması, Mavi Kart ve vatandaşlık kayıtlarının düzeltilmesine ilişkin iş ve işlemleri yürütür.
+
+BİRİM: Bilgi İşlem Daire Başkanlığı
+GÖREV: Merkezi veri tabanındaki verilerin kamu kurumları ve kamu hizmeti sunan tüzel kişilerle paylaşımını, e-Devlet hizmetlerine ilişkin teknik işlemleri, sistem güvenliği ve sürekliliğini, çağrı merkezine gelen taleplerin kaydı ve ilgili daire başkanlıklarına iletilmesini yürütür.
+
+BİRİM: Adres Daire Başkanlığı
+GÖREV: Ulusal Adres Veri Tabanı ve Mekansal Adres Kayıt Sistemindeki yetkili idare işlemlerini ve adres bileşenlerindeki değişikliklerin sisteme işlenmesine ilişkin sorunların giderilmesini yürütür; yabancıların adres beyanı ve adrese ilişkin idari para cezası işlemlerini takip eder.
+
+BİRİM: Kimlik Kartı Daire Başkanlığı
+GÖREV: Kimlik kartı ve geçici kimlik belgesinde yer alacak bilgilerin belirlenmesi, kimlik kartı ve geçici kimlik belgesine ilişkin sorun ve taleplerin değerlendirilmesi ile kart üretimi, güvenliği ve dağıtım süreçlerini yürütür.
+
+BİRİM: Pasaport ve Sürücü Belgeleri Daire Başkanlığı
+GÖREV: Pasaport ve sürücü belgelerinin düzenlenmesine ilişkin usul ve esasları belirler; bu belgelerin kişiselleştirilmesi, kalite kontrolü, dağıtıma hazırlanması ve düzenlenmesine veya kullanımına engel durumlara ilişkin işlemleri yürütür.

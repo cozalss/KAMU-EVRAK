@@ -34,7 +34,7 @@ class TestEvrakToYaziIletimAilesi:
         # Regresyon: vatandaş yolu (cevap/bilgilendirme) bu düzeltmeden etkilenmez
         assert EVRAK_TO_YAZI["dilekce"] == "cevabi_yazi"
         assert EVRAK_TO_YAZI["bilgi_edinme"] == "bilgilendirme"
-        assert EVRAK_TO_YAZI["sikayet"] == "olur"
+        assert EVRAK_TO_YAZI["sikayet"] == "cevabi_yazi"
 
 
 class TestMuhatapKurumHitabi:

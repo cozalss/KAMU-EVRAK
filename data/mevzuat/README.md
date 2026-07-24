@@ -1,6 +1,11 @@
 # data/mevzuat — Kamuya açık mevzuat korpusu (seed kaynağı)
 
-Bu klasöre **kamuya açık** mevzuat metinleri konur ve `scripts/seed_mevzuat.py` (TODO) ile
+> Güvenlik notu: Bu dizinde bulunmak bir metni otomatik olarak doğrulanmış yapmaz.
+> Yalnız kaynak_manifest.json içinde resmî URL + doğrulayan + tarih/yöntem + güncel
+> SHA-256 kaydı bulunan dosyalar LLM kanıtına girebilir. Diğerleri retrieval için
+> adaydır ve insan incelemesi gerektirir. İş akışı: data/GUVENILIR_VERI_AKISI.md.
+
+Bu klasöre **kamuya açık** mevzuat metinleri konur ve `scripts/seed_mevzuat.py` ile
 chunk'lanıp Qdrant'a yüklenir (`mevzuat_oner` node'unun hybrid-RAG kaynağı). **Gerçek kamu
 evrakı / PII içermez** (şartname §6.5).
 

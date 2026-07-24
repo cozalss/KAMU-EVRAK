@@ -1,0 +1,9 @@
+@KURUM: Sermaye Piyasası Kurulu
+@BELGE: Bağımsız Denetim ve Değerleme Faaliyetleri Dairesi Başkanlığı Görevleri
+@KAYNAK_KIMLIK: https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/bagimsiz-denetim-ve-degerleme-faaliyetleri-dairesi-baskanligi
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Bağımsız Denetim ve Değerleme Faaliyetleri Dairesi Başkanlığı
+GÖREV: Kurula tabi ortaklıklar ve sermaye piyasası kurumlarının finansal raporlamasına ilişkin düzenleme ve görüş çalışmalarını yürütür; bağımsız denetim, değerleme ve derecelendirme kuruluşlarının yetkilendirme başvurularını inceler, faaliyetlerinin gözetim ve kalite kontrolünü yapar.

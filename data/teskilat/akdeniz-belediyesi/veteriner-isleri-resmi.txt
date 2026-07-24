@@ -1,0 +1,10 @@
+@KURUM: Akdeniz Belediyesi
+@BELGE: Veteriner İşleri Müdürlüğü
+@KAYNAK_KIMLIK: https://www.akdeniz.bel.tr/Default/KurumsalDetay/2308
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: Akdeniz Belediye Başkanlığı
+
+BİRİM: Veteriner İşleri Müdürlüğü
+GÖREV: Sahipsiz kedi ve köpekleri toplar, rehabilite eder, kısırlaştırır, aşılar ve tedavi eder. Sahipsiz kedi ve köpeklere ilişkin ihbar ve şikayetleri değerlendirir; veterinerlik hizmetlerine yönelik talep ve şikayetleri sonuçlandırır.

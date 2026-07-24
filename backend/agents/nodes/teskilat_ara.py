@@ -6,7 +6,8 @@
 şablona düşer (aday/sorgu genişletme — doğrulanmış hedef DEĞİL).
 
 Çıktı `KaynakKaydi` uyumlu dict listesi; her aday `kaynak_tipi` taşır:
-  - "kurum_ozel": kuruma-özel resmî kaynak → grounding'de doğrulanmış hedef olabilir.
+  - "kurum_ozel": resmî URL + kaynak türü + doğrulama metadatası bulunan kurum kaynağı.
+  - "aday": eski şablon, yerel kimlik veya doğrulanmamış kurum kaynağı; yalnız insan onayına öneri.
   - "jenerik": kurum-tipi şablon → yalnız aday; tek başına otomatik yönlendirme yapılmaz.
 """
 from __future__ import annotations
@@ -49,7 +50,8 @@ _STOPWORDS: frozenset[str] = frozenset({
     "gibi", "kadar", "göre", "ise", "ancak", "ayrıca", "her", "hem", "en",
     "arz", "ederim", "rica", "ederiz", "gereğini", "gereği", "bilgilerinize",
     "konusunda", "hakkında", "ilgili", "talep", "konu", "sayın", "müdürlüğü",
-    "müdürlük", "başkanlığı", "belediye", "belediyesi",
+    "müdürlük", "başkanlığı", "belediye", "belediyesi", "şikayet", "şikâyet",
+    "ihbar", "başvuru", "işlem", "işlemler", "gerekli", "yapılması", "edilmesi",
 })
 
 
@@ -57,8 +59,29 @@ def _tokenize(s: str) -> list[str]:
     return [t for t in _WORD_RE.findall(tr_lower(s)) if t not in _STOPWORDS]
 
 
-@lru_cache(maxsize=1)
-def _load_payload() -> dict[str, Any]:
+def kelime_uyum_skoru(sorgu: str, hedef: str) -> float:
+    """Return a conservative exact-or-stem word match score for Turkish inflections."""
+    if not sorgu or not hedef:
+        return 0.0
+    if sorgu == hedef:
+        return 1.0
+    kisa, uzun = sorted((sorgu, hedef), key=len)
+    if len(kisa) >= 4 and uzun.startswith(kisa):
+        return 0.72
+    return 0.0
+
+
+def _index_revision() -> tuple[Any, ...]:
+    """Atomik indeks degisimini process restart gerektirmeden fark eden stat kimligi."""
+    try:
+        stat = _INDEX_FILE.stat()
+        return (stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size)
+    except OSError:
+        return (0, 0, 0)
+
+
+@lru_cache(maxsize=3)
+def _load_payload_revision(_revision: tuple[Any, ...]) -> dict[str, Any]:
     """teskilat_index.json ham payload (seed_teskilat.py üretir). Yoksa boş dict."""
     if _INDEX_FILE.is_file():
         try:
@@ -68,20 +91,22 @@ def _load_payload() -> dict[str, Any]:
     return {}
 
 
-@lru_cache(maxsize=1)
+def _load_payload() -> dict[str, Any]:
+    return _load_payload_revision(_index_revision())
+
+
 def _load_index() -> tuple[dict[str, Any], ...]:
     """Index chunk listesi."""
     return tuple(_load_payload().get("chunks") or ())
 
 
-@lru_cache(maxsize=1)
 def _aliases() -> dict[str, str]:
     """@ALIAS haritası: alias-slug → kanonik kurum-slug (ör. uedas → uludag-elektrik-dagitim)."""
     return dict(_load_payload().get("aliases") or {})
 
 
-@lru_cache(maxsize=256)
-def _kanonik_slug(kurum_slug: str) -> str:
+@lru_cache(maxsize=512)
+def _kanonik_slug_revision(kurum_slug: str, _revision: tuple[Any, ...]) -> str:
     """Slug'ı korpustaki kanonik kurum dizinine çözümle; çözülemezse "".
 
     Sıra: (1) birebir dizin, (2) @ALIAS haritası, (3) İL-ADI-KIRPMA — "ankara-sosyal-guvenlik-
@@ -112,14 +137,41 @@ def _kanonik_slug(kurum_slug: str) -> str:
     return ""
 
 
-@lru_cache(maxsize=64)
-def _slug_chunks(kurum_slug: str) -> tuple[dict[str, Any], ...]:
+def _kanonik_slug(kurum_slug: str) -> str:
+    return _kanonik_slug_revision(kurum_slug, _index_revision())
+
+
+@lru_cache(maxsize=192)
+def _slug_chunks_revision(
+    kurum_slug: str,
+    _revision: tuple[Any, ...],
+) -> tuple[dict[str, Any], ...]:
     """Bir kurum slug'ına ait chunk'lar (lru_cache — BM25 memo için sabit tuple id)."""
     return tuple(c for c in _load_index() if c.get("kurum_slug") == kurum_slug)
 
 
+def _slug_chunks(kurum_slug: str) -> tuple[dict[str, Any], ...]:
+    return _slug_chunks_revision(kurum_slug, _index_revision())
+
+
+def _resmi_slug_chunks(kurum_slug: str) -> tuple[dict[str, Any], ...]:
+    """Only source records explicitly verified as official may ground an automatic route."""
+    return tuple(
+        c for c in _slug_chunks(kurum_slug)
+        if c.get("kaynak_guven") == "resmi_dogrulanmis"
+    )
+
+
 # BM25 modeli chunk-tuple başına bir kez kurulur (id-anahtarlı memo; _slug_chunks lru_cached).
 _BM25_MEMO: dict[int, Any] = {}
+
+
+def indeks_onbellegini_temizle() -> None:
+    """Test/operasyon icin tum teskilat indeks ve BM25 onbelleklerini temizle."""
+    _load_payload_revision.cache_clear()
+    _kanonik_slug_revision.cache_clear()
+    _slug_chunks_revision.cache_clear()
+    _BM25_MEMO.clear()
 
 
 def _bm25_model(chunks: tuple[dict[str, Any], ...]) -> Any:
@@ -127,6 +179,8 @@ def _bm25_model(chunks: tuple[dict[str, Any], ...]) -> Any:
     anahtar = id(chunks)
     if anahtar in _BM25_MEMO:
         return _BM25_MEMO[anahtar]
+    if len(_BM25_MEMO) >= 192:
+        _BM25_MEMO.clear()
     model: Any = None
     try:
         from rank_bm25 import BM25Okapi
@@ -151,7 +205,23 @@ def _score(konu: str, chunks: tuple[dict[str, Any], ...]) -> list[tuple[float, d
     else:
         q_set = set(q)
         skorlar = [float(sum(1 for t in _tokenize(c["text"]) if t in q_set)) for c in chunks]
-    sirali = sorted(((float(s), chunks[i]) for i, s in enumerate(skorlar)), key=lambda x: -x[0])
+    # "yol", "su", "imar" gibi kısa görev alanlarını kaçırmamak için üç harfli
+    # terimler de kök eşleşmesine girer. Arama zaten kurum ile sınırlıdır.
+    q_benzersiz = tuple(dict.fromkeys(t for t in q if len(t) >= 3))
+    zengin: list[tuple[float, dict[str, Any]]] = []
+    for i, raw_skor in enumerate(skorlar):
+        chunk = chunks[i]
+        hedef_tokenlari = tuple(dict.fromkeys(_tokenize(chunk.get("text", ""))))
+        kok_skoru = sum(
+            max((kelime_uyum_skoru(s, h) for h in hedef_tokenlari), default=0.0)
+            for s in q_benzersiz
+        )
+        # Küçük (özellikle tek kayıtlı) korpuslarda BM25'in IDF düzeltmesi negatif
+        # skor üretebilir. Bu, gerçek bir terim eşleşmesini elememeli; kök eşleşmesi
+        # yine yalnızca sıralamayı/erişimi destekler.
+        skor = max(0.0, float(raw_skor)) + (kok_skoru * 0.45)
+        zengin.append((skor, chunk))
+    sirali = sorted(zengin, key=lambda x: (-x[0], x[1].get("birim_ad", "")))
     return [r for r in sirali if r[0] > 0]
 
 
@@ -172,6 +242,11 @@ def _aday(chunk: dict[str, Any], skor: float, kaynak_tipi: str) -> dict[str, Any
         "icerik_hash": hashlib.sha256(metin.encode("utf-8")).hexdigest()[:16],
         "skor": round(skor, 3),
         "kaynak_tipi": kaynak_tipi,
+        "kaynak_guven": chunk.get("kaynak_guven", "aday"),
+        "kaynak_dosya": chunk.get("kaynak_dosya", ""),
+        "kaynak_sha256": chunk.get("icerik_sha256", ""),
+        "dogrulayan": chunk.get("dogrulayan", ""),
+        "dogrulama_tarihi": chunk.get("dogrulama_tarihi", ""),
     }
 
 
@@ -184,17 +259,23 @@ def teskilat_birim_ara(
 ) -> list[dict[str, Any]]:
     """Kurumun teşkilatında konuya en uygun birimleri ara (offline BM25).
 
-    Önce kuruma-özel dizin (kaynak_tipi='kurum_ozel'); yoksa/boşsa kurum TİPİNE göre jenerik
-    şablon (kaynak_tipi='jenerik'). Jenerik sonuçlar YALNIZ adaydır — route ajanı bunları
-    tek başına doğrulanmış hedef saymaz (REVİZYON 2). Boş konu/korpus → boş liste.
+    Önce doğrulanmış kuruma-özel kayıtlar (kaynak_tipi='kurum_ozel'); bunlar yoksa aynı kurumun
+    eski/doğrulanmamış kayıtları insan onayı için (kaynak_tipi='aday') döner. Son aşamada kurum
+    tipine göre jenerik şablon (kaynak_tipi='jenerik') kullanılır. Yalnız ilk tür otomatik hedef
+    üretebilir. Boş konu/korpus → boş liste.
     """
     kurum_slug = (kurum_slug or "").strip()
     # 1) Kuruma-özel kaynak — alias + il-adı-kırpma çözümlemesiyle (uedas, ankara-sgk-... vb.)
     kanonik = _kanonik_slug(kurum_slug)
     if kanonik:
         ozel = _slug_chunks(kanonik)
+        resmi = _resmi_slug_chunks(kanonik)
+        if resmi:
+            aday = [_aday(c, s, "kurum_ozel") for s, c in _score(konu, resmi)[:top_k]]
+            if aday:
+                return aday
         if ozel:
-            aday = [_aday(c, s, "kurum_ozel") for s, c in _score(konu, ozel)[:top_k]]
+            aday = [_aday(c, s, "aday") for s, c in _score(konu, ozel)[:top_k]]
             if aday:
                 return aday
     # 2) Kurum tipine göre jenerik şablon(lar) — yalnız aday
@@ -207,8 +288,9 @@ def teskilat_birim_ara(
 
 
 def kurum_korpusta_var(kurum_slug: str) -> bool:
-    """Kuruma-özel resmî kaynak korpusta var mı (alias/il-kırpma çözümlemesi dahil)?"""
-    return bool(_kanonik_slug(kurum_slug or ""))
+    """Doğrulanmış kuruma-özel resmî kaynak var mı (alias/il-kırpma çözümlemesi dahil)?"""
+    kanonik = _kanonik_slug(kurum_slug or "")
+    return bool(kanonik and _resmi_slug_chunks(kanonik))
 
 
-__all__ = ("kurum_korpusta_var", "teskilat_birim_ara")
+__all__ = ("kelime_uyum_skoru", "kurum_korpusta_var", "teskilat_birim_ara")

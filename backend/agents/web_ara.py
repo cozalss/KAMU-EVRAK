@@ -45,6 +45,11 @@ def _kayit(kurum_ad: str, birim_ad: str, gorev: str, url: str, baslik: str) -> K
         "icerik_hash": hashlib.sha256(metin.encode("utf-8")).hexdigest()[:16],
         "skor": 0.0,
         "kaynak_tipi": "web",
+        "kaynak_guven": "aday",
+        "kaynak_dosya": "",
+        "kaynak_sha256": "",
+        "dogrulayan": "",
+        "dogrulama_tarihi": "",
     }
 
 

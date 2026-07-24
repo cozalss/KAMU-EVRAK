@@ -105,6 +105,8 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         # (deterministik fallback zaten maskeli; burada savunma derinliği).
         ozet=mask_pii(state.get("ozet", "") or "").masked_text,
         hedef_birim=state.get("hedef_birim", ""),
+        hedef_kurum_adi=state.get("hedef_kurum_adi", ""),
+        hedef_birim_oneri=state.get("hedef_birim_oneri", ""),
         birim_alternatifleri=state.get("birim_alternatifleri", []),
         birim_reasoning=state.get("birim_reasoning", ""),
         servis_birimi=state.get("servis_birimi") or {},
@@ -411,7 +413,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "mevzuat_dogrula": ("mevzuat_nli",),
         "ozetle": ("ozet",),
         # birim_reasoning + alternatifler: "neden bu birim" gerekçesi + değerlendirilen adaylar.
-        "route_birim": ("hedef_birim", "birim_reasoning", "birim_alternatifleri", "servis_birimi",
+        "route_birim": ("hedef_birim", "hedef_kurum_adi", "hedef_birim_oneri", "birim_reasoning", "birim_alternatifleri", "servis_birimi",
                         "muhatap_kurum", "yetkili_kurum", "hedef_birim_kaynak", "hedef_kategori",
                         "durum", "insan_onayi_gerekli"),
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.

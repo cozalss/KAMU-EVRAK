@@ -118,6 +118,12 @@ def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
         score = float(o.get("score") or 0)
         norm_score = _sayi(o.get("norm_score"))
         guven, isabet, incele = _guven(norm_score, score, dogrula, nli_destek, ilk=(i == 0))
+        kaynak_dogrulanmis = o.get("kaynak_guven") == "resmi_dogrulanmis"
+        if not kaynak_dogrulanmis:
+            if guven == "yüksek":
+                guven = "orta"
+            isabet = None
+            incele = True
         madde_no = o.get("madde_no")
         out.append({
             "baslik": baslik, "snippet": snippet, "url": o.get("url"), "score": score,
@@ -129,6 +135,15 @@ def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
             "kaynak_dosya": str(o.get("kaynak_dosya", "") or ""),
             "madde_no": str(madde_no) if madde_no is not None else None,
             "madde_tur": (str(o.get("madde_tur")) if o.get("madde_tur") else None),
+            "kaynak_url": str(o.get("kaynak_url", "") or ""),
+            "kaynak_turu": str(o.get("kaynak_turu", "") or ""),
+            "kaynak_guven": str(o.get("kaynak_guven", "aday") or "aday"),
+            "kaynak_dogrulanmis": kaynak_dogrulanmis,
+            "icerik_sha256": str(o.get("icerik_sha256", "") or ""),
+            "dogrulayan": str(o.get("dogrulayan", "") or ""),
+            "dogrulama_tarihi": str(o.get("dogrulama_tarihi", "") or ""),
+            "dogrulama_yontemi": str(o.get("dogrulama_yontemi", "") or ""),
+            "kaynak_guven_hatalari": list(o.get("kaynak_guven_hatalari") or []),
             "atif_genisletme": bool(o.get("atif_genisletme")),
         })
     return out

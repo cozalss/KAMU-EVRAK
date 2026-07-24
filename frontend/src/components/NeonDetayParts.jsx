@@ -54,6 +54,9 @@ const GUVEN_RENK = { yüksek: DERIN.T, orta: DERIN.sari, düşük: DERIN.kirmizi
    yoksa oran İDDİA EDİLMEZ; bandın neden verildiği söylenir. Sıra önemli: en spesifik
    gerekçe (NLI-veto → [DOĞRULA] → ölçülü bant → ölçüsüz bant → statik) önce gelir. */
 function guvenBaslik(m) {
+  if (m.kaynak_guven && !m.kaynak_dogrulanmis) {
+    return "Kaynak henüz hash-kilitli doğrulama manifestinde değil; öneri insan incelemesi gerektirir ve LLM kanıtına verilmez.";
+  }
   if (m.nli_etiket && m.nli_etiket.startsWith("[DOĞRULA")) {
     return "NLI ölçtü: madde, talebi anlamsal olarak desteklemiyor; bu yüzden düşük güven.";
   }
@@ -90,7 +93,7 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
   const ac = () => onAc({ dosya: m.kaynak_dosya, maddeNo: m.madde_no ? Number(m.madde_no) : null, maddeTur: m.madde_tur || "madde" });
   // Kutucuk kurgusu: onSec verilirse madde yazıya dayanak olarak İŞARETLENEBİLİR (canlı akış).
   // Verilmezse (gömülü/legacy) satır salt-okunur kalır. İşaretli satır ince sol-aksan + tint alır.
-  const secilebilir = !!onSec;
+  const secilebilir = !!onSec && m.kaynak_dogrulanmis === true;
   const toggle = () => onSec && onSec(!secili);
 
   return (
@@ -119,6 +122,16 @@ export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = nu
           )}
           {guven && (
             <span title={guvenBaslik(m)} aria-label={`Güven seviyesi: ${guven}`} style={{ ...TYPE.meta, fontWeight: 500, color: gc, background: ALFA(GUVEN_RENK[guven] || PAL.mut2), borderRadius: RAD.chip, padding: "2px 8px" }}>{guven} güven</span>
+          )}
+          {m.kaynak_guven && (
+            <span
+              title={m.kaynak_dogrulanmis
+                ? `Resmî kaynak doğrulandı; içerik SHA-256 ile kilitli${m.dogrulama_tarihi ? ` (${m.dogrulama_tarihi})` : ""}.`
+                : "Kaynak adaydır; resmî metinle karşılaştırılıp hash-kilitli manifeste alınmadan LLM kanıtı veya kesin dayanak olmaz."}
+              style={{ ...TYPE.meta, fontWeight: 500, color: m.kaynak_dogrulanmis ? DERIN.T : DERIN.sari }}
+            >
+              {m.kaynak_dogrulanmis ? "doğrulanmış kaynak" : "kaynak adayı"}
+            </span>
           )}
           {m.atif_genisletme && (
             <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>

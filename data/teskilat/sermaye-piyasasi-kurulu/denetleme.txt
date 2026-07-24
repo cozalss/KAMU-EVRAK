@@ -1,0 +1,10 @@
+@KURUM: Sermaye Piyasası Kurulu
+@BELGE: Denetleme Dairesi Başkanlığı Görevleri
+@KAYNAK_KIMLIK: https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/denetleme-dairesi-baskanligi
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: SPK, Sermaye Piyasası Kurulu Başkanlığı
+
+BİRİM: Denetleme Dairesi Başkanlığı
+GÖREV: Halka açık ortaklıklar ve kolektif yatırım kuruluşları ile bunların iştirak ve bağlı ortaklıklarının mevzuata aykırı fiil ve işlemlerini denetler; izinsiz kripto varlık hizmet sağlayıcılığı, yatırım danışmanlığı, portföy yöneticiliği ve benzeri sermaye piyasası faaliyetlerine ilişkin denetimleri yürütür.

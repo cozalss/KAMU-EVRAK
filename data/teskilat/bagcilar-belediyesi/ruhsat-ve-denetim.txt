@@ -1,0 +1,9 @@
+@KURUM: Bağcılar Belediyesi
+@BELGE: Ruhsat ve Denetim Müdürlüğü Görev ve Çalışma Yönetmeliği
+@KAYNAK_KIMLIK: https://www.bagcilar.bel.tr/BBImages/Slider/Image/20250508_ruhsatve_denetim.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+
+BİRİM: Ruhsat ve Denetim Müdürlüğü
+GÖREV: Sıhhî müesseseler, ikinci ve üçüncü sınıf gayrisıhhî müesseseler ile umuma açık istirahat ve eğlence yerlerinin işyeri açma ve çalışma ruhsatı işlemlerini yürütür. Ruhsat başvurularını inceler, ruhsatlandırılan işyerlerini ruhsat şartları yönünden denetler ve ruhsata aykırılık işlemlerini yürütür.

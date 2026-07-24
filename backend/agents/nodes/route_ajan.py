@@ -31,7 +31,13 @@ _SYSTEM = (
     "listeden seçebilirsin, birim UYDURMA. Önce şunu değerlendir: bu talep muhatap kurumun "
     "görev alanında mı? Değilse (ör. sokak/cadde aydınlatması elektrik dağıtım şirketinin, "
     "trafik ışığı/karayolu farklı kurumun görevidir) yetki='DISARIDA' de ve gerçek yetkili "
-    "kurumun ADINI yaz. Muhatabın görevindeyse yetki='ICERIDE' ve listeden en uygun birimi seç."
+    "kurumun ADINI yaz. Muhatabın görevindeyse yetki='ICERIDE' ve listeden en uygun birimi seç. "
+    "Karar ilkesi: konuyu mevzuat gereği doğrudan inceleyen/ölçen/uygulayan uzman birim, yalnız "
+    "kayıt alan veya destek veren birimden önce gelir. 'Şikâyet' ve 'ihbar' yalnız evrak biçimidir; "
+    "konunun kendisi değildir. Teftiş birimini yalnız belediyenin kendi personeli veya iş ve işlemi "
+    "hakkında görevi kötüye kullanma, rüşvet, yolsuzluk, disiplin ya da soruşturma iddiasında seç. "
+    "İşyeri/eğlence yeri kaynaklı çevresel gürültüde aday görev tanımı açıkça gürültü kontrolü, "
+    "ölçümü ve çevre denetimini kapsıyorsa o uzman birimi; Zabıta/Ruhsat birimlerini destek olarak değerlendir."
 )
 
 
@@ -42,6 +48,53 @@ def _aday_listesi(adaylar: list[dict[str, Any]]) -> str:
         gorev = (a.get("gorev") or "")[:180]
         satirlar.append(f"- {a.get('birim_ad')}: {gorev}")
     return "\n".join(satirlar) if satirlar else "(aday birim bulunamadı)"
+
+
+def _arama_baglami(bilgi: dict[str, Any], masked_text: str) -> tuple[str, str]:
+    """Build retrieval input from subject, requested actions, and masked body text."""
+    konu = str(bilgi.get("konu") or "").strip()
+    talepler = bilgi.get("talepler") or []
+    talep_metinleri = [str(t).strip() for t in talepler if isinstance(t, str) and t.strip()]
+    govde = masked_text[:1600]
+    if not konu:
+        konu = (" ".join(talep_metinleri) or govde[:300]).strip()
+    arama = " ".join([konu, konu, konu, *talep_metinleri, govde]).strip()
+    return konu, arama[:2600]
+
+
+def _alternatif_adlari(
+    adaylar: list[dict[str, Any]],
+    secilen: dict[str, Any] | None,
+    det: dict[str, Any],
+) -> list[str]:
+    """Kurum korpusu varsa gerçek birim adlarını, yoksa eski kategori yedeklerini döndür."""
+    secilen_ad = (secilen or {}).get("birim_ad", "")
+    adlar: list[str] = []
+    kurum_adaylari = [
+        aday for aday in adaylar if aday.get("kaynak_tipi") in ("kurum_ozel", "web", "aday")
+    ]
+    for aday in kurum_adaylari:
+        ad = str(aday.get("birim_ad") or "").strip()
+        if ad and ad != secilen_ad and ad not in adlar:
+            adlar.append(ad)
+    if adlar:
+        return adlar[:3]
+    return list(det.get("birim_alternatifleri", []))[:3]
+
+
+def _yerel_oncelikli_secim(adaylar: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Model yoksa/hata verirse retrieval sirasindaki en guvenli yerel adayi sec."""
+    dogrulanmis = [
+        aday for aday in adaylar
+        if (
+            aday.get("kaynak_tipi") == "kurum_ozel"
+            and aday.get("kaynak_guven") == "resmi_dogrulanmis"
+            and aday.get("kaynak_sha256")
+        )
+    ]
+    if dogrulanmis:
+        return dogrulanmis[0]
+    return next((aday for aday in adaylar if aday.get("kaynak_tipi") == "aday"), None)
 
 
 async def _llm_sec(
@@ -69,7 +122,8 @@ def _kaynak_kunye(aday: dict[str, Any]) -> dict[str, Any]:
     return {k: aday[k] for k in (
         "birim_ad", "gorev", "kaynak_kurum", "kurum_slug", "belge_basligi",
         "url_veya_belge_kimligi", "erisim_tarihi", "metin_parcasi", "icerik_hash",
-        "kaynak_tipi",
+        "kaynak_tipi", "kaynak_guven", "kaynak_dosya", "kaynak_sha256",
+        "dogrulayan", "dogrulama_tarihi",
     ) if k in aday}
 
 
@@ -78,27 +132,27 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     bilgi = state.get("bilgi_unsurlari") or {}
     muhatap = muhatap_kurum_tespit(state.get("evrak_text", "") or "", bilgi)
     yetkili = dict(muhatap)
-    konu = (bilgi.get("konu") or "").strip()
     isim = bilgi.get("gonderen")
     masked = mask_for_llm(state.get("evrak_text", "") or "", isim)
-    if not konu:
-        konu = masked[:300]
+    konu, arama_baglami = _arama_baglami(bilgi, masked)
 
     kategori = det.get("hedef_birim")  # eski 9-set kategori (dürüst fallback köprüsü)
     llm = real_llm()
     secilen: dict[str, Any] | None = None
+    son_adaylar: list[dict[str, Any]] = []
     gerekce = ""
     yetki_disari = False
 
     for tur_i in range(max(1, ROUTE_AJAN_MAX_TUR)):
-        adaylar = kaynak_ara(yetkili.get("slug", ""), konu, tur=yetkili.get("tur", ""))
+        adaylar = kaynak_ara(yetkili.get("slug", ""), arama_baglami, tur=yetkili.get("tur", ""))
+        son_adaylar = adaylar
         if llm is None:
-            # Deterministik: en yüksek skorlu kuruma-özel aday (mock/CI — eskalasyon yok).
-            ozel = [a for a in adaylar if a.get("kaynak_tipi") == "kurum_ozel"]
-            secilen = ozel[0] if ozel else None
+            secilen = _yerel_oncelikli_secim(adaylar)
             break
         obj = await _llm_sec(masked, konu, yetkili, adaylar)
         if not obj:
+            secilen = _yerel_oncelikli_secim(adaylar)
+            gerekce = "Model yanıtı alınamadı; doğrulanmış resmî kaynak sırası kullanıldı"
             break
         if obj.get("yetki") == "DISARIDA" and tur_i < ROUTE_AJAN_MAX_TUR - 1:
             yk = ad_to_kurum((obj.get("yetkili_kurum_adi") or "").strip())
@@ -110,12 +164,18 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
         sb = (obj.get("secilen_birim") or "").strip()
         secilen = next((a for a in adaylar if (a.get("birim_ad") or "") == sb), None)
         gerekce = (obj.get("gerekce") or "").strip() or gerekce
+        if secilen is None and obj.get("yetki") != "DISARIDA":
+            secilen = _yerel_oncelikli_secim(adaylar)
+            gerekce = (
+                gerekce
+                or "Model seçimi aday listesiyle eşleşmedi; doğrulanmış resmî kaynak sırası kullanıldı"
+            )
         break
 
     base: dict[str, Any] = {"muhatap_kurum": muhatap, "yetkili_kurum": yetkili}
 
     # ÜÇLÜ grounding — yalnız kuruma-özel kaynak + kurum/birim/görev-konu birlikte doğrulanırsa.
-    if secilen and uclu_grounding(secilen, konu, yetkili.get("slug", "")):
+    if secilen and uclu_grounding(secilen, arama_baglami, yetkili.get("slug", "")):
         ad = secilen["birim_ad"]
         kaynak = secilen.get("kaynak_kurum", "")
         belge = secilen.get("belge_basligi", "")
@@ -124,11 +184,13 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
         return {
             **base,
             "hedef_birim": ad,
+            "hedef_birim_oneri": ad,
+            "hedef_kurum_adi": kaynak or yetkili.get("ad", ""),
             "hedef_birim_kaynak": _kaynak_kunye(secilen),
             "hedef_kategori": kategori,
             "durum": "kaynak_dogrulandi",
             "insan_onayi_gerekli": False,
-            "birim_alternatifleri": det.get("birim_alternatifleri", []),
+            "birim_alternatifleri": _alternatif_adlari(son_adaylar, secilen, det),
             "birim_reasoning": f"{ad} — {neden} (kaynak: {kaynak} · {belge}) [DeepSeek+kaynak]",
         }
 
@@ -137,7 +199,10 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     if yetki_disari and yetkili.get("ad") and yetkili["slug"] != muhatap.get("slug"):
         parcalar.append(f"Yetkili kurum: {yetkili['ad']}")
     if secilen and secilen.get("birim_ad"):
-        tip = "kuruma-özel" if secilen.get("kaynak_tipi") == "kurum_ozel" else "jenerik aday"
+        tip = {
+            "kurum_ozel": "kuruma-özel",
+            "aday": "kurum kaynağı adayı",
+        }.get(secilen.get("kaynak_tipi"), "jenerik aday")
         parcalar.append(f"Öneri ({tip}, doğrulanmadı): {secilen['birim_ad']}")
     parcalar.append("Resmî kaynakla doğrulanamadı — memur onayı gerekli.")
     log.info("route_ajan.fallback", muhatap=muhatap.get("slug"), yetki_disari=yetki_disari,
@@ -145,10 +210,13 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     return {
         **base,
         "hedef_birim": None,
+        "hedef_birim_oneri": (secilen or {}).get("birim_ad", ""),
+        "hedef_kurum_adi": ((secilen or {}).get("kaynak_kurum") or yetkili.get("ad", "")),
+        "hedef_birim_kaynak": _kaynak_kunye(secilen) if secilen else {},
         "hedef_kategori": kategori,
         "durum": "fallback_onerisi",
         "insan_onayi_gerekli": True,
-        "birim_alternatifleri": det.get("birim_alternatifleri", []),
+        "birim_alternatifleri": _alternatif_adlari(son_adaylar, secilen, det),
         "birim_reasoning": " · ".join(parcalar),
     }
 

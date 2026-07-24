@@ -1,0 +1,10 @@
+@KURUM: Tapu ve Kadastro Genel Müdürlüğü
+@BELGE: Tapu ve Kadastro Genel Müdürlüğü Merkez Teşkilatı Kuruluşu ile Görev, Yetki ve Sorumlulukları Hakkında Genelge No: 2025/5
+@KAYNAK_KIMLIK: https://www.tkgm.gov.tr/stratejig-db/gorev-yetki-ve-sorumluluklar
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_karar
+@DOGRULAMA: resmi
+@ALIAS: TKGM, Tapu Kadastro
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: Genel Müdürlüğün stratejik yönetim, planlama, bütçe, kesin hesap, raporlama ve iç kontrol çalışmalarını yürütür; hizmetleri etkileyen dış faktörleri ve yararlanıcı memnuniyetini analiz eder, yönetim bilgi sistemleri konusunda eğitim ve danışmanlık sağlar.

@@ -1,0 +1,10 @@
+@KURUM: Keçiören Belediyesi
+@BELGE: Fen İşleri Müdürlüğünün Görev, Yetki ve Sorumlulukları ile Çalışma Usul ve Esasları
+@KAYNAK_KIMLIK: https://kecioren.bel.tr/yonetmelikler_yonelgeler/Kecioren_Belediyesi_Mudurluklerinin_Gorev__Yetki_ve_Sorumluluklari_Ile_Calisma_Usul_ve_Esaslarina_Dair_Yonetmelikkecioren.bel.tr10.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+@ALIAS: Keçiören Belediye Başkanlığı
+
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: İlçedeki meydanların, yolların ve kaldırımların kullanılabilir durumda olmasını sağlar. Yol açma ve yol yapım hizmetleri, kaldırım ve refüj yapımı, altyapı koordinasyonu ile belediyenin uhdesindeki yolların üstyapı malzemeleriyle kaplanmasına ilişkin iş ve işlemleri yürütür.

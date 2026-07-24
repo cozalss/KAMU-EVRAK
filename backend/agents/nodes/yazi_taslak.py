@@ -34,6 +34,7 @@ from agents.config import (
     SDP_ONERI,
     YAZI_PLAN_PARALEL,
     birim_tr,
+    etkili_birim,
 )
 from agents.kurum_kimlik import (
     efektif_idare_adi,
@@ -41,6 +42,7 @@ from agents.kurum_kimlik import (
     hitap_eki,
     muzekkere_muhatabi,
 )
+from agents.mevzuat_kanit import mevzuat_kanit_paketi
 from agents.servis_birim import SERVIS_BIRIM_TR
 from yazi.sdp_plani import sdp_bul
 
@@ -203,11 +205,15 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     unsurlar = state.get("bilgi_unsurlari") or {}
     evrak_text = state.get("evrak_text", "") or ""
     alt_talepler = state.get("alt_talepler") or []
-    # Kaynak-doğrulamalı ajan köprüsü (muhatap/plan yolu): hedef_birim doğrulanmış GERÇEK
-    # birim adı (serbest-metin) VEYA fallback'te None → hedef_kategori (eski 9-set) etiketine
-    # köprülenir; böylece üst-yazı muhatabı (m.14/2) ve plan boş kalmaz. birim_tr passthrough.
-    hedef_birim = state.get("hedef_birim") or state.get("hedef_kategori") or ""
+    # Karar kartı/finalize/arşiv ile aynı hedef çözümünü kullan: doğrulanmış birim, kaynak
+    # önerisi, servis önerisi, son çare kaba kategori. Onay gerekliliği state'te ayrıca korunur.
+    rota_var = any(
+        state.get(alan)
+        for alan in ("hedef_birim", "hedef_birim_oneri", "servis_birimi", "hedef_kategori")
+    )
+    hedef_birim = etkili_birim(state) if rota_var else ""
     plan_notu = ""
+    kanit_paketi = mevzuat_kanit_paketi(state)
     # Antet İDARE = belge açıkça bir kuruma hitaben yazılmışsa (yönelme-ekli, yargı hariç)
     # O KURUM otomatik — sormadan/uyarmadan; değilse aktif kurum (istek-bazlı override,
     # boşsa env KURUM_ADI'ya düşer). "Biz belgeye göre hareket ediyoruz" (19 Tem 2. revizyon).
@@ -219,7 +225,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         from yazi.yazi_plan import yazi_plani
         from yazi.yazi_render import (
             build_alt_talep_taslaklari,
-            build_body,
+            build_body_sonuclu,
             build_context,
             hitap_bicimi,
             ts13298_ust_veri,
@@ -245,22 +251,29 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
             plan_gorevi = asyncio.create_task(
                 yazi_plani(turu, unsurlar, evrak_text, hedef_birim))
             try:
-                metin = await build_body(yazi_turu, unsurlar, evrak_text)
+                govde_sonucu = await build_body_sonuclu(
+                    yazi_turu, unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
             except BaseException:
                 plan_gorevi.cancel()
                 raise
             plan = await plan_gorevi
             if plan and plan["yazi_turu"] != yazi_turu:
                 log.info("yazi_plan_tur_degisti", statik=yazi_turu, plan=plan["yazi_turu"])
-                metin = await build_body(plan["yazi_turu"], unsurlar, evrak_text)
+                govde_sonucu = await build_body_sonuclu(
+                    plan["yazi_turu"], unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
         else:
             plan = None if plan_atla else await yazi_plani(
                 turu, unsurlar, evrak_text, hedef_birim)
-            metin = await build_body(
-                plan["yazi_turu"] if plan else yazi_turu, unsurlar, evrak_text)
+            govde_sonucu = await build_body_sonuclu(
+                plan["yazi_turu"] if plan else yazi_turu,
+                unsurlar,
+                evrak_text,
+                mevzuat_kanit_paketi=kanit_paketi,
+            )
         if plan:
             yazi_turu = plan["yazi_turu"]
             plan_notu = plan["gerekce"]
+        metin = govde_sonucu.metin
         # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
         # gorus_mutalaa = görüşü TALEP EDEN birime m.14/2 hitap biçimiyle — plan muhatabı
         # da AYNI biçim kapısından geçer (gerçek-LLM yolunda eksiz/karışık-kasa kalıyordu).
@@ -316,6 +329,11 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         "format_uyumlu": result.format_uyumlu,
         # Dinamik planın insan-okunur gerekçesi (boş = statik yol kullanıldı) — UI notu.
         "yazi_plan_notu": plan_notu,
+        # LLM'e verilen, yalnız korpus-kaynaklı madde parçaları ve kullanım sonucu.
+        "mevzuat_kanit_paketi": kanit_paketi,
+        "mevzuat_kanit_durumu": govde_sonucu.mevzuat_kanit_durumu,
+        "mevzuat_kanit_uyari": list(govde_sonucu.mevzuat_kanit_uyari),
+        "mevzuat_kanit_atif_sayisi": govde_sonucu.mevzuat_kanit_atif_sayisi,
         # Sistem-tespitli antet künyesi (grounding muafiyeti + UI şeffaflığı).
         "antet_meta": antet_meta,
         # TS 13298 üst-veri (EBYS metadata) — belge türü + konu + SDP + güvenlik + tarih/sayı.

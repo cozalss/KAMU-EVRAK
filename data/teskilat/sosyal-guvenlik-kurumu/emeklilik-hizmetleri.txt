@@ -1,0 +1,25 @@
+@KURUM: Sosyal Güvenlik Kurumu
+@BELGE: Emeklilik Hizmetleri Genel Müdürlüğü Hakkımızda ve Birim Görevleri
+@KAYNAK_KIMLIK: https://www.sgk.gov.tr/birimler/hakkimizda/EMEKLILIK-HIZMETLERI-GENEL-MUDURLUGU-2026-04-29-02-25-38
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: SGK
+
+BİRİM: Emeklilik Hizmetleri Genel Müdürlüğü
+GÖREV: Sosyal güvenlikte tescil, hizmet ve borçlanma işlemleri ile emeklilik işlemlerini yürütür; sigortalı ve hak sahiplerine yönelik hizmetleri, aylık bağlama ve ödeme işlemlerini ve sosyal güvenlik sözleşmeleri kapsamındaki çalışmaları yürütür.
+
+BİRİM: Evrak ve Dosya Koordinasyon Daire Başkanlığı
+GÖREV: Genel Müdürlüğün evrak sevk ve arşiv işlemlerini yürütür; sigortalı, iştirakçi ve emekli dosyalarını muhafaza eder, dosya ve belge taleplerine ilişkin yazışmaları yapar, görev alanındaki yazılı talep, ihbar, şikayet ve önerileri sonuçlandırır.
+
+BİRİM: Bağımsız ve Hizmet Akdiyle Çalışanlar Emeklilik Daire Başkanlığı
+GÖREV: 5510 sayılı Kanunun 4/a ve 4/b kapsamındaki sigortalıların uzun vadeli sigorta yardımlarına hak kazanma koşullarını tespit eder; gelir ve aylık bağlama, ödeme, banka ve adres değişikliği ile gelir ve aylıkların durdurulması ve yeniden başlatılması işlemlerini yürütür.
+
+BİRİM: Kamu Görevlileri Ödemeler Daire Başkanlığı
+GÖREV: 5510 sayılı Kanunun 4/c kapsamındaki kamu görevlileri ve hak sahiplerinin emeklilik, yaşlılık, malullük, dul ve yetim aylıkları ile ikramiye, tazminat, ek ödeme ve ilgili fark ödemelerine ilişkin işlemleri yürütür.
+
+BİRİM: Kısa Vadeli Sigortalar Daire Başkanlığı
+GÖREV: Geçici iş göremezlik ve emzirme ödeneği işlemlerini, iş kazası ve meslek hastalığı bildirimlerini yürütür; malullük, çalışma gücü kaybı ve meslekte kazanma gücü kaybı tespitleri ile Kurum Sağlık Kurullarının koordinasyonuna ilişkin işlemleri yürütür.
+
+BİRİM: Yönetim Hizmetleri Daire Başkanlığı
+GÖREV: Genel Müdürlüğün bütçe planlamasını, personel ve eğitim işlemlerinin koordinasyonunu, taşınır kayıtlarını, satın alma ve bilgi işlem altyapısına ilişkin idari işlemlerini yürütür.

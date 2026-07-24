@@ -1,0 +1,9 @@
+@KURUM: Bağcılar Belediyesi
+@BELGE: Rehberlik ve Teftiş Kurulu Müdürlüğü Yönetmeliği
+@KAYNAK_KIMLIK: https://www.bagcilar.bel.tr/duyuru/1104/rehberlik-ve-teftis-kurulu-mudurlugu-yonetmel
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+
+BİRİM: Rehberlik ve Teftiş Kurulu Müdürlüğü
+GÖREV: Belediye teşkilatının ve belediye personelinin iş ve işlemleri hakkında kurum içi teftiş, denetim, inceleme, ön inceleme ve soruşturma yürütür. Kamu görevlisinin görevi kötüye kullanması, yolsuzluk, rüşvet, usulsüz işlem veya disiplin ihlali iddialarını görev alanı kapsamında inceler.

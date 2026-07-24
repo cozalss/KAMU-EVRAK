@@ -1,0 +1,10 @@
+@KURUM: Bilgi Teknolojileri ve İletişim Kurumu
+@BELGE: İnternet Daire Başkanlığı Görevleri
+@KAYNAK_KIMLIK: https://www.btk.gov.tr/internet-daire-baskanligi
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: BTK, Bilgi Teknolojileri ve İletişim Kurumu Başkanlığı
+
+BİRİM: İnternet Daire Başkanlığı
+GÖREV: Yasadışı içeriklerle mücadelede ulusal ve uluslararası internet aktörleriyle işbirliği ve koordinasyon çalışmalarını yürütür; internet kullanıcı eğilimleri ve ihbar verilerini değerlendirir, internetin bilinçli, güvenli ve etkin kullanımına ilişkin eğitim ve projeler yürütür.

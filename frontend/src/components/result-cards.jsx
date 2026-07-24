@@ -542,15 +542,19 @@ function MevzuatCard({ oneriler, nli }) {
 }
 
 /* ---------- 5) Birim yönlendirme + alternatifler ---------- */
-function BirimCard({ hedef, alternatifler }) {
-  const alts = (alternatifler || []).filter((b) => b !== hedef);
+function BirimCard({ r }) {
+  const hedef = r.hedef_birim || r.hedef_birim_oneri || r.hedef_kategori || "";
+  const alternatifler = r.birim_alternatifleri || [];
+  const kurum = r.hedef_kurum_adi || r.hedef_birim_kaynak?.kaynak_kurum || r.yetkili_kurum?.ad || r.muhatap_kurum?.ad || "";
+  const alts = alternatifler.filter((b) => b !== hedef);
   return (
     <article className="rc-card rc-birim rc-g2" aria-labelledby="rc-birim-h">
       <header className="rc-card-head">
         <span className="rc-ic" aria-hidden="true"><Icon.route /></span>
         <h3 id="rc-birim-h" className="rc-card-title">Önerilen Havale Birimi</h3>
       </header>
-      <p className="rc-birim-hedef">{BIRIM_LBL(hedef)}</p>
+      {kurum && <p className="rc-birim-kurum">Kurum: {kurum}</p>}
+      <p className="rc-birim-hedef">Havale birimi: {BIRIM_LBL(hedef)}</p>
       {alts.length > 0 && (
         <div className="rc-birim-alts">
           <span className="rc-birim-alts-h">Alternatif birimler:</span>
@@ -1044,7 +1048,7 @@ export function ResultCards({ r, onToast, onDownload, downloading, canDownload, 
       <BilgilendirmeCard text={r.bilgilendirme} />
       <div className="rc-row rc-row-2">
         <EvrakTuruCard turu={r.evrak_turu} conf={r.tur_confidence} />
-        <BirimCard hedef={r.hedef_birim} alternatifler={r.birim_alternatifleri} />
+        <BirimCard r={r} />
       </div>
       {/* VİTRİN — çok-konulu evrak ayrıştırma: tek dilekçe → N alt-talep, her biri ayrı
           birime otomatik havale. <2 alt-talep (tek-konulu) → kart kendini gizler. */}

@@ -426,6 +426,14 @@ async def verify_node(state: dict[str, Any]) -> dict[str, Any]:
     # olabilir) → SSE'ye maskesiz gitmesin diye state'e girmeden maskelenir.
     uyarilar = ([mask_pii(u).masked_text for u in uydurma]
                 + [f"Eksik bölüm: {e}" for e in eksik])
+    # LLM, kapalı mevzuat kanıt paketi dışında atıf üretirse yazi_taslak güvenli
+    # şablona düşer. Olay yine de memur incelemesine taşınır; atıf sessizce kaybolmaz.
+    kanit_uyarilari = state.get("mevzuat_kanit_uyari") or []
+    uyarilar += [
+        mask_pii(str(uyari)).masked_text
+        for uyari in kanit_uyarilari
+        if isinstance(uyari, str) and uyari.strip()
+    ]
     # S2 — madde-referanslı 2646 lint raporu (kural-kimlikli; risk'e yalnız 'uyari' gider).
     # muhatap: render'ın muhatap mantığıyla AYNI (yön hatası = sahte m.16 uyarısı üretir).
     # Katman B: muhatap KURUM görünümlü ama tablo çözemiyorsa LLM kademe tahmini

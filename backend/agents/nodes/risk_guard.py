@@ -59,6 +59,7 @@ _UYDURMA_IMZA = "kaynak evrakta yok"
 # başlığı + memory: 'çıkarımsal sinyal bandı deterministik-dışı süremez'). Deterministik veto
 # (somut tarih/sayı) KIRMIZI olmaya devam eder — jüri-görünür anti-halüsinasyon sinyali korunur.
 _GROUNDING_IMZA = "(LLM grounding)"
+_MEVZUAT_KANIT_IMZA = "(mevzuat kanıtı)"
 _EKSIK_IMZA = "Eksik bölüm"
 
 # Memura DOĞRUDAN hitap eden eylem cümleleri (arayüzde "Ne yapmalısınız:" satırı). Jargon yok:
@@ -125,6 +126,8 @@ def compute_risk(
     # LLM grounding (olasılıksal) → SARI: memura "AI şu ifadeyi kaynakta bulamadı, kontrol
     # edin" der; bant deterministik değil ama incelemeye çağırır (asla otomatik KIRMIZI).
     sari += [f"AI incelemesi — {u}" for u in uyarilar if _GROUNDING_IMZA in u]
+    sari += [f"Mevzuat atfı incelemesi — {u}" for u in uyarilar
+             if _MEVZUAT_KANIT_IMZA in u]
     if format_uyumlu is False and not sari:
         sari.append("Resmî yazı zorunlu format bölümleri eksik")
     dogrula = taslak.count("[DOĞRULA")

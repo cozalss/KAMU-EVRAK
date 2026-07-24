@@ -34,6 +34,14 @@ class MevzuatOneri(TypedDict):
     norm_score: NotRequired[float]
     kaynak_dosya: NotRequired[str]  # katalog anahtarı → /mevzuat/icerik/{dosya} (doğrulama bağı)
     madde_no: NotRequired[str | None]
+    kaynak_url: NotRequired[str]
+    kaynak_turu: NotRequired[str]
+    kaynak_guven: NotRequired[str]  # resmi_dogrulanmis | aday
+    icerik_sha256: NotRequired[str]
+    dogrulayan: NotRequired[str]
+    dogrulama_tarihi: NotRequired[str]
+    dogrulama_yontemi: NotRequired[str]
+    kaynak_guven_hatalari: NotRequired[list[str]]
     madde_tur: NotRequired[str | None]  # "madde"|"ek"|"gecici" → ek≠normal madde (link doğruluğu)
 
 
@@ -68,6 +76,12 @@ class EvrakState(TypedDict):
     mevzuat_nli: NotRequired[list[dict[str, Any]]]
     crag_guven_oncesi: NotRequired[float]
     crag_guven_sonrasi: NotRequired[float]
+    # LLM taslak üretimine verilen kapalı mevzuat kanıt paketi (yalnız gerçek korpus madde
+    # kaydı + snippet). Paket dışı LLM atfı güvenli şablona düşer ve inceleme sinyali olur.
+    mevzuat_kanit_paketi: NotRequired[list[dict[str, Any]]]
+    mevzuat_kanit_durumu: NotRequired[str]
+    mevzuat_kanit_uyari: NotRequired[list[str]]
+    mevzuat_kanit_atif_sayisi: NotRequired[int]
 
     # --- Yenilikçilik: Self-RAG (reflection) çıktı tamlık öz-değerlendirmesi (ENV-gated) ---
     self_rag_tam: NotRequired[bool]         # çıktı tam mı (tüm beklenen alanlar dolu)
@@ -83,6 +97,8 @@ class EvrakState(TypedDict):
 
     # --- Görev 2: resmî yazı taslaklama + birim yönlendirme ---
     hedef_birim: NotRequired[str | None]    # kaynak-doğrulanmış birim ADI; fallback'te None
+    hedef_kurum_adi: NotRequired[str]
+    hedef_birim_oneri: NotRequired[str]
     birim_alternatifleri: NotRequired[list[str]]
     birim_reasoning: NotRequired[str]
     # Kaynak-doğrulamalı ajan çıktısı (REVİZYON 6): seçilen birimin tam kaynak künyesi

@@ -876,13 +876,21 @@ function RoutingCard({ r, birimAday }) {
   // doğrulanamadığında (fallback_onerisi) None döner AMA birim_reasoning yine üretilir
   // (route_ajan.py her iki dalda da yazar) — kart hedef_birim'e kilitliyse bu gerekçe hiç
   // görünmez (kullanıcı bulgusu: şartname "süreç bilgilendirmesi" gereksinimiyle çelişir).
-  const birim = r.hedef_birim || r.hedef_kategori;
+  const birim = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori;
   if (!birim) return null;
   const dogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
+  const kurum = String(r.hedef_kurum_adi || r.hedef_birim_kaynak?.kaynak_kurum || r.yetkili_kurum?.ad || r.muhatap_kurum?.ad || "").trim();
   return (
     <NeonCard title="Birim yönlendirme" tag={birimAday.length ? `${birimAday.length + 1} aday` : null} accent={V} icon={<Icon.route />}>
+      {kurum && (
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
+          <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>Kurum</span>
+          <strong style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{clean(kurum)}</strong>
+        </div>
+      )}
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
         <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>1.</span>
+        <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>Havale birimi</span>
         <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{BIRIM_GOSTER(birim, r.evrak_turu)}</span>
         <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, fontWeight: 600, color: dogrulandi ? DERIN.V : DERIN.sari }}>
           {dogrulandi
@@ -966,7 +974,7 @@ export default function SonucCalismaAlani({
   const band = BANT[r.risk_metadata?.bant] ? r.risk_metadata.bant : "yesil";
   const bantC = BANT[band]?.c || BANT.yesil.c;
   const birimAday = arr(r.birim_alternatifleri)
-    .filter((b) => b !== r.hedef_birim && b !== r.hedef_kategori).slice(0, 3);
+    .filter((b) => b !== r.hedef_birim && b !== r.hedef_birim_oneri && b !== r.hedef_kategori).slice(0, 3);
   const ozetButonu = (
     <SwapButton icon={<Icon.info width={13} height={13} />} onClick={() => setSourceView("ozet")}>
       Özet
@@ -1014,7 +1022,7 @@ export default function SonucCalismaAlani({
             <div className="sc-support-wide">
               <ArchiveSlaCard r={r} arsiv={arsiv} sdpAdaylar={sdpAdaylar} sla={sla} sInfo={sInfo} />
             </div>
-            {(r.hedef_birim || r.hedef_kategori) && (
+            {(r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori) && (
               <div className="sc-support-half">
                 <RoutingCard r={r} birimAday={birimAday} />
               </div>

@@ -22,14 +22,30 @@ _RUHSAT = {
                         "konu": "işyeri açma ve çalışma ruhsatı başvurusu"},
 }
 
+_BAGCILAR_GURULTU = {
+    "evrak_turu": "sikayet",
+    "evrak_text": (
+        "T.C.\nBAĞCILAR BELEDİYE BAŞKANLIĞINA\nİSTANBUL\n\n"
+        "Konu: Gürültü kirliliği şikâyeti\n\n"
+        "İkamet ettiğim binanın alt katındaki eğlence mekânından kaynaklanan aşırı ve "
+        "sürekli gürültü nedeniyle özellikle gece saatlerinde huzursuzluk yaşıyorum. "
+        "Gerekli gürültü ölçümünün yapılarak yasal işlem başlatılmasını talep ederim."
+    ),
+    "bilgi_unsurlari": {
+        "kurum": "Bağcılar Belediye Başkanlığı",
+        "konu": "Gürültü kirliliği şikâyeti",
+        "talepler": ["Eğlence mekânında gürültü ölçümü ve yasal denetim yapılması"],
+    },
+}
+
 
 # --------------------------------------------------------------------------- #
 # Kaynak-doğrulanmış birim (üçlü grounding geçer)
 # --------------------------------------------------------------------------- #
 
 class TestKaynakDogrulanmisBirim:
-    async def test_ruhsat_dilekcesi_ruhsat_denetime_gider(self):
-        """Bildirilen bug: ruhsat dilekçesi İK yerine Ruhsat ve Denetim'e (kaynak-doğrulanmış)."""
+    async def test_resmi_kaynak_otomatik_havale_uretir(self):
+        """Resmi kurum kaynağı eşleşirse hedef birim memur onaysız üretilebilir."""
         out = await route_birim_node(dict(_RUHSAT))
         assert out["hedef_birim"] == "Ruhsat ve Denetim Müdürlüğü"
         assert out["durum"] == "kaynak_dogrulandi"
@@ -42,11 +58,43 @@ class TestKaynakDogrulanmisBirim:
         assert k["kaynak_kurum"] == "Yenimahalle Belediyesi"
         assert k["belge_basligi"] and k["icerik_hash"] and k["url_veya_belge_kimligi"]
         assert k["kaynak_tipi"] == "kurum_ozel"
+        assert k["url_veya_belge_kimligi"] == (
+            "https://www.yenimahalle.bel.tr/Icerik/ruhsat-ve-denetim-islemleri/15"
+        )
 
     async def test_muhatap_ve_yetkili_kurum_alanlari(self):
         out = await route_birim_node(dict(_RUHSAT))
         assert out["muhatap_kurum"]["slug"] == "yenimahalle-belediyesi"
         assert out["yetkili_kurum"]["slug"] == "yenimahalle-belediyesi"
+
+    async def test_bagcilar_gurultu_uzman_cevre_birimine_gider(self):
+        """Gürültü şikâyeti Teftiş/Zabıta'ya değil, güncel çevre denetimi birimine gider."""
+        out = await route_birim_node(dict(_BAGCILAR_GURULTU))
+        assert out["hedef_kurum_adi"] == "Bağcılar Belediyesi"
+        assert out["hedef_birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert out["durum"] == "kaynak_dogrulandi"
+        assert out["insan_onayi_gerekli"] is False
+        assert "20260305_iklimdegisikligivesifiratik.pdf" in (
+            out["hedef_birim_kaynak"]["url_veya_belge_kimligi"]
+        )
+        assert "Ruhsat ve Denetim Müdürlüğü" in out["birim_alternatifleri"]
+
+    async def test_bagcilar_personel_yolsuzluk_iddiasi_teftise_gider(self):
+        state = {
+            "evrak_turu": "sikayet",
+            "evrak_text": (
+                "T.C.\nBAĞCILAR BELEDİYE BAŞKANLIĞINA\n\n"
+                "Belediye personelinin görevi kötüye kullanma, rüşvet ve usulsüz işlem "
+                "iddiaları hakkında soruşturma yapılmasını talep ederim."
+            ),
+            "bilgi_unsurlari": {
+                "konu": "Belediye personeli hakkında rüşvet ve usulsüz işlem iddiası",
+                "talepler": ["Görevi kötüye kullanma iddiasının soruşturulması"],
+            },
+        }
+        out = await route_birim_node(state)
+        assert out["hedef_birim"] == "Rehberlik ve Teftiş Kurulu Müdürlüğü"
+        assert out["durum"] == "kaynak_dogrulandi"
 
 
 # --------------------------------------------------------------------------- #
@@ -87,14 +135,16 @@ class TestUcluGrounding:
     def test_konu_gorev_baglantisi_yoksa_reddedilir(self):
         """Kurum-özel aday olsa da görev tanımı evrak konusuyla örtüşmüyorsa reddedilir."""
         aday = {"birim_ad": "Park ve Bahçeler Müdürlüğü", "gorev": "park yeşil alan ağaçlandırma",
-                "kurum_slug": "yenimahalle-belediyesi", "kaynak_tipi": "kurum_ozel"}
+                "kurum_slug": "yenimahalle-belediyesi", "kaynak_tipi": "kurum_ozel",
+                "kaynak_guven": "resmi_dogrulanmis", "kaynak_sha256": "a" * 64}
         # Konu 'icra haciz tebligat' → park görev tanımında yok → grounding reddeder.
         assert uclu_grounding(aday, "icra haciz tebligat mahkeme", "yenimahalle-belediyesi") is False
 
     def test_gecerli_aday_kabul_edilir(self):
         aday = {"birim_ad": "Ruhsat ve Denetim Müdürlüğü",
                 "gorev": "işyeri açma ve çalışma ruhsatı düzenlenmesi ve denetimi",
-                "kurum_slug": "yenimahalle-belediyesi", "kaynak_tipi": "kurum_ozel"}
+                "kurum_slug": "yenimahalle-belediyesi", "kaynak_tipi": "kurum_ozel",
+                "kaynak_guven": "resmi_dogrulanmis", "kaynak_sha256": "a" * 64}
         assert uclu_grounding(aday, "işyeri açma ruhsatı", "yenimahalle-belediyesi") is True
 
     def test_yanlis_kurum_reddedilir(self):
@@ -144,6 +194,14 @@ class TestKurumKimlik:
         k = ad_to_kurum("Uludağ Elektrik Dağıtım A.Ş.")
         assert k["slug"] and k["tur"] == "diger"
 
+    def test_baskanlik_anteti_korpustaki_kuruma_cozulur(self):
+        k = muhatap_kurum_tespit(
+            "T.C.\nTÜRKİYE İSTATİSTİK KURUMU BAŞKANLIĞINA\nKonu: Nüfus istatistikleri",
+            {},
+        )
+        assert k["slug"] == "turkiye-istatistik-kurumu-baskanligi"
+        assert k["tur"] == "baskanlik"
+
 
 # --------------------------------------------------------------------------- #
 # Mock determinizmi (CI) + arama primitifi
@@ -154,11 +212,28 @@ class TestMockDeterminizm:
         a = await route_birim_node(dict(_RUHSAT))
         b = await route_birim_node(dict(_RUHSAT))
         assert a["hedef_birim"] == b["hedef_birim"] == "Ruhsat ve Denetim Müdürlüğü"
+        assert a["durum"] == b["durum"] == "kaynak_dogrulandi"
 
-    def test_kaynak_ara_kurum_ozel_dondurur(self):
+    def test_resmi_kaynak_kurum_ozel_dondurur(self):
         adaylar = kaynak_ara("yenimahalle-belediyesi", "işyeri açma çalışma ruhsatı", tur="belediye")
         assert adaylar and adaylar[0]["kaynak_tipi"] == "kurum_ozel"
         assert adaylar[0]["birim_ad"] == "Ruhsat ve Denetim Müdürlüğü"
+
+    async def test_llm_hatasinda_dogrulanmis_retrieval_sirasi_kullanilir(self, monkeypatch):
+        import agents.nodes.route_ajan as route_mod
+
+        async def _llm_hatasi(*_args, **_kwargs):
+            return None
+
+        monkeypatch.setattr(route_mod, "real_llm", lambda: object())
+        monkeypatch.setattr(route_mod, "_llm_sec", _llm_hatasi)
+
+        out = await route_birim_node(dict(_BAGCILAR_GURULTU))
+
+        assert out["hedef_birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert out["durum"] == "kaynak_dogrulandi"
+        assert out["hedef_birim_kaynak"]["kaynak_guven"] == "resmi_dogrulanmis"
+        assert "resmî kaynak sırası" in out["birim_reasoning"]
 
 
 class TestKapsamAliasCozumleme:
@@ -174,12 +249,34 @@ class TestKapsamAliasCozumleme:
         from agents.nodes.teskilat_ara import _kanonik_slug
         assert _kanonik_slug("ankara-sosyal-guvenlik-il-mudurlugu") == "sosyal-guvenlik-kurumu"
 
-    def test_uedas_aydinlatma_kurum_ozel_aday(self):
-        """Sokak aydınlatması UEDAŞ kaynağından kurum_ozel aday üretir (Nilüfer vakası)."""
+    def test_uedas_aydinlatma_insan_onayi_adayi(self):
+        """Yerel kimlikli UEDAŞ kaynağı, doğrulanana kadar insan onayı adayıdır."""
         from agents.nodes.teskilat_ara import teskilat_birim_ara
         adaylar = teskilat_birim_ara("uedas", "sokak aydınlatma direği lambası arızalı")
-        assert adaylar and adaylar[0]["kaynak_tipi"] == "kurum_ozel"
+        assert adaylar and adaylar[0]["kaynak_tipi"] == "aday"
         assert "Aydınlatma" in adaylar[0]["birim_ad"]
+
+    def test_resmi_tuik_kaynagi_otomatik_hedef_uretmek_icin_gecerlidir(self):
+        from agents.nodes.teskilat_ara import kurum_korpusta_var, teskilat_birim_ara
+
+        adaylar = teskilat_birim_ara(
+            "turkiye-istatistik-kurumu",
+            "nüfus göç doğum ölüm istatistikleri",
+        )
+        assert kurum_korpusta_var("turkiye-istatistik-kurumu") is True
+        assert adaylar and adaylar[0]["kaynak_tipi"] == "kurum_ozel"
+        assert adaylar[0]["birim_ad"] == "Demografi İstatistikleri Daire Başkanlığı"
+
+    def test_resmi_nvi_kaynagi_otomatik_hedef_uretmek_icin_gecerlidir(self):
+        from agents.nodes.teskilat_ara import kurum_korpusta_var, teskilat_birim_ara
+
+        adaylar = teskilat_birim_ara(
+            "nufus-ve-vatandaslik-isleri-genel-mudurlugu",
+            "vatandaşlıktan çıkma mavi kart yeniden vatandaşlık kazanma",
+        )
+        assert kurum_korpusta_var("nufus-ve-vatandaslik-isleri-genel-mudurlugu") is True
+        assert adaylar and adaylar[0]["kaynak_tipi"] == "kurum_ozel"
+        assert adaylar[0]["birim_ad"] == "Vatandaşlık Hizmetleri Daire Başkanlığı"
 
     def test_jenerik_sablonlar_aday_kalir(self):
         """_genel-* şablonları kurum_korpusta_var=False → doğrulanmış hedef üretmez."""
@@ -214,3 +311,44 @@ class TestWebAdapterGated:
         wa = WebAdapter()
         assert wa.kurum_var("herhangi-kurum") is False
         assert wa.ara("herhangi-kurum", "bir konu") == []
+
+
+class TestRoutingContext:
+    async def test_resmi_tuik_anteti_demografi_birimine_gider(self):
+        state = {
+            "evrak_turu": "dilekce",
+            "evrak_text": (
+                "T.C.\nTÜRKİYE İSTATİSTİK KURUMU BAŞKANLIĞINA\n\n"
+                "Konu: Nüfus, göç, doğum ve ölüm istatistikleri talebi"
+            ),
+            "bilgi_unsurlari": {"konu": "nüfus göç doğum ölüm istatistikleri"},
+        }
+        out = await route_birim_node(state)
+        assert out["hedef_kurum_adi"] == "Türkiye İstatistik Kurumu"
+        assert out["hedef_birim"] == "Demografi İstatistikleri Daire Başkanlığı"
+        assert out["durum"] == "kaynak_dogrulandi"
+
+    async def test_body_context_routes_to_fen_isleri(self):
+        state = {
+            "evrak_turu": "dilekce",
+            "evrak_text": (
+                "T.C.\nYEN\u0130MAHALLE BELED\u0130YE BA\u015eKANLI\u011eINA\n\nKonu: Ba\u015fvuru\n\n"
+                "Mahallemizdeki bozuk kald\u0131r\u0131mlar\u0131n onar\u0131lmas\u0131 ve yol bak\u0131m\u0131 talep edilmektedir."
+            ),
+            "bilgi_unsurlari": {"konu": "Ba\u015fvuru"},
+        }
+        out = await route_birim_node(state)
+        assert out["hedef_birim"] is None
+        assert out["hedef_birim_oneri"] == "Fen İşleri Müdürlüğü"
+        assert out["hedef_kurum_adi"] == "Yenimahalle Belediyesi"
+
+    async def test_inflected_subject_routes_to_park_bahceler(self):
+        state = {
+            "evrak_turu": "dilekce",
+            "evrak_text": "T.C.\nYEN\u0130MAHALLE BELED\u0130YE BA\u015eKANLI\u011eINA\n\nKonu: A\u011fa\u00e7land\u0131rmalar\u0131n ve budamalar\u0131n yap\u0131lmas\u0131",
+            "bilgi_unsurlari": {"konu": "A\u011fa\u00e7land\u0131rmalar\u0131n ve budamalar\u0131n yap\u0131lmas\u0131"},
+        }
+        out = await route_birim_node(state)
+        assert out["hedef_birim"] is None
+        assert out["hedef_birim_oneri"] == "Park ve Bahçeler Müdürlüğü"
+        assert out["hedef_kurum_adi"] == "Yenimahalle Belediyesi"

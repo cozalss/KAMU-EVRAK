@@ -11,7 +11,11 @@ from api.mevzuat_zenginlestir import zenginlestir_mevzuat
 
 
 def _state(oneriler, nli=None, konu="imar durumu"):
-    return {"mevzuat_onerileri": oneriler, "mevzuat_nli": nli or [],
+    guvenli_oneriler = [
+        {"kaynak_guven": "resmi_dogrulanmis", **oneri}
+        for oneri in oneriler
+    ]
+    return {"mevzuat_onerileri": guvenli_oneriler, "mevzuat_nli": nli or [],
             "bilgi_unsurlari": {"konu": konu}}
 
 
@@ -65,6 +69,20 @@ class TestKalibreBant:
 def test_yuksek_guven_statik_skordan():
     out = zenginlestir_mevzuat(_state([{"baslik": "3071 s.K. m.4", "score": 0.82}]))
     assert out[0]["guven"] == "yüksek" and out[0]["inceleme_oner"] is False
+
+
+def test_dogrulanmamis_kaynak_yuksek_bandi_orta_ve_incelemeye_cevirir():
+    out = zenginlestir_mevzuat(_state([{
+        "baslik": "3071 s.K. m.4",
+        "score": 1.0,
+        "norm_score": 2.0,
+        "kaynak_guven": "aday",
+    }]))
+
+    assert out[0]["guven"] == "orta"
+    assert out[0]["guven_isabet"] is None
+    assert out[0]["inceleme_oner"] is True
+    assert out[0]["kaynak_dogrulanmis"] is False
 
 
 def test_dusuk_guven_skordan_inceleme():

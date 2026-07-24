@@ -1,0 +1,10 @@
+@KURUM: Kişisel Verileri Koruma Kurumu
+@BELGE: Veri Güvenliği ve Bilgi Sistemleri Dairesi Başkanlığı Görevleri
+@KAYNAK_KIMLIK: https://www.kvkk.gov.tr/Icerik/4228/Veri-Guvenligi-ve-Bilgi-Sistemleri-Dairesi-Baskanligi
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: KVKK, Kişisel Verileri Koruma Kurumu Başkanlığı
+
+BİRİM: Veri Güvenliği ve Bilgi Sistemleri Dairesi Başkanlığı
+GÖREV: Kurum projelerinin bilişim altyapısına uygun tasarlanması ve uygulanmasını sağlar; bilgi ve veri güvenliği için gerekli önlemleri, politikaları ve ilkeleri belirler, bilişim altyapısının kurulumu, bakımı, geliştirilmesi ve haberleşme güvenliği işlemlerini yürütür.

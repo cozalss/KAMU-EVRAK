@@ -1,0 +1,9 @@
+@KURUM: Bilgi Teknolojileri ve İletişim Kurumu
+@BELGE: Yetkilendirme Dairesi Başkanlığı Görevleri
+@KAYNAK_KIMLIK: https://btk.gov.tr/yetkilendirme-dairesi-baskanligi
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Yetkilendirme Dairesi Başkanlığı
+GÖREV: Elektronik haberleşme hizmetleri, şebekeleri ve altyapılarıyla ilgili yetkilendirmelere ilişkin düzenlemeleri yapar ve yetkilendirme işlemlerini yürütür.

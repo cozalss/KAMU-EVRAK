@@ -74,8 +74,8 @@ class TestLlmGecerliKapaliKume:
         monkeypatch.setattr(dec, "llm_json", _sahte_llm(payload))
         # Act
         alt = (await decompose_node({"evrak_text": _COK_KONULU, "bilgi_unsurlari": {}}))["alt_talepler"]
-        # Assert — sikayet → olur yazısı + 3071 30 gün; bilgi_edinme → 4982 15 iş günü
-        assert alt[0]["yazi_turu"] == "olur"
+        # Assert — hizmet şikâyeti → cevabi yazı + 3071 30 gün; bilgi edinme → 4982 15 iş günü
+        assert alt[0]["yazi_turu"] == "cevabi_yazi"
         assert "30 gün" in alt[0]["cevap_suresi"]
         assert "15 iş günü" in alt[1]["cevap_suresi"]
         assert alt[0]["tur_tr"] == "Şikâyet"

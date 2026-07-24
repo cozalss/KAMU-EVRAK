@@ -1,0 +1,10 @@
+@KURUM: Yenimahalle Belediyesi
+@BELGE: Ruhsat ve Denetim İşlemleri
+@KAYNAK_KIMLIK: https://www.yenimahalle.bel.tr/Icerik/ruhsat-ve-denetim-islemleri/15
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_hizmet
+@DOGRULAMA: resmi
+@ALIAS: Yenimahalle Belediye Başkanlığı
+
+BİRİM: Ruhsat ve Denetim Müdürlüğü
+GÖREV: İşyeri açma ve çalışma ruhsatı işlemlerini yürütür. Market, mağaza, restoran ve benzeri işyerlerinin ruhsat başvuru, yenileme, devir ve denetim süreçlerini; sıhhi, gayrisıhhi ve umuma açık istirahat ve eğlence yeri ruhsat işlemlerini yürütür.

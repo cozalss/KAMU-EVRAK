@@ -153,6 +153,15 @@ class MevzuatOneriSchema(BaseModel):
     # Öneriyi kaynağında doğrulama bağı — /mevzuat/icerik/{kaynak_dosya}, ilgili maddeye atlar.
     kaynak_dosya: str = ""
     madde_no: str | None = None
+    kaynak_url: str = ""
+    kaynak_turu: str = ""
+    kaynak_guven: str = "aday"
+    kaynak_dogrulanmis: bool = False
+    icerik_sha256: str = ""
+    dogrulayan: str = ""
+    dogrulama_tarihi: str = ""
+    dogrulama_yontemi: str = ""
+    kaynak_guven_hatalari: list[str] = Field(default_factory=list)
     madde_tur: str | None = None   # "madde"|"ek"|"gecici" → modal doğru maddeyi vurgular (ek≠normal)
     # S7 — GraphRAG-lite: öneri, top sonucun atıf verdiği mevzuattan 1-hop genişletmeyle geldi.
     atif_genisletme: bool = False
@@ -191,6 +200,8 @@ class ProcessResponse(BaseModel):
     ozet: str = ""
     # Kaynak-doğrulamalı ajan: doğrulanmış GERÇEK birim adı (serbest-metin) veya None (fallback).
     hedef_birim: str | None = ""
+    hedef_kurum_adi: str = ""
+    hedef_birim_oneri: str = ""
     birim_alternatifleri: list[str] = Field(default_factory=list)
     # "Neden bu birim" gerekçe metni (route_ajan/route_birim üretir) — dogrulandi VE
     # fallback_onerisi dalında YAZILIR; boşsa frontend jenerik dipnota düşer.

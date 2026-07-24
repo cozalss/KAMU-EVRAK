@@ -1,0 +1,116 @@
+{
+ "version": 1,
+ "aciklama": "Yalniz resmi kaynaktan elle dogrulanmis ve SHA-256 ile kilitlenmis dosyalar bu manifestte yer alir.",
+ "kaynaklar": {
+  "bagcilar-belediyesi/iklim-degisikligi-ve-sifir-atik.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/20260305_iklimdegisikligivesifiratik.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "c0c11892ded25ab7aaa3134fcd637d881bc84ced0d9cca4dcbc3794bfee847b3",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi yonetmelik PDF m.6/e ve m.12 ile birim-gorev karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "bagcilar-belediyesi/ruhsat-ve-denetim.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/20250508_ruhsatve_denetim.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "b1ffddf2d1b5caa01e39f4ec92adffdd3156646ce99358659f45d622d381d86f",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi yonetmelik PDF m.6, m.10 ve m.11 ile birim-gorev karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "bagcilar-belediyesi/zabita.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/2018_zabita.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "3f82dbe8d4067cb82c83b600ab86e5a6111342a211ea644e4f47f2272e285e2c",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi Zabıta Mudurlugu yonetmelik PDF m.6 ile birim-gorev karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "yenimahalle-belediyesi/ruhsat-ve-denetim-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.yenimahalle.bel.tr/Icerik/ruhsat-ve-denetim-islemleri/15",
+   "kaynak_turu": "resmi_hizmet",
+   "icerik_sha256": "176085885254f2d64fd5439f0079e7aacbc7686d959921f62550b267ed27d914",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Yenimahalle Belediyesi resmi hizmet ve mudurluk sayfalari ile ruhsat, yenileme, devir ve denetim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "kecioren-belediyesi/fen-isleri-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://kecioren.bel.tr/yonetmelikler_yonelgeler/Kecioren_Belediyesi_Mudurluklerinin_Gorev__Yetki_ve_Sorumluluklari_Ile_Calisma_Usul_ve_Esaslarina_Dair_Yonetmelikkecioren.bel.tr10.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "5f9cf14ebd3c039b56c2263d9b628804e7995720b25705202c5531531c476e7d",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Kecioren Belediyesi resmi mudurluk yonetmeligi PDF m.16.3, m.16.5 ve m.16.6 ile yol-kaldirim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "odunpazari-belediyesi/fen-isleri-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.odunpazari.bel.tr/upload/files/fenisleri.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "5d8427d3e26965143cdee64257cb3f31193d33674a0364f3773fe8b34792ba58",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Odunpazari Belediyesi resmi Fen Isleri yonetmeligi PDF m.7 ve m.10 ile yol-asfalt-kaldirim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "akdeniz-belediyesi/veteriner-isleri-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.akdeniz.bel.tr/Default/KurumsalDetay/2308",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5b5b06fb3464b39e4193f1592290deec6dc7d44adea06e01b79681dedda5d083",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Akdeniz Belediyesi resmi Veteriner Isleri sayfasi ile sahipsiz hayvan toplama-rehabilitasyon-sikayet gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "kecioren-belediyesi/fen-isleri-yol-bakim-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kecioren.bel.tr/keciorende_altyapi_seferberligi-2622-haber.html",
+   "kaynak_turu": "resmi_hizmet",
+   "icerik_sha256": "837bf41eb40671b5165f4ff32393262b77a591abc69cae8a101241144cf4a514",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Kecioren Belediyesi resmi 30.09.2024 altyapi haberi ile Fen Isleri yol, asfalt, kaldirim bakim ve onarim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "bagcilar-belediyesi/rehberlik-ve-teftis.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/duyuru/1104/rehberlik-ve-teftis-kurulu-mudurlugu-yonetmel",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "fd4667df4a20e3a5b42e2248dcee8117ec3335d42401e482bfc6f5b76114daf0",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi Rehberlik ve Teftis Kurulu yonetmeligi degisikligi m.7, m.8, m.45 ile teftis, denetim, inceleme ve sorusturma gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "turkiye-istatistik-kurumu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.tuik.gov.tr/media/corporatecontent/tuik-yonetmelik.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "e547d6e9da13f97223bde8901adeb79f85acd646dc9bcb26c166434565fdb8f9",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "TUIK resmi hizmet birimleri yonetmeligi m.4-m.23/A ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "nufus-ve-vatandaslik-isleri-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.nvi.gov.tr/kurumlar/nvi.gov.tr/mevzuat/nufusmevzuat/yonerge/NVIGMBirim-Yonergesi.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "94b7b0c93d7b12d382eee805864b2c2d6b8cbdbec3f440dc09440c397db934ed",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "NVI resmi Birim Yonergesi m.7-m.16 ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  }
+ }
+}

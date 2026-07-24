@@ -1,0 +1,10 @@
+@KURUM: Bağcılar Belediyesi
+@BELGE: İklim Değişikliği ve Sıfır Atık Müdürlüğü Görev ve Çalışma Yönetmeliği
+@KAYNAK_KIMLIK: https://www.bagcilar.bel.tr/BBImages/Slider/Image/20260305_iklimdegisikligivesifiratik.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+@ALIAS: Bağcılar Belediye Başkanlığı
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Müdürlüğü
+GÖREV: Çevre Denetimi Bürosu aracılığıyla çevre kirliliğine ilişkin talep ve şikâyetleri değerlendirir. Çevresel Gürültü Kontrol Yönetmeliği kapsamında işletme, tesis, işyeri, şantiye, rekreasyon ve eğlence yerlerini denetler; gürültü kirliliğini ve olumsuz etkilerini önlemek için kontrol, inceleme ve gürültü ölçümü işlemlerini yürütür. Hava kirliliği, asbest ve diğer çevresel etkiler hakkında denetim yapar. Bu görevler yönetmeliğin 6/e ve 12. maddelerinde düzenlenmiştir.

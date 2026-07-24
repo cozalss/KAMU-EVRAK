@@ -452,16 +452,16 @@ test("havale: kaynak doğrulanmış birim → havale, yeşil rozet, kaynak küny
     hedef_birim_kaynak: { birim_ad: "Ruhsat ve Denetim Müdürlüğü", kaynak_kurum: "Örnekşehir Belediyesi" },
   });
   assert.equal(h.devir, false);
-  assert.equal(h.etiket, "Havale — birim");
-  assert.equal(h.deger, "Ruhsat ve Denetim Müdürlüğü");
+  assert.equal(h.etiket, "Havale — kurum / birim");
+  assert.equal(h.deger, "Örnekşehir Belediyesi");
   assert.equal(h.rozet.ton, "yesil");
-  assert.deepEqual(h.alt, ["kaynak: Örnekşehir Belediyesi"]);
+  assert.deepEqual(h.alt, ["Birim: Ruhsat ve Denetim Müdürlüğü"]);
   assert.match(h.gerekce, /Örnekşehir Belediyesi teşkilat kaydından doğrulandı/);
 });
 
 test("havale: doğrulanmamış öneri → '(öneri)' etiketi + memur onayı rozeti + uyarıcı gerekçe", () => {
   const h = havaleYorum({ hedef_kategori: "basin_halkla_iliskiler_cimer", insan_onayi_gerekli: true });
-  assert.equal(h.etiket, "Havale — birim (öneri)");
+  assert.equal(h.etiket, "Havale — kurum / birim (öneri)");
   assert.equal(h.rozet.metin, "memur onayı gerekli");
   assert.match(h.gerekce, /doğrulanamadı/);
   assert.match(h.gerekce, /teyit edin/);
@@ -469,9 +469,23 @@ test("havale: doğrulanmamış öneri → '(öneri)' etiketi + memur onayı roze
 
 test("havale: birim hiç yoksa '(öneri)' DENMEZ, dürüstçe 'Belirlenmedi'", () => {
   const h = havaleYorum({ insan_onayi_gerekli: true });
-  assert.equal(h.etiket, "Havale — birim");   // olmayan öneriyi öneri diye sunma
+  assert.equal(h.etiket, "Havale — kurum / birim");   // olmayan öneriyi öneri diye sunma
   assert.equal(h.deger, "Belirlenmedi");
   assert.match(h.gerekce, /tahmin yürütmedi/);
+});
+
+test("havale: Bağcılar gürültü kararında kurum ve birim birlikte görünür", () => {
+  const h = havaleYorum({
+    hedef_kurum_adi: "Bağcılar Belediyesi",
+    hedef_birim: "İklim Değişikliği ve Sıfır Atık Müdürlüğü",
+    durum: "kaynak_dogrulandi",
+    hedef_birim_kaynak: {
+      birim_ad: "İklim Değişikliği ve Sıfır Atık Müdürlüğü",
+      kaynak_kurum: "Bağcılar Belediyesi",
+    },
+  });
+  assert.equal(h.deger, "Bağcılar Belediyesi");
+  assert.deepEqual(h.alt, ["Birim: İklim Değişikliği ve Sıfır Atık Müdürlüğü"]);
 });
 
 test("havale: çapraz kurum → slot kimlik değiştirir (havale DEĞİL, devir)", () => {

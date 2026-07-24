@@ -44,6 +44,7 @@ from agents.config import (
     RERANK_ENABLED,
     RERANK_PROVIDER,
 )
+from core.kaynak_guveni import manifest_yukle, mevzuat_kaynak_bilgisi
 from core.text import tr_lower
 from retrieval.chunker import chunk_mevzuat
 
@@ -52,6 +53,7 @@ log = structlog.get_logger()
 _ROOT = Path(__file__).resolve().parents[3]
 _MEVZUAT_DIR = _ROOT / "data" / "mevzuat"
 _INDEX_FILE = _MEVZUAT_DIR / "index" / "mevzuat_index.json"
+_MANIFEST_FILE = _MEVZUAT_DIR / "kaynak_manifest.json"
 _TOP_K = 3
 _MIN_QUERY_LEN = 8  # çok kısa metinde retrieval gürültülü → statik'e düş
 _MIN_CHUNK_CHARS = 40
@@ -148,11 +150,13 @@ def _chunks_from_corpus(src_dir: Path) -> list[dict[str, Any]]:
     kayitlar: list[dict[str, Any]] = []
     if not src_dir.is_dir():
         return kayitlar
+    manifest = manifest_yukle(_MANIFEST_FILE)
     for path in sorted(src_dir.glob("*.txt")):
         try:
             text = path.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
+        kaynak = mevzuat_kaynak_bilgisi(path, manifest)
         etiket = path.stem.replace("_", " ")
         chunks = chunk_mevzuat(text, subchunk=False)
         madde_var = any(c.metadata.get("madde_no") is not None for c in chunks)
@@ -168,13 +172,32 @@ def _chunks_from_corpus(src_dir: Path) -> list[dict[str, Any]]:
                 "mevzuat": etiket,
                 "kaynak_dosya": path.name,   # seed indeksle parite (öneri → okuma modalı bağı)
                 "madde_no": chunk.metadata.get("madde_no"),
+                "madde_tur": chunk.metadata.get("madde_tur"),
                 "text": govde,
+                **kaynak.indeks_alanlari(),
             })
     return kayitlar
 
 
-@lru_cache(maxsize=1)
-def _load_index() -> tuple[dict[str, Any], ...]:
+def _index_revision() -> tuple[Any, ...]:
+    """Atomik indeks degisimini process restart gerektirmeden fark eden stat kimligi."""
+    try:
+        stat = _INDEX_FILE.stat()
+        return ("index", stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size)
+    except OSError:
+        dosyalar = sorted(_MEVZUAT_DIR.glob("*.txt"))
+        imzalar = []
+        for path in (*dosyalar, _MANIFEST_FILE):
+            try:
+                stat = path.stat()
+                imzalar.append((path.name, stat.st_mtime_ns, stat.st_size))
+            except OSError:
+                continue
+        return ("corpus", tuple(imzalar))
+
+
+@lru_cache(maxsize=3)
+def _load_index_revision(_revision: tuple[Any, ...]) -> tuple[dict[str, Any], ...]:
     """Mevzuat chunk indeksi — seed JSON öncelikli, yoksa korpustan runtime build.
 
     lru_cache: indeks process ömrü boyunca bir kez kurulur (her node çağrısında
@@ -191,6 +214,18 @@ def _load_index() -> tuple[dict[str, Any], ...]:
     return tuple(_chunks_from_corpus(_MEVZUAT_DIR))
 
 
+def _load_index() -> tuple[dict[str, Any], ...]:
+    return _load_index_revision(_index_revision())
+
+
+def _indeks_onbellegini_temizle() -> None:
+    _load_index_revision.cache_clear()
+    _BM25_MEMO.clear()
+
+
+_load_index.cache_clear = _indeks_onbellegini_temizle  # type: ignore[attr-defined]
+
+
 # BM25 modeli indeks başına BİR kez kurulur (her sorguda yeniden token'lama yok).
 # lru_cache kullanılamaz: chunks (dict tuple) hashable değil → id-anahtarlı memo.
 # _load_index lru_cached olduğundan aynı tuple objesi döner (id sabit) → güvenli.
@@ -205,6 +240,8 @@ def _bm25_model(chunks: tuple[dict[str, Any], ...]) -> Any:
     anahtar = id(chunks)
     if anahtar in _BM25_MEMO:
         return _BM25_MEMO[anahtar]
+    if len(_BM25_MEMO) >= 3:
+        _BM25_MEMO.clear()
     try:
         from rank_bm25 import BM25Okapi
 
@@ -393,6 +430,14 @@ def _oneri(
         "score": round(score, 3),
         "raw_score": round(raw, 3),
         "norm_score": round(raw / q_token, 3) if q_token > 0 else 0.0,
+        "kaynak_url": str(chunk.get("kaynak_url", "") or ""),
+        "kaynak_turu": str(chunk.get("kaynak_turu", "") or ""),
+        "kaynak_guven": str(chunk.get("kaynak_guven", "aday") or "aday"),
+        "icerik_sha256": str(chunk.get("icerik_sha256", "") or ""),
+        "dogrulayan": str(chunk.get("dogrulayan", "") or ""),
+        "dogrulama_tarihi": str(chunk.get("dogrulama_tarihi", "") or ""),
+        "dogrulama_yontemi": str(chunk.get("dogrulama_yontemi", "") or ""),
+        "kaynak_guven_hatalari": list(chunk.get("kaynak_guven_hatalari") or []),
         **ek,
     }
 
@@ -473,7 +518,16 @@ def _maybe_rerank(
         cands = [
             {"text": c.get("text", ""), "mevzuat": c.get("mevzuat", ""),
              "kaynak_dosya": c.get("kaynak_dosya", ""),
-             "madde_no": c.get("madde_no"), "madde_tur": c.get("madde_tur"), "score": float(s)}
+             "madde_no": c.get("madde_no"), "madde_tur": c.get("madde_tur"),
+             "kaynak_url": c.get("kaynak_url", ""),
+             "kaynak_turu": c.get("kaynak_turu", ""),
+             "kaynak_guven": c.get("kaynak_guven", "aday"),
+             "icerik_sha256": c.get("icerik_sha256", ""),
+             "dogrulayan": c.get("dogrulayan", ""),
+             "dogrulama_tarihi": c.get("dogrulama_tarihi", ""),
+             "dogrulama_yontemi": c.get("dogrulama_yontemi", ""),
+             "kaynak_guven_hatalari": c.get("kaynak_guven_hatalari", []),
+             "score": float(s)}
             for s, c in deduped[:RERANK_CAND_N]
         ]
         results = get_reranker().rerank(query, cands, top_k=_TOP_K)
@@ -495,7 +549,16 @@ def _maybe_rerank(
             {"mevzuat": r.metadata.get("mevzuat", ""),
              "kaynak_dosya": r.metadata.get("kaynak_dosya", ""),
              "madde_no": r.metadata.get("madde_no"),
-             "madde_tur": r.metadata.get("madde_tur"), "text": r.text},
+             "madde_tur": r.metadata.get("madde_tur"),
+             "kaynak_url": r.metadata.get("kaynak_url", ""),
+             "kaynak_turu": r.metadata.get("kaynak_turu", ""),
+             "kaynak_guven": r.metadata.get("kaynak_guven", "aday"),
+             "icerik_sha256": r.metadata.get("icerik_sha256", ""),
+             "dogrulayan": r.metadata.get("dogrulayan", ""),
+             "dogrulama_tarihi": r.metadata.get("dogrulama_tarihi", ""),
+             "dogrulama_yontemi": r.metadata.get("dogrulama_yontemi", ""),
+             "kaynak_guven_hatalari": r.metadata.get("kaynak_guven_hatalari", []),
+             "text": r.text},
             score=float(r.score), raw=float(r.original_score), q_token=q_token, rerank=True,
         )
         for r in results

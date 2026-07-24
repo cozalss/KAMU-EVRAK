@@ -1,0 +1,9 @@
+@KURUM: Keçiören Belediyesi
+@BELGE: Keçiören'de altyapı seferberliği
+@KAYNAK_KIMLIK: https://www.kecioren.bel.tr/keciorende_altyapi_seferberligi-2622-haber.html
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_hizmet
+@DOGRULAMA: resmi
+
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: Vatandaşların konforlu ve güvenli sokaklarda ulaşım sağlaması için yol bakım ve onarım çalışmalarını yürütür. Yol, asfalt ve altyapı bakımına ilişkin sahadaki çalışmaları gerçekleştirir.

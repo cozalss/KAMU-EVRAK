@@ -34,7 +34,7 @@ class TestRouteBirimConfigEslesmesi:
             f"Dilekçe için {beklenen} beklendi, {sonuc['hedef_birim']} geldi"
         )
 
-    def test_sikayet_teftis_ic_denetim(self):
+    def test_sikayet_konuya_gore_ana_hizmete_gider(self):
         # Arrange
         state = {"evrak_turu": "sikayet", "evrak_text": "şikayet"}
         # Act
@@ -42,6 +42,17 @@ class TestRouteBirimConfigEslesmesi:
         # Assert
         beklenen = EVRAK_TO_BIRIM["sikayet"]
         assert sonuc["hedef_birim"] == beklenen
+
+    def test_personel_usulsuzlugu_teftise_gider(self):
+        state = {
+            "evrak_turu": "sikayet",
+            "evrak_text": (
+                "Belediye personeli olan kamu görevlisi hakkında görevi kötüye kullanma, "
+                "rüşvet, yolsuzluk ve usulsüz işlem nedeniyle soruşturma talep ediyorum."
+            ),
+        }
+        sonuc = _route_deterministik(state)
+        assert sonuc["hedef_birim"] == "teftis_ic_denetim"
 
     def test_tebligat_hukuk_musavirligi(self):
         # Arrange

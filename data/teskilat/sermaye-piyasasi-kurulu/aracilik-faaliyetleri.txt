@@ -1,0 +1,9 @@
+@KURUM: Sermaye Piyasası Kurulu
+@BELGE: Aracılık Faaliyetleri Dairesi Başkanlığı Görevleri
+@KAYNAK_KIMLIK: https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/aracilik-faaliyetleri-dairesi-baskanligi
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Aracılık Faaliyetleri Dairesi Başkanlığı
+GÖREV: Yatırım hizmeti ve faaliyeti yürütecek kurumların kuruluş ve faaliyet başvurularını inceler ve sonuçlandırır; aracı kurumlar, borsalar, piyasa işleticileri, merkezi takas ve saklama kuruluşları ile kitle fonlama platformlarının düzenleme, gözetim ve denetim işlemlerini yürütür.

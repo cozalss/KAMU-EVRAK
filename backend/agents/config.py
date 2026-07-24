@@ -135,8 +135,11 @@ ZORUNLU_ALANLAR: tuple[str, ...] = (
 EVRAK_TO_BIRIM: dict[str, str] = {
     "dilekce": "basin_halkla_iliskiler_cimer",
     "basvuru": "ilgili_teknik_daire",
-    "sikayet": "teftis_ic_denetim",
-    "ihbar": "teftis_ic_denetim",
+    # Şikâyet/ihbar bir başvuru BİÇİMİDİR; sorumlu birim konuya göre belirlenir.
+    # Teftiş yalnız belediye personeli/işlemi hakkında usulsüzlük-disiplin sinyali varsa
+    # içerik yönlendirmesiyle öne çıkar. Salt "şikâyet" sözcüğü iç denetim anlamına gelmez.
+    "sikayet": "ilgili_teknik_daire",
+    "ihbar": "ilgili_teknik_daire",
     "talep": "ilgili_teknik_daire",
     "bilgi_edinme": "basin_halkla_iliskiler_cimer",
     "cimer": "basin_halkla_iliskiler_cimer",
@@ -332,7 +335,8 @@ EVRAK_TO_YAZI: dict[str, str] = {
     # Vatandaş talebi ailesi → karşılık/bilgilendirme
     "dilekce": "cevabi_yazi", "basvuru": "cevabi_yazi", "talep": "cevabi_yazi",
     "bilgi_edinme": "bilgilendirme", "cimer": "bilgilendirme",
-    "sikayet": "olur", "ihbar": "olur",          # inceleme/soruşturma → makam oluru
+    "sikayet": "cevabi_yazi",                    # hizmet şikâyeti → inceleme sonrası başvurana cevap
+    "ihbar": "olur",                             # somut ihbar → inceleme/soruşturma oluru gerekebilir
     # Kurum→kurum resmî yazı ailesi
     "ust_yazi": "cevabi_yazi", "cevabi_yazi": "cevabi_yazi",
     "muzekkere": "cevabi_yazi",                   # kayıt/belge celbine karşılık (celbedilen kayıt gönderilir)
@@ -681,13 +685,21 @@ def birim_goster(hedef_birim: str, evrak_turu: str) -> str:
 def etkili_birim(state: dict) -> str:
     """Gösterim/metadata için etkili birim adı — kaynak-doğrulamalı ajan köprüsü.
 
-    Doğrulanmış `hedef_birim` (serbest-metin gerçek birim adı) varsa onu döndürür; yoksa
-    (dürüst fallback: hedef_birim=None) `hedef_kategori`'nin (eski 9-set) içerik-duyarlı
-    etiketini gösterir. Her zaman boş-olmayan string → finalize/arsiv None-güvenli.
+    Öncelik: doğrulanmış gerçek birim → kaynak adayından birim önerisi → içerikten bulunan
+    hizmet müdürlüğü → kaba kategori. Böylece karar kartı, taslak, arşiv ve sonuç bildirimi
+    aynı birim adını kullanır; doğrulanmamış önerinin onay durumu ayrıca state'te korunur.
     """
     hb = state.get("hedef_birim")
     if hb:
         return birim_tr(hb)
+    oneri = state.get("hedef_birim_oneri")
+    if oneri:
+        return birim_tr(oneri)
+    servis = state.get("servis_birimi") or {}
+    if isinstance(servis, dict) and servis.get("ad"):
+        return str(servis["ad"])
+    if isinstance(servis, str) and servis:
+        return birim_tr(servis)
     kategori = state.get("hedef_kategori") or "yazi_isleri_evrak"
     return birim_goster(kategori, state.get("evrak_turu", "") or "")
 

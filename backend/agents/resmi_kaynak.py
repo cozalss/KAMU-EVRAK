@@ -17,7 +17,12 @@ import re
 from typing import Protocol, TypedDict
 
 from agents.config import ROUTE_WEB_YEDEK
-from agents.nodes.teskilat_ara import _kanonik_slug, kurum_korpusta_var, teskilat_birim_ara
+from agents.nodes.teskilat_ara import (
+    _kanonik_slug,
+    kelime_uyum_skoru,
+    kurum_korpusta_var,
+    teskilat_birim_ara,
+)
 from core.text import tr_lower
 
 
@@ -34,7 +39,12 @@ class KaynakKaydi(TypedDict, total=False):
     metin_parcasi: str
     icerik_hash: str
     skor: float
-    kaynak_tipi: str   # "kurum_ozel" | "jenerik" | "web"
+    kaynak_tipi: str   # "kurum_ozel" | "aday" | "jenerik" | "web"
+    kaynak_guven: str
+    kaynak_dosya: str
+    kaynak_sha256: str
+    dogrulayan: str
+    dogrulama_tarihi: str
 
 
 class OfficialSourceSearch(Protocol):
@@ -91,6 +101,7 @@ _WORD_RE = re.compile(r"[0-9a-zçğıöşü]+")
 _GENEL_KONU = frozenset({
     "talep", "konu", "ilgili", "hakkında", "gereği", "arz", "ederim", "rica",
     "başvuru", "dilekçe", "işlem", "sayın", "belediye", "kurum", "müdürlük",
+    "şikayet", "şikâyet", "ihbar", "gerekli", "yapılması", "edilmesi",
 })
 
 
@@ -104,7 +115,10 @@ def _kaynakta_var(ifade: str, kaynak: str) -> bool:
     ifade = tr_lower(ifade).strip()
     if not ifade:
         return False
-    return re.search(rf"(?<!\w){re.escape(ifade)}(?!\w)", tr_lower(kaynak)) is not None
+    return any(
+        kelime_uyum_skoru(ifade, token) > 0
+        for token in _WORD_RE.findall(tr_lower(kaynak))
+    )
 
 
 def uclu_grounding(aday: KaynakKaydi, konu: str, yetkili_slug: str) -> bool:
@@ -112,13 +126,18 @@ def uclu_grounding(aday: KaynakKaydi, konu: str, yetkili_slug: str) -> bool:
 
     (a) hedef kurum: aday kuruma-özel kaynaktan ve slug yetkili kuruma ait.
     (b) gerçek birim adı: birim_ad kaynak künyesinde dolu (uydurma değil, korpus kaydı).
-    (c) görev-konu bağı: evrak konusundan en az bir ayırt edici token, görev tanımında
-        sözcük-sınırlı geçer (birim gerçekten bu konuyla görevli).
+    (c) görev-konu bağı: evrak konusundan en az iki ayırt edici token, görev tanımında
+        sözcük-sınırlı geçer (birim gerçekten bu konuyla görevli). "Şikâyet/başvuru"
+        gibi evrak zarfı sözcükleri ayırt edici sayılmaz.
     """
     # (a) kurum: yalnız kuruma-özel kaynak doğrulanmış hedef üretir; jenerik/boş → red.
     # Web adayı (kaynak_tipi="web") da kurum-kaynağıdır ama slug'ı boş olabilir → yalnız
     # kurum_ozel/web kabul; slug karşılaştırması ALIAS-duyarlı (uedas ≡ uludag-elektrik-dagitim).
-    if aday.get("kaynak_tipi") not in ("kurum_ozel", "web"):
+    if (
+        aday.get("kaynak_tipi") != "kurum_ozel"
+        or aday.get("kaynak_guven") != "resmi_dogrulanmis"
+        or not aday.get("kaynak_sha256")
+    ):
         return False
     aday_slug = aday.get("kurum_slug") or ""
     if yetkili_slug and aday_slug:
@@ -135,7 +154,8 @@ def uclu_grounding(aday: KaynakKaydi, konu: str, yetkili_slug: str) -> bool:
     konu_tok = _konu_tokenlari(konu)
     if not konu_tok:
         return False
-    return any(_kaynakta_var(t, gorev) for t in konu_tok)
+    eslesen = sum(1 for t in konu_tok if _kaynakta_var(t, gorev))
+    return eslesen >= 2
 
 
 __all__ = (

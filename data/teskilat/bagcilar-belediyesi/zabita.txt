@@ -1,0 +1,9 @@
+@KURUM: Bağcılar Belediyesi
+@BELGE: Zabıta Müdürlüğü Görev ve Çalışma Yönetmeliği
+@KAYNAK_KIMLIK: https://www.bagcilar.bel.tr/BBImages/Slider/Image/2018_zabita.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+
+BİRİM: Zabıta Müdürlüğü
+GÖREV: Beldenin düzenini ve esenliğini korur; belediye emir ve yasaklarını uygular ve belediye suçlarının işlenmesini önleyici tedbirler alır. Umuma açık yerlerde genel düzen, huzur ve belediye mevzuatına uyum yönünden zabıta denetimi yapar.

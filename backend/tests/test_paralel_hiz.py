@@ -208,19 +208,19 @@ class TestYaziPlanParalel:
 
         monkeypatch.setattr(yt, "YAZI_PLAN_PARALEL", True)
         cagrilar: list[str] = []
-        gercek_body = yr.build_body
+        gercek_body = yr.build_body_sonuclu
 
         async def sahte_plan(turu, unsurlar, evrak_text, hedef_birim):
             if plan_turu is None:
                 return None
             return {"yazi_turu": plan_turu, "muhatap": "", "gerekce": "test gerekçesi"}
 
-        async def sahte_body(yazi_turu, unsurlar, evrak_text):
+        async def sahte_body(yazi_turu, unsurlar, evrak_text, **kwargs):
             cagrilar.append(yazi_turu)
-            return await gercek_body(yazi_turu, unsurlar, evrak_text)
+            return await gercek_body(yazi_turu, unsurlar, evrak_text, **kwargs)
 
         monkeypatch.setattr(yp, "yazi_plani", sahte_plan)
-        monkeypatch.setattr(yr, "build_body", sahte_body)
+        monkeypatch.setattr(yr, "build_body_sonuclu", sahte_body)
         out = await yt.yazi_taslak_node(dict(_PLAN_STATE))
         return out, cagrilar
 

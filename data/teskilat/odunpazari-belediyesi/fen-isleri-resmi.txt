@@ -1,0 +1,10 @@
+@KURUM: Odunpazarı Belediyesi
+@BELGE: Fen İşleri Müdürlüğü Görev, Yetki, Sorumluluk, Çalışma Usul ve Esaslarına İlişkin Yönetmelik
+@KAYNAK_KIMLIK: https://www.odunpazari.bel.tr/upload/files/fenisleri.pdf
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
+@ALIAS: Odunpazarı Belediye Başkanlığı
+
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: Yeni yol açılması ve stabilizasyonunu, yolların bakım ve onarımlarını, kaldırım ve bordür döşenmesi ile bunların bakım ve onarımını yapar. Yeni açılan yolların asfalt kaplamasını yapar; asfalt yama ekibi ile bakım, onarım ve kontrol çalışmalarını yürütür.

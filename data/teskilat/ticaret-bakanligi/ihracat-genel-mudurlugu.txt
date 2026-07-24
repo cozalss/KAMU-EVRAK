@@ -1,0 +1,27 @@
+@KURUM: Ticaret Bakanlığı
+@BELGE: İhracat Genel Müdürlüğü Görevleri
+@KAYNAK_KIMLIK: https://ihracat.ticaret.gov.tr/kurumsal/gorevlerimiz
+@ERISIM: 2026-07-24
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Mevzuat ve Koordinasyon Daire Başkanlığı
+GÖREV: İhracat ve ihracatı teşvik mevzuatının hazırlanması, geliştirilmesi ve uygulanmasında koordinasyonu sağlar; ihracat rejimi, dahilde ve hariçte işleme rejimleri ile ilgili mütalaa taleplerini ve mevzuat uyum çalışmalarını yürütür.
+
+BİRİM: Tarım Ürünleri Daire Başkanlığı
+GÖREV: Tarım ve hayvancılık ürünlerinin ihracatını izler, ihracat politikaları doğrultusunda tedbir alır; tarım ve gıda sektörlerinde dahilde ve hariçte işleme izin belgelerine ilişkin işlemleri ve ilgili teşvik uygulamalarını yürütür.
+
+BİRİM: Kimya, Toprak ve Sağlık Endüstrileri Daire Başkanlığı
+GÖREV: Kimya ve toprak ürünleri ihracatını, piyasa gelişmelerini ve ilgili dahilde ve hariçte işleme izin belgelerini takip eder; uygulamaya ilişkin sorunları mevzuat çerçevesinde yürütür.
+
+BİRİM: Makina, Otomotiv, Elektrik ve Elektronik Ürünleri Daire Başkanlığı
+GÖREV: Makina, otomotiv, elektrik ve elektronik sektörlerinin ihracat politikalarını ve ihracatını izler; bu sektörlerde dahilde ve hariçte işleme izin belgelerini düzenler ve takip eder.
+
+BİRİM: Markalaşma ve Tasarım Destekleri Daire Başkanlığı
+GÖREV: Tasarıma dayalı ürünlerin ihracatını ve Türk markalarının uluslararasılaşmasını destekleyen mekanizmaları belirler; yurt dışı birim, marka ve tanıtım desteklerine ilişkin mevzuat ve uygulama işlemlerini yürütür.
+
+BİRİM: Ticari Bilgi, İletişim Hizmetleri ve Kadın-Genç Girişimciler Daire Başkanlığı
+GÖREV: İhracatçı firmaların, kadın ve genç girişimcilerin ve ticaret müşavirliklerinin ticari bilgi ihtiyacına yönelik enformasyon ve rehberlik hizmetlerini; standart bilgi talepleri ve dış ticaret bilgilendirme seminerlerini yürütür.
+
+BİRİM: Özel İhracat Daire Başkanlığı
+GÖREV: İhracat sayılan satış ve teslimlere ilişkin vergi, resim ve harç istisnası belgelerini düzenler ve süre uzatımlarını yürütür; özel ihracat uygulamaları, sınır ticareti ve ihracatçılara hususi pasaport verilmesine ilişkin işlemleri yürütür.

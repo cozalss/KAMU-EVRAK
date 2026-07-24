@@ -29,6 +29,8 @@ görev tanımı + evrak konusuyla birlikte kaynak zincirinde doğrulanır (üçl
 @BELGE: <kaynak belge başlığı>
 @KAYNAK_KIMLIK: <yerel belge kimliği veya resmî URL>
 @ERISIM: <YYYY-AA-GG>
+@KAYNAK_TURU: resmi_yonetmelik | resmi_teskilat | resmi_hizmet | resmi_karar
+@DOGRULAMA: resmi
 
 BİRİM: <birim adı>
 GÖREV: <görev tanımı — anahtar-kelime yoğun, tek paragraf>

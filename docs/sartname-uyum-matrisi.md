@@ -14,7 +14,8 @@
 **1319 passed**; frontend `npm.cmd run build` → **başarılı**.
 
 **Tek dürüst skor cümlesi (manşet — üç dokümanda [`scorecard.md`](benchmark/scorecard.md),
-[`llm-heldout.md`](benchmark/llm-heldout.md) aynı):** Üretim modeli **DeepSeek-chat**;
+[`llm-heldout.md`](benchmark/llm-heldout.md) aynı):** Ölçüm modeli **DeepSeek-chat**
+(ölçüm tarihindeki üretim modeli — bkz. aşağıdaki model-değişikliği notu);
 **dairesel-olmayan held-out**'ta (n=108, 2 bağımsız set) sınıflandırma macro-F1 **~0.89**
 (0.864 / 0.907) ve yönlendirme Top-1 **0.907**; **in-domain referans** (n=54,
 `eval.competition_scorecard`) sınıflandırma macro-F1 **0.817**, yönlendirme Top-1 **0.852**,
@@ -22,6 +23,18 @@ eksik-bilgi recall **0.739**, özet recall **0.712** / faithfulness **1.000**, t
 `format_uyumlu_rate`=**1.000** ve bileşen tam-uyum=**1.000** (216/216 tarihsel doğrulama),
 Türkçe saflık **0.9998**, false-veto **0**, fairness **0.944**. Mevzuat retrieval **gerçek
 BM25Okapi** (304 mevzuat / 1916 madde-chunk korpus; Recall@1 **0.688** / Recall@3 **0.875** / MRR 0.760, n=16, 11 Tem 2026 yeniden ölçüm).
+
+> ⚠️ **MODEL DEĞİŞİKLİĞİ NOTU (2026-07-24) — skorlar bu tarihten ÖNCEDİR.**
+> Yukarıdaki tüm manşet skorlar **`deepseek-chat`** ile ölçülmüştür. DeepSeek bu model
+> adını API'den **kaldırdı** (HTTP 400); üretim modeli **`deepseek-v4-flash`** olarak
+> güncellendi (güçlü kademe: `deepseek-v4-pro`). Skorlar tahrif edilmesin diye ölçüm
+> modeli adı **olduğu gibi bırakılmıştır** — ancak bu skorlar **yeni modelle yeniden
+> ölçülmemiştir** ve mevcut üretim davranışını temsil ettikleri iddia EDİLEMEZ.
+> Yeniden ölçüm yapılana kadar bu tablo *tarihsel kayıt* olarak okunmalıdır.
+> Yeni modeller "reasoning" üretir; düşünme token'ları `max_tokens`'tan düştüğü için
+> node bütçelerine `LLM_DUSUNME_MARJI` eklenmiştir (bkz. `CLAUDE.md` LLM bölümü).
+> Bu düzeltme öncesi ölçülen tek yeni sayı: birim yönlendirme A/B (n=108, `deepseek-v4-pro`,
+> `scripts/eval_route_llm_ab.py`) — deterministik Top-1 **0.889**, serbest LLM **0.584**.
 
 **Dürüstlük notu — jüri-güven riski KAPATILDI (2026-07-04):** Önceki manşet (mock-mod macro-F1
 0.9493) **kaldırıldı** — mock heuristik o test setine uyarlanmıştı (ezber, taban değil).
@@ -85,7 +98,8 @@ yanlış-pozitif 0/140** (anti-halüsinasyon kapısı sağlıklı); `format_uyum
 > **100 puan anlatısı:** Yöntem (35), Demo (15) ve Yenilikçilik/Ticarileşme (15) kanıtlı; Uygulama (35)
 > tarafında sınıflandırma/yönlendirme/özet/eksik-bilgi/taslak-format **hepsi ölçüldü ve geçti**
 > (`format_uyumlu_rate=1.0`, mevzuat **gerçek BM25** 304 mevzuat/1916 chunk, Recall@1 0.688 / Recall@3 0.875, n=16).
-> Manşet skorlar **üretim modeli DeepSeek-chat**, in-domain (n=54); **dairesel-olmayan held-out**
+> Manşet skorlar **ölçüm modeli DeepSeek-chat** (24 Tem 2026'da kaldırıldı — üstteki nota
+> bakınız), in-domain (n=54); **dairesel-olmayan held-out**
 > (n=108, 2 bağımsız set) macro-F1 ~0.89 / yönlendirme Top-1 0.907 ayrıca raporlanır — abartı yok,
 > kapalı risk jüriden saklanmaz (bkz. `route_birim` düzeltmesi, `docs/benchmark/llm-heldout.md`).
 

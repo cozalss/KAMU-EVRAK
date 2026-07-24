@@ -194,8 +194,10 @@ class TestLLMJudgeEvaluate:
         assert s.kisalik == 0.7
         assert sahte.cagri == 1
 
-    async def test_deepseek_chat_json_mode_temp_sifir(self, monkeypatch):
-        # Arrange — model + çağrı parametre sözleşmesi (deepseek-chat, json_mode, temp 0)
+    async def test_hakem_modeli_json_mode_temp_sifir(self, monkeypatch):
+        # Arrange — çağrı parametre sözleşmesi (yapılandırılan hakem modeli, json_mode, temp 0).
+        # Model adı SABİT DEĞİL: "deepseek-chat" API'den kaldırıldığında bu test kırılmıştı;
+        # sözleşme "JUDGE_MODEL neyse o gönderilir" olmalı (2026-07-24).
         yakalanan: dict = {}
         sahte = _SahteLLM(content=_IYI_JSON)
 
@@ -207,7 +209,9 @@ class TestLLMJudgeEvaluate:
         # Act
         await LLMJudge().evaluate("evrak", "özet")
         # Assert
-        assert yakalanan["model"] == "deepseek-chat"
+        assert yakalanan["model"] == judge_mod.JUDGE_MODEL
+        assert "deepseek-chat" not in judge_mod.JUDGE_MODEL, "kaldırılmış model adı"
+        assert "deepseek-reasoner" not in judge_mod.JUDGE_MODEL, "kaldırılmış model adı"
         assert sahte.son_kwargs["json_mode"] is True
         assert sahte.son_kwargs["temperature"] == 0.0
 

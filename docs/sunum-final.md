@@ -7,6 +7,15 @@
 > **Altın kural:** Demo `LLM_MODE=mock` + örnek evraklar ile koşulur → sıfır dış bağımlılık,
 > internet kesintisinden etkilenmez. Skor sunulan her an "**GERÇEK pipeline · DeepSeek-chat · in-domain (n=54); dairesel-olmayan held-out ayrıca raporlanır**" denir.
 
+> ⚠️ **MODEL DEĞİŞİKLİĞİ (2026-07-24) — sunumdan önce OKU.**
+> Bu belgedeki **tüm skorlar `deepseek-chat` ile ölçülmüştür**. DeepSeek bu model adını
+> API'den kaldırdı (HTTP 400); üretim modeli artık **`deepseek-v4-flash`** (güçlü kademe
+> `deepseek-v4-pro`). Skorlar tahrif edilmesin diye ölçüm modeli adı **değiştirilmedi**.
+> **Jüriye "üretim modelimiz DeepSeek-chat" DEME** — doğru cümle: *"skorlar DeepSeek-chat
+> ile ölçüldü; sağlayıcı model adını değiştirdiği için üretim `deepseek-v4-flash`'a
+> taşındı, yeniden ölçüm bekliyor."* Sunumdan önce skorların yeni modelle yeniden
+> ölçülmesi önerilir (`eval/competition_scorecard.py`).
+
 ---
 
 ## A. 10 Dakikalık Akış (zaman bütçeli)

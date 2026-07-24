@@ -16,7 +16,8 @@
 
 - Backend: `uv run python -m pytest -q` → **1319 passed**.
 - Frontend: `npm.cmd run build` → **başarılı**.
-- Karne (GERÇEK pipeline · DeepSeek-chat · in-domain, n=54): sınıflandırma macro-F1 **0.817**,
+- Karne (GERÇEK pipeline · ölçüm modeli DeepSeek-chat — 24 Tem 2026'da kaldırıldı, üretim
+  `deepseek-v4-flash`; yeniden ölçülmedi · in-domain, n=54): sınıflandırma macro-F1 **0.817**,
   routing Top-1 **0.852**, eksik-bilgi recall(β=2) **0.739**, özet faithfulness **1.000**, taslak
   `format_uyumlu_rate` **1.000**, false-veto **0/140**, fairness **0.944**. Dairesel-olmayan
   held-out (n=108, 2 bağımsız set): macro-F1 **~0.89** (0.864/0.907), routing Top-1 **0.907**.

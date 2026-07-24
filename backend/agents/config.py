@@ -229,13 +229,19 @@ EVRAK_TO_SURE: dict[str, tuple[int, bool, str]] = {
 }
 
 # --- Yetkisizlik (devir) dayanağı: evrak muhatabın görev alanı dışındaysa hangi hükümle
-# yetkili kuruma GÖNDERİLİR. Kaynak metinler data/mevzuat korpusunda birebir mevcut:
-#   3071 m.8  → 3071_dilekce_hakki_kanunu.txt:48-50  ("Dilekçenin ilgili makama gönderilmesi")
-#   4982 m.7  → 4982_bilgi_edinme_kanunu.txt:37-38   (maddenin SON cümlesi)
+# yetkili kuruma GÖNDERİLİR.
+#   3071 m.5 ("Gönderilen makamda hata"): "Dilekçe, konusuyla ilgili olmayan bir idari makama
+#     verilmesi durumunda, bu makam tarafından yetkili idari makama gönderilir ve ayrıca
+#     dilekçe sahibine de bilgi verilir."  → devir hükmü BUDUR.
+#   4982 m.7 → 4982_bilgi_edinme_kanunu.txt (maddenin SON cümlesi)
+# DÜZELTME (2026-07-24): burada m.8 yazıyordu — YANLIŞTI. Gerçek m.8 TBMM Dilekçe Komisyonu
+# sürelerini (60/30 gün) düzenler, devri değil. Hata korpus dosyasından kopyalanmıştı
+# (3071 korpusunda m.5 ve m.8 içerikleri yer değişmişti; korpus da bu commit'te düzeltildi).
+# Birincil doğrulama: mevzuat.gov.tr 1.5.3071 + ovacik.gov.tr resmî kanun metni.
 # CLAUDE.md §1: madde no uydurulmaz — anahtarı olmayan tür dayanak CÜMLESİ ALMAZ, devir
 # yine yapılır ama yazı hükme atıf yapmaz. Anahtar kümesi EVRAK_TO_SURE ile bilinçli aynı.
 EVRAK_TO_DEVIR_DAYANAK: dict[str, str] = {
-    t: "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanunun 8 inci maddesi"
+    t: "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanunun 5 inci maddesi"
     for t in ("dilekce", "basvuru", "sikayet", "talep", "ihbar", "cimer")
 } | {
     "bilgi_edinme": "4982 sayılı Bilgi Edinme Hakkı Kanununun 7 nci maddesi",
@@ -520,7 +526,9 @@ OCR_LLM_DUZELT = os.getenv("OCR_LLM_DUZELT", "1") == "1"
 # "belirsiz" ise deepseek-reasoner'dan İKİNCİ görüş alınır (yalnız zor vaka → maliyet
 # sınırlı). Reasoner da düşük güven verirse dürüst "belirsiz" kalır (abstention korunur).
 SINIFLANDIR_ESKALASYON = os.getenv("SINIFLANDIR_ESKALASYON", "1") == "1"
-ESKALASYON_MODEL = os.getenv("ESKALASYON_MODEL", "deepseek-reasoner")
+# NOT: eski varsayılan "deepseek-reasoner" API'den KALDIRILDI (HTTP 400) → eskalasyon
+# yolu sessizce ölüydü. Güçlü model artık "deepseek-v4-pro" (2026-07-24).
+ESKALASYON_MODEL = os.getenv("ESKALASYON_MODEL", "deepseek-v4-pro")
 ESKALASYON_TIMEOUT_S = float(os.getenv("ESKALASYON_TIMEOUT_S", "60.0"))
 
 # (4) Risk bandı doğal dil açıklaması — bant/skor/gerekçe DETERMİNİSTİK kalır; LLM
@@ -533,6 +541,14 @@ RISK_ACIKLAMA_LLM = os.getenv("RISK_ACIKLAMA_LLM", "1") == "1"
 LLM_JSON_RETRY = os.getenv("LLM_JSON_RETRY", "1") == "1"
 LLM_CACHE_ENABLED = os.getenv("LLM_CACHE_ENABLED", "1") == "1"
 LLM_CACHE_BOYUT = int(os.getenv("LLM_CACHE_BOYUT", "256"))
+
+# (6) DÜŞÜNME MARJI — deepseek-v4-* modelleri "reasoning" üretir ve düşünme token'ları
+# `max_tokens` bütçesinden düşer. Node'ların CEVAP için ayırdığı dar bütçeler (140-400)
+# bu modellerde tamamen düşünmeye gidiyor → içerik BOŞ dönüyor ve node sessizce
+# deterministik yedeğe düşüyordu (2026-07-24 bulgusu: 28 çağrının 13'ü boş).
+# Çözüm tek noktada: istemciye giden bütçeye marj EKLENİR; her node'un kendi cevap
+# bütçesi (anlamı: "cevap bu kadar kısa olsun") korunur. 0 = kapalı (eski davranış).
+LLM_DUSUNME_MARJI = int(os.getenv("LLM_DUSUNME_MARJI", "700"))
 
 # (2) Yön. 2646 lint bulgularının LLM düzeltme önerisi — düzeltilmiş taslak YENİDEN
 # lint + uydurma-veto'dan geçirilir (deterministik doğrulama); iyileşme yoksa öneri

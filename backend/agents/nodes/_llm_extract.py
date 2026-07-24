@@ -125,13 +125,20 @@ async def _chat_dene(
     timeout_s: float,
     json_mode: bool,
 ) -> str | None:
-    """Tek LLM çağrısı — geçici/altyapı hatası → None (çağıran fallback'e düşer)."""
+    """Tek LLM çağrısı — geçici/altyapı hatası → None (çağıran fallback'e düşer).
+
+    DÜŞÜNME MARJI: reasoning modellerinde (deepseek-v4-*) düşünme token'ları da
+    `max_tokens`'tan düşer; node'ların dar cevap bütçesi tek başına gönderilirse
+    içerik BOŞ döner. Marj yalnız GERÇEK istemciye eklenir — mock'ta bütçe aynen
+    kalır (test determinizmi korunur). Bkz. config.LLM_DUSUNME_MARJI.
+    """
+    butce = max_tokens + (0 if isinstance(llm, MockLLM) else config.LLM_DUSUNME_MARJI)
     try:
         resp = await asyncio.wait_for(
             llm.chat(
                 messages=messages,
                 temperature=temperature,
-                max_tokens=max_tokens,
+                max_tokens=butce,
                 json_mode=json_mode,
             ),
             timeout=timeout_s,

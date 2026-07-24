@@ -94,7 +94,9 @@ göstermek için açılır; zorunlu değildir.
 
 ## 3. Konuşma noktaları (jüri sorusu gelirse)
 
-- **"Skorlar?"** → `docs/benchmark/scorecard.md` (GERÇEK pipeline · DeepSeek-chat · in-domain, n=54):
+- **"Skorlar?"** → `docs/benchmark/scorecard.md` (GERÇEK pipeline · **ölçüm modeli** DeepSeek-chat
+  — 24 Tem 2026'da API'den kaldırıldı, üretim `deepseek-v4-flash`; skorlar yeniden ölçülmedi
+  · in-domain, n=54):
   sınıflandırma macro-F1 **0.817** / accuracy **0.796**, yönlendirme Top-1 **0.852** /
   Top-3 **0.963**, eksik-bilgi recall(β=2) **0.739**, özet key-fact recall **0.712**,
   faithfulness **1.000**, adillik (counterfactual) **0.944**, false-veto **0/140**.

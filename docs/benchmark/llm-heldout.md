@@ -3,7 +3,14 @@
 > Set: `data/synthetic/heldout_gold.jsonl` (108 evrak, **örtük/dolaylı ifade**, gen_synthetic'ten
 > farklı şablon/sözlük → keyword sızıntısı yok). Ölçüm: gerçek LangGraph pipeline `build_graph().ainvoke`.
 
-> ### ✅ GÜNCEL DURUM (2026-07-04) — ÜRETİM MODELİ DeepSeek-chat, `route_birim` düzeltmesi sonrası
+> ⚠️ **MODEL DEĞİŞİKLİĞİ (2026-07-24) — bu sayfa TARİHSEL KAYITTIR.**
+> Aşağıdaki tüm ölçümler **`deepseek-chat`** ile alınmıştır. DeepSeek bu model adını API'den
+> **kaldırdı** (HTTP 400) → üretim **`deepseek-v4-flash`**'a taşındı (güçlü kademe
+> `deepseek-v4-pro`). Ölçüm kaydı tahrif edilmesin diye model adı **değiştirilmedi**;
+> ancak bu sayfadaki skorlar **yeni modelle yeniden ölçülmemiştir** ve güncel üretim
+> başarımını temsil ettikleri iddia edilemez. Yeniden ölçüm komutu için sayfa sonuna bakınız.
+
+> ### GÜNCEL DURUM (2026-07-04) — ÖLÇÜM MODELİ DeepSeek-chat, `route_birim` düzeltmesi sonrası
 >
 > **Tek dürüst cümle:** Üretim modeli **DeepSeek-chat**; dairesel-olmayan held-out'ta (n=108, 2 bağımsız
 > set, dengeli n=54+n=54 alt-örneklem) sınıflandırma macro-F1 **~0.89** (set1 0.864 / set2 0.907),

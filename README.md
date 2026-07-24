@@ -49,7 +49,7 @@ Gerçek LLM (üretim doğruluğu) için `.env`:
 ```bash
 LLM_MODE=openai
 OPENAI_BASE_URL=https://api.deepseek.com
-OPENAI_LLM_MODEL=deepseek-chat
+OPENAI_LLM_MODEL=deepseek-v4-flash
 OPENAI_API_KEY=sk-...
 VITRIN_MODU=1        # demo profili: HITL + clarifier + CRAG + hız (belge ~10 sn)
 ```
@@ -116,7 +116,7 @@ Ayrıntılı topoloji: [`docs/03-mimari.md`](docs/03-mimari.md).
 **Dayanıklılık ilkesi:** LLM kullanan **her katmanın deterministik fallback'i vardır**
 (keyword/regex/şablon) — anahtar yok, model çökmüş, zaman aşımı: akış hiç durmaz.
 2026-07 güçlendirme dalgasıyla **10 varsayılan-açık LLM katmanı** eklendi: OCR düzeltme,
-sınıflandırma eskalasyonu (→ `deepseek-reasoner`), risk açıklaması, JSON retry + önbellek,
+sınıflandırma eskalasyonu (→ `deepseek-v4-pro`), risk açıklaması, JSON retry + önbellek,
 2646 lint oto-düzeltme, verify grounding, SDP seçici, sohbet araç döngüsü, rerank, NLI —
 hepsi aynı ilkeyle: **LLM iyileştirir, fallback garanti eder.** (CRAG düğümü vitrin
 profilinde açılır; açıldığında o da LLM'li sürümüyle koşar.)
@@ -273,7 +273,11 @@ flowchart LR
     METRIK --> ART["git-sha damgalı artefakt<br/>eval/runs/*.json"]
 ```
 
-### Held-out (görülmemiş evrak, n=108 = 2×54) — üretim modeli DeepSeek (`deepseek-chat`)
+### Held-out (görülmemiş evrak, n=108 = 2×54) — ölçüm modeli DeepSeek (`deepseek-chat`)
+
+> ⚠️ **2026-07-24:** `deepseek-chat` API'den kaldırıldı; üretim modeli `deepseek-v4-flash`.
+> Aşağıdaki skorlar **eski modelle** ölçülmüştür ve yeni modelle **yeniden ölçülmemiştir**
+> (ölçüm kaydı tahrif edilmesin diye model adı olduğu gibi bırakıldı).
 
 | Metrik | Set-1 (n=54) | Set-2 (n=54) |
 |---|---|---|
@@ -361,7 +365,7 @@ flowchart LR
 | Mod | LLM | Anahtar | Ne için |
 |---|---|---|---|
 | `mock` (varsayılan) | yok — keyword+regex | gerekmez | demo / CI / offline; skor tabanı |
-| `openai` | **DeepSeek `deepseek-chat`** (önerilen) / OpenAI / Azure | `OPENAI_API_KEY` | üretim doğruluğu (~$0.001/belge) |
+| `openai` | **DeepSeek `deepseek-v4-flash`** (önerilen) / `deepseek-v4-pro` / OpenAI / Azure | `OPENAI_API_KEY` | üretim doğruluğu (~$0.001/belge) |
 | `llamacpp` | lokal Qwen GGUF | — | on-prem / gizlilik |
 
 İki **profil anahtarı** hepsinin üstünde: `VITRIN_MODU=1` (jüri demosu: HITL + clarifier +

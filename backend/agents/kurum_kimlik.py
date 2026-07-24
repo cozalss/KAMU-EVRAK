@@ -31,9 +31,11 @@ class KurumKimlik(TypedDict):
 
 # Türkçe büyük-harf başlıklarda bir özel-ad öbeği (il/ilçe/kurum adı): 1-6 sözcük,
 # aralarında boşluk/virgül veya "VE" olabilir (ör. "ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ").
+# ŞAPKALI HARF (Â/Î/Û) sınıfa DAHİL: aksi hâlde "MİLLÎ EĞİTİM MÜDÜRLÜĞÜ" öbeği Î'de kırılıp
+# kurum "Eğitim Müdürlüğü" olarak çözümleniyordu (il + "Millî" düşüyordu) — 2026-07-24 bulgusu.
 _AD = (
-    r"[A-ZÇĞİÖŞÜ][A-ZÇĞİÖŞÜa-zçğıöşü]+"
-    r"(?:[\s,]+(?:VE\s+)?[A-ZÇĞİÖŞÜ][A-ZÇĞİÖŞÜa-zçğıöşü]+){0,6}"
+    r"[A-ZÇĞİÖŞÜÂÎÛ][A-ZÇĞİÖŞÜÂÎÛa-zçğıöşüâîû]+"
+    r"(?:[\s,]+(?:VE\s+)?[A-ZÇĞİÖŞÜÂÎÛ][A-ZÇĞİÖŞÜÂÎÛa-zçğıöşüâîû]+){0,6}"
 )
 
 # Sıra ÖNEMLİ: en spesifik tip önce. Her desen 'ad' grubunu (önceki özel-ad öbeği) yakalar;

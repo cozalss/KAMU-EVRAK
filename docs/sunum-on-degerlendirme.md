@@ -8,6 +8,11 @@
 > **Sunum disiplini:** Her slaytta tek ana mesaj. Abartma yok — kanıtlanabilir olan gösterilir.
 > Skor sunulduğunda **GERÇEK pipeline · DeepSeek-chat · in-domain (n=54)** ölçümü olduğu ve dairesel-olmayan held-out'un ayrıca raporlandığı **mutlaka** söylenir.
 
+> ⚠️ **MODEL DEĞİŞİKLİĞİ (2026-07-24):** Bu belgedeki skorlar **`deepseek-chat`** ile
+> ölçüldü; DeepSeek o adı API'den kaldırdı (HTTP 400) ve üretim **`deepseek-v4-flash`**'a
+> taşındı. Ölçüm kaydı tahrif edilmesin diye model adı **değiştirilmedi**, ancak skorlar
+> yeni modelle **yeniden ölçülmemiştir** — "üretim modelimiz DeepSeek-chat" DENMEZ.
+
 ---
 
 ## Slayt 1 — Kapak / Takım

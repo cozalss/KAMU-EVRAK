@@ -171,7 +171,11 @@ def build_index() -> dict:
     aliases: dict[str, str] = {}
     cakisan: set[str] = set()
     manifest = manifest_yukle(_MANIFEST_FILE)
-    kurumlar = sorted(p for p in _TESKILAT_DIR.glob("*") if p.is_dir())
+    # YALNIZ içinde .txt bulunan dizin bir kurumdur: data/teskilat/ altındaki yardımcı
+    # dizinler (ör. sicil üretiminin `girdi/` tabloları) kurum sayısını şişirmemeli.
+    kurumlar = sorted(
+        p for p in _TESKILAT_DIR.glob("*") if p.is_dir() and any(p.glob("*.txt"))
+    )
     kaynak_dosyalari: list[Path] = []
     for kurum_dir in kurumlar:
         kurum_slug = kurum_dir.name

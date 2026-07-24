@@ -20,6 +20,7 @@ from typing import Any
 
 import structlog
 
+from core.sicil import sicil_turu
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -41,6 +42,12 @@ _TIP_JENERIK: dict[str, str] = {
     "defterdarlik": "_genel-il-mudurlukleri",
     "universite": "_genel-universite",
     "bassavcilik": "_genel-adliye",
+    # Sicil taksonomisi (docs/10-kurum-sicili.md). YALNIZ karşılığı GERÇEKTEN olan tür
+    # eşlenir; karşılığı olmayan tür (elektrik_dagitim, su_kanalizasyon, ust_kurul, kit,
+    # kalkinma_ajansi...) bilinçli olarak eşlenmez — yanlış tipin şablonunu aday diye
+    # göstermektense hiç aday üretmemek doğrudur.
+    "il_mudurlugu": "_genel-il-mudurlukleri",
+    "dogalgaz_dagitim": "_genel-dogalgaz-dagitim",
 }
 # tur bilinmiyorsa denenecek jenerik şablonlar (aday havuzu).
 _JENERIK_HEPSI = ("_genel-belediye", "_genel-il-mudurlukleri")
@@ -53,6 +60,14 @@ _STOPWORDS: frozenset[str] = frozenset({
     "müdürlük", "başkanlığı", "belediye", "belediyesi", "şikayet", "şikâyet",
     "ihbar", "başvuru", "işlem", "işlemler", "gerekli", "yapılması", "edilmesi",
 })
+
+
+_BAGLAC = frozenset({"ve", "ile"})
+
+
+def _bagsiz(slug: str) -> str:
+    """Slug'ı bağlaçsız normale indir — 'aile-ve-sosyal' ve 'aile-sosyal' aynı anahtara düşer."""
+    return "-".join(p for p in slug.split("-") if p not in _BAGLAC)
 
 
 def _tokenize(s: str) -> list[str]:
@@ -133,6 +148,24 @@ def _kanonik_slug_revision(kurum_slug: str, _revision: tuple[Any, ...]) -> str:
             return aday
         hedef = aliases.get(aday, "")
         if hedef and not hedef.startswith("_") and hedef in mevcut:
+            return hedef
+    # (4) BAĞLAÇ NORMALİZASYONU — kurum_kimlik._slug "ve"/"ile" bağlacını ATAR
+    # ("aile-sosyal-hizmetler-bakanligi") ama korpus dizinleri bağlacı İÇEREBİLİR
+    # ("aile-ve-sosyal-hizmetler-bakanligi"). Bu uyuşmazlık, elle @ALIAS yazılmamış
+    # kurumları (AFAD, Çevre-Şehircilik, Hazine ve Maliye...) evraktan ERİŞİLEMEZ
+    # yapıyordu — 2026-07-24 çapraz doğrulama bulgusu. Yalnız 1-3 sonuçsuz kalınca
+    # çalışır (mevcut çözümleme sırası DEĞİŞMEZ) ve iki dizin aynı normale düşerse
+    # belirsizlik sayılıp çözümlenmez.
+    hedefler: dict[str, str] = {}
+    for kurum in mevcut:
+        anahtar = _bagsiz(kurum)
+        if anahtar in hedefler and hedefler[anahtar] != kurum:
+            hedefler[anahtar] = ""
+        else:
+            hedefler.setdefault(anahtar, kurum)
+    for aday in adaylar:
+        hedef = hedefler.get(_bagsiz(aday), "")
+        if hedef:
             return hedef
     return ""
 
@@ -278,8 +311,14 @@ def teskilat_birim_ara(
             aday = [_aday(c, s, "aday") for s, c in _score(konu, ozel)[:top_k]]
             if aday:
                 return aday
-    # 2) Kurum tipine göre jenerik şablon(lar) — yalnız aday
-    jenerik_sluglar = ([_TIP_JENERIK[tur]] if tur in _TIP_JENERIK else list(_JENERIK_HEPSI))
+    # 2) Kurum tipine göre jenerik şablon(lar) — yalnız aday.
+    # Çağıranın tipi bilinmiyorsa (kurum_kimlik kalıbı tutmayan SGK/TÜİK/il müdürlükleri...)
+    # kurum SİCİLİNDEN tür sorulur. Sicil yalnız TÜR verir: hedef üretmez, otomatik havale
+    # yetkisi kazandırmaz (INV-1/INV-2) — sonuç yine kaynak_tipi="jenerik" adaydır.
+    etkin_tur = tur if tur in _TIP_JENERIK else (sicil_turu(kurum_slug) or tur)
+    jenerik_sluglar = (
+        [_TIP_JENERIK[etkin_tur]] if etkin_tur in _TIP_JENERIK else list(_JENERIK_HEPSI)
+    )
     havuz: list[tuple[float, dict[str, Any]]] = []
     for js in jenerik_sluglar:
         havuz.extend(_score(konu, _slug_chunks(js)))

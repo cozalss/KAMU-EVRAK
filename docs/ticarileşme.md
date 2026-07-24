@@ -10,6 +10,11 @@
 > (n=108, 2 bağımsız set) — **reprodüke-edilebilir** artefakt (repoda `backend/eval/runs/heldout_deepseek_set*_n54_fixed.json`).
 > Tam tablo: [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md). Aşağıdaki ticarileşme iddiaları
 > bu ölçülmüş başarıma dayanır; "tamamlandı" denilen tek şey çalışan pipeline + ölçülen skordur.
+>
+> ⚠️ **MODEL DEĞİŞİKLİĞİ (2026-07-24):** Yukarıdaki skorlar **`deepseek-chat`** ile ölçüldü;
+> DeepSeek bu adı API'den kaldırdı ve üretim **`deepseek-v4-flash`**'a taşındı. Ölçüm kaydı
+> korunduğu için model adı değiştirilmedi; skorlar yeni modelle **yeniden ölçülmemiştir**.
+> Birim maliyet tahminleri de (~$0.001/belge) yeni modelin fiyatıyla doğrulanmalıdır.
 
 ## 1. Problem ve pazar
 

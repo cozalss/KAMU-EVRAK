@@ -97,11 +97,18 @@ Demo 15 (real-time avantaj) · Yenilikçilik/Özgünlük/Ticarileşme 15.
 
 ## LLM entegrasyonu + fallback
 
+> **MODEL ADI UYARISI (2026-07-24):** DeepSeek eski adları KALDIRDI — `deepseek-chat` ve
+> `deepseek-reasoner` artık HTTP 400 döndürüyor. Geçerli adlar: **`deepseek-v4-flash`**
+> (varsayılan) ve **`deepseek-v4-pro`**. İkisi de REASONING modeli: düşünme token'ları
+> `max_tokens`'tan düşer, bu yüzden node bütçelerine `LLM_DUSUNME_MARJI` (varsayılan 700)
+> `_llm_extract._chat_dene`'de EKLENİR. Marj olmadan dar bütçeli node'lar BOŞ cevap alıp
+> sessizce deterministik yedeğe düşer (ölçüldü: 28 çağrının 13'ü boş → marj sonrası 0).
+
 Çekirdek anlama/üretim node'ları **gerçek LLM (DeepSeek, `LLM_MODE=openai`,
-`deepseek-chat`)** kullanır — **sınıflandır · bilgi çıkar · çok-konulu ayır · eksik tespit ·
+`deepseek-v4-flash`)** kullanır — **sınıflandır · bilgi çıkar · çok-konulu ayır · eksik tespit ·
 özetle · yazı taslağı · birim yönlendir · bilgilendir** (8 çekirdek node). 2026-07
 güçlendirme dalgası (14 madde, hepsi ENV-gated + deterministik fallback'li): OCR imla
-düzeltme (`OCR_LLM_DUZELT`, WER %51→%29) · sınıflandırmada `deepseek-reasoner`
+düzeltme (`OCR_LLM_DUZELT`, WER %51→%29) · sınıflandırmada güçlü-model (`deepseek-v4-pro`)
 eskalasyonu (`SINIFLANDIR_ESKALASYON`) · risk bandı doğal dil açıklaması · llm_json
 parse-retry + LRU cache · 2646 lint auto-fix önerisi (`LINT_AUTOFIX`) · iddia-düzeyi
 grounding (`VERIFY_GROUNDING_LLM`, yalnız bandı sertleştirir) · DeepSeek listwise rerank

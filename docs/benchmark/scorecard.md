@@ -2,7 +2,13 @@
 
 > Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · `python -m eval.competition_scorecard` ile üretilir (commit `1532a37`, LLM_MODE=`openai`, model=`deepseek-chat`).
 
-> **Skorlar GERÇEK LLM (`deepseek-chat`) ile ölçülmüştür** — mock/keyword-heuristik fallback koşmadı. Bu, üretim modunun beklenen gerçek başarımıdır (tavan değil, güncel ölçüm); dairesel-olmayan (held-out) doğrulama için `docs/benchmark/llm-heldout.md`'ye bakın.
+> **Skorlar GERÇEK LLM (`deepseek-chat`) ile ölçülmüştür** — mock/keyword-heuristik fallback koşmadı. Dairesel-olmayan (held-out) doğrulama için `docs/benchmark/llm-heldout.md`'ye bakın.
+
+> ⚠️ **MODEL DEĞİŞİKLİĞİ (2026-07-24) — bu karne TARİHSEL KAYITTIR.**
+> `deepseek-chat` API'den **kaldırıldı** (HTTP 400); üretim modeli **`deepseek-v4-flash`**.
+> Ölçüm kaydı korunsun diye model adı değiştirilmedi, ancak bu skorlar **yeni modelle
+> yeniden ölçülmemiştir** — "üretim modunun güncel başarımı" olarak sunulamaz.
+> Yeniden üretim: `uv run python -m eval.competition_scorecard` (LLM_MODE=openai).
 
 Kanonik taksonomi: **19 evrak türü** (config.EVRAK_TURLERI; 'belirsiz' abstention dahil), **9 birim** (gerçek kamu verisi YOK — şartname §6.5). Vaka: sınıflandırma 54 · yönlendirme 54.
 

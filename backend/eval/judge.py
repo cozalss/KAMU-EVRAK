@@ -39,9 +39,11 @@ log = structlog.get_logger()
 # için JUDGE_SAMPLE_RATE=0.20 override edilebilir (should_sample deterministik).
 JUDGE_SAMPLE_RATE = float(os.getenv("JUDGE_SAMPLE_RATE", "1.0"))
 JUDGE_MAX_TOKENS = 512
-# Hakem modeli sabit: deepseek-chat (ucuz + json_mode güvenilir). openai modunda
-# tiered client açılır; mock/lokal modda get_llm_for_model base singleton'a düşer.
-JUDGE_MODEL = "deepseek-chat"
+# Hakem modeli: deepseek-v4-flash (ucuz + json_mode güvenilir). openai modunda tiered
+# client açılır; mock/lokal modda get_llm_for_model base singleton'a düşer.
+# NOT: eski sabit "deepseek-chat" API'den KALDIRILDI (HTTP 400) → hakem sessizce
+# ölüydü. ENV ile geçersiz kılınabilir (2026-07-24).
+JUDGE_MODEL = os.getenv("JUDGE_MODEL", "deepseek-v4-flash")
 # Evrak metni prompt bütçesi — hakem tam metni değil kısaltılmış halini görür
 # (uzun evrakta bile tek çağrı; kilit unsurlar evrakın başında yoğunlaşır).
 JUDGE_EVRAK_MAX_CHAR = 3000

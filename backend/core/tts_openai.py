@@ -8,9 +8,16 @@ düşer (established deterministik-fallback deseni — bkz. core/openai_compat.p
 
 ENV:
     OPENAI_TTS_API_KEY=sk-...              (zorunlu — yoksa RuntimeError → çağıran fallback yapar)
-    OPENAI_TTS_MODEL=tts-1                 (default; tts-1-hd = daha kaliteli/yavaş/pahalı)
-    OPENAI_TTS_VOICE=onyx                  (persona sesi; alloy|echo|fable|onyx|nova|shimmer)
+    OPENAI_TTS_MODEL=gpt-4o-mini-tts       (default; steerable kuşak — `instructions` destekler)
+    OPENAI_TTS_VOICE=marin                 (persona sesi; yeni kuşakta marin|cedar|ash|sage|... )
+    OPENAI_TTS_TALIMAT=...                 (prozodi yönergesi; boş bırakılırsa Türkçe varsayılan)
     OPENAI_TTS_BASE_URL=https://api.openai.com/v1  (test/proxy override — normalde değiştirilmez)
+
+Model kuşakları (ölçüldü 2026-07-25, canlı API):
+    · gpt-4o-mini-tts — `instructions` ile prozodi YÖNLENDİRİLEBİLİR + geniş ses seti
+      (marin/cedar dahil). Türkçede belirgin şekilde daha doğal; varsayılan budur.
+    · tts-1 / tts-1-hd — eski kuşak; `instructions`'ı yok sayar ve marin/cedar'ı TANIMAZ
+      (HTTP 400). Eski modele düşülürse ses güvenli karşılığa indirilir (sesli mod susmasın).
 """
 
 from __future__ import annotations
@@ -29,6 +36,43 @@ _SPEECH_PATH = "/audio/speech"
 
 # OpenAI TTS girdi sınırı (karakter) — aşarsa API 400 döner; görünür kırp (sessiz kesme değil).
 _MAX_INPUT_CHARS = 4000
+
+_VARSAYILAN_MODEL = "gpt-4o-mini-tts"
+_VARSAYILAN_SES = "marin"
+
+# Eski kuşağın (tts-1*) tanıdığı ses kümesi — canlı API'nin 400 gövdesinden alındı.
+# marin/cedar burada YOK: eski modele düşülürse ses bu kümeye indirilmeli.
+_ESKI_KUSAK_SESLERI = frozenset(
+    {"alloy", "ash", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"})
+_ESKI_KUSAK_YEDEK_SES = "ash"
+
+# Prozodi yönergesi — `instructions` yalnız steerable kuşakta anlamlı. Robotikliğin panzehiri:
+# modele NE söyleyeceğini değil NASIL söyleyeceğini anlatır (tempo, nefes, ton, rol).
+_VARSAYILAN_TALIMAT = (
+    "Türkçeyi ana dili gibi, doğal ve akıcı konuş. Deneyimli, sakin ve güven veren bir kamu "
+    "görevlisi meslektaş tonu kullan. Orta tempo; virgüllerde kısa nefes al, cümle sonlarında "
+    "tonu doğal biçimde indir. Kurum ve mevzuat adlarını acele etmeden, anlaşılır söyle. "
+    "Robotik, haber spikeri gibi ya da abartılı neşeli olma."
+)
+
+
+def _steerable_mi(model: str) -> bool:
+    """Model `instructions` (prozodi) destekliyor mu — gpt- kuşağı evet, tts-1* hayır."""
+    return model.startswith("gpt-")
+
+
+def _ses_secimi(model: str, ses: str) -> str:
+    """Modelin tanımadığı sesi güvenli karşılığa indir (sessiz HTTP 400 yerine duyulur ses)."""
+    if _steerable_mi(model) or ses in _ESKI_KUSAK_SESLERI:
+        return ses
+    log.warning("tts_ses_uyumsuz_dusuruldu", model=model, istenen=ses,
+                kullanilan=_ESKI_KUSAK_YEDEK_SES)
+    return _ESKI_KUSAK_YEDEK_SES
+
+
+def _talimat() -> str:
+    """Prozodi yönergesi — env override'ı yoksa Türkçe varsayılan."""
+    return os.getenv("OPENAI_TTS_TALIMAT", "").strip() or _VARSAYILAN_TALIMAT
 
 
 def tts_api_key() -> str:
@@ -68,14 +112,19 @@ async def tts_openai(
         log.warning("tts_openai_kirpildi", uzunluk=len(metin), sinir=_MAX_INPUT_CHARS)
         metin = metin[:_MAX_INPUT_CHARS]
 
+    secili_model = (model or os.getenv("OPENAI_TTS_MODEL", "") or _VARSAYILAN_MODEL).strip()
+    # Persona sesi: marin (yeni kuşağın en doğal ailesi; kullanıcı seçimi 2026-07-25). Env ile
+    # değiştirilebilir; TTS'in tek tüketicisi sesli görüşme sahnesi.
+    secili_ses = (voice or os.getenv("OPENAI_TTS_VOICE", "") or _VARSAYILAN_SES).strip()
+
     payload = {
-        "model": (model or os.getenv("OPENAI_TTS_MODEL", "tts-1")).strip(),
-        # Persona sesi: derin/sakin erkek (onyx). Env ile değiştirilebilir; TTS'in tek tüketicisi
-        # artık sesli görüşme sahnesi (sohbet-içi sesli-okuma kaldırıldı) → onyx anlamlı varsayılan.
-        "voice": (voice or os.getenv("OPENAI_TTS_VOICE", "onyx")).strip(),
+        "model": secili_model,
+        "voice": _ses_secimi(secili_model, secili_ses),
         "input": metin,
         "response_format": "mp3",
     }
+    if _steerable_mi(secili_model):
+        payload["instructions"] = _talimat()
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     base = _base_url()
 

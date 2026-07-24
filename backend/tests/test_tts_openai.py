@@ -129,9 +129,9 @@ class TestTtsOpenaiCagri:
         _mock_async_client(monkeypatch, _handler)
         # Act
         await tts_openai("selam", timeout_s=5.0)
-        # Assert
-        assert captured["json"]["model"] == "tts-1"
-        assert captured["json"]["voice"] == "onyx"   # persona sesi (derin erkek) — varsayılan
+        # Assert — steerable kuşak (tts-1 robotik duyuluyordu; marin en doğal ses ailesi)
+        assert captured["json"]["model"] == "gpt-4o-mini-tts"
+        assert captured["json"]["voice"] == "marin"
 
     async def test_uzun_metin_kirpilir(self, monkeypatch):
         # Arrange — 4000 karakter sınırını aşan metin sessizce değil GÖRÜNÜR kırpılır
@@ -150,6 +150,78 @@ class TestTtsOpenaiCagri:
         # Assert
         assert len(captured["json"]["input"]) == 4000
 
+class TestProzodiTalimati:
+    """`instructions` = gpt-4o-mini-tts kuşağının prozodi direksiyonu. Türkçe doğallığı
+    ROBOTİKLİKTEN çıkaran asıl kaldıraç; eski (tts-1) kuşağa gönderilmez — orada yok sayılır."""
+
+    def _yakala(self, monkeypatch):
+        captured = {}
+        req = httpx.Request("POST", "http://x")
+
+        def _handler(url, kwargs):
+            captured["json"] = kwargs.get("json")
+            return httpx.Response(200, content=b"audio", request=req)
+
+        _mock_async_client(monkeypatch, _handler)
+        return captured
+
+    async def test_varsayilan_talimat_gonderilir(self, monkeypatch):
+        # Arrange
+        monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-tts-test")
+        monkeypatch.delenv("OPENAI_TTS_MODEL", raising=False)
+        monkeypatch.delenv("OPENAI_TTS_TALIMAT", raising=False)
+        captured = self._yakala(monkeypatch)
+        # Act
+        await tts_openai("selam", timeout_s=5.0)
+        # Assert — Türkçe prozodi yönergesi payload'da
+        assert "Türkçe" in captured["json"]["instructions"]
+
+    async def test_talimat_env_ile_degistirilebilir(self, monkeypatch):
+        # Arrange
+        monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-tts-test")
+        monkeypatch.setenv("OPENAI_TTS_TALIMAT", "Fısıltıyla konuş.")
+        captured = self._yakala(monkeypatch)
+        # Act
+        await tts_openai("selam", timeout_s=5.0)
+        # Assert
+        assert captured["json"]["instructions"] == "Fısıltıyla konuş."
+
+    async def test_eski_kusak_modele_talimat_gonderilmez(self, monkeypatch):
+        # Arrange — tts-1 `instructions`'ı yok sayar; payload'ı gereksiz şişirme
+        monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-tts-test")
+        monkeypatch.setenv("OPENAI_TTS_MODEL", "tts-1")
+        monkeypatch.setenv("OPENAI_TTS_VOICE", "onyx")
+        captured = self._yakala(monkeypatch)
+        # Act
+        await tts_openai("selam", timeout_s=5.0)
+        # Assert
+        assert "instructions" not in captured["json"]
+
+    async def test_eski_kusak_uyumsuz_sesi_guvenli_sese_duser(self, monkeypatch):
+        # Arrange — tts-1 'marin'i TANIMAZ (HTTP 400). Varsayılan ses env'de model eskiye
+        # çevrilince sessiz 400 yerine güvenli sese düşmeli (sesli mod hiç susmasın).
+        monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-tts-test")
+        monkeypatch.setenv("OPENAI_TTS_MODEL", "tts-1-hd")
+        monkeypatch.setenv("OPENAI_TTS_VOICE", "marin")
+        captured = self._yakala(monkeypatch)
+        # Act
+        await tts_openai("selam", timeout_s=5.0)
+        # Assert
+        assert captured["json"]["voice"] == "ash"
+
+    async def test_yeni_kusakta_ses_dokunulmadan_gecer(self, monkeypatch):
+        # Arrange
+        monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-tts-test")
+        monkeypatch.setenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts")
+        monkeypatch.setenv("OPENAI_TTS_VOICE", "cedar")
+        captured = self._yakala(monkeypatch)
+        # Act
+        await tts_openai("selam", timeout_s=5.0)
+        # Assert
+        assert captured["json"]["voice"] == "cedar"
+
+
+class TestTtsHataYollari:
     async def test_401_kalici_hata_retry_yapmadan_yukselir(self, monkeypatch):
         # Arrange
         monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-yanlis")

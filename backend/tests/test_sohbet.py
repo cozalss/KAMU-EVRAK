@@ -845,6 +845,44 @@ class TestSohbetSeslendirRoute:
         assert resp.headers["content-type"] == "audio/mpeg"
         assert resp.content == fake_audio
 
+    def test_kullanici_kotasi_asilinca_429(self, auth_client: TestClient, monkeypatch):
+        """slowapi limiti IP başınadır; maliyet ise karakterle orantılı ve kullanıcıya aittir.
+        Kota dolduğunda 429 döner — frontend sesi atlar, görüşme metinle sürer."""
+        from api.routes import sohbet as sohbet_mod
+        from core.tts_kota import KOTA_KARAKTER_DAKIKA, kotayi_sifirla
+
+        async def _sahte_tts(metin, *, timeout_s):
+            return b"ses"
+
+        monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: True)
+        monkeypatch.setattr(sohbet_mod, "tts_openai", _sahte_tts)
+        kotayi_sifirla()
+        try:
+            uzun = "a" * 4000
+            harcanan = 0
+            while harcanan + 4000 <= KOTA_KARAKTER_DAKIKA:
+                assert auth_client.post("/sohbet/seslendir", json={"metin": uzun}).status_code == 200
+                harcanan += 4000
+            resp = auth_client.post("/sohbet/seslendir", json={"metin": uzun})
+            assert resp.status_code == 429
+        finally:
+            kotayi_sifirla()
+
+    def test_kota_tts_kapaliyken_yakilmaz(self, auth_client: TestClient, monkeypatch):
+        # TTS zaten kapalıysa (503) kota harcanmamalı — anahtarsız kurulumda kullanıcı
+        # kotası boşuna tükenip anahtar gelince sesli mod kilitli kalmasın.
+        from api.routes import sohbet as sohbet_mod
+        from core.tts_kota import kotayi_sifirla
+
+        monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: False)
+        kotayi_sifirla()
+        try:
+            auth_client.post("/sohbet/seslendir", json={"metin": "a" * 4000})
+            from core.tts_kota import kota_dus
+            assert kota_dus("herhangi", 4000) is True
+        finally:
+            kotayi_sifirla()
+
 
 # --------------------------------------------------------------------------
 # Sesli persona — SESLİ mod (sesli=true) kısa/konuşma-dili persona prompt'u kullanır
@@ -901,3 +939,92 @@ class TestSesliPersona:
         # sesli=true ile stream 200 döner (mock modda deterministik; şema alanı kabul edilir).
         resp = auth_client.post("/sohbet/stream", json={"mesaj": "merhaba", "sesli": True})
         assert resp.status_code == 200
+
+    def test_persona_uzunlugu_soruya_gore_ayarlar(self):
+        """Persona artık tek kalıp uzunluk dayatmaz — açıklama sorusunda daha uzun konuşabilir."""
+        from api.routes import sohbet as sohbet_mod
+
+        s = sohbet_mod._SESLI_SYSTEM
+        assert "SORUYA GÖRE" in s
+        assert "beş-altı cümle" in s
+
+
+class TestSesliButce:
+    """Sesli yanıt bütçesi soruya göre uyarlanır: veri sorusunda kısa, uzmanlık sorusunda geniş.
+    Sabit 150 token, 'neden/nasıl' sorularında cevabı ortasından kesiyordu."""
+
+    def test_kayit_sorusu_kisa_butce(self):
+        from api.routes.sohbet import _SESLI_BUTCE_KISA, _sesli_butce
+
+        assert _sesli_butce("bekleyen taslakları listele", "taslaklar") == _SESLI_BUTCE_KISA
+
+    def test_aciklama_sorusu_genis_butce(self):
+        from api.routes.sohbet import _SESLI_BUTCE_DERIN, _sesli_butce
+
+        assert _sesli_butce("dilekçeye neden otuz gün içinde cevap vermek zorundayım",
+                            "genel") == _SESLI_BUTCE_DERIN
+
+    def test_mevzuat_sorusu_genis_butce(self):
+        from api.routes.sohbet import _SESLI_BUTCE_DERIN, _sesli_butce
+
+        assert _sesli_butce("bu yazıda hangi kanun dayanak olur", "genel") == _SESLI_BUTCE_DERIN
+
+    def test_basit_selam_kisa_butce(self):
+        from api.routes.sohbet import _SESLI_BUTCE_KISA, _sesli_butce
+
+        assert _sesli_butce("merhaba", "genel") == _SESLI_BUTCE_KISA
+
+    def test_kelime_ICINDE_gecen_sinyal_saymaz(self):
+        # 'şartname'/'sürekli' içindeki 'şart'/'süre' derin soru DEĞİLDİR (kelime sınırı).
+        from api.routes.sohbet import _SESLI_BUTCE_KISA, _sesli_butce
+
+        assert _sesli_butce("şartname yüklendi mi", "genel") == _SESLI_BUTCE_KISA
+        assert _sesli_butce("sürekli aynı hatayı alıyorum", "genel") == _SESLI_BUTCE_KISA
+
+    def test_derin_sinyal_kayit_sorusunu_UZATMAZ(self):
+        # Kayıt listesi sesli okunuyor — "neden" geçse bile uzun liste dinlenemez.
+        from api.routes.sohbet import _SESLI_BUTCE_KISA, _sesli_butce
+
+        assert _sesli_butce("bu evrak neden kırmızı", "islem_gecmisi") == _SESLI_BUTCE_KISA
+
+    async def test_kompoze_derin_soruda_genis_butce_kullanir(self, monkeypatch):
+        from api.routes import sohbet as sohbet_mod
+
+        yakalanan = {}
+
+        async def _sahte_llm_text(system, user, **kw):
+            yakalanan["max_tokens"] = kw.get("max_tokens")
+            return "cevap"
+
+        monkeypatch.setattr(sohbet_mod, "llm_text", _sahte_llm_text)
+        await sohbet_mod._yanit_kompoze("bu süre neden otuz gün", "genel", None, "", True)
+        assert yakalanan["max_tokens"] == sohbet_mod._SESLI_BUTCE_DERIN
+
+
+class TestKarsilamaUcu:
+    """Sesli sahnenin açılış cümlesi — deterministik, kullanıcının gerçek kuyruğuna dayalı."""
+
+    def test_karsilama_metin_doner(self, auth_client: TestClient):
+        resp = auth_client.get("/sohbet/karsilama")
+        assert resp.status_code == 200
+        assert resp.json()["metin"].strip()
+
+    def test_karsilama_persona_adiyla_tanitir(self, auth_client: TestClient):
+        from api.routes.sohbet import SESLI_PERSONA_ADI
+
+        assert SESLI_PERSONA_ADI in auth_client.get("/sohbet/karsilama").json()["metin"]
+
+    def test_istatistik_hatasi_karsilamayi_dusurmez(self, auth_client: TestClient, monkeypatch):
+        # DB kapalı/persist yoksa sesli mod YİNE açılabilmeli (nötr karşılama).
+        from api.routes import sohbet as sohbet_mod
+
+        async def _patla(*a, **k):
+            raise RuntimeError("db yok")
+
+        monkeypatch.setattr(sohbet_mod, "_brifing_araci", _patla)
+        resp = auth_client.get("/sohbet/karsilama")
+        assert resp.status_code == 200
+        assert "taslağınız" not in resp.json()["metin"]   # veri yoksa sayı UYDURULMAZ
+
+    def test_karsilama_kimliksiz_reddedilir(self, client: TestClient):
+        assert client.get("/sohbet/karsilama").status_code == 401

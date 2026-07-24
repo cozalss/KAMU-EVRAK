@@ -44,6 +44,8 @@ from api.middleware.ratelimit import rate_limit
 from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
+from core.sesli_brifing import karsilama_metni
+from core.tts_kota import kota_dus
 from core.tts_openai import tts_enabled, tts_openai
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
 from db.repositories.mevzuat_repo import hybrid_ara
@@ -103,8 +105,11 @@ _SESLI_SYSTEM = (
     f"Sen {SESLI_PERSONA_ADI}, bir Türk kamu kurumunun evrak ve yazışma işlerinde UZMAN, deneyimli "
     "ve yardımsever bir asistansın. Kullanıcı (bir memur) seninle SESLİ konuşuyor; cevabın yüksek "
     "sesle okunacak.\n\n"
-    "ÜSLUP: Sıcak, saygılı, kendinden emin — deneyimli bir meslektaş gibi. ÇOK KISA: en fazla iki-üç "
-    "kısa cümle. ÖNCE doğrudan cevap, sonra tek cümle detay. Markdown, madde işareti, liste, başlık, "
+    "ÜSLUP: Sıcak, saygılı, kendinden emin — deneyimli bir meslektaş gibi. ÖNCE doğrudan cevap, "
+    "sonra gerekçe. UZUNLUK SORUYA GÖRE: kayıt/sayı sorusunda iki-üç kısa cümle; 'neden, nasıl, "
+    "hangi durumda' türü açıklama isteyen soruda en fazla beş-altı cümle — kısa tutacağım diye "
+    "eksik bırakma, ama dolgu cümle de kurma. Cümleleri KISA ve tek nefeste okunur yap; uzun "
+    "bağlaç zincirleri sesli okunduğunda takip edilemez. Markdown, madde işareti, liste, başlık, "
     "yıldız veya emoji ASLA kullanma — yalnız akıcı konuşma cümleleri. 'JSON', 'sistem verisi', "
     "'intent' gibi teknik terimleri KULLANMA. Uygunsa cevabın sonunda bir sonraki adımı öner "
     "('istersen taslak hazırlayayım', 'ilgili birime yönlendirmemi ister misin' gibi).\n\n"
@@ -140,6 +145,32 @@ _SESLI_SYSTEM = (
     "Sayıları konuşma diline uygun ver ('otuz gün'). Emin değilsen dürüstçe söyle, uydurma. Kullanıcı "
     "seninle yeni tanışıyorsa kendini tek cümleyle tanıtabilirsin, ama her cevapta tekrarlama."
 )
+
+
+# Sesli yanıt bütçesi — SABİT DEĞİL, soruya göre. Eskiden her sesli tur 150 token'a
+# sıkıştırılıyordu; "neden/nasıl/hangi durumda" türü uzmanlık sorularında bu, cümlenin
+# ortasında kesilen ya da yüzeysel kalan cevaplar üretiyordu. Veri sorusu (kayıt say/oku)
+# kısa kalmalı — sesli okunan liste uzarsa dinlenemez.
+# NOT: derinlik MODEL DEĞİŞTİREREK değil BÜTÇE açarak sağlanır; sesli modda gecikme
+# birincil kalite ölçüsüdür ve güçlü model (reasoning) turu saniyelerce uzatırdı.
+_SESLI_BUTCE_KISA = 150
+_SESLI_BUTCE_DERIN = 380
+
+# Kelime BAŞI (\b) zorunlu; sonek serbest bırakılır (Türkçe çekim: "süreniz", "zorunludur").
+# Serbest sonek kaçınılmaz olarak birkaç yakın-yazımlı kelimeyi de yakalıyordu — bu alanda
+# gerçekten geçenler hedefli olarak elenir (şartname ≠ şart, sürekli/süreç ≠ süre).
+_DERIN_SORU = re.compile(
+    r"\b(neden|niçin|niye|nasıl|açıkla|anlat|fark[ıi]?|karşılaştır|hangi durum|ne zaman|"
+    r"gerekçe|mevzuat|kanun|yönetmelik|madde|süre(?!kli|ç)|zorunlu|şart(?!name)|"
+    r"gerekir|olur mu)",
+    re.IGNORECASE)
+
+
+def _sesli_butce(mesaj: str, intent: str) -> int:
+    """Sesli turun token bütçesi — veri sorusunda kısa, uzmanlık sorusunda geniş."""
+    if intent in KAYIT_TURU:
+        return _SESLI_BUTCE_KISA
+    return _SESLI_BUTCE_DERIN if _DERIN_SORU.search(mesaj or "") else _SESLI_BUTCE_KISA
 
 
 class SohbetMesaj(BaseModel):
@@ -411,7 +442,8 @@ async def _yanit_kompoze(
         txt = await llm_text(
             _SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM,
             _kompoz_user(mesaj, veri, gecmis_metni),
-            max_tokens=150 if sesli else 400)   # sesli: kısalık donanımsal güvence (sadece prompt değil)
+            # Bütçe donanımsal güvence (sadece prompt değil): sesli modda soruya göre uyarlanır.
+            max_tokens=_sesli_butce(mesaj, intent) if sesli else 400)
         if txt:
             return txt, True
     return sablon_yanit(intent, veri), False
@@ -771,7 +803,8 @@ async def _kompoz_akisi(
     task = asyncio.create_task(llm.chat_stream(
         messages=[ChatMessage(role="system", content=_SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM),
                   ChatMessage(role="user", content=_kompoz_user(mesaj, veri, gecmis_metni))],
-        temperature=0.2, max_tokens=150 if sesli else 400, on_token=kuyruk.put_nowait))
+        temperature=0.2, on_token=kuyruk.put_nowait,
+        max_tokens=_sesli_butce(mesaj, intent) if sesli else 400))
     akti, son = False, time.monotonic() + LLM_NODE_TIMEOUT_S
     while True:
         if time.monotonic() > son:  # bütçe doldu — kısmi metinle bitir (demo asılı kalmaz)
@@ -863,17 +896,48 @@ class SeslendirIstek(BaseModel):
 
 
 @router.post("/sohbet/seslendir")
-@rate_limit("15/minute")  # ayrı bulut TTS çağrısı — sohbetten bağımsız, ek maliyetli
+# Cümle-cümle boru hattı (frontend lib/sesKuyrugu.js) bir yanıtı 2-4 parçaya böler → tur başına
+# istek sayısı arttı, parça boyu küçüldü. Toplam karakter (dolayısıyla maliyet) AYNI; limit buna
+# göre yükseltildi, yoksa normal bir görüşme birkaç turda 429'a çarpardı.
+@rate_limit("60/minute")
 async def sohbet_seslendir(request: Request, istek: SeslendirIstek, user: CurrentUser) -> Response:
     """Metni OpenAI TTS ile mp3'e çevirir. TTS kapalıysa/hata verirse 503 (frontend sessiz düşer)."""
     if not tts_enabled():
         raise HTTPException(status_code=503, detail="Sesli yanıt şu an devre dışı (TTS anahtarı yok).")
+    # Kullanıcı başına karakter kotası: yukarıdaki slowapi limiti IP başınadır (paylaşılan
+    # kurum ağında tek bütçe) ve İSTEK sayar — oysa TTS maliyeti KARAKTERLE orantılıdır.
+    # 429: frontend sesi atlar, görüşme metinle sürer (sesGetir null döner).
+    if not kota_dus(str(user.id), len(istek.metin)):
+        log.warning("sohbet_seslendir_kota_asildi", kullanici=str(user.id))
+        raise HTTPException(status_code=429, detail="Sesli yanıt kotası doldu — birazdan tekrar deneyin.")
     try:
         audio = await tts_openai(istek.metin, timeout_s=LLM_NODE_TIMEOUT_S)
     except Exception as exc:
         log.warning("sohbet_seslendir_hata", error=type(exc).__name__)
         raise HTTPException(status_code=503, detail="Sesli yanıt üretilemedi.") from exc
     return Response(content=audio, media_type="audio/mpeg")
+
+
+@router.get("/sohbet/karsilama")
+@rate_limit("30/minute")
+async def sohbet_karsilama(request: Request, user: CurrentUser, session: Session) -> dict[str, str]:
+    """Sesli sahnenin açılış cümlesi — kullanıcının GERÇEK kuyruk durumuna göre.
+
+    Deterministik (LLM yok): sahne açılışında sessiz bekleme olmasın ve ilk cümlede sayı
+    uydurma riski sıfır olsun diye. Sorgu başarısız olursa nötr karşılamaya düşer.
+    """
+    try:
+        # _brifing_araci: "karar bekleyen" ve "kırmızı" ALT KÜME ilişkisini koruyarak hesaplar
+        # (panel_istatistik'in ham sayıları bu cümle için yanlış iddia üretiyordu).
+        istatistik = await _brifing_araci(session, user.id)
+    except Exception as exc:
+        # BİLEREK geniş: sesli sahne, istatistik hangi sebeple gelmezse gelmesin açılmalı
+        # (DB kapalı, persist yok, beklenmedik regresyon). Ama sessiz bozulma görünür olsun
+        # diye mesaj + stack loglanır — yoksa "hep nötr karşılama" bir kusuru gizleyebilir.
+        log.warning("sohbet_karsilama_istatistik_hatasi",
+                    error=type(exc).__name__, mesaj=str(exc), exc_info=True)
+        istatistik = {}
+    return {"metin": karsilama_metni(SESLI_PERSONA_ADI, istatistik)}
 
 
 __all__ = ("router",)

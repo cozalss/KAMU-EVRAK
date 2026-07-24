@@ -13,6 +13,7 @@ import { DURUM, rmsGenlik, sonrakiDurum, yumusat } from "../lib/sesGorusme.js";
 import { blobNoktalari, blobYolu } from "../lib/orbCizim.js";
 import { sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { sesliMetneCevir } from "../lib/sesliMod.js";
+import { cumleAyir, sesKuyruguOlustur } from "../lib/sesKuyrugu.js";
 import {
   PAL, T, V, R, DERIN, SP, RAD, SH, EASE, Icon, focusRing, odakDongusu, SR_ONLY,
 } from "./neonUi.jsx";
@@ -27,9 +28,10 @@ const DURUM_ETIKET = {
   [DURUM.HAZIR]: "Hazır", [DURUM.DINLIYOR]: "Dinliyor",
   [DURUM.DUSUNUYOR]: "Düşünüyor", [DURUM.KONUSUYOR]: "Yanıtlıyor",
 };
-// Açılış karşılaması — persona (backend SESLI_PERSONA_ADI, varsayılan "Kamu Evrak") ile eşleşir.
-// Env'de isim değişirse bu metni de güncelle. TTS varsa sesli okunur, yoksa yalnız görünür.
-const KARSILAMA = "Merhaba, ben Kamu Evrak. Belge ve yazışma işlerinizde size yardımcı olmak için buradayım. Buyurun, sizi dinliyorum.";
+// Açılış karşılaması — normalde /sohbet/karsilama'dan GERÇEK kuyruk durumuyla gelir
+// ("karar bekleyen üç taslağınız var..."). Bu sabit yalnız uç erişilemezse kullanılan yedektir;
+// persona adı backend SESLI_PERSONA_ADI ile eşleşir (env'de değişirse burayı da güncelle).
+const KARSILAMA_YEDEK = "Merhaba, ben Kamu Evrak. Belge ve yazışma işlerinizde size yardımcı olmak için buradayım. Buyurun, sizi dinliyorum.";
 
 // Düşük opaklıklı grain — düz vektör gradyanı "enerji topu"na çevirir (research §1).
 const GRAIN =
@@ -64,6 +66,8 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   const audioElRef = useRef(null);
   const mediaBagliRef = useRef(false);
   const abortRef = useRef(null);
+  const kuyrukRef = useRef(null);   // aktif konuşma kuyruğu (barge-in/kapanışta iptal edilir)
+  const oncekiOynatmayiBitirRef = useRef(null);  // <audio> sahipliği — yeni oynatma eskiyi çözer
   const gecmisRef = useRef([]);     // çok-turlu konuşma hafızası — takip soruları bağlam kazanır
   const hataSayacRef = useRef(0);   // ardışık STT hatası (no-speech) — eşikte kullanıcıyı uyar
 
@@ -117,7 +121,9 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   }, []);
 
   // --- SSE beyin çağrısı (/sohbet/stream) → yanıt metnini biriktir, canlı göster ---
-  const beyinCagir = useCallback(async (metin) => {
+  // onCumle: yanıt AKARKEN tamamlanan her cümle için çağrılır → ilk cümle, LLM daha yazarken
+  // seslendirilmeye başlar (bkz. lib/sesKuyrugu.js — sessiz bekleme buradan kalkıyor).
+  const beyinCagir = useCallback(async (metin, onCumle) => {
     const ac = new AbortController();
     abortRef.current = ac;
     const res = await authFetch("/sohbet/stream", {
@@ -129,12 +135,33 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     const reader = res.body.getReader();
     const dec = new TextDecoder();
     let buf = "", yanit = "";
+    let konusulan = 0;   // seslendirmeye verilen karakter sayısı (yanıt önekinin sonu)
+    // Konuşulmamış kuyruğu cümlelere böl; tamamlananları seslendirmeye ver.
+    const cumleleriAkit = (zorla) => {
+      if (!onCumle) return;
+      const { cumleler } = cumleAyir(yanit.slice(konusulan), { zorla });
+      for (const c of cumleler) {
+        const nerede = yanit.slice(konusulan).indexOf(c);
+        if (nerede < 0) continue;   // savunma: offset geri gidip cümleyi İKİ KEZ konuşmasın
+        konusulan += nerede + c.length;
+        onCumle(c);
+      }
+    };
     const isle = (blok) => {
       const satir = blok.split("\n").find((l) => l.startsWith("data:"));
       if (!satir) return;
       let ev; try { ev = JSON.parse(satir.slice(5)); } catch { return; }
-      if (ev.event === "delta" && ev.t) { yanit += ev.t; setSonYanit(yanit); }
-      else if (ev.event === "done") { yanit = ev.yanit || yanit; setSonYanit(yanit); }
+      if (ev.event === "delta" && ev.t) { yanit += ev.t; setSonYanit(yanit); cumleleriAkit(false); }
+      else if (ev.event === "done") {
+        // 'done' tam metni taşır. Konuşulmuş öneki KORU: farklı bir metin gelirse baştaki
+        // cümleler ikinci kez seslendirilmesin (tekrar/atlama olmaz).
+        const tam = ev.yanit || yanit;
+        if (konusulan === 0 || tam.startsWith(yanit.slice(0, konusulan))) yanit = tam;
+        // Tam metin konuşulan önekten KISAYSA offset taşar ve henüz seslendirilmemiş kuyruk
+        // hiç konuşulmadan kaybolurdu.
+        konusulan = Math.min(konusulan, yanit.length);
+        setSonYanit(yanit);
+      }
     };
     for (;;) {
       const { done, value } = await reader.read();
@@ -143,32 +170,37 @@ export default function SesliGorusme({ acik = false, onKapat }) {
       let i; while ((i = buf.indexOf("\n\n")) !== -1) { isle(buf.slice(0, i)); buf = buf.slice(i + 2); }
     }
     buf += dec.decode(); if (buf.trim()) isle(buf);
+    cumleleriAkit(true);   // akış bitti → kalan son cümle de konuşulur
     return yanit.trim();
   }, []);
 
-  // --- TTS (/sohbet/seslendir) → mp3 blob → oynat; analyser'a bağla (barge-in için tap) ---
-  // KRİTİK: sesin ÇALMADIĞI her çıkış (boş metin · ağ · 503 · el yok · play reddi) döngüyü
-  // sürdürmek için dinle() çağırır — aksi halde TTS anahtarı yokken (mevcut durum) yanıt
-  // gösterilir ama tekrar dinlenmez, görüşme takılırdı.
-  const seslendir = useCallback(async (metin) => {
+  // --- TTS parçası getir (/sohbet/seslendir) → Blob | null (null = ses yok, metne düş) ---
+  const sesGetir = useCallback(async (metin) => {
     const duz = sesliMetneCevir(metin);
-    if (!duz) { gecir("yanit_bitti"); dinle(); return; }
+    if (!duz) return null;
     let res;
     try {
       res = await authFetch("/sohbet/seslendir", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ metin: duz }),
       });
-    } catch { gecir("yanit_bitti"); dinle(); return; }
+    } catch { return null; }
     if (!res.ok) {
-      // TTS anahtarı yok/hatası → metin-only'e düş, döngü SÜRSÜN (tekrar dinle).
+      // TTS anahtarı yok/hatası → metin-only'e düş; döngüyü çağıran (turIsle) sürdürür.
       if (res.status === 503) setUyari("Sesli yanıt için OPENAI_TTS_API_KEY gerekli — şimdilik yalnız metin.");
-      gecir("yanit_bitti"); dinle();
-      return;
+      return null;
     }
-    const blob = await res.blob();
+    return res.blob();
+  }, []);
+
+  // --- Bir ses parçasını çal; çalma BİTİNCE resolve et (kuyruk sırayı buna göre yürütür) ---
+  const oynatBlob = useCallback((blob) => new Promise((resolve) => {
     const el = audioElRef.current;
-    if (!el) { gecir("yanit_bitti"); dinle(); return; }
+    if (!el) { resolve(); return; }
+    // Tek <audio> elemanı + tek-slot handler: ikinci bir oynatma başlarsa birincinin `kapat`ı
+    // erişilemez olur ve promise'i SONSUZA KADAR askıda kalır (kuyruk sessizce kilitlenir).
+    // Sahiplik jetonu: yeni sahip gelince eski sahip hemen çözülür.
+    oncekiOynatmayiBitirRef.current?.();
     // MediaElementSource ELEMANA BİR KEZ bağlanabilir — AudioContext oturumlar arası YAŞAR
     // (temizle onu kapatmaz), böylece 2. oturumdan sonra createMediaElementSource InvalidState
     // atmaz ve orb TTS genliğine reaksiyon vermeye devam eder (reviewer bulgusu #2).
@@ -181,36 +213,59 @@ export default function SesliGorusme({ acik = false, onKapat }) {
         oynatAnalizRef.current = an; mediaBagliRef.current = true;
       } catch { /* bağlanamazsa ses yine çalar, orb düz kalır */ }
     }
-    // Önceki turun URL'ini bırak (barge-in/pause 'ended' tetiklemez → sızıntı olmasın, #3).
+    // Önceki parçanın URL'ini bırak (barge-in/pause 'ended' tetiklemez → sızıntı olmasın, #3).
     if (urlRef.current) { URL.revokeObjectURL(urlRef.current); urlRef.current = null; }
     const url = URL.createObjectURL(blob);
     urlRef.current = url;
-    const birak = () => { if (urlRef.current === url) { URL.revokeObjectURL(url); urlRef.current = null; } };
+    let bitti = false;
+    // Tek-sefer kapanış: ended · error · pause (barge-in/temizle) hangisi önce gelirse.
+    // Resolve ETMEZSE kuyruk o parçada kilitlenir — bu yüzden ÜÇ yol da buraya bağlı.
+    const kapat = () => {
+      if (bitti) return;
+      bitti = true;
+      if (oncekiOynatmayiBitirRef.current === kapat) oncekiOynatmayiBitirRef.current = null;
+      el.onended = null; el.onerror = null; el.onpause = null;
+      if (urlRef.current === url) { URL.revokeObjectURL(url); urlRef.current = null; }
+      resolve();
+    };
+    oncekiOynatmayiBitirRef.current = kapat;
     el.src = url;
-    el.onended = () => { birak(); if (acikRef.current) { gecir("yanit_bitti"); dinle(); } };
-    // Oynatma ORTASINDA hata (decode/ağ) → döngü KONUSUYOR'da kilitlenmesin (#5).
-    el.onerror = () => { birak(); if (acikRef.current && durumRef.current === DURUM.KONUSUYOR) { gecir("yanit_bitti"); dinle(); } };
-    try { await el.play(); gecir("yanit_basladi"); }
-    catch { birak(); gecir("yanit_bitti"); dinle(); }
-  }, [gecir]);
+    el.onended = kapat;
+    el.onerror = kapat;    // oynatma ORTASINDA hata (decode/ağ) → kuyruk ilerlesin (#5)
+    el.onpause = kapat;    // barge-in: kes() pause eder, 'ended' gelmez
+    el.play().catch(kapat);
+  }), []);
 
-  // --- Bir tur: transcript → beyin → seslendir ---
+  // --- Bir tur: transcript → beyin (akarken cümle cümle seslendir) → tekrar dinle ---
+  // KRİTİK: sesin çalmadığı her çıkış (boş yanıt · ağ · 503 · play reddi) döngüyü sürdürmek
+  // için dinle() çağırır — aksi halde yanıt gösterilir ama tekrar dinlenmez, görüşme takılırdı.
   const turIsle = useCallback(async (metin) => {
     hataSayacRef.current = 0;   // sesim duyuldu → hata sayacını sıfırla
     setSonUser(metin); setSonYanit(""); gecir("sonuc");
+    const kuyruk = sesKuyruguOlustur({
+      sesGetir, oynat: oynatBlob, onIlkSes: () => gecir("yanit_basladi"),
+      onIptal: () => audioElRef.current?.pause(),   // kesme/hata: çalan ses de sussun
+    });
+    kuyrukRef.current = kuyruk;
     try {
-      const yanit = await beyinCagir(metin);
+      const yanit = await beyinCagir(metin, (c) => kuyruk.ekle(c));
       if (!acikRef.current) return;
-      if (!yanit) { gecir("yanit_bitti"); dinle(); return; }
-      // Turu hafızaya ekle (son 8 mesaj — backend şema sınırı) → sonraki tur bağlam taşır.
-      gecmisRef.current = [...gecmisRef.current,
-        { rol: "kullanici", icerik: metin }, { rol: "asistan", icerik: yanit }].slice(-8);
-      await seslendir(yanit);
+      if (yanit) {
+        // Turu hafızaya ekle (son 8 mesaj — backend şema sınırı) → sonraki tur bağlam taşır.
+        gecmisRef.current = [...gecmisRef.current,
+          { rol: "kullanici", icerik: metin }, { rol: "asistan", icerik: yanit }].slice(-8);
+      }
+      const { iptal } = await kuyruk.bitir();   // tüm cümleler çalınana kadar bekle
+      // KESİLDİYSE turu İLERLETME: kes() zaten dinlemeyi başlattı; buradan ikinci bir
+      // dinle() taze tanıyıcıyı durdurup kullanıcının kesme sözünü yerdi.
+      if (iptal || !acikRef.current || kuyrukRef.current !== kuyruk) return;
+      gecir("yanit_bitti"); dinle();
     } catch {
+      kuyruk.iptal();   // onIptal → çalan ses susar (asistan kendi sesini transkript etmesin)
       if (acikRef.current) { setUyari("Yanıt alınamadı — tekrar dinliyorum."); gecir("hata"); dinle(); }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [beyinCagir, seslendir, gecir]);
+  }, [beyinCagir, sesGetir, oynatBlob, gecir]);
 
   // --- Dinlemeyi başlat (SpeechRecognition, tr-TR). Sonuç → turIsle. ---
   const dinle = useCallback(() => {
@@ -249,8 +304,13 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   // --- Barge-in / durdur: konuşurken orb'a dokun → sesi kes, dinlemeye dön ---
   const kes = useCallback(() => {
     if (durumRef.current !== DURUM.KONUSUYOR) return;
+    // SIRA ÖNEMLİ: önce kuyruğu iptal et — aksi halde pause, çalan parçayı bitirip kuyruktaki
+    // SONRAKİ cümleyi çalmaya başlar ve barge-in işe yaramaz.
+    kuyrukRef.current?.iptal();
     const el = audioElRef.current;
-    if (el) { el.pause(); el.currentTime = 0; }   // pause 'ended' tetiklemez →
+    // currentTime ataması kaynak boşaltılmışken atabilir; atarsa barge-in yarıda kalıp
+    // oturum KONUSUYOR'da kilitlenirdi. pause() zaten yeterli, sıfırlama best-effort.
+    if (el) { el.pause(); try { el.currentTime = 0; } catch { /* yoksay */ } }
     urlBirak();                                    // URL'i elle bırak (#3)
     gecir("kes"); dinle();
   }, [gecir, dinle, urlBirak]);
@@ -258,19 +318,44 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   // --- Açılış karşılaması: persona (Metin) önce SÖZLÜ selam verir, sonra dinlemeye geçer.
   //     seslendir DUSUNUYOR'dan yanit_basladi ile KONUSUYOR'a döner; ses biterse/yoksa dinle. ---
   const karsila = useCallback(async () => {
-    setSonYanit(KARSILAMA);
     setDurum(DURUM.DUSUNUYOR); durumRef.current = DURUM.DUSUNUYOR;
-    await seslendir(KARSILAMA);
-  }, [seslendir]);
+    // Durum-farkında açılış: kullanıcının gerçek kuyruğunu bilerek selam verir. Uç erişilemezse
+    // sabit yedek metin — sahne asla sessiz açılmaz.
+    let metin = KARSILAMA_YEDEK;
+    try {
+      // Zaman aşımı ZORUNLU: uç yavaşlarsa orb "Düşünüyor"da donar ve dinle() hiç çağrılmaz
+      // (sahne hiç başlamaz). Yedek metin her zaman hazır — brifing bir konfor, önkoşul değil.
+      const res = await authFetch("/sohbet/karsilama", { signal: AbortSignal.timeout(2500) });
+      if (res.ok) metin = (await res.json())?.metin || KARSILAMA_YEDEK;
+    } catch { /* zaman aşımı/ağ → yedek metinle devam */ }
+    if (!acikRef.current) return;
+    setSonYanit(metin);
+    // Karşılama da hafızaya girer: kullanıcı "kaç taslak demiştin?" derse model kendi
+    // söylediği sayıyı bilsin (bilmezse ikinci turda uydurma zemini doğar).
+    gecmisRef.current = [{ rol: "asistan", icerik: metin }];
+    const kuyruk = sesKuyruguOlustur({
+      sesGetir, oynat: oynatBlob, onIlkSes: () => gecir("yanit_basladi"),
+      onIptal: () => audioElRef.current?.pause(),
+    });
+    kuyrukRef.current = kuyruk;
+    kuyruk.ekle(metin);
+    const { iptal } = await kuyruk.bitir();
+    if (iptal || !acikRef.current || kuyrukRef.current !== kuyruk) return;
+    gecir("yanit_bitti"); dinle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sesGetir, oynatBlob, gecir]);
 
   // --- Oturum sökme (overlay kapanışı). AudioContext'i KAPATMAZ — oturumlar arası yaşar
   //     (MediaElementSource bir-kez-bağlanma kuralı, #2). Tam kapatma unmount effect'inde. ---
   const temizle = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
     abortRef.current?.abort();
+    kuyrukRef.current?.iptal(); kuyrukRef.current = null;
     try { tanimaRef.current?.stop(); } catch { /* yoksay */ }
     tanimaRef.current = null;
-    const el = audioElRef.current; if (el) { el.pause(); el.onended = null; el.onerror = null; }
+    // Handler'lar BİLEREK sökülmez: oynatBlob'un tek-sefer `kapat`ı pause olayında çalışıp
+    // URL'i bırakır ve bekleyen promise'i çözer (artık dinle() tetiklemiyor — yalnız resolve).
+    audioElRef.current?.pause();
     urlBirak();
     try { micSrcRef.current?.disconnect(); } catch { /* yoksay */ }
     micSrcRef.current = null;

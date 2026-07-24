@@ -1,0 +1,225 @@
+# KAYNAK: https://www.belediye.gov.tr/belediyeler  (T.C. İçişleri Bakanlığı e-Belediye Bilgi Sistemi)
+# ERİŞİM: 2026-07-25
+# KAPSAM: "e-Belediye Bilgi Sistemine Dahil Olan Belde Belediyeleri (219)"
+# UYARI: Bu liste SİSTEME DAHİL OLAN beldeleri gösterir, Türkiye'deki TÜM belde
+#        belediyelerini DEĞİL (kaynak sayfası aynı mantıkla 20 büyükşehir diyor, oysa 30 var).
+#        Kaynak metninde yazım hataları mevcut (BArtın, Girasun, onguldak, Beelediyesi...);
+#        ayrıştırıcı (scripts/ayikla_belde.py) bilinen hataları normalize eder.
+Adıyaman Gölbaşı İlçesi Harmanlı Beldesi
+Adıyaman Gölbaşı İlçesi Balkar Belde Belediyesi
+Afyonkarahisar Bolvadin İlçesi Dişli Belde Belediyesi
+Afyonkarahisar Çobanlar İlçesi Kocaöz Belde Belediyesi
+Afyonkarahisar Dinar İlçesi Haydarlı Belde Belediyesi
+Afyonkarahisar Dinar İlçesi Tatarlı Belde Belediyesi
+Afyonkarahisar Emirdağ ilçesi Davulga Belde Belediyesi
+Afyonkarahisar İhsaniye İlçe Döğer Belde Belediyesi
+Afyonkarahisar İscehisar İlçesi Seydiler Belde Belediyesi
+Afyonkarahisar Merkez İlçe Nuribey Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Çayırbağ Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Çıkrık Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Değirmenayvalı Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Erkmen Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Işıklar Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Kocatepe Belde Belediyesi
+Afyonkarahisar Merkez İlçesi Salar Belde Belediyesi
+Afyonkarahisar Pazarağaç Belde Belediyesi
+Afyonkarahisar Sandıklı İlçesi Akharım Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Ahmetpaşa Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Akören Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Düzağaç Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Güney Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Kılıçarslan Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Kırka Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Küçükhüyük Belde Belediyesi
+Afyonkarahisar Sinanpaşa İlçesi Taşoluk Belde Belediyesi
+Afyonkarahisar Sultandağı İlçesi Dereçine Belde Belediyesi
+Ağrı Eleşkirt İlçesi Yayladüzü Beldesi
+Ağrı Eleşkirt İlçesi Tahir Belde Belediyesi
+Ağrı Eleşkirt İlçesi Yücekapı Belde Belediyesi
+Aksaray Eskil İlçesi Eşmekaya Belde Belediyesi
+Aksaray Merkez İlçesi Yenikent Belde Belediyesi
+Aksaray Saratlı Belde Belediyesi
+Aksaray Gülağaç İlçesi Demirci Belde Belediyesi
+Aksaray Gülağaç İlçesi Gülpınar Belde Belediyesi
+Aksaray Güzelyurt İlçesi Ihlara Beldesi
+Aksaray Güzelyurt İlçesi Selime Belde Belediyesi
+Aksaray Merkez İlçe Sağlık Belde Belediyesi
+Aksaray Merkez İlçe Yeşiltepe Belde Belediyesi
+Aksaray Merkez İlçesi Bağlıkaya Belde Belediyesi
+Aksaray Merkez İlçesi Helvadere Belde Belediyesi
+Aksaray Merkez İlçesi Toprakkaya Belde Belediyesi
+Amasya Merkez İlçesi Ziyaret Belde Belediyesi
+BArtın Merkez İlçesi Kozcağız Belde Belediyesi
+Bartın Ulus İlçesi Abdipaşa Belde Belediyesi
+Bartın Ulus İlçesi Kumluca Belde Belediyesi
+Batman Beşiri İlçesi İkiköprü Belde Belediyesi
+Batman Kozluk İlçesi Bekirhan Belde Belediyesi
+Bilecik Bozüyük İlçesi Dodurga Belde Belediyesi
+Bingöl Merkez İlçe Ilıcalar Belde Belediyesi
+Bingöl Merkez İlçesi Sancak Belde Belediyesi
+Bingöl Solhan İlçesi Arakonak Belde Belediyesi
+Bitlis Adilcevaz İlçe Aydınlar Belde Belediyesi
+Bitlis Ahlat İlçesi Ovakışla Belde Belediyesi
+Bitlis Güroymak İlçesi Gölbaşı Beldesi
+Bitlis Güroymak İlçesi Günkırı Beldesi
+Bitlis Merkez İlçe Yolalan Belde Belediyesi
+Bitlis Mutki İlçesi Kavakbaşı Beldesi
+Burdur Bucak İlçesi Kocaaliler Belde Belediyesi
+Burdur Bucak Kızılkaya Belde Belediyesi
+Burdur Çavdır İlçesi Söğüt Belde Belediyesi
+Burdur Gölhisar İlçesi Yusufça Belde Belediyesi
+Burdur Merkez İlçesi Yeşilova Belediyesi
+Çanakkale Karabiga Belde Belediyesi
+Çankırı Çardaklı Belde Belediyesi
+Çankırı Çerkeş İlçesi Saçak Belde Belediyesi
+Çankırı Orta İlçe Yaylakent Belde Belediyesi
+Düzce Merkez İlçesi Boğaziçi Belde Belediyesi
+Edirne İpsala İlçesi Esetçe Belde Belediyesi
+Elazığ Karakoçan İlçesi Sarıcan Beldesi
+Elazığ Palu İlçesi Beyhan Belde Belediyesi
+Erzincan Merkez İlçe Çağlayan Belde Belediyesi
+Erzincan Merkez İlçesi Mollaköy Beldesi
+Erzincan Tercan İlçesi Kargın Belde Belediyesi
+Erzincan Tercan İlçesi Mercan Belde Belediyesi
+Erzincan Üzümlü İlçesi Altınbaşak Belde Belediyesi
+Girasun Espiye İlçesi Soğukpınar Belde Belediyesi
+Giresun Bulancak İlçesi Aydındere Belde Belediyesi
+Giresun Dereli İlçesi Yavuzkemal Belde Belediyesi
+Giresun Eynesil ilçesi Ören Belde Belediyesi
+Giresun Yağlıdere İlçesi Üçtepe Belde Belediyesi
+Gümüşhane Kelkit İlçesi Dereboyu Belde Belediyesi
+Gümüşhane Kelkit İlçesi Gümüşgöze Belde Belediyesi
+Gümüşhane Kelkit İlçesi Öbektaş Belde Belediyesi
+Gümüşhane Kelkit İlçesi Söğütlü Belde Belediyesi
+Gümüşhane Kürtün İlçesi Özkürtün Belde Belediyesi
+Gümüşhane Merkez İlçesi Arzular Kabaköy Belde Belediyesi
+Gümüşhane Şiran İlçesi Yeşilbük Belde Belediyesi
+Hakkari Yüksekova İlçe Esendere Belde Belediyesi
+Hakkari Merkez İlçesi Durankaya Belde Belediyesi
+Iğdır Merkez İlçe Hoşhaber Belde Belediye
+Iğdır Merkez ilçesi Halfeli Belde Belediyesi
+Iğdır Merkez Melekli Belde Belediyesi
+Isparta Eğirdir İlçesi Sarıidris Belde Belediyesi
+Isparta Senir Belde Belediyesi
+Isparta Şarkikaraağaç İlçesi Çarıksaraylar Belde Belediyesi
+Isparta Şarkikaraağaç İlçesi Çiçekpınar Belde Belediyesi
+Isparta Yalvaç İlçesi Hüyüklü Belediyesi
+Karaman Ermenek İlçesi Güneyyurt Belde Belediyesi
+Karaman Ermenek İlçesi Kazancı Belde Belediyesi
+Karaman Sarıveliler İlçesi Göktepe Belde Belediyesi
+Kars Digor İlçesi Dağpınar Belde Beldesi
+Kırıkkale Delice İlçesi Çerikli Belde Belediyesi
+Kırıklareli Babaeski İlçesi Alpullu Belde Belediyesi
+Kırklareli Vize İlçesi Kıyıköy Belde Belediyesi
+Kırşehir Çiçekdağı İlçesi Köseli Belde Belediyesi
+Kırşehir Kaman İlçesi Kurancılı Belde Belediyesi
+Kırşehir Özbağ Belde Belediyesi
+Kütahya Simav İlçesi Demirci Belde Belediyesi
+Muş Merkez İlçe Yeşilova Belde Belediyesi
+Muş Merkez İlçesi Sungu Belde Belediyesi
+Muş Bulanık İlçe Sarıpınar Belde Belediyesi
+Muş Bulanık İlçesi Elmakaya Belde Belediyesi
+Muş Bulanık İlçesi Erentepe Belde Belediyesi
+Muş Bulanık İlçesi Rüstemgedik Belde Belediyesi
+Muş Bulanık İlçesi Uzgörür Belde Belediyesi
+Muş Bulanık İlçesi Yoncalı Belde Belediyesi
+Muş Hasköy İlçesi Düzkışla Belde Belediyesi
+Muş Korkut İlçesi Altınova Belde Belediyesi
+Muş Malazgirt İlçesi Konakkuran Beldesi
+Muş Merkez İlçe Kızılağaç Belde Belediyesi
+Muş Merkez İlçesi Karaağaçlı Belde Belediyesi
+Muş Merkez İlçesi Kırköy Belde Belediyesi
+Muş Merkez İlçesi Serinova Belde Belediyesi
+Muş Merkez İlçesi Yaygın Belde Belediyesi
+Muş Merkez Konukbekler Belde Belediyesi
+Nevşehir Acıgöl İlçesi Karapınar Belde Belediyesi
+Nevşehir Avanos İlçesi Kalaba Belde Belediyesi
+Nevşehir Derinkuyu İlçesi Yazıhüyük Belde Belediyesi
+Nevşehir Merkez İlçe Kavak Belde Belediyesi
+Nevşehir Merkez İlçe Kaymaklı Belde Belediyesi
+Nevşehir Merkez İlçe Nar Belde Belediyesi
+Nevşehir Merkez İlçesi Göre Belde Belediyesi
+Nevşehir Merkez İlçesi Göreme Belde Belediyesi
+Nevşehir Merkez İlçesi Sulusaray Belde Belediyesi
+Nevşehir Merkez İlçesi Uçhisar Belde Beelediyesi
+Nevşehir Ürgüp İlçesi Ortahisar Belde Belediyesi
+Niğde Bor İlçesi Çukurkuyu Belde Belediyesi
+Niğde Altunhisar İlçesi Karakapı Belde Belediyesi
+Niğde Altunhisar İlçesi Keçikalesi belediyesi
+Niğde Bor İlçesi Bahçeli Belde Belediyesi
+Niğde Bor İlçesi Kemerhisar Belde Belediyesi
+Niğde İli Çiftlik İlçesi Bozköy Belde Belediyesi
+Niğde Merkez İlçe Alay Belde Belediyesi
+Niğde Merkez İlçesi Sazlıca Belde Belediyesi
+Niğde Merkez İlçesi Yeşilgölcük Belde Belediyesi
+onguldak Merkez İlçesi Elvanpazarcık Belde Belediyesi
+Osmaniye Düziçi İlçesi Ellek Belde Belediyesi
+Osmaniye Mehmetli Belde Belediyesi
+Rize Merkez İlçesi Kendirli Belde Belediyesi
+Rize Çayeli İlçesi Büyükköy Belde Belediyesi
+Rize Çayeli İlçesi Madenli Beldesi
+Rize Merkez İlçesi Muradiye Belde Belediyesi
+Rize Merkez İlçesi Salarha Belde Belediyesi
+Siirt Baykan İlçe Atabağı Belde Belediyesi
+Siirt Baykan İlçesi Veyselkarani Beldesi
+Siirt Kurtalan İlçesi Kayabağlar Beldesi
+Siirt Merkez İlçe Gökçebağ Belde Belediyesi
+Siirt Pervari İlçesi Beğendik Beldesi
+Sivas Altınyayla İlçesi Deliilyas Belde Belediyesi
+Sivas Gemerek İlçesi Çepni Belde Belediyesi
+Sivas Gemerek İlçesi Sızır Belde Belediyesi
+Sivas Şarkışla İlçesi Cemel Beldesi
+Sivas Şarkışla İlçesi Gürçayır Belde Belediyesi
+Sivas Yıldızeli İlçesi Güneykaya Belde Belediyesi
+Şırnak Silopi İlçesi Çalışkan Belde Belediyesi
+Şırnak Güçlükonak İlçesi Fındık Beldesi
+Şırnak İdil İlçesi Sırtköy Beldesi
+Şırnak Merkez İlçe Balveren Beldesi
+Şırnak Merkez İlçe Kumçatı Beldesi
+Şırnak Merkez İlçesi Kasrik Belde Belediyesi
+Şırnak Silopi İlçesi Başverimli Belde Belediyesi
+Şırnak Silopi İlçesi Görümlü Beldesi
+Şırnak Uludere İlçesi Şenoba Belde Belediyesi
+Şırnak Uludere İlçesi Uzungeçit Beldesi
+Tokat Almus İlçesi Ataköy Belde Belediyesi
+Tokat Almus İlçesi Çevreli Belde Belediyesi
+Tokat Almus İlçesi Gölgeli Belde Belediyesi
+Tokat Almus İlçesi Kınık Belde Belediyesi
+Tokat Erbaa İlçesi Gökal Belde Belediyesi
+Tokat Erbaa İlçesi Karayaka Beldesi
+Tokat Erbaa İlçesi Tanoba Belde Belediyesi
+Tokat Merkez İlçe Çamlıbel Belde Belediyesi
+Tokat Merkez İlçesi Çat Beldesi
+Tokat Merkez İlçesi Emirseyit Belde Belediyesi
+Tokat Merkez İlçesi Güryıldız Belde Belediyesi
+Tokat Niksar ilçesi Gökçeli Belde Belediyesi
+Tokat Niksar İlçesi Gürçeşme Belde Belediyesi
+Tokat Niksar İlçesi Serenli Belde Belediyesi
+Tokat Niksar İlçesi Yazıcık Belde Belediyesi
+Tokat Niksar İlçesi Yolkonak Belde Belediyesi
+Tokat Pazar İlçesi Üzümören Belde Belediyesi
+Tokat Reşadiye İlçesi Baydarlı Belde Belediyesi
+Tokat Reşadiye İlçesi Bereketli Belde Belediyesi
+Tokat Reşadiye İlçesi Bozçalı Belde Belediyesi
+Tokat Reşadiye İlçesi Cimitekke Belde Belediyesi
+Tokat Reşadiye İlçesi Hasanşeyh Belde Belediyesi
+Tokat Turhal ilçesi Şenyurt Belde Belediyesi
+Tunceli Mazgirt İlçesi Akpazar Beldesi
+Yalova Altınova İlçesi Kaytazdere Beldesi
+Yalova Altınova İlçesi Tavşanlı Belde Belediyesi
+Yozgat Akdağmadeni İlçesi Umutlu Belede Belediyesi
+Yozgat Akmadeni İlçesi Oluközü Belde Belediyesi
+Yozgat Aydıncık İlçesi Baydagin Belde Belediyesi
+Yozgat Belekçehan Belde Belediyesi
+Yozgat Saraykent İlçesi Ozan Belde Belediyesi
+Yozgat Sorgun İlçesi Eymir Belde Belediyesi
+Zonguldak Çaycuma İlçesi Filyos Beldesi
+Zonguldak Çaycuma İlçesi Karapınar Belde Belediyesi
+Zonguldak Çaycuma İlçesi Nebioğlu Belde Belediyesi
+Zonguldak Çaycuma İlçesi Perşembe Belde Belediyesi
+Zonguldak Devrek İlçesi Çaydeğirmeni Belde Belediyesi
+Zonguldak Gökçebey İlçesi Bakacakkadı Belde Belediyesi
+Zonguldak Kilimli İlçesi Çatalağzı Belde Belediyesi
+Zonguldak Kilimli İlçesi Gelik Belde Belediyesi
+Zonguldak Muslu Belde Belediyesi
+Zonguldak Saltukova Belde Belediyesi

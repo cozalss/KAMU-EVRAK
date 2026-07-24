@@ -396,8 +396,8 @@ class TestDevirTespiti:
 class TestDevirGovdesi:
     def test_dayanakli_govde_maddeye_atif_yapar(self):
         govde = devir_govdesi("sokak aydınlatması",
-                              "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanunun 8 inci maddesi")
-        assert "3071 sayılı" in govde and "8 inci maddesi" in govde
+                              "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanunun 5 inci maddesi")
+        assert "3071 sayılı" in govde and "5 inci maddesi" in govde
         assert "görev ve yetki alanı dışında" in govde
         assert "başvuru sahibine bilgi verilmesi" in govde  # bildirim yükümlülüğü
         assert "sokak aydınlatması" in govde
@@ -409,8 +409,22 @@ class TestDevirGovdesi:
         assert govde[0].isupper()  # cümle düzgün başlar ("Başvurunun...")
 
     def test_konusuz_govde_bos_tirnak_basmaz(self):
-        govde = devir_govdesi("", "3071 sayılı ... 8 inci maddesi")
+        govde = devir_govdesi("", "3071 sayılı ... 5 inci maddesi")
         assert '""' not in govde and "''" not in govde
+
+    def test_devir_dayanagi_3071_m5_olmali_m8_DEGIL(self):
+        """REGRESYON (2026-07-24): devir hükmü 3071 m.5 ("Gönderilen makamda hata")dir.
+
+        m.8 TBMM Dilekçe Komisyonu sürelerini (60/30 gün) düzenler — devri DEĞİL. Kodda
+        bir dönem m.8 yazıyordu (kaynak: korpustaki m.5/m.8 içerik takası) ve bu, resmî
+        yetkisizlik yazısına YANLIŞ hukuki atıf olarak giriyordu. Birincil doğrulama:
+        mevzuat.gov.tr 1.5.3071 konsolide PDF. CLAUDE.md §1: madde no uydurulmaz.
+        """
+        from agents.config import EVRAK_TO_DEVIR_DAYANAK
+        for tur in ("dilekce", "basvuru", "sikayet", "talep", "ihbar", "cimer"):
+            dayanak = EVRAK_TO_DEVIR_DAYANAK[tur]
+            assert "5 inci maddesi" in dayanak, f"{tur}: devir dayanağı m.5 olmalı"
+            assert "8 inci maddesi" not in dayanak, f"{tur}: m.8 devir hükmü DEĞİL"
 
 
 class TestDevirTaslagiNode:

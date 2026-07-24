@@ -2,49 +2,70 @@ Dilekçe Hakkının Kullanılmasına Dair Kanun
 Kanun No: 3071 (Kabul: 01.11.1984, RG 10.11.1984/18571 — YÜRÜRLÜKTE)
 Kaynak: https://www.mevzuat.gov.tr/mevzuatmetin/1.5.3071.pdf
 
-Bu metin kamuya açık kanunun (telifsiz resmî mevzuat) madde metinlerinden derlenmiş
-yakın-lafzî alıntıdır. Madde numaraları ve süreler mevzuat.gov.tr (1.5.3071), TBMM
-kanun mirror'ı ve kamuya açık hukuk kaynaklarından çapraz doğrulanmıştır. Cevap
-süresi 02.01.2003 değişikliğiyle "iki ay"dan "otuz gün"e indirilmiştir (güncel: 30 gün).
+Bu metin kamuya açık kanunun (telifsiz resmî mevzuat — FSEK m.31) LAFZÎ metnidir.
+Madde metinleri 2026-07-24 tarihinde mevzuat.gov.tr 1.5.3071 konsolide PDF'inden
+doğrudan çıkarılarak birebir alınmıştır; madde kenar başlıkları resmî metindekilerdir.
+Cevap süresi 02.01.2003 tarihli 4778 sK değişikliğiyle "iki ay"dan "otuz gün"e
+indirilmiştir (güncel: 30 gün).
+
+DÜZELTME NOTU (2026-07-24): bu dosyanın önceki sürümünde Madde 5 ile Madde 8'in
+içerikleri YER DEĞİŞMİŞTİ (m.3 f.2 "yabancılar" hükmü ayrı bir m.5 sanılmış, gerçek
+m.5 ise m.8 olarak numaralanmıştı) ve m.4 ile m.6'ya resmî metinde bulunmayan cümleler
+eklenmişti. Tümü resmî PDF ile karşılaştırılarak düzeltildi.
 
 Madde 1 — Amaç
 Bu Kanunun amacı, Türk vatandaşlarının ve Türkiye'de ikamet eden yabancıların
-kendileriyle veya kamu ile ilgili dilek ve şikâyetleri hakkında, Türkiye Büyük
-Millet Meclisine ve yetkili makamlara yazı ile başvurma haklarının kullanılma
-biçimini düzenlemektir.
+kendileri ve kamu ile ilgili dilek ve şikâyetleri hakkında, Türkiye Büyük Millet
+Meclisine ve yetkili makamlara yazı ile başvurma haklarının kullanılma biçimini
+düzenlemektir.
+
+Madde 2 — Kapsam
+Bu Kanun, Türk vatandaşları ve Türkiye'de ikamet eden yabancılar tarafından Türkiye
+Büyük Millet Meclisi ile idarî makamlara yapılan dilek ve şikâyetler hakkındaki
+başvuruları kapsar.
 
 Madde 3 — Dilekçe hakkı
-Türk vatandaşları kendileriyle veya kamu ile ilgili dilek ve şikâyetleri hakkında,
+Türk vatandaşları kendileriyle veya kamu ile ilgili dilek ve şikayetleri hakkında,
 Türkiye Büyük Millet Meclisine ve yetkili makamlara yazı ile başvurma hakkına
-sahiptirler. Bu hak, herkesin kendisiyle ilgili olan veya kamuyu ilgilendiren
-konularda idareye yazılı olarak başvurabilmesinin temelidir.
+sahiptirler.
+(Ek fıkra: 2/1/2003-4778/25 md.) Türkiye'de ikamet eden yabancılar karşılıklılık
+esası gözetilmek ve dilekçelerinin Türkçe yazılması kaydıyla bu haktan
+yararlanabilirler.
 
 Madde 4 — Dilekçede bulunması zorunlu şartlar
+(Değişik: 2/1/2003-4778/26 md.)
 Türkiye Büyük Millet Meclisine veya yetkili makamlara verilen veya gönderilen
 dilekçelerde, dilekçe sahibinin adı-soyadı ve imzası ile iş veya ikametgâh
-adresinin bulunması gerekir. Bu unsurlardan herhangi biri eksikse dilekçe işleme
-alınmaz ve incelenmez (m.6/c). Konu ve talebin açıkça belirtilmesi gerekir;
-uygulamada T.C. kimlik numarası ve tarih de aranır.
+adresinin bulunması gerekir.
 
-Madde 5 — Türkiye'de ikamet eden yabancıların dilekçe hakkı
-Türkiye'de ikamet eden yabancılar, karşılıklılık esası gözetilmek ve dilekçelerinin
-Türkçe yazılması kaydıyla bu haktan yararlanabilirler.
+Madde 5 — Gönderilen makamda hata
+Dilekçe, konusuyla ilgili olmayan bir idari makama verilmesi durumunda, bu makam
+tarafından yetkili idari makama gönderilir ve ayrıca dilekçe sahibine de bilgi
+verilir.
 
 Madde 6 — İncelenemeyecek dilekçeler
 Türkiye Büyük Millet Meclisine veya yetkili makamlara verilen veya gönderilen
-dilekçelerden; a) belli bir konuyu ihtiva etmeyenler, b) yargı mercilerinin görevine
+dilekçelerden; a) Belli bir konuyu ihtiva etmeyenler, b) Yargı mercilerinin görevine
 giren konularla ilgili olanlar, c) 4 üncü maddede gösterilen şartlardan herhangi
-birini taşımayanlar incelenemez. Bu nitelikteki dilekçeler hakkında işlem yapılmaz;
-ayrıca aynı konuda birden çok dilekçe verilmesi hâlinde ilkinden sonra verilenler
-de incelenmez. Durum gerektiğinde dilekçe sahibine bildirilir.
+birini taşımayanlar, incelenemezler.
 
 Madde 7 — Dilekçenin incelenmesi ve sonucunun bildirilmesi
+(Değişik: 2/1/2003-4778/27 md.)
 Türk vatandaşlarının ve Türkiye'de ikamet eden yabancıların kendileri ve kamu ile
 ilgili dilek ve şikâyetleri konusunda yetkili makamlara yaptıkları başvuruların
 sonucu veya yapılmakta olan işlemin safahatı hakkında dilekçe sahiplerine en geç
 otuz gün içinde gerekçeli olarak cevap verilir. İşlem safahatının duyurulması
-hâlinde alınan sonuç ayrıca bildirilir.
+halinde alınan sonuç ayrıca bildirilir.
 
-Madde 8 — Dilekçenin ilgili makama gönderilmesi
-Dilekçe, konusuyla ilgili olmayan bir idari makama verilmiş ise, bu makamca yetkili
-idari makama gönderilir ve ayrıca dilekçe sahibine de durum bildirilir.
+Madde 8 — Türkiye Büyük Millet Meclisine yapılan başvuruların incelenmesi
+(Değişik: 2/1/2003-4778/28 md.)
+Türkiye Büyük Millet Meclisine gönderilen dilekçelerin, Dilekçe Komisyonunda
+incelenmesi ve karara bağlanması altmış gün içinde sonuçlandırılır. İlgili kamu
+kurum veya kuruluşları Türkiye Büyük Millet Meclisi Dilekçe Komisyonunca gönderilen
+dilekçeleri otuz gün içinde cevaplandırır. İnceleme ve karara bağlamanın esas ve
+usulleri Türkiye Büyük Millet Meclisi İçtüzüğünde gösterilir.
+(Ek fıkra: 1/12/2011-6253/41 md.) Dilekçe Komisyonu, görevleri ile ilgili olarak,
+kamu kurum ve kuruluşları, kamu kurumu niteliğindeki meslek kuruluşları ile özel
+kuruluşlardan her türlü bilgi ve belgeyi almak, ilgilileri çağırıp bilgi almak,
+idari denetimin yapılmasını istemek, bilirkişi görevlendirmek ve yerinde inceleme
+yapmak yetkisine sahiptir.

@@ -2,18 +2,61 @@ Resmî Yazışmalarda Uygulanacak Usul ve Esaslar Hakkında Yönetmelik
 Cumhurbaşkanlığı Kararı 2646 / Resmî Gazete 31151 — 10.06.2020 (YÜRÜRLÜKTE)
 Kaynak: https://mevzuat.gov.tr/MevzuatMetin/21.5.2646.pdf
 
-Bu metin kamuya açık yönetmeliğin (telifsiz resmî mevzuat) madde metinlerinden
-derlenmiş yakın-lafzî alıntıdır. Madde numaraları docs/01-resmi-yazisma-mevzuati.md
-referansından ve mevzuat.gov.tr (21.5.2646) üzerinden çapraz doğrulanmıştır. Belgenin
-zorunlu bölümleri ve resmî üslubun (kapanış: alt makama "Rica ederim", üst/eş makama
-"Arz ederim") hukuki dayanağıdır.
+Bu metin kamuya açık yönetmeliğin (telifsiz resmî mevzuat — FSEK m.31) madde
+metinlerinden derlenmiş yakın-lafzî alıntıdır. Belgenin zorunlu bölümleri ve resmî
+üslubun (kapanış: alt makama "Rica ederim", üst/eş makama "Arz ederim") hukuki
+dayanağıdır.
+
+KISMİ KORPUS UYARISI: Gerçek Yönetmelik 39 madde + 1 geçici maddeden oluşur; bu dosyada
+yalnız bir ALT KÜME vardır. Bir maddenin burada bulunmaması "hüküm yok" anlamına gelmez.
+
+DÜZELTME NOTU (2026-07-24 — resmî PDF 21.5.2646 ile birebir karşılaştırma):
+  · m.25 içeriği UYDURMAYDI (gizlilik derecesi listesi + totoloji) → gerçek hükümle
+    (Hizmete Özel → elektronik / Özel ve üstü → fiziksel ortam) değiştirildi.
+  · m.10'daki "başlık iki satırı geçemez" kuralı resmî metinde YOK (bağlı/ilgili
+    idarelerde dört satıra çıkabilir) ve "birim adları küçük harflerle" yanlıştı
+    (doğrusu: ilk harfleri büyük diğerleri küçük) → düzeltildi.
+  · Lint motorunun dayandığı biçim maddeleri m.6-m.9 (A4 · Times New Roman 12 /
+    Arial 11 · yazı alanı 1,5 cm · logo) korpusta hiç yoktu → eklendi.
+Kalan bilinen eksikler (henüz düzeltilmedi): m.1, 2, 24, 27, 29, 33-39, Geçici m.1
+eksik; m.13/14/15/17/20/21/26'da resmî metinle sapmalar raporlanmıştır.
+
+Madde 6 — Belgenin şeklî özellikleri
+(1) Belgeler, A4 (210x297 mm) boyutu dikkate alınarak hazırlanır. (2) Belge ekleri farklı
+form, format veya ebatlarda hazırlanabilir. (3) Zorunlu hâllerde veya olağanüstü durumlarda
+hazırlanacak belgelerin üst yazıları için kâğıdın bir yüzü kullanılır; ancak üst yazının
+ekleri için kâğıdın her iki yüzü de kullanılabilir.
+
+Madde 7 — Yazı tipi ve harf büyüklüğü
+(1) Hazırlanan belgelerde "Times New Roman" veya "Arial" yazı tipi normal yazı stilinde
+kullanılır. Harf büyüklüğünün Times New Roman için 12 punto, Arial için 11 punto olması
+esastır. Ancak gerekli hâllerde yazı alanında harf büyüklüğü 9 puntoya, iletişim bilgileri
+kısmında ise 8 puntoya kadar düşürülebilir. Belge eklerinde farklı yazı tipi ve harf
+büyüklüğü kullanılabilir.
+
+Madde 8 — Yazı alanı
+(1) Belgenin yazı alanı sayfanın üst, sol ve sağ kenarından 1,5 cm boşluk bırakılarak
+düzenlenir. İdare, logo kullanmak istediğinde sayfanın üst boşluğu 0,5 cm olarak düzenlenir.
+
+Madde 9 — Kurumsal logo
+(1) İdareler, tercihen kurumsal logo kullanabilir. Logo, tek kullanıldığında belgenin en üst
+orta kısmında "T.C." ibaresini ortalayacak şekilde veya "Başlık" alanını ortalayacak şekilde
+belgenin üst sol kısmında yer alır. Belge üzerinde iki ayrı logo kullanıldığında hiyerarşi
+yönünden üst olan idareye ait logo solda, alt olan idareye ait logo sağda kullanılır. Belge
+üzerinde en fazla iki logo kullanılabilir.
 
 Madde 10 — Başlık (antet)
-Başlık, belgeyi gönderen idarenin adının belirtildiği bölümdür ve belgenin en üstünde
-ortalanarak yazılır. İlk satıra "T.C." kısaltması, ikinci satıra idarenin adı büyük
-harflerle, üçüncü ve sonraki satırlara ise birim adları küçük harflerle ortalanarak
-yazılır. Başlıkta yer alan bilgiler iki satırı geçemez ve başlık belgenin hangi
-idareye ait olduğunu gösterir.
+(1) Başlık (antet), belgeyi gönderen idarenin adının belirtildiği bölümdür. (2) Başlık,
+belgenin YAZI ALANININ üst kısmına ortalanarak yazılır. İlk satıra "T.C." kısaltması,
+ikinci satıra idarenin adı BÜYÜK harflerle, üçüncü satıra birimin adı İLK HARFLERİ BÜYÜK
+DİĞERLERİ KÜÇÜK harflerle ortalanarak yazılır. Ancak bağlı veya ilgili idarelerde ilk satıra
+"T.C.", ikinci satıra bağlı/ilgili olunan idarenin adı büyük harflerle, üçüncü satıra
+idarenin adı, dördüncü satıra da birimin adı ilk harfleri büyük diğerleri küçük harflerle
+yazılabilir (yani başlık DÖRT satıra kadar çıkabilir). (3) İl ve ilçe teşkilatlarında başlık,
+5442 sayılı İl İdaresi Kanunu hükümlerine uygun olarak ilk satıra "T.C.", ikinci satıra bağlı
+olunan mülki idarenin adı büyük harflerle, üçüncü satıra ilgili birimin adı ilk harfleri büyük
+diğerleri küçük harflerle yazılır; dış temsilciliklerde de aynı biçim uygulanır. (6) Başlığın
+yazımında DETSİS'te yer alan başlık kayıtları esas alınır.
 
 Madde 11 — Sayı ve evrak kayıt numarası
 Sayı bilgisi başlığın son satırından itibaren iki satır boşluk bırakılarak ve sayfanın
@@ -89,10 +132,16 @@ Belgenin imzalanmadan önce idare içindeki başka birimlerle iş birliği yapı
 hazırlanması gerektiğinde, koordinasyonu sağlayan personelin unvanı, adı ve soyadı
 "Koordinasyon:" ifadesinden sonra, parafın altına yazılır.
 
-Madde 25 — Gizlilik dereceli belge ve gizlilik dereceleri
-Gizlilik dereceli belgelerde gizlilik derecesi ("Çok Gizli", "Gizli", "Özel",
-"Hizmete Özel") belge üzerinde belirtilir; gizlilik derecesi olmayan belgeler
-gizlilik derecesi taşımaz.
+Madde 25 — Gizlilik dereceli belgeler
+(1) "Hizmete Özel" gizlilik derecesi bulunan belgelerin hazırlanması, kaydedilmesi,
+saklanması, gönderilmesi, alınması ve diğer işlemleri ELEKTRONİK ortamda gerçekleştirilir.
+(2) "Özel" ve üstü gizlilik dereceli belgelerin hazırlanması, kaydedilmesi, saklanması,
+gönderilmesi, alınması ve diğer işlemleri ilgili mevzuatta belirtilen hükümlere uygun
+olarak FİZİKSEL ortamda gerçekleştirilir. (3) Belgenin imzacısı olan yetkili makam,
+belgeye ait gizlilik derecesinin belirlenmesinden sorumludur.
+[NOT: Gizlilik derecelerinin kendisi ("Çok Gizli", "Gizli", "Özel", "Hizmete Özel") bu
+Yönetmelikte değil, 5529 sayılı Gizlilik Dereceli Belgelerde Uygulanacak Usul ve Esaslar
+Hakkında Yönetmelik'te tanımlanır — bu Yönetmeliğin m.25'i yalnız ORTAM ayrımını düzenler.]
 
 Madde 26 — Süreli yazışmalar ve kişiye özel belgeler
 Süreli yazışmalarda "ACELE" veya "GÜNLÜDÜR" ibaresine yazı alanının sağ üst

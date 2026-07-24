@@ -1,0 +1,1539 @@
+{
+  "kaynaklar": [
+    {
+      "url": "https://www.belediye.gov.tr/belediyeler",
+      "erisim": "2026-07-25",
+      "kapsam": "e-Belediye Bilgi Sistemine Dahil Olan Belde Belediyeleri (219)",
+      "not": "KISMI liste: yalnız sisteme DAHİL OLAN beldeler. Türkiye'deki tüm belde belediyelerini kapsamaz (aynı sayfa 20 büyükşehir diyor, oysa 30 var)."
+    }
+  ],
+  "belediyeler": [
+    {
+      "ad": "Harmanlı Belediyesi",
+      "belde": "Harmanlı",
+      "il": "Adıyaman",
+      "ilce": "Gölbaşı",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Balkar Belediyesi",
+      "belde": "Balkar",
+      "il": "Adıyaman",
+      "ilce": "Gölbaşı",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Dişli Belediyesi",
+      "belde": "Dişli",
+      "il": "Afyonkarahisar",
+      "ilce": "Bolvadin",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kocaöz Belediyesi",
+      "belde": "Kocaöz",
+      "il": "Afyonkarahisar",
+      "ilce": "Çobanlar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Haydarlı Belediyesi",
+      "belde": "Haydarlı",
+      "il": "Afyonkarahisar",
+      "ilce": "Dinar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Tatarlı Belediyesi",
+      "belde": "Tatarlı",
+      "il": "Afyonkarahisar",
+      "ilce": "Dinar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Davulga Belediyesi",
+      "belde": "Davulga",
+      "il": "Afyonkarahisar",
+      "ilce": "Emirdağ",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Döğer Belediyesi",
+      "belde": "Döğer",
+      "il": "Afyonkarahisar",
+      "ilce": "İhsaniye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Seydiler Belediyesi",
+      "belde": "Seydiler",
+      "il": "Afyonkarahisar",
+      "ilce": "İscehisar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Nuribey Belediyesi",
+      "belde": "Nuribey",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çayırbağ Belediyesi",
+      "belde": "Çayırbağ",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çıkrık Belediyesi",
+      "belde": "Çıkrık",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Değirmenayvalı Belediyesi",
+      "belde": "Değirmenayvalı",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Erkmen Belediyesi",
+      "belde": "Erkmen",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Işıklar Belediyesi",
+      "belde": "Işıklar",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kocatepe Belediyesi",
+      "belde": "Kocatepe",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Salar Belediyesi",
+      "belde": "Salar",
+      "il": "Afyonkarahisar",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Pazarağaç Belediyesi",
+      "belde": "Pazarağaç",
+      "il": "Afyonkarahisar",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Akharım Belediyesi",
+      "belde": "Akharım",
+      "il": "Afyonkarahisar",
+      "ilce": "Sandıklı",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ahmetpaşa Belediyesi",
+      "belde": "Ahmetpaşa",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Akören Belediyesi",
+      "belde": "Akören",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Düzağaç Belediyesi",
+      "belde": "Düzağaç",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Güney Belediyesi",
+      "belde": "Güney",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kılıçarslan Belediyesi",
+      "belde": "Kılıçarslan",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kırka Belediyesi",
+      "belde": "Kırka",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Küçükhüyük Belediyesi",
+      "belde": "Küçükhüyük",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Taşoluk Belediyesi",
+      "belde": "Taşoluk",
+      "il": "Afyonkarahisar",
+      "ilce": "Sinanpaşa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Dereçine Belediyesi",
+      "belde": "Dereçine",
+      "il": "Afyonkarahisar",
+      "ilce": "Sultandağı",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yayladüzü Belediyesi",
+      "belde": "Yayladüzü",
+      "il": "Ağrı",
+      "ilce": "Eleşkirt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Tahir Belediyesi",
+      "belde": "Tahir",
+      "il": "Ağrı",
+      "ilce": "Eleşkirt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yücekapı Belediyesi",
+      "belde": "Yücekapı",
+      "il": "Ağrı",
+      "ilce": "Eleşkirt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Eşmekaya Belediyesi",
+      "belde": "Eşmekaya",
+      "il": "Aksaray",
+      "ilce": "Eskil",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yenikent Belediyesi",
+      "belde": "Yenikent",
+      "il": "Aksaray",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Saratlı Belediyesi",
+      "belde": "Saratlı",
+      "il": "Aksaray",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Demirci Belediyesi",
+      "belde": "Demirci",
+      "il": "Aksaray",
+      "ilce": "Gülağaç",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gülpınar Belediyesi",
+      "belde": "Gülpınar",
+      "il": "Aksaray",
+      "ilce": "Gülağaç",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ihlara Belediyesi",
+      "belde": "Ihlara",
+      "il": "Aksaray",
+      "ilce": "Güzelyurt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Selime Belediyesi",
+      "belde": "Selime",
+      "il": "Aksaray",
+      "ilce": "Güzelyurt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sağlık Belediyesi",
+      "belde": "Sağlık",
+      "il": "Aksaray",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yeşiltepe Belediyesi",
+      "belde": "Yeşiltepe",
+      "il": "Aksaray",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bağlıkaya Belediyesi",
+      "belde": "Bağlıkaya",
+      "il": "Aksaray",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Helvadere Belediyesi",
+      "belde": "Helvadere",
+      "il": "Aksaray",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Toprakkaya Belediyesi",
+      "belde": "Toprakkaya",
+      "il": "Aksaray",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ziyaret Belediyesi",
+      "belde": "Ziyaret",
+      "il": "Amasya",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kozcağız Belediyesi",
+      "belde": "Kozcağız",
+      "il": "Bartın",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Abdipaşa Belediyesi",
+      "belde": "Abdipaşa",
+      "il": "Bartın",
+      "ilce": "Ulus",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kumluca Belediyesi",
+      "belde": "Kumluca",
+      "il": "Bartın",
+      "ilce": "Ulus",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "İkiköprü Belediyesi",
+      "belde": "İkiköprü",
+      "il": "Batman",
+      "ilce": "Beşiri",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bekirhan Belediyesi",
+      "belde": "Bekirhan",
+      "il": "Batman",
+      "ilce": "Kozluk",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Dodurga Belediyesi",
+      "belde": "Dodurga",
+      "il": "Bilecik",
+      "ilce": "Bozüyük",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ilıcalar Belediyesi",
+      "belde": "Ilıcalar",
+      "il": "Bingöl",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sancak Belediyesi",
+      "belde": "Sancak",
+      "il": "Bingöl",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Arakonak Belediyesi",
+      "belde": "Arakonak",
+      "il": "Bingöl",
+      "ilce": "Solhan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Aydınlar Belediyesi",
+      "belde": "Aydınlar",
+      "il": "Bitlis",
+      "ilce": "Adilcevaz",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ovakışla Belediyesi",
+      "belde": "Ovakışla",
+      "il": "Bitlis",
+      "ilce": "Ahlat",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gölbaşı Belediyesi",
+      "belde": "Gölbaşı",
+      "il": "Bitlis",
+      "ilce": "Güroymak",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Günkırı Belediyesi",
+      "belde": "Günkırı",
+      "il": "Bitlis",
+      "ilce": "Güroymak",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yolalan Belediyesi",
+      "belde": "Yolalan",
+      "il": "Bitlis",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kavakbaşı Belediyesi",
+      "belde": "Kavakbaşı",
+      "il": "Bitlis",
+      "ilce": "Mutki",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kocaaliler Belediyesi",
+      "belde": "Kocaaliler",
+      "il": "Burdur",
+      "ilce": "Bucak",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bucak Kızılkaya Belediyesi",
+      "belde": "Bucak Kızılkaya",
+      "il": "Burdur",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Söğüt Belediyesi",
+      "belde": "Söğüt",
+      "il": "Burdur",
+      "ilce": "Çavdır",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yusufça Belediyesi",
+      "belde": "Yusufça",
+      "il": "Burdur",
+      "ilce": "Gölhisar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yeşilova Belediyesi",
+      "belde": "Yeşilova",
+      "il": "Burdur",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Karabiga Belediyesi",
+      "belde": "Karabiga",
+      "il": "Çanakkale",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çardaklı Belediyesi",
+      "belde": "Çardaklı",
+      "il": "Çankırı",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Saçak Belediyesi",
+      "belde": "Saçak",
+      "il": "Çankırı",
+      "ilce": "Çerkeş",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yaylakent Belediyesi",
+      "belde": "Yaylakent",
+      "il": "Çankırı",
+      "ilce": "Orta",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Boğaziçi Belediyesi",
+      "belde": "Boğaziçi",
+      "il": "Düzce",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Esetçe Belediyesi",
+      "belde": "Esetçe",
+      "il": "Edirne",
+      "ilce": "İpsala",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sarıcan Belediyesi",
+      "belde": "Sarıcan",
+      "il": "Elazığ",
+      "ilce": "Karakoçan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Beyhan Belediyesi",
+      "belde": "Beyhan",
+      "il": "Elazığ",
+      "ilce": "Palu",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çağlayan Belediyesi",
+      "belde": "Çağlayan",
+      "il": "Erzincan",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Mollaköy Belediyesi",
+      "belde": "Mollaköy",
+      "il": "Erzincan",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kargın Belediyesi",
+      "belde": "Kargın",
+      "il": "Erzincan",
+      "ilce": "Tercan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Mercan Belediyesi",
+      "belde": "Mercan",
+      "il": "Erzincan",
+      "ilce": "Tercan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Altınbaşak Belediyesi",
+      "belde": "Altınbaşak",
+      "il": "Erzincan",
+      "ilce": "Üzümlü",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Soğukpınar Belediyesi",
+      "belde": "Soğukpınar",
+      "il": "Giresun",
+      "ilce": "Espiye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Aydındere Belediyesi",
+      "belde": "Aydındere",
+      "il": "Giresun",
+      "ilce": "Bulancak",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yavuzkemal Belediyesi",
+      "belde": "Yavuzkemal",
+      "il": "Giresun",
+      "ilce": "Dereli",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ören Belediyesi",
+      "belde": "Ören",
+      "il": "Giresun",
+      "ilce": "Eynesil",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Üçtepe Belediyesi",
+      "belde": "Üçtepe",
+      "il": "Giresun",
+      "ilce": "Yağlıdere",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Dereboyu Belediyesi",
+      "belde": "Dereboyu",
+      "il": "Gümüşhane",
+      "ilce": "Kelkit",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gümüşgöze Belediyesi",
+      "belde": "Gümüşgöze",
+      "il": "Gümüşhane",
+      "ilce": "Kelkit",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Öbektaş Belediyesi",
+      "belde": "Öbektaş",
+      "il": "Gümüşhane",
+      "ilce": "Kelkit",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Söğütlü Belediyesi",
+      "belde": "Söğütlü",
+      "il": "Gümüşhane",
+      "ilce": "Kelkit",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Özkürtün Belediyesi",
+      "belde": "Özkürtün",
+      "il": "Gümüşhane",
+      "ilce": "Kürtün",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Arzular Kabaköy Belediyesi",
+      "belde": "Arzular Kabaköy",
+      "il": "Gümüşhane",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yeşilbük Belediyesi",
+      "belde": "Yeşilbük",
+      "il": "Gümüşhane",
+      "ilce": "Şiran",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Esendere Belediyesi",
+      "belde": "Esendere",
+      "il": "Hakkâri",
+      "ilce": "Yüksekova",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Durankaya Belediyesi",
+      "belde": "Durankaya",
+      "il": "Hakkâri",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Hoşhaber Belediyesi",
+      "belde": "Hoşhaber",
+      "il": "Iğdır",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Halfeli Belediyesi",
+      "belde": "Halfeli",
+      "il": "Iğdır",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Melekli Belediyesi",
+      "belde": "Melekli",
+      "il": "Iğdır",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sarıidris Belediyesi",
+      "belde": "Sarıidris",
+      "il": "Isparta",
+      "ilce": "Eğirdir",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Senir Belediyesi",
+      "belde": "Senir",
+      "il": "Isparta",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çarıksaraylar Belediyesi",
+      "belde": "Çarıksaraylar",
+      "il": "Isparta",
+      "ilce": "Şarkikaraağaç",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çiçekpınar Belediyesi",
+      "belde": "Çiçekpınar",
+      "il": "Isparta",
+      "ilce": "Şarkikaraağaç",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Hüyüklü Belediyesi",
+      "belde": "Hüyüklü",
+      "il": "Isparta",
+      "ilce": "Yalvaç",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Güneyyurt Belediyesi",
+      "belde": "Güneyyurt",
+      "il": "Karaman",
+      "ilce": "Ermenek",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kazancı Belediyesi",
+      "belde": "Kazancı",
+      "il": "Karaman",
+      "ilce": "Ermenek",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Göktepe Belediyesi",
+      "belde": "Göktepe",
+      "il": "Karaman",
+      "ilce": "Sarıveliler",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Dağpınar Belediyesi",
+      "belde": "Dağpınar",
+      "il": "Kars",
+      "ilce": "Digor",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çerikli Belediyesi",
+      "belde": "Çerikli",
+      "il": "Kırıkkale",
+      "ilce": "Delice",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Alpullu Belediyesi",
+      "belde": "Alpullu",
+      "il": "Kırklareli",
+      "ilce": "Babaeski",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kıyıköy Belediyesi",
+      "belde": "Kıyıköy",
+      "il": "Kırklareli",
+      "ilce": "Vize",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Köseli Belediyesi",
+      "belde": "Köseli",
+      "il": "Kırşehir",
+      "ilce": "Çiçekdağı",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kurancılı Belediyesi",
+      "belde": "Kurancılı",
+      "il": "Kırşehir",
+      "ilce": "Kaman",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Özbağ Belediyesi",
+      "belde": "Özbağ",
+      "il": "Kırşehir",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Demirci Belediyesi",
+      "belde": "Demirci",
+      "il": "Kütahya",
+      "ilce": "Simav",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yeşilova Belediyesi",
+      "belde": "Yeşilova",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sungu Belediyesi",
+      "belde": "Sungu",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sarıpınar Belediyesi",
+      "belde": "Sarıpınar",
+      "il": "Muş",
+      "ilce": "Bulanık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Elmakaya Belediyesi",
+      "belde": "Elmakaya",
+      "il": "Muş",
+      "ilce": "Bulanık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Erentepe Belediyesi",
+      "belde": "Erentepe",
+      "il": "Muş",
+      "ilce": "Bulanık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Rüstemgedik Belediyesi",
+      "belde": "Rüstemgedik",
+      "il": "Muş",
+      "ilce": "Bulanık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Uzgörür Belediyesi",
+      "belde": "Uzgörür",
+      "il": "Muş",
+      "ilce": "Bulanık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yoncalı Belediyesi",
+      "belde": "Yoncalı",
+      "il": "Muş",
+      "ilce": "Bulanık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Düzkışla Belediyesi",
+      "belde": "Düzkışla",
+      "il": "Muş",
+      "ilce": "Hasköy",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Altınova Belediyesi",
+      "belde": "Altınova",
+      "il": "Muş",
+      "ilce": "Korkut",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Konakkuran Belediyesi",
+      "belde": "Konakkuran",
+      "il": "Muş",
+      "ilce": "Malazgirt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kızılağaç Belediyesi",
+      "belde": "Kızılağaç",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Karaağaçlı Belediyesi",
+      "belde": "Karaağaçlı",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kırköy Belediyesi",
+      "belde": "Kırköy",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Serinova Belediyesi",
+      "belde": "Serinova",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yaygın Belediyesi",
+      "belde": "Yaygın",
+      "il": "Muş",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Konukbekler Belediyesi",
+      "belde": "Konukbekler",
+      "il": "Muş",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Karapınar Belediyesi",
+      "belde": "Karapınar",
+      "il": "Nevşehir",
+      "ilce": "Acıgöl",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kalaba Belediyesi",
+      "belde": "Kalaba",
+      "il": "Nevşehir",
+      "ilce": "Avanos",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yazıhüyük Belediyesi",
+      "belde": "Yazıhüyük",
+      "il": "Nevşehir",
+      "ilce": "Derinkuyu",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kavak Belediyesi",
+      "belde": "Kavak",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kaymaklı Belediyesi",
+      "belde": "Kaymaklı",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Nar Belediyesi",
+      "belde": "Nar",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Göre Belediyesi",
+      "belde": "Göre",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Göreme Belediyesi",
+      "belde": "Göreme",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sulusaray Belediyesi",
+      "belde": "Sulusaray",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Uçhisar Belde Beelediyesi Belediyesi",
+      "belde": "Uçhisar Belde Beelediyesi",
+      "il": "Nevşehir",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ortahisar Belediyesi",
+      "belde": "Ortahisar",
+      "il": "Nevşehir",
+      "ilce": "Ürgüp",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çukurkuyu Belediyesi",
+      "belde": "Çukurkuyu",
+      "il": "Niğde",
+      "ilce": "Bor",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Karakapı Belediyesi",
+      "belde": "Karakapı",
+      "il": "Niğde",
+      "ilce": "Altunhisar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Keçikalesi Belediyesi",
+      "belde": "Keçikalesi",
+      "il": "Niğde",
+      "ilce": "Altunhisar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bahçeli Belediyesi",
+      "belde": "Bahçeli",
+      "il": "Niğde",
+      "ilce": "Bor",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kemerhisar Belediyesi",
+      "belde": "Kemerhisar",
+      "il": "Niğde",
+      "ilce": "Bor",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bozköy Belediyesi",
+      "belde": "Bozköy",
+      "il": "Niğde",
+      "ilce": "Çiftlik",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Alay Belediyesi",
+      "belde": "Alay",
+      "il": "Niğde",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sazlıca Belediyesi",
+      "belde": "Sazlıca",
+      "il": "Niğde",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yeşilgölcük Belediyesi",
+      "belde": "Yeşilgölcük",
+      "il": "Niğde",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Elvanpazarcık Belediyesi",
+      "belde": "Elvanpazarcık",
+      "il": "Zonguldak",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ellek Belediyesi",
+      "belde": "Ellek",
+      "il": "Osmaniye",
+      "ilce": "Düziçi",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Mehmetli Belediyesi",
+      "belde": "Mehmetli",
+      "il": "Osmaniye",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kendirli Belediyesi",
+      "belde": "Kendirli",
+      "il": "Rize",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Büyükköy Belediyesi",
+      "belde": "Büyükköy",
+      "il": "Rize",
+      "ilce": "Çayeli",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Madenli Belediyesi",
+      "belde": "Madenli",
+      "il": "Rize",
+      "ilce": "Çayeli",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Muradiye Belediyesi",
+      "belde": "Muradiye",
+      "il": "Rize",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Salarha Belediyesi",
+      "belde": "Salarha",
+      "il": "Rize",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Atabağı Belediyesi",
+      "belde": "Atabağı",
+      "il": "Siirt",
+      "ilce": "Baykan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Veyselkarani Belediyesi",
+      "belde": "Veyselkarani",
+      "il": "Siirt",
+      "ilce": "Baykan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kayabağlar Belediyesi",
+      "belde": "Kayabağlar",
+      "il": "Siirt",
+      "ilce": "Kurtalan",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gökçebağ Belediyesi",
+      "belde": "Gökçebağ",
+      "il": "Siirt",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Beğendik Belediyesi",
+      "belde": "Beğendik",
+      "il": "Siirt",
+      "ilce": "Pervari",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Deliilyas Belediyesi",
+      "belde": "Deliilyas",
+      "il": "Sivas",
+      "ilce": "Altınyayla",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çepni Belediyesi",
+      "belde": "Çepni",
+      "il": "Sivas",
+      "ilce": "Gemerek",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sızır Belediyesi",
+      "belde": "Sızır",
+      "il": "Sivas",
+      "ilce": "Gemerek",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Cemel Belediyesi",
+      "belde": "Cemel",
+      "il": "Sivas",
+      "ilce": "Şarkışla",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gürçayır Belediyesi",
+      "belde": "Gürçayır",
+      "il": "Sivas",
+      "ilce": "Şarkışla",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Güneykaya Belediyesi",
+      "belde": "Güneykaya",
+      "il": "Sivas",
+      "ilce": "Yıldızeli",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çalışkan Belediyesi",
+      "belde": "Çalışkan",
+      "il": "Şırnak",
+      "ilce": "Silopi",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Fındık Belediyesi",
+      "belde": "Fındık",
+      "il": "Şırnak",
+      "ilce": "Güçlükonak",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Sırtköy Belediyesi",
+      "belde": "Sırtköy",
+      "il": "Şırnak",
+      "ilce": "İdil",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Balveren Belediyesi",
+      "belde": "Balveren",
+      "il": "Şırnak",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kumçatı Belediyesi",
+      "belde": "Kumçatı",
+      "il": "Şırnak",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kasrik Belediyesi",
+      "belde": "Kasrik",
+      "il": "Şırnak",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Başverimli Belediyesi",
+      "belde": "Başverimli",
+      "il": "Şırnak",
+      "ilce": "Silopi",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Görümlü Belediyesi",
+      "belde": "Görümlü",
+      "il": "Şırnak",
+      "ilce": "Silopi",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Şenoba Belediyesi",
+      "belde": "Şenoba",
+      "il": "Şırnak",
+      "ilce": "Uludere",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Uzungeçit Belediyesi",
+      "belde": "Uzungeçit",
+      "il": "Şırnak",
+      "ilce": "Uludere",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ataköy Belediyesi",
+      "belde": "Ataköy",
+      "il": "Tokat",
+      "ilce": "Almus",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çevreli Belediyesi",
+      "belde": "Çevreli",
+      "il": "Tokat",
+      "ilce": "Almus",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gölgeli Belediyesi",
+      "belde": "Gölgeli",
+      "il": "Tokat",
+      "ilce": "Almus",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kınık Belediyesi",
+      "belde": "Kınık",
+      "il": "Tokat",
+      "ilce": "Almus",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gökal Belediyesi",
+      "belde": "Gökal",
+      "il": "Tokat",
+      "ilce": "Erbaa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Karayaka Belediyesi",
+      "belde": "Karayaka",
+      "il": "Tokat",
+      "ilce": "Erbaa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Tanoba Belediyesi",
+      "belde": "Tanoba",
+      "il": "Tokat",
+      "ilce": "Erbaa",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çamlıbel Belediyesi",
+      "belde": "Çamlıbel",
+      "il": "Tokat",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çat Belediyesi",
+      "belde": "Çat",
+      "il": "Tokat",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Emirseyit Belediyesi",
+      "belde": "Emirseyit",
+      "il": "Tokat",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Güryıldız Belediyesi",
+      "belde": "Güryıldız",
+      "il": "Tokat",
+      "ilce": "Merkez",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gökçeli Belediyesi",
+      "belde": "Gökçeli",
+      "il": "Tokat",
+      "ilce": "Niksar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gürçeşme Belediyesi",
+      "belde": "Gürçeşme",
+      "il": "Tokat",
+      "ilce": "Niksar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Serenli Belediyesi",
+      "belde": "Serenli",
+      "il": "Tokat",
+      "ilce": "Niksar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yazıcık Belediyesi",
+      "belde": "Yazıcık",
+      "il": "Tokat",
+      "ilce": "Niksar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Yolkonak Belediyesi",
+      "belde": "Yolkonak",
+      "il": "Tokat",
+      "ilce": "Niksar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Üzümören Belediyesi",
+      "belde": "Üzümören",
+      "il": "Tokat",
+      "ilce": "Pazar",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Baydarlı Belediyesi",
+      "belde": "Baydarlı",
+      "il": "Tokat",
+      "ilce": "Reşadiye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bereketli Belediyesi",
+      "belde": "Bereketli",
+      "il": "Tokat",
+      "ilce": "Reşadiye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bozçalı Belediyesi",
+      "belde": "Bozçalı",
+      "il": "Tokat",
+      "ilce": "Reşadiye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Cimitekke Belediyesi",
+      "belde": "Cimitekke",
+      "il": "Tokat",
+      "ilce": "Reşadiye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Hasanşeyh Belediyesi",
+      "belde": "Hasanşeyh",
+      "il": "Tokat",
+      "ilce": "Reşadiye",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Şenyurt Belediyesi",
+      "belde": "Şenyurt",
+      "il": "Tokat",
+      "ilce": "Turhal",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Akpazar Belediyesi",
+      "belde": "Akpazar",
+      "il": "Tunceli",
+      "ilce": "Mazgirt",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Kaytazdere Belediyesi",
+      "belde": "Kaytazdere",
+      "il": "Yalova",
+      "ilce": "Altınova",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Tavşanlı Belediyesi",
+      "belde": "Tavşanlı",
+      "il": "Yalova",
+      "ilce": "Altınova",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Umutlu Belede Belediyesi",
+      "belde": "Umutlu Belede",
+      "il": "Yozgat",
+      "ilce": "Akdağmadeni",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Oluközü Belediyesi",
+      "belde": "Oluközü",
+      "il": "Yozgat",
+      "ilce": "Akmadeni",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Baydagin Belediyesi",
+      "belde": "Baydagin",
+      "il": "Yozgat",
+      "ilce": "Aydıncık",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Belekçehan Belediyesi",
+      "belde": "Belekçehan",
+      "il": "Yozgat",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Ozan Belediyesi",
+      "belde": "Ozan",
+      "il": "Yozgat",
+      "ilce": "Saraykent",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Eymir Belediyesi",
+      "belde": "Eymir",
+      "il": "Yozgat",
+      "ilce": "Sorgun",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Filyos Belediyesi",
+      "belde": "Filyos",
+      "il": "Zonguldak",
+      "ilce": "Çaycuma",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Karapınar Belediyesi",
+      "belde": "Karapınar",
+      "il": "Zonguldak",
+      "ilce": "Çaycuma",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Nebioğlu Belediyesi",
+      "belde": "Nebioğlu",
+      "il": "Zonguldak",
+      "ilce": "Çaycuma",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Perşembe Belediyesi",
+      "belde": "Perşembe",
+      "il": "Zonguldak",
+      "ilce": "Çaycuma",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çaydeğirmeni Belediyesi",
+      "belde": "Çaydeğirmeni",
+      "il": "Zonguldak",
+      "ilce": "Devrek",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Bakacakkadı Belediyesi",
+      "belde": "Bakacakkadı",
+      "il": "Zonguldak",
+      "ilce": "Gökçebey",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Çatalağzı Belediyesi",
+      "belde": "Çatalağzı",
+      "il": "Zonguldak",
+      "ilce": "Kilimli",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Gelik Belediyesi",
+      "belde": "Gelik",
+      "il": "Zonguldak",
+      "ilce": "Kilimli",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Muslu Belediyesi",
+      "belde": "Muslu",
+      "il": "Zonguldak",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    },
+    {
+      "ad": "Saltukova Belediyesi",
+      "belde": "Saltukova",
+      "il": "Zonguldak",
+      "ilce": "",
+      "kaynak_guveni": "resmi"
+    }
+  ],
+  "dogrulanmayanlar": []
+}

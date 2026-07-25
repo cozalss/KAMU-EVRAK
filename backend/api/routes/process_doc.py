@@ -111,6 +111,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         birim_reasoning=state.get("birim_reasoning", ""),
         servis_birimi=state.get("servis_birimi") or {},
         muhatap_kurum=state.get("muhatap_kurum") or {},
+        gonderen_kurum=state.get("gonderen_kurum") or {},
         yetkili_kurum=state.get("yetkili_kurum") or {},
         hedef_birim_kaynak=state.get("hedef_birim_kaynak") or {},
         hedef_kategori=state.get("hedef_kategori"),

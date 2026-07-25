@@ -93,6 +93,10 @@ class EvrakState(TypedDict):
     # yetkili_kurum: işlemin hukuken/idari yetkilisi; başlangıçta = muhatap, route ajanı
     # talep muhatabın görevinde değilse kurum-DIŞI gerçek yetkiliye günceller. {ad, slug, tur}.
     muhatap_kurum: NotRequired[dict[str, Any]]
+    # gonderen_kurum: nominatif T.C.-antet kurumu (Yön. m.10 — evrağı GÖNDEREN idare).
+    # DEĞİŞMEZ: gonderen_kurum.slug hiçbir zaman havale hedefi olamaz — nominatif antet
+    # muhatap sayıldığında sistem gelen evrakı kendi göndericisine havale ediyordu.
+    gonderen_kurum: NotRequired[dict[str, Any]]
     yetkili_kurum: NotRequired[dict[str, Any]]
 
     # --- Görev 2: resmî yazı taslaklama + birim yönlendirme ---

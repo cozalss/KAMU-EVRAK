@@ -13,12 +13,17 @@ Güvenlik sözleşmeleri:
 """
 from __future__ import annotations
 
+import os
 from typing import Any
 
 import structlog
 
 from agents.config import ROUTE_AJAN_MAX_TUR
-from agents.kurum_kimlik import ad_to_kurum, muhatap_kurum_tespit
+from agents.kurum_kimlik import (
+    ad_to_kurum,
+    gonderen_kurum_tespit,
+    muhatap_kurum_tespit,
+)
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.resmi_kaynak import kaynak_ara, uclu_grounding
 from api.pii import mask_for_llm
@@ -71,7 +76,8 @@ def _alternatif_adlari(
     secilen_ad = (secilen or {}).get("birim_ad", "")
     adlar: list[str] = []
     kurum_adaylari = [
-        aday for aday in adaylar if aday.get("kaynak_tipi") in ("kurum_ozel", "web", "aday")
+        aday for aday in adaylar
+        if aday.get("kaynak_tipi") in ("kurum_ozel", "web", "aday", "mevzuat_teskilat")
     ]
     for aday in kurum_adaylari:
         ad = str(aday.get("birim_ad") or "").strip()
@@ -94,7 +100,15 @@ def _yerel_oncelikli_secim(adaylar: list[dict[str, Any]]) -> dict[str, Any] | No
     ]
     if dogrulanmis:
         return dogrulanmis[0]
-    return next((aday for aday in adaylar if aday.get("kaynak_tipi") == "aday"), None)
+    # Kurumun KENDİ kaydı (doğrulanmamış da olsa) tür-genel mevzuat şablonundan önce gelir:
+    # şablon o idarede fiilen kurulu olmayabilir (Yönetmelik GEÇİCİ MADDE 1), kurumun kendi
+    # beyanı ise kuruma özgüdür. İkisi de memur onayına gittiği için sıra bilgi kalitesidir.
+    ozel = next((aday for aday in adaylar if aday.get("kaynak_tipi") == "aday"), None)
+    if ozel:
+        return ozel
+    return next(
+        (aday for aday in adaylar if aday.get("kaynak_tipi") == "mevzuat_teskilat"), None
+    )
 
 
 async def _llm_sec(
@@ -123,14 +137,23 @@ def _kaynak_kunye(aday: dict[str, Any]) -> dict[str, Any]:
         "birim_ad", "gorev", "kaynak_kurum", "kurum_slug", "belge_basligi",
         "url_veya_belge_kimligi", "erisim_tarihi", "metin_parcasi", "icerik_hash",
         "kaynak_tipi", "kaynak_guven", "kaynak_dosya", "kaynak_sha256",
-        "dogrulayan", "dogrulama_tarihi",
+        "dogrulayan", "dogrulama_tarihi", "sablon_slug",
     ) if k in aday}
 
 
 async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, Any]:
     """Kaynak-doğrulamalı yönlendirme. det = _route_deterministik(state) (kategori köprüsü)."""
     bilgi = state.get("bilgi_unsurlari") or {}
-    muhatap = muhatap_kurum_tespit(state.get("evrak_text", "") or "", bilgi)
+    metin = state.get("evrak_text", "") or ""
+    # GÖNDEREN ≠ MUHATAP (2026-07-26): nominatif T.C.-antet kurumu evrağı GÖNDEREN idaredir.
+    # Havale hedefi ASLA gönderen olamaz — aksi hâlde evrak kendi göndericisine yollanır.
+    gonderen = gonderen_kurum_tespit(metin)
+    muhatap = muhatap_kurum_tespit(metin, bilgi)
+    if not muhatap.get("slug"):
+        # Hitapsız resmî evrak: muhatap BİZİZ (evrakı alan kurum). İstek-bazlı aktif kurum,
+        # yoksa env KURUM_ADI; ikisi de yoksa boş künye → dürüst fallback + memur onayı.
+        muhatap = ad_to_kurum(
+            (state.get("aktif_kurum") or "").strip() or os.getenv("KURUM_ADI", "").strip())
     yetkili = dict(muhatap)
     isim = bilgi.get("gonderen")
     masked = mask_for_llm(state.get("evrak_text", "") or "", isim)
@@ -156,6 +179,11 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
             break
         if obj.get("yetki") == "DISARIDA" and tur_i < ROUTE_AJAN_MAX_TUR - 1:
             yk = ad_to_kurum((obj.get("yetkili_kurum_adi") or "").strip())
+            # LLM yetkili olarak GÖNDERENİ gösterse bile eskalasyon yapma — gönderenin
+            # korpusunda hiçbir turda arama yapılmaz (değişmezin ikinci savunması).
+            if yk.get("slug") and gonderen.get("slug") and yk["slug"] == gonderen["slug"]:
+                log.info("route_ajan.gonderen_eskalasyonu_reddedildi", kurum=yk.get("ad"))
+                yk = {}
             if yk.get("slug") and yk["slug"] != yetkili.get("slug"):
                 yetkili = dict(yk)
                 yetki_disari = True
@@ -172,7 +200,19 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
             )
         break
 
-    base: dict[str, Any] = {"muhatap_kurum": muhatap, "yetkili_kurum": yetkili}
+    base: dict[str, Any] = {
+        "muhatap_kurum": muhatap, "yetkili_kurum": yetkili, "gonderen_kurum": gonderen,
+    }
+    # KEMER-ASKI: seçilen aday gönderen kurumun korpusundansa doğrulanmış hedef ÜRETİLMEZ.
+    # Yukarıdaki iki guard'ı (muhatap tespiti + eskalasyon) atlatan gelecekteki her yeni
+    # sızıntı yolunu da burada yakalarız; maliyeti bir slug karşılaştırması.
+    if (
+        secilen
+        and gonderen.get("slug")
+        and str(secilen.get("kurum_slug") or "") == gonderen["slug"]
+    ):
+        log.warning("route_ajan.gonderen_hedef_reddedildi", kurum=gonderen.get("ad"))
+        secilen = None
 
     # ÜÇLÜ grounding — yalnız kuruma-özel kaynak + kurum/birim/görev-konu birlikte doğrulanırsa.
     if secilen and uclu_grounding(secilen, arama_baglami, yetkili.get("slug", "")):
@@ -201,6 +241,7 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     if secilen and secilen.get("birim_ad"):
         tip = {
             "kurum_ozel": "kuruma-özel",
+            "mevzuat_teskilat": "mevzuat-teşkilat",
             "aday": "kurum kaynağı adayı",
         }.get(secilen.get("kaynak_tipi"), "jenerik aday")
         parcalar.append(f"Öneri ({tip}, doğrulanmadı): {secilen['birim_ad']}")

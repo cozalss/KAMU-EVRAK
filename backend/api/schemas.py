@@ -210,6 +210,9 @@ class ProcessResponse(BaseModel):
     servis_birimi: dict = Field(default_factory=dict)
     # Kaynak-doğrulamalı yönlendirme (REVİZYON 1/4/6): kurum kimliği + kaynak künyesi + durum.
     muhatap_kurum: dict = Field(default_factory=dict)
+    # Evrağı GÖNDEREN idare (nominatif T.C. anteti). Havale hedefi ASLA bu olamaz;
+    # UI'da "Gönderen" olarak gösterilir ki memur muhatapla karıştırmasın.
+    gonderen_kurum: dict = Field(default_factory=dict)
     yetkili_kurum: dict = Field(default_factory=dict)
     hedef_birim_kaynak: dict = Field(default_factory=dict)   # KaynakKaydi (grounding kanıtı)
     hedef_kategori: str | None = None                        # dürüst fallback köprüsü (eski 9-set)

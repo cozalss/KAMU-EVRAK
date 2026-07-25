@@ -203,6 +203,8 @@ const ROZET_RENK = {
 function MetaSlot({ slot, id, acik, ac }) {
   const acikMi = acik === id;
   const rozet = slot.rozet ? ROZET_RENK[slot.rozet.ton] || ROZET_RENK.sari : null;
+  // Kurum ve birim AYRI biliniyorsa ikisini de eşit ağırlıkta göster (bkz. dd içindeki not).
+  const ciftSlot = Boolean(slot.kurum && slot.birim && slot.kurum !== slot.birim);
   return (
     <div>
       <dt>
@@ -227,7 +229,22 @@ function MetaSlot({ slot, id, acik, ac }) {
         </span>
       </dt>
       <dd style={slot.vurgu && slot.ton ? { color: TON[slot.ton] } : undefined}>
-        {slot.deger}
+        {/* Havale iki bileşenlidir (KURUM + BİRİM) ve ikisi de karar için eşit kritiktir.
+            Eskiden birim `alt` satırında küçük/soluk yazılıp gözden kaçıyordu (kullanıcı
+            bulgusu) — artık ikisi de aynı ağırlıkta, her biri kendi mikro etiketiyle.
+            Renk/ölçü/boşluk token'dan gelir; elle hex yok (CLAUDE.md UI kuralı). */}
+        {ciftSlot ? (
+          <span style={{ display: "grid", gap: 2 }}>
+            {[["Kurum", slot.kurum], ["Birim", slot.birim]].map(([et, deger]) => (
+              <span key={et} style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
+                <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", minWidth: 42 }}>{et}</span>
+                <span>{deger}</span>
+              </span>
+            ))}
+          </span>
+        ) : (
+          slot.deger
+        )}
         {rozet && (
           <span
             style={{ marginLeft: 6, padding: "1px 7px", borderRadius: RAD.chip, ...TYPE.meta,
@@ -237,7 +254,8 @@ function MetaSlot({ slot, id, acik, ac }) {
           </span>
         )}
       </dd>
-      {slot.alt.map((satir, i) => (
+      {/* Çift slot açıkken `alt`taki "Birim: X" satırı TEKRAR olur → gizlenir. */}
+      {(ciftSlot ? [] : slot.alt).map((satir, i) => (
         <dd key={`${id}-${i}`} style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{satir}</dd>
       ))}
     </div>
@@ -886,6 +904,16 @@ function RoutingCard({ r, birimAday }) {
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
           <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>Kurum</span>
           <strong style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{clean(kurum)}</strong>
+        </div>
+      )}
+      {/* GÖNDEREN ayrı gösterilir: nominatif T.C. anteti bir zamanlar MUHATAP sanılıyor ve
+          evrak kendi göndericisine havale ediliyordu. Artık havale hedefi olamaz; memurun
+          ikisini karıştırmaması için künye açıkça yazılır. */}
+      {r.gonderen_kurum?.ad && (
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
+          <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>Gönderen</span>
+          <span style={{ ...TYPE.data, color: PAL.mut2 }}>{clean(r.gonderen_kurum.ad)}</span>
+          <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3 }}>havale hedefi değil</span>
         </div>
       )}
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>

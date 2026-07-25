@@ -4,6 +4,7 @@ from __future__ import annotations
 from urllib.parse import urlparse
 
 from agents.nodes.teskilat_ara import kurum_korpusta_var, teskilat_birim_ara
+from core.kaynak_guveni import _TESKILAT_KAYNAK_TURLERI
 from scripts.seed_teskilat import _kaynak_guveni, build_index
 
 
@@ -24,12 +25,9 @@ def test_indeksteki_resmi_kaynaklar_resmi_https_alanda() -> None:
         parsed = urlparse(chunk["kaynak_kimlik"])
         assert parsed.scheme == "https"
         assert (parsed.hostname or "").endswith((".gov.tr", ".bel.tr", ".edu.tr", ".tsk.tr"))
-        assert chunk["kaynak_turu"] in {
-            "resmi_yonetmelik",
-            "resmi_teskilat",
-            "resmi_hizmet",
-            "resmi_karar",
-        }
+        # Kanonik kümeye bağlı: yeni bir resmî kaynak türü eklendiğinde test elle
+        # güncellenmek zorunda kalmasın, ama küme dışına çıkan tür yine yakalansın.
+        assert chunk["kaynak_turu"] in _TESKILAT_KAYNAK_TURLERI
         assert len(chunk["icerik_sha256"]) == 64
         assert chunk["dogrulayan"]
         assert chunk["dogrulama_tarihi"]

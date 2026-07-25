@@ -2,14 +2,21 @@
 
 Sicil kapsamı (kurum TANIMA) ile havale yeteneği (BİRİM bulma) AYRI şeylerdir. Bu betik
 sicildeki kurumları örnekleyip her biri için pipeline'ın üretebileceği EN İYİ sonucu
-dört kovaya ayırır:
+beş kovaya ayırır:
 
-  1. OTOMATIK   — hash-kilitli, insan-doğrulamalı kurum kaynağı var → sistem birimi
-                  kendi yazabilir (uclu_grounding geçebilir).
+  1. OTOMATIK   — sistem birimi kendi yazabilir. İki yoldan biriyle: hash-kilitli
+                  kuruma-özel kaynak, VEYA mevzuat-teşkilat genişletmesinin fiilen
+                  `uclu_grounding`'den geçmesi (docs/11-mevzuat-teskilat.md).
   2. GERCEK_ADAY— kuruma ÖZEL birim listesi var ama doğrulanmamış → gerçek birim adı
                   önerilir, memur onaylar.
-  3. SABLON     — kuruma özel kayıt yok; kurum TİPİNE göre jenerik şablondan aday.
-  4. YOK        — hiçbir aday üretilemiyor.
+  3. MEVZUAT_ADAY — mevzuat şablonu GERÇEK birim adını (kaynak künyesiyle) buldu; otomatik
+                  havale yetkisi TASARIM GEREĞİ yok → memur onaylar. Gerekçe: docs/11 §7
+                  (Yönetmelik m.26/2 İmza Yetkileri Yönergesi + GEÇİCİ MADDE 1).
+  4. SABLON     — kuruma özel kayıt yok; kurum TİPİNE göre jenerik şablondan aday.
+  5. YOK        — hiçbir aday üretilemiyor.
+
+UYARI: kova kararı tür başına SABİT bir sonda konusuyla (`_KONULAR`) ölçülür; OTOMATIK
+oranı "bu konu için grounding geçiyor" demektir, her evrak için değil.
 
     uv run python scripts/eval_havale_yetenegi.py [--ornek 400] [--json]
 """
@@ -24,6 +31,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # backend/
 from agents.nodes.teskilat_ara import kurum_korpusta_var, teskilat_birim_ara
+from agents.resmi_kaynak import uclu_grounding
 from core.sicil import sicil_yukle
 
 # Tür başına gerçekçi bir konu (BM25 boş dönmesin diye ayırt edici sözcükler).
@@ -57,6 +65,11 @@ def _kova(kurum: dict[str, Any]) -> str:
         return "YOK"
     if kurum_korpusta_var(slug) and adaylar[0].get("kaynak_tipi") == "kurum_ozel":
         return "OTOMATIK"
+    if adaylar[0].get("kaynak_tipi") == "mevzuat_teskilat":
+        # Kova kaynak TİPİNE değil gerçek ölçüte bağlanır: bu aday `uclu_grounding`'i fiilen
+        # geçiyor mu? Bugün geçmez (docs/11 §7) — ölçüt yine de burada tutulur ki sözleşme
+        # ileride değişirse rapor kendiliğinden doğruyu göstersin.
+        return "OTOMATIK" if uclu_grounding(adaylar[0], konu, slug) else "MEVZUAT_ADAY"
     return "GERCEK_ADAY" if adaylar[0].get("kaynak_tipi") == "aday" else "SABLON"
 
 
@@ -94,6 +107,8 @@ def _metin(r: dict[str, Any]) -> str:
         "  dogrulanmis kaynak -> sistem birimi kendi yazar",
         f"  GERCEK_ADAY   {k.get('GERCEK_ADAY', 0):5d}  (%{100 * k.get('GERCEK_ADAY', 0) / n:5.1f})"
         "  kuruma OZEL birim listesi -> memur onaylar",
+        f"  MEVZUAT_ADAY  {k.get('MEVZUAT_ADAY', 0):5d}  (%{100 * k.get('MEVZUAT_ADAY', 0) / n:5.1f})"
+        "  mevzuat-dayanakli GERCEK birim adi -> memur onaylar (otomatik yetki yok)",
         f"  SABLON        {k.get('SABLON', 0):5d}  (%{100 * k.get('SABLON', 0) / n:5.1f})"
         "  kurum tipi sablonu -> genel oneri",
         f"  YOK           {k.get('YOK', 0):5d}  (%{100 * k.get('YOK', 0) / n:5.1f})"

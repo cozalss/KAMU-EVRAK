@@ -23,6 +23,7 @@ from agents.nodes.teskilat_ara import (
     kurum_korpusta_var,
     teskilat_birim_ara,
 )
+from agents.nodes.teskilat_mevzuat import dosya_gecerli as mevzuat_dosya_gecerli
 from core.text import tr_lower
 
 
@@ -131,6 +132,14 @@ def uclu_grounding(aday: KaynakKaydi, konu: str, yetkili_slug: str) -> bool:
         gibi evrak zarfı sözcükleri ayırt edici sayılmaz.
     """
     # (a) kurum: yalnız kuruma-özel kaynak doğrulanmış hedef üretir; jenerik/boş → red.
+    #
+    # MEVZUAT-TEŞKİLAT ADAYI BİLİNÇLİ OLARAK BURADAN GEÇMEZ (docs/11 §7). Tür geneli mevzuat,
+    # birimin O mülki idarede fiilen kurulu olduğunu kanıtlamaz (Valilik ve Kaymakamlık
+    # Birimleri Yönetmeliği GEÇİCİ MADDE 1: işler başka bir şube müdürlüğüne gördürülebilir)
+    # ve m.26/2 havaleyi ilin kendi İmza Yetkileri Yönergesiyle belirlenen görevliye ait
+    # devredilmiş imza yetkisi sayar. Bu nedenle mevzuat adayı GERÇEK birim adı taşıyan
+    # yüksek kaliteli bir ÖNERİdir; onayı memur verir.
+    #
     # Web adayı (kaynak_tipi="web") da kurum-kaynağıdır ama slug'ı boş olabilir → yalnız
     # kurum_ozel/web kabul; slug karşılaştırması ALIAS-duyarlı (uedas ≡ uludag-elektrik-dagitim).
     if (
@@ -138,6 +147,12 @@ def uclu_grounding(aday: KaynakKaydi, konu: str, yetkili_slug: str) -> bool:
         or aday.get("kaynak_guven") != "resmi_dogrulanmis"
         or not aday.get("kaynak_sha256")
     ):
+        return False
+    # İndeks (teskilat_index.json) manifest-kilitli DEĞİLDİR: mevcut bir chunk'ın gövdesini
+    # YERİNDE düzenlemek chunk sayısını ve korpus hash'ini bozmaz, yani veri kalite kapısından
+    # geçer. Bu yüzden adayın `kaynak_guven` beyanına güvenilmez — kaynak dosyası manifest +
+    # SHA-256 ile ŞU AN doğrulanıyor mu, diskten yeniden hesaplanır (güvenlik bulgusu F7).
+    if not mevzuat_dosya_gecerli(str(aday.get("kaynak_dosya") or "")):
         return False
     aday_slug = aday.get("kurum_slug") or ""
     if yetkili_slug and aday_slug:

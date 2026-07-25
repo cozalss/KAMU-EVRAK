@@ -48,7 +48,14 @@ _RESMI_KAYNAK_TURLERI = frozenset({
     "resmi_teskilat",
     "resmi_hizmet",
     "resmi_karar",
+    "resmi_mevzuat_teskilat",
 })
+# Mevzuat-teşkilat sınıfı (docs/11-mevzuat-teskilat.md): tür geneli ZORUNLU birim listesi
+# taşıyan şablon dizini öneki + şablonun kapsamını kilitleyen kapalı liste dizini.
+_SABLON_ONEK = "_mevzuat-"
+_KAPSAM_DIR = "_kapsam"
+_JENERIK_ONEK = "_genel-"
+_MEVZUAT_KAYNAK_TURU = "resmi_mevzuat_teskilat"
 _RESMI_ALAN_SONLARI = (".gov.tr", ".bel.tr", ".edu.tr", ".tsk.tr")
 
 _BASLIK_RE = re.compile(r"^@(\w+):\s*(.*)$")
@@ -166,6 +173,89 @@ def _dosya_aliaslari(path: Path, kurum_slug: str) -> dict[str, str]:
     return aliases
 
 
+def _dosya_meta(path: Path) -> dict[str, str]:
+    """Dosyanın TÜM @-başlıklarını oku.
+
+    Pencere (ilk N satır) KULLANILMAZ: `_parse_dosya` dosyanın tamamındaki @-satırlarını
+    işlediği için, pencereli bir okuma INV-7 guard'ının altından geçebilecek geç-satır
+    ilanları görmezdi (güvenlik denetimi bulgusu F6).
+    """
+    meta: dict[str, str] = {}
+    for ham in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        m = _BASLIK_RE.match(ham.rstrip())
+        if m:
+            meta[m.group(1).upper()] = m.group(2).strip()
+    return meta
+
+
+def _kapsam_oku(rel_yol: str) -> dict[str, str]:
+    """Kapsam dosyası (`_kapsam/*.txt`) → {alan_slug: resmî ad}. Satır: `slug|Resmî Ad`."""
+    path = _TESKILAT_DIR / rel_yol
+    kapsam: dict[str, str] = {}
+    for ham in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        satir = ham.strip()
+        if not satir or satir.startswith("#") or satir.startswith("@"):
+            continue
+        slug, _, ad = satir.partition("|")
+        slug, ad = slug.strip(), ad.strip()
+        if slug and ad:
+            kapsam.setdefault(slug, ad)  # aynı adlı ilçe (Gölbaşı) → ilk kayıt kalır
+    return kapsam
+
+
+def _sablonlari_topla(manifest: dict[str, dict]) -> dict[str, dict]:
+    """`_mevzuat-*` dizinlerinden şablon kayıtları (kalıp + hash-kilitli kapsam listesi).
+
+    Şablon veya kapsam dosyası manifest'te doğrulanmamışsa şablon indekse YAZILMAZ —
+    yarı-doğrulanmış bir şablon otomatik havale üretmemeli.
+    """
+    sablonlar: dict[str, dict] = {}
+    for sablon_dir in sorted(p for p in _TESKILAT_DIR.glob(f"{_SABLON_ONEK}*") if p.is_dir()):
+        for path in sorted(sablon_dir.glob("*.txt")):
+            meta = _dosya_meta(path)
+            rel = path.relative_to(_TESKILAT_DIR).as_posix()
+            kalip = meta.get("KAPSAM_KALIP", "")
+            kapsam_dosya = meta.get("KAPSAM_ALAN_DOSYA", "")
+            ad_kalip = meta.get("KAPSAM_AD_KALIP", "")
+            if not (kalip and kapsam_dosya and ad_kalip):
+                print(f"[UYARI] {rel}: @KAPSAM_* başlıkları eksik; şablon atlandı",
+                      file=sys.stderr)
+                continue
+            if not (_TESKILAT_DIR / kapsam_dosya).is_file():
+                print(f"[UYARI] {rel}: kapsam dosyası yok ({kapsam_dosya})", file=sys.stderr)
+                continue
+            eksik = [
+                ad for ad in (rel, kapsam_dosya)
+                if str((manifest.get(ad) or {}).get("durum", "")) != RESMI_DOGRULANMIS
+            ]
+            if eksik:
+                print(f"[UYARI] {rel}: manifest doğrulaması yok ({', '.join(eksik)}); "
+                      "şablon indekse yazılmadı", file=sys.stderr)
+                continue
+            sablonlar[sablon_dir.name] = {
+                "kalip": kalip,
+                "ad_kalip": ad_kalip,
+                "kaynak_dosya": rel,
+                "kapsam_dosya": kapsam_dosya,
+                "kapsam_sha256": dosya_sha256(_TESKILAT_DIR / kapsam_dosya),
+                "kapsam": _kapsam_oku(kapsam_dosya),
+            }
+    return sablonlar
+
+
+def _inv7_dogrula(kurumlar: list[Path]) -> None:
+    """INV-7: `_genel-*` jenerik havuzu mevzuat-teşkilat türü İLAN EDEMEZ → sert hata."""
+    for kurum_dir in kurumlar:
+        if not kurum_dir.name.startswith(_JENERIK_ONEK):
+            continue
+        for path in sorted(kurum_dir.glob("*.txt")):
+            if _dosya_meta(path).get("KAYNAK_TURU", "").lower() == _MEVZUAT_KAYNAK_TURU:
+                rel = f"{kurum_dir.name}/{path.name}"
+                print(f"[HATA] INV-7 ihlali: jenerik şablon {rel} mevzuat-teşkilat türü "
+                      "ilan ediyor. Jenerik havuz otomatik havale üretemez.", file=sys.stderr)
+                raise SystemExit(1)
+
+
 def build_index() -> dict:
     chunks_out: list[dict] = []
     aliases: dict[str, str] = {}
@@ -173,9 +263,12 @@ def build_index() -> dict:
     manifest = manifest_yukle(_MANIFEST_FILE)
     # YALNIZ içinde .txt bulunan dizin bir kurumdur: data/teskilat/ altındaki yardımcı
     # dizinler (ör. sicil üretiminin `girdi/` tabloları) kurum sayısını şişirmemeli.
+    # `_kapsam/` bir kurum değil, şablon kapsam listelerinin evi → dışarıda bırakılır.
     kurumlar = sorted(
-        p for p in _TESKILAT_DIR.glob("*") if p.is_dir() and any(p.glob("*.txt"))
+        p for p in _TESKILAT_DIR.glob("*")
+        if p.is_dir() and p.name != _KAPSAM_DIR and any(p.glob("*.txt"))
     )
+    _inv7_dogrula(kurumlar)
     kaynak_dosyalari: list[Path] = []
     for kurum_dir in kurumlar:
         kurum_slug = kurum_dir.name
@@ -202,20 +295,27 @@ def build_index() -> dict:
         c["kaynak_kimlik"] for c in chunks_out
         if c.get("kaynak_guven") != RESMI_DOGRULANMIS
     }
+    sablonlar = _sablonlari_topla(manifest)
     korpus_hash = hashlib.sha256()
-    for path in kaynak_dosyalari:
+    kapsam_dosyalari = sorted(
+        {str(s["kapsam_dosya"]) for s in sablonlar.values()}
+    )
+    for path in kaynak_dosyalari + [_TESKILAT_DIR / k for k in kapsam_dosyalari]:
         korpus_hash.update(path.relative_to(_TESKILAT_DIR).as_posix().encode("utf-8"))
         korpus_hash.update(dosya_sha256(path).encode("ascii"))
     if _MANIFEST_FILE.is_file():
         korpus_hash.update(dosya_sha256(_MANIFEST_FILE).encode("ascii"))
     return {
-        "version": 4,
+        "version": 5,
         "korpus_sha256": korpus_hash.hexdigest(),
         "chunk_sayisi": len(chunks_out),
         "kurum_sayisi": len(kurumlar),
         "resmi_kaynak_sayisi": len(resmi_kaynaklar),
         "aday_kaynak_sayisi": len(aday_kaynaklar),
+        "sablon_sayisi": len(sablonlar),
+        "sablon_kapsami": sum(len(s["kapsam"]) for s in sablonlar.values()),
         "aliases": aliases,
+        "sablonlar": sablonlar,
         "chunks": chunks_out,
     }
 
@@ -226,8 +326,9 @@ def main() -> None:
         sys.exit(1)
     index = build_index()
     atomik_json_yaz(_INDEX_FILE, index)
-    print(f"[OK] {index['kurum_sayisi']} kurum -> {index['chunk_sayisi']} birim -> "
-          f"{_INDEX_FILE.relative_to(_ROOT)}")
+    print(f"[OK] {index['kurum_sayisi']} kurum -> {index['chunk_sayisi']} birim + "
+          f"{index['sablon_sayisi']} mevzuat şablonu ({index['sablon_kapsami']} kurum kapsamı) "
+          f"-> {_INDEX_FILE.relative_to(_ROOT)}")
 
 
 if __name__ == "__main__":

@@ -38,6 +38,10 @@ _TESKILAT_KAYNAK_TURLERI = frozenset({
     "resmi_teskilat",
     "resmi_hizmet",
     "resmi_karar",
+    # Mevzuat-teskilat sinifi (docs/11): tur genelinde ZORUNLU kilinmis birim listesi
+    # tasiyan sablon, ve sablonun kapsamini kilitleyen resmi idari bolunus listesi.
+    "resmi_mevzuat_teskilat",
+    "resmi_idari_bolunus",
 })
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 _KAYNAK_RE = re.compile(r"^\s*Kaynak\s*:\s*(https://\S+)\s*$", re.IGNORECASE | re.MULTILINE)

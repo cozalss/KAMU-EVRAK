@@ -1,0 +1,103 @@
+@KURUM: İstanbul Büyükşehir Belediyesi
+@BELGE: İstanbul Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://ibb.istanbul/ibb/tum-baskanliklar/
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: ibb, istanbul-buyuksehir-belediyesi, istanbul-bb, istanbul-buyuksehir, istanbul-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adının kapsadığı işlerden TÜRETİLMİŞTİR, kaynakta birebir yer almaz — bu nedenle dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Liste kurumun o tarihte yayımladığı birimlerle sınırlıdır. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Belediyeye özgü not: sayfa JavaScript ile yüklendiği için gerçek tarayıcı (DOM) üzerinden okunmuştur; adlar kaynakta tamamı büyük harfle yazılıdır, burada Türkçe başlık yazımına çevrilmiştir. Sayfadaki ayrı "Bağlı Kuruluşlar ve İştirakler" bağlantısı açılmamıştır; İSKİ, İETT gibi bağlı kuruluşlar bu listede yoktur. Bu sayfada Hukuk Müşavirliği ve Özel Kalem Müdürlüğü listelenmemiştir.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet risk azaltma planları, arama kurtarma ve acil durum koordinasyonu, afet sonrası hasar tespit talepleri ve tahliye planlaması. Deprem tatbikatı, afet toplanma alanı düzenlemesi ve AFAD ile kurumlar arası yazışmalar bu birimde yürütülür.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Vatandaş başvuru, talep ve şikâyetlerinin (CİMER, Beyaz Masa, çağrı merkezi) kaydı, ilgili birime yönlendirilmesi ve cevabın başvurana bildirilmesi. 4982 sayılı Kanun kapsamındaki bilgi edinme başvuruları, basın açıklaması ve kurumsal duyuru yazışmaları bu birimde yürütülür.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: EBYS ve e-imza yetkilendirme, kurumsal yazılım ve donanım talepleri, ağ ve sistem erişim yetkileri. KVKK teknik tedbirleri, veri paylaşım protokolleri, açık veri ve web sitesi hizmetlerine ilişkin yazışmalar bu birimde yürütülür.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Katı atık ve atıksu deşarj izinleri, gürültü, koku ve hava kirliliği şikâyetleri, çevre denetim tutanakları ve idari yaptırım işlemleri. İşyerlerine çevre izni görüşü, atık bertaraf ve geri kazanım yazışmaları bu birimde yürütülür.
+
+BİRİM: Deprem Risk Yönetimi ve Kentsel İyileştirme Dairesi Başkanlığı
+GÖREV: Riskli yapı tespiti ve 6306 sayılı Kanun kapsamındaki kentsel dönüşüm başvuruları, zemin etüt ve mikrobölgeleme raporu talepleri. Bina güçlendirme projelerine görüş verilmesi, deprem risk analizi ve yapı envanteri çalışmaları bu birimde yürütülür.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Kurum içi lojistik, taşınır mal kayıt ve zimmet işlemleri, temizlik, güvenlik ve yemek hizmet alımları. Hizmet binalarının işletilmesi, ısıtma soğutma, kırtasiye ve idari destek talepleri bu birimde yürütülür.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Kardeş şehir protokolleri, uluslararası proje ve hibe başvuruları, yurt dışı görevlendirme onayları. Yabancı heyet ziyaretleri, uluslararası kuruluş üyelikleri ve tercüme talepleri bu birimde yürütülür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Kamulaştırma ve acele kamulaştırma işlemleri, belediye taşınmazlarının satış, kira, tahsis ve trampa işlemleri. Tapu tescil ve şerh yazışmaları, ecrimisil, irtifak hakkı ve taşınmaz devir talepleri bu birimde yürütülür.
+
+BİRİM: Etüt ve Projeler Dairesi Başkanlığı
+GÖREV: Yatırım projelerinin etüt, avan proje, uygulama projesi ve keşif çalışmaları. Proje onayı, revizyon talepleri, fizibilite raporları ve teknik şartname hazırlığı bu birimde yürütülür.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Altyapı ve üstyapı inşaat işleri, kazı ve altyapı ruhsatı, hakediş, geçici ve kesin kabul işlemleri. Yapım ihalelerine teknik görüş, sanat yapıları ve üstgeçit imalatına ilişkin yazışmalar bu birimde yürütülür.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Spor tesisi ve salon tahsis talepleri, gençlik merkezi kayıt işlemleri, turnuva ve spor etkinliği izinleri. Amatör spor kulübü destek başvuruları ve sporcu malzeme yardımı bu birimde yürütülür.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: İç denetim programının hazırlanması, denetim raporlarının düzenlenmesi ve bulguların takibi. Risk değerlendirmesi, süreç denetimi ve danışmanlık faaliyetlerine ilişkin yazışmalar bu birimde yürütülür.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: Nazım imar planı ve plan tadilatı teklifleri, imar durumu belgesi, plan askı ve itiraz işlemleri. Parselasyon, ifraz, tevhit ve imar çapı talepleri ile plan görüşü yazışmaları bu birimde yürütülür.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, nakil, görevlendirme, izin ve emeklilik işlemleri, özlük dosyası ve hizmet belgesi talepleri. Disiplin soruşturması yazışmaları, kadro ihdası ve hizmet içi eğitim planlaması bu birimde yürütülür.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın güvenlik raporu ve itfaiye uygunluk belgesi düzenlenmesi, işyeri ve bina yangın denetimleri. Yangın tahliye planı incelemesi, baca ve yanmazlık görüşleri ile acil müdahale ve kurtarma hizmetleri bu birimde yürütülür.
+
+BİRİM: Kent Tarihi, Tanıtım ve Turizm Dairesi Başkanlığı
+GÖREV: Kent tanıtım materyalleri, turizm etkinliklerinin koordinasyonu ve tarihî kent envanteri çalışmaları. Turizm işbirliği protokolleri, fuar katılımı ve kent müzesi hizmetlerine ilişkin yazışmalar bu birimde yürütülür.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür merkezi ve salon tahsis talepleri, kültürel ve sanatsal etkinlik izinleri, konser ve festival organizasyonları. Kütüphane hizmetleri, yayın ve süreli yayın işlemleri ile sanatçı destek başvuruları bu birimde yürütülür.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe hazırlığı, muhasebe kayıtları, gelir tahakkuk ve tahsilat işlemleri, ödeme emri ve harcama belgeleri. Vergi, harç ve katılım payı itirazları, borç sorgulama, mahsup ve iade talepleri bu birimde yürütülür.
+
+BİRİM: Mezarlıklar Dairesi Başkanlığı
+GÖREV: Mezar yeri tahsisi, defin ruhsatı, cenaze nakil belgesi ve cenaze hizmetleri. Mezarlık kayıt sorgulama, mezar bakım ve nakil talepleri ile şehirlerarası cenaze nakli yazışmaları bu birimde yürütülür.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Muhtarlardan gelen talep ve şikâyetlerin kayda alınarak ilgili birime havale edilmesi ve sonucunun muhtara bildirilmesi. Muhtarlık hizmet binası, demirbaş ve kırtasiye ihtiyaçlarına ilişkin yazışmalar bu birimde yürütülür.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve yeşil alan yapımı ile bakımı, ağaç kesim, budama ve nakil izinleri, peyzaj uygulamaları. Çocuk oyun alanı, spor aleti ve kent mobilyası talepleri ile ağaç zarar tespit tutanakları bu birimde yürütülür.
+
+BİRİM: Raylı Sistemler Dairesi Başkanlığı
+GÖREV: Metro, tramvay ve füniküler hatlarının yapımı, güzergâh etüdü ve işletme koordinasyonu. İstasyon alan tahsisi, raylı sistem güzergâh görüşü ve hat kamulaştırma yazışmaları bu birimde yürütülür.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Teftiş, inceleme, ön inceleme ve soruşturma işlemleri, ihbar ve şikâyet üzerine yürütülen incelemeler. Rehberlik raporları ve 4483 sayılı Kanun kapsamındaki soruşturma izni yazışmaları bu birimde yürütülür.
+
+BİRİM: Sağlık İşleri Dairesi Başkanlığı
+GÖREV: Belediye sağlık merkezi ve poliklinik hizmetleri, işyeri hekimliği ve sağlık raporu işlemleri. Halk sağlığı denetimleri, bağımlılıkla mücadele ve ilk yardım eğitimi yazışmaları bu birimde yürütülür.
+
+BİRİM: Satın Alma Dairesi Başkanlığı
+GÖREV: 4734 sayılı Kanun kapsamındaki mal, hizmet ve danışmanlık alım ihaleleri, yaklaşık maliyet ve ihale ilanı işlemleri. Sözleşme, teminat mektubu, doğrudan temin ve ihaleye itiraz başvuruları bu birimde yürütülür.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvuruları, gıda, yakacak, giyim ve nakdi destek talepleri, muhtaçlık ve sosyal inceleme raporu düzenlenmesi. Engelli, yaşlı ve dezavantajlı gruplara yönelik destek hizmetleri ile aşevi işlemleri bu birimde yürütülür.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Stratejik plan, performans programı, yatırım programı ve faaliyet raporu hazırlığı. Ön mali kontrol görüşleri, iç kontrol sistemi ve kurumsal performans izleme yazışmaları bu birimde yürütülür.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Kırsal kalkınma projeleri, üretici ve çiftçi destek başvuruları, fide, fidan, tohum ve hayvancılık destekleri. Tarımsal danışmanlık, kooperatif ve üretici birliği yazışmaları ile sera ve sulama destekleri bu birimde yürütülür.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: Toplu taşıma hat ve güzergâh düzenlemeleri, UKOME kararlarına bağlı işler, ulaşım kartı ve indirimli kart işlemleri. Trafik düzenlemesi, otopark, servis aracı ve ticari taksi plaka ve güzergâh talepleri bu birimde yürütülür.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrakın kaydı, havalesi ve dağıtımı, belediye meclisi ve encümen gündemi ile kararlarının yazımı, tebliği ve ilanı. Kurum arşivi, saklama planı ve evrak imha işlemleri bu birimde yürütülür.
+
+BİRİM: Yol Yapım, Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Yol, kaldırım, refüj ve sanat yapılarının yapım, bakım ve onarımı, asfalt kaplama ve yama talepleri. Kazı ruhsatı sonrası üstyapı tamiri, bordür ve tretuvar düzenlemesi yazışmaları bu birimde yürütülür.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri denetimi, ruhsatsız faaliyet ve işgaliye tespit tutanakları, idari yaptırım karar tutanağı düzenlenmesi. Pazar yeri düzenlemesi, seyyar satıcı denetimi, gürültü ve nizam intizam şikâyetleri bu birimde yürütülür.

@@ -1,0 +1,85 @@
+@KURUM: Ordu Büyükşehir Belediyesi
+@BELGE: Ordu Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.ordu.bel.tr/organizasyon-semasi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: ordu-buyuksehir-belediyesi, ordu-bb, ordu-buyuksehir, ordu-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI kurumun yayımladığı şube müdürlüğü listesinden okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü tespitler: Ordu'da daire seviyesinde Yazı İşleri ve Kararlar Dairesi Başkanlığı YOKTUR, evrak ve meclis işleri İnsan Kaynakları ve Eğitim Dairesi Başkanlığı altındaki Yazı İşleri ve Arşiv ile Meclis ve Encümen şube müdürlüklerince yürütülür; mezarlık ve temizlik hizmetleri Parklar ve Bahçeler dairesine bağlıdır; "İtfaiye Daire Başkanlığı" ve "Parklar ve Bahçeler" yazımları kaynaktaki gibi korunmuştur.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; Tören ve Organizasyon şube müdürlüğü aracılığıyla resmî tören ve etkinliklerin yürütülmesi.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Birimlerin teftişi, inceleme ve soruşturma işlemleri, disiplin dosyalarının hazırlanması ve denetim raporlarının düzenlenmesi.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Hukuk İşleri şube müdürlüğü eliyle dava ve icra takibi, sözleşme ve ihale dosyalarına hukuki görüş, mahkeme yazışmaları.
+
+BİRİM: İç Denetim Birimi
+GÖREV: Harcama birimlerinin iç denetimi, denetim raporu düzenlenmesi, usulsüzlük bildirimi ve bulgu takibi.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet planları ve risk yönetimi çalışmaları, Afet Koordinasyon Merkezi'nin işletilmesi, hasar tespit desteği ve acil durum tatbikatları.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: CİMER ve vatandaş şikâyet başvurularının takibi, 4982 sayılı Kanun kapsamında bilgi edinme talepleri, basın duyuruları ve kurumsal tanıtım.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bilgi teknolojileri ve EBYS sistem yönetimi, Coğrafi Bilgi Sistemleri ve akıllı şehir uygulamaları, yazılım ve donanım destek talepleri.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Atık yönetimi ve tesisleri, işyeri açma ve çalışma ruhsatı ile denetimi, hafriyat izinleri, gürültü ve emisyon şikâyetleri.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: İhale ve satınalma işlemleri, taşınır mal kayıt, hizmet binası bakım ve güvenlik hizmetleri.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Emlak yönetimi, harita ve kamulaştırma işlemleri, kentsel dönüşüm uygulamaları, taşınmaz kiralama ve tahsis.
+
+BİRİM: Etüt ve Projeler Dairesi Başkanlığı
+GÖREV: Etüt ve proje hazırlanması, ihale hazırlık ve kesin hesap işlemleri, yapım-bakım-onarım projelerinin yürütülmesi.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yol yapım ile yol bakım ve onarımı, üretim tesisleri, makine ikmal bakım ve onarım, AYKOME altyapı koordinasyonu ve kazı ruhsatı.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: İklim değişikliği ve temiz enerji çalışmaları, sıfır atık ve geri kazanım uygulamaları, atık azaltım projeleri.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar, şehircilik ve kent estetiği işlemleri, şehir planlama, imar durumu ve plan tadilatı, KUDEB koruma uygulama ve denetimi.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, özlük, izin ve bordro-tahakkuk işlemleri, iş sağlığı ve güvenliği, yazı işleri ve arşiv, meclis ve encümen kararları.
+
+BİRİM: İşletme ve İştirakler Dairesi Başkanlığı
+GÖREV: Belediye işletmeleri ve iştiraklerinin yönetimi; limanlar, terminaller ve toptancı hallerinin işletilmesi.
+
+BİRİM: İtfaiye Daire Başkanlığı
+GÖREV: Arama kurtarma ve yangına müdahale, yangın önleme ve yangın güvenlik raporu işlemleri, itfaiye eğitim hizmetleri.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür, turizm ve sanat etkinlikleri, yaygın eğitim ve kurs kayıtları, kütüphaneler, tiyatro, gençlik ve spor hizmetleri.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Muhasebe ve mali kontrol, gelir tahakkuk ve takip işlemleri, strateji-bütçe-analiz ve raporlama, borç sorgulama ve yapılandırma.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Muhtar talep ve şikâyetlerinin kaydı ile ilgili birime yönlendirilmesi, ilçe hizmetlerinin koordinasyonu ve sonucun bildirilmesi.
+
+BİRİM: Parklar ve Bahçeler Dairesi Başkanlığı
+GÖREV: Parklar ve yeşil alanların yapım-bakımı, temizlik işleri, mezarlıklar ve cenaze hizmetleri, mezar yeri tahsisi ve defin ruhsatı.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvuruları ve muhtaçlık incelemesi, engelli, yaşlı ve sağlık hizmetleri, gıda ve yakacak yardımı kararları.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Tarımsal üretim destekleri, hayvancılık ve mezbaha hizmetleri, biyoinovasyon çalışmaları, AB dış ilişkiler ve kırsal kalkınma projeleri.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: Toplu taşıma hat ve kart işlemleri, UKOME kararları, ulaşım planlama ve trafik hizmetleri, terminal ve otopark tesisleri.
+
+BİRİM: Veteriner İşleri Dairesi Başkanlığı
+GÖREV: Sokak hayvanlarının kısırlaştırma ve rehabilitasyonu, kuduz ve zoonoz takibi, veteriner tesislerinin işletilmesi.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri denetimi, ruhsatsız faaliyet ve işgaliye tutanakları, pazar yeri ve seyyar satıcı denetimi, idari yaptırım kararları.

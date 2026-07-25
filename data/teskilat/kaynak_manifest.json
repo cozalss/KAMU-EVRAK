@@ -111,6 +111,46 @@
    "dogrulama_tarihi": "2026-07-24",
    "dogrulama_yontemi": "NVI resmi Birim Yonergesi m.7-m.16 ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
    "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "_mevzuat-valilik/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/mevzuatmetin/yonetmelik/7.5.15030.htm",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "dogrulama_yontemi": "Valilik ve Kaymakamlik Birimleri Teskilat, Gorev ve Calisma Yonetmeligi (RG 8/6/2011-27958) konsolide metni mevzuat.gov.tr uzerinden indirilip tam okundu; birim listesi m.9/1 \"Illerde asagidaki birimler bulunur\" hukmunden, gorev tanimlari m.15, 16, 17, 18, 19, 21, 22, 23, 24 ve 24/A bentlerinden birebir cikarildi. Buyuksehir kosullu m.9/1-e Protokol Sube Mudurlugu kapsam disi birakildi. Bagimsiz fabrikasyon denetimi (2026-07-25): 0 uydurma; tespit edilen 1 yanlis atif (m.20 protokol gorevlerinin kosulsuz Ozel Kalem e yazilmasi) ve 5 sadakat sapmasi duzeltildi; Protokol Sube Mudurlugu kapsam boslugu @NOT ta acikca belgelendi.",
+   "icerik_sha256": "7c217c0d3d58702d82c5673d096ced7bf429cc7ece9784583f2efedb2cbe6ed5",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "_mevzuat-kaymakamlik/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/mevzuatmetin/yonetmelik/7.5.15030.htm",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "dogrulama_yontemi": "Ayni Yonetmelik m.10/1-a (kosulsuz Ilce Yazi Isleri Mudurlugu) ile m.25/1-a ve m.25/1-f esleme hukumleri; ihtiyari seflikler (nufus >=50.000 / Bakanlikca uygun gorulen) kapsam disi birakildi. Bagimsiz fabrikasyon denetimi (2026-07-25): 1 uydurma gorev kalemi (\"icra takibi\" - Yonetmelikte yok) KALDIRILDI; 3 kapsam asimi daraltildi; kaymakamlik evrak havalesi icin m.26 yerine dogru madde m.39/1 yazildi.",
+   "icerik_sha256": "52c419c31c9ceadf05c9125c46800143e5d52c80d4e6cc8a88a5aa1e31834df5",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "_kapsam/iller.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "dogrulama_yontemi": "T.C. Icisleri Bakanligi Iller Idaresi Genel Mudurlugu \"Il ve Ilce Kurulus Tarihleri\" resmi PDF'i indirilip 86 sayfa tam okundu; il/ilce adlari transkribe edilip kurum_kimlik._slug ile sluglastirildi. Bagimsiz capraz kontrol: 81 il sicil kayitlariyla birebir ortusuyor; ilce farki yalniz 3 bilinen ad varyanti (Eyup/Eyupsultan, Ondokuzmayis/19 Mayis, Eregli/Karadeniz Eregli).",
+   "icerik_sha256": "e2b48e2dbe950db09cf12247d41665ee0c6462593f68ad6c1e8941dedce42690",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "_kapsam/ilceler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "dogrulama_yontemi": "T.C. Icisleri Bakanligi Iller Idaresi Genel Mudurlugu \"Il ve Ilce Kurulus Tarihleri\" resmi PDF'i indirilip 86 sayfa tam okundu; il/ilce adlari transkribe edilip kurum_kimlik._slug ile sluglastirildi. Bagimsiz capraz kontrol: 81 il sicil kayitlariyla birebir ortusuyor; ilce farki yalniz 3 bilinen ad varyanti (Eyup/Eyupsultan, Ondokuzmayis/19 Mayis, Eregli/Karadeniz Eregli). Bagimsiz denetim (2026-07-25): 897 satirin tamami kaynakla bit-duzeyinde ortusuyor, uydurma ilce 0, yanlis cikarilan merkez 0. @NOT taki karsiliksiz 5442 atfi kaldirildi (Kanun metninde \"merkez ilce\" ifadesi gecmiyor).",
+   "icerik_sha256": "16353afa846771249b4552e8caab5af9fceae2faa913ebf0e51ff12f6bc4fc72",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
   }
  }
 }

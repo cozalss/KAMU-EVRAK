@@ -1,0 +1,97 @@
+@KURUM: T.C. Tekirdağ Büyükşehir Belediye Başkanlığı
+@BELGE: T.C. Tekirdağ Büyükşehir Belediye Başkanlığı resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.tekirdag.bel.tr/buyuksehir_idari_yapi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: tekirdag-buyuksehir-belediyesi, tekirdag-bb, tekirdag-buyuksehir, tekirdag-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI kurumun yayımladığı şube müdürlüğü listesinden okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü tespitler: Tekirdağ'da diğer büyükşehirlerden farklı olarak ayrı bir Satın Alma Dairesi Başkanlığı ile birleşik bir Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı bulunur; "Makine İkmal, Bakım ve Onarım" adı kaynaktaki virgüllü yazımıyla korunmuştur. Arama motoru özetinde geçen "İlçeler Koordinasyon Dairesi Başkanlığı" ham HTML'de HİÇ GEÇMEDİĞİ için listeye alınmamıştır.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu ve temsil işleri; Protokol ile Balkan Türkleri ve Dış İlişkiler şube müdürlükleri aracılığıyla protokol ve kardeş şehir yazışmaları.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Birimlerin teftişi, inceleme ve soruşturma işlemleri, disiplin dosyalarının hazırlanması ve denetim raporlarının düzenlenmesi.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Belediye lehine ve aleyhine dava takibi, icra işlemleri, sözleşme ve ihale dosyalarına hukuki görüş, mahkeme yazışmaları.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: Harcama birimlerinin iç denetimi, denetim raporu düzenlenmesi, usulsüzlük bildirimi ve bulgu takibi.
+
+BİRİM: Basın, Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Basın yayın ve halkla ilişkiler hizmetleri, CİMER ve bilgi edinme başvurularının cevaplanması, turizm ve tanıtım çalışmaları.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bilgi teknolojileri ve EBYS sistem yönetimi, Coğrafi Bilgi Sistemleri, yönetim bilgi sistemleri ve elektronik sistemlerin işletilmesi.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, özlük ve izin işlemleri, hizmet içi eğitim, işçi ve işveren ilişkileri, iş sağlığı ve güvenliği.
+
+BİRİM: İşletme ve İştirakler Dairesi Başkanlığı
+GÖREV: Belediye işletmeleri ve iştiraklerinin yönetimi, toptancı hallerinin işletilmesi, kaynak geliştirme çalışmaları.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Muhasebe, gelir tahakkuk ve tahsilat, bütçe ve stratejik yönetim, mali kontrol ve taşınır mal işlemleri.
+
+BİRİM: Satın Alma Dairesi Başkanlığı
+GÖREV: Satın alma işlemleri ve ihale iş ve işlemlerinin yürütülmesi, 4734 sayılı Kanun kapsamındaki süreçlerin takibi.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrak kaydı ile havalesi, meclis ve encümen gündem ve kararlarının yazımı, kurum arşivi ve imha işlemleri.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet yönetimi ve acil durum yönetimi planları, deprem ve zemin inceleme çalışmaları, hasar tespit desteği ve tatbikatlar.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Emlak yönetimi, kamulaştırma ve harita işlemleri, belediye taşınmazlarının kiralanması, tahsisi ve satışı.
+
+BİRİM: Etüt ve Projeler Dairesi Başkanlığı
+GÖREV: Etüt, proje ve keşif işlemleri, proje geliştirme ve yapım süreçlerinin yürütülmesi.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yapı işleri ve kontrollüğü, yol proje-yapım ile yol bakım işleri, altyapı koordinasyonu (AYKOME) ve kazı ruhsatı, akarsu yapıları.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar işleri ve imar durumu, şehir planlama ve plan tadilatı, kentsel dönüşüm uygulamaları, kültür varlıkları ve koruma işlemleri.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve bahçelerin yapım-bakımı, yeşil alan düzenlemesi, tesislerin bakım ve onarımı.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: Toplu taşıma ve planlama, UKOME ulaşım koordinasyon kararları, ticari plaka işlemleri, terminaller ve otoparklar, trafik hizmetleri.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: İkmal ve bakım-onarım hizmetleri, hizmet binası güvenliği ve genel destek işleri.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Arama kurtarma ve yangına müdahale, yangın eğitim ve önleme hizmetleri ile yangın güvenlik raporu işlemleri, itfaiye destek hizmetleri.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür ve sanat etkinlikleri, şehir tiyatroları, hayat boyu öğrenme ve kurs kayıtları, gençlik hizmetleri ve spor tesisi tahsisi.
+
+BİRİM: Makine İkmal, Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Araç ve iş makinelerinin ikmali ile bakım-onarımı, akaryakıt ve yedek parça tedariki, makine parkı yönetimi.
+
+BİRİM: Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sağlık işleri hizmetleri, sosyal yardım başvuruları, engelli ve yaşlı hizmetleri, kadın ve aile hizmetleri, şehit aileleri ve gazi hizmetleri.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: Zabıta denetimi ve idari yaptırım kararları, zabıta trafik hizmetleri, ruhsat ve denetim işlemleri.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Kent estetiği ve temizliği, hafriyat yönetimi ve izinleri, çevre ve deniz hizmetleri, gürültü ve emisyon şikâyetleri.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Atık yönetimi, sıfır atık ve geri kazanım uygulamaları, enerji yönetimi ve iklim değişikliği çalışmaları.
+
+BİRİM: Mezarlıklar Dairesi Başkanlığı
+GÖREV: Mezar yeri tahsisi, defin ruhsatı, cenaze nakli ve taziye hizmetleri, mezarlık destek hizmetleri.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Bölge muhtarlık işlerinin yürütülmesi, muhtar talep ve şikâyetlerinin ilgili birime yönlendirilmesi ve sonucun bildirilmesi.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Tarımsal altyapı çalışmaları, kırsal kalkınma projeleri, üretici destek ve eğitim programları.
+
+BİRİM: Veteriner İşleri Dairesi Başkanlığı
+GÖREV: Veteriner hizmetleri, sokak hayvanlarının kısırlaştırma ve rehabilitasyonu, gıda kontrol ve mezbaha denetimi.

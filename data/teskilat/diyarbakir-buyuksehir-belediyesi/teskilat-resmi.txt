@@ -1,0 +1,91 @@
+@KURUM: Diyarbakır Büyükşehir Belediyesi
+@BELGE: Diyarbakır Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.diyarbakir.bel.tr/tr/teskilat-semasi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: diyarbakir-buyuksehir-belediyesi, diyarbakir-bb, diyarbakir-buyuksehir, diyarbakir-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: mezarlık ve cenaze hizmetleri ayrı daire değil SAĞLIK İŞLERİ dairesine bağlıdır; Sivil Savunma Uzmanlığı Afet İşleri dairesine, Eşitlik Birimi Kadın ve Aile Hizmetleri dairesine bağlıdır; makam şemada "Büyükşehir Belediye Eşbaşkanlar" olarak yazılıdır. Daire adları şemada kısaltmalı yazıldığı için ("Dairesi Bşk." ve iki birimde "Dai. Bşk.") sitedeki yazım birebir korunmuştur.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dai. Bşk.
+GÖREV: Afet risk azaltma ve hazırlık planları ile Afet Koordinasyon Merkezi işlemleri.
+
+BİRİM: Yol Yapım, Bakım ve Onarım Dairesi Bşk.
+GÖREV: Altyapı koordinasyonu (AYKOME) ve kazı ruhsatı, kentsel ve kırsal yolların yapım-bakım-onarımı.
+
+BİRİM: Bilgi İşlem Dairesi Bşk.
+GÖREV: Bilgi teknolojileri, elektronik haberleşme sistemleri ve coğrafi bilgi sistemi kayıtları.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Bşk.
+GÖREV: Çevre koruma ve hafriyat denetimi, katı atık yönetimi, yenilenebilir enerji ve enerji yönetimi.
+
+BİRİM: Destek Hizmetleri Dairesi Bşk.
+GÖREV: Satın alma ve ihale, taşınır destek ile stok işlemleri, destek idari işleri.
+
+BİRİM: Kadın ve Aile Hizm. Dairesi Bşk.
+GÖREV: DİKASUM danışmanlık hizmetleri, kadına yönelik şiddetle mücadele, kadın ekonomisini güçlendirme ve eşitlik birimi işlemleri.
+
+BİRİM: Kırsal Hizmetler Dairesi Bşk.
+GÖREV: Tarım ve hayvancılığı geliştirme, ekonomik araştırma ve yatırım işleri, yerel ekonomiyi güçlendirme.
+
+BİRİM: Engelli ve Yaşlı Hizmetleri Dairesi Bşk.
+GÖREV: Engelli hizmetleri, yaşlı hizmetleri, nadir ve kronik hastalıklara yönelik destek işlemleri.
+
+BİRİM: Fen İşleri Dairesi Bşk.
+GÖREV: Etüt ve proje hazırlığı, yapım ve kontrol işleri, hakediş ile kesin hesap.
+
+BİRİM: Mali Hizmetler Dairesi Bşk.
+GÖREV: Gelir tahakkuk ve tahsilatı, muhasebe, bütçe ve finans işlemleri.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Bşk.
+GÖREV: Gençlik hizmetleri, spor tesisi tahsisi, kurs ve turnuva başvuruları.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dai. Bşk.
+GÖREV: İklim değişikliği çalışmaları, sıfır atık ve geri kazanım, biyoçeşitlilik ile su kaynakları.
+
+BİRİM: Basın Yayın ve Halkla İliş. Dairesi Bşk.
+GÖREV: Basın ve yayın, iletişim, halkla ilişkiler başvuruları, etkinlik ve organizasyon izinleri.
+
+BİRİM: İmar ve Şehircilik Dairesi Bşk.
+GÖREV: İmar planı ve imar durumu, harita ile kamulaştırma, yapı kontrol işlemleri.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Bşk.
+GÖREV: İnsan kaynakları ve özlük, bordro ile tahakkuk, eğitim işleri, hizmet alım işleri.
+
+BİRİM: İşletme ve İştirakler Dairesi Bşk.
+GÖREV: İştirak yönetimi, otogar ve otopark işletmesi, canlı hayvan borsası ile mezbaha, emlak işlemleri.
+
+BİRİM: İtfaiye Dairesi Bşk.
+GÖREV: İtfaiye denetim ve önleme (yangın raporu), yangına müdahale, arama-kurtarma.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Bşk.
+GÖREV: Kültür ve turizm hizmetleri, tiyatro, kütüphane işlemleri.
+
+BİRİM: Sağlık İşleri Dairesi Bşk.
+GÖREV: Mezarlık ve cenaze hizmetleri (defin ruhsatı, mezar yeri, cenaze nakli), halk sağlığı denetimi, iş sağlığı ve güvenliği.
+
+BİRİM: Park ve Bahçeler Dairesi Bşk.
+GÖREV: Park ve bahçelerin bakımı ve idaresi, fidanlık ve ağaçlandırma, ağaç kesim-budama izni.
+
+BİRİM: Raylı Sistemler Dairesi Başkanlığı
+GÖREV: Raylı sistem yatırımlarının yürütülmesi ve proje işleri.
+
+BİRİM: Veteriner İşleri Dairesi Bşk.
+GÖREV: Sokak hayvanlarının korunması ve denetimi ile veteriner hizmetleri.
+
+BİRİM: Sosyal Hizmetler Dairesi Bşk.
+GÖREV: Sosyal hizmet ve yardım başvuruları, çocuk hizmetleri, mesleki eğitim.
+
+BİRİM: Ulaşım Dairesi Bşk.
+GÖREV: Toplu ulaşım hat ve güzergâh işlemleri, ulaşım koordinasyonu (UKOME), otobüs işletmeciliği.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Bşk.
+GÖREV: Gelen-giden evrak kaydı, arşiv, meclis ve encümen karar işlemleri.
+
+BİRİM: Zabıta Dairesi Bşk.
+GÖREV: Zabıta denetimi ve idari işleri, trafik zabıtası, işgaliye ve idari yaptırım.
+
+BİRİM: Sivil Savunma Uzmanlığı
+GÖREV: Sivil savunma planlarının hazırlanması ve takibi; Afet İşleri ve Risk Yönetimi dairesine bağlıdır.
+
+BİRİM: Eşitlik Birimi
+GÖREV: Toplumsal cinsiyet eşitliği çalışmaları; Kadın ve Aile Hizmetleri dairesine bağlıdır.

@@ -1,0 +1,100 @@
+@KURUM: Eskişehir Büyükşehir Belediyesi
+@BELGE: Eskişehir Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.eskisehir.bel.tr/idari-sema
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: eskisehir-buyuksehir-belediyesi, eskisehir-bb, eskisehir-buyuksehir, eskisehir-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Ulaşım Dairesi Başkanlığı adı kurumun kendi birim sayfasından (birim-detay.php?id=26) ayrıca teyit edilmiştir.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, nakil ve izin işlemleri, özlük ve hizmet belgesi talepleri, derece-kademe işlemleri, disiplin ve hizmet içi eğitim.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve yeşil alan yapım-bakımı, ağaç kesim ve budama izni, çocuk oyun alanları ve peyzaj düzenlemesi.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: CİMER ve çözüm merkezi başvurularının cevaplanması, 4982 sayılı Kanun kapsamında bilgi edinme talepleri, vatandaş şikâyet takibi ve basın duyuruları.
+
+BİRİM: Satınalma Dairesi Başkanlığı
+GÖREV: İhale ve doğrudan temin süreçleri, mal ve hizmet alım işlemleri, sözleşme ve yaklaşık maliyet dosyaları.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe, muhasebe ve ödeme emri işlemleri; ilan-reklam vergisi ve harç tahakkuk ve tahsilatı, borç sorgulama ve yapılandırma.
+
+BİRİM: Veteriner İşleri Dairesi Başkanlığı
+GÖREV: Sokak hayvanlarının kısırlaştırılması ve rehabilitasyonu, kuduz takibi ve ısırık bildirimleri, mezbaha ve hayvansal gıda denetimi.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar durumu belgesi, imar planı tadilatı, yapı ruhsatı ve yapı kullanma izni (iskân), plan askı ve itiraz işlemleri, harita ve aplikasyon.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür merkezi ve salon tahsis talepleri, etkinlik izinleri, kurs kayıtları ve yayın işleri.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Muhtaç aile sosyal yardım başvuruları, muhtaçlık incelemesi, engelli ve yaşlı destek hizmetleri, gıda ve yakacak yardımı kararları.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrak kaydı ile havalesi, meclis ve encümen gündem ve kararlarının yazımı, kurum arşivi ve imha işlemleri.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Spor tesisi tahsisi, kurs kayıtları, amatör kulüp destek talepleri ve gençlik merkezi hizmetleri.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Stratejik plan, performans programı, faaliyet raporu, yatırım izleme, iç kontrol ve ön mali kontrol.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Taşınır mal kayıt ve ambar hizmetleri, hizmet binası bakım, temizlik ve güvenlik hizmetleri, kurum içi lojistik.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri denetimi, ruhsatsız faaliyet ve işgaliye tutanakları, pazar yeri ve seyyar satıcı denetimi, hal denetimi ve idari yaptırım kararları.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Kamulaştırma işlemleri, belediye taşınmazlarının kiralanması, tahsisi ve satışı, ecrimisil ve taşınmaz kayıt sorguları.
+
+BİRİM: Makine İkmal Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Araç ve iş makinesi bakım-onarımı, atölye hizmetleri, akaryakıt ve yedek parça ikmali.
+
+BİRİM: Yol Yapım Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Asfalt ve kaldırım yapım ve onarımı, yol çalışma programı, kar ve buzlanma mücadelesi.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararları ve sekretaryası, toplu taşıma hat ve güzergâh düzenlemesi, ulaşım kartı işlemleri, raylı sistem planlaması, servis ve taksi izinleri, geçiş yolu izin belgesi.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Sıfır atık belgesi işlemleri, geri dönüşüm ve atık azaltma programları, iklim eylem planı çalışmaları.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Üretici destek programları, tarımsal eğitim, fide ve fidan dağıtımı, hayvancılık destek başvuruları.
+
+BİRİM: Kent Tarihi, Tanıtım ve Turizm Dairesi Başkanlığı
+GÖREV: Kültürel mirası koruma ve KUDEB işlemleri, kent belleği çalışmaları, tanıtım ve turizm hizmetleri.
+
+BİRİM: Kentsel Dönüşüm Dairesi Başkanlığı
+GÖREV: Riskli yapı ve riskli alan işlemleri, 6306 sayılı Kanun kapsamında dönüşüm hak sahipliği, kira yardımı dosyaları.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Üstyapı yapım işleri, AYKOME kapsamında kazı ve altyapı ruhsatı, sanat yapıları, hakediş ve kesin kabul işlemleri.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Katı atık ve hafriyat yönetimi, gürültü ve emisyon şikâyetleri, işyeri çevre denetimi ve çevre izni görüşleri.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme ve kurtarma, yangın güvenlik raporu düzenlenmesi, baca ve tesisat denetimi, itfaiye uygunluk belgesi.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet ve acil durum planlaması, risk analizi, arama kurtarma koordinasyonu, toplanma alanı ve tatbikat işlemleri.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: EBYS ve e-belediye sistem yönetimi, kurumsal yazılım ve donanım talepleri, coğrafi bilgi sistemleri, sistem erişim ve veri paylaşımı işlemleri.
+
+BİRİM: I. Hukuk Müşavirliği
+GÖREV: Belediye lehine ve aleyhine dava takibi, icra işlemleri, sözleşme ve ihale dosyalarına hukuki görüş, mahkeme yazışmaları.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Kurum birimlerinin teftişi, inceleme ve soruşturma işlemleri, rehberlik raporları.
+
+BİRİM: İç Denetçiler
+GÖREV: Harcama birimlerinin iç denetimi, denetim raporu düzenlenmesi, usulsüzlük bildirimi ve bulgu takibi.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.

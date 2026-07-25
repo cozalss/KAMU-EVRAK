@@ -1,0 +1,94 @@
+@KURUM: Mardin Büyükşehir Belediyesi
+@BELGE: Mardin Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.mardin.bel.tr/teskilat-semasi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: mardin-buyuksehir-belediyesi, mardin-bb, mardin-buyuksehir, mardin-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kaynak şema birim adlarını "Daire Bşk." biçiminde kısaltmakta olup bu yazım korunmuştur; birimlerin kendi sayfalarında ad "... Dairesi Başkanlığı" olarak geçebilir. Mardin'e özgü ayrım: Park ve Bahçeler, Emlak ve İstimlak ile Strateji Geliştirme daireleri bu şemada yer almaz, buna karşılık Kent Estetiği ile Engelli ve Yaşlı Hizmetleri ayrı daire olarak bulunur.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Daire Bşk.
+GÖREV: CİMER ve çözüm merkezi başvurularının cevaplanması, 4982 sayılı Kanun kapsamında bilgi edinme talepleri, vatandaş şikâyet takibi ve basın duyuruları.
+
+BİRİM: Çevre Koruma ve Kontrol Daire Bşk.
+GÖREV: Katı atık ve hafriyat yönetimi, gürültü ve emisyon şikâyetleri, işyeri çevre denetimi ve çevre izni görüşleri.
+
+BİRİM: Gençlik ve Spor Hizmetleri Daire Bşk.
+GÖREV: Spor tesisi tahsisi, kurs kayıtları, amatör kulüp destek talepleri ve gençlik merkezi hizmetleri.
+
+BİRİM: İnsan Kaynakları ve Eğitim Daire Bşk.
+GÖREV: Personel atama, nakil ve izin işlemleri, özlük ve hizmet belgesi talepleri, derece-kademe işlemleri, disiplin ve hizmet içi eğitim.
+
+BİRİM: Kaynak Geliştirme ve İştirakler Daire Bşk.
+GÖREV: Belediye şirket ve iştiraklerine ilişkin işlemler, gelir getirici proje ve kaynak geliştirme çalışmaları, tesis işletmeciliği.
+
+BİRİM: Kent Estetiği Daire Bşk.
+GÖREV: Cephe, tabela ve kentsel tasarım izinleri, meydan ve sokak sağlıklaştırma projeleri, reklam ve ilan görünüm denetimi.
+
+BİRİM: Kültür, Sanat ve Sosyal Daire Bşk.
+GÖREV: Kültür merkezi ve salon tahsis talepleri, etkinlik izinleri, kurs kayıtları ve yayın işleri.
+
+BİRİM: Yazı İşleri ve Kararlar Daire Bşk.
+GÖREV: Gelen ve giden evrak kaydı ile havalesi, meclis ve encümen gündem ve kararlarının yazımı, kurum arşivi ve imha işlemleri.
+
+BİRİM: Destek Hizmetleri Daire Bşk.
+GÖREV: İhale ve satın alma işlemleri, taşınır mal kayıt ve ambar hizmetleri, hizmet binası bakım, temizlik ve güvenlik hizmetleri.
+
+BİRİM: Engelli ve Yaşlı Hizmetleri Daire Bşk.
+GÖREV: Engelli ve yaşlı bakım ve destek hizmetleri, evde bakım başvuruları, erişilebilirlik talepleri ve engelli kart işlemleri.
+
+BİRİM: Kadın ve Aile Hizmetleri Daire Bşk.
+GÖREV: Kadın danışma ve sığınma hizmetleri, aile destek programları, kreş ve çocuk hizmetleri.
+
+BİRİM: Mali Hizmetler Daire Bşk.
+GÖREV: Bütçe, muhasebe ve ödeme emri işlemleri; ilan-reklam vergisi ve harç tahakkuk ve tahsilatı, borç sorgulama ve yapılandırma.
+
+BİRİM: Sağlık İşleri Daire Bşk.
+GÖREV: Sağlık raporu ve poliklinik hizmetleri, evde sağlık desteği, gıda ve işyeri sağlık denetimi, hıfzıssıhha işlemleri.
+
+BİRİM: Veteriner İşleri Daire Bşk.
+GÖREV: Sokak hayvanlarının kısırlaştırılması ve rehabilitasyonu, kuduz takibi ve ısırık bildirimleri, mezbaha ve hayvansal gıda denetimi.
+
+BİRİM: Fen İşleri Daire Bşk.
+GÖREV: Üstyapı yapım işleri, AYKOME kapsamında kazı ve altyapı ruhsatı, yol ve sanat yapıları bakım-onarımı, hakediş ve kesin kabul işlemleri.
+
+BİRİM: İmar ve Şehircilik Daire Bşk.
+GÖREV: İmar durumu belgesi, imar planı tadilatı, yapı ruhsatı ve yapı kullanma izni (iskân), plan askı ve itiraz işlemleri, harita ve aplikasyon.
+
+BİRİM: İtfaiye Daire Bşk.
+GÖREV: Yangın söndürme ve kurtarma, yangın güvenlik raporu düzenlenmesi, baca ve tesisat denetimi, itfaiye uygunluk belgesi.
+
+BİRİM: Ulaşım Daire Bşk.
+GÖREV: UKOME kararları, toplu taşıma hat ve güzergâh düzenlemesi, ulaşım kartı işlemleri, ticari plaka, servis ve taksi izinleri, terminal ve otopark.
+
+BİRİM: Zabıta Daire Bşk.
+GÖREV: İşyeri denetimi, ruhsatsız faaliyet ve işgaliye tutanakları, pazar yeri ve seyyar satıcı denetimi, hal denetimi ve idari yaptırım kararları.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Daire Bşk.
+GÖREV: Afet ve acil durum planlaması, risk analizi, arama kurtarma koordinasyonu, toplanma alanı ve tatbikat işlemleri.
+
+BİRİM: Bilgi İşlem Daire Bşk.
+GÖREV: EBYS ve e-belediye sistem yönetimi, kurumsal yazılım ve donanım talepleri, coğrafi bilgi sistemleri, sistem erişim ve veri paylaşımı işlemleri.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Daire Bşk.
+GÖREV: Sıfır atık belgesi işlemleri, geri dönüşüm ve atık azaltma programları, iklim eylem planı çalışmaları.
+
+BİRİM: Muhtarlık İşleri Daire Bşk.
+GÖREV: Muhtar talep ve şikâyetlerinin kaydı, ilgili birime yönlendirilmesi ve sonucun muhtara bildirilmesi.
+
+BİRİM: Sosyal Hizmetler Daire Bşk.
+GÖREV: Muhtaç aile sosyal yardım başvuruları, muhtaçlık incelemesi, gıda ve yakacak yardımı kararları, aşevi hizmetleri.
+
+BİRİM: Tarımsal Hizmetler Daire Bşk.
+GÖREV: Üretici destek programları, tarımsal eğitim, fide ve fidan dağıtımı, hayvancılık destek başvuruları.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Belediye lehine ve aleyhine dava takibi, icra işlemleri, sözleşme ve ihale dosyalarına hukuki görüş, mahkeme yazışmaları.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Bşk.
+GÖREV: Kurum birimlerinin teftişi, inceleme ve soruşturma işlemleri, rehberlik raporları.
+
+BİRİM: İç Denetim Birimi
+GÖREV: Harcama birimlerinin iç denetimi, denetim raporu düzenlenmesi, usulsüzlük bildirimi ve bulgu takibi.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.

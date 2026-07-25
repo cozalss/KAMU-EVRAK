@@ -1,0 +1,82 @@
+@KURUM: Samsun Büyükşehir Belediyesi
+@BELGE: Samsun Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.samsun.bel.tr/kurumsal/kurumsal-yapi/daire-baskanliklari
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: samsun-buyuksehir-belediyesi, samsun-bb, samsun-buyuksehir, samsun-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Samsun'un sitesi Next.js ile istemci tarafında render edilir; birim listesi sayfanın gömülü RSC verisinden okunmuştur. Site "Dairesi Başkanlığı" yazımını tutarlı biçimde kullanır. Bağlı kuruluş SASKİ (Samsun Su ve Kanalizasyon İdaresi) ayrı tüzel kişilik olduğu için listeye alınmamıştır.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Kuruma gelen evrakın kaydını, havalesini ve ilgili birimlere dağıtımını yapar; kurum dışına gidecek yazıların giden evrak kaydı ile posta/KEP gönderim işlemlerini yürütür. Belediye Meclisi ve Encümen gündemi, karar yazımı, karar tebliği ve kurum arşivi iş ve işlemlerini yürütür.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: Nazım imar planı ve uygulama imar planı teklifleri ile plan tadilatı başvurularını inceler, imar durumu (çap) taleplerini karşılar. Halihazır harita, parselasyon ve ifraz-tevhit işlemleri ile numarataj ve coğrafi bilgi sistemi kayıtlarını yürütür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Kamulaştırma, kamulaştırmasız el atma, tahsis, irtifak hakkı ve takas işlemlerini 2942 sayılı Kamulaştırma Kanunu hükümlerine göre yürütür. Belediye mülkiyetindeki taşınmazların kira, satış ve ecrimisil iş ve işlemlerini yapar.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Belediye yatırım programındaki üstyapı ve bina inşaatlarının etüt, proje, ihale, yapım ve kesin kabul süreçlerini yürütür. Hakediş, geçici/kesin kabul tutanağı ve iş deneyim belgesi düzenlenmesine ilişkin işlemleri yapar.
+
+BİRİM: Yol Yapım Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Büyükşehir sorumluluğundaki ana arter ve bağlantı yollarının yapım, asfalt kaplama, bakım ve onarım işlerini yürütür. Altyapı kazı (ruhsat) izinleri ve AYKOME kapsamındaki kazı koordinasyonu ile yol bozma-onarım bedeli işlemlerini takip eder.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararlarının hazırlanması ve uygulanması, toplu taşıma hat ve güzergâh izinleri, servis aracı ile ticari taksi/plaka tahsis ve çalışma ruhsatı işlemlerini yürütür. Toplu taşıma kart (elektronik ücret toplama) başvuru, indirimli kart ve trafik sinyalizasyon işlemlerini yapar.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri açma ve çalışma ruhsatı denetimi, seyyar satıcı, işgaliye ve pazar yeri denetimlerini yapar, idari yaptırım (ceza) tutanaklarını düzenler. İlan-reklam denetimi ile ruhsatsız faaliyetlere ilişkin şikâyet ve CİMER başvurularını sonuçlandırır.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme, arama-kurtarma ve ilk müdahale hizmetlerini yürütür. Binaların Yangından Korunması Hakkında Yönetmelik kapsamında yangın güvenlik raporu, baca ve tesisat denetimi ile itfaiye raporu düzenler; yangın eğitimi verir.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Katı atık toplama, taşıma ve bertaraf hizmetleri ile hafriyat toprağı ve inşaat/yıkıntı atıkları taşıma izin belgesi işlemlerini yürütür. Gürültü, hava ve su kirliliği şikâyetlerini denetler, çevresel gürültü ölçüm ve GSM işyeri çevre denetim işlemlerini yapar.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Sıfır atık yönetim sistemi kurulum ve belgelendirme işlemleri ile ambalaj atığı toplama-ayırma sözleşmelerini yürütür. İklim eylem planı, sera gazı envanteri ve enerji verimliliği çalışmalarını takip eder.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park, yeşil alan, çocuk oyun alanı ve rekreasyon alanlarının yapım, bakım ve sulama işlerini yürütür. Ağaç kesim/nakil izni, budama talepleri ve peyzaj projesi onayına ilişkin işlemleri yapar.
+
+BİRİM: Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvurularını (gıda, yakacak, engelli ve muhtaç aylığı) inceler ve sosyal inceleme raporu düzenler. Cenaze nakil, defin ruhsatı ve mezar yeri tahsisi ile evde bakım, engelli ve yaşlı destek hizmetlerini yürütür.
+
+BİRİM: Kültür ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür-sanat etkinlikleri, festival, konser ve kurs (meslek edindirme) programlarını düzenler. Salon/tesis tahsisi başvurularını, kütüphane hizmetlerini ve kent tarihi-tanıtım yayınlarını yürütür.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe hazırlama, kesin hesap, muhasebe kayıtları ve ödeme emri belgesi işlemlerini yürütür. Gelir tarifesi, tahakkuk, tahsilat, borç sorgulama ve 6183 sayılı Kanun kapsamındaki icra takip işlemlerini yapar.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Memur ve işçi personelin atama, terfi, özlük, izin, disiplin ve emeklilik işlemlerini yürütür. Kadro ihdas-iptal, norm kadro, hizmet içi eğitim ve staj başvurularına ilişkin iş ve işlemleri yapar.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Doğrudan temin ve ihale yoluyla mal/hizmet alımı, taşınır mal kayıt ve ambar işlemlerini 4734 sayılı Kamu İhale Kanunu çerçevesinde yürütür. Hizmet binalarının bakım-onarım, güvenlik, temizlik ve akaryakıt tedarik işlerini yapar.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: EBYS (elektronik belge yönetim sistemi), e-belediye ve kurumsal yazılımların işletim, yetkilendirme ve entegrasyon işlemlerini yürütür. Bilgi edinme ve CİMER başvurularının sistem üzerinden yönlendirilmesi ile KVKK teknik tedbirlerini takip eder.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Kurumun basın açıklamaları, tanıtım yayınları ve sosyal medya iletişimini yürütür. Vatandaş istek-şikâyet (çözüm merkezi), bilgi edinme ve CİMER başvurularının kayıt, takip ve cevap süreçlerini koordine eder.
+
+BİRİM: İşletme ve İştirakler Dairesi Başkanlığı
+GÖREV: Belediye işletmeleri, sosyal tesisler ve iştirak şirketlerine ilişkin iş ve işlemleri yürütür. Otopark, terminal ve hal işletmeciliği ile kira/işletme sözleşmelerinin takibini yapar.
+
+BİRİM: Makine İkmal Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Belediye araç ve iş makinelerinin bakım, onarım, muayene ve sigorta işlemlerini yürütür. Araç görevlendirme, akaryakıt takibi ve yedek parça ikmal işlemlerini yapar.
+
+BİRİM: Kırsal Hizmetler Dairesi Başkanlığı
+GÖREV: Kırsal mahallelere yönelik yol, içme suyu ve altyapı destek hizmetleri ile tarımsal üretim desteklerini yürütür. Hayvancılık, sulama ve kırsal kalkınma projelerine ilişkin başvuruları değerlendirir.
+
+BİRİM: Afet İşleri Dairesi Başkanlığı
+GÖREV: Afet ve acil durum planlarını hazırlar, AFAD ile koordinasyon içinde müdahale ve tahliye çalışmalarını yürütür. Zemin etüdü, risk azaltma ve afet sonrası hasar tespit iş ve işlemlerini takip eder.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Belediye birimlerinin iş ve işlemlerini teftiş eder, inceleme ve soruşturma yapar. Denetim raporu, ön inceleme raporu ve disiplin soruşturması evrakını düzenler.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerini yürütür, kurumu yargı mercileri önünde temsil eder. Birimlerden gelen hukuki görüş taleplerini, sözleşme ve şartname incelemelerini karşılar.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, temsil, ağırlama ve protokol iş ve işlemlerini yürütür. Başkanlığa doğrudan intikal eden talep ve davetlerin kaydı ile ilgili birime yönlendirmesini yapar.

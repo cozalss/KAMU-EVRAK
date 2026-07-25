@@ -1,0 +1,103 @@
+@KURUM: Muğla Büyükşehir Belediyesi
+@BELGE: Muğla Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.mugla.bel.tr/organizasyonsemasi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: mugla-buyuksehir-belediyesi, mugla-bb, mugla-buyuksehir, mugla-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Muğla'ya özgü ayrımlar: mezarlık ve defin işleri Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı altındadır, veteriner hizmetleri Tarımsal Hizmetler Dairesi Başkanlığı altındadır ve kurumda üç adet coğrafi İlçe Hizmetleri Bölge Dairesi Başkanlığı bulunur; bu nedenle ayrı mezarlık veya veteriner dairesi aranmamalıdır. "Fen işleri Dairesi Başkanlığı" adı kaynak sayfadaki küçük harfli yazımıyla korunmuştur.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet ve Acil Durum Koordinasyon Merkezi (AKOM) işletimi, afet planlaması ve eğitimi, afet lojistiği ve idari işleri.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Basın ve yayın işleri, halkla ilişkiler ve vatandaş başvurularının takibi, sivil toplum kuruluşlarıyla iletişim, tören ve organizasyon işleri.
+
+BİRİM: İlçe Hizmetleri 1. Bölge Dairesi Başkanlığı
+GÖREV: Bodrum ve Milas ilçelerinde büyükşehir hizmetlerinin saha yürütümü ve bu ilçelerden gelen hizmet taleplerinin karşılanması.
+
+BİRİM: İlçe Hizmetleri 2. Bölge Dairesi Başkanlığı
+GÖREV: Datça, Kavaklıdere, Marmaris, Menteşe, Ula ve Yatağan ilçelerinde büyükşehir hizmetlerinin saha yürütümü ve hizmet taleplerinin karşılanması.
+
+BİRİM: İlçe Hizmetleri 3. Bölge Dairesi Başkanlığı
+GÖREV: Dalaman, Fethiye, Köyceğiz, Ortaca ve Seydikemer ilçelerinde büyükşehir hizmetlerinin saha yürütümü ve hizmet taleplerinin karşılanması.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel özlük işlemleri, bordro ve tahakkuk, hizmet içi eğitim, iş sağlığı ve güvenliği, işçi hizmetleri.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın müdahalesi ve kentsel arama kurtarma, yangın önleme denetimi ve yangın güvenlik raporu, itfaiye eğitim ve idari işleri.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür tesisi ve salon tahsisi, konservatuvar hizmetleri, kültür ve sosyal etkinlikler, Türkan Saylan Çağdaş Yaşam Merkezi hizmetleri.
+
+BİRİM: Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sağlık hizmetleri, sosyal yardım ve muhtaçlık incelemesi, engelli ve yaşlı hizmetleri; mezar yeri tahsisi, defin ruhsatı ve cenaze işlemleri.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: Hal denetimi, çevre ve imar zabıtası işlemleri, zabıta denetim tutanakları ve idari yaptırım, zabıta trafik hizmetleri.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Fon ve proje başvuruları, uluslararası ilişkiler ve kardeş şehir yazışmaları.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Gençlik hizmetleri, spor hizmetleri ve spor tesisi tahsis talepleri.
+
+BİRİM: Kadın ve Aile Hizmetleri Dairesi Başkanlığı
+GÖREV: Kadın politikaları ve kadın destek hizmetleri, çocuk politikaları ve çocuğa yönelik programlar.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe ve mali kontrol, gelir tahakkuk ve tahsilatı, muhasebe ve ödeme işlemleri, strateji işleri.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrak kaydı ile havalesi, meclis ve encümen gündem ve kararları, kurum arşivi işlemleri.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Yazılım ve bilgi teknolojileri hizmetleri, coğrafi bilgi sistemleri, elektronik ve altyapı işleri, sistem, ağ ve veri güvenliği.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: İhale ve satın alma işlemleri, taşınır mal ve ambar hizmetleri.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: Kamulaştırma işlemleri, taşınmaz malların kiralanması, tahsisi ve satışı, emlak yönetimi ve taşınmaz kayıt sorguları.
+
+BİRİM: Akıllı Şehir ve Kent Bilgi Sistemleri Dairesi Başkanlığı
+GÖREV: Akıllı şehir uygulamaları ve kent bilgi sistemleri, sosyal inovasyon ve yurttaş refahı programları, dairenin idari ve mali işleri.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Atık yönetimi, çevre yönetimi ve kent temizliği, hafriyat yönetimi ve denetimi, çevre ruhsat ve denetim işlemleri.
+
+BİRİM: Etüt ve Projeler Dairesi Başkanlığı
+GÖREV: Enerji yönetimi ve etüt-proje çalışmaları, yapı ve kontrol işleri, yapım işleri ihale süreçleri.
+
+BİRİM: Fen işleri Dairesi Başkanlığı
+GÖREV: AYKOME kapsamında altyapı koordinasyonu ve kazı ruhsatı, yol proje-yapım ile yol bakım ve işletme, sanat yapıları, yeşil alan planlama, yapım ve bakımı.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Çevre ve iklim politikaları, temiz enerji ve sıfır atık uygulamaları.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar planlama, üst ölçek planlama ve mevzuat geliştirme, yapı ruhsatı ve kontrol, harita işleri, deprem ve risk yönetimi.
+
+BİRİM: Kent Tarihi, Tanıtım ve Turizm Dairesi Başkanlığı
+GÖREV: Kültürel mirası koruma, Koruma Uygulama ve Denetim Bürosu (KUDEB) işlemleri, kent belleği ve kültür merkezi, tanıtım ve turizm hizmetleri.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Muhtar talep ve şikâyetlerinin kaydı ile ilgili birime yönlendirilmesi, şehit yakınları ve gazilere yönelik işlemler.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Mezbaha hizmetleri, veteriner hizmetleri ve hayvan sağlığı işlemleri, tarımsal yapı, tarım ve hayvancılık araştırma, destekleme ve eğitim.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararları, toplu ulaşım hizmetleri, terminal ve otopark işletmeciliği, ulaşım planlama, trafik hizmetleri, denizcilik işleri, makine ve ikmal.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Kurum birimlerinin teftişi, inceleme ve soruşturma işlemleri, rehberlik raporları.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Belediye lehine ve aleyhine dava takibi, icra işlemleri, sözleşme ve ihale dosyalarına hukuki görüş, mahkeme yazışmaları.
+
+BİRİM: Genel Sekreterlik Koordinasyon Şube Müdürlüğü
+GÖREV: Genel sekreterlik makamına gelen evrakın koordinasyonu, birimler arası iş takibi ve makam yazışmalarının izlenmesi.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.

@@ -113,9 +113,9 @@ async def _set_olc(dosya: str, limit: int) -> dict[str, Any]:
     return {
         "dosya": dosya,
         "n": n,
-        "det_top1": round(sum(1 for d, _l, _g in sonuc if d) / n, 3),
-        "llm_top1": round(sum(1 for _d, l, _g in sonuc if l) / n, 3),
-        "llm_gecersiz": sum(1 for _d, _l, g in sonuc if not g),
+        "det_top1": round(sum(1 for det, _llm, _gecerli in sonuc if det) / n, 3),
+        "llm_top1": round(sum(1 for _det, llm, _gecerli in sonuc if llm) / n, 3),
+        "llm_gecersiz": sum(1 for _det, _llm, gecerli in sonuc if not gecerli),
     }
 
 

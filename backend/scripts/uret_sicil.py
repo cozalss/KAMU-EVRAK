@@ -23,8 +23,8 @@ from agents.kurum_kimlik import ad_to_kurum
 from agents.nodes.teskilat_ara import _bagsiz  # bağlaç normalizasyonu — tek kaynak
 from core.kaynak_guveni import atomik_json_yaz
 from core.sicil import GECERLI_GUVEN, GECERLI_TURLER, kayit_dogrula
-from scripts.seed_teskilat import _BASLIK_RE  # korpus @başlık ayrıştırıcısı — tek kaynak
 from core.text import tr_lower
+from scripts.seed_teskilat import _BASLIK_RE  # korpus @başlık ayrıştırıcısı — tek kaynak
 
 _ROOT = Path(__file__).resolve().parents[2]
 _GIRDI_DIR = _ROOT / "data" / "teskilat" / "girdi"

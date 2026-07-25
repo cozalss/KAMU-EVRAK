@@ -155,6 +155,13 @@ def onbellegi_temizle() -> None:
 
 
 __all__ = (
-    "GECERLI_GUVEN", "GECERLI_TURLER", "SicilKaydi", "YASAK_ALANLAR",
-    "kayit_dogrula", "onbellegi_temizle", "sicil_cozumle", "sicil_turu", "sicil_yukle",
+    "GECERLI_GUVEN",
+    "GECERLI_TURLER",
+    "YASAK_ALANLAR",
+    "SicilKaydi",
+    "kayit_dogrula",
+    "onbellegi_temizle",
+    "sicil_cozumle",
+    "sicil_turu",
+    "sicil_yukle",
 )

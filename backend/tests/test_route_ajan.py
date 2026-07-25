@@ -141,11 +141,27 @@ class TestUcluGrounding:
         assert uclu_grounding(aday, "icra haciz tebligat mahkeme", "yenimahalle-belediyesi") is False
 
     def test_gecerli_aday_kabul_edilir(self):
+        # kaynak_dosya GERÇEK ve manifest+SHA doğrulamasından geçen bir dosyayı gösterir:
+        # uclu_grounding artık adayın beyanına değil diske bakar (bkz. docs/11 §8, F7).
         aday = {"birim_ad": "Ruhsat ve Denetim Müdürlüğü",
                 "gorev": "işyeri açma ve çalışma ruhsatı düzenlenmesi ve denetimi",
                 "kurum_slug": "yenimahalle-belediyesi", "kaynak_tipi": "kurum_ozel",
-                "kaynak_guven": "resmi_dogrulanmis", "kaynak_sha256": "a" * 64}
+                "kaynak_guven": "resmi_dogrulanmis", "kaynak_sha256": "a" * 64,
+                "kaynak_dosya": "yenimahalle-belediyesi/ruhsat-ve-denetim-resmi.txt"}
         assert uclu_grounding(aday, "işyeri açma ruhsatı", "yenimahalle-belediyesi") is True
+
+    def test_dogrulanmamis_kaynak_dosyasi_reddedilir(self):
+        """İndekste 'resmi_dogrulanmis' yazması yetmez; kaynak dosyası diskte doğrulanmalı.
+
+        `teskilat_index.json` manifest-kilitli değildir — mevcut bir chunk'ın gövdesini
+        YERİNDE düzenlemek korpus hash'ini bozmaz. Bu yüzden beyan tek başına kanıt sayılmaz.
+        """
+        aday = {"birim_ad": "Uydurma Şube Müdürlüğü",
+                "gorev": "işyeri açma ve çalışma ruhsatı düzenlenmesi ve denetimi",
+                "kurum_slug": "yenimahalle-belediyesi", "kaynak_tipi": "kurum_ozel",
+                "kaynak_guven": "resmi_dogrulanmis", "kaynak_sha256": "a" * 64,
+                "kaynak_dosya": "_genel-belediye/birimler.txt"}  # manifest'te YOK
+        assert uclu_grounding(aday, "işyeri açma ruhsatı", "yenimahalle-belediyesi") is False
 
     def test_yanlis_kurum_reddedilir(self):
         """Aday başka kurumun teşkilatındansa (slug uyuşmaz) reddedilir (başka-belediye koruması)."""

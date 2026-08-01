@@ -1,33 +1,68 @@
 @KURUM: Ticaret Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/ticaret-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.443 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: tb, ticaret, ticaret-bakanligi-tr
-@NOT: Rekabet Kurumu, ürün fiyatlandırma ve piyasa hakimiyeti ihlallerini inceleyen ayrı bir bağımsız idari otoritedir; bu dosya kapsamı dışındadır.
-
-BİRİM: Gümrükler Genel Müdürlüğü
-GÖREV: Gümrük işlemleri, gümrük vergisi tahakkuku, ithalat/ihracat gümrük mevzuatı ve gümrük beyannamesi başvurularını yürütür.
-
-BİRİM: İç Ticaret Genel Müdürlüğü
-GÖREV: Şirket kuruluş ve ticaret sicili işlemleri, perakende ticaret düzenlemeleri ve elektronik ticaret (e-ticaret) mevzuatına ilişkin başvuruları yürütür.
-
-BİRİM: Tüketicinin Korunması ve Piyasa Gözetimi Genel Müdürlüğü
-GÖREV: Tüketici şikâyetleri, tüketici hakem heyeti başvuruları ve ürün güvenliği/piyasa gözetim denetimlerini yürütür.
+@NOT: Birim adları m.443/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: İhracat Genel Müdürlüğü
-GÖREV: İhracat teşvikleri, ihracatçı birlikleri kaydı ve dış ticaret sermaye şirketi başvurularını yürütür.
-
-BİRİM: Esnaf, Sanatkârlar ve Kooperatifçilik Genel Müdürlüğü
-GÖREV: Esnaf ve sanatkâr sicili, kooperatif kuruluş işlemleri ve esnaf kredi/destek başvurularını yürütür.
+GÖREV: İhracatın kalkınma planları ve yıllık programlardaki ilke, hedef ve politikalar yönünde ülke ekonomisi yararına düzenlenmesini, desteklenmesini ve geliştirilmesini sağlamak; Kamu kurum ve kuruluşlarına çeşitli mevzuatla verilmiş yetkilerin kullanımında ihracata ilişkin politikaların uygulanmasına dair esasları düzenlemek, uygulamalarla ilgili kuruluşlar arasında koordinasyonu temin etmek ve anılan kurumların ihracata ilişkin yeni düzenlemeleri ile ilgili görüş bildirmek.
 
 BİRİM: İthalat Genel Müdürlüğü
-GÖREV: İthalat rejimi uygulamaları, gözetim ve korunma önlemleri ile damping soruşturması başvurularını yürütür.
+GÖREV: İthalatın uluslararası anlaşmalar ile kalkınma planları ve yıllık programlarda öngörülen ilke, hedef ve politikalar çerçevesinde yürütülmesini sağlamak; Kamu kurum ve kuruluşlarına çeşitli mevzuatla verilmiş yetkilerin kullanımında ithalat ile ilgili politikaların uygulanmasına dair esasları düzenlemek ve bu kurumların ithalata ilişkin düzenlemeleri ile ilgili görüş bildirmek.
 
-BİRİM: Serbest Bölgeler, Yurtdışı Yatırım ve Hizmetler Genel Müdürlüğü
-GÖREV: Serbest bölge faaliyet izinleri ve yurt dışı müteahhitlik hizmetlerine ilişkin başvuruları yürütür.
+BİRİM: İç Ticaret Genel Müdürlüğü
+GÖREV: Ticarete ilişkin politikaların oluşturulmasına yardımcı olmak, ticari faaliyetleri teşvik etmek, gerekli düzenlemeleri yapmak ve bunların uygulanmasını sağlamak; 13/1/2011 tarihli ve 6102 sayılı Türk Ticaret Kanunu ve ilgili diğer mevzuat gereğince Bakanlıkça yapılması gereken işlemleri yürütmek; Kuruluşuna izin verilecek anonim şirketler ile genel kurul toplantılarında Bakanlık temsilcisi bulunacak anonim şirketleri belirlemek ve bunların işlemlerini yürütmek.
 
-BİRİM: Gümrükler Muhafaza Genel Müdürlüğü
-GÖREV: Gümrük kapılarında kaçakçılıkla mücadele ve güvenlik denetimine ilişkin başvuruları yürütür.
+BİRİM: Gümrükler Genel Müdürlüğü
+GÖREV: Gümrük mevzuatı ve anlaşmalarına uygun olarak uygulamaların gerçekleşmesini sağlamak; Ulusal ve uluslararası mevzuat hükümlerine göre TIR, Transit ve Konteyner işlemlerini yürütmek; Türk Gümrük Tarife Cetvelini, eşyanın menşeini, gümrük kıymetini, gümrük rejim ve formalitelerini taraf olunan anlaşmalara ve uluslararası uygulamalara uygun olarak düzenlemek ve uygulanmasını sağlamak.
 
 BİRİM: Uluslararası Anlaşmalar ve Avrupa Birliği Genel Müdürlüğü
-GÖREV: Serbest ticaret anlaşmaları, Dünya Ticaret Örgütü (DTÖ) ilişkileri, AB Gümrük Birliği süreçleri ve ikili ticaret anlaşması müzakerelerine ilişkin başvuruları yürütür.
+GÖREV: Bakanlığın görev alanına giren konularda.
+
+BİRİM: Uluslararası Hizmet Ticareti Genel Müdürlüğü
+GÖREV: Uluslararası hizmet ticaretinin ülke ekonomisi yararına geliştirilmesini ve desteklenmesini sağlamak, bu alana yönelik küresel gelişmeleri takip ederek sektörler ve ülkeler bazında gerekli çalışmaları yapmak ve yurtdışı müteahhitlik dâhil uluslararası hizmet ticaretine ilişkin politikaların uygulanmasında ilgili kurum ve kuruluşlar arasında koordinasyonu sağlamak ve gerekli her türlü tedbiri almak.
+
+BİRİM: Serbest Bölgeler Genel Müdürlüğü
+GÖREV: Kalkınma planları ve yıllık programlar çerçevesinde yurtiçi ve yurtdışında serbest bölgeler, lojistik serbest bölgeleri, ihtisas serbest bölgeleri ve özel bölgelerin kurulması, yönetilmesi, işletilmesi ve desteklenmesi ile ilgili ilke ve politikaların tespiti konusunda çalışmalar yapmak, araştırma, planlama ve koordinasyon faaliyetlerini yürütmek; 6/6/1985 tarihli ve 3218 sayılı Serbest Bölgeler Kanunu ve buna ilişkin mevzuat çerçevesinde düzenlemeler yapmak, bunları uygulamak ve uygulanmasını sağlamak.
+
+BİRİM: Gümrükler Muhafaza Genel Müdürlüğü
+GÖREV: Gümrüklü yer ve sahalarda kamu düzeninin bozulmasını önleyecek tedbirleri almak, buraların takip ve muhafazasını sağlamak, gerektiğinde müdahalede bulunarak durumu adli mercilere intikal ettirmek; Deniz ve hava limanlarıyla kara sınırlarındaki gümrük kapılarında ve diğer gümrüklü yer ve sahalarda giriş ve çıkış yapan kişi, eşya ve taşıtların muhafazası ile gümrüğe sevk edilmesini sağlamak ve gümrük işlemleri bitirilmeden buralardan çıkmalarını önlemek; Yatlara ilişkin işlemlerin yürütülmesini sağlamak.
+
+BİRİM: Tüketicinin Korunması ve Piyasa Gözetimi Genel Müdürlüğü
+GÖREV: Tüketicinin korunmasına ilişkin politikalar oluşturulması amacıyla gerekli çalışmaları yapmak, yurtiçi ve yurtdışındaki kurum ve kuruluşlarla işbirliği yapmak ve gerekli koordinasyonu sağlamak; Tüketicilerin, sağlık ve güvenliği ile ekonomik çıkarlarını koruyucu, kayıplarını giderici tedbirleri almak ve gerekli düzenlemeleri yapmak; Tüketicilerin tüketim maddeleri yönünden çevresel tehlikelerden korunabilmesi amacıyla alınacak tedbirlerin belirlenmesinde ilgili bakanlık ve kuruluşlarla işbirliği yapmak.
+
+BİRİM: Esnaf, Sanatkârlar ve Kooperatifçilik Genel Müdürlüğü
+GÖREV: Esnaf ve sanatkârlara ilişkin politikaların belirlenmesi amacıyla gerekli çalışmaları yapmak.
+
+BİRİM: Ticaret Araştırmaları ve Risk Değerlendirme Genel Müdürlüğü
+GÖREV: Türkiye ve dünya ticareti ve ekonomisiyle ilgili güncel gelişmeleri izlemek, değerlendirmek, derlenmiş bilgi ve istatistikleri kullanarak ticaret politikalarının belirlenmesine katkı sağlamak üzere araştırma ve analizler yapmak, bu amaçla ikili ve çok taraflı ilişkilerdeki gelişmeleri analiz etmek, gerekli hallerde bunları yayımlamak, Türkiye’nin ticari ve ekonomik gelişimi ile ilgili tahmin ve analizler yaparak projeksiyonlar oluşturmak.
+
+BİRİM: Ürün Güvenliği ve Denetimi Genel Müdürlüğü
+GÖREV: Dış ticaret politikası, genel ekonomik hedefler, insan sağlığı ve güvenliği ile kamu yararı doğrultusunda ürün güvenliği politikalarının ilgili kuruluşlarla işbirliği halinde hazırlanmasını sağlamaya ve ticarette teknik engellerin önlenmesine ilişkin çalışmalar yapmak.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel politikası ve planlaması ile insan kaynakları sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; Bakanlığın eğitim planını hazırlamak, uygulamak ve değerlendirmek; eğitim faaliyetleri ile ilgili dokümantasyon, yayım ve arşiv hizmetlerini yürütmek.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek ve Bakanlık otomasyon stratejilerini belirlemek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, politikaları ve ilkeleri belirlemek, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlığın bilgi işlem hizmetlerini yürütmek; Bakanlığın internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapmak.
+
+BİRİM: Destek Hizmetleri, Tasfiye İşleri ve Döner Sermaye Genel Müdürlüğü
+GÖREV: 5018 sayılı Kanun hükümleri çerçevesinde Bakanlığın kiralama ve satın alma işlerini yürütmek; temizlik, aydınlatma, ısıtma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Bakanlığın ihtiyaç duyduğu taşınmazların temin edilmesi, projelendirilmesi ve inşa edilmesine yönelik iş ve işlemleri yürütmek, protokoller hazırlamak ve bunların yürürlük sürecinin takibini sağlamak.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlık teşkilatının her türlü faaliyet ve işlemleriyle ilgili olarak inceleme, denetim ve soruşturma yapmak; Bakanlık teşkilatının denetimi altındaki her türlü kuruluşun faaliyet ve işlemleri ile ilgili olarak Bakanlığın görev ve yetkileri çerçevesinde inceleme, denetim ve soruşturma yapmak; Özel anlaşmalara dayalı olarak Bakanlığa verilmiş görevlere ilişkin konularda ilgili merciler, gerçek ve tüzel kişiler nezdinde inceleme, denetim ve soruşturma yapmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenen usul ve ilkelere göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

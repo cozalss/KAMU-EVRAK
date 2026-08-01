@@ -1,29 +1,53 @@
 @KURUM: Gençlik ve Spor Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/genclik-ve-spor-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.186 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: gsb, genclik-bakanligi, spor-bakanligi
+@NOT: Birim adları m.186/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Gençlik Hizmetleri Genel Müdürlüğü
-GÖREV: Gençlik merkezi üyelik, gençlik kampı/projesi başvurusu ve gönüllülük programı işlemlerini yürütür.
-
-BİRİM: Spor Hizmetleri Genel Müdürlüğü
-GÖREV: Spor kulübü tescili, sporcu lisansı, federasyon iş ve işlemleri ile tesis tahsis başvurularını karşılar.
+GÖREV: Gençlere yönelik istismarın ve şiddetin engellenmesi ile gençler arasında her türlü ayrımcılığın giderilmesi amacıyla gerekli tedbirleri almak ve bu hususlarda öneriler geliştirmek; Yurtiçi veya yurtdışında gençlikle ilgili toplantı, kurs, seminer ve benzeri faaliyetler düzenlemek, düzenlenen faaliyetlere katılmak ve bu faaliyetleri desteklemek; Gençlere hizmet veren gençlik merkezi ve benzeri tesisler ile gençlik ve izcilik kamplarının; Sosyal hayatın her alanına gençliğin etkin katılımını sağlayıcı öneriler geliştirmek.
 
 BİRİM: Kredi ve Yurtlar Genel Müdürlüğü
-GÖREV: Yurt başvurusu (KYK), öğrenim/katkı kredisi ve burs başvuruları, yurt disiplin itirazlarını yürütür. [DOĞRULA: kredi/burs ödeme ve tahsilat işlemlerinin güncel kurumsal dağılımı — bir bölümü Hazine ve Maliye Bakanlığına devredilmiş olabilir]
+GÖREV: Yurt ihtiyacını belirlemek, yurtların her türlü ihtiyacını temin etmek, yurtların sevk ve idaresini yapmak, öğrencilerin iaşe, ibate ve sosyal ihtiyaçlarının karşılanması için yurt alanlarında ilgili düzenlemeleri yapmak; Yurtlarda barınacak öğrencilerin başvuru, değerlendirme, kayıt ve kabulüne ilişkin esasları belirlemek ve uygulamak, yurtlarda kalan öğrencilerin sosyal, sağlık, kültürel ve eğitim ihtiyaçlarını sağlamak ve ilgili kurumlarla işbirliği yapmak.
+
+BİRİM: Spor Hizmetleri Genel Müdürlüğü
+GÖREV: Spor alanında uygulanacak temel politikaların tespiti amacıyla gerekli çalışmaları yapmak, spor tesisleri ihtiyacını tespit etmek ve planlamak; Spor kültürünün geliştirilmesi, yaygınlaştırılması ve özendirilmesini sağlamak ve bu konuda her türlü tedbiri almak.
+
+BİRİM: Eğitim, Araştırma ve Koordinasyon Genel Müdürlüğü
+GÖREV: Gençlere rehberlik ve danışmanlık hizmeti yapmak, eğitim hizmet ve imkânlarını geliştirici faaliyetlerde bulunmak; Gençlik veya spor alanında proje ve çalışmalar yapmak, bu alanda yapılacak proje ve çalışmaları değerlendirmek, katılmak, desteklemek, uygulama ve sonuçlarını denetlemek, desteklenecek proje ve çalışmalara ilişkin usul ve esasları belirlemek.
 
 BİRİM: Yatırım ve İşletmeler Genel Müdürlüğü
-GÖREV: Gençlik ve spor tesisi yatırım projeleri, tesis yapım/onarım ve işletme başvuruları ile yatırım koordinasyon yazışmalarını yürütür.
+GÖREV: Bakanlık veya il müdürlüklerinin taşınmazlarına ilişkin her türlü alım, satım, kira, trampa, arsa veya kiralama ile kat karşılığı inşaat, sınırlı ayni hak tesisi, takas, tahsis, devir, yapma, yaptırma, bakım, onarım ve yenileme işlerini yapmak, bunlara ait kontrol, koordinasyon ve mimari proje çalışmalarını yürütmek, saha ve tesisleri yapmak, yaptırmak, işletmek, kiraya vermek suretiyle toplumun istifadesine sunmak.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+BİRİM: Uluslararası Organizasyonlar ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Bakanlığın faaliyet alanıyla ilgili uluslararası gelişmeleri takip etmek ve Bakanlığın uluslararası ilişkilerini yürütmek; Uluslararası organizasyonların yapılmasında, temas ve münasebetlerinde resmi merci görevi yapmak, yurtiçinde ve yurtdışında toplantı, konferans, seminer, organizasyon ve benzeri uluslararası; Uluslararası kuruluşlara üyelik, aidat ve benzeri hizmetlerle ilgili maddi yükümlülüklerin yerine getirilmesine ilişkin iş ve işlemleri yapmak.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel planlaması ile personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; Bakanlık personelinin eğitim planını hazırlamak, uygulamak ve değerlendirmek; Eğitim faaliyetleri ile ilgili dokümantasyon, yayım ve arşiv hizmetlerini yürütmek.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, politikaları ve ilkeleri belirlemek, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlık teşkilatı, bağlı ve ilgili kuruluşlar ve taşra teşkilatının bilgi işlem ve otomasyon ihtiyacını karşılamak ve işletimini sağlamak, Bakanlığın bilgi işlem hizmetlerini yürütmek.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlık merkez, taşra ve yurtdışı teşkilatı ile bağlı kuruluşların, federasyonların ve bunların denetimi altındaki kurum ve kuruluşların personeline rehberlik etmek; Bakanlık merkez, taşra ve yurtdışı teşkilatı ile bağlı kuruluşların, federasyonların ve bunların denetimi altındaki kurum ve kuruluşların faaliyet, işlem ve personeli ile ilgili usulsüzlükleri önleyici, eğitici ve rehberlik yaklaşımını ön plana çıkaran bir anlayışla denetim, araştırma, inceleme ve soruşturmalar yapmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Sosyal İlişkiler ve İletişim Dairesi Başkanlığı
+GÖREV: Bakanlığın sunduğu hizmetler hususunda toplumu bilgilendirmek ve toplumla ilişkilerin yürütülmesini sağlamak; Bakanlığın faaliyet alanında memnuniyeti, tanıtım ve itibarı geliştirici faaliyetleri planlayıp uygulamak; Bakanlık çalışmalarının kamuoyundaki etkilerini inceleyip değerlendirmek; Yazılı, görsel, sosyal medya ve diğer iletişim yolları ile Bakanlıktan beklentilerin tespitine yönelik çalışmalar yürütmek.
 
 BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: Bakanlık ve bağlı birimlerin satın alma, taşınır/taşınmaz ve idari destek yazışmalarını yürütür.
+GÖREV: 5018 sayılı Kanun hükümleri çerçevesinde, Bakanlığın satın alma işlerini yürütmek, temizlik, aydınlatma, ısıtma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınırlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Genel evrak ve arşiv faaliyetlerini düzenlemek ve yürütmek.
 
-BİRİM: Rehberlik ve Denetim Başkanlığı
-GÖREV: Bakanlık merkez/taşra teşkilatı ve bağlı kuruluşlar hakkındaki teftiş, inceleme ve şikâyet başvurularını değerlendirir.
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenen usul ve ilkelere göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

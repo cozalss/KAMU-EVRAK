@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: manisa-buyuksehir-belediyesi, manisa-bb, manisa-buyuksehir, manisa-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur (şema JavaScript ile çizildiğinden adlar sayfanın kendi veri dosyası olan yonetim-semasi/org.csv üzerinden aynı alan adından okunmuştur). GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: park ve yeşil alan işleri ayrı bir Park ve Bahçeler dairesi değil KENT ESTETİĞİ dairesi altındadır; Strateji Geliştirme ayrı bir daire başkanlığıdır; "Basın Yayın ve Halka İlişkiler Dairesi Başkanlığı" sitedeki yazımıyla korunmuştur.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Yönetim şeması sayfası HTTP hata döndürüyor; alternatif kurumsal sayfalar da erişilemiyor.
 
 BİRİM: Strateji Geliştirme Dairesi Başkanlığı
 GÖREV: Stratejik plan, performans programı, bütçe performansı ve faaliyet raporlarının hazırlanması.

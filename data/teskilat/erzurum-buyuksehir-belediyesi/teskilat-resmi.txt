@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: erzurum-buyuksehir-belediyesi, erzurum-bb, erzurum-buyuksehir, erzurum-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü yazım korunmuştur: Erzurum diğer büyükşehirlerdeki "Dairesi Başkanlığı" değil "Daire Başkanlığı" formunu kullanır; "Makina İkmal" yazımı da kaynaktaki gibi bırakılmıştır. Kaynak sayfa adları tümü büyük harfle yayımlamaktadır, burada normal Türkçe başlık yazımına çevrilmiştir. Kaynak sayfa yalnızca daire başkanlıklarını listelediği için Özel Kalem Müdürlüğü, Hukuk Müşavirliği, Teftiş Kurulu ve İç Denetim gibi daire dışı birimler bu dosyaya YAZILMAMIŞTIR; kurumsal şema sayfası ise metin değil görsel olduğundan okunamamıştır.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Teşkilat sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında liste yok.
 
 BİRİM: Bilgi İşlem Daire Başkanlığı
 GÖREV: EBYS ve e-belediye sistem yönetimi, kurumsal yazılım ve donanım talepleri, sistem erişim ve veri paylaşımı.

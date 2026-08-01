@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: gaziantep-buyuksehir-belediyesi, gaziantep-bb, gaziantep-buyuksehir, gaziantep-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Gaziantep teşkilat şeması sunucu tarafında tam ağaç olarak yayımlanır (124 düğüm) ve her dairenin alt şube müdürlükleri sitede yazılıdır; bu nedenle görevler isimden değil, sitedeki alt birim adlarından okunmuştur. Şema kısaltma kullanır: "Dai. Bşk." (Zabıta'da "Daire Bşk."). Sitedeki yazım hataları korunmuştur: "İtfaye", "Destek Hizmeteri", "Dal. Bşk." (iki birimde), "Kütühaneler", "Çoğrafi", "İletişim ve Enformasyon koordinatörlüğü" (küçük harf). Gaziantep'te ayrı bir Yazı İşleri dairesi YOKTUR; evrak, karar ve arşiv işlemleri İnsan Kaynakları ve Eğitim Dai. Bşk. altındaki Yazı İşleri, Kararlar ve Arşiv Şb. Md. tarafından yürütülür. Emlak ve kamulaştırma da ayrı daire değildir, İmar ve Şehircilik Dai. Bşk. altındadır.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Sayfa yalnız TLS sertifika doğrulaması KAPATILDIĞINDA açılıyor; bu nedenle bu dosya değil, yalnız birim listesi eşleşmesi kaydedildi ve dosya aday bırakıldı.
 
 BİRİM: Mali Hizmetler Dai. Bşk.
 GÖREV: Gelirler, Giderler, İç Kontrol ve Ön Mali Kontrol ile Strateji ve Bütçe şube müdürlüklerinden oluşur; gelir tahakkuk ve tahsilatı, ödeme ve muhasebe işlemleri, ön mali kontrol, bütçe ve kesin hesap iş ve işlemlerini yürütür.
@@ -86,9 +87,6 @@ GÖREV: Belediye yatırım programındaki projelerin ilerlemesini izler, koordin
 
 BİRİM: Şehir Vizyonu ve Gelişimi Koordinatörlüğü
 GÖREV: Kentin uzun vadeli gelişim vizyonuna yönelik strateji ve projeleri geliştirir; ilgili daire başkanlıkları arasında şehir ölçekli planlama koordinasyonunu sağlar.
-
-BİRİM: İletişim ve Enformasyon koordinatörlüğü
-GÖREV: Başkanlık makamının iletişim ve enformasyon faaliyetlerini koordine eder; kurum içi ve kurum dışı bilgilendirme akışını düzenler.
 
 BİRİM: İç Denetim Birim Başkanlığı
 GÖREV: Risk esaslı iç denetim programını hazırlar; uygunluk, sistem ve performans denetimlerini mevzuata ve denetim standartlarına uygun olarak yürütür ve raporlar.

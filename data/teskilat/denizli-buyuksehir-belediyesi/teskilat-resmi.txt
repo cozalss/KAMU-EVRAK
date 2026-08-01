@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: denizli-buyuksehir-belediyesi, denizli-bb, denizli-buyuksehir, denizli-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kaynak sayfa birim adlarını büyük harfle yazmakta ve bir kısmını "DAİRESİ BŞK." olarak kısaltmaktadır; adlar normal Türkçe başlık yazımına çevrilmiş, kısaltmalar "Dairesi Bşk." biçiminde korunmuştur.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Teşkilat sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında liste yok.
 
 BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
 GÖREV: Afet ve acil durum planlaması, deprem ve sel risk değerlendirmesi, arama kurtarma koordinasyonu, toplanma alanı tahsisi ve tatbikat işlemleri.

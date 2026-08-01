@@ -1,36 +1,59 @@
 @KURUM: Ulaştırma ve Altyapı Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/ulastirma-ve-altyapi-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.476 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: ulastirma-bakanligi, uab
-@NOT: Karayolları Genel Müdürlüğü (6001 sayılı Kanun) ve Sivil Havacılık Genel Müdürlüğü mevzuatta ayrı tüzel kişiliğe sahip bağlı/ilgili kuruluş statüsündedir; evrak yönlendirme amacıyla Bakanlık teşkilatı içinde listelenmiştir.
-
-BİRİM: Karayolları Genel Müdürlüğü
-GÖREV: Devlet ve il yolları yapım/bakım-onarım, karayolu kamulaştırma, geçiş yolu izin belgesi ve yol arızası/hasar ihbarı başvurularını yürütür.
-
-BİRİM: Altyapı Yatırımları Genel Müdürlüğü
-GÖREV: Demiryolu, liman ve büyük altyapı yatırım projelerinin planlama, ihale ve yapım takibi başvurularını karşılar.
-
-BİRİM: Denizcilik Genel Müdürlüğü
-GÖREV: Gemi sicil, bağlama kütüğü kaydı, liman başkanlığı işlemleri ve deniz taşımacılığı yetki belgesi başvurularını yürütür.
-
-BİRİM: Sivil Havacılık Genel Müdürlüğü
-GÖREV: Hava taşıyıcı işletme ruhsatı, uçuşa elverişlilik belgesi, havaalanı işletme izni ve yolcu şikâyeti başvurularını değerlendirir.
+@NOT: Birim adları m.476/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Ulaştırma Hizmetleri Düzenleme Genel Müdürlüğü
-GÖREV: Karayolu taşımacılığı yetki belgeleri (C, K, L vb. türler), taşıt kartı ve lojistik işletme izin başvurularını yürütür.
+GÖREV: Karayolu ve demiryolu ulaştırması faaliyetlerinin ticari, ekonomik, sosyal ihtiyaçlara ve teknik gelişmelere bağlı olarak ekonomik, seri, elverişli, güvenli, kaliteli, çevreye olumsuz etkilerini önleyecek, giderecek ve kamu yararını gözetecek tarzda serbest, adil ve sürdürülebilir bir rekabet ortamında yapılmasını ve bu faaliyetlerin müstakilen veya ulaştırma türleriyle birlikte ve birbirlerini tamamlayıcı olarak hizmet vermesini sağlamak.
+
+BİRİM: Denizcilik Genel Müdürlüğü
+GÖREV: Deniz ve içsular ulaştırması faaliyetlerinin ticari, ekonomik, sosyal ihtiyaçlara ve teknik gelişmelere bağlı olarak ekonomik, seri, elverişli, güvenli, kaliteli, çevreye olumsuz etkilerini önleyecek ve kamu yararını gözetecek tarzda serbest, adil ve sürdürülebilir bir rekabet ortamında yapılmasını ve bu faaliyetlerin diğer ulaştırma türleriyle birlikte ve birbirlerini tamamlayıcı olarak hizmet vermesini sağlamak; Deniz ve içsular ulaştırması alanında hizmet üretenler ile hizmetten yararlananların hak, yükümlülük ve sorumluluklarını belirlemek.
+
+BİRİM: Tersaneler ve Kıyı Yapıları Genel Müdürlüğü
+GÖREV: Çevrenin, denizin ve kıyı şeridinin korunması ilkesini gözeterek; tersaneler ile gemi geri dönüşüm tesisleri ve liman, iskele ve benzeri kıyı yapıları, kıyı yapılarıyla irtibatlı boru, kablo, kanal ve benzeri yapıların yer, kapasite ve benzeri niteliklerini belirleyerek planlamak, kurulmalarına ilişkin usul ve esasları belirlemek ve izin vermek, gerekli arazi tahsisi ile altyapıların kurulması hususunda ilgili kuruluşları koordine etmek, uygulamasını takip etmek ve denetlemek.
 
 BİRİM: Haberleşme Genel Müdürlüğü
-GÖREV: Elektronik haberleşme altyapısı, uydu ve kablo işletmeciliği izin/lisans başvuruları ile posta hizmetleri şikâyetlerini karşılar.
+GÖREV: Haberleşme ve posta hizmetleri ve bunlarla ilgili evrensel hizmetler ile acil durum haberleşmesine yönelik politika, strateji ve hedeflerin belirlenmesi amacıyla çalışmalar yapmak ve uygulanmasını takip etmek; Haberleşme ve posta hizmetleriyle ilgili evrensel hizmetler ve acil durum haberleşmesine yönelik hizmet politikalarını ve yürütülme esaslarını belirlemek amacıyla çalışmalar yapmak ve uygulanmasını takip etmek.
 
-BİRİM: Tehlikeli Mal ve Kombine Taşımacılık Düzenleme Genel Müdürlüğü
-GÖREV: Tehlikeli madde taşımacılığı faaliyet belgesi, sürücü eğitim sertifikası (ADR/SRC5) işlemleri, taşıma güvenliği denetim ve kombine taşımacılık başvurularını yürütür.
+BİRİM: Altyapı Yatırımları Genel Müdürlüğü
+GÖREV: Devletçe yaptırılacak demiryolları, lojistik köy, merkez veya üsler, limanlar, barınaklar, kıyı yapıları, hava meydanlarının plan ve projelerini hazırlamak veya hazırlatmak ve onaylamak; (a) bendinde belirtilen ulaştırma altyapılarının inşaatını yapmak ve/veya yaptırmak, yapımı tamamlananları ilgili kuruluşlara devretmek.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve yatırım programı yazışmalarını yürütür.
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Türkiye’nin ulaştırma, denizcilik, haberleşme, posta teknolojileriyle ilgili çok taraflı uluslararası anlaşmalara, sözleşmelere ve kuruluşlara katılmasına dair görüş hazırlamak; Çevre, enerji, sera gazları ve iklim değişikliği konularında ulusal ve uluslararası kuruluş, platform, oluşum ve benzeri yapıların çalışmalarını izlemek, değerlendirmek, gerektiğinde bu çalışmalara katılarak Bakanlığı temsil etmek ve bu çalışmaların sonuçlarını Bakanlık ilgili hizmet birimleri ve kuruluşlarına bildirmek ve gereğini takip etmek.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
 
 BİRİM: Personel Genel Müdürlüğü
-GÖREV: Bakanlık personeli atama, nakil ve özlük işlemlerine ilişkin başvuruları yürütür.
+GÖREV: Bakanlığın personel politikası ve planlaması ile insan kaynakları sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve bu çalışmaları Bakanlık teşkilatı ile bağlı, ilgili ve ilişkili kuruluşları koordine ederek uygulamak; Personelin atama, nakil, terfi, emeklilik ve benzeri özlük iş ve işlemlerini yürütmek; Bakanlığın eğitim planını hazırlamak, uygulamak ve değerlendirmek; eğitim faaliyetleri ile ilgili dokümantasyon, yayım ve arşiv hizmetlerini yürütmek.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.476/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Ulaştırma, Denizcilik ve Haberleşme Araştırmaları Merkezi Başkanlığı
+GÖREV: Bakanlık ilgili hizmet birimleri ve kuruluşlarıyla işbirliği içerisinde araştırma ve geliştirme faaliyeti yapmak ve bu amaçla program hazırlamak ve uygulamak; Bakanlık ilgili hizmet birimleri ve kuruluşlarıyla işbirliği içerisinde yerli, yabancı ve ulus￾lararası araştırma ve geliştirme kuruluşlarına araştırma ve geliştirme faaliyeti yaptırmak ve bu amaçla program hazırlamak ve uygulamak.
+
+BİRİM: Ulaşım Emniyeti İnceleme Merkezi Başkanlığı
+GÖREV: Ulaştırma türlerinde meydana gelen ve ulaştırma emniyet düzenlemeleri ile emniyet yönetimi bakımından belirgin bir etkiye sahip kaza veya olayları araştırmak, incelemek ve ulaşım emniyetinin iyileştirilmesine yönelik rapor hazırlamak, incelenen ve karara bağlanan raporu Bakana ve Cumhurbaşkanlığı Güvenlik ve Dış Politikalar Kuruluna sunmak.; İncelemesi yapılan kaza veya olaylara ilişkin raporları gerektiğinde taraflara, ilgili ulusal ve uluslararası kurum ve kuruluşlara göndermek.
+
+BİRİM: Döner Sermaye İşletme Dairesi Başkanlığı
+GÖREV: Döner Sermaye İşletmesini idari ve mali yönden yönetmek; Gerçek ve kamu kurum ve kuruluşları dahil tüzel kişilere.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bilgi teknolojileri, bilişim, bilgi işlem ve bilgi güvenliğiyle ilgili her türlü yatırım, iş, işlem ve hizmetleri yapmak veya yaptırmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kanun çerçevesinde; kiralama ve satın alma işlerini yürütmek, temizlik, aydınlatma, ısıtma, bakım, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Genel evrak ve sosyal hizmetleri düzenlemek ve yürütmek; Hizmet birimlerinin talep etmesi halinde; bunların faaliyet ve yürüttüğü projelerle ilgili olarak kamuoyu ve toplumu bilgilendirmeye yönelik yazılı ve görsel belge basmak veya bastırmak, yurtiçi tanıtım toplantıları, tören ve benzeri çalışmalar yapmak veya yaptırmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Basın ve halkla ilişkilerle ilgili faaliyetleri hazırlamak, koordine etmek ve yürütmek; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak; Bakanlık makamının yurtiçindeki her türlü tören, konuşma, basın açıklaması, protokol ve benzeri işlerini düzenlemek ve yürütmek.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel yazışmalarını yürütmek; Bakanın kabul, davet, karşılama, ağırlama, uğurlama, milli ve dini bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve ilgili hizmet birimleri ve kuruluşlarla koordine etmek.

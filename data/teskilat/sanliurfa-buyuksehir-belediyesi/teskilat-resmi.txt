@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: sanliurfa-buyuksehir-belediyesi, sanliurfa-bb, sanliurfa-buyuksehir, sanliurfa-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kurumun birim sayfaları görev tanımı içermez, yalnızca daire başkanı ve iletişim bilgisi yayımlanır. Sitedeki yazım biçimleri korunmuştur: "İşletme ve İştiraklar" (İştirakler değil), "Kültür,Sanat" (virgülden sonra boşluksuz), "Park Bahçeler" ("ve" bağlacı yok). Şanlıurfa'nın tipik büyükşehir setinden ayrılan yapısı: Sağlık İşleri ile Sosyal Hizmetler AYRI iki dairedir ve Veteriner İşleri müstakil bir daire başkanlığıdır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Sağlık İşleri Dairesi Başkanlığı
 GÖREV: Sağlık tarama, poliklinik ve sağlık merkezi hizmetlerini yürütür; gıda üretim yerleri ile umuma açık istirahat ve eğlence yerlerinde sağlık denetimlerini yapar; halk sağlığına yönelik bilgilendirme ve koruyucu sağlık faaliyetlerini planlar.

@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: kocaeli-buyuksehir-belediyesi, kocaeli-bb, kocaeli-buyuksehir, kocaeli-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kurumun birim sayfaları görev tanımı içermez, yalnızca daire başkanının özgeçmişi ve iletişim bilgisi yayımlanır. Hukuk birimi sitede "Birinci Hukuk Müşavirliği" adıyla geçer. Kocaeli'nin tipik büyükşehir setinden ayrılan dört dairesi vardır: Raylı Sistemler, Sivil Toplum Kuruluşları İle İlişkiler, Strateji Geliştirme ile Etüt ve Projeler. Ayrı bir Mezarlıklar dairesi yoktur; defin ve cenaze hizmetleri Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı altındadır. Teşkilat sayfasında ayrıca 100'ü aşkın şube müdürlüğü listelenmektedir; bu dosyaya daire ve doğrudan bağlı birim düzeyi alınmıştır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Raylı Sistemler Dairesi Başkanlığı
 GÖREV: Tramvay ve raylı sistem hatlarının işletme, bakım ve yatırım işlerini yürütür; hat güzergâh projelerini hazırlar; istasyon işletmeciliği ile araç bakım ve sinyalizasyon işlemlerini yönetir.

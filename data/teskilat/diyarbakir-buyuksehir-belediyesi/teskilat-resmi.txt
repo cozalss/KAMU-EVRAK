@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: diyarbakir-buyuksehir-belediyesi, diyarbakir-bb, diyarbakir-buyuksehir, diyarbakir-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: mezarlık ve cenaze hizmetleri ayrı daire değil SAĞLIK İŞLERİ dairesine bağlıdır; Sivil Savunma Uzmanlığı Afet İşleri dairesine, Eşitlik Birimi Kadın ve Aile Hizmetleri dairesine bağlıdır; makam şemada "Büyükşehir Belediye Eşbaşkanlar" olarak yazılıdır. Daire adları şemada kısaltmalı yazıldığı için ("Dairesi Bşk." ve iki birimde "Dai. Bşk.") sitedeki yazım birebir korunmuştur.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Afet İşleri ve Risk Yönetimi Dai. Bşk.
 GÖREV: Afet risk azaltma ve hazırlık planları ile Afet Koordinasyon Merkezi işlemleri.

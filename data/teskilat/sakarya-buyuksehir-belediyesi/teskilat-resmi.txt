@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: sakarya-buyuksehir-belediyesi, sakarya-bb, sakarya-buyuksehir, sakarya-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. Liste ayrıca kurumun kendi organizasyon şeması sayfasıyla (https://www.sakarya.bel.tr/tr/OrganizasyonSemasi) çapraz doğrulanmış, iki sayfa birebir aynı 25 birimi vermiştir. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. "Yazı işleri ve Kararlar Dairesi Başkanlığı" adı kaynak sayfadaki küçük harfli yazımıyla korunmuştur.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
 GÖREV: Afet ve acil durum planlaması, risk analizi, arama kurtarma koordinasyonu, toplanma alanı ve tatbikat işlemleri.

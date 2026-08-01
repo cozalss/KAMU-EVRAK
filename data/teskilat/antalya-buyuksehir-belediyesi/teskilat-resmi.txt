@@ -5,6 +5,9 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: antalya-buyuksehir-belediyesi, antalya-bb, antalya-buyuksehir, antalya-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adının kapsadığı işlerden TÜRETİLMİŞTİR, kaynakta birebir yer almaz — bu nedenle dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Liste kurumun o tarihte yayımladığı birimlerle sınırlıdır. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Belediyeye özgü not: ana sitedeki kurumsal birimler sayfası yalnızca JavaScript kabuğu döndürdüğü ve birim listesi gelmediği için liste kurumun Genel Sekreterlik alt alanındaki (ge.antalya.bel.tr) statik birimler sayfasından alınmıştır. Sayfada görünen ASAT Genel Müdürlüğü ayrı tüzel kişiliğe sahip bağlı kuruluş olduğu için listeye alınmamıştır. Ulaşım birimi kaynak sayfada kısaltmalı olarak "Ulaşım Planlama ve Raylı Sistem Dai.Bşk." biçiminde yazılmıştır ve bu yazım korunmuştur. Afet birimi bu kurumda "Afet İşleri Dairesi Başkanlığı" adını taşır, adında "Risk Yönetimi" ibaresi yoktur.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@NOT: Kaynak sayfa unvanı "Dai.Bşk." biçiminde kısaltarak yazmaktadır; dosyada resmî yazışmada kullanılabilmesi için açık yazım tutulmuştur (yalnız yazım normalleştirmesi, birim adı değişmemiştir).
 
 BİRİM: Afet İşleri Dairesi Başkanlığı
 GÖREV: Afet risk azaltma planları, arama kurtarma ve acil durum koordinasyonu, afet sonrası hasar tespit talepleri ve tahliye planlaması. Deprem tatbikatı, afet toplanma alanı düzenlemesi ve AFAD ile kurumlar arası yazışmalar bu birimde yürütülür.
@@ -90,7 +93,7 @@ GÖREV: Sosyal yardım başvuruları, gıda, yakacak, giyim ve nakdi destek tale
 BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
 GÖREV: Kırsal kalkınma projeleri, üretici ve çiftçi destek başvuruları, fide, fidan, tohum ve hayvancılık destekleri. Tarımsal danışmanlık, kooperatif ve üretici birliği yazışmaları ile sera ve sulama destekleri bu birimde yürütülür.
 
-BİRİM: Ulaşım Planlama ve Raylı Sistem Dai.Bşk.
+BİRİM: Ulaşım Planlama ve Raylı Sistem Dairesi Başkanlığı
 GÖREV: Ulaşım planlama ve raylı sistem dairesi başkanlığı olarak toplu taşıma hat ve güzergâh düzenlemeleri, UKOME kararlarına bağlı işler, ulaşım kartı ve indirimli kart işlemleri. Tramvay ve raylı sistem güzergâh etüdü, trafik düzenlemesi, otopark, servis aracı ve ticari taksi plaka talepleri bu birimde yürütülür.
 
 BİRİM: Veteriner İşleri Dairesi Başkanlığı

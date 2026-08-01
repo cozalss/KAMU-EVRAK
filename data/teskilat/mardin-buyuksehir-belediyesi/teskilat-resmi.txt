@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: mardin-buyuksehir-belediyesi, mardin-bb, mardin-buyuksehir, mardin-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kaynak şema birim adlarını "Daire Bşk." biçiminde kısaltmakta olup bu yazım korunmuştur; birimlerin kendi sayfalarında ad "... Dairesi Başkanlığı" olarak geçebilir. Mardin'e özgü ayrım: Park ve Bahçeler, Emlak ve İstimlak ile Strateji Geliştirme daireleri bu şemada yer almaz, buna karşılık Kent Estetiği ile Engelli ve Yaşlı Hizmetleri ayrı daire olarak bulunur.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Teşkilat şeması sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında yalnız birkaç birim görünüyor.
 
 BİRİM: Basın Yayın ve Halkla İlişkiler Daire Bşk.
 GÖREV: CİMER ve çözüm merkezi başvurularının cevaplanması, 4982 sayılı Kanun kapsamında bilgi edinme talepleri, vatandaş şikâyet takibi ve basın duyuruları.

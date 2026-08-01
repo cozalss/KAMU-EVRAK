@@ -1,33 +1,62 @@
 @KURUM: Adalet Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/adalet-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.40 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: adalet, adalet-bakanligi-tr
-@NOT: Mahkemeler ve savcılıklar bağımsız yargı organlarıdır; bireysel dava dosyası talepleri ilgili mahkeme/savcılık kalemine, bu dosyadaki birimler ise bakanlığın idari işlerine yöneliktir.
+@NOT: Birim adları m.40/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Ceza İşleri Genel Müdürlüğü
-GÖREV: Ceza mevzuatının uygulanmasına ilişkin görüş verme, cezai konularda adli makamlarla yazışmaların idari koordinasyonu ve ceza muhakemesine ilişkin idari başvuruları yürütür.
+GÖREV: Kamu güvenliği yönünden dava nakli ile ilgili olarak mevzuatın Adalet Bakanına verdiği yetkinin kullanılmasına ilişkin iş ve işlemleri yapmak; Kamu davasının açılması ile ilgili olarak mevzuatın Adalet Bakanına verdiği yetkinin kullanılmasına ilişkin iş ve işlemleri yapmak; 4/12/2004 tarihli ve 5271 sayılı Ceza Muhakemesi Kanunu uyarınca Bakanlığa verilen kanun yararına bozmaya ilişkin işlemleri yürütmek.
 
 BİRİM: Hukuk İşleri Genel Müdürlüğü
-GÖREV: Hukuki görüş verme, kanun tasarısı hazırlık çalışmaları ve uluslararası özel hukuk/tahkim başvurularını yürütür.
-
-BİRİM: Ceza ve Tevkifevleri Genel Müdürlüğü
-GÖREV: Ceza infaz kurumlarının (cezaevi) yönetimi, ceza infaz mevzuatının uygulanması, tutuklu ve hükümlü işlemleri ile infaz koruma memurluğu başvurularını yürütür.
-
-BİRİM: Adli Sicil ve İstatistik Genel Müdürlüğü
-GÖREV: Adli sicil (sabıka) kaydı ve arşiv kaydı belgesi başvuruları ile adalet istatistiklerinin derlenmesini yürütür.
-
-BİRİM: İcra İşleri Dairesi Başkanlığı
-GÖREV: İcra ve iflas dairelerinin idari koordinasyonu, icra memurları işlemleri ve alacak-borç takip süreçlerine ilişkin başvuruları yürütür.
+GÖREV: 19/3/1969 tarihli ve 1136 sayılı Avukatlık Kanunu ile 18/1/1972 tarihli ve 1512 sayılı Noterlik Kanununda verilen görevleri yapmak ve ceza uygulamalarını gerektiren işlerde evrakı ilgili mercie tevdi etmek; 13/1/2011 tarihli ve 6102 sayılı Türk Ticaret Kanunu ve bu Kanuna dayanılarak çıkarılan mevzuatın Bakanlıkça yapılması gereken işlemlerini yürütmek; Kanun yararına temyiz yoluna başvurulması işlemlerini yürütmek; 7/6/2012 tarihli ve 6325 sayılı Hukuk Uyuşmazlıklarında Arabuluculuk Kanununda verilen görevleri yapmak.
 
 BİRİM: Mevzuat Genel Müdürlüğü
-GÖREV: Mevzuat hazırlama, kanun/tüzük/yönetmelik taslaklarının incelenmesi ve görüş bildirme başvurularını yürütür.
+GÖREV: Adlî konulara ilişkin kanunlarla ilgili inceleme ve araştırma yapmak, önerilerde bulunmak; Bakanlığa gönderilen kanun teklifleri hakkında görüş bildirmek; Bakanlıklarca gönderilen mevzuat taslaklarının, Türk hukuk sistemine ve mevzuat tekniğine uygunluğunu incelemek ve bu konularda görüş bildirmek.
 
-BİRİM: Uluslararası Hukuk ve Dış İlişkiler Genel Müdürlüğü
-GÖREV: Suçluların iadesi, adli yardımlaşma, AİHM süreçleri ve uluslararası sözleşmelere ilişkin başvuruları yürütür. [DOĞRULA: güncel adı "Dış İlişkiler ve Avrupa Birliği Genel Müdürlüğü" olabilir; 1 sayılı CBK'dan teyit edilmeli]
+BİRİM: Ceza ve Tevkifevleri Genel Müdürlüğü
+GÖREV: Ceza infaz kurumları ve tutukevlerini yönetmek, denetlemek ve hesap işlerini izlemek, Ceza İnfaz Kurumları ile Tutukevleri İşyurtları Kurumuna ilişkin mevzuatla verilen görevleri yerine getirmek.
 
-BİRİM: Bilgi İşlem Genel Müdürlüğü
-GÖREV: UYAP (Ulusal Yargı Ağı Bilişim Sistemi), e-imza ve elektronik dava takibi altyapısına ilişkin başvuruları yürütür.
+BİRİM: Adli Sicil ve İstatistik Genel Müdürlüğü
+GÖREV: Adli sicili tutmak; Bakanlığın görev ve yetkisine giren konularla ilgili istatistiki bilgilerin belirlenmesi, toplanması, sınıflandırılması ve değerlendirilmesi ile ilgili hizmetleri yürütmek; Adli sicil ve adli istatistik hizmetlerinin yerine getirilmesi için bilgi işlem sistemini kurmak ve geliştirmek.
+
+BİRİM: Dış İlişkiler ve Avrupa Birliği Genel Müdürlüğü
+GÖREV: Bakanlığın görev alanına giren konularda uluslararası antlaşmalar ve belgelerle ilgili olarak görüş bildirmek, yapılan çalışmalara ve görüşmelere katılmak, bu antlaşma ve belgeleri Türkçeye çevirtmek, derlemek, arşivlemek, bunları ilgili kurum ve birimlere iletmek; Yurtdışında işlenen ve Türk yargı yetkisine giren suçlar konusunda adli makamlara bilgi ve belge sağlanmasına yardımcı olmak; Hukuki ve cezai konularda uluslararası adli yardımlaşma.
 
 BİRİM: Personel Genel Müdürlüğü
-GÖREV: Hâkim, savcı ve adalet personelinin atama, nakil ve özlük işlemlerine ilişkin başvuruları yürütür.
+GÖREV: Hâkim ve savcıların, Bakanlık merkez, taşra ve yurtdışı teşkilatı ile bağlı ve ilgili kuruluşlarına, diğer kamu kurum ve kuruluşları ile uluslararası kuruluş ve mahkemelere atanma veya görevlendirilme işlemlerini yapmak.; Bakanlık merkez ve taşra teşkilatında görev yapan hâkim ve savcıların eğitim, çalışma ziyareti veya benzeri amaçlarla yurtiçinde görevlendirme işlemleri ile izin işlemlerini yerine getirmek.; Hâkim ve savcıların, eğitim, çalışma ziyareti veya benzeri amaçlarla yurtdışında görevlendirilmesi işlemlerini yapmak.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararnamede hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi İşlem Genel Müdürlüğü
+GÖREV: 44 üncü maddenin birinci fıkrasının (c) bendinde belirtilen konular hariç olmak üzere, Bakanlık merkez ve taşra teşkilatı ile bağlı kuruluşların ilgili birimleriyle işbirliği yaparak bilgi işlem sistemini kurmak, işletmek, bakım ve onarımlarını yapmak veya yaptırmak, bunlara ait hizmetleri ilgili birimlerle birlikte yürütmek; bilgi işlem projeleri ile ilgili olarak Bakanlık birimleri arasında koordinasyonu ve işbirliğini sağlamak.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Mevzuatta adalet müfettişlerince denetimi öngörülen yerleri denetlemek; Araştırma, inceleme ve soruşturma yapmak; Mevzuatta gösterilen veya Bakan tarafından verilen diğer görevleri yerine getirmek. Strateji Geliştirme Başkanlığı.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: İnsan Hakları Dairesi Başkanlığı
+GÖREV: Dışişleri Bakanlığı ile işbirliği yapmak suretiyle Türkiye Cumhuriyeti aleyhine Avrupa İnsan Hakları Mahkemesine yapılan başvuruları takip etmek, bu başvurulara ilişkin ilgili tüm kurum ve kuruluşlardan her türlü bilgi, belge ve görüş istemek, savunmaları hazırlamak ve gerektiğinde oturumlara temsilci göndermek; Gerektiğinde dostane çözüm ve tek taraflı deklarasyon yöntemlerini kullanmak.
+
+BİRİM: Eğitim Dairesi Başkanlığı
+GÖREV: Ceza infaz kurumları ve tutukevleri personeli eğitim merkezlerinde eğitim gören personel hariç olmak üzere, Bakanlık merkez ve taşra teşkilatı personelinin eğitim planını hazırlamak, yayınlamak ve uygulanmasını takip etmek, bu personelin adaylık, hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek ve uygulamak; Personel eğitim merkezleriyle ilgili işleri yürütmek.
+
+BİRİM: İcra İşleri Dairesi Başkanlığı
+GÖREV: İcra ve iflas sisteminin etkin ve verimli bir şekilde yürütülmesini sağlamak; İcra ve iflas dairelerinin kurulması, kaldırılması ve aynı veya farklı yerlerdeki dairelerin birleştirilmesi ile yetki alanının belirlenmesi işlemlerini yürütmek; İcra ve iflas dairelerinin yönetim, denetim ve gözetim işlemlerinin etkin bir şekilde yürütülmesi için gerekli önlemleri almak; Doğrudan Bakanlıkça ataması yapılan icra ve iflas dairesi personelinin.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Bakanlık için gerekli araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek; Temizlik, aydınlatma, ısıtma ve taşıma hizmetlerini yapmak; Sosyal tesislerin kurulması ve yönetimi ile ilgili hizmetleri yapmak; Bakanlık için ihtiyaç duyulan bina ve arazinin, kiralama ve satın alma işlerini yürütmek; Bakanlığa ait bina ve tesislerin, ilgili birimlerle işbirliği yaparak tesis, yapım, onarım ve kira işlerine ilişkin program ve projelerini hazırlamak, takip etmek, bunların bakım ve küçük onarımlarını yapmak veya yaptırmak.
+
+BİRİM: Adli Destek ve Mağdur Hizmetleri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.40/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.40/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel yazışmalarını yürütmek; Bakanın her türlü protokol ve tören işlerini düzenlemek ve yürütmek; Bakanın ziyaret, davet, karşılama ve uğurlama, ağırlama, milli ve dini bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve diğer kuruluşlarla koordine etmek.

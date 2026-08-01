@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: eskisehir-buyuksehir-belediyesi, eskisehir-bb, eskisehir-buyuksehir, eskisehir-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Ulaşım Dairesi Başkanlığı adı kurumun kendi birim sayfasından (birim-detay.php?id=26) ayrıca teyit edilmiştir.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
 GÖREV: Personel atama, nakil ve izin işlemleri, özlük ve hizmet belgesi talepleri, derece-kademe işlemleri, disiplin ve hizmet içi eğitim.
@@ -92,9 +94,6 @@ GÖREV: Belediye lehine ve aleyhine dava takibi, icra işlemleri, sözleşme ve 
 
 BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
 GÖREV: Kurum birimlerinin teftişi, inceleme ve soruşturma işlemleri, rehberlik raporları.
-
-BİRİM: İç Denetçiler
-GÖREV: Harcama birimlerinin iç denetimi, denetim raporu düzenlenmesi, usulsüzlük bildirimi ve bulgu takibi.
 
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.

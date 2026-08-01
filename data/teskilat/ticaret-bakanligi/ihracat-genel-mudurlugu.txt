@@ -4,6 +4,7 @@
 @ERISIM: 2026-07-24
 @KAYNAK_TURU: resmi_teskilat
 @DOGRULAMA: resmi
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — ihracat.ticaret.gov.tr birim listesini JavaScript ile yüklüyor; birim adları bu dosyadakilerle eşleşmedi.
 
 BİRİM: Mevzuat ve Koordinasyon Daire Başkanlığı
 GÖREV: İhracat ve ihracatı teşvik mevzuatının hazırlanması, geliştirilmesi ve uygulanmasında koordinasyonu sağlar; ihracat rejimi, dahilde ve hariçte işleme rejimleri ile ilgili mütalaa taleplerini ve mevzuat uyum çalışmalarını yürütür.

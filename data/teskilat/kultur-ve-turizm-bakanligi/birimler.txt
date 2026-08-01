@@ -1,32 +1,62 @@
 @KURUM: Kültür ve Turizm Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/kultur-ve-turizm-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.279 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: ktb, kultur-bakanligi, turizm-bakanligi
-
-BİRİM: Kültür Varlıkları ve Müzeler Genel Müdürlüğü
-GÖREV: Tescilli kültür varlığı tadilat/kazı izni, sit alanı statü itirazı ve müze/ören yeri işletme başvurularını yürütür.
-
-BİRİM: Yatırım ve İşletmeler Genel Müdürlüğü
-GÖREV: Turizm işletme belgesi, turizm yatırım belgesi ve konaklama tesisi sınıflandırma başvurularını değerlendirir.
-
-BİRİM: Telif Hakları Genel Müdürlüğü
-GÖREV: Eser sahibi/bandrol başvuruları, fikri mülkiyet ihlali şikâyetleri ve meslek birliği tescil işlemlerini yürütür.
-
-BİRİM: Kütüphaneler ve Yayımlar Genel Müdürlüğü
-GÖREV: Halk kütüphanesi üyelik/hizmet başvuruları, ISBN/ISSN kaydı ve yayın bağış/devir işlemlerini karşılar.
+@NOT: Birim adları m.279/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Güzel Sanatlar Genel Müdürlüğü
-GÖREV: Sanat galerisi, sergi/festival desteği ve güzel sanatlar eğitim kurumu başvurularını yürütür.
+GÖREV: Klasik, çağdaş ve geleneksel sanat akımlarını takip ederek, yurt içindeki sanat faaliyetlerinin milli kültür ve çağdaş anlayışa uygun olarak yürütülmesi ve yayılmasını, milletin bu yönden bilgi sahibi olmasını sağlamak; Resim ve heykel sanatları, görsel sanatlar ile geleneksel Türk süsleme sanatları koleksiyonlarını geliştirmek; Güzel sanatlara ilişkin çalışmaların sosyal ve kültürel gelişme bakımından verimli olması için tedbirler almak.
+
+BİRİM: Kültür Varlıkları ve Müzeler Genel Müdürlüğü
+GÖREV: Yurdumuzdaki korunması gerekli taşınır ve taşınmaz kültür varlıklarının arkeolojik araştırma ve kazılarla açığa çıkarılmasını, korunmasını, değerlendirilmesini ve tanıtılmasını sağlamak, tahribini ve kaçırılmasını önleyici tedbirleri almak.
+
+BİRİM: Kütüphaneler ve Yayımlar Genel Müdürlüğü
+GÖREV: Toplumun kütüphanelerden yararlanması için gerekli tedbirleri almak ve uygulamak, Bakanlıkça uygun görülen kütüphanelerde, kütüphane kullanıcılarına yiyecek ve içecek gibi ikramlarda bulunmak, yeni kütüphaneler kurulmasını teklif etmek ve bunların idare ve ihtisas işlerini düzenlemek ve yürütmek; İhtiyaç duyulan eserler ve belgeler ile bunların tasnifi, muhafazası ve halkın yararına sunulması için gerekli her türlü araç gereç ve tesisi satın almak, yaptırmak veya başka yollarla sağlamak.
+
+BİRİM: Telif Hakları Genel Müdürlüğü
+GÖREV: 5/12/1951 tarihli ve 5846 sayılı Fikir ve Sanat Eserleri Kanunu ile Bakanlığa verilen görevleri yürütmek; Telif hakları alanının kamu yararına, ekonomik ve sosyal gelişmelere uygun olarak düzenlenmesi, korunması, geliştirilmesi ile fikir ve sanat eserlerinin desteklenmesi amacıyla stratejilerin belirlenmesine yönelik çalışmaları yapmak, uygulamak ve takip etmek; Bakanlığın, telif haklarının korunması ve geliştirilmesine yönelik uluslararası kuruluşlarla işbirliği kapsamındaki faaliyetlerini yürütmek.
+
+BİRİM: Sinema Genel Müdürlüğü
+GÖREV: 14/7/2004 tarihli ve 5224 sayılı Sinema Filmlerinin Değerlendirilmesi ve Sınıflandırılması ile Desteklenmesi Hakkında Kanun ile Bakanlığa verilen görevleri yürütmek; Sinema sektörüne ilişkin yatırım destek ve tanıtım faaliyetlerini koordine etmek ve bu alandaki kültür mirasımızın gelecek kuşaklara aktarılmasını sağlamak; Bakanlığın ulusal sinema sektörünün korunması, desteklenmesi ve geliştirilmesine yönelik uluslararası kuruluşlarla işbirliği faaliyetlerini yürütmek.
+
+BİRİM: Yatırım ve İşletmeler Genel Müdürlüğü
+GÖREV: Ülkenin turizme tahsis edilebilecek kaynaklarını araştırmak, önceliklerini belirlemek, turizm sektöründe kullanılabilecek doğal kaynakların korunması ve değerlendirilmesiyle ilgili çalışmaları yürütmek, bu konuyla ilgili olarak diğer kamu kurum ve kuruluşları ile özel kuruluşlarla işbirliği yapmak.
+
+BİRİM: Yaşayan Miras ve Kültürel Etkinlikler Genel Müdürlüğü
+GÖREV: Halk kültürünün halk edebiyatı, halk mutfağı, geleneksel tiyatro, halk müziği, gelenek görenek ve inançlar, halk sanatları, geleneksel oyun kültürü, giyim, kuşam, süsleme ve benzeri bütün dallarında araştırma, derleme, inceleme ve diğer bilimsel çalışmaları yapmak, yaptırmak, yayımlamak, tanıtmak, kayıt altına almak ve bu hususta gerekli çalışmaları yürütmek; Somut olmayan kültürel mirasın korunmasına yönelik olarak.
 
 BİRİM: Tanıtma Genel Müdürlüğü
-GÖREV: Turizm tanıtımı iş birliği, yurt dışı tanıtım ofisi koordinasyonu ve tanıtım materyali destek başvurularını yürütür.
-
-BİRİM: Araştırma ve Eğitim Genel Müdürlüğü
-GÖREV: Kültür-turizm alanında araştırma, eğitim semineri ve turist rehberliği/turizm meslek belgesi başvurularını değerlendirir.
-
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+GÖREV: Her türlü imkândan yararlanarak, ülkemizin millî, manevî, tarihî, kültürel, sanatsal ve turistik değerlerinin yurt içi ve yurt dışında tanıtımını yapmak, yaptırmak, bu amaçla yurt içinde ve yurt dışında seminer, sempozyum, kolokyum, kongre, fuar, sergi, festival, yarışma, gösteriler ve benzeri faaliyetleri düzenlemek veya düzenlenmiş olanlara katılmak, bu yönde faaliyet gösteren yerli veya yabancı, kamu veya özel kurum, kuruluş, topluluk ve kişileri desteklemek, yönlendirmek ve bunlar arasında gerekli işbirliğini sağlamak, bu tür faaliyetlerin .
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın insan kaynakları politikasını oluşturmak; uzmanlık, kadro, unvan, kıdem ve benzeri kıstasların analizleri doğrultusunda insan kaynağı planlamasını yapmak ve bu çalışmaları Bakanlık teşkilatı ile bağlı, ilgili ve ilişkili kuruluşları koordine ederek uygulamak.; Nitelikli insan kaynağını tespit etmek ve kuruma kazandırmak başta olmak üzere yetenek yönetimi sistemini kurmak ve uygulamak; Liyakat temelli ölçümler ve insan kaynağı planlamasına göre.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlığın hedef ve politikaları ile iş modelleri ve yürütülen iş süreçlerine uygun olarak bilişim hedeflerini belirlemek, iş planlarını, mali planları ve kaynak planlarını hazırlamak, bu hususlarda gerekli bilişim standartlarını tespit etmek, Genel Müdürlüğün iş süreçlerini tasarlamak ve yayınlamak.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Bakanlık merkez, taşra ve yurtdışı teşkilatı ile bağlı ve ilgili kuruluşların her türlü faaliyet ve işlemleriyle ilgili olarak denetim, araştırma, inceleme ve soruşturma işlerini yürütmek, usulsüzlükleri önleyici bir anlayışla rehberlik etmek; Denetim, inceleme ve soruşturma sonucunda tespit ettikleri hususlarda Bakanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programa uygun çalışmasını temin etmek amacıyla gerekli teklifleri hazırlamak ve Bakana sunmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Alevi-Bektaşi Kültür ve Cemevi Başkanlığı
+GÖREV: Cemevlerinin ve ihtiyaçlarının belirlenmesine yönelik çalışmalar yapmak, cemevlerindeki hizmetlerin etkin ve verimli yürütülmesini koordine etmek; Cemevlerinin Başkanlıkça belirlenen hizmetlerinin gördürülmesi için yerel yönetimlere veya yatırım izleme ve koordinasyon başkanlıklarına ödenek aktarımına ilişkin iş ve işlemleri yürütmek.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Ülkemizin dış politikası doğrultusunda, çeşitli ülkeler ve milletlerarası kuruluşlarla kültür ve turizm ilişkilerini düzenlemek ve geliştirmek; Kültür ve turizm alanında çeşitli ülkelerin hükümetleriyle akdedilecek işbirliği anlaşmaları ile mübadele programlarının hazırlanması ve uygulanmasına ilişkin işlemleri yürütmek; Milletlerarası kültür ve turizm kuruluşları ile ilişkileri düzenlemek ve bunların yürütülmesinde gerekli koordinasyonu sağlamak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Bakanlık için gerekli araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek; İhtiyaç duyulan bina ve arazinin kiralanma ve satın alma işlemlerini yürütmek; Temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma hizmetlerini yapmak; Genel evrak, arşiv ve haber merkezinin hizmet ve faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.279/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel yazışmalarını yürütmek; Bakanın her türlü protokol ve tören işlerini düzenlemek ve yürütmek; Bakanın ziyaret, davet, karşılama, uğurlama, ağırlama ve bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve diğer kuruluşlarla koordine etmek.

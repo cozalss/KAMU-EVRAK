@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: trabzon-buyuksehir-belediyesi, trabzon-bb, trabzon-buyuksehir, trabzon-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kaynak sayfa adları tümü büyük harfle yayımlamaktadır; burada normal Türkçe başlık yazımına çevrilmiştir. Kuruma özgü yazımlar korunmuştur: "Emlak İstimlak" arada "ve" olmadan, "Makine İkmal Bakım ve Onarım" ile "Yol Yapım Bakım ve Onarım" virgülsüz, "İnsan Kaynakları ve Eğitim Dairesi" ise şemada "Başkanlığı" ibaresi olmadan geçmektedir.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Organizasyon şeması sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında liste yok.
 
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.

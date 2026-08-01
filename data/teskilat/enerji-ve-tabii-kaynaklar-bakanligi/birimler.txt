@@ -1,27 +1,41 @@
 @KURUM: Enerji ve Tabii Kaynaklar Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/enerji-ve-tabii-kaynaklar-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.168 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: etkb, enerji-bakanligi
-@NOT: Maden ve Petrol İşleri Genel Müdürlüğü (MAPEG) mevzuatta özel bütçeli bağlı kuruluş statüsündedir; evrak yönlendirme amacıyla Bakanlık teşkilatı içinde listelenmiştir. Yenilenebilir Enerji Genel Müdürlüğü kaldırılmış olup görevleri Enerji İşleri Genel Müdürlüğüne devredilmiştir.
+@NOT: Birim adları m.168/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Enerji İşleri Genel Müdürlüğü
-GÖREV: Elektrik/doğal gaz piyasası proje onayı, enerji verimliliği belgelendirme ve verimlilik artırıcı proje (VAP) destekleri, yenilenebilir enerji (GES/RES) kapasite tahsisi ve yenilenebilir enerji kaynak alanı (YEKA) başvuruları ile enerji tesisleri arıza/şikâyet başvurularını yürütür.
+GÖREV: Enerji kaynaklarını ve tesislerinin envanterini tutmak, memleketin her türlü enerji ihtiyacını karşılamak için gerekli planlamaları yapmak; Enerji kaynaklarının ve enerjinin plan ve programlara uygun miktar ve evsafta üretilmesi, nakli ve dağıtımı için gerekli tedbirleri almak ve aldırtmak; Enerji kaynaklarının üretim, iletim ve dağıtım tesislerinin milli menfaatlere ve modern teknolojiye en uygun şekilde kurulmaları ve işletilmeleri için gerekli tedbirleri almak ve aldırtmak.
 
-BİRİM: Maden ve Petrol İşleri Genel Müdürlüğü
-GÖREV: Maden ruhsatı başvurusu/devri, petrol arama-işletme ruhsatı ve maden sahası ihtilaf başvurularını değerlendirir.
-
-BİRİM: Nükleer Enerji ve Uluslararası Projeler Genel Müdürlüğü
-GÖREV: Nükleer enerji santrali proje koordinasyonu ve uluslararası enerji iş birliği yazışmalarını yürütür.
-
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+BİRİM: Dış İlişkiler Genel Müdürlüğü
+GÖREV: Bakanlığın görev alanına giren uluslararası ilişkilere ait konularda görevli kuruluşlarla sürekli temas halinde bulunmak ve bunlar arasında koordinasyonu sağlamak; Bakanlığın görev alanına giren uluslararası ilişkilerde ortaya çıkan meseleler hakkında inceleme ve araştırmalar yapmak ve yaptırmak, bunları değerlendirmek ve teklifleri hazırlamak; Bakanlığın koordinatörlüğünde görevleri ile ilgili konularda teşkil edilen kurullara sekretarya hizmeti yapmak; Bakanlığın yurtdışı kadrolarında görev yapan personele ilişkin iş ve işlemleri yürütmek.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararnamede hukuk birimlerine verilen görevleri yapmak.
 
-BİRİM: Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı
-GÖREV: AB enerji mevzuat uyumu ve uluslararası enerji projeleri dış ilişkiler yazışmalarını yürütür.
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlığın personel planlaması ve personel politikasıyla ilgili çalışmaları yapmak, personel sisteminin geliştirilmesiyle ilgili tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; Eğitim planını hazırlamak, hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek ve uygulamak; Bakanlık birimleri ile işbirliği içinde hizmetlerin önceden belirlenmiş amaç ve hedeflere, kalite standartlarına uygun şekilde yerine getirilmesini takip etmek.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Bakanlık teşkilatının her türlü faaliyet ve işlemleriyle ilgili olarak teftiş, denetim, inceleme ve soruşturma yapmak; Bakanlığın denetimi altındaki her türlü kuruluş ile gerçek ve tüzel kişilerin faaliyet ve işlemleri ile ilgili olarak Bakanlığın görev ve yetkileri çerçevesinde teftiş, denetim, inceleme ve soruşturma yapmak; Bakanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programa uygun faaliyet göstermesini sağlamak üzere çalışmalar yapmak ve gerekli teklifleri hazırlamak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak; Bakanlığın bağlı ve ilgili kuruluşlarının faaliyetlerini izlemek, bunların Bakanlık politika esaslarına, program ilke ve hedeflerine uygun olarak yürütülmesini sağlamak.
+
+BİRİM: Enerji Verimliliği ve Çevre Dairesi Başkanlığı
+GÖREV: Enerji verimliliği ile ilgili mevzuat, strateji ve eylem planlarının taslaklarını düzenleyici etki analizleri ile birlikte hazırlamak, uygulamalarını izlemek, değerlendirmek ve iyileştirici tedbirleri planlamak; Enerji verimliliğinin artırılmasına yönelik ulusal ve uluslararası kurum ve kuruluşlar, üniversiteler, özel sektör ve sivil toplum örgütleri ile işbirliği yapmak, müşterek projeler veya etkinlikler yürütmek veya koordine etmek.
+
+BİRİM: Tabii Kaynaklar Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.168/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Bilgi İşlem Dairesi Başkanlığı
-GÖREV: Bakanlık bilgi sistemleri, e-Devlet entegrasyonu ve veri güvenliği ile ilgili başvuruları karşılar.
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, politika ve ilkelerin belirlenmesi amacıyla çalışmalar yapmak, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlığın bilgi işlem hizmetlerini yürütmek; Bakanlığın internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usul ve ilkelere göre yürütülmesini sağlamak; 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

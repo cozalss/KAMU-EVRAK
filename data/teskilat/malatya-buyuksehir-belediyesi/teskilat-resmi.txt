@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: malatya-buyuksehir-belediyesi, malatya-bb, malatya-buyuksehir, malatya-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adının kapsadığı işlerden TÜRETİLMİŞTİR, kaynakta birebir yer almaz — bu nedenle dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır ve otomatik havale üretmez, memur onayı gerekir. Liste kurumun o tarihte yayımladığı birimlerle sınırlıdır. Bağlı kuruluş MASKİ ayrı tüzel kişilik olduğu için alınmamıştır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.

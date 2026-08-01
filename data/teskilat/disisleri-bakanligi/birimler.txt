@@ -1,27 +1,92 @@
 @KURUM: Dışişleri Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/disisleri-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.129 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: mfa, disisleri
-@NOT: Avrupa Birliği Başkanlığı, Bakanlık merkez hizmet birimi değil Bakanlığa bağlı ayrı bir kuruluştur; evrak yönlendirme amacıyla bu listede yer almaktadır.
+@NOT: Birim adları m.129/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
-BİRİM: Konsolosluk İşleri Genel Müdürlüğü
-GÖREV: Pasaport/vize işlemleri, yurt dışında yaşayan vatandaşların konsolosluk kaydı, evlilik/nüfus tescili ve yurt dışı vatandaş hukuki yardım başvurularını yürütür.
+BİRİM: İkili İlişkiler Genel Müdürlükleri
+GÖREV: Coğrafi görev alanlarındaki ülkelerle ikili düzeydeki siyasi, ekonomik-ticari, finans, güvenlik, savunma, sağlık ve diğer ilişkiler ile bölgesel nitelikli siyasi örgütlerle ilişkiler ve işbirliği için gerekli çalışmaları yapmak, söz konusu çalışmaları ilgili kurum ve kuruluşlarla koordine etmek ve yürütmek; Kuzey Kıbrıs Türk Cumhuriyeti ile ilişkileri ve işbirliğini geliştirmek; Kıbrıs sorununa ilişkin gelişmeleri izlemek, gerekli politika ve hareket tarzlarının belirlenmesi için gerekli çalışmaları yapmak.
 
-BİRİM: Protokol Genel Müdürlüğü
-GÖREV: Yabancı devlet temsilcilikleri akreditasyonu, diplomatik protokol düzenlemeleri ve resmî ziyaret organizasyon yazışmalarını yürütür.
+BİRİM: Uluslararası Güvenlik Genel Müdürlüğü
+GÖREV: Kuzey Atlantik Antlaşması Örgütü (NATO), Avrupa Güvenlik ve İşbirliği Teşkilatı (AGİT) ve diğer çok taraflı güvenlik teşkilatları ile ilişkileri yürütmek, bu örgütlerin gündemindeki konuları takip etmek ve bu örgütler nezdinde Türkiye'nin hak ve çıkarlarını ilgili kurum ve kuruluşlarla işbirliği yapmak suretiyle savunmak.
 
-BİRİM: Avrupa Birliği Başkanlığı
-GÖREV: AB üyelik müzakere süreci, mevzuat uyum çalışmaları ve AB fonlu proje koordinasyon yazışmalarını yürütür.
+BİRİM: Çok Taraflı İlişkiler Genel Müdürlükleri
+GÖREV: Birleşmiş Milletler, Avrupa Konseyi ve diğer uluslararası ve bölgesel nitelikli siyasi örgütler ile ilişkileri yürütmek; Bu örgütlerin gündemindeki konuları takip etmek ve koordine etmek; Bu örgütler nezdinde Türkiye’nin hak ve çıkarlarını ilgili kurum ve kuruluşlarla işbirliği yapmak suretiyle savunmak.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+BİRİM: İnsani ve Teknik Yardımlar Genel Müdürlüğü
+GÖREV: İnsani ve teknik yardımlar konularında politika ve hareket tarzlarının belirlenmesi için gerekli çalışmaları yapmak, ilgili bakanlık, kurum ve kuruluşlarla tatbikini ve takibini koordine etmek; Ulusal ve uluslararası olağanüstü acil durumları izlemek, doğal afetler ve salgınlarla ilgili ikili ve çok taraflı işbirliği konularının eşgüdümünü ilgili kurum, kuruluş ve sivil toplum kuruluşlarıyla sağlamak; Türkiye’ye gelecek ve ülkemizden gidecek insani yardımları koordine etmek.
 
-BİRİM: Hukuk Müşavirliği
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar. [DOĞRULA: hukuk biriminin güncel adı (Hukuk Müşavirliği / Hukuk Hizmetleri Genel Müdürlüğü) 1 sayılı CBK m.139'dan teyit edilmeli]
+BİRİM: Dış Politika Plan ve Eşgüdüm Genel Müdürlüğü
+GÖREV: Dış politikamızı ilgilendiren bölgesel ve uluslararası konulara ilişkin analiz, planlama, stratejik öngörü ve eşgüdüm çalışmalarını yürütmek, strateji, tutum, politika çalışmaları hazırlamak ve bunların uygulama sürecini takip etmek; Dünyadaki güncel dış politika gelişmelerini takip etmek, cari gelişmeleri ilgili birimlerle koordine ederek Bakanlık makamını bilgilendirmek; Milli güvenlikle ilgili stratejik belgelerin hazırlanmasına yönelik çalışmalar yapmak.
+
+BİRİM: Uluslararası Ekonomik İşler Genel Müdürlüğü
+GÖREV: Yirmiler Grubu (G20), Dünya Ticaret Örgütü (DTÖ), İktisadi İşbirliği ve Kalkınma Teşkilatı (OECD) ve Birleşmiş Milletler kalkınma sütununda faaliyet gösterenler başta olmak üzere, görev alanındaki uluslararası ve bölgesel ekonomik kuruluş ve platformlarda küresel ekonomi ile çok taraflı kalkınma, ticaret, gıda, turizm, teknoloji ve bunlarla ilintili küresel ve çok taraflı konuları takip etmek, anılan kuruluş ve oluşumlarla ilişkileri ilgili kurum ve kuruluşlarla eşgüdüm içinde yürüterek bu örgütler nezdinde ülkenin hak ve çıkarlarının savunulma.
+
+BİRİM: Uluslararası Hukuk ve Andlaşmalar Genel Müdürlüğü
+GÖREV: Uluslararası hukukun ve uluslararası hukuk içtihadının gelişimine yönelik süreçleri takip etmek, bu süreçlere iştirak edilmesini ve katkıda bulunulmasını sağlamak; Milli hukuku etkileyecek uluslararası hukuki gelişmeleri takip etmek, ilgili kurumları bu doğrultuda bilgilendirmek, yurtdışındaki davalar hakkında ilgili birimlerce talep edilen görüşleri oluşturmak.
+
+BİRİM: Konsolosluk Hizmetleri ve Yurtdışında Yaşayan Vatandaşlar Genel Müdürlüğü
+GÖREV: Konsolosluk ilişkilerini ve buna dair görüşmeleri yürütmek ve koordinasyonu sağlamak; Yurtdışında yaşayan vatandaşlar ve yurtdışında yaşayan Türk toplumu ile dış ilişkileri ilgilendiren emlak konularındaki çalışma ve faaliyetleri, ilgili kurum ve kuruluşlarla işbirliği yapmak suretiyle yürütmek; Suçluların iadesi ve hükümlü nakli ile ilgili iş ve işlemleri Adalet Bakanlığı ile eşgüdüm halinde yürütmek.
+
+BİRİM: Göç Politikaları ve Vize İşlemleri Genel Müdürlüğü
+GÖREV: Vize işlemlerini yürütmek, ilgili kurum ve kuruluşlarla işbirliği yapmak ve gerekli koordinasyonu sağlamak; Vize politikalarını belirlemek için çalışmalar yürütmek; Göç ve iltica faaliyetlerini takip etmek, ülkemizin göç politikalarını oluşturmaya katkı sunmak; Kamu düzeni ve kamu güvenliği sebebiyle bazı yabancıların ülkeye girişlerine tahdit konulması taleplerini ilgili kurum ve kuruluşlara iletmek.
+
+BİRİM: İstihbarat ve Güvenlik İşleri Genel Müdürlüğü
+GÖREV: İkili ve çok taraflı güvenlik işbirliğinin tesisi ve yürütülmesinin yanı sıra uluslararası boyutu bulunan veya dış ilişkileri ilgilendiren terörizm, uyuşturucu kaçakçılığı ve diğer örgütlü suçlar ile ülke aleyhine faaliyetlerle mücadele konularını takip etmek, bu görevlerini ilgili kurum ve kuruluşlar ile işbirliği yapmak suretiyle yerine getirmek; Bakanlığın faaliyet ve görev alanına giren konulardaki istihbarat ihtiyacının karşılanması için ilgili istihbarat ve güvenlik kurumlarıyla ilişkileri yürütmek.
+
+BİRİM: Kamu Diplomasisi ve Stratejik İletişim Genel Müdürlüğü
+GÖREV: Dış politikamıza ilişkin stratejik iletişim çalışmalarını Bakanlık içerisinde koordine etmek; Stratejik ve siyasi mesajların uluslararası kamuoyuna aktarımı konusunda ilgili kurum ve kuruluşlarla koordineli olarak çalışmalar yürütmek; Ülkemizin dış politikasını, imajını etkileyen sosyal medya ve medya yayınlarını takip etmek, ilgili genel müdürlüklerle istişare etmek.
+
+BİRİM: Yurtdışı Tanıtım ve Kültürel İşler Genel Müdürlüğü
+GÖREV: İlgili kurum ve kuruluşlar ile işbirliği yapmak suretiyle; turizm, kültür, eğitim, bilim, spor ve benzeri alanlarında diğer ülke ve uluslararası kuruluşlarla ikili ve çok taraflı ilişkileri ve işbirliğini yürütmek; Türkiye'nin yurtdışındaki tanıtımına yönelik proje ve faaliyetlerin yürütülmesini ve koordinasyonunu sağlamak.
+
+BİRİM: Protokol ve Diplomatik İşlemler Genel Müdürlüğü
+GÖREV: Dışişleri protokolünü düzenlemek ve uygulamak, Devlet protokolünü uygulamak.; Ülkedeki yabancı misyonların diplomatik işlemlerini, güvenlikle ilgili iş ve işlemlerini, diplomatik pasaport işlemlerini, misyon şeflerinin atama belgeleri ile yabancı konsolosların buyrultu belgelerinin hazırlanması işlemlerini yürütmek; Cumhurbaşkanlığı protokol hizmetleri ile ilgili Cumhurbaşkanlığınca ihtiyaç duyulan iş ve işlemleri yürütmek.
 
 BİRİM: Personel Genel Müdürlüğü
-GÖREV: Bakanlık ve dış temsilcilik personeline ilişkin atama, nakil ve özlük başvurularını yürütür.
+GÖREV: Bakanlığın insan kaynakları politikasını oluşturmak, uzmanlık, kadro, unvan, kıdem ve benzeri kıstasların analizleri doğrultusunda insan kaynağı planlamasını yapmak, Bakanlık kadrolarının dağıtımı, tahsisi, tenkisi ve kadro verimliliği konusunda çalışmalar yapmak ve bu çalışmaları Bakanlık teşkilatı ile bağlı, ilgili ve ilişkili kuruluşları koordine ederek uygulamak; Nitelikli insan kaynağını tespit etmek ve kuruma kazandırmak başta olmak üzere yetenek yönetimi sistemini kurmak ve uygulamak.
 
-BİRİM: Bilgi İşlem Dairesi Başkanlığı
-GÖREV: Bakanlık bilgi sistemleri, e-konsolosluk altyapısı ve veri güvenliği ile ilgili başvuruları karşılar.
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Destek Hizmetleri Genel Müdürlüğü
+GÖREV: Merkez ve yurtdışı teşkilatında kullanılmak üzere gerekli araç, gereç ve malzemenin temini ile ilgili işleri yürütmek; Merkez ve yurtdışı teşkilatında ihtiyaç duyulan arazinin ve binaların kiralanması ve satın alınması ile bina inşası ve büyük onarımlarıyla ilgili işleri yürütmek; Bina ve tesis yönetimi, temizliği, aydınlatması, ısıtması, bakımı, onarımı ile taşıma işlerini yürütmek; Yurtiçindeki ve yurtdışındaki lojmanlar ile sosyal tesislerin kurulması, yönetimi ve bakımı ile ilgili işleri yürütmek.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Merkez ile yurtdışı teşkilatı arasındaki haberleşmeyi yürütmek; Gelen ve giden haberleşme evrakının kayıt, tasnif ve dağıtımını sağlamak; Bilişim ve haberleşme ihtiyaçları ile bağlantılı yazılımları temin etmek, oluşturmak ve geliştirmek, merkez ve yurtdışı teşkilatında bilişim ağının kurulumu, bakımı, ikmali, geliştirilmesi ve güncellenmesi ile ilgili işleri yürütmek.
+
+BİRİM: Enerji, Çevre ve Sınıraşan Sular Genel Müdürlüğü
+GÖREV: Ülkelerle enerji, enerji güvenliği, çevre, iklim değişikliğiyle mücadele, sınıraşan sular alanlarında ilişkilerimizi ve çıkarlarımızı ilgili kurum ve kuruluşlarla eşgüdüm halinde takip etmek, politika ve hareket tarzlarının oluşturulması sürecine katkıda bulunmak; Bu alanlardaki çıkarlarımızı ilgili uluslararası kuruluşlar ve çok taraflı platformlar nezdinde ilgili kurum ve kuruluşlarla eşgüdüm içinde takip etmek.
+
+BİRİM: Bilim ve Teknoloji Politikaları Genel Müdürlüğü
+GÖREV: Çığır açan teknolojilerin ve gelişmelerin uluslararası ilişkilere etkilerini takip etmek, analiz çalışmaları yapmak, politika kağıtları hazırlamak; Uluslararası kuruluşlarda hazırlanan bilim ve teknoloji alanındaki rejimleri incelemek, ülkemizdeki politikalarla karşılaştırmak, ülkemizin haklı menfaatlerini korumak üzere çalışmalar gerçekleştirmek; Bilim ve teknoloji konularında uluslararası mevzuat ve rejim çalışmalarına katkıda bulunmak, ilgili kurum ve kuruluşların ihtiyaçlarına uygun uluslararası diplomasi faaliyetlerinde bulunmak.
+
+BİRİM: Uluslararası Arabuluculuk Genel Müdürlüğü
+GÖREV: Uluslararası kuruluşlar bünyesindeki arabuluculuk, çatışmaların önlenmesi ve kriz yönetimi çalışmalarını ve bu kapsamdaki diğer projeleri yürütmek; Ülkemizin üstlendiği ve üstlenebileceği arabuluculuk ve kolaylaştırıcılık süreçlerinin hazırlanmasını ve geliştirilmesini sağlamak; Arabuluculuk faaliyetlerini yürütmek veya destek vermek.
+
+BİRİM: Diplomatik Arşiv Genel Müdürlüğü
+GÖREV: Bakanlık arşivini muhafaza etmek, arşiv sistemini yönetmek ve geliştirmek; Diğer devletlerle ve uluslararası kuruluşlarla akdedilen andlaşmaların tasnifini ve muhafazasını gerçekleştirmek; Gizli içerikli belgelerin belli süreler sonunda araştırmacıların istifadesine açılmasına yönelik olarak gizliliği kaldırma komisyonları oluşturmak ve bunların faaliyetlerini düzenlemek.
+
+BİRİM: Diplomatik Güvenlik Genel Müdürlüğü
+GÖREV: Bakanlığın merkez, yurtiçindeki tesis ve yurtdışındaki Türk misyonlarının güvenliğini sağlamak ve bununla ilgili iş ve işlemleri yürütmek; Bakanlığın merkez ve yurtdışı teşkilatında siber, haberleşme, evrak ve bilgi güvenliğini sağlamak; Temsilciliklerin ve personelin güvenliği bağlamında terör eylemleri ve diğer tehditlere ilişkin konuları takip etmek ve bu konularda gerekli tedbirleri almak, ilgili kurum ve kuruluşlarla koordinasyonu sağlamak.
+
+BİRİM: Dış Politika Danışma Kurulu
+GÖREV: Türkiye Cumhuriyetinin dış politikasının oluşturulması, yönlendirilmesi ve uygulanması hakkında değerlendirmeler yapmak ve görüş bildirmek.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Bakanlık teşkilatı ile bağlı ve ilgili kuruluşlarının her türlü faaliyet ve işlemlerini, Bakan adına incelemek, denetlemek ve gerekli görülmesi halinde soruşturmak; Bakanlık birimlerinin işleyişine dair, mevcut görev tanımları ve verimlilik esasları temelinde, incelemelerde bulunup tavsiyeleri de içeren raporlar hazırlamak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Stratejik Araştırmalar Merkezi Başkanlığı
+GÖREV: Türk dış politikası, uluslararası ilişkiler ve bölgesel konular hakkında bilimsel araştırma, inceleme ve analizler yapmak ve bağımsız kaynaklarca oluşturulan analizleri Bakanlığın ilgili birimlerinin kullanımına sunmak; Türk ve yabancı kamuoyunu Türk dış politikası, uluslararası ilişkiler ve bölgesel konular hakkında bilgilendirmek; Antalya Diplomasi Forumu başta olmak üzere düzenlenen etkinlik ve forum çalışmaları ile ilgili işlemleri yürütmek.
+
+BİRİM: Diplomasi Akademisi Başkanlığı
+GÖREV: Türkiye Cumhuriyetinin dış ilişkilerinin, Türk dış politikasının ve konsolosluk hizmetlerinin yürütülmesinde görev alan Bakanlık mensuplarının temel ve hazırlayıcı eğitimleri ve stajları ile Bakanlığın ihtiyaçlarına göre tespit edilen diğer hizmet içi eğitim faaliyetlerini planlamak ve icra etmek.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel temaslarını planlamak, yazışmalarını yürütmek, protokol, tören, ziyaret, karşılama, uğurlama ve ağırlama ile ilgili hizmetleri düzenlemek, yerine getirmek.

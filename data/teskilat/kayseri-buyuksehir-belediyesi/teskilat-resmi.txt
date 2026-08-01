@@ -5,6 +5,9 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: kayseri-buyuksehir-belediyesi, kayseri-bb, kayseri-buyuksehir, kayseri-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. Birim listesi hizmet-birimleri sayfasından, alt şube kırılımı ise aynı alan adındaki https://www.kayseri.bel.tr/organizasyon-yapisi şemasından okunmuştur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: mezarlık ve cenaze hizmetleri ayrı daire değil ÇEVRE KORUMA VE KONTROL dairesine bağlı şubedir; gayrisıhhi müessese (GSM) ruhsatı ile hafriyat izni İKLİM DEĞİŞİKLİĞİ VE SIFIR ATIK dairesine bağlıdır; tarımsal hizmetler ayrı daire değil Kırsal Hizmetler dairesine bağlıdır; KUDEB Kent Tarihi, Tanıtım ve Turizm dairesindedir; Sivil Savunma şemada Başkan'a bağlı UZMANLIK olup daire başkanlığı değildir. Kurum birim adlarını "Daire Başkanlığı" ekini yazmadan listelediği için sitedeki suffix'siz yazım korunmuştur; Özel Kalem Müdürlüğü, Rehberlik ve Teftiş Kurulu Başkanlığı ve İç Denetim Birimi Başkanlığı yalnız organizasyon şemasında yer alır.
+@DOGRULAMA_URL: https://www.kayseri.bel.tr/yonetim
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: 1. Hukuk Müşavirliği
 GÖREV: Belediye lehine ve aleyhine dava ile icra takibi, hukuki görüş bildirimi.
@@ -17,9 +20,6 @@ GÖREV: Yazılım, bilgi teknolojileri, coğrafi bilgi sistemleri, elektronik si
 
 BİRİM: Basın Yayın ve Halkla İlişkiler
 GÖREV: Basın yayın, halkla ilişkiler başvuruları ve bilgi edinme talepleri.
-
-BİRİM: Çevre Koruma ve Kontrol
-GÖREV: Mezarlık ve cenaze hizmetleri (defin ruhsatı, mezar yeri tahsisi) ile çevre koruma ve denetim işlemleri.
 
 BİRİM: Destek Hizmetleri
 GÖREV: Doğrudan temin, hizmet ve mal alım ihaleleri.
@@ -57,9 +57,6 @@ GÖREV: Kırsal hizmetler, ilçe yolları, tarımsal hizmetler, araştırma ve g
 BİRİM: Kültür Sanat ve Sosyal İşler
 GÖREV: Konservatuar, kültür ve sosyal işler etkinlikleri, kütüphane hizmetleri.
 
-BİRİM: Makine İkmal Bakım ve Onarım
-GÖREV: Makine işletme, akaryakıt dağıtımı ve tehlikeli madde, sevk ve koordinasyon.
-
 BİRİM: Mali Hizmetler
 GÖREV: Bütçe, gelir, hesap işleri, icra ve tahsilat, strateji geliştirme.
 
@@ -68,12 +65,6 @@ GÖREV: Muhtarlık işleri ve muhtar taleplerinin takibi ile iş sağlığı ve 
 
 BİRİM: Park ve Bahçeler
 GÖREV: Yeşil alan proje ve uygulaması, millet bahçesi ve parklar, hobi bahçeleri tahsisi, park-bahçe idari işleri.
-
-BİRİM: Sivil Savunma
-GÖREV: Sivil savunma planlarının hazırlanması ve takibi; şemada Başkanlık makamına bağlı uzmanlıktır.
-
-BİRİM: Sivil Toplum Kuruluşları
-GÖREV: Dernek ve vakıflarla ilişkiler, ortak proje ve protokol işlemleri.
 
 BİRİM: Sosyal Hizmetler
 GÖREV: Sosyal yardım başvuruları, engelliler koordinasyonu, huzurevi hizmetleri.
@@ -93,8 +84,3 @@ GÖREV: İşyeri denetimi, işgaliye ve idari yaptırım işlemleri.
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Başkanlık makamı yazışmaları, randevu ve protokol işleri.
 
-BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
-GÖREV: Teftiş, soruşturma ve inceleme işlemleri.
-
-BİRİM: İç Denetim Birimi Başkanlığı
-GÖREV: 5018 sayılı Kanun kapsamında iç denetim ve risk değerlendirme çalışmaları.

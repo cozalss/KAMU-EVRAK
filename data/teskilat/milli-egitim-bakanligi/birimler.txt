@@ -1,36 +1,71 @@
 @KURUM: Milli Eğitim Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/milli-egitim-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.303 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: meb, milli-egitim, egitim-bakanligi
-@NOT: Yükseköğretim Kurulu (YÖK) ayrı bir tüzel kişiliğe sahip olup bu dosya kapsamı dışındadır; üniversitelere ilişkin başvurular ilgili üniversite rektörlüğüne yönlendirilir.
+@NOT: Birim adları m.303/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Temel Eğitim Genel Müdürlüğü
-GÖREV: Okul öncesi, ilkokul ve ortaokul düzeyinde eğitim-öğretim politikaları, kayıt-nakil işlemleri ve taşımalı eğitim başvurularını yürütür.
+GÖREV: Okul öncesi ve ilköğretim okul ve kurumlarının yönetimine ve öğrencilerinin eğitim ve öğretimine yönelik çalışmalar yapmak ve belirlenen politikaları uygulamak; Okul öncesi ve ilköğretim okul ve kurumlarının eğitim ve öğretim programlarını, ders kitaplarını, eğitim araç-gereçlerini hazırlamak veya hazırlatmak ve Talim ve Terbiye Kuruluna sunmak; İlköğretim öğrencilerinin barınma ihtiyaçlarının giderilmesi ve maddî yönden desteklenmesi ile ilgili iş ve işlemleri yürütmek.
 
 BİRİM: Ortaöğretim Genel Müdürlüğü
-GÖREV: Lise düzeyinde eğitim-öğretim, Anadolu ve fen liseleri kontenjan/nakil işlemleri ile merkezi yerleştirme sürecine ilişkin başvuruları yürütür.
+GÖREV: Ortaöğretim okul ve kurumlarının yönetimine ve öğrencilerinin eğitim ve öğretimine yönelik çalışmalar yapmak ve belirlenen politikaları uygulamak; Ortaöğretim okul ve kurumlarının eğitim ve öğretim programlarını, ders kitaplarını, eğitim araç-gereçlerini hazırlamak veya hazırlatmak Talim ve Terbiye Kuruluna sunmak; Ortaöğrenim öğrencilerinin barınma ihtiyaçlarının giderilmesi ve maddî yönden desteklenmesi ile ilgili iş ve işlemleri yürütmek.
 
-BİRİM: Mesleki ve Teknik Eğitim Genel Müdürlüğü
-GÖREV: Meslek liseleri, mesleki eğitim merkezleri, işyeri staj/beceri eğitimi ve mesleki sertifikasyon başvurularını yürütür.
-
-BİRİM: Özel Öğretim Kurumları Genel Müdürlüğü
-GÖREV: Özel okul, özel öğretim kursu ve etüt merkezi açma-kapama izinleri, kurum ruhsatlandırma ve denetim başvurularını yürütür.
-
-BİRİM: Öğretmen Yetiştirme ve Geliştirme Genel Müdürlüğü
-GÖREV: Öğretmen atama, hizmet içi eğitim ve mesleki gelişim programlarına ilişkin başvuruları yürütür.
-
-BİRİM: Özel Eğitim ve Rehberlik Hizmetleri Genel Müdürlüğü
-GÖREV: Engelli ve özel gereksinimli öğrencilerin eğitimi, Rehberlik Araştırma Merkezi (RAM) değerlendirmeleri ve kaynaştırma eğitimi başvurularını yürütür.
-
-BİRİM: Yükseköğretim ve Yurt Dışı Eğitim Genel Müdürlüğü
-GÖREV: Yurt dışında öğrenim gören öğrenciler, denklik işlemleri ve yurt dışı eğitim burslarına ilişkin başvuruları yürütür.
-
-BİRİM: Hayat Boyu Öğrenme Genel Müdürlüğü
-GÖREV: Halk eğitim merkezleri, yaygın eğitim faaliyetleri ve yetişkinlere yönelik kurs başvurularını yürütür.
+BİRİM: Meslekî ve Teknik Eğitim Genel Müdürlüğü
+GÖREV: Meslekî ve teknik eğitim ve öğretim veren okul ve kurumların yönetimine ve öğrencilerinin eğitim ve öğretimine yönelik çalışmalar yapmak ve belirlenen politikaları uygulamak; Meslekî ve teknik eğitim ve öğretim veren okul ve kurumların eğitim ve öğretim programlarını, ders kitaplarını, eğitim araç-gereçlerini hazırlamak veya hazırlatmak ve Talim ve Terbiye Kuruluna sunmak.
 
 BİRİM: Din Öğretimi Genel Müdürlüğü
-GÖREV: İmam hatip okulları, Kur'an kursları ve din kültürü ve ahlak bilgisi dersi müfredatına ilişkin başvuruları yürütür.
+GÖREV: İlköğretim, ortaöğretim ve yaygın eğitim kurumlarında din kültürü ve ahlak eğitimi ile bu alandaki seçmeli derslerin eğitim ve öğretimine ait programlar ile ders kitaplarını, eğitim araç￾gereçlerini hazırlamak veya hazırlatmak ve Talim ve Terbiye Kuruluna sunmak; İmam hatip ortaokulları ve imam hatip liselerinin alanları ile ilgili eğitim ve öğretim programlarını, ders kitaplarını, eğitim araç-gereçlerini hazırlamak veya hazırlatmak ve Talim ve Terbiye Kuruluna sunmak.
+
+BİRİM: Özel Eğitim ve Rehberlik Hizmetleri Genel Müdürlüğü
+GÖREV: İlgili bakanlıklarla işbirliği içinde, özel eğitim sınıfları, özel eğitim okulları, rehberlik ve araştırma merkezleri, iş okulları ve iş eğitim merkezleri ile aynı seviye ve türdeki benzeri okul ve kurumların yönetimine ve öğrencilerin eğitim ve öğretimine yönelik çalışmalar yapmak ve belirlenen politikaları uygulamak; İlgili bakanlıklarla işbirliği içinde, özel eğitim okul ve kurumlarının eğitim ve öğretim programlarını, ders kitaplarını, eğitim araç-gereçlerini hazırlamak veya hazırlatmak ve Talim ve Terbiye Kuruluna sunmak.
+
+BİRİM: Hayat Boyu Öğrenme Genel Müdürlüğü
+GÖREV: Zorunlu eğitim dışında, eğitim ve öğretimi hayat boyu devam edecek şekilde yaygınlaştırmak amacıyla çalışmalar yapmak, bunları uygulamak, izlemek ve değerlendirmek; Yaygın eğitim ve öğretim ile açık öğretim hizmetlerini yürütmek; Örgün eğitim sistemine girmemiş, herhangi bir eğitim kademesinden ayrılmış veya bitirmiş vatandaşlara yaygın eğitim yoluyla genel veya meslekî ve teknik öğretim alanlarında eğitim ve öğretim vermek.
+
+BİRİM: Özel Öğretim Kurumları Genel Müdürlüğü
+GÖREV: 8/2/2007 tarihli ve 5580 sayılı Özel Öğretim Kurumları Kanunuyla Bakanlığa verilen görevleri yerine getirmek; Her kademedeki öğrencilere yönelik dernek ve vakıflar ile gerçek ve diğer tüzel kişilerce açılacak veya işletilecek yurt, pansiyon ve benzeri kurumların açılması, devri, nakli ve kapatılmasıyla ilgili esasları belirlemek ve denetlemek; Özel Barınma Hizmeti Veren Kurumlar ve Bazı Düzenlemeler Hakkında Kanun Hükmünde Kararnamenin 13 üncü maddesinde belirtilen görevleri yapmak.
+
+BİRİM: Yenilik ve Eğitim Teknolojileri Genel Müdürlüğü
+GÖREV: Eğitim ve öğretimin teknoloji ile desteklenmesine yönelik işleri yürütmek; Eğitim ve öğretim faaliyetlerinde bilişim teknolojileri ile bilişim ürünlerinin kullanılmasına yönelik çalışmalar yürütmek; Yaygın eğitim ve öğretime yönelik olarak bilgi ve iletişim teknolojilerine dayalı program, film ve benzeri yayınları hazırlamak veya hazırlatmak, yayınlamak veya yayınlatmak; Eğitim ve öğretimde.
 
 BİRİM: Ölçme, Değerlendirme ve Sınav Hizmetleri Genel Müdürlüğü
-GÖREV: Merkezi sınavların (LGS ve benzeri) planlanması, uygulanması ve sınav itiraz başvurularının değerlendirilmesini yürütür.
+GÖREV: Merkezî sistemle yürütülen resmî ve özel yerleştirme, bitirme, karşılaştırma sınavlarını planlamak, uygulamak ve değerlendirmek; Kamu kurum ve kuruluşları ile özel hukuk tüzel kişileri tarafından talep edilen mesleğe giriş, yeterlik, görevde yükselme ve benzeri sınav hizmetlerini yürütmek; Sınavlara ilişkin değerlendirme ve sonuç belgelerinin düzenlenmesi ile itirazların incelenmesi işlemlerini yürütmek.
+
+BİRİM: Yükseköğretim ve Yurt Dışı Eğitim Genel Müdürlüğü
+GÖREV: Yükseköğretime giriş sistemine ilişkin usul ve esasların belirlenmesinde ilgili birim, kurum ve kuruluşlarla iş birliği yapmak; 2547 sayılı Yükseköğretim Kanunu ile Bakanlığa verilmiş olan görev ve sorumlulukları yerine getirmek.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Bakanlığın Avrupa Birliği ve diğer uluslararası kuruluşlarla ilgili işbirliği çalışmaları ile ilgili mevzuat çerçevesinde ikili anlaşmalara ilişkin iş ve işlemleri yürütmek; Bakanlık düzeyinde proje geliştirmek ve Bakanlığın diğer birimleri tarafından yürütülen ulusal ve uluslararası projelerin uyumlu bir şekilde uygulanmasını ve koordinasyonunu sağlamak; Bakanlığın diğer kurum ve kuruluşlarla yapacağı protokollere ilişkin koordinasyon çalışmalarını yürütmek.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel politikası ve planlaması ile personel sisteminin geliştirilmesi konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; Millî Eğitim Akademisinde öğretmenlik mesleğine hazırlık eğitimine alınacak öğretmen adaylarının 10/10/2024 tarihli ve 7528 sayılı Öğretmenlik Mesleği Kanunu kapsamında belirlenmesine yönelik iş ve işlemleri yürütmek.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Destek Hizmetleri Genel Müdürlüğü
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, aydınlatma, ısınma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Genel evrak ve arşiv faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Bilgi İşlem Genel Müdürlüğü
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, ilkeleri belirlemek, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlık birimleri ile taşra teşkilatının bilgi işlem ve otomasyon ihtiyacını karşılamak ve işletimini sağlamak, Bakanlığın bilgi işlem hizmetlerini yürütmek.
+
+BİRİM: İnşaat ve Emlak Genel Müdürlüğü
+GÖREV: Okul ve kurum binaları dâhil, taşınmazlara ilişkin her türlü satım, yapma, yaptırma, bakım, onarım ve tadilat işleri ile bunlara ait kontrol, koordinasyon ve mimari proje çalışmalarını yürütmek; Kamulaştırma işlemlerini yürütmek; Bakanlığa ait arsa, bina ve tesisleri, ilgili birimlerle koordine ederek, imar durumu ve uygunluğu yönünden incelemek, ihtiyaçlarını tespit etmek ve programlamak.
+
+BİRİM: Talim ve Terbiye Kurulu Başkanlığı
+GÖREV: Eğitim sistemini, eğitim ve öğretim plan ve programlarını, ders kitaplarını hazırlatmak, hazırlananları incelemek veya inceletmek, araştırmak, geliştirmek ve uygulamaya ilişkin görüşlerini Bakana sunmak; Bakanlık birimlerince hazırlanan eğitim ve öğretim programları, ders kitapları, yardımcı kitaplar ile öğretmen kılavuz kitaplarını incelemek, inceletmek ve sonucunu Bakana sunmak.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.303/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usûl ve esaslara göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

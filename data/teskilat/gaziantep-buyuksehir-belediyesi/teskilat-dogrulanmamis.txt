@@ -1,0 +1,9 @@
+@KURUM: Gaziantep Büyükşehir Belediyesi
+@BELGE: [DOĞRULA: bu birimler kurumun resmî teşkilat sayfasında listelenmemektedir]
+@KAYNAK_KIMLIK: teskilat/gaziantep-buyuksehir-belediyesi/dogrulanmamis
+@ERISIM: 2026-07-26
+@NOT: DOĞRULANMAMIŞ KAYIT. Bu birimler daha önce derlenmiş ancak 2026-07-26 tarihli doğrulamada kurumun resmî sayfasında (https://www.gaziantep.bel.tr/tr/teskilat-semasi) bulunamamıştır. Birimin var olmadığı anlamına GELMEZ — sayfa eksik/güncel olmayabilir. Silinmedi, aday kayıt olarak tutuluyor; otomatik havale hedefi üretemez, yalnız memur onayına sunulur.
+
+BİRİM: İletişim ve Enformasyon koordinatörlüğü
+GÖREV: Başkanlık makamının iletişim ve enformasyon faaliyetlerini koordine eder; kurum içi ve kurum dışı bilgilendirme akışını düzenler.
+

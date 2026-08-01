@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: hatay-buyuksehir-belediyesi, hatay-bb, hatay-buyuksehir, hatay-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: Afet Koordinasyon Merkezi ayrı bir afet dairesi değil İTFAİYE dairesine bağlı şube müdürlüğüdür; mezarlık ve muhtarlık hizmetleri "Mahalle ve Mezarlıklar Dairesi Başkanlığı" adlı tek dairede birleşiktir; kentsel dönüşüm ile emlak-kamulaştırma ayrı daire değil İmar ve Şehircilik dairesine bağlı şubelerdir; göç yönetimi Dış İlişkiler dairesine bağlıdır; veterinerlik Tarımsal Hizmetler dairesine bağlıdır; Mali Hizmetler ve Zabıta daireleri altında ilçe şube müdürlükleri bulunur. Sitede daire adları büyük harfle yazılıdır; bu dosyada Türkçe başlık yazımına çevrilmiştir.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Yönetim şeması sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında liste yok.
 
 BİRİM: Destek Hizmetleri Dairesi Başkanlığı
 GÖREV: Stok yönetimi, ihale ve satın alma, makine ikmali, bakım-onarım, araç yönetimi ve yönetim hizmetleri.

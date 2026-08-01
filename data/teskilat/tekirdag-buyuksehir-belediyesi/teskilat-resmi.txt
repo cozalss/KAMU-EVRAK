@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: tekirdag-buyuksehir-belediyesi, tekirdag-bb, tekirdag-buyuksehir, tekirdag-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI kurumun yayımladığı şube müdürlüğü listesinden okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü tespitler: Tekirdağ'da diğer büyükşehirlerden farklı olarak ayrı bir Satın Alma Dairesi Başkanlığı ile birleşik bir Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı bulunur; "Makine İkmal, Bakım ve Onarım" adı kaynaktaki virgüllü yazımıyla korunmuştur. Arama motoru özetinde geçen "İlçeler Koordinasyon Dairesi Başkanlığı" ham HTML'de HİÇ GEÇMEDİĞİ için listeye alınmamıştır.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Sayfa yalnız TLS sertifika doğrulaması KAPATILDIĞINDA açılıyor. Birim listesi tam eşleşti, ancak gerçek siteye ulaşıldığı kanıtlanamadığı için doğrulanmış sayılmadı.
 
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Başkanlık makamının randevu ve temsil işleri; Protokol ile Balkan Türkleri ve Dış İlişkiler şube müdürlükleri aracılığıyla protokol ve kardeş şehir yazışmaları.

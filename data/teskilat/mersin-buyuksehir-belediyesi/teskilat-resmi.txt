@@ -5,9 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: mersin-buyuksehir-belediyesi, mersin-bb, mersin-buyuksehir, mersin-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz — sayfa yalnız birim adlarını listeler, görev tanımı metni içermez. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: "Kalite Yönetimi ve Kent Araştırmaları" ile "Protokol ve Törenler" sitede daire başkanlığı değil ŞUBE MÜDÜRLÜĞÜ olarak listelenmiştir; "Yazı işleri ve Kararlar Dairesi Başkanlığı" sitedeki küçük harfli yazımıyla korunmuştur.
-
-BİRİM: Genel Sekreterlik
-GÖREV: Daireler arası koordinasyon, başkanlık makamı ile birimler arasındaki havale ve onay zincirinin yürütülmesi.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
 GÖREV: Afet risk azaltma planları, AFAD koordinasyonu, hasar tespit talepleri ve afet sonrası barınma başvuruları.

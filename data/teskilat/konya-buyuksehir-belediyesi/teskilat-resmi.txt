@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: konya-buyuksehir-belediyesi, konya-bb, konya-buyuksehir, konya-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Konya istisnasız "Dairesi Başkanlığı" yazımını kullanır. Kurumun birim sayfaları yalnızca daire başkanının özgeçmişi ve iletişim bilgisini içerir, görev tanımı yayımlanmamaktadır. Konya'nın tipik büyükşehir setinden ayrılan iki dairesi vardır: Yapı Kontrol Dairesi Başkanlığı ve İlçe Hizmetleri Dairesi Başkanlığı. Ayrı bir Mezarlıklar dairesi yoktur; defin ve cenaze hizmetleri Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı altındadır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Yapı Kontrol Dairesi Başkanlığı
 GÖREV: Büyükşehir uhdesindeki yapılarda ruhsat ve yapı kullanma izni (iskân) denetimini yürütür; yapı denetim kuruluşlarına ilişkin iş ve işlemleri yapar; ruhsatsız ve ruhsata aykırı yapılarda tespit ve yapı tatil tutanağı düzenleyerek encümene sevk eder.

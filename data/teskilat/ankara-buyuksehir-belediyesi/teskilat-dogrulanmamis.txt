@@ -1,0 +1,9 @@
+@KURUM: Ankara Büyükşehir Belediyesi
+@BELGE: [DOĞRULA: bu birimler kurumun resmî teşkilat sayfasında listelenmemektedir]
+@KAYNAK_KIMLIK: teskilat/ankara-buyuksehir-belediyesi/dogrulanmamis
+@ERISIM: 2026-07-26
+@NOT: DOĞRULANMAMIŞ KAYIT. Bu birimler daha önce derlenmiş ancak 2026-07-26 tarihli doğrulamada kurumun resmî sayfasında (https://www.ankara.bel.tr/teskilat-semasi/baskanliklar) bulunamamıştır. Birimin var olmadığı anlamına GELMEZ — sayfa eksik/güncel olmayabilir. Silinmedi, aday kayıt olarak tutuluyor; otomatik havale hedefi üretemez, yalnız memur onayına sunulur.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Muhtarlardan gelen talep ve şikâyetlerin kayda alınarak ilgili birime havale edilmesi ve sonucunun muhtara bildirilmesi. Muhtarlık hizmet binası, demirbaş ve kırtasiye ihtiyaçlarına ilişkin yazışmalar bu birimde yürütülür.
+

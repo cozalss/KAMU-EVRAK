@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: mugla-buyuksehir-belediyesi, mugla-bb, mugla-buyuksehir, mugla-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Muğla'ya özgü ayrımlar: mezarlık ve defin işleri Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı altındadır, veteriner hizmetleri Tarımsal Hizmetler Dairesi Başkanlığı altındadır ve kurumda üç adet coğrafi İlçe Hizmetleri Bölge Dairesi Başkanlığı bulunur; bu nedenle ayrı mezarlık veya veteriner dairesi aranmamalıdır. "Fen işleri Dairesi Başkanlığı" adı kaynak sayfadaki küçük harfli yazımıyla korunmuştur.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
 GÖREV: Afet ve Acil Durum Koordinasyon Merkezi (AKOM) işletimi, afet planlaması ve eğitimi, afet lojistiği ve idari işleri.

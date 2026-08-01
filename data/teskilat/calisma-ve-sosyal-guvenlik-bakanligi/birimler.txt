@@ -1,30 +1,44 @@
 @KURUM: Çalışma ve Sosyal Güvenlik Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/calisma-ve-sosyal-guvenlik-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.88 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: csgb, calisma-bakanligi
-@NOT: Sosyal Güvenlik Kurumu (SGK, emeklilik ve prim işlemleri) ve Türkiye İş Kurumu (İŞKUR, işe yerleştirme ve işsizlik ödeneği) ayrı tüzel kişiliğe sahip bağlı kuruluşlardır; bu dosyada yer alan ana hizmet birimlerinden farklı ele alınmalıdır.
+@NOT: Birim adları m.88/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Çalışma Genel Müdürlüğü
-GÖREV: İş sözleşmeleri, toplu iş sözleşmesi süreçleri, sendikal haklar, kıdem ve ihbar tazminatı mevzuatı ile işçi-işveren uyuşmazlıklarına ilişkin başvuruları yürütür.
+GÖREV: Çalışma hayatı ile ilgili mevzuatı uygulamak; İşçi, işveren ilişkilerini düzenlemek, çalışma barışını sağlayıcı tedbirleri almak; Çalışma mevzuatı ve istihdam politikası ile ilgili taslakları ve kalkınma planları ve yıllık programlarda yer alan genel politika içinde mahalli ve sektörel bazda istihdam programlarını hazırlamak; Sendikalar, toplu iş sözleşmesi, grev ve lokavta ilişkin mevzuatta öngörülen işleri yapmak.
 
 BİRİM: İş Sağlığı ve Güvenliği Genel Müdürlüğü
-GÖREV: İşyerlerinde iş sağlığı ve güvenliği denetimi, iş kazası ve meslek hastalığı önleme çalışmaları ile İSG uzmanlığı belgelendirme başvurularını yürütür.
+GÖREV: İş sağlığı ve güvenliği ile iş kazaları ve meslek hastalıklarının önlenmesi konularında inceleme ve araştırma çalışmalarını planlamak, programlamak ve uygulanmasını sağlamak; Üretilen ve ithal edilen kişisel koruyucu donanımların piyasa gözetimi ve denetimini yapmak, bu hususlarda usul ve esasları belirlemek.
 
 BİRİM: Uluslararası İşgücü Genel Müdürlüğü
-GÖREV: Yabancılara verilecek çalışma izni başvuruları ve göçmen işgücü politikalarına ilişkin işlemleri yürütür.
+GÖREV: Yabancı istihdamı ve işgücü göçü ile ilgili ulusal ve uluslararası düzeyde faaliyette bulunmak, çalışma izni ve çalışma izni muafiyetine ilişkin iş ve işlemleri yürütmek; Uluslararası işgücüne ilişkin politika belirlenmesi amacıyla gerekli çalışmaları yapmak ve belirlenen politikanın uygulanmasına ilişkin ulusal ve uluslararası düzeyde faaliyette bulunmak; Yabancı ülkelerle imzalanacak işgücü anlaşmaları ve sosyal güvenlik sözleşmelerinin müzakerelerine, hazırlanmasına ve tadiline katkı sağlamak.
 
-BİRİM: Dış İlişkiler Genel Müdürlüğü
-GÖREV: Yurt dışında çalışan vatandaşların hak ve hizmetleri, ikili sosyal güvenlik anlaşmaları ve uluslararası kuruluşlarla ilişkilere ilişkin başvuruları yürütür. [DOĞRULA: birim adı 1 sayılı CBK ÇSGB hizmet birimleri listesinden teyit edilmeli; eski "Yurtdışı İşçi Hizmetleri Genel Müdürlüğü" güncel teşkilatta yer almıyor]
+BİRİM: Dış İlişkiler ve Avrupa Birliği Genel Müdürlüğü
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.88/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek ve Bakanlık otomasyon stratejilerini Strateji Geliştirme Başkanlığı ile işbirliği içerisinde belirlemek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlığın bilgi işlem hizmetlerini yürütmek; Bakanlığın internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapmak.
 
 BİRİM: Rehberlik ve Teftiş Başkanlığı
-GÖREV: İş müfettişliği, işyeri denetimleri ve işçi şikâyetlerinin incelenmesine ilişkin başvuruları yürütür.
-
-BİRİM: Avrupa Birliği ve Mali Yardımlar Dairesi Başkanlığı
-GÖREV: AB fonlu istihdam ve sosyal politika projelerinin koordinasyonuna ilişkin başvuruları yürütür.
+GÖREV: Bakanlığın görev alanına giren faaliyet ve işlemlerle ilgili teftiş, inceleme ve soruşturmaları yürütmek, gerekli önlemleri almak veya aldırmak; Bakanlığın görev alanına giren konularda ulusal ve uluslararası mevzuatın uygulanmasını izlemek, mevzuat çalışmaları yapmak, gerektiğinde, teftiş ve denetimler sonucunda, mevzuatın aksayan yönleri, uygulanabilirliği, sektörel bazda ilgili kurum ve kuruluşlarca alınması gereken önlemleri belirlemek; Denetim sonuçlarına ilişkin istatistikleri tutmak, değerlendirmek ve yorumlamak.
 
 BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık bütçesi, stratejik plan ve performans programı çalışmalarını yürütür.
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
 
 BİRİM: Personel Dairesi Başkanlığı
-GÖREV: Bakanlık personelinin atama, nakil ve özlük işlemlerine ilişkin başvuruları yürütür.
+GÖREV: Bakanlığın personel politikası ve planlaması ile personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; Bakanlık personelinin yetiştirilmesi, eğitilmesi ve bilgi düzeylerinin yükseltilmesi için gerekli programları planlamak, geliştirmek ve uygulamak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kanun hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, aydınlatma, ısınma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Genel evrak ve arşiv faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usûl ve esaslara göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

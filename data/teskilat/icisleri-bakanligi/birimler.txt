@@ -1,33 +1,56 @@
 @KURUM: İçişleri Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/icisleri-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.256 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: icisleri, ib, mulkiye
-@NOT: Emniyet Genel Müdürlüğü (trafik, asayiş, pasaport), Jandarma Genel Komutanlığı (kırsal asayiş), Göç İdaresi Başkanlığı (yabancılar, ikamet izni, uluslararası koruma) ve AFAD (afet ve acil durum) İçişleri Bakanlığına bağlı kuruluşlardır; bu dosyada yer alan ana hizmet birimlerinden farklı ele alınmalıdır. Belediyeler ve il özel idarelerine ilişkin merkezi iş ve işlemler 2018'den bu yana Çevre, Şehircilik ve İklim Değişikliği Bakanlığı Yerel Yönetimler Genel Müdürlüğünce yürütülür; bu konudaki evrak o bakanlığa yönlendirilir.
+@NOT: Birim adları m.256/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: İller İdaresi Genel Müdürlüğü
-GÖREV: Mülki idare bölümlerinin (il, ilçe) kurulması ve sınır işlemleri, valilik ve kaymakamlık iş ve işlemlerinin koordinasyonu, toplantı ve gösteri yürüyüşü izinleri, olağanüstü hal ve genel güvenlik koordinasyonu ile ilgili başvuruları yürütür.
+GÖREV: Yurdun iç politikasına, il ve ilçelerin genel ve özel durumlarına ait bilgileri toplamak ve değerlendirmek; Mülki idare birimlerinin kurulmasına, kaldırılmasına, sınır ve adlarının değiştirilmesine, merkezlerinin belirtilmesine, mülki ayrılma ve birleşmeler ile köy, önemli mevki ve tabii yer adlarının değiştirilmesine ait işlemleri yürütmek, mülki idare birimleriyle ilgili yayınlar yapmak; İl ve ilçelerin idaresine, yardım toplanmasına, taşınmaz mal zilyetliğine (…) ait mevzuatın uygulanmasını takip etmek.
 
 BİRİM: Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü
-GÖREV: Doğum, ölüm, evlenme, boşanma gibi nüfus olaylarının tescili, kimlik kartı (TC Kimlik Kartı) ve nüfus cüzdanı işlemleri, MERNİS kayıtları, Türk vatandaşlığına alınma ve vatandaşlıktan çıkma başvurularını yürütür.
-
-BİRİM: Sivil Toplumla İlişkiler Genel Müdürlüğü
-GÖREV: Dernek kuruluşu, tüzük değişikliği ve fesih işlemleri, dernek denetimi, yardım toplama izinleri ve kamu yararına çalışan dernek statüsü başvurularını yürütür.
-
-BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
-GÖREV: Bakanlığın e-Devlet entegrasyonu, bilişim altyapısı, veri güvenliği ve elektronik başvuru sistemlerinin kurulup işletilmesinden sorumludur.
+GÖREV: Ülke nüfusunun yapısı, nitelikleri, nüfus hareketleri ve bunlardaki gelişmelere göre takip edilecek politikaların tespitine dair çalışmaları ilgili kuruluşlarla işbirliği içinde yapmak, belirlenecek esasların yürütülmesini sağlamak; Nüfus hareketlerini takip etmek ve değerlendirmek, merkezde bir nüfus bilgi bankası kurmak, aile ve hayat istatistiklerine ait verileri toplamak, ilgili kuruluşlarla işbirliği içerisinde yayınlamak.
 
 BİRİM: Personel Genel Müdürlüğü
-GÖREV: Bakanlık personeli ile mülki idare amirlerinin atama, nakil, terfi ve özlük işlemlerini; personel şikâyet ve itiraz başvurularını yürütür.
-
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık bütçesinin hazırlanması, stratejik plan ve performans programı çalışmaları, iç kontrol ve mali izleme faaliyetlerini yürütür.
+GÖREV: Bakanlığın personel planlaması ve personel politikasıyla ilgili çalışmalar yapmak, personel sisteminin geliştirilmesiyle ilgili tekliflerde bulunmak; Bakanlık personelinin atama, özlük ve emeklilik işlemleriyle ilgili işleri yapmak.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin hukuki görüş verme, dava ve icra takibi, mevzuat inceleme başvurularını değerlendirir.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek; Bakanlık bilişim hizmetlerinde kullanılan yazılım ve donanımların dışa bağımlılığını azaltmak üzere yerlilik ve millilik oranlarını artırmak için çalışmalar yürütmek, yenilikçi ve dönüştürücü proje üretmek, bu amaçla Ar-Ge çalışmalarını yapmak ve yaptırmak; Siber güvenlik alanında Bakanlık merkez, taşra ve yurtdışı teşkilatı ile bağlı kuruluşları nezdinde gerekli önlemleri almak ve çalışmaları yürütmek.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Bakanlığın merkez birimlerinin, bağlı kuruluşların, il ve ilçelerin ve mahalli idarelerle, bunlara bağlı ve bunların kurdukları veya özel kanunlarla veya Cumhurbaşkanlığı kararnameleriyle kurulmuş birlik, işletme, müessese ve teşebbüslerin işlem ve hesaplarını teftiş etmek ve denetlemek, inceleme ve soruşturma yapmak; Bakanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programlara uygun çalışmasını temin etmek amacıyla gerekli teklifleri hazırlamak ve Bakana sunmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Kaçakçılık İstihbarat, Harekat ve Bilgi Toplama Dairesi Başkanlığı
+GÖREV: Her türlü kaçakçılık faaliyetlerine ait istihbaratı Devlet çapında toplayıp değerlendirmek, kaçakçılığı men, takip ve tahkikle görevli kuruluşlara bilgi vermek, bağlı kuruluşların önleme ve yakalama faaliyetlerini yönlendirmek ve ilgili kuruluşlar arasında koordinasyon ve işbirliği yapılması için gerekli tedbirleri almak; Kaçakçılıkla mücadele, hedef, taktik ve usullerini tespit etmek ve eğitici nitelikte yayımlar yapmak.
+
+BİRİM: Sivil Toplumla İlişkiler Genel Müdürlüğü
+GÖREV: Dernekler ve şubelerinin, derneklerin ve vakıfların üst kuruluşlarının, yabancı dernek, vakıf ve kâr amacı gütmeyen kuruluşların Türkiye’deki şubeleri ile temsilciliklerinin (…) iş ve işlemlerini yürütmek; 26/3/1987 tarihli ve 3335 sayılı Uluslararası Nitelikteki Teşekküllerin Kurulması Hakkında Kanun hükümlerine göre kurulan teşekküllerin (…) iş ve işlemlerini yürütmek; Yardım toplama mevzuatına ilişkin iş ve işlemleri yürütmek.
+
+BİRİM: Güvenlik ve Acil Durumlar Koordinasyon Merkezi
+GÖREV: Kamu düzeni ve güvenliğini, bireylerin temel hak ve hürriyetlerini, toplumun huzur ve güvenini temin etmeye yönelik faaliyetler ile doğa, insan ve teknoloji kaynaklı acil durumlarda ortaya çıkabilecek her türlü güvenlik riskinde, güvenlik odaklı olarak Bakanlık merkez birimleri, bağlı kuruluşlar, valilikler, mahalli idareler, diğer bakanlıklar, kurum ve kuruluşlar, özel sektör ve sivil toplum kuruluşları arasında koordinasyon ve işbirliğini sağlamak.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Bakanlığın Avrupa Birliği ile ilişkilerini yürütmek ve Avrupa Birliğine uyum çalışmalarında koordinasyonu sağlamak; Bakanlığın yabancı ülkeler ve uluslararası kuruluşlar ile ilişkilerini yürütmek ve bu konuda koordinasyonu sağlamak; Avrupa Birliği, uluslararası kuruluşlar ve diğer ülkelerce sağlanan mali kaynakların proje bazlı kullanım sürecini yürütmek, Bakanlık merkez ve bağlı birimlerince yürütülen projelerin uygulanmasını izlemek ve koordinasyonunu sağlamak.
+
+BİRİM: Eğitim Dairesi Başkanlığı
+GÖREV: Bakanlık merkez ve taşra teşkilatı ile bağlı kuruluşların eğitim planını hazırlamak, yayınlamak ve uygulanmasını takip etmek; Bakanlık merkez teşkilatı personeli ile ilgili hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek ve uygulamak; Kalkınma planı ve yıllık programlar gereğince bakanlığın merkez ve taşra teşkilatının eğitim ihtiyaçlarını tespit etmek, kaynakları belirlemek, değerlendirmek ve sağlamak.
 
 BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: Bakanlığın idari, mali ve lojistik destek hizmetlerini; taşınır-taşınmaz yönetimi ve satın alma süreçlerini yürütür.
+GÖREV: Bakanlık için gerekli araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek; İhtiyaç duyulan bina ve arazinin kiralanma, satın alma işlemlerini yürütmek; Valilik ve kaymakamlık binalarının yapımını programlamak, satın alma ile kiralanması işlemlerini yürütmek ve bunların onarımlarını yapmak; Temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma hizmetlerini yapmak; Bakanın direktif ve emirlerini ilgililere duyurmak ve işlemlerini takip etmek, bakanlığın iç ve dış protokol hizmetlerini yürütmek.
+
+BİRİM: İç Güvenlik Stratejileri Dairesi Başkanlığı
+GÖREV: İç güvenlikle ilgili stratejilerin belirlenmesine yönelik çalışmalar yürütmek ve bu stratejilerin uygulamasını izlemek; Gerekli araştırma, analiz ve değerlendirme çalışmaları yapmak veya yaptırmak, kamuoyunu bilgilendirmek ve halkla iletişimi sağlamak; Güvenlik kuruluşlarına ve ilgili kurumlara stratejik bilgi desteği sağlamak, iç güvenlik ile ilgili stratejik istihbaratı değerlendirmek ve ilgili birimlerle paylaşmak.
 
 BİRİM: Basın ve Halkla İlişkiler Müşavirliği
-GÖREV: Bilgi edinme başvuruları, basın açıklamaları ve vatandaş-kurum iletişimi ile ilgili talepleri karşılar.
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usul ve ilkelere göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel yazışmalarını yürütmek; Bakanın her türlü protokol ve tören işlerini düzenlemek ve yürütmek; Bakanın ziyaret, davet, karşılama ve uğurlama, ağırlama, milli ve dini bayramları ile ilgili hizmetleri düzenlemek ve diğer kuruluşlarla koordine etmek.

@@ -5,6 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: ibb, istanbul-buyuksehir-belediyesi, istanbul-bb, istanbul-buyuksehir, istanbul-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adının kapsadığı işlerden TÜRETİLMİŞTİR, kaynakta birebir yer almaz — bu nedenle dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Liste kurumun o tarihte yayımladığı birimlerle sınırlıdır. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Belediyeye özgü not: sayfa JavaScript ile yüklendiği için gerçek tarayıcı (DOM) üzerinden okunmuştur; adlar kaynakta tamamı büyük harfle yazılıdır, burada Türkçe başlık yazımına çevrilmiştir. Sayfadaki ayrı "Bağlı Kuruluşlar ve İştirakler" bağlantısı açılmamıştır; İSKİ, İETT gibi bağlı kuruluşlar bu listede yoktur. Bu sayfada Hukuk Müşavirliği ve Özel Kalem Müdürlüğü listelenmemiştir.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — ibb.istanbul teşkilat sayfaları birim listesini JavaScript ile yüklüyor. 2023 faaliyet raporu PDF’i denendi; güncel listeyle örtüşmediği için doğrulama kaynağı olarak kullanılmadı.
 
 BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
 GÖREV: Afet risk azaltma planları, arama kurtarma ve acil durum koordinasyonu, afet sonrası hasar tespit talepleri ve tahliye planlaması. Deprem tatbikatı, afet toplanma alanı düzenlemesi ve AFAD ile kurumlar arası yazışmalar bu birimde yürütülür.

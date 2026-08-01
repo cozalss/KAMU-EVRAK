@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: adana-buyuksehir-belediyesi, adana-bb, adana-buyuksehir, adana-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARININ ÇOĞU kurumun birim-detay sayfalarındaki 'Görev, Yetki ve Sorumlulukları' metinlerinden alınmıştır; kalanlar birim adından türetilmiştir. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Adana, bu korpustaki beş büyükşehir içinde birim bazında görev tanımı yayımlayan tek belediyedir (https://www.adana.bel.tr/tr/birim-detay/{id} sayfaları). Sitenin kendi yazımındaki tutarsızlıklar korunmuştur: afet dairesi bir yerde "Risk Yönetim", başka yerde "Risk Yönetimi" olarak geçer; basın dairesi tek başına "Dairesi Başkanlığı", diğerlerinin tümü "Daire Başkanlığı" yazımını kullanır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Yazı İşleri ve Kararlar Daire Başkanlığı
 GÖREV: KEP (Kayıtlı Elektronik Posta) hesabı ve e-Belediye sistemi üzerinden gelen evrakı kabul edip ilgili birimlere havale eder; fiziki olarak gelen evrakın asıllarını zimmetleyerek ekleriyle birlikte ilgili birimine gönderir; kurum dışına gidecek evrakın e-Belediye sistemi üzerinden gönderileceği posta türünü seçer ve posta/kargo evrakını zimmet defterine işler; Meclis, Encümen ve Arşiv şube müdürlükleri bu başkanlığa bağlıdır.

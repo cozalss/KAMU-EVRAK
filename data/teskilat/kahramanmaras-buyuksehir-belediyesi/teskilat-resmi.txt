@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: kahramanmaras-buyuksehir-belediyesi, kahramanmaras-bb, kahramanmaras-buyuksehir, kahramanmaras-belediyesi, maras-buyuksehir-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî yayınından ham metin üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kahramanmaraş'ın web sitesi birim listesini YAYIMLAMAMAKTADIR — "Birim Listesi ve İletişim" sayfası içeriği artık 404 dönen bir iframe'den (fs/images/oldsrc/birim-telefon-listesi.html) geldiği için boştur, "Organ ve Teşkilat" sayfasındaki şema ise yalnız görseldir. Bu nedenle kaynak olarak kurumun kendi alan adında yayımladığı 2025 Yılı Faaliyet Raporu kullanılmıştır. Raporun İKİ BÖLÜMÜ ÇELİŞMEKTEDİR: s.11'deki teşkilat şeması ile s.15'teki personel dağılım tablosu 6 birimde farklı ad verir. Buradaki liste s.15 tablosundan alınmıştır; çünkü rapor metninin tamamındaki kullanım sıklığı bu adları desteklemektedir (Çevre Koruma ve Sıfır Atık 3 / Çevre Koruma ve Kontrol 1, İtfaiye ve Afet İşleri 3 / İtfaiye 1, Kent Estetiği ve Yeşil Alanlar 2 / Park ve Bahçeler 1, Kültür Gençlik ve Spor 5 / Kültür Sanat ve Sosyal İşler 1) ve s.11 şeması güncelliğini yitirmiş görünmektedir. Raporun kendi ifadesiyle teşkilat 18 daire başkanlığından oluşur ve aşağıdaki liste 18 daire başkanlığı içerir. Bağlı kuruluş KASKİ (Kahramanmaraş Su ve Kanalizasyon İdaresi) ayrı tüzel kişilik olduğu için listeye alınmamıştır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
 GÖREV: Nazım ve uygulama imar planı ile plan tadilatı işlemlerini yürütür, imar durumu (çap) taleplerini karşılar. Halihazır harita, parselasyon, ifraz-tevhit ve numarataj iş ve işlemlerini yapar.
@@ -30,9 +32,6 @@ GÖREV: Katı atık toplama, taşıma ve bertaraf hizmetleri ile hafriyat topra�
 BİRİM: Kent Estetiği ve Yeşil Alanlar Dairesi Başkanlığı
 GÖREV: Park, yeşil alan ve çocuk oyun alanlarının yapım ve bakım işleri ile kentsel tasarım projelerini yürütür. Ağaç kesim/nakil izni, peyzaj projesi onayı ve ilan-reklam estetiği başvurularını değerlendirir.
 
-BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
-GÖREV: Kamulaştırma, tahsis, irtifak hakkı ve takas işlemlerini 2942 sayılı Kamulaştırma Kanunu hükümlerine göre yürütür. Belediye taşınmazlarının kira, satış ve ecrimisil işlemlerini yapar.
-
 BİRİM: Kadın Aile ve Sosyal Hizmetler Dairesi Başkanlığı
 GÖREV: Sosyal yardım başvurularını (gıda, yakacak, ayni ve nakdi yardım) inceler ve sosyal inceleme raporu düzenler. Kadın, aile, engelli ve yaşlı destek hizmetleri ile meslek edindirme kurslarını yürütür.
 
@@ -51,14 +50,8 @@ GÖREV: Bütçe hazırlama, kesin hesap, muhasebe ve ödeme emri belgesi işleml
 BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
 GÖREV: Memur ve işçi personelin atama, terfi, özlük, izin, disiplin ve emeklilik işlemlerini yürütür. Kadro, norm kadro, hizmet içi eğitim ve staj başvurularına ilişkin işlemleri yapar.
 
-BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: Doğrudan temin ve ihale yoluyla mal/hizmet alımı ile taşınır mal ve ambar işlemlerini 4734 sayılı Kamu İhale Kanunu çerçevesinde yürütür. Hizmet binalarının bakım-onarım, güvenlik, temizlik ve araç/akaryakıt tedarik işlerini yapar.
-
 BİRİM: Bilgi İşlem Dairesi Başkanlığı
 GÖREV: EBYS ve e-belediye sistemlerinin işletim, yetkilendirme ve entegrasyon işlemlerini yürütür. Bilgi edinme ve CİMER başvurularının sistem üzerinden yönlendirilmesi ile KVKK teknik tedbirlerini takip eder.
-
-BİRİM: Basın ve Halkla İlişkiler Dairesi Başkanlığı
-GÖREV: Basın açıklamaları, tanıtım yayınları ve sosyal medya iletişimini yürütür. Vatandaş istek-şikâyet, bilgi edinme ve CİMER başvurularının kayıt, takip ve cevap süreçlerini koordine eder.
 
 BİRİM: Dış İlişkiler Dairesi Başkanlığı
 GÖREV: Kardeş şehir ilişkileri, uluslararası protokol ve yurt dışı temsil iş ve işlemlerini yürütür. AB ve kalkınma ajansı hibe/proje başvurularının hazırlık ve takibini yapar.

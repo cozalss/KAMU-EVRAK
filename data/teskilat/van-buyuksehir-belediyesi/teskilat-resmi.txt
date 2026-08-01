@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: van-buyuksehir-belediyesi, van-bb, van-buyuksehir, van-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kaynak sayfa birimleri daire başkanı adlarıyla birlikte yayımlar, kişi adları alınmamıştır; sayfadaki birimlerin neredeyse tamamı vekâleten ("V.") yürütülmektedir. Sitenin kendi yazımı korunmuştur: "İnsan Kaynakları Ve Eğitim Dairesi Başkanlığı" büyük "Ve" ile, "Yol Yapım, Bakım ve Onarım Dairesi Başkanlığı" ve "Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı" virgüllü yazılmıştır. Van'da hem "İklim Değişikliği ve Sıfır Atık" hem "Çevre Koruma ve Kontrol" dairesi ayrı ayrı bulunur. Bağlı kuruluş VASKİ (Van Su ve Kanalizasyon İdaresi) ayrı tüzel kişilik olduğu için listeye alınmamıştır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
 GÖREV: Gelen-giden evrak kaydı, havale ve kurum arşivi işlemlerini yürütür. Belediye Meclisi ve Encümen gündemi, karar yazımı ve kararların tebliğ işlemlerini yapar.
@@ -63,9 +65,6 @@ GÖREV: Kadın ve aile destek hizmetleri ile kadın danışma ve konukevi süre�
 BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
 GÖREV: Kültür-sanat etkinlikleri, festival, konser ve kurs programlarını düzenler. Salon/tesis tahsisi başvurularını ve kütüphane hizmetlerini yürütür.
 
-BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
-GÖREV: Muhtarlardan gelen talep ve şikâyetlerin kaydını, ilgili birime yönlendirilmesini ve sonucunun bildirilmesini yürütür. Muhtarlıklarla iletişim ve koordinasyon işlemlerini yapar.
-
 BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
 GÖREV: Tarımsal üretim destekleri, çiftçi eğitimi ve hayvancılık projelerini yürütür. Sulama, tohum-fide desteği ve tarımsal altyapı taleplerini değerlendirir.
 
@@ -95,9 +94,6 @@ GÖREV: EBYS ve e-belediye sistemlerinin işletim, yetkilendirme ve entegrasyon 
 
 BİRİM: Akıllı Şehir ve Kent Bilgi Sistemleri Dairesi Başkanlığı
 GÖREV: Kent bilgi sistemi ve coğrafi veri altyapısının kurulum ve güncellenmesini yürütür. Akıllı şehir uygulamaları ile kurumlar arası veri paylaşımı iş ve işlemlerini yapar.
-
-BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
-GÖREV: Basın açıklamaları, tanıtım yayınları ve sosyal medya iletişimini yürütür. Vatandaş istek-şikâyet, bilgi edinme ve CİMER başvurularının kayıt, takip ve cevap süreçlerini koordine eder.
 
 BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
 GÖREV: Belediye birimlerinin iş ve işlemlerini teftiş eder; inceleme, soruşturma ve ön inceleme raporlarını düzenler.

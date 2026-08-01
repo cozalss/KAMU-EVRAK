@@ -1,39 +1,59 @@
 @KURUM: Sanayi ve Teknoloji Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/sanayi-ve-teknoloji-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.387 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: sanayi-bakanligi, sanayi-teknoloji-bakanligi, stb
-@NOT: Bağlı/ilgili kuruluşlar (TÜBİTAK, KOSGEB, TSE vb.) ayrı dizinde ele alınır; burada yalnız Bakanlık merkez teşkilatı birimleri listelenmiştir.
+@NOT: Birim adları m.387/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Sanayi Genel Müdürlüğü
-GÖREV: Sanayi sicil belgesi düzenleme, imalat sanayii kayıt işlemleri, sanayi işletmelerinin sicil bilgi güncellemeleri ve sanayi envanteri başvurularını yürütür.
+GÖREV: Sanayi sektörlerinin ihtiyaç duyduğu nitelikli işgücü ihtiyacının karşılanmasına yönelik iş ve meslek analizleri yapmak ve yaptırmak, mesleki teknik eğitimi desteklemek, nitelikli işgücü programları hazırlamak ve uygulanmasını sağlamak; Çevre ve iklim değişikliği konularındaki gelişmeleri takip etmek, çevrenin korunması amacıyla sanayiye yönelik tedbirlerin alınmasına yardımcı olmak, sanayi işletmelerinin temiz üretim program ve projeleri hazırlamasına ve uygulamasına yönelik faaliyetlerde bulunmak.
 
-BİRİM: Teşvik Uygulama ve Yabancı Sermaye Genel Müdürlüğü
-GÖREV: Yatırım teşvik belgesi başvuruları, teşvik belgesi kapama/revize işlemleri ve yabancı sermayeli şirket kuruluş bildirimlerini değerlendirir.
-
-BİRİM: Sanayi Bölgeleri Genel Müdürlüğü
-GÖREV: Organize sanayi bölgesi (OSB) kuruluş, parsel tahsis ve altyapı başvurularını, ayrıca endüstri bölgesi ve teknoloji geliştirme bölgesi işlemlerini yürütür.
-
-BİRİM: Ar-Ge Teşvikleri Genel Müdürlüğü
-GÖREV: Ar-Ge ve tasarım merkezi belgelendirme başvuruları, Ar-Ge/tasarım harcaması teşvik ve muafiyet talepleri ile teknoloji odaklı sanayi hamlesi programı başvurularını değerlendirir.
-
-BİRİM: Metroloji ve Sanayi Ürünleri Güvenliği Genel Müdürlüğü
-GÖREV: Ölçü ve ölçü aletleri muayene/damgalama itirazları, ürün güvenliği ve piyasa gözetim denetim şikâyetlerini karşılar.
+BİRİM: Millî Teknoloji ve Yapay Zekâ Genel Müdürlüğü
+GÖREV: Milli Teknoloji Hamlesi kapsamında, Türkiye’nin teknolojik yetkinliğini geliştirmek amacıyla etki gücü yüksek program ve projelerin hayata geçirilmesine katkı sağlamak; Milli Teknoloji Hamlesi hedefleri doğrultusunda ilgili paydaşlarla işbirliği içerisinde, teknoloji geliştirme ve bireylerin ve işletmelerin dijital dönüşümü konularında bireysel yetkinlikler ile toplumsal bilinç ve kültürün gelişmesine yönelik faaliyetlerde bulunmak.
 
 BİRİM: Stratejik Araştırmalar ve Verimlilik Genel Müdürlüğü
-GÖREV: Sanayi ve teknoloji alanında stratejik araştırma/analiz çalışmaları ile işletmelere yönelik verimlilik geliştirme programı ve verimlilik danışmanlık taleplerini yürütür.
+GÖREV: Türkiye’yi küresel rekabette öne çıkaracak yüksek katma değer taşıyan, ekonomik bağımsızlığımız için stratejik değeri haiz ve dijital dönüşümde kritik seviyede önemli teknolojik ürün ve hizmetlerin milli ve özgün olarak geliştirilmesi ve üretilmesi amacıyla yürütülen Milli Teknoloji Hamlesi programının temel hedefler, odak alanlar, yol haritaları, uygulama planları gibi esaslarını ilgili paydaşlarla işbirliği halinde belirlemek.
 
-BİRİM: Rehberlik ve Teftiş Başkanlığı
-GÖREV: Bakanlık merkez ve taşra teşkilatı ile bağlı/ilgili kuruluşlar hakkındaki teftiş, inceleme ve şikâyet/ihbar başvurularını değerlendirir.
+BİRİM: Ar-Ge Teşvikleri Genel Müdürlüğü
+GÖREV: Teknoloji geliştirme bölgelerinin; yer seçimi, kamulaştırılması, kuruluşu, işleyişi, (…) inşası ile ilgili ruhsat ve izinlerin verilmesine ilişkin işleri yürütmek, düzenlemeler yapmak, faaliyetlerini izlemek ve denetlemek; Ar-ge ve tasarım merkezlerine ilişkin başvuruları değerlendirmek, uygun görülen başvuruları neticelendirerek ar-ge ve tasarım merkezlerini tescil etmek, ar-ge ve tasarım merkezlerine ilişkin düzenlemeler yapmak, faaliyetlerini değerlendirmek ve denetlemek.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, performans programı, bütçe ve iç kontrol süreçlerine ilişkin kurumsal yazışmaları yürütür.
+BİRİM: Sanayi Bölgeleri Genel Müdürlüğü
+GÖREV: Organize sanayi bölgesi, endüstri bölgesi, teknoloji geliştirme bölgesi, serbest bölge ve sanayi siteleri için kullanılabilir yatırım alanlarını belirlemek ve mekânsal strateji planları, çevre düzeni planları ve 1/25. ölçekli nazım imar planlarında sanayi alanlarına ilişkin görüş vermek; Organize sanayi bölgeleri ve endüstri bölgelerinin planlanması ve geliştirilmesine yönelik çalışmalar yapmak.
 
-BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine karşı açılan dava/itiraz süreçleri ve hukuki görüş talep eden yazışmaları karşılar.
+BİRİM: Metroloji ve Sanayi Ürünleri Güvenliği Genel Müdürlüğü
+GÖREV: Bilimsel, endüstriyel ve yasal metroloji alanlarında stratejiler belirlenmesi amacıyla yapılan çalışmalara katkıda bulunmak, belirlenen politikaların uygulanmasını sağlamak; Yasal metroloji ve hazır ambalajlama alanında teknik düzenlemeler hazırlamak ve uygulamaya koymak, bu alanda piyasa gözetimi ve denetimi yapmak; Yasal metroloji kapsamına alınacak veya kapsamdan çıkartılacak ölçü aletlerini belirlemek, yasal metroloji alanında izlenebilirliği sağlamak için gerekli teknik ve idari altyapıyı oluşturmak.
+
+BİRİM: Teşvik Uygulama ve Yabancı Sermaye Genel Müdürlüğü
+GÖREV: Cumhurbaşkanlığı yıllık programı, kalkınma planları ve orta vadeli program çerçevesinde ülke kalkınmasında yabancı sermayeden beklenen gerekli katkıların sağlanmasını ve yönlendirilmesini temin amacıyla ihtiyaç duyulan mevzuatı hazırlamak; 5/6/2003 tarihli ve 4875 sayılı Doğrudan Yabancı Yatırımlar Kanunu ve buna ilişkin mevzuat çerçevesinde belirtilen işleri yapmak.
+
+BİRİM: Kalkınma Ajansları Genel Müdürlüğü
+GÖREV: Kalkınma planı, orta vadeli program ve yıllık programlar ile diğer ulusal ve sektörel politika belgelerine bölgesel gelişme bakımından katkı sağlamak; Bölgesel gelişme ulusal stratejisi, bölge planları ve stratejilerinin hazırlık çalışmalarını yapmak veya yaptırmak, bu belgelerin sektörel ve tematik politikalarla uyum ve tamamlayıcılığını sağlayacak tedbirler geliştirmek; Kalkınma ajanslarının genel koordinasyonunu sağlamak ve bunlarla ilgili iş ve işlemleri yürütmek, çalışmalarını izlemek ve denetlemek.
 
 BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
-GÖREV: AB uyum süreci, ikili/çoklu uluslararası sanayi işbirliği ve dış ilişkiler yazışmalarını yürütür.
+GÖREV: Bakanlığın görev ve faaliyet alanına giren konularda Avrupa Birliği ile ilişkilerin ulusal plan ve programlarda öngörülen hedefler doğrultusunda yürütülmesini sağlamak, Avrupa Birliği￾Türkiye arasındaki üyelik ve Gümrük Birliği ile ilgili konularda uyum, uygulama ve müzakere çalışmaları ile AB çerçeve programlarına ilişkin faaliyetleri yürütmek, toplantılara katılmak ve Bakanlık içerisinde koordinasyonu sağlamak.
 
-BİRİM: Personel Genel Müdürlüğü
-GÖREV: Bakanlık personeline ait atama, nakil, özlük ve disiplin işlemlerine ilişkin başvuruları yürütür.
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlığın personel politikası ve planlaması ile personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlığın eğitim planını hazırlamak, uygulamak ve değerlendirmek, eğitim faaliyetleri ile ilgili dokümantasyon, yayım ve arşiv hizmetlerini yürütmek; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlık teşkilatının her türlü faaliyet ve işlemleriyle ilgili olarak teftiş, inceleme ve soruşturmalar yapmak; Bakanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programlara uygun çalışmasını temin etmek amacıyla gerekli teklifleri hazırlamak ve Bakana sunmak; Bakanlığın denetimi altındaki her türlü kuruluş ve tüzel kişilerin faaliyet ve işlemleri ile ilgili olarak Bakanlığın görev ve yetkileri çerçevesinde inceleme, teftiş, denetim ve soruşturma yapmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek ve Bakanlık otomasyon stratejilerini belirlemek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, buna ilişkin politikaları ve ilkeleri belirlemek, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlığın bilgi işlem hizmetlerini yürütmek; Bakanlığın internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapmak.
+
+BİRİM: Acil Durumlar ve Savunma Planlaması Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.387/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usul ve ilkelere göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak; Bakanlığın görev ve faaliyet alanına giren yurtiçi ve yurtdışı ilişkilerle ilgili konularda protokol faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmi ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

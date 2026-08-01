@@ -5,6 +5,8 @@
 @KAYNAK_TURU: resmi_teskilat
 @ALIAS: ordu-buyuksehir-belediyesi, ordu-bb, ordu-buyuksehir, ordu-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI kurumun yayımladığı şube müdürlüğü listesinden okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü tespitler: Ordu'da daire seviyesinde Yazı İşleri ve Kararlar Dairesi Başkanlığı YOKTUR, evrak ve meclis işleri İnsan Kaynakları ve Eğitim Dairesi Başkanlığı altındaki Yazı İşleri ve Arşiv ile Meclis ve Encümen şube müdürlüklerince yürütülür; mezarlık ve temizlik hizmetleri Parklar ve Bahçeler dairesine bağlıdır; "İtfaiye Daire Başkanlığı" ve "Parklar ve Bahçeler" yazımları kaynaktaki gibi korunmuştur.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; Tören ve Organizasyon şube müdürlüğü aracılığıyla resmî tören ve etkinliklerin yürütülmesi.

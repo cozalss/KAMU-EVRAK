@@ -171,6 +171,44 @@ class TestVeriUcu:
         # Uydurma yasağı VERİYLE BİRLİKTE gider (talimatın uzağında kalmasın).
         assert "UYDURMA" in veri["not"]
 
+    def test_KAC_kelimesi_hukuki_soruyu_panele_dusurmez(self, auth_client: TestClient, monkeypatch):
+        """Paylaşılan sınıflandırıcıda "kaç" panel desenindedir; "bilgi edinme başvurusu KAÇ
+        günde cevaplanır" hukuki bir sorudur ama panel_ozet'e düşüp boşuna DB sorgulatıyordu
+        (ölçüldü: ~2 sn israf + modele alakasız veri)."""
+        from api.routes import sohbet as sohbet_mod
+
+        cagri = 0
+
+        async def _sayan(session, owner_id, intent, parametreler):
+            nonlocal cagri
+            cagri += 1
+            return {"olmamali": True}
+
+        monkeypatch.setattr(sohbet_mod, "araci_calistir", _sayan)
+        resp = auth_client.post(
+            "/sohbet/veri", json={"soru": "Bilgi edinme başvurusu kaç günde cevaplanır?"})
+        assert resp.status_code == 200
+        assert cagri == 0                      # DB'ye HİÇ gidilmedi
+        assert resp.json()["veri"] is None
+        assert "GÜVENLE" in resp.json()["not"]  # uzmanlık talimatı verildi
+
+    def test_gercek_panel_sorusu_HALA_DB_sorgular(self, auth_client: TestClient, monkeypatch):
+        """Karşı-kanıt: düzeltme panel sorgusunu bozmamalı."""
+        from api.routes import sohbet as sohbet_mod
+
+        cagri = 0
+
+        async def _sayan(session, owner_id, intent, parametreler):
+            nonlocal cagri
+            cagri += 1
+            return {"toplam": 38}
+
+        monkeypatch.setattr(sohbet_mod, "araci_calistir", _sayan)
+        resp = auth_client.post("/sohbet/veri", json={"soru": "Kaç evrak işledik?"})
+        assert resp.status_code == 200
+        assert cagri == 1
+        assert resp.json()["veri"] == {"toplam": 38}
+
     def test_UZMANLIK_sorusunda_model_veri_yok_DEMEZ(self, auth_client: TestClient):
         """Canlı bulgu: 'bilgi edinme kaç gün?' veri döndürmez → model 'bilgi bulunamadı'
         diyordu. Oysa doğrulanmış cevap zaten oturum talimatında; talimat bunu söylemeli."""

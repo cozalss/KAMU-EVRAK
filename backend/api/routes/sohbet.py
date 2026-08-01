@@ -53,6 +53,7 @@ from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
 from core.realtime_oturum import efemer_anahtar, realtime_acik
 from core.sesli_brifing import karsilama_metni
+from core.text import tr_lower
 from core.tts_kota import kota_dus
 from core.tts_openai import tts_enabled, tts_media_type, tts_openai
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
@@ -1067,6 +1068,29 @@ async def sohbet_seslendir(request: Request, istek: SeslendirIstek, user: Curren
     return Response(content=audio, media_type=tts_media_type())
 
 
+# "kaç" kelimesi paylaşılan sınıflandırıcının _RE_PANEL desenindedir; bu yüzden
+# "bilgi edinme başvurusu KAÇ günde cevaplanır" panel_ozet'e düşüp HUKUKİ bir soru için
+# panel istatistiği sorgulatıyordu (ölçüldü: boşa giden ~2 sn + modele alakasız veri).
+# Paylaşılan sınıflandırıcıya DOKUNULMUYOR — ölçülü ve sistemin her yerinde kullanılıyor;
+# düzeltme yalnız bu uçta ve yalnız panel_ozet kovası için geçerli.
+_GENEL_KURAL = re.compile(
+    r"(gün|süre|kanun|yönetmelik|madde|tebligat|bilgi edinme|dilekçe hakk|imza|kapanış|"
+    r"arz eder|rica eder|üst yazı|müzekkere|sdp|detsis)")
+_KAYIT_ISARETI = re.compile(
+    r"(benim|bizim|kaç evrak|kaç taslak|kaç işlem|kaç adet|kaç tane|panel|istatistik|"
+    r"dağılım|toplam|rapor|listele|göster|kuyruk)")
+
+
+def _kayit_sorgusu_gerekli_mi(intent: str, soru: str) -> bool:
+    """Bu soru için DB'ye gidilmeli mi? panel_ozet kovasında genel-kural sorusunu ayıklar."""
+    if intent != "panel_ozet":
+        return intent in KAYIT_TURU
+    s = tr_lower(soru or "")
+    if _KAYIT_ISARETI.search(s):
+        return True                      # açıkça kullanıcının kayıtları soruluyor
+    return not _GENEL_KURAL.search(s)    # mevzuat/süre sözlüğü varsa kayıt sorgusu değildir
+
+
 class VeriIstek(BaseModel):
     soru: str = Field(..., min_length=1, max_length=1000)
     ekran: EkranBaglam | None = None
@@ -1114,7 +1138,8 @@ async def sohbet_veri(
                 "onay_bekleyen": y.onay_bekleyen, "intent": y.intent}
 
     veri: Any = None
-    if intent in KAYIT_TURU:
+    kayit_sorusu = _kayit_sorgusu_gerekli_mi(intent, istek.soru)
+    if kayit_sorusu:
         try:
             veri = await araci_calistir(session, user.id, intent, niyet["parametreler"])
         except Exception as exc:
@@ -1122,7 +1147,6 @@ async def sohbet_veri(
             return {"tur": "veri", "intent": intent, "veri": None,
                     "not": "Kayıtlara şu an ulaşılamadı; bunu kullanıcıya dürüstçe söyle."}
 
-    kayit_sorusu = intent in KAYIT_TURU
     # Talimat İKİ TÜRLÜ — canlı ölçümde tek tip talimat iki ayrı kusur üretti:
     # · "Bilgi edinme kaç gün?" → veri boş → model "bilgi bulunamadı" dedi. Oysa bu bir
     #   UZMANLIK sorusu; doğrulanmış cevap zaten oturum talimatında (4982 → on beş iş günü).

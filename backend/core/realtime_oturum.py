@@ -43,9 +43,12 @@ ARACLAR: list[dict[str, Any]] = [
         "type": "function",
         "name": "kamu_evrak_sor",
         "description": (
-            "Kullanıcının evrak, taslak, mevzuat, yasal süre, birim yönlendirme veya bu "
-            "sistemdeki kayıtlarla ilgili HER sorusunu bu araca sor. Kendi bilginden yasal "
-            "süre, madde numarası, kayıt sayısı veya evrak bilgisi VERME — hepsi bu araçtan gelir."
+            "Kullanıcının evrak, taslak, kayıt, sayı, mevzuat, yasal süre ya da birim "
+            "yönlendirme sorularında bu aracı çağır. Kendi bilginden kayıt sayısı, evrak "
+            "bilgisi ya da spesifik madde numarası VERME — bunlar araçtan gelir. "
+            "ÇAĞIRMADAN ÖNCE 'bakıyorum', 'kısaca anlatayım' gibi DOLGU CÜMLESİ KURMA; "
+            "aracı hemen çağır, cevabı sonucu alınca tek seferde söyle. Dolgu cümlesi "
+            "kullanıcıyı iki kez bekletiyor."
         ),
         "parameters": {
             "type": "object",

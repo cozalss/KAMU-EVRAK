@@ -18,6 +18,9 @@ import { sesliMetneCevir } from "../lib/sesliMod.js";
 import { cumleAyir, sesKuyruguOlustur } from "../lib/sesKuyrugu.js";
 import { komutCoz, komutOnayi } from "../lib/sesliKomut.js";
 import {
+  aracArgumanlari, aracCiktisiniYaz, aracTamamlandiMi, realtimeBaglan, sonrakiSesliDurum, yanitIste,
+} from "../lib/realtimeSes.js";
+import {
   PAL, T, V, R, DERIN, SP, RAD, SH, EASE, TYPE, Icon, focusRing, SR_ONLY,
 } from "./neonUi.jsx";
 
@@ -83,6 +86,13 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   // saklarız ve BİR SONRAKİ cümleyi onunla göndeririz ("evet" → uygula). Geri alınamaz iş
   // asla tek komutla yapılmaz — yazılı sohbetteki iki-adımlı kuralın sesli karşılığı.
   const onayRef = useRef(null);
+  // Araç turu senkronizasyonu — üçü birlikte "sonucu yazdık VE aktif yanıt bitti" koşulunu kurar.
+  const aracBekliyorRef = useRef(false);
+  const aracCiktiYazildiRef = useRef(false);
+  const aracYanitBittiRef = useRef(false);
+  const rtRef = useRef(null);        // aktif realtime oturumu ({gonder, kapat, pc})
+  const rtAktifRef = useRef(false);  // realtime mi eski zincir mi (temizle/kes bunu okur)
+  const sonUserRef = useRef("");     // model araca soru vermezse son transkripti kullan
 
   const orbRef = useRef(null);
   const haloRef = useRef(null);
@@ -349,6 +359,14 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   // --- Barge-in / durdur: konuşurken orb'a dokun → sesi kes, dinlemeye dön ---
   const kes = useCallback(() => {
     if (durumRef.current !== DURUM.KONUSUYOR) return;
+    // Realtime'da kesme protokolün kendisinde: response.cancel + çalan sesi sustur.
+    if (rtAktifRef.current) {
+      // Canlı akışta <audio>'yu duraklatmak akışı da dondurur; kesme protokolün kendisinde:
+      // response.cancel üretimi durdurur, model hemen dinlemeye döner.
+      rtRef.current?.gonder({ type: "response.cancel" });
+      gecir("kes");
+      return;
+    }
     // SIRA ÖNEMLİ: önce kuyruğu iptal et — aksi halde pause, çalan parçayı bitirip kuyruktaki
     // SONRAKİ cümleyi çalmaya başlar ve barge-in işe yaramaz.
     kuyrukRef.current?.iptal();
@@ -364,6 +382,11 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   //     (MediaElementSource bir-kez-bağlanma kuralı, #2). Tam kapatma unmount effect'inde. ---
   const temizle = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
+    // Realtime oturumu: peer bağlantısı + mikrofon izleri kapanır. Kapatılmazsa sahne
+    // kapandıktan sonra da mikrofon açık kalır ve fatura işlemeye devam eder.
+    try { rtRef.current?.kapat(); } catch { /* yoksay */ }
+    rtRef.current = null; rtAktifRef.current = false;
+    oynatAnalizRef.current = null;   // uzak akış analizörü oturuma özgüdür
     abortRef.current?.abort();
     kuyrukRef.current?.iptal(); kuyrukRef.current = null;
     try { tanimaRef.current?.stop(); } catch { /* yoksay */ }
@@ -380,6 +403,147 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     // ctx / oynatAnaliz / mediaBagli KORUNUR (bir sonraki açılışta yeniden kullanılır).
   }, [urlBirak]);
 
+  // --- REALTIME MOTORU (birincil) ---------------------------------------------------------
+  // Ses tarayıcı ↔ OpenAI arasında DOĞRUDAN akar; sunucumuz yalnız kısa ömürlü anahtarı üretir.
+  // Ölçüm: eski zincir ilk sesi ~3184 ms'de veriyordu, realtime ~1000 ms.
+  // Model mevzuat/kayıt sorularını KENDİ BİLGİSİNDEN cevaplamaz: `kamu_evrak_sor` aracını
+  // çağırır, biz o soruyu GÜNCEL ekran bağlamıyla /sohbet ucuna sorarız, cevabı modele
+  // veririz. Böylece hız realtime'dan, doğruluk bizim grounded pipeline'dan gelir.
+  const aracaSor = useCallback(async (soru) => {
+    try {
+      // /sohbet DEĞİL /sohbet/veri: o uç veriyi cümleye çeviriyordu, realtime modeli de aynı
+      // cümleyi yeniden kuruyordu — aynı iş iki kez, ölçülen 8789 ms'nin ~4 sn'si buydu.
+      // Artık kompozisyon TEK yerde (realtime), veri ve grounding TEK yerde (bizde).
+      const res = await authFetch("/sohbet/veri", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          soru,
+          ...(ekranRef.current ? { ekran: ekranRef.current } : {}),
+          ...(onayRef.current ? { onay_baglam: onayRef.current } : {}),
+        }),
+      });
+      if (!res.ok) return JSON.stringify({ hata: "Kayıtlara şu an ulaşılamadı." });
+      const y = await res.json();
+      onayRef.current = y.onay_bekleyen || null;   // teyit gerekiyorsa sonraki tura taşı
+      gecmisRef.current = [...gecmisRef.current, { rol: "kullanici", icerik: soru }].slice(-8);
+      // Aksiyon yollarında (onay/revize/kurul) metin zaten karar cümlesidir — olduğu gibi ver.
+      return y.tur === "aksiyon" ? y.metin : JSON.stringify(y);
+    } catch {
+      return JSON.stringify({ hata: "Kayıtlara şu an ulaşılamadı." });
+    }
+  }, []);
+
+  // Araç turunun iki koşulu da sağlandı → yanıt iste ve bayrakları temizle (tek yerde,
+  // iki farklı sıralamadan da buraya düşülüyor).
+  const yanitIsteVeSifirla = useCallback(() => {
+    aracCiktiYazildiRef.current = false;
+    aracYanitBittiRef.current = false;
+    if (rtRef.current) {
+      gecir("sonuc");                       // araç cevabı hazırlanıyor → "Düşünüyor"
+      yanitIste(rtRef.current.gonder);
+    }
+  }, [gecir]);
+
+  const rtOlay = useCallback((olay) => {
+    // Realtime API hatası SESSİZ KALMAZ: teşhis edilemeyen "ses gelmedi" durumları buradan
+    // görünür hâle gelir (aktif-yanıt çakışması tam da böyle gizlenmişti).
+    if (olay.type === "error") {
+      setUyari("Sesli bağlantıda sorun oldu — tekrar deneyin.");
+      console.warn("realtime hata", olay.error || olay);
+    }
+    // Ses AKMAYA BAŞLADIYSA durum tartışmasız KONUŞUYOR'dur. Guard'lı geçiş yetmiyor: araç
+    // turundan sonra durum DİNLİYOR'a düşmüş oluyor ve `yanit_basladi` yalnız DÜŞÜNÜYOR'dan
+    // geçtiği için orb, model konuşurken "Dinliyor" görünüyordu (canlı bulgu).
+    if (olay.type === "output_audio_buffer.started" || olay.type === "response.output_audio.delta") {
+      setDurum(DURUM.KONUSUYOR); durumRef.current = DURUM.KONUSUYOR;
+      return;
+    }
+    // Araç turu iki koşul bekler: (1) sonucumuz konuşmaya YAZILMIŞ olmalı, (2) modelin
+    // aktif yanıtı BİTMİŞ olmalı. Biri eksikken response.create göndermek ya API hatası
+    // verir ya da model aracın cevabını görmeden konuşur. Hangisi önce gelirse gelsin.
+    if (olay.type === "response.done" && aracBekliyorRef.current) {
+      aracBekliyorRef.current = false;
+      aracYanitBittiRef.current = true;
+      if (aracCiktiYazildiRef.current) yanitIsteVeSifirla();
+      return;                       // bu response.done tur sonu DEĞİL, araç turunun ortası
+    }
+    const gecis = sonrakiSesliDurum(olay.type);
+    if (gecis) gecir(gecis);
+
+    // Kullanıcının söylediği yazıya döküldü → ÖNCE deterministik komut dene (ağ turu yok).
+    if (olay.type === "conversation.item.input_audio_transcription.completed") {
+      const metin = (olay.transcript || "").trim();
+      if (!metin) return;
+      setSonUser(metin); sonUserRef.current = metin;
+      const komut = onayRef.current ? { tur: "yok" } : komutCoz(metin, {
+        basliklar: ekranRef.current?.liste?.ilkler || [],
+      });
+      if (komut.tur !== "yok") {
+        onKomut?.(komut);
+        // Model bu tur için konuşmaya başlamış olabilir: kes. Eylem zaten görünür geri bildirim.
+        rtRef.current?.gonder({ type: "response.cancel" });
+        setSonYanit(komutOnayi(komut));
+      }
+      return;
+    }
+    if (olay.type === "response.output_audio_transcript.delta") {
+      setSonYanit((s) => s + (olay.delta || ""));
+      return;
+    }
+    if (olay.type === "response.created") setSonYanit("");
+    // Araç çağrısı: argümanlar parça parça akar, YALNIZ .done çalıştırılabilir.
+    if (aracTamamlandiMi(olay)) {
+      aracBekliyorRef.current = true;
+      aracCiktiYazildiRef.current = false;
+      aracYanitBittiRef.current = false;
+      const { soru } = aracArgumanlari(olay);
+      aracaSor(soru || sonUserRef.current).then((cevap) => {
+        if (!rtRef.current) return;
+        aracCiktisiniYaz(rtRef.current.gonder, olay.call_id, cevap);
+        aracCiktiYazildiRef.current = true;
+        if (aracYanitBittiRef.current) yanitIsteVeSifirla();
+      });
+    }
+  }, [gecir, onKomut, aracaSor, yanitIsteVeSifirla]);
+
+  const kurRealtime = useCallback(async () => {
+    const res = await authFetch("/sohbet/realtime/anahtar", { method: "POST" });
+    if (!res.ok) throw new Error(`anahtar ${res.status}`);   // 503 → çağıran eski zincire düşer
+    const { anahtar, model } = await res.json();
+
+    let ctx = ctxRef.current;
+    if (!ctx || ctx.state === "closed") {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      ctx = new Ctx(); ctxRef.current = ctx;
+    }
+    if (ctx.state === "suspended") await ctx.resume();
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true },
+    });
+    if (!acikRef.current) { stream.getTracks().forEach((t) => t.stop()); throw new Error("kapandı"); }
+    micStreamRef.current = stream;
+    const micKaynak = ctx.createMediaStreamSource(stream);
+    micSrcRef.current = micKaynak;
+    const micAn = ctx.createAnalyser(); micAn.fftSize = FFT; micAn.smoothingTimeConstant = 0.4;
+    micKaynak.connect(micAn); micAnalizRef.current = micAn;
+    bufRef.current = new Uint8Array(micAn.fftSize);
+
+    rtRef.current = await realtimeBaglan({
+      anahtar, model, mikrofon: stream, sesElemani: audioElRef.current, onOlay: rtOlay,
+      // Orb genliği artık TTS blob'undan değil canlı uzak akıştan okunuyor.
+      onUzakAkis: (akis) => {
+        try {
+          const kaynak = ctx.createMediaStreamSource(akis);
+          const an = ctx.createAnalyser(); an.fftSize = FFT; an.smoothingTimeConstant = 0.4;
+          kaynak.connect(an); oynatAnalizRef.current = an;
+        } catch { /* analiz kurulamazsa orb düz kalır, görüşme sürer */ }
+      },
+    });
+    rtAktifRef.current = true;
+    gecir("dinle");
+  }, [rtOlay, gecir]);
+
   const kur = useCallback(async () => {
     azHareketRef.current = azHareketMi();
     setUyari(""); setSonUser(""); setSonYanit(""); setSusturuldu(false); susturRef.current = false;
@@ -387,6 +551,18 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     onayRef.current = null;   // önceki oturumdan sarkan teyit bağlamı taşınmaz
     olcuRef.current = orbRef.current?.clientWidth || 0;   // sıvı kenar için orb px boyutu
     rafRef.current = requestAnimationFrame(dongu);
+    // BİRİNCİL: realtime. Anahtar ucu 503 verirse (SESLI_REALTIME=0, anahtar yok, ağ) ya da
+    // WebRTC kurulamazsa (kurum güvenlik duvarı) sessizce aşağıdaki eski zincire düşülür —
+    // sesli görüşme hiçbir durumda tamamen kaybolmaz.
+    try {
+      await kurRealtime();
+      return;
+    } catch {
+      rtAktifRef.current = false;
+      try { rtRef.current?.kapat(); } catch { /* yoksay */ }
+      rtRef.current = null;
+      if (!acikRef.current) return;
+    }
     try {
       // Var olan context'i YENİDEN KULLAN (oturumlar arası yaşar); yoksa/ölüyse yeni kur.
       let ctx = ctxRef.current;
@@ -415,7 +591,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     } catch {
       if (acikRef.current) setUyari("Mikrofon izni gerekli — tarayıcı çubuğundan izin verip tekrar açın.");
     }
-  }, [dongu, dinle]);
+  }, [dongu, dinle, kurRealtime]);
 
   // Component tamamen unmount olunca AudioContext'i kapat (oturum sökme onu koruyordu).
   useEffect(() => () => { try { ctxRef.current?.close(); } catch { /* yoksay */ } }, []);
@@ -446,7 +622,9 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
 
   return (
     <>
-      <audio ref={audioElRef} hidden aria-hidden="true" />
+      {/* autoplay ZORUNLU: realtime'da model sesi bir MediaStream olarak srcObject'e bağlanır
+          ve play() çağıran kimse yoktur (eski zincirde blob'u biz çalıyorduk). */}
+      <audio ref={audioElRef} autoPlay hidden aria-hidden="true" />
 
       {acik && (
         <div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}

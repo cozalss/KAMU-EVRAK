@@ -52,6 +52,7 @@ from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
 from core.sesli_brifing import karsilama_metni
+from core.realtime_oturum import efemer_anahtar, realtime_acik
 from core.tts_kota import kota_dus
 from core.tts_openai import tts_enabled, tts_media_type, tts_openai
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
@@ -1064,6 +1065,111 @@ async def sohbet_seslendir(request: Request, istek: SeslendirIstek, user: Curren
         log.warning("sohbet_seslendir_hata", error=type(exc).__name__)
         raise HTTPException(status_code=503, detail="Sesli yanıt üretilemedi.") from exc
     return Response(content=audio, media_type=tts_media_type())
+
+
+class VeriIstek(BaseModel):
+    soru: str = Field(..., min_length=1, max_length=1000)
+    ekran: EkranBaglam | None = None
+    onay_baglam: dict[str, Any] | None = None
+
+
+@router.post("/sohbet/veri")
+@rate_limit("40/minute")
+async def sohbet_veri(
+    request: Request, istek: VeriIstek, user: CurrentUser, session: Session,
+) -> dict[str, Any]:
+    """Realtime aracı için GROUNDED VERİ — kompozisyon YOK.
+
+    NEDEN AYRI BİR UÇ (ölçüldü 2026-08-01, canlı tarayıcı):
+    Realtime aracı önce /sohbet'i çağırıyordu; o uç veriyi düzgün Türkçe cümleye çeviriyor
+    (bir LLM turu), sonra realtime modeli aynı cümleyi kendi üslubuyla YENİDEN kuruyordu
+    (ikinci tur). Aynı iş iki kez yapıldığı için mevzuat sorusu 8789 ms sürüyordu — eski
+    zincirden bile yavaş. Burada kompozisyon yok: yalnız deterministik niyet + araç/RAG
+    çıktısı döner, cümleyi realtime modeli kurar (klasik RAG deseni).
+
+    GROUNDING KORUNUR: sayılar, kayıtlar ve mevzuat parçaları hâlâ BİZDEN gelir; model
+    yalnız elindeki veriyi cümleye çevirir. Uydurma alanı açılmaz.
+    """
+    # Aksiyonlar (onay/ret/revize/kurul) veri değil KARAR üretir — tam yol korunur.
+    # Geri alınamaz iş, hız uğruna kısa devre edilmez.
+    tam_istek = SohbetIstek(mesaj=istek.soru, ekran=istek.ekran,
+                            onay_baglam=istek.onay_baglam, sesli=True)
+    teyit = await _onay_teyidini_isle(tam_istek, user, session)
+    if teyit is not None:
+        return {"tur": "aksiyon", "metin": teyit.yanit,
+                "onay_bekleyen": teyit.onay_bekleyen, "intent": teyit.intent}
+
+    niyet = fallback_niyet(istek.soru)
+    intent = niyet["intent"]
+    if intent in ("taslak_onayla", "taslak_reddet"):
+        y = await _onay_baslat(intent, user, session, _hedef_ipucu(istek.soru))
+    elif intent == "taslak_revize":
+        y = await _revize_isle(tam_istek, user, session)
+    elif intent == "kurula_sun":
+        y = await _kurul_isle(tam_istek, user, session)
+    else:
+        y = None
+    if y is not None:
+        return {"tur": "aksiyon", "metin": y.yanit,
+                "onay_bekleyen": y.onay_bekleyen, "intent": y.intent}
+
+    veri: Any = None
+    if intent in KAYIT_TURU:
+        try:
+            veri = await araci_calistir(session, user.id, intent, niyet["parametreler"])
+        except Exception as exc:
+            log.warning("sohbet_veri_arac_hatasi", intent=intent, error=type(exc).__name__)
+            return {"tur": "veri", "intent": intent, "veri": None,
+                    "not": "Kayıtlara şu an ulaşılamadı; bunu kullanıcıya dürüstçe söyle."}
+
+    kayit_sorusu = intent in KAYIT_TURU
+    # Talimat İKİ TÜRLÜ — canlı ölçümde tek tip talimat iki ayrı kusur üretti:
+    # · "Bilgi edinme kaç gün?" → veri boş → model "bilgi bulunamadı" dedi. Oysa bu bir
+    #   UZMANLIK sorusu; doğrulanmış cevap zaten oturum talimatında (4982 → on beş iş günü).
+    # · "Kaç taslağım var?" → ekrandaki sayaç ile DB sayısı farklıydı, model "kayıtlar
+    #   çelişkili" deyip cevap vermedi. İkisi de doğru ama KAPSAMLARI farklı; hangisinin ne
+    #   olduğu söylenmezse çelişki gibi görünür.
+    if kayit_sorusu:
+        not_ = ("YALNIZ 'veri' alanına dayan; kayıt, sayı, tarih, evrak numarası UYDURMA. "
+                "Veri boşsa 'kaydı bulamadım' de. Kısa ve konuşma dilinde cevapla.")
+    else:
+        not_ = ("Bu bir GENEL UZMANLIK sorusu, kayıt sorgusu değil. Sana verilen talimattaki "
+                "doğrulanmış bilgilerden GÜVENLE cevapla — 'veri yok' ya da 'bilgi bulunamadı' "
+                "DEME. Spesifik madde numarası ya da kuruma özel kod istenirse doğrulamaya yönlendir.")
+
+    ekran_metni = _ekran_metni(istek.ekran)
+    return {
+        "tur": "veri",
+        "intent": intent,
+        "veri": veri,
+        "mevzuat_kaynaklari": _mevzuat_kaynaklari(intent, veri),
+        # Ekran ile kayıt verisi AYRI etiketlenir: biri kullanıcının o an gördüğü sayaç,
+        # diğeri sorgu sonucu. Etiketsiz gönderilince model bunları çelişki sanıyordu.
+        "ekranda_gorunen": ekran_metni or None,
+        "not": not_,
+    }
+
+
+# --------------------------------------------------------------------------
+# Realtime sesli mod — tarayıcı WebRTC ile DOĞRUDAN OpenAI'a bağlanır (ses bizim sunucudan
+# geçmez; geçseydi kazanılan gecikmeyi geri verirdik). Bizim rolümüz: kısa ömürlü anahtarı
+# üretmek ve oturum sözleşmesini (persona + araç) sunucuda tutmak.
+# --------------------------------------------------------------------------
+@router.post("/sohbet/realtime/anahtar")
+@rate_limit("10/minute")   # sahne açılışında bir kez alınır; sık istek kötüye kullanımdır
+async def sohbet_realtime_anahtar(request: Request, user: CurrentUser) -> dict[str, Any]:
+    """Tarayıcıya kısa ömürlü Realtime anahtarı ver. GERÇEK anahtar asla dönmez.
+
+    Kapalıysa (SESLI_REALTIME=0) ya da anahtar yoksa 503 → frontend eski STT+TTS zincirine
+    düşer; sesli görüşme hiçbir durumda tamamen kaybolmaz.
+    """
+    if not realtime_acik():
+        raise HTTPException(status_code=503, detail="Realtime sesli mod kapalı.")
+    try:
+        return await efemer_anahtar(_SESLI_SYSTEM)
+    except Exception as exc:
+        log.warning("realtime_anahtar_uretilemedi", error=type(exc).__name__)
+        raise HTTPException(status_code=503, detail="Realtime oturumu açılamadı.") from exc
 
 
 @router.get("/sohbet/karsilama")

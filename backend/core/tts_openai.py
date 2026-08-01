@@ -40,13 +40,14 @@ _MAX_INPUT_CHARS = 4000
 _VARSAYILAN_MODEL = "gpt-4o-mini-tts"
 _VARSAYILAN_SES = "marin"
 
-# Çıktı formatı — GECİKME kararı. OpenAI Speech kılavuzu (developers.openai.com, Context7 ile
-# doğrulandı 2026-08-01): "To achieve the fastest response times when streaming audio, it is
-# recommended to use `wav` or `pcm`". mp3 sıkıştırma için ÜRETİM SONRASI ek iş demek; sesli
-# görüşmede ilk sesin gecikmesi kaliteyi doğrudan belirler.
-# Bedeli: wav ~6x daha büyük gövde. Yerel/LAN demoda (jüri senaryosu) bu ücretsizdir; dar
-# bantta (mobil QR) mp3 daha iyi olabilir — bu yüzden ENV ile değiştirilebilir.
-_VARSAYILAN_FORMAT = "wav"
+# Çıktı formatı — GECİKME kararı, ÖLÇÜLDÜ (2026-08-01, aynı 3 Türkçe cümle, medyan):
+#     wav 1819 ms / 204 KB · mp3 1725 ms / 56 KB · opus 1384 ms / 30 KB
+# OpenAI kılavuzu "en hızlı yanıt için wav/pcm" der ama bu AKITARAK çalan istemci içindir;
+# biz dosyayı tamponlayıp çaldığımız için wav'ın dört katı gövdesi transferde geri alıyor.
+# Varsayılan mp3: ölçülen en hızlının 340 ms gerisinde ama HER tarayıcıda çalar. opus daha
+# hızlı ve çok küçük — Ogg kabında geliyor, Chrome/Edge/Firefox çalar, Safari'de riskli;
+# jüri demosu Chrome'daysa OPENAI_TTS_FORMAT=opus ile açılır (sessiz ses riskini bilerek al).
+_VARSAYILAN_FORMAT = "mp3"
 _FORMAT_MIME = {
     "wav": "audio/wav", "mp3": "audio/mpeg", "opus": "audio/ogg",
     "aac": "audio/aac", "flac": "audio/flac", "pcm": "audio/L16",

@@ -112,14 +112,15 @@ class TestTtsOpenaiCagri:
         assert captured["json"]["input"] == "Merhaba dünya"
         assert captured["json"]["voice"] == "nova"
         assert captured["json"]["model"] == "tts-1-hd"
-        # Varsayılan format wav: OpenAI Speech kılavuzu en hızlı yanıt için wav/pcm önerir
-        # (sesli görüşmede ilk sesin gecikmesi kalitenin kendisidir). ENV ile değiştirilebilir.
-        assert captured["json"]["response_format"] == "wav"
+        # Varsayılan format mp3 — ÖLÇÜLDÜ (aynı 3 Türkçe cümle, medyan):
+        # wav 1819 ms/204 KB · mp3 1725 ms/56 KB · opus 1384 ms/30 KB.
+        # opus en hızlı ama Ogg kabı Safari'de riskli; mp3 her tarayıcıda çalar.
+        assert captured["json"]["response_format"] == "mp3"
 
     async def test_format_env_ile_degistirilebilir(self, monkeypatch):
-        """Dar bantta (mobil) mp3 tercih edilebilir — istek gövdesi ona göre gitmeli."""
+        """Chrome/Edge demosunda opus'a geçilebilir (ölçülen en hızlı) — gövde ona göre gitmeli."""
         monkeypatch.setenv("OPENAI_TTS_API_KEY", "sk-tts-test")
-        monkeypatch.setenv("OPENAI_TTS_FORMAT", "mp3")
+        monkeypatch.setenv("OPENAI_TTS_FORMAT", "opus")
         captured = {}
         req = httpx.Request("POST", "http://x")
 
@@ -129,7 +130,7 @@ class TestTtsOpenaiCagri:
 
         _mock_async_client(monkeypatch, _handler)
         await tts_openai("Merhaba", timeout_s=5.0)
-        assert captured["json"]["response_format"] == "mp3"
+        assert captured["json"]["response_format"] == "opus"
 
     async def test_taninmayan_format_varsayilana_duser(self, monkeypatch):
         """Yanlış ENV değeri canlı API'den 400 almasın — güvenli varsayılana inilir."""
@@ -144,7 +145,7 @@ class TestTtsOpenaiCagri:
 
         _mock_async_client(monkeypatch, _handler)
         await tts_openai("Merhaba", timeout_s=5.0)
-        assert captured["json"]["response_format"] == "wav"
+        assert captured["json"]["response_format"] == "mp3"
 
     async def test_varsayilan_model_ve_ses(self, monkeypatch):
         # Arrange

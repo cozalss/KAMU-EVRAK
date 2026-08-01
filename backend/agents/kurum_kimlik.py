@@ -192,6 +192,87 @@ _BIRIM_GOSTERGE = re.compile(
 _META_SATIR = re.compile(r"^\s*(sayı|tarih|konu|ilgi|t\.c\.)\s*[:.]?", re.IGNORECASE)
 
 
+def antet_slug_kumesi(evrak_text: str) -> frozenset[str]:
+    """T.C. antetini izleyen idare satırlarının HAM slug'ları (regex'ten bağımsız).
+
+    `gonderen_kurum_tespit` tip desenlerine (BAKANLIĞ/BAŞKANLIĞ...) dayanır ve bu desenler
+    Türkçe diakritik ister. OCR diakritiği düşürdüğünde ("BAKANLIGI") desen tutmaz, gönderen
+    tespit edilemez ve LLM-yedek yolu göndereni muhatap yapar (canlı koşumda ölçüldü).
+    Bu küme o boşluğu kapatır: antet konumundaki satırlar ham hâliyle slug'lanır ve
+    LLM adayı bunlarla karşılaştırılır.
+    """
+    satirlar = [x.strip() for x in sanitize_text(evrak_text or "")[:800].splitlines() if x.strip()]
+    tc_index = next(
+        (i for i, x in enumerate(satirlar[:4]) if x.lower().replace(" ", "").startswith("t.c")),
+        None,
+    )
+    if tc_index is None:
+        return frozenset()
+    adaylar = satirlar[tc_index: tc_index + 3]
+    kume: set[str] = set()
+    for x in adaylar:
+        temiz = re.sub(r"^\s*t\.?\s*c\.?\s*", "", x, flags=re.IGNORECASE).strip(" ,-—")
+        if _HITAP_BICIMLI.search(tr_lower(temiz)):
+            continue  # yönelme-ekli satır MUHATAPTIR
+        sl = _slug(temiz)
+        if sl and len(sl) > 4:
+            kume.add(sl)
+    return frozenset(kume)
+
+
+def gonderen_kurum_tespit(evrak_text: str) -> KurumKimlik:
+    """Gelen evrakın antetindeki GÖNDEREN İDARE künyesi (Yön. m.10) — deterministik.
+
+    "T.C. / İDARE ADI / Birim" düzeni resmî yazının GÖNDEREN antetidir; bu kurum evrakın
+    MUHATABI DEĞİLDİR. Ayrım kritiktir: nominatif antet muhatap sayıldığında sistem gelen
+    evrakı kendi göndericisine havale eder (2026-07-26 ölçümü).
+
+    YAPISAL ÜÇLÜ KANIT aranır, üçü birden yoksa boş künye döner:
+      (1) "T.C." satırı, (2) onu izleyen ve `_DESENLER`e uyan idare satırı,
+      (3) antetin resmî-yazı olduğunu gösteren izleyen sinyal — birim satırı VEYA
+          "Sayı :" meta bloğu.
+    Üçlü şart bilinçlidir: OCR'da yönelme eki düşmüş vatandaş dilekçesinin tek satırlık
+    başlığı ("YENİMAHALLE BELEDİYE BAŞKANLIĞI") gönderen SAYILMAMALIDIR — o evrak bugün
+    doğru havale ediliyor ve bu değişiklik onu bozmamalıdır.
+    """
+    ham = sanitize_text(evrak_text or "")[:800]
+    satirlar = [s.strip() for s in ham.splitlines() if s.strip()]
+    tc_index = next(
+        (i for i, s in enumerate(satirlar[:4]) if s.lower().replace(" ", "").startswith("t.c")),
+        None,
+    )
+    if tc_index is None:
+        return bos_kurum()
+    # "T.C. ADALET BAKANLIĞI" aynı-satır varyantı da desteklenir.
+    aday_satirlar = [satirlar[tc_index]] if len(satirlar[tc_index]) > 5 else []
+    aday_satirlar += satirlar[tc_index + 1: tc_index + 2]
+    kurum = bos_kurum()
+    for s in aday_satirlar:
+        for tur, desen in _DESENLER:
+            m = desen.search(s)
+            if not m:
+                continue
+            # YÖNELME-EKLİ (dative) satır MUHATAPTIR, gönderen değildir: "...BAŞKANLIĞINA"
+            # deseni nominatif kalıba da uyar (BAŞKANLIĞ\w*), bu yüzden açıkça elenir.
+            # Aksi hâlde hitap-ekli evrakta muhatap "gönderen" sanılıp havale reddedilir.
+            if _HITAP_BICIMLI.search(tr_lower(m.group(0))):
+                continue
+            ad, slug = _kanonik(tur, m.group("ad"), bool(m.groupdict().get("buyuk")))
+            if slug:
+                kurum = KurumKimlik(ad=ad, slug=slug, tur=tur)
+                break
+        if kurum.get("slug"):
+            break
+    if not kurum.get("slug"):
+        return bos_kurum()
+    # (3) Resmî-yazı sinyali: antetten sonra birim satırı veya Sayı/Tarih meta bloğu.
+    kuyruk = satirlar[tc_index + 1: tc_index + 7]
+    resmi_sinyal = any(
+        _META_SATIR.match(s) or _BIRIM_GOSTERGE.search(tr_lower(s)) for s in kuyruk
+    )
+    return kurum if resmi_sinyal else bos_kurum()
+
+
 def gonderen_birim_tespit(evrak_text: str) -> str:
     """Gelen evrakın antetindeki GÖNDEREN BİRİM satırı (varsa) — deterministik.
 
@@ -408,34 +489,62 @@ def muhatap_kurum_tespit_meta(
         ad, slug = _kanonik(tur, m.group("ad"), bool(m.groupdict().get("buyuk")))
         if slug:
             return KurumKimlik(ad=ad, slug=slug, tur=tur), True
+    # GÖNDEREN GUARD'I (2026-07-26): yapısal T.C.-antet kurumu evrağı GÖNDEREN idaredir,
+    # muhatap DEĞİLDİR. Eskiden adım 2 onu muhatap sayıyordu → sistem gelen evrakı kendi
+    # göndericisine havale ediyordu (ölçüldü: hitapsız "T.C./TARIM VE ORMAN BAKANLIĞI"
+    # raporu Tarım'a havale ediliyordu). `efektif_idare_adi` docstring'i bu ayrımı zaten
+    # kabul ediyordu; iki katman aynı sinyale zıt anlam yüklüyordu.
+    gonderen_slug = gonderen_kurum_tespit(evrak_text).get("slug", "")
+
     # 2) Nominatif başlık — mevcut desen-öncelik sırası (yönlendirme davranışı korunur).
     for tur, desen in _DESENLER:
         m = desen.search(bas)
         if not m:
             continue
         ad, slug = _kanonik(tur, m.group("ad"), bool(m.groupdict().get("buyuk")))
-        if slug:
+        if slug and slug != gonderen_slug:
             return KurumKimlik(ad=ad, slug=slug, tur=tur), False
 
     # Yedek: LLM'in çıkardığı serbest-metin kurum (mock'ta boş olabilir). Kaynak-doğrulamalı:
     # ayırt-edici token'ı kaynakta geçmeyen kurum adı HALÜSİNASYON sayılır ve kullanılmaz.
+    # AYRICA: `cikar` node'u bu alana genellikle BELGEDEKİ (yani gönderen) kurumu yazar ve
+    # gönderen adı kaynakta geçtiği için grounding süzgecinden geçer — adım 2 düzeltilip
+    # burası düzeltilmezse hata aynı yoldan geri gelir (mimari denetim bulgusu).
     llm_kurum = ((bilgi_unsurlari or {}).get("kurum") or "").strip()
+    # Baştaki "T.C." antet eki kurum adının parçası değildir ("T.c. Tarım ve Orman
+    # Bakanlıgı" gibi künyeler üretiyordu) — atılır.
+    llm_kurum = re.sub(r"^\s*t\.?\s*c\.?\s*", "", llm_kurum, flags=re.IGNORECASE).strip()
+    antet_sluglari = antet_slug_kumesi(evrak_text)
+    if llm_kurum and _slug(llm_kurum) in antet_sluglari:
+        return bos_kurum(), False  # LLM göndereni söylüyor (diakritiksiz metinde de yakalanır)
     if llm_kurum and _llm_kurum_grounded(llm_kurum, text):
         # LLM kurum metninde de tip kalıbı olabilir → aynı desenlerle dene (tr-upper: İ doğru).
         for tur, desen in _DESENLER:
             m = desen.search(llm_kurum) or desen.search(_tr_upper(llm_kurum))
             if m:
                 ad, slug = _kanonik(tur, m.group("ad"), bool(m.groupdict().get("buyuk")))
-                if slug:
+                if slug and slug != gonderen_slug:
                     return KurumKimlik(ad=ad, slug=slug, tur=tur), False
-        return KurumKimlik(ad=_tr_title(llm_kurum), slug=_slug(llm_kurum), tur="diger"), False
+        if not gonderen_slug or _slug(llm_kurum) != gonderen_slug:
+            return KurumKimlik(ad=_tr_title(llm_kurum), slug=_slug(llm_kurum), tur="diger"), False
 
     return bos_kurum(), False
 
 
 __all__ = (
-    "KurumKimlik", "ad_to_kurum", "antet_idare_adi", "bos_kurum", "efektif_idare_adi",
-    "gonderen_birim_tespit", "gorus_muhatabi", "hitap_eki", "is_yargi_kurumu",
-    "iyelik_eki", "muhatap_kurum_tespit",
-    "muhatap_kurum_tespit_meta", "muzekkere_muhatabi",
+    "KurumKimlik",
+    "ad_to_kurum",
+    "antet_idare_adi",
+    "antet_slug_kumesi",
+    "bos_kurum",
+    "efektif_idare_adi",
+    "gonderen_birim_tespit",
+    "gonderen_kurum_tespit",
+    "gorus_muhatabi",
+    "hitap_eki",
+    "is_yargi_kurumu",
+    "iyelik_eki",
+    "muhatap_kurum_tespit",
+    "muhatap_kurum_tespit_meta",
+    "muzekkere_muhatabi",
 )

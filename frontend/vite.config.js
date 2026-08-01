@@ -21,6 +21,12 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // LAN'a bağlan (0.0.0.0). Backend zaten UVICORN_HOST=0.0.0.0 ile tüm arayüzlerde
+    // dinliyor; frontend yalnız localhost'a bağlanırsa telefonla QR yükleme akışı
+    // (aşağıdaki /mobil proxy'si) fiilen kullanılamaz — sayfa telefonda hiç açılmaz.
+    // Not: LAN'dan açılınca tarayıcı Origin'i http://<LAN-IP>:5173 olur; backend'in
+    // CORS_ORIGINS listesinde bu origin YOKSA istekler bloklanır (.env'e eklenmeli).
+    host: true,
     proxy: {
       "/process_doc": { target: apiTarget, changeOrigin: true },
       "/multimodal": { target: apiTarget, changeOrigin: true },

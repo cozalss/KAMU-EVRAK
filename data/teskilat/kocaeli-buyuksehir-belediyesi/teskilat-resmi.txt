@@ -1,0 +1,99 @@
+@KURUM: Kocaeli Büyükşehir Belediyesi
+@BELGE: Kocaeli Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.kocaeli.bel.tr/teskilat/
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: kocaeli-buyuksehir-belediyesi, kocaeli-bb, kocaeli-buyuksehir, kocaeli-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kurumun birim sayfaları görev tanımı içermez, yalnızca daire başkanının özgeçmişi ve iletişim bilgisi yayımlanır. Hukuk birimi sitede "Birinci Hukuk Müşavirliği" adıyla geçer. Kocaeli'nin tipik büyükşehir setinden ayrılan dört dairesi vardır: Raylı Sistemler, Sivil Toplum Kuruluşları İle İlişkiler, Strateji Geliştirme ile Etüt ve Projeler. Ayrı bir Mezarlıklar dairesi yoktur; defin ve cenaze hizmetleri Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı altındadır. Teşkilat sayfasında ayrıca 100'ü aşkın şube müdürlüğü listelenmektedir; bu dosyaya daire ve doğrudan bağlı birim düzeyi alınmıştır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Raylı Sistemler Dairesi Başkanlığı
+GÖREV: Tramvay ve raylı sistem hatlarının işletme, bakım ve yatırım işlerini yürütür; hat güzergâh projelerini hazırlar; istasyon işletmeciliği ile araç bakım ve sinyalizasyon işlemlerini yönetir.
+
+BİRİM: Sivil Toplum Kuruluşları İle İlişkiler Dairesi Başkanlığı
+GÖREV: Dernek, vakıf, oda ve meslek kuruluşlarından gelen başvuruları değerlendirir; sivil toplum kuruluşlarıyla iş birliği protokolleri ve yazışmalarını yürütür; tahsis ve destek taleplerini sonuçlandırır.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Stratejik plan ve performans programını hazırlar; idare faaliyet raporunu düzenler; iç kontrol ve ön mali kontrol sistemini yürütür ve yatırım programı izleme raporlarını üretir.
+
+BİRİM: Etüt ve Projeler Dairesi Başkanlığı
+GÖREV: Yatırım projelerinin etüt, proje ve keşif çalışmalarını yapar; avan ve uygulama projelerinin hazırlanması ve onayını yürütür; ihale öncesi teknik şartname ve doküman hazırlığını sağlar.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: 1/5000 ölçekli nazım imar planı ve plan tadilatı tekliflerini inceleyip meclise sunar; imar durumu belgesi düzenler; halihazır harita, numarataj ve parselasyon işlemlerini yürütür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: 2942 sayılı Kamulaştırma Kanunu kapsamında kamulaştırma işlemlerini yürütür; belediye taşınmazlarının satış, trampa, tahsis, kira ve ecrimisil işlemlerini yapar ve tapu tescil takibini sağlar; emlak hizmetlerine ilişkin işlemler çevrim içi olarak da yürütülmektedir.
+
+BİRİM: Kentsel Dönüşüm Dairesi Başkanlığı
+GÖREV: 6306 sayılı Kanun kapsamında riskli yapı ve riskli alan işlemlerini yürütür; hak sahipliği tespiti ve uzlaşma görüşmelerini yapar; kentsel dönüşüm proje ve uygulamalarını takip eder.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yapım işlerinin ihale, kontrollük, hakediş ve kabul işlemlerini yürütür; altyapı ve üstyapı imalatlarını gerçekleştirir; AYKOME kapsamında altyapı kazı ruhsatı koordinasyonunu sağlar.
+
+BİRİM: Yol Yapım, Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Ana arter ve bağlantı yollarında asfalt yapım, yama, tretuvar ve bordür imalatı ile yol bakım-onarım hizmetlerini yürütür; yıllık yol çalışma programını hazırlar ve yol kaynaklı talepleri sonuçlandırır.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararlarının hazırlanması ve uygulanmasını sağlar; toplu taşıma hat ve güzergâh izinleri, ticari araç ve okul servis aracı çalışma ruhsatları ile elektronik ücret toplama (ulaşım kartı) işlemlerini yürütür.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme, arama ve teknik kurtarma müdahalelerini yapar; yangın güvenlik raporu ve itfaiye raporu düzenler; baca, tesisat ve yangın güvenlik önlemleri denetimlerini yürütür.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet risk azaltma ve zarar azaltma planlarını hazırlar; AKOM üzerinden afet koordinasyonunu sağlar; imar planına esas zemin etüdü ve yerleşime uygunluk raporlarını değerlendirir.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: Ruhsat, işgaliye ve seyyar satıcı denetimlerini yapar; pazar yerleri ve toptancı hal denetimlerini yürütür; idari yaptırım karar tutanağı düzenleyerek encümene sevk eder.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: İşyeri açma ve çalışma ruhsatı (gayrisıhhî müessese) iş ve işlemlerini yürütür; gürültü, koku ve emisyon şikâyetlerini denetler; hafriyat ve atık yönetimi ile sıfır atık uygulamalarına ilişkin işlemleri yapar.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve yeşil alanların yapım ve bakımını gerçekleştirir; ağaç kesim ve budama izinlerini değerlendirir; sulama sistemleri ile yeşil alan ilaçlama hizmetlerini yürütür.
+
+BİRİM: Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvurularını alır ve muhtaçlık incelemesi yapar; engelli ve yaşlı destek hizmetleri ile sağlık tarama hizmetlerini sağlar; mezar yeri tahsisi, defin ve cenaze nakil hizmetlerini yürütür.
+
+BİRİM: Kadın ve Aile Hizmetleri Dairesi Başkanlığı
+GÖREV: Kadın danışma ve sığınma hizmetlerini yürütür; meslek edindirme kurslarını düzenler; aile ve çocuk destek programlarını uygular.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür merkezi ve salon tahsis işlemlerini yürütür; kütüphane ve müze hizmetlerini sağlar; nikâh ve evlendirme işlemlerini gerçekleştirir; kültür-sanat etkinlik ve organizasyonlarını düzenler.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Spor tesisi tahsis ve kullanım işlemlerini yürütür; spor kursu kayıtlarını alır; gençlik merkezlerini işletir ve turnuva, müsabaka ve gençlik organizasyonlarını düzenler.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Mahalle muhtarlarından gelen talep ve şikâyetleri kaydeder, ilgili birime havale eder ve MUHTAR Bilgi Sistemi üzerinden sonuç bildirimi ile geri bildirim takibini yapar.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe ve kesin hesabı hazırlar; gelirlerin tahakkuk ve tahsilatını yapar; ödeme emri belgesi düzenler ve muhasebe kayıtlarını tutar.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrakın kaydı ve havalesini yapar; KEP ve elektronik belge yönetim sistemi (EBYS) üzerinden resmî yazışmaları yürütür; Meclis ve Encümen gündem, karar ve tutanak işlemleri ile kurum arşivini yönetir.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, terfi, izin, disiplin ve özlük işlemlerini yürütür; maaş tahakkukunu yapar; hizmet içi eğitim programları ile iş sağlığı ve güvenliği faaliyetlerini planlar.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Doğrudan temin ve 4734 sayılı Kamu İhale Kanunu kapsamındaki ihale işlemlerini yürütür; taşınır kayıt ve kontrol işlemlerini yapar; hizmet binaları, araç ikmali, koruma ve güvenlik hizmetlerini sağlar.
+
+BİRİM: Basın, Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Basın bültenleri ve kurumsal yayınları hazırlar, kurumsal kimlik uygulamalarını yürütür; CİMER ve çözüm merkezi başvurularının ilgili birime yönlendirilmesini ve yasal süresi içinde yanıtlanmasını takip eder.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Elektronik belge yönetim sistemi (EBYS) ve e-belediye uygulamalarını kurar ve işletir; kent bilgi sistemi ve coğrafi bilgi sistemi (CBS) altyapısını yönetir; ağ, sunucu ve siber güvenlik ile kişisel verilerin korunmasına yönelik teknik tedbirleri alır.
+
+BİRİM: İşletme ve İştirakler Dairesi Başkanlığı
+GÖREV: Belediye şirket ve iştirakleri ile ilişkileri yürütür; işletme gelirlerini takip eder; kira, işletme ve tahsis sözleşmelerinin hazırlanması ve takibine ilişkin işlemleri yapar.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Belediye birimlerinin iş ve işlemlerini mevzuata uygunluk yönünden teftiş eder; inceleme, araştırma ve soruşturma işlemlerini yürütür ve raporlarını başkanlık makamına sunar.
+
+BİRİM: Birinci Hukuk Müşavirliği
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerini yürütür ve belediyeyi yargı mercileri önünde temsil eder; birimlerden gelen hukuki görüş taleplerini karşılar ve sözleşme taslaklarını hukuki yönden inceler.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Belediye başkanının randevu, görüşme ve program trafiğini düzenler; başkanlık makamına gelen evrakın havalesini ve temsil-ağırlama işlemlerini yürütür.

@@ -5,7 +5,7 @@
    Geçmiş oturumluk (component state — DashboardApp ömrünce yaşar). Tema yalnız neonUi
    token'ları; z-index FAB 150 / panel 160 (Toast 200 üstte kalır).
    Spec: docs/09-sohbet-asistani.md */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { belgeMetniMi, belgeOzetiMd, pipelineOlay } from "../lib/belgeIsle.js";
@@ -155,7 +155,9 @@ function Yaziyor() {
   );
 }
 
-export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
+// ekran: kullanıcının o an gördüğü ekranın özeti (lib/ekranBaglami). Her isteğe eklenir —
+// asistan "bu evrak", "buradaki liste" gibi işaret eden soruları arama yapmadan çözer.
+export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, onEvrakAc }) {
   const queryClient = useQueryClient();   // teyit sonrası panel/giden senkronu
   const [acik, setAcik] = useState(false);
   // Kaydırma sırasında FAB küçülüp soluklaşır (satır eylemlerini örtmesin — jüri bulgusu);
@@ -179,12 +181,17 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
   // STT (mikrofon) tarayıcı desteklemiyorsa (Firefox vb.) sesli butonlar hiç render edilmez.
   const sttVar = sttDestekleniyorMu();
   const [dinliyor, setDinliyor] = useState(false);
-  // Tam-ekran sesli görüşme sahnesi — asistanın İÇİNDEN başlatılır (ayrı FAB yok, kenar
-  // çubuğuyla çakışmasın). Overlay z-index 300 → panel/FAB üstünü kapar; kapanınca odak
-  // başlatan butona döner.
+  // Sesli görüşme — asistanın İÇİNDEN başlatılır ve sohbet panelinin YERİNE geçer: panel
+  // kapanır, aynı noktada yuvarlak disk açılır (tam ekran DEĞİL; kullanıcı sitede kalır,
+  // arkadaki ekranı görür/kullanır). Görüşme bitince panel geri gelir — kullanıcı geldiği
+  // yere döner ve yazışma geçmişi elinde kalır.
   const [sesliAcik, setSesliAcik] = useState(false);
-  const sesliBtnRef = useRef(null);
   const tanimaRef = useRef(null);
+  // Ekran bağlamı REF'te tutulur: gonder() bir closure ve ekran her navigasyonda değişiyor —
+  // prop'u doğrudan okusaydı kullanıcı soruyu sorduğu anki değil, closure'ın kurulduğu anki
+  // ekranı gönderirdi (bayat bağlam = yanlış cevap).
+  const ekranRef = useRef(ekran);
+  useEffect(() => { ekranRef.current = ekran; }, [ekran]);
   const fabRef = useRef(null);
   const inputRef = useRef(null);
   const listeRef = useRef(null);
@@ -199,6 +206,13 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
   useEffect(() => { if (!bekliyor) hafizaKaydet(mesajlar); }, [mesajlar, bekliyor]);
 
   const kapat = () => { setAcik(false); fabRef.current?.focus(); };
+
+  // Sesli komutu kabuğa ilet. useCallback: SesliGorusme'nin tur işleyicisi bunu bağımlılık
+  // olarak taşıyor — her render'da yeni referans, dinleme döngüsünü gereksiz yere yeniden kurar.
+  const sesliKomutUygula = useCallback((komut) => {
+    if (komut?.tur === "gorunum") onNavigate?.(komut.gorunum);
+    else if (komut?.tur === "evrak_ac") onEvrakAc?.(komut.baslik);
+  }, [onNavigate, onEvrakAc]);
   const gecmisiTemizle = () => {
     hafizaTemizle(); setMesajlar([KARSILAMA]); setKaynak(null); inputRef.current?.focus();
   };
@@ -271,7 +285,11 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
       .filter((m) => !m.karsilama && !m.hata)  // karşılama (reload'da yeni obje) + hata balonları hariç
       .slice(-8)
       .map((m) => ({ rol: m.rol, icerik: m.icerik.slice(0, 4000) }));
-    const govde = { mesaj, gecmis, ...(onayBaglam ? { onay_baglam: onayBaglam } : {}) };
+    const govde = {
+      mesaj, gecmis,
+      ...(onayBaglam ? { onay_baglam: onayBaglam } : {}),
+      ...(ekranRef.current ? { ekran: ekranRef.current } : {}),
+    };
     setMesajlar((ms) => [...ms, { rol: "kullanici", icerik: mesaj }]);
     try {
       // Birincil: SSE akışı (token-token). Başarısızsa aşağıda düz POST'a düşülür.
@@ -518,7 +536,10 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
         </section>
       )}
 
-      {/* FAB — her görünümde sağ altta */}
+      {/* FAB — her görünümde sağ altta. Görüşme sürerken GİZLİ: disk tam bu noktanın üstünde
+          durur, FAB'a basmak paneli diskin ALTINA açar (görünmez, kilitli hissi verirdi).
+          Görüşmeden çıkış diskin kendi kırmızı butonundan — tek ve açık yol. */}
+      {!sesliAcik && (
       <button ref={fabRef} type="button" onClick={() => (acik ? kapat() : setAcik(true))}
         aria-label={acik ? "Evrak asistanını kapat" : "Evrak asistanını aç"} aria-expanded={acik} {...focusRing}
         onMouseEnter={(e) => { e.currentTarget.style.background = DERIN.Th; }}
@@ -541,11 +562,13 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="9" cy="9.5" r="1" fill="currentColor" /><circle cx="12.5" cy="9.5" r="1" fill="currentColor" /><circle cx="16" cy="9.5" r="1" fill="currentColor" /></svg>
         )}
       </button>
+      )}
 
       {/* Sesli görüşme yuvarlak butonu — sohbet FAB'ının SOLUNDA, chat açıkken belirir
-          (kullanıcı isteği: FAB'a basınca yanında yuvarlak buton → Metin ile sesli görüş). */}
+          (kullanıcı isteği: FAB'a basınca yanında yuvarlak buton → Metin ile sesli görüş).
+          Basınca panel KAPANIR: sohbet ve disk aynı ayak izini paylaşır, ikisi bir arada durmaz. */}
       {acik && sttVar && (
-        <button ref={sesliBtnRef} type="button" data-press onClick={() => setSesliAcik(true)}
+        <button type="button" data-press onClick={() => { setSesliAcik(true); setAcik(false); }}
           aria-label="Kamu Evrak ile sesli görüş" title="Kamu Evrak ile sesli görüş" {...focusRing}
           onMouseEnter={(e) => { e.currentTarget.style.background = DERIN.Th; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = DERIN.T; }}
@@ -560,8 +583,11 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc }) {
         </button>
       )}
 
-      {/* Tam-ekran sesli görüşme — asistandan başlatılır; kapanınca odak başlatan butona döner. */}
-      <SesliGorusme acik={sesliAcik} onKapat={() => { setSesliAcik(false); sesliBtnRef.current?.focus(); }} />
+      {/* Sesli görüşme diski — panelin yerine geçer; bitince panel geri açılır (odak, panelin
+          kendi effect'iyle mesaj kutusuna gider: görüşmenin devamı yazarak sürdürülebilir).
+          onKomut: sesli komut siteyi GERÇEKTEN sürer (gezinme / evrak açma). */}
+      <SesliGorusme acik={sesliAcik} ekran={ekran} onKomut={sesliKomutUygula}
+        onKapat={() => { setSesliAcik(false); setAcik(true); }} />
     </>
   );
 }

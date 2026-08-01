@@ -1,0 +1,71 @@
+@KURUM: Hatay Büyükşehir Belediyesi
+@BELGE: Hatay Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://hatay.bel.tr/yonetim-semasi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: hatay-buyuksehir-belediyesi, hatay-bb, hatay-buyuksehir, hatay-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML/DOM/gömülü veri üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü notlar: Afet Koordinasyon Merkezi ayrı bir afet dairesi değil İTFAİYE dairesine bağlı şube müdürlüğüdür; mezarlık ve muhtarlık hizmetleri "Mahalle ve Mezarlıklar Dairesi Başkanlığı" adlı tek dairede birleşiktir; kentsel dönüşüm ile emlak-kamulaştırma ayrı daire değil İmar ve Şehircilik dairesine bağlı şubelerdir; göç yönetimi Dış İlişkiler dairesine bağlıdır; veterinerlik Tarımsal Hizmetler dairesine bağlıdır; Mali Hizmetler ve Zabıta daireleri altında ilçe şube müdürlükleri bulunur. Sitede daire adları büyük harfle yazılıdır; bu dosyada Türkçe başlık yazımına çevrilmiştir.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Yönetim şeması sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında liste yok.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Stok yönetimi, ihale ve satın alma, makine ikmali, bakım-onarım, araç yönetimi ve yönetim hizmetleri.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Hal işlemleri, veteriner hizmetleri, tarım ve hayvancılık destekleri.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yol yapım ve onarımı, altyapı koordinasyonu (AYKOME) ve kazı ruhsatı, etüt-proje, yapı işleri, kontrol ve kesin hesap.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararları ve ulaşım koordinasyonu, toplu ulaşım hat izni, trafik ve akıllı ulaşım sistemleri, terminaller ve otoparklar.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar ve planlama, ruhsat denetimi, KUDEB, adres ve numarataj, emlak ve kamulaştırma, kentsel dönüşüm, harita işlemleri.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Proje ve finansman (dış kaynaklı hibe), göç yönetimi, üyelikler ve uluslararası ilişkiler.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Muhasebe, bütçe ve mali kontrol, gelirler, strateji geliştirme ve ilçe şube müdürlükleri işlemleri.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen-giden evrak kaydı, meclis ve encümen karar işlemleri, kurum arşivi.
+
+BİRİM: Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvuruları, engelli ve yaşlı hizmetleri, kadın ve aile hizmetleri, şehit yakınları ve gaziler işlemleri.
+
+BİRİM: Basın, Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Basın yayın, iletişim yönetimi, Beyaz Masa ve Alo 153 vatandaş başvuruları ile bilgi edinme talepleri.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür etkinlikleri ve salon tahsisi, turizm ve tanıtım, gençlik ve spor hizmetleri.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Yazılım ve bilgi güvenliği, bilgi teknolojileri, elektronik sistemler, coğrafi bilgi sistemleri.
+
+BİRİM: İşletme ve İştirakler Dairesi Başkanlığı
+GÖREV: Belediye işletmelerinin ve iştiraklerinin yönetimi.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: İnsan kaynakları ve özlük, şirket personeli, eğitim ve hayat boyu öğrenme, iş sağlığı ve güvenliği.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve bahçe bakımı, yeşil alanlar ile tesis yapımı, şehir aydınlatma talepleri.
+
+BİRİM: Mahalle ve Mezarlıklar Dairesi Başkanlığı
+GÖREV: Defin ruhsatı, mezar yeri tahsisi ve cenaze nakli ile muhtarlık hizmetleri ve muhtar taleplerinin takibi.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangına müdahale ve arama-kurtarma, önleme ve denetim (yangın güvenlik raporu), Afet Koordinasyon Merkezi işlemleri.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Atık yönetimi, çevre temizlik hizmetleri, iklim değişikliği ve sıfır atık, çevre koruma ve denetimi.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri denetimi, işgaliye ve idari yaptırım işlemleri, özel güvenlik ve ilçe zabıta hizmetleri.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Belediye lehine ve aleyhine dava ile icra takibi, hukuki görüş bildirimi.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamı yazışmaları, randevu ve protokol işleri.

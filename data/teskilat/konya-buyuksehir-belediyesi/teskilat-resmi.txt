@@ -1,0 +1,87 @@
+@KURUM: Konya Büyükşehir Belediyesi
+@BELGE: Konya Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.konya.bel.tr/s/birimlerimiz
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: konya-buyuksehir-belediyesi, konya-bb, konya-buyuksehir, konya-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Konya istisnasız "Dairesi Başkanlığı" yazımını kullanır. Kurumun birim sayfaları yalnızca daire başkanının özgeçmişi ve iletişim bilgisini içerir, görev tanımı yayımlanmamaktadır. Konya'nın tipik büyükşehir setinden ayrılan iki dairesi vardır: Yapı Kontrol Dairesi Başkanlığı ve İlçe Hizmetleri Dairesi Başkanlığı. Ayrı bir Mezarlıklar dairesi yoktur; defin ve cenaze hizmetleri Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı altındadır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Yapı Kontrol Dairesi Başkanlığı
+GÖREV: Büyükşehir uhdesindeki yapılarda ruhsat ve yapı kullanma izni (iskân) denetimini yürütür; yapı denetim kuruluşlarına ilişkin iş ve işlemleri yapar; ruhsatsız ve ruhsata aykırı yapılarda tespit ve yapı tatil tutanağı düzenleyerek encümene sevk eder.
+
+BİRİM: İlçe Hizmetleri Dairesi Başkanlığı
+GÖREV: İlçe belediyeleri ile koordinasyonu sağlar; ilçelerden gelen makine, ekipman, malzeme ve hizmet desteği taleplerini değerlendirir; ortak proje ve iş birliği protokollerinin hazırlanması ve uygulanmasını takip eder.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: 1/5000 ölçekli nazım imar planı ve plan tadilatı tekliflerini inceleyip meclise sunar; imar durumu belgesi düzenler; halihazır harita, numarataj ve parselasyon işlemlerini yürütür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: 2942 sayılı Kamulaştırma Kanunu kapsamında kamulaştırma işlemlerini yürütür; belediye taşınmazlarının satış, trampa, tahsis, kira ve ecrimisil işlemlerini yapar ve tapu tescil takibini sağlar.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yapım işlerinin ihale, kontrollük, hakediş ve kabul işlemlerini yürütür; altyapı ve üstyapı imalatlarını gerçekleştirir; AYKOME kapsamında altyapı kazı ruhsatı koordinasyonunu sağlar.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararlarının hazırlanması ve uygulanmasını sağlar; toplu taşıma hat ve güzergâh izinleri, ticari araç ve okul servis aracı çalışma ruhsatları ile elektronik ücret toplama (ulaşım kartı) işlemlerini yürütür.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: İşyeri açma ve çalışma ruhsatı (gayrisıhhî müessese) iş ve işlemlerini yürütür; gürültü, koku ve emisyon şikâyetlerini denetler; hafriyat toprağı ile inşaat ve yıkıntı atıklarının kontrolüne ilişkin işlemleri yapar.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Sıfır atık yönetim sistemi kurulum ve belgelendirme işlemlerini yürütür; ambalaj atığı ve geri kazanım süreçlerini yönetir; iklim eylem planı ve enerji verimliliği çalışmalarını koordine eder.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme, arama ve teknik kurtarma müdahalelerini yapar; yangın güvenlik raporu ve itfaiye raporu düzenler; baca, tesisat ve yangın güvenlik önlemleri denetimlerini yürütür.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: Ruhsat, işgaliye ve seyyar satıcı denetimlerini yapar; pazar yerleri ve toptancı hal denetimlerini yürütür; idari yaptırım karar tutanağı düzenleyerek encümene sevk eder.
+
+BİRİM: Sağlık ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvurularını alır ve muhtaçlık incelemesi yapar; engelli ve yaşlı destek hizmetleri ile sağlık tarama hizmetlerini sağlar; mezar yeri tahsisi, defin ve cenaze nakil hizmetlerini yürütür.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe ve kesin hesabı hazırlar; gelirlerin tahakkuk ve tahsilatını yapar; ödeme emri belgesi düzenler, muhasebe kayıtlarını tutar ve ön mali kontrol işlemlerini yürütür.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrakın kaydı ve havalesini yapar; KEP ve elektronik belge yönetim sistemi (EBYS) üzerinden resmî yazışmaları yürütür; Meclis ve Encümen gündem, karar ve tutanak işlemleri ile kurum arşivini yönetir.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, terfi, izin, disiplin ve özlük işlemlerini yürütür; maaş tahakkukunu yapar; hizmet içi eğitim programları ile iş sağlığı ve güvenliği faaliyetlerini planlar.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Doğrudan temin ve 4734 sayılı Kamu İhale Kanunu kapsamındaki ihale işlemlerini yürütür; taşınır kayıt ve kontrol işlemlerini yapar; hizmet binaları, koruma ve güvenlik hizmetlerini sağlar.
+
+BİRİM: Makine İkmal, Bakım Ve Onarım Dairesi Başkanlığı
+GÖREV: Belediye araç ve iş makinesi filosunun bakım, onarım ve muayene işlemlerini yürütür; yedek parça ve akaryakıt ikmalini sağlar; araç görevlendirme taleplerini karşılar.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve yeşil alanların yapım ve bakımını gerçekleştirir; ağaç kesim ve budama izinlerini değerlendirir; sulama sistemleri ile yeşil alan ilaçlama ve haşere mücadelesi hizmetlerini yürütür.
+
+BİRİM: Kültür, Sanat Ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür merkezi ve salon tahsis işlemlerini yürütür; kütüphane ve müze hizmetlerini sağlar; nikâh ve evlendirme işlemlerini gerçekleştirir; kültür-sanat etkinlik ve organizasyonlarını düzenler.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Spor tesisi tahsis ve kullanım işlemlerini yürütür; spor kursu kayıtlarını alır; gençlik merkezlerini işletir ve turnuva, müsabaka ve gençlik organizasyonlarını düzenler.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Basın bültenleri ve kurumsal yayınları hazırlar; CİMER ve çözüm merkezi başvurularının ilgili birime yönlendirilmesini ve yasal süresi içinde yanıtlanmasını takip eder.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Elektronik belge yönetim sistemi (EBYS) ve e-belediye uygulamalarını kurar ve işletir; kent bilgi sistemi ve coğrafi bilgi sistemi (CBS) altyapısını yönetir; ağ, sunucu ve siber güvenlik ile kişisel verilerin korunmasına yönelik teknik tedbirleri alır.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Kardeş şehir protokollerini hazırlar ve yürütür; Avrupa Birliği ve kalkınma ajansı hibe projelerini takip eder; uluslararası yazışma, heyet kabul ve ziyaret işlemlerini koordine eder.
+
+BİRİM: İşletme ve İştirakler Dairesi Başkanlığı
+GÖREV: Belediye şirket ve iştirakleri ile ilişkileri yürütür; işletme gelirlerini takip eder; kira, işletme ve tahsis sözleşmelerinin hazırlanması ve takibine ilişkin işlemleri yapar.
+
+BİRİM: Rehberlik Ve Teftiş Kurulu Başkanlığı
+GÖREV: Belediye birimlerinin iş ve işlemlerini mevzuata uygunluk yönünden teftiş eder; inceleme, araştırma ve soruşturma işlemlerini yürütür ve raporlarını başkanlık makamına sunar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerini yürütür ve belediyeyi yargı mercileri önünde temsil eder; birimlerden gelen hukuki görüş taleplerini karşılar ve sözleşme taslaklarını hukuki yönden inceler.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Belediye başkanının randevu, görüşme ve program trafiğini düzenler; başkanlık makamına gelen evrakın havalesini ve temsil-ağırlama işlemlerini yürütür.

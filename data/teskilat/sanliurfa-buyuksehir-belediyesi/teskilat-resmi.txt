@@ -1,0 +1,93 @@
+@KURUM: Şanlıurfa Büyükşehir Belediyesi
+@BELGE: Şanlıurfa Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.sanliurfa.bel.tr/kategori/7/0/birimler
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: sanliurfa-buyuksehir-belediyesi, sanliurfa-bb, sanliurfa-buyuksehir, sanliurfa-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kurumun birim sayfaları görev tanımı içermez, yalnızca daire başkanı ve iletişim bilgisi yayımlanır. Sitedeki yazım biçimleri korunmuştur: "İşletme ve İştiraklar" (İştirakler değil), "Kültür,Sanat" (virgülden sonra boşluksuz), "Park Bahçeler" ("ve" bağlacı yok). Şanlıurfa'nın tipik büyükşehir setinden ayrılan yapısı: Sağlık İşleri ile Sosyal Hizmetler AYRI iki dairedir ve Veteriner İşleri müstakil bir daire başkanlığıdır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: Sağlık İşleri Dairesi Başkanlığı
+GÖREV: Sağlık tarama, poliklinik ve sağlık merkezi hizmetlerini yürütür; gıda üretim yerleri ile umuma açık istirahat ve eğlence yerlerinde sağlık denetimlerini yapar; halk sağlığına yönelik bilgilendirme ve koruyucu sağlık faaliyetlerini planlar.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvurularını alır ve muhtaçlık incelemesi yaparak ayni ve nakdi yardım işlemlerini yürütür; gıda ve yakacak yardımı, aşevi hizmetleri ile engelli ve yaşlı destek programlarını sağlar.
+
+BİRİM: Veteriner İşleri Dairesi Başkanlığı
+GÖREV: Sokak hayvanlarının kısırlaştırma, aşılama, tedavi ve rehabilitasyon işlemlerini yürütür; hayvan bakımevi ve barınak hizmetlerini sağlar; kuduz şüphesi ihbarlarının gereğini yapar ve kurban kesim yerlerinin denetimini gerçekleştirir.
+
+BİRİM: Kırsal Hizmetler Dairesi Başkanlığı
+GÖREV: Kırsal mahallelerde yol, içme suyu ve altyapı taleplerini değerlendirir ve gereğini yapar; köy ve mahalle hizmet programını hazırlar; kırsal alanlara makine, ekipman ve malzeme desteği sağlar.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Üreticilere tohum, fide, fidan ve tarımsal girdi desteği sağlar; tarımsal sulama ve arazi yolu taleplerini değerlendirir; hayvancılık destekleri ve tarımsal eğitim faaliyetlerini yürütür.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: 1/5000 ölçekli nazım imar planı ve plan tadilatı tekliflerini inceleyip meclise sunar; imar durumu belgesi düzenler; halihazır harita, numarataj ve parselasyon işlemlerini yürütür.
+
+BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
+GÖREV: 2942 sayılı Kamulaştırma Kanunu kapsamında kamulaştırma işlemlerini yürütür; belediye taşınmazlarının satış, trampa, tahsis, kira ve ecrimisil işlemlerini yapar ve tapu tescil takibini sağlar.
+
+BİRİM: Kentsel Dönüşüm Dairesi Başkanlığı
+GÖREV: 6306 sayılı Kanun kapsamında riskli yapı ve riskli alan işlemlerini yürütür; hak sahipliği tespiti ve uzlaşma görüşmelerini yapar; kentsel dönüşüm proje ve uygulamalarını takip eder.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yapım işlerinin ihale, kontrollük, hakediş ve kabul işlemlerini yürütür; yol ve altyapı imalatlarını gerçekleştirir; AYKOME kapsamında altyapı kazı ruhsatı koordinasyonunu sağlar.
+
+BİRİM: Ulaşım Hizmetleri Dairesi Başkanlığı
+GÖREV: UKOME kararlarının hazırlanması ve uygulanmasını sağlar; toplu taşıma hat ve güzergâh izinleri, ticari araç ve okul servis aracı çalışma ruhsatları ile elektronik ücret toplama (ulaşım kartı) işlemlerini yürütür.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme, arama ve teknik kurtarma müdahalelerini yapar; yangın güvenlik raporu ve itfaiye raporu düzenler; baca, tesisat ve yangın güvenlik önlemleri denetimlerini yürütür.
+
+BİRİM: Afet İşleri ve Risk Yönetimi Dairesi Başkanlığı
+GÖREV: Afet risk azaltma ve zarar azaltma planlarını hazırlar; AKOM üzerinden afet koordinasyonunu sağlar; imar planına esas zemin etüdü ve yerleşime uygunluk raporlarını değerlendirir.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: Ruhsat, işgaliye ve seyyar satıcı denetimlerini yapar; pazar yerleri ve toptancı hal denetimlerini yürütür; idari yaptırım karar tutanağı düzenleyerek encümene sevk eder.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: İşyeri açma ve çalışma ruhsatı (gayrisıhhî müessese) iş ve işlemlerini yürütür; gürültü, koku ve emisyon şikâyetlerini denetler; hafriyat toprağı ile inşaat ve yıkıntı atıklarının kontrolüne ilişkin işlemleri yapar.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Sıfır atık yönetim sistemi kurulum ve belgelendirme işlemlerini yürütür; ambalaj atığı ve geri kazanım süreçlerini yönetir; iklim eylem planı ve enerji verimliliği çalışmalarını koordine eder.
+
+BİRİM: Park Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve yeşil alanların yapım ve bakımını gerçekleştirir; ağaç kesim ve budama izinlerini değerlendirir; sulama sistemleri ile yeşil alan ilaçlama hizmetlerini yürütür.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe ve kesin hesabı hazırlar; gelirlerin tahakkuk ve tahsilatını yapar; ödeme emri belgesi düzenler, muhasebe kayıtlarını tutar ve ön mali kontrol işlemlerini yürütür.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrakın kaydı ve havalesini yapar; KEP ve elektronik belge yönetim sistemi (EBYS) üzerinden resmî yazışmaları yürütür; Meclis ve Encümen gündem, karar ve tutanak işlemleri ile kurum arşivini yönetir.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Personel atama, terfi, izin, disiplin ve özlük işlemlerini yürütür; maaş tahakkukunu yapar; hizmet içi eğitim programları ile iş sağlığı ve güvenliği faaliyetlerini planlar.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Doğrudan temin ve 4734 sayılı Kamu İhale Kanunu kapsamındaki ihale işlemlerini yürütür; taşınır kayıt ve kontrol işlemlerini yapar; hizmet binaları, araç ikmali, koruma ve güvenlik hizmetlerini sağlar.
+
+BİRİM: Kadın ve Aile Hizmetleri Dairesi Başkanlığı
+GÖREV: Kadın danışma ve sığınma hizmetlerini yürütür; meslek edindirme ve el sanatları kurslarını düzenler; aile ve çocuk destek programlarını uygular.
+
+BİRİM: Kültür,Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür merkezi ve salon tahsis işlemlerini yürütür; kütüphane ve müze hizmetlerini sağlar; nikâh ve evlendirme işlemlerini gerçekleştirir; kültür-sanat etkinlik ve organizasyonlarını düzenler.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Spor tesisi tahsis ve kullanım işlemlerini yürütür; spor kursu kayıtlarını alır; gençlik merkezlerini işletir ve turnuva, müsabaka ve gençlik organizasyonlarını düzenler.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Basın bültenleri ve kurumsal yayınları hazırlar; CİMER ve çözüm merkezi başvurularının ilgili birime yönlendirilmesini ve yasal süresi içinde yanıtlanmasını takip eder.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Elektronik belge yönetim sistemi (EBYS) ve e-belediye uygulamalarını kurar ve işletir; kent bilgi sistemi ve coğrafi bilgi sistemi (CBS) altyapısını yönetir; ağ, sunucu ve siber güvenlik ile kişisel verilerin korunmasına yönelik teknik tedbirleri alır.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Kardeş şehir protokollerini hazırlar ve yürütür; Avrupa Birliği ve kalkınma ajansı hibe projelerini takip eder; uluslararası yazışma, heyet kabul ve ziyaret işlemlerini koordine eder.
+
+BİRİM: İşletme ve İştiraklar Dairesi Başkanlığı
+GÖREV: Belediye şirket ve iştirakleri ile ilişkileri yürütür; işletme gelirlerini takip eder; kira, işletme ve tahsis sözleşmelerinin hazırlanması ve takibine ilişkin işlemleri yapar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerini yürütür ve belediyeyi yargı mercileri önünde temsil eder; birimlerden gelen hukuki görüş taleplerini karşılar ve sözleşme taslaklarını hukuki yönden inceler.

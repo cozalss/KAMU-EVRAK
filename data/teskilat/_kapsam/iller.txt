@@ -1,0 +1,92 @@
+@KURUM: İl Listesi (mevzuat-teşkilat kapsamı)
+@BELGE: İl ve İlçe Kuruluş Tarihleri (T.C. İçişleri Bakanlığı İller İdaresi Genel Müdürlüğü)
+@KAYNAK_KIMLIK: https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_idari_bolunus
+@DOGRULAMA: resmi
+@NOT: 81 il. Valilik şablonunun kapsamıdır.
+
+# Biçim: <slug>|<resmî ad>. Bir mevzuat-teşkilat şablonunun KAPSAMINI kilitler
+# (docs/11-mevzuat-teskilat.md INV-6). Manifest + SHA-256 ile kilitlidir.
+
+adana|Adana
+adiyaman|Adıyaman
+afyonkarahisar|Afyonkarahisar
+agri|Ağrı
+aksaray|Aksaray
+amasya|Amasya
+ankara|Ankara
+antalya|Antalya
+ardahan|Ardahan
+artvin|Artvin
+aydin|Aydın
+balikesir|Balıkesir
+bartin|Bartın
+batman|Batman
+bayburt|Bayburt
+bilecik|Bilecik
+bingol|Bingöl
+bitlis|Bitlis
+bolu|Bolu
+burdur|Burdur
+bursa|Bursa
+canakkale|Çanakkale
+cankiri|Çankırı
+corum|Çorum
+denizli|Denizli
+diyarbakir|Diyarbakır
+duzce|Düzce
+edirne|Edirne
+elazig|Elazığ
+erzincan|Erzincan
+erzurum|Erzurum
+eskisehir|Eskişehir
+gaziantep|Gaziantep
+giresun|Giresun
+gumushane|Gümüşhane
+hakkari|Hakkari
+hatay|Hatay
+igdir|Iğdır
+isparta|Isparta
+istanbul|İstanbul
+izmir|İzmir
+kahramanmaras|Kahramanmaraş
+karabuk|Karabük
+karaman|Karaman
+kars|Kars
+kastamonu|Kastamonu
+kayseri|Kayseri
+kilis|Kilis
+kirikkale|Kırıkkale
+kirklareli|Kırklareli
+kirsehir|Kırşehir
+kocaeli|Kocaeli
+konya|Konya
+kutahya|Kütahya
+malatya|Malatya
+manisa|Manisa
+mardin|Mardin
+mersin|Mersin
+mugla|Muğla
+mus|Muş
+nevsehir|Nevşehir
+nigde|Niğde
+ordu|Ordu
+osmaniye|Osmaniye
+rize|Rize
+sakarya|Sakarya
+samsun|Samsun
+sanliurfa|Şanlıurfa
+siirt|Siirt
+sinop|Sinop
+sirnak|Şırnak
+sivas|Sivas
+tekirdag|Tekirdağ
+tokat|Tokat
+trabzon|Trabzon
+tunceli|Tunceli
+usak|Uşak
+van|Van
+yalova|Yalova
+yozgat|Yozgat
+zonguldak|Zonguldak

@@ -1,30 +1,62 @@
 @KURUM: Millî Savunma Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/milli-savunma-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.339 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: msb, milli-savunma
-@NOT: Türk Silahlı Kuvvetleri komuta kademesi (Genelkurmay, Kuvvet Komutanlıkları) ayrı teşkilat olduğundan burada listelenmemiştir; yalnız Bakanlık merkez teşkilatı sivil birimleri yer alır.
+@NOT: Birim adları m.339/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Askeralma Genel Müdürlüğü
-GÖREV: Askerlik erteleme, celp/sevk işlemleri, bedelli askerlik başvurusu ve yoklama kaçağı/bakaya itiraz başvurularını yürütür.
-
-BİRİM: Harita Genel Müdürlüğü
-GÖREV: Resmî harita üretimi, jeodezik veri talebi ve harita/kroki bilgi edinme başvurularını karşılar.
+GÖREV: Askeralma faaliyetlerini ilgili bakanlıklar, kamu kurum ve kuruluşları ile koordineli olarak planlamak ve icra etmek; Askeralma politikası ve planlaması ile askeralma, seferberlik ve askerlik sistemlerinin geliştirilmesi konularında çalışmalar yapmak ve tekliflerde bulunmak; Türk Silahlı Kuvvetlerinin seferberlik ve savaş hali hazırlıklarıyla ilgili faaliyetlerini, Genelkurmay Başkanlığının planlaması doğrultusunda; kuvvet komutanlıkları, ilgili bakanlıklar, kamu kurum ve kuruluşları ile koordine etmek.
 
 BİRİM: Askeri Fabrikalar Genel Müdürlüğü
-GÖREV: Askeri fabrika üretim/tedarik süreçleri ve savunma sanayii sipariş takip başvurularını yürütür.
+GÖREV: Türk Silahlı Kuvvetlerine ait silah ve sistemlerin bakım, onarım, imalat, yenileştirme, tadilat, modernizasyon ve bu faaliyetleri icra ederken ihtiyaç duyacağı tedarik faaliyetlerinin gerçekleştirilmesini sağlamak; Askeri fabrikaların atıl kapasitelerinin değerlendirilmesi için yeni iş modelleri geliştirmek, bu maksatla gerekli ticari girişimlerde bulunmak, imkân ve kabiliyetlerini tanıtıcı faaliyetler gerçekleştirmek.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+BİRİM: Askeri Sağlık Hizmetleri Genel Müdürlüğü
+GÖREV: Barışta ve savaşta, Bakanlığın sağlık ve veteriner hizmetlerini yürütmek; Askeri sağlık hizmetleri alanında ulusal ve uluslararası işbirliği faaliyetlerini ve AR-GE çalışmalarını yürütmek; Askeri sağlık hizmetlerinin planlama ve icrasına yönelik resmî askeri yayınları hazırlamak; Bakanlığın sağlık insan gücü temin ve yetiştirme planlarını hazırlamak, mezuniyet öncesi ve sonrası eğitim faaliyetlerini planlamak ve yürütülmesini sağlamak.
+
+BİRİM: Bütçe ve Mali Hizmetler Genel Müdürlüğü
+GÖREV: İlgili mevzuat çerçevesinde strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak; Türk Silahlı Kuvvetleri Stratejik Hedef Planı ile belirlenen güvenlik ve savunmaya yönelik projelere ilişkin mali kaynakların; tespiti, programlanması, bütçelenmesi, tahsisi, kullanımının takip ve kontrolü ile koordinasyonunun sağlanmasına yönelik faaliyetleri yürütmek ve bu hususlara ilişkin ilke, esas ve usulleri belirlemek; Döner sermayeli işletmelerin Bakanlıkça yapılacak iş ve işlemlerini yürütmek.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak; İlgili mevzuat çerçevesinde hukuk sınıfı subayların meslek öncesi ve meslek içi eğitimlerini planlamak ve yürütmek; Hukuk hizmetleri başkanlıkları ve hukuk hizmetleri birimlerinin denetimini yapmak.
+
+BİRİM: Lojistik Genel Müdürlüğü
+GÖREV: Bakanlığın ihtiyaç duyduğu bina ve tesislerin planlanmasını, yapım, bakım ve onarımını gerçekleştirmek; Kamulaştırma işlemlerini yürütmek; Bakanlığa tahsisli ve/veya fiilen kullanılan taşınmazların, Türk Silahlı Kuvvetlerinin ihtiyaçları kapsamında imar durumu ve uygunluğunu incelemek, ihtiyaç olması halinde ilgili birimlerle koordine ederek imar planı ile imar uygulamalarını yaptırmak ve onaylanmasını sağlamak; Bakanlığın taşınmazlarına ve merkez teşkilatı haricindeki taşınırlarına ilişkin iş ve işlemleri yürütmek.
 
 BİRİM: Personel Genel Müdürlüğü
-GÖREV: Bakanlık sivil memur/işçi personeline ilişkin atama, nakil ve özlük başvurularını yürütür.
+GÖREV: Bakanlığın personel politikası ve planlaması ile personel sisteminin geliştirilmesi konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık merkez, taşra ve yurtdışı teşkilatı ile bağlı, ilgili kurum ve kuruluşlarında görevli Türk Silahlı Kuvvetleri personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini ilgili kuvvet komutanlıkları ile koordine ederek yürütmek; Bakanlık merkez, taşra ve yurtdışı teşkilatındaki sivil personele ilişkin işlemleri yürütmek.
+
+BİRİM: Savunma ve Güvenlik Genel Müdürlüğü
+GÖREV: Milli savunma politikasının oluşturulması ve geliştirilmesi için gerekli çalışmaları yürütmek; Yurtdışı ikili resmi ziyaretler ile yurtdışından gelen ziyaretçilere ilişkin işlemleri yürütmek; İkili ve/veya çok taraflı uluslararası anlaşmaların yapılması çalışmalarını yürütmek; NATO bünyesindeki çalışmaları değerlendirmek, takip etmek ve ilgili Bakanlık birimleri ve kurumlarla koordinasyonu sağlamak; Katılım sağlanan çok taraflı güvenlik toplantılarına ve konferanslarına yönelik işlemleri yürütmek.
+
+BİRİM: Tedarik Hizmetleri Genel Müdürlüğü
+GÖREV: Türk Silahlı Kuvvetlerinin ihtiyacı olan silah, mühimmat, sistem, her türlü araç-gereç, giyim-kuşam, sağlık, enerji, teçhizat, yiyecek ve yakacak ile akaryakıt, madeni yağ ve benzer kapsamdaki merkezi mal ve hizmetlerin tedarik faaliyetlerini yürütmek; İhtiyaçların temininde, uluslararası çok taraflı ve ikili anlaşmalar ile imzalanan mutabakat muhtıraları kapsamında tedarik ve modernizasyon faaliyetlerini yürütmek; Kalite Güvence makamı olarak.
+
+BİRİM: Tersaneler Genel Müdürlüğü
+GÖREV: Türk Silahlı Kuvvetlerine ait yüzer unsurların ve üzerindeki sistemlerin bakım, onarım, imalat, yenileştirme, tadilat, modernizasyon ve bu faaliyetleri icra ederken ihtiyaç duyacağı tedarik faaliyetlerini gerçekleştirmek; Tersanelerin atıl kapasitelerinin değerlendirilmesi için yeni iş modelleri geliştirmek, bu maksatla gerekli ticari girişimlerde bulunmak, imkân ve kabiliyetlerini tanıtıcı faaliyetler gerçekleştirmek.
+
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: İlgili mevzuat çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, iaşe, aydınlatma, ısıtma, bakım, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın merkez teşkilatının taşınırlarına ilişkin işlemleri yürütmek; Bakanın protokol ve tören işlerini düzenlemek ve yürütmek; Bakanın koruma işlemlerini yürütmek ve koordine etmek.
+
+BİRİM: Teknik Hizmetler Genel Müdürlüğü
+GÖREV: İlgili mevzuat uyarınca savunma sanayi güvenliği faaliyetlerini yürütmek; Türk Silahlı Kuvvetleri envanterine giren ikmal maddelerinin kodlandırma faaliyetlerini yürütmek; Uluslararası Savunma Sanayi Fuarları (IDEF) dâhil yurtiçi/yurtdışı fuarlara katılımı planlamak, fuarların kapsamına ilişkin inceleme programları hazırlamak ve fuarlara katılmak; Araştırma-Geliştirme ve teknoloji yönetim faaliyetlerini gerçekleştirmek; Türk Silahlı Kuvvetlerinin ihtiyacını karşılamak amacıyla sözleşmeye bağlanan.
 
 BİRİM: Teftiş Kurulu Başkanlığı
-GÖREV: Bakanlık merkez ve taşra teşkilatı hakkındaki teftiş, inceleme ve şikâyet/ihbar başvurularını değerlendirir.
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.339/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: Bakanlık satın alma, taşınır/taşınmaz işlemleri ve idari destek hizmetlerine ilişkin yazışmaları yürütür.
+BİRİM: Milli Mayın Faaliyet Merkezi Dairesi Başkanlığı
+GÖREV: Akreditasyon: Askerî unsurlar dâhil tüm kurum ve kuruluşların teşkilatının, teçhizatının, eğitim seviyesinin ve çalışma usullerinin, mayın ve/veya patlamamış mühimmat temizleme işlemi için belirlenen standartlara uygunluğunun kontrol ve takip edilerek yetkilendirilmesini.
+
+BİRİM: Muhabere ve Bilgi Sistem Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.339/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın, halkla ilişkiler ve tanıtımla ilgili faaliyetlerini planlamak ve bu faaliyetleri yürütmek; Bakanlık merkez ve taşra teşkilatı, Genelkurmay Başkanlığı ve kuvvet komutanlıkları ile bağlı, ilgili kurum ve kuruluşların basın, halkla ilişkiler ve tanıtımla ilgili faaliyetlerinin eşgüdüm içinde yürütülmesini sağlamak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını yürütmek; Bakanın ziyaret, davet, karşılama ve uğurlama, ağırlama, milli ve dini bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve diğer kuruluşlarla koordine etmek.
+
+BİRİM: Diğer Komutanlıklar. Askeralma Genel Müdürlüğü
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.339/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

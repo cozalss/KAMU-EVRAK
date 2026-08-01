@@ -1,33 +1,50 @@
 @KURUM: Sağlık Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/saglik-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.354 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: sb, saglik, saglik-bakanligi
-@NOT: Sosyal Güvenlik Kurumu (SGK) sağlık hizmeti bedellerinin ödenmesinden sorumlu ayrı bir kamu kurumudur; bu dosya kapsamı dışındadır. Türkiye İlaç ve Tıbbî Cihaz Kurumu (TİTCK) bakanlığın hizmet birimi değil, bakanlığa bağlı özel bütçeli ayrı bir kurumdur; ilaç/tıbbi cihaz evrakının yönlendirilmesi kolaylığı için bu listede yer almaktadır.
-
-BİRİM: Kamu Hastaneleri Genel Müdürlüğü
-GÖREV: Devlet hastaneleri ve eğitim-araştırma hastanelerinin işletilmesi, hasta hakları başvuruları ve hastane hizmet kalitesi denetimini yürütür.
-
-BİRİM: Halk Sağlığı Genel Müdürlüğü
-GÖREV: Bulaşıcı hastalık kontrolü, aşılama programları, aile hekimliği hizmetleri ve çevre sağlığı denetimine ilişkin başvuruları yürütür.
+@NOT: Birim adları m.354/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Sağlık Hizmetleri Genel Müdürlüğü
-GÖREV: Sağlık hizmet sunum standartları, özel sağlık kuruluşu ruhsatlandırma ve sağlık personeli hizmet politikalarına ilişkin başvuruları yürütür.
+GÖREV: Her türlü koruyucu, teşhis, tedavi ve rehabilite edici sağlık hizmetlerini planlamak, teknik düzenleme yapmak, standartları belirlemek ve bu hizmetler ile sunucularını sınıflandırmak, bununla ilgili iş ve işlemleri yaptırmak; Organ ve doku nakli, kan ve kan ürünleri, diyaliz, üremeye yardımcı tedavi, evde sağlık, yanık, yoğun bakım gibi özellikli planlama gerektiren sağlık hizmetlerini planlamak ve bu hizmetleri sunan kurum ve kuruluşlar arasında koordinasyonu sağlamak.
 
 BİRİM: Acil Sağlık Hizmetleri Genel Müdürlüğü
-GÖREV: 112 acil çağrı merkezi, ambulans hizmetleri ve afet/acil durum sağlık müdahalelerine ilişkin başvuruları yürütür.
+GÖREV: Afetlerde ve acil durumlarda ülke genelinde sağlık hizmetlerini planlamak ve yürütmek; Hastane öncesi acil sağlık hizmetlerine ait birimleri kurmak ve işletmek, gerektiğinde hastane acil servisleri ile entegre etmek, ilgili birimlerin faaliyetlerini izlemek, değerlendirmek, hasta nakil ve sevk koordinasyonunu sağlamak; Kara, hava ve deniz ambulanslarının temin, tahsis, sevk ve idaresini sağlamak.
 
-BİRİM: Türkiye İlaç ve Tıbbî Cihaz Kurumu (TİTCK)
-GÖREV: İlaç ve tıbbi cihazların ruhsatlandırılması, farmakovijilans bildirimleri ve eczane denetimine ilişkin başvuruları yürütür.
-
-BİRİM: Sağlık Yatırımları Genel Müdürlüğü
-GÖREV: Şehir hastaneleri dahil sağlık tesisi yapım ve yatırım planlaması ile ilgili başvuruları yürütür.
+BİRİM: Sağlığın Geliştirilmesi Genel Müdürlüğü
+GÖREV: Toplumun ve bireyin sağlığı ile ilgili bilgi, farkındalık ve kontrol yeteneklerini artırmak ve bu konuda sorumluluk almalarını ve karar süreçlerine katılımlarını teşvik etmek; Sağlığı doğrudan ve dolaylı olarak etkileyen faktörlerin ve sosyal belirleyicilerin iyileştirilmesine yardım edecek düzenlemeler yaparak birey sağlığının korunması ve sağlık düzeyinin yükseltilmesine yönelik davranış değişikliği oluşturmak ve sürdürmek.
 
 BİRİM: Sağlık Bilgi Sistemleri Genel Müdürlüğü
-GÖREV: e-Nabız ve Merkezi Hekim Randevu Sistemi (MHRS) gibi elektronik sağlık kayıt sistemlerinin işletilmesine ilişkin başvuruları yürütür.
+GÖREV: Sağlık alanında kullanılan bilişim sistemleri ve iletişim teknolojileri ile ilgili ülke çapında politika, strateji ve standartların belirlenmesi amacıyla çalışmalar yapmak; Kişisel sağlık verileri ile ülke düzeyinde sağlık durumu ve sağlık hizmetlerine ilişkin veri ve bilgi akışını içeren her türden bilgi sistemleri ve projelerini yapmak ve yaptırmak; Sağlık bilgi sistemleri ve teknolojileri alanında uluslararası gelişmeleri izlemek, ülke uygulamalarını ve tecrübelerini paylaşmak, gerektiğinde uluslararası kuruluşlarla işbirliği yapmak.
 
-BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık personel, mali ve idari işlerinin yürütülmesinden sorumludur.
+BİRİM: Sağlık Yatırımları Genel Müdürlüğü
+GÖREV: Bakanlığın ve bağlı kuruluşların hizmetlerinde kullanılacak binalar için belirlenen ihtiyaç programlarına uygun olarak mühendislik hizmetlerini yürütmek, projelerini hazırlamak veya hazırlatmak; Gerektiğinde ön veya tam proje ile inşaat ihalelerini yapmak ve bu hizmetler için müşavirlik hizmeti satın almak; Gerektiğinde Bakanlık ve bağlı kuruluşların inşaatlarının kontrollüğünü yapmak veya yaptırmak; Sağlık yapılarının standartlarını belirlemek ve mimarisini geliştirmeye yönelik çalışmalar yapmak.
 
 BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
-GÖREV: Uluslararası sağlık iş birliği, AB uyum süreçleri ve sınır ötesi sağlık projelerine ilişkin başvuruları yürütür. [DOĞRULA: güncel birim adı 1 sayılı CBK Sağlık Bakanlığı hizmet birimleri listesinden teyit edilmeli]
+GÖREV: Sağlık alanında yabancı ülkelerle ve uluslararası kuruluşlarla ilişkileri yürütmek, geliştirmek ve bunlarla ilgili hukukî ve idarî düzenlemelere ilişkin çalışmaları yürütmek; İkili ve çok taraflı anlaşma ve sözleşmelere ilişkin işlemleri yürütmek; Avrupa Birliği ile ilişkileri, Bakanlığın ilgili birimleri arasında ve Bakanlık ile diğer kurumlar arasında koordinasyonu gerçekleştirmek suretiyle yürütmek.
+
+BİRİM: Halk Sağlığı Genel Müdürlüğü
+GÖREV: Halk sağlığını korumak ve geliştirmek, sağlık için risk oluşturan faktörlerle mücadele etmek; Birinci basamak sağlık hizmetlerini yürütmek, bu amaçla birinci basamak sağlık kuruluşlarını kurmak ve işletmek, gerektiğinde bunları birleştirmek, ayırmak, nakletmek veya kapatmak.
+
+BİRİM: Kamu Hastaneleri Genel Müdürlüğü
+GÖREV: Bakanlığa bağlı hastaneleri, ağız ve diş sağlığı merkezlerini ve benzeri sağlık kuruluşlarını kurmak ve işletmek, gerektiğinde bunları birleştirmek, ayırmak, nakletmek veya kapatmak; Sağlık kuruluşlarında her türlü koruyucu, teşhis, tedavi ve rehabilite edici sağlık hizmetlerinin yürütülmesini sağlamak, faaliyetleri izlemek ve değerlendirmek, iyi uygulama örneklerini yaygınlaştırmak; Performans değerlendirmesi yapmak ve değerlendirme sistematiği için her türlü alt yapıyı kurmak.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlığın personel planlaması ile personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, aydınlatma, ısınma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Denetime ilişkin yöntem ve teknikleri geliştirmek, denetim alanındaki standart ve ilkelerin oluşturulmasını sağlamak, denetim rehberleri hazırlamak, denetimlerin etkinliğini ve verimliliğini artırıcı tedbirler almak; Bakanlık teşkilatı ile gerektiğinde bağlı ve ilgili kuruluşların ve bunların denetimi altındaki kurum ve kuruluşların iş ve işlemleri hakkında teftiş, denetim, inceleme ve soruşturma yapmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basınla ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usul ve esaslara göre yürütülmesini sağlamak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

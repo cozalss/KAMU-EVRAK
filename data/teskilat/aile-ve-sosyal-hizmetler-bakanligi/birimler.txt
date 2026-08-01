@@ -1,32 +1,56 @@
 @KURUM: Aile ve Sosyal Hizmetler Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/aile-ve-sosyal-hizmetler-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.67 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: ashb, aile-bakanligi, sosyal-hizmetler-bakanligi
-
-BİRİM: Çocuk Hizmetleri Genel Müdürlüğü
-GÖREV: Koruma altına alma, çocuk evi/yurt yerleştirme, evlat edindirme ve çocuk istismarı ihbar başvurularını yürütür.
-
-BİRİM: Engelli ve Yaşlı Hizmetleri Genel Müdürlüğü
-GÖREV: Engelli sağlık kurulu raporu itirazı, evde bakım aylığı, huzurevi yerleştirme ve engelli/yaşlı bakım hizmeti başvurularını karşılar.
-
-BİRİM: Kadının Statüsü Genel Müdürlüğü
-GÖREV: Kadına yönelik şiddet ihbar/başvuruları, ŞÖNİM yönlendirmesi ve kadın istihdamı destek programlarına ilişkin yazışmaları yürütür.
-
-BİRİM: Sosyal Yardımlar Genel Müdürlüğü
-GÖREV: Sosyal yardım başvurusu (nakdi yardım, engelli/yaşlı aylığı), muhtaçlık tespiti ve Sosyal Yardımlaşma ve Dayanışma Vakfı yönlendirme işlemlerini yürütür.
+@NOT: Birim adları m.67/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Aile ve Toplum Hizmetleri Genel Müdürlüğü
-GÖREV: Aile danışmanlığı, evlilik öncesi eğitim, aile arabuluculuğu ve toplum merkezi hizmet başvurularını karşılar.
+GÖREV: Bakanlığın aile ve topluma yönelik koruyucu, önleyici, eğitici, geliştirici, rehberlik ve rehabilite edici sosyal hizmet faaliyetlerini yürütmek ve koordine etmek; Aile yapısının ve değerlerinin korunması, güçlendirilmesi ve ailenin sosyal refahının artırılması için ulusal politika ve stratejilerin belirlenmesi amacıyla gerekli çalışmaları koordine etmek, belirlenen politika ve stratejileri uygulamak, uygulanmasını izlemek ve değerlendirmek.
+
+BİRİM: Çocuk Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlığın çocuklara yönelik koruyucu, önleyici, eğitici, geliştirici, rehberlik ve rehabilite edici sosyal hizmet faaliyetlerini yürütmek ve koordine etmek; Çocuklara yönelik sosyal hizmetler konusunda politika ve stratejiler belirlenmesi amacıyla gerekli çalışmaları koordine etmek, belirlenen politika ve stratejileri uygulamak, uygulanmasını izlemek ve değerlendirmek.
+
+BİRİM: Kadının Statüsü Genel Müdürlüğü
+GÖREV: Bakanlığın kadınlara yönelik koruyucu, önleyici, eğitici, geliştirici, rehberlik ve rehabilite edici sosyal hizmet faaliyetlerini yürütmek ve koordine etmek; Kadına karşı ayrımcılığın önlenmesi, kadının insan haklarının ve toplumsal statüsünün korunması ve geliştirilmesi, kadının toplumsal hayatın tüm alanlarında etkin hâle getirilmesine yönelik ulusal politika ve stratejilerin belirlenmesi çalışmalarını koordine etmek, belirlenen politika ve stratejileri uygulamak, uygulanmasını izlemek ve değerlendirmek.
+
+BİRİM: Engelli ve Yaşlı Hizmetleri Genel Müdürlüğü
+GÖREV: Bakanlığın engellilere ve yaşlılara yönelik koruyucu, önleyici, eğitici, geliştirici, rehberlik ve rehabilite edici sosyal hizmet faaliyetlerini yürütmek ve koordine etmek; Engelliliğin önlenmesi ile engellilerin eğitimi, istihdamı, rehabilitasyonu, ayrımcılığa uğramadan insan haklarından yararlanarak toplumsal hayata katılmaları ve diğer konularda ulusal düzeyde politika ve stratejilerin belirlenmesi amacıyla gerekli çalışmaları koordine etmek, belirlenen politika ve stratejileri uygulamak, uygulanmasını izlemek ve değerlendirmek.
 
 BİRİM: Şehit Yakınları ve Gaziler Genel Müdürlüğü
-GÖREV: Şehit yakını/gazi aylığı, gazi kimlik belgesi ve şehit/gazi yakınlarına yönelik sosyal destek başvurularını yürütür.
+GÖREV: Bakanlığın şehit yakınları ve gazilere yönelik sosyal hizmet faaliyetlerini yürütmek ve koordine etmek; Şehit yakınları ve gazilerin hakları ile onlara yönelik yardım, hizmet ve muafiyetlere ilişkin ulusal politika ve stratejilerin belirlenmesi amacıyla gerekli çalışmaları koordine etmek, belirlenen politika ve stratejileri uygulamak, uygulanmasını izlemek ve değerlendirmek.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programı yazışmalarını yürütür.
+BİRİM: Sosyal Yardımlar Genel Müdürlüğü
+GÖREV: Yoksullukla mücadele ve sosyal yardımlar alanında ulusal düzeyde uygulanacak politika ve stratejilerin belirlenmesi amacıyla gerekli çalışmaları koordine etmek, belirlenen politika ve stratejileri uygulamak, uygulanmasını izlemek ve değerlendirmek; 29/5/1986 tarihli ve 3294 sayılı Sosyal Yardımlaşma ve Dayanışmayı Teşvik Kanununun amaçlarını gerçekleştirmek ve uygulanmasını sağlamak için gerekli idarî ve malî tedbirleri almak.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
 
-BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
-GÖREV: AB fonlu sosyal politika projeleri ve uluslararası aile/sosyal hizmet işbirliği yazışmalarını yürütür.
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel politikası ve planlaması ile personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlık projelerinin Bakanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek ve Bakanlık otomasyon stratejilerini Strateji Geliştirme Başkanlığı ile işbirliği içerisinde belirlemek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, kamu bilişim standartlarına uygun çözümler üretmek; Bakanlığın bilgi işlem hizmetlerini yürütmek; Bakanlığın internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapmak.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlığın görev alanına giren faaliyet ve işlemlerle ilgili teftiş, inceleme ve soruşturmaları yürütmek, gerekli önlemleri almak veya aldırmak; Bakanlığın görev alanına giren konularda ulusal ve uluslararası mevzuatın uygulanmasını izlemek, mevzuat çalışmaları yapmak, gerektiğinde, teftiş ve denetimler sonucunda, mevzuatın aksayan yönleri, uygulanabilirliği, sektörel bazda ilgili kurum ve kuruluşlarca alınması gereken önlemleri belirlemek; Denetim sonuçlarına ilişkin istatistikleri tutmak, değerlendirmek ve yorumlamak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Bakanlığın görev ve faaliyet alanına giren konularda, kalkınma planları ve yıllık programlarda öngörülen hedefler doğrultusunda, uluslararası kurum ve kuruluşlarla ilişkileri yürütmek, koordinasyonu sağlamak; Avrupa Birliğine yönelik olarak Cumhurbaşkanınca belirlenen politikalar doğrultusunda Bakanlığın görev alanlarına ilişkin kısa, orta ve uzun vadede uygulanacak politikaların belirlenmesi amacıyla gerekli çalışmaları yapmak ve bu konularda uygulama ile ilgili gerekli tedbirlerin alınmasını sağlamak ve öneriler hazırlamak.
+
+BİRİM: Eğitim ve Yayın Dairesi Başkanlığı
+GÖREV: Bakanlık personeli ile Bakanlığın görev alanındaki hizmetleri yerine getirecek diğer kurum ve kuruluş personelinin yetiştirilmesi, eğitilmesi ve bilgi düzeylerinin yükseltilmesi için gerekli programları planlamak, geliştirmek ve uygulamak; hizmet içi eğitim programları hazırlamak ve yürütülmesini sağlamak; Bakanlığın görev alanına ilişkin konularda kamuoyuna yönelik eğitici, aydınlatıcı ve bilinçlendirici faaliyetler yürütmek, bu konuda ilgili kamu kurum ve kuruluşları, sivil toplum kuruluşları, üniversiteler ve özel sektörle işbirliği yapmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kanun hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, aydınlatma, ısınma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Bakanlığa bağlı döner sermaye işletmeleri ile ilgili işleri yürütmek; Genel evrak ve arşiv faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usul ve esaslara göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

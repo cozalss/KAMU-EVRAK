@@ -1,0 +1,70 @@
+@KURUM: Tarım ve Orman Bakanlığı
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi, Orman Genel Müdürlüğü, m.338
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.4.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@NOT: Orman Genel Müdürlüğü, Tarım ve Orman Bakanlığına bağlı ayrı tüzel kişiliğe sahip bir kuruluştur ve 1 sayılı Cumhurbaşkanlığı Kararnamesinin Bakanlık hizmet birimlerini sayan m.412 hükmünde YER ALMAZ; teşkilatı 4 sayılı Kararnamenin m.338 hükmünde düzenlenmiştir. Kuruluş kanunu olan 3234 sayılı Kanunun teşkilat maddelerinin tamamı 2/7/2018 tarihli ve 703 sayılı KHK ile yürürlükten kaldırıldığından kaynak olarak kullanılamaz. Birim adları m.338/1 bentlerinden birebir, görev metinleri aynı bentlerin alt numaralarından özetlenmiştir. Evrak yönlendirme kolaylığı için Bakanlık dizininde tutulur; ayrı tüzel kişilik olduğu gözden kaçırılmamalıdır.
+
+BİRİM: Orman Zararlılarıyla Mücadele Dairesi Başkanlığı
+GÖREV: Ormanları usulsüz müdahalelerden korumak, ormanlarda tahribata yol açan hastalık ve her çeşit orman zararlılarıyla mücadele etmek veya ettirmek, ormanların sağlığının korunması ve orman zararlılarının yayılmasını önlemek için karantina tedbirleri almak, mücadele amacıyla laboratuvarlar kurmak veya kurdurmak; 6831 sayılı Orman Kanununun 23 ve 24 üncü maddelerine istinaden tefrik edilen muhafaza ormanlarının ayrılması ve idaresi ile ilgili iş ve işlemleri yapmak; ormanların muhafazası ile ilgili mevzuat çalışmalarını yürütmek.
+
+BİRİM: Orman Yangınlarıyla Mücadele Dairesi Başkanlığı
+GÖREV: Orman yangınlarının çıkmasına ve yayılmasına mani olmak için her türlü fiziki ve beşeri tedbiri almak; orman yangınları ile mücadele tekniklerini güçlendirmek, yangın gözetleme kulelerinin kurulmasını ve hizmete hazır halde tutulmasını sağlamak; yangına müdahale tekniklerini geliştirmek, müdahale sürelerini kısaltarak yangın zararlarını en aza indirmek; orman yangınlarına müdahalede görev alan personeli eğitmek, yangın uzmanı eğitim merkezi ile ilgili iş ve işlemleri yürütmek.
+
+BİRİM: Kadastro ve Mülkiyet Dairesi Başkanlığı
+GÖREV: Ormanların kadastrosunun yapılmasına, orman sınırları dışına çıkarılacak sahaların tespit ve değerlendirilmesine ait iş ve işlemleri yürütmek; Devlet ormanları ile ilgili çeşitli ihtilafları, sahipli yerlerdeki kesim işlerini, devletten başkasına ait ormanların denetim ve kontrolüne ait iş ve işlemlerin yapılmasını sağlamak; orman kadastrosu yapılmamış yerlerde ihtiyaç halinde vasıf tayin işlemlerini yapmak; orman rejimine alınacak yerlerin kamulaştırma işlemlerini yürütmek.
+
+BİRİM: Orman İdaresi ve Planlama Dairesi Başkanlığı
+GÖREV: Ormanların amenajman planlarını yapmak, yaptırmak, bu planların uygulanma durumlarını, yenilenmelerini ve geliştirilmelerini sağlamak, takip ve kontrol etmek; ormancılık hizmetlerinin gerektirdiği envanter verilerini değerlendirmek, harita ve fotogrametri iş ve işlemlerini düzenlemek.
+
+BİRİM: İşletme ve Pazarlama Dairesi Başkanlığı
+GÖREV: Asli ve tali orman ürünlerinin üretim, taşıma, depolama, imal ve pazarlamasına ait iş ve işlemleri düzenlemek, yürütmek ve kontrol etmek; bu hizmetler için inşası gerekli tesisleri belirlemek, depo yerlerinin tayin ve tespit edilmesine ait iş ve işlemleri yürütmek.
+
+BİRİM: Ağaçlandırma Dairesi Başkanlığı
+GÖREV: Orman sınırları içinde veya dışındaki arazilerde uygulama plan ve projeleri dahil ağaçlandırma faaliyetlerini yapmak veya yaptırmak; gerçek ve tüzel kişiler ile kamu kurum ve kuruluşlarınca yapılacak özel ağaçlandırma ve imar-ihya çalışmalarını teşvik etmek ve desteklemek.
+
+BİRİM: Toprak Muhafaza ve Havza Islahı Dairesi Başkanlığı
+GÖREV: Su havzalarında kaliteli ve azami miktarda su elde etmek, erozyonu önlemek, sel, çığ ve taşkınları kontrol altına almak, toprak, su ve bitki dengesini korumak amacıyla hazırlanan entegre havza ıslahı ana planının gerektirdiği iş ve işlemleri yapmak veya yaptırmak; entegre havza ıslahı projelerini uygulamaya koymak ve yatırımları izlemek; çölleşme ile mücadele çalışmalarını yürütmek; erozyona maruz sahalarda erozyon kontrolü çalışmaları yapmak, heyelanların ve çığların önlenmesini sağlamak; orman içi, orman kenarı ve orman üst sınırı meralarda ıslah çalışmaları yapmak; yeşil kuşak projeleri uygulamak; erozyon kontrolü çalışmalarını teşvik etmek ve desteklemek.
+
+BİRİM: Silvikültür Dairesi Başkanlığı
+GÖREV: Orman amenajman planlarının yapılmasına esas olacak silvikültür tekniğini belirlemek; orman imar, ıslah, bakım ve gençleştirilmesini sağlamak üzere silvikültür planları ile uygulama projelerini tanzim etmek, bu plan ve projeler gereğince kesilecek ağaçların tespit ve damgalanma işlerini yürütmek, uygulamalarını takip ve kontrol etmek.
+
+BİRİM: Orman ve Köy İlişkileri Dairesi Başkanlığı
+GÖREV: Orman içinde veya bitişiğindeki köylülerin sosyal ve ekonomik gelişmelerini desteklemek maksadıyla etüt ve araştırmalar yapmak, plan ve projeler hazırlamak ve uygulamak; orman köylülerinin kalkındırılmasının desteklenmesi amacıyla kredi veya hibe vermek; ormancılık alanında faaliyet gösteren kooperatiflerin proje bazında desteklenmesi ile ürünlerin ulusal ve uluslararası pazarlarda değerlendirilmesi konularında araştırma ve danışmanlık hizmetleri vermek; orman köylerinde odun ve odun dışı orman ürünlerinin üretilmesini desteklemek; nakledilecek orman köylülerinin terk ettikleri taşınmazları kamulaştırmak.
+
+BİRİM: İnşaat ve İkmal Dairesi Başkanlığı
+GÖREV: Üretim, ağaçlandırma yolları ve yangın şeritleri ile ilgili orman ve orman içi yolları ağının tespiti ve etüt proje çalışmalarını yapmak ve yaptırmak, üretim, ağaçlandırma ve yangın sahalarına ulaşılmasını sağlayan işleri yaptırmak; her türlü bina ve tesislerin inşaatı, bakım ve onarımı ile ilgili iş ve işlemleri yürütmek.
+
+BİRİM: Ekosistem Hizmetleri Dairesi Başkanlığı
+GÖREV: Orman ekosistem hizmetleri ve ürünleri ile biyolojik çeşitliliğinin tespiti, envanteri, planlaması, haritalandırılması, projelendirilmesi, üretimi, tanıtımı, pazarlanması, standardizasyonu, değer tespiti, belgelendirme ve sertifikasyonuna ait usul ve esasları düzenlemek; mesire yerleri, şehir ormanları, orman parkları, arboretum sahaları ve orman içi biyolojik çeşitlilik koruma alanlarının ayrılması, korunması, geliştirilmesi ve işletilmesini sağlamak; ekoturizmin desteklenmesi ve geliştirilmesine yönelik usul ve esasları düzenlemek; orman içi av ve yaban hayatı, otlatma ve arıcılığın geliştirilmesine yönelik iş ve işlemleri yapmak; orman içi su kaynaklarını korumak ve geliştirmek; iklim değişikliği sürecinde ormanların azaltım yeteneğinin artırılması için koordinasyonu sağlamak; orman ekosistem hizmetleri için ödeme sistemleri ve orman kaynakları ile ilişkili karbon piyasasına ait usul ve esasları düzenlemek.
+
+BİRİM: Fidanlık ve Tohum İşleri Dairesi Başkanlığı
+GÖREV: Orman ağaç, ağaççık ve florasına ait tohum ve fidanları üretmek, ürettirmek, ağaç ve tohum ıslahını yapmak; fidanlıkların ve fidanlık tesislerinin kurulması, idaresi, işletilmesi ve pazarlanması ile ilgili her türlü iş ve işlemleri yürütmek; tohum kaynaklarının korunmasını, iyileştirilmesini ve çoğaltılmasını sağlamak; orman bitki ve flora türlerine ilişkin genetik kaynakların kaydı, bitki pasaportu, sertifikasyonu, ticareti ve piyasa denetimiyle ilgili iş ve işlemleri yapmak, ihracat ve ithalat işlemlerini yürütmek; gerçek ve tüzel kişilerin tohumluk ve fidanlık tesis etmesi, işletmesi ve pazarlaması çalışmalarını teşvik etmek.
+
+BİRİM: İzin ve İrtifak Dairesi Başkanlığı
+GÖREV: Orman sayılan alanlarda verilecek izinlere ait iş ve işlemleri yürütmek; irtifak hakkı talepleri ile ilgili iş ve işlemleri yürütmek.
+
+BİRİM: Havacılık Dairesi Başkanlığı
+GÖREV: Orman yangınlarıyla mücadele başta olmak üzere Genel Müdürlüğün görev alanı kapsamında havacılık hizmetlerini yürütmek; havacılık hizmetlerinin yerine getirilmesinde personel planlamasını yapmak ve hava araçları ile diğer araç, gereç ve teçhizatın teminini, kiralanmasını ve emniyetli bir şekilde kullanılmasını sağlamak; hava araçlarının bakım, onarım, revizyon ve modifikasyon işlemlerinin yetkili bakım merkezlerinde yapılmasını sağlamak; hava araçlarının uçuş, sicil ve bakım kayıtlarına ilişkin iş ve işlemleri yapmak; uçuş ve yer emniyeti ile ilgili faaliyetleri yürütmek.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Genel Müdürün emri veya onayı üzerine Genel Müdür adına, Genel Müdürlük merkez ve taşra kuruluşlarının her türlü faaliyet ve işlemleri ile ilgili olarak tetkik, teftiş ve soruşturma yapmak; kontrol ve denetleme işlerini yapmak; Genel Müdürlüğün mevzuata, plan ve programa uygun çalışmasını temin etmek amacıyla gerekli teklifleri hazırlamak ve Genel Müdüre sunmak.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kanun ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Genel Müdürlüğün insan gücü planlaması ve personel politikasıyla ilgili çalışmaları yapmak, personel sisteminin geliştirilmesiyle ilgili tekliflerde bulunmak; Genel Müdürlük personelinin atama, özlük, emeklilik ve sağlık işleriyle ilgili işleri yapmak; Genel Müdürlüğe bağlı işyerlerinde işveren-işçi ilişkileri ve toplu iş sözleşmelerine ilişkin çalışmalarda gerekli koordinasyon ve işbirliğini sağlamak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Genel Müdürlük için gerekli araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek; ihtiyaç duyulan bina ve arazinin kiralanma ve satın alma işlemlerini yürütmek; Genel Müdürlüğün mali işlerle ilgili hizmetlerini yürütmek; temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma hizmetlerini yapmak; sosyal tesislerin kurulması ve yönetimi ile ilgili hizmetleri düzenlemek; genel evrak ve arşiv hizmet ve faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Dış İlişkiler, Eğitim ve Araştırma Dairesi Başkanlığı
+GÖREV: Genel Müdürlüğün dış ilişkilerini yürütmek; öncelikli orman araştırma alanları ile araştırma program ve projelerini belirlemek, yürütülmesini ve sonuçlandırılmasını sağlamak; araştırma ve geliştirme çalışmalarında ilgili kurum ve kuruluşlarla koordinasyon ve işbirliğini sağlamak; araştırma sonuçlarını değerlendirmek, seminer, konferans ve sempozyum faaliyetleri ile araştırma sonuç raporlarının yayımlanmasını sağlamak; Genel Müdürlük teşkilatının eğitim planını hazırlamak, hizmet öncesi, hizmet içi ve mesleki eğitim işlerini yürütmek; ormancılıkla ilgili her türlü yayın ve tanıtım faaliyetlerini yürütmek; Genel Müdürlüğün ihtiyacı olan evrak, harita, kitap ve broşürlerin basımı ile tercüme işlerini yürütmek.
+
+BİRİM: Bilgi Sistemleri Dairesi Başkanlığı
+GÖREV: Orman bilgi sistemini kurmak, işletmek, bakım ve onarımlarını yapmak veya yaptırmak; Genel Müdürlük merkez ve taşra teşkilatlarının internet üzerinden bilgi paylaşımı, bilgi toplama ve yayımlama iş ve işlemleri için gerekli çalışmaları yapmak; Genel Müdürlük veri ve bilgilerinin güvenliğini sağlamak, veri güvenliği politikaları oluşturmak; ormancılıkta veri standartlarını geliştirmek; uydu görüntüleri, hava ve yer fotoğrafları, harita ve koordinat bilgilerine ilişkin işlemleri yapmak; coğrafi bilgi sistemleri ve uzaktan algılama ile ilgili faaliyetleri yürütmek; ormancılıkla ilgili haritaların hazırlanmasına ilişkin iş ve işlemleri yapmak.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.

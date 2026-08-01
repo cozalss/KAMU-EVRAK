@@ -1,33 +1,68 @@
 @KURUM: Çevre, Şehircilik ve İklim Değişikliği Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/cevre-sehircilik-ve-iklim-degisikligi-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.99 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: cevre-bakanligi, csb, cevre-ve-sehircilik-bakanligi
-@NOT: Tapu ve Kadastro Genel Müdürlüğü bakanlığa bağlı ayrı bir kuruluş, İklim Değişikliği Başkanlığı ise bakanlığa bağlı ayrı bir başkanlıktır; her ikisi de evrak yönlendirme kolaylığı için bu listede yer almaktadır. Milli Emlak Genel Müdürlüğü bakanlığın hizmet birimidir. Taşra teşkilatı il müdürlükleri ve kadastro müdürlükleri üzerinden yürütülür.
-
-BİRİM: Mekânsal Planlama Genel Müdürlüğü
-GÖREV: İmar planları, çevre düzeni planları ve mekânsal strateji planlarının onayı, plan itirazlarının değerlendirilmesi ve imar mevzuatına ilişkin başvuruları yürütür.
+@NOT: Birim adları m.99/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Yerel Yönetimler Genel Müdürlüğü
-GÖREV: Belediyeler ve il özel idarelerinin kuruluş, sınır, bütçe ve personel işlemlerini izler; köylere hizmet götürme birlikleri ve mahalli idare birlikleri ile ilgili başvuruları değerlendirir.
-
-BİRİM: Çevre Yönetimi Genel Müdürlüğü
-GÖREV: Hava, su ve toprak kirliliği şikâyetleri, atık yönetimi, gürültü kirliliği ve çevre izinlerine ilişkin başvuruları değerlendirir.
-
-BİRİM: ÇED, İzin ve Denetim Genel Müdürlüğü
-GÖREV: Çevresel Etki Değerlendirmesi (ÇED) süreçlerini, çevre izin ve lisans başvurularını ve tesislerin çevre denetimini yürütür.
-
-BİRİM: Yapı İşleri Genel Müdürlüğü
-GÖREV: Kamu yapılarının etüt-proje ve inşaat işleri, yapı denetim mevzuatı uygulamaları ve bina deprem güvenliğine ilişkin başvuruları yürütür.
-
-BİRİM: İklim Değişikliği Başkanlığı
-GÖREV: Sera gazı emisyon envanteri ve izleme, ulusal iklim değişikliği stratejisi ve karbon piyasası düzenlemelerine ilişkin başvuruları yürütür.
-
-BİRİM: Tapu ve Kadastro Genel Müdürlüğü
-GÖREV: Tapu sicili işlemleri, taşınmaz mülkiyet devri, ipotek tesisi, kadastro tespit ve itiraz başvurularını yürütür.
+GÖREV: Mahalli idarelerin iş ve işlemlerine dair mevzuatla verilen görev ve hizmetleri yapmak, takip etmek, sonuçlandırmak ve geliştirmek; Mahalli idare yatırım ve hizmetlerinin kalkınma planları ile yıllık programlara uygun şekilde yapılmasını gözetmek; Mahalli idarelerin geliştirilmesi amacıyla araştırmalar yapmak, istatistiki bilgileri toplamak, değerlendirmek ve yayımlamak; Mahalli idareler personelinin hizmet içi eğitimini planlamak ve uygulanmasını takip etmek; Mahalli idarelerin teşkilat, araç ve kadro standartlarını tespit etmek.
 
 BİRİM: Milli Emlak Genel Müdürlüğü
-GÖREV: Hazineye ait taşınmazların kiralama, satış ve tahsis işlemleri; kamu arazileri üzerindeki işgal ve ecrimisil başvurularını değerlendirir.
+GÖREV: Hazinenin özel mülkiyetindeki taşınmazlar ve Devletin hüküm ve tasarrufu altındaki yerlerin yönetimine ilişkin hizmetleri, gerektiğinde diğer kamu idareleri ile işbirliği yaparak yürütmek; Hazinenin özel mülkiyetindeki taşınmazların satışı, kiralanması, trampası ve üzerinde sınırlı aynî hak tesisi, Devletin hüküm ve tasarrufu altındaki yerlerin kiralanması ve bu yerler için gerekli görülen hallerde kullanma izni verilmesi işlemlerini yapmak.
 
-BİRİM: Altyapı ve Kentsel Dönüşüm Hizmetleri Genel Müdürlüğü
-GÖREV: 6306 sayılı Kanun kapsamında riskli yapı tespiti, kentsel dönüşüm süreçleri ve altyapı yatırımlarına ilişkin başvuruları yürütür.
+BİRİM: Mekânsal Planlama Genel Müdürlüğü
+GÖREV: Yerleşme, yapılaşma ve arazi kullanımına yön veren, her tür ve ölçekte fiziki planlara ve uygulamalara esas teşkil eden üst ölçekli mekânsal strateji planlarını ve çevre düzeni planlarını ilgili kurum ve kuruluşlarla işbirliği yaparak hazırlamak, hazırlatmak, onaylamak ve uygulamanın bu stratejilere göre yürütülmesini sağlamak; Kentlerde ve kırsal alanlarda arazi kullanımına ilişkin temel ilke, strateji ve standartların belirlenmesine ilişkin çalışmaları yapmak ve uygulanmasını sağlamak.
+
+BİRİM: Çevre Yönetimi Genel Müdürlüğü
+GÖREV: Çevre kirliliğinin önlenmesi ve kontrolü ile ilgili mevzuatı hazırlamak, standart geliştirmek, ölçüm, tespit ve kalite ölçütlerini belirlemek; alıcı ortam özelliklerine göre çevre kirliliği yönünden görüş vermek; Hava kalitesinin korunması, hava kirliliği, gürültü ve titreşimin azaltılması veya bertaraf edilmesi için hedef ve ilkelerin belirlenmesine ilişkin çalışmaları yapmak; temiz hava eylem planları yapmak ve yaptırmak; konuyla ilgili kurum ve kuruluşlarla koordineli çalışmalar yapmak, ölçüt ve standartları belirlemek.
+
+BİRİM: Çevresel Etki Değerlendirmesi, İzin ve Denetim Genel Müdürlüğü
+GÖREV: Çevresel etki değerlendirmesi ve stratejik çevresel değerlendirme çalışmalarını yapmak ve bu konuda gerekli kararları almak, izlemek ve denetlemek; Çevre kirliliğini önleme ve çevre kalitesini iyileştirmeye yönelik her türlü faaliyet ve tesisi izlemek, gerekli tedbirleri almak ve aldırmak, denetlemek, çevre izni ve lisansı vermek; Çevre kirliliğine neden olan faaliyet ve tesislerin emisyon, deşarj ve atıklar ile arıtma ve bertaraf sistemlerini izlemek ve denetlemek.
+
+BİRİM: Yapı İşleri Genel Müdürlüğü
+GÖREV: Kamu kurum ve kuruluşlarına ait her türlü yapılar ile ilgili genel ilkeleri, stratejileri ve standartları belirlemek ve uygulanmasını sağlamak; Kamu yatırımlarının projeleri ve yapımla ilgili iş ve işlemlere ilişkin usul ve esaslar ile etüt ve projelerin niteliklerini belirlemek ve uygulanmasını sağlamak; 97 nci maddenin birinci fıkrasının (e) bendi ile Bakanlığa verilen görevleri yürütmek; 5543 sayılı İskan Kanunu ile Bakanlığa verilen görevleri yapmak.
+
+BİRİM: Mesleki Hizmetler Genel Müdürlüğü
+GÖREV: Yerleşme ve yapılaşmaya yönelik mimarlık, mühendislik, müteahhitlik ve müşavirlik hizmetlerine ilişkin düzenlemeleri yapmak, uygulamaları denetlemek ve izlemek; Gerçek kişilere ve özel hukuk tüzel kişilerine ait her türlü yapılar ile ilgili genel ilke, strateji ve standartların belirlemesine ilişkin çalışmaları yapmak ve uygulanmasını sağlamak.
+
+BİRİM: Coğrafi Bilgi Sistemleri Genel Müdürlüğü
+GÖREV: Ulusal Coğrafi Bilgi Sisteminin kurulmasına, kullanılmasına ve geliştirilmesine dair iş ve işlemleri yapmak ve yaptırmak; Çağdaş coğrafi bilgi teknolojilerinin ülkede etkin ve verimli bir şekilde kullanılmasını teşvik etmek ve eşgüdümü sağlamak; Coğrafi veri ve bilginin ulusal düzeyde üretimine, kalitesine ve paylaşımına yönelik standartlar ile bunlara ilişkin temel politika ve stratejilerin belirlenmesini sağlamak amacıyla çalışmalar yapmak ve gerekli mevzuatı hazırlamak.
+
+BİRİM: Çölleşme ve Erozyonla Mücadele Genel Müdürlüğü
+GÖREV: Toprağın korunması, tabii kaynakların geliştirilmesi ve iklim değişikliği ile mücadele amacıyla; havza bütünlüğü esas alınarak çölleşme ve erozyonla mücadele, çığ, heyelan ve sel kontrolü ile entegre havza ıslahı plan ve projelerini yapmak, yaptırmak, bu plan ve projelerin gerektirdiği etüt ve proje işlerini yürütmek, projeleri uygulamak, uygulanmasını izlemek, kurumlara proje desteği sağlamak, bu iş ve işlemlerle ilgili politika ve stratejilerin belirlenmesi amacıyla ilgili kurum ve kuruluşlar arasında işbirliği ve koordinasyon sağlamak.
+
+BİRİM: Tabiat Varlıklarını Koruma Genel Müdürlüğü
+GÖREV: Milli parklar, tabiat parkları, tabiat anıtları, tabiatı koruma alanları, sulak alanlar ve benzeri koruma statüsü bulunan diğer alanların tescil, onay ve ilanına dair usul ve esasları belirlemek ve bu alanların sınırlarını tescil etmek; Tabiat varlıkları ve doğal sit alanları ile özel çevre koruma bölgelerinin tespit, tescil, onay, değişiklik ve ilanına dair usul ve esasları belirlemek ve bu alanların sınırlarını tespit ve tescil etmek, yönetmek ve yönetilmesini sağlamak.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Avrupa Birliği ile ilişkilerde ve Avrupa Birliğine yönelik mevzuat ve uyum çalışmaları ile ekonomik ve teknik işbirliğine yönelik çalışmalarda Bakanlık hizmetlerinin süratli, düzenli, etkili ve verimli bir şekilde yürütülmesi için gerekli irtibat ve eşgüdümü sağlamak; Avrupa Birliği ile mali ilişkiler çerçevesindeki operasyonel programları yürütmek ve fonların uygulanmasını koordine etmek; İlgili mevzuat, Avrupa Birliği müktesebatı ve uluslararası anlaşmalar çerçevesinde operasyonel programları hazırlamak ve uygulamak.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel planlaması ve politikası ile ilgili çalışmaları yapmak, personel sisteminin geliştirilmesi için tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek; Bakanlığın eğitim planını hazırlamak, uygulamak ve değerlendirmek.
+
+BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlık teşkilatının her türlü faaliyet ve işlemleriyle ilgili olarak teftiş, inceleme ve soruşturmalar yapmak; Bakanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programlara uygun çalışmasını temin etmek amacıyla gerekli teklifleri hazırlamak ve Bakana sunmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Yüksek Fen Kurulu Başkanlığı
+GÖREV: 5/1/2002 tarihli ve 4735 sayılı Kamu İhale Sözleşmeleri Kanununun ek 1 inci maddesi ile verilen görev ve yetkileri yerine getirmek; Çevre ve imar mevzuatının yürütülmesinden doğan anlaşmazlıkları ilgili idarelerin talebine istinaden inceleyip karara bağlamak; Teknik veya fiziki yönden birbirini etkileyen plan ve yapım işleri ile ilgili olarak, kamu kurum ve kuruluşları arasında doğan anlaşmazlıkları, taraf olan idarelerin birlikte talep etmeleri halinde inceleyip karara bağlamak.
+
+BİRİM: Eğitim ve Yayın Dairesi Başkanlığı
+GÖREV: Bakanlığın görev alanına giren konularda yazılı, işitsel ve görsel dokümanların basım ve yayımını desteklemek; Bakanlığın görev alanına giren konularda kamu kurum ve kuruluşları ve özel kuruluşlarla işbirliği yapmak, plan ve programların hazırlanmasında, uygulanmasında ve halkın eğitilmesinde Milli Eğitim Bakanlığı ile bilimsel ve gönüllü kuruluşlarla işbirliği yapmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, aydınlatma, ısıtma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Genel evrak ve arşiv faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usul ve ilkelere göre yürütülmesini sağlamak; 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel yazışmalarını yürütmek; Bakanın her türlü protokol ve tören işlerini düzenlemek ve yürütmek; Bakanın ziyaret, davet, karşılama ve uğurlama, ağırlama, milli ve dini bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve diğer kuruluşlarla koordine etmek.

@@ -1,0 +1,23 @@
+@KURUM: Kayseri Büyükşehir Belediyesi
+@BELGE: [DOĞRULA: bu birimler kurumun resmî yönetim sayfasında listelenmemektedir]
+@KAYNAK_KIMLIK: teskilat/kayseri-buyuksehir-belediyesi/dogrulanmamis
+@ERISIM: 2026-07-26
+@NOT: DOĞRULANMAMIŞ KAYIT. 2026-07-26 doğrulamasında kayseri.bel.tr/yonetim sayfasında bulunamamıştır. Var olmadığı anlamına gelmez; aday kayıt olarak tutulur, otomatik havale hedefi üretemez.
+
+BİRİM: Çevre Koruma ve Kontrol
+GÖREV: Mezarlık ve cenaze hizmetleri (defin ruhsatı, mezar yeri tahsisi) ile çevre koruma ve denetim işlemleri.
+
+BİRİM: Makine İkmal Bakım ve Onarım
+GÖREV: Makine işletme, akaryakıt dağıtımı ve tehlikeli madde, sevk ve koordinasyon.
+
+BİRİM: Sivil Savunma
+GÖREV: Sivil savunma planlarının hazırlanması ve takibi; şemada Başkanlık makamına bağlı uzmanlıktır.
+
+BİRİM: Sivil Toplum Kuruluşları
+GÖREV: Dernek ve vakıflarla ilişkiler, ortak proje ve protokol işlemleri.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Teftiş, soruşturma ve inceleme işlemleri.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: 5018 sayılı Kanun kapsamında iç denetim ve risk değerlendirme çalışmaları.

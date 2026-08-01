@@ -446,10 +446,9 @@
   min-height: 420px;
 }
 
-.sc-main-draft-shell .sc-document-paper pre {
-  font-size: 16px !important;
-  line-height: 24px !important;
-}
+/* Not: taslak kâğıdı artık A4Belge bileşeninde (Yönetmelik m.6/7/8 ölçüleriyle) render
+   edilir; içinde <pre> yoktur ve tipografisi mevzuata bağlıdır. Eski <pre> geçersiz
+   kılmaları kaldırıldı — kalsalardı belge puntosunu sessizce ezerlerdi. */
 
 .sc-main-draft-shell .sc-decision-footer > div {
   max-width: 860px !important;
@@ -1112,10 +1111,6 @@
   .sc-main-draft-shell .sc-document-paper {
     min-height: 360px;
     max-width: 100% !important;
-  }
-  .sc-main-draft-shell .sc-document-paper pre {
-    font-size: 16px !important;
-    line-height: 24px !important;
   }
   .sc-decision-footer { padding: 12px; }
   .sc-action-row { align-items: stretch; flex-direction: column; }

@@ -230,9 +230,37 @@ def test_inv4_sicil_birim_veya_gorev_icermez(sicil: dict) -> None:
 
 
 def test_inv1_sicil_kaydi_otomatik_havale_yetkisi_vermez(sicil: dict) -> None:
-    """Sicilde SGK var ama korpusta doğrulanmış kaynağı yok → otomatik havale KAPALI."""
-    assert sicil_cozumle("sosyal-guvenlik-kurumu", sicil=sicil) is not None
-    assert kurum_korpusta_var("sosyal-guvenlik-kurumu") is False
+    """Sicilde olmak tek başına otomatik havale yetkisi VERMEZ.
+
+    Test bilerek tek bir kuruma bağlanmaz: örnek olarak seçilen kurumun teşkilatı sonradan
+    doğrulanınca (ölçüldü: SGK 2026-07-26'da kendi resmî sayfasından doğrulandı) test
+    değişmezi değil, seçimi yüzünden kırılıyordu. Bunun yerine sicilde bulunup korpusta
+    doğrulanmış kaynağı OLMAYAN kurumlar çalışma anında bulunur ve hepsinde yetki
+    kapalı olmalıdır.
+    """
+    import json
+    from pathlib import Path
+
+    manifest_yolu = (
+        Path(__file__).resolve().parents[2] / "data" / "teskilat" / "kaynak_manifest.json"
+    )
+    manifest = json.loads(manifest_yolu.read_text(encoding="utf-8"))["kaynaklar"]
+    dogrulanmis_kurumlar = {yol.split("/")[0] for yol in manifest}
+
+    # Not: bazı slug'lar (ör. golbasi-belediyesi) birden çok ilde bulunduğu için BİLEREK
+    # çözülmez; bu INV-1'in konusu değildir, o yüzden çözümleme burada iddia edilmez.
+    denetlenen = 0
+    for kayit in sicil["kurumlar"]:
+        slug = kayit["slug"]
+        if kurum_korpusta_var(slug):
+            # Doğrulanmışlık YALNIZ manifestten gelebilir; sicil kaydı asla üretemez.
+            assert slug in dogrulanmis_kurumlar or any(
+                slug.endswith(k) or k.endswith(slug) for k in dogrulanmis_kurumlar
+            ), f"{slug}: korpusta doğrulanmış görünüyor ama manifestte kaydı yok"
+        else:
+            denetlenen += 1
+
+    assert denetlenen, "sicildeki her kurum doğrulanmış — değişmez artık ölçülemiyor"
 
 
 def test_turetilmis_kayit_guveni_turetilmis(sicil: dict) -> None:

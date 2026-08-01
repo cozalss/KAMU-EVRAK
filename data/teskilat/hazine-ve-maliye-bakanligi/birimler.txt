@@ -1,27 +1,62 @@
 @KURUM: Hazine ve Maliye Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/hazine-ve-maliye-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.219 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: hmb, hazine-bakanligi, maliye-bakanligi
-@NOT: Sigorta ve özel emeklilik piyasası düzenlemesi, Sigortacılık ve Özel Emeklilik Düzenleme ve Denetleme Kurumu (SEDDK) tarafından yürütülen ayrı bir kurumsal süreçtir; bu dosya kapsamı dışındadır. Gelir İdaresi Başkanlığı bakanlığa bağlı ayrı bir kuruluştur; vergi evrakının yönlendirilmesi kolaylığı için bu listede yer almaktadır. Merkezi yönetim bütçesinin hazırlanması 2018'den bu yana Cumhurbaşkanlığı Strateji ve Bütçe Başkanlığınca yürütülür; bütçe hazırlığına ilişkin evrak o kuruma yönlendirilir.
+@NOT: Birim adları m.219/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
-BİRİM: Gelir İdaresi Başkanlığı
-GÖREV: Vergi tarh, tahakkuk ve tahsilat işlemleri, vergi beyannameleri, mükellef kayıt işlemleri ve vergi iadesi başvurularını yürütür.
+BİRİM: Başhukuk Müşavirliği ve Muhakemat Genel Müdürlüğü
+GÖREV: Bakanlığın ve talep halinde genel bütçe kapsamındaki kamu idareleri ve özel bütçeli idarelerin hukuk danışmanlığını ve muhakemat hizmetlerini yapmak; Mevzuat taslakları hakkında görüş vermek; Uyuşmazlıkların sulh yoluyla çözümlenmesine ilişkin işlerde mütalaa vermek; Hazinenin mülkiyetindeki taşınmazlar ile Devletin hüküm ve tasarrufu altındaki taşınmazların ayn’ıyla ilgili her türlü davaları takip etmek ve icra işlemlerini yapmak.
+
+BİRİM: Kamu Mali Yönetim ve Dönüşüm Genel Müdürlüğü
+GÖREV: Cumhurbaşkanı tarafından belirlenen temel hedef, ilke ve amaçlar çerçevesinde orta vadeli program hazırlıklarına katılmak ve orta vadeli mali plan ile sektörel plan ve programları, ilgili kamu idareleri ile Cumhurbaşkanlığı bünyesinde bulunan politika kurullarının görüşlerini de almak suretiyle Strateji ve Bütçe Başkanlığı ile müştereken hazırlamak ve makro dengelerini oluşturmak.
 
 BİRİM: Muhasebat Genel Müdürlüğü
-GÖREV: Kamu muhasebe sistemi, kamu harcama ve ödeme işlemleri ile kamu personeli maaş ve emeklilik ödemelerine ilişkin başvuruları yürütür.
+GÖREV: Devlet hesaplarının kayıtlarını tutmak, uygulamaları izlemek, dönem sonuçlarını çıkarmak, değerlendirmek ve yayımlamak; Genel yönetim kapsamındaki kamu idarelerinin ve bunlara bağlı döner sermayeli işletmelerin, Devlet sermayesi ile kurulmuş işletmelerin ve fonların muhasebe sistemlerini, gerektiğinde ilgili idarelerle birlikte belirlemek, bu konudaki mevzuat düzenlemeleri ile ilgili hazırlıkları yapmak; Genel bütçe kapsamındaki idareler ve ilgili mevzuatında öngörülen döner sermayeli işletmeler ile fonlarda.
 
 BİRİM: Kamu Finansmanı Genel Müdürlüğü
-GÖREV: Hazine iç ve dış borçlanma işlemleri ile hazine garantisi taleplerine ilişkin başvuruları yürütür.
-
-BİRİM: Vergi Denetim Kurulu Başkanlığı
-GÖREV: Vergi incelemesi, vergi denetimi ve vergi kaçakçılığı soruşturmalarına ilişkin başvuruları yürütür.
-
-BİRİM: Mali Suçları Araştırma Kurulu Başkanlığı (MASAK)
-GÖREV: Kara para aklama ve terörün finansmanıyla mücadele kapsamında şüpheli işlem bildirimlerini inceler.
+GÖREV: Hazine işlemlerini yürütmek, Devlet giderlerinin gerektirdiği nakdi sağlamak; Merkezi yönetim bütçesi ile ilgili yurtdışı ödemelerini yapmak, iç ödemeler ve dış ödemeler saymanlıkları kurmak ve yönetmek; Devlete ait para, kıymetli maden ve değerleri muhafaza etmek, yönetmek ve nemalandırmak; Kamu borç portföyü, Hazine garantileri ve Hazine alacakları ile ilgili her türlü analiz ve risk değerlendirmesini yapmak.
 
 BİRİM: Kamu Sermayeli Kuruluş ve İşletmeler Genel Müdürlüğü
-GÖREV: Hazine payı bulunan kamu iktisadi teşebbüsleri ve şirketlerin izlenmesine ilişkin başvuruları yürütür.
+GÖREV: Kamu iktisadi teşebbüsleri ve Hazinenin iştirak ettiği şirketler ile ilgili olarak hazine pay sahipliğinin gerektirdiği her türlü işlemi yapmak; Hazine ile kamu iktisadi teşebbüsleri ilişkisini kurmak, bu kuruluşların yıllık genel yatırım ve finansman programlarını hazırlamak ve Cumhurbaşkanının onayına sunmak, uygulamasını izlemek ve yıl içinde ortaya çıkacak gelişmelere göre programda gerekli değişiklikleri yapmak.
 
 BİRİM: Dış Ekonomik İlişkiler Genel Müdürlüğü
-GÖREV: Uluslararası mali ilişkiler, uluslararası finans kuruluşlarıyla ilişkiler ve AB mali iş birliği süreçlerine ilişkin başvuruları yürütür. [DOĞRULA: birim adı 1 sayılı CBK HMB hizmet birimleri listesinden teyit edilmeli]
+GÖREV: Bakanlığın yurtdışı ve milletlerarası veya ikili münasebetlerini yürütmek; Bakanlığın görev ve faaliyet alanına giren konularda, Avrupa Birliği ile ilgili hususlarda koordinasyonu sağlamak, bu alanda Cumhurbaşkanının genel politikasını uygulamaya yönelik tedbirleri almak, uyum ve uygulama çalışmaları ile ilgili işleri yürütmek.
+
+BİRİM: Finansal Piyasalar ve Kambiyo Genel Müdürlüğü
+GÖREV: Finansal istikrarın sürdürülmesi amacıyla sistemik risklerin izlenmesi ve yönetilmesine ilişkin kurumsal çerçeveyi güçlendirmek, bu risklere karşı tedbir ve politikaların geliştirilmesine katkı sağlamak, faizsiz finans sektörünün geliştirilmesi için ilgili kurum ve kuruluşlarla eşgüdüm içerisinde çalışmalar yapmak, finansal piyasalardaki yenilikler başta olmak üzere küresel ve yerel gelişmeleri takip etmek, değerlendirmek ve finansal sektörü geliştirici çalışmalar yapmak.
+
+BİRİM: Ekonomik Programlar ve Araştırmalar Genel Müdürlüğü
+GÖREV: Cumhurbaşkanı tarafından belirlenen temel hedef, ilke ve amaçlar çerçevesinde kalkınma planı, Cumhurbaşkanlığı Programı, orta vadeli program ve Cumhurbaşkanlığı yıllık programını ilgili kamu idareleri ile Cumhurbaşkanlığı bünyesinde bulunan politika kurullarının görüşlerini de almak suretiyle Strateji ve Bütçe Başkanlığı ile müştereken hazırlamak ve makro dengelerini oluşturmak.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel planlaması ve politikasıyla ilgili çalışmaları yapmak; personel sisteminin geliştirilmesiyle ilgili tekliflerde bulunmak, performans ve yetkinlik değerlendirme çalışmaları yapmak; bu çalışmaları Bakanlık teşkilatıyla bağlı, ilgili veya ilişkili kuruluşları koordine ederek uygulamak; Bakanlık personelinin atama, nakil, özlük, emeklilik işleriyle ilgili işleri yapmak; Bakanlık kadrolarının ilgili birimlerinin görüşünü aldıktan sonra dağıtım, tahsis ve tenkisini sağlamak.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlığın hedef ve politikaları ile iş modelleri ve yürütülen iş süreçlerine uygun olarak bilişim hedeflerini belirlemek, iş planlarını, mali planları ve kaynak planlarını hazırlamak, bu hususlarda gerekli bilişim standartlarını tespit etmek, Genel Müdürlüğün iş süreçlerini tasarlamak ve yayınlamak.
+
+BİRİM: Teftiş Başkanlığı
+GÖREV: Bakanlık merkez, taşra ve yurtdışı teşkilatları ile bağlı, ilgili ve ilişkili kuruluşlarının her türlü faaliyet ve işlemleriyle ilgili olarak inceleme, denetim ve soruşturma işlerini yürütmek ve bu işlerle ilgili gerekli önlemleri almak veya aldırmak; İlgili mevzuatın Bakanlığa tanıdığı inceleme, denetim ve soruşturma yetkisini Bakanlığın diğer hizmet birimlerinin görev alanına girmediği durumlarda kullanmak.
+
+BİRİM: Vergi Denetim Kurulu Başkanlığı
+GÖREV: Denetim Daire Başkanlığı; Vergi Kaçakçılığı Denetim Daire Başkanlığı; Vergi İadeleri Denetim Daire Başkanlığı; Sektörel Denetim Daire Başkanlığı. fazla sayıda kurulabilir.; 4/1/1961 tarihli ve 213 sayılı Vergi Usul Kanunu ve diğer gelir kanunları kapsamında vergi incelemeleri yapmak; Her türlü bilgi, veri ve istatistiği toplamak suretiyle oluşturulacak Risk Analiz Sistemi üzerinden mükelleflerin faaliyetlerini gruplar ve sektörler itibarıyla analiz etmek, mukayeseler yapmak ve bu suretle risk alanlarını tespit etmek.
+
+BİRİM: Hazine Kontrolörleri Kurulu Başkanlığı
+GÖREV: Avrupa Birliği tarafından Türkiye Cumhuriyetine mali işbirliği çerçevesinde sağlanan fonların kullanımı amacı ile oluşturulan tüm yönetim ve kontrol mekanizmalarının işlerliği ve etkinliğinin denetimi ile bu kapsamdaki her türlü harcama, gelir, mali yükümlülük, muafiyet ve mali tabloların denetimini, Avrupa Birliği ile imzalanan anlaşmalara, uluslararası denetim standartlarına ve Kurul Başkanlığınca hazırlanan denetim rehberlerine uygun olarak Denetim Otoritesi sıfatıyla yerine getirmek.
+
+BİRİM: Malî Suçları Araştırma Kurulu Başkanlığı
+GÖREV: Suç gelirlerinin aklanması ve terörizmin finansmanının önlenmesi amacıyla plan, program, politika, strateji hazırlama ve geliştirme süreçlerine katkıda bulunmak, kurum ve kuruluşlar arasında ulusal düzeyde risk değerlendirme çalışmaları da dâhil olmak üzere koordinasyonu sağlamak; Faaliyet alanıyla ilgili mevzuat çalışmaları yapmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Bakanlık için gerekli araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek; İhtiyaç duyulan bina ve arazinin kiralanma, satın alma işlemlerini yürütmek; Temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma hizmetlerini yapmak; Bakanlığın iç ve dış protokol hizmetlerini yürütmek; Bakanlığı ilgilendiren toplantı, brifing ve görüşmeleri düzenlemek, bunlara ait önemli not ve tutanakları tutmak ve yaymak; Genel evrak, arşiv ve haber merkezinin hizmet ve faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.219/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın resmi ve özel yazışmalarını yürütmek; Bakanın her türlü protokol ve tören işlerini düzenlemek ve yürütmek; Bakanın ziyaret, davet, karşılama, uğurlama, ağırlama, milli ve dini bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve diğer kuruluşlarla koordine etmek.

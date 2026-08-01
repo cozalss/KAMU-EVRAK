@@ -1,0 +1,86 @@
+@KURUM: Trabzon Büyükşehir Belediyesi
+@BELGE: Trabzon Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.trabzon.bel.tr/Web/OrganizasyonSema
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: trabzon-buyuksehir-belediyesi, trabzon-bb, trabzon-buyuksehir, trabzon-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kaynak sayfa adları tümü büyük harfle yayımlamaktadır; burada normal Türkçe başlık yazımına çevrilmiştir. Kuruma özgü yazımlar korunmuştur: "Emlak İstimlak" arada "ve" olmadan, "Makine İkmal Bakım ve Onarım" ile "Yol Yapım Bakım ve Onarım" virgülsüz, "İnsan Kaynakları ve Eğitim Dairesi" ise şemada "Başkanlığı" ibaresi olmadan geçmektedir.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Organizasyon şeması sayfası birim listesini JavaScript ile yüklüyor; HTML kaynağında liste yok.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, protokol ve temsil işleri; makama gelen dilekçe ve davetlerin havalesi.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Birimlerin teftişi, inceleme ve soruşturma işlemleri, disiplin dosyalarının hazırlanması ve denetim raporlarının düzenlenmesi.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Belediye lehine ve aleyhine dava takibi, icra işlemleri, sözleşme ve ihale dosyalarına hukuki görüş, mahkeme yazışmaları.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: CİMER başvurularının cevaplanması, 4982 sayılı Kanun kapsamında bilgi edinme talepleri, vatandaş şikâyet takibi, basın duyuruları.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi
+GÖREV: Personel atama, nakil ve izin işlemleri, özlük ve hizmet belgesi talepleri, derece-kademe işlemleri, disiplin, hizmet içi eğitim.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe, muhasebe ve ödeme emri işlemleri; ilan-reklam vergisi ve harç tahakkuk ve tahsilatı, borç sorgulama ve yapılandırma.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Stratejik plan, performans programı, faaliyet raporu, yatırım izleme ve ön mali kontrol.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Gelen ve giden evrak kaydı ile havalesi, meclis ve encümen gündem ve kararlarının yazımı, kurum arşivi ve imha işlemleri.
+
+BİRİM: Emlak İstimlak Dairesi Başkanlığı
+GÖREV: Kamulaştırma işlemleri, belediye taşınmazlarının kiralanması, tahsisi ve satışı, ecrimisil işlemleri.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yapım işleri ihale ve kontrollüğü, kazı ve altyapı ruhsatı, hakediş ve kesin kabul işlemleri.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: İmar durumu belgesi, imar planı tadilatı, yapı ruhsatı ve yapı kullanma izni (iskân), plan askı ve itiraz işlemleri.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Yangın söndürme ve kurtarma, yangın güvenlik raporu düzenlenmesi, baca ve tesisat denetimi, itfaiye uygunluk belgesi.
+
+BİRİM: Makine İkmal Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Araç ve iş makinelerinin bakım-onarımı, akaryakıt ve yedek parça ikmali, makine parkı yönetimi.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararları, toplu taşıma hat ve güzergâh düzenlemesi, ulaşım kartı işlemleri, ticari plaka, terminal ve otopark hizmetleri.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: EBYS ve e-belediye sistem yönetimi, coğrafi bilgi sistemleri, kurumsal yazılım ve donanım talepleri, sistem erişim ve veri paylaşımı.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Katı atık ve hafriyat yönetimi, gürültü ve emisyon şikâyetleri, işyeri çevre denetimi ve çevre izni görüşleri.
+
+BİRİM: Gençlik ve Spor Hizmetleri Dairesi Başkanlığı
+GÖREV: Spor tesisi tahsisi, kurs kayıtları, amatör kulüp destek talepleri, gençlik merkezi hizmetleri.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Park ve yeşil alan yapım-bakımı, ağaç kesim ve budama izni, çocuk oyun alanları.
+
+BİRİM: Tarımsal Hizmetler Dairesi Başkanlığı
+GÖREV: Üretici destek programları, tarımsal eğitim, fide ve fidan dağıtımı, kırsal kalkınma projeleri.
+
+BİRİM: Yol Yapım Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Asfalt ve kaldırım yapım ve onarımı, yol çalışma programı, sanat yapıları bakımı.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: İhale ve satın alma işlemleri, taşınır mal kayıt, hizmet binası bakım, temizlik ve güvenlik hizmetleri.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kültür merkezi ve salon tahsis talepleri, etkinlik izinleri, kurs kayıtları, yayın işleri.
+
+BİRİM: Mezarlıklar Dairesi Başkanlığı
+GÖREV: Mezar yeri tahsisi, defin ruhsatı, cenaze nakli ve taziye hizmetleri, mezarlık kayıt sorguları.
+
+BİRİM: Muhtarlık İşleri Dairesi Başkanlığı
+GÖREV: Muhtar talep ve şikâyetlerinin kaydı, ilgili birime yönlendirilmesi ve sonucun muhtara bildirilmesi.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Muhtaç aile sosyal yardım başvuruları, muhtaçlık incelemesi, engelli ve yaşlı destek hizmetleri, gıda ve yakacak yardımı kararları.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri denetimi, ruhsatsız faaliyet ve işgaliye tutanakları, pazar yeri ve seyyar satıcı denetimi, idari yaptırım kararları.

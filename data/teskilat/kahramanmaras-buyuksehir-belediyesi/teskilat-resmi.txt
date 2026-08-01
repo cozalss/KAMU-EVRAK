@@ -1,0 +1,66 @@
+@KURUM: Kahramanmaraş Büyükşehir Belediyesi
+@BELGE: Kahramanmaraş Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://kahramanmaras.bel.tr/fs/fields/attachments/2025_faaliyet_raporu_0.pdf
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: kahramanmaras-buyuksehir-belediyesi, kahramanmaras-bb, kahramanmaras-buyuksehir, kahramanmaras-belediyesi, maras-buyuksehir-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî yayınından ham metin üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Kahramanmaraş'ın web sitesi birim listesini YAYIMLAMAMAKTADIR — "Birim Listesi ve İletişim" sayfası içeriği artık 404 dönen bir iframe'den (fs/images/oldsrc/birim-telefon-listesi.html) geldiği için boştur, "Organ ve Teşkilat" sayfasındaki şema ise yalnız görseldir. Bu nedenle kaynak olarak kurumun kendi alan adında yayımladığı 2025 Yılı Faaliyet Raporu kullanılmıştır. Raporun İKİ BÖLÜMÜ ÇELİŞMEKTEDİR: s.11'deki teşkilat şeması ile s.15'teki personel dağılım tablosu 6 birimde farklı ad verir. Buradaki liste s.15 tablosundan alınmıştır; çünkü rapor metninin tamamındaki kullanım sıklığı bu adları desteklemektedir (Çevre Koruma ve Sıfır Atık 3 / Çevre Koruma ve Kontrol 1, İtfaiye ve Afet İşleri 3 / İtfaiye 1, Kent Estetiği ve Yeşil Alanlar 2 / Park ve Bahçeler 1, Kültür Gençlik ve Spor 5 / Kültür Sanat ve Sosyal İşler 1) ve s.11 şeması güncelliğini yitirmiş görünmektedir. Raporun kendi ifadesiyle teşkilat 18 daire başkanlığından oluşur ve aşağıdaki liste 18 daire başkanlığı içerir. Bağlı kuruluş KASKİ (Kahramanmaraş Su ve Kanalizasyon İdaresi) ayrı tüzel kişilik olduğu için listeye alınmamıştır.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: Nazım ve uygulama imar planı ile plan tadilatı işlemlerini yürütür, imar durumu (çap) taleplerini karşılar. Halihazır harita, parselasyon, ifraz-tevhit ve numarataj iş ve işlemlerini yapar.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: Yatırım programındaki yapı ve üstyapı işlerinin etüt, proje, ihale ve yapım süreçlerini yürütür. Hakediş, geçici ve kesin kabul tutanağı düzenlenmesine ilişkin işlemleri yapar.
+
+BİRİM: Yol Yapım, Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Büyükşehir sorumluluğundaki ana arter ve bağlantı yollarının yapım, asfalt, bakım ve onarım işlerini yürütür. Altyapı kazı izinleri ve AYKOME kapsamındaki kazı koordinasyon işlemlerini takip eder.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: UKOME kararlarının hazırlanması ve uygulanması ile toplu taşıma hat ve güzergâh izinlerini yürütür. Ticari plaka tahsisi, servis aracı çalışma ruhsatı ve toplu taşıma kart işlemlerini yapar.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: İşyeri açma ve çalışma ruhsatı denetimi, işgaliye, seyyar satıcı ve pazar yeri denetimlerini yapar. İdari yaptırım tutanağı düzenler ve ruhsatsız faaliyet şikâyetlerini sonuçlandırır.
+
+BİRİM: İtfaiye ve Afet İşleri Dairesi Başkanlığı
+GÖREV: Yangın söndürme, arama-kurtarma ve ilk müdahale hizmetlerini yürütür; yangın güvenlik raporu ve itfaiye raporu düzenler. Afet ve acil durum planlaması ile AFAD koordinasyonunu ve afet sonrası hasar tespit süreçlerini takip eder.
+
+BİRİM: Çevre Koruma ve Sıfır Atık Dairesi Başkanlığı
+GÖREV: Katı atık toplama, taşıma ve bertaraf hizmetleri ile hafriyat toprağı ve inşaat/yıkıntı atıkları taşıma izin belgesi işlemlerini yürütür. Sıfır atık yönetim sistemi belgelendirmesi ile gürültü, hava ve su kirliliği şikâyet denetimlerini yapar.
+
+BİRİM: Kent Estetiği ve Yeşil Alanlar Dairesi Başkanlığı
+GÖREV: Park, yeşil alan ve çocuk oyun alanlarının yapım ve bakım işleri ile kentsel tasarım projelerini yürütür. Ağaç kesim/nakil izni, peyzaj projesi onayı ve ilan-reklam estetiği başvurularını değerlendirir.
+
+BİRİM: Kadın Aile ve Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Sosyal yardım başvurularını (gıda, yakacak, ayni ve nakdi yardım) inceler ve sosyal inceleme raporu düzenler. Kadın, aile, engelli ve yaşlı destek hizmetleri ile meslek edindirme kurslarını yürütür.
+
+BİRİM: Kültür, Gençlik ve Spor Dairesi Başkanlığı
+GÖREV: Kültür-sanat etkinlikleri, festival, konser ve kurs programları ile kütüphane hizmetlerini düzenler. Gençlik ve spor faaliyetleri ile salon/tesis tahsisi başvurularını yürütür.
+
+BİRİM: Tarımsal Hizmetler ve Muhtarlıklar Dairesi Başkanlığı
+GÖREV: Tarımsal üretim destekleri, çiftçi eğitimi, hayvancılık ve kırsal kalkınma projelerini yürütür. Muhtarlardan gelen talep ve şikâyetlerin kaydını, ilgili birime yönlendirilmesini ve sonucunun bildirilmesini yapar.
+
+BİRİM: Kuzey İlçeleri Dairesi Başkanlığı
+GÖREV: Kuzey ilçelerinde büyükşehir hizmetlerinin yerinden yürütülmesini ve koordinasyonunu sağlar. Bölgedeki yol, altyapı ve destek hizmeti taleplerini ilgili birimlerle birlikte takip eder.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: Bütçe hazırlama, kesin hesap, muhasebe ve ödeme emri belgesi işlemlerini yürütür. Gelir tarifesi, tahakkuk, tahsilat ve 6183 sayılı Kanun kapsamındaki icra takip işlemlerini yapar.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Memur ve işçi personelin atama, terfi, özlük, izin, disiplin ve emeklilik işlemlerini yürütür. Kadro, norm kadro, hizmet içi eğitim ve staj başvurularına ilişkin işlemleri yapar.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: EBYS ve e-belediye sistemlerinin işletim, yetkilendirme ve entegrasyon işlemlerini yürütür. Bilgi edinme ve CİMER başvurularının sistem üzerinden yönlendirilmesi ile KVKK teknik tedbirlerini takip eder.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Kardeş şehir ilişkileri, uluslararası protokol ve yurt dışı temsil iş ve işlemlerini yürütür. AB ve kalkınma ajansı hibe/proje başvurularının hazırlık ve takibini yapar.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerini yürütür, kurumu yargı mercileri önünde temsil eder. Birimlerden gelen hukuki görüş taleplerini, sözleşme ve şartname incelemelerini karşılar.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: Kurumun mali ve mali olmayan iş ve işlemlerini iç denetim standartlarına göre denetler. İç denetim raporu düzenler ve risk değerlendirmesi yapar.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanlık makamının randevu, temsil, ağırlama ve protokol işlemlerini yürütür. Başkanlığa doğrudan gelen talep ve davetlerin kaydı ile ilgili birime yönlendirmesini yapar.

@@ -116,6 +116,20 @@ def cache_temizle() -> None:
     _yanit_cache.clear()
 
 
+def dusunme_marjli(llm: Any, max_tokens: int) -> int:
+    """Cevap bütçesine düşünme marjını ekle (gerçek istemci) — mock'ta bütçe aynen kalır.
+
+    Reasoning modellerinde (deepseek-v4-*) düşünme token'ları da `max_tokens`'tan düşer;
+    dar cevap bütçesi tek başına gönderilirse içerik BOŞ döner ve çağıran sessizce
+    deterministik yedeğe düşer. Mock'ta eklenmez → test determinizmi korunur.
+
+    AKIŞ (chat_stream) yolları da bunu KULLANMALI: canlı ölçümde sesli sohbetin SSE
+    kompozisyonu marjsız çağırıyordu, 150 token'lık sesli bütçe düşünmeye gidiyor ve her
+    veri sorusu markdown şablona düşüyordu (sesli okununca tam da istenmeyen robotik cevap).
+    """
+    return max_tokens + (0 if isinstance(llm, MockLLM) else config.LLM_DUSUNME_MARJI)
+
+
 async def _chat_dene(
     llm: Any,
     messages: list[ChatMessage],
@@ -127,12 +141,9 @@ async def _chat_dene(
 ) -> str | None:
     """Tek LLM çağrısı — geçici/altyapı hatası → None (çağıran fallback'e düşer).
 
-    DÜŞÜNME MARJI: reasoning modellerinde (deepseek-v4-*) düşünme token'ları da
-    `max_tokens`'tan düşer; node'ların dar cevap bütçesi tek başına gönderilirse
-    içerik BOŞ döner. Marj yalnız GERÇEK istemciye eklenir — mock'ta bütçe aynen
-    kalır (test determinizmi korunur). Bkz. config.LLM_DUSUNME_MARJI.
+    Bütçeye düşünme marjı eklenir — bkz. dusunme_marjli.
     """
-    butce = max_tokens + (0 if isinstance(llm, MockLLM) else config.LLM_DUSUNME_MARJI)
+    butce = dusunme_marjli(llm, max_tokens)
     try:
         resp = await asyncio.wait_for(
             llm.chat(

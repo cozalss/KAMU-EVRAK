@@ -5,7 +5,8 @@
    Kurgu ayrımı: İşlenen = tüm işlemlerin arşivi (karar durumuyla) · Taslaklar = yalnız karar
    bekleyen taslak çalışma kuyruğu · Giden = gönderilmiş arşiv.
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
-import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { baslikAl, ekranBaglamiOlustur } from "./lib/ekranBaglami.js";
 import { flushSync } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
@@ -163,6 +164,27 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const draftCount = drafts.length;
   const inboxCount = Math.max(0, SAMPLE_DOCS.length - sentSampleIds.size);
   const gidenCount = outbox.filter((o) => o.durum === "gonderildi").length;
+
+  // Asistanın "ekranı takip etmesi": kullanıcının O AN gördüğü şeyin küçük özeti. Sesli/yazılı
+  // sohbete her istekte gider; "bu evrak ne?", "buradaki risk neden kırmızı?" gibi İŞARET EDEN
+  // sorular DB'ye gidip aramadan cevaplanır (bir tur = bir araç çağrısı kadar gecikme siler).
+  // Liste, açık görünüme göre seçilir — asistan "Taslaklar'da 37 kayıt var" diyebilsin diye.
+  // Gelen kuyruğu = henüz gönderilmemiş örnekler (GelenEvrakView'a verilen listenin AYNISI).
+  // Bağlamdaki liste ile ekrandaki liste ayrışırsa asistan "aç" dediğin kaydı bulamaz.
+  const gelenListesi = useMemo(
+    () => SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id)), [sentSampleIds]);
+  const ekranListesi = { taslaklar: drafts, giden: outbox, islenen: history, gelen: gelenListesi }[activeView] || null;
+  // Kenar çubuğundaki sayaçlar HER görünümde kullanıcının gözünün önünde. Bunlar bağlama
+  // girmezse "panelde durum ne?" sorusu ekrandan cevaplanamaz ve asistan ya konserve yardım
+  // metni ya da DB turu üretir — ikisi de kullanıcının istediği anlık cevap değil.
+  const ekranBaglami = useMemo(
+    () => ekranBaglamiOlustur({
+      gorunum: activeView,
+      secili: data ? { result: data } : null,
+      liste: ekranListesi,
+      notlar: `ekrandaki sayaçlar — gelen ${inboxCount}, taslak ${draftCount}, giden ${gidenCount}`,
+    }),
+    [activeView, data, ekranListesi, inboxCount, draftCount, gidenCount]);
 
   // Onaylanan/gönderilen evrakı Giden Evrak'a yaz (durum: gonderildi|duzenlendi|reddedildi).
   // Aynı sonuç iki kez gönderilmez (sentRef). SHA frontend'de üretilmez — backend son_hash taşınır.
@@ -434,6 +456,22 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     if (typeof hedefId === "string") setGelenHedef(hedefId);
     goView("gelen");
   }, [goView]);
+
+  // Sesli komutla evrak açma ("sokak hayvanı şikayetini aç"). Başlık, ekran bağlamındaki
+  // listeden gelir (sesliKomut orada eşleştirdi) → burada aynı listelerde kaydı bulup
+  // MEVCUT hedef desenini kullanırız; yeni bir açma mekanizması icat edilmez.
+  // Taslak/gelen satır-hedefi destekler; işlenen/giden yalnız görünüme götürür (o
+  // görünümlerde satır hedefi yok — olmayan bir yeteneği varmış gibi göstermeyiz).
+  const evrakAc = useCallback((baslik) => {
+    const esles = (x) => baslikAl(x) === baslik;
+    const taslak = drafts.find(esles);
+    if (taslak) { setTaslakHedef(taslak.id); goView("taslaklar"); return; }
+    const gelen = gelenListesi.find(esles);
+    if (gelen) { setGelenHedef(gelen.id); goView("gelen"); return; }
+    if (history.some(esles)) { goView("islenen"); return; }
+    if (outbox.some(esles)) { goView("giden"); return; }
+    showToast(`"${baslik}" ekrandaki listede bulunamadı.`);
+  }, [drafts, gelenListesi, history, outbox, goView, showToast]);
 
   // İşlenen evrak listesinden "Taslaklar'da düzenle": eşleşen kuyruk taslağı varsa hedefle;
   // yoksa (canlı oturum kaydı — kuyruk yalnız açık "Düzenle" kararı ya da DB hidrasyonuyla
@@ -908,7 +946,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} samples={SAMPLE_DOCS} onPickSample={processSample} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} aktifKurum={aktifKurum} onAktifKurumDegistir={setAktifKurum} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} aktifKurum={aktifKurum} onAktifKurumDegistir={setAktifKurum} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>
@@ -920,7 +958,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onInk, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
 
-        {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} /></Suspense>}
+        {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} ekran={ekranBaglami} onEvrakAc={evrakAc} /></Suspense>}
 
         {/* Global mevzuat okuma modalı — hangi görünümde olursan ol üstte açılır (view değişmez). */}
         {okumaHedef && (

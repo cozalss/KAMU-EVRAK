@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { cleanDemoText } from "./result-cards.jsx";
 import TurSecici from "./TurSecici.jsx";
 import BelgeModal from "./BelgeModal.jsx";
+import A4Belge from "./A4Belge.jsx";
 import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
 
 /* Pager ok düğmesi — başlık şeridine gömülü (ayrı üst satır AÇMAZ, kartın dış kutusu komşu
@@ -102,10 +103,8 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
       {/* Kağıt tezgahı — beyaz A4 sayfası tint "masa" üstünde yüzer, ortalı, TAM metin (kırpma
           yok — 2026-07-15 kullanıcı isteği). Ana taslak kağıt bloğuyla aynı ölçüler/gölge. */}
       <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
-        <div className="sc-document-paper" title="Büyüt (A4 görünüm)"
-          onClick={() => setModalAcik(true)}
-          style={{ maxWidth: 860, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: uretilen ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
-          <pre style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0 }}>{cleanDemoText(metin)}</pre>
+        <div className="sc-document-paper" style={{ maxWidth: 860, margin: "0 auto" }}>
+          <A4Belge metin={cleanDemoText(metin)} onAc={() => setModalAcik(true)} solgun={uretilen} />
         </div>
       </div>
 

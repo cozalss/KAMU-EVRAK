@@ -1,0 +1,101 @@
+@KURUM: Gaziantep Büyükşehir Belediyesi
+@BELGE: Gaziantep Büyükşehir Belediyesi resmî birim/teşkilat sayfası
+@KAYNAK_KIMLIK: https://www.gaziantep.bel.tr/tr/teskilat-semasi
+@ERISIM: 2026-07-25
+@KAYNAK_TURU: resmi_teskilat
+@ALIAS: gaziantep-buyuksehir-belediyesi, gaziantep-bb, gaziantep-buyuksehir, gaziantep-belediyesi
+@NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI teşkilat şemasında yazılı alt şube müdürlüğü adlarından okunmuştur. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Gaziantep teşkilat şeması sunucu tarafında tam ağaç olarak yayımlanır (124 düğüm) ve her dairenin alt şube müdürlükleri sitede yazılıdır; bu nedenle görevler isimden değil, sitedeki alt birim adlarından okunmuştur. Şema kısaltma kullanır: "Dai. Bşk." (Zabıta'da "Daire Bşk."). Sitedeki yazım hataları korunmuştur: "İtfaye", "Destek Hizmeteri", "Dal. Bşk." (iki birimde), "Kütühaneler", "Çoğrafi", "İletişim ve Enformasyon koordinatörlüğü" (küçük harf). Gaziantep'te ayrı bir Yazı İşleri dairesi YOKTUR; evrak, karar ve arşiv işlemleri İnsan Kaynakları ve Eğitim Dai. Bşk. altındaki Yazı İşleri, Kararlar ve Arşiv Şb. Md. tarafından yürütülür. Emlak ve kamulaştırma da ayrı daire değildir, İmar ve Şehircilik Dai. Bşk. altındadır.
+@DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Sayfa yalnız TLS sertifika doğrulaması KAPATILDIĞINDA açılıyor; bu nedenle bu dosya değil, yalnız birim listesi eşleşmesi kaydedildi ve dosya aday bırakıldı.
+
+BİRİM: Mali Hizmetler Dai. Bşk.
+GÖREV: Gelirler, Giderler, İç Kontrol ve Ön Mali Kontrol ile Strateji ve Bütçe şube müdürlüklerinden oluşur; gelir tahakkuk ve tahsilatı, ödeme ve muhasebe işlemleri, ön mali kontrol, bütçe ve kesin hesap iş ve işlemlerini yürütür.
+
+BİRİM: Kadın Aile ve Sosyal Hizmetler Dai. Bşk.
+GÖREV: Kadın, Aile ve Çocuk Hizmetleri, Sosyal Hizmetler, Mezarlıklar, Göç Yönetimi ve Uyum ile Evlendirme şube müdürlüklerinden oluşur; sosyal yardım başvuruları, mezar yeri tahsisi ve defin işlemleri, göçmen uyum hizmetleri ve nikâh/evlendirme işlemlerini yürütür.
+
+BİRİM: Engelli, Yaşlı ve Sağlık Hizmetleri Dal. Bşk.
+GÖREV: Sağlık Hizmetleri, Engelli ve Yaşlı ile Özel Gereksinimliler Rehabilitasyon ve Eğitim şube müdürlüklerinden oluşur; engelli ve yaşlı destek hizmetleri, rehabilitasyon ve özel eğitim hizmetleri ile sağlık tarama ve poliklinik hizmetlerini sağlar.
+
+BİRİM: Eğitim, Gençlik ve Spor Dai. Bşk.
+GÖREV: Gençlik Hizmetleri ve Değerler Eğitimi, Spor Hizmetleri ile Eğitim Hizmetleri şube müdürlüklerinden oluşur; kurs kayıtları, spor tesisi tahsisi, gençlik merkezleri ve eğitim destek programlarını yürütür.
+
+BİRİM: Kurumsal İletişim Dai. Bşk.
+GÖREV: Dijital Medya, Basım ve Yayın ile Tanıtım ve Halkla İlişkiler şube müdürlüklerinden oluşur; basın bültenleri ve kurumsal yayınları hazırlar, vatandaş başvuru ve şikâyetlerinin ilgili birime yönlendirilmesi ile yanıt takibini yapar.
+
+BİRİM: Fen İşleri Dai. Bşk.
+GÖREV: Yol İşleri, Yapı İşleri, Etüt ve Projeler, AYKOME, Makine İkmal ve Onarım, Kırsal Hizmetler ve Muhtarlıklar ile Kesin Hesap şube müdürlüklerinden oluşur; yol ve yapı imalatı, altyapı kazı ruhsatı (AYKOME) koordinasyonu, hakediş ve kesin hesap işlemleri ile muhtar taleplerini yürütür.
+
+BİRİM: Ulaşım Dai. Bşk.
+GÖREV: Akıllı Ulaşım Sistemleri Trafik Hizmetleri ve Denetleme, UKOME ve Ulaşım Planlama, Toplu Taşıma ve Bisikletli Ulaşım Hizmetleri ile İç Sular şube müdürlüklerinden oluşur; UKOME kararları, toplu taşıma hat ve güzergâh izinleri, ulaşım kartı işlemleri ve trafik denetimini yürütür.
+
+BİRİM: İmar ve Şehircilik Dai. Bşk.
+GÖREV: Kent Planlama, Harita, Emlak ve Kamulaştırma, İmar, Kiralama ile Dirençli Şehirler ve Kentsel Dönüşüm şube müdürlüklerinden oluşur; imar durumu ve plan tadilatı, halihazır harita, 2942 sayılı Kanun kapsamında kamulaştırma, taşınmaz kiralama ve kentsel dönüşüm işlemlerini yürütür.
+
+BİRİM: Kent Estetiği ve Yeşil Alanlar Dai. Bşk.
+GÖREV: Kent Estetiği, Bitkisel Araştırma, Uygulama ve Üretim, Kent ve Yeşil Alanlar Bakım Onarım, Park Yapım, Haşere İle Mücadele ve İlaçlama ile Kesin Hesap şube müdürlüklerinden oluşur; park yapım ve bakımı, ağaçlandırma ve fidan üretimi, ilaçlama ve haşere mücadelesi ile cephe ve tabela estetiği işlemlerini yürütür.
+
+BİRİM: Kültür Varlıkları Koruma Dai. Bşk.
+GÖREV: KUDEB, Restorasyon ve Dünya Miras Alanları şube müdürlüklerinden oluşur; tescilli taşınmaz kültür varlıklarında KUDEB onarım ön izin ve uygunluk belgesi düzenler, restorasyon projelerini yürütür ve dünya miras alanı yönetim işlemlerini yapar.
+
+BİRİM: İtfaye ve Afet Yönetimi Dai. Bşk.
+GÖREV: Eğitim ve Denetim, Müdehale ile Afet Yönetimi (AKOM) şube müdürlüklerinden oluşur; yangın söndürme ve kurtarma müdahalesi, yangın güvenlik denetimi ve rapor düzenleme ile AKOM üzerinden afet koordinasyon işlemlerini yürütür.
+
+BİRİM: Zabıta Daire Bşk.
+GÖREV: 1. Bölge Zabıta Denetim, Zabıta Çevre Denetim, 2. Bölge Zabıta Denetim ve Haller şube müdürlüklerinden oluşur; ruhsat ve işgaliye denetimi, çevre denetimi, toptancı hal iş ve işlemleri ile idari yaptırım tutanağı düzenleme ve encümene sevk işlemlerini yürütür.
+
+BİRİM: Destek Hizmeteri Dai. Bşk.
+GÖREV: Destek Hizmetleri, İhale İşleri Şube Md., Satın Alma ve Sözleşmeler ile Koruma ve Güvenlik şube müdürlüklerinden oluşur; 4734 sayılı Kamu İhale Kanunu kapsamındaki ihale ve doğrudan temin işlemleri, sözleşme süreçleri ve koruma-güvenlik hizmetlerini yürütür.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dai. Bşk.
+GÖREV: İnsan Kaynakları, İş Sağlığı ve Güvenliği, Yazı İşleri, Kararlar ve Arşiv ile Eğitim, İş ve Kariyer şube müdürlüklerinden oluşur; personel özlük ve maaş işlemleri, iş sağlığı ve güvenliği faaliyetleri ile gelen-giden evrak kaydı, Meclis ve Encümen karar işlemleri ve kurum arşivini yürütür.
+
+BİRİM: Doğal Hayatı Koruma ve Veteriner Hizmetleri Dai. Bşk.
+GÖREV: Doğal Hayatı Koruma Şb. Md ile Sokak Hayvanları Koruma, Denetim ve Veterinerlik Hizmet Şb. Md.'den oluşur; sokak hayvanlarının kısırlaştırma, aşılama ve rehabilitasyon işlemlerini, hayvan barınağı hizmetlerini ve kuduz şüphesi ihbarlarının gereğini yürütür.
+
+BİRİM: Kültür, Sanat ve Bilim Dai. Bşk.
+GÖREV: Kültür ve Sanat, Bilim ve Toplum, Kütühaneler ve Müzeler ile Tören ve Organizasyonlar şube müdürlüklerinden oluşur; kütüphane ve müze hizmetleri, bilim merkezi faaliyetleri ile tören, etkinlik ve organizasyon işlemlerini yürütür.
+
+BİRİM: Sürdürülebilir Tarım ve Kırsal Kalkınma Dai. Bşk.
+GÖREV: Tarımsal Hizmetler ve Kırsal Kalkınma ile Ürün Markalaştırma ve Çoğrafi İşaretler şube müdürlüklerinden oluşur; üreticiye tarımsal girdi ve kırsal kalkınma desteği sağlar, yöresel ürünlerin coğrafi işaret tescil ve markalaştırma işlemlerini yürütür.
+
+BİRİM: Dış İlişkiler ve Uluslararası Projeler Dai. Bşk.
+GÖREV: Dış İlişkiler, Turizm ve Tanıtım, Fon ve Projeler ile Kardeş Şehirler şube müdürlüklerinden oluşur; hibe ve fon projelerini hazırlayıp yürütür, kardeş şehir protokollerini yapar ve turizm tanıtım faaliyetlerini yönetir.
+
+BİRİM: İşletme ve İştirakler Dai. Bşk.
+GÖREV: İştirakler ile İdari İşler ve Koordinasyon şube müdürlüklerinden oluşur; belediye şirket ve iştirakleri ile ilişkileri yürütür, işletme gelirleri ile kira ve işletme sözleşmelerine ilişkin iş ve işlemleri yapar.
+
+BİRİM: Çevre Koruma, Sıfır Atık ve İklim Değişikliği Dai. Bşk.
+GÖREV: Sıfır Atık Yönetimi, Çevre Sağlığı ile Enerji Yönetimi ve İklim Değişikliği şube müdürlüklerinden oluşur; atık yönetimi ve sıfır atık belgelendirme, çevre sağlığı denetimleri ile enerji verimliliği ve iklim eylem planı çalışmalarını yürütür.
+
+BİRİM: Bilgi İşlem Dai. Bşk.
+GÖREV: Bilgi Teknolojileri, Bilgi Sistemleri ve Veri Yönetimi şube müdürlüklerinden oluşur; elektronik belge yönetim sistemi (EBYS) ve e-belediye uygulamalarını işletir, veri yönetimi ile kişisel verilerin korunmasına yönelik teknik tedbirleri alır.
+
+BİRİM: Kaynak ve İş Geliştirme Dal. Bşk.
+GÖREV: İş Geliştirme ile Kaynak Geliştirme şube müdürlüklerinden oluşur; belediyeye yeni gelir kaynağı geliştirme, yatırım ve iş geliştirme projelerinin hazırlanması ve takibine ilişkin iş ve işlemleri yürütür.
+
+BİRİM: Genel Sekreterlik Koordinatörlüğü
+GÖREV: Genel sekreterliğe bağlı koordinatörlüklerin çalışmalarını koordine eder; daire başkanlıkları arasındaki iş akışını ve makam yazışmalarını düzenler.
+
+BİRİM: Kurumsal Gelişim Koordinatörlüğü
+GÖREV: Kurumsal kapasite geliştirme, süreç iyileştirme ve kalite yönetimi çalışmalarını yürütür; stratejik plan ve performans programı süreçlerine katkı sağlar.
+
+BİRİM: Finans Yönetimi Koordinatörlüğü
+GÖREV: Kurumun finansal planlama, borçlanma ve nakit yönetimi süreçlerini koordine eder; mali risklerin izlenmesi ve raporlanmasını sağlar.
+
+BİRİM: Yatırım İzleme Koordinasyon ve Kontrol Koordinatörlüğü
+GÖREV: Belediye yatırım programındaki projelerin ilerlemesini izler, koordine eder ve kontrol raporlarını hazırlar; gecikme ve sapmalara ilişkin makam bilgilendirmesini yapar.
+
+BİRİM: Şehir Vizyonu ve Gelişimi Koordinatörlüğü
+GÖREV: Kentin uzun vadeli gelişim vizyonuna yönelik strateji ve projeleri geliştirir; ilgili daire başkanlıkları arasında şehir ölçekli planlama koordinasyonunu sağlar.
+
+BİRİM: İç Denetim Birim Başkanlığı
+GÖREV: Risk esaslı iç denetim programını hazırlar; uygunluk, sistem ve performans denetimlerini mevzuata ve denetim standartlarına uygun olarak yürütür ve raporlar.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Belediye birimlerinin iş ve işlemlerini mevzuata uygunluk yönünden teftiş eder; inceleme, araştırma ve soruşturma işlemlerini yürütür ve raporlarını başkanlık makamına sunar.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Belediyenin taraf olduğu dava ve icra takiplerini yürütür ve belediyeyi yargı mercileri önünde temsil eder; birimlerden gelen hukuki görüş taleplerini karşılar ve sözleşme taslaklarını hukuki yönden inceler.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Belediye başkanının randevu, görüşme ve program trafiğini düzenler; başkanlık makamına gelen evrakın havalesini ve temsil-ağırlama işlemlerini yürütür.

@@ -1,39 +1,65 @@
 @KURUM: Tarım ve Orman Bakanlığı
-@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi
-@KAYNAK_KIMLIK: teskilat/tarim-ve-orman-bakanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474), m.412 ve devamı
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf
+@ERISIM: 2026-07-26
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: tarim-bakanligi, orman-bakanligi, tob
-@NOT: Orman Genel Müdürlüğü mevzuatta ayrı tüzel kişiliğe sahip bağlı kuruluştur; evrak yönlendirme amacıyla Bakanlık teşkilatı içinde listelenmiştir. Su Yönetimi Genel Müdürlüğü ile Doğa Koruma ve Milli Parklar Genel Müdürlüğü ise Bakanlık merkez hizmet birimleridir.
+@NOT: Birim adları m.412/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
 
 BİRİM: Gıda ve Kontrol Genel Müdürlüğü
-GÖREV: Gıda işletmesi kayıt/onay başvuruları, gıda güvenliği denetim şikâyetleri, veteriner sağlık ve bitki koruma ürünleri ruhsat/izin işlemlerini yürütür.
+GÖREV: Güvenilir gıda ve yem arzını sağlamak, bu amaçla politikaların oluşturulması amacıyla çalışmalar yapmak ve uygulamayı denetlemek; Gıda, gıda katkı maddeleri ve gıda ile temasta bulunan madde ve malzemelerin üretim, işleme ve pazarlama ile ilgili süreçlerin her aşamasındaki izlenebilirliğine yönelik esasları belirlemek.
 
 BİRİM: Bitkisel Üretim Genel Müdürlüğü
-GÖREV: Tohumluk sertifikasyonu, bitkisel üretim destekleri, sera ve örtü altı üretim kayıt başvurularını değerlendirir.
+GÖREV: Bitkisel ürünlerde üretimi, verimliliği ve çeşitliliği artırmak; Bitkisel üretimde kullanılan girdilerin ve üretim teknolojilerinin kullanımının uygunluğunu ve standartlarını belirlemek ve denetlemek; Bitkisel üretimi, tarım ve sanayi sektörü ile entegrasyonunu sağlayacak şekilde yönlendirmek; İnsan sağlığını ve ekolojik dengeyi gözeterek yeni üretim şekilleri belirlemek, bunları desteklemek, yaygınlaştırmak ve görev alanına giren faaliyetler sonucu ortaya çıkabilecek kirliliğin önlenmesine yönelik ilgili kurumlarla koordinasyonu sağlamak.
 
 BİRİM: Hayvancılık Genel Müdürlüğü
-GÖREV: Hayvan kayıt sistemi (TÜRKVET) işlemleri, hayvancılık destekleri ve büyük/küçükbaş hayvan yetiştirici belgesi başvurularını yürütür.
-
-BİRİM: Tarım Reformu Genel Müdürlüğü
-GÖREV: Çiftçi Kayıt Sistemi (ÇKS) kaydı, arazi toplulaştırma, tarımsal destekleme ödemeleri ve kırsal kalkınma proje başvurularını yürütür.
-
-BİRİM: Orman Genel Müdürlüğü
-GÖREV: Orman arazisi izin/tahsis, orman ürünleri satışı, orman yangını ihbar ve orman suçu şikâyet başvurularını karşılar.
-
-BİRİM: Su Yönetimi Genel Müdürlüğü
-GÖREV: Su tahsis planlaması, taşkın koruma, sulama suyu ve havza yönetimi konularındaki başvuruları yürütür.
+GÖREV: Hayvancılığı geliştirmek, teşvik etmek ve teşvik esaslarını belirlemek; Hayvansal üretim girdileri ile hayvancılık işletmelerinin niteliklerini ve bunlara ilişkin izin ve onay esaslarını belirlemek, izin ve her türlü onay işlemlerini yürütmek; Yüksek vasıflı hayvan ırklarını yaygınlaştırmak; Hayvansal üretimin insan sağlığı ve ekolojik dengeyi koruyucu yöntemlerle yapılmasına ilişkin çalışmalar yapmak ve bunları denetlemek; Hayvansal üretimin artırılmasına yönelik faaliyetlerde bulunmak.
 
 BİRİM: Balıkçılık ve Su Ürünleri Genel Müdürlüğü
-GÖREV: Su ürünleri yetiştiricilik ruhsatı, balıkçı gemisi kayıt/ruhsat işlemleri ve su ürünleri avcılık izin başvurularını değerlendirir.
+GÖREV: Denizlerde ve iç sularda sürdürülebilir balıkçılık ve su ürünleri yetiştiriciliği ile avcılığının esaslarını belirlemek ve bunları teşvik etmek; Balıkçı barınakları ve balıkçılık altyapı tesisleri kurulması, işletilmesi ve denetlenmesine ilişkin usûl ve esasları belirlemek ve denetimini yapmak; Balıkçılık ve su ürünleri kaynaklarını korumak, koruma, üretim ve yetiştiricilik alanlarını belirlemek ve bu alanları zararlardan koruyacak tedbirleri almak; İthal ve ihraç edilecek balıkçılık ve su ürünleri ile girdilerine ilişkin esasları belirlemek.
+
+BİRİM: Tarım Reformu Genel Müdürlüğü
+GÖREV: Rekabetçi bir tarım sektörünün oluşturulması, fiziki potansiyelin, çevre ve arazinin geliştirilmesi, kırsal alanlardaki yaşam kalitesinin ve ekonomik çeşitliliğin iyileştirilmesi, yerel kırsal kalkınma kapasitesinin oluşturulması için programlar hazırlamak, uygulamak ve izlemek; Tarımsal ve kırsal kalkınma desteklerinin uygulanmasına ilişkin gerekli işlemleri yapmak, kontrol etmek ve ödemeler arasındaki uyumu sağlamak; Üreticilerin bilgi düzeyini yükseltmek; kooperatif, birlik ve diğer üretici örgütlerinin kurulmasına izin vermek.
 
 BİRİM: Tarımsal Araştırmalar ve Politikalar Genel Müdürlüğü
-GÖREV: Tarımsal araştırma enstitüleri koordinasyonu, tohum/damızlık ıslah projeleri ve tarım politikası analiz taleplerini yürütür.
+GÖREV: Ulusal kalkınma planları doğrultusunda tarımsal araştırma ve geliştirme stratejilerini ve önceliklerini belirlemek amacıyla çalışmalar yapmak, projeler hazırlamak, hazırlatmak, uygulamak ve uygulatmak; Çeşit ve ırk geliştirmek, tescil ettirmek ve bunların nüve materyallerini üretmek; Yerli gen kaynaklarını korumak ve geliştirmek, gen kaynaklarına erişim ve bunların yararının paylaşımını sağlamak; yetkilendirme, izleme ve denetleme çalışmalarını yapmak.
 
-BİRİM: Doğa Koruma ve Milli Parklar Genel Müdürlüğü
-GÖREV: Milli park, tabiat parkı ve av-yaban hayatı izin/ruhsat başvuruları ile doğa koruma alanı ihlal şikâyetlerini karşılar.
+BİRİM: Su Yönetimi Genel Müdürlüğü
+GÖREV: Su kaynaklarının korunması, iyileştirilmesi ve kullanılmasına ilişkin politikaların belirlenmesi amacıyla çalışmalar yapmak; Su kaynaklarının kıyı suları dahil olmak üzere koruma-kullanma dengesi gözetilerek, sucul çevrenin ekolojik ve kimyasal kalitesinin korunması ve geliştirilmesini sağlamak amacıyla havza bazında nehir havza yönetim planları hazırlamak, hazırlatmak, bütüncül nehir havzaları yönetimi ile ilgili mevzuat çalışmalarını yürütmek.
 
-BİRİM: Strateji Geliştirme Başkanlığı
-GÖREV: Bakanlık stratejik plan, bütçe ve performans programına ilişkin kurumsal yazışmaları yürütür.
+BİRİM: Avrupa Birliği ve Dış İlişkiler Genel Müdürlüğü
+GÖREV: Bakanlığın görev ve faaliyet alanına giren, Avrupa Birliği ile ilgili konularda; müzakerelere ilişkin hazırlıkları yapmak, toplantılara katılmak, Avrupa Birliği-Türkiye ortaklık organlarında alınan kararlarla ilgili olarak uyum ve uygulama çalışmalarını yürütmek, Bakanlık birimleri arasında koordinasyonu sağlamak.
+
+BİRİM: Personel Genel Müdürlüğü
+GÖREV: Bakanlığın personel politikası ve planlaması ile personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması konusunda çalışmalar yapmak ve tekliflerde bulunmak; Bakanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemleri ile personel eğitim faaliyetlerini yürütmek.
 
 BİRİM: Hukuk Hizmetleri Genel Müdürlüğü
-GÖREV: Bakanlık işlemlerine ilişkin dava, itiraz ve hukuki görüş taleplerini karşılar.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Bakanlığın hedef ve politikaları doğrultusunda iş modelleri ve yürütülen iş süreçlerine uygun olarak bilişim hedeflerini belirleyerek tasarlamak ve yayımlamak, iş planlarını, mali planları ve kaynak planlarını hazırlamak, bu hususlarda gerekli bilişim standartlarını tespit etmek.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Bakanlık teşkilatının her türlü faaliyet ve işlemlerinin teftiş, inceleme ve soruşturma işlerini yürütmek; Bakanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programa uygun çalışmasını temin etmek üzere gerekli teklifleri hazırlamak ve Bakana sunmak.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile Bazı Kanun ve Kanun Hükmünde Kararnamelerde Değişiklik Yapılması Hakkında Kanunun 15 inci maddesi, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Tütün ve Alkol Dairesi Başkanlığı
+GÖREV: 3/1/2002 tarihli ve 4733 sayılı Tütün, Tütün Mamulleri ve Alkol Piyasasının Düzenlenmesine Dair Kanunla Bakanlığa verilen görevleri yerine getirmek; 8/6/1942 tarihli ve 4250 sayılı İspirto ve İspirtolu İçkiler İnhisarı Kanunu ile Bakanlığa verilen görevleri yerine getirmek; 7/11/1996 tarihli ve 4207 sayılı Tütün Ürünlerinin Zararlarının Önlenmesi ve Kontrolü Hakkında Kanun ile Bakanlığa verilen görevleri yerine getirmek.
+
+BİRİM: Şeker Dairesi Başkanlığı
+GÖREV: 4/4/2001 tarihli ve 4634 sayılı Şeker Kanununda Bakanlığa verilen görevleri yerine getirmek.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kanun hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, güvenlik, aydınlatma, ısınma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak; Bakanlığın taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütmek; Bakanlığın genel evrak ve arşiv faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Eğitim ve Yayın Dairesi Başkanlığı
+GÖREV: Bakanlığın görev alanına giren konularda görsel, işitsel ve yazılı dokümanların basım ve yayımını yapmak veya yaptırmak; Eğitim amacıyla Bakanlığın görev alanıyla ilgili her türlü bilgi ve belgeyi toplamak, değerlendirmek, yayımlamak, film, slayt, fotoğraf ve benzeri belgeleri hazırlamak veya hazırlatmak, bu konulara ilişkin arşiv, dokümantasyon ve kütüphane hizmetlerini yürütmek; Bakanlığın görev alanına giren konularda personel eğitimi hariç eğitim faaliyetini yapmak veya yaptırmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Bakanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenecek usûl ve esaslara göre yürütülmesini sağlamak; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek ve yürütmek.

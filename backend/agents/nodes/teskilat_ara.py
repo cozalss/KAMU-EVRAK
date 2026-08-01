@@ -20,6 +20,10 @@ from typing import Any
 
 import structlog
 
+from agents.nodes.teskilat_mevzuat import KAYNAK_TIPI as MEVZUAT_KAYNAK_TIPI
+from agents.nodes.teskilat_mevzuat import kapsam_cozumle
+from agents.nodes.teskilat_mevzuat import onbellegi_temizle as mevzuat_onbellegi_temizle
+from core.kaynak_guveni import RESMI_DOGRULANMIS
 from core.sicil import sicil_turu
 from core.text import tr_lower
 
@@ -205,6 +209,7 @@ def indeks_onbellegini_temizle() -> None:
     _kanonik_slug_revision.cache_clear()
     _slug_chunks_revision.cache_clear()
     _BM25_MEMO.clear()
+    mevzuat_onbellegi_temizle()
 
 
 def _bm25_model(chunks: tuple[dict[str, Any], ...]) -> Any:
@@ -258,6 +263,36 @@ def _score(konu: str, chunks: tuple[dict[str, Any], ...]) -> list[tuple[float, d
     return [r for r in sirali if r[0] > 0]
 
 
+def _mevzuat_adaylari(kurum_slug: str, konu: str, top_k: int) -> list[dict[str, Any]]:
+    """Adım 1.5 — mevzuatla tür geneli zorunlu kılınmış birimleri kuruma genişlet.
+
+    Şablon chunk'ları puanlanır, sonra künye SOMUT kuruma yazılır (kurum_slug/kurum_ad).
+    Kapsam ve hash doğrulaması `teskilat_mevzuat`'a aittir (INV-6/INV-8); burada yalnız
+    puanlama ve künye yazımı yapılır. Bkz. docs/11-mevzuat-teskilat.md.
+    """
+    genisleme = kapsam_cozumle(_load_payload(), kurum_slug)
+    if genisleme is None:
+        return []
+    # GÜVENLİK: doğrulama DİZİNE değil, chunk'ın KENDİ dosyasına bağlanır. Aksi hâlde şablon
+    # dizinine bırakılan manifest-dışı bir .txt, doğrulanmış şablonun yetkisini ödünç alırdı
+    # (güvenlik denetimi bulgusu F1). Chunk ayrıca resmi_dogrulanmis olmak zorundadır.
+    chunks = tuple(
+        c for c in _slug_chunks(genisleme.sablon_slug)
+        if c.get("kaynak_dosya") == genisleme.kaynak_dosya
+        and c.get("kaynak_guven") == RESMI_DOGRULANMIS
+    )
+    if not chunks:
+        return []
+    adaylar: list[dict[str, Any]] = []
+    for skor, chunk in _score(konu, chunks)[:top_k]:
+        aday = _aday(chunk, skor, MEVZUAT_KAYNAK_TIPI)
+        aday["kurum_slug"] = genisleme.kurum_slug
+        aday["kaynak_kurum"] = genisleme.kurum_ad
+        aday["sablon_slug"] = genisleme.sablon_slug
+        adaylar.append(aday)
+    return adaylar
+
+
 def _aday(chunk: dict[str, Any], skor: float, kaynak_tipi: str) -> dict[str, Any]:
     """Chunk → KaynakKaydi-uyumlu aday dict (icerik_hash + kaynak_tipi eklenir)."""
     import hashlib
@@ -301,16 +336,23 @@ def teskilat_birim_ara(
     # 1) Kuruma-özel kaynak — alias + il-adı-kırpma çözümlemesiyle (uedas, ankara-sgk-... vb.)
     kanonik = _kanonik_slug(kurum_slug)
     if kanonik:
-        ozel = _slug_chunks(kanonik)
         resmi = _resmi_slug_chunks(kanonik)
         if resmi:
             aday = [_aday(c, s, "kurum_ozel") for s, c in _score(konu, resmi)[:top_k]]
             if aday:
                 return aday
+    # 1.5) Mevzuatla tür geneli zorunlu birimler (docs/11) + kurumun KENDİ doğrulanmamış kaydı.
+    # İkisi BİRLİKTE döner: erken dönüş, kurumun kendi kaydını memurdan gizliyordu (güvenlik
+    # denetimi bulgusu F8). Kuruma-özel kayıt önce sıralanır — tür-genel bir şablon, kurumun
+    # kendi beyan ettiği birimi gölgelememelidir; ikisi de memur onayına gider.
+    ozel_adaylar: list[dict[str, Any]] = []
+    if kanonik:
+        ozel = _slug_chunks(kanonik)
         if ozel:
-            aday = [_aday(c, s, "aday") for s, c in _score(konu, ozel)[:top_k]]
-            if aday:
-                return aday
+            ozel_adaylar = [_aday(c, s, "aday") for s, c in _score(konu, ozel)[:top_k]]
+    mevzuat = _mevzuat_adaylari(kanonik or kurum_slug, konu, top_k)
+    if ozel_adaylar or mevzuat:
+        return (ozel_adaylar + mevzuat)[:top_k] if mevzuat else ozel_adaylar
     # 2) Kurum tipine göre jenerik şablon(lar) — yalnız aday.
     # Çağıranın tipi bilinmiyorsa (kurum_kimlik kalıbı tutmayan SGK/TÜİK/il müdürlükleri...)
     # kurum SİCİLİNDEN tür sorulur. Sicil yalnız TÜR verir: hedef üretmez, otomatik havale

@@ -1,12 +1,14 @@
-/* SesliGorusme — ChatGPT "voice mode" tarzı tam-ekran sesli görüşme sahnesi.
-   Sayfa sol-altındaki tetikleyiciden açılır (sağ-alttaki sohbet FAB'ından AYRI). Bas → konuş →
-   asistan sesli cevap ver → tekrar dinle (kesintisiz döngü). Orb, mikrofon (dinlerken) ve TTS
-   sesinin (konuşurken) GERÇEK genliğine göre canlanır (Web Audio AnalyserNode → rmsGenlik →
-   rAF; bkz. lib/sesGorusme.js). Beyin: /sohbet/stream (DeepSeek). Ses: /sohbet/seslendir
-   (OpenAI TTS — anahtar yoksa 503, metin-only'e zarifçe düşer). Görüşme durum makinesi saf +
-   test edilmiş (sonrakiDurum). Tema: "SAHNE" istisnası (CanliAjanAkisi gibi) — dim backdrop +
-   Hero gökyüzü orb'u (T/V/R token'ları); glow yalnız burada, sakin çalışma-alanı chrome'unda değil.
-   a11y: ESC kapatır, odak döngüsü, aria-live durum, reduced-motion'da morph/scale söner. */
+/* SesliGorusme — ChatGPT "voice mode" tarzı sesli görüşme sahnesi; sayfayı KAPLAMAZ.
+   Sohbet panelinin durduğu noktada (sağ-alt) yuvarlak bir DİSK olarak açılır: kullanıcı sitede
+   kalır, arkadaki ekranı görür ve kullanabilir — bu yüzden modal DEĞİL (aria-modal ve odak
+   tuzağı bilerek yok; ESC yine kapatır). Bas → konuş → asistan sesli cevap ver → tekrar dinle
+   (kesintisiz döngü). Orb, mikrofon (dinlerken) ve TTS sesinin (konuşurken) GERÇEK genliğine
+   göre canlanır (Web Audio AnalyserNode → rmsGenlik → rAF; bkz. lib/sesGorusme.js).
+   Beyin: /sohbet/stream (DeepSeek). Ses: /sohbet/seslendir (OpenAI TTS — anahtar yoksa 503,
+   metin-only'e zarifçe düşer). Görüşme durum makinesi saf + test edilmiş (sonrakiDurum).
+   Tema: "SAHNE" istisnası (CanliAjanAkisi gibi) — koyu zemin ve glow yalnız DİSKİN İÇİNDE,
+   sayfanın üstünde değil; sakin çalışma-alanı chrome'u bozulmaz.
+   a11y: ESC kapatır, aria-live durum, reduced-motion'da morph/scale söner. */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { authFetch } from "../lib/authApi.js";
 import { DURUM, rmsGenlik, sonrakiDurum, yumusat } from "../lib/sesGorusme.js";
@@ -14,11 +16,19 @@ import { blobNoktalari, blobYolu } from "../lib/orbCizim.js";
 import { sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { sesliMetneCevir } from "../lib/sesliMod.js";
 import { cumleAyir, sesKuyruguOlustur } from "../lib/sesKuyrugu.js";
+import { komutCoz, komutOnayi } from "../lib/sesliKomut.js";
 import {
-  PAL, T, V, R, DERIN, SP, RAD, SH, EASE, Icon, focusRing, odakDongusu, SR_ONLY,
+  aracArgumanlari, aracCiktisiniYaz, aracTamamlandiMi, realtimeBaglan, sonrakiSesliDurum, yanitIste,
+} from "../lib/realtimeSes.js";
+import {
+  PAL, T, V, R, DERIN, SP, RAD, SH, EASE, TYPE, Icon, focusRing, SR_ONLY,
 } from "./neonUi.jsx";
 
-const ORB_BOYUT = "clamp(200px, 38vh, 340px)"; // masaüstü büyük, telefonda sığar
+// Yuvarlak olan şey ORB'UN KENDİSİ — arkasında koyu tabak yok (kullanıcı kararı: zemin
+// kahverengi bir daire olarak okunuyordu). Sohbet panelinin ayak izinde durur; sayfa
+// görünür kalır. Kap saydam olduğu için TIKLAMA GEÇİRİR (pointerEvents) — aksi halde
+// görünmeyen bir kutu arkadaki listeleri tıklanamaz yapardı.
+const ORB_BOYUT = "min(210px, calc(100vw - 96px), calc(100vh - 220px))";
 const FFT = 1024;                 // ~512 bin; research deseni (smoothingTimeConstant 0.4)
 const SCALE_K = 0.13;             // genlik → hafif scale; asıl tepki KENAR sıvı-morph'unda (aş. dongu)
 const NEFES = 0.022;              // idle "nefes" salınımı ±%2.2
@@ -28,10 +38,6 @@ const DURUM_ETIKET = {
   [DURUM.HAZIR]: "Hazır", [DURUM.DINLIYOR]: "Dinliyor",
   [DURUM.DUSUNUYOR]: "Düşünüyor", [DURUM.KONUSUYOR]: "Yanıtlıyor",
 };
-// Açılış karşılaması — normalde /sohbet/karsilama'dan GERÇEK kuyruk durumuyla gelir
-// ("karar bekleyen üç taslağınız var..."). Bu sabit yalnız uç erişilemezse kullanılan yedektir;
-// persona adı backend SESLI_PERSONA_ADI ile eşleşir (env'de değişirse burayı da güncelle).
-const KARSILAMA_YEDEK = "Merhaba, ben Kamu Evrak. Belge ve yazışma işlerinizde size yardımcı olmak için buradayım. Buyurun, sizi dinliyorum.";
 
 // Düşük opaklıklı grain — düz vektör gradyanı "enerji topu"na çevirir (research §1).
 const GRAIN =
@@ -42,7 +48,9 @@ function azHareketMi() {
     !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 }
 
-export default function SesliGorusme({ acik = false, onKapat }) {
+// onKomut(komut): sesli komut ÇALIŞTIRILIR (görünüm değiştir / evrak aç). Sahne bu işi
+// kendisi yapmaz — kabuk (DashboardApp) yapar; sahne yalnız komutu çözer ve bildirir.
+export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKapat }) {
   const [durum, setDurum] = useState(DURUM.HAZIR);
   const [susturuldu, setSusturuldu] = useState(false);
   const [sonUser, setSonUser] = useState("");   // canlı transcript — kullanıcı
@@ -51,6 +59,10 @@ export default function SesliGorusme({ acik = false, onKapat }) {
 
   const durumRef = useRef(DURUM.HAZIR);
   const acikRef = useRef(false);
+  // Ekran bağlamı ref'te: beyinCagir kalıcı bir closure, prop'u doğrudan okusa kullanıcının
+  // KONUŞTUĞU andaki değil, sahnenin açıldığı andaki ekranı gönderirdi. Kullanıcı görüşme
+  // sürerken ekran değiştirebilir ("şimdi taslaklara bak, buradaki ilk yazı ne?").
+  const ekranRef = useRef(ekran);
   const susturRef = useRef(false);
   const azHareketRef = useRef(false);
 
@@ -70,6 +82,17 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   const oncekiOynatmayiBitirRef = useRef(null);  // <audio> sahipliği — yeni oynatma eskiyi çözer
   const gecmisRef = useRef([]);     // çok-turlu konuşma hafızası — takip soruları bağlam kazanır
   const hataSayacRef = useRef(0);   // ardışık STT hatası (no-speech) — eşikte kullanıcıyı uyar
+  // HITL el sıkışması: backend bir eylem için teyit isterse (meta.onay_bekleyen) bağlamı
+  // saklarız ve BİR SONRAKİ cümleyi onunla göndeririz ("evet" → uygula). Geri alınamaz iş
+  // asla tek komutla yapılmaz — yazılı sohbetteki iki-adımlı kuralın sesli karşılığı.
+  const onayRef = useRef(null);
+  // Araç turu senkronizasyonu — üçü birlikte "sonucu yazdık VE aktif yanıt bitti" koşulunu kurar.
+  const aracBekliyorRef = useRef(false);
+  const aracCiktiYazildiRef = useRef(false);
+  const aracYanitBittiRef = useRef(false);
+  const rtRef = useRef(null);        // aktif realtime oturumu ({gonder, kapat, pc})
+  const rtAktifRef = useRef(false);  // realtime mi eski zincir mi (temizle/kes bunu okur)
+  const sonUserRef = useRef("");     // model araca soru vermezse son transkripti kullan
 
   const orbRef = useRef(null);
   const haloRef = useRef(null);
@@ -80,6 +103,7 @@ export default function SesliGorusme({ acik = false, onKapat }) {
 
   useEffect(() => { durumRef.current = durum; }, [durum]);
   useEffect(() => { acikRef.current = acik; }, [acik]);
+  useEffect(() => { ekranRef.current = ekran; }, [ekran]);
 
   const gecir = useCallback((olay) => setDurum((d) => sonrakiDurum(d, olay)), []);
 
@@ -129,7 +153,13 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     const res = await authFetch("/sohbet/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
       // Çok-turlu hafıza: bu tura kadarki geçmişi gönder → "peki kaçı acil?" gibi takipler bağlam kazanır.
-      body: JSON.stringify({ mesaj: metin, gecmis: gecmisRef.current, sesli: true }), signal: ac.signal,
+      // ekran: konuşma anındaki görünen ekran → "bu evrak", "buradaki liste" araması gerektirmez.
+      // onay_baglam: bir önceki tur teyit istediyse bu cümle o teyidin cevabıdır ("evet"/"vazgeç").
+      body: JSON.stringify({
+        mesaj: metin, gecmis: gecmisRef.current, sesli: true,
+        ...(ekranRef.current ? { ekran: ekranRef.current } : {}),
+        ...(onayRef.current ? { onay_baglam: onayRef.current } : {}),
+      }), signal: ac.signal,
     });
     if (!res.ok || !res.body) throw new Error(`akış ${res.status}`);
     const reader = res.body.getReader();
@@ -151,6 +181,10 @@ export default function SesliGorusme({ acik = false, onKapat }) {
       const satir = blok.split("\n").find((l) => l.startsWith("data:"));
       if (!satir) return;
       let ev; try { ev = JSON.parse(satir.slice(5)); } catch { return; }
+      // meta: yazılı sohbette butona bağlanan alanlar. Sesli sahne bunları GÖRMEZDEN
+      // GELİYORDU → asistan "onaylayayım mı?" diyor ama "evet" cevabı bağlamsız gidiyordu
+      // (teyit hiç tamamlanmıyordu). Artık bağlam saklanır, sonraki cümleyle geri gönderilir.
+      if (ev.event === "meta") { onayRef.current = ev.onay_bekleyen || null; return; }
       if (ev.event === "delta" && ev.t) { yanit += ev.t; setSonYanit(yanit); cumleleriAkit(false); }
       else if (ev.event === "done") {
         // 'done' tam metni taşır. Konuşulmuş öneki KORU: farklı bir metin gelirse baştaki
@@ -241,12 +275,33 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   // için dinle() çağırır — aksi halde yanıt gösterilir ama tekrar dinlenmez, görüşme takılırdı.
   const turIsle = useCallback(async (metin) => {
     hataSayacRef.current = 0;   // sesim duyuldu → hata sayacını sıfırla
+
+    // --- KOMUT YOLU: ağa hiç çıkmadan uygula (gezinme bir soru değil, emirdir) ---
+    // Teyit bekliyorsak atlanır: o durumda söylenen şey bekleyen sorunun CEVABIDIR.
+    // SESLENDİRME YOK ve "Düşünüyor" durumuna hiç geçilmez: komut 30 ms'de uygulanıyor,
+    // oysa TTS turu 2-3 sn sürüyordu — kullanıcı ekranın değiştiğini çoktan görmüşken
+    // "açılıyor" diyen geç bir ses duyuyordu (canlı bulgu). Eylemin kendisi geri bildirimdir;
+    // orb kesintisiz DİNLEMEDE kalır, kullanıcı hemen bir sonraki komutu verebilir.
+    const komut = onayRef.current ? { tur: "yok" } : komutCoz(metin, {
+      basliklar: ekranRef.current?.liste?.ilkler || [],
+    });
+    if (komut.tur !== "yok") {
+      const onay = komutOnayi(komut);
+      onKomut?.(komut);
+      setSonUser(metin); setSonYanit(onay);   // görünmez (SR_ONLY) — ekran okuyucu için
+      gecmisRef.current = [...gecmisRef.current,
+        { rol: "kullanici", icerik: metin }, { rol: "asistan", icerik: onay }].slice(-8);
+      if (acikRef.current) dinle();
+      return;
+    }
+
     setSonUser(metin); setSonYanit(""); gecir("sonuc");
     const kuyruk = sesKuyruguOlustur({
       sesGetir, oynat: oynatBlob, onIlkSes: () => gecir("yanit_basladi"),
       onIptal: () => audioElRef.current?.pause(),   // kesme/hata: çalan ses de sussun
     });
     kuyrukRef.current = kuyruk;
+
     try {
       const yanit = await beyinCagir(metin, (c) => kuyruk.ekle(c));
       if (!acikRef.current) return;
@@ -265,7 +320,7 @@ export default function SesliGorusme({ acik = false, onKapat }) {
       if (acikRef.current) { setUyari("Yanıt alınamadı — tekrar dinliyorum."); gecir("hata"); dinle(); }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [beyinCagir, sesGetir, oynatBlob, gecir]);
+  }, [beyinCagir, sesGetir, oynatBlob, gecir, onKomut]);
 
   // --- Dinlemeyi başlat (SpeechRecognition, tr-TR). Sonuç → turIsle. ---
   const dinle = useCallback(() => {
@@ -304,6 +359,14 @@ export default function SesliGorusme({ acik = false, onKapat }) {
   // --- Barge-in / durdur: konuşurken orb'a dokun → sesi kes, dinlemeye dön ---
   const kes = useCallback(() => {
     if (durumRef.current !== DURUM.KONUSUYOR) return;
+    // Realtime'da kesme protokolün kendisinde: response.cancel + çalan sesi sustur.
+    if (rtAktifRef.current) {
+      // Canlı akışta <audio>'yu duraklatmak akışı da dondurur; kesme protokolün kendisinde:
+      // response.cancel üretimi durdurur, model hemen dinlemeye döner.
+      rtRef.current?.gonder({ type: "response.cancel" });
+      gecir("kes");
+      return;
+    }
     // SIRA ÖNEMLİ: önce kuyruğu iptal et — aksi halde pause, çalan parçayı bitirip kuyruktaki
     // SONRAKİ cümleyi çalmaya başlar ve barge-in işe yaramaz.
     kuyrukRef.current?.iptal();
@@ -315,40 +378,15 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     gecir("kes"); dinle();
   }, [gecir, dinle, urlBirak]);
 
-  // --- Açılış karşılaması: persona (Metin) önce SÖZLÜ selam verir, sonra dinlemeye geçer.
-  //     seslendir DUSUNUYOR'dan yanit_basladi ile KONUSUYOR'a döner; ses biterse/yoksa dinle. ---
-  const karsila = useCallback(async () => {
-    setDurum(DURUM.DUSUNUYOR); durumRef.current = DURUM.DUSUNUYOR;
-    // Durum-farkında açılış: kullanıcının gerçek kuyruğunu bilerek selam verir. Uç erişilemezse
-    // sabit yedek metin — sahne asla sessiz açılmaz.
-    let metin = KARSILAMA_YEDEK;
-    try {
-      // Zaman aşımı ZORUNLU: uç yavaşlarsa orb "Düşünüyor"da donar ve dinle() hiç çağrılmaz
-      // (sahne hiç başlamaz). Yedek metin her zaman hazır — brifing bir konfor, önkoşul değil.
-      const res = await authFetch("/sohbet/karsilama", { signal: AbortSignal.timeout(2500) });
-      if (res.ok) metin = (await res.json())?.metin || KARSILAMA_YEDEK;
-    } catch { /* zaman aşımı/ağ → yedek metinle devam */ }
-    if (!acikRef.current) return;
-    setSonYanit(metin);
-    // Karşılama da hafızaya girer: kullanıcı "kaç taslak demiştin?" derse model kendi
-    // söylediği sayıyı bilsin (bilmezse ikinci turda uydurma zemini doğar).
-    gecmisRef.current = [{ rol: "asistan", icerik: metin }];
-    const kuyruk = sesKuyruguOlustur({
-      sesGetir, oynat: oynatBlob, onIlkSes: () => gecir("yanit_basladi"),
-      onIptal: () => audioElRef.current?.pause(),
-    });
-    kuyrukRef.current = kuyruk;
-    kuyruk.ekle(metin);
-    const { iptal } = await kuyruk.bitir();
-    if (iptal || !acikRef.current || kuyrukRef.current !== kuyruk) return;
-    gecir("yanit_bitti"); dinle();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sesGetir, oynatBlob, gecir]);
-
   // --- Oturum sökme (overlay kapanışı). AudioContext'i KAPATMAZ — oturumlar arası yaşar
   //     (MediaElementSource bir-kez-bağlanma kuralı, #2). Tam kapatma unmount effect'inde. ---
   const temizle = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
+    // Realtime oturumu: peer bağlantısı + mikrofon izleri kapanır. Kapatılmazsa sahne
+    // kapandıktan sonra da mikrofon açık kalır ve fatura işlemeye devam eder.
+    try { rtRef.current?.kapat(); } catch { /* yoksay */ }
+    rtRef.current = null; rtAktifRef.current = false;
+    oynatAnalizRef.current = null;   // uzak akış analizörü oturuma özgüdür
     abortRef.current?.abort();
     kuyrukRef.current?.iptal(); kuyrukRef.current = null;
     try { tanimaRef.current?.stop(); } catch { /* yoksay */ }
@@ -365,12 +403,166 @@ export default function SesliGorusme({ acik = false, onKapat }) {
     // ctx / oynatAnaliz / mediaBagli KORUNUR (bir sonraki açılışta yeniden kullanılır).
   }, [urlBirak]);
 
+  // --- REALTIME MOTORU (birincil) ---------------------------------------------------------
+  // Ses tarayıcı ↔ OpenAI arasında DOĞRUDAN akar; sunucumuz yalnız kısa ömürlü anahtarı üretir.
+  // Ölçüm: eski zincir ilk sesi ~3184 ms'de veriyordu, realtime ~1000 ms.
+  // Model mevzuat/kayıt sorularını KENDİ BİLGİSİNDEN cevaplamaz: `kamu_evrak_sor` aracını
+  // çağırır, biz o soruyu GÜNCEL ekran bağlamıyla /sohbet ucuna sorarız, cevabı modele
+  // veririz. Böylece hız realtime'dan, doğruluk bizim grounded pipeline'dan gelir.
+  const aracaSor = useCallback(async (soru) => {
+    try {
+      // /sohbet DEĞİL /sohbet/veri: o uç veriyi cümleye çeviriyordu, realtime modeli de aynı
+      // cümleyi yeniden kuruyordu — aynı iş iki kez, ölçülen 8789 ms'nin ~4 sn'si buydu.
+      // Artık kompozisyon TEK yerde (realtime), veri ve grounding TEK yerde (bizde).
+      const res = await authFetch("/sohbet/veri", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          soru,
+          ...(ekranRef.current ? { ekran: ekranRef.current } : {}),
+          ...(onayRef.current ? { onay_baglam: onayRef.current } : {}),
+        }),
+      });
+      if (!res.ok) return JSON.stringify({ hata: "Kayıtlara şu an ulaşılamadı." });
+      const y = await res.json();
+      onayRef.current = y.onay_bekleyen || null;   // teyit gerekiyorsa sonraki tura taşı
+      gecmisRef.current = [...gecmisRef.current, { rol: "kullanici", icerik: soru }].slice(-8);
+      // Aksiyon yollarında (onay/revize/kurul) metin zaten karar cümlesidir — olduğu gibi ver.
+      return y.tur === "aksiyon" ? y.metin : JSON.stringify(y);
+    } catch {
+      return JSON.stringify({ hata: "Kayıtlara şu an ulaşılamadı." });
+    }
+  }, []);
+
+  // Araç turunun iki koşulu da sağlandı → yanıt iste ve bayrakları temizle (tek yerde,
+  // iki farklı sıralamadan da buraya düşülüyor).
+  const yanitIsteVeSifirla = useCallback(() => {
+    aracCiktiYazildiRef.current = false;
+    aracYanitBittiRef.current = false;
+    if (rtRef.current) {
+      gecir("sonuc");                       // araç cevabı hazırlanıyor → "Düşünüyor"
+      yanitIste(rtRef.current.gonder);
+    }
+  }, [gecir]);
+
+  const rtOlay = useCallback((olay) => {
+    // Realtime API hatası SESSİZ KALMAZ: teşhis edilemeyen "ses gelmedi" durumları buradan
+    // görünür hâle gelir (aktif-yanıt çakışması tam da böyle gizlenmişti).
+    if (olay.type === "error") {
+      setUyari("Sesli bağlantıda sorun oldu — tekrar deneyin.");
+      console.warn("realtime hata", olay.error || olay);
+    }
+    // Ses AKMAYA BAŞLADIYSA durum tartışmasız KONUŞUYOR'dur. Guard'lı geçiş yetmiyor: araç
+    // turundan sonra durum DİNLİYOR'a düşmüş oluyor ve `yanit_basladi` yalnız DÜŞÜNÜYOR'dan
+    // geçtiği için orb, model konuşurken "Dinliyor" görünüyordu (canlı bulgu).
+    if (olay.type === "output_audio_buffer.started" || olay.type === "response.output_audio.delta") {
+      setDurum(DURUM.KONUSUYOR); durumRef.current = DURUM.KONUSUYOR;
+      return;
+    }
+    // Araç turu iki koşul bekler: (1) sonucumuz konuşmaya YAZILMIŞ olmalı, (2) modelin
+    // aktif yanıtı BİTMİŞ olmalı. Biri eksikken response.create göndermek ya API hatası
+    // verir ya da model aracın cevabını görmeden konuşur. Hangisi önce gelirse gelsin.
+    if (olay.type === "response.done" && aracBekliyorRef.current) {
+      aracBekliyorRef.current = false;
+      aracYanitBittiRef.current = true;
+      if (aracCiktiYazildiRef.current) yanitIsteVeSifirla();
+      return;                       // bu response.done tur sonu DEĞİL, araç turunun ortası
+    }
+    const gecis = sonrakiSesliDurum(olay.type);
+    if (gecis) gecir(gecis);
+
+    // Kullanıcının söylediği yazıya döküldü → ÖNCE deterministik komut dene (ağ turu yok).
+    if (olay.type === "conversation.item.input_audio_transcription.completed") {
+      const metin = (olay.transcript || "").trim();
+      if (!metin) return;
+      setSonUser(metin); sonUserRef.current = metin;
+      const komut = onayRef.current ? { tur: "yok" } : komutCoz(metin, {
+        basliklar: ekranRef.current?.liste?.ilkler || [],
+      });
+      if (komut.tur !== "yok") {
+        onKomut?.(komut);
+        // Model bu tur için konuşmaya başlamış olabilir: kes. Eylem zaten görünür geri bildirim.
+        rtRef.current?.gonder({ type: "response.cancel" });
+        setSonYanit(komutOnayi(komut));
+      }
+      return;
+    }
+    if (olay.type === "response.output_audio_transcript.delta") {
+      setSonYanit((s) => s + (olay.delta || ""));
+      return;
+    }
+    if (olay.type === "response.created") setSonYanit("");
+    // Araç çağrısı: argümanlar parça parça akar, YALNIZ .done çalıştırılabilir.
+    if (aracTamamlandiMi(olay)) {
+      aracBekliyorRef.current = true;
+      aracCiktiYazildiRef.current = false;
+      aracYanitBittiRef.current = false;
+      const { soru } = aracArgumanlari(olay);
+      aracaSor(soru || sonUserRef.current).then((cevap) => {
+        if (!rtRef.current) return;
+        aracCiktisiniYaz(rtRef.current.gonder, olay.call_id, cevap);
+        aracCiktiYazildiRef.current = true;
+        if (aracYanitBittiRef.current) yanitIsteVeSifirla();
+      });
+    }
+  }, [gecir, onKomut, aracaSor, yanitIsteVeSifirla]);
+
+  const kurRealtime = useCallback(async () => {
+    const res = await authFetch("/sohbet/realtime/anahtar", { method: "POST" });
+    if (!res.ok) throw new Error(`anahtar ${res.status}`);   // 503 → çağıran eski zincire düşer
+    const { anahtar, model } = await res.json();
+
+    let ctx = ctxRef.current;
+    if (!ctx || ctx.state === "closed") {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      ctx = new Ctx(); ctxRef.current = ctx;
+    }
+    if (ctx.state === "suspended") await ctx.resume();
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true },
+    });
+    if (!acikRef.current) { stream.getTracks().forEach((t) => t.stop()); throw new Error("kapandı"); }
+    micStreamRef.current = stream;
+    const micKaynak = ctx.createMediaStreamSource(stream);
+    micSrcRef.current = micKaynak;
+    const micAn = ctx.createAnalyser(); micAn.fftSize = FFT; micAn.smoothingTimeConstant = 0.4;
+    micKaynak.connect(micAn); micAnalizRef.current = micAn;
+    bufRef.current = new Uint8Array(micAn.fftSize);
+
+    rtRef.current = await realtimeBaglan({
+      anahtar, model, mikrofon: stream, sesElemani: audioElRef.current, onOlay: rtOlay,
+      // Orb genliği artık TTS blob'undan değil canlı uzak akıştan okunuyor.
+      onUzakAkis: (akis) => {
+        try {
+          const kaynak = ctx.createMediaStreamSource(akis);
+          const an = ctx.createAnalyser(); an.fftSize = FFT; an.smoothingTimeConstant = 0.4;
+          kaynak.connect(an); oynatAnalizRef.current = an;
+        } catch { /* analiz kurulamazsa orb düz kalır, görüşme sürer */ }
+      },
+    });
+    rtAktifRef.current = true;
+    gecir("dinle");
+  }, [rtOlay, gecir]);
+
   const kur = useCallback(async () => {
     azHareketRef.current = azHareketMi();
     setUyari(""); setSonUser(""); setSonYanit(""); setSusturuldu(false); susturRef.current = false;
     gecmisRef.current = [];   // her oturum temiz hafızayla başlar
+    onayRef.current = null;   // önceki oturumdan sarkan teyit bağlamı taşınmaz
     olcuRef.current = orbRef.current?.clientWidth || 0;   // sıvı kenar için orb px boyutu
     rafRef.current = requestAnimationFrame(dongu);
+    // BİRİNCİL: realtime. Anahtar ucu 503 verirse (SESLI_REALTIME=0, anahtar yok, ağ) ya da
+    // WebRTC kurulamazsa (kurum güvenlik duvarı) sessizce aşağıdaki eski zincire düşülür —
+    // sesli görüşme hiçbir durumda tamamen kaybolmaz.
+    try {
+      await kurRealtime();
+      return;
+    } catch {
+      rtAktifRef.current = false;
+      try { rtRef.current?.kapat(); } catch { /* yoksay */ }
+      rtRef.current = null;
+      if (!acikRef.current) return;
+    }
     try {
       // Var olan context'i YENİDEN KULLAN (oturumlar arası yaşar); yoksa/ölüyse yeni kur.
       let ctx = ctxRef.current;
@@ -391,11 +583,15 @@ export default function SesliGorusme({ acik = false, onKapat }) {
       const an = ctx.createAnalyser(); an.fftSize = FFT; an.smoothingTimeConstant = 0.4;
       src.connect(an); micAnalizRef.current = an;         // yalnız analiz — hoparlöre BAĞLANMAZ (echo yok)
       bufRef.current = new Uint8Array(an.fftSize);
-      karsila();   // persona önce sözlü selam verir, sonra dinlemeye geçer
+      // KARŞILAMA YOK — mikrofon açılır açılmaz DİNLER (kullanıcı kararı). Eskiden burada
+      // /sohbet/karsilama (2,5 sn timeout) + selam TTS'i + selamın okunması vardı: kullanıcı
+      // konuşmaya başlayana kadar ~8 sn "Düşünüyor/Yanıtlıyor" bekliyordu. Sahne artık sessiz
+      // açılır ve ilk sözü kullanıcı söyler.
+      dinle();
     } catch {
       if (acikRef.current) setUyari("Mikrofon izni gerekli — tarayıcı çubuğundan izin verip tekrar açın.");
     }
-  }, [dongu, karsila]);
+  }, [dongu, dinle, kurRealtime]);
 
   // Component tamamen unmount olunca AudioContext'i kapat (oturum sökme onu koruyordu).
   useEffect(() => () => { try { ctxRef.current?.close(); } catch { /* yoksay */ } }, []);
@@ -426,34 +622,45 @@ export default function SesliGorusme({ acik = false, onKapat }) {
 
   return (
     <>
-      <audio ref={audioElRef} hidden aria-hidden="true" />
+      {/* autoplay ZORUNLU: realtime'da model sesi bir MediaStream olarak srcObject'e bağlanır
+          ve play() çağıran kimse yoktur (eski zincirde blob'u biz çalıyorduk). */}
+      <audio ref={audioElRef} autoPlay hidden aria-hidden="true" />
 
       {acik && (
-        <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); odakDongusu(e); }}
+        <div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
           style={{
             outline: "none",
-            position: "fixed", inset: 0, zIndex: 300, display: "flex", flexDirection: "column",
-            alignItems: "center", justifyContent: "center", gap: SP.xxl,
-            background: PAL.inkSurf,             // dim "moment" — orb'u parlatır (Apple: dim to focus)
-            animation: "nu-rise .2s var(--ke-ease-out) both",
+            // Sohbet panelinin ayak izi (right/bottom birebir aynı): panel kapanır, orb oraya doğar.
+            position: "fixed", right: SP.xl, bottom: 96, zIndex: 170,
+            width: ORB_BOYUT,
+            display: "flex", flexDirection: "column", alignItems: "center", gap: SP.l,
+            // Kap görünmez: zemin/gölge YOK ve tıklamayı yutmaz — yalnız çocukları tıklanabilir.
+            pointerEvents: "none",
+            // Köken-farkında giriş: orb, kendisini açan yuvarlak butondan (sağ-alt) büyür.
+            transformOrigin: "bottom right",
+            animation: "ke-disk-gir .2s var(--ke-ease-out) both",
           }}>
           {/* Durum etiketi (aria-live) */}
-          <div aria-live="polite" style={{ position: "absolute", top: "10vh", ...SR_ONLY }}>{DURUM_ETIKET[durum]}</div>
-          <div aria-hidden="true" style={{ position: "absolute", top: "9vh", color: PAL.onInk, fontFamily: "'Source Sans 3',system-ui,sans-serif", fontSize: 14, letterSpacing: ".32px", opacity: .7, textTransform: "none" }}>
+          <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
+          {/* zIndex: orb'un aura/halo katmanları konumlandırılmış olduğu için akış içindeki
+              içeriğin ÜSTÜNE boyanır — etiket ve düğmeler bu yüzden kendi katmanına alınır. */}
+          <div aria-hidden="true" style={{ position: "relative", zIndex: 1, ...TYPE.meta, color: PAL.mut2 }}>
             {DURUM_ETIKET[durum]}{dinliyor ? "…" : ""}
           </div>
 
           {/* ORB — dokununca konuşmayı keser (barge-in) */}
           <button type="button" onClick={kes} aria-label={konusuyor ? "Yanıtı durdur" : "Sesli görüşme küresi"} {...focusRing}
-            style={{ position: "relative", width: ORB_BOYUT, height: ORB_BOYUT, borderRadius: "50%", border: "none", background: "none", padding: 0, cursor: konusuyor ? "pointer" : "default" }}>
+            style={{ position: "relative", pointerEvents: "auto", width: ORB_BOYUT, aspectRatio: "1 / 1", flexShrink: 0, borderRadius: RAD.dot, border: "none", background: "none", padding: 0, cursor: konusuyor ? "pointer" : "default" }}>
             {/* düşünürken dışa yayılan halka */}
             {dusunuyor && !azHareketRef.current && (
               <span aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${T}`, animation: "ke-orb-halka 1.4s var(--ke-ease-out) infinite" }} />
             )}
-            {/* dış aura — geniş, çok yumuşak atmosfer katmanı (derinlik) */}
-            <span aria-hidden="true" style={{ position: "absolute", inset: "-58%", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 40%, transparent 70%)`, filter: "blur(70px)", opacity: .2 }} />
-            {/* halo — arkada taşan glow (rAF opacity sürer) */}
-            <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-35%", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 45%, transparent 68%)`, filter: "blur(44px)", opacity: .32 }} />
+            {/* dış aura — geniş, çok yumuşak atmosfer katmanı (derinlik).
+                pointerEvents ZORUNLU: kutunun ~%58 DIŞINA taşar; tıklamayı yutarsa hem alttaki
+                sustur/bitir düğmeleri hem arkadaki sayfa ölür (bulundu: düğmeler basılmıyordu). */}
+            <span aria-hidden="true" style={{ position: "absolute", inset: "-58%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 40%, transparent 70%)`, filter: "blur(70px)", opacity: .2 }} />
+            {/* halo — arkada taşan glow (rAF opacity sürer); o da kutu dışına çıkar → tıklama geçirir */}
+            <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-35%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 45%, transparent 68%)`, filter: "blur(44px)", opacity: .32 }} />
             {/* küre — rAF scale sürer */}
             <span ref={orbRef} aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", willChange: "transform", boxShadow: `inset 0 -14px 44px rgba(0,0,0,.4), inset 0 8px 30px color-mix(in srgb, ${PAL.onInk} 22%, transparent)` }}>
               {/* taban gökyüzü gradyanı (hero: gök mavisi çekirdek → lavanta → mühür moru kenar)
@@ -472,24 +679,29 @@ export default function SesliGorusme({ acik = false, onKapat }) {
             </span>
           </button>
 
-          {/* Canlı transcript */}
-          <div style={{ maxWidth: "min(640px, 88vw)", textAlign: "center", display: "flex", flexDirection: "column", gap: SP.s, minHeight: 64 }}>
-            {sonUser && <p style={{ margin: 0, color: PAL.onInk, opacity: .62, fontFamily: "'Source Sans 3',system-ui,sans-serif", fontSize: 14, lineHeight: "20px" }}>{sonUser}</p>}
-            {sonYanit && <p style={{ margin: 0, color: PAL.onInk, fontFamily: "'Source Sans 3',system-ui,sans-serif", fontSize: 18, lineHeight: "26px" }}>{sonYanit}</p>}
-            {uyari && <p role="status" aria-live="polite" style={{ margin: 0, color: PAL.onInk, opacity: .55, fontFamily: "'Source Sans 3',system-ui,sans-serif", fontSize: 13, lineHeight: "18px" }}>{uyari}</p>}
-          </div>
+          {/* Konuşulan metin GÖRÜNMEZ (kullanıcı kararı: altyazı yok — ses zaten konuşuyor).
+              Ekran okuyucu için erişilebilir kalır; aria-live YOK, yoksa akan her token
+              yeniden seslendirilirdi. */}
+          <div style={SR_ONLY}>{sonUser}{sonYanit ? ` — ${sonYanit}` : ""}</div>
 
-          {/* Kontrol barı — sustur + kapat (yarı saydam pill) */}
-          <div style={{ position: "absolute", bottom: "8vh", display: "flex", alignItems: "center", gap: SP.l, padding: `${SP.s}px ${SP.m}px`, borderRadius: 999, background: "color-mix(in srgb, #000 45%, transparent)", backdropFilter: "blur(16px)" }}>
+          {/* Kontroller — sustur + bitir. Artık AÇIK zeminde duruyorlar: koyu tabak yok,
+              bu yüzden yüzey/kenarlık token'ları (PAL) kullanılır, yarı saydam siyah değil. */}
+          <div style={{ position: "relative", zIndex: 1, pointerEvents: "auto", display: "flex", alignItems: "center", gap: SP.l, flexShrink: 0 }}>
             <button type="button" data-press onClick={susturDegistir} aria-pressed={susturuldu} aria-label={susturuldu ? "Susturmayı kaldır" : "Mikrofonu sustur"} {...focusRing}
-              style={{ cursor: "pointer", width: 52, height: 52, borderRadius: "50%", border: `1px solid color-mix(in srgb, ${PAL.onInk} 24%, transparent)`, background: susturuldu ? DERIN.R : "color-mix(in srgb, #000 25%, transparent)", color: PAL.onInk, display: "grid", placeItems: "center", transition: `background .14s ${EASE.out}` }}>
-              {susturuldu ? <Icon.micOff /> : <Icon.mic width={18} height={18} />}
+              style={{ cursor: "pointer", width: 44, height: 44, borderRadius: RAD.dot, border: `1px solid ${susturuldu ? DERIN.R : PAL.line}`, background: susturuldu ? DERIN.R : PAL.surf, color: susturuldu ? PAL.onAccent : PAL.ink2, display: "grid", placeItems: "center", boxShadow: SH.card, transition: `background .14s ${EASE.out}, color .14s ${EASE.out}` }}>
+              {susturuldu ? <Icon.micOff /> : <Icon.mic width={17} height={17} />}
             </button>
             <button type="button" data-press onClick={kapat} aria-label="Sesli görüşmeyi bitir" {...focusRing}
-              style={{ cursor: "pointer", width: 56, height: 56, borderRadius: "50%", border: "none", background: DERIN.R, color: PAL.onInk, display: "grid", placeItems: "center", boxShadow: SH.pop }}>
-              <Icon.x width={20} height={20} />
+              style={{ cursor: "pointer", width: 48, height: 48, borderRadius: RAD.dot, border: "none", background: DERIN.R, color: PAL.onAccent, display: "grid", placeItems: "center", boxShadow: SH.pop }}>
+              <Icon.x width={19} height={19} />
             </button>
           </div>
+
+          {/* Uyarı ALTYAZI DEĞİL: mikrofon izni yok / TTS anahtarı yok gibi sessiz kalırsa
+              kullanıcının asla anlayamayacağı durumlar. Yalnız doluyken görünür. */}
+          {uyari && (
+            <p role="status" aria-live="polite" style={{ position: "relative", zIndex: 1, margin: 0, maxWidth: "100%", textAlign: "center", ...TYPE.meta, color: PAL.mut }}>{uyari}</p>
+          )}
         </div>
       )}
     </>

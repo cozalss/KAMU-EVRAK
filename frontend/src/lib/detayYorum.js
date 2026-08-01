@@ -250,6 +250,11 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
       devir: false,
       etiket: "Havale — kurum / birim",
       deger: kurum || birim,
+      // ÇİFT SLOT: kurum ve birim şeritte AYRI ve eşit ağırlıkta gösterilir. Eskiden birim
+      // `alt` satırında küçük/soluk yazılıyordu ve memurun gözünden kaçıyordu (kullanıcı
+      // bulgusu) — havalenin iki bileşeni de karar için eşit derecede kritiktir.
+      kurum: kurum || "",
+      birim: birim || "",
       ton: null,
       vurgu: false,
       rozet: { metin: "kaynak doğrulandı", ton: "yesil" },
@@ -269,6 +274,8 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
     devir: false,
     etiket: belirsiz ? "Havale — kurum / birim" : "Havale — kurum / birim (öneri)",
     deger: kurum || birim || "Belirlenmedi",
+    kurum: kurum || "",
+    birim: birim || "",
     ton: "sari",
     // Geçerli bir birim adı kendi başına alarm DEĞİL — belirsizliği rozet taşır, adı okunur bırak.
     // "Belirlenmedi" ise değerin kendisi eksikliktir → tonlanır.

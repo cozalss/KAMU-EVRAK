@@ -10,6 +10,7 @@ import AjanAdimDetay from "./AjanAdimDetay.jsx";
 import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
+import A4Belge from "./A4Belge.jsx";
 import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 
@@ -388,10 +389,9 @@ export default function CanliAjanAkisi({
                     başlık/seçici/footer düz kalır → hiyerarşi net, belge kahraman. */}
                 <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
                   {draftMd ? (
-                    <div className="sc-document-paper" title="Büyüt (A4 görünüm)"
-                      onClick={() => setBelgeModal("taslak")}
-                      style={{ maxWidth: 860, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: "zoom-in", animation: "nu-rise .16s var(--ke-ease-out) both", opacity: (turUretiliyor || dayanakUretiliyor) ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
-                      <pre style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0 }}>{cleanDemoText(draftMd)}</pre>
+                    <div className="sc-document-paper" style={{ maxWidth: 860, margin: "0 auto" }}>
+                      <A4Belge metin={cleanDemoText(draftMd)} onAc={() => setBelgeModal("taslak")}
+                        solgun={turUretiliyor || dayanakUretiliyor} />
                     </div>
                   ) : (
                     <div style={{ maxWidth: 800, margin: "0 auto", display: "flex", alignItems: "center", gap: SP.s, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px dashed ${PAL.lineHi}`, borderRadius: RAD.card, padding: SP.xxl, background: PAL.surf }}>

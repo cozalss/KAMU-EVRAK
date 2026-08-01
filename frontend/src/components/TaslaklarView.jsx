@@ -7,8 +7,9 @@
    Düzenleme yüzeyi TEK kalır: A4 kâğıt modalı (BelgeModal); kurul = KurulModal. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
 import BelgeModal from "./BelgeModal.jsx";
+import A4Belge from "./A4Belge.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
@@ -54,10 +55,9 @@ const BASE_CONFIG = {
 const KALEM = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z M14 6l4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 const COP = (p) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}><path d="M5 7h14M10 7V5h4v2M6 7l1 13h10l1-13M10 11v6M14 11v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 
-/* Yalnız SARI/KIRMIZI görünür sinyal taşır (yeşil = sessiz varsayılan; renk enflasyonu yok).
-   Metin + renk birlikte — renk tek sinyal değil. */
-const RISK_UYARI = { sari: "Orta risk", kirmizi: "Yüksek risk" };
-const bantOf = (h) => h.bant || h.result?.risk_metadata?.bant || "";
+/* NOT: risk bandı bu görünümde GÖSTERİLMEZ (kullanıcı kararı 2026-08-02) — taslak kuyruğu
+   karar vermeye odaklanır, risk değerlendirmesi Panel/Denetim yüzeylerinde kalır. Risk
+   VERİSİ üretilmeye devam eder (result.risk_metadata.bant); yalnız bu ekranda çizilmez. */
 
 /* Taslak metninden KONU + gövdenin ilk anlamlı paragrafını çıkar — önizleme her taslakta
    aynı olan resmî başlık kalıbını ("T.C. / KAMU KURUMU / Sayı…") tekrarlamasın. */
@@ -76,6 +76,14 @@ function taslakOzeti(md) {
   }
   return { konu, govde: govde || temiz };
 }
+
+/* Meta satırı — YALNIZ dolu parçaları "·" ile birleştirir.
+   BIRIM_LBL/EVRAK_TR bilinmeyen değerde "—" döndürdüğü için satırlar "Üst Yazı · —" ya da
+   "Bilgilendirme Yazısı · — · Orta risk" gibi çıkıyordu: boş bir alanı görünür kılmak memura
+   hiçbir şey söylemiyor, yalnız gürültü ekliyor. Bilinmeyen değer artık satırdan düşer;
+   ayraç da onunla birlikte gider (yalnız kalan "·" bırakmaz). */
+const metaSatiri = (...parcalar) =>
+  parcalar.map((p) => String(p ?? "").trim()).filter((p) => p && p !== "—").join(" · ");
 
 /* Sakin metin-düğme — panel eylem çubuğundaki ikincil/yıkıcı eylemler. */
 function MetinEylem({ onClick, renk = DERIN.T, ariaLabel, disabled, children }) {
@@ -151,11 +159,12 @@ function AracCubugu({ filter, turSecenek, birimSecenek }) {
    görüntüsünde 6 kez) — title tooltip'i tam metni hover'da verir (MevzuatView künye kırpması
    ile aynı çözüm); data-press diğer seçim kutucuklarıyla aynı dokunma dili. */
 function KuyrukSatiri({ h, konu, secili, onSec, onAc, optId, ilk }) {
-  const bant = bantOf(h);
-  const uyari = RISK_UYARI[bant];
   const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
   const baslik = konu || h.name;
-  const meta = `${YAZI_TR(h.result?.yazi_turu) || "Taslak"} · ${BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu)}`;
+  const meta = metaSatiri(
+    YAZI_TR(h.result?.yazi_turu) || "Taslak",
+    BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu),
+  );
   return (
     <div role="option" id={optId} aria-selected={secili} onClick={onSec} onDoubleClick={onAc} data-press=""
       style={{ cursor: "pointer", padding: "10px 12px 10px 10px", borderLeft: `2px solid ${secili ? T : "transparent"}`,
@@ -172,7 +181,6 @@ function KuyrukSatiri({ h, konu, secili, onSec, onAc, optId, ilk }) {
         <span title={meta} style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {meta}
         </span>
-        {uyari && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(BANT[bant].c), flexShrink: 0 }}>· {uyari}</span>}
       </div>
     </div>
   );
@@ -182,13 +190,11 @@ function KuyrukSatiri({ h, konu, secili, onSec, onAc, optId, ilk }) {
    (Retool action-bar deseni): Gönder = ekranın tek primary'si; Sil = çıplak kırmızı metin,
    en solda, arada boşluk (yanlış-tıklama sigortası). Önizleme TYPE.read — okuma metni
    okuma kademesini hak eder. */
-function KararPaneli({ h, konu, govde, genis, sendBusy, onDuzenle, onKurul, onGonder, onSil }) {
+function KararPaneli({ h, konu, govde, tamMetin, genis, sendBusy, onDuzenle, onKurul, onGonder, onSil }) {
   const [confirmDel, setConfirmDel] = useState(false);
   // Gönder de onaylı (confirmDel ikizi): resmî yazı GİDEN EVRAK'a kalıcı yazılır — tek yanlış
   // tık geri alınamaz kayıt üretmesin; "Gönder" önce onay ister, gönderim onayla başlar.
   const [confirmSend, setConfirmSend] = useState(false);
-  const bant = bantOf(h);
-  const uyari = RISK_UYARI[bant];
   const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
   const r = h.result || {};
   // key={secili.id} remount zaten sıfırlar — bu effect, key kalkarsa emniyet kemeri.
@@ -200,29 +206,25 @@ function KararPaneli({ h, konu, govde, genis, sendBusy, onDuzenle, onKurul, onGo
       <header style={{ padding: `${SP.l}px ${SP.xl}px ${SP.m}px`, borderBottom: `1px solid ${PAL.line}`, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: SP.m }}>
           <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink, flex: 1, minWidth: 0 }}>{konu || h.name}</h3>
-          {uyari && (
-            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(BANT[bant].c), ...TYPE.meta, fontWeight: 500, color: DERIN_OF(BANT[bant].c) }}>
-              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: BANT[bant].c }} />
-              {uyari}
-            </span>
-          )}
         </div>
         <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", marginTop: SP.xs }}>
           <span style={{ fontFamily: SANS, fontSize: 12, color: PAL.mut3 }}>{h.name}</span>
           {tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, ...TNUM }}>{tarih}</span>}
           <span style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {EVRAK_TR(r.evrak_turu)} · {BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}{r.yazi_turu ? ` · ${YAZI_TR(r.yazi_turu)}` : ""}
+            {metaSatiri(EVRAK_TR(r.evrak_turu), BIRIM_GOSTER(r.hedef_birim, r.evrak_turu), YAZI_TR(r.yazi_turu))}
           </span>
         </div>
       </header>
-      {/* Kâğıt önizleme — resmî başlık kalıbı atlanır; tıkla → A4 düzenleme (BelgeModal). */}
+      {/* Kâğıt önizleme — GERÇEK A4 sayfası (A4Belge: 210x297, Yönetmelik m.8/1 kenar
+          boşlukları, taşan metin yeni sayfaya). Kırpılmış özet yerine TAM taslak gösterilir:
+          antet/Sayı/Konu/imza bloğu belgenin parçasıdır ve sayfa düzeninde ancak tamamı
+          gösterilirse gerçekçi durur (özet, eski dar metin bloğu için kırpılıyordu).
+          Tıkla → A4 düzenleme (BelgeModal). */}
       <div role="button" tabIndex={0} title="Düzenle (A4 görünüm)" {...focusRing}
         onClick={onDuzenle}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDuzenle(); } }}
-        style={{ flex: 1, minHeight: 120, overflowY: "auto", padding: `${SP.l}px ${SP.xl}px`, background: PAL.surf2, cursor: "zoom-in" }}>
-        <span style={{ display: "block", ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-line", wordBreak: "break-word", maxWidth: 680 }}>
-          {govde}
-        </span>
+        style={{ flex: 1, minHeight: 120, overflowY: "auto", padding: SP.l, background: PAL.surf2, cursor: "zoom-in" }}>
+        <A4Belge metin={cleanDemoText(tamMetin) || govde} baslikIpucu="Düzenle (A4 görünüm)" />
       </div>
       <footer style={{ display: "flex", alignItems: "center", gap: SP.s, padding: `${SP.m}px ${SP.xl}px`, borderTop: `1px solid ${PAL.line}`, flexShrink: 0, flexWrap: "wrap" }}>
         {confirmDel ? (
@@ -409,7 +411,8 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
             ))}
           </div>
           {secili && (
-            <KararPaneli key={secili.id} h={secili} konu={secili.konu} govde={secili._govde} genis={genis} sendBusy={sendBusy}
+            <KararPaneli key={secili.id} h={secili} konu={secili.konu} govde={secili._govde}
+              tamMetin={secili.result?.yazi_taslak_md} genis={genis} sendBusy={sendBusy}
               onDuzenle={() => acDuzenle(secili.id)} onKurul={() => acKurul(secili.id)}
               onGonder={() => gonder(secili, secili.result.yazi_taslak_md)} onSil={() => sil(secili)} />
           )}

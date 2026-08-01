@@ -14,6 +14,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
 import { SANS, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, SR_ONLY, EASE_BEZIER, Icon, focusRing } from "./neonUi.jsx";
 import RevizePaneli from "./RevizePaneli.jsx";
+import A4Belge from "./A4Belge.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
@@ -201,7 +202,15 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                       yaratıyordu; ayrıca istek sürerken kâğıt açık kalsaydı memurun o sırada yaptığı
                       elle düzeltme "Uygula"da sessizce silinirdi (ESKİ metne göre üretilmiş öneri
                       üzerine yazardı). Uygula/Vazgeç sonrası kâğıt geri döner. */}
-                  {!revizeOneriAcik && (
+                  {/* Düz metin + düzenlenemez + vurgu yok → GERÇEK A4 sayfa düzeni (A4Belge:
+                      210x297 oranı, Yönetmelik m.8/1 kenar boşluğu, taşan metin yeni sayfaya).
+                      Diğer üç kip (PDF önizleme, kâğıt üstünde düzenleme, çıkarım vurgulu kaynak
+                      belge) kendi düzenlerini korur — vurgulama ve dikte alanı A4 bölmesine
+                      girmez. */}
+                  {!revizeOneriAcik && !fileUrl && !duzenlenebilir && !(segmentler && segmentler.length) && (
+                    <A4Belge metin={metin || "İçerik henüz hazır değil."} />
+                  )}
+                  {!revizeOneriAcik && (fileUrl || duzenlenebilir || (segmentler && segmentler.length)) && (
                     <div style={{ background: PAL.surf, borderRadius: RAD.chip, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
                       {fileUrl ? (
                         <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>

@@ -29,6 +29,14 @@ import {
 // görünür kalır. Kap saydam olduğu için TIKLAMA GEÇİRİR (pointerEvents) — aksi halde
 // görünmeyen bir kutu arkadaki listeleri tıklanamaz yapardı.
 const ORB_BOYUT = "min(210px, calc(100vw - 96px), calc(100vh - 220px))";
+// MALİYET KORUMASI — realtime'da ses açık kaldığı sürece ücretlendirilir ve eski zincirdeki
+// kullanıcı-başına TTS karakter kotası artık hiçbir şeyi korumuyor (TTS'i biz çağırmıyoruz).
+// Açık unutulan bir sekme sessizce fatura yazardı. İki sınır: konuşulmadan geçen süre ve
+// oturumun toplam ömrü. İkisi de dolunca oturum kapanır, kullanıcı görünür bir not görür.
+const BOS_KAPANIS_MS = 3 * 60 * 1000;    // 3 dk kimse konuşmadıysa
+const AZAMI_OTURUM_MS = 15 * 60 * 1000;  // toplam tavan (aktif olsa bile)
+const SAYAC_ARALIK_MS = 5000;
+
 const FFT = 1024;                 // ~512 bin; research deseni (smoothingTimeConstant 0.4)
 const SCALE_K = 0.13;             // genlik → hafif scale; asıl tepki KENAR sıvı-morph'unda (aş. dongu)
 const NEFES = 0.022;              // idle "nefes" salınımı ±%2.2
@@ -93,6 +101,8 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   const rtRef = useRef(null);        // aktif realtime oturumu ({gonder, kapat, pc})
   const rtAktifRef = useRef(false);  // realtime mi eski zincir mi (temizle/kes bunu okur)
   const sonUserRef = useRef("");     // model araca soru vermezse son transkripti kullan
+  const sonEtkilesimRef = useRef(0); // son kullanıcı konuşması (boşta-kapanış sayacı)
+  const oturumBaslangicRef = useRef(0);
 
   const orbRef = useRef(null);
   const haloRef = useRef(null);
@@ -445,6 +455,9 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   }, [gecir]);
 
   const rtOlay = useCallback((olay) => {
+    // Kullanıcı konuştu → boşta-kapanış sayacı sıfırlanır (model konuşması SAYILMAZ:
+    // asistanın kendi kendine konuşması "kullanıcı burada" anlamına gelmez).
+    if (olay.type === "input_audio_buffer.speech_started") sonEtkilesimRef.current = Date.now();
     // Realtime API hatası SESSİZ KALMAZ: teşhis edilemeyen "ses gelmedi" durumları buradan
     // görünür hâle gelir (aktif-yanıt çakışması tam da böyle gizlenmişti).
     if (olay.type === "error") {
@@ -605,6 +618,33 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   }, [acik]);
 
   const kapat = useCallback(() => { setDurum(DURUM.HAZIR); onKapat?.(); }, [onKapat]);
+
+  // Maliyet koruması: boşta kalan ya da çok uzayan oturumu kendiliğinden kapat.
+  // Yalnız realtime yolunda anlamlı (eski zincirde ses sürekli akmıyor), ama iki yolda da
+  // zararsız çalışır — açık unutulan sahne her hâlükârda mikrofonu meşgul ediyor.
+  useEffect(() => {
+    if (!acik) return undefined;
+    sonEtkilesimRef.current = Date.now();
+    oturumBaslangicRef.current = Date.now();
+    let kapanisZamani = null;
+    const sayac = setInterval(() => {
+      const simdi = Date.now();
+      const bosta = simdi - sonEtkilesimRef.current;
+      const omur = simdi - oturumBaslangicRef.current;
+      const neden = bosta >= BOS_KAPANIS_MS
+        ? "Bir süredir konuşulmadığı için görüşme kapatılıyor."
+        : omur >= AZAMI_OTURUM_MS
+          ? "Görüşme süresi doldu — dilediğinde yeniden başlatabilirsin."
+          : null;
+      if (!neden || kapanisZamani) return;
+      // Sebebi ÖNCE göster, sonra kapat: sahneyle birlikte uyarı da yok olduğu için
+      // kullanıcı sebepsiz kapanma yaşıyordu (canlı testte yakalandı).
+      clearInterval(sayac);
+      setUyari(neden);
+      kapanisZamani = setTimeout(kapat, 2600);
+    }, SAYAC_ARALIK_MS);
+    return () => { clearInterval(sayac); if (kapanisZamani) clearTimeout(kapanisZamani); };
+  }, [acik, kapat]);
 
   const susturDegistir = useCallback(() => {
     setSusturuldu((v) => {

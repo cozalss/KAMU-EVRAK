@@ -4,7 +4,7 @@
    (/mevzuat/icerik/{dosya}). Oturumda RAG'in önerdiği mevzuat da tıklanınca ilgili
    maddeye kaydırılmış açılır. Backend yoksa statik çekirdek katalog fallback. */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ViewWrap, NeonCard, EmptyState, Icon, Btn, MONO, T, V, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, EmptyState, Icon, Btn, MONO, T, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY } from "./neonUi.jsx";
 import { cleanDemoText } from "./result-cards.jsx";
 import { OkumaModal } from "./MevzuatOkuma.jsx";
 

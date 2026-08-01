@@ -13,7 +13,7 @@ import { Toaster } from "sonner";
 import { MotionConfig } from "motion/react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { useAktifKurum } from "./hooks/useAktifKurum.js";
-import { createSekans, mevzuatAnahtar, mevzuatOzet, sonrakiSecim } from "./lib/dayanakSecim.js";
+import { createSekans, sonrakiSecim } from "./lib/dayanakSecim.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { islemIdCoz } from "./lib/taslakId.js";
 import { useAuth } from "./lib/useAuth.jsx";

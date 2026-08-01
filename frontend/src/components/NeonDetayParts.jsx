@@ -5,7 +5,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { diffLines } from "diff";
 import { cleanDemoText } from "./result-cards.jsx";
-import { MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, Icon, KV } from "./neonUi.jsx";
+import { MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, Icon } from "./neonUi.jsx";
 import { lintGrupla, slaKonum } from "../lib/detayYorum.js";
 
 /* Semantik durum çipi — satır başına en fazla 1 (MASTER: çip enflasyonu yasak). */

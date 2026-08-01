@@ -8,10 +8,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
-import { belgeMetniMi, belgeOzetiMd, pipelineOlay } from "../lib/belgeIsle.js";
-import { makeNode } from "../lib/nodeMeta.js";
 import { mdSatirTipi } from "../lib/mdSatir.js";
-import { sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
+import { sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import SesliGorusme from "./SesliGorusme.jsx";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
@@ -180,13 +178,11 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   const [kaynak, setKaynak] = useState(null);   // son yanıtın kaynağı (llm|fallback) — şeffaflık
   // STT (mikrofon) tarayıcı desteklemiyorsa (Firefox vb.) sesli butonlar hiç render edilmez.
   const sttVar = sttDestekleniyorMu();
-  const [dinliyor, setDinliyor] = useState(false);
   // Sesli görüşme — asistanın İÇİNDEN başlatılır ve sohbet panelinin YERİNE geçer: panel
   // kapanır, aynı noktada yuvarlak disk açılır (tam ekran DEĞİL; kullanıcı sitede kalır,
   // arkadaki ekranı görür/kullanır). Görüşme bitince panel geri gelir — kullanıcı geldiği
   // yere döner ve yazışma geçmişi elinde kalır.
   const [sesliAcik, setSesliAcik] = useState(false);
-  const tanimaRef = useRef(null);
   // Ekran bağlamı REF'te tutulur: gonder() bir closure ve ekran her navigasyonda değişiyor —
   // prop'u doğrudan okusaydı kullanıcı soruyu sorduğu anki değil, closure'ın kurulduğu anki
   // ekranı gönderirdi (bayat bağlam = yanlış cevap).
@@ -215,20 +211,6 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   }, [onNavigate, onEvrakAc]);
   const gecmisiTemizle = () => {
     hafizaTemizle(); setMesajlar([KARSILAMA]); setKaynak(null); inputRef.current?.focus();
-  };
-
-  // Mikrofon push-to-talk: basınca dinlemeye başlar, transcript gelince otomatik gönderir.
-  const mikrofonBasildi = () => {
-    if (dinliyor) { tanimaRef.current?.stop(); return; }
-    const tanima = sesTanimaOlustur({
-      onSonuc: (metin) => gonder(metin),
-      onBitti: () => setDinliyor(false),
-      onHata: () => setDinliyor(false),
-    });
-    if (!tanima) return;
-    tanimaRef.current = tanima;
-    setDinliyor(true);
-    tanima.start();
   };
 
   // Son (akan) asistan balonunu fonksiyonel güncelle — akış sırasında state yarışı olmaz.
@@ -340,87 +322,6 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
     }
   };
 
-  // Belge işle (FAZ 3, Görev 1): yapıştırılan evrak metnini /process_doc/stream'e (.txt blob)
-  // gönder → pipeline node'ları CANLI akar ("✓ Sınıflandır… ✓ Mevzuat Öner…"), done'da Görev-1
-  // özeti render edilir. "Ajanı izle" demo anı. Kısa sorgu değilse dürüst uyarı verir.
-  const belgeYukle = async (metin) => {
-    const text = (metin ?? girdi).trim();
-    if (!text || bekliyor) return;
-    if (!belgeMetniMi(text)) {
-      setMesajlar((ms) => [...ms, {
-        rol: "asistan",
-        icerik: "İşlemek için evrak metnini (en az birkaç cümle) yapıştırıp 📎 işle deyin.",
-      }]);
-      return;
-    }
-    setGirdi("");
-    setBekliyor(true);
-    const onizleme = text.slice(0, 80) + (text.length > 80 ? "…" : "");
-    setMesajlar((ms) => [
-      ...ms,
-      { rol: "kullanici", icerik: `📎 Belge işlensin: ${onizleme}` },
-      { rol: "asistan", icerik: "📄 Belge işleniyor…", akiyor: true },
-    ]);
-    const bitenler = [];
-    try {
-      const fd = new FormData();
-      fd.append("file", new Blob([text], { type: "text/plain" }), "sohbet-evrak.txt");
-      const res = await authFetch("/process_doc/stream", { method: "POST", body: fd });
-      if (!res.ok || !res.body) throw new Error(`akış ${res.status}`);
-      const reader = res.body.getReader();
-      const dec = new TextDecoder();
-      let buf = "";
-      let sonucGeldi = false;
-      // Tek SSE bloğunu işle — döngü + döngü sonrası kalan için ortak (bug avı: ayraçsız son
-      // 'done' event'i düşüyordu → özet hiç görünmüyor, balon 'işleniyor…'da kalıyordu).
-      const islemBlok = (blok) => {
-        const satir = blok.split("\n").find((l) => l.startsWith("data:"));
-        if (!satir) return;
-        let ev;
-        try { ev = JSON.parse(satir.slice(5)); } catch { return; }
-        const o = pipelineOlay(ev);
-        if (o.tip === "node") {
-          bitenler.push(`✓ ${makeNode(o.node).label}`);
-          sonuGuncelle((son) => ({ ...son, icerik: `📄 Belge işleniyor…\n${bitenler.join("\n")}` }));
-        } else if (o.tip === "sonuc") {
-          sonucGeldi = true;
-          setKaynak("llm");
-          sonuGuncelle((son) => ({ ...son, icerik: belgeOzetiMd(o.sonuc), akiyor: false }));
-        } else if (o.tip === "hata") {
-          sonucGeldi = true;
-          sonuGuncelle((son) => ({ ...son, icerik: `Belge işlenemedi: ${o.mesaj}`, akiyor: false, hata: true }));
-        }
-      };
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        let i;
-        while ((i = buf.indexOf("\n\n")) !== -1) {
-          islemBlok(buf.slice(0, i));
-          buf = buf.slice(i + 2);
-        }
-      }
-      buf += dec.decode();               // flush
-      if (buf.trim()) islemBlok(buf);    // ayraçsız son event'i de işle
-      if (!sonucGeldi) {                 // hiç sonuç/hata gelmedi → dürüst yarım-kaldı mesajı
-        sonuGuncelle((son) => ({
-          ...son, akiyor: false, hata: true, tekrar: () => belgeYukle(text),
-          icerik: "Belge işleme yarım kaldı — sonuç alınamadı. Tekrar deneyin.",
-        }));
-      } else {
-        sonuGuncelle((son) => ({ ...son, akiyor: false }));
-      }
-    } catch (err) {
-      sonuGuncelle((son) => ({
-        ...son, akiyor: false, hata: true, tekrar: () => belgeYukle(text),
-        icerik: `Belge işlenemedi: ${err.message || "bağlantı hatası"}`,
-      }));
-    } finally {
-      setBekliyor(false);
-    }
-  };
-
   // HITL teyit butonları — bağlamı geri göndererek eylemi uygula/iptal et.
   // "Evet" DB'ye gerçek karar yazar (sohbet.py → onayla_ve_gonder) — Panel/Taslaklar/Giden
   // ekranları eskiden F5'e dek eski durumu gösteriyordu (denetim bulgusu): kararın ardından
@@ -493,36 +394,19 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
           {/* Giriş */}
           <form onSubmit={(e) => { e.preventDefault(); gonder(); }}
             style={{ display: "flex", gap: SP.s, padding: SP.m, borderTop: `1px solid ${PAL.line}`, background: PAL.surf }}>
-            <button type="button" aria-label="Belgeyi işle (Görev 1)" title="Yapıştırdığınız evrak metnini işle: tür, özet, birim, mevzuat, taslak"
-              disabled={bekliyor || !girdi.trim()} onClick={() => belgeYukle()} {...focusRing}
-              style={{
-                cursor: bekliyor || !girdi.trim() ? "not-allowed" : "pointer", width: 36, height: 36, borderRadius: RAD.ctl,
-                border: `1px solid ${PAL.inputLine}`, background: PAL.surf,
-                color: bekliyor || !girdi.trim() ? PAL.mut2 : DERIN.T, display: "grid", placeItems: "center", flexShrink: 0,
-                transition: "color .12s ease-out",
-              }}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 7 L9.5 15.5 a2.5 2.5 0 0 1-3.5-3.5 L14 4 a4 4 0 0 1 5.5 5.5 L11 18 a5.5 5.5 0 0 1-7.7-7.7 L11 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </button>
+            {/* Ataç (belge işleme) butonu KALDIRILDI — kullanıcı kararı. Evrak işleme yolu
+                Gelen Evrak ve "Yeni evrak yükle"dir; buradaki ikinci giriş aynı işi
+                tekrarlıyordu. Sohbet kutusu artık tek şey yapar: yazışmak. */}
             <input ref={inputRef} type="text" value={girdi} onChange={(e) => setGirdi(e.target.value)}
               placeholder="Evrak sorun, mevzuat arayın…" aria-label="Asistana mesaj yaz"
               maxLength={1000} {...focusRing}
               style={{ flex: 1, minWidth: 0, ...TYPE.ui, color: PAL.ink, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "8px 12px", outline: "none" }} />
-            {sttVar && (
-              <button type="button" aria-label={dinliyor ? "Dinlemeyi durdur" : "Sesle konuş"}
-                title={dinliyor ? "Dinliyor… bitirince otomatik gönderilir" : "Sesle konuş"}
-                disabled={bekliyor} onClick={mikrofonBasildi} {...focusRing}
-                style={{
-                  cursor: bekliyor ? "not-allowed" : "pointer", width: 36, height: 36, borderRadius: RAD.ctl,
-                  border: `1px solid ${dinliyor ? DERIN.kirmizi : PAL.inputLine}`,
-                  background: dinliyor ? ALFA(BANT.kirmizi.c) : PAL.surf,
-                  color: bekliyor ? PAL.mut2 : dinliyor ? DERIN.kirmizi : DERIN.T,
-                  display: "grid", placeItems: "center", flexShrink: 0,
-                  animation: dinliyor ? "nu-think 1.1s infinite" : "none",
-                  transition: "color .12s ease-out, background .12s ease-out",
-                }}>
-                <Icon.mic width={17} height={17} />
-              </button>
-            )}
+            {/* Yazı kutusunda MİKROFON YOK — kullanıcı kararı. Eskiden buradaki push-to-talk
+                konuşmayı yazıya çevirip SOHBET MESAJI olarak gönderiyordu; "sesle konuştum,
+                neden chat'e düştü?" sorusunun kaynağı buydu. Ayrım artık net:
+                  konuşmak → sesli görüşme diski (sohbet geçmişine yazmaz)
+                  yazmak   → sohbet paneli
+                İkisi aynı kutuda durur, içerikleri karışmaz. */}
             <button type="submit" aria-label="Mesajı gönder" disabled={gonderPasif} {...focusRing}
               style={{
                 cursor: gonderPasif ? "not-allowed" : "pointer", width: 40, height: 36, borderRadius: RAD.ctl, border: "none",

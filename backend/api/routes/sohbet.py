@@ -51,8 +51,8 @@ from api.pii import mask_for_llm
 from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
-from core.sesli_brifing import karsilama_metni
 from core.realtime_oturum import efemer_anahtar, realtime_acik
+from core.sesli_brifing import karsilama_metni
 from core.tts_kota import kota_dus
 from core.tts_openai import tts_enabled, tts_media_type, tts_openai
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder

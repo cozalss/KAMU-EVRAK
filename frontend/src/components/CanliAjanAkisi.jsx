@@ -14,7 +14,7 @@ import A4Belge from "./A4Belge.jsx";
 import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 
-import { MONO, SANS, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
+import { SANS, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 import NumberFlow from "@number-flow/react";
 /* Metro şeması + sahne bileşenleri CanliMetro.jsx'te yaşar (dosya <800 kuralı + "SAHNE Epik"

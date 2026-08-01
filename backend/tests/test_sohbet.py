@@ -829,21 +829,41 @@ class TestSohbetSeslendirRoute:
         resp = auth_client.post("/sohbet/seslendir", json={"metin": "Bilgilerinize sunulur."})
         assert resp.status_code == 503
 
-    def test_basarili_seslendirme_mp3_doner(self, auth_client: TestClient, monkeypatch):
+    def test_basarili_seslendirme_ses_doner(self, auth_client: TestClient, monkeypatch):
+        """Varsayılan format wav (OpenAI kılavuzu: en düşük gecikme) — media type onunla uyumlu.
+
+        Media type SABİT DEĞİL: yanlış tip gönderilen ses bazı tarayıcılarda hiç çalmaz, bu
+        yüzden formatla birlikte türetilmeli. Test bu bağı doğrular, bir sabiti değil.
+        """
         from api.routes import sohbet as sohbet_mod
 
-        fake_audio = b"\xff\xfb\x90fake-mp3"
+        fake_audio = b"RIFFfake-wav"
 
         async def _sahte_tts(metin, *, timeout_s):
             assert metin == "Bilgilerinize sunulur."
             return fake_audio
 
+        monkeypatch.delenv("OPENAI_TTS_FORMAT", raising=False)
+        monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: True)
+        monkeypatch.setattr(sohbet_mod, "tts_openai", _sahte_tts)
+        resp = auth_client.post("/sohbet/seslendir", json={"metin": "Bilgilerinize sunulur."})
+        assert resp.status_code == 200
+        assert resp.headers["content-type"] == "audio/wav"
+        assert resp.content == fake_audio
+
+    def test_media_type_formatla_birlikte_degisir(self, auth_client: TestClient, monkeypatch):
+        """Dar bantta mp3'e dönülebilir; media type ona göre mp3 olmalı (aksi halde sessiz ses)."""
+        from api.routes import sohbet as sohbet_mod
+
+        async def _sahte_tts(metin, *, timeout_s):
+            return b"\xff\xfb\x90fake-mp3"
+
+        monkeypatch.setenv("OPENAI_TTS_FORMAT", "mp3")
         monkeypatch.setattr(sohbet_mod, "tts_enabled", lambda: True)
         monkeypatch.setattr(sohbet_mod, "tts_openai", _sahte_tts)
         resp = auth_client.post("/sohbet/seslendir", json={"metin": "Bilgilerinize sunulur."})
         assert resp.status_code == 200
         assert resp.headers["content-type"] == "audio/mpeg"
-        assert resp.content == fake_audio
 
     def test_kullanici_kotasi_asilinca_429(self, auth_client: TestClient, monkeypatch):
         """slowapi limiti IP başınadır; maliyet ise karakterle orantılı ve kullanıcıya aittir.

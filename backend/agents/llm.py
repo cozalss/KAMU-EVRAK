@@ -345,6 +345,7 @@ class LlamaCppClient:
         temperature: float = 0.1,
         max_tokens: int = 1024,
         on_token: Callable[[str], None],
+        dusunme_kapali: bool = False,   # yerel modelde zaten _apply_no_think var — arayüz uyumu
     ) -> LLMResponse:
         """chat() ile aynı üretim, AMA token'lar üretildikçe on_token(delta) ile yayılır.
 
@@ -579,15 +580,31 @@ class OpenAIClient:
         key = require_api_key("LLM_MODE=openai")
         return {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
 
+    def _dusunme_destekli_mi(self) -> bool:
+        """Model `thinking` alanını tanıyor mu? Yalnız DeepSeek v4 ailesi.
+
+        Bilinmeyen bir sağlayıcıya bu alan gönderilirse HTTP 400 gelir ve sesli mod tamamen
+        susar — bu yüzden alan MODEL ADINA bağlı, ENV'e değil (yanlış ENV kombinasyonu
+        çalışan bir kurulumu bozamasın).
+        """
+        return self.model.lower().startswith("deepseek-v4")
+
     def _payload(
         self, messages: list[ChatMessage], temperature: float, max_tokens: int,
         *, json_mode: bool, json_schema: dict[str, Any] | None, stream: bool,
+        dusunme_kapali: bool = False,
     ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": [m.to_dict() for m in messages],
             "stream": stream,
         }
+        # Düşünmeyi kapat (DeepSeek `thinking`, api-docs.deepseek.com — Context7 ile doğrulandı
+        # 2026-08-01): reasoning modelinde düşünme, ilk token'ı saniyelerce geciktirir. Sesli
+        # görüşmede gecikme kalitenin kendisidir ve konuşma-dili kısa cevaplar için derin
+        # muhakemeye gerek yok. Metin sohbeti/pipeline node'ları BU YOLU KULLANMAZ.
+        if dusunme_kapali and self._dusunme_destekli_mi():
+            payload["thinking"] = {"type": "disabled"}
         # Yeni-nesil muhakeme modelleri (o1/o3/o4/gpt-5): 'max_tokens' YERİNE 'max_completion_tokens'
         # ve 'temperature' yalnız default(1) destekler → özel temp GÖNDERME (400 hatası önlenir).
         # gpt-4o ailesi (default): klasik parametreler. İleride model değişse de kod kırılmaz.
@@ -676,9 +693,12 @@ class OpenAIClient:
         temperature: float = 0.1,
         max_tokens: int = 1024,
         on_token: Callable[[str], None],
+        dusunme_kapali: bool = False,
     ) -> LLMResponse:
         """OpenAI SSE streaming — token'lar üretildikçe on_token(delta). Async (event loop'ta)
         çağrıldığı için on_token doğrudan çağrılır (threadsafe sarmaya gerek yok).
+
+        dusunme_kapali=True → DeepSeek `thinking: disabled` (sesli görüşme; ilk token gecikmesi).
 
         Retry YALNIZ bağlantı seviyesinde (token emit edilmeden, 429/5xx); token akmaya
         başlayınca ortada retry edilmez (çift-token olur) → propagate. Bellek: birikim
@@ -690,6 +710,7 @@ class OpenAIClient:
         client = self._ensure_client()
         payload = self._payload(
             messages, temperature, max_tokens, json_mode=False, json_schema=None, stream=True,
+            dusunme_kapali=dusunme_kapali,
         )
         url = f"{self.base_url}/chat/completions"
         parts: list[str] = []

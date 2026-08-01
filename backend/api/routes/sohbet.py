@@ -29,7 +29,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from agents import config as _cfg
 from agents.llm import ChatMessage
-from agents.nodes._llm_extract import LLM_NODE_TIMEOUT_S, llm_json, llm_text, real_llm
+from agents.nodes._llm_extract import (
+    LLM_NODE_TIMEOUT_S,
+    dusunme_marjli,
+    llm_json,
+    llm_text,
+    real_llm,
+)
 from agents.sohbet_niyet import (
     KAYIT_TURU,
     LIMIT_VARSAYILAN,
@@ -41,12 +47,13 @@ from agents.sohbet_niyet import (
     talimat_cikar,
 )
 from api.middleware.ratelimit import rate_limit
+from api.pii import mask_for_llm
 from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
 from core.sesli_brifing import karsilama_metni
 from core.tts_kota import kota_dus
-from core.tts_openai import tts_enabled, tts_openai
+from core.tts_openai import tts_enabled, tts_media_type, tts_openai
 from db.repositories import KararError, dogrula_denetim, onayla_ve_gonder
 from db.repositories.mevzuat_repo import hybrid_ara
 from db.repositories.sorgu_repo import (
@@ -102,9 +109,11 @@ _KOMPOZ_SYSTEM = (
 # değiştirilebilir (SESLI_PERSONA_ADI). Grounding (uydurma yasağı) metin moduyla AYNI sıkılıkta.
 SESLI_PERSONA_ADI = (os.getenv("SESLI_PERSONA_ADI", "").strip() or "Kamu Evrak")
 _SESLI_SYSTEM = (
-    f"Sen {SESLI_PERSONA_ADI}, bir Türk kamu kurumunun evrak ve yazışma işlerinde UZMAN, deneyimli "
-    "ve yardımsever bir asistansın. Kullanıcı (bir memur) seninle SESLİ konuşuyor; cevabın yüksek "
-    "sesle okunacak.\n\n"
+    # Ad, "Sen {ad}," kalıbıyla YAZILMAZ: canlı ölçümde model bu kalıbı adın parçası sanıp
+    # "Ben Sen Kamu Evrak…" diye tanıttı kendini (sesli okununca fena). Ad ayrı cümlede.
+    f"Adın {SESLI_PERSONA_ADI}. Bir Türk kamu kurumunun evrak ve yazışma işlerinde UZMAN, "
+    f"deneyimli ve yardımsever bir asistansın; kendini tanıtırken 'Ben {SESLI_PERSONA_ADI}' de. "
+    "Kullanıcı (bir memur) seninle SESLİ konuşuyor; cevabın yüksek sesle okunacak.\n\n"
     "ÜSLUP: Sıcak, saygılı, kendinden emin — deneyimli bir meslektaş gibi. ÖNCE doğrudan cevap, "
     "sonra gerekçe. UZUNLUK SORUYA GÖRE: kayıt/sayı sorusunda iki-üç kısa cümle; 'neden, nasıl, "
     "hangi durumda' türü açıklama isteyen soruda en fazla beş-altı cümle — kısa tutacağım diye "
@@ -178,6 +187,38 @@ class SohbetMesaj(BaseModel):
     icerik: str = Field(..., max_length=4000)
 
 
+# --------------------------------------------------------------------------
+# Ekran bağlamı — "asistan ekranı takip etsin". Kullanıcı "bu evrak ne?", "buradaki
+# risk neden kırmızı?" dediğinde asistan DB'ye gidip aramak yerine ekrandakini bilir:
+# bir turdan araç çağrısı + niyet turu KADAR gecikme siler.
+#
+# GÜVENLİK: bu blok İSTEMCİDEN gelir — yani KULLANICI GİRDİSİDİR, sunucu gerçeği değil.
+# Üç kural: (1) her alan şemada uzunluk-sınırlı (prompt şişmesi/maliyet DoS'u yok),
+# (2) prompt'a girmeden ÖNCE mask_for_llm'den geçer (KVKK: dış modele ham PII gitmez),
+# (3) yalnız SUNUM bağlamıdır — yetki/karar için ASLA kullanılmaz (kayıt okuma hâlâ
+# kullanıcının kendi owner_id'siyle DB'den yapılır).
+# --------------------------------------------------------------------------
+class EkranSecili(BaseModel):
+    ad: str | None = Field(None, max_length=200)
+    tur: str | None = Field(None, max_length=80)
+    birim: str | None = Field(None, max_length=200)
+    bant: str | None = Field(None, max_length=40)
+    ozet: str | None = Field(None, max_length=800)
+    durum: str | None = Field(None, max_length=80)
+
+
+class EkranListe(BaseModel):
+    adet: int = Field(0, ge=0, le=1_000_000)
+    ilkler: list[str] = Field(default_factory=list, max_length=8)
+
+
+class EkranBaglam(BaseModel):
+    gorunum: str = Field("", max_length=60)
+    secili: EkranSecili | None = None
+    liste: EkranListe | None = None
+    notlar: str | None = Field(None, max_length=200)
+
+
 class SohbetIstek(BaseModel):
     mesaj: str = Field(..., min_length=1, max_length=1000)
     gecmis: list[SohbetMesaj] = Field(default_factory=list, max_length=_GECMIS_MAX)
@@ -185,6 +226,37 @@ class SohbetIstek(BaseModel):
     onay_baglam: dict[str, Any] | None = None
     # Sesli görüşme modu — açıksa yanıt kompozisyonu SESLİ persona (kısa, konuşma-dili) kullanır.
     sesli: bool = False
+    # Kullanıcının O AN gördüğü ekranın özeti (opsiyonel; yoksa davranış birebir eskisi).
+    ekran: EkranBaglam | None = None
+
+
+# Ekran bloğunun prompt'taki toplam tavanı — şema alan-alan sınırlıyor, bu son emniyet.
+_EKRAN_MAX = 1200
+# Liste başlıklarının tek tek tavanı (şema listenin UZUNLUĞUNU sınırlar, eleman boyunu değil).
+_EKRAN_BASLIK_MAX = 160
+
+
+def _ekran_metni(ekran: EkranBaglam | None) -> str:
+    """Ekran bağlamı → prompt satırları. Maskelenmiş ve tavanlı; bağlam yoksa boş dize."""
+    if ekran is None:
+        return ""
+    satirlar: list[str] = []
+    if ekran.gorunum:
+        satirlar.append(f"Açık ekran: {ekran.gorunum}")
+    if ekran.secili:
+        alanlar = {k: v for k, v in ekran.secili.model_dump().items() if v}
+        if alanlar:
+            satirlar.append("Seçili/açık evrak: " + ", ".join(f"{k}: {v}" for k, v in alanlar.items()))
+    if ekran.liste and ekran.liste.adet:
+        basliklar = ", ".join(b[:_EKRAN_BASLIK_MAX] for b in ekran.liste.ilkler if b)
+        satirlar.append(f"Ekrandaki liste: {ekran.liste.adet} kayıt"
+                        + (f" (ilk birkaçı: {basliklar})" if basliklar else ""))
+    if ekran.notlar:
+        satirlar.append(f"Not: {ekran.notlar}")
+    if not satirlar:
+        return ""
+    # KVKK: ekranda maskesiz bir ad görünüyor olabilir — dış modele gitmeden maskelenir.
+    return mask_for_llm("\n".join(satirlar))[:_EKRAN_MAX]
 
 
 class SohbetYanit(BaseModel):
@@ -225,14 +297,46 @@ def _parametre_temizle(obj: dict[str, Any], mesaj: str) -> dict[str, Any]:
     }
 
 
-async def _niyet_tespit(mesaj: str, gecmis: list[SohbetMesaj]) -> tuple[dict[str, Any], bool]:
-    """(niyet, llm_kullanildi) — LLM birincil, deterministik fallback garantili."""
+async def _niyet_tespit(
+    mesaj: str, gecmis: list[SohbetMesaj], hizli: bool = False,
+) -> tuple[dict[str, Any], bool]:
+    """(niyet, llm_kullanildi) — LLM birincil, deterministik fallback garantili.
+
+    hizli=True (sesli mod): LLM turu HİÇ yapılmaz, doğrudan deterministik sınıflandırıcı.
+    Gerekçe ölçüldü: niyet çağrısı reasoning modeline gider (düşünme token'ları) ve sesli
+    turun BAŞINDA, kullanıcı sessizliği dinlerken 1-3 saniye harcar. Deterministik niyet
+    zaten her yolda fallback olarak kurulu ve aynı NIYETLER kümesini üretir; sesli modda
+    kompozisyon LLM'i ekran bağlamı + araç verisiyle cevabı zaten toparlıyor.
+    """
+    if hizli:
+        return fallback_niyet(mesaj), False
     baglam = "\n".join(f"{m.rol}: {m.icerik[:200]}" for m in gecmis[-4:])
     user = (f"Önceki konuşma:\n{baglam}\n\n" if baglam else "") + f"Kullanıcı mesajı: {mesaj}"
     obj = await llm_json(_NIYET_SYSTEM, user, max_tokens=150)
     if obj is not None and obj.get("intent") in NIYETLER:
         return {"intent": obj["intent"], "parametreler": _parametre_temizle(obj, mesaj)}, True
     return fallback_niyet(mesaj), False
+
+
+def _sesli_dusunme_kapali() -> bool:
+    """Sesli turda modelin düşünme aşaması kapatılsın mı? (SESLI_DUSUNME_KAPALI, varsayılan açık)
+
+    Ölçüldü: sesli kompozisyonda ilk token 3,4-4,8 sn ve bunun çoğu düşünme. Konuşma-dili,
+    iki-üç cümlelik cevap derin muhakeme istemiyor. Kalite kaygısı olursa ENV ile kapatılır;
+    parametreyi yalnız DeepSeek v4 tanır (agents/llm._dusunme_destekli_mi), diğer sağlayıcıda
+    alan hiç gönderilmez.
+    """
+    return (os.getenv("SESLI_DUSUNME_KAPALI", "1").strip().lower()
+            not in ("0", "false", "hayir", "hayır", "off"))
+
+
+def _hizli_yol_mu(istek: SohbetIstek) -> bool:
+    """Sesli tur düşük gecikme yolunu kullansın mı? ENV ile kapatılabilir (SESLI_HIZLI_YOL=0
+    → davranış birebir eski hâline döner; deterministik-fallback deseninin kapatma anahtarı)."""
+    if not istek.sesli:
+        return False
+    return (os.getenv("SESLI_HIZLI_YOL", "1").strip().lower()
+            not in ("0", "false", "hayir", "hayır", "off"))
 
 
 def _mevzuat_katalog_araci(q: str) -> dict[str, Any]:
@@ -421,45 +525,72 @@ def _mevzuat_kaynaklari(intent: str, veri: Any) -> list[dict[str, Any]] | None:
     return kaynaklar[:5] or None
 
 
-def _kompoz_user(mesaj: str, veri: Any, gecmis_metni: str = "") -> str:
-    """Kompozisyon LLM'ine giden kullanıcı içeriği — geçmiş + soru + araç verisi.
-    Madde 13: geçmiş dahil → takip soruları ('peki bunların kaçı kırmızı?') bağlam kazanır."""
+def _kompoz_user(mesaj: str, veri: Any, gecmis_metni: str = "", ekran_metni: str = "") -> str:
+    """Kompozisyon LLM'ine giden kullanıcı içeriği — geçmiş + EKRAN + soru + araç verisi.
+    Madde 13: geçmiş dahil → takip soruları ('peki bunların kaçı kırmızı?') bağlam kazanır.
+    Ekran bloğu 'bu/burada/şu evrak' gibi işaret eden soruları DB turu olmadan çözer."""
     veri_json = json.dumps(veri, ensure_ascii=False, default=str)[:4000] if veri else "[]"
     onek = f"Önceki konuşma:\n{gecmis_metni}\n\n" if gecmis_metni else ""
-    return f"{onek}Kullanıcı sorusu: {mesaj}\n\nSistem verisi (JSON):\n{veri_json}"
+    ekran = (
+        "Kullanıcının ŞU AN gördüğü ekran (kullanıcı 'bu', 'burada', 'şu evrak', 'ekrandaki' "
+        f"derse bunu kastediyor):\n{ekran_metni}\n\n" if ekran_metni else "")
+    return f"{onek}{ekran}Kullanıcı sorusu: {mesaj}\n\nSistem verisi (JSON):\n{veri_json}"
+
+
+def _kompoze_edilir(intent: str, sesli: bool) -> bool:
+    """Bu niyet LLM ile mi kompoze edilecek (yoksa konserve bilgi/şablon metni mi)?
+
+    SESLİ modda site_yardim da kompoze edilir — iki sebeple ölçüldü:
+    · Konserve yardım metni markdown'lı ve uzundur; yüksek sesle okununca tam da kullanıcının
+      istemediği robotik cevabı verir.
+    · Deterministik niyet (hızlı yol) 'panelde durum nedir' gibi soruları site_yardim'a
+      koyabiliyor; konserve metin bu durumda EKRANDAKİ gerçek sayıları göremezdi.
+    Kompozisyon yolunda persona uzmanlığı + ekran bağlamı birlikte çalışır; LLM yoksa
+    aşağıdaki fallback yine bilgi_yaniti/şablon üretir (davranış kaybı yok).
+    """
+    return intent in KAYIT_TURU or intent == "genel" or (sesli and intent == "site_yardim")
 
 
 async def _yanit_kompoze(
     mesaj: str, intent: str, veri: Any, gecmis_metni: str = "", sesli: bool = False,
+    ekran_metni: str = "",
 ) -> tuple[str, bool]:
     """(yanit, llm_kullanildi) — bilgi tabanı > LLM > şablon sırasıyla.
     sesli=True → SESLİ persona sistem prompt'u (kısa, konuşma-dili, markdown'sız)."""
-    if intent == "site_yardim":
+    if intent == "site_yardim" and not sesli:
         return bilgi_yaniti(mesaj) or sablon_yanit(intent, None), False
     if intent == "selamlama":
         return sablon_yanit(intent, None), False
-    if intent in KAYIT_TURU or intent == "genel":
+    if _kompoze_edilir(intent, sesli):
         txt = await llm_text(
             _SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM,
-            _kompoz_user(mesaj, veri, gecmis_metni),
+            _kompoz_user(mesaj, veri, gecmis_metni, ekran_metni),
             # Bütçe donanımsal güvence (sadece prompt değil): sesli modda soruya göre uyarlanır.
             max_tokens=_sesli_butce(mesaj, intent) if sesli else 400)
         if txt:
             return txt, True
+        # Sesli site_yardim kompozisyonu boş döndüyse konserve bilgi metni hâlâ devrede
+        # (deterministik fallback deseni: LLM yoksa/boşsa yetenek kaybolmaz).
+        if intent == "site_yardim":
+            return bilgi_yaniti(mesaj) or sablon_yanit(intent, None), False
     return sablon_yanit(intent, veri), False
 
 
 async def _veri_getir(
     istek: SohbetIstek, user: Any, session: AsyncSession, intent: str,
-    parametreler: dict[str, Any],
+    parametreler: dict[str, Any], hizli: bool = False,
 ) -> tuple[str, Any, bool]:
     """(intent, veri, dongu_llm) — Madde 13 araç döngüsü birincil, klasik tek-tur fallback.
 
     SOHBET_ARAC_DONGUSU açıkken LLM güdümlü döngü denenir; protokole uymayan LLM
     (mock/bozuk) ya da araçsız dönüş → klasik araci_calistir yolu BİREBİR. Döngü
     farklı bir araç seçtiyse intent onunla güncellenir (kart/görünüm tutarlılığı).
+
+    hizli=True (sesli mod): döngü ATLANIR. Döngü her turda 1-3 EK LLM çağrısı demek;
+    sesli görüşmede kullanıcı cevabı BEKLERKEN sessizlik oluşur ve gecikme birincil
+    kalite ölçüsüdür. Tek-tur araç yolu aynı veriyi deterministik parametrelerle getirir.
     """
-    if _cfg.SOHBET_ARAC_DONGUSU:
+    if _cfg.SOHBET_ARAC_DONGUSU and not hizli:
         async def _cal(arac: str, parametreler_ham: dict[str, Any]) -> Any:
             # LLM parametreleri mevcut doğrulamadan geçer (şema dışı değer sızmaz).
             return await araci_calistir(
@@ -737,7 +868,8 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
     teyit = await _onay_teyidini_isle(istek, user, session)
     if teyit is not None:
         return teyit
-    niyet, llm_niyet = await _niyet_tespit(istek.mesaj, istek.gecmis)
+    hizli = _hizli_yol_mu(istek)
+    niyet, llm_niyet = await _niyet_tespit(istek.mesaj, istek.gecmis, hizli)
     intent = niyet["intent"]
     if intent in ("taslak_onayla", "taslak_reddet"):
         return await _onay_baslat(intent, user, session, _hedef_ipucu(istek.mesaj))
@@ -751,7 +883,7 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
     if intent in KAYIT_TURU:
         try:
             intent, veri, dongu_llm = await _veri_getir(
-                istek, user, session, intent, niyet["parametreler"])
+                istek, user, session, intent, niyet["parametreler"], hizli)
         except Exception as exc:  # DB/arama hatası sohbeti düşürmesin (500 yerine özürlü yanıt)
             log.warning("sohbet_arac_hatasi", intent=intent, error=type(exc).__name__)
             return SohbetYanit(
@@ -759,7 +891,8 @@ async def sohbet(request: Request, istek: SohbetIstek, user: CurrentUser, sessio
                 intent=intent, kaynak="fallback")
 
     yanit, llm_kompoz = await _yanit_kompoze(
-        istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis), istek.sesli)
+        istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis), istek.sesli,
+        _ekran_metni(istek.ekran))
     kart, gorunum = KAYIT_TURU.get(intent, (None, None))
     kayitlar = _kart_kayitlari(intent, veri)
     log.info("sohbet", intent=intent, llm=llm_niyet or llm_kompoz or dongu_llm,
@@ -785,26 +918,34 @@ def _sse(payload: dict[str, Any]) -> str:
 
 async def _kompoz_akisi(
     mesaj: str, intent: str, veri: Any, gecmis_metni: str = "", sesli: bool = False,
+    ekran_metni: str = "",
 ) -> AsyncIterator[tuple[str, str]]:
     """('delta'|'kaynak', metin) akışı — gerçek LLM token-token, yoksa tek parça şablon.
     sesli=True → SESLİ persona (kısa, konuşma-dili) kullanılır."""
-    if intent not in KAYIT_TURU and intent != "genel":  # bilgi tabanı/şablon yolları tek parça
-        yanit, _ = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni, sesli)
+    if not _kompoze_edilir(intent, sesli):  # bilgi tabanı/şablon yolları tek parça
+        yanit, _ = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni, sesli, ekran_metni)
         yield "delta", yanit
         yield "kaynak", "fallback"
         return
     llm = real_llm()
     if llm is None or not hasattr(llm, "chat_stream"):
-        yanit, llm_kompoz = await _yanit_kompoze(mesaj, intent, veri, gecmis_metni, sesli)
+        yanit, llm_kompoz = await _yanit_kompoze(
+            mesaj, intent, veri, gecmis_metni, sesli, ekran_metni)
         yield "delta", yanit
         yield "kaynak", "llm" if llm_kompoz else "fallback"
         return
     kuyruk: asyncio.Queue[str] = asyncio.Queue()
     task = asyncio.create_task(llm.chat_stream(
         messages=[ChatMessage(role="system", content=_SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM),
-                  ChatMessage(role="user", content=_kompoz_user(mesaj, veri, gecmis_metni))],
+                  ChatMessage(role="user",
+                              content=_kompoz_user(mesaj, veri, gecmis_metni, ekran_metni))],
         temperature=0.2, on_token=kuyruk.put_nowait,
-        max_tokens=_sesli_butce(mesaj, intent) if sesli else 400))
+        # Sesli turda düşünmeyi kapat — ilk token gecikmesinin ana kalemi (bkz. _sesli_dusunme_kapali).
+        dusunme_kapali=sesli and _sesli_dusunme_kapali(),
+        # DÜŞÜNME MARJI ZORUNLU: düşünme AÇIK kaldığında (metin modu ya da ENV ile geri açılınca)
+        # düşünme token'ları bütçeden düşer. Marjsız gönderilen 150 token'lık sesli bütçe BOŞ akış
+        # üretiyordu → her sesli veri sorusu markdown şablona düşüyordu (canlı ölçümde yakalandı).
+        max_tokens=dusunme_marjli(llm, _sesli_butce(mesaj, intent) if sesli else 400)))
     akti, son = False, time.monotonic() + LLM_NODE_TIMEOUT_S
     while True:
         if time.monotonic() > son:  # bütçe doldu — kısmi metinle bitir (demo asılı kalmaz)
@@ -831,8 +972,9 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
     """SSE'li sohbet — kayıtlar meta'da hemen iner, yanıt token-token akar (canlı demo)."""
     hazir = await _onay_teyidini_isle(istek, user, session)
     llm_niyet = False
+    hizli = _hizli_yol_mu(istek)
     if hazir is None:
-        niyet, llm_niyet = await _niyet_tespit(istek.mesaj, istek.gecmis)
+        niyet, llm_niyet = await _niyet_tespit(istek.mesaj, istek.gecmis, hizli)
         intent = niyet["intent"]
         if intent in ("taslak_onayla", "taslak_reddet"):
             hazir = await _onay_baslat(intent, user, session, _hedef_ipucu(istek.mesaj))
@@ -846,7 +988,7 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
         if intent in KAYIT_TURU:
             try:
                 intent, veri, dongu_llm = await _veri_getir(
-                    istek, user, session, intent, niyet["parametreler"])
+                    istek, user, session, intent, niyet["parametreler"], hizli)
             except Exception as exc:
                 log.warning("sohbet_arac_hatasi", intent=intent, error=type(exc).__name__)
                 hazir = SohbetYanit(
@@ -873,7 +1015,8 @@ async def sohbet_stream(request: Request, istek: SohbetIstek, user: CurrentUser,
         parcalar: list[str] = []
         kaynak = "fallback"
         async for tur, icerik in _kompoz_akisi(
-                istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis), istek.sesli):
+                istek.mesaj, intent, veri, _gecmis_metni(istek.gecmis), istek.sesli,
+                _ekran_metni(istek.ekran)):
             if tur == "delta":
                 parcalar.append(icerik)
                 yield _sse({"event": "delta", "t": icerik})
@@ -901,7 +1044,12 @@ class SeslendirIstek(BaseModel):
 # göre yükseltildi, yoksa normal bir görüşme birkaç turda 429'a çarpardı.
 @rate_limit("60/minute")
 async def sohbet_seslendir(request: Request, istek: SeslendirIstek, user: CurrentUser) -> Response:
-    """Metni OpenAI TTS ile mp3'e çevirir. TTS kapalıysa/hata verirse 503 (frontend sessiz düşer)."""
+    """Metni OpenAI TTS ile sese çevirir. TTS kapalıysa/hata verirse 503 (frontend sessiz düşer).
+
+    Media type SABİT DEĞİL: format env ile değişebilir (varsayılan wav — en düşük gecikme).
+    Yanlış media type'la gönderilen ses bazı tarayıcılarda hiç çalmaz, o yüzden tek kaynaktan
+    (core.tts_openai.tts_media_type) türetilir.
+    """
     if not tts_enabled():
         raise HTTPException(status_code=503, detail="Sesli yanıt şu an devre dışı (TTS anahtarı yok).")
     # Kullanıcı başına karakter kotası: yukarıdaki slowapi limiti IP başınadır (paylaşılan
@@ -915,7 +1063,7 @@ async def sohbet_seslendir(request: Request, istek: SeslendirIstek, user: Curren
     except Exception as exc:
         log.warning("sohbet_seslendir_hata", error=type(exc).__name__)
         raise HTTPException(status_code=503, detail="Sesli yanıt üretilemedi.") from exc
-    return Response(content=audio, media_type="audio/mpeg")
+    return Response(content=audio, media_type=tts_media_type())
 
 
 @router.get("/sohbet/karsilama")

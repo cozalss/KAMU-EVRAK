@@ -40,6 +40,32 @@ _MAX_INPUT_CHARS = 4000
 _VARSAYILAN_MODEL = "gpt-4o-mini-tts"
 _VARSAYILAN_SES = "marin"
 
+# Çıktı formatı — GECİKME kararı. OpenAI Speech kılavuzu (developers.openai.com, Context7 ile
+# doğrulandı 2026-08-01): "To achieve the fastest response times when streaming audio, it is
+# recommended to use `wav` or `pcm`". mp3 sıkıştırma için ÜRETİM SONRASI ek iş demek; sesli
+# görüşmede ilk sesin gecikmesi kaliteyi doğrudan belirler.
+# Bedeli: wav ~6x daha büyük gövde. Yerel/LAN demoda (jüri senaryosu) bu ücretsizdir; dar
+# bantta (mobil QR) mp3 daha iyi olabilir — bu yüzden ENV ile değiştirilebilir.
+_VARSAYILAN_FORMAT = "wav"
+_FORMAT_MIME = {
+    "wav": "audio/wav", "mp3": "audio/mpeg", "opus": "audio/ogg",
+    "aac": "audio/aac", "flac": "audio/flac", "pcm": "audio/L16",
+}
+
+
+def tts_format() -> str:
+    """Ses çıktı formatı (OPENAI_TTS_FORMAT). Tanınmayan değer → varsayılan (sessiz 400 yerine)."""
+    istenen = os.getenv("OPENAI_TTS_FORMAT", "").strip().lower() or _VARSAYILAN_FORMAT
+    if istenen not in _FORMAT_MIME:
+        log.warning("tts_format_taninmadi", istenen=istenen, kullanilan=_VARSAYILAN_FORMAT)
+        return _VARSAYILAN_FORMAT
+    return istenen
+
+
+def tts_media_type() -> str:
+    """Seçili formatın HTTP media type'ı — <audio> doğru decoder'ı seçsin."""
+    return _FORMAT_MIME[tts_format()]
+
 # Eski kuşağın (tts-1*) tanıdığı ses kümesi — canlı API'nin 400 gövdesinden alındı.
 # marin/cedar burada YOK: eski modele düşülürse ses bu kümeye indirilmeli.
 _ESKI_KUSAK_SESLERI = frozenset(
@@ -97,7 +123,8 @@ async def tts_openai(
     voice: str | None = None,
     model: str | None = None,
 ) -> bytes:
-    """Metni OpenAI TTS ile mp3 sese çevir. Başarısızlıkta exception (çağıran metne düşer).
+    """Metni OpenAI TTS ile sese çevir (format: tts_format()). Başarısızlıkta exception
+    (çağıran metne düşer).
 
     Anahtar `.env`'den — ASLA hardcode edilmez.
     """
@@ -121,7 +148,7 @@ async def tts_openai(
         "model": secili_model,
         "voice": _ses_secimi(secili_model, secili_ses),
         "input": metin,
-        "response_format": "mp3",
+        "response_format": tts_format(),
     }
     if _steerable_mi(secili_model):
         payload["instructions"] = _talimat()
@@ -136,4 +163,4 @@ async def tts_openai(
         return resp.content
 
 
-__all__ = ("tts_api_key", "tts_enabled", "tts_openai")
+__all__ = ("tts_api_key", "tts_enabled", "tts_format", "tts_media_type", "tts_openai")

@@ -111,11 +111,17 @@ _KOMPOZ_SYSTEM = (
 # değiştirilebilir (SESLI_PERSONA_ADI). Grounding (uydurma yasağı) metin moduyla AYNI sıkılıkta.
 SESLI_PERSONA_ADI = (os.getenv("SESLI_PERSONA_ADI", "").strip() or "Kamu Evrak")
 _SESLI_SYSTEM = (
-    # Ad, "Sen {ad}," kalıbıyla YAZILMAZ: canlı ölçümde model bu kalıbı adın parçası sanıp
-    # "Ben Sen Kamu Evrak…" diye tanıttı kendini (sesli okununca fena). Ad ayrı cümlede.
+    # Ad iki tuzak üretti, ikisi de canlı ölçümde yakalandı:
+    # · "Sen {ad}," kalıbı → model adı "Sen Kamu Evrak" sandı.
+    # · "kendini tanıtırken 'Ben {ad}' de" → model HER cevaba adıyla başladı.
+    # Doğrusu: adı bildir, ama söyleme kuralını YASAKLA. Kimse asistana her cümlede kim
+    # olduğunu sormuyor; kendini tekrarlayan bir asistan sesli okununda dayanılmaz oluyor.
     f"Adın {SESLI_PERSONA_ADI}. Bir Türk kamu kurumunun evrak ve yazışma işlerinde UZMAN, "
-    f"deneyimli ve yardımsever bir asistansın; kendini tanıtırken 'Ben {SESLI_PERSONA_ADI}' de. "
-    "Kullanıcı (bir memur) seninle SESLİ konuşuyor; cevabın yüksek sesle okunacak.\n\n"
+    "deneyimli ve yardımsever bir asistansın. Kullanıcı (bir memur) seninle SESLİ konuşuyor; "
+    "cevabın yüksek sesle okunacak.\n\n"
+    "ADINI SÖYLEME: Cevaplarına adınla BAŞLAMA, kendini tanıtma, 'ben ...' diye giriş yapma. "
+    "Adını yalnız kullanıcı DOĞRUDAN sorarsa ('kimsin', 'adın ne') söyle. Konuşmaya doğrudan "
+    "cevapla gir — karşındaki seninle konuşmaya devam ediyor, yeni tanışmıyorsunuz.\n\n"
     "ÜSLUP: Sıcak, saygılı, kendinden emin — deneyimli bir meslektaş gibi. ÖNCE doğrudan cevap, "
     "sonra gerekçe. UZUNLUK SORUYA GÖRE: kayıt/sayı sorusunda iki-üç kısa cümle; 'neden, nasıl, "
     "hangi durumda' türü açıklama isteyen soruda en fazla beş-altı cümle — kısa tutacağım diye "
@@ -154,7 +160,7 @@ _SESLI_SYSTEM = (
     "özel hukuki görüş ya da karar. Bunlarda 'kesin madde ya da kod için mevzuat ekranından ya da "
     "kurumundan doğrula' de; nihai kararı sen verme, yetkili amire ya da hukuk birimine bırak.\n"
     "Sayıları konuşma diline uygun ver ('otuz gün'). Emin değilsen dürüstçe söyle, uydurma. Kullanıcı "
-    "seninle yeni tanışıyorsa kendini tek cümleyle tanıtabilirsin, ama her cevapta tekrarlama."
+    "seninle yeni tanışıyor olsa bile kendini TANITMA — doğrudan işe gir."
 )
 
 
@@ -550,7 +556,11 @@ def _kompoze_edilir(intent: str, sesli: bool) -> bool:
     Kompozisyon yolunda persona uzmanlığı + ekran bağlamı birlikte çalışır; LLM yoksa
     aşağıdaki fallback yine bilgi_yaniti/şablon üretir (davranış kaybı yok).
     """
-    return intent in KAYIT_TURU or intent == "genel" or (sesli and intent == "site_yardim")
+    # SESLİ modda selamlama da kompoze edilir: konserve "Merhaba! Ben evrak asistanıyım.
+    # Gelen/giden evraklarınızı listeleyebilir…" metni sesli okununca hem robotik hem
+    # kendini tanıtan bir giriş oluyordu (kullanıcı şikâyeti). Konuşma modelin işi.
+    return (intent in KAYIT_TURU or intent == "genel"
+            or (sesli and intent in ("site_yardim", "selamlama")))
 
 
 async def _yanit_kompoze(
@@ -561,7 +571,7 @@ async def _yanit_kompoze(
     sesli=True → SESLİ persona sistem prompt'u (kısa, konuşma-dili, markdown'sız)."""
     if intent == "site_yardim" and not sesli:
         return bilgi_yaniti(mesaj) or sablon_yanit(intent, None), False
-    if intent == "selamlama":
+    if intent == "selamlama" and not sesli:
         return sablon_yanit(intent, None), False
     if _kompoze_edilir(intent, sesli):
         txt = await llm_text(
@@ -571,10 +581,12 @@ async def _yanit_kompoze(
             max_tokens=_sesli_butce(mesaj, intent) if sesli else 400)
         if txt:
             return txt, True
-        # Sesli site_yardim kompozisyonu boş döndüyse konserve bilgi metni hâlâ devrede
-        # (deterministik fallback deseni: LLM yoksa/boşsa yetenek kaybolmaz).
+        # Sesli kompozisyon boş döndüyse konserve metin hâlâ devrede (deterministik fallback
+        # deseni: LLM yoksa/boşsa yetenek kaybolmaz — mock modda testler de bunu görür).
         if intent == "site_yardim":
             return bilgi_yaniti(mesaj) or sablon_yanit(intent, None), False
+        if intent == "selamlama":
+            return sablon_yanit(intent, None), False
     return sablon_yanit(intent, veri), False
 
 

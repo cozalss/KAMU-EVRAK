@@ -1019,3 +1019,42 @@ class TestSesliButce:
         monkeypatch.setattr(sohbet_mod, "llm_text", _sahte_llm_text)
         await sohbet_mod._yanit_kompoze("bu süre neden otuz gün", "genel", None, "", True)
         assert yakalanan["max_tokens"] == sohbet_mod._SESLI_BUTCE_DERIN
+
+
+class TestVeriUcuPiiGuard:
+    """`/sohbet/veri` çıktısı DOĞRUDAN OpenAI Realtime'a yazılıyor — ham PII geçmemeli.
+
+    Bu uç, DeepSeek'ten SONRAKİ ikinci sağlayıcı sınırıdır: tarayıcı gövdeyi kullanıcıya
+    göstermez, `kamu_evrak_sor` aracının sonucu olarak modele yazar. Ekran bloğu zaten
+    maskeleniyordu; kayıt verisi ham gidiyordu (2026-08-02 denetimi).
+    """
+
+    # Sentetik SAHTE PII (CLAUDE.md §2)
+    _TCKN = "12345678901"
+    _TEL = "0532 111 22 33"
+
+    def test_veri_ucu_ham_pii_dondurmez(self, auth_client: TestClient, monkeypatch):
+        from api.routes import sohbet as sohbet_mod
+
+        async def _sahte_arac(session, owner_id, intent, parametreler):
+            return [{"ad": "Ayşe Yılmaz", "tckn": self._TCKN, "tel": self._TEL}]
+
+        monkeypatch.setattr(sohbet_mod, "araci_calistir", _sahte_arac)
+        resp = auth_client.post("/sohbet/veri", json={"soru": "gelen evraklarımı listele"})
+        assert resp.status_code == 200
+        duz = resp.text
+        assert self._TCKN not in duz, "/sohbet/veri HAM TCKN döndürdü → OpenAI'a giderdi"
+        sade = duz.replace(" ", "").replace("-", "")
+        assert self._TEL.replace(" ", "") not in sade, "HAM telefon döndü"
+
+    def test_ad_maskelenmez_bilgi_degeri_korunur(self, auth_client: TestClient, monkeypatch):
+        """Maskeleme yalnız TCKN/telefon/IBAN'ı vurur; ad kalır, yoksa cevap işe yaramaz."""
+        from api.routes import sohbet as sohbet_mod
+
+        async def _sahte_arac(session, owner_id, intent, parametreler):
+            return [{"ad": "Ayşe Yılmaz", "tckn": self._TCKN}]
+
+        monkeypatch.setattr(sohbet_mod, "araci_calistir", _sahte_arac)
+        resp = auth_client.post("/sohbet/veri", json={"soru": "gelen evraklarımı listele"})
+        veri = resp.json().get("veri") or []
+        assert veri and veri[0]["ad"] == "Ayşe Yılmaz"

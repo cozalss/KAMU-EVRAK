@@ -98,11 +98,20 @@ const PARLA_SES = 0.55;
    bir metin etiketine yüklüydü. Genliğe bağlı parlaklık tek başına yetmez, çünkü genlik
    0 olabilir; her durumun kendi TABAN parlaklığı ve hâle yoğunluğu olmalı.
    Anahtarlar lib/sesGorusme.DURUM değerleridir (düz dize — modüller arası bağ kurmamak için). */
+// Aralık ÖLÇÜLEREK açıldı: ilk değerlerle (0.06/0.17/0.10/0.24) sessiz modda Dinliyor ile
+// Yanıtlıyor arasındaki gövde farkı ortalama 1,8/255'ti — rasterizasyon gürültü tabanının
+// (maks 8) ALTINDA, yani fiilen ayırt edilemez. Komşu durumlar arasında en az ~0,12 parlaklık
+// ve ~0,15 hâle farkı olmalı ki fark ekranda okunsun.
+// AĞIRLIK ÇEKİRDEKTE, HÂLEDE DEĞİL — occlusion ölçümünün sonucu. Hâle geniş bir alana yayılır
+// ve açık zeminde tint yaparak arkadaki KARTI buzlu cama çevirip başlığı okunmaz hâle getirdi
+// (ölçüldü: zemin testinde kart yüzeyi belirgin biçimde boyandı). Çekirdek parlaması ise
+// orb'un İÇİNDE: durum farkını taşır ama hiçbir içeriği kapatmaz. Bu yüzden `parla` aralığı
+// geniş (0.04→0.44), `halo` aralığı dar (0.14→0.40) tutulur.
 export const DURUM_TABAN = Object.freeze({
-  hazir: { parla: 0.06, halo: 0.20 },
-  dinliyor: { parla: 0.17, halo: 0.34 },
-  dusunuyor: { parla: 0.10, halo: 0.26 },
-  konusuyor: { parla: 0.24, halo: 0.42 },
+  hazir: { parla: 0.04, halo: 0.14 },
+  dusunuyor: { parla: 0.16, halo: 0.21 },
+  dinliyor: { parla: 0.28, halo: 0.29 },
+  konusuyor: { parla: 0.48, halo: 0.38 },
 });
 const VARSAYILAN_TABAN = DURUM_TABAN.hazir;
 
@@ -118,9 +127,13 @@ const VARSAYILAN_TABAN = DURUM_TABAN.hazir;
 // Kör yargı bulgusu: düşünme durumunun ayrımı tamamen gövdenin DIŞINA çizilmiş 1 px'lik
 // geometrik bir halkaya yaslanmıştı; akışkan bir gövdenin yanında mekanik duruyor ve orb'un
 // kendi davranışıyla hiç ilişkilenmiyordu. Durum farkı orb'un KENDİSİNDEN doğmalı.
+// Ölçüldü (piksel kıyası): 0.14/0.012 ile Düşünüyor gövdesi Hazır gövdesinden yalnız
+// ~6,7/255 farklıydı — yani ayrım fiilen hâlâ halkanın üstündeydi. Nabız GÖVDEDE okunacak
+// kadar güçlü olmalı; hâleye de bindirilir ki atım orb'un dışına da taşsın.
 const DUSUNCE_PERIYOT = 430;
-const DUSUNCE_PARLA = 0.14;
-const DUSUNCE_OLCEK = 0.012;
+const DUSUNCE_PARLA = 0.30;
+const DUSUNCE_OLCEK = 0.020;
+const DUSUNCE_HALO = 0.18;
 
 export function orbKare({ boyut, seviye, ts, azHareket = false, durum }) {
   const taban = DURUM_TABAN[durum] || VARSAYILAN_TABAN;
@@ -144,7 +157,9 @@ export function orbKare({ boyut, seviye, ts, azHareket = false, durum }) {
   return {
     scale: 1 + nefes + s * ORB_SCALE_K + nabiz * DUSUNCE_OLCEK,
     clipPath,
-    haloOpacity: Math.min(1, taban.halo + s * 0.42),
+    // Hâlenin sese tepkisi de kısıldı (0.42 → 0.24): yüksek genlikte hâle içeriğin üstüne
+    // taşıp okunurluğu düşürüyordu. Sesin görünür karşılığı artık ağırlıkla çekirdekte.
+    haloOpacity: Math.min(1, taban.halo + s * 0.24 + nabiz * DUSUNCE_HALO),
     parlaklik: Math.min(1, taban.parla + s * PARLA_SES + nabiz * DUSUNCE_PARLA),
   };
 }

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import Any
 
 from core.text import tr_lower
 
@@ -101,4 +102,36 @@ def mask_for_llm(text: str, isim: str | None = None) -> str:
     return mask_pii(_redact_isim(text, isim)).masked_text
 
 
-__all__ = ("MaskResult", "has_pii", "mask_for_llm", "mask_pii")
+# Yapısal maskelemede özyineleme tavanı — kötü niyetli/bozuk derin yapı sonsuz inmesin.
+_AZAMI_DERINLIK = 12
+
+
+def mask_yapisal(veri: Any, isim: str | None = None, _derinlik: int = 0) -> Any:
+    """dict/list yapısındaki TÜM metin DEĞERLERİNİ maskele — dış modele giden veri için.
+
+    NEDEN GEREKLİ: `mask_for_llm` bir metin fonksiyonudur, oysa araç çıktıları (DB kayıtları)
+    iç içe dict/list gelir. Ekran bağlamı maskelenirken kayıt verisi ham gidiyordu; sesli modda
+    bu veri ayrıca TARAYICI ÜZERİNDEN ikinci bir sağlayıcıya (OpenAI Realtime) ulaşıyor.
+    Aynı sınırdan geçen iki veriden yalnız birini maskelemek tutarsızdı.
+
+    ANAHTARLARA DOKUNULMAZ: onlar alan adıdır, kişisel veri değil; maskelenirse şema bozulur
+    ve model alanları tanıyamaz. Sayı/bool/None olduğu gibi kalır — maskeleme metin işidir ve
+    int bir alanı dizeye çevirmek şemayı sessizce değiştirirdi.
+
+    KABUL EDİLEN BEDEL: mask_pii desenleri biçimseldir; 10-11 haneli bir KAYIT numarası da
+    telefon/TCKN sanılıp yıldızlanabilir. Yanlış-pozitifin bedeli okunmayan bir numara,
+    yanlış-negatifin bedeli dış servise sızan bir TCKN — asimetri maskeleme yönünde.
+    """
+    if _derinlik > _AZAMI_DERINLIK:
+        return veri
+    if isinstance(veri, str):
+        return mask_for_llm(veri, isim)
+    if isinstance(veri, dict):
+        return {k: mask_yapisal(v, isim, _derinlik + 1) for k, v in veri.items()}
+    if isinstance(veri, (list, tuple)):
+        donusen = [mask_yapisal(v, isim, _derinlik + 1) for v in veri]
+        return tuple(donusen) if isinstance(veri, tuple) else donusen
+    return veri
+
+
+__all__ = ("MaskResult", "has_pii", "mask_for_llm", "mask_pii", "mask_yapisal")

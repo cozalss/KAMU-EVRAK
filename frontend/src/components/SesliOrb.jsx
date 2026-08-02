@@ -74,9 +74,9 @@ export default function SesliOrb({
           kendi kenarında bir iz olarak kalır. Duraklar kürenin görünür kenarının (r≈0.38·boyut)
           DIŞINDA olacak şekilde seçildi, yoksa yine görünmezler.
           pointerEvents ZORUNLU: kutunun dışına taşar; tıklamayı yutarsa alttaki düğmeler ölür. */}
-      <span aria-hidden="true" style={{ position: "absolute", inset: "-34%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${T} 54%, transparent 80%)`, filter: "blur(46px)", opacity: .16 }} />
+      <span aria-hidden="true" style={{ position: "absolute", inset: "-24%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${T} 52%, transparent 78%)`, filter: "blur(38px)", opacity: .11 }} />
       {/* Halo — rAF opacity sürer; çekirdeğin hue'sunda, dar. */}
-      <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-21%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${GOK} 0%, ${GOK} 46%, ${T} 64%, transparent 80%)`, filter: "blur(26px)", opacity: .3 }} />
+      <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-15%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${GOK} 0%, ${GOK} 52%, ${T} 68%, transparent 82%)`, filter: "blur(20px)", opacity: .3 }} />
       {/* Küre — rAF scale + clipPath sürer. İÇ GÖLGE YOK (bkz. üstteki tasarım ilkesi).
           willChange clip-path'i de SAYAR: path() basit-şekil optimizasyonuna girmiyor, her
           karede maske olarak uygulanıyor; beyan edilmezse alt ağaç (blur + blend) boşuna
@@ -97,7 +97,7 @@ export default function SesliOrb({
             (ölçüldü) — buna karşılık filtrelenen katman her karede yeniden boyanıyordu.
             Algılanmayan bir efekt için ödenen bedel. İç canlılık artık gerçekten görünen
             şeyden geliyor: aşağıdaki blob'ların açık/koyu çalkantısı. */}
-        <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle closest-side at 50% 47%, ${GOK_UST} 0%, ${GOK} 22%, ${T} 50%, color-mix(in srgb, ${V} 58%, ${T}) 79%, color-mix(in srgb, ${T} 40%, transparent) 100%)` }} />
+        <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle closest-side at 50% 47%, ${GOK_UST} 0%, ${GOK} 18%, ${T} 40%, color-mix(in srgb, ${V} 62%, ${T}) 60%, color-mix(in srgb, ${T} 70%, ${GOK}) 80%, color-mix(in srgb, ${GOK} 62%, transparent) 100%)` }} />
         {/* Dönen sıvı blob'lar — iç akış.
             BLEND KARIŞIMI KASITLI: eski sürümde hareketli katmanların HEPSİ `screen`'di ve
             screen yalnız AÇAR (sonuç ≥ max(a,b)). Sonuç iki katlıydı — (a) hiçbir katman iç
@@ -110,7 +110,13 @@ export default function SesliOrb({
         {/* Erik katmanı KOYULTUR (overlay) — ama düşük opaklıkta ve geniş: yüksek opaklıkta
             tek yönde toplanıp yarım-ay bir gölge çiziyordu, yani kaldırdığımız "aydınlatılmış
             küre" okumasını başka yönden geri getiriyordu. Amaç gölge değil, iç çalkantı. */}
-        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .26, animation: anim("ke-orb-c 30s linear infinite") }} />
+        {/* İKİ erik katmanı, KARŞI YÖNDE dönen: tek katman yörüngesinin bulunduğu yarıyı
+            sistematik koyultuyordu (ölçüldü: üst/alt ortalama farkı ~20 L). Karşı-fazlı ikinci
+            katman bu yönlü bileşeni büyük ölçüde söndürüyor ama çalkantıyı korumak için
+            farklı periyotta koşuyor — eşit periyot olsaydı ikisi kilitlenip donuk bir maske
+            oluştururdu. */}
+        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .17, animation: anim("ke-orb-c 30s linear infinite") }} />
+        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .17, animation: anim("ke-orb-c 23s linear infinite reverse") }} />
         {/* Dönen ışık süpürmesi (conic) — yüzeyde gezinen enerji. Eski sürümde bu katmanın
             üstünde %90 alfalı sabit bir "sheen" duruyordu ve tam da hareketin yoğunlaştığı
             merkez–sol bölgeyi örtüyordu; sheen kaldırıldı, süpürme artık görünür. */}
@@ -121,9 +127,11 @@ export default function SesliOrb({
         <span ref={parlaRef} aria-hidden="true" style={{ position: "absolute", inset: 0, background: `radial-gradient(circle closest-side at 50% 47%, ${GOK_UST} 0%, color-mix(in srgb, ${GOK_UST} 50%, transparent) 24%, transparent 52%)`, mixBlendMode: "screen", opacity: .1 }} />
         {/* Grain */}
         <span style={{ position: "absolute", inset: 0, backgroundImage: GRAIN, opacity: .09, mixBlendMode: "overlay" }} />
-        {/* İnce iç kenar ışığı — plazma sınırı. Alt-koyu gölgenin YERİNE geçer: gölge yerçekimi
-            ima ederdi, bu her yönde eşit ve cismin KENDİ ışıdığını söyler. */}
-        <span aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", boxShadow: `inset 0 0 22px color-mix(in srgb, ${GOK_UST} 30%, transparent)` }} />
+        {/* KENAR IŞIĞI ARTIK GRADYANIN KENDİSİNDE (yukarıdaki %80 durağı), ayrı bir inset
+            gölgede DEĞİL. Neden: inset gölge KUTUNUN dairesine (r≈105 px) yaslanır, oysa
+            gövde clip-path ile r≈80 px'te kesiliyor — yani o ışık halkasının tamamı kırpılan
+            bölgede kalıyor ve HİÇ GÖRÜNMÜYORDU (ölçüldü: kaldırınca metrik değişmedi).
+            Gradyan durağı ise clip'le birlikte ölçekleniyor, her genlikte kenarda kalıyor. */}
       </span>
     </>
   );

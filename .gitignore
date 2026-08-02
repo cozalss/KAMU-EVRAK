@@ -92,3 +92,10 @@ frontend/orb-lab.html
 frontend/src/orb-lab.jsx
 orb-*.png
 /.orb-kiyas/
+# orb ölçüm kanıtları (determinizm/K1/occlusion kıyas kareleri) — çalışma dosyası
+det-*.png
+faz-*.png
+k1*.png
+sessiz-*.png
+zemin-*.png
+reduce-*.png

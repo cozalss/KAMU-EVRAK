@@ -137,3 +137,29 @@ test("orbKare: boyut 0 iken path üretmez (ölçüm gelmeden çizim yok)", () =>
   const k = orbKare({ boyut: 0, seviye: 0.5, ts: 4200, durum: "dinliyor" });
   assert.match(k.clipPath, /^circle\(/, "ölçüm yoksa güvenli daireye düşmeli");
 });
+
+test("DURUM_TABAN: komşu durumlar ÖLÇÜLEBİLİR aralıkla ayrılır (gürültü tabanı üstünde)", () => {
+  // Ölçüldü: rasterizasyon gürültü tabanı maks 8/255 ≈ 0.031 normalize. İlk değerlerle
+  // Dinliyor↔Yanıtlıyor parlaklık farkı 0.07'ydi ve sessiz modda gövde farkı ortalama
+  // 1.8/255 çıkıyordu — yani fark ekranda YOKTU. Bu test o regresyonu kilitler.
+  const sirali = ["hazir", "dusunuyor", "dinliyor", "konusuyor"];
+  const ASGARI_PARLA = 0.10;
+  for (let i = 1; i < sirali.length; i++) {
+    const onceki = DURUM_TABAN[sirali[i - 1]];
+    const simdi = DURUM_TABAN[sirali[i]];
+    assert.ok(simdi.parla - onceki.parla >= ASGARI_PARLA,
+      `${sirali[i - 1]} → ${sirali[i]} parlaklık farkı çok küçük: ${(simdi.parla - onceki.parla).toFixed(3)}`);
+    assert.ok(simdi.halo > onceki.halo, `${sirali[i]} hâlesi bir öncekinden büyük olmalı`);
+  }
+});
+
+test("DURUM_TABAN: hâle aralığı çekirdek aralığından DAR (occlusion sözleşmesi)", () => {
+  // Hâle geniş alana yayılır ve açık zeminde arkadaki kartı boyar (ölçüldü: kart doygunluğu
+  // %8.4 → hâle kısılınca %3.0). Durum sinyalinin ağırlığı orb'un İÇİNDEKİ çekirdekte
+  // kalmalı; bu oran tersine dönerse occlusion regresyonu geri gelir.
+  const p = Object.values(DURUM_TABAN).map((d) => d.parla);
+  const h = Object.values(DURUM_TABAN).map((d) => d.halo);
+  const yay = (a) => Math.max(...a) - Math.min(...a);
+  assert.ok(yay(p) > yay(h),
+    `çekirdek yayılımı (${yay(p).toFixed(2)}) hâle yayılımından (${yay(h).toFixed(2)}) büyük olmalı`);
+});

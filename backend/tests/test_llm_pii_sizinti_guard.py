@@ -124,3 +124,62 @@ class TestLlmPiiSizintiGuard:
         await crag_mod._llm_mevzuat_terimleri({"evrak_text": _METIN, "evrak_turu": "dilekce"})
         assert "user" in kayit, "crag terimler LLM'i çağrılmadı — test yolu kırık"
         _pii_yok(kayit["user"])
+
+
+class TestYapisalMaskeleme:
+    """`mask_yapisal` — dict/list araç çıktısındaki metin DEĞERLERİ maskelenmeli.
+
+    Bu, `mask_for_llm`'in yapı-farkında karşılığı: araç çıktıları dize değil iç içe
+    dict/list geliyor ve ekran bloğu maskelenirken bunlar ham gidiyordu.
+    """
+
+    def test_ic_ice_yapidaki_pii_maskelenir(self):
+        from api.pii import mask_yapisal
+
+        veri = {
+            "kayitlar": [
+                {"ad": "Ayşe Yılmaz", "tckn": _HAM_TCKN, "tel": _HAM_TEL},
+                {"ad": "Mehmet Demir", "notlar": [f"iletişim: {_HAM_TEL}"]},
+            ],
+        }
+        cikti = mask_yapisal(veri)
+        duz = str(cikti)
+        assert _HAM_TCKN not in duz, "iç içe yapıdan HAM TCKN sızdı"
+        assert _HAM_TEL.replace(" ", "") not in duz.replace(" ", "").replace("-", "")
+
+    def test_anahtarlar_ve_sayilar_korunur(self):
+        """Alan adları kişisel veri değil ŞEMADIR; maskelenirse model alanı tanıyamaz."""
+        from api.pii import mask_yapisal
+
+        cikti = mask_yapisal({"tckn": "x", "adet": 11111111111, "acik": True, "yok": None})
+        assert set(cikti) == {"tckn", "adet", "acik", "yok"}
+        assert cikti["adet"] == 11111111111, "int alan dizeye çevrilmiş — şema bozuldu"
+        assert cikti["acik"] is True
+        assert cikti["yok"] is None
+
+    def test_girdi_mutasyona_ugramaz(self):
+        from api.pii import mask_yapisal
+
+        veri = {"a": [{"t": _HAM_TCKN}]}
+        mask_yapisal(veri)
+        assert veri["a"][0]["t"] == _HAM_TCKN, "kaynak yapı MUTASYONA uğradı"
+
+    def test_asiri_derin_yapi_cokmez(self):
+        """Özyineleme tavanı: bozuk/kötü niyetli derin yapı RecursionError vermemeli."""
+        from api.pii import mask_yapisal
+
+        derin: dict = {"x": _HAM_TCKN}
+        for _ in range(200):
+            derin = {"n": derin}
+        mask_yapisal(derin)   # patlamamalı
+
+
+    def test_kompoz_prompt_ham_pii_tasimaz(self):
+        """Yazılı yol da aynı sınırdan geçiyor: _kompoz_user'ın ürettiği payload temiz olmalı."""
+        from api.routes.sohbet import _kompoz_user
+
+        payload = _kompoz_user(
+            "kayıtlarımı listele",
+            [{"ad": "Ayşe Yılmaz", "tckn": _HAM_TCKN, "tel": _HAM_TEL}],
+        )
+        _pii_yok(payload)

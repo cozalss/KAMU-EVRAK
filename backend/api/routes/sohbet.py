@@ -47,7 +47,7 @@ from agents.sohbet_niyet import (
     talimat_cikar,
 )
 from api.middleware.ratelimit import rate_limit
-from api.pii import mask_for_llm
+from api.pii import mask_for_llm, mask_yapisal
 from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
@@ -536,7 +536,12 @@ def _kompoz_user(mesaj: str, veri: Any, gecmis_metni: str = "", ekran_metni: str
     """Kompozisyon LLM'ine giden kullanıcı içeriği — geçmiş + EKRAN + soru + araç verisi.
     Madde 13: geçmiş dahil → takip soruları ('peki bunların kaçı kırmızı?') bağlam kazanır.
     Ekran bloğu 'bu/burada/şu evrak' gibi işaret eden soruları DB turu olmadan çözer."""
-    veri_json = json.dumps(veri, ensure_ascii=False, default=str)[:4000] if veri else "[]"
+    # KVKK: araç verisi de dış modele gidiyor — ekran bloğu maskelenirken bunun ham gitmesi
+    # tutarsızdı (aynı sınır, aynı sağlayıcı). mask_yapisal ADA DOKUNMAZ, yalnız TCKN/telefon/
+    # IBAN'ı yıldızlar; yani cevabın bilgi değeri korunur, kimlik numarası dışarı çıkmaz.
+    veri_json = (
+        json.dumps(mask_yapisal(veri), ensure_ascii=False, default=str)[:4000] if veri else "[]"
+    )
     onek = f"Önceki konuşma:\n{gecmis_metni}\n\n" if gecmis_metni else ""
     ekran = (
         "Kullanıcının ŞU AN gördüğü ekran (kullanıcı 'bu', 'burada', 'şu evrak', 'ekrandaki' "
@@ -1173,10 +1178,13 @@ async def sohbet_veri(
                 "DEME. Spesifik madde numarası ya da kuruma özel kod istenirse doğrulamaya yönlendir.")
 
     ekran_metni = _ekran_metni(istek.ekran)
+    # KVKK — BU UCUN ÇIKTISI DOĞRUDAN DIŞ MODELE GİDİYOR. Tarayıcı bu gövdeyi kullanıcıya
+    # göstermez; `kamu_evrak_sor` aracının sonucu olarak OpenAI Realtime'a yazar. Yani burası
+    # DeepSeek'ten SONRAKİ ikinci sağlayıcı sınırıdır ve ham DB kaydı bu sınırı geçmemeli.
     return {
         "tur": "veri",
         "intent": intent,
-        "veri": veri,
+        "veri": mask_yapisal(veri),
         "mevzuat_kaynaklari": _mevzuat_kaynaklari(intent, veri),
         # Ekran ile kayıt verisi AYRI etiketlenir: biri kullanıcının o an gördüğü sayaç,
         # diğeri sorgu sonucu. Etiketsiz gönderilince model bunları çelişki sanıyordu.

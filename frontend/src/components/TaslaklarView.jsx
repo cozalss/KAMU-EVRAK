@@ -5,7 +5,7 @@
    hedefti; triyajda bilişsel yükü düşüren şey tek seferde TEK karar + kalıcı önizlemedir.
    Kurgu ayrımı: işlenen arşivi IslenenEvrakView (sicil defteri), gönderilmiş GidenEvrakView.
    Düzenleme yüzeyi TEK kalır: A4 kâğıt modalı (BelgeModal); kurul = KurulModal. */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
 import BelgeModal from "./BelgeModal.jsx";
@@ -13,6 +13,7 @@ import A4Belge from "./A4Belge.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
+import { A4_GEN_MM, A4_YUK_MM, kagitSutunGenisligi } from "../lib/a4Sayfalama.js";
 
 /* Düzenlenen metni DOĞRUDAN DOCX indir (pipeline yok → /yazi/render). Gövde olduğu gibi. */
 async function docxIndir(text, name, onToast) {
@@ -186,11 +187,22 @@ function KuyrukSatiri({ h, konu, secili, onSec, onAc, optId, ilk }) {
   );
 }
 
-/* Karar paneli — seçili taslağın kalıcı önizlemesi + eylem çubuğu. Eylemlerin TEK evi
-   (Retool action-bar deseni): Gönder = ekranın tek primary'si; Sil = çıplak kırmızı metin,
-   en solda, arada boşluk (yanlış-tıklama sigortası). Önizleme TYPE.read — okuma metni
-   okuma kademesini hak eder. */
-function KararPaneli({ h, konu, govde, tamMetin, genis, sendBusy, onDuzenle, onKurul, onGonder, onSil }) {
+/* Karar paneli — İKİ SÜTUN: solda KÂĞIT, sağda karar sütunu (üst-veri + eylemler).
+   React fragment döner; iki parça üst grid'in AYRI hücreleridir (kuyruk | kâğıt | karar).
+
+   NEDEN İKİYE AYRILDI (kullanıcı isteği + ölçülebilir gerekçe): önceki sürümde kâğıt ve
+   eylem çubuğu TEK bir geniş kartın içindeydi. A4 dikey (oran 0.707), kart ise yatay bir
+   kutuydu; kâğıt yüksekliğe göre ölçeklendiğinden kartın yarısına yakını ÖLÜ BEYAZ ALAN
+   olarak kalıyordu (1600px ekranda ~944px kart, ~424px kâğıt → ~520px boşluk). Eylemler
+   kendi sütununa alınınca kâğıt sütunu daralıyor ve TAM A4 ORANINDA kuruluyor: sütun
+   genişliği ölçülen yükseklikten türetiliyor (`kagitSutunGenisligi = sutunH × A4_ORAN`),
+   böylece kâğıt sütunu birebir dolduruyor — kenarında boşluk kalmıyor.
+
+   Karar sütunu bir "inspector": önce KİMLİK (konu · dosya · tarih · tür/birim), sonra
+   EYLEMLER dikey yığın hâlinde. Gönder ekranın tek primary'si; Sil en altta, ayrı, çıplak
+   kırmızı metin (yanlış-tıklama sigortası olarak araya boşluk girer). Onay durumları
+   (sil/gönder) eylem yığınının YERİNE geçer — iki karar aynı anda açık kalamaz. */
+function KararPaneli({ h, konu, govde, tamMetin, genis, sutunH, sendBusy, onDuzenle, onKurul, onGonder, onSil }) {
   const [confirmDel, setConfirmDel] = useState(false);
   // Gönder de onaylı (confirmDel ikizi): resmî yazı GİDEN EVRAK'a kalıcı yazılır — tek yanlış
   // tık geri alınamaz kayıt üretmesin; "Gönder" önce onay ister, gönderim onayla başlar.
@@ -199,70 +211,91 @@ function KararPaneli({ h, konu, govde, tamMetin, genis, sendBusy, onDuzenle, onK
   const r = h.result || {};
   // key={secili.id} remount zaten sıfırlar — bu effect, key kalkarsa emniyet kemeri.
   useEffect(() => { setConfirmDel(false); setConfirmSend(false); }, [h.id]);
+  const ad = konu || h.name;
+  // Dikey yığında her düğme tam genişlik — hedefler eşit ve tahmin edilebilir (Fitts).
+  const tamGenis = { width: "100%", justifyContent: "center" };
   return (
-    <section aria-label="Karar paneli"
-      style={{ position: genis ? "sticky" : "static", top: SP.xl, display: "flex", flexDirection: "column", minWidth: 0,
-        maxHeight: genis ? `calc(100vh - ${SP.xl * 2}px)` : "none", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden" }}>
-      <header style={{ padding: `${SP.l}px ${SP.xl}px ${SP.m}px`, borderBottom: `1px solid ${PAL.line}`, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: SP.m }}>
-          <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink, flex: 1, minWidth: 0 }}>{konu || h.name}</h3>
-        </div>
+    <>
+      {/* ── SÜTUN 1: KÂĞIT ──────────────────────────────────────────────────────────
+          Kart YOK. Kâğıdın kendisi zaten beyaz yüzey + hairline + gölge taşıyor (A4Belge
+          `sayfaStil`); etrafına bir de kart koymak "kutu içinde kutu" üretirdi. Sütun tam
+          A4 oranında olduğundan (genişliği üst grid'in `kagitGenisligi` ile hesapladığı
+          sütun verir) kâğıt onu birebir doldurur — tek sayfa TAM görünür, kaydırma yalnız
+          çok sayfalı taslakta devreye girer (kullanıcı kararı, 2026-08-02).
+          Tıkla/Enter → A4 düzenleme (BelgeModal). */}
+      <div role="button" tabIndex={0} title="Düzenle (A4 görünüm)" aria-label={`${ad} taslağını A4 görünümde düzenle`} {...focusRing}
+        data-karar-kagit=""
+        onClick={onDuzenle}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDuzenle(); } }}
+        style={{
+          position: genis ? "sticky" : "static", top: SP.xl,
+          // Ölçüm gelmeden önce oran kilidi devrede: `sutunH` yokken yükseklik yerine
+          // aspect-ratio A4 biçimini tutar, böylece kâğıt hiçbir karede yanlış oranda
+          // görünmez. Ölçüm gelince yükseklik kesinleşir ve oran kilidi kalkar.
+          height: genis ? (sutunH ?? undefined) : undefined,
+          aspectRatio: genis && !sutunH ? `${A4_GEN_MM} / ${A4_YUK_MM}` : undefined,
+          maxHeight: genis ? undefined : "76vh",
+          overflowY: "auto", overscrollBehavior: "contain",
+          borderRadius: RAD.card, cursor: "zoom-in", minWidth: 0,
+        }}>
+        <A4Belge metin={cleanDemoText(tamMetin) || govde} baslikIpucu="Düzenle (A4 görünüm)" />
+      </div>
+
+      {/* ── SÜTUN 2: KARAR ──────────────────────────────────────────────────────────
+          Üstte kimlik, altta eylemler. Sil en altta ve fazladan bir boşlukla AYRI durur:
+          yıkıcı eylem, sık kullanılan eylemlerin bitişiğinde olmasın (yanlış-tık sigortası). */}
+      <aside aria-label="Karar paneli"
+        style={{ position: genis ? "sticky" : "static", top: SP.xl, display: "flex", flexDirection: "column", minWidth: 0,
+          maxHeight: genis ? (sutunH ?? undefined) : "none", overflowY: "auto",
+          background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.xl }}>
+        <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink, minWidth: 0, overflowWrap: "anywhere" }}>{ad}</h3>
         <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", marginTop: SP.xs }}>
           <span style={{ fontFamily: SANS, fontSize: 12, color: PAL.mut3 }}>{h.name}</span>
           {tarih && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, ...TNUM }}>{tarih}</span>}
-          <span style={{ ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {metaSatiri(EVRAK_TR(r.evrak_turu), BIRIM_GOSTER(r.hedef_birim, r.evrak_turu), YAZI_TR(r.yazi_turu))}
-          </span>
         </div>
-      </header>
-      {/* Kâğıt önizleme — GERÇEK A4 sayfası (A4Belge: 210x297, Yönetmelik m.8/1 kenar
-          boşlukları, taşan metin yeni sayfaya). Kırpılmış özet yerine TAM taslak gösterilir:
-          antet/Sayı/Konu/imza bloğu belgenin parçasıdır ve sayfa düzeninde ancak tamamı
-          gösterilirse gerçekçi durur (özet, eski dar metin bloğu için kırpılıyordu).
-          Tıkla → A4 düzenleme (BelgeModal). */}
-      <div role="button" tabIndex={0} title="Düzenle (A4 görünüm)" {...focusRing}
-        onClick={onDuzenle}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDuzenle(); } }}
-        style={{ flex: 1, minHeight: 120, overflowY: "auto", padding: SP.l, background: PAL.surf2, cursor: "zoom-in" }}>
-        <A4Belge metin={cleanDemoText(tamMetin) || govde} baslikIpucu="Düzenle (A4 görünüm)" />
-      </div>
-      <footer style={{ display: "flex", alignItems: "center", gap: SP.s, padding: `${SP.m}px ${SP.xl}px`, borderTop: `1px solid ${PAL.line}`, flexShrink: 0, flexWrap: "wrap" }}>
-        {confirmDel ? (
-          <>
-            <span style={{ ...TYPE.data, color: DERIN.kirmizi, marginRight: "auto" }}>Taslak silinecek. Emin misiniz?</span>
-            <MetinEylem onClick={onSil} renk={DERIN.kirmizi} ariaLabel="Silmeyi onayla"><COP /> Evet, sil</MetinEylem>
-            <Btn onClick={() => setConfirmDel(false)}>Vazgeç</Btn>
-          </>
-        ) : confirmSend ? (
-          <>
-            {/* Gönderim onayı — hedef birim açıkça söylenir; onaydan sonra doğrulama kapıları
-                (/yazi/dogrula) koşar, başarısızlıkta onay açık kalır (memur tekrar dener). */}
-            <span style={{ ...TYPE.data, color: PAL.ink2, marginRight: "auto", minWidth: 0 }}>
-              Yazı <strong style={{ fontWeight: 600 }}>{BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}</strong> birimine gönderilecek ve Giden Evrak'a kalıcı kaydedilecek. Emin misiniz?
-            </span>
-            <Btn onClick={() => setConfirmSend(false)} disabled={sendBusy}>Vazgeç</Btn>
-            <Btn primary onClick={onGonder} disabled={sendBusy} ariaLabel={`${konu || h.name} gönderimini onayla`}>
-              {sendBusy ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.check width={14} height={14} /> Onayla</>}
-            </Btn>
-          </>
-        ) : (
-          <>
-            {/* sendBusy TÜM eylemleri kilitler: /yazi/dogrula ağ turu sürerken silme/düzenleme,
-                gönderilen kopyayla yarışıp tutarsız DB durumu üretebilirdi (review bulgusu). */}
-            <MetinEylem onClick={() => setConfirmDel(true)} disabled={sendBusy} renk={DERIN.kirmizi} ariaLabel={`${konu || h.name} taslağını sil`}><COP /> Sil</MetinEylem>
-            <span style={{ flex: 1 }} />
-            {/* AI Bürokrasi Kurulu — üç ajan BU taslağı gerçek doğrulama sinyalleriyle tartışır */}
-            <Btn onClick={onKurul} disabled={sendBusy} ariaLabel={`${konu || h.name} taslağı için Bürokrasi Kurulu'nu topla`}>
-              <Icon.scale width={14} height={14} /> Kurulu topla
-            </Btn>
-            <Btn onClick={onDuzenle} disabled={sendBusy} ariaLabel={`${konu || h.name} taslağını düzenle`}><KALEM /> Düzenle</Btn>
-            <Btn primary onClick={() => setConfirmSend(true)} disabled={sendBusy} ariaLabel={`${konu || h.name} taslağını gönder — önce onay istenir`}>
-              <Icon.arrow width={14} height={14} /> Gönder
-            </Btn>
-          </>
-        )}
-      </footer>
-    </section>
+        <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut }}>
+          {metaSatiri(EVRAK_TR(r.evrak_turu), BIRIM_GOSTER(r.hedef_birim, r.evrak_turu), YAZI_TR(r.yazi_turu))}
+        </p>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: SP.s, marginTop: SP.xl, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
+          {confirmDel ? (
+            <>
+              <p role="status" style={{ margin: 0, ...TYPE.data, color: DERIN.kirmizi }}>Taslak silinecek. Emin misiniz?</p>
+              <Btn onClick={onSil} style={{ ...tamGenis, color: DERIN.kirmizi }} ariaLabel="Silmeyi onayla"><COP /> Evet, sil</Btn>
+              <Btn onClick={() => setConfirmDel(false)} style={tamGenis}>Vazgeç</Btn>
+            </>
+          ) : confirmSend ? (
+            <>
+              {/* Gönderim onayı — hedef birim açıkça söylenir; onaydan sonra doğrulama kapıları
+                  (/yazi/dogrula) koşar, başarısızlıkta onay açık kalır (memur tekrar dener). */}
+              <p role="status" style={{ margin: 0, ...TYPE.data, color: PAL.ink2 }}>
+                Yazı <strong style={{ fontWeight: 600 }}>{BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)}</strong> birimine gönderilecek ve Giden Evrak'a kalıcı kaydedilecek. Emin misiniz?
+              </p>
+              <Btn primary onClick={onGonder} disabled={sendBusy} style={tamGenis} ariaLabel={`${ad} gönderimini onayla`}>
+                {sendBusy ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.check width={14} height={14} /> Onayla</>}
+              </Btn>
+              <Btn onClick={() => setConfirmSend(false)} disabled={sendBusy} style={tamGenis}>Vazgeç</Btn>
+            </>
+          ) : (
+            <>
+              {/* sendBusy TÜM eylemleri kilitler: /yazi/dogrula ağ turu sürerken silme/düzenleme,
+                  gönderilen kopyayla yarışıp tutarsız DB durumu üretebilirdi (review bulgusu). */}
+              <Btn primary onClick={() => setConfirmSend(true)} disabled={sendBusy} style={tamGenis} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
+                <Icon.arrow width={14} height={14} /> Gönder
+              </Btn>
+              <Btn onClick={onDuzenle} disabled={sendBusy} style={tamGenis} ariaLabel={`${ad} taslağını düzenle`}><KALEM /> Düzenle</Btn>
+              {/* AI Bürokrasi Kurulu — üç ajan BU taslağı gerçek doğrulama sinyalleriyle tartışır */}
+              <Btn onClick={onKurul} disabled={sendBusy} style={tamGenis} ariaLabel={`${ad} taslağı için Bürokrasi Kurulu'nu topla`}>
+                <Icon.scale width={14} height={14} /> Kurulu topla
+              </Btn>
+              <div style={{ marginTop: SP.l }}>
+                <MetinEylem onClick={() => setConfirmDel(true)} disabled={sendBusy} renk={DERIN.kirmizi} ariaLabel={`${ad} taslağını sil`}><COP /> Sil</MetinEylem>
+              </div>
+            </>
+          )}
+        </div>
+      </aside>
+    </>
   );
 }
 
@@ -277,6 +310,72 @@ function useGenisEkran() {
     return () => mq.removeEventListener("change", onChange);
   }, []);
   return genis;
+}
+
+/* Sütun yüksekliği — 100vh VARSAYILMAZ, ÖLÇÜLÜR.
+
+   NEDEN (gerçek hata, Playwright'ta ölçüldü): kuyruk ve karar paneli `calc(100vh - 48px)` ile
+   kapatılıyordu. Ama bu iki sütun sayfanın TEPESİNDE başlamıyor — üstlerinde ViewWrap dolgusu +
+   başlık + araç çubuğu (~154px), altlarında ViewWrap'ın 96px alt dolgusu var. Sonuç: belge
+   1118px, pencere 900px → sayfa 218px taşıyor ve bir SAYFA kaydırma çubuğu doğuyordu. O çubuk,
+   karar panelinin kendi iç çubuğunun 33px yanına düşünce ekranda YAN YANA İKİ ÇUBUK görünüyordu.
+   Taşan 218px zaten işe yaramıyordu: yalnız başlığı yukarı kaydırıyordu.
+
+   Ölçüm ViewWrap'ın iç değerlerine BAĞLANMAZ — alt dolgu DOM'dan okunur, üst boşluk elemanın
+   kendi konumundan gelir. Başlık sarsa, araç çubuğu iki satıra düşse veya ViewWrap dolgusu
+   değişse ölçü kendiliğinden doğru kalır (sabit sayı yazılsaydı sessizce bozulurdu).
+
+   `rect.top + scrollY` KARARLI bir ölçüdür: sütunlar kısalıp sayfa sığınca tarayıcı scrollY'yi
+   sıfırlar ama rect.top aynı miktarda artar; toplam değişmez. Bu yüzden ResizeObserver kendi
+   değişikliğimizle tetiklense de aynı sonucu üretir ve döngü oluşmaz (ayrıca 1px eşiği var). */
+const SUTUN_MIN = 320;
+function useSutunYuksekligi(genis) {
+  const ref = useRef(null);
+  const [olcu, setOlcu] = useState(null);   // { yukseklik, genislik } — ikisi tek commit'te
+  useLayoutEffect(() => {
+    if (!genis || typeof window === "undefined") { setOlcu(null); return undefined; }
+    const olc = () => {
+      const el = ref.current;
+      const bolum = el?.closest("section");
+      if (!el || !bolum) return;
+      const altDolgu = parseFloat(window.getComputedStyle(bolum).paddingBottom) || 0;
+      const ust = el.getBoundingClientRect().top + window.scrollY;
+      const h = Math.max(SUTUN_MIN, Math.round(window.innerHeight - ust - altDolgu));
+      const w = Math.round(el.clientWidth);
+      setOlcu((eski) => (!eski || Math.abs(eski.yukseklik - h) > 1 || Math.abs(eski.genislik - w) > 1
+        ? { yukseklik: h, genislik: w }
+        : eski));
+    };
+    olc();
+    /* Gözlemci BODY'ye bağlanır, grid'in kendisine değil: efekt koştuğunda taslaklar henüz
+       yüklenmemiş olabilir (ekranda EmptyState var, grid DOM'da YOK) — o an grid'e bağlanmaya
+       çalışsaydık hiçbir gözlemci kurulmaz, taslaklar sonradan gelince ölçüm bir daha
+       tetiklenmez ve sütunlar eski calc()'ta kalırdı. Body her koşulda vardır ve grid
+       belirdiğinde yüksekliği değiştiği için ölçüm kendiliğinden koşar. */
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(olc) : null;
+    ro?.observe(document.body);
+    window.addEventListener("resize", olc);
+    return () => { ro?.disconnect(); window.removeEventListener("resize", olc); };
+  }, [genis]);
+  return [ref, olcu?.yukseklik ?? null, olcu?.genislik ?? null];
+}
+
+/* Kâğıt sütununun genişliği — ölçülen yükseklikten A4 oranıyla TÜRETİLİR (karar
+   `kagitSutunGenisligi`de, saf ve birim testli): sütun tam kâğıt biçiminde olur, sayfa onu
+   birebir doldurur ve TAM görünür — kaydırma yok. Sayfayı bundan büyütmenin tek yolu sütuna
+   daha çok YÜKSEKLİK açmaktır; taşma payıyla büyütme denendi ve geri alındı (2026-08-02).
+
+   KUYRUK_AZAMI neden var (kullanıcı şikâyeti + ölçüm): kuyruk `1fr` iken artan TÜM yeri
+   yutuyordu — kâğıdın ihtiyacı olmayan genişlik kuyruğa yığılıyordu. Kuyruk satırı tek
+   satırlık konu başlığı gösterir; 420px'ten sonrası okunurluğa bir şey katmaz. Artan yer
+   artık sütun aralarına gider (grid `justifyContent: space-between`): kuyruk solda, karar
+   paneli sağda kalır — ikisi de üstteki araç çubuğuyla hizalı. */
+const KUYRUK_MIN = 260, KUYRUK_AZAMI = 420, KARAR_MIN = 236, GRID_BOSLUK = SP.l;
+function kagitGenisligi(sutunH, gridGen) {
+  if (!sutunH || !gridGen) return null;
+  // Karar: `kagitSutunGenisligi` (saf, a4Sayfalama.test.js'te birim testli). Burada yalnız
+  // bu görünümün sütun bütçesi çıkarılır — diğer sütunların asgarileri kâğıda kalan yeri verir.
+  return kagitSutunGenisligi(sutunH, gridGen - KUYRUK_MIN - KARAR_MIN - GRID_BOSLUK * 2);
 }
 
 const optIdOf = (id) => `tas-${String(id).replace(/[^\w-]+/g, "_")}`;
@@ -294,6 +393,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   const [karar, setKarar] = useState({ gonderildi: 0, silindi: 0 });
   const [sendBusy, setSendBusy] = useState(false);
   const genis = useGenisEkran();
+  // gridRef ölçüm içindir (bkz. useSutunYuksekligi); ölçü gelmeden önce güvenli yedeğe düşülür.
+  const [gridRef, sutunH, gridGen] = useSutunYuksekligi(genis);
+  const kagitGen = kagitGenisligi(sutunH, gridGen);
   const [listeRef] = useAutoAnimate();   // karar sonrası satırın kuyruğu terk edişi + FLIP
 
   // Hedefli geliş: ilgili taslak kuyrukta SEÇİLİR ve görünür kılınır — A4 modalı otomatik
@@ -364,9 +466,10 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   useEffect(() => {
     if (!secili) return;
     document.getElementById(optIdOf(secili.id))?.scrollIntoView({ block: "nearest" });
-    // Dar ekranda panel listenin ALTINDA — seçim değişince görünür kalsın (blok: nearest,
-    // smooth değil; reduced-motion tartışması doğmaz).
-    if (!genis) document.querySelector('[aria-label="Karar paneli"]')?.scrollIntoView({ block: "nearest" });
+    // Dar ekranda kâğıt listenin ALTINDA — seçim değişince görünür kalsın (blok: nearest,
+    // smooth değil; reduced-motion tartışması doğmaz). Hedef KÂĞITTIR, karar sütunu değil:
+    // memur önce belgeyi görmek ister, eylemler onun altında zaten erişilebilir.
+    if (!genis) document.querySelector("[data-karar-kagit]")?.scrollIntoView({ block: "nearest" });
   }, [secili, genis]);
 
   if (drafts.length === 0) {
@@ -392,19 +495,44 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   }
 
   const oturumEki = karar.gonderildi + karar.silindi > 0 ? ` · bu oturumda ${karar.gonderildi + karar.silindi} karara bağlandı` : "";
+  /* altDolgu (JS yorumu — JSX yorumu DEĞİL; kök elemanın önüne konsa iki kardeş doğar ve
+     sözdizimi hatası verir, bu depoda daha önce yaşandı): geniş düzende sütunlar pencereye
+     kilitli, sayfa kaydırılmıyor — o hâlde 96px alt dolgu nefes payı değil, doğrudan kâğıttan
+     kısılan ölü alandır (sütun yüksekliği = pencere − üst boşluk − alt dolgu). 24'e çekmek
+     kâğıda ~72px yükseklik kazandırır: sayfa yine TAM sığar, yalnız büyür. Yığılmış (dar)
+     düzende sayfa kaydırıldığından varsayılan 96px korunur — yüzen sohbet düğmesi son satırı
+     örtmesin. */
   return (
-    <ViewWrap id="taslak-h" title="Taslaklar" sub={`${drafts.length} taslak karar bekliyor${oturumEki} · satırı seçin, sağdaki panelde karar verin`}>
+    <ViewWrap id="taslak-h" title="Taslaklar" altDolgu={genis ? SP.xl : undefined}
+      sub={`${drafts.length} taslak karar bekliyor${oturumEki} · satırı seçin, sağdaki panelde karar verin`}>
       <AracCubugu filter={filter} turSecenek={config.select[0].options.slice(1)} birimSecenek={config.select[1].options.slice(1)} />
       {sonuc.length === 0 ? (
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: genis ? "minmax(300px, 400px) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: SP.l, alignItems: "start" }}>
+        /* Üç sütun: kuyruk | kâğıt | karar. Kâğıt sütunu ölçülen yükseklikten türeyen SABİT
+           genişlikte (A4 oranı); kuyruk KUYRUK_AZAMI'ye kadar büyür, artan yer sütun
+           aralarına dağılır (bkz. justifyContent).
+           Ölçüm gelmeden önce kâğıt için oransal bir yedek (0.8fr) kullanılır — ilk karede
+           de üç sütunlu düzen görünür, yerleşim sonradan sıçramaz.
+           Seçim yokken kâğıt/karar hücreleri boş kalmasın diye grid tek sütuna iner.
+           NOT: bu bir JS yorumudur, JSX yorumu DEĞİL — ternary'nin ifade konumunda
+           süslü-parantezli JSX yorumu sözdizimi hatası verir (bu depoda daha önce yaşandı). */
+        <div ref={gridRef} style={{
+          display: "grid",
+          gridTemplateColumns: !genis ? "minmax(0, 1fr)"
+            : !secili ? "minmax(0, 1fr)"
+            : `minmax(${KUYRUK_MIN}px, ${KUYRUK_AZAMI}px) ${kagitGen ? `${kagitGen}px` : "minmax(0, 0.8fr)"} minmax(${KARAR_MIN}px, 300px)`,
+          // Sütunlar toplam genişliği doldurmadığında artan yer ARALARA dağılır; kuyruk sola,
+          // karar paneli sağa yaslı kalır (aksi halde ikisi de ortaya kayıp araç çubuğunun
+          // hizasını bozardı). Yer darken/`fr` yedeği devredeyken bu kural etkisizdir.
+          gap: GRID_BOSLUK, alignItems: "start", justifyContent: "space-between",
+        }}>
           {/* Kuyruk listesi — listbox: ↑/↓ gezinme, Enter düzenleme; satırda eylem yok
               (eylemler panelde — Hick yasası: 244 hedef → 4 hedef). */}
           <div ref={listeRef} role="listbox" aria-label="Taslak kuyruğu" tabIndex={0} onKeyDown={klavye}
             aria-activedescendant={secili ? optIdOf(secili.id) : undefined} {...focusRing}
             style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflowY: "auto",
-              maxHeight: genis ? `calc(100vh - ${SP.xl * 2}px)` : 420 }}>
+              maxHeight: genis ? (sutunH ?? `calc(100vh - ${SP.xl * 2}px)`) : 420 }}>
             {sonuc.map((h, i) => (
               <KuyrukSatiri key={h.id} h={h} konu={h.konu} secili={secili?.id === h.id} optId={optIdOf(h.id)} ilk={i === 0}
                 onSec={() => { if (!sendBusy) setSeciliId(h.id); }} onAc={() => { if (!sendBusy) acDuzenle(h.id); }} />
@@ -412,7 +540,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
           </div>
           {secili && (
             <KararPaneli key={secili.id} h={secili} konu={secili.konu} govde={secili._govde}
-              tamMetin={secili.result?.yazi_taslak_md} genis={genis} sendBusy={sendBusy}
+              tamMetin={secili.result?.yazi_taslak_md} genis={genis} sutunH={sutunH} sendBusy={sendBusy}
               onDuzenle={() => acDuzenle(secili.id)} onKurul={() => acKurul(secili.id)}
               onGonder={() => gonder(secili, secili.result.yazi_taslak_md)} onSil={() => sil(secili)} />
           )}

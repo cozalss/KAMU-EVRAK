@@ -3,10 +3,16 @@ import assert from "node:assert/strict";
 import {
   A4_GEN_MM,
   A4_GEN_PX,
+  A4_ORAN,
   A4_YUK_MM,
   A4_YUK_PX,
+  ASGARI_OLCEK,
+  AZAMI_OLCEK,
+  KAGIT_ASGARI_GEN,
   KENAR_MM,
   YAZI_ALANI_YUK_PX,
+  kagitSutunGenisligi,
+  olcekHesapla,
   olcumleriTopla,
   sayfalaraBol,
 } from "./a4Sayfalama.js";
@@ -65,4 +71,102 @@ test("boş girdi tek boş sayfa döner", () => {
 test("olcumleriTopla DOM yokken çökmez", () => {
   assert.deepEqual(olcumleriTopla(null), []);
   assert.deepEqual(olcumleriTopla({ children: [] }), []);
+});
+
+/* ── olcekHesapla ────────────────────────────────────────────────────────────────
+   Bu blok, kağıt sütununun tasarım sözleşmesini KANITLAR: sütun A4 oranında olduğunda
+   kağıt onu birebir doldurur (kenarda ölü beyaz alan kalmaz) ve ölçek hiçbir koşulda
+   sıfıra ya da absürt değerlere kaçmaz. Ölçek eskiden bileşen içinde satır-içi
+   hesaplanıyordu; buraya taşındı ki tarayıcı açmadan da doğrulanabilsin. */
+
+test("A4 oranındaki kutuda kağıt kutuyu BİREBİR doldurur (iki eksen aynı ölçeği verir)", () => {
+  // Sütun yüksekliği verilip genişliği A4_ORAN ile türetildiğinde kağıt tam oturmalı.
+  const yuk = 650;
+  const gen = yuk * A4_ORAN;
+  const olcek = olcekHesapla(gen, yuk);
+  // Ölçeklenmiş sayfa, kutunun HEM genişliğini HEM yüksekliğini tüketir.
+  assert.ok(Math.abs(A4_GEN_PX * olcek - gen) < 0.5, "genişlik birebir dolmalı");
+  assert.ok(Math.abs(A4_YUK_PX * olcek - yuk) < 0.5, "yükseklik birebir dolmalı");
+});
+
+test("geniş ama kısa kutuda YÜKSEKLİK karar verir — sayfa dikeyde taşmaz", () => {
+  const yuk = 500;
+  const olcek = olcekHesapla(5000, yuk);
+  assert.ok(A4_YUK_PX * olcek <= yuk + 0.5, "ölçekli sayfa kutu yüksekliğini aşmamalı");
+});
+
+test("dar ama uzun kutuda GENİŞLİK karar verir — sayfa yatayda taşmaz", () => {
+  const gen = 600;   // ASGARI kelepçesinin ÜSTÜNDE kalan bir genişlik (bkz. sonraki test)
+  const olcek = olcekHesapla(gen, 5000);
+  assert.ok(A4_GEN_PX * olcek <= gen + 0.5, "ölçekli sayfa kutu genişliğini aşmamalı");
+});
+
+test("ASGARI kelepçesi altında sayfa kutudan BİLEREK taşar — okunurluk kaydırmaya tercih edilir", () => {
+  // Tasarım kararı: çok dar kapta sayfayı küçültmeye devam etmek yazıyı okunamaz yapardı.
+  // Bu noktadan sonra ölçek sabitlenir ve taşma kaydırma ile karşılanır. Sözleşme budur;
+  // "taşma = hata" varsayan bir düzeltme bu testi kırar ve niyeti hatırlatır.
+  const gen = 300;
+  const olcek = olcekHesapla(gen, 5000);
+  assert.equal(olcek, ASGARI_OLCEK);
+  assert.ok(A4_GEN_PX * olcek > gen, "ASGARI'de sayfa kutudan geniştir (kaydırma devreye girer)");
+});
+
+test("yükseklik ölçülemediğinde (0) yalnız genişlik karar verir — ölçek sıfıra çökmez", () => {
+  // Henüz yerleşmemiş kapta yükseklik 0 gelir; sayfa bir kare görünmez olmamalı.
+  const gen = A4_GEN_PX / 2;
+  assert.ok(Math.abs(olcekHesapla(gen, 0) - 0.5) < 1e-9);
+  assert.ok(olcekHesapla(gen, undefined) > 0);
+  assert.ok(olcekHesapla(gen, NaN) > 0);
+});
+
+test("ölçek ASGARI ve AZAMI sınırlarına kelepçelenir", () => {
+  assert.equal(olcekHesapla(10, 10), ASGARI_OLCEK, "çok küçük kutu ASGARI'nin altına inmez");
+  assert.equal(olcekHesapla(100000, 100000), AZAMI_OLCEK, "çok büyük kutu AZAMI'yi aşmaz");
+});
+
+test("geçersiz genişlikte çökmez, ASGARI döner", () => {
+  assert.equal(olcekHesapla(0, 500), ASGARI_OLCEK);
+  assert.equal(olcekHesapla(-40, 500), ASGARI_OLCEK);
+  assert.equal(olcekHesapla(NaN, 500), ASGARI_OLCEK);
+  assert.equal(olcekHesapla(undefined, undefined), ASGARI_OLCEK);
+});
+
+/* ── kagitSutunGenisligi ─────────────────────────────────────────────────────────
+   Sütun genişliği ile sayfa ölçeği AYNI türetmeden gelir; bu blok ikisinin birlikte
+   tuttuğunu kanıtlar: kenarda ölü alan yok VE sayfa dikeyde taşmıyor (kaydırma yok).
+   Sayfayı kaba sığandan büyük çizen bir "taşma payı" denenip kullanıcı kararıyla geri
+   alındı (2026-08-02) — aşağıdaki taşma kontrolü o kararın bekçisidir. */
+
+test("yer varsa sütun tam sayfa genişliğinde olur ve sayfa sütunu BİREBİR doldurur", () => {
+  const yuk = 1144, bol = 5000;                       // geniş monitör: kalan bol
+  const gen = kagitSutunGenisligi(yuk, bol);
+  assert.ok(Math.abs(gen - yuk * A4_ORAN) <= 1, "sütun tam sayfa genişliğinde olmalı");
+  const olcek = olcekHesapla(gen, yuk);
+  assert.ok(Math.abs(A4_GEN_PX * olcek - gen) < 1, "sayfa sütun genişliğini birebir doldurmalı");
+  assert.ok(A4_YUK_PX * olcek <= yuk, "sayfa dikeyde taşmamalı — kaydırma doğmaz");
+});
+
+test("türetilen sütunda sayfa dikeyde ASLA taşmaz (yukarı yuvarlama çubuğu doğurmaz)", () => {
+  // Math.floor'un bekçisi: kesirli yüksekliklerde bile taşma olmamalı.
+  for (const yuk of [604, 605.4, 943.7, 1144, 1189.2]) {
+    const gen = kagitSutunGenisligi(yuk, 5000);
+    const olcek = olcekHesapla(gen, yuk);
+    assert.ok(A4_YUK_PX * olcek <= yuk, `yuk=${yuk}: sayfa (${A4_YUK_PX * olcek}) sütunu aşmamalı`);
+  }
+});
+
+test("dar pencerede sütun kalana kelepçelenir, ASGARI'nin altına inmez", () => {
+  assert.equal(kagitSutunGenisligi(900, 300), 300, "kalan tam sayfadan darsa kalan kazanır");
+  assert.equal(kagitSutunGenisligi(900, 50), KAGIT_ASGARI_GEN, "asgari genişliğin altına inilmez");
+});
+
+test("ölçüm yoksa null döner — çağıran oransal yedeğine düşer, sıçrama olmaz", () => {
+  assert.equal(kagitSutunGenisligi(0, 900), null);
+  assert.equal(kagitSutunGenisligi(null, 900), null);
+  assert.equal(kagitSutunGenisligi(900, undefined), null);
+});
+
+test("A4_ORAN gerçek A4 en/boy oranıdır (1/√2)", () => {
+  assert.ok(Math.abs(A4_ORAN - A4_GEN_MM / A4_YUK_MM) < 1e-12);
+  assert.ok(Math.abs(A4_ORAN - 1 / Math.SQRT2) < 0.002);
 });

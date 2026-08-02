@@ -22,15 +22,12 @@ import {
   KENAR_MM,
   MM,
   YAZI_ALANI_GEN_PX,
+  olcekHesapla,
   olcumleriTopla,
   sayfalaraBol,
 } from "../lib/a4Sayfalama.js";
 
 const SAYFA_ARASI_PX = 24;
-// Geniş panelde sayfa gerçek A4'ten büyük gösterilebilir; sınır yalnız absürt büyümeyi keser.
-const AZAMI_OLCEK = 1.6;
-// Çok kısa panellerde sayfa okunamaz hâle gelmesin — bu noktadan sonra kaydırma devreye girer.
-const ASGARI_OLCEK = 0.42;
 
 /* Yönetmelik m.7/1 belgede İKİ yazı tipine izin verir: "Times New Roman" 12 punto VEYA
    "Arial" 11 punto. Arial seçildi — kullanıcı tercihi tırnaksız (sans-serif) görünüm ve bu
@@ -78,25 +75,29 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
 
   useEffect(stilYukle, []);
 
-  // Ölçek HEM genişliğe HEM yüksekliğe göre hesaplanır: bir TAM sayfa görünür alana sığmalı.
-  // Yalnız genişliğe bakmak yetmiyordu — geniş panelde sayfa büyüyüp dikeyde taşıyor, memur
-  // tek bir yazıyı görmek için kaydırmak zorunda kalıyordu. Oran asla esnetilmez; yalnız
-  // ölçek küçülür. Çok sayfalı taslakta 2. sayfa aşağıda kalır (kaydırma orada doğrudur).
-  useEffect(() => {
+  /* Ölçek ölçümü — BOYAMADAN ÖNCE (useLayoutEffect). Karar matematiği `olcekHesapla`da
+     (saf, a4Sayfalama.test.js'te birim testli).
+
+     NEDEN useLayoutEffect (gerçek hataydı): bu ölçüm `useEffect` ile boyamadan SONRA
+     koşuyordu. `olcek` 1'de başladığı ve yığın yüksekliği `olcek`e bağlı olduğu için ilk
+     kare YANLIŞ yükseklikle boyanıyor, hemen ardından ölçülen değere `transition: height`
+     ile ANİMASYONLA gidiyordu (ör. 2270px → 1021px). Kullanıcı bunu "panel üstten aşağı
+     iniyor" diye bildirdi; karar paneli her seçimde remount olduğundan başka bir taslağa
+     her tıklayışta tekrarlanıyordu. Hemen aşağıdaki sayfalama efekti bu kuralı zaten
+     yazmıştı ("Ölçüm boyamadan ÖNCE yapılmalı"); ölçek efekti ona uymuyordu — tutarsızlık
+     hatanın ta kendisiydi. */
+  useLayoutEffect(() => {
     const el = sarmalRef.current;
     if (!el) return undefined;
     const guncelle = () => {
       const kutu = el.parentElement;
       const bicim = kutu ? getComputedStyle(kutu) : null;
-      const gen = el.clientWidth;
       const yuk = kutu
         ? kutu.clientHeight - parseFloat(bicim.paddingTop || 0) - parseFloat(bicim.paddingBottom || 0)
         : 0;
-      if (gen <= 0) return;
-      const genOlcek = gen / A4_GEN_PX;
-      // Yükseklik ölçülemiyorsa (henüz yerleşmemiş kutu) genişlik tek başına karar verir.
-      const yukOlcek = yuk > 0 ? yuk / A4_YUK_PX : Infinity;
-      setOlcek(Math.max(ASGARI_OLCEK, Math.min(AZAMI_OLCEK, genOlcek, yukOlcek)));
+      const gen = el.clientWidth;
+      if (gen <= 0) return;   // kap henüz yerleşmemiş; ResizeObserver birazdan yine çağırır
+      setOlcek(olcekHesapla(gen, yuk));
     };
     guncelle();
     const gozlemci = new ResizeObserver(guncelle);
@@ -104,6 +105,16 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     if (el.parentElement) gozlemci.observe(el.parentElement);
     return () => gozlemci.disconnect();
   }, []);
+
+  /* Yükseklik geçişi ilk yerleşmede KAPALIDIR, sonrasında açılır.
+     Yalnız ölçümü öne almak yetmez: ölçüm bir state güncellemesidir ve React bunu ayrı bir
+     commit'te uygular; geçiş açık olsaydı o commit yine animasyon tetikleyebilirdi. Bu bayrak
+     ilk boyamadan SONRA çalışan passive efektte açılır — yani ölçülen yüksekliği uygulayan
+     commit'te geçiş hâlâ "none"dur, mount sıçraması imkânsız hâle gelir. Pencere yeniden
+     boyutlandırma gibi GERÇEK değişiklikler ise animasyonlu kalır (hareket = bilgi).
+     prefers-reduced-motion için ek kod YOK: neonUi.jsx global kuralı tüm geçişleri söndürür. */
+  const [yerlesti, setYerlesti] = useState(false);
+  useEffect(() => { setYerlesti(true); }, []);
 
   // Ölçüm boyamadan ÖNCE yapılmalı; yoksa tek sayfalık hâli bir kare görünüp sonra bölünür.
   useLayoutEffect(() => {
@@ -154,7 +165,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
           bu yüzden ortalama, ölçeklenmiş gerçek genişliğe sahip bir sarmalla yapılır — yoksa
           sayfa panelin soluna yaslanıp sağda boş alan bırakıyordu. */}
       <div className="ke-a4-yigin"
-        style={{ width: A4_GEN_PX * olcek, height: yigunYuk, margin: "0 auto", transition: "height .18s ease-out" }}>
+        style={{ width: A4_GEN_PX * olcek, height: yigunYuk, margin: "0 auto", transition: yerlesti ? "height .18s ease-out" : "none" }}>
         <div className="ke-a4-olcek"
           style={{
             transform: `scale(${olcek})`, transformOrigin: "top left", width: A4_GEN_PX,

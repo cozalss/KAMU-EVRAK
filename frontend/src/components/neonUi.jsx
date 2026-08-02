@@ -288,13 +288,18 @@ details[open] > summary .mev-chevron{transform:rotate(90deg)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 `;
 
-/* Görünüm kabuğu — başlık + alt başlık + içerik (kaydırılır sayfa). */
-export function ViewWrap({ id, title, sub, actions, children }) {
+/* Görünüm kabuğu — başlık + alt başlık + içerik (kaydırılır sayfa).
+
+   altDolgu: alt dolgu, kaydırılan görünümlerde nefes payıdır (96px varsayılan; yüzen sohbet
+   düğmesinin son satırı örtmesini de engeller). PENCEREYE KİLİTLİ düzenlerde ise ölü alandır:
+   sütun yüksekliği "pencere − üst boşluk − alt dolgu" olarak ölçüldüğünden o 96px doğrudan
+   içerikten kısılır. Bu yüzden opsiyonel; yalnız sayfanın kaydırılmadığı düzenler kısar. */
+export function ViewWrap({ id, title, sub, actions, altDolgu = 96, children }) {
   return (
     // Yatay padding responsive: 390px telefonda sabit 32+32=64px, içeriğe kalan genişliğin
     // %16'sını yiyip satırları sıfır genişliğe eziyordu (ölçüm: Panel 441px/390px taşma).
     // clamp ile dar ekranda 16px'e iner; ≥800px'te eski 32px değeri BİT-AYNI kalır.
-    <section aria-labelledby={id} style={{ padding: "24px clamp(16px, 4vw, 32px) 96px", minHeight: "calc(100vh - 1px)" }}>
+    <section aria-labelledby={id} style={{ padding: `24px clamp(16px, 4vw, 32px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
       <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
         <div>
           {/* 2026-07-25: h2(20) → h1(28). TYPE.h1 zaten "görünüm başlıkları" için tanımlıydı

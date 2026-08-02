@@ -48,6 +48,68 @@ export function sayfalaraBol(satirlar, sayfaYuk = YAZI_ALANI_YUK_PX) {
   return sayfalar;
 }
 
+/* A4 en/boy oranı — kağıt sütununun genişliği bu orandan türer (CSS `aspect-ratio`), böylece
+   sütun tam kağıt biçiminde olur ve kenarında ölü beyaz alan kalmaz. */
+export const A4_ORAN = A4_GEN_MM / A4_YUK_MM;
+
+// Geniş panelde sayfa gerçek A4'ten büyük gösterilebilir; sınır yalnız absürt büyümeyi keser.
+export const AZAMI_OLCEK = 1.6;
+// Çok kısa kaplarda sayfa okunamaz hâle gelmesin — bu noktadan sonra kaydırma devreye girer.
+export const ASGARI_OLCEK = 0.42;
+
+/**
+ * Kullanılabilir kutuya bir TAM A4 sayfası sığdıran ölçeği hesaplar.
+ *
+ * Ölçek HEM genişliğe HEM yüksekliğe bakar: yalnız genişliğe bakmak sayfayı dikeyde taşırır
+ * ve memur tek bir yazıyı görmek için kaydırmak zorunda kalır. Oran ASLA esnetilmez; iki
+ * eksenin küçüğü kazanır, sonuç ASGARI/AZAMI arasına kelepçelenir.
+ *
+ * Sayfanın kabı aşmasına izin veren bir "taşma payı" DENENDİ ve kullanıcı kararıyla geri
+ * alındı (2026-08-02): daha büyük punto, alt şeridin kaydırmayla gelmesine değmiyor. Sayfa
+ * daima tam sığar; büyütmek isteyen sütuna daha çok YER açar (bkz. kagitSutunGenisligi).
+ *
+ * Yükseklik ölçülemediğinde (henüz yerleşmemiş kap → 0) genişlik TEK BAŞINA karar verir;
+ * aksi halde ölçek sıfıra çöker ve sayfa bir kare görünmez olurdu.
+ *
+ * Saf fonksiyondur (DOM yok) — bileşendeki efekt sıralamasından bağımsız olarak test edilir.
+ *
+ * @param {number} genislik kullanılabilir genişlik (px)
+ * @param {number} yukseklik kullanılabilir yükseklik (px); 0/geçersiz → yalnız genişlik
+ * @returns {number} ASGARI_OLCEK..AZAMI_OLCEK arası ölçek
+ */
+export function olcekHesapla(genislik, yukseklik) {
+  const gen = Number(genislik);
+  if (!Number.isFinite(gen) || gen <= 0) return ASGARI_OLCEK;
+  const yuk = Number(yukseklik);
+  const genOlcek = gen / A4_GEN_PX;
+  const yukOlcek = Number.isFinite(yuk) && yuk > 0 ? yuk / A4_YUK_PX : Infinity;
+  return Math.max(ASGARI_OLCEK, Math.min(AZAMI_OLCEK, genOlcek, yukOlcek));
+}
+
+// Kâğıt sütunu bu genişliğin altına inmez; altında sayfa okunmaz olur (kaydırma devralır).
+export const KAGIT_ASGARI_GEN = 240;
+
+/**
+ * Kâğıt sütununun genişliği — ölçülen sütun yüksekliğinden A4 oranıyla TÜRETİLİR, böylece
+ * sütun tam kâğıt biçiminde olur: sayfa sütunu birebir doldurur, kenarında ölü alan kalmaz.
+ *
+ * Dar pencerede ideal genişlik diğer sütunlara yer bırakmayabilir; o durumda kalan kazanır
+ * ve sayfa daralır (oran esnetilmez, yalnız ölçek küçülür).
+ *
+ * `Math.floor` ŞART: yukarı yuvarlama sayfayı yarım piksel taşırıp koca bir kaydırma çubuğu
+ * doğurabilir — kazanç yarım piksel, bedel 15px'lik çubuk.
+ *
+ * @param {number} sutunH ölçülen sütun yüksekliği (px)
+ * @param {number} kalanGen kâğıda ayrılabilecek azami genişlik (px)
+ * @returns {number|null} sütun genişliği (px); ölçüm yoksa null
+ */
+export function kagitSutunGenisligi(sutunH, kalanGen) {
+  const yuk = Number(sutunH);
+  const kalan = Number(kalanGen);
+  if (!Number.isFinite(yuk) || yuk <= 0 || !Number.isFinite(kalan)) return null;
+  return Math.max(KAGIT_ASGARI_GEN, Math.floor(Math.min(yuk * A4_ORAN, kalan)));
+}
+
 /** DOM ölçüm katmanındaki çocukları saf ölçüm nesnelerine çevirir. */
 export function olcumleriTopla(olcerEl) {
   if (!olcerEl) return [];

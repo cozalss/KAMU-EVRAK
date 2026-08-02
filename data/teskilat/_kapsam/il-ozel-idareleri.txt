@@ -1,0 +1,62 @@
+@KURUM: İl Özel İdaresi Listesi (mevzuat-teşkilat kapsamı)
+@BELGE: T.C. İçişleri Bakanlığı il idari bölünüş kayıtlarından türetilen il özel idaresi listesi
+@KAYNAK_KIMLIK: https://www.icisleri.gov.tr/illeridaresi/turkiye-mulki-idare-bolumleri-envanteri
+@ERISIM: 2026-08-02
+@KAYNAK_TURU: resmi_idari_bolunus
+@DOGRULAMA: resmi
+@NOT: 5302 sayılı Kanun m.35 şablonunun kapsamıdır. İl özel idareleri 6360 sayılı Kanunla BÜYÜKŞEHİR illerinde kaldırılmıştır; bu nedenle liste 81 değil 51 kayıt içerir (81 - 30 büyükşehir). Sicil kaydı bu durumla tutarlıdır.
+
+# Biçim: <slug>|<resmî ad>. Bir mevzuat-teşkilat şablonunun KAPSAMINI kilitler
+# (docs/11-mevzuat-teskilat.md INV-6). Manifest + SHA-256 ile kilitlidir.
+
+adiyaman|Adıyaman
+afyonkarahisar|Afyonkarahisar
+agri|Ağrı
+aksaray|Aksaray
+amasya|Amasya
+ardahan|Ardahan
+artvin|Artvin
+bartin|Bartın
+batman|Batman
+bayburt|Bayburt
+bilecik|Bilecik
+bingol|Bingöl
+bitlis|Bitlis
+bolu|Bolu
+burdur|Burdur
+canakkale|Çanakkale
+cankiri|Çankırı
+corum|Çorum
+duzce|Düzce
+edirne|Edirne
+elazig|Elazığ
+erzincan|Erzincan
+giresun|Giresun
+gumushane|Gümüşhane
+hakkari|Hakkâri
+igdir|Iğdır
+isparta|Isparta
+karabuk|Karabük
+karaman|Karaman
+kars|Kars
+kastamonu|Kastamonu
+kilis|Kilis
+kirikkale|Kırıkkale
+kirklareli|Kırklareli
+kirsehir|Kırşehir
+kutahya|Kütahya
+mus|Muş
+nevsehir|Nevşehir
+nigde|Niğde
+osmaniye|Osmaniye
+rize|Rize
+siirt|Siirt
+sinop|Sinop
+sirnak|Şırnak
+sivas|Sivas
+tokat|Tokat
+tunceli|Tunceli
+usak|Uşak
+yalova|Yalova
+yozgat|Yozgat
+zonguldak|Zonguldak

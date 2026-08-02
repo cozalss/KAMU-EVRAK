@@ -1,0 +1,9 @@
+@KURUM: Samsun Büyükşehir Belediyesi
+@BELGE: [DOĞRULA: bu birim kurumun resmî teşkilat sayfasında listelenmemektedir]
+@KAYNAK_KIMLIK: teskilat/samsun-buyuksehir-belediyesi/dogrulanmamis
+@ERISIM: 2026-08-02
+@NOT: DOĞRULANMAMIŞ KAYIT. 2026-08-02 doğrulamasında https://www.samsun.bel.tr/kurumsal/kurumsal-yapi/daire-baskanliklari sayfasında bulunamamıştır. Var olmadığı anlamına gelmez; aday kayıt olarak tutulur, otomatik havale hedefi üretemez.
+
+BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Kuruma gelen evrakın kaydını, havalesini ve ilgili birimlere dağıtımını yapar; kurum dışına gidecek yazıların giden evrak kaydı ile posta/KEP gönderim işlemlerini yürütür. Belediye Meclisi ve Encümen gündemi, karar yazımı, karar tebliği ve kurum arşivi iş ve işlemlerini yürütür.
+

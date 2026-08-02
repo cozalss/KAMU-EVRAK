@@ -1,0 +1,31 @@
+@KURUM: İl Özel İdaresi Birimleri (mevzuat-teşkilat şablonu)
+@BELGE: 5302 sayılı İl Özel İdaresi Kanunu (RG 4/3/2005-25745), m.6 ve m.35
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5302.pdf
+@ERISIM: 2026-08-02
+@KAYNAK_TURU: resmi_mevzuat_teskilat
+@DOGRULAMA: resmi
+@KAPSAM_KALIP: {alan}-il-ozel-idaresi
+@KAPSAM_AD_KALIP: {ad} İl Özel İdaresi
+@KAPSAM_ALAN_DOSYA: _kapsam/il-ozel-idareleri.txt
+@NOT: Dayanak 5302 m.35: "İl özel idaresi teşkilatı; genel sekreterlik, malî işler, sağlık, tarım, imar, insan kaynakları, hukuk işleri birimlerinden oluşur." Bu YEDİ birim tür geneli zorunludur; aynı maddedeki "norm kadro sistemine ve ihtiyaca göre oluşturulacak diğer birimler" il genel meclisi kararına bağlı olduğundan şablona ALINMAMIŞTIR. Birim unvanı da kaynaktandır: m.35 "diğer illerde müdürlük şeklinde kurulur" der ve il özel idareleri yalnız büyükşehir OLMAYAN illerde bulunduğundan (6360 sayılı Kanunla büyükşehir illerinde tüzel kişilikleri kaldırılmıştır; sicildeki 51 kayıt bununla tutarlıdır) tamamı müdürlük biçimindedir; Genel Sekreterlik maddede ayrı sayılmıştır. GÖREV METİNLERİ: Kanun birimlerin görevlerini ayrı ayrı düzenlemez; yalnız Genel Sekreterin görevi m.35'te tanımlıdır. Diğer altı birim için idarenin m.6'daki görev alanından o birime karşılık gelen hizmet dalı yazılmış, bunun bir birim görev tanımı DEĞİL idare görevi olduğu her kayıtta belirtilmiştir — birim düzeyinde görev uydurulmamıştır. Mahallî müşterek nitelik ve m.6'daki alan sınırları (bazı hizmetler yalnız belediye sınırları dışında) korunmuştur.
+
+BİRİM: Genel Sekreterlik
+GÖREV: 5302 m.35 uyarınca genel sekreter, il özel idaresi hizmetlerini vali adına ve onun emirleri yönünde, mevzuat hükümlerine, il genel meclisi ve il encümeni kararlarına, il özel idaresinin amaç ve politikalarına, stratejik plan ve yıllık çalışma programına göre düzenler ve yürütür; bu amaçla il özel idaresi kuruluşlarına gereken emirleri verir ve bunların uygulanmasını gözetir. Kurum içi koordinasyon, üst yönetim yazışmaları ve birimler arası iş bölümü bu birimde toplanır.
+
+BİRİM: Malî İşler Müdürlüğü
+GÖREV: 5302 m.35'te sayılan zorunlu birimlerden biridir. Kanun bu birimin görevlerini ayrıca düzenlememiştir; malî hizmetler birimlerine 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.60 ile verilen görevler bu birimde yürütülür: bütçeyi hazırlamak, uygulamak ve kesin hesabı çıkarmak; muhasebe hizmetlerini yürütmek; gelirleri tahakkuk ettirmek, gelir ve alacakların takip ve tahsilini yapmak; ön malî kontrol faaliyetini yürütmek; taşınır ve taşınmaz işlemlerini yapmak.
+
+BİRİM: Sağlık Müdürlüğü
+GÖREV: 5302 m.35'te sayılan zorunlu birimlerden biridir. Kanun birim düzeyinde görev tanımı içermez; idarenin m.6/1-a'da sayılan SAĞLIK hizmetleri (mahallî müşterek nitelikte olmak şartıyla, il sınırları içinde) bu birimde yürütülür. Not: bu birim Sağlık Bakanlığı taşra teşkilatındaki İl Sağlık Müdürlüğünden AYRIDIR; burada söz konusu olan il özel idaresinin kendi birimidir.
+
+BİRİM: Tarım Müdürlüğü
+GÖREV: 5302 m.35'te sayılan zorunlu birimlerden biridir. Kanun birim düzeyinde görev tanımı içermez; idarenin m.6/1-a'da sayılan TARIM hizmetleri ile toprağın korunması ve erozyonun önlenmesine ilişkin hizmetler (mahallî müşterek nitelikte, il sınırları içinde) bu birimde yürütülür. Not: bu birim Tarım ve Orman Bakanlığı taşra teşkilatındaki İl Tarım ve Orman Müdürlüğünden AYRIDIR.
+
+BİRİM: İmar Müdürlüğü
+GÖREV: 5302 m.35'te sayılan zorunlu birimlerden biridir. Kanun birim düzeyinde görev tanımı içermez; idarenin m.6'da sayılan imar hizmetleri bu birimde yürütülür. Kapsam sınırı kaynaktan gelir: ilin çevre düzeni plânı ile bayındırlık ve iskân hizmetleri m.6/1-a uyarınca il sınırları içinde (belediye sınırları il sınırı olan büyükşehirler hariç); imar, yol, su, kanalizasyon, katı atık ve çevre hizmetleri ise m.6/1-b uyarınca YALNIZ BELEDİYE SINIRLARI DIŞINDA yürütülür.
+
+BİRİM: İnsan Kaynakları Müdürlüğü
+GÖREV: 5302 m.35'te sayılan zorunlu birimlerden biridir. Kanun bu birimin görevlerini ayrıca düzenlememiştir; il özel idaresi personelinin atama, özlük, kadro, eğitim ve emeklilik işlemleri ile insan gücü planlaması bu birimde yürütülür.
+
+BİRİM: Hukuk İşleri Müdürlüğü
+GÖREV: 5302 m.35'te sayılan zorunlu birimlerden biridir. Kanun bu birimin görevlerini ayrıca düzenlememiştir; il özel idaresinin taraf olduğu dava ve icra işlerinin takibi ile idareye hukuki görüş ve danışmanlık hizmeti bu birimde yürütülür.

@@ -18,13 +18,15 @@ Kullanım:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import urlparse
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from core.kaynak_guveni import dosya_sha256
 
 # Windows konsolu varsayılan olarak cp857/cp1254 kullanır ve "DOĞRULANDI" bozulur.
 if hasattr(sys.stdout, "reconfigure"):
@@ -88,7 +90,8 @@ def kayitlari_topla() -> list[Kayit]:
         kayit_manifest = manifest.get(rel) or {}
         if str(kayit_manifest.get("durum", "")) == _RESMI_DOGRULANMIS:
             beklenen = str(kayit_manifest.get("icerik_sha256", ""))
-            gercek = hashlib.sha256(veri).hexdigest()
+            # Ortak yardimci ile AYNI normallestirme — satir sonu bicimi yanlis alarm vermesin.
+            gercek = dosya_sha256(yol)
             durum = DOGRULANDI if beklenen == gercek else KIRIK
             kaynak = str(kayit_manifest.get("kaynak_url", ""))
             tarih = str(kayit_manifest.get("dogrulama_tarihi", ""))

@@ -343,8 +343,14 @@ def teskilat_birim_ara(
                 return aday
     # 1.5) Mevzuatla tür geneli zorunlu birimler (docs/11) + kurumun KENDİ doğrulanmamış kaydı.
     # İkisi BİRLİKTE döner: erken dönüş, kurumun kendi kaydını memurdan gizliyordu (güvenlik
-    # denetimi bulgusu F8). Kuruma-özel kayıt önce sıralanır — tür-genel bir şablon, kurumun
-    # kendi beyan ettiği birimi gölgelememelidir; ikisi de memur onayına gider.
+    # denetimi bulgusu F8).
+    #
+    # SIRALAMA GÜVEN SEVİYESİNE GÖRE (2026-08-02): önce doğrulanmış kayıtlar, sonra adaylar.
+    # F8'in gerekçesi "kurumun kendi BEYAN ETTİĞİ birim gölgelenmesin"di; ancak kaynağı
+    # gösterilmeyen bir dosya beyan değildir. Ölçüldü: Kadıköy/Çankaya gibi kurumlarda
+    # kaynaksız şablon verisi, 5393 m.48'e dayanan DOĞRULANMIŞ birimi listenin önüne
+    # geçiriyordu — doğrulanmamış veri doğrulanmışı gölgeleyemez. Kurumun kendi kaydı
+    # listeden düşmez, yalnız güveni kadar sıralanır (F8 korunur).
     ozel_adaylar: list[dict[str, Any]] = []
     if kanonik:
         ozel = _slug_chunks(kanonik)
@@ -352,7 +358,9 @@ def teskilat_birim_ara(
             ozel_adaylar = [_aday(c, s, "aday") for s, c in _score(konu, ozel)[:top_k]]
     mevzuat = _mevzuat_adaylari(kanonik or kurum_slug, konu, top_k)
     if ozel_adaylar or mevzuat:
-        return (ozel_adaylar + mevzuat)[:top_k] if mevzuat else ozel_adaylar
+        birlesik = ozel_adaylar + mevzuat
+        birlesik.sort(key=lambda a: a.get("kaynak_guven") != RESMI_DOGRULANMIS)
+        return birlesik[:top_k]
     # 2) Kurum tipine göre jenerik şablon(lar) — yalnız aday.
     # Çağıranın tipi bilinmiyorsa (kurum_kimlik kalıbı tutmayan SGK/TÜİK/il müdürlükleri...)
     # kurum SİCİLİNDEN tür sorulur. Sicil yalnız TÜR verir: hedef üretmez, otomatik havale

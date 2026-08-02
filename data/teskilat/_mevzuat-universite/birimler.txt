@@ -1,0 +1,43 @@
+@KURUM: Üniversite İdarî Teşkilatı (mevzuat-teşkilat şablonu)
+@BELGE: 124 sayılı Yükseköğretim Üst Kuruluşları ile Yükseköğretim Kurumlarının İdari Teşkilatı Hakkında Kanun Hükmünde Kararname (RG 21/11/1983-18228), m.26-37
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/4.5.124.pdf
+@ERISIM: 2026-08-02
+@KAYNAK_TURU: resmi_mevzuat_teskilat
+@DOGRULAMA: resmi
+@KAPSAM_KALIP: {alan}-universitesi
+@KAPSAM_AD_KALIP: {ad} Üniversitesi
+@KAPSAM_ALAN_DOSYA: _kapsam/universiteler.txt
+@NOT: 124 sayılı KHK m.26 "Üniversite İdari Teşkilatı aşağıdaki birimlerden oluşur" hükmü gereği bu birimler tür geneli zorunludur; birim adları m.26 bentlerinden, görev metinleri m.27-37'den alınmıştır. KAPSAM: YALNIZ DEVLET üniversiteleri. Vakıf yükseköğretim kurumları kapsam DIŞIDIR — KHK m.2 kapsamı 2547 m.51'e göre kurulan idare teşkilatıyla sınırlar ve 2547 Ek m.8 vakıf kurumları için yalnız AKADEMİK ORGANLARIN devlet üniversiteleriyle aynı düzenleneceğini söyler; idarî teşkilat için böyle bir hüküm yoktur. KOMPTROLÖRLÜK: m.26/1-d "Komptrolörlük Daire Başkanlığı" der; ancak 22/12/2005 tarihli 5436 sayılı Kanunun 15/1-c maddesi "Üniversiteler ile yüksek teknoloji enstitülerinde Strateji Geliştirme Daire Başkanlığı kurulmuştur" hükmünü getirmiş ve mali hizmetler bu birime geçmiştir. Bu şablon bugün fiilen var olan birimi listeler: Komptrolörlük ALINMAMIŞ, yerine Strateji Geliştirme Daire Başkanlığı konmuştur (görevleri 5436 m.15/2 ve 5018 m.60'tan). ÜNİVERSİTE HASTANESİ BAŞMÜDÜRLÜĞÜ m.37'de açıkça "Hastane bulunan üniversitelerde" koşuluna bağlıdır; koşul bir hastane listesi gerektirdiğinden bu birim şablonda KOŞULLU olarak işaretlenmiştir ve hastanesi olmayan üniversitede karşılığı yoktur. Fakülte/enstitü/yüksekokul sekreterlikleri (m.38-40) bu şablonda YER ALMAZ: rektörlük idarî teşkilatı değil, akademik birim büroları olduklarından evrak havalesinde ayrı ele alınır.
+
+BİRİM: Genel Sekreterlik
+GÖREV: Üniversite idari teşkilatının başı olarak birimlerin verimli, düzenli ve uyumlu şekilde çalışmasını sağlamak; Üniversite Senatosu ile Üniversite Yönetim Kurulunda oya katılmaksızın raportörlük görevi yapmak, alınan kararların yazılması, korunması ve saklanmasını sağlamak; Senato ve Yönetim Kurulu kararlarını üniversiteye bağlı birimlere iletmek; üniversite idari teşkilatında görevlendirilecek personel hakkında rektöre öneride bulunmak; basın ve halkla ilişkiler hizmetinin yürütülmesini sağlamak; rektörlüğün yazışmalarını yürütmek; rektörlüğün protokol, ziyaret ve tören işlerini düzenlemek.
+
+BİRİM: Yapı İşleri ve Teknik Daire Başkanlığı
+GÖREV: Üniversite bina ve tesislerinin projelerini yapmak, ihale dosyalarını hazırlamak, yapı ve onarımla ilgili ihaleleri yürütmek, inşaatları kontrol etmek ve teslim almak, bakım ve onarım işlerini yapmak; kalorifer, kazan dairesi, soğuk oda, jeneratör, havalandırma sistemleri ile telefon santralı, çevre düzenleme ve araç işletme, asansör bakım ve onarımı ile benzer işleri yürütmek.
+
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Üniversitenin insan gücü planlaması ve personel politikasıyla ilgili çalışmalar yapmak, personel sisteminin geliştirilmesiyle ilgili önerilerde bulunmak; üniversite personelinin atama, özlük ve emeklilik işleriyle ilgili işlemleri yapmak; idari personelin hizmet öncesi ve hizmet içi eğitimi programlarını düzenlemek ve uygulamak.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanununun 60 ıncı maddesi ile 5436 sayılı Kanunun 15 inci maddesinde sayılan strateji geliştirme ve malî hizmetleri yürütmek: idarenin orta ve uzun vadeli strateji ve politikalarını belirlemek üzere gerekli çalışmaları yapmak; performans ve kalite ölçütleri geliştirmek; idarenin yönetimi ile hizmetlerin geliştirilmesi ve performansıyla ilgili bilgi ve verileri toplamak, analiz etmek ve yorumlamak; bütçeyi hazırlamak ve uygulama sonuçlarını izlemek; muhasebe, ödeme ve ön malî kontrol işlemlerini yürütmek. Bu birim, 124 sayılı KHK m.26/1-d'deki Komptrolörlük Daire Başkanlığının yerine 5436 sayılı Kanunun 15/1-c maddesiyle kurulmuştur.
+
+BİRİM: Öğrenci İşleri Daire Başkanlığı
+GÖREV: Öğrencilerin yeni kayıt, kabul ve ders durumları ile ilgili gerekli işleri yapmak; mezuniyet, kimlik, burs ve mezunların izlenmesi işlemlerini yürütmek.
+
+BİRİM: Sağlık, Kültür ve Spor Daire Başkanlığı
+GÖREV: Öğrencilerin ve personelin sağlık işleri ve tedavileri ile ilgili hizmetleri yürütmek; öğrencilerin ve personelin barınma, yemek ve benzeri ihtiyaçlarını karşılamak; öğrencilerin ve personelin spor, kültürel ve sosyal ihtiyaçlarını karşılayacak faaliyetleri düzenlemek.
+
+BİRİM: Kütüphane ve Dokümantasyon Daire Başkanlığı
+GÖREV: Üniversite kütüphanelerinin gerekli her türlü hizmetlerini karşılamak; baskı, film, videobant, mikrofilm gibi kayıt katalogları ve hizmete sunma işlemleri ile bibliyografik tarama çalışmalarını yapmak.
+
+BİRİM: Bilgi İşlem Daire Başkanlığı
+GÖREV: Üniversitedeki bilgi işlem sistemini işletmek, eğitim, öğretim ve araştırmalara destek olmak; üniversitenin ihtiyaç duyacağı diğer bilgi işlem hizmetlerini yerine getirmek.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Üniversitenin öğrencileri, diğer kişi ve kurumlarla olan anlaşmazlık ve uyuşmazlıklarında adli ve idari mercilerde üniversitenin haklarını savunmak; üniversitenin tasarruflarının yürürlükteki kanunlara uygun olarak icrasında idareye yardımcı olmak.
+
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: Araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek; temizlik, aydınlatma, ısıtma, bakım, onarım ve benzeri hizmetleri yapmak; basım ve grafik işleri ile evrak, yazı ve teksir hizmetlerini yerine getirmek; sivil savunma, güvenlik ve çevre kontrolü işlerini yürütmek.
+
+BİRİM: Üniversite Hastanesi Başmüdürlüğü
+GÖREV: KOŞULLU BİRİM — 124 sayılı KHK m.37 uyarınca yalnız HASTANE BULUNAN üniversitelerde kurulur. Hastanenin düzenli işlemesini ve iyi hizmet vermesini, kayıtların düzgün tutulmasını ve benzeri hizmetlerin görülmesini sağlamak.

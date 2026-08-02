@@ -1,0 +1,137 @@
+@KURUM: Devlet Üniversiteleri Listesi (mevzuat-teşkilat kapsamı)
+@BELGE: Yükseköğretim Kurulu resmî üniversite listesi (devlet üniversiteleri)
+@KAYNAK_KIMLIK: https://www.yok.gov.tr/tr/university?type=1
+@ERISIM: 2026-08-02
+@KAYNAK_TURU: resmi_idari_bolunus
+@DOGRULAMA: resmi
+@NOT: 124 sayılı KHK idarî teşkilat şablonunun kapsamıdır. YALNIZ DEVLET üniversiteleri; vakıf yükseköğretim kurumları KAPSAM DIŞIDIR (2547 Ek m.8 yalnız AKADEMİK ORGANLARIN devlet üniversiteleriyle aynı düzenleneceğini söyler, idarî teşkilat için böyle bir hüküm yoktur). İzmir Yüksek Teknoloji Enstitüsü devlet kurumu olmasına rağmen slug kalıbına ({alan}-universitesi) uymadığı için bu listede yoktur; teşkilatı ayrıca ele alınmalıdır.
+
+# Biçim: <slug>|<resmî ad>. Bir mevzuat-teşkilat şablonunun KAPSAMINI kilitler
+# (docs/11-mevzuat-teskilat.md INV-6). Manifest + SHA-256 ile kilitlidir.
+
+abdullah-gul|Abdullah Gül
+adana-alparslan-turkes-bilim-teknoloji|Adana Alparslan Türkeş Bilim ve Teknoloji
+adiyaman|Adıyaman
+afyon-kocatepe|Afyon Kocatepe
+afyonkarahisar-saglik-bilimleri|Afyonkarahisar Sağlık Bilimleri
+agri-ibrahim-cecen|Ağrı İbrahim Çeçen
+akdeniz|Akdeniz
+aksaray|Aksaray
+alanya-alaaddin-keykubat|Alanya Alaaddin Keykubat
+amasya|Amasya
+anadolu|Anadolu
+ankara-haci-bayram-veli|Ankara Hacı Bayram Veli
+ankara-muzik-guzel-sanatlar|Ankara Müzik ve Güzel Sanatlar
+ankara-sosyal-bilimleri|Ankara Sosyal Bilimleri
+ankara|Ankara
+ankara-yildirim-beyazit|Ankara Yıldırım Beyazıt
+ardahan|Ardahan
+artvin-coruh|Artvin Çoruh
+ataturk|Atatürk
+aydin-adnan-menderes|Aydın Adnan Menderes
+balikesir|Balıkesir
+bandirma-onyedi-eylul|Bandırma Onyedi Eylül
+bartin|Bartın
+batman|Batman
+bayburt|Bayburt
+bilecik-seyh-edebali|Bilecik Şeyh Edebali
+bingol|Bingöl
+bitlis-eren|Bitlis Eren
+bogazici|Boğaziçi
+bolu-abant-izzet-baysal|Bolu Abant İzzet Baysal
+burdur-mehmet-akif-ersoy|Burdur Mehmet Akif Ersoy
+bursa-teknik|Bursa Teknik
+bursa-uludag|Bursa Uludağ
+canakkale-onsekiz-mart|Çanakkale Onsekiz Mart
+cankiri-karatekin|Çankırı Karatekin
+cukurova|Çukurova
+dicle|Dicle
+dokuz-eylul|Dokuz Eylül
+duzce|Düzce
+ege|Ege
+erciyes|Erciyes
+erzincan-binali-yildirim|Erzincan Binali Yıldırım
+erzurum-teknik|Erzurum Teknik
+eskisehir-osmangazi|Eskişehir Osmangazi
+eskisehir-teknik|Eskişehir Teknik
+firat|Fırat
+galatasaray|Galatasaray
+gazi|Gazi
+gaziantep-islam-bilim-teknoloji|Gaziantep İslam Bilim ve Teknoloji
+gaziantep|Gaziantep
+gebze-teknik|Gebze Teknik
+giresun|Giresun
+gumushane|Gümüşhane
+hacettepe|Hacettepe
+hakkari|Hakkari
+harran|Harran
+hatay-mustafa-kemal|Hatay Mustafa Kemal
+hitit|Hitit
+igdir|Iğdır
+inonu|İnönü
+iskenderun-teknik|İskenderun Teknik
+isparta-uygulamali-bilimleri|Isparta Uygulamalı Bilimleri
+istanbul-medeniyet|İstanbul Medeniyet
+istanbul-teknik|İstanbul Teknik
+istanbul|İstanbul
+izmir-bakircay|İzmir Bakırçay
+izmir-demokrasi|İzmir Demokrasi
+izmir-katip-celebi|İzmir Katip Çelebi
+kafkas|Kafkas
+kahramanmaras-istiklal|Kahramanmaraş İstiklal
+kahramanmaras-sutcu-imam|Kahramanmaraş Sütçü İmam
+karabuk|Karabük
+karadeniz-teknik|Karadeniz Teknik
+karamanoglu-mehmetbey|Karamanoğlu Mehmetbey
+kastamonu|Kastamonu
+kayseri|Kayseri
+kilis-7-aralik|Kilis 7 Aralık
+kirikkale|Kırıkkale
+kirklareli|Kırklareli
+kirsehir-ahi-evran|Kırşehir Ahi Evran
+kocaeli|Kocaeli
+konya-teknik|Konya Teknik
+kutahya-dumlupinar|Kütahya Dumlupınar
+kutahya-saglik-bilimleri|Kütahya Sağlık Bilimleri
+malatya-turgut-ozal|Malatya Turgut Özal
+manisa-celal-bayar|Manisa Celal Bayar
+mardin-artuklu|Mardin Artuklu
+marmara|Marmara
+mersin|Mersin
+mimar-sinan-guzel-sanatlar|Mimar Sinan Güzel Sanatlar
+mugla-sitki-kocman|Muğla Sıtkı Koçman
+munzur|Munzur
+mus-alparslan|Muş Alparslan
+necmettin-erbakan|Necmettin Erbakan
+nevsehir-haci-bektas-veli|Nevşehir Hacı Bektaş Veli
+nigde-omer-halisdemir|Niğde Ömer Halisdemir
+ondokuz-mayis|Ondokuz Mayıs
+ordu|Ordu
+orta-dogu-teknik|Orta Doğu Teknik
+osmaniye-korkut-ata|Osmaniye Korkut Ata
+pamukkale|Pamukkale
+recep-tayyip-erdogan|Recep Tayyip Erdoğan
+saglik-bilimleri|Sağlık Bilimleri
+sakarya|Sakarya
+sakarya-uygulamali-bilimleri|Sakarya Uygulamalı Bilimleri
+samsun|Samsun
+selcuk|Selçuk
+siirt|Siirt
+sinop|Sinop
+sirnak|Şırnak
+sivas-bilim-teknoloji|Sivas Bilim ve Teknoloji
+sivas-cumhuriyet|Sivas Cumhuriyet
+suleyman-demirel|Süleyman Demirel
+tarsus|Tarsus
+tekirdag-namik-kemal|Tekirdağ Namık Kemal
+tokat-gaziosmanpasa|Tokat Gaziosmanpaşa
+trabzon|Trabzon
+trakya|Trakya
+turk-alman|Türk-Alman
+turkiye-uluslararasi-islam-bilim-teknoloji|Türkiye Uluslararası İslam, Bilim ve Teknoloji
+usak|Uşak
+van-yuzuncu-yil|Van Yüzüncü Yıl
+yalova|Yalova
+yildiz-teknik|Yıldız Teknik
+yozgat-bozok|Yozgat Bozok
+zonguldak-bulent-ecevit|Zonguldak Bülent Ecevit

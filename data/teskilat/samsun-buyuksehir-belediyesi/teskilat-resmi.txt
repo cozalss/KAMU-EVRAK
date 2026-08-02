@@ -6,9 +6,8 @@
 @ALIAS: samsun-buyuksehir-belediyesi, samsun-bb, samsun-buyuksehir, samsun-belediyesi
 @NOT: BİRİM ADLARI 2026-07-25 tarihinde kurumun kendi resmî sayfasından ham HTML üzerinden çıkarılmıştır; arama motoru özetinden alınan hiçbir ad yoktur. GÖREV TANIMLARI birim adından TÜRETİLMİŞTİR, kaynakta birebir yer almaz. Dosya bilinçli olarak doğrulanmamış (aday) bırakılmıştır, otomatik havale üretmez, memur onayı gerekir. Bağlı kuruluşlar ayrı tüzel kişilik oldukları için alınmamıştır. Kuruma özgü not: Samsun'un sitesi Next.js ile istemci tarafında render edilir; birim listesi sayfanın gömülü RSC verisinden okunmuştur. Site "Dairesi Başkanlığı" yazımını tutarlı biçimde kullanır. Bağlı kuruluş SASKİ (Samsun Su ve Kanalizasyon İdaresi) ayrı tüzel kişilik olduğu için listeye alınmamıştır.
 @DOGRULAMA_DURUMU: 2026-07-26 tarihinde doğrulanamadı — Sunucu bağlantısı zaman aşımına uğruyor (ConnectTimeout); sayfa bu ortamdan indirilemiyor.
-
-BİRİM: Yazı İşleri ve Kararlar Dairesi Başkanlığı
-GÖREV: Kuruma gelen evrakın kaydını, havalesini ve ilgili birimlere dağıtımını yapar; kurum dışına gidecek yazıların giden evrak kaydı ile posta/KEP gönderim işlemlerini yürütür. Belediye Meclisi ve Encümen gündemi, karar yazımı, karar tebliği ve kurum arşivi iş ve işlemlerini yürütür.
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 
 BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
 GÖREV: Nazım imar planı ve uygulama imar planı teklifleri ile plan tadilatı başvurularını inceler, imar durumu (çap) taleplerini karşılar. Halihazır harita, parselasyon ve ifraz-tevhit işlemleri ile numarataj ve coğrafi bilgi sistemi kayıtlarını yürütür.

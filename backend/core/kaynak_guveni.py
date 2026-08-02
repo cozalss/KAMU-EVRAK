@@ -74,12 +74,25 @@ class KaynakBilgisi:
 
 
 def dosya_sha256(path: Path) -> str:
-    """Dosyanin tam SHA-256 ozetini hesapla."""
-    h = hashlib.sha256()
-    with path.open("rb") as stream:
-        for parca in iter(lambda: stream.read(1024 * 1024), b""):
-            h.update(parca)
-    return h.hexdigest()
+    """Metin kaynagin ICERIK ozeti — satir sonu bicimi ve son satir farki NOTRLENIR.
+
+    Ham bayt ozeti kullanildiginda guven zinciri icerik degismeden kiriliyordu (olculdu
+    2026-08-02: 59 manifest kaydinin 35'i "KIRIK" cikti; tek fark 65 adet CR baytiydi, satir
+    farki sifirdi). Sebep yapisal: bu depo Windows'ta duzenlenir, Python metin modunda CRLF
+    yazar, editor/git ise LF'e cevirir. Kirilan hash "birileri dosyayi degistirdi" sinyalidir;
+    her kaydetmede yanlis alarm vermesi o sinyali degersizlestirir.
+
+    Normallestirme YALNIZ sunlari notrler: UTF-8 BOM, CRLF/CR -> LF, dosya sonundaki bosluk.
+    Icerigin kendisinde tek karakterlik degisiklik hala ozeti degistirir — kurcalama tespiti
+    korunur. Metin olarak cozulemeyen dosyalarda (ikili icerik) ham bayt ozetine dusulur.
+    """
+    veri = path.read_bytes()
+    try:
+        metin = veri.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return hashlib.sha256(veri).hexdigest()
+    normal = metin.replace("\r\n", "\n").replace("\r", "\n").rstrip("\n")
+    return hashlib.sha256((normal + "\n").encode("utf-8")).hexdigest()
 
 
 def resmi_https_url_mi(url: str) -> bool:

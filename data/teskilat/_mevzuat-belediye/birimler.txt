@@ -1,0 +1,22 @@
+@KURUM: Belediye Zorunlu Birimleri (mevzuat-teşkilat şablonu)
+@BELGE: 5393 sayılı Belediye Kanunu (RG 13/7/2005-25874), m.48 ve m.51
+@KAYNAK_KIMLIK: https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5393.pdf
+@ERISIM: 2026-08-02
+@KAYNAK_TURU: resmi_mevzuat_teskilat
+@DOGRULAMA: resmi
+@KAPSAM_KALIP: {alan}-belediyesi
+@KAPSAM_AD_KALIP: {ad} Belediyesi
+@KAPSAM_ALAN_DOSYA: _kapsam/belediyeler.txt
+@NOT: Dayanak 5393 m.48: "Belediye teşkilâtı, norm kadroya uygun olarak yazı işleri, malî hizmetler, fen işleri ve zabıta birimlerinden oluşur." Bu DÖRT birim tür geneli ZORUNLUDUR; şablona yalnız bunlar alınmıştır. Aynı maddedeki sağlık, itfaiye, imar, insan kaynakları ve hukuk işleri birimleri "gerektiğinde ... oluşturulabilir" ifadesiyle KOŞULLUDUR ve belediye meclisi kararına bağlıdır — bir belediyede var olup olmadığı mevzuattan bilinemeyeceği için şablona ALINMAMIŞTIR. "Müdürlük" unvanı kanunun kendi dilinden gelir: m.49 "Birim müdürlüğü ve üstü yönetici kadrolarına yapılan atamalar" der. GÖREV METİNLERİ: Kanun yalnız zabıta biriminin görevlerini ayrı bir maddede (m.51) tanımlar; malî hizmetler için 5018 sayılı Kanun m.60 genel hükmü uygulanır. Yazı işleri ve fen işleri birimlerinin görevleri 5393'te ayrıca düzenlenmemiştir — bu durum ilgili birimlerde AÇIKÇA belirtilmiş, görev metni uydurulmamıştır. KAPSAM: büyükşehir belediyeleri HARİÇTİR; onların teşkilatı 5216 sayılı Kanun m.21'e tabidir ve birim unvanları "Daire Başkanlığı"dır. Bu şablon normatif asgari teşkilatı yansıtır; bir belediyedeki fiilî birim listesi meclis kararıyla genişletilmiş olabilir.
+
+BİRİM: Yazı İşleri Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca her belediyede bulunması zorunlu dört birimden biridir; belediyenin yazı işleri hizmetlerini yürütür. Bu birimin görevleri anılan Kanunda ayrı bir maddeyle düzenlenmemiştir. Uygulamada belediye meclisi ve encümen kararlarının yazılması ve saklanması, genel evrak kayıt, havale ve arşiv hizmetleri bu birimde yürütülür.
+
+BİRİM: Malî Hizmetler Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca her belediyede bulunması zorunlu dört birimden biridir. Görevleri 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu m.60'ta malî hizmetler birimleri için belirlenmiştir: idarenin stratejik planı ve performans programının hazırlanmasını koordine etmek; bütçeyi hazırlamak, izlemek ve kesin hesabı çıkarmak; muhasebe hizmetlerini yürütmek; gelirleri tahakkuk ettirmek, gelir ve alacakların takip ve tahsil işlemlerini yürütmek; ön malî kontrol faaliyetini yürütmek; taşınır ve taşınmaz işlemlerini yapmak.
+
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca her belediyede bulunması zorunlu dört birimden biridir; belediyenin fen işleri hizmetlerini yürütür. Bu birimin görevleri anılan Kanunda ayrı bir maddeyle düzenlenmemiştir. Uygulamada yol, altyapı, park ve belediye yapılarının yapım, bakım ve onarım işleri ile bunlara ilişkin ihale ve kontrollük hizmetleri bu birimde yürütülür.
+
+BİRİM: Zabıta Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.51 uyarınca belediye zabıtası, beldede esenlik, huzur, sağlık ve düzenin sağlanmasıyla görevlidir; bu amaçla belediye meclisi tarafından alınan ve belediye zabıtası tarafından yerine getirilmesi gereken emir ve yasaklarla bunlara uymayanlar hakkında mevzuatta öngörülen ceza ve diğer yaptırımları uygular. Görevini yaparken zabıtaya karşı gelenler, kolluk kuvvetlerine karşı gelenler gibi cezalandırılır.

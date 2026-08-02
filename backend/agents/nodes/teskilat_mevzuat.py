@@ -85,7 +85,17 @@ def _dogrulanmis_icerik(rel_yol: str) -> str | None:
         veri = path.read_bytes()
     except OSError:
         return None
-    gercek = hashlib.sha256(veri).hexdigest()
+    # Özet, manifesti üreten `dosya_sha256` ile AYNI normalleştirmeyi uygulamalı (BOM, CRLF/CR
+    # -> LF, dosya sonu boşluğu). Aksi halde depo Windows'ta düzenlendiğinde satır sonu bicimi
+    # degisir, hash tutmaz ve doğrulanmış şablon SESSİZCE devre dışı kalır — ölçüldü 2026-08-02:
+    # üniversite şablonu bu yüzden hiç genişlemedi, sorgular jenerik listeye düşüyordu.
+    try:
+        gercek = hashlib.sha256(
+            (veri.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n").rstrip("\n") + "\n")
+            .encode("utf-8")
+        ).hexdigest()
+    except UnicodeDecodeError:
+        gercek = hashlib.sha256(veri).hexdigest()
     kayit = manifest_yukle(_MANIFEST_FILE).get(rel_yol) or {}
     if str(kayit.get("durum", "")).strip() != RESMI_DOGRULANMIS:
         return None

@@ -52,7 +52,6 @@ from api.routes import mevzuat as mevzuat_katalog_mod
 from api.routes.sohbet_araclar import arac_dongusu
 from auth.deps import _ROL_HIYERARSI, CurrentUser
 from core.realtime_oturum import efemer_anahtar, realtime_acik
-from core.sesli_brifing import karsilama_metni
 from core.text import tr_lower
 from core.tts_kota import kota_dus
 from core.tts_openai import tts_enabled, tts_media_type, tts_openai
@@ -1206,28 +1205,6 @@ async def sohbet_realtime_anahtar(request: Request, user: CurrentUser) -> dict[s
     except Exception as exc:
         log.warning("realtime_anahtar_uretilemedi", error=type(exc).__name__)
         raise HTTPException(status_code=503, detail="Realtime oturumu açılamadı.") from exc
-
-
-@router.get("/sohbet/karsilama")
-@rate_limit("30/minute")
-async def sohbet_karsilama(request: Request, user: CurrentUser, session: Session) -> dict[str, str]:
-    """Sesli sahnenin açılış cümlesi — kullanıcının GERÇEK kuyruk durumuna göre.
-
-    Deterministik (LLM yok): sahne açılışında sessiz bekleme olmasın ve ilk cümlede sayı
-    uydurma riski sıfır olsun diye. Sorgu başarısız olursa nötr karşılamaya düşer.
-    """
-    try:
-        # _brifing_araci: "karar bekleyen" ve "kırmızı" ALT KÜME ilişkisini koruyarak hesaplar
-        # (panel_istatistik'in ham sayıları bu cümle için yanlış iddia üretiyordu).
-        istatistik = await _brifing_araci(session, user.id)
-    except Exception as exc:
-        # BİLEREK geniş: sesli sahne, istatistik hangi sebeple gelmezse gelmesin açılmalı
-        # (DB kapalı, persist yok, beklenmedik regresyon). Ama sessiz bozulma görünür olsun
-        # diye mesaj + stack loglanır — yoksa "hep nötr karşılama" bir kusuru gizleyebilir.
-        log.warning("sohbet_karsilama_istatistik_hatasi",
-                    error=type(exc).__name__, mesaj=str(exc), exc_info=True)
-        istatistik = {}
-    return {"metin": karsilama_metni(SESLI_PERSONA_ADI, istatistik)}
 
 
 __all__ = ("router",)

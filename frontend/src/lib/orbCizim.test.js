@@ -3,7 +3,17 @@
    blobYolu geçerli kapalı SVG path. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { blobNoktalari, blobYolu, kenarSapma } from "./orbCizim.js";
+import { DURUM_TABAN, blobNoktalari, blobYolu, kenarSapma, orbKare } from "./orbCizim.js";
+import { DURUM } from "./sesGorusme.js";
+
+test("DURUM_TABAN, DURUM'un TÜM değerlerini kapsar (modüller arası dize sözleşmesi)", () => {
+  // orbCizim, sesGorusme'yi BİLEREK import etmez (bağ kurmamak için) — anahtarlar düz dize.
+  // Bu, sessiz bir kopmaya açık: DURUM'a yeni bir durum eklenir ya da bir değer yeniden
+  // adlandırılırsa orbKare sessizce "hazir" tabanına düşer ve o durum ayırt edilemez olur.
+  const beklenen = [...Object.values(DURUM)].sort();
+  const gelen = Object.keys(DURUM_TABAN).sort();
+  assert.deepEqual(gelen, beklenen);
+});
 
 test("kenarSapma: deterministik ve -1..1 aralığında", () => {
   assert.equal(kenarSapma(1.2, 3.4), kenarSapma(1.2, 3.4));   // aynı girdi → aynı çıktı
@@ -47,4 +57,83 @@ test("blobYolu: geçerli kapalı SVG path (M ile başlar, Z ile biter, Q içerir
 test("blobYolu: <3 nokta → boş dize (güvenli)", () => {
   assert.equal(blobYolu([[0, 0], [1, 1]]), "");
   assert.equal(blobYolu([]), "");
+});
+
+test("kenarSapma: 5. harmonik n=10 örneklemesinde ÖLMEZ (aliasing regresyonu)", () => {
+  // Eskiden noktalar n=10'da örnekleniyordu ve sin(5·(i/10)·2π) = sin(iπ) = 0 oluyordu:
+  // gürültü enerjisinin %20'si rim boyunca ilerlemeyen bir terime çöküyordu. Örnekleme artık
+  // 14 nokta; bu test kenarın gerçekten AÇIYA GÖRE değiştiğini (düz olmadığını) korur.
+  const acilar = Array.from({ length: 14 }, (_, i) => (i / 14) * Math.PI * 2);
+  const degerler = acilar.map((a) => kenarSapma(a, 2.5));
+  const benzersiz = new Set(degerler.map((v) => v.toFixed(4)));
+  assert.ok(benzersiz.size >= 12, `kenar açıya göre yeterince değişmiyor: ${benzersiz.size}/14`);
+});
+
+test("orbKare: sessizlikte bile dört durum AYRI görsel değer üretir", () => {
+  // Kör denetim bulgusu: mikrofon susturulduğunda ya da TTS anahtarı yokken genlik 0 olur ve
+  // eski sürümde Hazır ≡ Dinliyor ≡ Yanıtlıyor PİKSEL PİKSEL AYNIYDI. Ayrım artık durum
+  // tabanlarından geliyor; bu testi kıran bir değişiklik o kusuru geri getirir.
+  const p = { boyut: 210, seviye: 0, ts: 4200 };
+  const imzalar = Object.keys(DURUM_TABAN).map((durum) => {
+    const k = orbKare({ ...p, durum });
+    return `${k.parlaklik.toFixed(3)}|${k.haloOpacity.toFixed(3)}`;
+  });
+  assert.equal(new Set(imzalar).size, 4, `durumlar ayrışmıyor: ${imzalar.join(" · ")}`);
+});
+
+test("orbKare: genlik arttıkça ölçek, hâle ve parlaklık MONOTON artar", () => {
+  const p = { boyut: 210, ts: 4200, durum: "konusuyor" };
+  const sessiz = orbKare({ ...p, seviye: 0 });
+  const orta = orbKare({ ...p, seviye: 0.5 });
+  const yuksek = orbKare({ ...p, seviye: 1 });
+  assert.ok(sessiz.scale < orta.scale && orta.scale < yuksek.scale);
+  assert.ok(sessiz.parlaklik < orta.parlaklik && orta.parlaklik < yuksek.parlaklik);
+  assert.ok(sessiz.haloOpacity < orta.haloOpacity && orta.haloOpacity < yuksek.haloOpacity);
+  assert.ok(yuksek.parlaklik <= 1 && yuksek.haloOpacity <= 1, "opaklık 1'i aşmamalı");
+});
+
+test("orbKare: reduced-motion → statik DAİRE kırpması (none DEĞİL)", () => {
+  // clipPath "none" bırakılsaydı küre kutunun tamamını doldurup hareketli sürümden belirgin
+  // biçimde büyük olurdu; gradyanın dış durakları da tam görünüp erik kenarı ağırlaşırdı.
+  const k = orbKare({ boyut: 210, seviye: 0.8, ts: 4200, azHareket: true, durum: "konusuyor" });
+  assert.match(k.clipPath, /^circle\(/);
+  assert.equal(k.scale, 1, "reduced-motion'da nefes ve genlik ölçeği susar");
+});
+
+test("orbKare: reduced-motion'da durum tabanları KORUNUR", () => {
+  // Tabanlar hareket değil, durumun rengidir — kaldırmak dört durumu yine ayırt edilemez yapardı.
+  const a = orbKare({ boyut: 210, seviye: 0, ts: 0, azHareket: true, durum: "hazir" });
+  const b = orbKare({ boyut: 210, seviye: 0, ts: 0, azHareket: true, durum: "konusuyor" });
+  assert.ok(b.parlaklik > a.parlaklik);
+  assert.ok(b.haloOpacity > a.haloOpacity);
+});
+
+test("orbKare: düşünme nabzı orb'un KENDİSİNDE — zamanla değişir, diğer durumlarda yok", () => {
+  // Kör yargı bulgusu: düşünme ayrımı gövdenin dışına çizilmiş mekanik bir halkaya
+  // yaslanmıştı. Nabız, farkı orb'un kendi davranışına taşır.
+  const p = { boyut: 210, seviye: 0, azHareket: false };
+  const a = orbKare({ ...p, ts: 0, durum: "dusunuyor" });
+  const b = orbKare({ ...p, ts: 675, durum: "dusunuyor" });   // ~çeyrek periyot sonra
+  assert.ok(Math.abs(b.parlaklik - a.parlaklik) > 0.05, "düşünme nabzı görünmüyor");
+  // Diğer durumlarda parlaklık yalnız genlikten gelir; ts değişimi onu oynatmamalı.
+  const h1 = orbKare({ ...p, ts: 0, durum: "hazir" });
+  const h2 = orbKare({ ...p, ts: 675, durum: "hazir" });
+  assert.equal(h1.parlaklik, h2.parlaklik);
+});
+
+test("orbKare: reduced-motion düşünme nabzını SUSTURUR", () => {
+  const p = { boyut: 210, seviye: 0, azHareket: true, durum: "dusunuyor" };
+  assert.equal(orbKare({ ...p, ts: 0 }).parlaklik, orbKare({ ...p, ts: 675 }).parlaklik);
+});
+
+test("orbKare: bilinmeyen/eksik durum çökertmez, hazır tabanına düşer", () => {
+  const bilinmeyen = orbKare({ boyut: 210, seviye: 0, ts: 0, durum: "yok_boyle_durum" });
+  const hazir = orbKare({ boyut: 210, seviye: 0, ts: 0, durum: "hazir" });
+  assert.equal(bilinmeyen.parlaklik, hazir.parlaklik);
+  assert.equal(orbKare({ boyut: 210, seviye: 0, ts: 0 }).parlaklik, hazir.parlaklik);
+});
+
+test("orbKare: boyut 0 iken path üretmez (ölçüm gelmeden çizim yok)", () => {
+  const k = orbKare({ boyut: 0, seviye: 0.5, ts: 4200, durum: "dinliyor" });
+  assert.match(k.clipPath, /^circle\(/, "ölçüm yoksa güvenli daireye düşmeli");
 });

@@ -141,6 +141,78 @@ export function yanitIste(gonder) {
   gonder({ type: "response.create" });
 }
 
+/**
+ * Araç turu senkronizasyonu — saf durum makinesi (protokolün en ince kuralı burada).
+ *
+ * NEDEN BİR MAKİNE GEREKİYOR: bir araç turunda İKİ olay birbirinden bağımsız gelir ve
+ * SIRALARI GARANTİ DEĞİLDİR:
+ *   (a) bizim araç sonucumuz konuşmaya yazılır  — bizim ağ turumuz bitince,
+ *   (b) modelin O ANKİ aktif yanıtı biter       — `response.done` geldiğinde.
+ * `response.create` YALNIZ ikisi de olduktan sonra gönderilebilir:
+ *   · (b) olmadan gönderilirse aktif yanıtla çakışır, API hata verir ve tur SESSİZCE ölür
+ *     (canlı testte "35 sn hiç ses gelmedi" olarak göründü),
+ *   · (a) olmadan gönderilirse model aracın cevabını GÖRMEDEN konuşur — yani uydurur.
+ * Ayrıca araç turunun ortasındaki `response.done` TUR SONU DEĞİLDİR; durum makinesine
+ * "yanıt bitti" diye verilirse orb, model daha konuşmadan "Dinliyor"a düşer.
+ *
+ * @returns {{
+ *   basla: () => void,
+ *   ciktiyiYazdik: () => boolean,
+ *   yanitTamamlandi: () => {turSonu: boolean, yanitIstenmeli: boolean},
+ *   sifirla: () => void,
+ * }}
+ */
+export function aracTuruOlustur() {
+  let bekliyor = false;      // araç çağrısı geldi, turu henüz kapanmadı
+  let ciktiYazildi = false;  // (a) bizim cevabımız konuşmaya yazıldı
+  let yanitBitti = false;    // (b) modelin aktif yanıtı bitti
+
+  // İki koşul da sağlandıysa TÜKET: aynı araç turu iki kez yanıt istemesin.
+  const hazirMi = () => {
+    if (!ciktiYazildi || !yanitBitti) return false;
+    ciktiYazildi = false;
+    yanitBitti = false;
+    return true;
+  };
+
+  return {
+    /** `response.function_call_arguments.done` görüldü — yeni araç turu başlıyor. */
+    basla() {
+      bekliyor = true;
+      ciktiYazildi = false;
+      yanitBitti = false;
+    },
+
+    /** Araç sonucumuz yazıldı. @returns {boolean} şimdi `response.create` gönderilmeli mi */
+    ciktiyiYazdik() {
+      // Uçuşta araç turu yoksa yok say: oturum kapanırken geç çözülen bir söz (promise)
+      // bir sonraki oturumu tetiklemesin.
+      if (!bekliyor && !yanitBitti) return false;
+      ciktiYazildi = true;
+      return hazirMi();
+    },
+
+    /**
+     * `response.done` geldi.
+     * @returns {{turSonu: boolean, yanitIstenmeli: boolean}} turSonu=false ise bu olay araç
+     * turunun ORTASIDIR ve durum makinesine verilmemelidir.
+     */
+    yanitTamamlandi() {
+      if (!bekliyor) return { turSonu: true, yanitIstenmeli: false };
+      bekliyor = false;
+      yanitBitti = true;
+      return { turSonu: false, yanitIstenmeli: hazirMi() };
+    },
+
+    /** Oturum açılışında çağrılır — yarıda kapanan bir turdan sarkan bayrak taşınmasın. */
+    sifirla() {
+      bekliyor = false;
+      ciktiYazildi = false;
+      yanitBitti = false;
+    },
+  };
+}
+
 /* EKRAN BAĞLAMI NEDEN BURADA YOK: modele `session.update` ile talimat göndermek, personayı
    ve grounding sözleşmesini istemci-yazılabilir yapardı (sunucuda tutmamızın tüm anlamı bu).
    Gerek de yok — ekran bağlamı zaten araç yolundan gidiyor: `kamu_evrak_sor` çağrıldığında

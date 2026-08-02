@@ -11,17 +11,19 @@
    a11y: ESC kapatır, aria-live durum, reduced-motion'da morph/scale söner. */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { authFetch } from "../lib/authApi.js";
-import { DURUM, rmsGenlik, sonrakiDurum, yumusat } from "../lib/sesGorusme.js";
-import { blobNoktalari, blobYolu } from "../lib/orbCizim.js";
+import { DURUM, rmsGenlik, sonrakiDurum, yumusatZamanli } from "../lib/sesGorusme.js";
+import { orbKare } from "../lib/orbCizim.js";
 import { sesTanimaOlustur, sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { sesliMetneCevir } from "../lib/sesliMod.js";
 import { cumleAyir, sesKuyruguOlustur } from "../lib/sesKuyrugu.js";
 import { komutCoz, komutOnayi } from "../lib/sesliKomut.js";
 import {
-  aracArgumanlari, aracCiktisiniYaz, aracTamamlandiMi, realtimeBaglan, sonrakiSesliDurum, yanitIste,
+  aracArgumanlari, aracCiktisiniYaz, aracTamamlandiMi, aracTuruOlustur, realtimeBaglan,
+  sonrakiSesliDurum, yanitIste,
 } from "../lib/realtimeSes.js";
+import SesliOrb from "./SesliOrb.jsx";
 import {
-  PAL, T, V, R, DERIN, SP, RAD, SH, EASE, TYPE, Icon, focusRing, SR_ONLY,
+  PAL, DERIN, SP, RAD, SH, EASE, TYPE, Icon, focusRing, SR_ONLY,
 } from "./neonUi.jsx";
 
 // Yuvarlak olan şey ORB'UN KENDİSİ — arkasında koyu tabak yok (kullanıcı kararı: zemin
@@ -38,18 +40,13 @@ const AZAMI_OTURUM_MS = 15 * 60 * 1000;  // toplam tavan (aktif olsa bile)
 const SAYAC_ARALIK_MS = 5000;
 
 const FFT = 1024;                 // ~512 bin; research deseni (smoothingTimeConstant 0.4)
-const SCALE_K = 0.13;             // genlik → hafif scale; asıl tepki KENAR sıvı-morph'unda (aş. dongu)
-const NEFES = 0.022;              // idle "nefes" salınımı ±%2.2
-const YUM = 0.15;                 // genlik yumuşatma (exponential) — ham FFT titrek, bu "confident"
+// Genlik yumuşatma artık ZAMAN tabanlı ve asimetrik (lib/sesGorusme.yumusatZamanli);
+// ölçek/nefes/kenar/durum-tabanı katsayıları lib/orbCizim.orbKare'de (düzenekle paylaşılır).
 
 const DURUM_ETIKET = {
   [DURUM.HAZIR]: "Hazır", [DURUM.DINLIYOR]: "Dinliyor",
   [DURUM.DUSUNUYOR]: "Düşünüyor", [DURUM.KONUSUYOR]: "Yanıtlıyor",
 };
-
-// Düşük opaklıklı grain — düz vektör gradyanı "enerji topu"na çevirir (research §1).
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 function azHareketMi() {
   return typeof window !== "undefined" &&
@@ -94,10 +91,10 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   // saklarız ve BİR SONRAKİ cümleyi onunla göndeririz ("evet" → uygula). Geri alınamaz iş
   // asla tek komutla yapılmaz — yazılı sohbetteki iki-adımlı kuralın sesli karşılığı.
   const onayRef = useRef(null);
-  // Araç turu senkronizasyonu — üçü birlikte "sonucu yazdık VE aktif yanıt bitti" koşulunu kurar.
-  const aracBekliyorRef = useRef(false);
-  const aracCiktiYazildiRef = useRef(false);
-  const aracYanitBittiRef = useRef(false);
+  // Araç turu senkronizasyonu — "sonucu yazdık VE aktif yanıt bitti" koşulu SAF ve testli
+  // bir makinede (lib/realtimeSes.aracTuruOlustur); burada yalnız örneği tutuyoruz.
+  const aracTuruRef = useRef(null);
+  if (aracTuruRef.current === null) aracTuruRef.current = aracTuruOlustur();
   const rtRef = useRef(null);        // aktif realtime oturumu ({gonder, kapat, pc})
   const rtAktifRef = useRef(false);  // realtime mi eski zincir mi (temizle/kes bunu okur)
   const sonUserRef = useRef("");     // model araca soru vermezse son transkripti kullan
@@ -106,6 +103,8 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
 
   const orbRef = useRef(null);
   const haloRef = useRef(null);
+  const parlaRef = useRef(null);    // çekirdek parlaması (genlik + durum tabanı)
+  const sonKareRef = useRef(0);     // önceki rAF damgası → dt (çerçeve-bağımsız yumuşatma)
   const olcuRef = useRef(0);        // orb px boyutu (clip-path sıvı kenar için ölçülür)
   const dialogRef = useRef(null);
   const urlRef = useRef(null);      // çalan TTS blob URL'i — barge-in/kapatmada revoke edilir
@@ -128,29 +127,23 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
       kaynak.getByteTimeDomainData(bufRef.current);
       hedef = rmsGenlik(bufRef.current);
     }
-    seviyeRef.current = yumusat(seviyeRef.current, hedef, YUM);
-    const az = azHareketRef.current;
-    const seviye = az ? 0 : seviyeRef.current;   // reduced-motion: hem scale hem halo donuk
-    const nefes = az ? 0 : Math.sin(ts / 1800) * NEFES;
-    const scale = 1 + nefes + seviye * SCALE_K;
+    // dt: gerçek geçen süre. Kare-sayısı yerine ZAMAN kullanmak zorunlu — sabit kare
+    // katsayısı orb'un karakterini kullanıcının tazeleme hızına bağlıyordu (bkz. yumusatZamanli).
+    const dt = sonKareRef.current ? ts - sonKareRef.current : 16.7;
+    sonKareRef.current = ts;
+    seviyeRef.current = yumusatZamanli(seviyeRef.current, hedef, dt);
+    // Karenin görsel matematiği SAF ve paylaşımlı (lib/orbCizim.orbKare) — orb-lab düzeneği
+    // aynı fonksiyonu sürdüğü için orada görülen kare burada çalan karenin AYNISIDIR.
+    const kare = orbKare({
+      boyut: olcuRef.current, seviye: seviyeRef.current, ts,
+      azHareket: azHareketRef.current, durum: d,
+    });
     if (orbRef.current) {
-      orbRef.current.style.transform = `scale(${scale.toFixed(4)})`;
-      // Sıvı kenar — "cam bilye"yi "canlı enerji"ye çeviren asıl öğe: spline+noise blob'u
-      // clip-path olarak sür (mükemmel daire değil, organik dalgalanan hat). Genlik arttıkça
-      // kenar DAHA ÇOK kıpırdar (sadece büyümez — araştırma §2/5). CSS gradyan katmanları korunur.
-      const boyut = olcuRef.current;
-      if (az || !boyut) {
-        orbRef.current.style.clipPath = "none";
-      } else {
-        // r + max amp < 0.5*boyut olmalı: aksi halde overflow:hidden dairesi wobble tepelerini
-        // düzleştirir. r=0.40 + amp≤0.075 = 0.475 < 0.5 → güvenli, kenar tam serbest dalgalanır.
-        const c = boyut / 2, r = boyut * 0.40;
-        const amp = boyut * (0.02 + seviye * 0.055);
-        const pts = blobNoktalari(c, c, r, 10, ts * 0.0011, amp);
-        orbRef.current.style.clipPath = `path('${blobYolu(pts)}')`;
-      }
+      orbRef.current.style.transform = `scale(${kare.scale.toFixed(4)})`;
+      orbRef.current.style.clipPath = kare.clipPath;
     }
-    if (haloRef.current) haloRef.current.style.opacity = (0.3 + seviye * 0.6).toFixed(3);
+    if (haloRef.current) haloRef.current.style.opacity = kare.haloOpacity.toFixed(3);
+    if (parlaRef.current) parlaRef.current.style.opacity = kare.parlaklik.toFixed(3);
     rafRef.current = requestAnimationFrame(dongu);
   }, []);
 
@@ -285,6 +278,11 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   // için dinle() çağırır — aksi halde yanıt gösterilir ama tekrar dinlenmez, görüşme takılırdı.
   const turIsle = useCallback(async (metin) => {
     hataSayacRef.current = 0;   // sesim duyuldu → hata sayacını sıfırla
+    // Boşta-kapanış sayacı ESKİ ZİNCİRDE de beslenmeli: realtime yolunda sayacı
+    // `input_audio_buffer.speech_started` sıfırlıyor, ama eski zincirde öyle bir olay yok —
+    // sayaç sahne açılışında bir kez kurulup bir daha dokunulmuyordu, yani kullanıcı KONUŞMAYA
+    // DEVAM ETSE BİLE görüşme 3 dakikada zorla kapanıyordu. Transkript geldiyse kullanıcı burada.
+    sonEtkilesimRef.current = Date.now();
 
     // --- KOMUT YOLU: ağa hiç çıkmadan uygula (gezinme bir soru değil, emirdir) ---
     // Teyit bekliyorsak atlanır: o durumda söylenen şey bekleyen sorunun CEVABIDIR.
@@ -443,15 +441,12 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     }
   }, []);
 
-  // Araç turunun iki koşulu da sağlandı → yanıt iste ve bayrakları temizle (tek yerde,
-  // iki farklı sıralamadan da buraya düşülüyor).
-  const yanitIsteVeSifirla = useCallback(() => {
-    aracCiktiYazildiRef.current = false;
-    aracYanitBittiRef.current = false;
-    if (rtRef.current) {
-      gecir("sonuc");                       // araç cevabı hazırlanıyor → "Düşünüyor"
-      yanitIste(rtRef.current.gonder);
-    }
+  // Araç turunun iki koşulu da sağlandı → yanıt iste (tek yerde, iki farklı sıralamadan da
+  // buraya düşülüyor; hangi koşulun tamamlandığını makine biliyor).
+  const aracYanitiniIste = useCallback(() => {
+    if (!rtRef.current) return;
+    gecir("sonuc");                         // araç cevabı hazırlanıyor → "Düşünüyor"
+    yanitIste(rtRef.current.gonder);
   }, [gecir]);
 
   const rtOlay = useCallback((olay) => {
@@ -471,14 +466,12 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
       setDurum(DURUM.KONUSUYOR); durumRef.current = DURUM.KONUSUYOR;
       return;
     }
-    // Araç turu iki koşul bekler: (1) sonucumuz konuşmaya YAZILMIŞ olmalı, (2) modelin
-    // aktif yanıtı BİTMİŞ olmalı. Biri eksikken response.create göndermek ya API hatası
-    // verir ya da model aracın cevabını görmeden konuşur. Hangisi önce gelirse gelsin.
-    if (olay.type === "response.done" && aracBekliyorRef.current) {
-      aracBekliyorRef.current = false;
-      aracYanitBittiRef.current = true;
-      if (aracCiktiYazildiRef.current) yanitIsteVeSifirla();
-      return;                       // bu response.done tur sonu DEĞİL, araç turunun ortası
+    // Araç turu iki koşul bekler (kural ve gerekçesi: lib/realtimeSes.aracTuruOlustur).
+    // Araç turunun ORTASINDAKİ response.done tur sonu değildir — durum makinesine verilmez.
+    if (olay.type === "response.done") {
+      const { turSonu, yanitIstenmeli } = aracTuruRef.current.yanitTamamlandi();
+      if (yanitIstenmeli) aracYanitiniIste();
+      if (!turSonu) return;
     }
     const gecis = sonrakiSesliDurum(olay.type);
     if (gecis) gecir(gecis);
@@ -506,18 +499,16 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     if (olay.type === "response.created") setSonYanit("");
     // Araç çağrısı: argümanlar parça parça akar, YALNIZ .done çalıştırılabilir.
     if (aracTamamlandiMi(olay)) {
-      aracBekliyorRef.current = true;
-      aracCiktiYazildiRef.current = false;
-      aracYanitBittiRef.current = false;
+      const tur = aracTuruRef.current;
+      tur.basla();
       const { soru } = aracArgumanlari(olay);
       aracaSor(soru || sonUserRef.current).then((cevap) => {
         if (!rtRef.current) return;
         aracCiktisiniYaz(rtRef.current.gonder, olay.call_id, cevap);
-        aracCiktiYazildiRef.current = true;
-        if (aracYanitBittiRef.current) yanitIsteVeSifirla();
+        if (tur.ciktiyiYazdik()) aracYanitiniIste();
       });
     }
-  }, [gecir, onKomut, aracaSor, yanitIsteVeSifirla]);
+  }, [gecir, onKomut, aracaSor, aracYanitiniIste]);
 
   const kurRealtime = useCallback(async () => {
     const res = await authFetch("/sohbet/realtime/anahtar", { method: "POST" });
@@ -562,7 +553,11 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     setUyari(""); setSonUser(""); setSonYanit(""); setSusturuldu(false); susturRef.current = false;
     gecmisRef.current = [];   // her oturum temiz hafızayla başlar
     onayRef.current = null;   // önceki oturumdan sarkan teyit bağlamı taşınmaz
+    // Araç turu ortasında kapatılan bir oturum, "bekliyor" bayrağını açık bırakırdı: yeni
+    // oturumun İLK response.done'ı araç turu sanılıp yutulur ve orb "Yanıtlıyor"da kalırdı.
+    aracTuruRef.current.sifirla();
     olcuRef.current = orbRef.current?.clientWidth || 0;   // sıvı kenar için orb px boyutu
+    sonKareRef.current = 0;   // dt taze başlasın; eski oturumun damgası dev bir dt üretirdi
     rafRef.current = requestAnimationFrame(dongu);
     // BİRİNCİL: realtime. Anahtar ucu 503 verirse (SESLI_REALTIME=0, anahtar yok, ağ) ya da
     // WebRTC kurulamazsa (kurum güvenlik duvarı) sessizce aşağıdaki eski zincire düşülür —
@@ -597,9 +592,9 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
       src.connect(an); micAnalizRef.current = an;         // yalnız analiz — hoparlöre BAĞLANMAZ (echo yok)
       bufRef.current = new Uint8Array(an.fftSize);
       // KARŞILAMA YOK — mikrofon açılır açılmaz DİNLER (kullanıcı kararı). Eskiden burada
-      // /sohbet/karsilama (2,5 sn timeout) + selam TTS'i + selamın okunması vardı: kullanıcı
+      // bir karşılama ucu (2,5 sn timeout) + selam TTS'i + selamın okunması vardı: kullanıcı
       // konuşmaya başlayana kadar ~8 sn "Düşünüyor/Yanıtlıyor" bekliyordu. Sahne artık sessiz
-      // açılır ve ilk sözü kullanıcı söyler.
+      // açılır ve ilk sözü kullanıcı söyler; o uç ve modülü depodan da kaldırıldı.
       dinle();
     } catch {
       if (acikRef.current) setUyari("Mikrofon izni gerekli — tarayıcı çubuğundan izin verip tekrar açın.");
@@ -615,6 +610,19 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     kur();
     return temizle;
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [acik]);
+
+  // Orb px boyutu sıvı kenarı besler ve ORB_BOYUT viewport'a bağlıdır (min(210px, 100vw-96,
+  // 100vh-220)). Tek seferlik ölçüm pencere yeniden boyutlanınca bayatlıyor: kutu küçülürse
+  // clip taşar ve KENAR DALGALANMASI TAMAMEN KAYBOLUR, büyürse küre kutusundan küçük kalır.
+  useEffect(() => {
+    const el = orbRef.current;
+    if (!acik || !el || typeof ResizeObserver === "undefined") return undefined;
+    const gozlemci = new ResizeObserver(([giris]) => {
+      olcuRef.current = giris?.contentRect?.width || el.clientWidth || 0;
+    });
+    gozlemci.observe(el);
+    return () => gozlemci.disconnect();
   }, [acik]);
 
   const kapat = useCallback(() => { setDurum(DURUM.HAZIR); onKapat?.(); }, [onKapat]);
@@ -651,7 +659,11 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
       const yeni = !v; susturRef.current = yeni;
       micStreamRef.current?.getAudioTracks().forEach((tr) => (tr.enabled = !yeni));
       if (yeni) { try { tanimaRef.current?.stop(); } catch { /* yoksay */ } }
-      else if (durumRef.current !== DURUM.KONUSUYOR) dinle();
+      // REALTIME'DA dinle() ÇAĞIRMA: orada dinleme WebRTC izinin KENDİSİDİR — iz yeniden
+      // etkinleşince model zaten duyar. dinle() burada tarayıcı STT'sini de başlatırdı ve
+      // sustur→aç yapan kullanıcıda İKİ MOTOR birden cevap verirdi (realtime konuşurken eski
+      // zincir de /sohbet/stream + TTS turu açar → üst üste binen iki ses).
+      else if (!rtAktifRef.current && durumRef.current !== DURUM.KONUSUYOR) dinle();
       return yeni;
     });
   }, [dinle]);
@@ -688,35 +700,15 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
             {DURUM_ETIKET[durum]}{dinliyor ? "…" : ""}
           </div>
 
-          {/* ORB — dokununca konuşmayı keser (barge-in) */}
-          <button type="button" onClick={kes} aria-label={konusuyor ? "Yanıtı durdur" : "Sesli görüşme küresi"} {...focusRing}
+          {/* ORB — dokununca konuşmayı keser (barge-in). Görsel katmanlar SesliOrb'da. */}
+          {/* data-press KOŞULLU: press geri bildirimi yalnız orb GERÇEKTEN tıklanabilirken
+              verilir. kes() konuşmuyorken erken dönüyor; her hâlde basılma animasyonu göstermek
+              olmayan bir eylemi varmış gibi göstermek olurdu (hareket=bilgi kuralı). */}
+          <button type="button" onClick={kes} {...(konusuyor ? { "data-press": "" } : {})}
+            aria-label={konusuyor ? "Yanıtı durdur" : "Sesli görüşme küresi"} {...focusRing}
             style={{ position: "relative", pointerEvents: "auto", width: ORB_BOYUT, aspectRatio: "1 / 1", flexShrink: 0, borderRadius: RAD.dot, border: "none", background: "none", padding: 0, cursor: konusuyor ? "pointer" : "default" }}>
-            {/* düşünürken dışa yayılan halka */}
-            {dusunuyor && !azHareketRef.current && (
-              <span aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${T}`, animation: "ke-orb-halka 1.4s var(--ke-ease-out) infinite" }} />
-            )}
-            {/* dış aura — geniş, çok yumuşak atmosfer katmanı (derinlik).
-                pointerEvents ZORUNLU: kutunun ~%58 DIŞINA taşar; tıklamayı yutarsa hem alttaki
-                sustur/bitir düğmeleri hem arkadaki sayfa ölür (bulundu: düğmeler basılmıyordu). */}
-            <span aria-hidden="true" style={{ position: "absolute", inset: "-58%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 40%, transparent 70%)`, filter: "blur(70px)", opacity: .2 }} />
-            {/* halo — arkada taşan glow (rAF opacity sürer); o da kutu dışına çıkar → tıklama geçirir */}
-            <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-35%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${V} 45%, transparent 68%)`, filter: "blur(44px)", opacity: .32 }} />
-            {/* küre — rAF scale sürer */}
-            <span ref={orbRef} aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", willChange: "transform", boxShadow: `inset 0 -14px 44px rgba(0,0,0,.4), inset 0 8px 30px color-mix(in srgb, ${PAL.onInk} 22%, transparent)` }}>
-              {/* taban gökyüzü gradyanı (hero: gök mavisi çekirdek → lavanta → mühür moru kenar)
-                  + yavaş hue kayması ("canlı renk", araştırma §2/4 — palet ±10° içinde kalır) */}
-              <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 38% 32%, ${T} 0%, ${T} 34%, ${V} 74%, color-mix(in srgb, ${V} 55%, #000) 100%)`, animation: azHareketRef.current ? "none" : "ke-orb-hue 13s ease-in-out infinite" }} />
-              {/* dönen sıvı blob'lar (screen blend → kayan gökyüzü gradyanı: mavi baskın + lavanta + mercan vurgu) */}
-              <span style={{ position: "absolute", inset: "-25%", background: `radial-gradient(circle at 50% 50%, ${T} 0%, transparent 58%)`, filter: "blur(24px)", mixBlendMode: "screen", animation: azHareketRef.current ? "none" : "ke-orb-b 21s linear infinite" }} />
-              <span style={{ position: "absolute", inset: "-25%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 50%)`, filter: "blur(28px)", mixBlendMode: "screen", opacity: .85, animation: azHareketRef.current ? "none" : "ke-orb-a 16s linear infinite" }} />
-              <span style={{ position: "absolute", inset: "-25%", background: `radial-gradient(circle at 50% 50%, ${R} 0%, transparent 42%)`, filter: "blur(30px)", mixBlendMode: "screen", opacity: .4, animation: azHareketRef.current ? "none" : "ke-orb-c 30s linear infinite" }} />
-              {/* dönen ışık süpürmesi (conic) — yüzeyde gezinen specular; "canlı" hissin anahtarı */}
-              <span aria-hidden="true" style={{ position: "absolute", inset: "-8%", borderRadius: "50%", background: `conic-gradient(from 0deg, transparent 0deg, color-mix(in srgb, ${PAL.onInk} 50%, transparent) 24deg, transparent 66deg, transparent 200deg, color-mix(in srgb, ${T} 60%, transparent) 232deg, transparent 300deg)`, filter: "blur(10px)", mixBlendMode: "screen", opacity: .55, animation: azHareketRef.current ? "none" : "nu-spin 8s linear infinite" }} />
-              {/* sheen — cam yüzey ışık yansıması */}
-              <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 32% 25%, color-mix(in srgb, ${PAL.onInk} 90%, transparent) 0%, transparent 32%)` }} />
-              {/* grain */}
-              <span style={{ position: "absolute", inset: 0, backgroundImage: GRAIN, opacity: .1, mixBlendMode: "overlay" }} />
-            </span>
+            <SesliOrb dusunuyor={dusunuyor} azHareket={azHareketRef.current}
+              orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
           </button>
 
           {/* Konuşulan metin GÖRÜNMEZ (kullanıcı kararı: altyazı yok — ses zaten konuşuyor).

@@ -85,3 +85,10 @@ frontend/src/kurul-preview.jsx
 kurul-debate-full.png
 *.playwright-preview.png
 kurul-*.png
+
+# dev-only orb düzeneği — SesliOrb'u dört durumda deterministik ekran görüntüsüne alır
+# (kurul-preview ile aynı sözleşme: vite build girdilerinde değil, commit edilmez).
+frontend/orb-lab.html
+frontend/src/orb-lab.jsx
+orb-*.png
+/.orb-kiyas/

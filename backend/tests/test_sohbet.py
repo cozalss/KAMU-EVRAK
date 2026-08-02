@@ -1019,32 +1019,3 @@ class TestSesliButce:
         monkeypatch.setattr(sohbet_mod, "llm_text", _sahte_llm_text)
         await sohbet_mod._yanit_kompoze("bu süre neden otuz gün", "genel", None, "", True)
         assert yakalanan["max_tokens"] == sohbet_mod._SESLI_BUTCE_DERIN
-
-
-class TestKarsilamaUcu:
-    """Sesli sahnenin açılış cümlesi — deterministik, kullanıcının gerçek kuyruğuna dayalı."""
-
-    def test_karsilama_metin_doner(self, auth_client: TestClient):
-        resp = auth_client.get("/sohbet/karsilama")
-        assert resp.status_code == 200
-        assert resp.json()["metin"].strip()
-
-    def test_karsilama_persona_adiyla_tanitir(self, auth_client: TestClient):
-        from api.routes.sohbet import SESLI_PERSONA_ADI
-
-        assert SESLI_PERSONA_ADI in auth_client.get("/sohbet/karsilama").json()["metin"]
-
-    def test_istatistik_hatasi_karsilamayi_dusurmez(self, auth_client: TestClient, monkeypatch):
-        # DB kapalı/persist yoksa sesli mod YİNE açılabilmeli (nötr karşılama).
-        from api.routes import sohbet as sohbet_mod
-
-        async def _patla(*a, **k):
-            raise RuntimeError("db yok")
-
-        monkeypatch.setattr(sohbet_mod, "_brifing_araci", _patla)
-        resp = auth_client.get("/sohbet/karsilama")
-        assert resp.status_code == 200
-        assert "taslağınız" not in resp.json()["metin"]   # veri yoksa sayı UYDURULMAZ
-
-    def test_karsilama_kimliksiz_reddedilir(self, client: TestClient):
-        assert client.get("/sohbet/karsilama").status_code == 401

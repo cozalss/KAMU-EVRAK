@@ -4,7 +4,7 @@
    döngüsü). Gerçek AudioContext/mikrofon gerektirmez; saf matematik + reducer. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DURUM, rmsGenlik, sonrakiDurum, yumusat } from "./sesGorusme.js";
+import { DURUM, rmsGenlik, sonrakiDurum, yumusat, yumusatZamanli } from "./sesGorusme.js";
 
 // --- rmsGenlik: AnalyserNode.getByteTimeDomainData çıktısı (0..255, sessizlik=128) → 0..1 ---
 test("rmsGenlik: sessizlik (tümü 128) sıfır döner", () => {
@@ -76,4 +76,38 @@ test("guard: 'yanit_basladi' yalnız düşünürken konuşmaya geçirir", () => 
 
 test("bilinmeyen olay durumu değiştirmez", () => {
   assert.equal(sonrakiDurum(DURUM.KONUSUYOR, "zzz"), DURUM.KONUSUYOR);
+});
+
+// --- yumusatZamanli: çerçeve-bağımsız + atak/iniş asimetrik genlik takibi ---
+test("yumusatZamanli: AYNI süre, FARKLI kare sayısı → aynı sonuç (çerçeve bağımsız)", () => {
+  // Asıl kusur buydu: kare başına sabit katsayı, orb'un karakterini kullanıcının tazeleme
+  // hızına bağlıyordu — 144 Hz'de seğiriyor, 30 fps'te uyuşuyordu.
+  const adimla = (kare, toplamMs) => {
+    let v = 0;
+    for (let i = 0; i < kare; i++) v = yumusatZamanli(v, 1, toplamMs / kare);
+    return v;
+  };
+  const altmis = adimla(6, 100);     // 60 Hz'de 100 ms
+  const yuzKirkDort = adimla(15, 100); // 144 Hz'de 100 ms
+  assert.ok(Math.abs(altmis - yuzKirkDort) < 0.02,
+    `çerçeve hızına bağımlı: ${altmis.toFixed(4)} vs ${yuzKirkDort.toFixed(4)}`);
+});
+
+test("yumusatZamanli: yükseliş inişten HIZLI (ses ölçeri davranışı)", () => {
+  const cikis = yumusatZamanli(0, 1, 50);   // sessizlikten sese
+  const inis = 1 - yumusatZamanli(1, 0, 50); // sesten sessizliğe (kat edilen mesafe)
+  assert.ok(cikis > inis * 2,
+    `atak yeterince hızlı değil: çıkış ${cikis.toFixed(3)}, iniş ${inis.toFixed(3)}`);
+});
+
+test("yumusatZamanli: hedefi AŞMAZ ve dt=0'da değer değişmez", () => {
+  assert.ok(yumusatZamanli(0, 1, 5000) <= 1);
+  assert.ok(yumusatZamanli(1, 0, 5000) >= 0);
+  assert.equal(yumusatZamanli(0.4, 1, 0), 0.4);
+});
+
+test("yumusatZamanli: uzun duraklamadan sonra hedefe atlar (hayalet hareket yok)", () => {
+  // Sekme arka plandayken rAF durur; dönüşte eski genliği yavaşça sürüklemek, olmayan bir sesi
+  // canlandırırdı.
+  assert.ok(yumusatZamanli(0.9, 0, 3000) < 0.01);
 });

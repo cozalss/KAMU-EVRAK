@@ -175,6 +175,37 @@ kapsam dışı kaldığı ayrıca testle kilitlendi: fark 51'in altına inerse t
 sicil eksik (24↔26), kaymakamlıkta sicil fazla (949↔898). Farkı kapatmadan önce **hangi tarafın
 doğru olduğu kaynaktan tespit edilmelidir.**
 
+## Plan adımı E — Defterdarlık: **ŞABLON KURULMADI (çapraz kontrol çürüttü)**
+
+Normatif kaynak (1 s. CBK'nın Hazine ve Maliye taşra maddesi) mevzuat.gov.tr üzerinden
+erişilemedi. İkincil ama resmî kaynak olarak valilik sayfaları denendi ve **üç bağımsız
+valilik üç FARKLI liste verdi**:
+
+| Kaynak | Defterdarlık birimleri |
+|---|---|
+| Konya Valiliği | Muhasebat + Muhakemat birimleri + Personel Müdürlüğü |
+| Van Valiliği | muhasebat + **millî emlak** + muhakemat + personel müdürlüğü |
+| Tokat Valiliği | Muhasebat + Muhakemat + Personel + **Gelir ve Vergi Dairesi Müdürlükleri** |
+
+İki ayrı sorun var ve ikisi de şablonu engelliyor:
+
+1. **Bir kaynak bayat.** Van sayfası Millî Emlak'ı hâlâ defterdarlık birimi sayıyor; Konya
+   saymıyor. Millî Emlak birimlerinin ayrılması bu farkın sebebi. Hangi sayfanın ne zaman
+   güncellendiği bilinemediği için ikincil kaynaklar tek başına yeterli değil.
+2. **Yapı gerçekten il'e göre DEĞİŞİYOR.** Tokat'ta defterdarlık altında Gelir ve Vergi
+   Dairesi Müdürlükleri var, Konya'da yok. Bu tesadüf değil: GİB'in doğrulanmış faaliyet
+   raporu "29 ilde 30 vergi dairesi başkanlığı ile **52 il defterdarlığı bünyesinde yer alan
+   gelir birimleri**" diyor. Yani vergi dairesi başkanlığı OLMAYAN 52 ilde gelir birimi
+   defterdarlığın altındadır, olan 29 ilde değildir. Tek listeyi 81 ile uygulayan şablon
+   bu farkı ezerdi.
+
+Bu iki bulgu birleşince defterdarlık, CSB il müdürlüğüyle aynı sınıfa düşüyor: **tür geneli
+tek bir zorunlu birim listesi yok.** Şablon kurulmadı.
+
+Yapılabilecek doğru iş, vergi dairesi başkanlığı bulunan 29 il ile bulunmayan 52 ili
+ayırmak ve iki ayrı şablon kurmaktır — ama bunun için önce o 29 ilin resmî listesi gerekir
+(aynı liste sicildeki 52 fazla vergi dairesi başkanlığı kaydını düzeltmek için de gerekli).
+
 ## Şablon nasıl eklenir
 
 1. Kaynağı bul, `scripts/mevzuat_pdf_cek.py` ile indir (TLS doğrulamalı).

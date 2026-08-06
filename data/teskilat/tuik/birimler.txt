@@ -1,18 +1,23 @@
 @KURUM: Türkiye İstatistik Kurumu
-@BELGE: 5429 sayılı Türkiye İstatistik Kanunu
-@KAYNAK_KIMLIK: teskilat/tuik/gorev-tanimi
-@ERISIM: 2026-07-18
-@ALIAS: turkiye-istatistik-kurumu
-@NOT: [DOĞRULA: güncel teşkilat şeması]
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.604
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: tuik, turkiye-istatistik-kurumu, istatistik-kurumu
+@NOT: KAPSAM UYARISI — BU LİSTE EKSİKTİR VE EKSİKLİĞİ KAYNAĞIN KENDİSİNDEN GELİR. 4 sayılı Kararname m.604/1: "Kurumun görev alanıyla ilgili hizmetlerinden sorumlu birimleri daire başkanlıklarıdır. Daire başkanlıklarının isim, görev ve yetkileri YÖNETMELİKLE belirlenir. Başkanlığın DİĞER birimleri ve görevleri şunlardır..." Yani Kurumun asıl istatistik üretim daireleri (nüfus, ekonomik, sosyal istatistikler vb.) kararnamede ADIYLA SAYILMAZ; adları bir yönetmeliğe bırakılmıştır. Bu dosyada yalnız kararnamenin adıyla saydığı BEŞ birim vardır. Eksik olduğu bilinen bir listeyi tam sanmak, evrağı var olan bir birimden mahrum bırakır — istatistik konulu bir yazının muhatabı burada bulunamayabilir; o durumda Başkanlığa hitap edilmelidir. Görev metinleri kararnamenin ilgili bentlerinden özetlenmiş, kaynakta bulunmayan ayrıntı yazılmamıştır. TAŞRA teşkilatı (bölge müdürlükleri) bu dosyada YER ALMAZ.
 
-BİRİM: Veri Yayımlama Daire Başkanlığı
-GÖREV: Resmi istatistik veri talepleri, yayımlanan veri setinde hata bildirimi ve mikro veri erişim başvurularını yürütür.
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: 4 s. CBK m.604/1-a uyarınca Başkanlığın birimlerindendir; 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile 5436 sayılı Kanunun malî hizmetler birimlerine verdiği görevleri yürütür.
 
-BİRİM: Bilgi Edinme ve Halkla İlişkiler Şube Müdürlüğü
-GÖREV: Bilgi edinme başvuruları, kamuoyu istatistik veri talepleri ve anket/araştırma katılım şikâyetlerinin ilk kabul merciidir.
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Türkiye İstatistik Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
-BİRİM: Bölge Müdürlüğü
-GÖREV: İl/bölge düzeyinde anket saha uygulaması, hane halkı araştırması katılım talepleri ve yerel istatistik veri taleplerini karşılar.
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: Türkiye İstatistik Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
-BİRİM: Metodoloji ve Standartlar Daire Başkanlığı
-GÖREV: İstatistiki sınıflama (NACE, İBBS vb.) ve metodoloji itirazlarına ilişkin teknik başvuruları değerlendirir.
+BİRİM: Hukuk Hizmetleri Daire Başkanlığı
+GÖREV: Türkiye İstatistik Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Türkiye İstatistik Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.

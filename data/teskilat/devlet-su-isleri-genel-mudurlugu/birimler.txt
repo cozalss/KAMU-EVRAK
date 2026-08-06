@@ -1,18 +1,74 @@
 @KURUM: Devlet Su İşleri Genel Müdürlüğü
-@BELGE: 6200 sayılı Kanun; 4 sayılı Cumhurbaşkanlığı Kararnamesi (Devlet Su İşleri Genel Müdürlüğü)
-@KAYNAK_KIMLIK: teskilat/devlet-su-isleri-genel-mudurlugu/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.123 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: dsi, dsi-bolge-mudurlugu
-@NOT: Bölge müdürlüğü birimi jenerik şablon olarak listelenmiştir; bölge bazında resmî iletişim bilgisi DSİ bölge müdürlüğü sayfasından doğrulanmalıdır.
+@NOT: Birim adları 4 sayılı Kararname m.123/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.123/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
-BİRİM: DSİ Bölge Müdürlüğü
-GÖREV: Baraj işletme, sulama şebekesi bakımı, taşkın koruma tesisleri ve bölgesindeki su yapısı arıza/şikâyet bildirimlerini karşılar. Sulama suyu tahsis, kanal bakım ve yeraltı suyu kullanma belgesi (kuyu belgesi) başvurularının ilk muhatabıdır.
+BİRİM: Etüt, Planlama ve Tahsisler Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: Etüt Planlama ve Tahsisler Dairesi Başkanlığı
-GÖREV: Su tahsis planlaması, hidrolojik etüt ve fizibilite çalışmalarını yürütür.
+BİRİM: Sulama Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Barajlar ve Hidroelektrik Santrallar Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: İçmesuyu ve Atıksu Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Taşkın Kontrol Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Emlak ve Kamulaştırma Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Jeoteknik Hizmetler Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Yeraltısuları Dairesi Başkanlığı
-GÖREV: Yeraltı suyu arama ve kullanma belgesi (kuyu belgesi) başvurularına ilişkin teknik değerlendirme ile yeraltı suyu rezerv takibini yürütür. (Başvurular DSİ bölge müdürlüklerine yapılır.) [DOĞRULA: merkez teşkilatındaki güncel birim adı — bu görev alanı "Jeoteknik Hizmetler ve Yeraltısuları Dairesi Başkanlığı" adlı birleşik birimde de yürütülüyor olabilir]
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Makina, İmalat ve Donatım Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Teknik Araştırma ve Kalite Kontrol Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İşletme ve Bakım Dairesi Başkanlığı
-GÖREV: Baraj, gölet ve sulama tesislerinin işletme-bakım standartlarını belirler, arıza giderme önceliklendirmesini yapar. Taşkın koruma tesislerinin işletilmesi ve taşkın dönemi koordinasyonunda görev alır. [DOĞRULA: taşkın yönetimine ilişkin merkez birim yapılanması]
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Yenilenebilir Enerji Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Arazi Toplulaştırma ve Tarla İçi Geliştirme Hizmetleri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Arazi Toplulaştırması Etüt ve Projelendirme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Değerlendirme ve Destekleme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

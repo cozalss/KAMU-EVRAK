@@ -235,7 +235,13 @@ def main() -> None:
             )
         satirlar.append(f"BİRİM: {b}\nGÖREV: {g}\n")
 
-    print(f"m.{args.madde}: {len(birimler)} birim bulundu, {len(satirlar)} tanesinin görevi çıkarıldı")
+    # `satirlar` HER birimi içerir (görev maddesi yoksa açıklayıcı yedek metinle); sayısını
+    # "görevi çıkarıldı" diye basmak yanıltıcıydı — gerçekte kaç birimin görev maddesi
+    # bulunduğunu göstermeliydi. Kaynakta görev maddesi olmayan birimler ✗ ile işaretlenir
+    # ve bu bir HATA DEĞİL, kaynağın kendi boşluğudur (ör. 4 s. CBK m.214: Karayolları'nın
+    # 16 biriminden yalnız Teftiş Kurulu ve Hukuk Müşavirliği için görev maddesi vardır).
+    print(f"m.{args.madde}: {len(birimler)} birim bulundu, "
+          f"{len(birimler) - len(eksik)} tanesinin GÖREV MADDESİ kaynakta var")
     for b in birimler:
         print(("  ✓ " if b not in eksik else "  ✗ ") + b)
     if eksik:

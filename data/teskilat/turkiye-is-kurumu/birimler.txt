@@ -1,24 +1,44 @@
 @KURUM: Türkiye İş Kurumu Genel Müdürlüğü
-@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Türkiye İş Kurumu); 4904 sayılı Kanun
-@KAYNAK_KIMLIK: teskilat/turkiye-is-kurumu/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.622 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: iskur, calisma-ve-is-kurumu-il-mudurlugu
-@NOT: İl müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi İŞKUR il müdürlüğü sayfasından doğrulanmalıdır.
-
-BİRİM: İşsizlik Sigortası Dairesi Başkanlığı
-GÖREV: İşsizlik ödeneği başvurularını, hak sahipliği tespitini ve ödenek kesinti/itiraz taleplerini sonuçlandırır. Kısa çalışma ödeneği ve ücret garanti fonu başvurularını da yürütür.
-
-BİRİM: İş ve Meslek Danışmanlığı Dairesi Başkanlığı
-GÖREV: İş arayan kaydı oluşturma, meslek danışmanlığı ve kariyer yönlendirme hizmetlerini karşılar. İşe yerleştirme ve iş görüşmesi eşleştirme süreçlerini yürütür.
-
-BİRİM: Aktif İşgücü Hizmetleri Dairesi Başkanlığı
-GÖREV: İşbaşı eğitim programı, mesleki eğitim kursu ve girişimcilik destek programlarına başvuru işlemlerini yönetir. Program katılımcı sözleşmeleri ve devam takibinden sorumludur.
+@NOT: Birim adları 4 sayılı Kararname m.622/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.622/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
 BİRİM: İstihdam Hizmetleri Dairesi Başkanlığı
-GÖREV: Engelli ve eski hükümlü kota kapsamında işe yerleştirme, engelli istihdam teşviki ve işveren teşvik belgesi taleplerini yürütür. Özel istihdam büroları ile taşra istihdam hizmetlerinin koordinasyonundan sorumludur.
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: Çalışma ve İş Kurumu İl Müdürlüğü
-GÖREV: İl düzeyinde iş arayan kaydı, işsizlik ödeneği başvuru kabulü ve işbaşı eğitim programı yerleştirmelerini yürütür. Vatandaş dilekçelerinin ilgili daire başkanlığına yönlendirilmesinden sorumludur.
+BİRİM: Aktif İşgücü Hizmetleri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: Hizmet Merkezi
-GÖREV: İlçe düzeyinde iş arayan/işveren başvurularının ilk kabulünü yapar, evrak teslim alır ve randevu işlemlerini gerçekleştirir.
+BİRİM: İş ve Meslek Danışmanlığı Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: İşgücü Piyasası ve İstatistik Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Dış İlişkiler ve Projeler Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: İşsizlik Sigortası Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Fon Yönetimi ve Aktüerya Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

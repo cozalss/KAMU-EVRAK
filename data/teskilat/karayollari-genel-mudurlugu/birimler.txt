@@ -1,18 +1,56 @@
 @KURUM: Karayolları Genel Müdürlüğü
-@BELGE: 6001 sayılı Karayolları Genel Müdürlüğünün Teşkilat ve Görevleri Hakkında Kanun
-@KAYNAK_KIMLIK: teskilat/karayollari-genel-mudurlugu/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.214 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: kgm, karayollari-bolge-mudurlugu
-@NOT: Bölge müdürlüğü birimi jenerik şablon olarak listelenmiştir; bölge bazında resmî iletişim bilgisi KGM bölge müdürlüğü sayfasından doğrulanmalıdır. HGS ihlal itirazı süreç detayları [DOĞRULA: ilgili bölge müdürlüğü/işletme birimi] işaretiyle kaydedilmiştir.
+@NOT: Birim adları 4 sayılı Kararname m.214/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.214/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
-BİRİM: Karayolları Bölge Müdürlüğü
-GÖREV: Devlet ve il yolları bakım-onarım, kar mücadelesi ve yol güzergâhı arıza/şikâyet bildirimlerini karşılar. Bölgesindeki otoyol ve köprü işletme sorunlarının ilk muhatabıdır.
+BİRİM: Etüt, Proje ve Çevre Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: Program ve İzleme Dairesi Başkanlığı
-GÖREV: Yol yapım/bakım programlarının planlanması, yatırım önceliklendirmesi ve proje izleme faaliyetlerini yürütür.
+BİRİM: Araştırma ve Geliştirme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Yol Yapım Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Tesisler ve Bakım Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Trafik Güvenliği Dairesi Başkanlığı
-GÖREV: Kara yolu trafik güvenliği düzenlemeleri, işaretleme/sinyalizasyon standartları ve kaza kara noktası iyileştirme çalışmalarını yürütür.
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İşletmeler Dairesi Başkanlığı
-GÖREV: KGM tarafından işletilen otoyol ve köprülerde geçiş ücreti tahsilatı ile HGS/OGS geçiş ihlali ve geçiş ücreti itiraz başvurularını karşılar. [DOĞRULA: HGS ihlal itirazlarının merkez/bölge teşkilatındaki hangi alt birim tarafından sonuçlandırıldığı]
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Makine ve İkmal Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Sanat Yapıları Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Taşınmazlar Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Program ve İzleme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Genel Müdürün emri veya onayı üzerine Genel Müdürlüğün merkez ve taşra teşkilatının faaliyet ve işlemleriyle ilgili olarak Genel Müdür adına teftiş, ön inceleme, inceleme ve soruşturma işlerini yürütmek.; Müfettişlerin araştırma, ön inceleme, inceleme, soruşturma ve denetim sonucu düzenleyecekleri raporları Başkanlık görüşü ile birlikte Genel Müdürlük makamına sunmak. Hukuk Müşavirliği.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.

@@ -1151,6 +1151,66 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025 degisikliklerine kadar guncel) pypdfium2 ile cikarildi; birim adlari hizmet birimleri maddesinin bentlerinden, GOREV metinleri her birimin kendi maddesinden BIREBIR alindi (scripts/cbk_bakanlik_cikar.py). Mulga bent ve maddeler alinmadi. GIB icin bagimsiz capraz dogrulama: kararnamedeki 12 birim, kurumun 2023 faaliyet raporundaki listeyle birebir ayni cikti",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "afet-ve-acil-durum-yonetimi-baskanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "8dd96c0fbac535a46c15fd8b1f95cc27efbc3dfa4a928632b038a262252c337e",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025'e kadar guncel) pypdfium2 ile cikarildi; birim adlari m.35 bentlerinden BIREBIR. Gorev maddesi kaynakta OLMAYAN birimlerde bu durum acikca yazildi, gorev UYDURULMADI — kararname bu kuruluslarda daire baskanliklarinin gorevini ayri maddeyle duzenlememis. Tasra teskilati kapsam disi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "devlet-su-isleri-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "65cd975b57c1ebde45481a3e56a3801315416644cd8850665b0ae06bdd9663a3",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025'e kadar guncel) pypdfium2 ile cikarildi; birim adlari m.123 bentlerinden BIREBIR. Gorev maddesi kaynakta OLMAYAN birimlerde bu durum acikca yazildi, gorev UYDURULMADI — kararname bu kuruluslarda daire baskanliklarinin gorevini ayri maddeyle duzenlememis. Tasra teskilati kapsam disi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "karayollari-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5739c23b46a24fdbe7cd447107ab451bd550c387354227aae53a3bddbe25d515",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025'e kadar guncel) pypdfium2 ile cikarildi; birim adlari m.214 bentlerinden BIREBIR. Gorev maddesi kaynakta OLMAYAN birimlerde bu durum acikca yazildi, gorev UYDURULMADI — kararname bu kuruluslarda daire baskanliklarinin gorevini ayri maddeyle duzenlememis. Tasra teskilati kapsam disi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "goc-idaresi-baskanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "fe5b9bad93b8307613529611b596fbdc75bca3cb7f34197bf6453bbb61428e0d",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, 21/2/2025'e kadar guncel) pypdfium2 ile cikarildi; birim adlari m.161 bentlerinden BIREBIR. Kararname bu kurulusta birim goreverini ayri maddeyle duzenlemedigi icin gorev UYDURULMADI, durum acikca yazildi. Tasra teskilati kapsam disi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "turkiye-is-kurumu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "e6d93105aac88433dae58734121424a39933d79f601a3d1a53a1f9f5ccf84101",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, 21/2/2025'e kadar guncel) pypdfium2 ile cikarildi; birim adlari m.622 bentlerinden BIREBIR. Kararname bu kurulusta birim goreverini ayri maddeyle duzenlemedigi icin gorev UYDURULMADI, durum acikca yazildi. Tasra teskilati kapsam disi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "tuik/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "3e07a723bfeefe93bb718793399498c8ea89cc8e2a3d433c7f02443c3edfbe34",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 s. CBK m.604 (CSB resmi kopyasi, TLS dogrulamali) — kararname TUIK'in asil istatistik dairelerini ADIYLA SAYMAZ, adlarini yonetmelige birakir; yalniz adiyla sayilan BES birim alindi ve listenin EKSIK oldugu kunyede acikca yazildi. Eksikligi gizlemek yerine beyan etmek dogrudur",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

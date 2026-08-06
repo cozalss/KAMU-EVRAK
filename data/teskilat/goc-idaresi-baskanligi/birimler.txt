@@ -1,18 +1,41 @@
 @KURUM: Göç İdaresi Başkanlığı
-@BELGE: 6458 sayılı Yabancılar ve Uluslararası Koruma Kanunu; 4 sayılı Cumhurbaşkanlığı Kararnamesi (Göç İdaresi Başkanlığı)
-@KAYNAK_KIMLIK: teskilat/goc-idaresi-baskanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.161 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: il-goc-idaresi-mudurlugu
-@NOT: İl göç idaresi müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi Göç İdaresi il müdürlüğü sayfasından doğrulanmalıdır. Türk vatandaşlığı başvuruları Göç İdaresinin değil Nüfus ve Vatandaşlık İşleri Genel Müdürlüğünün (il nüfus ve vatandaşlık müdürlükleri) görev alanıdır.
+@NOT: Birim adları 4 sayılı Kararname m.161/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.161/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
 BİRİM: Yabancılar Genel Müdürlüğü
-GÖREV: Kısa dönem, aile, öğrenci ve uzun dönem ikamet izni başvurularını, ikamet izni uzatma ve iptal işlemlerini sonuçlandırır. Yabancı kimlik numarası tahsisine ilişkin kayıt işlemlerini yürütür.
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Uluslararası Koruma Genel Müdürlüğü
-GÖREV: Uluslararası koruma (sığınma) başvurularının kabulü, mülakat süreçleri ve koruma statüsü kararlarını yürütür.
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Düzensiz Göçle Mücadele ve Sınır Dışı İşleri Genel Müdürlüğü
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Uyum ve İletişim Genel Müdürlüğü
-GÖREV: Göçmen uyum programları, dil kursu koordinasyonu ve toplumsal uyum projelerini yürütür.
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: İl Göç İdaresi Müdürlüğü
-GÖREV: İl düzeyinde ikamet izni başvurusu kabulü, yabancı kimlik numarası işlemleri ve uluslararası koruma başvurusu ön kaydını yürütür. Vatandaş/yabancı dilekçelerinin ilgili genel müdürlüğe yönlendirilmesinden sorumludur.
+BİRİM: Sınır Yönetimi Genel Müdürlüğü
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Rehberlik ve Denetim Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

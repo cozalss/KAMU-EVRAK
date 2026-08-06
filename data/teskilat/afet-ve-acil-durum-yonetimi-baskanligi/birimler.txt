@@ -1,21 +1,35 @@
 @KURUM: Afet ve Acil Durum Yönetimi Başkanlığı
-@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Afet ve Acil Durum Yönetimi Başkanlığı); 5902 sayılı Kanun
-@KAYNAK_KIMLIK: teskilat/afet-ve-acil-durum-yonetimi-baskanligi/gorev-tanimi
-@ERISIM: 2026-07-17
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.35 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: afad
-@NOT: İl afet ve acil durum müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi AFAD il müdürlüğü sayfasından doğrulanmalıdır.
+@NOT: Birim adları 4 sayılı Kararname m.35/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.35/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
-BİRİM: Müdahale Dairesi Başkanlığı
-GÖREV: Afet anında acil müdahale, arama-kurtarma koordinasyonu ve acil yardım malzemesi sevkiyatını yönetir.
+BİRİM: Deprem ve Risk Azaltma Genel Müdürlüğü
+GÖREV: Ülke düzeyinde uygulanacak afet ve acil durum müdahale, risk yönetimi ve zarar azaltma planlarını yapmak veya yaptırmak.; Muhtemel afet ve acil durum bölgelerini tespit etmek ve önleyici tedbirleri ilan etmek.; Zarara uğraması muhtemel yerlerin plan, proje ve imar esaslarını belirlemek.; Aynî, nakdi ve insani yardım esaslarını belirlemek.; Yurt içi ve yurt dışında meydana gelen afet ve acil durumlarla ilgili bilgileri toplamak ve değerlendirmek.; Afet ve acil durumlara ilişkin.
 
-BİRİM: İyileştirme Dairesi Başkanlığı
-GÖREV: Afet sonrası hasar tespit başvurularını, geçici barınma (konteyner) taleplerini ve afet konutu/kira yardımı başvurularını sonuçlandırır. Afetzede yardım ödeneği süreçlerini yürütür.
+BİRİM: Afetlere Müdahale Genel Müdürlüğü
+GÖREV: Afet ve acil durum esnasında kamu, özel sektör ve sivil toplum kuruluşları, yabancı kişi ve kuruluşlara ait her türlü kaynakları değerlendirerek afet veya acil durumun etkilerini gidermeye yönelik müdahale çalışmalarını yürütmek.; Başkanlık bünyesindeki afet ve acil durum yönetimi merkezini idare etmek.; Kamu kurum ve kuruluşları ile illerde afet ve acil durum yönetimi merkezlerinin açılması ve yönetilmesini sağlamak.; İtfaiye, arama ve kurtarma hizmetlerinin standartlarını belirlemek.
 
-BİRİM: Planlama ve Zarar Azaltma Dairesi Başkanlığı
-GÖREV: Risk azaltma planlaması, deprem/afet risk haritalaması ve önleyici tedbir uygulamalarını koordine eder. [DOĞRULA: güncel teşkilat şemasındaki adlandırma — "Planlama ve Risk Azaltma Dairesi Başkanlığı" olarak geçebilir]
+BİRİM: Barınma ve Yapım İşleri Genel Müdürlüğü
+GÖREV: Afet ve acil durum sonrası hayatın normale dönmesini sağlayıcı tedbirleri almak.; Afet sonrası bina hasar tespitinin yapılmasını sağlamak, yapılan hasar tespit çalışmalarını değerlendirmek, meydana gelen afetlerin genel hayata etkili olup olmadığına karar verilmesine yönelik iş ve işlemleri yapmak.; Afet ve acil durum bölgelerinde geçici barınmayı sağlamak.; Afet lojistik depoları kurmak, bakım onarımını yapmak, işletmek ve yönetimini sağlamak.; Afetzedelerin tedavi, iaşe, ibate gibi acil ihtiyaçları ile ilgili hizmetleri yürütmek.
 
-BİRİM: Sivil Savunma Dairesi Başkanlığı
-GÖREV: Sığınak yapım standartları, sivil savunma tatbikatları ve sivil savunma mevzuatı uygulamalarını yürütür.
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: Başkanlığın insan gücü planlamasını yapmak, insan kaynakları politikası ile performans ölçütlerini belirlemek ve insan kaynakları sisteminin geliştirilmesine yönelik çalışmalar yapmak.; Başkanlık personelinin atama, nakil, terfi, emeklilik ve benzeri özlük işlemlerini yürütmek.; Başkanlık merkez ve taşra teşkilatı personelinin bilgi düzeylerinin yükseltilmesi için temel, hazırlayıcı ve uzmanlaştırma amaçlı hizmet içi eğitimlerinin planlanması, uygulanması ve değerlendirilmesine yönelik iş ve işlemleri yürütmek.
 
-BİRİM: İl Afet ve Acil Durum Müdürlüğü
-GÖREV: İl düzeyinde afet yardımı başvurusu, hasar tespit talebi ve geçici barınma/konteyner tahsisi işlemlerinin ilk kabulünü yapar. Vatandaş dilekçelerinin ilgili daire başkanlığına yönlendirilmesinden sorumludur.
+BİRİM: Rehberlik ve Denetim Başkanlığı
+GÖREV: Başkanlık merkez birimleri ile il afet ve acil durum müdürlüklerinin her türlü faaliyet ve işlemleri ile personeli hakkında inceleme, denetim ve soruşturma yapmak.; Başkanlığın amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programa uygun faaliyet göstermesini sağlamak üzere rehberlik etmek, çalışmalar yapmak ve gerekli teklifleri hazırlamak.; Mevzuatın Başkanlığa tanıdığı inceleme, denetim ve soruşturma yetkilerini kullanmak.; Denetim ve soruşturma raporlarını inceleyip değerlendirmek.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Uluslararası alanda faaliyet gösteren kuruluşlarla Başkanlığın görev alanına giren konularda uluslararası sözleşmeler de dâhil olmak üzere ilişkileri düzenlemek, gerekli irtibat ve eşgüdümü sağlamak; Başkanlığın görev ve faaliyet alanına giren konularda uluslararası antlaşma, protokol ve belgelerin imzalanmasına yönelik iş ve işlemleri koordine etmek.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Başkanlığın basın ve halkla ilişkilerle ilgili faaliyetlerini planlamak ve bu faaliyetlerin belirlenen usul ve ilkelere göre yürütülmesini sağlamak.; 9/10/2003 tarihli ve 4982 sayılı Bilgi Edinme Hakkı Kanununa göre yapılacak bilgi edinme başvurularını etkin, süratli ve doğru bir şekilde sonuçlandırmak üzere gerekli tedbirleri almak.; Afet ve acil durumlarda iletişim, medya ve halkla ilişkilerin sağlıklı yürütülmesini sağlamak.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Başkanın çalışma programını düzenlemek.; Başkanın resmî ve özel yazışmalarını, protokol ve tören işlerini düzenlemek.

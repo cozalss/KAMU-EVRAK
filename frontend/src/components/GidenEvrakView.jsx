@@ -68,14 +68,16 @@ function DetayModal({ item, onClose }) {
   if (!item) return null;
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.l, marginBottom: SP.l }}>
           <div>
             <h2 id="giden-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{item.id}</h2>
             <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{cleanDemoText(item.konu)}</p>
           </div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing}
-            style={{ cursor: "pointer", flexShrink: 0, width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.ink2, padding: 0 }}>
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing} data-press=""
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+            style={{ cursor: "pointer", flexShrink: 0, width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.surf, color: PAL.ink2, padding: 0, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
             <Icon.x />
           </button>
         </div>

@@ -5,7 +5,7 @@
    Örnek evrak dropdown'ı kaldırıldı; örnekler Gelen evrak görünümünden açılır. */
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, EASE_BEZIER, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
+import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, EASE, EASE_BEZIER, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
 
 // Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
@@ -31,14 +31,18 @@ const PanelIkon = (p) => (
 
 function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCount, dar }) {
   const Ic = Icon[item.icon];
-  const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "8px 0" : "8px 12px", borderRadius: RAD.ctl, ...TYPE.ui, textAlign: "left", cursor: "pointer" };
+  // Geri bildirim basış ANINDA (Apple response): hover zemin + data-press scale — görünüm
+  // değişimini beklemeden düğme "duyduğunu" söyler.
+  const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "8px 0" : "8px 12px", borderRadius: RAD.ctl, ...TYPE.ui, textAlign: "left", cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` };
   const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : item.count === "giden" ? gidenCount : null;
   const showBadge = badgeVal != null && badgeVal > 0;
   const canli = item.live && active && busy;
   return (
     <button type="button" onClick={onClick} aria-current={active ? "page" : undefined}
       aria-label={dar ? `${item.label}${showBadge ? ` (${badgeVal} öğe)` : ""}` : undefined}
-      title={dar ? item.label : undefined} {...focusRing}
+      title={dar ? item.label : undefined} {...focusRing} data-press=""
+      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
       style={active
         ? { ...base, background: ALFA(T), border: "1px solid transparent", color: PAL.ink, fontWeight: 500, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }
         : { ...base, border: "1px solid transparent", background: "transparent", color: PAL.mut, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }}>
@@ -112,10 +116,10 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
         {/* Daralt/genişlet — ChatGPT panel-toggle muadili */}
         {!mobil && <button type="button" onClick={darDegistir} aria-expanded={!dar}
           aria-label={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"}
-          title={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"} {...focusRing}
+          title={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"} {...focusRing} data-press=""
           onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-          style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, marginLeft: dar ? 0 : "auto", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, flexShrink: 0, transition: "background .12s ease-out" }}>
+          style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, marginLeft: dar ? 0 : "auto", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, flexShrink: 0, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
           <PanelIkon />
         </button>}
       </div>
@@ -125,7 +129,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
         {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={kompakt} />)}
       </nav>
 
-      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing}
+      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press=""
         onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
         onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
         style={{
@@ -133,7 +137,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
           padding: kompakt ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
           border: busy ? "1px solid transparent" : `1px solid ${PAL.inputLine}`,
           background: busy ? PAL.press : PAL.surf, color: busy ? PAL.mut2 : PAL.ink,
-          transition: "background .12s ease-out",
+          transition: `background .12s ease-out, transform .14s ${EASE.out}`,
         }}>
         <Icon.plus />{!kompakt && " Yeni evrak yükle"}
       </button>

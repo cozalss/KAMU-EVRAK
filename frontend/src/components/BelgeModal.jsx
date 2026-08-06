@@ -12,7 +12,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
-import { SANS, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, SR_ONLY, EASE_BEZIER, Icon, focusRing } from "./neonUi.jsx";
+import { SANS, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, SR_ONLY, EASE, EASE_BEZIER, Icon, focusRing } from "./neonUi.jsx";
 import RevizePaneli from "./RevizePaneli.jsx";
 import A4Belge from "./A4Belge.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
@@ -22,10 +22,10 @@ const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
 /* Karartı üstü açık düğme — modal üst şeridindeki eylemler (PDF/DOCX indir) Kapat ile aynı dil. */
 export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ariaLabel, ariaPressed }) {
   return (
-    <button type="button" onClick={onClick} onMouseDown={onMouseDown} disabled={disabled} title={title} aria-label={ariaLabel} aria-pressed={ariaPressed} {...focusRing}
+    <button type="button" onClick={onClick} onMouseDown={onMouseDown} disabled={disabled} title={title} aria-label={ariaLabel} aria-pressed={ariaPressed} {...focusRing} data-press=""
       onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = "rgba(251,247,240,.18)"; }}
       onMouseLeave={(e) => { if (!disabled) e.currentTarget.style.background = "rgba(251,247,240,.10)"; }}
-      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onInk, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
+      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onInk, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
       {children}
     </button>
   );
@@ -112,7 +112,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
-              style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px" }}>
+              style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrimKoyu, overflowY: "auto", padding: "32px 16px 48px" }}>
               <Dialog.Content asChild forceMount
                 onOpenAutoFocus={(e) => { e.preventDefault(); (duzenlenebilir ? alanRef.current : kapatRef.current)?.focus(); }}>
                 <motion.div
@@ -126,10 +126,10 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                     <Dialog.Title asChild>
                       <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>{baslik}</span>
                     </Dialog.Title>
-                    {dosyaAdi && <span style={{ fontFamily: SANS, fontSize: 12, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{dosyaAdi}</span>}
+                    {dosyaAdi && <span style={{ fontFamily: SANS, fontSize: 12, lineHeight: "16px", color: PAL.onInk2 }}>{dosyaAdi}</span>}
                     <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
                       {duzenlenebilir && (
-                        <span style={{ ...TYPE.meta, ...TNUM, color: "rgba(251,247,240,.72)" }}>{metinD.length} karakter</span>
+                        <span style={{ ...TYPE.meta, ...TNUM, color: PAL.onInk2 }}>{metinD.length} karakter</span>
                       )}
                       {duzenlenebilir && stt.destekleniyor && (
                         <ScrimDugme
@@ -167,17 +167,20 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                         </ScrimDugme>
                       )}
                       {eylemler}
-                      <button ref={kapatRef} type="button" onClick={kapatIstegi} aria-label={duzenlenebilir ? "Vazgeç ve kapat (Esc)" : "Kapat (Esc)"} {...focusRing}
+                      <button ref={kapatRef} type="button" onClick={kapatIstegi} aria-label={duzenlenebilir ? "Vazgeç ve kapat (Esc)" : "Kapat (Esc)"} {...focusRing} data-press=""
                         onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(251,247,240,.18)"; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(251,247,240,.10)"; }}
-                        style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onInk, ...TYPE.data, fontWeight: 500, transition: "background .12s ease-out" }}>
+                        style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, border: "1px solid rgba(251,247,240,.35)", background: "rgba(251,247,240,.10)", color: PAL.onInk, ...TYPE.data, fontWeight: 500, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
                         <Icon.x width={12} height={12} /> {duzenlenebilir ? "Vazgeç" : "Kapat"}
                       </button>
                     </span>
                   </div>
 
                   {duzenlenebilir && stt.hata && (
-                    <div role="alert" style={{ ...TYPE.data, fontWeight: 500, color: BANT.kirmizi.c, textAlign: "center" }}>{stt.hata}</div>
+                    /* Scrim hep koyu (üstteki kasıt notu) → hata rengi de tema-bağımsız açık
+                       mercan (onInkHata). Ham BANT.kirmizi açık temada scrim üstünde ~1.4:1'e
+                       düşüyordu — fiilen okunmazdı (2026-08 koyu mod denetimi bulgusu). */
+                    <div role="alert" style={{ ...TYPE.data, fontWeight: 500, color: PAL.onInkHata, textAlign: "center" }}>{stt.hata}</div>
                   )}
 
                   {/* Kaydedilmemiş değişiklik koruması — kapatma denendiğinde net seçenekler */}

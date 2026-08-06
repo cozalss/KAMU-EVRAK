@@ -69,13 +69,21 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
     return () => { iptal = true; };
   }, [dosya, deneme]);
 
+  // Odak iadesi (AjanAdimDetay idiomu): modal kapanınca odak tetikleyiciye döner — klavye
+  // kullanıcısı MevzuatView kartındaki / sohbetteki konumunu kaybetmez.
+  const oncekiOdak = useRef(null);
   useEffect(() => {
+    oncekiOdak.current = document.activeElement;
     closeRef.current?.focus();
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
     const eski = document.body.style.overflow;
     document.body.style.overflow = "hidden"; // arka sayfa kaydırması kilitli — yalnız mevzuat okunur
-    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = eski; };
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = eski;
+      oncekiOdak.current?.focus?.();
+    };
   }, [onClose]);
 
   const bloklar = useMemo(() => (icerik && icerik !== "hata" ? maddeAyir(icerik.metin) : []), [icerik]);
@@ -88,9 +96,11 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
   }, [bloklar, maddeNo]);
 
   return (
-    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
+    // nu-sol: scrim tek karede çakılmak yerine solarak gelir (içerik nu-rise ile — iki katman
+    // birlikte doğar, parlaklık sıçraması yok).
+    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl, animation: "nu-sol .16s var(--ke-ease-out) both" }}>
       <div role="dialog" aria-modal="true" aria-labelledby="mevzuat-okuma-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu}
-        style={{ width: "min(760px,100%)", maxHeight: "86vh", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out)" }}>
+        style={{ width: "min(760px,100%)", maxHeight: "86vh", display: "flex", flexDirection: "column", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out)" }}>
         <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.m, padding: "16px 24px 12px", borderBottom: `1px solid ${PAL.line}`, flexShrink: 0 }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
@@ -104,8 +114,10 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
               <p style={{ margin: "4px 0 0", ...TYPE.meta, color: PAL.mut2 }}>{icerik.kunye}</p>
             )}
           </div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Okuma panelini kapat" {...focusRing}
-            style={{ cursor: "pointer", width: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0, borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.ink2, flexShrink: 0, transition: "background .12s ease-out" }}><Icon.x /></button>
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Okuma panelini kapat" {...focusRing} data-press=""
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+            style={{ cursor: "pointer", width: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0, borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.surf, color: PAL.ink2, flexShrink: 0, transition: "background .12s ease-out, transform .14s var(--ke-ease-out)" }}><Icon.x /></button>
         </header>
         <div style={{ overflowY: "auto", padding: "16px 24px 24px" }}>
           {icerik === null && (

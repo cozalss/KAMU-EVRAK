@@ -2,7 +2,7 @@
    render edilir (arama → çipler → select+sıralama satırı → tarih → aktif-filtre şeridi).
    filter = useFilter(...) çıktısı. Hero Light v2 satır-içi stil + tam a11y (label, role, aria-live). */
 import React from "react";
-import { T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, EASE, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
 
 const inputBase = { background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, color: PAL.ink2, ...TYPE.ui, padding: "8px 12px", outline: "none" };
 const labelStyle = { ...TYPE.meta, fontWeight: 500, color: PAL.mut2 };
@@ -41,8 +41,13 @@ function FilterChips({ group, filter }) {
         const on = set.has(opt.value);
         const c = opt.color || BANT[opt.value]?.c || null;
         return (
-          <button key={opt.value} type="button" aria-pressed={on} onClick={() => filter.toggleChip(group.id, opt.value)} {...focusRing}
-            style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${on ? "transparent" : PAL.line}`, background: on ? ALFA(c || PAL.inkSurf) : PAL.surf, color: on ? (c ? DERIN_OF(c) : PAL.ink) : PAL.mut2, transition: "background .12s ease-out" }}>
+          /* Renksiz çipin seçili tinti ALFA(PAL.ink): tema ile döner (inkSurf hep koyuydu —
+             koyu modda koyu-üstü-koyu tint görünmüyordu, seçililik kayboluyordu). Seçilide
+             kenar lineHi: tint tek sinyal olamaz (WCAG 1.4.11), 2026-08 koyu mod bulgusu. */
+          <button key={opt.value} type="button" aria-pressed={on} onClick={() => filter.toggleChip(group.id, opt.value)} {...focusRing} data-press=""
+            onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = PAL.surf; }}
+            style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${on ? PAL.lineHi : PAL.line}`, background: on ? ALFA(c || PAL.ink) : PAL.surf, color: on ? (c ? DERIN_OF(c) : PAL.ink) : PAL.mut2, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
             {/* Nokta yalnız SEMANTİK renk taşıyorsa — süs noktası yok (jüri T6). */}
             {c && <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: c, opacity: on ? 1 : 0.55, flexShrink: 0 }} />}{opt.label}
           </button>
@@ -93,8 +98,10 @@ function FilterDatePresets({ filter }) {
     <div role="group" aria-label="Hızlı tarih filtreleri" style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
       <span style={labelStyle}>Hızlı tarih</span>
       {presets.map(([lbl, g]) => (
-        <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing}
-          style={{ padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, transition: "background .12s ease-out" }}>{lbl}</button>
+        <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing} data-press=""
+          onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+          style={{ padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>{lbl}</button>
       ))}
       {aktif && (
         <button type="button" onClick={() => filter.setDateRange(null, null)} aria-label="Tarih filtresini temizle" {...focusRing}

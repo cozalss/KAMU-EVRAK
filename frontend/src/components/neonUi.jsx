@@ -29,11 +29,19 @@ export const DISPLAY = "'Segoe UI',system-ui,sans-serif";
 export const T = "var(--ke-t)", V = "var(--ke-v)", R = "var(--ke-r)";
 export const PAL = {
   bg: "var(--ke-bg)", bg2: "var(--ke-bg2)", surf: "var(--ke-surf)", surf2: "var(--ke-surf2)", surfHi: "var(--ke-surf-hi)",
+  /* surfPop: HAVADA DURAN katman yüzeyi (dropdown/tooltip/modal/toast). Açık modda surf ile
+     bit-aynı (#ffffff) — koyu modda bir basamak AÇIK (#252220): siyah üstünde siyah gölge
+     görünmediğinden koyu modda yükseklik ışıkla anlatılır (yüzey merdiveni, bkz. THEME_CSS). */
+  surfPop: "var(--ke-surf-pop)",
   line: "var(--ke-line)", lineHi: "var(--ke-line-hi)",
   ink: "var(--ke-ink)", ink2: "var(--ke-ink2)", mut: "var(--ke-mut)", mut2: "var(--ke-mut2)", mut3: "var(--ke-mut3)",
   hov: "var(--ke-hov)", press: "var(--ke-press)",
-  inputLine: "var(--ke-input-line)", onAccent: "var(--ke-on-accent)", onInk: "var(--ke-on-ink)", inkSurf: "var(--ke-ink-surf)",
+  inputLine: "var(--ke-input-line)", onAccent: "var(--ke-on-accent)", onInk: "var(--ke-on-ink)", onInkHata: "var(--ke-on-ink-hata)", inkSurf: "var(--ke-ink-surf)",
   scrim: "var(--ke-scrim)",
+  /* scrimKoyu: A4/kurul modallarının HER İKİ temada koyu karartısı (onInk ailesiyle çift) —
+     elle rgba kopyaları (BelgeModal/MuzakereKurulu) tek kaynağa bağlanır. onInk2: bu karartı
+     üstündeki ikincil metin (dosya adı, ipucu satırı). */
+  scrimKoyu: "var(--ke-scrim-koyu)", onInk2: "var(--ke-on-ink-2)",
 };
 export const BANT = {
   yesil: { c: "var(--ke-bant-yesil)", l: "YEŞİL", t: "Düşük risk" },
@@ -95,9 +103,11 @@ export const DERIN_OF = (c) => ({
   [T]: DERIN.T, [V]: DERIN.V, [R]: DERIN.R,
   [BANT.yesil.c]: DERIN.yesil, [BANT.sari.c]: DERIN.sari, [BANT.kirmizi.c]: DERIN.kirmizi,
 }[c] || c);
-/* Tek izinli alfa eki: %8 tint zemin (çip/seçili durum). color-mix — hex ve var() girdisiyle
-   aynı çalışır (eski hex+"14" eki var() dizgesinde kırılırdı). Başka alfa-yapıştırma yok. */
-export const ALFA = (c) => `color-mix(in srgb, ${c} 8%, transparent)`;
+/* Tek izinli alfa eki: tint zemin (çip/seçili durum). Oran token'dan gelir (--ke-alfa):
+   açık modda %8; koyu modda %14 — %8'lik tint siyaha kompozit olunca gözle seçilemiyordu
+   (çipler "yıkanmış" okunuyordu, 2026-08 koyu mod teşhisi). color-mix — hex ve var()
+   girdisiyle aynı çalışır (eski hex+"14" eki var() dizgesinde kırılırdı). Başka alfa-yapıştırma yok. */
+export const ALFA = (c) => `color-mix(in srgb, ${c} var(--ke-alfa, 8%), transparent)`;
 
 /* Açık/koyu mod değerleri — kök [data-theme] ile seçilir (main.jsx Root ayarlar; kalıcı
    tercih localStorage "ke-tema", yoksa OS prefers-color-scheme). Hex YALNIZ burada yazılır;
@@ -112,6 +122,9 @@ export const THEME_CSS = `
   --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#7a7060;
   --ke-hov:rgba(35,26,18,.04); --ke-press:rgba(35,26,18,.07);
   --ke-input-line:rgba(35,26,18,.35); --ke-on-accent:#fbf7f0; --ke-ink-surf:#2a251e; --ke-scrim:rgba(35,26,18,.35);
+  /* scrim-koyu: A4/kurul modallarının "her iki temada koyu" karartısı (bkz. --ke-on-ink
+     gerekçesi) — dark'ta YENİDEN TANIMLANMAZ. on-ink-2: bu karartı üstündeki ikincil metin. */
+  --ke-scrim-koyu:rgba(22,22,22,.58); --ke-on-ink-2:rgba(251,247,240,.72);
   /* cam: yarı saydam yüzey — opak beyaz yerine zeminin sıcaklığını içeri alan kart (bkz. CAM). */
   --ke-cam:rgba(255,255,255,.55); --ke-cam-line:rgba(35,26,18,.09);
   /* iris: sıralı pastel rampa (bkz. IRIS). Landing hero'sunun gökyüzünden türer:
@@ -128,7 +141,25 @@ export const THEME_CSS = `
      --ke-on-accent bunun için YANLIŞ token'dı: DERIN.*-dolgulu buton metni için tema-tersine
      akar (koyu modda karartı+onAccent ikisi de koyulaşıp metin kayboluyordu — 2026-07 bulgusu). */
   --ke-on-ink:#fbf7f0;
+  /* on-ink-hata: HEP KOYU katman (scrim/inkSurf) üstünde hata metni — on-ink gibi iki modda
+     tek değer. Ham BANT.kirmizi scrim üstünde ~1.4:1'e düşüyordu (2026-08 bulgusu); bu açık
+     mercan koyu scrimde her iki temada ~7:1 verir. */
+  --ke-on-ink-hata:#f0917e;
+  /* alfa: ALFA() tint oranı — koyu modda %8 siyaha kompozit olunca görünmüyordu, tek token'la
+     moda göre ayarlanır (çağıran 91 yer değişmeden). */
+  --ke-alfa:8%;
+  /* surf-pop: havada duran katman yüzeyi — açık modda surf ile bit-aynı; koyu modda bir
+     basamak açık (siyahta gölge yerine ışıkla yükseklik). */
+  --ke-surf-pop:#ffffff;
   --ke-shadow-rgb:35,26,18;
+  /* Gölge token'ları var() üzerinden: açık mod değerleri eski SH dizgeleriyle BİT-AYNI;
+     koyu mod kendi zanaatını taşır (iç üst-kenar ışığı + gerçek karartı — bkz. dark blok). */
+  --ke-sh-card:0 1px 2px rgba(var(--ke-shadow-rgb),.05);
+  --ke-sh-pop:0 4px 12px -2px rgba(var(--ke-shadow-rgb),.10), 0 1px 3px rgba(var(--ke-shadow-rgb),.05);
+  --ke-sh-modal:0 16px 40px -12px rgba(var(--ke-shadow-rgb),.18), 0 2px 8px rgba(var(--ke-shadow-rgb),.06);
+  /* kagit: A4 kâğıdının koyu scrim üstündeki derin gölgesi (A4Belge) — değerler eski elle
+     yazımla bit-aynı, yalnız mürekkep tek kaynağa (--ke-shadow-rgb) bağlandı. */
+  --ke-sh-kagit:0 1px 2px rgba(var(--ke-shadow-rgb),.06), 0 12px 28px -8px rgba(var(--ke-shadow-rgb),.18);
   /* Güçlü özel easing eğrileri (emil-design-eng) — yerleşik ease-* zayıf; mod-bağımsız (dark'ta ezilmez).
      spring: geri tepmeli (back-out) — yalnız SAHNE tamamlanma/ateşleme vuruşları. */
   --ke-ease-out:cubic-bezier(0.23,1,0.32,1); --ke-ease-in-out:cubic-bezier(0.77,0,0.175,1);
@@ -139,27 +170,46 @@ export const THEME_CSS = `
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  /* 2026-07 revizyonu #2: ilk düzeltme hâlâ "gri/kahverengi" okundu (kullanıcı geri
-     bildirimi) — bg/bg2 neredeyse SAF SİYAHA çekildi (sıcaklık payı minimuma indi),
-     surf/surf2 okunabilirlik için net bir adım yukarıda tutuldu. */
+  /* 2026-08 revizyonu #3 "Mürekkep Gecesi": #2 hâlâ vasat okundu (kullanıcı). Teşhis, siyahlık
+     değil ÇAMURDU — surf #161310 doygunluğu ~%27 (kahve lekesi) + yüzey merdiveni çökmüştü
+     (sidebar saf siyah, kart≈zemin, gölge siyah-üstü-siyah görünmez). Üç ilke:
+     1) Zemin near-black KALIR (ölçülmüş tercih), yüzeyler nötr-sıcak ANTRASİTE çekilir
+        (doygunluk ≤%19 — "mum ışığında antrasit", kahve değil).
+     2) Beş basamaklı yükseklik merdiveni — ΔL* ile ölçüldü (siyah dibinde parlaklık oranı
+        duyarsız): bg2 4.0 &lt; bg 5.4 &lt; surf2 7.7 &lt; surf 11.0 &lt; surf-pop 16.1.
+        Ray (sidebar) zeminden koyu → içerik öne çıkar; havada duran katman en açık.
+     3) Yükseklik gölgeyle değil IŞIKLA: sh-* iç üst-kenar parlaması + gerçek karartı taşır.
+     64 kontrast çifti ölçüldü (scratchpad/kontrast.mjs): tüm metin ≥4.5, grafik ≥3.0. */
   --ke-t:#4db6cf; --ke-v:#c97fa3; --ke-r:#ff7a5c;
-  --ke-bg:#050403; --ke-bg2:#000000; --ke-surf:#161310; --ke-surf2:#0b0906; --ke-surf-hi:rgba(255,255,255,.06);
-  --ke-line:rgba(255,255,255,.14); --ke-line-hi:rgba(255,255,255,.24);
-  --ke-ink:#f2ece0; --ke-ink2:#d6cdbc; --ke-mut:#a89d8a; --ke-mut2:#c1b7a1; --ke-mut3:#8d8370;
-  --ke-hov:rgba(255,255,255,.06); --ke-press:rgba(255,255,255,.09);
-  --ke-input-line:rgba(255,255,255,.32); --ke-on-accent:#050403; --ke-ink-surf:#1c1811; --ke-scrim:rgba(0,0,0,.65);
-  --ke-cam:rgba(34,29,24,.55); --ke-cam-line:rgba(255,255,255,.10);
-  /* Koyu modda açıklık SIRASI aynı (0.520 / 0.323 / 0.161; adım 1.53 ve 1.77) ama tüm rampa
-     bir tık yukarı: en koyu adım bile zeminden 3.7:1 ayrışır. Kenarlar burada AÇIK uçtur —
-     koyu zeminde koyu kenar görünmez. */
+  --ke-bg:#0b0a09; --ke-bg2:#060505; --ke-surf:#1a1815; --ke-surf2:#121110; --ke-surf-hi:rgba(255,255,255,.07);
+  --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.22);
+  --ke-ink:#f4efe6; --ke-ink2:#d8d1c2; --ke-mut:#a79d8b; --ke-mut2:#c3b9a4; --ke-mut3:#948a77;
+  --ke-hov:rgba(255,255,255,.05); --ke-press:rgba(255,255,255,.09);
+  --ke-input-line:rgba(255,255,255,.34); --ke-on-accent:#0b0a09; --ke-ink-surf:#1c1811; --ke-scrim:rgba(0,0,0,.68);
+  --ke-cam:rgba(30,27,24,.55); --ke-cam-line:rgba(255,255,255,.10);
+  --ke-alfa:14%;
+  --ke-surf-pop:#252220;
+  /* Koyu modda açıklık SIRASI aynı; rampa bir tık yukarı — en koyu adım bile yeni surf'ten
+     ≥3:1 ayrışır (kenarlar 8.3–12.5:1, yeniden ölçüldü). Kenarlar AÇIK uçtur — koyu zeminde
+     koyu kenar görünmez. */
   --ke-iris-1:#7fcadd; --ke-iris-1b:#a5dcea; --ke-iris-1k:#a8e0ee;
   --ke-iris-2:#a68fd0; --ke-iris-2b:#b8a6e0; --ke-iris-2k:#c3b0e8;
   --ke-iris-3:#a85575; --ke-iris-3b:#d894ac; --ke-iris-3k:#e0a0b8;
   --ke-shadow-rgb:0,0,0;
+  /* Işıkla yükseklik: inset üst-kenar parlaması (mum ışığı) + siyahta GERÇEKTEN görünen
+     karartı. Kart en sessiz; pop/modal katmanı hem daha açık yüzey (surf-pop) hem daha
+     belirgin ışık alır — merdiven iki kanaldan birden okunur. */
+  --ke-sh-card:inset 0 1px 0 rgba(255,255,255,.04), 0 1px 2px rgba(0,0,0,.35);
+  --ke-sh-pop:inset 0 1px 0 rgba(255,255,255,.06), 0 8px 24px -6px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.35);
+  --ke-sh-modal:inset 0 1px 0 rgba(255,255,255,.07), 0 24px 60px -16px rgba(0,0,0,.65), 0 4px 12px rgba(0,0,0,.4);
+  --ke-sh-kagit:inset 0 1px 0 rgba(255,255,255,.07), 0 12px 28px -8px rgba(0,0,0,.6), 0 1px 2px rgba(0,0,0,.35);
   --ke-bant-yesil:#4cbf8a; --ke-bant-sari:#e0a83f; --ke-bant-kirmizi:#e2604a;
   --ke-derin-t:#7ecbdd; --ke-derin-th:#92d6e6; --ke-derin-v:#e2a8c4; --ke-derin-r:#ffa088;
   --ke-derin-yesil:#7ad9ae; --ke-derin-sari:#f0c168; --ke-derin-kirmizi:#f0917e;
 }
+/* Seçim vurgusu yalnız koyu modda tanımlanır (açık mod bit-aynı kalsın): tarayıcı
+   varsayılan mavisi mürekkep paletinde yabancı duruyordu — marka gök mavisi tintine çekilir. */
+:root[data-theme="dark"] ::selection{ background:color-mix(in srgb, var(--ke-t) 32%, transparent); }
 `;
 
 /* Tip ölçeği — bu tablo dışında fontSize yazılmaz. Sayısal kolonlarda TNUM eklenir. */
@@ -190,11 +240,14 @@ export const EASE_BEZIER = { out: [0.23, 1, 0.32, 1], inOut: [0.77, 0, 0.175, 1]
 export const RAD = { chip: 4, ctl: 6, card: 8, pop: 12, dot: "50%" };
 /* Boşluk ölçeği — serbest değer yazılmaz. */
 export const SP = { xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32, xxxl: 48 };
-/* Gölge yalnız havada duran katman: card=en fazla bu (opsiyonel) · pop=dropdown/tooltip · modal=modal/toast. */
+/* Gölge yalnız havada duran katman: card=en fazla bu (opsiyonel) · pop=dropdown/tooltip · modal=modal/toast.
+   Değerler THEME_CSS'te moda göre ayrışır: açık mod eski dizgelerle bit-aynı; koyu mod
+   iç üst-kenar ışığı + gerçek karartı taşır (siyahta gölge görünmez, yükseklik ışıkla anlatılır). */
 export const SH = {
-  card: "0 1px 2px rgba(var(--ke-shadow-rgb),.05)",
-  pop: "0 4px 12px -2px rgba(var(--ke-shadow-rgb),.10), 0 1px 3px rgba(var(--ke-shadow-rgb),.05)",
-  modal: "0 16px 40px -12px rgba(var(--ke-shadow-rgb),.18), 0 2px 8px rgba(var(--ke-shadow-rgb),.06)",
+  card: "var(--ke-sh-card)",
+  pop: "var(--ke-sh-pop)",
+  modal: "var(--ke-sh-modal)",
+  kagit: "var(--ke-sh-kagit)",
 };
 
 /* Yalnız KLAVYE odağında halka göster (:focus-visible) — fare tıklaması da native focus
@@ -234,6 +287,9 @@ export const NEON_KEYFRAMES = `
 @keyframes nu-spin{to{transform:rotate(360deg)}}
 @keyframes nu-think{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes nu-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* nu-sol: scrim/perde girişi — YALNIZ opacity. Karartma perdesi mekânda hareket ETMEZ
+   (Apple: materyal katman solar, içerik hareket eder) — nu-rise scrim'e verilmez. */
+@keyframes nu-sol{from{opacity:0}to{opacity:1}}
 @keyframes nu-iz{from{transform:translateY(-22px)}to{transform:translateY(100%)}}
 @keyframes nu-halka{from{transform:scale(.55);opacity:.65}to{transform:scale(2.2);opacity:0}}
 /* nu-alarm — çalan çalar saat: hızlı sağa-sola çalkalanma salvosu + duraklama.
@@ -502,7 +558,7 @@ function InfoTip({ label = "Bilgi", children, width = 256, align = "right" }) {
         </RTooltip.Trigger>
         <RTooltip.Portal>
           <RTooltip.Content side="bottom" align={align === "right" ? "end" : "start"} sideOffset={8} collisionPadding={12}
-            style={{ width, zIndex: 60, background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: "12px 14px", boxShadow: SH.pop, ...TYPE.data, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, animation: "nu-rise .14s var(--ke-ease-out) both" }}>
+            style={{ width, zIndex: 60, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: "12px 14px", boxShadow: SH.pop, ...TYPE.data, color: PAL.ink2, textAlign: "left", whiteSpace: "normal", fontWeight: 400, animation: "nu-rise .14s var(--ke-ease-out) both" }}>
             {children}
           </RTooltip.Content>
         </RTooltip.Portal>

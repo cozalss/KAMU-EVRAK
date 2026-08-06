@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-import { PAL, T, SANS, MONO, THEME_CSS } from "./components/neonUi.jsx";
+import { PAL, T, SANS, TYPE, THEME_CSS } from "./components/neonUi.jsx";
 import "./styles/fonts.css";
 import "./styles/kamu-evrak.css";   // global reset + result-cards yardımcı stilleri
 
@@ -36,7 +36,7 @@ function useTema() {
   });
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", tema);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", tema === "dark" ? "#050403" : "#f7f3ee");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", tema === "dark" ? "#0b0a09" : "#f7f3ee");
     try { localStorage.setItem(TEMA_ANAHTAR, tema); } catch { /* özel mod — tercih oturumluk kalır */ }
   }, [tema]);
   const toggleTema = React.useCallback(() => setTemaState((v) => (v === "dark" ? "light" : "dark")), []);
@@ -58,7 +58,9 @@ function Splash() {
       <style>{"@keyframes ke-spin{to{transform:rotate(360deg)}}"}</style>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
         <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", border: `3px solid color-mix(in srgb, ${T} 25%, transparent)`, borderTopColor: T, animation: "ke-spin .8s linear infinite" }} />
-        <span style={{ fontFamily: MONO, fontSize: 12, letterSpacing: "1px", color: PAL.mut2 }}>Oturum doğrulanıyor…</span>
+        {/* Kullanıcı cümlesi gövde sesiyle konuşur (TYPE.meta) — mono yalnız makine verisi;
+            geniş pozitif takip küçük puntoda lowercase cümleyi harf harf koparıyordu. */}
+        <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Oturum doğrulanıyor…</span>
       </div>
     </div>
   );

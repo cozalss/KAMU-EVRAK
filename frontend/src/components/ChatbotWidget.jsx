@@ -6,13 +6,14 @@
    token'ları; z-index FAB 150 / panel 160 (Toast 200 üstte kalır).
    Spec: docs/09-sohbet-asistani.md */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { mdSatirTipi } from "../lib/mdSatir.js";
 import { sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import SesliGorusme from "./SesliGorusme.jsx";
-import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, Icon, focusRing } from "./neonUi.jsx";
+import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, EASE, EASE_BEZIER, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
 
 const GORUNUM_ETIKET = {
   gelen: "Gelen evrak", giden: "Giden evrak", taslaklar: "Taslaklar",
@@ -79,7 +80,7 @@ function KaynakCip({ kaynak, onMevzuatAc, onClose }) {
   return (
     <button type="button" {...focusRing} title={`${kaynak.baslik}: tam metni oku`}
       onClick={() => { onMevzuatAc?.({ dosya: kaynak.dosya, maddeNo: kaynak.madde_no ?? null }); onClose(); }}
-      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, maxWidth: "100%", ...TYPE.meta, fontWeight: 500, color: DERIN.V, background: ALFA(V), border: "none", borderRadius: RAD.chip, padding: "4px 10px", transition: "background .12s ease-out" }}>
+      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, maxWidth: "100%", minHeight: 32, ...TYPE.meta, fontWeight: 500, color: DERIN.V, background: ALFA(V), border: "none", borderRadius: RAD.chip, padding: "4px 10px", transition: "background .12s ease-out" }}>
       <Icon.book width={12} height={12} />
       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{etiket}</span>
     </button>
@@ -129,7 +130,7 @@ function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor }) {
       {m.oneri_gorunum && GORUNUM_ETIKET[m.oneri_gorunum] && (
         <button type="button" {...focusRing}
           onClick={() => { onNavigate?.(m.oneri_gorunum); onClose(); }}
-          style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.data, fontWeight: 500, color: DERIN.T, background: ALFA(T), border: "none", borderRadius: RAD.ctl, padding: "4px 12px" }}>
+          style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, minHeight: 32, ...TYPE.data, fontWeight: 500, color: DERIN.T, background: ALFA(T), border: "none", borderRadius: RAD.ctl, padding: "4px 12px" }}>
           {GORUNUM_ETIKET[m.oneri_gorunum]} görünümüne git <Icon.arrow width={13} height={13} />
         </button>
       )}
@@ -176,6 +177,10 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   const [girdi, setGirdi] = useState("");
   const [bekliyor, setBekliyor] = useState(false);
   const [kaynak, setKaynak] = useState(null);   // son yanıtın kaynağı (llm|fallback) — şeffaflık
+  // SR duyurusu: akan yanıt token token mutasyona uğrarken liste aria-live "off"a alınır
+  // (her delta SR kuyruğuna girmesin — result-cards daktilo idiomu); tamamlanan yanıt tek
+  // seferde bu görünmez role=status bölgesinden duyurulur.
+  const [srDuyuru, setSrDuyuru] = useState("");
   // STT (mikrofon) tarayıcı desteklemiyorsa (Firefox vb.) sesli butonlar hiç render edilmez.
   const sttVar = sttDestekleniyorMu();
   // Sesli görüşme — asistanın İÇİNDEN başlatılır ve sohbet panelinin YERİNE geçer: panel
@@ -239,6 +244,8 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
         sonuGuncelle((son) => ({ ...son, icerik: (son.icerik || "") + ev.t }));
       } else if (ev.event === "done") {
         setKaynak(ev.kaynak);
+        // Updater SAF kalır (StrictMode çift çağrı — BelgeModal notu); duyuru dışarıda set edilir.
+        if (ev.yanit) setSrDuyuru(ev.yanit);
         sonuGuncelle((son) => ({ ...son, icerik: ev.yanit || son.icerik, akiyor: false }));
       }
     };
@@ -340,19 +347,24 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
 
   return (
     <>
+      {/* AnimatePresence + köken-farkındalık: panel kendisini açan FAB köşesinden büyür,
+          kapanırken AYNI yoldan oraya döner (spatial consistency — ke-disk-gir deseni).
+          MotionConfig reducedMotion="user" (DashboardApp) azaltmada animasyonu söndürür. */}
+      <AnimatePresence>
       {acik && (
-        <section role="dialog" aria-label="Evrak asistanı sohbeti"
+        <motion.section role="dialog" aria-label="Evrak asistanı sohbeti"
           onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
+          initial={{ opacity: 0, y: 8, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.97 }}
+          transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
           style={{
             position: "fixed", right: SP.xl, bottom: 96, zIndex: 160,
             width: "min(384px, calc(100vw - 32px))", height: "min(560px, calc(100vh - 130px))",
             display: "flex", flexDirection: "column", overflow: "hidden",
-            background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop,
-            boxShadow: SH.modal,
-            animation: "nu-rise .16s var(--ke-ease-out) both",
+            background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop,
+            boxShadow: SH.modal, transformOrigin: "bottom right",
           }}>
           {/* Başlık */}
-          <header style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", background: PAL.surf, borderBottom: `1px solid ${PAL.line}` }}>
+          <header style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", background: PAL.surfPop, borderBottom: `1px solid ${PAL.line}` }}>
             <span aria-hidden="true" style={{ width: 32, height: 32, borderRadius: RAD.dot, display: "grid", placeItems: "center", background: DERIN.T, color: PAL.onAccent, flexShrink: 0 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="M8.5 8.5 H15.5 M8.5 11.5 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
             </span>
@@ -364,32 +376,35 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
               </div>
             </div>
             {mesajlar.length > 1 && (
-              <button type="button" aria-label="Sohbet geçmişini temizle" title="Geçmişi temizle" onClick={gecmisiTemizle} {...focusRing}
-                style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0 }}>
+              <button type="button" aria-label="Sohbet geçmişini temizle" title="Geçmişi temizle" onClick={gecmisiTemizle} {...focusRing} data-press=""
+                style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0, transition: `transform .14s ${EASE.out}` }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7 H20 M9 7 V5 a1 1 0 0 1 1-1 H14 a1 1 0 0 1 1 1 V7 M6 7 L7 19 a2 2 0 0 0 2 2 H15 a2 2 0 0 0 2-2 L18 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </button>
             )}
-            <button type="button" aria-label="Sohbeti kapat" onClick={kapat} {...focusRing}
-              style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0 }}>
+            <button type="button" aria-label="Sohbeti kapat" onClick={kapat} {...focusRing} data-press=""
+              style={{ cursor: "pointer", width: 30, height: 30, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0, transition: `transform .14s ${EASE.out}` }}>
               <Icon.x />
             </button>
           </header>
 
-          {/* Mesajlar */}
-          <div ref={listeRef} role="log" aria-live="polite" aria-atomic="false" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m }}>
+          {/* Mesajlar — akış sırasında aria-live "off": SSE delta'ları son balonu token token
+              mutasyona uğratır, her mutasyon SR kuyruğuna girerdi (result-cards daktilo idiomu).
+              Tam yanıt aşağıdaki SR_ONLY role=status bölgesinden TEK seferde duyurulur. */}
+          <div ref={listeRef} role="log" aria-live={bekliyor ? "off" : "polite"} aria-busy={bekliyor} aria-atomic="false" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m }}>
             {mesajlar.map((m, i) => <Balon key={i} m={m} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
             {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <Yaziyor />}
             {ilkAcilis && !bekliyor && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, marginTop: SP.xs }}>
                 {ONERILER.map((o) => (
-                  <button key={o} type="button" {...focusRing} onClick={() => gonder(o)}
-                    style={{ cursor: "pointer", ...TYPE.meta, fontWeight: 500, color: PAL.ink2, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.chip, padding: "4px 12px", transition: "background .12s ease-out" }}>
+                  <button key={o} type="button" {...focusRing} data-press="" onClick={() => gonder(o)}
+                    style={{ cursor: "pointer", ...TYPE.meta, fontWeight: 500, minHeight: 32, color: PAL.ink2, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.chip, padding: "4px 12px", transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
                     {o}
                   </button>
                 ))}
               </div>
             )}
           </div>
+          <div role="status" aria-live="polite" style={SR_ONLY}>{srDuyuru}</div>
 
           {/* Giriş */}
           <form onSubmit={(e) => { e.preventDefault(); gonder(); }}
@@ -407,38 +422,47 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
                   konuşmak → sesli görüşme diski (sohbet geçmişine yazmaz)
                   yazmak   → sohbet paneli
                 İkisi aynı kutuda durur, içerikleri karışmaz. */}
-            <button type="submit" aria-label="Mesajı gönder" disabled={gonderPasif} {...focusRing}
+            <button type="submit" aria-label="Mesajı gönder" disabled={gonderPasif} {...focusRing} data-press=""
+              onMouseEnter={(e) => { if (!gonderPasif) e.currentTarget.style.background = DERIN.Th; }}
+              onMouseLeave={(e) => { if (!gonderPasif) e.currentTarget.style.background = DERIN.T; }}
               style={{
                 cursor: gonderPasif ? "not-allowed" : "pointer", width: 40, height: 36, borderRadius: RAD.ctl, border: "none",
                 background: gonderPasif ? PAL.press : DERIN.T,
                 color: gonderPasif ? PAL.mut2 : PAL.onAccent, display: "grid", placeItems: "center", flexShrink: 0,
-                transition: "background .12s ease-out",
+                transition: `background .12s ease-out, transform .14s ${EASE.out}`,
               }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12 L20 4 L14 20 L11.5 13.5 L4 12Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>
             </button>
           </form>
-        </section>
+        </motion.section>
       )}
+      </AnimatePresence>
 
       {/* FAB — her görünümde sağ altta. Görüşme sürerken GİZLİ: disk tam bu noktanın üstünde
           durur, FAB'a basmak paneli diskin ALTINA açar (görünmez, kilitli hissi verirdi).
           Görüşmeden çıkış diskin kendi kırmızı butonundan — tek ve açık yol. */}
       {!sesliAcik && (
+      /* Kaydırma jesti (küçül+soluklaş) SARMALAYICIDA yaşar: FAB'ın kendi inline transform'u
+         [data-press]:active scale kuralını specificity ile eziyordu — press feedback butonda,
+         kaydırma tepkisi sarmalayıcıda; ikisi çakışmadan birlikte çalışır. Aynı jestin iki
+         özelliği (opacity+transform) TEK süre + TEK token eğrisinde: öğe tek parça yerleşir. */
+      <span style={{
+        position: "fixed", right: SP.xl, bottom: SP.xl, zIndex: 150, display: "block",
+        opacity: kayiyor && !acik ? 0.3 : 1,
+        transform: kayiyor && !acik ? "scale(.72)" : "scale(1)",
+        transformOrigin: "bottom right",
+        transition: "opacity .2s var(--ke-ease-out), transform .2s var(--ke-ease-out)",
+      }}>
       <button ref={fabRef} type="button" onClick={() => (acik ? kapat() : setAcik(true))}
-        aria-label={acik ? "Evrak asistanını kapat" : "Evrak asistanını aç"} aria-expanded={acik} {...focusRing}
+        aria-label={acik ? "Evrak asistanını kapat" : "Evrak asistanını aç"} aria-expanded={acik} {...focusRing} data-press=""
         onMouseEnter={(e) => { e.currentTarget.style.background = DERIN.Th; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = DERIN.T; }}
         style={{
-          position: "fixed", right: SP.xl, bottom: SP.xl, zIndex: 150, width: 58, height: 58,
+          width: 58, height: 58,
           borderRadius: RAD.dot, border: "none", cursor: "pointer", display: "grid", placeItems: "center",
           background: DERIN.T, color: PAL.onAccent,
           boxShadow: SH.pop,
-          // Kaydırma sırasında küçül+soluklaş: liste eylemlerinin üstünü örtmesin (panel
-          // açıkken davranış devre dışı — konuşma sürerken FAB sabit kalır).
-          opacity: kayiyor && !acik ? 0.3 : 1,
-          transform: kayiyor && !acik ? "scale(.72)" : "scale(1)",
-          transformOrigin: "bottom right",
-          transition: "background .12s ease-out, opacity .2s ease, transform .25s var(--ke-ease-out)",
+          transition: `background .12s ease-out, transform .14s ${EASE.out}`,
         }}>
         {acik ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -446,6 +470,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="9" cy="9.5" r="1" fill="currentColor" /><circle cx="12.5" cy="9.5" r="1" fill="currentColor" /><circle cx="16" cy="9.5" r="1" fill="currentColor" /></svg>
         )}
       </button>
+      </span>
       )}
 
       {/* Sesli görüşme yuvarlak butonu — sohbet FAB'ının SOLUNDA, chat açıkken belirir

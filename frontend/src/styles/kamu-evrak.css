@@ -144,9 +144,30 @@
   background: var(--surface-2);
 }
 :root[data-theme="dark"] .rc-onay-ok,
-:root[data-theme="dark"] .rc-onay-red {
-  /* dolgu artık --ok/--danger DERIN (koyu modda AÇIK tonlar) → beyaz değil, on-accent metin */
+:root[data-theme="dark"] .rc-onay-red,
+:root[data-theme="dark"] .rc-decompose-no,
+:root[data-theme="dark"] .rc-clarify-banner-count {
+  /* dolgu artık --ok/--danger/--accent/--warn DERIN (koyu modda AÇIK tonlar) → beyaz değil,
+     on-accent metin. decompose-no + clarify-banner-count 2026-08 denetiminde yakalandı:
+     beyaz metin açık dolgu üstünde ~1.7:1 ile siliniyordu. */
   color: var(--ke-on-accent);
+}
+/* 2026-08 koyu mod denetimi — kalan kaçaklar: */
+:root[data-theme="dark"] .rc-clarify-banner-why {
+  /* %65 BEYAZ overlay koyu modda beyazımsı kutu üretip açık ink-2 metnini yutuyordu (~1.3:1).
+     Aynı saydamlık fikri yüzey tonuyla: koyu cam üstünde açık metin iki modda da okunur. */
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
+  border-color: var(--line);
+}
+:root[data-theme="dark"] .rc-clarify-banner-ic {
+  /* 139'daki kural yalnız background'ı devirir; açık şeftali kenar (#f0d2a3) kalıyordu. */
+  border-color: var(--line);
+}
+:root[data-theme="dark"] .rc-kanit-mark {
+  /* Sabit fosforlu sarı koyu kanıt bloğunda light-mode swatch olarak sırıtıyordu; amber
+     tinti yüzeye karıştırılır, metin DERIN sarıya döner (vurgu anlamı korunur). */
+  background: color-mix(in srgb, var(--ke-bant-sari) 30%, var(--ke-surf));
+  color: var(--ke-derin-sari);
 }
 
 /* --- Sonuç çalışma alanı ---------------------------------------------
@@ -550,14 +571,17 @@
 .sc-detail-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 70;
+  /* Modal katmanı: tooltip düzlemi (70) ve FAB'ların (150/160) ÜSTÜNDE — açıkken hiçbir
+     kalıcı yüzey karartının önüne geçmemeli. İçerik normal açık yüzey olduğundan scrim
+     tema-farkında token (--ke-scrim); "hep koyu" A4 karartısı (--ke-scrim-koyu) BURASI DEĞİL. */
+  z-index: 300;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: rgba(22, 22, 22, .58);
+  background: var(--ke-scrim);
   animation: sc-detail-backdrop-in .14s ease-out both;
 }
 
@@ -683,8 +707,9 @@
   flex-wrap: wrap;
   gap: 6px;
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 20px;
+  /* TYPE.read çifti (16/24) — 15px ölçek dışıydı (dd'nin 17px düzeltmesiyle aynı gerekçe). */
+  font-size: 16px;
+  line-height: 24px;
   font-weight: 600;
 }
 .sc-risk-help {
@@ -693,6 +718,7 @@
   align-items: center;
 }
 .sc-risk-help-trigger {
+  position: relative;
   width: 22px;
   height: 22px;
   display: inline-grid;
@@ -707,6 +733,13 @@
   font-size: 13px;
   line-height: 1;
   font-weight: 700;
+}
+/* Görünmez hit-alanı genişletmesi: 22px görsel disk aynen kalır, tıklanabilir alan 34×34'e
+   çıkar (24px minimum + ~10px histerezis — Apple dokunma hedefi kuralı). */
+.sc-risk-help-trigger::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
 }
 .sc-risk-help-trigger:hover {
   background: var(--ke-hov);
@@ -728,8 +761,9 @@
   color: var(--ke-ink2);
   box-shadow: var(--shadow-lg);
   font-family: var(--font-body);
-  font-size: 13.5px;
-  line-height: 19px;
+  /* TYPE.data çifti (13/18) — 13.5px kesirli/ölçek dışıydı (subpiksel bulanma). */
+  font-size: 13px;
+  line-height: 18px;
   font-weight: 500;
 }
 .sc-risk-help-popover button {
@@ -790,8 +824,9 @@
   flex: 0 1 340px;
   margin: 0;
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 21px;
+  /* TYPE.ui çifti (14/20) — 15/21 ölçek dışıydı; ikincil açıklama bir basamak altta durur. */
+  font-size: 14px;
+  line-height: 20px;
 }
 .sc-decision-strip-chip {
   flex: none;
@@ -1449,21 +1484,26 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
   transition: box-shadow var(--dur-normal) ease, border-color var(--dur-normal) ease;
 }
 @keyframes agw-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.agw-figure.is-complete { border-color: #b9e0d6; box-shadow: 0 0 0 1px rgba(47, 143, 166, .22), var(--shadow-lg); }
+/* Halka color-mix(--ke-t): açık modda rgba(47,143,166,.22) ile bit-aynı; koyu modda token
+   açık varyanta dönüp halka görünür kalır (sabit hâli koyu zeminde kayboluyordu, 2026-08). */
+.agw-figure.is-complete { border-color: #b9e0d6; box-shadow: 0 0 0 1px color-mix(in srgb, var(--ke-t) 22%, transparent), var(--shadow-lg); }
 .agw-head { display: flex; align-items: center; gap: .85rem; flex-wrap: wrap; margin-bottom: .65rem; }
 .agw-title {
   display: inline-flex; align-items: center; gap: .5rem; font-family: var(--font-display);
   font-weight: 700; font-size: .82rem; letter-spacing: .03em; text-transform: uppercase; color: var(--ink);
 }
+/* Nabız halkası --ke-bant-kirmizi'den türetilir: açık modda rgba(201,67,47,.5) ile bit-aynı;
+   koyu modda nokta dolgusuyla (--danger) aynı aileden görünür halka (sabit light kırmızısı
+   koyu zeminde ~1.9:1 ile kayboluyor, nokta ve halka rengi ayrışıyordu — 2026-08). */
 .agw-live-dot {
   width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex: none;
-  box-shadow: 0 0 0 0 rgba(201, 67, 47, .5); animation: agw-live 1.8s ease-out infinite;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ke-bant-kirmizi) 50%, transparent); animation: agw-live 1.8s ease-out infinite;
 }
 .agw-figure.is-complete .agw-live-dot { background: var(--g1); animation: none; }
 @keyframes agw-live {
-  0% { box-shadow: 0 0 0 0 rgba(201, 67, 47, .5); opacity: 1; }
-  70% { box-shadow: 0 0 0 7px rgba(201, 67, 47, 0); opacity: .85; }
-  100% { box-shadow: 0 0 0 0 rgba(201, 67, 47, 0); opacity: 1; }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ke-bant-kirmizi) 50%, transparent); opacity: 1; }
+  70% { box-shadow: 0 0 0 7px transparent; opacity: .85; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 1; }
 }
 .agw-bar { height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; margin-bottom: .8rem; }
 .agw-bar-fill {
@@ -1736,7 +1776,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .rc-kanit-sub { margin: .2rem 0 .6rem; color: var(--ink-2); font-size: .85rem; line-height: 1.45; }
 .rc-kanit-metin { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .8rem; line-height: 1.65; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: .7rem .8rem; max-height: 280px; overflow: auto; color: var(--ink-2); }
 .rc-kanit-mark { background: #fde68a; color: #713f12; border-radius: 3px; padding: 0 .14rem; font-weight: 600; }
-@media (prefers-contrast: more) { .rc-kanit-mark { outline: 1px solid #713f12; } }
+@media (prefers-contrast: more) {
+  .rc-kanit-mark { outline: 1px solid #713f12; }
+  /* Koyu modda işaret zemini yüzeye karışmış amber (yukarıdaki dark override) — koyu kahve
+     outline görünmez; kenar DERIN sarıya çekilir. */
+  :root[data-theme="dark"] .rc-kanit-mark { outline-color: var(--ke-derin-sari); }
+}
 
 /* NLI atıf-gerekçelendirme rozeti (mevzuat önerisinde) */
 .rc-mev-nli { font-size: .68rem; padding: .12rem .45rem; border-radius: 999px; white-space: nowrap; }
@@ -1744,7 +1789,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 .rc-mev-nli.rc-badge-warn { background: var(--warn-soft); color: var(--warn-ink); }
 
 /* HITL memur onay paneli */
-.rc-onay-panel { display: flex; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; box-shadow: 0 4px 18px rgba(15, 23, 42, .07); }
+/* Gölge token seti üzerinden: sabit slate gölge koyu modda görünmezdi (katman hissi
+   kayboluyordu); --shadow-md moda göre doğru yoğunluğu taşır (2026-08). */
+.rc-onay-panel { display: flex; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-md); }
 .rc-onay-bar { flex: none; width: 6px; background: var(--accent, #1e40af); }
 .rc-onay-body { padding: 1rem 1.1rem; flex: 1; min-width: 0; }
 .rc-onay-head { display: flex; gap: .7rem; align-items: flex-start; margin-bottom: .7rem; }

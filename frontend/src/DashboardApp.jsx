@@ -992,11 +992,13 @@ function ViewFallback() {
 
 function ErrorBar({ msg, canRetry, onRetry, onDismiss }) {
   return (
-    <div role="alert" style={{ position: "fixed", bottom: SP.xl, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden" }}>
+    // zIndex 400: uyarı katmanı HER yüzeyin üstünde — modal (300) veya sheet (320) açıkken
+    // ağ hatası scrim arkasında görünmez kalıyordu; "Tekrar dene" her durumda erişilir.
+    <div role="alert" style={{ position: "fixed", bottom: SP.xl, left: "50%", transform: "translateX(-50%)", zIndex: 400, background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, background: ALFA(BANT.kirmizi.c), color: DERIN.kirmizi, padding: "12px 16px", ...TYPE.data }}>
         <span style={{ display: "flex", alignItems: "center", gap: SP.s }}><Icon.alert /> {msg}</span>
-        {canRetry && <button onClick={onRetry} {...focusRing} style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: DERIN.kirmizi, ...TYPE.data, fontWeight: 500 }}>Tekrar dene</button>}
-        <button onClick={onDismiss} aria-label="Kapat" {...focusRing} style={{ cursor: "pointer", display: "flex", alignItems: "center", padding: "4px 8px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: DERIN.kirmizi }}><Icon.x /></button>
+        {canRetry && <button onClick={onRetry} {...focusRing} data-press="" style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: DERIN.kirmizi, ...TYPE.data, fontWeight: 500, transition: "transform .14s var(--ke-ease-out)" }}>Tekrar dene</button>}
+        <button onClick={onDismiss} aria-label="Kapat" {...focusRing} data-press="" style={{ cursor: "pointer", display: "flex", alignItems: "center", padding: "4px 8px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: DERIN.kirmizi, transition: "transform .14s var(--ke-ease-out)" }}><Icon.x /></button>
       </div>
     </div>
   );

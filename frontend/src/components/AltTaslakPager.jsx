@@ -45,7 +45,11 @@ export default function AltTaslakPager({ altTaslaklar, idx, onIdx, onTurUret, on
   // besleme döngüsü kurulmaz.
   useEffect(() => {
     if (!emblaApi) return;
-    if (emblaApi.selectedScrollSnap() !== guvenliIdx) emblaApi.scrollTo(guvenliIdx);
+    // Embla kaymayı kendi rAF motoruyla (JS transform) sürer — CSS reduced-motion
+    // kill-switch'i erişemez. jump=true (ikinci parametre) animasyonsuz anında konumlar;
+    // kullanıcının KENDİ swipe'ı 1:1 takip olduğu için bu guard'ın dışında kalır.
+    const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    if (emblaApi.selectedScrollSnap() !== guvenliIdx) emblaApi.scrollTo(guvenliIdx, az);
   }, [emblaApi, guvenliIdx]);
 
   // Kullanıcı sürükleyerek/swipe ile kaydırdı → dışarıya (tek doğruluk kaynağı olan idx'e) bildir.

@@ -15,7 +15,7 @@
    satırlar bir kez ölçülüp sayfa yüksekliğine göre bölünür; baskıda W3C standardı
    `@page { size: A4 }` devreye girer, ekrandaki ile çıktı aynı olur. */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PAL, SP, TYPE } from "./neonUi.jsx";
+import { PAL, SH, SP, TYPE } from "./neonUi.jsx";
 import {
   A4_GEN_PX,
   A4_YUK_PX,
@@ -141,7 +141,8 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     // Köşe yuvarlaması YOK — gerçek sayfa keskin köşelidir. Kağıt beyazı, "masa" (surf2)
     // tonunun üstünde durur; ince kenar + derin gölge olmadan iki beyaz birbirine karışıyordu.
     border: `1px solid ${PAL.line}`,
-    boxShadow: "0 1px 2px rgba(22,22,22,.06), 0 12px 28px -8px rgba(22,22,22,.18)",
+    // SH.kagit: değerler bit-aynı, gölge mürekkebi tek kaynağa (--ke-shadow-rgb) bağlı.
+    boxShadow: SH.kagit,
     overflow: "hidden",
     flexShrink: 0,
   };

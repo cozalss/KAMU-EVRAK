@@ -240,14 +240,14 @@ function MetaSlot({ slot, id, acik, ac }) {
     <div>
       <dt>
         <span>{slot.etiket}</span>
-        <span className="sc-risk-help">
+        {/* Escape sarmalayıcıda: popover İÇİNDEKİ odakta da çalışsın (yalnız tetikleyicide değil). */}
+        <span className="sc-risk-help" onKeyDown={(e) => { if (e.key === "Escape") ac(null); }}>
           <button
             type="button"
             className="sc-risk-help-trigger"
             aria-label={`${slot.etiket} — bu karar neye dayanıyor?`}
             aria-expanded={acikMi}
             onClick={() => ac((v) => (v === id ? null : id))}
-            onKeyDown={(e) => { if (e.key === "Escape") ac(null); }}
             {...focusRing}
           >
             ?
@@ -304,6 +304,15 @@ function MetaSlot({ slot, id, acik, ac }) {
 function DecisionCard({ r, eksik, uyari, tutar }) {
   // Tek yardım kanalı: aynı anda yalnız bir gerekçe açık ("risk" | "havale" | "sure" | null).
   const [acikYardim, setAcikYardim] = useState(null);
+  // Light-dismiss: gerekçe popover'ı açıkken sayfanın başka yerine basmak kapatır (geçici
+  // yüzeyin standart çıkışı — yalnız aynı ? butonuna geri tıklamak yeterli değildi).
+  // capture: iç stopPropagation'lar dinleyiciyi atlatamasın; .sc-risk-help içi tıklar muaf.
+  useEffect(() => {
+    if (!acikYardim) return undefined;
+    const disariTik = (e) => { if (!e.target?.closest?.(".sc-risk-help")) setAcikYardim(null); };
+    document.addEventListener("pointerdown", disariTik, true);
+    return () => document.removeEventListener("pointerdown", disariTik, true);
+  }, [acikYardim]);
   const hy = hukumYorum(r);
   const [ana, ...kuyruk] = String(hy.baslik || "İşlem tamamlandı").split(" · ");
   const band = BANT[r.risk_metadata?.bant] ? r.risk_metadata.bant : "yesil";
@@ -329,7 +338,9 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
       window.requestAnimationFrame(() => {
         const rect = hedef.getBoundingClientRect();
         const top = window.scrollY + rect.top - Math.max(24, (window.innerHeight - rect.height) / 2);
-        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        // JS-sürümlü smooth scroll'a CSS kill-switch erişemez — guard elle (GelenEvrakView deseni).
+        const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+        window.scrollTo({ top: Math.max(0, top), behavior: az ? "auto" : "smooth" });
         hedef.focus({ preventScroll: true });
         hedef.classList.remove("is-highlighted");
         window.requestAnimationFrame(() => {
@@ -357,20 +368,21 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
           {hy.ton === "yesil" ? <Icon.check width={24} height={24} /> : <Icon.shield width={24} height={24} />}
         </span>
         <span className="sc-decision-strip-copy">
-          <h2 id="sc-decision-title" style={{ margin: 0, ...TYPE.h2, fontSize: 22, lineHeight: "28px", color: PAL.ink }}>
+          {/* Saf TYPE.h2 (20/26): 22 ölçek dışıydı ve h2'nin -.01em tracking'i 20px'e ayarlı —
+              boyuta-özgü tracking çifti bozulmasın (Apple tipografi disiplini). */}
+          <h2 id="sc-decision-title" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>
             {ana}
           </h2>
           <span className="sc-decision-status-line" style={{ marginTop: 2, color: TON[hy.ton] || DERIN.sari }}>
             {durumSatiri}
             {r.risk_metadata?.bant && (
-              <span className="sc-risk-help">
+              <span className="sc-risk-help" onKeyDown={(e) => { if (e.key === "Escape") setAcikYardim(null); }}>
                 <button
                   type="button"
                   className="sc-risk-help-trigger"
                   aria-label={`${riskEtiket} nedir?`}
                   aria-expanded={acikYardim === "risk"}
                   onClick={() => setAcikYardim((v) => (v === "risk" ? null : "risk"))}
-                  onKeyDown={(e) => { if (e.key === "Escape") setAcikYardim(null); }}
                   {...focusRing}
                 >
                   ?
@@ -671,7 +683,7 @@ function DetailModal({ type, r, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="sc-detail-modal-title"
-        style={{ background: PAL.surf, borderColor: PAL.line, boxShadow: SH.modal }}
+        style={{ background: PAL.surfPop, borderColor: PAL.line, boxShadow: SH.modal }}
         onKeyDown={odakDongusu}
         onMouseDown={(event) => event.stopPropagation()}
       >

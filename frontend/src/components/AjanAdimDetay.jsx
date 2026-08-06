@@ -7,13 +7,14 @@
    Veri: node.data (SSE _node_summary) birincil; yoksa result alanlarına düşer — koşum
    CANLI sürerken de açılabilir, adım bittiğinde içerik kendiliğinden zenginleşir. */
 import { useEffect, useRef } from "react";
+import { motion } from "motion/react";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import {
   Chip, MevzuatRow, SlaPanel, slaInfo, subSlaRenk, ZincirStepper, Vrow, CopyChip, KanitAlinti,
   BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
 import {
-  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon, KV, RiskBand, odakDongusu,
+  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, focusRing, Icon, KV, RiskBand, odakDongusu,
 } from "./neonUi.jsx";
 
 const pct = (x) => Math.round((Number(x) || 0) * 100);
@@ -465,10 +466,10 @@ function KonumSeridi({ display, idx, onGit }) {
         const secili = i === idx;
         return (
           <button key={x.id} type="button" onClick={() => onGit(i)} title={x.label}
-            aria-label={`${x.label} adımına git`} aria-current={secili ? "step" : undefined} {...focusRing}
+            aria-label={`${x.label} adımına git`} aria-current={secili ? "step" : undefined} {...focusRing} data-press=""
             onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-            style={{ cursor: "pointer", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, background: "transparent", borderRadius: RAD.dot, border: `1px solid ${secili ? PAL.lineHi : "transparent"}`, transition: "background .12s ease-out" }}>
+            style={{ cursor: "pointer", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, background: "transparent", borderRadius: RAD.dot, border: `1px solid ${secili ? PAL.lineHi : "transparent"}`, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
             <span aria-hidden="true" style={{ width: secili ? 11 : 8, height: secili ? 11 : 8, borderRadius: RAD.dot, background: err ? BANT.kirmizi.c : done ? col : PAL.bg, border: done || err ? "none" : `1px solid ${PAL.lineHi}` }} />
           </button>
         );
@@ -526,11 +527,11 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
   const onceki = display[idx - 1], sonraki = display[idx + 1];
 
   const navBtn = (hedef, etiket, sagOk) => (
-    <button type="button" disabled={!hedef} onClick={() => hedef && onGit(hedef.sira)} {...focusRing}
+    <button type="button" disabled={!hedef} onClick={() => hedef && onGit(hedef.sira)} {...focusRing} data-press=""
       aria-label={hedef ? `${sagOk ? "Sonraki" : "Önceki"} adım: ${hedef.label}` : undefined}
       onMouseEnter={(e) => { if (hedef) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ cursor: hedef ? "pointer" : "not-allowed", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "8px 14px", minHeight: 36, maxWidth: "46%", borderRadius: RAD.ctl, border: `1px solid ${hedef ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: hedef ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease-out" }}>
+      style={{ cursor: hedef ? "pointer" : "not-allowed", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "8px 14px", minHeight: 36, maxWidth: "46%", borderRadius: RAD.ctl, border: `1px solid ${hedef ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: hedef ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
       {!sagOk && <span aria-hidden="true" style={{ display: "flex", transform: "rotate(180deg)" }}><Icon.arrow width={13} height={13} /></span>}
       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{etiket}</span>
       {sagOk && <span aria-hidden="true" style={{ display: "flex" }}><Icon.arrow width={13} height={13} /></span>}
@@ -538,10 +539,17 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
   );
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={`${a.label}: adım detayı`} onClick={onKapat} onKeyDown={odakDongusu}
-      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrim, overflowY: "auto", padding: "48px 16px", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
-      <div onClick={(e) => e.stopPropagation()}
-        style={{ width: "min(680px, 96vw)", margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl }}>
+    /* Scrim/içerik ayrımı (BelgeModal deseni): perde YALNIZ solar (materyal katman mekânda
+       hareket etmez), içerik y+scale ile girer ve AYNI yoldan çıkar (AnimatePresence exit —
+       sarmalayıcı CanliAjanAkisi'de). MotionConfig reducedMotion="user" JS animasyonu kapsar. */
+    <motion.div role="dialog" aria-modal="true" aria-label={`${a.label}: adım detayı`} onClick={onKapat} onKeyDown={odakDongusu}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
+      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrim, overflowY: "auto", padding: "48px 16px" }}>
+      <motion.div onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
+        transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
+        style={{ width: "min(680px, 96vw)", margin: "0 auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl }}>
 
         {/* Başlık — hat roundeli + ad + durum + kapat */}
         <div style={{ display: "flex", alignItems: "flex-start", gap: SP.m }}>
@@ -560,10 +568,10 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
               {a.status === "done" && a.out ? ` · ${a.out}` : ""}
             </div>
           </div>
-          <button ref={kapatRef} type="button" onClick={onKapat} aria-label="Detayı kapat (Esc)" {...focusRing}
+          <button ref={kapatRef} type="button" onClick={onKapat} aria-label="Detayı kapat (Esc)" {...focusRing} data-press=""
             onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-            style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: "background .12s ease-out" }}>
+            style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
             <Icon.x />
           </button>
         </div>
@@ -606,7 +614,7 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
           <span style={{ ...TYPE.meta, color: PAL.mut3, textAlign: "center", flexShrink: 1 }}>← → gezinir · Esc kapatır</span>
           {navBtn(sonraki, sonraki ? sonraki.label : "Son adım", true)}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

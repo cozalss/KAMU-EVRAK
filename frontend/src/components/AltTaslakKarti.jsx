@@ -24,7 +24,7 @@ function PagerOk({ ileri, onClick, disabled, label }) {
     <button type="button" onClick={onClick} disabled={disabled} aria-label={label} {...focusRing} data-press=""
       onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 26, height: 26, borderRadius: RAD.dot, border: `1px solid ${disabled ? PAL.line : PAL.inputLine}`, background: PAL.surf, color: disabled ? PAL.mut3 : PAL.ink2, flexShrink: 0, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+      style={{ cursor: disabled ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, borderRadius: RAD.dot, border: `1px solid ${disabled ? PAL.line : PAL.inputLine}`, background: PAL.surf, color: disabled ? PAL.mut3 : PAL.ink2, flexShrink: 0, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
       <Icon.arrow width={13} height={13} style={ileri ? undefined : { transform: "scaleX(-1)" }} />
     </button>
   );
@@ -118,7 +118,7 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
         <div className="sc-decision-footer" style={{ borderTop: `1px solid ${PAL.line}` }}>
           <div style={{ maxWidth: 860, margin: "0 auto" }}>
             <div className="sc-action-row">
-              <button type="button" disabled={kilitli} {...focusRing}
+              <button type="button" disabled={kilitli} {...focusRing} data-press=""
                 onClick={() => { if (onReddet(metin, tur)) setDurum("reddedildi"); }}
                 onMouseEnter={(e) => { if (!kilitli) e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
@@ -126,7 +126,7 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
                 <Icon.x /> Reddet
               </button>
               <span className="sc-action-spacer" />
-              <button type="button" disabled={kilitli} onClick={() => onDuzenle(metin, tur)} {...focusRing}
+              <button type="button" disabled={kilitli} onClick={() => onDuzenle(metin, tur)} {...focusRing} data-press=""
                 style={{ cursor: kilitli ? "default" : "pointer", padding: "9px 16px", minHeight: 42, borderRadius: RAD.ctl, border: `1px solid ${kilitli ? PAL.line : PAL.inputLine}`, background: PAL.surf, color: kilitli ? PAL.mut2 : PAL.ink, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
                 <Icon.edit /> Düzenle
               </button>

@@ -314,12 +314,19 @@ export function KanitAlinti({ span, metin, children }) {
       onKeyDown={(e) => { if (e.key === "Escape") setAcik(false); }}>
       {children}
       {acik && (
-        <span role="tooltip" style={{ position: "absolute", bottom: "calc(100% + 6px)", right: 0, width: "min(340px, 82vw)", zIndex: 70, display: "block", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.pop, padding: "10px 12px", animation: "nu-rise .14s var(--ke-ease-out) both" }}>
+        /* Görsel 6px boşluk hit alanının İÇİNDE (paddingBottom köprüsü): eski `bottom: calc(
+           100% + 6px)` boşluğuna imleç girince mouseleave popover'ı kapatıyordu — içindeki
+           seçilebilir kanıt pasajına imleç hiç ulaşamıyordu (hover sürekliliği). Zemin/kenar/
+           gölge İÇ span'de: dış katman şeffaf köprü, görünüm birebir aynı. */
+        <span role="tooltip" style={{ position: "absolute", bottom: "100%", right: 0, width: "min(340px, 82vw)", zIndex: 70, display: "block", paddingBottom: 6, animation: "nu-rise .14s var(--ke-ease-out) both" }}>
+          <span style={{ display: "block", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.pop, padding: "10px 12px" }}>
           <span style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: 4 }}>Kaynak belgeden kanıt</span>
-          <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: 1.7, color: PAL.mut, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+          {/* px leading (12/18): sistemin px-leading disiplininde tek unitless değer buydu. */}
+          <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.mut, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
             {bas > 0 ? "…" : ""}{metin.slice(bas, span.start | 0)}
             <mark style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{metin.slice(span.start | 0, span.end | 0)}</mark>
             {metin.slice(span.end | 0, son)}{son < metin.length ? "…" : ""}
+          </span>
           </span>
         </span>
       )}

@@ -10,7 +10,8 @@
 import React, { useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, SR_ONLY, focusRing, Icon, Btn } from "./neonUi.jsx";
+import { AnimatePresence, motion } from "motion/react";
+import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon, Btn } from "./neonUi.jsx";
 
 const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sistem: "Sistem" };
 
@@ -44,15 +45,25 @@ function Kip({ baslik, onKapat, donusRef, children }) {
   const kapatRef = useRef(null);
   return (
     <Dialog.Root open onOpenChange={(v) => { if (!v) onKapat(); }}>
-      <Dialog.Portal>
-        <Dialog.Overlay style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, animation: "nu-rise .16s var(--ke-ease-out)" }}>
-          <Dialog.Content aria-label={baslik}
+      {/* BelgeModal deseni: Portal forceMount + motion — scrim YALNIZ solar (karartma perdesi
+          mekânda hareket etmez), içerik y+scale ile girer ve AnimatePresence (HesapMenu'de,
+          koşullu render'ın dışında) sayesinde AYNI yoldan çıkar. */}
+      <Dialog.Portal forceMount>
+        <Dialog.Overlay asChild forceMount>
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
+            style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <Dialog.Content asChild forceMount aria-label={baslik}
             onOpenAutoFocus={(e) => { e.preventDefault(); kapatRef.current?.focus(); }}
             // Odak-iadesi Radix varsayılanına (kapanmadan önce en son odaklı öğe) bırakılmaz —
             // o öğe DropdownMenu.Item'dı ve menü zaten kapanıp unmount olacak; odak HER ZAMAN
             // hesap menüsü tetikleyicisine (kart) dönsün diye açıkça kontrol ediyoruz.
-            onCloseAutoFocus={(e) => { e.preventDefault(); donusRef?.current?.focus(); }}
-            style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, outline: "none" }}>
+            onCloseAutoFocus={(e) => { e.preventDefault(); donusRef?.current?.focus(); }}>
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
+            style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, outline: "none" }}>
             <Dialog.Description style={SR_ONLY}>{baslik} bilgi penceresi.</Dialog.Description>
             <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "14px 16px", borderBottom: `1px solid ${PAL.line}` }}>
               <Dialog.Title asChild>
@@ -68,7 +79,9 @@ function Kip({ baslik, onKapat, donusRef, children }) {
               </Dialog.Close>
             </div>
             <div style={{ padding: 16 }}>{children}</div>
+          </motion.div>
           </Dialog.Content>
+          </motion.div>
         </Dialog.Overlay>
       </Dialog.Portal>
     </Dialog.Root>
@@ -226,12 +239,12 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
       <DropdownMenu.Root open={acik} onOpenChange={setAcik}>
         {/* Tetik — kullanıcı kartı; daraltılmış rayda yalnız avatar (title + aynı aria) */}
         <DropdownMenu.Trigger asChild>
-          <button type="button" ref={tetikRef}
+          <button type="button" ref={tetikRef} data-press=""
             aria-label={`Hesap menüsü: ${user?.ad_soyad || "kullanıcı"}`}
             title={dar ? `Hesap menüsü: ${user?.ad_soyad || "kullanıcı"}` : undefined} {...focusRing}
             onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.hov : PAL.surfHi; }}
-            style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: dar ? "center" : "flex-start", gap: SP.m, padding: dar ? SP.s : SP.m, borderRadius: RAD.card, background: acik ? PAL.hov : PAL.surfHi, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, textAlign: "left", transition: "background .12s ease-out, border-color .12s ease-out" }}>
+            style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: dar ? "center" : "flex-start", gap: SP.m, padding: dar ? SP.s : SP.m, borderRadius: RAD.card, background: acik ? PAL.hov : PAL.surfHi, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, textAlign: "left", transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
             <span aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.meta, fontWeight: 500, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
             {!dar && (
               <>
@@ -252,7 +265,7 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             kapatıyoruz — NeonSidebar'daki "örnek evrak" dropdown'ıyla aynı gerekçe). */}
         <DropdownMenu.Portal>
           <DropdownMenu.Content side="top" align="start" sideOffset={8} collisionPadding={12}
-            style={{ width: 236, background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s var(--ke-ease-out) both", outline: "none" }}>
+            style={{ width: 236, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s var(--ke-ease-out) both", outline: "none" }}>
             {/* Kimlik başlığı — etkileşimsiz; Radix'in ok-tuşu gezinmesi yalnız Item/CheckboxItem'ları sayar. */}
             <div role="presentation" style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.s}px 10px ${SP.m}px` }}>
               <span aria-hidden="true" style={{ width: 36, height: 36, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.ui, fontWeight: 600, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
@@ -280,11 +293,15 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
 
-      {modal === "profil" && <ProfilKip user={user} onKapat={() => setModal(null)} donusRef={tetikRef} />}
-      {modal === "kurum" && <KurumKip aktifKurum={aktifKurum} onKaydet={(v) => onAktifKurumDegistir?.(v)}
-        onKapat={() => setModal(null)} donusRef={tetikRef} />}
-      {modal === "yardim" && <YardimKip onKapat={() => setModal(null)} donusRef={tetikRef} />}
-      {modal === "kvkk" && <KvkkKip onKapat={() => setModal(null)} donusRef={tetikRef} />}
+      {/* AnimatePresence koşulun DIŞINDA: modal null olunca Kip, çıkış animasyonu bitene
+          dek mounted kalır — giriş-çıkış aynı yoldan (spatial consistency). */}
+      <AnimatePresence>
+        {modal === "profil" && <ProfilKip key="profil" user={user} onKapat={() => setModal(null)} donusRef={tetikRef} />}
+        {modal === "kurum" && <KurumKip key="kurum" aktifKurum={aktifKurum} onKaydet={(v) => onAktifKurumDegistir?.(v)}
+          onKapat={() => setModal(null)} donusRef={tetikRef} />}
+        {modal === "yardim" && <YardimKip key="yardim" onKapat={() => setModal(null)} donusRef={tetikRef} />}
+        {modal === "kvkk" && <KvkkKip key="kvkk" onKapat={() => setModal(null)} donusRef={tetikRef} />}
+      </AnimatePresence>
     </div>
   );
 }

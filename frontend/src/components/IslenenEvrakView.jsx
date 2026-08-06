@@ -158,7 +158,9 @@ function BentoSeridi({ items, filter, ortSn }) {
           border: `1px solid ${aktifSet.size === 0 ? T : PAL.line}`, display: "flex", flexDirection: "column",
           transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
         <span style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
-          <span style={{ ...TYPE.num, fontSize: 28, lineHeight: "34px", color: PAL.ink, ...TNUM }}>
+          {/* Saf TYPE.num (24/28): 28'e elle taşımak num'un -.015em tracking'ini (24'e ayarlı)
+              boyutsuz bırakıyordu — boyut-tracking çifti token'da kalır. */}
+          <span style={{ ...TYPE.num, color: PAL.ink }}>
             <NumberFlow value={items.length} />
           </span>
           {bugunSay.toplam > 0 && <span style={{ ...TYPE.meta, color: DERIN.T, ...TNUM }}>bugün +{bugunSay.toplam}</span>}
@@ -422,14 +424,16 @@ function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
   const aktifMd = aktif?.yazi_taslak_md ?? r.yazi_taslak_md;
   return (
     <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: SP.xl }}>
-      <div role="dialog" aria-modal="true" aria-labelledby="islenen-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
+      <div role="dialog" aria-modal="true" aria-labelledby="islenen-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.l, marginBottom: SP.l }}>
           <div>
             <h2 id="islenen-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{cleanDemoText(item.konu) || item.name}</h2>
             <p style={{ margin: "4px 0 0", fontFamily: SANS, fontSize: 12, lineHeight: "16px", color: PAL.mut2 }}>{item.name}</p>
           </div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing}
-            style={{ cursor: "pointer", flexShrink: 0, width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.hov, color: PAL.ink2, padding: 0 }}>
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing} data-press=""
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+            style={{ cursor: "pointer", flexShrink: 0, width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.surf, color: PAL.ink2, padding: 0, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
             <Icon.x />
           </button>
         </div>
@@ -555,8 +559,10 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
               {g.etiket && (
                 // Sticky kova başlığı — kart DIŞINDA (overflow'lu yüzey sticky'yi kırar);
                 // zemin PAL.bg: kayıtlar altından akarken okunur kalır.
+                // borderBottom hairline: kayıtlar altından akarken başlık "üstte duran katman"
+                // olarak ayrışır (scroll-edge, border-first idiom — CanliAjanAkisi ile aynı).
                 <div style={{ position: "sticky", top: 0, zIndex: 2, display: "flex", alignItems: "center",
-                  gap: SP.s, padding: `${SP.s}px 2px`, background: PAL.bg }}>
+                  gap: SP.s, padding: `${SP.s}px 2px`, background: PAL.bg, borderBottom: `1px solid ${PAL.line}` }}>
                   <span style={{ ...TYPE.meta, fontWeight: 600, color: PAL.ink2 }}>{g.etiket}</span>
                   <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM, padding: "1px 7px",
                     borderRadius: RAD.chip, background: PAL.hov }}>{g.rows.length}</span>

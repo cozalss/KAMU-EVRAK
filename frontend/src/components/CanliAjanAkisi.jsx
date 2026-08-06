@@ -1,7 +1,8 @@
 /* CanliAjanAkisi — "İşleniyor" görünümü.
    Gerçek SSE verisini tek bir canlı işlem odağında sunar; kaynak belge her zaman yan tarafta
    erişilebilir. İşlem bittiğinde doğrudan memur kararı için ayrıntılı sonuç ve taslağa geçer. */
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence } from "motion/react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
 import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
@@ -14,7 +15,7 @@ import A4Belge from "./A4Belge.jsx";
 import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 
-import { SANS, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
+import { T, V, PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 import NumberFlow from "@number-flow/react";
 /* Metro şeması + sahne bileşenleri CanliMetro.jsx'te yaşar (dosya <800 kuralı + "SAHNE Epik"
@@ -170,6 +171,25 @@ export default function CanliAjanAkisi({
   // sıfırlanmayınca pager eski konumdan (örn. 3/3) açılıyordu (bug avı bulgusu) → effect'le sıfırla.
   const [altIdx, setAltIdx] = useState(0);
   useEffect(() => { setAltIdx(0); }, [runBase]);
+  // Kaydırma yükselmesi — şerit "yapışık" mı (altından içerik akıyor mu)? Header'dan hemen
+  // önceki 1px sentinel görünürlükten çıkınca yapışık sayılır. IntersectionObserver scroll
+  // dinleyicisinden ucuzdur: eşik geçişinde BİR kez tetiklenir, kare başına iş yok (perf
+  // kuralı). Sinyal çift kanallı verilir (gölge + kenar tonu): koyu temada siyah zeminde
+  // gölge görünmez, sinyali kenar taşır. Hook koşulsuz (Rules of Hooks — yukarıdaki not);
+  // sentinel yalnız started'da render edildiğinden effect started'a bağlı.
+  const [takili, setTakili] = useState(false);
+  const sentinelRef = useRef(null);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    // started düşünce sıfırla: iptal→yeni koşum döngüsünde header ilk kareyi bayat
+    // "yapışık" stille çizmesin (IO'nun ilk callback'i asenkron gelir).
+    if (!started || !el || typeof IntersectionObserver === "undefined") { setTakili(false); return undefined; }
+    // SON kayıt okunur: IO tek callback'te birden çok kronolojik geçiş teslim edebilir
+    // (hızlı aşağı-yukarı kaydırma); ilk kayıt en eski durumdur, sonuncusu günceldir.
+    const io = new IntersectionObserver((girisler) => setTakili(!girisler[girisler.length - 1].isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, [started]);
   // Sahne animasyonları her zaman açık (kullanıcı kararı, 2026-07-16 — sayfa içi durdurma
   // düğmesi kaldırıldı); prefers-reduced-motion OS düzeyinde yine tümünü söndürür.
   const efGlow = glow;
@@ -265,70 +285,118 @@ export default function CanliAjanAkisi({
         })()}
       </div>
 
-      {/* Üst durum çubuğu */}
-      <header style={{ padding: "16px 24px", borderBottom: `1px solid ${PAL.line}`, background: PAL.bg, position: "sticky", top: 0, zIndex: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
-            <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut }}>
-              <Icon.doc width={18} height={18} />
-            </span>
-            <span style={{ minWidth: 0 }}>
-              <h2 style={{ margin: 0, fontFamily: SANS, fontSize: 14, lineHeight: "18px", color: PAL.ink, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>{fileLabel}</h2>
-              <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{metaLine}</span>
-            </span>
-            {!sonucGoster && <span style={{ marginLeft: SP.s, flexShrink: 0 }}>
-              <Chip c={chipRenk} label={`Durum: ${statusText}`}>
-                {hataliAdim >= 0 && !kosumda ? <Icon.alert width={12} height={12} />
-                  : allDone ? <Icon.check width={12} height={12} />
-                  : kosumda ? <Icon.spin width={12} height={12} />
-                  : <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: PAL.mut2 }} />}
-                {statusText}
-              </Chip>
-            </span>}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
-            {!sonucGoster && <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
-              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
-              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
-            </span>}
-            {!sonucGoster && <span aria-hidden="true" style={{ width: 1, height: 20, background: PAL.line, flexShrink: 0 }} />}
-            <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-              {/* İptal — yalnız canlı koşumda: SSE akışını keser, boş duruma döner
-                  ("Tekrar dene" ErrorBar yerine sessiz iptal; lastRun durduğundan aynı evrak
-                  yeniden başlatılabilir). Düşük-vurgu ghost: yanlışlıkla basılmasın. */}
-              {busy && (
-                <button onClick={onCancel} aria-label="İşlemi iptal et" {...focusRing} data-press=""
-                  title="İşlemi iptal et"
-                  onMouseEnter={(e) => { e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                  style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: DERIN.kirmizi, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                  <Icon.x width={13} height={13} /> İptal
-                </button>
-              )}
-              {/* Yeni evrak kısayolları — YALNIZ boşta (!busy). Önceki tasarım "sidebar'da zaten
-                  var" diyordu ama "Telefonla yükle" YALNIZ boş dropzone durumunda (!started)
-                  erişilebilirdi; bir sonuç görüntülenirken (started=true) bu ekrana geri dönüşü
-                  YOKTU — sidebar'ın "Yeni evrak yükle"si native dosya seçiciyi doğrudan açıyor,
-                  seçici iptal edilince memur eski sonuçla burada MAHSUR kalıyordu, tek çıkış
-                  sekme yenilemekti (kullanıcı bulgusu, 2026-07-20). bekleyenKararUyar (DashboardApp)
-                  önceki kararın kalıcı kayda yazılamadığını zaten toast'la uyarıyor — ekstra guard
-                  gerekmez. Düşük-vurgu (Btn secondary): tek primary "Onayla ve gönder" kalır. */}
-              {!busy && (
-                <>
-                  <Btn onClick={onTelefon}><Icon.phone width={14} height={14} /> Telefonla yükle</Btn>
-                  <Btn onClick={onUpload}><Icon.upload width={14} height={14} /> Yeni evrak yükle</Btn>
-                </>
-              )}
+      {/* Kaydırma sentineli — header'ın HEMEN önünde, akış içinde ama görünmez (1px, negatif
+          marginle net sıfır yer kaplar). Görünürlükten çıktığı an şerit "yapışık" demektir. */}
+      <div ref={sentinelRef} aria-hidden="true" style={{ height: 1, marginBottom: -1 }} />
+
+      {/* Üst durum çubuğu — kabuk tam genişlik (buzlu cam + tam-genişlik hairline = uygulama
+          kromu), İÇERİK 1540 kolonda. Altındaki her iki durum da 1540 ortalı akar (canlı:
+          maxWidth 1540 · sonuç: .sc-workspace); şerit tam-genişlik serilince 2560px ekranda
+          ad solda, butonlar sağ dipte "çorak" kalıyordu (kullanıcı bulgusu, 2026-08-03).
+          BUZLU CAM (kullanıcı seçimi): CAM token'ının kendi yorumu tam bu durumu — kaydırılan
+          içeriğin üstünde duran yüzey — kutsuyor; modal jank yasağı buraya uzanmaz (scroll
+          pürüzsüzlüğü Playwright'la ölçüldü). Kenar cam üstünde CAM.line (opak çizgi camda
+          sert duruyordu); yapışınca PAL.lineHi + SH.card — çift kanal, çünkü koyu temada
+          siyah zeminde gölge görünmez, sinyali kenar taşır. */}
+      <header style={{
+        padding: `${SP.l}px clamp(${SP.l}px, 2.4vw, ${SP.xxl}px)`,
+        position: "sticky", top: 0, zIndex: 20,
+        background: CAM.bg, backdropFilter: CAM.blur, WebkitBackdropFilter: CAM.blur,
+        borderBottom: `1px solid ${takili ? PAL.lineHi : CAM.line}`,
+        boxShadow: takili ? SH.card : "none",
+        transition: "box-shadow .16s ease, border-color .16s ease",
+      }}>
+        {/* Çift perde — cam tek katmanda %55 saydam: koyu temada altından BEYAZ A4 kâğıdı
+            geçerken kompozit zemin griye açılıyor, 13px meta ≈2.0:1'e düşüyordu (yargıç
+            ölçümü — AA ihlali; eski opak header'a göre gerçek gerileme olurdu). CAM.bg bir
+            kez daha bindirilince efektif örtü ~%80: en kötü durumda (saf beyaz kâğıt) meta
+            ≈4.6:1 ile AA'yı geçer, buzlu his korunur. Token dışına çıkılmaz; gradyan ve
+            renkli gölge kullanılmaz (yasa). İçerik sarmalı position:relative ile üstte. */}
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: CAM.bg, pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1540, margin: "0 auto", position: "relative" }}>
+          {/* minHeight 36 = Btn'nin onaylı yüksekliği (satırın en uzun sakini): çip/lejant/
+              butonlar durumdan duruma takılıp çıkarken satır yüksekliği oynamasın (CLS koruması). */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", minHeight: 36 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
+              {/* Kutusuz aksan ikonu — NeonCard ev stili ("accent yalnız ikon rengi", 16-18px
+                  sınırı); ikon KUTUSU MASTER.md anti-pattern'i, bilerek yok. */}
+              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}>
+                <Icon.doc width={18} height={18} />
+              </span>
+              <span style={{ minWidth: 0 }}>
+                {/* Belge kimliği görünümün başlığıdır — 14px UI satırı değil 16/600 okuma
+                    kademesi; geniş ekranda erken kırpılmasın (360px sabiti kalktı). */}
+                <h2 style={{ margin: 0, ...TYPE.read, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "min(48vw, 640px)" }}>{fileLabel}</h2>
+                <span style={{ display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: SP.xs, marginTop: SP.xs, ...TYPE.data, color: PAL.mut2, ...TNUM }}>
+                  <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{metaLine}</span>
+                  {/* Sonuç durumunda çip kalkar (büyük hüküm aşağıda — çip tekrarı yasak);
+                      tamamlanma bilgisi meta satırında sakin bir segment olarak yaşar. */}
+                  {sonucGoster && allDone && (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, whiteSpace: "nowrap" }}>
+                      <span style={{ color: PAL.mut3 }}>·</span>
+                      <span aria-hidden="true" style={{ display: "flex", color: DERIN.yesil }}><Icon.check width={12} height={12} /></span>
+                      İşlem tamamlandı{toplamSn ? ` · ${toplamSn}` : ""}
+                    </span>
+                  )}
+                </span>
+              </span>
+              {!sonucGoster && <span style={{ marginLeft: SP.s, flexShrink: 0 }}>
+                <Chip c={chipRenk} label={`Durum: ${statusText}`}>
+                  {hataliAdim >= 0 && !kosumda ? <Icon.alert width={12} height={12} />
+                    : allDone ? <Icon.check width={12} height={12} />
+                    : kosumda ? <Icon.spin width={12} height={12} />
+                    : <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: PAL.mut2 }} />}
+                  {statusText}
+                </Chip>
+              </span>}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
+              {!sonucGoster && <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
+                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
+                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
+              </span>}
+              {!sonucGoster && <span aria-hidden="true" style={{ width: 1, height: 20, background: PAL.line, flexShrink: 0 }} />}
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+                {/* İptal — yalnız canlı koşumda: SSE akışını keser, boş duruma döner
+                    ("Tekrar dene" ErrorBar yerine sessiz iptal; lastRun durduğundan aynı evrak
+                    yeniden başlatılabilir). Düşük-vurgu ghost: yanlışlıkla basılmasın. */}
+                {busy && (
+                  <button onClick={onCancel} aria-label="İşlemi iptal et" {...focusRing} data-press=""
+                    title="İşlemi iptal et"
+                    onMouseEnter={(e) => { e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                    style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: DERIN.kirmizi, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
+                    <Icon.x width={13} height={13} /> İptal
+                  </button>
+                )}
+                {/* Yeni evrak kısayolları — YALNIZ boşta (!busy). Önceki tasarım "sidebar'da zaten
+                    var" diyordu ama "Telefonla yükle" YALNIZ boş dropzone durumunda (!started)
+                    erişilebilirdi; bir sonuç görüntülenirken (started=true) bu ekrana geri dönüşü
+                    YOKTU — sidebar'ın "Yeni evrak yükle"si native dosya seçiciyi doğrudan açıyor,
+                    seçici iptal edilince memur eski sonuçla burada MAHSUR kalıyordu, tek çıkış
+                    sekme yenilemekti (kullanıcı bulgusu, 2026-07-20). bekleyenKararUyar (DashboardApp)
+                    önceki kararın kalıcı kayda yazılamadığını zaten toast'la uyarıyor — ekstra guard
+                    gerekmez. Düşük-vurgu (Btn secondary): tek primary "Onayla ve gönder" kalır.
+                    nu-rise: koşum bitip butonlar belirirken tek seferlik sakin giriş (izinli
+                    çekirdek keyframe; reduced-motion global kuralı söndürür). */}
+                {!busy && (
+                  <div style={{ display: "flex", alignItems: "center", gap: SP.s, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+                    <Btn onClick={onTelefon}><Icon.phone width={14} height={14} /> Telefonla yükle</Btn>
+                    <Btn onClick={onUpload}><Icon.upload width={14} height={14} /> Yeni evrak yükle</Btn>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+          {!sonucGoster && <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
+            {/* Dolum scaleX (compositor); glow overflow'da kırpıldığından kaldırıldı (jüri: ölü efekt).
+                Hata durumunda dolgu KIRMIZI donar — renk işlevseldir (nerede durduğu bilgisi). */}
+            <div aria-hidden="true" style={{ flex: 1, height: 6, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden" }}>
+              <div style={{ width: "100%", height: "100%", borderRadius: RAD.chip, background: hataliAdim >= 0 && !kosumda ? BANT.kirmizi.c : allDone ? BANT.yesil.c : T, transformOrigin: "left", transform: `scaleX(${pct / 100})`, transition: "transform .28s var(--ke-ease-out), background .2s ease" }} />
+            </div>
+            <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flexShrink: 0, minWidth: 38, textAlign: "right", ...TNUM }}><NumberFlow value={pct} spinTiming={{ duration: 250 }} />%</span>
+          </div>}
         </div>
-        {!sonucGoster && <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
-          {/* Dolum scaleX (compositor); glow overflow'da kırpıldığından kaldırıldı (jüri: ölü efekt). */}
-          <div aria-hidden="true" style={{ flex: 1, height: 6, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden" }}>
-            <div style={{ width: "100%", height: "100%", borderRadius: RAD.chip, background: allDone ? BANT.yesil.c : T, transformOrigin: "left", transform: `scaleX(${pct / 100})`, transition: "transform .28s var(--ke-ease-out), background .2s ease" }} />
-          </div>
-          <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flexShrink: 0, minWidth: 38, textAlign: "right", ...TNUM }}><NumberFlow value={pct} spinTiming={{ duration: 250 }} />%</span>
-        </div>}
       </header>
 
       {/* İşlem merkezi: canlı durumda kaynak belgeyle yan yana, sonuçta karar yüzeyiyle devam eder. */}
@@ -495,11 +563,14 @@ export default function CanliAjanAkisi({
       })()}
 
       {/* İşlem adımı detayı — istasyon/nokta tıklanınca; ←/→ ile adımlar arasında
-          gezinilir. Koşum CANLI sürerken de açılabilir (içerik node bittikçe dolar). */}
-      {detayIdx != null && display[detayIdx] && (
-        <AjanAdimDetay idx={detayIdx} display={display} result={result}
-          onKapat={() => setDetayIdx(null)} onGit={setDetayIdx} />
-      )}
+          gezinilir. Koşum CANLI sürerken de açılabilir (içerik node bittikçe dolar).
+          AnimatePresence: kapanışta giriş yolunun tersinden çıkar (spatial consistency). */}
+      <AnimatePresence>
+        {detayIdx != null && display[detayIdx] && (
+          <AjanAdimDetay key="adim-detay" idx={detayIdx} display={display} result={result}
+            onKapat={() => setDetayIdx(null)} onGit={setDetayIdx} />
+        )}
+      </AnimatePresence>
 
       {/* A4 belge modalları — kaynak belge (maskeli metin / gerçek PDF sayfası) + resmî yazı
           taslağı (PDF/DOCX indirme kısayollu). Tetikleyiciler: panel tıklaması / büyüt düğmesi. */}

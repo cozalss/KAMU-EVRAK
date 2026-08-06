@@ -102,7 +102,7 @@ function Muhur({ az }) {
 function Zarf() {
   const top = 118, h = 168, flapH = 106, tip = flapH; // kapak ucu (mum mühür konumu)
   return (
-    <div aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, top, height: h, zIndex: 3, perspective: 800, animation: "as-zarf-gel .4s ease-out both", filter: `drop-shadow(0 6px 14px rgba(60,45,20,.22))` }}>
+    <div aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, top, height: h, zIndex: 3, perspective: 800, animation: "as-zarf-gel .4s var(--ke-ease-out) both", filter: `drop-shadow(0 6px 14px rgba(var(--ke-shadow-rgb),.22))` }}>
       {/* Ön yüz — tam opak kraft gövde + köşe dikiş hatları */}
       <div style={{ position: "absolute", inset: 0, background: ZARF_GOVDE, border: `1.5px solid ${ZARF_KENAR}`, borderRadius: RAD.ctl, overflow: "hidden" }}>
         <svg viewBox={`0 0 ${A4_W} ${h}`} width="100%" height="100%" preserveAspectRatio="none" style={{ position: "absolute", inset: 0 }}>
@@ -111,9 +111,9 @@ function Zarf() {
         </svg>
       </div>
       {/* Kapak — üstten kapanan koyu kraft üçgen (3B) */}
-      <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: flapH, transformOrigin: "top center", clipPath: "polygon(0 0, 100% 0, 50% 100%)", background: ZARF_KAPAK, borderRadius: `${RAD.ctl}px ${RAD.ctl}px 0 0`, boxShadow: `inset 0 -1px 0 ${ZARF_KENAR}`, animation: "as-kapak .55s .15s ease-out both", backfaceVisibility: "hidden" }} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: flapH, transformOrigin: "top center", clipPath: "polygon(0 0, 100% 0, 50% 100%)", background: ZARF_KAPAK, borderRadius: `${RAD.ctl}px ${RAD.ctl}px 0 0`, boxShadow: `inset 0 -1px 0 ${ZARF_KENAR}`, animation: "as-kapak .55s .15s var(--ke-ease-out) both", backfaceVisibility: "hidden" }} />
       {/* Mum mühür — kapak ucunda, kapak kapandıktan sonra basılır */}
-      <span style={{ position: "absolute", left: "50%", top: tip - 9, marginLeft: -9, width: 18, height: 18, borderRadius: "50%", background: R, border: `1px solid color-mix(in srgb, ${R} 55%, #000)`, boxShadow: `0 1px 2px rgba(60,45,20,.35)`, animation: "nu-pop .3s .6s var(--ke-ease-out) both" }} />
+      <span style={{ position: "absolute", left: "50%", top: tip - 9, marginLeft: -9, width: 18, height: 18, borderRadius: "50%", background: R, border: `1px solid color-mix(in srgb, ${R} 55%, #000)`, boxShadow: `0 1px 2px rgba(var(--ke-shadow-rgb),.35)`, animation: "nu-pop .3s .6s var(--ke-ease-out) both" }} />
     </div>
   );
 }
@@ -134,7 +134,8 @@ function Belge({ belge, bitti, isliyor, katli, zarfli, ucus, az }) {
         <div style={{ padding: "16px 18px 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14 }}>
             <span style={{ fontFamily: SANS, fontSize: 12, letterSpacing: ".32px", color: PAL.mut3 }}>T.C. · EVRAK</span>
-            <span style={{ fontFamily: SANS, fontSize: 12, letterSpacing: ".32px", color: PAL.mut3 }}>{belge.evrak}</span>
+            {/* Evrak no = makine verisi → MONO (aynı değer sahnenin künyesinde de MONO). */}
+            <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, fontVariantNumeric: "tabular-nums" }}>{belge.evrak}</span>
           </div>
           <span style={{ display: "block", height: 7, width: "56%", margin: "0 auto 7px", borderRadius: 2, background: PAL.lineHi }} />
           <span style={{ display: "block", height: 7, width: "34%", margin: "0 auto 18px", borderRadius: 2, background: PAL.line }} />
@@ -228,7 +229,7 @@ function Ray({ node, tamam, belge }) {
 function Kabarcik({ k, belge }) {
   const deger = k.alan ? belge[k.alan] : k.deger;
   return (
-    <div aria-hidden="true" style={{ position: "absolute", top: k.yer.top, left: k.yer.left, zIndex: 5, display: "flex", flexDirection: "column", gap: 2, padding: "7px 11px", background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.pop, animation: "nu-pop .34s var(--ke-ease-out) both" }}>
+    <div aria-hidden="true" style={{ position: "absolute", top: k.yer.top, left: k.yer.left, zIndex: 5, display: "flex", flexDirection: "column", gap: 2, padding: "7px 11px", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.pop, animation: "nu-pop .34s var(--ke-ease-out) both" }}>
       <span style={{ ...TYPE.meta, color: PAL.mut3 }}>{k.etiket}</span>
       {k.bant
         ? <span style={{ fontFamily: MONO, fontSize: 11, fontWeight: 500, color: DERIN.yesil, ...TNUM }}>{deger}</span>

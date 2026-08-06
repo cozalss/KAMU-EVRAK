@@ -212,7 +212,9 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
 
       {/* Öneri kartı — kalite kapıları + değişiklik özeti + diff + çok-turlu geliştirme */}
       {oneri && (
-        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.modal, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+        // SH.card: bu kart modal İÇİNDE satır-içi bir bölge, yeni katman değil — komşu
+        // şeritlerle (giriş/geri-al/hata) aynı düzlemde durur; modal gölgesi katmana aittir.
+        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surfPop, boxShadow: SH.card, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
             <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
               AI önerisi — {oneri.zincir.map((z) => `“${z}”`).join(" → ")}

@@ -154,7 +154,7 @@ function Balon({ uye, t, aksan }) {
               <Icon.arrow width={9} height={9} /> {hedef.ad} · {tm.etiket}
             </span>
           )}
-          {t.kaynak && !["ornek", "muzakere"].includes(t.kaynak) && <span style={{ fontFamily: MONO, fontSize: 10, lineHeight: "14px", color: PAL.mut3 }}>· {t.kaynak}</span>}
+          {t.kaynak && !["ornek", "muzakere"].includes(t.kaynak) && <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>· {t.kaynak}</span>}
         </span>
         <span style={{ ...TYPE.data, color: PAL.ink2 }}>{t.text}</span>
       </div>
@@ -325,7 +325,7 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
                     </Btn>
                   </span>
                 )}
-                <span style={{ flex: "none", fontFamily: MONO, fontSize: 10, lineHeight: "18px", color: PAL.mut3 }}>{o.kaynak}</span>
+                <span style={{ flex: "none", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>{o.kaynak}</span>
               </div>
             );
           })}
@@ -654,16 +654,18 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   }, []);
 
   return (
+    // Scrim YALNIZ solar (nu-sol), içerik yükselir (nu-rise) — karartma perdesi mekânda
+    // hareket etmez (Apple materyal kuralı). Karartı tonu tek kaynaktan: PAL.scrimKoyu.
     <div role="dialog" aria-modal="true" aria-label="AI Bürokrasi Kurulu" onClick={onKapat} onKeyDown={odakDongusu}
-      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: "rgba(22,22,22,.58)", overflowY: "auto", padding: "32px 16px 48px", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+      style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrimKoyu, overflowY: "auto", padding: "32px 16px 48px", animation: "nu-sol .16s var(--ke-ease-out) both" }}>
       {/* ref+tabIndex: açılışta odak diyalog kabına girer (WCAG dialog deseni; bug avı: kapatRef
           hiçbir öğeye bağlı değildi → focus no-op, odak arka planda kalıyordu). */}
-      <div ref={kapatRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} style={{ width: "min(1060px, 96vw)", margin: "0 auto", outline: "none", display: "flex", flexDirection: "column", gap: SP.m }}>
+      <div ref={kapatRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} style={{ width: "min(1060px, 96vw)", margin: "0 auto", outline: "none", display: "flex", flexDirection: "column", gap: SP.m, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
 
         {/* Üst şerit — başlık + taslak kimliği + kapat (BelgeModal dili) */}
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
           <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>AI Bürokrasi Kurulu</span>
-          {taslakAdi && <span style={{ fontFamily: SANS, fontSize: 13, lineHeight: "16px", color: "rgba(251,247,240,.72)" }}>{taslakAdi}</span>}
+          {taslakAdi && <span style={{ fontFamily: SANS, fontSize: 13, lineHeight: "16px", color: PAL.onInk2 }}>{taslakAdi}</span>}
           <span style={{ ...TYPE.meta, color: "rgba(251,247,240,.6)" }}>
             {kurgu.kaynak === "llm" ? "DeepSeek uzman ajanları taslağı müzakere eder" : "üç ajan, taslağın gerçek doğrulama sinyalleri üzerinden müzakere eder"}
           </span>

@@ -38,9 +38,9 @@ function BarGrafik({ veri, ort }) {
     <div style={{ display: "flex", gap: SP.s, marginTop: SP.m }}>
       {/* Y ekseni */}
       <div aria-hidden="true" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between",
-        height: H, flexShrink: 0, textAlign: "right", minWidth: 34 }}>
+        height: H, flexShrink: 0, textAlign: "right", minWidth: 38 }}>
         {kademeler.map((k) => (
-          <span key={k} style={{ fontFamily: MONO, fontSize: 11, lineHeight: "11px", color: PAL.mut3 }}>{k.toFixed(1)}</span>
+          <span key={k} style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>{k.toFixed(1)}</span>
         ))}
       </div>
       <div style={{ flex: 1, minWidth: 0, overflowX: "auto" }}>
@@ -66,7 +66,7 @@ function BarGrafik({ veri, ort }) {
         <div aria-hidden="true" style={{ display: "flex", gap: 3, marginTop: SP.xs, minWidth: veri.length * 18 }}>
           {veri.map((x, i) => (
             <span key={`e-${i}`} style={{ flex: 1, minWidth: 10, textAlign: "center",
-              fontFamily: MONO, fontSize: 10, color: PAL.mut3 }}>{i + 1}</span>
+              fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>{i + 1}</span>
           ))}
         </div>
       </div>
@@ -77,13 +77,16 @@ function BarGrafik({ veri, ort }) {
 /* Sıralanabilir tablo başlığı — aktif kolonun yönü ok ile gösterilir. */
 function ThSirali({ alan, etiket, aktif, artan, onSec, sayisal }) {
   return (
-    <th scope="col" style={{ padding: `${SP.s}px ${SP.m}px`, textAlign: sayisal ? "right" : "left", whiteSpace: "nowrap" }}>
+    <th scope="col" style={{ padding: 0, textAlign: sayisal ? "right" : "left", whiteSpace: "nowrap" }}>
+      {/* Hit alanı hücre dolgusuna yayılır (padding butonda, th 0): görsel hiza aynı,
+          tıklanabilir hedef ~16px'lik metin şeridinden tüm başlık hücresine (≥32px) çıkar. */}
       <button type="button" onClick={() => onSec(alan)} {...focusRing} data-press=""
         aria-label={`${etiket} sütununa göre sırala`}
         onMouseEnter={(e) => { e.currentTarget.style.color = DERIN.T; }}
         onMouseLeave={(e) => { e.currentTarget.style.color = aktif ? DERIN.T : PAL.mut; }}
         style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs,
-          background: "transparent", border: "none", padding: 0, ...TYPE.meta, fontWeight: 600,
+          width: "100%", justifyContent: sayisal ? "flex-end" : "flex-start",
+          background: "transparent", border: "none", padding: `${SP.s}px ${SP.m}px`, ...TYPE.meta, fontWeight: 600,
           color: aktif ? DERIN.T : PAL.mut, transition: `color .12s ease, transform .14s ${EASE.out}` }}>
         {etiket}
         <span aria-hidden="true" style={{ opacity: aktif ? 1 : 0.3, fontSize: 9 }}>{aktif && !artan ? "▼" : "▲"}</span>
@@ -122,8 +125,8 @@ export default function SureRaporModal({ acik, onKapat, history = [] }) {
                 <motion.div
                   initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
                   transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
-                  style={{ width: "min(720px, 96vw)", margin: "0 auto", background: PAL.surf,
-                    border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal,
+                  style={{ width: "min(720px, 96vw)", margin: "0 auto", background: PAL.surfPop,
+                    border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal,
                     padding: SP.xl, outline: "none" }}>
                   <Dialog.Description style={SR_ONLY}>
                     İşlem sürelerinin ayrıntılı raporu: ortalama, son işlemlerin dağılımı, tablo ve dönem kıyaslaması.
@@ -155,7 +158,9 @@ export default function SureRaporModal({ acik, onKapat, history = [] }) {
                     <>
                       {/* Büyük metrik + trend */}
                       <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-                        <span style={{ ...TYPE.h1, color: PAL.ink, ...TNUM }}>{sn(ort)} sn</span>
+                        {/* TYPE.num (24/28, tabular-nums yerleşik): istatistik rakamı num
+                            katmanında — h1 display token'ı görünüm başlıklarına aittir. */}
+                        <span style={{ ...TYPE.num, color: PAL.ink }}>{sn(ort)} sn</span>
                         <TrendRozet t={gTrend} buyuk />
                         <span style={{ ...TYPE.data, color: PAL.mut2, ...TNUM }}>
                           ortalama · {olcum.length} işlem

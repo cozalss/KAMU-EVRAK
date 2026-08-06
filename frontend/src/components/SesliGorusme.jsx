@@ -10,6 +10,7 @@
    sayfanın üstünde değil; sakin çalışma-alanı chrome'u bozulmaz.
    a11y: ESC kapatır, aria-live durum, reduced-motion'da morph/scale söner. */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { authFetch } from "../lib/authApi.js";
 import { DURUM, rmsGenlik, sonrakiDurum, yumusatZamanli } from "../lib/sesGorusme.js";
 import { orbKare } from "../lib/orbCizim.js";
@@ -23,7 +24,7 @@ import {
 } from "../lib/realtimeSes.js";
 import SesliOrb from "./SesliOrb.jsx";
 import {
-  PAL, DERIN, SP, RAD, SH, EASE, TYPE, Icon, focusRing, SR_ONLY,
+  PAL, DERIN, SP, RAD, SH, EASE, EASE_BEZIER, TYPE, Icon, focusRing, SR_ONLY,
 } from "./neonUi.jsx";
 
 // Yuvarlak olan şey ORB'UN KENDİSİ — arkasında koyu tabak yok (kullanıcı kararı: zemin
@@ -70,6 +71,10 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   const ekranRef = useRef(ekran);
   const susturRef = useRef(false);
   const azHareketRef = useRef(false);
+  // State aynası: SesliOrb prop'u dürüst kalsın (yalnız ref güncellemek render'ı tazelemez).
+  // Görüşme SÜRERKEN OS "hareketi azalt" açılırsa change dinleyicisi (aşağıdaki [acik]
+  // effect'i) hem ref'i (rAF döngüsü okur) hem state'i günceller — MuzakereKurulu idiomu.
+  const [azHareket, setAzHareket] = useState(azHareketMi);
 
   const ctxRef = useRef(null);
   const micAnalizRef = useRef(null);
@@ -612,6 +617,19 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [acik]);
 
+  // Reduced-motion CANLI takip: rAF-sürümlü orb morph'una CSS kill-switch erişemez; görüşme
+  // ortasında tercihi değiştiren kullanıcı için change dinleyicisi şart (tek seferlik örnekleme
+  // bayatlıyordu). kur()'daki ilk örnekleme korunur; burası değişimi yakalar.
+  useEffect(() => {
+    if (!acik) return undefined;
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return undefined;
+    const din = (e) => { azHareketRef.current = e.matches; setAzHareket(e.matches); };
+    din(mq);   // açılış anındaki gerçek değerle senkronla
+    mq.addEventListener?.("change", din);
+    return () => mq.removeEventListener?.("change", din);
+  }, [acik]);
+
   // Orb px boyutu sıvı kenarı besler ve ORB_BOYUT viewport'a bağlıdır (min(210px, 100vw-96,
   // 100vh-220)). Tek seferlik ölçüm pencere yeniden boyutlanınca bayatlıyor: kutu küçülürse
   // clip taşar ve KENAR DALGALANMASI TAMAMEN KAYBOLUR, büyürse küre kutusundan küçük kalır.
@@ -678,8 +696,14 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
           ve play() çağıran kimse yoktur (eski zincirde blob'u biz çalıyorduk). */}
       <audio ref={audioElRef} autoPlay hidden aria-hidden="true" />
 
+      <AnimatePresence>
       {acik && (
-        <div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
+        <motion.div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
+          // ke-disk-gir'in motion karşılığı + SİMETRİK çıkış: disk kendisini açan butondan
+          // büyür, kapanırken AYNI köşeye geri çekilir (girişteki zarafetin çıkış yarısı).
+          // MotionConfig reducedMotion="user" azaltmada animasyonu söndürür.
+          initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.94 }}
+          transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
           style={{
             outline: "none",
             // Sohbet panelinin ayak izi (right/bottom birebir aynı): panel kapanır, orb oraya doğar.
@@ -688,9 +712,8 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
             display: "flex", flexDirection: "column", alignItems: "center", gap: SP.l,
             // Kap görünmez: zemin/gölge YOK ve tıklamayı yutmaz — yalnız çocukları tıklanabilir.
             pointerEvents: "none",
-            // Köken-farkında giriş: orb, kendisini açan yuvarlak butondan (sağ-alt) büyür.
+            // Köken-farkında giriş/çıkış: orb, kendisini açan yuvarlak butona bağlı kalır.
             transformOrigin: "bottom right",
-            animation: "ke-disk-gir .2s var(--ke-ease-out) both",
           }}>
           {/* Durum etiketi (aria-live) */}
           <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
@@ -707,7 +730,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
           <button type="button" onClick={kes} {...(konusuyor ? { "data-press": "" } : {})}
             aria-label={konusuyor ? "Yanıtı durdur" : "Sesli görüşme küresi"} {...focusRing}
             style={{ position: "relative", pointerEvents: "auto", width: ORB_BOYUT, aspectRatio: "1 / 1", flexShrink: 0, borderRadius: RAD.dot, border: "none", background: "none", padding: 0, cursor: konusuyor ? "pointer" : "default" }}>
-            <SesliOrb dusunuyor={dusunuyor} azHareket={azHareketRef.current}
+            <SesliOrb dusunuyor={dusunuyor} azHareket={azHareket}
               orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
           </button>
 
@@ -734,8 +757,9 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
           {uyari && (
             <p role="status" aria-live="polite" style={{ position: "relative", zIndex: 1, margin: 0, maxWidth: "100%", textAlign: "center", ...TYPE.meta, color: PAL.mut }}>{uyari}</p>
           )}
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </>
   );
 }

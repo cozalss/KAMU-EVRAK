@@ -26,8 +26,10 @@ const Ray = ({ top, height, bottom, filled, col, akis }) => (
     <span style={{ position: "absolute", inset: 0, background: col, transformOrigin: "top", transform: filled ? "scaleY(1)" : "scaleY(0)", transition: "transform .45s var(--ke-ease-in-out)" }} />
     {filled && akis && (
       <>
-        <span style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent, ${PAL.onAccent}, transparent)`, backgroundSize: "100% 22px", backgroundRepeat: "no-repeat", opacity: 0.95, animation: "nu-iz 1.1s linear infinite" }} />
-        <span style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent, ${PAL.onAccent}, transparent)`, backgroundSize: "100% 22px", backgroundRepeat: "no-repeat", opacity: 0.55, animation: "nu-iz 1.1s linear .55s infinite" }} />
+        {/* Işık kuyruğu PAL.onInk: "her zeminde ışık" sözleşmesi. onAccent tema-tersine akar —
+            koyu modda #0b0a09 olup kuyruk siyah bir KARARTI gibi süzülüyordu (2026-08 bulgusu). */}
+        <span style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent, ${PAL.onInk}, transparent)`, backgroundSize: "100% 22px", backgroundRepeat: "no-repeat", opacity: 0.95, animation: "nu-iz 1.1s linear infinite" }} />
+        <span style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent, ${PAL.onInk}, transparent)`, backgroundSize: "100% 22px", backgroundRepeat: "no-repeat", opacity: 0.55, animation: "nu-iz 1.1s linear .55s infinite" }} />
       </>
     )}
   </span>

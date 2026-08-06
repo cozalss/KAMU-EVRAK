@@ -428,8 +428,10 @@ function SureGrafik({ history }) {
                 alignItems: "center", justifyContent: "flex-end", gap: SP.xs }}>
               {/* Koyu değer baloncuğu — açık zeminde en okunur eşleşme (toast ile aynı çift).
                   Sayının kendisi renkten BAĞIMSIZ sinyal: renk körlüğünde de süre okunur. */}
+              {/* 12/16 mono-meta çifti: sayı erişilebilirlik yükünü taşıyor (renkten bağımsız
+                  sinyal) — 10px okunabilirlik tabanının altındaydı; dolgu daraltıldı. */}
               <span style={{ maxWidth: "100%", overflow: "hidden", background: PAL.inkSurf, color: PAL.onInk,
-                fontFamily: MONO, fontSize: 10, lineHeight: "14px", padding: "2px 4px",
+                fontFamily: MONO, fontSize: 12, lineHeight: "16px", padding: "1px 4px",
                 borderRadius: RAD.chip, whiteSpace: "nowrap", ...TNUM }}>{fmtSn(x.ms)}</span>
               <span style={{ width: "100%", height: Math.max(6, Math.round((x.ms / max) * BAR_TAVAN)),
                 ...IRIS_BAR(kademe), borderBottom: "none", borderRadius: `${RAD.chip}px ${RAD.chip}px 0 0` }} />

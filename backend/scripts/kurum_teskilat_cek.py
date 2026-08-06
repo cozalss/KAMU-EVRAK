@@ -18,6 +18,7 @@ Kullanım:
 from __future__ import annotations
 
 import argparse
+import html
 import re
 import sys
 from pathlib import Path
@@ -47,10 +48,27 @@ def _indir(url: str) -> tuple[str, str]:
     return yanit.text, tur
 
 
+def _duz_metin(govde: str, tur: str) -> str:
+    """Gövdeyi düz metne çevir — TEK YOL.
+
+    HTML VARLIKLARI ÇÖZÜLMEK ZORUNDA (&#252; → ü). Aksi hâlde Türkçe harfler kaçış
+    dizisi olarak kalır ve birim adı bozuk çıkar: "Mevzuat Geliştirme, Teknik
+    D&#252;zenleme ..." (ölçüldü 2026-08-06, EPDK teşkilat şeması). Doğrulayıcı bunu
+    zaten `_norm` içinde yapıyordu; çıkarım aracında eksikti ve bozuk ad doğrudan
+    dosyaya yazılabilirdi. Çözme, etiketler SÖKÜLDÜKTEN sonra yapılır — önce yapılsaydı
+    "&lt;script&gt;" gibi kaçırılmış etiketler gerçek etikete dönüşüp temizliği delerdi.
+
+    Bu dönüşüm BURADA toplanır: ilk düzeltmede yalnız `sayfa_metni` düzeltilmiş, CLI
+    kendi kopyasını kullanmaya devam ettiği için çıktı hâlâ bozuk geliyordu.
+    """
+    if tur == "pdf":
+        return govde
+    return html.unescape(_ETIKET_RE.sub(" ", govde))
+
+
 def sayfa_metni(url: str) -> str:
     """URL'i indir ve düz metne çevir."""
-    govde, tur = _indir(url)
-    return govde if tur == "pdf" else _ETIKET_RE.sub(" ", govde)
+    return _duz_metin(*_indir(url))
 
 
 def adaylar(metin: str) -> list[str]:
@@ -99,7 +117,7 @@ def main() -> int:
         liste = baglanti_adaylari(govde)
         metin = govde
     else:
-        metin = govde if tur == "pdf" else _ETIKET_RE.sub(" ", govde)
+        metin = _duz_metin(govde, tur)
         liste = adaylar(metin)
     print(f"[OK] {len(metin)} karakter · {len(liste)} aday birim · {args.url}")
     for ad in liste:

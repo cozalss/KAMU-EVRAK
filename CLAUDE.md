@@ -14,6 +14,7 @@
 | `backend/multimodal/` | OCR (PDF/görsel/Word) — KEEP | — |
 | `backend/retrieval/` | Mevzuat RAG (KEEP, opsiyonel) | — |
 | `backend/yazi/` | Resmî yazı taslak render (dilekçe'den ADAPT) | — |
+| `backend/core/` | Sicil, kurum kimliği, **canlı kaynak keşfi** (`docs/14`) | — |
 | `data/` | Sentetik evrak + şablon + mevzuat | — |
 | `docs/` | Araştırma + plan | — |
 
@@ -28,6 +29,11 @@
    (şartname §7: link+sürüm+lisans yeterli).
 4. **AGPL bağımlılık ekleme** (PyMuPDF gibi) — MIT açık-kaynak repo iddiasını bozar. PDF için
    pypdfium2 (Apache/BSD).
+5. **Canlı bulunan kaynağı "doğrulanmış" sayma.** `dogrulanmis=False` sözleşmesi dört yerde
+   kilitli (`uclu_grounding` · `route_ajan` çıktısı · `CanliKaynak.kunye()` · frontend
+   `canliKaynakYorum`). Bu yoldan otomatik havale ASLA üretilmez. Bkz. `docs/14`.
+6. **TLS doğrulamasını kapatma** (`verify=False`) ve izinli alan listesini gevşetme. Dış
+   ağa yalnız `sayfa_kesif` çıkar; yönlendirmenin HER sıçraması ayrı sınanır.
 
 ## Her Zaman Yap
 
@@ -124,3 +130,27 @@ Risk **skoru** sabit değil **ölçülmüştür**: `ağırlık = ciddiyet × isa
 alt sınırı olarak yazılır. Gözlem sinyalleri (checksum/lint/`[DOĞRULA]`) ölçülmez → isabet 1.0.
 Skor bir olasılık DEĞİL, beklenen zarardır; kalibre edilen ayrı büyüklük `kusur_olasiligi`'dır.
 Maliyet ~$0.001-0.002/belge. Eval: `eval/` (bkz. `docs/06-eval-harness.md`).
+
+## Canlı kaynak keşfi (2026-08-06) — korpusta OLMAYAN kuruma evrak gelince
+
+Sicildeki 4066 kurumun 128'i doğrulanmış teşkilat kaydına sahip; 2210'u mevzuat şablonu
+kapsamında. Kalanına evrak düştüğünde sistem artık **kurumun kendi resmî sitesini çalışma
+anında bulur**, birim sayfasını okur ve memura **tıklanabilir kaynak + birim önerisi**
+gösterir. Katmanlar (ucuzdan pahalıya): önbellek → alan kalıbı (`core/kurum_alan.py`,
+kurumların %69,8'i + 227 merkezî kurum) → site içi sayfa keşfi (`core/sayfa_kesif.py`) →
+**ücretli** web araması (`core/kaynak_web_arama.py`, çalışma anında KAPALI) → kimlik kapısı
+(`core/kurum_kimligi.py`) → birim çıkarımı. Orkestratör: `core/canli_kaynak.py`.
+
+Bozulmaması gereken üç şey:
+1. **`dogrulanmis=False`** dört yerde kilitli (yukarıda §5). UI'da sarı, yeşil değil.
+2. **İki çakışma kapısı** — kimlik kapısı (`ttk.gov.tr` = Türk TARİH Kurumu, oysa sicildeki
+   `ttk` Türkiye TAŞKÖMÜRÜ Kurumu) ve aday kapısı (merkez ilçe kaymakamlığı valiliğin
+   adresine düşer). İkisi de ölçümle bulundu; kaldırılırsa yanlış kurumun birimleri
+   resmî görünümlü bir linkle önerilir.
+3. **Ağ ve para sınırları** — yönlendirmenin her sıçraması ayrı sınanır (kör SSRF), gövde
+   sınırı indirme SIRASINDA uygulanır, harcama yalnız-ekleme defteriyle + rezervasyonla
+   tutulur (`KESIF_AZAMI_HARCAMA_USD`; tanımsız → katman KAPALI).
+
+Aynı motor `scripts/canli_kaynak_tara.py` ile çevrimdışı toplu **kaynak avcısı** olarak
+koşar; çıktısı ADAY listesidir, korpusa yazmaz. Tam mimari + ölçümler + dürüst sınırlar:
+**`docs/14-canli-kaynak-kesfi.md`**.

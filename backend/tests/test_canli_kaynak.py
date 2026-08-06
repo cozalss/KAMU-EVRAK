@@ -147,6 +147,27 @@ class TestOnbellek:
         ck._ONBELLEK_DOSYASI.write_text("{bozuk", encoding="utf-8")
         assert ck.onbellekten("selcuklu-belediyesi") is None
 
+    def test_ESKI_SURUM_kayit_kullanilmaz(self) -> None:
+        """Çıkarıcı değişince önbellekteki eski adlar GÜVENİLMEZ olur.
+
+        Önbellek 30 gün yaşıyor; `_adayi_kirp` eklendikten sonra bile eski kayıtlar
+        "Bakanlığı tarafindan personele yönelik … Müdürlüğü" gibi cümle artıklarını
+        taşımaya devam ediyordu ve konu eşleşmesinde gerçek birimlerin önüne geçebiliyordu.
+        """
+        ck._onbellege_koy(_ornek())
+        veri = ck._onbellek_yukle()
+        veri["selcuklu-belediyesi"]["surum"] = ck.CIKARIM_SURUMU - 1
+        ck._onbellek_yaz(veri)
+        assert ck.onbellekten("selcuklu-belediyesi") is None
+
+    def test_SURUMSUZ_eski_kayit_da_kullanilmaz(self) -> None:
+        """Sürüm alanı eklenmeden önce yazılmış kayıtlar da elenmeli."""
+        ck._onbellege_koy(_ornek())
+        veri = ck._onbellek_yukle()
+        veri["selcuklu-belediyesi"].pop("surum", None)
+        ck._onbellek_yaz(veri)
+        assert ck.onbellekten("selcuklu-belediyesi") is None
+
     def test_onbellekten_donunce_aga_cikilmaz(self, monkeypatch) -> None:
         def _patlat(*a, **k):
             raise AssertionError("önbellek varken ağa çıkıldı")

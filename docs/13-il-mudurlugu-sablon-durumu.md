@@ -229,6 +229,25 @@ ayırmak ve iki ayrı şablon kurmaktır — ama bunun için önce o 29 ilin res
 - **E** — Defterdarlıklar (81): **önce** 1/9/2024 tarihli GİB devrinin ne değiştirdiği
   doğrulanmalı — Millî Emlak ve Personel birimleri artık defterdarlık birimi değil.
 
+## 2026-08-06 — canlı keşif motoru kaynak avını hızlandırdı
+
+Yukarıdaki engellerin bir kısmı, doğru sayfayı BULAMAMAKtan kaynaklanıyordu; kaynak
+vardı ama elle aramak çok vakit alıyordu. `scripts/canli_kaynak_tara.py` (bkz.
+`14-canli-kaynak-kesfi.md`) bu adımı otomatikleştirir: 99 karantina kurumu tarandı,
+**26'sında** kurumun kendi resmî birim sayfası bulundu.
+
+Bunlardan **9 belediye** elden doğrulanıp korpusa alındı (289 birim): Seyhan, Mamak,
+Maltepe, Şişli, Van BB, Ümraniye, Çankaya, Pendik, Kahramanmaraş BB. Doğrulama zinciri
+değişmedi — motor yalnız zincirin ilk adımını hızlandırdı.
+
+Böylece **plan adımı C'nin "kalan 11 büyükşehrin kendi yönetmeliğini doğrulamak" işi
+kısmen kapandı** (Van ve Kahramanmaraş eklendi). Kalanlar hâlâ JS ile çizilen sayfalar
+yüzünden bekliyor; onlar için doğru yol ücretli web araması katmanıdır.
+
+Bu bölümdeki il müdürlüğü türleri için motor İŞE YARAMADI ve sebebi öğreticidir: aranan
+şey tür GENELİ bir yönetmeliktir, kurumun kendi sayfası değil. Canlı keşif kuruma-özel
+kaynak bulur; şablon için gereken normatif metni bulmaz. İki iş ayrıdır.
+
 ## Kapsanamayacaklar (dürüst sınır)
 
 - **79 vakıf üniversitesi** — 124 s. KHK kapsamında değil, her birinin kendi yönetmeliği var;

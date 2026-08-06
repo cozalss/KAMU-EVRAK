@@ -86,6 +86,26 @@ def _arama_baglami(
     return konu, arama[:2600]
 
 
+def kesif_konusu(konu: str, masked_text: str) -> str:
+    """Canlı keşfe verilecek konu metni.
+
+    Neden `konu`nun kendisi yetmiyor: `en_uygun_birim` basit token örtüşmesi yapar ve
+    2600 karakterlik tam bağlamı vermek öneriyi rastgeleleştiriyordu (ölçüldü: konusu
+    "kaldırım onarımı" olan dilekçede adresteki "Sağlık Sokak" yüzünden Sağlık İşleri
+    Müdürlüğü öneriliyordu). Ama `konu` da DEJENERE olabiliyor: mock modda çıkarıcı
+    "T.C" döndürdü ve keşif kör kaldı — link geldi, birim önerisi boş çıktı.
+
+    Çözüm ikisinin ortası: konu ayırt edici en az iki kelime taşıyorsa onu kullan,
+    taşımıyorsa gövdenin KISA önekine düş (tam gövde değil).
+    """
+    from core.canli_kaynak import _tokenlar
+
+    temiz = (konu or "").strip()
+    if len(_tokenlar(temiz)) >= 2:
+        return temiz
+    return (masked_text or "")[:300].strip() or temiz
+
+
 def _alternatif_adlari(
     adaylar: list[dict[str, Any]],
     secilen: dict[str, Any] | None,
@@ -278,11 +298,6 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     # WEB ARAMASI KAPALI: ücretsiz katmanlar ~1,2 sn, web araması ~8 sn sürüyor ve
     # memuru ekranda bekletmek kabul edilemez. Ücretli katman çevrimdışı toplu
     # zenginleştirmede açılır.
-    # KONU verilir, GÖVDE DEĞİL. `en_uygun_birim` basit token örtüşmesi yapar ve girdiyi
-    # bir KÜMEye çevirir; 2600 karakterlik gövde geçilince konu kelimeleriyle gövdedeki
-    # tesadüfi kelimeler eşit ağırlık kazanıyordu. Ölçülen bozulma: konusu "kaldırım
-    # onarımı" olan dilekçede adresteki "Sağlık Sokak" yüzünden Sağlık İşleri Müdürlüğü
-    # öneriliyordu. Bu katman BM25 değil; gövdeye ihtiyacı yok.
     canli: dict[str, Any] = {}
     hedef_slug = yetkili.get("slug") or muhatap.get("slug") or ""
     if hedef_slug and not kurum_korpusta_var(hedef_slug):
@@ -292,7 +307,7 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
         # seviyesinde test edilebilir kalmalı (defense in depth).
         try:
             canli = await kurum_icin_oneri_async(
-                hedef_slug, konu, web_aramasi=False
+                hedef_slug, kesif_konusu(konu, masked), web_aramasi=False
             ) or {}
         except Exception as exc:   # canlı keşif ASLA yönlendirmeyi düşürmez
             log.warning("route_ajan.canli_kaynak_hatasi", hata=type(exc).__name__)

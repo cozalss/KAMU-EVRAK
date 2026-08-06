@@ -53,6 +53,31 @@ class TestGroundingKabulEtmez:
         assert uclu_grounding(aday, "ulaşım toplu taşıma", "ornek-belediyesi") is False
 
 
+class TestKesifKonusu:
+    """Keşfe verilen metin: ne çok dar (dejenere konu) ne çok geniş (tüm gövde).
+
+    İki yönde de ölçülmüş bozulma var:
+      · Tüm gövde verilince adresteki "Sağlık Sokak" yüzünden Sağlık İşleri Müdürlüğü
+        öneriliyordu (tesadüfi kelimeler konuyla eşit ağırlık kazanıyor).
+      · Yalnız `konu` verilince, çıkarıcı "T.C" gibi dejenere bir konu üretince keşif kör
+        kalıyordu: link geliyor ama birim önerisi BOŞ çıkıyordu.
+    """
+
+    def test_ayirt_edici_konu_AYNEN_kullanilir(self) -> None:
+        assert ra.kesif_konusu("ambulans gecikmesi hakkında", "uzun gövde metni") == \
+            "ambulans gecikmesi hakkında"
+
+    @pytest.mark.parametrize("dejenere", ["T.C", "", "  ", "ve", "talep"])
+    def test_dejenere_konuda_govde_onekine_dusulur(self, dejenere: str) -> None:
+        govde = "İlçemizde ambulans hizmetlerinde yaşanan gecikmeler hakkında " * 20
+        sonuc = ra.kesif_konusu(dejenere, govde)
+        assert "ambulans" in sonuc
+        assert len(sonuc) <= 300, "tüm gövde verildi — öneri rastgeleleşir"
+
+    def test_ikisi_de_bossa_cokmez(self) -> None:
+        assert ra.kesif_konusu("", "") == ""
+
+
 class TestBirimSecimi:
     def test_konuya_en_cok_ortusen_birim_secilir(self) -> None:
         birimler = ("Fen İşleri Müdürlüğü", "Ulaşım Dairesi Başkanlığı",

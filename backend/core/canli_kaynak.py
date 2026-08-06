@@ -55,6 +55,12 @@ _ONBELLEK_DOSYASI = Path(__file__).resolve().parents[2] / "data" / "canli_kaynak
 # Kurum siteleri sık değişmez; bir ay sonra yeniden bakmak makul bir denge.
 ONBELLEK_OMRU_SN = 30 * 24 * 3600
 AZAMI_BIRIM = 60
+# ÇIKARIM SÜRÜMÜ — birim adlarının nasıl çıkarıldığı değişince ARTIRILIR.
+# Önbellek 30 gün yaşadığı için, çıkarıcı düzeltilse bile eski KAYITLAR eski (gürültülü)
+# adları taşımaya devam ediyordu; ölçüldü: `_adayi_kirp` eklendikten sonra bile önbellekte
+# "Bakanlığı tarafindan personele yönelik … Müdürlüğü" gibi cümle artıkları duruyordu ve
+# konu eşleşmesinde gerçek birimlerin önüne geçebiliyordu. Sürüm uyuşmayan kayıt YOK sayılır.
+CIKARIM_SURUMU = 2
 # Önbellek oku-değiştir-yaz kritik bölgesi. Kilitsizken iki eşzamanlı yazım (SSE akışı +
 # ikinci istek) SABİT ".tmp" adında buluşuyor ve tüm önbelleği bozabiliyordu; bozuk JSON
 # sessizce {} okunduğu için yüzlerce kurumun kaydı log basmadan yok oluyordu.
@@ -188,6 +194,10 @@ def onbellekten(kurum_slug: str) -> CanliKaynak | None:
     kayit = _onbellek_yukle().get(kurum_slug)
     if not isinstance(kayit, dict):
         return None
+    if int(kayit.get("surum") or 1) != CIKARIM_SURUMU:
+        # Çıkarıcı değişti; bu kaydın birim adları eski mantıkla üretilmiş — güvenilmez.
+        log.info("canli_kaynak.onbellek_surumu_eski", kurum=kurum_slug)
+        return None
     if time.time() - float(kayit.get("bulundu_ts") or 0) > ONBELLEK_OMRU_SN:
         return None
     if not izinli_mi(str(kayit.get("url") or "")):
@@ -202,6 +212,7 @@ def onbellekten(kurum_slug: str) -> CanliKaynak | None:
 def _onbellege_koy(kaynak: CanliKaynak) -> None:
     kayit = asdict(kaynak)
     kayit["birimler"] = list(kaynak.birimler)
+    kayit["surum"] = CIKARIM_SURUMU
     kayit.pop("kurum_slug", None)
     # Oku-değiştir-yaz TEK kritik bölge: kilitsizken iki yazıcıdan birinin kaydı kayboluyordu.
     with _ONBELLEK_KILIDI:

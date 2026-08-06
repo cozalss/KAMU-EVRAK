@@ -6,13 +6,21 @@
 
 ## 1. Amaç
 
-Teşkilat korpusu bugün **201 kuruma özel** kayıt taşıyor; Türkiye'de ~3.000+ kamu kurumu var.
-Eksik olan **birim bilgisi değil, kurum tanıma**: korpusta dizini olmayan bir kurum adı
-(`Sosyal Güvenlik Kurumu`, `UEDAŞ`, `Karayolları Genel Müdürlüğü`) bugün `tur="diger"`e
-düşüyor ve yanlış jenerik havuzda (belediye + il müdürlüğü şablonları) aranıyor.
+Teşkilat korpusu bugün **220 kuruma özel** kayıt taşıyor (129'u manifest + SHA-256 ile
+doğrulanmış, 2053 birim); sicil **4066 kurumu** tanıyor. Eksik olan **birim bilgisi değil,
+kurum tanıma**ydı: korpusta dizini olmayan bir kurum adı (`Sosyal Güvenlik Kurumu`, `UEDAŞ`,
+`Karayolları Genel Müdürlüğü`) `tur="diger"`e düşüyor ve yanlış jenerik havuzda (belediye +
+il müdürlüğü şablonları) aranıyordu.
 
 Sicil bu boşluğu kapatır: **her kurum tanınır, kanonik adı ve TÜRÜ bilinir** → doğru tip
 şablonu seçilir, kısaltması çözülür. Birim listesi ÜRETMEZ.
+
+**Sicilin bıraktığı boşluk ve onu kimin kapattığı:** sicil kurumu tanır ama birimini
+bilmez. Korpusta karşılığı olmayan kuruma evrak geldiğinde devreye **canlı kaynak keşfi**
+girer — kurumun kendi resmî sitesini çalışma anında bulup memura tıklanabilir bir kaynak +
+birim önerisi gösterir. O katman da INV-1…INV-9'u BOZMAZ: çıktısı daima
+`dogrulanmis=False`'tır ve otomatik havale üretmez. Bkz.
+[14-canli-kaynak-kesfi.md](14-canli-kaynak-kesfi.md).
 
 **Kullanıcı:** route ajanı (`agents/nodes/route_birim.py` → `birim_ara`) ve kurum kimliği
 katmanı (`agents/kurum_kimlik.py`).

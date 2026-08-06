@@ -118,6 +118,41 @@ Ajans ADLARI kararnamede yok; Cumhurbaşkanı kararıyla belirleniyor. Eksik iki
 - *Eksik* kapsam (kalkınma ajansı: sicil 24, kaynak 26) **güvenlidir** — iki ajans öneri
   alamaz, yanlış öneri almaz. Şablon 24 ile kurulabilir, eksik ikisi sonra eklenir.
 
+## Plan adımı C — Büyükşehir belediyesi: **ŞABLON KURULMADI (ölçülmüş gerekçe)**
+
+5216 m.21 daire başkanlıklarını **saymaz**: teşkilatın "genel sekreterlik, daire başkanlıkları
+ve müdürlüklerden" oluştuğunu söyler ve birimlerin kurulmasını/kaldırılmasını **büyükşehir
+belediye meclisinin kararına** bırakır. Yani kurulabilecek şablon tek birimden ibaret olurdu:
+Genel Sekreterlik.
+
+Korpusun mevcut hâli ölçüldü:
+- 30 büyükşehir belediyesinin **19'u** kendi resmî yönetmeliğinden zaten **doğrulanmış**
+  (573 birim, ortalama 30 birim/kurum). Bunlar aramada 1. adımda erken döndüğü için şablondan
+  hiç etkilenmezdi.
+- Kalan **11'i** doğrulanmamış, ama **spesifik ve isabetli** adaylar döndürüyor:
+
+  | Kurum | Sorgu | Şu anki cevap |
+  |---|---|---|
+  | İstanbul BB | ulaşım ve toplu taşıma hattı | Ulaşım Dairesi Başkanlığı |
+  | İstanbul BB | imar planı tadilatı | İmar ve Şehircilik Dairesi Başkanlığı |
+  | Gaziantep BB | itfaiye ve yangın güvenliği | İtfaiye ve Afet Yönetimi Dai. Bşk. |
+  | Trabzon BB | park ve yeşil alan bakımı | Park ve Bahçeler Dairesi Başkanlığı |
+  | Denizli BB | zabıta denetimi ve ruhsat | Zabıta Dairesi Başkanlığı |
+
+**Şablon eklenseydi ne olurdu:** güven sıralaması doğrulanmışı öne aldığı için tek generic
+birim (Genel Sekreterlik) bu 30 spesifik adayın ÖNÜNE geçer ve ulaşım sorgusuna "Genel
+Sekreterlik" cevabı verilirdi. Bu bir iyileştirme değil, **gerileme** olurdu.
+
+Bu yüzden adım C mekanik olarak uygulanmadı. Şablonun değeri, kurumun kendi verisinden
+DAHA İYİ bir cevap vermesine bağlıdır; burada tersi ölçüldü. Doğru iş, kalan 11 büyükşehrin
+kendi yönetmeliğini doğrulamaktır (kaynakları `teskilat_durum.py`de BEKLİYOR olarak kayıtlı;
+JS sayfa / TLS sorunu gerekçeleri dosyalarında yazılı).
+
+**Genel kural:** mevzuat şablonu, kurum türü için ZORUNLU birim listesi veren kaynaklarda
+işe yarar (5393 m.48 dört birim, 2560 m.3/m.12, 124 s. KHK m.26, MEB Yönetmeliği m.9-30).
+Kaynak "birimleri organ kendisi belirler" diyorsa şablon, kurumun kendi verisinin önüne
+geçen bir gürültü hâline gelir.
+
 ## Şablon nasıl eklenir
 
 1. Kaynağı bul, `scripts/mevzuat_pdf_cek.py` ile indir (TLS doğrulamalı).

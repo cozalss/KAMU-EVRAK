@@ -67,8 +67,13 @@ def _arama_baglami(
     "Konu: [AD]'in tahsis talebi" derken prompt "EVRAK KONUSU: Ayşe Yılmaz'ın tahsis
     talebi" yazıyordu). Maskeleme burada, prompt'a girmeden önce uygulanır.
     """
+    # `isim` YOKKEN de çağrılmalı: `mask_for_llm` iki iş yapar — isim redaksiyonu (isim
+    # gerektirir) VE `mask_pii` (TCKN/telefon/IBAN, isim gerektirmez). Kısa devre yapan
+    # ilk yazım ikisini birden atlıyordu; gönderen adı çıkarılamayan evrakta (hitapsız üst
+    # yazı, ödeme emri) konu satırındaki IBAN ham olarak dış modele gidiyordu. Üstelik
+    # `cikar._PII_SCAN` yalnız TCKN/telefon tarar — IBAN'ın tek savunması burasıydı.
     def _maskele(s: str) -> str:
-        return mask_for_llm(s, isim) if isim else s
+        return mask_for_llm(s, isim)
 
     konu = _maskele(str(bilgi.get("konu") or "").strip())
     talepler = bilgi.get("talepler") or []

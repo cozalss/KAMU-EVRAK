@@ -162,6 +162,36 @@ class TestSureButcesi:
         assert gecen < 3.0, f"bütçe tutmadı: {gecen:.1f} sn, {cagri['n']} çağrı"
 
 
+class TestAdresKapisiDar:
+    """Kapı yalnız sonek değil PORT ve USERINFO da sınamalı."""
+
+    @pytest.mark.parametrize("url", [
+        "https://hedef.gov.tr:22/x",       # kör port sondası
+        "https://hedef.gov.tr:8080/x",
+        "https://kullanici@ornek.gov.tr/", # istemci kapısıyla ayrışma
+        "https://a:b@ornek.gov.tr/",
+    ])
+    def test_port_ve_userinfo_reddedilir(self, url: str) -> None:
+        assert sk.izinli_mi(url) is False
+
+    def test_standart_port_ACIKCA_yazilsa_da_gecer(self) -> None:
+        assert sk.izinli_mi("https://ornek.gov.tr:443/birimler") is True
+
+    def test_port_kapisi_ISTEGI_engeller(self) -> None:
+        """Reddetmek yetmez: portlu adrese istek ATILMAMALI."""
+        istekler: list[str] = []
+
+        def islek(istek: httpx.Request) -> httpx.Response:
+            istekler.append(str(istek.url))
+            if istek.url.path == "/git":
+                return httpx.Response(302, headers={"location": "https://hedef.gov.tr:22/x"})
+            return httpx.Response(200, text="ok", headers={"content-type": "text/html"})
+
+        with _istemci(islek) as c:
+            assert sk._getir(c, "https://x.bel.tr/git") is None
+        assert istekler == ["https://x.bel.tr/git"], istekler
+
+
 class TestIcAgKapisi:
     @pytest.mark.parametrize("ham,beklenen", [
         ("127.0.0.1", True), ("10.0.0.5", True), ("192.168.1.1", True),

@@ -93,6 +93,21 @@ class TestBirimCikarimi:
     def test_unvan_eki_TEK_BASINA_birim_sayilmaz(self) -> None:
         assert ck.birimleri_cikar("... hakkında Müdürlüğü") == ()
 
+    def test_PARANTEZLI_ad_kirpilirken_bozulmaz(self) -> None:
+        """Bitişik parantez ilk karakter olunca harf sınavı düşüyor ve ad kırpılıyordu.
+
+        Ölçülen bozulma: "Bilgi İşlem (Fen İşleri) Müdürlüğü" → "İşleri) Müdürlüğü".
+        Sınav noktalamasız biçimde yapılmalı; çıktıda parantez atılır.
+        """
+        assert ck._adayi_kirp("(Fen İşleri) Müdürlüğü") == "Fen İşleri Müdürlüğü"
+        assert ck._adayi_kirp("İklim ve (Sıfır) Atık Müdürlüğü") == \
+            "İklim ve Sıfır Atık Müdürlüğü"
+
+    def test_VIRGUL_ad_icinde_KORUNUR(self) -> None:
+        """Parantez atılırken virgül de atılırsa gerçek birim adları bozulur."""
+        assert ck._adayi_kirp("Kültür, Sanat ve Sosyal İşler Müdürlüğü") == \
+            "Kültür, Sanat ve Sosyal İşler Müdürlüğü"
+
     def test_unvansiz_metin_birim_uretmez(self) -> None:
         assert ck.birimleri_cikar("Haberler Duyurular İletişim Anasayfa") == ()
 
@@ -184,6 +199,49 @@ class TestKimlikKapisiBagli:
         self._sahte_bulgu(monkeypatch, "Türk Tarih Kurumu — Bilim Kurulu Başkanlığı")
         ck.canli_kaynak_bul({"slug": "ttk", "ad": "Türkiye Taşkömürü Kurumu"}, web_aramasi=False)
         assert ck.onbellekten("ttk") is None
+
+
+@pytest.mark.anyio
+class TestAsenkronSarmalayici:
+    """`kurum_icin_oneri_async` — zaman aşımı ve hata yutma GERÇEKTEN çalışıyor mu?
+
+    Bu sarmalayıcı evrak akışını ASILMAKTAN korur, ama onu çağıran her test şimdiye kadar
+    onu tamamen sahteyle değiştiriyordu; yani asıl uygulama CI'da hiç koşmuyordu. Biri
+    ayrılmış havuzu varsayılana çevirse ya da zaman aşımını kaldırsa hiçbir test kırılmazdı
+    — tam da bu dosyanın önlemeye çalıştığı thread-açlığı hatası sessizce geri gelirdi.
+    """
+
+    async def test_yavas_kesif_ZAMAN_ASIMINA_ugrar_ve_None_doner(self, monkeypatch) -> None:
+        import time as _t
+        monkeypatch.setattr(ck, "KESIF_TOPLAM_SN", 0.4)
+        monkeypatch.setattr(ck, "kurum_icin_oneri",
+                            lambda *a, **k: (_t.sleep(5), {"url": "x"})[1])
+        basla = _t.monotonic()
+        sonuc = await ck.kurum_icin_oneri_async("bir-kurum", "konu")
+        gecen = _t.monotonic() - basla
+        assert sonuc is None
+        assert gecen < 2.0, f"zaman aşımı tutmadı: {gecen:.1f} sn"
+
+    async def test_kesif_HATASI_yutulur(self, monkeypatch) -> None:
+        def _patla(*a, **k):
+            raise RuntimeError("ağ öldü")
+        monkeypatch.setattr(ck, "kurum_icin_oneri", _patla)
+        assert await ck.kurum_icin_oneri_async("bir-kurum", "konu") is None
+
+    async def test_basarili_sonuc_AYNEN_doner(self, monkeypatch) -> None:
+        kunye = {"url": "https://x.gov.tr/b", "dogrulanmis": False}
+        monkeypatch.setattr(ck, "kurum_icin_oneri", lambda *a, **k: kunye)
+        assert await ck.kurum_icin_oneri_async("bir-kurum", "konu") == kunye
+
+    async def test_AYRILMIS_havuzda_kosar_varsayilan_executorda_DEGIL(self, monkeypatch) -> None:
+        """Paylaşımlı havuzda koşarsa yavaş kurum siteleri giriş/mevzuat/mobil'i aç bırakır."""
+        import threading
+        gorulen: dict[str, str] = {}
+        monkeypatch.setattr(ck, "kurum_icin_oneri",
+                            lambda *a, **k: gorulen.setdefault(
+                                "ad", threading.current_thread().name) and None)
+        await ck.kurum_icin_oneri_async("bir-kurum", "konu")
+        assert gorulen.get("ad", "").startswith("kesif-worker"), gorulen
 
 
 class TestGirdiDogrulama:

@@ -99,12 +99,23 @@ class Bulgu:
 
 
 def izinli_mi(url: str) -> bool:
-    """Adres izinli resmî sonekli bir HTTPS alanında mı?"""
+    """Adres izinli resmî sonekli, standart portlu bir HTTPS alanında mı?"""
     try:
         parca = urlsplit(url)
     except ValueError:
         return False
     if parca.scheme != "https" or not parca.hostname:
+        return False
+    # PORT: yalnız 443. Serbest bırakıldığında bir sayfadaki
+    # <a href="https://hedef.gov.tr:22/x">Müdürlükler</a> bağlantısı kapıdan geçiyor ve
+    # sunucu resmî altyapıya karşı kör bir port sondasına dönüşüyordu.
+    if parca.port not in (None, 443):
+        return False
+    # USERINFO: "https://kullanici@ornek.gov.tr/" biçimini reddet. Python konağı doğru
+    # ayrıştırdığı için burada güvenlik açığı değildi, ama istemci tarafı kapı
+    # (frontend guvenliKaynakAdresi) bunu REDDEDİYOR — ikisi ayrışırsa backend indirip
+    # künyeye koyduğu bir kaynağı arayüz sessizce göstermez. İki kapı aynı olmalı.
+    if parca.username or parca.password:
         return False
     ana = parca.hostname.lower().rstrip(".")
     return any(ana == s.lstrip(".") or ana.endswith(s) for s in IZINLI_SONEKLER)

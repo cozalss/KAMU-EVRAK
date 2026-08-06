@@ -159,8 +159,30 @@ class TestKonuSatiriIsimSizintisi:
         assert "Ayşe Yılmaz" not in user, "konu/talep satırındaki ham İSİM dış LLM'e sızdı"
         _pii_yok(user)
 
-    def test_arama_baglami_isim_verilmeden_de_cokmez(self):
-        """`isim` bilinmiyorsa maskeleme atlanır ama fonksiyon çalışmaya devam eder."""
+    def test_isim_YOKKEN_de_sayisal_PII_maskelenir(self):
+        """`isim` boşsa maskeleme TAMAMEN atlanıyordu — IBAN ham gidiyordu.
+
+        `mask_for_llm` iki iş yapar: isim redaksiyonu (isim gerektirir) ve `mask_pii`
+        (TCKN/telefon/IBAN, isim gerektirmez). İlk yazım `if isim else s` ile kısa devre
+        yapıp ikisini birden atlıyordu. Gönderen adı çıkarılamayan evrak (hitapsız üst
+        yazı, ödeme emri) hiç de nadir değil ve `cikar._PII_SCAN` yalnız TCKN/telefon
+        tarar — IBAN'ın tek savunması burasıydı.
+        """
+        from agents.nodes.route_ajan import _arama_baglami
+
+        iban = "TR33 0006 1005 1978 6457 8413 26"
+        konu, arama = _arama_baglami(
+            {"konu": f"{iban} IBAN'ına ödenek aktarımı, tel {_HAM_TEL}",
+             "talepler": [f"TCKN {_HAM_TCKN} için işlem"]},
+            "gövde metni",
+        )
+        assert iban not in konu, "HAM IBAN maskelenmedi (isim yokken maskeleme atlanıyor)"
+        assert iban not in arama
+        _pii_yok(konu)
+        _pii_yok(arama)
+        assert "ödenek aktarımı" in konu, "maskeleme metnin geri kalanını da silmiş"
+
+    def test_arama_baglami_bos_girdide_cokmez(self):
         from agents.nodes.route_ajan import _arama_baglami
 
         konu, arama = _arama_baglami({"konu": "park onarımı"}, "gövde metni")

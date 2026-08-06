@@ -27,6 +27,9 @@ def _temiz_cevre(monkeypatch, tmp_path):
     """Her test kendi harcama defteriyle çalışsın; gerçek sayaç kirlenmesin."""
     monkeypatch.setattr(kwa, "_HARCAMA_DOSYASI", tmp_path / "harcama.json")
     monkeypatch.setattr(kwa, "_YAZILAMIYOR", False)
+    # Süreç-içi yüksek su seviyesi modül genelindedir; sıfırlanmazsa bir testin harcaması
+    # sonrakine sızar (dosya izole olsa bile). monkeypatch test sonunda geri yükler.
+    monkeypatch.setattr(kwa, "_SURECTE_HARCANAN", 0.0)
     monkeypatch.delenv("KESIF_OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("KESIF_AZAMI_HARCAMA_USD", raising=False)
     monkeypatch.delenv("KESIF_ARAMA_MODEL", raising=False)
@@ -83,6 +86,16 @@ class TestButceTavani:
         """İlk çalıştırma meşrudur; yalnız VAR OLAN bozuk defter alarm sebebidir."""
         assert not kwa._HARCAMA_DOSYASI.exists()
         assert kwa.harcanan() == 0.0
+
+    def test_defter_SILINIRSE_tavan_geri_ACILMAZ(self) -> None:
+        """"Dosya yoksa 0" kuralı tek başına tavanı SİLİNEBİLİR bir dosyaya bağlıyordu.
+
+        Log rotasyonu, disk temizliği ya da `git clean -fdx` bütçeyi sıfırlayabilirdi.
+        Süreç-içi yüksek su seviyesi bunu engeller: süreç yaşadıkça harcama unutulmaz.
+        """
+        kwa._deftere_ekle(1.60)
+        kwa._HARCAMA_DOSYASI.unlink()
+        assert kwa.harcanan() >= 1.60, "defter silinince harcama unutuldu"
 
     def test_defter_yazilamazsa_katman_kapanir(self, monkeypatch) -> None:
         """Harcamayı kaydedemiyorsak harcama yapmayız."""

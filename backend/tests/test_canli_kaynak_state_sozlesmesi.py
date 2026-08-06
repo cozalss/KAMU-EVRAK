@@ -16,7 +16,7 @@ import pytest
 from agents.state import EvrakState
 
 
-def test_canli_kaynak_EvrakState_semasinda(self=None) -> None:
+def test_canli_kaynak_EvrakState_semasinda() -> None:
     """Şemada yoksa LangGraph sessizce düşürür — bütün özelliğin can damarı."""
     assert "canli_kaynak" in EvrakState.__annotations__
 

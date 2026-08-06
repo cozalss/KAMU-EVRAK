@@ -95,6 +95,8 @@ _KILIT = threading.RLock()
 # Defter yazılamıyorsa (salt-okunur dizin, disk dolu) katman bu süreçte kapanır:
 # harcamayı kaydedemiyorsak harcama yapmayız.
 _YAZILAMIYOR = False
+# Bu süreçte deftere yazılan toplam — dosya silinse bile tavanı geri açtırmayan alt sınır.
+_SURECTE_HARCANAN = 0.0
 
 
 @dataclass(frozen=True)
@@ -121,11 +123,15 @@ def harcanan() -> float:
     · Dosya hiç yoksa 0.0 — ilk çalıştırma meşrudur.
     · Dosya VAR ama okunamıyor/bozuksa `inf` — katman kapanır. Eskiden burada 0.0
       dönülüyordu ve tek bir bozuk yazma tavanı sıfırlıyordu (denetimde ölçüldü).
+    · SÜREÇ-İÇİ YÜKSEK SU SEVİYESİ: dönen değer bu süreçte yazılan toplamdan asla küçük
+      olamaz. "Dosya yoksa 0" kuralı doğru ama tek başına tavanı SİLİNEBİLİR bir dosyaya
+      bağlıyordu; log rotasyonu, disk temizliği ya da bir `git clean -fdx` bütçeyi
+      sessizce yeniden açardı. Süreç yaşadığı sürece bu mümkün değil.
     """
     try:
         ham = _HARCAMA_DOSYASI.read_text(encoding="utf-8")
     except FileNotFoundError:
-        return 0.0
+        return _SURECTE_HARCANAN
     except OSError as exc:
         log.error("kesif.defter_okunamadi", hata=str(exc))
         return float("inf")
@@ -141,7 +147,7 @@ def harcanan() -> float:
             # bu yüzden "harcanmadı" varsayamayız.
             log.error("kesif.defter_bozuk", satir=satir[:80])
             return float("inf")
-    return toplam
+    return max(toplam, _SURECTE_HARCANAN)
 
 
 def _deftere_ekle(tutar: float) -> bool:
@@ -157,7 +163,7 @@ def _deftere_ekle(tutar: float) -> bool:
     defter TOPLAMI doğru kalır (ekleme kipi), yalnız nadir bir paylaşım ihlali fazladan
     bir çağrıyı iptal edebilir — güvenli yön.
     """
-    global _YAZILAMIYOR
+    global _YAZILAMIYOR, _SURECTE_HARCANAN
     satir = json.dumps({"usd": round(tutar, 6), "ts": int(time.time()),
                         "pid": os.getpid(), "id": uuid.uuid4().hex[:8]},
                        ensure_ascii=False) + "\n"
@@ -172,6 +178,7 @@ def _deftere_ekle(tutar: float) -> bool:
             _YAZILAMIYOR = True
             log.error("kesif.defter_yazilamadi_katman_kapandi", hata=str(exc))
             return False
+        _SURECTE_HARCANAN = max(0.0, _SURECTE_HARCANAN + tutar)
     return True
 
 

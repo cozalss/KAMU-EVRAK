@@ -89,21 +89,30 @@ AZAMI_SOZCUK = 6
 
 def _adayi_kirp(ham: str) -> str:
     """Aday adı, birim adı gramerine uyan EN SAĞDAKİ parçaya indir. Uymazsa boş."""
-    sozcukler = ham.split()
     tutulan: list[str] = []
-    for sozcuk in reversed(sozcukler):
-        yalin = sozcuk.strip("().,:;\"'").lower()
+    for sozcuk in reversed(ham.split()):
+        # ÜÇ AYRI BİÇİM, üçü de gerekli:
+        #  · `sinav`   — noktalamasız ama BÜYÜK/KÜÇÜK korunmuş; harf sınavı bunda yapılır.
+        #    Ham sözcüğe bakmak yanlıştı: bitişik "(" ilk karakter olunca `isupper()` False
+        #    döner ve döngü erken kırılırdı ("(Fen İşleri) Müdürlüğü" → "İşleri) Müdürlüğü").
+        #    Küçültülmüş biçime bakmak da yanlış olurdu — o zaman hiçbir sözcük geçmez.
+        #  · `yalin`   — küçük harfli; gezinme/bağlaç sözlükleriyle karşılaştırma için.
+        #  · `gorunen` — çıktıya giren biçim. Parantez/tırnak atılır ama VİRGÜL KORUNUR:
+        #    virgül gerçek birim adlarının parçasıdır ("Kültür, Sanat ve Sosyal İşler Md.").
+        sinav = sozcuk.strip("().,:;\"'")
+        yalin = sinav.lower()
+        gorunen = sozcuk.strip("()\"'")
         if yalin in _GEZINME:
             break
         if yalin in _BAGLAC:
             # Bağlaç yalnız ORTADA olabilir; adın başında duramaz.
             if not tutulan:
                 break
-            tutulan.append(sozcuk)
+            tutulan.append(gorunen)
             continue
-        if not sozcuk[:1].isupper() and not sozcuk[:1].isdigit():
+        if not sinav[:1].isupper() and not sinav[:1].isdigit():
             break
-        tutulan.append(sozcuk)
+        tutulan.append(gorunen)
         if len(tutulan) >= AZAMI_SOZCUK:
             break
     return " ".join(reversed(tutulan)).strip("().,:;\"'")

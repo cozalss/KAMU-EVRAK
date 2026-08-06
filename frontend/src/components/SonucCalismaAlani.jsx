@@ -984,9 +984,11 @@ function RoutingCard({ r, birimAday }) {
         </span>
       </div>
       )}
+      {/* Numaralandırma 1. satırın GERÇEKTEN basılıp basılmadığına bağlanır. Sabit `i+2`
+          yazılırsa, birim yokken (yalnız canlı kaynak olan kart) liste "2."den başlar. */}
       {adaylar.map((b, i) => (
         <div key={b} style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
-          <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{i + 2}.</span>
+          <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{i + (birim ? 2 : 1)}.</span>
           <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_GOSTER(b, r.evrak_turu)}</span>
         </div>
       ))}
@@ -1029,6 +1031,14 @@ function RoutingCard({ r, birimAday }) {
             </div>
           )}
           <KaynakLinki canli={canli} />
+          {/* Sayfadan okunan diğer birimler: öneri yanlışsa memur listeye bakıp doğrusunu
+              seçebilsin. Önerinin kendisi tekrarlanmaz. */}
+          {canli.ornekler.filter((b) => b !== canli.birimOneri).length > 0 && (
+            <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2 }}>
+              Sayfadaki diğer birimler:{" "}
+              {canli.ornekler.filter((b) => b !== canli.birimOneri).slice(0, 3).map(clean).join(" · ")}
+            </div>
+          )}
           <p style={{ margin: "6px 0 0", ...TYPE.meta, color: PAL.mut2 }}>
             Bu kurumun doğrulanmış teşkilat kaydı yok. Sistem kurumun kendi resmî sitesini
             {canli.yol ? ` ${canli.yol}` : ""} bulup birim sayfasını okudu; kayıt manifest ve
@@ -1147,8 +1157,11 @@ export default function SonucCalismaAlani({
             </div>
             {/* `canli_kaynak` de karta yeter: doğrulanmamış kurumda korpus birimi HİÇ
                 olmayabilir ve kartın tek içeriği canlı kaynak linki olur — asıl
-                gösterilmesi gereken durum tam olarak budur. */}
-            {(r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || r.canli_kaynak?.url) && (
+                gösterilmesi gereken durum tam olarak budur.
+                Kapı HAM `r.canli_kaynak.url` yerine DOĞRULANMIŞ künyeyi sorar: adres
+                güvenlik sınavından geçmezse RoutingCard onu zaten basmaz ve burada ham
+                alana bakmak boş bir kart hücresi bırakırdı. */}
+            {(r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || canliKaynakYorum(r)) && (
               <div className="sc-support-half">
                 <RoutingCard r={r} birimAday={birimAday} />
               </div>

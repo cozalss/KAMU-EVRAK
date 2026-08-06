@@ -1,18 +1,41 @@
 @KURUM: Meteoroloji Genel Müdürlüğü
-@BELGE: 6301 sayılı Meteoroloji Genel Müdürlüğü Teşkilat ve Görevleri Hakkında Kanun
-@KAYNAK_KIMLIK: teskilat/meteoroloji-genel-mudurlugu/gorev-tanimi
-@ERISIM: 2026-07-18
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.266 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: mgm, devlet-meteoroloji-isleri-genel-mudurlugu
-@NOT: [DOĞRULA: güncel teşkilat şeması]
+@NOT: Birim adları 4 sayılı Kararname m.266/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.266/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
-BİRİM: Hava Tahminleri Dairesi Başkanlığı
-GÖREV: Hava durumu tahmin talepleri, meteorolojik rapor/bülten talepleri ve hava tahmini hatasına ilişkin şikâyet dilekçelerini değerlendirir.
+BİRİM: Tahminler Dairesi Başkanlığı
+GÖREV: Meteorolojik gözlemler ve uzaktan algılama ürünleri ile sayısal hava tahmin modellerini kullanarak kara, hava ve deniz ile ilgili meteorolojik tahminleri yapmak, şiddetli meteorolojik hadiselerle ilgili erken uyarılar hazırlamak.; Kamu ve özel sektör ile diğer kullanıcıların ihtiyaç duyduğu meteorolojik tahminleri üretmek.; Havacılık ve denizcilik sektörünün ihtiyaç duyduğu meteorolojik desteği, ulusal ve uluslararası standartlarda sağlamak.; Uluslararası kuruluşlar ile sorumluluk sahasına giren konularda teknik işbirliğini yürütmek.
 
-BİRİM: Tarım Meteorolojisi ve İklim Rasatları Dairesi Başkanlığı
-GÖREV: Zirai don uyarısı, kuraklık/iklim verisi talebi ve tarımsal meteoroloji danışmanlık başvurularını yürütür.
+BİRİM: Gözlem Sistemleri Dairesi Başkanlığı
+GÖREV: Kurulması gereken meteorolojik ölçüm ve gözlem istasyonları ile ilgili planlama yapmak, yerlerini tespit etmek ve bunların kurulumunu yapmak veya yaptırmak.; Uluslararası standartlara uygun olarak yer ve yüksek atmosfer ile deniz ölçüm ve gözlemlerinin yapılmasını ve kontrolünü sağlamak.; Meteorolojik ölçüm alet ve cihazların yenilenmesi ve geliştirilmesini sağlamak; imalat, bakım, onarım, ayar ve kalibrasyonlarını yapmak veya yaptırmak.; Haberleşme alet ve vericilerinin işletilmesini sağlamak.
 
-BİRİM: Uzaktan Algılama ve Radar Dairesi Başkanlığı
-GÖREV: Radar/uydu verisi talepleri, şiddetli hava olayı (dolu, hortum) bildirim ve inceleme dilekçelerini karşılar.
+BİRİM: Meteorolojik Veri İşlem Dairesi Başkanlığı
+GÖREV: Yurt içi ve yurt dışı meteorolojik verilerin toplanması, kayıtlarının tutulması, yayımlanması ile arşivlenmesini sağlamak.; Gözlem şebekesinden elde edilen verilerin kalite kontrolünü yapmak.; Bilgi işlem faaliyetlerini yürütmek, iletişim altyapısını geliştirmek ve sürdürülebilirliğini sağlamak.; Uluslararası kuruluşlar ile sorumluluk sahasına giren konularda teknik işbirliğini yürütmek.; Genel Müdürlükçe verilen benzeri görevleri yapmak. Araştırma Dairesi Başkanlığı.
 
-BİRİM: İl Meteoroloji Müdürlüğü
-GÖREV: İl düzeyinde resmi hava durumu belgesi (adli/sigorta amaçlı) düzenleme talepleri ve yerel meteorolojik veri başvurularının ilk muhatabıdır.
+BİRİM: Araştırma Dairesi Başkanlığı
+GÖREV: Genel Müdürlüğün görev alanına giren meteorolojik karakterli doğal afetler, hidrometeoroloji, deniz meteorolojisi ve meteoroloji ile ilgili diğer konularda araştırma ve geliştirme çalışmaları yapmak.; Ulusal ve uluslararası bilimsel gelişmeleri takip etmek, çalışmalara katılmak, işbirliği ve proje çalışmalarında bulunmak, araştırma projeleri yürütmek ve sonuçlandırmak.; Çevresel faaliyetlere yönelik meteorolojik çalışmaları yürütmek ve ilgili kurum ve kuruluşlarla işbirliği yapmak.; Araştırma ve geliştirme projelerini yapmak veya yaptırmak.
+
+BİRİM: İklim ve Zirai Meteoroloji Dairesi Başkanlığı
+GÖREV: Zirai meteoroloji konusunda araştırma ve geliştirme çalışmaları ile tarım sektörüne yönelik zirai meteorolojik uygulamalar yapmak veya yaptırmak.; Kuraklık konusunda araştırma ve analiz yapmak, meteorolojik faktörlerin bitki gelişimine etkileriyle ilgili çalışmalar yapmak veya yaptırmak.; Uzaktan algılama ve sayısal tahmin ürünlerinin tarımda kullanımına yönelik araştırma ve analiz yapmak.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Genel Müdürlüğün faaliyetlerine yönelik olarak insan kaynakları politikasını oluşturmak ve planlamak.; Genel Müdürlük personelinin atama, disiplin ve özlük işlemlerini yürütmek.; Genel Müdürlük personelinin hizmet içi eğitim planlarını hazırlamak ve değerlendirmek.; Genel Müdürlüğün yayın ve kütüphane işlemlerini yürütmek.; Genel Müdürlükçe verilen benzeri görevleri yapmak. Dış İlişkiler Dairesi Başkanlığı.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Uluslararası kuruluşlarla ilişkileri ve üyelik faaliyetlerini yürütmek, bu kuruluşlara yönelik politikalar geliştirmek ve uygulanmasına destek olmak, ilgili toplantıları düzenlemek, düzenlenen toplantılara yurtiçi ve yurtdışında katılmak veya katılımı koordine etmek.; Cumhurbaşkanlığı politikaları çerçevesinde ülkelerle bölgesel ve uluslararası kuruluşlarla ilişkileri geliştirmek amacıyla, ilgili birimler ile koordineli olarak, meteoroloji alanında işbirliği protokolleri ve projeler hazırlamak, müzakere etmek ve yürütmek.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Genel Müdürlük için gerekli araç ve malzemenin temini ile ilgili hizmetleri yürütmek.; İhtiyaç duyulan bina, arsa ve arazinin kiralama, satın alma işlerini yürütmek.; Temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma hizmetleri yapmak.; Sosyal tesislerin kurulması ve yönetimi ile ilgili hizmetleri düzenlemek ve yürütmek.; Satın alınacak alet, cihaz ve yedek malzemelerin teknik şartnamelerini hazırlamak.; Alet, araç ve cihazların verimli bir şekilde çalışmasını sağlamak, bakım ve onarımını yapmak, taşıma hizmetlerini yürütmek.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kanun ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapmak.; Genel Müdürlükçe verilen benzeri görevleri yapmak. Teftiş Kurulu Başkanlığı.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Genel Müdürlük teşkilatının her türlü faaliyet ve işlemleriyle ilgili olarak teftiş, inceleme, soruşturma işlemlerini yürütmek.; Genel Müdürlüğün amaçlarını daha iyi gerçekleştirmek, mevzuata, plan ve programa uygun çalışmalarını temin etmek amacıyla gerekli teklifleri hazırlamak ve Genel Müdüre sunmak.; Özel kanunlarla ve Cumhurbaşkanlığı kararnameleriyle verilen benzeri görevleri yapmak. düzenlenir. Hukuk Müşavirliği.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.

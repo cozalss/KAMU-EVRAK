@@ -1,24 +1,62 @@
 @KURUM: Kamu İhale Kurumu
-@BELGE: 4734 sayılı Kamu İhale Kanunu; 4735 sayılı Kamu İhale Sözleşmeleri Kanunu
-@KAYNAK_KIMLIK: teskilat/kamu-ihale-kurumu/gorev-tanimi
-@ERISIM: 2026-07-18
-@ALIAS: kik, kamu-ihale-kurulu
-@NOT: [DOĞRULA: güncel teşkilat şeması]
+@BELGE: Kamu İhale Kurumu resmî teşkilat şeması (dayanak: 4734 sayılı Kamu İhale Kanunu m.53)
+@KAYNAK_KIMLIK: https://ihale.gov.tr/teskilat_semasi-58-1.html
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: kik, kamu-ihale-kurumu, kamu-ihale-kurumu-baskanligi
+@NOT: Birim listesi Kamu İhale Kurumunun resmî teşkilat şeması sayfasından alınmıştır. Dayanak 4734 sayılı Kanun m.53: Kurum teşkilatı Kamu İhale Kurulu, Başkanlık ve hizmet birimlerinden oluşur; hizmet birimleri 'Kurumun görev ve yetkilerinin gerektirdiği SAYIDA daire başkanlığı' şeklinde teşkilatlanır — yani kanun daire başkanlıklarını TEK TEK SAYMAZ, sayı ve adları Kurum belirler. Bu yüzden liste kanundan değil Kurumun kendi resmî beyanından gelir. Sayfadan çıkan iki aday KİŞİ adı ve unvanı olduğu için (Başkan/Başkan Yardımcısı) göz denetiminde atılmıştır; makam adı birim değildir. Sayfa birim ADINI verir, GÖREV tanımını vermez; görev UYDURULMAMIŞTIR. KARAR mercii Kamu İhale Kuruludur; daire başkanlıkları Kurulun kararlarını hazırlayan ve uygulayan hizmet birimleridir. İtirazen şikâyet başvuruları Kuruma yapılır, ihaleyi yapan idareye değil.
 
-BİRİM: İtirazen Şikayet Değerlendirme Dairesi Başkanlığı
-GÖREV: İhaleye katılan isteklilerin idare kararına karşı itirazen şikayet başvurularını inceler; ihale sürecinin durdurulması taleplerini değerlendirir.
+BİRİM: Başkanlık Özel Büro Müdürlüğü
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Kurum Müşavirliği
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Başkanlık Müşavirliği
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Hukuk Hizmetleri Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Ön İnceleme Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: I. İnceleme Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: II. İnceleme Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: III. İnceleme Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: IV. İnceleme Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Kurumsal Gelişim ve Araştırma Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Kurul İşleri ve Kararlar Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
 BİRİM: Düzenleme Dairesi Başkanlığı
-GÖREV: Kamu ihale mevzuatı, tip sözleşme ve şartname düzenlemelerini hazırlar.
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
-BİRİM: Yasaklılık ve Yaptırımlar Dairesi Başkanlığı
-GÖREV: İhalelere katılmaktan yasaklama kararları ile isteklilerin yasaklılık sorgularına ilişkin başvuruları yürütür.
+BİRİM: Uluslararası İlişkiler Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
-BİRİM: Hukuk Müşavirliği
-GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+BİRİM: İnsan Kaynakları Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
-BİRİM: Bilgi İşlem Dairesi Başkanlığı
-GÖREV: Elektronik Kamu Alımları Platformu (EKAP) üzerinden yapılan başvuru ve bildirimlerin teknik altyapısını işletir.
+BİRİM: Sicil İzleme Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
 
-BİRİM: İnsan Kaynakları ve Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: Kurum personeli ve idari destek hizmetlerinin yürütülmesinden sorumludur.
+BİRİM: Eğitim Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: İdari ve Mali İşler Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Elektronik İhale Dairesi Başkanlığı
+GÖREV: Kamu İhale Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.

@@ -1,21 +1,47 @@
 @KURUM: Vakıflar Genel Müdürlüğü
-@BELGE: 5737 sayılı Vakıflar Kanunu
-@KAYNAK_KIMLIK: teskilat/vakiflar-genel-mudurlugu/gorev-tanimi
-@ERISIM: 2026-07-18
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.705 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: vgm
-@NOT: [DOĞRULA: güncel teşkilat şeması]
+@NOT: Birim adları 4 sayılı Kararname m.705/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.705/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
-BİRİM: Yeni Vakıflar Dairesi Başkanlığı
-GÖREV: Yeni vakıf kurma başvurusu, vakıf senedi tescili ve vakıf sicil kaydı taleplerini yürütür.
+BİRİM: Vakıf Hizmetleri Daire Başkanlığı
+GÖREV: Mülhak, cemaat, esnaf ve yeni vakıflarla ilgili iş ve işlemleri yürütmek.; İdarî para cezası ile ilgili işlemleri yürütmek.; Genel Müdür tarafından verilen diğer benzer görevleri yapmak. Hayır Hizmetleri Daire Başkanlığı.
 
-BİRİM: Mazbut Vakıflar Dairesi Başkanlığı
-GÖREV: Mazbut vakıf taşınmazlarına ilişkin tahsis, işgal şikâyeti ve mazbut vakıf yönetim dilekçelerini değerlendirir.
+BİRİM: Hayır Hizmetleri Daire Başkanlığı
+GÖREV: Vakfiyelerde yer alan hayır şart ve hizmetlerini yerine getirmek.; Hayrat taşınmaz malların tahsis işlemlerini yürütmek.; Vakfiyelerde yazılı hayır şart ve hizmetlerini yerine getirmek üzere her seviyeden eğitim öğretim tesisleri, öğrenci yurtları, sağlık ve sosyal yardım kurumları, aşevleri gibi tesisler açmak, yönetimini sağlamak, öğrencilere eğitim yardımı yapmak, ihtiyaç sahibi insanlara sosyal yardımlarda bulunmak, muhtaç ve engellilere aylık bağlamak.; Sosyal yardım hizmeti veren kurum ve kuruluşlarla işbirliği yapmak.
 
-BİRİM: Yatırım ve Emlak Dairesi Başkanlığı
-GÖREV: Vakıf taşınmazı kiralama/ihale başvuruları, kira bedeli itirazı ve vakıf gayrimenkul tahsis taleplerini karşılar.
+BİRİM: Sanat Eserleri ve Yapı İşleri Daire Başkanlığı
+GÖREV: Vakıf kültür varlıklarının tespit ve envanterini yapmak ve belgelerini arşivlemek.; Genel Müdürlüğe ve mazbut vakıflara ait vakıf kültür varlıklarının röleve, restitüsyon, restorasyon ve diğer projeleri ile yıllık ve beş yıllık onarım programlarını hazırlayarak veya hazırlatarak onarım ve restorasyonlarını yapmak veya yaptırmak, talep halinde kontrollük görevi Genel Müdürlükçe yürütülmek kaydıyla düzenlenecek protokol esasları dahilinde kamu kurum ve kuruluşları ile gerçek ve tüzel kişilere yaptırmak.
 
-BİRİM: Bölge Vakıflar Müdürlüğü
-GÖREV: İl/bölge düzeyinde vakıf tescil, kira sözleşmesi ve mazbut vakıf şikâyet dilekçelerinin ilk kabul merciidir.
+BİRİM: Yatırım ve Emlak Daire Başkanlığı
+GÖREV: Genel Müdürlüğe; mazbut, mülhak ve cemaat vakıflarına ait taşınmaz malların envanterini çıkarmak, kütük kayıtlarını tutmak.; Bu Bölüm ve ilgili mevzuat uyarınca vakfına intikali gereken taşınmaz malların tespitini yaparak vakfı adına tapuya tescilini sağlamak, vakıf kültür varlıklarının mülkiyet ve tasarruf işlemlerini yürütmek.; Genel Müdürlüğe ve mazbut vakıflara ait taşınmazların; imar uygulama ve kadastro çalışmalarını takip etmek; kamulaştırma, kiralama, vakıf konut veya hizmet statüsüne alma, çıkarma işlemlerini yürütmek.
+
+BİRİM: Sağlık Hizmetleri Daire Başkanlığı
+GÖREV: Mazbut vakıfların vakfiyelerinde yer alan sağlık hayır şartlarının gerçekleştirilmesi amacıyla yataklı, ayakta, gezici sağlık hizmeti vermek ve bu konuyla ilgili iş ve işlemleri yürütmek.; Sağlık tesislerinin etkin ve verimli hizmet vermesine yönelik tedbirler almak.; Sağlık hizmeti veren kurum ve kuruluşlarla işbirliği yapmak. ç) Gerektiğinde kamu kurum ve kuruluşları, sosyal güvenlik kurumları ve sağlık branşında hizmet veren özel sigorta şirketleri ile anlaşma yapılmasını sağlamak.
+
+BİRİM: Kültür ve Tescil Daire Başkanlığı
+GÖREV: Genel Müdürlük arşivinde bulunan vakfiye, ferman, berat, hüccet ve benzeri belgelerin tercüme ve transkripsiyonunu yapmak, tasnif etmek ve arşivlemek.; Vakıfların merkezî sicil kayıtlarını tutmak, kurulacak yeni vakıfların merkezî sicile tescilini yapmak.; Devlet arşiv, kütüphane ve müzeleri ile gerçek ve tüzel kişilerin elinde bulunan vakfiye ve benzeri belgeleri tespit ederek bunların Genel Müdürlük arşivine intikalini sağlamak.
+
+BİRİM: Dış İlişkiler Daire Başkanlığı
+GÖREV: Genel Müdürlüğün uluslararası kuruluşlarla ilişki ve işlemlerini yürütmek.; Vakıflarla ilgili uluslararası alandaki gelişmeleri takip etmek.; Yurt dışı vakıf emlak konuları ile ilgili işlemleri yürütmek.; Genel Müdürlüğün Avrupa Birliği ile ilgili yapacağı çalışmaları diğer birimlerle koordinasyon sağlayarak yürütmek.; Genel Müdürlüğün görev alanına giren konularda Türkiye’de düzenlenecek uluslararası toplantıların organizasyonunu yapmak ve buna ilişkin işlemleri yürütmek.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Mülhak, cemaat, esnaf vakıfları ile yeni vakıfların, vakfiye ve vakıf senedinde yazılı şartlara, yürürlükteki mevzuata uygun yönetilip yönetilmediği, amacı doğrultusunda faaliyette bulunup bulunmadığı, mallarının ve gelirlerinin vakfiye, 1936 Beyannamesi ve vakıf senedindeki şartlara uygun kullanılıp kullanılmadığı hususlarını incelemek, denetlemek ve rehberlik yapmak.; Vakıf ve iktisadî işletmelerinin ve iştiraklerinin denetleme ve inceleme işlerini yürütmek.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kanun, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Personel Daire Başkanlığı.
+
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Genel Müdürlüğün insan gücü politikası ve planlaması konusunda çalışmalar yapmak ve tekliflerde bulunmak.; Genel Müdürlük personelinin atama, sicil, disiplin, emeklilik, nakil, terfi, ücret, sendika ve benzeri özlük hakları işlemlerini yürütmek.; Genel Müdürlük personelinin hizmet içi eğitim programını hazırlamak, uygulamak ve değerlendirmek.; İç denetimle ilgili hizmetleri yürütmek.; Genel Müdür tarafından verilen diğer benzer görevleri yapmak. Destek Hizmetleri Daire Başkanlığı.
+
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: Genel Müdürlük için gerekli araç, gereç, kırtasiye ve malzemeleri temin etmek, dağıtımını sağlamak, onarım hizmetlerini yürütmek, kayıtlarını tutmak ve harcamalara ilişkin tahakkuk işlemlerini yapmak.; Genel Müdürlük hizmetleri için ihtiyaç duyulan taşınır ve taşınmazların kiralanması işlemlerini yürütmek.; Genel Müdürlük hizmet binalarının temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma işlemlerini yürütmek.; Konut tahsisi, sağlık ve sosyal tesislerin kurulması ve yönetilmesi ile ilgili hizmetleri yürütmek.
 
 BİRİM: Hukuk Müşavirliği
-GÖREV: Vakıf tescili ret kararları ve kira sözleşmesi uyuşmazlıklarına ilişkin itiraz/dava dilekçelerinde kurumu temsil eder.
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Basın ve Halkla İlişkiler Müşavirliği.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Genel Müdürlüğün saydam bir yapıya kavuşturulması amacıyla Genel Müdürlüğün kimliği, misyonu, vizyonu, çalışma alanı ve faaliyetleri konusunda kamuoyunu bilgilendirmek.; Genel Müdürlüğün çalışmalarına ve yürüttüğü projeler ile faaliyetlerine ilişkin kamuoyunun bilgilendirilmesi amacıyla görsel ve yazılı basın organlarıyla iletişim kurmak, Genel Müdürlüğe ilişkin enformasyon niteliğindeki bilgileri derlemek, bunları Genel Müdürlük adına haberleştirerek kitle iletişim araçları kanalıyla kamuoyuna duyurulmasını sağlamak.

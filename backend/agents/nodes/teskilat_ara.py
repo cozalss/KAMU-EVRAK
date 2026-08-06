@@ -12,6 +12,7 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from functools import lru_cache
@@ -35,6 +36,12 @@ _WORD_RE = re.compile(r"[0-9a-zçğıöşü]+")
 _BM25_K1 = 1.5
 _BM25_B = 0.3
 _TOP_K = 5
+# Birim ADINDAKİ eşleşmenin ağırlığı (gövde kök eşleşmesi 0.45). Ad, gövdeden daha yoğun
+# bir sinyaldir: bir birimin adı zaten "ne işe baktığı"dır. Değer altın küme üzerinde
+# ölçülerek seçildi: 0.6 ve 0.9 aynı sonucu verdi (Top-1 0.936 -> 0.957), 1.3 GERİLEDİ
+# (Arşiv Dairesi Başkanlığı sorgusu Tapu Dairesi Başkanlığına kaydı) — güvenli aralığın
+# ortası seçildi. Gerekçe ve ölçülen hata _score içinde.
+_AD_AGIRLIK = 0.9
 
 # Kurum tipi → jenerik şablon slug'ı (kuruma-özel dizin yoksa aday kaynağı).
 _TIP_JENERIK: dict[str, str] = {
@@ -199,8 +206,26 @@ def _resmi_slug_chunks(kurum_slug: str) -> tuple[dict[str, Any], ...]:
     )
 
 
-# BM25 modeli chunk-tuple başına bir kez kurulur (id-anahtarlı memo; _slug_chunks lru_cached).
-_BM25_MEMO: dict[int, Any] = {}
+# BM25 modeli chunk kümesi başına bir kez kurulur. Anahtar İÇERİK İMZASIDIR, id() DEĞİL.
+#
+# NEDEN (2026-08-06'da ölçülen gerçek hata): önbellek `id(chunks)` ile anahtarlanıyordu ve
+# bu, tuple'ın bellekte YAŞAMASINA bağlıydı. `_slug_chunks` lru_cache'li olduğu için bu
+# varsayım onun için tutuyordu; ama `_resmi_slug_chunks` ve mevzuat şablonu genişletmesi
+# HER ÇAĞRIDA yeni bir tuple kuruyor. Geçici tuple serbest kalınca CPython aynı adresi
+# yeniden kullanıyor, `id()` çakışıyor ve önbellek BAŞKA bir kurumun BM25 modelini
+# döndürüyordu. Chunk sayıları farklıysa `IndexError` ile çöküyor; AYNIYSA sessizce yanlış
+# puanlıyordu — yani bir kurumun sorgusu başka kurumun terim istatistikleriyle skorlanıyordu.
+# Çökme şanslı hâliydi; asıl tehlike sessiz olanıydı.
+_BM25_MEMO: dict[str, Any] = {}
+
+
+def _bm25_anahtar(chunks: tuple[dict[str, Any], ...]) -> str:
+    """Chunk kümesinin içerik imzası. Aynı içerik → aynı anahtar, farklı içerik → farklı."""
+    ham = "\x1f".join(
+        f"{c.get('kaynak_dosya', '')}\x1e{c.get('kurum_slug', '')}\x1e{c.get('birim_ad', '')}"
+        for c in chunks
+    )
+    return hashlib.sha256(ham.encode("utf-8")).hexdigest()
 
 
 def indeks_onbellegini_temizle() -> None:
@@ -214,7 +239,7 @@ def indeks_onbellegini_temizle() -> None:
 
 def _bm25_model(chunks: tuple[dict[str, Any], ...]) -> Any:
     """BM25Okapi kur (memo). rank_bm25 yok/hata → None (stdlib term-overlap fallback)."""
-    anahtar = id(chunks)
+    anahtar = _bm25_anahtar(chunks)
     if anahtar in _BM25_MEMO:
         return _BM25_MEMO[anahtar]
     if len(_BM25_MEMO) >= 192:
@@ -254,10 +279,23 @@ def _score(konu: str, chunks: tuple[dict[str, Any], ...]) -> list[tuple[float, d
             max((kelime_uyum_skoru(s, h) for h in hedef_tokenlari), default=0.0)
             for s in q_benzersiz
         )
+        # BİRİM ADI AYRICA PUANLANIR. Ad, birimin ne işe baktığının en yoğun ifadesidir ama
+        # `text` içinde yüzlerce karakterlik görev metninin yanında erir; BM25 uzunluk
+        # normalizasyonu bunu telafi etmez. Ölçüldü 2026-08-06: "vergi borcu tahsilatı ve
+        # ihtilaf" sorgusu "Tahsilat ve İhtilaflı İşler Daire Başkanlığı" yerine "Avrupa
+        # Birliği ve Dış İlişkiler Daire Başkanlığı"na gidiyordu — çünkü doğru birimin ADINDA
+        # geçen iki ayırt edici kelime yalnız KÖK olarak eşleşiyor (Türkçe çekim eki:
+        # tahsilatı/tahsilat, ihtilaf/ihtilaflı) ve BM25'ten 0 alıyorken, yanlış birim görev
+        # metnindeki sıradan bir kelimeden ("vergi") tam eşleşme puanı topluyordu.
+        ad_tokenlari = tuple(dict.fromkeys(_tokenize(chunk.get("birim_ad", ""))))
+        ad_skoru = sum(
+            max((kelime_uyum_skoru(s, h) for h in ad_tokenlari), default=0.0)
+            for s in q_benzersiz
+        )
         # Küçük (özellikle tek kayıtlı) korpuslarda BM25'in IDF düzeltmesi negatif
         # skor üretebilir. Bu, gerçek bir terim eşleşmesini elememeli; kök eşleşmesi
         # yine yalnızca sıralamayı/erişimi destekler.
-        skor = max(0.0, float(raw_skor)) + (kok_skoru * 0.45)
+        skor = max(0.0, float(raw_skor)) + (kok_skoru * 0.45) + (ad_skoru * _AD_AGIRLIK)
         zengin.append((skor, chunk))
     sirali = sorted(zengin, key=lambda x: (-x[0], x[1].get("birim_ad", "")))
     return [r for r in sirali if r[0] > 0]
@@ -295,8 +333,6 @@ def _mevzuat_adaylari(kurum_slug: str, konu: str, top_k: int) -> list[dict[str, 
 
 def _aday(chunk: dict[str, Any], skor: float, kaynak_tipi: str) -> dict[str, Any]:
     """Chunk → KaynakKaydi-uyumlu aday dict (icerik_hash + kaynak_tipi eklenir)."""
-    import hashlib
-
     metin = chunk.get("text", "")
     return {
         "birim_ad": chunk.get("birim_ad", ""),

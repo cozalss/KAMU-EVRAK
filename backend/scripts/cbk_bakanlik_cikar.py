@@ -23,8 +23,28 @@ if hasattr(sys.stdout, "reconfigure"):
 
 _KOK = Path(__file__).resolve().parents[2]
 _TESKILAT_DIR = _KOK / "data" / "teskilat"
-_KAYNAK_URL = "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf"
-_BELGE = "1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 10/7/2018-30474)"
+# Ayrıştırıcı iki kararnameyi de okur: 1 sayılı (bakanlıklar) ve 4 sayılı (bakanlıklara
+# bağlı/ilgili/ilişkili kurum ve kuruluşlar). Madde biçimi ikisinde de aynıdır
+# ("MADDE nnn- (1) ... hizmet birimleri şunlardır: a) ...").
+#
+# KAYNAK NEDEN mevzuat.gov.tr DEĞİL: o alan sertifika zincirini eksik sunuyor ve hem Node
+# hem Python istemcilerinde doğrulama düşüyor (ölçüldü 2026-08-06). Doğrulamayı kapatmak
+# yasak olduğundan metin, kararnameyi KENDİ resmî .gov.tr alanında yayımlayan kurumdan
+# alınır. 4 sayılı için Çevre, Şehircilik ve İklim Değişikliği Bakanlığı kopyası
+# kullanılıyor; içeriği 21/2/2025 değişikliklerine kadar günceldir.
+_KARARNAMELER = {
+    1: (
+        "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+        "1 sayılı Cumhurbaşkanlığı Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi "
+        "(RG 10/7/2018-30474)",
+    ),
+    4: (
+        "https://webdosya.csb.gov.tr/db/altyapi/icerikler/"
+        "cb-4-kararname--19.5.4-20240604155733.pdf",
+        "4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve "
+        "Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479)",
+    ),
+}
 
 _BENT_RE = re.compile(r"^([a-zçğıöşü]{1,2})\)\s*(.+)$")
 _UNVAN = (
@@ -186,6 +206,8 @@ def main() -> None:
     a.add_argument("--madde", type=int, required=True, help="hizmet birimleri madde no")
     a.add_argument("--slug", required=True, help="data/teskilat altındaki kurum dizini")
     a.add_argument("--kaynak", default="", help="çıkarılmış CBK metni (varsayılan: scratchpad)")
+    a.add_argument("--kararname", type=int, default=1, choices=sorted(_KARARNAMELER),
+                   help="1 = bakanlıklar, 4 = bağlı/ilgili/ilişkili kuruluşlar")
     a.add_argument("--yaz", action="store_true", help="dosyaya yaz (yoksa yalnız göster)")
     args = a.parse_args()
 
@@ -224,22 +246,26 @@ def main() -> None:
         eski = hedef.read_text(encoding="utf-8") if hedef.exists() else ""
         alias = next((s for s in eski.splitlines() if s.startswith("@ALIAS:")), "")
         kurum = next((s for s in eski.splitlines() if s.startswith("@KURUM:")), "@KURUM: ?")
+        kaynak_url, belge = _KARARNAMELER[args.kararname]
         kunye = [
             kurum,
-            f"@BELGE: {_BELGE}, m.{args.madde} ve devamı",
-            f"@KAYNAK_KIMLIK: {_KAYNAK_URL}",
-            "@ERISIM: 2026-07-26",
+            f"@BELGE: {belge}, m.{args.madde} ve devamı",
+            f"@KAYNAK_KIMLIK: {kaynak_url}",
+            "@ERISIM: 2026-08-06",
             "@KAYNAK_TURU: resmi_teskilat",
             "@DOGRULAMA: resmi",
         ]
         if alias:
             kunye.append(alias)
         kunye.append(
-            f"@NOT: Birim adları m.{args.madde}/1 bentlerinden, görev metinleri her birimin kendi "
-            "maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve "
-            "mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler "
-            "bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele "
-            "alınır."
+            f"@NOT: Birim adları {args.kararname} sayılı Kararname m.{args.madde}/1 bentlerinden, "
+            "görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır "
+            "(scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye "
+            "ALINMAMIŞTIR. Bir birim m.{madde}/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle "
+            "düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — "
+            "kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten "
+            "mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ."
+            .replace("{madde}", str(args.madde))
         )
         hedef.write_text("\n".join(kunye) + "\n\n" + "\n".join(satirlar), encoding="utf-8")
         print(f"\nyazıldı -> {hedef.relative_to(_KOK)}")

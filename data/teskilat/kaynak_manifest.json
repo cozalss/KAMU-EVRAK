@@ -1104,12 +1104,12 @@
   },
   "gelir-idaresi-baskanligi/birimler.txt": {
    "durum": "resmi_dogrulanmis",
-   "kaynak_url": "https://cdn.gib.gov.tr/api/gibportal-file/file/getFileResources?objectKey=arsiv/fileadmin/faaliyetraporlari/2023/2023_faaliyet_raporu.pdf",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
    "kaynak_turu": "resmi_teskilat",
-   "icerik_sha256": "0658d764899647c26e27af7469c75562cf0b3236cf4fd535ef74266ba90bd728",
+   "icerik_sha256": "34ede3ca02492cd1dce699dd2645d8c20d77fe18dbf767aa6c1f2ac69b43bce8",
    "dogrulayan": "claude-opus-5/2026-08-06",
    "dogrulama_tarihi": "2026-08-06",
-   "dogrulama_yontemi": "GIB 2023 Yili Faaliyet Raporu PDF'inden (gib.gov.tr CDN, TLS dogrulamali) pypdfium2 ile cikarildi; rapor listeyi 4 s. CBK m.140'a dayandirarak verir. 13. satir (Ic Denetim Birimi Baskanligi) m.140'in 12 hizmet biriminden dipnotla ayrilmis, fiilen bulundugu icin alinip ayrim kunyede belirtilmis. Coğul numarali daireler (I,II,III,IV) tekil ad olarak yazildi, m.140/2 not edildi. Tasra teskilati kapsam disi. TASRA ALIAS DUZELTMESI: yeniden yazarken @ALIAS satirindaki tasra birimi adlari (vergi dairesi baskanligi / tapu mudurlugu / sosyal guvenlik il mudurlugu) kaybolmustu; eski aliaslar birlestirilerek geri kondu ve kunyeye silinmeme uyarisi yazildi",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025 degisikliklerine kadar guncel) pypdfium2 ile cikarildi; birim adlari hizmet birimleri maddesinin bentlerinden, GOREV metinleri her birimin kendi maddesinden BIREBIR alindi (scripts/cbk_bakanlik_cikar.py). Mulga bent ve maddeler alinmadi. GIB icin bagimsiz capraz dogrulama: kararnamedeki 12 birim, kurumun 2023 faaliyet raporundaki listeyle birebir ayni cikti",
    "kaynak_erisim_tarihi": "2026-08-06"
   },
   "tapu-ve-kadastro-genel-mudurlugu/birimler.txt": {
@@ -1120,6 +1120,36 @@
    "dogrulayan": "claude-opus-5/2026-08-06",
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "TKGM 2023 Yili Idare Faaliyet Raporu PDF'inden (tkgm.gov.tr, TLS dogrulamali) pypdfium2 ile cikarildi; rapor merkez birimlerini 'Sunulan Hizmetler' bolumunde a-m diye tek tek sayar ve teskilat semasinda gosterir. Kaynaktaki 'Dairesi/Daire Baskanligi' tutarsizligi korundu. Tasra (22 bolge mudurlugu + tapu/kadastro mudurlukleri) ve yurtdisi (Berlin) kapsam disi, kunyede belirtildi. TASRA ALIAS DUZELTMESI: yeniden yazarken @ALIAS satirindaki tasra birimi adlari (vergi dairesi baskanligi / tapu mudurlugu / sosyal guvenlik il mudurlugu) kaybolmustu; eski aliaslar birlestirilerek geri kondu ve kunyeye silinmeme uyarisi yazildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "kamu-ihale-kurumu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://ihale.gov.tr/teskilat_semasi-58-1.html",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "be45922221b3c2b497e8e2716da87dfeaa08115274db91a9d5172c25e469a32d",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "KIK resmi teskilat semasi sayfasindan (ihale.gov.tr, TLS dogrulamali) 18 birim cikarildi; iki aday KISI adi/unvani oldugu icin (Baskan/Baskan Yrd.) goz denetiminde atildi. 4734 m.53 daire baskanliklarini saymaz ('gerektirdigi sayida'), bu yuzden liste kurumun kendi beyanindan. Sayfa GOREV vermedigi icin gorev uydurulmadi. Onceki 6 kaynaksiz birim kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "meteoroloji-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "3cf1fec4a505f9ca06ea173c2560cadaedb003c4c1bc4fac2ce54ef5e1b6b62f",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025 degisikliklerine kadar guncel) pypdfium2 ile cikarildi; birim adlari hizmet birimleri maddesinin bentlerinden, GOREV metinleri her birimin kendi maddesinden BIREBIR alindi (scripts/cbk_bakanlik_cikar.py). Mulga bent ve maddeler alinmadi. GIB icin bagimsiz capraz dogrulama: kararnamedeki 12 birim, kurumun 2023 faaliyet raporundaki listeyle birebir ayni cikti",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "vakiflar-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "361897072da6d10a1f25ea02779c5caf8b41fe4c5ca9379535bc87f13bddf898",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, icerik 21/2/2025 degisikliklerine kadar guncel) pypdfium2 ile cikarildi; birim adlari hizmet birimleri maddesinin bentlerinden, GOREV metinleri her birimin kendi maddesinden BIREBIR alindi (scripts/cbk_bakanlik_cikar.py). Mulga bent ve maddeler alinmadi. GIB icin bagimsiz capraz dogrulama: kararnamedeki 12 birim, kurumun 2023 faaliyet raporundaki listeyle birebir ayni cikti",
    "kaynak_erisim_tarihi": "2026-08-06"
   }
  }

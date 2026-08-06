@@ -1081,6 +1081,16 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "EGM resmi sitesinden (egm.gov.tr, TLS dogrulamali) 10 baskanlik/musavirlik + 21 daire baskanligi cikarildi. Ilk cikarimda baskanlik katmani ATLANMISTI (cikarici unvan listesinde duz 'Baskanligi' eki yoktu); eksiklik ham metin kontrolunde yakalandi, hem liste hem paylasilan unvan listesi duzeltildi. Menu/cerez artiklari atildi. Sayfa GOREV vermedigi icin gorev uydurulmadi. Tasra teskilati kapsam disi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "diyanet-isleri-baskanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://diyanet.gov.tr/tr-TR/Kurumsal/TeskilatSemasi/4",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "4170448349104967951606edcc564c98a5271e6366e33cd30485aefc80a4ebf6",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Diyanet Isleri Baskanligi resmi teskilat semasi sayfasindan (diyanet.gov.tr, TLS dogrulamali) 15 merkez birimi cikarildi; sayfa/telif artiklari goz denetiminde atildi. Sayfa GOREV vermedigi icin gorev uydurulmadi. Tasra (il/ilce muftulukleri, egitim merkezleri) kapsam disi. Onceki 5 kaynaksiz birim kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

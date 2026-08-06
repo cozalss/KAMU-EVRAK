@@ -1,21 +1,53 @@
 @KURUM: Diyanet İşleri Başkanlığı
-@BELGE: 633 sayılı Diyanet İşleri Başkanlığı Kuruluş ve Görevleri Hakkında Kanun
-@KAYNAK_KIMLIK: teskilat/diyanet-isleri-baskanligi/gorev-tanimi
-@ERISIM: 2026-07-18
-@ALIAS: diyanet
-@NOT: İl/ilçe müftülüğü ve cami görevlisi kadro/atama süreçleri il bazında değişebilir. [DOĞRULA: güncel teşkilat şeması]
+@BELGE: Diyanet İşleri Başkanlığı merkez teşkilatı şeması (dayanak: 633 sayılı Diyanet İşleri Başkanlığı Kuruluş ve Görevleri Hakkında Kanun)
+@KAYNAK_KIMLIK: https://diyanet.gov.tr/tr-TR/Kurumsal/TeskilatSemasi/4
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: diyanet, diyanet-isleri-baskanligi, dib
+@NOT: Birim listesi Diyanet İşleri Başkanlığının resmî teşkilat şeması sayfasından alınmıştır; sayfadaki ad yazımı korunmuştur. Kuruluş dayanağı 633 sayılı Diyanet İşleri Başkanlığı Kuruluş ve Görevleri Hakkında Kanundur. Sayfa birim ADINI verir, GÖREV tanımını vermez; görev bu dosyada UYDURULMAMIŞ, yalnız birim adının işaret ettiği hizmet alanı belirtilmiştir. Sayfa/çerez artıkları ('T.C. Diyanet İşleri Başkanlığı', telif satırı) göz denetiminde atılmıştır. TAŞRA teşkilatı (il ve ilçe müftülükleri ile eğitim merkezi müdürlükleri) bu dosyada DEĞİLDİR; merkez teşkilatı listelenmiştir. Bir mahalle camisi veya müftülük işlemine ilişkin evrak merkeze değil ilgili il/ilçe müftülüğüne gider.
+
+BİRİM: Din İşleri Yüksek Kurulu
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Mushafları İnceleme ve Kıraat Kurulu
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Din Hizmetleri Genel Müdürlüğü
-GÖREV: Cami ve mescitlerde ibadet hizmetlerinin yürütülmesi, imam-hatip/müezzin görevlendirme ve cami görevlisi şikâyet/talep dilekçelerini değerlendirir. Vaaz, hutbe ve dini rehberlik hizmetlerine ilişkin başvuruların merkezi muhatabıdır.
-
-BİRİM: Hac ve Umre Hizmetleri Genel Müdürlüğü
-GÖREV: Hac ve umre kayıt/kura başvuruları, kontenjan itirazları, kafile organizasyonu ve hacı adayı şikâyet dilekçelerini sonuçlandırır.
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Eğitim Hizmetleri Genel Müdürlüğü
-GÖREV: Kur'an kursu açma/kayıt talepleri, din görevlisi yetiştirme ve hizmet içi eğitim programlarına ilişkin başvuruları yürütür.
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: İl Müftülüğü
-GÖREV: İl düzeyinde din hizmetleri koordinasyonu, cami görevlisi atama/nakil talepleri ve vatandaş dilekçelerinin ilk kabul ve yönlendirme merciidir.
+BİRİM: Hac ve Umre Hizmetleri Genel Müdürlüğü
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: İlçe Müftülüğü
-GÖREV: İlçe düzeyinde cami ve din görevlisi iş ve işlemleri ile yerel ibadet hizmeti taleplerini karşılar; muhtarlık/belediye ile birlikte nikah kıyma sürecine destek verir.
+BİRİM: Dini Yayınlar Genel Müdürlüğü
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Dış İlişkiler Genel Müdürlüğü
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İnsan Kaynakları Genel Müdürlüğü
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Rehberlik ve Teftiş Başkanlığı
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Diyanet İşleri Başkanlığı merkez teşkilatında yer alan birimdir; adının işaret ettiği hizmet alanında merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.

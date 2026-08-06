@@ -1451,6 +1451,16 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "tubitak/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.tubitak.gov.tr/tr/kurumsal/hakkimizda/birimlerimiz",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "286297f1f9a693f2e49727f4678fcda00c108252da71970d13257cb31ab84d5a",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî 'Birimlerimiz' sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

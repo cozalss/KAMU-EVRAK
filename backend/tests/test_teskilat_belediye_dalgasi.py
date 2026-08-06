@@ -1,4 +1,4 @@
-"""Canlı keşifle bulunup ELDEN doğrulanan 9 belediye — kaynak künyesi ve konu ayrımı.
+"""Canlı keşifle bulunup ELDEN doğrulanan kurumlar (9 belediye + TÜBİTAK).
 
 Bu kurumlar `scripts/canli_kaynak_tara.py` ile bulundu: motor kurumun kendi resmî birim
 sayfasını buldu, birimler `kurum_teskilat_cek.py` ile sayfadan birebir çıkarıldı, alt bilgi
@@ -10,6 +10,8 @@ bu dosya onu kilitler: kayıtlar `resmi_dogrulanmis` künyesi taşımalı, konuy
 birimi vermeli ve kurumlar arasında sızıntı olmamalı.
 """
 from __future__ import annotations
+
+import json
 
 import pytest
 
@@ -26,7 +28,19 @@ DALGA = [
     ("cankaya-belediyesi", 28),
     ("pendik-belediyesi", 20),
     ("kahramanmaras-buyuksehir-belediyesi", 18),
+    # Merkezî kurum: TÜBİTAK'ın kendi "Birimlerimiz" sayfası (alt birimler dâhil).
+    ("tubitak", 50),
 ]
+
+# ELDEN REDDEDİLENLER — aynı taramada bulundu ama korpusa ALINMADI. Sebepleri burada
+# durur ki "neden eklenmemiş?" sorusu tekrar tekrar araştırılmasın:
+#   ego   — listede ASKİ Genel Müdürlüğü var (BAŞKA KURUM; menü/altbilgi sızıntısı) +
+#           bazı adlar baştan kırpılmış ("İşler ve Satın Alma Şube Müdürlüğü").
+#   epdk  — org şeması JS/JSON ile çiziliyor; adların çoğu kırpık
+#           ("Hakları ve Müşteri Hizmetleri…" ← "Tüketici Hakları…", "1 Grup Başkanlığı").
+#   euas  — çıktıya JSON artıkları sızıyor ('0.children.4","text":"…').
+# Kırpılmış ad yazmak, kaynağın SÖYLEMEDİĞİ bir birim yazmaktır (CLAUDE.md §1).
+REDDEDILEN = ("ego", "epdk", "euas")
 
 # (kurum, konu, beklenen birim) — ölçüldü 2026-08-06, 11/11 doğrulanmış kaynaktan.
 KONU_BIRIM = [
@@ -44,7 +58,29 @@ KONU_BIRIM = [
     ("pendik-belediyesi", "sosyal yardım başvurusu", "Sosyal Hizmetler Müdürlüğü"),
     ("umraniye-belediyesi", "emlak ve istimlak işlemleri", "Emlak ve İstimlak Müdürlüğü"),
     ("maltepe-belediyesi", "kreş kaydı ve çocuk hizmetleri", "Kreş Müdürlüğü"),
+    ("tubitak", "araştırma destek programı başvurusu ve proje izleme",
+     "Araştırma Destek Programları Başkanlığı"),
+    ("tubitak", "fikri mülkiyet ve patent ticarileştirme", "Fikri Mülkiyet Müdürlüğü"),
+    ("tubitak", "uluslararası işbirliği AB çerçeve programı",
+     "Uluslararası İşbirliği Daire Başkanlığı"),
 ]
+
+
+def test_REDDEDILEN_kurumlar_korpusa_SIZMADI() -> None:
+    """Kırpık/karışık listeler bilinçli olarak alınmadı; sessizce geri gelmemeli.
+
+    En tehlikelisi `ego`: listesinde ASKİ Genel Müdürlüğü vardı. Bu tam olarak
+    "yanlış kurumun birimi" sınıfıdır ve bu depoda iki ayrı kapı bunu engellemek için
+    kuruldu (kimlik kapısı + aday kapısı).
+    """
+    from pathlib import Path
+
+    teskilat = Path(__file__).resolve().parents[2] / "data" / "teskilat"
+    man = json.loads((teskilat / "kaynak_manifest.json").read_text(encoding="utf-8"))
+    for slug in REDDEDILEN:
+        assert f"{slug}/birimler.txt" not in man["kaynaklar"], (
+            f"{slug} doğrulanmış olarak kaydedilmiş — gerekçesi bu dosyada yazılı"
+        )
 
 
 def _kurum_kayitlari(slug: str) -> list[dict]:

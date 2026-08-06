@@ -1,21 +1,185 @@
-@KURUM: Türkiye Bilimsel ve Teknolojik Araştırma Kurumu
-@BELGE: 278 sayılı Türkiye Bilimsel ve Teknolojik Araştırma Kurumu Kurulması Hakkında Kanun
-@KAYNAK_KIMLIK: teskilat/tubitak/gorev-tanimi
-@ERISIM: 2026-07-18
+@KURUM: Türkiye Bilimsel ve Teknolojik Araştırma Kurumu (TÜBİTAK)
+@BELGE: TÜBİTAK resmî birimler listesi
+@KAYNAK_KIMLIK: https://www.tubitak.gov.tr/tr/kurumsal/hakkimizda/birimlerimiz
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: turkiye-bilimsel-ve-teknolojik-arastirma-kurumu
-@NOT: Destek programı kodları (1501, 2211 vb.) ve başvuru koşulları yıllık çağrılarla güncellenir. [DOĞRULA: güncel teşkilat şeması]
+@NOT: Birim listesi TÜBİTAK'ın resmî sitesindeki 'Birimlerimiz' sayfasından alınmıştır; sayfadaki ad yazımı korunmuştur. Sayfa birim ADINI ve hiyerarşisini verir, GÖREV tanımını vermez — görev bu dosyada UYDURULMAMIŞTIR. TÜBİTAK'ın teşkilat yapısı Bilim Kurulu kararıyla değişebilir; liste erişim tarihindeki hâli yansıtır. Çıkarımda bir aday ('ve Planlama Müdürlüğü') önceki adın kuyruğu olduğu için elenmiştir.
 
-BİRİM: Teknoloji ve Yenilik Destek Programları Başkanlığı (TEYDEB)
-GÖREV: Sanayi Ar-Ge proje destek başvuruları (1501, 1507 vb.), hakem değerlendirme itirazları ve destek ödemesi taleplerini yürütür.
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
 
-BİRİM: Araştırma Destek Programları Başkanlığı (ARDEB)
-GÖREV: Akademik/bilimsel araştırma proje destek başvuruları, proje izleme raporları ve destek kesintisi itirazlarını değerlendirir.
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
 
-BİRİM: Bilim İnsanı Destekleme Daire Başkanlığı (BİDEB)
-GÖREV: Lisans/yüksek lisans/doktora bursu (2211, 2205 vb.) başvuruları, burs kesintisi itirazı ve bilim insanı destek programı dilekçelerini sonuçlandırır.
+BİRİM: Hukuk Hizmetleri Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
 
-BİRİM: Hukuk Müşavirliği
-GÖREV: Destek programı ret kararlarına karşı itiraz ve dava dilekçelerinde kurumu temsil eder.
+BİRİM: Gebze Hukuk Hizmetleri Birimi
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
 
-BİRİM: Halkla İlişkiler ve Bilgilendirme Birimi
-GÖREV: Bilgi edinme başvuruları ve genel destek programı bilgilendirme taleplerinin ilk kabul merciidir.
+BİRİM: Mevzuat, Düzenlemeler ve Bilgi Edinme Birimi
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Dava Takip Birimi
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Teknoloji ve Yenilik Politikaları Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: BTY Politikaları Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Destek Programları Planlama ve Geliştirme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: BTY Veri Analizi ve Değerlendirme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Teknoloji Transfer Ofisi Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Fikri Mülkiyet Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Ticarileştirme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Mali İşler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İletişim Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: TÜBİTAK İletişim Merkezi Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İletişim ve Tanıtım Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Medya ve Dijital İletişim Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Uluslararası İşbirliği Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İkili ve Çoklu İlişkiler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: AB Çerçeve Programları Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Teknoloji ve Yenilik Destek Programları Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Mali Denetleme ve Sözleşmeler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Eğitim, Tanıtım ve Program Değerlendirme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Araştırma Destek Programları Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Destek Programları İzleme ve Koordinasyon Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Bilim İnsanı Destek Programları Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Bilim ve Toplum Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Kitaplar ve Telif Eserler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Dergiler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Bilim İletişimi Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Bilim Merkezleri Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Destek Programları Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Eğitim ve İçerik Geliştirme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Ekosistem Geliştirme ve Atölyeler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Yarışmalar ve Organizasyon Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Satış ve Pazarlama Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Proje Yönetimi ve Koordinasyon Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Tanıtım ve Destek Hizmetler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Bilgi İşlem Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İş Uygulamaları ve Yazılım Geliştirme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Sistem ve İşletim Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İnsan Kaynakları Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İnsan Kaynakları Planlama Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Özlük İşleri Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Eğitim, Gelişim ve Değerlendirme Süreçleri Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İdari Hizmetler Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Koruma ve Güvenlik Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Yapım, Bakım ve İşletme Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Satınalma Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Genel Evrak ve Arşiv Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Ayniyat ve Stok Kontrol Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İdari ve Sosyal İşler Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Seyahat İşleri Birimi
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İş Yeri Sağlık ve Güvenlik Birimi
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Muhasebe ve Kesin Hesap Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: Bütçe ve Performans Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.
+
+BİRİM: İç Kontrol Müdürlüğü
+GÖREV: TÜBİTAK resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları TÜBİTAK Bilim Kurulu kararıyla yürürlüğe konan yönetmelik/yönergelerde düzenlenir.

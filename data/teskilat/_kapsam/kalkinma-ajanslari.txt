@@ -1,0 +1,32 @@
+@KURUM: Kalkınma Ajansları Listesi (mevzuat-teşkilat kapsamı)
+@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.186 uyarınca Cumhurbaşkanı kararıyla kurulan kalkınma ajansları
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_idari_bolunus
+@DOGRULAMA: resmi
+@NOT: Kararnamenin EK LİSTE'si Düzey 2 İstatistikî Bölge Birimlerini 26 bölge olarak sayar ve m.186 ajansların bölgeler esas alınarak kurulduğunu söyler; bu listede 24 ajans vardır, İKİSİ EKSİKTİR. Ajans ADLARI kararnamede yer almaz (Cumhurbaşkanı kararıyla belirlenir), bu yüzden eksik ikisi buradan tamamlanamadı. EKSİK kapsam bilinçli tercihtir: eksik listede iki ajans öneri ALAMAZ ama yanlış öneri de almaz; fazla listede ise var olmayan kuruma güvenle öneri verilirdi.
+
+ahiler|Ahiler
+ankara|Ankara
+bati-akdeniz|Batı Akdeniz
+bati-karadeniz|Batı Karadeniz
+bursa-eskisehir-bilecik|Bursa Eskişehir Bilecik
+cukurova|Çukurova
+dogu-akdeniz|Doğu Akdeniz
+dogu-anadolu|Doğu Anadolu
+dogu-karadeniz|Doğu Karadeniz
+dogu-marmara|Doğu Marmara
+firat|Fırat
+guney-ege|Güney Ege
+guney-marmara|Güney Marmara
+istanbul|İstanbul
+izmir|İzmir
+karacadag|Karacadağ
+kuzey-anadolu|Kuzey Anadolu
+kuzeydogu-anadolu|Kuzeydoğu Anadolu
+mevlana|Mevlana
+orta-anadolu|Orta Anadolu
+orta-karadeniz|Orta Karadeniz
+serhat|Serhat
+trakya|Trakya
+zafer|Zafer

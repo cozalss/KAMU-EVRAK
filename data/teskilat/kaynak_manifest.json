@@ -1341,6 +1341,26 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "MEB Milli Egitim Mudurlukleri Yonetmeligi (RG 26/4/2025) resmi PDF'i (ttkb.meb.gov.tr, TLS dogrulamali) pypdfium2 ile cikarildi; IL mudurlugune iliskin 23 birim ve her birinin GOREV metni kendi maddesinden LAFZEN alindi. Madde sinirlari deterministik olarak MADDE-konumlarindan hesaplandi (ileri-bakisli desen gorev metnindeki madde atiflarina takilip metni cumle ortasindan kesiyordu). Uzun gorev listeleri cumle sinirinda kisaltildi ve kisaltildigi metinde belirtildi. 2025 yonetmeligi birim adlarini DEGISTIRDIGI icin eski surum kullanilmadi. ILCE mudurlukleri kapsam disi (m.8/2 buro esasi)",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "_kapsam/kalkinma-ajanslari.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "icerik_sha256": "627d47cf337e23021e080afbcee3a64963e35ebae0a96e88fb6836ee9012e124",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 s. CBK m.186 uyarinca kurulan kalkinma ajanslari listesi. Kararnamenin EK LISTE'si Duzey 2 bolgelerini 26 olarak sayiyor, bu listede 24 ajans var — IKISI EKSIK ve bu kunyede acikca yazildi. Ajans adlari kararnamede yok (CB kararıyla belirlenir), eksik ikisi tamamlanamadi. Eksik kapsam bilincli tercih: fazla kapsam var olmayan kuruma guvenle oneri verir",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "_mevzuat-kalkinma-ajansi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "a15163caed447d48399faa8c3ba0b920ad070ba273620f4293a1b78d9eb17a2d",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "4 s. CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, 21/2/2025'e kadar guncel) cikarildi; m.190/1'de tek tek sayilan DORT birim ve gorev metinleri m.191/m.193/m.195-196/m.197'den LAFZEN. Madde sinirlari MADDE konumlarindan deterministik hesaplandi. Ayristirici bu maddede kucuk harfli bent adlari yuzunden 0 buldugu icin birimler dogrudan yazildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

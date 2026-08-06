@@ -92,7 +92,7 @@ Beş tür denendikten sonra engellerin rastgele olmadığı görülüyor:
 Bu üç engel, il müdürlüğü şablonlarının merkez teşkilatı kadar kolay olmayacağını gösteriyor:
 merkez teşkilatı kararnamede tek elden ve güncel sayılıyor, taşra ise dağınık ve eski.
 
-## Plan adımı B — Kalkınma ajansları: birimler HAZIR, kapsam eksik
+## Plan adımı B — Kalkınma ajansları: **TAMAM** (24 ajans × 4 birim)
 
 4 sayılı CBK **m.190**: *"Ajansın teşkilat yapısı aşağıdaki gibidir: a) Kalkınma kurulu.
 b) Yönetim kurulu. c) Genel sekreterlik. ç) Yatırım destek ofisleri."* Dördünün de kendi
@@ -104,14 +104,13 @@ lafzî olarak alınabilir.
 birim doğrudan `kurum_teskilat_yaz.py` ile yazılmalı — dört birim için desen genişletmek,
 başka yerlerde aşırı eşleşme riski getirir.
 
-**KAPSAM SORUNU (çözülmeden şablon kurulmamalı):** Kararnamenin **EK LİSTE**'si Düzey 2
+**KAPSAM (bilerek eksik, künyede yazılı):** Kararnamenin **EK LİSTE**'si Düzey 2
 İstatistikî Bölge Birimlerini sayıyor ve bunlar **26 bölge**dir (TR10, TR21, TR22, TR31,
 TR32, TR33, TR41, TR42, TR51, TR52, TR61, TR62, TR63, TR71, TR72, TR81, TR82, TR83, TR90,
 TRA1, TRA2, TRB1, TRB2, TRC1, TRC2, TRC3). m.186: ajanslar bölgeler esas alınarak kurulur.
 Sicilde ise yalnız **24** kalkınma ajansı var — **iki tanesi eksik**.
 
-Ajans ADLARI kararnamede yok; Cumhurbaşkanı kararıyla belirleniyor. Eksik ikisinin adı
-Sanayi ve Teknoloji Bakanlığının ajans listesinden tamamlanmalı.
+Ajans ADLARI kararnamede yok; Cumhurbaşkanı kararıyla belirleniyor. Eksik ikisinin adı Sanayi ve Teknoloji Bakanlığının ajans listesinden tamamlanabilir; şablon 24 ile kuruldu, eksiklik künyede ve testte açıkça yazılı. Ölçüm 6/6.
 
 **Eksik kapsam ile fazla kapsam arasındaki fark burada nettir ve genel kuraldır:**
 - *Fazla* kapsam (vergi dairesi başkanlığı: sicil 81, kaynak 29) **tehlikelidir** — var

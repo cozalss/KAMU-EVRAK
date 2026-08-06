@@ -325,6 +325,7 @@ ercis|Erciş
 erdek|Erdek
 erdemli|Erdemli
 eregli|Ereğli
+karadeniz-eregli|Karadeniz Ereğli
 erenler|Erenler
 erfelek|Erfelek
 ergani|Ergani
@@ -342,7 +343,7 @@ etimesgut|Etimesgut
 evciler|Evciler
 evren|Evren
 eynesil|Eynesil
-eyup|Eyüp
+eyupsultan|Eyüpsultan
 eyyubiye|Eyyübiye
 ezine|Ezine
 fatih|Fatih
@@ -660,7 +661,7 @@ oguzlar|Oğuzlar
 oltu|Oltu
 olur|Olur
 omerli|Ömerli
-ondokuzmayis|Ondokuzmayıs
+19-mayis|19 Mayıs
 onikisubat|Onikişubat
 orhaneli|Orhaneli
 orhangazi|Orhangazi

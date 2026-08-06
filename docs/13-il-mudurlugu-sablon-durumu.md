@@ -153,6 +153,28 @@ işe yarar (5393 m.48 dört birim, 2560 m.3/m.12, 124 s. KHK m.26, MEB Yönetmel
 Kaynak "birimleri organ kendisi belirler" diyorsa şablon, kurumun kendi verisinin önüne
 geçen bir gürültü hâline gelir.
 
+## Plan adımı D — Kaymakamlık kapsamı: **TAMAM** (3 gerçek boşluk kapatıldı)
+
+Kapsam listesi sicille karşılaştırıldı: **54 fark**. Ayrıştırıldığında fark tek cins değildi.
+
+- **51'i merkez ilçe** (il adı = ilçe adı: Ağrı/Ağrı, Bolu/Bolu…). Büyükşehir olmayan illerin
+  merkez ilçesinde **kaymakamlık yoktur**, o görevi vali yürütür. Yani burada da **sicil FAZLA
+  sayıyor** ve kapsamın onu izlememesi doğrudur. Vergi dairesi başkanlığındaki bulgunun aynısı.
+- **3'ü gerçek boşluktu** ve üçü de slug yazım uyuşmazlığından kaynaklanıyordu:
+  · `eyup` → `eyupsultan` (ilçe 2018'de yeniden adlandırıldı)
+  · `ondokuzmayis` → `19-mayis` (sicilin kanonik biçimi)
+  · `karadeniz-eregli` hiç yoktu — kapsamdaki `eregli` **Konya** Ereğli'sidir; Zonguldak'taki
+    Karadeniz Ereğli ayrı bir ilçedir ve kapsam dışı kalmıştı.
+
+Üçü de eklendi/düzeltildi ve doğrulanmış birime kavuştu (kapsam 897 → 898). Merkez ilçelerin
+kapsam dışı kaldığı ayrıca testle kilitlendi: fark 51'in altına inerse test kırılır, böylece
+"eksik kapatıyorum" diye kapsamın sessizce şişirilmesi engellenir.
+
+**Ders:** iki liste arasındaki fark otomatik olarak "eksiklik" değildir. Bu depoda üç kez
+ölçüldü ve üçünde de yön farklıydı: vergi dairesinde sicil fazla (81↔29), kalkınma ajansında
+sicil eksik (24↔26), kaymakamlıkta sicil fazla (949↔898). Farkı kapatmadan önce **hangi tarafın
+doğru olduğu kaynaktan tespit edilmelidir.**
+
 ## Şablon nasıl eklenir
 
 1. Kaynağı bul, `scripts/mevzuat_pdf_cek.py` ile indir (TLS doğrulamalı).

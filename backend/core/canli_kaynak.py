@@ -169,5 +169,63 @@ def canli_kaynak_bul(
     return kaynak
 
 
+_TOKEN_RE = re.compile(r"[0-9a-zçğıöşü]+")
+# Evrak zarfı sözcükleri ayırt edici değildir; birim seçiminde sayılmaz.
+_ZAYIF = frozenset({
+    "ve", "ile", "için", "hakkında", "konulu", "talep", "talebi", "başvuru", "başvurusu",
+    "şikayet", "şikâyet", "ihbar", "dilekçe", "evrak", "yazı", "konu", "sayın",
+    "müdürlüğü", "başkanlığı", "birimi", "daire", "dairesi", "şube", "genel",
+})
+
+
+def _tokenlar(s: str) -> set[str]:
+    from core.text import tr_lower
+    return {t for t in _TOKEN_RE.findall(tr_lower(s)) if len(t) >= 3 and t not in _ZAYIF}
+
+
+def en_uygun_birim(birimler: tuple[str, ...], konu: str) -> str:
+    """Konuya en çok token'ı örtüşen birim adı. Örtüşme yoksa boş.
+
+    Kasten BASİT: bu bir ÖNERİdir ve memur onayına gider. Karmaşık bir skorlayıcı,
+    doğrulanmamış bir kaynağın üzerine sahte bir kesinlik katmanı eklerdi.
+    """
+    kt = _tokenlar(konu)
+    if not kt or not birimler:
+        return ""
+    en_iyi, en_skor = "", 0
+    for ad in birimler:
+        skor = len(kt & _tokenlar(ad))
+        if skor > en_skor:
+            en_iyi, en_skor = ad, skor
+    return en_iyi
+
+
+def kurum_icin_oneri(
+    kurum_slug: str, konu: str, *, web_aramasi: bool = False
+) -> dict[str, Any] | None:
+    """Doğrulanmamış kurum için canlı kaynak + konuya uygun birim önerisi.
+
+    `web_aramasi` RUNTIME'DA VARSAYILAN KAPALI: ücretsiz katmanlar ~1,2 sn sürerken
+    web araması ~8 sn sürüyor ve memuru ekranda bekletmek kabul edilemez. Ücretli
+    katman toplu zenginleştirmede (çevrimdışı) açılır.
+
+    Dönen künye HER ZAMAN `dogrulanmis=False` taşır. Bu sözleşme kırılırsa
+    doğrulanmamış bir kaynak doğrulanmış görünür — deponun en temel kuralı budur.
+    """
+    from core.sicil import sicil_cozumle
+
+    kayit = sicil_cozumle(kurum_slug)
+    if not kayit:
+        return None
+    kaynak = canli_kaynak_bul(dict(kayit), web_aramasi=web_aramasi)
+    if kaynak is None:
+        return None
+    kunye = kaynak.kunye()
+    kunye["kurum_slug"] = kaynak.kurum_slug
+    kunye["birim_oneri"] = en_uygun_birim(kaynak.birimler, konu)
+    kunye["birim_ornekleri"] = list(kaynak.birimler[:8])
+    return kunye
+
+
 __all__ = ("AZAMI_BIRIM", "CanliKaynak", "birimleri_cikar", "canli_kaynak_bul",
-           "onbellekten")
+           "en_uygun_birim", "kurum_icin_oneri", "onbellekten")

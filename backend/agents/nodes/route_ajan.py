@@ -13,6 +13,7 @@ Güvenlik sözleşmeleri:
 """
 from __future__ import annotations
 
+import asyncio
 import os
 from typing import Any
 
@@ -25,8 +26,9 @@ from agents.kurum_kimlik import (
     muhatap_kurum_tespit,
 )
 from agents.nodes._llm_extract import llm_json, real_llm
-from agents.resmi_kaynak import kaynak_ara, uclu_grounding
+from agents.resmi_kaynak import kaynak_ara, kurum_korpusta_var, uclu_grounding
 from api.pii import mask_for_llm
+from core.canli_kaynak import kurum_icin_oneri
 
 log = structlog.get_logger()
 
@@ -246,8 +248,34 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
         }.get(secilen.get("kaynak_tipi"), "jenerik aday")
         parcalar.append(f"Öneri ({tip}, doğrulanmadı): {secilen['birim_ad']}")
     parcalar.append("Resmî kaynakla doğrulanamadı — memur onayı gerekli.")
+
+    # CANLI KAYNAK — yalnız bu yolda, yalnız korpusta karşılığı OLMAYAN kurumda.
+    # Amaç memura kuru bir tahmin yerine TIKLANABİLİR KAYNAK vermek: linke bakıp beş
+    # saniyede kendi gözüyle doğrulasın.
+    #
+    # OTOMATİK HAVALE YOLU AÇILMAZ. Bu blok `hedef_birim`e ve `hedef_birim_kaynak`a
+    # DOKUNMAZ; yalnız ayrı bir `canli_kaynak` anahtarı ekler. Üçlü grounding zaten
+    # `kaynak_tipi == "kurum_ozel"` şartı koyduğu için buradan gelen veri oraya
+    # ulaşamaz; bu ayrılık ikinci savunma hattıdır (docs/14).
+    #
+    # WEB ARAMASI KAPALI: ücretsiz katmanlar ~1,2 sn, web araması ~8 sn sürüyor ve
+    # memuru ekranda bekletmek kabul edilemez. Ücretli katman çevrimdışı toplu
+    # zenginleştirmede açılır.
+    canli: dict[str, Any] = {}
+    hedef_slug = yetkili.get("slug") or muhatap.get("slug") or ""
+    if hedef_slug and not kurum_korpusta_var(hedef_slug):
+        try:
+            canli = await asyncio.to_thread(
+                kurum_icin_oneri, hedef_slug, arama_baglami, web_aramasi=False
+            ) or {}
+        except Exception as exc:   # canlı keşif ASLA yönlendirmeyi düşürmez
+            log.warning("route_ajan.canli_kaynak_hatasi", hata=type(exc).__name__)
+            canli = {}
+        if canli.get("url"):
+            parcalar.append(f"Canlı kaynak (doğrulanmadı): {canli['url']}")
+
     log.info("route_ajan.fallback", muhatap=muhatap.get("slug"), yetki_disari=yetki_disari,
-             kategori=kategori)
+             kategori=kategori, canli=bool(canli.get("url")))
     return {
         **base,
         "hedef_birim": None,
@@ -259,6 +287,7 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
         "insan_onayi_gerekli": True,
         "birim_alternatifleri": _alternatif_adlari(son_adaylar, secilen, det),
         "birim_reasoning": " · ".join(parcalar),
+        "canli_kaynak": canli,
     }
 
 

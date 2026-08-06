@@ -1,23 +1,29 @@
 @KURUM: Kişisel Verileri Koruma Kurumu
-@BELGE: 6698 sayılı Kişisel Verilerin Korunması Kanunu
-@KAYNAK_KIMLIK: teskilat/kvkk-kurumu/gorev-tanimi
-@ERISIM: 2026-07-18
-@NOT: [DOĞRULA: güncel teşkilat şeması]
+@BELGE: Kişisel Verileri Koruma Kurumu resmî teşkilat şeması (dayanak: 6698 sayılı Kişisel Verilerin Korunması Kanunu m.19-m.21)
+@KAYNAK_KIMLIK: https://www.kvkk.gov.tr/Icerik/2033/Teskilat-Semasi
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: kvkk, kvkk-kurumu, kisisel-verileri-koruma-kurumu
+@NOT: Birim listesi Kişisel Verileri Koruma Kurumunun resmî teşkilat şeması sayfasından alınmıştır. 6698 sayılı Kanun Kurumu ve Kurulu kurar (m.19-m.21) ancak daire başkanlıklarını TEK TEK SAYMAZ; hizmet birimleri Kurumun kendi teşkilat düzenlemesiyle belirlenir. Bu yüzden birim adları kanundan değil kurumun kendi resmî beyanından gelir ve GÖREV metinleri birim adının işaret ettiği görev alanıyla sınırlı tutulmuş, kaynağın söylemediği ayrıntı YAZILMAMIŞTIR. Sayfadan çıkarılan sekizinci aday ('Verilerin İnternet Ortamında Paylaşılması Hakkında ... Kurul') bir BELGE başlığıdır, birim değildir; göz denetiminde atılmıştır. KARAR mercii Kişisel Verileri Koruma Kuruludur (m.21); daire başkanlıkları Kurulun kararlarını hazırlayan ve uygulayan hizmet birimleridir.
 
-BİRİM: Veri İhlali İnceleme ve Uzlaştırma Dairesi Başkanlığı
-GÖREV: Veri sorumlularının veri ihlali bildirimlerini alır; ilgili kişilerin kişisel veri işleme şikayet ve başvurularını inceler.
+BİRİM: Veri Yönetimi Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; VERBİS (Veri Sorumluları Sicil Bilgi Sistemi) kayıt ve veri yönetimi işleri bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Politikalar Dairesi Başkanlığı
-GÖREV: Kişisel verilerin korunmasına ilişkin mevzuat, ikincil düzenleme ve rehber taslaklarını hazırlar.
+BİRİM: İnceleme Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; kişisel veri ihlali şikâyet ve ihbarlarının incelenmesi bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Veri Sorumluları Sicili Dairesi Başkanlığı
-GÖREV: VERBİS'e kayıt yükümlülüğü ile veri sorumlusu bildirimlerinin takibinden sorumludur.
+BİRİM: Hukuk İşleri Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; hukuki görüş, dava ve mevzuat işleri bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
-GÖREV: Kurumun elektronik başvuru sistemleri ile veri ihlali bildirim altyapısının işletilmesinden sorumludur.
+BİRİM: Veri Güvenliği ve Bilgi Sistemleri Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; veri güvenliği ve bilgi sistemleri işleri bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Hukuk Hizmetleri Dairesi Başkanlığı
-GÖREV: Kurul kararlarına karşı açılan davalar ile idari itirazları hukuki açıdan değerlendirir.
+BİRİM: Rehberlik, Araştırma ve Kurumsal İletişim Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; rehberlik, araştırma ve kurumsal iletişim işleri bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Uluslararası İlişkiler Dairesi Başkanlığı
-GÖREV: Yurt dışına kişisel veri aktarımı başvuruları ve uluslararası kurumlarla işbirliğini yürütür.
+BİRİM: İnsan Kaynakları ve Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; insan kaynakları ve destek hizmetleri işleri bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: Kişisel Verileri Koruma Kurumunun resmî teşkilat şemasında yer alan hizmet birimidir; strateji geliştirme ve malî hizmetler işleri bu birimde yürütülür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.

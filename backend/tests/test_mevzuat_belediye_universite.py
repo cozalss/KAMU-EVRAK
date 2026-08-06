@@ -98,13 +98,29 @@ class TestUniversiteSablonu:
 
 
 class TestGuvenSiralamasi:
+    """Senaryo: kurumun KENDİ dosyası doğrulanmamış AMA mevzuat şablonu onu kapsıyor.
+
+    Örnek kurum neden Kadıköy değil: bu iki test 2026-08-02'de Kadıköy/Çankaya üzerinde
+    ölçülmüştü; 2026-08-06'da Kadıköy'ün kendi resmî müdürlük listesi doğrulanıp manifeste
+    girdi ve arama artık 1. adımda (kurum_ozel) erken dönüyor — yani Kadıköy'de test edilecek
+    "doğrulanmamış kuruma-özel kayıt" KALMADI. Kadıköy'de bırakılsaydı ilk test YANLIŞ SEBEPLE
+    yeşil kalırdı (doğrulanmış kayıt sıralamayı kazandığı için değil, tek kayıt olduğu için).
+    Çankaya hâlâ özgün senaryoda: kaynaksız kendi dosyası + 5393 şablonu.
+    """
+
+    KURUM = "cankaya-belediyesi"
+
     def test_dogrulanmis_birim_kaynaksiz_kaydin_onunde_gelir(self) -> None:
         """Kaynağı gösterilmeyen kuruma-özel dosya, doğrulanmış mevzuat birimini gölgeleyemez."""
-        aday = _ilk("kadikoy-belediyesi", "meclis kararı ve evrak kayıt işlemi")
-        assert aday is not None
-        assert aday["kaynak_guven"] == RESMI_DOGRULANMIS, aday
+        adaylar = teskilat_birim_ara(self.KURUM, "meclis kararı ve evrak kayıt işlemi", top_k=10)
+        assert adaylar
+        # Senaryonun hâlâ geçerli olduğunu ÖNCE doğrula: kurumun doğrulanmamış kaydı duruyor mu?
+        assert any(a["kaynak_tipi"] == "aday" for a in adaylar), (
+            f"{self.KURUM} artık doğrulanmış; testi hâlâ kaynaksız olan bir belediyeye taşı"
+        )
+        assert adaylar[0]["kaynak_guven"] == RESMI_DOGRULANMIS, adaylar[0]
 
     def test_kurumun_kendi_kaydi_listeden_dusmez(self) -> None:
         """F8 değişmezi: sıralama değişti, GİZLEME geri gelmedi."""
-        adaylar = teskilat_birim_ara("kadikoy-belediyesi", "meclis kararı ve evrak kayıt", top_k=10)
+        adaylar = teskilat_birim_ara(self.KURUM, "meclis kararı ve evrak kayıt", top_k=10)
         assert any(a["kaynak_tipi"] == "aday" for a in adaylar), "kurumun kendi kaydı kayboldu"

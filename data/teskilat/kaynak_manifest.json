@@ -1001,6 +1001,76 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "AYM Hizmet Birimlerinin Gorevleri, Calisma Usul ve Esaslari Hakkinda Yonetmelik resmi PDF'i (anayasa.gov.tr) pypdfium2 ile cikarildi; m.12/1'de sayilan ON DORT hizmet birimi bent sirasiyla alindi ve her birimin GOREV metni kendi maddesinden (m.13-m.86) LAFZEN programla cikarildi (elle aktarim yok). Yargisal yapi (Genel Kurul/Bolumler/Komisyonlar) hizmet birimi olmadigi icin listelenmedi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "kadikoy-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kadikoy.bel.tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "472868edff822db5a94ac4d433bb0b220f4f8f9e7297c3dfd37a400944d77c5d",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Kadikoy Belediyesi resmi mudurlukler sayfasindan (kadikoy.bel.tr/mudurlukler, TLS dogrulamali) 30 birim adi cikarildi ve goz denetiminden gecirildi; satir kirilmasi artigi ('Rehberlik ve Teftis Kurulu' + 'Temizlik Isleri') elle ayrildi. Sayfa GOREV tanimi vermedigi icin yalniz 5393 m.48/m.51 ve 5018 m.60 kanuni gorevleri yazildi, digerlerinde gorevin kaynakta bulunmadigi belirtildi. Onceki 14 uydurma 'TIPIK mudurluk' kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "bakirkoy-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bakirkoy.bel.tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "54a6ae4b0f258e223b1636cca0d989b5a1af8805344cf7e7c4d06d7a687b74c0",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Bakırköy Belediyesi resmi mudurlukler sayfasindan (TLS dogrulamali) 24 birim adi cikarildi ve goz denetiminden gecirildi; menu/cikarim artiklari ('Uye Kurulu', 'Bagli Kurulu', 'Uye Olunan Kurulu') atildi. Sayfa GOREV tanimi vermedigi icin yalniz 5393 m.48/m.51 ve 5018 m.60 kanuni gorevleri yazildi; digerlerinde gorevin kaynakta bulunmadigi acikca belirtildi. Onceki kaynaksiz 'TIPIK mudurluk' listesi kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "etimesgut-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.etimesgut.bel.tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "cdd62ef4ff49d5774de816b801fdcaa36dab65b3fc966dc03f6052ca2415bbac",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Etimesgut Belediyesi resmi mudurlukler sayfasindan (TLS dogrulamali) 29 birim adi cikarildi ve goz denetiminden gecirildi; menu/cikarim artiklari ('Uye Kurulu', 'Bagli Kurulu', 'Uye Olunan Kurulu') atildi. Sayfa GOREV tanimi vermedigi icin yalniz 5393 m.48/m.51 ve 5018 m.60 kanuni gorevleri yazildi; digerlerinde gorevin kaynakta bulunmadigi acikca belirtildi. Onceki kaynaksiz 'TIPIK mudurluk' listesi kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "konak-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.konak.bel.tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "aa24f68bc8871d89c4664509b5583b3b2df34278aaf7aef57ee4dd16c2acbaae",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Konak Belediyesi resmi mudurlukler sayfasindan (TLS dogrulamali) 40 birim adi cikarildi ve goz denetiminden gecirildi; menu/cikarim artiklari ('Uye Kurulu', 'Bagli Kurulu', 'Uye Olunan Kurulu') atildi. Sayfa GOREV tanimi vermedigi icin yalniz 5393 m.48/m.51 ve 5018 m.60 kanuni gorevleri yazildi; digerlerinde gorevin kaynakta bulunmadigi acikca belirtildi. Onceki kaynaksiz 'TIPIK mudurluk' listesi kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "nilufer-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.nilufer.bel.tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "4fbdc138c62266c6cbde2b515190f2db698feb27b0b4ffbd13d7115602fb9dd4",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Nilüfer Belediyesi resmi mudurlukler sayfasindan (TLS dogrulamali) 33 birim adi cikarildi ve goz denetiminden gecirildi; menu/cikarim artiklari ('Uye Kurulu', 'Bagli Kurulu', 'Uye Olunan Kurulu') atildi. Sayfa GOREV tanimi vermedigi icin yalniz 5393 m.48/m.51 ve 5018 m.60 kanuni gorevleri yazildi; digerlerinde gorevin kaynakta bulunmadigi acikca belirtildi. Onceki kaynaksiz 'TIPIK mudurluk' listesi kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "osmangazi-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.osmangazi.bel.tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "47a09fc543a7367ae3679735fb436cf082dd2a44332cd273fc14fc37095ae624",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "Osmangazi Belediyesi resmi mudurlukler sayfasindan (TLS dogrulamali) 30 birim adi cikarildi ve goz denetiminden gecirildi; menu/cikarim artiklari ('Uye Kurulu', 'Bagli Kurulu', 'Uye Olunan Kurulu') atildi. Sayfa GOREV tanimi vermedigi icin yalniz 5393 m.48/m.51 ve 5018 m.60 kanuni gorevleri yazildi; digerlerinde gorevin kaynakta bulunmadigi acikca belirtildi. Onceki kaynaksiz 'TIPIK mudurluk' listesi kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "kvkk-kurumu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kvkk.gov.tr/Icerik/2033/Teskilat-Semasi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "33ef6dccf1f347269f069d4582d00be58582fb4dd4cf09e3b01f6d115ac5c63a",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "KVKK resmi teskilat semasi sayfasindan (kvkk.gov.tr, TLS dogrulamali) 7 daire baskanligi cikarildi; sekizinci aday bir BELGE basligi oldugu icin goz denetiminde atildi. 6698 daire baskanliklarini saymadigi icin gorev metinleri birim adinin isaret ettigi alanla sinirli tutuldu. Onceki 6 kaynaksiz birim kaldirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

@@ -1,666 +1,1006 @@
 {
-  "version": 1,
-  "aciklama": "Yalniz resmi kaynaktan elle dogrulanmis ve SHA-256 ile kilitlenmis dosyalar bu manifestte yer alir.",
-  "kaynaklar": {
-    "bagcilar-belediyesi/iklim-degisikligi-ve-sifir-atik.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/20260305_iklimdegisikligivesifiratik.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "c0c11892ded25ab7aaa3134fcd637d881bc84ced0d9cca4dcbc3794bfee847b3",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Bagcilar Belediyesi resmi yonetmelik PDF m.6/e ve m.12 ile birim-gorev karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "bagcilar-belediyesi/ruhsat-ve-denetim.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/20250508_ruhsatve_denetim.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "b1ffddf2d1b5caa01e39f4ec92adffdd3156646ce99358659f45d622d381d86f",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Bagcilar Belediyesi resmi yonetmelik PDF m.6, m.10 ve m.11 ile birim-gorev karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "bagcilar-belediyesi/zabita.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/2018_zabita.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "3f82dbe8d4067cb82c83b600ab86e5a6111342a211ea644e4f47f2272e285e2c",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Bagcilar Belediyesi resmi Zabıta Mudurlugu yonetmelik PDF m.6 ile birim-gorev karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "yenimahalle-belediyesi/ruhsat-ve-denetim-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.yenimahalle.bel.tr/Icerik/ruhsat-ve-denetim-islemleri/15",
-      "kaynak_turu": "resmi_hizmet",
-      "icerik_sha256": "176085885254f2d64fd5439f0079e7aacbc7686d959921f62550b267ed27d914",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Yenimahalle Belediyesi resmi hizmet ve mudurluk sayfalari ile ruhsat, yenileme, devir ve denetim gorevleri karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "kecioren-belediyesi/fen-isleri-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://kecioren.bel.tr/yonetmelikler_yonelgeler/Kecioren_Belediyesi_Mudurluklerinin_Gorev__Yetki_ve_Sorumluluklari_Ile_Calisma_Usul_ve_Esaslarina_Dair_Yonetmelikkecioren.bel.tr10.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "5f9cf14ebd3c039b56c2263d9b628804e7995720b25705202c5531531c476e7d",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Kecioren Belediyesi resmi mudurluk yonetmeligi PDF m.16.3, m.16.5 ve m.16.6 ile yol-kaldirim gorevleri karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "odunpazari-belediyesi/fen-isleri-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.odunpazari.bel.tr/upload/files/fenisleri.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "5d8427d3e26965143cdee64257cb3f31193d33674a0364f3773fe8b34792ba58",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Odunpazari Belediyesi resmi Fen Isleri yonetmeligi PDF m.7 ve m.10 ile yol-asfalt-kaldirim gorevleri karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "akdeniz-belediyesi/veteriner-isleri-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.akdeniz.bel.tr/Default/KurumsalDetay/2308",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "5b5b06fb3464b39e4193f1592290deec6dc7d44adea06e01b79681dedda5d083",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Akdeniz Belediyesi resmi Veteriner Isleri sayfasi ile sahipsiz hayvan toplama-rehabilitasyon-sikayet gorevleri karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "kecioren-belediyesi/fen-isleri-yol-bakim-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.kecioren.bel.tr/keciorende_altyapi_seferberligi-2622-haber.html",
-      "kaynak_turu": "resmi_hizmet",
-      "icerik_sha256": "837bf41eb40671b5165f4ff32393262b77a591abc69cae8a101241144cf4a514",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Kecioren Belediyesi resmi 30.09.2024 altyapi haberi ile Fen Isleri yol, asfalt, kaldirim bakim ve onarim gorevleri karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "bagcilar-belediyesi/rehberlik-ve-teftis.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.bagcilar.bel.tr/duyuru/1104/rehberlik-ve-teftis-kurulu-mudurlugu-yonetmel",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "fd4667df4a20e3a5b42e2248dcee8117ec3335d42401e482bfc6f5b76114daf0",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "Bagcilar Belediyesi resmi Rehberlik ve Teftis Kurulu yonetmeligi degisikligi m.7, m.8, m.45 ile teftis, denetim, inceleme ve sorusturma gorevleri karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "turkiye-istatistik-kurumu/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.tuik.gov.tr/media/corporatecontent/tuik-yonetmelik.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "e547d6e9da13f97223bde8901adeb79f85acd646dc9bcb26c166434565fdb8f9",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "TUIK resmi hizmet birimleri yonetmeligi m.4-m.23/A ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "nufus-ve-vatandaslik-isleri-genel-mudurlugu/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.nvi.gov.tr/kurumlar/nvi.gov.tr/mevzuat/nufusmevzuat/yonerge/NVIGMBirim-Yonergesi.pdf",
-      "kaynak_turu": "resmi_yonetmelik",
-      "icerik_sha256": "94b7b0c93d7b12d382eee805864b2c2d6b8cbdbec3f440dc09440c397db934ed",
-      "dogrulayan": "codex-agent/2026-07-24",
-      "dogrulama_tarihi": "2026-07-24",
-      "dogrulama_yontemi": "NVI resmi Birim Yonergesi m.7-m.16 ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
-      "kaynak_erisim_tarihi": "2026-07-24"
-    },
-    "_mevzuat-valilik/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/mevzuatmetin/yonetmelik/7.5.15030.htm",
-      "kaynak_turu": "resmi_mevzuat_teskilat",
-      "dogrulama_yontemi": "Valilik ve Kaymakamlik Birimleri Teskilat, Gorev ve Calisma Yonetmeligi (RG 8/6/2011-27958) konsolide metni mevzuat.gov.tr uzerinden indirilip tam okundu; birim listesi m.9/1 \"Illerde asagidaki birimler bulunur\" hukmunden, gorev tanimlari m.15, 16, 17, 18, 19, 21, 22, 23, 24 ve 24/A bentlerinden birebir cikarildi. Buyuksehir kosullu m.9/1-e Protokol Sube Mudurlugu kapsam disi birakildi. Bagimsiz fabrikasyon denetimi (2026-07-25): 0 uydurma; tespit edilen 1 yanlis atif (m.20 protokol gorevlerinin kosulsuz Ozel Kalem e yazilmasi) ve 5 sadakat sapmasi duzeltildi; Protokol Sube Mudurlugu kapsam boslugu @NOT ta acikca belgelendi.",
-      "icerik_sha256": "7c217c0d3d58702d82c5673d096ced7bf429cc7ece9784583f2efedb2cbe6ed5",
-      "dogrulayan": "claude-agent/2026-07-25",
-      "dogrulama_tarihi": "2026-07-25",
-      "kaynak_erisim_tarihi": "2026-07-25"
-    },
-    "_mevzuat-kaymakamlik/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/mevzuatmetin/yonetmelik/7.5.15030.htm",
-      "kaynak_turu": "resmi_mevzuat_teskilat",
-      "dogrulama_yontemi": "Ayni Yonetmelik m.10/1-a (kosulsuz Ilce Yazi Isleri Mudurlugu) ile m.25/1-a ve m.25/1-f esleme hukumleri; ihtiyari seflikler (nufus >=50.000 / Bakanlikca uygun gorulen) kapsam disi birakildi. Bagimsiz fabrikasyon denetimi (2026-07-25): 1 uydurma gorev kalemi (\"icra takibi\" - Yonetmelikte yok) KALDIRILDI; 3 kapsam asimi daraltildi; kaymakamlik evrak havalesi icin m.26 yerine dogru madde m.39/1 yazildi.",
-      "icerik_sha256": "52c419c31c9ceadf05c9125c46800143e5d52c80d4e6cc8a88a5aa1e31834df5",
-      "dogrulayan": "claude-agent/2026-07-25",
-      "dogrulama_tarihi": "2026-07-25",
-      "kaynak_erisim_tarihi": "2026-07-25"
-    },
-    "_kapsam/iller.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf",
-      "kaynak_turu": "resmi_idari_bolunus",
-      "dogrulama_yontemi": "T.C. Icisleri Bakanligi Iller Idaresi Genel Mudurlugu \"Il ve Ilce Kurulus Tarihleri\" resmi PDF'i indirilip 86 sayfa tam okundu; il/ilce adlari transkribe edilip kurum_kimlik._slug ile sluglastirildi. Bagimsiz capraz kontrol: 81 il sicil kayitlariyla birebir ortusuyor; ilce farki yalniz 3 bilinen ad varyanti (Eyup/Eyupsultan, Ondokuzmayis/19 Mayis, Eregli/Karadeniz Eregli).",
-      "icerik_sha256": "e2b48e2dbe950db09cf12247d41665ee0c6462593f68ad6c1e8941dedce42690",
-      "dogrulayan": "claude-agent/2026-07-25",
-      "dogrulama_tarihi": "2026-07-25",
-      "kaynak_erisim_tarihi": "2026-07-25"
-    },
-    "_kapsam/ilceler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf",
-      "kaynak_turu": "resmi_idari_bolunus",
-      "dogrulama_yontemi": "T.C. Icisleri Bakanligi Iller Idaresi Genel Mudurlugu \"Il ve Ilce Kurulus Tarihleri\" resmi PDF'i indirilip 86 sayfa tam okundu; il/ilce adlari transkribe edilip kurum_kimlik._slug ile sluglastirildi. Bagimsiz capraz kontrol: 81 il sicil kayitlariyla birebir ortusuyor; ilce farki yalniz 3 bilinen ad varyanti (Eyup/Eyupsultan, Ondokuzmayis/19 Mayis, Eregli/Karadeniz Eregli). Bagimsiz denetim (2026-07-25): 897 satirin tamami kaynakla bit-duzeyinde ortusuyor, uydurma ilce 0, yanlis cikarilan merkez 0. @NOT taki karsiliksiz 5442 atfi kaldirildi (Kanun metninde \"merkez ilce\" ifadesi gecmiyor).",
-      "icerik_sha256": "16353afa846771249b4552e8caab5af9fceae2faa913ebf0e51ff12f6bc4fc72",
-      "dogrulayan": "claude-agent/2026-07-25",
-      "dogrulama_tarihi": "2026-07-25",
-      "kaynak_erisim_tarihi": "2026-07-25"
-    },
-    "tarim-ve-orman-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "12f05b51549d6a8f2fc00c90c1b9f6ef33d22c7de5650b6fe3854c0d6abaef93",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.412/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "tarim-ve-orman-bakanligi/orman-genel-mudurlugu.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.4.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "f41b3fd6193be4aa1748e78825e7e95a20cdf867a70a5648ee3d91e12e2ec583",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "4 sayili Cumhurbaskanligi Kararnamesi resmi PDF metni pypdfium2 ile cikarildi; 21 birim adi m.338/1 bentleriyle (a-r, ilave i-Ekosistem ve k-Havacilik dahil) birebir, gorev metinleri ayni bentlerin alt numaralarindan ozetlendi; 3234 sayili Kanunun teskilat maddeleri KHK-703/83 ile mulga oldugu icin kaynak alinmadi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "adana-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.adana.bel.tr/tr/birimlerimiz",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "b7f3f832c6ccc4384c74f9877bc5983764cae238a12a862d751e5f5ebecc7562",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "antalya-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://ge.antalya.bel.tr/birimler.html",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "c686b4263924a51867d92201ca2000d4c9ac4e7da144288c89b35befdac5d63a",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "bursa-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.bursa.bel.tr/idari",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "0455be00132b3aa67c090443eb5201842e945ec667a4024b6fa4f7e748d1f302",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "eskisehir-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.eskisehir.bel.tr/idari-sema",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "c724be2b73377c1b3d59515da90bb2a0935a1163ad1c47c95d003a6d5fa9e296",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "izmir-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.izmir.bel.tr/tr/Birimler/289/",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "b8e10d0ee14b73b183b363eea34075a0cee6d70038352b0b28a7526758531294",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "kocaeli-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.kocaeli.bel.tr/teskilat/",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "de75dcfc522f33cd531bc58b7b87775989b3087338407bae90c0aedb2dcfa3f4",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "konya-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.konya.bel.tr/s/birimlerimiz",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "503ba10d34c1204a1f46c9ba9cd73f79e36a22fc44c34961eb786d84acf93e86",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "malatya-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.malatya.bel.tr/organizasyon-semasi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "da33dce7edef89d8d8e593363984248289ce461e9d74ac6077289b9e488bda9d",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "mersin-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mersin.bel.tr/birimler",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "9986e2e62bcc08e81800afa6908f43ab0ae4eb5a15c8be3548f772921c76251e",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "mugla-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mugla.bel.tr/organizasyonsemasi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "1a31c6740b3b6420c4a7f079c079f1245db0e90eb0e3f82867b8c06e82d41c3f",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sakarya-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.sakarya.bel.tr/1/Belediye/DaireBaskanliklari/1",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "292c7fe20c1b9010ffffd702c81c6203707e6f790045c59afccaa1c900fc20d7",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sanliurfa-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.sanliurfa.bel.tr/kategori/7/0/birimler",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "779d87233501356788eb5cda879ae515f1549bb5c07e6dedafb060e6517b4273",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "cevre-sehircilik-ve-iklim-degisikligi-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "a3a64547f7322a5836ccb2434cf437465c21bac341ae5f5aa15751f69ac43284",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.99/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "adalet-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "16e2c31956ca681d357e8365280ba0a66e0306e1545e572d5d22b6a6e27c51a8",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.40/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "aile-ve-sosyal-hizmetler-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "e59a064b6d03d5eaa23ca559120fd704d1e30b601f528ff2389abbb7b8e0d405",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.67/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "calisma-ve-sosyal-guvenlik-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "6477588bc4f698221560af035459210c808d5332c361086b493aa50ad0652960",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.88/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "enerji-ve-tabii-kaynaklar-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "b4767d42ecda95766521285452d639c7dbfc1374dec0e217e7fdd73c2e33ac60",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.168/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "genclik-ve-spor-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "476e2f9be2c79e2385b8bec5e57183f191b9c26767e8de59564f04423496e9fe",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.186/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "hazine-ve-maliye-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "a2214fb782596459071e21a0134fe5ae8746600bca4da5b66b743c7b063dd500",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.219/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "icisleri-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "5d42a488c79d0e66652c80eae4b9f9ce11594c7fd350ae65828e75a6802065ee",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.256/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "kultur-ve-turizm-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "79959aa4bdf26bea4577cadbba56917bed6741384e0ea78e5e962e0da022e9f8",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.279/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "milli-egitim-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "9249718b7fb2620cc0404e31588b50aad86559a3d6b9540f5fae5e13842cb5ff",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.303/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "milli-savunma-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "5e9f680ddf257aa5f090c40b8ee6e779757581f915eb7ad9fd049be38b0604a5",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.339/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "saglik-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "6035f351a672eb0609ca8e7f25ee725a7e2347f2c2a2e71fd66044b1febe3731",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.354/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sanayi-ve-teknoloji-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "d324ace836fb7a5c829f243ec96e275584cc95da97d5738b9caa6bac3262c4a6",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.387/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "ticaret-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "ea5104ab614a2e3d8b6559d880d9a48300997f4ae7b58fe9bb811e058879a6e9",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.443/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "ulastirma-ve-altyapi-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "dbc9aa3ed55daa0fc87bd219a279570d314ee02a3bc16c3c90cbc49a23dd623d",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.476/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "disisleri-bakanligi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "9134957f043f50a7f2aeef97c4d53831db932dbc5b279c54a2fb133de2f8b02d",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.129/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "bilgi-teknolojileri-ve-iletisim-kurumu/internet.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.btk.gov.tr/internet-daire-baskanligi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "0bf8ce56b4d8c8df09f5d1721c4c431820c15fa6098a5201f7cba68e2ae0045a",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "bilgi-teknolojileri-ve-iletisim-kurumu/yetkilendirme.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://btk.gov.tr/yetkilendirme-dairesi-baskanligi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "e5a46dd1b3d3880062e9b7611472c3c7f90233301fd580eafc595a5a96659ea8",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "kisisel-verileri-koruma-kurumu/veri-guvenligi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.kvkk.gov.tr/Icerik/4228/Veri-Guvenligi-ve-Bilgi-Sistemleri-Dairesi-Baskanligi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "f9087789569c4b9eb81f475f98c226fbd0f2877098a1c4ca566517e88dfface5",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sermaye-piyasasi-kurulu/aracilik-faaliyetleri.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/aracilik-faaliyetleri-dairesi-baskanligi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "3f30bf07e8d2c782997a656062fa6c426fe901e77d5f36fb3a57ffaf5253c85a",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sermaye-piyasasi-kurulu/bagimsiz-denetim-ve-degerleme.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/bagimsiz-denetim-ve-degerleme-faaliyetleri-dairesi-baskanligi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "cdaafb306953b194d31c25c45bd5e715593f195946adaf2c11af7bd5883b2f12",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sermaye-piyasasi-kurulu/denetleme.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/denetleme-dairesi-baskanligi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "358ba1a4d7451a72eb2986fcdb8a79ae1367931c8e617c40f7baa4e68abe9f83",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "sosyal-guvenlik-kurumu/emeklilik-hizmetleri.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.sgk.gov.tr/birimler/hakkimizda/EMEKLILIK-HIZMETLERI-GENEL-MUDURLUGU-2026-04-29-02-25-38",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "5baa8b453df673b0204f1c48b249f719e647046c9ac53f9c2734f4b4268ea6a4",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "tapu-ve-kadastro-genel-mudurlugu/strateji-gelistirme.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.tkgm.gov.tr/stratejig-db/gorev-yetki-ve-sorumluluklar",
-      "kaynak_turu": "resmi_karar",
-      "icerik_sha256": "37061175531f708c74d2f8fd7a599625e666a439bc614eb659d074a89b1622f5",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "diyarbakir-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.diyarbakir.bel.tr/tr/teskilat-semasi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "403a82d971dc0506955379c9cd5a2338cbbb65ae6e1485ed8d0b944b0ec19011",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "ordu-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.ordu.bel.tr/organizasyon-semasi",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "2911cd704c1551b9fccb086915d38b8e7cb62e9130008d31c16470e1f898b64f",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "ankara-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.ankara.bel.tr/teskilat-semasi/baskanliklar",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "9dfd697646ad14db0077a44f252a06e52a122d329d0eb745c73c73b1b2a2bbcf",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "resmi teskilat sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi kaynak metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); kaynakta gorunmeyen birimler ayni dizindeki teskilat-dogrulanmamis.txt dosyasina ayrildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "van-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://van.bel.tr/teskilat-semasi.html",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "8a9b35ca10a49c0949f44656cd790cef29b1854da7e8b3cbeba8bcfa8ef1fd1d",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "resmi teskilat sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi kaynak metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); kaynakta gorunmeyen birimler ayni dizindeki teskilat-dogrulanmamis.txt dosyasina ayrildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "kahramanmaras-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://kahramanmaras.bel.tr/fs/fields/attachments/2025_faaliyet_raporu_0.pdf",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "2cbb4538426d7cff4b0662cdae4ca98dabc748df88b31d722cc3b62e8e600fc1",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "resmi faaliyet raporu PDF TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi kaynak metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); kaynakta gorunmeyen birimler ayni dizindeki teskilat-dogrulanmamis.txt dosyasina ayrildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "kayseri-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.kayseri.bel.tr/hizmet-birimleri",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "5c6759031f5a8ccac3d794fc3a7f6b216096163201fff01729b31951d30a89a8",
-      "dogrulayan": "claude-opus-5/2026-07-26",
-      "dogrulama_tarihi": "2026-07-26",
-      "dogrulama_yontemi": "kurumun resmi yonetim sayfasi (kayseri.bel.tr/yonetim) TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfada bulundu; kisa yazilmis birim adlari tam unvanli karsiligiyla eslestirildi; bulunmayanlar teskilat-dogrulanmamis.txt dosyasina ayrildi",
-      "kaynak_erisim_tarihi": "2026-07-26"
-    },
-    "samsun-buyuksehir-belediyesi/teskilat-resmi.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.samsun.bel.tr/kurumsal/kurumsal-yapi/daire-baskanliklari",
-      "kaynak_turu": "resmi_teskilat",
-      "icerik_sha256": "c66ab3c25e55f1b54857dbf19027868c32308a6605d46a4b7225edc6b9469c1c",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "kurumun resmi teskilat sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfada bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); sayfada gorunmeyen birim teskilat-dogrulanmamis.txt dosyasina ayrildi",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    },
-    "_mevzuat-universite/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/4.5.124.pdf",
-      "kaynak_turu": "resmi_mevzuat_teskilat",
-      "icerik_sha256": "169ad6c415e413baf38db221319fd6b8ffa3899b387aa407b155d4866a9924cb",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "124 sayili KHK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.26/1 bentlerinden, gorev metinleri m.27-37den alindi. Yururluk kontrolu yapildi: mulga maddeler 15-24 YOK ust kurulusu bolumune aittir, m.26 yururluktedir; 703 s. KHK atiflari m.25 ve m.42yi degistirmis, m.26ya dokunmamistir. Komptrolorluk (m.26/1-d) yerine 5436 s. Kanun m.15/1-c ile kurulan Strateji Gelistirme Daire Baskanligi listelenmistir (5436 metni ayrica dogrulandi). Kapsam 2547 Ek m.8 uyarinca yalniz DEVLET universiteleriyle sinirlandirilmistir",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    },
-    "_kapsam/universiteler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.yok.gov.tr/tr/university?type=1",
-      "kaynak_turu": "resmi_idari_bolunus",
-      "icerik_sha256": "248dbf00a54680dbbd2dea94ace1e2ab7c489333bf65e852e57b1827917a02a4",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "YOK resmi universite listesinden turetilen 126 devlet universitesi; vakif yuksekogretim kurumlari ve slug kalibina uymayan Izmir Yuksek Teknoloji Enstitusu disarida birakildi, gerekcesi dosya kunyesinde yazili",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    },
-    "_mevzuat-belediye/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5393.pdf",
-      "kaynak_turu": "resmi_mevzuat_teskilat",
-      "icerik_sha256": "36b3b3e30447facecacb808923f491f447274cd65208712dfb5c45bfe20880e4",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "5393 s. Belediye Kanunu resmi PDF metni pypdfium2 ile cikarildi; m.48'deki DORT zorunlu birim ('yazi isleri, mali hizmetler, fen isleri ve zabita') alindi, ayni maddedeki kosullu birimler (saglik/itfaiye/imar/insan kaynaklari/hukuk) ALINMADI. Zabita gorevi m.51'den birebir; mali hizmetler gorevi 5018 m.60 genel hukmunden. Yazi isleri ve fen isleri icin Kanun gorev tanimi icermedigi acikca belirtildi, gorev uydurulmadi. Buyuksehir belediyeleri kapsam disi (5216 m.21)",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    },
-    "_kapsam/belediyeler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.icisleri.gov.tr/illeridaresi/turkiye-mulki-idare-bolumleri-envanteri",
-      "kaynak_turu": "resmi_idari_bolunus",
-      "icerik_sha256": "54ded71c61eb524964c9d44e6d9c240eb3aca39d9fbda846f3530bfd4c2e52c0",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "kurum sicilinden turetilen 973 belediye (buyuksehir ve kalip disi bagli idareler haric); gerekcesi dosya kunyesinde yazili",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    },
-    "_mevzuat-il-ozel-idaresi/birimler.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5302.pdf",
-      "kaynak_turu": "resmi_mevzuat_teskilat",
-      "icerik_sha256": "41a3e2d6a467977de09f33d031773a0ffb4a867ae6bcb5c49f9e89efd78a986d",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "5302 s. Kanun resmi PDF metni pypdfium2 ile cikarildi; m.35'teki YEDI zorunlu birim alindi, ihtiyari birimler alinmadi. Genel Sekreterlik gorevi m.35'ten birebir; mali isler 5018 m.60'tan; kalan bes birim icin Kanun birim gorevi tanimlamadigi ACIKCA yazildi ve idarenin m.6'daki gorev alanindan karsilik gelen hizmet dali belirtildi. m.6/1-b'deki 'belediye sinirlari disinda' sinirlamasi imar biriminde korundu",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    },
-    "_kapsam/il-ozel-idareleri.txt": {
-      "durum": "resmi_dogrulanmis",
-      "kaynak_url": "https://www.icisleri.gov.tr/illeridaresi/turkiye-mulki-idare-bolumleri-envanteri",
-      "kaynak_turu": "resmi_idari_bolunus",
-      "icerik_sha256": "88f28a1aea384095181c43fcabb8c3cdd9c4b8c51f0a37c35b411da2c30e5a90",
-      "dogrulayan": "claude-opus-5/2026-08-02",
-      "dogrulama_tarihi": "2026-08-02",
-      "dogrulama_yontemi": "kurum sicilinden turetilen 51 il ozel idaresi (6360 sonrasi buyuksehir illerinde yok)",
-      "kaynak_erisim_tarihi": "2026-08-02"
-    }
+ "version": 1,
+ "aciklama": "Yalniz resmi kaynaktan elle dogrulanmis ve SHA-256 ile kilitlenmis dosyalar bu manifestte yer alir.",
+ "kaynaklar": {
+  "bagcilar-belediyesi/iklim-degisikligi-ve-sifir-atik.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/20260305_iklimdegisikligivesifiratik.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "c0c11892ded25ab7aaa3134fcd637d881bc84ced0d9cca4dcbc3794bfee847b3",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi yonetmelik PDF m.6/e ve m.12 ile birim-gorev karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "bagcilar-belediyesi/ruhsat-ve-denetim.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/20250508_ruhsatve_denetim.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "b1ffddf2d1b5caa01e39f4ec92adffdd3156646ce99358659f45d622d381d86f",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi yonetmelik PDF m.6, m.10 ve m.11 ile birim-gorev karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "bagcilar-belediyesi/zabita.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/BBImages/Slider/Image/2018_zabita.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "3f82dbe8d4067cb82c83b600ab86e5a6111342a211ea644e4f47f2272e285e2c",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi Zabıta Mudurlugu yonetmelik PDF m.6 ile birim-gorev karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "yenimahalle-belediyesi/ruhsat-ve-denetim-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.yenimahalle.bel.tr/Icerik/ruhsat-ve-denetim-islemleri/15",
+   "kaynak_turu": "resmi_hizmet",
+   "icerik_sha256": "176085885254f2d64fd5439f0079e7aacbc7686d959921f62550b267ed27d914",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Yenimahalle Belediyesi resmi hizmet ve mudurluk sayfalari ile ruhsat, yenileme, devir ve denetim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "kecioren-belediyesi/fen-isleri-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://kecioren.bel.tr/yonetmelikler_yonelgeler/Kecioren_Belediyesi_Mudurluklerinin_Gorev__Yetki_ve_Sorumluluklari_Ile_Calisma_Usul_ve_Esaslarina_Dair_Yonetmelikkecioren.bel.tr10.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "5f9cf14ebd3c039b56c2263d9b628804e7995720b25705202c5531531c476e7d",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Kecioren Belediyesi resmi mudurluk yonetmeligi PDF m.16.3, m.16.5 ve m.16.6 ile yol-kaldirim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "odunpazari-belediyesi/fen-isleri-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.odunpazari.bel.tr/upload/files/fenisleri.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "5d8427d3e26965143cdee64257cb3f31193d33674a0364f3773fe8b34792ba58",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Odunpazari Belediyesi resmi Fen Isleri yonetmeligi PDF m.7 ve m.10 ile yol-asfalt-kaldirim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "akdeniz-belediyesi/veteriner-isleri-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.akdeniz.bel.tr/Default/KurumsalDetay/2308",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5b5b06fb3464b39e4193f1592290deec6dc7d44adea06e01b79681dedda5d083",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Akdeniz Belediyesi resmi Veteriner Isleri sayfasi ile sahipsiz hayvan toplama-rehabilitasyon-sikayet gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "kecioren-belediyesi/fen-isleri-yol-bakim-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kecioren.bel.tr/keciorende_altyapi_seferberligi-2622-haber.html",
+   "kaynak_turu": "resmi_hizmet",
+   "icerik_sha256": "837bf41eb40671b5165f4ff32393262b77a591abc69cae8a101241144cf4a514",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Kecioren Belediyesi resmi 30.09.2024 altyapi haberi ile Fen Isleri yol, asfalt, kaldirim bakim ve onarim gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "bagcilar-belediyesi/rehberlik-ve-teftis.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bagcilar.bel.tr/duyuru/1104/rehberlik-ve-teftis-kurulu-mudurlugu-yonetmel",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "fd4667df4a20e3a5b42e2248dcee8117ec3335d42401e482bfc6f5b76114daf0",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "Bagcilar Belediyesi resmi Rehberlik ve Teftis Kurulu yonetmeligi degisikligi m.7, m.8, m.45 ile teftis, denetim, inceleme ve sorusturma gorevleri karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "turkiye-istatistik-kurumu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.tuik.gov.tr/media/corporatecontent/tuik-yonetmelik.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "e547d6e9da13f97223bde8901adeb79f85acd646dc9bcb26c166434565fdb8f9",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "TUIK resmi hizmet birimleri yonetmeligi m.4-m.23/A ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "nufus-ve-vatandaslik-isleri-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.nvi.gov.tr/kurumlar/nvi.gov.tr/mevzuat/nufusmevzuat/yonerge/NVIGMBirim-Yonergesi.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "94b7b0c93d7b12d382eee805864b2c2d6b8cbdbec3f440dc09440c397db934ed",
+   "dogrulayan": "codex-agent/2026-07-24",
+   "dogrulama_tarihi": "2026-07-24",
+   "dogrulama_yontemi": "NVI resmi Birim Yonergesi m.7-m.16 ile daire adlari ve gorevlerinin madde madde karsilastirmasi",
+   "kaynak_erisim_tarihi": "2026-07-24"
+  },
+  "_mevzuat-valilik/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/mevzuatmetin/yonetmelik/7.5.15030.htm",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "dogrulama_yontemi": "Valilik ve Kaymakamlik Birimleri Teskilat, Gorev ve Calisma Yonetmeligi (RG 8/6/2011-27958) konsolide metni mevzuat.gov.tr uzerinden indirilip tam okundu; birim listesi m.9/1 \"Illerde asagidaki birimler bulunur\" hukmunden, gorev tanimlari m.15, 16, 17, 18, 19, 21, 22, 23, 24 ve 24/A bentlerinden birebir cikarildi. Buyuksehir kosullu m.9/1-e Protokol Sube Mudurlugu kapsam disi birakildi. Bagimsiz fabrikasyon denetimi (2026-07-25): 0 uydurma; tespit edilen 1 yanlis atif (m.20 protokol gorevlerinin kosulsuz Ozel Kalem e yazilmasi) ve 5 sadakat sapmasi duzeltildi; Protokol Sube Mudurlugu kapsam boslugu @NOT ta acikca belgelendi.",
+   "icerik_sha256": "7c217c0d3d58702d82c5673d096ced7bf429cc7ece9784583f2efedb2cbe6ed5",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "_mevzuat-kaymakamlik/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/mevzuatmetin/yonetmelik/7.5.15030.htm",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "dogrulama_yontemi": "Ayni Yonetmelik m.10/1-a (kosulsuz Ilce Yazi Isleri Mudurlugu) ile m.25/1-a ve m.25/1-f esleme hukumleri; ihtiyari seflikler (nufus >=50.000 / Bakanlikca uygun gorulen) kapsam disi birakildi. Bagimsiz fabrikasyon denetimi (2026-07-25): 1 uydurma gorev kalemi (\"icra takibi\" - Yonetmelikte yok) KALDIRILDI; 3 kapsam asimi daraltildi; kaymakamlik evrak havalesi icin m.26 yerine dogru madde m.39/1 yazildi.",
+   "icerik_sha256": "52c419c31c9ceadf05c9125c46800143e5d52c80d4e6cc8a88a5aa1e31834df5",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "_kapsam/iller.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "dogrulama_yontemi": "T.C. Icisleri Bakanligi Iller Idaresi Genel Mudurlugu \"Il ve Ilce Kurulus Tarihleri\" resmi PDF'i indirilip 86 sayfa tam okundu; il/ilce adlari transkribe edilip kurum_kimlik._slug ile sluglastirildi. Bagimsiz capraz kontrol: 81 il sicil kayitlariyla birebir ortusuyor; ilce farki yalniz 3 bilinen ad varyanti (Eyup/Eyupsultan, Ondokuzmayis/19 Mayis, Eregli/Karadeniz Eregli).",
+   "icerik_sha256": "e2b48e2dbe950db09cf12247d41665ee0c6462593f68ad6c1e8941dedce42690",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "_kapsam/ilceler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.icisleri.gov.tr/kurumlar/icisleri.gov.tr/IcSite/illeridaresi/Bilgiler2/%C4%B0l%20ve%20%C4%B0l%C3%A7e%20Kurulu%C5%9F%20Tarihleri%202018.pdf",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "dogrulama_yontemi": "T.C. Icisleri Bakanligi Iller Idaresi Genel Mudurlugu \"Il ve Ilce Kurulus Tarihleri\" resmi PDF'i indirilip 86 sayfa tam okundu; il/ilce adlari transkribe edilip kurum_kimlik._slug ile sluglastirildi. Bagimsiz capraz kontrol: 81 il sicil kayitlariyla birebir ortusuyor; ilce farki yalniz 3 bilinen ad varyanti (Eyup/Eyupsultan, Ondokuzmayis/19 Mayis, Eregli/Karadeniz Eregli). Bagimsiz denetim (2026-07-25): 897 satirin tamami kaynakla bit-duzeyinde ortusuyor, uydurma ilce 0, yanlis cikarilan merkez 0. @NOT taki karsiliksiz 5442 atfi kaldirildi (Kanun metninde \"merkez ilce\" ifadesi gecmiyor).",
+   "icerik_sha256": "16353afa846771249b4552e8caab5af9fceae2faa913ebf0e51ff12f6bc4fc72",
+   "dogrulayan": "claude-agent/2026-07-25",
+   "dogrulama_tarihi": "2026-07-25",
+   "kaynak_erisim_tarihi": "2026-07-25"
+  },
+  "tarim-ve-orman-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "12f05b51549d6a8f2fc00c90c1b9f6ef33d22c7de5650b6fe3854c0d6abaef93",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.412/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "tarim-ve-orman-bakanligi/orman-genel-mudurlugu.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.4.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "f41b3fd6193be4aa1748e78825e7e95a20cdf867a70a5648ee3d91e12e2ec583",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "4 sayili Cumhurbaskanligi Kararnamesi resmi PDF metni pypdfium2 ile cikarildi; 21 birim adi m.338/1 bentleriyle (a-r, ilave i-Ekosistem ve k-Havacilik dahil) birebir, gorev metinleri ayni bentlerin alt numaralarindan ozetlendi; 3234 sayili Kanunun teskilat maddeleri KHK-703/83 ile mulga oldugu icin kaynak alinmadi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "adana-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.adana.bel.tr/tr/birimlerimiz",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "b7f3f832c6ccc4384c74f9877bc5983764cae238a12a862d751e5f5ebecc7562",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "antalya-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://ge.antalya.bel.tr/birimler.html",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "c686b4263924a51867d92201ca2000d4c9ac4e7da144288c89b35befdac5d63a",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "bursa-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.bursa.bel.tr/idari",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "0455be00132b3aa67c090443eb5201842e945ec667a4024b6fa4f7e748d1f302",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "eskisehir-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eskisehir.bel.tr/idari-sema",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "c724be2b73377c1b3d59515da90bb2a0935a1163ad1c47c95d003a6d5fa9e296",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "izmir-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.izmir.bel.tr/tr/Birimler/289/",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "b8e10d0ee14b73b183b363eea34075a0cee6d70038352b0b28a7526758531294",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "kocaeli-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kocaeli.bel.tr/teskilat/",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "de75dcfc522f33cd531bc58b7b87775989b3087338407bae90c0aedb2dcfa3f4",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "konya-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.konya.bel.tr/s/birimlerimiz",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "503ba10d34c1204a1f46c9ba9cd73f79e36a22fc44c34961eb786d84acf93e86",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "malatya-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.malatya.bel.tr/organizasyon-semasi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "da33dce7edef89d8d8e593363984248289ce461e9d74ac6077289b9e488bda9d",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "mersin-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mersin.bel.tr/birimler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "9986e2e62bcc08e81800afa6908f43ab0ae4eb5a15c8be3548f772921c76251e",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "mugla-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mugla.bel.tr/organizasyonsemasi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "1a31c6740b3b6420c4a7f079c079f1245db0e90eb0e3f82867b8c06e82d41c3f",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sakarya-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.sakarya.bel.tr/1/Belediye/DaireBaskanliklari/1",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "292c7fe20c1b9010ffffd702c81c6203707e6f790045c59afccaa1c900fc20d7",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sanliurfa-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.sanliurfa.bel.tr/kategori/7/0/birimler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "779d87233501356788eb5cda879ae515f1549bb5c07e6dedafb060e6517b4273",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "cevre-sehircilik-ve-iklim-degisikligi-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "a3a64547f7322a5836ccb2434cf437465c21bac341ae5f5aa15751f69ac43284",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.99/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "adalet-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "16e2c31956ca681d357e8365280ba0a66e0306e1545e572d5d22b6a6e27c51a8",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.40/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "aile-ve-sosyal-hizmetler-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "e59a064b6d03d5eaa23ca559120fd704d1e30b601f528ff2389abbb7b8e0d405",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.67/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "calisma-ve-sosyal-guvenlik-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "6477588bc4f698221560af035459210c808d5332c361086b493aa50ad0652960",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.88/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "enerji-ve-tabii-kaynaklar-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "b4767d42ecda95766521285452d639c7dbfc1374dec0e217e7fdd73c2e33ac60",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.168/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "genclik-ve-spor-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "476e2f9be2c79e2385b8bec5e57183f191b9c26767e8de59564f04423496e9fe",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.186/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "hazine-ve-maliye-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "a2214fb782596459071e21a0134fe5ae8746600bca4da5b66b743c7b063dd500",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.219/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "icisleri-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5d42a488c79d0e66652c80eae4b9f9ce11594c7fd350ae65828e75a6802065ee",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.256/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "kultur-ve-turizm-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "79959aa4bdf26bea4577cadbba56917bed6741384e0ea78e5e962e0da022e9f8",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.279/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "milli-egitim-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "9249718b7fb2620cc0404e31588b50aad86559a3d6b9540f5fae5e13842cb5ff",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.303/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "milli-savunma-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5e9f680ddf257aa5f090c40b8ee6e779757581f915eb7ad9fd049be38b0604a5",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.339/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "saglik-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "6035f351a672eb0609ca8e7f25ee725a7e2347f2c2a2e71fd66044b1febe3731",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.354/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sanayi-ve-teknoloji-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "d324ace836fb7a5c829f243ec96e275584cc95da97d5738b9caa6bac3262c4a6",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.387/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "ticaret-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "ea5104ab614a2e3d8b6559d880d9a48300997f4ae7b58fe9bb811e058879a6e9",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.443/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "ulastirma-ve-altyapi-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "dbc9aa3ed55daa0fc87bd219a279570d314ee02a3bc16c3c90cbc49a23dd623d",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.476/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "disisleri-bakanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/19.5.1.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "9134957f043f50a7f2aeef97c4d53831db932dbc5b279c54a2fb133de2f8b02d",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "1 sayili CBK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.129/1 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR kesildi (scripts/cbk_bakanlik_cikar.py); mulga bentler ve Anayasa Mahkemesince iptal edilen bentler alinmadi; gorevi ayri maddede duzenlenmemis birimler bu durum belirtilerek listede tutuldu",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "bilgi-teknolojileri-ve-iletisim-kurumu/internet.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.btk.gov.tr/internet-daire-baskanligi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "0bf8ce56b4d8c8df09f5d1721c4c431820c15fa6098a5201f7cba68e2ae0045a",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "bilgi-teknolojileri-ve-iletisim-kurumu/yetkilendirme.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://btk.gov.tr/yetkilendirme-dairesi-baskanligi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "e5a46dd1b3d3880062e9b7611472c3c7f90233301fd580eafc595a5a96659ea8",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "kisisel-verileri-koruma-kurumu/veri-guvenligi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kvkk.gov.tr/Icerik/4228/Veri-Guvenligi-ve-Bilgi-Sistemleri-Dairesi-Baskanligi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "f9087789569c4b9eb81f475f98c226fbd0f2877098a1c4ca566517e88dfface5",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sermaye-piyasasi-kurulu/aracilik-faaliyetleri.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/aracilik-faaliyetleri-dairesi-baskanligi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "3f30bf07e8d2c782997a656062fa6c426fe901e77d5f36fb3a57ffaf5253c85a",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sermaye-piyasasi-kurulu/bagimsiz-denetim-ve-degerleme.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/bagimsiz-denetim-ve-degerleme-faaliyetleri-dairesi-baskanligi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "cdaafb306953b194d31c25c45bd5e715593f195946adaf2c11af7bd5883b2f12",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sermaye-piyasasi-kurulu/denetleme.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://spk.gov.tr/hakkimizda/organizasyon/teskilat/daire-baskanliklari/denetleme-dairesi-baskanligi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "358ba1a4d7451a72eb2986fcdb8a79ae1367931c8e617c40f7baa4e68abe9f83",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "sosyal-guvenlik-kurumu/emeklilik-hizmetleri.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.sgk.gov.tr/birimler/hakkimizda/EMEKLILIK-HIZMETLERI-GENEL-MUDURLUGU-2026-04-29-02-25-38",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5baa8b453df673b0204f1c48b249f719e647046c9ac53f9c2734f4b4268ea6a4",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "tapu-ve-kadastro-genel-mudurlugu/strateji-gelistirme.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.tkgm.gov.tr/stratejig-db/gorev-yetki-ve-sorumluluklar",
+   "kaynak_turu": "resmi_karar",
+   "icerik_sha256": "37061175531f708c74d2f8fd7a599625e666a439bc614eb659d074a89b1622f5",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "diyarbakir-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.diyarbakir.bel.tr/tr/teskilat-semasi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "403a82d971dc0506955379c9cd5a2338cbbb65ae6e1485ed8d0b944b0ec19011",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "ordu-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.ordu.bel.tr/organizasyon-semasi",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "2911cd704c1551b9fccb086915d38b8e7cb62e9130008d31c16470e1f898b64f",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM)",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "ankara-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.ankara.bel.tr/teskilat-semasi/baskanliklar",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "9dfd697646ad14db0077a44f252a06e52a122d329d0eb745c73c73b1b2a2bbcf",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "resmi teskilat sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi kaynak metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); kaynakta gorunmeyen birimler ayni dizindeki teskilat-dogrulanmamis.txt dosyasina ayrildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "van-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://van.bel.tr/teskilat-semasi.html",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "8a9b35ca10a49c0949f44656cd790cef29b1854da7e8b3cbeba8bcfa8ef1fd1d",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "resmi teskilat sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi kaynak metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); kaynakta gorunmeyen birimler ayni dizindeki teskilat-dogrulanmamis.txt dosyasina ayrildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "kahramanmaras-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://kahramanmaras.bel.tr/fs/fields/attachments/2025_faaliyet_raporu_0.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "2cbb4538426d7cff4b0662cdae4ca98dabc748df88b31d722cc3b62e8e600fc1",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "resmi faaliyet raporu PDF TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi kaynak metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); kaynakta gorunmeyen birimler ayni dizindeki teskilat-dogrulanmamis.txt dosyasina ayrildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "kayseri-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kayseri.bel.tr/hizmet-birimleri",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "5c6759031f5a8ccac3d794fc3a7f6b216096163201fff01729b31951d30a89a8",
+   "dogrulayan": "claude-opus-5/2026-07-26",
+   "dogrulama_tarihi": "2026-07-26",
+   "dogrulama_yontemi": "kurumun resmi yonetim sayfasi (kayseri.bel.tr/yonetim) TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfada bulundu; kisa yazilmis birim adlari tam unvanli karsiligiyla eslestirildi; bulunmayanlar teskilat-dogrulanmamis.txt dosyasina ayrildi",
+   "kaynak_erisim_tarihi": "2026-07-26"
+  },
+  "samsun-buyuksehir-belediyesi/teskilat-resmi.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.samsun.bel.tr/kurumsal/kurumsal-yapi/daire-baskanliklari",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "c66ab3c25e55f1b54857dbf19027868c32308a6605d46a4b7225edc6b9469c1c",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "kurumun resmi teskilat sayfasi TLS dogrulamasi ACIK indirildi; dosyadaki her birim adi sayfada bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); sayfada gorunmeyen birim teskilat-dogrulanmamis.txt dosyasina ayrildi",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "_mevzuat-universite/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/4.5.124.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "169ad6c415e413baf38db221319fd6b8ffa3899b387aa407b155d4866a9924cb",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "124 sayili KHK resmi PDF metni pypdfium2 ile cikarildi; birim adlari m.26/1 bentlerinden, gorev metinleri m.27-37den alindi. Yururluk kontrolu yapildi: mulga maddeler 15-24 YOK ust kurulusu bolumune aittir, m.26 yururluktedir; 703 s. KHK atiflari m.25 ve m.42yi degistirmis, m.26ya dokunmamistir. Komptrolorluk (m.26/1-d) yerine 5436 s. Kanun m.15/1-c ile kurulan Strateji Gelistirme Daire Baskanligi listelenmistir (5436 metni ayrica dogrulandi). Kapsam 2547 Ek m.8 uyarinca yalniz DEVLET universiteleriyle sinirlandirilmistir",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "_kapsam/universiteler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.yok.gov.tr/tr/university?type=1",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "icerik_sha256": "248dbf00a54680dbbd2dea94ace1e2ab7c489333bf65e852e57b1827917a02a4",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "YOK resmi universite listesinden turetilen 126 devlet universitesi; vakif yuksekogretim kurumlari ve slug kalibina uymayan Izmir Yuksek Teknoloji Enstitusu disarida birakildi, gerekcesi dosya kunyesinde yazili",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "_mevzuat-belediye/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5393.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "36b3b3e30447facecacb808923f491f447274cd65208712dfb5c45bfe20880e4",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "5393 s. Belediye Kanunu resmi PDF metni pypdfium2 ile cikarildi; m.48'deki DORT zorunlu birim ('yazi isleri, mali hizmetler, fen isleri ve zabita') alindi, ayni maddedeki kosullu birimler (saglik/itfaiye/imar/insan kaynaklari/hukuk) ALINMADI. Zabita gorevi m.51'den birebir; mali hizmetler gorevi 5018 m.60 genel hukmunden. Yazi isleri ve fen isleri icin Kanun gorev tanimi icermedigi acikca belirtildi, gorev uydurulmadi. Buyuksehir belediyeleri kapsam disi (5216 m.21)",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "_kapsam/belediyeler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.icisleri.gov.tr/illeridaresi/turkiye-mulki-idare-bolumleri-envanteri",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "icerik_sha256": "54ded71c61eb524964c9d44e6d9c240eb3aca39d9fbda846f3530bfd4c2e52c0",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "kurum sicilinden turetilen 973 belediye (buyuksehir ve kalip disi bagli idareler haric); gerekcesi dosya kunyesinde yazili",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "_mevzuat-il-ozel-idaresi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mevzuat.gov.tr/MevzuatMetin/1.5.5302.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "41a3e2d6a467977de09f33d031773a0ffb4a867ae6bcb5c49f9e89efd78a986d",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "5302 s. Kanun resmi PDF metni pypdfium2 ile cikarildi; m.35'teki YEDI zorunlu birim alindi, ihtiyari birimler alinmadi. Genel Sekreterlik gorevi m.35'ten birebir; mali isler 5018 m.60'tan; kalan bes birim icin Kanun birim gorevi tanimlamadigi ACIKCA yazildi ve idarenin m.6'daki gorev alanindan karsilik gelen hizmet dali belirtildi. m.6/1-b'deki 'belediye sinirlari disinda' sinirlamasi imar biriminde korundu",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "_kapsam/il-ozel-idareleri.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.icisleri.gov.tr/illeridaresi/turkiye-mulki-idare-bolumleri-envanteri",
+   "kaynak_turu": "resmi_idari_bolunus",
+   "icerik_sha256": "88f28a1aea384095181c43fcabb8c3cdd9c4b8c51f0a37c35b411da2c30e5a90",
+   "dogrulayan": "claude-opus-5/2026-08-02",
+   "dogrulama_tarihi": "2026-08-02",
+   "dogrulama_yontemi": "kurum sicilinden turetilen 51 il ozel idaresi (6360 sonrasi buyuksehir illerinde yok)",
+   "kaynak_erisim_tarihi": "2026-08-02"
+  },
+  "adana-aski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "ffd2aaed512d7f1da91ae35f9685d08eb98a15cd795cfe9e49fb7c956500346a",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "aski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "522a3e46505ea7091b631fd2ffa0a8579331b1d9d89f5f4795197064869c376f",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "asat/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "546fa6b1daa2098378cbbec6725f61ab673dc44530f79b69ac349e8fc0cf89a3",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "aydin-aski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "f4bb736a9c892207c23a28d2163f865f40a19ae29565c09a5070c6c98d8299f3",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "baski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "2f6fa8ebd135911ce10c3c16bebac7484455b11a3ecf47547e1d368f0183c6d1",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "buski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "62a1ef65ce01f21e2129e25a668bd2abd9b2e2d235d1d259296dccff9b56c96f",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "deski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "3683cb101ccc0e56fd68b21329ca8d17c45b13eb2b102b04f3e8046890fe4663",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "diski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "6987f674ee4e4bf05c5de87bf15980c4a2c2e9492ee9482213f5bfca57206f73",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "erzurum-eski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "b3ba2406f896ecd43a942b9de5fbf2aa1be5bbde6963758583f9fd74a9053b64",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "eskisehir-eski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "96dc272b17804ee5e7c35954b6c5766ab8bb1126db179b0aafcc582c7e402c01",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "gaski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "86d975dede04d0d1fea70a476d2619d66d9b9f2a5139a649d9de4ac24dfc8358",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "hatsu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "a58ffa7e294462978062cd691b23cb227dcfcf7388696d3bfb72257c576c5491",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "iski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "9a7cb4590952741001f6468251fbce29224e4ae9b976816a03c5460a5bc61991",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "isu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "454c878a174d066cd68133a23c88f68e1a58c481c69a3557591e7d668ca3f1d0",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "izsu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "fa495beed0b7894ca6bc2fd7e7b1deed5f55959d871bc108c5f71ac4eac6b641",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "kahramanmaras-kaski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "5ab994f3a7a0ae71ada588df013774487b7304c64831a717fdb6f4abb2cf5663",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "kayseri-kaski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "c931c5a543c72ee5abeaf2c1377c923de17bbd38c4e313b1b155a776533c5869",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "koski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "b38a3a92a252d2a207571d24d3caa916d4418b98b951ee42a7e7c9735f8498ec",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "malatya-maski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "02c426a34a85c7e98d463677cc972f82c98022582b53c4f7685f8f5ecaf168ab",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "manisa-maski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "15e47c37d1130d381fb823c3839e9636eea19539a858d60f9b2432418aaa7377",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "marsu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "7e3f266da399840071916552f7a1912b6bf45c2ba02d8a2f0a7bb07343f5a478",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "meski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "06ddf984e86b9cbe57f9ce57d1f7cdf2cc5db2827b715e0a6eb4cdfeb847ae8b",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "muski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "fe1bfc5344f0e33824164267d374ed84655372a93f0a06b85e2cfe8068527e02",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "oski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "813bdf06dc0b40971aebce9ab3278c71c1976cfde0a3034acd9c11e2b42a3ed0",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "sakarya-saski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "3711aa9895e4d8797e2dbc0182ad5377fa87578ec2e588bc40f925897a703597",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "samsun-saski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "b1502f7c5eb6582eb4439b409126b8f6d6ddf96bb719850d58f4cad1c057bae8",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "suski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "8480602553dc05879868d4e3a7d306c17bee53936b377555ba00b80412747775",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "teski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "265c0f8c47a2c1639aebe1e4bd9e3f666d6ef3a0941285e9d84fda0cd2affe6c",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "tiski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "a569a366bc0da1eaf1e7b1952c53d861cc1bdf9b3effdaa13e56050d93a99377",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "vaski/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "4e395e20b41e88108012c7c7505089e2db61cee1ee0c85a55a17963a37801c00",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2560 s. Kanunun resmi PDF metni (eski.gov.tr, .gov.tr) pypdfium2 ile cikarildi; yalniz kanunun ADIYLA kurdugu birimler alindi: m.3 organlari (Genel Kurul, Yonetim Kurulu, Genel Mudurluk) + m.12'de atama usulu duzenlenen Teftis ve Kontrol Kurulu Baskanligi ve 1'inci Hukuk Musavirligi. m.12 daire baskanliklarini SAYMADIGI icin ('hizmetin gerektirdigi sayida Daire Baskanligi ... tesekkul eder') onceki surumdeki 7 kaynaksiz daire adi KALDIRILDI. m.10'daki denetciler kisi oldugundan birim yazilmadi. Gorev metinleri m.1/m.2/m.6/m.9/m.11/m.12'den; kapsam Ek Madde 4'ten",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "sayistay/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.sayistay.gov.tr/files/662_TBMM_Kabul_Edilen_Sayistay_Kanunu.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "3d6cdf99e598b15a72e4be3a93e147fda003e8583d26ba034933e89d2769cec0",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "6085 s. Sayistay Kanunu resmi PDF'i (sayistay.gov.tr) pypdfium2 ile cikarildi; m.11/1'de tek tek sayilan ON organ bent sirasiyla alindi. Gorev metinleri m.10 ve ilgili bolumlerden; kanunda karsiligi olmayan yerde gorev yazilmadi, yalniz dayanak bendi belirtildi. Grup baskanliklari kanunda sayilmadigi icin listelenmedi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "yargitay/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.yargitay.gov.tr/documents/mevzuat2015duzeltme.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "73415ffc45776063ee0ee8d2cbe6faca8eccc1b27f792e8f17ccdfaea9ab16c1",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2797 s. Yargitay Kanunu + Yargitay Ic Yonetmeligi, Yargitay Baskanligi resmi mevzuat derlemesi PDF'inden (yargitay.gov.tr) cikarildi; m.2 kurulus unsurlari, m.3 karar organlari (8) ve Ic Yonetmelik m.3/B buro-idari birimleri (10) kaynaktaki sirayla alindi. Daire sayisi m.5'in 6572 s.K. degisik halinden; dairelerin is bolumu kanunla belirlenmedigi icin yazilmadi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "danistay/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://rayp.adalet.gov.tr/resimler/522/dosya/5-2575-sayili-danistay-kanunu11-08-202010-23-am.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "cb36a98fbd385742c7a133475f5930609141a54658643360a3b153a45cfb407e",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "2575 s. Danistay Kanunu resmi PDF'i (rayp.adalet.gov.tr) pypdfium2 ile cikarildi; m.5 karar organlari (10), m.6 Genel Sekreterlik, m.7'de tek tek sayilan sekiz mudurluk ve m.60-61 Bassavcilik alindi. m.5/g ve m.5/h AYM iptali sonrasi 6494 s.K. m.3 ile yeniden duzenlenen yururlukteki halleriyle yazildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "anayasa-mahkemesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.anayasa.gov.tr/media/4233/anayasa-mahkemesi-hizmet-birimlerinin-gorevleri-calisma-usul-ve-esaslar.pdf",
+   "kaynak_turu": "resmi_yonetmelik",
+   "icerik_sha256": "ef306693b973bb46d8fd5e1cd9849d33d516b73b74d969ed38b1eee0d4945834",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "AYM Hizmet Birimlerinin Gorevleri, Calisma Usul ve Esaslari Hakkinda Yonetmelik resmi PDF'i (anayasa.gov.tr) pypdfium2 ile cikarildi; m.12/1'de sayilan ON DORT hizmet birimi bent sirasiyla alindi ve her birimin GOREV metni kendi maddesinden (m.13-m.86) LAFZEN programla cikarildi (elle aktarim yok). Yargisal yapi (Genel Kurul/Bolumler/Komisyonlar) hizmet birimi olmadigi icin listelenmedi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
+ }
 }

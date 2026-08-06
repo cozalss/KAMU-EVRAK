@@ -1,27 +1,23 @@
 @KURUM: Mersin Su ve Kanalizasyon İdaresi Genel Müdürlüğü
-@BELGE: 2560 sayılı Kanun (bu Kanun İstanbul için çıkarılmış olup 3305 sayılı Kanun ile diğer büyükşehir belediyelerine teşmil edilmiştir)
-@KAYNAK_KIMLIK: teskilat/meski/gorev-tanimi
-@ERISIM: 2026-07-18
+@BELGE: 2560 sayılı İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü Kuruluş ve Görevleri Hakkında Kanun (Kabul 20/11/1981, RG 23/11/1981-17523); Ek Madde 4 uyarınca — "Bu Kanun diğer Büyükşehir Belediyelerinde de uygulanır" — Mersin Büyükşehir Belediyesinde de uygulanır
+@KAYNAK_KIMLIK: https://www.eski.gov.tr/kurumlar/eski.gov.tr/belgeler/kanunlar/2560-Sayili-Kanun.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_mevzuat_teskilat
+@DOGRULAMA: resmi
 @ALIAS: meski, mersin-su-ve-kanalizasyon-idaresi, mersin-su-kanalizasyon, mersin-meski
-@NOT: [DOĞRULA: Birim listesi 2560 sayılı Kanun'a tabi su idareleri için TİPİK şablondur; MESKİ'nin güncel teşkilat şemasındaki fiilî daire adları farklılaşabilir — yönlendirme öncesi ilgili idarenin resmî internet sitesindeki güncel teşkilat şemasıyla doğrula.]
+@NOT: Bu dosyadaki birimler 2560 sayılı Kanunun KENDİSİNİN kurduğu birimlerdir. Kanun daire başkanlıklarını SAYMAZ: m.12 "Genel Müdürlük, hizmetin gerektirdiği sayıda Daire Başkanlığı, Müdürlük ve bunlara bağlı alt kademe birimlerinden teşekkül eder" der; hangi dairelerin kurulacağı her idarenin kendi organlarınca belirlenir ve mevzuattan bilinemez. Bu yüzden "Abone İşleri Dairesi Başkanlığı", "Atıksu Arıtma Dairesi Başkanlığı" gibi fiilî daire adları bu dosyaya ALINMAMIŞTIR — bu dosyanın önceki sürümü bunları kaynaksız listeliyor ve kendi künyesinde "TİPİK şablondur" diye işaretliyordu; kaldırıldılar. Su ve kanalizasyon hizmetine ilişkin yazışmanın kanuni muhatabı Genel Müdürlüktür (m.3, m.11, m.12). m.10'daki iki denetçi Genel Kurula rapor veren KİŞİdir, yazışma birimi değildir; bilerek listelenmemiştir. HİZMET ALANI m.1: idarenin hizmeti Mersin Büyükşehir Belediyesinin görev alanı ile sınırlıdır; ancak şehrin yararlandığı su kaynaklarının korunmasına ilişkin hizmetler bu sınır dışında da bu kuruluşça yürütülür. İdare, büyükşehir belediyesine bağlı, müstakil bütçeli ve kamu tüzel kişiliğine sahiptir; personeli 657 sayılı Kanuna tabidir.
 
-BİRİM: Abone İşleri Dairesi Başkanlığı
-GÖREV: Su aboneliği açma/kapama, yeni abonelik başvurusu, sayaç kontrol ve değişim talepleri, su faturasına itiraz ve tahakkuk düzeltme işlemleriyle ilgilenir; hizmet bölgesi Mersin il sınırlarıdır.
+BİRİM: Genel Müdürlük
+GÖREV: 2560 m.3 uyarınca idarenin organlarından biridir ve su-kanalizasyon hizmetini fiilen yürüten birimdir; m.12 uyarınca hizmetin gerektirdiği sayıda Daire Başkanlığı, Müdürlük ve bunlara bağlı alt kademe birimlerinden teşekkül eder. m.2'de sayılan görev ve yetkiler bu birimde yürütülür: içme, kullanma ve endüstri suyu ihtiyaçlarının her türlü yeraltı ve yerüstü kaynaklarından sağlanması ve ihtiyaç sahiplerine dağıtılması için kaynaklardan abonelere ulaşıncaya kadar her türlü tesisin etüt ve projesini yapmak veya yaptırmak, tesisleri kurmak, kurulu olanları devralıp işletmek, bakım ve onarımını yapmak; kullanılmış sular ile yağış sularının toplanması, yerleşim yerlerinden uzaklaştırılması ve zararsız bir biçimde boşaltma yerine ulaştırılması; bölge içindeki su kaynaklarının, deniz, göl ve akarsu kıyıları ile yeraltı sularının kullanılmış sular ve endüstri atıkları ile kirletilmesini önlemek ve bu konuda her türlü teknik, idari ve hukuki tedbiri almak; su ve kanalizasyon hizmetleri konusunda hizmet alanı içindeki belediyelere verilen görevleri yürütmek. Abonelik ve tarife (m.23), kanalizasyon şebekesine bağlanma zorunluluğu (m.17), su ve kanalizasyon durum belgesi (m.18) ve endüstriyel atıksu ön arıtma yükümlülüğü (m.19) konularındaki yazışmaların muhatabı bu birimdir. Genel Müdür, idare ve yargı organlarında üçüncü kişilere karşı idareyi temsil eder (m.11/b).
 
-BİRİM: Su İşletme Dairesi Başkanlığı
-GÖREV: İçmesuyu şebekesinde su arızası, su kesintisi, basınç düşüklüğü ve şebeke bakım-onarım taleplerini karşılar.
+BİRİM: Yönetim Kurulu
+GÖREV: 2560 m.3 uyarınca idarenin organlarından biridir. m.9'da sayılan görevleri yürütür: kuruluş amacına uygun olarak idarenin çalışmasına ilişkin esasları tespit etmek ve bunların Genel Müdürlükçe uygulanmasını izlemek; yönetmelik, bütçe, bilanço ve kadro taslaklarının ön incelemesini yapıp Genel Kurula sunmak; bütçe fasılları arasında aktarma yapmak; beş yıllık ve yıllık yatırım plan ve programlarını inceleyip Genel Kurula sunmak; satma, satın alma ve ihale işlemlerini karara bağlamak; kamulaştırma işlerini karara bağlamak; su satışı ve kullanılmış suların boşaltılmasına ilişkin tarifeleri tespit ederek Genel Kurulun onayına sunmak. Kamulaştırma ve ihale kararı gerektiren yazışmalarda karar mercii bu kuruldur.
 
-BİRİM: Kanalizasyon Dairesi Başkanlığı
-GÖREV: Kanalizasyon tıkanıklığı, foseptik taşması, yağmursuyu şebekesi arızası ve kanal bakım-temizlik talepleriyle ilgilenir.
+BİRİM: Genel Kurul
+GÖREV: 2560 m.3 uyarınca idarenin organlarından biridir. m.4: Mersin Büyükşehir Belediye Meclisi, idarenin Genel Kurulu olarak görevli ve yetkilidir — yani bu organ ayrı bir kurul değil, büyükşehir belediye meclisinin kendisidir. m.5 uyarınca her yıl Mayıs ve Kasım aylarında özel gündemle toplanır. m.6'daki görevleri karara bağlar: beş yıllık yatırım planı, yıllık yatırım programları, bütçe, personel kadroları, faaliyet raporu ve bilanço ile denetçiler raporu, su satışı ve kullanılmış suların boşaltılmasına ilişkin tarifeler, denetçilerin seçimi ve yönetmeliklerin kabulü.
 
-BİRİM: Atıksu Arıtma Dairesi Başkanlığı
-GÖREV: Atıksu arıtma tesislerinin işletilmesi, sanayi deşarj izin başvuruları ve atıksu kalite denetimini yürütür.
+BİRİM: Teftiş ve Kontrol Kurulu Başkanlığı
+GÖREV: 2560 m.12'de adıyla kurulan birimdir; Başkanı, Genel Müdürün teklifi, Yönetim Kurulunun kararı ve Büyükşehir Belediye Başkanının onayı ile atanır (m.12; atama önerisi m.9/m). Kanun bu birimin görevlerini ayrıca saymamıştır; kanunun müfettiş kadrosunu aynı usule bağlaması nedeniyle idarenin teftiş, denetim ve soruşturma işleri bu birimde yürütülür. Not: m.10'daki denetçilerden farklıdır — denetçiler Genel Kurula rapor verir, bu birim Genel Müdürlüğe bağlıdır.
 
-BİRİM: Yatırım ve İnşaat Dairesi Başkanlığı
-GÖREV: Yeni içmesuyu/kanalizasyon şebeke yatırımları, isale hattı inşaatı ve altyapı proje taleplerini yürütür.
-
-BİRİM: Emlak ve İstimlak Dairesi Başkanlığı
-GÖREV: Tesis ve hat güzergahları için kamulaştırma işlemleri ile taşınmaz tahsis/kira taleplerini yürütür.
-
-BİRİM: Hukuk Müşavirliği
-GÖREV: Abonelik ve tahakkuk itirazlarına ilişkin dava/icra süreçleri ile hukuki görüş taleplerini yürütür.
+BİRİM: 1'inci Hukuk Müşavirliği
+GÖREV: 2560 m.12'de adıyla kurulan birimdir; 1'inci Hukuk Müşaviri, Genel Müdürün teklifi, Yönetim Kurulunun kararı ve Büyükşehir Belediye Başkanının onayı ile atanır (m.12; atama önerisi m.9/m). Kanun bu birimin görevlerini ayrıca saymamıştır; kanunun avukat kadrosunu aynı usule bağlaması ve dava değerine göre sulh yetkisini paylaştırması (m.6/ı Genel Kurul, m.9/j Yönetim Kurulu) nedeniyle idarenin taraf olduğu dava ve icra işleri ile hukuki görüş talepleri bu birimde yürütülür.

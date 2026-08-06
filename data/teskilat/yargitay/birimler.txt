@@ -1,15 +1,68 @@
 @KURUM: Yargıtay
-@BELGE: 2797 sayılı Yargıtay Kanunu
-@KAYNAK_KIMLIK: teskilat/yargitay/gorev-tanimi
-@ERISIM: 2026-07-18
+@BELGE: 2797 sayılı Yargıtay Kanunu m.2-m.7 ve m.18 ile Yargıtay İç Yönetmeliği m.3-m.4 (Yargıtay Başkanlığı resmî mevzuat derlemesi)
+@KAYNAK_KIMLIK: https://www.yargitay.gov.tr/documents/mevzuat2015duzeltme.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: yargitay, yargitay-baskanligi
-@NOT: Yargıtay yüksek yargı organıdır; bireysel dava dosyası temyiz incelemesi ilgili hukuk/ceza dairesine, idari/genel yazışma Genel Sekreterliğe yöneliktir. [DOĞRULA: güncel teşkilat şeması ve daire dağılımı]
+@NOT: Dayanak 2797 sayılı Yargıtay Kanunu m.2: "Yargıtay; Birinci Başkanlık, daireler, Yargıtay Cumhuriyet Başsavcılığı, bürolar ve idari birimlerden oluşur." Karar organları m.3'te, büro ve idarî birimler Yargıtay İç Yönetmeliği m.3/B'de TEK TEK sayılmıştır; her ikisi de kaynaktaki sırayla ve eksiksiz alınmıştır. Kanun bu organların çoğunun görevlerini ayrı maddelerde düzenlediği için burada yalnız hangi bende dayandıkları ve kaynakta lafzî karşılığı olan tanımlar yazılmıştır — GÖREV UYDURULMAMIŞTIR. Daire SAYISI (on iki hukuk, on iki ceza) m.5'in 6572 sayılı Kanunla değişik hâlindendir; dairelerin İŞ BÖLÜMÜ kanunla değil Birinci Başkanlık Kurulu kararıyla belirlendiğinden hangi dairenin hangi uyuşmazlığa bakacağı bu dosyadan çıkarılamaz. İç Yönetmelik m.4 uyarınca yeni hizmet birimleri Birinci Başkanlık Kurulunca kurulabilir; bu liste normatif asgariyi gösterir. Yargıtay bir yüksek mahkemedir, idarî hiyerarşi içinde bir bakanlığa bağlı DEĞİLDİR.
+
+BİRİM: Birinci Başkanlık
+GÖREV: 2797 m.2 uyarınca Yargıtayın kuruluş unsurlarından biridir. m.4: "Birinci Başkanlık; Birinci Başkan ve başkanvekilleriyle Genel Sekreterden oluşur." Kurumla yapılan genel yazışmaların ve idarî işlerin muhatabıdır.
+
+BİRİM: Daireler
+GÖREV: 2797 m.2 uyarınca kuruluş unsurlarından, m.3/1 uyarınca karar organlarından biridir. m.5 (Değişik: 2/12/2014-6572/21): "Yargıtayda on iki hukuk, on iki ceza dairesi ve her dairede bir daire başkanı ile yeteri kadar üye bulunur." Dairelerin iş bölümü Birinci Başkanlık Kurulu kararıyla belirlenir.
 
 BİRİM: Yargıtay Cumhuriyet Başsavcılığı
-GÖREV: Temyiz dilekçelerinin ilk incelemesi ve tebliğname düzenleme, olağanüstü kanun yollarına (Yargıtay Cumhuriyet Başsavcısının itirazı, kanun yararına bozma) ilişkin başvuruların değerlendirilmesi.
+GÖREV: 2797 m.2 uyarınca kuruluş unsurlarından biridir. m.6: "Yargıtay Cumhuriyet Başsavcılığı; Cumhuriyet Başsavcısı, Cumhuriyet Başsavcıvekili, Cumhuriyet Başsavcı Başyardımcısı ile Cumhuriyet Başsavcı yardımcılarından oluşur."
 
-BİRİM: İlgili Hukuk veya Ceza Dairesi Yazı İşleri Müdürlüğü
-GÖREV: Temyiz incelemesi bekleyen dosya sorgulama, içtihat ve emsal karar örneği talebi.
+BİRİM: Hukuk Genel Kurulu
+GÖREV: 2797 m.3/2 uyarınca karar organlarından biridir. m.7: "Hukuk Genel Kurulu, hukuk dairelerinin başkan ve üyelerinden ... oluşur."
 
-BİRİM: Genel Sekreterlik
-GÖREV: Yargıtay genel evrak kayıt ve havale, idari yazışma koordinasyonu, Birinci Başkanlık Kurulu kararlarına ilişkin yazışmalar.
+BİRİM: Ceza Genel Kurulu
+GÖREV: 2797 m.3/3 uyarınca karar organlarından biridir. m.7: "Ceza Genel Kurulu, ceza dairelerinin başkan ve üyelerinden oluşur."
+
+BİRİM: Büyük Genel Kurul
+GÖREV: 2797 m.3/4 uyarınca karar organlarından biridir.
+
+BİRİM: Başkanlar Kurulları
+GÖREV: 2797 m.3/5 uyarınca karar organlarından biridir.
+
+BİRİM: Birinci Başkanlık Kurulu
+GÖREV: 2797 m.3/6 uyarınca karar organlarından biridir. Birinci Başkanın başkanlığında dördü daire başkanı, dördü Yargıtay üyesi olmak üzere sekiz asıl ve dört yedek üyeden oluşur; m.18 uyarınca daire başkanı, üye ve tetkik hâkimlerinin geçici görevlendirilmesi, dairelerdeki boşalmaların doldurulması, Yargıtay görevlilerinin denetlenmesi ve Genel Sekreterin Yargıtay üyeleri arasından seçilmesi görevlerini yürütür. Yeni hizmet birimleri de İç Yönetmelik m.4 uyarınca bu Kurulca kurulur.
+
+BİRİM: Yüksek Disiplin Kurulu
+GÖREV: 2797 m.3/7 uyarınca karar organlarından biridir.
+
+BİRİM: Yönetim Kurulu
+GÖREV: 2797 m.3/8 uyarınca karar organlarından biridir.
+
+BİRİM: Yayın Kurulu
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-1 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Tasnif Kurulu
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-2 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Yayın İşleri Müdürlüğü
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-3 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Sağlık Müdürlüğü
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-4 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Eğitim ve Sosyal İşler Müdürlüğü
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-5 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Yazı İşleri Büroları
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-6 uyarınca büro ve idarî birimlerdendir; gelen-giden evrak ve yazı işleri bu bürolarda yürütülür.
+
+BİRİM: Sivil Savunma Uzmanlığı
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-7 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Özlük İşleri Müdürlüğü
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-8 uyarınca büro ve idarî birimlerdendir; personel özlük işleri bu müdürlükte yürütülür.
+
+BİRİM: Levazım Müdürlüğü
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-9 uyarınca büro ve idarî birimlerdendir.
+
+BİRİM: Daire Müdürlüğü
+GÖREV: Yargıtay İç Yönetmeliği m.3/B-10 uyarınca büro ve idarî birimlerdendir.

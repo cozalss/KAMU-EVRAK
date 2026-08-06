@@ -20,7 +20,9 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # backend/
 from core.kaynak_guveni import (
+    MEVZUAT_KAYNAK_TURLERI,
     RESMI_DOGRULANMIS,
+    TESKILAT_KAYNAK_TURLERI,
     atomik_json_yaz,
     bos_manifest,
     dosya_sha256,
@@ -32,23 +34,11 @@ _VERI_DIRLERI = {
     "mevzuat": _ROOT / "data" / "mevzuat",
     "teskilat": _ROOT / "data" / "teskilat",
 }
-_MEVZUAT_TURLERI = {
-    "kanun",
-    "yonetmelik",
-    "cumhurbaskanligi_kararnamesi",
-    "kanun_hukmunde_kararname",
-    "genelge",
-    "teblig",
-    "tuzuk",
-    "karar",
-    "anayasa",
-}
-_TESKILAT_TURLERI = {
-    "resmi_yonetmelik",
-    "resmi_teskilat",
-    "resmi_hizmet",
-    "resmi_karar",
-}
+# İzinli tür kümeleri BURADA KOPYALANMAZ; indeksleyicinin kabul ettiği kümeyle aynı olmak
+# zorundadır. Kopya tutulduğunda bayatladı: mevzuat-teşkilat sınıfı (`resmi_mevzuat_teskilat`,
+# `resmi_idari_bolunus`) çekirdeğe eklendi ama bu araca eklenmedi; sonuç olarak sistemin
+# TANIDIĞI bir tür bu araçla KAYDEDİLEMİYORDU (ölçüldü 2026-08-06: 30 su idaresi dosyası
+# "Kaynak turu izinli degil" ile reddedildi).
 _BASLIK_RE = re.compile(r"^@(\w+):\s*(.*)$")
 _KAYNAK_RE = re.compile(r"^\s*Kaynak\s*:\s*(https://\S+)\s*$", re.IGNORECASE | re.MULTILINE)
 
@@ -108,7 +98,7 @@ def _kayit(
     metin = path.read_text(encoding="utf-8", errors="replace")
     if not resmi_https_url_mi(kaynak_url):
         raise ValueError("Kaynak URL'i resmi bir HTTPS kamu alani olmali.")
-    izinli = _MEVZUAT_TURLERI if veri_turu == "mevzuat" else _TESKILAT_TURLERI
+    izinli = MEVZUAT_KAYNAK_TURLERI if veri_turu == "mevzuat" else TESKILAT_KAYNAK_TURLERI
     if kaynak_turu not in izinli:
         raise ValueError(f"Kaynak turu izinli degil: {kaynak_turu}")
     if not dogrulayan.strip() or not dogrulama_yontemi.strip():
@@ -165,7 +155,7 @@ def _mevcut_teskilat_migrasyonu(args: argparse.Namespace, payload: dict[str, Any
         kaynak_turu = meta.get("KAYNAK_TURU", "").lower()
         if (
             meta.get("DOGRULAMA", "").lower() != "resmi"
-            or kaynak_turu not in _TESKILAT_TURLERI
+            or kaynak_turu not in TESKILAT_KAYNAK_TURLERI
             or not resmi_https_url_mi(kaynak_url)
         ):
             continue

@@ -1,18 +1,68 @@
 @KURUM: Danıştay
-@BELGE: 2575 sayılı Danıştay Kanunu
-@KAYNAK_KIMLIK: teskilat/danistay/gorev-tanimi
-@ERISIM: 2026-07-18
+@BELGE: 2575 sayılı Danıştay Kanunu m.5, m.6, m.7 ve m.60-61
+@KAYNAK_KIMLIK: https://rayp.adalet.gov.tr/resimler/522/dosya/5-2575-sayili-danistay-kanunu11-08-202010-23-am.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
 @ALIAS: danistay, danistay-baskanligi
-@NOT: Danıştay yüksek idari yargı ve danışma organıdır; idari işlem/eylem temyiz incelemesi ilgili dava dairesine (istinaf mercii bölge idare mahkemeleridir), imtiyaz şartlaşma-sözleşme incelemesi danışma-inceleme birimlerine yöneliktir. [DOĞRULA: güncel teşkilat şeması, daire dağılımı ve imtiyaz incelemesinde görevli merci (Birinci Daire / İdari İşler Kurulu) dağılımı]
+@NOT: Karar organları 2575 sayılı Danıştay Kanunu m.5'te, idarî hizmet birimleri m.7'de TEK TEK sayılmıştır: "Danıştayda Özlük İşleri, Evrak, Levazım, Kitaplık ve Yayın, Tasnif, Arşiv, Sosyal ve İdari İşler, Özel Kalem müdürlükleriyle bu Kanunda yazılı ve ihtiyaca göre kurulacak bürolar ve kalemler bulunur." Müdürlük adları bu cümledeki sırayla alınmış, her birine kaynak cümlesindeki "müdürlükleri" ibaresine uygun olarak "Müdürlüğü" unvanı verilmiştir. Aynı madde "ihtiyaca göre kurulacak bürolar ve kalemler"den söz ettiği için bu liste normatif asgariyi gösterir; fiilî teşkilat daha geniş olabilir. m.5/g ve m.5/h'deki Başkanlar Kurulu ve Başkanlık Kurulu, 650 sayılı KHK ile getirilip Anayasa Mahkemesinin 18/7/2012 tarihli E.2011/113 K.2012/108 sayılı kararıyla iptal edildikten sonra 6494 sayılı Kanun m.3 ile YENİDEN düzenlenmiştir; yürürlükteki hâlleriyle listelenmişlerdir. Danıştay bir yüksek mahkemedir, idarî hiyerarşi içinde bir bakanlığa bağlı DEĞİLDİR.
+
+BİRİM: Daireler
+GÖREV: 2575 m.5/a uyarınca Danıştayın karar organlarından biridir; idarî uyuşmazlıklar ile vergi uyuşmazlıklarına ilişkin dava ve inceleme işleri dairelerde görülür.
+
+BİRİM: Danıştay Genel Kurulu
+GÖREV: 2575 m.5/b uyarınca karar organlarından biridir.
+
+BİRİM: İdari İşler Kurulu
+GÖREV: 2575 m.5/c uyarınca karar organlarından biridir.
+
+BİRİM: İdari Dava Daireleri Kurulu
+GÖREV: 2575 m.5/d uyarınca karar organlarından biridir (5183 s. Kanun m.15 ile ad değişikliği).
+
+BİRİM: Vergi Dava Daireleri Kurulu
+GÖREV: 2575 m.5/e uyarınca karar organlarından biridir (5183 s. Kanun m.15 ile ad değişikliği).
+
+BİRİM: İçtihatları Birleştirme Kurulu
+GÖREV: 2575 m.5/f uyarınca karar organlarından biridir.
+
+BİRİM: Başkanlar Kurulu
+GÖREV: 2575 m.5/g uyarınca karar organlarından biridir (6494 s. Kanun m.3 ile yeniden düzenlenmiştir).
+
+BİRİM: Başkanlık Kurulu
+GÖREV: 2575 m.5/h uyarınca karar organlarından biridir (6494 s. Kanun m.3 ile yeniden düzenlenmiştir).
+
+BİRİM: Yüksek Disiplin Kurulu
+GÖREV: 2575 m.5/ı uyarınca karar organlarından biridir.
+
+BİRİM: Disiplin Kurulu
+GÖREV: 2575 m.5/i uyarınca karar organlarından biridir.
 
 BİRİM: Danıştay Başsavcılığı
-GÖREV: Kanun yararına temyiz başvurularının değerlendirilmesi, idari yargı mevzuatına ilişkin görüş bildirme.
-
-BİRİM: İlgili Dava Dairesi Yazı İşleri Müdürlüğü
-GÖREV: İdari işlem iptali ve tam yargı davalarının temyiz incelemesi, ilk derece görevine giren davaların kabulü, dosya sorgulama ve karar örneği talebi.
-
-BİRİM: İdari İşler Kurulu Sekreterliği
-GÖREV: İmtiyaz şartlaşma ve sözleşme tasarıları hakkında danışma ve inceleme başvuruları.
+GÖREV: 2575 m.60-61 uyarınca Başsavcı, incelediği dava dosyaları hakkında düşüncesini bildirir ve kanunlarla kendisine verilen diğer görevleri yapar; Başsavcılıkta görevli memurların çalışmasını, gelen dosyaların kaydı ve saklanmasını, işi bitenlerin ilgili yerlere geciktirilmeden gönderilmesini sağlar. Başsavcı her takvim yılı sonunda işlerin durumu hakkında Danıştay Başkanlığına rapor verir.
 
 BİRİM: Genel Sekreterlik
-GÖREV: Danıştay genel evrak kayıt ve havale, idari yazışma koordinasyonu.
+GÖREV: 2575 m.6: "Danıştay Başkanının seçeceği bir üye Danıştay Genel Sekreterliği görevini yapar." Genel Sekreterlik hizmetleri için yeteri kadar savcı, tetkik hâkimi ve memur verilir. Kurumla yapılan idarî yazışmaların muhatabıdır.
+
+BİRİM: Özlük İşleri Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir.
+
+BİRİM: Evrak Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir; gelen ve giden evrak işlemleri bu müdürlükte yürütülür.
+
+BİRİM: Levazım Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir.
+
+BİRİM: Kitaplık ve Yayın Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir.
+
+BİRİM: Tasnif Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir.
+
+BİRİM: Arşiv Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir; arşiv ve saklama işlemleri bu müdürlükte yürütülür.
+
+BİRİM: Sosyal ve İdari İşler Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: 2575 m.7 uyarınca Danıştayda bulunan idarî hizmet birimidir.

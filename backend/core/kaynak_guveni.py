@@ -22,7 +22,7 @@ RESMI_DOGRULANMIS = "resmi_dogrulanmis"
 MANIFEST_VERSION = 1
 
 _RESMI_ALAN_SONLARI = (".gov.tr", ".bel.tr", ".edu.tr", ".tsk.tr")
-_MEVZUAT_KAYNAK_TURLERI = frozenset({
+MEVZUAT_KAYNAK_TURLERI = frozenset({
     "kanun",
     "yonetmelik",
     "cumhurbaskanligi_kararnamesi",
@@ -33,7 +33,7 @@ _MEVZUAT_KAYNAK_TURLERI = frozenset({
     "karar",
     "anayasa",
 })
-_TESKILAT_KAYNAK_TURLERI = frozenset({
+TESKILAT_KAYNAK_TURLERI = frozenset({
     "resmi_yonetmelik",
     "resmi_teskilat",
     "resmi_hizmet",
@@ -246,7 +246,7 @@ def mevzuat_kaynak_bilgisi(
         manifest=manifest,
         kaynak_url=kaynak_url,
         kaynak_turu=kaynak_turu,
-        izinli_turler=_MEVZUAT_KAYNAK_TURLERI,
+        izinli_turler=MEVZUAT_KAYNAK_TURLERI,
         metin=metin,
     )
 
@@ -278,7 +278,7 @@ def teskilat_kaynak_bilgisi(
         manifest=manifest,
         kaynak_url=kaynak_url,
         kaynak_turu=kaynak_turu,
-        izinli_turler=_TESKILAT_KAYNAK_TURLERI,
+        izinli_turler=TESKILAT_KAYNAK_TURLERI,
         metin=metin,
     )
 
@@ -286,7 +286,9 @@ def teskilat_kaynak_bilgisi(
 __all__ = (
     "ADAY",
     "MANIFEST_VERSION",
+    "MEVZUAT_KAYNAK_TURLERI",
     "RESMI_DOGRULANMIS",
+    "TESKILAT_KAYNAK_TURLERI",
     "KaynakBilgisi",
     "atomik_json_yaz",
     "bos_manifest",

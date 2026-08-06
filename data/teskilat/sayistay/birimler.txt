@@ -1,21 +1,38 @@
 @KURUM: Sayıştay
-@BELGE: 6085 sayılı Sayıştay Kanunu
-@KAYNAK_KIMLIK: teskilat/sayistay/gorev-tanimi
-@ERISIM: 2026-07-18
-@ALIAS: sayistay-baskanligi
-@NOT: [DOĞRULA: güncel teşkilat şeması] — dairelerin hangi kamu idaresini denetlediği yönetmelikle belirlenir ve zaman içinde değişebilir.
+@BELGE: 6085 sayılı Sayıştay Kanunu (Kabul 3/12/2010), m.10 ve m.11
+@KAYNAK_KIMLIK: https://www.sayistay.gov.tr/files/662_TBMM_Kabul_Edilen_Sayistay_Kanunu.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: sayistay, sayistay-baskanligi
+@NOT: Birimler 6085 sayılı Sayıştay Kanunu m.11/1'de "Sayıştayın kuruluşuna dahil organlar şunlardır" denilerek TEK TEK sayılan on organdır; liste kaynaktaki bent sırasıyla ve eksiksiz alınmıştır. Kanun bu organların görevlerini ayrı bir teşkilat maddesinde toplamaz; görev metinleri m.10 (mensuplar) ve Kanunun ilgili bölümlerinden yazılmış, kanunda karşılığı bulunmayan yerlerde görev UYDURULMAMIŞ, yalnız organın hangi bende dayandığı belirtilmiştir. Denetim ve denetim destek GRUP BAŞKANLIKLARI ile yönetim birimleri m.10 uyarınca Başkanlığa bağlı çalışır; sayıları ve adları Sayıştay Başkanınca belirlendiği ve kanunda sayılmadığı için ayrı birim olarak listelenmemiştir. Sayıştay TBMM adına denetim yapan bir yüksek mahkemedir; idarî hiyerarşi içinde bir bakanlığa bağlı DEĞİLDİR.
 
-BİRİM: Denetim Grup Başkanlığı
-GÖREV: Genel bütçe, özel bütçe ve döner sermayeli kamu idarelerinin mali işlem ve hesaplarının düzenlilik ve performans denetimini yürütür.
+BİRİM: Başkanlık
+GÖREV: 6085 m.11/1-a uyarınca Sayıştayın kuruluşuna dahil organlardan biridir. m.10 uyarınca Sayıştay Başkanı meslek mensuplarının başında gelir; denetim ve yönetim işlerinde kendisine yardımcı olmak üzere üyeler arasından iki başkan yardımcısı görevlendirir ve bunlar daire başkanı statüsündedir. Denetim ve denetim destek grup başkanlıkları ile yönetim birimleri doğrudan Başkanlığa bağlı olarak çalışır; daire başkanı ve üyelerin daireleri, ihtisas daireleri, dairelere iş dağılımı ve meslek mensuplarının görev yeri Sayıştay Başkanınca belirlenir. Kurumla yapılan genel yazışmaların muhatabıdır.
 
-BİRİM: Daireler Kurulu
-GÖREV: Dairelerce verilen kesin hükümlere karşı temyiz öncesi içtihat birliğini sağlar; daireler arası uyuşmazlıkları karara bağlar.
+BİRİM: Daireler
+GÖREV: 6085 m.11/1-b uyarınca kuruluşa dahil organlardan biridir. Hesap ve işlemlerin kesin hükme bağlanmasına ilişkin yargılama işleri dairelerde yürütülür; her dairede bir daire başkanı ile üyeler bulunur ve dairelere iş dağılımı Sayıştay Başkanınca yapılır.
+
+BİRİM: Genel Kurul
+GÖREV: 6085 m.11/1-c uyarınca kuruluşa dahil organlardan biridir; Kanunla kendisine verilen içtihat, yorum ve düzenleyici nitelikteki konuları karara bağlar.
 
 BİRİM: Temyiz Kurulu
-GÖREV: Sayıştay dairelerinin sorumluluk (yargılama) kararlarına karşı yapılan temyiz başvurularını inceler.
+GÖREV: 6085 m.11/1-ç uyarınca kuruluşa dahil organlardan biridir; daire kararlarına karşı yapılan temyiz başvurularını inceler.
+
+BİRİM: Daireler Kurulu
+GÖREV: 6085 m.11/1-d uyarınca kuruluşa dahil organlardan biridir.
 
 BİRİM: Rapor Değerlendirme Kurulu
-GÖREV: Denetçiler tarafından düzenlenen denetim raporlarını değerlendirerek dairelere sevk eder.
+GÖREV: 6085 m.11/1-e uyarınca kuruluşa dahil organlardan biridir; denetim ve incelemeler sonucu hazırlanan raporların değerlendirilmesi bu kurulda yapılır.
 
-BİRİM: Başkanlık Genel Sekreterliği
-GÖREV: Kurumun idari, mali ve personel işlerini yürütür; vatandaş ve kamu idarelerinden gelen ihbar/şikayet dilekçelerinin ilgili daireye yönlendirilmesini sağlar.
+BİRİM: Yüksek Disiplin Kurulu
+GÖREV: 6085 m.11/1-f uyarınca kuruluşa dahil organlardan biridir.
+
+BİRİM: Meslek Mensupları Yükseltme ve Disiplin Kurulu
+GÖREV: 6085 m.11/1-g uyarınca kuruluşa dahil organlardan biridir; meslek mensuplarının yükseltme ve disiplin işleri bu kurulda görülür.
+
+BİRİM: Denetim, Planlama ve Koordinasyon Kurulu
+GÖREV: 6085 m.11/1-ğ uyarınca kuruluşa dahil organlardan biridir; denetimin planlanması ve koordinasyonu bu kurulda yürütülür.
+
+BİRİM: Başsavcılık
+GÖREV: 6085 m.11/1-h uyarınca kuruluşa dahil organlardan biridir. m.10 uyarınca Başsavcı ve savcılar Sayıştay mensupları arasında ayrı bir grup olarak sayılmıştır.

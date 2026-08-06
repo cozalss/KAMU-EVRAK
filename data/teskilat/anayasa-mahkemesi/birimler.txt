@@ -1,15 +1,50 @@
 @KURUM: Anayasa Mahkemesi
-@BELGE: 6216 sayılı Anayasa Mahkemesinin Kuruluşu ve Yargılama Usulleri Hakkında Kanun
-@KAYNAK_KIMLIK: teskilat/anayasa-mahkemesi/gorev-tanimi
-@ERISIM: 2026-07-18
+@BELGE: Anayasa Mahkemesi Hizmet Birimlerinin Görevleri, Çalışma Usul ve Esasları Hakkında Yönetmelik m.12 ve m.13-m.86 (dayanak: 6216 sayılı Kanun m.23/1, m.29/3)
+@KAYNAK_KIMLIK: https://www.anayasa.gov.tr/media/4233/anayasa-mahkemesi-hizmet-birimlerinin-gorevleri-calisma-usul-ve-esaslar.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_yonetmelik
+@DOGRULAMA: resmi
 @ALIAS: aym, anayasa-mahkemesi-baskanligi
-@NOT: Anayasa Mahkemesi yüksek yargı organıdır; bireysel başvurular Bireysel Başvuru Bürosuna, norm denetimi (iptal davası/itiraz) başvuruları norm denetimi yazı işlerine yöneliktir. [DOĞRULA: güncel teşkilat şeması; 'Norm Denetimi Yazı İşleri Müdürlüğü' birim adı AYM İçtüzüğü/resmî teşkilat şemasından teyit edilmeli]
+@NOT: Birimler, Anayasa Mahkemesi Hizmet Birimlerinin Görevleri, Çalışma Usul ve Esasları Hakkında Yönetmelik m.12/1'de "Mahkemenin hizmet birimleri şunlardır" denilerek TEK TEK sayılan on dört birimdir; liste kaynaktaki bent sırasıyla ve eksiksiz alınmıştır. GÖREV metinleri her birimin kendi maddesinden (m.13-m.86) LAFZÎ olarak çıkarılmıştır — elle aktarılmamış, bu yüzden transkripsiyon hatası taşımaz. Yönetmelik 6216 sayılı Kanun m.23/1 ve m.29/3 ile AYM İçtüzüğü m.35/4, m.85/1 ve m.89/2'ye dayanır. Mahkemenin YARGISAL yapısı (Genel Kurul, Bölümler, Komisyonlar) hizmet birimi DEĞİLDİR ve bu listede yer almaz; bireysel başvuru evrakının idarî muhatabı Bireysel Başvuru Müdürlüğüdür. Özel Kalem Müdürlüğü, Basın Müşavirliği ve Anayasa Yargısı Araştırmaları Merkezi m.12/3 uyarınca doğrudan Başkanın gözetiminde, diğerleri Genel Sekreter Yardımcısının gözetiminde çalışır. Anayasa Mahkemesi bir yüksek mahkemedir, idarî hiyerarşi içinde bir bakanlığa bağlı DEĞİLDİR.
 
-BİRİM: Bireysel Başvuru Bürosu
-GÖREV: Anayasa m.148 kapsamında bireysel başvuru kabulü, kabul edilebilirlik ön incelemesi, harç ve eksiklik tamamlama bildirimi.
+BİRİM: Yazı İşleri Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.13/1: Yazı İşleri Müdürlüğü; iptal davalarının, itiraz başvurularının, Yüce Divan yargılamalarının, siyasi parti kapatma davaları ile ihtar başvuruları ve mali denetimlerinin, Yüce Divan değişik işler ile değişik işlere ilişkin başvuruların yazı işlerini yürütmek, kararları dil bilgisi kurallarına uygunluk yönünden incelemek, Mahkemeye gelen evrakı teslim alarak evrakın tasnifini ve dağıtımını yapmak, Mahkeme dışına gönderilecek evrakın ilgililere ulaştırılmasını sağlamak ile Mahkemenin mübaşirlik, fotokopi, faks ve kurum arşivi hizmetlerini yerine getirmekle görevlidir.
 
-BİRİM: Norm Denetimi Yazı İşleri Müdürlüğü
-GÖREV: İptal davası ve itiraz yoluyla norm denetimi başvurularının kabulü, dosya sorgulama ve karar örneği talebi.
+BİRİM: İdari ve Mali İşler Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.19/1: İdari ve Mali İşler Müdürlüğü; mal ve hizmet alımları için ihale, satın alma ve tahakkuk işleri ile maaşlar, yolluklar ve tedavi giderlerinin ödeme işlerini yapmak, sosyal işler ile temizlik hizmetleri ve bahçe bakım işlerini yürütmekle görevlidir.
 
-BİRİM: Genel Sekreterlik
-GÖREV: Anayasa Mahkemesi genel evrak kayıt ve havale, idari yazışma koordinasyonu, kurul kararlarına ilişkin yazışmalar.
+BİRİM: Personel Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.27/1: Personel Müdürlüğü; personelin atama, kadro, özlük ve disiplin işlerini yürütmekle görevlidir.
+
+BİRİM: Yayın ve Halkla İlişkiler Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.32/1: Yayın ve Halkla İlişkiler Müdürlüğü; yayın ve kütüphane işleri ile halkla ilişkileri yürütmekle görevlidir.
+
+BİRİM: Dış İlişkiler Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.37/1: Dış İlişkiler Müdürlüğü; Mahkemenin uluslararası organizasyonlarına ait işleri koordine etmek, kendi görev alanına giren konularda tercüme yapmak ve AAMB’nin sekreterya faaliyetlerini yürütmekle görevlidir.
+
+BİRİM: Strateji Geliştirme Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.42/1: Strateji Geliştirme Müdürlüğü; stratejik plan ile bütçeyi hazırlamak, taşınır ve taşınmazların muayene, kabul, muhafaza işlemleri ile kişi borçlarının takip ve tahsilini yapmakla görevlidir.
+
+BİRİM: Teknik Hizmetler Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.48/1: Teknik Hizmetler Müdürlüğü; Mahkemenin ve her türlü eklentisinin sıhhi tesisat, elektrik tesisatı işlerini yapmak ve destek hizmetlerini yerine getirmek ile Mahkemenin teknik güvenliğini sağlamak ve personelin ulaştırma işlerini yürütmekle görevlidir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.55/1: Özel Kalem Müdürlüğü; Başkanlığın işlerini ve üyelerin sekretaryasını yürütmekle görevlidir.
+
+BİRİM: Basın Müşavirliği
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.58/1: Basın Müşavirliği; Mahkeme ve Başkan hakkında medyada çıkan haberlere dair işlemler ile Mahkemenin kurumsal iletişim işlerini yürütmekle görevlidir.
+
+BİRİM: Bireysel Başvuru Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.62/1: Bireysel Başvuru Müdürlüğü; bireysel başvuruların kabul ve kayıt işlerini yapmak, başvuruları tedbir değerlendirmesi için hazırlamak, bireysel başvuruların yazı işlerini yürütmek ve arşiv hizmetlerini yerine getirmekle görevlidir. ANAYASA MAHKEMESİ HİZMET BİRİMLERİNİN GÖREVLERİ, ÇALIŞMA USUL VE ESASLARI HAKKINDAYÖNETMELİK 43
+
+BİRİM: Bilgi İşlem Müdürlüğü
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.69/1: Bilgi İşlem Müdürlüğü; kullanıcı desteği sağlamak, yazılım geliştirme işlerini yürütmek, sistem yönetimi ve güvenlik işlemlerini gerçekleştirmek ile istatistik ve raporlama yapmakla görevlidir.
+
+BİRİM: Kurum Hekimliği
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.75/1: Kurum Hekimliği; emekliler, geçici görevliler ve stajyerler de dâhil olmak üzere Mahkemenin tüm mensupları ve bunların bakmakla yükümlü oldukları kişilere sağlık hizmeti ile birinci basamak tanı, tedavi, rehabilitasyon ve danışmanlık hizmeti sağlamak, gerektiğinde istirahat raporu vermek ve sevk gereken hâllerde ilgiliyi ileri sağlık kurum ve kuruluşlarına sevk etmekle görevlidir.
+
+BİRİM: Sivil Savunma Uzmanlığı
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.80/1: Sivil Savunma Uzmanlığı; sivil savunma işlerini yürütmek, iç güvenliği sağlamak, müracaat memurluğu görevini yerine getirmek ve iç hizmetleri sunmakla görevlidir.
+
+BİRİM: Anayasa Yargısı Araştırmaları Merkezi
+GÖREV: AYM Hizmet Birimleri Yönetmeliği m.12/1 uyarınca Mahkemenin hizmet birimlerinden biridir. m.86/1: AYAM; Anayasa yargısı alanında araştırma faaliyetleri ile ihtiyaç duyulan konularda mukayeseli hukuk çalışmaları yapmak ve yaptırmak, misafir araştırmacıları kabul etmek, Mahkeme tarafından verilen ilkesel nitelikteki önemli kararları ilgili başraportörün görüşünü alarak tespit etmek, derlemek ve yayına hazırlamak, Mahkeme faaliyetlerine yönelik yıllık raporları hazırlamak ve yayımlamak, Anayasa yargısı alanında süreli ve süresiz yayınlar yapmak, ulusal ve uluslararası kongre, sempozyum, çalıştay, yuvarlak masa toplantıları ve benzeri bilimsel etkinlikler düzenlemek, Mahkeme kütüphanesine alınacak basılı veya elektronik kitap ve yayınlar, abone olunacak veri tabanları ile Mahkeme tarafından yapılacak yayınlara ilişkin komisyona öneride bulunmakla ve verilen diğer işleri yapmakla görevlidir.

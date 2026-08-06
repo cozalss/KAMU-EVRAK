@@ -32,7 +32,7 @@ o gerekçenin değişip değişmediğine bakılır.
 | 7 | `il-nufus-vatandaslik-mudurlugu` | ARANACAK | Aday: NVİ taşra teşkilatı yönetmeliği. |
 | 8 | `il-emniyet-mudurlugu` | ARANACAK | Aday: 3201 s. Emniyet Teşkilat Kanunu + EGM taşra düzenlemesi. Merkez teşkilatı zaten doğrulandı (`emniyet-genel-mudurlugu`). |
 | 9 | `il-jandarma-komutanligi` | ARANACAK | Aday: 2803 s. Kanun. |
-| 10 | `cevre-sehircilik-iklim-degisikligi-il-mudurlugu` | ARANACAK | CSB taşra yönetmeliği. CSB alanı erişilebilir (4 s. CBK kopyası oradan alındı). |
+| 10 | `cevre-sehircilik-iklim-degisikligi-il-mudurlugu` | **KAYNAK BAYAT + TEK TİP DEĞİL** | `webdosya.csb.gov.tr/db/kys/editordosya/Tasra-Teskilat-Yapisi.pdf` indirildi ve okundu. İki ayrı sebeple kullanılmadı: (1) belge **Nisan 2014** tarihli, en geç atıf 2013 ve içinde **Millî Emlak** şube müdürlükleri sayılıyor — oysa Millî Emlak 2018'de Çevre-Şehircilik'ten **Hazine ve Maliye'ye** geçti; bu liste bugün yanlış bakanlığın birimlerini CSB il müdürlüğüne yazdırırdı. (2) Bakanlık Makamının 28/2/2013 tarihli Olur'u ile **dört ayrı tipte** (A/B/C/D) il teşkilatı kurulmuş ve şube listesi tipe göre değişiyor — tek-tip şablon zaten kurulamaz; dört ayrı şablon + tip-il eşlemesi gerekir. Güncel bir taşra düzenlemesi bulunursa bu iki koşul birlikte çözülmeli. |
 | 11 | `aile-sosyal-hizmetler-il-mudurlugu` | ARANACAK | — |
 | 12 | `il-kultur-turizm-mudurlugu` | ARANACAK | — |
 | 13 | `genclik-spor-il-mudurlugu` | ARANACAK | — |
@@ -72,6 +72,25 @@ kaynak 29 il diyor.
 
 Bu bulgu, "kapsam sayısı sicilden alınır" varsayımının test edilmesi gerektiğini gösteriyor:
 **sicil bir envanterdir, doğrulanmış kaynak değildir.**
+
+## Kaynak avında tekrar eden üç engel
+
+Beş tür denendikten sonra engellerin rastgele olmadığı görülüyor:
+
+1. **TLS zinciri kırık merkezî kaynaklar.** `mevzuat.gov.tr` ve `resmigazete.gov.tr` sertifika
+   zincirini eksik sunuyor; hem Node hem Python istemcilerinde doğrulama düşüyor. Türkiye'nin
+   iki kanonik mevzuat kaynağı bu yüzden kullanılamıyor ve her tür için kurumun KENDİ
+   yayınını aramak gerekiyor. Doğrulamayı kapatmak yasak.
+2. **Bayat taşra belgeleri.** Kurumlar merkez teşkilatını güncel tutuyor ama taşra
+   düzenlemelerini yıllarca yenilemiyor (CSB'de 2014, Tarım'da 2018). Bayat listeyi yazmak
+   81 kurumda birden var olmayan birime yönlendirme demektir — MEB'de aynı tuzak yakalandı,
+   orada 2025 sürümü bulunabildiği için kurtarıldı.
+3. **Taşra tek tip olmayabilir.** CSB'de dört ayrı il teşkilatı tipi var ve şube listesi tipe
+   göre değişiyor. Şablon mekanizması tek listeyi tüm kapsama uyguladığı için böyle türlerde
+   ya tip başına ayrı şablon + kapsam listesi gerekir, ya da tür şablonlanamaz.
+
+Bu üç engel, il müdürlüğü şablonlarının merkez teşkilatı kadar kolay olmayacağını gösteriyor:
+merkez teşkilatı kararnamede tek elden ve güncel sayılıyor, taşra ise dağınık ve eski.
 
 ## Şablon nasıl eklenir
 

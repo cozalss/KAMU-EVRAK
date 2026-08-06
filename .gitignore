@@ -99,3 +99,6 @@ k1*.png
 sessiz-*.png
 zemin-*.png
 reduce-*.png
+
+# Canlı kaynak keşfi harcama sayacı (çalışma zamanı durumu)
+data/kesif_harcama.json

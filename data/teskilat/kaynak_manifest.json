@@ -1361,6 +1361,96 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "4 s. CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, 21/2/2025'e kadar guncel) cikarildi; m.190/1'de tek tek sayilan DORT birim ve gorev metinleri m.191/m.193/m.195-196/m.197'den LAFZEN. Madde sinirlari MADDE konumlarindan deterministik hesaplandi. Ayristirici bu maddede kucuk harfli bent adlari yuzunden 0 buldugu icin birimler dogrudan yazildi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "seyhan-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.seyhan.bel.tr/mudurlukler.php",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "b0626e63e02d76fa9755cd3dd679fbadfac3f8d8a50a67fbe7406c049ba20c13",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "mamak-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.mamak.bel.tr/mudurluk",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "021b0f129ecb3d102782734e62a195ec2b655007d93b9d7d5f5663e6903bd008",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "sisli-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.sisli.bel.tr/kurumsal/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "d52659c9cc42c99c097136add92c1ff8d70f926d0859aef7f393bab5ffdcd568",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "maltepe-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.maltepe.bel.tr/kurumsal/birim/mudurluk/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "b60a6c44df219e7c58ac2ece1a8f8e863c2a5e99a3dad62a155cb2f02a9f2869",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "umraniye-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://umraniye.bel.tr/kurumsal/yonetim-semasi/mudurlukler/",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "8c5f8aba5b527582c6f6c7df9344ad8b546be52db44edaec78d0db92d7dabfc2",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "van-buyuksehir-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://van.bel.tr/teskilat-semasi.html",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "8a9d5febee4f95578278c4977512fedfc1ecdb7629c990488bfbae13aa49eb71",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "cankaya-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.cankaya.bel.tr/kurumsal/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "c030e6583ed555fa8e414c04da7265d12d4a9268cf0e148b84790ce0eb4a9efc",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "pendik-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.pendik.bel.tr/tr/mudurlukler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "9407a4501b57a064afbd49f77f80bb6e1f299c3f4ad14c316523efebbd804311",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "kahramanmaras-buyuksehir-belediyesi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.kahramanmaras.bel.tr/kurumsal/organ-ve-teskilat",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "caaca31a1fcbb8e9485cb232d66b9f0492f3569b9bf656a620227d22eaba7fca",
+   "dogrulayan": "cem ozal",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "kurumun resmî sitesindeki birim listesi sayfası indirildi (TLS doğrulamalı), birim adları sayfadan birebir çıkarıldı ve elden gözden geçirildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

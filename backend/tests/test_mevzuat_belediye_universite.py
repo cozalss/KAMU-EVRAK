@@ -105,10 +105,14 @@ class TestGuvenSiralamasi:
     girdi ve arama artık 1. adımda (kurum_ozel) erken dönüyor — yani Kadıköy'de test edilecek
     "doğrulanmamış kuruma-özel kayıt" KALMADI. Kadıköy'de bırakılsaydı ilk test YANLIŞ SEBEPLE
     yeşil kalırdı (doğrulanmış kayıt sıralamayı kazandığı için değil, tek kayıt olduğu için).
-    Çankaya hâlâ özgün senaryoda: kaynaksız kendi dosyası + 5393 şablonu.
+    Aynı sebeple 2026-08-06'nın ikinci dalgasında Çankaya da doğrulandı ve fikstür bir kez
+    daha taşındı (Kadıköy → Çankaya → Keçiören). Bu KAÇINILMAZ bir sürüklenmedir: korpus
+    büyüdükçe "doğrulanmamış belediye" örneği tükenir. Testin başındaki ön-koşul assert'i
+    bu yüzden var — senaryo geçersizleştiğinde test YANLIŞ SEBEPLE yeşil kalmak yerine
+    kırılır ve nereye taşınacağını söyler.
     """
 
-    KURUM = "cankaya-belediyesi"
+    KURUM = "kecioren-belediyesi"
 
     def test_dogrulanmis_birim_kaynaksiz_kaydin_onunde_gelir(self) -> None:
         """Kaynağı gösterilmeyen kuruma-özel dosya, doğrulanmış mevzuat birimini gölgeleyemez."""

@@ -1,47 +1,110 @@
 @KURUM: Şişli Belediyesi
-@BELGE: Belediye Görev ve Çalışma Yönetmeliği (model; 5393 sayılı Belediye Kanunu ve Belediye ve Bağlı Kuruluşları ile Mahalli İdare Birlikleri Norm Kadro İlke ve Standartlarına Dair Yönetmelik esas alınmıştır)
-@KAYNAK_KIMLIK: teskilat/sisli-belediyesi/gorev-yonetmeligi
-@ERISIM: 2026-07-18
-@NOT: [DOĞRULA: Birim listesi 5393 sayılı Kanun + Norm Kadro Yönetmeliği'ne göre ilçe belediyelerinde TİPİK müdürlüklerdir (İstanbul ili Şişli ilçesi); Şişli Belediyesi'nin güncel teşkilat şemasındaki fiilî müdürlük adları/sayısı farklılaşabilir — yönlendirme öncesi kurumun resmî sitesindeki güncel teşkilat şemasıyla doğrula.]
+@BELGE: Şişli Belediyesi resmî müdürlükler listesi (5393 sayılı Belediye Kanunu m.48 ve m.49 uyarınca kurulan birimler)
+@KAYNAK_KIMLIK: https://www.sisli.bel.tr/kurumsal/mudurlukler
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: sisli-belediyesi
+@NOT: Birim listesi Şişli Belediyesi resmî sitesindeki müdürlükler sayfasından alınmıştır; sayfadaki ad yazımı korunmuştur. Bu dosyanın ÖNCEKİ sürümü birimleri "ilçe belediyelerinde TİPİK müdürlükler" diyerek kaynaksız listeliyor ve kendi künyesinde bunu itiraf ediyordu; o liste kaldırıldı. Kaynak sayfa birim ADINI verir, GÖREV tanımını vermez: yalnız 5393 m.48'in zorunlu dört birimi ile m.51 (zabıta) ve 5018 m.60 (malî hizmetler) için kanuni görev yazılmış, diğerlerinde görevin bu kaynakta bulunmadığı açıkça belirtilmiştir. Belediye teşkilatı meclis kararıyla değişebilir; liste erişim tarihindeki hâli yansıtır.
 
-BİRİM: Ruhsat ve Denetim Müdürlüğü
-GÖREV: İşyeri açma ve çalışma ruhsatı işlemleri; sıhhi işyeri ruhsatı, gayrisıhhi müessese ruhsatı ve umuma açık istirahat ve eğlence yeri ruhsatı düzenlenmesi. İşyeri açmak isteyen gerçek ve tüzel kişilerin ruhsat başvurularının alınması, gerekli belgelerin (kira sözleşmesi, vergi levhası, yapı kullanma izni) incelenmesi, yerinde denetim yapılması ve ruhsatın verilmesi. Hafta tatili ruhsatı, mesul müdür belgesi, canlı müzik izni işlemleri. Ruhsatsız veya ruhsata aykırı işyerlerinin denetimi, uyarılması, faaliyetten men edilmesi ve ruhsat iptali. İşyeri ruhsat harçlarının tahakkuku.
+BİRİM: Afet İşleri ve Risk Yönetimi Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
 
-BİRİM: İmar ve Şehircilik Müdürlüğü
-GÖREV: İmar planlarının uygulanması, imar durumu belgesi düzenlenmesi. Yapı ruhsatı (inşaat ruhsatı) ve yapı kullanma izin belgesi (iskan) verilmesi. Tadilat ve tamirat ruhsatları, kot-kesit ve aplikasyon işlemleri. Kaçak, ruhsatsız ve ruhsata aykırı yapıların tespiti, yıkım ve imar para cezası işlemleri (3194 sayılı İmar Kanunu). Numarataj ve adres işlemleri.
+BİRİM: Basın, Yayın ve Halkla İlişkiler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
 
-BİRİM: Fen İşleri Müdürlüğü
-GÖREV: Yol, asfalt, kaldırım, bordür yapımı, bakımı ve onarımı. Alt yapı ve üst yapı çalışmaları, yağmur suyu hatları, sanat yapıları. Belediye hizmet binaları ve tesislerinin inşaatı, bakımı. Yol çukuru, bozuk kaldırım, çökme gibi altyapı arızalarının giderilmesi.
+BİRİM: Bilgi İşlem Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
 
-BİRİM: Zabıta Müdürlüğü
-GÖREV: Belediye emir ve yasaklarının uygulanması, kabahatlerin denetimi. Seyyar satıcı, işgaliye, kaldırım ve yol işgalinin önlenmesi. Pazar yerlerinin düzeni ve denetimi, ölçü-tartı aletleri kontrolü. Gürültü, görüntü ve çevre kirliliği şikâyetlerinin yerinde denetimi. Umuma açık yerlerin genel düzen ve huzur denetimi.
+BİRİM: Destek Hizmetleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
 
-BİRİM: Temizlik İşleri Müdürlüğü
-GÖREV: Evsel katı atık (çöp) toplama ve nakli, cadde ve sokak süpürme temizliği. Konteyner yerleşimi ve bakımı, geri dönüşüm ve ambalaj atığı toplama. Çevre kirliliği ile mücadele, moloz ve hafriyat denetimi, haşere ve ilaçlama.
-
-BİRİM: Park ve Bahçeler Müdürlüğü
-GÖREV: Park, yeşil alan, çocuk oyun alanı ve spor alanlarının yapımı, bakımı ve düzenlenmesi. Ağaçlandırma, budama, çim biçme, sulama ve peyzaj çalışmaları. Ağaç kesim ve budama taleplerinin değerlendirilmesi.
-
-BİRİM: Sosyal Yardım İşleri Müdürlüğü
-GÖREV: İhtiyaç sahibi, muhtaç ve dar gelirli ailelere sosyal yardım (gıda, yakacak, giyim, nakdi yardım) yapılması. Engelli, yaşlı ve yardıma muhtaç vatandaşlara yönelik hizmetler. Sosyal inceleme ve muhtaçlık tespiti.
-
-BİRİM: Yazı İşleri Müdürlüğü
-GÖREV: Genel evrak kayıt, gelen-giden evrak ve havale işlemleri. Belediye meclisi ve encümen gündemi, kararların yazımı, takibi ve arşivlenmesi. Evlendirme (nikâh) işlemleri, resmî yazışma ve dağıtım. Vatandaş dilekçelerinin kayda alınması ve ilgili birime yönlendirilmesi.
-
-BİRİM: Mali Hizmetler Müdürlüğü
-GÖREV: Belediye bütçesinin hazırlanması ve uygulanması, gelir ve gider işlemleri. Emlak vergisi, çevre temizlik vergisi, ilan-reklam vergisi tahakkuk ve tahsilatı. Ödeme, tahakkuk, muhasebe ve harcama işlemleri. Fatura, hak ediş ve ödeme evraklarının işlenmesi.
-
-BİRİM: İnsan Kaynakları ve Eğitim Müdürlüğü
-GÖREV: Belediye personelinin (memur, işçi, sözleşmeli) özlük işlemleri. Atama, nakil, terfi, kadro, derece-kademe, emeklilik işlemleri. Personel izin (yıllık izin, mazeret izni), disiplin ve sicil işlemleri. Hizmet içi eğitim ve personel görevlendirmeleri.
-
-BİRİM: Hukuk İşleri Müdürlüğü
-GÖREV: Belediyenin taraf olduğu dava ve icra takiplerinin yürütülmesi, adli ve idari yargı süreçleri. Hukuki görüş ve mütalaa verilmesi, sözleşmelerin incelenmesi. Mahkeme, icra dairesi ve noterden gelen tebligat, müzekkere ve haciz işlemleri.
+BİRİM: Dış İlişkiler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
 
 BİRİM: Emlak ve İstimlak Müdürlüğü
-GÖREV: Belediye taşınmazlarının (arsa, bina) kayıt, tahsis, kiralama, satış ve takas işlemleri. Kamulaştırma (istimlak) ve şerh işlemleri. Ecrimisil, işgal ve tahsis takibi.
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
 
-BİRİM: Sağlık İşleri ve Veteriner Müdürlüğü
-GÖREV: Halk sağlığı ve hıfzıssıhha hizmetleri, cenaze ve defin işlemleri. Sokak hayvanlarının rehabilitasyonu, kısırlaştırma, aşılama ve sahiplendirme. Başıboş ve sahipsiz hayvan şikâyetleri, veterinerlik hizmetleri.
+BİRİM: Fen İşleri Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir; belediyenin fen işleri hizmetlerini yürütür. Bu birimin görevleri anılan Kanunda ayrı bir maddeyle düzenlenmemiştir.
 
-BİRİM: Basın Yayın ve Halkla İlişkiler Müdürlüğü
-GÖREV: CİMER, bilgi edinme (4982 sayılı Kanun) ve halkın belediyeye elektronik başvurularının karşılanması. Vatandaş istek, şikâyet ve önerilerinin (çözüm merkezi, beyaz masa) kayda alınıp ilgili birime iletilmesi ve geri bildirimi. Basın, tanıtım, sosyal medya ve kurumsal iletişim.
+BİRİM: Gelirler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Gençlik ve Spor Hizmetleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Hukuk İşleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İklim Değişikliği ve Sıfır Atık Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İmar ve Şehircilik Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İnsan Kaynakları ve Eğitim Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İşletme ve İştirakler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Kentsel Dönüşüm Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Kreş Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Makine İkmal, Bakım ve Onarım Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Mali Hizmetler Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir. Görevleri 5018 sayılı Kanun m.60'ta malî hizmetler birimleri için belirlenmiştir: stratejik plan ve performans programının hazırlanmasını koordine etmek; bütçeyi hazırlamak, izlemek ve kesin hesabı çıkarmak; muhasebe hizmetlerini yürütmek; gelirleri tahakkuk ettirmek, gelir ve alacakların takip ve tahsilini yapmak; ön malî kontrol faaliyetini yürütmek; taşınır ve taşınmaz işlemlerini yapmak.
+
+BİRİM: Muhtarlık İşleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Park ve Bahçeler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Plan ve Proje Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Rehberlik ve Teftiş Kurulu
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Ruhsat ve Denetim Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Sağlık İşleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Sosyal Hizmetler Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Strateji Geliştirme Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Temizlik İşleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Ulaşım Hizmetleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Veteriner İşleri Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Yapı Kontrol Müdürlüğü
+GÖREV: Şişli Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Yazı İşleri Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir; belediyenin yazı işleri hizmetlerini yürütür. Bu birimin görevleri anılan Kanunda ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Zabıta Müdürlüğü
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir. m.51: belediye zabıtası, beldede esenlik, huzur, sağlık ve düzenin sağlanmasıyla görevlidir; belediye meclisince alınan ve belediye zabıtasınca yerine getirilmesi gereken emir ve yasaklarla bunlara uymayanlar hakkında mevzuatta öngörülen ceza ve diğer yaptırımları uygular.

@@ -1,0 +1,74 @@
+@KURUM: Kahramanmaraş Büyükşehir Belediyesi
+@BELGE: Kahramanmaraş Büyükşehir Belediyesi resmî müdürlükler listesi (5393 sayılı Belediye Kanunu m.48 ve m.49 uyarınca kurulan birimler)
+@KAYNAK_KIMLIK: https://www.kahramanmaras.bel.tr/kurumsal/organ-ve-teskilat
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: kahramanmaras-buyuksehir-belediyesi
+@NOT: Birim listesi Kahramanmaraş Büyükşehir Belediyesi resmî sitesindeki müdürlükler sayfasından alınmıştır; sayfadaki ad yazımı korunmuştur. Bu dosyanın ÖNCEKİ sürümü birimleri "ilçe belediyelerinde TİPİK müdürlükler" diyerek kaynaksız listeliyor ve kendi künyesinde bunu itiraf ediyordu; o liste kaldırıldı. Kaynak sayfa birim ADINI verir, GÖREV tanımını vermez: yalnız 5393 m.48'in zorunlu dört birimi ile m.51 (zabıta) ve 5018 m.60 (malî hizmetler) için kanuni görev yazılmış, diğerlerinde görevin bu kaynakta bulunmadığı açıkça belirtilmiştir. Belediye teşkilatı meclis kararıyla değişebilir; liste erişim tarihindeki hâli yansıtır.
+
+BİRİM: Özel Kalem Müdürlüğü
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İtfaiye Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Zabıta Dairesi Başkanlığı
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir. m.51: belediye zabıtası, beldede esenlik, huzur, sağlık ve düzenin sağlanmasıyla görevlidir; belediye meclisince alınan ve belediye zabıtasınca yerine getirilmesi gereken emir ve yasaklarla bunlara uymayanlar hakkında mevzuatta öngörülen ceza ve diğer yaptırımları uygular.
+
+BİRİM: Fen İşleri Dairesi Başkanlığı
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir; belediyenin fen işleri hizmetlerini yürütür. Bu birimin görevleri anılan Kanunda ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: İmar ve Şehircilik Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Kuzey İlçeleri Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Ulaşım Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Basın Yayın ve Halkla İlişkiler Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Çevre Koruma ve Kontrol Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Sosyal Hizmetler Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Tarımsal Hizmetler ve Muhtarlıklar Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Mali Hizmetler Dairesi Başkanlığı
+GÖREV: 5393 sayılı Belediye Kanunu m.48 uyarınca belediyede bulunması zorunlu dört birimden biridir. Görevleri 5018 sayılı Kanun m.60'ta malî hizmetler birimleri için belirlenmiştir: stratejik plan ve performans programının hazırlanmasını koordine etmek; bütçeyi hazırlamak, izlemek ve kesin hesabı çıkarmak; muhasebe hizmetlerini yürütmek; gelirleri tahakkuk ettirmek, gelir ve alacakların takip ve tahsilini yapmak; ön malî kontrol faaliyetini yürütmek; taşınır ve taşınmaz işlemlerini yapmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İnsan Kaynakları ve Eğitim Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Kültür, Sanat ve Sosyal İşler Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Yol Yapım Bakım ve Onarım Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: 1. Hukuk Müşavirliği
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Park ve Bahçeler Dairesi Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: Rehberlik ve Teftiş Kurulu Başkanlığı
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.
+
+BİRİM: İç Denetim Birimi
+GÖREV: Kahramanmaraş Büyükşehir Belediyesi resmî teşkilat listesinde yer alan birimdir. Bu kaynak birimin ADINI verir, görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR. Birimin görev ve çalışma esasları belediye meclisinin kabul ettiği görev ve çalışma yönetmeliğinde düzenlenir.

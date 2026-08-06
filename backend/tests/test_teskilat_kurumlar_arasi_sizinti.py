@@ -52,6 +52,8 @@ class TestKapiFazlaGenisDegil:
 
     def test_dogrulanmamis_kurum_mevzuat_sablonunu_alir(self) -> None:
         """Kaynaksız kendi dosyası + 5393 şablonu olan belediyede yol bozulmadı."""
-        adaylar = teskilat_birim_ara("cankaya-belediyesi", "meclis kararı ve evrak kayıt", top_k=5)
+        # Fikstür hâlâ KAYNAKSIZ bir belediye olmalı; Çankaya 2026-08-06'da doğrulandı
+        # (bkz. test_mevzuat_belediye_universite.TestGuvenSiralamasi notu).
+        adaylar = teskilat_birim_ara("kecioren-belediyesi", "meclis kararı ve evrak kayıt", top_k=5)
         assert any(a["kaynak_tipi"] == "mevzuat_teskilat" for a in adaylar), adaylar
         assert any(a["kaynak_tipi"] == "aday" for a in adaylar), "F8: kurumun kendi kaydı düştü"

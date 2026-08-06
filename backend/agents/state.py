@@ -109,6 +109,12 @@ class EvrakState(TypedDict):
     # {birim_ad, gorev, kaynak_kurum, belge_basligi, url_veya_belge_kimligi, erisim_tarihi,
     #  metin_parcasi, icerik_hash}. Grounding kanıtı + denetim izi.
     hedef_birim_kaynak: NotRequired[dict[str, Any]]
+    # Canlı kaynak (2026-08-06): korpusta karşılığı OLMAYAN kuruma evrak düştüğünde kurumun
+    # kendi resmî sitesinden canlı okunmuş öneri + kaynak linki. `hedef_birim_kaynak`tan
+    # AYRI tutulur ve daima `dogrulanmis=False` taşır — doğrulanmış künyeye karışmamalı.
+    # Şemada olması ZORUNLU: LangGraph tanımsız anahtarı sessizce düşürür, yani bu satır
+    # olmadan node değeri döndürse bile API'ye hiç ulaşmaz (denetimde ölçüldü).
+    canli_kaynak: NotRequired[dict[str, Any]]
     # Ajan başarısız/grounding-fail (REVİZYON 4): eski 9-set kategori GERÇEK birim değil,
     # yalnız öneri. durum="fallback_onerisi" + insan_onayi_gerekli=True bunu işaretler.
     hedef_kategori: NotRequired[str | None]

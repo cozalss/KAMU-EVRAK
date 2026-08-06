@@ -87,10 +87,71 @@ class TestKalipYoksaBosDoner:
             assert aday_alanlar(kayit) == []
 
     def test_bilinmeyen_tur_bos_doner(self) -> None:
-        assert aday_alanlar({"slug": "bir-sey", "tur": "kit"}) == []
+        assert aday_alanlar({"slug": "bir-sey", "tur": "bilinmeyen-tur"}) == []
 
     def test_slugsuz_kayit_bos_doner(self) -> None:
         assert aday_alanlar({"tur": "belediye"}) == []
+
+
+class TestCakismaKapisi:
+    """Merkez ilçe kaymakamlığı valiliğin adresine düşüyordu — yanlış kurumun sitesi.
+
+    Kimlik kapısı (core.kurum_kimligi) bunu YAKALAYAMAZ: "Adıyaman Kaymakamlığı" ile
+    "Adıyaman Valiliği"nin tek ayırt edici kelimesi "adıyaman"dır ve valilik sayfasında
+    da geçer. Bu yüzden kapı burada, aday üretiminde olmalı.
+    """
+
+    def test_merkez_ilce_kaymakamligi_ADAY_URETMEZ(self) -> None:
+        assert aday_alanlar({"slug": "adiyaman-kaymakamligi", "tur": "kaymakamlik",
+                             "il": "Adıyaman"}) == []
+
+    def test_valiligin_kendi_adayi_ETKILENMEZ(self) -> None:
+        adaylar = aday_alanlar({"slug": "adiyaman-valiligi", "tur": "valilik",
+                                "il": "Adıyaman"})
+        assert "https://www.adiyaman.gov.tr" in adaylar
+
+    def test_gercek_ilce_kaymakamligi_calismaya_DEVAM_EDER(self) -> None:
+        """Kapı dar olmalı: yalnız ilçe adı il adına EŞİTSE kapanır."""
+        adaylar = aday_alanlar({"slug": "tavsanli-kaymakamligi", "tur": "kaymakamlik",
+                                "il": "Kütahya"})
+        assert "https://tavsanli.gov.tr" in adaylar
+
+    def test_sicildeki_TUM_kaymakamliklar_valilik_adresine_dusmez(self) -> None:
+        """Tek örnek değil, korpusun tamamı taranır."""
+        kayitlar = list(_kayitlar().values())
+        valilik_alanlari = {
+            a for k in kayitlar if k.get("tur") == "valilik" for a in aday_alanlar(k)
+        }
+        cakisan = [
+            k["slug"] for k in kayitlar if k.get("tur") == "kaymakamlik"
+            if set(aday_alanlar(k)) & valilik_alanlari
+        ]
+        assert not cakisan, f"valilik adresine düşen kaymakamlık: {cakisan[:5]}"
+
+
+class TestMerkeziKalip:
+    """`<slug>.gov.tr` — 90 karantina kurumunda ölçüldü, 19'u tuttu (bkz. _MERKEZI_OLCUMU).
+
+    Bu kalıp TEK BAŞINA güvenli değildir: kısaltmalar çakışıyor (ttk.gov.tr = Türk Tarih
+    Kurumu, sicildeki `ttk` = Türkiye Taşkömürü Kurumu). Güvenliği `kurum_kimligi` kapısı
+    sağlar; o kapının kendi testi tests/test_kurum_kimligi.py'dedir.
+    """
+
+    @pytest.mark.parametrize("tur", ["diger", "kit", "ust_kurul", "bagli_kurulus"])
+    def test_merkezi_turlerde_slug_alan_adi_olur(self, tur: str) -> None:
+        adaylar = aday_alanlar({"slug": "tubitak", "tur": tur})
+        assert adaylar == ["https://www.tubitak.gov.tr", "https://tubitak.gov.tr"]
+
+    def test_tireli_slugda_tiresiz_varyant_da_denenir(self) -> None:
+        adaylar = aday_alanlar({"slug": "eti-maden", "tur": "kit"})
+        assert "https://www.eti-maden.gov.tr" in adaylar
+        assert "https://etimaden.gov.tr" in adaylar
+
+    @pytest.mark.parametrize("tur", ["elektrik_dagitim", "dogalgaz_dagitim"])
+    def test_ozel_sirketlere_kalip_UYGULANMAZ(self, tur: str) -> None:
+        """Ölçümde 21/21 başarısız (.com.tr kullanıyorlar) — boş istek atılmaz."""
+        assert aday_alanlar({"slug": "aydem", "tur": tur}) == []
+        assert not kalip_var_mi(tur)
 
 
 class TestKapsam:
@@ -99,5 +160,6 @@ class TestKapsam:
         kayitlar = list(_kayitlar().values())
         kapsanan = sum(1 for k in kayitlar if aday_alanlar(k))
         # Ölçüldü 2026-08-06: belediye+valilik+kaymakamlık+il özel idare+defterdarlık
-        # ve ölçülmüş il müdürlüğü türleri.
-        assert kapsanan > 2500, kapsanan
+        # ve ölçülmüş il müdürlüğü türleri. 2026-08-06 (2. dalga): +merkezî kurumlar
+        # (diger/kit/ust_kurul/cumhurbaskanligi_ofis_kurul = 227 kayıt).
+        assert kapsanan > 2700, kapsanan

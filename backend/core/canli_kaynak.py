@@ -5,7 +5,14 @@ AKIŞ (ucuzdan pahalıya, ilk tutan kazanır):
     1. ALAN KALIBI   — sicil türünden adres türet (kurumların %69,8'i)     [~1 sn, 0 $]
     2. SAYFA KEŞFİ   — o sitede "birimler/teşkilat" sayfasını bul          [~1 sn, 0 $]
     3. WEB ARAMASI   — 1-2 tutmazsa; resmî alanlara kilitli, bütçe tavanlı [~8 sn, ~$0,002]
-    4. BİRİM ÇIKARIM — sayfadan unvan ekiyle biten adları topla            [0 sn, 0 $]
+    4. KİMLİK KAPISI — sayfa GERÇEKTEN bu kuruma mı ait? değilse REDDET    [0 sn, 0 $]
+    5. BİRİM ÇIKARIM — sayfadan unvan ekiyle biten adları topla            [0 sn, 0 $]
+
+KİMLİK KAPISI NEDEN ZORUNLU: alan adı kalıptan türetildiği için kısaltma çakışması
+mümkün. Ölçümde `ttk` (Türkiye Taşkömürü Kurumu) için ttk.gov.tr açıldı — o adres
+**Türk Tarih Kurumu**na ait. Kapı olmasaydı yanlış kurumun birimleri, resmî görünümlü
+bir linkle önerilecekti. Kapı `kurum_kimligi.kurum_sayfasi_mi`dir ve gerçek sayfalarda
+ölçülmüştür: 29 kurum, 0 yanlış-pozitif, 0 etkin yanlış-negatif.
 
 NEDEN ÇIKARIMDA LLM YOK: birimler zaten SAYFADAN geliyor, yani "kaynakta birebir geçme"
 şartı yapısı gereği sağlanıyor. Ölçüldü (2026-08-06): mevcut regex çıkarıcı Kayseri
@@ -22,9 +29,16 @@ zaman memur onayına gider; otomatik havale bu yoldan ASLA yapılmaz.
 """
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
+import contextlib
+import functools
 import json
+import os
 import re
+import threading
 import time
+import uuid
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -32,6 +46,7 @@ from typing import Any
 import structlog
 
 from core.kurum_alan import aday_alanlar
+from core.kurum_kimligi import kurum_sayfasi_mi
 from core.sayfa_kesif import birim_sayfasi_bul, izinli_mi
 
 log = structlog.get_logger()
@@ -40,6 +55,10 @@ _ONBELLEK_DOSYASI = Path(__file__).resolve().parents[2] / "data" / "canli_kaynak
 # Kurum siteleri sık değişmez; bir ay sonra yeniden bakmak makul bir denge.
 ONBELLEK_OMRU_SN = 30 * 24 * 3600
 AZAMI_BIRIM = 60
+# Önbellek oku-değiştir-yaz kritik bölgesi. Kilitsizken iki eşzamanlı yazım (SSE akışı +
+# ikinci istek) SABİT ".tmp" adında buluşuyor ve tüm önbelleği bozabiliyordu; bozuk JSON
+# sessizce {} okunduğu için yüzlerce kurumun kaydı log basmadan yok oluyordu.
+_ONBELLEK_KILIDI = threading.Lock()
 
 # Birim adı unvanları — doğrulayıcıyla AYNI tanım kullanılmalı, yoksa bir araç "birim"
 # derken diğeri demez. Tek kaynak: teskilat_kaynak_dogrula._SON_EKLER.
@@ -51,6 +70,43 @@ _SON_EKLER = (
 _ADAY_RE = re.compile(
     r"[A-ZÇĞİÖŞÜ0-9][^<>\n\r\t|•]{2,75}?(?:" + "|".join(map(re.escape, _SON_EKLER)) + ")"
 )
+
+# ---- Aday temizleme -------------------------------------------------------------------
+# Regex, unvan ekinden ÖNCEKİ her şeyi yutabiliyor: "Vatandaşlarımız gürültü şikayetlerini
+# Zabıta Müdürlüğü" tek bir "birim adı" olarak çıkıyordu — hem ad çöp, hem `en_uygun_birim`
+# yanlış birimi seçiyordu (ölçüldü). Aday SAĞDAN SOLA, yalnız birim adı grameri kadar
+# kırpılır: büyük harfle başlayan sözcükler + "ve/ile" bağlaçları.
+_BAGLAC = frozenset({"ve", "ile", "ila"})
+# Menü/gezinme sözcükleri birim adının parçası olamaz — sınır sayılır.
+_GEZINME = frozenset({
+    "anasayfa", "ana", "sayfa", "iletişim", "iletisim", "duyurular", "haberler",
+    "kurumsal", "başkan", "baskan", "meclis", "yönetim", "yonetim", "hakkımızda",
+    "hakkimizda", "belgelerimiz", "galeri", "menü", "menu", "arama", "giriş", "giris",
+})
+# Ölçülen en uzun gerçek birim adı 6 sözcük ("İklim Değişikliği ve Sıfır Atık Müdürlüğü").
+AZAMI_SOZCUK = 6
+
+
+def _adayi_kirp(ham: str) -> str:
+    """Aday adı, birim adı gramerine uyan EN SAĞDAKİ parçaya indir. Uymazsa boş."""
+    sozcukler = ham.split()
+    tutulan: list[str] = []
+    for sozcuk in reversed(sozcukler):
+        yalin = sozcuk.strip("().,:;\"'").lower()
+        if yalin in _GEZINME:
+            break
+        if yalin in _BAGLAC:
+            # Bağlaç yalnız ORTADA olabilir; adın başında duramaz.
+            if not tutulan:
+                break
+            tutulan.append(sozcuk)
+            continue
+        if not sozcuk[:1].isupper() and not sozcuk[:1].isdigit():
+            break
+        tutulan.append(sozcuk)
+        if len(tutulan) >= AZAMI_SOZCUK:
+            break
+    return " ".join(reversed(tutulan)).strip("().,:;\"'")
 
 
 @dataclass(frozen=True)
@@ -76,25 +132,46 @@ class CanliKaynak:
 
 def _onbellek_yukle() -> dict[str, Any]:
     try:
-        return json.loads(_ONBELLEK_DOSYASI.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        veri = json.loads(_ONBELLEK_DOSYASI.read_text(encoding="utf-8"))
+    except FileNotFoundError:
         return {}
+    except OSError as exc:
+        log.warning("canli_kaynak.onbellek_okunamadi", hata=str(exc))
+        return {}
+    except ValueError:
+        # Sessiz veri kaybı kabul edilemez: burada {} dönmek "önbellek boş" gibi görünür
+        # ve yüzlerce kurum yeniden ağa çıkar; sebebi kimse bilmez.
+        log.warning("canli_kaynak.onbellek_bozuk_sifirlandi")
+        return {}
+    return veri if isinstance(veri, dict) else {}
 
 
 def _onbellek_yaz(veri: dict[str, Any]) -> None:
+    """Atomik yaz. Geçici ad SÜREÇ+ÇAĞRI BENZERSİZ olmalı — sabit ".tmp" adında iki
+    eşzamanlı yazıcı buluşup birbirinin dosyasını bozuyordu."""
+    gecici = _ONBELLEK_DOSYASI.with_suffix(f".{os.getpid()}.{uuid.uuid4().hex[:8]}.tmp")
     try:
         _ONBELLEK_DOSYASI.parent.mkdir(parents=True, exist_ok=True)
-        gecici = _ONBELLEK_DOSYASI.with_suffix(".tmp")
         gecici.write_text(json.dumps(veri, ensure_ascii=False, indent=1) + "\n",
                           encoding="utf-8", newline="\n")
         gecici.replace(_ONBELLEK_DOSYASI)
     except OSError as exc:
         log.warning("canli_kaynak.onbellek_yazilamadi", hata=str(exc))
+        with contextlib.suppress(OSError):
+            gecici.unlink(missing_ok=True)      # yarım kalan artığı bırakma
 
 
 def birimleri_cikar(metin: str) -> tuple[str, ...]:
-    """Sayfa metninden unvan ekiyle biten aday birim adları (sıra korunur, tekil)."""
-    bulunan = (re.sub(r"\s+", " ", m.group(0)).strip() for m in _ADAY_RE.finditer(metin))
+    """Sayfa metninden unvan ekiyle biten aday birim adları (sıra korunur, tekil).
+
+    Her aday `_adayi_kirp` ile cümle/menü gürültüsünden arındırılır; unvan ekinin kendisi
+    tek başına kalırsa ("Müdürlüğü") atılır — bilgi taşımaz.
+    """
+    bulunan: list[str] = []
+    for m in _ADAY_RE.finditer(metin):
+        temiz = _adayi_kirp(re.sub(r"\s+", " ", m.group(0)).strip())
+        if temiz and temiz not in _SON_EKLER and len(temiz.split()) >= 2:
+            bulunan.append(temiz)
     return tuple(dict.fromkeys(bulunan))[:AZAMI_BIRIM]
 
 
@@ -114,12 +191,14 @@ def onbellekten(kurum_slug: str) -> CanliKaynak | None:
 
 
 def _onbellege_koy(kaynak: CanliKaynak) -> None:
-    veri = _onbellek_yukle()
     kayit = asdict(kaynak)
     kayit["birimler"] = list(kaynak.birimler)
     kayit.pop("kurum_slug", None)
-    veri[kaynak.kurum_slug] = kayit
-    _onbellek_yaz(veri)
+    # Oku-değiştir-yaz TEK kritik bölge: kilitsizken iki yazıcıdan birinin kaydı kayboluyordu.
+    with _ONBELLEK_KILIDI:
+        veri = _onbellek_yukle()
+        veri[kaynak.kurum_slug] = kayit
+        _onbellek_yaz(veri)
 
 
 def canli_kaynak_bul(
@@ -153,6 +232,16 @@ def canli_kaynak_bul(
 
     if bulgu is None:
         log.info("canli_kaynak.bulunamadi", kurum=slug)
+        return None
+
+    # KİMLİK KAPISI — sayfa gerçekten bu kuruma mı ait? Alan adı kalıptan türetiliyor ve
+    # kısaltmalar ÇAKIŞABİLİYOR: ölçümde `ttk` (Türkiye Taşkömürü Kurumu) için açılan
+    # ttk.gov.tr, Türk Tarih Kurumu'na aitti. Kapı olmasaydı taşkömürü evrakına tarih
+    # kurumunun birimleri, üstelik resmî görünümlü bir linkle önerilecekti.
+    # Yanlış kuruma GÜVENLE yönlendirmek, hiç öneri vermemekten kötüdür (INV-6 mantığı).
+    ad = str(kayit.get("ad") or "")
+    if not kurum_sayfasi_mi(ad, bulgu.metin):
+        log.warning("canli_kaynak.kurum_kimligi_tutmadi", kurum=slug, url=bulgu.url)
         return None
 
     birimler = birimleri_cikar(bulgu.metin)
@@ -227,5 +316,49 @@ def kurum_icin_oneri(
     return kunye
 
 
-__all__ = ("AZAMI_BIRIM", "CanliKaynak", "birimleri_cikar", "canli_kaynak_bul",
-           "en_uygun_birim", "kurum_icin_oneri", "onbellekten")
+"""Aşağıdaki asenkron sarmalayıcı, keşfin evrak akışını ASMASINI engeller.
+
+İki ayrı koruma, ikisi de gerekli:
+  · AYRILMIŞ HAVUZ — `asyncio.to_thread` paylaşımlı varsayılan executor'ı kullanır.
+    Zaman aşımı yalnız AWAIT'i iptal eder; Python'da çalışan thread durdurulamaz, alttaki
+    httpx çağrısı worker'ı bırakmaz. Paylaşımlı havuzda birkaç yavaş kurum sitesi giriş
+    (argon2), mevzuat önerisi ve mobil QR dâhil tüm `to_thread` çağrılarını açlığa
+    düşürüyordu. Depo aynı hatayı OCR'da bir kez yaşamış ve `multimodal/ocr.py`de bu
+    deseni kurmuştu; burada tekrarlanıyor. Thread sızıntısını bitirmez, YAYILMA ALANINI
+    keşifle sınırlar.
+  · TOPLAM ZAMAN AŞIMI — `sayfa_kesif` kendi bütçesini uygular ama modül dışı bir asılma
+    (DNS, TLS el sıkışması) yine mümkün; dış sınır memuru ekranda tutmamayı garanti eder.
+"""
+
+_KESIF_MAX_WORKERS = int(os.getenv("KESIF_MAX_WORKERS", "2"))
+_kesif_executor = concurrent.futures.ThreadPoolExecutor(
+    max_workers=_KESIF_MAX_WORKERS, thread_name_prefix="kesif-worker")
+# sayfa_kesif.TOPLAM_BUTCE_SN (6 sn) + el sıkışma payı.
+KESIF_TOPLAM_SN = float(os.getenv("KESIF_TOPLAM_SN", "8"))
+
+
+async def kurum_icin_oneri_async(
+    kurum_slug: str, konu: str, *, web_aramasi: bool = False
+) -> dict[str, Any] | None:
+    """`kurum_icin_oneri`nin evrak akışında kullanılacak güvenli biçimi.
+
+    Hata VE zaman aşımı yutulur: canlı keşif bir EK'tir, evrak işlemenin şartı değildir.
+    """
+    dongu = asyncio.get_running_loop()
+    is_ = dongu.run_in_executor(
+        _kesif_executor,
+        functools.partial(kurum_icin_oneri, kurum_slug, konu, web_aramasi=web_aramasi),
+    )
+    try:
+        return await asyncio.wait_for(is_, timeout=KESIF_TOPLAM_SN)
+    except TimeoutError:
+        log.warning("canli_kaynak.zaman_asimi", kurum=kurum_slug, sinir=KESIF_TOPLAM_SN)
+        return None
+    except Exception as exc:
+        log.warning("canli_kaynak.hata", kurum=kurum_slug, hata=type(exc).__name__)
+        return None
+
+
+__all__ = ("AZAMI_BIRIM", "KESIF_TOPLAM_SN", "CanliKaynak", "birimleri_cikar",
+           "canli_kaynak_bul", "en_uygun_birim", "kurum_icin_oneri",
+           "kurum_icin_oneri_async", "onbellekten")

@@ -126,6 +126,48 @@ class TestLlmPiiSizintiGuard:
         _pii_yok(kayit["user"])
 
 
+class TestKonuSatiriIsimSizintisi:
+    """KİŞİ ADI da PII'dir — sayısal PII'nin maskelenmesi tek başına yetmez.
+
+    2026-08-06 denetiminde ölçüldü: `route_ajan` gövdeyi `mask_for_llm(text, isim)` ile
+    "[AD]" yaparken, `bilgi_unsurlari["konu"]` alanını HAM alıyordu. `cikar` konuya yalnız
+    TCKN/telefon temizliği uyguluyor, ismi bırakıyor. Sonuç: aynı prompt'ta gövde
+    "Konu: [AD]'in tahsis talebi" derken konu satırı "EVRAK KONUSU: Ayşe Yılmaz'ın tahsis
+    talebi" yazıyordu — maskeleme tek satırla delinmişti.
+    """
+
+    async def test_konu_satirindaki_ISIM_llm_prompta_gitmez(self, monkeypatch):
+        import agents.nodes.route_ajan as ajan_mod
+
+        kayit, fake = _yakalayan()
+        monkeypatch.setattr(ajan_mod, "llm_json", fake)
+        monkeypatch.setattr(ajan_mod, "real_llm", lambda: object())
+        await ajan_mod.route_ajan(
+            {
+                "evrak_text": _METIN,
+                "aktif_kurum": "Nilüfer Belediyesi",
+                "bilgi_unsurlari": {
+                    "gonderen": "Ayşe Yılmaz",
+                    "konu": "Ayşe Yılmaz'ın park onarımı talebi",
+                    "talepler": ["Ayşe Yılmaz için parkın onarılması"],
+                },
+            },
+            {"birim_alternatifleri": []},
+        )
+        user = kayit.get("user", "")
+        assert user, "LLM çağrılmadı — test anlamsız"
+        assert "Ayşe Yılmaz" not in user, "konu/talep satırındaki ham İSİM dış LLM'e sızdı"
+        _pii_yok(user)
+
+    def test_arama_baglami_isim_verilmeden_de_cokmez(self):
+        """`isim` bilinmiyorsa maskeleme atlanır ama fonksiyon çalışmaya devam eder."""
+        from agents.nodes.route_ajan import _arama_baglami
+
+        konu, arama = _arama_baglami({"konu": "park onarımı"}, "gövde metni")
+        assert konu == "park onarımı"
+        assert "park onarımı" in arama
+
+
 class TestYapisalMaskeleme:
     """`mask_yapisal` — dict/list araç çıktısındaki metin DEĞERLERİ maskelenmeli.
 

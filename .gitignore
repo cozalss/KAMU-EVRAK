@@ -103,3 +103,4 @@ reduce-*.png
 # Canlı kaynak keşfi harcama sayacı (çalışma zamanı durumu)
 data/kesif_harcama.json
 data/canli_kaynak_onbellek.json
+data/canli_kaynak_taramasi.json

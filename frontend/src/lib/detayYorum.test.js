@@ -7,6 +7,7 @@ import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum,
   mevzuatDipnot, birimDipnot, denetimDipnot, lintGiris, lintGrupla, decomposeGiris, slaKonum,
   riskGerekceYorum, riskSkorYorum, kanunNo, havaleYorum,
+  canliKaynakYorum, guvenliKaynakAdresi,
 } from "./detayYorum.js";
 
 /* ---- lintGrupla: durum gruplama + bilinmeyen durum düşmez + varsayılan açılım ---- */
@@ -561,6 +562,135 @@ test("havale: vurgu yalnız değerin KENDİSİ alarm olduğunda (devir / belirle
   // Geçerli birim adı alarm değil — belirsizliği rozet taşır, ad okunur kalır.
   assert.equal(havaleYorum({ hedef_kategori: "fen_isleri", insan_onayi_gerekli: true }).vurgu, false);
   assert.equal(havaleYorum({ hedef_birim: "X", durum: "kaynak_dogrulandi" }).vurgu, false);
+});
+
+/* ---- canlı kaynak: DOĞRULANMAMIŞ kaynağın arayüzdeki sözleşmesi -----------------------
+   Korpusta karşılığı olmayan kuruma evrak düştüğünde backend, kurumun kendi resmî
+   sitesinden okunmuş bir öneri + kaynak linki döndürür (`canli_kaynak`). Buradaki
+   testlerin tek amacı, o verinin arayüzde DOĞRULANMIŞ GİBİ görünmesini imkânsız kılmak
+   ve adresin güvenli olduğunu istemci tarafında da kanıtlamaktır. Backend'de aynı sınır
+   üç yerde kilitli (tests/test_canli_kaynak_baglanti.py); bu dosya dördüncüsüdür. */
+const CANLI = {
+  url: "https://konyaism.saglik.gov.tr/TR-186619/birimler.html",
+  birim_sayisi: 38,
+  yol: "onbellek",
+  dogrulanmis: false,
+  uyari: "Bu kaynak canlı bulundu; insan incelemesinden GEÇMEDİ.",
+  kurum_slug: "konya-il-saglik-mudurlugu",
+  birim_oneri: "Acil Sağlık Hizmetleri Başkanlığı",
+  birim_ornekleri: ["Acil Sağlık Hizmetleri Başkanlığı", "Personel Hizmetleri Başkanlığı"],
+};
+
+test("guvenliKaynakAdresi: yalnız izinli resmî HTTPS alanı geçer", () => {
+  assert.equal(guvenliKaynakAdresi("https://tokat.gov.tr/x").alan, "tokat.gov.tr");
+  assert.equal(guvenliKaynakAdresi("https://www.selcuklu.bel.tr/m").alan, "selcuklu.bel.tr");
+  assert.equal(guvenliKaynakAdresi("https://hacettepe.edu.tr/a").alan, "hacettepe.edu.tr");
+});
+
+test("guvenliKaynakAdresi: şema/alan hilelerinin HEPSİ reddedilir", () => {
+  for (const kotu of [
+    "http://tokat.gov.tr/x",                    // düz HTTP
+    "javascript:alert(1)",                      // şema enjeksiyonu
+    "data:text/html,<script>x</script>",
+    "https://tokat.gov.tr.saldirgan.com/x",     // sonek yapıştırma
+    "https://saldirgan.com/tokat.gov.tr",       // yol içinde alan adı
+    "https://kullanici@kotu.com/x",             // userinfo — göz "kullanici", tarayıcı "kotu.com"
+    "https://tokat.gov.tr@kotu.com/x",          // aynı hile, resmî alan yem olarak
+    "", null, undefined, "tokat.gov.tr",
+  ]) {
+    assert.equal(guvenliKaynakAdresi(kotu), null, `geçmemeliydi: ${kotu}`);
+  }
+});
+
+test("guvenliKaynakAdresi: sondaki nokta ve www ayıklanır (backend izinli_mi ile aynı)", () => {
+  assert.equal(guvenliKaynakAdresi("https://tokat.gov.tr./x").alan, "tokat.gov.tr");
+  assert.equal(guvenliKaynakAdresi("https://WWW.Tokat.GOV.TR/x").alan, "tokat.gov.tr");
+});
+
+test("canliKaynakYorum: künye görünüme çevrilir, alan adı ayrıştırılır", () => {
+  const c = canliKaynakYorum({ canli_kaynak: CANLI });
+  assert.equal(c.alan, "konyaism.saglik.gov.tr");
+  assert.equal(c.birimOneri, "Acil Sağlık Hizmetleri Başkanlığı");
+  assert.equal(c.birimSayisi, 38);
+  assert.equal(c.yol, "daha önce bulunmuş, önbellekten");
+  assert.equal(c.dogrulanmis, false);
+});
+
+test("canliKaynakYorum: künye yok / adres güvensizse null (link BASILMAZ)", () => {
+  assert.equal(canliKaynakYorum({}), null);
+  assert.equal(canliKaynakYorum({ canli_kaynak: {} }), null);
+  assert.equal(canliKaynakYorum({ canli_kaynak: { url: "https://kotu.com/x" } }), null);
+  assert.equal(canliKaynakYorum({ canli_kaynak: "metin" }), null);
+});
+
+test("canliKaynakYorum: dogrulanmis KATI okunur — 'true' metni doğrulanmış SAYILMAZ", () => {
+  // Künye bozuk/uydurma gelirse güvenli tarafa düşmeli: doğrulanmamış.
+  for (const sahte of ["true", 1, "evet", {}, null]) {
+    const c = canliKaynakYorum({ canli_kaynak: { ...CANLI, dogrulanmis: sahte } });
+    assert.equal(c.dogrulanmis, false, `dogrulanmis=${JSON.stringify(sahte)} true sayıldı`);
+  }
+});
+
+test("havale: canlı öneri JENERİK korpus adayını geçer ve rozet kaynağını söyler", () => {
+  const h = havaleYorum({
+    hedef_kurum_adi: "Konya İl Sağlık Müdürlüğü",
+    hedef_birim: null,                       // doğrulanmadı → korpus birimi YOK
+    hedef_kategori: "ilgili_teknik_daire",   // jenerik havuz adayı
+    durum: "fallback_onerisi",
+    insan_onayi_gerekli: true,
+    canli_kaynak: CANLI,
+  });
+  assert.equal(h.birim, "Acil Sağlık Hizmetleri Başkanlığı");   // spesifik olan kazandı
+  assert.equal(h.rozet.metin, "canlı kaynak · doğrulanmadı");
+  assert.equal(h.rozet.ton, "sari");
+  assert.equal(h.canli.alan, "konyaism.saglik.gov.tr");
+  assert.match(h.gerekce, /kendi resmî sitesinden/);
+  assert.match(h.gerekce, /insan incelemesinden geçmedi/);
+});
+
+test("havale: DOĞRULANMIŞ birim canlı öneriyle EZİLMEZ (en kritik sıralama)", () => {
+  const h = havaleYorum({
+    hedef_birim: "Ruhsat ve Denetim Müdürlüğü",
+    durum: "kaynak_dogrulandi",
+    hedef_birim_kaynak: { birim_ad: "Ruhsat ve Denetim Müdürlüğü", kaynak_kurum: "X Belediyesi" },
+    canli_kaynak: CANLI,
+  });
+  assert.equal(h.birim, "Ruhsat ve Denetim Müdürlüğü");
+  assert.equal(h.rozet.ton, "yesil");         // doğrulanmış rozeti korunur
+});
+
+test("havale: canlı kaynak birim ÖNERMİYORSA slot uydurmaz", () => {
+  const h = havaleYorum({
+    hedef_kurum_adi: "Bir Kurum",
+    canli_kaynak: { ...CANLI, birim_oneri: "" },
+    insan_onayi_gerekli: true,
+  });
+  assert.equal(h.birim, "");                  // boş öneri birim yerine geçmez
+  assert.equal(h.rozet.metin, "memur onayı gerekli");
+  assert.ok(h.canli, "link yine de gösterilmeli — memur kendi bakabilsin");
+});
+
+test("havale: gerekçedeki ÇIPLAK URL tekrarı gösterimden düşer (link zaten basılıyor)", () => {
+  const h = havaleYorum({
+    hedef_kurum_adi: "Konya İl Sağlık Müdürlüğü",
+    birim_reasoning: `Resmî kaynakla doğrulanamadı — memur onayı gerekli. · Canlı kaynak (doğrulanmadı): ${CANLI.url}`,
+    canli_kaynak: CANLI,
+    insan_onayi_gerekli: true,
+  });
+  assert.doesNotMatch(h.gerekce, /https:\/\//, "çıplak URL gerekçede tekrar etti");
+  assert.match(h.gerekce, /memur onayı gerekli/, "gerekçenin geri kalanı korunmalı");
+  assert.equal(h.canli.url, CANLI.url, "adres yapısal alanda AYNEN duruyor");
+});
+
+test("havale: canlı öneri DEVİR kararını değiştirmez (yetkisizlik en üstte kalır)", () => {
+  const h = havaleYorum({
+    evrak_turu: "dilekce",
+    muhatap_kurum: KURUM("A Belediyesi", "a"),
+    yetkili_kurum: KURUM("B Müdürlüğü", "b"),
+    canli_kaynak: CANLI,
+  });
+  assert.equal(h.devir, true);
+  assert.equal(h.etiket, "Yetkisizlik — devredilecek kurum");
 });
 
 /* ---- null-güvenlik: boş state hiçbir fonksiyonu düşürmez ---- */

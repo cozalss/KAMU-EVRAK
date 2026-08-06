@@ -80,9 +80,11 @@ class TestYonlendirmeCiktisi:
         çalışmadı — test yanlış sebeple kırıldı. Bu da bir davranış kaydı: kurum
         bilinmiyorsa canlı keşif yapılmaz, çünkü hangi sitede aranacağı bilinmez.
         """
+        async def _sahte(slug, konu, **kw):
+            return canli
+
         monkeypatch.setattr(ra, "kurum_korpusta_var", lambda slug: False)
-        monkeypatch.setattr(ra, "kurum_icin_oneri",
-                            lambda slug, konu, **kw: canli)
+        monkeypatch.setattr(ra, "kurum_icin_oneri_async", _sahte)
         return await ra.route_ajan(
             {"evrak_text": "Toplu taşıma hattı talebi hakkında.",
              "aktif_kurum": "Tavşanlı Kaymakamlığı",
@@ -92,10 +94,10 @@ class TestYonlendirmeCiktisi:
 
     async def test_kurum_cozumlenemezse_canli_kesif_YAPILMAZ(self, monkeypatch) -> None:
         """Hangi sitede aranacağı bilinmiyorsa dışarı çıkmanın anlamı yok."""
-        def _patla(*a, **k):
+        async def _patla(*a, **k):
             raise AssertionError("kurum bilinmezken canlı keşif çağrıldı")
         monkeypatch.setattr(ra, "kurum_korpusta_var", lambda slug: False)
-        monkeypatch.setattr(ra, "kurum_icin_oneri", _patla)
+        monkeypatch.setattr(ra, "kurum_icin_oneri_async", _patla)
         out = await ra.route_ajan(
             {"evrak_text": "Herhangi bir talep.", "bilgi_unsurlari": {"konu": "talep"}},
             {"birim_alternatifleri": []},
@@ -128,10 +130,10 @@ class TestYonlendirmeCiktisi:
 
     async def test_canli_kaynak_HATASI_yonlendirmeyi_dusurmez(self, monkeypatch) -> None:
         """Dış ağ hatası evrak işlemeyi durdurmamalı — keşif bir EK'tir, zorunluluk değil."""
-        def _patla(*a, **k):
+        async def _patla(*a, **k):
             raise RuntimeError("ağ öldü")
         monkeypatch.setattr(ra, "kurum_korpusta_var", lambda slug: False)
-        monkeypatch.setattr(ra, "kurum_icin_oneri", _patla)
+        monkeypatch.setattr(ra, "kurum_icin_oneri_async", _patla)
         out = await ra.route_ajan(
             {"evrak_text": "Talep hakkında.", "aktif_kurum": "Tavşanlı Kaymakamlığı",
              "bilgi_unsurlari": {"konu": "talep"}},
@@ -142,10 +144,10 @@ class TestYonlendirmeCiktisi:
 
     async def test_korpusta_OLAN_kurumda_canli_kesif_CALISMAZ(self, monkeypatch) -> None:
         """Boşuna ağ isteği ve gecikme olmasın: korpus varsa dışarı çıkılmaz."""
-        def _patla(*a, **k):
+        async def _patla(*a, **k):
             raise AssertionError("korpus varken canlı keşif çağrıldı")
         monkeypatch.setattr(ra, "kurum_korpusta_var", lambda slug: True)
-        monkeypatch.setattr(ra, "kurum_icin_oneri", _patla)
+        monkeypatch.setattr(ra, "kurum_icin_oneri_async", _patla)
         out = await ra.route_ajan(
             {"evrak_text": "Talep hakkında.", "aktif_kurum": "Yenimahalle Belediyesi",
              "bilgi_unsurlari": {"konu": "talep"}},

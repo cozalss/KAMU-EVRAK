@@ -8,11 +8,24 @@ NEDEN ARAMA MOTORU DEĞİL: kurumun kendi sitesinde gezinmek hem ücretsiz hem d
 YAPISI GEREĞİ resmî. Arama motoru üçüncü bir tarafın sıralamasına güvenmek demektir.
 LLM araması ancak burası tutmazsa devreye girer (bkz. docs/14).
 
-GÜVENLİK — bu modül dış girdiyle ağa çıkar, üç kural:
-  · Yalnız İZİNLİ alan adı soneklerine gidilir (.gov.tr/.bel.tr/.edu.tr/.pol.tr).
-    Yönlendirme başka alana çıkarsa izlenmez — SSRF ve alan kaçırma koruması.
+GÜVENLİK — bu modül dış girdiyle ağa çıkar, beş kural (2026-08-06 denetiminde sertleşti):
+  · Yalnız İZİNLİ alan adı soneklerine gidilir (.gov.tr/.bel.tr/.edu.tr/.pol.tr/.tsk.tr).
+  · YÖNLENDİRME ELLE İZLENİR ve HER SIÇRAMA ayrı ayrı sınanır. Eskiden httpx zinciri
+    kendisi takip ediyor, kod yalnız NİHAİ adrese bakıyordu — yani izinsiz ara adrese
+    (127.0.0.1, 169.254.169.254 gibi) istek FİİLEN ATILIYOR, sadece sonucu atılıyordu.
+    Kör SSRF buydu; artık izinsiz sıçramaya istek hiç gitmez.
+  · Çözülen IP özel/loopback/link-local aralıktaysa reddedilir. (DNS rebinding'e karşı
+    tam koruma değildir — bunun için bağlantı anında IP sabitlemek gerekir; bu katman
+    yalnız GET yaptığı ve içeriği doğrulanmadan kullanmadığı için kabul edilen risk.)
   · TLS doğrulaması KAPATILAMAZ.
-  · Yalnız GET, gövde boyutu sınırlı, zaman aşımı kısa.
+  · Yalnız GET; gövde AKIŞLA indirilir ve sınır İNDİRME SIRASINDA uygulanır. Eskiden
+    `len(yanit.content)` ile indirme BİTTİKTEN sonra bakılıyordu; 3 MB tavanı belleği
+    hiç korumuyordu (sıkıştırma bombası / dev PDF → OOM). Ayrıca HTML olmayan içerik
+    hiç indirilmez.
+
+ZAMAN: `ZAMAN_ASIMI` istek başınadır; toplam iş için ayrıca `TOPLAM_BUTCE_SN` vardır.
+İkisi olmadan tek bir evrak dakikalarca asılı kalabiliyordu (ölçülen senaryo: 4 ölü aday
+alan × 12 sn + 4 yavaş iç sayfa × 12 sn ≈ 96 sn).
 
 BULUNAN SAYFA KAYNAK DEĞİLDİR: burada dönen şey bir ADRES ve o adresin METNİdir.
 Birim adlarının o metinde birebir geçtiğini doğrulamak çağıranın işidir.
@@ -20,7 +33,10 @@ Birim adlarının o metinde birebir geçtiğini doğrulamak çağıranın işidi
 from __future__ import annotations
 
 import html
+import ipaddress
 import re
+import socket
+import time
 from dataclasses import dataclass
 from urllib.parse import urljoin, urlsplit
 
@@ -45,6 +61,12 @@ _AGIRLIK = {"mudurlukler": 5, "müdürlükler": 5, "birimler": 5, "birimlerimiz"
 
 _BAG_RE = re.compile(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', re.I | re.S)
 _ETIKET_RE = re.compile(r"<[^>]+>")
+# Blok düzeyi etiketler METİN SINIRIDIR (hücre/öğe/paragraf); boşluğa değil satır sonuna
+# çevrilirler ki komşu hücrelerin metni birbirine yapışmasın.
+_BLOK_ETIKET_RE = re.compile(
+    r"</?(?:td|th|tr|li|p|div|br|h[1-6]|option|dt|dd|section|article|table|ul|ol)\b[^>]*>",
+    re.I,
+)
 _BASLIK = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -53,7 +75,18 @@ _BASLIK = {
     "Accept-Language": "tr-TR,tr;q=0.9",
 }
 AZAMI_GOVDE = 3_000_000   # 3 MB; kurumsal siteler bunu aşmaz, aşan sayfa okunmaz
-ZAMAN_ASIMI = 12.0
+# İstek başına sınırlar. connect ayrı ve KISA tutulur: ölü/güvenlik duvarlı alan adları
+# ölçümde en çok burada vakit yiyordu (kurum_alan._OLCUM_NOTU'ndaki ConnectTimeout'lar).
+ZAMAN_ASIMI = httpx.Timeout(8.0, connect=3.0)
+# Tüm keşif işinin ÜST SINIRI. Memuru ekranda bekletmemek bir güvenlik değil kullanılabilirlik
+# şartı ama sözleşme F ("akış düşmez") açısından kritik: süresiz asılma hatadan kötüdür.
+TOPLAM_BUTCE_SN = 6.0
+AZAMI_YONLENDIRME = 3
+# HTML olmayan içerik hiç indirilmez — birim adları HTML sayfalarda yaşar.
+_KABUL_TIPLERI = ("text/html", "application/xhtml", "text/plain")
+# Bağlantı ipucu taşısa bile indirilmeyecek uzantılar (dev dosya + ikili içerik).
+_YASAK_UZANTI = (".pdf", ".zip", ".rar", ".doc", ".docx", ".xls", ".xlsx", ".ppt",
+                 ".pptx", ".mp4", ".mp3", ".iso", ".exe", ".jpg", ".png", ".gif")
 
 
 @dataclass(frozen=True)
@@ -77,27 +110,103 @@ def izinli_mi(url: str) -> bool:
     return any(ana == s.lstrip(".") or ana.endswith(s) for s in IZINLI_SONEKLER)
 
 
-def _duz_metin(govde: str) -> str:
-    return html.unescape(_ETIKET_RE.sub(" ", govde))
+def ic_ag_mi(konak: str) -> bool:
+    """Konak özel/loopback/link-local bir adrese mi çözülüyor?
 
-
-def _getir(istemci: httpx.Client, url: str) -> str | None:
-    """Sayfayı indir. İzinsiz alan / hata / aşırı boyut → None."""
-    if not izinli_mi(url):
-        return None
+    `.gov.tr` bir ad da iç bir IP'ye çözülebilir; alan adı sonekine bakmak yetmez.
+    Çözülemeyen ad "iç" sayılmaz — bağlantı zaten kurulamayacaktır.
+    """
     try:
-        yanit = istemci.get(url)
-        yanit.raise_for_status()
-    except Exception as exc:
-        log.info("sayfa_kesif.erisilemedi", url=url, hata=type(exc).__name__)
-        return None
-    # Yönlendirme izinli alandan ÇIKTIYSA içeriği kullanma (alan kaçırma koruması).
-    if not izinli_mi(str(yanit.url)):
-        log.warning("sayfa_kesif.yonlendirme_izinsiz_alana", url=url, hedef=str(yanit.url))
-        return None
-    if len(yanit.content) > AZAMI_GOVDE:
-        return None
-    return yanit.text
+        adresler = {bilgi[4][0] for bilgi in socket.getaddrinfo(konak, 443, proto=socket.IPPROTO_TCP)}
+    except (OSError, UnicodeError):
+        return False
+    for ham in adresler:
+        try:
+            ip = ipaddress.ip_address(ham)
+        except ValueError:
+            continue
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            return True
+    return False
+
+
+def _guvenli_hedef(url: str) -> bool:
+    """İstek atılmadan ÖNCE uygulanan tam kapı: izinli sonek + iç ağ değil."""
+    if not izinli_mi(url):
+        return False
+    konak = (urlsplit(url).hostname or "").lower()
+    if ic_ag_mi(konak):
+        log.warning("sayfa_kesif.ic_ag_adresi_reddedildi", url=url)
+        return False
+    return True
+
+
+def _duz_metin(govde: str) -> str:
+    """HTML → düz metin. BLOK sınırları satır sonuna çevrilir.
+
+    Neden önemli: birim çıkarıcı `\\n`'i sınır sayar. Tüm etiketleri boşluğa çevirmek
+    tablo hücrelerini ve liste öğelerini birbirine yapıştırıyordu — bir personel
+    tablosunda `<td>Ayşe Yılmaz</td><td>Fen İşleri Müdürlüğü</td>` "Ayşe Yılmaz Fen
+    İşleri Müdürlüğü" adında bir "birim" üretiyor ve kişi adı önbelleğe yazılıyordu.
+    """
+    metin = _BLOK_ETIKET_RE.sub("\n", govde)
+    return html.unescape(_ETIKET_RE.sub(" ", metin))
+
+
+def _okunabilir_mi(yanit: httpx.Response) -> bool:
+    """İçerik türü ve bildirilen boyut kabul edilebilir mi (gövde okunmadan ÖNCE)."""
+    tip = (yanit.headers.get("content-type") or "").lower()
+    if tip and not any(k in tip for k in _KABUL_TIPLERI):
+        log.info("sayfa_kesif.icerik_turu_reddedildi", tip=tip[:40])
+        return False
+    bildirilen = yanit.headers.get("content-length")
+    if bildirilen and bildirilen.isdigit() and int(bildirilen) > AZAMI_GOVDE:
+        log.info("sayfa_kesif.govde_cok_buyuk_bildirildi", boyut=bildirilen)
+        return False
+    return True
+
+
+def _getir(istemci: httpx.Client, url: str, bitis: float | None = None) -> str | None:
+    """Sayfayı indir. İzinsiz alan / iç ağ / hata / aşırı boyut → None.
+
+    Yönlendirme ELLE izlenir: her sıçrama `_guvenli_hedef` kapısından ayrı ayrı geçer,
+    böylece izinsiz adrese istek HİÇ atılmaz. Gövde akışla okunur ve sınır indirme
+    SIRASINDA uygulanır.
+    """
+    for _ in range(AZAMI_YONLENDIRME + 1):
+        if bitis is not None and time.monotonic() > bitis:
+            log.info("sayfa_kesif.butce_doldu", url=url)
+            return None
+        if not _guvenli_hedef(url):
+            return None
+        try:
+            with istemci.stream("GET", url) as yanit:
+                if yanit.status_code in (301, 302, 303, 307, 308):
+                    hedef = urljoin(url, yanit.headers.get("location", ""))
+                    if hedef == url:
+                        return None
+                    url = hedef
+                    continue      # bir sonraki turda hedef YENİDEN sınanır
+                yanit.raise_for_status()
+                if not _okunabilir_mi(yanit):
+                    return None
+                parcalar: list[bytes] = []
+                toplam = 0
+                for parca in yanit.iter_bytes():
+                    toplam += len(parca)
+                    if toplam > AZAMI_GOVDE:
+                        # Sınır indirme SIRASINDA uygulanır: bağlantı burada kesilir,
+                        # 10 GB'a açılan bir sıkıştırma bombası belleğe alınmaz.
+                        log.warning("sayfa_kesif.govde_sinirini_asti", url=url)
+                        return None
+                    parcalar.append(parca)
+                govde = b"".join(parcalar)
+                return govde.decode(yanit.encoding or "utf-8", errors="replace")
+        except Exception as exc:
+            log.info("sayfa_kesif.erisilemedi", url=url, hata=type(exc).__name__)
+            return None
+    log.warning("sayfa_kesif.cok_fazla_yonlendirme", url=url)
+    return None
 
 
 def _aday_baglantilar(govde: str, temel: str) -> list[tuple[int, str, str]]:
@@ -109,6 +218,10 @@ def _aday_baglantilar(govde: str, temel: str) -> list[tuple[int, str, str]]:
             continue
         etiket = re.sub(r"\s+", " ", _duz_metin(ham_metin)).strip().lower()
         hedef = urljoin(temel, href)
+        # "Müdürlükler" bağlantısı çoğu zaman bir PDF/şema dosyasına gider; ikili içerik
+        # indirmek hem boşuna hem risklidir (uzantı kapısı, tür kapısından önce ucuz).
+        if urlsplit(hedef).path.lower().endswith(_YASAK_UZANTI):
+            continue
         if not izinli_mi(hedef):
             continue
         aranan = f"{href.lower()} {etiket}"
@@ -124,23 +237,36 @@ def _aday_baglantilar(govde: str, temel: str) -> list[tuple[int, str, str]]:
 
 
 def birim_sayfasi_bul(
-    alan_adaylari: list[str], *, azami_sayfa: int = 4
+    alan_adaylari: list[str], *, azami_sayfa: int = 4, butce_sn: float = TOPLAM_BUTCE_SN
 ) -> Bulgu | None:
     """Aday alan adlarını sırayla dene; ilkinde açılan sitede birim sayfasını ara.
 
     `azami_sayfa` bir sitede denenecek iç sayfa sayısını sınırlar — kurum sitesini
     gezmek amacımız değil, tek bir sayfayı bulmak. Bulunamazsa None döner ve çağıran
     LLM aramasına düşebilir.
+
+    `butce_sn` TOPLAM iştir. İstek başına zaman aşımı tek başına yetmiyordu: 4 ölü aday
+    alan + 4 yavaş iç sayfa ≈ 96 sn ediyor ve memur o kadar bekliyordu. Bütçe dolunca
+    elde ne varsa onunla dönülür (ya da None).
+
+    `follow_redirects=False` ZORUNLU: yönlendirmeyi `_getir` elle, her sıçramayı
+    sınayarak izler. httpx'e bırakılırsa izinsiz ara adrese istek fiilen atılır.
     """
+    bitis = time.monotonic() + max(0.5, butce_sn)
     with httpx.Client(
-        follow_redirects=True, timeout=ZAMAN_ASIMI, headers=_BASLIK, verify=True
+        follow_redirects=False, timeout=ZAMAN_ASIMI, headers=_BASLIK, verify=True
     ) as istemci:
         for alan in alan_adaylari:
-            ana_sayfa = _getir(istemci, alan)
+            if time.monotonic() > bitis:
+                log.info("sayfa_kesif.butce_doldu_aday_atlandi", kalan_aday=alan)
+                break
+            ana_sayfa = _getir(istemci, alan, bitis)
             if ana_sayfa is None:
                 continue
             for _agirlik, url, ipucu in _aday_baglantilar(ana_sayfa, alan)[:azami_sayfa]:
-                govde = _getir(istemci, url)
+                if time.monotonic() > bitis:
+                    break
+                govde = _getir(istemci, url, bitis)
                 if govde is None:
                     continue
                 metin = _duz_metin(govde)
@@ -153,4 +279,5 @@ def birim_sayfasi_bul(
     return None
 
 
-__all__ = ("IZINLI_SONEKLER", "Bulgu", "birim_sayfasi_bul", "izinli_mi")
+__all__ = ("AZAMI_GOVDE", "AZAMI_YONLENDIRME", "IZINLI_SONEKLER", "TOPLAM_BUTCE_SN",
+           "Bulgu", "birim_sayfasi_bul", "ic_ag_mi", "izinli_mi")

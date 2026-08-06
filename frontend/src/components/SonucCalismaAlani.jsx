@@ -23,6 +23,7 @@ import {
   riskGerekceYorum,
   riskSkorYorum,
   havaleYorum,
+  canliKaynakYorum,
 } from "../lib/detayYorum.js";
 import {
   MONO,
@@ -38,6 +39,7 @@ import {
   RAD,
   SP,
   SH,
+  SR_ONLY,
   NeonCard,
   Icon,
   focusRing,
@@ -200,6 +202,35 @@ const ROZET_RENK = {
    dokunmatikte hiç görünmüyor, ekran okuyucuda güvenilmiyor ve memura "onayla" derken
    dayanağı hover ardında bırakıyordu. Tetik bilinçli olarak `dt` içinde — `dd` iki satıra
    kelepçeli (-webkit-line-clamp + overflow:hidden) olduğu için popover orada kırpılırdı. */
+/* Canlı bulunmuş kaynağın tıklanabilir künyesi.
+   Bu bileşen DAİMA sarıdır ve "doğrulanmadı" ibaresini taşır: canlı kaynak manifest +
+   SHA-256 + insan incelemesinden GEÇMEMİŞTİR (backend/core/canli_kaynak.py). Yeşil rozet
+   bu yoldan asla basılmaz — memurun tek bakışta "bu, korpustan gelen doğrulanmış birim
+   DEĞİL" diyebilmesi bütün özelliğin dürüstlük şartıdır.
+   Adres güvenliği lib/detayYorum.guvenliKaynakAdresi'nde sınanır; buraya yalnız izinli
+   resmî HTTPS alanı ulaşır (sunucudaki kontrolün istemci tarafı ikizi). */
+function KaynakLinki({ canli }) {
+  return (
+    <a
+      href={canli.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-press=""
+      title={canli.url}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: SP.xs, maxWidth: "100%",
+        ...TYPE.meta, fontFamily: MONO, color: DERIN.sari,
+        textDecoration: "underline", textUnderlineOffset: 2, cursor: "pointer",
+      }}
+      {...focusRing}
+    >
+      <span aria-hidden="true" style={{ display: "flex", flex: "none" }}><Icon.dis /></span>
+      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{canli.alan}</span>
+      <span style={SR_ONLY}> — kaynak sayfası, yeni sekmede açılır; doğrulanmamış kaynak</span>
+    </a>
+  );
+}
+
 function MetaSlot({ slot, id, acik, ac }) {
   const acikMi = acik === id;
   const rozet = slot.rozet ? ROZET_RENK[slot.rozet.ton] || ROZET_RENK.sari : null;
@@ -258,6 +289,14 @@ function MetaSlot({ slot, id, acik, ac }) {
       {(ciftSlot ? [] : slot.alt).map((satir, i) => (
         <dd key={`${id}-${i}`} style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2 }}>{satir}</dd>
       ))}
+      {/* Canlı kaynak künyesi ÇİFT SLOTTA DA basılır: adresin kendisi kararın dayanağıdır,
+          birim adının tekrarı değil. Memur linke bakıp beş saniyede kendi gözüyle
+          doğrulayabilsin diye şeritten çıkarılmaz. */}
+      {slot.canli && (
+        <dd key={`${id}-canli`} style={{ marginTop: 3 }}>
+          <KaynakLinki canli={slot.canli} />
+        </dd>
+      )}
     </div>
   );
 }
@@ -894,12 +933,27 @@ function RoutingCard({ r, birimAday }) {
   // doğrulanamadığında (fallback_onerisi) None döner AMA birim_reasoning yine üretilir
   // (route_ajan.py her iki dalda da yazar) — kart hedef_birim'e kilitliyse bu gerekçe hiç
   // görünmez (kullanıcı bulgusu: şartname "süreç bilgilendirmesi" gereksinimiyle çelişir).
-  const birim = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori;
-  if (!birim) return null;
+  //
+  // CANLI KAYNAK: korpusta karşılığı olmayan kuruma evrak düştüğünde backend, kurumun
+  // KENDİ resmî sitesinden okunmuş bir öneri + kaynak linki döndürür. Kart bu durumda da
+  // AÇILIR (eskiden `birim` yoksa null dönüyordu ve özelliğin tamamı görünmezdi).
+  const canli = canliKaynakYorum(r);
+  const korpusBirim = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori;
+  // Öncelik havaleYorum ile BİREBİR AYNI olmalı (doğrulanmış > canlı spesifik > jenerik):
+  // iki yerde farklı sıralarsak karar şeridi ile bu kart birbirini yalanlar.
+  const canliBirim = !r.hedef_birim && canli && !canli.dogrulanmis ? canli.birimOneri : "";
+  const birim = r.hedef_birim || canliBirim || korpusBirim;
+  if (!birim && !canli) return null;
   const dogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
+  const canlidanGeldi = !!canliBirim && birim === canliBirim;
+  // Canlı öneri 1. sıraya geçtiyse jenerik korpus adayı SİLİNMEZ, alternatiflere iner —
+  // memur iki seçeneği de görsün.
+  const adaylar = [...new Set(
+    (canlidanGeldi && korpusBirim ? [korpusBirim, ...birimAday] : birimAday).filter((b) => b && b !== birim),
+  )];
   const kurum = String(r.hedef_kurum_adi || r.hedef_birim_kaynak?.kaynak_kurum || r.yetkili_kurum?.ad || r.muhatap_kurum?.ad || "").trim();
   return (
-    <NeonCard title="Birim yönlendirme" tag={birimAday.length ? `${birimAday.length + 1} aday` : null} accent={V} icon={<Icon.route />}>
+    <NeonCard title="Birim yönlendirme" tag={adaylar.length ? `${adaylar.length + 1} aday` : null} accent={V} icon={<Icon.route />}>
       {kurum && (
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
           <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>Kurum</span>
@@ -916,6 +970,7 @@ function RoutingCard({ r, birimAday }) {
           <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3 }}>havale hedefi değil</span>
         </div>
       )}
+      {birim && (
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
         <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>1.</span>
         <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none" }}>Havale birimi</span>
@@ -923,10 +978,13 @@ function RoutingCard({ r, birimAday }) {
         <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, fontWeight: 600, color: dogrulandi ? DERIN.V : DERIN.sari }}>
           {dogrulandi
             ? (<><Icon.check width={12} height={12} /> önerilen</>)
-            : (<><Icon.alert width={12} height={12} /> doğrulanmadı</>)}
+            : canlidanGeldi
+              ? (<><Icon.kure width={12} height={12} /> canlı · doğrulanmadı</>)
+              : (<><Icon.alert width={12} height={12} /> doğrulanmadı</>)}
         </span>
       </div>
-      {birimAday.map((b, i) => (
+      )}
+      {adaylar.map((b, i) => (
         <div key={b} style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
           <span style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{i + 2}.</span>
           <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_GOSTER(b, r.evrak_turu)}</span>
@@ -940,6 +998,43 @@ function RoutingCard({ r, birimAday }) {
             <strong style={{ fontWeight: 700 }}>{r.servis_birimi.ad}</strong>
             {arr(r.servis_birimi.sinyal).length > 0 && <span style={{ ...TYPE.meta, color: PAL.mut3 }}> · içerik: {arr(r.servis_birimi.sinyal).join(", ")}</span>}
           </span>
+        </div>
+      )}
+      {canli && (
+        /* CANLI KAYNAK PANELİ — provenance'ı gözle ayırt edilebilir kılar.
+           Tint zemin + sarı metin bilinçli: bu blok korpustan GELMEYEN veriyi taşır ve
+           memur onu doğrulanmış birimle karıştırmamalı. Panel hiçbir koşulda yeşile
+           dönmez; `dogrulanmis` künyeden true gelse bile (gelmemeli) metin "insan
+           incelemesinden geçmedi" der, çünkü bu iddiayı doğrulayacak bir imza yok. */
+        <div
+          style={{
+            marginTop: SP.s, padding: "8px 12px", borderRadius: RAD.card,
+            background: ALFA(BANT.sari.c), border: `1px solid ${BANT.sari.c}`,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: SP.xs, marginBottom: 4 }}>
+            <span aria-hidden="true" style={{ display: "flex", color: DERIN.sari }}><Icon.kure /></span>
+            <strong style={{ ...TYPE.meta, fontWeight: 700, color: DERIN.sari }}>
+              Canlı kaynak — doğrulanmadı
+            </strong>
+            {canli.birimSayisi > 0 && (
+              <span style={{ marginLeft: "auto", ...TYPE.meta, fontFamily: MONO, color: PAL.mut2, ...TNUM }}>
+                {canli.birimSayisi} birim
+              </span>
+            )}
+          </div>
+          {canli.birimOneri && (
+            <div style={{ ...TYPE.data, color: PAL.ink2, marginBottom: 4 }}>
+              Sayfadan okunan öneri: <strong style={{ fontWeight: 700 }}>{clean(canli.birimOneri)}</strong>
+            </div>
+          )}
+          <KaynakLinki canli={canli} />
+          <p style={{ margin: "6px 0 0", ...TYPE.meta, color: PAL.mut2 }}>
+            Bu kurumun doğrulanmış teşkilat kaydı yok. Sistem kurumun kendi resmî sitesini
+            {canli.yol ? ` ${canli.yol}` : ""} bulup birim sayfasını okudu; kayıt manifest ve
+            insan incelemesinden <strong style={{ fontWeight: 700 }}>geçmedi</strong>.
+            Havale etmeden önce linke bakıp birimi teyit edin.
+          </p>
         </div>
       )}
       <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{clean(birimDipnot(r))}</div>
@@ -1050,7 +1145,10 @@ export default function SonucCalismaAlani({
             <div className="sc-support-wide">
               <ArchiveSlaCard r={r} arsiv={arsiv} sdpAdaylar={sdpAdaylar} sla={sla} sInfo={sInfo} />
             </div>
-            {(r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori) && (
+            {/* `canli_kaynak` de karta yeter: doğrulanmamış kurumda korpus birimi HİÇ
+                olmayabilir ve kartın tek içeriği canlı kaynak linki olur — asıl
+                gösterilmesi gereken durum tam olarak budur. */}
+            {(r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || r.canli_kaynak?.url) && (
               <div className="sc-support-half">
                 <RoutingCard r={r} birimAday={birimAday} />
               </div>

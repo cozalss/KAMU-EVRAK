@@ -215,6 +215,7 @@ class ProcessResponse(BaseModel):
     gonderen_kurum: dict = Field(default_factory=dict)
     yetkili_kurum: dict = Field(default_factory=dict)
     hedef_birim_kaynak: dict = Field(default_factory=dict)   # KaynakKaydi (grounding kanıtı)
+    canli_kaynak: dict = Field(default_factory=dict)         # doğrulanmamış canlı kaynak künyesi
     hedef_kategori: str | None = None                        # dürüst fallback köprüsü (eski 9-set)
     durum: str = ""                                          # "kaynak_dogrulandi" | "fallback_onerisi"
     insan_onayi_gerekli: bool = False

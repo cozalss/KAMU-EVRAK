@@ -13,7 +13,6 @@ Güvenlik sözleşmeleri:
 """
 from __future__ import annotations
 
-import asyncio
 import os
 from typing import Any
 
@@ -28,7 +27,7 @@ from agents.kurum_kimlik import (
 from agents.nodes._llm_extract import llm_json, real_llm
 from agents.resmi_kaynak import kaynak_ara, kurum_korpusta_var, uclu_grounding
 from api.pii import mask_for_llm
-from core.canli_kaynak import kurum_icin_oneri
+from core.canli_kaynak import kurum_icin_oneri_async
 
 log = structlog.get_logger()
 
@@ -57,11 +56,24 @@ def _aday_listesi(adaylar: list[dict[str, Any]]) -> str:
     return "\n".join(satirlar) if satirlar else "(aday birim bulunamadı)"
 
 
-def _arama_baglami(bilgi: dict[str, Any], masked_text: str) -> tuple[str, str]:
-    """Build retrieval input from subject, requested actions, and masked body text."""
-    konu = str(bilgi.get("konu") or "").strip()
+def _arama_baglami(
+    bilgi: dict[str, Any], masked_text: str, isim: str | None = None
+) -> tuple[str, str]:
+    """Konu + talepler + maskeli gövdeden retrieval girdisi üret.
+
+    KVKK: `konu` ve `talepler` `bilgi_unsurlari`ndan gelir ve orada YALNIZ TCKN/telefon
+    temizlenir — kişi ADI kalır. Gövde `mask_for_llm` ile [AD] yapılırken konu satırının
+    ham ad taşıması, aynı istekte adı LLM'e sızdırıyordu (denetimde ölçüldü: gövde
+    "Konu: [AD]'in tahsis talebi" derken prompt "EVRAK KONUSU: Ayşe Yılmaz'ın tahsis
+    talebi" yazıyordu). Maskeleme burada, prompt'a girmeden önce uygulanır.
+    """
+    def _maskele(s: str) -> str:
+        return mask_for_llm(s, isim) if isim else s
+
+    konu = _maskele(str(bilgi.get("konu") or "").strip())
     talepler = bilgi.get("talepler") or []
-    talep_metinleri = [str(t).strip() for t in talepler if isinstance(t, str) and t.strip()]
+    talep_metinleri = [_maskele(str(t).strip())
+                       for t in talepler if isinstance(t, str) and t.strip()]
     govde = masked_text[:1600]
     if not konu:
         konu = (" ".join(talep_metinleri) or govde[:300]).strip()
@@ -159,7 +171,7 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     yetkili = dict(muhatap)
     isim = bilgi.get("gonderen")
     masked = mask_for_llm(state.get("evrak_text", "") or "", isim)
-    konu, arama_baglami = _arama_baglami(bilgi, masked)
+    konu, arama_baglami = _arama_baglami(bilgi, masked, isim)
 
     kategori = det.get("hedef_birim")  # eski 9-set kategori (dürüst fallback köprüsü)
     llm = real_llm()
@@ -261,12 +273,21 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     # WEB ARAMASI KAPALI: ücretsiz katmanlar ~1,2 sn, web araması ~8 sn sürüyor ve
     # memuru ekranda bekletmek kabul edilemez. Ücretli katman çevrimdışı toplu
     # zenginleştirmede açılır.
+    # KONU verilir, GÖVDE DEĞİL. `en_uygun_birim` basit token örtüşmesi yapar ve girdiyi
+    # bir KÜMEye çevirir; 2600 karakterlik gövde geçilince konu kelimeleriyle gövdedeki
+    # tesadüfi kelimeler eşit ağırlık kazanıyordu. Ölçülen bozulma: konusu "kaldırım
+    # onarımı" olan dilekçede adresteki "Sağlık Sokak" yüzünden Sağlık İşleri Müdürlüğü
+    # öneriliyordu. Bu katman BM25 değil; gövdeye ihtiyacı yok.
     canli: dict[str, Any] = {}
     hedef_slug = yetkili.get("slug") or muhatap.get("slug") or ""
     if hedef_slug and not kurum_korpusta_var(hedef_slug):
+        # Sarmalayıcı zaman aşımını, ayrılmış iş havuzunu ve hata yutmayı kendi içinde
+        # yapar. Buradaki ikinci try YİNE DE duruyor: sözleşme F ("akış düşmez") bu
+        # düğümün sorumluluğudur ve tek bir sarmalayıcıya devredilmemeli — düğüm
+        # seviyesinde test edilebilir kalmalı (defense in depth).
         try:
-            canli = await asyncio.to_thread(
-                kurum_icin_oneri, hedef_slug, arama_baglami, web_aramasi=False
+            canli = await kurum_icin_oneri_async(
+                hedef_slug, konu, web_aramasi=False
             ) or {}
         except Exception as exc:   # canlı keşif ASLA yönlendirmeyi düşürmez
             log.warning("route_ajan.canli_kaynak_hatasi", hata=type(exc).__name__)

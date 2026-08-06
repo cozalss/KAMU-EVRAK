@@ -10,7 +10,7 @@ import * as RTooltip from "@radix-ui/react-tooltip";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
-  AudioLines, MicOff, CalendarDays, ChevronLeft, ChevronRight,
+  AudioLines, MicOff, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Globe,
 } from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
@@ -453,6 +453,11 @@ export const Icon = {
   sparkle: (p) => <Sparkles size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
   undo: (p) => <Undo2 size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
   search: (p) => <Search size={15} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  // Dış bağlantı: kullanıcıyı bu uygulamadan ÇIKARAN her link bunu taşır (a11y — yeni
+  // sekmede açılan bağlantının önceden bilinmesi WCAG 3.2.5 beklentisi).
+  dis: (p) => <ExternalLink size={13} strokeWidth={1.75} aria-hidden="true" {...p} />,
+  // Canlı/çevrimiçi kaynak — korpustan değil, kurumun kendi sitesinden okunmuş veri.
+  kure: (p) => <Globe size={14} strokeWidth={1.75} aria-hidden="true" {...p} />,
 };
 
 /* MarkaKaro — çalışma alanı marka işareti: "Havale" amblemi (2026-07-17 logo seçimi,

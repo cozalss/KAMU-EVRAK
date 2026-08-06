@@ -183,12 +183,81 @@ const DEVIR_DAYANAK = {
 
 const NIHAI_KARAR = "Nihai karar yetkili memurundur.";
 
+/* ---- Canlı kaynak (DOĞRULANMAMIŞ) ----------------------------------------------------------
+   Korpusta karşılığı olmayan bir kuruma evrak düştüğünde backend, kurumun KENDİ resmî
+   sitesini canlı bulur, birim sayfasını keşfeder ve `canli_kaynak` künyesini döndürür
+   (backend/core/canli_kaynak.py). Bu künye manifest + SHA-256 + insan incelemesinden
+   GEÇMEMİŞTİR; arayüzde bu yüzden asla yeşil gösterilmez ve "doğrulanmadı" ibaresi
+   metinden çıkarılmaz. Sözleşme backend'de üç yerde kilitli, burası dördüncüsüdür.
+
+   ADRES GÜVENLİĞİ: link sunucuda zaten izinli alanlara kilitli, ama BURADA DA sınanır.
+   Sunucu sözleşmesi ileride gevşer ya da künye başka bir yoldan doldurulursa, arayüz
+   `javascript:` şemasını veya saldırgan bir alan adını tıklanabilir yapmamalı. Sonek
+   listesi backend `sayfa_kesif.IZINLI_SONEKLER` ile birebir aynıdır; biri değişirse
+   diğeri de değişmeli (ikisinin de regresyon testi var). */
+const CANLI_IZINLI_SONEK = [".gov.tr", ".bel.tr", ".edu.tr", ".pol.tr", ".tsk.tr"];
+
+/** İzinli resmî HTTPS adresi mi? Değilse null — çağıran link BASMAZ.
+ *  `izinli_mi` (Python) ile aynı mantık: https şart, sondaki nokta atılır, sonek ya da
+ *  soneğin kendisi (nokta olmadan) eşleşmeli. Ek olarak userinfo ("https://a@kotu.com")
+ *  reddedilir: tarayıcı orada gerçek konağı `kotu.com` sayar, göz ise `a`yı okur. */
+export function guvenliKaynakAdresi(ham) {
+  const s = String(ham || "").trim();
+  let u;
+  try {
+    u = new URL(s);
+  } catch {
+    return null;
+  }
+  if (u.protocol !== "https:" || u.username || u.password) return null;
+  const konak = u.hostname.toLowerCase().replace(/\.+$/, "");
+  const izinli = CANLI_IZINLI_SONEK.some((son) => konak === son.slice(1) || konak.endsWith(son));
+  return izinli ? { url: u.href, alan: konak.replace(/^www\./, "") } : null;
+}
+
+/* Hangi katmanın bulduğu denetlenebilirlik içindir — memur "sistem bunu nereden aldı?"
+   sorusunun cevabını görmeli. Bilinmeyen yol adı sessizce düşmez, aynen basılır. */
+const CANLI_YOL = {
+  onbellek: "daha önce bulunmuş, önbellekten",
+  kalip: "kurumun adres kalıbından",
+  web_arama: "web aramasıyla",
+};
+
+/** Canlı kaynak künyesi → arayüz görünümü. Yoksa/adres güvensizse null.
+ *  Saf: ağ yok, tarih yok. Bileşen yalnız basar. */
+export function canliKaynakYorum(r = {}) {
+  const ck = r.canli_kaynak;
+  if (!ck || typeof ck !== "object") return null;
+  const adres = guvenliKaynakAdresi(ck.url);
+  if (!adres) return null;
+  const sayi = Number(ck.birim_sayisi);
+  return {
+    ...adres,
+    birimOneri: String(ck.birim_oneri || "").trim(),
+    birimSayisi: Number.isFinite(sayi) && sayi > 0 ? sayi : 0,
+    ornekler: dizi(ck.birim_ornekleri).map((s) => String(s).trim()).filter(Boolean).slice(0, 6),
+    yol: CANLI_YOL[ck.yol] || String(ck.yol || "").trim(),
+    // `dogrulanmis` künyeden GELDİĞİ gibi değil, KATI okunur: yalnız birebir true ise true.
+    // Künye bozuk/eksik gelirse "doğrulanmamış" tarafa düşmek güvenli yöndür.
+    dogrulanmis: ck.dogrulanmis === true,
+  };
+}
+
 /* Gerekçe cümleleri boşlukla birleştirilir; serbest-metin parça (birim_reasoning) noktasız
    gelirse sonraki cümleye yapışıyordu ("…arızası 3071 s.K. m.8 —"). Sonlandırıcı garanti edilir. */
 const nokta = (s) => {
   const t = String(s || "").trim();
   return !t || /[.!?…:]$/.test(t) ? t : `${t}.`;
 };
+
+/* route_ajan canlı kaynağı İKİ yerde gönderir: yapısal `canli_kaynak` alanında ve serbest
+   metin gerekçenin sonunda ("· Canlı kaynak (doğrulanmadı): <url>"). İkincisi denetim
+   izinde adresin kalıcı kalması içindir ve backend'de öyle kalmalı. Arayüz aynı adresi
+   GERÇEK BİR LİNK olarak bastığı için çıplak URL'i bir de cümle içinde tekrarlamak
+   gürültüdür — yalnız GÖSTERİMDEN düşürülür, veri değişmez. */
+const CANLI_GEREKCE_PARCASI = /\s*·?\s*Canlı kaynak \(doğrulanmadı\):\s*\S+/g;
+const gerekceyiSadelestir = (s) =>
+  String(s || "").replace(CANLI_GEREKCE_PARCASI, "").replace(/\s{2,}/g, " ").trim();
 
 /** Karar slotu — "ne yapacağım + kime".
     Öncelik sırası ANLAMLIDIR: yetkisizlik (devir) en üstte, çünkü yapılacak iş kurum-içi
@@ -269,24 +338,48 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
     };
   }
 
-  const belirsiz = !birim;
+  /* CANLI KAYNAK ÖNCELİĞİ. Buraya düşen evrak, doğrulanmış teşkilat kaydı OLMAYAN bir
+     kuruma aittir; elimizdeki `birim` en iyi ihtimalle jenerik havuzdan bir kategori
+     ("İl/İlçe Sağlık Müdürlüğü" gibi kurumun kendi adının tekrarı). Canlı kaynak ise
+     kurumun KENDİ sitesinden okunmuş SPESİFİK bir birim adıdır ve `en_uygun_birim`
+     yalnız konuyla en az bir ayırt edici token örtüştüğünde döner.
+     İkisi de doğrulanmamıştır — yani burada güvenlik çizgisi geçilmiyor, iki
+     doğrulanmamış öneri arasında seçim yapılıyor ve spesifik olan kazanıyor.
+     `hedef_birim` (doğrulanmış) varsa canlı kaynak ONU ASLA ezmez: sıra en üstte. */
+  const canli = canliKaynakYorum(r);
+  const canliBirim = !r.hedef_birim && canli && !canli.dogrulanmis ? canli.birimOneri : "";
+  // Canlı ad zaten kurumun resmî yazımıdır; kod→etiket çevirisinden geçirilmez.
+  // Sıra: doğrulanmış birim > canlı spesifik öneri > jenerik korpus adayı. `birim`
+  // değişkeni jenerik kategoriyi de kapsadığı için `canliBirim || birim` yazmak ŞART —
+  // `birim || canliBirim` yazıldığında jenerik kategori canlı öneriyi eziyordu (test yakaladı).
+  const gosterilenBirim = r.hedef_birim ? birim : (canliBirim || birim);
+  const belirsiz = !gosterilenBirim;
   return {
     devir: false,
     etiket: belirsiz ? "Havale — kurum / birim" : "Havale — kurum / birim (öneri)",
-    deger: kurum || birim || "Belirlenmedi",
+    deger: kurum || gosterilenBirim || "Belirlenmedi",
     kurum: kurum || "",
-    birim: birim || "",
+    birim: gosterilenBirim || "",
     ton: "sari",
     // Geçerli bir birim adı kendi başına alarm DEĞİL — belirsizliği rozet taşır, adı okunur bırak.
     // "Belirlenmedi" ise değerin kendisi eksikliktir → tonlanır.
     vurgu: belirsiz,
-    rozet: r.insan_onayi_gerekli ? { metin: "memur onayı gerekli", ton: "sari" } : null,
-    alt: kurum && birim ? [`Birim: ${birim}`] : [],
+    // Rozet, önerinin NEREDEN geldiğini söyler. Canlı kaynakta "memur onayı gerekli"
+    // yetersizdi: memur bunun korpustan mı yoksa canlı okunmuş bir sayfadan mı geldiğini
+    // bilmeden linke bakma ihtiyacını fark edemez.
+    rozet: canliBirim
+      ? { metin: "canlı kaynak · doğrulanmadı", ton: "sari" }
+      : r.insan_onayi_gerekli ? { metin: "memur onayı gerekli", ton: "sari" } : null,
+    alt: kurum && gosterilenBirim ? [`Birim: ${gosterilenBirim}`] : [],
+    canli: canli || null,
     gerekce: [
-      belirsiz
-        ? "Sistem yetkili birimi belirleyemedi; emin olmadığı için tahmin yürütmedi."
-        : "Bu birim resmî teşkilat kaydıyla doğrulanamadı — içerik sinyaline dayalı bir öneridir.",
-      reasoning ? `Sistem gerekçesi: ${nokta(reasoning)}` : "",
+      canliBirim
+        ? `Bu kurumun doğrulanmış teşkilat kaydı yok; öneri kurumun kendi resmî sitesinden `
+          + `(${canli.alan}) CANLI okundu ve insan incelemesinden geçmedi.`
+        : belirsiz
+          ? "Sistem yetkili birimi belirleyemedi; emin olmadığı için tahmin yürütmedi."
+          : "Bu birim resmî teşkilat kaydıyla doğrulanamadı — içerik sinyaline dayalı bir öneridir.",
+      reasoning ? `Sistem gerekçesi: ${nokta(gerekceyiSadelestir(reasoning))}` : "",
       "Havaleyi onaylamadan önce birimi teyit edin.",
     ].filter(Boolean).join(" "),
   };

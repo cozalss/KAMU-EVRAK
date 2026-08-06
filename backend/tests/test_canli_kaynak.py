@@ -55,21 +55,43 @@ class TestBirimCikarimi:
         assert any("Strateji Geliştirme" in b for b in birimler)
         assert any("Fen İşleri Müdürlüğü" in b for b in birimler)
 
-    def test_ILK_ogede_onek_gurultusu_KALIR_bu_bilinen_sinirdir(self) -> None:
-        """Düz metinde birim adının NEREDE BAŞLADIĞI lafzen ayırt edilemez.
+    def test_GEZINME_oneki_temizlenir(self) -> None:
+        """Eskiden "Anasayfa Fen İşleri Müdürlüğü" tek bir "birim" olarak çıkıyordu.
 
-        "Anasayfa Fen İşleri Müdürlüğü" dizisinde hem "Anasayfa" hem "Fen" büyük harfle
-        başlar; hangisinin adın başı olduğunu metin söylemez. Sonraki öğeler temiz çıkar,
-        çünkü bir önceki unvanın bittiği yerden başlarlar — ölçüldü (2026-08-06, Selçuklu
-        Belediyesi: 37 adayın yalnız ilki kirliydi).
-
-        Bu kusur BİLEREK düzeltilmiyor: çıktı memura ÖNERİ olarak gider, korpusa
-        yazılmaz; ayrıca sıralamayı evrak konusuyla BM25 yapar ve önek gürültüsü konuyla
-        eşleşmediği için pratikte öne çıkmaz. Bir gün korpusa yazılacaksa bu test
-        kırılmalı ve çıkarım güçlendirilmelidir.
+        O davranış bilinen bir sınır olarak kayda geçirilmişti ve "bir gün çıkarım
+        güçlendirilirse bu test kırılmalı" diye yazılmıştı. 2026-08-06 denetiminde
+        gürültünün yalnız çirkin değil ZARARLI olduğu ölçüldü: `en_uygun_birim` gürültülü
+        adayı seçebiliyor ve yanlış birim öneriliyordu. Artık aday sağdan kırpılıyor.
         """
-        birimler = ck.birimleri_cikar("Anasayfa Fen İşleri Müdürlüğü")
-        assert birimler == ("Anasayfa Fen İşleri Müdürlüğü",)
+        assert ck.birimleri_cikar("Anasayfa Fen İşleri Müdürlüğü") == ("Fen İşleri Müdürlüğü",)
+
+    def test_CUMLE_ici_birim_adi_cumleyi_yutmaz(self) -> None:
+        metin = ("Vatandaşlarımız gürültü şikayetlerini Zabıta Müdürlüğüne iletebilir. "
+                 "İlgili ölçümler Çevre Koruma ve Kontrol Müdürlüğü tarafından yapılır.")
+        birimler = ck.birimleri_cikar(metin)
+        assert "Zabıta Müdürlüğü" in birimler
+        assert "Çevre Koruma ve Kontrol Müdürlüğü" in birimler
+        assert all("Vatandaşlarımız" not in b for b in birimler), birimler
+
+    def test_baglac_ADIN_ICINDE_korunur(self) -> None:
+        """Kırpma fazla agresif olmamalı: "ve" gerçek birim adlarının parçasıdır."""
+        birimler = ck.birimleri_cikar("Ölçüm İklim Değişikliği ve Sıfır Atık Müdürlüğü")
+        assert "İklim Değişikliği ve Sıfır Atık Müdürlüğü" in birimler
+
+    def test_KISI_ADI_bitisik_hucreden_birim_adina_karismaz(self) -> None:
+        """Personel tablosunda hücre sınırı kaybolunca kişi adı "birim" oluyordu (KVKK).
+
+        Kök çözüm `sayfa_kesif._duz_metin`te: blok etiketleri satır sonuna çevrilir ve
+        `_ADAY_RE` satır sonunu sınır sayar.
+        """
+        from core.sayfa_kesif import _duz_metin
+        html_ = "<table><tr><td>Ayşe Yılmaz</td><td>Fen İşleri Müdürlüğü</td></tr></table>"
+        birimler = ck.birimleri_cikar(_duz_metin(html_))
+        assert birimler == ("Fen İşleri Müdürlüğü",)
+        assert all("Ayşe" not in b for b in birimler)
+
+    def test_unvan_eki_TEK_BASINA_birim_sayilmaz(self) -> None:
+        assert ck.birimleri_cikar("... hakkında Müdürlüğü") == ()
 
     def test_unvansiz_metin_birim_uretmez(self) -> None:
         assert ck.birimleri_cikar("Haberler Duyurular İletişim Anasayfa") == ()
@@ -117,6 +139,51 @@ class TestOnbellek:
         ck._onbellege_koy(_ornek())
         sonuc = ck.canli_kaynak_bul({"slug": "selcuklu-belediyesi"}, web_aramasi=False)
         assert sonuc is not None and sonuc.yol == "onbellek"
+
+
+class TestKimlikKapisiBagli:
+    """Kapı yalnız var olmakla yetmez — bu akışta GERÇEKTEN çağrılıyor mu?
+
+    `ttk` olayı (bkz. tests/test_kurum_kimligi.py) tam olarak burada engellenmeliydi:
+    alan adı kalıptan açıldı, sayfa indi, birim adları da çıktı — kapı olmasa öneri
+    üretilirdi. Bu yüzden kapının bağlı olduğu ayrıca kilitlenir.
+    """
+
+    @staticmethod
+    def _sahte_bulgu(monkeypatch, metin: str) -> None:
+        from core.sayfa_kesif import Bulgu
+        monkeypatch.setattr(
+            ck, "birim_sayfasi_bul",
+            lambda *a, **k: Bulgu(url="https://ttk.gov.tr/teskilat", metin=metin, ipucu="teskilat"),
+        )
+
+    def test_baska_kurumun_sayfasi_REDDEDILIR(self, monkeypatch) -> None:
+        # Sayfa BİRİM ADI İÇERİYOR — yani reddin sebebi birim bulunamaması değil, kimlik.
+        self._sahte_bulgu(monkeypatch, "Türk Tarih Kurumu — Kütüphane ve Arşiv Müdürlüğü")
+        sonuc = ck.canli_kaynak_bul(
+            {"slug": "ttk", "ad": "Türkiye Taşkömürü Kurumu (TTK)"}, web_aramasi=False
+        )
+        assert sonuc is None, "yanlış kurumun sayfasından öneri üretildi"
+
+    def test_dogru_kurumun_sayfasi_KABUL_EDILIR(self, monkeypatch) -> None:
+        # İlk öğe bilerek kurumun kendi ünvanı: çıkarıcının bilinen önek gürültüsü orada
+        # kalır (bkz. test_ILK_ogede_onek_gurultusu…), sonraki adlar temiz çıkar.
+        self._sahte_bulgu(
+            monkeypatch,
+            "Türkiye Taşkömürü Kurumu Genel Müdürlüğü "
+            "İnsan Kaynakları Daire Başkanlığı Muhasebe Müdürlüğü",
+        )
+        sonuc = ck.canli_kaynak_bul(
+            {"slug": "ttk", "ad": "Türkiye Taşkömürü Kurumu (TTK)"}, web_aramasi=False
+        )
+        assert sonuc is not None
+        assert "İnsan Kaynakları Daire Başkanlığı" in sonuc.birimler
+
+    def test_reddedilen_sayfa_ONBELLEGE_YAZILMAZ(self, monkeypatch) -> None:
+        """Yanlış eşleşme önbelleğe girerse hata 30 gün boyunca tekrarlanır."""
+        self._sahte_bulgu(monkeypatch, "Türk Tarih Kurumu — Bilim Kurulu Başkanlığı")
+        ck.canli_kaynak_bul({"slug": "ttk", "ad": "Türkiye Taşkömürü Kurumu"}, web_aramasi=False)
+        assert ck.onbellekten("ttk") is None
 
 
 class TestGirdiDogrulama:

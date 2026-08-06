@@ -8,34 +8,34 @@
 @NOT: Birim adları 4 sayılı Kararname m.161/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.161/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
 BİRİM: Yabancılar Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Uluslararası Koruma Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Düzensiz Göçle Mücadele ve Sınır Dışı İşleri Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Uyum ve İletişim Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Sınır Yönetimi Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Yönetim Hizmetleri Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Rehberlik ve Denetim Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Dış İlişkiler Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Hukuk Müşavirliği
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Basın ve Halkla İlişkiler Müşavirliği
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Özel Kalem Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.161/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

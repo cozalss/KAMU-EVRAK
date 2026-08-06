@@ -5,7 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @DOGRULAMA: resmi
 @ALIAS: msb, milli-savunma
-@NOT: Birim adları m.339/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır.
+@NOT: Birim adları m.339/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye alınmamıştır. Bakanlığa bağlı ayrı tüzel kişilikler bu dosyada YER ALMAZ; onlar 4 sayılı Kararnameye dayanan ayrı dosyalarda ele alınır. EKSİK BİR BENT VAR: m.331/1'in son bendi çıkarımda bozuk üretilmişti — "Diğer Komutanlıklar" ile bir sonraki madde başlığı tek ada yapışmış ve zaten listede bulunan Askeralma Genel Müdürlüğü ikinci kez yazılmıştı. Sebep, ayrıştırıcının unvan listesinde ÇOĞUL biçimlerin (Komutanlıklar/Kurulları/Daireleri/Başkanlıkları/Müdürlükleri) bulunmamasıydı; liste 2026-08-06'da genişletildi. Bozuk kayıt UYDURULMADAN kaldırıldı: 1 sayılı Kararnamenin GÜNCEL tam metni elde edilemediği için (mevzuat.gov.tr sertifika zinciri kırık, bulunan tek .gov.tr kopyası 2019'da donmuş) o bendin doğru yazımı doğrulanamadı. Kararname metni erişilebilir olduğunda bu dosya yeniden üretilmelidir.
 
 BİRİM: Askeralma Genel Müdürlüğü
 GÖREV: Askeralma faaliyetlerini ilgili bakanlıklar, kamu kurum ve kuruluşları ile koordineli olarak planlamak ve icra etmek; Askeralma politikası ve planlaması ile askeralma, seferberlik ve askerlik sistemlerinin geliştirilmesi konularında çalışmalar yapmak ve tekliflerde bulunmak; Türk Silahlı Kuvvetlerinin seferberlik ve savaş hali hazırlıklarıyla ilgili faaliyetlerini, Genelkurmay Başkanlığının planlaması doğrultusunda; kuvvet komutanlıkları, ilgili bakanlıklar, kamu kurum ve kuruluşları ile koordine etmek.
@@ -57,6 +57,3 @@ GÖREV: Bakanlığın basın, halkla ilişkiler ve tanıtımla ilgili faaliyetle
 
 BİRİM: Özel Kalem Müdürlüğü
 GÖREV: Bakanın çalışma programını düzenlemek; Bakanın resmî ve özel yazışmalarını yürütmek; Bakanın ziyaret, davet, karşılama ve uğurlama, ağırlama, milli ve dini bayramlarla ilgili hizmetlerini düzenlemek, yürütmek ve diğer kuruluşlarla koordine etmek.
-
-BİRİM: Diğer Komutanlıklar. Askeralma Genel Müdürlüğü
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.339/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

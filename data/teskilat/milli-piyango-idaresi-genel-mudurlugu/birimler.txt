@@ -1,0 +1,41 @@
+@KURUM: Milli Piyango İdaresi Genel Müdürlüğü
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.289 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: milli-piyango-idaresi-genel-mudurlugu, milli-piyango
+@NOT: Birim adları 4 sayılı Kararname m.289/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.289/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Piyango Dairesi Başkanlığı
+GÖREV: Piyango planlarını hazırlamak ve Yönetim Kuruluna sunmak.; Piyango biletlerini basıma hazırlamak, basımını sağlamak, basılı biletleri tesellüm ve muhafaza etmek, biletlerin kontrolünü yapmak.; Piyango biletlerinin sevk planlarını düzenlemek, biletlerin satış merkezlerine sevk işlemlerini yapmak.; Piyango biletlerinin satışlarını izlemek, satışların en yüksek düzeyde yapılabilmesi amacıyla satış merkezleri ile merkez arasında koordinasyonu sağlamak.
+
+BİRİM: Loto Dairesi Başkanlığı
+GÖREV: Sayısal Loto sistem ve planlarını hazırlamak; Sayısal Loto kuponlarının basımını sağlamak, kuponların başbayi ve bayiler ile İdarenin taşra teşkilatına sevk işlemlerini yapmak, lotonun oynanmasını sağlamak ve izlemek; Sayısal Lotonun ülke düzeyinde organizasyonunu, iştirak oranının en yüksek düzeyde olması amacıyla başbayii, bayi ve İdarenin taşra teşkilatı ile merkez arasında gerekli koordinasyonu sağlamak; Sayısal Lotonun her oyun devresi sonucunun toplam hasılatını tespit etmek, toplam hasılata göre dağıtılacak ikramiyeleri belirlemek.
+
+BİRİM: Bahisler ve Oyunlar Dairesi Başkanlığı
+GÖREV: Hemen - kazan oyununun sistem ve planlarını hazırlamak, oyun biletlerinin basımını sağlamak, biletleri tesellüm, muhafaza ve kontrol etmek, biletlerin sevk işlemlerini yapmak, satışını sağlamak ve izlemek, satılamayan biletlerle ilgili iade işlemlerini yürütmek.; Her türlü eşya piyangosu, diğer şans oyunu ve müşterek bahisleri tertiplemek, bilet veya kuponlarının basım, tesellüm, kontrolünü yapmak, bunların sevk işlemlerini yürütmek, satışını sağlamak.
+
+BİRİM: İkramiye Kontrol ve Çekilişler Dairesi Başkanlığı
+GÖREV: İdarenin ana hizmet faaliyetlerine ait her türlü oyunlarda ikramiye kazananların belirlenmesi amacıyla çekilişleri düzenlemek, çekilişleri gerçekleştirmek, çekiliş sonuçlarının ilanını sağlamak, ikramiyelerin düzenli olarak ödenmesini sağlamak ve izlemek.; Çekilişler itibariyle ödenen ve İdareye irat kayıt olunacak ikramiyeleri belirlemek ve bunlarla ilgili muhasebeye esas olan belge ve kayıtları düzenlemek.
+
+BİRİM: Talih Oyunları Dairesi Başkanlığı
+GÖREV: Talih oyunları ve işletmelerini denetlemek.; Talih oyunları işletmelerinin denetimi amacıyla istihdam edilecek denetleme elemanlarını yönetmek, denetleme sonucu düzenlenen rapor gereklerini yerine getirmek, raporların ilgili mercilere sunulmasına dair işlemleri yapmak.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Teftiş, inceleme, soruşturma ve araştırma yapmak; İdarenin amaçlarını ve görevlerini daha iyi gerçekleştirmek, mevzuata plan ve programlara uygun çalışmasını temin etmek üzere gerekli teklifleri hazırlamak ve Genel Müdüre sunmak; İlgili mevzuatla veya Genel Müdürce verilen benzeri görevleri yapmak, ile yükümlüdür. Muhasebe ve Mali İşler Dairesi Başkanlığı.
+
+BİRİM: Muhasebe ve Mali İşler Dairesi Başkanlığı
+GÖREV: Hizmet ve faaliyetlerin ekonomik ve etkin bir şekilde yerine getirilmesi için insan, para ve malzeme gibi mevcut kaynakların en uygun ve verimli bir şekilde kullanılmasını sağlamak üzere İdare bütçesini plan ve program esaslarına göre hazırlamak ve onaylanan bütçenin uygulanmasını takip etmek.; İdarenin merkez ve taşra teşkilatı ile yurt dışı teşkilatının bütün nakit, kıymet ve hesap hareketlerini takip ve kontrol etmek, gerekli belgeleri hazırlamak.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: İdarenin insan gücü planlaması ve personel politikası ile ilgili çalışmaları yapmak, personel sisteminin geliştirilmesi ile ilgili önerilerde bulunmak; İdare personelinin atama, özlük, emeklilik ve konut tahsis işlemlerini yürütmek, özlük hakları ile ilgili her türlü tahakkuk işlemlerini yapmak; İdarenin eğitim planlarını hazırlamak, hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek ve yürütmek.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: İdare birimlerine ait görevlerin zamanında bilgisayar aracılığı ile gerçekleştirilmesi ve daha hızlı ve güvenilir sonuçlara ulaştırılması için destek sağlamak; İdarenin ana hizmetlerinin çözümleme ve tasarımını yapmak, bu hizmetlerin gerçekleştirilmesine yardımcı olmak; Verilerin derlenmesi, girilmesi, işlenmesi ve sonuç değerlerinin elde edilmesi gibi değişik aşamalarda, iş bütünlüğünün sağlanması amacı ile planlamalar yapmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: İdare için gerekli araç, gereç, malzeme ve kırtasiyelerin temin ve dağıtımı ile ilgili işlemleri yapmak; İhtiyaç duyulan bina ve arazinin kiralama, satın alma işlemlerini yürütmek; Temizlik, aydınlatma, ısıtma, bakım, onarım ve her türlü taşıma işlemlerini yapmak; Sosyal tesislerin kurulması ve yönetimi ile ilgili hizmetleri düzenlemek ve yürütmek; İdare personelinin ve ailelerinin sağlık hizmetlerinden yararlanmalarını sağlamak; Genel evrak, arşiv ve diğer haberleşme hizmet ve faaliyetlerini düzenlemek ve yürütmek.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: İdarenin diğer birimlerinden sorulan hukuki konular ile hukuki, mali ve cezai sonuçlar doğuracak işlemler hakkında görüş bildirmek.; İdarenin menfaatlerini koruyucu ve anlaşmazlıkları önleyici hukuki tedbirleri zamanında almak, anlaşma ve sözleşmelerin bu esaslara uygun olarak yapılmasına yardımcı olmak.; Adli ve idari davalarla, her türlü icra işlerini takip etmek ve sonuçlandırmak, bunlarla ilgili merciler nezdinde Genel Müdürlüğü temsil etmek.

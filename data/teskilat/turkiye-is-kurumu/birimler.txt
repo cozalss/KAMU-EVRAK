@@ -8,37 +8,37 @@
 @NOT: Birim adları 4 sayılı Kararname m.622/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.622/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
 BİRİM: İstihdam Hizmetleri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Aktif İşgücü Hizmetleri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İş ve Meslek Danışmanlığı Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İşgücü Piyasası ve İstatistik Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Dış İlişkiler ve Projeler Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İşsizlik Sigortası Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Fon Yönetimi ve Aktüerya Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Strateji Geliştirme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Personel Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Bilgi İşlem Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Hukuk Müşavirliği
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.622/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

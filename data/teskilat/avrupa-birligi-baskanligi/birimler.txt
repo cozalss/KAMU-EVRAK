@@ -1,0 +1,26 @@
+@KURUM: Avrupa Birliği Başkanlığı
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.61 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: avrupa-birligi-baskanligi, ab-baskanligi
+@NOT: Birim adları 4 sayılı Kararname m.61/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.61/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Avrupa Birliği ile İlişkiler Genel Müdürlüğü
+GÖREV: Türkiye’nin Avrupa Birliği ve organları ile ilişkilerini yürütmek, Avrupa Birliği ile Türkiye arasındaki ortaklık çalışmalarının ve katılım müzakerelerinin genel koordinasyonunu sağlamak, bu çerçevede ilgili diğer kurum ve kuruluşlarla işbirliği yapmak suretiyle gerekli politikaları ve hareket tarzlarını belirlemek, uygulamak ve koordine etmek; Avrupa Birliği müktesebatı, ekonomik kriterler ve siyasî kriterler alanında yürütülen katılım müzakerelerini, uyum çalışmalarını ve uygulamalarını yönlendirmek, koordine etmek ve izlemek.
+
+BİRİM: Malî İşbirliği ve Proje Uygulama Genel Müdürlüğü
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.61/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Yönetim Hizmetleri Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.61/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.61/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.61/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.61/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

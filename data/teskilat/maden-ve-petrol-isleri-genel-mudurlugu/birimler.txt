@@ -1,0 +1,71 @@
+@KURUM: Maden ve Petrol İşleri Genel Müdürlüğü
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.772 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: maden-ve-petrol-isleri-genel-mudurlugu, mapeg, maden-ve-petrol-isleri
+@NOT: Birim adları 4 sayılı Kararname m.772/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.772/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Maden Ruhsat Sicil Dairesi Başkanlığı
+GÖREV: Maden hakları ile ilgili maden sicilini tutmak, ruhsat ve izin düzenlemek.; Ruhsatlarla ilgili devir, tescil ve intikal işlemlerini yapmak, haciz, ihtiyati tedbir, ipotek ve rehin işlemlerine ilişkin bilgileri maden siciline kaydetmek.; Rödövans sözleşmelerini bilgi amaçlı maden siciline şerh etmek.; İcra müdürlüklerince ruhsatların satışı nedeniyle yapılacak ihaleye katılacaklara, ruhsat almak için aranan kanuni şartları taşıdığına dair belge düzenlemek.; Ruhsat sahiplerine ilişkin mali yeterlilik kayıtlarını tutmak.
+
+BİRİM: Enerji Hammaddeleri Dairesi Başkanlığı
+GÖREV: 3213 sayılı Kanunun 2 nci maddesinde yer alan IV. Grup (b) bendi ruhsatlara ilişkin işletme ruhsatı ve işletme izni müracaatlarını, süre uzatım ve diğer talepleri mevzuat kapsamında değerlendirmek ve sonuçlandırmak.; 3213 sayılı Kanunun 2 nci maddesinde yer alan IV. Grup (b) bendi kapsamındaki işletme izinli ruhsat sahalarındaki madencilik faaliyetlerinin projesine ve mevzuata uygun olarak yürütülmesini sağlamak ve takibini yapmak.; Yeraltı kömür işletmelerinde işçi maliyetlerine uygulanacak desteklere ilişkin iş ve işlemleri yürütmek.
+
+BİRİM: Agrega Dairesi Başkanlığı
+GÖREV: 3213 sayılı Kanunun 2 nci maddesinde yer alan II. Grup (a) ve (c) bentleri kapsamındaki ruhsatlara ilişkin işletme ruhsatı ve işletme izni müracaatlarını, süre uzatım ve diğer talepleri mevzuat kapsamında değerlendirmek ve sonuçlandırmak.; 3213 sayılı Kanunun 2 nci maddesinde yer alan II. Grup (a) ve (c) bentleri kapsamındaki işletme izinli ruhsat sahalarındaki madencilik faaliyetlerinin projesine ve mevzuata uygun olarak yürütülmesini sağlamak ve takibini yapmak.
+
+BİRİM: Doğal Taş Dairesi Başkanlığı
+GÖREV: 3213 sayılı Kanunun 2 nci maddesinde yer alan II. Grup (b) bendi kapsamındaki ruhsatlara ilişkin işletme ruhsatı ve işletme izni müracaatlarını, süre uzatım ve diğer talepleri mevzuat kapsamında değerlendirmek ve sonuçlandırmak.; 3213 sayılı Kanunun 2 nci maddesinde yer alan II. Grup (b) bendi kapsamındaki işletme izinli ruhsat sahalarındaki madencilik faaliyetlerinin projesine ve mevzuata uygun olarak yürütülmesini sağlamak ve takibini yapmak.
+
+BİRİM: Endüstriyel Mineraller Dairesi Başkanlığı
+GÖREV: 3213 sayılı Kanunun 2 nci maddesinde yer alan I. Grup (b) bendi ve IV. Grup (a) bendi kapsamındaki ruhsatlara ilişkin işletme ruhsatı ve işletme izni müracaatlarını, süre uzatım ve diğer talepleri mevzuat kapsamında değerlendirmek ve sonuçlandırmak.; 3213 sayılı Kanunun 2 nci maddesinde yer alan I. Grup (b) bendi ve IV. Grup (a) bendi kapsamındaki işletme izinli ruhsat sahalarındaki madencilik faaliyetlerinin projesine ve mevzuata uygun olarak yürütülmesini sağlamak ve takibini yapmak.
+
+BİRİM: Metalik Madenler Dairesi Başkanlığı
+GÖREV: 3213 sayılı Kanunun 2 nci maddesinde yer alan III. Grup, IV. Grup (c) ve (ç) bentleri ile V. Grup ruhsatlara ilişkin işletme ruhsatı ve işletme izni müracaatlarını, süre uzatım ve diğer talepleri mevzuat kapsamında değerlendirmek ve sonuçlandırmak.; 3213 sayılı Kanunun 2 nci maddesinde yer alan III. Grup, IV. Grup (c) ve (ç) bentleri ile V. Grup kapsamındaki işletme izinli ruhsat sahalarındaki madencilik faaliyetlerinin projesine ve mevzuata uygun olarak yürütülmesini sağlamak ve takibini yapmak.
+
+BİRİM: Petrol Arama, Üretim ve Ruhsatlandırma Dairesi Başkanlığı
+GÖREV: Petrol arama ve işletme ruhsatları ile araştırma izinlerine ilişkin; başvuru, müzayede, terk, sahaya ilave, devir, sürenin sona erdirilmesi, süre uzatımı, tadil, fesih, hisse devri, hak tesisi, ipotek, muafiyet ve benzeri iş ve işlemleri yapmak.; Petrol hakları ile ilgili petrol sicil kayıtlarını tutmak, ilan ve tebligatlarını yapmak.; Petrol arama ve üretim faaliyetleri ile ruhsat hukukundan doğan iş ve işlemlerin takibini ve denetimini yapmak.
+
+BİRİM: Petrol Stokları Dairesi Başkanlığı
+GÖREV: Uluslararası Enerji Programı Anlaşması ve mevzuattan kaynaklanan ulusal petrol stoku tutulmasına ilişkin iş ve işlemleri yürütmek.; Petrol ve doğal gaza ilişkin uluslararası bildirim yükümlülüklerini yerine getirmek.; Uluslararası Enerji Ajansı tarafından petrolle ilgili oluşturulan komitelerin ülkemize ilişkin faaliyetlerini ve bu kapsamda piyasaya koordineli olarak petrol stoku verilmesi iş ve işlemlerini yürütmek.; Tamamlayıcı stokların tutulması için toplanan gelir payını takip etmek.
+
+BİRİM: İhale ve Proje Geliştirme Dairesi Başkanlığı
+GÖREV: Maden sahalarının ihale işlemlerini yapmak.; Tesis kurarak uç ürün üretmek şartı ile maden sahalarını ihale etmek.; Stratejik tabii kaynak alanlarının belirlenmesi ve ilan edilmesine yönelik çalışmalar yapmak.
+
+BİRİM: Mali Yükümlülükler Dairesi Başkanlığı
+GÖREV: Madenlerden alınacak Devlet haklarının hesaplanmasına esas teşkil eden ocak başı satış fiyatlarını tespit etmek.; Sevk fişi taleplerini değerlendirmek.; Ruhsatlara ait mali yükümlülüklerin tahakkuk, tahsil ve takip işlemlerini yapmak.; İhale bedelleri, ihale teminatları ve ihale şartname bedellerinin tahakkuk, tahsil ve iade işlemlerini yapmak.; Yurtiçinde ve/veya yurtdışında görevlendirilen personele avans ve harcırah ödemek ve ödemelere ait tahakkukları düzenlemek.
+
+BİRİM: Özel Alanlar ve Harita Dairesi Başkanlığı
+GÖREV: Madencilik faaliyetleri ile kamu kurum ve kuruluşlarınca planlanan kamu yararı niteliği taşıyan ya da gerçek veya tüzel kişilere ait diğer yatırımların kamu yararı açısından önceliği ve önemine ilişkin Bakanlığa görüş bildirmek.; Kısıtlanan alanlar, yasak alanlar, özel alanlar ve izne tabi alan konumuna getirilen alanlar ile ilgili iş ve işlemleri yapmak.; Çevre ile uyum planının uygulanıp uygulanmadığını denetlemek.; Coğrafi Bilgi Sistemi ve haritacılık ile ilgili iş ve işlemleri yapmak.
+
+BİRİM: Ruhsat Denetleme Dairesi Başkanlığı
+GÖREV: Ruhsatları ve hammadde üretim izinlerini ilgili mevzuat kapsamında denetlemek, buna ilişkin esasları ve standartları belirlemek ve koordinasyonu sağlamak.; Genel Müdürlüğe yapılan uzman eleman taleplerini değerlendirmek.; Ruhsatların risk değerlendirme esaslarını ve standartlarını belirlemek.; Daimi nezaretçi, teknik eleman, vardiya mühendisi ve yetkilendirilmiş tüzel kişiler ile ilgili iş ve işlemleri yürütmek, takibini yapmak.
+
+BİRİM: Sektör İzleme ve Koordinasyon Dairesi Başkanlığı
+GÖREV: Ülkemizde ve uluslararası alanda sektörün tanıtımına yönelik faaliyetlerde bulunmak, tabii kaynaklara ilişkin faaliyetleri, iç ve dış piyasalardaki gelişmeleri takip etmek, değerlendirmek ve raporlar hazırlamak.; Tabii kaynakları arama, işletme, ara ve uç ürün üretim faaliyetlerine ilişkin yatırımlara yönelik teşvik tedbirleri ile rekabet imkânlarını artırıcı önlemler geliştirmek ve bu konularda önerilerde bulunmak.
+
+BİRİM: Hammadde Üretim İzinleri Dairesi Başkanlığı
+GÖREV: Kamu kurum ve kuruluşlarınca yol, köprü, baraj, gölet, liman gibi projelerin inşasında kullanılacak yapı ve inşaat hammaddelerinin üretim izin taleplerini değerlendirmek.; Hammadde üretim izin sahalarındaki madencilik faaliyetlerinin projesine ve mevzuata uygun olarak yürütülmesini sağlamak ve takibini yapmak.; Maden sahalarında Genel Müdürlükçe tespit edilen pasa, artık ve atıkların hammadde üretim izin talepleri kapsamında değerlendirilmesini sağlamak.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Genel Müdürün emri veya onayı üzerine, Genel Müdürlüğün teşkilatının faaliyet ve işlemleriyle ilgili olarak Genel Müdür adına teftiş, ön inceleme, inceleme ve soruşturma işlerini yürütmek.; Müfettişlerin araştırma, ön inceleme, inceleme, soruşturma ve teftiş sonucu düzenleyecekleri raporları Genel Müdürlük makamına sunmak.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kanunun 15 inci maddesi ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Genel Müdürlük bünyesinde görev yapan personelin atama, özlük, emeklilik, kadro, terfi, görev, yolluk, sağlık, izin ve benzeri özlük işlemleri ile ilgili hizmetleri yürütmek.; Sosyal hizmetler ve hizmet içi eğitim ile ilgili işleri yapmak.; Genel Müdürlük teşkilatının eğitim planını hazırlamak, yayınlamak ve uygulanmasını takip etmek.; Genel Müdürlük teşkilatı ile ilgili adaylık, hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek ve uygulamak.; Personel eğitim merkezleri ile diğer eğitim kurum ve tesisleriyle ilgili işleri yapmak.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Genel Müdürlük için gerekli araç, gereç ve malzemenin temini ile ilgili hizmetleri yürütmek.; İhtiyaç duyulan bina ve arazinin kiralanma, satın alma işlemlerini yürütmek.; Temizlik, aydınlatma, ısıtma, bakım, onarım ve taşıma hizmetlerini yapmak.; Genel Müdürlük personelinin ve ailelerinin sağlık hizmetlerinden yararlanmalarını sağlamak.; Genel Müdürlüğün iç ve dış protokol hizmetlerini yürütmek.; Genel Müdürlüğü ilgilendiren toplantı, brifing ve görüşmeleri düzenlemek, bunlara ait önemli not ve tutanakları tutmak ve yaymak.
+
+BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
+GÖREV: Genel Müdürlüğün bilgi işlem hizmetlerini yürütmek, bilgi teknolojileri, bilişim, bilgi işlem ve bilgi güvenliğiyle ilgili her türlü yatırım, iş, işlem ve hizmetleri yapmak veya yaptırmak.; Genel Müdürlük ile ilgili kamu kurum ve kuruluşları arasında ortak bilişim altyapısı oluşturmak, koordinasyon ve işbirliği yapmak.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.772/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.772/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

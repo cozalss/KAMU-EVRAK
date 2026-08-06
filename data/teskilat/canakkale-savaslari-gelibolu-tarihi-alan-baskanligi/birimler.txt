@@ -1,0 +1,23 @@
+@KURUM: Çanakkale Savaşları Gelibolu Tarihi Alan Başkanlığı
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.98 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: canakkale-savaslari-gelibolu-tarihi-alan-baskanligi, gelibolu-tarihi-alan
+@NOT: Birim adları 4 sayılı Kararname m.98/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.98/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Alan Planlama ve Proje Grup Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.98/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Restorasyon ve Yapım İşleri Grup Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.98/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Alan Yönetimi ve Tanıtım Grup Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.98/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel ve Destek Hizmetleri Grup Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.98/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.98/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

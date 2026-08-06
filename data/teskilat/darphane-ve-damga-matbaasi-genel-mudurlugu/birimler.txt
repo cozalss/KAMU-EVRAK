@@ -1,0 +1,35 @@
+@KURUM: Darphane ve Damga Matbaası Genel Müdürlüğü
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.107 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: darphane-ve-damga-matbaasi-genel-mudurlugu, darphane
+@NOT: Birim adları 4 sayılı Kararname m.107/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.107/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Darphane Dairesi Başkanlığı
+GÖREV: Madeni para ile madeni hatıra parayı, hatıra madalyonunu, Cumhuriyet sikke ve ziynet altınlarını, özel kanun, Cumhurbaşkanlığı kararnameleri ve yönetmelikleri gereği Devletçe verilen madalyaları, resmî mühürleri basmak, dağıtmak ve bunların sicillerini tutmak.; Kıymetli madenlerden ürünleri basmak, bastırmak ve dağıtmak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Damga Matbaası Dairesi Başkanlığı.
+
+BİRİM: Damga Matbaası Dairesi Başkanlığı
+GÖREV: Devlet gelirlerinin tahsilinde kullanılan harç pullarının, Değerli Kâğıtlar Kanununa tabi değerli kâğıtlar ile güvenlikli basımı gerektiren diğer belgelerin basımını ve dağıtımını sağlamak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Uygulama Dairesi Başkanlığı.
+
+BİRİM: Uygulama Dairesi Başkanlığı
+GÖREV: Kıymetli maden ticaretini düzenlemek üzere standartlar tespit etmek ve uygulamasını kontrol etmek.; Kıymetli madenlerin ve kıymetli taşların ithalat ve ihracatında yapılan düzenlemeleri uygulamak.; Hatıra paraların satış servisini kurmak ve ihracatını gerçekleştirmek.; Genel Müdürlüğün tüm Ar-Ge ve işbirliği çalışmalarını koordine etmek ve yürütmek.; Genel Müdürlüğün her türlü bilişim sistemleri ile ilgili işlemlerini yürütmek.; Genel Müdürlüğün üretmiş olduğu tüm ürün ve hizmetlerin pazarlama ile satış faaliyetlerini yürütmek.
+
+BİRİM: Bandrollü Ürün İzleme Sistemleri Dairesi Başkanlığı
+GÖREV: Kamu kurum ve kuruluşlarınca usul ve esasları belirlenmek suretiyle kullanılma mecburiyeti getirilen özel etiket ve işaretlerle takip edilmesi öngörülen ürünler için bu kurum ve kuruluşların talebi üzerine izleme sistemlerinin kurulması ve işletilmesiyle ilgili işleri yapmak veya yaptırmak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Kalite Güvence Dairesi Başkanlığı.
+
+BİRİM: Kalite Güvence Dairesi Başkanlığı
+GÖREV: Kıymetli madenler ile ilgili resmî ayar evi işlemlerini yapmak.; Kıymetli maden ve madeni para sahteciliği ile ilgili laboratuvar ve analiz çalışmaları yapmak.; Güvenlikli matbu evrak ve bandrol sahteciliği ile ilgili analiz çalışmaları yapmak.; Genel Müdürlüğün hedeflenen kalite yönetim sistemlerini kurma çalışmalarını yürütmek, takip etmek ve gerekli sistem revizyonlarını yaparak kalite sisteminin sürekli gelişimini sağlamak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Strateji Geliştirme Dairesi Başkanlığı.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kanun, Cumhurbaşkanlığı kararnameleri ve ilgili diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Personel Dairesi Başkanlığı.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Genel Müdürlüğün insan gücü planlaması ve personel politikasıyla ilgili çalışmalarını yapmak, personel sisteminin geliştirilmesiyle ilgili tekliflerde bulunmak.; Genel Müdürlük personelinin atama, özlük, sağlık ve emeklilik işleriyle ilgili işlemleri yürütmek.; Genel Müdürlük eğitim planını hazırlamak, hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek.; Genel Müdürlük birimlerinde yürütülecek iş sağlığı ve güvenliği faaliyetlerini koordine etmek, izlemek.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Temizlik, aydınlatma, ısıtma, bakım, onarım, taşıma ve lojistik hizmetleri ile güvenlik faaliyetlerini yürütmek.; Sosyal tesislerin kurulması ve yönetimi ile ilgili hizmetleri düzenlemek ve yürütmek.; Genel Müdürün direktif ve emirlerini ilgililere duyurmak ve işlemlerini takip etmek, Genel Müdürlüğün iç ve dış protokol hizmetlerini yürütmek.; Kurumsal iletişim süreçlerini yürütmek.; Evrak ve arşiv hizmet ve faaliyetlerini düzenlemek ve yürütmek.; Genel Müdür tarafından verilecek diğer görevleri yapmak. Bütçe.
+
+BİRİM: Döner Sermaye Saymanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.107/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

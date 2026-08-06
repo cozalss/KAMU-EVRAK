@@ -1,0 +1,41 @@
+@KURUM: Sivil Havacılık Genel Müdürlüğü
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.439 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: sivil-havacilik-genel-mudurlugu, shgm, sivil-havacilik
+@NOT: Birim adları 4 sayılı Kararname m.439/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.439/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Uçuşa Elverişlilik Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Uçuş Operasyon Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hava Ulaşım Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hava Seyrüsefer Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hava Alanları Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Havacılık Güvenliği Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Sektörel Düzenleme ve Eğitim Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel Müdürlüğü
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Destek Hizmetleri Müdürlüğü
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.439/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

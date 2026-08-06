@@ -1,0 +1,44 @@
+@KURUM: Türk Patent ve Marka Kurumu
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.368 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: turk-patent-ve-marka-kurumu, turkpatent, turk-patent
+@NOT: Birim adları 4 sayılı Kararname m.368/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.368/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Patent Dairesi Başkanlığı
+GÖREV: Patentlerin tescil başvurularının ilgili mevzuat hükümlerine göre kayıt, dosyalama, araştırma, inceleme, değerlendirme ve tescil işlemlerini; Patentlerin ve patent tescil başvurularının ilgili mevzuat hükümlerine göre lisans, devir, sair değişikliklerle ilgili işlemlerini; Patentlerin ilan, tasnif ve sicil işlemlerini; Başkanlıkça verilecek diğer işleri, yapar. Markalar Dairesi Başkanlığı.
+
+BİRİM: Markalar Dairesi Başkanlığı
+GÖREV: Markaların tescil başvurularının ilgili mevzuat hükümlerine göre kayıt, dosyalama, araştırma, inceleme, değerlendirme ve tescil işlemlerini; Markaların ve marka tescil başvurularının ilgili mevzuat hükümlerine göre lisans, devir, sair değişikliklerle ilgili işlemlerini; Markaların ilan, tasnif ve sicil işlemlerini; İlgili mevzuat hükümlerine göre, belirli nitelikleri haiz işaret ve ibarelerin koruma altına alınması, markaların tanınmışlık düzeyleri ile ilgili esasların belirlenmesi ve uygulamaya konulması işlemlerini.
+
+BİRİM: Tasarımlar Dairesi Başkanlığı
+GÖREV: Tasarımların tescil başvurularının ilgili mevzuat hükümlerine göre kayıt, dosyalama, araştırma, inceleme, değerlendirme ve tescil işlemlerini yapar.; Tasarımların ve tasarım başvurularının ilgili mevzuat hükümlerine göre lisans, devir ve sair değişikliklerle ilgili işlemlerini yapar.; Tasarımların ilan, tasnif ve sicil işlemlerini yapar.; Türk Tasarım Danışma Konseyinin sekretaryasını yürütür.; Başkanlıkça verilecek diğer işleri yapar. Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı.
+
+BİRİM: Avrupa Birliği ve Dış İlişkiler Dairesi Başkanlığı
+GÖREV: Avrupa Birliği ile ilgili Kurumun görev alanına giren konularda; müzakerelere ilişkin hazırlıkları yapar, toplantılara katılır, bu konularla ilgili olarak Kurum birimleri arasında koordinasyonu sağlar.; Kurumun görev alanına giren konularda yabancı ülkeler ve uluslararası kuruluşlar ile ilişkilerini yürütür, koordinasyonu sağlar, ikili ve çok taraflı işbirliği anlaşmaları ile bölgesel işbirliği anlaşmalarının ve protokollerinin hazırlanmasına yardımcı olur.
+
+BİRİM: Yenilik ve Tanıtım Dairesi Başkanlığı
+GÖREV: Sınai mülkiyet haklarından ülke ekonomisi için değer üretmek amacıyla gerçek ve tüzel kişilerin sınai mülkiyete konu olan ya da olabilecek varlıklarını ve kullanım şekillerini tespit etme, ilgili sektörleri takip etme, etüt çalışmaları yapma ve benzeri faaliyetleri yürütür.; Sınai mülkiyet varlıklarının değeri ve ekonomik etkileri konusunda çalışmalar yapar.; Yeni teknolojilerin tespiti, teknoloji transferi işlemlerine aracılık gibi ticarileştirme faaliyetlerini yürütür.
+
+BİRİM: Coğrafi İşaretler Dairesi Başkanlığı
+GÖREV: Coğrafi işaretler ve geleneksel ürün adlarına ilişkin kayıt, araştırma, inceleme, değerlendirme ve tescil işlemlerini yapar; Coğrafi işaretler ve geleneksel ürün adlarının ilan ve sicil işlemlerini yapar; Başkanlıkça verilecek diğer işleri yapar. Yeniden İnceleme ve Değerlendirme Dairesi Başkanlığı.
+
+BİRİM: Yeniden İnceleme ve Değerlendirme Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.368/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Kurum bünyesinde görev yapan personelin iş akitleri, kadro, terfi, görev, yolluk, sağlık, izin ve benzeri özlük işlemleri ile ilgili hizmetleri yürütür.; Sosyal hizmetler ve hizmet içi eğitim ile ilgili işleri yapar.; Başkanlıkça verilecek diğer işleri yapar. Destek Hizmetleri Dairesi Başkanlığı.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu hükümleri çerçevesinde, kiralama ve satın alma işlerini yürütür; temizlik, güvenlik, aydınlatma, ısınma, onarım, taşıma ve benzeri hizmetleri yapar veya yaptırır.; Genel evrak ve arşiv faaliyetlerini düzenler ve yürütür.; Kurumun taşınır ve taşınmazlarına ilişkin işlemleri ilgili mevzuat çerçevesinde yürütür.; Kurumun sivil savunma ve seferberlik hizmetlerini planlar ve yürütür.; Kütüphane hizmetlerini yürütür.
+
+BİRİM: Bilgi İşlem Dairesi Başkanlığı
+GÖREV: Bilgi teknolojilerini takip ederek Kurumun otomasyon stratejilerini belirler, bilgi güvenliğinin gerektirdiği önlemleri alır, kamu bilişim standartlarına uygun çözümler üretir.; Kurumun bilgi işlem hizmetlerini yürütür.; Kurumun internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapar.; Kurumun hizmetleriyle ilgili bilgileri toplar ve veri tabanları oluşturur.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 5018 sayılı Kanun, 22/12/2005 tarihli ve 5436 sayılı Kanun ve diğer mevzuatla strateji geliştirme ve mali hizmetler birimlerine verilen görevleri yapar.; Başkanlıkça verilecek diğer işleri yapar. Hukuk Müşavirliği.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Genel Bütçe Kapsamındaki Kamu İdareleri ve Özel Bütçeli İdarelerde Hukuk Hizmetlerinin Yürütülmesine İlişkin Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapar.; Başkanlıkça verilecek diğer işleri yapar. Gelirler, giderler ve bütçe.

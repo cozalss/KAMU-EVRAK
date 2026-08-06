@@ -8,49 +8,49 @@
 @NOT: Birim adları 4 sayılı Kararname m.214/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.214/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
 BİRİM: Etüt, Proje ve Çevre Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Araştırma ve Geliştirme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Yol Yapım Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Tesisler ve Bakım Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Trafik Güvenliği Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İşletmeler Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Makine ve İkmal Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Sanat Yapıları Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Taşınmazlar Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Program ve İzleme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Teftiş Kurulu Başkanlığı
 GÖREV: Genel Müdürün emri veya onayı üzerine Genel Müdürlüğün merkez ve taşra teşkilatının faaliyet ve işlemleriyle ilgili olarak Genel Müdür adına teftiş, ön inceleme, inceleme ve soruşturma işlerini yürütmek.; Müfettişlerin araştırma, ön inceleme, inceleme, soruşturma ve denetim sonucu düzenleyecekleri raporları Başkanlık görüşü ile birlikte Genel Müdürlük makamına sunmak. Hukuk Müşavirliği.
 
 BİRİM: Strateji Geliştirme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Personel Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.214/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Hukuk Müşavirliği
 GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.

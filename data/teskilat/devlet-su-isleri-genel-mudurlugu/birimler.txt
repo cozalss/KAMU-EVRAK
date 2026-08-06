@@ -8,67 +8,67 @@
 @NOT: Birim adları 4 sayılı Kararname m.123/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.123/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
 
 BİRİM: Etüt, Planlama ve Tahsisler Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Sulama Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Barajlar ve Hidroelektrik Santrallar Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İçmesuyu ve Atıksu Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Taşkın Kontrol Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Emlak ve Kamulaştırma Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Jeoteknik Hizmetler Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Yeraltısuları Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Makina, İmalat ve Donatım Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Teknik Araştırma ve Kalite Kontrol Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: İşletme ve Bakım Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Yenilenebilir Enerji Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Arazi Toplulaştırma ve Tarla İçi Geliştirme Hizmetleri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Arazi Toplulaştırması Etüt ve Projelendirme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Değerlendirme ve Destekleme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Strateji Geliştirme Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Personel Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Destek Hizmetleri Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Dış İlişkiler Dairesi Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Teftiş Kurulu Başkanlığı
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
 
 BİRİM: Hukuk Müşavirliği
-GÖREV: 1 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1 uyarınca Bakanlığın hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.123/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

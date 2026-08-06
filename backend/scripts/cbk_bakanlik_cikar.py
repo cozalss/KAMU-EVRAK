@@ -47,9 +47,19 @@ _KARARNAMELER = {
 }
 
 _BENT_RE = re.compile(r"^([a-zçğıöşü]{1,2})\)\s*(.+)$")
+# ÇOĞUL biçimler de listede olmak ZORUNDA. 4 sayılı Kararname bazı kuruluşlarda birimi
+# çoğul yazar (Adli Tıp m.4: "Adli Tıp Üst Kurulları", "Adli Tıp İhtisas Daireleri",
+# "Adli Tıp Kurumu Grup Başkanlıkları", "Adli Tıp Şube Müdürlükleri"). Bunlar listede
+# olmadığında iki şey birden bozuluyordu (ölçüldü 2026-08-06): (1) yedi birimin DÖRDÜ
+# sessizce düşüyordu; (2) eşleşemeyen bent bir sonraki madde başlığına kadar uzayıp
+# "Adli Tıp Şube Müdürlükleri. Adli Tıp Kurumu Başkanlığı" gibi BOZUK ad üretiyordu.
+# UZUN biçimler ÖNCE gelmeli — alternasyon ilk eşleşeni alır, "Genel Müdürlüğü" yerine
+# "Müdürlüğü" eşleşirse ad kırpılır.
 _UNVAN = (
-    r"(?:Genel Müdürlükleri|Genel Müdürlüğü|Başkanlığı|Müşavirliği|Müdürlüğü|"
-    r"Başkanlığının|Kurulu|Merkezi)"
+    r"(?:Genel Müdürlükleri|Genel Müdürlüğü|Grup Başkanlıkları|Şube Müdürlükleri|"
+    r"Daire Başkanlıkları|Başkanlıkları|Müdürlükleri|Kurulları|Daireleri|"
+    r"Komutanlıkları|Komutanlıklar|Komutanlığı|Saymanlıkları|Saymanlığı|"
+    r"Başkanlığının|Başkanlığı|Müşavirliği|Müdürlüğü|Kurulu|Merkezi)"
 )
 # "(Ek:RG-...)70 Diplomatik Güvenlik GM" — değişiklik parantezi silinince dipnot numarası
 # adın başında kalıyor; ad "70 Diplomatik..." olarak kaydedilmemeli.
@@ -138,6 +148,16 @@ def birimleri_cikar(sat: list[str], madde: int) -> list[str]:
             continue
         govde = re.sub(r"\s+", " ", _DIPNOT_NO_RE.sub("", govde)).strip()
         govde = _BASTA_DIPNOT_RE.sub("", govde).strip()
+        # BİRLEŞİK BENT BİÇİMİ: bazı kuruluşlarda madde başlığı "Hizmet birimlerinin
+        # GÖREVLERİ şunlardır" olur ve bent adı ile görevi birlikte taşır:
+        #   "a) Alan Planlama ve Proje Grup Başkanlığı: 1) ... 2) ..."
+        # Ad iki nokta üst üsteden ÖNCEki kısımdır. Bu ayrım yapılmazsa bent unvanla
+        # bitmediği için tamamen düşer ya da görev metni birim ADI olarak kaydedilir
+        # (ölçüldü 2026-08-06: Çanakkale m.98'de tek "birim" olarak 200 karakterlik görev
+        # metni yazılmıştı). 4 s. CBK'da TÜİK m.604 de aynı biçimi kullanır.
+        bas_kisim = govde.split(":", 1)[0].strip()
+        if bas_kisim != govde and re.search(_UNVAN + r"$", bas_kisim):
+            govde = bas_kisim
         if not re.search(_UNVAN + r"$", govde):
             continue
         adlar.append(govde)
@@ -228,10 +248,14 @@ def main() -> None:
             # Birim m.<madde>/1 listesinde SAYILI; yalnız görevleri ayrı maddede
             # düzenlenmemiş. Dosyadan düşürmek kaynakta var olan bir birimi kaybetmek olur.
             eksik.append(b)
+            # Kararname NUMARASI ve kurum türü sabit YAZILMAZ: 4 sayılı Kararname bakanlıkları
+            # değil bağlı/ilgili/ilişkili KURULUŞLARI düzenler; "1 sayılı ... Bakanlığın hizmet
+            # birimidir" demek Adli Tıp Kurumu gibi kuruluşlarda hem yanlış dayanak hem yanlış
+            # kurum türü yazmak olurdu (ölçüldü 2026-08-06, düzeltildi).
             g = (
-                f"1 sayılı Cumhurbaşkanlığı Kararnamesi m.{args.madde}/1 uyarınca Bakanlığın "
-                "hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle "
-                "düzenlenmemiştir."
+                f"{args.kararname} sayılı Cumhurbaşkanlığı Kararnamesi m.{args.madde}/1'de "
+                "sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir "
+                "maddeyle düzenlenmemiştir."
             )
         satirlar.append(f"BİRİM: {b}\nGÖREV: {g}\n")
 
@@ -273,7 +297,11 @@ def main() -> None:
             "mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ."
             .replace("{madde}", str(args.madde))
         )
-        hedef.write_text("\n".join(kunye) + "\n\n" + "\n".join(satirlar), encoding="utf-8")
+        # newline="\n" ZORUNLU: Windows'ta varsayılan CRLF yazılıyordu. Manifest hash'i
+        # satır sonunu normalleştirdiği için doğrulama bozulmuyordu ama depo iki farklı
+        # satır sonu biçimi taşıyor ve git her dokunuşta uyarı veriyordu.
+        hedef.write_text("\n".join(kunye) + "\n\n" + "\n".join(satirlar),
+                         encoding="utf-8", newline="\n")
         print(f"\nyazıldı -> {hedef.relative_to(_KOK)}")
 
 

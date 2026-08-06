@@ -1,0 +1,32 @@
+@KURUM: Türk İşbirliği ve Koordinasyon Ajansı Başkanlığı
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.524 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: turk-isbirligi-ve-koordinasyon-ajansi-baskanligi, tika
+@NOT: Birim adları 4 sayılı Kararname m.524/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.524/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Orta Asya ve Kafkaslar Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Balkanlar ve Doğu Avrupa Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Ortadoğu ve Afrika Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Doğu ve Güney Asya, Pasifik ve Latin Amerika Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Dış İlişkiler ve Ortaklıklar Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Strateji Geliştirme Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Personel ve Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.524/1'de sayılan hizmet birimidir; görev ve yetkileri anılan Kararnamede ayrı bir maddeyle düzenlenmemiştir.

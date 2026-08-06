@@ -1,0 +1,35 @@
+@KURUM: Yurtdışı Türkler ve Akraba Topluluklar Başkanlığı
+@BELGE: 4 sayılı Bakanlıklara Bağlı, İlgili, İlişkili Kurum ve Kuruluşlar ile Diğer Kurum ve Kuruluşların Teşkilatı Hakkında Cumhurbaşkanlığı Kararnamesi (RG 15/7/2018-30479), m.736 ve devamı
+@KAYNAK_KIMLIK: https://webdosya.csb.gov.tr/db/altyapi/icerikler/cb-4-kararname--19.5.4-20240604155733.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: yurtdisi-turkler-ve-akraba-topluluklar-baskanligi, ytb
+@NOT: Birim adları 4 sayılı Kararname m.736/1 bentlerinden, görev metinleri her birimin kendi maddesinden BİREBİR alınmıştır (scripts/cbk_bakanlik_cikar.py). Mülga bentler ve mülga görev maddeleri listeye ALINMAMIŞTIR. Bir birim m.736/1'de SAYILI olduğu hâlde görevi ayrı bir maddeyle düzenlenmemişse dosyadan düşürülmez; görev alanına bu durum açıkça yazılır — kaynakta var olan bir birimi listeden çıkarmak, evrağı var olan bir adresten mahrum bırakmaktır. TAŞRA teşkilatı bu dosyada YER ALMAZ.
+
+BİRİM: Yurtdışı Vatandaşlar Daire Başkanlığı
+GÖREV: Yurtdışında yaşayan Türkiye Cumhuriyeti vatandaşlarının, kaybettirme hâlleri dışında vatandaşlıktan çıkmış olanların ve 29/5/2009 tarihli ve 5901 sayılı Türk Vatandaşlığı Kanununun 28 inci maddesi gereği Türk vatandaşlarına tanınan haklardan aynen yararlananların ülkemizle sosyal, kültürel ve ekonomik bağlarını muhafaza etmeleri ve geliştirmeleri için gerekli çalışmaların ilgili kurumlarla eşgüdüm içinde yapılmasını sağlamak.
+
+BİRİM: Kültürel ve Sosyal İlişkiler Daire Başkanlığı
+GÖREV: Soydaş ve akraba topluluklarla ekonomik, sosyal ve kültürel bağların geliştirilmesi için ilgili kişi, kurum, sivil toplum kuruluşu ve meslekî yapılanmalarla birlikte yapılacak çalışmalara destek olmak ve bu faaliyetlerin bir plan dâhilinde koordine edilmesini sağlamak.; Kamu kurum ve kuruluşlarınca soydaş ve akraba topluluklarla ilgili hizmet ve faaliyetlere yönelik olarak ilgili kuruluşlarla birlikte hedefleri belirleyerek bir plan dâhilinde koordine edilmesini sağlamak.
+
+BİRİM: Kurumsal İlişkiler ve İletişim Daire Başkanlığı
+GÖREV: Yurtdışında yaşayan vatandaşların ve kaybettirme hâlleri dışında vatandaşlıktan çıkmış olanların kurdukları sivil toplum kuruluşları ile bu Bölümde belirtilen konularda faaliyette bulunan sivil toplum kuruluşlarının başarılı çalışmalar yapabilmeleri için kapasite geliştirme program ve projeleri geliştirmek, uygulamak ve benzeri çalışmalara ve projelere idarî ve malî destekte bulunmak.
+
+BİRİM: Uluslararası Öğrenciler Daire Başkanlığı
+GÖREV: Öğrencilerin, öğrenimleri süresinde ve sonrasında, ülkemizi daha iyi tanımalarını ve ilişkilerin sürekliliğini sağlayıcı yurtiçinde ve yurtdışında çalışmalar yapmak veya benzeri çalışmalar yapan kamu kurum ve kuruluşları, özel kuruluş ile sivil toplum kuruluşlarının çalışmalarına katkıda bulunmak.; Öğrencilere yönelik olarak alınan kararların uygulanmasını ve sonuçlarını takip etmek.; Kurum ve kuruluşların yaptıkları çalışmalarla ilgili değerlendirmeler ve analizler yapmak.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: 10/12/2003 tarihli ve 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu, 22/12/2005 tarihli ve 5436 sayılı Kanun, Cumhurbaşkanlığı kararnameleri ve diğer mevzuatla strateji geliştirme ve malî hizmetler birimlerine verilen görevleri yapmak.
+
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Başkanlığın insan gücü planlaması ve personel politikasıyla ilgili çalışmaları yapmak, personel sisteminin geliştirilmesi ve performans ölçütlerinin oluşturulması ile ilgili tekliflerde bulunmak.; Başkanlık personelinin atama, özlük, emeklilik ve sağlık işleriyle ilgili işleri yapmak.; Başkanlığın eğitim planını hazırlamak, hizmet öncesi ve hizmet içi eğitim programlarını düzenlemek ve uygulamak.; Başkanlık kütüphane hizmetlerini yürütmek.
+
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: 5018 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu çerçevesinde, kiralama ve satın alma işlerini yürütmek, temizlik, aydınlatma, ısıtma, onarım, taşıma ve benzeri hizmetleri yapmak veya yaptırmak.; Genel evrak faaliyetlerini düzenlemek ve yürütmek.; Başkanlık arşiv hizmetlerini yürütmek.; Başkanlık sivil savunma ve seferberlik hizmetlerini planlamak ve yürütmek.; Başkan tarafından verilecek diğer görevleri yerine getirmek. Bilgi İşlem Daire Başkanlığı.
+
+BİRİM: Bilgi İşlem Daire Başkanlığı
+GÖREV: Başkanlık projelerinin Başkanlık bilişim altyapısına uygun olarak tasarlanmasını ve uygulanmasını sağlamak, teknolojik gelişmeleri takip etmek ve Başkanlık otomasyon stratejilerini belirlemek, bilgi güvenliği ve güvenilirliği konusunun gerektirdiği önlemleri almak, kamu bilişim standartlarına uygun çözümler üretmek.; Başkanlığın bilgi işlem hizmetlerini yürütmek.; Başkanlığın internet sayfaları, elektronik imza ve elektronik belge uygulamaları ile ilgili teknik çalışmaları yapmak.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: 26/9/2011 tarihli ve 659 sayılı Kanun Hükmünde Kararname hükümlerine göre hukuk birimlerine verilen görevleri yapmak.

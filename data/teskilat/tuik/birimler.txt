@@ -5,7 +5,7 @@
 @KAYNAK_TURU: resmi_teskilat
 @DOGRULAMA: resmi
 @ALIAS: tuik, turkiye-istatistik-kurumu, istatistik-kurumu
-@NOT: KAPSAM UYARISI — BU LİSTE EKSİKTİR VE EKSİKLİĞİ KAYNAĞIN KENDİSİNDEN GELİR. 4 sayılı Kararname m.604/1: "Kurumun görev alanıyla ilgili hizmetlerinden sorumlu birimleri daire başkanlıklarıdır. Daire başkanlıklarının isim, görev ve yetkileri YÖNETMELİKLE belirlenir. Başkanlığın DİĞER birimleri ve görevleri şunlardır..." Yani Kurumun asıl istatistik üretim daireleri (nüfus, ekonomik, sosyal istatistikler vb.) kararnamede ADIYLA SAYILMAZ; adları bir yönetmeliğe bırakılmıştır. Bu dosyada yalnız kararnamenin adıyla saydığı BEŞ birim vardır. Eksik olduğu bilinen bir listeyi tam sanmak, evrağı var olan bir birimden mahrum bırakır — istatistik konulu bir yazının muhatabı burada bulunamayabilir; o durumda Başkanlığa hitap edilmelidir. Görev metinleri kararnamenin ilgili bentlerinden özetlenmiş, kaynakta bulunmayan ayrıntı yazılmamıştır. TAŞRA teşkilatı (bölge müdürlükleri) bu dosyada YER ALMAZ.
+@NOT: KAPSAM UYARISI — BU LİSTE EKSİKTİR VE EKSİKLİĞİ KAYNAĞIN KENDİSİNDEN GELİR. 4 sayılı Kararname m.604/1: "Kurumun görev alanıyla ilgili hizmetlerinden sorumlu birimleri daire başkanlıklarıdır. Daire başkanlıklarının isim, görev ve yetkileri YÖNETMELİKLE belirlenir. Başkanlığın DİĞER birimleri ve görevleri şunlardır..." Yani Kurumun asıl istatistik üretim daireleri (nüfus, ekonomik, sosyal istatistikler vb.) kararnamede ADIYLA SAYILMAZ. Bu dosyada m.604/1'de adıyla sayılan BEŞ birim ile m.604/3'te varlığından söz edilen Teftiş Başkanlığı vardır. Teftiş Başkanlığı bent listesinde DEĞİLDİR; ayrı fıkrada "Teftiş Başkanlığının çalışma usul ve esasları ... yönetmelikle belirlenir" denildiği için kurumda bulunduğu kaynaktan anlaşılmaktadır — bu ayrım burada belirtilmiştir. Eksik olduğu bilinen bir listeyi tam sanmak, evrağı var olan bir birimden mahrum bırakır; istatistik konulu yazının muhatabı burada bulunamazsa Başkanlığa hitap edilmelidir. TAŞRA teşkilatı (bölge müdürlükleri) YER ALMAZ.
 
 BİRİM: Strateji Geliştirme Daire Başkanlığı
 GÖREV: 4 s. CBK m.604/1-a uyarınca Başkanlığın birimlerindendir; 5018 sayılı Kamu Malî Yönetimi ve Kontrol Kanunu ile 5436 sayılı Kanunun malî hizmetler birimlerine verdiği görevleri yürütür.
@@ -21,3 +21,6 @@ GÖREV: Türkiye İstatistik Kurumu teşkilatında yer alan birimdir; adının i
 
 BİRİM: Basın ve Halkla İlişkiler Müşavirliği
 GÖREV: Türkiye İstatistik Kurumu teşkilatında yer alan birimdir; adının işaret ettiği alanda görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez; görev bu dosyada UYDURULMAMIŞTIR.
+
+BİRİM: Teftiş Başkanlığı
+GÖREV: 4 s. CBK m.604/3 uyarınca Kurumda bulunan birimdir; çalışma usul ve esasları ile başmüfettiş, müfettiş ve müfettiş yardımcılarının görev, yetki ve sorumlulukları yönetmelikle belirlenir. Bu birim m.604/1'deki bent listesinde SAYILMAZ; varlığı anılan fıkradan anlaşılmaktadır.

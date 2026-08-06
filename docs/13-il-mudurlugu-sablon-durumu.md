@@ -28,7 +28,7 @@ o gerekçenin değişip değişmediğine bakılır.
 | 3 | `il-tarim-orman-mudurlugu` | ENGELLİ | Taşra görev yönergesi `tarimorman.gov.tr/Belgeler/...` altında; sunucu bu yolda bağlantıyı zorla kapatıyor (WinError 10054). Ana site erişilebilir. İl sitelerinde (ör. `istanbul.tarimorman.gov.tr`) şube menüleri var ama bunlar **kuruma özel** kaynaktır, tür geneli şablon dayanağı değildir. |
 | 4 | `il-muftulugu` | **KAYNAK SUSUYOR** | Diyanet Görev ve Çalışma Yönergesi (`hukukmusavirligi.diyanet.gov.tr`) alındı ve okundu: m.115 taşra **şube müdürünün ortak görevlerini** tanımlıyor, ama il müftülüğünde **hangi şubelerin bulunduğunu saymıyor**. Yönergede atıf yapılan "Diyanet İşleri Başkanlığı Görev ve Çalışma Yönetmeliği m.30" denenmedi — sıradaki aday. |
 | 5 | `sosyal-guvenlik-il-mudurlugu` | KAYNAK YETERSİZ | 4 s. CBK m.427 il müdürlüğünün **varlığını** düzenliyor ("her ilde kurulan SGİM ile SGİM'lere bağlı SGM'ler"), **iç birimlerini** değil. SGK'nın kendi taşra yönergesi aranmalı. |
-| 6 | `vergi-dairesi-baskanligi` | ARANACAK | Aday: Vergi Dairesi Başkanlıklarının Kuruluş ve Görev Yönetmeliği (GİB). 4 s. CBK m.152 yalnız taşra yapısını sayıyor. |
+| 6 | `vergi-dairesi-baskanligi` | **ÖNCE SİCİL DÜZELTİLMELİ** | Kaynak avı ikinci bir soruna çarptı — aşağıya bak. Yönetmelik metnine erişilemedi: GİB portalı JS ile çiziliyor (102 karakter), `.htm` kopyalar 404, `resmigazete.gov.tr` sertifika zinciri kırık (mevzuat.gov.tr ile aynı durum). |
 | 7 | `il-nufus-vatandaslik-mudurlugu` | ARANACAK | Aday: NVİ taşra teşkilatı yönetmeliği. |
 | 8 | `il-emniyet-mudurlugu` | ARANACAK | Aday: 3201 s. Emniyet Teşkilat Kanunu + EGM taşra düzenlemesi. Merkez teşkilatı zaten doğrulandı (`emniyet-genel-mudurlugu`). |
 | 9 | `il-jandarma-komutanligi` | ARANACAK | Aday: 2803 s. Kanun. |
@@ -40,6 +40,38 @@ o gerekçenin değişip değişmediğine bakılır.
 | 15 | `il-afet-acil-durum-mudurlugu` | ARANACAK | AFAD merkez teşkilatı 4 s. CBK m.35'ten doğrulandı; taşra ayrı düzenlemede. |
 | 16 | `il-goc-idaresi-mudurlugu` | ARANACAK | Göç İdaresi merkez teşkilatı 4 s. CBK m.161'den doğrulandı; taşra ayrı. |
 | 17 | `il-calisma-is-kurumu-il-mudurlugu` | ARANACAK | İŞKUR merkez teşkilatı 4 s. CBK m.622'den doğrulandı; taşra ayrı. |
+
+## AÇIK BULGU — sicilde 52 il için var olmayan kurum kayıtlı
+
+Vergi dairesi başkanlığı türünün kaynağı aranırken çıktı ve **şablon yazılmadan önce
+çözülmesi gerekiyor.**
+
+`sicil.json` her il için bir `<il>-vergi-dairesi-baskanligi` kaydı tutuyor — toplam **81**.
+Oysa bu depoda **doğrulanmış** olan GİB 2023 Yılı Faaliyet Raporu şunu söylüyor:
+
+> "Başkanlığın taşra teşkilatı ise **29 ilde örgütlenmiş 30 vergi dairesi başkanlığı** ile
+> **52 il defterdarlığı** bünyesinde yer alan gelir birimlerinden oluşmaktadır."
+
+Yani 52 ilde vergi dairesi başkanlığı **YOKTUR**; gelir işleri o illerde defterdarlık
+bünyesindeki gelir birimlerince yürütülür. Sicildeki 52 kayıt gerçekte var olmayan kurumu
+gösteriyor.
+
+**Neden şablon yazmadan önce düzeltilmeli:** 81 illik kapsamla şablon kurulsaydı, "Ağrı Vergi
+Dairesi Başkanlığı"na yazılmış bir evrağa sistem kendinden emin bir birim önerecekti. Var
+olmayan bir kuruma güvenle yönlendirmek, hiç öneri vermemekten kötüdür — memur öneriyi
+doğrulanmış gördüğü için sorgulamaz. Kapsam sınırı daima kaynaktan gelir (INV-6); burada
+kaynak 29 il diyor.
+
+**Yapılacak sıra:**
+1. Hangi 29 ilde başkanlık bulunduğu GİB'in resmî listesinden tespit edilir.
+2. `sicil.json`daki fazla 52 kayıt kaldırılır ya da tür/ad düzeltilir (o illerde muhatap
+   `<il>-defterdarligi` gelir birimidir).
+3. Kapsam dosyası bu 29 ille sınırlı yazılır, ancak ondan sonra şablon kurulur.
+4. Aynı kontrol **defterdarlık** türü için de yapılır: 1/9/2024'te Millî Emlak ve Personel
+   birimleri defterdarlıktan ayrıldı; plan adımı E zaten bunu öngörüyor.
+
+Bu bulgu, "kapsam sayısı sicilden alınır" varsayımının test edilmesi gerektiğini gösteriyor:
+**sicil bir envanterdir, doğrulanmış kaynak değildir.**
 
 ## Şablon nasıl eklenir
 

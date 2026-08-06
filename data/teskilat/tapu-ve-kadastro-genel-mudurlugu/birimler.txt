@@ -1,21 +1,47 @@
 @KURUM: Tapu ve Kadastro Genel Müdürlüğü
-@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Tapu ve Kadastro Genel Müdürlüğü); 2644 sayılı Tapu Kanunu; 3402 sayılı Kadastro Kanunu
-@KAYNAK_KIMLIK: teskilat/tapu-ve-kadastro-genel-mudurlugu/gorev-tanimi
-@ERISIM: 2026-07-17
-@ALIAS: tkgm, tapu-mudurlugu, kadastro-mudurlugu
-@NOT: Tapu/kadastro müdürlüğü birimleri jenerik şablon olarak listelenmiştir; il/ilçe bazında resmî iletişim bilgisi TKGM il müdürlüğü sayfasından doğrulanmalıdır.
+@BELGE: Tapu ve Kadastro Genel Müdürlüğü 2023 Yılı İdare Faaliyet Raporu, merkez birimleri ve teşkilat şeması
+@KAYNAK_KIMLIK: https://www.tkgm.gov.tr/sites/default/files/2024-02/2023+Yili+Idare+Faaliyet+Raporu.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: tkgm, tapu-ve-kadastro-genel-mudurlugu, tapu-kadastro, tapu-mudurlugu, kadastro-mudurlugu
+@NOT: Birim listesi Tapu ve Kadastro Genel Müdürlüğünün 2023 Yılı İdare Faaliyet Raporundan (Şubat 2024) alınmıştır; rapor birimleri 'Sunulan Hizmetler' bölümünde a'dan m'ye TEK TEK sayar ve teşkilat şemasında gösterir. Ad yazımı kaynaktaki gibidir — kaynak aynı kurumda hem 'Dairesi Başkanlığı' hem 'Daire Başkanlığı' kullanır (ör. Personel DAİRESİ, Strateji Geliştirme DAİRE), bu tutarsızlık kaynağa aittir ve düzeltilmemiştir. Rapor birim ADINI ve hizmet alanını verir; ayrıntılı görev tanımı bu dosyada UYDURULMAMIŞTIR. TAŞRA teşkilatı bu dosyada DEĞİLDİR: kurumun 22 bölge müdürlüğü ile bunlara bağlı tapu ve kadastro müdürlükleri vardır — bir tapu devri, ipotek veya kadastro işlemine ilişkin evrak merkeze değil ilgili TAPU MÜDÜRLÜĞÜNE gider. Yurtdışı teşkilatı olarak Berlin Tapu ve Kadastro Temsilciliği bulunmaktadır. TAŞRA ALIAS'LARI: künyedeki @ALIAS satırı taşra birimi adlarını da taşır (ör. vergi dairesi başkanlığı / tapu müdürlüğü / sosyal güvenlik il müdürlüğü). Bunlar il adı kırpma çözümlemesinde kullanılır: "Ankara Vergi Dairesi Başkanlığı" gibi bir muhataba yazılan evrak bu ulusal kuruma çözümlensin diye. ALIAS SATIRINDAN TAŞRA ADLARINI SİLME — 2026-08-06'da bir kez silindi ve taşraya adreslenmiş evrak kuruma hiç bağlanamaz oldu; SGK'da test yakaladı, GİB ve TKGM'de sessizce kayboldu.
 
 BİRİM: Tapu Dairesi Başkanlığı
-GÖREV: Taşınmaz mülkiyet devri, ipotek tesisi/fekki, şerh ve beyanlar ile miras intikali işlemlerine ilişkin merkezi politika ve mevzuat uygulamasını yürütür.
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Kadastro Dairesi Başkanlığı
-GÖREV: Parsel tespiti, kadastro yenileme, aplikasyon ve sınırlandırma işlemlerine ilişkin teknik standartları belirler ve itiraz süreçlerini yönetir.
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Harita Dairesi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Arşiv Dairesi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Yabancı İşler Dairesi Başkanlığı
-GÖREV: Yabancı uyruklu gerçek/tüzel kişilerin taşınmaz edinimi, tapu devri ve mütekabiliyet kontrolü işlemlerini yürütür.
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Tapu Müdürlüğü
-GÖREV: İl/ilçe düzeyinde tapu devri, ipotek tesisi/fekki, şerh, terkin ve intikal işlemlerini doğrudan işleme alır. Vatandaş ve noter taleplerinin ilk muhatabıdır.
+BİRİM: Taşınmaz Değerleme Dairesi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Kadastro Müdürlüğü
-GÖREV: İl/ilçe düzeyinde parsel ölçüm, kadastro tespit tutanağı düzenleme ve aplikasyon (sınır gösterme) taleplerini karşılar. Kadastro itirazlarının ilk incelemesini yapar.
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Personel Dairesi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Destek Hizmetleri Dairesi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Bilgi Teknolojileri Dairesi Başkanlığı
+GÖREV: Tapu ve Kadastro Genel Müdürlüğü merkez teşkilatında yer alan birimdir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.

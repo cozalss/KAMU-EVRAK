@@ -36,15 +36,21 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
-def sayfa_metni(url: str) -> str:
-    """URL'i indir ve düz metne çevir. TLS doğrulaması AÇIK — kapatma seçeneği yoktur."""
+def _indir(url: str) -> tuple[str, str]:
+    """(gövde, içerik-türü). TLS doğrulaması AÇIK — kapatma seçeneği yoktur."""
     with httpx.Client(follow_redirects=True, timeout=45.0, headers=_BASLIK, verify=True) as c:
         yanit = c.get(url)
         yanit.raise_for_status()
         tur = yanit.headers.get("content-type", "").lower()
     if "pdf" in tur or url.lower().endswith(".pdf"):
-        return _pdf_metni(yanit.content)
-    return _ETIKET_RE.sub(" ", yanit.text)
+        return _pdf_metni(yanit.content), "pdf"
+    return yanit.text, tur
+
+
+def sayfa_metni(url: str) -> str:
+    """URL'i indir ve düz metne çevir."""
+    govde, tur = _indir(url)
+    return govde if tur == "pdf" else _ETIKET_RE.sub(" ", govde)
 
 
 def adaylar(metin: str) -> list[str]:
@@ -53,14 +59,48 @@ def adaylar(metin: str) -> list[str]:
     return list(dict.fromkeys(bulunan))
 
 
+# Menüsü JavaScript ile çizilen sitelerde birim adları GÖRÜNÜR metinde bulunmaz ama
+# bağlantı ADRESLERİNDE durur (ölçüldü 2026-08-06: sgk.gov.tr/birimler görünür metinden
+# 3 aday verirken href listesinden 15 birimin tamamı çıktı). Slug'lar büyük harfli ve
+# tireli olur: .../organizasyonYapisi/BILGI-TEKNOLOJILERI-GENEL-MUDURLUGU-2026-01-28-...
+_HREF_RE = re.compile(r'href="([^"]+)"', re.I)
+_SLUG_PARCA_RE = re.compile(r"[A-Z][A-Z0-9-]{8,}")
+_TARIH_KUYRUK_RE = re.compile(r"-\d{4}(?:-\d{2}){2,5}$")
+
+
+def baglanti_adaylari(govde: str) -> list[str]:
+    """href'lerdeki BÜYÜK-HARFLİ slug parçalarını okunur birim adına çevirir.
+
+    Çıktı yine ADAYdır: bağlantı slug'ı kısaltma veya sayfa adı olabilir. Türkçe harfler
+    slug'da kaybolduğu için (I/İ ayrımı dahil) adlar göz denetiminde düzeltilmelidir —
+    bu yüzden araç dosya yazmaz, yalnız gösterir.
+    """
+    bulunan: list[str] = []
+    for ham in _HREF_RE.findall(govde):
+        for parca in _SLUG_PARCA_RE.findall(ham):
+            temiz = _TARIH_KUYRUK_RE.sub("", parca).replace("-", " ").strip()
+            if len(temiz.split()) >= 2:
+                bulunan.append(temiz)
+    return list(dict.fromkeys(bulunan))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("url")
     ap.add_argument("--ham", type=int, default=0, help="ham metnin ilk N karakterini de bas")
+    ap.add_argument("--baglanti", action="store_true",
+                    help="görünür metin yerine bağlantı adreslerinden çıkar (JS menülü siteler)")
     args = ap.parse_args()
 
-    metin = sayfa_metni(args.url)
-    liste = adaylar(metin)
+    govde, tur = _indir(args.url)
+    if args.baglanti:
+        if tur == "pdf":
+            raise SystemExit("--baglanti yalnız HTML sayfalar içindir.")
+        liste = baglanti_adaylari(govde)
+        metin = govde
+    else:
+        metin = govde if tur == "pdf" else _ETIKET_RE.sub(" ", govde)
+        liste = adaylar(metin)
     print(f"[OK] {len(metin)} karakter · {len(liste)} aday birim · {args.url}")
     for ad in liste:
         print(f"  · {ad}")

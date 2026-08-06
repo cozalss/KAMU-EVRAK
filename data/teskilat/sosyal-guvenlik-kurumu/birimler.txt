@@ -1,27 +1,53 @@
 @KURUM: Sosyal Güvenlik Kurumu Başkanlığı
-@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Sosyal Güvenlik Kurumu); 5502 sayılı Kanun
-@KAYNAK_KIMLIK: teskilat/sosyal-guvenlik-kurumu/gorev-tanimi
-@ERISIM: 2026-07-17
-@ALIAS: sgk, sosyal-guvenlik-il-mudurlugu, sosyal-guvenlik-merkezi
-@NOT: İl müdürlüğü ve merkez birimleri jenerik şablon olarak listelenmiştir; il/ilçe bazında resmî iletişim bilgisi için SGK il müdürlüğü sayfası doğrulanmalıdır.
+@BELGE: Sosyal Güvenlik Kurumu merkez hizmet birimleri (dayanak: 4 sayılı Cumhurbaşkanlığı Kararnamesi)
+@KAYNAK_KIMLIK: https://www.sgk.gov.tr/birimler
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: sgk, sosyal-guvenlik-kurumu, sosyal-guvenlik-il-mudurlugu, sosyal-guvenlik-merkezi
+@NOT: Birim listesi SGK'nın kendi sitesindeki organizasyon yapısı sayfalarından alınmıştır (her birimin ayrı bir /birimler/organizasyonYapisi sayfası vardır; bağlantılar 2026 tarihlidir). Kuruluş dayanağı 4 sayılı Cumhurbaşkanlığı Kararnamesidir. GÜNCELLİK UYARISI VE NEDEN BU KAYNAK: Kurumun 2022 yılı faaliyet raporu (Şubat 2023) bu birimi "Hizmet Sunumu Genel Müdürlüğü" diye sayıyor; kurumun GÜNCEL sitesi ise "Bilgi Teknolojileri Genel Müdürlüğü" diyor. Birim yeniden adlandırılmıştır. Faaliyet raporundaki eski ad yazılsaydı bilişim konulu evrak var olmayan bir birime yönlendirilirdi; bu yüzden rapor DEĞİL güncel site esas alınmıştır. Sayfalar birim ADINI verir, GÖREV tanımını vermez; görev bu dosyada UYDURULMAMIŞTIR. TAŞRA teşkilatı (her ilde Sosyal Güvenlik İl Müdürlükleri ve bunlara bağlı Sosyal Güvenlik Merkezleri, 4 s. CBK m.427) bu dosyada DEĞİLDİR — bireysel emeklilik, prim ve sağlık işlemlerine ilişkin evrak merkeze değil ilgili il müdürlüğüne/merkeze gider. TAŞRA ALIAS'LARI: künyedeki @ALIAS satırı taşra birimi adlarını da taşır (ör. vergi dairesi başkanlığı / tapu müdürlüğü / sosyal güvenlik il müdürlüğü). Bunlar il adı kırpma çözümlemesinde kullanılır: "Ankara Vergi Dairesi Başkanlığı" gibi bir muhataba yazılan evrak bu ulusal kuruma çözümlensin diye. ALIAS SATIRINDAN TAŞRA ADLARINI SİLME — 2026-08-06'da bir kez silindi ve taşraya adreslenmiş evrak kuruma hiç bağlanamaz oldu; SGK'da test yakaladı, GİB ve TKGM'de sessizce kayboldu.
+
+BİRİM: Başkanlık
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Emeklilik Hizmetleri Genel Müdürlüğü
-GÖREV: Yaşlılık, malullük ve ölüm aylığı tahsis başvurularını, emeklilik hizmet birleştirme ve borçlanma taleplerini sonuçlandırır. Emekli aylığı bağlanması, aylık yeniden hesaplama ve intibak işlemlerinde yetkilidir.
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Sigorta Primleri Genel Müdürlüğü
-GÖREV: İşyeri ve sigortalı tescili, prim borcu sorgulama, prim borcu yapılandırma/taksitlendirme ile prim teşviki başvurularını yürütür. 4A/4B/4C kapsamındaki hizmet dökümü tescil işlemlerinin dayanağını oluşturur.
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Genel Sağlık Sigortası Genel Müdürlüğü
-GÖREV: GSS tescil işlemleri, gelir testi başvuruları, GSS prim borcu hesaplama ve sağlık provizyon süreçlerini yönetir. Yeşil kart devri sonrası genel sağlık sigortalılık statüsü belirleme başvurularını karşılar.
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Hizmet Sunumu Genel Müdürlüğü
-GÖREV: e-Devlet üzerinden SGK hizmetleri, hizmet dökümü belgesi, borcu yoktur yazısı ve sigortalılık teyidi taleplerini karşılar. Vatandaş başvurularının dijital kanaldan işleme alınmasını koordine eder.
+BİRİM: Bilgi Teknolojileri Genel Müdürlüğü
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Rehberlik ve Teftiş Başkanlığı
-GÖREV: Sigortasız işçi çalıştırma şikâyetleri, işyeri denetim talepleri ve kayıt dışı istihdam ihbarlarını inceler. İşveren uyuşmazlıklarında denetim raporu düzenler.
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Sosyal Güvenlik İl Müdürlüğü
-GÖREV: İl düzeyinde emeklilik başvurusu ön incelemesi, hizmet dökümü, 4A/4B/4C işlemleri ve prim borcu başvurularını kabul eder. Vatandaş dilekçelerinin ilgili genel müdürlüğe yönlendirilmesinden sorumludur.
+BİRİM: Aktüerya ve Fon Yönetimi Daire Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Sosyal Güvenlik Merkezi
-GÖREV: İlçe düzeyinde evrak teslim alma, randevu işlemleri ve basit sorgulama taleplerini karşılayan ilk başvuru noktasıdır. Karmaşık dosyaları il müdürlüğüne yönlendirir.
+BİRİM: Strateji Geliştirme Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İnşaat ve Emlak Daire Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Eğitim, Araştırma ve Geliştirme Merkezi Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Başkanlık İç Denetim Birim Başkanlığı
+GÖREV: Sosyal Güvenlik Kurumu merkez teşkilatında yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.

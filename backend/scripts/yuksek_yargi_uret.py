@@ -28,6 +28,9 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from belediye_teskilat_yaz import kardes_uydurmalari_sil  # ortak koruma
+
 _TESKILAT_DIR = Path(__file__).resolve().parents[2] / "data" / "teskilat"
 ERISIM = "2026-08-06"
 
@@ -327,9 +330,10 @@ def main() -> int:
         sayi = metin.count("BİRİM: ")
         if args.yaz:
             yol.parent.mkdir(parents=True, exist_ok=True)
-            for eski in yol.parent.glob("*.txt"):
-                if eski.name != "birimler.txt":
-                    eski.unlink()
+            # Manifestte kayıtlı kardeş dosyaya DOKUNULMAZ. Gerekçe ve olay kaydı
+            # `belediye_teskilat_yaz.kardes_uydurmalari_sil` docstring'inde.
+            for ad in kardes_uydurmalari_sil(yol):
+                print(f"   silindi (manifestte yok): {ad}")
             yol.write_text(metin, encoding="utf-8", newline="\n")
         print(f"{'YAZILDI ' if args.yaz else 'HAZIR   '} {slug}: {sayi} birim")
     return 0

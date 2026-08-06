@@ -1091,6 +1091,36 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "Diyanet Isleri Baskanligi resmi teskilat semasi sayfasindan (diyanet.gov.tr, TLS dogrulamali) 15 merkez birimi cikarildi; sayfa/telif artiklari goz denetiminde atildi. Sayfa GOREV vermedigi icin gorev uydurulmadi. Tasra (il/ilce muftulukleri, egitim merkezleri) kapsam disi. Onceki 5 kaynaksiz birim kaldirildi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "sosyal-guvenlik-kurumu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.sgk.gov.tr/birimler",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "390304ee01627b514dc5e8835432a23a8d6099cdfce2f910913fbb119ab775f7",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "SGK resmi sitesindeki birim organizasyon sayfalarindan (sgk.gov.tr/birimler, TLS dogrulamali, baglantilar 2026 tarihli) 15 merkez birimi cikarildi. 2022 faaliyet raporu 'Hizmet Sunumu Genel Mudurlugu' derken guncel site 'Bilgi Teknolojileri Genel Mudurlugu' diyor; birim yeniden adlandirilmis, bu yuzden rapor DEGIL guncel site esas alindi. Sayfa GOREV vermedigi icin gorev uydurulmadi. Tasra (SGIM/SGM) kapsam disi. TASRA ALIAS DUZELTMESI: yeniden yazarken @ALIAS satirindaki tasra birimi adlari (vergi dairesi baskanligi / tapu mudurlugu / sosyal guvenlik il mudurlugu) kaybolmustu; eski aliaslar birlestirilerek geri kondu ve kunyeye silinmeme uyarisi yazildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "gelir-idaresi-baskanligi/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://cdn.gib.gov.tr/api/gibportal-file/file/getFileResources?objectKey=arsiv/fileadmin/faaliyetraporlari/2023/2023_faaliyet_raporu.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "0658d764899647c26e27af7469c75562cf0b3236cf4fd535ef74266ba90bd728",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "GIB 2023 Yili Faaliyet Raporu PDF'inden (gib.gov.tr CDN, TLS dogrulamali) pypdfium2 ile cikarildi; rapor listeyi 4 s. CBK m.140'a dayandirarak verir. 13. satir (Ic Denetim Birimi Baskanligi) m.140'in 12 hizmet biriminden dipnotla ayrilmis, fiilen bulundugu icin alinip ayrim kunyede belirtilmis. Coğul numarali daireler (I,II,III,IV) tekil ad olarak yazildi, m.140/2 not edildi. Tasra teskilati kapsam disi. TASRA ALIAS DUZELTMESI: yeniden yazarken @ALIAS satirindaki tasra birimi adlari (vergi dairesi baskanligi / tapu mudurlugu / sosyal guvenlik il mudurlugu) kaybolmustu; eski aliaslar birlestirilerek geri kondu ve kunyeye silinmeme uyarisi yazildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "tapu-ve-kadastro-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.tkgm.gov.tr/sites/default/files/2024-02/2023+Yili+Idare+Faaliyet+Raporu.pdf",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "ed8cd381f0f05ece094c2e100494094930fa2c23b728fbd17dd8a219c7ed4789",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "TKGM 2023 Yili Idare Faaliyet Raporu PDF'inden (tkgm.gov.tr, TLS dogrulamali) pypdfium2 ile cikarildi; rapor merkez birimlerini 'Sunulan Hizmetler' bolumunde a-m diye tek tek sayar ve teskilat semasinda gosterir. Kaynaktaki 'Dairesi/Daire Baskanligi' tutarsizligi korundu. Tasra (22 bolge mudurlugu + tapu/kadastro mudurlukleri) ve yurtdisi (Berlin) kapsam disi, kunyede belirtildi. TASRA ALIAS DUZELTMESI: yeniden yazarken @ALIAS satirindaki tasra birimi adlari (vergi dairesi baskanligi / tapu mudurlugu / sosyal guvenlik il mudurlugu) kaybolmustu; eski aliaslar birlestirilerek geri kondu ve kunyeye silinmeme uyarisi yazildi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

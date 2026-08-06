@@ -1,21 +1,47 @@
 @KURUM: Gelir İdaresi Başkanlığı
-@BELGE: 4 sayılı Cumhurbaşkanlığı Kararnamesi (Gelir İdaresi Başkanlığı); 5345 sayılı Kanun
-@KAYNAK_KIMLIK: teskilat/gelir-idaresi-baskanligi/gorev-tanimi
-@ERISIM: 2026-07-17
-@ALIAS: gib, vergi-dairesi-baskanligi, vergi-dairesi-mudurlugu
-@NOT: Vergi dairesi başkanlığı/müdürlüğü birimi jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi GİB il teşkilatı sayfasından doğrulanmalıdır.
+@BELGE: Gelir İdaresi Başkanlığı 2023 Yılı Faaliyet Raporu, Merkez Teşkilatı (dayanak: 4 sayılı Cumhurbaşkanlığı Kararnamesi m.140)
+@KAYNAK_KIMLIK: https://cdn.gib.gov.tr/api/gibportal-file/file/getFileResources?objectKey=arsiv/fileadmin/faaliyetraporlari/2023/2023_faaliyet_raporu.pdf
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: gib, gelir-idaresi-baskanligi, gelir-idaresi, vergi-dairesi-baskanligi, vergi-dairesi-mudurlugu
+@NOT: Birim listesi Gelir İdaresi Başkanlığının 2023 Yılı Faaliyet Raporundan (Şubat 2024, Strateji Geliştirme Daire Başkanlığı Yayın No: 515) alınmıştır; rapor listeyi "4 sayılı Cumhurbaşkanlığı Kararnamesinin 140 ıncı maddesi uyarınca ... 12 hizmet biriminden oluşmaktadır" diyerek verir. Raporun saydığı ON ÜÇ satırdan sonuncusu (İç Denetim Birimi Başkanlığı) dipnotludur ve m.140'ın on iki hizmet biriminden ayrı gösterilmiştir; kurumda fiilen bulunduğu için listeye ALINMIŞ, bu ayrım burada belirtilmiştir. Kaynakta bazı birimler çoğul numaralıdır — Gelir Yönetimi ve Uygulama ve Veri Yönetimi "(I, II, III, IV)", Denetim ve Uyum Yönetimi "(I, II)" — yani aynı adla birden çok daire başkanlığı vardır; numara yazışma adresini değiştirmediği için birim adı tekil yazılmış, m.140/2 uyarınca bir hizmet biriminin görevlerinin birden fazla daire başkanlığınca yürütülebileceği not edilmiştir. Rapor birim ADINI verir, ayrıntılı GÖREV tanımını vermez; görev UYDURULMAMIŞTIR. TAŞRA teşkilatı (29 ilde 30 vergi dairesi başkanlığı, 475 vergi dairesi, 52 defterdarlık gelir birimi — 4 s. CBK m.152) bu dosyada DEĞİLDİR; bir vergi işlemine ilişkin evrak merkeze değil ilgili vergi dairesine gider. TAŞRA ALIAS'LARI: künyedeki @ALIAS satırı taşra birimi adlarını da taşır (ör. vergi dairesi başkanlığı / tapu müdürlüğü / sosyal güvenlik il müdürlüğü). Bunlar il adı kırpma çözümlemesinde kullanılır: "Ankara Vergi Dairesi Başkanlığı" gibi bir muhataba yazılan evrak bu ulusal kuruma çözümlensin diye. ALIAS SATIRINDAN TAŞRA ADLARINI SİLME — 2026-08-06'da bir kez silindi ve taşraya adreslenmiş evrak kuruma hiç bağlanamaz oldu; SGK'da test yakaladı, GİB ve TKGM'de sessizce kayboldu.
+
+BİRİM: Gelir Yönetimi Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Mükellef Hizmetleri Daire Başkanlığı
-GÖREV: Vergi mükellefiyeti tesis, mükellef kaydı güncelleme ve beyanname verme süreçlerine ilişkin başvuruları karşılar. Mükellef bilgilendirme ve vergi kimlik numarası taleplerini yürütür.
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Uygulama ve Veri Yönetimi Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Tahsilat ve İhtilaflı İşler Daire Başkanlığı
-GÖREV: Vergi borcu sorgulama, vergi borcu yapılandırma/taksitlendirme başvuruları ile vergi ihtilaflarına ilişkin uzlaşma taleplerini sonuçlandırır. İtiraz dilekçelerinin idari süreçte değerlendirilmesinden sorumludur.
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Denetim ve Uyum Yönetimi Daire Başkanlığı
-GÖREV: Risk analizi, mükellef uyum değerlendirmesi ve yaygın-yoğun vergi denetimlerinin koordinasyonunu yürütür. Kayıt dışı ekonomi ihbarlarını inceler. [DOĞRULA: kapsamlı vergi incelemesi Hazine ve Maliye Bakanlığı Vergi Denetim Kurulu Başkanlığının görev alanındadır]
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Vergi Dairesi Başkanlığı / Vergi Dairesi Müdürlüğü
-GÖREV: İl/ilçe düzeyinde tahakkuk, tahsilat, beyanname kabulü ve vergi borcu yapılandırma başvurularını doğrudan işleme alır. Mükellef dilekçelerinin ilk muhatabıdır.
+BİRİM: Gelir Bütçesi Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Motorlu Taşıtlar Vergisi Servisi
-GÖREV: MTV tahakkuk, ödeme ve borç sorgulama işlemlerini vergi dairesi bünyesinde yürütür; araç sahiplerinin vergi itirazlarını değerlendirir. [DOĞRULA: MTV işlemleri vergi dairesi müdürlükleri bünyesindeki servislerce, büyük illerde ihtisas motorlu taşıtlar vergi dairelerince yürütülür]
+BİRİM: Avrupa Birliği ve Dış İlişkiler Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Personel Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Basın ve Halkla İlişkiler Müşavirliği
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İç Denetim Birimi Başkanlığı
+GÖREV: Gelir İdaresi Başkanlığı merkez teşkilatında 4 sayılı CBK m.140 uyarınca yer alan hizmet birimidir; adının işaret ettiği alanda merkezî görevleri yürütür. m.140/2 uyarınca bir hizmet birimine verilen görevler gerektiğinde birden fazla daire başkanlığınca yürütülebilir. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.

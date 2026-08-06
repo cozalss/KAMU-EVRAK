@@ -29,6 +29,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # backend/
+from core.kaynak_guveni import manifest_yukle
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -84,6 +87,32 @@ def gorev(birim_ad: str, kurum: str) -> str:
     )
 
 
+def kardes_uydurmalari_sil(hedef: Path) -> list[str]:
+    """Aynı klasördeki DİĞER .txt dosyalarını sil — MANİFESTTE OLANLARA DOKUNMA.
+
+    Neden bu koruma var (2026-08-06'da gerçekten oldu): bu araç önce kardeş dosyaların
+    tamamını siliyordu, çünkü karantinadaki kurumlarda tek dosya bulunduğu varsayılmıştı.
+    Oysa bazı kurumlarda ayrıca DOĞRULANMIŞ bir dosya vardı — TKGM'de 2025/5 sayılı
+    genelgeden yazılmış `strateji-gelistirme.txt`, SGK'da birim görevlerini tek tek veren
+    `emeklilik-hizmetleri.txt`. İkisi de silindi; veri kalite kapısı manifestte kayıtlı ama
+    diskte olmayan dosyayı görüp HATA verdiği için fark edildi ve geri alındı. Silinenler
+    yerine yazdıklarımdan DAHA zengindi (gerçek görev tanımı + alt birimler).
+
+    Manifest tek yetkili: bir dosya orada kayıtlıysa insan incelemesinden geçmiştir ve bu
+    araç onu kaldıramaz. Silinen her dosyanın adı çağırana döner — sessiz silme yok.
+    """
+    manifest = manifest_yukle(_TESKILAT_DIR / "kaynak_manifest.json")
+    silinen: list[str] = []
+    for eski in hedef.parent.glob("*.txt"):
+        if eski.name == hedef.name:
+            continue
+        if eski.relative_to(_TESKILAT_DIR).as_posix() in manifest:
+            continue  # doğrulanmış — dokunma
+        eski.unlink()
+        silinen.append(eski.name)
+    return silinen
+
+
 def dosya_metni(slug: str, kurum: str, url: str, birimler: list[str], alias: str) -> str:
     notu = (
         f"Birim listesi {kurum} resmî sitesindeki müdürlükler sayfasından alınmıştır; sayfadaki "
@@ -133,10 +162,10 @@ def main() -> int:
     metin = dosya_metni(args.slug, args.kurum, args.url, args.birim, alias or args.slug)
     if args.yaz:
         yol.parent.mkdir(parents=True, exist_ok=True)
-        for eski in yol.parent.glob("*.txt"):
-            if eski.name != "birimler.txt":
-                eski.unlink()
+        silinen = kardes_uydurmalari_sil(yol)
         yol.write_text(metin, encoding="utf-8", newline="\n")
+        for ad in silinen:
+            print(f"   silindi (manifestte yok): {ad}")
     print(f"{'YAZILDI' if args.yaz else 'HAZIR  '} {args.slug}: {len(args.birim)} birim")
     return 0
 

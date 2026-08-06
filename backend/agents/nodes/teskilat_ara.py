@@ -361,6 +361,16 @@ def teskilat_birim_ara(
         birlesik = ozel_adaylar + mevzuat
         birlesik.sort(key=lambda a: a.get("kaynak_guven") != RESMI_DOGRULANMIS)
         return birlesik[:top_k]
+    # KURUMLAR ARASI SIZINTI KAPISI (2026-08-06): kurumun KENDİ doğrulanmış teşkilatı korpusta
+    # varsa ama konu hiçbir birimiyle eşleşmiyorsa, BAŞKA bir kurum tipinin jenerik havuzuna
+    # düşmek yanlıştır. Ölçüldü: Emniyet Genel Müdürlüğüne "polis memuru atama ve özlük işlemi"
+    # sorulduğunda EGM'nin 29 doğrulanmış birimi 0 puan aldı ve cevap bir BELEDİYENİN "İnsan
+    # Kaynakları ve Eğitim Müdürlüğü"ne düştü. Jenerik havuz, korpusta karşılığı OLMAYAN kurumlar
+    # için bir köprüdür; teşkilatı bilinen kurumda "eşleşme yok" demek, başka kurumun birimini
+    # önermekten dürüsttür. Memur boş liste görünce kendi bildiği birime havale eder; yanlış
+    # kurum adı gördüğünde ise yanlış yere yönlendirilebilir.
+    if kanonik and _resmi_slug_chunks(kanonik):
+        return []
     # 2) Kurum tipine göre jenerik şablon(lar) — yalnız aday.
     # Çağıranın tipi bilinmiyorsa (kurum_kimlik kalıbı tutmayan SGK/TÜİK/il müdürlükleri...)
     # kurum SİCİLİNDEN tür sorulur. Sicil yalnız TÜR verir: hedef üretmez, otomatik havale

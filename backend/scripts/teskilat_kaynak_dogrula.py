@@ -42,6 +42,13 @@ _SON_EKLER = (
     # Bazı belediye siteleri unvanı kısaltarak yazıyor (ölçüldü: Antalya "Dai.Bşk.",
     # Denizli/Diyarbakır "Dairesi Bşk."). Kısaltma birimin varlığını değiştirmez.
     "Dai.Bşk.", "Dai. Bşk.", "Dairesi Bşk.", "Daire Bşk.", "D.Bşk.", "Bşk.",
+    # DÜZ "Başkanlığı" — daire/kurul öneki OLMADAN. Bazı kurumlarda daire başkanlığının
+    # ÜSTÜNDE ayrı bir başkanlık katmanı vardır (ölçüldü 2026-08-06: Emniyet Genel
+    # Müdürlüğünde Özel Harekat/İstihbarat/Trafik/KOM/Personel/Narkotik/Cumhurbaşkanlığı
+    # Koruma Başkanlıkları — yedi birim). Bu ek listede olmadığı için o birimler sayfada
+    # AÇIKÇA YAZILI olmasına rağmen bulunamıyordu. En SONA konur: alternasyon daha uzun
+    # ekleri önce denesin, yoksa "Asayiş Daire Başkanlığı" gibi adlar kırpılabilir.
+    "Başkanlığı",
 )
 # Kısaltmalar normalleştirmede tam yazıma açılır; dosyada tam yazım tutulur.
 _KISALTMA = (

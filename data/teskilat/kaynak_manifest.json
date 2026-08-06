@@ -1071,6 +1071,16 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "KVKK resmi teskilat semasi sayfasindan (kvkk.gov.tr, TLS dogrulamali) 7 daire baskanligi cikarildi; sekizinci aday bir BELGE basligi oldugu icin goz denetiminde atildi. 6698 daire baskanliklarini saymadigi icin gorev metinleri birim adinin isaret ettigi alanla sinirli tutuldu. Onceki 6 kaynaksiz birim kaldirildi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "emniyet-genel-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://www.egm.gov.tr/daire-baskanliklari",
+   "kaynak_turu": "resmi_teskilat",
+   "icerik_sha256": "2c44a6ba56cdece82aefaea6317c9fdc9eb3369fe9054e04a4637dfa3d74ffa0",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "EGM resmi sitesinden (egm.gov.tr, TLS dogrulamali) 10 baskanlik/musavirlik + 21 daire baskanligi cikarildi. Ilk cikarimda baskanlik katmani ATLANMISTI (cikarici unvan listesinde duz 'Baskanligi' eki yoktu); eksiklik ham metin kontrolunde yakalandi, hem liste hem paylasilan unvan listesi duzeltildi. Menu/cerez artiklari atildi. Sayfa GOREV vermedigi icin gorev uydurulmadi. Tasra teskilati kapsam disi",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

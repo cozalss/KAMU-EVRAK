@@ -1,18 +1,95 @@
 @KURUM: Emniyet Genel Müdürlüğü
-@BELGE: 3201 sayılı Emniyet Teşkilatı Kanunu
-@KAYNAK_KIMLIK: teskilat/emniyet-genel-mudurlugu/gorev-tanimi
-@ERISIM: 2026-07-17
-@ALIAS: egm, il-emniyet-mudurlugu
-@NOT: İl emniyet müdürlüğü şube birimleri jenerik şablon olarak listelenmiştir; il bazında resmî iletişim bilgisi EGM il teşkilatı sayfasından doğrulanmalıdır. DİKKAT: Pasaport ve sürücü belgesi düzenleme işlemleri 2 Nisan 2018'den itibaren Nüfus ve Vatandaşlık İşleri Genel Müdürlüğüne (il/ilçe nüfus müdürlükleri) devredilmiştir; bu konudaki evrak EGM'ye değil ilgili nüfus müdürlüğüne yönlendirilmelidir.
+@BELGE: Emniyet Genel Müdürlüğü merkez teşkilatı birim listesi (dayanak: 3201 sayılı Emniyet Teşkilat Kanunu)
+@KAYNAK_KIMLIK: https://www.egm.gov.tr/daire-baskanliklari
+@ERISIM: 2026-08-06
+@KAYNAK_TURU: resmi_teskilat
+@DOGRULAMA: resmi
+@ALIAS: egm, emniyet-genel-mudurlugu, emniyet
+@NOT: Birim listesi Emniyet Genel Müdürlüğünün resmî sitesindeki 'Birimlerimiz' menüsü ile 'Daire Başkanlıkları' sayfasından alınmıştır. Teşkilat İKİ KATMANLIDIR: daire başkanlıklarının ÜSTÜNDE ayrı bir Başkanlık katmanı vardır (Özel Harekat, İstihbarat, Trafik, KOM, Personel, Narkotik Suçlarla Mücadele, Cumhurbaşkanlığı Koruma). İlk çıkarımda bu yedi birim ATLANMIŞTI çünkü çıkarıcının unvan listesinde düz 'Başkanlığı' eki yoktu; eksiklik fark edilip hem liste hem araç düzeltildi. Kaynak sayfa birim ADINI verir, GÖREV tanımını vermez; görev bu dosyada UYDURULMAMIŞ, yalnız birim adının işaret ettiği alan belirtilmiştir. Kuruluş dayanağı 3201 sayılı Emniyet Teşkilat Kanunudur; daire başkanlıklarının sayısı ve adları kanunla değil idari düzenlemeyle belirlendiği için liste erişim tarihindeki hâli yansıtır. TAŞRA teşkilatı (81 İl Emniyet Müdürlüğü) ile eğitim birimleri bu dosyada DEĞİLDİR; merkez teşkilatı listelenmiştir.
+
+BİRİM: Teftiş Kurulu Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Özel Güvenlik Denetleme Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Hukuk Müşavirliği
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Özel Harekat Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İstihbarat Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
 BİRİM: Trafik Başkanlığı
-GÖREV: Trafik denetimi, trafik idari para cezaları ve araç tescil süreçlerinin emniyet birimlerince yürütülen kısmına ilişkin merkezi düzenleme yapar. (Sürücü belgesi düzenleme işlemleri nüfus müdürlüklerine devredilmiştir.)
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: Asayiş Dairesi Başkanlığı
-GÖREV: Genel asayiş olaylarına ilişkin şikâyet ve ihbarların değerlendirilmesi, kayıp/buluntu eşya bildirimleri ve genel güvenlik uygulamalarını yürütür.
+BİRİM: KOM Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: İl Emniyet Müdürlüğü Silah ve Patlayıcı Maddeler Şube Müdürlüğü
-GÖREV: Silah taşıma/bulundurma ruhsatı başvuruları, ruhsat yenileme ve iptal işlemlerini il emniyet müdürlüğü bünyesinde yürütür.
+BİRİM: Personel Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
 
-BİRİM: İl Emniyet Müdürlüğü Trafik Tescil ve Denetleme Şube Müdürlüğü
-GÖREV: İl düzeyinde emniyette kalan araç tescil işlemleri (çalıntı, plaka ve hurda kayıtları gibi) ile trafik cezalarına ilişkin idari başvuruların ilk kabulünü yapar. (Araç satış/devir işlemleri noterlerce, sürücü belgesi işlemleri nüfus müdürlüklerince yürütülür.)
+BİRİM: Cumhurbaşkanlığı Koruma Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Narkotik Suçlarla Mücadele Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatında daire başkanlıklarının üstünde yer alan başkanlık düzeyindeki birimdir; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Asayiş Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Belge Yönetimi ve Koordinasyon Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Bilgi Teknolojileri ve Haberleşme Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Destek Hizmetleri Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Dış İlişkiler Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Göçmen Kaçakçılığıyla Mücadele ve Hudut Kapıları Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Güvenlik Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Havacılık Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İnşaat Emlak Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: İnterpol-Europol Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Koruma Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Kriminal Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Medya-Halkla İlişkiler ve Protokol Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Siber Suçlarla Mücadele Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Sosyal Hizmetler ve Sağlık Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Strateji Geliştirme Daire Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Tanık Koruma Dairesi Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: TBMM Koruma Dairesi Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.
+
+BİRİM: Terörle Mücadele Dairesi Başkanlığı
+GÖREV: Emniyet Genel Müdürlüğü merkez teşkilatındaki daire başkanlığıdır; adının işaret ettiği görev alanında merkezî hizmetleri yürütür. Kaynak birim ADINI verir, ayrıntılı görev tanımını içermez.

@@ -1331,6 +1331,16 @@
    "dogrulama_tarihi": "2026-08-06",
    "dogrulama_yontemi": "4 sayili CBK'nin CSB resmi kopyasindan (webdosya.csb.gov.tr, TLS dogrulamali, 21/2/2025'e kadar guncel) pypdfium2 ile cikarildi; birim adlari m.772 bentlerinden, gorev metinleri her birimin kendi maddesinden BIREBIR. Unvan listesine COGUL bicimler (Kurullari/Daireleri/Baskanliklari/Mudurlukleri) eklendikten sonra yeniden uretildi — eksik bicimler yuzunden Adli Tip'ta yedi birimin dordu dusuyor ve bir ad bozuk cikiyordu. Gorev maddesi kaynakta olmayan birimde bu acikca yazildi, gorev UYDURULMADI. Tasra kapsam disi",
    "kaynak_erisim_tarihi": "2026-08-06"
+  },
+  "_mevzuat-il-milli-egitim-mudurlugu/birimler.txt": {
+   "durum": "resmi_dogrulanmis",
+   "kaynak_url": "https://ttkb.meb.gov.tr/meb_iys_dosyalar/2026_02/698d9de1f18b7925482667_yonetmelik.pdf",
+   "kaynak_turu": "resmi_mevzuat_teskilat",
+   "icerik_sha256": "11e94f312642bfe1a7737c33333320d3b4c8ae5de8523fdbb8d01aba7c899803",
+   "dogrulayan": "claude-opus-5/2026-08-06",
+   "dogrulama_tarihi": "2026-08-06",
+   "dogrulama_yontemi": "MEB Milli Egitim Mudurlukleri Yonetmeligi (RG 26/4/2025) resmi PDF'i (ttkb.meb.gov.tr, TLS dogrulamali) pypdfium2 ile cikarildi; IL mudurlugune iliskin 23 birim ve her birinin GOREV metni kendi maddesinden LAFZEN alindi. Madde sinirlari deterministik olarak MADDE-konumlarindan hesaplandi (ileri-bakisli desen gorev metnindeki madde atiflarina takilip metni cumle ortasindan kesiyordu). Uzun gorev listeleri cumle sinirinda kisaltildi ve kisaltildigi metinde belirtildi. 2025 yonetmeligi birim adlarini DEGISTIRDIGI icin eski surum kullanilmadi. ILCE mudurlukleri kapsam disi (m.8/2 buro esasi)",
+   "kaynak_erisim_tarihi": "2026-08-06"
   }
  }
 }

@@ -149,9 +149,11 @@ export function mevzuatDipnot(r = {}) {
   return parca.join(" ");
 }
 
-/** Birim yönlendirme dipnotu — gerçek routing gerekçesi varsa onu gösterir. */
+/** Birim yönlendirme dipnotu — gerçek routing gerekçesi varsa onu gösterir.
+ *  Çıplak URL burada da düşürülür: aynı adres kartın canlı kaynak panelinde zaten
+ *  tıklanabilir bir link olarak duruyor (havaleYorum ile aynı sadeleştirme). */
 export function birimDipnot(r = {}) {
-  const gerekce = String(r.birim_reasoning || "").trim();
+  const gerekce = gerekceyiSadelestir(r.birim_reasoning);
   if (gerekce) return `Gerekçe: ${gerekce} · Nihai havale memur onayındadır.`;
   return "Sıralama içerik sinyali + birim görev alanı eşleşmesiyle yapılır; nihai havale memur onayındadır.";
 }
@@ -216,11 +218,13 @@ export function guvenliKaynakAdresi(ham) {
 }
 
 /* Hangi katmanın bulduğu denetlenebilirlik içindir — memur "sistem bunu nereden aldı?"
-   sorusunun cevabını görmeli. Bilinmeyen yol adı sessizce düşmez, aynen basılır. */
+   sorusunun cevabını görmeli. Bilinmeyen yol adı sessizce düşmez, aynen basılır.
+   Etiketler CÜMLE İÇİNE değil, KENDİ BAŞINA duracak biçimde yazılır: cümleye gömüldüğünde
+   "sitesini daha önce bulunmuş, önbellekten bulup…" gibi çift fiil çıkıyordu. */
 const CANLI_YOL = {
-  onbellek: "daha önce bulunmuş, önbellekten",
-  kalip: "kurumun adres kalıbından",
-  web_arama: "web aramasıyla",
+  onbellek: "önbellek (daha önce bulundu)",
+  kalip: "adres kalıbı",
+  web_arama: "web araması",
 };
 
 /** Canlı kaynak künyesi → arayüz görünümü. Yoksa/adres güvensizse null.

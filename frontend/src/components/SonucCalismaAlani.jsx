@@ -1019,11 +1019,14 @@ function RoutingCard({ r, birimAday }) {
             <strong style={{ ...TYPE.meta, fontWeight: 700, color: DERIN.sari }}>
               Canlı kaynak — doğrulanmadı
             </strong>
-            {canli.birimSayisi > 0 && (
-              <span style={{ marginLeft: "auto", ...TYPE.meta, fontFamily: MONO, color: PAL.mut2, ...TNUM }}>
-                {canli.birimSayisi} birim
-              </span>
-            )}
+            <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut2, textAlign: "right" }}>
+              {canli.birimSayisi > 0 && (
+                <span style={{ fontFamily: MONO, ...TNUM }}>{canli.birimSayisi} birim</span>
+              )}
+              {/* Bulunma yolu denetlenebilirlik içindir: memur "sistem bunu nereden aldı?"
+                  sorusunu sormadan görsün. Cümleye gömülmez — kendi başına durur. */}
+              {canli.yol && <span> · {clean(canli.yol)}</span>}
+            </span>
           </div>
           {canli.birimOneri && (
             <div style={{ ...TYPE.data, color: PAL.ink2, marginBottom: 4 }}>
@@ -1041,8 +1044,8 @@ function RoutingCard({ r, birimAday }) {
           )}
           <p style={{ margin: "6px 0 0", ...TYPE.meta, color: PAL.mut2 }}>
             Bu kurumun doğrulanmış teşkilat kaydı yok. Sistem kurumun kendi resmî sitesini
-            {canli.yol ? ` ${canli.yol}` : ""} bulup birim sayfasını okudu; kayıt manifest ve
-            insan incelemesinden <strong style={{ fontWeight: 700 }}>geçmedi</strong>.
+            bulup birim sayfasını okudu; kayıt manifest ve insan incelemesinden{" "}
+            <strong style={{ fontWeight: 700 }}>geçmedi</strong>.
             Havale etmeden önce linke bakıp birimi teyit edin.
           </p>
         </div>

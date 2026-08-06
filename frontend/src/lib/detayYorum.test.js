@@ -612,7 +612,7 @@ test("canliKaynakYorum: künye görünüme çevrilir, alan adı ayrıştırılı
   assert.equal(c.alan, "konyaism.saglik.gov.tr");
   assert.equal(c.birimOneri, "Acil Sağlık Hizmetleri Başkanlığı");
   assert.equal(c.birimSayisi, 38);
-  assert.equal(c.yol, "daha önce bulunmuş, önbellekten");
+  assert.equal(c.yol, "önbellek (daha önce bulundu)");
   assert.equal(c.dogrulanmis, false);
 });
 
@@ -680,6 +680,15 @@ test("havale: gerekçedeki ÇIPLAK URL tekrarı gösterimden düşer (link zaten
   assert.doesNotMatch(h.gerekce, /https:\/\//, "çıplak URL gerekçede tekrar etti");
   assert.match(h.gerekce, /memur onayı gerekli/, "gerekçenin geri kalanı korunmalı");
   assert.equal(h.canli.url, CANLI.url, "adres yapısal alanda AYNEN duruyor");
+});
+
+test("birimDipnot: çıplak URL kart dipnotunda da tekrar ETMEZ", () => {
+  // Canlı koşumda görüldü: şeritte temizlenmişti ama kartın dipnotu URL'i hâlâ basıyordu.
+  const d = birimDipnot({
+    birim_reasoning: `Resmî kaynakla doğrulanamadı — memur onayı gerekli. · Canlı kaynak (doğrulanmadı): ${CANLI.url}`,
+  });
+  assert.doesNotMatch(d, /https:\/\//);
+  assert.match(d, /memur onayı gerekli/);
 });
 
 test("havale: canlı öneri DEVİR kararını değiştirmez (yetkisizlik en üstte kalır)", () => {

@@ -88,6 +88,10 @@ Sırayla göster:
 > **Yedek:** internet yoksa bu adımı ATLA. Önbellek doluysa (daha önce çalıştırıldıysa)
 > ağa çıkmadan da gösterir — demo öncesi bir kez koşturup önbelleği ısıtmak en güvenlisi.
 
+Ekranda göreceğiniz kart (gerçek koşumdan alınmıştır):
+
+![Canlı kaynak kartı](img/canli-kaynak-karti.png)
+
 ### Adım 5 — Eksik-bilgi senaryosu (opsiyonel, 30 sn)
 - **"Şikâyet (eksik)"** örneğine tıkla → sistem zorunlu alan eksikliğini yakalar,
   **clarify soruları** üretir. "Sistem körlemesine yazı üretmez; eksikse vatandaştan ister."

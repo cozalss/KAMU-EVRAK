@@ -65,6 +65,29 @@ Sırayla göster:
 - En altta **yasal disclaimer**: "Bu sistem karar-destek amaçlıdır; nihai sorumluluk
   yetkili personeldedir."
 
+### Adım 4b — ⭐ Canlı kaynak keşfi (opsiyonel, 40 sn — **internet ister**)
+
+> Bu adım sistemin en ayırt edici yeteneği: **korpusta olmayan bir kuruma evrak geldiğinde
+> sistem o kurumun resmî sitesini CANLI bulup birim önerisini kaynağıyla gösteriyor.**
+
+- Örnek: muhatabı **Konya İl Sağlık Müdürlüğü** olan bir evrak işle (bu kurumun
+  doğrulanmış teşkilat kaydı YOK — 4066 kurumun 129'u doğrulanmış durumda).
+- **Birim yönlendirme** kartında sarı panel açılır:
+  - Öneri: **Acil Sağlık Hizmetleri Başkanlığı**
+  - Kaynak: `konyaism.saglik.gov.tr/…-birimleri.html` ← **tıklanabilir**
+  - Uyarı: *"Canlı kaynak — doğrulanmadı"*
+- Söylenecek: *"Sistem kurumun adresini kalıptan türetti, birim sayfasını buldu, 36 birim
+  okudu ve konuya uyanı önerdi — 1,2 saniyede. Ama **doğrulanmış demedi**: bu sayfa
+  manifest ve insan incelemesinden geçmedi, o yüzden sarı ve memur onayı gerekiyor.
+  Otomatik havale bu yoldan asla üretilmiyor."*
+- Jüri "yanlış siteye düşmez mi?" derse: *"İki kapı var. `ttk.gov.tr` Türk **Tarih**
+  Kurumu'na ait, bizim sicilde `ttk` Türkiye **Taşkömürü** Kurumu — kimlik kapısı sayfada
+  kurum adını arıyor ve bunu reddediyor. İkincisi: merkez ilçe kaymakamlığı valiliğin
+  adresine düşüyordu, o da aday üretiminde kapatıldı."*
+
+> **Yedek:** internet yoksa bu adımı ATLA. Önbellek doluysa (daha önce çalıştırıldıysa)
+> ağa çıkmadan da gösterir — demo öncesi bir kez koşturup önbelleği ısıtmak en güvenlisi.
+
 ### Adım 5 — Eksik-bilgi senaryosu (opsiyonel, 30 sn)
 - **"Şikâyet (eksik)"** örneğine tıkla → sistem zorunlu alan eksikliğini yakalar,
   **clarify soruları** üretir. "Sistem körlemesine yazı üretmez; eksikse vatandaştan ister."
@@ -108,5 +131,12 @@ göstermek için açılır; zorunlu değildir.
   guard uydurma kurum/tarih/sayıyı veto eder; her çıktıda disclaimer.
 - **"KVKK / kişisel veri?"** → TCKN/telefon backend'de maskelenir; ham PII arayüze hiç ulaşmaz
   (kart üstündeki 🛡️ rozet bunun görünür kanıtı).
-- **"Test/build?"** → backend `uv run python -m pytest -q` → **1319 passed**;
-  frontend `npm.cmd run build` → **başarılı**.
+- **"Kaç kurumu biliyorsunuz?"** → Sicil **4066 kurum** tanır. Bunların **129'u** manifest +
+  SHA-256 + insan doğrulamalı teşkilat kaydına sahip (**2053 birim**); **2210'u** mevzuat
+  şablonu kapsamında (5393 belediye, 124 s. KHK üniversite, MEB il müdürlüğü…). Kalanına
+  evrak gelirse **canlı kaynak keşfi** devreye girer (Adım 4b). Yani hiçbir kurum
+  cevapsız kalmıyor — ama her cevabın **güven seviyesi ayrı ayrı gösteriliyor**:
+  yeşil "kaynak doğrulandı" · sarı "canlı kaynak, doğrulanmadı" · "memur onayı gerekli".
+- **"Test/build?"** → backend `uv run pytest -q` → **2346 passed**;
+  frontend `npm test` → **361 passed**, `npm run build` → **başarılı**; `ruff check` temiz;
+  veri kalite kapısı **GEÇTİ**.

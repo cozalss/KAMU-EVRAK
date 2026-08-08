@@ -25,6 +25,7 @@ SIRA İÇİNDEKİ MANTIK ve gerekçeleri:
 
 from __future__ import annotations
 
+import contextlib
 import json
 from typing import Any
 
@@ -155,6 +156,10 @@ class DemoKapisiMiddleware:
         finally:
             demo_butce.istek_baglami_coz(token)
             demo_butce.istek_kapat(sayaci)
+            # Kalıcı katmana TEK yazım (belge başına). Başarısızlığı isteği düşürmez —
+            # koruma dosya defterinde zaten uygulandı, bu yalnız restart dayanıklılığı.
+            with contextlib.suppress(Exception):
+                await demo_butce.kalici_senkronize()
             log.info("demo.istek_bitti", yol=yol,
                      harcanan=round(sayaci.harcanan, 6),
                      rezerve=sayaci.rezerve, kisitlandi=sayaci.kisitlandi)

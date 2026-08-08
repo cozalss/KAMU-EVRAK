@@ -176,6 +176,19 @@ class ButceDefteri:
         """Bugün kalan bütçe (USD). Negatif olmaz."""
         return max(0.0, self.azami_harcama() - self.harcanan())
 
+    def tabani_tohumla(self, gun: int, toplam: float) -> None:
+        """Süreç-içi yüksek su seviyesini DIŞ bir kaynaktan (kalıcı DB) yükselt.
+
+        YALNIZ YÜKSELTİR. Dış kaynak düşük bir değer bildirirse yok sayılır — aksi hâlde
+        bayat/yarışan bir okuma, bu süreçte zaten yazılmış harcamayı unutturup tavanı
+        sessizce geri açardı.
+        """
+        with self._kilit:
+            if self._surec_gunu != gun:
+                self._surec_gunu = gun
+                self._surecte_harcanan = 0.0
+            self._surecte_harcanan = max(self._surecte_harcanan, max(0.0, toplam))
+
     # ------------------------------------------------------------------- test
     def sifirla_test_icin(self) -> None:
         """YALNIZ test/bakım — süreç-içi durumu sıfırla (dosyaya dokunmaz)."""

@@ -45,6 +45,12 @@ async def lifespan(app: FastAPI):
     # TODO(kamu-evrak): Gelecek faz — mevzuat-RAG embedder + reranker preload (ADALET
     # deseni); şu an retrieval lazy/stub, ağır model preload yok (hızlı boot tercih edildi).
     log.info("startup", llm_mode=LLM_MODE)
+    # Demo günlük harcamasını kalıcı katmandan geri yükle — ücretsiz katmanda dosya
+    # sistemi yeniden başlatmada silinir ve tavan sıfırlanırdı.
+    try:
+        await demo_butce.kalici_tohumla()
+    except Exception as exc:
+        log.error("demo_kalici_tohumlama_hatasi", hata=type(exc).__name__)
     try:
         yield
     finally:
@@ -65,6 +71,8 @@ async def lifespan(app: FastAPI):
 
 
 _APP_ENV_PROD = os.getenv("APP_ENV", "").strip().lower() in ("prod", "production")
+# Statik frontend kökü — "/" rotası ve alttaki mount ikisi de bunu okur.
+_STATIK_KOK = os.getenv("STATIK_KOK", "").strip()
 
 app = FastAPI(
     title="kamu-evrak — Akıllı Agent Destek Sistemi",
@@ -227,7 +235,21 @@ async def _db_ping(timeout_s: float = 2.0) -> bool:
 
 
 @app.get("/")
-async def root() -> dict[str, str]:
+async def root():
+    """Kök: statik frontend bağlıysa landing sayfası, değilse API kimlik kartı.
+
+    Bu rota "/" mount'undan ÖNCE tanımlıdır ve onu gölgeler — tek servis dağıtımında
+    ana adres JSON döndürüyordu (konteyner koşumunda ölçüldü). Statik kökte index.html
+    varsa onu sunar; yoksa eski davranış aynen korunur (yerel dev, API-only kurulum).
+    """
+    if _STATIK_KOK:
+        from pathlib import Path as _Yol
+
+        from fastapi.responses import FileResponse
+
+        _idx = _Yol(_STATIK_KOK) / "index.html"
+        if _idx.is_file():
+            return FileResponse(str(_idx))
     return {"app": "kamu-evrak", "scenario": "TEKNOFEST 2026 — 1. Senaryo", "docs": "/docs"}
 
 
@@ -263,6 +285,37 @@ def _port_bos_mu(host: str, port: int) -> bool:
         return False
     finally:
         probe.close()
+
+
+# ---------------------------------------------------------------- statik frontend
+# TEK SERVİS DAĞITIMI: frontend'i backend'in kendisi sunar.
+#
+# NEDEN böyle (Vercel + ayrı backend yerine): iki origin, aralarında yönetilmesi gereken
+# bir sınır demektir ve o sınır üç sorun doğuruyordu — (1) ziyaretçi çerezi `SameSite=Lax`
+# olduğu için siteler-arası GÖNDERİLMEZ, yani herkes çerezsiz kovaya düşer ve tüm demo
+# günde `DEMO_KOTA_AG_GUN` belgeyle kilitlenir; (2) CORS + credentials yapılandırması;
+# (3) SSE akışının vekilde tamponlanma riski. Tek origin bu üçünü de VAR ETMEZ.
+# Ek fayda: `X-Robots-Tag` başlığı HTML'i de kapsar → arama motoruna kapalılık tek
+# katmana iner.
+#
+# MUTLAKA EN SONDA: "/" kök mount'u kendisinden SONRA tanımlanan her yolu gölgeler.
+# Bu blok tüm router'lardan, /health'ten ve /demo/durum'dan sonradır — API yolları kazanır.
+if _STATIK_KOK:
+    from pathlib import Path as _Path
+
+    from fastapi.staticfiles import StaticFiles
+
+    _kok = _Path(_STATIK_KOK)
+    if _kok.is_dir():
+        # html=True: dizin isteği index.html'e düşer (landing). Çalışma alanı /app.html.
+        app.mount("/", StaticFiles(directory=str(_kok), html=True), name="statik")
+        log.info("statik_frontend_baglandi", kok=str(_kok),
+                 app_html=(_kok / "app.html").is_file(),
+                 robots=(_kok / "robots.txt").is_file())
+    else:
+        # Sessizce geçmek, dağıtımda "site açılmıyor" olarak geri döner — yüksek sesle söyle.
+        log.error("statik_kok_bulunamadi", kok=str(_kok),
+                  not_="STATIK_KOK verildi ama dizin yok; frontend SUNULMAYACAK")
 
 
 if __name__ == "__main__":

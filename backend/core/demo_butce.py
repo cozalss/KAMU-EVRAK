@@ -57,9 +57,25 @@ _ASGARI_GORUNTU_USD = 0.002
 # TTS 1000 karakter başı USD (tahmini üst sınır; gerçek liste değişir, yön güvenli).
 _SES_USD_1K_KARAKTER = 0.030
 
+def _defter_yolu() -> Path:
+    """Harcama defterinin yolu. `DEMO_DEFTER_YOLU` ile EZİLEBİLİR.
+
+    NEDEN ENV GEREKLİ (konteyner koşumunda ölçüldü): göreli hesap
+    `parents[2]/data` yerel ağaçta `<depo>/data` verir, ama imajda backend içeriği
+    doğrudan `/app`'e kopyalandığı için `/data`'ya düşer — orası yok ve app kullanıcısı
+    yazamaz. Sonuç: ilk yazımda `Permission denied` → defter KALICI OLARAK kapanır →
+    her ücretli istek 402 alır ve demo tamamen ölür. Sessiz değil gürültülü bir çöküştü,
+    ama yine de yalnız gerçek konteyner koşumunda görülüyordu.
+    """
+    acik = os.getenv("DEMO_DEFTER_YOLU", "").strip()
+    if acik:
+        return Path(acik)
+    return Path(__file__).resolve().parents[2] / "data" / "demo_harcama.json"
+
+
 DEFTER = ButceDefteri(DefterAyari(
     ad="demo",
-    dosya=Path(__file__).resolve().parents[2] / "data" / "demo_harcama.json",
+    dosya=_defter_yolu(),
     tavan_env="DEMO_AZAMI_GUNLUK_USD",
     gunluk=True,
 ))
@@ -281,6 +297,35 @@ def istek_kapat(sayaci: IstekSayaci) -> None:
         # dolu gösterir ve demoyu süreç ömrü boyunca kapatırdı.
         with _CANLI_KILIT:
             _CANLI.discard(sayaci)
+
+
+async def kalici_tohumla() -> None:
+    """Açılışta: kalıcı katmandan bugünkü toplamı oku, dosya defterinin tabanına yaz.
+
+    Render ücretsiz katmanında dosya sistemi yeniden başlatmada silinir; bu çağrı olmadan
+    tavan konteyner ömrü başına sıfırlanırdı.
+    """
+    if not demo_acik():
+        return
+    from core.demo_harcama_kalici import gunluk_oku
+    from core.gun_indeksi import bugun_indeksi
+
+    gun = bugun_indeksi()
+    toplam = await gunluk_oku(gun)
+    if toplam is None:
+        return                      # DB yok → dosya defteri tek başına devam (fail-open)
+    DEFTER.tabani_tohumla(gun, toplam)
+    log.info("demo.kalici_tohumlandi", gun=gun, toplam_usd=round(toplam, 6))
+
+
+async def kalici_senkronize() -> None:
+    """İstek sonunda: günün toplamını kalıcı katmana yaz (belge başına BİR yazım)."""
+    if not demo_acik():
+        return
+    from core.demo_harcama_kalici import gunluk_yaz
+    from core.gun_indeksi import bugun_indeksi
+
+    await gunluk_yaz(bugun_indeksi(), DEFTER.harcanan())
 
 
 def sifirla_test_icin() -> None:

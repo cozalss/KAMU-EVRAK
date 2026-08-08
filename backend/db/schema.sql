@@ -433,3 +433,18 @@ GRANT SELECT ON evrak_turu, yazi_turu, birim, mevzuat, mevzuat_madde, mevzuat_ch
 
 -- H-4: parola_hash / e_imza_yetkisi PostgREST rollerine asla görünmesin.
 REVOKE SELECT (parola_hash, e_imza_yetkisi) ON kullanici FROM anon, authenticated;
+
+-- ============================================================================
+-- demo_harcama — halka açık demonun GÜNLÜK harcama toplamı (alembic 0006)
+--
+-- Render ücretsiz katmanında kalıcı disk YOKTUR; `data/demo_harcama.json` dosya
+-- defteri her redeploy/restart/spin-down'da silinir ve günlük para tavanı yeniden
+-- açılır. Kalıcı olması gereken tek şey bir sayıdır: bugün ne kadar harcandı.
+-- Dosya defteri BİRİNCİL kalır (hızlı, fail-closed); bu tablo DAYANIKLILIK katmanıdır.
+-- `gun` = UTC epoch günü (core/gun_indeksi.bugun_indeksi()).
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS demo_harcama (
+    gun          INTEGER       PRIMARY KEY,
+    toplam_usd   NUMERIC(12,6) NOT NULL DEFAULT 0,
+    guncelleme   TIMESTAMPTZ   NOT NULL DEFAULT now()
+);

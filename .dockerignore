@@ -1,0 +1,22 @@
+# Docker build bağlamını küçült — imaj boyutu ve build süresi doğrudan buna bağlı.
+.git
+.github
+**/node_modules
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+frontend/dist          # imaj İÇİNDE yeniden derlenir (yerel dist bayat olabilir)
+docs
+eval
+tubitak-2209a
+data/demo_harcama.json
+data/kesif_harcama.json
+**/.env
+**/.env.*
+!**/.env.example
+*.md
+!README.md
+backend/tests
+backend/alembic/__pycache__

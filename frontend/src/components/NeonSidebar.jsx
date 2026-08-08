@@ -158,8 +158,8 @@ function DemoKotaSayaci({ kota, kompakt }) {
   const gunluk = Number(kota.gunluk ?? 0);
   const bitti = kalan <= 0 || kota.butce_acik === false;
   const tamMetin = kota.butce_acik === false
-    ? "Demo günlük bütçesi doldu — yarın yenilenir"
-    : `Bugün kalan demo hakkı: ${kalan} / ${gunluk}`;
+    ? "Günlük işlem kapasitesi doldu — yarın yenilenir"
+    : `Bugün kalan belge hakkı: ${kalan} / ${gunluk}`;
   return (
     <div
       title={tamMetin}

@@ -1,7 +1,6 @@
 /* CanliAjanAkisi — "İşleniyor" görünümü.
    Gerçek SSE verisini tek bir canlı işlem odağında sunar; kaynak belge her zaman yan tarafta
    erişilebilir. İşlem bittiğinde doğrudan memur kararı için ayrıntılı sonuç ve taslağa geçer. */
-import { KvkkOnamNotu } from "./KvkkOnamKapisi.jsx";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { useDropzone } from "react-dropzone";
@@ -71,7 +70,6 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
         <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>İşleniyor</h2>
         <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>Seçilen evrak burada uçtan uca canlı işlenir</p>
       </header>
-      <KvkkOnamNotu />
       <EmptyState
         icon={<Icon.doc />}
         title={isDragActive ? "Bırakın — işleme başlasın" : "İşlenecek evrak seçilmedi"}

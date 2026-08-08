@@ -43,65 +43,60 @@ class TestGovdeTavani:
         assert bayt > body_size._hesapla({"DEMO_KORUMA": "1"})
 
 
-class TestAramaMotoruGorunmezligi:
-    def test_demo_KAPALIYKEN_X_Robots_Tag_YOK(self, monkeypatch):
-        # Arrange
-        monkeypatch.delenv("DEMO_KORUMA", raising=False)
-        mod = importlib.reload(importlib.import_module("api.middleware.security_headers"))
-        try:
-            # Assert — normal kurulumda başlık basılmaz
-            assert "X-Robots-Tag" not in mod._SECURITY_HEADERS
-        finally:
-            importlib.reload(mod)
+class TestAramaMotoruGorunurlugu:
+    """Site arama motorlarına AÇIK (kullanıcı kararı, 9 Ağu 2026).
 
-    def test_demo_ACIKKEN_noindex_basilir(self, monkeypatch):
-        # Arrange
+    Önceki sürüm `X-Robots-Tag: noindex` basıyordu ("hayalet gibi olsun" isteği).
+    Karar değişti: site bulunmak istiyor. Bu testler kararın KAZARA geri alınmadığını
+    korur — biri noindex'i geri koyarsa test söyler ve bilinçli mi diye sorar.
+    Bedeli belgelenmiştir: bot trafiği günlük işlem kapasitesini erken doldurabilir.
+    """
+
+    def test_noindex_BASILMAZ(self, monkeypatch):
+        # Arrange — demo koruma AÇIKKEN bile
         monkeypatch.setenv("DEMO_KORUMA", "1")
         mod = importlib.reload(importlib.import_module("api.middleware.security_headers"))
         try:
-            # Assert — JSON/PDF/DOCX dâhil HER yanıtı kapsayan taşıyıcı katman
-            deger = mod._SECURITY_HEADERS["X-Robots-Tag"]
-            assert "noindex" in deger
-            assert "nofollow" in deger
-            assert mod._SECURITY_HEADERS["Cross-Origin-Opener-Policy"] == "same-origin"
+            # Assert
+            assert "X-Robots-Tag" not in mod._SECURITY_HEADERS
         finally:
             monkeypatch.delenv("DEMO_KORUMA", raising=False)
             importlib.reload(mod)
 
     def test_mevcut_guvenlik_basliklari_KORUNUR(self, monkeypatch):
-        # Arrange — demo açıkken de eski başlıklar yerinde
+        # Arrange — görünürlük açıldı diye güvenlik başlıkları düşmemeli
         monkeypatch.setenv("DEMO_KORUMA", "1")
         mod = importlib.reload(importlib.import_module("api.middleware.security_headers"))
         try:
             assert mod._SECURITY_HEADERS["X-Content-Type-Options"] == "nosniff"
             assert mod._SECURITY_HEADERS["X-Frame-Options"] == "DENY"
+            assert mod._SECURITY_HEADERS["Cross-Origin-Opener-Policy"] == "same-origin"
         finally:
             monkeypatch.delenv("DEMO_KORUMA", raising=False)
             importlib.reload(mod)
 
 
 class TestStatikDosyalar:
-    def test_robots_txt_var_ve_kapali(self):
+    def test_robots_txt_taramaya_ACIK_ama_agir_uclar_kapali(self):
         # Arrange
         from pathlib import Path
         yol = Path(__file__).resolve().parents[2] / "frontend" / "public" / "robots.txt"
         # Assert
         assert yol.exists(), "frontend/public/robots.txt yok — Vite dist'e kopyalayamaz"
         icerik = yol.read_text(encoding="utf-8")
-        assert "User-agent: *" in icerik
-        assert "Disallow: /" in icerik
+        assert "Allow: /" in icerik
+        # Para harcayan uçlar bota kapalı — bot trafiği günlük kapasiteyi yemesin.
+        for uc in ("/process_doc", "/multimodal", "/yazi"):
+            assert f"Disallow: {uc}" in icerik
 
-    def test_app_html_noindex_meta(self):
+    def test_app_html_noindex_ICERMEZ(self):
+        """Görünürlük kararı: çalışma alanı da dizine düşebilir."""
         from pathlib import Path
         yol = Path(__file__).resolve().parents[2] / "frontend" / "app.html"
-        icerik = yol.read_text(encoding="utf-8")
-        assert 'name="robots"' in icerik
-        assert "noindex" in icerik
+        assert "noindex" not in yol.read_text(encoding="utf-8")
 
     def test_landing_sayfasina_DOKUNULMADI(self):
         """index.html + src/portfolio/** proje kuralınca dokunulmaz (CLAUDE.md)."""
         from pathlib import Path
         yol = Path(__file__).resolve().parents[2] / "frontend" / "index.html"
-        icerik = yol.read_text(encoding="utf-8")
-        # Assert — landing'e robots etiketi EKLENMEDİ; başlık + robots.txt katmanları kapsar
-        assert 'name="robots"' not in icerik
+        assert 'name="robots"' not in yol.read_text(encoding="utf-8")

@@ -149,7 +149,7 @@ class TestButce:
         y = client.post("/process_doc", json={})
         # Assert
         assert y.status_code == 402
-        assert "bütçe" in y.json()["detail"].lower()
+        assert "kapasite" in y.json()["detail"].lower()
 
     def test_defter_bozuksa_402(self, client, demo_acik, defter_yolu):
         # Arrange

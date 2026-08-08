@@ -1,8 +1,15 @@
 # 16 — Canlı demo koruma katmanı
 
-> Sistemi **halka açık internete** almak için gereken para, gizlilik ve görünürlük
-> korumaları. Tamamı `DEMO_KORUMA` bayrağına bağlıdır; bayrak yokken davranış
-> bugünküyle bit-aynıdır (2590 backend + 413 frontend testi bunu doğrular).
+> Sistemi **halka açık internete** almak için gereken para ve gizlilik korumaları.
+> Tamamı `DEMO_KORUMA` bayrağına bağlıdır; bayrak yokken davranış bugünküyle
+> bit-aynıdır.
+>
+> **İSİM NOTU:** ortam değişkeni adı tarihsel olarak `DEMO_*` kaldı, ama sistem bir
+> "demo" değil **açık erişim sürümü** olarak sunuluyor: kullanıcıya görünen metinlerde
+> "demo" kelimesi geçmez, sınırlar özür dilenerek değil ürün özelliği olarak yazılır
+> ("Günlük belge işleme hakkınız doldu"). Ekrandaki KVKK uyarı/onam katmanı kullanıcı
+> kararıyla KALDIRILDI (9 Ağu 2026) — **teknik korumalar yerinde**: belge veri tabanına
+> yazılmaz (boot kapısı), diske düşmez (1 MiB gövde tavanı), log'da PII maskelidir.
 
 ## Neden gerekliydi — ölçülen üç gerçek
 
@@ -89,16 +96,22 @@ SONRA bilinir. Günlük toplam, tavanı **en fazla bir çağrı payı** kadar a�
 **Kalan sınır:** `mask_pii` biçimsel desen tanır — TCKN/telefon/IBAN. **Ad, adres,
 e-posta maskelenmez.** Bu değişiklikten önce de böyleydi; ayrı bir karardır.
 
-### 3. Arama motorunda görünmezlik — üç katman
+### 3. Arama motoru görünürlüğü — AÇIK (9 Ağu 2026 kararı)
 
-| Katman | Kapsadığı |
+İlk sürüm `noindex` basıyordu ("hayalet gibi olsun, rakip bulmasın"). Karar değişti:
+site bulunmak istiyor.
+
+| Katman | Durum |
 |---|---|
-| `X-Robots-Tag` başlığı (backend) | **JSON, PDF, DOCX, ZIP dâhil her yanıt** — taşıyıcı katman |
-| `<meta name="robots">` (`app.html`) | Backend'i geçmeyen statik CDN dağıtımı |
-| `public/robots.txt` | Nazik tarayıcıyı isteğe gelmeden durdurur |
+| `X-Robots-Tag` başlığı | **KALDIRILDI** — geri açmak tek satır (`security_headers.py`) |
+| `<meta name="robots">` | **KALDIRILDI** |
+| `public/robots.txt` | `Allow: /`, ama **para harcayan uçlar bota kapalı** (`/process_doc`, `/multimodal`, `/yazi`, `/mobil`, `/auth`) |
 
-`index.html` (landing) **düzenlenmedi** — proje kuralı. Başlık + robots.txt onu da kapsar.
-Frontend'i başlığı geçirmeyen bir CDN'e koyarsanız landing için ayrıca karar gerekir.
+**Bedeli:** bot ve organik trafik günlük işlem kapasitesini erken doldurabilir. Ağır
+uçların `Disallow` edilmesi bunu azaltır ama bitirmez; tavanın gerçek trafiğe göre
+yeniden ölçülmesi gerekir.
+
+`index.html` (landing) hiç düzenlenmedi — proje kuralı.
 
 ## Kota modeli
 

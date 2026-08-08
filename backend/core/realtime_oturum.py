@@ -115,8 +115,7 @@ async def efemer_anahtar(talimat: str, *, timeout_s: float = 20.0) -> dict[str, 
     # için "auth'lu" olması da koruma sağlamıyor — iki istekte hesap açılıyor.
     if demo_butce.demo_acik():
         raise RuntimeError(
-            "Realtime sesli mod demo dağıtımında kapalıdır (harcama ölçülemediği için "
-            "günlük bütçe tavanına dâhil edilemez).")
+            "Sesli görüşme bu sürümde kapalıdır.")
 
     api_key = os.environ.get("OPENAI_TTS_API_KEY", "").strip()
     if not api_key:

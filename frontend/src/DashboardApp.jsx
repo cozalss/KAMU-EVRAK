@@ -11,7 +11,6 @@ import { flushSync } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { MotionConfig } from "motion/react";
-import { KvkkOnamModal, useKvkkOnam } from "./components/KvkkOnamKapisi.jsx";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { createSekans, sonrakiSecim } from "./lib/dayanakSecim.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
@@ -597,30 +596,22 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     bekleyenAltKararRef.current.clear();
     showToast("Önceki evrakın kararı kalıcı kayda yazılamadan yeni işlem başladı — kararı İşlenen evrak'tan yineleyin.");
   }, [showToast]);
-  // KVKK onam kapısı — DÖRT giriş yolunun tamamı buradan geçer (dosya seçici, kenar
-  // çubuğu/görünüm başlıkları, sürükle-bırak, telefon). Kapı yalnız DEMO_MODU=1 iken
-  // canlıdır; kapalıyken `gerekli` false döner ve akış birebir bugünkü hâlindedir.
-  const kvkk = useKvkkOnam();
-  // `uyar` parametresi DAVRANIŞI KORUR: sürükle-bırak yolu eskiden bekleyenKararUyar()
-  // ÇAĞIRMIYORDU. Tek bir sarmalayıcıya indirgerken onu da uyarır hâle getirmek, dosya
-  // bırakan memurun bekleyen kararını sessizce temizleyip toast göstermeye başlardı
-  // (adversarial doğrulama bulgusu — bayrak KAPALIYKEN bile görülür).
+  // Yükleme sarmalayıcısı. `uyar` DAVRANIŞI KORUR: sürükle-bırak yolu bekleyen kararı
+  // uyarmaz (dosya seçici ve telefon yolları uyarır) — tek sarmalayıcıya indirirken bu
+  // farkı düzleştirmek, dosya bırakan memurun bekleyen kararını sessizce temizlerdi.
   const runFileOnamli = useCallback((f, uyar = true) => {
     if (!f) return;
-    if (kvkk.gerekli) { kvkk.iste(f); return; }   // dosya saklanır, onaydan sonra koşar
     if (uyar) bekleyenKararUyar();
     runFile(f);
-  }, [kvkk, bekleyenKararUyar, runFile]);
+  }, [bekleyenKararUyar, runFile]);
 
   const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFileOnamli(f); };
   // Sürükle-bırak: eski davranışta uyarı YOKTU → uyar=false.
   const onFileDropOnamli = useCallback((f) => runFileOnamli(f, false), [runFileOnamli]);
   const triggerUpload = useCallback(() => {
     goView("isleniyor");
-    // Onay yoksa dosya seçici HİÇ AÇILMAZ — kapı burada, seçim sonrasında değil.
-    if (kvkk.gerekli) { kvkk.iste(null); return; }
     if (!busy) fileRef.current?.click();
-  }, [busy, goView, kvkk]);
+  }, [busy, goView]);
   // "İşlendi" damgası YALNIZ koşum gerçekten başlarsa basılır — busy'de damga + kalıcı
   // processedSamples yazımı, evrak hiç işlenmeden refresh'ler boyu "İşlendi" gösteriyordu
   // (bug avı bulgusu). Navigasyon korunur: memur süren akışı görür.
@@ -1009,17 +1000,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           </Suspense>
         )}
 
-        {/* Onam kapısı: onaylanınca bekleyen dosya (varsa) hemen koşar — aksi hâlde
-            kullanıcı dosyayı bırakır, onaylar ve hiçbir şey olmazdı (sessiz kayıp). */}
-        <KvkkOnamModal
-          acik={kvkk.acik}
-          onVazgec={kvkk.vazgec}
-          onOnayla={() => {
-            const f = kvkk.onayla();
-            if (f) { bekleyenKararUyar(); runFile(f); }
-            else if (!busy) fileRef.current?.click();
-          }}
-        />
       </div>
     </MotionConfig>
   );

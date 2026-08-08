@@ -123,7 +123,8 @@ class DemoKapisiMiddleware:
             log.warning("demo.402_butce", yol=yol)
             await _yanit_gonder(
                 send, 402,
-                "Demo günlük bütçesi doldu. Yarın tekrar deneyebilirsiniz.", cerez_ek)
+                "Sistem günlük işlem kapasitesine ulaştı. Yarın tekrar deneyebilirsiniz.",
+                cerez_ek)
             return
 
         # 4) Kota — para AYRILMADAN.
@@ -131,9 +132,9 @@ class DemoKapisiMiddleware:
         if not sonuc.izin:
             log.info("demo.429_kota", yol=yol, sebep=sonuc.sebep)
             mesaj = (
-                "Günlük demo hakkınız doldu (bugün için 3 belge). Yarın yenilenir."
+                "Günlük belge işleme hakkınız doldu. Yarın yenilenir."
                 if sonuc.sebep == "ziyaretci" else
-                "Bu ağdan bugünkü demo hakkı doldu. Yarın yenilenir."
+                "Bu ağdan bugünkü işlem hakkı doldu. Yarın yenilenir."
             )
             await _yanit_gonder(
                 send, 429, mesaj,
@@ -146,7 +147,8 @@ class DemoKapisiMiddleware:
             log.warning("demo.402_rezervasyon", yol=yol)
             await _yanit_gonder(
                 send, 402,
-                "Demo günlük bütçesi doldu. Yarın tekrar deneyebilirsiniz.", cerez_ek)
+                "Sistem günlük işlem kapasitesine ulaştı. Yarın tekrar deneyebilirsiniz.",
+                cerez_ek)
             return
 
         # 6) Bağlamı kur → uygulama → tek delta satırı.

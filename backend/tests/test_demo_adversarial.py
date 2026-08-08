@@ -179,7 +179,7 @@ class TestP2SesliUclar:
         monkeypatch.setenv("OPENAI_TTS_API_KEY", "sahte-anahtar")
         from core import realtime_oturum
         # Act + Assert — ölçülemeyen harcama sınırlanamaz → uç kapalı
-        with pytest.raises(RuntimeError, match="demo dağıtımında kapalı"):
+        with pytest.raises(RuntimeError, match="bu sürümde kapalı"):
             await realtime_oturum.efemer_anahtar("merhaba")
 
 

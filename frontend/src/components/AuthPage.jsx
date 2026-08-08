@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import { PAL, T, R, SANS, TYPE, RAD, SP, SH, DERIN, ALFA, BANT, Btn, Icon, focusRing, NEON_KEYFRAMES, MarkaKaro } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
-import { DEMO_MODU } from "../lib/kvkkOnam.js";
 import AjanSahnesi from "./AjanSahnesi.jsx";
 
 const STATS = [
@@ -269,27 +268,6 @@ export default function AuthPage({ tema, onTemaDegistir }) {
             </p>
 
             <h1 style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>kamu-evrak çalışma alanına giriş</h1>
-
-            {/* Demo notu — YALNIZ halka açık demoda. Ziyaretçi kendi hesabını açıyor, yani
-                e-posta ve ad Supabase'de saklanıyor: belgeler için "kaydetmiyoruz" derken
-                hesabı sessizce kaydetmek dürüst olmazdı. Aynı yerde günlük hakkı da söyler,
-                böylece 4. belgede gelen 429 sürpriz olmaz. */}
-            {DEMO_MODU && (
-              <div role="note" style={{
-                display: "flex", alignItems: "flex-start", gap: SP.s,
-                margin: `0 0 ${SP.l}px`, padding: `${SP.s}px ${SP.m}px`,
-                background: ALFA(BANT.sari.c), borderRadius: RAD.card,
-                ...TYPE.meta, color: DERIN.sari,
-              }}>
-                <Icon.alert style={{ flex: "none", marginTop: 2 }} />
-                <span>
-                  <strong>Bu bir tanıtım demosudur.</strong> Lütfen <strong>deneme
-                  bilgileriyle</strong> hesap açın — gerçek kurumsal e-posta kullanmayın.
-                  Hesap bilgileriniz saklanır; yüklediğiniz belgeler saklanmaz. Günlük
-                  belge hakkı sınırlıdır.
-                </span>
-              </div>
-            )}
 
             <form onSubmit={submit} noValidate>
               {kayit && (

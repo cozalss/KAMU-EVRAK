@@ -34,6 +34,29 @@ const UYDURMA_DESENI = /kaynak evrakta (yok|geçmiyor)/i;
 const EKSIK_BOLUM_DESENI = /^Eksik bölüm/i;
 const USLUP_DESENI = /uslup|üslup/i;
 const MAKS_ITIRAZ = 2;   // tur başına sinyal üst sınırı — müzakere temposu boğulmasın
+
+/* Talep eşleştirmede AYIRT EDİCİ olmayan bürokratik dolgu — "talep/rica/gereği" her dilekçede
+   geçer, eşleşme sayılırsa her talep "karşılanmış" görünür. */
+const DOLGU_TOKEN = new Set([
+  "talep", "talebi", "talebim", "rica", "gerek", "geregi", "geregini", "husus", "hususunda",
+  "konu", "konusunda", "ilgili", "yapilmasini", "yapilmasi", "edilmesi", "edilmesini",
+  "ederim", "arz", "basvuru", "basvurum", "dilekce", "tarafinizca", "tarafimiza",
+]);
+
+/** Taslakta HİÇ izi olmayan talepler — muhatabın sorusunun cevapsız kalması (yüksek KESİNLİK).
+    YALNIZ sıfır örtüşmede işaretlenir: talebin ayırt edici sözcüklerinden HİÇBİRİ taslakta
+    geçmiyorsa o talep hiç ele alınmamıştır. Kısmî/dolaylı cevap (kelime örtüşmesi var ama
+    içerik farklı) BİLEREK işaretlenmez — yanlış-pozitif, memurun kurula güvenini bitirir;
+    eksik yakalamak, yanlış suçlamaktan iyidir (projenin guard felsefesi). */
+export function cevapsizTalepler(taslakMd, talepler) {
+  const govde = trKatla(taslakMd);
+  return strDizi(talepler).filter((t) => {
+    const tokenlar = String(t).split(/\s+/)
+      .map((w) => trKatla(w))
+      .filter((w) => w.length >= 5 && !DOLGU_TOKEN.has(w));
+    return tokenlar.length > 0 && !tokenlar.some((w) => govde.includes(w));
+  });
+}
 // [DOĞRULA]/düşük güven/inceleme işaretli öneriye "sağlam" denemez (CLAUDE.md §1).
 const mevzuatTemiz = (m) => m && m.baslik && m.guven !== "düşük" && !m.inceleme_oner
   && !m.dogrula && !/\[DOĞRULA/.test(String(m.baslik));
@@ -141,6 +164,11 @@ export function muzakereKurgusu(r) {
   const nliZayif = nli.filter((n) => n.entailment === false);
   const mev = dizi(r.mevzuat_onerileri).filter((m) => m && m.baslik);
   const tutar = strDizi(r.tutarlilik_uyari);
+  // Muhatap Temsilcisi'nin ÇAPASI: evraktaki talepler ↔ taslak. Bu şerit 6 Ağu 2026'da
+  // eklendi; öncesinde üye yalnız üslup konuşuyordu ve "vatandaşın talebi cevapsız kalmış"
+  // hatası — sistemin en pahalı hata sınıflarından biri (vatandaş tekrar başvurur) — hiçbir
+  // üyenin görev alanında DEĞİLDİ.
+  const cevapsiz = cevapsizTalepler(r.yazi_taslak_md, obj(r.bilgi_unsurlari).talepler);
   const editler = r.lint_duzeltme_md ? duzeltmeEditleri(taslak, r.lint_duzeltme_md) : [];
 
   const turlar = [];
@@ -163,8 +191,16 @@ export function muzakereKurgusu(r) {
   T0("hukukcu", "muzakere", itirazN
     ? `İlk incelemede ${itirazN} doğrulama/biçim çekincem var; kanıtla zorlanmadıkça bunları geçmem.`
     : "Doğrulama sinyalleri temiz görünüyor; yine de dayanağı ve biçimi tek tek sınayacağım.");
-  // Vatandaş açılışı = üslup denetiminin GERÇEK sonucu (üç durum, uydurma yok).
-  if (uslupUyari.length) {
+  // Muhatap Temsilcisi açılışı — ÖNCELİK cevapsız talepte: bir talebin hiç ele alınmaması,
+  // ağır üsluptan çok daha pahalı bir hatadır (vatandaş yeniden başvurur, süre yeniden işler).
+  if (cevapsiz.length) {
+    T0("vatandas", "muzakere",
+      `Muhatabın "${cevapsiz[0].slice(0, 70)}" talebinin taslakta hiçbir karşılığı yok; bu hâliyle yazı başvuruyu cevapsız bırakıyor.`);
+    cevapsiz.slice(0, MAKS_ITIRAZ).forEach((t) => oneriler.push({
+      tip: "ekle", kaynak: "muzakere",
+      metin: `Cevapsız talep: "${t.slice(0, 90)}" — taslakta karşılığı yok, yanıtlanmalı ya da neden karşılanamadığı belirtilmeli.`,
+    }));
+  } else if (uslupUyari.length) {
     T0("vatandas", "lint_2646", `Üslup denetimi uyarı verdi: ${uslupUyari[0].mesaj || uslupUyari[0].kural} — resmî yazıda gündelik kalıp kalamaz.`);
   } else if (kurallar.some((k) => k.durum === "gecti" && USLUP_DESENI.test(`${k.kural || ""} ${k.madde || ""}`))) {
     T0("vatandas", "lint_2646", "Üslup denetimi temiz — dil resmî ama anlaşılır, vatandaş açısından itirazım yok.");
@@ -289,8 +325,10 @@ export function sunucuKurgusu(data, result = {}) {
     .filter((t) => t && UYE_KUME.has(t.who) && typeof t.text === "string" && t.text.trim())
     .map((t) => ({
       who: t.who, kaynak: t.kaynak || "muzakere", text: t.text,
-      // debate turu (açılış/çapraz/moderatör); yoksa moderatör→karar(2), diğerleri→açılış(0).
-      tur: [0, 1, 2].includes(t.tur) ? t.tur : (t.who === "birim_amiri" ? 2 : 0),
+      // debate turu: 0=açılış · 1=çapraz eleştiri · 2+=DENETİM turları (yakınsama döngüsü,
+      // backend yazi/kurul.py) · 9=karar. Yoksa moderatör→karar, diğerleri→açılış.
+      tur: Number.isInteger(t.tur) && t.tur >= 0 && t.tur <= 9
+        ? t.tur : (t.who === "birim_amiri" ? 9 : 0),
       ...(UYE_KUME.has(t.yanit) && t.yanit !== t.who ? { yanit: t.yanit } : {}),
       ...(TUTUM_KUME.has(t.tutum) ? { tutum: t.tutum } : {}),
     }));
@@ -325,7 +363,30 @@ export function sunucuKurgusu(data, result = {}) {
     degisiklik: oneriKoherans.filter((o) => o.uygulanabilir).length,
     uzlasi_metni: uzlasi,
     uzlasi_uygulanabilir: uzlasiUyg,
+    // Yakınsama raporu — kurulun ÖLÇÜLEN sonucu (kaç tur koştu, kaç itiraz düştü, kaç duruyor).
+    // Sayılar sunucuda revize metin YENİDEN ÖLÇÜLEREK üretilir; `olculdu` false ise ölçüm yok
+    // demektir ve UI kazanım göstermez (kanıtsız iyileşme iddia edilmez). Revize DÜŞTÜYSE
+    // (koherans guard) rapor da anlamsızdır → burada birlikte söndürülür.
+    yakinsama: uzlasiUyg ? yakinsamaOku(data.yakinsama) : null,
   };
+}
+
+/* Yakınsama raporunu güvenli oku — sunucu alanı yoksa/bozuksa null (UI sessizce gizler).
+   ÜÇ sayı ayrı taşınır: düşen (gerçekten giderilen) · duran (giderilemeyen) · yeni
+   (revizyonun KENDİ ürettiği uyarı). Net fark tek başına yanıltıcıdır: 2 uyarı düşüp 2 yeni
+   uyarı çıktığında net 0 olur ve "hiçbir şey olmadı" gibi okunur — oysa memurun bilmesi
+   gereken şey tam olarak revizyonun yeni sorun ürettiğidir (canlı koşumda görüldü). */
+function yakinsamaOku(y) {
+  if (!y || typeof y !== "object" || !y.olculdu) return null;
+  const say = (v) => (Number.isInteger(v) && v >= 0 ? v : 0);
+  const rapor = {
+    tur: say(y.tur),
+    dusen: say(y.dusen ?? y.cozulen),   // eski sunucu alanı → düşen
+    duran: say(y.duran),
+    yeni: say(y.yeni),
+    itirazIlk: say(y.itiraz_ilk),
+  };
+  return rapor.tur ? rapor : null;
 }
 
 // LLM karar etiketi → risk bandı (rozet için; sunucu bant döndürmezse karardan türet).

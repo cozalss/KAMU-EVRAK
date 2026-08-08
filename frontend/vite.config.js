@@ -7,6 +7,12 @@ const apiTarget = process.env.VITE_API_TARGET || "http://localhost:8000";
 // Backend (FastAPI :8000) proxy — SSE dahil.
 export default defineConfig({
   plugins: [react()],
+  // `@/` takma adı — shadcn/ui bileşenleri kendi aralarında bu yolla import eder
+  // (`@/lib/cn`, `@/components/ui/...`). jsconfig.json CLI'ı ve editörü besler, bu satır
+  // ise Vite'ın gerçekten çözmesini sağlar; ikisi AYRI yerlerdir, biri eksikse build kırılır.
+  resolve: {
+    alias: { "@": resolve(__dirname, "./src") },
+  },
   // Multi-page:
   //  index.html → LANDING (portfolio, kök "/") — kendi Tailwind'i, izole.
   //  app.html   → neon çalışma alanı (auth → dashboard).

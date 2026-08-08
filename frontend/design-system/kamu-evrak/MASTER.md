@@ -136,11 +136,35 @@ karşılanır (press `:active` durum stili olduğundan orada anında/animasyonsu
 
 ### Etkileşim kütüphanesi katmanı (2026-07-20 — headless/unstyled, YALNIZ bunlar)
 
-> Önceki kural "yalnız react/react-dom" idi (bkz. `CONTRIBUTING.md`); bu revizyon onu
+> Önceki kural "yalnız react/react-dom" idi (bkz. `CONTRIBUTING.md`); 2026-07-20 revizyonu onu
 > **headless kütüphanelere** genişletti — hiçbiri kendi görünümünü/CSS sınıf sistemini
-> getirmez, hepsi `style` prop'uyla `neonUi.jsx` token'larından boyanır. **Stilli** kütüphane
-> (MUI/Chakra/shadcn/daisyUI vb.) hâlâ yasak — "Stil satır-içidir, CSS sınıf sistemi değil"
-> kuralı bu kütüphanelerle de bozulmaz.
+> getirmez, hepsi `style` prop'uyla `neonUi.jsx` token'larından boyanır.
+
+> **2026-08-08 — STİLLİ KÜTÜPHANE YASAĞI KALDIRILDI (kullanıcı kararı).**
+> Eski kural: *"Stilli kütüphane (MUI/Chakra/shadcn/daisyUI vb.) hâlâ yasak."* Artık geçerli
+> değil; **shadcn/ui kurulu** (`src/components/ui/`) ve Tailwind çalışma alanına eklendi.
+>
+> Yerine geçen kural — **TEK PALET SÖZLEŞMESİ**: sınıf tabanlı bir kütüphane gelebilir, ama
+> rengini/ölçüsünü **kendisi tanımlayamaz**. `tailwind.app.config.js` teması ham hex değil
+> baştan sona `var(--ke-*)` okur; shadcn'in kendi anlamsal adları (`bg-card`,
+> `text-muted-foreground`, `border-input`…) da oraya köprülenmiştir. Sonuç: iki render
+> mekanizması (satır-içi stil + utility sınıfı) **aynı** THEME_CSS'ten boyanır, koyu tema
+> ikisinde de kendiliğinden çalışır. Yeni renk gerekiyorsa önce THEME_CSS'e token olarak
+> girer, Tailwind config'ine değil.
+>
+> Kurulum tuzakları (ölçülerek bulundu, tekrar etme):
+> - `@tailwind base` satırı **silinemez** — `--tw-*` varsayılanları yalnız orada basılır;
+>   silinirse `shadow-*/ring-*/scale-*/blur-*/gradient-*` sessizce çalışmaz. Reset'i kapatmanın
+>   yolu `corePlugins: { preflight: false }`.
+> - Preflight kapalıyken `border` utility'si görünmez (border-style yalnız preflight'ta
+>   tanımlı) → `app-tailwind.css`'te `:where(#root)` 0-özgüllüklü telafi kuralı var.
+> - **Her iki** CSS girdisinde de açık `@config` olmalı; yalnız birinde olursa PostCSS'in tek
+>   eklenti örneği config'i sızdırır ve landing tüm utility'lerini kaybeder.
+> - shadcn `init` **asla** çalıştırılmaz (mevcut CSS değişkenlerini ezer); `components.json`
+>   elle yazılır, yalnız `add` kullanılır. `tsconfig.json` oluşturulmaz (CLI'ı `.tsx`'e döndürür).
+>
+> Lisans kuralı **değişmedi**: eklenen her kütüphane MIT/ISC/Apache-2.0 olmalı. Aceternity UI
+> kaynak dosyalarının yeniden dağıtımını yasaklar — depo public'e çevrilirse o kod çıkarılmalı.
 
 | Kütüphane | Nerede | Verdiği | Token disiplini |
 |---|---|---|---|

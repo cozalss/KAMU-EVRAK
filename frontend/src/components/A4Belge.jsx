@@ -174,9 +174,14 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
             opacity: solgun ? 0.55 : 1, transition: "opacity .15s ease-out",
           }}>
           {liste.map(([bas, son], si) => (
+            /* cursor "inherit": sayfanın KENDİSİ tıklanabilir değilse (onAc yok) kabın
+               imlecini EZMEZ. Eskiden burada "default" yazıyordu ve TaslaklarView'da
+               tıklanabilirliği kabın kendisi taşıdığı için (cursor:zoom-in) memur kâğıdın
+               üstüne geldiğinde büyüteç imleci yerine düz ok görüyordu — kâğıdın
+               tıklanabilir olduğuna dair TEK ipucu kayboluyordu (2026-08-06 bulgusu). */
             <div key={si} className="ke-a4-sayfa"
-              style={{ ...sayfaStil, cursor: onAc ? "zoom-in" : "default" }}
-              title={onAc ? (baslikIpucu || "Büyüt (A4 görünüm)") : undefined}
+              style={{ ...sayfaStil, cursor: onAc ? "zoom-in" : "inherit" }}
+              title={onAc ? (baslikIpucu || "Büyüt (A4 görünüm)") : (baslikIpucu || undefined)}
               onClick={onAc || undefined}>
               {satirlar.slice(bas, son).map((s, i) => (
                 <div key={i} style={satirStil}>{s === "" ? " " : s}</div>

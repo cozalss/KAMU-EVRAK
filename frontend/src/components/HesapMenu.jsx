@@ -11,7 +11,7 @@ import React, { useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AnimatePresence, motion } from "motion/react";
-import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon, Btn } from "./neonUi.jsx";
+import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon } from "./neonUi.jsx";
 
 const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sistem: "Sistem" };
 
@@ -25,7 +25,6 @@ function bashHarfler(ad) {
    (24 viewBox, 1.6-1.8 stroke, round cap) satır-içi tanımlanır (NeonSidebar deseni). */
 const MIC = {
   kisi: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" strokeWidth="1.6" /><path d="M5 20 C5 16.5 8 14.5 12 14.5 C16 14.5 19 16.5 19 20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
-  kurum: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 21V6.5L12 3l7 3.5V21" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9.5 21v-5h5v5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 10h.01M15 10h.01M9 13.5h.01M15 13.5h.01" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>,
   tema: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M12 3.5 A8.5 8.5 0 0 1 12 20.5 Z" fill="currentColor" /></svg>,
   yardim: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M9.6 9.3 C9.6 7.9 10.7 7 12 7 C13.3 7 14.4 7.9 14.4 9.2 C14.4 11 12 11.2 12 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><circle cx="12" cy="16.4" r="1" fill="currentColor" /></svg>,
   kvkk: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 L19 6 V11 C19 15.5 16 19.2 12 21 C8 19.2 5 15.5 5 11 V6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 11.5 L11.2 13.7 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
@@ -119,38 +118,6 @@ function ProfilKip({ user, onKapat, donusRef }) {
   );
 }
 
-/* Aktif kurum modal'ı — demo senaryosuna göre değiştirilebilir kurum adı (19 Tem revizyonu:
-   sabit tek-tenant zorunlu değil). Antet + kurum-içi yönlendirme bu değere göre üretilir. */
-function KurumKip({ aktifKurum, onKaydet, onKapat, donusRef }) {
-  const [deger, setDeger] = useState(aktifKurum || "");
-  const girisRef = useRef(null);
-  const kaydet = (e) => {
-    e.preventDefault();
-    onKaydet(deger);
-    onKapat();
-  };
-  return (
-    <Kip baslik="Aktif kurum" onKapat={onKapat} donusRef={donusRef}>
-      <p style={{ margin: "0 0 12px", ...TYPE.data, color: PAL.ink2 }}>
-        Bu değer resmî yazı antetinde ve kurum-içi yönlendirmede kullanılır. Demo senaryosuna göre değiştirin
-        — ör. Odunpazarı örneğiyle çalışırken <strong style={{ fontWeight: 600 }}>Odunpazarı Belediye Başkanlığı</strong>.
-      </p>
-      <form onSubmit={kaydet}>
-        <label style={{ display: "block", ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: 6 }} htmlFor="ke-aktif-kurum-giris">
-          Kurum adı
-        </label>
-        <input id="ke-aktif-kurum-giris" ref={girisRef} type="text" value={deger} maxLength={200} autoFocus
-          onChange={(e) => setDeger(e.target.value)} onFocus={(e) => e.currentTarget.select()} {...focusRing}
-          style={{ width: "100%", boxSizing: "border-box", padding: "9px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, ...TYPE.data, color: PAL.ink, marginBottom: SP.m }} />
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: SP.s }}>
-          <Btn onClick={onKapat}>Vazgeç</Btn>
-          <Btn type="submit" primary disabled={!deger.trim()}>Kaydet</Btn>
-        </div>
-      </form>
-    </Kip>
-  );
-}
-
 function YardimKip({ onKapat, donusRef }) {
   const Kisayol = ({ k, a }) => (
     <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "6px 0" }}>
@@ -227,9 +194,9 @@ const Anahtar = ({ acik }) => (
   </span>
 );
 
-export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDegistir, dar = false, aktifKurum, onAktifKurumDegistir }) {
+export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDegistir, dar = false }) {
   const [acik, setAcik] = useState(false);
-  const [modal, setModal] = useState(null);   // "profil" | "kurum" | "yardim" | "kvkk"
+  const [modal, setModal] = useState(null);   // "profil" | "yardim" | "kvkk"
   const tetikRef = useRef(null);   // sub-modal kapanınca odak buraya döner (Kip.onCloseAutoFocus)
 
   const modalAc = (m) => setModal(m);
@@ -280,8 +247,6 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             </div>
             <DropdownMenu.Separator style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />
             <DItem ikon={MIC.kisi} label="Profil bilgileri" onSelect={() => modalAc("profil")} />
-            <DItem ikon={MIC.kurum} label="Aktif kurum" onSelect={() => modalAc("kurum")}
-              sag={<span style={{ ...TYPE.meta, color: PAL.mut3, maxWidth: 96, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{aktifKurum}</span>} />
             <DItem ikon={MIC.tema} label="Koyu görünüm" isCheckbox checked={tema === "dark"}
               sag={<Anahtar acik={tema === "dark"} />} onSelect={() => onTemaDegistir?.()} />
             <DItem ikon={MIC.yardim} label="Yardım ve kısayollar" onSelect={() => modalAc("yardim")} />
@@ -297,8 +262,6 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
           dek mounted kalır — giriş-çıkış aynı yoldan (spatial consistency). */}
       <AnimatePresence>
         {modal === "profil" && <ProfilKip key="profil" user={user} onKapat={() => setModal(null)} donusRef={tetikRef} />}
-        {modal === "kurum" && <KurumKip key="kurum" aktifKurum={aktifKurum} onKaydet={(v) => onAktifKurumDegistir?.(v)}
-          onKapat={() => setModal(null)} donusRef={tetikRef} />}
         {modal === "yardim" && <YardimKip key="yardim" onKapat={() => setModal(null)} donusRef={tetikRef} />}
         {modal === "kvkk" && <KvkkKip key="kvkk" onKapat={() => setModal(null)} donusRef={tetikRef} />}
       </AnimatePresence>

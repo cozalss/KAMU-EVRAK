@@ -1,3 +1,16 @@
+/* @config ZORUNLU — SAVUNMA AMAÇLI (8 Ağu 2026). Landing'in davranışını DEĞİŞTİRMEZ:
+   direktif işlendikten sonra AST'ten silinir (findAtConfigPath -> rule.remove()), üretilen
+   CSS bit-aynı kalır. Peki neden var?
+   Çalışma alanı (src/styles/app-tailwind.css) kendi config'ini @config ile seçiyor. Ama
+   PostCSS eklentisi BİR KEZ örnekleniyor ve Tailwind'in plugin.js'i seçilen config'i DIŞ
+   kapanış değişkenine yazıyor (`configOrPath = findAtConfigPath(...) ?? configOrPath`).
+   Bu dosyada @config OLMAZSA, app CSS'i işlendikten sonra buraya sıra geldiğinde landing
+   APP config'ini miras alır; app config'inin content globunda index.html yoktur, dolayısıyla
+   landing'in TÜM utility'leri üretilmez ve sayfa çıplak kalır. Üstelik hata modül sırasına
+   bağlı olduğu için bazen görünür bazen görünmez.
+   Kısacası: bu satır landing'i korur. SİLME. */
+@config "../../tailwind.config.js";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

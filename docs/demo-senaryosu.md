@@ -43,7 +43,9 @@ Kontrol listesi:
 Üst şeritteki üç güvenceyi göster: **2 görev tek pipeline**, **kişisel veri maskeli**, **karar destek (uydurmasız)**.
 
 ### Adım 2 — Örnek evrak → canlı ajan akışı (60 sn)
-- "Dosyan yok mu?" satırından **"Dilekçe"** örneğine tıkla.
+- **Gelen evrak**tan **"Çok-Konulu Dilekçe"** örneğine tıkla (kuyrukta 15 örnek var;
+  her biri boru hattının farklı bir davranışını tetikler — `frontend/src/lib/sampleDocs.js`
+  başındaki kapsam haritası hangi örneğin neyi kanıtladığını satır satır yazar).
 - **Ajan Akış Şeması** canlanır: node'lar sırayla `oku → siniflandir → cikar → eksik_tespit →
   [mevzuat_oner ∥ ozetle] → route_birim → yazi_taslak → finalize` şeklinde "yanar".
 - Vurgula: "Bu paralel kol — mevzuat önerisi ve özetleme aynı anda koşuyor."
@@ -70,8 +72,9 @@ Sırayla göster:
 > Bu adım sistemin en ayırt edici yeteneği: **korpusta olmayan bir kuruma evrak geldiğinde
 > sistem o kurumun resmî sitesini CANLI bulup birim önerisini kaynağıyla gösteriyor.**
 
-- Örnek: muhatabı **Konya İl Sağlık Müdürlüğü** olan bir evrak işle (bu kurumun
-  doğrulanmış teşkilat kaydı YOK — 4066 kurumun 129'u doğrulanmış durumda).
+- Gelen evraktan **"Dilekçe — Canlı Kaynak Keşfi ⭐"** örneğine tıkla. Muhatabı
+  **Konya İl Sağlık Müdürlüğü**dür ve bu kurumun doğrulanmış teşkilat kaydı YOKTUR
+  (4066 kurumun 129'u doğrulanmış durumda) — örnek tam da bunun için seçildi.
 - **Birim yönlendirme** kartında sarı panel açılır:
   - Öneri: **Acil Sağlık Hizmetleri Başkanlığı**
   - Kaynak: `konyaism.saglik.gov.tr/…-birimleri.html` ← **tıklanabilir**
@@ -93,7 +96,7 @@ Ekranda göreceğiniz kart (gerçek koşumdan alınmıştır):
 ![Canlı kaynak kartı](img/canli-kaynak-karti.png)
 
 ### Adım 5 — Eksik-bilgi senaryosu (opsiyonel, 30 sn)
-- **"Şikâyet (eksik)"** örneğine tıkla → sistem zorunlu alan eksikliğini yakalar,
+- **"Şikâyet — Eksik Bilgi"** örneğine tıkla → sistem zorunlu alan eksikliğini yakalar,
   **clarify soruları** üretir. "Sistem körlemesine yazı üretmez; eksikse vatandaştan ister."
 
 > **Not (indirme):** PDF/DOCX indirme **örnek-evrak** akışında etkindir (metin client'ta var).

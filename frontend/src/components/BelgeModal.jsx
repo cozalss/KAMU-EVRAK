@@ -9,7 +9,7 @@
    Giriş/çıkış animasyonu motion (AnimatePresence + Dialog.Portal/Content forceMount — Radix'in
    belgelediği animasyon-kütüphanesi kompozisyon deseni). PDF kaynaklarda gerçek sayfa
    önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik gösterilir (KVKK). */
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
 import { SANS, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, SR_ONLY, EASE, EASE_BEZIER, Icon, focusRing } from "./neonUi.jsx";
@@ -72,6 +72,21 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
   // çağrılar günceli okur; StrictMode kaygısı updater'da değil (bu bir olay işleyicisi).
   const metinDRef = useRef(metinD);
   useEffect(() => { metinDRef.current = metinD; });   // elle yazım dahil her commit'te aynala
+
+  /* Kâğıt İÇİNDE kaydırma OLMAZ — metin alanı içeriği kadar uzar.
+     Sabit yükseklikli textarea (minHeight 800) uzun taslakta kendi kaydırma çubuğunu
+     doğuruyordu: modal zaten kayan bir yüzey olduğu için ekranda İÇ İÇE İKİ çubuk çıkıyor,
+     kâğıdın kenarında gri bir şerit beliriyordu (kullanıcı bulgusu, 2026-08-06). Belge
+     metaforu da bunu reddeder: gerçek kâğıdın içinde kaydırma yoktur, sayfa uzar.
+     Ölçüm BOYAMADAN ÖNCE (useLayoutEffect) yapılır — yoksa doğru yükseklik bir kare sonra
+     uygulanır ve açılışta bir "sıçrama" görünür. `height:auto` şart: küçülmede scrollHeight
+     eski yüksekliğe takılı kalır, alan bir daha kısalmazdı. */
+  useLayoutEffect(() => {
+    const el = alanRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [metinD, acik, duzenlenebilir, revizeOneriAcik]);
   const sesSonucu = (parca, { finalMi }) => {
     if (!parca.trim() && !finalMi) return;
     const kaynakMetin = metinDRef.current;
@@ -224,7 +239,10 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                         <textarea ref={alanRef} value={metinD}
                           onChange={(e) => { setMetinD(e.target.value); setKapatUyari(false); }}
                           aria-label="Resmî yazı taslağı metni" spellCheck={false}
-                          style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "vertical", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
+                          /* overflow:hidden + resize:none — yükseklik yukarıdaki ölçümle
+                             içeriğe kilitlenir; iç kaydırma çubuğu ve elle boyutlandırma
+                             kolu ikisi de gereksizdir (sayfa uzar, kâğıt kaymaz). */
+                          style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "none", overflow: "hidden", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
                       ) : (
                         <div style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                           {/* Çıkarım vurguları A4'te de korunur — panel ile aynı sarı <mark> dili

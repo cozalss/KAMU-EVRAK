@@ -7,6 +7,7 @@
    summarize: AgentFlowGraph + App.jsx'ten taşındı, yeni node'larla genişletildi. */
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR } from "../components/result-cards.jsx";
 import { slaInfo } from "../components/NeonDetayParts.jsx";
+import { DEFAULT_PIPELINE_NODE_IDS, phaseForNode } from "./pipelinePhases.js";
 
 // Her node için kısa TR etiket + görev + açıklama. (İkon dashboard'da numara ile gösterilir.)
 const NODE_META = {
@@ -36,16 +37,15 @@ const NODE_META = {
 // Varsayılan ENV pipeline (DECOMPOSE=1, RISK_GUARD=1; CRAG/NLI/SELF_RAG/HITL=0) — 16 node.
 // Sample (JSON) yolunda SSE start event'i yok → bu sırayı kullan (dosya yolunda gerçek
 // start.nodes gelir, ENV ne olursa olsun ona uyarız).
-export const DEFAULT_NODE_IDS = [
-  "oku", "siniflandir", "cikar", "kanit_baglama", "eksik_tespit", "decompose",
-  "mevzuat_oner", "ozetle", "route_birim", "yazi_taslak", "verify", "risk_guard",
-  "arsiv", "sla_triyaj", "denetim_izi", "finalize",
-];
+export const DEFAULT_NODE_IDS = DEFAULT_PIPELINE_NODE_IDS;
 
 // Bir node ID'sinden taze düğüm nesnesi (etiket bilinmiyorsa ID'yi okunur yap).
 export function makeNode(id) {
   const m = NODE_META[id] || { label: prettyNodeId(id), gorev: 1, desc: "" };
-  return { id, label: m.label, gorev: m.gorev, desc: m.desc, status: "pending", data: null, t0: null, t1: null };
+  return {
+    id, label: m.label, gorev: m.gorev, faz: phaseForNode(id), desc: m.desc,
+    status: "pending", data: null, durationMs: null, t0: null, t1: null,
+  };
 }
 
 function prettyNodeId(id) {

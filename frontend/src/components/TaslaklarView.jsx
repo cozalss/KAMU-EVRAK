@@ -7,7 +7,7 @@
    Düzenleme yüzeyi TEK kalır: A4 kâğıt modalı (BelgeModal); kurul = KurulModal. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, Btn, EmptyState, Icon, MONO, SANS, T, PAL, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, BuyutIkon, EmptyState, Icon, MONO, SANS, T, PAL, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import A4Belge from "./A4Belge.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
@@ -224,7 +224,7 @@ function KararPaneli({ h, konu, govde, tamMetin, genis, sutunH, sendBusy, onDuze
           çok sayfalı taslakta devreye girer (kullanıcı kararı, 2026-08-02).
           Tıkla/Enter → A4 düzenleme (BelgeModal). */}
       <div role="button" tabIndex={0} title="Düzenle (A4 görünüm)" aria-label={`${ad} taslağını A4 görünümde düzenle`} {...focusRing}
-        data-karar-kagit=""
+        data-karar-kagit="" data-kagit=""
         onClick={onDuzenle}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDuzenle(); } }}
         style={{
@@ -238,6 +238,15 @@ function KararPaneli({ h, konu, govde, tamMetin, genis, sutunH, sendBusy, onDuze
           overflowY: "auto", overscrollBehavior: "contain",
           borderRadius: RAD.card, cursor: "zoom-in", minWidth: 0,
         }}>
+        {/* Büyüteç rozeti — hover/klavye odağında belirir, kâğıdın açılabilir olduğunu
+            söyler. `sticky` + `height:0`: akışta yer KAPLAMAZ (sayfalama/ölçek matematiği
+            değişmez) ama çok sayfalı taslak kaydırılırken üstte asılı kalır. Salt görsel;
+            tıklama ve Enter yolu kabın kendisindedir (neonUi [data-kagit-buyut] kuralı). */}
+        <div aria-hidden="true" style={{ position: "sticky", top: SP.s, height: 0, zIndex: 2, display: "flex", justifyContent: "flex-end", paddingRight: SP.s, pointerEvents: "none" }}>
+          <span data-kagit-buyut="" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 26, height: 26, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, boxShadow: SH.card }}>
+            <BuyutIkon />
+          </span>
+        </div>
         <A4Belge metin={cleanDemoText(tamMetin) || govde} baslikIpucu="Düzenle (A4 görünüm)" />
       </div>
 

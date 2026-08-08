@@ -5,7 +5,7 @@
    A1-A6: adversarial doğrulama bulgularının regresyon kilitleri. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, ORNEK_KURGU } from "./muzakere.js";
+import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, cevapsizTalepler, ORNEK_KURGU } from "./muzakere.js";
 
 const TASLAK = "T.C.\nANKARA VALİLİĞİ\n\nSayı : E-2026/1502\nKonu : Bilgi Edinme Başvurusu\n\nİşbu talebinize binaen bilgiler değerlendirilmiştir.\n\nBilgilerinize saygıyla sunulur.";
 
@@ -397,7 +397,7 @@ test("sunucu: backend'in eklediği birim_amiri turu korunur (filtrelenmez)", () 
   const k = sunucuKurgusu(data, R_MIN);
   const amir = k.turlar.find((t) => t.who === "birim_amiri");
   assert.ok(amir && amir.kaynak === "risk_guard");
-  assert.equal(amir.tur, 2);   // tur'suz gelse bile moderatör → 'Karar' turu (açılışta gösterilmez)
+  assert.equal(amir.tur, 9);   // tur'suz gelse bile moderatör → 'Karar' turu (9; 2+ artık DENETİM turları)
 });
 
 /* ---- Çok-turlu DEBATE: açılış (tur 0) → çapraz-eleştiri (tur 1, yanit+tutum) → moderatör (tur 2) ---- */
@@ -460,4 +460,121 @@ test("DEBATE: sunucu kurgusu tur/yanit/tutum'u KORUR (backend debate şeması)",
 test("null-güvenlik: bozuk şekiller motoru düşürmez", () => {
   const k = muzakereKurgusu({ yazi_taslak_md: TASLAK, verify_uyari: "bozuk", lint_2646: 7, mevzuat_nli: {} });
   assert.ok(Array.isArray(k.turlar) && k.turlar.length > 0);
+});
+
+/* ---- YAKINSAMA DÖNGÜSÜ (2026-08-06): denetim turları + ÖLÇÜLEN kazanım raporu ----
+   Sunucu (yazi/kurul.py) revize taslağı yeniden ölçer; istemci o raporu YALNIZ ölçüm
+   gerçekten yapıldıysa ve revize AYAKTAYSA gösterir — kanıtsız kazanım iddia edilmez. */
+const _REVIZE = TASLAK.split("\n").filter((s) => !s.startsWith("Sayı :")).join("\n");
+
+test("sunucu: DENETİM turu (tur>=2) korunur — yakınsama döngüsü şeridi", () => {
+  const data = {
+    kaynak: "llm", karar: "serhli",
+    turlar: [
+      { who: "hukukcu", tur: 1, yanit: "taslakci", tutum: "karsi", text: "Sayı satırı doğrulanamadı." },
+      { who: "hukukcu", tur: 2, yanit: "taslakci", tutum: "katil", text: "Ölçümde uyarı düştü." },
+      { who: "birim_amiri", tur: 9, kaynak: "risk_guard", text: "Bant sarı." },
+    ],
+    oneriler: [], uzlasi_metni: _REVIZE, uzlasi_uygulanabilir: true,
+  };
+  const k = sunucuKurgusu(data, R_MIN);
+  assert.deepEqual(k.turlar.map((t) => t.tur), [1, 2, 9]);
+});
+
+test("sunucu: yakınsama raporu ölçüldüyse taşınır", () => {
+  const k = sunucuKurgusu({
+    kaynak: "llm", karar: "serhli", turlar: [{ who: "hukukcu", tur: 1, text: "x" }],
+    oneriler: [], uzlasi_metni: _REVIZE, uzlasi_uygulanabilir: true,
+    yakinsama: { tur: 2, olculdu: true, itiraz_ilk: 3, itiraz_son: 1, dusen: 2, duran: 1, yeni: 0, cozulen: 2, kalan: 1 },
+  }, R_MIN);
+  assert.deepEqual(k.yakinsama, { tur: 2, dusen: 2, duran: 1, yeni: 0, itirazIlk: 3 });
+});
+
+test("sunucu: revizyonun ÜRETTİĞİ yeni uyarı ayrı taşınır (net farkta erimez)", () => {
+  // Canlı bulgu: 3 uyarı düşüp 2 yeni uyarı çıkınca net fark 1'dir ve "neredeyse temiz" gibi
+  // okunur; oysa memurun görmesi gereken şey revizyonun YENİ sorun ürettiğidir.
+  const k = sunucuKurgusu({
+    kaynak: "llm", karar: "serhli", turlar: [{ who: "hukukcu", tur: 1, text: "x" }],
+    oneriler: [], uzlasi_metni: _REVIZE, uzlasi_uygulanabilir: true,
+    yakinsama: { tur: 2, olculdu: true, itiraz_ilk: 3, itiraz_son: 2, dusen: 3, duran: 0, yeni: 2, cozulen: 3, kalan: 2 },
+  }, R_MIN);
+  assert.equal(k.yakinsama.dusen, 3);
+  assert.equal(k.yakinsama.yeni, 2);
+});
+
+test("sunucu: eski alan adı (cozulen) düşen olarak okunur — geriye uyum", () => {
+  const k = sunucuKurgusu({
+    kaynak: "llm", karar: "serhli", turlar: [{ who: "hukukcu", tur: 1, text: "x" }],
+    oneriler: [], uzlasi_metni: _REVIZE, uzlasi_uygulanabilir: true,
+    yakinsama: { tur: 1, olculdu: true, itiraz_ilk: 2, itiraz_son: 0, cozulen: 2, kalan: 0 },
+  }, R_MIN);
+  assert.equal(k.yakinsama.dusen, 2);
+  assert.equal(k.yakinsama.duran, 0);
+});
+
+test("sunucu: ÖLÇÜLMEMİŞ yakınsama gösterilmez (kanıtsız kazanım yok)", () => {
+  const k = sunucuKurgusu({
+    kaynak: "llm", karar: "serhli", turlar: [{ who: "hukukcu", tur: 1, text: "x" }],
+    oneriler: [], uzlasi_metni: _REVIZE, uzlasi_uygulanabilir: true,
+    yakinsama: { tur: 1, olculdu: false, itiraz_ilk: 3, itiraz_son: 3, cozulen: 0, kalan: 3 },
+  }, R_MIN);
+  assert.equal(k.yakinsama, null);
+});
+
+test("sunucu: revize DÜŞTÜYSE yakınsama raporu da düşer (koherans)", () => {
+  // uzlasi_uygulanabilir=false → revize yok → "şu kadar uyarı düşüyor" cümlesi anlamsız.
+  const k = sunucuKurgusu({
+    kaynak: "llm", karar: "sevk", turlar: [{ who: "hukukcu", tur: 1, text: "x" }],
+    oneriler: [], uzlasi_metni: TASLAK, uzlasi_uygulanabilir: false,
+    yakinsama: { tur: 2, olculdu: true, itiraz_ilk: 3, itiraz_son: 1, cozulen: 2, kalan: 1 },
+  }, R_MIN);
+  assert.equal(k.yakinsama, null);
+});
+
+test("sunucu: bozuk yakınsama şekli motoru düşürmez", () => {
+  for (const y of [null, "x", { tur: -1, olculdu: true }, { olculdu: true }]) {
+    const k = sunucuKurgusu({
+      kaynak: "llm", karar: "serhli", turlar: [{ who: "hukukcu", tur: 1, text: "x" }],
+      oneriler: [], uzlasi_metni: _REVIZE, uzlasi_uygulanabilir: true, yakinsama: y,
+    }, R_MIN);
+    assert.equal(k.yakinsama, null);
+  }
+});
+
+
+/* ---- MUHATAP TEMSİLCİSİ şeridi (6 Ağu 2026): cevapsız talep ----
+   Üye artık ölçülebilir bir çapaya bağlı. Sözleşme: YALNIZ sıfır örtüşmede işaretle —
+   kısmî/dolaylı cevabı "cevapsız" saymak yanlış-pozitiftir ve memurun güvenini bitirir. */
+test("cevapsız talep: taslakta HİÇ izi olmayan talep işaretlenir", () => {
+  const taslak = ["T.C.", "Konu : Aydınlatma", "", "Sokak aydınlatmasının onarımı planlanmıştır."].join("\n");
+  const eksik = cevapsizTalepler(taslak, [
+    "sokak aydınlatmasının onarılması",
+    "çocuk parkına bank yerleştirilmesi",
+  ]);
+  assert.deepEqual(eksik, ["çocuk parkına bank yerleştirilmesi"]);
+});
+
+test("cevapsız talep: kısmî örtüşme cevapsız SAYILMAZ (yanlış-pozitif guard)", () => {
+  const taslak = "Aydınlatma direği talebiniz değerlendirilmektedir.";
+  assert.deepEqual(cevapsizTalepler(taslak, ["yeni aydınlatma direği yerleştirilmesi"]), []);
+});
+
+test("cevapsız talep: yalnız bürokratik dolgu içeren talep işaretlenmez", () => {
+  // "gereğini rica ederim" her dilekçede geçer; ayırt edici sözcük yoksa iddia üretilmez.
+  assert.deepEqual(cevapsizTalepler("Herhangi bir metin.", ["gereğini rica ederim"]), []);
+});
+
+test("cevapsız talep: bozuk girdi çökertmez", () => {
+  assert.deepEqual(cevapsizTalepler("", null), []);
+  assert.deepEqual(cevapsizTalepler("x", [null, 5, "  "]), []);
+});
+
+test("motor: cevapsız talep Muhatap Temsilcisi turuna ve tutanağa düşer", () => {
+  const k = muzakereKurgusu({
+    ...R_TEMIZ,
+    bilgi_unsurlari: { talepler: ["çocuk parkına bank yerleştirilmesi"] },
+  });
+  const vat = k.turlar.find((t) => t.who === "vatandas");
+  assert.match(vat.text, /cevapsız bırakıyor/);
+  assert.ok(k.oneriler.some((o) => o.tip === "ekle" && /Cevapsız talep/.test(o.metin)));
 });

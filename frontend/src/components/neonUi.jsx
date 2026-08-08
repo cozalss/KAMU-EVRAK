@@ -7,6 +7,10 @@
    yalnız @keyframes. a11y: focusRing + SR_ONLY + semantik. */
 import React from "react";
 import * as RTooltip from "@radix-ui/react-tooltip";
+// Görsel katman. TEK YÖNLÜ bağımlılık: gorsel.jsx bu dosyadan HİÇBİR ŞEY import etmez
+// (token'ları kendi içinde CSS değişkeni dizesi olarak tutar) — aksi hâlde ESM döngüsü
+// doğar ve modül-seviyesi sabitler tanımlanmadan okunurdu.
+import { MeshZemin, useIsik } from "./gorsel.jsx";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
@@ -319,6 +323,24 @@ export const NEON_KEYFRAMES = `
    opaklık 0'dan .5'e SIÇRIYORDU — saniyede bir "flaş" gibi okunan bir pop. Şimdi kürenin
    kenarında görünmez doğar, hızla belirir, yayılırken söner; sarma dikişsiz. */
 @keyframes ke-orb-halka{0%{transform:scale(1);opacity:0}14%{opacity:.5}100%{transform:scale(1.7);opacity:0}}
+/* NOT: biten adımın YUTULMASI burada keyframe DEĞİLDİR. İlk sürümde ke-orb-yut adlı tek
+   sürekli bir uçuş vardı ve etiket okunmuyordu; jest üç vuruşa (belir · dur · çekil)
+   ayrılınca süreleri sıkışıklığa göre değişken oldu — sabit yüzdeli keyframe bunu taşıyamaz,
+   üstelik hızlı tetiklenen bir öğede keyframe kesilince sıfırdan başlar. AjanOrb.jsx artık
+   vuruşları transition ile sürüyor; gerekçe orada belgeli. */
+/* Yeni adımın SEVKİ — orb aşağıya, akışa doğru kısa bir ışık bırakır ("görevi yönlendirdi").
+   Yutmanın tam tersi yön: mekânsal tutarlılık, iş orb'a girer ve orb'dan çıkar.
+   ÖLÇÜ NOTU: yol kürenin GÖRÜNÜR KENARINDA başlamalı. Küre clip-path ile r = 0.38·boyut
+   çiziliyor (132px kapta ≈50px); ilk sürüm merkezden 2px'te doğuyordu, yani parçacığın
+   TÜM yolu çekirdeğin parlak yüzeyinin üstünde kalıyor ve hiç görünmüyordu. 44px = yüzeyin
+   hemen içi (doğum), 88px = sönüm. Sönüm noktası yutulan adım etiketinin durduğu yerin
+   (96px) HEMEN ÜSTÜNDE bitmeli: 104px'te ikisi çakışıyor ve sevk noktası etiketin üstüne
+   iniyordu — aynı anda iki farklı olay aynı piksellerde anlatılamaz. */
+@keyframes ke-orb-sevk{
+  0%{opacity:0;transform:translate(-50%,44px) scale(.5)}
+  25%{opacity:.9}
+  100%{opacity:0;transform:translate(-50%,88px) scale(1)}
+}
 /* Sesli görüşme diski girişi — köken-farkında: transformOrigin'i çağıran taraf (sağ-alt) verir,
    disk kendisini açan yuvarlak butondan büyür. scale(0)'dan DEĞİL .94'ten: hiçlikten belirmez. */
 @keyframes ke-disk-gir{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
@@ -335,6 +357,12 @@ export const NEON_KEYFRAMES = `
    reduced-motion'da alttaki genel kural transition'ı zaten kapatır. */
 [data-buyut]{transition:transform .18s var(--ke-ease-out)}
 [data-hover-buyut]:hover [data-buyut]{transform:scale(1.06)}
+/* Kâğıt üstünde beliren büyüteç rozeti — tıklanabilir A4 kâğıdın (TaslaklarView karar
+   paneli) görünür ipucu. Rozet SALT GÖRSEL: tıklama/klavye yolunu kabın kendisi taşır
+   (aria-hidden + pointer-events:none), yani ikinci bir tab durağı ya da iç içe interaktif
+   öğe doğmaz. Yalnız opaklık değişir — hover transform yasağı korunur. */
+[data-kagit-buyut]{opacity:0;transition:opacity .14s var(--ke-ease-out)}
+[data-kagit]:hover [data-kagit-buyut],[data-kagit]:focus-visible [data-kagit-buyut]{opacity:1}
 /* <details> katlama (MevzuatView kategori grupları): summary marker'ını söndür (kendi
    chevron'umuz var), açıkken chevron 90° döner, hover'da başlık zemini. Renk/token'dan
    bağımsız saf mekanik. */
@@ -355,8 +383,13 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, children }) {
     // Yatay padding responsive: 390px telefonda sabit 32+32=64px, içeriğe kalan genişliğin
     // %16'sını yiyip satırları sıfır genişliğe eziyordu (ölçüm: Panel 441px/390px taşma).
     // clamp ile dar ekranda 16px'e iner; ≥800px'te eski 32px değeri BİT-AYNI kalır.
-    <section aria-labelledby={id} style={{ padding: `24px clamp(16px, 4vw, 32px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
-      <header style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
+    <section aria-labelledby={id} style={{ position: "relative", padding: `24px clamp(16px, 4vw, 32px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
+      {/* Atmosfer — TÜM görünümler tek yerden alır (Panel, Gelen, Taslaklar, Mevzuat,
+          Denetim). Statik: metnin arkasında sürekli hareket eden katman açık zeminde
+          kontrastı ölçülemez yapar ve rAF'ı hiç durdurmaz. Yalnız açılışta bir kez belirir,
+          reduced-motion'da o da yok. Tıklamayı yutmaz. */}
+      <MeshZemin />
+      <header style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
         <div>
           {/* 2026-07-25: h2(20) → h1(28). TYPE.h1 zaten "görünüm başlıkları" için tanımlıydı
               ama ViewWrap h2 kullanıyordu — token'ın kendi tarifine dönüldü. TÜM görünümleri
@@ -366,7 +399,7 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, children }) {
         </div>
         {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap" }}>{actions}</div>}
       </header>
-      {children}
+      <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </section>
   );
 }
@@ -374,21 +407,32 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, children }) {
 /* Kart — düz beyaz yüzey + 1px hairline (border-first); gölge en fazla SH.card.
    Başlık: satır-içi kutusuz ikon (accent yalnız ikon rengi) + 14/600 sentence-case başlık +
    sağda düz meta metin (tag). Hover'da kalkış YOK. */
-export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, bodyCenter, style }) {
+export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, bodyCenter, style, isik = true }) {
+  // İMLEÇ IŞIĞI (2026-08-08) — kartın kendi yüzeyinde, EK SARMALAYICI OLMADAN. Kanca
+  // dokunmatik cihazda ve reduced-motion'da hiçbir dinleyici kurmaz; kurulduğunda da yazma
+  // kare başına birdir ve CSS değişkeni ELEMANIN KENDİSİNDE tutulur (üst öğede tutulsa tüm
+  // çocuklar için stil yeniden hesaplanır — listelerde titremenin klasik sebebi).
+  // Işık içeriğin ALTINDA kalır: amaç yüzeyi aydınlatmak, metnin kontrastını düşürmek değil.
+  // `isik={false}` ile kart bazında kapatılabilir (yoğun tablo/liste yüzeyleri için).
+  const { ref: isikRef, baglar, katman } = useIsik({ renk: accent, guc: 0.1 });
   // bodyCenter: ColGrid'in stretchLast'ı son kartı komşu sütunla hizalamak için flex:1 verir
   // (bkz. NeonDetay.jsx) — içerik kısa bir metinse fazla boşluk gövdenin ALTINDA boş kalır.
   // bodyCenter true'ysa gövde o boşluğu üstlenip içeriği dikeyde ortalar; içerik kartı zaten
   // doldurduğunda (stretch yoksa) hiçbir görsel farkı yoktur.
   return (
-    <section style={{ position: "relative", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, boxShadow: SH.card, ...(bodyCenter ? { display: "flex", flexDirection: "column" } : null), ...style }}>
+    <section ref={isik ? isikRef : undefined} {...(isik ? baglar : null)}
+      style={{ position: "relative", isolation: "isolate", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, boxShadow: SH.card, ...(bodyCenter ? { display: "flex", flexDirection: "column" } : null), ...style }}>
+      {isik && katman}
+      {/* Başlık ve gövde zIndex 1 taşır: ışık katmanının ÜSTÜNDE kalmalılar, yoksa
+          aydınlanma metnin üzerine biner ve kontrast düşer. */}
       {title && (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m, flexShrink: 0 }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m, flexShrink: 0 }}>
           {icon && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(accent) }}>{icon}</span>}
           <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{title}</h3>
           {tag && <span style={{ marginLeft: "auto", ...TYPE.meta, color: tagColor ? DERIN_OF(tagColor) : PAL.mut, ...TNUM }}>{tag}</span>}
         </div>
       )}
-      <div style={{ position: "relative", ...(bodyCenter ? { flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" } : null) }}>{children}</div>
+      <div style={{ position: "relative", zIndex: 1, ...(bodyCenter ? { flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" } : null) }}>{children}</div>
     </section>
   );
 }
@@ -452,7 +496,7 @@ export function EmptyState({ icon, title, sub, actions }) {
 
 /* Büyüt ikonu (dört köşe ok) — belge panellerinin A4 modal tetikleyicisi (kaynak belge /
    ana taslak / birim taslağı — hepsi ortak). */
-const BuyutIkon = (p) => (
+export const BuyutIkon = (p) => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
     <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
   </svg>

@@ -19,7 +19,10 @@ import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara } from "../lib/muzakere.js";
 import { apiStream } from "../lib/authApi.js";
 
-const KURUL_FETCH_TIMEOUT_MS = 55000;   // çok-turlu debate = 2 LLM çağrısı (açılış + çapraz) → daha uzun tavan
+// Yalnız AÇILIŞ turunu bekler (sonrası akışla gelir): açılış gelmezse deterministik motora düş.
+// Sunucu açılış bütçesi 30 sn (KURUL_ACILIS_TIMEOUT_S) + ilk sinyal ölçümü → 45 sn güvenli tavan.
+// Denetim turları bu tavana TABİ DEĞİL; akış açıldıktan sonra turlar geldikçe eklenir.
+const KURUL_FETCH_TIMEOUT_MS = 45000;
 
 // Kişi (vatandaş) ikonu — neonUi setinde yok, yerel.
 const KisiIkon = (p) => (
@@ -32,10 +35,13 @@ const KisiIkon = (p) => (
 // Kurul üyeleri ↔ gerçek pipeline ajanları eşlemesi (rol satırında görünür — dürüst kurgu).
 // Birim Amiri = 4. üye: risk_guard bandını sahiplenen kapanış sesi; rengi DİNAMİK (üstündeki
 // riskin rengini taşır — semantik: amir riskin rengini giyer), sözü backend'de deterministik.
+// Her üye AYRI bir hata sınıfına ve o sınıfın GERÇEK sinyaline bağlıdır (backend
+// yazi/kurul.py KURUL_UYELERI gerekçesi): biçim · doğruluk · karşılık. Sinyale bağlı olmayan
+// üye her belgede aynı genel cümleyi kurar — eski "Vatandaş Avukatı" ölçümle böyle bulundu.
 const KURUL = [
-  { id: "taslakci", ad: "Taslakçı", rol: "yazı ajanı · taslağı savunur", col: T, Ikon: Icon.doc },
-  { id: "hukukcu", ad: "Hukukçu", rol: "verify + 2646 + NLI · itiraz yürütür", col: V, Ikon: Icon.scale },
-  { id: "vatandas", ad: "Vatandaş Avukatı", rol: "üslup denetimi · vatandaş gözü", col: R, Ikon: KisiIkon },
+  { id: "taslakci", ad: "Yazı Sorumlusu", rol: "biçim bütünlüğü · 2646 zorunlu bölümleri", col: T, Ikon: Icon.doc },
+  { id: "hukukcu", ad: "Hukuk Denetimi", rol: "uydurma-veto · dayanak · gerekçe", col: V, Ikon: Icon.scale },
+  { id: "vatandas", ad: "Muhatap Temsilcisi", rol: "talep karşılandı mı · hak arama yolu", col: R, Ikon: KisiIkon },
   { id: "birim_amiri", ad: "Birim Amiri", rol: "risk bandı · gönderim kararı", col: V, Ikon: Icon.shield, dinamik: true },
 ];
 const UYE = Object.fromEntries(KURUL.map((k) => [k.id, k]));
@@ -45,7 +51,17 @@ const uyeGor = (id, aksan) => (UYE[id]?.dinamik ? { ...UYE[id], col: aksan } : U
 const THINK = 900, READ = 1700;
 
 // Debate turu → şerit etiketi (açılış → çapraz eleştiri → karar). Turlar arası geçişte gösterilir.
-const TUR_ETIKET = { 0: "Açılış turu", 1: "Çapraz eleştiri", 2: "Karar" };
+/* Şerit etiketi (açılış → çapraz eleştiri → denetim turları → karar). Denetim turları 2'den
+   ARTARAK numaralanır: kurul her denetim turunda revize taslağın YENİDEN ÖLÇÜLEN sinyallerine
+   bakar (backend yazi/kurul.py yakınsama döngüsü). Karar turu sabit 9 — yerel deterministik
+   motor (muzakere.js) moderatörü hâlâ 2'de bıraktığından etiket `who`ya da bakar. */
+const KARAR_TUR = 9;
+function turEtiketi(t) {
+  if (t.who === "birim_amiri" || t.tur === KARAR_TUR) return "Karar";
+  if (t.tur === 0) return "Açılış turu";
+  if (t.tur === 1) return "Çapraz eleştiri";
+  return t.tur === 2 ? "Denetim turu" : `${t.tur - 1}. denetim turu`;
+}
 // Çapraz-tur duruşu → çapraz-referans ipucu (kime · nasıl): karşı çıkıyor / katılıyor / geliştiriyor.
 const TUTUM_META = {
   karsi: { etiket: "karşı çıkıyor", col: BANT.kirmizi.c },
@@ -127,12 +143,12 @@ function KurulSirasi({ speaking, votes, aksan }) {
   );
 }
 
-// Debate tur şeridi — turlar arası geçişte "Açılış turu / Çapraz eleştiri / Karar" ayıracı.
-function TurSeridi({ tur }) {
+// Debate tur şeridi — turlar arası geçişte "Açılış / Çapraz eleştiri / Denetim / Karar" ayıracı.
+function TurSeridi({ etiket }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: SP.s, margin: "2px 2px" }}>
       <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
-      <span style={{ ...TYPE.meta, fontWeight: 600, color: PAL.mut2 }}>{TUR_ETIKET[tur]}</span>
+      <span style={{ ...TYPE.meta, fontWeight: 600, color: PAL.mut2 }}>{etiket}</span>
       <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
     </div>
   );
@@ -287,6 +303,35 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
         )}
       </div>
 
+      {/* ÖLÇÜLEN yakınsama — kurulun asıl kanıtı. "İşlendi" kaç öneri UYGULANDIĞINI söyler;
+          bu satır revizenin NE İŞE YARADIĞINI söyler: revize taslak sunucuda yeniden
+          verify/risk_guard'dan geçirildi ve uyarılar YENİDEN SAYILDI. Ölçüm yoksa (mock,
+          ölçüm hatası, revize düştü) satır hiç görünmez — kanıtsız kazanım iddia edilmez. */}
+      {kurgu.yakinsama && (() => {
+        const y = kurgu.yakinsama;
+        const temiz = !y.duran && !y.yeni;                       // duran da yok, yeni de yok
+        const renk = temiz ? BANT.yesil.c : BANT.sari.c;
+        return (
+          <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, marginBottom: SP.m, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(renk) }}>
+            <span aria-hidden="true" style={{ display: "flex", marginTop: 1, color: DERIN_OF(renk) }}>
+              <Icon.scale width={15} height={15} />
+            </span>
+            <span style={{ ...TYPE.data, color: PAL.ink2, ...TNUM }}>
+              <strong style={{ fontWeight: 600 }}>{y.tur} tur müzakere</strong>{" · revize uygulanırsa: "}
+              <strong style={{ fontWeight: 600, color: DERIN.yesil }}>{y.dusen} uyarı düşüyor</strong>
+              {!!y.duran && <>{" · "}<strong style={{ fontWeight: 600, color: DERIN_OF(BANT.sari.c) }}>{y.duran} uyarı duruyor</strong></>}
+              {/* "Yeni uyarı" AYRI gösterilir: revizyonun kendi ürettiği sorun, net farkın
+                  içinde eritilirse memur bunu hiç görmez (canlı koşum bulgusu). */}
+              {!!y.yeni && <>{" · "}<strong style={{ fontWeight: 600, color: DERIN_OF(BANT.kirmizi.c) }}>revizyon {y.yeni} yeni uyarı üretiyor</strong></>}
+              {temiz && " — taslakta işaretli uyarı kalmıyor."}
+              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, marginTop: 2 }}>
+                Sayılar revize metin üzerinde yeniden ölçüldü (kurulun beyanı değil).
+              </span>
+            </span>
+          </div>
+        );
+      })()}
+
       {sirali.length === 0 ? (
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: DERIN.yesil }}>
           <Icon.check width={15} height={15} /> Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü.
@@ -398,6 +443,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
   const akanRef = useRef(akan); akanRef.current = akan;
   const [turnIdx, setTurnIdx] = useState(az ? TURLAR.length : 0);   // açığa çıkmış tur sayısı
   const [speaking, setSpeaking] = useState(null);                    // o an "yazan" üye id'si
+  const [bekleyenSn, setBekleyenSn] = useState(0);                   // sıradaki tur beklenirken geçen süre
   const [draft, setDraft] = useState(() => (az ? nihaiTaslak(kurgu) : kurgu.taslak.map((l) => ({ ...l }))));
   const [votes, setVotes] = useState(() => (az ? Object.fromEntries(TURLAR.filter((t) => t.oy).map((t) => [t.who, true])) : {}));
   const [done, setDone] = useState(az && !akan);
@@ -454,10 +500,27 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
   // Yeni balon/yazıyor gelince akışı en alta kaydır (canlı sohbet hissi).
   useEffect(() => { feedRef.current?.scrollTo({ top: feedRef.current.scrollHeight, behavior: az ? "auto" : "smooth" }); }, [turnIdx, speaking, az]);
 
+  // Sıradaki tur beklenirken saniye sayacı — "canlı ama uzun" ile "takıldı"yı ayıran tek şey.
+  // Sayaç bekleme BİTİNCE sıfırlanır; reduced-motion'da da çalışır (hareket değil, bilgi).
+  const bekleniyor = akan && !speaking && turnIdx >= TURLAR.length;
+  useEffect(() => {
+    if (!bekleniyor) { setBekleyenSn(0); return undefined; }
+    const t0 = Date.now();
+    const id = setInterval(() => setBekleyenSn(Math.round((Date.now() - t0) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [bekleniyor]);
+
   const gorunenTurlar = useMemo(() => TURLAR.slice(0, turnIdx), [TURLAR, turnIdx]);
   // Başlık: revizyon çıktısı odaklı (verdict değil). Bitince revize var mı yok mu söyler.
   const degisiklikN = kurgu.degisiklik || (kurgu.oneriler || []).filter((o) => o.uygulanabilir).length;
-  const durum = !done ? "Müzakere sürüyor"
+  // BEKLEME DURUMU: akış açık ama oynatılacak tur kalmadı → sunucu SIRADAKİ turu üretiyor.
+  // Bu bekleme 40-90 sn sürebilir (reasoning modeli düşünüyor). Göstergesiz bırakılınca ekran
+  // "3/3 tur" + donmuş transkriptle TAKILMIŞ gibi okunuyordu (kullanıcı bildirimi, 7 Ağu 2026).
+  const bekliyor = bekleniyor;
+  const sonrakiTur = TURLAR.length && TURLAR[TURLAR.length - 1].tur === 0
+    ? "Çapraz eleştiri" : "Denetim";
+  const durum = !done
+    ? (bekliyor ? `${sonrakiTur} turu hazırlanıyor${bekleyenSn ? ` · ${bekleyenSn} sn` : ""}` : "Müzakere sürüyor")
     : kurgu.uzlasi_uygulanabilir ? `Revize önerisi hazır${degisiklikN ? ` · ${degisiklikN} değişiklik` : ""}` : "Değişiklik önerilmedi";
   const durumRenk = done ? aksan : T;
   // Bitince sağ panelde REVİZE taslağını göster (memur uygulayacağı sürümü görür).
@@ -469,6 +532,9 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
       {/* Ekran okuyucu için canlı müzakere duyurusu */}
       <div role="status" aria-live="polite" aria-atomic="true" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>
         {speaking ? `${UYE[speaking].ad} söz alıyor` : turnIdx > 0 ? `${UYE[TURLAR[turnIdx - 1].who].ad}: ${TURLAR[turnIdx - 1].text}` : ""}
+        {/* Bekleme sessiz kalmamalı: görme engelli memur da "sürüyor mu, takıldı mı" bilmeli.
+            Saniye sayacı duyuruya GİRMEZ — her saniye tekrar okunması gürültü olur. */}
+        {bekliyor ? ` — ${sonrakiTur} turu hazırlanıyor` : ""}
         {done ? ` — ${durum}` : ""}
       </div>
 
@@ -492,21 +558,44 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
           <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
             <span aria-hidden="true" style={{ display: "flex", color: DERIN.V }}><Icon.scale /></span>
             <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Müzakere</h3>
-            <span style={{ marginLeft: "auto", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>{Math.min(turnIdx, TURLAR.length)}/{TURLAR.length} tur</span>
+            {/* Akış sürerken "3/3 tur" TAMAMLANDI gibi okunuyordu; tur sayısı önceden BİLİNMEZ
+                (kurul ölçüm temizlenince erken durur) → sürerken yalnız gelen tur sayısı. */}
+            <span style={{ marginLeft: "auto", ...TYPE.meta, ...TNUM, color: PAL.mut3 }}>
+              {akan ? `${TURLAR.length} tur · sürüyor` : `${Math.min(turnIdx, TURLAR.length)}/${TURLAR.length} tur`}
+            </span>
           </div>
           <div ref={feedRef} style={{ display: "flex", flexDirection: "column", gap: SP.m, maxHeight: 420, overflowY: "auto", paddingRight: SP.xs }}>
             {/* Turlar kaynağında SIRALI-GRUPLU gelir (motor [*acilis,*capraz,moderatör]; sunucu da
                 aynı sırada) — şerit bu bitişik-tur değişimine göre çizilir; ara-sıralama gerekmez. */}
             {gorunenTurlar.map((t, i) => {
-              const yeniTur = TUR_ETIKET[t.tur] && (i === 0 || gorunenTurlar[i - 1].tur !== t.tur);
+              const etiket = turEtiketi(t);
+              const yeniTur = i === 0 || turEtiketi(gorunenTurlar[i - 1]) !== etiket;
               return (
                 <Fragment key={`${i}-${t.who}`}>
-                  {yeniTur && <TurSeridi tur={t.tur} />}
+                  {yeniTur && <TurSeridi etiket={etiket} />}
                   <Balon uye={uyeGor(t.who, aksan)} t={t} aksan={aksan} />
                 </Fragment>
               );
             })}
             {speaking && <Yaziyor uye={uyeGor(speaking, aksan)} />}
+            {/* Sıradaki tur beklenirken: ne beklendiği + geçen süre. Kurul burada GERÇEKTEN
+                çalışıyor (revize ölçülüyor, sonraki tur üretiliyor) — sessiz kalmak "takıldı"
+                izlenimi veriyordu. */}
+            {bekliyor && (
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: PAL.surf, border: `1px dashed ${PAL.line}`, ...TYPE.meta, color: PAL.mut }}>
+                <span aria-hidden="true" style={{ display: "inline-flex", gap: 3 }}>
+                  {[0, 1, 2].map((i) => (
+                    <span key={i} style={{ width: 5, height: 5, borderRadius: RAD.dot, background: PAL.mut2, animation: az ? "none" : "nu-think 1s ease-in-out infinite", animationDelay: `${i * 0.16}s` }} />
+                  ))}
+                </span>
+                <span style={{ ...TNUM }}>
+                  {sonrakiTur === "Denetim"
+                    ? "Revize taslak yeniden ölçülüyor, denetim turu hazırlanıyor"
+                    : "Üyeler birbirine yanıt hazırlıyor"}
+                  {bekleyenSn ? ` · ${bekleyenSn} sn` : ""}
+                </span>
+              </div>
+            )}
             {done && (
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(aksan), ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s var(--ke-ease-out) both" }}>
                 <Icon.check /> {kurgu.uzlasi_uygulanabilir
@@ -607,6 +696,10 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
     setDurum("yukleniyor"); setAkan(false);
     let bant = "";                       // 'sinyaller' olayından risk bandı (kısmi kurguya renk verir)
     let acildi = false, sonucGeldi = false;
+    // Canlı müzakere birikimi: açılış + hazır olan her müzakere turu. Sunucu yakınsama
+    // döngüsünde tur SAYISI önceden bilinmez (ölçüm temizlenirse erken durur), bu yüzden
+    // turlar geldikçe eklenir; animasyon zaten `akan` bayrağıyla yeni turu bekler.
+    let biriken = [];
     const govde = {
       taslak_md: result.yazi_taslak_md, evrak_text: result.evrak_text || "",
       yazi_turu: result.yazi_turu || "", evrak_turu: result.evrak_turu || "",
@@ -622,10 +715,12 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
       if (!alive) return;
       if (olay.tip === "sinyaller") {
         bant = ((olay.sinyaller || {}).risk_metadata || {}).bant || "";
-      } else if (olay.tip === "acilis") {
+      } else if (olay.tip === "acilis" || olay.tip === "tur") {
         acildi = true;
-        // Kısmi kurgu = yalnız açılış turları → HEMEN oynatmaya başla (canlı akış).
-        const kismi = sunucuKurgusu({ kaynak: "llm", turlar: olay.turlar, oneriler: [], sinyaller: { risk_metadata: { bant } } }, result);
+        biriken = [...biriken, ...(olay.turlar || [])];
+        // Kısmi kurgu = o ana kadarki turlar → HEMEN oynatmaya başla (canlı akış); müzakere
+        // sürerken gelen DENETİM turları da aynı yoldan eklenir (memur tartışmayı oluşurken izler).
+        const kismi = sunucuKurgusu({ kaynak: "llm", turlar: biriken, oneriler: [], sinyaller: { risk_metadata: { bant } } }, result);
         if (kismi) { setKurgu(kismi); setDurum("hazir"); setAkan(true); }
       } else if (olay.tip === "sonuc") {
         sonucGeldi = true;
@@ -667,7 +762,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
           <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk }}>AI Bürokrasi Kurulu</span>
           {taslakAdi && <span style={{ fontFamily: SANS, fontSize: 13, lineHeight: "16px", color: PAL.onInk2 }}>{taslakAdi}</span>}
           <span style={{ ...TYPE.meta, color: "rgba(251,247,240,.6)" }}>
-            {kurgu.kaynak === "llm" ? "DeepSeek uzman ajanları taslağı müzakere eder" : "üç ajan, taslağın gerçek doğrulama sinyalleri üzerinden müzakere eder"}
+            {kurgu.kaynak === "llm" ? "üç uzman tartışır, revize ölçülür, sonuç size dürüstçe raporlanır" : "üç ajan, taslağın gerçek doğrulama sinyalleri üzerinden müzakere eder"}
           </span>
           <span style={{ marginLeft: "auto" }}>
             <ScrimDugme onClick={onKapat} ariaLabel="Kurulu kapat"><Icon.x width={13} height={13} /> Kapat</ScrimDugme>

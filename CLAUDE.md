@@ -77,10 +77,16 @@
 - **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
   `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`
   (isim tarihsel — animasyon mekaniği renkten bağımsız).
-- **Headless kütüphane katmanı (2026-07-20):** `motion`/Radix (`Dialog`/`DropdownMenu`/
-  `Tooltip`)/`vaul`/`embla-carousel-react`/`lucide-react` — hepsi görünümsüz, `neonUi.jsx`
-  token'larıyla boyanır. **Stilli** kütüphane (kendi CSS/tema getiren) hâlâ yasak. Tam liste +
-  gerekçe: `frontend/design-system/kamu-evrak/MASTER.md`.
+- **Kütüphane katmanı (2026-08-08 revizyonu):** `motion`/Radix/`vaul`/`embla`/`lucide-react`
+  (headless) **+ shadcn/ui** (`src/components/ui/`, sınıf tabanlı). Stilli kütüphane yasağı
+  kullanıcı kararıyla KALDIRILDI; yerine **tek palet sözleşmesi** geçti: Tailwind teması
+  (`tailwind.app.config.js`) ham hex değil baştan sona `var(--ke-*)` okur, shadcn'in kendi
+  adları (`bg-card`, `text-muted-foreground`…) oraya köprülenmiştir → iki render mekanizması
+  aynı THEME_CSS'ten boyanır, koyu tema ikisinde de çalışır. Yeni renk önce THEME_CSS'e token
+  olarak girer. Tailwind YALNIZ çalışma alanında (`@config` ile ayrı config, preflight kapalı,
+  `@tailwind base` satırı SİLİNMEZ); landing'in CSS'i bit-aynı kalır ve bu her build'de
+  hash'le doğrulanır. Görsel efektler `components/gorsel.jsx`'te ve token'lardan beslenir.
+  Kurulum tuzakları + lisans kuralı: `frontend/design-system/kamu-evrak/MASTER.md`.
 - **Adlandırma:** kabuk/parça `Neon*` (isim tarihsel, görünüm artık açık/kağıt), bölümler `*View`,
   canlı akış `CanliAjanAkisi`.
 - **a11y:** her tıklanabilirde `focusRing` + `cursor:pointer`; renk tek sinyal değil (ikon+metin+etiket);

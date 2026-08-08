@@ -4,9 +4,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { komutCoz, komutOnayi } from "./sesliKomut.js";
 
+// Fikstür başlıkları GERÇEK örnek evrak adlarıyla hizalı tutulur (lib/sampleDocs.js) —
+// eşleştirme algoritması bağımsız çalışsa da, var olmayan adlarla yazılmış bir test
+// okuyanı yanıltıyor. "şikayet" iki başlıkta birden geçer: belirsizlik testi buna dayanır.
 const BASLIKLAR = [
-  "ornek-sikayet_sokak_hayvani.txt",
-  "ornek-talep_aydinlatma.txt",
+  "ornek-sikayet_gurultu.txt",
+  "ornek-dilekce_aydinlatma.txt",
   "saglik_mud_sikayet.txt",
 ];
 
@@ -48,8 +51,8 @@ test("'açıklama' fiil sanılmaz (serbest sonek tuzağı)", () => {
 
 test("evrak açma: başlık parçalarıyla eşleşir", () => {
   assert.deepEqual(
-    komutCoz("sokak hayvanı şikayetini aç", { basliklar: BASLIKLAR }),
-    { tur: "evrak_ac", baslik: "ornek-sikayet_sokak_hayvani.txt" });
+    komutCoz("gürültü şikayetini aç", { basliklar: BASLIKLAR }),
+    { tur: "evrak_ac", baslik: "ornek-sikayet_gurultu.txt" });
 });
 
 test("evrak açma: ayırt etmeyen sözcük (ornek/txt) tek başına eşleştirmez", () => {
@@ -57,7 +60,7 @@ test("evrak açma: ayırt etmeyen sözcük (ornek/txt) tek başına eşleştirme
 });
 
 test("BELİRSİZLİK: iki başlık eşit skorluysa hiçbiri açılmaz", () => {
-  // "şikayet" hem sokak-hayvanı hem sağlık-müdürlüğü başlığında geçiyor → beraberlik.
+  // "şikayet" hem gürültü hem sağlık-müdürlüğü başlığında geçiyor → beraberlik.
   assert.equal(komutCoz("şikayeti aç", { basliklar: BASLIKLAR }).tur, "yok");
 });
 

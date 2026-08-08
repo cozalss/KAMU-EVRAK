@@ -1,0 +1,21 @@
+{
+  "//": [
+    "shadcn/ui CLI'ın `add` komutu yol takma adlarını (@/components gibi) BURADAN okur.",
+    "ZORUNLU: bu dosya yoksa CLI takma adı çözemez ve bileşenleri yanlış yere yazar.",
+    "tsconfig.json ASLA oluşturulmamalı — varlığı CLI'ı tsx:true'ya döndürür ve .tsx",
+    "dosyaları üretir; bu proje saf JS/JSX."
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "checkJs": false
+  },
+  "include": ["src/**/*.js", "src/**/*.jsx"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -76,7 +76,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
   );
 }
 
-function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, tema, onTemaDegistir, aktifKurum, onAktifKurumDegistir }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, tema, onTemaDegistir }) {
   // Daraltılmış ikon-ray modu (ChatGPT sidebar-toggle deseni) — tercih kalıcı (localStorage).
   const [dar, setDar] = useState(() => {
     try { return localStorage.getItem("nu-sidebar-dar") === "1"; } catch { return false; }
@@ -143,8 +143,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
       </button>
 
       <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}
-        tema={tema} onTemaDegistir={onTemaDegistir} dar={kompakt}
-        aktifKurum={aktifKurum} onAktifKurumDegistir={onAktifKurumDegistir} />
+        tema={tema} onTemaDegistir={onTemaDegistir} dar={kompakt} />
     </aside>
   );
 }

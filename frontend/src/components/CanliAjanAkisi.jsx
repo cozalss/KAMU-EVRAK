@@ -14,6 +14,8 @@ import AltTaslakKarti from "./AltTaslakKarti.jsx";
 import A4Belge from "./A4Belge.jsx";
 import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
+import { ParlaKenar } from "./gorsel.jsx";
+import AjanOrb from "./AjanOrb.jsx";
 
 import { T, V, PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
@@ -171,6 +173,12 @@ export default function CanliAjanAkisi({
   // sıfırlanmayınca pager eski konumdan (örn. 3/3) açılıyordu (bug avı bulgusu) → effect'le sıfırla.
   const [altIdx, setAltIdx] = useState(0);
   useEffect(() => { setAltIdx(0); }, [runBase]);
+  // Kararın mühürlenmesi — onay/ret anında taslak kartının kenarında tek turluk ışık.
+  // Ürünün doruk anı burası ve kart ekranda KALIYOR (gönderim başka görünüme navigasyon
+  // yapmaz), yani efekt gerçekten görülüyor. Yeni koşumda sıfırlanır, yoksa bir sonraki
+  // belge daha karar verilmeden mühürlü açılırdı.
+  const [kararMuhru, setKararMuhru] = useState(null);   // null | "onay" | "ret"
+  useEffect(() => { setKararMuhru(null); }, [runBase]);
   // Kaydırma yükselmesi — şerit "yapışık" mı (altından içerik akıyor mu)? Header'dan hemen
   // önceki 1px sentinel görünürlükten çıkınca yapışık sayılır. IntersectionObserver scroll
   // dinleyicisinden ucuzdur: eşik geçişinde BİR kez tetiklenir, kare başına iş yok (perf
@@ -414,17 +422,24 @@ export default function CanliAjanAkisi({
                 (position:relative) — okunabilirlik etkilenmez, reduced-motion'da durur. */}
             {sahneCanli && efGlow && <Aurora />}
             <div style={{ position: "relative" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: SP.m, flexWrap: "wrap", marginBottom: SP.xl }}>
-              <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T, paddingTop: 4 }}><Icon.sparkle /></span>
-              <div style={{ minWidth: 180, flex: "1 1 260px" }}>
-                <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>
-                  {sahneCanli ? "Belgeniz dikkatle inceleniyor" : "Belge incelemeye hazır"}
-                </h3>
-                <p style={{ margin: "6px 0 0", ...TYPE.data, color: PAL.mut, maxWidth: 620 }}>
-                  Sistem gerekli bilgileri çıkarıyor, ilgili kontrolleri tamamlıyor ve memur incelemesi için hazırlıyor.
-                </p>
-              </div>
+            {/* Sahnenin öznesi: BEYİN ORB'U (AjanOrb). Eskiden burada tek bir kıvırcık ikon
+                vardı — koşumu kimin yürüttüğünün görsel bir öznesi yoktu. Orb ürünün maskotu
+                ve beyni: durumu gövdesiyle söyler, biten adımı içine çeker, yeni adımı akışa
+                doğru sevk eder. Yığın MERKEZE alındı (orb → başlık → açıklama): orb ile
+                altındaki MerkezKart aynı düşey eksende durur, yutma/sevk parçacıkları o
+                eksende uçar; sola yaslı düzende parçacık ekseni içerikle çaprazlaşıyordu.
+                Telemetri kendi satırında sağda kalır — merkez ekseni bölmez. */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: SP.s }}>
               <SahneTelemetri busy={sahneCanli} allDone={allDone} toplamSn={toplamSn} runBase={runBase} glow={efGlow} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: SP.xl }}>
+              <AjanOrb display={display} kosumda={sahneCanli} hataVar={hataliAdim >= 0 && !kosumda} />
+              <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>
+                {sahneCanli ? "Belgeniz dikkatle inceleniyor" : "Belge incelemeye hazır"}
+              </h3>
+              <p style={{ margin: "6px 0 0", ...TYPE.data, color: PAL.mut, maxWidth: 560 }}>
+                Sistem gerekli bilgileri çıkarıyor, ilgili kontrolleri tamamlıyor ve memur incelemesi için hazırlıyor.
+              </p>
             </div>
             <SahneAkis display={display} total={total} glow={efGlow} runBase={runBase} onDetay={setDetayIdx} />
             <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut2 }}>
@@ -441,6 +456,14 @@ export default function CanliAjanAkisi({
           <>
             {altTaslaklar.length < 2 && (
               <div className="sc-draft-card" style={{ ...card, display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
+                {/* Karar mührü — kenarda TEK TUR dolaşan ışık. Renk kararı taşır (yeşil onay,
+                    kırmızı ret) ama renk tek sinyal değil: karar zaten Giden/İşlenen
+                    görünümlerinde metinle de yazılı. Sonsuz döngü yok, reduced-motion'da hiç
+                    kurulmaz — hareket burada bilgi değil, bilginin VURGUSU. */}
+                {kararMuhru && (
+                  <ParlaKenar anahtar={kararMuhru}
+                    renk={kararMuhru === "onay" ? BANT.yesil.c : BANT.kirmizi.c} />
+                )}
                 {/* Başlık şeridi — ikon + başlık · tür seçici (dropdown, ikincil) · A4 büyüt.
                     Tür artık başlıkta metin değil; dropdown'da (belge ile ağırlıkta yarışmaz). */}
                 <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
@@ -474,7 +497,7 @@ export default function CanliAjanAkisi({
                 <div className="sc-decision-footer" style={{ borderTop: `1px solid ${PAL.line}` }}>
                   <div style={{ maxWidth: 800, margin: "0 auto" }}>
                   <div className="sc-action-row">
-                    <button onClick={onReject} disabled={!decisionReady} aria-label="Taslağı reddet" {...focusRing} data-press=""
+                    <button onClick={() => { setKararMuhru("ret"); onReject(); }} disabled={!decisionReady} aria-label="Taslağı reddet" {...focusRing} data-press=""
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 14px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.x /> Reddet</button>
@@ -483,7 +506,7 @@ export default function CanliAjanAkisi({
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
                       onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
                       style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 16px", minHeight: 42, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.edit /> Düzenle</button>
-                    <button onClick={onApprove} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" {...focusRing} data-press=""
+                    <button onClick={() => { setKararMuhru("onay"); onApprove(); }} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" {...focusRing} data-press=""
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
                       onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
                       style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 20px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 600, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.send /> Onayla ve gönder</button>

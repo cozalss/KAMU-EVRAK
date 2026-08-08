@@ -1,0 +1,62 @@
+/* Çalışma alanının (app.html) Tailwind girdisi.
+ *
+ * @config: Tailwind 3.2+ — BU dosya için landing'inkinden AYRI config kullan. İki sayfa
+ * birbirinin utility'lerini taşımasın diye şart; landing'in 12 kB'lık CSS'i bit-aynı kalır.
+ *
+ * PREFLIGHT KAPALI AMA `@tailwind base` SATIRI DURUYOR — ikisi AYRI şeydir ve bunu
+ * karıştırmak sessiz bir kırılma üretir (ölçüldü, 8 Ağu 2026):
+ *   · Reset'i istemiyoruz → `corePlugins: { preflight: false }` (tailwind.app.config.js).
+ *     Çalışma alanı satır-içi stille kuruldu ve kamu-evrak.css'in kendi reset'i zaten var;
+ *     ikinci bir reset, hangisinin kazandığı yükleme sırasına kalan kırılgan bir düzen olurdu.
+ *   · AMA `@tailwind base` satırı SİLİNEMEZ: Tailwind'in `--tw-*` varsayılanları (box-shadow,
+ *     ring, transform, filter, backdrop-filter, gradient…) YALNIZ base direktifinin durduğu
+ *     yere basılıyor (expandTailwindAtRules.js: `layerNodes.base.before(defaultNodes…)`).
+ *     Satır silinince `shadow-*`, `ring-*`, `scale-*`, `rotate-*`, `blur-*`, `bg-gradient-*`
+ *     utility'leri tanımsız var() referansına düşüp SESSİZCE çalışmıyor — ilk sürümde tam
+ *     bu oldu, kanıt: app CSS'inde `--tw-shadow:` 0 adet, landing'de 1.
+ */
+@config "../../tailwind.app.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* KENAR UYUMU — preflight kapalıyken `border` utility'si GÖRÜNMEZ.
+   Sebep: borderWidth eklentisi yalnız `border-width` üretir; `border-style: solid`
+   Tailwind kaynağında SADECE preflight.css'te tanımlı (bir de opt-in `.border-solid`).
+   UA varsayılanı `border-style: none` olduğu için genişlik+renk yazılsa da kenar çizilmez.
+   Çözüm 0-ÖZGÜLLÜKLE verilir (`:where()`), böylece kamu-evrak.css'teki `.rc-*` sınıf
+   kuralları (0,1,0) ve tüm satır-içi stiller kazanmaya DEVAM eder — mevcut hiçbir kenar
+   değişmez. `#root *` yazımı (1,0,0) mevcut tüm kenarlıkları silerdi; bilerek kullanılmadı.
+   Form kontrolleri dışarıda: UA buton/input kenarları kaybolmasın. */
+@layer base {
+  :where(#root) *:not(:where(button, input, select, textarea)),
+  :where(#root) ::before,
+  :where(#root) ::after {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--ke-line, currentColor);
+  }
+}
+
+/* Ortak yüzey/kart sınıfları — satır-içi stille kurulmuş `NeonCard` ile GÖRSEL OLARAK
+   AYNI çıktıyı vermeli, yoksa iki mekanizma yan yana durduğunda fark göze çarpar.
+   Tanımlar token'lardan; ham hex yok. */
+@layer components {
+  /* Kart: border-first (1px hairline) + isteğe bağlı kart gölgesi — MASTER.md ev stili. */
+  .ke-kart {
+    @apply rounded-card border border-solid border-line bg-surf shadow-card;
+  }
+  /* Cam yüzey: kaydırılan içeriğin üstünde duran katman (sticky başlıklar). */
+  .ke-cam {
+    background: var(--ke-cam);
+    border-color: var(--ke-cam-line);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  /* Odak halkası — her tıklanabilirde zorunlu (a11y sözleşmesi). */
+  .ke-odak:focus-visible {
+    outline: 2px solid var(--ke-derin-t);
+    outline-offset: 2px;
+  }
+}

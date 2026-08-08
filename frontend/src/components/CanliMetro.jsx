@@ -11,6 +11,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { MONO, SANS, T, V, PAL, BANT, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
+import { PIPELINE_PHASES, nodeDurationMs } from "../lib/pipelinePhases.js";
 
 /* Geometri: 28px oluk, ray x=13. Glow yalnız bu sahnede (Epik istisna). */
 const HAT = { x: 13, w: 2, merkez: 16 };
@@ -69,7 +70,7 @@ function HatDurak({ st, col }) {
 
 /* Hat başlığı — roundel hat HİZMETE GİRENE dek outline; ilk istasyon aktifleşince ateşlenir
    (pop + halka + glow). Ayraç hattın kendi ilerleme rayı; faz bitince onay + hat rengi. */
-function HatTerminal({ n, col, count, sure, girisAktif, tamam, ilerleme, canli, glow, akis, devir }) {
+function HatTerminal({ n, label, col, count, sure, girisAktif, tamam, ilerleme, canli, glow, akis, devir }) {
   return (
     <div style={{ position: "relative", padding: `0 0 ${SP.s}px`, animation: glow ? "nu-rise .18s var(--ke-ease-out) both" : "none" }}>
       <Ray top={22} bottom={0} filled={girisAktif} col={col} akis={akis} />
@@ -86,7 +87,7 @@ function HatTerminal({ n, col, count, sure, girisAktif, tamam, ilerleme, canli, 
             <span style={{ position: "absolute", inset: 0, boxSizing: "border-box", borderRadius: RAD.dot, background: girisAktif ? col : PAL.surf, border: `2px solid ${col}`, color: girisAktif ? PAL.onAccent : DERIN_OF(col), fontFamily: SANS, fontSize: 12, lineHeight: "16px", fontWeight: 600, textAlign: "center", ...TNUM, boxShadow: canli ? `0 0 12px ${GLOW(col, 45)}` : "none", transition: "background .25s ease, box-shadow .3s ease", animation: girisAktif && glow ? "nu-pop .4s var(--ke-ease-spring) both" : "none" }}>{n}</span>
           </span>
         </span>
-        <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(col), flexShrink: 0 }}>{n === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
+        <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN_OF(col), flexShrink: 0 }}>{label}</span>
         <span aria-hidden="true" style={{ flex: 1, height: 2, background: PAL.line, overflow: "hidden" }}>
           <span style={{ display: "block", width: "100%", height: "100%", background: col, boxShadow: `0 0 8px ${GLOW(col, 40)}`, transformOrigin: "left", transform: `scaleX(${ilerleme || 0})`, transition: "transform .4s var(--ke-ease-in-out)" }} />
         </span>
@@ -106,7 +107,7 @@ function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akisTop, 
   const done = a.status === "done", active = a.status === "active", err = a.status === "error";
   const nodeBant = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant] : null;
   const durakCol = a.id === "risk_guard" && done ? (nodeBant || risk).c : col;
-  const ms = a.t1 - a.t0;
+  const ms = nodeDurationMs(a);
   const sure = done && Number.isFinite(ms) && ms >= 50 ? `${(ms / 1000).toFixed(1)}s` : null;
   const altYazi = done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "hata · adım başarısız" : (a.desc || "—");
   const altRenk = err ? DERIN_OF(BANT.kirmizi.c) : done ? (a.id === "risk_guard" ? DERIN_OF((nodeBant || risk).c) : PAL.mut) : active ? PAL.mut : PAL.mut2;
@@ -163,9 +164,12 @@ const HatSon = ({ col, done }) => (
 
 /* Tek hat (görev fazı) — terminal + istasyonlar + terminüs. Işık izi tek odakta: yalnız
    aktif istasyona giren parça (terminal rayı dahil, aktif istasyon hattın ilkiyse). */
-function HatFaz({ n, items, risk = BANT.yesil, glow, sahne, sonHat = true, devir = false, onDetay }) {
-  const col = n === 2 ? V : T;
-  const ms = items.reduce((s, a) => (a.status === "done" && Number.isFinite(a.t1 - a.t0) ? s + (a.t1 - a.t0) : s), 0);
+function HatFaz({ phase, items, risk = BANT.yesil, glow, sahne, sonHat = true, devir = false, onDetay }) {
+  const col = phase.gorev === 2 ? V : T;
+  const ms = items.reduce((s, a) => {
+    const nodeMs = nodeDurationMs(a);
+    return a.status === "done" && Number.isFinite(nodeMs) ? s + nodeMs : s;
+  }, 0);
   const sure = ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
   const doneN = items.filter((a) => a.status === "done").length;
   const fazDone = items.length > 0 && doneN === items.length;
@@ -173,7 +177,7 @@ function HatFaz({ n, items, risk = BANT.yesil, glow, sahne, sonHat = true, devir
   const canli = sahne && glow;
   return (
     <div style={{ minWidth: 0 }}>
-      <HatTerminal n={n} col={col} count={items.length} sure={sure}
+      <HatTerminal n={phase.no} label={phase.label} col={col} count={items.length} sure={sure}
         girisAktif={items[0]?.status !== "pending"} tamam={fazDone}
         ilerleme={items.length ? doneN / items.length : 0} canli={canli && aktifJ >= 0}
         glow={glow} akis={canli && aktifJ === 0} devir={devir} />
@@ -226,7 +230,7 @@ export function MerkezKart({ a, total, glow, runBase }) {
   const bantC = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : null;
   const relNow = Number.isFinite(runBase) && runBase > 0 ? performance.now() - runBase : null;
   const ms = active && relNow != null && Number.isFinite(a.t0) ? relNow - a.t0
-    : (done && Number.isFinite(a.t1 - a.t0) ? a.t1 - a.t0 : null);
+    : (done ? nodeDurationMs(a) : null);
   const sn = ms != null && ms >= 100 ? ms / 1000 : null;
   const durum = active ? (a.desc || "çalışıyor…") : done ? (a.out || "tamamlandı") : err ? "hata · adım başarısız" : (a.desc || "sırada");
   return (
@@ -276,12 +280,9 @@ export const Aurora = () => (
   </div>
 );
 
-/* ——— useSahneTempo: sunum temposu (min-dwell kuyruğu) ———
-   SSE olayları deterministik adımlarda milisaniyelik burst'lerle gelir; ekran her
-   tamamlanmayı en az ~400ms sahnede tutar ki pop/halka/ray-dolumu İZLENEBİLİR olsun
-   (jüri bulgusu: 15 adım · 5.8 sn koşumda vuruşlar üst üste biniyordu). Veri anında
-   saklanır, yalnız GÖSTERİM sıralanır; toplam ek gecikme ~3.6 sn ile sınırlandı
-   (real-time avantaj korunur). Hata/HITL/reduced-motion'da anında yetişir. */
+/* ——— useSahneTempo: kısa sunum temposu ———
+   Canlı burst'ler en fazla 80ms arayla okunur; backend sonucu geldiği anda kuyruk açılır.
+   Böylece görsel ritim korunur fakat sonuç sonrası saniyelik yapay bekleme oluşmaz. */
 export function useSahneTempo(nodes, { pendingOnay = null, glow = true } = {}) {
   // Başlangıç = mount ANINDAKİ gerçek tamamlanma sayısı: tempo yalnız CANLI gelen
   // tamamlanmaları sıralar. useState(0) ile başlamak, başka görünüme geçip dönüldüğünde
@@ -297,51 +298,37 @@ export function useSahneTempo(nodes, { pendingOnay = null, glow = true } = {}) {
   }, [trueDone, reveal]);
   useEffect(() => {
     if (reveal >= trueDone) return undefined;
-    const aninda = !glow || hataVar || !!pendingOnay;
+    const aninda = !glow || hataVar || !!pendingOnay || trueDone === nodes.length;
     const kalan = trueDone - reveal;
-    const dwell = aninda ? 0 : Math.min(420, Math.max(140, 3600 / kalan));
+    const dwell = aninda ? 0 : Math.min(80, Math.max(24, 300 / kalan));
     const bekle = Math.max(0, dwell - (performance.now() - sonVurus.current));
     const id = setTimeout(() => { sonVurus.current = performance.now(); setReveal((r) => r + 1); }, bekle);
     return () => clearTimeout(id);
-  }, [reveal, trueDone, glow, hataVar, pendingOnay]);
+  }, [reveal, trueDone, nodes.length, glow, hataVar, pendingOnay]);
   const paced = useMemo(() => {
     let gorulen = 0;
     return nodes.map((n) => {
       if (n.status !== "done") return n;
       gorulen += 1;
       if (gorulen <= reveal) return n;
-      return { ...n, status: gorulen === reveal + 1 ? "active" : "pending" };
+      return { ...n, status: "pending" };
     });
   }, [nodes, reveal]);
   return { paced, sunumTamam: reveal >= trueDone };
 }
 
-/* Sahne gövdesi — üstte "now playing" spot kartı, altında iki hatlı metro şeması
-   (Görev 1 | Görev 2 yan yana; dar panelde alt alta). Satırlar tıklanabilir (adım detayı). */
+/* Sahne gövdesi — üstte son gerçek olay, altında dört resmî işlem fazı.
+   Teknik adımlar ayrıntı olarak kalır ve satırdan açılabilir. */
 export function SahneAkis({ display, total, glow, runBase, onDetay }) {
   const aktifIdx = display.findIndex((x) => x.status === "active");
   let sonBiten = -1;
   display.forEach((x, i) => { if (x.status === "done") sonBiten = i; });
   const merkezIdx = aktifIdx >= 0 ? aktifIdx : (sonBiten >= 0 ? sonBiten : 0);
   const merkez = display[merkezIdx];
-  const g1 = display.filter((a) => a.gorev !== 2);
-  const g2 = display.filter((a) => a.gorev === 2);
-  // Aktarma bağı yalnız iki hat YAN YANA iken çizilir (alt alta yığılımda hat zaten
-  // dikeyde akar) — kolonların offsetTop eşitliği ölçülür, pencere boyutunda güncellenir.
-  const gridRef = useRef(null);
-  const [ikiKolon, setIkiKolon] = useState(false);
-  useEffect(() => {
-    const el = gridRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return undefined;
-    const olc = () => {
-      const c = el.children;
-      setIkiKolon(c.length >= 2 && Math.abs(c[0].offsetTop - c[1].offsetTop) < 4);
-    };
-    olc();
-    const ro = new ResizeObserver(olc);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [display.length]);
+  const fazlar = PIPELINE_PHASES.map((phase) => ({
+    phase,
+    items: display.filter((a) => a.faz === phase.id),
+  })).filter((faz) => faz.items.length > 0);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: SP.l, width: "100%", maxWidth: 920, margin: "0 auto" }}>
       {merkez && <MerkezKart a={merkez} total={total} glow={glow} runBase={runBase} />}
@@ -353,9 +340,10 @@ export function SahneAkis({ display, total, glow, runBase, onDetay }) {
               adım <NumberFlow value={merkezIdx + 1} /> / {total}
             </span>
           </div>
-          <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%),  1fr))", columnGap: SP.xxl, rowGap: SP.l, alignItems: "start" }}>
-            {g1.length > 0 && <HatFaz n={1} items={g1} glow={glow} sahne onDetay={onDetay} />}
-            {g2.length > 0 && <HatFaz n={2} items={g2} glow={glow} sahne devir={ikiKolon} onDetay={onDetay} />}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", columnGap: SP.xxl, rowGap: SP.l, alignItems: "start" }}>
+            {fazlar.map(({ phase, items }) => (
+              <HatFaz key={phase.id} phase={phase} items={items} glow={glow} sahne onDetay={onDetay} />
+            ))}
           </div>
         </div>
       )}

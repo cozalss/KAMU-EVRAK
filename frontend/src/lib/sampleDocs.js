@@ -1,576 +1,503 @@
 /* Denenebilir örnek evrak metinleri — backend OCR'sız JSON yolu (/process_doc) için.
-   TÜMÜ SAHTE veri (CLAUDE.md §2 / şartname §6.5): isim/TCKN/telefon/IBAN uydurma; gerçek
-   kişi veya kurumla eşleşmez. Format 2646 sayılı Yönetmelik'e göre gerçekçi, içerik %100
-   kurgudur. "Gerçek dilekçe şablonlarından uyarlanmış" işaretli örnekler (aşağıda ayrı
-   bölümde), kamuya açık dilekçe-örneği/hukuk sitelerindeki BOŞ ŞABLON metinlerin (ad/TCKN/
-   adres alanları zaten doldurulmamış) gövde diline ve yapısına dayanır — kaynakta gerçek
-   kişiye ait doldurulmuş bir dilekçe YOKTU; tüm kimlik alanları buradan itibaren kurgu.
 
-   Demo (15p): jüri dosya bulmadan tek tıkla sistemin HER özelliğini canlı işletir. Her örnek
-   pipeline'ın farklı bir davranışını sergiler; id = geçerli config.EVRAK_TURLERI değeri
-   (SLA önizleme + kategori türetimi bununla çalışır).
+   TÜMÜ SAHTE veri (CLAUDE.md §2 / şartname §6.5): isim/TCKN/telefon/IBAN/e-posta uydurma,
+   gerçek kişiyle eşleşmez. TCKN'ler KASITLI GEÇERSİZ desendedir (checksum tutmaz) — geçersiz
+   bir numara hiçbir vatandaşa ait olamaz. Muhatap KURUMLAR gerçektir (kamuya açık teşkilat
+   bilgisi); evrakların İÇERİĞİ %100 kurgudur.
 
-   ÖZELLİK HARİTASI (hangi örnek neyi denetler):
-     Görev 1:
-       - sınıflandırma: 17 farklı tür (aşağıda) + belirsiz → abstention
-       - bilgi çıkarımı + PII maskeleme: TCKN (dilekce), telefon (çok), IBAN (fatura/icra),
-         e-posta (bilgi_edinme)
-       - eksik-bilgi tespiti + clarify (dur-ve-sor): sikayet (zorunlu alan eksik)
-       - mevzuat öner (BM25 RAG): her örnek ilgili kanuna atıf (3071/4982/7201/3194/2004/4734…)
-       - özetleme: tüm örnekler
-     Görev 2:
-       - resmî yazı taslağı (6 tür) + üslup + birim yönlendirme (9 birim, farklı örneklerde farklı)
-       - bilgilendirme + eksik-bilgi isteme
-     Yenilikçilik:
-       - decompose (çok-konulu): cok_konulu → 3 iş → 3 birim
-       - SLA / yasal süre bantları (bugüne göre ayarlı):
-           NORMAL   → dilekce, ihbar        (süre içinde)
-           KRİTİK   → basvuru, cimer         (son 0-2 gün)
-           GECİKMİŞ → bilgi_edinme, talep    (yasal süre doldu)
-           tarih_yok→ sikayet                (etiketli tarih yok → [DOĞRULA])
-           tanımsız → kurum→kurum + hukuk türleri (vatandaş süresi yok — uydurma yok)
+   NEDEN BU 15: her örnek boru hattının FARKLI bir davranışını tetikler. Jüri dosya
+   aramadan tek tıkla sistemin tüm yeteneklerini canlı görebilmeli (Demo 15p).
 
-   TCKN'ler kasıtlı geçersiz desen (algoritma tutmaz); IBAN'lar TR + sıfır/örnek blok.
-   Sınıflandırma mock-modda keyword-heuristik ile deterministiktir (anahtarsız demo). */
+   ┌── KAPSAM HARİTASI (hangi örnek neyi kanıtlar) ─────────────────────────────────────┐
+   │ Görev 1                                                                            │
+   │   sınıflandırma      : 10 farklı tür + belirsiz → abstention (#15)                 │
+   │   bilgi çıkarımı+PII : TCKN (#2,#9) · telefon (çoğu) · e-posta (#7,#8) · IBAN (#14)│
+   │   eksik bilgi+clarify: #6 (zorunlu alan yok → dur-ve-sor)                          │
+   │   mevzuat RAG        : 3071 · 4982 · 3194 · 2872 · 657 · 7201 · 2004 · 4734        │
+   │                        (sekizi de data/mevzuat korpusunda DOĞRULANDI)              │
+   │ Görev 2                                                                            │
+   │   yazı taslağı       : cevabi_yazi · üst yazı · bilgilendirme · müzekkere          │
+   │   birim yönlendirme  : üç GÜVEN SEVİYESİ birden — aşağıya bak                      │
+   │ Yenilikçilik                                                                       │
+   │   decompose          : #1 → tek dilekçe, üç ayrı iş, üç ayrı birim                 │
+   │   canlı kaynak keşfi : #2 → korpusta OLMAYAN kurum, sistem sitesini canlı bulur ⭐ │
+   │   yetkisizlik/devir  : #10 → muhatap ≠ yetkili (3071 m.5)                          │
+   │   SLA bantları       : NORMAL ×4 · KRİTİK ×2 · GECİKMİŞ ×3 · tarih_yok ×1 · tanımsız ×5 │
+   └────────────────────────────────────────────────────────────────────────────────────┘
+
+   ÜÇ GÜVEN SEVİYESİ (demo'nun dürüstlük iddiası — ölçülerek seçildi 2026-08-06):
+     YEŞİL  "kaynak doğrulandı" → kurumun kendi teşkilat kaydı manifest+SHA-256'lı
+            (#3 Seyhan · #4 Pendik · #5 Van BB · #8 Kadıköy · #9 Nilüfer)
+     YEŞİL  mevzuat şablonu → tür için kanunen zorunlu birim (#11 valilik · #12 kaymakamlık)
+     SARI   canlı kaynak → korpusta yok; kurumun sitesi çalışma anında bulundu (#2)
+   Muhataplar bu tabloya göre SEÇİLDİ; değiştirilirse demo iddiası bozulur.
+
+   SLA TARİHLERİ BUGÜNE GÖRE AYARLIDIR (referans: 06.08.2026). Süre tabloları:
+   30 takvim günü (3071 m.7) · 15 iş günü (4982 m.11). Aylar geçtikçe bantlar KAYAR —
+   demo öncesi `backend/agents/nodes/sla_triyaj.compute_sla` ile yeniden doğrulayın.
+     30 gün: 27.07 → NORMAL · 08.07 → KRİTİK · 02.07 → GECİKMİŞ
+     15 iş  : 17.07 → KRİTİK · 09.07 → GECİKMİŞ
+
+   SÖZLEŞME: `tur ?? id` kanonik EVRAK_TURLERI değeri olmalı (SLA + kategori bununla
+   çalışır) — sampleDocs.test.js bunu kilitler. */
 
 export const SAMPLE_DOCS = [
-  // ---------- VİTRİN: çok-konulu dilekçe (decompose → 3 birim) ----------
+  // ══════════ VİTRİN 1: çok-konulu dilekçe → decompose (tek evrak, üç iş) ══════════
   {
     id: "cok_konulu",
-    konu: "Çukur onarımı, su faturası itirazı ve iş başvurusu hk.",
+    konu: "Park aydınlatması, su faturası itirazı ve iş başvurusu takibi hk.",
     label: "Çok-Konulu Dilekçe",
     icon: "route",
     grup: "Vatandaş",
-    aciklama: "İçinde üç ayrı talep var: çukur onarımı, su faturası itirazı ve iş başvurusu takibi",
-    text: `T.C.
-KEÇİÖREN BELEDİYE BAŞKANLIĞINA
-ANKARA
-
-Tarih: 02.07.2026
-Konu: Çeşitli talepler
-
-Sokağımızın başındaki çukurun bir an önce onarılmasını, ayrıca geçen ay fazla
-tahakkuk ettirilen su faturasının yanlış olduğunu ve düzeltilmesini, bir de
-oğlumun belediyenizdeki iş başvurusunun sonucunu öğrenmek istiyorum.
-Gereğini arz ederim.
-
-Adı Soyadı: Ayşe Yılmaz
-T.C. Kimlik No: 12345678901
-Adres: Şenlik Mahallesi, Gül Sokak No: 7, Keçiören / ANKARA
-Telefon: 0555 123 45 67
-İmza`,
-  },
-
-  // ---------- Vatandaş → kurum (SLA bantları burada yayılır) ----------
-  {
-    id: "dilekce",
-    konu: "Park aydınlatma direği onarım talebi",
-    label: "Dilekçe (süre içinde)",
-    icon: "pencil",
-    grup: "Vatandaş",
-    aciklama: "Başvuru eksiksiz görünüyor, cevabi yazı bekleniyor",
+    aciklama: "Tek dilekçede üç ayrı talep — sistem ayrıştırıp üç farklı birime dağıtır",
     text: `T.C.
 ÇANKAYA BELEDİYE BAŞKANLIĞINA
 ANKARA
 
-Tarih: 05.07.2026
-Konu: Park ve bahçe düzenleme talebi
+Tarih: 27.07.2026
+Konu: Çeşitli talepler hk.
 
-Mahallemizde bulunan çocuk parkının aydınlatma direkleri uzun süredir
-arızalıdır. Akşam saatlerinde park kullanılamaz hale gelmektedir.
-Gerekli onarımın yapılması hususunda gereğini arz ederim.
+Sayın Yetkili,
+
+Birinci olarak, mahallemizdeki Barış Parkı'nın yürüyüş yolundaki aydınlatma
+direklerinden dördü yaklaşık iki aydır yanmamaktadır. Akşam saatlerinde park
+kullanılamaz hâle gelmiş, özellikle yaşlı komşularımız için güvenlik sorunu
+oluşmuştur. Onarımının yapılmasını talep ediyorum.
+
+İkinci olarak, Haziran 2026 dönemine ait su faturam bir önceki dönemin yaklaşık
+dört katı tahakkuk etmiştir. Konutta sızıntı veya tesisat arızası bulunmadığı
+tesisatçı raporuyla belgelenmiştir. Sayaç okumasının kontrol edilerek hatalı
+tahakkuka itirazımın değerlendirilmesini ve faturanın düzeltilmesini istiyorum.
+
+Üçüncü olarak, oğlum Kerem Aydın'ın Başkanlığınıza yaptığı şoför kadrosu iş
+başvurusunun hangi aşamada olduğu konusunda tarafıma bilgi verilmesini rica
+ediyorum.
+
+Gereğini bilgilerinize arz ederim.
 
 Adı Soyadı: Ayşe Yılmaz
 T.C. Kimlik No: 12345678901
-Adres: Kızılay Mahallesi, Atatürk Caddesi No: 42/5, Çankaya / ANKARA
+Adres: Kırkkonaklar Mahallesi, Barış Sokak No: 14/6, Çankaya / ANKARA
 Telefon: 0555 123 45 67
 İmza`,
   },
+
+  // ══════════ VİTRİN 2: korpusta OLMAYAN kurum → CANLI KAYNAK KEŞFİ ⭐ ══════════
   {
-    id: "basvuru",
-    konu: "İşyeri açma ve çalışma ruhsatı başvurusu",
-    label: "İşyeri Ruhsat Başvurusu",
+    id: "dilekce",
+    konu: "Ambulans ulaşım sürelerinin iyileştirilmesi talebi",
+    label: "Dilekçe — Canlı Kaynak Keşfi ⭐",
     icon: "pencil",
     grup: "Vatandaş",
-    aciklama: "Yeni işyeri için ruhsat başvurusu, ekleri tam",
+    aciklama: "Bu kurumun doğrulanmış teşkilat kaydı YOK; sistem kurumun resmî sitesini canlı bulup birim önerir",
     text: `T.C.
-YENİMAHALLE BELEDİYE BAŞKANLIĞINA
-ANKARA
+KONYA İL SAĞLIK MÜDÜRLÜĞÜNE
+KONYA
 
-Tarih: 10.06.2026
-Konu: İşyeri açma ve çalışma ruhsatı başvurusu
+Tarih: 27.07.2026
+Konu: Acil sağlık hizmetlerinde ulaşım süresi hk.
 
-İlçeniz sınırları içinde açmayı planladığım kırtasiye ve fotokopi işletmesi
-için işyeri açma ve çalışma ruhsatı düzenlenmesini talep ediyorum. Kira
-sözleşmesi ve vergi levhası dilekçe ekindedir. Gereğini arz ederim.
+Sayın Yetkili,
 
-Adı Soyadı: Murat Çelik
-T.C. Kimlik No: 45678912303
-İş yeri Adresi: Batıkent Mahallesi, Meydan Caddesi No: 15, Yenimahalle / ANKARA
-Telefon: 0555 321 76 54
-İmza`,
-  },
-  {
-    id: "bilgi_edinme",
-    konu: "2025 yılı yapı ruhsatı istatistikleri bilgi talebi",
-    label: "Bilgi Edinme (süresi geçti)",
-    icon: "search",
-    grup: "Vatandaş",
-    aciklama: "4982 kapsamında yazılı bilgi istiyor",
-    text: `T.C.
-ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞINA
+Selçuklu ilçesi Sille Mahallesi'nde ikamet etmekteyim. Son üç ay içinde
+mahallemizden 112 Acil Çağrı Merkezine yapılan çağrılarda ambulansın olay
+yerine ulaşma süresinin otuz dakikayı aştığı üç ayrı olaya bizzat şahit oldum.
+Bunlardan biri kalp rahatsızlığı geçiren komşumuz için yapılan çağrıdır.
 
-Tarih: 01.06.2026
-Konu: 4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında bilgi talebi
+Mahallemize hizmet veren acil sağlık hizmetleri istasyonunun kapasitesinin ve
+görevli ambulans sayısının yeterli olup olmadığının incelenmesini, gecikmelerin
+sebebine ilişkin tarafıma yazılı bilgi verilmesini arz ederim.
 
-4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında, ilçemizde 2025 yılında
-verilen yapı ruhsatı sayısı ve toplam inşaat alanına ilişkin mevcut bilgi ve
-belgelerin tarafıma yazılı olarak verilmesini talep ederim.
-
-Adı Soyadı: Mehmet Demir
+Adı Soyadı: Hatice Aydın
 T.C. Kimlik No: 98765432109
-E-posta: mehmet.demir@ornekmail.com
-Adres: Bahçelievler Mahallesi, 7. Sokak No: 3, Bahçelievler / İSTANBUL
+Adres: Sille Mahallesi, Şehit Er Sokak No: 12/4, Selçuklu / KONYA
+Telefon: 0555 246 81 03
 İmza`,
   },
+
+  // ══════════ Vatandaş → belediye: DOĞRULANMIŞ birim kaydı olan kurumlar ══════════
   {
-    id: "sikayet",
-    konu: "Temizlik araçlarının sabah gürültüsü şikâyeti",
-    label: "Şikâyet (eksik bilgi)",
+    id: "sikayet_gurultu",
+    tur: "sikayet",   // id benzersiz anahtar; SLA/kategori GEÇERLİ türü ister (test kilitler)
+    konu: "Gece çalışan işyeri kaynaklı gürültü şikâyeti",
+    label: "Gürültü Şikâyeti",
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "İmza ve iletişim bilgisi eksik görünüyor",
-    text: `Belediyeye bağlı temizlik araçları sabahın çok erken saatlerinde yüksek
-sesle çalışıp mahalleliyi rahatsız etmektedir. Bu durumdan dolayı şikâyetçiyim.
-Gereken işlemin yapılmasını istiyorum.`,
+    aciklama: "Çevresel gürültü — 2872 s. Çevre Kanunu; ölçüm yetkisi uzman birimde",
+    text: `T.C.
+SEYHAN BELEDİYE BAŞKANLIĞINA
+ADANA
+
+Tarih: 21.07.2026
+Konu: İşyeri kaynaklı gürültü şikâyeti
+
+Sayın Yetkili,
+
+Apartmanımızın zemin katında faaliyet gösteren kafeterya, hafta sonları saat
+02.00'ye kadar açık havada canlı müzik yayını yapmaktadır. Ses seviyesi
+pencereler kapalıyken dahi konuşmayı güçleştirecek düzeydedir. Binada üç
+öğrenci ve iki küçük çocuk bulunmaktadır.
+
+Anılan işyerinin ruhsatında canlı müzik izni bulunup bulunmadığının kontrol
+edilmesini, 2872 sayılı Çevre Kanunu kapsamında gürültü ölçümü yapılmasını ve
+sonucuna göre gerekli yasal işlemin tesis edilmesini şikâyeten arz ederim.
+
+Adı Soyadı: Emre Şahin
+Adres: Reşatbey Mahallesi, Atatürk Caddesi No: 47/3, Seyhan / ADANA
+Telefon: 0555 318 24 76
+E-posta: emre.sahin@ornekmail.com
+İmza`,
   },
   {
     id: "ihbar",
-    konu: "Ruhsatsız yapı ihbarı (Şenlik Mahallesi)",
+    konu: "Ruhsatsız yapı ihbarı (Kurtköy Mahallesi)",
     label: "Kaçak Yapı İhbarı",
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "Komşu parselde ruhsatsız kat çıkıldığı bildiriliyor, yerinde bakılmalı",
+    aciklama: "3194 s. İmar Kanunu — yerinde denetim ve yapı tatil tutanağı gerektirir",
     text: `T.C.
 PENDİK BELEDİYE BAŞKANLIĞINA
 İSTANBUL
 
-Tarih: 07.07.2026
-Konu: Ruhsatsız yapı ihbarı
+Tarih: 30.07.2026
+Konu: Ruhsatsız yapılaşma ihbarı
 
-Mahallemizde, komşu parselde gece gündüz devam eden ve ruhsatı bulunmadığını
-düşündüğüm bir inşaat yapılmaktadır. 3194 sayılı İmar Kanunu kapsamında gerekli
-denetimin yapılıp yasal işlem başlatılmasını ihbar ve talep ederim.
+Sayın Yetkili,
+
+Kurtköy Mahallesi Çınar Sokak üzerinde bulunan komşu parselde, yaklaşık üç
+haftadır gece saatlerinde de devam eden bir inşaat faaliyeti bulunmaktadır.
+Mevcut iki katlı binanın üzerine ilave kat çıkıldığı, şantiye alanında ruhsat
+levhası bulunmadığı gözlenmektedir.
+
+3194 sayılı İmar Kanunu kapsamında söz konusu yapının ruhsat durumunun yerinde
+denetlenmesini, ruhsatsız veya ruhsata aykırı olduğunun tespiti hâlinde gerekli
+yasal işlemin başlatılmasını ihbar ve talep ederim.
 
 Adı Soyadı: Zeynep Kaya
-Telefon: 0555 444 55 66
 Adres: Kurtköy Mahallesi, Çınar Sokak No: 9, Pendik / İSTANBUL
+Telefon: 0555 444 55 66
 İmza`,
   },
   {
-    id: "talep",
-    konu: "Personel yıllık izin talebi",
-    label: "İzin Talebi (süresi geçti)",
-    icon: "file",
-    grup: "Kurum",
-    aciklama: "Memur 14 gün yıllık izin istiyor",
+    id: "talep_ulasim",
+    tur: "talep",
+    konu: "Toplu taşıma hattı güzergâh ve sefer talebi",
+    label: "Ulaşım Hattı Talebi (KRİTİK süre)",
+    icon: "route",
+    grup: "Vatandaş",
+    aciklama: "Büyükşehir — yasal cevap süresinin son günlerinde",
     text: `T.C.
-İL SAĞLIK MÜDÜRLÜĞÜNE
-İZMİR
+VAN BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞINA
+VAN
 
-Tarih: 25.05.2026
-Konu: Yıllık izin talebi
+Tarih: 08.07.2026
+Konu: Toplu taşıma sefer sıklığı ve güzergâh talebi
 
-Müdürlüğünüz bünyesinde memur olarak görev yapmaktayım. 657 sayılı Devlet
-Memurları Kanunu kapsamında hak ettiğim yıllık iznimin 14.07.2026-28.07.2026
-tarihleri arasında kullandırılmasını arz ederim.
+Sayın Yetkili,
 
-Adı Soyadı: Elif Doğan
-Sicil No: 2026/5541
-Görev: Sağlık Memuru
+İpekyolu ilçesi Şerefiye Mahallesi ile şehir merkezi arasında çalışan otobüs
+hattının akşam 19.00'dan sonraki sefer aralığı kırk beş dakikaya çıkmaktadır.
+Mahallemizde vardiyalı çalışan çok sayıda vatandaş bulunmakta, bu kişiler işten
+çıkış saatlerinde uzun süre beklemek zorunda kalmaktadır.
+
+Anılan hattın akşam sefer sıklığının artırılmasını, mümkünse güzergâhın Şerefiye
+Mahallesi içindeki iki durağı kapsayacak şekilde düzenlenmesini talep ederim.
+Konuya ilişkin değerlendirmenin tarafıma bildirilmesini arz ederim.
+
+Adı Soyadı: Murat Çelik
+Adres: Şerefiye Mahallesi, Vali Konağı Caddesi No: 22, İpekyolu / VAN
+Telefon: 0555 432 19 87
+İmza`,
+  },
+  {
+    id: "sikayet",
+    konu: "Temizlik araçlarının erken saat gürültüsü (eksik bilgi)",
+    label: "Şikâyet — Eksik Bilgi",
+    icon: "alert",
+    grup: "Vatandaş",
+    aciklama: "Muhatap, tarih, kimlik ve iletişim YOK — sistem körlemesine yazı üretmeyip soru sorar",
+    text: `Belediyeye bağlı çöp toplama araçları sabah saat 05.00 civarında sokağa
+girmekte, konteyner boşaltma sırasında çıkan ses tüm apartmanı uyandırmaktadır.
+Bu durumdan uzun süredir rahatsızız.
+
+Çalışma saatlerinin makul bir vakte alınmasını istiyorum. Gereğinin yapılmasını
+bekliyorum.`,
+  },
+  {
+    id: "bilgi_edinme",
+    konu: "2025 yılı yapı ruhsatı istatistikleri bilgi talebi",
+    label: "Bilgi Edinme (süresi GEÇTİ)",
+    icon: "search",
+    grup: "Vatandaş",
+    aciklama: "4982 s.K. m.11 — 15 iş günü doldu; sistem gecikmeyi kırmızı işaretler",
+    text: `T.C.
+ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞINA
+ANKARA
+
+Tarih: 09.07.2026
+Konu: 4982 sayılı Kanun kapsamında bilgi talebi
+
+Sayın Yetkili,
+
+4982 sayılı Bilgi Edinme Hakkı Kanunu kapsamında, 2025 yılı içinde Ankara ili
+genelinde düzenlenen yapı ruhsatı sayısının ilçe bazında dağılımı ile bu
+ruhsatlara konu toplam inşaat alanının (m²) tarafıma yazılı olarak verilmesini
+talep ederim.
+
+Talebimin akademik bir çalışmada kullanılacağını, kişisel veri içermeyen
+toplulaştırılmış verinin yeterli olduğunu belirtirim.
+
+Adı Soyadı: Mehmet Demir
+Adres: Bahçelievler Mahallesi, 7. Cadde No: 3/8, Çankaya / ANKARA
+E-posta: mehmet.demir@ornekmail.com
+Telefon: 0555 907 46 12
 İmza`,
   },
   {
     id: "cimer",
-    konu: "CİMER başvurusu (toplu taşıma sefer sıklığı)",
-    label: "CİMER Başvurusu",
+    konu: "CİMER — pazar yeri hijyen ve denetim talebi",
+    label: "CİMER Başvurusu (KRİTİK süre)",
     icon: "search",
     grup: "Vatandaş",
-    aciklama: "CİMER'den düştü; akşam otobüs seferlerinin artırılması isteniyor",
+    aciklama: "CİMER'den düşen başvuru; yasal cevap süresinin son günü",
     text: `CİMER — Cumhurbaşkanlığı İletişim Merkezi
-Başvuru Türü: Talep/İstek
+Başvuru Türü: Şikâyet / Talep
+Başvuru No: 2026-CMR-4471829
 
-Tarih: 09.06.2026
-Konu: Toplu taşıma sefer sıklığı
+Tarih: 08.07.2026
+Konu: Semt pazarı hijyen koşulları ve denetim talebi
 
-İlçemizde akşam saatlerinden sonra belediye otobüslerinin sefer sıklığı çok
-azalmaktadır. Çalışan vatandaşların mağdur olmaması için sefer sayısının
-artırılması yönünde gereğinin yapılmasını ve tarafıma bilgi verilmesini talep
-ederim.
+İlgili Kurum: Kadıköy Belediye Başkanlığı
+
+Salı günleri kurulan semt pazarında, pazar dağıldıktan sonra atıkların uzun süre
+kaldırılmadığı, özellikle yaz aylarında ciddi koku ve sinek sorunu oluştuğu
+gözlenmektedir. Ayrıca gıda satışı yapılan bazı tezgâhlarda soğuk zincir
+koşullarının sağlanmadığı izlenimi edinilmiştir.
+
+Pazar sonrası temizlik programının gözden geçirilmesini, gıda tezgâhlarının
+hijyen yönünden denetlenmesini ve yapılan işlem hakkında tarafıma bilgi
+verilmesini talep ederim.
 
 Adı Soyadı: Ali Vural
 Telefon: 0555 777 88 99
 E-posta: ali.vural@ornekmail.com`,
   },
-
-  // ---------- Gerçek dilekçe şablonlarından uyarlanmış (bkz. dosya başı not) ----------
   {
-    id: "sikayet_gurultu",
-    tur: "sikayet",   // id benzersiz anahtar; SLA/kategori GEÇERLİ evrak türünü ister (bug avı bulgusu)
-    konu: "Gece çalışan işyeri gürültü şikâyeti",
-    label: "Gürültü Şikâyeti",
-    icon: "alert",
+    id: "basvuru",
+    konu: "İşyeri açma ve çalışma ruhsatı başvurusu",
+    label: "İşyeri Ruhsat Başvurusu",
+    icon: "doc",
     grup: "Vatandaş",
-    aciklama: "Gece çalışan işyerinden gürültü şikâyeti, tekrar eden başvuru",
-    text: `T.C.
-BAĞCILAR BELEDİYE BAŞKANLIĞINA
-İSTANBUL
-
-Tarih: 11.07.2026
-Konu: Gürültü kirliliği şikâyeti
-
-İkamet ettiğim binanın alt katında faaliyet gösteren eğlence mekânından
-kaynaklanan aşırı ve sürekli gürültü nedeniyle özellikle gece saatlerinde
-huzursuzluk yaşamaktayım. Mekân işletmecisi defalarca sözlü olarak
-uyarılmasına rağmen gürültü seviyesi düşürülmemiştir. 2872 sayılı Çevre
-Kanunu ve Gürültü Kontrol Yönetmeliği kapsamında gerekli gürültü ölçümünün
-yapılarak yasal işlem başlatılmasını talep ederim.
-
-Adı Soyadı: Hüseyin Arslan
-T.C. Kimlik No: 32165498770
-Adres: Yıldıztepe Mahallesi, Papatya Sokak No: 14/3, Bağcılar / İSTANBUL
-Telefon: 0555 234 56 78
-İmza`,
-  },
-  {
-    id: "talep_yol_tamiri",
-    tur: "talep",
-    konu: "Asfalt ve kaldırım yenileme talebi",
-    label: "Yol / Kaldırım Tamiri Talebi",
-    icon: "pencil",
-    grup: "Vatandaş",
-    aciklama: "Mahalle muhtarı asfalt ve kaldırım yenileme istiyor",
-    text: `T.C.
-ODUNPAZARI BELEDİYE BAŞKANLIĞINA
-Fen İşleri Müdürlüğüne
-ESKİŞEHİR
-
-Tarih: 08.07.2026
-Konu: Yol ve kaldırım yapımı talebi
-
-Belediyenizin hizmet bölgesinde bulunan sokakta ikamet etmekteyim.
-Sokağımızın asfalt yüzeyi ve kaldırımları; yapılan altyapı çalışmaları,
-iklim şartları ve araç trafiği nedeniyle büyük ölçüde yıpranmış olup
-araç ve yaya geçiş güvenliğini tehlikeye sokmaktadır. Belediyenizin
-hizmet planlaması dahilinde sokağımızdaki yol ve kaldırım yüzeyinin
-yenilenmesi hususunda gereğinin yapılmasını arz ve talep ederim.
-
-Adı Soyadı: Burak Şen
-T.C. Kimlik No: 65498712330
-Adres: Cumhuriyet Mahallesi, Menekşe Sokak No: 22, Odunpazarı / ESKİŞEHİR
-Telefon: 0555 456 78 90
-İmza`,
-  },
-  {
-    id: "sikayet_sokak_hayvani",
-    tur: "sikayet",
-    konu: "Sahipsiz hayvan bildirimi (Gül Sokak)",
-    label: "Başıboş Hayvan Şikâyeti",
-    icon: "alert",
-    grup: "Vatandaş",
-    aciklama: "Sahipsiz köpekler için 5199 kapsamında önlem isteniyor",
-    text: `T.C.
-AKDENİZ BELEDİYE BAŞKANLIĞINA
-Veteriner İşleri Müdürlüğüne
-MERSİN
-
-Tarih: 12.07.2026
-Konu: Başıboş sokak köpekleri hakkında şikâyet
-
-Mahallemizdeki park ve sokaklarda dolaşan başıboş köpekler nedeniyle
-gerek kendimiz gerekse çocuklarımız dışarıda yürümekten tedirginlik
-duymaktayız. Söz konusu köpeklerin zaman zaman geçen kişilere doğru
-saldırgan tavırlar sergilediği de gözlenmektedir. 5199 sayılı Hayvanları
-Koruma Kanunu'nun 6. maddesi uyarınca sahipsiz hayvanların ilgili
-bakımevine götürülerek gerekli sağlık ve güvenlik tedbirlerinin
-alınmasını talep ederim.
-
-Adı Soyadı: Emine Koç
-T.C. Kimlik No: 74185296302
-Adres: Barış Mahallesi, Leylak Sokak No: 6, Akdeniz / MERSİN
-Telefon: 0555 345 67 89
-İmza`,
-  },
-  {
-    id: "talep_aydinlatma",
-    tur: "talep",
-    konu: "Arızalı sokak aydınlatması bildirimi",
-    label: "Sokak Aydınlatması Arızası",
-    icon: "pencil",
-    grup: "Vatandaş",
-    aciklama: "Üç gündür yanmayan sokak lambası bildirimi",
+    aciklama: "Ekleri tam görünen başvuru — sistem eksik alan bulamayınca yeşil geçer",
     text: `T.C.
 NİLÜFER BELEDİYE BAŞKANLIĞINA
 BURSA
 
-Tarih: 06.07.2026
-Konu: Sokak aydınlatması arıza bildirimi ve talebi
+Tarih: 27.07.2026
+Konu: İşyeri açma ve çalışma ruhsatı başvurusu
 
-İkamet ettiğim sokaktaki aydınlatma direği uzun süredir arızalı olup
-akşam saatlerinden itibaren sokağımız tamamen karanlıkta kalmaktadır.
-Bu durum hem yaya güvenliği hem de asayiş açısından ciddi endişe
-yaratmaktadır. Söz konusu arızanın en kısa sürede giderilmesi, mümkün
-değilse bölgeye yeni bir aydınlatma direği yerleştirilmesi hususunda
-gereğinin yapılmasını rica ederim.
+Sayın Yetkili,
 
-Adı Soyadı: Derya Aksoy
-T.C. Kimlik No: 15975348620
-Adres: Konak Mahallesi, Nilüfer Caddesi No: 31/2, Nilüfer / BURSA
-Telefon: 0555 567 89 01
+İlçeniz sınırları içinde, aşağıda adresi belirtilen taşınmazda kırtasiye ve
+fotokopi işletmesi açmayı planlamaktayım. İşyeri açma ve çalışma ruhsatının
+düzenlenmesi için gereğini arz ederim.
+
+Adı Soyadı: Selin Arslan
+T.C. Kimlik No: 45678912303
+İşyeri Adresi: Ertuğrul Mahallesi, Nilüfer Caddesi No: 15/A, Nilüfer / BURSA
+Vergi Dairesi / No: Nilüfer VD - 4567891230
+Telefon: 0555 321 76 54
+E-posta: selin.arslan@ornekmail.com
+
+EKLER:
+1- Kira sözleşmesi örneği (2 sayfa)
+2- Vergi levhası fotokopisi (1 sayfa)
+3- Yapı kullanma izin belgesi fotokopisi (1 sayfa)
+4- İtfaiye raporu (1 sayfa)
+
 İmza`,
   },
 
-  // ---------- Kurum → kurum (SLA: vatandaş süresi yok → tanımsız) ----------
+  // ══════════ VİTRİN 3: muhatap ≠ yetkili → YETKİSİZLİK / DEVİR (3071 m.5) ══════════
+  {
+    id: "dilekce_aydinlatma",
+    tur: "dilekce",
+    konu: "Sokak aydınlatması arızası (yetkili kurum ayrımı)",
+    label: "Aydınlatma Arızası — Yetkisizlik ⭐",
+    icon: "alert",
+    grup: "Vatandaş",
+    aciklama: "Belediyeye yazılmış, ancak genel aydınlatma dağıtım şirketinin görevi — devir yazısı gerekir",
+    text: `T.C.
+ÇANKAYA BELEDİYE BAŞKANLIĞINA
+ANKARA
+
+Tarih: 02.07.2026
+Konu: Sokak aydınlatması arızası hk.
+
+Sayın Yetkili,
+
+İkamet ettiğim Aşağı Öveçler Mahallesi 1312. Sokak üzerindeki elektrik
+direklerine bağlı sokak aydınlatma armatürlerinden altı tanesi yaklaşık bir
+aydır yanmamaktadır. Sokak akşam saatlerinde tamamen karanlık kalmakta, yaya
+geçişi güvenli olmaktan çıkmaktadır.
+
+Arızanın giderilmesi için gereğinin yapılmasını, işlem yetkisinin başka bir
+kurumda olması hâlinde dilekçemin ilgili kuruma iletilerek tarafıma bilgi
+verilmesini arz ederim.
+
+Adı Soyadı: Fatma Öztürk
+Adres: Aşağı Öveçler Mahallesi, 1312. Sokak No: 8/5, Çankaya / ANKARA
+Telefon: 0555 654 32 10
+İmza`,
+  },
+
+  // ══════════ Kurum içi / kurum → kurum (SLA: vatandaş süresi yok → tanımsız) ══════════
+  {
+    id: "talep",
+    konu: "Personel yıllık izin talebi",
+    label: "Memur İzin Talebi (süresi GEÇTİ)",
+    icon: "clock",
+    grup: "Kurum",
+    aciklama: "657 s.K. kapsamında memur izni — sistem doğru mevzuat rejimini seçmeli (4857 değil)",
+    text: `T.C.
+KAYSERİ VALİLİĞİNE
+(İl Yazı İşleri Müdürlüğü)
+
+Tarih: 02.07.2026
+Konu: Yıllık izin talebi
+
+Valiliğiniz bünyesinde Veri Hazırlama ve Kontrol İşletmeni olarak görev
+yapmaktayım. 657 sayılı Devlet Memurları Kanununun 102 nci maddesi uyarınca hak
+etmiş olduğum yıllık iznimin 17.08.2026 - 31.08.2026 tarihleri arasında (14 gün)
+kullandırılması hususunda;
+
+Gereğini arz ederim.
+
+Adı Soyadı: Elif Doğan
+Sicil No: 2026/5541
+Unvan: Veri Hazırlama ve Kontrol İşletmeni
+Birim: İl Yazı İşleri Müdürlüğü
+İmza`,
+  },
   {
     id: "ust_yazi",
-    konu: "Adres kayıt sistemi güncelleme çalışmaları",
-    label: "Üst Yazı",
-    icon: "landmark",
+    konu: "Muhtarlık ödeneği ödemelerine ilişkin veri talebi",
+    label: "Üst Yazı (Valilik → Kaymakamlık)",
+    icon: "send",
     grup: "Kurum",
-    aciklama: "Bakanlıktan gelen adres kayıt yazısı, kayda alınacak",
+    aciklama: "Kurumdan kuruma resmî yazı — 2646 formatı, üst makamdan geldiği için 'rica ederim'",
     text: `T.C.
-İÇİŞLERİ BAKANLIĞI
-Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü
+KÜTAHYA VALİLİĞİ
+İl Yazı İşleri Müdürlüğü
 
-Sayı : E-45678257-622.03-2026/1487
-Tarih: 18.06.2026
-Konu : Adres kayıt sistemi güncelleme çalışmaları
+Sayı : E-15784236-045.03-2026/1187
+Konu : Muhtarlık ödeneği ödemeleri
 
-Adres Kayıt Sistemi'nde tespit edilen mükerrer kayıtların temizlenmesine
-yönelik çalışmaların 2026 yılı üçüncü çeyreğinde tamamlanması planlanmaktadır.
-Konuya ilişkin il müdürlüklerinin bilgilendirilmesi hususunda;
+TAVŞANLI KAYMAKAMLIĞINA
+
+İlgi : Bakanlığımız İller İdaresi Genel Müdürlüğünün 24.07.2026 tarihli ve
+       E-89451236-045.03-2026/4412 sayılı yazısı.
+
+İlgi yazı ile İlimiz genelinde 2026 yılı ikinci üç aylık döneminde muhtarlara
+yapılan ödenek ödemelerine ilişkin bilgilerin derlenmesi istenilmektedir.
+
+Bu kapsamda; İlçeniz sınırları içindeki mahalle ve köy muhtarlıklarına anılan
+dönemde yapılan ödeme tutarlarının, ödeme tarihlerinin ve varsa ödenememiş
+muhtarlık sayısının ekli çizelgeye işlenerek 20.08.2026 tarihine kadar
+Müdürlüğümüze gönderilmesi hususunda;
 
 Gereğini rica ederim.
 
-Dr. Selim Kaya
-Genel Müdür
-e-imza`,
+                                                        Ahmet KILIÇ
+                                                        Vali a.
+                                                        İl Yazı İşleri Müdürü
+
+EK: Ödeme bilgi çizelgesi (1 sayfa)`,
   },
   {
     id: "muzekkere",
-    konu: "Sigortalılık kayıtlarının celbi müzekkeresi",
-    label: "Müzekkere",
-    icon: "file",
-    grup: "Kurum",
-    aciklama: "SGK dava dosyası için kayıt celbi istiyor",
-    text: `T.C.
-SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI
-Hukuk Müşavirliği
-
-Sayı : E-72615498-640-2026/2210
-Tarih: 09.06.2026
-Konu : Müzekkere — sigortalılık kayıtlarının celbi
-
-İdaremiz aleyhine açılan tam yargı davasında kullanılmak üzere, aşağıda
-kimlik bilgileri yazılı kişinin 2018-2024 dönemine ait hizmet ve prim
-ödeme kayıtlarının bir örneğinin acilen Müşavirliğimize gönderilmesi
-hususunu rica ederim.
-
-İlgili Kişi: Hasan Aydın
-Kurum Sicil No: 2026/2210
-1. Hukuk Müşaviri
-e-imza`,
-  },
-  {
-    id: "gorus_mutalaa",
-    konu: "Doğrudan temin hakkında hukuki görüş istemi",
-    label: "Görüş / Mütalaa",
+    konu: "Hizmet alımı ihalesi öncesi hukuki değerlendirme",
+    label: "Müzekkere (birimler arası)",
     icon: "scale",
     grup: "Kurum",
-    aciklama: "4734 sayılı Kanun kapsamında hukuki mütalaa talebi",
+    aciklama: "Birimden birime iç yazışma — 4734 s. Kamu İhale Kanunu değerlendirmesi isteniyor",
     text: `T.C.
-SANAYİ VE TEKNOLOJİ BAKANLIĞI
-Strateji Geliştirme Başkanlığı
+ÇANKAYA BELEDİYE BAŞKANLIĞI
+Destek Hizmetleri Müdürlüğü
 
-Sayı : E-31204765-045-2026/0987
-Tarih: 27.05.2026
-Konu : Doğrudan temin sınırı hakkında hukuki mütalaa talebi
+Sayı : E-77451298-934.02-2026/318
+Konu : Personel taşıma hizmeti alımı hk.
 
-4734 sayılı Kanun'un 22. maddesi kapsamında yıl içinde yapılan doğrudan
-temin alımlarında parasal sınırın hesaplanmasına ilişkin tereddüt
-oluşmuştur. Konuya dair hukuki görüş ve mütalaanızın bildirilmesini
-arz ederim.
+HUKUK İŞLERİ MÜDÜRLÜĞÜNE
 
-Birim Amiri
-Mali Hizmetler Uzmanı
-e-imza`,
-  },
-  {
-    id: "genelge_talimat_olur",
-    konu: "Kurum içi genelge (makam oluru)",
-    label: "Genelge / Olur",
-    icon: "landmark",
-    grup: "Kurum",
-    aciklama: "Kurum içi genelge; makam oluru gerektirir",
-    text: `T.C.
-GENÇLİK VE SPOR BAKANLIĞI
-Personel Genel Müdürlüğü
+İlgi : Başkanlık Makamının 28.07.2026 tarihli ve 2026/216 sayılı Olur'u.
 
-Sayı : E-55012398-010.06-2026/0033
-Tarih: 12.06.2026
-Konu : Mesai saatleri düzenlemesi (Genelge)
+Müdürlüğümüzce 2027 yılı personel taşıma hizmeti alımı için ihale hazırlıkları
+yürütülmektedir. Hazırlanan teknik şartname taslağında, yüklenicinin araç
+filosunun azami yaşına ve sürücülerin mesleki yeterlilik belgesine ilişkin
+kriterler öngörülmüştür.
 
-Yaz dönemi çalışma saatlerine ilişkin olarak, taşra teşkilatında mesai
-başlangıç ve bitiş saatlerinin aşağıdaki şekilde uygulanması ve konunun
-tüm birimlere duyurulması hususunda;
+Söz konusu kriterlerin 4734 sayılı Kamu İhale Kanunu ile ikincil mevzuatı
+karşısında rekabeti engelleyici nitelik taşıyıp taşımadığı hususunda
+Müdürlüğünüz görüşünün bildirilmesini;
 
-Olur'larınıza arz ederim.
+Rica ederim.
 
-Genel Müdür
-e-imza`,
+                                                        Burak TEKİN
+                                                        Destek Hizmetleri Müdürü
+
+EK: Teknik şartname taslağı (6 sayfa)`,
   },
 
-  // ---------- Hukuk / mali (PII: IBAN maskeleme; SLA tanımsız) ----------
-  {
-    id: "tebligat",
-    konu: "Yıkım kararı tebligatı",
-    label: "Tebligat",
-    icon: "mail",
-    grup: "Hukuk/Mali",
-    aciklama: "7201 sayılı Kanun kapsamında yıkım kararı tebligatı",
-    text: `T.C.
-KEÇİÖREN BELEDİYE BAŞKANLIĞI
-İmar ve Şehircilik Müdürlüğü
-
-Sayı : E-88451203-755-2026/0421
-Tarih: 22.06.2026
-Konu : Ruhsatsız yapı hakkında yıkım kararının tebliği
-
-7201 sayılı Tebligat Kanunu hükümleri uyarınca, aşağıda kimlik bilgileri
-yazılı ilgiliye, ruhsatsız yapının 3194 sayılı İmar Kanunu m.32 gereği
-yıkımına ilişkin Encümen kararı işbu yazı ile tebliğ edilir. Karara karşı
-idari yargıda dava açma süresi tebliğ tarihinden itibaren başlar.
-
-İlgili: Fatma Şahin
-Karar No: 2026/0421
-Belediye Başkanı a.
-Müdür
-e-imza`,
-  },
+  // ══════════ Hukuk / mali — PII: IBAN maskeleme; SLA tanımsız ══════════
   {
     id: "icra_evraki",
-    konu: "Ödeme emri ve haciz ihbarnamesi",
-    label: "İcra / Haciz (IBAN)",
-    icon: "receipt",
-    grup: "Hukuk/Mali",
-    aciklama: "2004 sayılı İcra ve İflas Kanunu kapsamında ödeme emri; mali kayıtlar 10 yıl saklanır",
-    text: `T.C.
-ANKARA 14. İCRA DAİRESİ
-
-Sayı : 2026/3344 E.
-Tarih: 30.05.2026
-Konu : Ödeme emri ve haciz ihbarnamesi
-
-İlamsız icra takibi kapsamında, aşağıda bilgileri yazılı borçluya işbu
-ödeme emri tebliğ olunur. Borca ve takibe itiraz süresi tebliğ tarihinden
-itibaren 7 gündür. Süresinde ödeme yapılmaması halinde belirtilen banka
-hesabı üzerine haciz işlemi başlatılacaktır.
-
-Borçlu: Kemal Öztürk
-Dosya No: 2026/3344
-IBAN: TR00 0000 0000 0000 0000 0000 00
-Telefon: 0555 987 65 43
-İcra Müdürü
-e-imza`,
-  },
-  {
-    id: "dava_evraki",
-    konu: "İdari yargı ara kararı (savunma istemi)",
-    label: "Dava Evrakı (mahkeme)",
+    konu: "İcra dairesi maaş haczi müzekkeresi",
+    label: "İcra Müzekkeresi (IBAN maskeleme)",
     icon: "scale",
     grup: "Hukuk/Mali",
-    aciklama: "Mahkeme savunma istiyor, süre işliyor",
+    aciklama: "2004 s. İcra ve İflas Kanunu — IBAN ve borçlu bilgisi maskelenmeli",
     text: `T.C.
-ANKARA 5. İDARE MAHKEMESİ
+ANKARA 12. İCRA DAİRESİ
 
-Esas No : 2026/1789
-Tarih: 04.06.2026
-Konu : Savunma ve işlem dosyası istemi
+Dosya No : 2026/8847 E.
+Konu     : Maaş haczi müzekkeresi
 
-Mahkememizde görülmekte olan iptal davasında, dava konusu idari işleme
-ilişkin tüm bilgi ve belgeler ile idarenin savunmasının, tebliğ tarihinden
-itibaren 30 gün içinde Mahkememize gönderilmesi hususu 2577 sayılı Kanun
-uyarınca rica olunur.
+ÇANKAYA BELEDİYE BAŞKANLIĞINA
 
-Davacı: Örnek Yapı A.Ş. vekili
-Yazı İşleri Müdürü
-e-imza`,
-  },
-  {
-    id: "fatura",
-    konu: "Mal ve hizmet bedeli ödeme talebi",
-    label: "Fatura / Ödeme (IBAN)",
-    icon: "card",
-    grup: "Hukuk/Mali",
-    aciklama: "Tedarikçi fatura bedelinin ödenmesini talep ediyor",
-    text: `T.C.
-GAZİ ÜNİVERSİTESİ REKTÖRLÜĞÜ
-Strateji Geliştirme Daire Başkanlığına
+Dairemizin yukarıda numarası yazılı dosyasından, aşağıda kimlik bilgileri
+belirtilen borçlu hakkında yürütülen takip kesinleşmiştir.
 
-Sayı : E-15903742-841-2026/1156
-Tarih: 14.06.2026
-Konu : Kırtasiye malzemesi alımı fatura bedelinin ödenmesi
+2004 sayılı İcra ve İflas Kanununun 355 inci maddesi uyarınca; borçlunun
+kurumunuzdan almakta olduğu maaş ve diğer ödemelerinin haczi ile kesilecek
+tutarın aşağıdaki hesaba yatırılması, borçlunun kurumunuzdaki görevinden
+ayrılması hâlinde durumun derhâl Dairemize bildirilmesi hususunda gereği rica
+olunur.
 
-İdaremiz birimlerinin ihtiyacı için piyasadan temin edilen kırtasiye
-malzemelerine ilişkin ekte sunulan faturaya istinaden, 24.750,00 TL
-tutarındaki bedelin firmanın hesabına ödenmesi (tahakkuk ettirilmesi)
-hususunda gereğini arz ederim.
+Borçlu           : Kemal Yıldırım
+T.C. Kimlik No   : 32165498701
+Alacaklı         : Örnek Finans A.Ş.
+Takip Tutarı     : 47.850,00 TL
+Ödeme Hesabı     : TR33 0006 1005 1978 6457 8413 26
 
-Firma: Örnek Kırtasiye Ltd. Şti.
-Fatura No: ORN2026000158
-IBAN: TR12 3456 7890 1234 5678 9012 34
-Birim Amiri
-e-imza`,
+Tarih: 31.07.2026
+
+                                                        İcra Müdür Yardımcısı`,
   },
 
-  // ---------- Diğer / abstention (belirsiz → düşük güven / soru) ----------
-  {
-    id: "rapor",
-    konu: "Denetim ve inceleme raporu",
-    label: "İnceleme Raporu",
-    icon: "file",
-    grup: "Kurum",
-    aciklama: "Teftiş raporu geldi, gereği için dağıtılacak",
-    text: `T.C.
-TARIM VE ORMAN BAKANLIĞI
-İl Müdürlüğü — İnceleme Heyeti
-
-Sayı : E-40317295-260-2026/0512
-Tarih: 20.06.2026
-Konu : Yerinde inceleme raporu
-
-İlçemizde faaliyet gösteren tesise ilişkin şikâyet üzerine yapılan yerinde
-incelemede, atık yönetimi kayıtlarının eksik tutulduğu tespit edilmiştir.
-Tespit edilen eksikliklerin giderilmesi için ilgili birime bildirim yapılması
-uygun görülmüştür. İş bu rapor üç nüsha düzenlenmiştir.
-
-Heyet Başkanı
-Ziraat Mühendisi
-e-imza`,
-  },
+  // ══════════ Abstention — sistem emin değilse EMİN DEĞİLİM demeli ══════════
   {
     id: "belirsiz",
-    konu: "Konusu belirsiz başvuru",
-    label: "Belirsiz İçerik",
-    icon: "alert",
+    konu: "Tür tespiti güç, eksik metin",
+    label: "Belirsiz Evrak (abstention)",
+    icon: "search",
     grup: "Kurum",
-    aciklama: "İçeriği belirsiz başvuru; tür ataması memur onayına bırakılır",
-    text: `Merhaba,
+    aciklama: "Ne talep ne şikâyet — sistem tahmin yürütmeyip düşük güven bildirmeli",
+    text: `Ekte gönderilen listeye ilişkin olarak, daha önce görüşülen hususlar
+çerçevesinde gereğinin yapılmasını,
 
-Geçen hafta konuştuğumuz konuyla ilgili olarak, sizden bir an önce dönüş
-bekliyorum. Gerekli evrağı ilettiğimi düşünüyorum, ancak emin değilim.
-Uygun olduğunuzda ilgilenebilirseniz sevinirim.
+Bilgilerinize.
 
-Teşekkürler.`,
+EK: Liste (2 sayfa)`,
   },
 ];

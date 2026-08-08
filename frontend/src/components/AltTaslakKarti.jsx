@@ -16,6 +16,7 @@ import TurSecici from "./TurSecici.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import A4Belge from "./A4Belge.jsx";
 import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
+import { ParlaKenar } from "./gorsel.jsx";
 
 /* Pager ok düğmesi — başlık şeridine gömülü (ayrı üst satır AÇMAZ, kartın dış kutusu komşu
    kolonlarla aynı y'de başlamalı). onPrev/onNext verilmezse AltTaslakKarti bunu hiç render etmez. */
@@ -75,6 +76,17 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
   const kilitli = bitti || !!uretilen;
   return (
     <div className="sc-draft-card" style={{ position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      {/* KARARIN MÜHÜRLENMESİ — kart kenarında TEK TUR dolaşan ışık. Ürünün doruk anı burası:
+          memur resmî yazıyı onaylıyor ya da reddediyor; geri dönüşü olan bir işlem değil.
+          Neden BU kart: karar verilince kart ekranda KALIYOR (gönderim başka görünüme
+          navigasyon yapmaz), yani ışık gerçekten görülüyor.
+          Renk kararı taşır — yeşil onay, kırmızı ret — ama renk TEK sinyal değil: aynı bilgi
+          rozette metinle de yazıyor. `durum` null'dan çıkınca bir kez oynar ve biter;
+          sonsuz döngü YOK (8 saatlik mesaide durmayan ışık periferik dikkat hırsızıdır).
+          reduced-motion'da hiç kurulmaz — kararın kendisi rozetten okunmaya devam eder. */}
+      {bitti && (
+        <ParlaKenar anahtar={durum} renk={durum === "gonderildi" ? BANT.yesil.c : BANT.kirmizi.c} />
+      )}
       {/* Başlık şeridi — [◀ pager] ikon + "Resmî yazı taslağı" · tür seçici · A4 büyüt [pager ▶].
           Ana taslak başlığıyla BİREBİR aynı; yalnız pager okları eklenir (onPrev/onNext varsa). */}
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>

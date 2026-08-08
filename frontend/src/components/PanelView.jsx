@@ -34,6 +34,9 @@ import { olcumler, ortalama, genelTrend, hizKademe, gunlukOrtSure, fmtSn } from 
 import { kalanMetin } from "../lib/sureTakvimi.js";
 import { adBuyut } from "../lib/trMetin.js";
 import { GUN_MS, gunBasi, gunlukSeri } from "../lib/gunlukSeri.js";
+// Görsel katman — imleç ışığı + atmosfer zemini. Renkleri token'lardan alır, kendi
+// paletini icat etmez; koyu tema kendiliğinden çalışır. Bkz. gorsel.jsx başlığı.
+import { IsikYuzeyi } from "./gorsel.jsx";
 
 const fmtSaat = (ts) => { try { return new Date(ts).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
 const fmtGunSaat = (ts) => { try { return new Date(ts).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
@@ -102,6 +105,9 @@ function AkisHucre({ label, value, icon, onClick, ariaLabel, gunluk, i }) {
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={{ cursor: "pointer", textAlign: "left", padding: `${SP.xl}px ${SP.l}px`,
+        // width/height %100: hücre artık IsikYuzeyi sarmalayıcısının içinde yaşıyor;
+        // esnemezse ışık katmanı hücreden büyük kalır ve aydınlanma kenarda kesilir.
+        width: "100%", height: "100%",
         background: "transparent", border: "none",
         borderLeft: i % 2 === 1 ? `1px solid ${PAL.line}` : "none",
         borderTop: i >= 2 ? `1px solid ${PAL.line}` : "none", borderRadius: RAD.ctl,
@@ -573,6 +579,8 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
 
   return (
     <ViewWrap id="panel-h" title="Panel" sub={manset}>
+      {/* Atmosfer ARTIK ViewWrap'ten geliyor (tüm görünümler tek yerden alır) — burada
+          mükerrer katman yok. */}
       {/* Giriş: tek nefes — nu-rise yalnız konteynere, kart kart stagger yok. */}
       <div style={{ display: "grid", gridTemplateColumns: genis ? "repeat(12, 1fr)" : "1fr", gap: SP.l, alignItems: "start", animation: `nu-rise .16s ${EASE.out} both` }}>
 
@@ -588,13 +596,25 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
             görünmez olur. aria-label sayıyı da taşır — salt eylem etiketi panelin ana
             verisini ekran okuyucudan gizliyordu (review bulgusu). */}
         {n > 0 && (
+          /* Ölçü şeridi — dört hücrenin her biri kendi ışığını taşır (IsikYuzeyi): imleç
+             hangi hücrenin üstündeyse orası aydınlanır. Işık İÇERİĞİN ALTINDA kalır, yani
+             sayı ve etiketin kontrastı hiç düşmez. Dokunmatik cihazda ve reduced-motion'da
+             katman hiç kurulmaz (tap = hover yanlış tetiklemesi + hareket kısıtı). */
           <div style={{ ...span(8), alignSelf: "stretch", height: "100%", background: PAL.surf,
             border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
-            display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridAutoRows: "1fr" }}>
-            <AkisHucre label="İşlenen Evrak" value={n} icon={<Icon.doc />} onClick={onGoIslenen} ariaLabel={`${n} işlenen evrak — arşivi aç`} gunluk={akisIslenen} i={0} />
-            <AkisHucre label="Gelen Evrak" value={inboxCount} icon={<Icon.inbox />} onClick={() => onGoInbox()} ariaLabel={`${inboxCount} gelen evrak — kuyruğu aç`} gunluk={null} i={1} />
-            <AkisHucre label="Üretilen Taslak" value={taslaklilar.length} icon={<Icon.edit />} onClick={onGoTaslaklar || onGoIslenen} ariaLabel={`${taslaklilar.length} üretilen taslak — Taslaklar'ı aç`} gunluk={akisTaslak} i={2} />
-            <AkisHucre label="Gönderilen Evrak" value={gonderilenler.length} icon={<Icon.send />} onClick={onGoGiden} ariaLabel={`${gonderilenler.length} gönderilen evrak — Giden arşivini aç`} gunluk={akisGiden} i={3} />
+            display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridAutoRows: "1fr",
+            overflow: "hidden" }}>
+            {[
+              { label: "İşlenen Evrak", value: n, icon: <Icon.doc />, onClick: onGoIslenen, ariaLabel: `${n} işlenen evrak — arşivi aç`, gunluk: akisIslenen, renk: T },
+              { label: "Gelen Evrak", value: inboxCount, icon: <Icon.inbox />, onClick: () => onGoInbox(), ariaLabel: `${inboxCount} gelen evrak — kuyruğu aç`, gunluk: null, renk: T },
+              { label: "Üretilen Taslak", value: taslaklilar.length, icon: <Icon.edit />, onClick: onGoTaslaklar || onGoIslenen, ariaLabel: `${taslaklilar.length} üretilen taslak — Taslaklar'ı aç`, gunluk: akisTaslak, renk: V },
+              { label: "Gönderilen Evrak", value: gonderilenler.length, icon: <Icon.send />, onClick: onGoGiden, ariaLabel: `${gonderilenler.length} gönderilen evrak — Giden arşivini aç`, gunluk: akisGiden, renk: V },
+            ].map((h, i) => (
+              <IsikYuzeyi key={h.label} renk={h.renk} guc={0.16} cap={300}
+                style={{ display: "flex", minWidth: 0 }}>
+                <AkisHucre {...h} i={i} />
+              </IsikYuzeyi>
+            ))}
           </div>
         )}
         {/* Takvim — kuyrukSla'nın AY izdüşümü (yeni veri kaynağı YOK; brifle aynı dizi).

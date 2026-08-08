@@ -1,0 +1,12 @@
+# kamu-evrak — demo dağıtımı arama motorlarına KAPALIDIR.
+#
+# Bu dosya üç katmanlı gizlilik savunmasının en zayıf ama en ucuz halkasıdır:
+# yalnız NAZİK tarayıcıyı durdurur ve dışarıdan link verilmiş bir URL yine de
+# sonuçlarda çıplak bağlantı olarak görünebilir. Asıl koruma backend'in her yanıta
+# bastığı `X-Robots-Tag: noindex` başlığı (JSON, PDF, DOCX dâhil) ve app.html'deki
+# `<meta name="robots">` etiketidir.
+#
+# Vite `public/` içeriğini dist'e AYNEN kopyalar — ek yapılandırma gerekmez.
+
+User-agent: *
+Disallow: /

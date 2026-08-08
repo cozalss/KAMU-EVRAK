@@ -18,15 +18,24 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from agents.config import LLM_MODE
 from api.middleware.body_size import MaxBodySizeMiddleware
+from api.middleware.demo_kapisi import DemoKapisiMiddleware
 from api.middleware.ratelimit import setup_rate_limiting
 from api.middleware.security_headers import SecurityHeadersMiddleware
 from api.routes import kayitlar, mevzuat, mobil, multimodal, process_doc, sla, sohbet, yazi
 from auth import auth_router
+from core import demo_butce, demo_guard
+from core.logging import configure_logging
+
+# structlog'u İLK İŞ yapılandır — `log = structlog.get_logger()` satırından da, herhangi bir
+# router import'undan da önce. Yapılandırılmamış structlog varsayılan seviye 0'da koşar:
+# log.debug dahil HER ŞEY maskesiz akar ve ham evrak metni/dosya adı log'a düşer (KVKK).
+# Bu çağrı olmadan `api/pii.py:3`'ün belgelediği maskeleme sözleşmesi kurulmuş SAYILMAZ.
+configure_logging()
 
 log = structlog.get_logger()
 
@@ -36,6 +45,12 @@ async def lifespan(app: FastAPI):
     # TODO(kamu-evrak): Gelecek faz — mevzuat-RAG embedder + reranker preload (ADALET
     # deseni); şu an retrieval lazy/stub, ağır model preload yok (hızlı boot tercih edildi).
     log.info("startup", llm_mode=LLM_MODE)
+    # Demo günlük harcamasını kalıcı katmandan geri yükle — ücretsiz katmanda dosya
+    # sistemi yeniden başlatmada silinir ve tavan sıfırlanırdı.
+    try:
+        await demo_butce.kalici_tohumla()
+    except Exception as exc:
+        log.error("demo_kalici_tohumlama_hatasi", hata=type(exc).__name__)
     try:
         yield
     finally:
@@ -56,6 +71,8 @@ async def lifespan(app: FastAPI):
 
 
 _APP_ENV_PROD = os.getenv("APP_ENV", "").strip().lower() in ("prod", "production")
+# Statik frontend kökü — "/" rotası ve alttaki mount ikisi de bunu okur.
+_STATIK_KOK = os.getenv("STATIK_KOK", "").strip()
 
 app = FastAPI(
     title="kamu-evrak — Akıllı Agent Destek Sistemi",
@@ -68,6 +85,13 @@ app = FastAPI(
     redoc_url=None if _APP_ENV_PROD else "/redoc",
     openapi_url=None if _APP_ENV_PROD else "/openapi.json",
 )
+
+# Demo kapısı — günlük belge kotası + günlük para tavanı (yalnız DEMO_KORUMA=1 iken etkin).
+# SecurityHeaders'tan ÖNCE eklenir: Starlette add_middleware'i 0. indekse sokup yığını
+# reversed() kurduğu için ilk eklenen EN İÇTE kalır. Sonuç: kapı MaxBodySize'ın 413'ünden
+# SONRA koşar (büyük gövde kota yakmaz) ve SecurityHeaders'ın İÇİNDE kalır (402/429 gövdesi
+# de nosniff/CSP taşır). Bayrak kapalıyken __call__ ilk satırda geçirir → sıfır maliyet.
+app.add_middleware(DemoKapisiMiddleware)
 
 # Güvenlik başlıkları — her yanıta nosniff/DENY/Referrer-Policy/CSP (clickjacking + MIME guard).
 app.add_middleware(SecurityHeadersMiddleware)
@@ -89,6 +113,17 @@ if "*" in _origins:
     raise RuntimeError(
         "CORS_ORIGINS='*' allow_credentials=True ile birlikte kullanılamaz — "
         "spesifik origin listesi ver (virgülle ayrılmış).")
+
+# Demo modu boot kapısı — AYNI fail-fast disiplini. DEMO_KORUMA=1 iken güvensiz
+# konfigürasyon (DB_PERSIST=1, SQL_ECHO=1, localhost CORS, tavansız bütçe...) süreci
+# HİÇ AÇTIRMAZ. "Yabancının belgesi DB'ye yazılmaz" garantisi böylece ters çevrilebilir
+# bir varsayılana değil, yapısal bir imkânsızlığa dayanır.
+demo_guard.dogrula_veya_dur()
+if demo_guard.demo_modu():
+    # Yanlış yazılmış bir bayrak faturada değil, açılışın ilk on satırında görünsün.
+    log.info("demo_koruma_acik", **demo_guard.boot_ozeti())
+    for _uyari in demo_guard.uyarilar():
+        log.warning("demo_koruma_uyari", uyari=_uyari)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins,
@@ -135,6 +170,31 @@ def _active_llm() -> str:
         return "unknown"
 
 
+@app.get("/demo/durum")
+async def demo_durum(request: Request) -> dict[str, Any]:
+    """Ziyaretçinin kalan günlük demo hakkı — HAK YAKMADAN (`kota_bak`).
+
+    Kenar çubuğundaki "Bugün kalan: 2 / 3" sayacı bunu okur. GET olduğu için demo
+    kapısının ücretli listesine girmez; `kota_bak` sayaç artırmaz.
+    Koruma kapalıyken `aktif: false` döner ve frontend sayacı hiç göstermez.
+    """
+    if not demo_butce.demo_acik():
+        return {"aktif": False}
+    from api.demo_kimlik import ziyaretci_kimligi
+    from core import demo_kota
+
+    kimlik = ziyaretci_kimligi(request.scope)
+    durum = demo_kota.kota_bak(kimlik.anahtar, kimlik.ag_anahtari)
+    return {
+        "aktif": True,
+        "kalan": durum.kalan_ziyaretci,
+        "gunluk": demo_kota.gunluk_ziyaretci(),
+        "kalan_ag": durum.kalan_ag,
+        # Bütçe tavanı dolduysa kota dolu olmasa bile işlem yapılamaz — UI bunu ayırt etsin.
+        "butce_acik": demo_butce.acik_mi(),
+    }
+
+
 @app.get("/health")
 async def health() -> dict[str, Any]:
     """Sağlık kontrolü — istenen LLM modu + GERÇEK aktif client + pipeline node SAYISI.
@@ -175,7 +235,21 @@ async def _db_ping(timeout_s: float = 2.0) -> bool:
 
 
 @app.get("/")
-async def root() -> dict[str, str]:
+async def root():
+    """Kök: statik frontend bağlıysa landing sayfası, değilse API kimlik kartı.
+
+    Bu rota "/" mount'undan ÖNCE tanımlıdır ve onu gölgeler — tek servis dağıtımında
+    ana adres JSON döndürüyordu (konteyner koşumunda ölçüldü). Statik kökte index.html
+    varsa onu sunar; yoksa eski davranış aynen korunur (yerel dev, API-only kurulum).
+    """
+    if _STATIK_KOK:
+        from pathlib import Path as _Yol
+
+        from fastapi.responses import FileResponse
+
+        _idx = _Yol(_STATIK_KOK) / "index.html"
+        if _idx.is_file():
+            return FileResponse(str(_idx))
     return {"app": "kamu-evrak", "scenario": "TEKNOFEST 2026 — 1. Senaryo", "docs": "/docs"}
 
 
@@ -211,6 +285,37 @@ def _port_bos_mu(host: str, port: int) -> bool:
         return False
     finally:
         probe.close()
+
+
+# ---------------------------------------------------------------- statik frontend
+# TEK SERVİS DAĞITIMI: frontend'i backend'in kendisi sunar.
+#
+# NEDEN böyle (Vercel + ayrı backend yerine): iki origin, aralarında yönetilmesi gereken
+# bir sınır demektir ve o sınır üç sorun doğuruyordu — (1) ziyaretçi çerezi `SameSite=Lax`
+# olduğu için siteler-arası GÖNDERİLMEZ, yani herkes çerezsiz kovaya düşer ve tüm demo
+# günde `DEMO_KOTA_AG_GUN` belgeyle kilitlenir; (2) CORS + credentials yapılandırması;
+# (3) SSE akışının vekilde tamponlanma riski. Tek origin bu üçünü de VAR ETMEZ.
+# Ek fayda: `X-Robots-Tag` başlığı HTML'i de kapsar → arama motoruna kapalılık tek
+# katmana iner.
+#
+# MUTLAKA EN SONDA: "/" kök mount'u kendisinden SONRA tanımlanan her yolu gölgeler.
+# Bu blok tüm router'lardan, /health'ten ve /demo/durum'dan sonradır — API yolları kazanır.
+if _STATIK_KOK:
+    from pathlib import Path as _Path
+
+    from fastapi.staticfiles import StaticFiles
+
+    _kok = _Path(_STATIK_KOK)
+    if _kok.is_dir():
+        # html=True: dizin isteği index.html'e düşer (landing). Çalışma alanı /app.html.
+        app.mount("/", StaticFiles(directory=str(_kok), html=True), name="statik")
+        log.info("statik_frontend_baglandi", kok=str(_kok),
+                 app_html=(_kok / "app.html").is_file(),
+                 robots=(_kok / "robots.txt").is_file())
+    else:
+        # Sessizce geçmek, dağıtımda "site açılmıyor" olarak geri döner — yüksek sesle söyle.
+        log.error("statik_kok_bulunamadi", kok=str(_kok),
+                  not_="STATIK_KOK verildi ama dizin yok; frontend SUNULMAYACAK")
 
 
 if __name__ == "__main__":

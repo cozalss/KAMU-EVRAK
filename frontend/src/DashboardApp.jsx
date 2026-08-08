@@ -11,6 +11,7 @@ import { flushSync } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { MotionConfig } from "motion/react";
+import { KvkkOnamModal, useKvkkOnam } from "./components/KvkkOnamKapisi.jsx";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { createSekans, sonrakiSecim } from "./lib/dayanakSecim.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
@@ -111,7 +112,7 @@ const gecisle = (fn) => {
 
 export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
-    nodes, result, busy, error, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
+    nodes, result, busy, error, errorKind, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
     runFile, runSample, resume, cancelRun, download, showToast, dismissError, canRetry, retry, runBase, applyTaslak,
   } = usePipeline();
 
@@ -298,6 +299,18 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // geri çekilme — uzak Supabase'in DNS düşmelerine dayanıklı; provider varsayılanları
   // main.jsx'te). Pipeline sonucu yine canlı state'e eklenir; bu yükleme açılışta bir kez
   // koşar (staleTime: Infinity + odak-refetch kapalı → canlı eklemeler ezilmez).
+  // Demo hak sayacı — auth GEREKTİRMEZ (demo ziyaretçisi anonimdir) ve hak YAKMAZ.
+  // busy değişiminde tazelenir: koşum bitince sayaç güncel olsun.
+  const kotaQ = useQuery({
+    queryKey: ["demo-durum", busy],
+    queryFn: () => apiGet("/demo/durum"),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  // React.memo KORUMASI: NeonSidebar memo'lu; her render'da TAZE nesne literali geçmek
+  // memo'yu bozar ve canlı akışın her SSE tick'inde sidebar yeniden render olurdu.
+  const kota = useMemo(() => kotaQ.data ?? null, [kotaQ.data]);
+
   const islemlerQ = useQuery({
     queryKey: ["islemler", user?.id],
     queryFn: () => apiGet("/islemler?limit=100"),
@@ -584,8 +597,30 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     bekleyenAltKararRef.current.clear();
     showToast("Önceki evrakın kararı kalıcı kayda yazılamadan yeni işlem başladı — kararı İşlenen evrak'tan yineleyin.");
   }, [showToast]);
-  const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) { bekleyenKararUyar(); runFile(f); } };
-  const triggerUpload = useCallback(() => { goView("isleniyor"); if (!busy) fileRef.current?.click(); }, [busy, goView]);
+  // KVKK onam kapısı — DÖRT giriş yolunun tamamı buradan geçer (dosya seçici, kenar
+  // çubuğu/görünüm başlıkları, sürükle-bırak, telefon). Kapı yalnız DEMO_MODU=1 iken
+  // canlıdır; kapalıyken `gerekli` false döner ve akış birebir bugünkü hâlindedir.
+  const kvkk = useKvkkOnam();
+  // `uyar` parametresi DAVRANIŞI KORUR: sürükle-bırak yolu eskiden bekleyenKararUyar()
+  // ÇAĞIRMIYORDU. Tek bir sarmalayıcıya indirgerken onu da uyarır hâle getirmek, dosya
+  // bırakan memurun bekleyen kararını sessizce temizleyip toast göstermeye başlardı
+  // (adversarial doğrulama bulgusu — bayrak KAPALIYKEN bile görülür).
+  const runFileOnamli = useCallback((f, uyar = true) => {
+    if (!f) return;
+    if (kvkk.gerekli) { kvkk.iste(f); return; }   // dosya saklanır, onaydan sonra koşar
+    if (uyar) bekleyenKararUyar();
+    runFile(f);
+  }, [kvkk, bekleyenKararUyar, runFile]);
+
+  const onPick = (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) runFileOnamli(f); };
+  // Sürükle-bırak: eski davranışta uyarı YOKTU → uyar=false.
+  const onFileDropOnamli = useCallback((f) => runFileOnamli(f, false), [runFileOnamli]);
+  const triggerUpload = useCallback(() => {
+    goView("isleniyor");
+    // Onay yoksa dosya seçici HİÇ AÇILMAZ — kapı burada, seçim sonrasında değil.
+    if (kvkk.gerekli) { kvkk.iste(null); return; }
+    if (!busy) fileRef.current?.click();
+  }, [busy, goView, kvkk]);
   // "İşlendi" damgası YALNIZ koşum gerçekten başlarsa basılır — busy'de damga + kalıcı
   // processedSamples yazımı, evrak hiç işlenmeden refresh'ler boyu "İşlendi" gösteriyordu
   // (bug avı bulgusu). Navigasyon korunur: memur süren akışı görür.
@@ -924,7 +959,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       onTurSec={secTaslakTuru} turUretiliyor={turUretiliyor} onerilenTur={taslakOnerilenRef.current}
       onDownload={download} downloading={downloading} canDownload={!!evrakText || !!data?.yazi_taslak_md}
       onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onCancel={cancelRun}
-      fileUrl={fileUrl} onFileDrop={(f) => runFile(f)} onTelefon={() => setTelefonAcik(true)}
+      fileUrl={fileUrl} onFileDrop={onFileDropOnamli} onTelefon={() => setTelefonAcik(true)}
       onMevzuatAc={mevzuatAc}
       onMevzuatSec={secMevzuat} seciliMevzuat={seciliMevzuat} dayanakUretiliyor={dayanakUretiliyor}
     />
@@ -944,7 +979,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} kota={kota} />
 
         <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Suspense fallback={<ViewFallback />}>{view}</Suspense>
@@ -954,7 +989,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         {/* sonner: katmanlı/istiflenen bildirimler — eski tek-toast görünümüyle aynı dil (koyu yüzey). */}
         <Toaster position="bottom-center" duration={3200} gap={8} visibleToasts={3}
           toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onInk, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
-        {error && !busy && <ErrorBar msg={error} canRetry={canRetry} onRetry={retry} onDismiss={dismissError} />}
+        {error && !busy && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}
 
         {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} ekran={ekranBaglami} onEvrakAc={evrakAc} /></Suspense>}
 
@@ -968,11 +1003,23 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           <Suspense fallback={null}>
             <TelefonYukleModal
               onClose={() => setTelefonAcik(false)}
-              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); bekleyenKararUyar(); runFile(f); }}
+              onFile={(f) => { setTelefonAcik(false); goView("isleniyor"); runFileOnamli(f); }}
               showToast={showToast}
             />
           </Suspense>
         )}
+
+        {/* Onam kapısı: onaylanınca bekleyen dosya (varsa) hemen koşar — aksi hâlde
+            kullanıcı dosyayı bırakır, onaylar ve hiçbir şey olmazdı (sessiz kayıp). */}
+        <KvkkOnamModal
+          acik={kvkk.acik}
+          onVazgec={kvkk.vazgec}
+          onOnayla={() => {
+            const f = kvkk.onayla();
+            if (f) { bekleyenKararUyar(); runFile(f); }
+            else if (!busy) fileRef.current?.click();
+          }}
+        />
       </div>
     </MotionConfig>
   );

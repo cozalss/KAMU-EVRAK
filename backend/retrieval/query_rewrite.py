@@ -29,6 +29,7 @@ import httpx
 import structlog
 
 from agents.llm import ChatMessage, get_llm
+from api.pii import mask_pii
 from retrieval.hybrid_search import SearchResult, search
 from retrieval.multi_query import rrf_merge
 
@@ -133,7 +134,8 @@ async def step_back_query(question: str, domain: str | None = None) -> str:
         return ""
     rewrite = _parse_rewrite(resp.content)
     if rewrite and rewrite.lower() != question.lower():
-        log.info("step_back_rewrite", domain=domain, rewrite=rewrite[:120])
+        log.info("step_back_rewrite", domain=domain,
+                 rewrite=mask_pii(rewrite).masked_text[:120])
         return rewrite
     return ""
 
@@ -220,7 +222,9 @@ async def decontextualize_for_retrieval(
         return q
     rewrite = _parse_rewrite(resp.content)
     if rewrite and rewrite.lower() != q.lower():
-        log.info("decontext_rewrite", domain=domain, original=q[:60], rewrite=rewrite[:120])
+        # original ÇIKARILDI: kullanıcının kendi sorgusu = asıl mahremiyet nesnesi.
+        log.info("decontext_rewrite", domain=domain, orijinal_n=len(q),
+                 rewrite=mask_pii(rewrite).masked_text[:120])
         return rewrite
     return q
 

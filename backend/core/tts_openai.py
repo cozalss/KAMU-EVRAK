@@ -27,6 +27,7 @@ import os
 import httpx
 import structlog
 
+from core import demo_butce
 from core.openai_compat import send_with_retry
 
 log = structlog.get_logger()
@@ -156,11 +157,20 @@ async def tts_openai(
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     base = _base_url()
 
+    # Demo para kapısı — TTS `get_llm()` yolundan GEÇMEZ, bu yüzden ayrı ölçülür.
+    # `core/tts_kota.py` KARAKTER sayar, DOLAR değil ve günlük tavanı yoktur: dakikada
+    # 4000 karakter × gün = milyonlarca karakter, hepsi defterin dışında kalıyordu
+    # (adversarial doğrulama bulgusu, 8 Ağu 2026). Kayıt açık olduğu için "auth'lu olması"
+    # koruma sağlamıyor.
+    demo_butce.butce_kapisi(secili_model)
+
     async with httpx.AsyncClient(timeout=timeout_s, follow_redirects=False) as client:
         async def _post() -> httpx.Response:
             return await client.post(f"{base}{_SPEECH_PATH}", headers=headers, json=payload)
 
         resp = await send_with_retry(_post)
+        # TTS token değil KARAKTER ile faturalanır; ölçülen büyüklük girdi uzunluğudur.
+        demo_butce.ses_mutabakati(secili_model, len(metin))
         return resp.content
 
 

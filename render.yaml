@@ -1,0 +1,86 @@
+# Render Blueprint — kamu-evrak halka açık demo (TEK SERVİS: frontend + backend)
+#
+# Kurulum:  Render → New → Blueprint → bu depoyu seç → dal: feat/canli-demo-koruma
+#
+# ÜCRETSİZ KATMAN GERÇEKLERİ (Render dokümanı):
+#   · 15 dakika hareketsizlikte UYUR; sonraki istek ~1 dk bekler.
+#     → cron-job.org / UptimeRobot ile 10 dakikada bir GET /health.
+#   · 750 örnek-saat/ay, WORKSPACE başına. 7/24 sıcak servis ~730 saat yer;
+#     BAŞKA ücretsiz servisiniz varsa kota ay bitmeden dolar ve HER ŞEY durur.
+#   · KALICI DİSK YOK — dosya sistemi redeploy/restart/spin-down'da silinir.
+#     Bu yüzden günlük harcama toplamı Supabase'de tutulur (migration 0006);
+#     dosya defteri yalnız süreç-içi hızlı katmandır.
+#   · 512 MB RAM. OCR (onnxruntime + opencv) tembel yüklenir; ağır PDF'te sınıra
+#     yaklaşılabilir — ilk gerçek koşumda bellek izlenmeli.
+
+services:
+  - type: web
+    name: kamu-evrak-demo
+    runtime: docker
+    plan: free
+    region: frankfurt          # Türkiye'ye en yakın Render bölgesi
+    dockerfilePath: ./Dockerfile
+    dockerContext: .           # depo KÖKÜ — frontend + backend birlikte gerekiyor
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+
+    envVars:
+      # --- demo koruma katmanı (docs/16-canli-demo-koruma.md) ---
+      - key: DEMO_KORUMA
+        value: "1"
+      - key: DEMO_AZAMI_GUNLUK_USD
+        value: "0.50"          # NOKTA ile. '0,50' yazılırsa boot REDDEDER.
+      - key: DEMO_BELGE_REZERVASYON_USD
+        value: "0.03"
+      - key: DEMO_KOTA_BELGE_GUN
+        value: "3"
+      - key: DEMO_KOTA_AG_GUN
+        value: "12"
+      - key: DEMO_KOTA_SECRET
+        generateValue: true    # Render üretir; panelde görünür, koda girmez
+      - key: DEMO_GUVENILEN_PROXY_SAYISI
+        value: "1"             # Render önde bir vekil ÇALIŞTIRIR → gerçek istemci IP'si
+                               # XFF listesinin SAĞ ucundadır. 0 bırakılırsa tüm
+                               # ziyaretçiler tek ağ kovasına düşer ve demo 12/gün ile
+                               # kilitlenir. Kurulumdan sonra /demo/durum ile DOĞRULA.
+
+      # --- boot doğrulamasının aradıkları ---
+      - key: APP_ENV
+        value: production
+      - key: RATE_LIMIT_ENABLED
+        value: "true"
+      - key: DB_PERSIST
+        value: "0"             # 1 olursa süreç HİÇ AÇILMAZ (yapısal KVKK garantisi)
+      - key: SQL_ECHO
+        value: "0"
+      - key: AUTH_JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false            # kurulumdan sonra gerçek Render URL'i ile doldur
+                               # (örn. https://kamu-evrak-demo.onrender.com)
+
+      # --- tek süreç: kota sözlüğü ve uçuştaki-harcama kümesi SÜREÇ-İÇİDİR ---
+      - key: WEB_CONCURRENCY
+        value: "1"
+
+      # --- LLM (panelden gir; repoya ASLA yazılmaz) ---
+      - key: LLM_MODE
+        value: openai
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
+        value: https://api.deepseek.com
+      - key: OPENAI_LLM_MODEL
+        value: deepseek-v4-flash
+
+      # --- Supabase: günlük harcamanın KALICI toplamı (kalıcı disk olmadığı için şart) ---
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_SYNC
+        sync: false
+
+      # --- log ---
+      - key: LOG_FORMAT
+        value: json
+      - key: LOG_LEVEL
+        value: INFO

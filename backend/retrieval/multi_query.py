@@ -186,7 +186,7 @@ async def expand_queries(
     paraphrases = _parse_json_paraphrases(resp.content, max_n=llm_slots)
     # JSON parse silent-fallback: numaralı/markdown formatına düşer.
     if not paraphrases:
-        log.debug("mq_json_parse_empty_fallback_to_numbered", raw=resp.content[:160])
+        log.debug("mq_json_parse_empty_fallback_to_numbered", n=len(resp.content))
         paraphrases = _parse_numbered(resp.content, max_n=llm_slots)
     # Boş çıkarsa orijinalle dön; çift ise tek tut
     queries = [question, *typo_variants] + [p for p in paraphrases if p and p != question]

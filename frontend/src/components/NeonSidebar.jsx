@@ -76,7 +76,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
   );
 }
 
-function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, tema, onTemaDegistir }) {
+function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, tema, onTemaDegistir, kota }) {
   // Daraltılmış ikon-ray modu (ChatGPT sidebar-toggle deseni) — tercih kalıcı (localStorage).
   const [dar, setDar] = useState(() => {
     try { return localStorage.getItem("nu-sidebar-dar") === "1"; } catch { return false; }
@@ -142,9 +142,37 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
         <Icon.plus />{!kompakt && " Yeni evrak yükle"}
       </button>
 
+      {/* Demo hak sayacı — sınırladığı kontrolün HEMEN ALTINDA. `kota` verilmediğinde
+          (demo kapalı) null render eder → bugünkü görünüm birebir korunur. */}
+      <DemoKotaSayaci kota={kota} kompakt={kompakt} />
+
       <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}
         tema={tema} onTemaDegistir={onTemaDegistir} dar={kompakt} />
     </aside>
+  );
+}
+
+function DemoKotaSayaci({ kota, kompakt }) {
+  if (!kota?.aktif) return null;
+  const kalan = Number(kota.kalan ?? 0);
+  const gunluk = Number(kota.gunluk ?? 0);
+  const bitti = kalan <= 0 || kota.butce_acik === false;
+  const tamMetin = kota.butce_acik === false
+    ? "Demo günlük bütçesi doldu — yarın yenilenir"
+    : `Bugün kalan demo hakkı: ${kalan} / ${gunluk}`;
+  return (
+    <div
+      title={tamMetin}
+      aria-label={tamMetin}
+      style={{
+        marginTop: SP.s, padding: kompakt ? "4px 0" : "4px 8px",
+        display: "flex", alignItems: "center", justifyContent: kompakt ? "center" : "flex-start",
+        gap: SP.xs, ...TYPE.meta, ...TNUM,
+        color: bitti ? DERIN.sari : PAL.mut,
+      }}
+    >
+      {kompakt ? <span>{kalan}</span> : <span>{tamMetin}</span>}
+    </div>
   );
 }
 

@@ -42,6 +42,7 @@ from pydantic import BaseModel
 from starlette.datastructures import UploadFile as StarletteUploadFile
 
 from api.middleware.ratelimit import rate_limit
+from api.pii import dosya_ref
 
 log = structlog.get_logger()
 router = APIRouter(prefix="/mobil", tags=["mobil"])
@@ -316,7 +317,9 @@ async def dosya_yukle(oturum_id: str, request: Request) -> YukleYanit:
         guncel.dosya, guncel.dosya_adi = data, ad
         guncel.icerik_turu = file.content_type or "application/octet-stream"
         guncel.durum = "yuklendi"
-    log.info("mobil_dosya_yuklendi", oturum=oturum_id[:8], boyut=len(data), ad=ad)
+    # Ham dosya adı KİŞİSEL VERİ taşır (Ayse_Yilmaz_...pdf) → hash + uzantı yeter.
+    log.info("mobil_dosya_yuklendi", oturum=oturum_id[:8], boyut=len(data),
+             ad_ref=dosya_ref(ad), uzanti=uzanti)
     return YukleYanit()
 
 

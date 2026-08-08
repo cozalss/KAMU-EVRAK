@@ -19,6 +19,24 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import NullPool
 
+
+def _sql_echo() -> bool:
+    """SQLAlchemy echo — prod ve demo modunda ZORLA kapalı.
+
+    `echo=True` tam SQL metnini stdlib `logging` üzerinden yazar; o yol
+    `core/logging.py` structlog processor'üne HİÇ UĞRAMAZ, yani PII maskelemesi
+    uygulanmaz. Halka açık demoda bu, 50.000 karaktere kadar ham evrak metninin
+    log'a düşmesi demektir → kaynağında kapatılır (boot doğrulaması ayrıca reddeder).
+    """
+    if os.getenv("SQL_ECHO", "0") != "1":
+        return False
+    # YALNIZ demo modunda zorla kapatılır. Prod'da da kapatmak denendi ve GERİ ALINDI:
+    # operatörün mevcut hata ayıklama anahtarını, demo bayrağıyla hiç ilgisi olmayan bir
+    # kurulumda sessizce etkisiz kılıyordu (adversarial doğrulama bulgusu). Demo modunda
+    # zaten `demo_guard.dogrula()` SQL_ECHO=1 ile boot'u REDDEDER; bu satır boot'tan
+    # geçmeyen yolları (doğrudan import eden betik) kapatan ikinci katmandır.
+    return os.getenv("DEMO_KORUMA", "0").strip().lower() not in ("1", "true", "yes", "on")
+
 load_dotenv(find_dotenv(usecwd=True))
 
 
@@ -64,7 +82,7 @@ engine = create_async_engine(
             "idle_in_transaction_session_timeout": _IDLE_TX_TIMEOUT_MS,
         },
     },
-    echo=os.getenv("SQL_ECHO", "0") == "1",
+    echo=_sql_echo(),
 )
 
 session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(

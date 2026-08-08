@@ -18,8 +18,13 @@ from core.text import tr_lower
 
 # IBAN ÖNCE (TR + 24 hane; içindeki hane dizilerini maskeler) → sonra TCKN → sonra telefon.
 _RE_IBAN = re.compile(r"\bTR\d{2}(?:\s?\d{4}){5}\s?\d{2}\b", re.IGNORECASE)
-_RE_TCKN = re.compile(r"\b[1-9]\d{10}\b")               # 11 hane
-_RE_TEL = re.compile(r"\b0?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}\b")
+# TCKN: 11 hane. SINIR `\b` DEĞİL, "rakam-değil" bakışıdır — `\b` alt çizgiyi KELİME
+# karakteri sayar, dolayısıyla `dilekce_12345678901.pdf` gibi (sahada en yaygın) dosya
+# adlarında TCKN'yi HİÇ yakalamıyordu. Kendi regresyon testimiz yakaladı (8 Ağu 2026).
+# Lookaround sürümü kesinlikle daha kapsayıcı ve fazladan yanlış-pozitif üretmez:
+# yine tam 11 hane ister ve komşusunda başka rakam bulunmamasını şart koşar.
+_RE_TCKN = re.compile(r"(?<!\d)[1-9]\d{10}(?!\d)")
+_RE_TEL = re.compile(r"(?<!\d)0?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}(?!\d)")
 
 _PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("iban", _RE_IBAN), ("tckn", _RE_TCKN), ("telefon", _RE_TEL),
@@ -61,6 +66,23 @@ def has_pii(text: str) -> bool:
     return isinstance(text, str) and bool(
         _RE_TCKN.search(text) or _RE_TEL.search(text) or _RE_IBAN.search(text),
     )
+
+
+def dosya_ref(filename: str | None) -> str:
+    """Log/kayıt için PII'siz dosya referansı — gerçek ad yerine kısa hash.
+
+    NEDEN GEREKLİ: sahadaki dosya adları düzenli olarak kişisel veri taşır
+    (`Ayse_Yilmaz_dilekce_12345678901.pdf`). `mask_pii` yalnız TCKN/telefon/IBAN
+    desenlerini yakalar; AD kısmını yakalamaz. Dosya adında tanılama değeri olan tek
+    şey aynılık/farklılıktır, o da hash'le korunur.
+
+    Bu fonksiyon `api/routes/multimodal.py`'de kanıtlanmış deseni tek yere taşır
+    (aynı davranış: `sha256:` + 8 hane).
+    """
+    import hashlib
+
+    digest = hashlib.sha256((filename or "").encode("utf-8")).hexdigest()[:8]
+    return f"sha256:{digest}"
 
 
 def _redact_isim(text: str, isim: str | None) -> str:
@@ -134,4 +156,5 @@ def mask_yapisal(veri: Any, isim: str | None = None, _derinlik: int = 0) -> Any:
     return veri
 
 
-__all__ = ("MaskResult", "has_pii", "mask_for_llm", "mask_pii", "mask_yapisal")
+__all__ = ("MaskResult", "dosya_ref", "has_pii", "mask_for_llm", "mask_pii",
+           "mask_yapisal")

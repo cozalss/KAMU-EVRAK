@@ -26,6 +26,8 @@ from typing import Any
 import httpx
 import structlog
 
+from core import demo_butce
+
 log = structlog.get_logger()
 
 _ANAHTAR_UCU = "https://api.openai.com/v1/realtime/client_secrets"
@@ -104,6 +106,18 @@ def oturum_yapilandirmasi(talimat: str) -> dict[str, Any]:
 
 async def efemer_anahtar(talimat: str, *, timeout_s: float = 20.0) -> dict[str, Any]:
     """Kısa ömürlü istemci anahtarı üret. Başarısızlıkta exception (çağıran 503'e çevirir)."""
+    # DEMO MODUNDA KAPALI — ölçülemeyen harcama sınırlanamaz.
+    # Bu uç kısa ömürlü bir OpenAI Realtime istemci anahtarı basar; ses ondan sonra
+    # TARAYICIDAN doğrudan sağlayıcıya akar ve BU SUNUCUDAN HİÇ GEÇMEZ. Dolayısıyla
+    # harcamayı ölçmek fiziksel olarak mümkün değil: token sayısı bize hiç ulaşmıyor.
+    # Kapatılamayan bir musluğa tavan koymuş gibi yapmak, tavanı olduğundan güvenli
+    # göstermek olurdu (adversarial doğrulama bulgusu, 8 Ağu 2026). Kayıt açık olduğu
+    # için "auth'lu" olması da koruma sağlamıyor — iki istekte hesap açılıyor.
+    if demo_butce.demo_acik():
+        raise RuntimeError(
+            "Realtime sesli mod demo dağıtımında kapalıdır (harcama ölçülemediği için "
+            "günlük bütçe tavanına dâhil edilemez).")
+
     api_key = os.environ.get("OPENAI_TTS_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("OPENAI_TTS_API_KEY yok — realtime sesli mod devre dışı")
@@ -119,7 +133,15 @@ async def efemer_anahtar(talimat: str, *, timeout_s: float = 20.0) -> dict[str, 
             json=govde,
         )
     if resp.status_code != 200:
-        log.warning("realtime_anahtar_hatasi", status=resp.status_code, govde=resp.text[:200])
+        # Ham gövde YAZILMAZ: sağlayıcı hata yanıtı isteği (oturum talimatları dâhil) yankılar.
+        _hata = ""
+        try:
+            _h = (resp.json() or {}).get("error") or {}
+            _hata = str(_h.get("code") or _h.get("type") or "")
+        except Exception:
+            _hata = ""
+        log.warning("realtime_anahtar_hatasi", status=resp.status_code,
+                    hata=_hata, govde_n=len(resp.text))
         raise RuntimeError(f"realtime anahtar alınamadı: HTTP {resp.status_code}")
     veri = resp.json()
     anahtar = veri.get("value") or (veri.get("client_secret") or {}).get("value")

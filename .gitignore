@@ -102,5 +102,8 @@ reduce-*.png
 
 # Canlı kaynak keşfi harcama sayacı (çalışma zamanı durumu)
 data/kesif_harcama.json
+# Demo günlük harcama defteri — makine durumu, repoya girmez (silinmesi tavanı geri AÇMAZ:
+# süreç-içi yüksek su seviyesi korur; ama süreç yeniden başlarsa bütçe sıfırlanır).
+data/demo_harcama.json
 data/canli_kaynak_onbellek.json
 data/canli_kaynak_taramasi.json

@@ -46,6 +46,7 @@ from typing import Any, Literal
 
 import structlog
 
+from core import demo_butce
 from core.text import sanitize_text
 from multimodal.docx_utils import extract_docx_text, is_docx
 from multimodal.ocr_cloud import cloud_ocr_enabled, ocr_image_openai
@@ -470,6 +471,13 @@ async def _pdf_ocr(
         if remaining <= 0:
             last_error = "taranmış belge çok uzun (zaman aşımı)"
             log.warning("pdf_scan_deadline_exceeded", processed=idx, total=len(images))
+            break
+        # Demo bütçe freni: bulut vision SAYFA BAŞINA ücretlidir; tek 10 sayfalık tarama
+        # günün kalanını yiyebilir. Tavan dolduğunda döngü DURUR (o ana kadar okunan
+        # sayfalar korunur) — sayfa sayfa 402 üretmek yerine kısmi sonuç döndürülür.
+        if not demo_butce.acik_mi_istek():
+            last_error = "demo günlük bütçe tavanı"
+            log.warning("pdf_scan_butce_tavani", processed=idx, total=len(images))
             break
         try:
             r = await asyncio.wait_for(

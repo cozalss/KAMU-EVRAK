@@ -37,15 +37,25 @@ def demo_modu(env: Mapping[str, str] | None = None) -> bool:
 
 
 def db_persist_acik(env: Mapping[str, str] | None = None) -> bool:
-    """Kalıcılık açık mı? Demo modunda HER ZAMAN False (ikinci savunma katmanı).
+    """Kalıcılık açık mı?
 
-    Boot doğrulaması bu ikisinin bir arada verilmesini zaten reddeder; bu fonksiyon
-    boot'tan geçmeyen yolları kapatır (doğrudan import eden betik, import sonrası
-    değiştirilen ortam).
+    TARİHÇE (9 Ağu 2026): bu fonksiyon demo modunda HER ZAMAN False dönüyordu ve boot
+    doğrulaması `DEMO_KORUMA=1 + DB_PERSIST=1` ikilisini REDDEDİYORDU. Gerekçe "halka
+    açık demoda YABANCININ belgesi veri tabanına yazılmaz" idi ve o gerekçe o ürün için
+    doğruydu.
+
+    ÜRÜN DEĞİŞTİ: sistem artık anonim bir demo değil, herkesin KENDİ HESABINI açtığı
+    bir uygulama. Kişinin kendi belgesini kendi hesabına kaydetmesi ürünün işlevinin ta
+    kendisidir — işlenen evrak, taslak ve karar geçmişi kalıcı olmazsa uygulama yarım
+    kalır. Dolayısıyla kısıt kaldırıldı; bayrak artık olduğu gibi okunur.
+
+    KORUNAN GÜVENCELER (kalıcılık açıkken de geçerli):
+      · `db/repositories/persist_run.py` metni `mask_pii` ile MASKELEYEREK yazar
+        (TCKN/telefon/IBAN yıldızlanır, ham hâliyle DB'ye girmez)
+      · dosya adı `_baslik_guvenli` ile maskelenir
+      · kayıt kullanıcının KENDİ hesabına bağlanır (`_owner_id_from_request`)
     """
     e = env if env is not None else os.environ
-    if demo_modu(e):
-        return False
     # DB_PERSIST için TOLERANT PARSE YOK — eski satır `os.getenv("DB_PERSIST","0") != "1"`
     # idi. `_acik()` kullanmak `DB_PERSIST=true` olan bir kurulumda kalıcılığı SESSİZCE
     # AÇARDI (adversarial doğrulama bulgusu): önce stateless koşan sistem, tek satır kod
@@ -60,11 +70,6 @@ def dogrula(env: Mapping[str, str]) -> tuple[str, ...]:
         return ()
 
     ihlal: list[str] = []
-
-    if _acik(env, "DB_PERSIST"):
-        ihlal.append(
-            "DB_PERSIST=1 ile DEMO_KORUMA=1 BİRLİKTE kullanılamaz — halka açık demoda "
-            "yabancıların belgeleri veri tabanına yazılamaz.")
 
     if _acik(env, "SQL_ECHO"):
         ihlal.append(
@@ -132,6 +137,11 @@ def uyarilar(env: Mapping[str, str] | None = None) -> tuple[str, ...]:
         cikti.append(
             "DEMO_GUVENILEN_PROXY_SAYISI>0 — X-Forwarded-For'a GÜVENİLİYOR. Gerçekte önde "
             "vekil yoksa ağ kotası sahte başlıkla atlatılabilir.")
+    if _acik(e, "DB_PERSIST"):
+        cikti.append(
+            "DB_PERSIST=1 — kullanıcıların işlediği evrak veri tabanında SAKLANIYOR "
+            "(metin ve dosya adı maskeli). Saklama süresi imhası OTOMATİK DEĞİL: "
+            "`uv run python -m db.imha_job --uygula` periyodik koşturulmalı (KVKK md.7).")
     if not (e.get("DEMO_KOTA_SECRET", "") or "").strip():
         cikti.append(
             "DEMO_KOTA_SECRET yok — çerez anahtarı AUTH_JWT_SECRET'tan türetiliyor; "

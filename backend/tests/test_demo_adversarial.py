@@ -187,7 +187,11 @@ class TestP4P5Regresyon:
     """Adversarial turda bulunan İKİ regresyon geri gelmemeli."""
 
     def test_DB_PERSIST_tolerant_parse_YOK(self):
-        """`DB_PERSIST=true` kalıcılığı AÇMAMALI — eski davranış `== "1"` idi."""
+        """`DB_PERSIST=true` kalıcılığı AÇMAMALI — eski davranış `== "1"` idi.
+
+        Kalıcılık artık demo modunda serbest (9 Ağu), ama PARSE katılığı korunuyor:
+        veri yazmayı genişleten bir değişiklik yan etki olarak gelmemeli.
+        """
         from core.demo_guard import db_persist_acik
         assert db_persist_acik({"DB_PERSIST": "1"}) is True
         for deger in ("true", "True", "yes", "on", "TRUE"):

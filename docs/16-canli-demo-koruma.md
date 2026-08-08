@@ -81,8 +81,20 @@ SONRA bilinir. Günlük toplam, tavanı **en fazla bir çağrı payı** kadar a�
 
 ### 2. Kişisel veri — katmanlı
 
-- **Veri tabanı:** `DEMO_KORUMA=1` + `DB_PERSIST=1` → **süreç hiç açılmaz.** Garanti
-  ters çevrilebilir bir varsayılana değil, yapısal imkânsızlığa dayanır.
+- **Veri tabanı (9 Ağu 2026'da DEĞİŞTİ):** eskiden `DEMO_KORUMA=1` + `DB_PERSIST=1`
+  **boot'u reddediyordu**; gerekçe "halka açık demoda YABANCININ belgesi DB'ye
+  yazılmaz"dı ve o ürün için doğruydu. Ürün değişti: sistem anonim bir demo değil,
+  **herkesin kendi hesabını açtığı bir uygulama**. Kişinin kendi belgesini kendi
+  hesabında saklaması işlevin ta kendisi — kalıcı olmazsa "İşlenen Evrak" listesi her
+  yenilemede boşalır ve uygulama yarım kalır. Kısıt kaldırıldı, kalıcılık AÇIK.
+
+  **Korunan güvenceler:** `persist_run` metni `mask_pii` ile MASKELEYEREK yazar
+  (TCKN/telefon/IBAN yıldızlı), dosya adı `_baslik_guvenli` ile maskelenir, kayıt
+  kullanıcının KENDİ hesabına bağlanır.
+
+  **AÇIK KALAN İŞ — saklama süresi imhası OTOMATİK DEĞİL.** `db/imha_job.py` hazır ama
+  zamanlanmamış; periyodik koşturulmalı (KVKK md.7):
+  `uv run python -m db.imha_job --uygula`. Boot uyarısı bunu her açılışta hatırlatır.
 - **Disk:** demo gövde tavanı **tam 1 MiB** = Starlette `spool_max_size`. Gövde eşiğin
   altındaysa dosya parçası da altındadır → `SpooledTemporaryFile` diske taşmaz.
   Content-Length'siz (chunked) istek **411** alır — bu kapı olmadan Starlette gövdeyi

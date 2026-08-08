@@ -47,20 +47,29 @@ class TestSaglamKonfigurasyon:
         dg.dogrula_veya_dur(SAGLAM)
 
 
-class TestYapisalGaranti:
-    def test_DB_PERSIST_ile_birlikte_REDDEDILIR(self):
+class TestKalicilik:
+    """9 Ağu 2026: kalıcılık kısıtı KALDIRILDI — ürün anonim demo değil, hesaplı uygulama.
+
+    Eski sözleşme "DEMO_KORUMA=1 + DB_PERSIST=1 → boot reddi" idi ve gerekçesi
+    "yabancının belgesi DB'ye yazılmaz"dı. Artık herkes kendi hesabını açıyor; kişinin
+    kendi belgesini kendi hesabında saklaması ürünün işlevi. Metin ve dosya adı yine
+    MASKELİ yazılır (persist_run), o güvence testlerle korunuyor.
+    """
+
+    def test_DB_PERSIST_ile_birlikte_BOOT_REDDEDILMEZ(self):
         # Arrange
         env = {**SAGLAM, "DB_PERSIST": "1"}
-        # Act
-        ihlal = dg.dogrula(env)
-        # Assert
-        assert any("DB_PERSIST" in i for i in ihlal)
-        with pytest.raises(RuntimeError, match="DB_PERSIST"):
-            dg.dogrula_veya_dur(env)
+        # Assert — artık meşru bir konfigürasyon
+        assert dg.dogrula(env) == ()
+        dg.dogrula_veya_dur(env)          # raise etmemeli
 
-    def test_demo_modunda_db_persist_HER_ZAMAN_kapali(self):
-        """Boot'tan geçmeyen yollar (doğrudan import eden betik) için ikinci katman."""
-        assert dg.db_persist_acik({**SAGLAM, "DB_PERSIST": "1"}) is False
+    def test_demo_modunda_da_kalicilik_ACILABILIR(self):
+        assert dg.db_persist_acik({**SAGLAM, "DB_PERSIST": "1"}) is True
+
+    def test_kalicilik_acikken_IMHA_uyarisi_verilir(self):
+        """Saklama süresi imhası otomatik değil — operatör bunu boot'ta görmeli."""
+        uyari = dg.uyarilar({**SAGLAM, "DB_PERSIST": "1"})
+        assert any("imha_job" in u for u in uyari)
 
     def test_SQL_ECHO_reddedilir(self):
         # structlog processor'ü SQLAlchemy echo'suna ULAŞMAZ → kaynağında kapatılmalı

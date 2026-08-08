@@ -50,7 +50,10 @@ services:
       - key: RATE_LIMIT_ENABLED
         value: "true"
       - key: DB_PERSIST
-        value: "0"             # 1 olursa süreç HİÇ AÇILMAZ (yapısal KVKK garantisi)
+        value: "1"             # kullanıcı kendi hesabındaki evrakı sonra da görsün.
+                               # Metin ve dosya adı MASKELİ yazılır (persist_run).
+                               # Saklama imhası otomatik DEĞİL — db.imha_job periyodik
+                               # koşturulmalı (boot uyarısı bunu hatırlatır).
       - key: SQL_ECHO
         value: "0"
       - key: AUTH_JWT_SECRET

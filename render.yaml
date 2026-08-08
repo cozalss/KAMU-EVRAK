@@ -1,4 +1,4 @@
-# Render Blueprint — kamu-evrak halka açık demo (TEK SERVİS: frontend + backend)
+# Render Blueprint — kamu-evrak (TEK SERVİS: frontend + backend)
 #
 # Kurulum:  Render → New → Blueprint → bu depoyu seç → dal: feat/canli-demo-koruma
 #
@@ -15,7 +15,7 @@
 
 services:
   - type: web
-    name: kamu-evrak-demo
+    name: kamu-evrak
     runtime: docker
     plan: free
     region: frankfurt          # Türkiye'ye en yakın Render bölgesi
@@ -60,7 +60,7 @@ services:
         generateValue: true
       - key: CORS_ORIGINS
         sync: false            # kurulumdan sonra gerçek Render URL'i ile doldur
-                               # (örn. https://kamu-evrak-demo.onrender.com)
+                               # (örn. https://kamu-evrak.onrender.com)
 
       # --- tek süreç: kota sözlüğü ve uçuştaki-harcama kümesi SÜREÇ-İÇİDİR ---
       - key: WEB_CONCURRENCY

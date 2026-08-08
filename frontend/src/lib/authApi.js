@@ -84,12 +84,24 @@ function dogrulamaMesaji(dizi) {
   return "Girdiğiniz bilgilerde bir hata var — lütfen alanları kontrol edin.";
 }
 
-async function parseError(res) {
+export async function parseError(res) {
   try {
     const body = await res.json();
     const d = body?.detail;
     if (typeof d === "string") return d;           // backend'in kendi Türkçe mesajı (AuthError)
     if (Array.isArray(d) && d.length) return dogrulamaMesaji(d);  // pydantic 422 → Türkçeye çevir
+    // slowapi'nin 429 handler'ı `{"error": "Rate limit exceeded: ..."}` döner — `detail` DEĞİL.
+    // İki şekil de sahada var (mobil.py `detail` kullanır), ikisi de okunmalı; yoksa kullanıcı
+    // hız sınırında yalnız çıplak durum kodu görür.
+    if (typeof body?.error === "string" && body.error) {
+      // slowapi'nin handler'ı İNGİLİZCE üretir ("Rate limit exceeded: 20 per 1 minute").
+      // Ham hâliyle göstermek, Türkçe bir arayüzde kullanıcıya anlamsız gelir; kendi
+      // uçlarımızın Türkçe `error` gövdeleri ise aynen geçer.
+      if (/rate limit exceeded/i.test(body.error)) {
+        return "Çok sık istek gönderildi — bir dakika bekleyip tekrar deneyin.";
+      }
+      return body.error;
+    }
   } catch {
     /* gövde JSON değil */
   }

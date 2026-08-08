@@ -18,15 +18,24 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import structlog
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from agents.config import LLM_MODE
 from api.middleware.body_size import MaxBodySizeMiddleware
+from api.middleware.demo_kapisi import DemoKapisiMiddleware
 from api.middleware.ratelimit import setup_rate_limiting
 from api.middleware.security_headers import SecurityHeadersMiddleware
 from api.routes import kayitlar, mevzuat, mobil, multimodal, process_doc, sla, sohbet, yazi
 from auth import auth_router
+from core import demo_butce, demo_guard
+from core.logging import configure_logging
+
+# structlog'u İLK İŞ yapılandır — `log = structlog.get_logger()` satırından da, herhangi bir
+# router import'undan da önce. Yapılandırılmamış structlog varsayılan seviye 0'da koşar:
+# log.debug dahil HER ŞEY maskesiz akar ve ham evrak metni/dosya adı log'a düşer (KVKK).
+# Bu çağrı olmadan `api/pii.py:3`'ün belgelediği maskeleme sözleşmesi kurulmuş SAYILMAZ.
+configure_logging()
 
 log = structlog.get_logger()
 
@@ -69,6 +78,13 @@ app = FastAPI(
     openapi_url=None if _APP_ENV_PROD else "/openapi.json",
 )
 
+# Demo kapısı — günlük belge kotası + günlük para tavanı (yalnız DEMO_KORUMA=1 iken etkin).
+# SecurityHeaders'tan ÖNCE eklenir: Starlette add_middleware'i 0. indekse sokup yığını
+# reversed() kurduğu için ilk eklenen EN İÇTE kalır. Sonuç: kapı MaxBodySize'ın 413'ünden
+# SONRA koşar (büyük gövde kota yakmaz) ve SecurityHeaders'ın İÇİNDE kalır (402/429 gövdesi
+# de nosniff/CSP taşır). Bayrak kapalıyken __call__ ilk satırda geçirir → sıfır maliyet.
+app.add_middleware(DemoKapisiMiddleware)
+
 # Güvenlik başlıkları — her yanıta nosniff/DENY/Referrer-Policy/CSP (clickjacking + MIME guard).
 app.add_middleware(SecurityHeadersMiddleware)
 
@@ -89,6 +105,17 @@ if "*" in _origins:
     raise RuntimeError(
         "CORS_ORIGINS='*' allow_credentials=True ile birlikte kullanılamaz — "
         "spesifik origin listesi ver (virgülle ayrılmış).")
+
+# Demo modu boot kapısı — AYNI fail-fast disiplini. DEMO_KORUMA=1 iken güvensiz
+# konfigürasyon (DB_PERSIST=1, SQL_ECHO=1, localhost CORS, tavansız bütçe...) süreci
+# HİÇ AÇTIRMAZ. "Yabancının belgesi DB'ye yazılmaz" garantisi böylece ters çevrilebilir
+# bir varsayılana değil, yapısal bir imkânsızlığa dayanır.
+demo_guard.dogrula_veya_dur()
+if demo_guard.demo_modu():
+    # Yanlış yazılmış bir bayrak faturada değil, açılışın ilk on satırında görünsün.
+    log.info("demo_koruma_acik", **demo_guard.boot_ozeti())
+    for _uyari in demo_guard.uyarilar():
+        log.warning("demo_koruma_uyari", uyari=_uyari)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins,
@@ -133,6 +160,31 @@ def _active_llm() -> str:
     except Exception as exc:
         log.warning("health_llm_probe_failed", error=type(exc).__name__)
         return "unknown"
+
+
+@app.get("/demo/durum")
+async def demo_durum(request: Request) -> dict[str, Any]:
+    """Ziyaretçinin kalan günlük demo hakkı — HAK YAKMADAN (`kota_bak`).
+
+    Kenar çubuğundaki "Bugün kalan: 2 / 3" sayacı bunu okur. GET olduğu için demo
+    kapısının ücretli listesine girmez; `kota_bak` sayaç artırmaz.
+    Koruma kapalıyken `aktif: false` döner ve frontend sayacı hiç göstermez.
+    """
+    if not demo_butce.demo_acik():
+        return {"aktif": False}
+    from api.demo_kimlik import ziyaretci_kimligi
+    from core import demo_kota
+
+    kimlik = ziyaretci_kimligi(request.scope)
+    durum = demo_kota.kota_bak(kimlik.anahtar, kimlik.ag_anahtari)
+    return {
+        "aktif": True,
+        "kalan": durum.kalan_ziyaretci,
+        "gunluk": demo_kota.gunluk_ziyaretci(),
+        "kalan_ag": durum.kalan_ag,
+        # Bütçe tavanı dolduysa kota dolu olmasa bile işlem yapılamaz — UI bunu ayırt etsin.
+        "butce_acik": demo_butce.acik_mi(),
+    }
 
 
 @app.get("/health")

@@ -296,7 +296,10 @@ async def llm_json(
         # `bos`/`kesik`: başarısızlığın SEBEBİ artık log'dan okunuyor. Bu ayrım olmadan
         # "bütçe yetmiyor" ile "model bozuk JSON üretti" aynı satıra düşüyor ve iki node'un
         # LLM'i hiç çalıştırmadığı aylarca görünmüyordu.
-        log.debug("evrak_llm_json_parse_empty", raw=raw[:160],
+        # raw ÇIKARILDI: cikar/siniflandir yanıtı ad/adres gibi kişisel alanlar taşır ve
+        # bu satır halka açık demoda log'a düşerdi. Teşhis sinyali (boş mu / kesik mi /
+        # retry hakkı var mı) zaten ayrı alanlarda; uzunluk onu tamamlar.
+        log.debug("evrak_llm_json_parse_empty", n=len(raw),
                   bos=not raw.strip(), kesik=sonuc.kesik, retry=retry_hakli)
         return None
     if anahtar is not None:

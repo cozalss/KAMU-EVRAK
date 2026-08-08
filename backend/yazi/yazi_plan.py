@@ -22,6 +22,7 @@ import structlog
 
 from agents.config import YAZI_TURLERI, YAZI_TURU_TR, birim_tr
 from agents.nodes._llm_extract import llm_json, real_llm
+from api.pii import mask_for_llm
 from core.text import tr_lower
 
 log = structlog.get_logger()
@@ -77,7 +78,7 @@ async def yazi_plani(
             f"EVRAK TÜRÜ: {evrak_turu}\nKONU: {konu or '(belirtilmemiş)'}\n"
             f"HAVALE EDİLEN BİRİM: {birim_tr(hedef_birim) if hedef_birim else '(yok)'}\n\n"
             f"YAZI TÜRÜ SEÇENEKLERİ:\n{_TUR_REHBER}\n\n"
-            f"EVRAK METNİ:\n{evrak_text[:1500]}\n\n"
+            f"EVRAK METNİ:\n{mask_for_llm(evrak_text[:1500])}\n\n"
             'Yalnız şu JSON: {"yazi_turu":"<kod>","muhatap":"<ad ya da boş>",'
             '"gerekce":"<tek cümle Türkçe: neden bu tür ve bu muhatap>"}'
         ),
@@ -91,7 +92,12 @@ async def yazi_plani(
         return None
     muhatap = str(obj.get("muhatap", "") or "").strip()
     if muhatap and not _muhatap_grounded(muhatap, evrak_text, hedef_birim):
-        log.warning("yazi_plan_muhatap_grounded_degil", muhatap=muhatap[:60])
+        # muhatap ÇIKARILDI: prompt açıkça "<ad ya da boş>" istiyor, yani bu alan bir KİŞİ
+        # ADI taşıyabilir ve `mask_pii` adları yakalamaz (yalnız TCKN/telefon/IBAN).
+        # Üstelik bu satır tam da modelin muhatabı UYDURDUĞU dalda ateşlenir — dilekçeden
+        # devşirilmiş bir vatandaş adı taşıma ihtimali en yüksek olan yer.
+        # (adversarial doğrulama bulgusu — 7. log sızıntısı, 8 Ağu 2026)
+        log.warning("yazi_plan_muhatap_grounded_degil", muhatap_n=len(muhatap))
         muhatap = ""  # uydurma muhatap taslağa giremez; tür korunur
     gerekce = str(obj.get("gerekce", "") or "").strip()[:300]
     log.info("yazi_plan", tur=tur, muhatap_var=bool(muhatap),

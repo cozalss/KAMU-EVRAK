@@ -13,12 +13,11 @@ UYGULANDI.
 
 from __future__ import annotations
 
-import hashlib
-
 import structlog
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 
 from api.middleware.ratelimit import rate_limit
+from api.pii import dosya_ref
 from api.schemas import OCRResponse
 from multimodal.ocr import extract_text
 
@@ -29,9 +28,8 @@ MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB DoS guard
 
 
 def _file_ref(filename: str | None) -> str:
-    """Log için PII'siz dosya referansı — gerçek ad yerine kısa hash (8 hane)."""
-    digest = hashlib.sha256((filename or "").encode("utf-8")).hexdigest()[:8]
-    return f"sha256:{digest}"
+    """Log için PII'siz dosya referansı. Tek kaynak: `api/pii.dosya_ref` (ad/davranış aynı)."""
+    return dosya_ref(filename)
 
 
 @router.post("/ocr", response_model=OCRResponse)

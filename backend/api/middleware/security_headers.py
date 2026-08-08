@@ -56,6 +56,18 @@ if _APP_ENV_PROD:
     # tarayıcı zaten başlığı yok sayar, ama sinyali yalnız gerçek dağıtımda taşımak daha net.
     _SECURITY_HEADERS["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
+_DEMO = os.getenv("DEMO_KORUMA", "0").strip().lower() in ("1", "true", "yes", "on")
+if _DEMO:
+    # ARAMA MOTORUNDA GÖRÜNMEME — üç katmanın TAŞIYICI olanı.
+    # `<meta name="robots">` yalnız HTML'de yaşar; bu başlık JSON yanıtları, /mobil telefon
+    # sayfası ve /yazi/* uçlarının ürettiği PDF/DOCX/ZIP indirmelerini de kapsar. Google
+    # PDF indeksler ve bir PDF'in içine meta etiketi konamaz → başlık katmanı şart.
+    # robots.txt ise yalnız NAZİK tarayıcıyı durdurur ve dışarıdan link verilirse URL
+    # sonuçlarda çıplak bağlantı olarak yine görünebilir; tek başına yetmez.
+    _SECURITY_HEADERS["X-Robots-Tag"] = "noindex, nofollow, noarchive, nosnippet"
+    _SECURITY_HEADERS["Cross-Origin-Opener-Policy"] = "same-origin"
+    _SECURITY_HEADERS["Cross-Origin-Resource-Policy"] = "same-origin"
+
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Tüm yanıtlara sabit güvenlik başlıkları ekler (mevcut başlığın üzerine yazmaz)."""

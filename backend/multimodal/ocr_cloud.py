@@ -24,6 +24,7 @@ import os
 import httpx
 import structlog
 
+from core import demo_butce
 from core.openai_compat import cloud_enabled, require_api_key, send_with_retry
 from core.openai_compat import validated_base_url as _validated_base_url
 
@@ -132,12 +133,22 @@ async def ocr_image_openai(
     }
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
+    # Demo para kapısı — bulut vision OCR `get_llm()` yolundan GEÇMEZ ve SAYFA BAŞINA
+    # ücretlenir (ocr.py sayfa döngüsü, 10 sayfaya kadar). Bu yüzden ayrıca ölçülür.
+    # ButceTukendi burada yükselirse `ocr.py:_cloud_ocr_attempt` yakalar ve YEREL RapidOCR'a
+    # düşer — demo bozulmaz, yalnız ücretsiz motorla devam eder.
+    demo_butce.butce_kapisi(model)
+
     async with httpx.AsyncClient(timeout=timeout_s, follow_redirects=False) as client:
         async def _post() -> httpx.Response:
             return await client.post(f"{base}{_TRANSCRIBE_PATH}", headers=headers, json=payload)
 
         resp = await send_with_retry(_post)
         payload_json = resp.json()
+    _usage = payload_json.get("usage") or {}
+    # Görüntü token'ları prompt_tokens'a dâhildir → gerçek ölçüm. usage yoksa asgari sayfa bedeli.
+    demo_butce.goruntu_mutabakati(
+        model, _usage.get("prompt_tokens", 0), _usage.get("completion_tokens", 0))
     choices = payload_json.get("choices") or []
     if not choices:
         return ""

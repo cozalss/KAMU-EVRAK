@@ -9,7 +9,7 @@
    + HITL resume (/process_doc/resume) + taslak indirme (/yazi/taslak). */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast as sonnerToast } from "sonner";
-import { authFetch } from "./authApi.js";
+import { authFetch, parseError } from "./authApi.js";
 import { DEFAULT_NODE_IDS, makeNode } from "./nodeMeta.js";
 
 const MAX_UPLOAD_MB = 20;            // backend MAX_UPLOAD_BYTES (20 MiB) ile eşleşir
@@ -24,6 +24,10 @@ export function usePipeline() {
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // Hata SINIFI — mesajın kendisinden ayrı tutulur. 429 (kota/hız sınırı) "Tekrar dene"
+  // göstermemeli: hemen tekrar denemek yine 429 verir ve kullanıcıyı ucu döverek
+  // beklemeye alıştırır. Genel hata ise tam tersine retry ister.
+  const [errorKind, setErrorKind] = useState("");
   const [toast, setToast] = useState("");
   const [selectedSample, setSelectedSample] = useState(null);
   // {name, size, kind:"file"|"sample"} — TopBar dosya meta. size: bytes (dosya) | char (örnek).
@@ -73,6 +77,7 @@ export function usePipeline() {
     setNodes(freshNodes());
     setResult(null);
     setError("");
+    setErrorKind("");
     setEvrakText("");
     setPendingOnay(null);
     if (fileUrlRef.current) URL.revokeObjectURL(fileUrlRef.current);
@@ -149,7 +154,14 @@ export function usePipeline() {
       const fd = new FormData();
       fd.append("file", file);
       const res = await authFetch("/process_doc/stream", { method: "POST", body: fd, signal: ctrl.signal });
-      if (!res.ok || !res.body) throw new Error(`Sunucu hatası (${res.status})`);
+      // Gövde OKUNUR: eskiden yalnız "Sunucu hatası (429)" gösteriliyordu ve backend'in
+      // Türkçe açıklaması (kota doldu / demo bütçesi bitti / dosya çok büyük) çöpe gidiyordu.
+      // İki durum AYRI: !res.ok → sunucunun söyleyecek sözü var; res.ok && !res.body →
+      // başarılı yanıt ama akış yok, orada parseError çağırmak anlamsız olurdu.
+      if (!res.ok) {
+        throw Object.assign(new Error(await parseError(res)), { status: res.status });
+      }
+      if (!res.body) throw new Error("Sunucu akışı başlatılamadı.");
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buf = "";
@@ -181,6 +193,11 @@ export function usePipeline() {
     } catch (err) {
       if (err?.name === "AbortError") return;   // unmount/iptal — sessizce çık
       setError(err?.message || "Bağlantı hatası — backend çalışıyor mu?");
+      // 402 (günlük bütçe) ve demo kotası yeniden denemeyle ÇÖZÜLMEZ → retry gizlenir.
+      // Ama slowapi'nin IP hız sınırı 429'u bir dakika sonra geçer → retry KALSIN.
+      // Ayrım mesajdan yapılır: demo kapısı Türkçe "demo hakkınız" metni döner.
+      const kotaMi = err?.status === 429 && /demo hakk|demo bütçe/i.test(err?.message || "");
+      setErrorKind(err?.status === 402 || kotaMi ? "kota" : "");
       setNodes((prev) => prev.map((n) => (n.status === "active" ? { ...n, status: "error" } : n)));
     } finally {
       // Bu çağrı hâlâ GÜNCEL akış mı? `done` sonrası busy=false olsa da reader persist
@@ -343,7 +360,7 @@ export function usePipeline() {
     runFile(file);
   }, [runFile, busy]);
 
-  const dismissError = useCallback(() => setError(""), []);
+  const dismissError = useCallback(() => { setError(""); setErrorKind(""); }, []);
   const canRetry = hasRun;
 
   // Memur farklı yazı TÜRÜ seçti → yeni üretilen taslağı sonuca işle. Yalnız üç taslak
@@ -360,7 +377,7 @@ export function usePipeline() {
   }, []);
 
   return {
-    nodes, result, busy, error, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
+    nodes, result, busy, error, errorKind, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
     runFile: runFileValidated, runSample, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
     // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
     // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).

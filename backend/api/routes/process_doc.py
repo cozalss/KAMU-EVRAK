@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import os
 import time
 from collections.abc import AsyncIterator
 from typing import Any
@@ -35,6 +34,7 @@ from api.schemas import (
     ProcessRequest,
     ProcessResponse,
 )
+from core.demo_guard import db_persist_acik
 from multimodal.ocr import extract_text
 
 log = structlog.get_logger()
@@ -191,7 +191,7 @@ async def _persist_sonrasi(request: Request, state: dict[str, Any],
     (eski kod, persist kapalıyken bile koşulsuz bir uzak DB turu atıyordu — Supabase soğuk
     havuzunda ~20 sn). Akış gövdesinde 401 dönülemez (başlıklar gitti) → token hatası
     loglanır, persist sistem kullanıcısına düşer, akış ölmez."""
-    if os.getenv("DB_PERSIST", "0") != "1":
+    if not db_persist_acik():          # demo modunda HER ZAMAN kapalı
         return ""
     try:
         owner_id = await _owner_id_from_request(request)
@@ -231,7 +231,7 @@ async def _maybe_persist(state: dict[str, Any], response: ProcessResponse,
     Demo güvenliği: DATABASE_URL/DB yoksa veya yazma hata verirse YANITI BOZMAZ
     (yalnız uyarı loglanır). Kalıcılaştırma opsiyoneldir; stateless demo birebir korunur.
     """
-    if os.getenv("DB_PERSIST", "0") != "1":
+    if not db_persist_acik():          # demo modunda HER ZAMAN kapalı
         return ""
     try:
         from db.repositories.persist_run import persist_pipeline_run

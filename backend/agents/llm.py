@@ -29,6 +29,7 @@ from typing import Any, Literal, Protocol
 
 import structlog
 
+from core import demo_butce
 from core.openai_compat import _retry_delay, require_api_key, validated_base_url
 
 log = structlog.get_logger()
@@ -638,6 +639,10 @@ class OpenAIClient:
 
         import httpx
 
+        # Demo para kapısı — AĞA ÇIKMADAN önce. Tavan doluysa ButceTukendi (RuntimeError alt
+        # sınıfı) yükselir ve node'lar deterministik yedeğe düşer; belge tamamlanır.
+        demo_butce.butce_kapisi(self.model)
+
         client = self._ensure_client()
         # dusunme_kapali: DeepSeek v4 `thinking: disabled`. Akış yolunda (chat_stream) sesli
         # görüşme için vardı; blocking yolda da gerekli oldu — kurulun DENETİM turu gerçekleri
@@ -665,6 +670,9 @@ class OpenAIClient:
                     await asyncio.sleep(_retry_delay(1.0, attempt, exc.response))
                     continue
                 log.warning("openai_llm_failed", status=code)
+                # İstek süreçten ÇIKTI — sağlayıcı faturalamış olabilir. Asgari bedel yazılır;
+                # "hata = ücretsiz" varsayımı, hata döngüsüyle bütçeyi sonsuz açık tutardı.
+                demo_butce.cagri_mutabakati(self.model, 0, 0)
                 raise
             except httpx.HTTPError as exc:
                 last_exc = exc
@@ -672,6 +680,7 @@ class OpenAIClient:
                     await asyncio.sleep(2 ** attempt)
                     continue
                 log.warning("openai_llm_failed", error=type(exc).__name__)
+                demo_butce.cagri_mutabakati(self.model, 0, 0)
                 raise
         else:  # pragma: no cover — döngü break/raise ile çıkar
             raise last_exc or RuntimeError("openai_llm_unreachable")
@@ -687,6 +696,9 @@ class OpenAIClient:
             elapsed_ms=int((time.perf_counter() - started) * 1000),
             tokens_in=usage.get("prompt_tokens", 0), tokens_out=usage.get("completion_tokens", 0),
         )
+        # ÖLÇÜLEN harcama — sağlayıcının bildirdiği gerçek token'lardan (tahmin değil).
+        demo_butce.cagri_mutabakati(
+            self.model, usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
         return LLMResponse(
             content=_strip_think(choice["message"]["content"] or ""),
             raw=data,
@@ -715,6 +727,8 @@ class OpenAIClient:
         import asyncio
 
         import httpx
+
+        demo_butce.butce_kapisi(self.model)   # akış da ücretlidir — ağa çıkmadan kontrol
 
         client = self._ensure_client()
         payload = self._payload(
@@ -767,6 +781,10 @@ class OpenAIClient:
                                 raise RuntimeError("SSE akışı boyut sınırını aştı")
                             parts.append(delta)
                             on_token(delta)
+                # Akışta usage, sondaki usage-only chunk'ta gelir (stream_options.include_usage).
+                # Gelmezse tokens_in/out 0 kalır → cagri_mutabakati ASGARİ bedeli yazar,
+                # yani "ücretsiz akış" diye bir şey defterde asla görünmez.
+                demo_butce.cagri_mutabakati(self.model, tokens_in, tokens_out)
                 return LLMResponse(
                     content=_strip_think("".join(parts)), raw={}, finish_reason="stop",
                     tokens_in=tokens_in, tokens_out=tokens_out,

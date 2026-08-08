@@ -19,6 +19,11 @@
       name="description"
       content="Kamu evrak ve yazışma için akıllı agent destek sistemi — evrak okuma, sınıflandırma, mevzuat ve resmî yazı taslağı."
     />
+    <!-- Arama motoruna kapalı: çalışma alanı link-only erişilir, dizine düşmez. Üç katmanlı
+         savunmanın HTML ayağı; JSON/PDF/DOCX yanıtlarını backend'in X-Robots-Tag başlığı,
+         nazik tarayıcıyı public/robots.txt kapatır. Bu etiket, frontend başlığı geçirmeyen
+         bir statik CDN'den servis edildiğinde tek koruma olarak kalır. -->
+    <meta name="robots" content="noindex, nofollow" />
     <!-- Çalışma alanı fontları (yoksa sistem fontuna düşer) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

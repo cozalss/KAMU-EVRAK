@@ -10,7 +10,7 @@ import * as RTooltip from "@radix-ui/react-tooltip";
 // Görsel katman. TEK YÖNLÜ bağımlılık: gorsel.jsx bu dosyadan HİÇBİR ŞEY import etmez
 // (token'ları kendi içinde CSS değişkeni dizesi olarak tutar) — aksi hâlde ESM döngüsü
 // doğar ve modül-seviyesi sabitler tanımlanmadan okunurdu.
-import { MeshZemin, useIsik } from "./gorsel.jsx";
+import { MeshZemin } from "./gorsel.jsx";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
@@ -407,24 +407,21 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, children }) {
 /* Kart — düz beyaz yüzey + 1px hairline (border-first); gölge en fazla SH.card.
    Başlık: satır-içi kutusuz ikon (accent yalnız ikon rengi) + 14/600 sentence-case başlık +
    sağda düz meta metin (tag). Hover'da kalkış YOK. */
-export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, bodyCenter, style, isik = true }) {
-  // İMLEÇ IŞIĞI (2026-08-08) — kartın kendi yüzeyinde, EK SARMALAYICI OLMADAN. Kanca
-  // dokunmatik cihazda ve reduced-motion'da hiçbir dinleyici kurmaz; kurulduğunda da yazma
-  // kare başına birdir ve CSS değişkeni ELEMANIN KENDİSİNDE tutulur (üst öğede tutulsa tüm
-  // çocuklar için stil yeniden hesaplanır — listelerde titremenin klasik sebebi).
-  // Işık içeriğin ALTINDA kalır: amaç yüzeyi aydınlatmak, metnin kontrastını düşürmek değil.
-  // `isik={false}` ile kart bazında kapatılabilir (yoğun tablo/liste yüzeyleri için).
-  const { ref: isikRef, baglar, katman } = useIsik({ renk: accent, guc: 0.1 });
+export function NeonCard({ title, tag, tagColor, accent = T, icon, children, full, bodyCenter, style }) {
+  // İMLEÇ IŞIĞI KALDIRILDI (2026-08-09, kullanıcı kararı): kart yüzeyinde imleci takip eden
+  // bir aydınlanma vardı (`useIsik`), artık yok. Yüzey tamamen statik — hover geri bildirimi
+  // yalnız tıklanabilir öğelerin kendi zemin tonundan gelir (hareket = bilgi).
+  // position:relative + isolation KALIYOR: kartların içinde konumlanan başka katmanlar
+  // (ParlaKenar gibi) buna dayanıyor.
   // bodyCenter: ColGrid'in stretchLast'ı son kartı komşu sütunla hizalamak için flex:1 verir
   // (bkz. NeonDetay.jsx) — içerik kısa bir metinse fazla boşluk gövdenin ALTINDA boş kalır.
   // bodyCenter true'ysa gövde o boşluğu üstlenip içeriği dikeyde ortalar; içerik kartı zaten
   // doldurduğunda (stretch yoksa) hiçbir görsel farkı yoktur.
   return (
-    <section ref={isik ? isikRef : undefined} {...(isik ? baglar : null)}
+    <section
       style={{ position: "relative", isolation: "isolate", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, boxShadow: SH.card, ...(bodyCenter ? { display: "flex", flexDirection: "column" } : null), ...style }}>
-      {isik && katman}
-      {/* Başlık ve gövde zIndex 1 taşır: ışık katmanının ÜSTÜNDE kalmalılar, yoksa
-          aydınlanma metnin üzerine biner ve kontrast düşer. */}
+      {/* Başlık ve gövde zIndex 1 taşır: kart içinde konumlanan dekor katmanlarının
+          (ParlaKenar) ÜSTÜNDE kalmalılar. */}
       {title && (
         <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m, flexShrink: 0 }}>
           {icon && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(accent) }}>{icon}</span>}

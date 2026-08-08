@@ -8,11 +8,15 @@
  * uygulaması, memur gün boyu bakıyor. Bu yüzden:
  *   · Metnin ARKASINDA sürekli hareket eden katman YOK. Zemin efektleri statiktir; yalnız
  *     bir kereye mahsus giriş yapar. (Sürekli döngü = periferik dikkat hırsızı + pil.)
- *   · Işık/parıltı yalnız İMLECİN OLDUĞU yerde ve yalnız fare olan cihazlarda.
+ *   · İMLEÇ IŞIĞI YOK (2026-08-09, kullanıcı kararı). Kartın üstünde imleci takip eden
+ *     `IsikYuzeyi`/`useIsik` çifti vardı; kaldırıldı. Görsel gerekçenin yanında somut bir
+ *     bedeli de vardı: `IsikYuzeyi`'nin sarmalayıcısı ızgara hücresini içerik genişliğine
+ *     daraltıyor, hücrenin geri kalanı tıklanamıyordu (bkz. PanelView ölçü şeridi).
+ *     Geri getirilecekse sarmalayıcının hücreyi tam doldurduğu ölçülerek doğrulanmalı.
  *   · prefers-reduced-motion'da hepsi statik hâline düşer — kaybolmaz, DURUR.
  *   · Hiçbir katman tıklamayı yutmaz (`pointerEvents: none`).
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /* BAĞIMSIZ MODÜL — bilerek `neonUi.jsx`'ten HİÇBİR ŞEY import etmez.
    Sebep: bu efektler neonUi'nin kendi atomlarında (NeonCard/ViewWrap) kullanılıyor; iki
@@ -28,146 +32,19 @@ const azHareketMi = () =>
   typeof window !== "undefined"
   && !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
-/** Fare var mı — dokunmatikte hover efektleri yanlış tetikleniyor (tap = hover). */
-const fareVarMi = () =>
-  typeof window !== "undefined"
-  && !!window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches;
-
-/** İki medya sorgusunu canlı izleyen ortak kanca. */
+/* Hareket kısıtını CANLI izler — kullanıcı sistem ayarını mesai ortasında değiştirebilir,
+   ilk render'daki değere kilitlenmek "ayarı açtım ama durmadı" olarak görünürdü.
+   (Eskiden burada bir de `(hover: hover)` sorgusu vardı; yalnız imleç ışığı kullanıyordu,
+   ışık kaldırılınca birlikte gitti.) */
 function useOrtam() {
-  const [ortam, setOrtam] = useState(() => ({ az: azHareketMi(), fare: fareVarMi() }));
+  const [az, setAz] = useState(azHareketMi);
   useEffect(() => {
-    const mqAz = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const mqFare = window.matchMedia?.("(hover: hover) and (pointer: fine)");
-    const guncelle = () => setOrtam({ az: !!mqAz?.matches, fare: !!mqFare?.matches });
-    mqAz?.addEventListener?.("change", guncelle);
-    mqFare?.addEventListener?.("change", guncelle);
-    return () => {
-      mqAz?.removeEventListener?.("change", guncelle);
-      mqFare?.removeEventListener?.("change", guncelle);
-    };
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    const guncelle = () => setAz(!!mq?.matches);
+    mq?.addEventListener?.("change", guncelle);
+    return () => mq?.removeEventListener?.("change", guncelle);
   }, []);
-  return ortam;
-}
-
-/**
- * IsikYuzeyi — imleci takip eden ışık. Kartın üstünde, imlecin bulunduğu noktada yumuşak
- * bir aydınlanma; kart "cama dokunuyormuş" gibi tepki verir.
- *
- * NEDEN KENDİ YAZIMIMIZ: hazır MagicCard bileşeni `next-themes` istiyor (bu proje Vite,
- * tema `data-theme` ile yönetiliyor → bileşenin useTheme'i çalışmaz) ve her pointermove'da
- * gradyan şablonunu yeniden kuruyor. Burada iki şey farklı:
- *   1. Konum CSS DEĞİŞKENİNE yazılır ve değişken ELEMANIN KENDİSİNDE tutulur — üst öğede
- *      tutulsa tüm çocuklar için stil yeniden hesaplanırdı (liste/tablo satırlarında
- *      titremenin klasik sebebi).
- *   2. Yazma rAF ile bir kareye kısılır; pointermove saniyede 120 kez gelse de tek yazma olur.
- */
-export function IsikYuzeyi({
-  children, renk = T, guc = 0.14, cap = 320, style, className, ...kalan
-}) {
-  const { az, fare } = useOrtam();
-  const kapRef = useRef(null);
-  const rafRef = useRef(0);
-  const sonRef = useRef({ x: 0, y: 0 });
-
-  const hareket = useCallback((e) => {
-    const el = kapRef.current;
-    if (!el) return;
-    const k = el.getBoundingClientRect();
-    sonRef.current = { x: e.clientX - k.left, y: e.clientY - k.top };
-    if (rafRef.current) return;              // kare başına tek yazma
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = 0;
-      const { x, y } = sonRef.current;
-      el.style.setProperty("--isik-x", `${x}px`);
-      el.style.setProperty("--isik-y", `${y}px`);
-    });
-  }, []);
-
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
-
-  const aktif = fare && !az;
-  return (
-    <div
-      ref={kapRef}
-      onPointerMove={aktif ? hareket : undefined}
-      onPointerEnter={aktif ? (e) => { e.currentTarget.style.setProperty("--isik-o", String(guc)); } : undefined}
-      onPointerLeave={aktif ? (e) => { e.currentTarget.style.setProperty("--isik-o", "0"); } : undefined}
-      className={className}
-      style={{ position: "relative", isolation: "isolate", ...style }}
-      {...kalan}
-    >
-      {aktif && (
-        // Işık İÇERİĞİN ALTINDA (zIndex 0 + children zIndex 1): üstte olsaydı metnin
-        // kontrastını düşürürdü. Amaç yüzeyi aydınlatmak, metni yıkamak değil.
-        <span
-          aria-hidden="true"
-          style={{
-            position: "absolute", inset: 0, zIndex: 0, borderRadius: "inherit",
-            pointerEvents: "none", opacity: "var(--isik-o, 0)",
-            transition: `opacity .22s ${EASE_OUT}`,
-            background: `radial-gradient(${cap}px circle at var(--isik-x, 50%) var(--isik-y, 50%), ${renk}, transparent 70%)`,
-          }}
-        />
-      )}
-      <div style={{ position: "relative", zIndex: 1, minWidth: 0, height: "100%" }}>{children}</div>
-    </div>
-  );
-}
-
-/**
- * useIsik — IsikYuzeyi'nin kanca hâli. Zaten `position:relative` olan bir yüzeye (NeonCard'ın
- * kendi `<section>`'ı gibi) EK SARMALAYICI DIV EKLEMEDEN ışık takmak için.
- *
- * Neden önemli: NeonCard uygulamanın her yerinde kullanılıyor. Her kartın etrafına bir div
- * daha koymak ızgara/flex hizalarını sessizce kaydırırdı (grid item artık kart değil
- * sarmalayıcı olurdu). Kanca yüzeyi olduğu gibi bırakır.
- *
- * @returns {{ref: object, baglar: object, katman: JSX.Element|null}}
- *   `baglar` doğrudan elemana yayılır; `katman` içeriğin ÖNÜNE basılır (arkada kalır).
- */
-export function useIsik({ renk = T, guc = 0.1, cap = 340 } = {}) {
-  const { az, fare } = useOrtam();
-  const ref = useRef(null);
-  const rafRef = useRef(0);
-  const sonRef = useRef({ x: 0, y: 0 });
-  const aktif = fare && !az;
-
-  const hareket = useCallback((e) => {
-    const el = ref.current;
-    if (!el) return;
-    const k = el.getBoundingClientRect();
-    sonRef.current = { x: e.clientX - k.left, y: e.clientY - k.top };
-    if (rafRef.current) return;
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = 0;
-      el.style.setProperty("--isik-x", `${sonRef.current.x}px`);
-      el.style.setProperty("--isik-y", `${sonRef.current.y}px`);
-    });
-  }, []);
-
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
-
-  if (!aktif) return { ref, baglar: {}, katman: null };
-  return {
-    ref,
-    baglar: {
-      onPointerMove: hareket,
-      onPointerEnter: (e) => e.currentTarget.style.setProperty("--isik-o", String(guc)),
-      onPointerLeave: (e) => e.currentTarget.style.setProperty("--isik-o", "0"),
-    },
-    katman: (
-      <span
-        aria-hidden="true"
-        style={{
-          position: "absolute", inset: 0, zIndex: 0, borderRadius: "inherit",
-          pointerEvents: "none", opacity: "var(--isik-o, 0)",
-          transition: `opacity .22s ${EASE_OUT}`,
-          background: `radial-gradient(${cap}px circle at var(--isik-x, 50%) var(--isik-y, 50%), ${renk}, transparent 70%)`,
-        }}
-      />
-    ),
-  };
+  return { az };
 }
 
 /**

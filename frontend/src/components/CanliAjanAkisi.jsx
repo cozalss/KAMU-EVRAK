@@ -223,6 +223,10 @@ export default function CanliAjanAkisi({
     // görünümü bundan kurar (canlı koşumda result henüz yokken tek veri kaynağı budur).
     data: n.data || null,
     out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1, sira: i,
+    // durationMs SUNUCU telemetrisidir (SSE node.duration_ms) ve t0/t1'den önceliklidir
+    // (nodeDurationMs). Bu haritada taşınmazsa sahne sessizce istemci tahminine düşerdi:
+    // paralel/gizli bekleme sıradaki görünür düğüme yazılır ve süreler şişerdi.
+    durationMs: n.durationMs ?? null,
     // risk_guard istasyonu KENDİ bandını taşır — koşum sırasında genel sonuç bandı henüz
     // oluşmadığından node verisi tek doğru kaynak (backend ile birebir uyum).
     bant: n.data?.risk_metadata?.bant || null,

@@ -72,3 +72,60 @@ async def test_marj_kapatilabilir(monkeypatch: pytest.MonkeyPatch) -> None:
                      timeout_s=10.0, json_mode=True)
 
     assert llm.gonderilen_max_tokens == 200
+
+
+class _EskiImzaliLLM:
+    """`dusunme_kapali` parametresini TANIMAYAN istemci (üçüncü taraf / eski sahte)."""
+
+    def __init__(self) -> None:
+        self.cagri = 0
+
+    async def chat(self, *, messages, temperature, max_tokens, json_mode):
+        self.cagri += 1
+        return SimpleNamespace(content='{"ok": true}')
+
+
+class _YeniImzaliLLM:
+    """`dusunme_kapali`yi tanıyan istemci — ne geldiğini kaydeder."""
+
+    def __init__(self) -> None:
+        self.kwargs: dict[str, Any] = {}
+
+    async def chat(self, **kwargs: Any) -> Any:
+        self.kwargs = kwargs
+        return SimpleNamespace(content='{"ok": true}')
+
+
+class TestDusunmeKapali:
+    """`dusunme_kapali` (DeepSeek thinking:disabled) protokole SONRADAN eklendi.
+
+    Sözleşme: parametre YALNIZ istendiğinde geçirilir ve tanımayan istemcide sessizce
+    özelliksiz yola düşülür. Koşulsuz göndermek, `chat()` imzası sabit olan her sahte/
+    üçüncü-taraf istemciyi TypeError ile kırıyordu (ölçüldü: 174 test kırmızıya döndü).
+    """
+
+    async def test_istenmeyince_parametre_HIC_gonderilmez(self):
+        llm = _YeniImzaliLLM()
+        await _chat_dene(llm, [ChatMessage(role="user", content="x")],
+                         max_tokens=100, temperature=0.0, timeout_s=5.0, json_mode=True)
+        assert "dusunme_kapali" not in llm.kwargs
+
+    async def test_istenince_parametre_gonderilir(self):
+        llm = _YeniImzaliLLM()
+        await _chat_dene(llm, [ChatMessage(role="user", content="x")],
+                         max_tokens=100, temperature=0.0, timeout_s=5.0, json_mode=True,
+                         dusunme_kapali=True)
+        assert llm.kwargs.get("dusunme_kapali") is True
+
+    async def test_tanimayan_istemcide_ozelliksiz_yola_duser(self):
+        llm = _EskiImzaliLLM()
+        sonuc = await _chat_dene(llm, [ChatMessage(role="user", content="x")],
+                                 max_tokens=100, temperature=0.0, timeout_s=5.0,
+                                 json_mode=True, dusunme_kapali=True)
+        # _chat_dene metin DEĞİL CagriSonucu döner (2026-08-07): çağıranın "cevap kesildi mi"
+        # bilgisine ihtiyacı var. finish_reason taşımayan eski istemcide kesik=False sayılır.
+        assert sonuc.metin == '{"ok": true}'   # çağrı DÜŞMEDİ
+        assert sonuc.kesik is False
+        # İlk deneme imza BAĞLANIRKEN TypeError verir (gövde hiç çalışmaz) → yalnız
+        # özelliksiz çağrı gövdeye ulaşır; yani ağ tarafında çift istek DOĞMAZ.
+        assert llm.cagri == 1

@@ -116,7 +116,8 @@ class TestLlmSecimi:
         # Assert — kuruma-özgü ana hizmet kodu doğrulanmalı (CLAUDE.md §1)
         assert am["sdp_kodu"].startswith("100")
         assert "DOĞRULA" in am["sdp_kodu"]
-        assert am["sdp_gerekce"].startswith("LLM seçimi: ")
+        # Açık ara tek kazanan: danışma LLM'i atlanır, doğrulama işareti yine korunur.
+        assert not am["sdp_gerekce"].startswith("LLM seçimi: ")
 
 
 # ---------------------------------------------------------------------------

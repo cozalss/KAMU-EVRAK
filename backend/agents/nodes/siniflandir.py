@@ -23,6 +23,7 @@ from agents.config import (
     ESKALASYON_TIMEOUT_S,
     EVRAK_TURLERI,
     EVRAK_TURU_TR,
+    LLM_DUSUNME_CIKARIMDA_KAPALI,
     SELF_CONSISTENCY_ESIK,
     SELF_CONSISTENCY_N,
     SINIFLANDIR_ESKALASYON,
@@ -514,7 +515,9 @@ async def _self_consistency(raw: str) -> dict[str, Any] | None:
     None → hiç geçerli LLM örneği yok → çağıran heuristik fallback'e düşer.
     """
     orneklem = await asyncio.gather(
-        *[llm_json(_SYSTEM, raw[:6000], max_tokens=200) for _ in range(SELF_CONSISTENCY_N)]
+        *[llm_json(_SYSTEM, raw[:6000], max_tokens=200,
+                   dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
+          for _ in range(SELF_CONSISTENCY_N)]
     )
     oylar: list[str] = []
     confs: dict[str, list[float]] = {}
@@ -554,7 +557,8 @@ async def siniflandir_node(state: dict[str, Any]) -> dict[str, Any]:
                  source="self-consistency")
         return sc
 
-    obj = await llm_json(_SYSTEM, raw_llm[:6000], max_tokens=200)
+    obj = await llm_json(_SYSTEM, raw_llm[:6000], max_tokens=200,
+                        dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
     if obj is not None and (result := _from_llm(obj)) is not None:
         # Kademeli model: LLM düşük güven/belirsiz döndüyse (_from_llm eşik-altını
         # zaten 'belirsiz'e çevirdi → tek koşul yeter) reasoner ikinci görüşü alınır.

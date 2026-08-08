@@ -22,7 +22,7 @@ import json
 import os
 import re
 from collections import OrderedDict
-from typing import Any
+from typing import Any, NamedTuple
 
 import httpx
 import structlog
@@ -88,9 +88,18 @@ def _model_kimligi(llm: Any) -> str:
     return type(llm).__name__
 
 
-def _cache_anahtari(tur: str, llm: Any, system: str, user: str, max_tokens: int) -> str:
+def _cache_anahtari(tur: str, llm: Any, system: str, user: str, max_tokens: int,
+                    *, dusunme_kapali: bool = False, temperature: float = 0.0) -> str:
+    """Yanıt önbelleği anahtarı.
+
+    `dusunme_kapali` ve `temperature` anahtara DAHİLDİR: ikisi de aynı prompt'tan FARKLI
+    cevap üretir. Bunlar anahtarda yokken düşünme ayarını A/B ölçerken eski cevap servis
+    ediliyor ve ölçüm sessizce yanlış çıkıyordu (gecikme denetimi bulgusu, 7 Ağu 2026) —
+    yani hatanın bedeli yanlış bir performans sonucuna inanmaktı, çökme değil.
+    """
     h = hashlib.sha256()
-    for parca in (tur, _model_kimligi(llm), system, user, str(max_tokens)):
+    for parca in (tur, _model_kimligi(llm), system, user, str(max_tokens),
+                  "dk1" if dusunme_kapali else "dk0", f"{temperature:.3f}"):
         h.update(parca.encode("utf-8"))
         h.update(b"\x1f")  # alan ayracı — birleştirme çakışmalarını önler
     return h.hexdigest()
@@ -130,6 +139,17 @@ def dusunme_marjli(llm: Any, max_tokens: int) -> int:
     return max_tokens + (0 if isinstance(llm, MockLLM) else config.LLM_DUSUNME_MARJI)
 
 
+class CagriSonucu(NamedTuple):
+    """Tek LLM çağrısının sonucu — metin YETMİYOR, bitiş sebebi de gerekiyor.
+
+    `kesik=True` (finish_reason == "length") demek: model bütçeyi doldurdu ve cevabı
+    TAMAMLAYAMADI. Bu, "bozuk JSON üretti"den TAMAMEN farklı bir başarısızlıktır ve farklı
+    davranış ister — bkz. llm_json'daki retry kararı.
+    """
+    metin: str
+    kesik: bool
+
+
 async def _chat_dene(
     llm: Any,
     messages: list[ChatMessage],
@@ -138,27 +158,37 @@ async def _chat_dene(
     temperature: float,
     timeout_s: float,
     json_mode: bool,
-) -> str | None:
+    dusunme_kapali: bool = False,
+) -> CagriSonucu | None:
     """Tek LLM çağrısı — geçici/altyapı hatası → None (çağıran fallback'e düşer).
 
-    Bütçeye düşünme marjı eklenir — bkz. dusunme_marjli.
+    Bütçeye düşünme marjı eklenir — bkz. dusunme_marjli. `dusunme_kapali=True` ise marj da
+    gereksizdir (düşünme token'ı üretilmez) ama zararsız olduğu için tek kod yolu korunur.
+
+    Dönüş metin DEĞİL CagriSonucu: çağıranın "cevap kesildi mi" bilgisine ihtiyacı var,
+    yoksa kesilmiş bir cevaba bozuk-JSON muamelesi yapıp aynı bütçeyle boşuna yeniden
+    soruyor (ölçüldü: iki node'da 4/4 başarısız retry, ~21 sn).
     """
     butce = dusunme_marjli(llm, max_tokens)
+    # `dusunme_kapali` YALNIZ istendiğinde geçirilir: parametre LLMClient protokolüne yeni
+    # eklendi ve testlerdeki/üçüncü-taraf sahte istemcilerin `chat()` imzası onu tanımayabilir.
+    # Koşulsuz göndermek çalışan her istemciyi TypeError'la kırardı (ölçüldü: 174 test).
+    ek = {"dusunme_kapali": True} if dusunme_kapali else {}
+    temel = {"messages": messages, "temperature": temperature,
+             "max_tokens": butce, "json_mode": json_mode}
     try:
-        resp = await asyncio.wait_for(
-            llm.chat(
-                messages=messages,
-                temperature=temperature,
-                max_tokens=butce,
-                json_mode=json_mode,
-            ),
-            timeout=timeout_s,
-        )
+        try:
+            resp = await asyncio.wait_for(llm.chat(**temel, **ek), timeout=timeout_s)
+        except TypeError:
+            # İstemci düşünme-kapatmayı tanımıyor → özelliksiz (düşünmeli) yol yine çalışsın.
+            log.debug("evrak_llm_dusunme_kapali_desteklenmiyor")
+            resp = await asyncio.wait_for(llm.chat(**temel), timeout=timeout_s)
     except _LLM_FALLBACK_EXCEPTIONS as exc:
         log.warning("evrak_llm_failed_fallback", error=str(exc) or type(exc).__name__,
                     exc_type=type(exc).__name__)
         return None
-    return resp.content
+    # getattr: sahte/üçüncü-taraf istemciler finish_reason taşımayabilir → kesik değil say.
+    return CagriSonucu(resp.content, getattr(resp, "finish_reason", "stop") == "length")
 
 
 # Retry düzeltme mesajı — önceki ham cevapla birlikte gönderilir (geri-bildirimli).
@@ -175,18 +205,36 @@ async def llm_json(
     max_tokens: int = 512,
     temperature: float = 0.0,
     timeout_s: float = LLM_NODE_TIMEOUT_S,
+    dusunme_kapali: bool = False,
+    kesikte_dusunmesiz: bool = False,
 ) -> dict[str, Any] | None:
     """LLM'i JSON-mode'da çağır, tolerant parse et. Hata/timeout/parse-fail → None
     (çağıran node deterministik fallback'ine düşer — anahtarsız demo çalışır).
 
-    Bozuk JSON'da geri-bildirimli TEK retry (config.LLM_JSON_RETRY); başarılı sonuç
-    LRU cache'e yazılır (config.LLM_CACHE_ENABLED). Mock'ta ikisi de devre dışı —
-    mock deterministiktir: retry aynı cevabı verir, cache çağrı sayısını değiştirirdi.
+    İKİ AYRI BAŞARISIZLIK, İKİ AYRI KURTARMA (ölçülerek ayrıldı, 7 Ağu 2026):
+      · DOLU AMA BOZUK  → geri-bildirimli retry (config.LLM_JSON_RETRY). Asıl işi buydu:
+        model JSON'u markdown/açıklamayla sarmışsa ikinci şans verir.
+      · KESİK (finish_reason=="length") → biçim sorunu DEĞİL bütçe sorunu; düşünme
+        token'ları cevaba yer bırakmamıştır. Aynı bütçeyle tekrar sormak yazı-tura
+        (ölçüldü: 4 denemenin 3'ü yine kesildi, ~11 sn/deneme). `kesikte_dusunmesiz=True`
+        verilirse tek seferlik DÜŞÜNMESİZ yeniden çağrı yapılır — bütçenin tamamı cevaba
+        kalır, kurtarma güvenilir olur ve ~3 sn'ye iner. Opt-in: yalnız ÇIKARIM işlerinde
+        uygundur (bkz. config.LLM_DUSUNME_CIKARIMDA_KAPALI taksonomisi).
+      · BOŞ ve KESİK DEĞİL → kurtarma yok, deterministik yedek.
+
+    Başarılı sonuç LRU cache'e yazılır (config.LLM_CACHE_ENABLED). Mock'ta retry ve cache
+    devre dışı — mock deterministiktir: retry aynı cevabı verir, cache çağrı sayısını
+    değiştirirdi.
+
+    `dusunme_kapali=True` (DeepSeek v4): gerçekleri HAZIR alan, muhakemeden çok biçim
+    isteyen çağrılar için düşünmeyi kapatır — reasoning modelinde düşünme token'ları
+    çıktı bütçesini yiyip yanıtı KESEBİLİYOR (kurul denetim turunda ölçüldü).
     """
     llm = get_llm()
     mock = isinstance(llm, MockLLM)
     anahtar = (
-        _cache_anahtari("json", llm, system, user, max_tokens)
+        _cache_anahtari("json", llm, system, user, max_tokens,
+                        dusunme_kapali=dusunme_kapali, temperature=temperature)
         if config.LLM_CACHE_ENABLED and not mock else None
     )
     if anahtar is not None:
@@ -197,22 +245,59 @@ async def llm_json(
         ChatMessage(role="system", content=system),
         ChatMessage(role="user", content=user),
     ]
-    raw = await _chat_dene(llm, messages, max_tokens=max_tokens,
-                           temperature=temperature, timeout_s=timeout_s, json_mode=True)
-    if raw is None:
+    sonuc = await _chat_dene(llm, messages, max_tokens=max_tokens, temperature=temperature,
+                             timeout_s=timeout_s, json_mode=True, dusunme_kapali=dusunme_kapali)
+    if sonuc is None:
         return None
+    raw = sonuc.metin
     obj = parse_json_object(raw)
-    if obj is None and config.LLM_JSON_RETRY and not mock:
+    # RETRY YALNIZ "DOLU AMA BOZUK" CEVAP İÇİN (ölçüm bulgusu, 7 Ağu 2026).
+    # Retry'ın işi, modelin JSON'u markdown/açıklamayla sarmasını kurtarmaktır. Cevap BOŞ ya
+    # da KESİK (finish_reason=="length") ise sorun biçim değil BÜTÇEDİR: reasoning modelinde
+    # düşünme token'ları çıktı bütçesini yiyip cevabı bitirmeye yer bırakmamıştır. Aynı
+    # max_tokens ve aynı temperature ile tekrar sormak mekanik olarak aynı sonucu verir —
+    # üstelik retry mesajı prompt'u uzatıp cevap alanını DAHA DA daraltır.
+    # Ölçüldü: decompose + route_ajan'da 4/4 retry başarısız, boşuna ~21 sn.
+    # Kaybedilen yetenek yok: bozuk-JSON kurtarması aynen duruyor.
+    retry_hakli = bool(raw.strip()) and not sonuc.kesik
+    # KESİLMİŞ CEVABIN KURTARILMASI — bütçe sorununu bütçeyle çöz, biçim mesajıyla değil.
+    # Ölçüldü (A/B, 7 Ağu 2026): eski kod kesilmiş cevapta aynı bütçeyle yeniden soruyordu ve
+    # 4 denemenin 3'ü yine kesildi; 1'i şans eseri tuttu. Yani kurtarma vardı ama YAZI TURA'ydı
+    # ve her seferinde ~11 sn'ye mal oluyordu. Düşünme kapatılınca bütçenin tamamı cevaba
+    # kalır: kurtarma güvenilir olur ve ~3 sn'ye iner.
+    # OPT-IN, ÇAĞRI NOKTASI BAZINDA: yalnız ÇIKARIM işleri (kapalı-küme seçim, metinde geçeni
+    # bulma) bunu ister. YARGI işlerinde (route_ajan'ın yetki-içeride/dışarıda kararı)
+    # düşünme kapatmak kalite riskidir ve orada deterministik yol zaten ölçülmüş üstündür
+    # (Top-1 0,907) — bu yüzden varsayılan KAPALI.
+    kesik_kurtarma = (
+        obj is None and sonuc.kesik and kesikte_dusunmesiz and not dusunme_kapali
+        and config.LLM_JSON_RETRY and not mock
+    )
+    if kesik_kurtarma:
+        # Düzeltme mesajı EKLENMEZ: cevap bozuk değil yarım kalmış; ek mesaj prompt'u uzatıp
+        # cevap alanını daha da daraltırdı (ölçüldü: tokens_in 714 -> 775).
+        sonuc2 = await _chat_dene(llm, messages, max_tokens=max_tokens,
+                                  temperature=temperature, timeout_s=timeout_s,
+                                  json_mode=True, dusunme_kapali=True)
+        obj = parse_json_object(sonuc2.metin) if sonuc2 is not None else None
+        log.debug("evrak_llm_kesik_kurtarma", basarili=obj is not None)
+    elif obj is None and config.LLM_JSON_RETRY and not mock and (
+            retry_hakli or not config.LLM_RETRY_SADECE_BOZUK):
         retry_msgs = [
             *messages,
             ChatMessage(role="assistant", content=raw),
             ChatMessage(role="user", content=_RETRY_DUZELTME),
         ]
-        raw2 = await _chat_dene(llm, retry_msgs, max_tokens=max_tokens,
-                                temperature=temperature, timeout_s=timeout_s, json_mode=True)
-        obj = parse_json_object(raw2) if raw2 is not None else None
+        sonuc2 = await _chat_dene(llm, retry_msgs, max_tokens=max_tokens,
+                                  temperature=temperature, timeout_s=timeout_s,
+                                  json_mode=True, dusunme_kapali=dusunme_kapali)
+        obj = parse_json_object(sonuc2.metin) if sonuc2 is not None else None
     if obj is None:
-        log.debug("evrak_llm_json_parse_empty", raw=(raw or "")[:160])
+        # `bos`/`kesik`: başarısızlığın SEBEBİ artık log'dan okunuyor. Bu ayrım olmadan
+        # "bütçe yetmiyor" ile "model bozuk JSON üretti" aynı satıra düşüyor ve iki node'un
+        # LLM'i hiç çalıştırmadığı aylarca görünmüyordu.
+        log.debug("evrak_llm_json_parse_empty", raw=raw[:160],
+                  bos=not raw.strip(), kesik=sonuc.kesik, retry=retry_hakli)
         return None
     if anahtar is not None:
         _cache_koy(anahtar, copy.deepcopy(obj))  # kopya sakla — dönen nesne serbest
@@ -237,32 +322,40 @@ async def llm_text(
     max_tokens: int = 420,
     temperature: float = 0.2,
     timeout_s: float = LLM_NODE_TIMEOUT_S,
+    dusunme_kapali: bool = False,
 ) -> str | None:
     """LLM'i SERBEST METİN modunda çağır (JSON değil). Mock/hata/timeout/boş → None.
 
     None dönerse çağıran node kendi deterministik metnine düşer (demo asla bozulmaz).
     llm_json'ın metin-üreten ikizi (DRY: route/finalize gibi prose node'ları paylaşır).
+
+    `dusunme_kapali` llm_json'daki ile aynı anlamda (DeepSeek `thinking: disabled`):
+    gerçekleri HAZIR alıp yalnız cümleye döken node'lar için muhakeme gereksizdir.
     """
     llm = real_llm()
     if llm is None:
         return None
     anahtar = (
-        _cache_anahtari("text", llm, system, user, max_tokens)
+        _cache_anahtari("text", llm, system, user, max_tokens,
+                        dusunme_kapali=dusunme_kapali, temperature=temperature)
         if config.LLM_CACHE_ENABLED else None
     )
     if anahtar is not None:
         onbellek = _cache_al(anahtar)
         if onbellek is not None:
             return onbellek  # str immutable — kopya gerekmez
-    raw = await _chat_dene(
+    sonuc = await _chat_dene(
         llm,
         [ChatMessage(role="system", content=system), ChatMessage(role="user", content=user)],
         max_tokens=max_tokens, temperature=temperature, timeout_s=timeout_s, json_mode=False,
+        dusunme_kapali=dusunme_kapali,
     )
-    if raw is None:
+    if sonuc is None:
         return None
-    txt = raw.strip()
+    txt = sonuc.metin.strip()
     if not txt:
+        # Serbest metinde retry zaten yoktu; sebebi loglamak teşhisi mümkün kılar.
+        log.debug("evrak_llm_text_bos", kesik=sonuc.kesik)
         return None
     if anahtar is not None:
         _cache_koy(anahtar, txt)

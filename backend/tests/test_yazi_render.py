@@ -230,7 +230,8 @@ class TestBuildAltTalepTaslaklari:
 
     async def test_alt_talep_antet_tek_kurum(self):
         # TEK-KURUM (19 Tem): gelen dilekçe ODUNPAZARI BELEDİYE BAŞKANLIĞINA yazılmış olsa
-        # bile alt-talep taslaklarının anteti o kuruma DÖNMEZ — aktif kurum (env) kullanılır.
+        # bile alt-talep taslaklarının anteti o kuruma DÖNMEZ — çağıranın geçirdiği idare adı
+        # (boşsa env KURUM_ADI) kullanılır.
         # Test ortamında KURUM_ADI boş → jenerik 'KAMU KURUMU'; evrak kurumu antede sızmaz.
         alt = [
             {"ozet": "çukurun onarılması", "birim_tr": "İlgili Teknik Daire"},

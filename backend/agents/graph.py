@@ -28,6 +28,9 @@ alt-talepler, fan-out kaynağı, varsayılan AÇIK), risk_guard (RISK_GUARD_ENAB
 
 from __future__ import annotations
 
+import time
+from collections.abc import Awaitable, Callable
+from functools import wraps
 from typing import Any
 
 from langgraph.graph import END, START, StateGraph
@@ -139,6 +142,20 @@ def _risk_route(state: dict[str, Any]) -> str:
     return "onay_kapisi" if bant in ("sari", "kirmizi") else "arsiv"
 
 
+def _zamanli_node(
+    ad: str, node: Callable[..., Awaitable[dict[str, Any]]],
+) -> Callable[..., Awaitable[dict[str, Any]]]:
+    """Node çıktısına gerçek sunucu süresini additive olarak ekle."""
+    @wraps(node)
+    async def _sarili(state: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
+        baslangic = time.perf_counter()
+        sonuc = await node(state, *args, **kwargs)
+        sure_ms = max(0, round((time.perf_counter() - baslangic) * 1000))
+        return {**(sonuc or {}), "node_sureleri_ms": {ad: sure_ms}}
+
+    return _sarili
+
+
 def build_graph(checkpointer: Any = None) -> Any:
     """Compiled LangGraph — `await graph.ainvoke(make_initial_state(text))` ile çağrılır.
 
@@ -148,19 +165,22 @@ def build_graph(checkpointer: Any = None) -> Any:
     """
     g = StateGraph(EvrakState)
 
-    g.add_node("siniflandir", siniflandir_node)
-    g.add_node("cikar", cikar_node)
-    g.add_node("kanit_baglama", kanit_baglama_node)
-    g.add_node("eksik_tespit", eksik_tespit_node)
-    g.add_node("mevzuat_oner", mevzuat_oner_node)
-    g.add_node("ozetle", ozetle_node)
-    g.add_node("route_birim", route_birim_node)
-    g.add_node("yazi_taslak", yazi_taslak_node)
-    g.add_node("verify", verify_node)
-    g.add_node("arsiv", arsiv_node)
-    g.add_node("sla_triyaj", sla_triyaj_node)
-    g.add_node("denetim_izi", denetim_izi_node)
-    g.add_node("finalize", finalize_node)
+    def ekle(ad: str, node: Callable[..., Awaitable[dict[str, Any]]]) -> None:
+        g.add_node(ad, _zamanli_node(ad, node))
+
+    ekle("siniflandir", siniflandir_node)
+    ekle("cikar", cikar_node)
+    ekle("kanit_baglama", kanit_baglama_node)
+    ekle("eksik_tespit", eksik_tespit_node)
+    ekle("mevzuat_oner", mevzuat_oner_node)
+    ekle("ozetle", ozetle_node)
+    ekle("route_birim", route_birim_node)
+    ekle("yazi_taslak", yazi_taslak_node)
+    ekle("verify", verify_node)
+    ekle("arsiv", arsiv_node)
+    ekle("sla_triyaj", sla_triyaj_node)
+    ekle("denetim_izi", denetim_izi_node)
+    ekle("finalize", finalize_node)
 
     # DİKKAT — LangGraph çok-ebeveyn birleşimi: kaynaklar AYRI add_edge çağrılarıyla
     # bağlanırsa hedef "hepsi bitince BİR KEZ" değil "HER kaynak bitişinde bir kez" koşar.
@@ -185,7 +205,7 @@ def build_graph(checkpointer: Any = None) -> Any:
         g.add_edge("cikar", "kanit_baglama")
         fanout_src = "kanit_baglama"
         if DECOMPOSE_ENABLED:
-            g.add_node("decompose", decompose_node)
+            ekle("decompose", decompose_node)
             g.add_edge("kanit_baglama", "decompose")
             fanout_src = "decompose"
         for hedef in ("eksik_tespit", "mevzuat_oner", "ozetle"):
@@ -195,7 +215,7 @@ def build_graph(checkpointer: Any = None) -> Any:
                 g.add_edge(fanout_src, hedef)
         # Servis müdürlüğü önerisi YALNIZ evrak_text okur → en baştan ayrı danışma dalı
         # (route_birim'den taşındı; o node artık bilinen türde saf deterministik).
-        g.add_node("servis_birim", servis_birim_oneri_node)
+        ekle("servis_birim", servis_birim_oneri_node)
         g.add_edge(START, "servis_birim")
         route_kaynaklar = ["eksik_tespit", "ozetle", "servis_birim"]
     else:
@@ -207,7 +227,7 @@ def build_graph(checkpointer: Any = None) -> Any:
         g.add_edge("kanit_baglama", "eksik_tespit")
         fanout_src = "eksik_tespit"
         if DECOMPOSE_ENABLED:
-            g.add_node("decompose", decompose_node)
+            ekle("decompose", decompose_node)
             g.add_edge("eksik_tespit", "decompose")
             fanout_src = "decompose"
         g.add_edge(fanout_src, "mevzuat_oner")
@@ -219,12 +239,12 @@ def build_graph(checkpointer: Any = None) -> Any:
     mevzuat_tail = "mevzuat_oner"
     if CRAG_ENABLED:
         # CRAG öz-düzeltme (Yan et al. 2024): düşük-güvenli retrieval'ı sorgu-genişletmeyle düzeltir.
-        g.add_node("crag", crag_node)
+        ekle("crag", crag_node)
         g.add_edge(mevzuat_tail, "crag")
         mevzuat_tail = "crag"
     if NLI_ENABLED:
         # NLI atıf-gerekçelendirme: önerilen madde ⊨ evrak talebi entailment doğrulaması (additive).
-        g.add_node("mevzuat_dogrula", mevzuat_dogrula_node)
+        ekle("mevzuat_dogrula", mevzuat_dogrula_node)
         g.add_edge(mevzuat_tail, "mevzuat_dogrula")
         mevzuat_tail = "mevzuat_dogrula"
     route_kaynaklar.append(mevzuat_tail)
@@ -235,7 +255,7 @@ def build_graph(checkpointer: Any = None) -> Any:
         # Dur-ve-sor dalı (ENV-gated): kritik eksikte taslak ÜRETMEDEN kullanıcıdan
         # bilgi iste. clarifier kendi dur-ve-sor mesajını yazar → doğrudan END
         # (finalize'ı atla ki mesaj korunsun; finalize scope dışı, ezmesin).
-        g.add_node("clarifier", clarifier_node)
+        ekle("clarifier", clarifier_node)
         g.add_conditional_edges(
             "route_birim", _clarify_route,
             {"clarifier": "clarifier", "yazi_taslak": "yazi_taslak"},
@@ -253,12 +273,12 @@ def build_graph(checkpointer: Any = None) -> Any:
     tail = "verify"
     if RISK_GUARD_ENABLED:
         # Risk bandı (trafik ışığı): verify sinyallerini yeşil/sarı/kırmızı'ya çevirir (additive).
-        g.add_node("risk_guard", risk_guard_node)
+        ekle("risk_guard", risk_guard_node)
         g.add_edge(tail, "risk_guard")
         tail = "risk_guard"
     if SELF_RAG_ENABLED:
         # Self-RAG reflection (ENV-gated): çıktı tamlığını öz-değerlendirir (Asai et al. 2023).
-        g.add_node("self_rag", self_rag_node)
+        ekle("self_rag", self_rag_node)
         g.add_edge(tail, "self_rag")
         tail = "self_rag"
 
@@ -270,7 +290,7 @@ def build_graph(checkpointer: Any = None) -> Any:
         g.add_edge("verify", "arsiv")
         g.add_edge([tail, "arsiv"] if tail != "verify" else "arsiv", "sla_triyaj")
         if HITL_ENABLED:
-            g.add_node("onay_kapisi", onay_kapisi_node)
+            ekle("onay_kapisi", onay_kapisi_node)
             if RISK_GUARD_ENABLED:
                 # _risk_route "arsiv" etiketi = "yeşil, otomatik geç" — burada geçiş denetim'e.
                 g.add_conditional_edges("sla_triyaj", _risk_route,
@@ -285,7 +305,7 @@ def build_graph(checkpointer: Any = None) -> Any:
             # Memur onay kapısı (interrupt() — checkpointer ŞART → build_graph(checkpointer=...)).
             # RISK_GUARD ile KOŞULLU: yeşil → otomatik geç (arsiv); sarı/kırmızı → onay_kapisi →
             # arsiv. RISK_GUARD yoksa KOŞULSUZ (her taslak onaya). Kapalıyken node grafta YOK.
-            g.add_node("onay_kapisi", onay_kapisi_node)
+            ekle("onay_kapisi", onay_kapisi_node)
             if RISK_GUARD_ENABLED:
                 g.add_conditional_edges(tail, _risk_route,
                                         {"onay_kapisi": "onay_kapisi", "arsiv": "arsiv"})
@@ -307,4 +327,4 @@ def build_graph(checkpointer: Any = None) -> Any:
     return g.compile(checkpointer=checkpointer)
 
 
-__all__ = ("GIZLI_NODELAR", "PIPELINE_NODES", "build_graph")
+__all__ = ("GIZLI_NODELAR", "PIPELINE_NODES", "_zamanli_node", "build_graph")

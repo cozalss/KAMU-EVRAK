@@ -49,14 +49,17 @@ class EvrakState(TypedDict):
     # --- Giriş (OCR/route tarafından doldurulur) ---
     evrak_text: str
     filename: NotRequired[str]
-    # Demo/kurum FALLBACK'i (19 Tem 2. revizyon): istek-bazlı override, boşsa env KURUM_ADI'ya
-    # düşer. Yalnız belge açık bir kuruma hitap ETMİYORSA kullanılır — belge hitap-ekli bir
-    # kuruma yazılmışsa (yargı hariç) antet HER ZAMAN o kurumu kullanır, sormadan/uyarmadan
-    # (bkz. kurum_kimlik.efektif_idare_adi — "biz belgeye göre hareket ediyoruz").
-    aktif_kurum: NotRequired[str]
+    # Kurum kimliği state'te TAŞINMAZ (6 Ağu 2026): istek-bazlı `aktif_kurum` override'ı
+    # tamamen kaldırıldı. Antet kurumu ya belgeden gelir (hitap-ekli kurum; bkz.
+    # kurum_kimlik.efektif_idare_adi — "biz belgeye göre hareket ediyoruz") ya da kurulum
+    # sabiti env KURUM_ADI'dan.
     ocr_engine: NotRequired[str]
     page_count: NotRequired[int]
     ocr_confidence: NotRequired[float | None]
+
+    # Sunucu-kaynaklı gerçek node süreleri. Paralel dallar aynı superstep'te farklı
+    # anahtarlar yazdığı için dict reducer ile kayıpsız birleşir; UI istemci tahmini yapmaz.
+    node_sureleri_ms: Annotated[dict[str, int], _merge_dict]
 
     # --- Görev 1: sınıflandırma + içerik analizi ---
     evrak_turu: NotRequired[str]            # EVRAK_TURLERI'nden biri
@@ -213,6 +216,7 @@ def make_initial_state(evrak_text: str, *, filename: str = "", **meta: Any) -> E
         bilgi_unsurlari={},
         mevzuat_onerileri=[],
         eksik_alanlar=[],
+        node_sureleri_ms={},
         errors=[],
         **meta,
     )

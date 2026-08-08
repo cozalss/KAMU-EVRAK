@@ -101,20 +101,22 @@ class TestHavaleGondereneGitmez:
         kaynak = out.get("hedef_birim_kaynak") or {}
         assert kaynak.get("kurum_slug", "") != "tarim-orman-bakanligi"
 
-    def test_hitapsiz_evrakta_aktif_kurum_alici_olarak_kullanilir(self):
+    def test_hitapsiz_evrakta_kurulum_kurumu_alici_olarak_kullanilir(self, monkeypatch):
+        """Hitapsız evrakta alıcı BİZİZ — kurum kurulum sabiti env KURUM_ADI'dan gelir
+        (6 Ağu 2026: istek-bazlı `aktif_kurum` alanı sistemden kaldırıldı)."""
+        monkeypatch.setenv("KURUM_ADI", "Yenimahalle Belediye Başkanlığı")
         out = self._kos(
-            {"evrak_text": _RAPOR, "bilgi_unsurlari": {"konu": "atık yönetimi denetimi"},
-             "aktif_kurum": "Yenimahalle Belediye Başkanlığı"},
+            {"evrak_text": _RAPOR, "bilgi_unsurlari": {"konu": "atık yönetimi denetimi"}},
             {"hedef_birim": "ilgili_teknik_daire", "birim_alternatifleri": []},
         )
         assert out["yetkili_kurum"]["slug"] == "yenimahalle-belediyesi"
         assert out["gonderen_kurum"]["slug"] == "tarim-orman-bakanligi"
 
-    def test_alici_bilinmiyorsa_durust_fallback(self):
-        """Aktif kurum yoksa uydurma hedef ÜRETİLMEZ — memur onayına düşer."""
+    def test_alici_bilinmiyorsa_durust_fallback(self, monkeypatch):
+        """KURUM_ADI tanımsızsa uydurma hedef ÜRETİLMEZ — memur onayına düşer."""
+        monkeypatch.setenv("KURUM_ADI", "")
         out = self._kos(
-            {"evrak_text": _RAPOR, "bilgi_unsurlari": {"konu": "atık yönetimi denetimi"},
-             "aktif_kurum": ""},
+            {"evrak_text": _RAPOR, "bilgi_unsurlari": {"konu": "atık yönetimi denetimi"}},
             {"hedef_birim": "ilgili_teknik_daire", "birim_alternatifleri": []},
         )
         assert out.get("hedef_birim") in (None, "")

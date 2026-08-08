@@ -18,7 +18,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import ZORUNLU_ALANLAR
+from agents.config import LLM_DUSUNME_CIKARIMDA_KAPALI, ZORUNLU_ALANLAR
 from agents.nodes._llm_extract import llm_json
 from api.pii import mask_for_llm
 
@@ -101,7 +101,8 @@ async def _llm_sorular(eksik: list[str], turu: str, metin: str) -> list[str] | N
     etiketler = ", ".join(_ALAN_SORU.get(a, a) for a in eksik)
     # KVKK: LLM'e ham sayısal PII gitmez (eksik-alan tespiti değerlere değil varlığa bakar).
     user = f"Evrak türü: {turu}\nEksik alanlar: {etiketler}\nEvrak metni:\n{mask_for_llm(metin, None)[:2000]}"
-    obj = await llm_json(_SYSTEM, user, max_tokens=400)
+    obj = await llm_json(_SYSTEM, user, max_tokens=400,
+                         dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
     if obj is None:
         return None
     items = obj.get("sorular")

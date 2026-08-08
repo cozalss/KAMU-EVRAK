@@ -542,6 +542,45 @@ LLM_JSON_RETRY = os.getenv("LLM_JSON_RETRY", "1") == "1"
 LLM_CACHE_ENABLED = os.getenv("LLM_CACHE_ENABLED", "1") == "1"
 LLM_CACHE_BOYUT = int(os.getenv("LLM_CACHE_BOYUT", "256"))
 
+# (5b) RETRY YALNIZ "DOLU AMA BOZUK" CEVAPTA — gecikme denetimi bulgusu (2026-08-07).
+# Retry'ın işi modelin JSON'u markdown/açıklamayla sarmasını kurtarmaktır. Cevap BOŞ ya da
+# KESİK (finish_reason == "length") geldiğinde ise sorun biçim değil BÜTÇEDİR: düşünme
+# token'ları çıktı bütçesini bitirmiş, cevaba yer kalmamıştır. Aynı bütçe + aynı sıcaklıkla
+# tekrar sormak mekanik olarak aynı sonucu verir, üstelik retry mesajı prompt'u uzatıp cevap
+# alanını daha da daraltır (ölçüldü: tokens_in 714 -> 775).
+# ÖLÇÜM: decompose ve route_ajan'da 4/4 retry başarısız; uçtan uca 44,9 sn'nin ~15 sn'si
+# ÇIKTISI ZATEN ATILAN ikinci çağrılara gidiyordu. Node çıktıları DEĞİŞMEDEN düşer.
+# 0 = eski davranış (boş/kesik cevapta da yeniden dene).
+LLM_RETRY_SADECE_BOZUK = os.getenv("LLM_RETRY_SADECE_BOZUK", "1") == "1"
+
+# (5c) KESİK CEVABIN DÜŞÜNMESİZ KURTARILMASI — decompose'a özel (ÇIKARIM işi).
+# Ölçüldü (A/B): decompose'un çağrısı bütçe tavanına dayanıp kesiliyor; eski kod aynı
+# bütçeyle yeniden soruyordu ve 4 denemenin 3'ü yine kesildi, 1'i şans eseri tuttu — yani
+# kurtarma vardı ama yazı-turaydı ve deneme başına ~11 sn'ye mal oluyordu. Düşünme
+# kapatılınca bütçenin tamamı cevaba kalır: kurtarma güvenilir ve ~3 sn.
+# YALNIZ decompose: segmentasyon + kapalı-küme tur/birim seçimi ÇIKARIM'dır
+# (bkz. LLM_DUSUNME_CIKARIMDA_KAPALI taksonomisi). route_ajan'ın yetki kararı YARGI'dır ve
+# orada deterministik yol ölçülmüş üstündür (Top-1 0,907) — oraya BAĞLANMAZ.
+DECOMPOSE_KESIKTE_DUSUNMESIZ = os.getenv("DECOMPOSE_KESIKTE_DUSUNMESIZ", "1") == "1"
+
+# (5d) DECOMPOSE KAYNAK ÇAPASI — LLM segmentinin metni kaynakta gerçekten geçiyor mu.
+# `tur`/`birim` kapalı-küme ile doğrulanıyordu ama serbest-metin `metin` alanı yalnız
+# uzunluk kontrolünden geçiyordu; oysa o metin çok-konulu evrakta her alt-taslağın Konu
+# satırına ve gövde tohumuna giriyor ve 2..N taslakları verify'ın uydurma vetosunu
+# GÖRMÜYOR. Eşiğin altında kalan segment düşer; 2'nin altına inilirse LLM segmenti tümden
+# reddedilir ve heuristik yol çalışır. 0 = guard kapalı (eski davranış).
+DECOMPOSE_CAPA_ESIGI = float(os.getenv("DECOMPOSE_CAPA_ESIGI", "0.7"))
+
+# (5e) RESMÎ YAZI GÖVDESİ — düşünme kapalı. Bu çağrı (yazi_render) `_chat_dene` katmanını
+# ATLIYOR, yani ne düşünme marjı ne düşünme kapatma alıyordu. ÖLÇÜLDÜ (2026-08-07): çok-konulu
+# koşumda üç gövde çağrısının ÜÇÜ de `tokens_out=320` = TAM TAVAN; bütçenin tamamı muhakemeye
+# gidip `content` boş kalıyor ve üç resmî yazının gövdesi de sessizce şablona düşüyordu.
+# Bu bir hız ayarı DEĞİL, hız çalışmasında bulunmuş bir KALİTE hatasının düzeltmesidir.
+# Marj eklemek (+700) süreyi ~3× artırırdı; düşünmeyi kapatmak gecikmeyi nötr bırakır.
+# İş cinsi uygun: tür/konu/talepler/kanıt paketi HAZIR verilir, iş resmî üslupla cümleye
+# dökmektir. Emniyet ağı yerinde (kanit_etiketlerini_coz uydurma atıfı reddeder).
+YAZI_GOVDE_DUSUNME_KAPALI = os.getenv("YAZI_GOVDE_DUSUNME_KAPALI", "1") == "1"
+
 # (6) DÜŞÜNME MARJI — deepseek-v4-* modelleri "reasoning" üretir ve düşünme token'ları
 # `max_tokens` bütçesinden düşer. Node'ların CEVAP için ayırdığı dar bütçeler (140-400)
 # bu modellerde tamamen düşünmeye gidiyor → içerik BOŞ dönüyor ve node sessizce
@@ -638,6 +677,28 @@ YAZI_PLAN_PARALEL = os.getenv("YAZI_PLAN_PARALEL", "1") == "1"
 # (15d) Verify içi paralel: LLM grounding ∥ (makam-kademe → lint → autofix) zinciri —
 # iki dal birbirinin çıktısını okumaz; uyarı listesi sırası seri yolla aynı tutulur.
 VERIFY_PARALEL = os.getenv("VERIFY_PARALEL", "1") == "1"
+
+# (16) Hız dalgası 2 (2026-08-07) — DÜŞÜNME BÜTÇESİ. Paralellik (15) çağrıları yan yana
+# koydu; bu madde çağrının KENDİSİNİ kısaltır.
+#
+# ÖLÇÜLEN SORUN: `deepseek-v4-flash` bir reasoning modelidir ve her çağrıda muhakeme
+# token'ı üretir. Bu token'lar `max_tokens`'tan düştüğü için node bütçelerine
+# LLM_DUSUNME_MARJI (700) EKLENİYOR — ve log'da `tokens_out=1000..1300` görünüyor.
+# Üretim ardışık olduğundan süre doğrudan buradan gelir (~10 ms/token): "bu evrağı 19
+# türden hangisine koyayım" gibi KAPALI KÜMELİ bir iş için 1000 token muhakeme israftır.
+#
+# AYRIM — düşünme İŞİN CİNSİNE göre kapatılır, her yerde değil:
+#   ÇIKARIM/BİÇİM işleri: metinde geçen alanı bul, kapalı kümeden kod seç, verilmiş bir
+#     kararı Türkçe cümleye dök. Muhakeme ölçülebilir katkı sağlamaz → KAPALI.
+#   YARGI işleri: aday birimler arasından seçim + yetki içeride/dışarıda kararı, uydurma
+#     vetosu (grounding), CRAG öz-düzeltme. Muhakeme işin kendisidir → AÇIK KALIR.
+#
+# GÜVENLİK AĞI: sınıflandırmada düşünme kapalıyken güven düşerse SINIFLANDIR_ESKALASYON
+# zaten güçlü modele ikinci görüş sorar, o da emin değilse dürüst "belirsiz" döner —
+# yani hız için doğruluk feda edilmez, belirsizlik görünür kalır.
+#
+# =0 → tüm düğümlerde düşünme açık (baseline davranış birebir geri gelir).
+LLM_DUSUNME_CIKARIMDA_KAPALI = os.getenv("LLM_DUSUNME_CIKARIMDA_KAPALI", "1") == "1"
 
 # Resmî yazı taslağında bulunması beklenen zorunlu bölüm başlıkları (format-compliance).
 # Yön. 2646 / 3071: T.C. başlığı + Sayı + Konu + imza (ad-soyad) blokları.

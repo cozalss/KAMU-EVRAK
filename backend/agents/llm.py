@@ -164,6 +164,7 @@ class LLMClient(Protocol):
         max_tokens: int = 1024,
         json_mode: bool = False,
         json_schema: dict[str, Any] | None = None,
+        dusunme_kapali: bool = False,
     ) -> LLMResponse: ...
 
 
@@ -285,6 +286,7 @@ class LlamaCppClient:
         max_tokens: int = 1024,
         json_mode: bool = False,
         json_schema: dict[str, Any] | None = None,
+        dusunme_kapali: bool = False,
     ) -> LLMResponse:
         import asyncio
 
@@ -474,6 +476,7 @@ class LlamaCppServerClient:
         max_tokens: int = 1024,
         json_mode: bool = False,
         json_schema: dict[str, Any] | None = None,
+        dusunme_kapali: bool = False,
     ) -> LLMResponse:
         import httpx
 
@@ -629,15 +632,21 @@ class OpenAIClient:
         max_tokens: int = 1024,
         json_mode: bool = False,
         json_schema: dict[str, Any] | None = None,
+        dusunme_kapali: bool = False,
     ) -> LLMResponse:
         import asyncio
 
         import httpx
 
         client = self._ensure_client()
+        # dusunme_kapali: DeepSeek v4 `thinking: disabled`. Akış yolunda (chat_stream) sesli
+        # görüşme için vardı; blocking yolda da gerekli oldu — kurulun DENETİM turu gerçekleri
+        # HAZIR alır (ölçüm farkı verilir) ve derin muhakemeye ihtiyaç duymaz. 2026-08-06
+        # ölçümü: düşünme açıkken o tur çıktı tavanını (7700) tüketip KESİLİYOR, tur kayboluyordu.
         payload = self._payload(
             messages, temperature, max_tokens,
             json_mode=json_mode, json_schema=json_schema, stream=False,
+            dusunme_kapali=dusunme_kapali,
         )
         url = f"{self.base_url}/chat/completions"
         started = time.perf_counter()

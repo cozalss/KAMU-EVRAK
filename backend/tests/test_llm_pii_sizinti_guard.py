@@ -145,7 +145,6 @@ class TestKonuSatiriIsimSizintisi:
         await ajan_mod.route_ajan(
             {
                 "evrak_text": _METIN,
-                "aktif_kurum": "Nilüfer Belediyesi",
                 "bilgi_unsurlari": {
                     "gonderen": "Ayşe Yılmaz",
                     "konu": "Ayşe Yılmaz'ın park onarımı talebi",

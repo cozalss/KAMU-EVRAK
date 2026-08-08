@@ -68,15 +68,14 @@ def _hazirlayan_birim(state: dict[str, Any], yazi_turu: str) -> str:
 
 
 def _fallback_taslak(
-    yazi_turu: str, konu: str, evrak_text: str = "", aktif_kurum: str = "",
+    yazi_turu: str, konu: str, evrak_text: str = "", idare_adi: str = "",
 ) -> dict[str, Any]:
     """Render motoru import edilemezse minimum güvenli iskelet (uydurmasız)."""
     konu_satir = konu if konu else "Başvuru değerlendirmesi"
     tarih = date.today().strftime("%d.%m.%Y")
     # Kurum kimliği: çağıran zaten efektif_idare_adi() ile hesaplayıp geçirir (belge hitap-
-    # ekliyse doküman kurumu, değilse aktif kurum/env) — burada yalnız son ENV/jenerik
-    # fallback'i uygulanır.
-    idare = (aktif_kurum or "").strip() or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
+    # ekliyse doküman kurumu, değilse boş) — burada yalnız son ENV/jenerik fallback'i uygulanır.
+    idare = (idare_adi or "").strip() or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
     birim = os.getenv("KURUM_BIRIM", "").strip() or "Yazı İşleri Birimi"
     kapanis = {
         "cevabi_yazi": "Gereğini rica ederim.",
@@ -215,10 +214,9 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     plan_notu = ""
     kanit_paketi = mevzuat_kanit_paketi(state)
     # Antet İDARE = belge açıkça bir kuruma hitaben yazılmışsa (yönelme-ekli, yargı hariç)
-    # O KURUM otomatik — sormadan/uyarmadan; değilse aktif kurum (istek-bazlı override,
-    # boşsa env KURUM_ADI'ya düşer). "Biz belgeye göre hareket ediyoruz" (19 Tem 2. revizyon).
-    efektif_kurum = efektif_idare_adi(
-        evrak_text, unsurlar, str(state.get("aktif_kurum") or "").strip())
+    # O KURUM otomatik — sormadan/uyarmadan; değilse boş → render env KURUM_ADI'ya düşer.
+    # "Biz belgeye göre hareket ediyoruz" (19 Tem 2. revizyon).
+    efektif_kurum = efektif_idare_adi(evrak_text, unsurlar)
 
     try:
         from yazi.renderer import render_yazi
@@ -232,7 +230,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         )
 
         alt_out = await build_alt_talep_taslaklari(
-            alt_talepler, unsurlar, aktif_kurum=efektif_kurum)
+            alt_talepler, unsurlar, idare_adi=efektif_kurum)
         if len(alt_out) >= 2:
             return _coklu_cikti(alt_out)
         # Yetkisizlik (tek-konu, farklı yetkili kurum) → devir üst yazısı; plan makinesi
@@ -298,7 +296,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         konu = str(unsurlar.get("konu", "") or "")
         sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
         # Antet İDARE = efektif_kurum (yukarıda hesaplandı: belge hitap-ekliyse doküman
-        # kurumu, değilse aktif kurum/env) + hazırlayan BİRİM (kaynak-doğrulanmış hedef
+        # kurumu, değilse boş → env KURUM_ADI) + hazırlayan BİRİM (kaynak-doğrulanmış hedef
         # birim → konuya göre servis müdürlüğü → env/tür varsayılanı).
         hazirlayan = _hazirlayan_birim(state, yazi_turu)
         ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
@@ -317,7 +315,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
         log.warning("yazi_taslak_fallback", err=str(exc))
         return _fallback_taslak(
             yazi_turu, str(unsurlar.get("konu", "") or ""), evrak_text,
-            aktif_kurum=efektif_kurum)
+            idare_adi=efektif_kurum)
 
     log.info(
         "yazi_taslak", turu=turu, yazi_turu=result.yazi_turu,

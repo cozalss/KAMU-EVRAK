@@ -35,6 +35,8 @@ import structlog
 
 from agents.config import (
     BIRIMLER,
+    DECOMPOSE_CAPA_ESIGI,
+    DECOMPOSE_KESIKTE_DUSUNMESIZ,
     EVRAK_TO_BIRIM,
     EVRAK_TO_YAZI,
     EVRAK_TURLERI,
@@ -49,11 +51,20 @@ from core.text import tr_lower
 
 log = structlog.get_logger()
 
-# Alt-talep ayraçları: bağlaçlar + noktalı virgül + numaralı/harfli madde başları.
+# Alt-talep ayraçları: bağlaçlar + SIRA BİLDİREN sayma + noktalı virgül + madde başları.
+#
+# SIRA SÖZCÜKLERİ (2026-08-06'da eklendi): "Birinci olarak … İkinci olarak … Üçüncü
+# olarak …" Türk dilekçe dilinde çok-konulu başvurunun EN YAYGIN kalıbıdır ama listede
+# yoktu; bu kalıpla yazılmış üç talepli bir dilekçe tek parça sayılıyor ve decompose hiç
+# çalışmıyordu (ölçüldü). Kalıp güvenli: "olarak/olmak üzere" eki zorunlu tutulduğu için
+# "birinci derece akrabam" gibi sıradan kullanımlar ayraç sayılmaz.
 _AYRAC = re.compile(
     r"(?:\bayrıca\b|\bbir de\b|\bbunun yanı ?sıra\b|\bbunun yanında\b|\bek olarak\b"
     r"|\bilaveten\b|\bayrıyeten\b|\bdiğer yandan\b|\böte yandan\b|\bhem de\b"
-    r"|\bbir diğer\b|\bbir başka\b|;|\n\s*\d+[.)]\s|\n\s*[a-zçğşöüı][.)]\s)",
+    r"|\bbir diğer\b|\bbir başka\b"
+    r"|\b(?:birinci|ikinci|üçüncü|dördüncü|beşinci|son)\s+olarak\b"
+    r"|\b(?:birincisi|ikincisi|üçüncüsü|dördüncüsü)\b"
+    r"|;|\n\s*\d+[.)]\s|\n\s*[a-zçğşöüı][.)]\s)",
     re.IGNORECASE,
 )
 _MIN_SEG = 12     # bu uzunluğun altındaki parça fragment sayılır (atılır)
@@ -192,17 +203,59 @@ def _llm_talep(item: Any) -> dict[str, Any] | None:
     }
 
 
+_KELIME = re.compile(r"[0-9a-zçğıöşü]+")
+_CAPA_MIN_KELIME = 4   # kısa kelimeler (ve/için/bir) çapa sinyali taşımaz
+_CAPA_KOK = 5          # Türkçe eklemeli: kök başta, ilk 5 harf eşleşmesi yeterli
+
+
+def _capa_orani(segment: str, kaynak_norm: str) -> float:
+    """Segmentin kaynakta gerçekten karşılığı var mı (0..1).
+
+    Türkçe eklemeli olduğu için tam kelime eşleşmesi aranmaz ("onarılmasını" ↔ "onarım"):
+    kök başta durduğundan kelimenin ilk `_CAPA_KOK` harfi kaynakta aranır.
+    """
+    kelimeler = [k for k in _KELIME.findall(tr_lower(segment)) if len(k) >= _CAPA_MIN_KELIME]
+    if not kelimeler:
+        return 0.0
+    tutan = sum(1 for k in kelimeler if k[:_CAPA_KOK] in kaynak_norm)
+    return tutan / len(kelimeler)
+
+
 async def _llm_segment(text: str) -> list[dict[str, Any]] | None:
-    """LLM ile segmentle + tur/birim önerisi al (TEK çağrı). Geçersiz/yok → None (heuristiğe düşülür)."""
+    """LLM ile segmentle + tur/birim önerisi al (TEK çağrı). Geçersiz/yok → None (heuristiğe düşülür).
+
+    KAYNAK ÇAPASI (2026-08-07): `tur`/`birim` kapalı-küme ile doğrulanıyordu ama `metin`
+    yalnız uzunluk kontrolünden geçiyordu. O metin zararsız bir "özet" değil: çok-konulu
+    evrakta her segmentin metni N ayrı RESMÎ YAZI'nın Konu satırına ve gövde tohumuna
+    geçiyor (yazi_render), üstelik 2..N taslakları verify'ın uydurma vetosunu görmüyor.
+    Yani uydurulmuş bir segment doğrudan resmî çıktıya sızabilirdi.
+    Çapa bunu EK LLM ÇAĞRISI OLMADAN, deterministik biçimde kapatır: kaynakta karşılığı
+    olmayan segment düşer; 2'nin altına inilirse tüm LLM segmenti reddedilir ve bugünkü
+    heuristik yol aynen çalışır (fallback sözleşmesi korunur).
+    """
     # KVKK: dış servise ham sayısal PII gitmez (içerik/segment anlamı korunur).
-    obj = await llm_json(_LLM_SYSTEM, mask_for_llm(text, None)[:4000], max_tokens=600)
+    obj = await llm_json(_LLM_SYSTEM, mask_for_llm(text, None)[:4000], max_tokens=600,
+                         kesikte_dusunmesiz=DECOMPOSE_KESIKTE_DUSUNMESIZ)
     if not isinstance(obj, dict):
         return None
     talepler = obj.get("talepler")
     if not isinstance(talepler, list):
         return None
     temiz = [t for t in (_llm_talep(item) for item in talepler) if t]
-    return temiz or None
+    if not temiz:
+        return None
+    if DECOMPOSE_CAPA_ESIGI > 0:
+        kaynak_norm = " ".join(_KELIME.findall(tr_lower(text)))
+        capali = [t for t in temiz
+                  if _capa_orani(t["metin"], kaynak_norm) >= DECOMPOSE_CAPA_ESIGI]
+        if len(capali) < len(temiz):
+            log.info("decompose_capa_reddi", reddedilen=len(temiz) - len(capali),
+                     kalan=len(capali))
+        # Tek segment "ayrıştırma" değildir; 2'nin altına düşen LLM çıktısı tümden reddedilir.
+        if len(capali) < 2:
+            return None
+        temiz = capali
+    return temiz
 
 
 def _segment_turu(seg: str) -> str:

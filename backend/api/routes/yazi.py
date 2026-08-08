@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 import structlog
@@ -180,13 +181,13 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     else:
         muhatap = None
     # Antet: belge hitap-ekli bir kuruma yazılmışsa (yargı hariç) O KURUM otomatik; değilse
-    # aktif kurum (istek-bazlı override, boşsa build_context env KURUM_ADI'ya düşer) — pipeline
-    # (yazi_taslak_node) ile AYNI kural (kurum_kimlik.efektif_idare_adi).
+    # boş → build_context env KURUM_ADI'ya düşer — pipeline (yazi_taslak_node) ile AYNI
+    # kural (kurum_kimlik.efektif_idare_adi).
     hazirlayan = (birim_tr(hedef_birim)
                   if hedef_birim and req.yazi_turu != "ust_yazi" else "")
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
-        efektif_kurum = efektif_idare_adi(text, unsurlar, req.aktif_kurum.strip())
+        efektif_kurum = efektif_idare_adi(text, unsurlar)
         ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap,
                             hazirlayan_birim=hazirlayan, idare_adi=efektif_kurum)
         result = render_yazi(ctx, formats=frozenset())
@@ -382,7 +383,7 @@ async def yazi_kurul(request: Request, req: KurulRequest) -> dict[str, Any]:
         return {"kaynak": "deterministik"}  # sinyal yoksa frontend deterministik motora düşer
 
     try:
-        kurgu = await kurul_muzakere(taslak, meta=meta, sinyaller=sinyaller)
+        kurgu = await kurul_muzakere(taslak, meta=meta, sinyaller=sinyaller, olc=_olcer(req))
     except Exception as exc:
         log.error("kurul_muzakere_failed", error=str(exc) or type(exc).__name__)
         kurgu = None
@@ -396,13 +397,21 @@ async def yazi_kurul(request: Request, req: KurulRequest) -> dict[str, Any]:
     return {**kurgu, "sinyaller": sinyaller}
 
 
-async def _kurul_sinyal_meta(req: KurulRequest, taslak: str) -> tuple[dict[str, Any], dict[str, Any]]:
+async def _kurul_sinyal_meta(
+    req: KurulRequest, taslak: str, *, aciklama: bool = True,
+) -> tuple[dict[str, Any], dict[str, Any]]:
     """Taslaktan verify+risk_guard sinyallerini SUNUCUDA yeniden hesapla (grounding + karar
-    otoritesi istemciye bağlı değil) → (sinyaller, meta). /kurul ve /kurul/akis ortak kullanır."""
+    otoritesi istemciye bağlı değil) → (sinyaller, meta). /kurul ve /kurul/akis ortak kullanır.
+
+    `aciklama=False`: yalnız SAYILAR gerekiyorsa (kurulun tur-arası yeniden ölçümü) risk
+    bandının sade-dil açıklaması ÜRETİLMEZ — memura gösterilmeyecek bir metin için her turda
+    LLM çağrısı yapmak saf gecikmedir. Bant/skor/gerekçe aynı kalır.
+    """
     from agents.nodes.risk_guard import risk_guard_node
     from agents.nodes.verify import verify_node
 
     state: dict[str, Any] = {
+        "risk_aciklama_atla": not aciklama,
         "evrak_text": (req.evrak_text or "").strip()[:MAX_EVRAK_CHARS],
         "bilgi_unsurlari": _skaler_unsurlar(req.bilgi_unsurlari),
         "yazi_taslak_md": taslak,
@@ -418,14 +427,50 @@ async def _kurul_sinyal_meta(req: KurulRequest, taslak: str) -> tuple[dict[str, 
         "lint_2646": v.get("lint_2646") or {},
         "tutarlilik_uyari": v.get("tutarlilik_uyari", []),
         "risk_metadata": r.get("risk_metadata") or {},
+        # Biçim bütünlüğü — kurulun "Yazı Sorumlusu" şeridinin çapası. verify yalnız
+        # ZAYIFLATMA yönünde yazar (eksik bölüm → False), yoksa alan hiç gelmez → varsayılan evet.
+        "format_uyumlu": v.get("format_uyumlu", True),
     }
     meta = {
         "yazi_turu": req.yazi_turu, "evrak_turu": req.evrak_turu,
         "hedef_birim": req.hedef_birim, "bilgi_unsurlari": state["bilgi_unsurlari"],
         "evrak_text": state["evrak_text"],
         "mevzuat": req.mevzuat_onerileri, "nli": req.mevzuat_nli,
+        # Muhatabın TALEPLERİ — kurulun "Muhatap Temsilcisi" şeridinin çapası. `bilgi_unsurlari`
+        # yolundan GELEMEZ: orası muhatap/ilgi satırı üretimi için düz skalerlere indirgenir
+        # (_skaler_unsurlar) ve listeler elenir. Ayrı alan olarak, satır-enjeksiyonuna karşı
+        # temizlenmiş ve sayıca sınırlı taşınır.
+        "talepler": _talep_listesi(req.bilgi_unsurlari),
     }
     return sinyaller, meta
+
+
+def _talep_listesi(unsurlar: dict | None) -> list[str]:
+    """`bilgi_unsurlari['talepler']` → temizlenmiş, sınırlı liste (istemci verisi = güvensiz)."""
+    ham = (unsurlar or {}).get("talepler")
+    if not isinstance(ham, list):
+        return []
+    out: list[str] = []
+    for t in ham[:8]:
+        if isinstance(t, (str, int, float)) and not isinstance(t, bool):
+            temiz = _sanitize_line(str(t), 300)
+            if temiz:
+                out.append(temiz)
+    return out
+
+
+def _olcer(req: KurulRequest) -> Callable[[str], Awaitable[dict[str, Any]]]:
+    """Kurulun DENETİM turu için yeniden-ölçüm geri çağrısı: revize taslak → GÜNCEL sinyaller.
+
+    Kurulun tek turdan yakınsama döngüsüne geçmesinin dayanağı budur: LLM'in "düzelttim"
+    iddiası kanıt değildir; kanıt, revize METİN üzerinde yeniden koşan verify + risk_guard'dır.
+    İstemci verisi (evrak_text/unsurlar) sabit kalır — DEĞİŞEN yalnız taslaktır, yani ölçüm
+    sunucu otoritesinde ve turlar arası karşılaştırılabilir.
+    """
+    async def olc(revize_taslak: str) -> dict[str, Any]:
+        sinyaller, _meta = await _kurul_sinyal_meta(req, revize_taslak, aciklama=False)
+        return sinyaller
+    return olc
 
 
 def _sse(payload: dict[str, Any]) -> str:
@@ -456,7 +501,8 @@ async def yazi_kurul_akis(request: Request, req: KurulRequest) -> StreamingRespo
         # Sinyaller ERKEN yayılır → frontend deterministik fallback'i hazırlar (LLM gelmezse anında oynar).
         yield _sse({"tip": "sinyaller", "sinyaller": sinyaller})
         try:
-            async for tip, veri in kurul_muzakere_stream(taslak, meta=meta, sinyaller=sinyaller):
+            async for tip, veri in kurul_muzakere_stream(
+                    taslak, meta=meta, sinyaller=sinyaller, olc=_olcer(req)):
                 yield _sse({"tip": tip, **veri})
         except Exception as exc:
             log.error("kurul_akis_muzakere_failed", error=str(exc) or type(exc).__name__)

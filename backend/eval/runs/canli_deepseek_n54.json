@@ -1,0 +1,13 @@
+{
+ "model": "deepseek-v4-flash",
+ "n": 54,
+ "top1": 44,
+ "top1_acc": 0.8148,
+ "top3": 17,
+ "top3_acc": 0.3148,
+ "tur_dogru": 46,
+ "tur_n": 54,
+ "tur_acc": 0.8519,
+ "sure_sn": 4544.2,
+ "not": "n=54 altın küme; 216'lık küme sıralı koşumda 2 saati aşıyor."
+}

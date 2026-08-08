@@ -44,7 +44,11 @@ from typing import Any
 import structlog
 
 from agents import config
-from agents.config import RISK_GUARD_ENABLED, RISK_GUVEN_ESIK
+from agents.config import (
+    LLM_DUSUNME_CIKARIMDA_KAPALI,
+    RISK_GUARD_ENABLED,
+    RISK_GUVEN_ESIK,
+)
 from agents.nodes._llm_extract import llm_json
 from agents.risk_agirlik import skor_ve_katkilar
 from api.pii import mask_pii
@@ -191,7 +195,8 @@ async def _llm_aciklama(bant: str, gerekceler: list[str], evrak_turu: str) -> st
         f"Risk bandı: {_BANT_TR.get(bant, bant)}\n"
         "Gerekçeler:\n" + "\n".join(f"- {g}" for g in gerekceler)
     )
-    obj = await llm_json(_ACIKLAMA_SISTEM, kullanici, max_tokens=220)
+    obj = await llm_json(_ACIKLAMA_SISTEM, kullanici, max_tokens=220,
+                         dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
     metin = (obj or {}).get("aciklama")
     if not isinstance(metin, str) or not metin.strip():
         return None
@@ -223,17 +228,11 @@ async def risk_guard_node(state: dict[str, Any]) -> dict[str, Any]:
     # birleşiminden türer; uydurma sayı/tarih token'ı TCKN-şekilli olabilir → arayüze/onaya
     # gitmeden maskele (verify tarafı da state'e girmeden maskeler; çift katman savunma).
     meta["gerekceler"] = [mask_pii(g).masked_text for g in meta["gerekceler"]]
-    # Sade dil açıklama — additive 'aciklama'; bant/skor/gerekceler/oneri LLM'den ETKİLENMEZ.
-    # Yeşilde LLM çağrılmaz (karar temiz, maliyet 0); LLM yok/hata/bozuk → oneri metni
-    # (= _ONERI[bant]) — memur hiçbir durumda yönlendirmesiz kalmaz. Maskeleme SONRASI
-    # çağrılır → LLM'e giden gerekçeler de maskeli (PII sözleşmesi korunur).
-    aciklama = None
-    if meta["bant"] in ("sari", "kirmizi") and config.RISK_ACIKLAMA_LLM:
-        aciklama = await _llm_aciklama(
-            meta["bant"], meta["gerekceler"], state.get("evrak_turu", "belirsiz"))
-    meta["aciklama"] = aciklama or meta["oneri"]
+    # Karar ve memur açıklaması aynı deterministik kaynaktan gelir. Eski doğal-dil LLM'i
+    # bandı değiştirmiyordu; yalnız sunum cümlesi için kritik yola uzak çağrı ekliyordu.
+    meta["aciklama"] = meta["oneri"]
     log.info("risk_guard", bant=meta["bant"], n_gerekce=len(meta["gerekceler"]),
-             aciklama_llm=aciklama is not None)
+             aciklama_llm=False)
     return {"risk_metadata": meta}
 
 

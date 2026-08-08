@@ -20,7 +20,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 import structlog
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 
 from agents.config import HITL_ENABLED, llm_profil
@@ -256,8 +256,7 @@ async def process(request: Request, req: ProcessRequest) -> ProcessResponse:
         return int((time.monotonic() - t0) * 1000)
 
     text, _ = await _ocr_or_text(None, req.evrak_text)
-    state = make_initial_state(
-        text[:MAX_EVRAK_CHARS], filename=req.filename, aktif_kurum=req.aktif_kurum)
+    state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=req.filename)
     if HITL_ENABLED:
         thread_id = uuid4().hex
         g = _get_hitl_graph()
@@ -312,7 +311,7 @@ async def resume(request: Request, req: OnayResumeRequest) -> ProcessResponse:
 @router.post("/stream")
 @rate_limit("20/minute")  # IP-başı akış limiti (slowapi yoksa etkisiz)
 async def process_stream(
-    request: Request, file: UploadFile = File(...), aktif_kurum: str = Form(""),
+    request: Request, file: UploadFile = File(...),
 ) -> StreamingResponse:
     """Dosya yükle → OCR + pipeline node event'lerini SSE ile yayınla.
 
@@ -320,10 +319,9 @@ async def process_stream(
     önce 'active' (canlı), OCR bitince 'done' yayılır. Dosya okuma (hızlı) request
     context'inde kalır ki >20MB'de 413 düzgün HTTP yanıtı olsun; ağır extract_text akışa girer.
 
-    aktif_kurum: demo kurumu override (boşsa env KURUM_ADI'ya düşer — /process_doc ile AYNI
-    sözleşme). Sabit tek-tenant ZORUNLU DEĞİL; her demo senaryosu kendi kurumunu geçirebilir.
+    Kurum kimliği istekle GEÇİRİLMEZ (6 Ağu 2026): antet kurumu belgeden (hitap-ekli kurum)
+    ya da kurulum sabiti env KURUM_ADI'dan gelir — bkz. kurum_kimlik.efektif_idare_adi.
     """
-    aktif_kurum = aktif_kurum.strip()[:200]
     data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, "Dosya çok büyük")
@@ -334,6 +332,7 @@ async def process_stream(
         yield _sse({"event": "start", "nodes": ["oku", *PIPELINE_NODES]})
         # OCR'ı akış içinde yap: önce 'oku' CANLI (active) yansın, sonra sonuç (done).
         yield _sse({"event": "node", "node": "oku", "status": "active"})
+        ocr_t0 = time.perf_counter()
         try:
             res = await extract_text(data)
         except Exception as exc:
@@ -345,12 +344,12 @@ async def process_stream(
                                     "ocr_confidence": res.confidence, "filename": filename}
         yield _sse({"event": "node", "node": "oku", "status": "done",
                     "data": {"engine": res.engine, "n_chars": len(text),
-                             "page_count": res.page_count, "ocr_confidence": res.confidence}})
+                             "page_count": res.page_count, "ocr_confidence": res.confidence,
+                             "duration_ms": max(0, round((time.perf_counter() - ocr_t0) * 1000))}})
         if not text.strip():
             yield _sse({"event": "error", "message": "Belgeden metin çıkarılamadı"})
             return
-        state = make_initial_state(
-            text[:MAX_EVRAK_CHARS], filename=filename, aktif_kurum=aktif_kurum)
+        state = make_initial_state(text[:MAX_EVRAK_CHARS], filename=filename)
         # Akış HER ZAMAN checkpointer'lı graf + thread_id: (1) final state get_state ile okunur →
         # LangGraph reducer'ları (operator.add / _merge_dict fan-in) DOĞRU uygulanır — plain
         # dict.update fan-in'i bozardı (HIGH-8); (2) HITL koşullu onayda interrupt PERSIST eder
@@ -435,7 +434,11 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         # finalize: yapısal bildirim SSE'ye taşınsın (adım detayı canlı akışta boş kalmasın).
         "finalize": ("bilgilendirme", "bilgilendirme_yapisal"),
     }.get(node, ())
-    return {k: slice_.get(k) for k in keys if k in slice_}
+    sonuc = {k: slice_.get(k) for k in keys if k in slice_}
+    sure = (slice_.get("node_sureleri_ms") or {}).get(node)
+    if isinstance(sure, (int, float)):
+        sonuc["duration_ms"] = max(0, round(sure))
+    return sonuc
 
 
 __all__ = ("router",)

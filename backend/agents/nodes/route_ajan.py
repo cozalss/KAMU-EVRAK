@@ -189,10 +189,9 @@ async def route_ajan(state: dict[str, Any], det: dict[str, Any]) -> dict[str, An
     gonderen = gonderen_kurum_tespit(metin)
     muhatap = muhatap_kurum_tespit(metin, bilgi)
     if not muhatap.get("slug"):
-        # Hitapsız resmî evrak: muhatap BİZİZ (evrakı alan kurum). İstek-bazlı aktif kurum,
-        # yoksa env KURUM_ADI; ikisi de yoksa boş künye → dürüst fallback + memur onayı.
-        muhatap = ad_to_kurum(
-            (state.get("aktif_kurum") or "").strip() or os.getenv("KURUM_ADI", "").strip())
+        # Hitapsız resmî evrak: muhatap BİZİZ (evrakı alan kurum) — kurulum sabiti env
+        # KURUM_ADI. Tanımsızsa boş künye → dürüst fallback + memur onayı (uydurma hedef yok).
+        muhatap = ad_to_kurum(os.getenv("KURUM_ADI", "").strip())
     yetkili = dict(muhatap)
     isim = bilgi.get("gonderen")
     masked = mask_for_llm(state.get("evrak_text", "") or "", isim)

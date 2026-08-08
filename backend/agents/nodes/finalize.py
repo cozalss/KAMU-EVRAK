@@ -13,11 +13,9 @@ NN/g visibility-of-system-status):
   yapilacak → eksik maddeler + eylemsizliğin sonucu (tek birincil eylem)
   notlar    → koşullu mevzuat hatırlatmaları (ör. 4982 m.12-13 itiraz yolu)
 
-MÜHENDİSLİK SÖZLEŞMESİ: iskeletin TAMAMI deterministiktir; GERÇEK LLM (DeepSeek) yalnız
-"ne_oldu" anlatısını akıcılaştırır ve anlatı, olgularda OLMAYAN sayı/tarih ya da
-selamlama/teşekkür kalıbı içerirse REDDEDİLİR (şablon kalır) — uydurulabilir alan yok.
-LLM yok/mock/hata → şablon anlatı; `bilgilendirme` metni HER ZAMAN yapıdan render edilir
-(tek kaynak, çift-metin drift'i olmaz).
+MÜHENDİSLİK SÖZLEŞMESİ: iskeletin ve ``ne_oldu`` anlatısının TAMAMI deterministiktir.
+Terminal adım uzak model çağrısı yapmaz; ``bilgilendirme`` metni HER ZAMAN yapıdan render
+edilir (tek kaynak, çift-metin drift'i ve süsleyici çağrı gecikmesi olmaz).
 """
 
 from __future__ import annotations
@@ -27,7 +25,13 @@ from typing import Any
 
 import structlog
 
-from agents.config import LLM_ATLA_NODELAR, YAZI_TURU_TR, etkili_birim, evrak_turu_tr
+from agents.config import (
+    LLM_ATLA_NODELAR,
+    LLM_DUSUNME_CIKARIMDA_KAPALI,
+    YAZI_TURU_TR,
+    etkili_birim,
+    evrak_turu_tr,
+)
 from agents.nodes._llm_extract import llm_text
 
 log = structlog.get_logger()
@@ -290,20 +294,9 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
 
     yapisal = _yapisal(state, turu, birim, eksik, sorular, mevzuat)
 
-    # DeepSeek yalnız anlatıyı akıcılaştırır; guard'ı geçemezse şablon anlatı kalır.
-    # Vitrin hız profili: bilgilendirme LLM'i danışma niteliğinde → atla, şablon kalır.
-    facts = _llm_facts(state, turu, birim, eksik, sorular, mevzuat)
-    llm_anlati = None if "finalize" in LLM_ATLA_NODELAR else await llm_text(
-        system=_SYSTEM, user=facts, max_tokens=200,
-    )
-    if llm_anlati and _anlati_gecerli(facts, llm_anlati):
-        yapisal["ne_oldu"], yapisal["ne_oldu_kaynak"] = llm_anlati.strip(), "llm"
-    elif llm_anlati:
-        log.info("finalize_anlati_reddedildi", uzunluk=len(llm_anlati))
-
     bilgilendirme = _metin(yapisal, state)
     log.info("finalize", turu=turu, birim=birim, eksik=len(eksik),
-             llm=yapisal["ne_oldu_kaynak"] == "llm")
+             llm=False)
     return {"response": bilgilendirme, "bilgilendirme": bilgilendirme,
             "bilgilendirme_yapisal": yapisal}
 

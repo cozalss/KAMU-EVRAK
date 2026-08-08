@@ -69,30 +69,30 @@ class TestYesilBant:
 # ---------------------------------------------------------------------------
 
 
-class TestLLMAciklama:
-    async def test_sari_sahte_llm_aciklamasi(self, monkeypatch):
+class TestDeterministikAciklama:
+    async def test_sari_aciklama_oneriden_gelir(self, monkeypatch):
         metin = "Taslakta imza bölümü eksik olduğu için sarı banda düştü. Önce imza alanını tamamlayın."
         cagrilar = _sahte_llm(monkeypatch, {"aciklama": metin})
         sonuc = await risk_guard_node(_sari_state())
         assert sonuc["risk_metadata"]["bant"] == "sari"
-        assert sonuc["risk_metadata"]["aciklama"] == metin
-        assert len(cagrilar) == 1
+        assert sonuc["risk_metadata"]["aciklama"] == _ONERI["sari"]
+        assert cagrilar == []
 
-    async def test_kirmizi_sahte_llm_aciklamasi(self, monkeypatch):
+    async def test_kirmizi_aciklama_oneriden_gelir(self, monkeypatch):
         metin = "Taslakta kaynak evrakta olmayan bir tarih var. Göndermeden önce tarihi teyit edin."
         _sahte_llm(monkeypatch, {"aciklama": metin})
         u = ["Taslaktaki '99.99.9999' tarihi kaynak evrakta yok (doğrulayın)."]
         sonuc = await risk_guard_node(_state(verify_uyari=u))
         assert sonuc["risk_metadata"]["bant"] == "kirmizi"
-        assert sonuc["risk_metadata"]["aciklama"] == metin
+        assert sonuc["risk_metadata"]["aciklama"] == _ONERI["kirmizi"]
 
     async def test_llm_girdisi_maskeli_gerekce(self, monkeypatch):
-        # LLM'e giden prompt MASKELİ gerekçeyi kullanır — ham TCKN LLM'e sızmaz
+        # LLM çağrılmaz; state'e yazılan deterministik gerekçe yine maskelidir.
         cagrilar = _sahte_llm(monkeypatch, {"aciklama": "açıklama"})
         u = [f"Taslaktaki '{_SAHTE_TCKN}' sayısı kaynak evrakta yok (doğrulayın)."]
-        await risk_guard_node(_state(verify_uyari=u))
-        assert len(cagrilar) == 1
-        assert _SAHTE_TCKN not in cagrilar[0]["user"]
+        sonuc = await risk_guard_node(_state(verify_uyari=u))
+        assert cagrilar == []
+        assert _SAHTE_TCKN not in " ".join(sonuc["risk_metadata"]["gerekceler"])
 
     async def test_llm_ciktisi_da_maskelenir(self, monkeypatch):
         # LLM PII-şekilli token üretse bile arayüze sızmaz (çift katman savunma)
@@ -165,3 +165,26 @@ class TestKararLLMdenBagimsiz:
         sonuc = await risk_guard_node(_sari_state())
         assert set(sonuc["risk_metadata"]) == {
             "bant", "skor", "gerekceler", "katkilar", "kalibrasyon", "oneri", "aciklama"}
+
+
+class TestAciklamaAtla:
+    """`risk_aciklama_atla` — yalnız SAYI ölçen çağıran için LLM açıklamasını atlar.
+
+    Kurulun yakınsama döngüsü (yazi/kurul.py) her turdan sonra revize taslağı yeniden
+    ölçer; ona yalnız bant/gerekçe SAYISI lazımdır. Memura hiç gösterilmeyecek sade-dil
+    açıklaması için tur başına LLM çağrısı yapmak saf gecikmedir (canlı koşumda ~10 sn).
+    Karar büyüklükleri bu bayraktan ETKİLENMEZ — sözleşme budur.
+    """
+
+    async def test_bayrak_llm_cagrisini_engeller(self, monkeypatch):
+        cagrilar = _sahte_llm(monkeypatch, {"aciklama": "çağrılmamalıydı"})
+        sonuc = await risk_guard_node({**_sari_state(), "risk_aciklama_atla": True})
+        assert cagrilar == []                                  # LLM'e hiç gidilmedi
+        assert sonuc["risk_metadata"]["aciklama"] == _ONERI["sari"]   # deterministik metne düşer
+
+    async def test_bant_ve_gerekceler_bayraktan_ETKILENMEZ(self, monkeypatch):
+        _sahte_llm(monkeypatch, {"aciklama": "sade dil"})
+        acik = (await risk_guard_node(_sari_state()))["risk_metadata"]
+        atla = (await risk_guard_node({**_sari_state(), "risk_aciklama_atla": True}))["risk_metadata"]
+        for anahtar in ("bant", "skor", "gerekceler", "katkilar", "oneri"):
+            assert acik[anahtar] == atla[anahtar], anahtar

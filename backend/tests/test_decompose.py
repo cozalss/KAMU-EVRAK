@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from datetime import date
 
+import pytest
+
 from agents.nodes.decompose import (
     _coklu_sinyal,
     _govde,
@@ -124,6 +126,42 @@ class TestTekKonuluPassthrough:
     def test_tek_numarali_madde_yanlis_tetiklemez(self):
         # Tek 'm.5' benzeri dayanak atfı çok-talep sinyali DEĞİL (≥2 işaret gerekir).
         assert _coklu_sinyal("Talebiniz 2926 sayılı Kanun m.5 uyarınca değerlendirilmiştir.") is False
+
+
+class TestSiraBildirenSayma:
+    """"Birinci olarak … İkinci olarak …" — Türk dilekçe dilinin en yaygın sayma kalıbı.
+
+    2026-08-06'da ölçüldü: bu kalıpla yazılmış üç talepli gerçekçi bir dilekçe TEK PARÇA
+    sayılıyor ve decompose hiç çalışmıyordu — ayraç listesinde sıra sözcükleri yoktu.
+    Kalıba "olarak" eki ZORUNLU: aksi hâlde "birinci derece yakınım" gibi sıradan
+    kullanımlar da evrağı bölerdi.
+    """
+
+    _SIRALI = (
+        "Birinci olarak, parktaki aydınlatma direklerinin onarılmasını talep ediyorum. "
+        "İkinci olarak, su faturamdaki hatalı tahakkuka itiraz ediyorum. "
+        "Üçüncü olarak, iş başvurumun sonucunu öğrenmek istiyorum."
+    )
+
+    def test_sira_sozcukleri_coklu_sinyali_tetikler(self):
+        assert _coklu_sinyal(self._SIRALI) is True
+
+    def test_sira_sozcukleri_uc_segmente_boler(self):
+        assert len(_heuristik_segment(self._SIRALI)) >= 3
+
+    def test_sira_kalibi_ucten_fazla_da_calisir(self):
+        metin = (self._SIRALI +
+                 " Dördüncü olarak, muhtarlık binasının tabelasının yenilenmesini isterim.")
+        assert len(_heuristik_segment(metin)) >= 4
+
+    @pytest.mark.parametrize("cumle", [
+        "Birinci derece yakınım olan babam adına başvuruyorum.",
+        "İkinci el araç satışına ilişkin bilgi talep ediyorum.",
+        "Üçüncü şahıslara ait bilgiler paylaşılmamalıdır.",
+    ])
+    def test_olarak_EKI_YOKSA_ayrac_sayilmaz(self, cumle: str):
+        """Kapı dar olmalı — sıra sıfatı her yerde geçer, sayma kalıbı değildir."""
+        assert _coklu_sinyal(cumle) is False
 
 
 # ---------------------------------------------------------------------------

@@ -163,8 +163,7 @@ def is_yargi_kurumu(kurum: KurumKimlik | dict[str, Any] | None) -> bool:
 
 def efektif_idare_adi(
     evrak_text: str,
-    bilgi_unsurlari: dict[str, Any] | None,
-    aktif_kurum_adi: str,
+    bilgi_unsurlari: dict[str, Any] | None = None,
 ) -> str:
     """Antet İDARE satırı için nihai kurum adı — belge HANGİ kuruma hitaben yazılmışsa
     (yönelme-ekli/dative, ör. '...BAŞKANLIĞINA') O KURUM otomatik kullanılır, sormadan
@@ -175,13 +174,16 @@ def efektif_idare_adi(
     ayrım yapılmaz, belge açıkça bir kuruma hitap ediyorsa (yargı hariç) o kurum HER
     ZAMAN kullanılır. Belge açık bir hitap taşımıyorsa (nominatif T.C. başlığı yalnızca
     GÖNDEREN olabilir — belirsiz) veya yargı kaynağıysa (mahkeme/icra/savcılık, DIŞ
-    kaynak) `aktif_kurum_adi` (istek-bazlı override, boşsa çağıran env KURUM_ADI'ya
-    düşürür) fallback'tir.
+    kaynak) BOŞ döner → render katmanı env KURUM_ADI / jenerik varsayılana düşer.
+
+    İstek-bazlı `aktif_kurum` override'ı (19 Tem katmanı: frontend ayarı + ProcessRequest
+    alanı + state alanı) 6 Ağu 2026'da TAMAMEN KALDIRILDI — kurum kimliği yalnız iki
+    kaynaktan gelir: belgenin kendisi veya kurulum sabiti env KURUM_ADI.
     """
     kurum, hitapli = muhatap_kurum_tespit_meta(evrak_text, bilgi_unsurlari)
     if hitapli and kurum.get("ad") and not is_yargi_kurumu(kurum):
         return kurum["ad"]
-    return (aktif_kurum_adi or "").strip()
+    return ""
 
 
 # Antet idare satırından SONRAKİ satırda birim kalıbı (Yön. m.10 üçüncü satır) —

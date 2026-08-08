@@ -14,6 +14,7 @@ dayanır; somut veri yoksa nötr çerçeve cümlesi kurulur (sahte sayı/kişi y
 
 from __future__ import annotations
 
+import asyncio
 import re
 from dataclasses import dataclass
 from datetime import date
@@ -21,7 +22,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import YAZI_TURU_TR
+from agents.config import YAZI_GOVDE_DUSUNME_KAPALI, YAZI_TURU_TR
 from agents.mevzuat_kanit import kanit_etiketlerini_coz, mevzuat_kanit_promptu
 
 # Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
@@ -308,13 +309,29 @@ async def build_body_sonuclu(
         # Görüş/cevabi gövdesi mevzuat çerçevesi + gerekçe taşır → biraz daha pay.
         pay = 400 if (len(talepler) > 1 or yazi_turu in (
             "gorus_mutalaa", "cevabi_yazi")) else 320
-        resp = await llm.chat(
-            [ChatMessage(role="system", content=_BODY_SYSTEM),
-             ChatMessage(role="user", content=prompt)],
-            temperature=0.2, max_tokens=pay,
-        )
+        # DÜŞÜNME KAPALI (2026-08-07 ölçümü): bu çağrı `_chat_dene` katmanını ATLADIĞI için
+        # ne düşünme marjı ne düşünme kapatma alıyordu. Sonuç ölçüldü — üç gövde çağrısının
+        # ÜÇÜ de `tokens_out=320` yani TAM TAVAN: bütçenin tamamı muhakemeye gidiyor,
+        # `resp.content` boş kalıyor ve üç resmî yazının gövdesi de sessizce şablona düşüyordu.
+        # Marj eklemek (+700) süreyi ~3,5 sn'den ~10 sn'ye ÇIKARIRDI; düşünmeyi kapatmak
+        # gecikmeyi nötr bırakıp bütçeyi cevaba açar. İş cinsi de uyuyor: tür/konu/talepler/
+        # kanıt paketi HAZIR verilir, iş "verilmiş kararı resmî üslupla cümleye dökmek"tir.
+        # Emniyet ağı yerinde: kanit_etiketlerini_coz uydurma atıfı reddedip fallback'e döner.
+        # `dusunme_kapali` koşulsuz geçirilmez — protokole sonradan eklendi, tanımayan sahte
+        # istemcileri TypeError'la kırar (aynı guard _chat_dene'de de var).
+        temel = {"temperature": 0.2, "max_tokens": pay}
+        mesajlar = [ChatMessage(role="system", content=_BODY_SYSTEM),
+                    ChatMessage(role="user", content=prompt)]
+        try:
+            resp = await llm.chat(mesajlar, **temel,
+                                  **({"dusunme_kapali": True} if YAZI_GOVDE_DUSUNME_KAPALI
+                                     else {}))
+        except TypeError:
+            resp = await llm.chat(mesajlar, **temel)
         body = _kapanis_kuyrugu_kirp((resp.content or "").strip())
         if not body:
+            log.warning("yazi_body_bos", kesik=getattr(resp, "finish_reason", "") == "length",
+                        butce=pay)
             return GovdeSonucu(
                 _fallback_body(yazi_turu, konu, has_ilgi, talepler), "llm_bos")
         cozulmus, uyarilar, atif_sayisi = kanit_etiketlerini_coz(body, kanit_paketi)
@@ -670,7 +687,7 @@ def build_context(
         yazi_turu=turu,
         tarih=date.today().strftime("%d.%m.%Y"),
         # Yön. m.10: idare adı BÜYÜK harfle yazılır — çağıran serbest biçimde geçirebilir
-        # (aktif_kurum ayarı karışık harfle girilebilir), burada TEK noktadan normalize edilir.
+        # (belgeden çıkan ad karışık kasa olabilir), burada TEK noktadan normalize edilir.
         idare_adi=_tr_upper(idare_adi.strip()),  # boşsa jinja_vars KURUM_ADI env/jenerik'e düşer
         birim_adi=hazirlayan_birim.strip(),  # boşsa jinja_vars _DEMO_DEFAULTS'a düşer
         # m.13: konunun sonuna nokta konulmaz → çıkarılan konudaki kuyruk noktası atılır.
@@ -717,7 +734,7 @@ def ts13298_ust_veri(
 
 
 async def build_alt_talep_taslaklari(
-    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], aktif_kurum: str = "",
+    alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], idare_adi: str = "",
 ) -> list[dict[str, Any]]:
     """Çok-konulu evrakta HER alt-talep için ayrı üst yazı taslağı (kuruma yönlendirme).
 
@@ -725,29 +742,34 @@ async def build_alt_talep_taslaklari(
     (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
     < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
 
-    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler: `aktif_kurum`
+    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler: `idare_adi`
     parametresi burada ÖNCEDEN çözülmüş nihai kurum adıdır (bkz. kurum_kimlik.efektif_idare_adi
-    — çağıran, belge hitap-ekliyse doküman kurumunu, değilse aktif kurum/env'i hesaplayıp geçirir).
+    — çağıran, belge hitap-ekliyse doküman kurumunu geçirir; boşsa build_context env
+    KURUM_ADI / jenerik varsayılana düşer).
     """
     if len(alt_talepler) < 2:
         return list(alt_talepler)
     from yazi.renderer import render_yazi
 
-    out: list[dict[str, Any]] = []
-    for item in alt_talepler:
+    semafor = asyncio.Semaphore(3)
+
+    async def _bir_taslak(item: dict[str, Any]) -> dict[str, Any]:
         ozet = str(item.get("ozet", "") or "")
         muhatap = str(item.get("birim_tr", "") or "") or "İlgili Birime"
         child_unsurlar = {**unsurlar, "konu": ozet}
-        metin = await build_body("ust_yazi", child_unsurlar, ozet)
+        async with semafor:
+            metin = await build_body("ust_yazi", child_unsurlar, ozet)
         ctx = build_context(
             "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap,
-            idare_adi=aktif_kurum)
+            idare_adi=idare_adi)
         result = render_yazi(ctx)
-        out.append({
+        return {
             **item, "yazi_turu": "ust_yazi",
             "yazi_taslak_md": result.metin, "format_uyumlu": result.format_uyumlu,
-        })
-    return out
+        }
+
+    # gather giriş sırasını korur; yalnız bağımsız gövde çağrıları aynı anda yürür.
+    return list(await asyncio.gather(*(_bir_taslak(item) for item in alt_talepler)))
 
 
 __all__ = ("GovdeSonucu", "build_alt_talep_taslaklari", "build_body", "build_body_sonuclu", "build_context",

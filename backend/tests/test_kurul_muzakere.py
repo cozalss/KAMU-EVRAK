@@ -340,9 +340,10 @@ _ACILIS = {"turlar": [
 
 
 class TestDebate:
-    """Çok-turlu DEBATE: açılış (tur 0) → çapraz-eleştiri (tur 1, yanit+tutum) → moderatör (tur 2).
-    Araştırma-kilitli (MAD/Du et al.): 2 çağrı (2. çağrı GERÇEK açılışı görür → genuine yanıt),
-    grounding değişmez (öneriler hâlâ anchored-edit), moderatör deterministik, sahte oybirliği yok."""
+    """Çok-turlu DEBATE: açılış (tur 0) → çapraz-eleştiri (tur 1, yanit+tutum) → moderatör (tur 9).
+    Araştırma-kilitli (MAD/Du et al.): 2. çağrı GERÇEK açılışı görür → genuine yanıt; grounding
+    değişmez (öneriler hâlâ anchored-edit), moderatör deterministik, sahte oybirliği yok.
+    Ölçer (`olc`) verilmediğinde döngü tek turda kalır — bu sınıf o (eski) yolu kilitler."""
 
     async def test_iki_cagri_cok_turlu_turlar(self, monkeypatch):
         muz = {"turlar": [
@@ -356,7 +357,7 @@ class TestDebate:
         r = await kurul.kurul_muzakere(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL)
         assert calls["n"] == 2                                  # İKİ çağrı (açılış + müzakere)
         turlar = r["turlar"]
-        assert {t["tur"] for t in turlar} == {0, 1, 2}          # üç tur etiketi
+        assert {t["tur"] for t in turlar} == {0, 1, 9}          # açılış · çapraz · karar
         assert sum(1 for t in turlar if t["tur"] == 0) == 3     # 3 açılış
         assert sum(1 for t in turlar if t["tur"] == 1) == 3     # 3 çapraz-eleştiri
         assert len(turlar) >= 7                                 # açılış+çapraz+moderatör (kısa değil)
@@ -388,11 +389,13 @@ class TestDebate:
         assert "Sayın Elif Doğan" not in r["uzlasi_metni"]      # grounded çıkar uygulandı
         assert "657 sayılı" not in r["uzlasi_metni"]            # uydurma atıf duzelt reddedildi
 
-    async def test_moderator_kapanista_tur2(self, monkeypatch):
+    async def test_moderator_kapanista_karar_turu(self, monkeypatch):
         _debate_llm(monkeypatch, _ACILIS, {"turlar": [{"uye": "hukukcu", "soz": "x"}], "oneriler": []})
         r = await kurul.kurul_muzakere(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL)
         amir = [t for t in r["turlar"] if t["who"] == "birim_amiri"]
-        assert len(amir) == 1 and amir[0]["tur"] == 2 and amir[0]["kaynak"] == "risk_guard"
+        assert len(amir) == 1 and amir[0]["tur"] == 9 and amir[0]["kaynak"] == "risk_guard"
+        # Ölçüm yoksa kazanım cümlesi de YOK — kanıtsız iyileşme iddia edilmez.
+        assert "yeniden ölçüldü" not in amir[0]["text"]
 
     async def test_acilis_yoksa_none(self, monkeypatch):
         _debate_llm(monkeypatch, {"turlar": []}, {"turlar": [{"uye": "hukukcu", "soz": "x"}], "oneriler": []})
@@ -405,10 +408,12 @@ class TestDebate:
         _debate_llm(monkeypatch, _ACILIS, muz)
         olaylar = [(ad, veri) async for ad, veri in
                    kurul.kurul_muzakere_stream(FABRIK_TASLAK, meta=FABRIK_META, sinyaller=FABRIK_SINYAL)]
-        assert [a for a, _ in olaylar] == ["acilis", "sonuc"]
+        # Her müzakere turu HAZIR OLDUKÇA yayılır ('tur'), sonda tam kurgu ('sonuc') gelir.
+        assert [a for a, _ in olaylar] == ["acilis", "tur", "sonuc"]
         assert len(olaylar[0][1]["turlar"]) == 3                 # 3 açılış turu önce gelir
-        assert olaylar[1][1]["kaynak"] == "llm" and olaylar[1][1]["turlar"]   # sonra tam kurgu
-        assert "Sayın Elif Doğan" not in olaylar[1][1]["uzlasi_metni"]        # grounding stream'de de korunur
+        assert olaylar[1][1]["tur"] == 1 and olaylar[1][1]["turlar"]          # çapraz tur canlı
+        assert olaylar[2][1]["kaynak"] == "llm" and olaylar[2][1]["turlar"]   # sonra tam kurgu
+        assert "Sayın Elif Doğan" not in olaylar[2][1]["uzlasi_metni"]        # grounding stream'de de korunur
 
     async def test_stream_acilis_yoksa_bos(self, monkeypatch):
         _debate_llm(monkeypatch, {"turlar": []}, {"turlar": [{"uye": "hukukcu", "soz": "x"}], "oneriler": []})

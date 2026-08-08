@@ -173,7 +173,7 @@ class TestSelfConsistencyAbstention:
     def _fake_votes(votes):
         it = iter(votes)
 
-        async def _fake(_sys, _u, max_tokens=200):
+        async def _fake(_sys, _u, max_tokens=200, **_):
             return next(it)
 
         return _fake
@@ -213,7 +213,7 @@ class TestSelfConsistencyAbstention:
         monkeypatch.setattr(S, "SELF_CONSISTENCY_N", 1)
         cagri = {"n": 0}
 
-        async def _tek(_sys, _u, max_tokens=200):
+        async def _tek(_sys, _u, max_tokens=200, **_):
             cagri["n"] += 1
             return {"evrak_turu": "dilekce", "tur_confidence": 0.8}
 

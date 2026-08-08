@@ -16,6 +16,7 @@ from typing import Any
 
 import structlog
 
+from agents.config import LLM_DUSUNME_CIKARIMDA_KAPALI
 from agents.nodes._llm_extract import llm_json
 from api.pii import mask_for_llm
 
@@ -246,7 +247,8 @@ async def cikar_node(state: dict[str, Any]) -> dict[str, Any]:
     # isim=None → ad korunur (LLM gonderen'i çıkarır); yalnız sayısal PII maskelenir → LLM
     # bunları zaten regex'e bıraktığı için işlevsel kayıp yok.
     llm_metin = mask_for_llm(text, None)
-    obj = await llm_json(_SYSTEM, llm_metin[:6000], max_tokens=300)
+    obj = await llm_json(_SYSTEM, llm_metin[:6000], max_tokens=300,
+                         dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
     source = "regex"
     if obj is not None:
         _merge_llm(unsurlar, obj, text)

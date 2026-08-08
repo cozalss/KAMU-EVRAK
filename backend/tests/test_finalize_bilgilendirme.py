@@ -185,22 +185,21 @@ class TestLlmAnlatiGuard:
     """LLM yalnız 'ne oldu' anlatısını yazar; iskelet deterministik kalır. Anlatı,
     olgularda OLMAYAN sayı/tarih içerirse REDDEDİLİR (CLAUDE.md §1 — sıfır uydurma)."""
 
-    async def test_temiz_anlati_kabul(self, monkeypatch):
-        # Arrange
+    async def test_temiz_anlati_icin_bile_llm_cagrilmaz(self, monkeypatch):
+        # Arrange — finalize artık yalnız doğrulanabilir deterministik şablonu kullanır.
         anlati = ("Gazi Üniversitesi Rektörlüğü tarafından gönderilen fatura talebi "
                   "Cevabi Yazı olarak sınıflandırılarak Strateji birimine havale edilmiştir.")
 
         async def _fake_llm(**kwargs):
-            return anlati
+            raise AssertionError("finalize LLM çağırmamalı")
 
         monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
         monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
         # Act
         sonuc = await finalize_mod.finalize_node(_state_tam())
-        # Assert — anlatı hem yapıda hem string'de; kaynak işaretli
-        assert sonuc["bilgilendirme_yapisal"]["ne_oldu"] == anlati
-        assert sonuc["bilgilendirme_yapisal"]["ne_oldu_kaynak"] == "llm"
-        assert anlati in sonuc["bilgilendirme"]
+        # Assert — dış anlatı yok; yapı ile düz metin aynı şablon kaynağından.
+        assert sonuc["bilgilendirme_yapisal"]["ne_oldu_kaynak"] == "sablon"
+        assert anlati not in sonuc["bilgilendirme"]
 
     async def test_uydurma_sayili_anlati_reddedilir(self, monkeypatch):
         # Arrange — olgularda olmayan tutar/tarih → şablona düşülür
@@ -253,57 +252,51 @@ class TestLlmAnlatiGuard:
         assert y["ne_oldu_kaynak"] == "sablon"
         assert "Ankara Büyükşehir" not in y["ne_oldu"]
 
-    async def test_ekli_kurum_adi_kabul(self, monkeypatch):
-        # Arrange — hâl eki almış GERÇEK kurum adı ("Rektörlüğüne") yanlış reddedilmemeli
+    async def test_ekli_kurum_adi_sablonda_kaynaktan_gelir(self, monkeypatch):
+        # Arrange — eski LLM anlatısı çalıştırılmasa da kaynak kurum şablonda korunur.
         anlati = ("Gazi Üniversitesi Rektörlüğüne ait talep, Cevabi Yazı kapsamında "
                   "ilgili birime havale edilmiştir.")
 
         async def _fake_llm(**kwargs):
-            return anlati
+            raise AssertionError("finalize LLM çağırmamalı")
 
         monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
         monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
         # Act
         y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
-        # Assert — ek toleransı: "Rektörlüğü" olguda var, "Rektörlüğüne" kabul edilir
-        assert y["ne_oldu_kaynak"] == "llm"
-        assert y["ne_oldu"] == anlati
+        # Assert
+        assert y["ne_oldu_kaynak"] == "sablon"
+        assert "Gazi Üniversitesi Rektörlüğü" in y["ne_oldu"]
+        assert y["ne_oldu"] != anlati
 
 
-class TestLlmPromptOlayaUygun:
-    async def test_facts_olaya_ozgu_alanlari_icerir(self, monkeypatch):
-        # Arrange — llm_text'e giden system+user yakalanır
-        yakalanan: dict = {}
+class TestDeterministikAnlatiOlayaUygun:
+    async def test_yapisal_alanlar_olaya_ozgu_bilgileri_icerir(self, monkeypatch):
+        # Arrange
 
         async def _fake_llm(**kwargs):
-            yakalanan.update(kwargs)
-            return ("Gazi Üniversitesi Rektörlüğü tarafından gönderilen talep Cevabi Yazı "
-                    "olarak sınıflandırılıp ilgili birime havale edilmiştir.")
+            raise AssertionError("finalize LLM çağırmamalı")
 
         monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
         monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
         # Act
         sonuc = await finalize_mod.finalize_node(_state_tam())
-        # Assert — LLM anlatısı bildirime gömülür; olgular prompt'ta (gönderen + taslak + süre)
-        assert "havale edilmiştir" in sonuc["bilgilendirme"]
-        assert "Gazi Üniversitesi Rektörlüğü" in yakalanan["user"]
-        assert "Yasal cevap süresi" in yakalanan["user"]
-        assert "Yazı taslağı" in yakalanan["user"]
+        # Assert — gönderici, taslak ve süre yapısal kaynaklardan render edilir.
+        assert "Gazi Üniversitesi Rektörlüğü" in sonuc["bilgilendirme"]
+        assert "Yasal cevap süresi" in sonuc["bilgilendirme"]
+        assert "Yazı taslağı" in sonuc["bilgilendirme"]
 
-    async def test_system_prompt_uslup_kurallari(self, monkeypatch):
+    async def test_sablon_kurumsal_notr_uslubu_korur(self, monkeypatch):
         # Arrange
-        yakalanan: dict = {}
 
         async def _fake_llm(**kwargs):
-            yakalanan.update(kwargs)
-            return "x"
+            raise AssertionError("finalize LLM çağırmamalı")
 
         monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
         monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
         # Act
-        await finalize_mod.finalize_node(_state_tam())
-        # Assert — teşekkür/selamlama kalıpları açıkça yasaklanır; hedef kitle memurdur
-        system = yakalanan["system"]
-        assert "teşekkür" in system.lower()
-        assert "memur" in system.lower()
-        assert "UYDURMA" in system
+        sonuc = await finalize_mod.finalize_node(_state_tam())
+        # Assert — selamlama/teşekkür/imza eklenmez.
+        metin = sonuc["bilgilendirme_yapisal"]["ne_oldu"].lower()
+        assert "teşekkür" not in metin
+        assert "sayın " not in metin

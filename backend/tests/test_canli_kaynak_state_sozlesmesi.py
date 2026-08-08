@@ -65,12 +65,12 @@ async def test_grafta_ucdan_uca_HAYATTA_KALIR(monkeypatch) -> None:
     async def _sahte(slug, konu, **kw):
         return kunye
 
+    monkeypatch.setenv("KURUM_ADI", "Konya İl Sağlık Müdürlüğü")
     monkeypatch.setattr(ra, "kurum_korpusta_var", lambda slug: False)
     monkeypatch.setattr(ra, "kurum_icin_oneri_async", _sahte)
 
     son = await build_graph().ainvoke(make_initial_state(
         evrak_text="Ambulans hizmetlerinde yaşanan gecikme hakkında şikâyet başvurusu.",
-        aktif_kurum="Konya İl Sağlık Müdürlüğü",
     ))
     assert son.get("canli_kaynak", {}).get("url") == kunye["url"], (
         "künye graftan geçerken düşürüldü — EvrakState şeması eksik olabilir"

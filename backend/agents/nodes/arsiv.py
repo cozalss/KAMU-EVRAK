@@ -32,6 +32,7 @@ import structlog
 from agents import config
 from agents.config import (
     EVRAK_TO_SDP,
+    LLM_DUSUNME_CIKARIMDA_KAPALI,
     etkili_birim,
     evrak_turu_tr,
     saklama_suresi,
@@ -90,6 +91,15 @@ def _konu_for(unsurlar: dict[str, Any]) -> str:
 _DOGRULA_ANA_HIZMET = " [DOĞRULA: kuruma-özgü ana hizmet kodu]"
 
 
+def _sdp_llm_gerekli(adaylar: list[dict[str, Any]]) -> bool:
+    """LLM'i yalnız birbirine yakın en az iki makul aday varsa devreye al."""
+    if len(adaylar) < 2:
+        return False
+    ilk = float(adaylar[0].get("skor") or 0.0)
+    ikinci = float(adaylar[1].get("skor") or 0.0)
+    return ilk - ikinci < 1.0
+
+
 async def _sdp_llm_secimi(
     parcalar: list[str], turu: str, adaylar: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
@@ -120,6 +130,10 @@ async def _sdp_llm_secimi(
             'Yalnız şu JSON: {"kod":"<aday_kod>","gerekce":"<tek cümle Türkçe gerekçe>"}'
         ),
         max_tokens=160,
+        # KAPALI KÜME seçimi: aday SDP kodları hazır listeleniyor, liste dışına çıkmak
+        # zaten reddediliyor. Muhakeme katkı sağlamaz; liste-dışı kod gelirse deterministik
+        # fallback devrede (aşağıda).
+        dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI,
     )
     kod = str((obj or {}).get("kod") or "").strip()
     kayit = next((a for a in havuz if a["kod"] == kod), None)
@@ -149,7 +163,8 @@ async def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, 
                 "gerekce": "Evrak sayısından okundu (DETSİS-SDP-kayıt deseni).",
                 "adaylar": adaylar}
     # Kapalı-küme LLM seçici (bayrak call-time okunur → test/ENV ile anahtarlanabilir).
-    if config.SDP_LLM_SECICI and (secim := await _sdp_llm_secimi(parcalar, turu, adaylar)):
+    if (config.SDP_LLM_SECICI and _sdp_llm_gerekli(adaylar)
+            and (secim := await _sdp_llm_secimi(parcalar, turu, adaylar))):
         return secim
     if adaylar:
         a = adaylar[0]

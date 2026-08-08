@@ -49,7 +49,7 @@ def _kur(monkeypatch, *, birincil=None, bayrak=True, n=1):
     monkeypatch.setattr(S, "SELF_CONSISTENCY_N", n)
     monkeypatch.setattr(S, "SINIFLANDIR_ESKALASYON", bayrak)
     if birincil is not None:
-        async def _fake(_sys, _u, max_tokens=200):
+        async def _fake(_sys, _u, max_tokens=200, **_):
             return birincil
         monkeypatch.setattr(S, "llm_json", _fake)
 
@@ -223,7 +223,7 @@ class TestEskalasyonTetiklenmez:
         monkeypatch.setattr(S, "SINIFLANDIR_ESKALASYON", True)
         sayac = {"n": 0}
 
-        async def _fake(_sys, _u, max_tokens=200):
+        async def _fake(_sys, _u, max_tokens=200, **_):
             sayac["n"] += 1
             return None if sayac["n"] <= 3 else _DUSUK_GUVEN
 

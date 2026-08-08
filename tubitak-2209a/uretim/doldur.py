@@ -27,8 +27,17 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bicim import zengin_yaz
 from akis import zengin_akis, faktoriyel_akis, gantt_akis
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FORM = os.path.join(BASE, "2209A_resmi_form.docx")
+# Resmi form sablonu once betikle AYNI klasorde, sonra bir ust klasorde aranir.
+# (8 Agu: sablon uretim/ icine tasinmisti ama yol bir ust klasoru gosteriyordu;
+# doldur.py bu yuzden hic kosmuyordu — teslim belgesi kaynaktan yeniden
+# uretilemez durumdaydi. Yol artik iki konumu da dener ve bulamazsa ACIK soyler.)
+_BURASI = os.path.dirname(os.path.abspath(__file__))
+_ADAYLAR = (os.path.join(_BURASI, "2209A_resmi_form.docx"),
+            os.path.join(os.path.dirname(_BURASI), "2209A_resmi_form.docx"))
+FORM = next((y for y in _ADAYLAR if os.path.exists(y)), None)
+if FORM is None:
+    raise SystemExit("Resmî form şablonu bulunamadı. Aranan konumlar:\n  " +
+                     "\n  ".join(_ADAYLAR))
 
 ARIAL = "Arial"
 BOYUT = Pt(9)
@@ -134,7 +143,10 @@ def doldur(icerik, cikti):
         if t.startswith(".....Yılı"):
             paragraf_metnini_degistir(p, icerik.get("yil", "2026") + " Yılı")
         elif t.startswith("… Dönem"):
-            paragraf_metnini_degistir(p, icerik.get("donem", "1.") + " Dönem Başvurusu")
+            # 2209-A'da DONEM numaralandirmasi kaldirildi (cagri artik "<yil> Yili
+            # Cagrisi" diye aniliyor). donem bos ise satir tamamen bosaltilir.
+            d = str(icerik.get("donem", "")).strip()
+            paragraf_metnini_degistir(p, f"{d} Dönem Başvurusu" if d else "")
 
     # --- T0 genel bilgiler
     genel = icerik.get("genel_bilgiler", {})
@@ -165,6 +177,19 @@ def doldur(icerik, cikti):
         metin = icerik.get(anahtar, "").strip()
         if metin:
             akisa_cevir.append((T[idx], metin))
+
+    # --- 3. PROJE YONETIMI giris metni (rubrikte %20; hakem "bu blok uc tablodan
+    # ibaret, izleme/koordinasyon yordami hicbir yerde yok" dedi). Baslikla ilk alt
+    # baslik arasina akis olarak yerlestirilir.
+    yonetim = icerik.get("bolum_3_yonetim_girisi", "").strip()
+    if yonetim:
+        for p in doc.paragraphs:
+            if p.text.strip().startswith("PROJE YÖNETİMİ"):
+                # basligin ARDINDAN gelen ilk ogeden once yaz
+                sonraki = p._p.getnext()
+                if sonraki is not None:
+                    zengin_akis(doc, sonraki, yonetim)
+                break
 
     # --- T5 calisma takvimi
     takvim = icerik.get("calisma_takvimi", [])

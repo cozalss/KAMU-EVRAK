@@ -94,13 +94,13 @@ def zengin_akis(doc, hedef_el, metin, taban=9, genislik=Cm(16.4)):
         pf.widow_control = True
 
         if tur == "baslik":
-            pf.space_before = Pt(9)
-            pf.space_after = Pt(3)
+            pf.space_before = Pt(7)
+            pf.space_after = Pt(2)
             pf.keep_with_next = True
             bicimle(p.add_run(t), size=taban, bold=True, renk=LACIVERT)
         elif tur == "madde":
             govde = re.sub(r"^[-•]\s*", "", t)
-            pf.space_after = Pt(2)
+            pf.space_after = Pt(1)
             pf.left_indent = Pt(14)
             pf.first_line_indent = Pt(-9)
             if len(govde) > 120:
@@ -109,7 +109,7 @@ def zengin_akis(doc, hedef_el, metin, taban=9, genislik=Cm(16.4)):
             bicimle(p.add_run(govde), size=taban)
         elif tur == "sirali":
             m = re.match(r"^(\(\w{1,3}\))\s*(.*)$", t, re.S)
-            pf.space_after = Pt(2)
+            pf.space_after = Pt(1)
             pf.left_indent = Pt(18)
             pf.first_line_indent = Pt(-18)
             if len(t) > 120:
@@ -117,7 +117,7 @@ def zengin_akis(doc, hedef_el, metin, taban=9, genislik=Cm(16.4)):
             bicimle(p.add_run(m.group(1) + " "), size=taban, bold=True)
             bicimle(p.add_run(m.group(2)), size=taban)
         else:
-            pf.space_after = Pt(3)
+            pf.space_after = Pt(2)
             if len(t) > 120:
                 p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
             bicimle(p.add_run(t), size=taban)
@@ -249,8 +249,9 @@ def gantt_akis(doc, hedef_el, takvim):
     _tasi(hedef_el, t._tbl)
 
     toplam = sum(x.get("katki") or 0 for x in takvim)
+    # "3.1" numarasi KALDIRILDI: formda o numarayla bir baslik yok, atif havada kaliyordu.
     _yazi(doc, hedef_el, f"Koyu hücreler iş paketinin etkin olduğu ayları gösterir. Katkı "
-                         f"sütununun toplamı %{toplam}'dür. Şekil, 3.1 Çalışma Takvimi "
+                         f"sütununun toplamı %{toplam}'dür. Şekil, Çalışma Takvimi "
                          f"tablosunun görsel özetidir; ayrıntılı faaliyet, sorumlu ve başarı "
                          f"ölçütü bilgisi o tablodadır.",
           size=7, italic=True, renk=RGBColor(0x44, 0x44, 0x44), once=3, sonra=6)

@@ -26,8 +26,22 @@ DOLU_ZEMIN = "2F5496"
 BOS_ZEMIN = "F2F2F2"
 
 
-def bicimle(run, size=9, bold=False, italic=False, renk=None):
+# Formun kendi kurali Arial 9'dur ve bu OLCULDU: resmi sablonda govde
+# paragraflarinin 112'si, TABLO hucrelerinin 32'si 9 punto (yalniz kapak basligi 14,
+# birkac dipnot 8). Bizim surumumuz sayfaya sigdirmak icin tablolari 7,5 · kaynakcayi
+# 8 · sekil notlarini 7 puntoya dusurmustu; bu, formun istedigi bicimden sapmadir ve
+# on incelemede "istenen formatta degil" itirazina acikti.
+#
+# Tek tek otuz sabiti degistirmek yerine taban BURADA uygulanir: metnin tamami bu
+# fonksiyondan geciyor, dolayisiyla kapsam garanti. Bosluk run'lari (metni bos olan
+# ayirac satirlari) haric tutulur; onlari buyutmek yalnizca dikey bosluk ekler.
+TABAN_PUNTO = 9.0
+
+
+def bicimle(run, size=9, bold=False, italic=False, renk=None, taban=True):
     run.font.name = ARIAL
+    if taban and run.text and run.text.strip():
+        size = max(size, TABAN_PUNTO)
     run.font.size = Pt(size)
     run.font.bold = bold
     run.font.italic = italic

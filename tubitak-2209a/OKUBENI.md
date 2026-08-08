@@ -6,24 +6,53 @@ Bu klasördeki üç belge, TÜBİTAK'ın **resmî 2209-A Araştırma Önerisi Fo
 
 | Dosya | Ne işe yarar | Başvuruya yüklenir mi |
 |---|---|---|
-| `2209A_BASVURU_TESLIM.docx` | Resmî formun doldurulmuş hâli. Toplam 19 sayfa (gövde 18 + ekler). | **EVET — yüklenecek dosya budur** |
+| `2209A_BASVURU_TESLIM.docx` | Resmî formun doldurulmuş hâli. Gövde 19 sayfa + EK-1 kaynakça = toplam 21. | **EVET — yüklenecek dosya budur** |
 | `2209A_REHBERLI_SABLON.docx` | Her bölüm için TÜBİTAK açıklaması + panelistin ne aradığı + doldurulmuş örnek + boş alan. | Hayır, çalışma belgesi |
 | `2209A_KONTROL_LISTESI.docx` | Ön inceleme eleme listesi, rubrik öz-puanlama, süreç akışı, ÜYZ yükümlülüğü, sonuç raporu iskeleti. | Hayır, denetim listesi |
 
-## Ölçülen değerler (tahmin değil, sayıldı)
+## Ölçülen değerler (tahmin değil, sayıldı — 8 Ağustos, düzeltmeler sonrası)
+
+Tümü `uretim/dogrula2.py` ile tek komutta yeniden üretilir:
+`python dogrula2.py ../2209A_BASVURU_TESLIM.docx icerik.json`
 
 | Kontrol | Ölçülen | Sınır |
 |---|---|---|
-| **Toplam sayfa (her şey dâhil)** | **19** | ≤ 20 |
-| Gövde sayfa (ekler hariç) | 18 | ≤ 20 (TÜBİTAK kuralı) |
-| Özet kelime sayısı | 399 | 25–450 |
+| **Gövde sayfa (EK-1 kaynakça hariç)** | **19** | ≤ 20 (TÜBİTAK kuralı) |
+| **Toplam sayfa (kaynakça dâhil)** | **21** | ≤ 21 (kullanıcı sınırı) |
+| Özet kelime sayısı | 442 | 25–450 |
 | Anahtar kelime | 5 | 3–5 |
+| Bölüm gövde kapsamı (metin belgeye gerçekten yazıldı mı) | %100 / %100 / %100 / %100 | ≥ %95 |
 | Çalışma takvimi katkı toplamı | 100 | tam 100 |
-| İş paketi sayısı / süre | 6 İP / 12 ay | ≤ 12 ay |
-| Bütçe toplamı | 12.000 TL | ≤ 12.000 TL |
-| Kaynak sayısı | 21 | — |
-| Madde 4.1.8 marka taraması (gövde) | 0 bulgu | 0 |
-| Yazı tipi | Arial 9 (sapma 0) | Arial 9 |
+| İş paketi sayısı / süre | 5 İP / 12 ay | ≤ 12 ay |
+| Bütçe toplamı | 11.000 TL | ≤ 12.000 TL |
+| Kaynak sayısı / atıf bütünlüğü | 21 / tam | ≥ 15 / boş fark |
+| Madde 4.1.8 marka taraması (gövde + üstbilgi) | 0 bulgu | 0 |
+| Yazı tipi (etkin, stil kalıtımı çözülerek) | Arial, 0 sapma | Arial |
+| Punto | 9 pt, 0 sapma | Arial 9 |
+| Dış geri bildirim (10 madde) | 10/10 | 10/10 |
+
+> **Punto (8 Ağustos'ta düzeltildi):** belge önceden tabloları 7,5 · kaynakçayı 8 ·
+> şekil notlarını 7 puntoda basıyordu ve OKUBENI bunu "Arial 9 (sapma 0)" diye
+> yayımlıyordu — o kontrol yalnız yazı tipi ADINI ölçtüğü için. **Resmî formun kendi
+> tabloları 9 punto** (ölçüldü: gövdede 112, tablolarda 32 run), dolayısıyla küçültme
+> formdan sapmaydı. Artık `bicim.py` içinde tek bir taban (`TABAN_PUNTO = 9`) uygulanır
+> ve **formun gövdesinin tamamı 9 puntodur** (sapma 0). İki bilinçli istisna vardır:
+>
+> 1. Yaygın Etki tablosundaki üç parantezli alt etiket (`(Ulusal/Uluslararası Makale…)`)
+>    8 puntodur — bunlar **formun kendi metnidir** ve resmî şablonda da 8 puntodur;
+>    üstbilgi kararıyla aynı gerekçeyle değiştirilmemiştir.
+> 2. **EK-1 kaynakça 8 puntodur.** TÜBİTAK'ın kuralı "ekler hariç 20 sayfa" olduğundan
+>    9 punto zorunluluğu formun gövdesi içindir. Kaynakçayı da 9 puntoya çıkarmak belgeyi
+>    22 sayfaya taşıyordu; seçim, panelin istediği bilimsel içerikten kesmek ile ekin
+>    puntosunu korumak arasındaydı ve ikincisi seçildi. Gövde 19 sayfa, toplam 21.
+>    Geri almak isterseniz: `tasarim.py` → `kaynakcayi_bicimle` → `taban=False` kaldırın
+>    (belge 22 sayfaya çıkar).
+
+> **Üstbilgi notu:** belgenin iki bölüm üstbilgisi program adını farklı yazar
+> (`2209-A … DESTEKLEME PROGRAMI` ve `2209/A … DESTEĞİ PROGRAMI`). Bu fark
+> **TÜBİTAK'ın kendi resmî form şablonundan** gelir (`uretim/2209A_resmi_form.docx`
+> ile bire bir aynı) ve **düzeltilmemiştir**: resmî formun antetini değiştirmek
+> "istenen formatta olmayan belge" riski yaratır.
 
 ## ALAN DURUMU
 
@@ -33,34 +62,24 @@ Bu klasördeki üç belge, TÜBİTAK'ın **resmî 2209-A Araştırma Önerisi Fo
 | Danışmanın adı soyadı | DOLDURULDU | Dr. Öğr. Üyesi Bilgin AVENOĞLU |
 | Araştırmanın yürütüleceği kurum | DOLDURULDU | Çankaya Üniversitesi, Mühendislik Fakültesi |
 | Araştırma önerisinin başlığı | DOLDURULDU | Türkçe İdari Yazışmada Karar Katmanı Mimarisinin Belge Anlama Başarımına ve Kaynak Dayanaklılığına Etkisi: Kontrollü Faktöriyel Deney |
-| Kapak yıl / dönem | DOLDURULDU | 2026 Yılı / 1. Dönem |
+| Kapak yıl / dönem | DOLDURULDU | 2026 Yılı /  Dönem |
 | Ekip büyüklüğü | DOLDURULDU | 3 öğrenci (yürütücü + 2 ortak) + danışman |
 | Araştırma olanakları — donanım | DOLDURULDU | somut özellikler yazıldı |
-| **Etik kurul: üniversite / karar tarihi / karar sayısı** | **BOŞ** | 5. bölümde `.......` olarak duruyor |
-
-> **Gönderilmeden önce yapılacak tek mekanik iş budur.** Metin şu an onayın ALINMIŞ olduğunu beyan ediyor ("...kararıyla ONAYLANMIŞTIR. Onay belgesi başvuru ekinde sunulmuştur."). Onay henüz yoksa bu cümle gerçeğe aykırıdır; ya onay alınıp alanlar doldurulmalı ya da cümle "başvurulmuş olup karar beklenmektedir" diline çevrilmelidir.
+| **Etik kurul: üniversite / karar tarihi / karar sayısı** | DOLDURULDU | — |
 
 ## AÇIK RİSKLER — gönderimden önce karara bağlanmalı
 
-Aşağıdaki 17 madde, metni üreten ve denetleyen ajanların **dürüstçe açık bıraktığı** konulardır. Hiçbiri gizlenmemiştir.
+Aşağıdaki 9 madde, metni üreten ve denetleyen ajanların **dürüstçe açık bıraktığı** konulardır. Hiçbiri gizlenmemiştir.
 
-1. **ETİK KURUL BELGESİ** — DOLDURULACAK ALAN: Etik beyanında üniversite adı, karar tarihi ve karar sayısı '.......' olarak bırakılmıştır. Başvuru gönderilmeden ÖNCE onay alınmalı, bu alanlar doldurulmalı ve belge ekte sunulmalıdır. Onay alınamıyorsa İP3 ve İP5 insan verisi içermeyecek biçimde yeniden tanımlanmalı ya da başvuru bir sonraki çağrıya bırakılmalıdır. Bu, panelin ortak ELEME bulgusudur ve tek başına başvuruyu düşürür.
-2. **GÜÇ SİMÜLASYONU** — Panel, H2 ve H7 için Monte Carlo güç simülasyonunun BAŞVURUDAN ÖNCE koşulup sonuç sayısının metne yazılmasını istedi. Sayı uydurulmadığı için metin, simülasyonun ön-kayıt kilidinden önce (İP1, 1-2. ay) koşulacağını ve üç dallı bağlayıcı karar kuralını ilan etmektedir. Simülasyonu başvurudan önce koşup saptanabilir en küçük etkiyi 2.6'ya yazmak Yöntem puanını görünür biçimde yükseltir. n=240 için hesaplanan saptanabilir en küçük mutlak fark (~9 yüzde puanı) doğrulanmıştır ve metindedir.
-3. **BİRİNCİL KONTRAST GÜCÜ** — H1'in birincil kontrastı (kısıtlı hibrit ile literatür tabanı), (kısıtlı hibrit ile kısıtsız kol) kontrastından küçük bir etki üretebilir. n=240, karşıt uyumsuz çift oranı 0,05 sabitken ancak ~9 puanlık farkı 0,80 güçle saptar; daha küçük bir fark bekleniyorsa ön-kayıt öncesi belge sayısı artırılmalı ya da birincil kontrast yeniden tanımlanmalıdır. Danışman onayına bırakılan tasarım kararıdır.
-4. **BÜTÇE KALEM UYGUNLUĞU [DOĞRULA]** — 'Hizmet alımı' kalemlerinin (bağımsız etiketleyicilere ve bağımsız doğrulayıcıya yapılacak ödeme) çağrının desteklenen gider listesinde yer alıp almadığı birincil çağrı metninden teyit edilmelidir. Uygun değilse: etiketleyiciler gönüllü akademik katkı olarak konumlandırılıp 4.200 TL'lik kalem silinmeli, tutar sarf ve bulut erişim kalemlerine dağıtılmalı, İP3 metnindeki 'hizmet alımıyla görevlendirilen' ibaresi 'gönüllü olarak katkı veren' biçiminde değiştirilmelidir. Aynı denetim 1.500 TL'lik bağımsız yeniden koşum kalemi için de yapılmalıdır.
-5. **BULUT MODEL MALİYETİ ÖLÇÜLMEMİŞTİR** — 4.300 TL'lik kalem bir TAVANDIR; ön çalışmada belge başına maliyetin bağımsız artefaktı yoktur ve tek taze koşum belge başına ~84 saniye kaydetmektedir. İP1'deki 20 belgelik pilot bu tavanı aşarsa risk tablosunun 3. satırındaki kural (sağlayıcı bloğunu üçten ikiye indirme, tekrar koşumları yerel modele kaydırma) uygulanmalıdır. Gerçekleşen maliyet İP1 sonunda bütçe gerekçesine işlenmelidir.
-6. **SAYFA SINIRI FİİLEN ÖLÇÜLMEDİ** — Yazılan bölümlerin toplamı yaklaşık 58.000 karakterdir; Arial 9 ile tahminen 16-19 sayfa eder ve form şablonunun kendi açıklama metinleriyle 20 sayfa sınırına yaklaşır. Form doldurulduktan sonra PDF'e aktarılıp sayfa sayısı FİİLEN sayılmalıdır. 20'yi aşarsa kesinti sırası: (1) 2.7'deki ön çalışma dökümünün kalibrasyon ve dayanaklılık sayıları, (2) takvim 'Faaliyetler' hücreleri, (3) risk 'B Planı' hücreleri, (4) 1.1'deki politika maddesi alıntıları. Hiçbir bölüm 350 karakterin altına düşürülmemelidir.
-7. **KARAKTER SAYILARI YAKLAŞIKTIR** — Yalnız özetin kelime (399) ve karakter (3.238) sayısı betikle doğrulanmıştır. Diğer bölümlerin 'karakter_sayisi_yaklasik' değerleri tahminîdir; hepsi 350 alt sınırının çok üzerindedir, ancak forma girmeden önce kutu sınırı olan alanlar için fiilen sayılmalıdır.
-8. **4. BÖLÜM ATIF NUMARALARI ELLE DÜZELTİLECEK** — 4. Yaygın Etki bölümü, panel raporundaki numaralandırmayla ([3]-[12]) yazılmış olup bölüm sonunda kanonik numaralara ([9], [10], [7], [15], [16], [17], [18], [19], [20], [21]) dönüştürme notu vardır. Forma girerken bu numaralar metin içinde DEĞİŞTİRİLMELİ ve dönüştürme notu silinmelidir; not, forma yapıştırılacak nihai metinde kalmamalıdır.
-9. **[5] ÖZTÜRK KÜNYESİ [DOĞRULA]** — arXiv 2604.04790 künyesi (yazar adları, başlık, tarih) gönderimden önce açılıp birebir teyit edilmelidir. Erişilemezse kaynak listeden çıkarılmalı ve 1.1 ile 2.4'teki 'Türkçe alan-uyarlaması çalışmaları hukuk metinlerinde yoğunlaşmaktadır' cümleleri, kalan hakemli Türkçe kaynaklara ([3], [4]) dayandırılacak biçimde yeniden yazılmalıdır. Tüm arXiv künyelerine '(ön baskı)' işareti konmuştur.
-10. B4 BOŞLUĞU HÂLÂ ATIFSIZ — Güven kalibrasyonu / aşırı-güven alanyazınından doğrulanmış kaynak bulunamadığı için B4 iddiası 'bir çalışmaya rastlanmamıştır' biçiminde zayıflatılmış, aday kaynaklar yalnız [DOĞRULA] bloğunda bırakılmıştır. En az iki hakemli kalibrasyon kaynağı teyit edilip metne eklenirse bilimsel nitelik puanında görünür kazanç sağlar. Aynı durum B3 (açık uçlu yönlendirme) için de geçerlidir.
-11. **ARAŞTIRMA OLANAKLARI** — DONANIM AYRINTISI: Yerel açık ağırlıklı modelin çalıştırılacağı bilgisayarların bellek ve işlemci bilgisi bilinmediği için metin sayısal değer içermemektedir. Panel, bu bilginin somut yazılmasını istemişti; başvuru öncesinde gerçek donanım özellikleri (bellek, işlemci, varsa hızlandırıcı) eklenmelidir. Ayrıca yerel modelin kısıtsız kolda geçersiz çıktı oranı %20'yi aşarsa bu blok seviyesinin tasarımdan çıkarılacağı kuralı İP1 başarı ölçütüne eklenebilir.
-12. **ÖN ÇALIŞMA SAYILARININ BAYATLIĞI** — Metindeki tüm ön çalışma değerleri (0,907 / 0,584 / 0,864 / 0,598 / 0,877→0,964 / 0,1123 / 0,5141 / 0,9561) hizmet dışı bırakılmış bir model sürümüyle ve mevcut kod tabanından iki yüzü aşkın sürüm önce üretilmiştir. Metin bunu açıkça beyan etmekte ve İP1'de yeniden ölçüleceğini taahhüt etmektedir. Bu sayılar hiçbir sunumda 'güncel başarım' olarak alıntılanmamalıdır.
-13. **DEPO İÇİ SAYISAL TUTARSIZLIKLAR ÇÖZÜLMEDİ** — Doğrulanmış kurum sayısı bir kaynakta 128, diğerinde 129; adillik bir yerde 1,0000, artefaktta 0,9444; 216 örneklemli karne için gösterilen artefakt 54 örnek içermektedir. Bu üç tutarsızlık başvuru metnine SIZDIRILMAMIŞTIR (hiçbiri metinde kullanılmadı), ancak proje deposunda durmaktadır. Sözlü savunma ya da ek belge sunulacaksa önce tek sayıya indirgenmelidir.
-14. **KATKI PUANI KAYDIRMA KURALI** — Risk tablosunun İP5 satırında, gecikme hâlinde katkı puanlarının yeniden dağıtılacağı (İP5 22→18, İP6 12→8, fark İP4'e) yazılmıştır. Bu, formdaki tablo değerlerini DEĞİŞTİRMEZ; tablo 15/18/18/15/22/12 = 100 olarak kalır. Kaydırma yalnız bir B planı senaryosudur; panelist tabloda 100 dışında bir toplam görürse eleme riski doğar, bu yüzden tablo değerleri elle güncellenmemelidir.
-15. **TAKVİM** — YAYGIN ETKİ SINIRI — 4.1'deki bildiri/makale teslim ayları ve 4.2'deki seminer, İş-Zaman Çizelgesine SATIR OLARAK EKLENMEMELİDİR; eklenirse 'sonuçların paylaşımı' yasak iş adımı ihlali doğar. Mevcut takvimde bu satırlar yoktur ve yasak dört kalemin (literatür taraması, sonuç raporu hazırlama, sonuçların paylaşımı, malzeme alımı) hiçbiri ayrı satır değildir.
-16. **MARKA TARAMASI** — Nihai metnin tamamı madde 4.1.8 açısından tarandı: hiçbir dil modeli ticari adı, yazılım kütüphanesi, çerçeve, veritabanı, bulut sağlayıcı, font, yarışma, takım veya firma adı geçmemektedir; destek programı kodları (2224-A/B, 2209-B) silinmiştir. Destekleyici kurumun adı yalnız kaynakça künyesinde ([20]) yer almakta, gövdede 'ulusal öncelikli Ar-Ge ve yenilik konuları listesi' olarak anılmaktadır. Forma yapıştırırken bu ayrım korunmalıdır.
-17. KELİME/SAYI KONTROL ÖZETİ — Özet 399 kelime (sınır 25-450, güvenlik payı içinde) ve 3.238 karakter; anahtar kelime tam 5 adet; takvim katkı toplamı tam 100; takvim 12 ayı aşmıyor ve 1. aydan başlıyor; bütçe toplamı tam 12.000 TL; konferans/yayın/patent gideri yok; kaynaklar [1]-[21] sıralı ve her biri metinde en az bir kez kullanılıyor; doğrulanmamış aday kaynaklar ayrı [DOĞRULA] bloğunda ve metinde KULLANILMAMIŞ durumda.
+1. **ÇAĞRI HENÜZ AÇILMADI** — 2209-A'nın 2026 çağrısı 8 Ağustos itibarıyla yayımlanmamış. Tarihsel örüntü Ekim'i gösteriyor. Çağrı açılınca: (a) destek üst limitini web sayfasından tekrar teyit edin, (b) kapağa çağrının resmî adını yazın, (c) çağrı duyurusunun yeni sürümünü bu paketle karşılaştırın.
+2. KAPAK YIL/ÇAĞRI ADI — 'dönem' ibaresi kaldırıldı (2209-A'da artık yok). Yıl şu an 2026 yazıyor; çağrı açıldığında resmî adıyla güncelleyin.
+3. +1 PUAN FIRSATI (m.5.2.7) — proje ekibinde özel gereksinimli bir birey varsa, başvuru sırasında 'Engelli Sağlık Raporu Referans Numarası' beyan edilirse değerlendirme toplam puanına 1 PUAN eklenir. Bu, başvuru sisteminde beyan edilir, metinde değil.
+4. **ÖN ÇALIŞMA SAYILARI KISMEN TAZELENDİ** — mevzuat erişimi 8 Ağustos 2026'da güncel kod tabanında yeniden ölçüldü (Recall@1 0,750, Recall@3 0,938, MRR 0,812; n=16) ve 2.7'ye işlendi. LLM'li metrikler (sınıflandırma, yönlendirme, özet, taslak) hâlâ bayat çünkü .env dosyasında OPENAI_API_KEY satırı YOK. Anahtar eklenirse bu zayıflık TAMAMEN kapanır.
+5. **H2 GÜCÜ SINIRLI** (ölçüldü: 0,314) — gizlenmedi. Saptanabilir en küçük etkileşim 0,19 olasılık puanı (= 2,27 etkileşim odds oranı) olarak ilan edildi. **8 Ağu: koşullu genişletme (n=480) KALDIRILDI** — tetikleyicisi ("eğilim sıfırdan uzak görünürse") ölçülebilir bir karar kuralı değildi; örneklem n=240'ta sabit ve H2 güç sınırlı olarak raporlanıyor. Ayrıca H2, seri kapı zincirinin **son** kapısına alındı; sonuçsuz kalması diğer hipotezlerin sınanmasını engellemiyor. Ana etkiler (H1 0,857, H3 0,99-1,00, H5 0,838-0,996, H8 1,00) sağlam.
+6. **ÜYZ BEYANI** — bu metin üretken yapay zekâ araçlarıyla hazırlandı. ÜYZ Rehberi v04 (Ocak 2026) 'önemli ölçüde' kullanımda şeffaf beyan istiyor; nihai sorumluluk akademik danışmanda. Danışmana bildirin.
+7. **KATMANLI RAPORLAMA BLOĞU** — sayfa sınırı için 2.5'ten çıkarıldı; Katman A/B ayrımının önceden bağlayıcı kuralı kaybedildi. Yer açılırsa geri konması önerilir.
+8. **GÖNÜLLÜ DEĞERLENDİRİCİ** — kör değerlendirmenin ikisi danışmanın bölümünden gönüllü akademik katkı. Bu iki kişi ilk ayda belirlenmeli; bulunamazsa bütçeden aktarımla ücretlendirme yoluna gidilecek (kural metinde yazılı).
+9. **İŞ YÜKÜ** — fizibilite hakemi %152 doluluk hesaplamıştı; iş devirleri ve kilometre taşlarıyla düşürüldü ama takvim sıkı. Danışmanla haftalık takip metinde taahhüt edilen yordamın kendisidir, süs değil.
 
 ## DOĞRULANMAMIŞ KAYNAK ADAYLARI
 
@@ -86,44 +105,91 @@ Bu nedenle gönderimden önce **zorunlu** olarak:
 
 ## Uygulanan düzeltmeler (adversarial panel çıktısı)
 
-Metin, üç bağımsız hakem lensinden geçirildi (rubrik panelisti · ön inceleme denetçisi · "bu araştırma değil" şüphecisi) ve 36 düzeltme uygulandı:
+Metin, üç bağımsız hakem lensinden geçirildi (rubrik panelisti · ön inceleme denetçisi · "bu araştırma değil" şüphecisi) ve 28 düzeltme uygulandı:
 
-1. ELEME (3 hakem birden) — Etik kurul onayının proje içinde alınması: İP1 faaliyet metninden 'etik kurul başvurusunun hazırlanıp yapılması' ve başarı ölçütünden 'Etik kurul başvurusu 2. ay içinde yapılmış' SİLİNDİ; yerine onaylı protokolün uygulama yordamına dönüştürülmesi yazıldı. Etik beyanı (3) fıkrası 'onay başvuru öncesinde alınmıştır, belge ekte sunulmuştur' olarak yeniden yazıldı. 2.8'in etik paragrafı aynı yönde güncellendi. Eski 'etik onay gecikmesi' riski, 'onaylı protokolde revizyon gereği' riskine dönüştürüldü ve İP5'e eşlendi.
-2. ELEME — Özet ve anahtar kelimeler yoktu: 399 kelimelik (3.238 karakter) özet yazıldı ve kelime sayısı betikle doğrulandı (380-445 aralığında). Tam 5 anahtar kelime eklendi.
-3. ELEME — 3. Proje Yönetimi bölümü yoktu: 3.0 yönetim girişi (ekip rolleri + üç unsurlu izleme yordamı, ~1.500 karakter), 3.1 dört sütunlu İş-Zaman Çizelgesi (6 satır, İP1-İP6), 3.2 on satırlık Risk Yönetimi tablosu (her satır bir İP numarasına eşlendi) ve 3.3 Araştırma Olanakları yazıldı.
-4. ELEME/KRİTİK — Bütçe yoktu: 5 kalemli bütçe yazıldı (hizmet alımı x3, sarf malzemesi, seyahat), toplam TAM 12.000 TL. Konferans/yayın/patent gideri yok; donanım alımı yok. Bulut model kalemi, İP1'deki 20 belgelik maliyet pilotuna bağlanan üst sınır olarak açıkça nitelendi (ön çalışmada maliyet artefaktı bulunmadığı beyan edildi).
-5. KRİTİK (R1+R3) — D1 gözlem sayısı çelişkisi ve sağlayıcı bloğu: Tasarım tek bir tanıma sabitlendi. Mimari 4 seviyeye çıkarıldı; ana gövde 240 x 4 x 3 = 2.880 gözlem, sağlayıcı bloğu 80 belgelik katmanlı alt kümede iki ek sağlayıcıda 80 x 3 x 3 x 2 = 1.440 ek gözlem, toplam 4.320 (720 deterministik + 3.600 model çağrılı). 'Tam faktöriyel' ifadesi yalnız mimari x bozulma çaprazı için kullanıldı; desen 'kısmen çaprazlanmış (dengesiz)' olarak açıkça adlandırıldı ve deterministik kolun sağlayıcı düzeyinde tekrarlanamadığı yazıldı. İP2 başarı ölçütü 4.320 koşum olarak güncellendi.
-6. KRİTİK (R1+R3) — Güç analizi: Kapı 1'de üç test bulunduğu için Holm'un en katı basamağı (alfa=0,0167) üzerinden n=207, dışlama payıyla n=240 gerekçelendirildi; sayılar betikle doğrulandı (alfa=0,05'te 155; 0,0125'te 221; 0,0167'de 207). n=240 için saptanabilir en küçük mutlak fark ~9 yüzde puanı olarak HESAPLANDI ve metne yazıldı. H2 ve H7 için simülasyon ön-kayıt kilidinden ÖNCE koşulacak biçimde İP1'e alındı ve üç dallı BAĞLAYICI karar kuralı yazıldı (0,80+; 0,70-0,80; <0,70). H7'nin gücü, Cohen f yerine sınanacak modelin kendisi (deneme düzeyi karma etkili lojistik) üzerinde simülasyona bağlandı; beklenen oranlar (K0=0,40 … K3=0,64) ve varyanslar ilan edildi.
-7. KRİTİK (R1) — KVKK beyanı çelişkisi: 2.2'nin açılış cümlesi 'Kişisel veri işlenmeyecektir' yerine belge tarafı / insan tarafı ayrımı yapan tam metinle değiştirildi; İP5'te toplanan davranış, süre ve öznel güven verisi 6698 kapsamında kişisel veri olarak beyan edildi, takma-adlaştırma, ayrı anahtar saklama, m.10 aydınlatma ve imha yordamı yazıldı.
-8. KRİTİK (R2) — Dört ayrı kaynak numaralandırması: 1.1'in 21 kaynaklık listesi KANONİK yapıldı; 1.2 ve 2. bölümdeki tüm metin içi atıflar bu numaralara göre yeniden yazıldı. 4. bölümde numaralar korunup bölüm sonuna açık bir dönüştürme notu eklendi (forma girerken kanonik numarayla değiştirilecek). Bölüm sonu ayrı kaynak listeleri kaldırıldı; tek Kaynaklar bölümü var. [1]-[21] arasındaki her kayıt metinde en az bir kez kullanılıyor.
-9. KRİTİK (R2) — Takvim 'Kimler Tarafından' sütununda ekip dışı kişiler: İP3'te üç bağımsız etiketleyici, İP6'da bağımsız doğrulayıcı yürütücü olmaktan çıkarıldı; ekip üyeleri koordinatör olarak yazıldı ve ekip dışı kişiler yalnız bütçede hizmet alımı kalemi olarak bırakıldı. 3.0 yönetim girişine bu ayrımı açıkça yazan bir cümle eklendi.
-10. KRİTİK (R2) — 4.2 ↔ takvim tutarsızlığı ve yasak iş adımı riski: Çalıştaydan ay bilgisi kaldırıldı, çevrim içi ve bütçe dışı hâle getirildi, katılımcı sayısı taahhüdü kaldırıldı (İP5 risk analiziyle çelişiyordu). 'Ders sunumu seti' silindi. Yayın/paylaşım faaliyetlerinin İş-Zaman Çizelgesine satır olarak eklenmeyeceği kuralı yazıldı; takvimde literatür taraması, sonuç raporu, sonuçların paylaşımı ve malzeme alımı ayrı satır olarak YOK.
-11. ÖNEMLİ (R1) — B3 ve B4 atıfsız boşluk iddiaları: İki iddia da 'literatür şunu varsayar' kesinliğinden 'incelenen çalışmalarda ... rastlanmamıştır' biçimine indirgendi. B4'ün desteği ön çalışma ölçümüyle sınırlı tutuldu ve dairesel olmayan biçimde sunuldu. Doğrulanamayan aday kaynaklar metne ALINMADI, ayrı [DOĞRULA] bloğuna konuldu.
-12. ÖNEMLİ (R1) — Hedef 2'nin mutlak başarım eşiği: 'makro-F1 >= 0,85' ürün kabul eşiği kaldırıldı; yerine karar verilebilirlik ölçütü (güven aralığı genişliği < 0,15 ve en az iki bağımlı değişkende gerçekleşen güç > 0,80; reddedilme de desteklenme de aynı ayrıntıda raporlandığında hedef gerçekleşmiş sayılır) yazıldı. İP1'in '21 düğümün 16'sı' ölçütü '13 bağımlı değişkenin tamamı' ile değiştirildi.
-13. ÖNEMLİ (R1+R3) — Birincil bağımlı değişkenler ve test ailesi: Dört birincil değişken adıyla sayıldı (tür sınıflandırma, birim yönlendirme ilk-sıra isabeti, eksik alan F_beta, dayanaksızlık oranı). Onaylayıcı aile 16 test olarak tek tek sayıldı ve 7 kapılı hiyerarşik gatekeeping yordamı yazıldı; keşifsel aile ayrıca tanımlandı.
-14. ÖNEMLİ (R1) — İddia düzeyi kümelenme: Tüm uyum aralıkları belge düzeyinde kümelenmiş önyüklemeye bağlandı; DEFF = 1 + (m-1)xICC = 1,8 (ICC=0,20, m=5) ile 150 → 270 düzeltmesi ve planlanan 300 iddia gerekçelendirildi; 300 iddianın en az 60 belgeden, belge başına en fazla 6 olacak biçimde katmanlı seçileceği yazıldı.
-15. ÖNEMLİ (R1+R3) — Sağlayıcı bloğunun yetenek sınıfıyla karışması: Bloklama varsayımı sınanmadan kabul edilmez hâle getirildi (sağlayıcı x mimari etkileşimi olabilirlik-oranı testiyle sınanır; anlamlıysa sağlayıcı ikinci faktöre yükseltilir ve sonuçlar sağlayıcı başına raporlanır).
-16. ÖNEMLİ (R1) — Bozulma çapasının n=3'e dayanması: 0,1123 değeri KİLİTLENMEDİ; İP1'de en az 50 taranmış belgede yeniden ölçülecek ortalamaya çapalanacağı ve ön-kayıtta güven aralığıyla sabitleneceği yazıldı. CER-WER uçurumunun (0,11 vs 0,51) Türkçe ek bozulmasıyla açıklanan gerekçesi eklendi.
-17. ÖNEMLİ (R1) — Abartılı çıktı yükü: 4.1 üç yayın çıktısına indirildi (1 ulusal bildiri, 1 uluslararası bildiri, 1 ulusal makale) + ön-kayıt belgesi + 2 lisans çıktısı; ikinci ulusal bildiri ve ayrı veri kümesi tanıtım raporu kaldırılıp veri kümesi belgelendirmesine gömüldü. Kitap/kitap bölümü/patent hedeflenmediği gerekçesiyle yazıldı.
-18. ÖNEMLİ (R1+R3) — Prototipin kökeni ve mükerrer destek şüphesi: 2.7'nin açılışına 'ders ve kulüp kapsamında, hiçbir kamu desteği alınmadan geliştirilmiştir; başka bir projenin çıktısı olarak sunulmamıştır' beyanı eklendi. Ayrıca 2.7.1 başlığıyla MEVCUT OLAN (3 madde) ile ÜRETİLECEK OLAN (7 madde) satır satır ayrıldı ve ön çalışma belgeleriyle örneklem ayrıklığı ilan edildi.
-19. ÖNEMLİ (R1) — İP5/İP6 B planı tutarsızlığı: İP6'nın ilk faaliyeti İP5 verisi gerektirdiği için B planı yeniden yazıldı; İP6'nın İP5'ten bağımsız iki faaliyeti 10. ayda başlatılır, bütünleşik model D1-D3 ile kurulup D4 son ay eklenir, gerekirse katkı puanları (İP5 22→18, İP6 12→8, fark İP4'e) toplamı 100'de tutacak biçimde kaydırılır.
-20. ÖNEMLİ (R1) — Yöntem bölümünde tablo yoktu: 2.6'ya H1-H11 için altı sütunlu hipotez-test eşleme tablosu eklendi (Hipotez | Deney | Bağımsız değişken | Birincil bağımlı değişken | Test ve karar kuralı | İP) ve test seçimlerinin gerekçesi ayrı bir paragrafa toplandı.
-21. ÖNEMLİ (R1) — 'Özgün Değer' başlığı yoktu: 1.1'e üç numaralı cümleden oluşan 'ÖNERİNİN ÖZGÜN DEĞERİ' bloğu eklendi ve aynı iddia özetin ikinci paragrafına sıkıştırılmış hâlde tekrarlandı.
-22. ÖNEMLİ (R1) — Geçersiz çıktının analizdeki yeri belirsizdi: Niyet-tedavi ilkesiyle yanlış sayılacağı, ayrıca ikincil bağımlı değişken olarak raporlanacağı, dışlamalı duyarlılık analizinin ikincil olduğu ve yeniden deneme politikasının (en fazla bir tekrar, aynı tohum) tüm koşullarda aynı olduğu yazıldı.
-23. ÖNEMLİ (R2) — Türkçe olmayan terimler: 'preregistration', 'data descriptor', 'permissive' parantezleri silindi; 'bootstrap' → 'önyükleme' (tüm bölümlerde), 'bootstrap-BCa' → 'yanlılık düzeltmeli ve hızlandırılmış önyükleme (BCa)'; 'Top-1/Top-3' → 'ilk-sıra/ilk-üç isabeti'; CER, WER, MRR, ROC ve TOST ilk geçişte Türkçe açılımıyla verildi; 'Okapi BM25' → 'olasılıksal seyrek erişim ağırlıklandırması'.
-24. ÖNEMLİ (R2) — Destek programı kodları: 4.3'teki '(2224-B ve 2224-A)' ve '(2209-B)' parantezleri SİLİNDİ; programlar jenerik adlarıyla anıldı (madde 4.1.8 tutarlılığı).
-25. ÖNEMLİ (R3) — Hipotezlerin tamamının sistem lehine kurulmuş olması: Üç yeni hipotez eklendi — H9 (sınır koşulu: kapalı küme dışında kısıtın ZARARLI olabileceği; ana kümenin %20'si bu alt grup için tasarıma alındı), H10 (bedel: gecikme eşdeğerliği), H11 (otomasyon yanlılığı: sistemin kullanıcıyı sistemsiz tabanın ALTINA düşürmesi). Ayrıca 'BİLGİ KAZANCI BEYANI' bloğu eklendi: her hipotez için H0'ın reddedilmemesi hâlinde ne öğrenileceği ve hangi sonucun önerilen mimarinin aleyhine olacağı önceden yazıldı.
-26. ÖNEMLİ (R3) — H1'in analitik olarak garanti bileşeni: 2.5'e KATMAN A / KATMAN B raporlaması eklendi ve bağlayıcı karar kuralı yazıldı: Katman A'daki üstünlük Katman B'de kaybolursa bulgu 'biçim dayatmasının katkısı' olarak yorumlanır ve kapalı-küme seçicinin anlamsal kazanç sağlamadığı sonucu yayımlanır.
-27. ÖNEMLİ (R3) — Kontrol ile manipülasyonun mantıksal çelişkisi: 'İstem metinleri ve çıktı şeması sabittir' cümlesi kaldırıldı; yerine sabit tutulanın GÖREV TANIMI ve BİLGİ ERİŞİMİ olduğu, değişenin yalnız kısıtlama biçimi olduğu ve dört kolun aynı erişim çıktısını girdi aldığı yazıldı (kısıt ile bilgiye erişim karışması giderildi). İstem metinlerinin ön-kayıt ekinde yayımlanacağı ve uzunluk farkının %10 ile sınırlanacağı manipülasyon kontrolü eklendi.
-28. ÖNEMLİ (R3) — Zayıflatılmış karşılaştırma kolu: (b2) LİTERATÜR TABANI kolu eklendi (şemaya bağlı + geri getirmeyle güçlendirilmiş + bir öz-eleştiri turu, [11][12][13]); H1'in BİRİNCİL kontrastı (c)-(b2) yapıldı, (b) alt sınır referansı olarak ikincil kontrasta indirildi.
-29. ÖNEMLİ (R3) — İnsan deneyinde sistemsiz taban yoktu: D4'e K0 (sistem çıktısı yok) koşulu eklendi; tasarım 4 koşullu, 4x4 dengelenmiş Latin kare, 32 katılımcı (sıra başına 8), katılımcı başına 24 deneme, 768 deneme (ısınma sonrası 704) olarak yeniden kuruldu. H7'nin birincil kontrastı K0'a karşı yapıldı; H11 otomasyon yanlılığını bu tabana bağladı.
-30. ÖNEMLİ (R3) — H4'te zayıflatma tavanı: Karar ölçütü ikiye bağlandı (etiketleyiciler arası alt sınır 0,67; otomatik-insan uyumunun insan-insan uyumuna normalize oranının alt sınırı 0,75) ve tam uyuşulan/uyuşulmayan alt kümelerde ayrı raporlama zorunlu kılındı; eşik aşılamazsa H4'ün 'kararsız' ilan edileceği ve ikincil çıkarımların geri çekileceği yazıldı.
-31. ÖNEMLİ (R3) — Kuramsal iddia yokluğu: 1.1'e 'KISITIN ERKEN BAĞLANMASI ÖNERMESİ' başlıklı, artefakta bağlı olmayan, yanlışlanabilir ve sınır koşulu ilan edilmiş kuramsal iddia bloğu eklendi; önermenin başka görev ailelerine (yapılandırılmış çıkarım, kod üretimi, klinik kodlama, katalog eşleme) aktarılabilirliği yazıldı. Aynı iddia özetin ikinci paragrafında da yer aldı.
-32. ÖNEMLİ (R3) — Dış geçerlilik alt kümesinin tanımsızlığı: İP6'da n>=60, en az 12 kurum türü, ilan edilmiş tarama protokolü (kaynak listesi, tarih aralığı, dâhil/dışla ölçütleri, yineleme eleme), kişisel veri içeren belgelerin dışlanması ve dışlama sayısının raporlanması; yalnız iki hipotezin onaylayıcı sınanması ve saptanabilir en küçük farkın altında kalınırsa genelleme iddiasının açıkça daraltılması yazıldı.
-33. ÖNEMLİ (R3) — Maliyet fizibilitesi: İP1'e 20 belgelik maliyet pilotu eklendi ve bütçe kalemi bu pilota bağlandı; aşım hâlinde hangi HİPOTEZİN değil hangi BLOK SEVİYESİNİN düşeceği önceden sabitlendi (risk tablosu 3. satır).
-34. ÖNEMLİ (R3) — 0,598 ile 0,907'nin aynı adla anılması: Metinde ölçüler ayrıştırıldı — 0,598 artık 'ilgili mevzuat maddesi ERİŞİMİNDE ilk-sıra isabeti (204 belge)', 0,907/0,796 ise 'hedef birim YÖNLENDİRMEDE ilk-sıra isabeti (108 belge)' olarak adlandırıldı (1.1, 2.7 ve 4.2'de).
-35. İYİLEŞTİRME (R2) — Biçim: Hipotez kodu/simge çakışması giderildi (H1 — H0/Ha gösterimi); bölüm metinlerinin başındaki mükerrer '1.2.'/'2.' başlık satırları kaldırıldı (form şablonu zaten basıyor); binlik ayırıcı tüm metinde nokta olarak birleştirildi (4.066 / 2.160 / 2.880 / 3.600 / 4.320); düğüm sayısı tek değere (yirmi bir) sabitlendi; etik beyanının başındaki ve sonundaki tırnak artıkları temizlendi ve fıkralar ayrı satırlara bölündü; başlık 133 karaktere indirildi.
-36. İYİLEŞTİRME (R2/R3) — Kaynak güvenilirliği: [5] Öztürk (arXiv 2604.04790) künyesine '(ön baskı; hakem denetiminden geçmemiştir)' ibaresi eklendi ve dayandığı cümle 'incelenen çalışmalar ağırlıklı olarak hukuk metinleri üzerinedir; idari yazışmaya rastlanmamıştır' biçiminde zayıflatıldı. Tüm arXiv künyelerine '(ön baskı)' işareti kondu.
+1. İnsan katılımcılı deney (D4 / İP5 / 32 katılımcı) tamamen çıkarıldı; H7, H8, H11 hipotezleri, AS6 araştırma sorusu ve gerekçe-düzeyi değişkeni kaldırıldı.
+2. Etik kurul bağımlılığı ortadan kaldırıldı: araştırma insan katılımcı içermiyor, ölçüm birimi belge ve metindeki iddia; onay gerekmiyor.
+3. İP3 yeniden konumlandırıldı: üç bağımsız DEĞERLENDİRİCİ metindeki iddia üzerinde kör uzman yargısı verir; haklarında kişisel veri toplanmaz. Dairesellik kırma iddiası korundu.
+4. Bağımlı değişken 13→9→10, bağımsız 6→5, onaylayıcı test ailesi 16→11, kapı 7→5 olarak yeniden hesaplandı ve bölümler arası senkronlandı.
+5. Özet baştan yazıldı (407 kelime): 'dört deney', 'on bir hipotez', 'katılımcı sayısı 32' gibi bayat ifadeler temizlendi.
+6. Araştırma Olanakları'ndaki iki katılımcı-deneyi kalıntısı silindi — iki hakem bunu 'tek başına ret gerekçesi olabilir' diye işaretlemişti (etik beyanıyla açık çelişki).
+7. Numaralandırma dikişleri kapatıldı: H9→H7, H10→H8, İP6→İP5 (sayım korunumu doğrulandı).
+8. Kapı zinciri SERİ bağlandı: eski yapıda gerçek ailesel hata ≈0,19 idi; artık on bir testin bütününde 0,05'te tutuluyor. GEE/DeLong/karma Poisson aile dışına çıkarıldı.
+9. H3 testi düzeltildi: Jonckheere-Terpstra (bağımsız gruplar) → eşleştirilmiş Page eğilim testi.
+10. H6 testi düzeltildi: Cochran Q (ikili) → Friedman + Holm-Wilcoxon; bağımlı değişken sayım olduğu için. Ayrıca değişken kilitli listeye eklendi (10 oldu).
+11. H10 yön çelişkisi giderildi: 1.1 üstünlük diyordu, 2.6 TOST kullanıyordu; ikisi eşdeğerlik çerçevesinde birleştirildi.
+12. H5 yanlış-veto ve H10 için tek yönlü aşmazlık (non-inferiority) kurgusu ve sınır gerekçeleri eklendi.
+13. H2 etkileşim büyüklüğü ilanı, H9 alt grup gücü ve 80 belgelik blok gücü beyanları eklendi.
+14. H1 için bağlayıcı güç kuralı eklendi: taban yeniden ölçümünde fark 0,09'un altında kalırsa kilit öncesi TOST eşdeğerliğine geçilir.
+15. (b2) taban kolunun aslına uygunluğu bağımsız kabul testine bağlandı — ekip kendi taban kolunu zayıf kurarsa hibrit bedavaya kazanırdı.
+16. Kodlama kılavuzu, doğrulayıcının kural listesinden yapısal olarak ayrıldı (yapı daireselliği); sözlük örtüşmesi sayısal raporlanacak.
+17. Kör değerlendirme ekonomisi düzeltildi: 4,67 TL/yargı ile uzman bulunamazdı. Yeni kurgu bir ücretli (14 TL/yargı) + iki gönüllü akademik katkı; desen ve güç değişmedi.
+18. B4 boşluğunun kapsam dışı olduğu açıkça yazıldı — ameliyattan sonra hiçbir hipotez kalibrasyon ölçmüyordu, boşluk iddiası karşılıksızdı.
+19. PROJE YÖNETİMİ bölümüne izleme/koordinasyon yordamı eklendi (%20'lik blok üç tablodan ibaretti): toplantı düzeni, sürüm damgalı depo, sapma günlüğü, parti-teslim takvimi.
+20. Risk tablosuna ekip üyesi ayrılması riski eklendi — körlük şartı gereği altın etiketin ikinci kaynağı ekip içinden ikame edilemiyor, yedek kişi ilk ayda belirlenecek.
+21. İş yükü dengelendi (%152 doluluk): maliyet pilotu İP2'ye, dış geçerlilik kümesi İP3'e taşındı; İP1'e üç ara kilometre taşı kondu.
+22. İP3→İP4 ters bağımlılığı giderildi: İP4'ün 6-7. ayı yalnız koşum, puanlama 8. ayda.
+23. Bütçe gerekçesine koşum hacmi kırılımı (6.800 koşum), birim tavan ve makine süresi eklendi.
+24. Gizli maliyetler bütçelendi: 50 belgenin baskı-tarama gideri, olanaklara yazıcı-tarayıcı; dış geçerlilik kümesinin altın etiketlenmesi yordama bağlandı.
+25. Yaygın etki gerçekçileştirildi: bildiri kabul ölçütü 'yayımlanma'dan 'gönderim'e çevrildi (hakem kararı ekipte değil); uluslararası bildiri 12→11. aya alındı.
+26. Hedef 6 aşırı-iddiası düzeltildi: dış geçerlilik kümesinde yalnız H1 ve H5 sınanıyor.
+27. Şekil 2 altyazısındaki olmayan '3.1' başlığına atıf kaldırıldı; Risk 4'teki 'bir aylık örtüşme' fiilî iki aya düzeltildi.
+28. Anahtar kelime 'insan gözetimli karar destek' → 'denetlenebilir karar destek' (ölçülmeyen bir şeyi başlığa taşıyordu).
+
+## Üretim hattı — hangi betik CANLI, hangisi TARİHSEL
+
+Belgeyi yeniden üretmek ve denetlemek için **yalnız şu dört adım** gerekir
+(`uretim/` klasöründe, sırayla):
+
+```
+python doldur.py icerik.json ../2209A_BASVURU_TESLIM.docx     # resmî formu doldur
+python dogrula2.py ../2209A_BASVURU_TESLIM.docx icerik.json   # ANA KAPI (sayfayı da ölçer)
+python dis_geri_bildirim.py icerik.json ../2209A_BASVURU_TESLIM.docx   # 10 madde
+```
+
+`icerik.json` teslime hazır hâldedir; **normal akışta `duzeltmeler_uygula.py`'yi
+çalıştırmanız gerekmez.** O betik hakem düzeltmelerinin kod, çapa ve gerekçesiyle
+birlikte durduğu kayıttır. Girdisi **`icerik.taban.json`** (depoda, betikle aynı
+klasörde), çıktısı `icerik.json`:
+
+```
+python duzeltmeler_uygula.py icerik.taban.json --cikti icerik.json --kuru-calistir
+python duzeltmeler_uygula.py icerik.taban.json --cikti icerik.json
+```
+
+> **`icerik.taban.json` SİLİNMEZ.** Bir denetim, tabanın yalnızca geçici bir klasörde
+> durduğunu ve `git checkout -- uretim/icerik.json` çalıştırılırsa nihai metnin geri
+> döndürülemez biçimde kaybolacağını gösterdi. Taban artık depoda ve betik onun
+> üzerine asla yazmıyor.
+
+**Güç sayıları ekten gelir, tersi değil.** `guc_simulasyonu.py` + `guc_h5_h8.py`
+(sabit tohum 20260808) koşulur, çıktıları `guc_sonuc.json` / `guc_h5_h8.json`'a
+yazılır ve metindeki her güç değeri bu dosyalarla birebir aynıdır (H1 0,833 ·
+H4 0,987 · H7 0,779 · H5 0,812-0,994 · H8 1,00). Alfa bölüştürmesi değişirse
+**önce betikler koşulur, sonra metin güncellenir.**
+
+Çıkış kodları: `0` uygulandı · `1` gerçek sorun (çapa kaymış — dosyaya dokunulmaz) ·
+`2` dosya zaten dönüştürülmüş. Betik yazmadan önce **kendi çıktısı üzerinde yeniden
+koşup hiçbir şeyin değişmediğini doğrular**; bu, "biri metin ekler, diğeri sıkıştırır"
+tipi zincirlenmiş düzenlemelerin ikinci koşumda metni bozmasını engeller.
+
+Yardımcılar: `guc_simulasyonu.py` + `guc_h5_h8.py` (Monte Carlo güç, sabit tohum
+20260808) · `sayfa_say.ps1` (Word COM sayfa) · `sayfa_dokum.ps1` (sayfa sayfa doluluk —
+sınırdayken hangi paragrafın taştığını gösterir) · `bicim.py` / `akis.py` / `tasarim.py`
+(doldur.py'nin biçim katmanı, tek başına çalıştırılmaz).
+
+> **TARİHSEL — yeniden ÇALIŞTIRMAYIN:** `son_uc.py`, `v5_birlestir.py`,
+> `v6_birlestir.py`, `taze_olcum.py`, `numara_kapat.py`, `eski_kod_temizle.py`,
+> `meta_taze.py`, `meta_tazele.py`, `meta_guclendirme.py`, `h2_secenek.py`,
+> `h2_mdes480.py`, `guc_yaz.py`, `ekip3.py`, `kimlik_yaz.py`, `bosluk_tara.py`.
+> Bunlar tek seferlik dönüşümlerdi ve işlerini yaptılar. Bağımsız bir denetimde
+> **hepsinin denetim kısmı en az bir noktada yanılıyor** çıktı: bir kısmı çıkış kodu
+> döndürmüyor (başarısızlık başarı sanılır), `taze_olcum.py` idempotent değil (her
+> koşumda aynı paragrafı yeniden ekler), `v6_birlestir.py` iki kalıcı yanlış-pozitifle
+> hep kırmızı. Yaptıkları içerik değişiklikleri artık `duzeltmeler_uygula.py`'de
+> bildirimsel ve çapa-denetimli biçimde durur; denetim işi `dogrula2.py` ile
+> `dis_geri_bildirim.py`'ye taşındı. Bir düzeltme eklemek gerekirse yeni betik
+> yazmayın — `duzeltmeler_uygula.py`'deki `DUZELTMELER` listesine bir kayıt ekleyin.
 
 ## Kaynaklar
 

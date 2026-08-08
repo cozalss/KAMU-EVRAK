@@ -100,3 +100,53 @@ class TestStatikDosyalar:
         from pathlib import Path
         yol = Path(__file__).resolve().parents[2] / "frontend" / "index.html"
         assert 'name="robots"' not in yol.read_text(encoding="utf-8")
+
+
+class TestFrontendCSP:
+    """CANLI DAĞITIMDA ÖLÇÜLEN HATA — bu testler beyaz ekranın geri gelmesini engeller.
+
+    Varsayılan CSP `script-src 'none'` idi (uygulama yalnız JSON döndürürken doğruydu).
+    Frontend aynı servisten sunulmaya başlayınca tarayıcı bütün script/stil dosyalarını
+    engelledi: HTTP 200, varlıklar 200, sunucu hatası YOK — site beyaz açıldı.
+    """
+
+    def _csp(self):
+        from api.middleware.security_headers import _CSP_STRICT
+        return _CSP_STRICT
+
+    def test_script_ENGELLENMEZ(self):
+        # Arrange + Act
+        csp = self._csp()
+        # Assert — 'none' beyaz ekran demekti
+        assert "script-src 'none'" not in csp
+        assert "script-src 'self'" in csp
+
+    def test_stil_ve_font_ENGELLENMEZ(self):
+        csp = self._csp()
+        assert "style-src 'none'" not in csp
+        assert "font-src 'none'" not in csp
+        # Google Fonts app.html/index.html'de <link> ile yükleniyor
+        assert "https://fonts.googleapis.com" in csp
+        assert "https://fonts.gstatic.com" in csp
+
+    def test_satir_ici_stil_serbest_ama_satir_ici_SCRIPT_degil(self):
+        """Tasarım sistemi style={{...}} kullanıyor → stil için zorunlu.
+        Script'te 'unsafe-inline' YOK: asıl XSS riski orada."""
+        csp = self._csp()
+        stil = next(p for p in csp.split(";") if p.strip().startswith("style-src"))
+        script = next(p for p in csp.split(";") if p.strip().startswith("script-src"))
+        assert "'unsafe-inline'" in stil
+        assert "'unsafe-inline'" not in script
+
+    def test_pdf_worker_ve_blob_serbest(self):
+        """react-pdf worker açar; dosya önizleme ve TTS sesi blob: URL kullanır."""
+        csp = self._csp()
+        assert "worker-src 'self' blob:" in csp
+        assert "blob:" in next(p for p in csp.split(";") if p.strip().startswith("img-src"))
+
+    def test_clickjacking_ve_object_korumasi_DURUYOR(self):
+        """Gevşetme yalnız gereken yerde — temel korumalar aynen."""
+        csp = self._csp()
+        assert "frame-ancestors 'none'" in csp
+        assert "object-src 'none'" in csp
+        assert "base-uri 'self'" in csp

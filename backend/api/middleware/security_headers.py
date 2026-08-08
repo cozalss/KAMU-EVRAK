@@ -15,14 +15,31 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-# Sıkı (varsayılan) CSP — saf JSON API yüzeyi; script/style/font'a hiç ihtiyaç yok.
+# Varsayılan CSP — TEK SERVİS dağıtımında aynı origin hem API'yi hem FRONTEND'i sunar.
+#
+# CANLI DAĞITIMDA ÖLÇÜLEN HATA (9 Ağu 2026): burası eskiden `script-src 'none';
+# style-src 'none'; font-src 'none'` idi ve doğruydu — uygulama YALNIZ JSON döndürüyordu.
+# Frontend backend'den sunulmaya başlayınca aynı başlık ana sayfaya da uygulandı ve
+# tarayıcı bütün script/stil dosyalarını engelledi: site BEYAZ EKRAN açıldı. HTTP 200,
+# varlıklar 200, hiçbir sunucu hatası yok — tamamen tarayıcı tarafında sessiz ölüm.
+# Yalnız gerçek dağıtımda görülebilirdi.
+#
+# İzin verilenler ÖLÇÜLEREK belirlendi (dist taraması), tahminle değil:
+#   · Google Fonts   → app.html/index.html <link> ile stil + font çekiyor
+#   · 'unsafe-inline' (STYLE) → ZORUNLU: tüm tasarım sistemi satır-içi stil kullanıyor
+#     (`style={{...}}`). Nonce'a geçmeden kaldırılamaz. SCRIPT'te YOK — asıl risk orada.
+#   · worker-src blob: → react-pdf (PDF önizleme) worker açıyor
+#   · blob: (img/media/connect) → dosya önizleme object-URL'leri, TTS ses çıktısı
+#   · api.openai.com (connect) → sesli görüşme tarayıcıdan doğrudan bağlanır
 _CSP_STRICT = (
     "default-src 'self'; "
-    "script-src 'none'; "
-    "style-src 'none'; "
-    "img-src 'self' data:; "
-    "font-src 'none'; "
-    "connect-src 'self'; "
+    "script-src 'self'; "
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+    "img-src 'self' data: blob:; "
+    "font-src 'self' data: https://fonts.gstatic.com; "
+    "connect-src 'self' blob: https://api.openai.com; "
+    "media-src 'self' blob: data:; "
+    "worker-src 'self' blob:; "
     "frame-ancestors 'none'; "
     "base-uri 'self'; "
     "object-src 'none'"

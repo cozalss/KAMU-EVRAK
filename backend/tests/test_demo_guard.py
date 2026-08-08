@@ -10,8 +10,6 @@ değil, yapısal bir imkânsızlığa dayanır.
 
 from __future__ import annotations
 
-import pytest
-
 from core import demo_guard as dg
 
 # Demo modunda TÜM kapıları geçen taban konfigürasyon.

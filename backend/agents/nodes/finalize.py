@@ -20,61 +20,20 @@ edilir (tek kaynak, çift-metin drift'i ve süsleyici çağrı gecikmesi olmaz).
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
 import structlog
 
 from agents.config import (
-    LLM_ATLA_NODELAR,
-    LLM_DUSUNME_CIKARIMDA_KAPALI,
     YAZI_TURU_TR,
     etkili_birim,
     evrak_turu_tr,
 )
-from agents.nodes._llm_extract import llm_text
 
 log = structlog.get_logger()
 
-_SYSTEM = (
-    "Sen kamu kurumunda gelen evrakı işleyen MEMURA sonuç bildiren bir asistansın. "
-    "Verilen yapılandırılmış işlem sonucundan bildirimin yalnız 'NE OLDU' anlatısını yaz: "
-    "evrakın kimden geldiği ve konusu; hangi tür olarak sınıflandırıldığı; hangi birime, "
-    "hangi mevzuat dayanağıyla havale edildiği. EN FAZLA 2 cümle, tek paragraf.\n"
-    "KESİN KURALLAR:\n"
-    "1) Yalnız sana verilen bilgileri kullan; HİÇBİR ŞEY UYDURMA (tutar/tarih/isim/madde "
-    "dahil). 'İlgili mevzuat' satırı 'yok' ise mevzuattan HİÇ bahsetme.\n"
-    "2) Sıradaki adımları, eksik bilgileri ve süreleri YAZMA — bunlar bildirimin yapısal "
-    "bölümlerinde ayrıca gösterilir (tek mesaj = tek iş).\n"
-    "3) Etken ve özneli anlat: işlemi yapan/yapacak birim görünsün; belirsiz 'işlem "
-    "yapılacaktır' kalıbı yasak (sade dil: aktif çatı, eylem öne).\n"
-    "4) ÜSLUP: kurumsal-nötr, üçüncü şahıs. Selamlama, teşekkür ('İlginize teşekkür "
-    "ederiz' vb.), temenni ve imza/kapanış kalıbı YASAK. Emoji yok. En fazla ~50 kelime."
-)
-
 # 3071 sayılı Dilekçe Hakkı Kanunu rejimindeki vatandaş-başvuru türleri (m.7: gerekçeli cevap).
 _3071_AILESI = frozenset({"dilekce", "talep", "basvuru", "cimer", "sikayet", "ihbar"})
-
-# CİMER "kurumsal-nötr" ilkesi: anlatıda selamlama/teşekkür/temenni kalıbı → reddet.
-_YASAK_KALIPLAR = ("teşekkür", "saygılarımızla", "saygılarımla", "sayın ", "merhaba", "rica ederiz")
-
-_ANLATI_MAX_KARAKTER = 420  # ~50 kelime üst sınırının karakter karşılığı (taşma → şablon)
-
-# Ad/kurum/unvan adayı: 2+ ardışık Büyük-harf sözcük ("Ahmet Yılmaz", "Ankara Valiliği").
-# Tek Büyük-harf sözcük (cümle başı "Evrak") üslup gereğidir, uydurma sayılmaz (kurul deseni).
-_BUYUK_DIZI = re.compile(r"(?:[A-ZÇĞİÖŞÜ][^\W\d_]+['’]?\s+){1,}[A-ZÇĞİÖŞÜ][^\W\d_]+")
-
-_KATLA_MAP = str.maketrans("İIıŞşĞğÜüÖöÇç", "iiissgguuoocc")
-
-
-def _katla(s: str) -> str:
-    """Türkçe harf-katlamalı normalize (kurul._katla ikizi) — grounding karşılaştırması."""
-    return "".join(c for c in str(s).translate(_KATLA_MAP).lower() if c.isalnum())
-
-
-def _tr_kucuk(s: str) -> str:
-    """Türkçe-duyarlı küçültme: ascii lower'ın İ→i? tuzağı olmadan ('SAYIN' → 'sayın')."""
-    return s.replace("İ", "i").replace("I", "ı").lower()
 
 
 def _taslak_durumu(state: dict[str, Any]) -> str:
@@ -222,58 +181,6 @@ def _metin(y: dict[str, Any], state: dict[str, Any]) -> str:
         satirlar.append("**Zorunlu alanlar tam** — evrak işleme hazır.")
     satirlar += [f"Not: {n}" for n in y["notlar"]]
     return "\n\n".join(satirlar)
-
-
-def _ad_dizisi_grounded(mf: str, f_fold: str) -> bool:
-    """Katlanmış ad/kurum dizisi olgularda var mı? Son sözcüğün Türkçe hâl eki için
-    kuyruktan ≤3 karakter tolerans ("CİMER Birimine" ↔ olgudaki "CİMER Birimi")."""
-    for kes in range(4):
-        aday = mf[: len(mf) - kes]
-        if len(aday) >= 6 and aday in f_fold:
-            return True
-    return len(mf) < 6 and mf in f_fold  # çok kısa dizi → yalnız tam eşleşme
-
-
-def _anlati_gecerli(facts: str, aday: str) -> bool:
-    """LLM anlatısı yayınlanabilir mi? (CLAUDE.md §1 — sıfır uydurma, yapısal guard.)
-
-    Ret koşulları — kurul motorundaki `_yeni_uydurma` deseninin anlatıya uyarlanmış hâli:
-    boş/aşırı uzun · selamlama-teşekkür kalıbı (Türkçe-duyarlı küçültmeyle) · olgularda
-    OLMAYAN sayısal token (tutar/tarih/kimlik/madde no) · olgularda OLMAYAN ad/kurum/unvan
-    dizisi (sayısız uydurma da yakalanır; adversarial review bulgusu).
-    """
-    metin = (aday or "").strip()
-    if not metin or len(metin) > _ANLATI_MAX_KARAKTER:
-        return False
-    kucuk = _tr_kucuk(metin)
-    if any(k in kucuk for k in _YASAK_KALIPLAR):
-        return False
-    if set(re.findall(r"\d+", metin)) - set(re.findall(r"\d+", facts)):
-        return False                                    # yeni sayı/tarih/kimlik/madde
-    f_fold = _katla(facts)
-    return all(
-        _ad_dizisi_grounded(_katla(m.group(0)), f_fold)
-        for m in _BUYUK_DIZI.finditer(metin)
-    )                                                   # yeni ad/kurum/unvan → reddet
-
-
-def _llm_facts(state: dict[str, Any], turu: str, birim: str,
-               eksik: list[str], sorular: list[str], mevzuat: list[dict]) -> str:
-    """LLM'e verilen yapılandırılmış olay özeti (ham evrak metni DEĞİL — özet zaten LLM)."""
-    gonderen = str((state.get("bilgi_unsurlari") or {}).get("gonderen") or "").strip()
-    arsiv = state.get("arsiv_metadata") or {}
-    return (
-        f"Gönderen: {gonderen or '—'}\n"
-        f"Evrak türü: {turu}\n"
-        f"Havale edilen birim: {birim}\n"
-        f"İlgili mevzuat: {'; '.join(m['baslik'] for m in mevzuat[:3]) if mevzuat else 'yok'}\n"
-        f"Özet: {state.get('ozet') or '—'}\n"
-        f"Yazı taslağı: {_taslak_durumu(state) or 'üretilmedi'}\n"
-        f"Yasal cevap süresi: {_sla_ozeti(state) or 'hesaplanamadı'}\n"
-        f"Arşiv (SDP 2005/7): {arsiv.get('sdp_kodu', 'yok')}\n"
-        f"Eksik zorunlu alanlar: {', '.join(eksik) if eksik else 'yok'}\n"
-        f"Tamamlanması istenecekler: {'; '.join(sorular) if sorular else 'yok'}"
-    )
 
 
 async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:

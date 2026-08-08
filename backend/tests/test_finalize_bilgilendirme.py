@@ -4,10 +4,17 @@
 + "gerekli durumlarda eksik bilgi talep edebilme". Bilgilendirme metni:
   - olaya özgü bilgileri taşımalı (gönderen, taslak durumu, yasal cevap süresi),
   - eksik varsa somut sonuç uyarısı vermeli (neden tamamlanmalı),
-  - LLM üslubu kurumsal-nötr olmalı (teşekkür/selamlama kalıpları prompt'ta YASAKLI).
+  - üslup kurumsal-nötr olmalı (teşekkür/selamlama kalıbı yok).
+
+NOT: finalize'ın LLM yolu kaldırıldı — bildirimin TAMAMI (iskelet + 'ne oldu' anlatısı)
+deterministik şablondan render edilir. Bu yüzden testler LLM patch'lemez; sıfır-uydurma
+sözleşmesi artık şablonun kendisine uygulanır (bkz. TestLlmsizAnlatiSozlesmesi).
 """
 
 from __future__ import annotations
+
+import json
+import re
 
 from agents.nodes import finalize as finalize_mod
 
@@ -44,10 +51,8 @@ def _state_eksik() -> dict:
 
 
 class TestDeterministikMetin:
-    async def test_gonderen_taslak_ve_yasal_sure_metinde(self, monkeypatch):
-        # Arrange — LLM atlanır → deterministik şablon tek başına olayı anlatabilmeli
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
-        # Act
+    async def test_gonderen_taslak_ve_yasal_sure_metinde(self):
+        # Act — deterministik şablon tek başına olayı anlatabilmeli
         sonuc = await finalize_mod.finalize_node(_state_tam())
         # Assert — olaya özgü üç bilgi: kimden geldi, taslak durumu, yasal son tarih
         metin = sonuc["bilgilendirme"]
@@ -55,9 +60,7 @@ class TestDeterministikMetin:
         assert "Cevabi Yazı" in metin and "onay" in metin.lower()
         assert "24.07.2026" in metin
 
-    async def test_eksikte_sonuc_uyarisi_var(self, monkeypatch):
-        # Arrange
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
+    async def test_eksikte_sonuc_uyarisi_var(self):
         # Act
         sonuc = await finalize_mod.finalize_node(_state_eksik())
         # Assert — yalnız liste değil, tamamlanmazsa ne olacağı da söylenir
@@ -65,9 +68,8 @@ class TestDeterministikMetin:
         assert "tamamlanmadan" in metin
         assert "İletişim/tebligat adresi (veya telefon) eksik." in metin
 
-    async def test_clarify_stopta_taslak_uretilmedi_denir(self, monkeypatch):
+    async def test_clarify_stopta_taslak_uretilmedi_denir(self):
         # Arrange — dur-ve-sor: taslak üretilmeden kullanıcıya dönülür
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         state = _state_eksik()
         state["clarify_stop"] = True
         state.pop("yazi_taslak_md")
@@ -82,9 +84,8 @@ class TestYapisalBilgilendirme:
     iskelet. Kaynaklar: GOV.UK service manual "sending emails/text messages" + confirmation
     pages; 3071 m.7 / 4982 m.12 gerekçe-itiraz zorunluları (docs/arastirma)."""
 
-    async def test_tam_evrakta_yapi_hazir(self, monkeypatch):
+    async def test_tam_evrakta_yapi_hazir(self):
         # Arrange
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         # Act
         y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
         # Assert — durum + üç bölüm de dolu
@@ -95,9 +96,8 @@ class TestYapisalBilgilendirme:
         assert y["yapilacak"] is None
         assert y["sure"]["son_tarih"] == "24.07.2026"
 
-    async def test_sirada_havale_tamam_onay_bekliyor(self, monkeypatch):
+    async def test_sirada_havale_tamam_onay_bekliyor(self):
         # Arrange — GOV.UK "what happens next": tamamlanan + bekleyen adımlar ayrışır
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         # Act
         sirada = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]["sirada"]
         # Assert
@@ -108,9 +108,8 @@ class TestYapisalBilgilendirme:
         # Yasal süreli adım AÇIK bayrak taşır — UI gecikme vurgusu metne değil buna bağlanır.
         assert any(a.get("sureli") for a in sirada)
 
-    async def test_eksikte_yapilacak_ve_sonuc_uyarisi(self, monkeypatch):
+    async def test_eksikte_yapilacak_ve_sonuc_uyarisi(self):
         # Arrange — GOV.UK "what you need to do": maddeler + eylemsizliğin sonucu
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         # Act
         y = (await finalize_mod.finalize_node(_state_eksik()))["bilgilendirme_yapisal"]
         # Assert
@@ -119,9 +118,8 @@ class TestYapisalBilgilendirme:
         assert "tamamlanmadan" in y["yapilacak"]["sonuc"]
         assert any("eksik" in a["adim"].lower() for a in y["sirada"])
 
-    async def test_bilgi_edinmede_itiraz_yolu_notu(self, monkeypatch):
+    async def test_bilgi_edinmede_itiraz_yolu_notu(self):
         # Arrange — 4982 m.12: olumsuz cevapta gerekçe + başvuru yolları belirtilir
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         state = _state_tam()
         state["evrak_turu"] = "bilgi_edinme"
         # Act
@@ -129,9 +127,8 @@ class TestYapisalBilgilendirme:
         # Assert
         assert any("4982" in n and "itiraz" in n.lower() for n in notlar)
 
-    async def test_dilekce_ailesinde_gerekce_notu(self, monkeypatch):
+    async def test_dilekce_ailesinde_gerekce_notu(self):
         # Arrange — 3071 m.7: cevap gerekçeli verilir
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         state = _state_tam()
         state["evrak_turu"] = "dilekce"
         # Act
@@ -139,9 +136,8 @@ class TestYapisalBilgilendirme:
         # Assert
         assert any("3071" in n and "gerekçe" in n.lower() for n in notlar)
 
-    async def test_metin_yapidan_uretilir_tek_kaynak(self, monkeypatch):
+    async def test_metin_yapidan_uretilir_tek_kaynak(self):
         # Arrange — string bilgilendirme yapıdan render edilir (çift kaynak drift'i yok)
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         # Act
         sonuc = await finalize_mod.finalize_node(_state_tam())
         # Assert — anlatı + süre + sıradaki adım string'de de var
@@ -149,19 +145,17 @@ class TestYapisalBilgilendirme:
         assert y["ne_oldu"] in metin
         assert "24.07.2026" in metin
 
-    async def test_metin_ozet_ve_mevzuat_listesini_korur(self, monkeypatch):
+    async def test_metin_ozet_ve_mevzuat_listesini_korur(self):
         # Arrange — DB'ye persist edilen düz metin SÖZLEŞMESİ: özet + mevzuat listesi
         # eski _det_metin'de vardı, yapısal geçişte sessizce düşmemeli (review bulgusu).
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         # Act
         metin = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme"]
         # Assert
         assert "Kırtasiye alımına ilişkin fatura bedelinin ödenmesi talebi." in metin
         assert "5018 sayılı Kamu Mali Yönetimi ve Kontrol Kanunu m.33" in metin
 
-    async def test_eksik_sayisi_iki_bolumde_tutarli(self, monkeypatch):
+    async def test_eksik_sayisi_iki_bolumde_tutarli(self):
         # Arrange — clarify soruları eksik alanlardan FAZLA olabilir; iki bölüm aynı sayıyı demeli
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         state = _state_eksik()
         state["clarify_questions"] = state["clarify_questions"] + ["İçerik sorusu: hangi dönem?"]
         # Act
@@ -170,9 +164,8 @@ class TestYapisalBilgilendirme:
         eksik_adim = next(a for a in y["sirada"] if "eksik" in a["adim"].lower())
         assert str(len(y["yapilacak"]["maddeler"])) in eksik_adim["detay"]
 
-    async def test_bozuk_mevzuat_girisi_dusurulur(self, monkeypatch):
+    async def test_bozuk_mevzuat_girisi_dusurulur(self):
         # Arrange — 'baslik'sız / dict-olmayan mevzuat girdisi terminal node'u ASLA düşürmemeli
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
         state = _state_tam()
         state["mevzuat_onerileri"] = [{"skor": 1.0}, "çöp", {"baslik": "5018 s.K. m.33"}]
         # Act — crash yok
@@ -181,122 +174,54 @@ class TestYapisalBilgilendirme:
         assert y["referans"]["dayanak"] == ["5018 s.K. m.33"]
 
 
-class TestLlmAnlatiGuard:
-    """LLM yalnız 'ne oldu' anlatısını yazar; iskelet deterministik kalır. Anlatı,
-    olgularda OLMAYAN sayı/tarih içerirse REDDEDİLİR (CLAUDE.md §1 — sıfır uydurma)."""
+class TestLlmsizAnlatiSozlesmesi:
+    """Finalize'ın LLM yolu KALDIRILDI: 'ne oldu' anlatısı da deterministik şablondur.
 
-    async def test_temiz_anlati_icin_bile_llm_cagrilmaz(self, monkeypatch):
-        # Arrange — finalize artık yalnız doğrulanabilir deterministik şablonu kullanır.
-        anlati = ("Gazi Üniversitesi Rektörlüğü tarafından gönderilen fatura talebi "
-                  "Cevabi Yazı olarak sınıflandırılarak Strateji birimine havale edilmiştir.")
+    Bu sınıf eskiden sahte bir ``llm_text`` patch'leyip "uydurma anlatı reddedildi" derdi.
+    Çağrılan bir kod yolu kalmadığı için o testler HER hâlükârda geçiyordu (boş kapı).
+    Yerine iki gerçek sözleşme sınanır: (a) modül bir LLM yardımcısı import etmez,
+    (b) şablonun kendisi olgularda olmayan bilgi üretmez.
+    """
 
-        async def _fake_llm(**kwargs):
-            raise AssertionError("finalize LLM çağırmamalı")
+    async def test_llm_yardimcisi_import_edilmez(self):
+        # LLM yolu geri gelirse önce bu isim modül ad alanına döner — yapısal guard.
+        assert not hasattr(finalize_mod, "llm_text")
 
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
+    async def test_ne_oldu_kaynagi_sablondur(self):
+        # Act
+        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
+        # Assert
+        assert y["ne_oldu_kaynak"] == "sablon"
+
+    async def test_kaynak_kurum_sablonda_korunur(self):
+        # Act — gönderen kurum LLM olmadan da anlatıda görünmeli
+        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
+        # Assert
+        assert "Gazi Üniversitesi Rektörlüğü" in y["ne_oldu"]
+
+    async def test_sablon_olgularda_olmayan_sayi_uretmez(self):
+        # Arrange — CLAUDE.md §1 sıfır-uydurma, artık ŞABLONA uygulanıyor: anlatıdaki her
+        # sayı state'ten gelmeli (tutar/tarih/madde no şablon metnine sızmamalı).
+        state = _state_tam()
+        olgular = json.dumps(state, ensure_ascii=False)
+        # Act
+        y = (await finalize_mod.finalize_node(state))["bilgilendirme_yapisal"]
+        # Assert
+        for sayi in re.findall(r"\d+", y["ne_oldu"]):
+            assert sayi in olgular, f"şablon olgularda olmayan sayı üretti: {sayi}"
+
+    async def test_sablon_kurumsal_notr_uslubu_korur(self):
         # Act
         sonuc = await finalize_mod.finalize_node(_state_tam())
-        # Assert — dış anlatı yok; yapı ile düz metin aynı şablon kaynağından.
-        assert sonuc["bilgilendirme_yapisal"]["ne_oldu_kaynak"] == "sablon"
-        assert anlati not in sonuc["bilgilendirme"]
+        # Assert — selamlama/teşekkür/imza eklenmez (CİMER kurumsal-nötr ilkesi).
+        metin = sonuc["bilgilendirme_yapisal"]["ne_oldu"].lower()
+        assert "teşekkür" not in metin
+        assert "sayın " not in metin
 
-    async def test_uydurma_sayili_anlati_reddedilir(self, monkeypatch):
-        # Arrange — olgularda olmayan tutar/tarih → şablona düşülür
-        async def _fake_llm(**kwargs):
-            return "Evrak 1.250.000 TL bedelle 09.09.2027 tarihinde işleme alınmıştır."
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
-        # Act
-        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
-        # Assert
-        assert y["ne_oldu_kaynak"] == "sablon"
-        assert "1.250.000" not in y["ne_oldu"]
-
-    async def test_kalip_ihlalinde_reddedilir(self, monkeypatch):
-        # Arrange — selamlama/teşekkür kalıbı (CİMER kurumsal-nötr ilkesi) → şablon
-        async def _fake_llm(**kwargs):
-            return "Sayın ilgili, başvurunuz alınmıştır. İlginize teşekkür ederiz."
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
-        # Act
-        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
-        # Assert
-        assert y["ne_oldu_kaynak"] == "sablon"
-
-    async def test_buyuk_harf_kalip_reddedilir(self, monkeypatch):
-        # Arrange — Türkçe İ/I katlama tuzağı: "SAYIN İLGİLİ" ascii-lower'da yakalanmazdı
-        async def _fake_llm(**kwargs):
-            return "SAYIN İLGİLİ, evrak işleme alınmıştır."
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
-        # Act
-        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
-        # Assert
-        assert y["ne_oldu_kaynak"] == "sablon"
-
-    async def test_uydurma_ad_kurum_reddedilir(self, monkeypatch):
-        # Arrange — sayı İÇERMEYEN uydurma: olgularda olmayan kurum adı (adversarial bulgu)
-        async def _fake_llm(**kwargs):
-            return ("Ankara Büyükşehir Belediyesi tarafından gönderilen evrak "
-                    "ilgili birime havale edilmiştir.")
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
-        # Act
-        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
-        # Assert
-        assert y["ne_oldu_kaynak"] == "sablon"
-        assert "Ankara Büyükşehir" not in y["ne_oldu"]
-
-    async def test_ekli_kurum_adi_sablonda_kaynaktan_gelir(self, monkeypatch):
-        # Arrange — eski LLM anlatısı çalıştırılmasa da kaynak kurum şablonda korunur.
-        anlati = ("Gazi Üniversitesi Rektörlüğüne ait talep, Cevabi Yazı kapsamında "
-                  "ilgili birime havale edilmiştir.")
-
-        async def _fake_llm(**kwargs):
-            raise AssertionError("finalize LLM çağırmamalı")
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
-        # Act
-        y = (await finalize_mod.finalize_node(_state_tam()))["bilgilendirme_yapisal"]
-        # Assert
-        assert y["ne_oldu_kaynak"] == "sablon"
-        assert "Gazi Üniversitesi Rektörlüğü" in y["ne_oldu"]
-        assert y["ne_oldu"] != anlati
-
-
-class TestDeterministikAnlatiOlayaUygun:
-    async def test_yapisal_alanlar_olaya_ozgu_bilgileri_icerir(self, monkeypatch):
-        # Arrange
-
-        async def _fake_llm(**kwargs):
-            raise AssertionError("finalize LLM çağırmamalı")
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
+    async def test_yapisal_alanlar_olaya_ozgu_bilgileri_icerir(self):
         # Act
         sonuc = await finalize_mod.finalize_node(_state_tam())
         # Assert — gönderici, taslak ve süre yapısal kaynaklardan render edilir.
         assert "Gazi Üniversitesi Rektörlüğü" in sonuc["bilgilendirme"]
         assert "Yasal cevap süresi" in sonuc["bilgilendirme"]
         assert "Yazı taslağı" in sonuc["bilgilendirme"]
-
-    async def test_sablon_kurumsal_notr_uslubu_korur(self, monkeypatch):
-        # Arrange
-
-        async def _fake_llm(**kwargs):
-            raise AssertionError("finalize LLM çağırmamalı")
-
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-        monkeypatch.setattr(finalize_mod, "llm_text", _fake_llm)
-        # Act
-        sonuc = await finalize_mod.finalize_node(_state_tam())
-        # Assert — selamlama/teşekkür/imza eklenmez.
-        metin = sonuc["bilgilendirme_yapisal"]["ne_oldu"].lower()
-        assert "teşekkür" not in metin
-        assert "sayın " not in metin

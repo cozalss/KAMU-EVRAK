@@ -41,15 +41,15 @@ class TestRouteBirimAtlama:
 
 
 class TestFinalizeAtlama:
-    async def test_atla_listesindeyse_deterministik_bilgilendirme(self, monkeypatch):
-        # Arrange — llm_text çağrılırsa patlat (finalize LLM'inin atlandığının kanıtı)
-        monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset({"finalize"}))
-        async def _patlat(*a, **k):
-            raise AssertionError("HIZLI_MODU'da llm_text çağrılmamalı")
-        monkeypatch.setattr(finalize_mod, "llm_text", _patlat)
+    async def test_finalize_hizli_moddan_bagimsiz_deterministiktir(self):
+        # Arrange — finalize'ın LLM yolu kaldırıldı: artık HIZLI_MODU'nun atlayacağı bir
+        # çağrı YOK, bildirim her koşulda şablondan render edilir. (Eski test finalize'ı
+        # atlama listesine koyup "LLM çağrılmadı" derdi; çağrı zaten olmadığı için bu
+        # hızlı modu değil, hiçbir şeyi kanıtlamıyordu.)
         state = {"evrak_turu": "dilekce", "hedef_birim": "yazi_isleri_evrak",
                  "bilgi_unsurlari": {}, "eksik_alanlar": [], "mevzuat_onerileri": []}
-        # Act
+        # Act — atlama listesine HİÇ dokunulmadan
         sonuc = await finalize_mod.finalize_node(state)
-        # Assert — deterministik şablon bilgilendirme yine dolu
+        # Assert — deterministik şablon bilgilendirme dolu ve kaynağı şablon
         assert sonuc["bilgilendirme"]
+        assert sonuc["bilgilendirme_yapisal"]["ne_oldu_kaynak"] == "sablon"

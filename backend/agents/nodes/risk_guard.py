@@ -43,7 +43,6 @@ from typing import Any
 
 import structlog
 
-from agents import config
 from agents.config import (
     LLM_DUSUNME_CIKARIMDA_KAPALI,
     RISK_GUARD_ENABLED,

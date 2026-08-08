@@ -28,9 +28,12 @@ async def test_servis_onerisi_yalniz_deterministik(monkeypatch):
     assert sonuc["servis_birimi"]["kod"] == "fen_isleri"
 
 
-async def test_finalize_yalniz_deterministik_bildirim(monkeypatch):
-    monkeypatch.setattr(finalize_mod, "LLM_ATLA_NODELAR", frozenset())
-    monkeypatch.setattr(finalize_mod, "llm_text", _cagrilmamali)
+async def test_finalize_yalniz_deterministik_bildirim():
+    # Finalize'ın LLM yolu TÜMÜYLE kaldırıldı — artık atlanabilir bir çağrı değil, hiç yok.
+    # Bu yüzden guard davranışsal değil YAPISAL: modül bir LLM yardımcısı import ediyorsa
+    # yol geri gelmiş demektir (sahte llm_text patch'lemek boş kapıydı; çağrılmayan bir
+    # ismi patch'leyip "çağrılmadı" demek her hâlükârda geçerdi).
+    assert not hasattr(finalize_mod, "llm_text")
 
     sonuc = await finalize_mod.finalize_node(
         {

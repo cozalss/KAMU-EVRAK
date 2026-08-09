@@ -22,6 +22,7 @@ import structlog
 
 from agents.nodes._llm_extract import llm_json
 from agents.sohbet_niyet import KAYIT_TURU
+from api.pii import mask_yapisal
 
 log = structlog.get_logger()
 
@@ -80,9 +81,16 @@ async def arac_dongusu(
             transcript.append(f"ARAÇ HATASI [{arac}]: araç şu an çalıştırılamadı.")
             continue
         son_arac, son_veri = arac, veri
+        # KVKK SINIRI (9 Ağu 2026 güvenlik denetimi): `veri` HAM DB çıktısıdır ve buradan
+        # doğrudan DeepSeek'e gider. `sohbet.py:543` AYNI veriyi tek-tur yolunda zaten
+        # `mask_yapisal`'dan geçiriyordu; çok-turlu döngü o adımı atlıyordu — yani aynı
+        # sınırdan, aynı sağlayıcıya giden aynı veri bir yolda maskeli, diğerinde hamdı.
+        # Tutarsızlık kapatıldı: dış modele giden HER araç sonucu maskelenir.
+        # `son_veri` HAM kalır — o veri kullanıcının KENDİ ekranına döner, maskelenmesi
+        # memurun kendi evrağını okuyamaması demek olurdu.
         transcript.append(
             f"ARAÇ SONUCU [{arac}]: "
-            + json.dumps(veri, ensure_ascii=False, default=str)[:_SONUC_MAX]
+            + json.dumps(mask_yapisal(veri), ensure_ascii=False, default=str)[:_SONUC_MAX]
         )
     if son_arac is None:
         return None  # hiç araç koşmadı → klasik yol veriyi kendisi çeksin

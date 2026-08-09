@@ -167,8 +167,14 @@ def _duz_metin(govde: str) -> str:
 def _okunabilir_mi(yanit: httpx.Response) -> bool:
     """İçerik türü ve bildirilen boyut kabul edilebilir mi (gövde okunmadan ÖNCE)."""
     tip = (yanit.headers.get("content-type") or "").lower()
-    if tip and not any(k in tip for k in _KABUL_TIPLERI):
-        log.info("sayfa_kesif.icerik_turu_reddedildi", tip=tip[:40])
+    # FAIL-CLOSED (9 Ağu 2026 güvenlik denetimi): eskiden koşul `if tip and not ...` idi;
+    # yani sunucu Content-Type'ı HİÇ göndermezse kapı tamamen atlanıyor ve gövde
+    # indiriliyordu — oysa modülün kendi sözleşmesi "HTML olmayan içerik hiç indirilmez"
+    # diyor. Başlığı atlamak sunucunun (dolayısıyla saldırganın) tercihidir; eksik başlık
+    # artık "bilinmiyor" değil "kabul edilmez" sayılır. Meşru kurum siteleri Content-Type
+    # gönderir; göndermeyeni atlamanın bedeli yalnız o kaynağın keşfedilmemesidir.
+    if not tip or not any(k in tip for k in _KABUL_TIPLERI):
+        log.info("sayfa_kesif.icerik_turu_reddedildi", tip=(tip[:40] or "(başlık yok)"))
         return False
     bildirilen = yanit.headers.get("content-length")
     if bildirilen and bildirilen.isdigit() and int(bildirilen) > AZAMI_GOVDE:

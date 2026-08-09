@@ -240,6 +240,44 @@ def istek_baglami_coz(token) -> None:
     _ISTEK.reset(token)
 
 
+# Bağlamsız harcamanın kalıcı katmana en fazla bu sıklıkta yazılması. Sohbet her LLM
+# çağrısında Supabase'e yazmak gereksiz ağır olurdu; kayıp penceresi bu değerle sınırlı.
+_BAGLAMSIZ_SENKRON_ARALIK_SN = 20.0
+_son_baglamsiz_senkron = 0.0
+
+
+def _baglamsiz_senkron_tetikle() -> None:
+    """İstek bağlamı OLMAYAN harcamayı kalıcı katmana boşalt (throttle'lı, bloklamaz).
+
+    ÖLÇÜLEN KAPSAMA BOŞLUĞU (9 Ağu 2026 güvenlik denetimi): `kalici_senkronize()` yalnız
+    `DemoKapisiMiddleware`in ÜCRETLİ yol `finally` bloğunda çağrılıyordu. `/sohbet*`
+    SERBEST_YOLLAR'da olduğu için o bloğa hiç girmez → sohbet harcaması yalnız süreç-içi
+    dosya defterine yazılıyordu. Render ücretsiz katmanında kalıcı disk YOKTUR; konteyner
+    yeniden başlayınca o harcama kaybolur ve günlük tavan onu görmeden tohumlanır.
+    Tavan ATLATILMIYORDU (aynı konteyner ömründe `butce_kapisi()` sohbeti de sayar), ama
+    "günlük" tavan fiilen "konteyner ömrü başına" tavana dönüşüyordu.
+
+    Bilinçli sadelik: fire-and-forget görev + zaman eşiği. Hata YUTULUR — bu katman
+    `demo_harcama_kalici` docstring'indeki sözleşmeye uyar: koruma EKLER, koruma SAĞLAMAZ.
+    Çalışan bir olay döngüsü yoksa (senkron test, eval betiği) sessizce hiçbir şey yapmaz.
+    """
+    global _son_baglamsiz_senkron
+    import asyncio
+    import time
+
+    simdi = time.monotonic()
+    if simdi - _son_baglamsiz_senkron < _BAGLAMSIZ_SENKRON_ARALIK_SN:
+        return
+    try:
+        dongu = asyncio.get_running_loop()
+    except RuntimeError:
+        return  # olay döngüsü yok → senkron bağlam; yazacak kimse yok
+    _son_baglamsiz_senkron = simdi
+    gorev = dongu.create_task(kalici_senkronize())
+    # Görevin istisnası "never retrieved" uyarısı basmasın; başarısızlık zaten kabul edilir.
+    gorev.add_done_callback(lambda t: t.exception() if not t.cancelled() else None)
+
+
 def cagri_mutabakati(model: str, girdi: int, cikti: int) -> None:
     """Bir LLM çağrısının GERÇEK bedelini işle.
 
@@ -253,6 +291,7 @@ def cagri_mutabakati(model: str, girdi: int, cikti: int) -> None:
     sayaci = _ISTEK.get()
     if sayaci is None:
         DEFTER.deftere_ekle(tutar)
+        _baglamsiz_senkron_tetikle()
         return
     sayaci.ekle(tutar)
 
@@ -265,6 +304,7 @@ def goruntu_mutabakati(model: str, girdi: int, cikti: int) -> None:
     sayaci = _ISTEK.get()
     if sayaci is None:
         DEFTER.deftere_ekle(tutar)
+        _baglamsiz_senkron_tetikle()
         return
     sayaci.ekle(tutar)
 
@@ -277,6 +317,7 @@ def ses_mutabakati(model: str, karakter: int) -> None:
     sayaci = _ISTEK.get()
     if sayaci is None:
         DEFTER.deftere_ekle(tutar)
+        _baglamsiz_senkron_tetikle()
         return
     sayaci.ekle(tutar)
 

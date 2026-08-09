@@ -16,6 +16,17 @@ data/kesif_harcama.json
 **/.env
 **/.env.*
 !**/.env.example
+# NOKTASIZ ikizler + anahtar dosyaları — .gitignore bunları GERÇEK sır olarak koruyor
+# (`/env`, `/backend/env`: "GERÇEK DeepSeek anahtarı + Supabase şifresi içerir").
+# Buraya yazılmadıkları için `COPY backend/ ./` onları imaja GÖMÜYORDU: depoya sızmayan
+# sır, üretim imajına sızıyordu (9 Ağu 2026 güvenlik denetimi). İki dosya da şu an yok —
+# bu satırlar yeniden oluşturuldukları anda devreye girsin diye eklendi.
+env
+backend/env
+**/*.key
+**/*.pem
+**/*.p12
+**/id_rsa*
 *.md
 !README.md
 backend/tests

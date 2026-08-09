@@ -3,6 +3,8 @@
    401'de refresh ile bir kez yeniler. Hatalar backend `detail` mesajıyla fırlatılır.
    Vite proxy relatif path'leri :8000'e yönlendirir (vite.config.js). */
 
+import { hafizaTemizle } from "./sohbetHafiza.js";
+
 const ACCESS_KEY = "ke_access";
 const REFRESH_KEY = "ke_refresh";
 const USER_KEY = "ke_user";
@@ -20,6 +22,14 @@ export const tokens = {
     localStorage.removeItem(REFRESH_KEY);
     localStorage.removeItem(USER_KEY); // optimistik kullanıcı önbelleğini de temizle
     localStorage.removeItem(DASH_KEY); // optimistik panel önbelleğini de temizle
+    // Sohbet geçmişi de gitmeli (9 Ağu 2026 güvenlik denetimi): `kamu-evrak-sohbet`
+    // anahtarı kullanıcıya göre AYRILMIYOR ve çıkışta silinmiyordu. Kamu kurumlarında
+    // paylaşımlı bilgisayar olağandır: bir sonraki memur, açılışta önceki memurun tam
+    // sohbet geçmişini — içindeki evrak kayıt kartlarıyla birlikte — hazır buluyordu.
+    // SENKRON olmalı: dinamik import kullanılsaydı çıkış akışı (ve sayfa yenilemesi)
+    // temizlik çalışmadan bitebilirdi. `sohbetHafiza` hiçbir modülü içe aktarmaz →
+    // döngüsel bağımlılık riski yok, statik import güvenli.
+    hafizaTemizle();
   },
 };
 

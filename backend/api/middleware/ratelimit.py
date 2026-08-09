@@ -41,12 +41,53 @@ def _is_available() -> bool:
     return _SLOWAPI_AVAILABLE
 
 
+def istemci_anahtari(request: Any) -> str:
+    """Hız sınırı kovası anahtarı — `api/demo_kimlik.istemci_ip` ile AYNI türetme.
+
+    ÖLÇÜLEN AÇIK (9 Ağu 2026 güvenlik denetimi): burada eskiden slowapi'nin
+    `get_remote_address` fonksiyonu vardı ve o `request.client.host`, yani SOKET adresini
+    döndürür. Render (ve Cloudflare) ters vekil ARKASINDA soket adresi her ziyaretçi için
+    AYNIDIR — vekilin kendi adresi. Sonuç: tüm dünya tek kovayı paylaşıyordu.
+    İki yönlü zarar veriyordu:
+      · Koruma tarafı: saldırgan başına sınır YOK — 20/dakika sınırı saldırganı değil
+        TOPLAMI sınırlar, yani tek istemci sınırın tamamını yiyebilir.
+      · Erişilebilirlik tarafı: tek istemci sınırı doldurunca DİĞER HERKES 429 alır,
+        yani ucuz bir DoS'a dönüşür.
+    Uygulama `DEMO_GUVENILEN_PROXY_SAYISI`'nı okuyan doğru bir türetmeye ZATEN sahipti
+    (`demo_kimlik.istemci_ip`, kota ekseni onu kullanıyordu). İki ayrı IP türetmesi
+    tutmak, birinin doğru diğerinin yanlış olması demekti; tek kaynağa indirildi.
+
+    Başlık istemci-kontrollüdür: güvenilen vekil sayısı verilmezse XFF tamamen yok sayılır
+    ve soket adresine düşülür (fail-closed — bkz. `demo_kimlik` modül docstring'i).
+    """
+    from api.demo_kimlik import istemci_ip
+
+    scope = getattr(request, "scope", None)
+    if isinstance(scope, dict):
+        ip = istemci_ip(scope)
+        if ip:
+            return ip
+    # scope yoksa/boşsa slowapi'nin kendi davranışına düş — anahtar üretmeden kalmaktansa
+    # (o durumda TÜM istekler tek kovaya düşerdi) soket adresi yine de daha ayırt edicidir.
+    #
+    # Sarmalayıcı try BİLİNÇLİ: `key_func` HER istekte koşar ve burada atılan bir istisna
+    # isteği 500'e düşürür. Hız sınırı anahtarı üretememek, uygulamayı kırmaktan iyidir —
+    # bu yolda güvenlik zaten kaybedilmez, çünkü boş anahtar slowapi'de tek ortak kovadır
+    # (daha KISITLAYICI yön, fail-closed).
+    if _SLOWAPI_AVAILABLE:
+        try:
+            return get_remote_address(request)
+        except Exception:  # pragma: no cover — savunmacı; gerçek Request'te .client hep var
+            return ""
+    return ""
+
+
 # Tek paylaşılan Limiter (slowapi varsa). Limit'leri ortam değişkeniyle kapatılabilir kıl.
 _RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "true").lower() not in ("0", "false", "no")
 
 _limiter: Any = None
 if _SLOWAPI_AVAILABLE:
-    _limiter = Limiter(key_func=get_remote_address, enabled=_RATE_LIMIT_ENABLED)
+    _limiter = Limiter(key_func=istemci_anahtari, enabled=_RATE_LIMIT_ENABLED)
 
 
 def rate_limit(spec: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
@@ -80,4 +121,4 @@ def setup_rate_limiting(app: Any) -> bool:
     return True
 
 
-__all__ = ("rate_limit", "setup_rate_limiting")
+__all__ = ("istemci_anahtari", "rate_limit", "setup_rate_limiting")

@@ -27,28 +27,47 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq postgresql-client-17
 
-      - name: pg_dump (custom format, sıkıştırmalı)
+      - name: pg_dump (custom format, sıkıştırmalı) + ŞİFRELE
         id: dump
         env:
           DB_URL: ${{ secrets.DATABASE_URL_SYNC }}
+          YEDEK_PAROLA: ${{ secrets.YEDEK_SIFRELEME_PAROLASI }}
         run: |
           if [ -z "$DB_URL" ]; then
             echo "::notice::DATABASE_URL_SYNC secret'ı yok — yedek atlandı. Ekleyince otomatik aktifleşir."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # GÜVENLİK KAPISI (9 Ağu 2026 denetimi): artifact ŞİFRESİZ yüklenmemeli.
+          # Artifact'i deponun OKUMA yetkisi olan HERKES indirebilir; depo bir gün public
+          # yapılırsa (yol haritasında var) tam üretim veritabanı — kullanıcı hesapları,
+          # evrak metni, PII — 30 gün boyunca herkese açık hâle gelirdi. Parola yoksa
+          # yedek almak yerine job'ı DURDUR: şifresiz dump üretmek sessiz bir sızıntıdır.
+          if [ -z "$YEDEK_PAROLA" ]; then
+            echo "::error::YEDEK_SIFRELEME_PAROLASI secret'ı yok — ŞİFRESİZ yedek üretilmez."
+            echo "Ekleyin: Settings > Secrets > Actions > YEDEK_SIFRELEME_PAROLASI (güçlü, saklayın —"
+            echo "kaybederseniz yedekler AÇILAMAZ). Geri yükleme:"
+            echo "  gpg --batch --passphrase '<parola>' -d yedek.dump.gpg > yedek.dump"
+            exit 1
+          fi
           mkdir -p backups
           STAMP=$(date -u +%Y%m%d_%H%M%S)
-          OUT="backups/kamu_evrak_${STAMP}.dump"
+          HAM="kamu_evrak_${STAMP}.dump"
+          OUT="backups/${HAM}.gpg"
           # -Fc: custom (pg_restore ile seçmeli geri yükleme) · --no-owner/--no-acl: taşınabilir
-          pg_dump "$DB_URL" -Fc --no-owner --no-acl -f "$OUT"
+          # Dump doğrudan gpg'ye boru ile verilir → şifresiz hâli runner diskine HİÇ yazılmaz.
+          pg_dump "$DB_URL" -Fc --no-owner --no-acl \
+            | gpg --batch --yes --symmetric --cipher-algo AES256 \
+                  --passphrase "$YEDEK_PAROLA" -o "$OUT"
           echo "file=$OUT" >> "$GITHUB_OUTPUT"
           ls -lh "$OUT"
+          # Şifreli olduğunu KANITLA — gpg sessizce düz metin bırakırsa yakalansın.
+          file "$OUT" | grep -qi "GPG\|PGP" || { echo "::error::Çıktı şifreli değil!"; exit 1; }
 
-      - name: Yedeği artifact olarak yükle (30 gün)
+      - name: Yedeği artifact olarak yükle (30 gün, AES256 şifreli)
         if: steps.dump.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: db-yedek
+          name: db-yedek-sifreli
           path: ${{ steps.dump.outputs.file }}
           retention-days: 30

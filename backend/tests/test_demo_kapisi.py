@@ -244,6 +244,82 @@ class TestMiddlewareSirasi:
         assert y.headers.get("x-content-type-options") == "nosniff"
 
 
+class TestKapiKaliciYolu:
+    """Kapı KALICI sayacı kullanmalı — yoksa restart günlük hakkı yeniler.
+
+    Bu sınıf `core/demo_kota`'nın kendi testlerini tekrarlamaz; KAPININ doğru yolu
+    çağırdığını kilitler. Kapı sessizce `kota_dus`'a (bellek) dönerse buradaki iki test
+    kırılır — canlıda bildirilen açığın tam olarak o olduğunu unutmayalım.
+    """
+
+    @pytest.fixture
+    def kalici_db(self, monkeypatch):
+        """Süreç DIŞINDA yaşayan sahte sayaç — restart'ta silinmeyen katmanın yerine."""
+        import core.demo_kota_kalici as kalici
+
+        satir: dict[tuple[int, str], int] = {}
+
+        async def sahte_dus(gun, istekler):
+            sayaclar = {a: satir.get((gun, a), 0) for a, _ in istekler}
+            dolu = tuple(a for a, t in istekler if t <= 0 or sayaclar[a] >= t)
+            if dolu:
+                return kalici.DusSonucu(sayaclar, dolu)
+            for a, _t in istekler:
+                satir[(gun, a)] = satir.get((gun, a), 0) + 1
+                sayaclar[a] = satir[(gun, a)]
+            return kalici.DusSonucu(sayaclar, ())
+
+        async def sahte_oku(gun, anahtarlar):
+            return {a: satir.get((gun, a), 0) for a in anahtarlar}
+
+        monkeypatch.setattr(kalici, "dus", sahte_dus)
+        monkeypatch.setattr(kalici, "sayaclari_oku", sahte_oku)
+        monkeypatch.setattr(kalici, "kullanilabilir", lambda: True)
+        return satir
+
+    def test_RESTART_gunluk_hakki_YENILEMEZ(self, demo_acik, kalici_db):
+        # Arrange — çerezli istemci üç hakkını harcadı
+        from api.demo_kimlik import CEREZ_ADI, cerez_uret
+        cerez = cerez_uret()
+        c = TestClient(main.app)
+        c.cookies.set(CEREZ_ADI, cerez)
+        for _ in range(3):
+            c.post("/process_doc", json={})
+        assert c.post("/process_doc", json={}).status_code == 429
+
+        # Act — servis uyudu/yeniden başladı: süreç belleği gitti, çerez duruyor
+        demo_kota.kotayi_sifirla()
+        taze = TestClient(main.app)
+        taze.cookies.set(CEREZ_ADI, cerez)
+
+        # Assert — hak yenilenmedi (ESKİDEN: 422, yani istek pipeline'a giriyordu)
+        assert taze.post("/process_doc", json={}).status_code == 429
+
+    def test_GIRIS_YAPMIS_kullanici_CEREZ_silince_de_sinirli(self, demo_acik, kalici_db):
+        # Arrange — aynı hesap, her istekte BAŞKA çerez (tarayıcı değiştirme/temizleme)
+        from api.demo_kimlik import CEREZ_ADI, cerez_uret
+        from auth.security import access_token_uret
+
+        token, _son = access_token_uret("11111111-1111-4111-8111-111111111111",
+                                        "memur", "22222222-2222-4222-8222-222222222222")
+        basliklar = {"Authorization": f"Bearer {token}"}
+
+        def taze_tarayici() -> TestClient:
+            c = TestClient(main.app)
+            c.cookies.set(CEREZ_ADI, cerez_uret())
+            return c
+
+        for i in range(3):
+            y = taze_tarayici().post("/process_doc", json={}, headers=basliklar)
+            assert y.status_code == 422, f"{i}. belge geçmeliydi"
+
+        # Act — dördüncü kez tertemiz bir tarayıcıdan dene
+        y = taze_tarayici().post("/process_doc", json={}, headers=basliklar)
+
+        # Assert — hesap ekseni sayıyor (ESKİDEN: sınırsız, çerez sıfırlamak yetiyordu)
+        assert y.status_code == 429
+
+
 class TestUcretliMi:
     def test_yalniz_POST(self):
         from api.middleware.demo_kapisi import ucretli_mi

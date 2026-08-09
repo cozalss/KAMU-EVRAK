@@ -51,6 +51,19 @@ async def lifespan(app: FastAPI):
         await demo_butce.kalici_tohumla()
     except Exception as exc:
         log.error("demo_kalici_tohumlama_hatasi", hata=type(exc).__name__)
+    # Kota tablosundan geçmiş günleri sil. Tablo yalnız BUGÜNÜN kararını verir; satırlar
+    # birikirse ücretsiz Postgres kotasını gereksiz yer. Açılışta koşmak yeterli sıklıkta:
+    # ücretsiz katman zaten sık uyanıyor (bu tablonun var olma sebebi de o).
+    try:
+        from core.demo_kota_kalici import eski_gunleri_temizle, tabloyu_hazirla
+        from core.gun_indeksi import bugun_indeksi
+
+        if await tabloyu_hazirla():
+            silinen = await eski_gunleri_temizle(bugun_indeksi())
+            if silinen:
+                log.info("demo.kota_eski_gun_silindi", satir=silinen)
+    except Exception as exc:
+        log.error("demo_kota_temizlik_hatasi", hata=type(exc).__name__)
     try:
         yield
     finally:
@@ -184,10 +197,14 @@ async def demo_durum(request: Request) -> dict[str, Any]:
     from core import demo_kota
 
     kimlik = ziyaretci_kimligi(request.scope)
-    durum = demo_kota.kota_bak(kimlik.anahtar, kimlik.ag_anahtari)
+    durum = await demo_kota.kota_bak_dayanikli(
+        kimlik.anahtar, kimlik.ag_anahtari, kimlik.kullanici_anahtari)
+    # Gösterilen sayı en KISITLAYICI eksendir: oturum açık kullanıcı için hesap kovası
+    # tarayıcı kovasından önce dolabilir; büyük olanı göstermek "1 hakkım var" deyip
+    # 429 yiyen bir kullanıcı üretirdi.
     return {
         "aktif": True,
-        "kalan": durum.kalan_ziyaretci,
+        "kalan": min(durum.kalan_ziyaretci, durum.kalan_kullanici),
         "gunluk": demo_kota.gunluk_ziyaretci(),
         "kalan_ag": durum.kalan_ag,
         # Bütçe tavanı dolduysa kota dolu olmasa bile işlem yapılamaz — UI bunu ayırt etsin.

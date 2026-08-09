@@ -127,13 +127,18 @@ class DemoKapisiMiddleware:
                 cerez_ek)
             return
 
-        # 4) Kota — para AYRILMADAN.
-        sonuc = demo_kota.kota_dus(kimlik.anahtar, kimlik.ag_anahtari)
+        # 4) Kota — para AYRILMADAN. KALICI sayaç (DB); erişilemezse bellek yedeği.
+        sonuc = await demo_kota.kota_dus_dayanikli(
+            kimlik.anahtar, kimlik.ag_anahtari, kimlik.kullanici_anahtari)
         if not sonuc.izin:
             log.info("demo.429_kota", yol=yol, sebep=sonuc.sebep)
+            # "kullanici" ve "ziyaretci" AYNI mesajı alır: ikisi de kişinin KENDİ hakkıdır,
+            # ayrımı memura anlatmanın bir faydası yok (ve hangi eksenin dolduğunu söylemek
+            # kotayı atlatmayı öğretir). Ağ mesajı ayrı çünkü eylem farklı: bekle ya da
+            # başka ağdan dene.
             mesaj = (
                 "Günlük belge işleme hakkınız doldu. Yarın yenilenir."
-                if sonuc.sebep == "ziyaretci" else
+                if sonuc.sebep in ("kullanici", "ziyaretci") else
                 "Bu ağdan bugünkü işlem hakkı doldu. Yarın yenilenir."
             )
             await _yanit_gonder(

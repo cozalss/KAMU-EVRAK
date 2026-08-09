@@ -128,12 +128,51 @@ yeniden ölçülmesi gerekir.
 ## Kota modeli
 
 ```
+kullanıcı (JWT sub)       3 belge/gün     ← hesabın kendi hakkı
 ziyaretçi (imzalı çerez)  3 belge/gün     ← adalet
 ağ (IPv4 /24, IPv6 /64)  12 belge/gün     ← çerez silmenin tavanı
 ```
 
+### İki açık ve kapanışı (9 Ağu 2026 — canlıda bildirildi)
+
+**1. Restart hakları yeniliyordu.** Sayaç `core/demo_kota._SAYAC` süreç-içi bir
+sözlüktü. Render ücretsiz katmanı **15 dakika hareketsizlikte uyur** ve taze bir süreçle
+uyanır; her redeploy/restart da aynı. Sözlük her uyanışta boştu → "günde 3 belge" fiilen
+**"uyanış başına 3 belge"** idi. Siteyi 20 dakika bekletip dönen ziyaretçi sınırsız hak
+alıyordu. Sayaç artık `demo_kota` tablosunda (alembic 0007); `0006_demo_harcama` aynı
+sorunu **para** için çözmüştü, bu **kota** için çözer.
+
+**2. Çıkış/giriş taze hak veriyordu.** Kimlik yalnız çerezdeydi; çerezi silmek ya da
+başka tarayıcı açmak yeni kova demekti. **Hesap ekseni** eklendi: JWT `sub` (imzası
+doğrulanmış) kendi kovasını taşır, kullanıcı nereden bağlanırsa bağlansın. Çerez ekseni
+**kaldırılmadı, eklendi** — yalnız hesaba bakılsaydı bu kez "çıkış yap, anonim kovadan 3
+hak daha" açığı doğardı; iki eksen birlikte sayıldığı için çıkış yapmak hak üretmez.
+
+Üçü de **hep ya hiç** değerlendirilir: hepsi kontrol edilir, sonra hepsi artar. Bir eksen
+doluyken diğerlerinin hakkı **yanmaz** (tek transaction, kısmi artış geri alınır).
+
+### Kalıcılık sözleşmesi
+
+| Katman | Rol |
+|---|---|
+| `demo_kota` tablosu | **BİRİNCİL** — tek gerçek |
+| `_SAYAC` sözlüğü | **YEDEK** — yalnız DB erişilemezken |
+
+Yön, paranınkinin **tersidir** (orada dosya defteri birincil, DB dayanıklılık ekler):
+paranın kararı milisaniyelik ve fail-closed olmalı; kotanınki bir adalet kararıdır ve tek
+doğru cevabı ancak kalıcı sayaç verir. DB düşerse bellek yedeğine düşülür (fail-open) —
+geriye kalan, bu düzeltmeden **önceki** korumanın aynısıdır ve para tavanı hiç etkilenmez.
+Yedek, DB'den okunan sayaçla eşitlenir (asla azaltmaz), yani gün ortasında düşen bir DB
+sayacı sıfırlamaz. Üst üste 3 arızada katman 60 sn devre dışı kalır — DB tamamen ölünce
+her istek bir bağlantı zaman aşımı ödemesin diye.
+
+Tablo **açılışta idempotent kurulur** (`tabloyu_hazirla`). Gerekçe: dağıtım yalnız
+uvicorn başlatır, `alembic upgrade` koşmaz — korumanın kurulumu elle bir adıma bağlı
+kalsaydı deploy sonrası katman sessizce devre dışı kalırdı. Şemanın tek kaynağı yine
+`0007_demo_kota.py` + `db/schema.sql`.
+
 - Çerez **imzalıdır** — gizlilik için değil, sözlük büyütme saldırısına karşı: yalnız
-  sunucunun ürettiği anahtarlar sayaç sözlüğüne girer.
+  sunucunun ürettiği anahtarlar sayaca girer.
 - **Çerezsiz istekler ağ anahtarını paylaşır** → `curl` döngüsü toplam 3 belge alır,
   istek başına 3 değil.
 - `X-Forwarded-For` **varsayılan olarak yok sayılır.** Ters vekil arkasındaysanız

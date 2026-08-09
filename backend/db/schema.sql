@@ -448,3 +448,25 @@ CREATE TABLE IF NOT EXISTS demo_harcama (
     toplam_usd   NUMERIC(12,6) NOT NULL DEFAULT 0,
     guncelleme   TIMESTAMPTZ   NOT NULL DEFAULT now()
 );
+
+-- ============================================================================
+-- demo_kota — günlük belge kotasının KALICI sayacı (alembic 0007)
+--
+-- 0006 aynı sorunu PARA için çözmüştü; bu tablo KOTA için çözer. Sayaç süreç-içi bir
+-- sözlükteydi ve Render ücretsiz katmanı 15 dk hareketsizlikte uyuduğu için "günde 3
+-- belge" fiilen "uyanış başına 3 belge" oluyordu.
+--
+-- `anahtar` üç eksenden biri, hepsi SUNUCU üretimi:
+--   "k:<kullanıcı id>" (JWT sub, imzası doğrulanmış) · "z:<id>" (imzalı çerez) ·
+--   "ag:<önek>" (IPv4 /24, IPv6 /64).
+-- `gun` = UTC epoch günü (core/gun_indeksi.bugun_indeksi()).
+-- Satırlar kısa ömürlü: açılışta geçmiş günler silinir (kullanım geçmişi DEĞİLDİR).
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS demo_kota (
+    gun          INTEGER      NOT NULL,
+    anahtar      TEXT         NOT NULL,
+    sayac        INTEGER      NOT NULL DEFAULT 0,
+    guncelleme   TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    PRIMARY KEY (gun, anahtar)
+);
+CREATE INDEX IF NOT EXISTS ix_demo_kota_gun ON demo_kota (gun);

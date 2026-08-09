@@ -54,6 +54,7 @@ class Ziyaretci:
     anahtar: str          # "z:<id>" veya çerezsizse ag_anahtari ile aynı
     ag_anahtari: str      # "ag:<önek>"
     taze_cerez: str       # "" ise Set-Cookie basılmaz
+    kullanici_anahtari: str = ""   # "k:<kullanıcı id>" — oturum açıksa; anonimse ""
 
 
 def _gizli_anahtar() -> bytes:
@@ -148,13 +149,46 @@ def cerezleri_coz(scope: dict[str, Any]) -> dict[str, str]:
     return cikti
 
 
+def kullanici_anahtari(scope: dict[str, Any]) -> str:
+    """Oturum açmış kullanıcının kota anahtarı: "k:<id>". Anonim istekte "".
+
+    NEDEN AYRI BİR EKSEN (ölçülen açık, 9 Ağu 2026): kota yalnız çereze bağlıyken çıkış
+    yapıp yeniden girmek — ya da başka bir tarayıcı açmak — taze hak veriyordu. Hesap
+    anahtarı çerezden bağımsızdır; kullanıcı nereden bağlanırsa bağlansın aynı kovayı
+    taşır. Çerez ekseni KALDIRILMAZ, eklenir: yalnız hesaba bakılsaydı bu kez "çıkış yap,
+    anonim kovadan 3 hak daha" açığı doğardı.
+
+    Token'ın kendisi burada DOĞRULANIR (imza + süre + tip). İmzasız bir "sub" okumak,
+    saldırganın istediği kullanıcı kimliğini yazmasına — yani kotayı başkasının kovasına
+    yıkmasına — izin verirdi. Geçersiz token sessizce anonim sayılır: bu kapı yetki
+    vermez, yalnız SAYAÇ anahtarı seçer; 401 kararı uçların kendi bağımlılığındadır.
+    """
+    for ad, deger in scope.get("headers") or []:
+        if ad != b"authorization":
+            continue
+        ham = deger.decode("latin-1").strip()
+        if not ham.lower().startswith("bearer "):
+            return ""
+        try:
+            from auth.security import token_coz
+
+            veri = token_coz(ham[7:].strip(), "access")
+        except Exception:               # imza anahtarı yok / kütüphane hatası → anonim
+            return ""
+        sub = str((veri or {}).get("sub", "")).strip()
+        return f"k:{sub}" if sub else ""
+    return ""
+
+
 def ziyaretci_kimligi(scope: dict[str, Any]) -> Ziyaretci:
-    """İstekten ziyaretçi + ağ anahtarını çıkar; çerez yoksa/bozuksa taze çerez üret."""
+    """İstekten kullanıcı + ziyaretçi + ağ anahtarını çıkar; çerez yoksa taze çerez üret."""
     ag = ag_oneki(istemci_ip(scope))
+    kullanici = kullanici_anahtari(scope)
     ham = cerezleri_coz(scope).get(CEREZ_ADI, "")
     kimlik = cerez_dogrula(ham)
     if kimlik:
-        return Ziyaretci(anahtar=f"z:{kimlik}", ag_anahtari=ag, taze_cerez="")
+        return Ziyaretci(anahtar=f"z:{kimlik}", ag_anahtari=ag, taze_cerez="",
+                         kullanici_anahtari=kullanici)
     # Çerezsiz/bozuk → ağ kovasını PAYLAŞ (curl döngüsü sınırsız hak almasın),
     # ama taze çerez bas ki gerçek tarayıcı 2. istekte adil yola geçsin.
     #
@@ -165,7 +199,8 @@ def ziyaretci_kimligi(scope: dict[str, Any]) -> Ziyaretci:
     # çıkar) ya da yeni ziyaretçiye ağın sayacını miras bırakır (kalabalık ağdaki masum
     # kullanıcıyı cezalandırır). +1'in sınırı serttir: çerezi SİLEN saldırgan hep ağ
     # kovasına düşer ve 3'ü aşamaz. Para tavanı bu +1'den hiç etkilenmez.
-    return Ziyaretci(anahtar=ag, ag_anahtari=ag, taze_cerez=cerez_uret())
+    return Ziyaretci(anahtar=ag, ag_anahtari=ag, taze_cerez=cerez_uret(),
+                     kullanici_anahtari=kullanici)
 
 
 def cerez_basligi(deger: str, *, https: bool) -> bytes:
@@ -188,4 +223,5 @@ def cerez_basligi(deger: str, *, https: bool) -> bytes:
 
 
 __all__ = ("CEREZ_ADI", "Ziyaretci", "ag_oneki", "cerez_basligi", "cerez_dogrula",
-           "cerez_uret", "cerezleri_coz", "istemci_ip", "ziyaretci_kimligi")
+           "cerez_uret", "cerezleri_coz", "istemci_ip", "kullanici_anahtari",
+           "ziyaretci_kimligi")

@@ -37,6 +37,26 @@ import pytest  # noqa: E402 (sys.path düzeltmesinden sonra import zorunlu)
 
 
 @pytest.fixture(autouse=True)
+def _kota_kalici_katmani_kapali(monkeypatch):
+    """Kotanın KALICI katmanı testlerde varsayılan olarak KAPALI.
+
+    Neden gerekli: `core/demo_kota_kalici` gerçek bir `DATABASE_URL` görünce DB'ye bağlanmayı
+    dener. Testte o URL ya conftest'in yer tutucusudur ya da geliştiricinin gerçek Supabase'i
+    — ilki her ücretli istekte boşuna bağlantı denemesi ödetir (ölçüldü: demo kapısı paketi
+    148sn → 254sn), ikincisi testleri AĞA ve canlı veriye bağımlı kılar. İkisi de kabul
+    edilemez; birim testler çevrimdışı ve deterministik olmalı.
+
+    Katmanın KENDİSİ `tests/test_demo_kota_kalici.py` içinde açıkça açılarak ölçülür; buradaki
+    varsayılan yalnız onun DIŞINDAKİ testleri bellek yedeğine sabitler (yedek yol da gerçek
+    bir üretim yoludur — DB düştüğünde çalışan koddur).
+
+    Kapatma noktası bilerek EN ALTTAKİ anahtar (`_kalici_yapilandirildi`), `kullanilabilir`
+    değil: böylece arıza devresinin kendi mantığı testte hâlâ gerçek koduyla ölçülebilir.
+    """
+    monkeypatch.setattr("core.demo_kota_kalici._kalici_yapilandirildi", lambda: False)
+
+
+@pytest.fixture(autouse=True)
 def _reset_llm_singleton():
     """Her testten önce LLM singleton sıfırla — testler birbirini kirletmesin."""
     try:

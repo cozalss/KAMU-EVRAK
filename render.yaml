@@ -62,7 +62,11 @@ services:
         sync: false            # kurulumdan sonra gerçek Render URL'i ile doldur
                                # (örn. https://kamu-evrak.onrender.com)
 
-      # --- tek süreç: kota sözlüğü ve uçuştaki-harcama kümesi SÜREÇ-İÇİDİR ---
+      # --- tek süreç: uçuştaki-harcama kümesi (rezervasyon) SÜREÇ-İÇİDİR ---
+      # Not (9 Ağu 2026): KOTA sayacı artık süreç-içi DEĞİL, `demo_kota` tablosunda —
+      # ücretsiz katman 15 dk'da uyuduğu için bellek sayacı her uyanışta sıfırlanıyor ve
+      # günlük hak yenileniyordu (bkz. docs/16 "İki açık ve kapanışı"). WEB_CONCURRENCY=1
+      # yine de kalır: rezervasyon kümesi ve dosya defteri hâlâ süreç-içidir.
       - key: WEB_CONCURRENCY
         value: "1"
 

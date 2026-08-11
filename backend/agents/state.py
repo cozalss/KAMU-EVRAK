@@ -195,6 +195,12 @@ class EvrakState(TypedDict):
     # SABİT (frontend + AltTalepSchema eşleşir): ozet/tur/tur_tr/birim/birim_tr/yazi_turu/
     # cevap_suresi/sla_durum. Özet PII-maskeli (CLAUDE.md §2).
     alt_talepler: NotRequired[list[dict[str, Any]]]
+    # Ayrıştırma GERÇEKTEN denendi mi? Boş `alt_talepler` iki ayrı yoldan gelir: (a) çok-konu
+    # sinyali yok → LLM hiç çağrılmaz (adım fiilen boş geçer), (b) sinyal var, LLM çağrılır,
+    # ama anlamlı 2 segment çıkmaz. Arayüz "bu adım gerekmedi" derken YALNIZ (a)'yı kastedebilir;
+    # ikisi `alt_talepler`den ayırt EDİLEMEZ, o yüzden node gerçeği açıkça yazar. False =
+    # denenmedi (gerekmedi), True = denendi (sonuç tek-konulu çıktı).
+    ayristirma_denendi: NotRequired[bool]
 
     # --- Görev 2: dur-ve-sor (clarifier) ---
     # Kritik alan eksikse taslak üretmeden kullanıcıdan bilgi istenir (ENV-gated).

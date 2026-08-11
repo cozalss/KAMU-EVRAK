@@ -22,6 +22,7 @@ import {
   decomposeGiris,
   riskGerekceYorum,
   riskSkorYorum,
+  denetimRozeti,
   havaleYorum,
   canliKaynakYorum,
 } from "../lib/detayYorum.js";
@@ -316,6 +317,7 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
   const hy = hukumYorum(r);
   const [ana, ...kuyruk] = String(hy.baslik || "İşlem tamamlandı").split(" · ");
   const band = BANT[r.risk_metadata?.bant] ? r.risk_metadata.bant : "yesil";
+  const denetimIz = denetimRozeti(r.denetim_izi);
   const kontrolSayisi = eksik.length + uyari.length + tutar.length + arr(r.lint_2646?.uyari).length;
   const riskEtiket = r.risk_metadata?.bant ? `${band === "sari" ? "sarı" : band === "kirmizi" ? "kırmızı" : "yeşil"} risk bandı` : "risk bandı yok";
   const durumSatiri = kuyruk.length ? kuyruk.join(" · ") : riskEtiket;
@@ -402,7 +404,17 @@ function DecisionCard({ r, eksik, uyari, tutar }) {
         <dl className="sc-decision-strip-meta" aria-label="Havale kararı">
           <MetaSlot slot={havale} id="havale" acik={acikYardim} ac={setAcikYardim} />
         </dl>
-        <p className="sc-decision-strip-note" style={{ color: PAL.mut2 }}>{kararAciklama}</p>
+        <p className="sc-decision-strip-note" style={{ color: PAL.mut2 }}>
+          {kararAciklama}
+          {/* Denetim izi adım akışında gösterilmez (memurun işini kalabalıklaştırır) ama
+              görünmez de kalmaz: hash-zinciri bu sistemin en ayırt edici güvencesidir. */}
+          {denetimIz && (
+            <span title={denetimIz.baslik} style={{ marginLeft: SP.s, display: "inline-flex", alignItems: "center", gap: 4, ...TYPE.meta, color: PAL.mut2, whiteSpace: "nowrap" }}>
+              <Icon.shield width={11} height={11} aria-hidden="true" />
+              {denetimIz.metin}
+            </span>
+          )}
+        </p>
         {r.risk_metadata?.bant && (
           <span className="sc-decision-strip-chip" style={{ color: DERIN_OF(BANT[band].c), background: ALFA(BANT[band].c) }}>
             {BANT[band].l}
@@ -852,19 +864,31 @@ function RiskCard({ r, band, bantC }) {
   const riskGerekce = arr(r.risk_metadata?.gerekceler).slice(0, 5);
   if (!r.risk_metadata?.aciklama && !riskGerekce.length && !r.risk_metadata?.skor) return null;
   const yorumlar = riskGerekce.map((g) => riskGerekceYorum(String(g))).filter(Boolean);
-  const skor = riskSkorYorum(Number(r.risk_metadata?.skor), r.risk_metadata?.katkilar, band, r.risk_metadata?.kalibrasyon);
+  const skor = riskSkorYorum(Number(r.risk_metadata?.skor), r.risk_metadata?.katkilar, band,
+    r.risk_metadata?.kalibrasyon, r.risk_metadata?.kusur_olasiligi);
   const seviyeGoster = skor?.seviye ? skor.seviye[0].toUpperCase() + skor.seviye.slice(1) : null;
 
   return (
     <NeonCard title="Risk değerlendirmesi" tag={BANT[band]?.l} tagColor={bantC} accent={V} icon={<Icon.alert />}>
       {skor && (
         <div className="sc-risk-gauge-row" style={{ marginBottom: SP.m }}>
-          <span style={{ ...TYPE.num, color: bantC, flexShrink: 0 }}>%{skor.yuzde}</span>
+          {/* Puan BİRİMSİZDİR — "/ 1" ölçeği açıkça yazılır. Eskiden "%87" sunuluyordu ve bu,
+              beklenen zararı olasılık gibi okutuyordu (bkz. riskSkorYorum doküman bloğu).
+              Yüzde YALNIZ kusur olasılığı için kullanılır; o da ayrı satırda etiketiyle. */}
+          <span style={{ display: "inline-flex", alignItems: "baseline", gap: 2, flexShrink: 0 }}>
+            <span style={{ ...TYPE.num, color: bantC }}>{skor.puan}</span>
+            <span style={{ ...TYPE.meta, color: PAL.mut2 }}>/ 1</span>
+          </span>
           <div style={{ flex: 1, minWidth: 0 }}>
             {seviyeGoster && <div style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink2 }}>{seviyeGoster}</div>}
             <span className="sc-risk-gauge-track" aria-hidden="true" style={{ display: "block", marginTop: 6, background: PAL.press }}>
-              <span className="sc-risk-gauge-fill" style={{ width: `${Math.min(100, skor.yuzde)}%`, background: bantC }} />
+              <span className="sc-risk-gauge-fill" style={{ width: `${Math.min(100, skor.dolgu)}%`, background: bantC }} />
             </span>
+            {skor.olasilikYuzde != null && (
+              <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2 }}>
+                Kusur olasılığı %{skor.olasilikYuzde} — ölçülen isabet oranlarından.
+              </div>
+            )}
           </div>
         </div>
       )}

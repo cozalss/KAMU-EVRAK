@@ -34,6 +34,29 @@
    `canliKaynakYorum`). Bu yoldan otomatik havale ASLA üretilmez. Bkz. `docs/14`.
 6. **TLS doğrulamasını kapatma** (`verify=False`) ve izinli alan listesini gevşetme. Dış
    ağa yalnız `sayfa_kesif` çıkar; yönlendirmenin HER sıçraması ayrı sınanır.
+7. **Risk skorunu yüzde ile sunma.** `risk_metadata.skor` beklenen zarardır
+   (`Σ⊕ ciddiyet × isabet`), olasılık DEĞİL — "%87 ihtimalle kusurlu" diye okunamaz. Birimsiz
+   puandır (`0,87 / 1`). Yüzde gösterilebilen tek alan `kusur_olasiligi`'dır (`Σ⊕ isabet`).
+   Tek biçimlendirme kaynağı `detayYorum.riskOlcuEtiketi`; elle `%${skor*100}` yazma.
+8. **Adım eşzamanlılığını elle haritalama.** Canlı akıştaki paralel bloklar + adım SIRASI,
+   SSE `start.katmanlar` haritasından gelir; harita `agents/katman.py` ile DERLENMİŞ grafın
+   kendi kenarlarından hesaplanır (`graph.pipeline_katmanlari`, singleton başına önbellekli).
+   Frontend'e sabit yedek harita yazma: ENV bayrakları (`PARALEL_ANLAMA`/`PARALEL_TRIYAJ`/
+   `PARALEL_KAPANIS`/`CRAG`/`NLI`/`VITRIN_MODU`) topolojiyi değiştirdiğinde yalan söyler —
+   eski `VARSAYILAN_KATMAN` sabiti tam da bu yüzden silindi. Harita yoksa/eksikse paralellik
+   İDDİA EDİLMEZ → düz liste.
+9. **Koşmayan adımı "tamamlandı" sayma.** Backend akışın başında TÜM olası adımları duyurur;
+   koşullu dal (clarifier · yeşil bantta atlanan `onay_kapisi`) seçilmeyeni hiç çalıştırmaz.
+   Kapanış kuralı tek yerde: `akisKatman.kapanisDurumlari` — `active`→tamamlandı,
+   `pending`+koşum bitti→**atlandi**, `pending`+onay bekliyor→**sırada kalır**. Başarı beyanı
+   (`kosanCount`, ekran-okuyucu metni) yalnız gerçekten koşanları sayar; ilerleme çubuğu ayrı
+   sayaçtır. Eşzamanlılık etiketi de olguya bağlıdır: `ParalelBaslik` ancak grubun ≥2 üyesi
+   GERÇEKTEN koştuysa basılır. Ölçüm: 2026-08-12 adversarial denetimi (18 duyuruldu, 15 koştu).
+10. **Adım durumunu yerel olarak türetme.** `gerekmedi` (koştu, işi yoktu) yalnız backend'in
+   söylediğine dayanır — `oku.engine` metin motoruysa, `decompose.ayristirma_denendi=false`
+   ise. Boş `alt_talepler`den çıkarım YAPMA: LLM çağrılıp anlamlı bölünme çıkmadığında da
+   liste boştur ve o koşum gerçek bir çağrı harcamıştır. Tüm durum kararı
+   `akisKatman.adimDurumu`'ndan okunur (sahne · şerit · detay modalı aynı kaynağı görür).
 
 ## Her Zaman Yap
 

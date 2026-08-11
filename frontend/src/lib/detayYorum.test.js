@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import {
   hukumYorum, ozetDipnot, unsurEtiket, eksikYorum,
   mevzuatDipnot, birimDipnot, denetimDipnot, lintGiris, lintGrupla, decomposeGiris, slaKonum,
-  riskGerekceYorum, riskSkorYorum, kanunNo, havaleYorum,
+  riskGerekceYorum, riskSkorYorum, riskOlcuEtiketi, denetimRozeti, kanunNo, havaleYorum,
   canliKaynakYorum, guvenliKaynakAdresi,
 } from "./detayYorum.js";
 
@@ -405,13 +405,43 @@ test("gerekce: boş/null girdi null döner", () => {
   assert.equal(riskGerekceYorum(), null);
 });
 
-/* ---- riskSkorYorum: 0..1 ölçülmüş skor → yüzde + seviye; çubuk = gerekçenin KENDİ ağırlığı ---- */
+/* ---- riskSkorYorum: 0..1 ölçülmüş skor → BİRİMSİZ puan + seviye; çubuk = gerekçenin KENDİ ağırlığı
+
+   KATEGORİ AYRIMI (backend risk_agirlik.kusur_olasiligi doküman bloğu):
+     · skor            = Σ⊕(ciddiyet × isabet) → BEKLENEN ZARAR. Ciddiyet bir yargı olduğu
+                         için olasılık DEĞİLDİR ve "%87" diye sunulamaz.
+     · kusur_olasiligi = Σ⊕(isabet)            → OLASILIK. Yüzde gösterilebilen TEK alan.
+   Eskiden arayüz skoru "%87" diye yazıyordu — bu kategori hatasıydı. ---- */
 test("skor: çubuklar backend katkılarından gelir, gerekçe sayısına BÖLÜNMEZ", () => {
   const y = riskSkorYorum(0.87, [0.82, 0.29], "kirmizi", "olculdu");
-  assert.match(y.baslik, /%87/);
+  assert.match(y.baslik, /0,87/);
   assert.match(y.baslik, /en yüksek/);
   assert.deepEqual(y.paylar, [82, 29]);   // ağır neden büyük çubuk
   assert.match(y.teknik, /0\.87/);
+});
+
+test("skor: BİRİMSİZ puandır — başlıkta yüzde işareti YOK (kategori hatası regresyonu)", () => {
+  const y = riskSkorYorum(0.87, [0.82, 0.29], "kirmizi", "olculdu");
+  assert.equal(y.puan, "0,87");
+  assert.doesNotMatch(y.baslik, /%/);
+  assert.match(y.baslik, /\/ 1/);          // ölçek açıkça yazılır: 0,87 / 1
+});
+
+test("skor: çubuk genişliği ayrı alandır (dolgu) — sunulan sayı değil", () => {
+  const y = riskSkorYorum(0.87, [0.82], "kirmizi", "olculdu");
+  assert.equal(y.dolgu, 87);               // 0..100, YALNIZ görsel çubuk için
+  assert.equal(y.yuzde, undefined);        // eski yanıltıcı alan kaldırıldı
+});
+
+test("skor: kusur olasılığı verilirse yüzde olarak O sunulur", () => {
+  const y = riskSkorYorum(0.87, [0.82], "kirmizi", "olculdu", 0.62);
+  assert.equal(y.olasilikYuzde, 62);
+});
+
+test("skor: olasılık yoksa uydurulmaz (skordan türetilmez)", () => {
+  assert.equal(riskSkorYorum(0.87, [0.82], "kirmizi", "olculdu").olasilikYuzde, null);
+  assert.equal(riskSkorYorum(0.87, [0.82], "kirmizi", "olculdu", 0).olasilikYuzde, null);
+  assert.equal(riskSkorYorum(0.87, [0.82], "kirmizi", "olculdu", NaN).olasilikYuzde, null);
 });
 
 test("skor: REGRESYON — eşit bölüşüm iddiası artık yok", () => {
@@ -441,6 +471,23 @@ test("skor: geçersiz/sıfır skor null döner (uydurma yüzde yok)", () => {
   assert.equal(riskSkorYorum(NaN, [0.3], "sari"), null);
   assert.equal(riskSkorYorum(0, [], "yesil"), null);
   assert.equal(riskSkorYorum(undefined, [], "yesil"), null);
+});
+
+/* ---- riskOlcuEtiketi: adım satırındaki kompakt ölçü etiketi (tek kaynak) ---- */
+test("ölçü etiketi: olasılık varsa yüzde olarak onu yazar", () => {
+  assert.equal(riskOlcuEtiketi({ skor: 0.87, kusur_olasiligi: 0.62 }), "kusur olasılığı %62");
+});
+
+test("ölçü etiketi: olasılık yoksa BİRİMSİZ puana düşer (yüzde uydurmaz)", () => {
+  const e = riskOlcuEtiketi({ skor: 0.34 });
+  assert.equal(e, "risk puanı 0,34");
+  assert.doesNotMatch(e, /%/);
+});
+
+test("ölçü etiketi: temiz belgede ölçü sunulmaz", () => {
+  assert.equal(riskOlcuEtiketi({ skor: 0, kusur_olasiligi: 0 }), "");
+  assert.equal(riskOlcuEtiketi({}), "");
+  assert.equal(riskOlcuEtiketi(null), "");
 });
 
 /* ---- havaleYorum: şeridin 1. slotu — "ne yapacağım + kime" ---- */
@@ -715,4 +762,26 @@ test("null-güvenlik: boş/eksik state'te tüm fonksiyonlar string/obje döner",
   assert.equal(typeof decomposeGiris(), "string");
   assert.ok(havaleYorum().deger);
   assert.ok(havaleYorum().gerekce);
+});
+
+/* ---- denetimRozeti: SHA-256 zinciri sonuç başlığında görünür (adım olarak değil) ---- */
+test("denetim rozeti: halka sayısı ve hash özeti sunulur", () => {
+  const r = denetimRozeti({ zincir: [{ hash: "a" }, { hash: "b" }, { hash: "c" }], son_hash: "abcdef0123456789ff" });
+  assert.equal(r.metin, "3 halka · SHA-256");
+  assert.match(r.baslik, /abcdef0123456789/);
+});
+
+test("denetim rozeti: zincir yoksa adim_sayisi'ndan sayar", () => {
+  assert.equal(denetimRozeti({ adim_sayisi: 5, kok_hash: "zz" }).metin, "5 halka · SHA-256");
+});
+
+test("denetim rozeti: hash yoksa rozet BASILMAZ (mühür iddiası uydurulmaz)", () => {
+  assert.equal(denetimRozeti({ zincir: [{ hash: "a" }] }), null);
+  assert.equal(denetimRozeti({ son_hash: "abc" }), null);
+  assert.equal(denetimRozeti({}), null);
+  assert.equal(denetimRozeti(null), null);
+});
+
+test("denetim rozeti: bozuk zincir tipi düşürmez", () => {
+  assert.equal(denetimRozeti({ zincir: "üç", son_hash: "abc" }), null);
 });

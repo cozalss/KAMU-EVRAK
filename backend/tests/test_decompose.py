@@ -221,3 +221,61 @@ class TestDecomposeNode:
         # Act / Assert — boş metin patlamaz
         sonuc = await decompose_node({"evrak_text": "", "bilgi_unsurlari": {}})
         assert sonuc["alt_talepler"] == []
+
+
+# ---------------------------------------------------------------------------
+# ayristirma_denendi — boş alt_talepler'in İKİ anlamını ayırır (arayüz sözleşmesi)
+# ---------------------------------------------------------------------------
+
+
+class TestAyristirmaDenendiSozlesmesi:
+    """Arayüz "bu adım gerekmedi" derken yalnız LLM'in HİÇ çağrılmadığı hâli kastedebilir.
+
+    Boş `alt_talepler` iki ayrı yoldan gelir ve listeden ayırt EDİLEMEZ:
+      (a) çok-konu sinyali yok  → LLM hiç çağrılmaz (adım fiilen boş geçer)
+      (b) sinyal var, LLM koşar → anlamlı 2 segment çıkmaz (decompose.py'deki ikinci return)
+    (b)'yi "gerekmedi" göstermek, gerçekten harcanmış bir LLM çağrısını "iş yapılmadı" diye
+    beyan etmek olurdu — bu bayrağın var olma sebebi tam olarak budur.
+    """
+
+    async def test_coklu_sinyal_yokken_denenmedi(self):
+        # Arrange — tek konu, çok-talep bağlacı yok, TEK niyet kökü.
+        # NOT: "…yapılmasını talep ederim" gibi olağan bir dilekçe cümlesi _coklu_sinyal'i
+        # ateşler (kök sayımı 'yapılması' ⊂ 'yapılmasını' önekini iki kez sayar) → o metin
+        # bu dalı sınamaz. Ayrı bir bulgu olarak raporlandı; burada saf tek-kök metin.
+        state = {"evrak_text": "Sokaktaki çukur onarılsın."}
+        assert not _coklu_sinyal(_govde(state["evrak_text"])), "fixture artık çok-konulu sayılıyor"
+        # Act
+        out = await decompose_node(state)
+        # Assert — LLM çağrılmadı → gerekmedi
+        assert out["alt_talepler"] == []
+        assert out["ayristirma_denendi"] is False
+
+    async def test_bolunme_ciksa_da_denendi_isaretlenir(self, monkeypatch):
+        # Arrange — gerçek çok-konulu dilekçe
+        state = {"evrak_text": (
+            "Sokağımdaki çukurun onarılmasını talep ederim. AYRICA su faturama itiraz "
+            "ediyorum. BİR DE açtığım iş başvurusunun sonucunu öğrenmek istiyorum."
+        )}
+        # Act
+        out = await decompose_node(state)
+        # Assert — hangi dal koşarsa koşsun deneme yapıldığı bildirilir
+        assert out["ayristirma_denendi"] is True
+
+    async def test_llm_kostu_ama_bos_ciktiginda_gerekmedi_DEMEZ(self, monkeypatch):
+        # Arrange — çok-konu sinyali VAR (LLM çağrılır) ama segmentler anlamlı bölünmüyor:
+        # LLM boş döner ve heuristik de <2 segment bulur → ikinci boş return dalı.
+        import agents.nodes.decompose as dmod
+        monkeypatch.setattr(dmod, "_llm_segment", _bos_llm_segment)
+        monkeypatch.setattr(dmod, "_heuristik_segment", lambda _g: ["tek parça"])
+        monkeypatch.setattr(dmod, "_coklu_sinyal", lambda _g: True)
+        # Act
+        out = await decompose_node({"evrak_text": "ayrıca bir de talep ederim"})
+        # Assert — liste boş AMA deneme yapıldı: arayüz "gerekmedi" diyemez
+        assert out["alt_talepler"] == []
+        assert out["ayristirma_denendi"] is True
+
+
+async def _bos_llm_segment(_govde):
+    """LLM segmentasyonu başarısız/yetersiz — deterministik fallback dalını zorlar."""
+    return []

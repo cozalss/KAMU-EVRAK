@@ -12,6 +12,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { MONO, SANS, T, V, PAL, BANT, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, Icon } from "./neonUi.jsx";
 import { nodeDurationMs } from "../lib/pipelinePhases.js";
+import { grupSuresiMs, akisSuresiMs, adimDurumu, kostuMu } from "../lib/akisKatman.js";
 
 /* Geometri: 28px oluk, ray x=13. Glow yalnız bu sahnede (Epik istisna). */
 const HAT = { x: 13, w: 2, merkez: 16 };
@@ -19,13 +20,17 @@ const GLOW = (c, p = 45) => `color-mix(in srgb, ${c} ${p}%, transparent)`;
 
 /* Oluk içi dikey ray parçası — zemin hairline üstünde hat rengi YUKARIDAN AŞAĞI dolar
    (hat istasyona dökülür). akis: aktif istasyona giren parçada çift ışık kuyruğu + glow. */
-const Ray = ({ top, height, bottom, filled, col, akis }) => (
+const Ray = ({ top, height, bottom, filled, col, akis, kesik = false }) => (
   /* Dolum scaleY, kuyruk translateY — ikisi de compositor'da kalır (layout anime yok;
      jüri turu bulgusu: top/height animasyonu zayıf makinede jank üretir). Kuyruk span'ı
-     ray boyunda; gradyan üst 22px'te (background-size) — translateY(-22px→100%) tam süpürme. */
-  <span aria-hidden="true" style={{ position: "absolute", left: HAT.x, width: HAT.w, top, height, bottom, background: PAL.line, overflow: "hidden", boxShadow: akis ? `0 0 10px ${GLOW(col, 50)}` : "none", transition: "box-shadow .3s ease" }}>
-    <span style={{ position: "absolute", inset: 0, background: col, transformOrigin: "top", transform: filled ? "scaleY(1)" : "scaleY(0)", transition: "transform .45s var(--ke-ease-in-out)" }} />
-    {filled && akis && (
+     ray boyunda; gradyan üst 22px'te (background-size) — translateY(-22px→100%) tam süpürme.
+
+     kesik=true: EŞZAMANLI adımlar arasındaki bağ. Düz ray "önce bu, sonra şu" der; oysa
+     aynı katmandaki adımların arasında sıra YOKTUR. Kesikli hat bu iddiayı geri çeker
+     (ışık kuyruğu da akmaz — akış yönü göstermek yanlış olurdu). */
+  <span aria-hidden="true" style={{ position: "absolute", left: HAT.x, width: HAT.w, top, height, bottom, background: kesik ? `repeating-linear-gradient(180deg, ${PAL.lineHi} 0 3px, transparent 3px 7px)` : PAL.line, overflow: "hidden", boxShadow: akis && !kesik ? `0 0 10px ${GLOW(col, 50)}` : "none", transition: "box-shadow .3s ease" }}>
+    <span style={{ position: "absolute", inset: 0, background: kesik ? `repeating-linear-gradient(180deg, ${col} 0 3px, transparent 3px 7px)` : col, transformOrigin: "top", transform: filled ? "scaleY(1)" : "scaleY(0)", transition: "transform .45s var(--ke-ease-in-out)" }} />
+    {filled && akis && !kesik && (
       <>
         {/* Işık kuyruğu PAL.onInk: "her zeminde ışık" sözleşmesi. onAccent tema-tersine akar —
             koyu modda #0b0a09 olup kuyruk siyah bir KARARTI gibi süzülüyordu (2026-08 bulgusu). */}
@@ -38,9 +43,27 @@ const Ray = ({ top, height, bottom, filled, col, akis }) => (
 
 /* İstasyon işareti — dolu disk (bitti: pop + ışıklı halka) · dönen halka (çalışıyor, glow'lu)
    · ara durak (sırada). key={st}: durum değişince remount → vuruş o anda oynar. */
-function HatDurak({ st, col }) {
+function HatDurak({ st, col, bos = false }) {
   const orta = { position: "absolute", left: 0, width: 28, display: "flex", justifyContent: "center" };
   if (st === "pending") return <span aria-hidden="true" style={{ ...orta, top: 11 }}><span style={{ width: 10, height: 10, borderRadius: RAD.dot, background: PAL.bg, border: `1px solid ${PAL.lineHi}` }} /></span>;
+  // "Atlandı": akış koşullu dalda başka yere gitti, bu adım HİÇ koşmadı. Eğik çizgi —
+  // "gerekmedi"nin düz tiresinden biçimce de ayrılır (renk tek sinyal değil, WCAG 1.4.1).
+  if (st === "atlandi") return (
+    <span key="atlandi" aria-hidden="true" style={{ ...orta, top: 8 }}>
+      <span style={{ width: 16, height: 16, borderRadius: RAD.dot, background: PAL.bg, border: `1px dashed ${PAL.lineHi}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ width: 9, height: 1.5, background: PAL.mut3 || PAL.mut2, borderRadius: 1, transform: "rotate(-45deg)" }} />
+      </span>
+    </span>
+  );
+  // "Gerekmedi": içi boş halka + tire. Dolu renkli tik yalnız GERÇEKTEN iş yapan adımın
+  // hakkı; aksi halde ekran 15 eşit başarı gösterir ve ağırlıklar okunamaz.
+  if (bos && st === "done") return (
+    <span key="bos" aria-hidden="true" style={{ ...orta, top: 8 }}>
+      <span style={{ width: 16, height: 16, borderRadius: RAD.dot, background: PAL.bg, border: `1.5px solid ${PAL.lineHi}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ width: 7, height: 1.5, background: PAL.mut2, borderRadius: 1 }} />
+      </span>
+    </span>
+  );
   if (st === "active") return (
     /* Glow statik box-shadow'la (dönen SVG'nin altındaki halka) — filter:drop-shadow her
        karede yeniden rasterize oluyordu (jüri bulgusu). */
@@ -103,14 +126,25 @@ function HatTerminal({ n, col, count, sure, girisAktif, tamam, ilerleme, canli, 
 /* Tek istasyon satırı — oluk (ray + durak) + içerik (ad · süre · sıra no · canlı çıktı özeti).
    Aktif satır spot alır: tint zemin + hat renginde iç çerçeve + dış glow (Epik istisna).
    Satır TIKLANABİLİR: adım detay modalını açar. */
-function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akisTop, onDetay }) {
-  const done = a.status === "done", active = a.status === "active", err = a.status === "error";
+function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akisTop, onDetay,
+  kesikTop = false, kesikBot = false }) {
+  // Tek karar noktası (lib/akisKatman.adimDurumu): calisti · gerekmedi · atlandi · hata ·
+  // isleniyor · bekliyor. "gerekmedi" = koştu ama işi yoktu; "atlandi" = HİÇ koşmadı
+  // (koşullu dal başka yere saptı). İkisi de zafer tiki almaz — 15 tikin hepsi eşit katkı
+  // sanılmasın. Renk TEK sinyal değil; alt yazı ve SR metni durumu ayrıca söyler.
+  const durum = adimDurumu(a);
+  const done = a.status === "done", active = durum === "isleniyor", err = durum === "hata";
+  const bosGecti = durum === "gerekmedi";
+  const atlandi = durum === "atlandi";
   const nodeBant = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant] : null;
   const durakCol = a.id === "risk_guard" && done ? (nodeBant || risk).c : col;
   const ms = nodeDurationMs(a);
   const sure = done && Number.isFinite(ms) && ms >= 50 ? `${(ms / 1000).toFixed(1)}s` : null;
-  const altYazi = done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "hata · adım başarısız" : (a.desc || "—");
-  const altRenk = err ? DERIN_OF(BANT.kirmizi.c) : done ? (a.id === "risk_guard" ? DERIN_OF((nodeBant || risk).c) : PAL.mut) : active ? PAL.mut : PAL.mut2;
+  const altYazi = atlandi ? "bu koşumda çalışmadı"
+    : bosGecti ? (a.out || "gerekmedi")
+    : done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "hata · adım başarısız" : (a.desc || "—");
+  const altRenk = err ? DERIN_OF(BANT.kirmizi.c) : (bosGecti || atlandi) ? PAL.mut2
+    : done ? (a.id === "risk_guard" ? DERIN_OF((nodeBant || risk).c) : PAL.mut) : active ? PAL.mut : PAL.mut2;
   const zemin = active ? ALFA(col) : "transparent";
   const spotGolge = active && akisTop ? `inset 0 0 0 1px ${col}, 0 0 20px ${GLOW(col, 22)}, ${SH.card}` : "none";
   return (
@@ -125,9 +159,9 @@ function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akisTop, 
       onMouseLeave={(e) => { e.currentTarget.style.background = zemin; }}
       style={{ cursor: "pointer", position: "relative", display: "grid", gridTemplateColumns: "28px 1fr", gap: SP.m, padding: "6px 8px 6px 0", borderRadius: RAD.ctl, background: zemin, boxShadow: spotGolge, transition: "background .12s ease, box-shadow .2s var(--ke-ease-out)", animation: glow ? `nu-rise .18s var(--ke-ease-out) ${Math.min(i * 28, 420)}ms both` : "none" }}>
       <div style={{ position: "relative", minHeight: 40 }}>
-        {hasTop && <Ray top={-6} height={HAT.merkez + 6} filled={topFill} col={col} akis={akisTop} />}
-        {hasBot && <Ray top={HAT.merkez} bottom={-6} filled={done} col={col} />}
-        <HatDurak st={a.status} col={durakCol} />
+        {hasTop && <Ray top={-6} height={HAT.merkez + 6} filled={topFill} col={col} akis={akisTop} kesik={kesikTop} />}
+        {hasBot && <Ray top={HAT.merkez} bottom={-6} filled={done} col={col} kesik={kesikBot} />}
+        <HatDurak st={atlandi ? "atlandi" : a.status} col={durakCol} bos={bosGecti} />
       </div>
       <div style={{ minWidth: 0 }}>
         {/* Soluklaştırma opacity ile DEĞİL AA-güvenli renk kademeleriyle (a11y jüri bulgusu:
@@ -147,7 +181,7 @@ function HatIstasyon({ a, i, col, risk, hasTop, topFill, hasBot, glow, akisTop, 
         <div style={{ marginTop: 2, ...TYPE.data, color: altRenk }}>{altYazi}</div>
         {/* SR: durum programatik olarak da verilir (renk/ikon tek sinyal olmasın). */}
         <span style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>
-          {done ? `tamamlandı${sure ? ` · ${sure}` : ""}` : active ? "şu an işleniyor" : err ? "hata: adım başarısız" : "sırada"}
+          {atlandi ? "bu koşumda çalışmadı" : bosGecti ? "bu belgede gerekmedi" : done ? `tamamlandı${sure ? ` · ${sure}` : ""}` : active ? "şu an işleniyor" : err ? "hata: adım başarısız" : "sırada"}
         </span>
       </div>
     </div>
@@ -164,29 +198,83 @@ const HatSon = ({ col, done }) => (
 
 /* Tek hat (görev fazı) — terminal + istasyonlar + terminüs. Işık izi tek odakta: yalnız
    aktif istasyona giren parça (terminal rayı dahil, aktif istasyon hattın ilkiyse). */
-function HatFaz({ n, items, risk = BANT.yesil, glow, sahne, sonHat = true, devir = false, onDetay }) {
+/* Eşzamanlı blok başlığı — "bu adımların arasında sıra yok" iddiasını AÇIKÇA yazar.
+   Süre EN UZUN dalın süresidir; dalları toplamak geçen süreyi şişirirdi.
+
+   İDDİA YALNIZ OLGUYA DAYANIR: etiket ancak grubun EN AZ İKİ üyesi GERÇEKTEN koştuğunda
+   basılır. Koşullu dallarda (dur-ve-sor / yeşil bantta atlanan onay) bir katmandaki
+   adımların hiçbiri koşmayabilir; o durumda "2 adım aynı anda çalıştı" demek düpedüz
+   yanlış beyandır (2026-08-12 adversarial ölçümü — hiç koşmamış risk_guard ∥ arsiv çifti
+   eşzamanlılık kutusu içinde gösteriliyordu). */
+function ParalelBaslik({ grup, col }) {
+  const kosan = grup.items.filter(kostuMu).length;
+  if (kosan < 2) return null;
+  const ms = grupSuresiMs(grup.items);
+  const sure = Number.isFinite(ms) && ms >= 100
+    ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 8px 2px 28px" }}>
+      <span aria-hidden="true" style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(col), letterSpacing: "0.04em" }}>∥</span>
+      <span style={{ ...TYPE.meta, color: PAL.mut }}>
+        {kosan} adım aynı anda çalıştı{sure ? ` · ${sure} (en uzun dal)` : ""}
+      </span>
+    </div>
+  );
+}
+
+function HatFaz({ n, gruplar, risk = BANT.yesil, glow, sahne, sonHat = true, devir = false, onDetay }) {
   const col = n === 2 ? V : T;
-  const ms = items.reduce((s, a) => {
-    const nodeMs = nodeDurationMs(a);
-    return a.status === "done" && Number.isFinite(nodeMs) ? s + nodeMs : s;
-  }, 0);
-  const sure = ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
-  const doneN = items.filter((a) => a.status === "done").length;
-  const fazDone = items.length > 0 && doneN === items.length;
+  const items = gruplar.flatMap((g) => g.items);
+  // Geçen süre: gruplar arası TOPLAM, grup içi EN UZUN. Eskiden tüm adımlar toplanıyordu →
+  // paralel dallar iki kez sayılıyor, faz süresi olduğundan uzun görünüyordu.
+  const ms = akisSuresiMs(gruplar);
+  const sure = Number.isFinite(ms) && ms >= 100
+    ? `${ms < 10000 ? (ms / 1000).toFixed(1) : Math.round(ms / 1000)}s` : null;
+  // "Bitti" = koştu VEYA atlandı: koşullu dalda atlanan adım faz ilerlemesini sonsuza dek
+  // askıda bırakmamalı. Ama BAŞARI sayımı ayrıdır (doneN) — ilerleme çubuğu ile "kaç adım
+  // gerçekten çalıştı" bilgisi karıştırılmaz.
+  const kapandi = (a) => a.status === "done" || a.status === "atlandi" || a.status === "error";
+  const doneN = items.filter(kostuMu).length;
+  const fazDone = items.length > 0 && items.every(kapandi);
   const aktifJ = items.findIndex((a) => a.status === "active");
   const canli = sahne && glow;
+  let j = 0;                                    // faz genelinde istasyon sırası (ray dolumu)
   return (
     <div style={{ minWidth: 0 }}>
       <HatTerminal n={n} col={col} count={items.length} sure={sure}
         girisAktif={items[0]?.status !== "pending"} tamam={fazDone}
         ilerleme={items.length ? doneN / items.length : 0} canli={canli && aktifJ >= 0}
         glow={glow} akis={canli && aktifJ === 0} devir={devir} />
-      {items.map((a, j) => (
-        <HatIstasyon key={a.id} a={a} i={a.sira} col={col} risk={risk} hasTop
-          topFill={j === 0 ? a.status !== "pending" : items[j - 1].status === "done"}
-          hasBot glow={glow} akisTop={canli && a.status === "active"} onDetay={() => onDetay(a.sira)} />
+      {gruplar.map((g, gi) => (
+        <div key={g.items[0].id} style={{ position: "relative" }}>
+          {g.paralel && <ParalelBaslik grup={g} col={col} />}
+          {g.items.map((a, k) => {
+            const idx = j++;
+            // Blok İÇİ bağ kesikli: aynı katmandaki adımlar arasında sıra yoktur.
+            // Bloğa GİREN ve bloktan ÇIKAN bağ düz kalır (gerçek bağımlılık oradadır).
+            const kesikTop = g.paralel && k > 0;
+            const kesikBot = g.paralel && k < g.items.length - 1;
+            // Paralel blokta giriş rayı GRUBUN girişine bakar, önceki KARDEŞE değil:
+            // eşzamanlı dallar farklı sırada bitebilir (ozetle mevzuat_oner'den önce
+            // bitince, tik yeşilken üstündeki ray "henüz gelinmedi" gösteriyordu —
+            // hem yanlış hem de tam "aynı anda çalıştı" etiketinin altında).
+            const oncekiKapandi = idx === 0
+              ? a.status !== "pending"
+              : items[idx - 1].status === "done";
+            const grupGirisi = g.paralel
+              ? (idx - k === 0 ? g.items[0].status !== "pending" : items[idx - k - 1].status === "done")
+              : oncekiKapandi;
+            return (
+              <HatIstasyon key={a.id} a={a} i={a.sira} col={col} risk={risk} hasTop
+                topFill={grupGirisi}
+                hasBot glow={glow} akisTop={canli && a.status === "active"}
+                kesikTop={kesikTop} kesikBot={kesikBot}
+                onDetay={() => onDetay(a.sira)} />
+            );
+          })}
+          {gi === gruplar.length - 1 && sonHat && <HatSon col={col} done={fazDone} />}
+        </div>
       ))}
-      {sonHat && <HatSon col={col} done={fazDone} />}
     </div>
   );
 }
@@ -327,14 +415,22 @@ export function useSahneTempo(nodes, { pendingOnay = null, glow = true } = {}) {
    hiçbir faz eşleşmediği için ŞERİT TAMAMEN BOŞ render ediliyordu. Buradaki `gorev` alanı
    `display`'de her zaman dolu. Faz gruplaması geri getirilecekse `display` sözleşmesinin
    alanı taşıdığı önce doğrulanmalı. */
-export function SahneAkis({ display, total, glow, runBase, onDetay }) {
+export function SahneAkis({ display, gruplar = null, total, glow, runBase, onDetay }) {
   const aktifIdx = display.findIndex((x) => x.status === "active");
   let sonBiten = -1;
   display.forEach((x, i) => { if (x.status === "done") sonBiten = i; });
   const merkezIdx = aktifIdx >= 0 ? aktifIdx : (sonBiten >= 0 ? sonBiten : 0);
   const merkez = display[merkezIdx];
-  const g1 = display.filter((a) => a.gorev !== 2);
-  const g2 = display.filter((a) => a.gorev === 2);
+  // Katman blokları verilmediyse (eski çağıran / harita yok) her adım kendi bloğunda —
+  // paralellik İDDİA EDİLMEZ, görünüm eskisiyle birebir aynı kalır.
+  const bloklar = gruplar || display.map((a) => ({ katman: null, paralel: false, items: [a] }));
+  // Bir blok iki göreve yayılırsa görev başına bölünür; tek öğe kalırsa paralel iddiası düşer.
+  const gorevBloklari = (secici) => bloklar
+    .map((g) => ({ ...g, items: g.items.filter(secici) }))
+    .filter((g) => g.items.length)
+    .map((g) => ({ ...g, paralel: g.paralel && g.items.length > 1 }));
+  const g1 = gorevBloklari((a) => a.gorev !== 2);
+  const g2 = gorevBloklari((a) => a.gorev === 2);
   // Aktarma bağı yalnız iki hat YAN YANA iken çizilir (alt alta yığılımda hat zaten
   // dikeyde akar) — kolonların offsetTop eşitliği ölçülür, pencere boyutunda güncellenir.
   const gridRef = useRef(null);
@@ -363,8 +459,8 @@ export function SahneAkis({ display, total, glow, runBase, onDetay }) {
             </span>
           </div>
           <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", columnGap: SP.xxl, rowGap: SP.l, alignItems: "start" }}>
-            {g1.length > 0 && <HatFaz n={1} items={g1} glow={glow} sahne onDetay={onDetay} />}
-            {g2.length > 0 && <HatFaz n={2} items={g2} glow={glow} sahne devir={ikiKolon} onDetay={onDetay} />}
+            {g1.length > 0 && <HatFaz n={1} gruplar={g1} glow={glow} sahne onDetay={onDetay} />}
+            {g2.length > 0 && <HatFaz n={2} gruplar={g2} glow={glow} sahne devir={ikiKolon} onDetay={onDetay} />}
           </div>
         </div>
       )}
@@ -386,15 +482,20 @@ function SeritNokta({ a, col }) {
       </svg>
     </span>
   );
-  const done = a.status === "done", err = a.status === "error";
+  const err = a.status === "error";
   // Hatalı adım renk + BİÇİMLE ayrılır (X glifi) — renk tek sinyal olamaz (WCAG 1.4.1).
   if (err) return (
     <span style={{ width: 12, height: 12, borderRadius: RAD.dot, background: BANT.kirmizi.c, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
       <Icon.x width={8} height={8} />
     </span>
   );
+  // Yalnız GERÇEKTEN iş üreten adım dolu nokta alır. "gerekmedi" (koştu, işi yoktu) ve
+  // "atlandi" (hiç koşmadı) içi boş halka kalır; atlanan ayrıca kesikli çerçeveyle ayrışır.
+  const durum = adimDurumu(a);
+  const dolu = durum === "calisti";
+  const atlandi = durum === "atlandi";
   return (
-    <span style={{ width: done ? 12 : 9, height: done ? 12 : 9, borderRadius: RAD.dot, background: done ? dotCol : PAL.bg, border: done ? "none" : `1px solid ${PAL.lineHi}`, flexShrink: 0 }} />
+    <span style={{ width: dolu ? 12 : 9, height: dolu ? 12 : 9, borderRadius: RAD.dot, background: dolu ? dotCol : PAL.bg, border: dolu ? "none" : `1px ${atlandi ? "dashed" : "solid"} ${PAL.lineHi}`, flexShrink: 0 }} />
   );
 }
 
@@ -402,8 +503,8 @@ function SeritNokta({ a, col }) {
    hücreler kesintisiz tek hat okunur. bos: hattın gerçek ucu (parça çizilmez).
    Radius YOK: yuvarlak uçlar her ek yerinde "kapanmış boru" okunuyordu — parçalar
    düz uçla birbirine yaslanır, şerit boydan boya TEK boru görünür. */
-const YarimRay = ({ filled, col, bos }) => (
-  <span aria-hidden="true" style={{ flex: 1, minWidth: 6, height: 3, alignSelf: "center", background: bos ? "transparent" : (filled ? col : PAL.line), transition: "background .3s ease" }} />
+const YarimRay = ({ filled, col, bos, kesik = false }) => (
+  <span aria-hidden="true" style={{ flex: 1, minWidth: 6, height: 3, alignSelf: "center", background: bos ? "transparent" : (kesik ? `repeating-linear-gradient(90deg, ${filled ? col : PAL.line} 0 3px, transparent 3px 7px)` : (filled ? col : PAL.line)), transition: "background .3s ease" }} />
 );
 
 export function AkisSeridi({ display, onDetay }) {
@@ -437,8 +538,15 @@ export function AkisSeridi({ display, onDetay }) {
     }
     // İstasyon hücresi — üstte ray içinde nokta, altında adım adı (2 satır sığar).
     // Tüm hücre tıklanabilir (geniş hedef); durum + risk bandı erişilebilir ada girer.
-    const durumTr = a.status === "done" ? "tamamlandı" : a.status === "active" ? "işleniyor" : a.status === "error" ? "hata" : "sırada";
+    const durumTr = {
+      calisti: "tamamlandı", gerekmedi: "gerekmedi", atlandi: "bu koşumda çalışmadı",
+      hata: "hata", isleniyor: "işleniyor", bekliyor: "sırada",
+    }[adimDurumu(a)];
     const bantEk = a.id === "risk_guard" && a.bant && BANT[a.bant] ? ` · risk bandı ${BANT[a.bant].l}` : "";
+    // Aynı katmandaki komşularla bağ KESİKLİ: aralarında çalışma sırası yok.
+    const esKatman = (x, y) => x && y && x.katman != null && x.katman === y.katman;
+    const kesikSol = esKatman(a, prev);
+    const kesikSag = esKatman(a, display[i + 1]);
     const adRenk = a.status === "error" ? DERIN_OF(BANT.kirmizi.c) : a.status === "done" ? PAL.ink2 : a.status === "active" ? PAL.ink : PAL.mut;
     parcalar.push(
       <button key={a.id} type="button" onClick={() => onDetay(a.sira)} title={`${a.label} — ${durumTr}${bantEk}`}
@@ -447,9 +555,9 @@ export function AkisSeridi({ display, onDetay }) {
         onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
         style={{ cursor: "pointer", flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "0 0 6px", background: "transparent", border: "none", borderRadius: RAD.ctl, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
         <span style={{ display: "flex", alignItems: "center", width: "100%", height: 24 }}>
-          <YarimRay filled={gorevBasi ? a.status !== "pending" : prev?.status === "done"} col={col} />
+          <YarimRay filled={gorevBasi ? a.status !== "pending" : prev?.status === "done"} col={col} kesik={kesikSol} />
           <SeritNokta a={a} col={col} />
-          <YarimRay filled={a.status === "done"} col={col} bos={i === display.length - 1} />
+          <YarimRay filled={a.status === "done"} col={col} bos={i === display.length - 1} kesik={kesikSag} />
         </span>
         <span style={{ ...TYPE.meta, color: adRenk, fontWeight: a.status === "active" ? 600 : 400, textAlign: "center", maxWidth: 92, padding: "0 2px", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", transition: "color .2s ease" }}>{a.label}</span>
       </button>

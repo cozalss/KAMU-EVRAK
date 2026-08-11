@@ -11,6 +11,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast as sonnerToast } from "sonner";
 import { authFetch, parseError } from "./authApi.js";
 import { DEFAULT_NODE_IDS, makeNode } from "./nodeMeta.js";
+import { kapanisDurumlari } from "./akisKatman.js";
+
 
 const MAX_UPLOAD_MB = 20;            // backend MAX_UPLOAD_BYTES (20 MiB) ile eşleşir
 const ACCEPT = ".pdf,.png,.jpg,.jpeg,.webp,.tiff,.docx,.txt";
@@ -21,6 +23,11 @@ export { ACCEPT };
 
 export function usePipeline() {
   const [nodes, setNodes] = useState(freshNodes);
+  // node → superstep haritası; YALNIZ SSE `start` olayından gelir. Sabit yedek BİLEREK yok:
+  // koşum başlamadan (ya da `start` gelmeden ölen bir istekte) sabit bir harita göstermek,
+  // sunucunun çalıştırmadığı bir topolojiyi eşzamanlılık iddiasıyla çizmek olurdu. null =
+  // iddia yok → düz liste.
+  const [katmanlar, setKatmanlar] = useState(null);
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -75,6 +82,9 @@ export function usePipeline() {
     sawTerminal.current = false;
     runStart.current = performance.now();
     setNodes(freshNodes());
+    // Harita da sıfırlanır: bir önceki koşumun (ya da başka ENV'in) topolojisi yeni koşumun
+    // düğümlerine uygulanmasın — `start` gelene kadar paralellik iddiası olmaz.
+    setKatmanlar(null);
     setResult(null);
     setError("");
     setErrorKind("");
@@ -101,6 +111,11 @@ export function usePipeline() {
     if (ev.event === "start") {
       // start.nodes DİNAMİK — backend ENV ne döndürürse onu kur (R1). İlki aktif.
       const ids = Array.isArray(ev.nodes) && ev.nodes.length ? ev.nodes : DEFAULT_NODE_IDS;
+      // start.katmanlar: node → superstep; aynı değer = EŞZAMANLI koşan adımlar. Kaynağı
+      // backend'de KOŞAN grafın kendi kenarlarıdır. Gelmezse null → paralellik İDDİA
+      // EDİLMEZ, düz listeye düşülür (yarım bilgiyle eşzamanlılık uydurmaktansa susmak).
+      const km = ev.katmanlar;
+      setKatmanlar(km && typeof km === "object" && Object.keys(km).length ? km : null);
       const t = elapsed();
       setNodes(ids.map((id, i) => {
         const node = makeNode(id);
@@ -128,9 +143,10 @@ export function usePipeline() {
       if (ev.result?.onay_bekliyor) setPendingOnay(ev.result);
       else setResult(ev.result);
       const t = elapsed();
-      setNodes((prev) => prev.map((n) =>
-        (n.status === "pending" || n.status === "active")
-          ? { ...n, status: "done", t0: n.t0 ?? t, t1: t } : n));
+      // KOŞMAYAN adım "tamamlandı" SAYILMAZ — kural lib/akisKatman.kapanisDurumlari'nda
+      // saf ve testlidir (gerçek SSE kayıtlarıyla regresyon altında). onay_bekliyor:
+      // koşum BİTMEDİ, duraklatıldı → kalan adımlar "atlandı" değil "sırada" kalır.
+      setNodes((prev) => kapanisDurumlari(prev, t, { duraklatildi: !!ev.result?.onay_bekliyor }));
     } else if (ev.event === "persist") {
       // `done`dan SONRA gelen islem_id (backend persist'i sonuca ertelendi) — sonucu SIĞ
       // merge ile zenginleştir (iç nesne referansları korunur; DashboardApp aynı-koşum
@@ -259,6 +275,14 @@ export function usePipeline() {
       const final = await res.json();
       setPendingOnay(null);
       setResult(final);
+      // Duraklamış koşum memur kararıyla SONUNA kadar aktı (resume yalnız graf bitince
+      // döner) → onay kapısından sonra bekleyen adımlar gerçekten koştu, "sırada" kalmamalı.
+      // Node-başı SSE olayı bu yolda gelmediği için süre damgası yazılmaz (uydurulmaz).
+      {
+        const t = elapsed();
+        setNodes((prev) => prev.map((n) =>
+          n.status === "pending" ? { ...n, status: "done", t0: n.t0 ?? t, t1: t } : n));
+      }
       showToast(secim === "reddet" ? "Taslak reddedildi." : secim === "duzenle" ? "Düzenleme onaylandı." : "Taslak onaylandı.");
       return true;
     } catch (err) {
@@ -377,7 +401,7 @@ export function usePipeline() {
   }, []);
 
   return {
-    nodes, result, busy, error, errorKind, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
+    nodes, katmanlar, result, busy, error, errorKind, toast, selectedSample, fileMeta, evrakText, downloading, pendingOnay, fileUrl,
     runFile: runFileValidated, runSample, resume, retry, cancelRun, download, showToast, dismissError, canRetry, applyTaslak,
     // Koşum başlangıcının MUTLAK saati (performance.now tabanı). Node t0/t1 damgaları bu
     // tabana GÖRELİdir → canlı süre = performance.now() - runBase - t0 (saat karıştırma yok).

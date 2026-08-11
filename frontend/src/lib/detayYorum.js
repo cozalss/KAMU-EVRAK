@@ -501,13 +501,55 @@ const KALIBRASYON_NOT = {
   temiz: null,
 };
 
-/** Ham 0..1 risk skoru → memurun bildiği yüzde + seviye adı. Skor yoksa/0 ise null (yüzde uydurulmaz).
+/** Türkçe ondalık gösterim (0.87 → "0,87") — birimsiz puanlar için. */
+const ondalik = (s) => s.toFixed(2).replace(".", ",");
+
+/** Denetim izi rozeti — SHA-256 hash-zinciri sonuç başlığında tek satırda görünür.
+
+    Zincir memurun ADIM AKIŞINDA gösterilmez (iş akışını kalabalıklaştırır), ama tamamen
+    görünmez de kalmamalı: kamu evrak sisteminde denetlenebilirlik (Sayıştay/KVKK) en
+    ayırt edici güvencedir. Mühür iddiası YALNIZ gerçek hash varsa basılır — zincir uzunluğu
+    tek başına "mühürlendi" demeye yetmez. */
+export function denetimRozeti(denetim) {
+  const zincir = denetim?.zincir || denetim?.adimlar;
+  const n = Array.isArray(zincir) ? zincir.length : Number(denetim?.adim_sayisi);
+  const hash = denetim?.son_hash || denetim?.kok_hash;
+  if (!hash || !Number.isFinite(n) || n <= 0) return null;
+  return {
+    metin: `${n} halka · SHA-256`,
+    baslik: `Denetim izi: her adımın çıktısı SHA-256 hash-zinciriyle mühürlendi (${n} halka). `
+      + `Tek karakter değişse zincir kopar. Son hash: ${String(hash).slice(0, 16)}…`,
+  };
+}
+
+/** Risk ölçüsünün KOMPAKT etiketi (adım satırı, rozet) — tek kaynak.
+
+    Hangi büyüklüğün yüzde ile sunulabileceğini burası belirler; çağıranlar kendi
+    biçimlendirmesini yapmaz. Bkz. `riskSkorYorum` doküman bloğu. */
+export function riskOlcuEtiketi(meta) {
+  const p = Number(meta?.kusur_olasiligi);
+  if (Number.isFinite(p) && p > 0) return `kusur olasılığı %${Math.round(p * 100)}`;
+  const s = Number(meta?.skor);
+  if (Number.isFinite(s) && s > 0) return `risk puanı ${ondalik(s)}`;
+  return "";
+}
+
+/** Ham 0..1 risk skoru → BİRİMSİZ puan + seviye adı. Skor yoksa/0 ise null (ölçü uydurulmaz).
+
+    SKOR YÜZDE DEĞİLDİR. Backend `risk_agirlik.kusur_olasiligi` doküman bloğu bunu açıkça
+    yazar: skor = Σ⊕(ciddiyet × isabet) → BEKLENEN ZARAR; ciddiyet bir yargı olduğu için
+    "%87 ihtimalle kusurlu" diye OKUNAMAZ. Arayüz eskiden tam bunu yapıyordu ("Risk puanı:
+    %87") — kategori hatasıydı ve düzeltildi:
+      · `puan`          birimsiz, "0,87 / 1" ölçeğiyle sunulur
+      · `dolgu`         YALNIZ çubuk genişliği (0..100) — ekrana sayı olarak yazılmaz
+      · `olasilikYuzde` backend `kusur_olasiligi` = Σ⊕(isabet); yüzde ile sunulabilen TEK
+                        büyüklük. Yoksa null — skordan TÜRETİLMEZ.
 
     `katkilar`: backend'in gerekçe-başına ağırlığı (ciddiyet × ölçülen isabet). Çubuk = o
     nedenin KENDİ ağırlığı; gerekçe sayısına BÖLÜNMEZ. (Eski davranış eşit bölüyordu → kanıt
     arttıkça çubuklar küçülüyor, hafif sarı belge ağır kırmızıdan büyük görünüyordu.)
     Toplamları skora eşit değildir: skor noisy-OR birleşimidir, toplamsal değil. */
-export function riskSkorYorum(skor, katkilar, bant, kalibrasyon) {
+export function riskSkorYorum(skor, katkilar, bant, kalibrasyon, olasilik) {
   const s = Number(skor);
   if (!Number.isFinite(s) || s <= 0) return null;
   const paylar = Array.isArray(katkilar)
@@ -515,11 +557,14 @@ export function riskSkorYorum(skor, katkilar, bant, kalibrasyon) {
     : [];
   const seviye = BANT_SEVIYE[bant] || null;
   const coklu = paylar.filter((p) => p != null).length > 1;
+  const p = Number(olasilik);
   return {
-    yuzde: Math.round(s * 100),
+    puan: ondalik(s),
+    dolgu: Math.round(s * 100),
+    olasilikYuzde: Number.isFinite(p) && p > 0 ? Math.round(p * 100) : null,
     paylar,
     seviye,
-    baslik: `Risk puanı: %${Math.round(s * 100)}${seviye ? ` (${seviye})` : ""}`,
+    baslik: `Risk puanı: ${ondalik(s)} / 1${seviye ? ` (${seviye})` : ""}`,
     not: coklu
       ? "Her çubuk, o nedenin kendi ağırlığıdır (ne kadar ciddi olduğu × sistemin o konudaki isabet oranı). "
         + "Toplam puan bu nedenlerin birleşimidir; bir neden bile doğruysa belge riskli sayıldığı için çubukların toplamı puana eşit değildir."

@@ -5,6 +5,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
+import { katmanGruplari, gerekmediMi, kostuMu } from "../lib/akisKatman.js";
 import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
 import SonucCalismaAlani from "./SonucCalismaAlani.jsx";
 import AjanAdimDetay from "./AjanAdimDetay.jsx";
@@ -93,6 +94,10 @@ const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
 
 function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAksiyon = null }) {
   const [sekme, setSekme] = useState("belge");
+  /* Kaynak metin UI okuma tipografisinde (TYPE.read, 16px) kalır. Bir kez ters yön denendi —
+     kâğıdın ölçeğine indirilip taslakla eşitlendi — ve metin okunamayacak kadar küçüldü
+     (2026-08-11). Eşitlik kâğıdı BÜYÜTEREK sağlanır (A4Belge sigdir="genislik"), küçülterek
+     değil: bu panel okunmak için var. */
   const pdfGoster = !!fileUrl && (sekme === "belge" || !segs);
   // İçerik hazırsa kağıt tıklanınca A4 modal açılır; klavye/SR yolu başlıktaki BuyutDugme
   // (kağıda role=button vermek tüm belge metnini tek kontrol adına düzleştiriyordu — a11y bulgusu).
@@ -150,7 +155,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
 }
 
 export default function CanliAjanAkisi({
-  nodes = [], result = null, busy = false, started = false, runBase = 0,
+  nodes = [], katmanlar = null, result = null, busy = false, started = false, runBase = 0,
   fileMeta = null, pendingOnay = null,
   onApprove = () => {}, onEdit = () => {}, onReject = () => {}, onAltKarar = () => {},
   onAltTurUret = () => null, onAltDuzenle = () => {},
@@ -216,21 +221,43 @@ export default function CanliAjanAkisi({
   // koşumda tamamlanma vuruşları izlenebilir kalır; sonuç sahnesi sunum bitince açılır.
   const { paced, sunumTamam } = useSahneTempo(nodes, { pendingOnay, glow: efGlow });
   // Denetim zinciri arka planda üretilmeye devam eder; memurun iş akışını kalabalıklaştırmamak
-  // için bu görünümde bir adım ya da panel olarak sunulmaz.
-  const display = useMemo(() => paced.filter((n) => n.id !== "denetim_izi").map((n, i) => ({
-    id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
-    // data: SSE node yükü OLDUĞU GİBİ taşınır — adım detay modalı (AjanAdimDetay) zengin
-    // görünümü bundan kurar (canlı koşumda result henüz yokken tek veri kaynağı budur).
-    data: n.data || null,
-    out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1, sira: i,
-    // durationMs SUNUCU telemetrisidir (SSE node.duration_ms) ve t0/t1'den önceliklidir
-    // (nodeDurationMs). Bu haritada taşınmazsa sahne sessizce istemci tahminine düşerdi:
-    // paralel/gizli bekleme sıradaki görünür düğüme yazılır ve süreler şişerdi.
-    durationMs: n.durationMs ?? null,
-    // risk_guard istasyonu KENDİ bandını taşır — koşum sırasında genel sonuç bandı henüz
-    // oluşmadığından node verisi tek doğru kaynak (backend ile birebir uyum).
-    bant: n.data?.risk_metadata?.bant || null,
-  })), [paced]);
+  // için bu görünümde bir adım ya da panel olarak sunulmaz (sonuç başlığında rozet olarak çıkar).
+  //
+  // SIRA = GRAFIN SIRASI, listenin değil. Adımlar `katmanlar` haritasına göre gerçek çalışma
+  // sırasına dizilir ve eşzamanlı olanlar tek bloğa iner; numaralandırma (01, 02…) bu dizilim
+  // üzerinden verilir. Düz liste hem paralelliği gizliyordu hem de `decompose`/`eksik_tespit`
+  // çiftinde sırayı TERS gösteriyordu. Harita yoksa davranış birebir eskisi gibi kalır.
+  const { display, gruplar } = useMemo(() => {
+    const ham = paced.filter((n) => n.id !== "denetim_izi").map((n) => ({
+      id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
+      // data: SSE node yükü OLDUĞU GİBİ taşınır — adım detay modalı (AjanAdimDetay) zengin
+      // görünümü bundan kurar (canlı koşumda result henüz yokken tek veri kaynağı budur).
+      data: n.data || null,
+      out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
+      // durationMs SUNUCU telemetrisidir (SSE node.duration_ms) ve t0/t1'den önceliklidir
+      // (nodeDurationMs). Bu haritada taşınmazsa sahne sessizce istemci tahminine düşerdi:
+      // paralel/gizli bekleme sıradaki görünür düğüme yazılır ve süreler şişerdi.
+      durationMs: n.durationMs ?? null,
+      // risk_guard istasyonu KENDİ bandını taşır — koşum sırasında genel sonuç bandı henüz
+      // oluşmadığından node verisi tek doğru kaynak (backend ile birebir uyum).
+      bant: n.data?.risk_metadata?.bant || null,
+      // Adım koştu ama yapacak iş YOKTU (dijital metin → OCR gerekmedi; tek-konulu →
+      // ayrıştırma gerekmedi). Yeşil tik almaz; gri "gerekmedi" olarak gösterilir ki
+      // 15 tikin hepsi eşit katkı sanılmasın.
+      gerekmedi: gerekmediMi(n),
+    }));
+    // sira DİZİLİMDEN SONRA verilir: hem ekrandaki numara hem detay modalının indeksi
+    // (display[detayIdx]) aynı sırayı görür.
+    let i = 0;
+    const bloklar = katmanGruplari(ham, katmanlar)
+      // katman + esZamanli düğüme de damgalanır: yatay şerit (AkisSeridi) komşuları
+      // karşılaştırıp eşzamanlı bağı kesikli çizsin diye (blok bilgisi orada yok).
+      .map((g) => ({
+        ...g,
+        items: g.items.map((x) => ({ ...x, sira: i++, katman: g.katman, esZamanli: g.paralel })),
+      }));
+    return { display: bloklar.flatMap((g) => g.items), gruplar: bloklar };
+  }, [paced, katmanlar]);
 
   // EVRAK İŞLENMİYOR → anlamlı boş durum (sahte demo yok) + sürükle-bırak yükleme alanı.
   if (!started) {
@@ -240,9 +267,16 @@ export default function CanliAjanAkisi({
   // Sonuç sahnesi sunum kuyruğu boşalınca açılır — canlı sahne son vuruşlarını oynar.
   const sonucGoster = !!result && sunumTamam;
   const total = display.length || 1;
-  const doneCount = display.filter((a) => a.status === "done").length;
-  const pct = Math.round((doneCount / total) * 100);
-  const allDone = !busy && sunumTamam && doneCount >= total;
+  // İKİ AYRI SAYI, bilerek: `kapananCount` ilerleme çubuğunu sürer (atlanan adım çubuğu
+  // sonsuza dek askıda bırakmasın), `kosanCount` ise BAŞARI beyanıdır ve yalnız gerçekten
+  // çalışan adımları sayar. Eskiden tek sayaç vardı ve koşum bitince tüm bekleyen adımlar
+  // "done" işaretlendiği için, dur-ve-sor dalında hiç çalışmamış adımlar da "başarıyla
+  // yürütüldü" diye sayılıyordu (2026-08-12 adversarial ölçümü: 17 denildi, 10 koştu).
+  const kosanCount = display.filter(kostuMu).length;
+  const atlananCount = display.filter((a) => a.status === "atlandi").length;
+  const kapananCount = display.filter((a) => a.status === "done" || a.status === "atlandi" || a.status === "error").length;
+  const pct = Math.round((kapananCount / total) * 100);
+  const allDone = !busy && sunumTamam && kapananCount >= total;
   const hataliAdim = display.findIndex((a) => a.status === "error");
   // Uçtan-uca gerçek koşum süresi (usePipeline t0/t1 damgaları; yoksa sessizce gizlenir).
   const toplamSn = (() => {
@@ -292,7 +326,12 @@ export default function CanliAjanAkisi({
           if (hataliAdim >= 0 && !kosumda) return `İşlem hatası — ${display[hataliAdim].label} adımı başarısız oldu. Üst çubuktan yeniden deneyebilirsiniz.`;
           const ai = display.findIndex((a) => a.status === "active");
           if (ai >= 0) return `${display[ai].label} çalışıyor — adım ${ai + 1} / ${total}`;
-          if (allDone) return `İşlem tamamlandı — ${total} işlem adımı başarıyla yürütüldü.`;
+          // Beyan yalnız GERÇEKTEN koşan adımları sayar; koşullu dalda atlananlar ayrıca
+          // söylenir (eskiden hepsi "başarıyla yürütüldü" diye sayılıyordu).
+          if (allDone) {
+            return `İşlem tamamlandı — ${kosanCount} işlem adımı yürütüldü`
+              + (atlananCount ? `, ${atlananCount} adım bu koşumda çalışmadı.` : ".");
+          }
           return "";
         })()}
       </div>
@@ -445,7 +484,7 @@ export default function CanliAjanAkisi({
                 Sistem gerekli bilgileri çıkarıyor, ilgili kontrolleri tamamlıyor ve memur incelemesi için hazırlıyor.
               </p>
             </div>
-            <SahneAkis display={display} total={total} glow={efGlow} runBase={runBase} onDetay={setDetayIdx} />
+            <SahneAkis display={display} gruplar={gruplar} total={total} glow={efGlow} runBase={runBase} onDetay={setDetayIdx} />
             <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut2 }}>
               <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: sahneCanli ? T : BANT.yesil.c, animation: sahneCanli && efGlow ? "nu-think 1.3s ease-in-out infinite" : "none" }} />
               Her satır bir işlem aşamasıdır; ayrıntısını görmek için üzerine tıklayın.
@@ -486,7 +525,7 @@ export default function CanliAjanAkisi({
                   {draftMd ? (
                     <div className="sc-document-paper" style={{ maxWidth: 860, margin: "0 auto" }}>
                       <A4Belge metin={cleanDemoText(draftMd)} onAc={() => setBelgeModal("taslak")}
-                        solgun={turUretiliyor || dayanakUretiliyor} />
+                        solgun={turUretiliyor || dayanakUretiliyor} sigdir="genislik" />
                     </div>
                   ) : (
                     <div style={{ maxWidth: 800, margin: "0 auto", display: "flex", alignItems: "center", gap: SP.s, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px dashed ${PAL.lineHi}`, borderRadius: RAD.card, padding: SP.xxl, background: PAL.surf }}>

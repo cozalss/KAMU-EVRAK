@@ -163,8 +163,10 @@ class TestKararLLMdenBagimsiz:
         # additive sözleşme: deterministik anahtarlar + yalnız 'aciklama' eklenir
         _sahte_llm(monkeypatch, {"aciklama": "açıklama"})
         sonuc = await risk_guard_node(_sari_state())
+        # kusur_olasiligi: skordan AYRI olasılık (arayüzün yüzde gösterebileceği tek alan)
         assert set(sonuc["risk_metadata"]) == {
-            "bant", "skor", "gerekceler", "katkilar", "kalibrasyon", "oneri", "aciklama"}
+            "bant", "skor", "kusur_olasiligi", "gerekceler", "katkilar", "kalibrasyon",
+            "oneri", "aciklama"}
 
 
 class TestAciklamaAtla:

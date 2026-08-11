@@ -8,6 +8,7 @@
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR } from "../components/result-cards.jsx";
 import { slaInfo } from "../components/NeonDetayParts.jsx";
 import { DEFAULT_PIPELINE_NODE_IDS, phaseForNode } from "./pipelinePhases.js";
+import { riskOlcuEtiketi } from "./detayYorum.js";
 
 // Her node için kısa TR etiket + görev + açıklama. (İkon dashboard'da numara ile gösterilir.)
 const NODE_META = {
@@ -105,11 +106,13 @@ export function summarize(id, d) {
       return d.format_uyumlu === false ? "format uyarısı" : "doğrulandı";
     }
     case "risk_guard": {
-      // skor = noisy-OR(ciddiyet × ölçülen isabet) → yüzde sunulur; ham 0..1 memura bir şey demez.
+      // Ölçü etiketi TEK KAYNAKTAN (riskOlcuEtiketi): skor beklenen zarardır, olasılık
+      // değildir → yüzde ile sunulmaz. Yüzde yalnız kusur_olasiligi için kullanılır.
       const bant = d.risk_metadata?.bant;
-      const skor = Number(d.risk_metadata?.skor);
-      const tr = { yesil: "yeşil", sari: "sarı", kirmizi: "kırmızı" }[bant];
-      return bant ? `${tr || bant}${Number.isFinite(skor) ? ` (risk %${Math.round(skor * 100)})` : ""}` : "";
+      if (!bant) return "";
+      const tr = { yesil: "yeşil", sari: "sarı", kirmizi: "kırmızı" }[bant] || bant;
+      const olcu = riskOlcuEtiketi(d.risk_metadata);
+      return olcu ? `${tr} · ${olcu}` : tr;
     }
     case "self_rag":
       return d.self_rag_tam ? "yanıt yeterli" : "eksik tespit edildi";

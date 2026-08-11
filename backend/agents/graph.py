@@ -47,6 +47,7 @@ from agents.config import (
     RISK_GUARD_ENABLED,
     SELF_RAG_ENABLED,
 )
+from agents.katman import katmanlar as _katmanlar
 from agents.nodes.arsiv import arsiv_node
 from agents.nodes.cikar import cikar_node
 from agents.nodes.clarifier import clarifier_node, kritik_eksikler
@@ -121,6 +122,24 @@ GIZLI_NODELAR: frozenset[str] = frozenset({"servis_birim"})
 #   • self_rag KOŞULLU (SELF_RAG_ENABLED) verify→arsiv arasına girer.
 # Bağlayıcı topoloji build_graph()'tedir; bu sabit yalnız görselleştirme etiketidir.
 PIPELINE_NODES: tuple[str, ...] = _pipeline_nodes()
+
+
+def pipeline_katmanlari(compiled: Any) -> dict[str, int]:
+    """Derlenmiş graftan node → superstep (katman) haritası; SSE ile UI'a gider.
+
+    Kaynak DERLENMİŞ GRAFIN KENDİ KENARLARIDIR — elle tutulan bir kopya değil. Bu yüzden
+    ENV bayrakları (PARALEL_ANLAMA/PARALEL_TRIYAJ/PARALEL_KAPANIS/CRAG/NLI…) topolojiyi
+    değiştirdiğinde harita kendiliğinden değişir; UI'ın "bu adımlar aynı anda koştu"
+    iddiası çalışan grafla YAPISAL OLARAK çelişemez.
+
+    Aynı katmandaki node'lar eşzamanlıdır. Katman, node'un koşabileceği EN ERKEN
+    superstep'tir — düz PIPELINE_NODES listesinden farklı olarak graf bağımlılıklarına
+    uyar (o liste `decompose`/`eksik_tespit` çiftinde sırayı ters verir). Harita STATİK
+    graftan, istek işlenmeden önce üretilir: koşullu dallarda (`onay_kapisi`, `clarifier`)
+    "her koşul ateşlenirse" varsayımıyla üst sınırdır — o node atlanan bir istekte kuyruk
+    gerçekte bir adım kısadır. Sıralama ve eşzamanlılık iddiası bundan etkilenmez.
+    """
+    return _katmanlar([(e.source, e.target) for e in compiled.get_graph().edges])
 
 
 def _clarify_route(state: dict[str, Any]) -> str:
@@ -327,4 +346,6 @@ def build_graph(checkpointer: Any = None) -> Any:
     return g.compile(checkpointer=checkpointer)
 
 
-__all__ = ("GIZLI_NODELAR", "PIPELINE_NODES", "_zamanli_node", "build_graph")
+__all__ = (
+    "GIZLI_NODELAR", "PIPELINE_NODES", "_zamanli_node", "build_graph", "pipeline_katmanlari",
+)

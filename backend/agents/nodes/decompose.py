@@ -332,8 +332,11 @@ async def decompose_node(state: dict[str, Any]) -> dict[str, Any]:
     bugun = date.today()
     govde = _govde(text)
 
+    # ayristirma_denendi: boş `alt_talepler`in İKİ ayrı anlamını ayırır (bkz. state.py).
+    # Arayüz "bu adım gerekmedi" iddiasını yalnız denenmediğinde kurabilir; boş listeden
+    # çıkarım yapmak, gerçekten LLM çağrılmış bir koşumu "iş yapılmadı" diye gösterirdi.
     if not _coklu_sinyal(govde):
-        return {"alt_talepler": []}  # tek-konulu → LLM çağrısı yapma
+        return {"alt_talepler": [], "ayristirma_denendi": False}  # tek-konulu → LLM çağrısı yapma
 
     tarih_str = str(unsurlar.get("tarih") or "")  # tüm metni GEÇİRME (yanlış tarih riski); yoksa tarih_yok
     talepler = await _llm_segment(govde)
@@ -344,10 +347,11 @@ async def decompose_node(state: dict[str, Any]) -> dict[str, Any]:
     else:
         segs = _heuristik_segment(govde)
         if len(segs) < 2:
-            return {"alt_talepler": []}
+            # LLM ÇAĞRILDI ama anlamlı bölünme çıkmadı — "gerekmedi" DEĞİL, "tek-konulu".
+            return {"alt_talepler": [], "ayristirma_denendi": True}
         alt = [_enrich(s, tarih_str, bugun) for s in segs]
     log.info("decompose", n_alt=len(alt), birimler=[a["birim"] for a in alt])
-    return {"alt_talepler": alt}
+    return {"alt_talepler": alt, "ayristirma_denendi": True}
 
 
 __all__ = ("compute_decomposition", "decompose_node")

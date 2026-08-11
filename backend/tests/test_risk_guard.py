@@ -80,8 +80,11 @@ class TestComputeRiskBant:
         assert _risk(u)["bant"] == "kirmizi"
 
     def test_cikti_anahtarlari_sabit(self):
-        # frontend RiskBandCard ile eşleşen SABİT anahtarlar (+ ölçülmüş skor alanları)
-        assert set(_risk()) == {"bant", "skor", "gerekceler", "katkilar", "kalibrasyon", "oneri"}
+        # frontend RiskBandCard ile eşleşen SABİT anahtarlar (+ ölçülmüş skor alanları).
+        # kusur_olasiligi: skordan AYRI olasılık — arayüzün yüzde gösterebileceği TEK alan
+        # (bkz. TestKusurOlasiligiSozlesmesi + risk_agirlik.kusur_olasiligi doküman bloğu).
+        assert set(_risk()) == {"bant", "skor", "kusur_olasiligi", "gerekceler", "katkilar",
+                                "kalibrasyon", "oneri"}
         assert isinstance(_risk()["gerekceler"], list)
 
     def test_katkilar_gerekcelerle_hizali(self):
@@ -263,3 +266,47 @@ class TestReviewRegresyon:
                                  {"evrak_text": "kaynak", "bilgi_unsurlari": {}})
         assert uyarilar  # verify gerçekten uydurma yakaladı
         assert _risk(uyarilar)["bant"] == "kirmizi"
+
+
+# ---------------------------------------------------------------------------
+# kusur_olasiligi — skordan AYRI büyüklük (arayüz "%" ile yalnız BUNU sunabilir)
+# ---------------------------------------------------------------------------
+
+
+class TestKusurOlasiligiSozlesmesi:
+    """risk_metadata, beklenen zarar (skor) ile olasılığı ayrı taşır.
+
+    Neden: arayüz `skor`u "risk %34" diye sunuyordu. risk_agirlik.kusur_olasiligi
+    dokümantasyonu bunu açıkça kategori hatası sayar — ciddiyet bir yargı olduğu için
+    skor bir olasılık DEĞİLDİR. Kalibre edilebilir olan büyüklük ayrıca taşınır ki
+    arayüz yüzde göstermek istediğinde DOĞRU alanı gösterebilsin.
+    """
+
+    def test_metadata_olasiligi_ayrica_tasir(self):
+        # Arrange — sarı bandı tetikleyen çıkarımsal sinyal
+        sonuc = _risk(eksik=["tarih"])
+        # Assert — iki büyüklük de var ve ayrı anahtarlarda
+        assert "skor" in sonuc and "kusur_olasiligi" in sonuc
+        assert isinstance(sonuc["kusur_olasiligi"], float)
+        assert 0.0 <= sonuc["kusur_olasiligi"] <= 1.0
+
+    def test_yesil_bantta_olasilik_sifir(self):
+        # Arrange/Act — temiz belge risk sinyali taşımaz
+        sonuc = _risk()
+        # Assert — bilgi cümlesi olasılık üretmez
+        assert sonuc["kusur_olasiligi"] == 0.0
+
+    def test_olasilik_skordan_farkli_buyukluktur(self):
+        # Arrange — ciddiyeti düşük ama isabeti yüksek bir çıkarım sinyali
+        sonuc = _risk(eksik=["tarih", "konu"])
+        # Assert — ikisi aynı sayı DEĞİL (skor = ciddiyet×isabet, olasılık = yalnız isabet);
+        # eşit çıkarsa arayüz ikisini karıştırdığını fark edemez.
+        assert sonuc["kusur_olasiligi"] != sonuc["skor"]
+
+    async def test_node_ciktisinda_da_bulunur(self):
+        # Arrange/Act — uçtan uca node sözleşmesi (frontend bu yükü okur)
+        sonuc = await risk_guard_node({"verify_uyari": ["Eksik bölüm: İmza"],
+                                       "yazi_taslak_md": "x", "evrak_turu": "dilekce",
+                                       "tur_confidence": 0.9})
+        # Assert
+        assert "kusur_olasiligi" in sonuc["risk_metadata"]

@@ -9,6 +9,8 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
+import { riskSkorYorum } from "../lib/detayYorum.js";
+import { adimDurumu } from "../lib/akisKatman.js";
 import {
   Chip, MevzuatRow, SlaPanel, slaInfo, subSlaRenk, ZincirStepper, Vrow, CopyChip, KanitAlinti,
   BilgilendirmeYapisal,
@@ -354,13 +356,26 @@ function RiskDetay({ d, r }) {
         <Gerekce c={BANT[bant].c}>{cleanDemoText(String(meta.aciklama || meta.oneri))}</Gerekce>
       )}
       <RiskBand band={bant} lit />
-      {/* Skor = noisy-OR(ciddiyet × ölçülen isabet) — beklenen zarar; olasılık DEĞİL. */}
-      {Number.isFinite(Number(meta.skor)) && (
-        <div style={{ marginTop: SP.m }}>
-          <div style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>Risk puanı: %{pct(meta.skor)}</div>
-          <OranBar oran={pct(meta.skor)} fill={BANT[bant].c} label={`Risk puanı yüzde ${pct(meta.skor)}`} />
-        </div>
-      )}
+      {/* Skor = noisy-OR(ciddiyet × ölçülen isabet) — beklenen zarar; olasılık DEĞİL.
+          Bu blok bir zamanlar yorumun tam tersini yapıp "%87" basıyordu; biçimlendirme
+          artık sonuç kartıyla ORTAK tek kaynaktan (riskSkorYorum) gelir, iki yüzey
+          aynı sayıyı farklı anlamda gösteremez. Yüzde yalnız kusur olasılığında. */}
+      {(() => {
+        const s = riskSkorYorum(Number(meta.skor), meta.katkilar, bant,
+          meta.kalibrasyon, meta.kusur_olasiligi);
+        if (!s) return null;
+        return (
+          <div style={{ marginTop: SP.m }}>
+            <div style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM }}>{s.baslik}</div>
+            <OranBar oran={s.dolgu} fill={BANT[bant].c} label={`Risk puanı ${s.puan}, 1 üzerinden`} />
+            {s.olasilikYuzde != null && (
+              <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
+                Kusur olasılığı %{s.olasilikYuzde} — ölçülen isabet oranlarından.
+              </div>
+            )}
+          </div>
+        );
+      })()}
       {gerekceler.length > 0 && (
         <div style={{ marginTop: SP.m }}>
           <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, marginBottom: SP.xs }}>Bandı belirleyen kurallar</div>
@@ -478,8 +493,17 @@ function KonumSeridi({ display, idx, onGit }) {
   );
 }
 
-/* Durum çipi — adımın anlık durumu (satır başına 1 semantik çip). */
-function DurumCip({ st, col }) {
+/* Durum çipi — adımın anlık durumu (satır başına 1 semantik çip).
+   `a` verildiğinde durum lib/akisKatman.adimDurumu'ndan türer; sahnedeki istasyonla aynı
+   kaynağı okur (aynı adım iki yüzeyde farklı durum gösteremez). */
+function DurumCip({ st, col, a = null }) {
+  const durum = a ? adimDurumu(a) : null;
+  if (durum === "atlandi") {
+    return <Chip c={PAL.mut2} label="Bu adım bu koşumda hiç çalışmadı (akış başka dala gitti)">çalışmadı</Chip>;
+  }
+  if (durum === "gerekmedi") {
+    return <Chip c={PAL.mut2} label="Adım çalıştı ancak bu belgede yapacak işi yoktu">gerekmedi</Chip>;
+  }
   if (st === "active") return <Chip c={T} label="Adım şu anda çalışıyor">işleniyor</Chip>;
   if (st === "error") return <Chip c={BANT.kirmizi.c} label="Adım hatayla sonuçlandı"><Icon.x width={11} height={11} /> hata</Chip>;
   if (st === "done") return <Chip c={col} label="Adım tamamlandı"><Icon.check width={11} height={11} /> tamamlandı</Chip>;
@@ -560,7 +584,7 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
             <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
               {/* key={a.id}: adım değişince başlık taze girişle gelir */}
               <h2 key={a.id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink, animation: "nu-rise .16s var(--ke-ease-out) both" }}>{a.label}</h2>
-              <DurumCip st={a.status} col={bantC || col} />
+              <DurumCip st={a.status} col={bantC || col} a={a} />
             </div>
             <div style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
               <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{a.gorev === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>

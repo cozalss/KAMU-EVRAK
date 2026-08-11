@@ -23,7 +23,12 @@ from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 
 from agents.config import HITL_ENABLED, llm_profil
-from agents.graph import GIZLI_NODELAR, PIPELINE_NODES, build_graph
+from agents.graph import (
+    GIZLI_NODELAR,
+    PIPELINE_NODES,
+    build_graph,
+    pipeline_katmanlari,
+)
 from agents.state import make_initial_state
 from api.mevzuat_zenginlestir import zenginlestir_mevzuat
 from api.middleware.ratelimit import rate_limit
@@ -54,19 +59,51 @@ def _get_graph() -> Any:
 # HITL grafı AYRI singleton: InMemorySaver checkpointer ile derlenir → /process_doc ve
 # /process_doc/resume ÇAĞRILARI ARASINDA state korunur (interrupt → memur kararı → resume).
 _hitl_graph_singleton: Any = None
+_hitl_katmanlar: dict[str, int] | None = None
 
 
 def _get_hitl_graph() -> Any:
-    global _hitl_graph_singleton
+    global _hitl_graph_singleton, _hitl_katmanlar
     if _hitl_graph_singleton is None:
         from langgraph.checkpoint.memory import InMemorySaver
         _hitl_graph_singleton = build_graph(checkpointer=InMemorySaver())
+        # Katman haritası graf başına BİR KEZ. `compiled.get_graph()` ucuz bir kenar
+        # okuması DEĞİLDİR: LangGraph Pregel döngüsünü boş checkpoint üzerinde yeniden
+        # oynatır (ölçüldü ~1 ms) ve senkrondur → her istekte hesaplamak olay döngüsünü
+        # o süre boyunca bloklar. Sonuç singleton graf için determinist olduğundan
+        # compile-once deseniyle birlikte önbelleklenir (Hız 15a/15b disiplini).
+        _hitl_katmanlar = katman_haritasi(_hitl_graph_singleton)
     return _hitl_graph_singleton
+
+
+def hitl_katman_haritasi() -> dict[str, int]:
+    """SSE `start` için önbellekli katman haritası (singleton graf başına tek hesap)."""
+    _get_hitl_graph()
+    return _hitl_katmanlar or {}
 
 
 def _sse(payload: dict[str, Any]) -> str:
     """JSON → SSE 'data:' satırı."""
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+
+def katman_haritasi(graph: Any) -> dict[str, int]:
+    """SSE `start` için node → superstep (katman) haritası — hangi adımlar EŞZAMANLI.
+
+    Kaynak KOŞACAK grafın kendi kenarlarıdır (bkz. graph.pipeline_katmanlari): UI'ın
+    "bu adımlar aynı anda çalıştı" iddiası elle tutulan bir listeden değil, o isteği
+    işleyen graftan türer. `oku` graf ÖNCESİ (route'ta) çalıştığı için 0. katmandır.
+
+    Gizli yardımcı node'lar (servis_birim) duyurulan sıraya zaten girmediğinden burada
+    da süzülür. Topoloji katmanlanamazsa akış DÜŞMEZ: harita boş gider, UI düz listeye
+    geri döner — ama sessizce değil, uyarı loglanır.
+    """
+    try:
+        ham = pipeline_katmanlari(graph)
+    except Exception as exc:                                   # noqa: BLE001 — akış düşmemeli
+        log.warning("katman_hesaplanamadi", error=str(exc) or type(exc).__name__)
+        return {}
+    return {"oku": 0, **{ad: ham[ad] for ad in PIPELINE_NODES if ad in ham}}
 
 
 async def _ocr_or_text(
@@ -329,7 +366,10 @@ async def process_stream(
 
     async def gen() -> AsyncIterator[str]:
         t0 = time.monotonic()  # uçtan-uca süre (OCR dahil) — sure_ms yanıtta taşınır
-        yield _sse({"event": "start", "nodes": ["oku", *PIPELINE_NODES]})
+        # katmanlar: aynı değere sahip node'lar EŞZAMANLI koşar (UI paralel blok çizer ve
+        # süreyi toplamak yerine max alır). Additive alan — eski istemci sadece yok sayar.
+        yield _sse({"event": "start", "nodes": ["oku", *PIPELINE_NODES],
+                    "katmanlar": hitl_katman_haritasi()})
         # OCR'ı akış içinde yap: önce 'oku' CANLI (active) yansın, sonra sonuç (done).
         yield _sse({"event": "node", "node": "oku", "status": "active"})
         ocr_t0 = time.perf_counter()

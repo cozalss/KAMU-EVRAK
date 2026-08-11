@@ -22,6 +22,7 @@ yalnız risk_metadata ekler (state'i bozmaz → denetim_izi hash-chain'i kırıl
     risk_metadata = {
         "bant": "yesil"|"sari"|"kirmizi",
         "skor": float,              # 0..1 — ÖLÇÜLMÜŞ (risk_agirlik.noisy_or)
+        "kusur_olasiligi": float,   # 0..1 — OLASILIK; skordan AYRI büyüklük (aşağıya bak)
         "gerekceler": list[str],    # bandın NEDEN'leri (memura okunur)
         "katkilar": list[float],    # gerekceler[i]'nin KENDİ ağırlığı (çubuk yüksekliği)
         "kalibrasyon": str,         # "olculdu"|"kismi"|"onsel"|"temiz" — skorun statüsü
@@ -35,6 +36,12 @@ ağır KIRMIZI'dan büyük görünüyordu. Şimdi skor = noisy-OR(ciddiyet × Ö
 ayrıntı + kalibrasyon yöntemi: `agents/risk_agirlik.py` + `eval/risk_calibration.py`.
 BANT KARARI DEĞİŞMEDİ: aşağıdaki kural sırası (uydurma > eksik/belirsiz > temiz) aynen
 korunur — skor bandı asla değiştirmez, yalnız onu ölçer.
+
+SKOR ≠ OLASILIK (arayüz sözleşmesi): `skor` = Σ⊕(ciddiyet × isabet) → BEKLENEN ZARAR;
+ciddiyet bir yargı olduğu için "%N ihtimalle kusurlu" diye OKUNAMAZ ve yüzde işaretiyle
+sunulamaz. Kalibre edilebilir olasılık ayrı alandır: `kusur_olasiligi` = Σ⊕(isabet).
+Arayüz yüzde göstermek istiyorsa YALNIZ ikincisini gösterir; skor birimsiz puandır.
+Gerekçe: `agents/risk_agirlik.kusur_olasiligi` doküman bloğu.
 """
 
 from __future__ import annotations
@@ -49,7 +56,7 @@ from agents.config import (
     RISK_GUVEN_ESIK,
 )
 from agents.nodes._llm_extract import llm_json
-from agents.risk_agirlik import skor_ve_katkilar
+from agents.risk_agirlik import kusur_olasiligi, skor_ve_katkilar
 from api.pii import mask_pii
 
 log = structlog.get_logger()
@@ -82,11 +89,12 @@ def _bant_sonuc(bant: str, gerekceler: list[str]) -> dict[str, Any]:
     → skor 0.0, çubuk yok. Aksi hâlde taksonomi ağırlıklarıyla noisy-OR.
     """
     if bant == "yesil":
-        return {"bant": bant, "skor": 0.0, "gerekceler": gerekceler,
+        return {"bant": bant, "skor": 0.0, "kusur_olasiligi": 0.0, "gerekceler": gerekceler,
                 "katkilar": [0.0] * len(gerekceler), "kalibrasyon": "temiz",
                 "oneri": _ONERI[bant]}
     skor, katkilar, kalibrasyon = skor_ve_katkilar(gerekceler)
-    return {"bant": bant, "skor": skor, "gerekceler": gerekceler, "katkilar": katkilar,
+    return {"bant": bant, "skor": skor, "kusur_olasiligi": kusur_olasiligi(gerekceler),
+            "gerekceler": gerekceler, "katkilar": katkilar,
             "kalibrasyon": kalibrasyon, "oneri": _ONERI[bant]}
 
 # Zorunlu-alan anahtarı → kısa Türkçe etiket (risk gerekçesi okunur olsun; ham anahtar gösterilmez).

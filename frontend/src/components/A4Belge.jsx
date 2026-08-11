@@ -14,7 +14,7 @@
    sürekli yeniden sayfalama kırılgan olur ve yeni bir bağımlılık gerektirir. Bunun yerine
    satırlar bir kez ölçülüp sayfa yüksekliğine göre bölünür; baskıda W3C standardı
    `@page { size: A4 }` devreye girer, ekrandaki ile çıktı aynı olur. */
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PAL, SH, SP, TYPE } from "./neonUi.jsx";
 import {
   A4_GEN_PX,
@@ -23,6 +23,7 @@ import {
   MM,
   YAZI_ALANI_GEN_PX,
   olcekHesapla,
+  olcekOynadi,
   olcumleriTopla,
   sayfalaraBol,
 } from "../lib/a4Sayfalama.js";
@@ -39,8 +40,12 @@ const SAYFA_ARASI_PX = 24;
    birimi açıkça `pt` verilir; sayfa boyutu da aynı 96dpi referansına dayandığı için ikisi
    tutarlı kalır. */
 const BELGE_FONT = 'Arial, "Helvetica Neue", Helvetica, sans-serif';
-const BELGE_PUNTO_PT = 11;
-const BELGE_SATIR = 1.45;
+/* Punto ve satır aralığı DIŞARI AÇIK: kaynak belge paneli aynı değerleri kullanarak metnini
+   kâğıtla aynı okuma boyutuna getirir (KaynakBelge). Tek kaynak — yönetmelik Times 12'ye
+   çevrilirse iki panel birlikte döner, elle senkron gerekmez. Yazı tipi AİLESİ paylaşılmaz:
+   kâğıt m.7/1 gereği Arial kalır, panel kendi UI fontunu sürdürür. */
+export const BELGE_PUNTO_PT = 11;
+export const BELGE_SATIR = 1.45;
 const BELGE_MURAKKEP = "#111";   // matbaa siyahı — kağıt üstünde UI gri tonları kullanılmaz
 
 const STIL_ID = "ke-a4-stil";
@@ -65,7 +70,12 @@ function stilYukle() {
   document.head.appendChild(el);
 }
 
-export default function A4Belge({ metin = "", onAc = null, solgun = false, baslikIpucu = "" }) {
+/* sigdir="kutu"      → sayfa kabına TAM sığar (kaydırma yok, punto küçülür). Varsayılan.
+   sigdir="genislik"  → ölçek yalnız GENİŞLİKTEN türer; sayfa dikeyde kabı aşar ve kap kaydırır.
+                        Ana taslak paneli bunu kullanır: kutuya sığdırma puntoyu ~9pt'ye
+                        düşürüyordu ve memur "okunmuyor, kullanmayı düşürüyor" dedi
+                        (2026-08-11). Okunabilirlik, tek ekranda tüm sayfayı görmeye yeğlendi. */
+export default function A4Belge({ metin = "", onAc = null, solgun = false, baslikIpucu = "", sigdir = "kutu" }) {
   const sarmalRef = useRef(null);
   const olcerRef = useRef(null);
   const [olcek, setOlcek] = useState(1);
@@ -85,36 +95,78 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
      iniyor" diye bildirdi; karar paneli her seçimde remount olduğundan başka bir taslağa
      her tıklayışta tekrarlanıyordu. Hemen aşağıdaki sayfalama efekti bu kuralı zaten
      yazmıştı ("Ölçüm boyamadan ÖNCE yapılmalı"); ölçek efekti ona uymuyordu — tutarsızlık
-     hatanın ta kendisiydi. */
+     hatanın ta kendisiydi.
+
+     NEDEN BAĞIMLILIK LİSTESİ YOK (2026-08-12, aynı hatanın ikinci yarısı): yalnız mount'ta
+     ölçmek YETMİYORDU. Kabın genişliği bir kez daha, AYNI boyama turu içinde değişiyor:
+     TaslaklarView sütun bütçesini kendi useLayoutEffect'inde ölçer ve React ebeveyn layout
+     efektlerini ÇOCUKLARINKİNDEN SONRA koşturur — yani bu ölçüm koştuğunda grid hâlâ yedek
+     sütunlardaydı, ölçüm bittikten sonra gerçek sütunlara geçiyordu. `[sigdir]` listesi
+     efekti o ikinci commit'te yeniden koşmaktan alıkoyduğu için kâğıt BAYAT ölçekle
+     boyanıyor, düzeltme ancak ResizeObserver'ın boyama SONRASI turunda geliyordu
+     (Playwright'ta ölçüldü: kare 0 ölçek 1,1125 / yığın 1249px → kare 1 ölçek 0,8567 →
+     11 karelik animasyonla 962px; memur bunu "büyüyor, sonra bir anda aşağı kayıyor,
+     sonra düzeliyor" diye bildirdi).
+
+     Liste kalkınca ölçüm HER commit'te, boyamadan önce tazelenir; yedek→ölçülmüş geçişi
+     ekrana hiç çıkmaz. Ölçüm kendi çıktısına geri beslendiği için (yeni ölçek → yığın
+     yüksekliği → kap) döngüyü `olcekOynadi` kapatır: değer oynamadıysa state'e YAZILMAZ ve
+     React yeniden render etmez. Sözleşme saf ve testlidir; kaldırılırsa sonsuz render. */
+  const olcOlcek = useCallback(() => {
+    const el = sarmalRef.current;
+    if (!el) return;
+    const kutu = el.parentElement;
+    const bicim = kutu ? getComputedStyle(kutu) : null;
+    const yuk = kutu
+      ? kutu.clientHeight - parseFloat(bicim.paddingTop || 0) - parseFloat(bicim.paddingBottom || 0)
+      : 0;
+    const gen = el.clientWidth;
+    if (gen <= 0) return;   // kap henüz yerleşmemiş; ResizeObserver birazdan yine çağırır
+    // yuk=0 → olcekHesapla yüksekliği YOK SAYAR ve genişlik tek başına karar verir.
+    const yeni = olcekHesapla(gen, sigdir === "genislik" ? 0 : yuk);
+    setOlcek((eski) => (olcekOynadi(eski, yeni) ? yeni : eski));
+  }, [sigdir]);
+
+  useLayoutEffect(olcOlcek);   // bağımlılık listesi BİLEREK yok — yukarıdaki gerekçeye bak
+
+  /* Gözlemci AYRI efekt: kimliği yalnız `sigdir` ile değişir, böylece her ölçümde
+     kurulup yıkılmaz (üstteki efekt her commit'te koşuyor). Mount SONRASI gerçek
+     değişiklikleri (pencere yeniden boyutlandırma, sütun bütçesinin gecikmeli turu) burası
+     yakalar; üstteki efekt yalnız commit'lerle senkron kalmayı üstlenir. */
   useLayoutEffect(() => {
     const el = sarmalRef.current;
     if (!el) return undefined;
-    const guncelle = () => {
-      const kutu = el.parentElement;
-      const bicim = kutu ? getComputedStyle(kutu) : null;
-      const yuk = kutu
-        ? kutu.clientHeight - parseFloat(bicim.paddingTop || 0) - parseFloat(bicim.paddingBottom || 0)
-        : 0;
-      const gen = el.clientWidth;
-      if (gen <= 0) return;   // kap henüz yerleşmemiş; ResizeObserver birazdan yine çağırır
-      setOlcek(olcekHesapla(gen, yuk));
-    };
-    guncelle();
-    const gozlemci = new ResizeObserver(guncelle);
+    const gozlemci = new ResizeObserver(olcOlcek);
     gozlemci.observe(el);
     if (el.parentElement) gozlemci.observe(el.parentElement);
     return () => gozlemci.disconnect();
-  }, []);
+  }, [olcOlcek]);
 
   /* Yükseklik geçişi ilk yerleşmede KAPALIDIR, sonrasında açılır.
      Yalnız ölçümü öne almak yetmez: ölçüm bir state güncellemesidir ve React bunu ayrı bir
-     commit'te uygular; geçiş açık olsaydı o commit yine animasyon tetikleyebilirdi. Bu bayrak
-     ilk boyamadan SONRA çalışan passive efektte açılır — yani ölçülen yüksekliği uygulayan
-     commit'te geçiş hâlâ "none"dur, mount sıçraması imkânsız hâle gelir. Pencere yeniden
-     boyutlandırma gibi GERÇEK değişiklikler ise animasyonlu kalır (hareket = bilgi).
-     prefers-reduced-motion için ek kod YOK: neonUi.jsx global kuralı tüm geçişleri söndürür. */
+     commit'te uygular; geçiş açık olsaydı o commit yine animasyon tetikleyebilirdi.
+     Pencere yeniden boyutlandırma gibi GERÇEK değişiklikler ise animasyonlu kalır
+     (hareket = bilgi). prefers-reduced-motion için ek kod YOK: neonUi.jsx global kuralı
+     tüm geçişleri söndürür.
+
+     NEDEN İKİ KARE (2026-08-12): burada eskiden bağımlılıksız düz bir `useEffect` vardı ve
+     yorumu "ilk boyamadan sonra açılır, mount sıçraması İMKÂNSIZ" diyordu. Ölçüm bunun
+     yanlış olduğunu gösterdi: passive efekt ilk boyamanın hemen ardından koşuyor, ama kap
+     geometrisinin son düzeltmesi ResizeObserver'dan bir tur SONRA geliyordu — bayrak
+     düzeltmeden ÖNCE açılıyor ve düzeltme tam da animasyona yakalanıyordu (ölçülen: kare 1'de
+     geçiş çoktan "height .18s"ti, ardından 11 kare boyunca 1249px→962px süzülme).
+
+     Yukarıdaki her-commit ölçümü bu yarışın ana kaynağını zaten kurutuyor; bu iki-kare
+     gecikmesi ikinci kilittir ve gözlemci yollu düzeltmeleri de kapsar (ör. sayfa kaydırma
+     çubuğu kaybolunca sütun bütçesinin yeniden hesaplanması — o tur ASENKRON gelir ve
+     her-commit ölçümünün erişemediği tek yoldur). İkisi birlikte: mount'ta hiçbir animasyon
+     yok, mount'tan sonra hepsi var. */
   const [yerlesti, setYerlesti] = useState(false);
-  useEffect(() => { setYerlesti(true); }, []);
+  useEffect(() => {
+    let ikinci = 0;
+    const ilk = requestAnimationFrame(() => { ikinci = requestAnimationFrame(() => setYerlesti(true)); });
+    return () => { cancelAnimationFrame(ilk); cancelAnimationFrame(ikinci); };
+  }, []);
 
   // Ölçüm boyamadan ÖNCE yapılmalı; yoksa tek sayfalık hâli bir kare görünüp sonra bölünür.
   useLayoutEffect(() => {

@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import NumberFlow from "@number-flow/react";
 import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, SANS, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
+import { useDarEkran } from "../hooks/useMedya.js";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { evrakKategori, kategoriMeta } from "../lib/kategori.js";
 import { sicilGrupla } from "../lib/sicilVaryant.js";
@@ -146,7 +147,11 @@ function BentoSeridi({ items, filter, ortSn }) {
   const barOzet = KARARLAR.filter((k) => say[k.key] > 0)
     .map((k) => `${say[k.key]} ${k.label.toLocaleLowerCase("tr-TR")}`).join(", ");
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(230px, 1.4fr) minmax(240px, 1fr)",
+    /* Sabit asgariler (230+240+boşluk = ~478px) telefonda kabı 199px taşırıyordu (ölçüldü,
+       2026-08-12): iki kart yan yana sığmadığında grid daralmak yerine dışarı çıkıyordu.
+       `auto-fit` yer yetmeyince TEK sütuna iner — asgari genişlikler geniş ekranda aynen
+       korunur, dar ekranda kartlar alt alta geçer. */
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(230px, 100%), 1fr))",
       gap: SP.s, marginBottom: SP.m, alignItems: "stretch" }}>
       <button type="button" onClick={temizle} aria-pressed={aktifSet.size === 0}
         aria-label={`Toplam işlem: ${items.length}${bugunSay.toplam ? `, bugün ${bugunSay.toplam}` : ""} — tüm kararları göster`}
@@ -332,6 +337,11 @@ function DurumCip({ durum }) {
    div[role=button]: satır içinde ikincil eylem yaşayabilsin (button-içinde-button geçersiz). */
 function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
   const [uzerinde, setUzerinde] = useState(false);
+  // Telefonda altı sabit kolon (52+26+128+64+14 + 5 boşluk = 344px) kaba SIĞMIYORDU: başlık
+  // kolonu 0px'e çöküp içeriği dışarı taşıyordu (ölçüldü 2026-08-12: 390px ekranda
+  // `grid: 52px 26px 0px 128px 64px 14px`, sayfa 183px yatay kayıyordu). Dar ekranda satır
+  // sarmalı akışa geçer: bilgi GİZLENMEZ, ikinci satıra iner.
+  const dar = useDarEkran();
   const riskC = BANT[item.bant]?.c;
   const guven = fmtGuven(item.result?.tur_confidence);
   const sure = fmtSure(item.result?.sure_ms);
@@ -346,10 +356,13 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
       aria-label={`${item.konu || item.name} — ${DURUM_TR[item._durum]} — detayı aç`} {...focusRing} data-press=""
       onMouseEnter={(e) => { setUzerinde(true); e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { setUzerinde(false); e.currentTarget.style.background = "transparent"; }}
-      style={{ cursor: "pointer", display: "grid", alignItems: "center", gap: SP.m,
-        // Durum/risk kolonları SABİT genişlik — auto kolonlar çip metnine göre kayıp
-        // dikey hattı dalgalandırıyordu (yargıç bulgusu).
-        gridTemplateColumns: "52px 26px minmax(0,1fr) 128px 64px 14px",
+      style={{ cursor: "pointer", alignItems: "center", gap: SP.m,
+        // Geniş: ızgara. Durum/risk kolonları SABİT genişlik — auto kolonlar çip metnine göre
+        // kayıp dikey hattı dalgalandırıyordu (yargıç bulgusu); bu hizalama KORUNUR.
+        // Dar: sarmalı flex — sabit kolon bütçesi telefona sığmadığından satır ikiye iner.
+        ...(dar
+          ? { display: "flex", flexWrap: "wrap", rowGap: SP.xs }
+          : { display: "grid", gridTemplateColumns: "52px 26px minmax(0,1fr) 128px 64px 14px" }),
         padding: "8px 14px", borderTop: ilk ? "none" : `1px solid ${PAL.line}`, background: "transparent",
         transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
       {/* Zaman kolonu — defterin ray'ı: mono, sağa yaslı, dikey hairline ile ayrılır */}
@@ -361,7 +374,9 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
           background: PAL.surfHi, color: DURUM_RENK[item._durum] ? DERIN_OF(DURUM_RENK[item._durum]) : PAL.mut2 }}>
         <KIcon width={14} height={14} />
       </span>
-      <span style={{ minWidth: 0, display: "flex", alignItems: "baseline", gap: SP.s, overflow: "hidden", whiteSpace: "nowrap" }}>
+      {/* Dar ekranda başlık ilk satırın kalanını alır (120px taban) → durum/risk/ok ikinci
+          satıra sarar. Geniş ekranda `flex` yok, ızgara kolonu neyse odur. */}
+      <span style={{ minWidth: 0, display: "flex", alignItems: "baseline", gap: SP.s, overflow: "hidden", whiteSpace: "nowrap", ...(dar ? { flex: "1 1 120px" } : null) }}>
         <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2, flexShrink: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
           {baslikCase(cleanDemoText(item.konu)) || item.name}
         </span>

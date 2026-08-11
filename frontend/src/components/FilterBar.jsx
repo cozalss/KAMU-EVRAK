@@ -68,16 +68,22 @@ function FilterSelect({ sel, filter }) {
   );
 }
 
+/* İki tarih kutusu telefonda SIĞMIYORDU: `type=date` kutusunun içsel genişliği ~127px,
+   ikisi + ayraç + boşluklar ~282px eder; 390px ekranda filtre kartına kalan ~262px'tir →
+   sayfa 36px yatay taşıyordu (Playwright, 2026-08-12; giden + denetim görünümleri).
+   Kutular artık daralabilir (`minWidth: 0` — flex çocuğu varsayılan olarak içsel genişliğinin
+   altına İNMEZ) ve yer kalmazsa satır sarar. Geniş ekranda görünüm bit-aynı kalır. */
 function FilterDateRange({ dateRange, filter }) {
+  const kutu = { ...inputBase, flex: "1 1 128px", minWidth: 0 };
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, minWidth: 0 }}>
       <span style={labelStyle}>{dateRange.label || "Tarih"}</span>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", minWidth: 0 }}>
         <label htmlFor="flt-date-from" style={SR_ONLY}>Başlangıç tarihi</label>
-        <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={{ ...inputBase }} />
+        <input id="flt-date-from" type="date" value={toDateInput(filter.filters.dateFrom)} onChange={(e) => filter.setDateRange(fromDateInput(e.target.value, false), filter.filters.dateTo)} {...focusRing} style={kutu} />
         <span style={{ ...TYPE.data, color: PAL.mut2 }}>—</span>
         <label htmlFor="flt-date-to" style={SR_ONLY}>Bitiş tarihi</label>
-        <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={{ ...inputBase }} />
+        <input id="flt-date-to" type="date" value={toDateInput(filter.filters.dateTo)} onChange={(e) => filter.setDateRange(filter.filters.dateFrom, fromDateInput(e.target.value, true))} {...focusRing} style={kutu} />
       </div>
     </div>
   );
@@ -135,10 +141,15 @@ function ActiveState({ config, filter }) {
       {pills.map((p) => (
         <span key={p.key} style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(T), color: DERIN.T, ...TYPE.meta, fontWeight: 500 }}>
           {p.label}
-          <button type="button" onClick={p.clear} aria-label={`Filtre kaldır: ${p.label}`} {...focusRing} style={{ background: "none", border: "none", color: DERIN.T, cursor: "pointer", padding: 0, display: "flex" }}><Icon.x width={12} height={12} /></button>
+          {/* Hedef büyütme: ikon 12x12 kalır ama tıklama alanı 24x24'e çıkar (WCAG 2.2 §2.5.8
+              asgarisi; ölçüldü: eskiden 12x12'ydi). Dolgu kadar NEGATİF kenar boşluğu
+              verildiğinden çipin görünen boyu değişmez — büyüyen yalnız hedef. */}
+          <button type="button" onClick={p.clear} aria-label={`Filtre kaldır: ${p.label}`} {...focusRing}
+            style={{ background: "none", border: "none", color: DERIN.T, cursor: "pointer", padding: 6, margin: "-6px -4px -6px -2px", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon.x width={12} height={12} /></button>
         </span>
       ))}
-      <button type="button" onClick={filter.clearAll} {...focusRing} style={{ ...TYPE.data, color: PAL.mut2, background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Tüm filtreleri temizle</button>
+      <button type="button" onClick={filter.clearAll} {...focusRing}
+        style={{ ...TYPE.data, color: PAL.mut2, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: "4px 6px", margin: "-4px -6px" }}>Tüm filtreleri temizle</button>
     </div>
   );
 }

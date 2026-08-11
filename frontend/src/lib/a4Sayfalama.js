@@ -86,6 +86,29 @@ export function olcekHesapla(genislik, yukseklik) {
   return Math.max(ASGARI_OLCEK, Math.min(AZAMI_OLCEK, genOlcek, yukOlcek));
 }
 
+/* Ölçek yeniden-ölçümü HER commit'te (boyamadan önce) koşar — bkz. A4Belge. Bu yüzden ölçüm
+   kendi çıktısına geri beslenir: yeni ölçek → yığın yüksekliği değişir → kap yeniden ölçülür.
+   Sonuç öncekiyle AYNIYSA state'e yazılmamalı, yoksa ölçüm→render→ölçüm döngüsü kapanmaz.
+
+   Eşik piksel cinsinden anlamlı seçildi: A4 genişliğinde yarım pikselden küçük fark ekranda
+   GÖRÜNMEZ, ama kayan nokta gürültüsü (clientWidth tamsayı olsa da bölme sonucu değil) bu
+   mertebede kolayca oynar. Eşiği büyütmek gerçek yeniden boyutlandırmaları yutar; küçültmek
+   döngü riskini geri getirir. */
+export const OLCEK_ESIK = 0.5 / A4_GEN_PX;
+
+/**
+ * Yeni ölçüm state'e yazılmaya değer mi?
+ *
+ * @param {number} eski yürürlükteki ölçek
+ * @param {number} yeni yeni ölçülen ölçek
+ * @returns {boolean} yazılmalıysa true
+ */
+export function olcekOynadi(eski, yeni) {
+  if (!Number.isFinite(yeni)) return false;          // ölçülemeyen değer state'i bozmasın
+  if (!Number.isFinite(eski)) return true;           // ilk ölçüm daima yazılır
+  return Math.abs(eski - yeni) >= OLCEK_ESIK;
+}
+
 // Kâğıt sütunu bu genişliğin altına inmez; altında sayfa okunmaz olur (kaydırma devralır).
 export const KAGIT_ASGARI_GEN = 240;
 

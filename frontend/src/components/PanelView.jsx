@@ -28,6 +28,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, IRIS, IRIS_BAR, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
 import SureTakvimi from "./SureTakvimi.jsx";
+import { useDarEkran } from "../hooks/useMedya.js";
 import SureRaporModal from "./SureRaporModal.jsx";
 import SureKiyasBloku, { TrendRozet } from "./SureKiyas.jsx";
 import { olcumler, ortalama, genelTrend, hizKademe, gunlukOrtSure, fmtSn } from "../lib/sureRapor.js";
@@ -455,15 +456,21 @@ function SureGrafik({ history }) {
 /* Feed satırı — durum noktası + ad + tek semantik çip + tür/birim + mono saat. */
 function FeedSatir({ h, onGoIslenen, bugunGrubu }) {
   const bekliyor = h.result?.yazi_taslak_md && !h.result?.onay_durumu;
+  // Satırın çip/tür/saat parçaları `flexShrink: 0` taşır (kırpılmamaları KASITLI). Telefonda
+  // toplamları kaba sığmayınca satır dışarı taşıyordu (ölçüldü 2026-08-12: 390px ekranda saat
+  // 120px dışarıda, sayfa 87px yatay kayıyordu). Dar ekranda satır sarar: ad ilk satırı tek
+  // başına alır, künye ikinci satıra iner — hiçbir bilgi kırpılmaz.
+  const dar = useDarEkran();
   return (
     <button type="button" onClick={onGoIslenen} aria-label={`${h.name} — işlenen evrak arşivinde gör`} {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, width: "100%", textAlign: "left",
+        ...(dar ? { flexWrap: "wrap", rowGap: SP.xs } : null),
         padding: "8px 4px", background: "transparent", border: "none", borderTop: `1px solid ${PAL.line}`,
         transition: `background .12s ease, transform .14s ${EASE.out}` }}>
       <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: BANT[h.bant]?.c || PAL.mut2, flexShrink: 0 }} />
-      <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
+      <span style={{ ...TYPE.data, color: PAL.ink2, flex: dar ? "1 1 100%" : 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
       {bekliyor && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.sari, background: ALFA(BANT.sari.c), borderRadius: RAD.chip, padding: "2px 8px", flexShrink: 0 }}>karar bekliyor</span>}
       <span style={{ ...TYPE.meta, color: PAL.mut, flexShrink: 0 }}>{EVRAK_TR(h.evrak_turu)}</span>
       <span style={{ ...TYPE.meta, color: DERIN.V, textAlign: "right", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{BIRIM_GOSTER(h.hedef_birim, h.evrak_turu)}</span>
@@ -512,7 +519,7 @@ function SonIslemlerFeed({ history, n, onGoIslenen }) {
 
 /* ---------- Ana görünüm ---------- */
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onGoTaslaklar = null, onUpload, user }) {
+export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], slaHatasi = false, onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onGoTaslaklar = null, onUpload, user }) {
   const genis = useGenisEkran();
   const [raporAcik, setRaporAcik] = useState(false);   // İşlem Süresi detay raporu
   const n = history.length;
@@ -566,6 +573,13 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
 
   const span = (kol) => ({ gridColumn: genis ? `span ${kol}` : "1 / -1", minWidth: 0 });
 
+  /* R1 kuşağı iki kolonu KARŞILIKLI paylaşır: takvim yoksa ölçü şeridi 12 kola yayılır.
+     Şerit sabit 8 kolda kalırsa (eski hâl) sağda 4 kolluk ÖLÜ boşluk açılıyordu — takvim
+     backend'in /sla/onizleme yanıtına bağlı olduğundan (servis kapalı / tüm örnekler
+     gönderilmiş) bu boşluk sahada gerçekten görülüyor ve sayfa "bozulmuş" okunuyor.
+     Takvimin karşılıklı kuralı (`n > 0 ? 4 : 12`) zaten vardı; eksik olan tarafı budur. */
+  const takvimVar = kuyrukSla.length > 0;
+
   // Gerçek sıfır: hiç işlem yok VE kuyruk boş → tek boş durum; iskelet kart dizmek "ölü panel".
   if (n === 0 && inboxCount === 0 && kuyrukSla.length === 0) {
     return (
@@ -599,7 +613,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
           /* Ölçü şeridi — dört hücre, her biri TEK BAŞINA bir ızgara hücresi ve tamamı
              tıklanabilir buton. Aralarında sarmalayıcı yok: hücrenin her pikseli hedeftir
              (bkz. AkisHucre'deki tıklama alanı notu). */
-          <div style={{ ...span(8), alignSelf: "stretch", height: "100%", background: PAL.surf,
+          <div style={{ ...span(takvimVar ? 8 : 12), alignSelf: "stretch", height: "100%", background: PAL.surf,
             border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
             display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridAutoRows: "1fr",
             overflow: "hidden" }}>
@@ -613,7 +627,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         )}
         {/* Takvim — kuyrukSla'nın AY izdüşümü (yeni veri kaynağı YOK; brifle aynı dizi).
             Ölçü bloğu yoksa (hiç işlem yapılmamış) tam genişliğe yayılır. */}
-        {kuyrukSla.length > 0 && (
+        {takvimVar && (
           <div style={{ ...span(n > 0 ? 4 : 12), alignSelf: "stretch" }}>
             <SureTakvimi kuyrukSla={kuyrukSla} />
           </div>
@@ -622,9 +636,22 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         {/* R1.5 — kahraman brifi: ekranın tek "şimdi davran" sinyali ve tek primary'si.
             2026-07-25'te ölçü+takvim kuşağının ALTINA taşındı (içerik/mantık aynı, yalnız
             konum): bağlam önce, aksiyon sonra. Kuyruk SLA'sı yoksa hiç görünmez. */}
-        {kuyrukSla.length > 0 && (
+        {takvimVar && (
           <div style={span(12)}>
             <KahramanBrif kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} onIsle={onIsle} />
+          </div>
+        )}
+        {/* SLA servisi yanıt vermediğinde takvim ve brif SESSİZCE kayboluyordu — panel
+            "bozulmuş" görünüyor, sebebi hiçbir yerde yazmıyordu. Kuyruk boşaldığı için
+            gizlendiklerinde bu satır ÇIKMAZ (o dürüst bir boşluktur); yalnız istek
+            başarısızken çıkar. Eksik veriyi uydurmayız, yokluğunu söyleriz. */}
+        {!takvimVar && slaHatasi && (
+          <div style={{ ...span(12), display: "flex", alignItems: "center", gap: SP.s,
+            padding: `${SP.s}px ${SP.m}px`, background: ALFA(BANT.sari.c), border: `1px solid ${BANT.sari.c}`,
+            borderRadius: RAD.ctl, ...TYPE.meta, color: DERIN.sari }}>
+            <span aria-hidden="true" style={{ display: "flex" }}><Icon.clock width={14} height={14} /></span>
+            Yasal süre servisine ulaşılamadı — süre takvimi ve kuyruk brifi geçici olarak gizli.
+            Diğer veriler etkilenmedi.
           </div>
         )}
 

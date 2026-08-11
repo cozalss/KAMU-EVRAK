@@ -4,7 +4,7 @@
    evraklarda gün EN KÖTÜ duruma boyanır. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { trTarihAyristir, gunAnahtar, kalanMetin, isaretHarita, ayIzgarasi, DURUM_AGIRLIK } from "./sureTakvimi.js";
+import { trTarihAyristir, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi, DURUM_AGIRLIK } from "./sureTakvimi.js";
 
 const oge = (id, son_tarih, durum, kalan_gun) => ({ id, label: id, sla: { son_tarih, durum, kalan_gun } });
 
@@ -81,4 +81,35 @@ test("ayIzgarasi Pazar başlayan ayda tam satır kaydırır", () => {
   assert.equal(g.length, 35);
   assert.equal(g[6].getDate(), 1);
   assert.equal(g[5], null);
+});
+
+/* ayIsaretleri — kartın sağ kolonu (ayın son günleri listesi) + başlıktaki sayaç buradan
+   türer. Sözleşme: YALNIZ görünen ayın işaretli günleri, ızgara sırasında (tarihe göre
+   artan), her biri {anahtar, tarih, ogeler, agirlik}. */
+
+test("ayIsaretleri yalnız görünen ayın işaretli günlerini tarih sırasıyla verir", () => {
+  const isaret = isaretHarita([
+    oge("gec", "20.08.2026", "NORMAL", 8),
+    oge("erken", "03.08.2026", "GECIKMIS", -9),
+    oge("erken2", "03.08.2026", "NORMAL", 1),
+    oge("baska_ay", "05.09.2026", "NORMAL", 24),      // Eylül — Ağustos ızgarasında YOK
+  ]);
+  const liste = ayIsaretleri(ayIzgarasi(new Date(2026, 7, 1)), isaret);
+
+  assert.deepEqual(liste.map((g) => g.tarih.getDate()), [3, 20]);   // artan, Eylül dışarıda
+  assert.equal(liste[0].ogeler.length, 2);
+  assert.equal(liste[0].agirlik, DURUM_AGIRLIK.GECIKMIS);           // gün en kötü duruma boyanır
+  assert.equal(liste[0].anahtar, gunAnahtar(new Date(2026, 7, 3)));
+});
+
+test("ayIsaretleri sayacı işaret haritasıyla aynı evrakı sayar", () => {
+  const kuyruk = [oge("a", "03.08.2026", "NORMAL", 1), oge("b", "03.08.2026", "NORMAL", 1), oge("c", "20.08.2026", "NORMAL", 8)];
+  const liste = ayIsaretleri(ayIzgarasi(new Date(2026, 7, 1)), isaretHarita(kuyruk));
+  assert.equal(liste.reduce((t, g) => t + g.ogeler.length, 0), 3);
+});
+
+test("ayIsaretleri boş/bozuk girdide boş dizi döner", () => {
+  assert.deepEqual(ayIsaretleri(null, isaretHarita([])), []);
+  assert.deepEqual(ayIsaretleri(ayIzgarasi(new Date(2026, 7, 1)), null), []);
+  assert.deepEqual(ayIsaretleri(ayIzgarasi(new Date(2026, 7, 1)), isaretHarita([])), []);
 });

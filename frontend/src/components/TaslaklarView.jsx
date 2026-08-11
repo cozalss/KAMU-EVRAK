@@ -13,7 +13,8 @@ import A4Belge from "./A4Belge.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
-import { A4_GEN_MM, A4_YUK_MM, kagitSutunGenisligi } from "../lib/a4Sayfalama.js";
+import { A4_GEN_MM, A4_YUK_MM } from "../lib/a4Sayfalama.js";
+import { sutunButcesi, BOSLUK } from "../lib/taslakSutun.js";
 
 /* Düzenlenen metni DOĞRUDAN DOCX indir (pipeline yok → /yazi/render). Gövde olduğu gibi. */
 async function docxIndir(text, name, onToast) {
@@ -104,7 +105,11 @@ const selectStil = { padding: "6px 10px", borderRadius: RAD.ctl, border: `1px so
    ayrışma (o panel Gelen'in dili; kuyruk dikey alanı listeye bırakır). Arama kutusu Mevzuat
    sayfasıyla AYNI dilde (ikon + "/" odak kısayolu, 2026-07-23) — uygulama genelinde tek bir
    "arama" hissi. */
-function AracCubugu({ filter, turSecenek, birimSecenek }) {
+/* satirIci: araç çubuğu ViewWrap'in BAŞLIK satırında (actions yuvası) durur, kendi satırında
+   değil. Kazanç ölçülü: 33px çubuk + 16px alt boşluk = 49px dikey; Taslaklar penceteye kilitli
+   olduğundan bu 49px doğrudan A4'ün boyutuna gider (A4 genişliği = sütun yüksekliği × 0,707
+   → +35px kâğıt). Dar ekranda başlık satırı zaten sarar; düzen eskisiyle aynı görünür. */
+function AracCubugu({ filter, turSecenek, birimSecenek, satirIci = false }) {
   const f = filter.filters;
   const aramaRef = useRef(null);
   const [aramaOdakta, setAramaOdakta] = useState(false);
@@ -120,7 +125,7 @@ function AracCubugu({ filter, turSecenek, birimSecenek }) {
     return () => document.removeEventListener("keydown", dinle);
   }, []);
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: SP.l }}>
+    <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: satirIci ? 0 : SP.l }}>
       <div style={{ position: "relative", flex: "1 1 180px", maxWidth: 300 }}>
         <span aria-hidden="true" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", display: "flex", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
         <input ref={aramaRef} type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
@@ -219,7 +224,7 @@ function KararPaneli({ h, konu, govde, tamMetin, genis, sutunH, sendBusy, onDuze
       {/* ── SÜTUN 1: KÂĞIT ──────────────────────────────────────────────────────────
           Kart YOK. Kâğıdın kendisi zaten beyaz yüzey + hairline + gölge taşıyor (A4Belge
           `sayfaStil`); etrafına bir de kart koymak "kutu içinde kutu" üretirdi. Sütun tam
-          A4 oranında olduğundan (genişliği üst grid'in `kagitGenisligi` ile hesapladığı
+          A4 oranında olduğundan (genişliği üst grid'in `sutunButcesi` ile hesapladığı
           sütun verir) kâğıt onu birebir doldurur — tek sayfa TAM görünür, kaydırma yalnız
           çok sayfalı taslakta devreye girer (kullanıcı kararı, 2026-08-02).
           Tıkla/Enter → A4 düzenleme (BelgeModal). */}
@@ -369,23 +374,19 @@ function useSutunYuksekligi(genis) {
   return [ref, olcu?.yukseklik ?? null, olcu?.genislik ?? null];
 }
 
-/* Kâğıt sütununun genişliği — ölçülen yükseklikten A4 oranıyla TÜRETİLİR (karar
-   `kagitSutunGenisligi`de, saf ve birim testli): sütun tam kâğıt biçiminde olur, sayfa onu
-   birebir doldurur ve TAM görünür — kaydırma yok. Sayfayı bundan büyütmenin tek yolu sütuna
-   daha çok YÜKSEKLİK açmaktır; taşma payıyla büyütme denendi ve geri alındı (2026-08-02).
+/* Sütun bütçesi — üçünün piksel genişliği `sutunButcesi`de (saf, taslakSutun.test.js'te
+   birim testli). Kâğıt hâlâ ölçülen YÜKSEKLİKTEN A4 oranıyla türer; sayfayı büyütmenin tek
+   yolu sütuna daha çok yükseklik açmaktır (taşma payıyla büyütme denendi ve kullanıcı
+   kararıyla geri alındı, 2026-08-02).
 
-   KUYRUK_AZAMI neden var (kullanıcı şikâyeti + ölçüm): kuyruk `1fr` iken artan TÜM yeri
-   yutuyordu — kâğıdın ihtiyacı olmayan genişlik kuyruğa yığılıyordu. Kuyruk satırı tek
-   satırlık konu başlığı gösterir; 420px'ten sonrası okunurluğa bir şey katmaz. Artan yer
-   artık sütun aralarına gider (grid `justifyContent: space-between`): kuyruk solda, karar
-   paneli sağda kalır — ikisi de üstteki araç çubuğuyla hizalı. */
-const KUYRUK_MIN = 260, KUYRUK_AZAMI = 420, KARAR_MIN = 236, GRID_BOSLUK = SP.l;
-function kagitGenisligi(sutunH, gridGen) {
-  if (!sutunH || !gridGen) return null;
-  // Karar: `kagitSutunGenisligi` (saf, a4Sayfalama.test.js'te birim testli). Burada yalnız
-  // bu görünümün sütun bütçesi çıkarılır — diğer sütunların asgarileri kâğıda kalan yeri verir.
-  return kagitSutunGenisligi(sutunH, gridGen - KUYRUK_MIN - KARAR_MIN - GRID_BOSLUK * 2);
-}
+   2026-08-12 DÜZELTMESİ — artan genişlik artık sütun ARALARINA dağıtılmıyor. Eski düzende
+   kuyruk 420 / karar 300 sabit tavanlıydı; kâğıt ise yükseklikten türediği için alçak
+   ekranda daralıyordu. Artan yer `justifyContent:space-between` ile aralara düşüyor ve
+   1080p'de 2x185px, 1440p'de 2x378px uçurum açıyordu (Playwright'ta ölçüldü) — ekran üç
+   küçük ada + iki delik olarak görünüyordu. Artık artık sütunlara gider, kalanı tek parça
+   SAĞ boşluktur; sütunlar bitişik ve başlık/araç çubuğuyla aynı sol hizada başlar.
+   Gerekçenin tamamı + ölçüm tablosu: `lib/taslakSutun.js`. */
+const GRID_BOSLUK = BOSLUK;
 
 const optIdOf = (id) => `tas-${String(id).replace(/[^\w-]+/g, "_")}`;
 
@@ -404,7 +405,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   const genis = useGenisEkran();
   // gridRef ölçüm içindir (bkz. useSutunYuksekligi); ölçü gelmeden önce güvenli yedeğe düşülür.
   const [gridRef, sutunH, gridGen] = useSutunYuksekligi(genis);
-  const kagitGen = kagitGenisligi(sutunH, gridGen);
+  const butce = sutunButcesi(sutunH, gridGen);
   const [listeRef] = useAutoAnimate();   // karar sonrası satırın kuyruğu terk edişi + FLIP
 
   // Hedefli geliş: ilgili taslak kuyrukta SEÇİLİR ve görünür kılınır — A4 modalı otomatik
@@ -512,29 +513,30 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
      düzende sayfa kaydırıldığından varsayılan 96px korunur — yüzen sohbet düğmesi son satırı
      örtmesin. */
   return (
-    <ViewWrap id="taslak-h" title="Taslaklar" altDolgu={genis ? SP.xl : undefined}
-      sub={`${drafts.length} taslak karar bekliyor${oturumEki} · satırı seçin, sağdaki panelde karar verin`}>
-      <AracCubugu filter={filter} turSecenek={config.select[0].options.slice(1)} birimSecenek={config.select[1].options.slice(1)} />
+    <ViewWrap id="taslak-h" title="Taslaklar" altDolgu={genis ? SP.xl : undefined} ustSik={genis}
+      sub={`${drafts.length} taslak karar bekliyor${oturumEki} · satırı seçin, sağdaki panelde karar verin`}
+      actions={<AracCubugu filter={filter} turSecenek={config.select[0].options.slice(1)} birimSecenek={config.select[1].options.slice(1)} satirIci />}>
       {sonuc.length === 0 ? (
         <EmptyState icon={<Icon.doc />} title="Eşleşen taslak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        /* Üç sütun: kuyruk | kâğıt | karar. Kâğıt sütunu ölçülen yükseklikten türeyen SABİT
-           genişlikte (A4 oranı); kuyruk KUYRUK_AZAMI'ye kadar büyür, artan yer sütun
-           aralarına dağılır (bkz. justifyContent).
-           Ölçüm gelmeden önce kâğıt için oransal bir yedek (0.8fr) kullanılır — ilk karede
-           de üç sütunlu düzen görünür, yerleşim sonradan sıçramaz.
+        /* Üç sütun: kuyruk | kâğıt | karar — üçünün genişliği de `sutunButcesi`den gelir
+           (saf + birim testli). Kâğıt ölçülen yükseklikten türer (A4 oranı); artan genişlik
+           kuyruk ve karar sütunlarına dağıtılır, kalanı SAĞ boşluk olur — aralara ASLA değil.
+           Ölçüm gelmeden önce oransal bir yedek kullanılır — ilk karede de üç sütunlu düzen
+           görünür, yerleşim sonradan sıçramaz.
            Seçim yokken kâğıt/karar hücreleri boş kalmasın diye grid tek sütuna iner.
            NOT: bu bir JS yorumudur, JSX yorumu DEĞİL — ternary'nin ifade konumunda
            süslü-parantezli JSX yorumu sözdizimi hatası verir (bu depoda daha önce yaşandı). */
         <div ref={gridRef} style={{
           display: "grid",
-          gridTemplateColumns: !genis ? "minmax(0, 1fr)"
-            : !secili ? "minmax(0, 1fr)"
-            : `minmax(${KUYRUK_MIN}px, ${KUYRUK_AZAMI}px) ${kagitGen ? `${kagitGen}px` : "minmax(0, 0.8fr)"} minmax(${KARAR_MIN}px, 300px)`,
-          // Sütunlar toplam genişliği doldurmadığında artan yer ARALARA dağılır; kuyruk sola,
-          // karar paneli sağa yaslı kalır (aksi halde ikisi de ortaya kayıp araç çubuğunun
-          // hizasını bozardı). Yer darken/`fr` yedeği devredeyken bu kural etkisizdir.
-          gap: GRID_BOSLUK, alignItems: "start", justifyContent: "space-between",
+          gridTemplateColumns: !genis || !secili ? "minmax(0, 1fr)"
+            : butce ? `${butce.kuyruk}px ${butce.kagit}px ${butce.karar}px`
+            // Ölçüm gelmeden önceki tek kare: oransal yedek — ilk karede de üç sütun görünür.
+            : "minmax(260px, 420px) minmax(0, 0.8fr) minmax(236px, 300px)",
+          // justifyContent YOK (varsayılan `start`): artan yer sütun ARALARINA dağıtılamaz —
+          // `space-between` tam da bu yüzden kaldırıldı (bkz. lib/taslakSutun.js). Sütunlar
+          // bitişik durur, kalan genişlik tek parça sağ boşluk olur ve düzen sol hizada kalır.
+          gap: GRID_BOSLUK, alignItems: "start",
         }}>
           {/* Kuyruk listesi — listbox: ↑/↓ gezinme, Enter düzenleme; satırda eylem yok
               (eylemler panelde — Hick yasası: 244 hedef → 4 hedef). */}

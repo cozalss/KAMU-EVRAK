@@ -47,6 +47,20 @@ export function isaretHarita(kuyrukSla) {
   return harita;
 }
 
+/* Görünen ayın işaretli günleri — ay ızgarasının (hucreler) işaret haritasına izdüşümü,
+   tarihe göre ARTAN (ızgara zaten sıralı geldiği için ek sıralama yok). Kartın sağ kolonu
+   bu listeyi basar, ay sayacı da uzunluğundan türetilir: aynı bilgi iki ayrı döngüde
+   sayılırsa zamanla ayrışır. */
+export function ayIsaretleri(hucreler, isaret) {
+  const cikti = [];
+  for (const d of hucreler || []) {
+    if (!d) continue;
+    const kayit = isaret?.get?.(gunAnahtar(d));
+    if (kayit) cikti.push({ anahtar: gunAnahtar(d), ...kayit });
+  }
+  return cikti;
+}
+
 /* Ay ızgarası — Pazartesi başlangıçlı hücre dizisi; ay dışı hücreler null (komşu ayın
    günlerini soluk basmak yerine boş bırakılır: tıklanamaz gürültü eklemez). Uzunluk her
    zaman 7'nin katı. */

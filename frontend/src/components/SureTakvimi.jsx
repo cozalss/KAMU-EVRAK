@@ -11,6 +11,12 @@
    Renk sözlüğü BANT'tır (kırmızı/sarı/yeşil) — brifteki şeritle aynı; aynı evrak iki
    bileşende iki farklı renkte görünmesin diye. Legend bu yüzden 3 değil 4 satır.
 
+   Gövde İKİ KOLON (2026-08-12): solda ay ızgarası, sağda gün paneli — seçim yokken ayın
+   işaretli günleri listelenir, bir gün seçilince o günün evrakları. Kırılım kartın KENDİ
+   genişliğine bağlıdır (grid auto-fit), viewport'a değil: aynı bileşen 4 kolluk panel
+   yuvasında yan yana, telefonda alt alta dizilir. Önceki tek kolonlu düzende ızgara sola
+   yapışıyor, geniş ekranda kartın sağ yarısı boş kalıyordu.
+
    Saf çekirdek (tarih ayrıştırma, işaret haritası, ay ızgarası) lib/sureTakvimi.js'te —
    node --test orada koşar; bu dosya YALNIZ sunumdur.
 
@@ -22,7 +28,7 @@
    · Geçişler uzun (.2s) ama eğri "ease" — MASTER.md: renk geçişleri özel easing almaz. */
 import { useMemo, useState } from "react";
 import { Icon, MONO, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, CAM, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
-import { DURUM_AGIRLIK, gunAnahtar, kalanMetin, isaretHarita, ayIzgarasi } from "../lib/sureTakvimi.js";
+import { DURUM_AGIRLIK, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi } from "../lib/sureTakvimi.js";
 
 const AY_ADI = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const GUN_KISA = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
@@ -34,8 +40,22 @@ const AGIRLIK_RENK = { 1: BANT.yesil.c, 2: BANT.sari.c, 3: BANT.kirmizi.c };
 const ogeRenk = (x) => AGIRLIK_RENK[DURUM_AGIRLIK[x?.sla?.durum] || 1];
 
 /* Daire çapı tavanı — takvim dar sağ raya sığar. width:%100 + maxWidth ikilisi dar ekranda
-   küçülmeye izin verir, aspectRatio her genişlikte daireyi daire tutar. */
-const CAP = 34;
+   küçülmeye izin verir, aspectRatio her genişlikte daireyi daire tutar. 34 → 48 (2026-08-12):
+   34px daire geniş yuvada oyuncak gibi kalıyordu; iki kolonlu gövdeyle birlikte ızgara artık
+   kolonunu gerçekten dolduruyor. */
+const CAP = 56;
+/* Izgaranın azami genişliği — yedi hücre + altı boşluk. Bunu ızgaraya vermek, geniş ekranda
+   sütunların hücreden büyüyüp araya ölü boşluk açmasını engeller (bkz. ay ızgarası yorumu). */
+const IZGARA_AZAMI = 7 * CAP + 6 * SP.xs;                       // 416
+/* Gövde kırılımı — VIEWPORT değil KARTIN kendi genişliği belirler (auto-fit): panel yuvası
+   4 kola inip çıktığında, telefonda tek kolona düştüğünde takvim kendi kararını verir.
+   Ölçülen kart iç genişlikleri (2026-08-12, panelin 4 kolluk yuvası): 1440px ekranda ~323
+   (tek kolon, ızgara kabı doldurur) · 1920'de ~478 (tek kolon, ızgara tavanda + ortalı) ·
+   2286'da ~705 (iki kolon, her biri ~344 → ızgara yine doldurur). */
+const GOVDE_SUTUN = `repeat(auto-fit, minmax(${IZGARA_AZAMI - 100}px, 1fr))`;
+/* Izgara kabından darsa ORTALANIR: sola yapışık bırakmak kartın sağında ölü boşluk gibi
+   okunuyordu. Gün başlıkları da aynı kutuyu alır, yoksa sütun adları günlerden kayar. */
+const IZGARA_KUTU = { maxWidth: IZGARA_AZAMI, margin: "0 auto" };
 /* Renk/dolgu geçişi uzun (yumuşak his), eğri "ease"; press transform EASE.out alır. */
 const GECIS = `background .2s ease, border-color .2s ease, color .2s ease, transform .14s ${EASE.out}`;
 
@@ -67,7 +87,7 @@ function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec }) {
   const daire = {
     width: "100%", maxWidth: CAP, aspectRatio: "1 / 1", margin: "0 auto",
     display: "flex", alignItems: "center", justifyContent: "center",
-    borderRadius: RAD.dot, fontFamily: MONO, fontSize: 13, ...TNUM,
+    borderRadius: RAD.dot, fontFamily: MONO, fontSize: 14, ...TNUM,
   };
 
   if (!kayit) {
@@ -99,6 +119,87 @@ function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec }) {
   );
 }
 
+/* Sağ kolon satırı — hem "ayın işaretli günü" hem "seçili günün evrakı" bu iskeleti kullanır:
+   bant noktası + ad + sağa yaslı mono künye. İkisi ayrı yazılırsa hizaları zamanla ayrışır. */
+function Satir({ renk, ad, kunye, onClick, etiket }) {
+  const ic = (
+    <>
+      <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, flexShrink: 0, background: renk }} />
+      <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ad}</span>
+      <span style={{ ...TYPE.meta, fontWeight: 500, flexShrink: 0, ...TNUM, color: DERIN_OF(renk) }}>{kunye}</span>
+    </>
+  );
+  const stil = { display: "flex", alignItems: "center", gap: SP.s, width: "100%", textAlign: "left",
+    padding: "6px 0", borderTop: `1px solid ${CAM.line}` };
+  if (!onClick) return <div style={stil}>{ic}</div>;
+  return (
+    <button type="button" onClick={onClick} aria-label={etiket} {...focusRing} data-press=""
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      style={{ ...stil, cursor: "pointer", background: "transparent", border: "none", borderTop: `1px solid ${CAM.line}`,
+        transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+      {ic}
+    </button>
+  );
+}
+
+/* Sağ kolon — seçim YOKKEN ayın işaretli günleri (tıklanınca o günü seçer), seçim VARKEN o
+   günün evrakları. Eskiden burada tek satırlık bir ipucu vardı; geniş yuvada kartın yarısı
+   boş kalıyordu. Liste yeni veri ÇEKMEZ — ızgaranın bastığı işaret haritasının aynısıdır. */
+function GunPaneli({ isaretliGunler, seciliKayit, onSec, ayAdi }) {
+  if (seciliKayit) {
+    const gorunen = seciliKayit.ogeler.slice(0, 6);
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: SP.xs }}>
+          <span style={{ ...TYPE.data, fontWeight: 600, color: DERIN.V, ...TNUM }}>
+            {seciliKayit.tarih.getDate()} {ayAdi} · son gün
+          </span>
+          <button type="button" onClick={() => onSec(null)} {...focusRing} data-press=""
+            style={{ marginLeft: "auto", cursor: "pointer", padding: 0, background: "transparent", border: "none",
+              ...TYPE.meta, color: PAL.mut2 }}>
+            Ayın tümü
+          </button>
+        </div>
+        {gorunen.map((x) => <Satir key={x.id} renk={ogeRenk(x)} ad={x.label} kunye={kalanMetin(x.sla)} />)}
+        {seciliKayit.ogeler.length > gorunen.length && (
+          <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
+            +{seciliKayit.ogeler.length - gorunen.length} evrak daha
+          </p>
+        )}
+      </>
+    );
+  }
+
+  if (!isaretliGunler.length) {
+    return (
+      <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>
+        Bu ayda yasal süresi dolan evrak yok.
+      </p>
+    );
+  }
+
+  const gorunen = isaretliGunler.slice(0, 7);
+  return (
+    <>
+      <p style={{ margin: `0 0 ${SP.xs}px`, ...TYPE.meta, color: PAL.mut2 }}>
+        {ayAdi} ayının son günleri — ayrıntı için satıra ya da takvimdeki güne tıklayın.
+      </p>
+      {gorunen.map((g) => (
+        <Satir key={g.anahtar} renk={AGIRLIK_RENK[g.agirlik]}
+          ad={`${g.tarih.getDate()} ${ayAdi} ${GUN_TAM[(g.tarih.getDay() + 6) % 7]}`}
+          kunye={`${g.ogeler.length} evrak`} onClick={() => onSec(g.anahtar)}
+          etiket={`${g.tarih.getDate()} ${ayAdi}: ${g.ogeler.length} evrakın son günü — listeyi göster`} />
+      ))}
+      {isaretliGunler.length > gorunen.length && (
+        <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
+          +{isaretliGunler.length - gorunen.length} gün daha
+        </p>
+      )}
+    </>
+  );
+}
+
 export default function SureTakvimi({ kuyrukSla = [] }) {
   const bugun = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const [ay, setAy] = useState(() => new Date(bugun.getFullYear(), bugun.getMonth(), 1));
@@ -108,11 +209,11 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
   const hucreler = useMemo(() => ayIzgarasi(ay), [ay]);
   const bugunKey = gunAnahtar(bugun);
 
-  // Görünen aydaki işaret sayısı — boş ay dürüstçe söylenir ("takvim bozuk" sanılmasın).
+  // Görünen ayın işaretli günleri — hem sağ kolonun listesi hem başlıktaki sayaç buradan
+  // (boş ay dürüstçe söylenir, "takvim bozuk" sanılmasın).
+  const isaretliGunler = useMemo(() => ayIsaretleri(hucreler, isaret), [hucreler, isaret]);
   const ayIsaretN = useMemo(
-    () => hucreler.reduce((t, d) => t + (d && isaret.has(gunAnahtar(d)) ? isaret.get(gunAnahtar(d)).ogeler.length : 0), 0),
-    [hucreler, isaret],
-  );
+    () => isaretliGunler.reduce((t, g) => t + g.ogeler.length, 0), [isaretliGunler]);
 
   const seciliKayit = secili ? isaret.get(secili) : null;
   const ayDegis = (adim) => {
@@ -140,56 +241,53 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
         <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink }}>
           {AY_ADI[ay.getMonth()]} {ay.getFullYear()}
         </span>
+        {/* Ay sayacı — "takvim boş mu, yoksa bozuk mu" sorusunu başlıkta yanıtlar. */}
+        {ayIsaretN > 0 && (
+          <span style={{ ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
+            {ayIsaretN} evrak · {isaretliGunler.length} gün
+          </span>
+        )}
         <span style={{ display: "flex", gap: SP.xs, marginLeft: "auto" }}>
           <AyOk yon="sol" onClick={() => ayDegis(-1)} etiket="Önceki ay" />
           <AyOk yon="sag" onClick={() => ayDegis(1)} etiket="Sonraki ay" />
         </span>
       </div>
 
-      {/* Gün başlıkları */}
-      <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: SP.xs, marginBottom: SP.xs }}>
-        {GUN_KISA.map((g) => (
-          <span key={g} style={{ textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>{g}</span>
-        ))}
-      </div>
+      {/* Gövde — solda ızgara, sağda gün paneli. Kart dar olduğunda (telefon / tek kolonlu
+          panel) auto-fit ikisini alt alta indirir; geniş 4-kol yuvada yan yana dizer.
+          Eskiden panel ızgaranın ALTINDAydı: 700px'lik kartta ızgara sola yapışıp sağ yarı
+          ölü boşluk kalıyordu (kullanıcı bildirimi 2026-08-12). */}
+      <div style={{ display: "grid", gridTemplateColumns: GOVDE_SUTUN, gap: `${SP.m}px ${SP.l}px`,
+        alignItems: "start", flex: 1, minHeight: 0 }}>
 
-      {/* Ay ızgarası */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: SP.xs }}>
-        {hucreler.map((d, i) => (
-          d ? (
-            <GunHucre key={gunAnahtar(d)} tarih={d} bugunMu={gunAnahtar(d) === bugunKey}
-              kayit={isaret.get(gunAnahtar(d))} seciliMi={secili === gunAnahtar(d)} onSec={setSecili} />
-          ) : <span key={`bos-${i}`} aria-hidden="true" />
-        ))}
-      </div>
-
-      {/* Seçili günün evrakları — ad + gecikme durumu (salt okunur; eylem brifin işi) */}
-      <div style={{ marginTop: SP.m, flex: 1, minHeight: 0 }}>
-        {seciliKayit ? (
-          <>
-            <p style={{ margin: `0 0 ${SP.xs}px`, ...TYPE.meta, color: DERIN.V, ...TNUM }}>
-              {seciliKayit.tarih.getDate()} {AY_ADI[seciliKayit.tarih.getMonth()]} · son gün
-            </p>
-            {seciliKayit.ogeler.slice(0, 4).map((x) => (
-              <div key={x.id} style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "5px 0", borderTop: `1px solid ${CAM.line}` }}>
-                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, flexShrink: 0, background: ogeRenk(x) }} />
-                <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
-                <span style={{ ...TYPE.meta, fontWeight: 500, flexShrink: 0, ...TNUM, color: DERIN_OF(ogeRenk(x)) }}>{kalanMetin(x.sla)}</span>
-              </div>
+        <div style={{ minWidth: 0 }}>
+          {/* Gün başlıkları — ızgarayla AYNI genişlik/aralık, yoksa sütun başlıkları kayar. */}
+          <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: SP.xs, marginBottom: SP.xs, ...IZGARA_KUTU }}>
+            {GUN_KISA.map((g) => (
+              <span key={g} style={{ textAlign: "center", ...TYPE.meta, color: PAL.mut3 }}>{g}</span>
             ))}
-            {seciliKayit.ogeler.length > 4 && (
-              <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
-                +{seciliKayit.ogeler.length - 4} evrak daha
-              </p>
-            )}
-          </>
-        ) : (
-          <p style={{ margin: 0, ...TYPE.meta, color: PAL.mut3 }}>
-            {ayIsaretN > 0
-              ? "İşaretli güne tıklayın: o gün süresi dolan evraklar listelenir."
-              : "Bu ayda yasal süresi dolan evrak yok."}
-          </p>
-        )}
+          </div>
+
+          {/* Ay ızgarası — genişlik ızgaranın KENDİSİNDE sınırlanır, hücrede değil. Hücre zaten
+              CAP'te duruyordu ama sütun `1fr` olduğundan geniş ekranda sütun büyüyüp hücre
+              ortada kalıyor, günler arasında 36px'lik ölü boşluk açılıyordu (ölçüldü 2560px'te,
+              gap 4px iken). Izgara kapanınca hücreler sütunlarını doldurur, takvim sık kalır. */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: SP.xs, ...IZGARA_KUTU }}>
+            {hucreler.map((d, i) => (
+              d ? (
+                <GunHucre key={gunAnahtar(d)} tarih={d} bugunMu={gunAnahtar(d) === bugunKey}
+                  kayit={isaret.get(gunAnahtar(d))} seciliMi={secili === gunAnahtar(d)} onSec={setSecili} />
+              ) : <span key={`bos-${i}`} aria-hidden="true" />
+            ))}
+          </div>
+        </div>
+
+        {/* Gün paneli — seçim yoksa ayın son günleri, varsa o günün evrakları (salt okunur;
+            eylem brifin işi). İkisi de aynı işaret haritasından, yeni veri kaynağı YOK. */}
+        <div style={{ minWidth: 0 }}>
+          <GunPaneli isaretliGunler={isaretliGunler} seciliKayit={seciliKayit}
+            onSec={setSecili} ayAdi={AY_ADI[ay.getMonth()]} />
+        </div>
       </div>
 
       {/* Legend — en alta yaslı (kart metrik kolonuyla eşit yüksekliğe esnerken kaymasın) */}

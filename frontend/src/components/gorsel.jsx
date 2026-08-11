@@ -8,6 +8,10 @@
  * uygulaması, memur gün boyu bakıyor. Bu yüzden:
  *   · Metnin ARKASINDA sürekli hareket eden katman YOK. Zemin efektleri statiktir; yalnız
  *     bir kereye mahsus giriş yapar. (Sürekli döngü = periferik dikkat hırsızı + pil.)
+ *   · SAYFA ATMOSFERİ YOK (2026-08-12, kullanıcı kararı). `MeshZemin` her görünümün
+ *     arkasına çok düşük yoğunlukta gök mavisi/mor radyal lekeler koyuyordu; başlık
+ *     hizasında mavi bir aydınlanma olarak görünüyordu ve kaldırıldı. Görünüm zemini
+ *     artık düz `--ke-bg`. Geri getirilmez — derinlik yüzeyden gelir (kart + hairline).
  *   · İMLEÇ IŞIĞI YOK (2026-08-09, kullanıcı kararı). Kartın üstünde imleci takip eden
  *     `IsikYuzeyi`/`useIsik` çifti vardı; kaldırıldı. Görsel gerekçenin yanında somut bir
  *     bedeli de vardı: `IsikYuzeyi`'nin sarmalayıcısı ızgara hücresini içerik genişliğine
@@ -25,7 +29,6 @@ import { useEffect, useState } from "react";
    kırılma. Token'lar zaten düz CSS değişkeni dizeleri olduğu için burada birebir
    tekrarlanabiliyorlar; TEK KAYNAK hâlâ THEME_CSS, bunlar ona işaret eden birer takma ad. */
 const T = "var(--ke-t)";
-const V = "var(--ke-v)";
 const EASE_OUT = "var(--ke-ease-out)";
 
 const azHareketMi = () =>
@@ -45,38 +48,6 @@ function useOrtam() {
     return () => mq?.removeEventListener?.("change", guncelle);
   }, []);
   return { az };
-}
-
-/**
- * MeshZemin — sayfanın arkasındaki atmosfer. Palet renklerinden çok düşük yoğunlukta
- * radyal lekeler; derinlik hissi verir, okumayı bozmaz.
- *
- * STATİK — bilerek. Metnin arkasında SÜREKLİ hareket eden katman iki şeyi bozar: açık
- * zeminde kontrast ölçülemez hâle gelir ve rAF hiç durmadığı için dizüstünde pil/fan
- * bedeli doğar. Tek hareket, mount'ta bir kereye mahsus yumuşak beliriş.
- */
-export function MeshZemin({ yogunluk = 1 }) {
-  const { az } = useOrtam();
-  const leke = (renk, x, y, boyut, alfa) => ({
-    position: "absolute", left: `${x}%`, top: `${y}%`,
-    width: boyut, height: boyut, marginLeft: -boyut / 2, marginTop: -boyut / 2,
-    borderRadius: "50%", pointerEvents: "none",
-    background: `radial-gradient(circle, ${renk} 0%, transparent 68%)`,
-    opacity: alfa * yogunluk,
-  });
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0,
-        animation: az ? "none" : `nu-sol .9s ${EASE_OUT} both`,
-      }}
-    >
-      <span style={leke(T, 12, 6, 560, 0.1)} />
-      <span style={leke(V, 88, 22, 480, 0.07)} />
-      <span style={leke(T, 62, 92, 620, 0.06)} />
-    </div>
-  );
 }
 
 /**

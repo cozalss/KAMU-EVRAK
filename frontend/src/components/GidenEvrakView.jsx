@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, PAL, BANT, TYPE, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
+import { useDarEkran } from "../hooks/useMedya.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { evrakKategori, kategoriMeta, KATEGORILER } from "../lib/kategori.js";
 
@@ -106,6 +107,7 @@ function DetayModal({ item, onClose }) {
 
 export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onResend }) {
   const [detay, setDetay] = useState(null);
+  const dar = useDarEkran();         // telefonda gönderi satırı sarar (bkz. satır yorumu)
   const triggerRef = useRef(null);   // modal kapanınca odağı tetikleyen butona geri ver (a11y)
   const closeDetay = useCallback(() => { setDetay(null); triggerRef.current?.focus(); }, []);
   // Her gönderiye operasyonel kategori türet (evrak türü + birim + konu) — filtre + rozet.
@@ -149,11 +151,16 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
             const gecikmis = item.sla_durum === "GECIKMIS";
             const riskC = BANT[item.risk]?.c;
             return (
-              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
+              /* Kırpılmayan parçalar (evrak no 96 + durum metni + risk çipi + Görüntüle
+                 düğmesi + boşluklar ≈ 441px) telefonda kaba sığmıyordu; ortadaki esnek blok
+                 sıfıra ezilip künyesi dışarı taşıyordu (ölçüldü 2026-08-12: sayfa 151px
+                 yatay kayıyordu). Dar ekranda satır sarar; konu bloğu tam satır alır. */
+              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`,
+                ...(dar ? { flexWrap: "wrap", rowGap: SP.s } : null) }}>
                 {/* Durum: 8px düz renk noktası + sağda 12px metin (çip yerine) */}
                 <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: drenk, flexShrink: 0 }} />
                 <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, flexShrink: 0, minWidth: 96 }}>{item.id}</span>
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: dar ? "1 1 100%" : 1, minWidth: 0 }}>
                   <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
                   {/* Kategori + kaynak + süre + güven + birim: düz meta metin */}
                   <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs, display: "flex", gap: SP.s, flexWrap: "wrap", alignItems: "center" }}>

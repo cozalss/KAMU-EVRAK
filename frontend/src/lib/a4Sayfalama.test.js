@@ -10,9 +10,11 @@ import {
   AZAMI_OLCEK,
   KAGIT_ASGARI_GEN,
   KENAR_MM,
+  OLCEK_ESIK,
   YAZI_ALANI_YUK_PX,
   kagitSutunGenisligi,
   olcekHesapla,
+  olcekOynadi,
   olcumleriTopla,
   sayfalaraBol,
 } from "./a4Sayfalama.js";
@@ -169,4 +171,42 @@ test("ölçüm yoksa null döner — çağıran oransal yedeğine düşer, sıç
 test("A4_ORAN gerçek A4 en/boy oranıdır (1/√2)", () => {
   assert.ok(Math.abs(A4_ORAN - A4_GEN_MM / A4_YUK_MM) < 1e-12);
   assert.ok(Math.abs(A4_ORAN - 1 / Math.SQRT2) < 0.002);
+});
+
+/* ── olcekOynadi — ölçüm→render→ölçüm döngüsünün bekçisi ────────────────────────────────
+   A4Belge ölçeği HER commit'te yeniden ölçer (mount'ta bayat ölçekle boyama hatasının
+   düzeltmesi, 2026-08-12). Ölçüm kendi çıktısına geri beslendiği için, değişmeyen sonucun
+   state'e yazılmaması sadece bir optimizasyon değil DOĞRULUK koşuludur: yazılırsa React
+   sonsuz yeniden-render'a girer. */
+
+test("aynı ölçek yeniden yazılmaz — döngü kapanır", () => {
+  assert.equal(olcekOynadi(0.8567, 0.8567), false);
+});
+
+test("eşiğin altındaki kayan nokta gürültüsü yok sayılır", () => {
+  const taban = 0.8567;
+  assert.equal(olcekOynadi(taban, taban + OLCEK_ESIK / 2), false, "yarım eşik yazılmamalı");
+  assert.equal(olcekOynadi(taban, taban - OLCEK_ESIK / 3), false, "ters yönde de yazılmamalı");
+});
+
+test("eşik VEYA üstündeki gerçek değişiklik yazılır (pencere yeniden boyutlandırma)", () => {
+  const taban = 0.8567;
+  assert.equal(olcekOynadi(taban, taban + OLCEK_ESIK), true, "tam eşik değişikliktir");
+  assert.equal(olcekOynadi(taban, 1.1125), true, "yedek→ölçülmüş sıçraması yazılmalı");
+  assert.equal(olcekOynadi(1.1125, 0.8567), true, "mount düzeltmesi yazılmalı");
+});
+
+test("eşik yarım pikselden küçük farkı eler ama 1px'lik farkı ELEMEZ", () => {
+  // Eşik piksel cinsinden anlamlı olmalı: A4 genişliğinde 1px'lik değişim GÖRÜNÜR,
+  // yarım pikselinki görünmez. Eşik büyütülürse gerçek yeniden boyutlandırma yutulur.
+  const taban = 1;
+  assert.equal(olcekOynadi(taban, (A4_GEN_PX + 1) / A4_GEN_PX), true, "1px yazılmalı");
+  assert.equal(olcekOynadi(taban, (A4_GEN_PX + 0.25) / A4_GEN_PX), false, "0,25px yazılmamalı");
+});
+
+test("ilk ölçüm daima yazılır; ölçülemeyen değer state'i bozmaz", () => {
+  assert.equal(olcekOynadi(undefined, 0.9), true, "ilk ölçüm yazılır");
+  assert.equal(olcekOynadi(NaN, 0.9), true);
+  assert.equal(olcekOynadi(0.9, NaN), false, "NaN state'i ezmemeli");
+  assert.equal(olcekOynadi(0.9, undefined), false);
 });

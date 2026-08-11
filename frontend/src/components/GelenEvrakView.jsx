@@ -143,7 +143,10 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
                   <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
                     <button type="button" onClick={(e) => { e.stopPropagation(); setOnizle(s); }} {...focusRing} data-press=""
                       title={`${s.label}: evrakı önizle`}
-                      style={{ cursor: "pointer", padding: 0, background: "transparent", border: "none", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, textAlign: "left" }}>{s.konu || s.label}</button>
+                      /* Hedef büyütme: metin satırı 20px yüksekti (ölçüldü, tüm genişliklerde) →
+                         WCAG 2.2 §2.5.8 asgarisi 24px. Dolgu kadar negatif kenar boşluğuyla
+                         satır yüksekliği ve hizalama DEĞİŞMEZ; büyüyen yalnız tıklama alanı. */
+                      style={{ cursor: "pointer", padding: "3px 0", margin: "-3px 0", background: "transparent", border: "none", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, textAlign: "left" }}>{s.konu || s.label}</button>
                     {/* Durum çipi (işlenme) + yasal süre rozeti (SLA önizleme) */}
                     <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: isDone ? ALFA(BANT.yesil.c) : ALFA(T), color: isDone ? DERIN.yesil : DERIN.T }}>{isDone ? "İşlendi" : "Yeni"}</span>
                     <SlaRozet sla={slaMap?.[s.id]} />

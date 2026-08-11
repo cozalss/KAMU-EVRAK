@@ -7,10 +7,6 @@
    yalnız @keyframes. a11y: focusRing + SR_ONLY + semantik. */
 import React from "react";
 import * as RTooltip from "@radix-ui/react-tooltip";
-// Görsel katman. TEK YÖNLÜ bağımlılık: gorsel.jsx bu dosyadan HİÇBİR ŞEY import etmez
-// (token'ları kendi içinde CSS değişkeni dizesi olarak tutar) — aksi hâlde ESM döngüsü
-// doğar ve modül-seviyesi sabitler tanımlanmadan okunurdu.
-import { MeshZemin } from "./gorsel.jsx";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
@@ -378,18 +374,22 @@ details[open] > summary .mev-chevron{transform:rotate(90deg)}
    düğmesinin son satırı örtmesini de engeller). PENCEREYE KİLİTLİ düzenlerde ise ölü alandır:
    sütun yüksekliği "pencere − üst boşluk − alt dolgu" olarak ölçüldüğünden o 96px doğrudan
    içerikten kısılır. Bu yüzden opsiyonel; yalnız sayfanın kaydırılmadığı düzenler kısar. */
-export function ViewWrap({ id, title, sub, actions, altDolgu = 96, children }) {
+export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = false, children }) {
   return (
     // Yatay padding responsive: 390px telefonda sabit 32+32=64px, içeriğe kalan genişliğin
     // %16'sını yiyip satırları sıfır genişliğe eziyordu (ölçüm: Panel 441px/390px taşma).
     // clamp ile dar ekranda 16px'e iner; ≥800px'te eski 32px değeri BİT-AYNI kalır.
-    <section aria-labelledby={id} style={{ position: "relative", padding: `24px clamp(16px, 4vw, 32px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
-      {/* Atmosfer — TÜM görünümler tek yerden alır (Panel, Gelen, Taslaklar, Mevzuat,
-          Denetim). Statik: metnin arkasında sürekli hareket eden katman açık zeminde
-          kontrastı ölçülemez yapar ve rAF'ı hiç durdurmaz. Yalnız açılışta bir kez belirir,
-          reduced-motion'da o da yok. Tıklamayı yutmaz. */}
-      <MeshZemin />
-      <header style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: SP.xl }}>
+    //
+    // ustSik: PENCEREYE KİLİTLİ görünümlerde üst boşluğu kısar (24→16 dolgu, başlık altı
+    // SP.xl→SP.l). Kaydırılan görünümlerde bu boşluk nefes payıdır; kilitli düzende ise
+    // doğrudan içerikten çalınan yerdir — Taslaklar'da her piksel A4'ün boyutuna gider
+    // (A4 genişliği = sütun yüksekliği × 0,707). Varsayılan false → diğer görünümler BİT-AYNI.
+    <section aria-labelledby={id} style={{ position: "relative", padding: `${ustSik ? 16 : 24}px clamp(16px, 4vw, 32px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
+      {/* ATMOSFER KALDIRILDI (2026-08-12, kullanıcı kararı): burada `MeshZemin` vardı —
+          TÜM görünümlerin arkasına düşük yoğunluklu gök mavisi/mor radyal lekeler koyuyordu.
+          Zemin artık düz `PAL.bg`. Aşağıdaki zIndex:1'ler kalıyor; görünümlerin kendi
+          konumlanan katmanları (ParlaKenar vb.) bu istifleme sırasına dayanıyor. */}
+      <header style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: ustSik ? SP.l : SP.xl }}>
         <div>
           {/* 2026-07-25: h2(20) → h1(28). TYPE.h1 zaten "görünüm başlıkları" için tanımlıydı
               ama ViewWrap h2 kullanıyordu — token'ın kendi tarifine dönüldü. TÜM görünümleri

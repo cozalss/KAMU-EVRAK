@@ -115,7 +115,7 @@ function OkuDetay({ d, r }) {
   const sayfa = d.page_count ?? r?.page_count;
   return (
     <>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: SP.l }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(120px, 100%), 1fr))", gap: SP.l }}>
         <Olcum k="Okuma motoru" v={d.engine || "metin"} mono />
         {d.n_chars != null && <Olcum k="Çıkarılan metin" v={`${d.n_chars} karakter`} />}
         {sayfa != null && <Olcum k="Sayfa" v={sayfa} />}
@@ -134,7 +134,7 @@ function SiniflandirDetay({ d, r }) {
   return (
     <>
       {neden && <Gerekce>{cleanDemoText(String(neden))}</Gerekce>}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: SP.l }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(140px, 100%), 1fr))", gap: SP.l }}>
         <Olcum k="Belirlenen tür" v={EVRAK_TR(tur)} />
         {conf != null && <Olcum k="Güven skoru" v={`%${pct(conf)}`} c={pct(conf) < 60 ? DERIN.sari : DERIN.T} />}
       </div>
@@ -303,7 +303,7 @@ function TaslakDetay({ d, r }) {
   const md = r?.yazi_taslak_md;
   return (
     <>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: SP.l, marginBottom: md ? SP.m : 0 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(140px, 100%), 1fr))", gap: SP.l, marginBottom: md ? SP.m : 0 }}>
         {tur && <Olcum k="Yazı türü" v={YAZI_TR(tur)} c={DERIN.V} />}
         {uyum != null && <Olcum k="Yön. 2646 format" v={uyum ? "uyumlu" : "uyarılı"} c={uyum ? DERIN.yesil : DERIN.sari} />}
       </div>

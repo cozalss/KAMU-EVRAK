@@ -223,7 +223,7 @@ export function SlaPanel({ sla, info }) {
           </div>
         </div>
       )}
-      <div style={{ marginTop: SP.m, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px,1fr))", gap: `${SP.s}px ${SP.l}px` }}>
+      <div style={{ marginTop: SP.m, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(120px, 100%),1fr))", gap: `${SP.s}px ${SP.l}px` }}>
         {sla?.baslangic && <span><span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Başlangıç</span><span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.ink2, ...TNUM }}>{sla.baslangic}</span></span>}
         {sla?.sure && <span><span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Yasal süre</span><span style={{ ...TYPE.data, color: PAL.ink2, ...TNUM }}>{sla.sure}</span></span>}
         {sla?.son_tarih && <span><span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Cevap son tarihi</span><span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "18px", fontWeight: 500, color: dc, ...TNUM }}>{sla.son_tarih}</span></span>}

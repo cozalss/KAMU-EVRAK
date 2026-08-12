@@ -99,7 +99,12 @@ function MetinEylem({ onClick, renk = DERIN.T, ariaLabel, disabled, children }) 
   );
 }
 
-const selectStil = { padding: "6px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, ...TYPE.data, cursor: "pointer" };
+/* maxWidth + minWidth:0 — <select>'in içsel genişliği EN UZUN seçeneğinden gelir ("Çalışma,
+   Sosyal Güvenlik ve Aile Bakanlığı" gibi birim adları 200px+). Telefonda bu, araç çubuğunu
+   ve onunla birlikte sayfayı itiyordu (ölçüldü 2026-08-12: 360px'te Taslaklar 25px, 320px'te
+   65px kayıyordu). Tavan konunca seçenek metni kutuda kısalır — açılan listede tam görünür,
+   bilgi kaybı yok. */
+const selectStil = { padding: "6px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, ...TYPE.data, cursor: "pointer", minWidth: 0, maxWidth: "100%" };
 
 /* Kompakt tek-satır araç çubuğu — Gelen Evrak'ın kalıcı FilterBar panelinden bilinçli
    ayrışma (o panel Gelen'in dili; kuyruk dikey alanı listeye bırakır). Arama kutusu Mevzuat
@@ -125,8 +130,13 @@ function AracCubugu({ filter, turSecenek, birimSecenek, satirIci = false }) {
     return () => document.removeEventListener("keydown", dinle);
   }, []);
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: satirIci ? 0 : SP.l }}>
-      <div style={{ position: "relative", flex: "1 1 180px", maxWidth: 300 }}>
+    /* minWidth:0 — ViewWrap'in eylem kutusu daralsa bile bu kök esnek öğe kendi min-content'i
+       (en uzun <select> seçeneği) kadar geniş kalıyordu; zinciri kırmak için İKİSİNE de
+       gerekiyor (ölçüldü 2026-08-12: dış kutu 209'a indi, bu kök 290'da kaldı). */
+    <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", minWidth: 0, maxWidth: "100%", marginBottom: satirIci ? 0 : SP.l }}>
+      {/* minWidth:0 — esnek öğenin otomatik asgari boyutu içeriğinin min-content'idir; girdi
+          telefonda 16px'e çıkınca (iOS zoom kuralı) bu değer büyüyüp kabı itiyordu. */}
+      <div style={{ position: "relative", flex: "1 1 180px", maxWidth: 300, minWidth: 0 }}>
         <span aria-hidden="true" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", display: "flex", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
         <input ref={aramaRef} type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
           placeholder="Taslak adı, konu…" aria-label="Taslaklarda ara"

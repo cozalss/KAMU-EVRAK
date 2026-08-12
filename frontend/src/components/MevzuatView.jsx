@@ -165,7 +165,7 @@ function AramaModSecici({ modu, onSec }) {
   return (
     <div role="group" aria-label="Arama modu" style={{ display: "inline-flex", padding: 2, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surfHi }}>
       {secenekler.map(([k, ad]) => (
-        <button key={k} type="button" onClick={() => onSec(k)} aria-pressed={modu === k} {...focusRing} data-press=""
+        <button key={k} type="button" onClick={() => onSec(k)} aria-pressed={modu === k} {...focusRing} data-press="" data-dokunma=""
           onBlur={(e) => { e.currentTarget.style.boxShadow = modu === k ? SH.card : "none"; }}
           style={{ cursor: "pointer", padding: "5px 12px", borderRadius: RAD.chip, border: "none",
             background: modu === k ? PAL.surf : "transparent", color: modu === k ? DERIN.T : PAL.mut2,

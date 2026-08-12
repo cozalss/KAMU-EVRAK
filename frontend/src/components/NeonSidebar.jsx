@@ -40,7 +40,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
   return (
     <button type="button" onClick={onClick} aria-current={active ? "page" : undefined}
       aria-label={dar ? `${item.label}${showBadge ? ` (${badgeVal} öğe)` : ""}` : undefined}
-      title={dar ? item.label : undefined} {...focusRing} data-press=""
+      title={dar ? item.label : undefined} {...focusRing} data-press="" data-dokunma=""
       onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
       style={active
@@ -99,7 +99,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
   return (
     <aside aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
       <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
-        <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined}
+        <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined} data-dokunma=""
           onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; }}
           onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
           style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none", minWidth: 0 }}>
@@ -129,7 +129,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
         {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={kompakt} />)}
       </nav>
 
-      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press=""
+      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press="" data-dokunma=""
         onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
         onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
         style={{

@@ -17,16 +17,23 @@ function optionLabel(config, controlId, value) {
   return value;
 }
 
+/* minWidth `min(…,100%)` — çıplak sabit taban 320px telefonda (iPhone SE) kabı dışarı
+   itiyordu; WCAG 1.4.10 Reflow 320px'te yatay kaydırma istemez. Geniş ekranda bit-aynı. */
 function FilterInput({ config, filter }) {
   return (
-    <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
+    <div style={{ position: "relative", flex: 1, minWidth: "min(200px, 100%)" }}>
       <label htmlFor="flt-search" style={SR_ONLY}>Ara</label>
       <input id="flt-search" type="text" value={filter.filters.search} placeholder={config.search.placeholder || "Ara…"}
         onChange={(e) => filter.setSearch(e.target.value)} {...focusRing}
         style={{ ...inputBase, width: "100%", paddingRight: SP.xxl }} />
       {filter.filters.search && (
         <button type="button" onClick={() => filter.setSearch("")} aria-label="Aramayı temizle" {...focusRing}
-          style={{ position: "absolute", right: SP.s, top: 0, bottom: 0, display: "flex", alignItems: "center", background: "none", border: "none", color: PAL.mut2, cursor: "pointer", padding: 0 }}><Icon.x /></button>
+          /* Hedef genişliği: padding:0 ile buton yalnız ikon kadar (~14px) genişti ve
+             WCAG 2.2 SC 2.5.8'in 24px asgarisinin altındaydı (a11y denetimi 2026-08-12).
+             Ölçüm sweep'i göremedi çünkü buton YALNIZ arama doluyken DOM'a giriyor.
+             Yatay dolgu ikonun görünen boyunu değiştirmez, hedefi 26px'e çıkarır; dikey
+             eksende top/bottom:0 zaten girdi boyu kadar hedef veriyor. */
+          style={{ position: "absolute", right: 2, top: 0, bottom: 0, display: "flex", alignItems: "center", justifyContent: "center", minWidth: 26, background: "none", border: "none", color: PAL.mut2, cursor: "pointer", padding: "0 6px" }}><Icon.x /></button>
       )}
     </div>
   );
@@ -44,7 +51,7 @@ function FilterChips({ group, filter }) {
           /* Renksiz çipin seçili tinti ALFA(PAL.ink): tema ile döner (inkSurf hep koyuydu —
              koyu modda koyu-üstü-koyu tint görünmüyordu, seçililik kayboluyordu). Seçilide
              kenar lineHi: tint tek sinyal olamaz (WCAG 1.4.11), 2026-08 koyu mod bulgusu. */
-          <button key={opt.value} type="button" aria-pressed={on} onClick={() => filter.toggleChip(group.id, opt.value)} {...focusRing} data-press=""
+          <button key={opt.value} type="button" aria-pressed={on} onClick={() => filter.toggleChip(group.id, opt.value)} {...focusRing} data-press="" data-dokunma=""
             onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = PAL.surf; }}
             style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${on ? PAL.lineHi : PAL.line}`, background: on ? ALFA(c || PAL.ink) : PAL.surf, color: on ? (c ? DERIN_OF(c) : PAL.ink) : PAL.mut2, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
@@ -59,7 +66,7 @@ function FilterChips({ group, filter }) {
 
 function FilterSelect({ sel, filter }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, flex: 1, minWidth: 190 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, flex: 1, minWidth: "min(190px, 100%)" }}>
       <label htmlFor={`flt-${sel.id}`} style={labelStyle}>{sel.label}</label>
       <select id={`flt-${sel.id}`} value={filter.filters.select[sel.id] || ""} onChange={(e) => filter.setSelect(sel.id, e.target.value)} {...focusRing} style={{ ...inputBase, cursor: "pointer" }}>
         {sel.options.map((o) => <option key={o.value} value={o.value} style={{ background: PAL.surf }}>{o.label}</option>)}
@@ -104,7 +111,7 @@ function FilterDatePresets({ filter }) {
     <div role="group" aria-label="Hızlı tarih filtreleri" style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
       <span style={labelStyle}>Hızlı tarih</span>
       {presets.map(([lbl, g]) => (
-        <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing} data-press=""
+        <button key={lbl} type="button" onClick={() => uygula(g)} {...focusRing} data-press="" data-dokunma=""
           onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
           style={{ padding: "4px 8px", borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.data, fontWeight: 500, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut2, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>{lbl}</button>
@@ -119,7 +126,7 @@ function FilterDatePresets({ filter }) {
 
 function FilterSort({ sort, filter }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, minWidth: 190 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, minWidth: "min(190px, 100%)" }}>
       <label htmlFor="flt-sort" style={labelStyle}>Sıralama</label>
       <select id="flt-sort" value={filter.filters.sortBy} onChange={(e) => filter.setSortBy(e.target.value)} {...focusRing} style={{ ...inputBase, cursor: "pointer" }}>
         {sort.options.map((o) => <option key={o.value} value={o.value} style={{ background: PAL.surf }}>{o.label}</option>)}

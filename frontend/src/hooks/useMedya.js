@@ -6,10 +6,22 @@
    dar düzen her ekranda ÇALIŞIR, geniş düzen dar ekranda taşar). */
 import { useEffect, useState } from "react";
 
-const esles = (sorgu) => {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return !!window.matchMedia(sorgu).matches;
+/* MediaQueryList'i SORGU BAŞINA önbellekle — bileşen örneği başına değil.
+   Neden: hook liste satırı gibi çoğalan bileşenlerin içinde çağrılıyor (İşlenen defterinde
+   ~120 satır). Her örnek ayrı bir MediaQueryList + ayrı `change` dinleyicisi kuruyordu;
+   640px sınırı geçildiğinde (klavye açılışı, URL çubuğu daralması, döndürme) tek görevde
+   N dinleyici uyanıp N render planlıyordu — perf denetimi 2026-08-12.
+   Önbellek yalnız NESNEYİ paylaşır; her bileşen kendi dinleyicisini yine ekler/kaldırır,
+   dolayısıyla abonelik yaşam döngüsü ve temizlik davranışı DEĞİŞMEZ. */
+const mqOnbellek = new Map();
+const mqAl = (sorgu) => {
+  if (typeof window === "undefined" || !window.matchMedia) return null;
+  let mq = mqOnbellek.get(sorgu);
+  if (!mq) { mq = window.matchMedia(sorgu); mqOnbellek.set(sorgu, mq); }
+  return mq;
 };
+
+const esles = (sorgu) => !!mqAl(sorgu)?.matches;
 
 /**
  * Bir CSS medya sorgusunu canlı izler.
@@ -19,8 +31,8 @@ const esles = (sorgu) => {
 export function useMedyaSorgusu(sorgu) {
   const [eslesti, setEslesti] = useState(() => esles(sorgu));
   useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return undefined;
-    const mq = window.matchMedia(sorgu);
+    const mq = mqAl(sorgu);
+    if (!mq) return undefined;
     const degisti = () => setEslesti(mq.matches);
     degisti();                       // sorgu değişirse ilk değeri tazele
     mq.addEventListener("change", degisti);

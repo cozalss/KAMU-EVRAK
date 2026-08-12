@@ -365,6 +365,51 @@ export const NEON_KEYFRAMES = `
 summary::-webkit-details-marker{display:none}
 summary:hover{background:var(--ke-hov)}
 details[open] > summary .mev-chevron{transform:rotate(90deg)}
+
+/* ——— DOKUNMA TEMELLERİ (2026-08-12 mobil denetimi) ———————————————————————————
+   Telefonda "yerli hissetmeme"nin ölçülen üç kaynağı. Hepsi tarayıcı VARSAYILANINI
+   düzeltir; yeni görsel dil getirmez, token da tüketmez.
+
+   1) touch-action: çift-dokunma-yakınlaştırma bekleyen tarayıcı, her dokunuşta ~300ms
+      bekletip "acaba ikinci dokunuş gelecek mi" diye bakar. manipulation bu beklemeyi
+      kaldırır: tıklamalar anında olur. Sayfanın kendisi pinch-zoom'u KAYBETMEZ (erişilebilirlik) —
+      kural yalnız tıklanabilir öğelere verilir, gövdeye değil.
+   2) tap-highlight: iOS/Android dokununca öğenin üstüne gri bir dikdörtgen basar; bizim
+      kendi press geri bildirimimiz (data-press scale .97) zaten var, ikisi üst üste binince
+      ucuz görünüyor. Söndürülür — geri bildirim KAYBOLMAZ, yerini ölçek alır.
+   3) Yazı tipi boyutu: iOS Safari, 16px'ten KÜÇÜK punto taşıyan bir girdiye odaklanınca
+      sayfayı zorla yakınlaştırır ve geri döndürmez — kullanıcının "kayma" dediği şey
+      çoğunlukla budur (ölçüldü: 7 görünümde 13–14px girdi). Telefon eşiğinde tüm form
+      denetimleri 16px'e çıkar; masaüstünde tipografi ölçeği AYNEN korunur. */
+button,[role="button"],a,summary,input,select,textarea,label[for]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+/* !important ŞART: bu depo satır-içi stil kullanır (MASTER.md kararı) ve satır-içi stil,
+   seçici ne olursa olsun stil sayfasını yener. TYPE.ui yayılan girdiler 14px'te
+   kalmıştı — ölçüldü: kural eklendikten SONRA da 7 görünümde zoom tetikleyicisi duruyordu.
+   Bu, satır-içi stilin bilinçli olarak ezildiği İKİ yerden biri; ikincisi dokunma hedefi.
+
+   min-width:0 AYNI kuralın parçası ve isteğe bağlı DEĞİL: punto 13→16 çıkınca girdinin
+   içsel (min-content) genişliği de büyür — varsayılan size=20 karakterdir. Esnek bir satırda
+   duran arama kutusu bu yüzden kabını itiyordu (ölçüldü: punto düzeltmesinden SONRA Taslaklar
+   360px'te 25px kaydı; önce kaymıyordu). min-width:0 girdinin küçülmesine izin verir. */
+@media (max-width:640px){
+  input,select,textarea{font-size:16px!important;min-width:0}
+}
+/* Kaydırma zinciri: üstteki katman sonuna gelince ALTTAKİ sayfa kaymaya başlıyordu
+   (modal içinde parmağı sürükleyince arka plan kayıyor). Kapsayıcıya overscroll contain verildiğinde
+   hareket katmanın kendisinde biter. Kendi kaydırma bağlamı olan HER katmana uygulanır. */
+[data-kaydirma-kapsa]{overscroll-behavior:contain}
+/* Dokunma hedefi — telefonda 44px (Apple HIG / Material konfor eşiği; WCAG 2.2 SC 2.5.8'in
+   24px tabanının üstü). OPT-IN: her butona körlemesine verilirse satır-içi çipler ve metin
+   bağlantıları şişer. Yalnız PARMAKLA nişan alınan denetimler işaretlenir — gezinme rayı,
+   buton atomu, filtre çipleri, ay okları. Masaüstünde ölçüler AYNEN kalır (telefon eşiği).
+
+   NEDEN GENEL bir button{min-height:44px} DEĞİL: takvim gün hücresi de bir button ve
+   aspectRatio 1/1 ile DAİRE. 360px telefonda hücre ~34px'e iner; ona 44px dayatmak
+   daireyi elipse çevirirdi. Genel kural görsel sözleşmeyi bozar, opt-in bozmaz.
+   !important gerekçesi: satır-içi minHeight 36 (Btn, kenar çubuğu yükle) aksi hâlde kazanır. */
+@media (max-width:640px){
+  [data-dokunma]{min-height:44px!important;min-width:44px!important}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 `;
 
@@ -397,7 +442,10 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = fals
           <h2 id={id} style={{ margin: 0, ...TYPE.h1, color: PAL.ink }}>{title}</h2>
           {sub && <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.read, color: PAL.mut2 }}>{sub}</p>}
         </div>
-        {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap" }}>{actions}</div>}
+        {/* minWidth:0 — esnek öğenin otomatik asgari boyutu içeriğinin min-content'idir; araç
+            çubuğundaki <select>'ler en uzun seçeneği kadar geniş olmak istediğinden bu kutu
+            telefonda kabından taşıyordu (ölçüldü 2026-08-12: 320px'te Taslaklar 65px kaydı). */}
+        {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap", minWidth: 0, maxWidth: "100%" }}>{actions}</div>}
       </header>
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </section>
@@ -468,7 +516,7 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
     else e.currentTarget.style.background = PAL.surf;
   };
   return (
-    <button type={type} onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title} data-press=""
+    <button type={type} onClick={onClick} disabled={disabled} aria-label={ariaLabel} title={title} data-press="" data-dokunma=""
       onMouseEnter={onEnter} onMouseLeave={onLeave} {...focusRing} style={{ ...base, ...skin, ...style }}>
       {children}
     </button>

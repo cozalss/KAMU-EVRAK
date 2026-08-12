@@ -68,7 +68,7 @@ export default function DenetimView({ history = [], onGoInbox }) {
                 <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(BANT[h.bant]?.c || PAL.mut2), color: BANT[h.bant] ? DERIN_OF(BANT[h.bant].c) : PAL.mut2 }}>{BANT[h.bant]?.l || "—"}</span>
                 <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 12, color: PAL.mut2 }}>{fmtTime(h.ts)}</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: SP.s }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%),1fr))", gap: SP.s }}>
                 <KV2 k="Zincir" v={<span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs }}>SHA-256 · {zincir.length || "—"} adım <Icon.check /></span>} c={DERIN.yesil} />
                 {di.kok_hash && <KV2 k="Kök hash" v={String(di.kok_hash).slice(0, 22) + "…"} />}
                 {di.son_hash && <KV2 k="Son hash" v={String(di.son_hash).slice(0, 22) + "…"} />}

@@ -197,7 +197,7 @@ function BentoSeridi({ items, filter, ortSn }) {
             return (
               <button key={k.key} type="button" onClick={() => filter.toggleChip("durum", k.key)}
                 aria-pressed={aktif} aria-label={`${k.label}: ${say[k.key]} evrak${aktif ? " — filtre açık" : ""}`}
-                {...focusRing} data-press=""
+                {...focusRing} data-press="" data-dokunma=""
                 onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(k.renk) : "transparent"; }}
                 style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.s, width: "100%",
@@ -233,7 +233,7 @@ const selectStil = { padding: "6px 10px", borderRadius: RAD.ctl, border: `1px so
 function Pill({ label, renk, aktif, onClick, ariaLabel }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={aktif} aria-label={ariaLabel || label}
-      {...focusRing} data-press=""
+      {...focusRing} data-press="" data-dokunma=""
       onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(renk || T) : "transparent"; }}
       style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px",
@@ -356,6 +356,13 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
       aria-label={`${item.konu || item.name} — ${DURUM_TR[item._durum]} — detayı aç`} {...focusRing} data-press=""
       onMouseEnter={(e) => { setUzerinde(true); e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { setUzerinde(false); e.currentTarget.style.background = "transparent"; }}
+      /* Klavye eşdeğerliği (WCAG 2.1.1, a11y denetimi 2026-08-12): hızlı "Düzenle" yalnız
+         `uzerinde` state'ine bağlıydı ve o state SADECE fare olaylarıyla doluyordu — satıra
+         Tab'layan kullanıcı butonu DOM'da hiç bulamıyordu (buton kendi onFocus'unu taşıyor
+         ama render edilmediği için ona odaklanmak da mümkün değildi: kısır döngü).
+         Odak satıra gelince de açılır; dokunmatikte `dar` yolu devrede (aşağıda). */
+      onFocus={() => setUzerinde(true)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setUzerinde(false); }}
       style={{ cursor: "pointer", alignItems: "center", gap: SP.m,
         // Geniş: ızgara. Durum/risk kolonları SABİT genişlik — auto kolonlar çip metnine göre
         // kayıp dikey hattı dalgalandırıyordu (yargıç bulgusu); bu hizalama KORUNUR.
@@ -389,7 +396,11 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
         {sla === "GECIKMIS" && <span style={{ ...TYPE.meta, color: DERIN.kirmizi, flexShrink: 0 }}>süresi geçmiş</span>}
         {sla === "KRITIK" && <span style={{ ...TYPE.meta, color: DERIN.sari, flexShrink: 0 }}>süre kritik</span>}
       </span>
-      {hizliDuzenle && uzerinde ? (
+      {/* Dokunmatikte hover YOKTUR: `dar` (telefon) eşiğinde kısayol kalıcı görünür, yoksa
+          satır-içi hızlı yol fareye özel kalırdı (a11y denetimi 2026-08-12). Telefonda durum
+          çipinin yerini alır — çipin söylediği "bekliyor" bilgisini butonun varlığı zaten
+          taşır (buton YALNIZ bekleyen taslakta render edilir). */}
+      {hizliDuzenle && (uzerinde || dar) ? (
         <button type="button" onClick={(e) => { e.stopPropagation(); onDuzenle(item); }}
           onFocus={() => setUzerinde(true)} onBlur={() => setUzerinde(false)}
           aria-label={`${item.konu || item.name} taslağını Taslaklar'da düzenle`} {...focusRing} data-press=""

@@ -29,6 +29,7 @@
 import { useMemo, useState } from "react";
 import { Icon, MONO, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, CAM, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 import { DURUM_AGIRLIK, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi } from "../lib/sureTakvimi.js";
+import { useDarEkran } from "../hooks/useMedya.js";
 
 const AY_ADI = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const GUN_KISA = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
@@ -51,8 +52,11 @@ const IZGARA_AZAMI = 7 * CAP + 6 * SP.xs;                       // 416
    4 kola inip çıktığında, telefonda tek kolona düştüğünde takvim kendi kararını verir.
    Ölçülen kart iç genişlikleri (2026-08-12, panelin 4 kolluk yuvası): 1440px ekranda ~323
    (tek kolon, ızgara kabı doldurur) · 1920'de ~478 (tek kolon, ızgara tavanda + ortalı) ·
-   2286'da ~705 (iki kolon, her biri ~344 → ızgara yine doldurur). */
-const GOVDE_SUTUN = `repeat(auto-fit, minmax(${IZGARA_AZAMI - 100}px, 1fr))`;
+   2286'da ~705 (iki kolon, her biri ~344 → ızgara yine doldurur).
+   `min(100%, …)` ŞART: çıplak `minmax(316px, 1fr)` bir kolonu 316px'in ALTINA indirmez,
+   telefonda kart 300px kalınca ızgara dışarı taşar (ölçüldü 2026-08-12: 360px ekranda panel
+   68px yatay kayıyordu). `min()` sarmalayıcısı taban değeri kabın genişliğiyle sınırlar. */
+const GOVDE_SUTUN = `repeat(auto-fit, minmax(min(100%, ${IZGARA_AZAMI - 100}px), 1fr))`;
 /* Izgara kabından darsa ORTALANIR: sola yapışık bırakmak kartın sağında ölü boşluk gibi
    okunuyordu. Gün başlıkları da aynı kutuyu alır, yoksa sütun adları günlerden kayar. */
 const IZGARA_KUTU = { maxWidth: IZGARA_AZAMI, margin: "0 auto" };
@@ -62,7 +66,7 @@ const GECIS = `background .2s ease, border-color .2s ease, color .2s ease, trans
 /* Ay değiştirme oku — daire ikon buton (hover zemin, press ölçek; hover-kalkış yok). */
 function AyOk({ yon, onClick, etiket }) {
   return (
-    <button type="button" onClick={onClick} aria-label={etiket} {...focusRing} data-press=""
+    <button type="button" onClick={onClick} aria-label={etiket} {...focusRing} data-press="" data-dokunma=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center",
@@ -133,7 +137,7 @@ function Satir({ renk, ad, kunye, onClick, etiket }) {
     padding: "6px 0", borderTop: `1px solid ${CAM.line}` };
   if (!onClick) return <div style={stil}>{ic}</div>;
   return (
-    <button type="button" onClick={onClick} aria-label={etiket} {...focusRing} data-press=""
+    <button type="button" onClick={onClick} aria-label={etiket} {...focusRing} data-press="" data-dokunma=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={{ ...stil, cursor: "pointer", background: "transparent", border: "none", borderTop: `1px solid ${CAM.line}`,
@@ -155,9 +159,12 @@ function GunPaneli({ isaretliGunler, seciliKayit, onSec, ayAdi }) {
           <span style={{ ...TYPE.data, fontWeight: 600, color: DERIN.V, ...TNUM }}>
             {seciliKayit.tarih.getDate()} {ayAdi} · son gün
           </span>
+          {/* padding:0 ile yükseklik yalnız satır yüksekliği (16px) kadardı — 24px asgarisinin
+              altında (a11y denetimi 2026-08-12). Dikey dolgu + negatif kenar boşluğu: hedef
+              24px'e çıkar, satırın görünen hizası değişmez. */}
           <button type="button" onClick={() => onSec(null)} {...focusRing} data-press=""
-            style={{ marginLeft: "auto", cursor: "pointer", padding: 0, background: "transparent", border: "none",
-              ...TYPE.meta, color: PAL.mut2 }}>
+            style={{ marginLeft: "auto", cursor: "pointer", padding: "4px 6px", margin: "-4px -6px -4px auto",
+              background: "transparent", border: "none", ...TYPE.meta, color: PAL.mut2 }}>
             Ayın tümü
           </button>
         </div>
@@ -201,6 +208,7 @@ function GunPaneli({ isaretliGunler, seciliKayit, onSec, ayAdi }) {
 }
 
 export default function SureTakvimi({ kuyrukSla = [] }) {
+  const dar = useDarEkran();          // telefon eşiği — buzlu cam bedeli orada ödenmez
   const bugun = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const [ay, setAy] = useState(() => new Date(bugun.getFullYear(), bugun.getMonth(), 1));
   const [secili, setSecili] = useState(null);
@@ -231,8 +239,15 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
   return (
     <section aria-label="Yasal süre takvimi"
       style={{ height: "100%", display: "flex", flexDirection: "column",
-        /* Buzlu cam: opak beyaz yerine yarı saydam yüzey (CAM) — zemin sıcaklığı içeri işler. */
-        background: CAM.bg, backdropFilter: CAM.blur, WebkitBackdropFilter: CAM.blur,
+        /* Buzlu cam: opak beyaz yerine yarı saydam yüzey (CAM) — zemin sıcaklığı içeri işler.
+           TELEFONDA BLUR KAPALI (perf denetimi 2026-08-12): kartın arkasında düz zemin var
+           (atmosfer katmanı gorsel.jsx'te bilinçli kaldırıldı), yani blur GÖRSEL olarak bir
+           şey üretmiyor — yalnız ayrı bir kompozit katman ve kaydırılan her karede viewport
+           genişliğinde backdrop okuması maliyeti üretiyor. Telefonda kart tam genişlikte ve
+           açılış görünümünde olduğundan bedel en yüksek orada. Saydam zemin (CAM.bg) kalır,
+           görünüm aynıdır. Masaüstünde efekt AYNEN korunur — orada bedeli sorun değil. */
+        background: CAM.bg,
+        ...(dar ? null : { backdropFilter: CAM.blur, WebkitBackdropFilter: CAM.blur }),
         border: `1px solid ${CAM.line}`, borderRadius: RAD.pop, boxShadow: SH.card, padding: SP.l }}>
 
       {/* Başlık + ay gezinme */}

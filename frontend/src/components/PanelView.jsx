@@ -257,7 +257,11 @@ function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
           animation: "nu-alarm 2s linear infinite", transformOrigin: "50% 50%" }}>
           <Icon.clock width={22} height={22} />
         </span>
-        <span style={{ display: "flex", alignItems: "baseline", gap: SP.m, flex: 1, minWidth: 240, flexWrap: "wrap" }}>
+        {/* minWidth ÇIPLAK 240 DEĞİL `min(240px,100%)`: 320px telefonda (iPhone SE) içerik
+            alanı ~224px'e iniyor ve sabit taban kabı 25px dışarı itiyordu — WCAG 1.4.10
+            Reflow 320px'te yatay kaydırma istemez. min() tabanı kabın genişliğiyle sınırlar;
+            geniş ekranda davranış AYNEN aynı. */}
+        <span style={{ display: "flex", alignItems: "baseline", gap: SP.m, flex: 1, minWidth: "min(240px, 100%)", flexWrap: "wrap" }}>
           <span style={{ ...TYPE.num, color: say.gecikmis ? DERIN.kirmizi : DERIN.sari, ...TNUM }}><NumberFlow value={acil.length} /></span>
           {/* Bağlaçlar ("ya da") küçük — Türkçe başlık yazımında bağlaç büyütülmez.
               Kuyruk sayısı buradan KALDIRILDI: aynı sayı R1'deki "Gelen evrak" hücresinde
@@ -521,6 +525,7 @@ function SonIslemlerFeed({ history, n, onGoIslenen }) {
 
 export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], slaHatasi = false, onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onGoTaslaklar = null, onUpload, user }) {
   const genis = useGenisEkran();
+  const dar = useDarEkran();          // telefon eşiği (640px) — ölçü şeridi tek kolona iner
   const [raporAcik, setRaporAcik] = useState(false);   // İşlem Süresi detay raporu
   const n = history.length;
   const gonderilenler = useMemo(() => outbox.filter((o) => o.durum === "gonderildi"), [outbox]);
@@ -615,7 +620,11 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
              (bkz. AkisHucre'deki tıklama alanı notu). */
           <div style={{ ...span(takvimVar ? 8 : 12), alignSelf: "stretch", height: "100%", background: PAL.surf,
             border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
-            display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridAutoRows: "1fr",
+            /* Telefonda TEK kolon: 2×2 ızgara 360px ekranda hücre başına ~132px bırakıyor,
+               "Gönderilen Evrak" etiketi + ikon + sayı sığmayıp kabı 16px aşıyordu (ölçüldü
+               2026-08-12). overflow:hidden olduğu için taşma kaymaya değil KIRPILMAYA
+               dönüşüyor — sayı kesiliyordu. Dar ekranda dört hücre alt alta iner. */
+            display: "grid", gridTemplateColumns: dar ? "1fr" : "repeat(2, 1fr)", gridAutoRows: "1fr",
             overflow: "hidden" }}>
             {[
               { label: "İşlenen Evrak", value: n, icon: <Icon.doc />, onClick: onGoIslenen, ariaLabel: `${n} işlenen evrak — arşivi aç`, gunluk: akisIslenen },

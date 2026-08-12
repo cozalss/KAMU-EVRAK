@@ -30,6 +30,11 @@ import {
 
 const SAYFA_ARASI_PX = 24;
 
+/* Bir KARE içinde izin verilen azami senkron ölçek düzeltmesi — çökme kilidi (gerekçe
+   `olcOlcek`in hemen altında). Meşru mount dizisi 1, dar düzenin min() yakınsaması 2
+   harcar; 4 rahat bir tavan ve React'in 50'lik iç sınırının çok altında. */
+const TUR_AZAMI = 4;
+
 /* Yönetmelik m.7/1 belgede İKİ yazı tipine izin verir: "Times New Roman" 12 punto VEYA
    "Arial" 11 punto. Arial seçildi — kullanıcı tercihi tırnaksız (sans-serif) görünüm ve bu
    tercih mevzuata AYKIRI DEĞİL, yönetmeliğin kendi ikinci seçeneği. Times'a dönmek istenirse
@@ -110,8 +115,8 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
 
      Liste kalkınca ölçüm HER commit'te, boyamadan önce tazelenir; yedek→ölçülmüş geçişi
      ekrana hiç çıkmaz. Ölçüm kendi çıktısına geri beslendiği için (yeni ölçek → yığın
-     yüksekliği → kap) döngüyü `olcekOynadi` kapatır: değer oynamadıysa state'e YAZILMAZ ve
-     React yeniden render etmez. Sözleşme saf ve testlidir; kaldırılırsa sonsuz render. */
+     yüksekliği → kap) sabit noktaya oturmayı `olcekOynadi` sağlar: değer oynamadıysa
+     state'e YAZILMAZ ve React yeniden render etmez. Sözleşme saf ve testlidir. */
   const olcOlcek = useCallback(() => {
     const el = sarmalRef.current;
     if (!el) return;
@@ -127,7 +132,43 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     setOlcek((eski) => (olcekOynadi(eski, yeni) ? yeni : eski));
   }, [sigdir]);
 
-  useLayoutEffect(olcOlcek);   // bağımlılık listesi BİLEREK yok — yukarıdaki gerekçeye bak
+  /* ÇÖKME KİLİDİ — `olcekOynadi` yalnız SABİT NOKTAYA oturan döngüyü kapatır, ALMAŞIK olanı
+     değil. Kabın dikey kaydırma çubuğu yer kaplıyorsa (Windows/Chrome: 15px; ölçüldü —
+     headless'ta 0, yalnız headed'da 15) geri besleme şöyle işleyebilir: ölçek büyür → yığın
+     kabı taşırır → çubuk gelir → clientWidth 15px düşer → ölçek küçülür → taşma biter →
+     çubuk gider → clientWidth geri gelir → … Bu salınımın adımı 15/793,7 = 0,0189'dur, yani
+     OLCEK_ESIK'in (0,00063) ~30 katı; eşik onu ASLA yutmaz.
+
+     Her-commit ölçümü bu salınımı senkron hâle getirdiği için sonucu React'in "Maximum
+     update depth exceeded" hatasıdır — TaslaklarView bir HataSiniri içinde olmadığından
+     ekran beyaza döner. (Eski kod aynı 2-döngüye açıktı ama ölçüm ResizeObserver'daydı ve
+     tarayıcı onu kare başına birle kısıyordu: titreme, çökme değil.)
+
+     Salınımı ARADIM ve bulamadım: headed Chrome'da gerçek 15px çubukla ~40 yapılandırma
+     tarandı (1080p/1440p genişlik bantları, pencere yüksekliği 560–1100, 1–3 sayfalık
+     taslaklar; kâğıt sütunu 297–679px) — çubuk hiçbirinde yanıp sönmedi, render sayısı hep
+     2 kaldı. Ama "bulamadım" bir kanıt değil ve bedeli beyaz ekran; bu yüzden sınıf, ucuz
+     bir sayaçla erişilemez kılınıyor.
+
+     SAYAÇ: senkron düzeltme kare başına AZAMI ile sınırlanır. Meşru mount dizisi tek
+     düzeltme harcar (yedek sütun → ölçülmüş sütun); dar düzenin min() yakınsaması iki.
+     Sınıra dayanan tek şey almaşık salınımdır, o da React'in 50'lik tavanının çok altında
+     durur ve düzeltme bir sonraki karede ResizeObserver'a devredilir — yani en kötü hâl
+     ESKİ davranıştır (titreme), çökme değil. `scrollbar-gutter: stable` de kenarı tamamen
+     silerdi ama kâğıt sütununda kalıcı 15px ölü alan bırakırdı; `taslakSutun.js`'in
+     "kenarında ölü alan kalmaz" sözleşmesi buna değmez. */
+  const turRef = useRef(0);
+  useLayoutEffect(() => {                     // bağımlılık listesi BİLEREK yok (yukarıdaki gerekçe)
+    if (turRef.current >= TUR_AZAMI) return;
+    turRef.current += 1;
+    olcOlcek();
+  });
+  // Sayacı KARE başına sıfırla (commit başına değil): senkron zincir tek karede koşar, o
+  // yüzden zincir içinde sıfırlanmamalı; rAF zinciri bittikten sonra çalışır.
+  useEffect(() => {
+    const k = requestAnimationFrame(() => { turRef.current = 0; });
+    return () => cancelAnimationFrame(k);
+  });
 
   /* Gözlemci AYRI efekt: kimliği yalnız `sigdir` ile değişir, böylece her ölçümde
      kurulup yıkılmaz (üstteki efekt her commit'te koşuyor). Mount SONRASI gerçek

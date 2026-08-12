@@ -100,7 +100,7 @@ def katman_haritasi(graph: Any) -> dict[str, int]:
     """
     try:
         ham = pipeline_katmanlari(graph)
-    except Exception as exc:                                   # noqa: BLE001 — akış düşmemeli
+    except Exception as exc:                                   # akış düşmemeli
         log.warning("katman_hesaplanamadi", error=str(exc) or type(exc).__name__)
         return {}
     return {"oku": 0, **{ad: ham[ad] for ad in PIPELINE_NODES if ad in ham}}

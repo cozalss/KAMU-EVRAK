@@ -12,6 +12,8 @@ EN UZUN yol. Aynı katmandaki node'lar eşzamanlıdır.
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 
 import agents.graph as graph_mod
@@ -164,7 +166,7 @@ class TestSseKatmanSozlesmesi:
     ayrı olduğu için tek çapraz-dil emniyet kemeri budur.
     """
 
-    VARSAYILAN = {
+    VARSAYILAN: ClassVar[dict[str, int]] = {
         "oku": 0, "siniflandir": 1, "cikar": 1, "kanit_baglama": 2, "decompose": 3,
         "eksik_tespit": 4, "mevzuat_oner": 4, "ozetle": 4, "route_birim": 5,
         "yazi_taslak": 6, "verify": 7, "risk_guard": 8, "arsiv": 8, "sla_triyaj": 9,

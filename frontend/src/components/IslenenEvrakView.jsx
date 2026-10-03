@@ -9,8 +9,10 @@
      kaydı (sol mono zaman kolonu + dikey ray hissi), condensed ~44px, hover'da eylem.
    Kurgu ayrımı: İşlenen = arşiv/izleme, Taslaklar = çalışma kuyruğu, Giden = gönderilmiş. */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ViewWrap, Btn, KV, Icon, MONO, SANS, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
-import { SicilStil, BaslikHucre, SessizCip, DefterYuzey, BosDefter, useDefterGezinme, Imlec } from "./SicilDefter.jsx";
+import { ViewWrap, Btn, KV, Icon, MONO, SANS, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu, SR_ONLY } from "./neonUi.jsx";
+import { SicilStil, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterIskelet, DefterHata, GrupBasligi, useDefterGezinme, Imlec, HUCRE } from "./SicilDefter.jsx";
+import { SecimKutu, SecimCubugu } from "./IslenenSecim.jsx";
+import { bosDurumMetni } from "../lib/sicilDefter.js";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { useDarEkran } from "../hooks/useMedya.js";
 import IslenenOzet from "./IslenenOzet.jsx";
@@ -51,7 +53,8 @@ const DURUM_RENK = {
 const RISK_TR = { yesil: "Düşük", sari: "Orta", kirmizi: "Yüksek" };
 
 const fmtSaat = (ts) => { try { return new Date(ts).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); } catch { return ""; } };
-const fmtGunKisa = (ts) => { try { return new Date(ts).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit" }); } catch { return ""; } };
+// gg.aa elle — ICU tr-TR {day, month} "01/10" (eğik çizgi) veriyor; defterin tarih dili noktalı.
+const fmtGunKisa = (ts) => { const d = new Date(ts); return Number.isNaN(d.getTime()) ? "" : `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}`; };
 const fmtTam = (ts) => { try { return new Date(ts).toLocaleString("tr-TR"); } catch { return ""; } };
 const fmtGuven = (g) => (typeof g === "number" && g > 0 ? `%${Math.round(g * 100)}` : "");
 const fmtSure = (ms) => (Number.isFinite(ms) && ms >= 100 ? `${(ms / 1000).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} sn` : "");
@@ -217,22 +220,39 @@ function DurumCip({ durum }) {
 /* Defter şablonu — zaman · konu bloğu · karar durumu · risk · ok. Telefonda: üst satır
    zaman + durum, orta satır konu, alt satır risk + ok (bilgi gizlenmez, yeniden dizilir). */
 const SABLON = {
-  kolon: "56px minmax(0,1fr) 150px 76px 16px",
-  alan: '"zaman ana durum risk ok"',
-  alanDar: '"zaman durum" "ana ana" "risk ok"',
-  marj: "86px",
+  kolon: "16px 56px minmax(0,1fr) 150px 76px 16px",
+  alan: '"sec zaman ana durum risk ok"',
+  kolonDar: "24px minmax(0,1fr) auto",
+  alanDar: '"sec zaman durum" "sec ana ana" "sec risk ok"',
+  marj: "134px",
+  adim: "64px",
 };
-const BASLIKLAR = [
+/* Başlık: ilk hücre "tümünü seç" kutusu (filtrelenmiş görünür kayıtlar) — dinamik olduğu
+   için bileşende kurulur; boş/iskelet defter seçimsiz başlığı kullanır. */
+const BASLIK_GOVDE = [
   <BaslikHucre key="z" alan="zaman">Saat</BaslikHucre>,
   <BaslikHucre key="a" alan="ana">Konu · kaynak · tür · birim</BaslikHucre>,
   <BaslikHucre key="d" alan="durum">Karar</BaslikHucre>,
   <BaslikHucre key="r" alan="risk">Risk</BaslikHucre>,
 ];
+const BASLIKLAR = [<BaslikHucre key="s" alan="sec"><span style={SR_ONLY}>Seçim</span></BaslikHucre>, ...BASLIK_GOVDE];
+
+/* Sicil dökümü sütunları (CSV) — risk SKORU yok, yalnız bant kodu (CLAUDE.md §7). */
+const DOKUM_SUTUN = [
+  { baslik: "İşlem tarihi", deger: (r) => fmtTam(r.ts) },
+  { baslik: "Dosya", deger: (r) => r.name },
+  { baslik: "Konu", deger: (r) => cleanDemoText(r.konu) },
+  { baslik: "Evrak türü", deger: (r) => EVRAK_TR(r.evrak_turu) },
+  { baslik: "Hedef birim", deger: (r) => BIRIM_GOSTER(r.hedef_birim, r.evrak_turu) },
+  { baslik: "Karar durumu", deger: (r) => DURUM_TR[r._durum] },
+  { baslik: "Risk bandı", deger: (r) => BANT[r.bant]?.l || "" },
+  { baslik: "Sınıflandırma güveni", deger: (r) => fmtGuven(r.result?.tur_confidence) },
+];
 
 /* Defter kaydı — ortak defter satırı ([data-sicil-satir]: hairline ayraç, solda mürekkep
    cetveli, kayan seçim imleci). div[role=button]: satır içinde ikincil eylem yaşayabilsin
    (button-içinde-button geçersiz). Durum/risk sütunları SABİT genişlik — dikey hat dalgalanmaz. */
-function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez }) {
+function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez, secili, onSec }) {
   const [uzerinde, setUzerinde] = useState(false);
   // Telefonda hover yok: hızlı "Düzenle" kalıcı görünür (a11y denetimi 2026-08-12).
   const dar = useDarEkran();
@@ -245,9 +265,14 @@ function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez }) {
   const hizliDuzenle = item._durum === "bekliyor" && onDuzenle;
   const zaman = zamanBicimi === "saat" ? fmtSaat(item.ts) : fmtGunKisa(item.ts);
   return (
-    <div role="button" tabIndex={0} data-sicil-satir="" data-sd-anahtar={item.id} onClick={(e) => onAc(item, e.currentTarget)}
-      onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onAc(item, e.currentTarget); } }}
-      aria-label={`${item.konu || item.name} — ${DURUM_TR[item._durum]} — detayı aç`}
+    /* Satır = grid row (odaklanabilir; Enter detayı açar, Space seçer — APG ızgara deseni). */
+    <div role="row" tabIndex={0} aria-selected={secili} data-sicil-satir="" data-sd-anahtar={item.id} onClick={(e) => onAc(item, e.currentTarget)}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === "Enter") { e.preventDefault(); onAc(item, e.currentTarget); }
+        else if (e.key === " ") { e.preventDefault(); onSec(item.id); }
+      }}
+      aria-label={`${item.konu || item.name} — ${DURUM_TR[item._durum]}${secili ? " — seçili" : ""}`}
       onPointerDown={() => gez.sec(item.id)}
       onMouseEnter={() => setUzerinde(true)} onMouseLeave={() => setUzerinde(false)}
       /* Klavye eşdeğerliği (WCAG 2.1.1): hızlı "Düzenle" odak satıra gelince de açılır. */
@@ -255,11 +280,14 @@ function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez }) {
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setUzerinde(false); }}
       style={{ "--sd-i": Math.min(sira, 14) }}>
       {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="islenen" />}
-      <span data-sd-no-sira="" style={{ gridArea: "zaman", fontFamily: MONO, fontSize: 13, fontWeight: 500, color: PAL.ink2, ...TNUM }}>{zaman}</span>
-      <span style={{ gridArea: "ana", minWidth: 0 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
+      <span {...HUCRE.grid} style={{ gridArea: "sec", display: "flex" }}>
+        <SecimKutu secili={secili} onDegis={() => onSec(item.id)} etiket={`Seç: ${item.konu || item.name}`} />
+      </span>
+      <span {...HUCRE.grid} data-sd-no-sira="" style={{ gridArea: "zaman", fontFamily: MONO, fontSize: 13, fontWeight: 500, color: PAL.ink2, ...TNUM }}>{zaman}</span>
+      <span {...HUCRE.grid} style={{ gridArea: "ana", minWidth: 0 }}>
+        <span data-sd-konu-satir="" style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
           <span aria-hidden="true" title={kat.label} style={{ display: "flex", flexShrink: 0, color: DURUM_RENK[item._durum] ? DERIN_OF(DURUM_RENK[item._durum]) : PAL.mut3 }}><KIcon width={14} height={14} /></span>
-          <span data-sd-konu="" style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <span data-sd-konu="" title={baslikCase(cleanDemoText(item.konu)) || item.name} style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {baslikCase(cleanDemoText(item.konu)) || item.name}
           </span>
           {sla === "GECIKMIS" && <SessizCip renk={BANT.kirmizi.c} vurgulu metin="süresi geçmiş" ikon={<Icon.alert width={11} height={11} />} />}
@@ -272,7 +300,7 @@ function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez }) {
           {item.varyantlar?.length > 1 && ` · ${item.varyantlar.length} yazı türü`}
         </span>
       </span>
-      <span style={{ gridArea: "durum", minWidth: 0 }}>
+      <span {...HUCRE.grid} style={{ gridArea: "durum", minWidth: 0 }}>
         {hizliDuzenle && (uzerinde || dar) ? (
           <button type="button" data-sd-eylem="" onClick={(e) => { e.stopPropagation(); onDuzenle(item); }}
             onFocus={() => setUzerinde(true)} onBlur={() => setUzerinde(false)}
@@ -284,7 +312,7 @@ function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez }) {
           <DurumCip durum={item._durum} />
         )}
       </span>
-      <span style={{ gridArea: "risk", display: "inline-flex", alignItems: "center", gap: 6,
+      <span {...HUCRE.grid} style={{ gridArea: "risk", display: "inline-flex", alignItems: "center", gap: 6,
         ...TYPE.meta, fontWeight: 500, color: riskC ? DERIN_OF(riskC) : PAL.mut3, ...TNUM }}>
         <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: riskC || PAL.mut3, opacity: riskC ? 1 : 0.5 }} />
         {RISK_TR[item.bant] || "—"}
@@ -397,7 +425,28 @@ function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
   );
 }
 
-export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, onDuzenle = () => {}, onMevzuatAc = null }) {
+/* Toplu seçim durumu — anahtar kümesi (değişmez güncelleme), görünür kayıtlarla kesişim
+   (filtre değişince gizlenen kayıt seçimde "hayalet" kalmaz), Esc ile bırakma. */
+function useTopluSecim(gorunur) {
+  const [secim, setSecim] = useState(() => new Set());
+  const gorunurIdler = useMemo(() => new Set(gorunur.map((x) => x.id)), [gorunur]);
+  const etkin = useMemo(() => new Set([...secim].filter((id) => gorunurIdler.has(id))), [secim, gorunurIdler]);
+  const degistir = useCallback((id) => setSecim((s) => { const y = new Set(s); if (y.has(id)) y.delete(id); else y.add(id); return y; }), []);
+  const birak = useCallback(() => setSecim(new Set()), []);
+  const hepsi = gorunur.length > 0 && etkin.size === gorunur.length;
+  const tumunu = useCallback(() => setSecim(hepsi ? new Set() : new Set(gorunurIdler)), [hepsi, gorunurIdler]);
+  useEffect(() => {
+    if (!etkin.size) return undefined;
+    const tus = (e) => { if (e.key === "Escape" && !document.querySelector('[aria-modal="true"]')) birak(); };
+    document.addEventListener("keydown", tus);
+    return () => document.removeEventListener("keydown", tus);
+  }, [etkin.size, birak]);
+  return { etkin, degistir, birak, hepsi, tumunu, kayitlar: gorunur.filter((x) => etkin.has(x.id)) };
+}
+
+/* yukleniyor / hata: DB işlem geçmişi sorgusunun durumu (DashboardApp islemlerQ). Verilmezse
+   eski davranış — boş geçmiş "defter henüz açılmadı" olarak okunur. */
+export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, onDuzenle = () => {}, onMevzuatAc = null, yukleniyor = false, hata = null, onYenidenDene }) {
   const [detay, setDetay] = useState(null);
   const triggerRef = useRef(null);   // modal kapanınca odak tetikleyen satıra döner (a11y)
   const closeDetay = useCallback(() => { setDetay(null); triggerRef.current?.focus(); }, []);
@@ -411,7 +460,8 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
     konu: h.result?.bilgi_unsurlari?.konu || h.result?.alt_talepler?.[0]?.ozet || "",
   })), [history]);
   const filter = useFilter(items, BASE_CONFIG);
-  const gez = useDefterGezinme();   // j/k gezinme + kayan seçim imleci
+  const secim = useTopluSecim(filter.results);
+  const gez = useDefterGezinme({ secimTusu: secim.degistir });   // j/k gezinme + kayan imleç + x seçimi
   const turSecenek = useMemo(() => deriveOptions(items, "evrak_turu", EVRAK_TR), [items]);
   const birimSecenek = useMemo(() => deriveOptions(items, "hedef_birim", BIRIM_LBL), [items]);
 
@@ -434,17 +484,25 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
 
   if (history.length === 0) {
     return (
-      <ViewWrap id="islenen-h" title="İşlenen evrak" kunye="Evrak sicil defteri" sub="Bu oturumda ve önceki oturumlarda işlenen tüm evraklar">
+      <ViewWrap id="islenen-h" title="İşlenen evrak" kunye="Evrak sicil defteri" sub={yukleniyor ? "Defter açılıyor…" : "Bu oturumda ve önceki oturumlarda işlenen tüm evraklar"}>
         <SicilStil />
-        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" satir={7} baslik="Sicil defteri henüz açılmadı"
-          sub="Gelen evrak kuyruğundan bir evrak seçtiğinizde ya da yeni bir belge yüklediğinizde, işlenen her evrak karar durumuyla birlikte buraya kaydedilir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
+        {yukleniyor ? <DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Sicil kayıtları yükleniyor" />
+          : hata ? <DefterHata sablon={SABLON} basliklar={BASLIKLAR} baslik="Sicil defteri alınamadı" ayrinti={String(hata?.message || hata)} onYenidenDene={onYenidenDene} />
+            : <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" satir={7} baslik="Sicil defteri henüz açılmadı"
+              sub="Gelen evrak kuyruğundan bir evrak seçtiğinizde ya da yeni bir belge yüklediğinizde, işlenen her evrak karar durumuyla birlikte buraya kaydedilir."
+              actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />}
       </ViewWrap>
     );
   }
 
   // Görünümün hükmü: memur kararı bekleyen kayıt sayısı (tek damga).
   const bekleyen = items.filter((x) => x._durum === "bekliyor").length;
+  const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "kayıt", kalici: "sicil kayıtları silinmez" });
+  const basliklarSecimli = [
+    <BaslikHucre key="s" alan="sec">
+      <SecimKutu secili={secim.hepsi} karisik={secim.etkin.size > 0} onDegis={secim.tumunu}
+        etiket={secim.hepsi ? "Tüm seçimi kaldır" : `Görünen ${filter.results.length} kaydın tümünü seç`} />
+    </BaslikHucre>, ...BASLIK_GOVDE];
 
   // Başlıkta eylem YOK: "Yeni evrak yükle" sidebar'da kalıcı duruyor — burada tekrarı gürültüydü.
   return (
@@ -456,25 +514,21 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
 
       {filter.results.length === 0 ? (
         <BosDefter sablon={SABLON} basliklar={BASLIKLAR} damga="Eşleşme yok" onek=""
-          baslik="Bu ölçütlerle kayıt yok" sub="Filtre ölçütlerinizi gevşetin; sicil kayıtları silinmez."
+          baslik={bos.baslik} sub={bos.sub}
           actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="İşlenen evrak kayıtları" gezinme={gez} ipucu="detayı aç">
+        <>
+        <SecimCubugu seciliKayitlar={secim.kayitlar} sutunlar={DOKUM_SUTUN} onBirak={secim.birak} />
+        <DefterYuzey sablon={SABLON} basliklar={basliklarSecimli} etiket="İşlenen evrak kayıtları" gezinme={gez} ipucu="detayı aç"
+          rol="grid" secimli dolgu={Math.max(0, 4 - filter.results.length)}>
           {(() => {
             let sira = 0;
             return gruplar.map((g, gi) => (
               <React.Fragment key={g.etiket || `düz-${gi}`}>
-                {g.etiket && (
-                  /* Kova başlığı — defter içinde yapışkan bant (overflow:clip kaydırma kabı
-                     kurmaz, sticky çalışır); kayıtlar altından akarken okunur kalır. */
-                  <div role="heading" aria-level={3} style={{ position: "sticky", top: 0, zIndex: 2, display: "flex", alignItems: "center", gap: SP.s,
-                    padding: "6px 20px", background: PAL.surf2, borderTop: gi ? `1px solid ${PAL.lineHi}` : "none", borderBottom: `1px solid ${PAL.line}` }}>
-                    <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.ink2, textTransform: "uppercase" }}>{g.etiket}</span>
-                    <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, ...TNUM }}>· {g.rows.length} kayıt</span>
-                  </div>
-                )}
+                {/* Kova başlığı — yapışkan bant (overflow:clip kaydırma kabı kurmaz, sticky çalışır). */}
+                {g.etiket && <GrupBasligi etiket={g.etiket} sayi={g.rows.length} />}
                 {g.rows.map((item) => (
-                  <DefterSatiri key={item.id} item={item} sira={sira++} gez={gez}
+                  <DefterSatiri key={item.id} item={item} sira={sira++} gez={gez} secili={secim.etkin.has(item.id)} onSec={secim.degistir}
                     zamanBicimi={g.etiket === "Bugün" || g.etiket === "Dün" ? "saat" : "gun"}
                     onAc={acDetay} onDuzenle={onDuzenle} />
                 ))}
@@ -482,6 +536,7 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
             ));
           })()}
         </DefterYuzey>
+        </>
       )}
 
       <DetayModal item={detay} onClose={closeDetay} onDuzenle={onDuzenle} onMevzuatAc={onMevzuatAc} />

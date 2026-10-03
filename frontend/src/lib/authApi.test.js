@@ -6,7 +6,7 @@
    SİLMEZ; yalnız kesin 401 (oturum_gecersiz) siler. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { apiStream, authFetch, apiGet, oturumDustuAbone, tokens } from "./authApi.js";
+import { apiStream, authFetch, apiGet, oturumDustuAbone, tokens, tekrarDenemeSaniye } from "./authApi.js";
 
 function sahteLocalStorage() {
   const depo = new Map();
@@ -106,4 +106,32 @@ test("apiStream: kapanış chunk'ındaki ayraçsız son event de işlenir", asyn
   await apiStream("/yazi/kurul/akis", {}, (e) => olaylar.push(e.tip));
 
   assert.deepEqual(olaylar, ["acilis", "sonuc"], "son event flush edilmeli — 'sonuc' düşmemeli");
+});
+
+test("tekrarDenemeSaniye: 429 dışı durumda 0 (kilit yok)", () => {
+  assert.equal(tekrarDenemeSaniye(401, "30"), 0);
+  assert.equal(tekrarDenemeSaniye(500, null), 0);
+});
+
+test("tekrarDenemeSaniye: Retry-After saniye ve HTTP tarihi okunur, yoksa 60", () => {
+  assert.equal(tekrarDenemeSaniye(429, "17"), 17);
+  assert.equal(tekrarDenemeSaniye(429, null), 60);
+  assert.equal(tekrarDenemeSaniye(429, "bozuk"), 60);
+  const simdi = Date.parse("2026-10-03T10:00:00Z");
+  assert.equal(tekrarDenemeSaniye(429, "Sat, 03 Oct 2026 10:00:42 GMT", simdi), 42);
+});
+
+test("tekrarDenemeSaniye: 1 sn tabanı ve 15 dk tavanı", () => {
+  assert.equal(tekrarDenemeSaniye(429, "0"), 1);
+  assert.equal(tekrarDenemeSaniye(429, "99999"), 900);
+});
+
+test("apiPost hatası durum kodunu ve bekleme süresini taşır (giriş ekranı 429'u ayırt eder)", async () => {
+  globalThis.localStorage = sahteLocalStorage();
+  const eski = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ error: "Rate limit exceeded: 5 per 1 minute" }), { status: 429, headers: { "Retry-After": "25" } });
+  try {
+    const { apiPost } = await import("./authApi.js");
+    await assert.rejects(apiPost("/auth/giris", {}), (e) => e.status === 429 && e.tekrarSaniye === 25 && /bir dakika/.test(e.message));
+  } finally { globalThis.fetch = eski; }
 });

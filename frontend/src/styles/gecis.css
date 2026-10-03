@@ -1,0 +1,19 @@
+/* Görünüm geçişinin YÖNÜ — "geri" tuşu ileri geçişin aynası oynar (BENCHMARK §4 rota geçişi).
+ *
+ * İleri geçiş (neonUi NEON_KEYFRAMES): eski içerik 6px YUKARI solar, yenisi 14px AŞAĞIDAN
+ * kâğıt gibi yerine oturur — yığına yeni sayfa konuyor. Geri gidince aynı jestin tersi:
+ * yeni (önceki) sayfa yukarıdan iner, çıkan aşağı solar — yığından sayfa geri çekiliyor.
+ * Mekânsal tutarlılık: hareket yönü gezinme yönünü söyler, süreler/eğri ileriyle BİREBİR.
+ *
+ * Yön bayrağını DashboardApp.gecisle kurar (html[data-vt-yon="geri"]) ve geçiş bitince
+ * kaldırır; Navigation API yoksa geçmiş gezintisi (popstate) "geri" sayılır.
+ * Yalnız transform/opacity. Reduced-motion'da geçiş hiç başlatılmaz (gecisle), bu kurallar
+ * da devreye girmez. */
+html[data-vt-yon="geri"]::view-transition-old(ke-icerik) {
+  animation: ke-vt-cik-geri .14s ease-in both;
+}
+html[data-vt-yon="geri"]::view-transition-new(ke-icerik) {
+  animation: ke-vt-gir-geri .38s cubic-bezier(.23, 1, .32, 1) both;
+}
+@keyframes ke-vt-cik-geri { to { opacity: 0; transform: translateY(6px); } }
+@keyframes ke-vt-gir-geri { from { opacity: 0; transform: translateY(-14px); } }

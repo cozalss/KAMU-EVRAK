@@ -15,6 +15,7 @@
    Stripe/Linear dersi: birincil karo tek vurgulu, ikincil nötr; sayı + etiket + şekil. */
 import React, { useMemo } from "react";
 import NumberFlow from "@number-flow/react";
+import { useDarEkran } from "../hooks/useMedya.js";
 import { MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
 
 const GUN_MS = 86_400_000;
@@ -24,10 +25,10 @@ const ayniGun = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() ==
 const sn = (x) => (x == null ? "" : Number(x).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
 
 export const KARARLAR = [
-  { key: "bekliyor", label: "Karar bekliyor", renk: BANT.sari.c, doluluk: 0.9 },
-  { key: "onaylandi", label: "Onaylandı", renk: BANT.yesil.c, doluluk: 0.95 },
-  { key: "duzenlendi", label: "Düzenlenip gönderildi", renk: BANT.yesil.c, doluluk: 0.5 },
-  { key: "reddedildi", label: "Reddedildi", renk: BANT.kirmizi.c, doluluk: 0.9 },
+  { key: "bekliyor", label: "Karar bekliyor", kisa: "Bekliyor", renk: BANT.sari.c, doluluk: 0.9 },
+  { key: "onaylandi", label: "Onaylandı", kisa: "Onaylandı", renk: BANT.yesil.c, doluluk: 0.95 },
+  { key: "duzenlendi", label: "Düzenlenip gönderildi", kisa: "Düzenlendi", renk: BANT.yesil.c, doluluk: 0.5 },
+  { key: "reddedildi", label: "Reddedildi", kisa: "Reddedildi", renk: BANT.kirmizi.c, doluluk: 0.9 },
 ];
 
 /* Bir günün çetelesi — n çentik: 5'li demetler (4 dikey + 1 çapraz), en çok iki demet
@@ -130,7 +131,10 @@ function EtkinlikKarosu({ items, aktifSet, temizle, ortSn }) {
   );
 }
 
+/* Telefonda dört sayaç TEK satırda (2×2 ızgara defteri ekranın altına itiyordu — ölçüldü,
+   390px'te defter ilk ekranda hiç görünmüyordu); kısa etiket, açıklama notu gizli. */
 function KararKarosu({ say, aktifSet, onSec }) {
+  const dar = useDarEkran();
   const toplam = KARARLAR.reduce((a, k) => a + say[k.key], 0);
   const ozet = KARARLAR.filter((k) => say[k.key] > 0).map((k) => `${say[k.key]} ${k.label.toLocaleLowerCase("tr-TR")}`).join(", ");
   const bekleyenPay = toplam ? say.bekliyor / toplam : 0;
@@ -152,7 +156,7 @@ function KararKarosu({ say, aktifSet, onSec }) {
         ))}
       </span>
       <div role="group" aria-label="Karar durumu — sütun listeyi filtreler"
-        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(112px, 100%), 1fr))", gap: SP.xs, marginTop: SP.m, flex: 1 }}>
+        style={{ display: "grid", gridTemplateColumns: dar ? "repeat(4, minmax(0, 1fr))" : "repeat(auto-fit, minmax(min(112px, 100%), 1fr))", gap: dar ? 2 : SP.xs, marginTop: SP.m, flex: 1 }}>
         {KARARLAR.map((k) => {
           const n = say[k.key];
           const aktif = aktifSet.has(k.key);
@@ -163,19 +167,19 @@ function KararKarosu({ say, aktifSet, onSec }) {
               onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(k.renk) : "transparent"; }}
               style={{ cursor: "pointer", textAlign: "left", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 4,
-                padding: "8px 10px", borderRadius: RAD.ctl, border: `1px solid ${aktif ? PAL.lineHi : "transparent"}`,
+                padding: dar ? "6px 6px" : "8px 10px", minWidth: 0, borderRadius: RAD.ctl, border: `1px solid ${aktif ? PAL.lineHi : "transparent"}`,
                 background: aktif ? ALFA(k.renk) : "transparent",
                 transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
-              <span style={{ ...TYPE.num, color: n ? (aktif ? DERIN_OF(k.renk) : PAL.ink) : PAL.mut3 }}><NumberFlow value={n} /></span>
+              <span style={{ ...TYPE.num, ...(dar ? { fontSize: 22, lineHeight: "26px" } : null), color: n ? (aktif ? DERIN_OF(k.renk) : PAL.ink) : PAL.mut3 }}><NumberFlow value={n} /></span>
               <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.meta, color: n ? PAL.mut2 : PAL.mut3 }}>
-                <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: k.renk, opacity: n ? k.doluluk : 0.3, flexShrink: 0 }} />
-                {k.label}
+                {!dar && <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: k.renk, opacity: n ? k.doluluk : 0.3, flexShrink: 0 }} />}
+                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: dar ? "nowrap" : "normal", ...(dar ? { fontSize: 11, borderBottom: `2px solid ${k.renk}`, paddingBottom: 1 } : null) }}>{dar ? k.kisa : k.label}</span>
               </span>
             </button>
           );
         })}
       </div>
-      {bekleyenPay > 0 && (
+      {bekleyenPay > 0 && !dar && (
         <span style={{ ...TYPE.meta, color: PAL.mut2, marginTop: SP.s, paddingTop: SP.s, borderTop: `1px dashed ${PAL.line}` }}>
           Taramalı dilim memur kararı bekleyen taslaklardır — onaylanınca yeşile döner.
         </span>

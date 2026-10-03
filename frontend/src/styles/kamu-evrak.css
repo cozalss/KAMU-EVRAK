@@ -1,4 +1,4 @@
-/* kamu-evrak — Kurumsal Devlet teması (TEKNOFEST 2026, 1. Senaryo).
+/* kamu-evrak — Kurumsal Devlet teması.
    Yön: "Accessible & Ethical" (ui-ux-pro-max) — yüksek kontrast lacivert/mavi + nötr gri,
    gov.uk/USWDS ciddiyeti. SIFIR ek dep (saf React). Compositor-dostu motion (transform/opacity).
    Tipografi: Lexend (başlık, okunabilirlik için tasarlandı) + Source Sans 3 (gövde) — yerel woff2.
@@ -1141,7 +1141,9 @@
   .sc-decision-strip-chip { align-self: flex-start; }
   .sc-summary-row .sc-summary-stack { max-width: none; }
   .sc-document-stage { padding: 12px 8px 16px; }
-  .sc-document-paper { padding: 24px 20px !important; }
+  /* .sc-document-paper mobil dolgusu kaldırıldı (tur 3): kâğıdın iç ölçüsünü A4 ölçekleyici
+     (sonucStil.js) yönetir; burada !important ile 24/20px basmak onu eziyor, o da geri ezmek
+     zorunda kalıyordu. */
   .sc-main-draft-shell .sc-document-stage { min-height: 420px; }
   .sc-main-draft-shell .sc-document-paper {
     min-height: 360px;

@@ -53,6 +53,19 @@ class TestKatalog:
         assert kayit["madde_sayisi"] >= 3
 
 
+    def test_katalog_metin_niteligini_tasir(self, client: TestClient):
+        # Kaynak notu metnin LAFZÎ mi madde ÖZETİ mi olduğunu söyler; özet hukuki atıf için
+        # yeterli değildir → katalog kartı bunu okumadan önce göstermeli (CLAUDE.md §1).
+        mevzuatlar = {m["dosya"]: m for m in client.get("/mevzuat/katalog").json()["mevzuatlar"]}
+        assert mevzuatlar["3071_dilekce_hakki_kanunu"]["nitelik"] == "lafzi"
+        assert mevzuatlar["1136_avukatlik_kanunu"]["nitelik"] == "ozet"
+        assert {m["nitelik"] for m in mevzuatlar.values()} <= {"lafzi", "yakin", "ozet", None}
+
+    def test_nitelik_tanimayan_not_uydurmaz(self):
+        from api.routes.mevzuat import _nitelik
+        assert _nitelik("Serbest açıklama, nitelik beyanı yok.") is None
+        assert _nitelik("Bu metin yakın-lafzî alıntıdır.") == "yakin"
+
 # ---------------------------------------------------------------------------
 # Kategori — katalog konu/tema gruplarıyla organize edilir (öğrenme/keşif paneli)
 # ---------------------------------------------------------------------------

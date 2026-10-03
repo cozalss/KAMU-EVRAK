@@ -1,4 +1,4 @@
-"""Görev 1 — Özetleme değerlendirmesi (TEKNOFEST 1. Senaryo).
+"""Görev 1 — Özetleme değerlendirmesi.
 
 Şartname §6.4.1 ("kısa ve öz bir özet oluşturabilme") + §9 ("özetleme kalitesi").
 docs/06 birincil: LLM-judge kapsama; ikincil: key-fact recall + **faithfulness**.

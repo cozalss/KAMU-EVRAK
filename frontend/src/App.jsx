@@ -6,7 +6,7 @@ import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { Icon } from "./components/icons.jsx";
 
 // kamu-evrak demo arayüzü — evrak yükle (SSE) VEYA örnek metin gönder (JSON) → canlı node akışı + sonuç kartları.
-// SIFIR ek dep (react/react-dom dışında). TEKNOFEST 2026, 1. Senaryo — Demo (15p) + real-time avantajı.
+// SIFIR ek dep (react/react-dom dışında). Legacy arayüz (main.jsx render etmez).
 
 const MAX_UPLOAD_MB = 20; // backend MAX_UPLOAD_BYTES (20 MiB) ile eşleşir
 const ACCEPT = ".pdf,.png,.jpg,.jpeg,.webp,.tiff,.docx";
@@ -309,7 +309,7 @@ export default function App() {
             <div className="ke-brand-tx">
               {/* SC 2.4.6 Başlıklar — h1 sayfa başlığı */}
               <h1>kamu-evrak</h1>
-              <p className="ke-subline">Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi · <i>TEKNOFEST 2026, 1. Senaryo</i></p>
+              <p className="ke-subline">Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi</p>
             </div>
           </div>
           <ul className="ke-trust" aria-label="Sistem güvenceleri">
@@ -526,7 +526,7 @@ export default function App() {
       {/* SC 1.3.6 — contentinfo landmark (footer) */}
       <footer className="ke-footer">
         <p className="ke-footer-note">
-          TEKNOFEST 2026, 1. Senaryo — Demo arayüzü. Bu sistem karar-destek amaçlıdır.
+          Bu sistem karar-destek amaçlıdır; insan onayı olmadan hiçbir yazı gönderilmez.
         </p>
       </footer>
 

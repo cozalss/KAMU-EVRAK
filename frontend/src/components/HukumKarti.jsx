@@ -151,7 +151,10 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
   // (aşağıdaki SLA kartında duruyor) şeritten bilinçli olarak çıkarıldı — kullanıcı kararı.
   const havale = havaleYorum(r, BIRIM_GOSTER);
   // Not, durum satırının saydığı kontrol noktasını TEKRAR ETMEZ — memurun bir sonraki EYLEMİNİ söyler.
-  const kararAciklama = havale.devir
+  const onayBekliyor = r.onay_bekliyor === true;
+  const kararAciklama = onayBekliyor
+    ? "Koşum onay kapısında durdu: taslağı okuyun, ardından onaylayıp gönderin ya da reddedin. Arşiv ve süre adımları kararınızdan sonra koşar."
+    : havale.devir
     ? "Kurum içi havale yapmayın: yazıyı yetkili kuruma gönderin ve durumu başvurana yazılı bildirin."
     : kontrolSayisi
       ? "Havaleyi onaylamadan önce işaretli kontrol noktalarını inceleyin."
@@ -175,6 +178,17 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
         });
       });
     }
+  };
+
+  /* Onay kapısı: eylemi öne çıkar — karar düğmelerine götür ve birincil düğmeye odaklan
+     (klavye kullanıcısı tek Enter'la karar satırına iner). Kaydırma reduced-motion'a uyar. */
+  const kararaGit = () => {
+    const satir = document.querySelector(".sc-main-draft-shell .sc-decision-footer, .sc-draft-card .sc-decision-footer");
+    if (!satir) return;
+    const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    satir.scrollIntoView({ block: "center", behavior: az ? "auto" : "smooth" });
+    const birincil = Array.from(satir.querySelectorAll("button")).find((b) => /onayla/i.test(b.textContent || "") && !b.disabled);
+    birincil?.focus({ preventScroll: true });
   };
 
   const bantVar = !!r.risk_metadata?.bant;
@@ -232,8 +246,13 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
           <MetaSlot slot={havale} id="havale" acik={acikYardim} ac={setAcikYardim} />
         </dl>
         <p className="kd-hukum-not">
-          <span className="kd-hukum-not-etiket">Sıradaki adım</span>
+          <span className="kd-hukum-not-etiket">{onayBekliyor ? "Kararınız bekleniyor" : "Sıradaki adım"}</span>
           {kararAciklama}
+          {onayBekliyor && (
+            <button type="button" className="kd-hukum-karar" onClick={kararaGit} data-press="" {...focusRing}>
+              <Icon.arrow width={13} height={13} aria-hidden="true" /> Karar düğmelerine git
+            </button>
+          )}
         </p>
         {bantVar && (
           <div className="kd-hukum-damga">

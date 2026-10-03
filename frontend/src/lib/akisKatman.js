@@ -107,6 +107,7 @@ export function adimDurumu(node) {
  * Backend akışın BAŞINDA tüm olası adımları duyurur; hangi koşullu dalın seçileceğini o an
  * bilemez. Üç ayrı son vardır ve üçü FARKLI şey söyler:
  *   · `active`  → gerçekten başlamıştı, akış kapandı           → `done`
+ *   · `active`  + koşum DURAKLADI → interrupt'ta duran adım     → `pending` (bekliyor)
  *   · `pending` + koşum BİTTİ    → o dal hiç seçilmedi          → `atlandi`
  *   · `pending` + koşum DURAKLADI (memur onayı bekleniyor)      → `pending` KALIR
  *
@@ -115,13 +116,19 @@ export function adimDurumu(node) {
  * karar verince koşacaklardır. Onlara "bu koşumda çalışmadı" demek, "tamamlandı" demek
  * kadar yanlış olurdu; doğru cevap "sırada".
  *
+ * Backend her node BAŞLARKEN `active` yayar (2026-10, LangGraph `tasks` modu). Onay
+ * kapısı başlar, interrupt'ta durur ve `done` yaymaz → duraklamada `active` kalan adım
+ * bitmemiştir; "tamamlandı" demek memur karar vermeden kararı varsaymak olurdu.
+ *
  * @param {Array} nodes         mevcut düğümler
  * @param {number} t            koşum başına göreli kapanış damgası
  * @param {{duraklatildi?: boolean}} opt  duraklatildi = memur onayı bekleniyor
  */
 export function kapanisDurumlari(nodes, t, { duraklatildi = false } = {}) {
   return (Array.isArray(nodes) ? nodes : []).map((n) => {
-    if (n?.status === "active") return { ...n, status: "done", t0: n.t0 ?? t, t1: t };
+    if (n?.status === "active") return duraklatildi
+      ? { ...n, status: "pending" }
+      : { ...n, status: "done", t0: n.t0 ?? t, t1: t };
     if (n?.status === "pending" && !duraklatildi) return { ...n, status: "atlandi" };
     return n;
   });
@@ -143,4 +150,60 @@ export function akisSuresiMs(gruplar) {
     if (ms != null) toplam = (toplam || 0) + ms;
   }
   return toplam;
+}
+
+/** Eşzamanlı bloğun GERÇEKTEN üst üste binen üyeleri (canlı koşum için).
+ *
+ * Backend her adım BAŞLARKEN `active` yayar → usePipeline o an `t0`, bitişte `t1` damgalar.
+ * İki üyenin [t0, t1) aralığı kesişiyorsa ikisi aynı anda çalışmıştır — bu bir OLGU, katman
+ * haritasından TAHMİN değil. Hâlâ çalışan üyenin aralığı açıktır (t1 = +∞). Hiç başlamamış
+ * (`pending`/`atlandi`) ya da damgasız üye sayılmaz.
+ *
+ * @param {Array<{status:string, t0?:number, t1?:number}>} items  bir katmanın üyeleri
+ * @returns {Array} en az bir başka üyeyle kesişen üyeler (girdi sırasında)
+ */
+export function ortusenAdimlar(items) {
+  const basladi = (items || []).filter((a) => ["active", "done", "error"].includes(a?.status) && Number.isFinite(a.t0));
+  const son = (a) => (a.status === "active" || !Number.isFinite(a.t1) ? Infinity : a.t1);
+  return basladi.filter((a) => basladi.some((b) => b !== a && a.t0 < son(b) && b.t0 < son(a)));
+}
+
+/** Koşum hata ile DURDUYSA akışın kesildiği masa — hatadan sonra hiç başlamamış ilk adımın
+ * sırası (`sira`). Hata yoksa null. Sahne bu masayı "kesildi", sonrakileri "işlenmedi"
+ * gösterir; hiçbiri tamamlandı/atlandı DEĞİLDİR (CLAUDE.md §9). */
+export function kesimSirasi(display) {
+  const liste = Array.isArray(display) ? display : [];
+  if (!liste.some((a) => a?.status === "error")) return null;
+  const ilk = liste.find((a) => a?.status === "pending");
+  return ilk && Number.isFinite(ilk.sira) ? ilk.sira : null;
+}
+
+/** SSE `error` olayında düğüm durumlarını kapat — SAF, test edilebilir kural.
+ *
+ * Backend (2026-10) hangi adımda durduğunu (`ev.node`) ve o an eşzamanlı koşup yarıda
+ * kalan kardeşleri (`ev.kesilen`) söyler. Patlayan adım `error`; kesilen kardeş HATA
+ * DEĞİLDİR (kendisi başarısız olmadı, koşumu kesildi) → `pending` ("işlenmedi"), başarı
+ * sayısına da girmez. Adım bilgisi yoksa ya da duyurulmamış bir ad gelirse hangi adımın
+ * patladığı UYDURULMAZ: eski davranış — o an koşan her adım `error`.
+ */
+export function hataDurumlari(nodes, ev, t) {
+  const liste = Array.isArray(nodes) ? nodes : [];
+  const hatali = ev?.node;
+  const bilinir = hatali && liste.some((n) => n?.id === hatali);
+  const kesilen = new Set(Array.isArray(ev?.kesilen) ? ev.kesilen : []);
+  return liste.map((n) => {
+    if (bilinir) {
+      if (n.id === hatali) return { ...n, status: "error", t1: t };
+      if (n.status === "active" || kesilen.has(n.id)) return n.status === "done" ? n : { ...n, status: "pending" };
+      return n;
+    }
+    return n.status === "active" ? { ...n, status: "error", t1: t } : n;
+  });
+}
+
+/** Hata çubuğu metni: adım biliniyorsa etiketiyle ("Doğrula adımında durdu — …"). */
+export function hataMesaji(nodes, ev) {
+  const mesaj = ev?.message || "İşleme hatası";
+  const adim = ev?.node && (Array.isArray(nodes) ? nodes : []).find((n) => n?.id === ev.node);
+  return adim ? `${adim.label} adımında durdu — ${mesaj}` : mesaj;
 }

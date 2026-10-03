@@ -1,6 +1,6 @@
 # Yöntem ve Teknik Yaklaşım
 
-> TEKNOFEST TYDA 1. Senaryo — "Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent
+> "Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent
 > Destek Sistemi". Bu belge şartname §8 **"Yöntem ve Teknik Yaklaşım (35p)"**
 > kriterini hedefler: yöntemlerin derinliği, karmaşıklığı ve teknik kurgunun
 > bütünlüğü. İlgili tasarım kararları `docs/03-mimari.md`, ölçüm `docs/06-eval-harness.md`,

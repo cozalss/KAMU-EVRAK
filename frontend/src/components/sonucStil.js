@@ -47,8 +47,18 @@ export const SONUC_CSS = `
   grid-area: not; margin: 0; padding-left: 20px; border-left: 1px solid var(--ke-line);
   font-size: 13px; line-height: 19px; color: var(--ke-mut2); text-wrap: pretty;
 }
+.kd-hukum-karar{
+  display: flex; width: fit-content; align-items: center; gap: 6px; margin-top: 8px; min-height: 32px; padding: 5px 12px;
+  /* İkincil görünüm: ekranın TEK birincil düğmesi taslaktaki "Onayla ve gönder" kalır. */
+  border-radius: 8px; border: 1px solid color-mix(in srgb, var(--ke-derin-t) 45%, transparent); background: var(--ke-surf); color: var(--ke-derin-t);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .12s ease;
+}
+.kd-hukum-karar:hover{ background: color-mix(in srgb, var(--ke-t) 8%, var(--ke-surf)); }
+@media (hover: none){ .kd-hukum-karar{ min-height: 44px; } }
 .kd-hukum-not-etiket{ display: block; margin-bottom: 3px; font-size: 12px; line-height: 16px; color: var(--ke-mut3); }
-.kd-hukum-damga{ grid-area: damga; justify-self: end; padding: 6px 8px 6px 4px; }
+/* overflow:clip + clip-margin: eğik damganın dış çizgisi/dönme köşeleri BOYANIR ama sayfanın
+   kaydırma genişliğine KATILMAZ (390px'te 27px yatay kayma buradan geliyordu, TUR 3). */
+.kd-hukum-damga{ grid-area: damga; justify-self: end; padding: 6px 8px 6px 4px; overflow: clip; overflow-clip-margin: 14px; }
 .kd-damga-ic{ display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
 .kd-damga-ust{ font-size: 9px; line-height: 10px; letter-spacing: .22em; font-weight: 700; }
 .kd-damga-ad{ font-size: 25px; line-height: 26px; letter-spacing: .06em; font-weight: 900; }
@@ -95,7 +105,12 @@ export const SONUC_CSS = `
 }
 @media (max-width: 760px){
   .kd-sonuc .sc-source-slot [data-kd="kaynak-masa"]{ padding: 12px 8px 16px !important; }
-  .kd-sonuc .sc-main-draft-shell .sc-document-stage{ padding: 12px 8px 16px; }
+  .kd-sonuc .sc-main-draft-shell .sc-document-stage{ padding: 12px 8px 16px !important; }
+  /* Eşleşmiş çift telefonda da piksel-aynı: kâğıt sarmalının mobil iç dolgusu (kamu-evrak.css)
+     taslağı kaynaktan 48px dar bırakıyordu (236 vs 284). */
+  .kd-sonuc .sc-main-draft-shell .sc-document-paper,
+  .kd-sonuc .sc-draft-card .sc-document-paper{ padding: 0 !important; min-height: 0 !important; }
+  .kd-sonuc .sc-draft-card .sc-document-stage{ padding: 12px 8px 16px !important; }
 }
 /* Masa: kart başlığının altındaki alan arşiv grisine iner, hafif iç gölgeyle "çukur". */
 .kd-sonuc .sc-source-slot [data-kd="kaynak-masa"],
@@ -180,6 +195,14 @@ export const SONUC_CSS = `
   border-top: 2px solid var(--ke-ink); border-bottom: 1px solid var(--ke-ink); opacity: .85;
 }
 .kd-sonuc .sc-review-heading h2{ font-size: 22px !important; line-height: 28px !important; font-stretch: 114% !important; letter-spacing: -.015em !important; }
+
+/* Risk gerekçesi telefonda: metin tam satır, ağırlık çubuğu + birimsiz değer alt satırda
+   (yan yana 5 kelimelik sütuna sıkışıyordu). */
+@media (max-width: 560px){
+  .kd-sonuc .sc-risk-reason{ flex-wrap: wrap; }
+  .kd-sonuc .sc-risk-reason > span:nth-child(2){ flex-basis: calc(100% - 20px) !important; }
+  .kd-sonuc .sc-risk-reason .sc-risk-meter{ margin-left: 14px; flex: 1 1 auto; }
+}
 
 @media (prefers-reduced-motion: reduce){
   .kd-sonuc .sc-source-slot mark, .kd-sonuc .kd-hukum{ animation: none !important; }

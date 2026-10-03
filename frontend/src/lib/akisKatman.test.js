@@ -8,6 +8,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   katmanGruplari, gerekmediMi, adimDurumu, kostuMu, kapanisDurumlari, grupSuresiMs, akisSuresiMs,
+  ortusenAdimlar, kesimSirasi,
+  hataDurumlari, hataMesaji,
 } from "./akisKatman.js";
 
 const n = (id, ekstra = {}) => ({ id, label: id, status: "done", ...ekstra });
@@ -270,6 +272,20 @@ test("kapanış: çalışan adım tamamlanır ve süre damgası alır", () => {
   assert.equal(kapanmis[0].t1, 900);
 });
 
+test("kapanış: DURAKLADI — kesintiye giren adım 'tamamlandı' SAYILMAZ, sırada kalır", () => {
+  // Arrange — backend her node başlarken `active` yayar; HITL'de onay_kapisi BAŞLAR,
+  // interrupt'ta durur ve hiç `done` yaymaz. Kapanışta active→done kuralı onu yeşil tik
+  // yapardı: memur henüz karar vermemişken "onay kapısı tamamlandı" yalanı.
+  const nodes = vitrinDurumlari().map((x) => (x.id === "onay_kapisi" ? { ...x, status: "active", t0: 700 } : x));
+  // Act
+  const kapanmis = kapanisDurumlari(nodes, 1000, { duraklatildi: true });
+  const kapi = kapanmis.find((x) => x.id === "onay_kapisi");
+  // Assert
+  assert.equal(kapi.status, "pending");
+  assert.equal(adimDurumu(kapi), "bekliyor");
+  assert.equal(kapanmis.filter(kostuMu).length, 15);
+});
+
 test("kapanış: bozuk girdi düşürmez", () => {
   assert.deepEqual(kapanisDurumlari(null, 0), []);
   assert.deepEqual(kapanisDurumlari(undefined, 0), []);
@@ -285,4 +301,74 @@ test("REGRESYON: hiç koşmamış eşzamanlı çift 'aynı anda çalıştı' SAY
   // Assert — yapısal olarak aynı katman, ama bu koşumda eşzamanlılık İDDİASI YOK
   assert.equal(g[0].paralel, true);
   assert.equal(kosan, 0);
+});
+
+/* ---- ortusenAdimlar: canlı eşzamanlılık OLGUDAN (başladı/bitti damgaları) ---- */
+
+test("ortusenAdimlar: aynı anda çalışan iki adım kesişir", () => {
+  // Arrange — ikisi de başladı, biri bitti, diğeri sürüyor
+  const items = [n("siniflandir", { status: "done", t0: 100, t1: 1900 }), n("cikar", { status: "active", t0: 110 })];
+  // Act + Assert
+  assert.deepEqual(ortusenAdimlar(items).map((x) => x.id), ["siniflandir", "cikar"]);
+});
+
+test("ortusenAdimlar: ardışık (kesişmeyen) adımlar eşzamanlı SAYILMAZ", () => {
+  const items = [n("a", { t0: 0, t1: 100 }), n("b", { t0: 100, t1: 200 })];
+  assert.deepEqual(ortusenAdimlar(items), []);
+});
+
+test("ortusenAdimlar: başlamamış/atlanmış/damgasız üye iddiaya katılmaz", () => {
+  const items = [n("a", { status: "active", t0: 5 }), n("b", { status: "pending" }), n("c", { status: "atlandi", t0: 6 }), n("d", { status: "done" })];
+  assert.deepEqual(ortusenAdimlar(items), []);
+});
+
+test("ortusenAdimlar: bozuk girdi düşürmez", () => {
+  assert.deepEqual(ortusenAdimlar(null), []);
+});
+
+/* ---- kesimSirasi: hata ile duran koşumda akışın kesildiği masa ---- */
+
+test("kesimSirasi: hatadan sonraki ilk bekleyen masa", () => {
+  const d = [n("a", { sira: 0 }), n("b", { status: "error", sira: 1 }), n("c", { status: "pending", sira: 2 }), n("d", { status: "pending", sira: 3 })];
+  assert.equal(kesimSirasi(d), 2);
+});
+
+test("kesimSirasi: hata yoksa null (normal koşumda bekleyen adım 'kesildi' değildir)", () => {
+  assert.equal(kesimSirasi([n("a", { sira: 0 }), n("b", { status: "pending", sira: 1 })]), null);
+  assert.equal(kesimSirasi(undefined), null);
+});
+
+/* ——— hataDurumlari: SSE `error` olayında düğümleri kapat ———
+   Backend artık HANGİ adımda durduğunu (`node`) ve yarıda kalan eşzamanlı kardeşleri
+   (`kesilen`) söylüyor. Kardeşler HATA DEĞİLDİR — patlayan onlar değil; koşumları kesildi. */
+
+test("hataDurumlari: yalnız patlayan adım hata, kesilen kardeş sırada kalır", () => {
+  // Arrange
+  const nodes = [n("siniflandir", { status: "done" }), n("verify", { status: "active", t0: 10 }),
+    n("ozetle", { status: "active", t0: 12 }), n("finalize", { status: "pending" })];
+  // Act
+  const k = hataDurumlari(nodes, { node: "verify", kesilen: ["ozetle"] }, 99);
+  // Assert
+  assert.deepEqual(k.map((x) => x.status), ["done", "error", "pending", "pending"]);
+  assert.equal(k[1].t1, 99);
+  assert.equal(kostuMu(k[2]), false);
+});
+
+test("hataDurumlari: adım bilgisi yoksa eski davranış — koşanlar hata (uydurma atıf yok)", () => {
+  const nodes = [n("verify", { status: "active" }), n("ozetle", { status: "active" }), n("finalize", { status: "pending" })];
+  const k = hataDurumlari(nodes, {}, 5);
+  assert.deepEqual(k.map((x) => x.status), ["error", "error", "pending"]);
+});
+
+test("hataDurumlari: duyurulmamış adım adı gelirse kimse sahte hata almaz, koşanlar hata", () => {
+  const nodes = [n("verify", { status: "active" })];
+  const k = hataDurumlari(nodes, { node: "bilinmeyen", kesilen: [] }, 5);
+  assert.equal(k[0].status, "error");
+});
+
+test("hataMesaji: adım biliniyorsa etiketiyle söyler", () => {
+  const nodes = [n("verify", { label: "Doğrula" })];
+  assert.equal(hataMesaji(nodes, { node: "verify", message: "İşleme hatası" }), "Doğrula adımında durdu — İşleme hatası");
+  assert.equal(hataMesaji(nodes, { message: "OCR hatası" }), "OCR hatası");
+  assert.equal(hataMesaji(nodes, {}), "İşleme hatası");
 });

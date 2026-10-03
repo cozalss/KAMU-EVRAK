@@ -1,6 +1,6 @@
 # Katkı Rehberi
 
-> **kamu-evrak** — TEKNOFEST 2026, 1. Senaryo. Bu rehber depoya katkı verirken uyulması
+> **kamu-evrak** — kamu evrak ve yazışma için akıllı ajan destek sistemi. Bu rehber depoya katkı verirken uyulması
 > gereken kurulum, test, kod stili ve teslim kurallarını özetler. Daha derin proje kuralları
 > için [`CLAUDE.md`](CLAUDE.md) ve [`README.md`](README.md) dosyalarına bakın.
 

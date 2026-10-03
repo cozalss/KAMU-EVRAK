@@ -281,17 +281,22 @@ export function TaslakKarti({ draft, revize }) {
 }
 
 /* Kurul toplanıyor — ağ turu sürerken boş masa: koltuklar dolu, üyeler taslağı okuyor. */
-export function KurulYukleniyor({ az }) {
+export function KurulYukleniyor({ az, sn = 0, tavanSn = 45 }) {
+  // Saniye sayacı + uzun beklemede dürüst açıklama: açılış tavanı aşılırsa yerel motor devreye
+  // girer (MuzakereKurulu zaman aşımı) — memur "takıldı mı" diye tahmin etmek zorunda kalmaz.
+  const uzun = sn >= 12;
   return (
     <div style={{ padding: `${SP.xl}px ${SP.s}px` }}>
       <KurulMasasi yukleniyor az={az} aksan={V} orta={
         <>
-          <span style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>Toplantı açılıyor</span>
+          <span style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", ...TNUM }}>Toplantı açılıyor{sn ? ` · ${sn} sn` : ""}</span>
           <span style={{ fontFamily: DISPLAY, fontSize: 15, lineHeight: "20px", fontWeight: 700, fontStretch: "106%", color: PAL.ink }}>Kurul toplanıyor</span>
         </>
       } />
       <p style={{ margin: `${SP.l}px auto 0`, maxWidth: 460, textAlign: "center", ...TYPE.data, color: PAL.mut2 }}>
-        Üyeler taslağı ve doğrulama sinyallerini okuyor; ilk söz birkaç saniye içinde alınır.
+        {uzun
+          ? `İlk söz beklenenden uzun sürüyor. ${tavanSn} sn içinde gelmezse kurul, taslağın ölçülmüş sinyalleriyle yerel motorda toplanır.`
+          : "Üyeler taslağı ve doğrulama sinyallerini okuyor; ilk söz birkaç saniye içinde alınır."}
       </p>
     </div>
   );

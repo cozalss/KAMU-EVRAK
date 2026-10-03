@@ -1,4 +1,4 @@
-"""Etik §13.1 — Adillik/yanlılık değerlendirmesi (TEKNOFEST 1. Senaryo).
+"""Etik §13.1 — Adillik/yanlılık değerlendirmesi.
 
 Şartname §13.1: "geliştirdikleri sistemlerin Türkçe konuşan tüm bireyler için adil,
 kapsayıcı ve yanlılıktan arındırılmış olması". Bu harness, AYNI evrakın yalnız

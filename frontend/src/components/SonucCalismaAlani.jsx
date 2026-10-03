@@ -202,6 +202,8 @@ function ExtractedInfoQuickCard({ r, onOpen }) {
 }
 
 function QuickReviewSection({ r, band, bantC, onOpen }) {
+  const rm = r.risk_metadata || {};
+  const riskVar = Boolean(rm.aciklama || arr(rm.gerekceler).length || rm.skor);
   // Özet kartı bu bölümden kaldırıldı (kullanıcı isteği, 2026-07-16) — özet, kaynak belge
   // panelindeki "Özet" takas görünümünde yaşamaya devam eder; ilk kart risk değerlendirmesi.
   return (
@@ -216,7 +218,16 @@ function QuickReviewSection({ r, band, bantC, onOpen }) {
       </div>
       <div className="sc-quick-review-grid">
         <div id="sc-memur-kontrol" className="sc-review-anchor" tabIndex={-1}>
-          <RiskCard r={r} band={band} bantC={bantC} />
+          {riskVar ? <RiskCard r={r} band={band} bantC={bantC} /> : (
+            /* Risk adımı veri üretmediyse ızgarada delik kalmasın — ama bant UYDURULMAZ:
+               yokluk yeşil sayılmaz, memura açıkça "hesaplanmadı" denir. */
+            <NeonCard title="Risk değerlendirmesi" tag="hesaplanmadı" tagColor={PAL.mut2} accent={V} icon={<Icon.alert />} style={{ height: "100%" }}>
+              <div className="sc-positive-callout" style={{ background: PAL.surf2, color: PAL.mut2 }}>
+                <Icon.info />
+                Bu koşumda risk bandı üretilmedi. Taslağı göndermeden önce tamamını kendiniz okuyun.
+              </div>
+            </NeonCard>
+          )}
         </div>
         <ExtractedInfoQuickCard r={r} onOpen={onOpen} />
       </div>

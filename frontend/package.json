@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "kamu-evrak demo arayüzü — evrak yükle, canlı ajan akışı, sonuç (TEKNOFEST 2026, 1. Senaryo)",
+  "description": "kamu-evrak demo arayüzü — evrak yükle, canlı ajan akışı, sonuç",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

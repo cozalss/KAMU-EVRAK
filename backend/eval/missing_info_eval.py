@@ -1,4 +1,4 @@
-"""Görev 1 — Eksik bilgi tespiti değerlendirmesi (TEKNOFEST 1. Senaryo).
+"""Görev 1 — Eksik bilgi tespiti değerlendirmesi.
 
 Şartname §6.4.1 ("bulunması gereken ancak eksik olan bilgileri tespit edebilme")
 + §9 Uygulama ("eksik bilgi tespiti").

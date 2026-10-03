@@ -1,4 +1,4 @@
-"""TEKNOFEST 1. Senaryo — Yarışma karnesi (tek komut, tüm görevler).
+"""kamu-evrak — Görev karnesi (tek komut, tüm görevler).
 
 Şartname §9 Puanlama: "Uygulama (35p) — sınıflandırma doğruluğu, yönlendirme
 başarımı, özetleme ve yazı şablon oluşturma kalitesi, eksik bilgi tespiti" +
@@ -136,7 +136,7 @@ def render_markdown(sc: dict) -> str:
     yt = g2["yazi_taslak"]
     model_sfx = f", model=`{sc['llm_model']}`" if sc.get("llm_model") else ""
     lines: list[str] = [
-        "# TEKNOFEST 2026 — 1. Senaryo Yarışma Karnesi",
+        "# kamu-evrak — Görev Karnesi",
         "",
         "> Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · "
         "`python -m eval.competition_scorecard` ile üretilir "
@@ -224,7 +224,7 @@ def render_console(sc: dict) -> str:
                   else f"GERÇEK {sc.get('llm_model') or sc['llm_mode']} ölçümü, mock DEĞİL")
     return "\n".join([
         f"\n{bar}",
-        f"  TEKNOFEST 1. SENARYO KARNESİ  (commit {sc['git_sha']}, LLM_MODE={sc['llm_mode']}"
+        f"  KAMU-EVRAK GÖREV KARNESİ  (commit {sc['git_sha']}, LLM_MODE={sc['llm_mode']}"
         + (f", model={sc['llm_model']})" if sc.get("llm_model") else ")"),
         f"  [GERÇEK pipeline ölçümü — {mod_etiket}]",
         bar,
@@ -263,7 +263,7 @@ def main(check_only: bool = False) -> int:
 if __name__ == "__main__":
     import argparse
 
-    ap = argparse.ArgumentParser(description="TEKNOFEST 1. Senaryo yarışma karnesi")
+    ap = argparse.ArgumentParser(description="kamu-evrak görev karnesi")
     ap.add_argument("--check", action="store_true", help="Yalnız konsol (rapor yazma)")
     args = ap.parse_args()
     sys.exit(main(check_only=args.check))

@@ -13,6 +13,7 @@ import {
   OLCEK_ESIK,
   YAZI_ALANI_YUK_PX,
   kagitSutunGenisligi,
+  genislikOlcegi,
   olcekHesapla,
   olcekOynadi,
   olcumleriTopla,
@@ -209,4 +210,22 @@ test("ilk ölçüm daima yazılır; ölçülemeyen değer state'i bozmaz", () =>
   assert.equal(olcekOynadi(NaN, 0.9), true);
   assert.equal(olcekOynadi(0.9, NaN), false, "NaN state'i ezmemeli");
   assert.equal(olcekOynadi(0.9, undefined), false);
+});
+
+/* ── genislikOlcegi ── sigdir="genislik" kipinin sözleşmesi: sayfa kabın GENİŞLİĞİNİ ASLA
+   aşmaz. Bu kipte kabın yatay kaydırması yoktur (sonuç alanı, alt-taslak kartı); ASGARI
+   tabanı burada 390px telefonda sayfayı 27px ekran dışına itiyordu (TUR 3 ölçümü). Okumak
+   için kâğıda dokunulur → A4 büyütme modalı. */
+test("genislikOlcegi: dar kapta ASGARI'ye kelepçelenmez, kabı asla taşırmaz", () => {
+  const gen = 284;   // 390px telefonda taslak sahnesinin iç genişliği
+  const olcek = genislikOlcegi(gen);
+  assert.ok(A4_GEN_PX * olcek <= gen + 0.01, "sayfa kap genişliğini aşmamalı");
+  assert.ok(olcek < ASGARI_OLCEK);
+});
+
+test("genislikOlcegi: geniş kapta AZAMI'yi aşmaz, geçersiz girdide çökmez", () => {
+  assert.equal(genislikOlcegi(100000), AZAMI_OLCEK);
+  assert.ok(Math.abs(genislikOlcegi(A4_GEN_PX / 2) - 0.5) < 1e-9);
+  assert.equal(genislikOlcegi(0), ASGARI_OLCEK);
+  assert.equal(genislikOlcegi(NaN), ASGARI_OLCEK);
 });

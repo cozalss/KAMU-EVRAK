@@ -135,7 +135,7 @@ export default function SureRaporModal({ acik, onKapat, history = [] }) {
                   {/* Başlık + kapat */}
                   <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.xl }}>
                     <Dialog.Title asChild>
-                      <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>İşlem Süresi Detay Raporu</h3>
+                      <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>İşlem Süresi Detay Raporu</h2>
                     </Dialog.Title>
                     <Dialog.Close asChild>
                       <button type="button" aria-label="Raporu kapat" {...focusRing} data-press=""
@@ -171,9 +171,9 @@ export default function SureRaporModal({ acik, onKapat, history = [] }) {
                       <BarGrafik veri={grafik} ort={ort} />
 
                       {/* Tablo */}
-                      <h4 style={{ margin: `${SP.xl}px 0 ${SP.s}px`, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
+                      <h3 style={{ margin: `${SP.xl}px 0 ${SP.s}px`, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
                         Son 7 İşlem Detayı
-                      </h4>
+                      </h3>
                       {/* Dar ekranda tablo YATAY kaydırılır — kolonları sarmalamak sayıları okunmaz yapardı */}
                       <div style={{ overflowX: "auto", border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
                         <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560 }}>

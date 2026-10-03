@@ -46,8 +46,8 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam }
           <BaslikEtiket>Konu</BaslikEtiket>
           {/* Konu başlığı ÖLÇÜLÜ (18px) ve 3 satırla kelepçeli — konu satırları paragraf
               uzunluğunda gelebiliyor; dev başlık paneli yutuyordu. Tam metin title'da. */}
-          <h3 title={ad} style={{ margin: 0, fontFamily: DISPLAY, fontSize: 18, lineHeight: "24px", fontWeight: 700, fontStretch: "104%", letterSpacing: "-.01em", color: PAL.ink,
-            display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden", overflowWrap: "anywhere" }}>{ad}</h3>
+          <h2 title={ad} style={{ margin: 0, fontFamily: DISPLAY, fontSize: 18, lineHeight: "24px", fontWeight: 700, fontStretch: "104%", letterSpacing: "-.01em", color: PAL.ink,
+            display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden", overflowWrap: "anywhere" }}>{ad}</h2>
         </div>
 
         {bant && (

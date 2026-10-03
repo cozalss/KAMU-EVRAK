@@ -1,4 +1,4 @@
-"""Görev 2 — Birim yönlendirme değerlendirmesi (TEKNOFEST 1. Senaryo).
+"""Görev 2 — Birim yönlendirme değerlendirmesi.
 
 Şartname §6.4.2 ("doğru birime yönlendirme") + §9 ("yönlendirme başarımı").
 

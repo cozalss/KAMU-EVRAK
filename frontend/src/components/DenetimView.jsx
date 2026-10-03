@@ -7,7 +7,8 @@ import { ViewWrap, Btn, Icon, MONO, V, PAL, BANT, DERIN, DERIN_OF, TYPE, TNUM, R
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR } from "./result-cards.jsx";
-import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterNotu } from "./SicilDefter.jsx";
+import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterNotu, DefterIskelet, DefterHata, HUCRE } from "./SicilDefter.jsx";
+import { bosDurumMetni } from "../lib/sicilDefter.js";
 
 const fmtGun = (ts) => { try { return new Date(ts).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }); } catch { return ""; } };
 const fmtSaat = (ts) => { try { return new Date(ts).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); } catch { return ""; } };
@@ -36,6 +37,7 @@ const SABLON = {
   alan: '"zaman ana risk zincir"',
   alanDar: '"zaman risk" "ana ana" "zincir zincir"',
   marj: "148px",
+  adim: "64px",
 };
 const BASLIKLAR = [
   <BaslikHucre key="z" alan="zaman">Zaman damgası</BaslikHucre>,
@@ -50,7 +52,7 @@ const BASLIKLAR = [
 function ZincirHucre({ kok, son, adim }) {
   const cizilen = Math.min(adim, ZINCIR_AZAMI);
   return (
-    <span style={{ gridArea: "zincir", display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}
+    <span {...HUCRE.table} style={{ gridArea: "zincir", display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}
       aria-label={`SHA-256 zinciri, ${adim || "bilinmeyen sayıda"} adım; kök ${kisa(kok)}, son ${kisa(son)}`}>
       <HashJeton etiket="kök" h={kok} />
       <span aria-hidden="true" style={{ flex: 1, minWidth: 28, display: "flex", alignItems: "center", gap: 3, position: "relative", height: 12 }}>
@@ -73,7 +75,7 @@ const HashJeton = ({ etiket, h, vurgu }) => (
   </span>
 );
 
-export default function DenetimView({ history = [], onGoInbox }) {
+export default function DenetimView({ history = [], onGoInbox, yukleniyor = false, hata = null, onYenidenDene }) {
   const kayitlar = useMemo(() => history.filter((h) => h.result?.denetim_izi && Object.keys(h.result.denetim_izi).length), [history]);
   const config = useMemo(() => ({
     ...BASE_CONFIG,
@@ -85,13 +87,16 @@ export default function DenetimView({ history = [], onGoInbox }) {
     return (
       <ViewWrap id="denetim-h" title="Denetim izi" kunye="Denetim kayıt defteri" sub="Değiştirilemez işlem kayıtları (SHA-256)">
         <SicilStil />
-        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" satir={6} baslik="Henüz mühürlenmiş kayıt yok"
-          sub="İşlenen her evrak için değiştirilemez bir SHA-256 hash-zinciri oluşturulur ve bu deftere zaman damgasıyla işlenir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
+        {yukleniyor ? <DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Denetim kayıtları yükleniyor" />
+          : hata ? <DefterHata sablon={SABLON} basliklar={BASLIKLAR} baslik="Denetim defteri alınamadı" ayrinti={String(hata?.message || hata)} onYenidenDene={onYenidenDene} />
+            : <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" satir={6} baslik="Henüz mühürlenmiş kayıt yok"
+              sub="İşlenen her evrak için değiştirilemez bir SHA-256 hash-zinciri oluşturulur ve bu deftere zaman damgasıyla işlenir."
+              actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />}
       </ViewWrap>
     );
   }
 
+  const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "kayıt", kalici: "zincir kayıtları silinmez" });
   return (
     <ViewWrap id="denetim-h" title="Denetim izi" kunye="Denetim kayıt defteri"
       sub={`${kayitlar.length} değiştirilemez kayıt · tamper-evident SHA-256 hash-zinciri`}
@@ -105,28 +110,28 @@ export default function DenetimView({ history = [], onGoInbox }) {
       <FilterBar config={config} filter={filter} />
 
       {filter.results.length === 0 ? (
-        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" damga="Eşleşme yok" baslik="Bu ölçütlerle kayıt yok"
-          sub="Filtre ölçütlerinizi gevşetin; zincir kayıtları silinmez." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" damga="Eşleşme yok" baslik={bos.baslik}
+          sub={bos.sub} actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Denetim kayıtları">
+        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Denetim kayıtları" rol="table" dolgu={Math.max(0, 4 - filter.results.length)}>
           {filter.results.map((h, i) => {
             const di = h.result.denetim_izi;
             const zincir = Array.isArray(di.zincir) ? di.zincir : (Array.isArray(di.adimlar) ? di.adimlar : []);
             const riskC = BANT[h.bant]?.c;
             return (
-              <div key={h.id} data-sicil-satir="" style={{ "--sd-i": Math.min(i, 14), cursor: "default" }}>
-                <span style={{ gridArea: "zaman", display: "flex", flexDirection: "column", fontFamily: MONO, ...TNUM }}>
+              <div key={h.id} role="row" data-sicil-satir="" style={{ "--sd-i": i, cursor: "default" }}>
+                <span {...HUCRE.table} style={{ gridArea: "zaman", display: "flex", flexDirection: "column", fontFamily: MONO, ...TNUM }}>
                   <span data-sd-no-sira="" style={{ fontSize: 13, fontWeight: 600, color: PAL.ink }}>{fmtSaat(h.ts)}</span>
                   <span style={{ fontSize: 11, color: PAL.mut3 }}>{fmtGun(h.ts)}</span>
                 </span>
-                <span style={{ gridArea: "ana", minWidth: 0, display: "flex", alignItems: "center", gap: SP.s }}>
+                <span {...HUCRE.table} style={{ gridArea: "ana", minWidth: 0, display: "flex", alignItems: "center", gap: SP.s }}>
                   <span aria-hidden="true" style={{ display: "flex", color: DERIN.yesil, flexShrink: 0 }}><Icon.shield width={16} height={16} /></span>
                   <span style={{ minWidth: 0 }}>
-                    <span style={{ display: "block", fontFamily: MONO, fontSize: 13, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
+                    <span title={h.name} style={{ display: "block", fontFamily: MONO, fontSize: 13, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
                     <span style={{ display: "block", ...TYPE.meta, color: PAL.mut }}>{EVRAK_TR(h.evrak_turu)} · SHA-256 · {zincir.length || "—"} adım</span>
                   </span>
                 </span>
-                <span style={{ gridArea: "risk", fontFamily: MONO, fontSize: 11, fontWeight: 600, letterSpacing: ".06em", color: riskC ? DERIN_OF(riskC) : PAL.mut3 }}>{BANT[h.bant]?.l || "—"}</span>
+                <span {...HUCRE.table} style={{ gridArea: "risk", fontFamily: MONO, fontSize: 11, fontWeight: 600, letterSpacing: ".06em", color: riskC ? DERIN_OF(riskC) : PAL.mut3 }}>{BANT[h.bant]?.l || "—"}</span>
                 <ZincirHucre kok={di.kok_hash} son={di.son_hash} adim={zincir.length} />
               </div>
             );

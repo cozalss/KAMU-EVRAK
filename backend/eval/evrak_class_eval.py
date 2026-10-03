@@ -1,4 +1,4 @@
-"""Görev 1 — Evrak sınıflandırma değerlendirmesi (TEKNOFEST 1. Senaryo).
+"""Görev 1 — Evrak sınıflandırma değerlendirmesi.
 
 Şartname §6.4.1 ("evrakın türünü belirleme") + §9 Uygulama ("sınıflandırma doğruluğu").
 

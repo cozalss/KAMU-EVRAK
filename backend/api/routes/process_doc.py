@@ -368,6 +368,7 @@ async def process_stream(
         t0 = time.monotonic()  # uçtan-uca süre (OCR dahil) — sure_ms yanıtta taşınır
         # katmanlar: aynı değere sahip node'lar EŞZAMANLI koşar (UI paralel blok çizer ve
         # süreyi toplamak yerine max alır). Additive alan — eski istemci sadece yok sayar.
+        node_adlari = frozenset(PIPELINE_NODES)  # başladı olayı yalnız duyurulan adıma
         yield _sse({"event": "start", "nodes": ["oku", *PIPELINE_NODES],
                     "katmanlar": hitl_katman_haritasi()})
         # OCR'ı akış içinde yap: önce 'oku' CANLI (active) yansın, sonra sonuç (done).
@@ -396,9 +397,28 @@ async def process_stream(
         # (resume mümkün, bypass YOK). onay_kapisi yalnız HITL_ENABLED iken grafta (baseline korunur).
         graph = _get_hitl_graph()
         cfg = {"configurable": {"thread_id": uuid4().hex}}
+        calisan: list[str] = []      # başlamış, henüz bitmemiş görünür adımlar (başlama sırası)
+        hatali: str | None = None    # istisnayı fırlatan adım (tasks sonucundaki error alanı)
         try:
-            async for update in graph.astream(state, cfg, stream_mode="updates"):
-                for node, slice_ in update.items():
+            # "tasks" modu node BAŞLARKEN olay verir → canlı sahne o an çalışan adımı (paralel
+            # katmanda hepsini birden) gösterir. Yalnız ad+durum yayılır: task girdisi ham
+            # evrak metnini (maskesiz PII) taşır, SSE'ye ASLA konmaz. Bitiş "updates"tan gelir
+            # (reducer'lı dilim özeti); kesintiye giren onay_kapisi başlar ama bitmez — o
+            # ayrımı frontend kapanisDurumlari duraklatildi kuralı yapar.
+            async for mod, parca in graph.astream(state, cfg, stream_mode=["updates", "tasks"]):
+                if mod == "tasks":
+                    ad = parca.get("name")
+                    gorunur = ad in node_adlari and ad not in GIZLI_NODELAR
+                    if "input" in parca:
+                        if gorunur:
+                            calisan.append(ad)
+                            yield _sse({"event": "node", "node": ad, "status": "active"})
+                    elif ad in calisan:
+                        calisan.remove(ad)
+                        if parca.get("error") is not None and hatali is None:
+                            hatali = ad
+                    continue
+                for node, slice_ in parca.items():
                     if node == "__interrupt__":
                         continue  # interrupt aşağıda snap.next ile ele alınır
                     if node in GIZLI_NODELAR:
@@ -408,8 +428,9 @@ async def process_stream(
                     yield _sse({"event": "node", "node": node, "status": "done",
                                 "data": _node_summary(node, slice_ or {})})
         except Exception as exc:
-            log.error("process_stream_failed", error=str(exc) or type(exc).__name__)
-            yield _sse({"event": "error", "message": "İşleme hatası"})
+            log.error("process_stream_failed", error=str(exc) or type(exc).__name__,
+                      node=hatali, kesilen=calisan)
+            yield _sse(_hata_olayi(exc, hatali, calisan))
             return
         # Final state: reducer'lar uygulanmış halde (birikimli dict.update yerine).
         snap = await graph.aget_state(cfg)
@@ -435,6 +456,18 @@ async def process_stream(
             yield _sse({"event": "persist", "islem_id": islem_id})
 
     return StreamingResponse(gen(), media_type="text/event-stream")
+
+
+def _hata_olayi(exc: BaseException, hatali: str | None, calisan: list[str]) -> dict[str, Any]:
+    """SSE `error` olayı: HANGİ adımda durdu + o an yarıda kalan eşzamanlı kardeşler.
+
+    Ham istisna metni ASLA yayılmaz (belge içeriği/PII ya da iç yol taşıyabilir) — yalnız
+    istisna SINIF adı (`tur`). `tasks` sonucu gelmeden patlayan grafta (ör. iptal) hatalı
+    adım bilinmiyorsa ilk koşan adım varsayılmaz: `node` None kalır, uydurma atıf yok.
+    """
+    kesilen = [n for n in calisan if n != hatali]
+    return {"event": "error", "message": "İşleme hatası", "node": hatali,
+            "kesilen": kesilen, "tur": type(exc).__name__}
 
 
 def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:

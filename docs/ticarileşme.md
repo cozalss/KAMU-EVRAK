@@ -113,4 +113,4 @@ SLA'dan gelir — kamu yazılımında sürdürülebilir bir desen.
 
 > **İlgili belgeler:** dürüst skor [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md) ·
 > karne [`benchmark/scorecard.md`](benchmark/scorecard.md) · lisans [`07-model-lisanslari.md`](07-model-lisanslari.md) ·
-> mimari [`03-mimari.md`](03-mimari.md) · sunum [`sunum-final.md`](sunum-final.md).
+> mimari [`03-mimari.md`](03-mimari.md).

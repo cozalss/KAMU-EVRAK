@@ -5,7 +5,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
-import { katmanGruplari, gerekmediMi, kostuMu } from "../lib/akisKatman.js";
+import { katmanGruplari, gerekmediMi, kostuMu, kesimSirasi } from "../lib/akisKatman.js";
 import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
 import SonucCalismaAlani from "./SonucCalismaAlani.jsx";
 import AjanAdimDetay from "./AjanAdimDetay.jsx";
@@ -13,18 +13,19 @@ import HataSiniri from "./HataSiniri.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
 import A4Belge from "./A4Belge.jsx";
+import HukumMuhru from "./HukumMuhru.jsx";
 import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 import { ParlaKenar } from "./gorsel.jsx";
 import AjanOrb from "./AjanOrb.jsx";
 import { adimDurumu } from "../lib/akisKatman.js";
 
-import { T, V, PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, MONO, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme, Damga } from "./neonUi.jsx";
+import { T, V, PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, MONO, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme, Damga, ViewWrap } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 import NumberFlow from "@number-flow/react";
 /* Metro şeması + sahne bileşenleri CanliMetro.jsx'te yaşar (dosya <800 kuralı + "SAHNE Epik"
    gösteri katmanı orada belgelidir). AkisSeridi: sonuç sayfası dibindeki yatay koşum özeti. */
-import { SahneAkis, SahneTelemetri, AkisSeridi, useSahneTempo, MerkezKart, merkezIndeksi, IsaretCetveli, SAHNE_CSS } from "./CanliMetro.jsx";
+import { SahneAkis, SahneTelemetri, AkisSeridi, useSahneTempo, MerkezKart, merkezIndeksi, eszamanliMasalar, IsaretCetveli, SAHNE_CSS } from "./CanliMetro.jsx";
 
 function buildSegments(metin, spanlar) {
   const segs = [];
@@ -65,13 +66,13 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
     onDrop: (kabul) => { if (kabul?.[0]) onFileDrop(kabul[0]); },
   });
   return (
-    <div {...getRootProps()} style={{ position: "relative", display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "calc(100vh - 1px)", padding: "0 24px", outline: "none", border: `2px dashed ${isDragActive ? T : "transparent"}`, background: isDragActive ? ALFA(T) : "transparent", transition: "background .15s ease-out, border-color .15s ease-out" }}>
+    <div {...getRootProps()} style={{ position: "relative", outline: "none", border: `2px dashed ${isDragActive ? T : "transparent"}`, background: isDragActive ? ALFA(T) : "transparent", transition: "background .15s ease-out, border-color .15s ease-out" }}>
       <input {...getInputProps()} aria-hidden="true" />
-      {/* Diğer görünümlerle aynı başlık ritmi (jüri T5: İşleniyor tek başlıksız sayfaydı). */}
-      <header style={{ padding: "24px 32px 0", position: "absolute", top: 0, left: 0, right: 0 }}>
-        <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>İşleniyor</h2>
-        <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>Seçilen evrak burada uçtan uca canlı işlenir</p>
-      </header>
+      {/* Diğer görünümlerle AYNI antet (ViewWrap: künye satırı + geniş başlık + çift çizgi).
+          Eskiden yalnız bu görünüm küçük h2'li "başlıksız" sayfaydı; iptal sonrası da buraya
+          dönüldüğünden kimliği tutarsız kalıyordu. */}
+      <ViewWrap id="isleniyor-h" title="İşleniyor" kunye="Canlı işlem masası" sub="Seçilen evrak burada uçtan uca, adım adım canlı işlenir.">
+      <div style={{ minHeight: "calc(100vh - 340px)", display: "flex", flexDirection: "column", justifyContent: "center" }}>
       <EmptyState
         icon={<Icon.doc />}
         title={isDragActive ? "Bırakın — işleme başlasın" : "İşlenecek evrak seçilmedi"}
@@ -84,6 +85,8 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
           <Btn key="t" onClick={onTelefon}><Icon.phone /> Telefonla yükle</Btn>,
         ]}
       />
+      </div>
+      </ViewWrap>
     </div>
   );
 }
@@ -167,7 +170,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
                 {busy && <Icon.spin width={14} height={14} />}
-                {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Metin işlenecek…"}
+                {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Bu koşumda kaynak metin alınamadı."}
               </div>
             </div>
           )}
@@ -247,19 +250,21 @@ export default function CanliAjanAkisi({
   // kapanır, ıstampanın üstüne "İŞLENDİ" damgası basılır. YALNIZ bu mount'ta canlı görülen
   // koşumda (geri dönüşte sahte kapanış oynamaz) ve hareket kısıtlı değilse; hata dalında yok
   // (result gelmez). Sunum katmanıdır: hiçbir veri/karar bunu beklemez.
-  const [kapanis, setKapanis] = useState(false);
-  const canliGorulduRef = useRef(false);
-  useEffect(() => { if (busy) canliGorulduRef.current = true; }, [busy]);
-  useEffect(() => { setKapanis(false); }, [runBase]);
-  useEffect(() => {
-    if (!result || !sunumTamam || !canliGorulduRef.current) return;
-    canliGorulduRef.current = false;
-    const az = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    if (!az && !pendingOnay) setKapanis(true);
-  }, [result, sunumTamam, pendingOnay]);
+  //
+  // Kapanış RENDER SIRASINDA türetilir (effect'le sonradan açılmaz). Eskiden sonuç gelince
+  // önce bir kare sonuç sahnesi çiziliyor, effect kapanışı açınca canlı sahne SIFIRDAN yeniden
+  // kuruluyordu: ıstampanın WebGL bağlamı yeniden yaratılıyor, fosfor vurguları baştan
+  // boyanıyordu ve ekran bir kare "sonuca zıplayıp geri dönüyordu" (2026-10 ölçümü: kaynak
+  // paneli ve işlem kartı DOM düğümleri sonuç anında değişiyordu).
+  const [canliGoruldu, setCanliGoruldu] = useState(false);
+  const [kapanisBitti, setKapanisBitti] = useState(false);
+  useEffect(() => { setCanliGoruldu(false); setKapanisBitti(false); }, [runBase]);
+  useEffect(() => { if (busy) setCanliGoruldu(true); }, [busy, runBase]);
+  const azHareket = typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const kapanis = canliGoruldu && !kapanisBitti && !!result && sunumTamam && !pendingOnay && !azHareket;
   useEffect(() => {
     if (!kapanis) return undefined;
-    const id = setTimeout(() => setKapanis(false), 1900);
+    const id = setTimeout(() => setKapanisBitti(true), 1900);
     return () => clearTimeout(id);
   }, [kapanis]);
   // Denetim zinciri arka planda üretilmeye devam eder; memurun iş akışını kalabalıklaştırmamak
@@ -320,6 +325,11 @@ export default function CanliAjanAkisi({
   const pct = Math.round((kapananCount / total) * 100);
   const allDone = !busy && sunumTamam && kapananCount >= total;
   const hataliAdim = display.findIndex((a) => a.status === "error");
+  // DURDU — koşum hata ile kesildiyse bekleyen masalar "sırada" değildir: akış onlara hiç
+  // ulaşmayacak. Kesimin olduğu masa "kesildi", sonrakiler "işlenmedi" (tamamlandı/atlandı
+  // DEĞİL — CLAUDE.md §9). Tek kaynak akisKatman.kesimSirasi.
+  const durduKesim = kesimSirasi(display);
+  const durdu = hataliAdim >= 0 && !busy ? { kesim: durduKesim } : null;
   // Uçtan-uca gerçek koşum süresi (usePipeline t0/t1 damgaları; yoksa sessizce gizlenir).
   const toplamSn = (() => {
     if (!allDone) return null;
@@ -327,16 +337,18 @@ export default function CanliAjanAkisi({
     const t1s = display.map((a) => a.t1).filter(Number.isFinite);
     if (!t0s.length || !t1s.length) return null;
     const sn = (Math.max(...t1s) - Math.min(...t0s)) / 1000;
-    return sn >= 0.1 ? `${sn < 10 ? sn.toFixed(1) : Math.round(sn)} sn` : null;
+    return sn >= 0.1 ? `${sn < 10 ? sn.toFixed(1).replace(".", ",") : Math.round(sn)} sn` : null;
   })();
   // Sunum kuyruğu boşalana dek sahne "canlı"dır (busy SSE done'la erken düşer — çip
   // drenaj sırasında "Hazır" diyordu, Playwright kanıtı). Hata dalı dahil; sayaç tek
   // sözlükte — adım sayısı yalnız sahnede ("İşlem aşamaları"), % yalnız ilerleme çubuğunda.
   const kosumda = busy || (!!result && !sunumTamam);
+  // Memur onayı bekleyen koşum BİTMEDİ, duraklatıldı (§9): ne "tamamlandı" ne "Hazır".
+  const onayBekliyor = !!pendingOnay && !kosumda && hataliAdim < 0;
   const statusText = hataliAdim >= 0 && !kosumda
     ? `İşlem hatası · ${hataliAdim + 1}. adımda durdu`
-    : kosumda ? "İşleniyor" : (allDone ? "İşlem tamamlandı" : "Hazır");
-  const chipRenk = hataliAdim >= 0 && !kosumda ? BANT.kirmizi.c : allDone ? BANT.yesil.c : kosumda ? T : PAL.mut2;
+    : kosumda ? "İşleniyor" : onayBekliyor ? "Onay bekliyor" : (allDone ? "İşlem tamamlandı" : "Hazır");
+  const chipRenk = hataliAdim >= 0 && !kosumda ? BANT.kirmizi.c : onayBekliyor ? BANT.sari.c : allDone ? BANT.yesil.c : kosumda ? T : PAL.mut2;
 
   const draftMd = result?.yazi_taslak_md;
   // Çok-konulu evrakta birim başına ayrı üst yazı taslağı — her biri kendi HITL kararını taşır.
@@ -348,6 +360,14 @@ export default function CanliAjanAkisi({
     .map((a, i) => ({ a, sira: i + 1 }))
     .filter((x) => x.a?.yazi_taslak_md);
   const decisionReady = !busy && (!!pendingOnay || !!result);
+  // Taslak yoksa onaylanacak/gönderilecek bir yazı da yoktur (D-3 bulgusu).
+  const onayHazir = decisionReady && !!draftMd;
+  // Hüküm mührü YALNIZ kabul edilmiş karar için (§9): işleyici gerçekten kabul ettiğinde
+  // `true` döndürür; reddedilen/başarısız/bilinmeyen sonuçta mühür basılmaz.
+  const kararVer = async (tur, islem) => {
+    const kabul = await islem();
+    if (kabul === true) setKararMuhru(tur);
+  };
   const fileLabel = fileMeta?.kind === "sample" ? (fileMeta.label || fileMeta.name) : (fileMeta?.name || "evrak");
   // Başlık meta satırı koşum SIRASINDA da dolar: tür 2. adımda (siniflandir), sayfa/OCR güveni
   // 1. adımda (oku) SSE ile gelir — sonuç beklenmez, bulgular geldikçe başlığa işlenir.
@@ -371,9 +391,11 @@ export default function CanliAjanAkisi({
         {(() => {
           if (hataliAdim >= 0 && !kosumda) return `İşlem hatası — ${display[hataliAdim].label} adımı başarısız oldu. Üst çubuktan yeniden deneyebilirsiniz.`;
           const ai = display.findIndex((a) => a.status === "active");
-          if (ai >= 0) return `${display[ai].label} çalışıyor — adım ${ai + 1} / ${total}`;
+          const esz = eszamanliMasalar(display, ai).map((a) => a.label);
+          if (ai >= 0) return `${[display[ai].label, ...esz].join(" ve ")} ${esz.length ? "eşzamanlı " : ""}çalışıyor — adım ${ai + 1} / ${total}`;
           // Beyan yalnız GERÇEKTEN koşan adımları sayar; koşullu dalda atlananlar ayrıca
           // söylenir (eskiden hepsi "başarıyla yürütüldü" diye sayılıyordu).
+          if (onayBekliyor) return `Memur onayı bekleniyor — ${kosanCount} adım yürütüldü; kalan adımlar kararınızdan sonra koşacak.`;
           if (allDone) {
             return `İşlem tamamlandı — ${kosanCount} işlem adımı yürütüldü`
               + (atlananCount ? `, ${atlananCount} adım bu koşumda çalışmadı.` : ".");
@@ -414,7 +436,9 @@ export default function CanliAjanAkisi({
           {/* minHeight 36 = Btn'nin onaylı yüksekliği (satırın en uzun sakini): çip/lejant/
               butonlar durumdan duruma takılıp çıkarken satır yüksekliği oynamasın (CLS koruması). */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", minHeight: 36 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
+            {/* Koşum sürerken sağda yalnız küçük "İptal" var: sol blok esnek tabanla (0) satırı
+                paylaşır ki 390px'te İptal tek başına ikinci satıra düşmesin (başlık kısalır). */}
+            <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0, ...(busy ? { flex: "1 1 0" } : null) }}>
               {/* Kutusuz aksan ikonu — NeonCard ev stili ("accent yalnız ikon rengi", 16-18px
                   sınırı); ikon KUTUSU MASTER.md anti-pattern'i, bilerek yok. */}
               <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}>
@@ -428,6 +452,13 @@ export default function CanliAjanAkisi({
                   <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{metaLine}</span>
                   {/* Sonuç durumunda çip kalkar (büyük hüküm aşağıda — çip tekrarı yasak);
                       tamamlanma bilgisi meta satırında sakin bir segment olarak yaşar. */}
+                  {sonucGoster && onayBekliyor && (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, whiteSpace: "nowrap", color: DERIN.sari }}>
+                      <span style={{ color: PAL.mut3 }}>·</span>
+                      <span aria-hidden="true" style={{ display: "flex" }}><Icon.alert width={12} height={12} /></span>
+                      Memur onayı bekliyor
+                    </span>
+                  )}
                   {sonucGoster && allDone && (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, whiteSpace: "nowrap" }}>
                       <span style={{ color: PAL.mut3 }}>·</span>
@@ -483,7 +514,7 @@ export default function CanliAjanAkisi({
           {/* İŞARET CETVELİ — eski ince ilerleme çubuğu yerine adım başına bir çentik (graf
               sırası). Biçim adimDurumu'ndan; yüzde yalnız burada, kapanan adım sayısından. */}
           {!sonucGoster && <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m }}>
-            <IsaretCetveli display={display} />
+            <IsaretCetveli display={display} durdu={durdu} />
             <span style={{ fontFamily: MONO, fontSize: 13, lineHeight: "18px", fontWeight: 500, color: hataliAdim >= 0 && !kosumda ? DERIN.kirmizi : PAL.ink2, flexShrink: 0, minWidth: 44, textAlign: "right", ...TNUM }}>%<NumberFlow value={pct} spinTiming={{ duration: 250 }} /></span>
           </div>}
         </div>
@@ -508,7 +539,7 @@ export default function CanliAjanAkisi({
                 <span style={{ whiteSpace: "nowrap" }}>Havale pusulası ·</span>
                 <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0, color: PAL.mut }}>{canliMeta?.evrak_turu ? EVRAK_TR(canliMeta.evrak_turu) : "tür belirleniyor"}</span>
                 <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 12 }} />
-                <SahneTelemetri busy={sahneCanli} allDone={allDone} toplamSn={toplamSn} runBase={runBase} />
+                <SahneTelemetri busy={sahneCanli} allDone={allDone} toplamSn={toplamSn} runBase={runBase} durdu={!!durdu} />
               </div>
               <div aria-hidden="true" style={{ marginTop: SP.s, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.9 }} />
             </div>
@@ -516,7 +547,8 @@ export default function CanliAjanAkisi({
               <div style={{ position: "relative", minWidth: 0 }}>
                 {/* Istampa kutusu — teneke çerçeve (surf2 + iç hairline) içinde keçe. */}
                 <div style={{ padding: SP.s, borderRadius: RAD.pop, background: PAL.surf2, boxShadow: `inset 0 0 0 1px ${PAL.lineHi}, ${SH.card}` }}>
-                  <AjanOrb display={display} kosumda={sahneCanli} yukseklik={188} />
+                  <AjanOrb display={display} kosumda={sahneCanli} yukseklik={188} runBase={runBase}
+                    gelis={{ ad: fileLabel, meta: metaLine }} />
                 </div>
                 <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", flexWrap: "wrap" }}>
                   <span>Istampa</span>
@@ -530,10 +562,10 @@ export default function CanliAjanAkisi({
                   </div>
                 )}
               </div>
-              <MerkezKart a={display[merkezIdx]} total={total} runBase={runBase} kapanis={kapanisBilgi} kosumda={sahneCanli} />
+              <MerkezKart a={display[merkezIdx]} total={total} runBase={runBase} kapanis={kapanisBilgi} kosumda={sahneCanli} esz={eszamanliMasalar(display, merkezIdx)} />
             </div>
             <div style={{ padding: `0 ${pad} ${pad}` }}>
-              <SahneAkis display={display} gruplar={gruplar} onDetay={setDetayIdx} />
+              <SahneAkis display={display} gruplar={gruplar} onDetay={setDetayIdx} durdu={durdu} runBase={runBase} />
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.l, ...TYPE.meta, color: PAL.mut2 }}>
                 <Icon.info width={13} height={13} />
                 Her satır bir masadır; paraf, o masanın işini gerçekten yaptığını gösterir. Ayrıntı için satıra tıklayın.
@@ -574,12 +606,13 @@ export default function CanliAjanAkisi({
                   {draftMd ? (
                     <div className="sc-document-paper" style={{ maxWidth: 860, margin: "0 auto" }}>
                       <A4Belge metin={cleanDemoText(draftMd)} onAc={() => setBelgeModal("taslak")}
-                        solgun={turUretiliyor || dayanakUretiliyor} sigdir="genislik" />
+                        solgun={turUretiliyor || dayanakUretiliyor} sigdir="genislik"
+                        imzaKatmani={kararMuhru ? <HukumMuhru key={kararMuhru} karar={kararMuhru} /> : null} />
                     </div>
                   ) : (
                     <div style={{ maxWidth: 800, margin: "0 auto", display: "flex", alignItems: "center", gap: SP.s, justifyContent: "center", ...TYPE.data, color: PAL.mut2, border: `1px dashed ${PAL.lineHi}`, borderRadius: RAD.card, padding: SP.xxl, background: PAL.surf }}>
-                      <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: "nu-think 1.2s ease-in-out infinite" }} />
-                      Taslak, "Yazı Taslağı" adımında üretilecek…
+                      <span aria-hidden="true" style={{ display: "inline-block", width: 8, height: 8, borderRadius: RAD.dot, background: PAL.mut2, animation: busy ? "nu-think 1.2s ease-in-out infinite" : "none" }} />
+                      {busy ? "Taslak, \"Yazı Taslağı\" adımında üretilecek…" : "Bu koşumda yazı taslağı üretilmedi."}
                     </div>
                   )}
                 </div>
@@ -589,7 +622,7 @@ export default function CanliAjanAkisi({
                 <div className="sc-decision-footer" style={{ borderTop: `1px solid ${PAL.line}` }}>
                   <div style={{ maxWidth: 800, margin: "0 auto" }}>
                   <div className="sc-action-row">
-                    <button onClick={() => { setKararMuhru("ret"); onReject(); }} disabled={!decisionReady} aria-label="Taslağı reddet" {...focusRing} data-press=""
+                    <button onClick={() => kararVer("ret", onReject)} disabled={!decisionReady} aria-label="Taslağı reddet" {...focusRing} data-press=""
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = ALFA(BANT.kirmizi.c); }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 14px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", background: "transparent", color: decisionReady ? DERIN.kirmizi : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.x /> Reddet</button>
@@ -598,10 +631,10 @@ export default function CanliAjanAkisi({
                       onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.hov; }}
                       onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = PAL.surf; }}
                       style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 16px", minHeight: 42, borderRadius: RAD.ctl, border: `1px solid ${decisionReady ? PAL.inputLine : PAL.line}`, background: PAL.surf, color: decisionReady ? PAL.ink : PAL.mut2, ...TYPE.ui, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.edit /> Düzenle</button>
-                    <button onClick={() => { setKararMuhru("onay"); onApprove(); }} disabled={!decisionReady} aria-label="Taslağı onayla ve gönder" {...focusRing} data-press=""
-                      onMouseEnter={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.Th; }}
-                      onMouseLeave={(e) => { if (decisionReady) e.currentTarget.style.background = DERIN.T; }}
-                      style={{ cursor: decisionReady ? "pointer" : "not-allowed", padding: "9px 20px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 600, color: decisionReady ? PAL.onAccent : PAL.mut2, background: decisionReady ? DERIN.T : PAL.press, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.send /> Onayla ve gönder</button>
+                    <button onClick={() => kararVer("onay", onApprove)} disabled={!onayHazir} aria-label="Taslağı onayla ve gönder" {...focusRing} data-press=""
+                      onMouseEnter={(e) => { if (onayHazir) e.currentTarget.style.background = DERIN.Th; }}
+                      onMouseLeave={(e) => { if (onayHazir) e.currentTarget.style.background = DERIN.T; }}
+                      style={{ cursor: onayHazir ? "pointer" : "not-allowed", padding: "9px 20px", minHeight: 42, borderRadius: RAD.ctl, border: "1px solid transparent", ...TYPE.ui, fontWeight: 600, color: onayHazir ? PAL.onAccent : PAL.mut2, background: onayHazir ? DERIN.T : PAL.press, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}><Icon.send /> Onayla ve gönder</button>
                   </div>
                   </div>
                 </div>
@@ -682,7 +715,7 @@ export default function CanliAjanAkisi({
           AnimatePresence: kapanışta giriş yolunun tersinden çıkar (spatial consistency). */}
       <AnimatePresence>
         {detayIdx != null && display[detayIdx] && (
-          <AjanAdimDetay key="adim-detay" idx={detayIdx} display={display} result={result}
+          <AjanAdimDetay key="adim-detay" idx={detayIdx} display={display} result={result} runBase={runBase}
             onKapat={() => setDetayIdx(null)} onGit={setDetayIdx} />
         )}
       </AnimatePresence>

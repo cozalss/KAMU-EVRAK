@@ -22,6 +22,15 @@ export function hukumYorum(r = {}) {
   const kontrol = dizi(r.verify_uyari).length + dizi(r.tutarlilik_uyari).length
     + dizi(r.eksik_alanlar).length + dizi(r.lint_2646?.uyari).length;
   const band = r.risk_metadata?.bant;   // yokluk ≠ yeşil — bant kapalıysa hüküm nötr kalır
+  // Onay kapısında DURAKLAYAN koşum tamamlanmamıştır (arşiv/süre adımları henüz koşmadı):
+  // başlık "tamamlandı" demez, bekleyen kararı söyler (CLAUDE.md §9).
+  if (r.onay_bekliyor === true) {
+    const parca = [];
+    if (kontrol) parca.push(`${kontrol} kontrol noktası`);
+    if (band === "kirmizi") parca.push("kırmızı risk bandı");
+    else if (band === "sari") parca.push("sarı risk bandı");
+    return { baslik: ["Memur onayı bekliyor", ...parca].join(" · "), ton: band === "kirmizi" ? "kirmizi" : "sari" };
+  }
   if (kontrol === 0 && band === "yesil") {
     return { baslik: "İşlem sorunsuz tamamlandı", ton: "yesil" };
   }
@@ -558,8 +567,14 @@ export function riskSkorYorum(skor, katkilar, bant, kalibrasyon, olasilik) {
   const seviye = BANT_SEVIYE[bant] || null;
   const coklu = paylar.filter((p) => p != null).length > 1;
   const p = Number(olasilik);
+  // Gerekçe ağırlığı (ciddiyet × isabet) da beklenen zarar birimindedir → yüzde DEĞİL,
+  // puanla aynı birimsiz biçimde yazılır. `paylar` yalnız çubuk genişliğidir.
+  const payEtiketleri = Array.isArray(katkilar)
+    ? katkilar.map((k) => (Number.isFinite(Number(k)) && k !== null ? ondalik(Number(k)) : null))
+    : [];
   return {
     puan: ondalik(s),
+    payEtiketleri,
     dolgu: Math.round(s * 100),
     olasilikYuzde: Number.isFinite(p) && p > 0 ? Math.round(p * 100) : null,
     paylar,

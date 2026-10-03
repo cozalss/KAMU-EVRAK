@@ -2,33 +2,62 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <!-- "Havale" amblemi (2026-07-17 logo seçimi) — SVG birincil, PNG eski-tarayıcı/iOS
-         yedeği. Landing (index.html) kendi logo.png'siyle kalır (dokunulmaz). -->
-    <link rel="icon" type="image/svg+xml" href="/logo-kamu-evrak.svg" />
-    <link rel="icon" type="image/png" href="/logo-kamu-evrak.png" />
-    <link rel="apple-touch-icon" href="/logo-kamu-evrak.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#eceee9" />
-    <meta property="og:title" content="kamu-evrak — Akıllı Agent Destek Sistemi" />
-    <meta property="og:description" content="Kamu evrak ve yazışma için çok-ajanlı yapay zeka asistanı — çalışma alanı." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logo-kamu-evrak.png" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:image" content="/logo-kamu-evrak.png" />
+    <title>Çalışma alanı · KAMU-EVRAK</title>
     <meta
       name="description"
       content="Kamu evrak ve yazışma için akıllı agent destek sistemi — evrak okuma, sınıflandırma, mevzuat ve resmî yazı taslağı."
     />
+    <!-- Arama motoru politikası: site 9 Ağu 2026 kararıyla AÇIK (robots.txt + backend
+         security_headers.py). Kapatılırsa iki yer birlikte değişir; burada robots meta YOK. -->
 
-    <!-- Çalışma alanı fontları (yoksa sistem fontuna düşer) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- "Antet & Damga" (2026-10): Archivo (display — genişlik ekseniyle expanded başlık +
-         damga harfi) · Instrument Sans (gövde/UI) · IBM Plex Mono (makine verisi). Hepsi latin-ext. -->
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wdth,wght@75..100,400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <title>KAMU-EVRAK</title>
+    <!-- Tema: iki şemayı da destekler (form denetimleri, kaydırma çubuğu). Tarayıcı çubuğu
+         rengi = html zemini (THEME_CSS --ke-bg); OS tercihine göre seçilir, kullanıcı
+         açıkça seçince main.jsx ikisini de o renge çeker. -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eceee9" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0e14" />
+    <!-- JS gelmeden önceki ilk kare: zemin OS temasıyla boyanır (koyu modda beyaz parlama
+         yok). THEME_CSS yüklenince aynı token'larla devralır. CSP: style-src 'unsafe-inline'
+         izinli, script-src DEĞİL — bu yüzden satır-içi betik yerine yalnız stil. -->
+    <style>
+      html { background: #eceee9; }
+      @media (prefers-color-scheme: dark) { html { background: #0c0e14; } }
+      html[data-theme="light"] { background: #eceee9; }
+      html[data-theme="dark"] { background: #0c0e14; }
+    </style>
+
+    <!-- "Havale" amblemi (2026-07-17 logo seçimi) — SVG birincil, PNG eski-tarayıcı/iOS
+         yedeği. Landing (index.html) kendi logo.png'siyle kalır (dokunulmaz). -->
+    <link rel="icon" type="image/svg+xml" href="/logo-kamu-evrak.svg" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo-kamu-evrak.png" />
+    <link rel="apple-touch-icon" href="/logo-kamu-evrak.png" />
+    <link rel="manifest" href="/app.webmanifest" />
+
+    <meta property="og:title" content="KAMU-EVRAK — Akıllı Agent Destek Sistemi" />
+    <meta property="og:description" content="Kamu evrak ve yazışma için çok-ajanlı yapay zeka asistanı — çalışma alanı." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="KAMU-EVRAK" />
+    <meta property="og:image" content="/logo-kamu-evrak.png" />
+    <meta property="og:image:alt" content="KAMU-EVRAK amblemi" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="/logo-kamu-evrak.png" />
+
+    <!-- "Antet & Damga" fontları KENDİ sunucumuzdan (src/styles/fonts.css, gerekçe orada):
+         Archivo (display) · Instrument Sans (gövde/UI) · IBM Plex Mono (makine verisi).
+         Yalnız gövde fontu preload edilir — ilk ekrandaki metnin tamamı onunla dizilir
+         (Türkçe ç/ş/ğ/İ latin-ext'te olduğundan iki alt küme birlikte). Archivo başlıkları
+         swap ile gelir; ikisini birden preload etmek JS ile bant genişliği yarıştırır. -->
+    <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-sans-latin-ext.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
+    <noscript>
+      <p style="font: 16px/1.5 system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 16px;">
+        KAMU-EVRAK çalışma alanı JavaScript gerektirir. Lütfen tarayıcınızda JavaScript'i etkinleştirin.
+      </p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

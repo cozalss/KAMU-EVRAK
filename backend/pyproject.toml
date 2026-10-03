@@ -1,7 +1,7 @@
 [project]
 name = "kamu-evrak-backend"
 version = "0.1.0"
-description = "Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi — FastAPI + LangGraph (TEKNOFEST 2026, 1. Senaryo)"
+description = "Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi — FastAPI + LangGraph"
 requires-python = ">=3.11"
 # LİSANS NOTU: AGPL bağımlılık YOK. ADALET'teki PyMuPDF (AGPL) → pypdfium2 (Apache/BSD)
 # ile değiştirildi (MIT açık-kaynak repo + TAKP GitHub zorunluluğu — şartname §7).
@@ -68,9 +68,7 @@ dev = [
     "ruff>=0.6.9",
     "faker>=30.0.0",
 ]
-# Sunum (ön + final) export: Markdown → PDF + PPTX (scripts/export_sunum.py).
-# PDF yolu çekirdek reportlab ile sağlanır (TTF font gömme → Türkçe ç/ş/ğ/İ);
-# burada yalnız PPTX için python-pptx eklenir.
+# İsteğe bağlı belge araçları (PPTX üretimi için python-pptx).
 docs = [
     "python-pptx>=1.0.2",
 ]

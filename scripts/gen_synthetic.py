@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Sentetik kamu-evrak veri üreteci — TEKNOFEST 2026 1. Senaryo (Kamu Evrak ve Yazışma).
+"""Sentetik kamu-evrak veri üreteci (Kamu Evrak ve Yazışma).
 
 Yarışma şartnamesi (§6.5): GERÇEK kamu verisi YASAK → tüm evraklar KURGU. Bu modül
 KANONİK taksonomi için (agents/config.py — tek kaynak) şablon-tabanlı sahte resmî
@@ -711,7 +711,7 @@ def write_all(samples: list[EvrakOrnegi], out_dir: Path) -> dict[str, int]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
-        description="Sentetik kamu-evrak gold üreteci (TEKNOFEST 1. Senaryo, kanonik taksonomi)")
+        description="Sentetik kamu-evrak gold üreteci (kanonik taksonomi)")
     ap.add_argument("--per-type", type=int, default=DEFAULT_PER_TYPE, help="tür-başı örnek (>=4)")
     ap.add_argument("--seed", type=int, default=DEFAULT_SEED)
     ap.add_argument("--out", type=str, default=None, help="çıktı dizini (default repo/data/synthetic)")

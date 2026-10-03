@@ -15,7 +15,8 @@ import { cleanDemoText } from "./result-cards.jsx";
 import TurSecici from "./TurSecici.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import A4Belge from "./A4Belge.jsx";
-import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme, Damga } from "./neonUi.jsx";
+import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, SR_ONLY, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
+import HukumMuhru from "./HukumMuhru.jsx";
 import { ParlaKenar } from "./gorsel.jsx";
 
 /* Pager ok düğmesi — başlık şeridine gömülü (ayrı üst satır AÇMAZ, kartın dış kutusu komşu
@@ -100,11 +101,13 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
           </span>
         </span>
         {rozet ? (
-          /* Karar = mühür: kâğıda basılan GÖNDERİLDİ / REDDEDİLDİ damgası (ekranın 2. ve son
-             damgası — hüküm damgasıyla birlikte dikkat bütçesi 2). Metin kararı yazıyla taşır. */
-          <Damga ton={BANT[rozet.color]?.c} egim={-5} kucuk style={{ marginRight: SP.xs }}>
-            <Icon.check width={11} height={11} aria-hidden="true" /> {rozet.text}
-          </Damga>
+          /* Karar = mühür artık KÂĞIDIN ÜSTÜNDE (HukumMuhru: paraf + damga, imza bloğunda).
+             Başlıkta yalnız sessiz durum künyesi kalır — damga bütçesi ≤2 (hüküm + bu). */
+          <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "3px 9px", borderRadius: RAD.chip,
+            ...TYPE.meta, fontWeight: 600, color: DERIN[rozet.color], background: ALFA(BANT[rozet.color]?.c) }}>
+            {durum === "gonderildi" ? <Icon.check width={12} height={12} aria-hidden="true" /> : <Icon.x width={12} height={12} aria-hidden="true" />}
+            {rozet.text}
+          </span>
         ) : (
           <>
             <TurSecici secili={tur} onerilen={onerilen} uretilen={uretilen} onSec={secTur} pasif={bitti} />
@@ -118,9 +121,14 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
           yok — 2026-07-15 kullanıcı isteği). Ana taslak kağıt bloğuyla aynı ölçüler/gölge. */}
       <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
         <div className="sc-document-paper" style={{ maxWidth: 860, margin: "0 auto" }}>
-          <A4Belge metin={cleanDemoText(metin)} onAc={() => setModalAcik(true)} solgun={uretilen} sigdir="genislik" />
+          <A4Belge metin={cleanDemoText(metin)} onAc={() => setModalAcik(true)} solgun={uretilen} sigdir="genislik"
+            imzaKatmani={bitti ? <HukumMuhru key={durum} karar={durum === "gonderildi" ? "onay" : "ret"} /> : null} />
         </div>
       </div>
+
+      <span style={SR_ONLY} aria-live="polite">
+        {durum === "gonderildi" ? `${etiket} taslağı onaylandı ve gönderildi.` : durum === "reddedildi" ? `${etiket} taslağı reddedildi.` : ""}
+      </span>
 
       <BelgeModal acik={modalAcik} baslik={`Resmî yazı taslağı · ${etiket}`}
         metin={cleanDemoText(metin)} onKapat={() => setModalAcik(false)} />

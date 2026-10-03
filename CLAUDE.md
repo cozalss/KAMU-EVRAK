@@ -1,7 +1,7 @@
 # kamu-evrak — AI Asistan Bağlam Dosyası
 
-> TEKNOFEST 2026 Yapay Zeka Dil Ajanları Yarışması, **1. Senaryo: Kamu Evrak ve Yazışma
-> Süreçleri için Akıllı Agent Destek Sistemi**. Bu depo ADALET-AGENT'tan kod kopyalanarak
+> **Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi** — canlıya çıkan
+> bağımsız ürün (herhangi bir yarışmayla ilgisi yoktur; metinlerde yarışma adı geçmez). Bu depo ADALET-AGENT'tan kod kopyalanarak
 > kuruldu; **ADALET-AGENT ayrı bir projedir, oraya dokunulmaz.**
 
 ## Klasörler
@@ -48,7 +48,9 @@
 9. **Koşmayan adımı "tamamlandı" sayma.** Backend akışın başında TÜM olası adımları duyurur;
    koşullu dal (clarifier · yeşil bantta atlanan `onay_kapisi`) seçilmeyeni hiç çalıştırmaz.
    Kapanış kuralı tek yerde: `akisKatman.kapanisDurumlari` — `active`→tamamlandı,
-   `pending`+koşum bitti→**atlandi**, `pending`+onay bekliyor→**sırada kalır**. Başarı beyanı
+   `pending`+koşum bitti→**atlandi**, `pending`+onay bekliyor→**sırada kalır**. Backend her adım BAŞLARKEN `status:"active"` yayar (LangGraph `tasks` modu, yalnız
+   ad+durum — task girdisi maskesiz PII taşır, SSE'ye konmaz); interrupt'ta duran onay kapısı
+   başlar ama bitmez → duraklamada `active`→**sırada** (tamamlandı DEĞİL). Başarı beyanı
    (`kosanCount`, ekran-okuyucu metni) yalnız gerçekten koşanları sayar; ilerleme çubuğu ayrı
    sayaçtır. Eşzamanlılık etiketi de olguya bağlıdır: `ParalelBaslik` ancak grubun ≥2 üyesi
    GERÇEKTEN koştuysa basılır. Ölçüm: 2026-08-12 adversarial denetimi (18 duyuruldu, 15 koştu).

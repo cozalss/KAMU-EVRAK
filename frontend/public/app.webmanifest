@@ -1,0 +1,16 @@
+{
+  "name": "KAMU-EVRAK — Çalışma alanı",
+  "short_name": "KAMU-EVRAK",
+  "description": "Kamu evrak ve yazışma için akıllı agent destek sistemi — evrak okuma, sınıflandırma, mevzuat ve resmî yazı taslağı.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "/app.html#panel",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#eceee9",
+  "theme_color": "#eceee9",
+  "icons": [
+    { "src": "/logo-kamu-evrak.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/logo-kamu-evrak.png", "type": "image/png", "sizes": "512x512", "purpose": "any" }
+  ]
+}

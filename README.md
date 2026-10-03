@@ -1,21 +1,19 @@
 # kamu-evrak — Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi
 
-[![CI](https://github.com/cozalss/TasnifX-TeknoFest/actions/workflows/ci.yml/badge.svg)](https://github.com/cozalss/TasnifX-TeknoFest/actions/workflows/ci.yml)
+[![CI](https://github.com/cozalss/TasnifX/actions/workflows/ci.yml/badge.svg)](https://github.com/cozalss/TasnifX/actions/workflows/ci.yml)
 ![Testler](https://img.shields.io/badge/testler-1516%20py%20%2B%20104%20js-2f9e6e.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![LangGraph](https://img.shields.io/badge/LangGraph-20%20node%20multi--agent-1c3d5a.svg)
 ![React 18](https://img.shields.io/badge/React-18%20%2B%20Vite-61dafb.svg)
 
-> **TEKNOFEST 2026 — Yapay Zeka Dil Ajanları Yarışması · 1. Senaryo**
-
 Kamu kurumuna gelen evrakı **okuyan, sınıflandıran, eksiğini bulan, mevzuat öneren ve resmî
 yazı taslağını hazırlayan** çok-ajanlı (LangGraph) sistem — belge başına **~10 sn ve ~$0.001**;
 **anahtarsız/offline modda dahi uçtan uca çalışır**, insan onayı olmadan hiçbir yazı çıkmaz.
 
 **Hızlı gezinme:** [Hızlı başlangıç](#-hızlı-başlangıç-anahtar-gerekmez) ·
-[Mimari](#-mimari) · [Proje yapısı](#-proje-yapısı) · [Şartname eşlemesi](#-şartname--rubrik-eşlemesi) ·
-[Puanlama](#-puanlama-kriterleri) · [Skorlar](#-değerlendirme-sonuçları-dürüst) ·
+[Mimari](#-mimari) · [Proje yapısı](#-proje-yapısı) · [Görev eşlemesi](#-görev--kod-eşlemesi) ·
+[Skorlar](#-değerlendirme-sonuçları-dürüst) ·
 [Neden farklı](#-neden-farklı)
 
 - **Görev 1 — Anla:** oku (OCR/metin) → türü sınıflandır (19 tür) → bilgi çıkar (PII maskeli) →
@@ -189,7 +187,7 @@ graph TD
 | [`backend/multimodal/`](backend/multimodal/) | OCR (offline, AGPL-free) | `ocr.py` |
 | [`frontend/src/components/`](frontend/src/components/) | 27 React bileşeni + canlı ajan akışı | `PanelView.jsx` · `CanliAjanAkisi.jsx` · `MuzakereKurulu.jsx` |
 | [`data/`](data/) | %100 sentetik evrak, Jinja2 şablon, mevzuat korpus | `synthetic/` · `templates/` · `mevzuat/` |
-| [`docs/`](docs/) | Mimari, eval, uyum dokümanları | [`03-mimari.md`](docs/03-mimari.md) · [`sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md) |
+| [`docs/`](docs/) | Mimari, eval, uyum dokümanları | [`03-mimari.md`](docs/03-mimari.md) · [`method.md`](docs/method.md) |
 | [`bench/`](bench/) | KamuEvrak-Bench (6 görev, veri kartlı) | [`bench/README.md`](bench/README.md) |
 
 ---
@@ -216,11 +214,11 @@ graph TD
 
 ---
 
-## 📋 Şartname / rubrik eşlemesi
+## 📋 Görev → kod eşlemesi
 
-Şartname §9'daki her zorunlu adımın koddaki karşılığı ve kanıtı:
+İki ana görevin her adımının koddaki karşılığı ve kanıtı:
 
-| Şartname adımı | Pipeline karşılığı | Kanıt |
+| Adım | Pipeline karşılığı | Kanıt |
 |---|---|---|
 | G1 · Belgeyi oku (OCR) | pypdfium2 + RapidOCR (offline) + python-docx | [`multimodal/ocr.py`](backend/multimodal/ocr.py) · CER 0.112 ölçümü [`eval/runs/ocr_eval.json`](backend/eval/runs/ocr_eval.json) |
 | G1 · Türü sınıflandır | `siniflandir` — 19 tür, few-shot + eskalasyon + fallback | [`nodes/siniflandir.py`](backend/agents/nodes/siniflandir.py) · held-out %95.5 (n=22 ön-ölçüm) |
@@ -233,28 +231,6 @@ graph TD
 | G2 · Birim yönlendir | `route_birim` — 9 birim, top-k + alternatifler | [`nodes/route_birim.py`](backend/agents/nodes/route_birim.py) |
 | G2 · Kullanıcıyı bilgilendir | `finalize` + sohbet asistanı | [`api/routes/sohbet.py`](backend/api/routes/sohbet.py) |
 
-Tam matris: [`docs/sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md).
-
----
-
-## 🏆 Puanlama kriterleri
-
-Şartname 100 puanı dört boyuta böler; her biri README'de somut kanıta bağlanır:
-
-```mermaid
-pie showData title Puanlama (100 puan)
-    "Yöntem & Teknik (35)" : 35
-    "Uygulama başarımı (35)" : 35
-    "Demo — gerçek zamanlı (15)" : 15
-    "Yenilikçilik / Özgünlük / Ticarileşme (15)" : 15
-```
-
-| Boyut | Puan | Nereye bak |
-|---|---|---|
-| Yöntem & Teknik | 35 | [Mimari](#-mimari) + [`docs/method.md`](docs/method.md) |
-| Uygulama başarımı | 35 | [Değerlendirme sonuçları](#-değerlendirme-sonuçları-dürüst) |
-| Demo (gerçek zamanlı avantaj) | 15 | [`docs/demo-senaryosu.md`](docs/demo-senaryosu.md) |
-| Yenilikçilik / Özgünlük / Ticarileşme | 15 | [Neden farklı](#-neden-farklı) + [`docs/ticarileşme.md`](docs/ticarileşme.md) |
 
 ---
 
@@ -426,9 +402,7 @@ ile verilir. Diğer uçlar: `/sohbet` + `/sohbet/stream` (asistan), `/sla/onizle
 
 | Dosya | İçerik |
 |---|---|
-| [`00-yarisma-uygunluk.md`](docs/00-yarisma-uygunluk.md) | Şartname özeti + uygunluk kontrol listesi |
-| [`sartname-uyum-matrisi.md`](docs/sartname-uyum-matrisi.md) | Şartname maddesi → kod → test tam matrisi |
-| [`method.md`](docs/method.md) | Yöntem raporu (jüri teknik değerlendirmesi için) |
+| [`method.md`](docs/method.md) | Yöntem raporu |
 | [`03-mimari.md`](docs/03-mimari.md) | LangGraph node listesi + state şeması |
 | [`06-eval-harness.md`](docs/06-eval-harness.md) | Metrik → puanlama eşlemesi |
 | [`09-sohbet-asistani.md`](docs/09-sohbet-asistani.md) | Sohbet asistanı: niyet + araç döngüsü spesifikasyonu |
@@ -437,11 +411,10 @@ ile verilir. Diğer uçlar: `/sohbet` + `/sohbet/stream` (asistan), `/sla/onizle
 | [`data-card.md`](docs/data-card.md) | Sentetik veri kartı |
 | [`07-model-lisanslari.md`](docs/07-model-lisanslari.md) | Model/lisans + AGPL notu |
 | [`ticarileşme.md`](docs/ticarileşme.md) | Hedef kullanıcı, değer, iş modeli |
-| [`demo-senaryosu.md`](docs/demo-senaryosu.md) | Jüri canlı demo senaryosu + internet-kesinti yedeği |
 
 ---
 
-## ⚖️ Yarışma kuralları ve uyum
+## ⚖️ Lisans ve veri ilkeleri
 
 - **Açık kaynak (MIT)** — model ağırlıkları repoya yüklenmez (yalnız link + sürüm + lisans,
   [`docs/07`](docs/07-model-lisanslari.md)).
@@ -450,9 +423,7 @@ ile verilir. Diğer uçlar: `/sohbet` + `/sohbet/stream` (asistan), `/sla/onizle
 
 ## 👥 Takım
 
-**TasnifX** — TEKNOFEST 2026 Yapay Zeka Dil Ajanları Yarışması, "Kamu Evrak ve Resmî Yazışma
-Süreçleri İçin Çok Ajanlı (Multi-Agent) Akıllı Destek Sistemi" kategorisi.
-Başvuru: 04 Temmuz 2026 (Takım ID 1001572 · Başvuru ID 5372496).
+**TasnifX**
 
 - cem özal
 - Gizem Fatma Kılıç

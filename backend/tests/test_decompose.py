@@ -106,6 +106,21 @@ class TestTekKonuluPassthrough:
         # Arrange / Act / Assert — 'ayrıca' bağlacı çok-talep işareti
         assert _coklu_sinyal(_COK_KONULU) is True
 
+    def test_ayni_niyetin_kokleri_coklu_sayilmaz(self):
+        # Regresyon (2026-10 ölçümü): kod NİYET değil ham KÖK sayıyordu — "yapılmasını talep
+        # ederim" tek niyetin üç kökünü (talep/yapılması/yapılmasını) eşleştirip sıradan tek
+        # talepli dilekçede LLM segmentasyonunu boşuna çağırıyordu. 461 sentetik metinde
+        # tetiklenme 72 → 32; değişen 40 belgenin hepsi tek talepli çıktı.
+        assert _coklu_sinyal("Mahalle parkına aydınlatma yapılmasını talep ederim.") is False
+        assert _coklu_sinyal("Sokağımdaki çukurun onarılmasını rica ederim.") is False
+        assert _coklu_sinyal("Kaçak yapı ile ilgili usulsüzlüğü ihbar ediyorum.") is False
+
+    def test_iki_farkli_niyet_hala_tetikler(self):
+        # Gerçek çok-niyetli metin (bilgi edinme + şikâyet) bağlaçsız da yakalanır.
+        metin = ("Başvurumun sonucunu öğrenmek istiyorum. "
+                 "Ayrıntılı bilgi verilmemesinden şikâyetçiyim.")
+        assert _coklu_sinyal(metin) is True
+
     def test_numarali_liste_gate_tetikler_ama_numarasiz_tetiklemez(self):
         # Regresyon (izole): _govde metni tek satıra düzleştirir; _AYRAC'ın '\n'-çapalı
         # numaralı desenleri govde'de ASLA eşleşmiyordu → numaralı çok-konulu evrak sessizce

@@ -4,7 +4,7 @@
    evraklarda gün EN KÖTÜ duruma boyanır. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { trTarihAyristir, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi, DURUM_AGIRLIK } from "./sureTakvimi.js";
+import { trTarihAyristir, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi, DURUM_AGIRLIK, genislik, gunGenislik, GENISLIK_AZAMI, GENISLIK_ASGARI } from "./sureTakvimi.js";
 
 const oge = (id, son_tarih, durum, kalan_gun) => ({ id, label: id, sla: { son_tarih, durum, kalan_gun } });
 
@@ -112,4 +112,29 @@ test("ayIsaretleri boş/bozuk girdide boş dizi döner", () => {
   assert.deepEqual(ayIsaretleri(null, isaretHarita([])), []);
   assert.deepEqual(ayIsaretleri(ayIzgarasi(new Date(2026, 7, 1)), null), []);
   assert.deepEqual(ayIsaretleri(ayIzgarasi(new Date(2026, 7, 1)), isaretHarita([])), []);
+});
+
+/* genislik — Archivo wdth ekseni veriyi kodlar (BENCHMARK hamle 6). Sözleşme: süre azaldıkça
+   MONOTON daralır, eksen sınırlarını (62–125) asla aşmaz, süre tanımsızsa nötr 100. */
+
+test("genislik süre azaldıkça monoton daralır ve eksen sınırında kalır", () => {
+  const seri = [30, 10, 5, 1, 0].map((k) => genislik({ durum: "NORMAL", kalan_gun: k }));
+  for (let i = 1; i < seri.length; i++) assert.ok(seri[i] <= seri[i - 1], `${seri}`);
+  assert.equal(seri[0], GENISLIK_AZAMI);                                   // bol süre: en geniş
+  assert.equal(genislik({ durum: "NORMAL", kalan_gun: 0 }), 75);           // son gün dar
+  assert.ok(genislik({ durum: "GECIKMIS", kalan_gun: -3 }) < 75);          // gecikmiş daha da dar
+  assert.equal(genislik({ durum: "GECIKMIS", kalan_gun: -400 }), GENISLIK_ASGARI);
+});
+
+test("genislik süre tanımsızken nötr 100 döner", () => {
+  assert.equal(genislik({ durum: "tarih_yok", kalan_gun: null }), 100);
+  assert.equal(genislik(null), 100);
+});
+
+test("gunGenislik günün en sıkışık evrakını izler", () => {
+  const isaret = isaretHarita([oge("a", "03.08.2026", "NORMAL", 12), oge("b", "03.08.2026", "GECIKMIS", -9)]);
+  const kayit = isaret.get(gunAnahtar(new Date(2026, 7, 3)));
+  assert.equal(gunGenislik(kayit), genislik({ durum: "GECIKMIS", kalan_gun: -9 }));
+  assert.equal(gunGenislik({ ogeler: [oge("c", "03.08.2026", "NORMAL", undefined)] }), 100);
+  assert.equal(gunGenislik(null), 100);
 });

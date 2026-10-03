@@ -7,7 +7,6 @@
    Eski açık-tema App.jsx korunur (geri dönüş: main.jsx). */
 import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { baslikAl, ekranBaglamiOlustur } from "./lib/ekranBaglami.js";
-import { flushSync } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { MotionConfig } from "motion/react";
@@ -19,16 +18,19 @@ import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { sampleAdIndex, kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
 import { ayniKosumMu, varyantBirlestir } from "./lib/sicilVaryant.js";
-import { PAL, DERIN, SANS, TYPE, RAD, SP, SH, ALFA, BANT, Icon, focusRing, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
+import { PAL, DERIN, SANS, TYPE, RAD, SH, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
+import { gecisle, ViewFallback, ErrorBar } from "./dashboardKabuk.jsx";
+import HataSiniri from "./components/HataSiniri.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
 // ("yükleniyor…" flash) yaşanmasın, panel anında görünsün. Bağımlılıkları (neonUi +
 // result-cards) zaten usePipeline→nodeMeta zinciriyle ana bundle'da olduğundan ilk yük
 // indirmesine pratikte ağırlık eklemez.
 import PanelView from "./components/PanelView.jsx";
 // Mevzuat okuma modalı ("kağıt") — global overlay: ayrıntılı sonuç ekranı + sohbet çipi
-// mevzuata tıklayınca SAYFA DEĞİŞTİRMEDEN üstte açılır. Hafif (yalnız neonUi bağımlı) → eager.
-import { OkumaModal } from "./components/MevzuatOkuma.jsx";
+// mevzuata tıklayınca SAYFA DEĞİŞTİRMEDEN üstte açılır. Yalnız açılınca iner (~24 kB);
+// MevzuatView de aynı modülü kullandığından ortak chunk'tır, ikinci kez inmez.
+const OkumaModal = lazy(() => import("./components/MevzuatOkuma.jsx").then((m) => ({ default: m.OkumaModal })));
 // Diğer görünümler TEMBEL yüklenir (kod bölme) → ilk yük bundle'ı küçülür; görünümler birebir
 // aynı kalır, yalnız ilgili görünüme ilk geçişte küçük bir chunk indirilir. NeonSidebar
 // her zaman görünür (nav) olduğundan eager kalır.
@@ -52,6 +54,8 @@ const TelefonYukleModal = lazy(() => import("./components/TelefonYukle.jsx"));
 // görünüm korunur. Router bağımlılığı yok (tek kabuk, altı görünüm — hash yeterli).
 const VIEWS = new Set(["panel", "islenen", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
 const hashView = () => window.location.hash.slice(1);
+// Sekme başlığı için görünüm adları (kenar çubuğu etiketleriyle aynı).
+const VIEW_AD = { panel: "Panel", islenen: "İşlenen evrak", gelen: "Gelen evrak", isleniyor: "İşleniyor", taslaklar: "Taslaklar", giden: "Giden evrak", mevzuat: "Mevzuat", denetim: "Denetim" };
 
 // DB geçmişinden taslak listesi türet: taslağı ÜRETİLMİŞ ve henüz KARAR VERİLMEMİŞ işlemler
 // (onaylanmış/reddedilmiş işlemler Giden Evrak'a düşer — burada tekrar taslak sayılmaz;
@@ -94,21 +98,6 @@ const KARAR_ETIKET = { onayla: "onaylandi", reddet: "reddedildi" };
 // türetmek için (bkz. lib/kuyrukDurumu): gönderilmiş örnek refresh'te kuyruğa GERİ DÜŞMEZ.
 const SAMPLE_AD_ID = sampleAdIndex(SAMPLE_DOCS);
 
-// Görünüm geçişini View Transitions API ile sar: destekleyen tarayıcıda yumuşak
-// çapraz-erime; destek yoksa ya da kullanıcı hareket azaltmışsa DÜZ geçiş (birebir eski
-// davranış). flushSync: React güncellemesi geçiş kare-yakalaması içinde senkron uygulanmalı.
-const gecisle = (fn) => {
-  const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-  if (!document.startViewTransition || az) { fn(); return; }
-  const t = document.startViewTransition(() => { flushSync(fn); });
-  // Hızlı ard arda geçişte (sunucu görünümler arası hızlı tıklarsa) önceki geçiş SKIP edilir
-  // ve .ready/.finished promise'leri "Transition was skipped" ile REJECT olur — yakalanmazsa
-  // unhandled rejection (uncaught exception) olarak konsola düşer. Geçiş görsel; reddi yut.
-  t?.ready?.catch(() => {});
-  t?.finished?.catch(() => {});
-  t?.updateCallbackDone?.catch(() => {});
-};
-
 export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
     nodes, katmanlar, result, busy, error, errorKind, toast, fileMeta, pendingOnay, evrakText, downloading, fileUrl,
@@ -119,6 +108,15 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const queryClient = useQueryClient();   // karar sonrası DB gerçeğiyle tazeleme (invalidate)
   // Telefonla çek (QR) modalı — dosya telefondan gelince runFile mevcut SSE akışını başlatır.
   const [telefonAcik, setTelefonAcik] = useState(false);
+  // Asistan FAB'ı ilk boyamanın kritik yolunda değil: tarayıcı boşa düşünce (en geç 2 sn)
+  // bağlanır → ~44 kB'lık chunk LCP/TBT ile çakışmaz.
+  const [asistanHazir, setAsistanHazir] = useState(false);
+  useEffect(() => {
+    const ric = window.requestIdleCallback;
+    if (ric) { const id = ric(() => setAsistanHazir(true), { timeout: 2000 }); return () => window.cancelIdleCallback?.(id); }
+    const id = setTimeout(() => setAsistanHazir(true), 1200);
+    return () => clearTimeout(id);
+  }, []);
   // Optimistik açılış: son bilinen panel verisini (history/outbox) localStorage'dan ANINDA kur
   // → refresh'te boş→dolu ("Henüz evrak işlenmedi") flash'ı yok. Arka plandaki DB fetch (aşağıdaki
   // effect) uzak Supabase'ten tazeleyip günceller; değişince persist effect önbelleği yeniler.
@@ -432,8 +430,13 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // useCallback: NeonSidebar (React.memo) için kararlı referans → akış sırasında (busy/counts
   // sabitken nodes saniyede onlarca kez değişir) sidebar gereksiz yere yeniden render olmaz.
   // Hash ataması geçmişe KAYIT ekler → geri/ileri tuşu görünümler arasında gezinir.
-  const goView = useCallback((v) => {
-    gecisle(() => setActiveView(v));
+  // { gecissiz: true } — klavye kısayoluyla gezinme (sıklık yasası: klavye eylemi animasyonsuz).
+  const goView = useCallback((v, { gecissiz = false } = {}) => {
+    // Ref HEMEN güncellenir: startViewTransition güncellemeyi bir sonraki kareye erteler,
+    // o arada aşağıdaki hash ataması hashchange'i tetikler; ref eski kalsaydı onHash İKİNCİ
+    // bir geçiş başlatıp ilkini atlatıyordu (ölçüldü: 2 tıkta 4 geçiş, tur 3).
+    activeViewRef.current = v;
+    if (gecissiz) setActiveView(v); else gecisle(() => setActiveView(v));
     if (hashView() !== v) window.location.hash = v;
   }, []);
 
@@ -443,12 +446,22 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // view-transition başlatmasın (çift geçiş görünmezdi ama gereksiz kare yakalamaydı).
   const activeViewRef = useRef(activeView);
   useEffect(() => { activeViewRef.current = activeView; }, [activeView]);
+  // Belge başlığı görünümü söyler (WCAG 2.4.2 · sekme/geçmiş listesinde ayırt edilir).
+  useEffect(() => { document.title = `${VIEW_AD[activeView] || "Panel"} · KAMU-EVRAK`; }, [activeView]);
   useEffect(() => {
     if (!VIEWS.has(hashView())) window.history.replaceState(null, "", "#panel");
+    // Geçmiş yönü: Navigation API'de giriş indeksi azaldıysa GERİ. API yoksa (Firefox/Safari
+    // eski sürüm) goView'un kendi hash yazımı zaten erken döner, geriye kalan hashchange'ler
+    // geçmiş gezintisidir → "geri" en olası okumadır.
+    const nav = window.navigation;
+    let sonIndeks = nav?.currentEntry?.index ?? 0;
     const onHash = () => {
+      const indeks = nav?.currentEntry?.index;
+      const yon = indeks == null ? "geri" : (indeks < sonIndeks ? "geri" : "ileri");
+      if (indeks != null) sonIndeks = indeks;
       const h = hashView();
       const hedefView = VIEWS.has(h) ? h : (!h ? "panel" : null);
-      if (hedefView && hedefView !== activeViewRef.current) gecisle(() => setActiveView(hedefView));
+      if (hedefView && hedefView !== activeViewRef.current) gecisle(() => setActiveView(hedefView), yon);
     };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
@@ -628,16 +641,31 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // HITL kararı: ref'i damgala + resume. resume BAŞARISIZ olursa (backend 500/kopuk bağlantı)
   // ref'i HEMEN temizle — yoksa bayat karar bir sonraki ilgisiz koşumun result-effect'ine
   // sızıp o (onaylanmamış) evrakı sahte "onaylandı" ile Giden Evrak'a gönderir (workflow bulgusu).
-  const onApprove = async () => {
-    if (pendingOnay) { pendingApprovalRef.current = { secim: "onayla", fileMeta }; if (!(await resume("onayla"))) pendingApprovalRef.current = null; }
-    else if (pushOutbox(result, fileMeta, "onayla")) { persistDecision(result, "onayla"); stampDecision(result, "onayla"); showToast("Evrak onaylandı — Giden Evrak'a gönderildi."); goView("giden"); }
-    else showToast("Önce bir evrak işleyin.");
+  // Karar sözleşmesi (CanliAjanAkisi): onApprove/onReject karar GERÇEKTEN kabul edildiyse
+  // true döner → sahne hüküm mührünü basar (CLAUDE.md §9: olmayan kararı mühürleme).
+  // Giden'e geçiş AWAIT EDİLMEZ, ertelenir: mühür anı (paraf 450 ms → mühür, ~900 ms) ekranda
+  // görülsün diye oturumun ilk kararında 900 ms, sonrakilerde 300 ms (sıklık yasası);
+  // reduced-motion'da 0. true hemen döner — mühür sayfa değişmeden iner.
+  const ilkKararRef = useRef(true);
+  const gidenErtele = () => {
+    const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const gecikme = az ? 0 : (ilkKararRef.current ? 900 : 300);
+    ilkKararRef.current = false;
+    setTimeout(() => goView("giden"), gecikme);
   };
-  const onReject = async () => {
-    if (pendingOnay) { pendingApprovalRef.current = { secim: "reddet", fileMeta }; if (!(await resume("reddet"))) pendingApprovalRef.current = null; }
-    else if (pushOutbox(result, fileMeta, "reddet")) { persistDecision(result, "reddet"); stampDecision(result, "reddet"); showToast("Reddedildi — Giden evraka kaydedildi (denetim izi)."); goView("giden"); }
-    else showToast("Önce bir evrak işleyin.");
+  const karar = async (secim, toastMetni) => {
+    if (pendingOnay) {
+      pendingApprovalRef.current = { secim, fileMeta };
+      const kabul = !!(await resume(secim));
+      if (!kabul) pendingApprovalRef.current = null;
+      return kabul;
+    }
+    if (!pushOutbox(result, fileMeta, secim)) { showToast("Önce bir evrak işleyin."); return false; }
+    persistDecision(result, secim); stampDecision(result, secim); showToast(toastMetni); gidenErtele();
+    return true;
   };
+  const onApprove = () => karar("onayla", "Evrak onaylandı — Giden Evrak'a gönderildi.");
+  const onReject = () => karar("reddet", "Reddedildi — Giden evraka kaydedildi (denetim izi).");
   const onEdit = async () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; if (!(await resume("duzenle"))) pendingApprovalRef.current = null; return; }
     const taslakId = pushDraft(result, fileMeta);
@@ -733,7 +761,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
-  // ---- Yazı türü seçimi (şartname: üst yazı / cevabi / bilgilendirme / alternatif tür) ----
+  // ---- Yazı türü seçimi (resmî yazı türleri: üst yazı / cevabi / bilgilendirme / alternatif tür) ----
   // Pipeline'ın önerdiği tür + tür başına üretilen taslaklar koşum-içi önbelleğe alınır
   // (chip'ler arası anında geçiş; aynı tür için LLM'e ikinci kez gidilmez). Yeni koşum
   // sinyali = denetim_izi referansının değişmesi (applyTaslak/persist merge'i onu korur).
@@ -934,13 +962,13 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   };
 
   let view;
-  if (activeView === "panel") view = <PanelView history={history} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} slaHatasi={slaQ.isError} onGoInbox={goInbox} onIsle={(id) => { const sec = SAMPLE_DOCS.find((x) => x.id === id); if (sec) processSample(sec); }} onGoIslenen={() => goView("islenen")} onGoGiden={() => goView("giden")} onGoTaslaklar={() => goView("taslaklar")} onUpload={triggerUpload} user={user} />;
-  else if (activeView === "islenen") view = <IslenenEvrakView history={history} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} onDuzenle={goIslenenDuzenle} onMevzuatAc={mevzuatAc} />;
+  if (activeView === "panel") view = <PanelView history={history} gecmisYukleniyor={islemlerQ.isLoading} gecmisHatasi={islemlerQ.isError} outbox={outbox} inboxCount={inboxCount} kuyrukSla={kuyrukSla} slaHatasi={slaQ.isError} onGoInbox={goInbox} onIsle={(id) => { const sec = SAMPLE_DOCS.find((x) => x.id === id); if (sec) processSample(sec); }} onGoIslenen={() => goView("islenen")} onGoGiden={() => goView("giden")} onGoTaslaklar={() => goView("taslaklar")} onUpload={triggerUpload} user={user} />;
+  else if (activeView === "islenen") view = <IslenenEvrakView history={history} yukleniyor={islemlerQ.isLoading && !history.length} hata={!history.length ? islemlerQ.error : null} onYenidenDene={() => islemlerQ.refetch()} onGoInbox={() => goView("gelen")} onUpload={triggerUpload} onDuzenle={goIslenenDuzenle} onMevzuatAc={mevzuatAc} />;
   else if (activeView === "gelen") view = <GelenEvrakView samples={SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))} processedIds={processedIds} slaMap={slaMap} onProcess={processSample} onUpload={triggerUpload} busy={busy} hedef={gelenHedef} onHedefAcildi={() => setGelenHedef(null)} uid={user?.id} />;
-  else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
+  else if (activeView === "giden") view = <GidenEvrakView outbox={outbox} yukleniyor={gidenQ.isLoading && !outbox.length} hata={!outbox.length ? gidenQ.error : null} onYenidenDene={() => gidenQ.refetch()} onUpload={triggerUpload} onGoInbox={() => goView("gelen")} onResend={onResend} />;
   else if (activeView === "taslaklar") view = <TaslaklarView drafts={drafts} onGoInbox={() => goView("gelen")} onGoOutbox={() => goView("giden")} onUpdate={updateDraft} onDelete={deleteDraft} onSend={sendDraft} onRevize={dogrulaTaslak} onToast={showToast} hedef={taslakHedef} onHedefAcildi={() => setTaslakHedef(null)} />;
   else if (activeView === "mevzuat") view = <MevzuatView history={history} />;
-  else if (activeView === "denetim") view = <DenetimView history={history} onGoInbox={() => goView("gelen")} />;
+  else if (activeView === "denetim") view = <DenetimView history={history} yukleniyor={islemlerQ.isLoading && !history.length} hata={!history.length ? islemlerQ.error : null} onYenidenDene={() => islemlerQ.refetch()} onGoInbox={() => goView("gelen")} />;
   else view = (
     <CanliAjanAkisi
       nodes={nodes} katmanlar={katmanlar} result={data} busy={busy} started={started} runBase={runBase}
@@ -968,13 +996,20 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         // Zemin html'de (THEME_CSS) — burada opak boyanırsa body::before kâğıt dokusu örtülür.
         display: "flex", minHeight: "100vh", background: "transparent", color: PAL.ink, fontFamily: SANS,
       }}>
-        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
+        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onClick={(e) => { e.preventDefault(); document.getElementById("nu-main")?.focus(); }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
         <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} kota={kota} />
 
-        <main id="nu-main" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-          <Suspense fallback={<ViewFallback />}>{view}</Suspense>
+        {/* tabIndex -1: atlama bağlantısı odağı GERÇEKTEN içeriğe taşısın — yoksa odak body'ye düşer
+            ve hash #nu-main'e döner (geri tuşu bir "görünüm" daha sayardı). Programatik odak
+            halkası çizilmez; içerikteki ilk Tab sonraki öğeye gider. */}
+        <main id="nu-main" tabIndex={-1} style={{ outline: "none", flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+          {/* Görünüm başına hata sınırı: bir görünüm çökerse kabuk (kenar çubuğu, asistan)
+              ayakta kalır; key=activeView → başka görünüme geçince sınır kendini sıfırlar. */}
+          <HataSiniri key={activeView} tam baslik="Bu görünüm gösterilemedi">
+            <Suspense fallback={<ViewFallback />}>{view}</Suspense>
+          </HataSiniri>
         </main>
 
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
@@ -983,12 +1018,14 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onInk, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}
 
-        {user && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} ekran={ekranBaglami} onEvrakAc={evrakAc} /></Suspense>}
+        {user && asistanHazir && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} ekran={ekranBaglami} onEvrakAc={evrakAc} /></Suspense>}
 
         {/* Global mevzuat okuma modalı — hangi görünümde olursan ol üstte açılır (view değişmez). */}
         {okumaHedef && (
-          <OkumaModal dosya={okumaHedef.dosya} maddeNo={okumaHedef.maddeNo}
-            maddeTur={okumaHedef.maddeTur} onClose={okumaKapat} />
+          <Suspense fallback={null}>
+            <OkumaModal dosya={okumaHedef.dosya} maddeNo={okumaHedef.maddeNo}
+              maddeTur={okumaHedef.maddeTur} onClose={okumaKapat} />
+          </Suspense>
         )}
 
         {telefonAcik && (
@@ -1003,29 +1040,5 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
       </div>
     </MotionConfig>
-  );
-}
-
-// Tembel görünüm chunk'ı inerken (yalnız ilk geçişte, çok kısa) gösterilen sade, tema-uyumlu
-// yer tutucu — görünüm tasarımını değiştirmez, layout çökmesini önler.
-function ViewFallback() {
-  return (
-    <div aria-hidden="true" style={{ flex: 1, display: "grid", placeItems: "center", minHeight: "60vh", ...TYPE.data, color: PAL.mut2 }}>
-      yükleniyor…
-    </div>
-  );
-}
-
-function ErrorBar({ msg, canRetry, onRetry, onDismiss }) {
-  return (
-    // zIndex 400: uyarı katmanı HER yüzeyin üstünde — modal (300) veya sheet (320) açıkken
-    // ağ hatası scrim arkasında görünmez kalıyordu; "Tekrar dene" her durumda erişilir.
-    <div role="alert" style={{ position: "fixed", bottom: SP.xl, left: "50%", transform: "translateX(-50%)", zIndex: 400, background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.m, background: ALFA(BANT.kirmizi.c), color: DERIN.kirmizi, padding: "12px 16px", ...TYPE.data }}>
-        <span style={{ display: "flex", alignItems: "center", gap: SP.s }}><Icon.alert /> {msg}</span>
-        {canRetry && <button onClick={onRetry} {...focusRing} data-press="" style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: DERIN.kirmizi, ...TYPE.data, fontWeight: 500, transition: "transform .14s var(--ke-ease-out)" }}>Tekrar dene</button>}
-        <button onClick={onDismiss} aria-label="Kapat" {...focusRing} data-press="" style={{ cursor: "pointer", display: "flex", alignItems: "center", padding: "4px 8px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: DERIN.kirmizi, transition: "transform .14s var(--ke-ease-out)" }}><Icon.x /></button>
-      </div>
-    </div>
   );
 }

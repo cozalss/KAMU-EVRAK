@@ -2,7 +2,7 @@
 
 Biçim [Keep a Changelog](https://keepachangelog.com/tr/) esinlidir; tarihler dalga (wave)
 bazında gruplanır — her satır repodaki gerçek commit'lere dayanır (`git log` ile izlenebilir).
-Sürüm numarası yerine yarışma takvimi milatları kullanılır (TEKNOFEST 2026, 1. Senaryo).
+Sürüm numarası yerine tarih milatları kullanılır.
 
 ## [2026-07-20] — Frontend etkileşim kütüphanesi dalgası
 

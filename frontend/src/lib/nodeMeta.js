@@ -6,7 +6,7 @@
    gorev: 1 = Görev-1 (Anla/Çıkar), 2 = Görev-2 (Üret/Yönlendir).
    summarize: AgentFlowGraph + App.jsx'ten taşındı, yeni node'larla genişletildi. */
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR } from "../components/result-cards.jsx";
-import { slaInfo } from "../components/NeonDetayParts.jsx";
+import { slaInfo } from "./slaEtiket.js";
 import { DEFAULT_PIPELINE_NODE_IDS, phaseForNode } from "./pipelinePhases.js";
 import { riskOlcuEtiketi } from "./detayYorum.js";
 

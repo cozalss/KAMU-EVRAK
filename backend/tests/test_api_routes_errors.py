@@ -100,6 +100,105 @@ class TestProcessDocStream:
         assert '"event":' in resp.text
 
 
+def _sse_olaylari(govde: str) -> list[dict]:
+    """SSE gövdesini `data: {...}` satırlarından olay listesine çevir."""
+    import json
+    return [json.loads(s[len("data: "):]) for s in govde.splitlines() if s.startswith("data: ")]
+
+
+class TestStreamAdimBasladi:
+    """Canlı sahne o an HANGİ adımın çalıştığını gösterebilsin diye her pipeline node'u
+    başlarken `status: active` yayılır (LangGraph `tasks` akış modu). Sözleşme: başladı
+    olayı yalnız GERÇEKTEN koşan node için gelir ve bitişinden ÖNCE gelir; gizli yardımcı
+    dallar (servis_birim) adım listesinde olmadığı için ne başladı ne bitti yayar."""
+
+    METIN = ("Konu: park aydınlatma talebi. Mahalle parkına aydınlatma "
+             "yapılmasını arz ederim. Ad-Soyad: Ali Veli, imza.")
+
+    def _olaylar(self, client: TestClient) -> list[dict]:
+        files = {"file": ("evrak.txt", io.BytesIO(self.METIN.encode("utf-8")), "text/plain")}
+        return _sse_olaylari(client.post("/process_doc/stream", files=files).text)
+
+    def test_her_biten_node_once_basladi_yayar(self, client: TestClient):
+        # Act
+        olaylar = self._olaylar(client)
+        # Assert — oku dışındaki her `done`dan önce aynı node için `active` gelmiş olmalı
+        node_olay = [(o["node"], o["status"]) for o in olaylar if o.get("event") == "node"]
+        bitenler = [n for n, st in node_olay if st == "done" and n != "oku"]
+        assert bitenler, "pipeline node'u bitmedi"
+        for n in bitenler:
+            i_aktif = node_olay.index((n, "active")) if (n, "active") in node_olay else -1
+            assert i_aktif != -1, f"{n} başladı olayı yok"
+            assert i_aktif < node_olay.index((n, "done")), f"{n} başladı, bitti'den sonra geldi"
+
+    def test_basladi_yalniz_duyurulan_adimlar_icin(self, client: TestClient):
+        # Arrange
+        from agents.graph import GIZLI_NODELAR
+        olaylar = self._olaylar(client)
+        duyurulan = set(next(o for o in olaylar if o.get("event") == "start")["nodes"])
+        # Assert — başladı olayları duyurulan listede; gizli dallar hiç yayılmaz
+        aktifler = {o["node"] for o in olaylar if o.get("event") == "node" and o["status"] == "active"}
+        assert aktifler <= duyurulan
+        assert not aktifler & set(GIZLI_NODELAR)
+
+    def test_basladi_olayi_veri_tasimaz(self, client: TestClient):
+        # Başladı olayı node girdisini (ham evrak metni, maskesiz PII) SIZDIRMAZ — yalnız ad+durum.
+        olaylar = self._olaylar(client)
+        for o in olaylar:
+            if o.get("event") == "node" and o["status"] == "active" and o["node"] != "oku":
+                assert set(o) == {"event", "node", "status"}
+
+
+class TestStreamHataAdimi:
+    """Akış bir adımda patlarsa `error` olayı HANGİ adımda durduğunu (`node`) ve o an
+    eşzamanlı koşup yarıda kalan kardeşleri (`kesilen`) söyler; canlı sahne hatalı masayı
+    kırmızı, yarıda kalanları "işlenmedi" gösterir. Ham istisna metni SIZMAZ (PII/iç yol)."""
+
+    def _sahte_graf(self):
+        import operator
+        from typing import Annotated, TypedDict
+        from langgraph.checkpoint.memory import InMemorySaver
+        from langgraph.graph import END, START, StateGraph
+
+        S = TypedDict("S", {"x": Annotated[list, operator.add]}, total=False)
+
+        def patla(_s):
+            raise RuntimeError("GIZLI-IC-AYRINTI Ayşe Yılmaz 0555-123-4567")
+
+        async def yavas(_s):
+            import asyncio
+            await asyncio.sleep(0.3)
+            return {"x": ["b"]}
+
+        g = StateGraph(S)
+        g.add_node("siniflandir", lambda s: {"x": ["a"]})
+        g.add_node("verify", patla)
+        g.add_node("ozetle", yavas)
+        g.add_edge(START, "siniflandir")
+        g.add_edge("siniflandir", "verify")
+        g.add_edge("siniflandir", "ozetle")
+        g.add_edge(["verify", "ozetle"], END)
+        return g.compile(checkpointer=InMemorySaver())
+
+    def test_hata_olayi_adimi_ve_kesilenleri_soyler(
+            self, client: TestClient, monkeypatch: pytest.MonkeyPatch):
+        # Arrange
+        from api.routes import process_doc as pd
+        graf = self._sahte_graf()
+        monkeypatch.setattr(pd, "_get_hitl_graph", lambda: graf)
+        metin = "Konu: park aydınlatma talebi. Gereğini arz ederim."
+        files = {"file": ("evrak.txt", io.BytesIO(metin.encode("utf-8")), "text/plain")}
+        # Act
+        olaylar = _sse_olaylari(client.post("/process_doc/stream", files=files).text)
+        hata = next(o for o in olaylar if o.get("event") == "error")
+        # Assert
+        assert hata["node"] == "verify"
+        assert hata["kesilen"] == ["ozetle"]
+        assert hata["tur"] == "RuntimeError"
+        govde = str(hata)
+        assert "GIZLI-IC-AYRINTI" not in govde and "0555" not in govde
+
+
 class TestStreamPersistSirasi:
     """SSE sözleşmesi: `done` DB persist'i BEKLEMEZ (uzak Supabase sonucu geciktirmesin);
     islem_id sonradan `persist` event'iyle tamamlanır."""

@@ -86,6 +86,22 @@ export function olcekHesapla(genislik, yukseklik) {
   return Math.max(ASGARI_OLCEK, Math.min(AZAMI_OLCEK, genOlcek, yukOlcek));
 }
 
+/**
+ * sigdir="genislik" kipinin ölçeği — YALNIZ genişlikten, ASGARI tabanı OLMADAN.
+ *
+ * Bu kipte kabın yatay kaydırması yoktur; ASGARI tabanı dar telefonda sayfayı ekran
+ * dışına itiyordu (390px'te 27px yatay kayma, TUR 3 ölçümü). Orada okumak için kâğıda
+ * dokunulur (A4 büyütme). Geçersiz genişlikte (kap yerleşmemiş) ASGARI döner — çökme yok.
+ *
+ * @param {number} genislik kabın kullanılabilir genişliği (px)
+ * @returns {number} 0 < ölçek ≤ AZAMI_OLCEK
+ */
+export function genislikOlcegi(genislik) {
+  const gen = Number(genislik);
+  if (!Number.isFinite(gen) || gen <= 0) return ASGARI_OLCEK;
+  return Math.min(AZAMI_OLCEK, gen / A4_GEN_PX);
+}
+
 /* Ölçek yeniden-ölçümü HER commit'te (boyamadan önce) koşar — bkz. A4Belge. Bu yüzden ölçüm
    kendi çıktısına geri beslenir: yeni ölçek → yığın yüksekliği değişir → kap yeniden ölçülür.
    Sonuç öncekiyle AYNIYSA state'e yazılmamalı, yoksa ölçüm→render→ölçüm döngüsü kapanmaz.

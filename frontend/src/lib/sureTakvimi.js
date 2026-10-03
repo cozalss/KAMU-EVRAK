@@ -74,3 +74,24 @@ export function ayIzgarasi(ay) {
     return g >= 1 && g <= gunSayisi ? new Date(yil, no, g) : null;
   });
 }
+
+/* GENİŞLİK EKSENİ VERİYİ KODLAR (BENCHMARK hamle 6): Archivo rakamı yasal süre yaklaştıkça
+   SIKIŞIR — bol süre geniş (%125), son gün dar (%75), gecikmişte gecikme büyüdükçe en dar
+   kesime (%62) iner; "sıkışan süre" harfin kendisinde okunur. Tek sinyal DEĞİL: renk (BANT)
+   ikinci, ikon + "gün gecikti/kaldı" sözü üçüncü taşıyıcıdır. Süre tanımsızsa nötr %100. */
+export const GENISLIK_AZAMI = 125;
+export const GENISLIK_ASGARI = 62;
+export function genislik(sla) {
+  const k = sla?.kalan_gun;
+  if (!Number.isFinite(k)) return 100;
+  if (sla.durum === "GECIKMIS" || k < 0) return Math.max(GENISLIK_ASGARI, Math.round(75 - Math.abs(k) / 5));
+  return Math.min(GENISLIK_AZAMI, 75 + k * 5);
+}
+
+/* Takvim günü için genişlik — günün EN SIKIŞIK evrakı belirler (renk de en kötü duruma
+   boyanıyor: iki sinyal aynı evrakı söylemeli). Ölçülebilir evrak yoksa nötr %100. */
+export function gunGenislik(kayit) {
+  const olculen = (kayit?.ogeler || []).map((x) => x?.sla).filter((s) => Number.isFinite(s?.kalan_gun));
+  if (!olculen.length) return 100;
+  return Math.min(...olculen.map(genislik));
+}

@@ -56,7 +56,9 @@ function azHareketMi() {
 
 // onKomut(komut): sesli komut ÇALIŞTIRILIR (görünüm değiştir / evrak aç). Sahne bu işi
 // kendisi yapmaz — kabuk (DashboardApp) yapar; sahne yalnız komutu çözer ve bildirir.
-export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKapat }) {
+// konum: sohbet panelinin çapası ({left, bottom}, kenar çubuğu tetiğinin yanı) — disk panelin
+// ayak izinde doğar. null → telefon: ekranın alt-ortasında.
+export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKapat, konum = null }) {
   const [durum, setDurum] = useState(DURUM.HAZIR);
   const [susturuldu, setSusturuldu] = useState(false);
   const [sonUser, setSonUser] = useState("");   // canlı transcript — kullanıcı
@@ -706,14 +708,15 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
           transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
           style={{
             outline: "none",
-            // Sohbet panelinin ayak izi (right/bottom birebir aynı): panel kapanır, orb oraya doğar.
-            position: "fixed", right: SP.xl, bottom: 96, zIndex: 170,
+            // Sohbet panelinin ayak izi (aynı çapa): panel kapanır, orb oraya doğar.
+            position: "fixed", zIndex: 170,
+            ...(konum ? { left: konum.left, bottom: konum.bottom + SP.xl } : { left: 0, right: 0, marginInline: "auto", bottom: SP.xl }),
             width: ORB_BOYUT,
             display: "flex", flexDirection: "column", alignItems: "center", gap: SP.l,
             // Kap görünmez: zemin/gölge YOK ve tıklamayı yutmaz — yalnız çocukları tıklanabilir.
             pointerEvents: "none",
-            // Köken-farkında giriş/çıkış: orb, kendisini açan yuvarlak butona bağlı kalır.
-            transformOrigin: "bottom right",
+            // Köken-farkında giriş/çıkış: orb, panelin çıktığı köşeye (sol-alt) bağlı kalır.
+            transformOrigin: konum ? "bottom left" : "bottom center",
           }}>
           {/* Durum etiketi (aria-live) */}
           <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>

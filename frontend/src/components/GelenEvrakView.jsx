@@ -5,7 +5,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ViewWrap, Btn, Icon, MONO, T, R, PAL, BANT, TYPE, TNUM, RAD, SP, DERIN, focusRing, SR_ONLY } from "./neonUi.jsx";
-import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterNotu, useDefterGezinme, Imlec } from "./SicilDefter.jsx";
+import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterNotu, useDefterGezinme, Imlec, HUCRE } from "./SicilDefter.jsx";
+import { bosDurumMetni } from "../lib/sicilDefter.js";
 import FilterBar from "./FilterBar.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import { useFilter } from "../hooks/useFilter.js";
@@ -52,6 +53,7 @@ const SABLON = {
   marj: "142px",
   alan: '"no ana sure durum eylem"',
   alanDar: '"no sure" "ana ana" "durum eylem"',
+  adim: "88px",
 };
 const BASLIKLAR = [
   <BaslikHucre key="n" alan="no">Kayıt no</BaslikHucre>,
@@ -133,6 +135,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
   // 15 satırda 9 damga dikkat bütçesini yakardı; hüküm başlıkta bir kez basılır.
   const gez = useDefterGezinme();
   const gecikmisSay = items.filter((x) => x._slaDurum === "GECIKMIS").length;
+  const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "evrak", kalici: "kuyruktaki evraklar silinmedi" });
 
   return (
     <ViewWrap id="gelen-h" title="Gelen evrak" kunye="Gelen evrak defteri"
@@ -142,12 +145,18 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
       <SicilStil />
       <FilterBar config={filterConfig} filter={filter} />
 
-      {filter.results.length === 0 ? (
+      {samples.length === 0 ? (
+        /* Kuyruk gerçekten boş (tüm örnekler gönderildi) — "eşleşme yok" DEĞİL, işin bittiği hâl. */
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-2026/" damga="Kuyruk temiz"
+          baslik="Bekleyen gelen evrak yok" sub="Kuyruktaki tüm evraklar işlenip karara bağlandı. Yeni gelen evrakı yükleyerek deftere işleyebilirsiniz."
+          actions={[<Btn key="u" onClick={onUpload} disabled={busy}><Icon.upload /> Evrak yükle</Btn>]} />
+      ) : filter.results.length === 0 ? (
         <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-2026/" damga="Eşleşme yok"
-          baslik="Bu ölçütlerle evrak yok" sub="Arama veya filtre ölçütlerinizi gevşetin; kuyruktaki evraklar silinmedi."
+          baslik={bos.baslik} sub={bos.sub}
           actions={filter.hasActiveFilters ? [<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>] : null} />
       ) : (
-        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Gelen evrak kayıtları" listeRef={listeRef} gezinme={gez} ipucu="önizle">
+        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Gelen evrak kayıtları" listeRef={listeRef} gezinme={gez} ipucu="önizle"
+          rol="grid" dolgu={Math.max(0, 4 - filter.results.length)}>
           {filter.results.map((s, i) => {
             const no = EVRAK_NO.get(s.id) ?? 0;
             const isDone = done.has(s.id);
@@ -155,19 +164,21 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
             const onerilenBirim = BIRIM_LBL(KATEGORI_BIRIM[s._kategori] || "yazi_isleri_evrak");
             const vurgulu = vurgu === s.id;
             return (
-              <div key={s.id} data-sicil-satir="" data-sd-anahtar={s.id} {...(vurgulu ? { "data-vurgu": "" } : null)}
+              <div key={s.id} role="row" data-sicil-satir="" data-sd-anahtar={s.id} {...(vurgulu ? { "data-vurgu": "" } : null)}
                 onPointerDown={() => gez.sec(s.id)}
                 onClick={() => setOnizle(s)}
                 ref={(el) => { if (el) rowRefs.current.set(s.id, el); else rowRefs.current.delete(s.id); }}
                 style={{ "--sd-i": Math.min(i, 14) }}>
                 {gez.aktif === s.id && <Imlec gezinme={gez} kimlik="gelen" />}
-                <SicilNo no={`E-2026/${String(no).padStart(4, "0")}`} style={{ gridArea: "no" }} />
-                <div style={{ gridArea: "ana", minWidth: 0 }}>
+                <span {...HUCRE.grid} style={{ gridArea: "no" }}><SicilNo no={`E-2026/${String(no).padStart(4, "0")}`} /></span>
+                <div {...HUCRE.grid} style={{ gridArea: "ana", minWidth: 0 }}>
                   <button type="button" onClick={(e) => { e.stopPropagation(); setOnizle(s); }} {...focusRing} data-press=""
                     title={`${s.label}: evrakı önizle`}
                     /* Hedef ≥24px (WCAG 2.2 §2.5.8): dolgu kadar negatif kenar boşluğu — satır
                        yüksekliği değişmez, büyüyen yalnız tıklama alanı. */
-                    style={{ cursor: "pointer", padding: "3px 0", margin: "-3px 0", maxWidth: "100%", background: "transparent", border: "none", borderRadius: RAD.chip, ...TYPE.ui, fontWeight: 600, color: PAL.ink, textAlign: "left" }}>{s.konu || s.label}</button>
+                    style={{ cursor: "pointer", padding: "3px 0", margin: "-3px 0", maxWidth: "100%", background: "transparent", border: "none", borderRadius: RAD.chip, ...TYPE.ui, fontWeight: 600, color: PAL.ink, textAlign: "left",
+                      /* Çok uzun konu iki satırda kesilir (tam metin title'da + önizlemede). */
+                      display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2, overflow: "hidden" }}>{s.konu || s.label}</button>
                   <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, flexWrap: "wrap", minWidth: 0 }}>
                     <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
                     <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
@@ -181,16 +192,18 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
                     <span><span style={SR_ONLY}>önerilen birim: </span>{onerilenBirim}</span>
                   </div>
                 </div>
-                <span style={{ gridArea: "sure", minWidth: 0 }}><SureHucre sla={slaMap?.[s.id]} /></span>
-                <span style={{ gridArea: "durum" }}>
+                <span {...HUCRE.grid} style={{ gridArea: "sure", minWidth: 0 }}><SureHucre sla={slaMap?.[s.id]} /></span>
+                <span {...HUCRE.grid} style={{ gridArea: "durum" }}>
                   {isDone ? <SessizCip renk={BANT.yesil.c} vurgulu metin="İşlendi" ikon={<Icon.check width={12} height={12} />} />
                     : <SessizCip renk={T} metin="Yeni" />}
                 </span>
                 {/* Tekrarlanan satır eylemi hayalet — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
-                <button type="button" data-sd-eylem="" data-press="" style={{ gridArea: "eylem" }}
-                  onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} aria-label={`${s.label} evrakını işle`}>
-                  {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow width={14} height={14} />
-                </button>
+                <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end" }}>
+                  <button type="button" data-sd-eylem="" data-press=""
+                    onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} aria-label={`${s.label} evrakını işle`}>
+                    {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow width={14} height={14} />
+                  </button>
+                </span>
               </div>
             );
           })}

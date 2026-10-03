@@ -509,7 +509,7 @@ _SAYFA_HTML = """<!doctype html>
     </section>
   </main>
 
-  <footer><b>TEKNOFEST 2026</b><span class="nokta"></span>__AG_NOTU__<span class="nokta"></span><span class="mono">KVKK · sentetik veri</span></footer>
+  <footer><b>kamu-evrak</b><span class="nokta"></span>__AG_NOTU__<span class="nokta"></span><span class="mono">KVKK · sentetik veri</span></footer>
 
 <script>
 (function () {
@@ -624,7 +624,7 @@ _HATA_HTML = """<!doctype html>
     <p class="aciklama" style="margin-top:8px">Büyük ekrandaki “Telefonla yükle” penceresinden
        yeni bir QR kod oluşturup tekrar okutun.</p>
   </main>
-  <footer><b>TEKNOFEST 2026</b></footer>
+  <footer><b>kamu-evrak</b></footer>
 </body></html>"""
 
 

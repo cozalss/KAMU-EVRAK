@@ -16,8 +16,15 @@
      dönüşte sahte bir damla salvosu oynamaz.
    · Ham WebGL1, paket yok. ≤30 fps, DPR ≤ 1,5; ekran dışı / gizli sekmede rAF durur; tüm
      damlalar yerine oturup koşum bittiğinde döngü kendiliğinden söner.
-   · prefers-reduced-motion → shader tek kare (oturmuş hâl) çizip durur. WebGL yoksa Canvas 2D
-     radyal leke yedeği. */
+   · prefers-reduced-motion → shader tek kare (oturmuş hâl) çizip durur. WebGL yoksa (ya da
+     shader derlenemezse) AYRI bir Canvas 2D tuvalinde radyal leke yedeği — WebGL bağlamı alınmış
+     bir tuvalden 2D bağlam alınamaz, bu yüzden yedek kendi tuvalini taşır.
+
+   ISLAK LEKE (2026-10, backend "başladı" olayı): çalışan masa, damlasının düşeceği yerde keçeyi
+   ıslatmaya başlar — mürekkep yastığa siner. Lekenin büyüklüğü adımın GERÇEK geçen süresiyle
+   (t0 → şimdi) büyür; uydurma titreşim değil, saat. Paralel katmanda birden çok leke AYNI ANDA
+   ıslanır (olgu: backend ikisinin de başladığını söyledi). Adım bitince ıslak leke gider, yerine
+   tam damla açılır (paraf anı). */
 import { useEffect, useMemo, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { T, V, PAL, BANT, RAD, SP, SH, MONO, TYPE, TNUM, DERIN_OF, EASE_BEZIER } from "./neonUi.jsx";
@@ -34,11 +41,12 @@ precision mediump float;
 uniform vec2 uRes;uniform float uT;uniform int uN;
 uniform vec3 uZemin;uniform vec3 uR0;uniform vec3 uR1;uniform vec3 uR2;uniform vec3 uR3;uniform vec3 uR4;
 uniform vec4 uD[${AZAMI_DAMLA}];uniform float uK[${AZAMI_DAMLA}];
+// uD.w >= 10 → ISLAK leke (çalışan masa): renk = w-10, yaş = başladığından beri geçen süre.
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.03+17.1;a*=.5;}return s;}
-vec3 renk(float k){if(k<.5)return uR0;if(k<1.5)return uR1;if(k<2.5)return uR2;if(k<3.5)return uR3;return uR4;}
+vec3 renk(float k){k=mod(k,10.);if(k<.5)return uR0;if(k<1.5)return uR1;if(k<2.5)return uR2;if(k<3.5)return uR3;return uR4;}
 void main(){
   vec2 uv=gl_FragCoord.xy/uRes.y;
   // Keçe: yönlü lif + ince gren (ölçülü — mürekkep kahraman kalsın).
@@ -47,6 +55,17 @@ void main(){
   for(int i=0;i<${AZAMI_DAMLA};i++){
     if(i>=uN)break;
     vec4 d=uD[i];float yas=uT-d.z;if(yas<0.)continue;
+    if(d.w>9.5){
+      // Islak leke: keçeye sinen mürekkep — yavaş büyür (gerçek saat), soluk gövde + koyu
+      // ıslak kenar. Sınır ~%70 boy: tam damla bitişte açılır, ıslaklık onu önceden çizmez.
+      float Rw=uK[i]*(.34+.5*(1.-exp(-yas*.3)));
+      vec2 qw=uv-d.xy;
+      vec2 ww=vec2(fbm(qw*6.+d.z),fbm(qw*6.-d.z))-.5;
+      float rw=length(qw+ww*Rw*.9);
+      float islak=smoothstep(Rw,Rw*.2,rw)*.3+(smoothstep(Rw*1.05,Rw*.92,rw)-smoothstep(Rw*.92,Rw*.7,rw))*.5;
+      c=mix(c,renk(d.w),clamp(islak*(.7+.3*fbm(qw*18.)),0.,.62));
+      continue;
+    }
     // Yayılma: ilk saniyede hızlı açılır, sonra kılcal olarak yavaşça sürer.
     float R=uK[i]*(1.-exp(-yas*2.2))*(1.+.035*sqrt(yas));
     vec2 q=uv-d.xy;
@@ -123,9 +142,10 @@ function yedekCiz(cv, damlalar, renkler, zemin) {
   const css = (c, a) => `rgba(${c.map((x) => Math.round(x * 255)).join(",")},${a})`;
   g.fillStyle = css(zemin, 1); g.fillRect(0, 0, W, H);
   damlalar.forEach((d) => {
-    const x = (d.x / (W / H)) * W, y = H - d.y * H, r = d.k * H;
+    const islak = d.renk >= 10, rk = renkler[d.renk % 10];
+    const x = (d.x / (W / H)) * W, y = H - d.y * H, r = d.k * H * (islak ? 0.6 : 1);
     const gr = g.createRadialGradient(x, y, 0, x, y, r);
-    gr.addColorStop(0, css(renkler[d.renk], 0.75)); gr.addColorStop(0.8, css(renkler[d.renk], 0.55)); gr.addColorStop(1, css(renkler[d.renk], 0));
+    gr.addColorStop(0, css(rk, islak ? 0.14 : 0.75)); gr.addColorStop(0.8, css(rk, islak ? 0.3 : 0.55)); gr.addColorStop(1, css(rk, 0));
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
   });
 }
@@ -168,6 +188,7 @@ const saatOf = (runBase) => {
 export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196, gelis = null, runBase = 0, children = null }) {
   const kapRef = useRef(null);
   const cvRef = useRef(null);
+  const cv2Ref = useRef(null);            // Canvas 2D yedeği (WebGL yok / shader derlenmedi)
   const probRef = useRef(null);
   const dogumRef = useRef(new Map());     // adım id → doğum (sn, performance saatine göre)
   const ilkRef = useRef(true);
@@ -178,6 +199,8 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
     () => display.filter((a) => { const d = adimDurumu(a); return d === "calisti" || d === "hata"; }),
     [display],
   );
+  // Şu an çalışan masalar (backend "başladı" dedi, henüz bitmedi) — ıslak leke bırakır.
+  const islakAdimlar = useMemo(() => display.filter((a) => a.status === "active"), [display]);
 
   useEffect(() => {
     const simdi = performance.now() / 1000;
@@ -189,13 +212,20 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
     ilkRef.current = false;
     const kap = kapRef.current;
     const oran = kap ? Math.max(0.5, kap.clientWidth / Math.max(1, kap.clientHeight)) : 2;
-    durumRef.current.damlalar = damlaAdimlari.slice(-AZAMI_DAMLA).map((a) => {
+    const simdiSn = performance.now() / 1000;
+    const islak = islakAdimlar.slice(0, 4).map((a) => {
+      const [x, y] = damlaKonum(a, oran);
+      // Başlangıç = gerçek "başladı" damgası (runBase + t0, performance saati); yoksa şimdi.
+      const z = Number.isFinite(runBase) && runBase > 0 && Number.isFinite(a.t0) ? (runBase + a.t0) / 1000 : simdiSn;
+      return { x, y, z, renk: 10 + (a.gorev === 2 ? 1 : 0), k: 0.24 };
+    });
+    durumRef.current.damlalar = [...damlaAdimlari.slice(-(AZAMI_DAMLA - islak.length)).map((a) => {
       const [x, y] = damlaKonum(a, oran);
       return { x, y, z: dog.get(a.id), renk: damlaRengi(a), k: damlaBoyu(a) };
-    });
+    }), ...islak];
     durumRef.current.kosumda = kosumda;
     durumRef.current.ciz();
-  }, [damlaAdimlari, kosumda]);
+  }, [damlaAdimlari, islakAdimlar, kosumda, runBase]);
 
   useEffect(() => {
     const cv = cvRef.current, kap = kapRef.current, prob = probRef.current;
@@ -209,13 +239,15 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
     let raf = 0, son = 0, gorunur = true;
     const boyutla = () => {
       const dpr = Math.min(1.5, window.devicePixelRatio || 1);
-      cv.width = Math.max(1, Math.round(kap.clientWidth * dpr));
-      cv.height = Math.max(1, Math.round(kap.clientHeight * dpr));
+      const hedef = ctx ? cv : cv2Ref.current;
+      if (!hedef) return;
+      hedef.width = Math.max(1, Math.round(kap.clientWidth * dpr));
+      hedef.height = Math.max(1, Math.round(kap.clientHeight * dpr));
       ctx?.gl.viewport(0, 0, cv.width, cv.height);
     };
     const kare = (zamanSn) => {
       const { damlalar } = durumRef.current;
-      if (!ctx) { yedekCiz(cv, damlalar, renkler, zemin); return; }
+      if (!ctx) { if (cv2Ref.current) yedekCiz(cv2Ref.current, damlalar, renkler, zemin); return; }
       const { gl, u } = ctx;
       gl.uniform2f(u.res, cv.width, cv.height);
       gl.uniform1f(u.t, zamanSn);
@@ -266,6 +298,7 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
   return (
     <div ref={kapRef} aria-hidden="true" style={{ position: "relative", width: "100%", height: yukseklik, borderRadius: RAD.ctl, overflow: "hidden", background: KECE }}>
       <canvas ref={cvRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
+      <canvas ref={cv2Ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block", pointerEvents: "none" }} />
       <span ref={probRef} style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} />
       <AnimatePresence>
         {fisGoster && <GelisFisi ad={gelis.ad} meta={gelis.meta} saat={saat} />}

@@ -4,7 +4,8 @@
    tek menüde) — Denetim izi günlük iş akışının önünde durmasın diye ana NAV'da DEĞİL, burada.
    Örnek evrak dropdown'ı kaldırıldı; örnekler Gelen evrak görünümünden açılır. */
 import React, { useState, useEffect } from "react";
-import { DISPLAY, T, R, PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
+import { DISPLAY, T, R, PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, MONO, SR_ONLY, focusRing, FOCUS_HALKA, Icon, MarkaKaro } from "./neonUi.jsx";
+import { Activity } from "lucide-react";
 import HesapMenu from "./HesapMenu.jsx";
 
 // Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
@@ -28,8 +29,13 @@ const PanelIkon = (p) => (
   </svg>
 );
 
+/* "İşleniyor" ikonu: boşta DURAĞAN yarım yay "donmuş spinner" gibi okunuyordu (iptal
+   sonrası "hâlâ dönüyor mu?" şüphesi — tur 3 gözlemi). Boşta nabız çizgisi; yay yalnız
+   koşum GERÇEKTEN sürerken (busy) ve döner. Hareket = bilgi. */
+const BostaNabiz = ({ donuk: _donuk, ...p }) => <Activity size={18} strokeWidth={1.75} aria-hidden="true" {...p} />;
+
 function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCount, dar }) {
-  const Ic = Icon[item.icon];
+  const Ic = item.icon === "spin" && !busy ? BostaNabiz : Icon[item.icon];
   // Geri bildirim basış ANINDA (Apple response): hover zemin + data-press scale — görünüm
   // değişimini beklemeden düğme "duyduğunu" söyler.
   const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "10px 0" : "9px 12px", borderRadius: RAD.card, ...TYPE.ui, textAlign: "left", cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` };
@@ -105,7 +111,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
     <aside data-ray="" aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 236, flexShrink: 0, background: PAL.bg2, color: PAL.ink, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
       <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
         <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined} data-dokunma=""
-          onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; }}
+          onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = FOCUS_HALKA; }}
           onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
           style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none", minWidth: 0 }}>
           <MarkaKaro size={kompakt ? 32 : 36} nokta={kompakt} />
@@ -151,9 +157,53 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
           (demo kapalı) null render eder → bugünkü görünüm birebir korunur. */}
       <DemoKotaSayaci kota={kota} kompakt={kompakt} />
 
+      <AsistanDugme kompakt={kompakt} />
       <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}
         tema={tema} onTemaDegistir={onTemaDegistir} dar={kompakt} />
     </aside>
+  );
+}
+
+/* Asistan tetiği — "havale notu" kenar çubuğunda durur (yüzen düğme içeriği örtüyordu; bkz.
+   ChatbotWidget başı). Navigasyon öğesi DEĞİL (görünüm değiştirmez) → nav listesinin dışında,
+   hesap kartının hemen üstünde; ikincil (çerçeveli) dilde, birincil "Yeni evrak yükle" ile
+   yarışmaz. Kısayol ipucu yalnız fare/klavye cihazında (pointer:fine) görünür.
+   Çevrimdışı uyarısı da burada: kenar çubuğu her görünümde sabit tek yüzeydir. */
+function AsistanDugme({ kompakt }) {
+  const [acik, setAcik] = useState(false);
+  const [cevrimdisi, setCevrimdisi] = useState(() => typeof navigator !== "undefined" && navigator.onLine === false);
+  useEffect(() => {
+    const durum = (e) => setAcik(!!e.detail?.acik);
+    const ag = () => setCevrimdisi(navigator.onLine === false);
+    window.addEventListener("ke-asistan-durum", durum);
+    window.addEventListener("online", ag); window.addEventListener("offline", ag);
+    return () => { window.removeEventListener("ke-asistan-durum", durum); window.removeEventListener("online", ag); window.removeEventListener("offline", ag); };
+  }, []);
+  const mac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || "");
+  const kisayol = mac ? "⌘ ." : "Ctrl .";
+  return (
+    <div style={{ marginTop: "auto", display: "grid", gap: SP.s, paddingBottom: SP.s }}>
+      {cevrimdisi && (
+        <div role="status" title="Bağlantı yok — değişiklikler gönderilemez" style={{ display: "flex", alignItems: "center", justifyContent: kompakt ? "center" : "flex-start", gap: SP.s, padding: kompakt ? "6px 0" : "6px 10px", borderRadius: RAD.ctl, border: `1px dashed ${DERIN.sari}`, color: DERIN.sari, ...TYPE.antet, textTransform: "uppercase" }}>
+          <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: DERIN.sari, flexShrink: 0 }} />
+          {kompakt ? <span style={SR_ONLY}>Çevrimdışı</span> : "Çevrimdışı"}
+        </div>
+      )}
+      <button type="button" data-asistan-tetik="" data-press="" data-dokunma=""
+        onClick={() => window.dispatchEvent(new CustomEvent("ke-asistan", { detail: { ac: "degistir" } }))}
+        aria-expanded={acik} aria-haspopup="dialog" aria-keyshortcuts={mac ? "Meta+." : "Control+."}
+        aria-label={kompakt ? "Evrak asistanı" : undefined} title={kompakt ? `Evrak asistanı (${kisayol})` : undefined} {...focusRing}
+        onMouseEnter={(e) => { if (!acik) e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.press : "transparent"; }}
+        style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: kompakt ? "center" : "flex-start", gap: SP.s + 2, width: "100%", minHeight: 40, padding: kompakt ? "9px 0" : "9px 12px", borderRadius: RAD.card, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, background: acik ? PAL.press : "transparent", color: PAL.ink2, ...TYPE.ui, fontWeight: 500, textAlign: "left", transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
+        <span aria-hidden="true" style={{ display: "flex", color: acik ? "var(--ke-derin-t)" : PAL.mut2 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="M8.5 8.5 H15.5 M8.5 11.5 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+        </span>
+        {!kompakt && <span style={{ flex: 1 }}>Asistan</span>}
+        {!kompakt && <kbd className="ke-kisayol" style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", padding: "0 5px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, color: PAL.mut3, background: "transparent" }}>{kisayol}</kbd>}
+      </button>
+      <style>{"@media (pointer: coarse){.ke-kisayol{display:none}}"}</style>
+    </div>
   );
 }
 

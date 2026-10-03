@@ -7,7 +7,9 @@
    asılı (hanging marginalia), kenar başlığı madde başı; solda yapışkan madde dizini
    (scroll-spy), üstte okuma ilerleme çizgisi. Telefonda tam ekran kâğıt + yatay madde şeridi. */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Icon, Btn, MONO, DISPLAY, T, V, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, odakDongusu } from "./neonUi.jsx";
+import { Icon, Btn, Damga, MONO, DISPLAY, T, V, R, PAL, DERIN, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
+import { kunyeCoz, kaynakNotuCoz, NITELIK } from "../lib/mevzuatKunye.js";
+import { dogrulaParcala, vurguParcala } from "../lib/mevzuatVurgu.js";
 
 /* Ham mevzuat metni → bloklar: künye-sonrası giriş notu + "Madde N — ..." blokları.
    Backend chunker (_MADDE_HEADER_RE) ile aynı önek dili — "Ek Madde 1" / "Geçici Madde 2"
@@ -52,87 +54,29 @@ function paragraflar(govde) {
 /* Paragraf başındaki değişiklik notu — "(Değişik: 2/1/2003-4778/26 md.)" — metnin kendisi
    değil, kaynak işaretidir: mono + sessiz renkle ayrışır. */
 const DEGISIKLIK_RE = /^(\((?:Ek|Değişik|Mülga|İptal|Yeniden düzenleme|Ek fıkra|Ek bent)[^)]*\))\s*/i;
-function Paragraf({ metin }) {
+/* "[DOĞRULA: …]" — korpusun kendi şüphe işareti (CLAUDE.md §1). Metnin parçası gibi akıp
+   okunmasın: kesik sarı alt çizgili mono not, ekran okuyucuya "doğrulanmamış not" diye
+   duyurulur. İçerik bire bir aynı kalır (dogrulaParcala yalnız böler). */
+function DogrulaliMetin({ metin, sorgu }) {
+  return dogrulaParcala(metin).map((p, i) => (p.dogrula ? (
+    <span key={i} className="mo-dogrula" title="Doğrulanmamış hüküm notu — atıftan önce resmî metinle karşılaştırın">
+      <span style={SR_ONLY}>Doğrulanmamış not: </span>{p.metin}
+    </span>
+  ) : sorgu ? vurguParcala(p.metin, sorgu).map((v, j) => (v.vurgu ? <mark key={`${i}-${j}`} className="mo-vurgu">{v.metin}</mark> : v.metin)) : p.metin));
+}
+
+/* Gövde satır aralığı 25/16 = %156: ekran gövdesi için Butterick'in %120–145 basılı
+   aralığının hemen üstü (28px = %175 paragrafları gevşek bir ızgaraya dağıtıyordu). */
+function Paragraf({ metin, sorgu }) {
   const m = metin.match(DEGISIKLIK_RE);
   const bent = /^[a-zçğıöşü]\)\s/i.test(metin);
   return (
-    <p style={{ margin: `0 0 ${SP.m}px`, ...TYPE.read, lineHeight: "28px", color: PAL.ink2, textWrap: "pretty", hyphens: "auto", ...(bent ? { paddingLeft: "1.6em", textIndent: "-1.6em" } : null) }}>
+    <p style={{ margin: `0 0 ${SP.m + 2}px`, ...TYPE.read, lineHeight: "25px", color: PAL.ink2, textWrap: "pretty", hyphens: "auto", ...(bent ? { paddingLeft: "1.6em", textIndent: "-1.6em" } : null) }}>
       {m && <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut, letterSpacing: ".02em", marginRight: 6 }}>{m[1]}</span>}
-      {m ? metin.slice(m[0].length) : metin}
+      <DogrulaliMetin metin={m ? metin.slice(m[0].length) : metin} sorgu={sorgu} />
     </p>
   );
 }
-
-/* ——— Künye ayrıştırma (YALNIZ görüntü; katalog kartı + okuma başlığı AYNI kaynağı kullanır) ———
-   Künyeler elle derlendi, biçim karışık: "RG 07.04.1969/13168" · "Resmî Gazete: 24/6/1973,
-   Sayı 14574" · "Resmî Gazete 25766 — 24.03.2005" · "14/6/2014 tarih ve 29030 sayılı RG" ·
-   "RG: 4 Mart 2009, Sayı 27159" · "(e-Yazışma / … Boyutu)" (künye değil alt başlık).
-   304 kaydın 300'ünde RG tarihi çözülür (2026-10 ölçümü); kalanlar ham metin yerine
-   kabul tarihi / Düstur / alt başlık / hiçbir şey gösterir — ham dağınıklık asla. */
-const AYLAR = ["ocak", "şubat", "mart", "nisan", "mayıs", "haziran", "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık"];
-const AY_RE = /(\d{1,2})\s+(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s+(\d{4})/gi;
-const TARIH_RE = /(\d{1,2})[./](\d{1,2})[./](\d{4})/g;
-const tarihYaz = (m) => `${String(m[1]).padStart(2, "0")}.${String(m[2]).padStart(2, "0")}.${m[3]}`;
-
-function rgSayisi(k, rg, tarih) {
-  if (tarih) {
-    const son = k.slice(tarih.index + tarih[0].length);
-    const s = son.match(/^\s*(?:\/\s*(\d{3,6})|-\s*(\d{4,6})|(?:tarih(?:li)?\s*)?(?:[/,]|ve)?\s*(?:Sayı\s*:?\s*)?(\d{4,6})\b(?![./]\d))/i);
-    if (s) return s[1] || s[2] || s[3];
-  }
-  const sonra = k.slice(rg.index + rg[0].length, rg.index + rg[0].length + 60);
-  const s2 = sonra.match(/^\s*:?\s*(\d{4,6})\b(?![./]\d)/) || sonra.match(/Sayı\s*:?\s*(\d{4,6})/i)
-    || k.slice(Math.max(0, rg.index - 40), rg.index).match(/(\d{4,6})\s*(?:mükerrer\s*)?sayılı\s*$/i);
-  return s2 ? s2[1] : null;
-}
-
-export function kunyeCoz(kunye = "") {
-  const k = String(kunye || "").replace(/\s+/g, " ").trim()
-    .replace(AY_RE, (_, g, a, y) => `${g}.${AYLAR.indexOf(a.toLocaleLowerCase("tr")) + 1}.${y}`);
-  const mulga = /MÜLGA|yürürlükten kaldırılmıştır/i.test(k);
-  const r = { kabul: null, rgTarih: null, rgSayi: null, kararTarih: null, duz: false, altBaslik: null,
-    mulga, yururlukte: !mulga && /Y[ÜU]R[ÜU]RL[ÜU]KTE/i.test(k) };
-  if (!k) return r;
-  const tarihler = [...k.matchAll(TARIH_RE)];
-  const kabul = k.match(/Kabul(?:\s*Tarihi)?\s*:?\s*(\d{1,2})[./](\d{1,2})[./](\d{4})/i);
-  if (kabul) r.kabul = tarihYaz(kabul);
-  const rg = k.match(/\bRG\b|Resm[iî]\s*Gazete/i);
-  if (rg) {
-    const yakin = tarihler
-      .filter((t) => !(kabul && t.index >= kabul.index && t.index < kabul.index + kabul[0].length))
-      .map((t) => ({ t, d: Math.min(Math.abs(t.index - rg.index), Math.abs(t.index - rg.index - rg[0].length)) }))
-      .sort((a, b) => a.d - b.d)[0];
-    const tarih = yakin && yakin.d < 48 ? yakin.t : null;
-    if (tarih) r.rgTarih = tarihYaz(tarih);
-    r.rgSayi = rgSayisi(k, rg, tarih);
-  }
-  if (!r.rgTarih) {
-    const karar = k.match(/Karar(?:ının)?\s*Tarihi\s*:?\s*(\d{1,2})[./](\d{1,2})[./](\d{4})/i);
-    if (karar) r.kararTarih = tarihYaz(karar);
-    r.duz = /Düstur/i.test(k);
-  }
-  if (!tarihler.length && /^\(.*\)$/.test(k)) r.altBaslik = k.slice(1, -1).trim();
-  return r;
-}
-
-/* Künye-öncesi kaynak notu → kaynak bağlantısı + metnin NİTELİĞİ. Korpustaki notlar metnin
-   lafzî mi yoksa madde özeti mi olduğunu açıkça söyler; okur bunu ilk satırda görmeli
-   (madde özeti hukuki atıf için yeterli değildir). Tanınmazsa nitelik null → çip basılmaz. */
-export function kaynakNotuCoz(govde = "") {
-  const g = String(govde || "");
-  const u = g.match(/Kaynak\s*:\s*(https:\/\/[^\s)]+)/i);
-  let host = null;
-  try { host = u ? new URL(u[1]).hostname.replace(/^www\./, "") : null; } catch { host = null; }
-  const kucuk = g.toLocaleLowerCase("tr");
-  const nitelik = /özetlerinden|lafz[iî] tam metin değil/.test(kucuk) ? "ozet"
-    : /yakın-lafz/.test(kucuk) ? "yakin" : /lafz[iî]\s*metn/.test(kucuk) ? "lafzi" : null;
-  return { url: host ? u[1] : null, host, nitelik };
-}
-const NITELIK = {
-  lafzi: { ad: "Lafzî metin", aciklama: "Resmî metinden birebir alınmıştır.", renk: "yesil" },
-  yakin: { ad: "Yakın-lafzî alıntı", aciklama: "Resmî metne yakın alıntı; atıf öncesi asıl metinle karşılaştırın.", renk: "sari" },
-  ozet: { ad: "Madde özeti", aciklama: "Lafzî metin değildir; hukuki atıf için resmî kaynağı açın.", renk: "sari" },
-};
 
 /* Okuma ölçüsü: ~68 KARAKTER/satır. "68ch" CSS'te "0" glifinin genişliğidir; Instrument
    Sans'ta ortalama harf ondan dar olduğundan 68ch ≈ 92 karakter çıkıyordu (ölçüldü).
@@ -142,19 +86,103 @@ const kenarBasligi = (b) => b.baslik.replace(MADDE_BASLIK_RE, "").replace(/^\s*[
 const turKisa = (tur) => (tur === "ek" ? "Ek" : tur === "gecici" ? "Geçici" : "Madde");
 const blokKimlik = (b) => `${b.tur}-${b.no}`;
 
+/* Okuma başlığının künye satırı — ham künye yerine çözülmüş olgular (Kabul · RG tarih/sayı ·
+   yürürlük) + metnin NİTELİĞİ + resmî kaynak bağlantısı. Nitelik okurun ilk bakışta bilmesi
+   gereken şeydir: madde özeti hukuki atıf için yeterli değildir (CLAUDE.md §1). Renk tek
+   sinyal değil — nitelik adı metin olarak yazılı, açıklaması title + ekran okuyucuda. */
+const DURUM = {
+  yururlukte: { ad: "Yürürlükte", renk: DERIN.yesil },
+  kismen: { ad: "Kısmen yürürlükte", renk: DERIN.sari },
+  mulga: { ad: "Mülga", renk: DERIN.R },
+};
+
+/* Metnin niteliği + yürürlüğü için kalıcı uyarı şeridi (legislation.gov.uk'in "Changes to
+   legislation" bandı gibi): künye çipi OLGUYU söyler, şerit okurun NE YAPMASI gerektiğini.
+   Lafzî ve yürürlükteki metinde basılmaz — yalnız atıf riski olan hâlde görünür. */
+function NitelikSeridi({ kunye, metin }) {
+  const kn = kunyeCoz(kunye);
+  const not = kaynakNotuCoz(String(metin || "").slice(0, 1200));
+  const mulga = kn.durum === "mulga";
+  const ozet = not.nitelik === "ozet" || not.nitelik === "yakin";
+  if (!mulga && !ozet) return null;
+  const renk = mulga ? R : BANT.sari.c;
+  const baslik = mulga ? "Yürürlükte değil." : not.nitelik === "ozet" ? "Madde özeti — lafzî metin değildir." : "Yakın-lafzî alıntı.";
+  const govde = mulga
+    ? "Bu mevzuata yeni yazıda dayanılamaz; kaynak notundaki yürürlükteki karşılığını kullanın."
+    : "Hukuki atıf yapmadan önce maddeyi resmî metinle karşılaştırın.";
+  return (
+    <p role="note" className="mo-serit" style={{ margin: `${SP.m}px 0 0`, display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: `2px ${SP.s}px`, padding: `${SP.s}px ${SP.m}px`,
+      borderRadius: RAD.ctl, background: ALFA(renk), boxShadow: `inset 3px 0 0 ${renk}`, ...TYPE.data, color: PAL.ink2 }}>
+      <strong style={{ fontWeight: 650, color: mulga ? DERIN.R : DERIN.sari }}>{baslik}</strong>
+      <span className={mulga ? undefined : "mo-serit-govde"}>{govde}</span>
+      {not.url && !mulga && (
+        <a href={not.url} target="_blank" rel="noopener noreferrer" {...focusRing} style={{ color: DERIN.T, fontWeight: 600, textUnderlineOffset: 3, borderRadius: RAD.chip, whiteSpace: "nowrap" }}>
+          Resmî metni aç<span aria-hidden="true"> ↗</span><span style={SR_ONLY}> ({not.host}, yeni sekmede)</span>
+        </a>
+      )}
+    </p>
+  );
+}
+
+function KunyeSatiri({ kunye, metin, yer }) {
+  const kn = kunyeCoz(kunye);
+  const not = kaynakNotuCoz(String(metin || "").slice(0, 1200));
+  const nit = not.nitelik ? NITELIK[not.nitelik] : null;
+  const parca = [
+    kn.kabul && ["Kabul", kn.kabul],
+    kn.rgTarih && ["RG", kn.rgSayi ? `${kn.rgTarih} / ${kn.rgSayi}` : kn.rgTarih],
+    !kn.rgTarih && kn.kararTarih && ["Karar", kn.kararTarih],
+  ].filter(Boolean);
+  const ham = !parca.length ? (kn.altBaslik || kunye) : null;
+  const durum = DURUM[kn.durum] || null;
+  return (
+    <div className={`mo-kunye mo-kunye-${yer}`} style={{ margin: `${SP.s}px 0 0`, display: "flex", flexWrap: "wrap", alignItems: "center", gap: `${SP.xs}px ${SP.m}px`, fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.mut2, ...TNUM }}>
+      {parca.map(([e, d]) => (
+        <span key={e} title={kunye || undefined} style={{ whiteSpace: "nowrap" }}><span style={{ color: PAL.mut3 }}>{e} </span>{d}</span>
+      ))}
+      {ham && <span title={kunye} style={{ overflowWrap: "anywhere" }}>{ham}</span>}
+      {durum && <span style={{ fontFamily: "inherit", fontWeight: 600, color: durum.renk, whiteSpace: "nowrap" }}>{durum.ad}</span>}
+      {nit && (
+        <span title={nit.aciklama} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "1px 8px", borderRadius: RAD.chip, whiteSpace: "nowrap",
+          border: `1px solid color-mix(in srgb, ${BANT[nit.renk].c} 40%, transparent)`, background: ALFA(BANT[nit.renk].c), color: DERIN[nit.renk], fontWeight: 600 }}>
+          <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: BANT[nit.renk].c }} />
+          {nit.ad}<span style={SR_ONLY}>: {nit.aciklama}</span>
+        </span>
+      )}
+      {not.url && (
+        <a href={not.url} target="_blank" rel="noopener noreferrer" {...focusRing}
+          style={{ display: "inline-flex", alignItems: "center", gap: 4, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3, whiteSpace: "nowrap", borderRadius: RAD.chip }}>
+          {not.host}<span aria-hidden="true">↗</span><span style={SR_ONLY}> (resmî kaynak, yeni sekmede açılır)</span>
+        </a>
+      )}
+    </div>
+  );
+}
+
+/* Künye-sonrası kaynak notu. Telefonda KATLI gelir: 390px'te 20+ satırlık not ilk maddeyi
+   ikinci ekrana itiyordu; özü (nitelik + yürürlük) zaten başlıktaki şerit/çipte. Masaüstünde
+   açık, özet satırı gizli (native <details>: klavye + ekran okuyucu hazır). */
+const telefonMu = () => typeof window !== "undefined" && window.matchMedia?.("(max-width: 820px)").matches;
+function KaynakNotu({ govde }) {
+  const [acik] = useState(() => !telefonMu());
+  const ps = paragraflar(govde);
+  return (
+    <aside className="mo-satir" aria-label="Kaynak notu" style={{ marginBottom: SP.xxl }}>
+      <div className="mo-kenar" aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, paddingTop: 3 }}>KAYNAK<br className="mo-kenar-br" /> NOTU</div>
+      <details open={acik} className="mo-not" style={{ borderLeft: `1px solid ${PAL.line}`, paddingLeft: SP.l, maxWidth: OLCU }}>
+        <summary className="mo-not-ozet" {...focusRing} style={{ cursor: "pointer", ...TYPE.data, color: DERIN.T, fontWeight: 600, borderRadius: RAD.chip, padding: "6px 0", minHeight: 32 }}>
+          Kaynak notunu göster · {ps.length} paragraf
+        </summary>
+        {ps.map((p, i) => <p key={i} style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2, overflowWrap: "anywhere", textWrap: "pretty" }}>{p}</p>)}
+      </details>
+    </aside>
+  );
+}
+
 /* Tek madde — numara sol kenarda asılı (Archivo, kenar notu), kenar başlığı + akıtılmış gövde
    ~68ch ölçüde. Hedef madde mühür moru tint + "Önerilen madde" etiketi. */
-function MaddeBlok({ blok, vurgulu, anchorRef, kayitRef }) {
-  if (blok.no === null) {
-    return (
-      <aside className="mo-satir" style={{ marginBottom: SP.xxl }}>
-        <div className="mo-kenar" aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, paddingTop: 3 }}>KAYNAK<br />NOTU</div>
-        <div style={{ borderLeft: `1px solid ${PAL.line}`, paddingLeft: SP.l, maxWidth: OLCU }}>
-          {paragraflar(blok.govde).map((p, i) => <p key={i} style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2, overflowWrap: "anywhere", textWrap: "pretty" }}>{p}</p>)}
-        </div>
-      </aside>
-    );
-  }
+function MaddeBlok({ blok, vurgulu, anchorRef, kayitRef, sorgu }) {
+  if (blok.no === null) return <KaynakNotu govde={blok.govde} />;
   const kenar = kenarBasligi(blok);
   return (
     <section ref={(el) => { kayitRef(el); if (vurgulu && anchorRef) anchorRef.current = el; }} data-madde={blokKimlik(blok)}
@@ -166,9 +194,9 @@ function MaddeBlok({ blok, vurgulu, anchorRef, kayitRef }) {
         <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 30, lineHeight: "32px", fontStretch: "112%", letterSpacing: "-.03em", color: vurgulu ? DERIN.V : PAL.ink, ...TNUM }}>{blok.no}</div>
       </div>
       <div style={{ minWidth: 0, maxWidth: OLCU }}>
-        {vurgulu && <div style={{ ...TYPE.antet, color: DERIN.V, marginBottom: SP.xs }}>ÖNERİLEN MADDE</div>}
+        {vurgulu && <div style={{ ...TYPE.antet, color: DERIN.V, marginBottom: SP.xs }}>{sorgu ? "ARAMA SONUCU" : "ÖNERİLEN MADDE"}</div>}
         {kenar && <h3 style={{ margin: `2px 0 ${SP.s + 2}px`, fontFamily: DISPLAY, fontSize: 19, lineHeight: "24px", fontWeight: 650, fontStretch: "104%", letterSpacing: "-.01em", color: vurgulu ? DERIN.V : PAL.ink, textWrap: "balance" }}>{kenar}</h3>}
-        {paragraflar(blok.govde).map((p, i) => <Paragraf key={i} metin={p} />)}
+        {paragraflar(blok.govde).map((p, i) => <Paragraf key={i} metin={p} sorgu={sorgu} />)}
       </div>
     </section>
   );
@@ -182,16 +210,30 @@ function MaddeDizini({ maddeler, aktif, onGit, vurguKimlik }) {
     const el = listeRef.current?.querySelector(`[data-dizin="${aktif}"]`);
     el?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [aktif]);
+  // Ok tuşları (↑↓ masaüstü, ←→ telefon şeridi) + Home/End: dizinde gezer VE maddeye atlar.
+  // Roving tabindex — Tab dizine bir kez girer (19 maddelik yönetmelikte 19 durak değil);
+  // klavye eylemi animasyonsuz (Emil sıklık kuralı → onGit(k, true) anında kaydırır).
+  const tusla = (e) => {
+    const yon = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+    if (yon == null && e.key !== "Home" && e.key !== "End") return;
+    e.preventDefault();
+    const simdi = maddeler.findIndex((b) => blokKimlik(b) === e.target.dataset?.dizin);
+    const i = e.key === "Home" ? 0 : e.key === "End" ? maddeler.length - 1 : Math.min(maddeler.length - 1, Math.max(0, (simdi < 0 ? 0 : simdi) + yon));
+    const k = blokKimlik(maddeler[i]);
+    listeRef.current?.querySelector(`[data-dizin="${k}"]`)?.focus();
+    onGit(k, true);
+  };
+  const durak = maddeler.some((b) => blokKimlik(b) === aktif) ? aktif : blokKimlik(maddeler[0]);
   return (
     <nav aria-label="Madde dizini" className="mo-dizin">
       <div className="mo-dizin-baslik" style={{ ...TYPE.antet, color: PAL.mut3, padding: `0 ${SP.m}px ${SP.s}px` }}>MADDELER · {maddeler.length}</div>
-      <ol ref={listeRef} className="mo-dizin-liste" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+      <ol ref={listeRef} className="mo-dizin-liste" onKeyDown={tusla} aria-describedby="mo-dizin-ipucu" style={{ listStyle: "none", margin: 0, padding: 0 }}>
         {maddeler.map((b) => {
           const k = blokKimlik(b);
           const secili = aktif === k;
           return (
             <li key={k}>
-              <button type="button" data-dizin={k} onClick={() => onGit(k)} aria-current={secili ? "location" : undefined} {...focusRing}
+              <button type="button" data-dizin={k} onClick={() => onGit(k)} aria-current={secili ? "location" : undefined} {...focusRing} tabIndex={k === durak ? 0 : -1}
                 className="mo-dizin-oge"
                 style={{ display: "flex", alignItems: "baseline", gap: SP.s, width: "100%", boxSizing: "border-box", textAlign: "left", cursor: "pointer", border: "none",
                   background: secili ? ALFA(T) : "transparent", borderRadius: RAD.chip, padding: "5px 10px",
@@ -205,6 +247,10 @@ function MaddeDizini({ maddeler, aktif, onGit, vurguKimlik }) {
           );
         })}
       </ol>
+      <span id="mo-dizin-ipucu" style={SR_ONLY}>Ok tuşlarıyla maddeler arasında gezinin.</span>
+      <div className="mo-dizin-ipucu" aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, padding: `${SP.m}px ${SP.m}px 0`, display: "flex", gap: SP.xs, alignItems: "center" }}>
+        <kbd className="mo-kbd">↑</kbd><kbd className="mo-kbd">↓</kbd> GEZİN · <kbd className="mo-kbd">ESC</kbd> KAPAT
+      </div>
     </nav>
   );
 }
@@ -227,12 +273,35 @@ function turEtiketi(baslik = "", no = "") {
 const OKUMA_CSS = `
 .mo-kok{padding:${SP.xl}px}
 .mo-kagit{width:min(960px,100%);height:min(92vh,1000px);border-radius:${RAD.pop}px}
+.mo-kunye-tel{display:none!important}
 .mo-govde{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:0;flex:1}
 .mo-dizin{border-right:1px solid var(--ke-line);padding:${SP.xl}px ${SP.s}px;overflow-y:auto;overscroll-behavior:contain}
 .mo-satir{display:grid;grid-template-columns:76px minmax(0,1fr);column-gap:${SP.xl}px}
 .mo-metin{padding:${SP.xxl}px clamp(16px,4vw,56px) ${SP.xxxl}px clamp(8px,2vw,24px)}
 .mo-dizin-oge:hover{background:var(--ke-hov)!important;color:var(--ke-ink)!important}
+.mo-kbd{font:inherit;font-size:10px;padding:0 5px;border:1px solid var(--ke-line);border-bottom-width:2px;border-radius:4px;background:var(--ke-surf2)}
+.mo-dogrula{font-size:.875em;font-style:italic;color:var(--ke-mut);text-decoration:underline dashed color-mix(in srgb, var(--ke-bant-sari) 90%, transparent);text-decoration-thickness:1.5px;text-underline-offset:5px;text-decoration-skip-ink:none}
+.mo-vurgu{color:inherit;padding:0;border-radius:2px;background:linear-gradient(color-mix(in srgb, var(--ke-bant-sari) 38%, transparent),color-mix(in srgb, var(--ke-bant-sari) 38%, transparent)) no-repeat 0 85%/100% 70%;animation:mo-kalem .18s var(--ke-ease-out) both}
+@keyframes mo-kalem{from{background-size:0% 70%}to{background-size:100% 70%}}
+.mo-iskelet{background:linear-gradient(90deg,var(--ke-press) 0 40%,color-mix(in srgb,var(--ke-press) 45%,transparent) 50%,var(--ke-press) 60% 100%);background-size:250% 100%;animation:mo-kuru 1.4s linear infinite;border-radius:3px}
+@keyframes mo-kuru{from{background-position:100% 0}to{background-position:-150% 0}}
+/* Okuma ilerlemesi JS'siz: kaydırma zaman çizelgesi (Chrome 115+/Safari 26). Desteklemeyen
+   tarayıcıda ve reduced-motion'da (global kural animasyonu kapatır) rAF yedeği çalışır. */
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:scroll()){
+  .mo-kagit{timeline-scope:--mo-oku}
+  .mo-metin{scroll-timeline:--mo-oku block}
+  .mo-ilerleme{animation:mo-ilerle linear both;animation-timeline:--mo-oku}
+}}
+@keyframes mo-ilerle{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.mo-not-ozet{display:none}
+.mo-not>summary{list-style:none}
+.mo-not>summary::-webkit-details-marker{display:none}
 @media (max-width:820px){
+  .mo-dizin-ipucu{display:none!important}
+  .mo-not-ozet{display:block}
+  .mo-not[open] .mo-not-ozet{display:none}
+  .mo-kenar-br{display:none}
+  .mo-serit-govde{display:none}
   .mo-kok{padding:0}
   .mo-kagit{width:100%;height:100%;border-radius:0;border:none!important}
   .mo-govde{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
@@ -247,13 +316,17 @@ const OKUMA_CSS = `
   .mo-satir[data-vurgu]{padding-left:${SP.l}px!important}
   .mo-kenar{text-align:left!important;display:flex;align-items:baseline;gap:${SP.s}px}
   .mo-metin{padding:${SP.xl}px ${SP.l}px ${SP.xxxl}px}
-  .mo-kunye{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mo-kunye-masa{display:none!important}
+  .mo-kunye-tel{display:flex!important;margin-top:${SP.m}px!important}
   .mo-baslik-no{font-size:34px!important;line-height:36px!important}
 }
 `;
 
 const ICERIK_CACHE = new Map(); // dosya → içerik yanıtı (modal her açılışta yeniden inmesin)
 const azaltilmisHareket = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+/* CSS kaydırma zaman çizelgesi ilerlemeyi sürüyorsa JS satır içi transform yazmaz (yazarsa
+   animasyonun üstüne çıkmaz ama gereksiz iş yapar ve iki kaynak çatışır). */
+const cssIlerleme = () => typeof CSS !== "undefined" && CSS.supports?.("animation-timeline: scroll()") && !azaltilmisHareket();
 
 /* Kaydırma kabı → ilerleme çizgisi (ref ile, render'sız) + scroll-spy (aktif madde). */
 function useOkumaIzleyici(kapRef, cizgiRef, maddeEl, bloklar) {
@@ -262,10 +335,11 @@ function useOkumaIzleyici(kapRef, cizgiRef, maddeEl, bloklar) {
     const kap = kapRef.current;
     if (!kap) return undefined;
     let kare = 0;
+    const jsIlerleme = !cssIlerleme();
     const olc = () => {
       kare = 0;
       const max = kap.scrollHeight - kap.clientHeight;
-      if (cizgiRef.current) cizgiRef.current.style.transform = `scaleX(${max > 0 ? Math.min(1, kap.scrollTop / max) : 0})`;
+      if (jsIlerleme && cizgiRef.current) cizgiRef.current.style.transform = `scaleX(${max > 0 ? Math.min(1, kap.scrollTop / max) : 0})`;
       const esik = kap.getBoundingClientRect().top + 96;
       let bulunan = null;
       for (const el of maddeEl.current.values()) {
@@ -282,13 +356,55 @@ function useOkumaIzleyici(kapRef, cizgiRef, maddeEl, bloklar) {
   return aktif;
 }
 
+/* Yükleniyor — gerçek madde düzeninin iskeleti (kenar numarası + kenar başlığı + gövde
+   satırları); "kuruyan mürekkep" taraması. Spinner yok: okur metnin NEREYE geleceğini görür. */
+function OkumaIskelet() {
+  return (
+    <div aria-busy="true">
+      <span role="status" style={SR_ONLY}>Tam metin yükleniyor…</span>
+      {[0, 1, 2].map((i) => (
+        <div key={i} aria-hidden="true" className="mo-satir" style={{ marginBottom: SP.xxl }}>
+          <div className="mo-kenar" style={{ display: "grid", justifyItems: "end", gap: 6 }}>
+            <span className="mo-iskelet" style={{ width: 34, height: 8 }} />
+            <span className="mo-iskelet" style={{ width: 26, height: 26 }} />
+          </div>
+          <div style={{ display: "grid", gap: 10, maxWidth: OLCU }}>
+            <span className="mo-iskelet" style={{ width: "42%", height: 16, marginBottom: 4 }} />
+            {[96, 100, 91, 64].map((w, j) => <span key={j} className="mo-iskelet" style={{ width: `${w}%`, height: 10 }} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* İçerik alınamadı — ne olduğu + ne yapılacağı + (ikincil) teknik kod. Tek eylem: Tekrar dene. */
+function OkumaHata({ kod, onTekrar }) {
+  return (
+    <div role="alert" className="mo-satir" style={{ paddingTop: SP.s }}>
+      <div className="mo-kenar" aria-hidden="true" style={{ display: "flex", justifyContent: "flex-end", color: DERIN.R, paddingTop: 2 }}><Icon.alert width={22} height={22} /></div>
+      <div style={{ maxWidth: OLCU }}>
+        <h3 style={{ margin: `0 0 ${SP.s}px`, ...TYPE.h2, fontSize: 18, color: PAL.ink }}>Tam metin sunucudan alınamadı</h3>
+        <p style={{ margin: `0 0 ${SP.l}px`, ...TYPE.ui, color: PAL.mut2, textWrap: "pretty" }}>
+          Mevzuat kaydı yerinde; yalnız metin şu anda indirilemedi. Bağlantınızı kontrol edip tekrar deneyin — sorun sürerse kataloğa dönüp başka bir kaynak açabilirsiniz.
+        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
+          <Btn primary onClick={onTekrar}>Tekrar dene</Btn>
+          {kod && <span style={{ fontFamily: MONO, fontSize: 11.5, color: PAL.mut3, letterSpacing: ".04em" }}>{kod}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* Okuma modalı — ortada geniş kâğıt (telefonda tam ekran), arka plan karartılır.
    Esc / dış tıklama / kapat düğmesi kapatır; açılışta odak kapat butonuna, gövde kaydırması kilitlenir.
    view'dan BAĞIMSIZ: nerede render edilirse edilsin (Mevzuat sayfası VEYA ayrıntılı sonuç
    ekranı üstünde global overlay) aynı davranır. */
-export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
+export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onClose }) {
   const [icerik, setIcerik] = useState(ICERIK_CACHE.get(dosya) || null); // null=yükleniyor, "hata", {...}
   const [deneme, setDeneme] = useState(0);
+  const [hataKod, setHataKod] = useState(null); // "HTTP 500" · "AĞ" — teknik ayrıntı, mono + ikincil
   const closeRef = useRef(null);
   const maddeRef = useRef(null);
   const kapRef = useRef(null);
@@ -302,7 +418,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
     fetch(`/mevzuat/icerik/${encodeURIComponent(dosya)}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((d) => { ICERIK_CACHE.set(dosya, d); if (!iptal) setIcerik(d); })
-      .catch(() => { if (!iptal) setIcerik("hata"); });
+      .catch((e) => { if (!iptal) { setHataKod(/^\d+$/.test(e?.message) ? `HTTP ${e.message}` : "AĞ BAĞLANTISI"); setIcerik("hata"); } });
     return () => { iptal = true; };
   }, [dosya, deneme]);
 
@@ -336,13 +452,15 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
     return () => cancelAnimationFrame(id);
   }, [bloklar, maddeNo]);
 
-  const git = useCallback((k) => {
-    maddeEl.current.get(k)?.scrollIntoView({ block: "start", behavior: azaltilmisHareket() ? "auto" : "smooth" });
+  const git = useCallback((k, anlik = false) => {
+    maddeEl.current.get(k)?.scrollIntoView({ block: "start", behavior: anlik || azaltilmisHareket() ? "auto" : "smooth" });
   }, []);
   const kayit = (b) => (el) => { const k = blokKimlik(b); if (el) maddeEl.current.set(k, el); else maddeEl.current.delete(k); };
 
   const hazir = icerik && icerik !== "hata";
   const tur = hazir ? turEtiketi(icerik.baslik, icerik.no) : null;
+  const mulga = hazir && kunyeCoz(icerik.kunye).durum === "mulga";
+  const tekrarDene = () => { closeRef.current?.focus(); setDeneme((n) => n + 1); }; // düğme kaybolunca odak diyalog içinde kalsın
 
   return (
     // nu-sol: scrim tek karede çakılmak yerine solarak gelir (içerik nu-rise ile — iki katman
@@ -359,43 +477,43 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", onClose }) {
           </div>
           <div style={{ display: "flex", alignItems: "flex-start", gap: SP.l, marginTop: SP.m }}>
             {hazir && icerik.no && (
-              <span className="mo-baslik-no" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 44, lineHeight: "44px", fontStretch: "118%", letterSpacing: "-.035em", color: DERIN.T, flexShrink: 0, ...TNUM }}>{icerik.no}</span>
+              <span className="mo-baslik-no" style={{ position: "relative", fontFamily: DISPLAY, fontWeight: 800, fontSize: 44, lineHeight: "44px", fontStretch: "118%", letterSpacing: "-.035em", color: mulga ? PAL.mut2 : DERIN.T, flexShrink: 0, ...TNUM }}>
+                {icerik.no}
+                {/* Görünümün hükmü: yürürlükte olmayan metin — numaranın üstüne basılmış tek damga. */}
+                {mulga && <Damga ton={R} egim={-8} kucuk style={{ position: "absolute", left: "50%", top: "62%", translate: "-50% 0", background: PAL.surfPop }}>Mülga</Damga>}
+              </span>
             )}
             <div style={{ minWidth: 0, flex: 1, paddingTop: 2 }}>
-              <h2 id="mevzuat-okuma-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink, textWrap: "balance" }}>
+              <h2 id="mevzuat-okuma-h" style={{ margin: 0, ...TYPE.h2, ...(hazir && icerik.baslik?.length > 110 ? { fontSize: 17, lineHeight: "22px" } : null), color: PAL.ink, textWrap: "balance" }}>
                 {icerik === null ? "Mevzuat yükleniyor…" : icerik === "hata" ? "Mevzuat açılamadı" : icerik.baslik}
               </h2>
-              {hazir && icerik.kunye && (
-                <p className="mo-kunye" title={icerik.kunye} style={{ margin: `${SP.xs + 2}px 0 0`, fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.mut2, overflowWrap: "anywhere" }}>{icerik.kunye}</p>
-              )}
+              {hazir && <KunyeSatiri yer="masa" kunye={icerik.kunye} metin={icerik.metin} />}
             </div>
             <button ref={closeRef} type="button" onClick={onClose} aria-label="Okuma panelini kapat" {...focusRing} data-press="" data-dokunma=""
               onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
               style={{ cursor: "pointer", width: 36, height: 36, display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0, borderRadius: RAD.ctl, border: `1px solid ${PAL.lineHi}`, background: PAL.surf, color: PAL.ink2, flexShrink: 0, transition: "background .12s ease-out, transform .14s var(--ke-ease-out)" }}><Icon.x /></button>
           </div>
+          {/* Telefon: künye dar başlık sütununa sığmaz → tam genişlikte (masaüstü kopyası gizlenir;
+             display:none erişilebilirlik ağacından da düşer, tekrar okunmaz). */}
+          {hazir && <KunyeSatiri yer="tel" kunye={icerik.kunye} metin={icerik.metin} />}
+          {hazir && <NitelikSeridi kunye={icerik.kunye} metin={icerik.metin} />}
           {/* Çift antet çizgisi + üstünde okuma ilerlemesi (kaydırma oranı, yalnız transform). */}
           <div aria-hidden="true" style={{ position: "relative", marginTop: SP.l, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: .9 }}>
-            <span ref={cizgiRef} style={{ position: "absolute", left: 0, right: 0, top: -2, height: 2, background: T, transformOrigin: "0 50%", transform: "scaleX(0)" }} />
+            <span ref={cizgiRef} className="mo-ilerleme" style={{ position: "absolute", left: 0, right: 0, top: -2, height: 2, background: T, transformOrigin: "0 50%", transform: "scaleX(0)" }} />
           </div>
         </header>
 
         <div className="mo-govde">
           {maddeler.length > 1 ? <MaddeDizini maddeler={maddeler} aktif={aktif} onGit={git} vurguKimlik={vurguKimlik} /> : <div aria-hidden="true" className="mo-dizin" />}
-          <div ref={kapRef} data-kaydirma-kapsa="" tabIndex={-1} className="mo-metin" style={{ overflowY: "auto", minHeight: 0, outline: "none" }}>
-            {icerik === null && (
-              <div role="status" style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: PAL.mut2, padding: "16px 0" }}>
-                <Icon.spin /> Tam metin yükleniyor…
-              </div>
-            )}
-            {icerik === "hata" && (
-              <div role="alert" style={{ ...TYPE.data, color: PAL.ink2, padding: "8px 0" }}>
-                Tam metin şu anda alınamıyor. Lütfen tekrar deneyin.
-                <div style={{ marginTop: SP.m }}><Btn onClick={() => setDeneme((n) => n + 1)}>Tekrar dene</Btn></div>
-              </div>
-            )}
+          {/* Kaydırılan metin bölgesi klavyeyle odaklanabilir (axe: scrollable-region-focusable):
+             Tab dizinden buraya gelir, ↑↓/PgDn ile okunur; diyaloğun SON durağı olduğu için
+             odak döngüsü buradan kapat düğmesine sarar (önceden odak BODY'ye kaçıyordu). */}
+          <div ref={kapRef} data-kaydirma-kapsa="" tabIndex={0} role="region" aria-label="Mevzuat metni" className="mo-metin" {...focusRing} style={{ overflowY: "auto", minHeight: 0, outline: "none" }}>
+            {icerik === null && <OkumaIskelet />}
+            {icerik === "hata" && <OkumaHata kod={hataKod} onTekrar={tekrarDene} />}
             {bloklar.map((b, i) => (
-              <MaddeBlok key={i} blok={b} kayitRef={b.no === null ? () => {} : kayit(b)}
+              <MaddeBlok key={i} blok={b} sorgu={sorgu} kayitRef={b.no === null ? () => {} : kayit(b)}
                 vurgulu={maddeNo != null && b.no === maddeNo && b.tur === maddeTur} anchorRef={maddeRef} />
             ))}
             {hazir && bloklar.length > 0 && (

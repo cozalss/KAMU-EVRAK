@@ -127,12 +127,20 @@ function Vaat() {
   );
 }
 
-function Field({ label, children }) {
+/* Alan — resmî formun numaralı satırı ("01  E-posta"): dilekçe/başvuru formlarındaki alan
+   numarası, mono künye diliyle. Numara dekordur (aria-hidden); erişilebilir ad yalnız etiket. */
+/* Etiket girdiyi SARMAZ, htmlFor ile bağlanır: sarmalayan etiket, içindeki göz düğmesinin
+   adını ve büyük-harf uyarısını girdinin erişilebilir adına katıyordu ("Parola Parolayı göster"). */
+function Field({ label, no, id, children, ek }) {
   return (
-    <motion.label variants={YUKSEL} style={{ display: "block", marginBottom: SP.l }}>
-      <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink2, marginBottom: 6 }}>{label}</span>
+    <motion.div variants={YUKSEL} style={{ marginBottom: SP.l }}>
+      <label htmlFor={id} style={{ display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.data, fontWeight: 600, color: PAL.ink2, marginBottom: 6 }}>
+        {no && <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, fontWeight: 500, letterSpacing: ".04em", color: PAL.mut3, ...TNUM }}>{no}</span>}
+        <span>{label}</span>
+      </label>
       {children}
-    </motion.label>
+      {ek}
+    </motion.div>
   );
 }
 
@@ -158,12 +166,21 @@ const GozIkon = {
 };
 
 // Parola alanı — göster/gizle düğmesi; düğme odağı çalmaz (mousedown preventDefault).
-function ParolaField({ label, value, onChange, autoComplete, placeholder }) {
+// Büyük harf kilidi uyarısı: "parolam doğru ama girmiyor"un en sık sebebi. Yalnız alan
+// odaktayken ve kilit GERÇEKTEN açıkken (getModifierState) görünür; metin + ikon.
+function ParolaField({ label, no, value, onChange, autoComplete, placeholder, hatali, describedBy }) {
   const [goster, setGoster] = useState(false);
+  const [buyukHarf, setBuyukHarf] = useState(false);
+  const kilitOku = (e) => setBuyukHarf(!!e.getModifierState?.("CapsLock"));
   return (
-    <Field label={label}>
+    <Field label={label} no={no} id="ke-f-parola" ek={buyukHarf && (
+      <span role="status" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, ...TYPE.meta, color: DERIN.sari }}>
+        <Icon.alert width={13} height={13} />Büyük harf kilidi açık
+      </span>
+    )}>
       <span style={{ position: "relative", display: "block" }}>
-        <Girdi type={goster ? "text" : "password"} value={value} onChange={onChange} autoComplete={autoComplete} required placeholder={placeholder} style={{ paddingRight: 48 }} />
+        <Girdi id="ke-f-parola" type={goster ? "text" : "password"} value={value} onChange={onChange} autoComplete={autoComplete} required placeholder={placeholder} style={{ paddingRight: 48 }}
+          aria-invalid={hatali || undefined} aria-describedby={describedBy} onKeyDown={kilitOku} onKeyUp={kilitOku} onBlur={() => setBuyukHarf(false)} />
         <button type="button" className="ke-goz" onClick={() => setGoster((g) => !g)} onMouseDown={(e) => e.preventDefault()}
           aria-label={goster ? "Parolayı gizle" : "Parolayı göster"} aria-pressed={goster}
           title={goster ? "Parolayı gizle" : "Parolayı göster"} {...focusRing}>
@@ -196,6 +213,27 @@ function ModeTabs({ mode, onChange }) {
   );
 }
 
+const sureYaz = (sn) => `${Math.floor(sn / 60)}:${String(sn % 60).padStart(2, "0")}`;
+
+/* Hata notu — iki ton: kimlik/doğrulama hatası (kırmızı: ne oldu, ne yapmalı) ve hız sınırı
+   (sarı: hata DEĞİL geçici kilit — bekleyince kendiliğinden açılır). role=alert yalnız
+   ilk iletide okunur; geri sayım SR'yi her saniye rahatsız etmez (süre düğme metninde). */
+function HataNotu({ metin, kilit }) {
+  const c = kilit ? BANT.sari.c : BANT.kirmizi.c;
+  return (
+    <motion.div role="alert" id="ke-auth-hata"
+      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
+      style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: "10px 12px", marginBottom: SP.l, borderRadius: RAD.ctl, background: ALFA(c), borderLeft: `3px solid ${c}`, color: kilit ? DERIN.sari : DERIN.kirmizi, ...TYPE.data }}>
+      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2 }}>{kilit ? <Icon.clock width={14} height={14} /> : <Icon.alert />}</span>
+      <span style={{ minWidth: 0 }}>
+        {kilit
+          ? <><strong style={{ fontWeight: 600 }}>Güvenlik için giriş geçici olarak kilitlendi.</strong> Kısa sürede çok deneme yapıldı; süre dolunca form kendiliğinden açılır.</>
+          : metin}
+      </span>
+    </motion.div>
+  );
+}
+
 function TemaDugme({ tema, onTemaDegistir }) {
   const koyu = tema === "dark";
   return (
@@ -221,12 +259,33 @@ export default function AuthPage({ tema, onTemaDegistir }) {
   const [form, setForm] = useState({ eposta: "", parola: "", ad_soyad: "", birim_kod: "", unvan: "" });
   const [birimler, setBirimler] = useState([]);
   const [hata, setHata] = useState("");
+  const [hataDurum, setHataDurum] = useState(0);        // 401/422 → alanlar aria-invalid; 429 → kilit
+  const [kilitSn, setKilitSn] = useState(0);            // hız sınırı geri sayımı (sn)
   const [busy, setBusy] = useState(false);
   const [sifreNot, setSifreNot] = useState(false);     // "şifremi unuttum" yönlendirme notu açık mı
   const kagitRef = useRef(null);                       // hata → form kâğıdı iki kez yatay sallanır (WAAPI)
   const kayit = mode === "kayit";
-  const set = (k) => (v) => setForm((f) => ({ ...f, [k]: v }));
-  const changeMode = (id) => { setMode(id); setHata(""); setSifreNot(false); };
+  // Kullanıcı alanı düzeltmeye başlayınca kırmızı çerçeve kalkar (hata metni bir sonraki gönderime dek durur).
+  const set = (k) => (v) => { setForm((f) => ({ ...f, [k]: v })); if (hataDurum === 401 || hataDurum === 422) setHataDurum(-1); };
+  const changeMode = (id) => { setMode(id); setHata(""); setHataDurum(0); setSifreNot(false); };
+  const kilitli = kilitSn > 0;
+  const alanHatali = hataDurum === 401 || hataDurum === 422;
+
+  // 429 geri sayımı — saniyede bir; sıfırlanınca hata notu da kalkar (artık geçerli değil).
+  useEffect(() => {
+    if (!kilitli) return undefined;
+    const t = setTimeout(() => {
+      if (kilitSn <= 1) { setHata(""); setHataDurum(0); }
+      setKilitSn((s) => Math.max(0, s - 1));
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [kilitli, kilitSn]);
+
+  // Hata → kâğıt iki kez yatay sallanır (Hamle 9). Hareket azaltılmışsa yok.
+  const salla = () => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    kagitRef.current?.animate?.([{ transform: "translateX(0)" }, { transform: "translateX(-7px)" }, { transform: "translateX(6px)" }, { transform: "translateX(-4px)" }, { transform: "translateX(3px)" }, { transform: "translateX(0)" }], { duration: 360, easing: "ease-out" });
+  };
 
   useEffect(() => {
     birimleriGetir().then((b) => {
@@ -237,7 +296,11 @@ export default function AuthPage({ tema, onTemaDegistir }) {
 
   const submit = async (e) => {
     e?.preventDefault?.();
-    setHata("");
+    if (kilitli) return;
+    setHata(""); setHataDurum(0);
+    // İstemci ön denetimi: boş alan için sunucuya gidilip giriş hakkı (5/dk) yakılmaz.
+    const eksik = kayit && !form.ad_soyad.trim() ? "Ad soyad" : !form.eposta.trim() ? "E-posta" : !form.parola ? "Parola" : "";
+    if (eksik) { setHata(`${eksik} alanı boş bırakılamaz.`); setHataDurum(422); salla(); return; }
     setBusy(true);
     try {
       if (kayit) {
@@ -251,9 +314,9 @@ export default function AuthPage({ tema, onTemaDegistir }) {
       // başarı → AuthProvider status="auth" → Root dashboard'a geçer (unmount).
     } catch (err) {
       setHata(err.message || "Bir hata oluştu.");
-      if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-        kagitRef.current?.animate?.([{ transform: "translateX(0)" }, { transform: "translateX(-7px)" }, { transform: "translateX(6px)" }, { transform: "translateX(-4px)" }, { transform: "translateX(3px)" }, { transform: "translateX(0)" }], { duration: 360, easing: "ease-out" });
-      }
+      setHataDurum(err.status || 0);
+      if (err.status === 429) setKilitSn(err.tekrarSaniye || 60);
+      salla();
       setBusy(false);
     }
   };
@@ -266,12 +329,12 @@ export default function AuthPage({ tema, onTemaDegistir }) {
         <div aria-hidden="true" className="ke-auth-lif" style={{ backgroundImage: `url("${GRAIN}")` }} />
 
         {/* Üst şerit — ana sayfa + tema (mobilde en üstte; masaüstünde form sütununun başında). */}
-        <motion.div variants={SOL} className="ke-auth-ust">
+        <motion.header variants={SOL} className="ke-auth-ust">
           <a href="/" className="ke-ust-link" {...focusRing}>
             <Icon.arrow style={{ transform: "rotate(180deg)" }} />Ana sayfa
           </a>
           <TemaDugme tema={tema} onTemaDegistir={onTemaDegistir} />
-        </motion.div>
+        </motion.header>
 
         {/* Sol — masa: antet, vaat, sahne. */}
         <section className="ke-auth-sol" aria-label="Ürün tanıtımı">
@@ -319,30 +382,31 @@ export default function AuthPage({ tema, onTemaDegistir }) {
 
               <form onSubmit={submit} noValidate>
                 {kayit && (
-                  <Field label="Ad soyad">
-                    <Girdi value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
+                  <Field label="Ad soyad" no="01" id="ke-f-ad">
+                    <Girdi id="ke-f-ad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
                   </Field>
                 )}
-                <Field label="E-posta">
-                  <Girdi type="email" value={form.eposta} onChange={set("eposta")} autoComplete="email" required placeholder="ad.soyad@kurum.gov.tr" />
+                <Field id="ke-f-eposta" label="E-posta" no={kayit ? "02" : "01"}>
+                  <Girdi id="ke-f-eposta" type="email" value={form.eposta} onChange={set("eposta")} autoComplete="email" required placeholder="ad.soyad@kurum.gov.tr"
+                    inputMode="email" spellCheck={false} aria-invalid={alanHatali || undefined} aria-describedby={hata ? "ke-auth-hata" : undefined} />
                 </Field>
                 {kayit && (
                   <>
-                    <Field label="Birim">
+                    <Field label="Birim" no="03" id="ke-f-birim">
                       <span style={{ position: "relative", display: "block" }}>
-                        <select className="ke-girdi" value={form.birim_kod} onChange={(e) => set("birim_kod")(e.target.value)} required style={{ appearance: "none", WebkitAppearance: "none", paddingRight: 40, cursor: "pointer" }}>
+                        <select id="ke-f-birim" className="ke-girdi" value={form.birim_kod} onChange={(e) => set("birim_kod")(e.target.value)} required style={{ appearance: "none", WebkitAppearance: "none", paddingRight: 40, cursor: "pointer" }}>
                           {birimler.length === 0 && <option value="">Yükleniyor…</option>}
                           {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: PAL.surf }}>{b.ad}</option>)}
                         </select>
                         <span aria-hidden="true" style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%) rotate(90deg)", display: "flex", color: PAL.mut2, pointerEvents: "none" }}><Icon.okSag /></span>
                       </span>
                     </Field>
-                    <Field label="Unvan (opsiyonel)">
-                      <Girdi value={form.unvan} onChange={set("unvan")} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
+                    <Field label="Unvan (opsiyonel)" no="04" id="ke-f-unvan">
+                      <Girdi id="ke-f-unvan" value={form.unvan} onChange={set("unvan")} autoComplete="organization-title" placeholder="Yazı İşleri Müdürü" />
                     </Field>
                   </>
                 )}
-                <ParolaField label="Parola" value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
+                <ParolaField label="Parola" no={kayit ? "05" : "02"} hatali={alanHatali} describedBy={hata ? "ke-auth-hata" : undefined} value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
 
                 {!kayit && (
                   <div style={{ marginTop: -SP.s, marginBottom: SP.l, textAlign: "right" }}>
@@ -361,20 +425,14 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                 )}
 
                 <AnimatePresence initial={false}>
-                  {hata && (
-                    <motion.div role="alert" aria-live="assertive" key="hata"
-                      initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
-                      style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: "10px 12px", marginBottom: SP.l, borderRadius: RAD.ctl, background: ALFA(BANT.kirmizi.c), borderLeft: `3px solid ${BANT.kirmizi.c}`, color: DERIN.kirmizi, ...TYPE.data }}>
-                      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2 }}><Icon.alert /></span><span>{hata}</span>
-                    </motion.div>
-                  )}
+                  {hata && <HataNotu key={kilitli ? "kilit" : "hata"} metin={hata} kilit={kilitli} />}
                 </AnimatePresence>
 
                 <div className="ke-cta">
-                  <Btn primary type="submit" disabled={busy} style={{ width: "100%", justifyContent: "center", minHeight: 48, fontWeight: 600 }}>
-                    {busy ? <span aria-hidden="true" className="ke-spin" /> : null}
-                    {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : (kayit ? "Hesap oluştur" : "Giriş yap")}
-                    {!busy && <span aria-hidden="true" className="ke-ok"><Icon.arrow width={16} height={16} /></span>}
+                  <Btn primary type="submit" disabled={busy || kilitli} style={{ width: "100%", justifyContent: "center", minHeight: 48, fontWeight: 600, ...TNUM }}>
+                    {busy ? <span aria-hidden="true" className="ke-spin" /> : kilitli ? <Icon.clock width={16} height={16} /> : null}
+                    {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : kilitli ? `Yeniden deneme ${sureYaz(kilitSn)}` : (kayit ? "Hesap oluştur" : "Giriş yap")}
+                    {!busy && !kilitli && <span aria-hidden="true" className="ke-ok"><Icon.arrow width={16} height={16} /></span>}
                   </Btn>
                 </div>
               </form>
@@ -418,6 +476,7 @@ const AUTH_CSS = `
   transition:border-color .15s ease, box-shadow .2s ease, background .15s ease; }
 .ke-girdi::placeholder{ color:${PAL.mut3}; opacity:1; }
 .ke-girdi:hover{ border-color:color-mix(in srgb, ${PAL.ink} 45%, transparent); }
+.ke-girdi[aria-invalid="true"]{ border-color:${BANT.kirmizi.c}; }
 .ke-girdi:focus-visible, .ke-girdi:focus{ border-color:${T}; box-shadow:0 0 0 4px color-mix(in srgb, ${T} 18%, transparent); }
 .ke-goz{ position:absolute; right:6px; top:50%; transform:translateY(-50%); display:inline-flex; align-items:center; justify-content:center;
   width:36px; height:36px; padding:0; border:none; background:transparent; color:${PAL.mut2}; cursor:pointer; border-radius:${RAD.ctl}px; transition:color .12s ease, background .12s ease; }

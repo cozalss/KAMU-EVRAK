@@ -19,7 +19,8 @@
    Saf çekirdek (tarih ayrıştırma, işaret haritası, ay ızgarası) lib/sureTakvimi.js'te. */
 import { useMemo, useState } from "react";
 import { Icon, MONO, DISPLAY, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
-import { DURUM_AGIRLIK, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi } from "../lib/sureTakvimi.js";
+import { iskeletCizgi, iskeletNefes } from "./PanelBrif.jsx";
+import { DURUM_AGIRLIK, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi, gunGenislik } from "../lib/sureTakvimi.js";
 
 const AY_ADI = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const GUN_KISA = ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pa"];
@@ -90,7 +91,10 @@ function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira }) {
         background: seciliMi ? ALFA(V) : "transparent", fontWeight: 700,
         color: bugunMu ? DERIN.T : seciliMi ? DERIN.V : DERIN_OF(renk), transition: GECIS }}>
       <Muhur renk={renk} kalin={kayit.agirlik >= 3} gecikme={420 + sira * 80} gun={gunNo} />
-      <span style={{ position: "relative" }}>{gunNo}</span>
+      {/* Hamle 6: işaretli günün rakamı Archivo'da, genişliği günün en sıkışık süresini
+          kodlar (bol süre geniş, gecikmiş dar). Renk + nokta + aria ayrı taşıyıcılar. */}
+      <span style={{ position: "relative", fontFamily: DISPLAY, fontSize: 14, fontWeight: 800, letterSpacing: "-.01em",
+        fontStretch: `${gunGenislik(kayit)}%` }}>{gunNo}</span>
       {/* Nokta adedi = evrak sayısı (en çok 3) — sayının renkten bağımsız ikinci taşıyıcısı. */}
       <span aria-hidden="true" style={{ position: "absolute", bottom: "18%", display: "flex", gap: 2 }}>
         {kayit.ogeler.slice(0, 3).map((x) => <span key={x.id} style={{ width: 3, height: 3, borderRadius: RAD.dot, background: ogeRenk(x) }} />)}
@@ -281,6 +285,52 @@ function AySeridi({ ozet, ay, buAy, onGit }) {
   );
 }
 
+/* Yükleme iskeleti — takvimin ŞEKLİ (başlık, ay şeridi, 7×6 kare ızgara, lejant, gün paneli),
+   işaret yok. Masaüstünde brif satırına gerilir (height:100%); telefonda doğal boyu gerçek
+   takvime yakındır ve katın altında kalır. Gün sayısı/işaret UYDURULMAZ: hücreler boş kare. */
+const ISKELET_HAFTA = 6;
+export function TakvimIskelet() {
+  return (
+    <section aria-hidden="true"
+      style={{ height: "100%", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.line}`,
+        borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden", ...iskeletNefes(150) }}>
+      <div style={{ padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, height: 28 }}>
+          <span style={iskeletCizgi(13, 13)} />
+          <span style={iskeletCizgi(92, 10)} />
+          <span style={{ flex: 1, height: 1, background: PAL.line, minWidth: 8 }} />
+          <span style={iskeletCizgi(28, 28, { borderRadius: RAD.ctl })} />
+          <span style={iskeletCizgi(28, 28, { borderRadius: RAD.ctl })} />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, height: 30, marginTop: SP.s }}>
+          <span style={iskeletCizgi(132, 22)} />
+          <span style={iskeletCizgi(84, 10)} />
+        </div>
+        <span style={iskeletCizgi("100%", 44, { marginTop: SP.m, borderRadius: RAD.ctl })} />
+      </div>
+      <div style={{ flex: 1, padding: `${SP.m}px ${SP.l}px ${SP.l}px` }}>
+        <div style={{ width: "100%", maxWidth: 308, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 2 }}>
+            {GUN_KISA.map((g) => <span key={g} style={{ display: "flex", justifyContent: "center", padding: "5px 0" }}><span style={iskeletCizgi(14, 8)} /></span>)}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
+            {Array.from({ length: ISKELET_HAFTA * 7 }, (_, i) => <span key={i} style={{ aspectRatio: "1", borderRadius: RAD.ctl, background: PAL.surfHi }} />)}
+          </div>
+        </div>
+        <span style={iskeletCizgi("62%", 10, { margin: `${SP.s + 3}px auto 0` })} />
+        <div style={{ marginTop: SP.m + 3 }}>
+          {[70, 54, 62].map((w) => (
+            <div key={w} style={{ display: "flex", alignItems: "center", gap: SP.s, height: 44, borderTop: `1px solid ${PAL.line}` }}>
+              <span style={iskeletCizgi(8, 8, { borderRadius: RAD.dot })} />
+              <span style={iskeletCizgi(`${w}%`, 10)} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function SureTakvimi({ kuyrukSla = [] }) {
   const bugun = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const buAy = useMemo(() => new Date(bugun.getFullYear(), bugun.getMonth(), 1), [bugun]);
@@ -303,15 +353,20 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
 
   return (
     <section aria-label="Yasal süre takvimi"
-      style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden" }}>
+      style={{ height: "100%", display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden" }}>
 
       {/* Başlık — iki kat: antet künyesi + gezinme üstte, Archivo ay adı + ay sayacı altta.
           Tek satırdayken 390px'te sayaç kırpılıyordu ("son gü…"). Altında ay şeridi. */}
       <div style={{ padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.antet, color: PAL.mut3 }}>
+        {/* flexWrap (tur 3): telefonda 44px dokunma hedefli üç düğme künyeyle tek satıra
+            sığmıyor, kart overflow:hidden olduğundan "Sonraki ay" oku kırpılıyordu. */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: SP.s, ...TYPE.antet, color: PAL.mut3 }}>
           <span aria-hidden="true" style={{ display: "flex" }}><Icon.takvim width={13} height={13} /></span>
           <span style={{ whiteSpace: "nowrap" }}>SÜRE TAKVİMİ</span>
           <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 8 }} />
+          {/* Gezinme tek birim: dar kartta BÜTÜN olarak alt satıra iner (tek okun yetim
+              kalması yok). */}
+          <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s, marginLeft: "auto" }}>
           {fark !== 0 && (
             <button type="button" onClick={() => ayaGit(buAy)} {...focusRing} data-press="" data-dokunma=""
               aria-label={`Bu aya dön — ${AY_ADI[buAy.getMonth()]} ${buAy.getFullYear()}`}
@@ -324,8 +379,9 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
           )}
           <AyOk yon="sol" onClick={() => ayDegis(-1)} etiket="Önceki ay" />
           <AyOk yon="sag" onClick={() => ayDegis(1)} etiket="Sonraki ay" />
+          </span>
         </div>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.m, marginTop: SP.s }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: `${SP.xs}px ${SP.m}px`, marginTop: SP.s }}>
           <h3 aria-live="polite" style={{ margin: 0, fontFamily: DISPLAY, fontWeight: 800, fontStretch: "118%", fontSize: 26, lineHeight: "30px",
             letterSpacing: "-.02em", color: PAL.ink, whiteSpace: "nowrap" }}>
             {AY_ADI[ay.getMonth()]} <span style={{ color: PAL.mut3, fontWeight: 600, fontStretch: "100%" }}>{ay.getFullYear()}</span>
@@ -339,8 +395,8 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
         {ozet.size > 0 && <div style={{ marginTop: SP.m }}><AySeridi ozet={ozet} ay={ay} buAy={buAy} onGit={ayaGit} /></div>}
       </div>
 
-      <div style={{ padding: `${SP.m}px ${SP.l}px ${SP.l}px` }}>
-        <div style={{ maxWidth: 360, margin: "0 auto" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: `${SP.m}px ${SP.l}px ${SP.l}px` }}>
+        <div style={{ width: "100%", maxWidth: 308, margin: "0 auto" }}>
           <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 2 }}>
             {GUN_KISA.map((g, i) => (
               <span key={g} style={{ textAlign: "center", ...TYPE.antet, fontSize: 10, color: i >= 5 ? PAL.mut3 : PAL.mut2, padding: "2px 0" }}>{g}</span>
@@ -357,14 +413,9 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
           </div>
         </div>
 
-        <div style={{ marginTop: SP.m }}>
-          {isaretliGunler.length || seciliKayit
-            ? <GunPaneli isaretliGunler={isaretliGunler} seciliKayit={seciliKayit} onSec={setSecili} ayAdi={AY_ADI[ay.getMonth()]} />
-            : <BosAy ay={ay} ozet={ozet} onGit={ayaGit} />}
-        </div>
-
-        {/* Lejant — mühür örnekleriyle (renk + şekil birlikte). */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.m}px`, marginTop: SP.m, paddingTop: SP.s, borderTop: `1px dashed ${PAL.lineHi}` }}>
+        {/* Lejant — mühür örnekleriyle (renk + şekil birlikte). Izgaranın HEMEN altında (tur 3):
+            işaretin yanında okunur ve kart dibinde sabit Asistan düğmesinin altında kalmaz. */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.m}px`, justifyContent: "center", marginTop: SP.s }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, ...TYPE.meta, color: PAL.mut2 }}>
             <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: 2, background: DERIN.T }} />Bugün
           </span>
@@ -374,6 +425,12 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
             </span>
           ))}
         </div>
+        <div style={{ marginTop: SP.m }}>
+          {isaretliGunler.length || seciliKayit
+            ? <GunPaneli isaretliGunler={isaretliGunler} seciliKayit={seciliKayit} onSec={setSecili} ayAdi={AY_ADI[ay.getMonth()]} />
+            : <BosAy ay={ay} ozet={ozet} onGit={ayaGit} />}
+        </div>
+
       </div>
     </section>
   );

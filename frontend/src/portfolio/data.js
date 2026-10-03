@@ -1,4 +1,4 @@
-// Standalone landing içeriği — kamu-evrak (TEKNOFEST 2026, 1. Senaryo).
+// Standalone landing içeriği — kamu-evrak.
 // Tüm sayılar/iddialar gerçek kaynak dosyalardan doğrulandı (backend/agents,
 // data/, retrieval/, eval/, docs/). Uydurma mevzuat maddesi / gerçek PII yok.
 // Görseller placeholder; sahip ileride değiştirecek.

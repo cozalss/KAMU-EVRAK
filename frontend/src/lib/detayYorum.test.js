@@ -427,6 +427,12 @@ test("skor: BİRİMSİZ puandır — başlıkta yüzde işareti YOK (kategori ha
   assert.match(y.baslik, /\/ 1/);          // ölçek açıkça yazılır: 0,87 / 1
 });
 
+test("skor: gerekçe ağırlığı da BİRİMSİZ yazılır — yüzde değil (ağırlık = ciddiyet × isabet)", () => {
+  const y = riskSkorYorum(0.45, [0.3139, 0.2, null], "sari", "olculdu");
+  assert.deepEqual(y.payEtiketleri, ["0,31", "0,20", null]);
+  for (const e of y.payEtiketleri.filter(Boolean)) assert.doesNotMatch(e, /%/);
+});
+
 test("skor: çubuk genişliği ayrı alandır (dolgu) — sunulan sayı değil", () => {
   const y = riskSkorYorum(0.87, [0.82], "kirmizi", "olculdu");
   assert.equal(y.dolgu, 87);               // 0..100, YALNIZ görsel çubuk için
@@ -784,4 +790,19 @@ test("denetim rozeti: hash yoksa rozet BASILMAZ (mühür iddiası uydurulmaz)", 
 
 test("denetim rozeti: bozuk zincir tipi düşürmez", () => {
   assert.equal(denetimRozeti({ zincir: "üç", son_hash: "abc" }), null);
+});
+
+/* ---- hukumYorum: onay kapısında DURAKLAYAN koşum "tamamlandı" sayılmaz (CLAUDE.md §9) ---- */
+test("hüküm: onay_bekliyor → başlık 'tamamlandı' DEMEZ, bekleyen kararı söyler", () => {
+  const h = hukumYorum({ onay_bekliyor: true, risk_metadata: { bant: "kirmizi" }, verify_uyari: ["x"] });
+  assert.doesNotMatch(h.baslik, /tamamland/);
+  assert.match(h.baslik, /^Memur onayı bekliyor/);
+  assert.match(h.baslik, /1 kontrol noktası/);
+  assert.equal(h.ton, "kirmizi");
+});
+
+test("hüküm: onay_bekliyor sarı bantta ton sarı kalır", () => {
+  const h = hukumYorum({ onay_bekliyor: true, risk_metadata: { bant: "sari" } });
+  assert.match(h.baslik, /^Memur onayı bekliyor · sarı risk bandı$/);
+  assert.equal(h.ton, "sari");
 });

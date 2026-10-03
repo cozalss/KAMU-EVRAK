@@ -138,7 +138,9 @@ def _coklu_sinyal(text: str) -> bool:
     if len(_NUMARALI_MADDE.findall(text)) >= 2:
         return True
     t = tr_lower(text)
-    return sum(1 for kok in set(_SINYAL_KOK) if kok in t) >= 2
+    # NİYET sayılır, kök değil: aynı niyetin önek çiftleri ("yapılması"/"yapılmasını") eskiden
+    # iki kez sayılıp tek talepli dilekçede LLM'i boşuna çağırıyordu (461 metinde 72 → 32).
+    return sum(1 for _, koks in _NIYET if any(k in t for k in koks)) >= 2
 
 
 def _talep_iceriyor(seg: str) -> bool:

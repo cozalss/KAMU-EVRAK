@@ -47,7 +47,7 @@ e-mühürü, üretim entegrasyonunda CBDDO'nun açık kaynak e-Yazışma API'ler
 (Java/.NET) veya kurum EBYS'si üzerinden eklenir. Resmî XSD şemalı Ustveri.xml
 üretimi de aynı entegrasyon noktasına bırakılmıştır (şema iddiası taşınmaz).
 
-İçerik SENTETİKTİR (TEKNOFEST 2026 — gerçek kamu verisi kullanılmaz).
+Örnek içerik SENTETİKTİR (gerçek kamu verisi kullanılmaz).
 """
 
 

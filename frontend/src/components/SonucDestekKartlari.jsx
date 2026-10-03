@@ -176,6 +176,7 @@ export function RiskCard({ r, band, bantC }) {
         <div style={{ display: "flex", flexDirection: "column", gap: SP.xs, marginTop: r.risk_metadata?.aciklama ? SP.s : 0 }}>
           {yorumlar.map((yorum, i) => {
             const pay = skor?.paylar?.[i];
+            const payEtiket = skor?.payEtiketleri?.[i];
             return (
               <div key={i} className="sc-risk-reason">
                 <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: bantC, flex: "none" }} />
@@ -185,7 +186,8 @@ export function RiskCard({ r, band, bantC }) {
                     <span className="sc-risk-meter" aria-hidden="true" style={{ background: PAL.press }}>
                       <span style={{ display: "block", height: "100%", width: `${Math.min(100, pay)}%`, background: bantC }} />
                     </span>
-                    <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, width: 34, textAlign: "right", flexShrink: 0 }}>%{pay}</span>
+                    {/* Ağırlık birimsizdir (CLAUDE.md §7) — "%21" değil "0,21". */}
+                    <span title="Bu nedenin ağırlığı (ciddiyet × isabet), birimsiz" style={{ ...TYPE.meta, ...TNUM, color: PAL.mut3, width: 34, textAlign: "right", flexShrink: 0 }}>{payEtiket}</span>
                   </>
                 )}
               </div>

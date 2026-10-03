@@ -29,7 +29,11 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
    `nu-damga`. **Dikkat bütçesi:** ekran başına en fazla 1–2 damga. Her çipi damgaya çevirme;
    damga = "bu görünümün hükmü".
 3. **Dosya sırtı** (kenar çubuğu aktif öğesi): seçili öğe rayın sağ kenarını aşıp sayfa
-   zeminiyle birleşir (iç bükey köşeler), `layoutId` ile öğeler arasında kayar.
+   zeminiyle birleşir (iç bükey köşeler). Sırt aktif öğenin İÇİNDE düz bir `span`'dır; girişi
+   yalnız soldan açılan kısa bir `clip-path` keyframe'i (`nu-sirt`, 220 ms) — son kare her
+   zaman tam sırttır. **motion `layoutId` ile öğeler arası kaydırma KULLANILMAZ:** projeksiyon
+   durumu bozulunca sırt tıklamada "beyaz yanıp sönüyor", aktif metin lacivert üstünde koyu
+   kalıyordu (kullanıcı bulgusu, 2026-10-03). Geri dönme.
 
 ## Token'lar
 
@@ -67,10 +71,31 @@ sayfa zeminine bağlanır (`--ke-sayfa*` token'ları :root'ta hesaplanıp miras 
 Tailwind YALNIZ çalışma alanında (`tailwind.app.config.js`, renkler `var(--ke-*)`,
 preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yok.
 
+## Kabuk: asistan ve durum yüzeyleri (tur 3)
+
+- **Asistan tetiği kenar çubuğundadır, yüzen düğme YOK.** Sağ-alt FAB her ekranda bir köşeyi
+  örtüyordu (Panel takvim lejantı, telefonda satırın "İşle" düğmesi); güvenli alt boşluk yalnız
+  sayfa sonunda işe yarar. Tetik (`[data-asistan-tetik]`) hesap kartının üstünde, ikincil dilde;
+  kısayol `Ctrl/⌘ + .`. Panel cilt sırtının 12 px yanından, sol-alt kökenden `.96→1` yay ile
+  açılır (hiçlikten değil), 140 ms'de aynı köşeye kapanır; telefonda tam genişlik alttan.
+  Haberleşme iki window olayıyla: `ke-asistan` (aç/kapa isteği) · `ke-asistan-durum` (açık mı).
+  Sesli görüşme diski panelin çapasında doğar (tam ekran değil, zeminsiz orb).
+- **Asistan mesajı = havale notu fişi.** Araç sonucu kayıtlar nota zımbalı ek olarak durur;
+  yalnız EN SON araç sonucu mini damga taşır ("3 kayıt · Gelen") — panel başına tek damga.
+- **Hata sınırı = "hata kaydı" fişi** (`HataSiniri`): antet künyesi + saat, ne oldu / ne
+  yapılmalı, "Yeniden dene" (bölümü sıfırlar) + "Sayfayı yenile", teknik ayrıntı mono ve
+  `<details>` içinde gizli. `tam` prop'u görünüm düzeyi sarmalama içindir.
+- **Giriş formu = numaralı resmî form** (Form KE-01): alan numaraları mono; hatalı alan
+  `aria-invalid` + kırmızı kenar; hız sınırı (429) hata değil SARI geçici kilit, düğme geri
+  sayımlı (`authApi.tekrarDenemeSaniye`); büyük harf kilidi uyarısı.
+- **Çevrimdışı**: kenar çubuğunda kesikli sarı "ÇEVRİMDIŞI" künyesi (`role=status`).
+
 ## Erişilebilirlik tabanı
 
-`focusRing` her tıklanabilirde · renk tek sinyal değil (ikon + metin) · telefonda 44px
-dokunma hedefi (`data-dokunma`) · 16px girdi puntosu (iOS zoom) · AA kontrast iki temada.
+`focusRing` her tıklanabilirde — **çift çizgi halka** (`FOCUS_HALKA`: 2 px tükenmez + 2 px
+boşluk + 1 px ince; antet çizgisi/Damga çerçevesiyle aynı dil) · renk tek sinyal değil (ikon +
+metin) · telefonda 44px dokunma hedefi (`data-dokunma`) · 16px girdi puntosu (iOS zoom) · AA
+kontrast iki temada.
 
 ## Teslim öncesi
 

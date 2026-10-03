@@ -184,7 +184,7 @@ export default function FilterBar({ config, filter, compact = false, showResultC
   ];
   return (
     <section role="region" aria-labelledby="flt-h" style={{ marginBottom: compact ? SP.m : SP.l, display: "flex", flexDirection: "column", gap: SP.m }}>
-      <h3 id="flt-h" style={SR_ONLY}>Filtreler</h3>
+      <h2 id="flt-h" style={SR_ONLY}>Filtreler</h2>
       <div style={{ display: "flex", gap: SP.s, flexWrap: "wrap", alignItems: "center" }}>
         {config.search?.enabled && <FilterInput config={config} filter={filter} />}
         {(config.select || []).map((s) => (

@@ -139,9 +139,31 @@ async function apiFetch(path, { method = "GET", body, auth = true } = {}) {
     body: body != null ? JSON.stringify(body) : undefined,
   });
 
-  if (!res.ok) throw new Error(await parseError(res));
+  if (!res.ok) {
+    // Durum + bekleme süresi hataya iliştirilir: giriş ekranı hız sınırını (429) sıradan bir
+    // hatadan AYIRIR — düğme geri sayımla kilitlenir, kullanıcı boşa deneyip sayacı yakmaz.
+    const err = new Error(await parseError(res));
+    err.status = res.status;
+    err.tekrarSaniye = tekrarDenemeSaniye(res.status, res.headers?.get?.("Retry-After"));
+    throw err;
+  }
   if (res.status === 204) return null;
   return res.json();
+}
+
+/** Hız sınırı (429) sonrası kaç saniye beklenmeli? Retry-After (saniye ya da HTTP tarihi)
+ *  varsa ondan, yoksa giriş ucunun penceresinden (5/dk → 60 sn). 429 değilse 0.
+ *  Üst sınır 15 dk: bozuk/aşırı başlık arayüzü saatlerce kilitlemesin. */
+export function tekrarDenemeSaniye(status, retryAfter, simdi = Date.now()) {
+  if (status !== 429) return 0;
+  const ham = String(retryAfter ?? "").trim();
+  let sn = 60;
+  if (/^\d+$/.test(ham)) sn = Number(ham);
+  else if (ham) {
+    const t = Date.parse(ham);
+    if (!Number.isNaN(t)) sn = Math.ceil((t - simdi) / 1000);
+  }
+  return Math.min(900, Math.max(1, sn));
 }
 
 // Eşzamanlı 401'ler (açılışta benKimim + islemler + giden-evrak aynı anda tetiklenir,

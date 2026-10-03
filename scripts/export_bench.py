@@ -33,8 +33,7 @@ SETLER: dict[str, tuple[str, str]] = {
 README_SABLON = """# KamuEvrak-Bench
 
 Türk kamu evrak ve yazışma süreçleri (dilekçe, bilgi edinme, CİMER, tebligat, fatura…)
-için **%100 sentetik** değerlendirme seti — TEKNOFEST 2026 "Yapay Zeka Dil Ajanları /
-Kamu Evrak" senaryosu kapsamında üretildi. Taramamızda bu alan için yayımlanmış açık
+için **%100 sentetik** değerlendirme seti — kamu-evrak projesi kapsamında üretildi. Taramamızda bu alan için yayımlanmış açık
 Türkçe benchmark bulunamadı (Temmuz 2026) [DOĞRULA: yayın öncesi literatür taraması].
 
 ## Bileşim
@@ -60,7 +59,7 @@ uyumu, OCR CER/WER (`eval/ocr_eval.py`), istatistik (Wilson/McNemar) `eval/stats
 ## Lisans ve atıf
 
 Kod MIT (ana repo); veri **CC-BY-4.0** önerilir [kesinleştirilecek]. Atıf:
-`KamuEvrak-Bench (2026), TEKNOFEST Yapay Zeka Dil Ajanları — Kamu Evrak senaryosu`.
+`KamuEvrak-Bench (2026), kamu-evrak — Türkçe kamu evrak ve yazışma değerlendirme seti`.
 """
 
 

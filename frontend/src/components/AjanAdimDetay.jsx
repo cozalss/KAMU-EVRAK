@@ -15,7 +15,8 @@ import {
   Chip, MevzuatRow, SlaPanel, slaInfo, subSlaRenk, ZincirStepper, Vrow, CopyChip, KanitAlinti,
   BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
-import { Paraf } from "./CanliMetro.jsx";
+import { Paraf, CanliSure } from "./CanliMetro.jsx";
+import { nodeDurationMs } from "../lib/pipelinePhases.js";
 import {
   MONO, DISPLAY, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, focusRing, Icon, KV, RiskBand, odakDongusu,
 } from "./neonUi.jsx";
@@ -497,8 +498,12 @@ function KonumSeridi({ display, idx, onGit }) {
 /* Durum çipi — adımın anlık durumu (satır başına 1 semantik çip).
    `a` verildiğinde durum lib/akisKatman.adimDurumu'ndan türer; sahnedeki istasyonla aynı
    kaynağı okur (aynı adım iki yüzeyde farklı durum gösteremez). */
-function DurumCip({ st, col, a = null }) {
+function DurumCip({ st, col, a = null, durdu = false }) {
   const durum = a ? adimDurumu(a) : null;
+  // Koşum hata ile kesildiyse bekleyen adım "sırada" değildir — akış ona hiç ulaşmayacak.
+  if (durdu && durum === "bekliyor") {
+    return <Chip c={PAL.mut2} label="İşlem önceki bir adımda durduğu için bu adım işlenmedi">işlenmedi</Chip>;
+  }
   if (durum === "atlandi") {
     return <Chip c={PAL.mut2} label="Bu adım bu koşumda hiç çalışmadı (akış başka dala gitti)">çalışmadı</Chip>;
   }
@@ -511,7 +516,7 @@ function DurumCip({ st, col, a = null }) {
   return <Chip c={PAL.mut2} label="Adım sırada bekliyor">sırada</Chip>;
 }
 
-export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) {
+export default function AjanAdimDetay({ idx, display, result, onKapat, onGit, runBase = 0 }) {
   const kapatRef = useRef(null);
   const oncekiOdak = useRef(null);
   const a = display[idx];
@@ -544,11 +549,20 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
   if (!a) return null;
   const col = a.gorev === 2 ? V : T;
   const bantC = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : null;
-  const ms = a.t1 - a.t0;
-  const sure = a.status === "done" && Number.isFinite(ms) ? (ms >= 50 ? `${(ms / 1000).toFixed(1)} sn` : "anlık") : null;
+  // Süre pusuladaki satırla AYNI kaynaktan (sunucu telemetrisi önce — nodeDurationMs) ve
+  // Türkçe ondalıkla; eskiden modal istemci t1−t0'ı "1.8 sn" yazıyor, satır "1,8 sn" diyordu.
+  const ms = nodeDurationMs(a);
+  const sure = a.status === "done" && Number.isFinite(ms) ? (ms >= 50 ? `${(ms / 1000).toFixed(1).replace(".", ",")} sn` : "anlık") : null;
   const Icerik = GOVDE[a.id] || GenelDetay;
   const d = a.data || {};
-  const calismadi = a.status === "pending";
+  const durdu = display.some((x) => x.status === "error");
+  const durum = adimDurumu(a);
+  const calismadi = durum === "bekliyor" || durum === "atlandi";
+  const calismadiNot = durum === "atlandi"
+    ? "Akış koşullu dalda başka yere gitti; bu adım bu koşumda hiç çalışmadı."
+    : durdu
+      ? "İşlem önceki bir adımda durduğu için bu adıma sıra gelmedi."
+      : "Bu adım henüz çalışmadı; sıra geldiğinde çıktısı burada görünür.";
   const onceki = display[idx - 1], sonraki = display[idx + 1];
 
   const navBtn = (hedef, etiket, sagOk) => (
@@ -597,11 +611,12 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
             <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
               {/* key={a.id}: adım değişince başlık taze girişle gelir */}
               <h2 key={a.id} style={{ margin: 0, ...TYPE.h2, fontSize: 24, lineHeight: "28px", color: PAL.ink, animation: "ke-e-yaz .4s var(--ke-ease-out) both" }}>{a.label}</h2>
-              <DurumCip st={a.status} col={bantC || col} a={a} />
+              <DurumCip st={a.status} col={bantC || col} a={a} durdu={durdu} />
             </div>
             <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
               <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{a.gorev === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
               {" · "}adım {idx + 1}/{toplam}{sure ? ` · ${sure}` : ""}
+              {a.status === "active" && <>{" · "}<CanliSure runBase={runBase} t0={a.t0} style={{ color: DERIN_OF(col), fontWeight: 600 }} /></>}
               {a.status === "done" && a.out ? ` · ${a.out}` : ""}
             </div>
           </div>
@@ -621,7 +636,7 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
             kopya küçük modalda gürültüydü (jüri bulgusu). */}
         <Bolum t="Çıktı ve gerekçe">
           {calismadi ? (
-            <Not t="Bu adım henüz çalışmadı; sıra geldiğinde çıktısı burada görünür." />
+            <Not t={calismadiNot} />
           ) : a.status === "error" ? (
             <div role="alert" style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 12px", background: ALFA(BANT.kirmizi.c), border: `1px solid ${BANT.kirmizi.c}`, borderRadius: RAD.card, ...TYPE.data, fontWeight: 500, color: DERIN.kirmizi }}>
               <Icon.alert /> Adım hatayla sonuçlandı — koşum bu noktada kesildi.
@@ -635,7 +650,10 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
                   Çalışıyor — çıktı hazır olduğunda burada görünecek…
                 </div>
               )}
-              <Icerik d={d} r={result} a={a} />
+              {/* Çalışan ve henüz verisi gelmemiş adımın gövdesi ÇİZİLMEZ: boş veriyle gövde
+                  "Tüm zorunlu alanlar tam · geçti" gibi olumlu bir hüküm uyduruyordu (2026-10
+                  ölçümü, Eksik Tespit çalışırken). Yokluktan hüküm türetilmez. */}
+              {!(a.status === "active" && !a.data) && <Icerik d={d} r={result} a={a} />}
             </div>
           )}
         </Bolum>

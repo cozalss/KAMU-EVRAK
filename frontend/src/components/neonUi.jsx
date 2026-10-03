@@ -7,6 +7,7 @@
    yalnız @keyframes. a11y: focusRing + SR_ONLY + semantik. */
 import React from "react";
 import * as RTooltip from "@radix-ui/react-tooltip";
+import { ODAKLANIR_SECICI } from "../lib/odakSecici.js";
 import {
   LayoutGrid, Inbox, FileText, BookOpen, ShieldCheck, Upload, Smartphone, Plus, ArrowRight,
   Pencil, Send, BarChart3, Clock, Scale, Route, Info, Check, X, TriangleAlert, Mic, Sparkles, Undo2, Search,
@@ -286,13 +287,12 @@ export const SH = {
   kagit: "var(--ke-sh-kagit)",
 };
 
-/* Yalnız KLAVYE odağında halka göster (:focus-visible) — fare tıklaması da native focus
-   bıraktığı için onFocus her zaman tetiklenirdi; tık sonrası mavi halka "yapışık" kalırdı. */
+/* Yalnız KLAVYE odağında halka (:focus-visible; tık sonrası halka "yapışık" kalmaz). Tur 3:
+   ÇİFT ÇİZGİ — kalın 2px + 2px boşluk + ince 1px: antet çizgisi ve Damga çerçevesiyle aynı dil. */
+export const FOCUS_HALKA = `0 0 0 1px ${PAL.bg}, 0 0 0 3px ${T}, 0 0 0 5px ${PAL.bg}, 0 0 0 6px ${T}`;
 export const focusRing = {
   onFocus: (e) => {
-    if (e.currentTarget.matches(":focus-visible")) {
-      e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`;
-    }
+    if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = FOCUS_HALKA;
   },
   onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
 };
@@ -303,9 +303,7 @@ export const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, 
    bağlanır; mevcut Escape işleyicileriyle yan yana çalışır. */
 export const odakDongusu = (e) => {
   if (e.key !== "Tab") return;
-  const odaklanir = e.currentTarget.querySelectorAll(
-    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-  );
+  const odaklanir = e.currentTarget.querySelectorAll(ODAKLANIR_SECICI);   // tabindex=-1 dışlanır (lib/odakSecici)
   if (!odaklanir.length) return;
   const ilk = odaklanir[0], son = odaklanir[odaklanir.length - 1];
   if (e.shiftKey && document.activeElement === ilk) { e.preventDefault(); son.focus(); }
@@ -500,7 +498,7 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = fals
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap" }}>
-              <h2 id={id} style={{ margin: 0, viewTransitionName: "ke-antet-baslik", ...TYPE.h1, ...(ustSik ? { fontSize: 30, lineHeight: "34px" } : null), color: PAL.ink, overflowWrap: "anywhere" }}>{title}</h2>
+              <h1 id={id} style={{ margin: 0, viewTransitionName: "ke-antet-baslik", ...TYPE.h1, ...(ustSik ? { fontSize: 30, lineHeight: "34px" } : null), color: PAL.ink, overflowWrap: "anywhere" }}>{title}</h1>
               {damga && <Damga ton={damga.ton} egim={damga.egim ?? -4}>{damga.metin}</Damga>}
             </div>
             {sub && <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.read, color: PAL.mut2, maxWidth: 760 }}>{sub}</p>}

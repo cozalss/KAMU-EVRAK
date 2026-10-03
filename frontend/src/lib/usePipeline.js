@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast as sonnerToast } from "sonner";
 import { authFetch, parseError } from "./authApi.js";
 import { DEFAULT_NODE_IDS, makeNode } from "./nodeMeta.js";
-import { kapanisDurumlari } from "./akisKatman.js";
+import { kapanisDurumlari, hataDurumlari, hataMesaji } from "./akisKatman.js";
 
 
 const MAX_UPLOAD_MB = 20;            // backend MAX_UPLOAD_BYTES (20 MiB) ile eşleşir
@@ -154,8 +154,11 @@ export function usePipeline() {
       if (ev.islem_id) setResult((prev) => (
         prev && prev.islem_id !== ev.islem_id ? { ...prev, islem_id: ev.islem_id } : prev));
     } else if (ev.event === "error") {
-      setError(ev.message || "İşleme hatası");
-      setNodes((prev) => prev.map((n) => (n.status === "active" ? { ...n, status: "error", t1: elapsed() } : n)));
+      // Backend hangi adımda durduğunu + yarıda kalan eşzamanlı kardeşleri söyler; kural
+      // lib/akisKatman.hataDurumlari'nda (kardeş hata DEĞİL, "işlenmedi"). Etiket nodeMeta'dan.
+      setError(hataMesaji(ev.node ? [makeNode(ev.node)] : [], ev));
+      const t = elapsed();
+      setNodes((prev) => hataDurumlari(prev, ev, t));
     }
   }, []);
 

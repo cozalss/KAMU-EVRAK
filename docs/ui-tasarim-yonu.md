@@ -1,4 +1,4 @@
-# UI Tasarım Yönü — kamu-evrak Demo (TEKNOFEST 2026, 1. Senaryo)
+# UI Tasarım Yönü — kamu-evrak
 
 > **Amaç:** Demo (15p) puanını maksimize eden, jüriyi ilk 10 saniyede etkileyen, "düşünen
 > sistem" hissini canlı veren bir arayüz yönü + somut, uygulanabilir animasyon/stil spec'i.
@@ -42,7 +42,7 @@
 ### 1.1 Karar: "Resmî Kâğıt + Canlı Akıl" (warm-light KORUNUR, kasıtlı evrim)
 
 Kamu/resmî bağlam **güven** ister; warm-light tema (kâğıt-bej yüzey, koyu mürekkep, altın/devlet
-aksanı) zaten bu hissi taşıyor — TEKNOFEST jürisi için "ciddi kamu ürünü" sinyali. Karanlık tema
+aksanı) zaten bu hissi taşıyor — "ciddi kamu ürünü" sinyali. Karanlık tema
 veya neon agent-graph estetiği (LangFlow/Flowise tarzı koyu canvas) **reddedilir**: bu, "tüketici
 hackathon demosu" hissi verir, kamu evrak bağlamına yanlış oturur ve ECC anti-template kuralına
 takılır (default dark-mode otomatizmi).

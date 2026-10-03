@@ -16,7 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { MONO, SANS, DISPLAY, T, V, PAL, BANT, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing, Icon } from "./neonUi.jsx";
 import { nodeDurationMs } from "../lib/pipelinePhases.js";
-import { grupSuresiMs, akisSuresiMs, adimDurumu, kostuMu } from "../lib/akisKatman.js";
+import { grupSuresiMs, akisSuresiMs, adimDurumu, kostuMu, ortusenAdimlar } from "../lib/akisKatman.js";
 import { parafUret } from "./agent-flow/topology.js";
 
 /* Sahneye özgü keyframe'ler (ke-e-*). Ortak NEON_KEYFRAMES başka sahibin dosyasında; burada
@@ -40,6 +40,24 @@ export const SAHNE_CSS = `
 
 const HAT = { x: 13, w: 2, merkez: 18 };
 const fmtSn = (ms) => (Number.isFinite(ms) && ms >= 50 ? `${(ms / 1000).toFixed(1).replace(".", ",")} sn` : null);
+
+/* CANLI SÜRE SAYACI — çalışan masanın gerçek geçen süresi (backend "başladı" olayının t0'ı →
+   şimdi). GitHub Actions iş grafiğindeki "in progress · 12s" dersi: süre, çalışan adımın
+   yanında akar; bitince aynı yerde donar ve sunucu süresine döner. Rakam DÖNMEZ (NumberFlow
+   yok): saniyede 10 kez değişen bir değeri canlandırmak gürültüdür (Emil sıklık yasası) —
+   sabit genişlikli rakamla (tnum) yalnız metin değişir, satır titremez. */
+export function CanliSure({ runBase, t0, style = null }) {
+  const [, setTik] = useState(0);
+  const gecerli = Number.isFinite(runBase) && runBase > 0 && Number.isFinite(t0);
+  useEffect(() => {
+    if (!gecerli) return undefined;
+    const id = setInterval(() => setTik((x) => x + 1), 100);
+    return () => clearInterval(id);
+  }, [gecerli]);
+  if (!gecerli) return null;
+  const ms = Math.max(0, performance.now() - runBase - t0);
+  return <span style={{ fontFamily: MONO, ...TNUM, whiteSpace: "nowrap", ...style }}>{(ms / 1000).toFixed(1).replace(".", ",")} sn</span>;
+}
 
 /* Mürekkep hattı parçası — zemin hairline üstünde hat rengi YUKARIDAN AŞAĞI kendini çizer.
    kesik=true: EŞZAMANLI adımlar arası bağ (aralarında sıra yok → düz çizgi iddia etmez). */
@@ -95,9 +113,9 @@ export function Paraf({ a, durum, col }) {
   if (durum === "kesildi") return <span aria-hidden="true" style={{ ...NOT, color: DERIN_OF(BANT.kirmizi.c), border: `1.5px dashed ${BANT.kirmizi.c}` }}>Kesildi</span>;
   if (durum === "islenmedi") return <span aria-hidden="true" style={{ ...NOT, color: PAL.mut3, border: `1px dotted ${PAL.lineHi}` }}>İşlenmedi</span>;
   if (durum === "isleniyor") return (
-    <span aria-hidden="true" style={{ width: 32, height: 32, borderRadius: RAD.dot, border: `1.5px dashed ${col}`, flexShrink: 0, animation: "nu-spin 6s linear infinite" }} />
+    <span aria-hidden="true" style={{ display: "inline-block", width: 32, height: 32, boxSizing: "border-box", borderRadius: RAD.dot, border: `1.5px dashed ${col}`, flexShrink: 0, animation: "nu-spin 6s linear infinite" }} />
   );
-  return <span aria-hidden="true" style={{ width: 32, height: 32, borderRadius: RAD.dot, border: `1px dotted ${PAL.lineHi}`, flexShrink: 0 }} />;
+  return <span aria-hidden="true" style={{ display: "inline-block", width: 32, height: 32, boxSizing: "border-box", borderRadius: RAD.dot, border: `1px dotted ${PAL.lineHi}`, flexShrink: 0 }} />;
 }
 
 /* Hat başlığı — antet dilinde: "GÖREV 1 — ANLA" künyesi + kendi ilerleme hattı + sayaç.
@@ -138,7 +156,7 @@ export function sahneDurumu(a, durdu) {
   return a.sira === durdu.kesim ? "kesildi" : "islenmedi";
 }
 
-function HatIstasyon({ a, col, risk, hasTop, topFill, hasBot, onDetay, kesikTop = false, kesikBot = false, durdu = null }) {
+function HatIstasyon({ a, col, risk, hasTop, topFill, hasBot, onDetay, kesikTop = false, kesikBot = false, durdu = null, runBase = 0 }) {
   const durum = sahneDurumu(a, durdu);
   const kesildi = durum === "kesildi", islenmedi = durum === "islenmedi";
   const done = a.status === "done", active = durum === "isleniyor", err = durum === "hata";
@@ -178,6 +196,7 @@ function HatIstasyon({ a, col, risk, hasTop, topFill, hasBot, onDetay, kesikTop 
         <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginTop: 1, paddingLeft: 23, minWidth: 0 }}>
           <span style={{ ...TYPE.meta, color: altRenk, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{altYazi}</span>
           {sure && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, flexShrink: 0, ...TNUM }}>{sure}</span>}
+          {active && <CanliSure runBase={runBase} t0={a.t0} style={{ marginLeft: "auto", fontSize: 11, lineHeight: "16px", fontWeight: 600, color: DERIN_OF(col), flexShrink: 0 }} />}
         </div>
         <span style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>
           {kesildi ? "işlem bu adıma gelmeden durdu" : islenmedi ? "işlem durduğu için işlenmedi" : atlandi ? "bu koşumda çalışmadı" : bosGecti ? "bu belgede gerekmedi" : done ? `tamamlandı${sure ? ` · ${sure}` : ""}` : active ? "şu an işleniyor" : err ? "hata: adım başarısız" : "sırada"}
@@ -202,6 +221,22 @@ const HatSon = ({ col, done }) => (
    (2026-08-12 adversarial ölçümü). Süre EN UZUN dalın süresidir. */
 function ParalelBaslik({ grup, col }) {
   const kosan = grup.items.filter(kostuMu).length;
+  const suruyor = grup.items.filter((a) => a.status === "active").length;
+  /* CANLI hâl — blok henüz kapanmadı. İddia yine OLGUYA dayanır: backend her adımın
+     başladığını yayar; aralıkları GERÇEKTEN kesişen (ortusenAdimlar) ≥2 üye varsa "aynı anda"
+     denir. Katman haritası tek başına yetmez (o yalnız "aynı anda koşabilir" der). */
+  if (suruyor > 0) {
+    const ort = ortusenAdimlar(grup.items).length;
+    if (ort < 2) return null;
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 0 4px 40px", borderBottom: `1px dashed ${PAL.line}`, animation: "nu-rise .2s var(--ke-ease-out) both" }}>
+        <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, color: DERIN_OF(col) }}>∥</span>
+        <span style={{ ...TYPE.meta, color: DERIN_OF(col), fontWeight: 600 }}>
+          {suruyor >= 2 && suruyor === ort ? `${ort} masa şu an aynı anda çalışıyor` : `${ort} masa aynı anda başladı · ${suruyor} sürüyor`}
+        </span>
+      </div>
+    );
+  }
   if (kosan < 2) return null;
   const ms = grupSuresiMs(grup.items);
   const sure = Number.isFinite(ms) && ms >= 100
@@ -216,7 +251,7 @@ function ParalelBaslik({ grup, col }) {
   );
 }
 
-function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, onDetay, durdu = null }) {
+function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, onDetay, durdu = null, runBase = 0 }) {
   const col = n === 2 ? V : T;
   const items = gruplar.flatMap((g) => g.items);
   // Geçen süre: gruplar arası TOPLAM, grup içi EN UZUN (paralel dallar iki kez sayılmaz).
@@ -248,7 +283,7 @@ function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, o
               : oncekiKapandi;
             return (
               <HatIstasyon key={a.id} a={a} col={col} risk={risk} hasTop topFill={grupGirisi} hasBot
-                kesikTop={kesikTop} kesikBot={kesikBot} durdu={durdu} onDetay={() => onDetay(a.sira)} />
+                kesikTop={kesikTop} kesikBot={kesikBot} durdu={durdu} runBase={runBase} onDetay={() => onDetay(a.sira)} />
             );
           })}
           {gi === gruplar.length - 1 && sonHat && <HatSon col={col} done={fazDone} />}
@@ -259,7 +294,7 @@ function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, o
 }
 
 /* SAHNE telemetrisi — canlılık + geçen süre (saniye 500ms'de işler). */
-export function SahneTelemetri({ busy, allDone, toplamSn, runBase }) {
+export function SahneTelemetri({ busy, allDone, toplamSn, runBase, durdu = false }) {
   const [, setTik] = useState(0);
   useEffect(() => {
     if (!busy) return undefined;
@@ -269,10 +304,12 @@ export function SahneTelemetri({ busy, allDone, toplamSn, runBase }) {
   const gecen = busy && Number.isFinite(runBase) && runBase > 0 ? Math.max(0, (performance.now() - runBase) / 1000) : null;
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.antet, color: PAL.mut, ...TNUM, flexShrink: 0, whiteSpace: "nowrap" }}>
-      <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : (allDone ? BANT.yesil.c : PAL.mut2), animation: busy ? "ke-e-nefes 1.4s ease-in-out infinite" : "none" }} />
-      <span style={{ display: "inline-flex", alignItems: "baseline", gap: 3 }}>
-        {busy ? "CANLI" : (allDone ? "TAMAM" : "BEKLEMEDE")}
-        {gecen != null ? <> · <NumberFlow value={Math.floor(gecen)} spinTiming={{ duration: 300 }} /> SN</> : (toplamSn ? <> · {toplamSn.toLocaleUpperCase("tr-TR")}</> : null)}
+      <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: busy ? T : durdu ? BANT.kirmizi.c : (allDone ? BANT.yesil.c : PAL.mut2), animation: busy ? "ke-e-nefes 1.4s ease-in-out infinite" : "none" }} />
+      {/* Geçen saniye düz metin: her saniye dönen rakam, sahnenin asıl hareketiyle (paraf,
+          mürekkep) yarışan sürekli bir gürültüydü. */}
+      <span style={{ display: "inline-flex", alignItems: "baseline", gap: 3, color: durdu && !busy ? DERIN_OF(BANT.kirmizi.c) : undefined }}>
+        {busy ? "CANLI" : durdu ? "DURDU" : (allDone ? "TAMAM" : "BEKLEMEDE")}
+        {gecen != null ? <> · {Math.floor(gecen)} SN</> : (toplamSn ? <> · {toplamSn.toLocaleUpperCase("tr-TR")}</> : null)}
       </span>
     </span>
   );
@@ -283,25 +320,30 @@ export function SahneTelemetri({ busy, allDone, toplamSn, runBase }) {
 export function merkezIndeksi(display) {
   const aktif = display.findIndex((x) => x.status === "active");
   if (aktif >= 0) return aktif;
+  // Koşum hata ile durduysa odak HATALI masadadır (son paraf değil): jüri hatayı odağın
+  // kendisinde görmeli, "10 · Yazı Taslağı · son paraf" gibi bir başarı anında değil.
+  const hata = display.findIndex((x) => x.status === "error");
+  if (hata >= 0) return hata;
   let son = -1;
   display.forEach((x, i) => { if (x.status === "done") son = i; });
   return son >= 0 ? son : 0;
 }
 
-export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false }) {
-  const [, setTik] = useState(0);
+/* Odaktaki masayla AYNI ANDA çalışan diğer masalar — yalnız backend'in "başladı" dediği ve
+   henüz bitmemiş adımlar (olgu; katman haritasından tahmin YOK). */
+export function eszamanliMasalar(display, merkezIdx) {
+  return (display || []).filter((x, i) => i !== merkezIdx && x.status === "active");
+}
+
+export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false, esz = [] }) {
+  // Canlı süre kendi saatini taşır (CanliSure) — kartın tamamı saniyede birkaç kez yeniden
+  // çizilmez.
   const active = a?.status === "active";
-  useEffect(() => {
-    if (!active) return undefined;
-    const id = setInterval(() => setTik((x) => x + 1), 300);
-    return () => clearInterval(id);
-  }, [active, a?.id]);
   if (!a) return null;
   const col = a.gorev === 2 ? V : T;
   const done = a.status === "done", err = a.status === "error";
   const bantC = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : null;
-  const relNow = Number.isFinite(runBase) && runBase > 0 ? performance.now() - runBase : null;
-  const ms = active && relNow != null && Number.isFinite(a.t0) ? relNow - a.t0 : (done ? nodeDurationMs(a) : null);
+  const ms = done ? nodeDurationMs(a) : null;
   const sn = ms != null && ms >= 100 ? ms / 1000 : null;
   const durum = kapanis ? kapanis.alt
     : active ? (a.desc || "çalışıyor…") : done ? (a.out || "tamamlandı") : err ? "hata · adım başarısız" : (a.desc || "sırada");
@@ -311,7 +353,7 @@ export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false 
     <div style={{ minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: SP.s }}>
       <div style={{ ...TYPE.antet, color: DERIN_OF(vurgu), display: "flex", alignItems: "center", gap: SP.s, textTransform: "uppercase" }}>
         <span aria-hidden="true" style={{ width: 18, height: 2, background: vurgu }} />
-        {kapanis ? "Pusula kapandı" : active ? `Masada · Görev ${a.gorev}` : err ? "Durdu"
+        {kapanis ? "Pusula kapandı" : active ? (esz.length ? `Masada · ${esz.length + 1} masa eşzamanlı` : `Masada · Görev ${a.gorev}`) : err ? "Durdu"
           : adimDurumu(a) === "gerekmedi" ? `Son masa · gerekmedi` : adimDurumu(a) === "calisti" ? `Son paraf · Görev ${a.gorev}` : `Sırada · Görev ${a.gorev}`}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0 }}>
@@ -326,19 +368,35 @@ export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false 
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.m, minWidth: 0 }}>
         <span style={{ ...TYPE.data, color: kapanis ? PAL.ink2 : active ? DERIN_OF(col) : (bantC ? DERIN_OF(bantC) : PAL.mut), minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{durum}</span>
         {!kapanis && !active && kosumda && (
-          /* Backend her masanın başlangıcını yayınlamaz; hangi masanın çalıştığını UYDURMAYIZ —
-             yalnız koşumun sürdüğü (olgu) söylenir. */
+          /* Backend her masanın başlangıcını yayınlar (tasks akışı); bu satır yalnız iki olay
+             arasındaki kısa boşlukta ya da eski backend'de görünür. Hangi masanın çalıştığını
+             UYDURMAYIZ — yalnız koşumun sürdüğü (olgu) söylenir. */
           <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, ...TYPE.meta, color: DERIN_OF(T), flexShrink: 0 }}>
             <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: T, animation: "ke-e-nefes 1.2s ease-in-out infinite" }} />
             sonraki masa çalışıyor
           </span>
         )}
-        {!kapanis && (active || !kosumda) && sn != null && (
+        {!kapanis && active && (
+          <CanliSure runBase={runBase} t0={a.t0} style={{ marginLeft: "auto", fontSize: 13, lineHeight: "18px", color: PAL.ink2, flexShrink: 0 }} />
+        )}
+        {!kapanis && !active && !kosumda && sn != null && (
           <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink2, flexShrink: 0, ...TNUM, display: "inline-flex", alignItems: "baseline", gap: 3 }}>
             <NumberFlow value={sn} locales="tr-TR" format={{ minimumFractionDigits: 1, maximumFractionDigits: 1 }} spinTiming={{ duration: 220 }} /> sn
           </span>
         )}
       </div>
+      {!kapanis && active && esz.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: `${SP.xs}px ${SP.s}px`, ...TYPE.meta, color: PAL.mut2, minWidth: 0 }}>
+          <span aria-hidden="true" style={{ fontFamily: MONO, color: DERIN_OF(col) }}>∥</span>
+          <span>aynı anda:</span>
+          {esz.map((x) => (
+            <span key={x.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, color: PAL.ink2, fontWeight: 600 }}>
+              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: x.gorev === 2 ? V : T, animation: "ke-e-nefes 1.2s ease-in-out infinite" }} />
+              {x.label}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -383,7 +441,7 @@ export function useSahneTempo(nodes, { pendingOnay = null, glow = true } = {}) {
 /* Sahne gövdesi — iki sütunlu havale pusulası (Görev 1 | Görev 2; dar panelde alt alta).
    Odaktaki masa (MerkezKart) artık çağıran tarafta ıstampanın yanında durur; burada yalnız
    pusula var. Satırlar tıklanabilir (adım detayı). Blok/sıra = `gruplar` (start.katmanlar). */
-export function SahneAkis({ display, gruplar = null, onDetay, durdu = null }) {
+export function SahneAkis({ display, gruplar = null, onDetay, durdu = null, runBase = 0 }) {
   // Harita yoksa her adım kendi bloğunda — paralellik İDDİA EDİLMEZ.
   const bloklar = gruplar || display.map((a) => ({ katman: null, paralel: false, items: [a] }));
   const gorevBloklari = (secici) => bloklar
@@ -410,8 +468,8 @@ export function SahneAkis({ display, gruplar = null, onDetay, durdu = null }) {
   if (!display.length) return null;
   return (
     <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", columnGap: SP.xxl, rowGap: SP.xl, alignItems: "start" }}>
-      {g1.length > 0 && <HatFaz n={1} gruplar={g1} onDetay={onDetay} durdu={durdu} />}
-      {g2.length > 0 && <HatFaz n={2} gruplar={g2} devir={ikiKolon} onDetay={onDetay} durdu={durdu} />}
+      {g1.length > 0 && <HatFaz n={1} gruplar={g1} onDetay={onDetay} durdu={durdu} runBase={runBase} />}
+      {g2.length > 0 && <HatFaz n={2} gruplar={g2} devir={ikiKolon} onDetay={onDetay} durdu={durdu} runBase={runBase} />}
     </div>
   );
 }

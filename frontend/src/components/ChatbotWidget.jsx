@@ -6,14 +6,27 @@
    token'ları; z-index FAB 150 / panel 160 (Toast 200 üstte kalır).
    Spec: docs/09-sohbet-asistani.md */
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { mdSatirTipi } from "../lib/mdSatir.js";
 import { sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import SesliGorusme from "./SesliGorusme.jsx";
-import { BANT, MONO, DISPLAY, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, EASE, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { BANT, MONO, DISPLAY, PAL, T, V, DERIN, ALFA, TYPE, RAD, SP, SH, EASE, EASE_BEZIER, Icon, Damga, focusRing, SR_ONLY } from "./neonUi.jsx";
+
+/* Panelin çapası: kenar çubuğu (cilt) sağ kenarının 12px yanı, tetikle aynı taban hizası.
+   Telefonda (≤720) null → panel ekran genişliğinde alttan açılır (dar rayın yanında 300px'lik
+   bir tepsi okunmaz). Açılış anında BİR KEZ ölçülür; açıkken kenar çubuğu daralırsa panel
+   yerinde kalır (bir sonraki açılışta yeni ölçü). */
+function capaHesapla() {
+  if (window.matchMedia?.("(max-width: 720px)").matches) return null;
+  const tetik = document.querySelector("[data-asistan-tetik]");
+  const ray = tetik?.closest("[data-ray]")?.getBoundingClientRect();
+  const t = tetik?.getBoundingClientRect();
+  if (!ray || !t) return { left: SP.xl, bottom: SP.xl };
+  return { left: Math.round(ray.right + 12), bottom: Math.max(SP.s, Math.round(window.innerHeight - t.bottom)) };
+}
 
 const GORUNUM_ETIKET = {
   gelen: "Gelen evrak", giden: "Giden evrak", taslaklar: "Taslaklar",
@@ -87,22 +100,45 @@ function KaynakCip({ kaynak, onMevzuatAc, onClose }) {
   );
 }
 
-/* Mesaj balonu — kullanıcı sağda (T tint zemin), asistan solda (yüzey + hairline). */
-function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor }) {
+const KAYIT_TUR_ETIKET = { gelen: "Gelen", giden: "Giden", islem: "İşlem", taslak: "Taslak", mevzuat: "Mevzuat", panel: "Panel" };
+
+/* Zımba — araç sonucu kayıtları nota "zımbalı ek" olarak tutturulur (Hamle 14). Saf dekor. */
+const Zimba = () => (
+  <svg aria-hidden="true" width="24" height="8" viewBox="0 0 24 8" style={{ position: "absolute", left: 16, top: 0, zIndex: 1 }}>
+    <path d="M2.5 6.5 V4 H21.5 V6.5" fill="none" stroke={PAL.mut2} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 3.2 H20" stroke={PAL.surf} strokeWidth="1" strokeLinecap="round" opacity=".5" />
+  </svg>
+);
+
+/* Mesaj — kullanıcı sağda (tükenmez mavisi), asistan solda "havale notu fişi" (beyaz kâğıt +
+   hairline). Hata fişi kırmızı kenar + ikonla ayrışır (renk tek sinyal değil). Araç sonucu:
+   kayıt kartları zımbalı ek olarak altta; EN SON araç sonucu mini damga taşır ("3 KAYIT ·
+   GELEN") — panel başına tek damga (dikkat bütçesi), eski mesajlar damgasız. */
+function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor, damgali }) {
   const kullanici = m.rol === "kullanici";
+  const kayitSayi = m.kayitlar?.length || 0;
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: kullanici ? "flex-end" : "flex-start", gap: SP.s, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       <div style={{
-        maxWidth: "88%", padding: "10px 14px", ...TYPE.ui,
+        maxWidth: "88%", padding: "10px 14px", ...TYPE.ui, overflowWrap: "anywhere",
         ...(kullanici
           ? { background: DERIN.T, color: PAL.onAccent, borderRadius: `${RAD.card}px ${RAD.card}px ${RAD.chip}px ${RAD.card}px` }
-          : { background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, color: PAL.ink2, borderRadius: `${RAD.chip}px ${RAD.card}px ${RAD.card}px ${RAD.card}px` }),
+          : { background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, color: PAL.ink2, borderRadius: `${RAD.chip}px ${RAD.card}px ${RAD.card}px ${RAD.card}px`,
+              ...(m.hata ? { borderLeft: `3px solid ${BANT.kirmizi.c}`, display: "flex", gap: SP.s, alignItems: "flex-start" } : null) }),
       }}>
-        <Md text={m.icerik} />
+        {m.hata && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 3, color: DERIN.kirmizi }}><Icon.alert /></span>}
+        <span style={{ display: "block", minWidth: 0 }}><Md text={m.icerik} /></span>
       </div>
-      {m.kayitlar?.length > 0 && (
-        <div style={{ display: "grid", gap: SP.s, width: "88%" }}>
+      {kayitSayi > 0 && (
+        <div style={{ position: "relative", display: "grid", gap: SP.s, width: "88%", paddingTop: SP.xs }}>
+          <Zimba />
+          {damgali && (
+            <Damga ton={V} egim={-5} kucuk style={{ position: "absolute", right: 6, top: -12, zIndex: 2, background: PAL.surf }}>
+              {kayitSayi} kayıt{KAYIT_TUR_ETIKET[m.kayit_turu] ? ` · ${KAYIT_TUR_ETIKET[m.kayit_turu]}` : ""}
+            </Damga>
+          )}
           {m.kayitlar.slice(0, 8).map((k, i) => <KayitKart key={i} tur={m.kayit_turu} k={k} />)}
+          {kayitSayi > 8 && <span style={{ ...TYPE.meta, color: PAL.mut2 }}>+{kayitSayi - 8} kayıt daha — tümü ilgili görünümde</span>}
         </div>
       )}
       {m.mevzuat_kaynaklari?.length > 0 && (
@@ -162,9 +198,6 @@ function Yaziyor() {
 const SOHBET_CSS = `
 @keyframes ke-karala{0%{stroke-dashoffset:100}55%{stroke-dashoffset:0}100%{stroke-dashoffset:-100}}
 .ke-karala{stroke-dasharray:100;animation:ke-karala 1.5s cubic-bezier(0.77,0,0.175,1) infinite}
-.ke-fab-etiket{display:none}
-@media(max-width:699px){.ke-sohbet-panel{right:16px!important;bottom:16px!important;height:min(600px, calc(100dvh - 32px))!important}}
-@media(min-width:700px){.ke-fab-etiket{display:inline}.ke-fab{padding:0 20px 0 16px!important}}
 .ke-sohbet-ikon:hover:not(:disabled){background:${PAL.hov}!important;color:${PAL.ink}!important}
 .ke-sohbet-oneri:hover{background:${PAL.hov}!important;border-color:${PAL.lineHi}!important}
 .ke-sohbet-girdi:focus{border-color:${T}!important;box-shadow:0 0 0 3px color-mix(in srgb, ${T} 18%, transparent)}
@@ -175,19 +208,30 @@ const SOHBET_CSS = `
 export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, onEvrakAc }) {
   const queryClient = useQueryClient();   // teyit sonrası panel/giden senkronu
   const [acik, setAcik] = useState(false);
-  // Kaydırma sırasında FAB küçülüp soluklaşır (satır eylemlerini örtmesin — jüri bulgusu);
-  // durunca 500ms sonra geri gelir. capture:true iç scroll konteynerlerini de yakalar.
-  const [kayiyor, setKayiyor] = useState(false);
-  useEffect(() => {
-    let t = null;
-    const h = () => {
-      setKayiyor(true);
-      clearTimeout(t);
-      t = setTimeout(() => setKayiyor(false), 500);
-    };
-    document.addEventListener("scroll", h, { capture: true, passive: true });
-    return () => { document.removeEventListener("scroll", h, { capture: true }); clearTimeout(t); };
+  // BAŞLATICI KENAR ÇUBUĞUNDA (2026-10, tur 3): sağ-alttaki yüzen düğme içeriği örtüyordu
+  // (Panel'de takvim lejantı, telefonda satırın "İşle" düğmesi — ölçüldü). Yüzen düğme her
+  // ekranda bir köşeyi işgal eder; güvenli alt boşluk yalnız sayfa SONUNDA işe yarar. Linear'ın
+  // 2026 deseni gibi ajan girişi navigasyonun içinde: tetik NeonSidebar'da ("data-asistan-tetik"),
+  // haberleşme iki window olayıyla — ke-asistan (aç/kapa isteği) · ke-asistan-durum (açık mı).
+  // Kısayol Ctrl/⌘ + . her yerden açar/kapatır (klavye eylemi = animasyonsuz değil ama ≤200ms).
+  const [konum, setKonum] = useState(null);   // panelin tetiğe göre çapası {left, bottom} | null=telefon
+  const acKapa = useCallback((istek) => {
+    setAcik((a) => {
+      const yeni = istek === "degistir" ? !a : !!istek;
+      if (yeni && !a) setKonum(capaHesapla());
+      return yeni;
+    });
   }, []);
+  useEffect(() => {
+    const olay = (e) => acKapa(e.detail?.ac ?? "degistir");
+    const tus = (e) => {
+      if (e.key !== "." || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+      e.preventDefault(); acKapa("degistir");
+    };
+    window.addEventListener("ke-asistan", olay);
+    window.addEventListener("keydown", tus);
+    return () => { window.removeEventListener("ke-asistan", olay); window.removeEventListener("keydown", tus); };
+  }, [acKapa]);
   // Sohbet geçmişi localStorage'dan hidre edilir (reload/sekme kalıcılığı; DB gerektirmez).
   const [mesajlar, setMesajlar] = useState(() => hafizaYukle() ?? [KARSILAMA]);
   const [girdi, setGirdi] = useState("");
@@ -209,7 +253,6 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   // ekranı gönderirdi (bayat bağlam = yanlış cevap).
   const ekranRef = useRef(ekran);
   useEffect(() => { ekranRef.current = ekran; }, [ekran]);
-  const fabRef = useRef(null);
   const inputRef = useRef(null);
   const listeRef = useRef(null);
 
@@ -222,13 +265,14 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   // Konuşma bitince (akış sürerken değil) geçmişi localStorage'a yaz — reload'da kalıcı.
   useEffect(() => { if (!bekliyor) hafizaKaydet(mesajlar); }, [mesajlar, bekliyor]);
 
-  // Kapanınca odak başlatıcıya döner — başlatıcı panel kapandıktan SONRA monte olur
-  // (tek kap), bu yüzden odak bir sonraki boyamada verilir.
+  // Kapanınca odak kenar çubuğundaki tetiğe döner (WCAG 2.4.3). Durum olayı tetiğin
+  // aria-expanded'ını ve "açık" görünümünü sürer; sesli görüşme de "açık" sayılır.
   const odakDon = useRef(false);
   const kapat = () => { odakDon.current = true; setAcik(false); };
   useEffect(() => {
-    if (!acik && odakDon.current) { odakDon.current = false; requestAnimationFrame(() => fabRef.current?.focus()); }
-  }, [acik]);
+    window.dispatchEvent(new CustomEvent("ke-asistan-durum", { detail: { acik: acik || sesliAcik } }));
+    if (!acik && odakDon.current) { odakDon.current = false; requestAnimationFrame(() => document.querySelector("[data-asistan-tetik]")?.focus()); }
+  }, [acik, sesliAcik]);
 
   // Sesli komutu kabuğa ilet. useCallback: SesliGorusme'nin tur işleyicisi bunu bağımlılık
   // olarak taşıyor — her render'da yeni referans, dinleme döngüsünü gereksiz yere yeniden kurar.
@@ -365,28 +409,32 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   };
 
   const ilkAcilis = mesajlar.length <= 1;
+  const sonAracIdx = mesajlar.reduce((son, m, i) => (m.kayitlar?.length ? i : son), -1);
   const gonderPasif = bekliyor || !girdi.trim();
 
   return (
     <>
       <style>{SOHBET_CSS}</style>
-      {/* TEK KAP (Family "dinamik tepsi"): başlatıcı düğme ile panel aynı layoutId'yi taşır —
-          açılınca düğmenin kendisi panele GENİŞLER, kapanınca panelden düğmeye büzülür
-          (uzamsal süreklilik). İçerik kap oturduktan sonra belirir. MotionConfig
-          reducedMotion="user" (DashboardApp) azaltmada geçişi anlık yapar. */}
+      {/* HAVALE NOTU TEPSİSİ (Family "dinamik tepsi" + Emil köken-farkında açılış): panel
+          kenar çubuğundaki tetiğin YANINDAN, sol-alt köşesinden büyür (.96→1, hiçlikten değil)
+          ve aynı köşeye çekilerek kapanır — kâğıt cilt sırtından çekilip çıkarılır. Yay: hızlı,
+          sönümlü (520/40); çıkış 140ms. MotionConfig reducedMotion="user" azaltmada anlık yapar. */}
+      <AnimatePresence>
       {acik && (
-        <motion.section layoutId="ke-asistan-kap" className="ke-sohbet-panel" role="dialog" aria-label="Evrak asistanı sohbeti"
+        <motion.section key="ke-asistan-kap" className="ke-sohbet-panel" role="dialog" aria-label="Evrak asistanı sohbeti"
           onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
-          transition={{ type: "spring", stiffness: 420, damping: 38 }}
+          initial={{ opacity: 0, scale: 0.96, y: 8 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.97, y: 6, transition: { duration: 0.14, ease: EASE_BEZIER.out } }}
+          transition={{ type: "spring", stiffness: 520, damping: 40, mass: 0.8 }}
           style={{
-            position: "fixed", right: SP.xl, bottom: SP.xl, zIndex: 160,
-            width: "min(400px, calc(100vw - 32px))", height: "min(600px, calc(100vh - 48px))",
+            position: "fixed", zIndex: 160, transformOrigin: "bottom left",
+            ...(konum ? { left: konum.left, bottom: konum.bottom } : { left: SP.s, right: SP.s, bottom: SP.s }),
+            width: konum ? "min(400px, calc(100vw - 32px))" : "auto", height: konum ? `min(600px, calc(100vh - ${konum.bottom + 24}px))` : "min(640px, calc(100dvh - 16px))",
             display: "flex", flexDirection: "column", overflow: "hidden",
             background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop,
             boxShadow: SH.modal,
           }}>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.18, delay: 0.1 }}
-            style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+          <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
           {/* Başlık — antet dili: mono künye satırı + display başlık + çift antet çizgisi. */}
           <header style={{ padding: "14px 16px 0", background: PAL.surfPop }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
@@ -420,7 +468,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
               mutasyona uğratır, her mutasyon SR kuyruğuna girerdi (result-cards daktilo idiomu).
               Tam yanıt aşağıdaki SR_ONLY role=status bölgesinden TEK seferde duyurulur. */}
           <div ref={listeRef} role="log" aria-live={bekliyor ? "off" : "polite"} aria-busy={bekliyor} aria-atomic="false" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m, background: PAL.bg }}>
-            {mesajlar.map((m, i) => <Balon key={i} m={m} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
+            {mesajlar.map((m, i) => <Balon key={i} m={m} damgali={i === sonAracIdx && !m.akiyor} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
             {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <Yaziyor />}
             {ilkAcilis && !bekliyor && (
               <div style={{ marginTop: SP.xs }}>
@@ -458,44 +506,16 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12 L20 4 L14 20 L11.5 13.5 L4 12Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>
             </button>
           </form>
-          </motion.div>
+          </div>
         </motion.section>
       )}
+      </AnimatePresence>
 
-      {/* Başlatıcı — her görünümde sağ altta; panelle AYNI kap (layoutId). Görüşme sürerken
-          GİZLİ: disk tam bu noktanın üstünde durur. Kaydırma jesti (küçül+soluklaş)
-          SARMALAYICIDA yaşar: düğmenin transform'u layout animasyonuna ve [data-press]
-          :active kuralına ayrılmıştır. */}
-      {!acik && !sesliAcik && (
-      <span style={{
-        position: "fixed", right: SP.xl, bottom: SP.xl, zIndex: 150, display: "block",
-        opacity: kayiyor ? 0.3 : 1,
-        transform: kayiyor ? "scale(.72)" : "scale(1)",
-        transformOrigin: "bottom right",
-        transition: "opacity .2s var(--ke-ease-out), transform .2s var(--ke-ease-out)",
-      }}>
-      <motion.button layoutId="ke-asistan-kap" ref={fabRef} type="button" className="ke-fab" onClick={() => setAcik(true)}
-        aria-label="Evrak asistanını aç" aria-expanded={false} aria-haspopup="dialog" {...focusRing} data-press=""
-        transition={{ type: "spring", stiffness: 420, damping: 38 }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = DERIN.Th; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = DERIN.T; }}
-        style={{
-          height: 52, minWidth: 52, padding: 0, gap: SP.s,
-          borderRadius: 26, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center",
-          background: DERIN.T, color: PAL.onAccent, ...TYPE.ui, fontWeight: 600,
-          boxShadow: SH.modal,
-        }}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6 a3 3 0 0 1 3-3 H17 a3 3 0 0 1 3 3 V13 a3 3 0 0 1-3 3 H10 L5.5 20 V16 H7 a3 3 0 0 1-3-3 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><path d="M8.5 8.5 H15.5 M8.5 11.5 H13" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
-        <span className="ke-fab-etiket">Asistan</span>
-      </motion.button>
-      </span>
-      )}
-
-      {/* Sesli görüşme diski — panelin yerine geçer; bitince panel geri açılır (odak, panelin
-          kendi effect'iyle mesaj kutusuna gider: görüşmenin devamı yazarak sürdürülebilir).
-          onKomut: sesli komut siteyi GERÇEKTEN sürer (gezinme / evrak açma). */}
-      <SesliGorusme acik={sesliAcik} ekran={ekran} onKomut={sesliKomutUygula}
-        onKapat={() => { setSesliAcik(false); setAcik(true); }} />
+      {/* Sesli görüşme diski — panelin yerine geçer, AYNI çapada (konum) doğar; bitince panel
+          geri açılır (odak, panelin kendi effect'iyle mesaj kutusuna gider: görüşmenin devamı
+          yazarak sürdürülebilir). onKomut: sesli komut siteyi GERÇEKTEN sürer. */}
+      <SesliGorusme acik={sesliAcik} ekran={ekran} onKomut={sesliKomutUygula} konum={konum}
+        onKapat={() => { setSesliAcik(false); acKapa(true); }} />
     </>
   );
 }

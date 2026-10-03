@@ -1,4 +1,4 @@
-# TEKNOFEST 2026 — 1. Senaryo Yarışma Karnesi
+# kamu-evrak — Görev Karnesi
 
 > Kamu Evrak ve Yazışma Süreçleri · **GERÇEK pipeline** (agents/graph.py) ölçümü · `python -m eval.competition_scorecard` ile üretilir (commit `1532a37`, LLM_MODE=`openai`, model=`deepseek-chat`).
 

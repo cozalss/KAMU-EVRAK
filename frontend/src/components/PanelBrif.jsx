@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Btn, Icon, MONO, DISPLAY, T, R, TYPE, TNUM, SP, RAD, SH, EASE, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
-import { kalanMetin } from "../lib/sureTakvimi.js";
+import { kalanMetin, genislik } from "../lib/sureTakvimi.js";
 import { useDarEkran } from "../hooks/useMedya.js";
 
 /* Panel'in yerel giriş koreografisi. Global reduced-motion kuralı (NEON_KEYFRAMES)
@@ -27,6 +27,7 @@ export const PANEL_KF = `
 @keyframes pv-bas{0%{opacity:0;transform:rotate(var(--pv-egim,-8deg)) scale(1.8)}60%{opacity:1;transform:rotate(var(--pv-egim,-8deg)) scale(.92)}100%{opacity:1;transform:rotate(var(--pv-egim,-8deg)) scale(1)}}
 @keyframes pv-cizgi{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes pv-serit{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pv-nefes{from{opacity:.45}to{opacity:1}}
 `;
 
 /* Blok giriş stili — gecikme ms. Tek kaynak: hem PanelView ızgara hücreleri hem bu dosya. */
@@ -87,24 +88,17 @@ function GecikmeRakam({ sla, renk }) {
   );
 }
 
-/* GENİŞLİK EKSENİ VERİYİ KODLAR (benchmark hamlesi #6): Archivo rakamı yasal süre yaklaştıkça
-   SIKIŞIR — bol süre geniş (%125), son gün dar (%75), gecikmişte gecikme büyüdükçe en dar
-   kesime (%62) iner; "sıkışan süre" harfin kendisinde okunur. Tek sinyal DEĞİL: renk (BANT)
-   ikinci, üçgen ikon + "gün gecikti/kaldı" sözü üçüncü taşıyıcıdır. */
-export function genislik(sla) {
-  const k = sla?.kalan_gun;
-  if (!Number.isFinite(k)) return 100;
-  if (sla.durum === "GECIKMIS" || k < 0) return Math.max(62, Math.round(75 - Math.abs(k) / 5));
-  return Math.min(125, 75 + k * 5);
-}
+/* Genişlik ekseni veriyi kodlar (hamle 6) — saf kural lib/sureTakvimi.genislik'te (testli);
+   takvimin işaretli günleri de aynı kuralla sıkışır. */
 
 const DEFTER_SUTUN = "44px minmax(0, 1fr) 128px 104px auto";
 
 /* Sicil defteri satırı. Geniş ekranda 5 sütunlu ızgara; telefonda iki satıra iner (ad tam
    genişlik, künye + İşle altta) — hiçbir bilgi kırpılmaz, yatay kayma yok. */
 function DefterSatir({ x, sira, onIsle, dar, gecikme }) {
-  const gecikmis = x.sla.durum === "GECIKMIS";
-  const renk = gecikmis ? BANT.kirmizi.c : BANT.sari.c;
+  const durum = x.sla.durum;
+  const renk = durum === "GECIKMIS" ? BANT.kirmizi.c : durum === "KRITIK" ? BANT.sari.c : BANT.yesil.c;
+  const normal = durum !== "GECIKMIS" && durum !== "KRITIK";
   const no = String(sira).padStart(2, "0");
   const isle = (
     <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "4px 12px", minHeight: 32 }}>
@@ -115,7 +109,7 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme }) {
     <span style={{ minWidth: 0 }}>
       <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.ui, fontWeight: 600, color: PAL.ink, minWidth: 0 }}>
         {/* Renk tek sinyal değil: üçgen ikon "dikkat" der (renk körlüğünde de okunur). */}
-        <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(renk) }}><Icon.alert width={14} height={14} /></span>
+        <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(renk) }}>{normal ? <Icon.clock width={14} height={14} /> : <Icon.alert width={14} height={14} />}</span>
         <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
       </span>
       <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2, marginTop: 2, paddingLeft: 20, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.sla.mevzuat}</span>
@@ -152,6 +146,52 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme }) {
   );
 }
 
+/* Sicil defteri — acil hâlde süresi dolan/dolmak üzere olanlar; sükûnette SIRADAKİ süreler
+   (tur 3: sükûnet kahramanı takvim boyuna gerilip ortada tek manşetle boş kalıyordu; artık
+   aynı defter "ufku" gösterir — veri aynı kuyrukSla, yalnız süzgeç farklı). */
+function Defter({ liste, pad, dar, onIsle, onGoInbox, etiket, fazlaMetin }) {
+  const [acilRef] = useAutoAnimate();
+  const gorunen = liste.slice(0, 5);
+  return (
+    <>
+      {/* Sicil defteri — marj çizgisi sıra no sütununun sağında, yukarıdan aşağı çizilir. */}
+      <div style={{ position: "relative", flex: 1, padding: `0 ${pad}px ${SP.s}px`, background: PAL.surf2, borderTop: `1px solid ${PAL.line}` }}>
+        <span aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, left: pad + (dar ? 0 : 44), width: 1,
+          background: MARJ, transformOrigin: "50% 0", ...giris(320, "pv-cizgi", 0.7) }} />
+        {!dar && (
+          <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: DEFTER_SUTUN, gap: SP.l, padding: `${SP.m}px 0 ${SP.s}px`,
+            ...TYPE.antet, fontSize: 10, color: PAL.mut3 }}>
+            <span style={{ textAlign: "right", paddingRight: SP.s }}>SIRA</span>
+            <span>EVRAK · YASAL DAYANAK</span>
+            <span style={{ textAlign: "right" }}>DURUM</span>
+            <span style={{ textAlign: "right" }}>SON GÜN</span>
+            <span style={{ width: 64 }} />
+          </div>
+        )}
+        <div ref={acilRef} role="list" aria-label={etiket}>
+          {gorunen.map((x, i) => (
+            <div role="listitem" key={x.id}>
+              <DefterSatir x={x} sira={i + 1} onIsle={onIsle} dar={dar} gecikme={380 + i * 70} />
+            </div>
+          ))}
+        </div>
+        {liste.length > 5 && (
+          <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
+            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+            style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s, width: "100%",
+              padding: `${SP.m}px 0`, background: "transparent", border: "none", borderTop: `1px dashed ${PAL.lineHi}`,
+              borderRadius: 0, ...TYPE.ui, fontWeight: 500, color: DERIN.T, transition: `background .12s ease, transform .14s ${EASE.out}`,
+              ...giris(380 + gorunen.length * 70, "pv-yaz", 0.42) }}>
+            <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", ...TNUM }}>+{liste.length - 5}</span>
+            {dar ? "evrak daha — kuyrukta" : `evrak daha — ${fazlaMetin}`} <Icon.arrow width={14} height={14} />
+          </button>
+        )}
+      </div>
+    </>
+  );
+}
+
 /* Kahraman manşeti — dev rakam solda; sağ kolonda başlık + bağlam + (varsa) eylem. Rakam
    kutusu yazı gövdesine (≈cap height) kırpılır: NumberFlow kendi satır kutusunu taşır ve
    üstte ~0,3em ölü boşluk açıyordu — rakam kâğıda "oturmuyordu". */
@@ -160,17 +200,20 @@ function Manset({ sayi, renk, baslik, baglam, eylem, dar }) {
   const boy = dar ? 88 : 132;
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: dar ? SP.l : SP.xl + 4, flexWrap: dar ? "wrap" : "nowrap" }}>
-      <span aria-hidden="true" style={{ display: "flex", alignItems: "center", height: boy * 0.76, flexShrink: 0,
+      {/* overflow:hidden (tur 3): açılış sayımında NumberFlow'un dönen rakam şeridi kutunun
+          dışına taşıyor, komşu rakamlar antet satırının ÜSTÜNE biniyordu (kare kare ölçüldü).
+          Kutu cap-height'a kırpılı olduğundan kırpma tam bir "sayaç penceresi" verir. */}
+      <span aria-hidden="true" style={{ display: "flex", alignItems: "center", height: boy * 0.76, flexShrink: 0, overflow: "hidden",
         fontFamily: DISPLAY, fontWeight: 800, fontStretch: "125%", fontSize: boy, lineHeight: 1, letterSpacing: "-.05em",
         color: renk, ...TNUM }}>
         <NumberFlow value={akan} style={{ lineHeight: 1 }} />
       </span>
       <div style={{ flex: "1 1 280px", minWidth: "min(280px, 100%)" }}>
-        <h3 style={{ margin: 0, fontFamily: DISPLAY, fontSize: dar ? 22 : 28, lineHeight: dar ? "26px" : "32px", fontWeight: 700,
+        <h2 style={{ margin: 0, fontFamily: DISPLAY, fontSize: dar ? 22 : 28, lineHeight: dar ? "26px" : "32px", fontWeight: 700,
           fontStretch: "110%", letterSpacing: "-.02em", color: PAL.ink, textWrap: "balance" }}>
           <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>{sayi} </span>
           {baslik}
-        </h3>
+        </h2>
         {baglam && <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.read, fontSize: 15, color: PAL.mut2, textWrap: "pretty", maxWidth: 620 }}>{baglam}</p>}
         {eylem && <div style={{ marginTop: SP.l }}>{eylem}</div>}
       </div>
@@ -212,8 +255,79 @@ function acilBaslik(say) {
   return "evrakın yasal cevap süresi dolmak üzere";
 }
 
+/* ---------- Yükleme iskeleti ("kuruyan mürekkep") ---------- */
+
+/* İskelet çizgisi — kurşun kalem izi (PAL.surfHi). Tek kaynak: brif, takvim ve gözlem iskeletleri. */
+export const iskeletCizgi = (width, height, ek) => ({ display: "block", flexShrink: 0, width, height, borderRadius: RAD.chip, background: PAL.surfHi, ...ek });
+/* Nefes — iskelet yüzeyinin yavaş opaklık salınımı (transform yok; reduced-motion söndürür). */
+export const iskeletNefes = (gecikme = 0) => ({ animation: `pv-nefes .9s ease-in-out ${gecikme}ms infinite alternate both` });
+
+/* Ölçüler gerçek KahramanBrif'in "acil" hâlinden alındı (statik örnek kuyruğunun olağan hâli;
+   412 ve 1440 px'te DOM ölçümü, 2026-10-03). İskelet bu kutularla AYNI yüksekliği kaplar —
+   SLA gelince brif yerine oturur, altındaki takvim/akış yerinden oynamaz (CLS: telefonda
+   brif iskeletsizken akışın üstüne 1050 px'lik blok iniyordu → 0,38). Metin satır sayıları
+   tipik kırılımdır; veri farklı kırılırsa fark birkaç satırla sınırlı kalır. */
+const ISKELET_OLCU = {
+  dar: { baslikSatir: 2, baslikLh: 26, baglamSatir: 3, dugme: 44, lejantSatir: 2, lejantLh: 20, defterSatir: 115, defterBaslik: 0 },
+  genis: { baslikSatir: 1, baslikLh: 32, baglamSatir: 2, dugme: 38, lejantSatir: 1, lejantLh: 18, defterSatir: 63, defterBaslik: 34 },
+};
+const BAGLAM_LH = 24;          // TYPE.read 15px gövdesinin satır yüksekliği
+const FAZLA_SATIR = 45;        // "+N evrak daha" satırı
+const ISKELET_SATIR_N = 5;     // Defter ilk 5 satırı gösterir (bkz. Defter.gorunen)
+
+function SatirCizgileri({ n, lh, genislikler }) {
+  return Array.from({ length: n }, (_, i) => (
+    <span key={i} style={{ display: "flex", alignItems: "center", height: lh }}>
+      <span style={iskeletCizgi(genislikler[i % genislikler.length], Math.round(lh * 0.5))} />
+    </span>
+  ));
+}
+
+export function BrifIskelet() {
+  const dar = useDarEkran();
+  const o = ISKELET_OLCU[dar ? "dar" : "genis"];
+  const pad = dar ? SP.l : SP.xl + 4;
+  const boy = dar ? 88 : 132;   // Manset'in dev rakam boyu
+  return (
+    <section aria-hidden="true" style={{ ...yuzey(PAL.line), height: "100%", display: "flex", flexDirection: "column", ...iskeletNefes() }}>
+      <div style={{ padding: `${pad + 4}px ${pad}px ${pad - 4}px` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.s, height: 14, marginBottom: SP.l }}>
+          <span style={iskeletCizgi(14, 14)} />
+          <span style={iskeletCizgi(116, 10)} />
+          <span style={{ flex: 1, height: 1, background: PAL.line }} />
+        </div>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: dar ? SP.l : SP.xl + 4, flexWrap: dar ? "wrap" : "nowrap" }}>
+          <span style={iskeletCizgi(Math.round(boy * 0.74), Math.round(boy * 0.76))} />
+          <div style={{ flex: "1 1 280px", minWidth: "min(280px, 100%)" }}>
+            <SatirCizgileri n={o.baslikSatir} lh={o.baslikLh} genislikler={["88%", "56%"]} />
+            <div style={{ marginTop: SP.s }}><SatirCizgileri n={o.baglamSatir} lh={BAGLAM_LH} genislikler={["94%", "78%", "42%"]} /></div>
+            <span style={iskeletCizgi(188, o.dugme, { marginTop: SP.l, borderRadius: RAD.ctl })} />
+          </div>
+        </div>
+        <div style={{ marginTop: SP.xl }}>
+          <span style={iskeletCizgi("100%", 8, { borderRadius: 2 })} />
+          <div style={{ marginTop: SP.s + 2 }}><SatirCizgileri n={o.lejantSatir} lh={o.lejantLh} genislikler={["72%", "48%"]} /></div>
+        </div>
+      </div>
+      <div style={{ flex: 1, padding: `0 ${pad}px ${SP.s}px`, background: PAL.surf2, borderTop: `1px solid ${PAL.line}` }}>
+        {o.defterBaslik > 0 && (
+          <div style={{ display: "flex", alignItems: "center", height: o.defterBaslik }}><span style={iskeletCizgi(220, 8)} /></div>
+        )}
+        {Array.from({ length: ISKELET_SATIR_N }, (_, i) => (
+          <div key={i} style={{ boxSizing: "border-box", height: o.defterSatir, display: "flex", flexDirection: "column", justifyContent: "center",
+            gap: SP.s, borderTop: `1px solid ${PAL.line}` }}>
+            <span style={iskeletCizgi(`${[64, 52, 70, 46, 58][i]}%`, 12)} />
+            <span style={iskeletCizgi(`${[38, 44, 30, 40, 34][i]}%`, 9)} />
+          </div>
+        ))}
+        <div style={{ boxSizing: "border-box", height: FAZLA_SATIR, display: "flex", alignItems: "center", justifyContent: "center",
+          borderTop: `1px dashed ${PAL.lineHi}` }}><span style={iskeletCizgi(170, 10)} /></div>
+      </div>
+    </section>
+  );
+}
+
 export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
-  const [acilRef] = useAutoAnimate();
   const dar = useDarEkran();
   const { say, dilimler } = sayimVeDilim(kuyrukSla);
   const acil = kuyrukSla
@@ -227,12 +341,21 @@ export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
     const yaklasan = kuyrukSla
       .filter((x) => x.sla.durum === "NORMAL" && Number.isFinite(x.sla.kalan_gun))
       .sort((a, b) => a.sla.kalan_gun - b.sla.kalan_gun)[0];
+    const siradaki = kuyrukSla
+      .filter((x) => x.sla.durum === "NORMAL" && Number.isFinite(x.sla.kalan_gun))
+      .sort((a, b) => a.sla.kalan_gun - b.sla.kalan_gun);
     return (
-      <section aria-label="Kuyruk yasal süre durumu" style={{ ...yuzey(null), padding: pad }}>
-        <Manset sayi={kuyrukSla.length} renk={PAL.ink} dar={dar}
-          baslik="evrak kuyrukta — tamamı normal takvimde"
-          baglam={yaklasan ? `İlk yaklaşan süre: ${yaklasan.sla.son_tarih || `${yaklasan.sla.kalan_gun} gün`} — ${yaklasan.label}` : "Eskalasyon gerekmiyor."} />
-        <div style={{ marginTop: SP.xl }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
+      <section aria-label="Kuyruk yasal süre durumu" style={{ ...yuzey(null), height: "100%", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: `${pad + 4}px ${pad}px ${pad - 4}px` }}>
+          <Manset sayi={kuyrukSla.length} renk={PAL.ink} dar={dar}
+            baslik="evrak kuyrukta — tamamı normal takvimde"
+            baglam={yaklasan ? `İlk yaklaşan süre: ${yaklasan.sla.son_tarih || `${yaklasan.sla.kalan_gun} gün`} — ${yaklasan.label}` : "Eskalasyon gerekmiyor."} />
+          <div style={{ marginTop: SP.xl }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
+        </div>
+        {siradaki.length > 0 && (
+          <Defter liste={siradaki} pad={pad} dar={dar} onIsle={onIsle} onGoInbox={onGoInbox}
+            etiket="Sıradaki yasal süreler" fazlaMetin="tümü kuyrukta" />
+        )}
       </section>
     );
   }
@@ -240,7 +363,6 @@ export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
   const enEski = acil[0];
   const baglam = `${kuyrukSla.length} evraklık kuyrukta · en acili: ${enEski.label} (${kalanMetin(enEski.sla)})`;
   const vurgu = say.gecikmis ? BANT.kirmizi.c : BANT.sari.c;
-  const gorunen = acil.slice(0, 5);
 
   return (
     <section aria-label="Bugünün brifi — kuyruk yasal süre durumu" style={{ ...yuzey(vurgu), height: "100%", display: "flex", flexDirection: "column" }}>
@@ -262,40 +384,8 @@ export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
         <div style={{ marginTop: SP.xl }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
       </div>
 
-      {/* Sicil defteri — marj çizgisi sıra no sütununun sağında, yukarıdan aşağı çizilir. */}
-      <div style={{ position: "relative", flex: 1, padding: `0 ${pad}px ${SP.s}px`, background: PAL.surf2, borderTop: `1px solid ${PAL.line}` }}>
-        <span aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, left: pad + (dar ? 0 : 44), width: 1,
-          background: MARJ, transformOrigin: "50% 0", ...giris(320, "pv-cizgi", 0.7) }} />
-        {!dar && (
-          <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: DEFTER_SUTUN, gap: SP.l, padding: `${SP.m}px 0 ${SP.s}px`,
-            ...TYPE.antet, fontSize: 10, color: PAL.mut3 }}>
-            <span style={{ textAlign: "right", paddingRight: SP.s }}>SIRA</span>
-            <span>EVRAK · YASAL DAYANAK</span>
-            <span style={{ textAlign: "right" }}>DURUM</span>
-            <span style={{ textAlign: "right" }}>SON GÜN</span>
-            <span style={{ width: 64 }} />
-          </div>
-        )}
-        <div ref={acilRef} role="list" aria-label="Süresi dolan ya da dolmak üzere olan evraklar">
-          {gorunen.map((x, i) => (
-            <div role="listitem" key={x.id}>
-              <DefterSatir x={x} sira={i + 1} onIsle={onIsle} dar={dar} gecikme={380 + i * 70} />
-            </div>
-          ))}
-        </div>
-        {acil.length > 5 && (
-          <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
-            onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-            style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s, width: "100%",
-              padding: `${SP.m}px 0`, background: "transparent", border: "none", borderTop: `1px dashed ${PAL.lineHi}`,
-              borderRadius: 0, ...TYPE.ui, fontWeight: 500, color: DERIN.T, transition: `background .12s ease, transform .14s ${EASE.out}`,
-              ...giris(380 + gorunen.length * 70, "pv-yaz", 0.42) }}>
-            <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", ...TNUM }}>+{acil.length - 5}</span>
-            {dar ? "evrak daha — kuyrukta" : "evrak daha — tümü kuyrukta aciliyet sırasıyla"} <Icon.arrow width={14} height={14} />
-          </button>
-        )}
-      </div>
+      <Defter liste={acil} pad={pad} dar={dar} onIsle={onIsle} onGoInbox={onGoInbox}
+        etiket="Süresi dolan ya da dolmak üzere olan evraklar" fazlaMetin="tümü kuyrukta aciliyet sırasıyla" />
     </section>
   );
 }

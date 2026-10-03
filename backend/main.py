@@ -1,6 +1,5 @@
 """kamu-evrak FastAPI uygulaması — Kamu Evrak ve Yazışma için Akıllı Agent Destek Sistemi.
 
-TEKNOFEST 2026 Yapay Zeka Dil Ajanları Yarışması — 1. Senaryo.
 ADALET-AGENT main.py deseninden ADAPT (lifespan/health/CORS KEEP; ağır preload opsiyonel).
 
 Çalıştır:  uv run main.py  (backend/ dizininde)
@@ -89,7 +88,7 @@ _STATIK_KOK = os.getenv("STATIK_KOK", "").strip()
 
 app = FastAPI(
     title="kamu-evrak — Akıllı Agent Destek Sistemi",
-    description="Kamu evrak ve yazışma süreçleri için çok-ajanlı yapay zeka (TEKNOFEST 2026, 1. Senaryo)",
+    description="Kamu evrak ve yazışma süreçleri için çok-ajanlı yapay zeka",
     version="0.1.0",
     lifespan=lifespan,
     # Swagger/ReDoc/OpenAPI şeması prod'da kapalı — iç API yüzeyinin/mimarinin keşfini
@@ -267,7 +266,7 @@ async def root():
         _idx = _Yol(_STATIK_KOK) / "index.html"
         if _idx.is_file():
             return FileResponse(str(_idx))
-    return {"app": "kamu-evrak", "scenario": "TEKNOFEST 2026 — 1. Senaryo", "docs": "/docs"}
+    return {"app": "kamu-evrak", "docs": "/docs"}
 
 
 def _dev_host_port() -> tuple[str, int]:

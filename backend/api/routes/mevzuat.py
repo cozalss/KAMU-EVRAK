@@ -18,6 +18,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, status
 
+from core.text import tr_lower
+
 router = APIRouter(prefix="/mevzuat", tags=["mevzuat"])
 
 _ROOT = Path(__file__).resolve().parents[3]
@@ -151,6 +153,26 @@ def _no(dosya: str) -> str:
     return onek if _NO_RE.match(onek) else ""
 
 
+# Kaynak notundaki nitelik beyanı (frontend lib/mevzuatKunye.kaynakNotuCoz ile AYNI kurallar,
+# aynı sıra). Not dosyanın başındadır → yalnız ilk _NITELIK_PENCERE karakter taranır.
+_NITELIK_PENCERE = 1200
+_NITELIK_KURALLARI: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("ozet", re.compile(r"özetlerinden|lafz[iî] tam metin değil")),
+    ("yakin", re.compile(r"yakın-lafz")),
+    ("lafzi", re.compile(r"lafz[iî]\s*metn")),
+)
+
+
+def _nitelik(metin: str) -> str | None:
+    """Metnin NİTELİĞİ: lafzi | yakin | ozet | None (beyan yoksa uydurulmaz).
+
+    Madde özeti hukuki atıf için yeterli değildir — katalog kartı bunu okumadan önce
+    göstersin diye sunucu tarafında bir kez hesaplanır (CLAUDE.md §1).
+    """
+    bas = tr_lower(metin[:_NITELIK_PENCERE])
+    return next((ad for ad, desen in _NITELIK_KURALLARI if desen.search(bas)), None)
+
+
 def _oku(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
@@ -174,6 +196,7 @@ def _katalog() -> tuple[dict, ...]:
             "kunye": satirlar[1].strip() if len(satirlar) > 1 else "",
             "madde_sayisi": len(_MADDE_RE.findall(metin)),
             "kategori": _kategori(path.stem),
+            "nitelik": _nitelik(metin),
         })
     return tuple(kayitlar)
 

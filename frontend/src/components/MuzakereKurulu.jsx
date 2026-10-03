@@ -59,6 +59,11 @@ function GonderimeHazir({ kurgu, aksan, onGonder, az = false }) {
   const [gonderiyor, setGonderiyor] = useState(false);
   const [hata, setHata] = useState(false);   // gönderim başarısız → modal açık kalır, tekrar dene
   const revizeVar = !!kurgu.uzlasi_uygulanabilir;
+  // Birim Amiri çekince bildirdiyse (sarı/kırmızı bant) "kurulca uygun bulundu" DENMEZ — amirin
+  // sözü hemen üstte "gönderime çıkmamalı" derken alttaki başlık "uygun" diyordu (tur-3 bulgusu).
+  // Karar yine memurundur; yalnız metin olguya bağlanır ve onay rengi "güvenli" yeşili taşımaz.
+  const cekince = kurgu.risk === "sari" || kurgu.risk === "kirmizi";
+  const onayRenk = cekince ? T : DERIN.yesil;
   const finalMetin = revizeVar
     ? (kurgu.uzlasi_metni || "")
     : (kurgu.taslak || []).map((l) => l.metin).join("\n");
@@ -90,20 +95,23 @@ function GonderimeHazir({ kurgu, aksan, onGonder, az = false }) {
         </figure>
       )}
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", padding: "14px 16px", borderRadius: RAD.card, background: PAL.surf2, border: `1px solid ${PAL.line}` }}>
-        <span aria-hidden="true" style={{ display: "flex", color: DERIN.yesil }}><Icon.shield /></span>
+        <span aria-hidden="true" style={{ display: "flex", color: cekince ? DERIN_OF(aksan) : DERIN.yesil }}>{cekince ? <Icon.alert /> : <Icon.shield />}</span>
         <span style={{ minWidth: 0, flex: "1 1 260px" }}>
           <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink }}>
-            {revizeVar ? "Kurulun revize taslağı gönderime hazır" : "Taslak kurulca uygun bulundu — gönderime hazır"}
+            {revizeVar ? "Kurulun revize taslağı gönderime hazır"
+              : cekince ? "Kurul revize önermedi — Birim Amiri çekince bildirdi"
+                : "Taslak kurulca uygun bulundu — gönderime hazır"}
           </span>
           <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2 }}>
             {revizeVar
               ? "Onaylarsanız revize sürüm doğrulanıp Giden Evrak'a gönderilir."
-              : "Doğruluğunu onaylarsanız Giden Evrak'a gönderilir."}
+              : cekince ? "Çekinceyi değerlendirdiyseniz doğruluğunu onaylayıp Giden Evrak'a gönderebilirsiniz."
+                : "Doğruluğunu onaylarsanız Giden Evrak'a gönderilir."}
           </span>
         </span>
         <span style={{ marginLeft: "auto" }}>
           {!teyit ? (
-            <Btn primary accent={DERIN.yesil} onClick={() => setTeyit(true)}
+            <Btn primary accent={onayRenk} onClick={() => setTeyit(true)}
               ariaLabel="Taslağı onayla ve gönderime hazırla">
               <Icon.check /> Onayla ve gönder
             </Btn>
@@ -113,7 +121,7 @@ function GonderimeHazir({ kurgu, aksan, onGonder, az = false }) {
                 style={{ ...TYPE.meta, color: DERIN.kirmizi, fontWeight: 500 }}>
                 {hata ? "Gönderilemedi — bağlantıyı kontrol edip tekrar deneyin." : "Geri alınamaz — emin misiniz?"}
               </span>
-              <Btn primary accent={DERIN.yesil} onClick={gonder} disabled={gonderiyor} ariaLabel="Evet, Giden Evrak'a gönder">
+              <Btn primary accent={onayRenk} onClick={gonder} disabled={gonderiyor} ariaLabel="Evet, Giden Evrak'a gönder">
                 {gonderiyor
                   ? <><Icon.spin width={13} height={13} /> Gönderiliyor…</>
                   : <><Icon.check /> {hata ? "Tekrar dene" : "Evet, gönder"}</>}
@@ -198,16 +206,20 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
 
       {sirali.length === 0 ? (
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: DERIN.yesil }}>
-          <Icon.check width={15} height={15} /> Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü.
+          <Icon.check width={15} height={15} /> {kurgu.risk === "sari" || kurgu.risk === "kirmizi"
+            ? "Kurul taslakta değişiklik önermedi; risk çekincesi Birim Amiri'nin sözünde."
+            : "Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü."}
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {sirali.map((o, i) => {
             const t = TIP[o.tip] || TIP.duzelt;
             return (
-              <div key={`${o.tip}-${o.kaynak}-${i}`} style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "8px 0", borderTop: i ? `1px solid ${PAL.line}` : "none" }}>
+              <div key={`${o.tip}-${o.kaynak}-${i}`} style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: SP.s, padding: "8px 0", borderTop: i ? `1px solid ${PAL.line}` : "none" }}>
                 <span style={{ flex: "none", marginTop: 1, ...TYPE.meta, fontWeight: 600, color: DERIN_OF(t.col), background: ALFA(t.col), borderRadius: RAD.chip, padding: "2px 8px", minWidth: 52, textAlign: "center" }}>{t.etiket}</span>
-                <span style={{ flex: 1, minWidth: 0, ...TYPE.data, color: PAL.ink2 }}>
+                {/* flex-basis 220: dar ekranda metin tek-kelimelik sütuna ezilmez; eylem + kaynak
+                    satırın altına iner (390px'te ölçülen kırılma, tur-3). */}
+                <span style={{ flex: "1 1 220px", minWidth: 0, ...TYPE.data, color: PAL.ink2 }}>
                   {o.metin}
                   {/* DÜRÜST bayrak: grounded uygulandıysa "işlendi" (yeşil), yoksa "tavsiye" (nötr) —
                       revize taslağa işlendi rozeti YALNIZ diff'te gerçekten değişen öneride görünür. */}
@@ -223,6 +235,7 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
                 </span>
                 {/* Tavsiye kalan öneri TEK TIKLA revize taslağa katılır (AI revize yolu) —
                     aynı anda tek istek (isleyen kilidi); işlenmiş öneride buton yok. */}
+                <span style={{ flex: "none", marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.s }}>
                 {!o.uygulanabilir && onOneriIsle && (
                   <span style={{ flex: "none" }}>
                     <Btn onClick={() => onOneriIsle(o)} disabled={isleyen != null}
@@ -235,6 +248,7 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
                   </span>
                 )}
                 <span style={{ flex: "none", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>{o.kaynak}</span>
+                </span>
               </div>
             );
           })}
@@ -251,15 +265,15 @@ function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen
       )}
 
       {uygulanabilir && (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
-          <span style={{ ...TYPE.meta, color: PAL.mut2 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: SP.m, marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
+          <span style={{ ...TYPE.meta, color: PAL.mut2, flex: "1 1 220px" }}>
             {onGonder
               ? "İsterseniz yalnız taslağa kaydedip sonra gönderebilirsiniz:"
               : "Kalıcı yazım memur kararıdır — kurul hiçbir değişikliği kendiliğinden uygulamaz."}
           </span>
           <span style={{ marginLeft: "auto" }}>
             {/* onGonder varsa primary "Onayla ve gönder"e devredilir → uygula ikincil kalır (tek primary). */}
-            <Btn primary={!onGonder} accent={aksan} onClick={onUygula}>
+            <Btn primary={!onGonder} accent={aksan} onClick={onUygula} style={{ whiteSpace: "nowrap" }}>
               <Icon.check /> {onGonder ? "Yalnız taslağa kaydet" : "Revize taslağını uygula"}
             </Btn>
           </span>
@@ -476,6 +490,16 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
   const [kurgu, setKurgu] = useState(yerel);
   const [akan, setAkan] = useState(false);   // canlı akış: turlar hâlâ büyüyor (açılış→çapraz)
   const [isleyen, setIsleyen] = useState(null);   // uçuştaki tek öneri (çift istek kilidi)
+  // Canlı kurul (LLM) denendi ama gelmedi → yerel deterministik motor. Sessizce "aynı şey"
+  // gibi sunulmaz: başlıkta dürüst bir satır söyler (CLAUDE.md §9 ruhu — koşmayan şey koştu sayılmaz).
+  const [yedek, setYedek] = useState(false);
+  const [bekSn, setBekSn] = useState(0);   // açılış beklenirken geçen süre (takıldı mı, sürüyor mu)
+  useEffect(() => {
+    if (durum !== "yukleniyor") { setBekSn(0); return undefined; }
+    const t0 = Date.now();
+    const id = setInterval(() => setBekSn(Math.round((Date.now() - t0) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [durum]);
 
   // "Tavsiye" kalan kurul önerisini TEK TEK revize taslağa katla: mevcut etkin metin
   // (revize varsa o, yoksa orijinal) + öneri, /yazi/dogrula talimat yoluna gider (BelgeModal
@@ -525,7 +549,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
     if (!result?.yazi_taslak_md) { setKurgu(yerel); setDurum("hazir"); setAkan(false); return undefined; }
     let alive = true;
     const ac = new AbortController();
-    setDurum("yukleniyor"); setAkan(false);
+    setDurum("yukleniyor"); setAkan(false); setYedek(false);
     let bant = "";                       // 'sinyaller' olayından risk bandı (kısmi kurguya renk verir)
     let acildi = false, sonucGeldi = false;
     // Canlı müzakere birikimi: açılış + hazır olan her müzakere turu. Sunucu yakınsama
@@ -540,10 +564,14 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
     };
     // Açılış üst sınırda gelmezse deterministik motora düş (ağ takılması demo'yu kilitlemesin).
     const zamanAsimi = setTimeout(() => {
-      if (alive && !acildi) { ac.abort(); setKurgu(yerel); setDurum("hazir"); }
+      if (alive && !acildi) { ac.abort(); setKurgu(yerel); setDurum("hazir"); setYedek(true); }
     }, KURUL_FETCH_TIMEOUT_MS);
 
-    apiStream("/yazi/kurul/akis", govde, (olay) => {
+    // İstek bir tık ERTELENİR: StrictMode (dev) efekti kur→sök→kur koşturur ve hızlı aç-kapa
+    // da aynı deseni üretir. Hemen sökülen efektte zamanlayıcı iptal olur, sunucuya hiç istek
+    // gitmez — önceden ilk istek iptal edilse de sunucu LLM çağrısını başlatmış oluyordu
+    // (her Kurul açılışı 2× müzakere faturası, tur 3 ölçümü).
+    const baslat = setTimeout(() => apiStream("/yazi/kurul/akis", govde, (olay) => {
       if (!alive) return;
       if (olay.tip === "sinyaller") {
         bant = ((olay.sinyaller || {}).risk_metadata || {}).bant || "";
@@ -561,9 +589,9 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
         setAkan(false);
       }
     }, ac.signal)
-      .then(() => { if (alive) { clearTimeout(zamanAsimi); setAkan(false); if (!sonucGeldi) { setKurgu(yerel); setDurum("hazir"); } } })
-      .catch(() => { if (alive) { clearTimeout(zamanAsimi); setAkan(false); if (!sonucGeldi) { setKurgu(yerel); setDurum("hazir"); } } });
-    return () => { alive = false; clearTimeout(zamanAsimi); ac.abort(); };
+      .then(() => { if (alive) { clearTimeout(zamanAsimi); setAkan(false); if (!sonucGeldi) { setKurgu(yerel); setDurum("hazir"); setYedek(true); } } })
+      .catch(() => { if (alive) { clearTimeout(zamanAsimi); setAkan(false); if (!sonucGeldi) { setKurgu(yerel); setDurum("hazir"); setYedek(true); } } }), 0);
+    return () => { alive = false; clearTimeout(baslat); clearTimeout(zamanAsimi); ac.abort(); };
   }, [result, yerel]);
 
   useEffect(() => {
@@ -609,10 +637,16 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
               </div>
               <Btn onClick={onKapat} ariaLabel="Kurulu kapat"><Icon.x width={13} height={13} /> Kapat</Btn>
             </div>
+            {yedek && kurgu.kaynak !== "llm" && (
+              <p role="note" style={{ margin: `${SP.m}px 0 0`, display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", ...TYPE.meta, color: PAL.mut2 }}>
+                <span style={{ ...TYPE.antet, textTransform: "uppercase", color: DERIN_OF(BANT.sari.c), padding: "1px 6px", border: `1px solid ${BANT.sari.c}`, borderRadius: RAD.chip }}>Yerel motor</span>
+                Canlı kurula ulaşılamadı; müzakere taslağın ölçülmüş doğrulama sinyallerinden deterministik kuruldu.
+              </p>
+            )}
             <div aria-hidden="true" style={{ marginTop: SP.l, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.9 }} />
           </header>
           {durum === "yukleniyor" ? (
-            <KurulYukleniyor az={az} />
+            <KurulYukleniyor az={az} sn={bekSn} tavanSn={KURUL_FETCH_TIMEOUT_MS / 1000} />
           ) : kurgu.toplanamaz ? (
             <div style={{ padding: "40px 20px", textAlign: "center", ...TYPE.data, color: PAL.mut2 }}>
               Bu taslak için kurul toplanamıyor — müzakere edilecek yazı metni bulunamadı.

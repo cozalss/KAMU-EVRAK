@@ -215,7 +215,7 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
   const modalAc = (m) => setModal(m);
 
   return (
-    <div style={{ position: "relative", marginTop: "auto" }}>
+    <div style={{ position: "relative" }}>
       <DropdownMenu.Root open={acik} onOpenChange={setAcik}>
         {/* Tetik — kullanıcı kartı; daraltılmış rayda yalnız avatar (title + aynı aria) */}
         <DropdownMenu.Trigger asChild>

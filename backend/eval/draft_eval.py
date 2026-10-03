@@ -1,4 +1,4 @@
-"""Görev 2 — Resmî yazı taslağı değerlendirmesi (TEKNOFEST 1. Senaryo).
+"""Görev 2 — Resmî yazı taslağı değerlendirmesi.
 
 Şartname §6.4.2 ("uygun bir taslak oluşturma", "resmî üsluba uygun olması")
 + §9 ("yazı şablon oluşturma kalitesi"). docs/06: birincil **format-compliance**,

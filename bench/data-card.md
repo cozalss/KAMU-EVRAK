@@ -1,6 +1,6 @@
 # Veri Kartı (Data Card) — Sentetik Kamu-Evrak Veri Seti
 
-> TEKNOFEST TYDA 1. Senaryo. Bu kart şartname §6.5 (**gerçek kamu verisi YASAK**),
+> kamu-evrak. Bu kart şartname §6.5 (**gerçek kamu verisi YASAK**),
 > §7 (lisans/teslim) ve §13.1 (etik/fairness) gereği veri kökeni, üretim yöntemi,
 > sahte-PII güvenliği, gold set boyutları, lisans ve kullanım haklarını beyan eder.
 > Üretici kod: `scripts/gen_synthetic.py`. Plan: `docs/05-sentetik-veri-plani.md`.

@@ -3,7 +3,8 @@
    outbox: DashboardApp session state (Onayla&Gönder → giden evrak). */
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ViewWrap, Btn, KV, Icon, MONO, DISPLAY, PAL, BANT, TYPE, TNUM, RAD, SP, SH, DERIN, DERIN_OF, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
-import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, useDefterGezinme, Imlec } from "./SicilDefter.jsx";
+import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterIskelet, DefterHata, GrupBasligi, useDefterGezinme, Imlec, HUCRE } from "./SicilDefter.jsx";
+import { bosDurumMetni, gunleGrupla } from "../lib/sicilDefter.js";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
@@ -61,6 +62,7 @@ const SABLON = {
   alan: '"no ana durum pul eylem"',
   alanDar: '"no pul" "ana ana" "durum eylem"',
   marj: "158px",
+  adim: "88px",
 };
 const BASLIKLAR = [
   <BaslikHucre key="n" alan="no">Gönderi no</BaslikHucre>,
@@ -69,6 +71,7 @@ const BASLIKLAR = [
   <BaslikHucre key="p" alan="pul">Pul</BaslikHucre>,
   <BaslikHucre key="e" alan="eylem" sag>Eylem</BaslikHucre>,
 ];
+const saatOf = (ts) => { const d = new Date(Number(ts || 0)); return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }); };
 const gunAy = (ts) => { const d = new Date(Number(ts || 0)); return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }); };
 
 /* Posta damgası ("iptal pulu") — gönderilen her satır için dairesel SVG: çember üstünde
@@ -90,7 +93,7 @@ function PostaDamgasi({ ts, tohum = "" }) {
     <svg width="86" height="62" viewBox="0 0 72 52" aria-hidden="true"
       style={{ "--egim": `${egim}deg`, display: "block", color: DERIN.V, transform: `rotate(${egim}deg)`, overflow: "visible",
         WebkitMaskImage: PUL_DOKU, maskImage: PUL_DOKU, WebkitMaskSize: "90px 70px", maskSize: "90px 70px",
-        animation: "nu-damga .5s var(--ke-ease-out) both", animationDelay: "calc(var(--sd-i,0) * 32ms + 180ms)" }}>
+        animation: "nu-damga .5s var(--ke-ease-out) both", animationDelay: "calc(min(var(--sd-i,0), 5) * 30ms + 120ms)" }}>
       <defs>
         <path id={`ust-${uid}`} d="M 7.5 26 A 18.5 18.5 0 0 1 44.5 26" />
         <path id={`alt-${uid}`} d="M 6 26 A 20 20 0 0 0 46 26" />
@@ -98,7 +101,7 @@ function PostaDamgasi({ ts, tohum = "" }) {
       {[0, 6, 12].map((y) => <path key={y} d={`M 51 ${20 + y} q 4 -3 7 0 t 7 0 t 7 0`} fill="none" stroke="currentColor" strokeWidth="1.3" opacity=".75" />)}
       <circle cx="26" cy="26" r="24.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
       <circle cx="26" cy="26" r="13.5" fill="none" stroke="currentColor" strokeWidth=".9" />
-      <text style={{ fontFamily: DISPLAY, fontSize: 6.4, fontWeight: 800, letterSpacing: ".08em", fontStretch: "125%" }} fill="currentColor">
+      <text style={{ fontFamily: DISPLAY, fontSize: 5.4, fontWeight: 800, letterSpacing: ".04em", fontStretch: "100%" }} fill="currentColor">
         <textPath href={`#ust-${uid}`} startOffset="50%" textAnchor="middle">GÖNDERİLDİ</textPath>
       </text>
       <text style={{ fontFamily: MONO, fontSize: 5.6, fontWeight: 600, letterSpacing: ".06em" }} fill="currentColor">
@@ -159,7 +162,78 @@ function DetayModal({ item, onClose }) {
   );
 }
 
-export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onResend }) {
+/* Defter kaydı — gönderi no · konu bloğu · durum/risk · posta damgası · eylem. Gün
+   gruplamasında (zimmet çizelgesi) göreli "N gün önce" yerine gönderim SAATİ yazılır —
+   gün zaten yapışkan ayraçta. */
+function GidenSatir({ item, sira, gez, gunlu, onAc }) {
+  const drenk = DURUM_RENK[item.durum] || PAL.mut2;
+  const kat = kategoriMeta(item._kategori);
+  const guven = fmtGuven(item.guven);
+  const gecikmis = item.sla_durum === "GECIKMIS";
+  const riskC = BANT[item.risk]?.c;
+  const gitti = item.durum === "gonderildi" || item.durum === "duzenlendi";
+  const ayrac = <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>;
+  return (
+    <div role="row" data-sicil-satir="" data-sd-anahtar={item.id} style={{ "--sd-i": sira }}
+      onPointerDown={() => gez.sec(item.id)}
+      onClick={(e) => onAc(item, e.currentTarget.querySelector("[data-sd-eylem]"))}>
+      {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="giden" />}
+      <span {...HUCRE.grid} style={{ gridArea: "no", display: "flex", flexDirection: "column", gap: 2 }}>
+        <SicilNo no={item.id} />
+        {gunlu && <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut3, ...TNUM }}>saat {saatOf(item.gonderim_tarihi)}</span>}
+      </span>
+      <div {...HUCRE.grid} style={{ gridArea: "ana", minWidth: 0 }}>
+        <span data-sd-konu="" title={cleanDemoText(item.konu)} style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
+        <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, alignItems: "center", minWidth: 0, whiteSpace: "nowrap" }}>
+          <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
+          {ayrac}
+          <span title={item.kaynak_evrak_adi} style={{ fontFamily: MONO, fontSize: 11, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{item.kaynak_evrak_adi}</span>
+          {!gunlu && <>{ayrac}<span>{gecenSure(item.gonderim_tarihi)}</span></>}
+          {guven && <>{ayrac}<span style={TNUM}>güven {guven}</span></>}
+          {gecikmis && <span style={{ color: DERIN.kirmizi, fontWeight: 500 }}>· süresi geçmiş</span>}
+        </div>
+        <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 2, display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+          <span aria-hidden="true" style={{ display: "flex", color: DERIN.V, flexShrink: 0 }}><Icon.send width={11} height={11} /></span>
+          <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><span style={SR_ONLY}>alıcı birim: </span>{BIRIM_LBL(item.alici_birim)}</span>
+        </div>
+      </div>
+      <span {...HUCRE.grid} style={{ gridArea: "durum", display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start", minWidth: 0 }}>
+        <SessizCip renk={drenk} vurgulu={item.durum === "reddedildi"} metin={DURUM_TR[item.durum] || item.durum} />
+        {/* Risk kodu (BANT.l uppercase istisnası — mono) */}
+        <span style={{ fontFamily: MONO, fontSize: 11, fontWeight: 600, letterSpacing: ".06em", paddingLeft: 12, color: riskC ? DERIN_OF(riskC) : PAL.mut3 }}><span style={SR_ONLY}>risk: </span>{BANT[item.risk]?.l || "—"}</span>
+      </span>
+      <span {...HUCRE.grid} style={{ gridArea: "pul", justifySelf: "center" }}>
+        {gitti ? <PostaDamgasi ts={item.gonderim_tarihi} tohum={item.id} /> : <span style={{ ...TYPE.meta, color: PAL.mut3 }} aria-label="Pul yok — gönderilmedi">—</span>}
+        {gitti && <span style={SR_ONLY}>Gönderim: {gunAy(item.gonderim_tarihi)}</span>}
+      </span>
+      <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end" }}>
+        <button type="button" data-sd-eylem="" data-press=""
+          onClick={(e) => { e.stopPropagation(); onAc(item, e.currentTarget); }} aria-label={`${item.id} detayını görüntüle`}>
+          Görüntüle <Icon.arrow width={14} height={14} />
+        </button>
+      </span>
+    </div>
+  );
+}
+
+const BOS_ILK = {
+  baslik: "Defterin ilk sayfası henüz boş",
+  sub: "Bir evrakı işleyip “Onayla ve gönder” dediğinizde yazı buraya posta damgasıyla, değiştirilemez denetim iziyle birlikte işlenir.",
+};
+
+/* Boş defter üç hâli — yükleniyor (iskelet) · hata/çevrimdışı · gerçekten ilk sayfa. */
+function GidenBos({ yukleniyor, hata, onYenidenDene, onGoInbox }) {
+  if (yukleniyor) return <DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları yükleniyor" />;
+  if (hata) return <DefterHata sablon={SABLON} basliklar={BASLIKLAR} baslik="Giden evrak defteri alınamadı" ayrinti={String(hata?.message || hata)} onYenidenDene={onYenidenDene} />;
+  return (
+    <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" satir={7} baslik={BOS_ILK.baslik} sub={BOS_ILK.sub}
+      actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
+  );
+}
+
+/* yukleniyor / hata: DB'den giden evrak sorgusunun durumu (DashboardApp gidenQ). Verilmezse
+   eski davranış — boş liste "ilk sayfa boş" olarak okunur. */
+export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, yukleniyor = false, hata = null, onYenidenDene }) {
   const [detay, setDetay] = useState(null);
   const gez = useDefterGezinme();    // j/k gezinme + kayan seçim imleci
   const triggerRef = useRef(null);   // modal kapanınca odağı tetikleyen butona geri ver (a11y)
@@ -178,20 +252,23 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
   }), [items]);
   const filter = useFilter(items, config);
   const gonderildi = outbox.filter((o) => o.durum === "gonderildi").length;
+  // Zimmet çizelgesi: tarih sıralamasında gün ayraçları (yapışkan mono tarih); risk/birim
+  // sıralamasında gün başlığı yanıltır → düz liste.
+  const gunlu = filter.filters.sortBy === "ts_desc" || filter.filters.sortBy === "ts_asc";
+  const gruplar = useMemo(() => (gunlu ? gunleGrupla(filter.results, (r) => r.gonderim_tarihi) : [{ anahtar: "duz", rows: filter.results }]), [filter.results, gunlu]);
 
   if (outbox.length === 0) {
     return (
-      <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub="Onaylanıp gönderilen resmî yazılar">
+      <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={yukleniyor ? "Defter açılıyor…" : "Onaylanıp gönderilen resmî yazılar"}>
         <SicilStil />
-        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" satir={7}
-          baslik="Defterin ilk sayfası henüz boş"
-          sub="Bir evrakı işleyip “Onayla ve gönder” dediğinizde yazı buraya posta damgasıyla, değiştirilemez denetim iziyle birlikte işlenir."
-          actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
+        <GidenBos yukleniyor={yukleniyor} hata={hata} onYenidenDene={onYenidenDene} onGoInbox={onGoInbox} />
       </ViewWrap>
     );
   }
 
   const ac = (item, el) => { triggerRef.current = el; setDetay(item); };
+  const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "gönderi", kalici: "gönderilen yazılar silinmez" });
+  let sira = 0;
   return (
     <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={`${outbox.length} evrak · ${gonderildi} gönderildi`}
       actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]}>
@@ -200,55 +277,17 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
 
       {filter.results.length === 0 ? (
         <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" damga="Eşleşme yok"
-          baslik="Bu ölçütlerle gönderi yok" sub="Filtre ölçütlerinizi gevşetin; gönderilen yazılar silinmez."
+          baslik={bos.baslik} sub={bos.sub}
           actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları" gezinme={gez} ipucu="detayı aç">
-          {filter.results.map((item, i) => {
-            const drenk = DURUM_RENK[item.durum] || PAL.mut2;
-            const kat = kategoriMeta(item._kategori);
-            const guven = fmtGuven(item.guven);
-            const gecikmis = item.sla_durum === "GECIKMIS";
-            const riskC = BANT[item.risk]?.c;
-            const gitti = item.durum === "gonderildi" || item.durum === "duzenlendi";
-            return (
-              <div key={item.id} data-sicil-satir="" data-sd-anahtar={item.id} style={{ "--sd-i": Math.min(i, 14) }}
-                onPointerDown={() => gez.sec(item.id)}
-                onClick={(e) => ac(item, e.currentTarget.querySelector("[data-sd-eylem]"))}>
-                {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="giden" />}
-                <SicilNo no={item.id} style={{ gridArea: "no" }} />
-                <div style={{ gridArea: "ana", minWidth: 0 }}>
-                  <span data-sd-konu="" style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
-                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, flexWrap: "wrap", alignItems: "center", minWidth: 0 }}>
-                    <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
-                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
-                    <span style={{ fontFamily: MONO, fontSize: 11, overflowWrap: "anywhere" }}>{item.kaynak_evrak_adi}</span>
-                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
-                    <span>{gecenSure(item.gonderim_tarihi)}</span>
-                    {guven && <><span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span><span style={TNUM}>güven {guven}</span></>}
-                    {gecikmis && <span style={{ color: DERIN.kirmizi, fontWeight: 500 }}>· süresi geçmiş</span>}
-                  </div>
-                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
-                    <span aria-hidden="true" style={{ display: "flex", color: DERIN.V }}><Icon.send width={11} height={11} /></span>
-                    <span><span style={SR_ONLY}>alıcı birim: </span>{BIRIM_LBL(item.alici_birim)}</span>
-                  </div>
-                </div>
-                <span style={{ gridArea: "durum", display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start", minWidth: 0 }}>
-                  <SessizCip renk={drenk} vurgulu={item.durum === "reddedildi"} metin={DURUM_TR[item.durum] || item.durum} />
-                  {/* Risk kodu (BANT.l uppercase istisnası — mono) */}
-                  <span style={{ fontFamily: MONO, fontSize: 11, fontWeight: 600, letterSpacing: ".06em", paddingLeft: 12, color: riskC ? DERIN_OF(riskC) : PAL.mut3 }}>{BANT[item.risk]?.l || "—"}</span>
-                </span>
-                <span style={{ gridArea: "pul", justifySelf: "center" }}>
-                  {gitti ? <PostaDamgasi ts={item.gonderim_tarihi} tohum={item.id} /> : <span style={{ ...TYPE.meta, color: PAL.mut3 }}>—</span>}
-                  {gitti && <span style={SR_ONLY}>Gönderim: {gunAy(item.gonderim_tarihi)}</span>}
-                </span>
-                <button type="button" data-sd-eylem="" data-press="" style={{ gridArea: "eylem" }}
-                  onClick={(e) => { e.stopPropagation(); ac(item, e.currentTarget); }} aria-label={`${item.id} detayını görüntüle`}>
-                  Görüntüle <Icon.arrow width={14} height={14} />
-                </button>
-              </div>
-            );
-          })}
+        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları" gezinme={gez} ipucu="detayı aç"
+          rol="grid" dolgu={Math.max(0, 4 - filter.results.length)}>
+          {gruplar.map((g) => (
+            <React.Fragment key={g.anahtar}>
+              {gunlu && <GrupBasligi etiket={g.etiket} ek={g.tarih} sayi={g.rows.length} birim="gönderi" />}
+              {g.rows.map((item) => <GidenSatir key={item.id} item={item} sira={sira++} gez={gez} gunlu={gunlu} onAc={ac} />)}
+            </React.Fragment>
+          ))}
         </DefterYuzey>
       )}
 

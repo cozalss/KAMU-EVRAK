@@ -22,6 +22,7 @@ import {
   KENAR_MM,
   MM,
   YAZI_ALANI_GEN_PX,
+  genislikOlcegi,
   olcekHesapla,
   olcekOynadi,
   olcumleriTopla,
@@ -97,7 +98,10 @@ function stilYukle() {
                         Ana taslak paneli bunu kullanır: kutuya sığdırma puntoyu ~9pt'ye
                         düşürüyordu ve memur "okunmuyor, kullanmayı düşürüyor" dedi
                         (2026-08-11). Okunabilirlik, tek ekranda tüm sayfayı görmeye yeğlendi. */
-export default function A4Belge({ metin = "", onAc = null, solgun = false, baslikIpucu = "", sigdir = "kutu" }) {
+/* imzaKatmani → ilk İMZA satırına göre mutlak konumlanan katman (HukumMuhru: ıslak paraf +
+   karar mührü). Kâğıdın içinde olduğu için A4 ölçeğiyle birlikte ölçeklenir; mutlak olduğu
+   için ölçüm katmanına/sayfalamaya hiç girmez. İmza satırı yoksa son satıra düşer. */
+export default function A4Belge({ metin = "", onAc = null, solgun = false, baslikIpucu = "", sigdir = "kutu", imzaKatmani = null }) {
   const sarmalRef = useRef(null);
   const olcerRef = useRef(null);
   const [olcek, setOlcek] = useState(1);
@@ -107,6 +111,13 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
 
   useEffect(() => { stilYukle(); kagitStilYukle(); }, []);
   const roller = antetSiniflandir(satirlar);
+  const imzaIdx = (() => {
+    if (!imzaKatmani) return -1;
+    const i = roller.findIndex((r) => r?.tip === "imza");
+    if (i >= 0) return i;
+    for (let j = satirlar.length - 1; j >= 0; j -= 1) if (satirlar[j].trim()) return j;
+    return -1;
+  })();
 
   /* Islak mürekkep (yalnız DEĞİŞEN satırlar): tür değişimi / dayanak ekleme gibi bir
      yeniden üretimde yeni gelen satır tükenmez mavisiyle basılır ve ~900 ms'de mürekkep
@@ -163,7 +174,8 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     const gen = el.clientWidth;
     if (gen <= 0) return;   // kap henüz yerleşmemiş; ResizeObserver birazdan yine çağırır
     // yuk=0 → olcekHesapla yüksekliği YOK SAYAR ve genişlik tek başına karar verir.
-    const yeni = olcekHesapla(gen, sigdir === "genislik" ? 0 : yuk);
+    // "genislik" kipi ASGARI tabanı kullanmaz: kabın yatay kaydırması yok, sayfa taşmamalı.
+    const yeni = sigdir === "genislik" ? genislikOlcegi(gen) : olcekHesapla(gen, yuk);
     setOlcek((eski) => (olcekOynadi(eski, yeni) ? yeni : eski));
   }, [sigdir]);
 
@@ -285,7 +297,12 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     const ic = rol.tip === "sayi"
       ? (<><span>{rol.metin}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
       : (rol.tip === "duz" ? (s === "" ? " " : s) : rol.metin);
-    return <div key={islak ? `${i}:${s}` : i} className={islak ? "kd-islak" : undefined} style={stil}>{ic}</div>;
+    const katman = !olcum && i === imzaIdx;
+    return (
+      <div key={islak ? `${i}:${s}` : i} className={islak ? "kd-islak" : undefined} style={katman ? { ...stil, position: "relative" } : stil}>
+        {ic}{katman && imzaKatmani}
+      </div>
+    );
   };
 
   const liste = sayfalar || [[0, satirlar.length]];

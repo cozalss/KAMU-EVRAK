@@ -30,7 +30,7 @@ export default function About() {
         {/* Right — text, socials, CTA. */}
         <div className="flex flex-col">
           <p className="text-lg leading-relaxed text-muted">
-            kamu-evrak, gelen resmî evrakı uçtan uca işleyen, 20 otomatik işlem
+            kamu-evrak, gelen resmî evrakı uçtan uca işleyen, 15 otomatik işlem
             adımından oluşan bir yapay zekâ sistemidir. OCR ile okur, 19 evrak
             türünü sınıflandırır, bilgi unsurlarını çıkarıp eksikleri tespit eder,
             304 mevzuat / 1916 madde korpusundan akıllı arama ile ilgili maddeleri

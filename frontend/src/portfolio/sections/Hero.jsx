@@ -76,11 +76,15 @@ export default function Hero() {
         aria-label="Main navigation"
         className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12"
       >
-        <a
-          href="#home"
-          className="text-xl font-bold tracking-tight text-[#161616]"
-        >
-          KAMU EVRAK
+        {/* Marka kilidi çalışma alanıyla aynı: Havale amblemi + Archivo geniş logotype + mercan nokta. */}
+        <a href="#home" className="flex items-center gap-2.5 text-[#10131d]">
+          <span className="grid h-9 w-9 place-items-center rounded-xl border border-black/15 bg-white">
+            <img src="/logo-kamu-evrak.svg" alt="" className="h-6 w-6" />
+          </span>
+          <span className="font-display text-[15px] font-extrabold" style={{ fontStretch: "112%" }}>
+            KAMU·EVRAK
+          </span>
+          <span className="h-1.5 w-1.5 rounded-full bg-acele" aria-hidden="true" />
         </a>
 
         <ul className="hidden items-center gap-8 text-sm text-neutral-700 md:flex">
@@ -98,7 +102,7 @@ export default function Hero() {
 
         <a
           href={APP_URL}
-          className="rounded-full border border-black/25 px-5 py-2 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-900 hover:text-white"
+          className="rounded-lg bg-tukenmez px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-tukenmezKoyu"
         >
           Giriş Yap
         </a>
@@ -107,17 +111,27 @@ export default function Hero() {
       {/* Hero content — pinned to the bottom. */}
       <div className="absolute inset-x-0 bottom-0 px-6 pb-10 md:px-12 md:pb-14">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+          <div className="max-w-4xl">
+          {/* Antet satırı — çalışma alanındaki her görünümün başındaki künyenin aynısı. */}
+          <p className="mb-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[.08em] text-neutral-600">
+            <span className="whitespace-nowrap">T.C. · KAMU-EVRAK</span>
+            <span className="hidden h-px w-16 bg-neutral-400 sm:block" aria-hidden="true" />
+            <span className="hidden whitespace-nowrap sm:inline">Akıllı evrak masası</span>
+          </p>
           <h1
-            className="max-w-3xl font-semibold leading-tight text-[#161616]"
-            style={{ fontSize: "42px" }}
+            className="font-extrabold leading-[1.02] text-[#10131d]"
+            style={{ fontSize: "clamp(34px, 4.6vw, 64px)" }}
           >
             KAMU EVRAK VE YAZIŞMA SÜREÇLERİ İÇİN AKILLI AGENT DESTEK SİSTEMİ
             <span
               className="ml-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle"
-              style={{ backgroundColor: "#ff3b30" }}
+              style={{ backgroundColor: "#d93a2b" }}
               aria-hidden="true"
             />
           </h1>
+          {/* Antet çift çizgisi (kalın + ince) — çalışma alanı başlıklarıyla aynı imza. */}
+          <div className="mt-6 h-[5px] max-w-xl border-y border-[#10131d]" style={{ borderTopWidth: 2 }} aria-hidden="true" />
+          </div>
         </div>
       </div>
     </header>

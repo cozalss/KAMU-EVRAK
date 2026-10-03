@@ -44,7 +44,7 @@ export default function Footer() {
 
         <a
           href={APP_URL}
-          className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-lg bg-tukenmez px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           Giriş Yap
           <ArrowUpRight />

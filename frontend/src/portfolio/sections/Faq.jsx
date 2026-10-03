@@ -19,7 +19,7 @@ export default function Faq() {
           </h2>
           <a
             href={APP_URL}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-card px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-card2"
+            className="mt-8 inline-flex items-center gap-2 rounded-lg bg-tukenmez px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-tukenmezKoyu"
           >
             Giriş Yap
             <ArrowUpRight />

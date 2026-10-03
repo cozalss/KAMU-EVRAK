@@ -24,7 +24,7 @@ export default function Projects() {
             <div className="absolute inset-0 bg-black/20" />
 
             {/* Top-left category badges. */}
-            <div className="absolute left-6 top-6 flex gap-2">
+            <div className="absolute right-6 top-6 flex gap-2">
               {project.tags.map((tag) => (
                 <span
                   key={tag}
@@ -36,7 +36,7 @@ export default function Projects() {
             </div>
 
             {/* Bottom-left dark tab with the project title. */}
-            <div className="absolute bottom-6 left-6">
+            <div className="absolute bottom-6 right-6">
               <span className="inline-block rounded-xl bg-black/70 px-5 py-3 text-lg font-semibold text-white backdrop-blur-sm">
                 {project.title}
               </span>

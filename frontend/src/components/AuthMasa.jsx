@@ -185,7 +185,7 @@ function HavaleFisi({ evrak }) {
 }
 
 /* Künye sayıları — sistemin ölçeği; büyük Archivo rakam + mono etiket (sicil defteri altı). */
-const SAYILAR = [["16", "uzman ajan"], ["304", "mevzuat kaynağı"], ["4.066", "kurum sicili"]];
+const SAYILAR = [["15", "işlem adımı"], ["304", "mevzuat kaynağı"], ["4.066", "kurum sicili"]];
 function Sayilar() {
   return (
     <dl style={{ display: "grid", gridTemplateColumns: "repeat(3, auto)", justifyContent: "start", columnGap: SP.xxl, margin: 0 }}>

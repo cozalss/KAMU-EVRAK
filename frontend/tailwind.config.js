@@ -14,9 +14,20 @@ export default {
         card2: "#161616",
         line: "#262626",
         muted: "#a1a1a1",
+        // Çalışma alanı aksanları (neonUi THEME_CSS ile aynı değerler).
+        tukenmez: "#2b4fd6",
+        tukenmezKoyu: "#1f3fb4",
+        istampa: "#6b3ea6",
+        acele: "#d93a2b",
+        arsiv: "#eceee9",
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        // Çalışma alanıyla tek marka dili ("Antet & Damga"): gövde Instrument Sans,
+        // başlık Archivo (genişlik ekseni), makine verisi Plex Mono. Inter yalnız
+        // footer Lottie wordmark'ı için yüklenir (lottie metin kutuları ona göre ölçülü).
+        sans: ['"Instrument Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
       maxWidth: {
         shell: "1440px",

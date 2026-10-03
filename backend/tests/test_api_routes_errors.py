@@ -9,6 +9,8 @@ AAA deseni; Türkçe açıklayıcı isimler.
 from __future__ import annotations
 
 import io
+import operator
+from typing import Annotated, TypedDict
 
 import pytest
 from fastapi.testclient import TestClient
@@ -149,18 +151,22 @@ class TestStreamAdimBasladi:
                 assert set(o) == {"event", "node", "status"}
 
 
+class _SahteDurum(TypedDict, total=False):
+    """Hata-adımı testindeki sahte grafın durumu (modül düzeyinde: `from __future__
+    import annotations` altında yerel tanım Annotated'ı çözemiyor)."""
+
+    x: Annotated[list, operator.add]
+
+
 class TestStreamHataAdimi:
     """Akış bir adımda patlarsa `error` olayı HANGİ adımda durduğunu (`node`) ve o an
     eşzamanlı koşup yarıda kalan kardeşleri (`kesilen`) söyler; canlı sahne hatalı masayı
     kırmızı, yarıda kalanları "işlenmedi" gösterir. Ham istisna metni SIZMAZ (PII/iç yol)."""
 
     def _sahte_graf(self):
-        import operator
-        from typing import Annotated, TypedDict
         from langgraph.checkpoint.memory import InMemorySaver
         from langgraph.graph import END, START, StateGraph
 
-        S = TypedDict("S", {"x": Annotated[list, operator.add]}, total=False)
 
         def patla(_s):
             raise RuntimeError("GIZLI-IC-AYRINTI Ayşe Yılmaz 0555-123-4567")
@@ -170,7 +176,7 @@ class TestStreamHataAdimi:
             await asyncio.sleep(0.3)
             return {"x": ["b"]}
 
-        g = StateGraph(S)
+        g = StateGraph(_SahteDurum)
         g.add_node("siniflandir", lambda s: {"x": ["a"]})
         g.add_node("verify", patla)
         g.add_node("ozetle", yavas)

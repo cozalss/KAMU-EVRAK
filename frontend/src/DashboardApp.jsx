@@ -965,7 +965,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       <style>{NEON_KEYFRAMES}</style>
 
       <div style={{
-        display: "flex", minHeight: "100vh", background: PAL.bg, color: PAL.ink, fontFamily: SANS,
+        // Zemin html'de (THEME_CSS) — burada opak boyanırsa body::before kâğıt dokusu örtülür.
+        display: "flex", minHeight: "100vh", background: "transparent", color: PAL.ink, fontFamily: SANS,
       }}>
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />

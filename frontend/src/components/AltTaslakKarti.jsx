@@ -15,7 +15,7 @@ import { cleanDemoText } from "./result-cards.jsx";
 import TurSecici from "./TurSecici.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import A4Belge from "./A4Belge.jsx";
-import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
+import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, focusRing, Icon, BuyutDugme, Damga } from "./neonUi.jsx";
 import { ParlaKenar } from "./gorsel.jsx";
 
 /* Pager ok düğmesi — başlık şeridine gömülü (ayrı üst satır AÇMAZ, kartın dış kutusu komşu
@@ -100,9 +100,11 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
           </span>
         </span>
         {rozet ? (
-          <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(BANT[rozet.color]?.c || DERIN[rozet.color]), ...TYPE.meta, fontWeight: 500, color: DERIN[rozet.color] }}>
-            <Icon.check width={12} height={12} /> {rozet.text}
-          </span>
+          /* Karar = mühür: kâğıda basılan GÖNDERİLDİ / REDDEDİLDİ damgası (ekranın 2. ve son
+             damgası — hüküm damgasıyla birlikte dikkat bütçesi 2). Metin kararı yazıyla taşır. */
+          <Damga ton={BANT[rozet.color]?.c} egim={-5} kucuk style={{ marginRight: SP.xs }}>
+            <Icon.check width={11} height={11} aria-hidden="true" /> {rozet.text}
+          </Damga>
         ) : (
           <>
             <TurSecici secili={tur} onerilen={onerilen} uretilen={uretilen} onSec={secTur} pasif={bitti} />
@@ -116,7 +118,7 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
           yok — 2026-07-15 kullanıcı isteği). Ana taslak kağıt bloğuyla aynı ölçüler/gölge. */}
       <div className="sc-document-stage" style={{ background: PAL.surf2 }}>
         <div className="sc-document-paper" style={{ maxWidth: 860, margin: "0 auto" }}>
-          <A4Belge metin={cleanDemoText(metin)} onAc={() => setModalAcik(true)} solgun={uretilen} />
+          <A4Belge metin={cleanDemoText(metin)} onAc={() => setModalAcik(true)} solgun={uretilen} sigdir="genislik" />
         </div>
       </div>
 

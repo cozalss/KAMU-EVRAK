@@ -5,7 +5,7 @@
 
    Hesap yok: her şey lib/sureRapor.js'ten gelir (saf, test edilir). Burası yalnız sunum. */
 import { useMemo } from "react";
-import { TYPE, TNUM, SP, RAD, ALFA, DERIN_OF, PAL, BANT } from "./neonUi.jsx";
+import { DISPLAY, TYPE, TNUM, SP, RAD, ALFA, DERIN_OF, PAL, BANT } from "./neonUi.jsx";
 import { olcumler, donemKiyas, fmtSn } from "../lib/sureRapor.js";
 
 /* Trend rozeti — süre TERS yönlü metrik: düşüş yeşil aşağı ok, artış kırmızı yukarı ok.
@@ -43,16 +43,19 @@ export function TrendRozet({ t, buyuk, sade }) {
 
 /* Tek dönem karosu. Pencerede hiç işlem yoksa DÜRÜSTÇE söylenir — ortalama uydurulmaz. */
 export function KiyasKaro({ baslik, kiyas, gun }) {
+  /* 2026-10: kutulu karo yerine defter sütunu — üstte 2px mürekkep çizgisi, Archivo rakam.
+     Kart içinde kart (çift çerçeve) gürültüsü kalktı; iki dönem yan yana bir cetvel gibi okunur. */
   return (
-    <div style={{ flex: "1 1 190px", minWidth: 0, background: PAL.surf2, border: `1px solid ${PAL.line}`,
-      borderRadius: RAD.card, padding: SP.l }}>
-      <p style={{ margin: `0 0 ${SP.xs}px`, ...TYPE.meta, color: PAL.mut3 }}>{baslik}</p>
+    <div style={{ flex: "1 1 160px", minWidth: 0, borderTop: `2px solid ${PAL.ink}`, paddingTop: SP.s }}>
+      <p style={{ margin: `0 0 ${SP.xs}px`, ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>{baslik}</p>
       {kiyas.ort == null ? (
         <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Bu dönemde işlem yok.</p>
       ) : (
         <>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-            <span style={{ ...TYPE.h2, color: PAL.ink, ...TNUM }}>{fmtSn(kiyas.ort)} sn</span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
+            <span style={{ fontFamily: DISPLAY, fontSize: 24, lineHeight: "28px", fontWeight: 800, fontStretch: "115%", letterSpacing: "-.02em", color: PAL.ink, ...TNUM }}>
+              {fmtSn(kiyas.ort)}<span style={{ ...TYPE.data, fontWeight: 500, color: PAL.mut2, marginLeft: 3 }}>sn</span>
+            </span>
             <TrendRozet t={kiyas.trend} />
           </div>
           <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
@@ -75,7 +78,7 @@ export default function SureKiyasBloku({ history = [] }) {
   return (
     <>
       <h4 style={{ margin: `${SP.l}px 0 ${SP.s}px`, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kıyaslama</h4>
-      <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: `${SP.m}px ${SP.l}px`, flexWrap: "wrap" }}>
         <KiyasKaro baslik="Son 7 Gün" kiyas={hafta} gun={7} />
         <KiyasKaro baslik="Son 30 Gün" kiyas={ay} gun={30} />
       </div>

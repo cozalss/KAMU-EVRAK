@@ -15,8 +15,9 @@ import {
   Chip, MevzuatRow, SlaPanel, slaInfo, subSlaRenk, ZincirStepper, Vrow, CopyChip, KanitAlinti,
   BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
+import { Paraf } from "./CanliMetro.jsx";
 import {
-  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, focusRing, Icon, KV, RiskBand, odakDongusu,
+  MONO, DISPLAY, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, focusRing, Icon, KV, RiskBand, odakDongusu,
 } from "./neonUi.jsx";
 
 const pct = (x) => Math.round((Number(x) || 0) * 100);
@@ -575,29 +576,36 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit }) 
         transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
         style={{ width: "min(680px, 96vw)", margin: "0 auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl }}>
 
-        {/* Başlık — hat roundeli + ad + durum + kapat */}
-        <div style={{ display: "flex", alignItems: "flex-start", gap: SP.m }}>
-          <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: RAD.dot, background: bantC || col, color: PAL.onAccent, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: MONO, fontSize: 13, fontWeight: 500, ...TNUM }}>
-            {String(idx + 1).padStart(2, "0")}
-          </span>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-              {/* key={a.id}: adım değişince başlık taze girişle gelir */}
-              <h2 key={a.id} style={{ margin: 0, ...TYPE.h2, color: PAL.ink, animation: "nu-rise .16s var(--ke-ease-out) both" }}>{a.label}</h2>
-              <DurumCip st={a.status} col={bantC || col} a={a} />
-            </div>
-            <div style={{ marginTop: 2, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
-              <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{a.gorev === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
-              {" · "}adım {idx + 1}/{toplam}{sure ? ` · ${sure}` : ""}
-              {a.status === "done" && a.out ? ` · ${a.out}` : ""}
-            </div>
-          </div>
+        {/* Başlık — havale pusulası künyesi + çift antet çizgisi; altında masanın büyük
+            Archivo numarası, adı, durum çipi ve (yalnız gerçekten iş yaptıysa) parafı. */}
+        <div style={{ display: "flex", alignItems: "center", gap: SP.m, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase" }}>
+          <span style={{ whiteSpace: "nowrap" }}>Havale pusulası · masa ayrıntısı</span>
+          <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 8 }} />
           <button ref={kapatRef} type="button" onClick={onKapat} aria-label="Detayı kapat (Esc)" {...focusRing} data-press=""
             onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
             style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.mut, flexShrink: 0, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
             <Icon.x />
           </button>
+        </div>
+        <div aria-hidden="true" style={{ marginTop: SP.s, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.9 }} />
+        <div style={{ display: "flex", alignItems: "center", gap: SP.l, marginTop: SP.l }}>
+          <span aria-hidden="true" style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 56, lineHeight: 0.85, letterSpacing: "-.05em", color: DERIN_OF(bantC || col), flexShrink: 0, ...TNUM }}>
+            {String(idx + 1).padStart(2, "0")}
+          </span>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
+              {/* key={a.id}: adım değişince başlık taze girişle gelir */}
+              <h2 key={a.id} style={{ margin: 0, ...TYPE.h2, fontSize: 24, lineHeight: "28px", color: PAL.ink, animation: "ke-e-yaz .4s var(--ke-ease-out) both" }}>{a.label}</h2>
+              <DurumCip st={a.status} col={bantC || col} a={a} />
+            </div>
+            <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
+              <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{a.gorev === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
+              {" · "}adım {idx + 1}/{toplam}{sure ? ` · ${sure}` : ""}
+              {a.status === "done" && a.out ? ` · ${a.out}` : ""}
+            </div>
+          </div>
+          <span key={`p-${a.id}`} style={{ flexShrink: 0 }}><Paraf a={a} durum={adimDurumu(a)} col={bantC || col} /></span>
         </div>
 
         <KonumSeridi display={display} idx={idx} onGit={onGit} />

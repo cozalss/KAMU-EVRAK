@@ -24,7 +24,7 @@ import {
 } from "../lib/realtimeSes.js";
 import SesliOrb from "./SesliOrb.jsx";
 import {
-  PAL, DERIN, SP, RAD, SH, EASE, EASE_BEZIER, TYPE, Icon, focusRing, SR_ONLY,
+  PAL, T, V, DERIN, SP, RAD, SH, EASE, EASE_BEZIER, TYPE, Icon, focusRing, SR_ONLY,
 } from "./neonUi.jsx";
 
 // Yuvarlak olan şey ORB'UN KENDİSİ — arkasında koyu tabak yok (kullanıcı kararı: zemin
@@ -719,7 +719,11 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
           <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
           {/* zIndex: orb'un aura/halo katmanları konumlandırılmış olduğu için akış içindeki
               içeriğin ÜSTÜNE boyanır — etiket ve düğmeler bu yüzden kendi katmanına alınır. */}
-          <div aria-hidden="true" style={{ position: "relative", zIndex: 1, ...TYPE.meta, color: PAL.mut2 }}>
+          {/* Durum künyesi — havada duran tek satır fiş: mono antet harfi + durum noktası
+              (renk tek sinyal değil: metin her durumda yazılı). Arkadaki herhangi bir
+              ekranın üstünde okunur kalsın diye kendi yüzeyi var. */}
+          <div aria-hidden="true" style={{ position: "relative", zIndex: 1, display: "inline-flex", alignItems: "center", gap: SP.s, padding: "5px 12px 5px 10px", borderRadius: RAD.pop, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop, ...TYPE.antet, textTransform: "uppercase", color: PAL.ink2 }}>
+            <span style={{ width: 7, height: 7, borderRadius: RAD.dot, flexShrink: 0, background: konusuyor ? V : dinliyor ? T : dusunuyor ? DERIN.T : PAL.mut3, animation: dinliyor || dusunuyor ? "nu-think 1.2s ease-in-out infinite" : "none" }} />
             {DURUM_ETIKET[durum]}{dinliyor ? "…" : ""}
           </div>
 

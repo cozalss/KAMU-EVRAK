@@ -31,6 +31,8 @@
    iç transform'u güvenle kullanılabilir. */
 import { useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { motion, useReducedMotion } from "motion/react";
+import { PAL, DERIN, V, ALFA, RAD, SP, TYPE, TNUM, MONO, focusRing } from "./neonUi.jsx";
 import AltTaslakKarti from "./AltTaslakKarti.jsx";
 
 export default function AltTaslakPager({ altTaslaklar, idx, onIdx, onTurUret, onKarar, onDuzenle }) {
@@ -73,6 +75,7 @@ export default function AltTaslakPager({ altTaslaklar, idx, onIdx, onTurUret, on
     else if (e.key === "ArrowRight" && c.guvenliIdx < c.son) { e.preventDefault(); c.onIdx(c.guvenliIdx + 1); }
   };
 
+  const azHareket = useReducedMotion();
   if (son < 0) return null;
 
   return (
@@ -81,7 +84,7 @@ export default function AltTaslakPager({ altTaslaklar, idx, onIdx, onTurUret, on
         <div style={{ display: "flex", alignItems: "flex-start" }}>
           {altTaslaklar.map((x, i) => (
             <div key={x.sira} aria-hidden={i !== guvenliIdx} {...(i !== guvenliIdx ? { inert: "" } : {})}
-              style={{ flex: "0 0 100%", minWidth: 0 }}>
+              style={{ flex: "0 0 100%", minWidth: 0, opacity: i === guvenliIdx ? 1 : 0.35, transition: "opacity .32s var(--ke-ease-out)" }}>
               <AltTaslakKarti altTalep={x.a} sira={i + 1} toplam={altTaslaklar.length}
                 onPrev={() => onIdx(guvenliIdx - 1)} prevDisabled={guvenliIdx === 0}
                 onNext={() => onIdx(guvenliIdx + 1)} nextDisabled={guvenliIdx === son}
@@ -93,6 +96,41 @@ export default function AltTaslakPager({ altTaslaklar, idx, onIdx, onTurUret, on
           ))}
         </div>
       </div>
+      <DosyaSekmeleri altTaslaklar={altTaslaklar} idx={guvenliIdx} onIdx={onIdx} azHareket={azHareket} />
+    </div>
+  );
+}
+
+/* Dosya sekmeleri — klasördeki ayraçlar gibi: her alt-taslak bir sekme (sıra no + birim),
+   etkin sekmenin altındaki mürekkep çizgisi `layoutId` ile bir sekmeden ötekine KAYAR
+   (hareket = "aynı klasörde sayfa çevirdin" bilgisi). Oklar ve ←/→ ile aynı tek doğruluk
+   kaynağını (idx) sürer; kart başlığının hizasını bozmamak için kartın ALTINDA durur. */
+function DosyaSekmeleri({ altTaslaklar, idx, onIdx, azHareket }) {
+  return (
+    <div role="group" aria-label="Alt-taslaklar" style={{ display: "flex", gap: SP.xs, marginTop: SP.s, overflowX: "auto", scrollbarWidth: "none", padding: "2px 2px 4px" }}>
+      {altTaslaklar.map((x, i) => {
+        const etkin = i === idx;
+        return (
+          <button key={x.sira} type="button" aria-current={etkin ? "true" : undefined} onClick={() => onIdx(i)}
+            {...focusRing} data-press=""
+            style={{
+              position: "relative", flex: "1 1 0", minWidth: 120, display: "flex", alignItems: "baseline", gap: SP.s,
+              padding: "8px 10px 10px", border: 0, borderRadius: RAD.ctl, cursor: "pointer", textAlign: "left",
+              background: etkin ? ALFA(V) : "transparent", color: etkin ? DERIN.V : PAL.mut2,
+              transition: "background .18s ease, color .18s ease",
+            }}>
+            <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", ...TNUM, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span>
+            <span style={{ ...TYPE.meta, fontWeight: etkin ? 600 : 500, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {x.a?.birim_tr || "İlgili birim"}
+            </span>
+            {etkin && (
+              <motion.span layoutId="kd-alt-taslak-sekme" aria-hidden="true"
+                transition={azHareket ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40 }}
+                style={{ position: "absolute", left: 10, right: 10, bottom: 3, height: 2, borderRadius: RAD.chip, background: DERIN.V }} />
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }

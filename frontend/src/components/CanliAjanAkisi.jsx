@@ -17,13 +17,14 @@ import AltTaslakPager from "./AltTaslakPager.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 import { ParlaKenar } from "./gorsel.jsx";
 import AjanOrb from "./AjanOrb.jsx";
+import { adimDurumu } from "../lib/akisKatman.js";
 
-import { T, V, PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme } from "./neonUi.jsx";
+import { T, V, PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, MONO, focusRing, SR_ONLY, EmptyState, Btn, Icon, BuyutDugme, Damga } from "./neonUi.jsx";
 import TurSecici from "./TurSecici.jsx";
 import NumberFlow from "@number-flow/react";
 /* Metro şeması + sahne bileşenleri CanliMetro.jsx'te yaşar (dosya <800 kuralı + "SAHNE Epik"
    gösteri katmanı orada belgelidir). AkisSeridi: sonuç sayfası dibindeki yatay koşum özeti. */
-import { SahneAkis, SahneTelemetri, Aurora, AkisSeridi, useSahneTempo } from "./CanliMetro.jsx";
+import { SahneAkis, SahneTelemetri, AkisSeridi, useSahneTempo, MerkezKart, merkezIndeksi, IsaretCetveli, SAHNE_CSS } from "./CanliMetro.jsx";
 
 function buildSegments(metin, spanlar) {
   const segs = [];
@@ -92,7 +93,7 @@ function BosDurumDropzone({ onGoInbox, onUpload, onFileDrop, onTelefon }) {
    birebir. Kendi hook'ları kendi gövdesinde (CanliAjanAkisi'nin erken-dönüş deseni bozulmaz). */
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
 
-function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAksiyon = null }) {
+function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAksiyon = null, canli = false, havale = null }) {
   const [sekme, setSekme] = useState("belge");
   /* Kaynak metin UI okuma tipografisinde (TYPE.read, 16px) kalır. Bir kez ters yön denendi —
      kâğıdın ölçeğine indirilip taslakla eşitlendi — ve metin okunamayacak kadar küçüldü
@@ -111,7 +112,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
   return (
     // A4 KART (kullanıcı isteği: kaynak belge de taslak gibi A4) — başlık şeridi + beyaz A4
     // sayfası tint "masa" üstünde; height:100% ile satırdaki diğer sütunlarla eşit boy.
-    <div style={{ display: "flex", flexDirection: "column", minWidth: 0, height: "100%", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, overflow: "hidden" }}>
+    <div data-kd="kaynak-kart" style={{ display: "flex", flexDirection: "column", minWidth: 0, height: "100%", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, overflow: "hidden" }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
         <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.doc /></span>
         <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 60 }}>Okunan belge</span>
@@ -119,17 +120,39 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
         {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" /><SekmeBtn id="metin" label="Metin" /></>)}
         {tiklanabilir && <BuyutDugme onClick={onBuyut} label="Okunan belgeyi A4 görünümde büyüt" />}
       </div>
-      <div style={{ flex: 1, background: PAL.surf2, padding: `${SP.m}px ${SP.s}px ${SP.m}px`, display: "flex", minHeight: 0, ...(compact ? { overflowY: "auto" } : null) }}>
-        <div
+      <div data-kd="kaynak-masa" style={{ flex: 1, background: PAL.surf2, padding: `${SP.m}px ${SP.s}px ${SP.m}px`, display: "flex", minHeight: 0, ...(compact ? { overflowY: "auto" } : null) }}>
+        <div data-kd="kaynak-kagit"
           {...(tiklanabilir ? { onClick: onBuyut, title: "Büyüt (A4 görünüm)" } : {})}
-          style={{ flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(28px,3.5vw,48px) clamp(32px,4vw,60px)", boxShadow: SH.pop, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+          style={{ position: "relative", flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(24px,3.5vw,48px) clamp(20px,4vw,60px)", boxShadow: SH.pop, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+          {/* OKUMA ÇİZGİSİ — koşum sürerken sayfanın üstünden dibine tükenmez mavisi bir tarayıcı
+              çizgisi iner (yalnız transform; reduced-motion'da .ke-e-tarayici gizlenir). Belge
+              okunuyor/işleniyor olgusunun görsel karşılığı; koşum bitince kalkar. */}
+          {canli && busy && (
+            <span aria-hidden="true" className="ke-e-tarayici" style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, background: `linear-gradient(180deg, transparent calc(100% - 110px), color-mix(in srgb, ${T} 11%, transparent) calc(100% - 2px), ${T} calc(100% - 2px))`, animation: "ke-e-tara 2.8s cubic-bezier(.45,0,.55,1) infinite" }} />
+          )}
+          {/* HAVALE ÖNERİSİ — birim yönlendirme adımı GERÇEKTEN çalışıp bir birim önerdiğinde,
+              memurun kenar notu gibi sayfanın üstüne düşer. "Öneri"dir, otomatik havale DEĞİL
+              (CLAUDE.md §5) — damga değil, tükenmez kalem notu. */}
+          {canli && havale && (
+            <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap", marginBottom: SP.l, paddingBottom: SP.s, animation: "nu-rise .3s var(--ke-ease-out) both" }}>
+              <span style={{ ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase" }}>Havale önerisi</span>
+              <span style={{ position: "relative", ...TYPE.ui, fontWeight: 600, color: DERIN.T }}>
+                → {havale}
+                <span aria-hidden="true" style={{ position: "absolute", left: 0, right: 0, bottom: -3, height: 2, background: T, borderRadius: 2, transformOrigin: "left", animation: "ke-e-cizgi .6s var(--ke-ease-out) .25s both" }} />
+              </span>
+            </div>
+          )}
           {pdfGoster ? (
             <Suspense fallback={<div style={{ ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
               <PdfOnizleme fileUrl={fileUrl} />
             </Suspense>
           ) : segs ? (
             <pre style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", animation: "nu-rise .18s var(--ke-ease-out) both" }}>
-              {segs.map((sg, i) => sg.mark ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, boxDecorationBreak: "clone" }}>{sg.t}</mark> : <span key={i}>{sg.t}</span>)}
+              {/* Fosfor kalem: kanıt spanları canlı koşumda soldan sağa sırayla boyanır (çıkarım
+                  "şimdi" işaretleniyor); sonuç ekranında statik. */}
+              {(() => { let m = 0; return segs.map((sg, i) => sg.mark ? (
+                <mark key={i} data-kd="alan-vurgu" style={{ background: "none", backgroundImage: `linear-gradient(color-mix(in srgb, ${BANT.sari.c} 24%, transparent), color-mix(in srgb, ${BANT.sari.c} 24%, transparent))`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", color: DERIN.sari, borderRadius: 3, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", animation: canli ? `ke-e-fosfor .55s var(--ke-ease-out) ${Math.min(m++ * 140, 1600)}ms both` : "none" }}>{sg.t}</mark>
+              ) : <span key={i}>{sg.t}</span>); })()}
             </pre>
           ) : (
             /* Belge iskeleti — gerçek bir yazı sayfasının düşük-kontrast önizlemesi (başlık +
@@ -220,6 +243,25 @@ export default function CanliAjanAkisi({
   // Sunum temposu: SSE gerçeği anında saklanır, gösterim min-dwell ile sıralanır — hızlı
   // koşumda tamamlanma vuruşları izlenebilir kalır; sonuç sahnesi sunum bitince açılır.
   const { paced, sunumTamam } = useSahneTempo(nodes, { pendingOnay, glow: efGlow });
+  // KAPANIŞ ANI — canlı izlenen koşum bitince sonuç ekranına geçmeden önce ~1,9 sn: pusula
+  // kapanır, ıstampanın üstüne "İŞLENDİ" damgası basılır. YALNIZ bu mount'ta canlı görülen
+  // koşumda (geri dönüşte sahte kapanış oynamaz) ve hareket kısıtlı değilse; hata dalında yok
+  // (result gelmez). Sunum katmanıdır: hiçbir veri/karar bunu beklemez.
+  const [kapanis, setKapanis] = useState(false);
+  const canliGorulduRef = useRef(false);
+  useEffect(() => { if (busy) canliGorulduRef.current = true; }, [busy]);
+  useEffect(() => { setKapanis(false); }, [runBase]);
+  useEffect(() => {
+    if (!result || !sunumTamam || !canliGorulduRef.current) return;
+    canliGorulduRef.current = false;
+    const az = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    if (!az && !pendingOnay) setKapanis(true);
+  }, [result, sunumTamam, pendingOnay]);
+  useEffect(() => {
+    if (!kapanis) return undefined;
+    const id = setTimeout(() => setKapanis(false), 1900);
+    return () => clearTimeout(id);
+  }, [kapanis]);
   // Denetim zinciri arka planda üretilmeye devam eder; memurun iş akışını kalabalıklaştırmamak
   // için bu görünümde bir adım ya da panel olarak sunulmaz (sonuç başlığında rozet olarak çıkar).
   //
@@ -265,7 +307,7 @@ export default function CanliAjanAkisi({
   }
 
   // Sonuç sahnesi sunum kuyruğu boşalınca açılır — canlı sahne son vuruşlarını oynar.
-  const sonucGoster = !!result && sunumTamam;
+  const sonucGoster = !!result && sunumTamam && !kapanis;
   const total = display.length || 1;
   // İKİ AYRI SAYI, bilerek: `kapananCount` ilerleme çubuğunu sürer (atlanan adım çubuğu
   // sonsuza dek askıda bırakmasın), `kosanCount` ise BAŞARI beyanıdır ve yalnız gerçekten
@@ -315,11 +357,15 @@ export default function CanliAjanAkisi({
     ocr_confidence: nodeById.oku?.data?.ocr_confidence,
   };
   const metaLine = buildMetaLine(canliMeta, fileMeta);
+  // Havale önerisi kenar notu — yalnız birim yönlendirme adımı GERÇEKTEN iş yaptıysa (olgu).
+  const rb = display.find((a) => a.id === "route_birim");
+  const havaleOnerisi = rb && adimDurumu(rb) === "calisti" && rb.out ? rb.out : null;
   // Panel kartları — düz beyaz yüzey + 1px hairline (border-first), NeonCard ile tutarlı.
   const card = { position: "relative", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, padding: SP.l, boxShadow: SH.card };
 
   return (
     <>
+      <style>{SAHNE_CSS}</style>
       {/* SR: canlı ilerleme */}
       <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
         {(() => {
@@ -377,7 +423,7 @@ export default function CanliAjanAkisi({
               <span style={{ minWidth: 0 }}>
                 {/* Belge kimliği görünümün başlığıdır — 14px UI satırı değil 16/600 okuma
                     kademesi; geniş ekranda erken kırpılmasın (360px sabiti kalktı). */}
-                <h2 style={{ margin: 0, ...TYPE.read, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "min(48vw, 640px)" }}>{fileLabel}</h2>
+                <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "min(52vw, 680px)" }}>{fileLabel}</h2>
                 <span style={{ display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: SP.xs, marginTop: SP.xs, ...TYPE.data, color: PAL.mut2, ...TNUM }}>
                   <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{metaLine}</span>
                   {/* Sonuç durumunda çip kalkar (büyük hüküm aşağıda — çip tekrarı yasak);
@@ -402,11 +448,6 @@ export default function CanliAjanAkisi({
               </span>}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
-              {!sonucGoster && <span style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
-                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1 · Anla
-                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2 · Üret
-              </span>}
-              {!sonucGoster && <span aria-hidden="true" style={{ width: 1, height: 20, background: PAL.line, flexShrink: 0 }} />}
               <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
                 {/* İptal — yalnız canlı koşumda: SSE akışını keser, boş duruma döner
                     ("Tekrar dene" ErrorBar yerine sessiz iptal; lastRun durduğundan aynı evrak
@@ -439,13 +480,11 @@ export default function CanliAjanAkisi({
               </div>
             </div>
           </div>
-          {!sonucGoster && <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.m }}>
-            {/* Dolum scaleX (compositor); glow overflow'da kırpıldığından kaldırıldı (jüri: ölü efekt).
-                Hata durumunda dolgu KIRMIZI donar — renk işlevseldir (nerede durduğu bilgisi). */}
-            <div aria-hidden="true" style={{ flex: 1, height: 6, borderRadius: RAD.chip, background: PAL.press, overflow: "hidden" }}>
-              <div style={{ width: "100%", height: "100%", borderRadius: RAD.chip, background: hataliAdim >= 0 && !kosumda ? BANT.kirmizi.c : allDone ? BANT.yesil.c : T, transformOrigin: "left", transform: `scaleX(${pct / 100})`, transition: "transform .28s var(--ke-ease-out), background .2s ease" }} />
-            </div>
-            <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, flexShrink: 0, minWidth: 38, textAlign: "right", ...TNUM }}><NumberFlow value={pct} spinTiming={{ duration: 250 }} />%</span>
+          {/* İŞARET CETVELİ — eski ince ilerleme çubuğu yerine adım başına bir çentik (graf
+              sırası). Biçim adimDurumu'ndan; yüzde yalnız burada, kapanan adım sayısından. */}
+          {!sonucGoster && <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m }}>
+            <IsaretCetveli display={display} />
+            <span style={{ fontFamily: MONO, fontSize: 13, lineHeight: "18px", fontWeight: 500, color: hataliAdim >= 0 && !kosumda ? DERIN.kirmizi : PAL.ink2, flexShrink: 0, minWidth: 44, textAlign: "right", ...TNUM }}>%<NumberFlow value={pct} spinTiming={{ duration: 250 }} /></span>
           </div>}
         </div>
       </header>
@@ -454,41 +493,51 @@ export default function CanliAjanAkisi({
       {(() => {
         // Sunum kuyruğu boşalana dek sahne "canlı" görünür (busy SSE'yle erken düşer).
         const sahneCanli = kosumda;
+        const pad = "clamp(16px, 2.4vw, 28px)";
+        const merkezIdx = merkezIndeksi(display);
+        const kapanisBilgi = kapanis ? {
+          baslik: "İşlem tamamlandı",
+          alt: `${kosanCount} adım yürütüldü${atlananCount ? ` · ${atlananCount} adım bu koşumda çalışmadı` : ""}${toplamSn ? ` · ${toplamSn}` : ""}`,
+        } : null;
         const islemKart = (
-          <section aria-label="İşlem durumu" style={{
-            ...card,
-            width: "100%",
-            minHeight: 440,
-            padding: "clamp(20px, 3vw, 32px)",
-          }}>
-            {/* Epik sahne zemini: kartın arkasında yavaş gezinen aurora; içerik üstte
-                (position:relative) — okunabilirlik etkilenmez, reduced-motion'da durur. */}
-            {sahneCanli && efGlow && <Aurora />}
-            <div style={{ position: "relative" }}>
-            {/* Sahnenin öznesi: BEYİN ORB'U (AjanOrb). Eskiden burada tek bir kıvırcık ikon
-                vardı — koşumu kimin yürüttüğünün görsel bir öznesi yoktu. Orb ürünün maskotu
-                ve beyni: durumu gövdesiyle söyler, biten adımı içine çeker, yeni adımı akışa
-                doğru sevk eder. Yığın MERKEZE alındı (orb → başlık → açıklama): orb ile
-                altındaki MerkezKart aynı düşey eksende durur, yutma/sevk parçacıkları o
-                eksende uçar; sola yaslı düzende parçacık ekseni içerikle çaprazlaşıyordu.
-                Telemetri kendi satırında sağda kalır — merkez ekseni bölmez. */}
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: SP.s }}>
-              <SahneTelemetri busy={sahneCanli} allDone={allDone} toplamSn={toplamSn} runBase={runBase} glow={efGlow} />
+          /* HAVALE PUSULASI — sahnenin tek kâğıdı: antet künyesi + çift çizgi · ıstampa (mürekkep
+             havuzu) ile odaktaki masa yan yana · altta kendini çizen pusula. */
+          <section aria-label="İşlem durumu" style={{ ...card, width: "100%", padding: 0, overflow: "hidden" }}>
+            <div style={{ padding: `${pad} ${pad} 0` }}>
+              <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: SP.m, rowGap: SP.xs, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", minWidth: 0 }}>
+                <span style={{ whiteSpace: "nowrap" }}>Havale pusulası ·</span>
+                <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0, color: PAL.mut }}>{canliMeta?.evrak_turu ? EVRAK_TR(canliMeta.evrak_turu) : "tür belirleniyor"}</span>
+                <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 12 }} />
+                <SahneTelemetri busy={sahneCanli} allDone={allDone} toplamSn={toplamSn} runBase={runBase} />
+              </div>
+              <div aria-hidden="true" style={{ marginTop: SP.s, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.9 }} />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", marginBottom: SP.xl }}>
-              <AjanOrb display={display} kosumda={sahneCanli} hataVar={hataliAdim >= 0 && !kosumda} />
-              <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>
-                {sahneCanli ? "Belgeniz dikkatle inceleniyor" : "Belge incelemeye hazır"}
-              </h3>
-              <p style={{ margin: "6px 0 0", ...TYPE.data, color: PAL.mut, maxWidth: 560 }}>
-                Sistem gerekli bilgileri çıkarıyor, ilgili kontrolleri tamamlıyor ve memur incelemesi için hazırlıyor.
-              </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: pad, padding: pad, alignItems: "center" }}>
+              <div style={{ position: "relative", minWidth: 0 }}>
+                {/* Istampa kutusu — teneke çerçeve (surf2 + iç hairline) içinde keçe. */}
+                <div style={{ padding: SP.s, borderRadius: RAD.pop, background: PAL.surf2, boxShadow: `inset 0 0 0 1px ${PAL.lineHi}, ${SH.card}` }}>
+                  <AjanOrb display={display} kosumda={sahneCanli} yukseklik={188} />
+                </div>
+                <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", flexWrap: "wrap" }}>
+                  <span>Istampa</span>
+                  <span style={{ flex: 1, minWidth: 8 }} />
+                  <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1
+                  <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2
+                </div>
+                {kapanis && (
+                  <div aria-hidden="true" style={{ position: "absolute", inset: 0, bottom: 24, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+                    <Damga ton={V} egim={-8} style={{ fontSize: 30, lineHeight: "32px", padding: "10px 22px", borderWidth: 3, background: `color-mix(in srgb, ${PAL.surf} 55%, transparent)` }}>İşlendi</Damga>
+                  </div>
+                )}
+              </div>
+              <MerkezKart a={display[merkezIdx]} total={total} runBase={runBase} kapanis={kapanisBilgi} kosumda={sahneCanli} />
             </div>
-            <SahneAkis display={display} gruplar={gruplar} total={total} glow={efGlow} runBase={runBase} onDetay={setDetayIdx} />
-            <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut2 }}>
-              <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: sahneCanli ? T : BANT.yesil.c, animation: sahneCanli && efGlow ? "nu-think 1.3s ease-in-out infinite" : "none" }} />
-              Her satır bir işlem aşamasıdır; ayrıntısını görmek için üzerine tıklayın.
-            </div>
+            <div style={{ padding: `0 ${pad} ${pad}` }}>
+              <SahneAkis display={display} gruplar={gruplar} onDetay={setDetayIdx} />
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.l, ...TYPE.meta, color: PAL.mut2 }}>
+                <Icon.info width={13} height={13} />
+                Her satır bir masadır; paraf, o masanın işini gerçekten yaptığını gösterir. Ayrıntı için satıra tıklayın.
+              </div>
             </div>
           </section>
         );
@@ -619,7 +668,7 @@ export default function CanliAjanAkisi({
                   {islemKart}
                 </div>
                 <aside aria-label="Kaynak belge" style={{ flex: "1 1 340px", minWidth: 0, display: "flex" }}>
-                  <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={efGlow} onBuyut={() => setBelgeModal("kaynak")} />
+                  <KaynakBelge fileUrl={fileUrl} segs={segs} busy={busy} glow={efGlow} canli havale={havaleOnerisi} onBuyut={() => setBelgeModal("kaynak")} />
                 </aside>
               </div>
               </HataSiniri>

@@ -65,58 +65,28 @@
 3. Türkçe karakterler içerikte tam (ç, ş, ğ, İ); değişken isimleri Latin (`evrak_turu`).
 4. Yeni node eklerken `agents/graph.py` topolojisine + frontend `agent-flow/topology.js`'e ekle.
 5. Çıkarılan PII'yi **maskele** (kullanıcı koruması + jüri "wow").
-6. **UI = Hero Light tema.** Renk/font/animasyon `frontend/src/components/neonUi.jsx`
-   token'larından (`T`/`V`/`R`/`PAL`/`BANT`) gelir — elle hex yazma. Palet landing hero'sundan
-   (`frontend/public/portfolio/hero.webp`) türetilir; **landing sayfasına (`index.html` +
-   `src/portfolio/**`) dokunulmaz.** Detay: aşağıdaki Tasarım/UI bölümü +
+6. **UI = "Antet & Damga" teması (2026-10).** Renk/font/hareket `frontend/src/components/neonUi.jsx`
+   token'larından (`T`/`V`/`R`/`PAL`/`BANT`/`DERIN`/`TYPE`) gelir — elle hex yazma. Tam spesifikasyon:
    `frontend/design-system/kamu-evrak/MASTER.md`.
 
-## Tasarım / UI — Hero Light v2 "Sakin Ürün" (aktif tema)
+## Tasarım / UI — "Antet & Damga" (aktif tema, 2026-10)
 
-> Tek kaynak: `frontend/src/components/neonUi.jsx`. Tam spesifikasyon:
-> `frontend/design-system/kamu-evrak/MASTER.md`. Palet, landing hero görselinin (sıcak fildişi
-> zemin + pudra-gül→lavanta→gök mavisi pastel gökyüzü + tek mercan kırmızısı nokta) koyulaştırılmış,
-> UI'da kullanılabilir versiyonudur — **çalışma alanına (app.html) özgüdür, landing page ayrı kalır.**
+> Tek kaynak: `frontend/src/components/neonUi.jsx`. Spesifikasyon + gerekçe:
+> `frontend/design-system/kamu-evrak/MASTER.md`. Hero Light v2 "Sakin Ürün" emekliye ayrıldı
+> (kullanıcı kararı: hedef ödül düzeyinde görsellik, eski kısıtlar kaldırıldı).
 
-- **Aktif kabuk:** `DashboardApp.jsx` → `NeonSidebar` + görünümler (`PanelView`, `GelenEvrakView`,
-  `TaslaklarView`, `MevzuatView`, `DenetimView`) + canlı `CanliAjanAkisi` (demo yıldızı).
-- **Renk (token):** birincil aksan gök mavisi `T=#2f8fa6`, ikincil mühür moru `V=#8e3d66`, imza mercanı
-  `R=#e0563c` (yalnız küçük dokunuşlar — genel CTA rengi değil); zemin `PAL.bg=#f7f3ee` /
-  `PAL.bg2=#efe6da`; metin `PAL.ink=#161616` / `ink2=#3a3229`; risk bandı `BANT` (yeşil `#2f9e6e` /
-  sarı `#c98a1f` / kırmızı `#c9432f`). **Hex'i elle yazma, token kullan.**
-- **Font:** IBM Plex Sans (`SANS`, tüm UI/metin) + IBM Plex Mono (`MONO`, **yalnız makine
-  verisi**: evrak no, tarih damgası, hash, maskeli PII, dosya adı) + Bricolage Grotesque
-  (`DISPLAY`, **yalnız display katmanı**: `TYPE.h1` görünüm başlıkları + `TYPE.disp` hüküm
-  liderleri — gövdeye/UI'a yayılmaz) — `app.html` Google Fonts.
-- **v2 disiplini:** tip ölçeği `TYPE` (12/13/14/16/20/24/28 + `disp` 36 yalnız hüküm kartı liderleri) · radius `RAD` (4/6/8/12/"50%") ·
-  boşluk `SP` · gölge `SH` (border-first: statik yüzey 1px hairline) · açık zeminde renkli metin
-  yalnız `DERIN.*` (AA) · tint zemin yalnız `ALFA()`. **Gradyan/glow/uppercase-eyebrow/hover-kalkış
-  sıfır** — sentence case varsayılan; çip yalnız semantik durum; ekran başına 1 primary buton.
-- **Hareket zanaatı (emil-design-eng, 2026-07-13):** güçlü easing token'ları `EASE.out/inOut`
-  (yerleşik `ease-*` zayıf) + **press feedback**: tıklanabilir öğe `:active`'te `scale(0.97)`
-  (`data-press=""` opt-in; kural `NEON_KEYFRAMES`'te). Hover transform hâlâ yasak — press serbest
-  (hareket=bilgi). Detay: `design-system/kamu-evrak/MASTER.md` Motion bölümü. Skill'ler
-  `~/.claude/skills/`'te kurulu (emil-design-eng · apple-design · review/improve-animations).
-- **Stil yaklaşımı:** satır-içi stil + `neonUi` atomları (`ViewWrap`/`NeonCard`/`KV`/`Btn`/
-  `EmptyState`/`Icon`). CSS sınıf sistemi yok; yalnız `@keyframes` için `NEON_KEYFRAMES`
-  (isim tarihsel — animasyon mekaniği renkten bağımsız).
-- **Kütüphane katmanı (2026-08-08 revizyonu):** `motion`/Radix/`vaul`/`embla`/`lucide-react`
-  (headless) **+ shadcn/ui** (`src/components/ui/`, sınıf tabanlı). Stilli kütüphane yasağı
-  kullanıcı kararıyla KALDIRILDI; yerine **tek palet sözleşmesi** geçti: Tailwind teması
-  (`tailwind.app.config.js`) ham hex değil baştan sona `var(--ke-*)` okur, shadcn'in kendi
-  adları (`bg-card`, `text-muted-foreground`…) oraya köprülenmiştir → iki render mekanizması
-  aynı THEME_CSS'ten boyanır, koyu tema ikisinde de çalışır. Yeni renk önce THEME_CSS'e token
-  olarak girer. Tailwind YALNIZ çalışma alanında (`@config` ile ayrı config, preflight kapalı,
-  `@tailwind base` satırı SİLİNMEZ); landing'in CSS'i bit-aynı kalır ve bu her build'de
-  hash'le doğrulanır. Görsel efektler `components/gorsel.jsx`'te ve token'lardan beslenir.
-  Kurulum tuzakları + lisans kuralı: `frontend/design-system/kamu-evrak/MASTER.md`.
-- **Adlandırma:** kabuk/parça `Neon*` (isim tarihsel, görünüm artık açık/kağıt), bölümler `*View`,
-  canlı akış `CanliAjanAkisi`.
-- **a11y:** her tıklanabilirde `focusRing` + `cursor:pointer`; renk tek sinyal değil (ikon+metin+etiket);
-  `prefers-reduced-motion` desteklenir; açık zeminde AA kontrast.
-- **Legacy (yedek, unmounted):** açık "Kurumsal Devlet" teması (`App.jsx` + `styles/kamu-evrak.css`,
-  Lexend) `main.jsx`'te render edilmiyor; CSS dosyası reset + `rc-*`/`agw-*` yardımcıları için
-  yüklenir, `:root` token'ları Hero Light ile hizalı. **Genişletme;** yeni iş `neonUi.jsx`'ten kurulur.
+- **Fikir:** resmî yazışma dünyasının kendi malzemeleri — tükenmez mavisi `T`, ıstampa moru `V`,
+  ACELE kırmızısı `R`, arşiv kâğıdı zemini, lacivert dosya cildi kenar çubuğu.
+- **İmza öğeleri (bozma):** `ViewWrap` antet başlığı (mono künye + Archivo geniş başlık + çift
+  çizgi; `kunye`/`damga` prop'ları) · `Damga` lastik mühür atomu (ekran başına ≤2) · kenar
+  çubuğunda sayfaya bağlanan "dosya sırtı" aktif sekme (`[data-ray]` token kapsamı + `--ke-sayfa*`).
+- **Font:** Archivo (`DISPLAY`, genişlik ekseni — yalnız başlık/rakam/damga) · Instrument Sans
+  (`SANS`, gövde/UI) · IBM Plex Mono (`MONO`, makine verisi + antet satırı).
+- **Kütüphane:** motion · Radix · vaul · embla · lucide · @number-flow/react · shadcn/ui
+  (`src/components/ui/`). Tailwind yalnız çalışma alanında, renkler `var(--ke-*)`. Legacy
+  `styles/kamu-evrak.css` değişkenleri dosya sonundaki köprüyle `--ke-*`'ye bağlı.
+- **a11y:** focusRing, renk tek sinyal değil, reduced-motion, telefonda 44px hedef + 16px girdi.
+- **Landing** (`index.html` + `src/portfolio/**`) ayrı kimliktir; çalışma alanı teması ona dokunmaz.
 
 ## İki Zorunlu Görev (biri eksikse sistem tamamlanmamış sayılır — şartname §9)
 

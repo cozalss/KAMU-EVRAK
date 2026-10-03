@@ -11,7 +11,31 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Drawer } from "vaul";
 import QRCode from "react-qr-code";
-import { PAL, T, TYPE, RAD, SP, SH, MONO, BANT, DERIN, ALFA, SR_ONLY, Btn, Icon, focusRing } from "./neonUi.jsx";
+import { PAL, T, TYPE, RAD, SP, SH, MONO, DISPLAY, BANT, DERIN, ALFA, SR_ONLY, Btn, Icon, focusRing } from "./neonUi.jsx";
+
+/* QR çerçevesi — tarayıcı vizörünün köşe işaretleri (baskı "kesim işareti" dili). Yalnız
+   köşeler: QR'ın sessiz bölgesine (quiet zone) hiçbir şey taşmaz, okunabilirlik etkilenmez. */
+const KOSELER = [
+  { top: 0, left: 0, borderTop: 1, borderLeft: 1 }, { top: 0, right: 0, borderTop: 1, borderRight: 1 },
+  { bottom: 0, left: 0, borderBottom: 1, borderLeft: 1 }, { bottom: 0, right: 0, borderBottom: 1, borderRight: 1 },
+];
+function Vizor({ children, canli }) {
+  return (
+    <div style={{ position: "relative", padding: 12 }}>
+      {KOSELER.map(({ borderTop, borderLeft, borderRight, borderBottom, ...konum }, i) => (
+        <span key={i} aria-hidden="true" style={{
+          position: "absolute", ...konum, width: 22, height: 22,
+          borderTop: borderTop ? `2.5px solid ${T}` : "none", borderLeft: borderLeft ? `2.5px solid ${T}` : "none",
+          borderRight: borderRight ? `2.5px solid ${T}` : "none", borderBottom: borderBottom ? `2.5px solid ${T}` : "none",
+          borderRadius: 3, animation: canli ? "nu-think 2.4s ease-in-out infinite" : "none",
+        }} />
+      ))}
+      {children}
+    </div>
+  );
+}
+
+const ADIMLAR = ["QR'ı okutun", "Fotoğraf çekin", "Ajanları izleyin"];
 
 const POLL_MS = 1500;
 const MAKS_ARDISIK_HATA = 8;   // ~12 sn sunucu sessizliği → kullanıcıya söyle, sessiz dönme
@@ -149,7 +173,6 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
           <Drawer.Description style={SR_ONLY}>Telefonla evrak yükleme — QR eşleme penceresi.</Drawer.Description>
           {/* Üst şerit — bu kanalın "canlı" / demo-yıldızı kimliği (NavBtn'in aktif-şerit
               dilinin aynısı: ince T-renkli çizgi = özel/canlı durum, gradyan değil). */}
-          <div aria-hidden="true" style={{ height: 2, background: T, flexShrink: 0 }} />
           {/* Sürükleme tutamacı — vaul'un alttan-açılan panel dili (aşağı sürükleyerek de kapatılabilir). */}
           <Drawer.Handle style={{ margin: "12px auto 0", width: 36, height: 4, background: PAL.lineHi, borderRadius: RAD.dot, flexShrink: 0 }} />
           {/* minHeight: "kurulum" (oturum kurulurken, ~birkaç yüz ms) → "bekliyor" (QR + masa
@@ -158,21 +181,49 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
               asıl kaynağı buydu (kayma bug'ından ayrı, ikinci kök neden). "bekliyor" durumunun
               tipik yüksekliği baştan ayrılır → geçiş görünmez olur. */}
           <div style={{ padding: SP.xl, overflowY: "auto", display: "flex", flexDirection: "column", gap: SP.l, textAlign: "center", minHeight: 420 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-          <span aria-hidden="true" style={{ color: DERIN.T, display: "grid", placeItems: "center" }}><Icon.phone /></span>
-          <Drawer.Title asChild>
-            <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink, flex: 1, textAlign: "left" }}>
-              Telefonla evrak yükle
-            </h2>
-          </Drawer.Title>
-          <button ref={kapatRef} type="button" onClick={onClose} aria-label="Pencereyi kapat" {...focusRing}
-            style={{ cursor: "pointer", border: `1px solid ${PAL.line}`, background: PAL.surf,
-                     color: PAL.mut, borderRadius: RAD.ctl, width: 30, height: 30, lineHeight: 1,
-                     fontSize: 16 }}>×</button>
-        </div>
+        <header style={{ textAlign: "left" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
+                <Icon.phone width={12} height={12} /> Mobil eşleme · ikinci kanal
+              </div>
+              <Drawer.Title asChild>
+                <h2 style={{ margin: "6px 0 0", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "114%", fontSize: 24, lineHeight: "28px", letterSpacing: "-.02em", color: PAL.ink }}>
+                  Telefonla evrak yükle
+                </h2>
+              </Drawer.Title>
+            </div>
+            <button ref={kapatRef} type="button" onClick={onClose} aria-label="Pencereyi kapat" {...focusRing} data-press=""
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
+              style={{ cursor: "pointer", border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut,
+                       borderRadius: RAD.ctl, width: 34, height: 34, display: "grid", placeItems: "center", flexShrink: 0,
+                       transition: "background .12s ease" }}><Icon.x /></button>
+          </div>
+          <div aria-hidden="true" style={{ marginTop: SP.m, height: 4, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.85 }} />
+          <ol aria-label="Adımlar" style={{ listStyle: "none", margin: `${SP.m}px 0 0`, padding: 0, display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: SP.s }}>
+            {ADIMLAR.map((a, i) => {
+              const gecti = durum === "aliniyor" ? i < 2 : false;
+              const simdi = durum === "aliniyor" ? i === 2 : durum === "bekliyor" && i === 0;
+              return (
+                <li key={a} style={{ display: "grid", gap: 2, paddingTop: SP.s, borderTop: `2px solid ${gecti || simdi ? T : PAL.line}`, transition: "border-color .3s ease" }}>
+                  <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: gecti || simdi ? DERIN.T : PAL.mut3 }}>{String(i + 1).padStart(2, "0")}{gecti ? " ✓" : ""}</span>
+                  <span style={{ ...TYPE.meta, fontWeight: simdi ? 600 : 500, color: simdi ? PAL.ink : PAL.mut2 }}>{a}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </header>
 
         {durum === "kurulum" && (
-          <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut }}>Eşleme oturumu açılıyor…</p>
+          <div role="status" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: SP.m, padding: `${SP.l}px 0` }}>
+            <Vizor canli>
+              <div aria-hidden="true" style={{ width: 224, height: 224, borderRadius: RAD.card, background: PAL.surf, border: `1px dashed ${PAL.lineHi}`, display: "grid", placeItems: "center" }}>
+                <Icon.spin />
+              </div>
+            </Vizor>
+            <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut }}>Eşleme oturumu açılıyor…</p>
+          </div>
         )}
 
         {(durum === "bekliyor" || durum === "aliniyor") && oturum && (() => {
@@ -180,10 +231,10 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
           const seciliUrl = adaylar[Math.min(urlIdx, adaylar.length - 1)];
           return (
           <>
-            <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut2, textAlign: "left" }}>
+            <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2, textAlign: "left" }}>
               Telefonunuzla QR'ı okutun, fotoğraf çekin veya dosya seçin —
               bu ekranda ajanların canlı işleyişini izleyin.{" "}
-              <b>Telefon, bilgisayarla aynı Wi-Fi ağında olmalı.</b>
+              <b style={{ color: PAL.ink, fontWeight: 600 }}>Telefon, bilgisayarla aynı Wi-Fi ağında olmalı.</b>
             </p>
             {/* Backend self-test: sunucu kendi LAN IP'sinden kendine bağlanamadıysa telefonlar
                 da bağlanamaz. erisim_tanisi nedeni AYIRIR → doğru reçete: "dinlemiyor" =
@@ -221,13 +272,15 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
             )}
             {/* "Masa" zemini — KaynakBelge'nin kağıt-üstünde-masa motifiyle aynı dil (CanliAjanAkisi.jsx):
                 QR + bağlantı bilgisi tek tinted zeminde toplanır, ayrı ayrı yüzen öğeler değil. */}
-            <div style={{ background: PAL.surf2, borderRadius: RAD.card, padding: SP.l, display: "flex", flexDirection: "column", alignItems: "center", gap: SP.m }}>
+            <div style={{ background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, display: "flex", flexDirection: "column", alignItems: "center", gap: SP.m }}>
               {/* QR: her temada beyaz zemin + koyu modül — tarayıcı kameraları için en garantili kontrast. */}
-              <div style={{ background: "#fff", padding: 14, borderRadius: RAD.card, border: `1px solid ${PAL.line}`, boxShadow: SH.pop }}>
+              <Vizor canli={durum === "bekliyor"}>
+              <div style={{ background: "#fff", padding: 14, borderRadius: RAD.card, border: `1px solid ${PAL.line}`, boxShadow: SH.pop, transition: `opacity .3s ease`, opacity: durum === "aliniyor" ? 0.45 : 1 }}>
                 {/* level="M": orta hata düzeltme — uzaktan/parlamada okutmada L'den toleranslı
                     (resmî react-qr-code önerisi); kısa URL'de yoğunluk artışı ihmal edilebilir. */}
                 <QRCode value={seciliUrl} size={196} bgColor="#ffffff" fgColor="#161616" level="M" />
               </div>
+              </Vizor>
               {/* Çoklu ağ arayüzü: telefon bağlanamıyorsa büyük olasılıkla QR yanlış arayüzün
                   IP'sini kodladı — seçici ile diğer ağ denenir, QR anında yenilenir. */}
               {adaylar.length > 1 && (
@@ -245,7 +298,7 @@ export default function TelefonYukleModal({ onClose, onFile, showToast }) {
                   <span>— telefon bağlanamazsa diğerini deneyin</span>
                 </label>
               )}
-              <code style={{ fontFamily: MONO, ...TYPE.meta, color: PAL.mut, wordBreak: "break-all" }}>
+              <code style={{ fontFamily: MONO, fontSize: 11, lineHeight: "15px", color: PAL.mut, wordBreak: "break-all", padding: "4px 8px", borderRadius: RAD.chip, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
                 {seciliUrl}
               </code>
             </div>

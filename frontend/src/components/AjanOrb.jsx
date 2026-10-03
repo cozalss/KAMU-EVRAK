@@ -1,303 +1,276 @@
-/* AjanOrb — canlı işlem sahnesinin BEYNİ. Sesli görüşme orb'unun aynı görsel gövdesi
-   (SesliOrb + lib/orbCizim), bu kez mikrofon yerine PIPELINE tarafından sürülür.
+/* AjanOrb → "ISTAMPA" — canlı işlem sahnesinin öznesi (Antet & Damga, 2026-10).
+   Eski orb jenerik bir mavi küreydi (kullanıcı: "kavramı yok"). Yerine konunun kendi
+   malzemesi geldi: mühür mürekkebi emdirilmiş keçe — ıstampa. Her GERÇEKTEN İŞ YAPAN adım
+   (akisKatman.adimDurumu === "calisti") bittiği anda keçeye kendi görevinin renginde bir
+   damla düşer: Görev 1 tükenmez mavisi (T), Görev 2 ıstampa moru (V); risk bandı adımı kendi
+   bandının renginde, hata kırmızı. Damlanın boyu adımın SUNUCU süresiyle orantılıdır
+   (nodeDurationMs) — uzun düşünen adım büyük leke bırakır. Damlalar zamanla keçede dağılır
+   (domain-warped fBm). Sahte "düşünme" titreşimi YOK: yeni mürekkep yalnız SSE olayından gelir.
 
-   NEDEN BURADA: sahnenin daha önce tek bir kıvılcım ikonu vardı; koşumun "kim yürütüyor"
-   sorusunun görsel bir öznesi yoktu. Orb ürünün maskotu ve beyni — işin nerede olduğunu
-   tek bakışta anlatan özne. Sesli sahnede zaten ölçülmüş, ayarlanmış bir gövdesi var;
-   ikinci bir görsel dil icat etmek yerine AYNISI yeniden kullanılır (tek maskot, tek dil).
+   Sözleşmeler:
+   · Bilgi tek kanal DEĞİL — aria-hidden. Aynı bilgi slip (metro), başlık işaretleri ve
+     aria-live bölgesinde metinle var; bu katman sökülse hiçbir bilgi kaybolmaz.
+   · "gerekmedi" / "atlandi" / "bekliyor" adımları mürekkep BIRAKMAZ (koşmayan adım tamamlandı
+     sayılmaz — CLAUDE.md §9). Paralel katmanlar aynı karede birlikte damlar (olgu).
+   · Mount anında zaten bitmiş adımlar "eski" sayılır (doğum = şimdi − 60 sn): görünüme geri
+     dönüşte sahte bir damla salvosu oynamaz.
+   · Ham WebGL1, paket yok. ≤30 fps, DPR ≤ 1,5; ekran dışı / gizli sekmede rAF durur; tüm
+     damlalar yerine oturup koşum bittiğinde döngü kendiliğinden söner.
+   · prefers-reduced-motion → shader tek kare (oturmuş hâl) çizip durur. WebGL yoksa Canvas 2D
+     radyal leke yedeği. */
+import { useEffect, useMemo, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { T, V, PAL, BANT, RAD, SP, SH, MONO, TYPE, TNUM, DERIN_OF, EASE_BEZIER } from "./neonUi.jsx";
+import { adimDurumu } from "../lib/akisKatman.js";
+import { nodeDurationMs } from "../lib/pipelinePhases.js";
 
-   ÜÇ HAREKET — HEPSİ ANLAM TAŞIR AMA HİÇBİRİ TEK KANAL DEĞİL. Orb koşumun İKİNCİL,
-   yedekli görsel anlatımıdır: aktif adım, ilerleme yüzdesi ve hata durumu her zaman
-   orb'un DIŞINDA da verilir (üst çubuk çipi + yüzde barı + SahneAkis istasyon listesi +
-   aria-live bölgesi). Bu yüzden gövde aria-hidden ve reduced-motion'da hareketsiz
-   kalabiliyor. Buradan bir hareket sökülürse hiçbir bilgi kaybolmaz — AMA tersi de
-   geçerli: buraya yalnız burada var olan bir bilgi EKLENMEMELİ, eklenirse orb dekoratif
-   olmaktan çıkar ve aria-hidden ile reduced-motion sözleşmeleri ikisi birden bozulur.
+const AZAMI_DAMLA = 20;
+const KARE_MS = 1000 / 30;
+const OTURMA_SN = 9;          // bu yaştan sonra damla gözle görülür biçimde değişmez
 
-   1. DURUM — Görev 1 çalışırken düşünme halkaları, Görev 2'de en parlak çekirdek, adımlar
-      arasında uyanık ama sessiz, boşta sakin. Eşleme lib/orbEnerji.orbDurumu'nda, testli.
-   2. YUTMA — biten adım orb'un altında BELİRİR, okunacak kadar SABİT DURUR, sonra içeri
-      çekilir; vardığı an gövde parlar ve bir halka dışa açılır. Ayrıntı aşağıda.
-   3. SEVK — yeni adım başlayınca orb aşağıya, akışa doğru bir ışık bırakır: görevi verdi.
-
-   YUTMA JESTİ — ÜÇ VURUŞ, TEK KUYRUK (7 Ağu 2026 revizyonu):
-   İlk sürüm etiketi tek sürekli uçuşla orb'a taşıyordu ve OKUNMUYORDU (kullanıcı bulgusu):
-   okunması gereken metin okunduğu sırada hareket hâlindeydi, hızlı koşumda da birden çok
-   etiket üst üste biniyordu. Okunabilirlik hareketi yavaşlatmakla değil DURGUNLUKLA gelir.
-   Şimdi her adım sırayla (kuyrukta) tek tek işlenir ve üç vuruş yaşar:
-     · BELİR  — orb'un altında, hâlenin dışında maddeleşir (opacity + hafif ölçek; 0'dan
-                DEĞİL .94'ten — hiçlikten belirmez).
-     · DUR    — hiçbir şey kıpırdamaz. Bilgiyi taşıyan tek vuruş budur.
-     · ÇEKİL  — orb tarafından yutulur: yükselir, küçülür, son anda bulanıklaşarak gövdeye
-                karışır (blur, iki ayrı nesne görünmesin diye).
-   Süreler lib/orbEnerji.yutmaTempo'da ve TESTLİ: kuyruk uzayınca jest hızlanır ama sabit
-   durma süresi BEKLE_TABAN'ın altına İNMEZ. Sıkışma hızla değil, arkada biriken görünür
-   kuyrukla anlatılır — hızlandırarak çözmek tam da düzeltilen hatayı geri getirirdi.
-   Mekanizma keyframe DEĞİL transition: vuruşlar arası geçiş kesilebilir ve yeniden
-   hedeflenebilir (emil-design-eng: hızlı tetiklenen UI'da keyframe sıfırdan başlar).
-
-   ÖLÇÜ SÖZLEŞMESİ: kap KARE ve SABİT px olmalı (BOYUT) — orbCizim'in sıvı kenarı px
-   geometrisiyle çalışır, yüzdeyle esneyen bir kutuda blob yarıçapı ile clip kutusu ayrışır.
-   Alt LANE parçacıkların uçuş şeridi: rezerve edilmezse etiket alttaki başlığın üstüne biner.
-   YER_BEKLE, hâlenin (inset -15% → yarıçap ≈0.65·BOYUT) DIŞINDA seçilmiştir; içeride
-   kalsaydı etiket orb'un ışığı üstünde okunurluğunu kaybederdi.
-
-   a11y: tamamı aria-hidden — koşum ilerlemesi zaten üst çubuktaki yüzde ve aria-live
-   bölgesiyle veriliyor; orb ikinci (ve yalnız görsel) bir kanal olurdu. reduced-motion'da
-   rAF hiç başlamaz, etiket kuyruğu hiç işlemez; orb statik dairesine oturur ama durum
-   tabanları (parlaklık/hâle) KALIR — onlar hareket değil, durumun rengidir. */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import SesliOrb from "./SesliOrb.jsx";
-import { orbKare } from "../lib/orbCizim.js";
-import { orbDurumu, enerjiSonraki, yutmaKarari, yutmaTempo, kuyrugaEkle } from "../lib/orbEnerji.js";
-import { T, V, PAL, BANT, DERIN_OF, TYPE, RAD, SH } from "./neonUi.jsx";
-
-const BOYUT = 132;
-// Etiketin durduğu şerit. Ölçü: durma yeri 96px + etiket yüksekliği (~32px) + arkadaki iki
-// hayaletin kaydırması (16px) tam sığmalı — dar bırakılırsa yığının altı alttaki başlığa taşar.
-const LANE = 78;
-const HALKA_R = 46;           // ilerleme halkası yarıçapı (100'lük viewBox)
-const CEVRE = 2 * Math.PI * HALKA_R;
-const ILK_KARE = 32;          // "belir" stilinin bir kare uygulanması için gereken gecikme
-
-/* Üç vuruşun görsel değerleri. YER_BEKLE (96px) hâlenin dışıdır — etiket orb'un ışığının
-   üstünde değil, temiz zeminde durur. YER_GIRIS ondan 12px aşağıda: maddeleşme sırasında
-   minik bir yükselme var, ama şeridi taşıracak kadar değil. */
-const YER = { belir: 108, dur: 96, cekil: 0 };
-const OLCEK = { belir: 0.94, dur: 1, cekil: 0.34 };
-const OPAK = { belir: 0, dur: 1, cekil: 0 };
-const BULANIK = { belir: 0, dur: 0, cekil: 3 };
+const VS = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+const FS = `
+precision mediump float;
+uniform vec2 uRes;uniform float uT;uniform int uN;
+uniform vec3 uZemin;uniform vec3 uR0;uniform vec3 uR1;uniform vec3 uR2;uniform vec3 uR3;uniform vec3 uR4;
+uniform vec4 uD[${AZAMI_DAMLA}];uniform float uK[${AZAMI_DAMLA}];
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.03+17.1;a*=.5;}return s;}
+vec3 renk(float k){if(k<.5)return uR0;if(k<1.5)return uR1;if(k<2.5)return uR2;if(k<3.5)return uR3;return uR4;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/uRes.y;
+  // Keçe: yönlü lif + ince gren (ölçülü — mürekkep kahraman kalsın).
+  float lif=fbm(uv*vec2(5.,70.))*.5+n(uv*260.)*.5;
+  vec3 c=uZemin*(.965+.07*lif);
+  for(int i=0;i<${AZAMI_DAMLA};i++){
+    if(i>=uN)break;
+    vec4 d=uD[i];float yas=uT-d.z;if(yas<0.)continue;
+    // Yayılma: ilk saniyede hızlı açılır, sonra kılcal olarak yavaşça sürer.
+    float R=uK[i]*(1.-exp(-yas*2.2))*(1.+.035*sqrt(yas));
+    vec2 q=uv-d.xy;
+    vec2 w=vec2(fbm(q*5.+d.z*3.1+uT*.03),fbm(q*5.-d.z*1.7-uT*.025))-.5;
+    float r=length(q+w*R*1.25);
+    float govde=smoothstep(R,R*.35,r);
+    float kenar=smoothstep(R*1.04,R*.9,r)-smoothstep(R*.9,R*.62,r);   // kahve halkası kenarı
+    float doku=.62+.38*fbm(q*22.+d.z);
+    float yogun=clamp(govde*doku*.9+kenar*.4,0.,.94)*(1.-.18*clamp(yas/30.,0.,1.));
+    c=mix(c,renk(d.w),yogun);
+  }
+  gl_FragColor=vec4(c,1.);
+}`;
 
 const azHareketMi = () =>
   typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
-export default function AjanOrb({ display = [], kosumda = false, hataVar = false }) {
-  const orbRef = useRef(null);
-  const haloRef = useRef(null);
-  const parlaRef = useRef(null);
-  const rafRef = useRef(0);
-  const sonTsRef = useRef(0);
-  const enerjiRef = useRef(0);
-  const vurusRef = useRef(0);          // rAF'ın bir sonraki karede tüketeceği tamamlanma sayısı
-  const durumRef = useRef("hazir");
-  const kosumdaRef = useRef(false);
-  const azRef = useRef(azHareketMi());
-  const gorulenRef = useRef(new Set());
-  const sonBitenRef = useRef(0);       // bir önceki karede tamamlanmış görünen adım sayısı
-  const ilkKareRef = useRef(true);
-  const sayacRef = useRef(0);
+/* CSS token → [r,g,b] (0..1). Chrome color-mix'i "color(srgb a b c)", düz rengi "rgb()" verir. */
+function tokenRgb(el, css) {
+  el.style.color = css;
+  const s = getComputedStyle(el).color;
+  const m = s.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+  if (m) return [+m[1], +m[2], +m[3]];
+  const r = s.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/);
+  return r ? [r[1] / 255, r[2] / 255, r[3] / 255] : [0.5, 0.5, 0.5];
+}
 
-  const [az, setAz] = useState(azHareketMi);
-  const [kuyruk, setKuyruk] = useState([]);    // yutulmayı bekleyen adımlar (FIFO)
-  const [aktif, setAktif] = useState(null);    // o an sahnedeki tek etiket + temposu
-  const [faz, setFaz] = useState("belir");
-  const [yutum, setYutum] = useState(0);       // yutma halkasını remount eden sayaç
+const KECE = `color-mix(in srgb, ${PAL.ink} 5%, ${PAL.surf2})`;
+const RENKLER = [T, V, BANT.yesil.c, BANT.sari.c, BANT.kirmizi.c];
 
-  const aktifAdim = display.find((a) => a.status === "active") || null;
-  const aktifGorev = aktifAdim ? aktifAdim.gorev : null;
-  const durum = orbDurumu({ kosumda, aktifGorev, hataVar });
-  const bitenSayi = display.filter((a) => a.status === "done").length;
-  const oran = display.length ? bitenSayi / display.length : 0;
-  const tamam = display.length > 0 && bitenSayi === display.length;
-  // Halka rengi = o an yürüyen fazın rengi; koşum bitince yeşil, hata varsa kırmızı.
-  // Renk TEK sinyal değil: halka dolgusu (uzunluk) aynı bilgiyi biçimle de taşır.
-  const col = hataVar ? BANT.kirmizi.c : tamam ? BANT.yesil.c : aktifGorev === 2 ? V : T;
+/* Deterministik konum: Görev 1 sol, Görev 2 sağ yarıda; aynı adım her koşumda aynı yere düşer. */
+function hash(s) { let x = 2166136261; for (const ch of s) { x ^= ch.charCodeAt(0); x = Math.imul(x, 16777619); } return (x >>> 0) / 4294967295; }
+function damlaKonum(a, oran) {
+  const u = hash(a.id), v = hash(`${a.id}·y`);
+  const sol = a.gorev === 2 ? 0.52 : 0.08;
+  return [(sol + u * 0.4) * oran, 0.2 + v * 0.6];
+}
+function damlaRengi(a) {
+  if (a.status === "error") return 4;
+  if (a.id === "risk_guard" && a.bant) return { yesil: 2, sari: 3, kirmizi: 4 }[a.bant] ?? 1;
+  return a.gorev === 2 ? 1 : 0;
+}
+function damlaBoyu(a) {
+  const ms = nodeDurationMs(a);
+  const sn = Number.isFinite(ms) ? ms / 1000 : 1;
+  return Math.min(0.3, 0.1 + 0.055 * Math.sqrt(sn));
+}
 
-  durumRef.current = durum;
-  kosumdaRef.current = kosumda;
+function glKur(cv) {
+  const gl = cv.getContext("webgl", { antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false });
+  if (!gl) return null;
+  const sh = (tip, src) => { const s = gl.createShader(tip); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; };
+  const vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+  if (!vs || !fs) return null;
+  const pr = gl.createProgram();
+  gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null;
+  gl.useProgram(pr);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "p");
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const u = (k) => gl.getUniformLocation(pr, k);
+  return { gl, u: { res: u("uRes"), t: u("uT"), n: u("uN"), zemin: u("uZemin"), d: u("uD"), k: u("uK"), r: [0, 1, 2, 3, 4].map((i) => u(`uR${i}`)) } };
+}
 
-  // Tek yazma noktası — rAF de, statik yol da aynı üç katmanı sürer (SesliOrb sözleşmesi:
-  // gövde transform+clipPath, hâle opacity, çekirdek parlaması opacity).
-  const yazKare = useCallback((kare) => {
-    if (orbRef.current) {
-      orbRef.current.style.transform = `scale(${kare.scale.toFixed(4)})`;
-      orbRef.current.style.clipPath = kare.clipPath;
-    }
-    if (haloRef.current) haloRef.current.style.opacity = kare.haloOpacity.toFixed(3);
-    if (parlaRef.current) parlaRef.current.style.opacity = kare.parlaklik.toFixed(3);
-  }, []);
+/* Canvas 2D yedeği (WebGL yok): oturmuş lekeleri radyal gradyanla tek sefer çizer. */
+function yedekCiz(cv, damlalar, renkler, zemin) {
+  const g = cv.getContext("2d");
+  if (!g) return;
+  const W = cv.width, H = cv.height;
+  const css = (c, a) => `rgba(${c.map((x) => Math.round(x * 255)).join(",")},${a})`;
+  g.fillStyle = css(zemin, 1); g.fillRect(0, 0, W, H);
+  damlalar.forEach((d) => {
+    const x = (d.x / (W / H)) * W, y = H - d.y * H, r = d.k * H;
+    const gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, css(renkler[d.renk], 0.75)); gr.addColorStop(0.8, css(renkler[d.renk], 0.55)); gr.addColorStop(1, css(renkler[d.renk], 0));
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  });
+}
 
-  // reduced-motion canlı izlenir: kullanıcı ayarı koşum ortasında değişirse rAF de değişir.
-  useEffect(() => {
-    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    if (!mq) return undefined;
-    const din = (e) => { azRef.current = e.matches; setAz(e.matches); };
-    mq.addEventListener?.("change", din);
-    return () => mq.removeEventListener?.("change", din);
-  }, []);
-
-  // rAF döngüsü — React state'ine DOKUNMAZ; değerler doğrudan style'a yazılır (kare başına
-  // render yok). Bağımlılık YALNIZ `az`: durum ve koşum ref üzerinden okunur, yoksa her adım
-  // geçişinde döngü sökülüp yeniden kurulurdu (enerji zarfı sürekliliğini kaybederdi).
-  useEffect(() => {
-    if (az) return undefined;
-    const dongu = (ts) => {
-      const dt = sonTsRef.current ? ts - sonTsRef.current : 16;
-      sonTsRef.current = ts;
-      const vurus = vurusRef.current;
-      vurusRef.current = 0;
-      enerjiRef.current = enerjiSonraki(enerjiRef.current, dt, { vurus, kosumda: kosumdaRef.current });
-      yazKare(orbKare({ boyut: BOYUT, seviye: enerjiRef.current, ts, azHareket: false, durum: durumRef.current }));
-      rafRef.current = requestAnimationFrame(dongu);
-    };
-    rafRef.current = requestAnimationFrame(dongu);
-    return () => { cancelAnimationFrame(rafRef.current); sonTsRef.current = 0; };
-    // yazKare useCallback([]) ile sabittir — döngüyü yeniden kurmaz.
-  }, [az, yazKare]);
-
-  // Hareket kısıtlıyken rAF hiç koşmaz — ama durum tabanları (parlaklık/hâle) yine
-  // uygulanmalı: onlar hareket değil, durumun rengidir. Tek statik kare, durum değişince.
-  useEffect(() => {
-    if (!az) return;
-    yazKare(orbKare({ boyut: BOYUT, seviye: 0, ts: 0, azHareket: true, durum }));
-  }, [az, durum, yazKare]);
-
-  // Tamamlanan adımları KUYRUĞA al (doğrudan sahneye değil — sahnede daima tek etiket var).
-  useEffect(() => {
-    // MOUNT ANI TOHUMLAMASI — useSahneTempo'nun aynı sınıftan hatası burada da geçerli:
-    // memur başka görünüme geçip koşum sürerken geri döndüğünde bileşen yeniden mount olur
-    // ve o ana dek bitmiş TÜM adımlar "yeni bitmiş" sayılırdı; orb sahte bir yutma
-    // salvosu oynatırdı. Mount'ta zaten bitmiş olanlar görülmüş kabul edilir.
-    if (ilkKareRef.current) {
-      ilkKareRef.current = false;
-      gorulenRef.current = new Set(display.filter((a) => a.status === "done").map((a) => a.id));
-      sonBitenRef.current = gorulenRef.current.size;
-      return;
-    }
-    // Sıfırlama kararı saf katmanda (lib/orbEnerji.yutmaKarari) ve TESTLİ: sinyalin neden
-    // kimlik değil SAYI olması gerektiği oradaki yorumda — paralel dallarda kimlik-tabanlı
-    // kontrol koşum sağlamken defteri siliyordu.
-    const karar = yutmaKarari(gorulenRef.current, sonBitenRef.current, display);
-    sonBitenRef.current = karar.bitenSayi;
-    if (karar.sifirla) {
-      gorulenRef.current = new Set();
-      // Sahne ve kuyruk boşaltılır; havadaki zamanlayıcıları aşağıdaki vuruş effect'inin
-      // kendi cleanup'ı temizler (aktif → null onu söker), ayrı bir defter tutulmasına
-      // gerek kalmaz.
-      setKuyruk([]);
-      setAktif(null);
-      return;
-    }
-    if (!karar.yeni.length) return;
-    // DEFTER HER HÂLÜKÂRDA İŞLENİR — sahne kurulmasa bile. Sıra kritik: `az` kontrolünden
-    // ÖNCE. Aksi hâlde hareket kısıtlıyken biten adımlar "görülmemiş" kalır ve kullanıcı
-    // ayarı koşum ortasında kapatırsa dakikalar önce bitmiş adımlar tek seferde "yeni bitmiş"
-    // gibi kuyruğa dolar (inceleme bulgusu — kod, kendi yorumuyla çelişiyordu).
-    karar.yeni.forEach((a) => gorulenRef.current.add(a.id));
-    if (azRef.current) return;   // hareket kısıtlı: defter işlendi, sahne kurulmaz
-    setKuyruk((k) => kuyrugaEkle(k, karar.yeni.map((a) => ({
-      anahtar: `${a.id}-${sayacRef.current++}`,
-      label: a.label || a.id,
-      col: a.gorev === 2 ? V : T,
-    }))));
-  }, [display]);
-
-  // Kuyruktan sahneye — sahnede yer boşaldığı anda sıradaki etiket alınır. Tempo o ANDAKİ
-  // sıkışıklığa göre hesaplanır (kalan kuyruk), yani birikme arttıkça jest hızlanır.
-  // useLayoutEffect ZORUNLU (passive useEffect DEĞİL): sıradaki etiket ancak `aktif` null'dan
-  // geçtikten sonra alınabiliyor, yani sahne bir an boş kalıyor. Passive effect boyamadan
-  // SONRA boşaltıldığından tarayıcı o boş kareyi gerçekten çizip iki etiket arasında görünür
-  // bir boşluk bırakıyordu; layout effect commit ile boyama arasında koştuğu için devrediş
-  // hiç ekrana yansımaz. Effect gövdesi ucuz (tek dizi kopyası) — boyamayı geciktirmez.
-  useLayoutEffect(() => {
-    if (aktif || !kuyruk.length) return;
-    setAktif({ ...kuyruk[0], tempo: yutmaTempo(kuyruk.length - 1) });
-    setFaz("belir");
-    setKuyruk((k) => k.slice(1));
-  }, [aktif, kuyruk]);
-
-  // Üç vuruşun zamanlaması. Bağımlılık yalnız `aktif`: faz ayrı state'te tutulur, yoksa her
-  // vuruşta effect yeniden koşar ve kendi zamanlayıcılarını iptal ederdi.
-  useEffect(() => {
-    if (!aktif) return undefined;
-    const { giris, bekle, cek } = aktif.tempo;
-    const durBasi = ILK_KARE + giris;
-    const cekilBasi = durBasi + bekle;
-    const zam = [
-      setTimeout(() => setFaz("dur"), ILK_KARE),
-      setTimeout(() => setFaz("cekil"), cekilBasi),
-      // Vuruş ÇEKİLİŞİN SONUNA yakın: gövde parlaması etiket yüzeye değdiği an olmalı.
-      // az kontrolü ateşleme anında da yapılır — uçuş sırasında hareket kısıtlanmış olabilir.
-      setTimeout(() => {
-        if (azRef.current) return;
-        vurusRef.current += 1;
-        setYutum((y) => y + 1);
-      }, cekilBasi + cek * 0.82),
-      setTimeout(() => setAktif(null), cekilBasi + cek),
-    ];
-    return () => zam.forEach(clearTimeout);
-  }, [aktif]);
-
-  const etiketTaban = {
-    position: "absolute", left: "50%", top: BOYUT / 2, pointerEvents: "none",
-    whiteSpace: "nowrap", maxWidth: 230, overflow: "hidden", textOverflow: "ellipsis",
-    padding: "5px 13px", borderRadius: RAD.chip, background: PAL.surf,
-    border: `1px solid ${PAL.line}`, ...TYPE.ui, fontWeight: 600,
-  };
-  const gecis = aktif && {
-    belir: "none",
-    dur: `transform ${aktif.tempo.giris}ms var(--ke-ease-out), opacity ${aktif.tempo.giris}ms var(--ke-ease-out)`,
-    cekil: `transform ${aktif.tempo.cek}ms var(--ke-ease-in-out), opacity ${aktif.tempo.cek}ms var(--ke-ease-in-out), filter ${aktif.tempo.cek}ms var(--ke-ease-in-out)`,
-  }[faz];
-
+/* GELİŞ FİŞİ — ilk mürekkep düşene dek keçenin üstünde evrakın kendisi durur ("evrak masaya
+   geldi"). Bekleme anı boş bir keçe değil, bir OLGU: hangi evrak, ne zaman geldi (saat, koşumun
+   gerçek başlangıcından türetilir — uydurma kayıt no YOK). İlk paraf mürekkebi düşünce fiş
+   masaya alınır (sağa kayarak çıkar) ve keçe sahneyi devralır. Stripe globe dersi: ortam
+   hareketi yok, yalnız olay hareket ettirir — fişin tek hareketi iniş ve kalkıştır. */
+const FIS_GIRIS = { opacity: 0, y: -22, rotate: -7, scale: 1.04 };
+function GelisFisi({ ad, meta, saat }) {
   return (
-    <div aria-hidden="true" style={{ position: "relative", width: BOYUT, height: BOYUT + LANE, flexShrink: 0 }}>
-      {/* Orb gövdesi — SesliOrb'un kendi katman sözleşmesi: kap 1:1 ve position:relative. */}
-      <div style={{ position: "absolute", top: 0, left: 0, width: BOYUT, height: BOYUT }}>
-        <SesliOrb dusunuyor={durum === "dusunuyor"} azHareket={az}
-          orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
-        {/* Yutma halkası — etiket gövdeye değdiği anda dışa açılan tek atım. key=yutum:
-            her yutumda remount → vuruş tam o anda oynar (CSS animasyonu yeniden başlar). */}
-        {yutum > 0 && !az && (
-          <span key={yutum} style={{ position: "absolute", inset: "14%", borderRadius: RAD.dot, border: `1.5px solid ${DERIN_OF(col)}`, animation: "nu-halka .7s var(--ke-ease-out) both", pointerEvents: "none" }} />
-        )}
-        {/* İlerleme halkası — orb kaç adımı yuttu. Dolgu UZUNLUKLA da okunur, renk tek
-            sinyal değil. Dış yarıçap düşünme halkalarının söndüğü yerin hemen dışında. */}
-        <svg viewBox="0 0 100 100" style={{ position: "absolute", inset: "-15%", transform: "rotate(-90deg)", pointerEvents: "none", overflow: "visible" }}>
-          <circle cx="50" cy="50" r={HALKA_R} fill="none" stroke={PAL.line} strokeWidth="1.6" />
-          <circle cx="50" cy="50" r={HALKA_R} fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round"
-            strokeDasharray={CEVRE} strokeDashoffset={CEVRE * (1 - oran)}
-            style={{ transition: "stroke-dashoffset .45s var(--ke-ease-out), stroke .3s ease" }} />
-        </svg>
+    <motion.div key="fis" initial={FIS_GIRIS} animate={{ opacity: 1, y: 0, rotate: -2.2, scale: 1 }}
+      exit={{ opacity: 0, x: 90, rotate: 4, transition: { duration: 0.32, ease: EASE_BEZIER.inOut } }}
+      transition={{ type: "spring", stiffness: 380, damping: 26, mass: 0.9 }}
+      style={{ position: "absolute", left: "50%", top: "50%", width: "min(78%, 300px)", marginLeft: "calc(min(78%, 300px) / -2)", marginTop: -54, zIndex: 2, background: PAL.surf, borderRadius: 3, boxShadow: `${SH.pop}, 0 0 0 1px ${PAL.line}`, padding: `${SP.m}px ${SP.l}px`, pointerEvents: "none" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase" }}>
+        <span>Evrak masaya geldi</span>
+        <span style={{ flex: 1, height: 1, background: PAL.line }} />
+        {saat && <span style={{ ...TNUM }}>{saat}</span>}
       </div>
+      <div style={{ marginTop: 6, height: 3, borderTop: `1.5px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.85 }} />
+      <div style={{ marginTop: SP.s, ...TYPE.ui, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ad}</div>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: 2 }}>
+        <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0, flex: 1, ...TNUM }}>{meta || "okunmayı bekliyor"}</span>
+        {/* Paraf yuvası — ilk masa işini bitirince buraya değil keçeye mürekkep düşer;
+            kesikli halka yalnız "henüz paraf yok" olgusunu gösterir. */}
+        <span style={{ width: 22, height: 22, borderRadius: RAD.dot, border: `1.5px dashed ${DERIN_OF(T)}`, flexShrink: 0, opacity: 0.8, animation: "nu-spin 8s linear infinite" }} />
+      </div>
+    </motion.div>
+  );
+}
 
-      {/* SEVK — aktif adım değişince orb aşağıya, akışa doğru ışık bırakır. key=id:
-          remount animasyonu bir kez oynatır, state gerekmez. */}
-      {kosumda && !az && aktifAdim && (
-        <span key={`sevk-${aktifAdim.id}`} aria-hidden="true" style={{
-          position: "absolute", left: "50%", top: BOYUT / 2, width: 9, height: 9,
-          marginLeft: -4.5, borderRadius: RAD.dot, pointerEvents: "none", opacity: 0,
-          background: aktifGorev === 2 ? V : T,
-          animation: "ke-orb-sevk 620ms var(--ke-ease-out) both",
-        }} />
-      )}
+const saatOf = (runBase) => {
+  if (!Number.isFinite(runBase) || runBase <= 0 || typeof performance === "undefined") return "";
+  const d = new Date(Date.now() - (performance.now() - runBase));
+  return d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+};
 
-      {/* BEKLEYEN KUYRUK — sahnedeki etiketin arkasında hafifçe kaydırılmış hayaletler.
-          Sıkışıklığı hızla değil GÖRÜNÜRLÜKLE anlatır: "arkada iki adım daha var" bilgisi,
-          jesti okunamayacak kadar hızlandırmadan verilir. En çok iki tane — üçüncüsü yığını
-          okunmaz bir merdivene çevirirdi. */}
-      {!az && kuyruk.slice(0, 2).map((g, i) => (
-        <span key={g.anahtar} style={{
-          ...etiketTaban,
-          color: PAL.mut2,
-          boxShadow: SH.card,
-          transform: `translate(-50%, ${YER.dur + 8 * (i + 1)}px) scale(${0.95 - i * 0.05})`,
-          opacity: 0.42 - i * 0.18,
-        }}>{g.label}</span>
-      ))}
+export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196, gelis = null, runBase = 0, children = null }) {
+  const kapRef = useRef(null);
+  const cvRef = useRef(null);
+  const probRef = useRef(null);
+  const dogumRef = useRef(new Map());     // adım id → doğum (sn, performance saatine göre)
+  const ilkRef = useRef(true);
+  const durumRef = useRef({ damlalar: [], kosumda, ciz: () => {} });
 
-      {/* SAHNEDEKİ ETİKET — belir · dur · çekil. Yığının üstünde (kuyruktan sonra render). */}
-      {aktif && !az && (
-        <span style={{
-          ...etiketTaban,
-          color: DERIN_OF(aktif.col),
-          boxShadow: SH.pop,
-          transform: `translate(-50%, ${YER[faz]}px) scale(${OLCEK[faz]})`,
-          opacity: OPAK[faz],
-          filter: BULANIK[faz] ? `blur(${BULANIK[faz]}px)` : "none",
-          transition: gecis,
-        }}>{aktif.label}</span>
-      )}
+  // Mürekkep düşüren adımlar — YALNIZ gerçekten iş yapan / hata veren (olgu). Sıra = display sırası.
+  const damlaAdimlari = useMemo(
+    () => display.filter((a) => { const d = adimDurumu(a); return d === "calisti" || d === "hata"; }),
+    [display],
+  );
+
+  useEffect(() => {
+    const simdi = performance.now() / 1000;
+    const dog = dogumRef.current;
+    const kimlikler = new Set(damlaAdimlari.map((a) => a.id));
+    // Yeni koşum (biten sayısı düştü / kimlik kayboldu) → defter sıfırlanır.
+    for (const id of [...dog.keys()]) if (!kimlikler.has(id)) dog.delete(id);
+    damlaAdimlari.forEach((a) => { if (!dog.has(a.id)) dog.set(a.id, ilkRef.current ? simdi - 60 : simdi); });
+    ilkRef.current = false;
+    const kap = kapRef.current;
+    const oran = kap ? Math.max(0.5, kap.clientWidth / Math.max(1, kap.clientHeight)) : 2;
+    durumRef.current.damlalar = damlaAdimlari.slice(-AZAMI_DAMLA).map((a) => {
+      const [x, y] = damlaKonum(a, oran);
+      return { x, y, z: dog.get(a.id), renk: damlaRengi(a), k: damlaBoyu(a) };
+    });
+    durumRef.current.kosumda = kosumda;
+    durumRef.current.ciz();
+  }, [damlaAdimlari, kosumda]);
+
+  useEffect(() => {
+    const cv = cvRef.current, kap = kapRef.current, prob = probRef.current;
+    const durum = durumRef.current;
+    if (!cv || !kap || !prob) return undefined;
+    const az = azHareketMi();
+    const ctx = glKur(cv);
+    let renkler = [], zemin = [1, 1, 1];
+    const renkOku = () => { renkler = RENKLER.map((c) => tokenRgb(prob, c)); zemin = tokenRgb(prob, KECE); };
+    renkOku();
+    let raf = 0, son = 0, gorunur = true;
+    const boyutla = () => {
+      const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+      cv.width = Math.max(1, Math.round(kap.clientWidth * dpr));
+      cv.height = Math.max(1, Math.round(kap.clientHeight * dpr));
+      ctx?.gl.viewport(0, 0, cv.width, cv.height);
+    };
+    const kare = (zamanSn) => {
+      const { damlalar } = durumRef.current;
+      if (!ctx) { yedekCiz(cv, damlalar, renkler, zemin); return; }
+      const { gl, u } = ctx;
+      gl.uniform2f(u.res, cv.width, cv.height);
+      gl.uniform1f(u.t, zamanSn);
+      gl.uniform1i(u.n, damlalar.length);
+      gl.uniform3fv(u.zemin, zemin);
+      u.r.forEach((l, i) => gl.uniform3fv(l, renkler[i]));
+      const D = new Float32Array(AZAMI_DAMLA * 4), K = new Float32Array(AZAMI_DAMLA);
+      damlalar.forEach((d, i) => { D.set([d.x, d.y, d.z, d.renk], i * 4); K[i] = d.k; });
+      gl.uniform4fv(u.d, D); gl.uniform1fv(u.k, K);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    // Oturmuş hâl: tüm damlalar sabit yaşta (reduced-motion / yedek).
+    const statik = () => kare(performance.now() / 1000 + (az ? 600 : 0));
+    const oturdu = () => {
+      const t = performance.now() / 1000;
+      return !durumRef.current.kosumda && durumRef.current.damlalar.every((d) => t - d.z > OTURMA_SN);
+    };
+    const dongu = (ts) => {
+      raf = 0;
+      if (!gorunur || document.hidden) return;
+      if (ts - son >= KARE_MS) { son = ts; kare(ts / 1000); }
+      if (!oturdu()) raf = requestAnimationFrame(dongu);
+    };
+    const baslat = () => { if (az || !ctx) { statik(); return; } if (!raf) raf = requestAnimationFrame(dongu); };
+    durum.ciz = baslat;
+    boyutla(); baslat();
+    const ro = new ResizeObserver(() => { boyutla(); baslat(); if (az || !ctx) statik(); });
+    ro.observe(kap);
+    const io = new IntersectionObserver((g) => { gorunur = g[g.length - 1].isIntersecting; if (gorunur) baslat(); });
+    io.observe(kap);
+    const gor = () => { if (!document.hidden) baslat(); };
+    document.addEventListener("visibilitychange", gor);
+    // Tema değişimi (html[data-theme]) → token renkleri yeniden okunur.
+    const mo = new MutationObserver(() => { renkOku(); statik(); baslat(); });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => {
+      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); mo.disconnect();
+      document.removeEventListener("visibilitychange", gor);
+      // loseContext ÇAĞRILMAZ: StrictMode'un çift effect'inde aynı canvas'ın ikinci
+      // getContext'i kayıp bağlamı döndürür ve sahne boş kalır.
+      durum.ciz = () => {};
+    };
+  }, []);
+
+  // Fiş yalnız koşum sürerken ve keçede henüz mürekkep yokken (ilk paraf öncesi) masadadır.
+  const fisGoster = !!gelis && kosumda && damlaAdimlari.length === 0;
+  const saat = useMemo(() => saatOf(runBase), [runBase]);
+  return (
+    <div ref={kapRef} aria-hidden="true" style={{ position: "relative", width: "100%", height: yukseklik, borderRadius: RAD.ctl, overflow: "hidden", background: KECE }}>
+      <canvas ref={cvRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
+      <span ref={probRef} style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} />
+      <AnimatePresence>
+        {fisGoster && <GelisFisi ad={gelis.ad} meta={gelis.meta} saat={saat} />}
+      </AnimatePresence>
+      {children}
     </div>
   );
 }

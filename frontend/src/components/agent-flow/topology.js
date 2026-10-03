@@ -79,3 +79,19 @@ export function buildFigcaption(statusById = {}) {
   }
   return `${done}/${total} ajan tamamlandı.`;
 }
+
+/* PARAF — havale pusulasında (canlı sahne slip'i) her masanın imza baş harfleri. YALNIZ görsel
+   üst veri: hangi adımın koştuğu/atlandığı bilgisi buradan DEĞİL, akisKatman.adimDurumu'ndan
+   gelir. Bilinmeyen id için etiketten türetilir (parafUret). */
+export const PARAF = {
+  oku: "OK", siniflandir: "SN", cikar: "BÇ", kanit_baglama: "KB", eksik_tespit: "ET",
+  decompose: "ÇA", mevzuat_oner: "MÖ", ozetle: "ÖZ", route_birim: "BY", yazi_taslak: "YT",
+  verify: "DĞ", risk_guard: "RB", arsiv: "AR", sla_triyaj: "SL", denetim_izi: "Dİ",
+  finalize: "BL", clarifier: "NT", onay_kapisi: "OY",
+};
+export function parafUret(id, label = "") {
+  if (PARAF[id]) return PARAF[id];
+  const k = String(label).replace(/[^\p{L}\s-]/gu, " ").split(/[\s-]+/).filter(Boolean);
+  const s = k.length > 1 ? k[0][0] + k[1][0] : (k[0] || id || "?").slice(0, 2);
+  return s.toLocaleUpperCase("tr-TR");
+}

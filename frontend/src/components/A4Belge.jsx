@@ -27,6 +27,8 @@ import {
   olcumleriTopla,
   sayfalaraBol,
 } from "../lib/a4Sayfalama.js";
+import { antetSiniflandir } from "../lib/a4Antet.js";
+import { kagitStilYukle } from "./kagitDoku.js";
 
 const SAYFA_ARASI_PX = 24;
 
@@ -51,7 +53,22 @@ const BELGE_FONT = 'Arial, "Helvetica Neue", Helvetica, sans-serif';
    kâğıt m.7/1 gereği Arial kalır, panel kendi UI fontunu sürdürür. */
 export const BELGE_PUNTO_PT = 11;
 export const BELGE_SATIR = 1.45;
-const BELGE_MURAKKEP = "#111";   // matbaa siyahı — kağıt üstünde UI gri tonları kullanılmaz
+/* Matbaa siyahı — kâğıt üstünde UI gri tonları kullanılmaz. Kâğıt iki temada da açık
+   kaldığı için (kagitDoku.js) mürekkep de kâğıdın kendi token'ından gelir. */
+const BELGE_MURAKKEP = "var(--kd-kagit-murekkep)";
+
+/* Satır rolüne göre dizgi (lib/a4Antet.js sınıflandırır). Gerçek resmî yazı düzeni:
+   antet ortalı (T.C. + idare adı kalın), tarih Sayı hizasında sağda, muhatap ortalı,
+   paragraf başı 1,25 cm içeride, imza bloğu sağ yarıda ortalı. Ölçüm katmanı AYNI stili
+   kullanır — sarma farklı çıkarsa sayfalama kayardı. */
+const ROL_STIL = {
+  antet: { textAlign: "center" },
+  antetKalin: { textAlign: "center", fontWeight: 700 },
+  muhatap: { textAlign: "center" },
+  paragraf: { textIndent: "1.25cm" },
+  imza: { marginLeft: "55%", textAlign: "center" },
+  sayi: { display: "flex", justifyContent: "space-between", gap: "1em" },
+};
 
 const STIL_ID = "ke-a4-stil";
 const STIL = `
@@ -62,7 +79,7 @@ const STIL = `
   .ke-a4-yigin { position: absolute; inset: 0; width: auto !important; height: auto !important;
                  margin: 0 !important; }
   .ke-a4-olcek { transform: none !important; gap: 0 !important; }
-  .ke-a4-sayfa { box-shadow: none !important; border: none !important;
+  .ke-a4-sayfa { box-shadow: none !important; border: none !important; background-image: none !important;
                  break-after: page; page-break-after: always; }
   .ke-a4-sayfa:last-child { break-after: auto; page-break-after: auto; }
 }`;
@@ -88,7 +105,25 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
 
   const satirlar = String(metin).split("\n");
 
-  useEffect(stilYukle, []);
+  useEffect(() => { stilYukle(); kagitStilYukle(); }, []);
+  const roller = antetSiniflandir(satirlar);
+
+  /* Islak mürekkep (yalnız DEĞİŞEN satırlar): tür değişimi / dayanak ekleme gibi bir
+     yeniden üretimde yeni gelen satır tükenmez mavisiyle basılır ve ~900 ms'de mürekkep
+     siyahına kurur — memur neyin değiştiğini aramadan görür. İlk yerleşimde ıslak satır
+     YOK (her seçimde tüm sayfanın yanıp sönmesi dikkat hırsızlığı olurdu). */
+  /* Islak küme metin BAŞINA bir kez hesaplanır ve sonraki render'larda (ölçek/sayfalama
+     state'i) korunur — yoksa ölçüm turunun yeniden render'ı animasyonu yarıda keserdi. */
+  const islakRef = useRef({ metin: null, satirlar: null, islak: new Set() });
+  if (islakRef.current.metin !== metin) {
+    const eski = islakRef.current.satirlar;
+    islakRef.current = {
+      metin,
+      satirlar: new Set(satirlar),
+      islak: eski ? new Set(satirlar.filter((s) => s.trim() && !eski.has(s))) : new Set(),
+    };
+  }
+  const islakMi = (s) => islakRef.current.islak.has(s);
 
   /* Ölçek ölçümü — BOYAMADAN ÖNCE (useLayoutEffect). Karar matematiği `olcekHesapla`da
      (saf, a4Sayfalama.test.js'te birim testli).
@@ -215,6 +250,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
   }, [metin]);
 
   const satirStil = {
+    margin: 0,
     fontFamily: BELGE_FONT,
     fontSize: `${BELGE_PUNTO_PT}pt`,
     lineHeight: BELGE_SATIR,
@@ -230,7 +266,8 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     height: A4_YUK_PX,
     boxSizing: "border-box",
     padding: KENAR_MM * MM,
-    background: "#fff",
+    backgroundColor: "var(--kd-kagit)",
+    backgroundImage: "var(--kd-doku)",
     // Köşe yuvarlaması YOK — gerçek sayfa keskin köşelidir. Kağıt beyazı, "masa" (surf2)
     // tonunun üstünde durur; ince kenar + derin gölge olmadan iki beyaz birbirine karışıyordu.
     border: `1px solid ${PAL.line}`,
@@ -238,6 +275,17 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     boxShadow: SH.kagit,
     overflow: "hidden",
     flexShrink: 0,
+  };
+
+  const satirBas = (i, olcum) => {
+    const rol = roller[i] || { tip: "duz", metin: satirlar[i] };
+    const s = satirlar[i];
+    const islak = !olcum && islakMi(s);
+    const stil = { ...satirStil, ...ROL_STIL[rol.tip], ...(islak ? { animation: `kd-kuru .9s var(--ke-ease-out) ${Math.min(i, 12) * 30}ms both` } : null) };
+    const ic = rol.tip === "sayi"
+      ? (<><span>{rol.metin}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
+      : (rol.tip === "duz" ? (s === "" ? " " : s) : rol.metin);
+    return <div key={islak ? `${i}:${s}` : i} className={islak ? "kd-islak" : undefined} style={stil}>{ic}</div>;
   };
 
   const liste = sayfalar || [[0, satirlar.length]];
@@ -252,7 +300,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
           position: "absolute", visibility: "hidden", pointerEvents: "none",
           left: -99999, top: 0, width: YAZI_ALANI_GEN_PX,
         }}>
-        {satirlar.map((s, i) => <div key={i} style={satirStil}>{s === "" ? " " : s}</div>)}
+        {satirlar.map((_, i) => satirBas(i, true))}
       </div>
 
       {/* Ölçeklenmiş sayfa transform ile küçülür/büyür ama LAYOUT genişliği A4_GEN_PX kalır;
@@ -276,9 +324,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
               style={{ ...sayfaStil, cursor: onAc ? "zoom-in" : "inherit" }}
               title={onAc ? (baslikIpucu || "Büyüt (A4 görünüm)") : (baslikIpucu || undefined)}
               onClick={onAc || undefined}>
-              {satirlar.slice(bas, son).map((s, i) => (
-                <div key={i} style={satirStil}>{s === "" ? " " : s}</div>
-              ))}
+              {satirlar.slice(bas, son).map((_, j) => satirBas(bas + j, false))}
             </div>
           ))}
         </div>

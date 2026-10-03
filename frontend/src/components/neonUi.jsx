@@ -16,11 +16,11 @@ import {
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
 // Gövde + UI fontu: Source Sans 3 (kullanıcı tercihi, 2026-07-17) — latin-ext (ç/ş/ğ/İ tam),
 // app.html'de variable font olarak tek dosya iner. İnmezse Segoe UI (Windows sistem) fallback.
-export const SANS = "'Source Sans 3','Segoe UI',system-ui,sans-serif";
+export const SANS = "'Instrument Sans','Segoe UI',system-ui,sans-serif";
 /* DISPLAY: başlık katmanı da Segoe UI (kullanıcı tercihi, 2026-07-17) — tüm arayüz tek
    ailede. Token korunur (TYPE.h1/disp fontFamily: DISPLAY) ki ileride ayrı bir başlık
    fontu istenirse tek yerden değişsin; şu an değeri SANS ile birebir aynıdır. */
-export const DISPLAY = "'Segoe UI',system-ui,sans-serif";
+export const DISPLAY = "'Archivo','Segoe UI',system-ui,sans-serif";
 /* V (Görev 2 semantiği): lavanta → MÜHÜR moru (2026-07 revizyonu). Pastel "AI moru"ndan
    çıkış; ıstampa/mühür mürekkebi — resmî evrak dünyasının kendi rengi. Radix ruby/plum
    koyuluğunda; ivory zeminde dolgu 6.3:1, DERIN.V metin 8.3:1 (AA). */
@@ -116,17 +116,17 @@ export const ALFA = (c) => `color-mix(in srgb, ${c} var(--ke-alfa, 8%), transpar
 export const THEME_CSS = `
 :root{
   color-scheme:light;
-  --ke-t:#2f8fa6; --ke-v:#8e3d66; --ke-r:#e0563c;
-  --ke-bg:#f7f3ee; --ke-bg2:#efe6da; --ke-surf:#ffffff; --ke-surf2:#fdfbf7; --ke-surf-hi:rgba(35,26,18,.05);
-  --ke-line:rgba(35,26,18,.12); --ke-line-hi:rgba(35,26,18,.22);
-  --ke-ink:#161616; --ke-ink2:#3a3229; --ke-mut:#6b6255; --ke-mut2:#57503f; --ke-mut3:#7a7060;
-  --ke-hov:rgba(35,26,18,.04); --ke-press:rgba(35,26,18,.07);
-  --ke-input-line:rgba(35,26,18,.35); --ke-on-accent:#fbf7f0; --ke-ink-surf:#2a251e; --ke-scrim:rgba(35,26,18,.35);
+  --ke-t:#2b4fd6; --ke-v:#6b3ea6; --ke-r:#d93a2b;
+  --ke-bg:#eceee9; --ke-bg2:#e2e5de; --ke-surf:#ffffff; --ke-surf2:#f7f8f4; --ke-surf-hi:rgba(17,22,40,.05);
+  --ke-line:rgba(17,22,40,.11); --ke-line-hi:rgba(17,22,40,.22);
+  --ke-ink:#10131d; --ke-ink2:#2c3140; --ke-mut:#5c6272; --ke-mut2:#474d5d; --ke-mut3:#606678;
+  --ke-hov:rgba(17,22,40,.04); --ke-press:rgba(17,22,40,.075);
+  --ke-input-line:rgba(17,22,40,.47); --ke-on-accent:#ffffff; --ke-ink-surf:#141827; --ke-scrim:rgba(12,15,28,.40);
   /* scrim-koyu: A4/kurul modallarının "her iki temada koyu" karartısı (bkz. --ke-on-ink
      gerekçesi) — dark'ta YENİDEN TANIMLANMAZ. on-ink-2: bu karartı üstündeki ikincil metin. */
-  --ke-scrim-koyu:rgba(22,22,22,.58); --ke-on-ink-2:rgba(251,247,240,.72);
+  --ke-scrim-koyu:rgba(10,12,22,.82); --ke-on-ink-2:rgba(238,241,250,.74);
   /* cam: yarı saydam yüzey — opak beyaz yerine zeminin sıcaklığını içeri alan kart (bkz. CAM). */
-  --ke-cam:rgba(255,255,255,.55); --ke-cam-line:rgba(35,26,18,.09);
+  --ke-cam:rgba(255,255,255,.62); --ke-cam-line:rgba(17,22,40,.09);
   /* iris: sıralı pastel rampa (bkz. IRIS). Landing hero'sunun gökyüzünden türer:
      gök mavisi → lavanta → pudra gülü. ÖLÇÜLDÜ — bağıl parlaklık 0.560 / 0.323 / 0.178,
      komşu adım kontrastı 1.64 ve 1.64 (eşit adım): sıralama gri tonlamada da okunur.
@@ -136,22 +136,21 @@ export const THEME_CSS = `
   --ke-iris-1:#93cfdd; --ke-iris-1b:#cdeef4; --ke-iris-1k:#3d8ba1;
   --ke-iris-2:#a68fd0; --ke-iris-2b:#d5c9ec; --ke-iris-2k:#6b52a0;
   --ke-iris-3:#b25878; --ke-iris-3b:#e0a0b4; --ke-iris-3k:#8f3f60;
-  /* --ke-on-ink: dark modda YENİDEN TANIMLANMAZ — kasıtlı. inkSurf (toast) ve modal karartı
-     (BelgeModal scrim'i) HER İKİ modda da hep koyu kalır; üstündeki metin de hep açık kalmalı.
+  /* --ke-on-ink:#f3f5fb; üstündeki metin de hep açık kalmalı.
      --ke-on-accent bunun için YANLIŞ token'dı: DERIN.*-dolgulu buton metni için tema-tersine
      akar (koyu modda karartı+onAccent ikisi de koyulaşıp metin kayboluyordu — 2026-07 bulgusu). */
   --ke-on-ink:#fbf7f0;
   /* on-ink-hata: HEP KOYU katman (scrim/inkSurf) üstünde hata metni — on-ink gibi iki modda
      tek değer. Ham BANT.kirmizi scrim üstünde ~1.4:1'e düşüyordu (2026-08 bulgusu); bu açık
      mercan koyu scrimde her iki temada ~7:1 verir. */
-  --ke-on-ink-hata:#f0917e;
+  --ke-on-ink-hata:#ff9d8f;
   /* alfa: ALFA() tint oranı — koyu modda %8 siyaha kompozit olunca görünmüyordu, tek token'la
      moda göre ayarlanır (çağıran 91 yer değişmeden). */
   --ke-alfa:8%;
   /* surf-pop: havada duran katman yüzeyi — açık modda surf ile bit-aynı; koyu modda bir
      basamak açık (siyahta gölge yerine ışıkla yükseklik). */
   --ke-surf-pop:#ffffff;
-  --ke-shadow-rgb:35,26,18;
+  --ke-shadow-rgb:16,20,38;
   /* Gölge token'ları var() üzerinden: açık mod değerleri eski SH dizgeleriyle BİT-AYNI;
      koyu mod kendi zanaatını taşır (iç üst-kenar ışığı + gerçek karartı — bkz. dark blok). */
   --ke-sh-card:0 1px 2px rgba(var(--ke-shadow-rgb),.05);
@@ -164,9 +163,9 @@ export const THEME_CSS = `
      spring: geri tepmeli (back-out) — yalnız SAHNE tamamlanma/ateşleme vuruşları. */
   --ke-ease-out:cubic-bezier(0.23,1,0.32,1); --ke-ease-in-out:cubic-bezier(0.77,0,0.175,1);
   --ke-ease-spring:cubic-bezier(0.34,1.56,0.64,1);
-  --ke-bant-yesil:#2f9e6e; --ke-bant-sari:#c98a1f; --ke-bant-kirmizi:#c9432f;
-  --ke-derin-t:#1f6d82; --ke-derin-th:#1a5e71; --ke-derin-v:#74304f; --ke-derin-r:#a23425;
-  --ke-derin-yesil:#1f7a52; --ke-derin-sari:#8a5a10; --ke-derin-kirmizi:#a23425;
+  --ke-bant-yesil:#1f8a5b; --ke-bant-sari:#c4841a; --ke-bant-kirmizi:#d23a2e;
+  --ke-derin-t:#1f3fb4; --ke-derin-th:#18329a; --ke-derin-v:#56308a; --ke-derin-r:#a8261b;
+  --ke-derin-yesil:#17704a; --ke-derin-sari:#87570d; --ke-derin-kirmizi:#a8261b;
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -180,15 +179,15 @@ export const THEME_CSS = `
         Ray (sidebar) zeminden koyu → içerik öne çıkar; havada duran katman en açık.
      3) Yükseklik gölgeyle değil IŞIKLA: sh-* iç üst-kenar parlaması + gerçek karartı taşır.
      64 kontrast çifti ölçüldü (scratchpad/kontrast.mjs): tüm metin ≥4.5, grafik ≥3.0. */
-  --ke-t:#4db6cf; --ke-v:#c97fa3; --ke-r:#ff7a5c;
-  --ke-bg:#0b0a09; --ke-bg2:#060505; --ke-surf:#1a1815; --ke-surf2:#121110; --ke-surf-hi:rgba(255,255,255,.07);
+  --ke-t:#7491ff; --ke-v:#b98de6; --ke-r:#ff6a5a;
+  --ke-bg:#0c0e14; --ke-bg2:#08090e; --ke-surf:#161924; --ke-surf2:#11131b; --ke-surf-hi:rgba(255,255,255,.07);
   --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.22);
-  --ke-ink:#f4efe6; --ke-ink2:#d8d1c2; --ke-mut:#a79d8b; --ke-mut2:#c3b9a4; --ke-mut3:#948a77;
+  --ke-ink:#eef0f7; --ke-ink2:#cfd3df; --ke-mut:#9aa0b2; --ke-mut2:#b8bdcb; --ke-mut3:#8c92a5;
   --ke-hov:rgba(255,255,255,.05); --ke-press:rgba(255,255,255,.09);
-  --ke-input-line:rgba(255,255,255,.34); --ke-on-accent:#0b0a09; --ke-ink-surf:#1c1811; --ke-scrim:rgba(0,0,0,.68);
-  --ke-cam:rgba(30,27,24,.55); --ke-cam-line:rgba(255,255,255,.10);
+  --ke-input-line:rgba(255,255,255,.34); --ke-on-accent:#0b0d16; --ke-ink-surf:#1a1e2c; --ke-scrim:rgba(0,0,0,.66);
+  --ke-cam:rgba(24,27,38,.6); --ke-cam-line:rgba(255,255,255,.10);
   --ke-alfa:14%;
-  --ke-surf-pop:#252220;
+  --ke-surf-pop:#1f2331;
   /* Koyu modda açıklık SIRASI aynı; rampa bir tık yukarı — en koyu adım bile yeni surf'ten
      ≥3:1 ayrışır (kenarlar 8.3–12.5:1, yeniden ölçüldü). Kenarlar AÇIK uçtur — koyu zeminde
      koyu kenar görünmez. */
@@ -203,29 +202,66 @@ export const THEME_CSS = `
   --ke-sh-pop:inset 0 1px 0 rgba(255,255,255,.06), 0 8px 24px -6px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.35);
   --ke-sh-modal:inset 0 1px 0 rgba(255,255,255,.07), 0 24px 60px -16px rgba(0,0,0,.65), 0 4px 12px rgba(0,0,0,.4);
   --ke-sh-kagit:inset 0 1px 0 rgba(255,255,255,.07), 0 12px 28px -8px rgba(0,0,0,.6), 0 1px 2px rgba(0,0,0,.35);
-  --ke-bant-yesil:#4cbf8a; --ke-bant-sari:#e0a83f; --ke-bant-kirmizi:#e2604a;
-  --ke-derin-t:#7ecbdd; --ke-derin-th:#92d6e6; --ke-derin-v:#e2a8c4; --ke-derin-r:#ffa088;
-  --ke-derin-yesil:#7ad9ae; --ke-derin-sari:#f0c168; --ke-derin-kirmizi:#f0917e;
+  --ke-bant-yesil:#45c08a; --ke-bant-sari:#e2a940; --ke-bant-kirmizi:#ff6a5a;
+  --ke-derin-t:#a3b5ff; --ke-derin-th:#b8c6ff; --ke-derin-v:#d3b4f2; --ke-derin-r:#ff9d8f;
+  --ke-derin-yesil:#7ad9ae; --ke-derin-sari:#f0c168; --ke-derin-kirmizi:#ff9d8f;
 }
+/* RAY KAPSAMI (Antet & Damga, 2026-10) — kenar çubuğu "dosya cildi": iki temada da koyu
+   lacivert bez. Token'lar alt ağaçta YENİDEN tanımlanır → ray içindeki her atom (hesap
+   menüsü tetikleyicisi, yükle düğmesi, rozetler) kodu değişmeden koyu yüzeye uyar.
+   --ke-sayfa*: :root'ta HESAPLANIP miras alınır (var() tanım yerinde çözülür) → ray içinden
+   sayfanın kendi zemini/mürekkebi okunabilir: aktif sekme sayfaya "bağlanan" dosya sırtıdır. */
+:root{ --ke-sayfa:var(--ke-bg); --ke-sayfa-ink:var(--ke-ink); --ke-sayfa-t:var(--ke-derin-t); --ke-sayfa-mut:var(--ke-mut2); }
+[data-ray]{
+  color-scheme:dark;
+  --ke-bg:#141a31; --ke-bg2:#141a31; --ke-surf:#1c2340; --ke-surf2:#182039; --ke-surf-hi:rgba(255,255,255,.07);
+  --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.20);
+  --ke-ink:#f1f3fa; --ke-ink2:#d6dae8; --ke-mut:#9ea6c4; --ke-mut2:#b9c0da; --ke-mut3:#8890b0;
+  --ke-hov:rgba(255,255,255,.06); --ke-press:rgba(255,255,255,.10); --ke-input-line:rgba(255,255,255,.26);
+  --ke-t:#8aa2ff; --ke-derin-t:#aebdff; --ke-derin-th:#c3ceff; --ke-on-accent:#0d1124;
+  --ke-derin-sari:#f0c168; --ke-alfa:14%;
+}
+/* Koyu temada ray ≈ sayfa zemini (ölçüldü: 1,04:1) → dosya sırtı ve ray kenarı kayboluyordu.
+   Lacivert hue + cilt bezi dokusu + sağ kenar dikiş çizgisi (--ke-ray-kenar) üç ayrı sinyal;
+   açıklık farkına yaslanmaz (siyah dibinde açıklık farkı göze yetmez). */
+:root[data-theme="dark"] [data-ray]{ --ke-bg:#080a15; --ke-bg2:#080a15; --ke-surf:#141827; --ke-surf2:#0f121e; --ke-ray-kenar:rgba(255,255,255,.08); }
+/* Cilt bezi: çok ince atkı/çözgü örgüsü — rayın "lacivert bez kapak" malzemesi. Statik,
+   tek katman, metnin altında (ray zemininin background-image'ı). */
+[data-ray]{ --ke-ray-doku:repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px); }
 /* Seçim vurgusu yalnız koyu modda tanımlanır (açık mod bit-aynı kalsın): tarayıcı
    varsayılan mavisi mürekkep paletinde yabancı duruyordu — marka gök mavisi tintine çekilir. */
 :root[data-theme="dark"] ::selection{ background:color-mix(in srgb, var(--ke-t) 32%, transparent); }
+/* ——— Masa (Antet & Damga, 2026-10) ——————————————————————————————————————
+   Zemin "arşiv kâğıdı": body'nin ARKASINDA çok hafif lif/gren dokusu (SVG gürültü, sabit).
+   z-index:-1 → beyaz evrak yüzeyleri onu örter; doku yalnız masada görünür. Metnin üstüne
+   hiç binmez. Koyu temada "screen" ile açık lif — gece mesaisi masası. */
+html{background:var(--ke-bg)}
+body{position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.55;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08  0 0 0 0 .09  0 0 0 0 .16  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");}
+:root[data-theme="dark"] body::before{opacity:.5;filter:invert(1)}
+::selection{background:color-mix(in srgb, var(--ke-t) 22%, transparent)}
+/* İnce kaydırma çubuğu — mürekkep tonunda, zemin şeffaf. */
+*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb, var(--ke-ink) 22%, transparent) transparent}
+
 `;
 
 /* Tip ölçeği — bu tablo dışında fontSize yazılmaz. Sayısal kolonlarda TNUM eklenir. */
 export const TYPE = {
-  meta: { fontFamily: SANS, fontSize: 12, lineHeight: "16px", letterSpacing: ".32px" },
-  data: { fontFamily: SANS, fontSize: 13, lineHeight: "18px", letterSpacing: ".16px" },
+  meta: { fontFamily: SANS, fontSize: 12, lineHeight: "16px", letterSpacing: ".2px" },
+  data: { fontFamily: SANS, fontSize: 13, lineHeight: "18px", letterSpacing: ".1px" },
   ui: { fontFamily: SANS, fontSize: 14, lineHeight: "20px" },
   read: { fontFamily: SANS, fontSize: 16, lineHeight: "24px" },
-  h2: { fontFamily: SANS, fontSize: 20, lineHeight: "26px", fontWeight: 600, letterSpacing: "-.01em" },
-  num: { fontFamily: SANS, fontSize: 24, lineHeight: "28px", fontWeight: 600, letterSpacing: "-.015em", fontVariantNumeric: "tabular-nums" },
-  /* h1/disp DISPLAY ailesinde (Bricolage Grotesque): görünüm başlıkları + hüküm liderleri
-     karakter kazanır; UI/gövde Plex kalır. Bricolage geniş oturur → tracking hafif sıkı. */
-  h1: { fontFamily: DISPLAY, fontSize: 28, lineHeight: "34px", fontWeight: 600, letterSpacing: "-.02em" },
-  /* disp: tam-boy hüküm kartının lider olguları (ilk görülen ekran, 2026-07-15) — h1'in
-     üstü; YALNIZ hüküm + 2 karar-kritik değer (tür, birim). Başlık/metin için kullanılmaz. */
-  disp: { fontFamily: DISPLAY, fontSize: 36, lineHeight: "42px", fontWeight: 600, letterSpacing: "-.025em", fontVariantNumeric: "tabular-nums" },
+  /* "Antet & Damga" (2026-10): başlık katmanı Archivo'nun GENİŞLİK ekseninde açılır —
+     resmî tabela/antet harfi. Gövde Instrument Sans kalır; display yalnız başlık + rakam. */
+  h2: { fontFamily: DISPLAY, fontSize: 20, lineHeight: "26px", fontWeight: 700, fontStretch: "108%", letterSpacing: "-.01em" },
+  num: { fontFamily: DISPLAY, fontSize: 26, lineHeight: "30px", fontWeight: 700, fontStretch: "112%", letterSpacing: "-.02em", fontVariantNumeric: "tabular-nums" },
+  h1: { fontFamily: DISPLAY, fontSize: 38, lineHeight: "42px", fontWeight: 800, fontStretch: "118%", letterSpacing: "-.03em" },
+  disp: { fontFamily: DISPLAY, fontSize: 44, lineHeight: "48px", fontWeight: 800, fontStretch: "115%", letterSpacing: "-.03em", fontVariantNumeric: "tabular-nums" },
+  /* antet: başlık üstündeki resmî künye satırı (T.C. · birim · tarih) — makine verisi değil
+     ama antet dilinin parçası; mono + açık izleme. damga: lastik mühür harfi. */
+  antet: { fontFamily: MONO, fontSize: 11, lineHeight: "14px", letterSpacing: ".08em", fontWeight: 500 },
+  damga: { fontFamily: DISPLAY, fontSize: 11, lineHeight: "12px", letterSpacing: ".1em", fontWeight: 800, fontStretch: "125%", textTransform: "uppercase" },
 };
 export const TNUM = { fontVariantNumeric: "tabular-nums" };
 /* Güçlü easing token'ları (emil-design-eng) — yerleşik ease-* zayıftır, "kasıtlı" hissi vermez.
@@ -237,7 +273,7 @@ export const EASE = { out: "var(--ke-ease-out)", inOut: "var(--ke-ease-in-out)",
    (tek kaynak orada); yalnız motion'ın transition.ease'i için sayısala çevrilir. */
 export const EASE_BEZIER = { out: [0.23, 1, 0.32, 1], inOut: [0.77, 0, 0.175, 1], spring: [0.34, 1.56, 0.64, 1] };
 /* Radius: chip=durum çipi · ctl=buton/input · card=kart/panel · pop=dropdown/modal/toast. */
-export const RAD = { chip: 4, ctl: 6, card: 8, pop: 12, dot: "50%" };
+export const RAD = { chip: 5, ctl: 8, card: 12, pop: 14, dot: "50%" };
 /* Boşluk ölçeği — serbest değer yazılmaz. */
 export const SP = { xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32, xxxl: 48 };
 /* Gölge yalnız havada duran katman: card=en fazla bu (opsiyonel) · pop=dropdown/tooltip · modal=modal/toast.
@@ -290,6 +326,10 @@ export const NEON_KEYFRAMES = `
 /* nu-sol: scrim/perde girişi — YALNIZ opacity. Karartma perdesi mekânda hareket ETMEZ
    (Apple: materyal katman solar, içerik hareket eder) — nu-rise scrim'e verilmez. */
 @keyframes nu-sol{from{opacity:0}to{opacity:1}}
+/* nu-sirt: kenar çubuğu dosya sırtının girişi — soldan sağa açılır; son kare her zaman tam sırt. */
+@keyframes nu-sirt{from{clip-path:inset(0 100% 0 0 round 12px 0 0 12px)}to{clip-path:inset(-12px -1px -12px 0)}}
+/* nu-damga: lastik mührün kâğıda inişi — büyükten, saydamdan; hafif ezilip yerine oturur. */
+@keyframes nu-damga{0%{opacity:0;transform:rotate(var(--egim)) scale(1.9)}55%{opacity:1;transform:rotate(var(--egim)) scale(.94)}100%{opacity:1;transform:rotate(var(--egim)) scale(1)}}
 @keyframes nu-iz{from{transform:translateY(-22px)}to{transform:translateY(100%)}}
 @keyframes nu-halka{from{transform:scale(.55);opacity:.65}to{transform:scale(2.2);opacity:0}}
 /* nu-alarm — çalan çalar saat: hızlı sağa-sola çalkalanma salvosu + duraklama.
@@ -341,6 +381,17 @@ export const NEON_KEYFRAMES = `
    disk kendisini açan yuvarlak butondan büyür. scale(0)'dan DEĞİL .94'ten: hiçlikten belirmez. */
 @keyframes ke-disk-gir{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
+/* Antet görünümler arasında YOLCULUK eder (benchmark #5): başlık eski konumundan yenisine
+   morflanır (tarayıcının grup animasyonu), içerik eski sayfa hızla solar, yenisi kâğıt gibi
+   aşağıdan yerine oturur. Yalnız transform/opacity. Reduced-motion'da geçiş hiç başlamaz
+   (DashboardApp.gecisle). */
+::view-transition-group(ke-antet-baslik){animation-duration:.34s;animation-timing-function:cubic-bezier(.23,1,.32,1)}
+::view-transition-old(ke-antet-baslik),::view-transition-new(ke-antet-baslik){height:100%;object-fit:none;object-position:left center}
+::view-transition-old(ke-icerik){animation:ke-vt-cik .14s ease-in both}
+::view-transition-new(ke-icerik){animation:ke-vt-gir .38s cubic-bezier(.23,1,.32,1) both}
+::view-transition-group(ke-icerik){animation:none}
+@keyframes ke-vt-cik{to{opacity:0;transform:translateY(-6px)}}
+@keyframes ke-vt-gir{from{opacity:0;transform:translateY(14px)}}
 /* Press feedback (emil-design-eng): tıklanabilir öğe basılınca hafif scale(.97) — arayüz
    kullanıcıyı "duyuyor" hissi. Opt-in (yalnız data-press taşıyanlar); :active durum stili
    olduğundan reduced-motion'da anında (animasyonsuz) uygulanır — hareket değil geri bildirimdir. */
@@ -419,36 +470,74 @@ button,[role="button"],a,summary,input,select,textarea,label[for]{touch-action:m
    düğmesinin son satırı örtmesini de engeller). PENCEREYE KİLİTLİ düzenlerde ise ölü alandır:
    sütun yüksekliği "pencere − üst boşluk − alt dolgu" olarak ölçüldüğünden o 96px doğrudan
    içerikten kısılır. Bu yüzden opsiyonel; yalnız sayfanın kaydırılmadığı düzenler kısar. */
-export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = false, children }) {
+/* Bugünün resmî tarih biçimi (gg.aa.yyyy) — antet satırı. */
+const antetTarih = () => {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+};
+
+/* Görünüm kabuğu — "Antet" başlığı (2026-10, Antet & Damga teması).
+   Resmî yazının üst bloğu gibi kurulur: mono künye satırı (T.C. · birim · tarih) → geniş
+   Archivo başlık (+ isteğe bağlı Damga) → alt başlık → ÇİFT ANTET ÇİZGİSİ (kalın + ince;
+   resmî form/antet çizgisinin kendisi). Süs değil: görünümün bir "evrak" olduğunu söyler.
+
+   altDolgu: kaydırılan görünümlerde nefes payı (yüzen sohbet düğmesi son satırı örtmesin).
+   ustSik: PENCEREYE KİLİTLİ görünümler (Taslaklar) — künye satırı düşer, başlık küçülür;
+   kilitli düzende her piksel A4 boyutuna gider. damga: { metin, ton } — başlığın yanında
+   basılan lastik mühür (görünümün en önemli tek olgusu: "9 gecikmiş", "15 evrak"). */
+export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = false, damga, kunye = "Çalışma alanı", children }) {
   return (
-    // Yatay padding responsive: 390px telefonda sabit 32+32=64px, içeriğe kalan genişliğin
-    // %16'sını yiyip satırları sıfır genişliğe eziyordu (ölçüm: Panel 441px/390px taşma).
-    // clamp ile dar ekranda 16px'e iner; ≥800px'te eski 32px değeri BİT-AYNI kalır.
-    //
-    // ustSik: PENCEREYE KİLİTLİ görünümlerde üst boşluğu kısar (24→16 dolgu, başlık altı
-    // SP.xl→SP.l). Kaydırılan görünümlerde bu boşluk nefes payıdır; kilitli düzende ise
-    // doğrudan içerikten çalınan yerdir — Taslaklar'da her piksel A4'ün boyutuna gider
-    // (A4 genişliği = sütun yüksekliği × 0,707). Varsayılan false → diğer görünümler BİT-AYNI.
-    <section aria-labelledby={id} style={{ position: "relative", padding: `${ustSik ? 16 : 24}px clamp(16px, 4vw, 32px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
-      {/* ATMOSFER KALDIRILDI (2026-08-12, kullanıcı kararı): burada `MeshZemin` vardı —
-          TÜM görünümlerin arkasına düşük yoğunluklu gök mavisi/mor radyal lekeler koyuyordu.
-          Zemin artık düz `PAL.bg`. Aşağıdaki zIndex:1'ler kalıyor; görünümlerin kendi
-          konumlanan katmanları (ParlaKenar vb.) bu istifleme sırasına dayanıyor. */}
-      <header style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", marginBottom: ustSik ? SP.l : SP.xl }}>
-        <div>
-          {/* 2026-07-25: h2(20) → h1(28). TYPE.h1 zaten "görünüm başlıkları" için tanımlıydı
-              ama ViewWrap h2 kullanıyordu — token'ın kendi tarifine dönüldü. TÜM görünümleri
-              etkiler (tek başlık bileşeni); sayfadan sayfaya farklı başlık boyu daha kötü. */}
-          <h2 id={id} style={{ margin: 0, ...TYPE.h1, color: PAL.ink }}>{title}</h2>
-          {sub && <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.read, color: PAL.mut2 }}>{sub}</p>}
+    <section aria-labelledby={id} style={{ position: "relative", padding: `${ustSik ? 16 : 28}px clamp(16px, 4vw, 40px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
+      <header style={{ position: "relative", zIndex: 1, marginBottom: ustSik ? SP.l : SP.xl + 4, animation: "nu-rise .32s var(--ke-ease-out) both" }}>
+        {!ustSik && (
+          <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, minWidth: 0 }}>
+            <span style={{ whiteSpace: "nowrap" }}>T.C. · KAMU-EVRAK</span>
+            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textTransform: "uppercase" }}>{kunye}</span>
+            <span style={{ flex: 1, height: 1, background: PAL.line, minWidth: 16 }} />
+            <span style={{ whiteSpace: "nowrap", ...TNUM }}>{antetTarih()}</span>
+          </div>
+        )}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap" }}>
+              <h2 id={id} style={{ margin: 0, viewTransitionName: "ke-antet-baslik", ...TYPE.h1, ...(ustSik ? { fontSize: 30, lineHeight: "34px" } : null), color: PAL.ink, overflowWrap: "anywhere" }}>{title}</h2>
+              {damga && <Damga ton={damga.ton} egim={damga.egim ?? -4}>{damga.metin}</Damga>}
+            </div>
+            {sub && <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.read, color: PAL.mut2, maxWidth: 760 }}>{sub}</p>}
+          </div>
+          {/* minWidth:0 — <select>'li araç çubuğu telefonda kabından taşmasın (2026-08-12 ölçümü). */}
+          {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap", minWidth: 0, maxWidth: "100%" }}>{actions}</div>}
         </div>
-        {/* minWidth:0 — esnek öğenin otomatik asgari boyutu içeriğinin min-content'idir; araç
-            çubuğundaki <select>'ler en uzun seçeneği kadar geniş olmak istediğinden bu kutu
-            telefonda kabından taşıyordu (ölçüldü 2026-08-12: 320px'te Taslaklar 65px kaydı). */}
-        {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap", minWidth: 0, maxWidth: "100%" }}>{actions}</div>}
+        <div aria-hidden="true" style={{ marginTop: ustSik ? SP.m : SP.l, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: .9 }} />
       </header>
-      <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+      <div style={{ position: "relative", zIndex: 1, viewTransitionName: "ke-icerik" }}>{children}</div>
     </section>
+  );
+}
+
+/* Damga — lastik mühür (Antet & Damga temasının imzası). Resmî evrak dünyasında durum
+   damgayla söylenir: ACELE, GİZLİ, ASLI GİBİDİR, GÖNDERİLDİ. Çift çerçeve (2px kenar +
+   ofsetli 1px outline) + Archivo'nun en geniş kesimi + hafif eğim + mürekkep dokusu
+   (SVG gürültü maskesi — yer yer açılan mürekkep). Giriş: tek seferlik "basma" vuruşu.
+   YALNIZ görünümün en önemli tek olgusunda kullanılır — her çipe değil (dikkat bütçesi). */
+const DAMGA_DOKU = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 2.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+export function Damga({ children, ton = R, egim = -4, kucuk = false, animasyon = true, style }) {
+  const renk = DERIN_OF(ton);
+  return (
+    <span style={{
+      "--egim": `${egim}deg`,
+      display: "inline-flex", alignItems: "center", gap: 6, flexShrink: 0, whiteSpace: "nowrap",
+      ...TYPE.damga, fontSize: kucuk ? 10 : 12, lineHeight: kucuk ? "12px" : "14px",
+      color: renk, padding: kucuk ? "3px 7px" : "5px 10px",
+      border: `2px solid ${renk}`, borderRadius: RAD.chip + 1,
+      outline: `1px solid ${renk}`, outlineOffset: 2,
+      transform: `rotate(${egim}deg)`,
+      WebkitMaskImage: DAMGA_DOKU, maskImage: DAMGA_DOKU, WebkitMaskSize: "160px 60px", maskSize: "160px 60px",
+      animation: animasyon ? "nu-damga .5s var(--ke-ease-out) .12s both" : "none",
+      ...style,
+    }}>
+      {children}
+    </span>
   );
 }
 
@@ -467,13 +556,13 @@ export function NeonCard({ title, tag, tagColor, accent = T, icon, children, ful
   // doldurduğunda (stretch yoksa) hiçbir görsel farkı yoktur.
   return (
     <section
-      style={{ position: "relative", isolation: "isolate", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l, boxShadow: SH.card, ...(bodyCenter ? { display: "flex", flexDirection: "column" } : null), ...style }}>
+      style={{ position: "relative", isolation: "isolate", gridColumn: full ? "1 / -1" : "auto", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: SP.l + 4, boxShadow: SH.card, ...(bodyCenter ? { display: "flex", flexDirection: "column" } : null), ...style }}>
       {/* Başlık ve gövde zIndex 1 taşır: kart içinde konumlanan dekor katmanlarının
           (ParlaKenar) ÜSTÜNDE kalmalılar. */}
       {title && (
         <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m, flexShrink: 0 }}>
           {icon && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(accent) }}>{icon}</span>}
-          <h3 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{title}</h3>
+          <h3 style={{ margin: 0, fontFamily: DISPLAY, fontSize: 15, lineHeight: "20px", fontWeight: 700, fontStretch: "106%", letterSpacing: "-.005em", color: PAL.ink }}>{title}</h3>
           {tag && <span style={{ marginLeft: "auto", ...TYPE.meta, color: tagColor ? DERIN_OF(tagColor) : PAL.mut, ...TNUM }}>{tag}</span>}
         </div>
       )}
@@ -523,16 +612,23 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
   );
 }
 
-/* Boş durum — kutusuz soluk ikon + net yönlendirme metni + aksiyon. */
-export function EmptyState({ icon, title, sub, actions }) {
+/* Boş durum — "boş sicil sayfası": soluk ikon + KAYIT YOK damgası + net yönlendirme + aksiyon.
+   damga=false ile damgasız (hata/yükleme gibi "boş" olmayan durumlarda). */
+export function EmptyState({ icon, title, sub, actions, damga = "Kayıt yok" }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.m, padding: "56px 20px", textAlign: "center", minHeight: 320 }}>
-      {icon && React.isValidElement(icon) && (
-        <span aria-hidden="true" style={{ display: "flex", color: PAL.mut }}>{React.cloneElement(icon, { width: 24, height: 24 })}</span>
-      )}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.l, padding: "64px 20px", textAlign: "center", minHeight: 340 }}>
+      <div style={{ position: "relative", display: "grid", placeItems: "center", width: 88, height: 104, borderRadius: RAD.ctl, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card }}>
+        <span aria-hidden="true" style={{ position: "absolute", left: 14, right: 14, top: 18, display: "grid", gap: 7 }}>
+          {[1, .7, .85, .5].map((w, i) => <span key={i} style={{ height: 3, width: `${w * 100}%`, borderRadius: 2, background: PAL.press }} />)}
+        </span>
+        {icon && React.isValidElement(icon) && (
+          <span aria-hidden="true" style={{ position: "absolute", bottom: 14, left: 14, display: "flex", color: PAL.mut3 }}>{React.cloneElement(icon, { width: 18, height: 18 })}</span>
+        )}
+        {damga && <Damga ton={V} egim={-9} kucuk style={{ position: "absolute", right: -26, bottom: 22, background: PAL.surf }}>{damga}</Damga>}
+      </div>
       <div>
-        <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2 }}>{title}</div>
-        {sub && <p style={{ margin: "6px 0 0", ...TYPE.data, color: PAL.mut2, maxWidth: 420 }}>{sub}</p>}
+        <div style={{ ...TYPE.h2, fontSize: 18, color: PAL.ink }}>{title}</div>
+        {sub && <p style={{ margin: "8px auto 0", ...TYPE.ui, color: PAL.mut2, maxWidth: 440 }}>{sub}</p>}
       </div>
       {actions && <div style={{ display: "flex", gap: SP.m, marginTop: SP.xs, flexWrap: "wrap", justifyContent: "center" }}>{actions}</div>}
     </div>

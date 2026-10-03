@@ -2017,3 +2017,25 @@ a.rc-mev-baslik:hover { color: var(--accent); text-decoration: underline; }
 @media (max-width: 360px) {
   .ke-ph-step-lbl { white-space: normal; }
 }
+
+/* ——— Antet & Damga köprüsü (2026-10) ————————————————————————————————————
+   Legacy rc-* / agw-* yardımcıları kendi değişkenlerini okur. Hepsi yeni tema token'larına
+   (--ke-*, neonUi THEME_CSS) bağlanır → iki render yolu tek paletten boyanır, koyu tema
+   otomatik izler. Seçici iki temayı birden kapsar ki yukarıdaki dark bloğunu ezsin. */
+:root, :root[data-theme="dark"] {
+  --bg: var(--ke-bg); --bg-2: var(--ke-bg2);
+  --surface: var(--ke-surf); --surface-2: var(--ke-surf2); --surface-3: var(--ke-bg2);
+  --ink: var(--ke-ink); --ink-2: var(--ke-ink2); --muted: var(--ke-mut);
+  --line: var(--ke-line); --line-strong: var(--ke-line-hi);
+  --brand: var(--ke-derin-t); --brand-2: var(--ke-t);
+  --accent: var(--ke-t); --accent-hover: var(--ke-derin-th);
+  --accent-soft: color-mix(in srgb, var(--ke-t) 12%, var(--ke-surf)); --accent-ink: var(--ke-derin-t);
+  --g1: var(--ke-t); --g1-soft: color-mix(in srgb, var(--ke-t) 12%, var(--ke-surf)); --g1-ink: var(--ke-derin-t);
+  --g2: var(--ke-v); --g2-soft: color-mix(in srgb, var(--ke-v) 12%, var(--ke-surf)); --g2-ink: var(--ke-derin-v);
+  --ok: var(--ke-bant-yesil); --ok-soft: color-mix(in srgb, var(--ke-bant-yesil) 12%, var(--ke-surf)); --ok-ink: var(--ke-derin-yesil);
+  --warn: var(--ke-bant-sari); --warn-soft: color-mix(in srgb, var(--ke-bant-sari) 14%, var(--ke-surf)); --warn-ink: var(--ke-derin-sari);
+  --danger: var(--ke-bant-kirmizi); --danger-soft: color-mix(in srgb, var(--ke-bant-kirmizi) 12%, var(--ke-surf)); --danger-ink: var(--ke-derin-kirmizi);
+  --font-display: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}

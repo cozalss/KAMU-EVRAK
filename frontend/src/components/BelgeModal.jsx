@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { SANS, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, SR_ONLY, EASE, EASE_BEZIER, Icon, focusRing } from "./neonUi.jsx";
 import RevizePaneli from "./RevizePaneli.jsx";
 import A4Belge from "./A4Belge.jsx";
+import { FOSFOR_STIL, KAGIT_YUZEY, kagitStilYukle } from "./kagitDoku.js";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
@@ -114,6 +115,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
   // Dialog.Root'a onOpenChange olarak verilir: Radix'in Esc/dış-tık/Kapat'ı tetiklediği HER
   // "false" burdan geçer. `acik` (open) prop'u DEĞİŞMEDİĞİ sürece Radix diyaloğu görsel olarak
   // KAPATMAZ — kirliyse yalnız uyarı şeridi açılır, dialog açık kalır (kontrollü open deseni).
+  useEffect(() => { kagitStilYukle(); }, []);
   const kapatIstegi = () => { if (kirli) { setKapatUyari(true); return; } onKapat(); };
 
   return (
@@ -229,7 +231,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                     <A4Belge metin={metin || "İçerik henüz hazır değil."} />
                   )}
                   {!revizeOneriAcik && (fileUrl || duzenlenebilir || (segmentler && segmentler.length)) && (
-                    <div style={{ background: PAL.surf, borderRadius: RAD.chip, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
+                    <div style={{ ...(fileUrl ? { background: PAL.surf } : KAGIT_YUZEY), borderRadius: 2, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
                       {fileUrl ? (
                         <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
                           <PdfOnizleme fileUrl={fileUrl} tam />
@@ -242,14 +244,14 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                           /* overflow:hidden + resize:none — yükseklik yukarıdaki ölçümle
                              içeriğe kilitlenir; iç kaydırma çubuğu ve elle boyutlandırma
                              kolu ikisi de gereksizdir (sayfa uzar, kâğıt kaymaz). */
-                          style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "none", overflow: "hidden", ...TYPE.read, color: PAL.ink2, padding: 0 }} />
+                          style={{ width: "100%", boxSizing: "border-box", minHeight: 800, border: "none", outline: "none", background: "transparent", resize: "none", overflow: "hidden", ...TYPE.read, color: "inherit", padding: 0 }} />
                       ) : (
-                        <div style={{ ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                        <div style={{ ...TYPE.read, color: "inherit", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                           {/* Çıkarım vurguları A4'te de korunur — panel ile aynı sarı <mark> dili
                               (kaynak belgede vurgulanan unsurlar büyütünce de görünür kalır). */}
                           {segmentler && segmentler.length
                             ? segmentler.map((sg, i) => sg.mark
-                                ? <mark key={i} style={{ background: ALFA(BANT.sari.c), color: DERIN.sari, borderRadius: RAD.chip, padding: "0 2px" }}>{sg.t}</mark>
+                                ? <mark key={i} style={FOSFOR_STIL}>{sg.t}</mark>
                                 : <span key={i}>{sg.t}</span>)
                             : (metin || "İçerik henüz hazır değil.")}
                         </div>

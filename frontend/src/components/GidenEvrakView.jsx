@@ -1,11 +1,11 @@
 /* GidenEvrakView — onaylanıp gönderilen resmî yazıların arşivi + en zengin filtre
    (arama/risk/durum çip + tür/birim select + tarih + sıralama) + detay modalı.
    outbox: DashboardApp session state (Onayla&Gönder → giden evrak). */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, PAL, BANT, TYPE, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { ViewWrap, Btn, KV, Icon, MONO, DISPLAY, PAL, BANT, TYPE, TNUM, RAD, SP, SH, DERIN, DERIN_OF, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
+import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, useDefterGezinme, Imlec } from "./SicilDefter.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
-import { useDarEkran } from "../hooks/useMedya.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { evrakKategori, kategoriMeta, KATEGORILER } from "../lib/kategori.js";
 
@@ -54,6 +54,60 @@ const BASE_CONFIG = {
   ] },
   dataMapping: { search: ["konu", "kaynak_evrak_adi", "id"], risk: "risk", durum: "durum", sla: "sla_durum", kategori: "_kategori", tur: "tur", birim: "alici_birim", dateField: "gonderim_tarihi" },
 };
+
+/* Defter şablonu — gönderi no · konu bloğu · durum/risk · posta damgası · eylem. */
+const SABLON = {
+  kolon: "128px minmax(0,1fr) 168px 92px 116px",
+  alan: '"no ana durum pul eylem"',
+  alanDar: '"no pul" "ana ana" "durum eylem"',
+  marj: "158px",
+};
+const BASLIKLAR = [
+  <BaslikHucre key="n" alan="no">Gönderi no</BaslikHucre>,
+  <BaslikHucre key="a" alan="ana">Konu · kaynak · alıcı birim</BaslikHucre>,
+  <BaslikHucre key="d" alan="durum">Durum · risk</BaslikHucre>,
+  <BaslikHucre key="p" alan="pul">Pul</BaslikHucre>,
+  <BaslikHucre key="e" alan="eylem" sag>Eylem</BaslikHucre>,
+];
+const gunAy = (ts) => { const d = new Date(Number(ts || 0)); return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" }); };
+
+/* Posta damgası ("iptal pulu") — gönderilen her satır için dairesel SVG: çember üstünde
+   GÖNDERİLDİ, altında yıl (textPath), ortada gün.ay; sağa iptal dalgaları. Mühür moru
+   (DERIN.V), mürekkep dokusu maskesi, satır kimliğinden türeyen SABİT eğim (her pul biraz
+   farklı basılmış görünür ama yeniden çizimde zıplamaz). Salt görsel (aria-hidden): tarih
+   satırda ekran okuyucuya ayrıca verilir. */
+const PUL_DOKU = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='70'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 2.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+function PostaDamgasi({ ts, tohum = "" }) {
+  const uid = useId().replace(/:/g, "");
+  const d = new Date(Number(ts || 0));
+  const gecerli = !Number.isNaN(d.getTime());
+  const gun = gecerli ? `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}` : "—";
+  const yil = gecerli ? String(d.getFullYear()) : "";
+  let h = 0;
+  for (const c of String(tohum)) h = (h * 31 + c.charCodeAt(0)) % 997;
+  const egim = -4 - (h % 11);
+  return (
+    <svg width="86" height="62" viewBox="0 0 72 52" aria-hidden="true"
+      style={{ "--egim": `${egim}deg`, display: "block", color: DERIN.V, transform: `rotate(${egim}deg)`, overflow: "visible",
+        WebkitMaskImage: PUL_DOKU, maskImage: PUL_DOKU, WebkitMaskSize: "90px 70px", maskSize: "90px 70px",
+        animation: "nu-damga .5s var(--ke-ease-out) both", animationDelay: "calc(var(--sd-i,0) * 32ms + 180ms)" }}>
+      <defs>
+        <path id={`ust-${uid}`} d="M 7.5 26 A 18.5 18.5 0 0 1 44.5 26" />
+        <path id={`alt-${uid}`} d="M 6 26 A 20 20 0 0 0 46 26" />
+      </defs>
+      {[0, 6, 12].map((y) => <path key={y} d={`M 51 ${20 + y} q 4 -3 7 0 t 7 0 t 7 0`} fill="none" stroke="currentColor" strokeWidth="1.3" opacity=".75" />)}
+      <circle cx="26" cy="26" r="24.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="26" cy="26" r="13.5" fill="none" stroke="currentColor" strokeWidth=".9" />
+      <text style={{ fontFamily: DISPLAY, fontSize: 6.4, fontWeight: 800, letterSpacing: ".08em", fontStretch: "125%" }} fill="currentColor">
+        <textPath href={`#ust-${uid}`} startOffset="50%" textAnchor="middle">GÖNDERİLDİ</textPath>
+      </text>
+      <text style={{ fontFamily: MONO, fontSize: 5.6, fontWeight: 600, letterSpacing: ".06em" }} fill="currentColor">
+        <textPath href={`#alt-${uid}`} startOffset="50%" textAnchor="middle">★ {yil} ★</textPath>
+      </text>
+      <text x="26" y="28.8" textAnchor="middle" style={{ fontFamily: MONO, fontSize: 8, fontWeight: 700, ...TNUM }} fill="currentColor">{gun}</text>
+    </svg>
+  );
+}
 
 function DetayModal({ item, onClose }) {
   const closeRef = useRef(null);
@@ -107,7 +161,7 @@ function DetayModal({ item, onClose }) {
 
 export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onResend }) {
   const [detay, setDetay] = useState(null);
-  const dar = useDarEkran();         // telefonda gönderi satırı sarar (bkz. satır yorumu)
+  const gez = useDefterGezinme();    // j/k gezinme + kayan seçim imleci
   const triggerRef = useRef(null);   // modal kapanınca odağı tetikleyen butona geri ver (a11y)
   const closeDetay = useCallback(() => { setDetay(null); triggerRef.current?.focus(); }, []);
   // Her gönderiye operasyonel kategori türet (evrak türü + birim + konu) — filtre + rozet.
@@ -127,62 +181,75 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, onRes
 
   if (outbox.length === 0) {
     return (
-      <ViewWrap id="giden-h" title="Giden evrak" sub="Onaylanıp gönderilen resmî yazılar">
-        <EmptyState icon={<Icon.send />} title="Henüz gönderilen evrak yok"
-          sub="Bir evrakı işleyip İşleniyor görünümünde “Onayla ve gönder” dediğinizde, onayladığınız yazılar, değiştirilemez denetim iziyle birlikte burada listelenir."
+      <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub="Onaylanıp gönderilen resmî yazılar">
+        <SicilStil />
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" satir={7}
+          baslik="Defterin ilk sayfası henüz boş"
+          sub="Bir evrakı işleyip “Onayla ve gönder” dediğinizde yazı buraya posta damgasıyla, değiştirilemez denetim iziyle birlikte işlenir."
           actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
       </ViewWrap>
     );
   }
 
+  const ac = (item, el) => { triggerRef.current = el; setDetay(item); };
   return (
-    <ViewWrap id="giden-h" title="Giden evrak" sub={`${outbox.length} evrak · ${gonderildi} gönderildi`}
+    <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={`${outbox.length} evrak · ${gonderildi} gönderildi`}
       actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]}>
+      <SicilStil />
       <FilterBar config={config} filter={filter} />
 
       {filter.results.length === 0 ? (
-        <EmptyState icon={<Icon.send />} title="Eşleşen evrak yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" damga="Eşleşme yok"
+          baslik="Bu ölçütlerle gönderi yok" sub="Filtre ölçütlerinizi gevşetin; gönderilen yazılar silinmez."
+          actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
-          {filter.results.map((item) => {
+        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları" gezinme={gez} ipucu="detayı aç">
+          {filter.results.map((item, i) => {
             const drenk = DURUM_RENK[item.durum] || PAL.mut2;
             const kat = kategoriMeta(item._kategori);
             const guven = fmtGuven(item.guven);
             const gecikmis = item.sla_durum === "GECIKMIS";
             const riskC = BANT[item.risk]?.c;
+            const gitti = item.durum === "gonderildi" || item.durum === "duzenlendi";
             return (
-              /* Kırpılmayan parçalar (evrak no 96 + durum metni + risk çipi + Görüntüle
-                 düğmesi + boşluklar ≈ 441px) telefonda kaba sığmıyordu; ortadaki esnek blok
-                 sıfıra ezilip künyesi dışarı taşıyordu (ölçüldü 2026-08-12: sayfa 151px
-                 yatay kayıyordu). Dar ekranda satır sarar; konu bloğu tam satır alır. */
-              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`,
-                ...(dar ? { flexWrap: "wrap", rowGap: SP.s } : null) }}>
-                {/* Durum: 8px düz renk noktası + sağda 12px metin (çip yerine) */}
-                <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: drenk, flexShrink: 0 }} />
-                <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, flexShrink: 0, minWidth: 96 }}>{item.id}</span>
-                <div style={{ flex: dar ? "1 1 100%" : 1, minWidth: 0 }}>
-                  <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
-                  {/* Kategori + kaynak + süre + güven + birim: düz meta metin */}
-                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs, display: "flex", gap: SP.s, flexWrap: "wrap", alignItems: "center" }}>
-                    <span>{kat.label}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{item.kaynak_evrak_adi}</span>
-                    <span aria-hidden="true">·</span>
+              <div key={item.id} data-sicil-satir="" data-sd-anahtar={item.id} style={{ "--sd-i": Math.min(i, 14) }}
+                onPointerDown={() => gez.sec(item.id)}
+                onClick={(e) => ac(item, e.currentTarget.querySelector("[data-sd-eylem]"))}>
+                {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="giden" />}
+                <SicilNo no={item.id} style={{ gridArea: "no" }} />
+                <div style={{ gridArea: "ana", minWidth: 0 }}>
+                  <span data-sd-konu="" style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(item.konu)}</span>
+                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, flexWrap: "wrap", alignItems: "center", minWidth: 0 }}>
+                    <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
+                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
+                    <span style={{ fontFamily: MONO, fontSize: 11, overflowWrap: "anywhere" }}>{item.kaynak_evrak_adi}</span>
+                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
                     <span>{gecenSure(item.gonderim_tarihi)}</span>
-                    {guven && <><span aria-hidden="true">·</span><span>güven {guven}</span></>}
-                    <span aria-hidden="true">·</span>
-                    <span>{BIRIM_LBL(item.alici_birim)}</span>
-                    {gecikmis && <span style={{ color: DERIN.kirmizi }}>· süresi geçmiş</span>}
+                    {guven && <><span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span><span style={TNUM}>güven {guven}</span></>}
+                    {gecikmis && <span style={{ color: DERIN.kirmizi, fontWeight: 500 }}>· süresi geçmiş</span>}
+                  </div>
+                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+                    <span aria-hidden="true" style={{ display: "flex", color: DERIN.V }}><Icon.send width={11} height={11} /></span>
+                    <span><span style={SR_ONLY}>alıcı birim: </span>{BIRIM_LBL(item.alici_birim)}</span>
                   </div>
                 </div>
-                <span style={{ ...TYPE.meta, color: DERIN_OF(drenk), flexShrink: 0 }}>{DURUM_TR[item.durum] || item.durum}</span>
-                {/* Tek çip: risk kodu (BANT.l uppercase istisnası — mono 12) */}
-                <span style={{ flexShrink: 0, fontFamily: MONO, fontSize: 12, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: riskC ? ALFA(riskC) : PAL.hov, color: riskC ? DERIN_OF(riskC) : PAL.mut2 }}>{BANT[item.risk]?.l || "—"}</span>
-                <Btn onClick={(e) => { triggerRef.current = e.currentTarget; setDetay(item); }} ariaLabel={`${item.id} detayını görüntüle`}>Görüntüle</Btn>
+                <span style={{ gridArea: "durum", display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start", minWidth: 0 }}>
+                  <SessizCip renk={drenk} vurgulu={item.durum === "reddedildi"} metin={DURUM_TR[item.durum] || item.durum} />
+                  {/* Risk kodu (BANT.l uppercase istisnası — mono) */}
+                  <span style={{ fontFamily: MONO, fontSize: 11, fontWeight: 600, letterSpacing: ".06em", paddingLeft: 12, color: riskC ? DERIN_OF(riskC) : PAL.mut3 }}>{BANT[item.risk]?.l || "—"}</span>
+                </span>
+                <span style={{ gridArea: "pul", justifySelf: "center" }}>
+                  {gitti ? <PostaDamgasi ts={item.gonderim_tarihi} tohum={item.id} /> : <span style={{ ...TYPE.meta, color: PAL.mut3 }}>—</span>}
+                  {gitti && <span style={SR_ONLY}>Gönderim: {gunAy(item.gonderim_tarihi)}</span>}
+                </span>
+                <button type="button" data-sd-eylem="" data-press="" style={{ gridArea: "eylem" }}
+                  onClick={(e) => { e.stopPropagation(); ac(item, e.currentTarget); }} aria-label={`${item.id} detayını görüntüle`}>
+                  Görüntüle <Icon.arrow width={14} height={14} />
+                </button>
               </div>
             );
           })}
-        </div>
+        </DefterYuzey>
       )}
 
       <DetayModal item={detay} onClose={closeDetay} />

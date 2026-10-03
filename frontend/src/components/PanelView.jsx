@@ -25,14 +25,14 @@
 import { cloneElement, useEffect, useMemo, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, IRIS, IRIS_BAR, focusRing } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, DISPLAY, T, V, R, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, IRIS, IRIS_BAR, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
 import SureTakvimi from "./SureTakvimi.jsx";
+import KahramanBrif, { PANEL_KF, giris, useAcilisSayaci } from "./PanelBrif.jsx";
 import { useDarEkran } from "../hooks/useMedya.js";
 import SureRaporModal from "./SureRaporModal.jsx";
 import SureKiyasBloku, { TrendRozet } from "./SureKiyas.jsx";
 import { olcumler, ortalama, genelTrend, hizKademe, gunlukOrtSure, fmtSn } from "../lib/sureRapor.js";
-import { kalanMetin } from "../lib/sureTakvimi.js";
 import { adBuyut } from "../lib/trMetin.js";
 import { GUN_MS, gunBasi, gunlukSeri } from "../lib/gunlukSeri.js";
 
@@ -84,216 +84,62 @@ function Sparkline({ seri, aktifGun, birim = "" }) {
   );
 }
 
-/* Akış hücresi — sayı (NumberFlow, sıfır soluk) + etiket + düne-göre delta + sparkline.
-   Throughput deltasında azalış PAL.mut2 (yavaş gün başarısızlık değil); artış DERIN.yesil.
-   2026-07-25: ızgara 1×4 şeritten 2×2 bloğa döndü (bkz. R1). Ayraç kuralı ızgaraya
-   sabitlendi: sol kenar tek indeksliye, üst kenar alt sıraya.
-   İkon boyu ÇAĞRI YERİNDEN DEĞİL burada belirlenir (cloneElement) — dört ikon lucide
-   varsayılanlarıyla 18/18/15/15 gelip aynı ızgarada farklı büyüklükte duruyordu.
-   DÖRT HÜCRE TİPOGRAFİK OLARAK EŞ (kullanıcı isteği): üst sıra bir ara daha büyük
-   sayı/etiket taşıyordu, aynı ızgarada aynı yapıdaki hücrelerin farklı boyu "bozuk"
-   okunuyordu. Hiyerarşi artık tipten değil SIRADAN geliyor — birincil ölçüler üstte. */
-function AkisHucre({ label, value, icon, onClick, ariaLabel, gunluk, i }) {
+/* Akış hücresi (2026-10 yeniden tasarım) — "sicil defteri sayacı": küçük ikon + etiket üstte,
+   altında Archivo rakam (NumberFlow, açılışta 0'dan sayar) + sağda 7 günlük sparkline,
+   en altta düne-göre delta. Throughput deltasında azalış PAL.mut2 (yavaş gün başarısızlık
+   değil); artış DERIN.yesil. Dört hücre tipografik olarak EŞ (kullanıcı isteği) — hiyerarşi
+   sıradan gelir. Ayraç kuralı: `kolon` sütunlu ızgarada sol kenar sütun başına, üst kenar
+   ikinci satırdan itibaren. TIKLAMA ALANI = HÜCRENİN TAMAMI (2026-08-09 düzeltme): buton
+   doğrudan ızgara hücresidir, arada sarmalayıcı yok. */
+function AkisHucre({ label, value, icon, onClick, ariaLabel, gunluk, i, kolon, gecikme }) {
+  const akan = useAcilisSayaci(value, gecikme);
   const sifir = value === 0;
   const delta = gunluk ? gunluk.bugunN - gunluk.dunN : null;
+  const deltaVar = delta != null && gunluk.aktifGun >= 2 && delta !== 0;
   return (
-    /* data-hover-buyut: hover'da İÇ sarmalayıcı (data-buyut) hafif ölçeklenir — kutu, kenarlık
-       ve ızgara hairline'ları yerinde kalır. Kural NEON_KEYFRAMES'te (opt-in istisna). */
     <button type="button" onClick={onClick} aria-label={ariaLabel || label} {...focusRing} data-press="" data-hover-buyut=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-      style={{ cursor: "pointer", textAlign: "left", padding: `${SP.xl}px ${SP.l}px`,
-        /* TIKLAMA ALANI = HÜCRENİN TAMAMI (2026-08-09 düzeltme). Buton doğrudan ızgara
-           hücresidir; arada sarmalayıcı YOK. Daha önce bir `IsikYuzeyi` sarmalayıcısı vardı
-           ve iç kabı genişlik almadığı için içerik kadar daralıyordu — buton `width:100%`
-           deyip o daralmış kutuyu ölçü aldığından hücrenin sağ boşluğuna basınca hiçbir şey
-           olmuyordu. Buraya sarmalayıcı eklenecekse hücreyi tam doldurduğu doğrulanmalı. */
-        width: "100%", height: "100%",
-        background: "transparent", border: "none",
-        borderLeft: i % 2 === 1 ? `1px solid ${PAL.line}` : "none",
-        borderTop: i >= 2 ? `1px solid ${PAL.line}` : "none", borderRadius: RAD.ctl,
-        /* İçerik hücrenin ortasında: kutular takvim yüksekliğine esnediğinde sola yaslı
-           küme geniş boşlukta yüzüyordu. flex:1 KALDIRILDI — metin bloğu boşluğu yutarsa
-           justifyContent'in etkisi kalmaz. */
-        display: "flex", alignItems: "center", justifyContent: "center",
-        minWidth: 0, transition: `background .12s ease, transform .14s ${EASE.out}` }}>
-      <span data-buyut="" style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
-        {/* İkon dairesel rozet içinde (2026-07-25): çıplak ikon geniş hücrede öksüz duruyordu;
-            halka onu "başlık madalyonu" yapıp sayı+etiket bloğuna bağlıyor. Zemin ALFA (tek
-            izinli tint), kenarlık hairline — dolu renkli rozet CTA gibi okunurdu. */}
-        <span aria-hidden="true" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0, width: 48, height: 48, borderRadius: RAD.dot,
-          background: sifir ? "transparent" : ALFA(T), border: `1px solid ${sifir ? PAL.line : ALFA(T)}`,
-          color: sifir ? PAL.mut3 : DERIN.T }}>
-          {cloneElement(icon, { width: 24, height: 24 })}
+      style={{ cursor: "pointer", textAlign: "left", padding: `${SP.l}px ${SP.l + 2}px`, width: "100%", height: "100%",
+        background: "transparent", border: "none", borderRadius: 0,
+        borderLeft: i % kolon !== 0 ? `1px solid ${PAL.line}` : "none",
+        borderTop: i >= kolon ? `1px solid ${PAL.line}` : "none",
+        display: "flex", minWidth: 0, transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+      <span data-buyut="" style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%", minWidth: 0, transformOrigin: "0 50%" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.meta, color: PAL.mut2, minWidth: 0 }}>
+          <span aria-hidden="true" style={{ display: "flex", color: sifir ? PAL.mut3 : DERIN.T }}>{cloneElement(icon, { width: 14, height: 14 })}</span>
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
         </span>
-        <span style={{ minWidth: 0 }}>
-          <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, flexWrap: "wrap" }}>
-            <span style={{ ...TYPE.num, color: sifir ? PAL.mut3 : PAL.ink, ...TNUM }}><NumberFlow value={value} /></span>
-            {delta != null && gunluk.aktifGun >= 2 && delta !== 0 && (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 2, ...TYPE.meta, fontWeight: 500, color: delta > 0 ? DERIN.yesil : PAL.mut2, ...TNUM }}>
-                {delta > 0 ? <OK_YUKARI /> : <OK_ASAGI />}{delta > 0 ? `+${delta}` : delta} düne göre
-              </span>
-            )}
-          </span>
-          <span style={{ display: "block", ...TYPE.ui, color: PAL.mut, marginTop: 2 }}>{label}</span>
+        <span style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.s }}>
+          <span style={{ fontFamily: DISPLAY, fontSize: 36, lineHeight: "36px", fontWeight: 800, fontStretch: "118%", letterSpacing: "-.03em",
+            color: sifir ? PAL.mut3 : PAL.ink, ...TNUM }}><NumberFlow value={akan} /></span>
+          {gunluk && <Sparkline seri={gunluk.seri} aktifGun={gunluk.aktifGun} />}
         </span>
-        {gunluk && <Sparkline seri={gunluk.seri} aktifGun={gunluk.aktifGun} />}
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 3, minHeight: 16, ...TYPE.meta, fontWeight: 500,
+          color: deltaVar ? (delta > 0 ? DERIN.yesil : PAL.mut2) : PAL.mut3, ...TNUM }}>
+          {deltaVar ? (<>{delta > 0 ? <OK_YUKARI /> : <OK_ASAGI />}{delta > 0 ? `+${delta}` : delta} düne göre</>) : (gunluk ? "dünle aynı" : "anlık kuyruk")}
+        </span>
       </span>
     </button>
   );
 }
 
-/* ---------- R1: Kahraman (kuyruk yasal süre brifi) + sağ ray ---------- */
-
-/* Süresi yaklaşan/geçen kuyruk evrağı satırı — yasal dayanak + son tarih + satır-içi İşle
-   (secondary; doğrudan pipeline'a sokar). */
-function SlaSatir({ x, onIsle }) {
-  const gecikmis = x.sla.durum === "GECIKMIS";
-  const renk = gecikmis ? BANT.kirmizi.c : BANT.sari.c;
-  // Gecikme cümlesi takvimle TEK kaynaktan (lib/sureTakvimi) — aynı evrak iki bileşende
-  // farklı ifade edilmesin; ayrıca kalan_gun null'da "son null gün" basmaz.
-  const kalanTxt = kalanMetin(x.sla);
+/* Akış kartı — dört sayaç tek yüzeyde. `kolon`: 2 (takvimin altında, dar ray) · 4 (takvim
+   yokken tam genişlik şerit) · 1 (telefon). Başlık antet dilinde (mono, izlemeli). */
+function AkisKarti({ hucreler, kolon }) {
   return (
-    /* flexWrap + basis'li metin bloğu: dar ekranda (ölçüm: 390px'te satır 441px'e taşıyor,
-       evrak adı 0px'e eziliyordu) çip/tarih/İşle üçlüsü ALT SATIRA iner, ad tam genişliği
-       alır. Geniş ekranda üçlü marginLeft:auto ile hâlâ sağa yaslanır — görünüm bit-aynı. */
-    <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px 0`, borderTop: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
-      {/* Nokta değil UYARI ÜÇGENİ (2026-07-25): renksiz bir daire "durum" der, üçgen-ünlem
-          "dikkat" der — bu satırlar zaten yalnız gecikmiş/kritik evraklar. Şekil ikinci bir
-          sinyal katmanı: renk körlüğünde de uyarı okunur. */}
-      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(renk) }}>
-        <Icon.alert width={17} height={17} />
-      </span>
-      <span style={{ flex: "1 1 240px", minWidth: 0, overflow: "hidden" }}>
-        <span style={{ display: "block", ...TYPE.read, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
-        <span style={{ display: "block", ...TYPE.data, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.sla.mevzuat}</span>
-      </span>
-      <span style={{ display: "flex", alignItems: "center", gap: SP.m, marginLeft: "auto", flexWrap: "wrap", justifyContent: "flex-end" }}>
-        <span style={{ ...TYPE.data, fontWeight: 500, padding: "3px 10px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), ...TNUM }}>{kalanTxt}</span>
-        {x.sla.son_tarih && <span style={{ fontFamily: MONO, fontSize: 13, color: PAL.mut2 }}>son: {x.sla.son_tarih}</span>}
-        <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "4px 10px" }}>İşle <Icon.arrow /></Btn>
-      </span>
-    </div>
-  );
-}
-
-/* Yığın şerit — kuyruğun süre kompozisyonu; dilimler arası 2px yüzey boşluğu (kenar çizgisi
-   değil, boşluk ayırır). */
-function SlaSerit({ dilimler, toplam }) {
-  return (
-    <>
-      <div role="img" aria-label={dilimler.map((d) => `${d.n} ${d.l}`).join(", ")}
-        style={{ display: "flex", gap: 2, height: 10 }}>
-        {dilimler.map((d) => <span key={d.l} title={`${d.l}: ${d.n}`} style={{ width: `${(d.n / toplam) * 100}%`, minWidth: 4, background: d.c, borderRadius: RAD.chip }} />)}
+    <section aria-label="Akış nabzı" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: `${SP.m}px ${SP.l + 2}px`, borderBottom: `1px solid ${PAL.line}`, ...TYPE.antet, color: PAL.mut3 }}>
+        <span>AKIŞ NABZI</span>
+        <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
+        <span>SON 7 GÜN</span>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.l}px`, marginTop: SP.s }}>
-        {dilimler.map((d) => (
-          <span key={d.l} style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, ...TYPE.data, color: PAL.mut2, ...TNUM }}>
-            <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: d.c }} />{d.n} {d.l}
-          </span>
-        ))}
-      </div>
-    </>
-  );
-}
-
-/* Kahraman kart — durum makinesi: acil>0 → tam brif (sayı + şerit + satırlar + ekranın tek
-   primary'si). Acil=0 → tek satırlık pozitif banda çöker; sükûnetin kendisi ödül (yeşil
-   dolgu bandı yok — renk kutlama için değil) + "ilk yaklaşan süre" ufku. */
-function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
-  const [acilRef] = useAutoAnimate();
-  const say = { normal: 0, kritik: 0, gecikmis: 0, tarihYok: 0, diger: 0 };
-  for (const x of kuyrukSla) {
-    if (x.sla.durum === "NORMAL") say.normal++;
-    else if (x.sla.durum === "KRITIK") say.kritik++;
-    else if (x.sla.durum === "GECIKMIS") say.gecikmis++;
-    else if (x.sla.durum === "tarih_yok") say.tarihYok++;   // Gelen'deki çip ile aynı sözlük
-    else say.diger++;
-  }
-  const acil = kuyrukSla
-    .filter((x) => x.sla.durum === "GECIKMIS" || x.sla.durum === "KRITIK")
-    .sort((a, b) => (a.sla.kalan_gun ?? 0) - (b.sla.kalan_gun ?? 0));
-  /* Şerit renkleri (2026-07-25 düzeltme): eskiden son iki dilim PAL.mut3 (#7a7060) ve
-     PAL.mut (#6b6255) idi — iki kahve tonu yan yana TEK renk gibi okunuyordu, üstelik
-     "süre tanımsız" çoğu zaman en büyük dilim olduğu için şeridi kahverengi bir blok
-     kaplıyordu. Artık her dilim ayrı bir palet rengi; kalan tek nötr "süre tanımsız"
-     (gerçekten veri-yok durumu — nötr olması doğru, ama artık eşi yok). */
-  const dilimler = [
-    { c: BANT.yesil.c, n: say.normal, l: "normal takvim" },
-    { c: BANT.sari.c, n: say.kritik, l: "kritik" },
-    { c: BANT.kirmizi.c, n: say.gecikmis, l: "gecikmiş" },
-    { c: T, n: say.tarihYok, l: "tarih doğrulanmalı" },   // bilgi durumu → gök mavisi
-    { c: PAL.mut3, n: say.diger, l: "süre tanımsız" },     // veri yok → tek nötr
-  ].filter((d) => d.n > 0);
-  const toplam = kuyrukSla.length || 1;
-
-  if (acil.length === 0) {
-    // Pozitif hâl: temizken bile bir sonraki ufku göstermek güven verir.
-    const yaklasan = kuyrukSla
-      .filter((x) => x.sla.durum === "NORMAL" && Number.isFinite(x.sla.kalan_gun))
-      .sort((a, b) => a.sla.kalan_gun - b.sla.kalan_gun)[0];
-    return (
-      <section aria-label="Kuyruk yasal süre durumu" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: `${SP.l}px ${SP.xl}px` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-          <span style={{ display: "inline-flex", color: DERIN.yesil }}><Icon.check width={20} height={20} /></span>
-          <span style={{ ...TYPE.h2, color: PAL.ink }}>Kuyruğun tamamı normal takvimde</span>
-          <span style={{ ...TYPE.read, color: PAL.mut, ...TNUM }}>
-            {yaklasan ? `İlk yaklaşan süre: ${yaklasan.sla.son_tarih || `${yaklasan.sla.kalan_gun} gün`} — ${yaklasan.label}` : "Eskalasyon gerekmiyor."}
-          </span>
-        </div>
-        <div style={{ marginTop: SP.m }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
-      </section>
-    );
-  }
-
-  return (
-    <section aria-label="Bugünün brifi — kuyruk yasal süre durumu" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: SP.xl }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-        {/* Çalan saat: nu-alarm salvosu (3.2sn'de bir kısa titreşim). Bu dal zaten YALNIZ
-            acil>0 iken render edilir — hareket gerçek bir aciliyeti temsil eder, süs değil.
-            transformOrigin merkez: saat "sallanır", kaymaz. */}
-        <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(say.gecikmis ? BANT.kirmizi.c : BANT.sari.c),
-          animation: "nu-alarm 2s linear infinite", transformOrigin: "50% 50%" }}>
-          <Icon.clock width={22} height={22} />
-        </span>
-        {/* minWidth ÇIPLAK 240 DEĞİL `min(240px,100%)`: 320px telefonda (iPhone SE) içerik
-            alanı ~224px'e iniyor ve sabit taban kabı 25px dışarı itiyordu — WCAG 1.4.10
-            Reflow 320px'te yatay kaydırma istemez. min() tabanı kabın genişliğiyle sınırlar;
-            geniş ekranda davranış AYNEN aynı. */}
-        <span style={{ display: "flex", alignItems: "baseline", gap: SP.m, flex: 1, minWidth: "min(240px, 100%)", flexWrap: "wrap" }}>
-          <span style={{ ...TYPE.num, color: say.gecikmis ? DERIN.kirmizi : DERIN.sari, ...TNUM }}><NumberFlow value={acil.length} /></span>
-          {/* Bağlaçlar ("ya da") küçük — Türkçe başlık yazımında bağlaç büyütülmez.
-              Kuyruk sayısı buradan KALDIRILDI: aynı sayı R1'deki "Gelen evrak" hücresinde
-              zaten var, başlığı kalabalıklaştırıyordu (kullanıcı geri bildirimi). */}
-          <span style={{ ...TYPE.h2, color: PAL.ink }}>Evrakın Yasal Süresi Doldu ya da Kritik</span>
-        </span>
-        {/* Ekranın tek primary'si: en acil evrakı doğrudan pipeline'a sokar. */}
-        <Btn primary onClick={() => onIsle(acil[0].id)} ariaLabel={`En acil evrak: ${acil[0].label} — hemen işle`}>
-          En acil evrakı işle <Icon.arrow />
-        </Btn>
-      </div>
-      <div style={{ marginTop: SP.l }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
-      <div style={{ marginTop: SP.m }}>
-        <p style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2 }}>
-          Yasal cevap süresi dolan/dolmak üzere olan evraklar; yasal dayanak her satırın altında yazılıdır.
-        </p>
-        <div ref={acilRef}>
-          {acil.slice(0, 5).map((x) => <SlaSatir key={x.id} x={x} onIsle={onIsle} />)}
-          {acil.length > 5 && (
-            <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
-              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-              style={{ cursor: "pointer", width: "100%", padding: `${SP.m}px 0`, background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500, color: DERIN.T, textAlign: "center", transition: `background .12s ease, transform .14s ${EASE.out}` }}>
-              {acil.length - 5} evrak daha; tümünü kuyruğun aciliyet sırasında görün
-            </button>
-          )}
-        </div>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${kolon}, minmax(0, 1fr))` }}>
+        {hucreler.map((h, i) => <AkisHucre key={h.label} {...h} i={i} kolon={kolon} gecikme={420 + i * 90} />)}
       </div>
     </section>
   );
 }
-
 /* ---------- R3: Dağılım (tek yüzey, 3 iç kolon) ---------- */
 
 function BarList({ rows, color }) {
@@ -370,7 +216,7 @@ function BirimGecikmeKart({ rows }) {
   const [ref] = useAutoAnimate();
   const varmi = rows.length > 0;
   return (
-    <NeonCard title="Birim Bazlı Gecikme" accent={varmi ? BANT.kirmizi.c : BANT.yesil.c} tag="havale + yasal süre" icon={<Icon.clock />}>
+    <NeonCard title="Birim Bazlı Gecikme" accent={varmi ? BANT.kirmizi.c : BANT.yesil.c} tag="havale + yasal süre" icon={<Icon.clock />} style={{ height: "100%" }} bodyCenter={!varmi}>
       {varmi ? (
         <div ref={ref}>
           {rows.map(([birim, e]) => (
@@ -578,17 +424,21 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
 
   const span = (kol) => ({ gridColumn: genis ? `span ${kol}` : "1 / -1", minWidth: 0 });
 
-  /* R1 kuşağı iki kolonu KARŞILIKLI paylaşır: takvim yoksa ölçü şeridi 12 kola yayılır.
-     Şerit sabit 8 kolda kalırsa (eski hâl) sağda 4 kolluk ÖLÜ boşluk açılıyordu — takvim
-     backend'in /sla/onizleme yanıtına bağlı olduğundan (servis kapalı / tüm örnekler
-     gönderilmiş) bu boşluk sahada gerçekten görülüyor ve sayfa "bozulmuş" okunuyor.
-     Takvimin karşılıklı kuralı (`n > 0 ? 4 : 12`) zaten vardı; eksik olan tarafı budur. */
+  /* Takvim + brif kuyrukSla'ya bağlı: servis kapalıysa / kuyruk boşsa ikisi de yok ve akış
+     kartı tam genişliğe (1×4 şerit) yayılır — sağda ölü boşluk açılmaz. */
   const takvimVar = kuyrukSla.length > 0;
+
+  /* Başlık damgası — görünümün HÜKMÜ: gecikmiş varsa kırmızı "N gecikmiş", yalnız kritik
+     varsa sarı "N kritik". Sükûnette damga yok (dikkat bütçesi: ekran başına ≤2; bu tek). */
+  const gecikmisN = kuyrukSla.filter((x) => x.sla?.durum === "GECIKMIS").length;
+  const kritikN = kuyrukSla.filter((x) => x.sla?.durum === "KRITIK").length;
+  const damga = gecikmisN ? { metin: `${gecikmisN} gecikmiş`, ton: R } : kritikN ? { metin: `${kritikN} kritik`, ton: BANT.sari.c } : undefined;
+  const kunye = "Sabah brifingi";
 
   // Gerçek sıfır: hiç işlem yok VE kuyruk boş → tek boş durum; iskelet kart dizmek "ölü panel".
   if (n === 0 && inboxCount === 0 && kuyrukSla.length === 0) {
     return (
-      <ViewWrap id="panel-h" title="Panel" sub={manset}>
+      <ViewWrap id="panel-h" title="Panel" sub={manset} kunye={kunye}>
         <EmptyState icon={<Icon.chart />} title="Kuyruk Boş"
           sub="Yeni bir belge yükleyerek başlayın — işlenen her evrak burada özetlenir."
           actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]} />
@@ -596,64 +446,44 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
     );
   }
 
+  /* Akış hücreleri — kart eşlemesi kurgu ayrımını izler: İşlenen → İşlenen arşivi;
+     Gelen → kuyruk; Üretilen taslak → Taslaklar; Gönderilen → Giden. aria-label sayıyı da
+     taşır (salt eylem etiketi panelin ana verisini ekran okuyucudan gizliyordu). */
+  const akisHucreleri = [
+    { label: "İşlenen evrak", value: n, icon: <Icon.doc />, onClick: onGoIslenen, ariaLabel: `${n} işlenen evrak — arşivi aç`, gunluk: akisIslenen },
+    { label: "Gelen evrak", value: inboxCount, icon: <Icon.inbox />, onClick: () => onGoInbox(), ariaLabel: `${inboxCount} gelen evrak — kuyruğu aç`, gunluk: null },
+    { label: "Üretilen taslak", value: taslaklilar.length, icon: <Icon.edit />, onClick: onGoTaslaklar || onGoIslenen, ariaLabel: `${taslaklilar.length} üretilen taslak — Taslaklar'ı aç`, gunluk: akisTaslak },
+    { label: "Gönderilen evrak", value: gonderilenler.length, icon: <Icon.send />, onClick: onGoGiden, ariaLabel: `${gonderilenler.length} gönderilen evrak — Giden arşivini aç`, gunluk: akisGiden },
+  ];
+  /* Telefonda 2 kolon (390px'te hücre ~170px — rakam + sparkline sığar); takvimin altındaki
+     4-kol rayda 2; takvim yoksa tam genişlikte 4. */
+  const akisKolon = dar ? 2 : takvimVar && genis ? 2 : 4;
+
   return (
-    <ViewWrap id="panel-h" title="Panel" sub={manset}>
-      {/* Atmosfer ARTIK ViewWrap'ten geliyor (tüm görünümler tek yerden alır) — burada
-          mükerrer katman yok. */}
-      {/* Giriş: tek nefes — nu-rise yalnız konteynere, kart kart stagger yok. */}
-      <div style={{ display: "grid", gridTemplateColumns: genis ? "repeat(12, 1fr)" : "1fr", gap: SP.l, alignItems: "start", animation: `nu-rise .16s ${EASE.out} both` }}>
+    <ViewWrap id="panel-h" title="Panel" sub={manset} kunye={kunye} damga={damga}>
+      <style>{PANEL_KF}</style>
+      {/* Açılış koreografisi (2026-10): kahraman önce (60ms), takvim mührünü basar (180ms),
+          akış sayaçları sayar (280ms+), gözlem kuşağı sonra akar. Hepsi transform/opacity/
+          filter; global reduced-motion kuralı tümünü söndürür. */}
+      <div style={{ display: "grid", gridTemplateColumns: genis ? "repeat(12, 1fr)" : "1fr", gap: SP.l + 4, alignItems: "start" }}>
 
-        {/* R1 — akış nabzı (2×2, 8 kol) + yasal süre takvimi (4 kol), eşit yükseklikte.
-            2026-07-25 yeniden düzen: ölçüler "nerede duruyorum", takvim "ne zaman" sorusunu
-            yanıtlar; ikisi de bağlam — bu yüzden üstte yan yana. Aksiyon (brif) ALTLARINDA.
-            alignSelf:stretch + height:%100 → iki kolon aynı hizada biter (ana ızgara
-            alignItems:"start" olduğu için hücre bazında ezilir).
-            Ölçü şeridi 1×4'ten 2×2'ye döndü: üst sıra birincil (işlenen/gelen), alt sıra
-            ikincil (taslak/gönderilen). Kart eşlemesi kurgu ayrımını izler: İşlenen → İşlenen
-            arşivi; Üretilen taslak → Taslaklar; Gönderilen → Giden.
-            overflow:hidden YOK — focusRing dışa taşan halka çizer, kırpılırsa klavye odağı
-            görünmez olur. aria-label sayıyı da taşır — salt eylem etiketi panelin ana
-            verisini ekran okuyucudan gizliyordu (review bulgusu). */}
-        {n > 0 && (
-          /* Ölçü şeridi — dört hücre, her biri TEK BAŞINA bir ızgara hücresi ve tamamı
-             tıklanabilir buton. Aralarında sarmalayıcı yok: hücrenin her pikseli hedeftir
-             (bkz. AkisHucre'deki tıklama alanı notu). */
-          <div style={{ ...span(takvimVar ? 8 : 12), alignSelf: "stretch", height: "100%", background: PAL.surf,
-            border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
-            /* Telefonda TEK kolon: 2×2 ızgara 360px ekranda hücre başına ~132px bırakıyor,
-               "Gönderilen Evrak" etiketi + ikon + sayı sığmayıp kabı 16px aşıyordu (ölçüldü
-               2026-08-12). overflow:hidden olduğu için taşma kaymaya değil KIRPILMAYA
-               dönüşüyor — sayı kesiliyordu. Dar ekranda dört hücre alt alta iner. */
-            display: "grid", gridTemplateColumns: dar ? "1fr" : "repeat(2, 1fr)", gridAutoRows: "1fr",
-            overflow: "hidden" }}>
-            {[
-              { label: "İşlenen Evrak", value: n, icon: <Icon.doc />, onClick: onGoIslenen, ariaLabel: `${n} işlenen evrak — arşivi aç`, gunluk: akisIslenen },
-              { label: "Gelen Evrak", value: inboxCount, icon: <Icon.inbox />, onClick: () => onGoInbox(), ariaLabel: `${inboxCount} gelen evrak — kuyruğu aç`, gunluk: null },
-              { label: "Üretilen Taslak", value: taslaklilar.length, icon: <Icon.edit />, onClick: onGoTaslaklar || onGoIslenen, ariaLabel: `${taslaklilar.length} üretilen taslak — Taslaklar'ı aç`, gunluk: akisTaslak },
-              { label: "Gönderilen Evrak", value: gonderilenler.length, icon: <Icon.send />, onClick: onGoGiden, ariaLabel: `${gonderilenler.length} gönderilen evrak — Giden arşivini aç`, gunluk: akisGiden },
-            ].map((h, i) => <AkisHucre key={h.label} {...h} i={i} />)}
-          </div>
-        )}
-        {/* Takvim — kuyrukSla'nın AY izdüşümü (yeni veri kaynağı YOK; brifle aynı dizi).
-            Ölçü bloğu yoksa (hiç işlem yapılmamış) tam genişliğe yayılır. */}
+        {/* R1 — KAHRAMAN (8 kol) + ENSTRÜMAN RAYI (4 kol: takvim + akış). Brif ekranın tek
+            "şimdi davran" sinyali ve tek primary'si; takvim ikincil enstrüman, sağda. */}
         {takvimVar && (
-          <div style={{ ...span(n > 0 ? 4 : 12), alignSelf: "stretch" }}>
-            <SureTakvimi kuyrukSla={kuyrukSla} />
-          </div>
-        )}
-
-        {/* R1.5 — kahraman brifi: ekranın tek "şimdi davran" sinyali ve tek primary'si.
-            2026-07-25'te ölçü+takvim kuşağının ALTINA taşındı (içerik/mantık aynı, yalnız
-            konum): bağlam önce, aksiyon sonra. Kuyruk SLA'sı yoksa hiç görünmez. */}
-        {takvimVar && (
-          <div style={span(12)}>
+          <div style={{ ...span(8), alignSelf: "start", ...giris(60) }}>
             <KahramanBrif kuyrukSla={kuyrukSla} onGoInbox={onGoInbox} onIsle={onIsle} />
           </div>
         )}
-        {/* SLA servisi yanıt vermediğinde takvim ve brif SESSİZCE kayboluyordu — panel
-            "bozulmuş" görünüyor, sebebi hiçbir yerde yazmıyordu. Kuyruk boşaldığı için
-            gizlendiklerinde bu satır ÇIKMAZ (o dürüst bir boşluktur); yalnız istek
-            başarısızken çıkar. Eksik veriyi uydurmayız, yokluğunu söyleriz. */}
+        {takvimVar ? (
+          <div style={{ ...span(4), display: "flex", flexDirection: "column", gap: SP.l + 4 }}>
+            <div style={giris(180)}><SureTakvimi kuyrukSla={kuyrukSla} /></div>
+            {n > 0 && <div style={giris(280)}><AkisKarti hucreler={akisHucreleri} kolon={akisKolon} /></div>}
+          </div>
+        ) : n > 0 && (
+          <div style={{ ...span(12), ...giris(60) }}><AkisKarti hucreler={akisHucreleri} kolon={akisKolon} /></div>
+        )}
+        {/* SLA servisi yanıt vermediğinde takvim ve brif SESSİZCE kayboluyordu — yalnız istek
+            başarısızken çıkar (kuyruk boşalınca boşluk dürüsttür). Eksik veri uydurulmaz. */}
         {!takvimVar && slaHatasi && (
           <div style={{ ...span(12), display: "flex", alignItems: "center", gap: SP.s,
             padding: `${SP.s}px ${SP.m}px`, background: ALFA(BANT.sari.c), border: `1px solid ${BANT.sari.c}`,
@@ -664,30 +494,35 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
           </div>
         )}
 
-        {/* R3 + R4 — gözlem kuşağı: kahramanın arkasındaki sakin koro. */}
+        {/* R3 + R4 — gözlem kuşağı: kahramanın arkasındaki sakin koro. Antet ayraçla açılır. */}
         {n === 0 ? (
-          <div style={span(12)}>
+          <div style={{ ...span(12), ...giris(360) }}>
             <EmptyState icon={<Icon.chart />} title="Henüz Evrak İşlenmedi"
               sub="Kuyruktan bir evrak işlediğinizde akış, dağılım ve süre özetleri burada oluşur."
               actions={[<Btn key="g" onClick={() => onGoInbox()}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
           </div>
         ) : (
           <>
-            <div style={span(8)}>
+            <div aria-hidden="true" style={{ ...span(12), display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m,
+              ...TYPE.antet, color: PAL.mut3, ...giris(380) }}>
+              <span>GÖZLEM</span>
+              <span style={{ flex: 1, height: 1, background: PAL.line }} />
+              <span style={{ ...TNUM }}>{n} İŞLEM</span>
+            </div>
+            <div style={{ ...span(8), ...giris(420) }}>
               <DagilimYuzeyi n={n} risk={risk} turList={turList} birimList={birimList} ortGuven={ortGuven} genis={genis} />
             </div>
-            <div style={span(4)}>
+            <div style={{ ...span(4), alignSelf: "stretch", ...giris(480) }}>
               <BirimGecikmeKart rows={birimGecikmeList} />
             </div>
-            <div style={span(8)}>
+            <div style={{ ...span(8), ...giris(540) }}>
               <SonIslemlerFeed history={history} n={n} onGoIslenen={onGoIslenen} />
             </div>
-            <div style={span(4)}>
-              {/* Kompakt kart AYNEN duruyor; altına yalnız rapora açılan bir bağlantı eklendi
-                  (2026-07-25). Kartın tamamını tıklanabilir yapmak, içindeki bar başlıklarının
-                  hover detayını (native title) yutardı. */}
-              {/* tag: NeonCard başlığının sağ ucu — düz metin yerine etiket + günlük ortalama
-                  sparkline'ı (aynı bileşen, AkisHucre ile tek görsel dil). */}
+            <div style={{ ...span(4), ...giris(600) }}>
+              {/* tag: başlığın sağ ucu — etiket + günlük ortalama sparkline'ı (AkisHucre ile
+                  tek görsel dil). Kartın tamamı tıklanabilir DEĞİL: bar başlıklarının hover
+                  detayını (native title) yutardı; rapor alttaki ikincil butonla açılır —
+                  ekranın tek primary'si kahramandadır. */}
               <NeonCard title="İşlem Süresi" accent={T} icon={<Icon.clock width={16} height={16} />}
                 tag={sureGunluk.aktifGun >= 2 ? (
                   <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s }}>
@@ -696,10 +531,8 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
                   </span>
                 ) : undefined}>
                 <SureGrafik history={history} />
-                {/* Kıyaslama — detay raporuyla ORTAK bileşen (SureKiyas.jsx); dar kolonda
-                    karolar alt alta iner. Ölçüm yoksa hiç render edilmez. */}
                 <SureKiyasBloku history={history} />
-                <Btn primary onClick={() => setRaporAcik(true)} ariaLabel="İşlem süresi detay raporunu aç"
+                <Btn onClick={() => setRaporAcik(true)} ariaLabel="İşlem süresi detay raporunu aç"
                   style={{ width: "100%", justifyContent: "center", marginTop: SP.l }}>
                   Detay raporu <Icon.arrow width={14} height={14} />
                 </Btn>

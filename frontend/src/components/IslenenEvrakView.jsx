@@ -9,10 +9,13 @@
      kaydı (sol mono zaman kolonu + dikey ray hissi), condensed ~44px, hover'da eylem.
    Kurgu ayrımı: İşlenen = arşiv/izleme, Taslaklar = çalışma kuyruğu, Giden = gönderilmiş. */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import NumberFlow from "@number-flow/react";
-import { ViewWrap, Btn, EmptyState, KV, Icon, MONO, SANS, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
+import { ViewWrap, Btn, KV, Icon, MONO, SANS, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing, odakDongusu } from "./neonUi.jsx";
+import { SicilStil, BaslikHucre, SessizCip, DefterYuzey, BosDefter, useDefterGezinme, Imlec } from "./SicilDefter.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { useDarEkran } from "../hooks/useMedya.js";
+import IslenenOzet from "./IslenenOzet.jsx";
+import { SecimKutusu } from "./FilterBar.jsx";
+import { SlidersHorizontal } from "lucide-react";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
 import { evrakKategori, kategoriMeta } from "../lib/kategori.js";
 import { sicilGrupla } from "../lib/sicilVaryant.js";
@@ -51,7 +54,7 @@ const fmtSaat = (ts) => { try { return new Date(ts).toLocaleTimeString("tr-TR", 
 const fmtGunKisa = (ts) => { try { return new Date(ts).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit" }); } catch { return ""; } };
 const fmtTam = (ts) => { try { return new Date(ts).toLocaleString("tr-TR"); } catch { return ""; } };
 const fmtGuven = (g) => (typeof g === "number" && g > 0 ? `%${Math.round(g * 100)}` : "");
-const fmtSure = (ms) => (Number.isFinite(ms) && ms >= 100 ? `${(ms / 1000).toFixed(1)} sn` : "");
+const fmtSure = (ms) => (Number.isFinite(ms) && ms >= 100 ? `${(ms / 1000).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} sn` : "");
 // Konu verbatim veriden gelir; başlık zarafeti için ilk harf büyütülür (taslakOzeti deseni).
 const baslikCase = (s) => (s ? s.charAt(0).toLocaleUpperCase("tr-TR") + s.slice(1) : s);
 
@@ -86,137 +89,6 @@ const BASE_CONFIG = {
   dataMapping: { search: ["name", "konu"], risk: "bant", durum: "_durum", tur: "evrak_turu", birim: "hedef_birim", dateField: "ts" },
 };
 
-/* ---------- Bento özet ---------- */
-
-/* 14 günlük işlem etkinliği — tek seri, tek ton (bugün tam, geçmiş soluk — aynı tonun
-   açıklık kademesi); çubuk başına title, bütüne aria-label (PanelView süre grafiği dili). */
-function EtkinlikBars({ items }) {
-  const gunler = useMemo(() => {
-    const bugun = new Date(); bugun.setHours(0, 0, 0, 0);
-    const out = Array.from({ length: 14 }, (_, i) => {
-      const d = new Date(bugun.getTime() - (13 - i) * GUN_MS);
-      return { d, n: 0 };
-    });
-    for (const x of items) {
-      const t = new Date(x.ts); t.setHours(0, 0, 0, 0);
-      const idx = 13 - Math.round((bugun - t) / GUN_MS);
-      if (idx >= 0 && idx < 14) out[idx].n += 1;
-    }
-    return out;
-  }, [items]);
-  const max = Math.max(1, ...gunler.map((g) => g.n));
-  const toplam14 = gunler.reduce((a, g) => a + g.n, 0);
-  return (
-    <div role="img" aria-label={`Son 14 günde ${toplam14} işlem — günlük etkinlik çubuğu`}
-      style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 34, marginTop: SP.s }}>
-      {gunler.map((g, i) => (
-        <span key={i} title={`${g.d.toLocaleDateString("tr-TR", { day: "numeric", month: "long" })} · ${g.n} işlem`}
-          style={{ flex: 1, minWidth: 4, height: `${g.n ? Math.max(12, Math.round((g.n / max) * 100)) : 6}%`,
-            background: T, opacity: g.n === 0 ? 0.12 : i === 13 ? 0.95 : 0.4,
-            borderRadius: "2px 2px 0 0" }} />
-      ))}
-    </div>
-  );
-}
-
-/* Karar durumu tanımları — bento segment barı + lejant satırları + defter çipleri
-   TEK listeden beslenir. duzenlendi/onaylandi aynı yeşil ailesi: segmentte açıklık
-   kademesiyle ayrışır (tek-ton kuralı), lejant sayacı zaten adlandırır. */
-const KARARLAR = [
-  { key: "bekliyor", label: "Karar bekliyor", renk: BANT.sari.c, doluluk: 0.85 },
-  { key: "onaylandi", label: "Onaylandı", renk: BANT.yesil.c, doluluk: 0.9 },
-  { key: "duzenlendi", label: "Düzenlenip gönderildi", renk: BANT.yesil.c, doluluk: 0.45 },
-  { key: "reddedildi", label: "Reddedildi", renk: BANT.kirmizi.c, doluluk: 0.85 },
-];
-
-/* Bento: solda büyük "etkinlik" karosu (toplam + 14 gün çubukları + ort. süre), sağda
-   TEK "karar dağılımı" karosu — segmentli yatay bar + tıklanabilir lejant satırları
-   (yargıç bulgusu: 2×2 sıfır-kart grid'i jenerik admin-template'ti, kaldırıldı). */
-function BentoSeridi({ items, filter, ortSn }) {
-  const say = { bekliyor: 0, onaylandi: 0, duzenlendi: 0, reddedildi: 0, islendi: 0 };
-  const bugunSay = { toplam: 0 };
-  const bugun = new Date();
-  for (const x of items) {
-    say[x._durum] = (say[x._durum] || 0) + 1;
-    const d = new Date(x.ts);
-    if (!Number.isNaN(d.getTime()) && ayniGun(d, bugun)) bugunSay.toplam += 1;
-  }
-  const aktifSet = filter.filters.chips.durum || new Set();
-  const temizle = () => aktifSet.forEach((v) => filter.toggleChip("durum", v));
-  const kararliToplam = KARARLAR.reduce((a, k) => a + say[k.key], 0);
-  const barOzet = KARARLAR.filter((k) => say[k.key] > 0)
-    .map((k) => `${say[k.key]} ${k.label.toLocaleLowerCase("tr-TR")}`).join(", ");
-  return (
-    /* Sabit asgariler (230+240+boşluk = ~478px) telefonda kabı 199px taşırıyordu (ölçüldü,
-       2026-08-12): iki kart yan yana sığmadığında grid daralmak yerine dışarı çıkıyordu.
-       `auto-fit` yer yetmeyince TEK sütuna iner — asgari genişlikler geniş ekranda aynen
-       korunur, dar ekranda kartlar alt alta geçer. */
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(230px, 100%), 1fr))",
-      gap: SP.s, marginBottom: SP.m, alignItems: "stretch" }}>
-      <button type="button" onClick={temizle} aria-pressed={aktifSet.size === 0}
-        aria-label={`Toplam işlem: ${items.length}${bugunSay.toplam ? `, bugün ${bugunSay.toplam}` : ""} — tüm kararları göster`}
-        {...focusRing} data-press=""
-        onMouseEnter={(e) => { if (aktifSet.size) e.currentTarget.style.background = PAL.hov; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = aktifSet.size === 0 ? ALFA(T) : PAL.surf; }}
-        style={{ cursor: "pointer", textAlign: "left", padding: `${SP.m}px ${SP.l}px`,
-          borderRadius: RAD.card, background: aktifSet.size === 0 ? ALFA(T) : PAL.surf,
-          border: `1px solid ${aktifSet.size === 0 ? T : PAL.line}`, display: "flex", flexDirection: "column",
-          transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
-        <span style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
-          {/* Saf TYPE.num (24/28): 28'e elle taşımak num'un -.015em tracking'ini (24'e ayarlı)
-              boyutsuz bırakıyordu — boyut-tracking çifti token'da kalır. */}
-          <span style={{ ...TYPE.num, color: PAL.ink }}>
-            <NumberFlow value={items.length} />
-          </span>
-          {bugunSay.toplam > 0 && <span style={{ ...TYPE.meta, color: DERIN.T, ...TNUM }}>bugün +{bugunSay.toplam}</span>}
-        </span>
-        <span style={{ ...TYPE.meta, color: PAL.mut, marginTop: 2 }}>
-          Toplam işlem{ortSn ? ` · ort. ${ortSn} sn` : ""}
-        </span>
-        <EtkinlikBars items={items} />
-        <span style={{ display: "flex", justifyContent: "space-between", ...TYPE.meta, color: PAL.mut3, marginTop: 2, ...TNUM }}>
-          <span>14 gün önce</span><span>bugün</span>
-        </span>
-      </button>
-      <div style={{ padding: `${SP.s}px ${SP.m}px`, borderRadius: RAD.card, background: PAL.surf,
-        border: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", gap: 2 }}>
-        <span style={{ ...TYPE.meta, color: PAL.mut, marginBottom: 2 }}>Karar dağılımı</span>
-        {kararliToplam > 0 && (
-          <span role="img" aria-label={`Karar dağılımı: ${barOzet}`}
-            style={{ display: "flex", gap: 2, height: 8, borderRadius: RAD.chip, overflow: "hidden" }}>
-            {KARARLAR.filter((k) => say[k.key] > 0).map((k) => (
-              <span key={k.key} title={`${k.label} · ${say[k.key]}`}
-                style={{ flex: say[k.key], background: k.renk, opacity: k.doluluk, minWidth: 4 }} />
-            ))}
-          </span>
-        )}
-        <div role="group" aria-label="Karar durumu — satır listeyi filtreler" style={{ marginTop: 2 }}>
-          {KARARLAR.map((k) => {
-            const sifir = say[k.key] === 0;
-            const aktif = aktifSet.has(k.key);
-            return (
-              <button key={k.key} type="button" onClick={() => filter.toggleChip("durum", k.key)}
-                aria-pressed={aktif} aria-label={`${k.label}: ${say[k.key]} evrak${aktif ? " — filtre açık" : ""}`}
-                {...focusRing} data-press="" data-dokunma=""
-                onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(k.renk) : "transparent"; }}
-                style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.s, width: "100%",
-                  padding: "3px 8px", border: "none", borderRadius: RAD.ctl, textAlign: "left",
-                  background: aktif ? ALFA(k.renk) : "transparent",
-                  transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot,
-                  background: k.renk, opacity: sifir ? 0.3 : k.doluluk, flexShrink: 0 }} />
-                <span style={{ ...TYPE.data, color: sifir ? PAL.mut3 : aktif ? DERIN_OF(k.renk) : PAL.ink2, flex: 1 }}>{k.label}</span>
-                <span style={{ fontFamily: MONO, fontSize: 12, color: sifir ? PAL.mut3 : PAL.mut, ...TNUM }}>{say[k.key]}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ---------- Kompakt araç çubuğu ---------- */
 
 const RISK_PILL = [
@@ -228,7 +100,7 @@ const SIRALAMA = [
   { value: "ts_desc", label: "En yeni önce" }, { value: "ts_asc", label: "En eski önce" },
   { value: "risk_desc", label: "Risk (yüksek–düşük)" }, { value: "name_asc", label: "Ad (A–Z)" },
 ];
-const selectStil = { padding: "6px 10px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, ...TYPE.data, cursor: "pointer" };
+const kunyeEtiket = { ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap", marginRight: SP.xs };
 
 function Pill({ label, renk, aktif, onClick, ariaLabel }) {
   return (
@@ -237,9 +109,9 @@ function Pill({ label, renk, aktif, onClick, ariaLabel }) {
       onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(renk || T) : "transparent"; }}
       style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px",
-        borderRadius: RAD.chip, border: `1px solid ${aktif ? (renk || T) : PAL.line}`,
+        borderRadius: RAD.chip + 1, border: `1px solid ${aktif ? PAL.lineHi : "transparent"}`,
         background: aktif ? ALFA(renk || T) : "transparent",
-        ...TYPE.data, fontWeight: 500, color: aktif ? DERIN_OF(renk || T) : PAL.mut,
+        ...TYPE.data, fontWeight: 500, color: aktif ? DERIN_OF(renk || T) : PAL.mut2,
         transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
       {renk && <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: renk }} />}
       {label}
@@ -258,43 +130,53 @@ function AracCubugu({ filter, turSecenek, birimSecenek }) {
   const gunSonu = () => { const d = new Date(); d.setHours(23, 59, 59, 999); return d.getTime(); };
   const oncekiGun = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime() - n * GUN_MS; };
   return (
-    <div style={{ marginBottom: SP.m }}>
+    <div style={{ marginBottom: SP.l }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-        <input type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
-          placeholder="Evrak adı, konu…" aria-label="Arşivde ara"
-          style={{ flex: "1 1 200px", maxWidth: 320, padding: "6px 12px", borderRadius: RAD.ctl,
-            border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink, ...TYPE.data }} />
-        <span role="group" aria-label="Risk filtresi" style={{ display: "inline-flex", gap: SP.xs }}>
+        <span style={{ position: "relative", flex: "1 1 220px", maxWidth: 360, minWidth: "min(200px, 100%)", display: "flex" }}>
+          <span aria-hidden="true" style={{ position: "absolute", left: 12, top: 0, bottom: 0, display: "flex", alignItems: "center", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
+          <input type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
+            placeholder="Evrak adı, konu…" aria-label="Arşivde ara" {...focusRing}
+            style={{ width: "100%", height: 36, boxSizing: "border-box", padding: "0 12px 0 36px", borderRadius: RAD.ctl, outline: "none",
+              border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.ink, ...TYPE.ui }} />
+        </span>
+        <span role="group" aria-label="Risk filtresi" style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+          <span aria-hidden="true" style={kunyeEtiket}>Risk</span>
           {RISK_PILL.map((r) => (
             <Pill key={r.value} label={r.label} renk={r.renk} aktif={riskSet.has(r.value)}
               ariaLabel={`${r.label} risk filtresi`} onClick={() => filter.toggleChip("risk", r.value)} />
           ))}
         </span>
-        <select value={f.sortBy} onChange={(e) => filter.setSortBy(e.target.value)}
-          aria-label="Sıralama" style={selectStil}>
-          {SIRALAMA.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-        </select>
-        <Pill label={`Filtreler${gelismisAktif ? ` · ${gelismisAktif}` : ""}`} aktif={acik || gelismisAktif > 0}
-          ariaLabel={`Gelişmiş filtreler${gelismisAktif ? ` — ${gelismisAktif} aktif` : ""}`}
-          onClick={() => setAcik((a) => !a)} />
-        <span style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
-          <strong style={{ color: DERIN.T, fontWeight: 600 }}>{filter.counts.filtered}</strong> / {filter.counts.total} kayıt
+        {/* Native select kabuğu FilterBar ile ortak (SecimKutusu): tarayıcı oku yerine ince
+            chevron + "SIRA" künye öneki — Gelen/Giden/Denetim ile aynı kontrol dili. */}
+        <SecimKutusu id="isl-sort" label="Sıralama" onek="Sıra" value={f.sortBy} minW={190}
+          onChange={(e) => filter.setSortBy(e.target.value)} options={SIRALAMA} />
+        <button type="button" onClick={() => setAcik((a) => !a)} aria-expanded={acik} aria-controls="isl-gelismis"
+          aria-label={`Gelişmiş filtreler${gelismisAktif ? ` — ${gelismisAktif} aktif` : ""}`}
+          {...focusRing} data-press=""
+          onMouseEnter={(e) => { if (!acik) e.currentTarget.style.background = PAL.hov; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.surf2 : PAL.surf; }}
+          style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, height: 36, padding: "0 12px",
+            borderRadius: RAD.ctl, border: `1px solid ${acik || gelismisAktif ? PAL.lineHi : PAL.inputLine}`,
+            background: acik ? PAL.surf2 : PAL.surf, color: PAL.ink2, ...TYPE.ui, fontWeight: 500,
+            transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
+          <SlidersHorizontal size={15} strokeWidth={1.75} aria-hidden="true" />
+          Filtreler
+          {gelismisAktif > 0 && <span style={{ minWidth: 18, height: 18, padding: "0 5px", borderRadius: 9, display: "inline-grid", placeItems: "center", background: T, color: PAL.onAccent, fontFamily: MONO, fontSize: 11, fontWeight: 600, ...TNUM }}>{gelismisAktif}</span>}
+        </button>
+        <span role="status" aria-live="polite" style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 12, color: PAL.mut2, whiteSpace: "nowrap", ...TNUM }}>
+          <strong style={{ color: PAL.ink, fontWeight: 600, fontSize: 13 }}>{filter.counts.filtered}</strong> / {filter.counts.total} kayıt
         </span>
       </div>
       {acik && (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginTop: SP.s,
-          padding: `${SP.s}px ${SP.m}px`, borderRadius: RAD.card, border: `1px solid ${PAL.line}`, background: PAL.surf2 }}>
-          <select value={f.select.tur} onChange={(e) => filter.setSelect("tur", e.target.value)}
-            aria-label="Evrak türü" style={selectStil}>
-            <option value="">Tüm türler</option>
-            {turSecenek.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-          <select value={f.select.birim} onChange={(e) => filter.setSelect("birim", e.target.value)}
-            aria-label="Hedef birim" style={selectStil}>
-            <option value="">Tüm birimler</option>
-            {birimSecenek.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-          <span role="group" aria-label="Hızlı tarih" style={{ display: "inline-flex", gap: SP.xs }}>
+        <div id="isl-gelismis" style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginTop: SP.s,
+          padding: `${SP.s}px ${SP.m}px`, borderRadius: RAD.card, border: `1px solid ${PAL.line}`, background: PAL.surf2,
+          animation: "nu-rise .18s var(--ke-ease-out) both" }}>
+          <SecimKutusu id="isl-tur" label="Evrak türü" value={f.select.tur || ""} onChange={(e) => filter.setSelect("tur", e.target.value)}
+            options={[{ value: "", label: "Tüm türler" }, ...turSecenek]} />
+          <SecimKutusu id="isl-birim" label="Hedef birim" value={f.select.birim || ""} minW={220} onChange={(e) => filter.setSelect("birim", e.target.value)}
+            options={[{ value: "", label: "Tüm birimler" }, ...birimSecenek]} />
+          <span role="group" aria-label="Hızlı tarih" style={{ display: "inline-flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+            <span aria-hidden="true" style={kunyeEtiket}>Tarih</span>
             <Pill label="Bugün" aktif={f.dateFrom === oncekiGun(0)} onClick={() => filter.setDateRange(oncekiGun(0), gunSonu())} />
             <Pill label="Son 7 gün" aktif={f.dateFrom === oncekiGun(7)} onClick={() => filter.setDateRange(oncekiGun(7), gunSonu())} />
             <Pill label="Son 30 gün" aktif={f.dateFrom === oncekiGun(30)} onClick={() => filter.setDateRange(oncekiGun(30), gunSonu())} />
@@ -332,15 +214,27 @@ function DurumCip({ durum }) {
   );
 }
 
-/* Defter kaydı — kart DEĞİL: hairline üst ayraç, sol mono zaman kolonu + dikey ray,
-   tek satır içerik (başlık + inline meta, ellipsis), sağda durum/risk + hover'da Düzenle.
-   div[role=button]: satır içinde ikincil eylem yaşayabilsin (button-içinde-button geçersiz). */
-function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
+/* Defter şablonu — zaman · konu bloğu · karar durumu · risk · ok. Telefonda: üst satır
+   zaman + durum, orta satır konu, alt satır risk + ok (bilgi gizlenmez, yeniden dizilir). */
+const SABLON = {
+  kolon: "56px minmax(0,1fr) 150px 76px 16px",
+  alan: '"zaman ana durum risk ok"',
+  alanDar: '"zaman durum" "ana ana" "risk ok"',
+  marj: "86px",
+};
+const BASLIKLAR = [
+  <BaslikHucre key="z" alan="zaman">Saat</BaslikHucre>,
+  <BaslikHucre key="a" alan="ana">Konu · kaynak · tür · birim</BaslikHucre>,
+  <BaslikHucre key="d" alan="durum">Karar</BaslikHucre>,
+  <BaslikHucre key="r" alan="risk">Risk</BaslikHucre>,
+];
+
+/* Defter kaydı — ortak defter satırı ([data-sicil-satir]: hairline ayraç, solda mürekkep
+   cetveli, kayan seçim imleci). div[role=button]: satır içinde ikincil eylem yaşayabilsin
+   (button-içinde-button geçersiz). Durum/risk sütunları SABİT genişlik — dikey hat dalgalanmaz. */
+function DefterSatiri({ item, sira, zamanBicimi, onAc, onDuzenle, gez }) {
   const [uzerinde, setUzerinde] = useState(false);
-  // Telefonda altı sabit kolon (52+26+128+64+14 + 5 boşluk = 344px) kaba SIĞMIYORDU: başlık
-  // kolonu 0px'e çöküp içeriği dışarı taşıyordu (ölçüldü 2026-08-12: 390px ekranda
-  // `grid: 52px 26px 0px 128px 64px 14px`, sayfa 183px yatay kayıyordu). Dar ekranda satır
-  // sarmalı akışa geçer: bilgi GİZLENMEZ, ikinci satıra iner.
+  // Telefonda hover yok: hızlı "Düzenle" kalıcı görünür (a11y denetimi 2026-08-12).
   const dar = useDarEkran();
   const riskC = BANT[item.bant]?.c;
   const guven = fmtGuven(item.result?.tur_confidence);
@@ -351,74 +245,51 @@ function DefterSatiri({ item, zamanBicimi, onAc, onDuzenle, ilk = false }) {
   const hizliDuzenle = item._durum === "bekliyor" && onDuzenle;
   const zaman = zamanBicimi === "saat" ? fmtSaat(item.ts) : fmtGunKisa(item.ts);
   return (
-    <div role="button" tabIndex={0} onClick={(e) => onAc(item, e.currentTarget)}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onAc(item, e.currentTarget); } }}
-      aria-label={`${item.konu || item.name} — ${DURUM_TR[item._durum]} — detayı aç`} {...focusRing} data-press=""
-      onMouseEnter={(e) => { setUzerinde(true); e.currentTarget.style.background = PAL.hov; }}
-      onMouseLeave={(e) => { setUzerinde(false); e.currentTarget.style.background = "transparent"; }}
-      /* Klavye eşdeğerliği (WCAG 2.1.1, a11y denetimi 2026-08-12): hızlı "Düzenle" yalnız
-         `uzerinde` state'ine bağlıydı ve o state SADECE fare olaylarıyla doluyordu — satıra
-         Tab'layan kullanıcı butonu DOM'da hiç bulamıyordu (buton kendi onFocus'unu taşıyor
-         ama render edilmediği için ona odaklanmak da mümkün değildi: kısır döngü).
-         Odak satıra gelince de açılır; dokunmatikte `dar` yolu devrede (aşağıda). */
+    <div role="button" tabIndex={0} data-sicil-satir="" data-sd-anahtar={item.id} onClick={(e) => onAc(item, e.currentTarget)}
+      onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onAc(item, e.currentTarget); } }}
+      aria-label={`${item.konu || item.name} — ${DURUM_TR[item._durum]} — detayı aç`}
+      onPointerDown={() => gez.sec(item.id)}
+      onMouseEnter={() => setUzerinde(true)} onMouseLeave={() => setUzerinde(false)}
+      /* Klavye eşdeğerliği (WCAG 2.1.1): hızlı "Düzenle" odak satıra gelince de açılır. */
       onFocus={() => setUzerinde(true)}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setUzerinde(false); }}
-      style={{ cursor: "pointer", alignItems: "center", gap: SP.m,
-        // Geniş: ızgara. Durum/risk kolonları SABİT genişlik — auto kolonlar çip metnine göre
-        // kayıp dikey hattı dalgalandırıyordu (yargıç bulgusu); bu hizalama KORUNUR.
-        // Dar: sarmalı flex — sabit kolon bütçesi telefona sığmadığından satır ikiye iner.
-        ...(dar
-          ? { display: "flex", flexWrap: "wrap", rowGap: SP.xs }
-          : { display: "grid", gridTemplateColumns: "52px 26px minmax(0,1fr) 128px 64px 14px" }),
-        padding: "8px 14px", borderTop: ilk ? "none" : `1px solid ${PAL.line}`, background: "transparent",
-        transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-      {/* Zaman kolonu — defterin ray'ı: mono, sağa yaslı, dikey hairline ile ayrılır */}
-      <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut2, textAlign: "right",
-        paddingRight: SP.m, borderRight: `1px solid ${PAL.line}`, alignSelf: "stretch",
-        display: "flex", alignItems: "center", justifyContent: "flex-end", ...TNUM }}>{zaman}</span>
-      <span aria-hidden="true" title={kat.label}
-        style={{ width: 26, height: 26, borderRadius: RAD.ctl, display: "grid", placeItems: "center",
-          background: PAL.surfHi, color: DURUM_RENK[item._durum] ? DERIN_OF(DURUM_RENK[item._durum]) : PAL.mut2 }}>
-        <KIcon width={14} height={14} />
-      </span>
-      {/* Dar ekranda başlık ilk satırın kalanını alır (120px taban) → durum/risk/ok ikinci
-          satıra sarar. Geniş ekranda `flex` yok, ızgara kolonu neyse odur. */}
-      <span style={{ minWidth: 0, display: "flex", alignItems: "baseline", gap: SP.s, overflow: "hidden", whiteSpace: "nowrap", ...(dar ? { flex: "1 1 120px" } : null) }}>
-        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink2, flexShrink: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
-          {baslikCase(cleanDemoText(item.konu)) || item.name}
+      style={{ "--sd-i": Math.min(sira, 14) }}>
+      {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="islenen" />}
+      <span data-sd-no-sira="" style={{ gridArea: "zaman", fontFamily: MONO, fontSize: 13, fontWeight: 500, color: PAL.ink2, ...TNUM }}>{zaman}</span>
+      <span style={{ gridArea: "ana", minWidth: 0 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
+          <span aria-hidden="true" title={kat.label} style={{ display: "flex", flexShrink: 0, color: DURUM_RENK[item._durum] ? DERIN_OF(DURUM_RENK[item._durum]) : PAL.mut3 }}><KIcon width={14} height={14} /></span>
+          <span data-sd-konu="" style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {baslikCase(cleanDemoText(item.konu)) || item.name}
+          </span>
+          {sla === "GECIKMIS" && <SessizCip renk={BANT.kirmizi.c} vurgulu metin="süresi geçmiş" ikon={<Icon.alert width={11} height={11} />} />}
+          {sla === "KRITIK" && <SessizCip renk={BANT.sari.c} metin="süre kritik" />}
         </span>
-        <span style={{ ...TYPE.meta, color: PAL.mut, overflow: "hidden", textOverflow: "ellipsis", flexShrink: 4, minWidth: 0 }}>
-          <span style={{ fontFamily: SANS, fontSize: 12, fontWeight: 500 }}>{item.name}</span>
-          {" · "}{EVRAK_TR(item.evrak_turu)}{" · "}{BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)}
+        <span style={{ display: "block", ...TYPE.meta, color: PAL.mut, marginTop: 3, paddingLeft: 22, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: MONO, fontSize: 11 }}>{item.name}</span>
+          {" · "}{EVRAK_TR(item.evrak_turu)}{" · "}<span style={{ color: PAL.mut2 }}>{BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)}</span>
           {guven && ` · güven ${guven}`}{sure && ` · ${sure}`}
           {item.varyantlar?.length > 1 && ` · ${item.varyantlar.length} yazı türü`}
         </span>
-        {sla === "GECIKMIS" && <span style={{ ...TYPE.meta, color: DERIN.kirmizi, flexShrink: 0 }}>süresi geçmiş</span>}
-        {sla === "KRITIK" && <span style={{ ...TYPE.meta, color: DERIN.sari, flexShrink: 0 }}>süre kritik</span>}
       </span>
-      {/* Dokunmatikte hover YOKTUR: `dar` (telefon) eşiğinde kısayol kalıcı görünür, yoksa
-          satır-içi hızlı yol fareye özel kalırdı (a11y denetimi 2026-08-12). Telefonda durum
-          çipinin yerini alır — çipin söylediği "bekliyor" bilgisini butonun varlığı zaten
-          taşır (buton YALNIZ bekleyen taslakta render edilir). */}
-      {hizliDuzenle && (uzerinde || dar) ? (
-        <button type="button" onClick={(e) => { e.stopPropagation(); onDuzenle(item); }}
-          onFocus={() => setUzerinde(true)} onBlur={() => setUzerinde(false)}
-          aria-label={`${item.konu || item.name} taslağını Taslaklar'da düzenle`} {...focusRing} data-press=""
-          style={{ cursor: "pointer", justifySelf: "end", display: "inline-flex", alignItems: "center", gap: SP.xs,
-            padding: "3px 9px", border: `1px solid ${PAL.line}`, background: PAL.surf, borderRadius: RAD.ctl,
-            ...TYPE.meta, fontWeight: 500, color: DERIN.T,
-            transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-          <Icon.edit width={12} height={12} /> Düzenle
-        </button>
-      ) : (
-        <DurumCip durum={item._durum} />
-      )}
-      <span style={{ justifySelf: "end", display: "inline-flex", alignItems: "center", gap: 6,
+      <span style={{ gridArea: "durum", minWidth: 0 }}>
+        {hizliDuzenle && (uzerinde || dar) ? (
+          <button type="button" data-sd-eylem="" onClick={(e) => { e.stopPropagation(); onDuzenle(item); }}
+            onFocus={() => setUzerinde(true)} onBlur={() => setUzerinde(false)}
+            aria-label={`${item.konu || item.name} taslağını Taslaklar'da düzenle`} data-press=""
+            style={{ justifySelf: "start", minHeight: 28, padding: "3px 10px", borderColor: PAL.lineHi, background: PAL.surf }}>
+            <Icon.edit width={12} height={12} /> Düzenle
+          </button>
+        ) : (
+          <DurumCip durum={item._durum} />
+        )}
+      </span>
+      <span style={{ gridArea: "risk", display: "inline-flex", alignItems: "center", gap: 6,
         ...TYPE.meta, fontWeight: 500, color: riskC ? DERIN_OF(riskC) : PAL.mut3, ...TNUM }}>
         <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: riskC || PAL.mut3, opacity: riskC ? 1 : 0.5 }} />
         {RISK_TR[item.bant] || "—"}
       </span>
-      <span aria-hidden="true" style={{ display: "flex", color: PAL.mut3 }}><Icon.arrow width={12} height={12} /></span>
+      <span aria-hidden="true" style={{ gridArea: "ok", display: "flex", color: PAL.mut3 }}><Icon.arrow width={12} height={12} /></span>
     </div>
   );
 }
@@ -540,6 +411,7 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
     konu: h.result?.bilgi_unsurlari?.konu || h.result?.alt_talepler?.[0]?.ozet || "",
   })), [history]);
   const filter = useFilter(items, BASE_CONFIG);
+  const gez = useDefterGezinme();   // j/k gezinme + kayan seçim imleci
   const turSecenek = useMemo(() => deriveOptions(items, "evrak_turu", EVRAK_TR), [items]);
   const birimSecenek = useMemo(() => deriveOptions(items, "hedef_birim", BIRIM_LBL), [items]);
 
@@ -558,55 +430,58 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
 
   // Ortalama işlem süresi — büyük karoda dürüst telemetri (veri yoksa yazılmaz).
   const sureler = items.map((x) => x.result?.sure_ms).filter((x) => Number.isFinite(x) && x > 0);
-  const ortSn = sureler.length ? (sureler.reduce((a, x) => a + x, 0) / sureler.length / 1000).toFixed(1) : null;
+  const ortSn = sureler.length ? sureler.reduce((a, x) => a + x, 0) / sureler.length / 1000 : null;
 
   if (history.length === 0) {
     return (
-      <ViewWrap id="islenen-h" title="İşlenen evrak" sub="Bu oturumda ve önceki oturumlarda işlenen tüm evraklar">
-        <EmptyState icon={<Icon.shield />} title="Henüz evrak işlenmedi"
-          sub="Gelen evrak kuyruğundan bir evrak seçtiğinizde ya da yeni bir belge yüklediğinizde, işlenen her evrak karar durumuyla birlikte burada listelenir."
+      <ViewWrap id="islenen-h" title="İşlenen evrak" kunye="Evrak sicil defteri" sub="Bu oturumda ve önceki oturumlarda işlenen tüm evraklar">
+        <SicilStil />
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="" satir={7} baslik="Sicil defteri henüz açılmadı"
+          sub="Gelen evrak kuyruğundan bir evrak seçtiğinizde ya da yeni bir belge yüklediğinizde, işlenen her evrak karar durumuyla birlikte buraya kaydedilir."
           actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
       </ViewWrap>
     );
   }
 
+  // Görünümün hükmü: memur kararı bekleyen kayıt sayısı (tek damga).
+  const bekleyen = items.filter((x) => x._durum === "bekliyor").length;
+
   // Başlıkta eylem YOK: "Yeni evrak yükle" sidebar'da kalıcı duruyor — burada tekrarı gürültüydü.
   return (
-    <ViewWrap id="islenen-h" title="İşlenen evrak" sub="Evrak sicil defteri — işlenen her kayıt karar durumuyla">
-      <BentoSeridi items={items} filter={filter} ortSn={ortSn} />
+    <ViewWrap id="islenen-h" title="İşlenen evrak" kunye="Evrak sicil defteri" sub="İşlenen her kayıt, karar durumu ve risk bandıyla"
+      damga={bekleyen ? { metin: `${bekleyen} karar bekliyor`, ton: BANT.sari.c, egim: -4 } : undefined}>
+      <SicilStil />
+      <IslenenOzet items={items} filter={filter} ortSn={ortSn} />
       <AracCubugu filter={filter} turSecenek={turSecenek} birimSecenek={birimSecenek} />
 
       {filter.results.length === 0 ? (
-        <EmptyState icon={<Icon.shield />} title="Eşleşen kayıt yok" sub="Filtre ölçütlerinizi gevşetin." actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} damga="Eşleşme yok" onek=""
+          baslik="Bu ölçütlerle kayıt yok" sub="Filtre ölçütlerinizi gevşetin; sicil kayıtları silinmez."
+          actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
-          {gruplar.map((g, gi) => (
-            <section key={g.etiket || `düz-${gi}`} aria-label={g.etiket || "Kayıtlar"}>
-              {g.etiket && (
-                // Sticky kova başlığı — kart DIŞINDA (overflow'lu yüzey sticky'yi kırar);
-                // zemin PAL.bg: kayıtlar altından akarken okunur kalır.
-                // borderBottom hairline: kayıtlar altından akarken başlık "üstte duran katman"
-                // olarak ayrışır (scroll-edge, border-first idiom — CanliAjanAkisi ile aynı).
-                <div style={{ position: "sticky", top: 0, zIndex: 2, display: "flex", alignItems: "center",
-                  gap: SP.s, padding: `${SP.s}px 2px`, background: PAL.bg, borderBottom: `1px solid ${PAL.line}` }}>
-                  <span style={{ ...TYPE.meta, fontWeight: 600, color: PAL.ink2 }}>{g.etiket}</span>
-                  <span style={{ ...TYPE.meta, color: PAL.mut3, ...TNUM, padding: "1px 7px",
-                    borderRadius: RAD.chip, background: PAL.hov }}>{g.rows.length}</span>
-                </div>
-              )}
-              {/* Kovanın defter yüzeyi: TEK kart, satırlar hairline ile ayrılır (satır kartı YOK) */}
-              <div style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card,
-                overflow: "clip",
-                animation: "nu-rise .3s var(--ke-ease-out) both", animationDelay: `${Math.min(gi, 4) * 45}ms` }}>
-                {g.rows.map((item, ri) => (
-                  <DefterSatiri key={item.id} item={item} ilk={ri === 0}
+        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="İşlenen evrak kayıtları" gezinme={gez} ipucu="detayı aç">
+          {(() => {
+            let sira = 0;
+            return gruplar.map((g, gi) => (
+              <React.Fragment key={g.etiket || `düz-${gi}`}>
+                {g.etiket && (
+                  /* Kova başlığı — defter içinde yapışkan bant (overflow:clip kaydırma kabı
+                     kurmaz, sticky çalışır); kayıtlar altından akarken okunur kalır. */
+                  <div role="heading" aria-level={3} style={{ position: "sticky", top: 0, zIndex: 2, display: "flex", alignItems: "center", gap: SP.s,
+                    padding: "6px 20px", background: PAL.surf2, borderTop: gi ? `1px solid ${PAL.lineHi}` : "none", borderBottom: `1px solid ${PAL.line}` }}>
+                    <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.ink2, textTransform: "uppercase" }}>{g.etiket}</span>
+                    <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, ...TNUM }}>· {g.rows.length} kayıt</span>
+                  </div>
+                )}
+                {g.rows.map((item) => (
+                  <DefterSatiri key={item.id} item={item} sira={sira++} gez={gez}
                     zamanBicimi={g.etiket === "Bugün" || g.etiket === "Dün" ? "saat" : "gun"}
                     onAc={acDetay} onDuzenle={onDuzenle} />
                 ))}
-              </div>
-            </section>
-          ))}
-        </div>
+              </React.Fragment>
+            ));
+          })()}
+        </DefterYuzey>
       )}
 
       <DetayModal item={detay} onClose={closeDetay} onDuzenle={onDuzenle} onMevzuatAc={onMevzuatAc} />

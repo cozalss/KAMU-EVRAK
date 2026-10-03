@@ -6,7 +6,7 @@
    görünür hâli) · verify/risk kapı rozetleri · tek-adım Geri al. Esc önce öneriyi kapatır
    (modalı değil — capture-faz dinleyici BelgeModal'ın bubble dinleyicisinden önce durdurur). */
 import { useEffect, useRef, useState } from "react";
-import { PAL, DERIN, DERIN_OF, T, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, Btn, focusRing } from "./neonUi.jsx";
+import { PAL, DERIN, DERIN_OF, T, V, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, Icon, Btn, focusRing } from "./neonUi.jsx";
 import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
 import { cleanDemoText } from "./result-cards.jsx";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
@@ -152,9 +152,13 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
     <>
       {/* Giriş şeridi — talimat yaz/söyle ya da hazır talimata tek tıkla */}
       {!oneri && (
-        <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: "10px 14px", borderRadius: RAD.chip, background: PAL.surf, boxShadow: SH.card }}>
+        /* Revize masası: kâğıdın üstünde duran ince bir talimat şeridi — havada duran katman
+           (surfPop + SH.pop), kâğıttan ayrı okunur. Hazır talimatlar hap biçimli, sessiz. */
+        <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: "10px 12px", borderRadius: RAD.card, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop }}>
           <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-            <Icon.sparkle width={15} height={15} style={{ color: DERIN_OF(T), flexShrink: 0 }} />
+            <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 30, height: 30, borderRadius: RAD.ctl, background: ALFA(V), color: DERIN.V, flexShrink: 0 }}>
+              <Icon.sparkle width={15} height={15} />
+            </span>
             {busy ? <BeklemeDurumu sure={sure} /> : (
               <>
                 <input ref={girisRef} value={talimat}
@@ -162,7 +166,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
                   onKeyDown={(e) => { if (e.key === "Enter") revizeIste(); }}
                   placeholder="AI ile revize et (örn. “ilgi yazıya atıf yap”, “gerekçeyi güçlendir”)"
                   aria-label="Taslak revizyon talimatı" {...focusRing}
-                  style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "7px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
+                  style={{ flex: 1, minWidth: 0, flexBasis: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "8px 12px", background: PAL.bg, color: PAL.ink, ...TYPE.ui }} />
                 {stt.destekleniyor && (
                   <button type="button" onClick={stt.toggle} aria-pressed={stt.dinliyor}
                     aria-label={stt.dinliyor ? "Talimat diktesini durdur" : "Talimatı sesle söyle"}
@@ -177,12 +181,14 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
             )}
           </div>
           {!busy && (
-            <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }} aria-label="Hazır revizyon talimatları">
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", paddingLeft: 38 }} aria-label="Hazır revizyon talimatları">
+              <span aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginRight: 2 }}>Hazır</span>
               {HAZIR_TALIMATLAR.map((h) => (
                 <button key={h.etiket} type="button" onClick={() => revizeIste(h.talimat)} title={h.talimat} {...focusRing}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = PAL.surf2; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = PAL.bg; }}
-                  style={{ cursor: "pointer", padding: "3px 10px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, background: PAL.bg, color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: "background .12s ease-out" }}>
+                  data-press=""
+                  onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; e.currentTarget.style.borderColor = PAL.lineHi; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = PAL.line; }}
+                  style={{ cursor: "pointer", padding: "3px 11px", borderRadius: 999, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
                   {h.etiket}
                 </button>
               ))}
@@ -214,10 +220,11 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
       {oneri && (
         // SH.card: bu kart modal İÇİNDE satır-içi bir bölge, yeni katman değil — komşu
         // şeritlerle (giriş/geri-al/hata) aynı düzlemde durur; modal gölgesi katmana aittir.
-        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: SP.m, borderRadius: RAD.chip, background: PAL.surfPop, boxShadow: SH.card, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.m, padding: "14px 16px", borderRadius: RAD.card, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
-            <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
-              AI önerisi — {oneri.zincir.map((z) => `“${z}”`).join(" → ")}
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: "block", ...TYPE.antet, color: DERIN.V, textTransform: "uppercase", marginBottom: 2 }}>AI önerisi · {oneri.zincir.length} talimat</span>
+              <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{oneri.zincir.map((z) => `“${z}”`).join(" → ")}</span>
             </span>
             <span style={{ display: "flex", gap: SP.s }}>
               <Btn onClick={() => setOneri(null)}>Vazgeç</Btn>

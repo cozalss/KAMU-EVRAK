@@ -11,7 +11,7 @@ import React, { useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AnimatePresence, motion } from "motion/react";
-import { MONO, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon } from "./neonUi.jsx";
+import { MONO, DISPLAY, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon } from "./neonUi.jsx";
 
 const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sistem: "Sistem" };
 
@@ -30,6 +30,15 @@ const MIC = {
   kvkk: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 L19 6 V11 C19 15.5 16 19.2 12 21 C8 19.2 5 15.5 5 11 V6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 11.5 L11.2 13.7 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
   cikis: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 17l5-5-5-5M20 12H9M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>,
 };
+
+/* Avatar — "kişisel mühür": mühür moru disk + içte ince ofset halka (Damga'nın çift çerçeve
+   dili) + Archivo'nun geniş kesiminde baş harfler. Üç boyutta aynı çizim. */
+const Avatar = ({ ad, boy = 32 }) => (
+  <span aria-hidden="true" style={{ position: "relative", width: boy, height: boy, flexShrink: 0, borderRadius: RAD.dot, background: DERIN.V, display: "grid", placeItems: "center", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "120%", fontSize: Math.round(boy * 0.36), letterSpacing: ".02em", color: PAL.onAccent }}>
+    <span style={{ position: "absolute", inset: 2, borderRadius: RAD.dot, border: `1px solid color-mix(in srgb, ${PAL.onAccent} 45%, transparent)` }} />
+    {bashHarfler(ad)}
+  </span>
+);
 
 /* Durum çipi — semantik renk + metin (renk tek sinyal değil). */
 const Cip = ({ renk, zemin, children }) => (
@@ -64,20 +73,24 @@ function Kip({ baslik, onKapat, donusRef, children }) {
             transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
             style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, outline: "none" }}>
             <Dialog.Description style={SR_ONLY}>{baslik} bilgi penceresi.</Dialog.Description>
-            <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "14px 16px", borderBottom: `1px solid ${PAL.line}` }}>
-              <Dialog.Title asChild>
-                <h2 style={{ margin: 0, ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1 }}>{baslik}</h2>
-              </Dialog.Title>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: SP.s, padding: "16px 20px 0" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>T.C. · Kamu-Evrak · Hesap</div>
+                <Dialog.Title asChild>
+                  <h2 style={{ margin: "4px 0 0", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 20, lineHeight: "24px", letterSpacing: "-.01em", color: PAL.ink }}>{baslik}</h2>
+                </Dialog.Title>
+              </div>
               <Dialog.Close asChild>
                 <button type="button" ref={kapatRef} aria-label="Kapat" {...focusRing}
                   onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                  style={{ cursor: "pointer", width: 28, height: 28, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.mut, transition: "background .12s ease-out" }}>
+                  style={{ cursor: "pointer", width: 32, height: 32, display: "grid", placeItems: "center", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.mut, transition: "background .12s ease-out" }}>
                   <Icon.x />
                 </button>
               </Dialog.Close>
             </div>
-            <div style={{ padding: 16 }}>{children}</div>
+            <div aria-hidden="true" style={{ margin: "12px 20px 0", height: 4, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.85 }} />
+            <div style={{ padding: "12px 20px 20px" }}>{children}</div>
           </motion.div>
           </Dialog.Content>
           </motion.div>
@@ -101,7 +114,7 @@ function ProfilKip({ user, onKapat, donusRef }) {
   return (
     <Kip baslik="Profil bilgileri" onKapat={onKapat} donusRef={donusRef}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m }}>
-        <span aria-hidden="true" style={{ width: 44, height: 44, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.ui, fontWeight: 600, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
+        <Avatar ad={user?.ad_soyad} boy={48} />
         <span style={{ minWidth: 0 }}>
           <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{user?.ad_soyad || "Kullanıcı"}</span>
           <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.eposta || "—"}</span>
@@ -212,11 +225,11 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.hov : PAL.surfHi; }}
             style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", justifyContent: dar ? "center" : "flex-start", gap: SP.m, padding: dar ? SP.s : SP.m, borderRadius: RAD.card, background: acik ? PAL.hov : PAL.surfHi, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, textAlign: "left", transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
-            <span aria-hidden="true" style={{ width: 32, height: 32, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.meta, fontWeight: 500, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
+            <Avatar ad={user?.ad_soyad} boy={32} />
             {!dar && (
               <>
                 <span style={{ minWidth: 0, flex: 1 }}>
-                  <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
+                  <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
                   <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
                 </span>
                 <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut2, transition: "transform .15s ease-out", transform: acik ? "rotate(180deg)" : "none" }}>
@@ -232,12 +245,16 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             kapatıyoruz — NeonSidebar'daki "örnek evrak" dropdown'ıyla aynı gerekçe). */}
         <DropdownMenu.Portal>
           <DropdownMenu.Content side="top" align="start" sideOffset={8} collisionPadding={12}
-            style={{ width: 236, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.pop, zIndex: 60, animation: "nu-rise .16s var(--ke-ease-out) both", outline: "none" }}>
+            style={{ width: 252, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.modal, zIndex: 60, transformOrigin: "var(--radix-dropdown-menu-content-transform-origin)", animation: "ke-hesap-ac .18s var(--ke-ease-out) both", outline: "none" }}>
+            <style>{"@keyframes ke-hesap-ac{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}"}</style>
+            <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", padding: `${SP.xs}px 10px 0`, display: "flex", justifyContent: "space-between" }}>
+              <span>Personel kartı</span><span>Oturum açık</span>
+            </div>
             {/* Kimlik başlığı — etkileşimsiz; Radix'in ok-tuşu gezinmesi yalnız Item/CheckboxItem'ları sayar. */}
             <div role="presentation" style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.s}px 10px ${SP.m}px` }}>
-              <span aria-hidden="true" style={{ width: 36, height: 36, flexShrink: 0, borderRadius: RAD.dot, background: V, display: "flex", alignItems: "center", justifyContent: "center", ...TYPE.ui, fontWeight: 600, color: PAL.onAccent }}>{bashHarfler(user?.ad_soyad)}</span>
+              <Avatar ad={user?.ad_soyad} boy={40} />
               <span style={{ minWidth: 0, flex: 1 }}>
-                <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
+                <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 700, fontStretch: "106%", fontSize: 15, lineHeight: "20px", color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
                 <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.eposta || "—"}</span>
                 <span style={{ display: "flex", gap: SP.xs, marginTop: 4, flexWrap: "wrap" }}>
                   <Cip renk={DERIN.V} zemin={ALFA(V)}>{ROL_TR[user?.rol] || user?.rol || "Kullanıcı"}</Cip>

@@ -156,9 +156,10 @@ export default {
         pop: "var(--ke-sh-pop)",
         modal: "var(--ke-sh-modal)",
       },
-      // app.html'in yüklediği fontlar. DISPLAY ayrı değil: başlıklar sistem fontu.
+      // app.html fontları (Antet & Damga): sans = Instrument Sans · display = Archivo (wdth ekseni) · mono = Plex Mono.
       fontFamily: {
-        sans: ['"Source Sans 3"', "Segoe UI", "system-ui", "sans-serif"],
+        sans: ['"Instrument Sans"', "Segoe UI", "system-ui", "sans-serif"],
+        display: ['"Archivo"', "Segoe UI", "system-ui", "sans-serif"],
         mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
       // Yerleşik ease-* zayıf; projenin ölçülmüş eğrileri kullanılır (neonUi.EASE).

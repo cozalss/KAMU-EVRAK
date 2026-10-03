@@ -4,7 +4,8 @@
    oluştuğundan kuyrukta boştur (durum "Yeni" / işlenmişse "İşlendi"). */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, ALFA, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, Icon, MONO, T, R, PAL, BANT, TYPE, TNUM, RAD, SP, DERIN, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterNotu, useDefterGezinme, Imlec } from "./SicilDefter.jsx";
 import FilterBar from "./FilterBar.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import { useFilter } from "../hooks/useFilter.js";
@@ -44,22 +45,38 @@ const GELEN_FILTER_CONFIG_BASE = {
   dataMapping: { search: ["konu", "label", "aciklama"], grup: "grup", sla: "_slaDurum", kategori: "_kategori" },
 };
 
-/* Yasal süre (SLA) rozeti — backend /sla/onizleme sonucundan (compute_sla tek kaynak).
-   GECİKMİŞ kırmızı, KRİTİK sarı, NORMAL yeşil; tarih okunamadıysa [DOĞRULA]; süre
-   tanımsız türde rozet basılmaz (SlaTriyajCard ile aynı sessizlik kuralı). */
-function SlaRozet({ sla }) {
-  if (!sla || sla.durum === "tanimsiz") return null;
+/* Defter şablonu — kayıt no · konu bloğu · yasal süre · durum · eylem. Telefonda: üst satır
+   no + süre, orta satır konu, alt satır durum + eylem (bilgi gizlenmez, yeniden dizilir). */
+const SABLON = {
+  kolon: "112px minmax(0,1fr) 158px 84px 112px",
+  marj: "142px",
+  alan: '"no ana sure durum eylem"',
+  alanDar: '"no sure" "ana ana" "durum eylem"',
+};
+const BASLIKLAR = [
+  <BaslikHucre key="n" alan="no">Kayıt no</BaslikHucre>,
+  <BaslikHucre key="a" alan="ana">Konu · tür · önerilen birim</BaslikHucre>,
+  <BaslikHucre key="s" alan="sure">Yasal süre</BaslikHucre>,
+  <BaslikHucre key="d" alan="durum">Durum</BaslikHucre>,
+  <BaslikHucre key="e" alan="eylem" sag>Eylem</BaslikHucre>,
+];
+
+/* Yasal süre hücresi — backend /sla/onizleme sonucundan (compute_sla tek kaynak).
+   Ölçülü dil: yalnız GECİKMİŞ tint zemin + uyarı ikonu taşır (en ağır hâl); KRİTİK renkli
+   nokta + metin; normal süre sessiz. Son gün mono alt satırda. Süre tanımsız türde "—"
+   (SlaTriyajCard ile aynı sessizlik kuralı); okunamayan tarih memur diliyle. */
+function SureHucre({ sla }) {
+  if (!sla || sla.durum === "tanimsiz") return <span style={{ ...TYPE.meta, color: PAL.mut3 }} aria-label="Yasal süre tanımsız">—</span>;
   if (sla.durum === "tarih_yok") {
-    // Makine işareti ("[DOĞRULA]") yerine memur dili — iç etiket UI'a sızmaz (jüri bulgusu).
-    return <span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut2 }}>tarih doğrulanmalı</span>;
+    return <span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut2, fontStyle: "italic" }}>tarih doğrulanmalı</span>;
   }
-  const renk = sla.durum === "GECIKMIS" ? BANT.kirmizi.c : sla.durum === "KRITIK" ? BANT.sari.c : BANT.yesil.c;
-  const metin = sla.durum === "GECIKMIS" ? `${Math.abs(sla.kalan_gun)} gün gecikti`
-    : sla.durum === "KRITIK" ? `son ${sla.kalan_gun} gün` : `${sla.kalan_gun} gün süre`;
+  const gec = sla.durum === "GECIKMIS", kri = sla.durum === "KRITIK";
+  const renk = gec ? BANT.kirmizi.c : kri ? BANT.sari.c : BANT.yesil.c;
+  const metin = gec ? `${Math.abs(sla.kalan_gun)} gün gecikti` : kri ? `son ${sla.kalan_gun} gün` : `${sla.kalan_gun} gün süre`;
   return (
-    <span title={`${sla.etiket}; son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat})`}
-      style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: ALFA(renk), color: DERIN_OF(renk), ...TNUM }}>
-      {metin}
+    <span title={`${sla.etiket}; son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat})`} style={{ display: "inline-flex", flexDirection: "column", gap: 2, alignItems: "flex-start", minWidth: 0 }}>
+      <SessizCip renk={renk} vurgulu={gec} metin={metin} ikon={gec ? <Icon.alert width={12} height={12} /> : null} />
+      {sla.son_tarih && <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut3, ...TNUM, paddingLeft: gec ? 8 : 12 }}>son gün {sla.son_tarih}</span>}
     </span>
   );
 }
@@ -112,73 +129,77 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
     return () => clearTimeout(t);
   }, [vurgu]);
 
+  // Görünümün hükmü: gecikmiş evrak sayısı (tek damga). Satırlarda gecikme ölçülü kalır —
+  // 15 satırda 9 damga dikkat bütçesini yakardı; hüküm başlıkta bir kez basılır.
+  const gez = useDefterGezinme();
+  const gecikmisSay = items.filter((x) => x._slaDurum === "GECIKMIS").length;
+
   return (
-    <ViewWrap id="gelen-h" title="Gelen evrak" sub={`${samples.length} evrak kuyrukta · işlemek için seçin`}
+    <ViewWrap id="gelen-h" title="Gelen evrak" kunye="Gelen evrak defteri"
+      sub={`${samples.length} evrak kuyrukta · önizlemek için satıra, işlemek için “İşle”ye`}
+      damga={gecikmisSay ? { metin: `${gecikmisSay} gecikmiş`, ton: R, egim: -5 } : undefined}
       actions={[<Btn key="u" primary onClick={onUpload} disabled={busy}><Icon.upload /> Yeni evrak yükle</Btn>]}>
+      <SicilStil />
       <FilterBar config={filterConfig} filter={filter} />
 
       {filter.results.length === 0 ? (
-        <EmptyState icon={<Icon.inbox />} title="Eşleşen evrak yok"
-          sub="Arama veya filtre ölçütlerinizi gevşetin." />
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-2026/" damga="Eşleşme yok"
+          baslik="Bu ölçütlerle evrak yok" sub="Arama veya filtre ölçütlerinizi gevşetin; kuyruktaki evraklar silinmedi."
+          actions={filter.hasActiveFilters ? [<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>] : null} />
       ) : (
-        <div ref={listeRef} style={{ display: "flex", flexDirection: "column", gap: SP.m }}>
-          {filter.results.map((s) => {
+        <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Gelen evrak kayıtları" listeRef={listeRef} gezinme={gez} ipucu="önizle">
+          {filter.results.map((s, i) => {
             const no = EVRAK_NO.get(s.id) ?? 0;
             const isDone = done.has(s.id);
             const kat = kategoriMeta(s._kategori);
             const onerilenBirim = BIRIM_LBL(KATEGORI_BIRIM[s._kategori] || "yazi_isleri_evrak");
             const vurgulu = vurgu === s.id;
             return (
-              <div key={s.id}
+              <div key={s.id} data-sicil-satir="" data-sd-anahtar={s.id} {...(vurgulu ? { "data-vurgu": "" } : null)}
+                onPointerDown={() => gez.sec(s.id)}
                 onClick={() => setOnizle(s)}
-                onMouseEnter={(e) => { if (!vurgulu) e.currentTarget.style.background = PAL.hov; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = vurgulu ? "color-mix(in srgb, var(--ke-t) 8%, transparent)" : PAL.surf; }}
                 ref={(el) => { if (el) rowRefs.current.set(s.id, el); else rowRefs.current.delete(s.id); }}
-                /* flexWrap + basis: dar ekranda kayıt no + İşle alt satıra iner (ölçüm: 390px'te
-                   metin bloğuna 114px kalıyor, 88 metin 0px'e eziliyordu). Geniş ekranda
-                   marginLeft:auto ile üçlü sağda kalır — görünüm değişmez. */
-                style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, padding: "12px 16px", borderRadius: RAD.card, background: vurgulu ? ALFA(T) : PAL.surf, border: `1px solid ${vurgulu ? T : PAL.line}`, transition: "background .2s ease-out, border-color .3s ease-out", flexWrap: "wrap" }}>
-                <span aria-hidden="true" title={kat.label} style={{ width: 40, height: 40, borderRadius: RAD.ctl, flexShrink: 0, display: "grid", placeItems: "center", background: PAL.surfHi, color: PAL.mut2 }}>{(Icon[kat.icon] || Icon.doc)({})}</span>
-                <div style={{ flex: "1 1 220px", minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-                    <button type="button" onClick={(e) => { e.stopPropagation(); setOnizle(s); }} {...focusRing} data-press=""
-                      title={`${s.label}: evrakı önizle`}
-                      /* Hedef büyütme: metin satırı 20px yüksekti (ölçüldü, tüm genişliklerde) →
-                         WCAG 2.2 §2.5.8 asgarisi 24px. Dolgu kadar negatif kenar boşluğuyla
-                         satır yüksekliği ve hizalama DEĞİŞMEZ; büyüyen yalnız tıklama alanı. */
-                      style={{ cursor: "pointer", padding: "3px 0", margin: "-3px 0", background: "transparent", border: "none", ...TYPE.ui, fontWeight: 600, color: PAL.ink2, textAlign: "left" }}>{s.konu || s.label}</button>
-                    {/* Durum çipi (işlenme) + yasal süre rozeti (SLA önizleme) */}
-                    <span style={{ ...TYPE.meta, fontWeight: 500, padding: "2px 8px", borderRadius: RAD.chip, background: isDone ? ALFA(BANT.yesil.c) : ALFA(T), color: isDone ? DERIN.yesil : DERIN.T }}>{isDone ? "İşlendi" : "Yeni"}</span>
-                    <SlaRozet sla={slaMap?.[s.id]} />
+                style={{ "--sd-i": Math.min(i, 14) }}>
+                {gez.aktif === s.id && <Imlec gezinme={gez} kimlik="gelen" />}
+                <SicilNo no={`E-2026/${String(no).padStart(4, "0")}`} style={{ gridArea: "no" }} />
+                <div style={{ gridArea: "ana", minWidth: 0 }}>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); setOnizle(s); }} {...focusRing} data-press=""
+                    title={`${s.label}: evrakı önizle`}
+                    /* Hedef ≥24px (WCAG 2.2 §2.5.8): dolgu kadar negatif kenar boşluğu — satır
+                       yüksekliği değişmez, büyüyen yalnız tıklama alanı. */
+                    style={{ cursor: "pointer", padding: "3px 0", margin: "-3px 0", maxWidth: "100%", background: "transparent", border: "none", borderRadius: RAD.chip, ...TYPE.ui, fontWeight: 600, color: PAL.ink, textAlign: "left" }}>{s.konu || s.label}</button>
+                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, flexWrap: "wrap", minWidth: 0 }}>
+                    <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
+                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
+                    <span>{s.grup || "Evrak"}</span>
+                    <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
+                    <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: "1 1 200px" }} title={s.aciklama}>{s.aciklama}</span>
                   </div>
-                  {/* Kategori + grup: düz meta metin (operasyonel etiket, durum değil) */}
-                  <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: SP.xs, display: "flex", gap: SP.s, flexWrap: "wrap" }}>
-                    <span>{kat.label} · {s.grup || "Evrak"}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{s.aciklama}</span>
-                    {/* Önerilen birim SR'a da okunur (Görev 2 çıktısı — aria-hidden yanlıştı);
-                        ayraç ayrı span'de: satır kırılımında başa düşmez (jüri bulgusu). */}
-                    <span style={{ display: "block", width: "100%", color: PAL.mut2 }}>önerilen birim: {onerilenBirim}</span>
+                  {/* Önerilen birim SR'a da okunur (Görev 2 çıktısı) — havale oku ile. */}
+                  <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+                    <span aria-hidden="true" style={{ display: "flex", color: DERIN.V }}><Icon.route width={12} height={12} /></span>
+                    <span><span style={SR_ONLY}>önerilen birim: </span>{onerilenBirim}</span>
                   </div>
                 </div>
-                <span style={{ display: "flex", alignItems: "center", gap: SP.m, marginLeft: "auto", flexShrink: 0 }}>
-                  <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3 }}>E-2026/{String(no).padStart(4, "0")}</span>
-                  {/* Tekrarlanan satır eylemi secondary — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
-                  <Btn onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} ariaLabel={`${s.label} evrakını işle`}>
-                    {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow />
-                  </Btn>
+                <span style={{ gridArea: "sure", minWidth: 0 }}><SureHucre sla={slaMap?.[s.id]} /></span>
+                <span style={{ gridArea: "durum" }}>
+                  {isDone ? <SessizCip renk={BANT.yesil.c} vurgulu metin="İşlendi" ikon={<Icon.check width={12} height={12} />} />
+                    : <SessizCip renk={T} metin="Yeni" />}
                 </span>
+                {/* Tekrarlanan satır eylemi hayalet — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
+                <button type="button" data-sd-eylem="" data-press="" style={{ gridArea: "eylem" }}
+                  onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} aria-label={`${s.label} evrakını işle`}>
+                  {isDone ? "Yeniden işle" : "İşle"} <Icon.arrow width={14} height={14} />
+                </button>
               </div>
             );
           })}
-        </div>
+        </DefterYuzey>
       )}
 
-      <NeonCard style={{ marginTop: SP.l }}>
-        <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>
-          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
-        </p>
-      </NeonCard>
+      <DefterNotu ikon={<Icon.info width={14} height={14} />}>
+        Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur.
+      </DefterNotu>
 
       {/* Salt-okunur evrak önizleme (satır tıklaması) — "önce oku, sonra işle" akışı;
           İşle birincil eylem olarak modal içinde de sunulur. */}

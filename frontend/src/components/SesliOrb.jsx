@@ -23,16 +23,21 @@
    lib/orbCizim.orbKare. Bu bileşen yalnız katmanları kurar.
 */
 import React from "react";
-import { IRIS, DERIN, T, V } from "./neonUi.jsx";
+import { PAL, DERIN, T, V } from "./neonUi.jsx";
 
 // Düşük opaklıklı grain — düz vektör gradyanını "enerji topu"na çevirir.
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
-// Gökyüzü rampasının açık ucu — landing hero'sunun gök mavisinden türer. Referans tarifindeki
-// "fluid sky-like blue and white"ın BEYAZI bu; ham beyaz kullanmak paleti terk etmek olurdu.
-const GOK = IRIS.hizli.c;      // #93cfdd
-const GOK_UST = IRIS.hizli.ust; // #cdeef4
+// Antet & Damga (2026-10): eski pastel gök turkuazı (IRIS) yeni paletin dışında kalıyordu —
+// küre artık TÜKENMEZ MÜREKKEBİNİN kendi ailesinde: çekirdek T'nin kâğıda (onInk, iki temada
+// açık) karışmış hâli, kenarda istampa moru. "Mürekkep damlası ışığı"; hue birliği korunur.
+// Koyu temada T zaten açık bir mavi — kâğıda aynı oranda karışınca küre beyaza yıkanıyordu
+// (ölçüldü); orada mürekkep oranı yükselir. Oran tema başına tek CSS değişkeninde.
+const GOK = "var(--ke-orb-gok)";
+const GOK_UST = "var(--ke-orb-gok-ust)";
+const ORB_CSS = `:root{--ke-orb-gok:color-mix(in srgb, ${T} 52%, ${PAL.onInk});--ke-orb-gok-ust:color-mix(in srgb, ${T} 16%, ${PAL.onInk})}
+:root[data-theme="dark"]{--ke-orb-gok:color-mix(in srgb, ${T} 86%, ${PAL.onInk});--ke-orb-gok-ust:color-mix(in srgb, ${T} 48%, ${PAL.onInk})}`;
 
 // Düşünme halkası kutunun kenarından DEĞİL kürenin GÖRÜNÜR kenarından doğmalı. Küre clip-path
 // ile r = 0.38·boyut çiziliyor, yani kutu yarıçapının %76'sı; halka inset:0 ile başlarsa
@@ -50,6 +55,7 @@ export default function SesliOrb({
   const anim = (deger) => (azHareket ? "none" : deger);
   return (
     <>
+      <style>{ORB_CSS}</style>
       {/* Düşünürken dışa yayılan halkalar. İlk sürümde ham `T` ve tek halkaydı: açık zeminde
           hâlenin içinde kayboluyordu, "Düşünüyor" ile "Hazır" bakışta AYIRT EDİLEMİYORDU.
           Artık AA-güvenli DERIN.T + iki halka (gecikmeli ikinci = ritim, tek atım değil).

@@ -4,8 +4,7 @@
    tek menüde) — Denetim izi günlük iş akışının önünde durmasın diye ana NAV'da DEĞİL, burada.
    Örnek evrak dropdown'ı kaldırıldı; örnekler Gelen evrak görünümünden açılır. */
 import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
-import { SANS, T, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, EASE, EASE_BEZIER, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
+import { DISPLAY, T, R, PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, focusRing, Icon, MarkaKaro } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
 
 // Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
@@ -33,7 +32,7 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
   const Ic = Icon[item.icon];
   // Geri bildirim basış ANINDA (Apple response): hover zemin + data-press scale — görünüm
   // değişimini beklemeden düğme "duyduğunu" söyler.
-  const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "8px 0" : "8px 12px", borderRadius: RAD.ctl, ...TYPE.ui, textAlign: "left", cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` };
+  const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "10px 0" : "9px 12px", borderRadius: RAD.card, ...TYPE.ui, textAlign: "left", cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` };
   const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : item.count === "giden" ? gidenCount : null;
   const showBadge = badgeVal != null && badgeVal > 0;
   const canli = item.live && active && busy;
@@ -42,34 +41,40 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
       aria-label={dar ? `${item.label}${showBadge ? ` (${badgeVal} öğe)` : ""}` : undefined}
       title={dar ? item.label : undefined} {...focusRing} data-press="" data-dokunma=""
       onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = PAL.hov; }}
-      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={active
-        ? { ...base, background: ALFA(T), border: "1px solid transparent", color: PAL.ink, fontWeight: 500, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }
+        ? { ...base, background: "transparent", border: "1px solid transparent", color: "var(--ke-sayfa-ink)", fontWeight: 600, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }
         : { ...base, border: "1px solid transparent", background: "transparent", color: PAL.mut, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }}>
-      {/* Aktif-sekme çizgisi — layoutId paylaşımlı: nav değişince eski konumdan yeni konuma
-          KAYAR (motion "magic move"), sekme sekme "belirir/kaybolur" değil. Ekran-içi hareket
-          → EASE.inOut (MASTER.md Motion bölümü). */}
+      {/* DOSYA SIRTI — aktif öğe rayın sağ kenarına kadar uzanıp sayfa zeminiyle birleşir
+          (iç bükey köşeler iki küçük radyal maskeyle). DÜZ öğe, animasyon katmanına BAĞLI DEĞİL:
+          önceki sürüm motion layoutId ile öğeler arası kayıyordu; projeksiyon durumu bozulunca
+          (HMR sonrası, kullanıcı bulgusu 2026-10-03) sırt "beyaz yanıp" kayboluyor, aktif metin
+          lacivert üstünde koyu kalıyordu. Şimdi sırt HER ZAMAN çizilir; giriş yalnız soldan
+          açılan kısa bir clip-path (nu-sirt) — başarısız olsa bile son kare tam sırttır. */}
       {active && (
-        <motion.span aria-hidden="true" layoutId="nu-nav-active"
-          transition={{ type: "tween", duration: 0.18, ease: EASE_BEZIER.inOut }}
-          style={{ position: "absolute", left: 0, top: SP.s, bottom: SP.s, width: 2, borderRadius: RAD.chip, background: T }} />
+        <span aria-hidden="true"
+          style={{ position: "absolute", zIndex: 0, left: 0, right: dar ? -9 : -13, top: 0, bottom: 0, background: "var(--ke-sayfa)", borderRadius: `${RAD.card}px 0 0 ${RAD.card}px`, animation: `nu-sirt .22s ${EASE.out} both` }}>
+          <span style={{ position: "absolute", right: 0, top: -12, width: 12, height: 12, background: "radial-gradient(circle at 0 0, transparent 11.5px, var(--ke-sayfa) 12px)" }} />
+          <span style={{ position: "absolute", right: 0, bottom: -12, width: 12, height: 12, background: "radial-gradient(circle at 0 100%, transparent 11.5px, var(--ke-sayfa) 12px)" }} />
+          <span style={{ position: "absolute", left: 0, top: 9, bottom: 9, width: 3, borderRadius: 2, background: "var(--ke-sayfa-t)" }} />
+        </span>
       )}
       {dar ? (
         /* İkon-ray modu: yalnız ikon; rozet/canlılık sağ-üst köşede küçük nokta olarak. */
         <span style={{ position: "relative", display: "flex" }}>
-          <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>
+          <span style={{ position: "relative", zIndex: 1, color: active ? "var(--ke-sayfa-t)" : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>
           {(showBadge || canli) && (
             <span aria-hidden="true" style={{ position: "absolute", top: -3, right: -5, width: 7, height: 7, borderRadius: RAD.dot, background: T, animation: canli ? "nu-think 1.2s ease-in-out infinite" : "none" }} />
           )}
         </span>
       ) : (
         <>
-          <span style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-            <span style={{ color: active ? DERIN.T : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>{item.label}
+          <span style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s + 2 }}>
+            <span style={{ color: active ? "var(--ke-sayfa-t)" : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>{item.label}
           </span>
           {canli
-            ? <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, border: `2px solid ${PAL.line}`, borderTopColor: T, animation: "nu-spin .8s linear infinite", marginLeft: "auto" }} />
-            : showBadge && <span aria-label={`${badgeVal} öğe`} style={{ ...TYPE.meta, ...TNUM, color: PAL.mut }}>{badgeVal}</span>}
+            ? <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, border: `2px solid ${PAL.line}`, borderTopColor: "var(--ke-sayfa-t)", animation: "nu-spin .8s linear infinite", marginLeft: "auto", position: "relative", zIndex: 1 }} />
+            : showBadge && <span aria-label={`${badgeVal} öğe`} style={{ position: "relative", zIndex: 1, ...TYPE.meta, ...TNUM, fontWeight: 600, minWidth: 22, textAlign: "center", padding: "1px 6px", borderRadius: 999, color: active ? "var(--ke-sayfa-ink)" : PAL.ink2, background: active ? "transparent" : PAL.surfHi }}>{badgeVal}</span>}
         </>
       )}
     </button>
@@ -97,7 +102,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
   });
 
   return (
-    <aside aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 228, flexShrink: 0, background: PAL.bg2, borderRight: `1px solid ${PAL.line}`, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
+    <aside data-ray="" aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 236, flexShrink: 0, background: PAL.bg2, color: PAL.ink, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
       <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
         <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined} data-dokunma=""
           onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `0 0 0 2px ${PAL.bg}, 0 0 0 4px ${T}`; }}
@@ -108,7 +113,7 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
             /* Logotype — marka istisnası olarak büyük harf; imza noktası akış İÇİNDE durur,
                toggle düğmesiyle asla çakışmaz. */
             <span style={{ display: "flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
-              <span style={{ fontFamily: SANS, fontSize: 16, lineHeight: "24px", fontWeight: 600, letterSpacing: ".04em", color: PAL.ink, whiteSpace: "nowrap" }}>KAMU-EVRAK</span>
+              <span style={{ fontFamily: DISPLAY, fontSize: 14, lineHeight: "24px", fontWeight: 800, fontStretch: "112%", letterSpacing: ".01em", color: PAL.ink, whiteSpace: "nowrap" }}>KAMU·EVRAK</span>
               <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: R, flexShrink: 0 }} />
             </span>
           )}
@@ -124,19 +129,19 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
         </button>}
       </div>
 
-      {!kompakt && <div style={{ ...TYPE.meta, color: PAL.mut2, padding: "0 8px 8px" }}>Çalışma alanı</div>}
-      <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: SP.xs }}>
+      {!kompakt && <div style={{ ...TYPE.antet, color: PAL.mut3, padding: "8px 12px 10px", textTransform: "uppercase" }}>Çalışma alanı</div>}
+      <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={kompakt} />)}
       </nav>
 
       <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press="" data-dokunma=""
-        onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.hov; }}
-        onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
+        onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = DERIN.Th; }}
+        onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = T; }}
         style={{
-          cursor: busy ? "not-allowed" : "pointer", marginTop: SP.l, display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
-          padding: kompakt ? "8px 0" : "8px 14px", minHeight: 36, borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
-          border: busy ? "1px solid transparent" : `1px solid ${PAL.inputLine}`,
-          background: busy ? PAL.press : PAL.surf, color: busy ? PAL.mut2 : PAL.ink,
+          cursor: busy ? "not-allowed" : "pointer", marginTop: SP.xl, display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
+          padding: kompakt ? "10px 0" : "10px 14px", minHeight: 40, borderRadius: RAD.card, ...TYPE.ui, fontWeight: 600,
+          border: "1px solid transparent",
+          background: busy ? PAL.press : T, color: busy ? PAL.mut2 : PAL.onAccent,
           transition: `background .12s ease-out, transform .14s ${EASE.out}`,
         }}>
         <Icon.plus />{!kompakt && " Yeni evrak yükle"}

@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-import { PAL, T, SANS, TYPE, THEME_CSS } from "./components/neonUi.jsx";
+import { PAL, SANS, TYPE, DERIN, THEME_CSS, MarkaKaro } from "./components/neonUi.jsx";
 import "./styles/fonts.css";
 import "./styles/kamu-evrak.css";   // global reset + result-cards yardımcı stilleri
 // Tailwind utility katmanı — YALNIZ çalışma alanı için (kendi config'i, preflight YOK).
@@ -57,14 +57,14 @@ function Root() {
 }
 
 function Splash() {
+  // Açılış: "evrak masaya geliyor" — logo karosu + oturum damgası. Damga NEON_KEYFRAMES'e
+  // bağlı olmadığı için kendi kısa vuruşunu taşır (bu ekran DashboardApp'ten önce).
   return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: PAL.bg, color: PAL.ink, fontFamily: SANS }}>
-      <style>{"@keyframes ke-spin{to{transform:rotate(360deg)}}"}</style>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-        <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", border: `3px solid color-mix(in srgb, ${T} 25%, transparent)`, borderTopColor: T, animation: "ke-spin .8s linear infinite" }} />
-        {/* Kullanıcı cümlesi gövde sesiyle konuşur (TYPE.meta) — mono yalnız makine verisi;
-            geniş pozitif takip küçük puntoda lowercase cümleyi harf harf koparıyordu. */}
-        <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Oturum doğrulanıyor…</span>
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", color: PAL.ink, fontFamily: SANS }}>
+      <style>{"@keyframes ke-spl{0%{opacity:0;transform:rotate(-6deg) scale(1.8)}60%{opacity:1;transform:rotate(-6deg) scale(.95)}100%{opacity:1;transform:rotate(-6deg) scale(1)}}@media (prefers-reduced-motion:reduce){*{animation:none!important}}"}</style>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
+        <MarkaKaro size={48} nokta={false} />
+        <span style={{ ...TYPE.damga, fontSize: 12, color: DERIN.V, border: `2px solid ${DERIN.V}`, outline: `1px solid ${DERIN.V}`, outlineOffset: 2, padding: "5px 10px", borderRadius: 6, animation: "ke-spl .6s cubic-bezier(.23,1,.32,1) both" }}>Oturum doğrulanıyor</span>
       </div>
     </div>
   );

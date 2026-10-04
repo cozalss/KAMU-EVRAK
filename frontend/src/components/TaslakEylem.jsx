@@ -63,7 +63,7 @@ function GonderimCumlesi({ birim }) {
  *   durum: "bos"|"gonder"|"sil", hata: boolean, setDurum: (d: string) => void,
  *   onGonder: () => void, onDuzenle: () => void, onKurul: () => void, onSil: () => void }} p
  */
-export function KararEylemleri({ ad, birim, sendBusy, kompakt = false, durum, hata, setDurum, onGonder, onDuzenle, onKurul, onSil }) {
+export function KararEylemleri({ ad, birim, sendBusy, kompakt = false, durum, hata, setDurum, onGonder, onDuzenle, onKurul, onSil, gonderKilit = false }) {
   const kapRef = useRef(null);
   const fabVar = useSagAltDolu(kompakt);
   // Onay açılınca odak doğrudan onay düğmesine — klavyeyle (G kısayolu) gelen memur Enter'la
@@ -108,13 +108,13 @@ export function KararEylemleri({ ad, birim, sendBusy, kompakt = false, durum, ha
     <>
       <Btn onClick={onDuzenle} disabled={sendBusy} ariaLabel={`${ad} taslağını düzenle`} title="Düzenle" style={{ minWidth: 44, minHeight: 44, padding: 0, justifyContent: "center" }}><KALEM width={16} height={16} /></Btn>
       <Btn onClick={onKurul} disabled={sendBusy} ariaLabel={`${ad} taslağı için Bürokrasi Kurulu'nu topla`} title="Kurulu topla" style={{ minWidth: 44, minHeight: 44, padding: 0, justifyContent: "center" }}><Icon.scale width={16} height={16} /></Btn>
-      <Btn primary onClick={() => setDurum("gonder")} disabled={sendBusy} style={{ flex: 1, justifyContent: "center", minHeight: 44 }} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
+      <Btn primary onClick={() => setDurum("gonder")} disabled={sendBusy || gonderKilit} style={{ flex: 1, justifyContent: "center", minHeight: 44 }} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
         <Icon.send width={14} height={14} /> Gönder
       </Btn>
     </>
   ) : (
     <>
-      <Btn primary onClick={() => setDurum("gonder")} disabled={sendBusy} style={{ ...TAM_GENIS, minHeight: 42 }} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
+      <Btn primary onClick={() => setDurum("gonder")} disabled={sendBusy || gonderKilit} style={{ ...TAM_GENIS, minHeight: 42 }} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
         <Icon.send width={14} height={14} /> Gönder
       </Btn>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: SP.s }}>

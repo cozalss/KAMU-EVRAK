@@ -143,7 +143,7 @@ function YardimKip({ onKapat, donusRef }) {
       <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.xs }}>Üç adımda evrak işleme</div>
       {[
         ["1", "Gelen evraktan seçin, yeni belge yükleyin ya da örnek evrakla deneyin."],
-        ["2", "Canlı ajan izini izleyin: Görev 1 evrakı anlar, Görev 2 resmî yazıyı üretir."],
+        ["2", "Canlı ajan izini izleyin: önce evrak anlaşılır, ardından resmî yazı üretilir."],
         ["3", "Taslağı onaylayın, düzenleyin ya da reddedin; karar her zaman memurundur (HITL)."],
       ].map(([n, s]) => (
         <div key={n} style={{ display: "flex", gap: SP.m, padding: "6px 0", alignItems: "flex-start" }}>

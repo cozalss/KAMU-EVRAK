@@ -21,3 +21,14 @@ export function gunlukSeri(tsList, simdi = Date.now()) {
   }
   return { seri, bugunN, dunN, aktifGun };
 }
+
+/* Akış hücresinin kıyas satırı — GERÇEK farktan üretilir. Eskiden fark ancak ≥2 aktif günde
+   yazılıyor, aksi hâlde "dünle aynı" basılıyordu: dün 0 → bugün 1 iken de (tur4 bulgusu).
+   yon: "artis" | "azalis" | "sabit" | null (kıyas yok). */
+export function kiyasMetni(g) {
+  if (!g) return { metin: "anlık kuyruk", yon: null };
+  const fark = g.bugunN - g.dunN;
+  if (fark > 0) return { metin: `+${fark} düne göre`, yon: "artis" };
+  if (fark < 0) return { metin: `${fark} düne göre`, yon: "azalis" };
+  return g.bugunN > 0 ? { metin: "dünle aynı", yon: "sabit" } : { metin: "bugün henüz yok", yon: "sabit" };
+}

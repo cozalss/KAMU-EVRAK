@@ -95,11 +95,12 @@ class TestStatikDosyalar:
         yol = Path(__file__).resolve().parents[2] / "frontend" / "app.html"
         assert "noindex" not in yol.read_text(encoding="utf-8")
 
-    def test_landing_sayfasina_DOKUNULMADI(self):
-        """index.html + src/portfolio/** proje kuralınca dokunulmaz (CLAUDE.md)."""
+    def test_kok_sayfa_calisma_alanina_yonlendirir(self):
+        """Ayrı tanıtım sayfası yok: index.html yalnız /app.html'e yönlendirir, noindex taşımaz."""
         from pathlib import Path
-        yol = Path(__file__).resolve().parents[2] / "frontend" / "index.html"
-        assert 'name="robots"' not in yol.read_text(encoding="utf-8")
+        icerik = (Path(__file__).resolve().parents[2] / "frontend" / "index.html").read_text(encoding="utf-8")
+        assert 'name="robots"' not in icerik
+        assert 'url=/app.html' in icerik
 
 
 class TestFrontendCSP:

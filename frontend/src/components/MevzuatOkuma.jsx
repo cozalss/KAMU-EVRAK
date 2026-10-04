@@ -8,7 +8,7 @@
    (scroll-spy), üstte okuma ilerleme çizgisi. Telefonda tam ekran kâğıt + yatay madde şeridi. */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icon, Btn, Damga, MONO, DISPLAY, T, V, R, PAL, DERIN, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
-import { kunyeCoz, kaynakNotuCoz, NITELIK } from "../lib/mevzuatKunye.js";
+import { kunyeCoz, kaynakNotuCoz, NITELIK, notTemizle } from "../lib/mevzuatKunye.js";
 import { dogrulaParcala, vurguParcala } from "../lib/mevzuatVurgu.js";
 
 /* Ham mevzuat metni → bloklar: künye-sonrası giriş notu + "Madde N — ..." blokları.
@@ -173,7 +173,7 @@ function KaynakNotu({ govde }) {
         <summary className="mo-not-ozet" {...focusRing} style={{ cursor: "pointer", ...TYPE.data, color: DERIN.T, fontWeight: 600, borderRadius: RAD.chip, padding: "6px 0", minHeight: 32 }}>
           Kaynak notunu göster · {ps.length} paragraf
         </summary>
-        {ps.map((p, i) => <p key={i} style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2, overflowWrap: "anywhere", textWrap: "pretty" }}>{p}</p>)}
+        {ps.map((p, i) => <p key={i} style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2, overflowWrap: "anywhere", textWrap: "pretty" }}>{notTemizle(p)}</p>)}
       </details>
     </aside>
   );
@@ -283,8 +283,9 @@ const OKUMA_CSS = `
 .mo-dogrula{font-size:.875em;font-style:italic;color:var(--ke-mut);text-decoration:underline dashed color-mix(in srgb, var(--ke-bant-sari) 90%, transparent);text-decoration-thickness:1.5px;text-underline-offset:5px;text-decoration-skip-ink:none}
 .mo-vurgu{color:inherit;padding:0;border-radius:2px;background:linear-gradient(color-mix(in srgb, var(--ke-bant-sari) 38%, transparent),color-mix(in srgb, var(--ke-bant-sari) 38%, transparent)) no-repeat 0 85%/100% 70%;animation:mo-kalem .18s var(--ke-ease-out) both}
 @keyframes mo-kalem{from{background-size:0% 70%}to{background-size:100% 70%}}
-.mo-iskelet{background:linear-gradient(90deg,var(--ke-press) 0 40%,color-mix(in srgb,var(--ke-press) 45%,transparent) 50%,var(--ke-press) 60% 100%);background-size:250% 100%;animation:mo-kuru 1.4s linear infinite;border-radius:3px}
-@keyframes mo-kuru{from{background-position:100% 0}to{background-position:-150% 0}}
+.mo-iskelet{position:relative;overflow:hidden;background:var(--ke-press);border-radius:3px}
+.mo-iskelet::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ke-surf) 55%,transparent),transparent);transform:translateX(-100%);animation:mo-kuru 1.4s linear infinite}
+@keyframes mo-kuru{to{transform:translateX(100%)}}
 /* Okuma ilerlemesi JS'siz: kaydırma zaman çizelgesi (Chrome 115+/Safari 26). Desteklemeyen
    tarayıcıda ve reduced-motion'da (global kural animasyonu kapatır) rAF yedeği çalışır. */
 @media (prefers-reduced-motion:no-preference){@supports (animation-timeline:scroll()){
@@ -465,7 +466,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onC
   return (
     // nu-sol: scrim tek karede çakılmak yerine solarak gelir (içerik nu-rise ile — iki katman
     // birlikte doğar, parlaklık sıçraması yok).
-    <div role="presentation" onClick={onClose} className="mo-kok" style={{ position: "fixed", inset: 0, zIndex: 300, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", animation: "nu-sol .16s var(--ke-ease-out) both" }}>
+    <div role="presentation" onClick={onClose} className="mo-kok" style={{ position: "fixed", inset: 0, zIndex: 400, background: PAL.scrimKoyu, display: "flex", alignItems: "center", justifyContent: "center", animation: "nu-sol .16s var(--ke-ease-out) both" }}>
       <style>{OKUMA_CSS}</style>
       <div role="dialog" aria-modal="true" aria-labelledby="mevzuat-okuma-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} className="mo-kagit"
         style={{ display: "flex", flexDirection: "column", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, boxShadow: SH.modal, overflow: "hidden", animation: "nu-rise .22s var(--ke-ease-out)" }}>

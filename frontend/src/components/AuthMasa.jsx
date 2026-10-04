@@ -5,7 +5,10 @@
    Üç SENTETİK evrak döngüde işlenir (gerçek kurum/kişi yok — CLAUDE.md §2); yasal süreler
    doğru kanundan: dilekçe 3071 → 30 gün, bilgi edinme 4982 → 15 iş günü.
    aria-hidden salt-sunum demo — ekran okuyucuya hiçbir şey vaat etmez.
-   Reduced-motion: zamanlayıcı başlamaz, mühürlü son kare sabit durur (useReducedMotion). */
+   Reduced-motion: zamanlayıcı başlamaz, mühürlü son kare sabit durur (useReducedMotion).
+   Koyu tema (tur 4, jüri A#26): kâğıt GECE DE KÂĞITTIR — sahne [data-evrak-kagit] kapsamında
+   çizilir; THEME_CSS koyu temada o alt ağacın token'larını sıcak, kısık kâğıda çevirir
+   (A4 taslakla aynı --ke-kagit). Lacivert "kâğıt" metaforu iki ekranda iki türlü anlatıyordu. */
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { PAL, T, V, DERIN, ALFA, MONO, SANS, DISPLAY, TYPE, TNUM, RAD, SP, SH, EASE_BEZIER, Damga, Icon } from "./neonUi.jsx";
@@ -101,7 +104,7 @@ function Defter({ evrak, adim }) {
             <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...(r.mono ? { fontFamily: MONO, fontSize: 12, lineHeight: "16px" } : TYPE.data), color: PAL.ink, fontWeight: r.mono ? 500 : 600 }}>
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span key={bitti ? `${evrak.no}-${r.k}` : "bos"} style={{ display: "inline-block" }}
-                  initial={{ opacity: 0, y: 6, filter: "blur(3px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -4 }}
+                  initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.28, ease: EASE_BEZIER.out }}>
                   {bitti ? r.v(evrak) : <span style={{ color: PAL.mut3, fontWeight: 400 }}>{calisiyor ? "işleniyor…" : "—"}</span>}
                 </motion.span>
@@ -203,8 +206,11 @@ export default function AuthMasa() {
   const { evrak, i, adim } = useSahne();
   const cikiyor = adim === CIKIS;
   return (
-    <div aria-hidden="true" className="ke-masa" style={{ position: "relative", display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0, 400px)", gap: SP.xxxl, alignItems: "start", minHeight: 0, height: "100%" }}>
-      <div className="ke-masa-defter" style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: SP.xl, paddingTop: SP.s, paddingBottom: "12vh", minWidth: 0 }}>
+    /* Izgara (tur 4, jüri A#27/C#23): defter sütunu 520 px'te durur, kâğıt sağa yaslanır —
+       1920'de defter 880 px'e yayılıp sayılar ekranın dibine düşüyordu. Sayılar defterin hemen
+       altında: masa dağınık değil, tek bir fiş + kâğıt. */
+    <div aria-hidden="true" className="ke-masa" style={{ position: "relative", display: "grid", gridTemplateColumns: "minmax(0, 520px) minmax(0, 400px)", justifyContent: "space-between", columnGap: SP.xxxl, alignItems: "start", minHeight: 0, height: "100%" }}>
+      <div className="ke-masa-defter" style={{ display: "flex", flexDirection: "column", gap: SP.xxl + SP.s, paddingTop: SP.s, minWidth: 0 }}>
         <div>
         <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", display: "flex", justifyContent: "space-between", marginBottom: SP.s }}>
           <span>Evrak fişi</span><span style={TNUM}>{String(i + 1).padStart(2, "0")} / {String(EVRAKLAR.length).padStart(2, "0")}</span>
@@ -217,7 +223,7 @@ export default function AuthMasa() {
 
       <div style={{ position: "relative", height: "100%", minHeight: 0, width: "100%", maxWidth: 400, justifySelf: "center" }}>
         <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div key={evrak.no}
+          <motion.div key={evrak.no} data-evrak-kagit=""
             initial={{ opacity: 0, y: 60, rotate: 4, scale: 0.98 }}
             animate={cikiyor ? { opacity: 0, x: -120, y: 30, rotate: -7 } : { opacity: 1, x: 0, y: 0, rotate: -1.6, scale: 1 }}
             transition={cikiyor ? { duration: 0.6, ease: EASE_BEZIER.inOut } : { type: "spring", stiffness: 140, damping: 20, mass: 0.9 }}
@@ -230,7 +236,7 @@ export default function AuthMasa() {
             <AnimatePresence>{adim >= HAVALE && <HavaleFisi key="fis" evrak={evrak} />}</AnimatePresence>
             {adim >= MUHUR && (
               <div className="ke-murekkep" style={{ position: "absolute", left: 30, top: 292, zIndex: 4 }}>
-                <Damga ton={V} egim={-8} style={{ fontSize: 17, lineHeight: "20px", padding: "8px 14px", background: "transparent" }}>
+                <Damga ton={V} egim={-8} butce={false} style={{ fontSize: 17, lineHeight: "20px", padding: "8px 14px", background: "transparent" }}>
                   <span style={{ display: "grid", justifyItems: "center", gap: 3 }}>
                     <span>Kayda alındı</span>
                     <span style={{ fontFamily: MONO, fontSize: 10, lineHeight: "12px", fontWeight: 600, letterSpacing: ".04em", fontStretch: "100%" }}>{evrak.no}</span>

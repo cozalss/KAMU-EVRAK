@@ -187,3 +187,17 @@ class TestIcerik:
     def test_icerik_path_traversal_reddedilir(self, client: TestClient, dosya: str):
         # Assert — beyaz liste ([a-z0-9_-]) dışı her şey 404 (bilgi sızdırmadan)
         assert client.get(f"/mevzuat/icerik/{dosya}").status_code == 404
+
+
+def test_kunye_cok_satirli_birlesir_ic_not_atilir():
+    from api.routes.mevzuat import _kunye
+
+    satirlar = ["Resmî Mühür Yönetmeliği",
+                "Bakanlar Kurulu Kararı 84/8422 / Resmî Gazete 18513 — 12.09.1984 (YÜRÜRLÜKTE;",
+                "7/2/2019-30679 sayılı 716 sayılı Cumhurbaşkanı Kararı ile güncellenmiştir)",
+                "Kaynak: https://www.mevzuat.gov.tr/x"]
+    k = _kunye(satirlar)
+    assert k.count("(") == k.count(")") and "güncellenmiştir)" in k
+    k2 = _kunye(["CBK", "Cumhurbaşkanlığı Kararnamesi No 11, RG 16.07.2018/30480 — YÜRÜRLÜKTE. "
+                       "NOT: İstekteki '1 No.lu CBK' yerine teşkilat ayrı düzenlenmiştir."])
+    assert "İstekteki" not in k2 and "YÜRÜRLÜKTE" in k2

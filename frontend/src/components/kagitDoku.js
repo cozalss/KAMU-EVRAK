@@ -11,7 +11,7 @@ const LIF = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
 
 export const KAGIT_CSS = `
 :root{
-  --kd-kagit: var(--ke-surf);
+  --kd-kagit: var(--ke-kagit);
   --kd-kagit-murekkep: var(--ke-ink);
   --kd-masa: color-mix(in srgb, var(--ke-bg) 82%, var(--ke-bg2));
   --kd-masa-golge: inset 0 1px 0 color-mix(in srgb, var(--ke-ink) 5%, transparent), inset 0 10px 24px -18px color-mix(in srgb, var(--ke-ink) 30%, transparent);
@@ -22,7 +22,9 @@ export const KAGIT_CSS = `
   --kd-ip: var(--ke-r);
 }
 :root[data-theme="dark"]{
-  --kd-kagit: color-mix(in srgb, var(--ke-ink) 95%, var(--ke-bg));
+  /* Tur 4: soğuk gri (ink %95) yerine THEME_CSS'in sıcak gece kâğıdı — giriş sahnesindeki
+     dilekçe ([data-evrak-kagit]) ile A4 taslak AYNI kâğıttan kesilir (jüri A#26). */
+  --kd-kagit: var(--ke-kagit);
   --kd-kagit-murekkep: var(--ke-bg);
   --kd-masa: color-mix(in srgb, var(--ke-bg) 70%, var(--ke-bg2));
   --kd-masa-golge: inset 0 1px 0 color-mix(in srgb, var(--ke-ink) 4%, transparent), inset 0 12px 28px -16px color-mix(in srgb, black 70%, transparent);

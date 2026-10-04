@@ -7,9 +7,9 @@ const apiTarget = process.env.VITE_API_TARGET || "http://localhost:8000";
 // Çalışma alanının büyük üçüncü-taraf paketleri AYRI, uzun ömürlü chunk'lara (Dev Award · WPO).
 // Uygulama kodu her dağıtımda değişir, bu paketler değişmez → tarayıcı önbelleği yeniden
 // indirmez; HTTP/2 üzerinde paralel iner. YALNIZ çalışma alanına özgü paketler eşlenir:
-// lottie-web landing'indir, eşlenmez. react/react-dom/scheduler AÇIKÇA kendi "v-react"
+// react/react-dom/scheduler AÇIKÇA kendi "v-react"
 // chunk'ına konur: konmazsa Rollup onları ilk paylaşan manuel chunk'a (v-radix/v-query)
-// çeker ve landing radix+query'yi de indirmeye başlar (ölçüldü). Landing'in CSS'i bu
+// çeker ve yönlendirme sayfası radix+query.yi de indirmeye başlar (ölçüldü). CSS bu
 // kuraldan etkilenmez; JS'te yalnız ortak React chunk'ının adı değişir. Tembel yüklenen PDF motoru
 // (pdfjs-dist/react-pdf) ve dropzone/embla kendi tembel chunk'larında kalır (eşlenmez).
 // Radix/sonner/lucide BİLEREK eşlenmez: tek bir "v-ui" kovası giriş ekranına menü/diyalog/
@@ -26,7 +26,7 @@ const saticiParcasi = (id) => SATICI.find(([, re]) => re.test(id))?.[0];
 // ama girişli açılışta giriş chunk'ı çalışıp import() edene kadar BEKLEMESİN diye kabuk ve
 // bağımlılık zinciri app.html'e modulepreload olarak yazılır — yalnız indirme/derleme ipucu,
 // ÇALIŞTIRMA değil. Ölçüm (Lighthouse mobil, panel): ipucusuz FCP 1,2→1,9 sn geriliyordu.
-// Yalnız build'de (ctx.bundle) ve yalnız app.html'de; landing'in HTML'i hiç değişmez.
+// Yalnız build'de (ctx.bundle) ve yalnız app.html.de.
 const kabukOnYukle = {
   name: "ke-kabuk-on-yukle",
   transformIndexHtml: {
@@ -48,6 +48,7 @@ const kabukOnYukle = {
 // Backend (FastAPI :8000) proxy — SSE dahil.
 export default defineConfig({
   plugins: [react(), kabukOnYukle],
+
   // `@/` takma adı — shadcn/ui bileşenleri kendi aralarında bu yolla import eder
   // (`@/lib/cn`, `@/components/ui/...`). jsconfig.json CLI'ı ve editörü besler, bu satır
   // ise Vite'ın gerçekten çözmesini sağlar; ikisi AYRI yerlerdir, biri eksikse build kırılır.
@@ -55,9 +56,8 @@ export default defineConfig({
     alias: { "@": resolve(__dirname, "./src") },
   },
   // Multi-page:
-  //  index.html → LANDING (portfolio, kök "/") — kendi Tailwind'i, izole.
-  //  app.html   → neon çalışma alanı (auth → dashboard).
-  // İki ayrı doküman → Tailwind preflight neon app'i etkilemez.
+  //  index.html → yalnız /app.html'e yönlendirme (ayrı tanıtım sayfası yok, 4 Eki 2026).
+  //  app.html   → çalışma alanı (giriş → panel).
   build: {
     rollupOptions: {
       input: {

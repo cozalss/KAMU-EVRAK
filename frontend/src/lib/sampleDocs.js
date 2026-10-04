@@ -46,10 +46,11 @@ export const SAMPLE_DOCS = [
   {
     id: "cok_konulu",
     konu: "Park aydınlatması, su faturası itirazı ve iş başvurusu takibi hk.",
-    label: "Çok-Konulu Dilekçe",
+    label: "Çok konulu dilekçe",
+    eskiAdlar: ["Çok-Konulu Dilekçe"],
     icon: "route",
     grup: "Vatandaş",
-    aciklama: "Tek dilekçede üç ayrı talep — sistem ayrıştırıp üç farklı birime dağıtır",
+    aciklama: "Vatandaş dilekçesi · Çankaya Belediye Başkanlığı · tek dilekçede üç ayrı talep",
     text: `T.C.
 ÇANKAYA BELEDİYE BAŞKANLIĞINA
 ANKARA
@@ -86,10 +87,11 @@ Telefon: 0555 123 45 67
   {
     id: "dilekce",
     konu: "Ambulans ulaşım sürelerinin iyileştirilmesi talebi",
-    label: "Dilekçe — Canlı Kaynak Keşfi ⭐",
+    label: "Ambulans ulaşım süresi dilekçesi",
+    eskiAdlar: ["Dilekçe — Canlı Kaynak Keşfi ⭐"],
     icon: "pencil",
     grup: "Vatandaş",
-    aciklama: "Bu kurumun doğrulanmış teşkilat kaydı YOK; sistem kurumun resmî sitesini canlı bulup birim önerir",
+    aciklama: "Vatandaş dilekçesi · Konya İl Sağlık Müdürlüğü · acil sağlık istasyonu kapasitesinin incelenmesi",
     text: `T.C.
 KONYA İL SAĞLIK MÜDÜRLÜĞÜNE
 KONYA
@@ -120,10 +122,11 @@ Telefon: 0555 246 81 03
     id: "sikayet_gurultu",
     tur: "sikayet",   // id benzersiz anahtar; SLA/kategori GEÇERLİ türü ister (test kilitler)
     konu: "Gece çalışan işyeri kaynaklı gürültü şikâyeti",
-    label: "Gürültü Şikâyeti",
+    label: "Gürültü şikâyeti",
+    eskiAdlar: ["Gürültü Şikâyeti"],
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "Çevresel gürültü — 2872 s. Çevre Kanunu; ölçüm yetkisi uzman birimde",
+    aciklama: "Vatandaş şikâyeti · Seyhan Belediye Başkanlığı · gece canlı müzik yayını, gürültü ölçümü isteniyor",
     text: `T.C.
 SEYHAN BELEDİYE BAŞKANLIĞINA
 ADANA
@@ -151,10 +154,11 @@ E-posta: emre.sahin@ornekmail.com
   {
     id: "ihbar",
     konu: "Ruhsatsız yapı ihbarı (Kurtköy Mahallesi)",
-    label: "Kaçak Yapı İhbarı",
+    label: "Kaçak yapı ihbarı",
+    eskiAdlar: ["Kaçak Yapı İhbarı"],
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "3194 s. İmar Kanunu — yerinde denetim ve yapı tatil tutanağı gerektirir",
+    aciklama: "Vatandaş ihbarı · Pendik Belediye Başkanlığı · Kurtköy'de ruhsat levhasız kat ilavesi",
     text: `T.C.
 PENDİK BELEDİYE BAŞKANLIĞINA
 İSTANBUL
@@ -182,10 +186,11 @@ Telefon: 0555 444 55 66
     id: "talep_ulasim",
     tur: "talep",
     konu: "Toplu taşıma hattı güzergâh ve sefer talebi",
-    label: "Ulaşım Hattı Talebi (KRİTİK süre)",
+    label: "Toplu taşıma sefer talebi",
+    eskiAdlar: ["Ulaşım Hattı Talebi (KRİTİK süre)"],
     icon: "route",
     grup: "Vatandaş",
-    aciklama: "Büyükşehir — yasal cevap süresinin son günlerinde",
+    aciklama: "Vatandaş talebi · Van Büyükşehir Belediye Başkanlığı · akşam seferlerinin sıklaştırılması",
     text: `T.C.
 VAN BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞINA
 VAN
@@ -211,11 +216,12 @@ Telefon: 0555 432 19 87
   },
   {
     id: "sikayet",
-    konu: "Temizlik araçlarının erken saat gürültüsü (eksik bilgi)",
-    label: "Şikâyet — Eksik Bilgi",
+    konu: "Çöp toplama araçlarının sabah erken saat gürültüsü",
+    label: "Temizlik aracı gürültüsü şikâyeti",
+    eskiAdlar: ["Şikâyet — Eksik Bilgi"],
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "Muhatap, tarih, kimlik ve iletişim YOK — sistem körlemesine yazı üretmeyip soru sorar",
+    aciklama: "İmzasız şikâyet metni · muhatap, tarih ve iletişim bilgisi yazılmamış",
     text: `Belediyeye bağlı çöp toplama araçları sabah saat 05.00 civarında sokağa
 girmekte, konteyner boşaltma sırasında çıkan ses tüm apartmanı uyandırmaktadır.
 Bu durumdan uzun süredir rahatsızız.
@@ -226,10 +232,11 @@ bekliyorum.`,
   {
     id: "bilgi_edinme",
     konu: "2025 yılı yapı ruhsatı istatistikleri bilgi talebi",
-    label: "Bilgi Edinme (süresi GEÇTİ)",
+    label: "Bilgi edinme başvurusu",
+    eskiAdlar: ["Bilgi Edinme (süresi GEÇTİ)"],
     icon: "search",
     grup: "Vatandaş",
-    aciklama: "4982 s.K. m.11 — 15 iş günü doldu; sistem gecikmeyi kırmızı işaretler",
+    aciklama: "4982 sayılı Kanun kapsamında başvuru · Çevre, Şehircilik ve İklim Değişikliği Bakanlığı · ilçe bazında ruhsat sayıları",
     text: `T.C.
 ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ BAKANLIĞINA
 ANKARA
@@ -255,11 +262,12 @@ Telefon: 0555 907 46 12
   },
   {
     id: "cimer",
-    konu: "CİMER — pazar yeri hijyen ve denetim talebi",
-    label: "CİMER Başvurusu (KRİTİK süre)",
+    konu: "Semt pazarı hijyen koşulları ve denetim talebi",
+    label: "CİMER başvurusu",
+    eskiAdlar: ["CİMER Başvurusu (KRİTİK süre)"],
     icon: "search",
     grup: "Vatandaş",
-    aciklama: "CİMER'den düşen başvuru; yasal cevap süresinin son günü",
+    aciklama: "CİMER üzerinden iletilen başvuru · Kadıköy Belediye Başkanlığı · pazar sonrası temizlik ve gıda tezgâhı denetimi",
     text: `CİMER — Cumhurbaşkanlığı İletişim Merkezi
 Başvuru Türü: Şikâyet / Talep
 Başvuru No: 2026-CMR-4471829
@@ -285,10 +293,11 @@ E-posta: ali.vural@ornekmail.com`,
   {
     id: "basvuru",
     konu: "İşyeri açma ve çalışma ruhsatı başvurusu",
-    label: "İşyeri Ruhsat Başvurusu",
+    label: "İşyeri ruhsat başvurusu",
+    eskiAdlar: ["İşyeri Ruhsat Başvurusu"],
     icon: "doc",
     grup: "Vatandaş",
-    aciklama: "Ekleri tam görünen başvuru — sistem eksik alan bulamayınca yeşil geçer",
+    aciklama: "Ruhsat başvurusu · Nilüfer Belediye Başkanlığı · kırtasiye ve fotokopi işletmesi, 4 ek belge",
     text: `T.C.
 NİLÜFER BELEDİYE BAŞKANLIĞINA
 BURSA
@@ -322,11 +331,12 @@ EKLER:
   {
     id: "dilekce_aydinlatma",
     tur: "dilekce",
-    konu: "Sokak aydınlatması arızası (yetkili kurum ayrımı)",
-    label: "Aydınlatma Arızası — Yetkisizlik ⭐",
+    konu: "Sokak aydınlatması arızası",
+    label: "Sokak aydınlatması arızası",
+    eskiAdlar: ["Aydınlatma Arızası — Yetkisizlik ⭐"],
     icon: "alert",
     grup: "Vatandaş",
-    aciklama: "Belediyeye yazılmış, ancak genel aydınlatma dağıtım şirketinin görevi — devir yazısı gerekir",
+    aciklama: "Vatandaş dilekçesi · Çankaya Belediye Başkanlığı · altı armatür yaklaşık bir aydır yanmıyor",
     text: `T.C.
 ÇANKAYA BELEDİYE BAŞKANLIĞINA
 ANKARA
@@ -355,10 +365,11 @@ Telefon: 0555 654 32 10
   {
     id: "talep",
     konu: "Personel yıllık izin talebi",
-    label: "Memur İzin Talebi (süresi GEÇTİ)",
+    label: "Yıllık izin talebi",
+    eskiAdlar: ["Memur İzin Talebi (süresi GEÇTİ)"],
     icon: "clock",
     grup: "Kurum",
-    aciklama: "657 s.K. kapsamında memur izni — sistem doğru mevzuat rejimini seçmeli (4857 değil)",
+    aciklama: "Personel dilekçesi · Kayseri Valiliği İl Yazı İşleri Müdürlüğü · 14 günlük yıllık izin",
     text: `T.C.
 KAYSERİ VALİLİĞİNE
 (İl Yazı İşleri Müdürlüğü)
@@ -382,10 +393,11 @@ Birim: İl Yazı İşleri Müdürlüğü
   {
     id: "ust_yazi",
     konu: "Muhtarlık ödeneği ödemelerine ilişkin veri talebi",
-    label: "Üst Yazı (Valilik → Kaymakamlık)",
+    label: "Valilik üst yazısı",
+    eskiAdlar: ["Üst Yazı (Valilik → Kaymakamlık)"],
     icon: "send",
     grup: "Kurum",
-    aciklama: "Kurumdan kuruma resmî yazı — 2646 formatı, üst makamdan geldiği için 'rica ederim'",
+    aciklama: "Kütahya Valiliği → Tavşanlı Kaymakamlığı · muhtarlık ödeneği ödeme bilgileri isteniyor",
     text: `T.C.
 KÜTAHYA VALİLİĞİ
 İl Yazı İşleri Müdürlüğü
@@ -417,10 +429,11 @@ EK: Ödeme bilgi çizelgesi (1 sayfa)`,
   {
     id: "muzekkere",
     konu: "Hizmet alımı ihalesi öncesi hukuki değerlendirme",
-    label: "Müzekkere (birimler arası)",
+    label: "Hukuki görüş müzekkeresi",
+    eskiAdlar: ["Müzekkere (birimler arası)"],
     icon: "scale",
     grup: "Kurum",
-    aciklama: "Birimden birime iç yazışma — 4734 s. Kamu İhale Kanunu değerlendirmesi isteniyor",
+    aciklama: "Destek Hizmetleri Müdürlüğü → Hukuk İşleri Müdürlüğü · ihale şartnamesi kriterleri hakkında görüş",
     text: `T.C.
 ÇANKAYA BELEDİYE BAŞKANLIĞI
 Destek Hizmetleri Müdürlüğü
@@ -453,10 +466,11 @@ EK: Teknik şartname taslağı (6 sayfa)`,
   {
     id: "icra_evraki",
     konu: "İcra dairesi maaş haczi müzekkeresi",
-    label: "İcra Müzekkeresi (IBAN maskeleme)",
+    label: "Maaş haczi müzekkeresi",
+    eskiAdlar: ["İcra Müzekkeresi (IBAN maskeleme)"],
     icon: "scale",
     grup: "Hukuk/Mali",
-    aciklama: "2004 s. İcra ve İflas Kanunu — IBAN ve borçlu bilgisi maskelenmeli",
+    aciklama: "Ankara 12. İcra Dairesi · kesinleşmiş takipte borçlu personelin maaş haczi",
     text: `T.C.
 ANKARA 12. İCRA DAİRESİ
 
@@ -488,11 +502,12 @@ Tarih: 31.07.2026
   // ══════════ Abstention — sistem emin değilse EMİN DEĞİLİM demeli ══════════
   {
     id: "belirsiz",
-    konu: "Tür tespiti güç, eksik metin",
-    label: "Belirsiz Evrak (abstention)",
+    konu: "Konusu belirtilmemiş kısa yazı",
+    label: "Konusu belirsiz kısa yazı",
+    eskiAdlar: ["Belirsiz Evrak (abstention)"],
     icon: "search",
     grup: "Kurum",
-    aciklama: "Ne talep ne şikâyet — sistem tahmin yürütmeyip düşük güven bildirmeli",
+    aciklama: "Muhatabı, konusu ve göndereni yazılmamış iki satırlık metin",
     text: `Ekte gönderilen listeye ilişkin olarak, daha önce görüşülen hususlar
 çerçevesinde gereğinin yapılmasını,
 

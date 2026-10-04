@@ -97,7 +97,7 @@ export default function HukumMuhru({ karar }) {
         </svg>
       )}
       <span style={{ position: "absolute", right: "calc(100% + 18px)", bottom: -40 }}>
-        <Damga ton={ton} egim={onay ? -8 : -6} animasyon={false}
+        <Damga oncelik={1} ton={ton} egim={onay ? -8 : -6} animasyon={false}
           style={{ padding: "7px 14px 6px", outlineOffset: 3,
             filter: azHareket ? "drop-shadow(0 0 .6px currentColor)" : undefined,
             animation: azHareket ? "none"

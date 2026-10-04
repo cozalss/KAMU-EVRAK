@@ -632,3 +632,52 @@ class TestMaddeTurKimligi:
         c = {"mevzuat": "X", "madde_no": 5, "madde_tur": "madde"}
         out = _dedup([(9.0, c), (3.0, dict(c))])
         assert len(out) == 1 and out[0][0] == 9.0   # en yüksek skor kalır
+
+
+class TestGosterimAdi:
+    """tur4: öneriler ekranda ham slug ("kvkk aydinlatma yukumlulugu tebligi m.5") görünüyordu.
+    Gösterim adı korpus dosyasının resmî ad satırından gelir; `baslik` eşleştirme anahtarı kalır."""
+
+    def test_kanun_resmi_ad_sayili(self):
+        from agents.nodes.mevzuat_oner import _resmi_ad
+
+        assert _resmi_ad("4982_bilgi_edinme_kanunu") == "4982 sayılı Bilgi Edinme Hakkı Kanunu"
+        assert _resmi_ad("6698_kvkk").startswith("6698 sayılı Kişisel Verilerin Korunması Kanunu")
+
+    def test_kanun_olmayan_onek_sayi_eklenmez(self):
+        from agents.nodes.mevzuat_oner import _resmi_ad
+
+        ad = _resmi_ad("5690_cimer_cb_kararnamesi")
+        assert ad and not ad.startswith("5690")
+
+    def test_guvensiz_ya_da_olmayan_dosya_bos(self):
+        from agents.nodes.mevzuat_oner import _resmi_ad
+
+        assert _resmi_ad("../.env") == ""
+        assert _resmi_ad("yok_boyle_bir_dosya") == ""
+
+    def test_oneri_gosterim_adi_madde_ile_baslik_degismez(self):
+        from agents.nodes.mevzuat_oner import _oneri
+
+        o = _oneri({"mevzuat": "3071 dilekce hakki kanunu", "kaynak_dosya": "3071_dilekce_hakki_kanunu.txt",
+                    "madde_no": 7, "text": "Madde 7 — Dilekçe sahibine cevap verilir."},
+                   score=1.0, raw=5.0, q_token=5)
+        assert o["baslik"] == "3071 dilekce hakki kanunu m.7"
+        assert o["gosterim_adi"] == "3071 sayılı Dilekçe Hakkının Kullanılmasına Dair Kanun m.7"
+
+
+class TestEssesliBaglam:
+    def test_sokak_aydinlatmasi_kvkk_aydinlatma_onermez(self):
+        from agents.nodes.mevzuat_oner import _from_corpus
+
+        sonuc = _from_corpus("Sokak aydınlatması arızası, aydınlatma armatürleri yanmıyor dilekçe", "dilekce")
+        dosyalar = {o["kaynak_dosya"] for o in sonuc}
+        assert "kvkk_aydinlatma_yukumlulugu_tebligi" not in dosyalar
+        assert not any(o["kaynak_dosya"] == "6698_kvkk" and o["madde_no"] == 10 for o in sonuc)
+
+    def test_kvkk_baglaminda_oneri_korunur(self):
+        from agents.nodes.mevzuat_oner import _baglam_uygun
+
+        chunk = {"kaynak_dosya": "kvkk_aydinlatma_yukumlulugu_tebligi.txt", "mevzuat": "x"}
+        assert _baglam_uygun(chunk, "kişisel verilerin işlenmesinde aydınlatma") is True
+        assert _baglam_uygun(chunk, "park aydınlatma direği") is False

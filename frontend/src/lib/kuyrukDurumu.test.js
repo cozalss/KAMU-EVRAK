@@ -45,3 +45,9 @@ test("boş/bozuk girdilerde çökmez", () => {
   assert.deepEqual(kuyrukDurumuTuret(null, idx).processed.size, 0);
   assert.deepEqual(kuyrukDurumuTuret([{}, { name: null }, { name: "talep.txt" }], idx).processed.size, 1);
 });
+
+test("eski görünen adla kaydedilmiş oturum geçmişi de eşlenir (eskiAdlar)", () => {
+  const idx = sampleAdIndex([{ id: "belirsiz", label: "Konusu belirsiz kısa yazı", eskiAdlar: ["Belirsiz Evrak (abstention)"] }]);
+  const { sent } = kuyrukDurumuTuret([{ name: "Belirsiz Evrak (abstention)", result: { onay_durumu: "onaylandi" } }], idx);
+  assert.ok(sent.has("belirsiz"));
+});

@@ -31,7 +31,8 @@ export const ortalama = (list) =>
 
 /* Saniye biçimi — rapor ve panel BOYUNCA tek ondalık (10.4 sn). Ölçüm yoksa "—";
    "0.0 sn" basmak ölçüm yokluğunu sıfır süre gibi gösterirdi. */
-export const fmtSn = (ms) => (Number.isFinite(ms) ? (ms / 1000).toFixed(1) : "—");
+// Türkçe ondalık virgül (tr-TR) — Panel "13.2 sn" İşlenen "18,2 sn" yan yana duruyordu (tur4).
+export const fmtSn = (ms) => (Number.isFinite(ms) ? (ms / 1000).toFixed(1).replace(".", ",") : "—");
 
 export const esikMs = (ort) => (Number.isFinite(ort) ? ort * ESIK_KAT : null);
 

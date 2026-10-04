@@ -516,8 +516,8 @@ export default function App() {
               ))}
             </ol>
             <p className="ke-ph-flow-cap">
-              <span className="ke-ph-dot ke-ph-g1" aria-hidden="true" /> Görev 1: Anla &nbsp;·&nbsp;
-              <span className="ke-ph-dot ke-ph-g2" aria-hidden="true" /> Görev 2: Üret
+              <span className="ke-ph-dot ke-ph-g1" aria-hidden="true" /> Anlama &nbsp;·&nbsp;
+              <span className="ke-ph-dot ke-ph-g2" aria-hidden="true" /> Yazı üretimi
             </p>
           </section>
         )}

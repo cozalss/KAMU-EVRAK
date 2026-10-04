@@ -555,3 +555,54 @@ class TestUzlasiGuard:
             TASLAK, meta=META, sinyaller={**SINYAL_TEMIZ, "risk_metadata": {"bant": "kirmizi"}})
         assert r["uzlasi_uygulanabilir"] is True
         assert r["karar"] == "sevk"   # karar yalnız risk rozeti — uygulamayı engellemez
+
+
+TARIHLI_TASLAK = (
+    "T.C.\nKAMU KURUMU\nYAZI İŞLERİ BİRİMİ\n\n"
+    "Sayı : E-[DETSİS No]-622-[Kayıt No]            03.10.2026\n"
+    "Konu : Park aydınlatma talebi\n\n"
+    "Sayın Fatma Öztürk\n\n"
+    "Başvurunuz incelenmiştir.\n\n"
+    "Bilgilerinize rica ederim.\n\n"
+    "Yetkili İmza\nBirim Yetkilisi"
+)
+TARIH_SINYAL = {**FABRIK_SINYAL, "verify_uyari": [
+    "Taslaktaki '03.10.2026' tarihi kaynak evrakta yok",
+    "Taslaktaki 'Sayı : E-[DETSİS No]-622-[Kayıt No]            03.10.2026' ifadesi kaynak evrakta yok",
+]}
+
+
+class TestYaziTarihiKorunur:
+    """tur4 regresyonu: Kurul revizesi yazının KENDİ tarihini 'kaynakta doğrulanamadı' diye siliyordu.
+    Düzenlenme tarihi kaynak evraktan gelmez (Yön. 2646) — hiçbir çapalı edit onu düşüremez."""
+
+    async def test_duzelt_sayi_satirindan_tarihi_dusuremez(self, monkeypatch):
+        _capali_llm(monkeypatch, _fake_capali([
+            {"tip": "duzelt", "dayanak": "verify", "capa": "Sayı : E-[DETSİS No]-622-[Kayıt No]            03.10.2026",
+             "yeni": "Sayı : E-[DETSİS No]-622-[Kayıt No]",
+             "aciklama": "'03.10.2026' tarihi kaynak evrakta doğrulanamadığından satırdan çıkarılmıştır."},
+        ]))
+        r = await kurul.kurul_muzakere(TARIHLI_TASLAK, meta=FABRIK_META, sinyaller=TARIH_SINYAL)
+        assert r["oneriler"][0]["uygulanabilir"] is False      # tavsiye kalır, uygulanmaz
+        assert "03.10.2026" in r["uzlasi_metni"]
+
+    async def test_cikar_sayi_satiri_yer_tutucuya_doner_tarih_kalir(self, monkeypatch):
+        _capali_llm(monkeypatch, _fake_capali([
+            {"tip": "cikar", "dayanak": "verify", "capa": "Sayı : E-[DETSİS No]-622-[Kayıt No]            03.10.2026",
+             "aciklama": "Sayı satırı kaynakta yok."},
+        ]))
+        r = await kurul.kurul_muzakere(TARIHLI_TASLAK, meta=FABRIK_META, sinyaller=TARIH_SINYAL)
+        assert "03.10.2026" in r["uzlasi_metni"]
+        assert "Sayı : [DOĞRULA:" in r["uzlasi_metni"]
+
+    async def test_olur_blogu_tarih_satiri_silinmez(self, monkeypatch):
+        taslak = TARIHLI_TASLAK + "\n\nOLUR\n03.10.2026\nOnay Makamı"
+        _capali_llm(monkeypatch, _fake_capali([
+            {"tip": "cikar", "dayanak": "verify", "capa": "03.10.2026", "aciklama": "tarih kaynakta yok"},
+        ]))
+        r = await kurul.kurul_muzakere(taslak, meta=FABRIK_META, sinyaller=TARIH_SINYAL)
+        assert r["uzlasi_metni"].count("03.10.2026") == 2
+
+    def test_yazi_tarihleri_yalniz_sayi_ve_tek_tarih_satiri(self):
+        t = "Sayı : X  03.10.2026\nİlgi : 25.05.2026 tarihli başvurunuz.\n  04.10.2026  "
+        assert kurul._yazi_tarihleri(t) == {"03.10.2026", "04.10.2026"}

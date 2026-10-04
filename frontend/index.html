@@ -2,30 +2,20 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f4f4f6" />
-    <meta property="og:title" content="Kamu Evrak — Akıllı Agent Destek Sistemi" />
-    <meta property="og:description" content="Kamu evrak ve yazışma süreçleri için akıllı agent destek sistemi — OCR, sınıflandırma, mevzuat önerisi ve resmî yazı taslağı." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logo.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/logo.png" />
-    <meta
-      name="description"
-      content="Kamu evrak ve yazışma süreçleri için akıllı agent destek sistemi — OCR, sınıflandırma, mevzuat önerisi ve resmî yazı taslağı. Güvenli, denetlenebilir, kurumsal."
-    />
-    <title>Kamu Evrak — Akıllı Agent Destek Sistemi</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Instrument+Sans:wdth,wght@75..100,400..700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@800&display=swap"
-      rel="stylesheet"
-    />
+    <title>KAMU-EVRAK</title>
+    <!-- Kök adres doğrudan çalışma alanına açılır (ayrı tanıtım sayfası yok — kullanıcı kararı,
+         4 Eki 2026). Üretimde backend "/" isteğini /app.html'e yönlendirir; bu sayfa yalnız
+         Vite geliştirme sunucusu ve statik yedek içindir. CSP satır-içi betiğe izin vermez →
+         yönlendirme meta etiketiyle yapılır. -->
+    <meta http-equiv="refresh" content="0; url=/app.html" />
+    <link rel="icon" type="image/svg+xml" href="/logo-kamu-evrak.svg" />
+    <style>
+      html { background: #eceee9; font-family: system-ui, sans-serif; }
+      @media (prefers-color-scheme: dark) { html { background: #0c0e14; color: #e8e6e1; } }
+    </style>
   </head>
   <body>
-    <div id="portfolio-root"></div>
-    <script type="module" src="/src/portfolio/main.jsx"></script>
+    <p>Çalışma alanı açılıyor… Açılmazsa <a href="/app.html">buraya tıklayın</a>.</p>
   </body>
 </html>

@@ -33,3 +33,34 @@ export function nodeDurationMs(node) {
   const clientMs = Number(node?.t1) - Number(node?.t0);
   return Number.isFinite(clientMs) && clientMs >= 0 ? clientMs : null;
 }
+
+/* Kullanıcıya görünen İKİ İŞ BÖLÜMÜ — antet bölüm numaralandırmasıyla (I. / II.).
+   İç alan adı `gorev` (1|2) korunur; ekranda "Görev 1/2" yazmaz (ürün dili: anlama → yazı üretimi). */
+export const GOREV_FAZ = Object.freeze({
+  1: Object.freeze({ no: "I", ad: "Anlama", uzun: "I. Anlama" }),
+  2: Object.freeze({ no: "II", ad: "Yazı üretimi", uzun: "II. Yazı üretimi" }),
+});
+
+export function gorevFaz(gorev) {
+  return GOREV_FAZ[gorev === 2 ? 2 : 1];
+}
+
+/* Okuma motorunun (oku adımı `engine`) memur diline çevirisi — ham teknik ad ekrana çıkmaz. */
+const MOTOR_ETIKET = Object.freeze({
+  "text-plain": "Dijital metin",
+  "pdf-text": "PDF metin katmanı",
+  "docx-text": "Word metni",
+  rapidocr: "Görüntüden okuma (OCR)",
+  tesseract: "Görüntüden okuma (OCR)",
+  "qwen-vl": "Görsel model ile okuma",
+  "openai-vision": "Görsel model ile okuma",
+  none: "Metin bulunamadı",
+});
+
+export function motorEtiketi(engine) {
+  const e = String(engine || "").trim().toLowerCase();
+  if (!e) return "Metin";
+  if (MOTOR_ETIKET[e]) return MOTOR_ETIKET[e];
+  if (e.startsWith("pdf-scan")) return "Taranmış PDF (OCR)";
+  return "Okuma motoru";
+}

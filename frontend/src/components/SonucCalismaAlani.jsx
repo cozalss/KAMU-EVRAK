@@ -5,6 +5,7 @@ import { Chip, slaInfo, Vrow, KanitAlinti } from "./NeonDetayParts.jsx";
 import { unsurEtiket, eksikYorum, canliKaynakYorum } from "../lib/detayYorum.js";
 import { T, V, PAL, BANT, DERIN, ALFA, RAD, SP, SH, NeonCard, Icon, odakDongusu, TYPE, focusRing } from "./neonUi.jsx";
 import { arr, clean, plain } from "./sonucOrtak.js";
+import { talepleriSuz } from "../lib/sonucEtiket.js";
 import DecisionCard from "./HukumKarti.jsx";
 import { SONUC_CSS } from "./sonucStil.js";
 import { kagitStilYukle } from "./kagitDoku.js";
@@ -76,8 +77,10 @@ function alanEtiket(key) {
     .replace(/\b\p{L}/gu, (m) => m.toLocaleUpperCase("tr-TR"));
 }
 
-function degerYaz(value) {
+function degerYaz(value, key = "") {
   if (typeof value === "boolean") return value ? "Var" : "Yok";
+  // Talepler: antet artığı ("T.C") ve "Konu:" öneki memura sızmasın (backend çıkarım kusuru).
+  if (key === "talepler") return talepleriSuz(value).join(" · ");
   if (Array.isArray(value)) return value.map(clean).join(", ");
   return clean(value);
 }
@@ -167,10 +170,10 @@ function SummarySwapPanel({ r, onBelge }) {
 
 function ExtractedInfoQuickCard({ r, onOpen }) {
   const unsurSayisi = Object.entries(r.bilgi_unsurlari || {})
-    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false)
+    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "")
     .length;
   const entries = Object.entries(r.bilgi_unsurlari || {})
-    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false)
+    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "")
     .slice(0, 5);
   const uy = unsurEtiket(r);
 
@@ -181,7 +184,7 @@ function ExtractedInfoQuickCard({ r, onOpen }) {
           {entries.map(([key, value]) => (
             <div key={key} className="sc-quick-info-row" style={{ borderBottomColor: PAL.line }}>
               <span>{alanEtiket(key)}</span>
-              <strong>{degerYaz(value)}</strong>
+              <strong>{degerYaz(value, key)}</strong>
             </div>
           ))}
         </div>
@@ -238,7 +241,7 @@ function QuickReviewSection({ r, band, bantC, onOpen }) {
 function ExtractedInfoPanel({ r }) {
   const uy = unsurEtiket(r);
   const entries = Object.entries(r.bilgi_unsurlari || {})
-    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false)
+    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "")
     .slice(0, 18);
   const bools = Object.entries(r.bilgi_unsurlari || {}).filter(([, v]) => typeof v === "boolean");
   const kanitMetin = r.kanit_metadata?.metin || "";
@@ -265,7 +268,7 @@ function ExtractedInfoPanel({ r }) {
                       {alanEtiket(key)}
                     </span>
                     <span style={{ margin: 0, minWidth: 0, display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, fontWeight: 600, color: PAL.ink2, textAlign: "right" }}>
-                      <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{degerYaz(value)}</span>
+                      <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{degerYaz(value, key)}</span>
                       {maskeli && <Chip c={T} label="Bu alan KVKK gereği maskelendi">Maskeli</Chip>}
                     </span>
                   </div>
@@ -543,7 +546,7 @@ export default function SonucCalismaAlani({
             <div>
               <h2 id="sc-support-title" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>Ayrıntılar ve kontroller</h2>
               <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>
-                Önceki gelişmiş paneller burada korunur; memur yalnızca ihtiyaç duyduğunu açıp denetler.
+                Mevzuat önerileri, dosyalama, birim yönlendirme ve yazışma kuralı denetimleri.
               </p>
             </div>
           </div>

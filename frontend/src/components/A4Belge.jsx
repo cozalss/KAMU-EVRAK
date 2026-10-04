@@ -23,6 +23,8 @@ import {
   MM,
   YAZI_ALANI_GEN_PX,
   genislikOlcegi,
+  icerikYuksekligi,
+  kirpikSayfaYuk,
   olcekHesapla,
   olcekOynadi,
   olcumleriTopla,
@@ -106,6 +108,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
   const olcerRef = useRef(null);
   const [olcek, setOlcek] = useState(1);
   const [sayfalar, setSayfalar] = useState(null);
+  const [icerikYuk, setIcerikYuk] = useState(0);
 
   const satirlar = String(metin).split("\n");
 
@@ -258,7 +261,9 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
 
   // Ölçüm boyamadan ÖNCE yapılmalı; yoksa tek sayfalık hâli bir kare görünüp sonra bölünür.
   useLayoutEffect(() => {
-    setSayfalar(sayfalaraBol(olcumleriTopla(olcerRef.current)));
+    const olcumler = olcumleriTopla(olcerRef.current);
+    setSayfalar(sayfalaraBol(olcumler));
+    setIcerikYuk(icerikYuksekligi(olcumler));
   }, [metin]);
 
   const satirStil = {
@@ -306,7 +311,11 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
   };
 
   const liste = sayfalar || [[0, satirlar.length]];
-  const yigunYuk = (A4_YUK_PX * liste.length + SAYFA_ARASI_PX * (liste.length - 1)) * olcek;
+  // "genislik" önizlemesinde tek sayfalık yazı içeriğe göre kesilir (a4Sayfalama.kirpikSayfaYuk);
+  // çok sayfalı yazı ve "kutu" kipi (büyütülmüş A4) gerçek A4 yüksekliğini korur.
+  const kirpik = sigdir === "genislik" && liste.length === 1 && icerikYuk > 0;
+  const sayfaYuk = kirpik ? kirpikSayfaYuk(icerikYuk) : A4_YUK_PX;
+  const yigunYuk = (sayfaYuk * liste.length + SAYFA_ARASI_PX * (liste.length - 1)) * olcek;
 
   return (
     <div ref={sarmalRef} style={{ width: "100%" }}>
@@ -338,7 +347,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
                üstüne geldiğinde büyüteç imleci yerine düz ok görüyordu — kâğıdın
                tıklanabilir olduğuna dair TEK ipucu kayboluyordu (2026-08-06 bulgusu). */
             <div key={si} className="ke-a4-sayfa"
-              style={{ ...sayfaStil, cursor: onAc ? "zoom-in" : "inherit" }}
+              style={{ ...sayfaStil, height: sayfaYuk, cursor: onAc ? "zoom-in" : "inherit" }}
               title={onAc ? (baslikIpucu || "Büyüt (A4 görünüm)") : (baslikIpucu || undefined)}
               onClick={onAc || undefined}>
               {satirlar.slice(bas, son).map((_, j) => satirBas(bas + j, false))}

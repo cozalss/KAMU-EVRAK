@@ -328,11 +328,8 @@ export default function AuthPage({ tema, onTemaDegistir }) {
         <style>{AUTH_CSS}</style>
         <div aria-hidden="true" className="ke-auth-lif" style={{ backgroundImage: `url("${GRAIN}")` }} />
 
-        {/* Üst şerit — ana sayfa + tema (mobilde en üstte; masaüstünde form sütununun başında). */}
+        {/* Üst şerit — yalnız tema düğmesi (ayrı tanıtım sayfası yok; kök adres buraya açılır). */}
         <motion.header variants={SOL} className="ke-auth-ust">
-          <a href="/" className="ke-ust-link" {...focusRing}>
-            <Icon.arrow style={{ transform: "rotate(180deg)" }} />Ana sayfa
-          </a>
           <TemaDugme tema={tema} onTemaDegistir={onTemaDegistir} />
         </motion.header>
 
@@ -459,7 +456,7 @@ const AUTH_CSS = `
   padding:16px 16px 40px; row-gap:24px; overflow-x:clip; }
 .ke-auth-lif{ position:absolute; inset:0; background-size:160px 160px; opacity:.05; mix-blend-mode:multiply; pointer-events:none; }
 :root[data-theme="dark"] .ke-auth-lif{ mix-blend-mode:screen; opacity:.035; }
-.ke-auth-ust{ grid-area:ust; position:relative; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.ke-auth-ust{ grid-area:ust; position:relative; display:flex; align-items:center; justify-content:flex-end; gap:12px; }
 .ke-auth-sol{ grid-area:sol; position:relative; display:flex; flex-direction:column; gap:28px; min-width:0; }
 .ke-auth-sag{ grid-area:sag; position:relative; display:flex; justify-content:center; min-width:0; }
 .ke-auth-sahne{ display:none; }
@@ -508,6 +505,18 @@ const AUTH_CSS = `
   .ke-form-kagit{ padding:36px 36px 28px; }
 }
 @media(min-width:1100px) and (max-width:1379px){ .ke-masa{ grid-template-columns:minmax(0,1fr)!important; } .ke-masa-defter{ display:none!important; } }
+/* Geniş ekran (tur 4, jüri A#27/C#23): kompozisyon 1680 px'te durur ve ortalanır — 1920'de
+   fiş, sayılar ve açıklama birbirinden ~400 px uzaklaşıp "dağılıyordu". Bu genişlikte vaat
+   başlığı da sabitlenir; açıklama paragrafının SAĞ kenarı kâğıdın sağ kenarına hizalanır
+   (sahnenin 48 px sağ dolgusu kadar içeri) — paragraf havada değil, kâğıda bağlı okunur. */
+@media(min-width:1700px){
+  /* Zemin + lif html/body'den gelir (THEME_CSS): kök kendi zeminini boyarsa ortalanmış kutunun
+     iki yanında ayrı tonda şerit kalıyordu. */
+  .ke-auth-root{ max-width:1680px; margin:0 auto; background:transparent; }
+  .ke-auth-lif{ display:none; }
+  .ke-vaat{ font-size:84px; }
+  .ke-auth-alt{ max-width:320px!important; margin-right:48px!important; }
+}
 @media(min-width:1100px) and (max-height:760px){ .ke-auth-alt{ display:none; } }
 @media(min-width:2100px){ .ke-auth-root{ --z:1.15; zoom:1.15 } }
 @media(min-width:2400px){ .ke-auth-root{ --z:1.32; zoom:1.32 } }

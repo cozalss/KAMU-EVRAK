@@ -79,7 +79,7 @@ export default function TaslakImza({ kare, onBitti }) {
       </svg>
       {(evre === "damga" || evre === "kalkis") && (
         <span style={{ position: "absolute", right: "44%", bottom: `calc(16% + ${SP.s}px)` }}>
-          <Damga ton={V} egim={-8} animasyon={!az}
+          <Damga oncelik={1} ton={V} egim={-8} animasyon={!az}
             style={az ? null : { animation: "nu-damga .34s var(--ke-ease-spring) both" }}>Gönderildi</Damga>
         </span>
       )}

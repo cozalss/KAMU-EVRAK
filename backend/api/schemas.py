@@ -132,6 +132,8 @@ class OnayResumeRequest(BaseModel):
 
 class MevzuatOneriSchema(BaseModel):
     baslik: str
+    # Ekran adı (korpusun resmî ad satırı + madde) — `baslik` eşleştirme anahtarı olarak kalır.
+    gosterim_adi: str = ""
     snippet: str | None = None
     url: str | None = None
     score: float = 0.0            # max-normalize: top DAİMA 1.0 → GÖRELİ sıra, mutlak alaka DEĞİL

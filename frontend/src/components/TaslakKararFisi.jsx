@@ -5,7 +5,7 @@
    Risk YALNIZ bant etiketiyle söylenir (YEŞİL/SARI/KIRMIZI) — skor/yüzde YOK (CLAUDE.md §7).
    Mevzuat satırı "öneri"dir (RAG), doğrulanmış dayanak iddiası taşımaz. */
 import { Fragment } from "react";
-import { Damga, MONO, DISPLAY, PAL, BANT, DERIN_OF, TYPE, TNUM, SP } from "./neonUi.jsx";
+import { Damga, Icon, MONO, DISPLAY, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "./result-cards.jsx";
 
 const dolu = (v) => v != null && String(v).trim() && v !== "—";
@@ -21,7 +21,29 @@ const BaslikEtiket = ({ children }) => (
   <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginBottom: 6 }}>{children}</div>
 );
 
-export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam }) {
+/* Gönderim engeli — içi boş / "aşağıda" vaatli / [DOĞRULA]'lı yazı Gönder'e basılmadan
+   ÖNCE söylenir (tur-4: açıklama vermeyen cevap tek tıkla gönderilebiliyordu). Metin
+   lib/gonderimHazirlik.gonderimDenetimi'nden — onay fişiyle aynı kaynak, aynı kelimeler. */
+function GovdeUyarisi({ metin, onDuzenle }) {
+  return (
+    <div role="note" style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "10px 12px", borderRadius: RAD.card,
+      background: ALFA(BANT.kirmizi.c), boxShadow: `inset 3px 0 0 ${BANT.kirmizi.c}` }}>
+      <Icon.alert width={15} height={15} style={{ flexShrink: 0, marginTop: 2, color: DERIN.kirmizi }} />
+      <div style={{ minWidth: 0 }}>
+        <div style={{ ...TYPE.data, fontWeight: 600, color: DERIN.kirmizi }}>Gönderime hazır değil</div>
+        <p style={{ margin: "2px 0 6px", ...TYPE.meta, color: PAL.ink2, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden" }} title={metin}>{metin}</p>
+        {onDuzenle && (
+          <button type="button" onClick={onDuzenle} {...focusRing} data-press=""
+            style={{ cursor: "pointer", padding: "2px 0", border: "none", background: "transparent", ...TYPE.meta, fontWeight: 600, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3 }}>
+            Taslağı düzenle
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, govdeUyari = null, onDuzenle = null }) {
   const bant = BANT[r.risk_metadata?.bant] || null;
   const oz = ozCikar(govde);
   const mevzuat = (Array.isArray(r.mevzuat_onerileri) ? r.mevzuat_onerileri : [])
@@ -50,9 +72,11 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam }
             display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden", overflowWrap: "anywhere" }}>{ad}</h2>
         </div>
 
+        {govdeUyari && <GovdeUyarisi metin={govdeUyari} onDuzenle={onDuzenle} />}
+
         {bant && (
           <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap" }}>
-            <Damga ton={bant.c} egim={-3} kucuk>{bant.l} bant</Damga>
+            <Damga ton={bant.c} egim={-3} kucuk oncelik={1}>{bant.l} bant</Damga>
             <span style={{ ...TYPE.meta, color: DERIN_OF(bant.c), fontWeight: 500 }}>{bant.t}</span>
           </div>
         )}

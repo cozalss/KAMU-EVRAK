@@ -2,9 +2,12 @@
    Gerçek SSE verisini tek bir canlı işlem odağında sunar; kaynak belge her zaman yan tarafta
    erişilebilir. İşlem bittiğinde doğrudan memur kararı için ayrıntılı sonuç ve taslağa geçer. */
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { AnimatePresence } from "motion/react";
 import { useDropzone } from "react-dropzone";
 import { summarize } from "../lib/nodeMeta.js";
+import { gorevFaz, motorEtiketi } from "../lib/pipelinePhases.js";
+import { akanMetin } from "../lib/metinAkis.js";
 import { katmanGruplari, gerekmediMi, kostuMu, kesimSirasi } from "../lib/akisKatman.js";
 import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
 import SonucCalismaAlani from "./SonucCalismaAlani.jsx";
@@ -130,7 +133,9 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
           {/* OKUMA ÇİZGİSİ — koşum sürerken sayfanın üstünden dibine tükenmez mavisi bir tarayıcı
               çizgisi iner (yalnız transform; reduced-motion'da .ke-e-tarayici gizlenir). Belge
               okunuyor/işleniyor olgusunun görsel karşılığı; koşum bitince kalkar. */}
-          {canli && busy && (
+          {/* Yalnız metin HENÜZ yokken (okuma sürüyor): tur-4'te ışın metin geldikten sonra da
+              iniyor ve okunan satırları kesiyordu. Metin belirince okuma bitmiştir — ışın söner. */}
+          {canli && busy && !segs && !pdfGoster && (
             <span aria-hidden="true" className="ke-e-tarayici" style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, background: `linear-gradient(180deg, transparent calc(100% - 110px), color-mix(in srgb, ${T} 11%, transparent) calc(100% - 2px), ${T} calc(100% - 2px))`, animation: "ke-e-tara 2.8s cubic-bezier(.45,0,.55,1) infinite" }} />
           )}
           {/* HAVALE ÖNERİSİ — birim yönlendirme adımı GERÇEKTEN çalışıp bir birim önerdiğinde,
@@ -154,7 +159,7 @@ function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = false, ekAk
               {/* Fosfor kalem: kanıt spanları canlı koşumda soldan sağa sırayla boyanır (çıkarım
                   "şimdi" işaretleniyor); sonuç ekranında statik. */}
               {(() => { let m = 0; return segs.map((sg, i) => sg.mark ? (
-                <mark key={i} data-kd="alan-vurgu" style={{ background: "none", backgroundImage: `linear-gradient(color-mix(in srgb, ${BANT.sari.c} 24%, transparent), color-mix(in srgb, ${BANT.sari.c} 24%, transparent))`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", color: DERIN.sari, borderRadius: 3, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", animation: canli ? `ke-e-fosfor .55s var(--ke-ease-out) ${Math.min(m++ * 140, 1600)}ms both` : "none" }}>{sg.t}</mark>
+                <mark key={i} data-kd="alan-vurgu" style={{ background: "none", backgroundImage: `linear-gradient(color-mix(in srgb, ${BANT.sari.c} 24%, transparent), color-mix(in srgb, ${BANT.sari.c} 24%, transparent))`, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", color: DERIN.sari, borderRadius: 3, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone", animation: canli ? `ke-e-fosfor .55s var(--ke-ease-out) ${Math.min(m++ * 140, 800)}ms both` : "none" }}>{sg.t}</mark>
               ) : <span key={i}>{sg.t}</span>); })()}
             </pre>
           ) : (
@@ -242,7 +247,9 @@ export default function CanliAjanAkisi({
   // kanıt spanlarını ~4. adımda getirir (backend _node_summary) — sağ panel tüm koşum boyunca
   // iskelet beklemek zorunda değil. Sonuç gelince result.kanit_metadata (aynı nesne) devralır.
   const km = result?.kanit_metadata || nodeById.kanit_baglama?.data?.kanit_metadata || null;
-  const segs = useMemo(() => (km?.metin ? buildSegments(km.metin, Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
+  // akanMetin: paragraf içi tek "\n" boşluğa döner (dar sütunda testere dişi kenar yok);
+  // uzunluk birebir korunur → kanıt span ofsetleri aynı metne işaret eder.
+  const segs = useMemo(() => (km?.metin ? buildSegments(akanMetin(km.metin), Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
   // Sunum temposu: SSE gerçeği anında saklanır, gösterim min-dwell ile sıralanır — hızlı
   // koşumda tamamlanma vuruşları izlenebilir kalır; sonuç sahnesi sunum bitince açılır.
   const { paced, sunumTamam } = useSahneTempo(nodes, { pendingOnay, glow: efGlow });
@@ -264,7 +271,14 @@ export default function CanliAjanAkisi({
   const kapanis = canliGoruldu && !kapanisBitti && !!result && sunumTamam && !pendingOnay && !azHareket;
   useEffect(() => {
     if (!kapanis) return undefined;
-    const id = setTimeout(() => setKapanisBitti(true), 1900);
+    // Sahne → sonuç GEÇİŞİ (tur-4: tek karede kesiliyordu): View Transition ile pusula
+    // sonuca çapraz-solar. Yalnız kompozitör (anlık görüntü opaklığı); destek yoksa ya da
+    // hareket kısıtlıysa doğrudan geçer — hiçbir veri/karar bu geçişi beklemez.
+    const id = setTimeout(() => {
+      const bitir = () => setKapanisBitti(true);
+      if (typeof document !== "undefined" && document.startViewTransition) document.startViewTransition(() => flushSync(bitir));
+      else bitir();
+    }, 1900);
     return () => clearTimeout(id);
   }, [kapanis]);
   // Denetim zinciri arka planda üretilmeye devam eder; memurun iş akışını kalabalıklaştırmamak
@@ -280,7 +294,8 @@ export default function CanliAjanAkisi({
       // data: SSE node yükü OLDUĞU GİBİ taşınır — adım detay modalı (AjanAdimDetay) zengin
       // görünümü bundan kurar (canlı koşumda result henüz yokken tek veri kaynağı budur).
       data: n.data || null,
-      out: summarize(n.id, n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
+      // oku: motorun ham adı ("text-plain") memur diline çevrilir — özet satırı ham ad taşımaz.
+      out: summarize(n.id, n.id === "oku" && n.data?.engine ? { ...n.data, engine: motorEtiketi(n.data.engine) } : n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
       // durationMs SUNUCU telemetrisidir (SSE node.duration_ms) ve t0/t1'den önceliklidir
       // (nodeDurationMs). Bu haritada taşınmazsa sahne sessizce istemci tahminine düşerdi:
       // paralel/gizli bekleme sıradaki görünür düğüme yazılır ve süreler şişerdi.
@@ -438,7 +453,7 @@ export default function CanliAjanAkisi({
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", minHeight: 36 }}>
             {/* Koşum sürerken sağda yalnız küçük "İptal" var: sol blok esnek tabanla (0) satırı
                 paylaşır ki 390px'te İptal tek başına ikinci satıra düşmesin (başlık kısalır). */}
-            <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0, ...(busy ? { flex: "1 1 0" } : null) }}>
+            <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0, flex: "1 1 260px" }}>
               {/* Kutusuz aksan ikonu — NeonCard ev stili ("accent yalnız ikon rengi", 16-18px
                   sınırı); ikon KUTUSU MASTER.md anti-pattern'i, bilerek yok. */}
               <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}>
@@ -478,8 +493,11 @@ export default function CanliAjanAkisi({
                 </Chip>
               </span>}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: SP.m }}>
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
+            {/* Sağ yuva SABİT genişlikte ve sağa yaslı: koşum biterken "İptal" (76px) yerini iki
+                yükleme düğmesine (313px) bırakınca yuvanın sol kenarı kayıyordu (tur-4 CLS 0,051'in
+                bir parçası). Yuva en geniş içeriği baştan ayırır; içerik içinde değişir. */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: SP.m, minWidth: "min(320px, 100%)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: SP.s, flex: 1 }}>
                 {/* İptal — yalnız canlı koşumda: SSE akışını keser, boş duruma döner
                     ("Tekrar dene" ErrorBar yerine sessiz iptal; lastRun durduğundan aynı evrak
                     yeniden başlatılabilir). Düşük-vurgu ghost: yanlışlıkla basılmasın. */}
@@ -513,10 +531,14 @@ export default function CanliAjanAkisi({
           </div>
           {/* İŞARET CETVELİ — eski ince ilerleme çubuğu yerine adım başına bir çentik (graf
               sırası). Biçim adimDurumu'ndan; yüzde yalnız burada, kapanan adım sayısından. */}
-          {!sonucGoster && <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m }}>
+          {/* Cetvel SONUÇTA DA durur: kalkınca başlık 33px kısalıp sonuç sayfası yukarı zıplıyordu
+              (tur-4 CLS 0,017). Sonuçta koşumun adım-adım özetidir (koştu/gerekmedi/atlandı).
+              Yüzde: "%" NumberFlow öneki — ayrı metin düğümü rakam rulosuyla taban çizgisi
+              kaydırıyordu; kap sabit satır yüksekliği + clip ile rulo taşmaz. */}
+          <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginTop: SP.m }}>
             <IsaretCetveli display={display} durdu={durdu} />
-            <span style={{ fontFamily: MONO, fontSize: 13, lineHeight: "18px", fontWeight: 500, color: hataliAdim >= 0 && !kosumda ? DERIN.kirmizi : PAL.ink2, flexShrink: 0, minWidth: 44, textAlign: "right", ...TNUM }}>%<NumberFlow value={pct} spinTiming={{ duration: 250 }} /></span>
-          </div>}
+            <span style={{ fontFamily: MONO, fontSize: 13, lineHeight: "18px", height: 18, overflow: "clip", fontWeight: 500, color: hataliAdim >= 0 && !kosumda ? DERIN.kirmizi : PAL.ink2, flexShrink: 0, minWidth: 44, textAlign: "right", ...TNUM }}><NumberFlow value={pct} prefix="%" spinTiming={{ duration: 250 }} /></span>
+          </div>
         </div>
       </header>
 
@@ -527,7 +549,7 @@ export default function CanliAjanAkisi({
         const pad = "clamp(16px, 2.4vw, 28px)";
         const merkezIdx = merkezIndeksi(display);
         const kapanisBilgi = kapanis ? {
-          baslik: "İşlem tamamlandı",
+          baslik: "Tamamlandı",
           alt: `${kosanCount} adım yürütüldü${atlananCount ? ` · ${atlananCount} adım bu koşumda çalışmadı` : ""}${toplamSn ? ` · ${toplamSn}` : ""}`,
         } : null;
         const islemKart = (
@@ -553,12 +575,12 @@ export default function CanliAjanAkisi({
                 <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", flexWrap: "wrap" }}>
                   <span>Istampa</span>
                   <span style={{ flex: 1, minWidth: 8 }} />
-                  <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />Görev 1
-                  <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />Görev 2
+                  <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: T }} />{gorevFaz(1).uzun}
+                  <span style={{ width: 8, height: 8, borderRadius: RAD.dot, background: V, marginLeft: SP.xs }} />{gorevFaz(2).uzun}
                 </div>
                 {kapanis && (
                   <div aria-hidden="true" style={{ position: "absolute", inset: 0, bottom: 24, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                    <Damga ton={V} egim={-8} style={{ fontSize: 30, lineHeight: "32px", padding: "10px 22px", borderWidth: 3, background: `color-mix(in srgb, ${PAL.surf} 55%, transparent)` }}>İşlendi</Damga>
+                    <Damga ton={V} egim={-8} oncelik={1} style={{ fontSize: 30, lineHeight: "32px", padding: "10px 22px", borderWidth: 3, background: `color-mix(in srgb, ${PAL.surf} 55%, transparent)` }}>İşlendi</Damga>
                   </div>
                 )}
               </div>

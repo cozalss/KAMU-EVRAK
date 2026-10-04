@@ -4,7 +4,7 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ViewWrap, Btn, KV, Icon, MONO, DISPLAY, PAL, BANT, TYPE, TNUM, RAD, SP, SH, DERIN, DERIN_OF, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
 import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterIskelet, DefterHata, GrupBasligi, useDefterGezinme, Imlec, HUCRE } from "./SicilDefter.jsx";
-import { bosDurumMetni, gunleGrupla } from "../lib/sicilDefter.js";
+import { bosDurumMetni, gunleGrupla, kayitNoAramaMetni } from "../lib/sicilDefter.js";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
@@ -14,6 +14,14 @@ const DURUM_TR = { gonderildi: "Gönderildi", reddedildi: "Reddedildi", duzenlen
 const DURUM_RENK = { gonderildi: BANT.yesil.c, reddedildi: BANT.kirmizi.c, duzenlendi: BANT.sari.c };
 const fmtTime = (ts) => { try { return new Date(ts).toLocaleString("tr-TR"); } catch { return ""; } };
 const fmtGuven = (g) => (typeof g === "number" && g > 0 ? `%${Math.round(g * 100)}` : "");
+/* Resmî numara DB'den (/onayla → giden_no) gelir; o gelene dek satır GEÇİCİ kimlik taşır.
+   Geçici kimlik defter numarası gibi basılmaz — listede "0001", detayda "0035" görünüp memuru
+   yanıltıyordu (tur4 bulgusu). `numaraBekliyor` bayrağı ya da "E-G-" biçiminde olmayan kimlik. */
+const numaraBekliyor = (o) => !!o?.numaraBekliyor || !/^E-G-\d{4}\/\d+$/.test(String(o?.id || ""));
+function GidenNo({ item }) {
+  if (!numaraBekliyor(item)) return <SicilNo no={item.id} />;
+  return <span title="Resmî giden numarası kayıt tamamlanınca atanır" style={{ fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.mut2, whiteSpace: "nowrap" }}>numara bekleniyor…</span>;
+}
 // "bugün" / "N gün önce" — TAKVİM günü farkı (saat-tabanlı fark dün 18:00'i bugün 09:00'da
 // "bugün" sayıyordu — bug avı bulgusu).
 const gecenSure = (ts) => {
@@ -53,7 +61,7 @@ const BASE_CONFIG = {
     { value: "ts_desc", label: "En yeni önce" }, { value: "ts_asc", label: "En eski önce" },
     { value: "risk_desc", label: "Risk (yüksek–düşük)" }, { value: "birim_asc", label: "Birim (A–Z)" },
   ] },
-  dataMapping: { search: ["konu", "kaynak_evrak_adi", "id"], risk: "risk", durum: "durum", sla: "sla_durum", kategori: "_kategori", tur: "tur", birim: "alici_birim", dateField: "gonderim_tarihi" },
+  dataMapping: { search: ["konu", "kaynak_evrak_adi", "_noAra", "alici_birim"], risk: "risk", durum: "durum", sla: "sla_durum", kategori: "_kategori", tur: "tur", birim: "alici_birim", dateField: "gonderim_tarihi" },
 };
 
 /* Defter şablonu — gönderi no · konu bloğu · durum/risk · posta damgası · eylem. */
@@ -129,7 +137,7 @@ function DetayModal({ item, onClose }) {
       <div role="dialog" aria-modal="true" aria-labelledby="giden-modal-h" onClick={(e) => e.stopPropagation()} onKeyDown={odakDongusu} style={{ width: "min(720px,100%)", maxHeight: "88vh", overflowY: "auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.xl, boxShadow: SH.modal }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: SP.l, marginBottom: SP.l }}>
           <div>
-            <h2 id="giden-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{item.id}</h2>
+            <h2 id="giden-modal-h" style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{numaraBekliyor(item) ? "Giden numarası bekleniyor" : item.id}</h2>
             <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{cleanDemoText(item.konu)}</p>
           </div>
           <button ref={closeRef} type="button" onClick={onClose} aria-label="Kapat" {...focusRing} data-press=""
@@ -179,7 +187,7 @@ function GidenSatir({ item, sira, gez, gunlu, onAc }) {
       onClick={(e) => onAc(item, e.currentTarget.querySelector("[data-sd-eylem]"))}>
       {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="giden" />}
       <span {...HUCRE.grid} style={{ gridArea: "no", display: "flex", flexDirection: "column", gap: 2 }}>
-        <SicilNo no={item.id} />
+        <GidenNo item={item} />
         {gunlu && <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut3, ...TNUM }}>saat {saatOf(item.gonderim_tarihi)}</span>}
       </span>
       <div {...HUCRE.grid} style={{ gridArea: "ana", minWidth: 0 }}>
@@ -208,7 +216,7 @@ function GidenSatir({ item, sira, gez, gunlu, onAc }) {
       </span>
       <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end" }}>
         <button type="button" data-sd-eylem="" data-press=""
-          onClick={(e) => { e.stopPropagation(); onAc(item, e.currentTarget); }} aria-label={`${item.id} detayını görüntüle`}>
+          onClick={(e) => { e.stopPropagation(); onAc(item, e.currentTarget); }} aria-label={`${numaraBekliyor(item) ? "Numarası bekleyen gönderi" : item.id} detayını görüntüle`}>
           Görüntüle <Icon.arrow width={14} height={14} />
         </button>
       </span>
@@ -226,7 +234,7 @@ function GidenBos({ yukleniyor, hata, onYenidenDene, onGoInbox }) {
   if (yukleniyor) return <DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları yükleniyor" />;
   if (hata) return <DefterHata sablon={SABLON} basliklar={BASLIKLAR} baslik="Giden evrak defteri alınamadı" ayrinti={String(hata?.message || hata)} onYenidenDene={onYenidenDene} />;
   return (
-    <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" satir={7} baslik={BOS_ILK.baslik} sub={BOS_ILK.sub}
+    <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek={`E-G-${new Date().getFullYear()}/`} satir={7} baslik={BOS_ILK.baslik} sub={BOS_ILK.sub}
       actions={[<Btn key="g" primary onClick={onGoInbox}><Icon.inbox /> Gelen evrakı aç</Btn>]} />
   );
 }
@@ -241,6 +249,7 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, yukle
   // Her gönderiye operasyonel kategori türet (evrak türü + birim + konu) — filtre + rozet.
   const items = useMemo(() => outbox.map((o) => ({
     ...o, _kategori: o._kategori || evrakKategori({ evrak_turu: o.evrak_turu, birim: o.alici_birim, konu: o.konu }),
+    _noAra: numaraBekliyor(o) ? "" : kayitNoAramaMetni(o.id),
   })), [outbox]);
   const config = useMemo(() => ({
     ...BASE_CONFIG,
@@ -276,7 +285,7 @@ export default function GidenEvrakView({ outbox = [], onUpload, onGoInbox, yukle
       <FilterBar config={config} filter={filter} />
 
       {filter.results.length === 0 ? (
-        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek="E-G-2026/" damga="Eşleşme yok"
+        <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek={`E-G-${new Date().getFullYear()}/`} damga="Eşleşme yok"
           baslik={bos.baslik} sub={bos.sub}
           actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
       ) : (

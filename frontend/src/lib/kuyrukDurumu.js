@@ -18,6 +18,9 @@ export const sampleAdIndex = (sampleDocs) => {
     idx.set(`ornek-${s.id}.txt`, s.id);
     idx.set(`${s.id}.txt`, s.id);
     if (s.label) idx.set(s.label, s.id);
+    // Görünen ad değişti (iç senaryo adları → evrak adı); eski adla kaydedilmiş oturum
+    // geçmişi kuyruktan düşmeye devam etsin diye eski adlar da eşlenir.
+    for (const eski of s.eskiAdlar || []) idx.set(eski, s.id);
   }
   return idx;
 };

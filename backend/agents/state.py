@@ -25,6 +25,7 @@ class MevzuatOneri(TypedDict):
     """Önerilen mevzuat/yazışma kuralı referansı."""
 
     baslik: str          # "3071 sayılı Dilekçe Hakkı Kanunu m.4"
+    gosterim_adi: NotRequired[str]  # resmî ad + madde (ekran); baslik = eşleştirme anahtarı
     snippet: NotRequired[str]
     url: NotRequired[str]
     score: NotRequired[float]       # max-normalize (top≈1.0) — GÖRELİ sıra, mutlak alaka DEĞİL

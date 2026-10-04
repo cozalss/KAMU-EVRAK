@@ -478,6 +478,22 @@ _KORUNAN_SATIR = re.compile(r"^\s*(T\.C\.|Konu\s*:)", re.IGNORECASE)
 _ETIKET_SATIR = re.compile(r"^\s*(Sayı|İlgi|Koordinasyon|Belge Doğrulama Kodu)\s*:\s*", re.IGNORECASE)
 _DOGRULA_YER_TUTUCU = "[DOĞRULA: kaynak evrakta doğrulanamadı]"
 
+# Yazının KENDİ tarihi (Sayı satırındaki ya da tek başına duran tarih — OLUR bloğu) kaynak
+# evraktan gelmez, yazının düzenlenme tarihidir; Yön. 2646 bunu zorunlu tutar. Grounding sinyali
+# "kaynakta yok" dese bile hiçbir çapalı edit bu tarihi düşüremez (tur4 bulgusu: Kurul revizesi
+# "'03.10.2026' tarihi doğrulanamadığından çıkarılmıştır" diyerek yazıyı tarihsiz bırakıyordu).
+_TARIH = re.compile(r"(?<!\d)\d{1,2}[./]\d{1,2}[./]\d{4}(?!\d)")
+_SAYI_SATIR = re.compile(r"^\s*Sayı\s*:", re.IGNORECASE)
+
+
+def _yazi_tarihleri(taslak_md: str) -> set[str]:
+    """Taslağın kendi düzenlenme tarihleri: Sayı satırındaki ve yalnız tarihten oluşan satırlar."""
+    out: set[str] = set()
+    for satir in str(taslak_md or "").splitlines():
+        if _SAYI_SATIR.match(satir) or _TARIH.fullmatch(satir.strip()):
+            out.update(_TARIH.findall(satir))
+    return out
+
 
 def _capali_edit(
     oneri: dict[str, Any], satirlar: list[str], taslak_md: str, sinyaller: dict[str, Any],
@@ -500,17 +516,24 @@ def _capali_edit(
         return None
     idx, kapsam = coz
     satir = satirlar[idx]
+    kendi_tarih = [t for t in _TARIH.findall(satir) if t in _yazi_tarihleri(taslak_md)]
     if tip == "cikar":
         if kapsam < _CIKAR_MIN_KAPSAM or _KORUNAN_SATIR.match(satir) or not _cikar_sinyalli(satir, sinyaller):
             return None
         etiket = _ETIKET_SATIR.match(satir)
         if etiket:
             oneri["tip"] = "duzelt"   # gerçekte uygulanan işlemi yansıt (rozet artık 'Düzelt')
-            return {"idx": idx, "op": "duzelt", "yeni": f"{etiket.group(0)}{_DOGRULA_YER_TUTUCU}", "oneri": oneri}
+            # Yazının kendi tarihi alanla birlikte gitmez — yer tutucunun sağında korunur.
+            kuyruk = f"            {' '.join(kendi_tarih)}" if kendi_tarih else ""
+            return {"idx": idx, "op": "duzelt", "yeni": f"{etiket.group(0)}{_DOGRULA_YER_TUTUCU}{kuyruk}", "oneri": oneri}
+        if kendi_tarih:
+            return None               # tarih satırı (OLUR bloğu) silinemez
         return {"idx": idx, "op": "cikar", "oneri": oneri}
     yeni = oneri.get("_yeni", "")
     if not yeni or _katla(yeni) == _katla(satir) or _yeni_uydurma(taslak_md, yeni):
         return None
+    if any(t not in yeni for t in kendi_tarih):
+        return None                   # duzelt yazının kendi tarihini düşüremez (tavsiye kalır)
     return {"idx": idx, "op": "duzelt", "yeni": yeni, "oneri": oneri}
 
 

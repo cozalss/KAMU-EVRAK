@@ -37,7 +37,6 @@ import "./styles/fonts.css";
 import "./styles/kamu-evrak.css";   // global reset + result-cards yardımcı stilleri
 // Tailwind utility katmanı — YALNIZ çalışma alanı için (kendi config'i, preflight YOK).
 // kamu-evrak.css'ten SONRA yüklenir: utility'ler legacy yardımcı sınıfları ezebilsin.
-// Landing (index.html) bu dosyayı hiç görmez; onun CSS'i ayrı bundle'da kalır.
 import "./styles/app-tailwind.css";
 // Görünüm geçişi YÖNÜ (geri tuşu ters oynar) — DashboardApp.gecisle html[data-vt-yon] kurar.
 import "./styles/gecis.css";

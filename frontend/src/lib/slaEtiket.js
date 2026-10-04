@@ -3,6 +3,7 @@
    NeonDetayParts'ın tamamını (+ `diff` paketi, ~54 kB) çalışma alanı kabuğuna çekiyordu.
    NeonDetayParts eski içe aktarımlar kırılmasın diye bunları yeniden dışa aktarır. */
 import { BANT, PAL } from "../components/neonUi.jsx";
+import { slaDurumAdi } from "./sonucEtiket.js";
 
 export function slaInfo(sla) {
   const d = (sla?.durum || "").toLocaleUpperCase("tr-TR");
@@ -13,7 +14,8 @@ export function slaInfo(sla) {
   if (d.includes("GEC")) return { label: `Gecikmiş${gun}`, color: BANT.kirmizi.c };
   if (d.includes("KRİT") || d.includes("KRIT")) return { label: `Kritik${gun}`, color: BANT.sari.c };
   if (d.includes("NORMAL")) return { label: `Normal${gun}`, color: BANT.yesil.c };
-  return { label: sla.durum, color: PAL.mut };
+  // Tanınmayan kod HAM basılmaz ("tarih_yok" → "Tarih okunamadı").
+  return { label: slaDurumAdi(sla.durum), color: PAL.mut };
 }
 
 /* Alt-talep SLA durumu → bant rengi (decompose çıktısındaki sla_durum alanı). */

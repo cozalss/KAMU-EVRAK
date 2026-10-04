@@ -48,12 +48,12 @@ export const SONUC_CSS = `
   font-size: 13px; line-height: 19px; color: var(--ke-mut2); text-wrap: pretty;
 }
 .kd-hukum-karar{
-  display: flex; width: fit-content; align-items: center; gap: 6px; margin-top: 8px; min-height: 32px; padding: 5px 12px;
-  /* İkincil görünüm: ekranın TEK birincil düğmesi taslaktaki "Onayla ve gönder" kalır. */
-  border-radius: 8px; border: 1px solid color-mix(in srgb, var(--ke-derin-t) 45%, transparent); background: var(--ke-surf); color: var(--ke-derin-t);
-  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .12s ease;
+  display: flex; width: fit-content; align-items: center; gap: 8px; margin-top: 10px; min-height: 40px; padding: 8px 16px;
+  /* Fold üstündeki birincil eylem: onay fişini açar (gönderim tek yoldan — taslak kartının düğmesi). */
+  border-radius: 8px; border: 1px solid transparent; background: var(--ke-derin-t); color: var(--ke-on-accent);
+  font: inherit; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer; transition: background .12s ease, transform .14s var(--ke-ease-out);
 }
-.kd-hukum-karar:hover{ background: color-mix(in srgb, var(--ke-t) 8%, var(--ke-surf)); }
+.kd-hukum-karar:hover{ background: var(--ke-derin-th); }
 @media (hover: none){ .kd-hukum-karar{ min-height: 44px; } }
 .kd-hukum-not-etiket{ display: block; margin-bottom: 3px; font-size: 12px; line-height: 16px; color: var(--ke-mut3); }
 /* overflow:clip + clip-margin: eğik damganın dış çizgisi/dönme köşeleri BOYANIR ama sayfanın
@@ -83,12 +83,15 @@ export const SONUC_CSS = `
 
 /* ---------- Belge masası + kâğıt ---------- */
 .kd-sonuc .sc-result-document-grid{ position: relative; }
-/* EŞLEŞMİŞ ÇİFT: iki kâğıt aynı genişlikte, AYNI ölçekte iki A4 sayfasıdır — kaynak ile taslak
+/* (TUR 4'e dek) EŞLEŞMİŞ ÇİFT: iki kâğıt aynı genişlikte, AYNI ölçekte iki A4 sayfasıydı — kaynak ile taslak
    yan yana bir "karşılaştırma masası" gibi okunur. Taslak A4Belge'de ölçeğini genişlikten
    türetir (genişlik / 210 mm, azami 860px kâğıt); kaynak kâğıdı aynı matematiği CSS kap
    birimleriyle (cqi) kurar: punto = 11pt × (genişlik / 793,7px), kenar = 15 mm × aynı ölçek.
    İki sütun + iki masa dolgusu eşit olduğu sürece ölçekler piksel-aynı çıkar. */
-@media (min-width: 1121px){ .kd-sonuc .sc-result-document-grid{ grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; } }
+/* OKUNABİLİRLİK (bağımsız denetim, TUR 4): eşit iki sütunda taslak metni 1440'ta ~9 px'e
+   düşüyordu. İmzalanacak belge taslaktır; sütun ona genişlik verir (≈%59). Kaynak belge
+   düz metin olduğu için kâğıt ölçeğine bağlı kalmaz, okunur puntoda kendi sütununa akar. */
+@media (min-width: 1121px){ .kd-sonuc .sc-result-document-grid{ grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); column-gap: 20px; } }
 .kd-sonuc .sc-source-slot [data-kd="kaynak-masa"]{
   container-type: inline-size; align-items: flex-start;
   padding: 18px 12px 22px !important;
@@ -96,11 +99,12 @@ export const SONUC_CSS = `
 .kd-sonuc .sc-source-slot [data-kd="kaynak-kagit"]{
   --kd-a4: min(100cqi, 860px);
   flex: none !important; width: var(--kd-a4) !important; max-width: none !important;
-  aspect-ratio: 210 / 297; overflow: visible !important;
+  /* İçeriğe göre uzar (boş A4 yüksekliği yok); kısa metinde kâğıt hissi için taban yükseklik. */
+  min-height: calc(var(--kd-a4) * 1.4142 * .45); overflow: visible !important;
   padding: calc(var(--kd-a4) * .07143) !important;
 }
 .kd-sonuc .sc-source-slot [data-kd="kaynak-kagit"] pre{
-  font-size: calc(var(--kd-a4) * .018477) !important;
+  font-size: clamp(13px, calc(var(--kd-a4) * .018477), 16px) !important;
   line-height: 1.45 !important; letter-spacing: 0 !important;
 }
 @media (max-width: 760px){

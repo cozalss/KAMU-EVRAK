@@ -157,3 +157,24 @@ export function olcumleriTopla(olcerEl) {
     yukseklik: el.offsetHeight,
   }));
 }
+
+/* Önizleme kâğıdı İÇERİĞE GÖRE kesilir (yalnız tek sayfalık "genislik" önizlemesi).
+   Bağımsız denetim: 3 satırlık yazı için ~850 px boş A4 gösteriliyor, onay düğmesi ve imza
+   bloğu ekranın altına itiliyordu. Kâğıt artık içerik + üst/alt kenar boşluğu kadar uzar;
+   aşırı kısa yazıda A4 hissi kaybolmasın diye taban yüksekliğin %45'i, tavan tam A4.
+   Baskı (`@page`) ve büyütülmüş A4 görünümü etkilenmez — yalnız ekran önizlemesidir. */
+export const KIRPIK_TABAN_ORAN = 0.45;
+export const KIRPIK_PAY_PX = 24;   // imza altı nefes payı (mühür imza satırının altına taşar)
+
+export function kirpikSayfaYuk(icerikPx) {
+  const ic = Number(icerikPx);
+  if (!Number.isFinite(ic) || ic <= 0) return A4_YUK_PX;
+  const yuk = ic + 2 * KENAR_MM * MM + KIRPIK_PAY_PX;
+  return Math.min(A4_YUK_PX, Math.max(A4_YUK_PX * KIRPIK_TABAN_ORAN, yuk));
+}
+
+/* Ölçüm katmanındaki son satırın alt kenarı = içerik yüksekliği (px, ölçeksiz). */
+export function icerikYuksekligi(olcumler) {
+  if (!Array.isArray(olcumler) || !olcumler.length) return 0;
+  return olcumler.reduce((m, s) => Math.max(m, (Number(s.ust) || 0) + (Number(s.yukseklik) || 0)), 0);
+}

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BIRIM_GOSTER, EVRAK_TR } from "./result-cards.jsx";
 import { hukumYorum, denetimRozeti, havaleYorum } from "../lib/detayYorum.js";
 import { MONO, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, RAD, SP, SR_ONLY, Icon, focusRing, Damga } from "./neonUi.jsx";
 import { arr } from "./sonucOrtak.js";
+import { gonderimDenetimi } from "../lib/gonderimHazirlik.js";
 
 const TON = {
   yesil: DERIN.yesil,
@@ -160,6 +161,8 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
       ? "Havaleyi onaylamadan önce işaretli kontrol noktalarını inceleyin."
       : "Kontroller temiz; nihai havale kararı yetkili memurundur.";
   const riskAciklama = RISK_BAND_HELP[band] || RISK_BAND_HELP.yesil;
+  // Gönderimi engelleyen taslak kusuru (boş gövde vb.) şeritte de AÇIKÇA söylenir — yalnız fişte değil.
+  const engel = r.yazi_taslak_md ? gonderimDenetimi(r.yazi_taslak_md).engel[0] : null;
   const kontroleGit = () => {
     setAcikYardim(null);
     const hedef = document.getElementById("sc-memur-kontrol");
@@ -180,16 +183,33 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
     }
   };
 
-  /* Onay kapısı: eylemi öne çıkar — karar düğmelerine götür ve birincil düğmeye odaklan
-     (klavye kullanıcısı tek Enter'la karar satırına iner). Kaydırma reduced-motion'a uyar. */
-  const kararaGit = () => {
+  /* BİRİNCİL EYLEM FOLD ÜSTÜNDE (bağımsız denetim: "Onayla ve gönder" 1440×900'de y≈1190'daydı).
+     Şeritteki "İncele ve onayla" kendi gönderim yolu KURMAZ — taslak kartındaki asıl düğmeye
+     basar; böylece onay fişi + kabul sözleşmesi + kâğıttaki mühür TEK yoldan geçer. Önce kâğıt
+     görünür alana kaydırılır: mühür memurun gözü önünde insin. Kaydırma reduced-motion'a uyar. */
+  const kararDugmesi = () => {
     const satir = document.querySelector(".sc-main-draft-shell .sc-decision-footer, .sc-draft-card .sc-decision-footer");
+    const birincil = satir && Array.from(satir.querySelectorAll("button")).find((b) => /onayla/i.test(b.textContent || ""));
+    return { satir, birincil };
+  };
+  const kararaGit = (ac = false) => {
+    const { satir, birincil } = kararDugmesi();
     if (!satir) return;
     const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    satir.scrollIntoView({ block: "center", behavior: az ? "auto" : "smooth" });
-    const birincil = Array.from(satir.querySelectorAll("button")).find((b) => /onayla/i.test(b.textContent || "") && !b.disabled);
-    birincil?.focus({ preventScroll: true });
+    satir.scrollIntoView({ block: "end", behavior: az ? "auto" : "smooth" });
+    if (!birincil || birincil.disabled) return;
+    birincil.focus({ preventScroll: true });
+    if (ac) birincil.click();
   };
+  const taslakVar = !!String(r.yazi_taslak_md || "").trim();
+
+  // İşlem bitince odak <body>'ye düşüyordu (13 Tab ile karara ulaşılıyordu): sonuç başlığına al.
+  // Yalnız odak sahipsizse — memur başka bir öğedeyse odağı çalmayız.
+  const baslikRef = useRef(null);
+  useEffect(() => {
+    const a = document.activeElement;
+    if (!a || a === document.body || a.id === "nu-main") baslikRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const bantVar = !!r.risk_metadata?.bant;
   const tur = r.evrak_turu ? EVRAK_TR(r.evrak_turu) : "";
@@ -203,7 +223,7 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
   return (
     <section className="sc-decision-card sc-decision-strip-card kd-hukum" aria-labelledby="sc-decision-title">
       <div className="kd-hukum-kunye" aria-hidden="true">
-        <span>HÜKÜM</span>
+        <span>SONUÇ</span>
         {tur && <span className="kd-hukum-kunye-tur">{tur}</span>}
         <span className="kd-hukum-kunye-cizgi" />
         {denetimIz && (
@@ -215,7 +235,7 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
       </div>
       <div className="kd-hukum-izgara">
         <div className="kd-hukum-baslik">
-          <h2 id="sc-decision-title">{ana}</h2>
+          <h2 id="sc-decision-title" ref={baslikRef} tabIndex={-1} style={{ outline: "none" }}>{ana}</h2>
           <span className="sc-decision-status-line" style={{ color: TON[hy.ton] || DERIN.sari }}>
             {durumSatiri}
             {bantVar && (
@@ -246,17 +266,18 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
           <MetaSlot slot={havale} id="havale" acik={acikYardim} ac={setAcikYardim} />
         </dl>
         <p className="kd-hukum-not">
-          <span className="kd-hukum-not-etiket">{onayBekliyor ? "Kararınız bekleniyor" : "Sıradaki adım"}</span>
-          {kararAciklama}
-          {onayBekliyor && (
-            <button type="button" className="kd-hukum-karar" onClick={kararaGit} data-press="" {...focusRing}>
-              <Icon.arrow width={13} height={13} aria-hidden="true" /> Karar düğmelerine git
+          <span className="kd-hukum-not-etiket">{engel ? "Gönderim kilitli" : onayBekliyor ? "Kararınız bekleniyor" : "Sıradaki adım"}</span>
+          {engel ? <span role="status" style={{ color: DERIN.kirmizi }}>{engel.metin}</span> : kararAciklama}
+          {taslakVar && (
+            <button type="button" className="kd-hukum-karar" onClick={() => kararaGit(true)} data-press="" {...focusRing}
+              aria-label={engel ? "Gönderimi engelleyen eksiği gör — onay fişi açılır" : "Yazıyı incele ve onayla — önce gönderim onay fişi açılır"}>
+              <Icon.send width={13} height={13} aria-hidden="true" /> {engel ? "Eksiği gör" : "İncele ve onayla"}
             </button>
           )}
         </p>
         {bantVar && (
           <div className="kd-hukum-damga">
-            <Damga ton={BANT[band].c} egim={-6} style={{ padding: "8px 14px 7px", outlineOffset: 3 }}>
+            <Damga oncelik={1} ton={BANT[band].c} egim={-6} style={{ padding: "8px 14px 7px", outlineOffset: 3 }}>
               <span className="kd-damga-ic">
                 <span className="kd-damga-ust">Risk bandı</span>
                 <span className="kd-damga-ad">{BANT[band].l}</span>

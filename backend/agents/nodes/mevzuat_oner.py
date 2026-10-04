@@ -352,6 +352,63 @@ def _baslik(chunk: dict[str, Any]) -> str:
     return f"{mevzuat} [DOĞRULA: madde no]"
 
 
+_GUVENLI_DOSYA = re.compile(r"^[0-9A-Za-z_.-]{1,120}$")
+_KANUN_SONU = re.compile(r"\bKanun(?:u)?(?:\s*\([^)]*\))?$")
+
+
+@lru_cache(maxsize=512)
+def _resmi_ad(dosya: str) -> str:
+    """Korpus dosyasının İLK satırı = mevzuatın resmî adı (korpus sözleşmesi). Ekranda ham
+    slug ("kvkk aydinlatma yukumlulugu tebligi") yerine bu ad gösterilir. Kanunlarda dosya
+    önekindeki sayı ("4982_…") "4982 sayılı …" olarak eklenir — yalnız ad 'Kanun' ile
+    bitiyorsa (CBK/yönetmelik önekleri sayı değil sıra/karar no olabilir; uydurma yok)."""
+    if not dosya or not _GUVENLI_DOSYA.match(dosya) or ".." in dosya:
+        return ""
+    try:
+        with (_MEVZUAT_DIR / f"{dosya}.txt").open(encoding="utf-8", errors="replace") as f:
+            ilk = " ".join(f.readline().split())
+    except OSError:
+        return ""
+    no = dosya.split("_", 1)[0]
+    if no.isdigit() and _KANUN_SONU.search(ilk) and not ilk.startswith(no):
+        ilk = f"{no} sayılı {ilk}"
+    return ilk[:180]
+
+
+def _gosterim_adi(chunk: dict[str, Any]) -> str:
+    """Kullanıcıya gösterilen öneri adı: resmî ad + madde (yoksa boş → istemci baslik'e düşer).
+    `baslik` DEĞİŞMEZ — NLI/CRAG/eval eşleştirme anahtarıdır."""
+    ad = _resmi_ad(_kaynak_dosya(chunk))
+    if not ad:
+        return ""
+    madde_no = chunk.get("madde_no")
+    if madde_no is None:
+        return ad
+    onek = _MADDE_TUR_ONEK.get(str(chunk.get("madde_tur") or ""), "m.")
+    return f"{ad} {onek}{madde_no}"
+
+
+# Eşsesli sözcük tuzağı: bazı mevzuat, evrakta GEÇEN sıradan bir sözcükle (ör. "aydınlatma")
+# lafzen eşleşir ama yalnız belirli bağlamda ilgilidir. Bağlam terimlerinden hiçbiri sorguda
+# yoksa öneri düşürülür (tur4 bulgusu: park aydınlatması dilekçesine KVKK Aydınlatma Tebliği).
+_BAGLAM_SARTI: dict[str, tuple[str, ...]] = {
+    "kvkk_aydinlatma_yukumlulugu_tebligi": (
+        "kişisel veri", "kvkk", "6698", "veri sorumlusu", "aydınlatma metni", "aydınlatma yükümlülüğü"),
+    # KVKK m.10 = "Veri sorumlusunun aydınlatma yükümlülüğü" — aynı eşsesli tuzak (madde düzeyi).
+    "6698_kvkk#10": (
+        "kişisel veri", "kvkk", "6698", "veri sorumlusu", "aydınlatma metni", "aydınlatma yükümlülüğü"),
+    # "kamuyu aydınlatma" sermaye piyasası terimidir; sokak aydınlatmasıyla lafzen çakışır.
+    "6362_sermaye_piyasasi_kanunu": (
+        "sermaye piyasa", "halka arz", "borsa", "spk", "yatırımcı", "ihraççı"),
+}
+
+
+def _baglam_uygun(chunk: dict[str, Any], sorgu_kucuk: str) -> bool:
+    dosya = _kaynak_dosya(chunk)
+    terimler = _BAGLAM_SARTI.get(dosya) or _BAGLAM_SARTI.get(f"{dosya}#{chunk.get('madde_no')}")
+    return not terimler or any(t in sorgu_kucuk for t in terimler)
+
+
 # Konu + evrak türü = en güçlü alaka sinyali; ham gövde boilerplate ("arz ederim",
 # "imza") gürültüsü taşır ve genel resmî-yazı maddelerini (2646) kayırır. Konu/türü
 # tekrar ederek ağırlandırırız (standart sorgu-genişletme) → domain-spesifik madde
@@ -423,6 +480,7 @@ def _oneri(
     """
     return {
         "baslik": _baslik(chunk),
+        "gosterim_adi": _gosterim_adi(chunk),
         "snippet": _snippet(str(chunk.get("text", ""))),
         "kaynak_dosya": _kaynak_dosya(chunk),
         "madde_no": chunk.get("madde_no"),
@@ -587,7 +645,8 @@ def _from_corpus(query: str, turu: str = "", *, ek_beklenen: frozenset[str] = fr
     beklenen |= ek_beklenen
     boosted = _apply_boost(ranked, beklenen)
     boosted.sort(key=lambda x: -x[0])
-    deduped = _dedup(boosted)
+    sorgu_kucuk = tr_lower(query)
+    deduped = [(sk, c) for sk, c in _dedup(boosted) if _baglam_uygun(c, sorgu_kucuk)]
     # Aşama 2 — cross-encoder rerank (opt-in + graceful). None → BM25 yoluna devam.
     reranked = _maybe_rerank(query, deduped)
     if reranked is not None:

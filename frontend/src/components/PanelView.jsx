@@ -25,7 +25,7 @@
 import { cloneElement, useEffect, useMemo, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, DISPLAY, T, V, R, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, IRIS, IRIS_BAR, focusRing } from "./neonUi.jsx";
+import { ViewWrap, NeonCard, Btn, EmptyState, Icon, MONO, DISPLAY, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, IRIS, IRIS_BAR, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER } from "./result-cards.jsx";
 import SureTakvimi, { TakvimIskelet } from "./SureTakvimi.jsx";
 import KahramanBrif, { BrifIskelet, PANEL_KF, giris, iskeletCizgi, iskeletNefes } from "./PanelBrif.jsx";
@@ -34,7 +34,9 @@ import SureRaporModal from "./SureRaporModal.jsx";
 import SureKiyasBloku, { TrendRozet } from "./SureKiyas.jsx";
 import { olcumler, ortalama, genelTrend, hizKademe, gunlukOrtSure, fmtSn } from "../lib/sureRapor.js";
 import { adBuyut } from "../lib/trMetin.js";
-import { GUN_MS, gunBasi, gunlukSeri } from "../lib/gunlukSeri.js";
+import { GUN_MS, gunBasi, gunlukSeri, kiyasMetni } from "../lib/gunlukSeri.js";
+import { sicilGrupla } from "../lib/sicilVaryant.js";
+import { kayitAdi } from "../lib/sohbetMetin.js";
 
 /* Görsel olarak gizli, ekran okuyucuya açık durum metni (iskeletler aria-hidden). */
 const SR_YALNIZ = { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" };
@@ -105,8 +107,7 @@ function AkisHucre({ label, value, icon, onClick, ariaLabel, gunluk, i, kolon, y
      DEĞİŞİMİNDE akar; panelin tek açılış sayımı kahramanın dev rakamıdır. */
   const akan = value;
   const sifir = value === 0;
-  const delta = gunluk ? gunluk.bugunN - gunluk.dunN : null;
-  const deltaVar = delta != null && gunluk.aktifGun >= 2 && delta !== 0;
+  const kiyas = kiyasMetni(gunluk);   // gerçek farktan (dün 0 → bugün 1 "dünle aynı" değil)
   const kutu = { textAlign: "left", padding: `${SP.l}px ${SP.l + 2}px`, width: "100%", height: "100%",
     background: "transparent", border: "none", borderRadius: 0,
     borderLeft: i % kolon !== 0 ? `1px solid ${PAL.line}` : "none",
@@ -134,8 +135,8 @@ function AkisHucre({ label, value, icon, onClick, ariaLabel, gunluk, i, kolon, y
         <span style={{ display: "flex", alignItems: "center", minHeight: 16 }}><span style={iskeletCizgi(72, 8)} /></span>
       ) : (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 3, minHeight: 16, ...TYPE.meta, fontWeight: 500,
-          color: deltaVar ? (delta > 0 ? DERIN.yesil : PAL.mut2) : PAL.mut3, ...TNUM }}>
-          {deltaVar ? (<>{delta > 0 ? <OK_YUKARI /> : <OK_ASAGI />}{delta > 0 ? `+${delta}` : delta} düne göre</>) : (gunluk ? "dünle aynı" : "anlık kuyruk")}
+          color: kiyas.yon === "artis" ? DERIN.yesil : kiyas.yon === "azalis" ? PAL.mut2 : PAL.mut3, ...TNUM }}>
+          {kiyas.yon === "artis" ? <OK_YUKARI /> : kiyas.yon === "azalis" ? <OK_ASAGI /> : null}{kiyas.metin}
         </span>
       )}
     </span>
@@ -251,7 +252,7 @@ function DagilimYuzeyi({ n, risk, turList, birimList, ortGuven, genis }) {
           <KolonBaslik>Havale Edilen Birim</KolonBaslik>
           <BarList rows={birimList} color={T}
             bos="Henüz kayıtlı havale yok — birim yönlendirmesi doğrulanan evraklar burada birime göre sayılır." />
-          {birimList.length > 0 && <p style={{ margin: 0, ...TYPE.data, color: PAL.mut3 }}>Görev 2 yönlendirmesi: en çok havale alan birimler.</p>}
+          {birimList.length > 0 && <p style={{ margin: 0, ...TYPE.data, color: PAL.mut3 }}>Yönlendirme: en çok havale alan birimler.</p>}
         </div>
       </div>
     </NeonCard>
@@ -365,13 +366,15 @@ function SureGrafik({ history }) {
 /* Feed satırı — durum noktası + ad + tek semantik çip + tür/birim + mono saat. */
 function FeedSatir({ h, onGoIslenen, bugunGrubu }) {
   const bekliyor = h.result?.yazi_taslak_md && !h.result?.onay_durumu;
+  // İnsan-okur başlık: evrak konusu; dosya adı ("ornek-bilgi_edinme.txt") yalnız son çare.
+  const ad = kayitAdi({ konu: h.result?.bilgi_unsurlari?.konu, name: h.name, evrak_turu: h.evrak_turu });
   // Satırın çip/tür/saat parçaları `flexShrink: 0` taşır (kırpılmamaları KASITLI). Telefonda
   // toplamları kaba sığmayınca satır dışarı taşıyordu (ölçüldü 2026-08-12: 390px ekranda saat
   // 120px dışarıda, sayfa 87px yatay kayıyordu). Dar ekranda satır sarar: ad ilk satırı tek
   // başına alır, künye ikinci satıra iner — hiçbir bilgi kırpılmaz.
   const dar = useDarEkran();
   return (
-    <button type="button" onClick={onGoIslenen} aria-label={`${h.name} — işlenen evrak arşivinde gör`} {...focusRing} data-press=""
+    <button type="button" onClick={onGoIslenen} aria-label={`${ad} — işlenen evrak arşivinde gör`} {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, width: "100%", textAlign: "left",
@@ -379,7 +382,7 @@ function FeedSatir({ h, onGoIslenen, bugunGrubu }) {
         padding: "8px 4px", background: "transparent", border: "none", borderTop: `1px solid ${PAL.line}`,
         transition: `background .12s ease, transform .14s ${EASE.out}` }}>
       <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: RAD.dot, background: BANT[h.bant]?.c || PAL.mut2, flexShrink: 0 }} />
-      <span style={{ ...TYPE.data, color: PAL.ink2, flex: dar ? "1 1 100%" : 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
+      <span style={{ ...TYPE.data, color: PAL.ink2, flex: dar ? "1 1 100%" : 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={h.name}>{ad}</span>
       {bekliyor && <span style={{ ...TYPE.meta, fontWeight: 500, color: DERIN.sari, background: ALFA(BANT.sari.c), borderRadius: RAD.chip, padding: "2px 8px", flexShrink: 0 }}>karar bekliyor</span>}
       <span style={{ ...TYPE.meta, color: PAL.mut, flexShrink: 0 }}>{EVRAK_TR(h.evrak_turu)}</span>
       <span style={{ ...TYPE.meta, color: DERIN.V, textAlign: "right", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{BIRIM_GOSTER(h.hedef_birim, h.evrak_turu)}</span>
@@ -500,10 +503,14 @@ function GozlemDurum({ yukleniyor, span, genis }) {
 
 /* ---------- Ana görünüm ---------- */
 
-export default function PanelView({ history = [], outbox = [], inboxCount = 0, kuyrukSla = [], slaHatasi = false, onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onGoTaslaklar = null, onUpload, user, gecmisYukleniyor = false, gecmisHatasi = false }) {
+export default function PanelView({ history: hamGecmis = [], outbox = [], inboxCount = 0, kuyrukSla = [], slaHatasi = false, onGoInbox, onIsle = () => {}, onGoIslenen = () => {}, onGoGiden = () => {}, onGoTaslaklar = null, onUpload, user, gecmisYukleniyor = false, gecmisHatasi = false }) {
   const genis = useGenisEkran();
   const dar = useDarEkran();          // telefon eşiği (640px) — ölçü şeridi tek kolona iner
   const [raporAcik, setRaporAcik] = useState(false);   // İşlem Süresi detay raporu
+  // Tek sayaç kaynağı: İşlenen sicili ile AYNI kayıt birimi (sicilGrupla) — oturum/DB
+  // yinelenenleri bir kez sayılır; Panel "7" derken İşlenen "3 kayıt" demesin (tur4 bulgusu).
+  const history = useMemo(() => sicilGrupla(hamGecmis).map((h) => (h.hedef_birim || !h.hedef_birim_adi ? h
+    : { ...h, hedef_birim: h.hedef_birim_adi })), [hamGecmis]);
   const n = history.length;
   const gonderilenler = useMemo(() => outbox.filter((o) => o.durum === "gonderildi"), [outbox]);
   // Birikimli üretim: karar durumundan bağımsız, taslak üretilmiş TÜM işlemler (jüri T6).
@@ -565,11 +572,9 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
      tüm sayfa ~1050 px aşağı itiliyordu (CLS 0,38, yavaş 4G ölçümü). */
   const slaBekleniyor = !takvimVar && !slaHatasi && inboxCount > 0;
 
-  /* Başlık damgası — görünümün HÜKMÜ: gecikmiş varsa kırmızı "N gecikmiş", yalnız kritik
-     varsa sarı "N kritik". Sükûnette damga yok (dikkat bütçesi: ekran başına ≤2; bu tek). */
-  const gecikmisN = kuyrukSla.filter((x) => x.sla?.durum === "GECIKMIS").length;
-  const kritikN = kuyrukSla.filter((x) => x.sla?.durum === "KRITIK").length;
-  const damga = gecikmisN ? { metin: `${gecikmisN} gecikmiş`, ton: R } : kritikN ? { metin: `${kritikN} kritik`, ton: BANT.sari.c } : undefined;
+  /* Başlık damgası KALDIRILDI (tur4, üç jüri ortak bulgusu): "N gecikmiş" damgası, kahramanın
+     dev rakamı ve lejant aynı olguyu 200 px içinde üç kez söylüyordu. Hüküm kahramanda tek
+     kez söylenir; Damga yalnız gerçek karar anına (onay/gönderim) saklanır. */
   const kunye = "Sabah brifingi";
 
   // Gerçek sıfır: hiç işlem yok VE kuyruk boş → tek boş durum; iskelet kart dizmek "ölü panel".
@@ -597,7 +602,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
   const akisKolon = dar || !genis ? 2 : 4;
 
   return (
-    <ViewWrap id="panel-h" title="Panel" sub={manset} kunye={kunye} damga={damga}>
+    <ViewWrap id="panel-h" title="Panel" sub={manset} kunye={kunye}>
       <style>{PANEL_KF}</style>
       {/* Açılış koreografisi (2026-10): kahraman önce (60ms), takvim mührünü basar (180ms),
           akış sayaçları sayar (280ms+), gözlem kuşağı sonra akar. Hepsi transform/opacity/
@@ -623,7 +628,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
         {slaBekleniyor && (
           <>
             <div style={{ ...span(8), alignSelf: "stretch" }}>
-              <span role="status" style={SR_YALNIZ}>Yasal süre brifi yükleniyor</span>
+              <span role="status" style={SR_YALNIZ}>Yasal süre özeti yükleniyor</span>
               <BrifIskelet />
             </div>
             <div style={{ ...span(4), alignSelf: "stretch" }}><TakvimIskelet /></div>
@@ -640,7 +645,7 @@ export default function PanelView({ history = [], outbox = [], inboxCount = 0, k
             <span style={{ minWidth: 0 }}>
               <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Yasal süre servisine ulaşılamadı</span>
               <span style={{ display: "block", ...TYPE.data, color: PAL.mut2, marginTop: 2 }}>
-                Süre takvimi ve kuyruk brifi gizlendi; tahmini süre gösterilmez. Sayfayı yenileyerek
+                Süre takvimi ve kuyruk özeti gizlendi; tahmini süre gösterilmez. Sayfayı yenileyerek
                 yeniden deneyebilirsiniz — akış ve gözlem verileri etkilenmedi.
               </span>
             </span>

@@ -59,3 +59,14 @@ export function sicilDokumCsv(rows, sutunlar) {
   const govde = (rows || []).map((r) => sutunlar.map((c) => csvHucre(c.deger(r))).join(";"));
   return `\uFEFF${[bas, ...govde].join("\r\n")}\r\n`;
 }
+
+/** Kayıt numarası arama metni — "E-G-2026/0035" hem tam hâliyle hem de sıfırsız sırayla
+    ("35", "2026/35", "0035") bulunsun. Memur numarayı defterden okuduğu gibi kısaltarak
+    yazar; tam-dizi araması bunu kaçırıyordu (tur4 bulgusu). */
+export function kayitNoAramaMetni(no) {
+  const s = String(no || "").trim();
+  const m = s.match(/(\d{4})\/(\d+)$/);
+  if (!m) return s;
+  const sira = String(Number(m[2]));
+  return [s, m[2], sira, `${m[1]}/${sira}`, `${m[1]}/${m[2]}`].join(" ");
+}

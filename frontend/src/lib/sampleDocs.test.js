@@ -35,3 +35,17 @@ test("örnek id'leri benzersiz ve metinler boş değil", () => {
     assert.ok(typeof s.text === "string" && s.text.trim().length > 40, `örnek '${s.id}' metni boş/kısa`);
   }
 });
+
+// Görünen alanlar (label/konu/aciklama) memura gösterilir: geliştirici/test notu, emoji
+// ve iç senaryo dili sızmamalı (tur4 jüri bulgusu: "sistem eksik alan bulamayınca yeşil
+// geçer", "⭐", "(abstention)").
+test("görünen alanlarda iç not, emoji ve yarışma dili yok", () => {
+  const YASAK = [/⭐/u, /abstention/i, /\bsistem\b/i, /Görev [12]/u, /jüri/i, /şartname\s*§/iu, /\(KRİTİK süre\)/u, /süresi GEÇTİ/u, /yetkisizlik/i];
+  for (const s of SAMPLE_DOCS) {
+    for (const alan of ["label", "konu", "aciklama"]) {
+      const v = String(s[alan] || "");
+      assert.ok(v.length > 0, `örnek '${s.id}' ${alan} boş`);
+      for (const re of YASAK) assert.ok(!re.test(v), `örnek '${s.id}' ${alan} iç ifade içeriyor: ${v}`);
+    }
+  }
+});

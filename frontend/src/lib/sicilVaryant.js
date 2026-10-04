@@ -32,19 +32,28 @@ export const varyantBirlestir = (satir, res) => {
    history en-yeni-önce gelir → temsilci = en güncel karar durumunu taşıyan satır; yinelenen
    satırların taslakları temsilcinin varyant listesine katılır (tür zaten varsa en yenisi kalır). */
 export const sicilGrupla = (history) => {
-  const temsilci = new Map();
+  // Denetim hash'i İÇERİKTEN türer: aynı evrak iki kez işlenince iki AYRI işlem aynı son_hash'i
+  // taşır. Hash yalnız islem_id'si olmayan (persist öncesi) satırı bağlamak içindir — iki farklı
+  // islem_id hash'te çakışsa da ayrı sicil kaydıdır (tur4 bulgusu: 7 işlem 3 satıra iniyor,
+  // Panel "7" / İşlenen "3 kayıt" çelişiyordu).
+  const islemRep = new Map();
+  const hashRep = new Map();
   const out = [];
   for (const h of history) {
-    const keys = [h.result?.islem_id, h.result?.denetim_izi?.son_hash].filter(Boolean);
+    const id = h.result?.islem_id || null;
+    const hash = h.result?.denetim_izi?.son_hash || null;
     const varyant = varyantOf(h.result);
-    const rep = keys.map((k) => temsilci.get(k)).find(Boolean);
+    const adayHash = hash ? hashRep.get(hash) : null;
+    const rep = (id && islemRep.get(id))
+      || (adayHash && (!id || !adayHash.result?.islem_id) ? adayHash : null);
     if (rep) {
       if (varyant && !rep.varyantlar.some((v) => v.yazi_turu === varyant.yazi_turu)) rep.varyantlar.push(varyant);
-      for (const k of keys) temsilci.set(k, rep);
+      if (id) islemRep.set(id, rep);
       continue;
     }
     const satir = { ...h, varyantlar: h.varyantlar?.length ? [...h.varyantlar] : (varyant ? [varyant] : []) };
-    for (const k of keys) temsilci.set(k, satir);
+    if (id) islemRep.set(id, satir);
+    if (hash && !hashRep.has(hash)) hashRep.set(hash, satir);
     out.push(satir);
   }
   return out;

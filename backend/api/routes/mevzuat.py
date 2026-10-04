@@ -177,6 +177,18 @@ def _oku(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+def _kunye(satirlar: list[str]) -> str:
+    """Künye = 2. satır; parantez kapanmadan satır bittiyse (çok satırlı künye) bir sonraki
+    satırla birleştirilir ("(YÜRÜRLÜKTE;" yarım kalıyordu). Derleyicinin iç notu ("NOT:
+    İstekteki …") memura ait değildir — künyeden atılır (korpus metni değişmez)."""
+    if len(satirlar) < 2:
+        return ""
+    kunye = satirlar[1].strip()
+    if kunye.count("(") > kunye.count(")") and len(satirlar) > 2 and not satirlar[2].startswith("Kaynak"):
+        kunye = f"{kunye} {satirlar[2].strip()}"
+    return kunye.split(" NOT:", 1)[0].strip().rstrip(".") + ("." if kunye.endswith(".") else "")
+
+
 @lru_cache(maxsize=1)
 def _katalog() -> tuple[dict, ...]:
     """Korpus kataloğu — process ömrü boyunca bir kez kurulur (mevzuat_oner deseni)."""
@@ -193,7 +205,7 @@ def _katalog() -> tuple[dict, ...]:
             "dosya": path.stem,
             "no": _no(path.stem),
             "baslik": (satirlar[0].strip() if satirlar else "") or path.stem.replace("_", " "),
-            "kunye": satirlar[1].strip() if len(satirlar) > 1 else "",
+            "kunye": _kunye(satirlar),
             "madde_sayisi": len(_MADDE_RE.findall(metin)),
             "kategori": _kategori(path.stem),
             "nitelik": _nitelik(metin),
@@ -290,7 +302,7 @@ async def icerik(dosya: str) -> dict:
         "dosya": dosya,
         "no": _no(dosya),
         "baslik": (satirlar[0].strip() if satirlar else "") or dosya.replace("_", " "),
-        "kunye": satirlar[1].strip() if len(satirlar) > 1 else "",
+        "kunye": _kunye(satirlar),
         "metin": metin,
     }
 

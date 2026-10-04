@@ -1058,3 +1058,38 @@ class TestVeriUcuPiiGuard:
         resp = auth_client.post("/sohbet/veri", json={"soru": "gelen evraklarımı listele"})
         veri = resp.json().get("veri") or []
         assert veri and veri[0]["ad"] == "Ayşe Yılmaz"
+
+
+class TestSlaAraciTekKaynak:
+    """tur4: asistan '*bilgi_edinme* … kalan gün: -64' diyordu — ham enum + bayat gün sayısı."""
+
+    async def test_cevaplanmis_evrak_elenir_tur_turkce(self, monkeypatch):
+        import api.routes.sohbet as sohbet_mod
+
+        rows = [
+            {"name": "A", "evrak_turu": "bilgi_edinme", "hedef_birim": "",
+             "result": {"sla_metadata": {"durum": "GECIKMIS", "kalan_gun": -5, "son_tarih": "01.09.2026"}}},
+            {"name": "B", "evrak_turu": "dilekce", "hedef_birim": "",
+             "result": {"onay_durumu": "onaylandi",
+                        "sla_metadata": {"durum": "GECIKMIS", "kalan_gun": -9}}},
+        ]
+
+        async def _sahte_listele(session, owner_id, limit):
+            return rows
+
+        monkeypatch.setattr(sohbet_mod, "islem_listele", _sahte_listele)
+        sonuc = await sohbet_mod._sla_araci(session=None, owner_id="u1", limit=5)
+        assert [x["name"] for x in sonuc] == ["A"]          # gönderilmiş evrakın süresi işlemez
+        assert "_" not in sonuc[0]["evrak_turu"]             # enum değil Türkçe etiket
+        assert sonuc[0]["gecikme_gun"] == 5
+
+
+def test_sla_tazele_bugune_gore_yeniden_hesaplar():
+    from datetime import date
+
+    from agents.nodes.sla_triyaj import sla_tazele
+
+    eski = {"durum": "KRITIK", "kalan_gun": 1, "son_tarih": "05.10.2026", "etiket": "x"}
+    t = sla_tazele(eski, date(2026, 10, 7))
+    assert t["kalan_gun"] == -2 and t["durum"] == "GECIKMIS"
+    assert sla_tazele({"durum": "tanimsiz"}, date(2026, 10, 7)) == {"durum": "tanimsiz"}

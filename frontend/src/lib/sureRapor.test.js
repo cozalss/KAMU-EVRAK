@@ -48,8 +48,8 @@ test("ortalama ve esikMs", () => {
 });
 
 test("fmtSn tek ondalık verir, ölçüm yokluğunu '0.0' diye göstermez", () => {
-  assert.equal(fmtSn(10_420), "10.4");
-  assert.equal(fmtSn(0), "0.0");        // gerçek 0 ms ölçümü (olcumler zaten elemiştir)
+  assert.equal(fmtSn(10_420), "10,4");
+  assert.equal(fmtSn(0), "0,0");        // gerçek 0 ms ölçümü (olcumler zaten elemiştir)
   assert.equal(fmtSn(null), "—");
   assert.equal(fmtSn(undefined), "—");
 });

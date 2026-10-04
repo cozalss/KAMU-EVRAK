@@ -68,9 +68,22 @@ async def _sahiplik_dogrula(session: AsyncSession, islem_id: uuid.UUID, owner_id
 
 
 async def _giden_no(session: AsyncSession) -> str:
+    """Kurumun giden defterinde YIL içindeki bir sonraki sıra (E-G-<yıl>/<sıra>).
+
+    Eskiden tüm yılların TOPLAM satır sayısı +1 idi: yıl dönümünde numara sıfırlanmıyordu ve
+    bir kayıt silinince (imha) count+1 mevcut bir numarayla çakışıp üç denemede de aynı
+    numarayı üreterek gönderimi kilitliyordu. Artık o yılın EN BÜYÜK sırası +1 (sıfır dolgulu
+    4 hane sözlük sırasını bozar diye uzunluk önce sıralanır)."""
     yil = _dt.datetime.now(_dt.UTC).year
-    n = int(await session.scalar(select(func.count()).select_from(GidenEvrak)) or 0)
-    return f"E-G-{yil}/{n + 1:04d}"
+    onek = f"E-G-{yil}/"
+    son = await session.scalar(
+        select(GidenEvrak.giden_no)
+        .where(GidenEvrak.giden_no.like(f"{onek}%"))
+        .order_by(func.length(GidenEvrak.giden_no).desc(), GidenEvrak.giden_no.desc())
+        .limit(1))
+    sira = str(son or "")[len(onek):]
+    n = int(sira) if sira.isdigit() else 0
+    return f"{onek}{n + 1:04d}"
 
 
 async def _taslak_guncelle(

@@ -1,6 +1,7 @@
 # kamu-evrak — Tasarım Sistemi: "Antet & Damga" (v3, 2026-10)
 
-> Tek kod kaynağı: `frontend/src/components/neonUi.jsx` (token + atom). Bu dosya NEDEN'i ve
+> Tek kod kaynağı: `frontend/src/components/neonUi.jsx` (token + atom; hex değerleri
+> `components/temaCss.js` → `THEME_CSS`, neonUi yeniden dışa aktarır). Bu dosya NEDEN'i ve
 > kuralları anlatır. Önceki "Hero Light v2 · Sakin Ürün" tamamen emekliye ayrıldı.
 
 ## Fikir
@@ -26,8 +27,13 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
    başlığın yanına mühür basar.
 2. **Damga** (`<Damga ton egim kucuk>`): çift çerçeve (2px kenar + 1px ofsetli outline), Archivo
    %125 geniş büyük harf, -3..-9° eğim, SVG gürültü maskesiyle mürekkep dokusu, giriş vuruşu
-   `nu-damga`. **Dikkat bütçesi:** ekran başına en fazla 1–2 damga. Her çipi damgaya çevirme;
-   damga = "bu görünümün hükmü".
+   `nu-damga`. **Dikkat bütçesi:** ekran başına en fazla 2 damga — artık BİLEŞEN DÜZEYİNDE
+   zorlanır (`lib/damgaButce.js`): monte olan her Damga kayda girer, bütçeyi aşan damga
+   silinmez, sessiz bir mono künye çipine iner (`data-damga-cip`). Öncelik: `oncelik` prop'u
+   (yüksek kazanır), eşitse ilk monte olan. `ViewWrap` başlık damgası `-1` taşır → karar anının
+   damgası (hüküm/onay/gönderim, varsayılan 0) her zaman basılır. `butce={false}` yalnız tek
+   başına sahne gösterisi için (giriş ekranı). Her çipi damgaya çevirme; damga = "bu görünümün
+   hükmü".
 3. **Dosya sırtı** (kenar çubuğu aktif öğesi): seçili öğe rayın sağ kenarını aşıp sayfa
    zeminiyle birleşir (iç bükey köşeler). Sırt aktif öğenin İÇİNDE düz bir `span`'dır; girişi
    yalnız soldan açılan kısa bir `clip-path` keyframe'i (`nu-sirt`, 220 ms) — son kare her
@@ -38,7 +44,11 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
 ## Token'lar
 
 - Renk: yalnız `PAL` / `T` `V` `R` / `BANT` / `DERIN` / `ALFA()` / `IRIS`. Hex yalnız
-  `THEME_CSS`'te. Açık zeminde renkli METİN yalnız `DERIN.*` (AA).
+  `THEME_CSS`'te (`temaCss.js`). Açık zeminde renkli METİN yalnız `DERIN.*` (AA).
+- **Kontrast birim testte:** `lib/temaKontrast.test.js` THEME_CSS'i okuyup her metin token'ını
+  her yüzeye karşı ölçer (açık · koyu · ray iki tema · koyu kâğıt) — 4,5:1 altı CI'da kırılır.
+  axe'nin 2–3 sn'de yakaladığı `#767b89` türü ihlaller token değil, giriş animasyonunun
+  ARA karesidir (opacity < 1); kararlı durumda 0.
 - Tip: `TYPE.meta 12 · data 13 · ui 14 · read 16 · h2 20 (display) · num 26 (display) ·
   h1 38 (display) · disp 44 (display) · antet (mono 11, izlemeli) · damga (display %125)`.
   - `DISPLAY` = Archivo (genişlik ekseni 62–125, `fontStretch` ile). Yalnız başlık, büyük
@@ -62,8 +72,17 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
 ## Koyu tema "Gece mesaisi"
 
 `:root[data-theme="dark"]` — mavi-siyah zemin (#0c0e14), yüzey merdiveni surf2 < surf < pop,
-yükseklik ışıkla (iç üst-kenar parlaması). Ray daha da koyu (#07080d); dosya sırtı yine
-sayfa zeminine bağlanır (`--ke-sayfa*` token'ları :root'ta hesaplanıp miras alınır).
+yükseklik ışıkla (iç üst-kenar parlaması).
+
+- **Ray = gece laciverdi cilt** (#121b3d, tur 4). Eski #080a15 ray ile sayfa arasında oran
+  1,02'ydi: dosya sırtı koyu temada YOKTU. Ayrışma açıklıkla değil RENKLE yapılır (siyah
+  dibinde açıklık farkı göze yetmez); sırt sayfa zeminini taşıdığından lacivert cildin içine
+  giren koyu bir dil olarak okunur. Cilt bezi dokusu (`--ke-ray-doku`) + sağ kenar dikişi
+  (`--ke-ray-kenar`) aside'a bağlıdır; sırt dikişi tam bağlandığı satırda keser.
+- **Kâğıt gece de kâğıttır** (`--ke-kagit` #e4e1d8, sıcak ve kısık). A4 taslak
+  (`kagitDoku.js`) ve giriş sahnesindeki dilekçe aynı kâğıttan kesilir. `[data-evrak-kagit]`
+  kapsamı koyu temada alt ağacın token'larını açık kâğıt değerlerine çevirir (ray kapsamının
+  tersi) — kâğıt üstündeki Damga/fiş/künye kodu değişmeden doğru renk alır.
 
 ## Kütüphaneler
 
@@ -71,7 +90,21 @@ sayfa zeminine bağlanır (`--ke-sayfa*` token'ları :root'ta hesaplanıp miras 
 Tailwind YALNIZ çalışma alanında (`tailwind.app.config.js`, renkler `var(--ke-*)`,
 preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yok.
 
-## Kabuk: asistan ve durum yüzeyleri (tur 3)
+## Kabuk: asistan ve durum yüzeyleri (tur 3–4)
+
+- **Ray'daki "Yeni evrak yükle" İKİNCİLDİR** (tur 4): cilt yüzeyi + açık çerçeve + tükenmez
+  mavisi artı. Dolu mavi düğme her görünümde ekranın ikinci primary'si oluyordu; birincil
+  eylem görünümün kendisinde kalır.
+- **Denetim izi** ana NAV'da değil (hesap menüsü); açıkken listenin altında ayraçtan sonra
+  GEÇİCİ bir sırt satırı belirir — "neredeyim" sorusu cevapsız kalmaz.
+- **Asistan cevabı = danışma notu fişi** (tur 4): mono künye satırı (Karşılama · Danışma notu ·
+  İşlem durdu + saat) + kesikli ayraç + gövde, sol kenarda ıstampa moru çizgi. Sık sorulanlar
+  numaralı liste (01–06), hap çip değil. Panel künyesi "T.C. · KAMU-EVRAK · DANIŞMA · yapay
+  zekâ yanıtı | kural tabanlı yanıt" ("Havale notu" sevk notu demektir — yanlış etiketti).
+  Ham kodlar (`bilgi_edinme`, `tarih_yok`) ve tek yıldızlı italik `lib/sohbetMetin` ile
+  insan diline çevrilir.
+- **Modal hareket sözcüğü:** `nu-kagit` (translateY 8px + scale .985 → yerinde, 220 ms
+  `--ke-ease-out`); perde `nu-sol`. Yeni diyaloglar bunu kullanır.
 
 - **Asistan tetiği kenar çubuğundadır, yüzen düğme YOK.** Sağ-alt FAB her ekranda bir köşeyi
   örtüyordu (Panel takvim lejantı, telefonda satırın "İşle" düğmesi); güvenli alt boşluk yalnız
@@ -101,5 +134,6 @@ kontrast iki temada.
 
 - [ ] 1440 / 1080p / 390 genişlikte yatay kayma yok
 - [ ] Açık + koyu tema ekran görüntüsüyle bakıldı
-- [ ] Ekran başına ≤2 damga, 1 primary buton
+- [ ] Ekran başına ≤2 damga (bütçe kodda zorlanır; yine de `[data-damga-cip]` sayısına bak), 1 primary buton
+- [ ] `npm test` — temaKontrast sözleşmesi yeşil
 - [ ] Elle hex yok (`grep '#[0-9a-f]\{6\}'` yalnız THEME_CSS)

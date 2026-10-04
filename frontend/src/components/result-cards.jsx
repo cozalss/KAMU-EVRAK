@@ -125,6 +125,9 @@ function cleanDemoText(value) {
   return String(value ?? "")
     .replace(VERIFY_MARK_RE, (_, note) => `Kontrol: ${cleanReviewNote(note)}`)
     .replace(TEMPLATE_SLOT_RE, (_, field) => `Doldurulacak: ${prettyFieldName(field)}`)
+    // İç senaryo işaretleri (⭐, "(abstention)") kullanıcı metnine sızmasın.
+    .replace(/\s*\(abstention\)/gi, "")
+    .replace(/\s*[⭐★]️?/gu, "")
     .replace(/[ \t]{2,}/g, " ")
     .trim();
 }
@@ -493,7 +496,7 @@ function MevzuatCard({ oneriler, nli }) {
           // javascript:/data: gibi tehlikeli şemalar reddedilir; yalnız http/https link olur.
           const href = safeUrl(m.url);
           const scorePct = typeof m.score === "number" && m.score > 0 ? Math.round(m.score * 100) : null;
-          const baslik = cleanDemoText(m.baslik);
+          const baslik = cleanDemoText(m.gosterim_adi || m.baslik);
           const snippet = cleanDemoText(m.snippet);
           const nliMark = nliByBaslik.get(String(m.baslik || ""));
           return (

@@ -4,6 +4,8 @@
    bütünlüğü doğrulandıysa, eşik/NLI/CRAG cümleleri yalnız o veri mevcutsa söylenir.
    Ton anahtarları ("yesil"|"sari"|"kirmizi") — bileşen bunları DERIN/BANT token'ına çevirir. */
 
+import { kurumGorunur } from "./sonucEtiket.js";
+
 /* Backend eksik_tespit._RESMI_YAZI_TURLER ile hizalı — dayanak cümlesi tür-duyarlı. */
 const RESMI_TURLER = new Set([
   "ust_yazi", "cevabi_yazi", "muzekkere", "tebligat", "genelge_talimat_olur", "gorus_mutalaa",
@@ -286,7 +288,8 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
   const dogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
   const kod = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || "";
   const birim = kod ? birimEtiket(kod, r.evrak_turu) : "";
-  const kurum = String(r.hedef_kurum_adi || kaynak?.kaynak_kurum || yetkili || muhatap || "").trim();
+  // Şablon adı ("Genel Belediye Şablonu") kurum değildir — kurum bilinmiyor sayılır, birim tek başına gösterilir.
+  const kurum = kurumGorunur(r.hedef_kurum_adi || kaynak?.kaynak_kurum || yetkili || muhatap || "");
   const reasoning = String(r.birim_reasoning || "").trim();
 
   if (capraz) {

@@ -699,3 +699,15 @@ class TestSdpSayiRegresyon:
         k = next(k for k in lint_2646(t, "")["kurallar"] if k["kural"] == "L-M11-sayi")
         assert k["durum"] == "bilgi"
         assert "m.11 yapısında" in k["mesaj"]
+
+
+def test_m17_sunulur_kapanisinda_imza_degerlendirilir():
+    """tur4 yanlış-pozitifi: 'Bilgilerinize sunulur.' kapanışı + imza bloğu varken m.17
+    'Kapanış bulunamadığı için imza bloğu değerlendirilemedi' diyordu."""
+    from agents.yazi_lint import _k_imza
+
+    taslak = ("Başvurunuz incelenmiştir.\n\n         Bilgilerinize sunulur.\n\n"
+              "                                   Ayşe YILMAZ\n                                   Şef")
+    k = _k_imza(taslak, taslak.lower(), "bilgilendirme")
+    assert "bulunamadığı için" not in k["mesaj"]
+    assert k["durum"] == "gecti"

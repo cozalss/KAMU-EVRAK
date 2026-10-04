@@ -85,3 +85,13 @@ test("sicilGrupla: temsilcinin birikmiş varyantları korunur, aynı türün en 
   assert.equal(out.length, 1);
   assert.deepEqual(out[0].varyantlar, [{ yazi_turu: "olur", yazi_taslak_md: "v2" }]);
 });
+
+test("sicilGrupla: aynı içerik hash'li FARKLI işlemler ayrı sicil satırıdır", () => {
+  const history = [
+    { id: "a", result: { islem_id: "İ1", denetim_izi: { son_hash: "h" }, yazi_taslak_md: "x" } },
+    { id: "b", result: { islem_id: "İ2", denetim_izi: { son_hash: "h" }, yazi_taslak_md: "y" } },
+    { id: "c", result: { denetim_izi: { son_hash: "h" }, yazi_taslak_md: "z" } },   // persist öncesi kopya
+  ];
+  const out = sicilGrupla(history);
+  assert.equal(out.length, 2);
+});

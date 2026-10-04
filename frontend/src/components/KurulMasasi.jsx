@@ -7,6 +7,7 @@
    akış sohbet balonu değil TOPLANTI TUTANAĞI gibi dizilir (tur başlığı · § numaralı madde ·
    konuşmacı sütunu); uzlaşan üyenin koltuğuna küçük yuvarlak bir MÜHÜR basılır. */
 import { MONO, SANS, DISPLAY, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon } from "./neonUi.jsx";
+import { kaynakEtiketi } from "../lib/muzakere.js";
 
 // Kişi (vatandaş) ikonu — neonUi setinde yok, yerel.
 const KisiIkon = (p) => (
@@ -22,10 +23,10 @@ const KisiIkon = (p) => (
 // Her üye AYRI bir hata sınıfına ve o sınıfın GERÇEK sinyaline bağlıdır (backend
 // yazi/kurul.py KURUL_UYELERI gerekçesi): biçim · doğruluk · karşılık.
 export const KURUL = [
-  { id: "taslakci", ad: "Yazı Sorumlusu", rol: "biçim bütünlüğü · 2646 zorunlu bölümleri", col: T, Ikon: Icon.doc },
-  { id: "hukukcu", ad: "Hukuk Denetimi", rol: "uydurma-veto · dayanak · gerekçe", col: V, Ikon: Icon.scale },
-  { id: "vatandas", ad: "Muhatap Temsilcisi", rol: "talep karşılandı mı · hak arama yolu", col: R, Ikon: KisiIkon },
-  { id: "birim_amiri", ad: "Birim Amiri", rol: "risk bandı · gönderim kararı", col: V, Ikon: Icon.shield, dinamik: true },
+  { id: "taslakci", ad: "Yazı Sorumlusu", rol: "biçim · Yön. 2646 bölümleri", col: T, Ikon: Icon.doc },
+  { id: "hukukcu", ad: "Hukuk Denetimi", rol: "doğruluk · dayanak", col: V, Ikon: Icon.scale },
+  { id: "vatandas", ad: "Muhatap Temsilcisi", rol: "talep · hak arama yolu", col: R, Ikon: KisiIkon },
+  { id: "birim_amiri", ad: "Birim Amiri", rol: "risk bandı · gönderim", col: V, Ikon: Icon.shield, dinamik: true },
 ];
 export const UYE = Object.fromEntries(KURUL.map((k) => [k.id, k]));
 // Dinamik-renkli üye (Birim Amiri) sahnenin risk aksanını taşır; diğerleri sabit token rengi.
@@ -55,11 +56,9 @@ const VURGU = {
   sade: { col: R, etiket: "dil sadeleştirildi" },   // yalnız örnek kurguda üretilir (lib)
 };
 // Risk bandı → küçük ROZET (verdict/sevk töreni YOK — kurulun çıktısı revize taslağıdır).
-export const RISK = {
-  yesil: { etiket: "Düşük risk", c: BANT.yesil.c },
-  sari: { etiket: "Dikkat", c: BANT.sari.c },
-  kirmizi: { etiket: "Yüksek risk", c: BANT.kirmizi.c },
-};
+// Ad TEK sözlükten (BANT: "SARI · Orta risk") — karar fişiyle aynı kelimeler (tur-4: fiş
+// "Orta risk", kurul "Dikkat"/"yüksek risk" diyordu; üç ekranda üç ayrı ad).
+export const RISK = Object.fromEntries(Object.entries(BANT).map(([k, b]) => [k, { etiket: b.t, bant: b.l, c: b.c }]));
 // Sahne aksan rengi: risk varsa onun rengi, yoksa mühür moru (üretim hattı).
 export const aksanRenk = (risk) => RISK[risk]?.c || V;
 
@@ -140,7 +139,7 @@ function Koltuk({ uye, aktif, durus, yukleniyor, az, i }) {
       <Avatar uye={uye} aktif={aktif} durus={durus} az={az} />
       <span style={{ minWidth: 0 }}>
         <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink }}>{uye.ad}</span>
-        <span style={{ display: "block", ...TYPE.meta, color: aktif || oy ? DERIN_OF(uye.col) : PAL.mut3, fontWeight: aktif || oy ? 500 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+        <span style={{ display: "block", ...TYPE.meta, color: aktif || oy ? DERIN_OF(uye.col) : PAL.mut3, fontWeight: aktif || oy ? 500 : 400, maxWidth: 190,
           animation: yukleniyor && !az ? `nu-think 1.4s ease-in-out ${i * 0.2}s infinite` : "none" }}>{durum}</span>
       </span>
     </div>
@@ -157,10 +156,12 @@ export function KurulMasasi({ speaking = null, durus = {}, aksan, orta, yukleniy
         const u = uyeGor(base.id, aksan);
         return <Koltuk key={u.id} uye={u} i={i} aktif={speaking === u.id} durus={durus[u.id]} yukleniyor={yukleniyor} az={az} />;
       })}
-      {/* Masa yüzeyi — çift çizgili kenar (antet çizgisinin masa hâli) + üstünde toplantı durumu. */}
-      <div style={{ gridArea: "masa", minHeight: 92, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.s,
-        padding: "14px 18px", borderRadius: 999, background: PAL.surf2, border: `1px solid ${PAL.lineHi}`, outline: `1px solid ${PAL.line}`, outlineOffset: 4,
-        boxShadow: SH.card, textAlign: "center", animation: az ? "none" : "nu-rise .4s var(--ke-ease-out) both" }}>
+      {/* Masa yüzeyi — dikdörtgen toplantı masası FİŞİ: üstte antet çift çizgisi, altta tek
+          ince çizgi (tur-4: tam yuvarlak "hap" Antet & Damga dilinde yoktu). */}
+      <div style={{ gridArea: "masa", minHeight: 96, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.s,
+        padding: "16px 20px 14px", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`,
+        boxShadow: `inset 0 3px 0 -1px ${PAL.ink}, inset 0 5px 0 -1px ${PAL.surf}, inset 0 6px 0 -1px ${PAL.ink}, ${SH.card}`,
+        textAlign: "center", animation: az ? "none" : "nu-rise .4s var(--ke-ease-out) both" }}>
         {orta}
       </div>
     </div>
@@ -196,7 +197,7 @@ export function TutanakMaddesi({ uye, t, aksan, no }) {
               <Icon.arrow width={11} height={11} /> {hedef.ad} · {tm.etiket}
             </span>
           )}
-          {t.kaynak && !["ornek", "muzakere"].includes(t.kaynak) && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut3 }}>{t.kaynak}</span>}
+          {kaynakEtiketi(t.kaynak) && <span style={{ marginLeft: "auto", ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>{kaynakEtiketi(t.kaynak)}</span>}
         </div>
         <p style={{ margin: 0, fontFamily: SANS, fontSize: 14, lineHeight: "21px", color: PAL.ink2 }}>{t.text}</p>
       </div>

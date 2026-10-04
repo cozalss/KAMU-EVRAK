@@ -444,3 +444,35 @@ export const ORNEK_KURGU = derinDondur({
   risk: "", degisiklik: 2, uzlasi_uygulanabilir: true,
   uzlasi_metni: _ornekRevize.map((l) => l.metin).join("\n"),
 });
+
+/* Tutanak/öneri satırındaki `kaynak` alanı — pipeline sinyalinin İÇ adıdır (verify, lint_2646…).
+   Ekrana ham yazılmaz: memur diline çevrilir; anlam taşımayan iç kaynaklar (muzakere, llm,
+   ornek, gercek) hiç basılmaz. Bilinmeyen anahtar da basılmaz — ham ad sızmasın. */
+const KAYNAK_ETIKET = Object.freeze({
+  verify: "Doğrulama",
+  lint_2646: "Yön. 2646",
+  lint_duzeltme: "Yön. 2646 düzeltmesi",
+  nli: "Mevzuat uyumu",
+  tutarlilik: "Veri tutarlılığı",
+  uslup: "Üslup",
+  dayanak: "Dayanak",
+  risk_guard: "Risk bandı",
+  yazi_taslak: "Taslak",
+});
+
+export function kaynakEtiketi(kaynak) {
+  return KAYNAK_ETIKET[String(kaynak || "")] || null;
+}
+
+/* Risk bandı — belgenin işlem anındaki bandı ile kurulun taslağı YENİDEN ölçerek bulduğu
+   bant ayrı olgulardır. İkisi farklıysa ekran bunu söyler (tur-4: karar fişi "SARI",
+   kurul "yüksek risk" diyordu ve memur hangisine güveneceğini bilemiyordu). */
+const BANT_SIRA = { yesil: 0, sari: 1, kirmizi: 2 };
+export function kurulRiskOzeti(belgeBant, kurulBant) {
+  const b = BANT_SIRA[belgeBant] != null ? belgeBant : null;
+  const k = BANT_SIRA[kurulBant] != null ? kurulBant : null;
+  const gosterilen = k || b;
+  if (!gosterilen) return null;
+  const fark = b && k && b !== k ? (BANT_SIRA[k] > BANT_SIRA[b] ? "yukseldi" : "dustu") : null;
+  return { bant: gosterilen, belge: b, kurul: k, fark };
+}

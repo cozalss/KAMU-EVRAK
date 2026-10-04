@@ -82,3 +82,54 @@ export const NITELIK = {
   yakin: { ad: "Yakın-lafzî alıntı", aciklama: "Resmî metne yakın alıntı; atıf öncesi asıl metinle karşılaştırın.", renk: "sari" },
   ozet: { ad: "Madde özeti", aciklama: "Lafzî metin değildir; hukuki atıf için resmî kaynağı açın.", renk: "sari" },
 };
+
+/* ——— Katalog araması (saf) ———
+   Sistemin KENDİ atıf biçimi ("4982 m.11", "3071 s.K. m.7", "657 sayılı Kanun madde 102",
+   "4982/11") katalogda 0 sonuç veriyordu (tur4 bulgusu): sorgu tek dizi olarak içerilme
+   aranıyordu. atifCoz bu biçimleri {no, madde}'ye çözer; görünüm o kanunu süzer ve maddeyi
+   doğrudan okuma penceresinde açan kısayol sunar. Madde işareti yoksa (yalnız "4982") atıf
+   DEĞİLDİR — numara araması olağan yoldan çalışır. */
+const SIRA_EKI = "(?:['’]?\\s*(?:inci|ıncı|uncu|üncü|nci|ncı|ncu|ncü|ci|cı|cu|cü))?";
+const ATIF_DESEN = [
+  new RegExp(`^(\\d{1,5})\\s*(?:s\\.?\\s*k\\.?|sayılı(?:\\s+[^\\d\\s]+){0,8})?\\s*,?\\s*(?:m\\.?|md\\.?|madde(?:si)?)\\s*(\\d{1,3})${SIRA_EKI}\\.?$`, "iu"),
+  /^(\d{1,5})\s*\/\s*(\d{1,3})$/u,
+  new RegExp(`^(\\d{1,5})\\s+sayılı(?:\\s+[^\\d\\s]+){0,8}?\\s+(\\d{1,3})${SIRA_EKI}\\s+madde(?:si)?$`, "iu"),
+];
+
+/** @param {string} q @returns {{no:string, madde:string}|null} */
+export function atifCoz(q) {
+  const s = String(q || "").replace(/\s+/g, " ").trim();
+  for (const re of ATIF_DESEN) {
+    const m = s.match(re);
+    if (m) return { no: m[1], madde: String(Number(m[2])) };
+  }
+  return null;
+}
+
+const katla = (s) => String(s || "").toLocaleLowerCase("tr");
+
+/** Katalog kaydı sorguya uyuyor mu — önce tam ifade, olmazsa sözcüklerin HEPSİ (sıra
+    bağımsız: "bilgi edinme süre" ↔ "Bilgi Edinme Hakkı Kanunu … 15 iş günü süre").
+    Atıf sorgusunda yalnız numara eşleşmesi (kayıt no ya da dosya öneki) aranır. */
+export function katalogEslesir(m, q) {
+  const atif = atifCoz(q);
+  if (atif) return String(m?.no || "") === atif.no || String(m?.dosya || "").startsWith(`${atif.no}_`);
+  const sorgu = katla(q).trim();
+  if (!sorgu) return true;
+  const metin = katla(`${m?.no || ""} ${m?.baslik || ""} ${m?.kunye || ""} ${m?.kategori || ""} ${String(m?.dosya || "").replace(/_/g, " ")} ${m?.aciklama || ""}`);
+  if (metin.includes(sorgu)) return true;
+  const sozcukler = sorgu.split(/\s+/).filter((w) => w.length >= 2);
+  return sozcukler.length > 1 && sozcukler.every((w) => metin.includes(w));
+}
+
+/** Kaynak notu paragrafını memur diline çevir (YALNIZ görüntü; korpus metni değişmez):
+    İngilizce "mirror" → "yansı", derleyicinin iç notu ("NOT: İstekteki …") atılır, sorgu
+    dizili ham URL alan adına indirilir (tam bağlantı başlıktaki kaynak çipinde zaten var). */
+export function notTemizle(p) {
+  return String(p || "")
+    .replace(/\s*NOT:\s*İstekteki[^.]*\.?/giu, "")
+    .replace(/\bmirror['’]?[ıiuü](?!\p{L})/giu, "yansısı")
+    .replace(/\bmirror\b/giu, "yansı")
+    .replace(/https?:\/\/(?:www\.)?([^\s/)]+)[^\s)]*/giu, "$1")
+    .trim();
+}

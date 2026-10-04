@@ -15,7 +15,7 @@ import NumberFlow from "@number-flow/react";
 import { ViewWrap, EmptyState, Icon, Btn, MONO, DISPLAY, T, V, R, BANT, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY } from "./neonUi.jsx";
 import { cleanDemoText } from "./result-cards.jsx";
 import { OkumaModal } from "./MevzuatOkuma.jsx";
-import { kunyeCoz, NITELIK } from "../lib/mevzuatKunye.js";
+import { kunyeCoz, NITELIK, atifCoz, katalogEslesir } from "../lib/mevzuatKunye.js";
 import { vurguParcala } from "../lib/mevzuatVurgu.js";
 
 /* Sistemin dayandığı çekirdek mevzuat — katalogda etiketlenir + listede öne alınır.
@@ -218,13 +218,17 @@ function KatalogKart({ m, onAc, sira = 0, q = "" }) {
 
 /* Oturumda RAG'in önerdiği kaynak — katalogda karşılığı varsa tıklanınca ilgili maddeye açılır.
    Hover/press diğer tıklanabilir kartlarla (KatalogKart/DerinSonucSatir) AYNI dilde — önceden
-   bu kart hover'da sessiz kalıyordu (jüri'nin ilk gördüğü AI-öneri bölgesi tıklanabilirliğini
+   bu kart hover'da sessiz kalıyordu (sayfada ilk görülen öneri bölgesi tıklanabilirliğini
    göstermiyordu). */
-function OneriSatir({ m, dosyalar, onAc }) {
+function OneriSatir({ m, dosyalar, katalogAd, onAc }) {
   const hedef = oneriHedef(m, dosyalar);
+  // Görünen ad: backend gosterim_adi → katalogdaki resmî ad + madde → (son çare) ham başlık.
+  // Ham başlık dosya slug'ıdır ("kvkk aydinlatma yukumlulugu tebligi m.5") — tur4 bulgusu.
+  const resmi = hedef && katalogAd?.get(hedef.dosya);
+  const ad = m.gosterim_adi || (resmi ? `${resmi}${hedef.maddeNo != null ? ` m.${hedef.maddeNo}` : ""}` : cleanDemoText(m.baslik));
   const govde = (
     <>
-      <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{cleanDemoText(m.baslik)}</div>
+      <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{ad}</div>
       {m.snippet && <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{cleanDemoText(m.snippet)}</p>}
     </>
   );
@@ -536,12 +540,13 @@ export default function MevzuatView({ history = [] }) {
   }, [history]);
 
   const dosyalar = useMemo(() => new Set(Array.isArray(katalog) ? katalog.map((m) => m.dosya) : []), [katalog]);
+  const katalogAd = useMemo(() => new Map(Array.isArray(katalog) ? katalog.map((m) => [m.dosya, m.baslik]) : []), [katalog]);
 
   // Arama + kategori filtresi birlikte; grup içi sıra: çekirdek önce, sonra Türkçe alfabetik.
   const listelenen = useMemo(() => {
     if (!Array.isArray(katalog)) return [];
-    const q = trLower(filtre.trim());
-    let uyan = q ? katalog.filter((m) => trLower(`${m.no} ${m.baslik} ${m.kunye} ${m.kategori} ${m.dosya.replace(/_/g, " ")}`).includes(q)) : katalog;
+    const q = filtre.trim();
+    let uyan = q ? katalog.filter((m) => katalogEslesir(m, q)) : katalog;
     if (kategori) uyan = uyan.filter((m) => m.kategori === kategori);
     return [...uyan].sort((a, b) =>
       (CEKIRDEK_NO.has(b.no) - CEKIRDEK_NO.has(a.no)) || a.baslik.localeCompare(b.baslik, "tr"));
@@ -566,6 +571,10 @@ export default function MevzuatView({ history = [] }) {
   }, [kategoriler, listelenen]);
 
   const katalogHazir = aramaModu === "katalog" && Array.isArray(katalog);
+  // Atıf sorgusu ("4982 m.11") → o kanunun maddesini doğrudan açan kısayol (aynı numaralı
+  // birden çok dosya varsa — 2646 gibi — her biri için ayrı düğme).
+  const atif = atifCoz(filtre);
+  const atifHedefleri = katalogHazir && atif ? listelenen : [];
   const sayac = aramaModu === "derin"
     ? (derin && derin !== "hata" ? <span><Sayi n={derin.sonuclar.length} /> MADDE EŞLEŞTİ</span> : <span>MADDE METİNLERİNDE TAM METİN ARAMA</span>)
     : Array.isArray(katalog) ? (
@@ -581,15 +590,15 @@ export default function MevzuatView({ history = [] }) {
       <AramaBasligi aramaRef={aramaRef} filtre={filtre} setFiltre={setFiltre} aramaModu={aramaModu} setAramaModu={setAramaModu} sayac={sayac} />
 
       {onerilen.length > 0 && (
-        // AI-önerisi bölgesi kataloğun geri kalanından zeminle ayrışır (mühür moru tint) —
-        // Görev 1'in RAG çıktısı jürinin ilk gördüğü öge.
+        // Öneri bölgesi kataloğun geri kalanından zeminle ayrışır (mühür moru tint) —
+        // anlama aşamasının mevzuat çıktısı, sayfada ilk görülen öge.
         <section aria-labelledby="mv-oneri-h" style={{ marginBottom: SP.xxl, padding: `${SP.l}px ${SP.l}px ${SP.m}px`, borderRadius: RAD.card, background: ALFA(V), border: `1px solid ${PAL.line}` }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: SP.m, marginBottom: SP.m }}>
             <h2 id="mv-oneri-h" style={{ margin: 0, ...TYPE.h2, fontSize: 17, color: PAL.ink }}>Bu oturumda önerilen mevzuat</h2>
-            <span style={{ ...TYPE.antet, color: DERIN.V }}>RAG · {onerilen.length} KAYNAK</span>
+            <span style={{ ...TYPE.antet, color: DERIN.V }}>ÖNERİ · {onerilen.length} KAYNAK</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: SP.s }}>
-            {onerilen.map((m, i) => <OneriSatir key={i} m={m} dosyalar={dosyalar} onAc={ac} />)}
+            {onerilen.map((m, i) => <OneriSatir key={i} m={m} dosyalar={dosyalar} katalogAd={katalogAd} onAc={ac} />)}
           </div>
         </section>
       )}
@@ -627,12 +636,25 @@ export default function MevzuatView({ history = [] }) {
             <Dizin kategoriler={kategoriler} kategoriAdet={kategoriAdet} toplam={katalog.length} kategori={kategori} setKategori={setKategori} cekirdekSayi={cekirdekSayi} />
           ) : <span />}
           <div style={{ minWidth: 0 }}>
+            {atifHedefleri.length > 0 && (
+              <div role="group" aria-label="Atıf kısayolu" style={{ display: "flex", flexWrap: "wrap", gap: SP.s, alignItems: "center", marginBottom: SP.l }}>
+                <span style={{ ...TYPE.antet, color: PAL.mut2 }}>ATIF · {atif.no} m.{atif.madde}</span>
+                {atifHedefleri.map((m) => (
+                  <Btn key={m.dosya} primary={atifHedefleri.length === 1} onClick={() => ac({ dosya: m.dosya, maddeNo: atif.madde, maddeTur: null })}>
+                    <Icon.book /> {m.baslik} — Madde {atif.madde}
+                  </Btn>
+                ))}
+              </div>
+            )}
             {listelenen.length === 0 ? (
               <EmptyState icon={<Icon.book />} title="Eşleşen mevzuat yok"
                 sub={filtre.trim()
-                  ? `"${filtre.trim()}" için ${kategori ? `${kategori} grubunda` : "katalogda"} sonuç bulunamadı. Kanun adı veya numarasıyla deneyin.`
+                  ? `"${filtre.trim()}" için ${kategori ? `${kategori} grubunda` : "katalogda"} kaynak adı eşleşmedi. Aynı ifadeyi madde metinlerinin içinde arayabilirsiniz.`
                   : "Bu grupta gösterilecek mevzuat yok."}
-                actions={<Btn onClick={() => { setFiltre(""); setKategori(""); }}>Filtreleri temizle</Btn>} />
+                actions={filtre.trim()
+                  ? [<Btn key="d" primary onClick={() => setAramaModu("derin")}><Icon.search /> Madde içinde ara</Btn>,
+                    ...(kategori ? [<Btn key="k" onClick={() => setKategori("")}>Konu süzgecini kaldır</Btn>] : [])]
+                  : <Btn onClick={() => setKategori("")}>Konu süzgecini kaldır</Btn>} />
             ) : (
               // Açık gelenler: arama/filtre aktifse hepsi (sonuç zaten dar) VEYA tek grup varsa
               // o. Aksi halde yalnız ilk grup açık; gerisi katlı → memur konu seçip açar.

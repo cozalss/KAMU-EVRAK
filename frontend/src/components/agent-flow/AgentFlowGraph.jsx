@@ -97,11 +97,11 @@ export function AgentFlowGraph({ nodes }) {
         <span className="agw-legend">
           <span className="agw-legend-item g1">
             <i className="agw-swatch" aria-hidden="true" />
-            <span>Görev 1: Anla</span>
+            <span>I. Anlama</span>
           </span>
           <span className="agw-legend-item g2">
             <i className="agw-swatch" aria-hidden="true" />
-            <span>Görev 2: Üret</span>
+            <span>II. Yazı üretimi</span>
           </span>
         </span>
         {/* SC 4.1.2 — görsel sayaç + görünmez erişilebilir etiket */}
@@ -170,8 +170,8 @@ export function AgentFlowGraph({ nodes }) {
             <line className="agw-band-split" x1={BAND_SPLIT_X} y1="14" x2={BAND_SPLIT_X} y2={VIEW_H - 14} />
             {/* Bant başlıkları — canlı şema üzerinde Görev-1/Görev-2 ayrımını kanvasta da yazar
                 (renk TEK sinyal değil; üstteki legend + bu başlık + şerit birlikte). */}
-            <text className="agw-band-title agw-band-title-g1" x="18" y="26">GÖREV 1 · ANLA</text>
-            <text className="agw-band-title agw-band-title-g2" x={BAND_SPLIT_X + 18} y="26">GÖREV 2 · ÜRET</text>
+            <text className="agw-band-title agw-band-title-g1" x="18" y="26">I · ANLAMA</text>
+            <text className="agw-band-title agw-band-title-g2" x={BAND_SPLIT_X + 18} y="26">II · YAZI ÜRETİMİ</text>
           </g>
 
           {/* Kenarlar (düğümlerin ALTINDA) */}

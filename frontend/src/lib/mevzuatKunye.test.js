@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { kunyeCoz, kaynakNotuCoz, NITELIK } from "./mevzuatKunye.js";
+import { kunyeCoz, kaynakNotuCoz, NITELIK, atifCoz, katalogEslesir, notTemizle } from "./mevzuatKunye.js";
 
 test("kunyeCoz: 'RG gg.aa.yyyy/sayı' biçiminden kabul + RG tarih/sayı + yürürlük çözer", () => {
   const r = kunyeCoz("Kanun No 1136, Kabul 19.03.1969, RG 07.04.1969/13168 — YÜRÜRLÜKTE");
@@ -103,4 +103,27 @@ test("kunyeCoz: büyük harf MÜLGA beyanı mülgadır; durum bilinmiyorsa null"
 test("kunyeCoz: ilk büyük harf beyan kazanır — YÜRÜRLÜKTE notundaki 'MÜLGA edilmiş' maddeye aittir", () => {
   const r = kunyeCoz("Kanun No 5544, RG 07.10.2006/26312 — YÜRÜRLÜKTE (NOT: teşkilat maddeleri 703 sayılı KHK ile MÜLGA edilmiş)");
   assert.equal(r.durum, "yururlukte");
+});
+
+test("atifCoz: sistemin kendi atıf biçimleri çözülür, çıplak numara atıf değildir", () => {
+  for (const q of ["4982 m.11", "4982 m. 11", "4982 s.K. m.11", "4982 sayılı Kanun m.11", "4982 madde 11", "4982/11", "4982 sayılı Kanunun 11 inci maddesi"]) {
+    assert.deepEqual(atifCoz(q), { no: "4982", madde: "11" }, q);
+  }
+  assert.equal(atifCoz("4982"), null);
+  assert.equal(atifCoz("bilgi edinme"), null);
+});
+
+test("katalogEslesir: atıf numaraya, serbest sorgu sözcüklere bakar", () => {
+  const m = { no: "4982", baslik: "Bilgi Edinme Hakkı Kanunu", kunye: "RG 24.10.2003", kategori: "Bilgi", dosya: "4982_bilgi_edinme_kanunu" };
+  assert.ok(katalogEslesir(m, "4982 m.11"));
+  assert.ok(!katalogEslesir({ ...m, no: "3071", dosya: "3071_dilekce" }, "4982 m.11"));
+  assert.ok(katalogEslesir(m, "edinme bilgi"));   // sıra bağımsız
+  assert.ok(katalogEslesir(m, "Bilgi Edinme"));
+  assert.ok(!katalogEslesir(m, "dilekçe"));
+});
+
+test("notTemizle: İngilizce jargon, iç not ve ham URL ekrana düşmez", () => {
+  const t = notTemizle("Metin TBMM kanun mirror'ı ile doğrulandı. NOT: İstekteki '1 No.lu CBK' yerine 11 kullanıldı. Kaynak: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4982&MevzuatTur=1");
+  assert.ok(!/mirror|İstekteki|\?Mevzuat/u.test(t), t);
+  assert.ok(t.includes("yansısı") && t.includes("mevzuat.gov.tr"));
 });

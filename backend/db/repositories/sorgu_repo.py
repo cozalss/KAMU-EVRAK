@@ -5,11 +5,13 @@ parametrize. FilterBar parametreleri: durum/risk/tür/birim/arama + limit/offset
 """
 from __future__ import annotations
 
+import datetime as _dt
 import uuid
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from agents.nodes.sla_triyaj import sla_tazele
 from db.models import (
     Birim,
     DenetimIzi,
@@ -115,6 +117,12 @@ async def gelen_evrak_listele(session: AsyncSession, *, owner_id: uuid.UUID,
     } for r in rows]
 
 
+def _birim_adi(arsiv: dict | None) -> str:
+    """Arşiv üst-verisindeki etkin birim adı (yoksa "")."""
+    ad = (arsiv or {}).get("birim") if isinstance(arsiv, dict) else ""
+    return str(ad or "").strip()[:160]
+
+
 async def giden_evrak_listele(session: AsyncSession, *, owner_id: uuid.UUID,
                               limit: int = 20, offset: int = 0,
                               durum: str = "", risk: str = "") -> list[dict]:
@@ -136,7 +144,11 @@ async def giden_evrak_listele(session: AsyncSession, *, owner_id: uuid.UUID,
     return [{
         "id": str(giden.id), "giden_no": giden.giden_no, "konu": giden.konu,
         "durum": giden.durum, "risk": giden.risk, "yazi_turu_kod": giden.yazi_turu_kod,
-        "alici_birim": birim_kod or "", "taslak": taslak.metin_md if taslak else "",
+        # Birim kodu yoksa (serbest-metin yönlendirme) taslağın hitap ettiği etkin birim ADI —
+        # liste ve detay "—" yerine gönderilen yazının birimini gösterir (istemci adı aynen basar).
+        "alici_birim": birim_kod or _birim_adi(islem.arsiv_metadata if islem else None),
+        "guven": float(islem.tur_confidence) if islem and islem.tur_confidence else None,
+        "taslak": taslak.metin_md if taslak else "",
         "evrak_turu": islem.evrak_turu_kod if islem else "",
         "kaynak_evrak_adi": evrak.baslik if evrak else "",
         "son_hash": giden.son_hash or "",
@@ -241,6 +253,10 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
             "mevzuat_nli": [],
             "ozet": islem.ozet or "",
             "hedef_birim": birim_kod or "",
+            # Kaynak-doğrulamalı yönlendirme serbest-metin birim üretir; birim tablosunda kodu
+            # yoksa hedef_birim_id NULL kalır ve liste "—" basardı. Arşiv üst-verisindeki etkin
+            # birim ADI (agents.config.etkili_birim) ayrı alanda taşınır — kod sözleşmesi bozulmaz.
+            "hedef_birim_adi": "" if birim_kod else _birim_adi(islem.arsiv_metadata),
             "birim_alternatifleri": list(islem.birim_alternatifleri or []),
             "yazi_turu": taslak.yazi_turu_kod if taslak else "",
             "yazi_taslak_md": taslak.metin_md if taslak else "",
@@ -249,7 +265,8 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
             "verify_notes": islem.verify_notes or "",
             "bilgilendirme": islem.bilgilendirme or "",
             "arsiv_metadata": islem.arsiv_metadata or {},
-            "sla_metadata": islem.sla_metadata or {},
+            # Tek kaynak: kalan gün okuma anında bugüne göre (Panel /sla ile aynı sayı).
+            "sla_metadata": sla_tazele(islem.sla_metadata, _dt.date.today()),
             "denetim_izi": denetim_izi,
             "kanit_metadata": islem.kanit_metadata or {},
             "alt_talepler": [],
@@ -274,6 +291,7 @@ async def islem_listele(session: AsyncSession, *, owner_id: uuid.UUID,
             "ts": int(islem.baslangic.timestamp() * 1000) if islem.baslangic else 0,
             "evrak_turu": result["evrak_turu"],
             "hedef_birim": result["hedef_birim"],
+            "hedef_birim_adi": result["hedef_birim_adi"],
             "bant": result["risk_metadata"].get("bant"),
             "result": result,
         })

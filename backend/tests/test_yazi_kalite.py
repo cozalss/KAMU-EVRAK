@@ -507,3 +507,25 @@ def test_gorus_mutalaa_tur_varsayilanlari_muaf():
     degerler = sablon_iskelet_degerleri()
     assert "Hukuk Müşavirliği" in degerler
     assert "Hukuk Müşaviri" in degerler
+
+
+def test_antet_satiri_talep_sayilmaz():
+    """tur4 regresyonu: metnin İLK cümlesi ("T.C.") talep diye alınıyor, Kurul'a
+    "talepler: 1) T.C" diye sızıyordu. Antet/künye satırları atlanır, istek cümlesi döner."""
+    from agents.nodes.cikar import _talepleri_cikar
+
+    metin = ("T.C.\nÇANKAYA BELEDİYE BAŞKANLIĞINA\nANKARA\n\nTarih: 02.07.2026\n"
+             "Konu: Sokak aydınlatması arızası hk.\n\nSayın Yetkili,\n\n"
+             "Sokağımızdaki armatürlerden altısı bir aydır yanmamaktadır.\n\n"
+             "Arızanın giderilmesi için gereğinin yapılmasını arz ederim.\n\n"
+             "Adı Soyadı: Fatma Öztürk\nİmza")
+    talepler = _talepleri_cikar(metin)
+    assert talepler and all(not t.startswith("T.C") for t in talepler), talepler
+    assert "giderilmesi" in talepler[0]
+    assert not any("yanmamaktadır" in t for t in talepler)   # durum bildirimi istek değildir
+
+
+def test_durum_bildirimi_talep_degil():
+    from agents.nodes.cikar import _talepleri_cikar
+
+    assert _talepleri_cikar("Kafeterya hafta sonları canlı müzik yayını yapılmaktadır.") == []

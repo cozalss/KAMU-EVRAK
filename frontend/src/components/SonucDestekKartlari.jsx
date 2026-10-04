@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "./result-cards.jsx";
+import { kurumGorunur, katalogAdHaritasi, mevzuatGorunenAd, ondalikTr } from "../lib/sonucEtiket.js";
 import { Chip, slaInfo, subSlaRenk, MevzuatRow, SlaPanel, DuzeltmeDiff, Vrow, Lint2646Karti } from "./NeonDetayParts.jsx";
 import { mevzuatDipnot, birimDipnot, lintGiris, decomposeGiris, riskGerekceYorum, riskSkorYorum, canliKaynakYorum } from "../lib/detayYorum.js";
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, RAD, SP, NeonCard, Icon, TYPE, TNUM } from "./neonUi.jsx";
@@ -34,7 +36,33 @@ export function AltTaleplerCard({ alt }) {
   );
 }
 
+/* Mevzuat görünen adları — katalog (/mevzuat/katalog, RAG ile aynı korpus) oturumda BİR kez
+   çekilir. Öneri başlığı backend'de dosya slug'ından türediği için Türkçe karaktersiz geliyordu
+   ("kvkk aydinlatma yukumlulugu tebligi m.5"); resmî ad katalogdan okunur. Katalog gelmezse
+   ham başlık kalır — ad uydurulmaz. */
+let katalogSozu = null;
+function katalogAdlari() {
+  if (!katalogSozu) {
+    katalogSozu = fetch("/mevzuat/katalog")
+      .then((y) => (y.ok ? y.json() : null))
+      .then((j) => katalogAdHaritasi(j))
+      .catch(() => { katalogSozu = null; return new Map(); });
+  }
+  return katalogSozu;
+}
+function useKatalogAdlari(aktif) {
+  const [harita, setHarita] = useState(null);
+  useEffect(() => {
+    if (!aktif) return undefined;
+    let canli = true;
+    katalogAdlari().then((h) => { if (canli) setHarita(h); });
+    return () => { canli = false; };
+  }, [aktif]);
+  return harita;
+}
+
 export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliSet }) {
+  const adlar = useKatalogAdlari(mev.length > 0);
   if (!mev.length) return null;
   const secilebilir = !!onMevzuatSec;
   const secSay = mev.filter((m) => seciliSet.has(m.baslik)).length;
@@ -70,6 +98,7 @@ export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliS
             key={i}
             rank={i + 1}
             m={m}
+            ad={mevzuatGorunenAd(m, adlar)}
             nli={nliMap.get(m.baslik)}
             ilk={i === 0}
             onAc={onMevzuatAc}
@@ -122,7 +151,7 @@ export function ArchiveSlaCard({ r, arsiv, sdpAdaylar, sla, sInfo }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, margin: "8px 0 0" }}>
           {sdpAdaylar.map((a, i) => (
             <span key={a.kod || i} title={a.ad} style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: i === 0 ? DERIN.T : PAL.mut2, ...TNUM }}>
-              {a.kod} · {Number.isFinite(Number(a.skor)) ? Number(a.skor).toFixed(1) : "–"}
+              {a.kod} · {ondalikTr(a.skor, 1)}
             </span>
           ))}
         </div>
@@ -207,18 +236,23 @@ export function RiskCard({ r, band, bantC }) {
 
 export function ValidationCard({ r, uyari, tutar }) {
   const lintFix = r.lint_duzeltme_md;
+  // Yazışma kuralı uyarıları da sayılır: aynı ekranda "uyumlu" etiketi ile "1 uyarı (m.15)"
+  // yan yana duruyordu (bağımsız denetim). Format satırı da lint uyarısını görür.
+  const lintUyari = arr(r.lint_2646?.uyari).length;
+  const toplam = uyari.length + tutar.length + lintUyari;
+  const formatTemiz = !!r.format_uyumlu && !lintUyari;
   return (
     <NeonCard
       title="Taslak doğrulaması"
-      tag={uyari.length + tutar.length ? `${uyari.length + tutar.length} uyarı` : "uyumlu"}
-      tagColor={uyari.length + tutar.length ? BANT.sari.c : BANT.yesil.c}
+      tag={toplam ? `${toplam} uyarı` : "uyumlu"}
+      tagColor={toplam ? BANT.sari.c : BANT.yesil.c}
       accent={V}
       icon={<Icon.shield />}
     >
       <Vrow ok={!uyari.length} label="Kaynak kontrolü" val={uyari.length ? `${uyari.length} işaret` : "temiz"} />
-      <Vrow ok={!!r.format_uyumlu} label="Format (Yön. 2646)" val={r.format_uyumlu ? "uyumlu" : "kontrol"} />
+      <Vrow ok={formatTemiz} label="Format (Yön. 2646)" val={formatTemiz ? "uyumlu" : lintUyari ? `${lintUyari} kural uyarısı` : "kontrol"} />
       <Vrow ok={!tutar.length} label="Veri tutarlılığı" val={tutar.length ? `${tutar.length} uyarı` : "temiz"} />
-      {r.verify_notes && <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}>{clean(r.verify_notes)}</div>}
+      {r.verify_notes && !toplam && <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}>{clean(r.verify_notes)}</div>}
       {uyari.slice(0, 5).map((u, i) => (
         <div key={i} className="sc-warning-row" style={{ color: DERIN.sari }}>
           <Icon.alert style={{ flex: "none", marginTop: 2 }} /> {clean(u)}
@@ -263,7 +297,7 @@ export function RoutingCard({ r, birimAday }) {
   const adaylar = [...new Set(
     (canlidanGeldi && korpusBirim ? [korpusBirim, ...birimAday] : birimAday).filter((b) => b && b !== birim),
   )];
-  const kurum = String(r.hedef_kurum_adi || r.hedef_birim_kaynak?.kaynak_kurum || r.yetkili_kurum?.ad || r.muhatap_kurum?.ad || "").trim();
+  const kurum = kurumGorunur(r.hedef_kurum_adi || r.hedef_birim_kaynak?.kaynak_kurum || r.yetkili_kurum?.ad || r.muhatap_kurum?.ad || "");
   return (
     <NeonCard title="Birim yönlendirme" tag={adaylar.length ? `${adaylar.length + 1} aday` : null} accent={V} icon={<Icon.route />}>
       {kurum && (

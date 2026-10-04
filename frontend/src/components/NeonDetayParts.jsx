@@ -61,13 +61,14 @@ function guvenBaslik(m) {
    Tasarım notu (dürüstlük): `score` max-normalize olduğundan ilk satır DAİMA %100'dür —
    bu bir kalite ölçüsü değil, sıralama artefaktıdır. Bu yüzden yüzde açıkça "göreli" diye
    etiketlenir, amber/kırmızı sinyal ise skordan DEĞİL kalibre `guven` bandından gelir. */
-export function MevzuatRow({ rank, m, nli, ilk, onAc, secili = false, onSec = null, sade = false, inceleme = true }) {
+export function MevzuatRow({ rank, m, ad = "", nli, ilk, onAc, secili = false, onSec = null, sade = false, inceleme = true }) {
   const pct = Math.round((Number(m.score) || 0) * 100);
   const guven = m.guven || "";
   const gc = GUVEN_RENK[guven] || PAL.mut2;
   const zayif = guven === "düşük";
   const fill = zayif ? DERIN.kirmizi : (guven === "orta" ? DERIN.sari : DERIN.T);
-  const title = cleanDemoText(m.baslik);
+  // `ad`: katalogdaki resmî ad (SonucDestekKartlari) — yoksa backend başlığı.
+  const title = cleanDemoText(ad || m.gosterim_adi || m.baslik);
   const snippet = m.snippet ? cleanDemoText(m.snippet) : null;
   const gerekce = m.eslesme_gerekcesi ? cleanDemoText(m.eslesme_gerekcesi) : "";
   const nliPct = nli && Number.isFinite(Number(nli.skor)) ? Math.round(Number(nli.skor) * 100) : null;
@@ -190,6 +191,11 @@ export function SlaPanel({ sla, info }) {
         <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Yasal süre durumu</span>
         <span style={{ ...TYPE.meta, fontWeight: 500, color: dc, background: ALFA(info.color), borderRadius: RAD.chip, padding: "2px 8px", ...TNUM }}>{info.label}</span>
       </div>
+      {String(sla?.durum || "").toLowerCase() === "tarih_yok" && (
+        <div style={{ marginBottom: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
+          Evrak tarihi okunamadığı için cevap son tarihi hesaplanamadı — başvuru tarihini evraktan kontrol edin.
+        </div>
+      )}
       {konum && (
         <div role="img" aria-label={`Yasal süre çizelgesi: başvuru ${sla.baslangic}, cevap son tarihi ${sla.son_tarih}; ${konum.toplam} günlük sürenin ${konum.gecen} günü geçti, ${konum.kalan >= 0 ? `${konum.kalan} gün kaldı` : `${-konum.kalan} gün gecikti`}.`}>
           <div aria-hidden="true" style={{ position: "relative", height: 16, marginBottom: 2 }}>

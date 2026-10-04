@@ -1,7 +1,7 @@
 /* gunlukSeri testleri — gün penceresi/idx/delta kenarları (review bulgusu 8). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { GUN_MS, gunBasi, gunlukSeri } from "./gunlukSeri.js";
+import { GUN_MS, gunBasi, gunlukSeri, kiyasMetni } from "./gunlukSeri.js";
 
 // Sabit "şimdi": 2026-07-17 öğlen (yerel) — testler duvar saatinden bağımsız.
 const SIMDI = new Date(2026, 6, 17, 12, 0, 0).getTime();
@@ -47,4 +47,12 @@ test("aktifGun farklı gün sayısıdır, kayıt sayısı değil", () => {
   const r = gunlukSeri([SIMDI, SIMDI - 1000, SIMDI - 2000], SIMDI);
   assert.equal(r.seri[6], 3);
   assert.equal(r.aktifGun, 1);   // 3 kayıt ama tek gün → sparkline çizilmemeli
+});
+
+test("kiyasMetni: dün 0 → bugün 1 'dünle aynı' DEĞİL, +1", () => {
+  assert.deepEqual(kiyasMetni({ bugunN: 1, dunN: 0 }), { metin: "+1 düne göre", yon: "artis" });
+  assert.equal(kiyasMetni({ bugunN: 2, dunN: 2 }).metin, "dünle aynı");
+  assert.equal(kiyasMetni({ bugunN: 0, dunN: 0 }).metin, "bugün henüz yok");
+  assert.equal(kiyasMetni({ bugunN: 0, dunN: 3 }).metin, "-3 düne göre");
+  assert.equal(kiyasMetni(null).metin, "anlık kuyruk");
 });

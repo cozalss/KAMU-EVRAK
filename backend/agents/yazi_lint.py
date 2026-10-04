@@ -369,7 +369,10 @@ _AD_SOYAD_RE = re.compile(
 
 
 def _k_imza(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
-    poz = low.rfind("ederim")
+    # Kapanış = m.16'nın TÜM meşru aileleri (_KAPANIS_KALIP) — eskiden yalnız "ederim"
+    # aranıyordu; "Bilgilerinize sunulur." / "arz olunur" kapanışlı taslakta imza bloğu
+    # varken "kapanış bulunamadı" deniyordu (tur4 yanlış-pozitifi). Bant etkisi yok (bilgi).
+    poz = max([low.rfind("ederim"), *(low.rfind(k) for k in _KAPANIS_KALIP)])
     if poz < 0:
         return _kural("L-M17-imza", "m.17", "bilgi",
                       "Kapanış bulunamadığı için imza bloğu değerlendirilemedi (m.17).")

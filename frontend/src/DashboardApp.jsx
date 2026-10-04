@@ -14,6 +14,8 @@ import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
 import { createSekans, sonrakiSecim } from "./lib/dayanakSecim.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { islemIdCoz } from "./lib/taslakId.js";
+import { gonderimDenetimi } from "./lib/gonderimHazirlik.js";
+import GonderimOnayFisi from "./components/GonderimOnayFisi.jsx";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
 import { sampleAdIndex, kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
@@ -55,7 +57,7 @@ const TelefonYukleModal = lazy(() => import("./components/TelefonYukle.jsx"));
 const VIEWS = new Set(["panel", "islenen", "gelen", "giden", "taslaklar", "mevzuat", "denetim", "isleniyor"]);
 const hashView = () => window.location.hash.slice(1);
 // Sekme başlığı için görünüm adları (kenar çubuğu etiketleriyle aynı).
-const VIEW_AD = { panel: "Panel", islenen: "İşlenen evrak", gelen: "Gelen evrak", isleniyor: "İşleniyor", taslaklar: "Taslaklar", giden: "Giden evrak", mevzuat: "Mevzuat", denetim: "Denetim" };
+const VIEW_AD = { panel: "Panel", islenen: "İşlenen evrak", gelen: "Gelen evrak", isleniyor: "İşleniyor", taslaklar: "Taslaklar", giden: "Giden evrak", mevzuat: "Mevzuat", denetim: "Denetim izi" };
 
 // DB geçmişinden taslak listesi türet: taslağı ÜRETİLMİŞ ve henüz KARAR VERİLMEMİŞ işlemler
 // (onaylanmış/reddedilmiş işlemler Giden Evrak'a düşer — burada tekrar taslak sayılmaz;
@@ -198,7 +200,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       // GEÇİCİ numara — gerçek giden_no backend /onayla yanıtından gelir ve persistDecision
       // satırı islem_id ile eşleyip günceller (eskiden oturum sayacından üretilen numara
       // DB'deki resmî numaradan SAPABİLİYORDU ve refresh'e dek ekranda kalıyordu — denetim bulgusu).
-      id: `E-G-${new Date().getFullYear()}/${String(o.length + 1).padStart(4, "0")}`,
+      id: `geçici-${Date.now()}-${o.length}`, numaraBekliyor: true,
       islem_id: res.islem_id || null,
       kaynak_evrak_adi: name, gonderim_tarihi: Date.now(),
       evrak_turu: res.evrak_turu, tur: res.yazi_turu,
@@ -259,7 +261,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           const hedef = o.find((x) => x.islem_id === res.islem_id)
             || o.find((x) => !x.islem_id);
           return hedef ? o.map((x) => (x === hedef
-            ? { ...x, id: yanit.giden_no, islem_id: res.islem_id } : x)) : o;
+            ? { ...x, id: yanit.giden_no, islem_id: res.islem_id, numaraBekliyor: false } : x)) : o;
         });
         queryClient.invalidateQueries({ queryKey: ["giden-evrak"] });
       }
@@ -350,6 +352,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       memor_adi: user.ad_soyad || "Memur",
       memor_unvan: user.unvan || "",
       son_hash: r.son_hash || "",
+      guven: typeof r.guven === "number" ? r.guven : null,
     })));
   }, [gidenQ.data, gidenQ.error, user]);
 
@@ -649,7 +652,9 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const ilkKararRef = useRef(true);
   const gidenErtele = () => {
     const az = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    const gecikme = az ? 0 : (ilkKararRef.current ? 900 : 300);
+    // Mühür ritüeli (paraf → damga → mürekkep yayılımı, ilk kararda ~1,3 sn) bitmeden sayfa
+    // değişmesin: kayıt Giden'e mühür oturduktan SONRA kalkar.
+    const gecikme = az ? 0 : (ilkKararRef.current ? 1700 : 650);
     ilkKararRef.current = false;
     setTimeout(() => goView("giden"), gecikme);
   };
@@ -664,7 +669,27 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     persistDecision(result, secim); stampDecision(result, secim); showToast(toastMetni); gidenErtele();
     return true;
   };
-  const onApprove = () => karar("onayla", "Evrak onaylandı — Giden Evrak'a gönderildi.");
+  // "Onayla ve gönder" İKİ ADIMLIDIR: düğme yalnız ONAY FİŞİ'ni açar (GonderimOnayFisi).
+  // Sözleşme korunur: dönen söz ancak memur fişte onaylayıp karar GERÇEKTEN kabul edilince
+  // true ile çözülür → CanliAjanAkisi.kararVer mührü yalnız o zaman basar. Vazgeç → false.
+  // Gövdesi boş / açıklama vaat edip vermeyen / [DOĞRULA] kalan yazıda onay kilitlidir.
+  const [onayFisi, setOnayFisi] = useState(null);   // { denetim, coz, gonderiliyor, hata }
+  const onApprove = () => new Promise((coz) => {
+    setOnayFisi({ denetim: gonderimDenetimi(data?.yazi_taslak_md || ""), coz, gonderiliyor: false, hata: false });
+  });
+  const fisVazgec = () => { setOnayFisi((f) => { f?.coz(false); return null; }); };
+  const fisOnayla = async () => {
+    const fis = onayFisi;
+    if (!fis || fis.gonderiliyor || !fis.denetim.hazir) return;
+    setOnayFisi({ ...fis, gonderiliyor: true, hata: false });
+    let kabul = false;
+    try { kabul = await karar("onayla", "Yazı onaylandı ve Giden Evrak'a gönderildi."); } catch (err) { console.warn("Onay gönderilemedi", err); }
+    if (kabul) { setOnayFisi(null); fis.coz(true); return; }
+    setOnayFisi({ ...fis, gonderiliyor: false, hata: true });
+  };
+  const fisDuzenle = () => { fisVazgec(); onEdit(); };
+  // Görünüm değişirse (ör. kenar çubuğu) açık fiş kararsız kapanır — söz asılı kalmaz.
+  useEffect(() => { if (activeView !== "isleniyor") setOnayFisi((f) => { f?.coz(false); return null; }); }, [activeView]);
   const onReject = () => karar("reddet", "Reddedildi — Giden evraka kaydedildi (denetim izi).");
   const onEdit = async () => {
     if (pendingOnay) { pendingApprovalRef.current = { secim: "duzenle", fileMeta }; if (!(await resume("duzenle"))) pendingApprovalRef.current = null; return; }
@@ -1014,7 +1039,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
         {/* sonner: katmanlı/istiflenen bildirimler — eski tek-toast görünümüyle aynı dil (koyu yüzey). */}
-        <Toaster position="bottom-center" duration={3200} gap={8} visibleToasts={3}
+        <Toaster containerAriaLabel="Bildirimler" position="bottom-center" duration={3200} gap={8} visibleToasts={3}
           toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onInk, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
         {error && !busy && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}
 
@@ -1026,6 +1051,12 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
             <OkumaModal dosya={okumaHedef.dosya} maddeNo={okumaHedef.maddeNo}
               maddeTur={okumaHedef.maddeTur} onClose={okumaKapat} />
           </Suspense>
+        )}
+
+        {onayFisi && (
+          <GonderimOnayFisi denetim={onayFisi.denetim} r={data} onaylayan={user?.ad_soyad || ""}
+            gonderiliyor={onayFisi.gonderiliyor} hata={onayFisi.hata}
+            onOnayla={fisOnayla} onVazgec={fisVazgec} onDuzenle={fisDuzenle} />
         )}
 
         {telefonAcik && (

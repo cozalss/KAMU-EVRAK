@@ -126,7 +126,8 @@ def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
             incele = True
         madde_no = o.get("madde_no")
         out.append({
-            "baslik": baslik, "snippet": snippet, "url": o.get("url"), "score": score,
+            "baslik": baslik, "gosterim_adi": str(o.get("gosterim_adi", "") or ""),
+            "snippet": snippet, "url": o.get("url"), "score": score,
             "raw_score": _sayi(o.get("raw_score")), "norm_score": norm_score,
             "eslesme_gerekcesi": gerekce, "guven": guven, "guven_isabet": isabet,
             "inceleme_oner": incele,

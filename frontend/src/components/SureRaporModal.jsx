@@ -5,7 +5,7 @@
    Tüm hesap lib/sureRapor.js'te (saf, test edilir); burası yalnız sunum.
 
    Yetersiz geçmişte SAYI UYDURULMAZ: kıyas penceresi boşsa "kıyas için yeterli geçmiş yok"
-   yazılır, uydurma yüzde basılmaz (rapor jüriye gösterilecek bir belgedir).
+   yazılır, uydurma yüzde basılmaz (rapor amire sunulacak bir belgedir).
 
    Tema: Hero Light — açık yüzey (PAL.surf), referans görselin lacivert zemini KOPYALANMADI.
    Modal deseni BelgeModal ile aynı: Radix Dialog (odak tuzağı + Esc + dış tık) + motion
@@ -40,7 +40,7 @@ function BarGrafik({ veri, ort }) {
       <div aria-hidden="true" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between",
         height: H, flexShrink: 0, textAlign: "right", minWidth: 38 }}>
         {kademeler.map((k) => (
-          <span key={k} style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>{k.toFixed(1)}</span>
+          <span key={k} style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut3 }}>{k.toFixed(1).replace(".", ",")}</span>
         ))}
       </div>
       <div style={{ flex: 1, minWidth: 0, overflowX: "auto" }}>
@@ -212,7 +212,7 @@ export default function SureRaporModal({ acik, onKapat, history = [] }) {
                       </div>
                       {/* Eşik sabit bir sayı DEĞİL — ortalamadan türer; gizli sihirli sayı bırakmamak için yazılır */}
                       <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut3, ...TNUM }}>
-                        Yavaş işlem eşiği: ortalama × {ESIK_KAT} = {sn(esik)} sn.
+                        Yavaş işlem eşiği: ortalama × {String(ESIK_KAT).replace(".", ",")} = {sn(esik)} sn.
                       </p>
 
                       {/* Kıyaslama — Panel kartıyla ORTAK bileşen (bkz. SureKiyas.jsx) */}

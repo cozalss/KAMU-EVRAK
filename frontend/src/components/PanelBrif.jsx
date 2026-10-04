@@ -365,14 +365,14 @@ export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
   const vurgu = say.gecikmis ? BANT.kirmizi.c : BANT.sari.c;
 
   return (
-    <section aria-label="Bugünün brifi — kuyruk yasal süre durumu" style={{ ...yuzey(vurgu), height: "100%", display: "flex", flexDirection: "column" }}>
+    <section aria-label="Bugünün özeti — kuyruk yasal süre durumu" style={{ ...yuzey(vurgu), height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: `${pad + 4}px ${pad}px ${pad - 4}px` }}>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.l, ...TYPE.antet, color: PAL.mut3 }}>
           {/* Çalan saat: yalnız gerçek acil varken — hareket=bilgi. */}
           <span aria-hidden="true" style={{ display: "flex", color: DERIN_OF(vurgu), animation: "nu-alarm 2s linear infinite" }}>
             <Icon.clock width={14} height={14} />
           </span>
-          <span>YASAL SÜRE BRİFİ</span>
+          <span>YASAL SÜRE ÖZETİ</span>
           <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
         </div>
         <Manset sayi={acil.length} renk={DERIN_OF(vurgu)} dar={dar} baslik={acilBaslik(say)} baglam={baglam}

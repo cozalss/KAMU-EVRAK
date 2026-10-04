@@ -15,7 +15,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import NumberFlow from "@number-flow/react";
 import { MONO, SANS, DISPLAY, T, V, PAL, BANT, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing, Icon } from "./neonUi.jsx";
-import { nodeDurationMs } from "../lib/pipelinePhases.js";
+import { nodeDurationMs, gorevFaz } from "../lib/pipelinePhases.js";
 import { grupSuresiMs, akisSuresiMs, adimDurumu, kostuMu, ortusenAdimlar } from "../lib/akisKatman.js";
 import { parafUret } from "./agent-flow/topology.js";
 
@@ -26,7 +26,7 @@ export const SAHNE_CSS = `
 @keyframes ke-e-paraf{0%{opacity:0;transform:rotate(var(--egim)) scale(1.9)}55%{opacity:1;transform:rotate(var(--egim)) scale(.9)}100%{opacity:1;transform:rotate(var(--egim)) scale(1)}}
 @keyframes ke-e-tik{0%{transform:scaleY(.2)}60%{transform:scaleY(1.12)}100%{transform:scaleY(1)}}
 @keyframes ke-e-tara{from{transform:translateY(-100%)}to{transform:translateY(0)}}
-@keyframes ke-e-fosfor{from{background-size:0% 100%}to{background-size:100% 100%}}
+@keyframes ke-e-fosfor{from{opacity:.3}to{opacity:1}}
 @keyframes ke-e-yaz{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes ke-e-cizgi{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes ke-e-nefes{0%,100%{opacity:.45}50%{opacity:1}}
@@ -118,7 +118,7 @@ export function Paraf({ a, durum, col }) {
   return <span aria-hidden="true" style={{ display: "inline-block", width: 32, height: 32, boxSizing: "border-box", borderRadius: RAD.dot, border: `1px dotted ${PAL.lineHi}`, flexShrink: 0 }} />;
 }
 
-/* Hat başlığı — antet dilinde: "GÖREV 1 — ANLA" künyesi + kendi ilerleme hattı + sayaç.
+/* Hat başlığı — antet dilinde: "I. ANLAMA" künyesi + kendi ilerleme hattı + sayaç.
    Mühür rakamı hat hizmete girince mürekkeple dolar. */
 function HatTerminal({ n, col, count, doneN, sure, girisAktif, tamam, ilerleme, devir }) {
   return (
@@ -131,9 +131,9 @@ function HatTerminal({ n, col, count, doneN, sure, girisAktif, tamam, ilerleme, 
           ve sayaç asla kırılmaz. */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "nowrap", columnGap: SP.m, minHeight: 28, minWidth: 0 }}>
         <span style={{ width: 28, display: "flex", justifyContent: "center", flexShrink: 0 }}>
-          <span key={girisAktif ? "on" : "off"} aria-hidden="true" style={{ width: 26, height: 26, boxSizing: "border-box", borderRadius: RAD.dot, background: girisAktif ? col : PAL.surf, border: `2px solid ${col}`, color: girisAktif ? PAL.onAccent : DERIN_OF(col), fontFamily: DISPLAY, fontWeight: 800, fontStretch: "120%", fontSize: 13, lineHeight: "22px", textAlign: "center", ...TNUM, transition: "background .25s ease", animation: girisAktif ? "nu-pop .4s var(--ke-ease-spring) both" : "none" }}>{n}</span>
+          <span key={girisAktif ? "on" : "off"} aria-hidden="true" style={{ width: 26, height: 26, boxSizing: "border-box", borderRadius: RAD.dot, background: girisAktif ? col : PAL.surf, border: `2px solid ${col}`, color: girisAktif ? PAL.onAccent : DERIN_OF(col), fontFamily: DISPLAY, fontWeight: 800, fontStretch: "120%", fontSize: n === 2 ? 11 : 13, lineHeight: "22px", textAlign: "center", ...TNUM, transition: "background .25s ease", animation: girisAktif ? "nu-pop .4s var(--ke-ease-spring) both" : "none" }}>{gorevFaz(n).no}</span>
         </span>
-        <span style={{ ...TYPE.antet, color: DERIN_OF(col), flexShrink: 0, textTransform: "uppercase" }}>{n === 2 ? "Görev 2 — Üret" : "Görev 1 — Anla"}</span>
+        <span style={{ ...TYPE.antet, color: DERIN_OF(col), flexShrink: 0, textTransform: "uppercase" }}>{gorevFaz(n).ad}</span>
         <span aria-hidden="true" style={{ flex: "1 1 0", height: 1, background: PAL.line, overflow: "hidden", minWidth: 0 }}>
           <span style={{ display: "block", width: "100%", height: "100%", background: col, transformOrigin: "left", transform: `scaleX(${ilerleme || 0})`, transition: "transform .5s var(--ke-ease-in-out)" }} />
         </span>
@@ -353,8 +353,8 @@ export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false,
     <div style={{ minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: SP.s }}>
       <div style={{ ...TYPE.antet, color: DERIN_OF(vurgu), display: "flex", alignItems: "center", gap: SP.s, textTransform: "uppercase" }}>
         <span aria-hidden="true" style={{ width: 18, height: 2, background: vurgu }} />
-        {kapanis ? "Pusula kapandı" : active ? (esz.length ? `Masada · ${esz.length + 1} masa eşzamanlı` : `Masada · Görev ${a.gorev}`) : err ? "Durdu"
-          : adimDurumu(a) === "gerekmedi" ? `Son masa · gerekmedi` : adimDurumu(a) === "calisti" ? `Son paraf · Görev ${a.gorev}` : `Sırada · Görev ${a.gorev}`}
+        {kapanis ? "Pusula kapandı" : active ? (esz.length ? `Masada · ${esz.length + 1} masa eşzamanlı` : `Masada · ${gorevFaz(a.gorev).uzun}`) : err ? "Durdu"
+          : adimDurumu(a) === "gerekmedi" ? `Son masa · gerekmedi` : adimDurumu(a) === "calisti" ? `Son paraf · ${gorevFaz(a.gorev).uzun}` : `Sırada · ${gorevFaz(a.gorev).uzun}`}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0 }}>
         <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: "clamp(64px, 7.2vw, 104px)", lineHeight: 0.82, letterSpacing: "-.05em", color: PAL.ink, ...TNUM }}>
@@ -362,7 +362,9 @@ export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false,
         </span>
         <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", fontSize: 22, lineHeight: "22px", color: PAL.mut2, paddingBottom: 2, ...TNUM }}>/ {String(total).padStart(2, "0")}</span>
       </div>
-      <div key={kapanis ? "kapanis" : a.id} style={{ ...TYPE.h1, fontSize: "clamp(26px, 2.6vw, 36px)", lineHeight: 1.08, marginTop: -SP.l, color: PAL.ink, minWidth: 0, overflowWrap: "anywhere", animation: "ke-e-yaz .5s var(--ke-ease-out) both" }}>
+      {/* TEK SATIR (nowrap + ellipsis): masa adı değişince kart yüksekliği DEĞİŞMEZ — tur-4
+          ölçümünde kapanış başlığı iki satıra sarıp pusulayı 37px itiyordu (CLS 0,051). */}
+      <div key={kapanis ? "kapanis" : a.id} title={kapanis ? kapanis.baslik : a.label} style={{ ...TYPE.h1, fontSize: "clamp(26px, 2.6vw, 36px)", lineHeight: 1.08, marginTop: -SP.l, color: PAL.ink, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", animation: "ke-e-yaz .5s var(--ke-ease-out) both" }}>
         {kapanis ? kapanis.baslik : a.label}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.m, minWidth: 0 }}>
@@ -560,13 +562,13 @@ export function AkisSeridi({ display, onDetay }) {
             {a.gorev === 2 && prev
               ? <span aria-hidden="true" style={{ flex: 1, minWidth: 14, borderTop: `2px dashed ${prev.status === "done" ? col : PAL.lineHi}`, transition: "border-color .3s ease" }} />
               : <span aria-hidden="true" style={{ flex: 1 }} />}
-            <span aria-hidden="true" style={{ width: 18, height: 18, borderRadius: RAD.dot, background: col, color: PAL.onAccent, fontFamily: SANS, fontSize: 11, lineHeight: "18px", fontWeight: 600, textAlign: "center", flexShrink: 0, ...TNUM }}>{a.gorev}</span>
+            <span aria-hidden="true" style={{ width: 18, height: 18, borderRadius: RAD.dot, background: col, color: PAL.onAccent, fontFamily: SANS, fontSize: 11, lineHeight: "18px", fontWeight: 600, textAlign: "center", flexShrink: 0, ...TNUM }}>{gorevFaz(a.gorev).no}</span>
             <YarimRay filled={a.status !== "pending"} col={col} />
           </span>
-          {/* İki satır: üstte "Görev N", altında faz adı — istasyon adlarıyla aynı düşey ritim. */}
+          {/* İki satır: üstte bölüm no, altında bölüm adı — istasyon adlarıyla aynı düşey ritim. */}
           <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(col), whiteSpace: "nowrap", padding: "0 6px", textAlign: "center" }}>
-            Görev {a.gorev}
-            <span style={{ display: "block", fontWeight: 400 }}>{a.gorev === 2 ? "Üret" : "Anla"}</span>
+            {gorevFaz(a.gorev).no}.
+            <span style={{ display: "block", fontWeight: 400 }}>{gorevFaz(a.gorev).ad}</span>
           </span>
         </div>
       );

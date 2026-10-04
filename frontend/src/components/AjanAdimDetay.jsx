@@ -16,7 +16,7 @@ import {
   BilgilendirmeYapisal,
 } from "./NeonDetayParts.jsx";
 import { Paraf, CanliSure } from "./CanliMetro.jsx";
-import { nodeDurationMs } from "../lib/pipelinePhases.js";
+import { nodeDurationMs, gorevFaz, motorEtiketi } from "../lib/pipelinePhases.js";
 import {
   MONO, DISPLAY, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, focusRing, Icon, KV, RiskBand, odakDongusu,
 } from "./neonUi.jsx";
@@ -118,7 +118,7 @@ function OkuDetay({ d, r }) {
   return (
     <>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(120px, 100%), 1fr))", gap: SP.l }}>
-        <Olcum k="Okuma motoru" v={d.engine || "metin"} mono />
+        <Olcum k="Okuma yolu" v={motorEtiketi(d.engine)} />
         {d.n_chars != null && <Olcum k="Çıkarılan metin" v={`${d.n_chars} karakter`} />}
         {sayfa != null && <Olcum k="Sayfa" v={sayfa} />}
         {conf != null && <Olcum k="OCR güveni" v={`%${pct(conf)}`} c={pct(conf) < 60 ? DERIN.sari : DERIN.yesil} />}
@@ -614,7 +614,7 @@ export default function AjanAdimDetay({ idx, display, result, onKapat, onGit, ru
               <DurumCip st={a.status} col={bantC || col} a={a} durdu={durdu} />
             </div>
             <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
-              <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{a.gorev === 2 ? "Görev 2 · Üret" : "Görev 1 · Anla"}</span>
+              <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{gorevFaz(a.gorev).uzun}</span>
               {" · "}adım {idx + 1}/{toplam}{sure ? ` · ${sure}` : ""}
               {a.status === "active" && <>{" · "}<CanliSure runBase={runBase} t0={a.t0} style={{ color: DERIN_OF(col), fontWeight: 600 }} /></>}
               {a.status === "done" && a.out ? ` · ${a.out}` : ""}

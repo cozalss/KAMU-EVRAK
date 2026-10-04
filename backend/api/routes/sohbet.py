@@ -415,12 +415,21 @@ async def _sla_araci(
     rows = await islem_listele(session, owner_id=owner_id, limit=max(limit, 20))
     out: list[dict[str, Any]] = []
     for r in rows:
-        meta = (r.get("result") or {}).get("sla_metadata") or {}
-        if meta.get("durum") in _SLA_KRITIK:
+        res = r.get("result") or {}
+        meta = res.get("sla_metadata") or {}   # islem_listele bugüne göre tazeler (tek kaynak)
+        # Cevabı verilmiş (onaylanıp gönderilmiş/reddedilmiş) evrakın süresi artık işlemez.
+        if meta.get("durum") in _SLA_KRITIK and not res.get("onay_durumu"):
+            kalan = meta.get("kalan_gun")
             out.append({
-                "name": r.get("name"), "evrak_turu": r.get("evrak_turu"),
-                "hedef_birim": r.get("hedef_birim"),
-                "sla_durum": meta.get("durum"), "kalan_gun": meta.get("kalan_gun"),
+                "name": r.get("name"),
+                # Ham enum ("bilgi_edinme") modele verilmez — cevapta aynen tekrarlanıyordu.
+                "evrak_turu": _cfg.evrak_turu_tr(str(r.get("evrak_turu") or "")),
+                "hedef_birim": r.get("hedef_birim") or r.get("hedef_birim_adi") or "",
+                "sla_durum": meta.get("durum"),   # sözleşme anahtarı (kart etiketi bundan)
+                "sla_durum_tr": "süresi geçmiş" if meta.get("durum") == "GECIKMIS" else "süresi kritik",
+                "kalan_gun": kalan,
+                "gecikme_gun": -kalan if isinstance(kalan, int) and kalan < 0 else 0,
+                "son_tarih": meta.get("son_tarih") or "",
             })
     # kalan gün artan (en çok geciken/en az kalan en üstte); None sona.
     out.sort(key=lambda x: (x.get("kalan_gun") is None, x.get("kalan_gun") or 0))

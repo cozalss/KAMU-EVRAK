@@ -49,8 +49,8 @@ export const NODE_LABEL = Object.fromEntries(PIPELINE.map((n) => [n.id, n.label]
 
 // Görev başlıkları (şema üstü açıklama).
 export const GOREV_LABEL = {
-  1: "Görev 1 — Evrakı Anla & Çıkar",
-  2: "Görev 2 — Yönlendir & Yazı Üret",
+  1: "I. Anlama — evrakı oku ve çıkar",
+  2: "II. Yazı üretimi — yönlendir ve yaz",
 };
 
 // Bir kenarın görsel durumu hedef düğümün durumundan türetilir (akış hissi).

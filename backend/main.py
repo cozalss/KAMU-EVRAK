@@ -252,20 +252,20 @@ async def _db_ping(timeout_s: float = 2.0) -> bool:
 
 @app.get("/")
 async def root():
-    """Kök: statik frontend bağlıysa landing sayfası, değilse API kimlik kartı.
+    """Kök: statik frontend bağlıysa çalışma alanına (/app.html) yönlendirir, değilse API
+    kimlik kartı.
 
-    Bu rota "/" mount'undan ÖNCE tanımlıdır ve onu gölgeler — tek servis dağıtımında
-    ana adres JSON döndürüyordu (konteyner koşumunda ölçüldü). Statik kökte index.html
-    varsa onu sunar; yoksa eski davranış aynen korunur (yerel dev, API-only kurulum).
+    Ayrı tanıtım sayfası yok (4 Eki 2026 kullanıcı kararı: ürün memurun iş aracıdır, kök
+    adres doğrudan giriş/çalışma alanını açar). Bu rota "/" mount'undan ÖNCE tanımlıdır ve
+    onu gölgeler. app.html yoksa (yerel dev, API-only kurulum) eski davranış korunur.
     """
     if _STATIK_KOK:
         from pathlib import Path as _Yol
 
-        from fastapi.responses import FileResponse
+        from fastapi.responses import RedirectResponse
 
-        _idx = _Yol(_STATIK_KOK) / "index.html"
-        if _idx.is_file():
-            return FileResponse(str(_idx))
+        if (_Yol(_STATIK_KOK) / "app.html").is_file():
+            return RedirectResponse("/app.html", status_code=307)
     return {"app": "kamu-evrak", "docs": "/docs"}
 
 
@@ -323,7 +323,7 @@ if _STATIK_KOK:
 
     _kok = _Path(_STATIK_KOK)
     if _kok.is_dir():
-        # html=True: dizin isteği index.html'e düşer (landing). Çalışma alanı /app.html.
+        # html=True: dizin isteği index.html'e düşer (yalnız /app.html'e yönlendirme sayfası).
         app.mount("/", StaticFiles(directory=str(_kok), html=True), name="statik")
         log.info("statik_frontend_baglandi", kok=str(_kok),
                  app_html=(_kok / "app.html").is_file(),

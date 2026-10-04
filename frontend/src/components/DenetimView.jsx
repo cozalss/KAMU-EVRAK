@@ -1,12 +1,12 @@
-/* DenetimView — değiştirilemez denetim izi kayıtları. Her işlenen evrak için tamper-evident
-   SHA-256 hash-zinciri (Sayıştay/KVKK uyumlu). Oturum geçmişinden (gerçek denetim_izi).
+/* DenetimView — değiştirilemez denetim izi kayıtları. Her işlenen evrak için değişikliği
+   açığa çıkaran SHA-256 hash-zinciri (Sayıştay/KVKK uyumlu). Oturum geçmişinden (gerçek denetim_izi).
    "Antet & Damga" (2026-10): ortak sicil defteri yüzeyi (SicilDefter) — satır başına kart
    yerine hairline-ayraçlı kayıt; zincir hücresi kök→son hash'i bir mühür zinciri olarak çizer. */
 import React, { useMemo } from "react";
 import { ViewWrap, Btn, Icon, MONO, V, PAL, BANT, DERIN, DERIN_OF, TYPE, TNUM, RAD, SP } from "./neonUi.jsx";
 import FilterBar from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
-import { EVRAK_TR } from "./result-cards.jsx";
+import { EVRAK_TR, cleanDemoText } from "./result-cards.jsx";
 import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterNotu, DefterIskelet, DefterHata, HUCRE } from "./SicilDefter.jsx";
 import { bosDurumMetni } from "../lib/sicilDefter.js";
 
@@ -17,7 +17,7 @@ const kisa = (h) => { const s = String(h || ""); return s.length > 12 ? `${s.sli
 const ZINCIR_AZAMI = 9;
 
 const BASE_CONFIG = {
-  search: { enabled: true, placeholder: "Evrak adı…" },
+  search: { enabled: true, placeholder: "Konu ya da evrak adı…" },
   chips: [{ id: "bant", label: "Risk", options: [
     { value: "yesil", label: "Yeşil · Düşük", color: BANT.yesil.c },
     { value: "sari", label: "Sarı · Orta", color: BANT.sari.c },
@@ -28,7 +28,7 @@ const BASE_CONFIG = {
   sort: { enabled: true, default: "ts_desc", options: [
     { value: "ts_desc", label: "En yeni" }, { value: "ts_asc", label: "En eski" }, { value: "risk_desc", label: "Risk (yüksek→düşük)" },
   ] },
-  dataMapping: { search: ["name"], bant: "bant", evrak_turu: "evrak_turu", dateField: "ts" },
+  dataMapping: { search: ["_konu", "name"], bant: "bant", evrak_turu: "evrak_turu", dateField: "ts" },
 };
 
 /* Defter şablonu — zaman damgası · evrak · risk · zincir. Telefonda zincir tam satır alır. */
@@ -49,12 +49,12 @@ const BASLIKLAR = [
 /* Zincir hücresi — kök hash ─ adım halkaları ─ son hash. Halka sayısı gerçek adım sayısıdır
    (en fazla 9 çizilir, fazlası "+n"); adım bilgisi yoksa bağ kesikli çizilir — olmayan
    halkayı çizmek, doğrulanmamış bir iddia olurdu. */
-function ZincirHucre({ kok, son, adim }) {
+function ZincirHucre({ kok, son, adim, kokGizle = false }) {
   const cizilen = Math.min(adim, ZINCIR_AZAMI);
   return (
     <span {...HUCRE.table} style={{ gridArea: "zincir", display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}
       aria-label={`SHA-256 zinciri, ${adim || "bilinmeyen sayıda"} adım; kök ${kisa(kok)}, son ${kisa(son)}`}>
-      <HashJeton etiket="kök" h={kok} />
+      {!kokGizle && <HashJeton etiket="kök" h={kok} />}
       <span aria-hidden="true" style={{ flex: 1, minWidth: 28, display: "flex", alignItems: "center", gap: 3, position: "relative", height: 12 }}>
         <span style={{ position: "absolute", left: 0, right: 0, top: "50%", borderTop: `1.5px ${adim ? "solid" : "dashed"} ${adim ? DERIN.V : PAL.lineHi}`, opacity: adim ? 0.55 : 1 }} />
         {Array.from({ length: cizilen }, (_, i) => (
@@ -76,7 +76,15 @@ const HashJeton = ({ etiket, h, vurgu }) => (
 );
 
 export default function DenetimView({ history = [], onGoInbox, yukleniyor = false, hata = null, onYenidenDene }) {
-  const kayitlar = useMemo(() => history.filter((h) => h.result?.denetim_izi && Object.keys(h.result.denetim_izi).length), [history]);
+  const kayitlar = useMemo(() => history
+    .filter((h) => h.result?.denetim_izi && Object.keys(h.result.denetim_izi).length)
+    .map((h) => ({ ...h, _konu: h.result?.bilgi_unsurlari?.konu || "" })), [history]);
+  // Tüm zincirler aynı başlangıç değerinden türüyorsa (genesis) KÖK her satırda tekrar
+  // etmez — bilgi taşımayan sütun gürültüsüydü (tur4); bir kez nota yazılır.
+  const ortakKok = useMemo(() => {
+    const kokler = new Set(kayitlar.map((h) => h.result.denetim_izi.kok_hash || ""));
+    return kokler.size === 1 ? [...kokler][0] : null;
+  }, [kayitlar]);
   const config = useMemo(() => ({
     ...BASE_CONFIG,
     select: [{ ...BASE_CONFIG.select[0], options: [{ value: "", label: "Tüm türler" }, ...deriveOptions(kayitlar, "evrak_turu", EVRAK_TR)] }],
@@ -99,12 +107,13 @@ export default function DenetimView({ history = [], onGoInbox, yukleniyor = fals
   const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "kayıt", kalici: "zincir kayıtları silinmez" });
   return (
     <ViewWrap id="denetim-h" title="Denetim izi" kunye="Denetim kayıt defteri"
-      sub={`${kayitlar.length} değiştirilemez kayıt · tamper-evident SHA-256 hash-zinciri`}
+      sub={`${kayitlar.length} değiştirilemez kayıt · SHA-256 hash zinciri, sonradan değişikliği açığa çıkarır`}
       damga={{ metin: `${kayitlar.length} kayıt zincirde`, ton: V, egim: -4 }}>
       <SicilStil />
       <DefterNotu ikon={<Icon.shield width={15} height={15} />} style={{ margin: `0 0 ${SP.l}px` }}>
         Her işlem adımı bir öncekinin hash'ini içerir → tek bir kaydın değiştirilmesi tüm zinciri bozar.
         <strong style={{ color: DERIN.yesil, fontWeight: 600 }}> Sayıştay denetimi ve KVKK</strong> için kanıt niteliğindedir.
+        {ortakKok ? <> Tüm zincirler aynı başlangıç değerinden türer (kök <span style={{ fontFamily: MONO, fontSize: 12 }}>{kisa(ortakKok)}</span>).</> : null}
       </DefterNotu>
 
       <FilterBar config={config} filter={filter} />
@@ -117,6 +126,8 @@ export default function DenetimView({ history = [], onGoInbox, yukleniyor = fals
           {filter.results.map((h, i) => {
             const di = h.result.denetim_izi;
             const zincir = Array.isArray(di.zincir) ? di.zincir : (Array.isArray(di.adimlar) ? di.adimlar : []);
+            // DB kaydı zincirin kendisini değil adım SAYISINI taşır (adim_sayisi) — "— adım" basılıyordu.
+            const adim = zincir.length || (Number.isFinite(di.adim_sayisi) ? di.adim_sayisi : 0);
             const riskC = BANT[h.bant]?.c;
             return (
               <div key={h.id} role="row" data-sicil-satir="" style={{ "--sd-i": i, cursor: "default" }}>
@@ -127,12 +138,14 @@ export default function DenetimView({ history = [], onGoInbox, yukleniyor = fals
                 <span {...HUCRE.table} style={{ gridArea: "ana", minWidth: 0, display: "flex", alignItems: "center", gap: SP.s }}>
                   <span aria-hidden="true" style={{ display: "flex", color: DERIN.yesil, flexShrink: 0 }}><Icon.shield width={16} height={16} /></span>
                   <span style={{ minWidth: 0 }}>
-                    <span title={h.name} style={{ display: "block", fontFamily: MONO, fontSize: 13, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
-                    <span style={{ display: "block", ...TYPE.meta, color: PAL.mut }}>{EVRAK_TR(h.evrak_turu)} · SHA-256 · {zincir.length || "—"} adım</span>
+                    <span title={h._konu || h.name} style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cleanDemoText(h._konu) || h.name}</span>
+                    <span style={{ display: "block", ...TYPE.meta, color: PAL.mut, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {EVRAK_TR(h.evrak_turu)} · {adim ? `${adim} adım` : "adım sayısı kayıtlı değil"}{h._konu && h.name ? <> · <span style={{ fontFamily: MONO, fontSize: 11 }}>{h.name}</span></> : null}
+                    </span>
                   </span>
                 </span>
                 <span {...HUCRE.table} style={{ gridArea: "risk", fontFamily: MONO, fontSize: 11, fontWeight: 600, letterSpacing: ".06em", color: riskC ? DERIN_OF(riskC) : PAL.mut3 }}>{BANT[h.bant]?.l || "—"}</span>
-                <ZincirHucre kok={di.kok_hash} son={di.son_hash} adim={zincir.length} />
+                <ZincirHucre kok={di.kok_hash} son={di.son_hash} adim={adim} kokGizle={!!ortakKok} />
               </div>
             );
           })}

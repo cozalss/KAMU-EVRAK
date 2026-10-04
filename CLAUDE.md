@@ -88,7 +88,10 @@
   (`src/components/ui/`). Tailwind yalnız çalışma alanında, renkler `var(--ke-*)`. Legacy
   `styles/kamu-evrak.css` değişkenleri dosya sonundaki köprüyle `--ke-*`'ye bağlı.
 - **a11y:** focusRing, renk tek sinyal değil, reduced-motion, telefonda 44px hedef + 16px girdi.
-- **Landing** (`index.html` + `src/portfolio/**`) ayrı kimliktir; çalışma alanı teması ona dokunmaz.
+- **Ayrı tanıtım (landing) sayfası YOK** (2026-10-04 kullanıcı kararı: ürün memurun iş aracıdır).
+  `index.html` yalnız `/app.html`'e yönlendirir; backend `/` → 307 `/app.html`. Giriş ekranında
+  "Ana sayfa" bağlantısı yok. Yeniden landing önerme; eski sürümler `landing-onceki` dalında ve
+  masaüstündeki `kamu-evrak-landing-onceki` / `kamu-evrak-landing-yeni` klasörlerinde.
 
 ## İki Zorunlu Görev (biri eksikse sistem tamamlanmamış sayılır — şartname §9)
 

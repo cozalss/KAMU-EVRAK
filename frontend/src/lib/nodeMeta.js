@@ -7,7 +7,7 @@
    summarize: AgentFlowGraph + App.jsx'ten taşındı, yeni node'larla genişletildi. */
 import { EVRAK_TR, BIRIM_LBL, YAZI_TR } from "../components/result-cards.jsx";
 import { slaInfo } from "./slaEtiket.js";
-import { DEFAULT_PIPELINE_NODE_IDS, phaseForNode } from "./pipelinePhases.js";
+import { DEFAULT_PIPELINE_NODE_IDS, phaseForNode, motorEtiketi } from "./pipelinePhases.js";
 import { riskOlcuEtiketi } from "./detayYorum.js";
 
 // Her node için kısa TR etiket + görev + açıklama. (İkon dashboard'da numara ile gösterilir.)
@@ -61,7 +61,7 @@ export function summarize(id, d) {
   switch (id) {
     case "oku": {
       const conf = d.ocr_confidence != null ? ` · %${pct(d.ocr_confidence)} güven` : "";
-      return `${d.engine || "metin"} · ${d.n_chars ?? 0} karakter${conf}`;
+      return `${motorEtiketi(d.engine)} · ${d.n_chars ?? 0} karakter${conf}`;
     }
     case "siniflandir":
       return d.evrak_turu ? `${EVRAK_TR(d.evrak_turu)} · %${pct(d.tur_confidence)}` : "";

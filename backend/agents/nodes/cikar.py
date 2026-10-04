@@ -62,27 +62,52 @@ _RE_TALEP_BOL = re.compile(
 _RE_ISTEK = re.compile(
     r"(onar[ıi]l|tamir|gideril|yenile|yeni(?:\s+\w+){0,3}?\s+(?:direk|direği|tesis|kurul)|"
     r"tesis\s+edil|yerle[şs]tir|düzenlen|incelen|değerlendiril|kald[ıi]r|temin\s+edil|"
-    r"sağlan|yap[ıi]l)", re.IGNORECASE)
+    r"sağlan|yap[ıi]l|denetlen|bilgi\s+veril|kontrol\s+edil|başlat[ıi]l|kulland[ıi]r[ıi]l)", re.IGNORECASE)
+
+
+# İstek CÜMLESİNİN biçimi: Türkçe dilekçede istek "-mAsInI/-mAsI" + talep fiiliyle kurulur.
+# Yalnız istek kökü yetmez — "yapılmaktadır" (durum bildirimi) da "yapıl" içerir (tur4 bulgusu).
+_RE_TALEP_FIIL = re.compile(
+    r"(m[ae]s[ıi]n[ıi]|m[ae]s[ıi]\s+(?:hususunda|için|konusunda)|talep\s+ed|rica\s+ed|"
+    r"arz\s+ed|istiyorum|istirham|bekliyorum)", re.IGNORECASE)
+# Antet / künye / imza satırları istek değildir: "T.C.", büyük harfli kurum adı, Tarih/Konu/
+# Sayı/İlgi alanları, hitap ve kimlik satırları. Eskiden metnin İLK cümlesi alınıyordu →
+# 15 örnek evrakın 8'inde talep "T.C" çıkıyordu ve Kurul'a "talepler: 1) T.C" diye sızıyordu.
+_RE_KUNYE_SATIR = re.compile(
+    r"^\s*(?:T\.\s*C\.?|(?:Tarih|Konu|Sayı|İlgi|Ek(?:ler)?|Adres|Telefon|E-posta|Adı\s+Soyadı|"
+    r"Ad-Soyad|T\.C\.\s*Kimlik\s+No|Başvuru\s+(?:No|Türü)|İlgili\s+Kurum|Dosya\s+No)\s*:.*|"
+    r"Sayın\b.*|İmza\s*|[^a-zçğıöşü]+)\s*$")
+_RE_CUMLE_SONU = re.compile(r"(?<=[.!?])[ \t]+|(?<=[.!?])\n|\n[ \t]*\n")
+
+
+def _govde_cumleleri(text: str) -> list[str]:
+    """Künye/antet satırlarını at, kalan gövdeyi cümlelere böl. Satır sonları KORUNUR
+    (numaralı madde bölmesi `_RE_TALEP_BOL` satır başına bakar); boşluk sonra katlanır."""
+    govde = "\n".join(s for s in text.splitlines() if not _RE_KUNYE_SATIR.match(s))
+    return [c.strip() for c in _RE_CUMLE_SONU.split(govde) if c and c.strip()]
 
 
 def _talepleri_cikar(text: str) -> list[str]:
     """Metinden ayrı istek cümlelerini çıkar (koşullu ikinci talep dahil). Boş → []."""
     if not text:
         return []
-    parcalar = [p.strip() for p in _RE_TALEP_BOL.split(text) if p and p.strip()]
     talepler: list[str] = []
     gorulen: set[str] = set()
-    for p in parcalar:
-        if not _RE_ISTEK.search(p):
+    for cumle_tam in _govde_cumleleri(text):
+        if not (_RE_ISTEK.search(cumle_tam) and _RE_TALEP_FIIL.search(cumle_tam)):
             continue
-        # Cümle sınırına kırp + fazla uzunları kısalt (öz istek metni).
-        cumle = re.split(r"(?<=[.!?])\s", p, maxsplit=1)[0].strip().rstrip(".;, ")
-        cumle = re.sub(r"\s+", " ", cumle)[:200]
-        anahtar = cumle.lower()[:60]
-        if cumle and anahtar not in gorulen:
-            gorulen.add(anahtar)
-            talepler.append(cumle)
+        for p in _RE_TALEP_BOL.split(cumle_tam):
+            p = (p or "").strip()
+            if not (p and _RE_ISTEK.search(p)):
+                continue
+            cumle = re.sub(r"\s+", " ", p).strip().rstrip(".;, ")[:200]
+            anahtar = cumle.lower()[:60]
+            if cumle and anahtar not in gorulen:
+                gorulen.add(anahtar)
+                talepler.append(cumle)
     return talepler[:5]  # makul üst sınır (belge tek işleme; 5 talep pratikte yeter)
+
+
 # Gönderen ad-soyad: "Ad-Soyad: <İsim>" / "Adı Soyadı: <İsim>" satırı (sentetik+gerçek desen).
 # İsim: 2+ baş-harfi büyük Türkçe sözcük; parantezli sıfat (İlgili/Vatandaş) atılır.
 _RE_AD_SOYAD = re.compile(

@@ -229,3 +229,13 @@ test("genislikOlcegi: geniş kapta AZAMI'yi aşmaz, geçersiz girdide çökmez",
   assert.equal(genislikOlcegi(0), ASGARI_OLCEK);
   assert.equal(genislikOlcegi(NaN), ASGARI_OLCEK);
 });
+
+test("kirpikSayfaYuk: kısa yazı tabana, uzun yazı tam A4'e oturur; içerik + kenar payı", async () => {
+  const { kirpikSayfaYuk, icerikYuksekligi, A4_YUK_PX, KIRPIK_TABAN_ORAN, KENAR_MM, MM, KIRPIK_PAY_PX } = await import("./a4Sayfalama.js");
+  assert.equal(kirpikSayfaYuk(10), A4_YUK_PX * KIRPIK_TABAN_ORAN);
+  assert.equal(kirpikSayfaYuk(5000), A4_YUK_PX);
+  assert.equal(kirpikSayfaYuk(600), 600 + 2 * KENAR_MM * MM + KIRPIK_PAY_PX);
+  assert.equal(kirpikSayfaYuk(NaN), A4_YUK_PX);
+  assert.equal(icerikYuksekligi([{ ust: 0, yukseklik: 20 }, { ust: 20, yukseklik: 40 }]), 60);
+  assert.equal(icerikYuksekligi([]), 0);
+});

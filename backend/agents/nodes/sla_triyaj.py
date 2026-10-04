@@ -120,6 +120,20 @@ def compute_sla(turu: str, tarih_str: str, bugun: date) -> dict[str, Any]:
     }
 
 
+def sla_tazele(meta: dict[str, Any] | None, bugun: date) -> dict[str, Any]:
+    """Kayıtlı sla_metadata'yı BUGÜNE göre tazele (saf). `kalan_gun` işleme anında dondurulur;
+    ertesi gün okunduğunda bir gün eskir → Panel (canlı /sla) "65 gün", asistan (DB) "64 gün"
+    diyordu (tur4 bulgusu). Son tarih değişmez; yalnız kalan gün + bant yeniden hesaplanır.
+    Son tarihi olmayan kayıt (tanımsız/tarih_yok) olduğu gibi döner."""
+    m = dict(meta or {})
+    son = _parse_tarih(str(m.get("son_tarih") or ""))
+    if son is None:
+        return m
+    kalan = (son - bugun).days
+    durum = "GECIKMIS" if kalan < 0 else "KRITIK" if kalan <= _KRITIK_GUN else "NORMAL"
+    return {**m, "kalan_gun": kalan, "durum": durum, "etiket": _DURUM_ETIKET[durum]}
+
+
 async def sla_triyaj_node(state: dict[str, Any]) -> dict[str, Any]:
     """Yasal cevap süresi triyajı (additive, deterministik) — GECİKMİŞ/KRİTİK rozeti."""
     turu = state.get("evrak_turu", "belirsiz")
@@ -132,4 +146,4 @@ async def sla_triyaj_node(state: dict[str, Any]) -> dict[str, Any]:
     return {"sla_metadata": meta}
 
 
-__all__ = ("compute_sla", "sla_triyaj_node")
+__all__ = ("compute_sla", "sla_tazele", "sla_triyaj_node")

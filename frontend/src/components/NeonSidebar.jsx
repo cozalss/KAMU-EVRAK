@@ -5,7 +5,7 @@
    Örnek evrak dropdown'ı kaldırıldı; örnekler Gelen evrak görünümünden açılır. */
 import React, { useState, useEffect } from "react";
 import { DISPLAY, T, R, PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, MONO, SR_ONLY, focusRing, FOCUS_HALKA, Icon, MarkaKaro } from "./neonUi.jsx";
-import { Activity } from "lucide-react";
+import { Activity, ScrollText } from "lucide-react";
 import HesapMenu from "./HesapMenu.jsx";
 
 // Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
@@ -20,6 +20,12 @@ const NAV = [
   { id: "giden", label: "Giden evrak", icon: "arrow", count: "giden" },
   { id: "mevzuat", label: "Mevzuat", icon: "book" },
 ];
+/* Denetim izi ana NAV'da DEĞİL (hesap menüsünden açılır — günlük iş akışının önünde durmasın).
+   Ama açıkken hiçbir sekme etkin görünmüyordu (tur 4 jüri B#31: "neredeyim?"). Görünüm
+   açıkken listenin altında, ince bir ayraçtan sonra GEÇİCİ bir sırt satırı olarak belirir;
+   kapanınca kaybolur — yer bilgisi verilir, navigasyon kalabalıklaşmaz. */
+const DENETIM_OGE = { id: "denetim", label: "Denetim izi", icon: "denetim" };
+const DenetimIkon = (p) => <ScrollText size={18} strokeWidth={1.75} aria-hidden="true" {...p} />;
 
 /* Panel daralt/genişlet ikonu — ChatGPT kenar çubuğu toggle'ının çizgi-dili muadili. */
 const PanelIkon = (p) => (
@@ -35,13 +41,15 @@ const PanelIkon = (p) => (
 const BostaNabiz = ({ donuk: _donuk, ...p }) => <Activity size={18} strokeWidth={1.75} aria-hidden="true" {...p} />;
 
 function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCount, dar }) {
-  const Ic = item.icon === "spin" && !busy ? BostaNabiz : Icon[item.icon];
+  const canli = item.live && active && busy;
+  // Koşum sürerken etkin "İşleniyor" satırında TEK dönen gösterge kalır (sağdaki halka); baştaki
+  // ikon nabız çizgisine döner — iki spinner yan yana "kırpık halka" gibi okunuyordu (jüri A#34).
+  const Ic = item.icon === "denetim" ? DenetimIkon : item.icon === "spin" && (!busy || canli) ? BostaNabiz : Icon[item.icon];
   // Geri bildirim basış ANINDA (Apple response): hover zemin + data-press scale — görünüm
   // değişimini beklemeden düğme "duyduğunu" söyler.
   const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "10px 0" : "9px 12px", borderRadius: RAD.card, ...TYPE.ui, textAlign: "left", cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` };
   const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : item.count === "giden" ? gidenCount : null;
   const showBadge = badgeVal != null && badgeVal > 0;
-  const canli = item.live && active && busy;
   return (
     <button type="button" onClick={onClick} aria-current={active ? "page" : undefined}
       aria-label={dar ? `${item.label}${showBadge ? ` (${badgeVal} öğe)` : ""}` : undefined}
@@ -79,7 +87,9 @@ function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCoun
             <span style={{ color: active ? "var(--ke-sayfa-t)" : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>{item.label}
           </span>
           {canli
-            ? <span aria-hidden="true" style={{ width: 13, height: 13, borderRadius: RAD.dot, border: `2px solid ${PAL.line}`, borderTopColor: "var(--ke-sayfa-t)", animation: "nu-spin .8s linear infinite", marginLeft: "auto", position: "relative", zIndex: 1 }} />
+            /* İz halkası SAYFA mürekkebinden: etkin satırın zemini sayfa rengidir; ray'ın beyaz
+               %10 çizgisi açık sayfada görünmüyor, yalnız mavi yay kalıyordu ("◝"). */
+            ? <span aria-hidden="true" style={{ width: 14, height: 14, flexShrink: 0, boxSizing: "border-box", borderRadius: RAD.dot, border: "2px solid color-mix(in srgb, var(--ke-sayfa-ink) 16%, transparent)", borderTopColor: "var(--ke-sayfa-t)", animation: "nu-spin .8s linear infinite", marginLeft: "auto", position: "relative", zIndex: 1 }} />
             : showBadge && <span aria-label={`${badgeVal} öğe`} style={{ position: "relative", zIndex: 1, ...TYPE.meta, ...TNUM, fontWeight: 600, minWidth: 22, textAlign: "center", padding: "1px 6px", borderRadius: 999, color: active ? "var(--ke-sayfa-ink)" : PAL.ink2, background: active ? "transparent" : PAL.surfHi }}>{badgeVal}</span>}
         </>
       )}
@@ -108,7 +118,11 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
   });
 
   return (
-    <aside data-ray="" aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 236, flexShrink: 0, background: PAL.bg2, color: PAL.ink, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
+    <aside data-ray="" aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 236, flexShrink: 0, background: PAL.bg2,
+      /* Cilt bezi dokusu + sağ kenar dikişi (THEME_CSS --ke-ray-doku/--ke-ray-kenar — tanımlıydı
+         ama hiçbir yere bağlanmamıştı). Dikiş inset gölgedir: etkin sırt 1 px taşarak dikişi tam
+         bağlandığı satırda keser. */
+      backgroundImage: "var(--ke-ray-doku)", boxShadow: "inset -1px 0 0 var(--ke-ray-kenar, transparent)", color: PAL.ink, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
       <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
         <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined} data-dokunma=""
           onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = FOCUS_HALKA; }}
@@ -138,19 +152,29 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
       {!kompakt && <div style={{ ...TYPE.antet, color: PAL.mut3, padding: "8px 12px 10px", textTransform: "uppercase" }}>Çalışma alanı</div>}
       <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={kompakt} />)}
+        {activeView === "denetim" && (
+          <>
+            <span aria-hidden="true" style={{ height: 1, margin: `${SP.s}px ${kompakt ? 6 : 12}px`, background: PAL.line }} />
+            <NavBtn item={DENETIM_OGE} active onClick={() => onNavigate("denetim")} busy={busy} dar={kompakt} />
+          </>
+        )}
       </nav>
 
+      {/* Yükle — cilt üstünde İKİNCİL dil (tur 4, jüri A#25): dolu mavi düğme her görünümde
+          ekranın ikinci "primary"si oluyordu (Gelen'de başlıktaki "Yeni evrak yükle" ile çift).
+          Birincil eylem görünümün kendisinde kalır; ray'daki giriş her yerden erişilir ama
+          bağırmaz — cilt yüzeyi + açık çerçeve + tükenmez mavisi artı. */}
       <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press="" data-dokunma=""
-        onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = DERIN.Th; }}
-        onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = T; }}
+        onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.surfHi; }}
+        onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
         style={{
           cursor: busy ? "not-allowed" : "pointer", marginTop: SP.xl, display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s,
           padding: kompakt ? "10px 0" : "10px 14px", minHeight: 40, borderRadius: RAD.card, ...TYPE.ui, fontWeight: 600,
-          border: "1px solid transparent",
-          background: busy ? PAL.press : T, color: busy ? PAL.mut2 : PAL.onAccent,
+          border: `1px solid ${busy ? PAL.line : PAL.lineHi}`,
+          background: busy ? "transparent" : PAL.surf, color: busy ? PAL.mut2 : PAL.ink,
           transition: `background .12s ease-out, transform .14s ${EASE.out}`,
         }}>
-        <Icon.plus />{!kompakt && " Yeni evrak yükle"}
+        <span aria-hidden="true" style={{ display: "flex", color: busy ? PAL.mut2 : DERIN.T }}><Icon.plus /></span>{!kompakt && "Yeni evrak yükle"}
       </button>
 
       {/* Demo hak sayacı — sınırladığı kontrolün HEMEN ALTINDA. `kota` verilmediğinde

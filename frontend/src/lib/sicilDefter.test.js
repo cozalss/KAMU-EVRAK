@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { gunBasligi, gunleGrupla, bosDurumMetni, csvHucre, sicilDokumCsv } from "./sicilDefter.js";
+import { gunBasligi, gunleGrupla, bosDurumMetni, csvHucre, sicilDokumCsv, kayitNoAramaMetni } from "./sicilDefter.js";
 
 const SIMDI = new Date(2026, 9, 3, 9, 0).getTime();   // 03.10.2026 Cuma 09:00
 
@@ -59,4 +59,11 @@ test("sicilDokumCsv BOM + başlık + CRLF satırları üretir", () => {
   const csv = sicilDokumCsv([{ a: "İzin", b: 2 }], [{ baslik: "Konu", deger: (r) => r.a }, { baslik: "Sayı", deger: (r) => r.b }]);
   assert.ok(csv.startsWith("\uFEFFKonu;Sayı\r\n"));
   assert.ok(csv.endsWith("İzin;2\r\n"));
+});
+
+test("kayitNoAramaMetni: tam, sıfırlı ve sıfırsız sıra aranabilir", () => {
+  const m = kayitNoAramaMetni("E-G-2026/0035");
+  for (const q of ["E-G-2026/0035", "0035", "35", "2026/35"]) assert.ok(m.includes(q), q);
+  assert.equal(kayitNoAramaMetni("geçici"), "geçici");
+  assert.equal(kayitNoAramaMetni(null), "");
 });

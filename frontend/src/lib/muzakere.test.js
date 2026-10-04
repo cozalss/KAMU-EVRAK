@@ -5,7 +5,7 @@
    A1-A6: adversarial doğrulama bulgularının regresyon kilitleri. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, cevapsizTalepler, ORNEK_KURGU } from "./muzakere.js";
+import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, cevapsizTalepler, ORNEK_KURGU, kaynakEtiketi, kurulRiskOzeti } from "./muzakere.js";
 
 const TASLAK = "T.C.\nANKARA VALİLİĞİ\n\nSayı : E-2026/1502\nKonu : Bilgi Edinme Başvurusu\n\nİşbu talebinize binaen bilgiler değerlendirilmiştir.\n\nBilgilerinize saygıyla sunulur.";
 
@@ -577,4 +577,23 @@ test("motor: cevapsız talep Muhatap Temsilcisi turuna ve tutanağa düşer", ()
   const vat = k.turlar.find((t) => t.who === "vatandas");
   assert.match(vat.text, /cevapsız bırakıyor/);
   assert.ok(k.oneriler.some((o) => o.tip === "ekle" && /Cevapsız talep/.test(o.metin)));
+});
+
+/* ---- tur-4: ekrana ham iç ad çıkmaz; risk farkı açıkça söylenir ---- */
+
+test("kaynakEtiketi: iç sinyal adları memur diline çevrilir, anlamsızlar basılmaz", () => {
+  assert.equal(kaynakEtiketi("lint_2646"), "Yön. 2646");
+  assert.equal(kaynakEtiketi("verify"), "Doğrulama");
+  assert.equal(kaynakEtiketi("risk_guard"), "Risk bandı");
+  for (const ic of ["muzakere", "llm", "ornek", "gercek", "", null, "bilinmeyen_kaynak"]) {
+    assert.equal(kaynakEtiketi(ic), null);
+  }
+});
+
+test("kurulRiskOzeti: belge ve kurul bandı farklıysa yön söylenir", () => {
+  assert.deepEqual(kurulRiskOzeti("sari", "kirmizi"), { bant: "kirmizi", belge: "sari", kurul: "kirmizi", fark: "yukseldi" });
+  assert.equal(kurulRiskOzeti("kirmizi", "yesil").fark, "dustu");
+  assert.equal(kurulRiskOzeti("sari", "sari").fark, null);
+  assert.deepEqual(kurulRiskOzeti("sari", ""), { bant: "sari", belge: "sari", kurul: null, fark: null });
+  assert.equal(kurulRiskOzeti("", ""), null);
 });

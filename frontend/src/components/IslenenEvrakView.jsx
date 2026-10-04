@@ -388,11 +388,11 @@ function DetayModal({ item, onClose, onDuzenle, onMevzuatAc }) {
                   onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                   style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.s, width: "100%", textAlign: "left", padding: "6px 8px", background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.data, color: DERIN.T, transition: "background .12s ease, transform .14s var(--ke-ease-out)" }}>
-                  <Icon.book width={14} height={14} /> {m.baslik}
+                  <Icon.book width={14} height={14} /> {m.gosterim_adi || m.baslik}
                 </button>
               ) : (
                 <span key={i} style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "6px 8px", ...TYPE.data, color: PAL.ink2 }}>
-                  <Icon.book width={14} height={14} /> {m.baslik}
+                  <Icon.book width={14} height={14} /> {m.gosterim_adi || m.baslik}
                 </span>
               )
             ))}
@@ -456,6 +456,8 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onUpload, on
   // türleri seçenek çipleri olarak sunar.
   const items = useMemo(() => sicilGrupla(history).map((h) => ({
     ...h,
+    // Serbest-metin yönlendirmede birim kodu yok → DB'nin taşıdığı etkin birim ADI ("—" yerine).
+    hedef_birim: h.hedef_birim || h.hedef_birim_adi || "",
     _durum: durumOf(h.result),
     konu: h.result?.bilgi_unsurlari?.konu || h.result?.alt_talepler?.[0]?.ozet || "",
   })), [history]);

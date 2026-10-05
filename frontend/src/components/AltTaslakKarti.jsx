@@ -17,6 +17,7 @@ import BelgeModal from "./BelgeModal.jsx";
 import A4Belge from "./A4Belge.jsx";
 import { PAL, DERIN, BANT, ALFA, RAD, SP, TYPE, SH, SR_ONLY, focusRing, Icon, BuyutDugme } from "./neonUi.jsx";
 import HukumMuhru from "./HukumMuhru.jsx";
+import { talepKarari } from "../lib/yazismaPaketi.js";
 import { ParlaKenar } from "./gorsel.jsx";
 
 /* Pager ok düğmesi — başlık şeridine gömülü (ayrı üst satır AÇMAZ, kartın dış kutusu komşu
@@ -45,7 +46,9 @@ export default function AltTaslakKarti({ altTalep, sira, toplam = 0, onTurUret, 
   const [durum, setDurum] = useState(null);        // null | "gonderildi" | "reddedildi"
   const [modalAcik, setModalAcik] = useState(false);   // A4 görünüm büyütme
   const cacheRef = useRef({ [onerilen]: altTalep.yazi_taslak_md || "" });
-  const etiket = altTalep.birim_tr || "İlgili birim";
+  // Başlıktaki muhatap künyesi talebin GERÇEK kararından (birim adı / devir kurumu); 9'lu
+  // kaba kategori yalnız bu alanları taşımayan eski kayıtlarda kalır.
+  const etiket = talepKarari(altTalep).etiket || altTalep.birim_tr || "İlgili birim";
   const bitti = durum != null;
   const rozet = durum && DURUM_ETIKET[durum];
 

@@ -8,6 +8,25 @@ import { arr, clean } from "./sonucOrtak.js";
 import { KaynakLinki } from "./HukumKarti.jsx";
 import { gosterimBirimi } from "../lib/gosterimBirimi.js";
 import { mevzuatBolumleri } from "../lib/mevzuatGrup.js";
+import { talepKarari } from "../lib/yazismaPaketi.js";
+
+/* Talep başına yönlendirme kararı (KARMA belgede her talep ayrı karar alır): kurum içi
+   birim ya da yetkili makama devir. Karar backend'in talep bazlı alanlarından okunur
+   (lib/yazismaPaketi.talepKarari); devir moru + "Devir:" metni — renk tek sinyal değil. */
+function TalepKarariSatiri({ a }) {
+  const k = talepKarari(a);
+  if (!k.etiket) return null;
+  const c = k.tur === "devir" ? V : k.tur === "birim" ? T : BANT.sari.c;
+  return (
+    <p style={{ margin: `${SP.s}px 0 0`, display: "flex", alignItems: "center", gap: SP.xs, flexWrap: "wrap", ...TYPE.meta }}>
+      <Chip c={c} label={`Yönlendirme kararı: ${k.etiket}`}>
+        {k.tur === "devir" ? <Icon.route width={12} height={12} /> : <Icon.check width={12} height={12} />}
+        {k.etiket}
+      </Chip>
+      <span style={{ color: PAL.mut2 }}>{k.ayrinti}</span>
+    </p>
+  );
+}
 
 export function AltTaleplerCard({ alt }) {
   if (alt.length < 2) return null;
@@ -30,6 +49,7 @@ export function AltTaleplerCard({ alt }) {
                 </span>
                 {asla && slaColor && <Chip c={slaColor} label={`Alt-talep yasal süre durumu: ${asla.label}`}>{asla.label}</Chip>}
               </div>
+              <TalepKarariSatiri a={a} />
             </article>
           );
         })}

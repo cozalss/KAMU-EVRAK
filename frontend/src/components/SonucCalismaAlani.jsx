@@ -12,6 +12,7 @@ import { kagitStilYukle } from "./kagitDoku.js";
 import { useDayanakIpligi, DayanakSeridi, DayanakKatmani } from "./DayanakIpligi.jsx";
 import { AltTaleplerCard, MevzuatCard, ArchiveSlaCard, RiskCard, ValidationCard, RoutingCard, LintCard } from "./SonucDestekKartlari.jsx";
 import { gosterimBirimi } from "../lib/gosterimBirimi.js";
+import YazismaPaketiKarti from "./YazismaPaketiKarti.jsx";
 
 const TRUNCATED_TEXT_RE = /(?:\.{3}|…)\s*$/;
 
@@ -554,6 +555,7 @@ export default function SonucCalismaAlani({
 
           <div className="sc-support-grid">
             <AltTaleplerCard alt={alt} />
+            <YazismaPaketiKarti r={r} />
             <MevzuatCard r={r} mev={mev} nliMap={nliMap} onMevzuatAc={onMevzuatAc} onMevzuatSec={onMevzuatSec} seciliSet={seciliSet} />
             <div className="sc-support-wide">
               <ArchiveSlaCard r={r} arsiv={arsiv} sdpAdaylar={sdpAdaylar} sla={sla} sInfo={sInfo} />

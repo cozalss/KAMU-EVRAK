@@ -15,6 +15,7 @@ import json
 
 import pytest
 
+from agents.nodes.teskilat_ara import birim_adi_anahtari
 from agents.resmi_kaynak import kaynak_ara, kurum_korpusta_var
 
 # Dalgada doğrulanan kurumlar (slug, beklenen asgari birim sayısı).
@@ -141,7 +142,10 @@ def test_konu_dogru_birime_gider(slug: str, konu: str, beklenen: str) -> None:
     adaylar = kaynak_ara(slug, konu)
     assert adaylar, f"{slug}: hiç aday yok"
     ilk = adaylar[0]
-    assert ilk["birim_ad"] == beklenen, (
+    # Ad normalize karşılaştırılır: görev metni türetilmiş dosyalar (veri kapısı,
+    # teskilat_ara.gorev_turetilmis) aday katmanına indiğinde aynı birim virgüllü/virgülsüz
+    # yazımla başka dosyadan gelebilir.
+    assert birim_adi_anahtari(ilk["birim_ad"]) == birim_adi_anahtari(beklenen), (
         f"{slug} / {konu} → {ilk['birim_ad']} (beklenen {beklenen})"
     )
     # Manifest + SHA-256 olmadan üçlü grounding geçmez; künye zincirin kanıtıdır.

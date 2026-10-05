@@ -16,6 +16,9 @@ Kurallar:
 
 Çalıştır (backend/ içinde):
   PYTHONUTF8=1 uv run python -m eval.e2e_gercek_eval --etiket baslangic
+
+İnsan incelemesi için `--dokum <yol>` memurun gördüğü çıktıları belge başına JSONL yazar
+(sentetik belge çıktısıdır; yalnız depo DIŞINA — ör. scratchpad — yazılmalıdır).
 """
 
 from __future__ import annotations
@@ -558,8 +561,59 @@ def llm_sayacini_kur() -> None:
     OpenAIClient.chat = sarili  # type: ignore[method-assign]
 
 
+# ============================================================ döküm (insan incelemesi)
+DOKUM_ALANLARI = (
+    "evrak_turu", "yazi_turu", "yonlendirme", "gosterim_birimi", "alt_talepler",
+    "mevzuat_onerileri", "mevzuat_onerileri_corrected", "mevzuat_bulunamadi",
+    "yazi_taslak_md", "sla_metadata", "bilgilendirme", "ozet", "eksik_alanlar",
+    "eksik_bilgi_notlari", "durum")
+
+
+def _llm_iz_ozeti(izler: list[dict[str, Any]]) -> dict[str, Any]:
+    """llm_izleri → node başına çağrı/kesik/yedek sayısı (içerik YOK)."""
+    ozet: dict[str, dict[str, int]] = {}
+    for iz in izler or []:
+        if not isinstance(iz, dict):
+            continue
+        d = ozet.setdefault(str(iz.get("node") or "?"), {"cagri": 0, "kesik": 0, "yedek": 0})
+        d["cagri"] += 1
+        d["kesik"] += int(bool(iz.get("kesik")))
+        d["yedek"] += int(bool(iz.get("yedege_dustu")))
+    return {"toplam": sum(v["cagri"] for v in ozet.values()), "node": ozet}
+
+
+def dokum_satiri(state: dict[str, Any], r: dict[str, Any]) -> dict[str, Any]:
+    """Tek belge için memurun göreceği çıktılar + değerlendirme özeti (JSON-serileşebilir)."""
+    bu = state.get("bilgi_unsurlari") or {}
+    risk = state.get("risk_metadata") or {}
+    satir: dict[str, Any] = {"id": r["id"], "kurumda_kullanilabilir": r["kurumda_kullanilabilir"],
+                             "basarisizliklar": r["basarisizliklar"], "hata": r.get("hata")}
+    satir.update({k: state.get(k) for k in DOKUM_ALANLARI})
+    satir["konu"] = bu.get("konu")
+    satir["talep_kumesi"] = bu.get("talep_kumesi")
+    satir["gelen_evrak"] = bu.get("gelen_evrak")
+    satir["yazi_paketi"] = [
+        {k: p.get(k) for k in ("rol", "yazi_turu", "muhatap", "birim", "konu", "talep_ids",
+                               "yazi_taslak_md")}
+        for p in (state.get("yazi_paketi") or []) if isinstance(p, dict)]
+    satir["risk"] = {"bant": risk.get("bant"), "gerekceler": risk.get("gerekceler"),
+                     "aciklama": risk.get("aciklama")}
+    satir["llm_izleri"] = _llm_iz_ozeti(state.get("llm_izleri") or [])
+    return satir
+
+
+def dokum_yaz(yol: Path, satirlar: list[dict[str, Any]]) -> Path:
+    """Döküm satırlarını id sırasıyla JSONL yazar."""
+    yol.parent.mkdir(parents=True, exist_ok=True)
+    with yol.open("w", encoding="utf-8") as f:
+        for s in sorted(satirlar, key=lambda x: x["id"]):
+            f.write(json.dumps(s, ensure_ascii=False, default=str) + "\n")
+    return yol
+
+
 async def _belge_kos(graph: Any, satir: dict[str, Any], sem: asyncio.Semaphore,
-                     timeout_s: float) -> dict[str, Any]:
+                     timeout_s: float, dokum: list[dict[str, Any]] | None = None
+                     ) -> dict[str, Any]:
     from agents.state import make_initial_state
     async with sem:
         sayac: dict[str, Any] = {"cagri": 0, "kesik": 0, "tokens_out": 0, "kesik_butce": {}}
@@ -575,6 +629,8 @@ async def _belge_kos(graph: Any, satir: dict[str, Any], sem: asyncio.Semaphore,
             hata = f"{type(exc).__name__}: {str(exc)[:160]}"
         meta = {"sure_s": round(time.perf_counter() - t0, 2), "hata": hata, "llm": sayac}
         r = belge_degerlendir(state or {}, satir, meta)
+        if dokum is not None:
+            dokum.append(dokum_satiri(state or {}, r))
         durum = "OK " if r["kurumda_kullanilabilir"] else "ERR"
         print(f"  [{durum}] {satir['id']:<34} {meta['sure_s']:>6}s  "
               f"llm={sayac['cagri']} kesik={sayac['kesik']}  {len(r['basarisizliklar'])} sorun",
@@ -583,12 +639,13 @@ async def _belge_kos(graph: Any, satir: dict[str, Any], sem: asyncio.Semaphore,
 
 
 async def kos(satirlar: list[dict[str, Any]], eszamanlilik: int,
-              timeout_s: float) -> list[dict[str, Any]]:
+              timeout_s: float, dokum: list[dict[str, Any]] | None = None
+              ) -> list[dict[str, Any]]:
     from agents.graph import build_graph
     llm_sayacini_kur()
     graph = build_graph()
     sem = asyncio.Semaphore(eszamanlilik)
-    return list(await asyncio.gather(*(_belge_kos(graph, s, sem, timeout_s) for s in satirlar)))
+    return list(await asyncio.gather(*(_belge_kos(graph, s, sem, timeout_s, dokum) for s in satirlar)))
 
 
 def git_damgasi() -> dict[str, Any]:
@@ -651,6 +708,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--timeout", type=float, default=VARSAYILAN_TIMEOUT_S, help="belge başına sn")
     ap.add_argument("--id", action="append", dest="ids", help="yalnız bu id (tekrarlanabilir)")
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--dokum", type=str, default=None,
+                    help="memur çıktılarının JSONL dökümü (repo DIŞINA yazın)")
     ap.add_argument("--env", type=str, default=str(_KOK / ".env"), help="yüklenecek .env")
     a = ap.parse_args(argv)
     with contextlib.suppress(ImportError):
@@ -661,11 +720,14 @@ def main(argv: list[str] | None = None) -> int:
     print(f"e2e_gercek: {len(satirlar)} belge, eşzamanlılık={a.eszamanlilik}, "
           f"LLM_MODE={os.getenv('LLM_MODE', 'mock')}")
     t0 = time.perf_counter()
-    kayitlar = asyncio.run(kos(satirlar, a.eszamanlilik, a.timeout))
+    dokum: list[dict[str, Any]] | None = [] if a.dokum else None
+    kayitlar = asyncio.run(kos(satirlar, a.eszamanlilik, a.timeout, dokum))
     metrik = topla(kayitlar)
     ozet_yazdir(metrik)
     out = rapor_yaz(a.etiket, gold, kayitlar, metrik, time.perf_counter() - t0, a.eszamanlilik)
     print(f"\n  Artefakt: {out}")
+    if a.dokum and dokum is not None:
+        print(f"  Döküm: {dokum_yaz(Path(a.dokum), dokum)}")
     return 0
 
 

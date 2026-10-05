@@ -11,7 +11,10 @@ import json
 
 from eval.e2e_gercek_eval import (
     GOLD,
+    _belge_kos,
     belge_degerlendir,
+    dokum_satiri,
+    dokum_yaz,
     en_uzun_ortak_ngram,
     icerir_herhangi,
     ilgi_degerlendir,
@@ -275,3 +278,65 @@ class TestAltinSet:
         assert sum(x["talep_sayisi"] > 1 for x in b) >= 10
         assert all(x["talep_sayisi"] == len(x["talep_detay"]) for x in b)
         assert all("10000000146" in s["metin"] or "TCKN" not in s["metin"] for s in satirlar)
+
+
+# ------------------------------------------------------------ --dokum (insan incelemesi)
+def _dokum_state():
+    return {
+        "evrak_turu": "dilekce", "yazi_taslak_md": TASLAK_IYI,
+        "bilgi_unsurlari": {"konu": "Çukur", "talep_kumesi": [{"id": "t1", "ozet": "çukur"}],
+                            "gelen_evrak": {"tur": "dilekce"}},
+        "yonlendirme": {"karar": "havale", "birim": "Fen İşleri Müdürlüğü"},
+        "gosterim_birimi": "Fen İşleri Müdürlüğü",
+        "yazi_paketi": [{"rol": "havale", "yazi_taslak_md": "x", "format_uyumlu": True}],
+        "risk_metadata": {"bant": "SARI", "skor": 0.4, "gerekceler": ["g1"]},
+        "llm_izleri": [{"node": "cikar", "kesik": True}, {"node": "cikar"},
+                       {"node": "ozetle", "yedege_dustu": True}],
+        "mevzuat_bulunamadi": False,
+    }
+
+
+def test_dokum_satiri_memur_ciktilarini_ve_iz_ozetini_tasir():
+    # Arrange
+    state = _dokum_state()
+    satir = {"id": "d1", "metin": KAYNAK, "beklenen": _gold()}
+    r = belge_degerlendir(state, satir)
+    # Act
+    d = dokum_satiri(state, r)
+    # Assert
+    assert d["id"] == "d1" and d["konu"] == "Çukur"
+    assert d["talep_kumesi"][0]["id"] == "t1" and d["gelen_evrak"] == {"tur": "dilekce"}
+    assert d["gosterim_birimi"] == "Fen İşleri Müdürlüğü"
+    assert d["yazi_paketi"] == [{"rol": "havale", "yazi_turu": None, "muhatap": None,
+                                 "birim": None, "konu": None, "talep_ids": None,
+                                 "yazi_taslak_md": "x"}]
+    assert d["risk"]["bant"] == "SARI" and "skor" not in d["risk"]  # skor yüzde gibi okunmasın
+    assert d["llm_izleri"]["toplam"] == 3
+    assert d["llm_izleri"]["node"]["cikar"] == {"cagri": 2, "kesik": 1, "yedek": 0}
+    assert d["mevzuat_bulunamadi"] is False and "basarisizliklar" in d
+    json.dumps(d, ensure_ascii=False)  # serileşebilir
+
+
+def test_dokum_satiri_bos_state_de_cokmez():
+    satir = {"id": "bos", "metin": KAYNAK, "beklenen": _gold()}
+    d = dokum_satiri({}, belge_degerlendir({}, satir, {"hata": "timeout>1s"}))
+    assert d["hata"] == "timeout>1s" and d["yazi_paketi"] == [] and d["llm_izleri"]["toplam"] == 0
+
+
+def test_dokum_yaz_id_sirali_jsonl(tmp_path):
+    yol = dokum_yaz(tmp_path / "alt" / "d.jsonl", [{"id": "b", "x": "ç"}, {"id": "a"}])
+    satirlar = [json.loads(s) for s in yol.read_text(encoding="utf-8").splitlines()]
+    assert [s["id"] for s in satirlar] == ["a", "b"] and satirlar[1]["x"] == "ç"
+
+
+def test_belge_kos_dokum_listesine_ekler():
+    import asyncio
+
+    class SahteGraf:
+        async def ainvoke(self, _s):
+            return _dokum_state()
+
+    dokum: list = []
+    satir = {"id": "d2", "metin": KAYNAK, "beklenen": _gold()}
+    r = asyncio.run(_belge_kos(SahteGraf(), satir, asyncio.Semaphore(1), 5.0, dokum))
+    assert r["id"] == "d2" and len(dokum) == 1 and dokum[0]["evrak_turu"] == "dilekce"

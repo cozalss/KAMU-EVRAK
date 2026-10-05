@@ -165,19 +165,29 @@ async def _havale_yazisi(
 
     talepler = grup["talepler"]
     ozet = "\n".join(str(t.get("ozet") or "") for t in talepler)
-    adaylar = ([talepler[0].get("konu"), talepler[0].get("ozet")]
-               if len(talepler) == 1 else []) + [unsurlar.get("konu")]
+    # Havalenin konusu ve gövdesi YALNIZ bu havalenin taleplerinden kurulur; belge konusu
+    # (tüm talepleri kapsar) başka birimin talebini bu havaleye taşıyordu (2026-10-05:
+    # 'Kayıt dondurma ve yurt/burs' Öğrenci İşlerine, yurt/burs ayrıca GSB'ye devir).
+    grup_unsur = {**unsurlar, "konu": grup_konusu(talepler),
+                  "talepler": [str(t.get("ozet") or "") for t in talepler]}
     async with semafor:
-        metin = await build_body("ust_yazi", {**unsurlar, "talepler": [
-            str(t.get("ozet") or "") for t in talepler]}, ozet)
+        metin = await build_body("ust_yazi", grup_unsur, ozet)
     ctx = build_context(
-        "ust_yazi", unsurlar, metin, muhatap_override=grup["muhatap"], rol="havale",
-        konu_adaylari=adaylar, **ortak)
+        "ust_yazi", grup_unsur, metin, muhatap_override=grup["muhatap"], rol="havale",
+        konu_adaylari=[grup_unsur["konu"], talepler[0].get("ozet")], **ortak)
     sonuc = render_yazi(ctx)
     return {"rol": "havale", "yazi_turu": "ust_yazi", "muhatap": ctx.muhatap,
             "birim": grup["birim_ad"], "konu": ctx.konu,
             "talep_ids": [t.get("id") for t in talepler if t.get("id")],
             "yazi_taslak_md": sonuc.metin, "format_uyumlu": sonuc.format_uyumlu}
+
+
+def grup_konusu(talepler: list[dict[str, Any]]) -> str:
+    """Bir havale/devir grubunun konusu: yalnız gruptaki taleplerin konuları (sırayla, tekrar
+    yok). Belge konusuna geri DÖNÜLMEZ — o, diğer alıcıların taleplerini de içerir."""
+    konular = list(dict.fromkeys(
+        str(t.get("konu") or t.get("ozet") or "").strip() for t in talepler))
+    return " ve ".join(k for k in konular if k)
 
 
 def _devir_yazisi(
@@ -189,12 +199,12 @@ def _devir_yazisi(
     from yazi.yazi_render import build_context, devir_govdesi
 
     talepler = grup["talepler"]
-    konu = str(talepler[0].get("konu") or talepler[0].get("ozet") or "")         if len(talepler) == 1 else str(unsurlar.get("konu") or "")
+    konu = grup_konusu(talepler) or str(unsurlar.get("konu") or "")
     ctx = build_context(
-        "ust_yazi", unsurlar, devir_govdesi(konu, grup["dayanak"]),
+        "ust_yazi", {**unsurlar, "konu": konu}, devir_govdesi(konu, grup["dayanak"]),
         muhatap_override=muhatap_bicimle(grup["kurum"]["ad"], "kamu_idaresi")
         or "İLGİLİ MAKAMA", rol="devir",
-        konu_adaylari=[talepler[0].get("konu"), unsurlar.get("konu")], **ortak)
+        konu_adaylari=[konu, talepler[0].get("ozet")], **ortak)
     sonuc = render_yazi(ctx)
     return {"rol": "devir", "yazi_turu": "ust_yazi", "muhatap": ctx.muhatap,
             "birim": "", "kurum": grup["kurum"]["ad"], "konu": ctx.konu,
@@ -259,5 +269,5 @@ def cevap_yazisi(
 
 
 __all__ = ("cevap_govdesi", "cevap_yazisi", "devir_bilgi_govdesi", "devir_gruplari",
-           "devir_kurumu", "havale_gruplari", "havale_paketi", "talep_birim_adi",
+           "devir_kurumu", "grup_konusu", "havale_gruplari", "havale_paketi", "talep_birim_adi",
            "talep_yonlendirmesi", "vatandas_belgesi_mi")

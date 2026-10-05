@@ -249,7 +249,8 @@ class TestPipelineBagcilarGurultu:
         assert sonuc["insan_onayi_gerekli"] is True
         assert sonuc["yazi_turu"] == "cevabi_yazi"
         assert sonuc["antet_meta"]["idare"] == "BAĞCILAR BELEDİYESİ"
-        assert sonuc["antet_meta"]["birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        # Doğrulanmamış öneri birim ara cevabı imzalamış gibi antete girmez (2026-10-05).
+        assert sonuc["antet_meta"]["birim"] == ""
         assert sonuc["arsiv_metadata"]["birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
 
 

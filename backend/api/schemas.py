@@ -38,6 +38,9 @@ class TaslakTuruRequest(BaseModel):
     yazi_turu: str = Field(..., pattern="^(ust_yazi|cevabi_yazi|bilgilendirme|olur|muzekkere|gorus_mutalaa)$")
     bilgi_unsurlari: dict = Field(default_factory=dict, max_length=50)  # DoS-guard: anahtar sayısı sınırlı
     hedef_birim: str = Field("", max_length=100)   # birim kodu — ust_yazi muhatabı için
+    # Pipeline'ın sınıflandırdığı evrak türü (kapalı küme; route doğrular). Yoksa SDP ve
+    # gelen evrak çözümü 'belirsiz' türle yapılıp Sayı satırı genel koda (000) düşüyordu.
+    evrak_turu: str = Field("", max_length=40, pattern=r"^[a-z_]*$")
 
 
 class YaziRenderRequest(BaseModel):

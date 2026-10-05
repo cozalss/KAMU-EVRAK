@@ -104,8 +104,9 @@ class TestArsivSdpEntegrasyon:
         assert "bilgi edinme" in am["sdp_gerekce"]
         assert 1 <= len(am["sdp_adaylari"]) <= 3
 
-    async def test_sayidan_okunan_kod_oncelikli_ve_gerekceli(self):
-        # Arrange — sayıdaki SDP kodu içerik eşleşmesini ezmeli
+    async def test_gelen_sayidaki_kod_giden_sdp_olmaz(self):
+        # Arrange — gelen evrakın sayısındaki kod KARŞI kurumun dosya planıdır (2026-10-05:
+        # SGK'nın 205.99'u belediyenin giden Sayı satırına kopyalanıyordu) → seçimi ezmez.
         state = {
             "evrak_turu": "sikayet",
             "bilgi_unsurlari": {"konu": "şikayet", "sayi": "E-11112222-020-9999"},
@@ -114,8 +115,8 @@ class TestArsivSdpEntegrasyon:
         # Act
         am = (await arsiv_node(state))["arsiv_metadata"]
         # Assert
-        assert am["sdp_kodu"] == "020"
-        assert "sayısından" in am["sdp_gerekce"]
+        assert am["sdp_kodu"] != "020"
+        assert "sayısından" not in am["sdp_gerekce"]
 
     async def test_ana_hizmet_secimi_dogrula_tasir(self):
         # Arrange — içerik 100'ü seçse bile [DOĞRULA:] işareti korunmalı (CLAUDE.md §1)

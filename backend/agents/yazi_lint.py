@@ -334,6 +334,14 @@ def _k_ilgi(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
         return _kural("L-M15-ilgi", "m.15", "uyari",
                       "İlgide cevaplanan belgenin tarihi ve sayısı belirtilmeli (m.15).",
                       oneri="İlgi satırına belgenin tarihini (gg.aa.yyyy) ve sayısını ekleyin.")
+    if not sayi_var and re.search(r"(?:yazı|müzekkere)(?:nız|niz|sı|si)\b", satir_low):
+        # Kurum belgesinin (yazı/müzekkere) kayıt sayısı HER ZAMAN vardır (m.15: her ilgide
+        # tarih ve sayı) — sayısız ilgi çıkarım eksiğidir (2026-10-05: Soruşturma No düştü).
+        return _kural("L-M15-ilgi", "m.15", "uyari",
+                      "İlgi bir kurum yazısı ancak sayısı yok — her ilgide belgenin tarihi ve "
+                      "sayısı yer alır (m.15).",
+                      oneri="Cevaplanan yazının sayısını (Sayı / Esas / Soruşturma No) "
+                            "ilgi satırına ekleyin.")
     if not sayi_var:
         return _kural("L-M15-ilgi", "m.15", "bilgi",
                       "İlgide tarih var, belge sayısı görünmüyor — kayıt sayısı biliniyorsa "
@@ -342,9 +350,9 @@ def _k_ilgi(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
     return _kural("L-M15-ilgi", "m.15", "gecti", "İlgi atfı tarih ve sayıyla mevcut (m.15).")
 
 
-# m.16/12 tüm meşru kapanış aileleri: arz/rica (a) + dağıtımlı arz ve rica (b) + gerçek-kişi
+# m.16 [DOĞRULA fıkra 12] tüm meşru kapanış aileleri: arz/rica (a) + dağıtımlı arz ve rica (b) + gerçek-kişi
 # "Bilgilerinize sunulur./Saygılarımla./İyi dileklerimle." (e) + görüş "arz olunur/bilgilerine
-# arz". "sunulur" tek başına ("bilgilerinize sunulur") gerçek-kişi kapanışıdır (m.16/12-e).
+# arz". "sunulur" tek başına ("bilgilerinize sunulur") gerçek-kişi kapanışıdır (m.16 [DOĞRULA fıkra 12-e]).
 _KAPANIS_KALIP = (
     "arz ederim", "rica ederim", "arz olunur", "rica olunur",
     "arz ve rica ederim", "bilgilerinize sunulur", "bilgilerine arz",
@@ -401,8 +409,17 @@ def _k_ek(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
     """
     blok = _etiket_satiri(taslak, "ek")
     referans = re.search(r"\bekte\b|\bekli\b|\bekinde\b", low)
+    # 'ilişikte/ekte gönderilmiştir' bu belgenin KENDİ ekidir (alıntı olamaz) → kesin ihlal:
+    # Ek bloğu yoksa karşı kurum EBYS'de eki almaz (2026-10-05: 58 yazıda eksikti).
+    kendi_eki = re.search(r"ilişikte\s+(?:gönderil|sunul)", low)
     if blok is not None:
         return _kural("L-M18-ek", "m.18", "gecti", "Ek bloğu mevcut (m.18).")
+    if kendi_eki:
+        return _kural("L-M18-ek", "m.18", "uyari",
+                      "Gövde belgenin ilişikte gönderildiğini söylüyor ancak 'Ek:' bölümü yok "
+                      "(m.18).",
+                      oneri="İmza bölümünden sonra 'Ek:' başlığıyla ilişik belgenin adını "
+                            "(birden fazlaysa numaralı, sayfa sayısıyla) yazın.")
     if referans:
         return _kural("L-M18-ek", "m.18", "bilgi",
                       "Gövde ek'ten söz ediyor ancak 'Ek:' bloğu görünmüyor — bu belgeye ek "
@@ -582,9 +599,54 @@ def _kapanis_belirsiz_notu(low: str, muhatap: str) -> dict[str, str] | None:
                   "arz/rica seçimini elle doğrulayın (m.16).")
 
 
+# Makam/kurum adı taşıyan 2. şahıs iyelikleri meşrudur ('Kurumunuzca', 'Müdürlüğünüz').
+_MAKAM_KOKU = re.compile(
+    r"^(kurum|birim|makam|müdürlü|başkanlı|bakanlı|valili|kaymakamlı|belediye|idare|"
+    r"daire|şube|mahkeme|savcılı|başsavcılı|rektörlü|dekanlı|müşavirli|ilgi)")
+_IKINCI_SAHIS = re.compile(r"\b([a-zçğıöşü]+(?:ınız|iniz|unuz|ünüz)[a-zçğıöşü]*)\b")
+
+
+def _k_ikinci_sahis(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
+    """Üst yazı birime gider, vatandaşa değil: gövdede 2. şahıs iyeliği ('kızınızın',
+    'sokağınızdaki') talep özetinin kopyalandığını gösterir (2026-10-05 incelemesi)."""
+    if yazi_turu != "ust_yazi":
+        return None
+    sizan = [w for w in _IKINCI_SAHIS.findall(_govde(low)) if not _MAKAM_KOKU.match(w)]
+    if not sizan:
+        return None
+    return _kural("L-USLUP-ikinci-sahis", "üslup", "uyari",
+                  f"Üst yazıda vatandaşa hitap (2. şahıs): {', '.join(sizan[:3])} — başvuru "
+                  "sahibi 3. şahısla anılmalı.",
+                  oneri="'kızınızın' yerine 'başvuru sahibinin kızının' gibi 3. şahıs kullanın.")
+
+
+# Yargı mercii muhatabına talimat kipi yazılmaz: idare mahkemeye/savcılığa 'gereğini'
+# isteyemez, 'gerekmektedir' diyemez (2026-10-05: Başsavcılığa 'Gereğini rica ederim').
+_YARGI_MUHATAP = re.compile(
+    r"mahkemesi(?:ne|nin)|başsavcılığına|savcılığına|icra (?:dairesine|müdürlüğüne)")
+
+
+def _k_yargi_talimat(taslak: str, low: str, yazi_turu: str) -> dict[str, str] | None:
+    if not any(_YARGI_MUHATAP.search(tr_lower(s)) for s in _muhatap_bolgesi(taslak)):
+        return None
+    if "gerekmektedir" not in low and "gereğini rica ederim" not in low:
+        return None
+    return _kural("L-USLUP-yargi-talimat", "üslup", "uyari",
+                  "Yargı merciine talimat kipi ('gerekmektedir' / 'Gereğini rica ederim') — "
+                  "bilgi veren cevap 'Bilgilerinize arz ederim.' ile biter.",
+                  oneri="Talimat cümlesini kaldırın; yapılan işlemi bildirip "
+                        "'Bilgilerinize arz ederim.' ile kapatın.")
+
+
+def _govde(low: str) -> str:
+    """Gövde bölgesi: ilk 'ilgi'/muhatap satırından sonrası (antet/konu iyelikleri hariç)."""
+    i = low.find("\nilgi")
+    return low[i:] if i >= 0 else low
+
+
 _KURALLAR = (_k_baslik, _k_sayi, _k_tarih, _k_konu, _k_muhatap, _k_ilgi, _k_kapanis,
              _k_imza, _k_ek, _k_dagitim, _k_olur, _k_paraf, _k_koordinasyon,
-             _k_gizlilik, _k_sureli, _k_yasak_ifade)
+             _k_gizlilik, _k_sureli, _k_yasak_ifade, _k_ikinci_sahis, _k_yargi_talimat)
 
 _ANTET_SATIR = 6  # gönderen makam taslağın kendi antetinden (ilk satırlar) çözülür
 

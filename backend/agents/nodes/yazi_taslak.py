@@ -42,34 +42,31 @@ from agents.kurum_kimlik import (
     muzekkere_muhatabi,
 )
 from agents.mevzuat_kanit import mevzuat_kanit_paketi
-from agents.servis_birim import SERVIS_BIRIM_TR
 
 log = structlog.get_logger()
 
 
 def _hazirlayan_birim(state: dict[str, Any], yazi_turu: str) -> str:
-    """Antet BİRİM satırı = taslağı hazırlayan birim (Yön. m.10 üçüncü satır).
+    """Antet BİRİM satırı = yazının ÇIKTIĞI birim (Yön. m.10 üçüncü satır).
 
-    Öncelik: kaynak-doğrulanmış hedef birim (evrakı cevaplayacak gerçek birim; ust_yazi
-    HARİÇ — orada hedef birim MUHATAP'tır, gönderen olamaz) → içerikten türetilen servis
-    müdürlüğü (dict {kod, ad, sinyal}; eski kod-string biçimi de tolere edilir) → boş
-    (render KURUM_BIRIM env / tür-özgü varsayılana düşer).
+    Henüz havalesi yapılmamış bir birim vatandaşa giden ara cevabı imzalamış görünmemeli
+    (2026-10-05 incelemesi: 'ANKARA İL SAĞLIK MÜDÜRLÜĞÜ / İl/İlçe Sağlık Müdürlüğü' —
+    kategori etiketi; 'ÇANKAYA TAPU MÜDÜRLÜĞÜ / Tapu Dairesi Başkanlığı' — merkez birimi).
+    Birim YALNIZ kaynakta doğrulanmış + otomatik havalesi kesin (durum=kaynak_dogrulandi)
+    bir İÇ birimse antete girer; ust_yazi HARİÇ (orada birim muhataptır). İçerik anahtar
+    sözcüğüyle seçilen servis birimi doğrulanmış sayılmaz. Aksi hâlde boş → KURUM_BIRIM
+    env; o da yoksa satır basılmaz (uydurmak yerine boş).
     """
-    if yazi_turu != "ust_yazi" and state.get("durum") == "kaynak_dogrulandi":
-        hedef = state.get("hedef_birim")
-        if isinstance(hedef, str) and hedef.strip():
-            return hedef.strip()
-    # Yönlendirme tek doğruluk kaynağı (agents/yonlendirme.py): kurum içindeki karar birimi
-    # (doğrulanmamış öneri de olsa) içerik anahtar sözcüğüyle seçilen servis biriminden önce
-    # gelir; aksi hâlde antet ile arşiv/bildirim farklı birim söyler. Taslak zaten onaya gider.
+    from yazi.baslik import kategori_etiketi_mi
+
+    if yazi_turu == "ust_yazi" or state.get("durum") != "kaynak_dogrulandi":
+        return ""
     yon = state.get("yonlendirme") or {}
-    yon_birim = (yon.get("birim") or {}).get("ad") if yon.get("karar") in ("ICERIDE", "KARMA") else ""
-    if yazi_turu != "ust_yazi" and isinstance(yon_birim, str) and yon_birim.strip():
-        return yon_birim.strip()
-    servis = state.get("servis_birimi") or {}
-    if isinstance(servis, dict):
-        return str(servis.get("ad", "") or "")
-    return SERVIS_BIRIM_TR.get(str(servis), "")
+    birim = yon.get("birim") or {}
+    if yon and (yon.get("karar") != "ICERIDE" or birim.get("bagli")):
+        return ""
+    ad = str(birim.get("ad") or state.get("hedef_birim") or "").strip()
+    return "" if not ad or kategori_etiketi_mi(ad) else ad
 
 
 def _fallback_taslak(
@@ -81,7 +78,7 @@ def _fallback_taslak(
     # Kurum kimliği: çağıran zaten efektif_idare_adi() ile hesaplayıp geçirir (belge hitap-
     # ekliyse doküman kurumu, değilse boş) — burada yalnız son ENV/jenerik fallback'i uygulanır.
     idare = (idare_adi or "").strip() or os.getenv("KURUM_ADI", "").strip() or "KAMU KURUMU"
-    birim = os.getenv("KURUM_BIRIM", "").strip() or "Yazı İşleri Birimi"
+    birim = os.getenv("KURUM_BIRIM", "").strip()  # yoksa satır basılmaz (uydurma birim yok)
     kapanis = {
         "cevabi_yazi": "Gereğini rica ederim.",
         "bilgilendirme": "Bilgilerinize arz ederim.",
@@ -91,7 +88,7 @@ def _fallback_taslak(
     ortak_baslik = (
         "                                   T.C.\n"
         f"{idare.center(43).rstrip()}\n"
-        f"{birim.center(43).rstrip()}\n\n"
+        + (f"{birim.center(43).rstrip()}\n" if birim else "") + "\n"
         f"Sayı : EBYS-TASLAK            {tarih}\n"
         f"Konu : {konu_satir}\n\n"
     )
@@ -239,12 +236,18 @@ def _idare_coz(state: dict[str, Any], evrak_text: str, unsurlar: dict[str, Any])
     """Antet İDARE (m.10): belgenin kendi hitabı → route_ajan'ın kimlik kapısından geçmiş
     muhatap_kurum künyesi → boş (render env KURUM_ADI'ya düşer). Yargı kaynağı antet olamaz."""
     from agents.kurum_kimlik import is_yargi_kurumu
+    from yazi.baslik import dagitim_ifadesi_mi
+    from yazi.yazi_render import _kurum_adi_mi
+
     efektif = efektif_idare_adi(evrak_text, unsurlar)
     if efektif:
         return efektif
     muhatap = state.get("muhatap_kurum") or {}
-    if muhatap.get("ad") and not is_yargi_kurumu(muhatap):
-        return str(muhatap["ad"])
+    ad = str(muhatap.get("ad") or "").strip()
+    # 'Dağıtım Yerleri' bir kurum DEĞİLDİR (m.19 dağıtım ifadesi); kurum görünümü olmayan
+    # ad antete girmez → KURUM_ADI env / jenerik (2026-10-05: 'T.C. / DAĞITIM YERLERİ').
+    if ad and not is_yargi_kurumu(muhatap) and not dagitim_ifadesi_mi(ad) and _kurum_adi_mi(ad):
+        return ad
     return ""
 
 

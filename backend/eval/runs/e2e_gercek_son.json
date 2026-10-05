@@ -1,0 +1,979 @@
+{
+ "etiket": "son",
+ "tarih": "2026-10-05T21:15:50.174309+00:00",
+ "git": {
+  "sha": "be6b2ae6bf9f4337f294251f529da29c55bded06",
+  "kirli": false
+ },
+ "gold": "e2e_gercek_gold.jsonl",
+ "n": 6,
+ "llm_mode": "openai",
+ "model": "deepseek-v4-flash",
+ "eszamanlilik": 6,
+ "sure_toplam_s": 8.4,
+ "kurallar": {
+  "konu_azami_kelime": 12,
+  "ham_kopya_ngram": 6,
+  "mevzuat_k": 3,
+  "bilesik": [
+   "hata",
+   "tur",
+   "birim",
+   "yetki",
+   "talep",
+   "konu",
+   "ilgi",
+   "antet",
+   "pii"
+  ]
+ },
+ "metrikler": {
+  "kurumda_kullanilabilir": {
+   "k": 3,
+   "n": 6,
+   "oran": 0.5,
+   "ci95": [
+    0.188,
+    0.812
+   ]
+  },
+  "tur_dogruluk": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "tur_dogruluk_kabul": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "tur_dogruluk_operasyonel": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "muhatap_dogruluk": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "birim_dogruluk": {
+   "k": 3,
+   "n": 6,
+   "oran": 0.5,
+   "ci95": [
+    0.188,
+    0.812
+   ]
+  },
+  "birim_dogruluk_alt_talep": {
+   "k": 2,
+   "n": 4,
+   "oran": 0.5,
+   "ci95": [
+    0.15,
+    0.85
+   ]
+  },
+  "routing_fallback": {
+   "k": 0,
+   "n": 6,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.39
+   ]
+  },
+  "yetki_tespit_yapisal": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "yetki_tespit_metinsel": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "yetki_yanlis_alarm": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "yetki_yargi_devirsiz": {
+   "k": 1,
+   "n": 1,
+   "oran": 1.0,
+   "ci95": [
+    0.207,
+    1.0
+   ]
+  },
+  "talep_recall_decompose": {
+   "k": 4,
+   "n": 4,
+   "oran": 1.0,
+   "ci95": [
+    0.51,
+    1.0
+   ]
+  },
+  "talep_recall_cikar": {
+   "k": 4,
+   "n": 4,
+   "oran": 1.0,
+   "ci95": [
+    0.51,
+    1.0
+   ]
+  },
+  "talep_sayisi_dogru": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "talep_ajan_tutarliligi": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "konu_kalitesi": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "ilgi_dogrulugu": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "antet_dogrulugu": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "antet_birim_yer_tutucu": {
+   "k": 0,
+   "n": 6,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.39
+   ]
+  },
+  "mevzuat_beklenen_hit": {
+   "k": 5,
+   "n": 6,
+   "oran": 0.8333,
+   "ci95": [
+    0.436,
+    0.97
+   ]
+  },
+  "mevzuat_precision_at_3": {
+   "k": 10,
+   "n": 11,
+   "oran": 0.9091,
+   "ci95": [
+    0.623,
+    0.984
+   ]
+  },
+  "alakasiz_mevzuat_orani": {
+   "k": 1,
+   "n": 11,
+   "oran": 0.0909,
+   "ci95": [
+    0.016,
+    0.377
+   ]
+  },
+  "yasak_mevzuat_belge": {
+   "k": 0,
+   "n": 6,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.39
+   ]
+  },
+  "eksik_tam_eslesme": {
+   "k": 6,
+   "n": 6,
+   "oran": 1.0,
+   "ci95": [
+    0.61,
+    1.0
+   ]
+  },
+  "eksik_precision": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "eksik_recall": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "pii_sizinti_belge": {
+   "k": 0,
+   "n": 6,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.39
+   ]
+  },
+  "json_kesilme_belge": {
+   "k": 0,
+   "n": 6,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.39
+   ]
+  },
+  "json_kesilme_cagri": 0,
+  "json_kesilme_butce": {},
+  "llm_cagri_toplam": 46,
+  "hata_belge": 0,
+  "sure_p50_s": 7.37,
+  "sure_p95_s": 7.86,
+  "node_ortalama_ms": {
+   "mevzuat_oner": 2507,
+   "cikar": 1904,
+   "siniflandir": 1412,
+   "route_birim": 1410,
+   "yazi_taslak": 1372,
+   "ozetle": 1051,
+   "servis_birim": 7,
+   "verify": 1,
+   "kanit_baglama": 0,
+   "decompose": 0,
+   "eksik_tespit": 0,
+   "arsiv": 0,
+   "risk_guard": 0,
+   "sla_triyaj": 0,
+   "denetim_izi": 0,
+   "finalize": 0
+  }
+ },
+ "basarisizliklar": {
+  "bb_bursa_mezarlik_cop": [
+   "birim: 'Park ve Bahçeler Dairesi Başkanlığı' (gosterim_birimi, durum=llm_onerisi)",
+   "yetki: DISARIDA tespit edilmedi"
+  ],
+  "ilmud_tarim_destek": [
+   "birim: 'Birim belirlenemedi — havalede memur seçecek' (gosterim_birimi, durum=llm_onerisi)"
+  ],
+  "tapu_kat_mulkiyeti": [
+   "birim: 'Yargı yolu (3071 m.6/b — idarece incelenemez)' (gosterim_birimi, durum=llm_onerisi)"
+  ],
+  "yazi_sgk_cevabi": [
+   "mevzuat: beklenen yok, top=['5502_sosyal_guvenlik_kurumu_kanunu']"
+  ]
+ },
+ "belgeler": [
+  {
+   "id": "ilce_kecioren_cukur_su",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 7.86,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1215,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true,
+    "bilesik": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Fen İşleri Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Keçiören Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 2,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 2,
+    "alt_birim_dogru": [
+     true,
+     true
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Yol çukurunun kapatılması",
+    "kelime": 3
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "Ayşe Yılmaz'ın 02.10.2026 tarihli dilekçesi.",
+    "muhatap": "FEN İŞLERİ MÜDÜRLÜĞÜNE"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN BELEDİYESİ",
+    "gecti": true,
+    "birim_satiri": "",
+    "birim_yer_tutucu": false
+   },
+   "mevzuat": {
+    "top": [
+     "5393_belediye_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "not_dogru": true
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 2198,
+    "servis_birim": 8,
+    "siniflandir": 1375,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2475,
+    "ozetle": 1060,
+    "route_birim": 1223,
+    "yazi_taslak": 1954,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [],
+   "kurumda_kullanilabilir": true
+  },
+  {
+   "id": "ilce_kadikoy_su_kesintisi",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 5.7,
+   "llm": {
+    "cagri": 6,
+    "kesik": 0,
+    "tokens_out": 788,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true,
+    "bilesik": true
+   },
+   "muhatap": {
+    "tahmin": "Kadıköy Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü (devir)",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Su kesintilerinin araştırılması ve borunun onarılması",
+    "kelime": 6
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "Ayşe Yılmaz'ın 27.09.2026 tarihli dilekçesi.",
+    "muhatap": "İSTANBUL SU VE KANALİZASYON İDARESİ GENEL MÜDÜRLÜĞÜNE"
+   },
+   "antet": {
+    "antet": "T.C. / KADIKÖY BELEDİYESİ",
+    "gecti": true,
+    "birim_satiri": "",
+    "birim_yer_tutucu": false
+   },
+   "mevzuat": {
+    "top": [
+     "5393_belediye_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "not_dogru": true
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1715,
+    "servis_birim": 1,
+    "siniflandir": 1470,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2533,
+    "ozetle": 959,
+    "route_birim": 1163,
+    "yazi_taslak": 231,
+    "verify": 2,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [],
+   "kurumda_kullanilabilir": true
+  },
+  {
+   "id": "bb_bursa_mezarlik_cop",
+   "kurum_tipi": "buyuksehir_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 7.75,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1254,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true,
+    "bilesik": true
+   },
+   "muhatap": {
+    "tahmin": "Bursa Büyükşehir Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Park ve Bahçeler Dairesi Başkanlığı",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": false,
+    "metinsel": false,
+    "gecti": false,
+    "yetkili_tahmin": "Bursa Büyükşehir Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 2,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 2,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Aile kabri yer tahsisi",
+    "kelime": 4
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "Ayşe Yılmaz'ın 04.10.2026 tarihli dilekçesi.",
+    "muhatap": "PARK VE BAHÇELER DAİRESİ BAŞKANLIĞINA"
+   },
+   "antet": {
+    "antet": "T.C. / BURSA BÜYÜKŞEHİR BELEDİYESİ",
+    "gecti": true,
+    "birim_satiri": "",
+    "birim_yer_tutucu": false
+   },
+   "mevzuat": {
+    "top": [
+     "5393_belediye_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "not_dogru": true
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 2396,
+    "servis_birim": 1,
+    "siniflandir": 1388,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2963,
+    "ozetle": 982,
+    "route_birim": 1362,
+    "yazi_taslak": 1012,
+    "verify": 0,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Park ve Bahçeler Dairesi Başkanlığı' (gosterim_birimi, durum=llm_onerisi)",
+    "yetki: DISARIDA tespit edilmedi"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "ilmud_tarim_destek",
+   "kurum_tipi": "il_mudurlugu",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 7.41,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1272,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "basvuru",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true,
+    "bilesik": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara İl Tarım ve Orman Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Birim belirlenemedi — havalede memur seçecek",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara İl Tarım ve Orman Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "ÇKS güncellemesi ve tarımsal destek başvurusu",
+    "kelime": 6
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "17.09.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA VALİLİĞİ / İl Tarım ve Orman Müdürlüğü",
+    "gecti": true,
+    "birim_satiri": "İl Tarım ve Orman Müdürlüğü",
+    "birim_yer_tutucu": false
+   },
+   "mevzuat": {
+    "top": [
+     "5488_tarim_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "not_dogru": true
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1889,
+    "servis_birim": 36,
+    "siniflandir": 1689,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2559,
+    "ozetle": 1203,
+    "route_birim": 1220,
+    "yazi_taslak": 1716,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Birim belirlenemedi — havalede memur seçecek' (gosterim_birimi, durum=llm_onerisi)"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "tapu_kat_mulkiyeti",
+   "kurum_tipi": "tapu",
+   "yetki_beklenen": "YARGI",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 7.37,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1055,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true,
+    "bilesik": true
+   },
+   "muhatap": {
+    "tahmin": "Çankaya Tapu Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Yargı yolu (3071 m.6/b — idarece incelenemez)",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "YARGI",
+    "devir": false,
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Çankaya Tapu Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Aidat artışı ve gecikme tazminatı işleminin iptali",
+    "kelime": 7
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "27.09.2026 tarihli dilekçeniz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / ÇANKAYA TAPU MÜDÜRLÜĞÜ",
+    "gecti": true,
+    "birim_satiri": "",
+    "birim_yer_tutucu": false
+   },
+   "mevzuat": {
+    "top": [
+     "634_kat_mulkiyeti_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "not_dogru": true
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1596,
+    "servis_birim": 0,
+    "siniflandir": 1167,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2465,
+    "ozetle": 922,
+    "route_birim": 1550,
+    "yazi_taslak": 1673,
+    "verify": 1,
+    "arsiv": 5,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Yargı yolu (3071 m.6/b — idarece incelenemez)' (gosterim_birimi, durum=llm_onerisi)"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "yazi_sgk_cevabi",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 7.37,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1092,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "cevabi_yazi",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true,
+    "bilesik": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Malî Hizmetler Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Keçiören Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Prim borcu bilgisi",
+    "kelime": 3
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "29.09.2026 tarihli ve E-99887766-205.99-5512345 sayılı yazınız.",
+    "muhatap": "SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI ANKARA SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜNE"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN BELEDİYESİ",
+    "gecti": true,
+    "birim_satiri": "",
+    "birim_yer_tutucu": false
+   },
+   "mevzuat": {
+    "top": [
+     "5502_sosyal_guvenlik_kurumu_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 0,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "not_dogru": true
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1631,
+    "servis_birim": 1,
+    "siniflandir": 1388,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2052,
+    "ozetle": 1183,
+    "route_birim": 1947,
+    "yazi_taslak": 1648,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "mevzuat: beklenen yok, top=['5502_sosyal_guvenlik_kurumu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": true
+  }
+ ]
+}

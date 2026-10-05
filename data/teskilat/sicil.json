@@ -265,21 +265,22 @@
  "kurum_sayisi": 4066,
  "belirsiz_sayisi": 94,
  "tur_dagilimi": {
-  "bakanlik": 17,
-  "belediye": 1004,
-  "cumhurbaskanligi_ofis_kurul": 3,
-  "defterdarlik": 81,
-  "diger": 190,
-  "dogalgaz_dagitim": 5,
-  "elektrik_dagitim": 21,
   "il_mudurlugu": 1377,
-  "il_ozel_idare": 51,
-  "kalkinma_ajansi": 24,
+  "belediye": 1004,
   "kaymakamlik": 973,
-  "kit": 23,
   "universite": 205,
+  "diger": 147,
+  "defterdarlik": 81,
+  "valilik": 81,
+  "il_ozel_idare": 51,
+  "su_kanalizasyon": 29,
+  "elektrik_dagitim": 29,
+  "kalkinma_ajansi": 24,
+  "kit": 23,
+  "bakanlik": 17,
+  "dogalgaz_dagitim": 11,
   "ust_kurul": 11,
-  "valilik": 81
+  "cumhurbaskanligi_ofis_kurul": 3
  },
  "aliaslar": {
   "abb": "ankara-buyuksehir-belediyesi",
@@ -1139,7 +1140,7 @@
    "ad": "Adana Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Adana",
    "ilce": "",
    "aliaslar": [
     "adana-bb",
@@ -1424,8 +1425,8 @@
    "ad": "Akdeniz Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Mersin",
+   "ilce": "Akdeniz",
    "aliaslar": [
     "Akdeniz Belediye Başkanlığı"
    ],
@@ -1990,7 +1991,7 @@
    "ad": "Ankara Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Ankara",
    "ilce": "",
    "aliaslar": [
     "abb",
@@ -2024,7 +2025,7 @@
    "ad": "Antalya Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Antalya",
    "ilce": "",
    "aliaslar": [
     "antalya-bb",
@@ -2491,7 +2492,7 @@
    "ad": "Aydın Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Aydın",
    "ilce": "",
    "aliaslar": [
     "aydin-bb",
@@ -2682,8 +2683,8 @@
    "ad": "Bağcılar Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Bağcılar",
    "aliaslar": [
     "Bağcılar Belediye Başkanlığı"
    ],
@@ -2768,8 +2769,8 @@
    "ad": "Bakırköy Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Bakırköy",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -2824,7 +2825,7 @@
    "ad": "Balıkesir Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Balıkesir",
    "ilce": "",
    "aliaslar": [
     "balikesir-bb",
@@ -3223,8 +3224,8 @@
    "ad": "Beşiktaş Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Beşiktaş",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -3587,8 +3588,8 @@
    "ad": "Bornova Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İzmir",
+   "ilce": "Bornova",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -3869,7 +3870,7 @@
    "ad": "Bursa Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Bursa",
    "ilce": "",
    "aliaslar": [
     "bursa-bb",
@@ -4126,8 +4127,8 @@
    "ad": "Çankaya Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Ankara",
+   "ilce": "Çankaya",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -5106,7 +5107,7 @@
    "ad": "Denizli Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Denizli",
    "ilce": "",
    "aliaslar": [
     "denizli-bb",
@@ -5419,7 +5420,7 @@
    "ad": "Diyarbakır Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Diyarbakır",
    "ilce": "",
    "aliaslar": [
     "diyarbakir-bb",
@@ -6168,7 +6169,7 @@
    "ad": "Erzurum Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Erzurum",
    "ilce": "",
    "aliaslar": [
     "erzurum-bb",
@@ -6201,8 +6202,8 @@
    "ad": "Esenyurt Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Esenyurt",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -6215,7 +6216,7 @@
    "ad": "İzmir Büyükşehir Belediyesi ESHOT Genel Müdürlüğü (ESHOT)",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "İzmir",
    "ilce": "",
    "aliaslar": [
     "izmir-eshot",
@@ -6260,7 +6261,7 @@
    "ad": "Eskişehir Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Eskişehir",
    "ilce": "",
    "aliaslar": [
     "eskisehir-bb",
@@ -6307,8 +6308,8 @@
    "ad": "Etimesgut Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Ankara",
+   "ilce": "Etimesgut",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -6531,7 +6532,7 @@
    "ad": "Gaziantep Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Gaziantep",
    "ilce": "",
    "aliaslar": [
     "gaziantep-bb",
@@ -7688,7 +7689,7 @@
    "ad": "Hatay Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Hatay",
    "ilce": "",
    "aliaslar": [
     "hatay-bb",
@@ -8365,7 +8366,7 @@
    "ad": "İstanbul Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "İstanbul",
    "ilce": "",
    "aliaslar": [
     "ibb",
@@ -8413,7 +8414,7 @@
    "ad": "İzmir Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "İzmir",
    "ilce": "",
    "aliaslar": [
     "izmir-bb",
@@ -8488,8 +8489,8 @@
    "ad": "Kadıköy Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Kadıköy",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -8586,7 +8587,7 @@
    "ad": "Kahramanmaraş Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Kahramanmaraş",
    "ilce": "",
    "aliaslar": [
     "kahramanmaras-bb",
@@ -9125,8 +9126,8 @@
    "ad": "Karşıyaka Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İzmir",
+   "ilce": "Karşıyaka",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -9265,7 +9266,7 @@
    "ad": "Kayseri Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Kayseri",
    "ilce": "",
    "aliaslar": [
     "kayseri-bb",
@@ -9326,8 +9327,8 @@
    "ad": "Keçiören Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Ankara",
+   "ilce": "Keçiören",
    "aliaslar": [
     "Keçiören Belediye Başkanlığı"
    ],
@@ -9766,7 +9767,7 @@
    "ad": "Kocaeli Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Kocaeli",
    "ilce": "",
    "aliaslar": [
     "kocaeli-bb",
@@ -9841,8 +9842,8 @@
    "ad": "Konak Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İzmir",
+   "ilce": "Konak",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -9855,7 +9856,7 @@
    "ad": "Konya Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Konya",
    "ilce": "",
    "aliaslar": [
     "konya-bb",
@@ -10478,7 +10479,7 @@
    "ad": "Malatya Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Malatya",
    "ilce": "",
    "aliaslar": [
     "malatya-bb",
@@ -10525,8 +10526,8 @@
    "ad": "Maltepe Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Maltepe",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -10539,8 +10540,8 @@
    "ad": "Mamak Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Ankara",
+   "ilce": "Mamak",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -10567,7 +10568,7 @@
    "ad": "Manisa Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Manisa",
    "ilce": "",
    "aliaslar": [
     "manisa-bb",
@@ -10600,7 +10601,7 @@
    "ad": "Mardin Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Mardin",
    "ilce": "",
    "aliaslar": [
     "mardin-bb",
@@ -10815,7 +10816,7 @@
    "ad": "Mersin Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Mersin",
    "ilce": "",
    "aliaslar": [
     "mersin-bb",
@@ -10974,7 +10975,7 @@
    "ad": "Muğla Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Muğla",
    "ilce": "",
    "aliaslar": [
     "mugla-bb",
@@ -11021,8 +11022,8 @@
    "ad": "Muratpaşa Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Antalya",
+   "ilce": "Muratpaşa",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -11231,8 +11232,8 @@
    "ad": "Nilüfer Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Bursa",
+   "ilce": "Nilüfer",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -11315,8 +11316,8 @@
    "ad": "Odunpazarı Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Eskişehir",
+   "ilce": "Odunpazarı",
    "aliaslar": [
     "Odunpazarı Belediye Başkanlığı"
    ],
@@ -11429,7 +11430,7 @@
    "ad": "Ordu Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Ordu",
    "ilce": "",
    "aliaslar": [
     "ordu-bb",
@@ -11576,8 +11577,8 @@
    "ad": "Osmangazi Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Bursa",
+   "ilce": "Osmangazi",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -11874,8 +11875,8 @@
    "ad": "Pendik Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Pendik",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -12198,7 +12199,7 @@
    "ad": "Sakarya Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Sakarya",
    "ilce": "",
    "aliaslar": [
     "sakarya-bb",
@@ -12287,7 +12288,7 @@
    "ad": "Samsun Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Samsun",
    "ilce": "",
    "aliaslar": [
     "samsun-bb",
@@ -12334,7 +12335,7 @@
    "ad": "Şanlıurfa Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Şanlıurfa",
    "ilce": "",
    "aliaslar": [
     "sanliurfa-bb",
@@ -13013,8 +13014,8 @@
    "ad": "Seyhan Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Adana",
+   "ilce": "Seyhan",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -13251,8 +13252,8 @@
    "ad": "Şişli Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Şişli",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -13853,7 +13854,7 @@
    "ad": "Tekirdağ Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Tekirdağ",
    "ilce": "",
    "aliaslar": [
     "tekirdag-bb",
@@ -14124,7 +14125,7 @@
    "ad": "Trabzon Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Trabzon",
    "ilce": "",
    "aliaslar": [
     "trabzon-bb",
@@ -14439,8 +14440,8 @@
    "ad": "Ümraniye Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Ümraniye",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -14509,8 +14510,8 @@
    "ad": "Üsküdar Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "İstanbul",
+   "ilce": "Üsküdar",
    "aliaslar": [],
    "web": "",
    "ust_kurum": "",
@@ -14579,7 +14580,7 @@
    "ad": "Van Büyükşehir Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
+   "il": "Van",
    "ilce": "",
    "aliaslar": [
     "van-bb",
@@ -14922,8 +14923,8 @@
    "ad": "Yenimahalle Belediyesi",
    "tur": "belediye",
    "alt_tur": "",
-   "il": "",
-   "ilce": "",
+   "il": "Ankara",
+   "ilce": "Yenimahalle",
    "aliaslar": [
     "Yenimahalle Belediye Başkanlığı"
    ],
@@ -16497,9 +16498,9 @@
   {
    "slug": "adana-aski",
    "ad": "Adana Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Adana",
    "ilce": "",
    "aliaslar": [
     "adana-aski",
@@ -16583,7 +16584,7 @@
   {
    "slug": "aksa-dogalgaz",
    "ad": "Aksa Doğalgaz Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "dogalgaz_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -16694,9 +16695,9 @@
   {
    "slug": "aski",
    "ad": "Ankara Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Ankara",
    "ilce": "",
    "aliaslar": [
     "aski",
@@ -16769,7 +16770,7 @@
   {
    "slug": "aydem",
    "ad": "ADM Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -16790,9 +16791,9 @@
   {
    "slug": "aydin-aski",
    "ad": "Aydın Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Aydın",
    "ilce": "",
    "aliaslar": [
     "aydin-aski",
@@ -16809,7 +16810,7 @@
   {
    "slug": "ayedas",
    "ad": "İstanbul Anadolu Yakası Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -16859,7 +16860,7 @@
   {
    "slug": "baskent-edas",
    "ad": "Başkent Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -16877,7 +16878,7 @@
   {
    "slug": "baskentgaz",
    "ad": "Başkentgaz - Başkent Doğalgaz Dağıtım Gayrimenkul Yatırım Ortaklığı A.Ş.",
-   "tur": "diger",
+   "tur": "dogalgaz_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -16896,9 +16897,9 @@
   {
    "slug": "baski",
    "ad": "Balıkesir Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Balıkesir",
    "ilce": "",
    "aliaslar": [
     "baski",
@@ -16933,7 +16934,7 @@
   {
    "slug": "bedas",
    "ad": "Boğaziçi Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17005,7 +17006,7 @@
   {
    "slug": "bursagaz",
    "ad": "Bursagaz - Bursa Şehiriçi Doğal Gaz Dağıtım Ticaret ve Taahhüt A.Ş.",
-   "tur": "diger",
+   "tur": "dogalgaz_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17043,9 +17044,9 @@
   {
    "slug": "buski",
    "ad": "Bursa Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Bursa",
    "ilce": "",
    "aliaslar": [
     "buski",
@@ -17106,7 +17107,7 @@
   {
    "slug": "ck-akdeniz",
    "ad": "Akdeniz Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17197,9 +17198,9 @@
   {
    "slug": "deski",
    "ad": "Denizli Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Denizli",
    "ilce": "",
    "aliaslar": [
     "deski",
@@ -17297,7 +17298,7 @@
   {
    "slug": "dicle-elektrik-dagitim",
    "ad": "Dicle Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17315,9 +17316,9 @@
   {
    "slug": "diski",
    "ad": "Diyarbakır Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Diyarbakır",
    "ilce": "",
    "aliaslar": [
     "diski",
@@ -17509,9 +17510,9 @@
   {
    "slug": "erzurum-eski",
    "ad": "Erzurum Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Erzurum",
    "ilce": "",
    "aliaslar": [
     "erzurum-eski",
@@ -17528,7 +17529,7 @@
   {
    "slug": "esgaz",
    "ad": "ESGAZ - Eskişehir Şehiriçi Doğal Gaz Dağıtım Ticaret ve Taahhüt A.Ş.",
-   "tur": "diger",
+   "tur": "dogalgaz_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17547,9 +17548,9 @@
   {
    "slug": "eskisehir-eski",
    "ad": "Eskişehir Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Eskişehir",
    "ilce": "",
    "aliaslar": [
     "eskisehir-eski",
@@ -17603,9 +17604,9 @@
   {
    "slug": "gaski",
    "ad": "Gaziantep Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Gaziantep",
    "ilce": "",
    "aliaslar": [
     "gaski",
@@ -17622,7 +17623,7 @@
   {
    "slug": "gediz-elektrik-dagitim",
    "ad": "GDZ Elektrik Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17707,9 +17708,9 @@
   {
    "slug": "hatsu",
    "ad": "Hatay Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Hatay",
    "ilce": "",
    "aliaslar": [
     "hatsu",
@@ -17837,9 +17838,9 @@
   {
    "slug": "iski",
    "ad": "İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "İstanbul",
    "ilce": "",
    "aliaslar": [
     "iski",
@@ -17884,9 +17885,9 @@
   {
    "slug": "isu",
    "ad": "Kocaeli Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Kocaeli",
    "ilce": "",
    "aliaslar": [
     "isu",
@@ -17903,7 +17904,7 @@
   {
    "slug": "izmirgaz",
    "ad": "İzmirgaz - İzmir Doğalgaz Dağıtım A.Ş.",
-   "tur": "diger",
+   "tur": "dogalgaz_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -17922,9 +17923,9 @@
   {
    "slug": "izsu",
    "ad": "İzmir Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "İzmir",
    "ilce": "",
    "aliaslar": [
     "izsu",
@@ -17969,9 +17970,9 @@
   {
    "slug": "kahramanmaras-kaski",
    "ad": "Kahramanmaraş Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Kahramanmaraş",
    "ilce": "",
    "aliaslar": [
     "kahramanmaras-kaski",
@@ -18037,9 +18038,9 @@
   {
    "slug": "kayseri-kaski",
    "ad": "Kayseri Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Kayseri",
    "ilce": "",
    "aliaslar": [
     "kayseri-kaski",
@@ -18074,7 +18075,7 @@
   {
    "slug": "kayserigaz",
    "ad": "Kayserigaz - Kayseri Doğalgaz Dağıtım Pazarlama ve Ticaret A.Ş.",
-   "tur": "diger",
+   "tur": "dogalgaz_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -18127,9 +18128,9 @@
   {
    "slug": "koski",
    "ad": "Konya Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Konya",
    "ilce": "",
    "aliaslar": [
     "koski",
@@ -18222,9 +18223,9 @@
   {
    "slug": "malatya-maski",
    "ad": "Malatya Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Malatya",
    "ilce": "",
    "aliaslar": [
     "malatya-maski",
@@ -18241,9 +18242,9 @@
   {
    "slug": "manisa-maski",
    "ad": "Manisa Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Manisa",
    "ilce": "",
    "aliaslar": [
     "manisa-maski",
@@ -18260,9 +18261,9 @@
   {
    "slug": "marsu",
    "ad": "Mardin Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Mardin",
    "ilce": "",
    "aliaslar": [
     "marsu",
@@ -18308,9 +18309,9 @@
   {
    "slug": "meski",
    "ad": "Mersin Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Mersin",
    "ilce": "",
    "aliaslar": [
     "meski",
@@ -18438,9 +18439,9 @@
   {
    "slug": "muski",
    "ad": "Muğla Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Muğla",
    "ilce": "",
    "aliaslar": [
     "muski",
@@ -18524,9 +18525,9 @@
   {
    "slug": "oski",
    "ad": "Ordu Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Ordu",
    "ilce": "",
    "aliaslar": [
     "oski",
@@ -18655,9 +18656,9 @@
   {
    "slug": "sakarya-saski",
    "ad": "Sakarya Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Sakarya",
    "ilce": "",
    "aliaslar": [
     "sakarya-saski",
@@ -18674,9 +18675,9 @@
   {
    "slug": "samsun-saski",
    "ad": "Samsun Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Samsun",
    "ilce": "",
    "aliaslar": [
     "samsun-saski",
@@ -18806,9 +18807,9 @@
   {
    "slug": "suski",
    "ad": "Şanlıurfa Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Şanlıurfa",
    "ilce": "",
    "aliaslar": [
     "suski",
@@ -18899,7 +18900,7 @@
   {
    "slug": "tedas",
    "ad": "Türkiye Elektrik Dağıtım Anonim Şirketi (TEDAŞ)",
-   "tur": "diger",
+   "tur": "elektrik_dagitim",
    "alt_tur": "",
    "il": "",
    "ilce": "",
@@ -18935,9 +18936,9 @@
   {
    "slug": "teski",
    "ad": "Tekirdağ Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Tekirdağ",
    "ilce": "",
    "aliaslar": [
     "teski",
@@ -18972,9 +18973,9 @@
   {
    "slug": "tiski",
    "ad": "Trabzon Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Trabzon",
    "ilce": "",
    "aliaslar": [
     "tiski",
@@ -19508,9 +19509,9 @@
   {
    "slug": "vaski",
    "ad": "Van Su ve Kanalizasyon İdaresi Genel Müdürlüğü",
-   "tur": "diger",
+   "tur": "su_kanalizasyon",
    "alt_tur": "",
-   "il": "",
+   "il": "Van",
    "ilce": "",
    "aliaslar": [
     "vaski",

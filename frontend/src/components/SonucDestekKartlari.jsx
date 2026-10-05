@@ -6,6 +6,7 @@ import { mevzuatDipnot, birimDipnot, lintGiris, decomposeGiris, riskGerekceYorum
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, RAD, SP, NeonCard, Icon, TYPE, TNUM } from "./neonUi.jsx";
 import { arr, clean } from "./sonucOrtak.js";
 import { KaynakLinki } from "./HukumKarti.jsx";
+import { mevzuatBolumleri } from "../lib/mevzuatGrup.js";
 
 export function AltTaleplerCard({ alt }) {
   if (alt.length < 2) return null;
@@ -61,9 +62,28 @@ function useKatalogAdlari(aktif) {
   return harita;
 }
 
+function MevzuatBolumBasligi({ b }) {
+  if (!b.baslik) return null;
+  return (
+    <div style={{ margin: `${SP.m}px 0 ${SP.xs}px`, ...TYPE.meta, fontWeight: 600, color: b.tur === "usul" ? DERIN.V : DERIN.T }}>
+      {b.baslik}
+    </div>
+  );
+}
+
+function MevzuatBulunamadi() {
+  return (
+    <div role="status" style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.s, borderRadius: RAD.card, background: ALFA(BANT.sari.c), ...TYPE.data, color: PAL.ink2 }}>
+      <Icon.alert width={14} height={14} style={{ flex: "none", marginTop: 2, color: DERIN.sari }} aria-hidden="true" />
+      <span>Korpusta bu talebe doğrudan uygun mevzuat bulunamadı — dayanağı memur belirlemeli.</span>
+    </div>
+  );
+}
+
 export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliSet }) {
+  const { gruplu, bolumler } = mevzuatBolumleri(mev, r);
   const adlar = useKatalogAdlari(mev.length > 0);
-  if (!mev.length) return null;
+  if (!bolumler.length) return null;
   const secilebilir = !!onMevzuatSec;
   const secSay = mev.filter((m) => seciliSet.has(m.baslik)).length;
   // Dürüstlük sunumu: tüm öneriler zayıfsa (hepsi "düşük güven") panel, satır başına
@@ -72,7 +92,9 @@ export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliS
   // toplar ve satır-başı spam'ı bastırırız (inceleme={false}). Güven SAHTELENMEZ; yalnız
   // aynı dürüst bilgi bir kez, panik yaratmadan söylenir. Bir öneri bile "orta"/"yüksek"
   // ise satır-başı ayrımı bilgi taşır → eski davranış korunur.
-  const hepsiZayif = mev.every((m) => (m.guven || "") === "düşük");
+  // Usul katmanı (başvuru usulü) içerik eşleşmesi değildir → "hepsi zayıf" yargısına girmez.
+  const icerik = mev.filter((m) => m.katman !== "usul");
+  const hepsiZayif = icerik.length > 0 && icerik.every((m) => (m.guven || "") === "düşük");
   return (
     <NeonCard
       title="Önerilen mevzuat"
@@ -92,22 +114,34 @@ export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliS
           </span>
         </div>
       )}
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {mev.map((m, i) => (
-          <MevzuatRow
-            key={i}
-            rank={i + 1}
-            m={m}
-            ad={mevzuatGorunenAd(m, adlar)}
-            nli={nliMap.get(m.baslik)}
-            ilk={i === 0}
-            onAc={onMevzuatAc}
-            secili={seciliSet.has(m.baslik)}
-            onSec={secilebilir ? (checked) => onMevzuatSec(m, checked) : null}
-            inceleme={!hepsiZayif}
-          />
-        ))}
-      </div>
+      {bolumler.map((b) => (
+        <section key={b.anahtar} aria-label={b.baslik || undefined}>
+          {gruplu && <MevzuatBolumBasligi b={b} />}
+          {b.bulunamadi && <MevzuatBulunamadi />}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {b.ogeler.map(({ m, sira }) => (
+              <div key={`${b.anahtar}-${sira}`}>
+                <MevzuatRow
+                  rank={sira}
+                  m={m}
+                  ad={mevzuatGorunenAd(m, adlar)}
+                  nli={nliMap.get(m.baslik)}
+                  ilk={sira === 1}
+                  onAc={onMevzuatAc}
+                  secili={seciliSet.has(m.baslik)}
+                  onSec={secilebilir ? (checked) => onMevzuatSec(m, checked) : null}
+                  inceleme={!hepsiZayif}
+                />
+                {m.gerekce && m.katman !== "usul" && (
+                  <div style={{ margin: "0 0 6px", paddingLeft: SP.xl, ...TYPE.meta, color: PAL.mut2 }}>
+                    Neden: {clean(m.gerekce)}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
       <div style={{ marginTop: SP.m, display: "flex", gap: SP.s, alignItems: "flex-start", padding: SP.s, borderRadius: RAD.card, background: ALFA(T), ...TYPE.meta, color: PAL.ink2 }}>
         <Icon.info width={13} height={13} style={{ flex: "none", marginTop: 1, color: DERIN.T }} />
         <span>

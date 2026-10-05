@@ -115,4 +115,5 @@ class TestYaziTaslakNodeDinamik:
         # Assert
         assert out["yazi_turu"] == "ust_yazi"          # statik iletim eşlemesi
         assert out["yazi_plan_notu"] == ""              # plan koşmadı
-        assert "STRATEJİ GELİŞTİRME / MALİ İŞLER" in out["yazi_taslak_md"]  # m.14/2 BÜYÜK
+        assert "öneri: Strateji Geliştirme / Mali İşler" in out["yazi_taslak_md"]  # kaba kategori birim ADI değildir (Yön. m.14): yalnız açık
+        # yer tutucu içinde öneri olarak görünür (yazi.baslik, teşhis 2026-10-05)

@@ -98,7 +98,9 @@ class TestIlgiTuretme:
         # Act
         satirlar = _ilgi_satirlari(unsurlar)
         # Assert
-        assert satirlar == ("E-123-456 sayılı başvurunuz.",)
+        # Sayılı belge resmî yazıdır (Yön. m.11 sayı yalnız resmî yazıda bulunur) → "yazınız";
+        # eski "başvurunuz" sayılı belgeyi dilekçe sayıyordu (baslik.py tek çözücü, 2026-10).
+        assert satirlar == ("E-123-456 sayılı yazınız.",)
         assert "{{" not in satirlar[0]
 
     def test_hicbiri_yoksa_basvuru_atfi(self):
@@ -225,8 +227,10 @@ class TestBuildAltTalepTaslaklari:
         alt = [{"ozet": "talep 1"}, {"ozet": "talep 2"}]
         # Act
         sonuc = await build_alt_talep_taslaklari(alt, {})
-        # Assert
-        assert all("İlgili Birime" in t["yazi_taslak_md"] for t in sonuc)
+        # Assert — birim bilinmiyorsa gerçek görünümlü jenerik ad yerine AÇIK yer tutucu
+        # (yazi.baslik.BELIRSIZ_BIRIM_MUHATAP); iki talep aynı belirsiz havalede birleşir.
+        from yazi.baslik import BELIRSIZ_BIRIM_MUHATAP
+        assert all(BELIRSIZ_BIRIM_MUHATAP in t["yazi_taslak_md"] for t in sonuc)
 
     async def test_alt_talep_antet_tek_kurum(self):
         # TEK-KURUM (19 Tem): gelen dilekçe ODUNPAZARI BELEDİYE BAŞKANLIĞINA yazılmış olsa

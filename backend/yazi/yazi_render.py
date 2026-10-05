@@ -14,7 +14,6 @@ dayanır; somut veri yoksa nötr çerçeve cümlesi kurulur (sahte sayı/kişi y
 
 from __future__ import annotations
 
-import asyncio
 import re
 from dataclasses import dataclass
 from datetime import date
@@ -564,49 +563,24 @@ def _muhatap(unsurlar: dict[str, Any]) -> str:
 
 
 def _ilgi_satirlari(unsurlar: dict[str, Any], turu: str = "cevabi_yazi") -> tuple[str, ...]:
-    """İlgi satırlarını gelen belgenin tarih+sayısından kur (Yön. m.15).
+    """Geriye uyum sarmalayıcısı — ilgi artık TEK çözücüden (yazi.baslik, m.15/6).
 
-    m.15/6: ilgi tutulan belge MUHATABIN gönderdiği belgeyse idare adı yazılmaz
-    ("... yazınız."); değilse gönderen idarenin adı iyelik ekiyle yazılır
-    ("Ankara 5. İcra Müdürlüğünün ... tarihli ve ... sayılı yazısı." — CB kılavuzu
-    Örnek 7 birebir). ust_yazi (iletim) bu ikinci durumdur: muhatap hedef birimdir,
-    ilgi belge ise dış gönderenin yazısıdır. Biri eksikse Jinja placeholder yerine
-    doğal ve nötr atıf kurulur; bilgi uydurulmaz.
+    ust_yazi (iç havale/iletim) → belgenin SAHİBİ adıyla 3. şahıs; diğer türler → muhatap
+    belgenin sahibidir, 2. şahıs. Gelen modeli düz alanlardan türetilir (metin yok).
     """
-    from agents.kurum_kimlik import iyelik_eki
-
-    tarih = str(unsurlar.get("tarih", "") or "").strip()
-    sayi = str(unsurlar.get("sayi", "") or "").strip()
-    if turu == "ust_yazi":
-        gonderen = str(unsurlar.get("gonderen", "") or "").strip()
-        kaynak_ad = gonderen if _kurum_adi_mi(gonderen) else str(
-            unsurlar.get("kurum", "") or "").strip()
-        parca = " ".join(p for p in (
-            f"{tarih} tarihli" if tarih else "",
-            "ve" if tarih and sayi else "",
-            f"{sayi} sayılı" if sayi else "") if p)
-        if kaynak_ad and (tarih or sayi):
-            genitif = iyelik_eki(kaynak_ad)
-            if genitif != kaynak_ad:  # ek üretilebildi (ünlüyle biten kanonik ad)
-                return (f"{genitif} {parca} yazısı.",)
-            return (f"{kaynak_ad} tarafından gönderilen {parca} yazı.",)
-        # Gönderen adı yok ama tarih/sayı var: iletimde belge BİZE gelen ilgi yazıdır,
-        # "yazınız" (muhatabın yazısı) YANLIŞ olur → nötr "ilgi yazı" (m.15/6 yönü korunur).
-        if tarih or sayi:
-            return (f"{parca} ilgi yazı.",)
-    if tarih and sayi:
-        return (f"{tarih} tarihli ve {sayi} sayılı yazınız.",)
-    if tarih:
-        return (f"{tarih} tarihli başvurunuz.",)
-    if sayi:
-        return (f"{sayi} sayılı başvurunuz.",)
-    return ("Başvurunuz.",)
+    from yazi.baslik import gelen_evrak_coz, ilgi_satiri
+    gelen = gelen_evrak_coz("", unsurlar)
+    if not (gelen.get("tarih") or gelen.get("sayi") or gelen.get("basvuru_no")):
+        return ("Başvurunuz.",) if turu != "ust_yazi" else ()
+    return (ilgi_satiri(gelen, "havale" if turu == "ust_yazi" else "cevap"),)
 
 
 def build_context(
     yazi_turu: str, unsurlar: dict[str, Any], metin: str,
     *, muhatap_override: str | None = None, sdp_kodu: str = "",
     hazirlayan_birim: str = "", idare_adi: str = "",
+    gelen: dict[str, Any] | None = None, rol: str | None = None,
+    kaynak_metin: str = "", konu_adaylari: list[str | None] | None = None,
 ) -> YaziContext:
     """EvrakState bilgi_unsurları + üretilen gövde → YaziContext (demo-safe).
 
@@ -623,15 +597,11 @@ def build_context(
     böylece antet her evrakta sabit tek kurum yerine evrakın kurumuna göre değişir.
     """
     turu = resolve_yazi_turu(yazi_turu)
-    # cevabi/üst yazı + müzekkere/görüş de İlgi atfı kurar (şablonları İlgi bloğu içerir);
-    # olur'da ilgi yoktur, bilgilendirme nötr (dağıtım yerlerine, tekil ilgi taşımaz).
-    # bilgilendirme: dağıtımlı duyuruda İlgi yok; ama vatandaş-cevabı (CİMER/başvuru →
-    # gonderen + tarih/sayı var) ise başvuruya atıf İlgi ile verilir (m.15). Aksi halde ().
-    bilg_ilgi = bool(unsurlar.get("gonderen")) and bool(
-        unsurlar.get("tarih") or unsurlar.get("sayi"))
-    ilgi = (_ilgi_satirlari(unsurlar, turu)
-            if turu in ("cevabi_yazi", "ust_yazi", "muzekkere", "gorus_mutalaa")
-            or (turu == "bilgilendirme" and bilg_ilgi) else ())
+    # Başlık alanları TEK çözücüden (yazi.baslik): gelen evrak modeli verilmediyse düz
+    # alanlardan güvenli türetilir. İlgi rolü muhatap kesinleştikten SONRA çözülür.
+    from yazi.baslik import baslik_coz, gelen_evrak_coz, gonderen_muhatabi
+    if gelen is None:
+        gelen = gelen_evrak_coz("", unsurlar)
     if turu == "olur":
         muhatap = ""  # olur'da muhatap hiçbir zaman render edilmez (Yön. m.20) — override dahil
     elif muhatap_override:
@@ -652,7 +622,7 @@ def build_context(
         # kendi nötr varsayılanı (MAKAMA / placeholder) devreye girer.
         muhatap = ""
     else:
-        muhatap = _muhatap(unsurlar)
+        muhatap = gonderen_muhatabi(gelen) or _muhatap(unsurlar)
         if turu == "bilgilendirme" and muhatap and not muhatap.startswith("Sayın "):
             # Bilgilendirme dağıtımlı bir DUYURUDUR (Yön. m.14 cevabi-yazı değil):
             # gönderen KURUM ise (genelge/talimat gibi) o kurumun direktifini KENDİ
@@ -668,6 +638,11 @@ def build_context(
     # _DEMO_DEFAULTS'a düşer (KURUM_BIRIM env / jenerik) — her evrakta aynı birim yerine
     # konuya göre değişir (kullanıcı bulgusu: "birim hep aynı"). Kapanış makam-seviyesi de
     # bu birimden hesaplanır (tutarlılık).
+    baslik = baslik_coz(
+        gelen, turu, rol=rol, muhatap=muhatap, kaynak_metin=kaynak_metin,
+        konu_adaylari=konu_adaylari if konu_adaylari is not None else [unsurlar.get("konu")])
+    # bilgilendirme: dağıtımlı duyuruda ilgi ancak gelen belgenin tarih/sayısı varsa kurulur.
+    ilgi = baslik.ilgi_satirlari
     gonderen_birim = hazirlayan_birim.strip() or _DEMO_DEFAULTS["birim_adi"]
     kapanis = default_kapanis(turu)
     if muhatap and muhatap.startswith("Sayın ") and turu in ("cevabi_yazi", "bilgilendirme"):
@@ -694,7 +669,7 @@ def build_context(
         # Görüş/müzekkere CEVABININ konusu, gelen TALEBİN konusudur ama talep-kuyruğu düşer
         # ("... Hukuki Mütalaa Talebi" → "... Hukuki Mütalaa"); cevap yazısı talep değil
         # konunun kendisi hakkındadır (2026-07-18 yargıç bulgusu).
-        konu=_cevap_konusu(str(unsurlar.get("konu", "") or ""), turu),
+        konu=_cevap_konusu(baslik.konu, turu),
         metin=metin,
         muhatap=muhatap,
         ilgi_tarih=str(unsurlar.get("tarih", "") or ""),
@@ -735,41 +710,22 @@ def ts13298_ust_veri(
 
 async def build_alt_talep_taslaklari(
     alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], idare_adi: str = "",
+    **paket_kw: Any,
 ) -> list[dict[str, Any]]:
-    """Çok-konulu evrakta HER alt-talep için ayrı üst yazı taslağı (kuruma yönlendirme).
+    """Çok-konulu evrakta talep başına havale taslağı (geriye uyum sarmalayıcısı).
 
-    Tek ortak cevabi_yazi vatandaşa gitmez; her alt-talep KENDİ hedef birimine
-    (Yön. m.14) muhatap alan, yalnız kendi özetine odaklanan bir üst yazı alır.
-    < 2 alt-talep (tek-konulu) → değişmeden döner (ek LLM çağrısı/maliyet yok).
-
-    Antet İDARE satırı tek-konulu yolla (yazi_taslak_node) AYNI sözleşmeyi izler: `idare_adi`
-    parametresi burada ÖNCEDEN çözülmüş nihai kurum adıdır (bkz. kurum_kimlik.efektif_idare_adi
-    — çağıran, belge hitap-ekliyse doküman kurumunu geçirir; boşsa build_context env
-    KURUM_ADI / jenerik varsayılana düşer).
+    Asıl yapı yazi.paket.havale_paketi'dir: aynı birime düşen talepler TEK havalede birleşir,
+    başlık alanları yazi.baslik tek çözücüsünden gelir. < 2 alt-talep → değişmeden döner.
     """
     if len(alt_talepler) < 2:
         return list(alt_talepler)
-    from yazi.renderer import render_yazi
+    from yazi.baslik import gelen_evrak_coz
+    from yazi.paket import havale_paketi
 
-    semafor = asyncio.Semaphore(3)
-
-    async def _bir_taslak(item: dict[str, Any]) -> dict[str, Any]:
-        ozet = str(item.get("ozet", "") or "")
-        muhatap = str(item.get("birim_tr", "") or "") or "İlgili Birime"
-        child_unsurlar = {**unsurlar, "konu": ozet}
-        async with semafor:
-            metin = await build_body("ust_yazi", child_unsurlar, ozet)
-        ctx = build_context(
-            "ust_yazi", child_unsurlar, metin, muhatap_override=muhatap,
-            idare_adi=idare_adi)
-        result = render_yazi(ctx)
-        return {
-            **item, "yazi_turu": "ust_yazi",
-            "yazi_taslak_md": result.metin, "format_uyumlu": result.format_uyumlu,
-        }
-
-    # gather giriş sırasını korur; yalnız bağımsız gövde çağrıları aynı anda yürür.
-    return list(await asyncio.gather(*(_bir_taslak(item) for item in alt_talepler)))
+    paket_kw.setdefault("gelen", gelen_evrak_coz("", unsurlar))
+    alt_out, _paket = await havale_paketi(
+        alt_talepler, unsurlar, idare_adi=idare_adi, **paket_kw)
+    return alt_out
 
 
 __all__ = ("GovdeSonucu", "build_alt_talep_taslaklari", "build_body", "build_body_sonuclu", "build_context",

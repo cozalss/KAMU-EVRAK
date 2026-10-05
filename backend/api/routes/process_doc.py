@@ -160,6 +160,8 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         gosterim_birimi=state.get("gosterim_birimi", "") or "",
         yazi_turu=state.get("yazi_turu", ""),
         yazi_plan_notu=state.get("yazi_plan_notu", ""),
+        yazi_paketi=state.get("yazi_paketi") or [],
+        yazi_plan_yedek=bool(state.get("yazi_plan_yedek", False)),
         ust_veri=state.get("ust_veri", {}),
         antet_meta=state.get("antet_meta", {}),
         yazi_taslak_md=state.get("yazi_taslak_md", ""),
@@ -497,7 +499,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu", "yazi_plan_notu", "ust_veri",
-                        "antet_meta"),
+                        "antet_meta", "yazi_plan_yedek"),
         "verify": ("format_uyumlu", "verify_uyari", "verify_notes",
                    "lint_2646", "tutarlilik_uyari", "lint_duzeltme_md"),
         # risk_guard (ENV-gated): trafik ışığı bandı SSE'ye taşınsın (canlı kart).

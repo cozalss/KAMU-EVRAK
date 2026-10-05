@@ -235,6 +235,9 @@ class ProcessResponse(BaseModel):
     yazi_turu: str = ""
     # Dinamik yazı planı gerekçesi ("neden bu tür/muhatap"); boş = statik eşleme kullanıldı.
     yazi_plan_notu: str = ""
+    # [Akış B] Yazışma paketi (havale/cevap/devir/devir_bilgi) + plan yedek bayrağı.
+    yazi_paketi: list = Field(default_factory=list)
+    yazi_plan_yedek: bool = False
     # TS 13298 üst-veri (EBYS metadata) — belge türü/konu/SDP kodu+adı/güvenlik/tarih/sayı.
     ust_veri: dict = Field(default_factory=dict)
     # Sistem-tespitli antet künyesi {idare, birim, muhatap} — dinamik kurum kimliği.

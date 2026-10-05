@@ -104,7 +104,10 @@ class TestGonderimYoluGrounding:
 
     def test_dayanakli_taslak_temiz_kalir(self, client):
         base = _base(client)
-        dayanakli = _dayanak(client, base, _SECILI).json()["yazi_taslak_md"]
+        # Jenerik "KAMU KURUMU" anteti artık en az SARI (kurum belirlenmeden gönderilemez,
+        # risk_guard._antet_muhatap_bosluklari) → temiz taslak gerçek kurum anteti taşır.
+        dayanakli = _dayanak(client, base, _SECILI).json()["yazi_taslak_md"].replace(
+            "KAMU KURUMU", "KEÇİÖREN BELEDİYESİ")
         r = client.post("/yazi/dogrula", json={
             "taslak_md": dayanakli, "evrak_text": _EVRAK, "yazi_turu": "cevabi_yazi",
             "evrak_turu": "dilekce",

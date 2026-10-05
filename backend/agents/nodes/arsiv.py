@@ -189,7 +189,9 @@ async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
 
     sayi = str(unsurlar.get("sayi") or "")
     tarih = str(unsurlar.get("tarih") or "") or _TARIH_BELIRSIZ
-    secim = await _sdp_secimi(turu, sayi, state)
+    # SDP TEK motor: yazi_taslak aynı seçimi daha önce yaptıysa YENİDEN seçilmez → taslağın
+    # Sayı satırındaki dosya planı kodu ile arşiv kaydı aynı evrakta ayrışamaz.
+    secim = state.get("sdp_secimi") or await _sdp_secimi(turu, sayi, state)
     kod = secim["kod"]
 
     metadata: dict[str, Any] = {
@@ -208,4 +210,7 @@ async def arsiv_node(state: dict[str, Any]) -> dict[str, Any]:
     return {"arsiv_metadata": metadata}
 
 
-__all__ = ("arsiv_node",)
+# yazi_taslak'ın kullandığı tek SDP seçim motoru (aynı kapalı-küme + gerekçe zinciri).
+sdp_secimi_yap = _sdp_secimi
+
+__all__ = ("arsiv_node", "sdp_secimi_yap")

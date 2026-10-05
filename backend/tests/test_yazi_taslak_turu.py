@@ -55,7 +55,9 @@ class TestTurSecimi:
         # Üst yazı kurum içidir: muhatap gönderen DEĞİL hedef birim olmalı.
         data = _uret(client, "ust_yazi", hedef_birim="ilgili_teknik_daire")
         # m.14/2: kurum-içi iletim muhatabı BÜYÜK + yönelme eki.
-        assert "İLGİLİ TEKNİK / ANA HİZMET DAİRESİNE" in data["yazi_taslak_md"]
+        # Kaba kategori birim ADI değildir (m.14) → açık yer tutucu içinde öneri (yazi.baslik).
+        assert ("[Birim seçilecek — öneri: İlgili Teknik / Ana Hizmet Dairesi]"
+                in data["yazi_taslak_md"])
         assert "Sayın Ayşe Yılmaz" not in data["yazi_taslak_md"]
 
     def test_olur_muhatapsiz(self, client):

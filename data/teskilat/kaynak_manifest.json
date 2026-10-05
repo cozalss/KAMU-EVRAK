@@ -196,7 +196,7 @@
    "durum": "resmi_dogrulanmis",
    "kaynak_url": "https://www.bursa.bel.tr/idari",
    "kaynak_turu": "resmi_teskilat",
-   "icerik_sha256": "0455be00132b3aa67c090443eb5201842e945ec667a4024b6fa4f7e748d1f302",
+   "icerik_sha256": "aaa2dbe03ef2059a17ad67e787ecbfbb365809a4a2cb9f173a3f4b7b3360a7a7",
    "dogrulayan": "claude-opus-5/2026-07-26",
    "dogrulama_tarihi": "2026-07-26",
    "dogrulama_yontemi": "belediyenin resmi teskilat sayfasi TLS dogrulamasi ACIK olarak indirildi; dosyadaki her birim adi sayfa metninde bulundu (scripts/teskilat_kaynak_dogrula.py, TAM); unvan kisaltmalari (Dai.Bsk./Dairesi Bsk.) normalize edilerek eslestirildi",

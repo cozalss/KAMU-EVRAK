@@ -8,6 +8,10 @@
 const yonlendirmeVar = (r) =>
   !!r && !!r.yonlendirme && typeof r.yonlendirme === "object" && Object.keys(r.yonlendirme).length > 0;
 
+/* Yönlendirme var ama kurum içi birim yok: 9'lu kaba kategori 'havale birimi' diye
+   gösterilmez (backend agents/yonlendirme.BIRIM_SECILMEDI ile aynı metin). */
+export const BIRIM_SECILMEDI = "Birim belirlenemedi — havalede memur seçecek";
+
 const eskiZincir = (r) =>
   r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || "";
 
@@ -15,7 +19,7 @@ const eskiZincir = (r) =>
 export function gosterimBirimi(r = {}) {
   if (!r) return "";
   if (r.gosterim_birimi) return String(r.gosterim_birimi);
-  if (yonlendirmeVar(r)) return r.yonlendirme.karar === "DISARIDA" ? "" : (r.hedef_kategori || "");
+  if (yonlendirmeVar(r)) return r.yonlendirme.karar === "DISARIDA" ? "" : BIRIM_SECILMEDI;
   return eskiZincir(r);
 }
 
@@ -25,7 +29,7 @@ export function yonlendirmeBirimi(r = {}) {
   if (yonlendirmeVar(r)) {
     const ad = r.yonlendirme.birim?.ad;
     if (ad) return String(ad);
-    return r.yonlendirme.karar === "DISARIDA" ? "" : (r.hedef_kategori || "");
+    return "";
   }
   return eskiZincir(r);
 }

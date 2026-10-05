@@ -490,6 +490,12 @@ def kurum_birimleri(kurum_slug: str, konu: str, *, tur: str = "") -> list[dict[s
     tipin şablonunu aday diye göstermektense hiç aday üretmemek doğrudur.
     """
     kanonik = _kanonik_slug((kurum_slug or "").strip())
+    if kanonik and tasra_ornegi_mi(kurum_slug, kanonik):
+        # Taşra örneği ('ankara-sosyal-guvenlik-il-mudurlugu' → ulusal SGK kaydı): ulusal
+        # kaydın birimleri MERKEZ teşkilatıdır, il müdürlüğünün iç birimi değildir (ölçüldü:
+        # SGK İl Md. evrakı 'Emeklilik Hizmetleri Genel Müdürlüğüne', Çankaya Tapu evrakı
+        # 'Tapu Dairesi Başkanlığına' havale ediliyordu). Taşranın kendi kaydı yoksa küme boş.
+        kanonik = ""
     havuz: list[dict[str, Any]] = []
     if kanonik:
         resmi = _resmi_slug_chunks(kanonik)
@@ -527,7 +533,26 @@ _TIP_TAMAMLAYICI: dict[str, str] = {
     **_TIP_JENERIK,
     "valilik": "_genel-valilik",
     "kaymakamlik": "_genel-kaymakamlik",
+    # '_genel-il-mudurlukleri' valiliğe BAĞLI il müdürlüklerinin listesidir; il müdürlüğünün,
+    # bakanlığın ya da defterdarlığın İÇ birimi değildir. Tamamlayıcı olarak verilince kurum
+    # kendine ('İl/İlçe Sağlık Müdürlüğü') ya da kardeş kuruma ('Ticaret İl Müdürlüğü') 'iç
+    # havale' ediliyordu. Bu türlerin iç birim şablonu kaynaklı olarak yazılana dek küme
+    # boştur → birim belirlenemez, memur seçer (uydurma birim yerine dürüst boşluk).
+    "il_mudurlugu": "",
+    "bakanlik": "",
+    "defterdarlik": "",
 }
+
+
+def tasra_ornegi_mi(kurum_slug: str, kanonik: str) -> bool:
+    """Slug, ulusal kaydın İL/İLÇE ÖRNEĞİ olarak mı çözüldü (il adı kırpmasıyla)?
+
+    Birebir dizin, tam slug @ALIAS'ı ve bağlaç normalizasyonu AYNI kurumdur; yalnız baştaki
+    yer adı kırpılarak ulaşılan kanonik kayıt başka (merkez) bir teşkilattır."""
+    slug = (kurum_slug or "").strip()
+    if not slug or not kanonik or slug == kanonik:
+        return False
+    return not (_aliases().get(slug) == kanonik or _bagsiz(slug) == _bagsiz(kanonik))
 
 
 def _tamamlayici_sablon(kurum_slug: str, tur: str) -> str:
@@ -548,5 +573,5 @@ def _tum_skorlu(
 
 __all__ = (
     "birim_adi_anahtari", "gorev_turetilmis", "kelime_uyum_skoru", "kurum_birimleri",
-    "kurum_korpusta_var", "kurum_teskilatta_var", "teskilat_birim_ara",
+    "kurum_korpusta_var", "kurum_teskilatta_var", "tasra_ornegi_mi", "teskilat_birim_ara",
 )

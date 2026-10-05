@@ -1,14 +1,14 @@
 # kamu-evrak — Kamu Evrak ve Yazışma Süreçleri için Akıllı Agent Destek Sistemi
 
 [![CI](https://github.com/cozalss/TasnifX/actions/workflows/ci.yml/badge.svg)](https://github.com/cozalss/TasnifX/actions/workflows/ci.yml)
-![Testler](https://img.shields.io/badge/testler-1516%20py%20%2B%20104%20js-2f9e6e.svg)
+![Testler](https://img.shields.io/badge/testler-2834%20py%20%2B%20585%20js-2f9e6e.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python 3.11](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![LangGraph](https://img.shields.io/badge/LangGraph-20%20node%20multi--agent-1c3d5a.svg)
 ![React 18](https://img.shields.io/badge/React-18%20%2B%20Vite-61dafb.svg)
 
 Kamu kurumuna gelen evrakı **okuyan, sınıflandıran, eksiğini bulan, mevzuat öneren ve resmî
-yazı taslağını hazırlayan** çok-ajanlı (LangGraph) sistem — belge başına **~10 sn ve ~$0.001**;
+yazı taslağını hazırlayan** çok-ajanlı (LangGraph) sistem — belge başına **~7 sn** (ölçülen p50; p95 8,4 sn) **ve ~$0.001**;
 **anahtarsız/offline modda dahi uçtan uca çalışır**, insan onayı olmadan hiçbir yazı çıkmaz.
 
 **Hızlı gezinme:** [Hızlı başlangıç](#-hızlı-başlangıç-anahtar-gerekmez) ·
@@ -49,7 +49,7 @@ LLM_MODE=openai
 OPENAI_BASE_URL=https://api.deepseek.com
 OPENAI_LLM_MODEL=deepseek-v4-flash
 OPENAI_API_KEY=sk-...
-VITRIN_MODU=1        # demo profili: HITL + clarifier + CRAG + hız (belge ~10 sn)
+VITRIN_MODU=1        # demo profili: HITL + clarifier + CRAG + hız
 ```
 
 Gereksinimler: **Python 3.11+ · [uv](https://docs.astral.sh/uv/) · Node 22+** (yalnız frontend;
@@ -62,8 +62,8 @@ dev/build Node 20'de de çalışır, `npm test` glob'u Node 21+ ister) — GPU g
 >
 > **Panel girişi (login):** kullanıcı hesapları PostgreSQL/Supabase ister — kurulum ve seed
 > adımları: [`backend/db/README.md`](backend/db/README.md). DB olmadan API + `/docs` tam çalışır.
-Testler: `cd backend && uv run python -m pytest -q` (**1516 test · 92 modül**, CI'da mock modda koşar) ·
-frontend saf-mantık testleri: `cd frontend && npm test` (**104 test**, `node --test`, bağımlılıksız) ·
+Testler: `cd backend && uv run python -m pytest -q` (**2834 test**, CI'da mock modda koşar) ·
+frontend saf-mantık testleri: `cd frontend && npm test` (**585 test**, `node --test`, bağımlılıksız) ·
 Mevzuat RAG ağır ekleri (opsiyonel): `uv sync --extra rag`
 
 ---
@@ -81,8 +81,8 @@ flowchart LR
         SINIF["sınıflandır<br/>19 tür"]
         CIKAR["bilgi çıkar<br/>PII maskele"]
         EKSIK["eksik tespit<br/>3071 m.4"]
-        DECOMP["çok-konulu ayır"]
-        MEV["mevzuat öner<br/>BM25 + rerank + NLI"]
+        DECOMP["talep kümesi<br/>tek kaynak"]
+        MEV["mevzuat öner<br/>mesele + BM25 + yargıç"]
         OZET["özetle"]
         SINIF --> EKSIK
         CIKAR --> EKSIK
@@ -91,7 +91,7 @@ flowchart LR
         DECOMP --> OZET
     end
     subgraph G2["Görev 2 · Üretim"]
-        BIRIM["birim yönlendir"]
+        BIRIM["yönlendir<br/>talep bazlı yetki / devir"]
         TASLAK["resmî yazı taslağı<br/>Yön. 2646"]
         VERIFY["doğrula<br/>uydurma-veto + lint"]
         RISK["risk bandı<br/>yeşil / sarı / kırmızı"]
@@ -113,11 +113,20 @@ Ayrıntılı topoloji: [`docs/03-mimari.md`](docs/03-mimari.md).
 
 **Dayanıklılık ilkesi:** LLM kullanan **her katmanın deterministik fallback'i vardır**
 (keyword/regex/şablon) — anahtar yok, model çökmüş, zaman aşımı: akış hiç durmaz.
-2026-07 güçlendirme dalgasıyla **10 varsayılan-açık LLM katmanı** eklendi: OCR düzeltme,
-sınıflandırma eskalasyonu (→ `deepseek-v4-pro`), risk açıklaması, JSON retry + önbellek,
-2646 lint oto-düzeltme, verify grounding, SDP seçici, sohbet araç döngüsü, rerank, NLI —
-hepsi aynı ilkeyle: **LLM iyileştirir, fallback garanti eder.** (CRAG düğümü vitrin
-profilinde açılır; açıldığında o da LLM'li sürümüyle koşar.)
+Her çağrı noktasının bütçesi, düşünme ayarı ve kesilme davranışı tek tabloda durur
+([`agents/llm_politika.py`](backend/agents/llm_politika.py)): düşünme varsayılan kapalı,
+kesilen çağrı bir kez düşünmesiz tekrarlanır, sonra deterministik yedeğe düşer; her çağrı iz
+bırakır. Aynı ilke: **LLM iyileştirir, fallback garanti eder.**
+
+**Akışlar arası tek kaynaklar (2026-10):** talepler yalnız bir yerde çıkarılır
+([`agents/talep_kumesi.py`](backend/agents/talep_kumesi.py)); yönlendirme kararı talep
+bazlıdır ve tek nesnede durur ([`agents/yonlendirme.py`](backend/agents/yonlendirme.py) —
+birim, yetki, devir, insan onayı); resmî yazı başlığı tek çözücüden gelir ve bir evrak bir
+**yazışma paketi** üretir (cevap · havale · devir · devir bilgisi —
+[`yazi/baslik.py`](backend/yazi/baslik.py), [`yazi/paket.py`](backend/yazi/paket.py));
+mevzuat önerisi içerik odaklıdır: LLM talebin hukuki meselesini çıkarıp korpus kataloğundan
+dosya seçer, BM25 aday getirir, alaka yargıcı seçer ya da **boş döner**
+([`agents/mevzuat_yargic.py`](backend/agents/mevzuat_yargic.py)).
 
 ---
 
@@ -182,7 +191,7 @@ graph TD
 | [`backend/agents/nodes/`](backend/agents/nodes/) | 20 LangGraph node — pipeline'ın kalbi | `siniflandir.py` · `mevzuat_oner.py` · `verify.py` · `yazi_taslak.py` |
 | [`backend/api/routes/`](backend/api/routes/) | REST + SSE uçları | `process_doc.py` · `sohbet.py` · `sla.py` · `mevzuat.py` · `yazi.py` |
 | [`backend/retrieval/`](backend/retrieval/) | Mevzuat RAG altyapısı | `hybrid_search.py` · `reranker.py` · `atif_grafi.py` (GraphRAG-lite) |
-| [`backend/yazi/`](backend/yazi/) | Resmî yazı render + EYP 2.0 paketi | `renderer.py` · `dayanak.py` · `eyp.py` · `sdp_plani.py` |
+| [`backend/yazi/`](backend/yazi/) | Resmî yazı render + EYP 2.0 paketi | `renderer.py` · `baslik.py` · `paket.py` · `eyp.py` |
 | [`backend/eval/`](backend/eval/) | 15 metrik harness | `competition_scorecard.py` · `heldout_eval.py` · `stats.py` |
 | [`backend/multimodal/`](backend/multimodal/) | OCR (offline, AGPL-free) | `ocr.py` |
 | [`frontend/src/components/`](frontend/src/components/) | 27 React bileşeni + canlı ajan akışı | `PanelView.jsx` · `CanliAjanAkisi.jsx` · `MuzakereKurulu.jsx` |
@@ -196,7 +205,7 @@ graph TD
 
 | | |
 |---|---|
-| 🧩 **Çok-konulu ayrıştırma** | Tek dilekçedeki birden çok istek alt-taleplere bölünür; her biri ayrı **tür + birim + yasal süre** alır → otomatik havale — [`nodes/decompose.py`](backend/agents/nodes/decompose.py) |
+| 🧩 **Tek talep kümesi + talep bazlı yönlendirme** | Dilekçedeki her istek kaynağa birebir çapalı tek bir kümede çıkarılır; her talep ayrı **yetki (içeride/dışarıda) + birim + devir** kararı alır, aynı birime düşenler tek havalede birleşir — [`agents/talep_kumesi.py`](backend/agents/talep_kumesi.py) · [`agents/yonlendirme.py`](backend/agents/yonlendirme.py) |
 | 🚦 **Ölçülmüş risk bandı + koşullu onay** | Üretilen yazıya trafik ışığı: 🟢 otomatik geçer, 🟡🔴 memur onayına durur (`interrupt()` + checkpointer). Skor sabit katsayı değil **ölçüm**: `ağırlık = ciddiyet × isabet`, isabet bağımsız oracle'la sayılıp Wilson alt sınırı olarak yazılır, belge skoru noisy-OR — [`agents/risk_agirlik.py`](backend/agents/risk_agirlik.py) · [`eval/risk_calibration.py`](backend/eval/risk_calibration.py) |
 | 🏛️ **Bürokrasi Kurulu (çok-turlu müzakere)** | Hukuk + üslup + vatandaş-odaklılık + birim amiri perspektifli ajanlar taslağı **gerçek çok-turlu DEBATE** ile tartışır; öneriler çapalı-düzenleme (anchored-edit) olarak deterministik uygulanır, turlar SSE ile canlı açılır — [`agents/kurul.py`](backend/agents/kurul.py) |
 | 📏 **Yönetmelik-lafzı dayanaklı 2646 denetimi** | 13 kural (başlık/sayı/ilgi/muhatap/kapanış/imza/ek/dağıtım…) — her bulgu yönetmelik **maddesinin gerçek lafzını** (mevzuat.gov.tr PDF'inden doğrulanmış korpus) + somut düzeltme önerisini taşır; çıkarımsal sinyal asla yanlış-pozitif SARI üretmez — [`agents/yazi_lint.py`](backend/agents/yazi_lint.py) |
@@ -221,14 +230,14 @@ graph TD
 | Adım | Pipeline karşılığı | Kanıt |
 |---|---|---|
 | G1 · Belgeyi oku (OCR) | pypdfium2 + RapidOCR (offline) + python-docx | [`multimodal/ocr.py`](backend/multimodal/ocr.py) · CER 0.112 ölçümü [`eval/runs/ocr_eval.json`](backend/eval/runs/ocr_eval.json) |
-| G1 · Türü sınıflandır | `siniflandir` — 19 tür, few-shot + eskalasyon + fallback | [`nodes/siniflandir.py`](backend/agents/nodes/siniflandir.py) · held-out %95.5 (n=22 ön-ölçüm) |
+| G1 · Türü sınıflandır | `siniflandir` — 19 tür, few-shot + eskalasyon + fallback | [`nodes/siniflandir.py`](backend/agents/nodes/siniflandir.py) · e2e altın: kesin 50/59, operasyonel 58/59 |
 | G1 · Bilgi unsurlarını çıkar | `cikar` — gönderen/kurum/konu/tarih/sayı/talep, PII maskeli | [`nodes/cikar.py`](backend/agents/nodes/cikar.py) |
 | G1 · Eksik tespit + iste | `eksik_tespit` + `clarifier` (dur-ve-sor) | [`nodes/eksik_tespit.py`](backend/agents/nodes/eksik_tespit.py) |
-| G1 · Mevzuat öner | `mevzuat_oner` — BM25 + rerank + NLI + atıf grafiği | [`nodes/mevzuat_oner.py`](backend/agents/nodes/mevzuat_oner.py) |
+| G1 · Mevzuat öner | `mevzuat_oner` — talep başına mesele (LLM, kapalı küme katalog) + BM25 aday + alaka yargıcı (boş dönebilir) + usul katmanı | [`nodes/mevzuat_oner.py`](backend/agents/nodes/mevzuat_oner.py) · [`mevzuat_yargic.py`](backend/agents/mevzuat_yargic.py) · e2e altın: beklenen-hit 54/59, P@3 0,925 |
 | G1 · Özetle | `ozetle` — key-fact koruyan sadık özet | faithfulness 1.0 ([karne](backend/eval/runs/competition_scorecard.json)) |
 | G2 · Resmî yazı taslağı | `yazi_taslak` — üst/cevabi/bilgilendirme/olur, Yön. 2646 | format-uyum 1.0 · [`data/templates/`](data/templates/) (7 Jinja2 şablon) |
 | G2 · Resmî üslup + doğrula | `verify` — 2646 lint (madde madde) + uydurma-veto + tutarlılık | [`nodes/verify.py`](backend/agents/nodes/verify.py) · false-veto 0 |
-| G2 · Birim yönlendir | `route_birim` — 9 birim, top-k + alternatifler | [`nodes/route_birim.py`](backend/agents/nodes/route_birim.py) |
+| G2 · Birim yönlendir | `route_birim` → `route_ajan`: talep başına teşkilat korpusunda birim + yetki/devir kararı, tek `yonlendirme` nesnesi | [`nodes/route_ajan.py`](backend/agents/nodes/route_ajan.py) · [`agents/yonlendirme.py`](backend/agents/yonlendirme.py) · e2e altın: birim 47/59 |
 | G2 · Kullanıcıyı bilgilendir | `finalize` + sohbet asistanı | [`api/routes/sohbet.py`](backend/api/routes/sohbet.py) |
 
 
@@ -249,7 +258,37 @@ flowchart LR
     METRIK --> ART["git-sha damgalı artefakt<br/>eval/runs/*.json"]
 ```
 
-### Held-out (görülmemiş evrak, n=108 = 2×54) — ölçüm modeli DeepSeek (`deepseek-chat`)
+### Güncel: uçtan uca gerçekçi altın ölçüm (n=59, `deepseek-v4-flash`)
+
+"Bir kamu kurumu bu çıktıyı kullanabilir mi?" — 59 elle yazılmış sentetik evrak
+([`data/synthetic/e2e_gercek_gold.jsonl`](data/synthetic/e2e_gercek_gold.jsonl)), gerçek graf,
+LLM-judge yok, her ölçüt açık deterministik kural ([`eval/e2e_gercek_eval.py`](backend/eval/e2e_gercek_eval.py)),
+Wilson %95 CI. Artefakt: [`e2e_gercek_birlesik.json`](backend/eval/runs/e2e_gercek_birlesik.json)
+(2026-10-05, git `0fa4b7f`).
+
+| Metrik | Başlangıç | Birleşik |
+|---|---|---|
+| **Kurumda kullanılabilir** *(tür+birim+yetki+talep+konu+ilgi+antet+PII hepsi doğru)* | 13/59 = 0,22 | **45/59 = 0,76** [0,64–0,85] |
+| Birim (memurun gördüğü havale) | 38/59 = 0,64 | 47/59 = 0,80 |
+| Muhatap kurum | — | 59/59 |
+| Tür (kesin / operasyonel) | — | 50/59 / 58/59 |
+| Yetki dışı tespiti (yapısal) / yanlış alarm | — | 14/16 / 1/43 |
+| Konu · İlgi · Antet kurumu | — | 57/59 · 59/59 · 59/59 |
+| Mevzuat beklenen-hit / P@3 | — | 54/59 / 0,925 |
+| PII sızıntısı · JSON kesilmesi | — | 0/59 · 0 |
+| Süre p50 / p95 | — | 6,9 sn / 8,4 sn |
+
+> **2026-10-05 inceleme notu:** eval kurallarında iki yanlış negatif (kısaltma ↔ tam kurum adı;
+> Türkçe ünlü düşmesi/türetme eki) ve altında beş mevzuat-lafzı hatası düzeltildi (kat mülkiyeti
+> uyuşmazlığı artık 3071 m.6/b gereği **devirsiz** yargı yolu bekler; dilekçede TCKN zorunlu eksik
+> sayılmaz — 3071 m.4; CİMER'de ıslak imza aranmaz). Aynı koşum düzeltilmiş kurallarla döküm
+> üzerinden yeniden puanlandığında **48/59 = 0,81 [0,70–0,89]** — bu yeni bir LLM koşumu değildir.
+> Antet birim satırı 36/59 belgede jenerik yer tutucu (`antet_birim_yer_tutucu`, ayrı ölçüt).
+
+### Tarihsel: held-out (görülmemiş evrak, n=108 = 2×54) — ölçüm modeli DeepSeek (`deepseek-chat`)
+
+> **Tarihsel kayıt.** Bu skorlar kaldırılmış `deepseek-chat` modeliyle ve artık kullanılmayan
+> 9'lu kategori yönlendirmesiyle ölçüldü; güncel mimariyi temsil etmez, manşet olarak alıntılanmaz.
 
 > ⚠️ **2026-07-24:** `deepseek-chat` API'den kaldırıldı; üretim modeli `deepseek-v4-flash`.
 > Aşağıdaki skorlar **eski modelle** ölçülmüştür ve yeni modelle **yeniden ölçülmemiştir**
@@ -273,7 +312,7 @@ detay [`docs/benchmark/llm-heldout.md`](docs/benchmark/llm-heldout.md).
 > sınıflandırmada ~0.93 ile uyumludur; routing satırları düzeltme öncesine ait olduğundan
 > artık referans verilmez.
 
-### Geniş in-domain karne (n=216, gerçek LLM, kasıtlı zor set)
+### Tarihsel: geniş in-domain karne (n=216, `deepseek-chat`, kasıtlı zor set)
 
 216 evraklık set **bilerek zor** kurgulanmıştır (örtük ifade, zorluk kademeli):
 
@@ -319,7 +358,7 @@ tanımları: [`docs/06-eval-harness.md`](docs/06-eval-harness.md)).
 | Denetlenebilirlik | Islak imza + zimmet defteri | Yok | SHA-256 hash-zinciri + HITL onay kaydı |
 | Anahtar/internet yoksa | Çalışır (elle) | Durur | **Deterministik fallback ile uçtan uca çalışır** |
 | Arşiv/EBYS entegrasyonu | Elle SDP kodu | Yok | Otomatik SDP kodu + EYP 2.0 paketi |
-| Maliyet / belge | Memur-dakikaları | değişken | **~$0.001** (DeepSeek) · ~10 sn |
+| Maliyet / belge | Memur-dakikaları | değişken | **~$0.001** (DeepSeek) · ~7 sn (p50) |
 
 ---
 
@@ -344,8 +383,8 @@ flowchart LR
 | `openai` | **DeepSeek `deepseek-v4-flash`** (önerilen) / `deepseek-v4-pro` / OpenAI / Azure | `OPENAI_API_KEY` | üretim doğruluğu (~$0.001/belge) |
 | `llamacpp` | lokal Qwen GGUF | — | on-prem / gizlilik |
 
-İki **profil anahtarı** hepsinin üstünde: `VITRIN_MODU=1` (jüri demosu: HITL + clarifier +
-CRAG + atıf genişletme + hız profili → belge ~10 sn) · `KVKK_MODU=1` (yerel Ollama'ya zorlar —
+İki **profil anahtarı** hepsinin üstünde: `VITRIN_MODU=1` (demo profili: HITL + clarifier +
+CRAG + atıf genişletme + hız profili) · `KVKK_MODU=1` (yerel Ollama'ya zorlar —
 veri kurumdan çıkmaz).
 
 ---

@@ -186,9 +186,12 @@ Fenerbahçe Mahallesi'nde son bir haftada habersiz olarak üç kez uzun süreli 
       muhatap_kabul=["Kadıköy Belediye"], yetki="DISARIDA", yetkili="İSKİ Genel Müdürlüğü",
       yetkili_kabul=["İSKİ", "İstanbul Su ve Kanalizasyon"],
       talepler=[T("Su kesintisi ve ana boru arızası", ["su kesinti", "boru", "kesinti"],
-                  ["İSKİ", "Yazı İşleri", "Halkla İlişkiler", "Kurumsal İletişim"],
+                  ["İSKİ", "İstanbul Su ve Kanalizasyon", "Yazı İşleri", "Halkla İlişkiler",
+                   "Kurumsal İletişim"],
                   "DISARIDA", ["İSKİ", "İstanbul Su ve Kanalizasyon"])],
-      birim=["İSKİ", "Yazı İşleri", "Halkla İlişkiler", "Kurumsal İletişim"],
+      # Kısaltma + tam ad birlikte (2026-10-05: tam adlı doğru devir 'İSKİ' ile eşleşmiyordu).
+      birim=["İSKİ", "İstanbul Su ve Kanalizasyon", "Yazı İşleri", "Halkla İlişkiler",
+             "Kurumsal İletişim"],
       konu=["su", "kesinti"], mev=["3071", "2560"], mev_kabul=["5216", "5393"],
       kurum_tipi="ilce_belediyesi")))
 
@@ -407,7 +410,11 @@ Selçuklu ilçesi Yazır Mahallesi'nde sahipsiz köpekler çocuklara saldırıyo
       birim=["Selçuklu", "Veteriner", "Basın ve Halkla", "Halkla İlişkiler"],
       konu=["köpe", "hayvan"], ilgi_turu="cimer", ilgi_kabul=[AD, "CİMER"],
       mev=["5199", "3071", "5690"], mev_kabul=["5393", "5216"], yasak=["5176"],
-      eksik=["imza"], kurum_tipi="valilik", kanal="cimer")))
+      # ALTIN DÜZELTMESİ (2026-10-05 inceleme): eksik=["imza"] YANLIŞTI — aynı gerekçe
+      # cimer_etimesgut_hayvan_park ile: CİMER elektronik kanaldır, kimlik e-Devlet ile
+      # belirlenir (4982 m.6 son cümle: kimliğin "yasal olarak belirlenebilir olması
+      # kaydıyla elektronik ortamda"); ıslak imza aranmaz.
+      eksik=[], kurum_tipi="valilik", kanal="cimer")))
 
 S.append(("valilik_bursa_yuruyus", """T.C.
 BURSA VALİLİĞİNE
@@ -707,7 +714,7 @@ S.append(("sgk_icra_maas_haczi", """T.C.
 ANKARA 12. İCRA DAİRESİ
 
 Dosya No : 2026/45123 Esas
-Konu     : Maaş haczi (89/1 haciz ihbarnamesi)
+Konu     : Maaş haczi müzekkeresi
 
 SOSYAL GÜVENLİK KURUMU
 ANKARA SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜNE
@@ -725,6 +732,10 @@ Tarih: 24.09.2026
       birim=["Emeklilik", "Hukuk", "Ödeme", "Kamu Görevlileri Ödemeler"],
       konu=["haciz", "maaş", "aylık"], ilgi_turu="icra",
       ilgi_gonderen="Ankara 12. İcra Dairesi", ilgi_kabul=["İcra Daire", "İcra Müdürlüğü"],
+      # ALTIN DÜZELTMESİ (2026-10-05 inceleme): konu satırı '89/1 haciz ihbarnamesi' diyordu,
+      # gövde ise İİK m.83 maaş haczi kesintisi istiyor. 89/1 üçüncü kişiye süreli ihbardır
+      # (ayrı işlem; süre beklentisi korpusta m.89 lafzı OLMADIĞI için yazılamaz —
+      # [DOĞRULA: İİK m.89 itiraz süresi]). Senaryo gövdeyle tutarlı müzekkereye indirildi.
       mev=["2004"], mev_kabul=["5510", "7201", "6100"], kurum_tipi="sgk", kanal="icra")))
 
 S.append(("sgk_rapor_parasi", """SOSYAL GÜVENLİK KURUMU
@@ -794,12 +805,15 @@ S.append(("tapu_kat_mulkiyeti", """ÇANKAYA TAPU MÜDÜRLÜĞÜNE
 Oturduğum apartmanın yöneticisi, kat malikleri kurulu kararı olmadan aidatları iki katına çıkarmış ve ödemediğim için bana gecikme tazminatı uygulamaktadır. Yöneticinin bu işleminin iptal edilmesini ve aidatın eski tutara indirilmesini talep ediyorum.
 """ + imza_blok("Bahçelievler Mah. 3. Cad. No:44/8 Çankaya/ANKARA", "27.09.2026"),
     D(tur="dilekce", tur_kabul=["sikayet", "talep"], muhatap="Çankaya Tapu Müdürlüğü",
-      muhatap_kabul=["Tapu Müdürlü"], yetki="DISARIDA", yetkili="Sulh Hukuk Mahkemesi",
-      yetkili_kabul=["Sulh Hukuk", "Mahkeme", "Adliye"],
+      # ALTIN DÜZELTMESİ (2026-10-05 inceleme): önceki beklenti 'DISARIDA → Sulh Hukuk
+      # Mahkemesi' devriydi. Kat malikleri arası uyuşmazlık yargı merciinin görevidir:
+      # 3071 m.6/b "Yargı mercilerinin görevine giren konularla ilgili olanlar ...
+      # incelenemezler"; m.5 devri yalnız "yetkili idari makama" yapılır — mahkemeye
+      # dilekçe devri YOKTUR. Doğru çıktı devirsiz cevap: vatandaşa yargı yolu bildirilir.
+      muhatap_kabul=["Tapu Müdürlü"], yetki="YARGI",
       talepler=[T("Aidat artışı kararının iptali", ["aidat", "yönetici"],
-                  ["Sulh Hukuk", "Mahkeme", "Müdür", "Tapu"], "DISARIDA",
-                  ["Sulh Hukuk", "Mahkeme", "Adliye"])],
-      birim=["Sulh Hukuk", "Mahkeme", "Müdür", "Tapu"], konu=["aidat", "kat mülkiyeti", "yönetici"],
+                  ["Müdür", "Tapu"], "YARGI")],
+      birim=["Müdür", "Tapu"], konu=["aidat", "kat mülkiyeti", "yönetici"],
       mev=["634"], mev_kabul=["3071", "6100"], kurum_tipi="tapu")))
 
 # ---------------------------------------------------------------- MAHKEME / İCRA / KURUM YAZILARI
@@ -1026,7 +1040,11 @@ Ayşe Yılmaz
       talepler=[T("Çöplerin düzenli toplanması", ["çöp", "konteyner"], ["Temizlik İşleri"])],
       birim=["Temizlik İşleri"], konu=["çöp", "temizlik"],
       mev=["5393", "3071"], mev_kabul=["atik_yonetimi_yonetmeligi"],
-      eksik=["tckn_veya_kurum", "tarih", "iletisim_adres"], kurum_tipi="ilce_belediyesi")))
+      # ALTIN DÜZELTMESİ (2026-10-05 inceleme): 'tckn_veya_kurum' beklenen eksikten çıkarıldı.
+      # 3071 m.4 lafzı: dilekçede "adı-soyadı ve imzası ile iş veya ikametgâh adresinin
+      # bulunması gerekir" — T.C. kimlik no şart DEĞİL (4982 m.6 da saymaz). TCKN istemek
+      # geçerli dilekçeyi eksik gösterir ve gereksiz kişisel veri toplar.
+      eksik=["tarih", "iletisim_adres"], kurum_tipi="ilce_belediyesi")))
 
 S.append(("ilce_mem_okul_onu_cukur", """T.C.
 KEÇİÖREN KAYMAKAMLIĞI
@@ -1121,8 +1139,12 @@ for sid, metin, b in S:
     for k in b["birim_kabul_edilebilir"] + [x for t in b["talep_detay"] for x in t["birim_kabul"]]:
         if norm(k) not in teskilat_metin:
             uyarilar.append(f"{sid}: birim kökü teskilat korpusunda yok: {k}")
+    # YARGI: yargı merciinin görevi (3071 m.6/b) — devir beklenmez, yetkili kurum da yok.
+    assert b["yetki"] in {"ICERIDE", "DISARIDA", "YARGI"}, sid
     if b["yetki"] == "DISARIDA":
         assert b["yetkili_kurum_kabul"], sid
+    if b["yetki"] == "YARGI":
+        assert not b["yetkili_kurum_kabul"], sid
     assert b["evrak_turu"] in {"dilekce", "basvuru", "sikayet", "ihbar", "talep", "bilgi_edinme",
                                "cimer", "ust_yazi", "cevabi_yazi", "tebligat", "dava_evraki",
                                "icra_evraki", "muzekkere", "fatura", "tutanak", "rapor",

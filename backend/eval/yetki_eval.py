@@ -9,6 +9,8 @@ her belge için türü ve talepleri altından verir, yalnız yönlendirmeyi öl�
   - alt_birim_dogruluk    : çok talepli belgede talep başına birim/kurum doğru
   - yetki_tespit          : DISARIDA belgede yetkili kurum (belge ya da talep düzeyi) doğru
   - yetki_yanlis_alarm    : ICERIDE belgede belge düzeyi kurum dışına devir
+  - yargi_yolu_devir      : YARGI belgede (3071 m.6/b, yargı merciinin görevi) herhangi bir devir
+                            — hedef 0; m.5 devri yalnız yetkili İDARİ makama yapılır
   - yanlis_otomatik_havale: insan onayı İSTEMEDEN yanlış birime havale (hedef 0)
 
 Mock modda (LLM yok) deterministik yolu ölçer — CI bekçisi: yanlış otomatik havale 0 olmalı.
@@ -24,6 +26,7 @@ import json
 import sys
 from typing import Any
 
+from eval.e2e_eslesme import birim_dogru as _birim_dogru
 from eval.e2e_gercek_eval import GOLD, icerir_herhangi
 from eval.stats import wilson_interval
 
@@ -38,7 +41,7 @@ def _state(g: dict[str, Any]) -> dict[str, Any]:
 
 def belge_olc(out: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     gosterim = out.get("gosterim_birimi") or out.get("hedef_birim_oneri") or ""
-    birim_dogru = icerir_herhangi(gosterim, b["birim_kabul_edilebilir"])
+    birim_dogru = _birim_dogru(gosterim, b["birim_kabul_edilebilir"])
     yon = out.get("yonlendirme") or {}
     kararlar = yon.get("talepler") or []
     alt = []
@@ -54,6 +57,7 @@ def belge_olc(out: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     return {"birim": birim_dogru, "alt": alt, "gosterim": gosterim,
             "yetki": icerir_herhangi(kurumlar, b.get("yetkili_kurum_kabul") or []),
             "yanlis_alarm": belge_disari, "karar": yon.get("karar"),
+            "devir": belge_disari or any(k.get("alici_kurum") for k in kararlar),
             "otomatik_yanlis": (not out.get("insan_onayi_gerekli")) and not birim_dogru}
 
 
@@ -72,12 +76,14 @@ async def calistir(satirlar: list[dict[str, Any]]) -> dict[str, Any]:
                       **belge_olc(out, g["beklenen"])})
     dis = [r for r in kayit if r["yetki_beklenen"] == "DISARIDA"]
     ic = [r for r in kayit if r["yetki_beklenen"] == "ICERIDE"]
+    yargi = [r for r in kayit if r["yetki_beklenen"] == "YARGI"]
     alt = [x for r in kayit for x in r["alt"]]
     return {"n": len(kayit), "metrikler": {
         "birim_dogruluk": _oran(sum(r["birim"] for r in kayit), len(kayit)),
         "alt_birim_dogruluk": _oran(sum(alt), len(alt)),
         "yetki_tespit": _oran(sum(r["yetki"] for r in dis), len(dis)),
         "yetki_yanlis_alarm": _oran(sum(r["yanlis_alarm"] for r in ic), len(ic)),
+        "yargi_yolu_devir": _oran(sum(r["devir"] for r in yargi), len(yargi)),
         "yanlis_otomatik_havale": _oran(sum(r["otomatik_yanlis"] for r in kayit), len(kayit)),
     }, "belgeler": kayit}
 

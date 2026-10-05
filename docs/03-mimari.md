@@ -18,8 +18,10 @@ START → siniflandir → cikar → kanit_baglama → eksik_tespit → [decompos
             → sla_triyaj → denetim_izi → finalize → END
 ```
 
-`[decompose]` (ENV-gated, **varsayılan açık**): çok-konulu evrakı alt-taleplere böler ve paralel
-fan-out kaynağı olur (kapalıyken fan-out `eksik_tespit`'ten başlar — baseline birebir).
+`[decompose]` (ENV-gated, **varsayılan açık**): LLM ÇAĞIRMAZ (2026-10). Talepler `cikar`'ın tek
+LLM çağrısında tek bir kümede çıkarılır (`bilgi_unsurlari['talep_kumesi']`,
+`agents/talep_kumesi.py`); decompose bu kümeden `alt_talepler`'i deterministik türetir ve
+paralel fan-out kaynağı olur (kapalıyken fan-out `eksik_tespit`'ten başlar).
 
 `[risk_guard]` (ENV-gated, **varsayılan açık**): verify sinyallerinden trafik ışığı bandı
 (🟢 yayın-hazır / 🟡 memur incelesin / 🔴 uydurma şüphesi) üretir. HITL (`HITL_ENABLED`) açıkken
@@ -36,10 +38,10 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 | `siniflandir` | evrak türü (18+belirsiz) | **UYGULANDI** — few-shot LLM + mock fallback | triaj deseni |
 | `cikar` | bilgi unsurları + PII maskeleme | **UYGULANDI** — JSON/regex + maskeleme | yeni |
 | `eksik_tespit` | zorunlu-alan → eksik + takip sorusu | **UYGULANDI** — tür şeması | clarify_slots deseni |
-| `decompose` | çok-konulu evrak → alt-talepler (tür+birim+süre) | **UYGULANDI** — LLM segment + deterministik bağlaç fallback; ENV-gated (varsayılan açık) | yeni (vitrin) |
-| `mevzuat_oner` | ilgili mevzuat | **UYGULANDI** — BM25 + fallback | mevzuat node |
+| `decompose` | talep kümesi → alt-talepler (tür+birim ipucu) | **UYGULANDI** — LLM'siz; tek talep kümesinden deterministik türetme (eski LLM segment + bağlaç heuristiği kaldırıldı, 2026-10); ENV-gated (varsayılan açık) | yeni |
+| `mevzuat_oner` | ilgili mevzuat | **UYGULANDI** — `MEVZUAT_MESELE=1` (varsayılan): talep başına LLM mesele + korpus kataloğundan kapalı küme dosya seçimi → BM25 aday havuzu (tür boost'u yok) → alaka yargıcı (boş dönebilir) → deterministik usul katmanı; `MEVZUAT_MESELE=0` → eski tür odaklı BM25 | mevzuat node |
 | `ozetle` | kısa öz özet | **UYGULANDI** — key-fact odaklı özet | draft deseni |
-| `route_birim` | hedef birim + top-k | **UYGULANDI** — DeepSeek akıl-yürütme + 9 birim deterministik fallback | yeni |
+| `route_birim` | talep başına birim + yetki/devir | **UYGULANDI** — `ROUTE_AJAN=1` (varsayılan): `route_ajan` teşkilat korpusunda talep başına karar verir; sonuç TEK `state['yonlendirme']` nesnesi (`agents/yonlendirme.py`: ICERIDE/DISARIDA/KARMA/BELIRSIZ + devir + insan onayı); `hedef_birim`/`gosterim_birimi` yalnız ondan türetilir. 9'lu kategori yalnız deterministik yedektir, memura birim diye gösterilmez | yeni |
 | `yazi_taslak` | resmî yazı (Yön. 2646 format) | **UYGULANDI** — jinja2 + LLM/mock; format kapısı açık | dilekce node |
 | `verify` | taslak kalite kapısı + uydurma-veto | **UYGULANDI** — false-veto=0 | yeni |
 | `risk_guard` | risk bandı (🟢/🟡/🔴) + koşullu HITL | **UYGULANDI** — deterministik, verify sinyallerinden; ENV-gated (varsayılan açık) | yeni (vitrin) |
@@ -53,6 +55,9 @@ OCR: `POST /process_doc/stream` dosyayı alır → `multimodal/ocr.extract_text`
 `evrak_text, evrak_turu, bilgi_unsurlari, eksik_alanlar, mevzuat_onerileri, ozet, hedef_birim,
 yazi_turu, yazi_taslak_md, verify_notes, arsiv_metadata, clarify_questions, response`.
 `alt_talepler` (decompose; tek-yazıcı fan-out kaynağı → plain liste, reducer gerekmez).
+`yonlendirme` (yönlendirme tek doğruluk kaynağı) · `yazi_paketi` (cevap/havale/devir/devir_bilgi
+yazıları; başlıklar `yazi/baslik.py` tek çözücüsünden) · `llm_izleri` (`operator.add`; her LLM
+çağrısının profil/kesik/yedek izi — `agents/llm_politika.py`).
 
 ## Genişletme / açık kalite kapıları
 

@@ -559,23 +559,10 @@ LLM_CACHE_BOYUT = int(os.getenv("LLM_CACHE_BOYUT", "256"))
 # 0 = eski davranış (boş/kesik cevapta da yeniden dene).
 LLM_RETRY_SADECE_BOZUK = os.getenv("LLM_RETRY_SADECE_BOZUK", "1") == "1"
 
-# (5c) KESİK CEVABIN DÜŞÜNMESİZ KURTARILMASI — decompose'a özel (ÇIKARIM işi).
-# Ölçüldü (A/B): decompose'un çağrısı bütçe tavanına dayanıp kesiliyor; eski kod aynı
-# bütçeyle yeniden soruyordu ve 4 denemenin 3'ü yine kesildi, 1'i şans eseri tuttu — yani
-# kurtarma vardı ama yazı-turaydı ve deneme başına ~11 sn'ye mal oluyordu. Düşünme
-# kapatılınca bütçenin tamamı cevaba kalır: kurtarma güvenilir ve ~3 sn.
-# YALNIZ decompose: segmentasyon + kapalı-küme tur/birim seçimi ÇIKARIM'dır
-# (bkz. LLM_DUSUNME_CIKARIMDA_KAPALI taksonomisi). route_ajan'ın yetki kararı YARGI'dır ve
-# orada deterministik yol ölçülmüş üstündür (Top-1 0,907) — oraya BAĞLANMAZ.
-DECOMPOSE_KESIKTE_DUSUNMESIZ = os.getenv("DECOMPOSE_KESIKTE_DUSUNMESIZ", "1") == "1"
-
-# (5d) DECOMPOSE KAYNAK ÇAPASI — LLM segmentinin metni kaynakta gerçekten geçiyor mu.
-# `tur`/`birim` kapalı-küme ile doğrulanıyordu ama serbest-metin `metin` alanı yalnız
-# uzunluk kontrolünden geçiyordu; oysa o metin çok-konulu evrakta her alt-taslağın Konu
-# satırına ve gövde tohumuna giriyor ve 2..N taslakları verify'ın uydurma vetosunu
-# GÖRMÜYOR. Eşiğin altında kalan segment düşer; 2'nin altına inilirse LLM segmenti tümden
-# reddedilir ve heuristik yol çalışır. 0 = guard kapalı (eski davranış).
-DECOMPOSE_CAPA_ESIGI = float(os.getenv("DECOMPOSE_CAPA_ESIGI", "0.7"))
+# (5c/5d) DECOMPOSE_KESIKTE_DUSUNMESIZ ve DECOMPOSE_CAPA_ESIGI KALDIRILDI (birleştirme
+# 2026-10): decompose artık LLM çağırmıyor; talepler cikar'ın tek çağrısındaki talep
+# kümesinden deterministik türetiliyor ve kaynak çapası agents/talep_kumesi.py'de.
+# Ölü bayrak "ayar var ama etkisi yok" yanılgısı üretiyordu.
 
 # (5e) RESMÎ YAZI GÖVDESİ — düşünme kapalı. Bu çağrı (yazi_render) `_chat_dene` katmanını
 # ATLIYOR, yani ne düşünme marjı ne düşünme kapatma alıyordu. ÖLÇÜLDÜ (2026-08-07): çok-konulu
@@ -606,8 +593,8 @@ LINT_AUTOFIX = os.getenv("LINT_AUTOFIX", "1") == "1"
 VERIFY_GROUNDING_LLM = os.getenv("VERIFY_GROUNDING_LLM", "1") == "1"
 
 # SDP (Standart Dosya Planı) konu-kodu önerisi — Yön. 2646 m.11 Sayı satırının konu-kodu
-# bileşenini evrak türü + konudan DETERMİNİSTİK seçer (yazi/sdp_plani, 2005/7 Genelge Ortak
-# Alanlar). Taslak Sayı'sı "EBYS-TASLAK" placeholder'ından m.11-yapılı gerçek koda kavuşur.
+# bileşenini TEK motordan seçer (agents.nodes.arsiv.sdp_secimi_yap + data/sdp katalogu;
+# 2005/7 Ortak Alanlar). Taslak Sayı'sı "EBYS-TASLAK" placeholder'ından m.11-yapılı gerçek koda kavuşur.
 # Kapalı-küme + deterministik → kapatılırsa (SDP_ONERI=0) render bugünküyle BİREBİR aynı.
 SDP_ONERI = os.getenv("SDP_ONERI", "1") == "1"
 

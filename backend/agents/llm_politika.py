@@ -38,7 +38,6 @@ ENV EZMELERİ (çağrı anında okunur; operatör kod değiştirmeden geri alabi
   Geriye uyumlu eski bayraklar (agents.config):
   LLM_DUSUNME_CIKARIMDA_KAPALI=0  → tüm profillerde düşünme AÇIK (2026-08 öncesi baseline)
   YAZI_GOVDE_DUSUNME_KAPALI=0     → yazi_govde düşünmeli
-  DECOMPOSE_KESIKTE_DUSUNMESIZ=0  → decompose kesikte kurtarma yapmaz (doğrudan yedek)
 """
 
 from __future__ import annotations
@@ -216,8 +215,6 @@ def _env_ezmeleri(p: CagriProfili) -> CagriProfili:
         p = replace(p, dusunme=Dusunme.ACIK)
     if p.ad == "yazi_govde" and not config.YAZI_GOVDE_DUSUNME_KAPALI:
         p = replace(p, dusunme=Dusunme.ACIK)
-    if p.ad == "decompose" and not config.DECOMPOSE_KESIKTE_DUSUNMESIZ:
-        p = replace(p, kesikte=Kesikte.YEDEK)
     if p.ad in _csv("LLM_DUSUNME_ACIK_NODELAR"):
         p = replace(p, dusunme=Dusunme.ACIK)
     if p.ad in _csv("LLM_DUSUNME_KAPALI_NODELAR"):

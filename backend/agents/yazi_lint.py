@@ -233,7 +233,7 @@ def _k_sayi(taslak: str, low: str, yazi_turu: str) -> dict[str, str]:
                       "belgede başına 'E-' eklenir (m.11).",
                       oneri="Belge EBYS'de üretilecekse sayının başına 'E-' ibaresini ekleyin.")
     # Taslak yer tutucu Sayı: köşeli placeholder ('E-[DETSİS No]-903-[Kayıt No]', SDP
-    # konu-kodlu — yazi.sdp_plani), jinja ya da 'ebys/taslak' → EBYS kayıtta dolar (uyari değil).
+    # konu-kodlu — arşivin tek SDP motoru), jinja ya da 'ebys/taslak' → EBYS kayıtta dolar (uyari değil).
     # Köşeli parantez '[...]' TAM placeholder aranır (tek başına stray '[' desen ihlalini
     # sessizce bilgi'ye düşürmesin — review LOW bulgusu).
     yer_tutucu = ("{{" in satir or re.search(r"\[[^\]]+\]", satir)

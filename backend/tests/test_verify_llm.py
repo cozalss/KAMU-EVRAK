@@ -364,7 +364,7 @@ class TestGroundingIskeletMuafiyeti:
         assert out["verify_uyari"] == []  # hiçbiri banda dokunmaz
 
     async def test_sdp_sayi_satiri_dusurulur(self, acik):
-        # Yön. m.11 SDP Sayı satırı (yazi.sdp_plani) deterministik konur; '930' konu-kodu
+        # Yön. m.11 SDP Sayı satırı (tek SDP motoru) deterministik konur; '930' konu-kodu
         # kaynakta olmasa da UYDURMA DEĞİLDİR → grounding banda dokunmamalı (whole-Sayı muaf).
         acik.setattr(verify_mod, "LINT_AUTOFIX", False)
         acik.setattr(verify_mod, "VERIFY_GROUNDING_LLM", True)

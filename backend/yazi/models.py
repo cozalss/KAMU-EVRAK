@@ -166,7 +166,7 @@ class YaziContext:
         """
         out: dict[str, Any] = {"tarih": self.tarih, "yazi_turu": self.yazi_turu}
         # Sayı oto-kompoze (Yön. m.11: E-DETSİS-SDP-KAYIT). SDP kodu konudan türetilir
-        # (yazi.sdp_plani); DETSİS/kayıt no kuruma/EBYS'ye özgü (taslakta bilinmez) → köşeli
+        # (arşivin tek SDP motoru, sdp_secimi); DETSİS/kayıt no kuruma/EBYS'ye özgü (taslakta bilinmez) → köşeli
         # placeholder ile m.11 YAPISI korunur, gerçek konu-kodu görünür. Kod yoksa aşağıdaki
         # scalar döngüsü 'EBYS-TASLAK' nötr varsayılanına düşer (uydurma yok).
         sayi = self.sayi_satiri

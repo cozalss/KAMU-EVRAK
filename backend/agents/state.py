@@ -61,6 +61,9 @@ class EvrakState(TypedDict):
     # Sunucu-kaynaklı gerçek node süreleri. Paralel dallar aynı superstep'te farklı
     # anahtarlar yazdığı için dict reducer ile kayıpsız birleşir; UI istemci tahmini yapmaz.
     node_sureleri_ms: Annotated[dict[str, int], _merge_dict]
+    # Merkezi LLM katmanının çağrı izleri (agents.llm_iz): {node, profil, deneme, kesik,
+    # kurtarildi, yedege_dustu, neden, sure_ms, tokens_*, onbellek}. İçerik YOK (KVKK).
+    llm_izleri: NotRequired[Annotated[list[dict[str, Any]], operator.add]]
 
     # --- Görev 1: sınıflandırma + içerik analizi ---
     evrak_turu: NotRequired[str]            # EVRAK_TURLERI'nden biri

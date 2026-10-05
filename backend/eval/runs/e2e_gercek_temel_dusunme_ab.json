@@ -1,0 +1,532 @@
+{
+ "etiket": "temel_dusunme_ab",
+ "tarih": "2026-10-05T19:08:45.230769+00:00",
+ "git": {
+  "sha": "63c0bd0fcab55b504e237d0b2883b1a501815667",
+  "kirli": true
+ },
+ "gold": "e2e_gercek_gold.jsonl",
+ "n": 2,
+ "llm_mode": "openai",
+ "model": "deepseek-v4-flash",
+ "eszamanlilik": 6,
+ "sure_toplam_s": 10.8,
+ "kurallar": {
+  "konu_azami_kelime": 12,
+  "ham_kopya_ngram": 6,
+  "mevzuat_k": 3,
+  "bilesik": [
+   "hata",
+   "tur",
+   "birim",
+   "yetki",
+   "talep",
+   "konu",
+   "ilgi",
+   "antet",
+   "pii"
+  ]
+ },
+ "metrikler": {
+  "kurumda_kullanilabilir": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "tur_dogruluk": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "tur_dogruluk_kabul": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "tur_dogruluk_operasyonel": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "muhatap_dogruluk": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "birim_dogruluk": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "birim_dogruluk_alt_talep": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "routing_fallback": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "yetki_tespit_yapisal": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "yetki_tespit_metinsel": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "yetki_yanlis_alarm": {
+   "k": 1,
+   "n": 2,
+   "oran": 0.5,
+   "ci95": [
+    0.095,
+    0.905
+   ]
+  },
+  "talep_recall_decompose": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "talep_recall_cikar": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "talep_sayisi_dogru": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "talep_ajan_tutarliligi": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "konu_kalitesi": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "ilgi_dogrulugu": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "antet_dogrulugu": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "mevzuat_beklenen_hit": {
+   "k": 2,
+   "n": 2,
+   "oran": 1.0,
+   "ci95": [
+    0.342,
+    1.0
+   ]
+  },
+  "mevzuat_precision_at_3": {
+   "k": 2,
+   "n": 4,
+   "oran": 0.5,
+   "ci95": [
+    0.15,
+    0.85
+   ]
+  },
+  "alakasiz_mevzuat_orani": {
+   "k": 2,
+   "n": 4,
+   "oran": 0.5,
+   "ci95": [
+    0.15,
+    0.85
+   ]
+  },
+  "yasak_mevzuat_belge": {
+   "k": 1,
+   "n": 2,
+   "oran": 0.5,
+   "ci95": [
+    0.095,
+    0.905
+   ]
+  },
+  "eksik_tam_eslesme": {
+   "k": 1,
+   "n": 2,
+   "oran": 0.5,
+   "ci95": [
+    0.095,
+    0.905
+   ]
+  },
+  "eksik_precision": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "eksik_recall": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "pii_sizinti_belge": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "json_kesilme_belge": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "json_kesilme_cagri": 0,
+  "json_kesilme_butce": {},
+  "llm_cagri_toplam": 15,
+  "hata_belge": 0,
+  "sure_p50_s": 8.63,
+  "sure_p95_s": 10.13,
+  "node_ortalama_ms": {
+   "route_birim": 3931,
+   "cikar": 1419,
+   "yazi_taslak": 1360,
+   "siniflandir": 1354,
+   "ozetle": 1249,
+   "verify": 857,
+   "arsiv": 551,
+   "eksik_tespit": 437,
+   "mevzuat_oner": 317,
+   "servis_birim": 0,
+   "kanit_baglama": 0,
+   "decompose": 0,
+   "risk_guard": 0,
+   "sla_triyaj": 0,
+   "denetim_izi": 0,
+   "finalize": 0
+  }
+ },
+ "basarisizliklar": {
+  "kaymakamlik_kecioren_pasaport": [
+   "yetki: yanlış alarm → İl Nüfus ve Vatandaşlık Müdürlüğü",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Kaymakamlığının 03.10.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5176_etik_kurulu_kanunu']"
+  ],
+  "sgk_icra_maas_haczi": [
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: belge_turu_yanlis → 24.09.2026 tarihli başvurunuz."
+  ]
+ },
+ "belgeler": [
+  {
+   "id": "kaymakamlik_kecioren_pasaport",
+   "kurum_tipi": "kaymakamlik",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 8.63,
+   "llm": {
+    "cagri": 6,
+    "kesik": 0,
+    "tokens_out": 1353,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "basvuru",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Kaymakamlığı",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "İl Nüfus ve Vatandaşlık Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": true,
+    "gecti": false,
+    "yetkili_tahmin": "İl Nüfus ve Vatandaşlık Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "umuma mahsus pasaport çıkarılması",
+    "kelime": 4
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Keçiören Kaymakamlığının 03.10.2026 tarihli yazısı.",
+    "muhatap": "İL NÜFUS VE VATANDAŞLIK MÜDÜRLÜĞÜNE"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN KAYMAKAMLIĞI / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5682_pasaport_kanunu",
+     "5176_etik_kurulu_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1389,
+    "servis_birim": 0,
+    "siniflandir": 1398,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 337,
+    "ozetle": 993,
+    "route_birim": 5000,
+    "yazi_taslak": 126,
+    "verify": 2,
+    "arsiv": 1102,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "yetki: yanlış alarm → İl Nüfus ve Vatandaşlık Müdürlüğü",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Kaymakamlığının 03.10.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "sgk_icra_maas_haczi",
+   "kurum_tipi": "sgk",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 10.13,
+   "llm": {
+    "cagri": 9,
+    "kesik": 0,
+    "tokens_out": 1666,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "icra_evraki",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Hukuk İşleri Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Maaş haczi (89/1 haciz ihbarnamesi)",
+    "kelime": 6
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "24.09.2026 tarihli başvurunuz.",
+    "muhatap": "Ankara 12. İcra Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / SOSYAL GÜVENLİK KURUMU ANKARA SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "2004_icra_iflas_kanunu",
+     "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [
+     "gonderen_ad_soyad",
+     "iletisim_adres",
+     "imza"
+    ],
+    "tam": false,
+    "tp": 0,
+    "fp": 3,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1450,
+    "servis_birim": 0,
+    "siniflandir": 1311,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 874,
+    "mevzuat_oner": 298,
+    "ozetle": 1505,
+    "route_birim": 2862,
+    "yazi_taslak": 2594,
+    "verify": 1713,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: belge_turu_yanlis → 24.09.2026 tarihli başvurunuz."
+   ],
+   "kurumda_kullanilabilir": false
+  }
+ ]
+}

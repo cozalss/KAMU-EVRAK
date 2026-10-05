@@ -1,0 +1,2068 @@
+{
+ "etiket": "temel",
+ "tarih": "2026-10-05T19:07:41.611990+00:00",
+ "git": {
+  "sha": "63c0bd0fcab55b504e237d0b2883b1a501815667",
+  "kirli": true
+ },
+ "gold": "e2e_gercek_gold.jsonl",
+ "n": 15,
+ "llm_mode": "openai",
+ "model": "deepseek-v4-flash",
+ "eszamanlilik": 6,
+ "sure_toplam_s": 20.7,
+ "kurallar": {
+  "konu_azami_kelime": 12,
+  "ham_kopya_ngram": 6,
+  "mevzuat_k": 3,
+  "bilesik": [
+   "hata",
+   "tur",
+   "birim",
+   "yetki",
+   "talep",
+   "konu",
+   "ilgi",
+   "antet",
+   "pii"
+  ]
+ },
+ "metrikler": {
+  "kurumda_kullanilabilir": {
+   "k": 1,
+   "n": 15,
+   "oran": 0.0667,
+   "ci95": [
+    0.012,
+    0.298
+   ]
+  },
+  "tur_dogruluk": {
+   "k": 15,
+   "n": 15,
+   "oran": 1.0,
+   "ci95": [
+    0.796,
+    1.0
+   ]
+  },
+  "tur_dogruluk_kabul": {
+   "k": 15,
+   "n": 15,
+   "oran": 1.0,
+   "ci95": [
+    0.796,
+    1.0
+   ]
+  },
+  "tur_dogruluk_operasyonel": {
+   "k": 15,
+   "n": 15,
+   "oran": 1.0,
+   "ci95": [
+    0.796,
+    1.0
+   ]
+  },
+  "muhatap_dogruluk": {
+   "k": 15,
+   "n": 15,
+   "oran": 1.0,
+   "ci95": [
+    0.796,
+    1.0
+   ]
+  },
+  "birim_dogruluk": {
+   "k": 7,
+   "n": 15,
+   "oran": 0.4667,
+   "ci95": [
+    0.248,
+    0.699
+   ]
+  },
+  "birim_dogruluk_alt_talep": {
+   "k": 1,
+   "n": 8,
+   "oran": 0.125,
+   "ci95": [
+    0.022,
+    0.471
+   ]
+  },
+  "routing_fallback": {
+   "k": 12,
+   "n": 15,
+   "oran": 0.8,
+   "ci95": [
+    0.548,
+    0.93
+   ]
+  },
+  "yetki_tespit_yapisal": {
+   "k": 1,
+   "n": 3,
+   "oran": 0.3333,
+   "ci95": [
+    0.061,
+    0.792
+   ]
+  },
+  "yetki_tespit_metinsel": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "yetki_yanlis_alarm": {
+   "k": 1,
+   "n": 12,
+   "oran": 0.0833,
+   "ci95": [
+    0.015,
+    0.354
+   ]
+  },
+  "talep_recall_decompose": {
+   "k": 8,
+   "n": 8,
+   "oran": 1.0,
+   "ci95": [
+    0.676,
+    1.0
+   ]
+  },
+  "talep_recall_cikar": {
+   "k": 3,
+   "n": 8,
+   "oran": 0.375,
+   "ci95": [
+    0.137,
+    0.694
+   ]
+  },
+  "talep_sayisi_dogru": {
+   "k": 12,
+   "n": 15,
+   "oran": 0.8,
+   "ci95": [
+    0.548,
+    0.93
+   ]
+  },
+  "talep_ajan_tutarliligi": {
+   "k": 1,
+   "n": 4,
+   "oran": 0.25,
+   "ci95": [
+    0.046,
+    0.699
+   ]
+  },
+  "konu_kalitesi": {
+   "k": 7,
+   "n": 15,
+   "oran": 0.4667,
+   "ci95": [
+    0.248,
+    0.699
+   ]
+  },
+  "ilgi_dogrulugu": {
+   "k": 6,
+   "n": 15,
+   "oran": 0.4,
+   "ci95": [
+    0.198,
+    0.643
+   ]
+  },
+  "antet_dogrulugu": {
+   "k": 15,
+   "n": 15,
+   "oran": 1.0,
+   "ci95": [
+    0.796,
+    1.0
+   ]
+  },
+  "mevzuat_beklenen_hit": {
+   "k": 9,
+   "n": 15,
+   "oran": 0.6,
+   "ci95": [
+    0.357,
+    0.802
+   ]
+  },
+  "mevzuat_precision_at_3": {
+   "k": 13,
+   "n": 38,
+   "oran": 0.3421,
+   "ci95": [
+    0.212,
+    0.501
+   ]
+  },
+  "alakasiz_mevzuat_orani": {
+   "k": 25,
+   "n": 38,
+   "oran": 0.6579,
+   "ci95": [
+    0.499,
+    0.788
+   ]
+  },
+  "yasak_mevzuat_belge": {
+   "k": 8,
+   "n": 15,
+   "oran": 0.5333,
+   "ci95": [
+    0.301,
+    0.752
+   ]
+  },
+  "eksik_tam_eslesme": {
+   "k": 9,
+   "n": 15,
+   "oran": 0.6,
+   "ci95": [
+    0.357,
+    0.802
+   ]
+  },
+  "eksik_precision": {
+   "k": 2,
+   "n": 11,
+   "oran": 0.1818,
+   "ci95": [
+    0.051,
+    0.477
+   ]
+  },
+  "eksik_recall": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "pii_sizinti_belge": {
+   "k": 0,
+   "n": 15,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.204
+   ]
+  },
+  "json_kesilme_belge": {
+   "k": 0,
+   "n": 15,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.204
+   ]
+  },
+  "json_kesilme_cagri": 0,
+  "json_kesilme_butce": {},
+  "llm_cagri_toplam": 115,
+  "hata_belge": 0,
+  "sure_p50_s": 6.64,
+  "sure_p95_s": 8.2,
+  "node_ortalama_ms": {
+   "route_birim": 1563,
+   "yazi_taslak": 1317,
+   "cikar": 1301,
+   "ozetle": 1192,
+   "siniflandir": 1108,
+   "decompose": 719,
+   "eksik_tespit": 472,
+   "verify": 407,
+   "arsiv": 240,
+   "mevzuat_oner": 44,
+   "servis_birim": 0,
+   "kanit_baglama": 0,
+   "risk_guard": 0,
+   "sla_triyaj": 0,
+   "denetim_izi": 0,
+   "finalize": 0
+  }
+ },
+ "basarisizliklar": {
+  "ilce_konak_kacak_yapi": [
+   "mevzuat: beklenen yok, top=['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi', '2659_adli_tip_kurumu_kanunu']",
+   "mevzuat_yasak: ['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi']"
+  ],
+  "bb_ankara_sinyalizasyon": [
+   "konu: ham_kopya(8-gram) → Dikmen Caddesi ile Turan Güneş Bulvarı kavşağındaki trafik",
+   "mevzuat: beklenen yok, top=['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu', '3071_dilekce_hakki_kanunu']",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "bb_bursa_mezarlik_cop": [
+   "birim: 'Emlak ve İstimlak Dairesi Başkanlığı' (hedef_birim_oneri, durum=fallback_onerisi)",
+   "yetki: DISARIDA tespit edilmedi",
+   "konu: uzun(17k),ham_kopya(17-gram) → Geçen hafta vefat eden babamın Emirsultan Mezarlığı'nda annemin yanına defnedilebilmesi iç",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Bursa Büyükşehir Belediye Başkanlığının 04.10.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "valilik_ankara_dernek": [
+   "birim: 'İl Yazı İşleri Müdürlüğü' (hedef_birim_oneri, durum=fallback_onerisi)",
+   "mevzuat: beklenen yok, top=['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi', '6356_sendikalar_toplu_is_sozlesmesi_kanunu']",
+   "mevzuat_yasak: ['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi']"
+  ],
+  "kaymakamlik_kecioren_pasaport": [
+   "birim: 'Pasaport ve Sürücü Belgeleri Daire Başkanlığı' (hedef_birim, durum=kaynak_dogrulandi)",
+   "yetki: yanlış alarm → Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Kaymakamlığının 03.10.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5176_etik_kurulu_kanunu']"
+  ],
+  "uni_gazi_kayit_yurt": [
+   "yetki: DISARIDA tespit edilmedi (yalnız metinde anıldı)",
+   "talep_cikar: bilgi_unsurlari 1/2",
+   "konu: ham_kopya(7-gram) → 2026-2027 güz yarıyılı için kaydımın dondurulmasını",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Gazi Üniversitesi Rektörlüğünün 16.09.2026 tarihli ve 21345678 sayılı yazısı.",
+   "mevzuat: beklenen yok, top=['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu', '3071_dilekce_hakki_kanunu']",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "uni_ege_bilgi_edinme": [
+   "talep_cikar: bilgi_unsurlari 0/2",
+   "konu: uzun(16k),ham_kopya(12-gram),birinci_sahis_fiil → Üniversitenizin merkezi yemekhanesinde 2026 yılında öğrenciye sunulan bir öğün yemeğin bir",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Ege Üniversitesi Rektörlüğünün 20.09.2026 tarihli yazısı."
+  ],
+  "sgk_icra_maas_haczi": [
+   "birim: 'Sosyal Güvenlik İl Müdürlüğü (SGK)' (hedef_birim_oneri, durum=fallback_onerisi)",
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: belge_turu_yanlis → 24.09.2026 tarihli başvurunuz."
+  ],
+  "sgk_vergi_borcu": [
+   "birim: 'Tahsilat ve İhtilaflı İşler Daire Başkanlığı' (hedef_birim_oneri, durum=fallback_onerisi)",
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Sosyal Güvenlik Kurumunun 21.09.2026 tarihli yazısı.",
+   "mevzuat: beklenen yok, top=['3071_dilekce_hakki_kanunu', '5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "bel_icra_personel_haciz": [
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "konu: uzun(27k),ham_kopya(27-gram) → borçlunun Belediyenizde memur olarak almakta olduğu maaşının 2004 sayılı İcra ve İflas Kan"
+  ],
+  "bel_mahkeme_imar_muzekkere": [
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "konu: uzun(20k),ham_kopya(13-gram) → Çankaya ilçesi Birlik Mahallesi 27800 ada 3 parsele ait güncel imar durumu belgesinin onay",
+   "mevzuat: beklenen yok, top=['2646_resmi_yazisma_yonetmeligi', '2646_resmi_yazisma_e_yazisma']"
+  ],
+  "valilik_savcilik_yazisi": [
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: belge_turu_yanlis → 29.09.2026 tarihli başvurunuz."
+  ],
+  "yazi_sgk_cevabi": [
+   "birim: 'Yazı İşleri / Genel Evrak Müdürlüğü' (hedef_kategori, durum=fallback_onerisi)",
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: gonderen_yanlis,tarih_yanlis → 15.09.2026 tarihli ve E-99887766-205.99-5512345 sayılı yazınız."
+  ],
+  "bilgi_edinme_cankaya_cift": [
+   "birim: 'Yazı İşleri Müdürlüğü' (hedef_birim, durum=kaynak_dogrulandi)",
+   "talep_cikar: bilgi_unsurlari 0/2",
+   "konu: uzun(14k),ham_kopya(14-gram) → 2025 yılında Belediyenizce yapılan asfalt kaplama çalışmalarının toplam uzunluğu (km) ve h",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis,tarih_yanlis → Çankaya Belediye Başkanlığının 30.06.2026 tarihli yazısı."
+  ],
+  "eksik_adres_mamak_cop": [
+   "birim: 'Destek Hizmetleri Müdürlüğü' (hedef_birim_oneri, durum=fallback_onerisi)",
+   "konu: ham_kopya(6-gram) → Mahallemizde çöpler düzenli toplanmıyor, konteynerler taşıyor",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ]
+ },
+ "belgeler": [
+  {
+   "id": "ilce_konak_kacak_yapi",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 9.64,
+   "llm": {
+    "cagri": 9,
+    "kesik": 0,
+    "tokens_out": 1103,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "ihbar",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Konak Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Yapı Kontrol Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Konak Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "ruhsatsız ilave kat inşaatı ihbarı",
+    "kelime": 5
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "23.09.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / KONAK BELEDİYESİ / İmar ve Şehircilik Müdürlüğü",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5176_etik_kurulu_kanunu",
+     "5690_cimer_cb_kararnamesi",
+     "2659_adli_tip_kurumu_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 0,
+    "yasak": [
+     "5176_etik_kurulu_kanunu",
+     "5690_cimer_cb_kararnamesi"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1663,
+    "servis_birim": 0,
+    "siniflandir": 1504,
+    "kanit_baglama": 0,
+    "decompose": 1250,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 41,
+    "ozetle": 1371,
+    "route_birim": 1283,
+    "yazi_taslak": 2766,
+    "verify": 1,
+    "arsiv": 1294,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "mevzuat: beklenen yok, top=['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi', '2659_adli_tip_kurumu_kanunu']",
+    "mevzuat_yasak: ['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi']"
+   ],
+   "kurumda_kullanilabilir": true
+  },
+  {
+   "id": "bb_ankara_sinyalizasyon",
+   "kurum_tipi": "buyuksehir_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 6.32,
+   "llm": {
+    "cagri": 7,
+    "kesik": 0,
+    "tokens_out": 915,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara Büyükşehir Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Ulaşım Dairesi Başkanlığı",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Büyükşehir Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "ham_kopya(8-gram)"
+    ],
+    "konu": "Dikmen Caddesi ile Turan Güneş Bulvarı kavşağındaki trafik",
+    "kelime": 8
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "30.09.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA BÜYÜKŞEHİR BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1638,
+    "servis_birim": 0,
+    "siniflandir": 1366,
+    "kanit_baglama": 0,
+    "decompose": 1099,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 31,
+    "ozetle": 1088,
+    "route_birim": 1216,
+    "yazi_taslak": 1263,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "konu: ham_kopya(8-gram) → Dikmen Caddesi ile Turan Güneş Bulvarı kavşağındaki trafik",
+    "mevzuat: beklenen yok, top=['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu', '3071_dilekce_hakki_kanunu']",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "bb_bursa_mezarlik_cop",
+   "kurum_tipi": "buyuksehir_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 6.75,
+   "llm": {
+    "cagri": 7,
+    "kesik": 0,
+    "tokens_out": 935,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Bursa Büyükşehir Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Emlak ve İstimlak Dairesi Başkanlığı",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": false,
+    "metinsel": false,
+    "gecti": false,
+    "yetkili_tahmin": "Bursa Büyükşehir Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 2,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 2,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(17k)",
+     "ham_kopya(17-gram)"
+    ],
+    "konu": "Geçen hafta vefat eden babamın Emirsultan Mezarlığı'nda annemin yanına defnedilebilmesi için aile kabri yer tahsisi yapılmasını",
+    "kelime": 17
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Bursa Büyükşehir Belediye Başkanlığının 04.10.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / BURSA BÜYÜKŞEHİR BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "3071_dilekce_hakki_kanunu",
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1587,
+    "servis_birim": 0,
+    "siniflandir": 1366,
+    "kanit_baglama": 0,
+    "decompose": 1061,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 58,
+    "ozetle": 1259,
+    "route_birim": 1657,
+    "yazi_taslak": 1170,
+    "verify": 0,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Emlak ve İstimlak Dairesi Başkanlığı' (hedef_birim_oneri, durum=fallback_onerisi)",
+    "yetki: DISARIDA tespit edilmedi",
+    "konu: uzun(17k),ham_kopya(17-gram) → Geçen hafta vefat eden babamın Emirsultan Mezarlığı'nda annemin yanına defnedilebilmesi iç",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Bursa Büyükşehir Belediye Başkanlığının 04.10.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "valilik_ankara_dernek",
+   "kurum_tipi": "valilik",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 5.94,
+   "llm": {
+    "cagri": 6,
+    "kesik": 0,
+    "tokens_out": 720,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "basvuru",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara Valiliği",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "İl Yazı İşleri Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Valiliği"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Dernek kuruluş bildirimi",
+    "kelime": 3
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "01.10.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA VALİLİĞİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5176_etik_kurulu_kanunu",
+     "5690_cimer_cb_kararnamesi",
+     "6356_sendikalar_toplu_is_sozlesmesi_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 0,
+    "yasak": [
+     "5176_etik_kurulu_kanunu",
+     "5690_cimer_cb_kararnamesi"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1335,
+    "servis_birim": 0,
+    "siniflandir": 1156,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 195,
+    "ozetle": 1320,
+    "route_birim": 1656,
+    "yazi_taslak": 1613,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'İl Yazı İşleri Müdürlüğü' (hedef_birim_oneri, durum=fallback_onerisi)",
+    "mevzuat: beklenen yok, top=['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi', '6356_sendikalar_toplu_is_sozlesmesi_kanunu']",
+    "mevzuat_yasak: ['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "kaymakamlik_kecioren_pasaport",
+   "kurum_tipi": "kaymakamlik",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 6.64,
+   "llm": {
+    "cagri": 6,
+    "kesik": 0,
+    "tokens_out": 706,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "basvuru",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Kaymakamlığı",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Pasaport ve Sürücü Belgeleri Daire Başkanlığı",
+    "kaynak": "hedef_birim",
+    "durum": "kaynak_dogrulandi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": true,
+    "gecti": false,
+    "yetkili_tahmin": "Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "umuma mahsus pasaport çıkarılması",
+    "kelime": 4
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Keçiören Kaymakamlığının 03.10.2026 tarihli yazısı.",
+    "muhatap": "NÜFUS VE VATANDAŞLIK İŞLERİ GENEL MÜDÜRLÜĞÜNE"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN KAYMAKAMLIĞI / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5682_pasaport_kanunu",
+     "5176_etik_kurulu_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1476,
+    "servis_birim": 0,
+    "siniflandir": 1392,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 54,
+    "ozetle": 1079,
+    "route_birim": 2773,
+    "yazi_taslak": 224,
+    "verify": 2,
+    "arsiv": 1058,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Pasaport ve Sürücü Belgeleri Daire Başkanlığı' (hedef_birim, durum=kaynak_dogrulandi)",
+    "yetki: yanlış alarm → Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Kaymakamlığının 03.10.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "uni_gazi_kayit_yurt",
+   "kurum_tipi": "universite",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 6.75,
+   "llm": {
+    "cagri": 7,
+    "kesik": 0,
+    "tokens_out": 804,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Gazi Üniversitesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Öğrenci İşleri Daire Başkanlığı",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": false,
+    "metinsel": true,
+    "gecti": false,
+    "yetkili_tahmin": "Gazi Üniversitesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "ham_kopya(7-gram)"
+    ],
+    "konu": "2026-2027 güz yarıyılı için kaydımın dondurulmasını",
+    "kelime": 7
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Gazi Üniversitesi Rektörlüğünün 16.09.2026 tarihli ve 21345678 sayılı yazısı.",
+    "muhatap": "Yazı İşleri / Genel Evrak Müdürlüğü"
+   },
+   "antet": {
+    "antet": "T.C. / GAZİ ÜNİVERSİTESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1476,
+    "servis_birim": 0,
+    "siniflandir": 1486,
+    "kanit_baglama": 0,
+    "decompose": 1312,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 32,
+    "ozetle": 1285,
+    "route_birim": 1616,
+    "yazi_taslak": 1018,
+    "verify": 0,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "yetki: DISARIDA tespit edilmedi (yalnız metinde anıldı)",
+    "talep_cikar: bilgi_unsurlari 1/2",
+    "konu: ham_kopya(7-gram) → 2026-2027 güz yarıyılı için kaydımın dondurulmasını",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Gazi Üniversitesi Rektörlüğünün 16.09.2026 tarihli ve 21345678 sayılı yazısı.",
+    "mevzuat: beklenen yok, top=['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu', '3071_dilekce_hakki_kanunu']",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "uni_ege_bilgi_edinme",
+   "kurum_tipi": "universite",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 6.27,
+   "llm": {
+    "cagri": 7,
+    "kesik": 0,
+    "tokens_out": 850,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "bilgi_edinme",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ege Üniversitesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Sağlık, Kültür ve Spor Daire Başkanlığı",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ege Üniversitesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(16k)",
+     "ham_kopya(12-gram)",
+     "birinci_sahis_fiil"
+    ],
+    "konu": "Üniversitenizin merkezi yemekhanesinde 2026 yılında öğrenciye sunulan bir öğün yemeğin birim maliyetinin tarafıma bildirilmesini arz ederim",
+    "kelime": 16
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Ege Üniversitesi Rektörlüğünün 20.09.2026 tarihli yazısı.",
+    "muhatap": "Bilgi İşlem Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / EGE ÜNİVERSİTESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "4982_bilgi_edinme_kanunu",
+     "2709_anayasa_secili_maddeler"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1244,
+    "servis_birim": 0,
+    "siniflandir": 735,
+    "kanit_baglama": 0,
+    "decompose": 1087,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 31,
+    "ozetle": 1421,
+    "route_birim": 1347,
+    "yazi_taslak": 1161,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari 0/2",
+    "konu: uzun(16k),ham_kopya(12-gram),birinci_sahis_fiil → Üniversitenizin merkezi yemekhanesinde 2026 yılında öğrenciye sunulan bir öğün yemeğin bir",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Ege Üniversitesi Rektörlüğünün 20.09.2026 tarihli yazısı."
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "sgk_icra_maas_haczi",
+   "kurum_tipi": "sgk",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 7.28,
+   "llm": {
+    "cagri": 9,
+    "kesik": 0,
+    "tokens_out": 1206,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "icra_evraki",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Sosyal Güvenlik İl Müdürlüğü (SGK)",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Maaş haczi (89/1 haciz ihbarnamesi)",
+    "kelime": 6
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "24.09.2026 tarihli başvurunuz.",
+    "muhatap": "Ankara 12. İcra Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / SOSYAL GÜVENLİK KURUMU ANKARA SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "2004_icra_iflas_kanunu",
+     "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [
+     "gonderen_ad_soyad",
+     "iletisim_adres",
+     "imza"
+    ],
+    "tam": false,
+    "tp": 0,
+    "fp": 3,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1162,
+    "servis_birim": 0,
+    "siniflandir": 818,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 1104,
+    "mevzuat_oner": 34,
+    "ozetle": 1134,
+    "route_birim": 1099,
+    "yazi_taslak": 2433,
+    "verify": 1447,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Sosyal Güvenlik İl Müdürlüğü (SGK)' (hedef_birim_oneri, durum=fallback_onerisi)",
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: belge_turu_yanlis → 24.09.2026 tarihli başvurunuz."
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "sgk_vergi_borcu",
+   "kurum_tipi": "sgk",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 8.2,
+   "llm": {
+    "cagri": 9,
+    "kesik": 0,
+    "tokens_out": 876,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Tahsilat ve İhtilaflı İşler Daire Başkanlığı",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Vergi Dairesi Başkanlığı"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 0,
+    "sayi_dogru": false,
+    "decompose_bulunan": 1,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     false
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Gelir vergisi tarhiyatının düzeltilmesini",
+    "kelime": 4
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Sosyal Güvenlik Kurumunun 21.09.2026 tarihli yazısı.",
+    "muhatap": "Strateji Geliştirme / Mali İşler"
+   },
+   "antet": {
+    "antet": "T.C. / SOSYAL GÜVENLİK KURUMU ANKARA SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "3071_dilekce_hakki_kanunu",
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1384,
+    "servis_birim": 0,
+    "siniflandir": 1000,
+    "kanit_baglama": 0,
+    "decompose": 1040,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 27,
+    "ozetle": 815,
+    "route_birim": 2619,
+    "yazi_taslak": 1081,
+    "verify": 0,
+    "arsiv": 1250,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Tahsilat ve İhtilaflı İşler Daire Başkanlığı' (hedef_birim_oneri, durum=fallback_onerisi)",
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Sosyal Güvenlik Kurumunun 21.09.2026 tarihli yazısı.",
+    "mevzuat: beklenen yok, top=['3071_dilekce_hakki_kanunu', '5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "bel_icra_personel_haciz",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 6.0,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 905,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "icra_evraki",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Malî Hizmetler Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Keçiören Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 0,
+    "sayi_dogru": false,
+    "decompose_bulunan": 1,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     true
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(27k)",
+     "ham_kopya(27-gram)"
+    ],
+    "konu": "borçlunun Belediyenizde memur olarak almakta olduğu maaşının 2004 sayılı İcra ve İflas Kanunu'nun 83. ve 355. maddeleri uyarınca dörtte birinin haczi ile kesilen tutarların her ay",
+    "kelime": 27
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "Ankara 3. İcra Dairesinin 23.09.2026 tarihli yazısı.",
+    "muhatap": "İnsan Kaynakları / Personel Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "7155_abonelik_sozlesmesi_para_alacaklari_takip_kanunu",
+     "2004_icra_iflas_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [
+     "gonderen_ad_soyad",
+     "iletisim_adres",
+     "imza"
+    ],
+    "tam": false,
+    "tp": 0,
+    "fp": 3,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 961,
+    "servis_birim": 0,
+    "siniflandir": 780,
+    "kanit_baglama": 0,
+    "decompose": 1083,
+    "eksik_tespit": 912,
+    "mevzuat_oner": 30,
+    "ozetle": 1558,
+    "route_birim": 1330,
+    "yazi_taslak": 1063,
+    "verify": 0,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "konu: uzun(27k),ham_kopya(27-gram) → borçlunun Belediyenizde memur olarak almakta olduğu maaşının 2004 sayılı İcra ve İflas Kan"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "bel_mahkeme_imar_muzekkere",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 6.0,
+   "llm": {
+    "cagri": 9,
+    "kesik": 0,
+    "tokens_out": 1111,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "muzekkere",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Çankaya Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "İmar ve Şehircilik Müdürlüğü",
+    "kaynak": "hedef_birim",
+    "durum": "kaynak_dogrulandi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Çankaya Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 3,
+    "cikar_sayi": 0,
+    "sayi_dogru": false,
+    "decompose_bulunan": 1,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     false
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(20k)",
+     "ham_kopya(13-gram)"
+    ],
+    "konu": "Çankaya ilçesi Birlik Mahallesi 27800 ada 3 parsele ait güncel imar durumu belgesinin onaylı örneğinin 15 gün içinde Mahkememize gönderilmesi",
+    "kelime": 20
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "Ankara 7. Asliye Hukuk Mahkemesinin 22.09.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / ÇANKAYA BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "2646_resmi_yazisma_yonetmeligi",
+     "2646_resmi_yazisma_e_yazisma"
+    ],
+    "hit": false,
+    "ilgili_sayi": 0,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [
+     "imza"
+    ],
+    "tam": false,
+    "tp": 0,
+    "fp": 1,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 858,
+    "servis_birim": 0,
+    "siniflandir": 897,
+    "kanit_baglama": 0,
+    "decompose": 1360,
+    "eksik_tespit": 1091,
+    "mevzuat_oner": 24,
+    "ozetle": 1088,
+    "route_birim": 1312,
+    "yazi_taslak": 1308,
+    "verify": 0,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "konu: uzun(20k),ham_kopya(13-gram) → Çankaya ilçesi Birlik Mahallesi 27800 ada 3 parsele ait güncel imar durumu belgesinin onay",
+    "mevzuat: beklenen yok, top=['2646_resmi_yazisma_yonetmeligi', '2646_resmi_yazisma_e_yazisma']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "valilik_savcilik_yazisi",
+   "kurum_tipi": "valilik",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 6.61,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1173,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "muzekkere",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara Valiliği",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Hukuk Müşavirliği",
+    "kaynak": "hedef_kategori",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Valiliği"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Bilgi istemi",
+    "kelime": 2
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "29.09.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ankara Cumhuriyet Başsavcılığı"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA VALİLİĞİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5271_ceza_muhakemesi_kanunu",
+     "5726_tanik_koruma_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [
+     "imza"
+    ],
+    "tam": false,
+    "tp": 0,
+    "fp": 1,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 931,
+    "servis_birim": 0,
+    "siniflandir": 802,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 1149,
+    "mevzuat_oner": 21,
+    "ozetle": 1025,
+    "route_birim": 1470,
+    "yazi_taslak": 1438,
+    "verify": 1615,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: belge_turu_yanlis → 29.09.2026 tarihli başvurunuz."
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "yazi_sgk_cevabi",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 5.43,
+   "llm": {
+    "cagri": 7,
+    "kesik": 0,
+    "tokens_out": 813,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "cevabi_yazi",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Yazı İşleri / Genel Evrak Müdürlüğü",
+    "kaynak": "hedef_kategori",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Keçiören Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Prim borcu bilgisi",
+    "kelime": 3
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "tarih_yanlis"
+    ],
+    "ilgi": "15.09.2026 tarihli ve E-99887766-205.99-5512345 sayılı yazınız.",
+    "muhatap": "Keçiören Belediye Başkanlığı"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "2646_resmi_yazisma_yonetmeligi",
+     "karayollari_trafik_yonetmeligi",
+     "5510_sosyal_sigortalar_gss_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [
+     "imza"
+    ],
+    "tam": false,
+    "tp": 0,
+    "fp": 1,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1390,
+    "servis_birim": 0,
+    "siniflandir": 1086,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 1146,
+    "mevzuat_oner": 33,
+    "ozetle": 1423,
+    "route_birim": 1476,
+    "yazi_taslak": 1133,
+    "verify": 0,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Yazı İşleri / Genel Evrak Müdürlüğü' (hedef_kategori, durum=fallback_onerisi)",
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: gonderen_yanlis,tarih_yanlis → 15.09.2026 tarihli ve E-99887766-205.99-5512345 sayılı yazınız."
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "bilgi_edinme_cankaya_cift",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 7.3,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1128,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "bilgi_edinme",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Çankaya Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Yazı İşleri Müdürlüğü",
+    "kaynak": "hedef_birim",
+    "durum": "kaynak_dogrulandi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Çankaya Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     false,
+     true
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(14k)",
+     "ham_kopya(14-gram)"
+    ],
+    "konu": "2025 yılında Belediyenizce yapılan asfalt kaplama çalışmalarının toplam uzunluğu (km) ve harcanan toplam tutar",
+    "kelime": 14
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis",
+     "tarih_yanlis"
+    ],
+    "ilgi": "Çankaya Belediye Başkanlığının 30.06.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / ÇANKAYA BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "4982_bilgi_edinme_kanunu",
+     "2709_anayasa_secili_maddeler"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1163,
+    "servis_birim": 0,
+    "siniflandir": 1230,
+    "kanit_baglama": 0,
+    "decompose": 1493,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 34,
+    "ozetle": 1200,
+    "route_birim": 1208,
+    "yazi_taslak": 878,
+    "verify": 1289,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Yazı İşleri Müdürlüğü' (hedef_birim, durum=kaynak_dogrulandi)",
+    "talep_cikar: bilgi_unsurlari 0/2",
+    "konu: uzun(14k),ham_kopya(14-gram) → 2025 yılında Belediyenizce yapılan asfalt kaplama çalışmalarının toplam uzunluğu (km) ve h",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis,tarih_yanlis → Çankaya Belediye Başkanlığının 30.06.2026 tarihli yazısı."
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "eksik_adres_mamak_cop",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 7.3,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1000,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Mamak Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Destek Hizmetleri Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Mamak Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "ham_kopya(6-gram)"
+    ],
+    "konu": "Mahallemizde çöpler düzenli toplanmıyor, konteynerler taşıyor",
+    "kelime": 6
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "Başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / MAMAK BELEDİYESİ / Temizlik İşleri / Çevre Koruma Müdürlüğü",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [
+     "iletisim_adres",
+     "tarih"
+    ],
+    "tam": false,
+    "tp": 2,
+    "fp": 0,
+    "fn": 1
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1252,
+    "servis_birim": 0,
+    "siniflandir": 1010,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 1683,
+    "mevzuat_oner": 16,
+    "ozetle": 827,
+    "route_birim": 1383,
+    "yazi_taslak": 1214,
+    "verify": 1758,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Destek Hizmetleri Müdürlüğü' (hedef_birim_oneri, durum=fallback_onerisi)",
+    "konu: ham_kopya(6-gram) → Mahallemizde çöpler düzenli toplanmıyor, konteynerler taşıyor",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  }
+ ]
+}

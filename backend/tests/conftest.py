@@ -70,3 +70,13 @@ def _reset_llm_singleton():
         reset_llm()
     except ImportError:
         pass
+
+
+@pytest.fixture(autouse=True)
+def _llm_yanit_cache_temiz():
+    """Süreç-içi LLM yanıt önbelleği testler arasında taşınmasın (sahte istemcili testler
+    aynı prompt'u farklı cevapla bekleyebilir — önceki testin cevabı servis edilmesin)."""
+    from agents.nodes._llm_extract import cache_temizle
+    cache_temizle()
+    yield
+    cache_temizle()

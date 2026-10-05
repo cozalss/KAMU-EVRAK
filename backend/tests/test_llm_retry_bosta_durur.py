@@ -13,7 +13,9 @@ Uçtan uca 44,9 saniyenin ~15 saniyesi, çıktısı zaten atılan bu ikinci ça�
 
 BU TESTLERİN KORUDUĞU SÖZLEŞME:
   · boş cevap        -> retry YOK (tek çağrı)
-  · kesik cevap      -> retry YOK (tek çağrı), içerik dolu görünse bile
+  · kesik cevap      -> AYNI BÜTÇEYLE biçim retry'ı YOK; yerine (2026-10-05 merkezi politika)
+                        TEK kurtarma: düşünme KAPALI + 2× cevap bütçesi. `kesikte_dusunmesiz=
+                        False` → kurtarma da yok (tek çağrı).
   · dolu ama bozuk   -> retry VAR (yetenek kaybı yok — asıl işi buydu)
   · bayrak kapalı    -> eski davranış birebir geri gelir
 """
@@ -41,6 +43,7 @@ class _SayanLLM:
 
     async def chat(self, **kwargs: Any) -> Any:
         self.cagri += 1
+        self.son = kwargs
         return SimpleNamespace(content=self.icerik, finish_reason=self.finish_reason)
 
 
@@ -70,19 +73,31 @@ async def test_bos_cevapta_yeniden_denenmez(monkeypatch: pytest.MonkeyPatch) -> 
 
 
 @pytest.mark.asyncio
-async def test_kesik_cevapta_yeniden_denenmez(monkeypatch: pytest.MonkeyPatch) -> None:
-    """finish_reason='length': cevap bütçeye sığmadı. Aynı bütçeyle tekrar sormak anlamsız.
-
-    İçerik BOŞ DEĞİL (yarım JSON) — yani eski kod bunu "bozuk JSON" sanıp retry ederdi.
-    Ayrım tam olarak burada: bozukluğun sebebi biçim değil bütçe.
-    """
+async def test_kesik_cevapta_ayni_butceyle_denenmez_dusunmesiz_2x_kurtarilir(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """finish_reason='length': cevap bütçeye sığmadı. Aynı bütçeyle tekrar sormak anlamsız;
+    kurtarma bütçeyle yapılır — düşünme kapalı + 2× cevap bütçesi, biçim mesajı EKLENMEZ."""
     llm = _SayanLLM('{"alt_talepler": [{"metin": "yarim', finish_reason="length")
     _bagla(monkeypatch, llm)
 
     sonuc = await llm_json("sys", "user", max_tokens=600)
 
     assert sonuc is None
-    assert llm.cagri == 1, f"kesik cevapta retry yapıldı ({llm.cagri} çağrı)"
+    assert llm.cagri == 2, f"tek kurtarma bekleniyordu ({llm.cagri} çağrı)"
+    assert llm.son["max_tokens"] == 1200 and llm.son.get("dusunme_kapali") is True
+    assert len(llm.son["messages"]) == 2, "kurtarmada düzeltme mesajı eklenmemeli"
+
+
+@pytest.mark.asyncio
+async def test_kesikte_kurtarma_acikca_kapatilabilir(monkeypatch: pytest.MonkeyPatch) -> None:
+    llm = _SayanLLM('{"alt_talepler": [{"metin": "yarim', finish_reason="length")
+    _bagla(monkeypatch, llm)
+
+    sonuc = await llm_json("sys", "user", max_tokens=600, kesikte_dusunmesiz=False)
+
+    assert sonuc is None
+    assert llm.cagri == 1
 
 
 @pytest.mark.asyncio

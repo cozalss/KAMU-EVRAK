@@ -662,7 +662,8 @@ async def _kurul_acilis(user: str) -> list[dict[str, Any]] | None:
     Süre bütçesi müzakere turundan KISA: açılış 3 kısa pozisyondur, uzaması bir sorun
     işaretidir ve tüm turların bütçesini yemeden fallback'e düşmesi daha iyidir.
     """
-    obj0 = await llm_json(_SYSTEM_ACILIS, user, max_tokens=_ACILIS_TOKENS, temperature=0.5,
+    obj0 = await llm_json(_SYSTEM_ACILIS, user, profil="kurul_acilis",
+                          max_tokens=_ACILIS_TOKENS, temperature=0.5,
                           timeout_s=_sure("KURUL_ACILIS_TIMEOUT_S", _ACILIS_SURE_VARSAYILAN))
     return _normalize_turlar(obj0.get("turlar") if isinstance(obj0, dict) else None, tur=0) or None
 
@@ -775,7 +776,8 @@ async def _kurul_akisi(
         # tokens_out=7700 tavan, JSON yarım, tur tamamen kayboldu).
         obj = await llm_json(
             _SYSTEM_MUZAKERE if capraz_tur else _SYSTEM_DENETIM,
-            user, max_tokens=_MAKS_TOKENS, temperature=0.45,
+            user, profil="kurul_capraz" if capraz_tur else "kurul_denetim",
+            max_tokens=_MAKS_TOKENS, temperature=0.45,
             timeout_s=_sure("KURUL_TUR_TIMEOUT_S", _TUR_SURE_VARSAYILAN),
             dusunme_kapali=not capraz_tur)
         if not isinstance(obj, dict):

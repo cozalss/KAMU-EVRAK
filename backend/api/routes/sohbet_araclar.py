@@ -63,7 +63,8 @@ async def arac_dongusu(
     son_arac: str | None = None
     son_veri: Any = None
     for _ in range(max_tur):
-        cevap = await llm_json(_DONGU_SYSTEM, "\n\n".join(transcript), max_tokens=200)
+        cevap = await llm_json(_DONGU_SYSTEM, "\n\n".join(transcript), profil="sohbet_arac",
+                               max_tokens=200)
         if not isinstance(cevap, dict) or "arac" not in cevap:
             return None  # protokol dışı (mock/bozuk) → eski tek-tur akış birebir
         arac = cevap.get("arac")

@@ -68,7 +68,7 @@ async def ozetle_node(state: dict[str, Any]) -> dict[str, Any]:
     baglam = _kilit_unsurlar(unsurlar)
     # KVKK: LLM'e ham TCKN/telefon/IBAN gitmez (isim korunur → özet adı içerebilir).
     user = f"Tür: {evrak_turu_tr(turu)}\n{baglam}\n\nEvrak metni:\n{mask_for_llm(text, None)[:6000]}"
-    obj = await llm_json(_SYSTEM, user, max_tokens=300, temperature=0.2,
+    obj = await llm_json(_SYSTEM, user, profil="ozetle", max_tokens=300, temperature=0.2,
                          dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
     if obj is not None and isinstance(obj.get("ozet"), str) and obj["ozet"].strip():
         # LLM evrak metnindeki bir TCKN/telefonu ozetinde tekrarlayabilir (prompt bunu

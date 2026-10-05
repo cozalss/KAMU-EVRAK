@@ -28,8 +28,9 @@ from agents.config import (
     SELF_CONSISTENCY_N,
     SINIFLANDIR_ESKALASYON,
 )
-from agents.llm import ChatMessage, get_llm_for_model
-from agents.nodes._llm_extract import llm_json, parse_json_object
+from agents.llm import get_llm_for_model
+from agents.nodes import _llm_extract
+from agents.nodes._llm_extract import llm_json
 from api.pii import mask_for_llm
 from core.text import tr_lower
 
@@ -482,23 +483,13 @@ async def _eskalasyon_ikinci_gorus(raw: str) -> dict[str, Any] | None:
     düşünür → node bütçesinden ayrı). Geçerli kapalı-küme türü + eşik üstü güven
     dönerse sonuç; belirsiz/geçersiz/hata/timeout → None (mevcut sonuç aynen kalır).
     """
-    client = get_llm_for_model(ESKALASYON_MODEL)
-    try:
-        resp = await asyncio.wait_for(
-            client.chat(
-                messages=[ChatMessage(role="system", content=_SYSTEM),
-                          ChatMessage(role="user", content=raw[:6000])],
-                temperature=0.0,
-                max_tokens=400,
-                json_mode=True,
-            ),
-            timeout=ESKALASYON_TIMEOUT_S,
-        )
-    except _ESKALASYON_FALLBACK_EXC as exc:
-        log.warning("siniflandir_eskalasyon_failed",
-                    error=str(exc) or type(exc).__name__, exc_type=type(exc).__name__)
-        return None
-    obj = parse_json_object(resp.content)
+    # Merkezi katmandan (profil `siniflandir_eskalasyon`): eski doğrudan chat() 400 token'lık
+    # TOPLAM bütçeyle çağırıyordu; v4-pro düşünmesi bütçeyi bitirip 3/3 BOŞ döndü ve ikinci
+    # görüş fiilen ölüydü. Profil düşünme marjını + kesikte düşünmesiz tekrarı sağlar.
+    # Modül üzerinden: birincil çağrının (llm_json) sahtelenmesi ikinci görüşü etkilemesin.
+    obj = await _llm_extract.llm_json(_SYSTEM, raw[:6000], profil="siniflandir_eskalasyon",
+                                      llm=get_llm_for_model(ESKALASYON_MODEL),
+                                      timeout_s=ESKALASYON_TIMEOUT_S)
     result = _from_llm(obj) if obj is not None else None
     # _from_llm eşik-altı güveni zaten 'belirsiz'e çevirir → burada belirsiz =
     # "reasoner da emin değil": ikinci görüş kullanılmaz, dürüst abstention korunur.

@@ -345,7 +345,8 @@ def _uslup_skorlari(rows: list[dict]) -> list[dict[str, float]]:
         for r in rows:
             user = (f"TASLAK GÖVDESİ (kısaltılmış):\n{r['taslak'][:_USLUP_TASLAK_MAX_CHAR]}\n\n"
                     "Değerlendir (sadece JSON):")
-            obj = await llm_json(_USLUP_SYSTEM, user, max_tokens=160, temperature=0.0)
+            obj = await llm_json(_USLUP_SYSTEM, user, profil="eval_uslup", max_tokens=160,
+                                 temperature=0.0)
             if (skor := _uslup_skoru_dogrula(obj)) is not None:
                 out.append(skor)
         return out

@@ -35,6 +35,7 @@ from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
+from agents import llm_iz
 from agents.config import (
     CLARIFY_STOP_ENABLED,
     CRAG_ENABLED,
@@ -164,13 +165,22 @@ def _risk_route(state: dict[str, Any]) -> str:
 def _zamanli_node(
     ad: str, node: Callable[..., Awaitable[dict[str, Any]]],
 ) -> Callable[..., Awaitable[dict[str, Any]]]:
-    """Node çıktısına gerçek sunucu süresini additive olarak ekle."""
+    """Node çıktısına gerçek sunucu süresini + LLM çağrı izlerini additive olarak ekle.
+
+    `llm_iz.node_kapsami` koşan node adını ContextVar'a koyar: merkezi LLM katmanı
+    (`_llm_extract.llm_json/llm_text`) profil verilmemiş çağrının politikasını bu addan
+    çözer ve her çağrının izini (kesik/kurtarıldı/yedeğe düştü/süre/token) toplar.
+    """
     @wraps(node)
     async def _sarili(state: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
         baslangic = time.perf_counter()
-        sonuc = await node(state, *args, **kwargs)
+        with llm_iz.node_kapsami(ad) as izler:
+            sonuc = await node(state, *args, **kwargs)
         sure_ms = max(0, round((time.perf_counter() - baslangic) * 1000))
-        return {**(sonuc or {}), "node_sureleri_ms": {ad: sure_ms}}
+        ek: dict[str, Any] = {"node_sureleri_ms": {ad: sure_ms}}
+        if izler:
+            ek["llm_izleri"] = list(izler)
+        return {**(sonuc or {}), **ek}
 
     return _sarili
 

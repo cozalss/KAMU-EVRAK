@@ -319,7 +319,7 @@ async def _niyet_tespit(
         return fallback_niyet(mesaj), False
     baglam = "\n".join(f"{m.rol}: {m.icerik[:200]}" for m in gecmis[-4:])
     user = (f"Önceki konuşma:\n{baglam}\n\n" if baglam else "") + f"Kullanıcı mesajı: {mesaj}"
-    obj = await llm_json(_NIYET_SYSTEM, user, max_tokens=150)
+    obj = await llm_json(_NIYET_SYSTEM, user, profil="sohbet_niyet", max_tokens=150)
     if obj is not None and obj.get("intent") in NIYETLER:
         return {"intent": obj["intent"], "parametreler": _parametre_temizle(obj, mesaj)}, True
     return fallback_niyet(mesaj), False
@@ -591,6 +591,8 @@ async def _yanit_kompoze(
             _SESLI_SYSTEM if sesli else _KOMPOZ_SYSTEM,
             _kompoz_user(mesaj, veri, gecmis_metni, ekran_metni),
             # Bütçe donanımsal güvence (sadece prompt değil): sesli modda soruya göre uyarlanır.
+            # kesik_kabul: sohbet cevabının yarısı da kullanıcıya bilgi taşır (eski davranış).
+            profil="sohbet_kompozisyon", kesik_kabul=True,
             max_tokens=_sesli_butce(mesaj, intent) if sesli else 400)
         if txt:
             return txt, True

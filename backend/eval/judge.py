@@ -30,7 +30,8 @@ from dataclasses import dataclass
 
 import structlog
 
-from agents.llm import ChatMessage, get_llm_for_model
+from agents.llm import get_llm_for_model
+from agents.nodes._llm_extract import llm_json
 
 log = structlog.get_logger()
 
@@ -103,22 +104,17 @@ class LLMJudge:
         user_msg = _JUDGE_USER_TEMPLATE.format(
             evrak=evrak_metni[:JUDGE_EVRAK_MAX_CHAR], ozet=ozet[:2000],
         )
-        llm = get_llm_for_model(JUDGE_MODEL)
+        # Merkezi katman (profil `eval_judge`): kesilme kurtarma + iz + düşünme politikası.
         try:
-            resp = await llm.chat(
-                messages=[
-                    ChatMessage(role="system", content=_JUDGE_SYSTEM),
-                    ChatMessage(role="user", content=user_msg),
-                ],
-                temperature=0.0,
-                max_tokens=JUDGE_MAX_TOKENS,
-                json_mode=True,
-            )
-        except Exception as exc:
+            obj = await llm_json(_JUDGE_SYSTEM, user_msg, profil="eval_judge",
+                                 max_tokens=JUDGE_MAX_TOKENS, temperature=0.0,
+                                 llm=get_llm_for_model(JUDGE_MODEL))
+        except Exception as exc:  # hakem asla eval koşusunu düşürmez
             log.warning("judge_llm_failed", error=str(exc))
             return JudgeScore(0.0, 0.0, 0.0, f"LLM hata: {exc!s}")
-
-        return _parse_judge_json(resp.content)
+        if obj is None:
+            return JudgeScore(0.0, 0.0, 0.0, "LLM hata ya da yanıt yok/kesik (yedek)")
+        return _parse_judge_json(json.dumps(obj, ensure_ascii=False))
 
 
 def _parse_judge_json(raw: str) -> JudgeScore:

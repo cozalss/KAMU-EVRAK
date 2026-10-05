@@ -29,6 +29,7 @@ from typing import Any, Literal, Protocol
 
 import structlog
 
+from agents import llm_iz
 from core import demo_butce
 from core.openai_compat import _retry_delay, require_api_key, validated_base_url
 
@@ -691,10 +692,16 @@ class OpenAIClient:
             raise ValueError(f"OpenAI yanıtı geçersiz: 'choices' boş (yanıt anahtarları: {sorted(data)})")
         choice = choices[0]
         usage = data.get("usage", {})
+        detay = usage.get("completion_tokens_details") or {}
+        # node/profil/finish_reason/reasoning_tokens: kesilmenin ve düşünme israfının LOGDAN
+        # okunabilmesi için (teşhis 2026-10-05: kesilmeler aylarca görünmüyordu).
         log.info(
             "openai_llm_done", model=self.model,
             elapsed_ms=int((time.perf_counter() - started) * 1000),
             tokens_in=usage.get("prompt_tokens", 0), tokens_out=usage.get("completion_tokens", 0),
+            reasoning_tokens=detay.get("reasoning_tokens", 0) if isinstance(detay, dict) else 0,
+            finish_reason=choice.get("finish_reason", "stop"),
+            node=llm_iz.aktif_node(), profil=llm_iz.aktif_profil(),
         )
         # ÖLÇÜLEN harcama — sağlayıcının bildirdiği gerçek token'lardan (tahmin değil).
         demo_butce.cagri_mutabakati(

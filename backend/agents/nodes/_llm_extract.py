@@ -21,14 +21,17 @@ import hashlib
 import json
 import os
 import re
+import time
 from collections import OrderedDict
+from dataclasses import replace
 from typing import Any, NamedTuple
 
 import httpx
 import structlog
 
-from agents import config
+from agents import config, llm_iz
 from agents.llm import ChatMessage, MockLLM, get_llm
+from agents.llm_politika import CagriProfili, Dusunme, Kesikte, profil_coz, serbest_profil
 
 log = structlog.get_logger()
 
@@ -144,10 +147,31 @@ class CagriSonucu(NamedTuple):
 
     `kesik=True` (finish_reason == "length") demek: model bütçeyi doldurdu ve cevabı
     TAMAMLAYAMADI. Bu, "bozuk JSON üretti"den TAMAMEN farklı bir başarısızlıktır ve farklı
-    davranış ister — bkz. llm_json'daki retry kararı.
+    davranış ister — bkz. llm_json'daki kurtarma kararı. Token alanları iz kaydı içindir.
     """
     metin: str
     kesik: bool
+    tokens_in: int = 0
+    tokens_out: int = 0
+    reasoning_tokens: int = 0
+
+
+class KesikMetin(str):
+    """Bütçeye sığmayıp yarım kalmış serbest metin (`llm_text(..., kesik_kabul=True)`).
+
+    `str` alt sınıfıdır (eski çağıran kırılmaz) ama `kesik` bayrağı taşır: resmî yazı gövdesi
+    gibi yarım hâli kullanılamayacak yerler `getattr(txt, "kesik", False)` ile ayırt eder.
+    """
+
+    kesik = True
+
+
+def _reasoning_tokens(resp: Any) -> int:
+    raw = getattr(resp, "raw", None)
+    if not isinstance(raw, dict):
+        return 0
+    detay = (raw.get("usage") or {}).get("completion_tokens_details") or {}
+    return int(detay.get("reasoning_tokens") or 0) if isinstance(detay, dict) else 0
 
 
 async def _chat_dene(
@@ -159,17 +183,24 @@ async def _chat_dene(
     timeout_s: float,
     json_mode: bool,
     dusunme_kapali: bool = False,
+    marj: int | None = None,
 ) -> CagriSonucu | None:
     """Tek LLM çağrısı — geçici/altyapı hatası → None (çağıran fallback'e düşer).
 
-    Bütçeye düşünme marjı eklenir — bkz. dusunme_marjli. `dusunme_kapali=True` ise marj da
-    gereksizdir (düşünme token'ı üretilmez) ama zararsız olduğu için tek kod yolu korunur.
+    `max_tokens` CEVAP bütçesidir. Düşünme açıksa düşünme marjı eklenir (bkz. dusunme_marjli;
+    `marj` verilirse o kullanılır); `dusunme_kapali=True` ise düşünme token'ı üretilmez,
+    marj israf olurdu → eklenmez.
 
     Dönüş metin DEĞİL CagriSonucu: çağıranın "cevap kesildi mi" bilgisine ihtiyacı var,
     yoksa kesilmiş bir cevaba bozuk-JSON muamelesi yapıp aynı bütçeyle boşuna yeniden
     soruyor (ölçüldü: iki node'da 4/4 başarısız retry, ~21 sn).
     """
-    butce = dusunme_marjli(llm, max_tokens)
+    if dusunme_kapali:
+        butce = max_tokens
+    elif marj is not None and not isinstance(llm, MockLLM):
+        butce = max_tokens + max(0, marj)
+    else:
+        butce = dusunme_marjli(llm, max_tokens)
     # `dusunme_kapali` YALNIZ istendiğinde geçirilir: parametre LLMClient protokolüne yeni
     # eklendi ve testlerdeki/üçüncü-taraf sahte istemcilerin `chat()` imzası onu tanımayabilir.
     # Koşulsuz göndermek çalışan her istemciyi TypeError'la kırardı (ölçüldü: 174 test).
@@ -185,10 +216,14 @@ async def _chat_dene(
             resp = await asyncio.wait_for(llm.chat(**temel), timeout=timeout_s)
     except _LLM_FALLBACK_EXCEPTIONS as exc:
         log.warning("evrak_llm_failed_fallback", error=str(exc) or type(exc).__name__,
-                    exc_type=type(exc).__name__)
+                    exc_type=type(exc).__name__, node=llm_iz.aktif_node(),
+                    profil=llm_iz.aktif_profil())
         return None
     # getattr: sahte/üçüncü-taraf istemciler finish_reason taşımayabilir → kesik değil say.
-    return CagriSonucu(resp.content, getattr(resp, "finish_reason", "stop") == "length")
+    return CagriSonucu(
+        resp.content or "", getattr(resp, "finish_reason", "stop") == "length",
+        int(getattr(resp, "tokens_in", 0) or 0), int(getattr(resp, "tokens_out", 0) or 0),
+        _reasoning_tokens(resp))
 
 
 # Retry düzeltme mesajı — önceki ham cevapla birlikte gönderilir (geri-bildirimli).
@@ -198,110 +233,167 @@ _RETRY_DUZELTME = (
 )
 
 
+def _kesik_json_mu(raw: str) -> bool:
+    """finish_reason söylemese de yarım kalmış JSON (açılan süslü parantez kapanmamış)."""
+    t = _JSON_FENCE_RE.sub("", raw).strip()
+    return t.startswith("{") and t.count("{") > t.count("}")
+
+
+def _politika(
+    profil: str | None, gorev: str | None, *, max_tokens: int | None,
+    dusunme_kapali: bool | None, kesikte_dusunmesiz: bool | None, varsayilan_butce: int,
+) -> CagriProfili:
+    """Merkezi profil çözümü + AÇIK parametre ezmeleri (açık parametre profilden önceliklidir:
+    eski imzayla yazılmış çağrı noktaları birebir aynı bütçe/düşünme ile çalışır)."""
+    p = profil_coz(profil=profil, gorev=gorev, node=llm_iz.aktif_node())
+    if p is None:
+        return serbest_profil(max_tokens=max_tokens or varsayilan_butce,
+                              dusunme_kapali=bool(dusunme_kapali),
+                              kesikte_dusunmesiz=kesikte_dusunmesiz)
+    if max_tokens is not None:
+        p = replace(p, cevap_butcesi=max_tokens)
+    if dusunme_kapali is not None:
+        p = replace(p, dusunme=Dusunme.KAPALI if dusunme_kapali else Dusunme.ACIK)
+    if kesikte_dusunmesiz is not None:
+        p = replace(p, kesikte=(Kesikte.DUSUNMESIZ_TEKRAR if kesikte_dusunmesiz
+                                else Kesikte.YEDEK))
+    return p
+
+
+class _Iz:
+    """Tek merkezi çağrının iz kaydı (KVKK: içerik YOK — yalnız ad/sayı/bayrak)."""
+
+    def __init__(self, p: CagriProfili) -> None:
+        self.p = p
+        self.t0 = time.perf_counter()
+        self.deneme = 0
+        self.kesik = False
+        self.tokens = [0, 0, 0]
+
+    def ekle(self, s: CagriSonucu | None) -> None:
+        self.deneme += 1
+        if s is not None:
+            self.tokens = [a + b for a, b in zip(
+                self.tokens, (s.tokens_in, s.tokens_out, s.reasoning_tokens), strict=True)]
+
+    def bitir(self, *, basarili: bool, neden: str = "", onbellek: bool = False) -> None:
+        kurtarildi = basarili and self.kesik and not neden
+        if not basarili:
+            log.warning("evrak_llm_yedege_dustu", node=llm_iz.aktif_node(), profil=self.p.ad,
+                        neden=neden, kesik=self.kesik, deneme=self.deneme)
+        elif kurtarildi:
+            log.info("evrak_llm_kesik_kurtarildi", node=llm_iz.aktif_node(), profil=self.p.ad)
+        llm_iz.iz_ekle({
+            "profil": self.p.ad, "deneme": self.deneme, "kesik": self.kesik,
+            "kurtarildi": kurtarildi, "yedege_dustu": not basarili, "neden": neden or None,
+            "sure_ms": round((time.perf_counter() - self.t0) * 1000),
+            "tokens_in": self.tokens[0], "tokens_out": self.tokens[1],
+            "reasoning_tokens": self.tokens[2], "onbellek": onbellek,
+        })
+
+
+async def _kurtarma_cagrisi(
+    llm: Any, messages: list[ChatMessage], p: CagriProfili, iz: _Iz, *,
+    temperature: float, timeout_s: float, json_mode: bool,
+) -> CagriSonucu | None:
+    """Kesik cevabın TEK kurtarma denemesi: düşünme KAPALI + 2× cevap bütçesi.
+
+    Düzeltme mesajı EKLENMEZ: cevap bozuk değil yarım kalmış; ek mesaj prompt'u uzatıp
+    cevap alanını daha da daraltırdı (ölçüldü: tokens_in 714 -> 775)."""
+    s2 = await _chat_dene(llm, messages, max_tokens=p.cevap_butcesi * 2,
+                          temperature=temperature, timeout_s=timeout_s,
+                          json_mode=json_mode, dusunme_kapali=True)
+    iz.ekle(s2)
+    return s2
+
+
 async def llm_json(
     system: str,
     user: str,
     *,
-    max_tokens: int = 512,
+    profil: str | None = None,
+    gorev: str | None = None,
+    max_tokens: int | None = None,
     temperature: float = 0.0,
-    timeout_s: float = LLM_NODE_TIMEOUT_S,
-    dusunme_kapali: bool = False,
-    kesikte_dusunmesiz: bool = False,
+    timeout_s: float | None = None,
+    dusunme_kapali: bool | None = None,
+    kesikte_dusunmesiz: bool | None = None,
+    llm: Any = None,
 ) -> dict[str, Any] | None:
     """LLM'i JSON-mode'da çağır, tolerant parse et. Hata/timeout/parse-fail → None
     (çağıran node deterministik fallback'ine düşer — anahtarsız demo çalışır).
 
-    İKİ AYRI BAŞARISIZLIK, İKİ AYRI KURTARMA (ölçülerek ayrıldı, 7 Ağu 2026):
-      · DOLU AMA BOZUK  → geri-bildirimli retry (config.LLM_JSON_RETRY). Asıl işi buydu:
-        model JSON'u markdown/açıklamayla sarmışsa ikinci şans verir.
-      · KESİK (finish_reason=="length") → biçim sorunu DEĞİL bütçe sorunu; düşünme
-        token'ları cevaba yer bırakmamıştır. Aynı bütçeyle tekrar sormak yazı-tura
-        (ölçüldü: 4 denemenin 3'ü yine kesildi, ~11 sn/deneme). `kesikte_dusunmesiz=True`
-        verilirse tek seferlik DÜŞÜNMESİZ yeniden çağrı yapılır — bütçenin tamamı cevaba
-        kalır, kurtarma güvenilir olur ve ~3 sn'ye iner. Opt-in: yalnız ÇIKARIM işlerinde
-        uygundur (bkz. config.LLM_DUSUNME_CIKARIMDA_KAPALI taksonomisi).
+    POLİTİKA (agents.llm_politika): bütçe/düşünme/kesik davranışı `profil` adından, o yoksa
+    `gorev` etiketinden, o da yoksa KOŞAN GRAF NODE'unun adından (NODE_PROFILI) çözülür.
+    Açıkça verilen `max_tokens`/`dusunme_kapali`/`kesikte_dusunmesiz`/`timeout_s` profilden
+    ÖNCELİKLİDİR (eski imza birebir çalışır). Graf dışı + profilsiz çağrı eski anlamı korur
+    (düşünme `dusunme_kapali` verilmedikçe açık). `llm`: belirli istemci (eskalasyon/hakem
+    modeli); verilmezse `get_llm()`.
+
+    ÜÇ AYRI BAŞARISIZLIK, ÜÇ AYRI DAVRANIŞ:
+      · KESİK (finish_reason=="length" ya da kapanmamış JSON) → bütçe sorunu; profil
+        DUSUNMESIZ_TEKRAR ise TEK tekrar: düşünme kapalı + 2× cevap bütçesi. YEDEK → None.
+      · DOLU AMA BOZUK  → geri-bildirimli biçim retry'ı (config.LLM_JSON_RETRY).
       · BOŞ ve KESİK DEĞİL → kurtarma yok, deterministik yedek.
-
-    Başarılı sonuç LRU cache'e yazılır (config.LLM_CACHE_ENABLED). Mock'ta retry ve cache
-    devre dışı — mock deterministiktir: retry aynı cevabı verir, cache çağrı sayısını
-    değiştirirdi.
-
-    `dusunme_kapali=True` (DeepSeek v4): gerçekleri HAZIR alan, muhakemeden çok biçim
-    isteyen çağrılar için düşünmeyi kapatır — reasoning modelinde düşünme token'ları
-    çıktı bütçesini yiyip yanıtı KESEBİLİYOR (kurul denetim turunda ölçüldü).
+    Her çağrı `llm_iz`'e iz bırakır; yedeğe düşüş WARNING olarak loglanır. Başarılı sonuç
+    LRU cache'e yazılır. Mock'ta retry/kurtarma/cache devre dışı (mock deterministiktir).
     """
-    llm = get_llm()
+    p = _politika(profil, gorev, max_tokens=max_tokens, dusunme_kapali=dusunme_kapali,
+                  kesikte_dusunmesiz=kesikte_dusunmesiz, varsayilan_butce=512)
+    llm = llm if llm is not None else get_llm()
+    with llm_iz.profil_kapsami(p.ad):
+        return await _llm_json_cagir(
+            llm, p, system, user, temperature=temperature,
+            timeout_s=timeout_s or p.timeout_s or LLM_NODE_TIMEOUT_S)
+
+
+async def _llm_json_cagir(
+    llm: Any, p: CagriProfili, system: str, user: str, *,
+    temperature: float, timeout_s: float,
+) -> dict[str, Any] | None:
     mock = isinstance(llm, MockLLM)
+    iz = _Iz(p)
     anahtar = (
-        _cache_anahtari("json", llm, system, user, max_tokens,
-                        dusunme_kapali=dusunme_kapali, temperature=temperature)
+        _cache_anahtari("json", llm, system, user, p.cevap_butcesi,
+                        dusunme_kapali=p.dusunme_kapali, temperature=temperature)
         if config.LLM_CACHE_ENABLED and not mock else None
     )
-    if anahtar is not None:
-        onbellek = _cache_al(anahtar)
-        if onbellek is not None:
-            return copy.deepcopy(onbellek)  # kopya — çağıran mutasyonu cache'i kirletmesin
-    messages = [
-        ChatMessage(role="system", content=system),
-        ChatMessage(role="user", content=user),
-    ]
-    sonuc = await _chat_dene(llm, messages, max_tokens=max_tokens, temperature=temperature,
-                             timeout_s=timeout_s, json_mode=True, dusunme_kapali=dusunme_kapali)
+    if anahtar is not None and (onbellek := _cache_al(anahtar)) is not None:
+        iz.bitir(basarili=True, onbellek=True)
+        return copy.deepcopy(onbellek)  # kopya — çağıran mutasyonu cache'i kirletmesin
+    messages = [ChatMessage(role="system", content=system),
+                ChatMessage(role="user", content=user)]
+    sonuc = await _chat_dene(llm, messages, max_tokens=p.cevap_butcesi,
+                             temperature=temperature, timeout_s=timeout_s, json_mode=True,
+                             dusunme_kapali=p.dusunme_kapali, marj=p.dusunme_marji)
+    iz.ekle(sonuc)
     if sonuc is None:
+        iz.bitir(basarili=False, neden="hata")
         return None
     raw = sonuc.metin
     obj = parse_json_object(raw)
-    # RETRY YALNIZ "DOLU AMA BOZUK" CEVAP İÇİN (ölçüm bulgusu, 7 Ağu 2026).
-    # Retry'ın işi, modelin JSON'u markdown/açıklamayla sarmasını kurtarmaktır. Cevap BOŞ ya
-    # da KESİK (finish_reason=="length") ise sorun biçim değil BÜTÇEDİR: reasoning modelinde
-    # düşünme token'ları çıktı bütçesini yiyip cevabı bitirmeye yer bırakmamıştır. Aynı
-    # max_tokens ve aynı temperature ile tekrar sormak mekanik olarak aynı sonucu verir —
-    # üstelik retry mesajı prompt'u uzatıp cevap alanını DAHA DA daraltır.
-    # Ölçüldü: decompose + route_ajan'da 4/4 retry başarısız, boşuna ~21 sn.
-    # Kaybedilen yetenek yok: bozuk-JSON kurtarması aynen duruyor.
-    retry_hakli = bool(raw.strip()) and not sonuc.kesik
-    # KESİLMİŞ CEVABIN KURTARILMASI — bütçe sorununu bütçeyle çöz, biçim mesajıyla değil.
-    # Ölçüldü (A/B, 7 Ağu 2026): eski kod kesilmiş cevapta aynı bütçeyle yeniden soruyordu ve
-    # 4 denemenin 3'ü yine kesildi; 1'i şans eseri tuttu. Yani kurtarma vardı ama YAZI TURA'ydı
-    # ve her seferinde ~11 sn'ye mal oluyordu. Düşünme kapatılınca bütçenin tamamı cevaba
-    # kalır: kurtarma güvenilir olur ve ~3 sn'ye iner.
-    # OPT-IN, ÇAĞRI NOKTASI BAZINDA: yalnız ÇIKARIM işleri (kapalı-küme seçim, metinde geçeni
-    # bulma) bunu ister. YARGI işlerinde (route_ajan'ın yetki-içeride/dışarıda kararı)
-    # düşünme kapatmak kalite riskidir ve orada deterministik yol zaten ölçülmüş üstündür
-    # (Top-1 0,907) — bu yüzden varsayılan KAPALI.
-    kesik_kurtarma = (
-        obj is None and sonuc.kesik and kesikte_dusunmesiz and not dusunme_kapali
-        and config.LLM_JSON_RETRY and not mock
-    )
-    if kesik_kurtarma:
-        # Düzeltme mesajı EKLENMEZ: cevap bozuk değil yarım kalmış; ek mesaj prompt'u uzatıp
-        # cevap alanını daha da daraltırdı (ölçüldü: tokens_in 714 -> 775).
-        sonuc2 = await _chat_dene(llm, messages, max_tokens=max_tokens,
-                                  temperature=temperature, timeout_s=timeout_s,
-                                  json_mode=True, dusunme_kapali=True)
-        obj = parse_json_object(sonuc2.metin) if sonuc2 is not None else None
-        log.debug("evrak_llm_kesik_kurtarma", basarili=obj is not None)
-    elif obj is None and config.LLM_JSON_RETRY and not mock and (
+    iz.kesik = obj is None and (sonuc.kesik or _kesik_json_mu(raw))
+    retry_hakli = bool(raw.strip()) and not iz.kesik
+    yeniden = config.LLM_JSON_RETRY and not mock
+    if iz.kesik and yeniden and p.kesikte is Kesikte.DUSUNMESIZ_TEKRAR:
+        s2 = await _kurtarma_cagrisi(llm, messages, p, iz, temperature=temperature,
+                                     timeout_s=timeout_s, json_mode=True)
+        obj = parse_json_object(s2.metin) if s2 is not None else None
+    elif obj is None and yeniden and not iz.kesik and (
             retry_hakli or not config.LLM_RETRY_SADECE_BOZUK):
-        retry_msgs = [
-            *messages,
-            ChatMessage(role="assistant", content=raw),
-            ChatMessage(role="user", content=_RETRY_DUZELTME),
-        ]
-        sonuc2 = await _chat_dene(llm, retry_msgs, max_tokens=max_tokens,
-                                  temperature=temperature, timeout_s=timeout_s,
-                                  json_mode=True, dusunme_kapali=dusunme_kapali)
-        obj = parse_json_object(sonuc2.metin) if sonuc2 is not None else None
+        retry_msgs = [*messages, ChatMessage(role="assistant", content=raw),
+                      ChatMessage(role="user", content=_RETRY_DUZELTME)]
+        s2 = await _chat_dene(llm, retry_msgs, max_tokens=p.cevap_butcesi,
+                              temperature=temperature, timeout_s=timeout_s, json_mode=True,
+                              dusunme_kapali=p.dusunme_kapali, marj=p.dusunme_marji)
+        iz.ekle(s2)
+        obj = parse_json_object(s2.metin) if s2 is not None else None
     if obj is None:
-        # `bos`/`kesik`: başarısızlığın SEBEBİ artık log'dan okunuyor. Bu ayrım olmadan
-        # "bütçe yetmiyor" ile "model bozuk JSON üretti" aynı satıra düşüyor ve iki node'un
-        # LLM'i hiç çalıştırmadığı aylarca görünmüyordu.
-        # raw ÇIKARILDI: cikar/siniflandir yanıtı ad/adres gibi kişisel alanlar taşır ve
-        # bu satır halka açık demoda log'a düşerdi. Teşhis sinyali (boş mu / kesik mi /
-        # retry hakkı var mı) zaten ayrı alanlarda; uzunluk onu tamamlar.
-        log.debug("evrak_llm_json_parse_empty", n=len(raw),
-                  bos=not raw.strip(), kesik=sonuc.kesik, retry=retry_hakli)
+        # raw LOGA YAZILMAZ (cikar/siniflandir yanıtı kişisel alan taşır) — yalnız sebep.
+        iz.bitir(basarili=False,
+                 neden="kesik" if iz.kesik else ("bos" if not raw.strip() else "bozuk_json"))
         return None
+    iz.bitir(basarili=True)
     if anahtar is not None:
         _cache_koy(anahtar, copy.deepcopy(obj))  # kopya sakla — dönen nesne serbest
     return obj
@@ -322,48 +414,72 @@ async def llm_text(
     system: str,
     user: str,
     *,
-    max_tokens: int = 420,
+    profil: str | None = None,
+    gorev: str | None = None,
+    max_tokens: int | None = None,
     temperature: float = 0.2,
-    timeout_s: float = LLM_NODE_TIMEOUT_S,
-    dusunme_kapali: bool = False,
+    timeout_s: float | None = None,
+    dusunme_kapali: bool | None = None,
+    kesikte_dusunmesiz: bool | None = None,
+    kesik_kabul: bool = False,
+    llm: Any = None,
 ) -> str | None:
     """LLM'i SERBEST METİN modunda çağır (JSON değil). Mock/hata/timeout/boş → None.
 
-    None dönerse çağıran node kendi deterministik metnine düşer (demo asla bozulmaz).
-    llm_json'ın metin-üreten ikizi (DRY: route/finalize gibi prose node'ları paylaşır).
-
-    `dusunme_kapali` llm_json'daki ile aynı anlamda (DeepSeek `thinking: disabled`):
-    gerçekleri HAZIR alıp yalnız cümleye döken node'lar için muhakeme gereksizdir.
+    Politika çözümü llm_json ile aynıdır (profil → gorev → koşan node → serbest).
+    KESİK (finish_reason=="length"): profil DUSUNMESIZ_TEKRAR ise TEK tekrar (düşünme
+    kapalı, 2× bütçe). Yine kesikse VARSAYILAN None — yarım metin (ör. yarım resmî yazı
+    gövdesi) asla sessizce tam metin gibi dönmez. `kesik_kabul=True` verilirse yarım metin
+    `KesikMetin` (str alt sınıfı, `.kesik=True`) olarak döner; çağıran karar verir.
     """
-    llm = real_llm()
-    if llm is None:
+    p = _politika(profil, gorev, max_tokens=max_tokens, dusunme_kapali=dusunme_kapali,
+                  kesikte_dusunmesiz=kesikte_dusunmesiz, varsayilan_butce=420)
+    llm = llm if llm is not None else real_llm()
+    if llm is None or isinstance(llm, MockLLM):
         return None
+    with llm_iz.profil_kapsami(p.ad):
+        return await _llm_text_cagir(
+            llm, p, system, user, temperature=temperature, kesik_kabul=kesik_kabul,
+            timeout_s=timeout_s or p.timeout_s or LLM_NODE_TIMEOUT_S)
+
+
+async def _llm_text_cagir(
+    llm: Any, p: CagriProfili, system: str, user: str, *,
+    temperature: float, timeout_s: float, kesik_kabul: bool,
+) -> str | None:
+    iz = _Iz(p)
     anahtar = (
-        _cache_anahtari("text", llm, system, user, max_tokens,
-                        dusunme_kapali=dusunme_kapali, temperature=temperature)
+        _cache_anahtari("text", llm, system, user, p.cevap_butcesi,
+                        dusunme_kapali=p.dusunme_kapali, temperature=temperature)
         if config.LLM_CACHE_ENABLED else None
     )
-    if anahtar is not None:
-        onbellek = _cache_al(anahtar)
-        if onbellek is not None:
-            return onbellek  # str immutable — kopya gerekmez
-    sonuc = await _chat_dene(
-        llm,
-        [ChatMessage(role="system", content=system), ChatMessage(role="user", content=user)],
-        max_tokens=max_tokens, temperature=temperature, timeout_s=timeout_s, json_mode=False,
-        dusunme_kapali=dusunme_kapali,
-    )
+    if anahtar is not None and (onbellek := _cache_al(anahtar)) is not None:
+        iz.bitir(basarili=True, onbellek=True)
+        return onbellek  # str immutable — kopya gerekmez
+    messages = [ChatMessage(role="system", content=system),
+                ChatMessage(role="user", content=user)]
+    sonuc = await _chat_dene(llm, messages, max_tokens=p.cevap_butcesi,
+                             temperature=temperature, timeout_s=timeout_s, json_mode=False,
+                             dusunme_kapali=p.dusunme_kapali, marj=p.dusunme_marji)
+    iz.ekle(sonuc)
     if sonuc is None:
+        iz.bitir(basarili=False, neden="hata")
         return None
+    iz.kesik = sonuc.kesik
+    if sonuc.kesik and p.kesikte is Kesikte.DUSUNMESIZ_TEKRAR:
+        s2 = await _kurtarma_cagrisi(llm, messages, p, iz, temperature=temperature,
+                                     timeout_s=timeout_s, json_mode=False)
+        if s2 is not None and (s2.metin.strip() or not sonuc.metin.strip()):
+            sonuc = s2
     txt = sonuc.metin.strip()
-    if not txt:
-        # Serbest metinde retry zaten yoktu; sebebi loglamak teşhisi mümkün kılar.
-        log.debug("evrak_llm_text_bos", kesik=sonuc.kesik)
-        return None
+    if not txt or sonuc.kesik:
+        iz.bitir(basarili=bool(txt) and kesik_kabul, neden="kesik" if sonuc.kesik else "bos")
+        return KesikMetin(txt) if txt and kesik_kabul else None
+    iz.bitir(basarili=True)
     if anahtar is not None:
         _cache_koy(anahtar, txt)
     return txt
 
 
-__all__ = ("LLM_NODE_TIMEOUT_S", "cache_temizle", "llm_json", "llm_text",
-           "parse_json_object", "real_llm")
+__all__ = ("LLM_NODE_TIMEOUT_S", "CagriSonucu", "KesikMetin", "cache_temizle", "llm_json",
+           "llm_text", "parse_json_object", "real_llm")

@@ -8,6 +8,7 @@ regresyon örneği olarak durur. AAA deseni.
 from __future__ import annotations
 
 import json
+from typing import ClassVar
 
 from eval.e2e_gercek_eval import (
     GOLD,
@@ -340,3 +341,121 @@ def test_belge_kos_dokum_listesine_ekler():
     satir = {"id": "d2", "metin": KAYNAK, "beklenen": _gold()}
     r = asyncio.run(_belge_kos(SahteGraf(), satir, asyncio.Semaphore(1), 5.0, dokum))
     assert r["id"] == "d2" and len(dokum) == 1 and dokum[0]["evrak_turu"] == "dilekce"
+
+
+# ------------------------------------------------------------ 2026-10-05 inceleme düzeltmeleri
+class TestYanlisNegatifDuzeltmeleri:
+    """Ölçüm incelemesi: doğru çıktıyı başarısız sayan eval kuralları (yanlış negatifler)."""
+
+    def test_unlu_dusmesi_ve_turetme_eki_konu_anahtarini_karsilar(self):
+        from eval.e2e_eslesme import kok_icerir
+        assert kok_icerir("Aile kabri yer tahsisi", ["mezar", "kabir"])
+        assert kok_icerir("Yurt dışı çalışma sürelerinin borçlanılması", ["borçlanma"])
+        assert kok_icerir("Kitabın iadesi", ["kitap"])  # ünsüz yumuşaması
+
+    def test_cekim_kurali_alakasiz_sozcugu_eslemez(self):
+        from eval.e2e_eslesme import kok_icerir, kok_varyantlari
+        assert not kok_icerir("Kabul edilen başvuru", ["kabir"])
+        assert not kok_icerir("Kablo döşenmesi", ["kabir"])
+        assert kok_varyantlari("yol") == ["yol"]  # kısa sözcükte türetme serbestliği yok
+        assert kok_varyantlari("kasa") == ["kasa"]  # geniş ünlü düşmez
+        assert kok_varyantlari("su kesinti") == ["su kesinti"]  # çok sözcük: aynen
+
+    def test_konu_kurali_cekimli_anahtari_gecirir(self):
+        r = konu_degerlendir("Aile kabri yer tahsisi", "", ["kabir"])
+        assert r["gecti"], r["neden"]
+
+    def test_kisaltma_ve_tam_ad_ayni_sicil_kaydina_cozulur(self):
+        from eval.e2e_eslesme import birim_dogru
+        assert birim_dogru("İstanbul Su ve Kanalizasyon İdaresi Genel Müdürlüğü (devir)", ["İSKİ"])
+        assert not birim_dogru("Ankara Su ve Kanalizasyon İdaresi Genel Müdürlüğü (devir)",
+                               ["İSKİ"])
+        assert not birim_dogru("Fen İşleri Müdürlüğü", ["İSKİ"])
+
+    def test_bilesik_tur_altinin_kabul_ettigi_turu_gecirir(self):
+        from eval.e2e_gercek_eval import tur_degerlendir
+        b = {"evrak_turu": "sikayet", "evrak_turu_kabul": ["dilekce", "talep"]}
+        r = tur_degerlendir({"evrak_turu": "dilekce"}, b)
+        assert r["operasyonel"] is False and r["bilesik"] is True
+        assert tur_degerlendir({"evrak_turu": "ihbar"}, b)["bilesik"] is False
+
+
+class TestYargiYolu:
+    """3071 m.6/b: yargı merciinin görevi → devir YOK (m.5 yalnız idari makama devreder)."""
+
+    B: ClassVar[dict] = {"yetki": "YARGI", "yetkili_kurum_kabul": []}
+
+    def test_devirsiz_cikti_gecer(self):
+        st = {"yonlendirme": {"karar": "ICERIDE", "talepler": [{"karar": "ICERIDE"}]},
+              "muhatap_kurum": {"slug": "cankaya-tapu"}}
+        assert yetki_degerlendir(st, self.B)["gecti"] is True
+
+    def test_kaymakamliga_devir_basarisiz(self):
+        st = {"yonlendirme": {"karar": "DISARIDA"}, "muhatap_kurum": {"slug": "cankaya-tapu"},
+              "yetkili_kurum": {"slug": "cankaya-kaymakamligi", "ad": "Çankaya Kaymakamlığı"}}
+        r = yetki_degerlendir(st, self.B)
+        assert r["gecti"] is False and r["devir"] is True
+
+    def test_talep_duzeyi_devir_de_yakalanir(self):
+        st = {"yonlendirme": {"karar": "BELIRSIZ", "talepler": [{"karar": "DISARIDA"}]},
+              "muhatap_kurum": {"slug": "t"}}
+        assert yetki_degerlendir(st, self.B)["gecti"] is False
+
+    def test_topla_yargi_metrigi_ve_basarisizlik_metni(self):
+        satir = {"id": "y", "metin": KAYNAK, "beklenen": {**_gold(), "yetki": "YARGI",
+                                                           "yetkili_kurum_kabul": []}}
+        st = {"yonlendirme": {"karar": "DISARIDA"}, "muhatap_kurum": {"slug": "t"},
+              "yetkili_kurum": {"slug": "k", "ad": "Çankaya Kaymakamlığı"}}
+        r = belge_degerlendir(st, satir)
+        assert any(n.startswith("yetki: yargı konusu devredildi") for n in r["basarisizliklar"])
+        m = topla([r])
+        assert m["yetki_yargi_devirsiz"]["k"] == 0 and m["yetki_yargi_devirsiz"]["n"] == 1
+
+
+class TestPiiVeAntet:
+    def test_pii_taramasi_yazi_paketini_kapsar(self):
+        st = {"yazi_paketi": [{"yazi_taslak_md": "Havale — T.C. Kimlik No: 10000000146"},
+                              {"yazi_taslak_md": "Tel: 0555-123-4567"},
+                              {"yazi_taslak_md": "T.C. Kimlik No: 1000000****"}]}
+        assert pii_tara(st) == ["yazi_paketi_0", "yazi_paketi_1"]
+
+    def test_antet_birim_yer_tutucusu_ayri_olculur(self):
+        from eval.e2e_gercek_eval import _birim_yer_tutucusu, antet_degerlendir
+        b = {"muhatap_kabul": ["Çankaya Tapu"]}
+        md = f"T.C.\nÇANKAYA TAPU MÜDÜRLÜĞÜ\n{_birim_yer_tutucusu()}\nSayı : E-1\n"
+        r = antet_degerlendir(md, b)
+        assert r["gecti"] is True and r["birim_yer_tutucu"] is True
+        r2 = antet_degerlendir("T.C.\nÇANKAYA TAPU MÜDÜRLÜĞÜ\nSayı : E-1\n", b)
+        assert r2["birim_yer_tutucu"] is False and r2["birim_satiri"] == ""
+
+
+class TestAltinDuzeltmeleri:
+    """Altın satırlarının mevzuat lafzına göre düzeltilmiş beklentileri (geri dönmesin)."""
+
+    @staticmethod
+    def _gold_map():
+        return {json.loads(s)["id"]: json.loads(s)
+                for s in GOLD.read_text(encoding="utf-8").splitlines() if s.strip()}
+
+    def test_kat_mulkiyeti_yargi_yolu_devir_beklemez(self):
+        g = self._gold_map()["tapu_kat_mulkiyeti"]["beklenen"]
+        assert g["yetki"] == "YARGI" and g["yetkili_kurum_kabul"] == []
+        assert not icerir_herhangi(" ".join(g["birim_kabul_edilebilir"]), ["Mahkeme"])
+
+    def test_dilekcede_tckn_zorunlu_eksik_sayilmaz(self):
+        g = self._gold_map()
+        assert all("tckn_veya_kurum" not in s["beklenen"]["eksikler"] for s in g.values()
+                   if s["beklenen"]["evrak_turu"] in ("dilekce", "sikayet", "talep"))
+
+    def test_cimer_basvurusunda_islak_imza_beklenmez(self):
+        g = self._gold_map()
+        assert all("imza" not in s["beklenen"]["eksikler"] for s in g.values()
+                   if s["beklenen"]["kanal"] == "cimer")
+
+    def test_icra_senaryosu_baslik_ve_govde_tutarli(self):
+        metin = self._gold_map()["sgk_icra_maas_haczi"]["metin"]
+        assert "89/1" not in metin and "83. maddesi" in metin
+
+    def test_iski_tam_adi_birim_kabulunde(self):
+        g = self._gold_map()["ilce_kadikoy_su_kesintisi"]["beklenen"]
+        assert "İstanbul Su ve Kanalizasyon" in g["birim_kabul_edilebilir"]

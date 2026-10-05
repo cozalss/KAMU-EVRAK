@@ -35,13 +35,19 @@ import statistics
 import subprocess
 import sys
 import time
-import unicodedata
 from pathlib import Path
 from typing import Any
 
 with contextlib.suppress(Exception):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
 
+from eval.e2e_eslesme import (  # metin kuralları ayrı modülde (dosya <800 satır)
+    _kelimeler,
+    birim_dogru,
+    icerir_herhangi,
+    kok_icerir,
+    norm,
+)
 from eval.stats import wilson_interval
 
 _KOK = Path(__file__).resolve().parent.parent.parent
@@ -75,24 +81,6 @@ ILGI_TUR_KELIME: dict[str, tuple[str, ...]] = {
 
 
 # ============================================================ metin yardımcıları
-def norm(s: Any) -> str:
-    """Türkçe-güvenli katlama: İ/I → i/ı → ASCII, küçük harf, aksan yok, boşluk sıkışık."""
-    s = str(s or "").replace("İ", "i").replace("I", "ı").lower()
-    s = unicodedata.normalize("NFKD", s)
-    s = "".join(c for c in s if not unicodedata.combining(c)).replace("ı", "i")
-    return re.sub(r"\s+", " ", s).strip()
-
-
-def icerir_herhangi(metin: Any, kokler: list[str]) -> bool:
-    """Normalize metin, normalize köklerden birini içeriyor mu (alt-dizgi)."""
-    n = norm(metin)
-    return bool(n) and any(norm(k) and norm(k) in n for k in kokler)
-
-
-def _kelimeler(s: str) -> list[str]:
-    return re.findall(r"[a-z0-9]+", norm(s))
-
-
 def en_uzun_ortak_ngram(a: str, b: str) -> int:
     """a ile b arasındaki en uzun ARDIŞIK ortak kelime dizisinin uzunluğu."""
     x, y = _kelimeler(a), _kelimeler(b)
@@ -186,7 +174,7 @@ def konu_degerlendir(konu: str | None, kaynak: str, anahtarlar: list[str]) -> di
         nedenler.append(f"ham_kopya({ngram}-gram)")
     if _BIRINCI_SAHIS.search(norm(konu)):
         nedenler.append("birinci_sahis_fiil")
-    if not icerir_herhangi(konu, anahtarlar):
+    if not kok_icerir(konu, anahtarlar):  # Türkçe çekim: 'kabri' ~ 'kabir'
         nedenler.append("anahtar_yok")
     return {"gecti": not nedenler, "neden": nedenler, "konu": konu, "kelime": kelime}
 
@@ -215,18 +203,42 @@ def ilgi_degerlendir(ilgi: str | None, b: dict[str, Any], muhatap: str = "") -> 
     return {"gecti": not nedenler, "neden": nedenler, "ilgi": ilgi, "muhatap": muhatap}
 
 
+def _birim_yer_tutucusu() -> str:
+    """Render motorunun KURUM_BIRIM yokken bastığı jenerik birim satırı (tek kaynak:
+    yazi.models._DEMO_DEFAULTS) — sabit metin kopyalanmaz, motor değişirse ölçüt de değişir."""
+    with contextlib.suppress(Exception):
+        from yazi.models import _DEMO_DEFAULTS
+        return str(_DEMO_DEFAULTS.get("birim_adi") or "")
+    return ""
+
+
 def antet_degerlendir(md: str, b: dict[str, Any]) -> dict[str, Any]:
-    """Antet kuralı: yazıyı yazan idare = evrakın muhatabı (gelen evrakı işleyen kurum)."""
+    """Antet kuralı: yazıyı yazan idare = evrakın muhatabı (gelen evrakı işleyen kurum).
+
+    Ayrıca (bileşiğe GİRMEYEN ayrı ölçüt) antetin birim satırı jenerik yer tutucu mu: tapu
+    müdürlüğüne 'Yazı İşleri Birimi' basmak kurum metriğini geçer ama yanlış bir birim
+    iddiasıdır (2026-10-05 incelemesi; Yön. m.10 birim satırını zorunlu kılmaz → boş olabilir).
+    """
     antet = taslak_anteti(md)
-    return {"antet": antet, "gecti": icerir_herhangi(antet, b["muhatap_kabul"])}
+    satirlar = [x.strip() for x in antet.split(" / ")] if antet else []
+    birim_satiri = satirlar[2] if len(satirlar) >= 3 else ""
+    yer_tutucu = _birim_yer_tutucusu()
+    return {"antet": antet, "gecti": icerir_herhangi(antet, b["muhatap_kabul"]),
+            "birim_satiri": birim_satiri,
+            "birim_yer_tutucu": bool(birim_satiri and yer_tutucu
+                                     and norm(birim_satiri) == norm(yer_tutucu))}
 
 
 def tur_degerlendir(state: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     from agents.config import ayni_esdeger_grup
     pred = state.get("evrak_turu") or "belirsiz"
-    return {"tahmin": pred, "kesin": pred == b["evrak_turu"],
-            "kabul": pred == b["evrak_turu"] or pred in (b.get("evrak_turu_kabul") or []),
-            "operasyonel": ayni_esdeger_grup(pred, b["evrak_turu"])}
+    kabul = pred == b["evrak_turu"] or pred in (b.get("evrak_turu_kabul") or [])
+    operasyonel = ayni_esdeger_grup(pred, b["evrak_turu"])
+    # Bileşik ölçüt: altının AÇIKÇA kabul ettiği tür ya da operasyonel eşdeğeri. Yalnız
+    # eşdeğer gruba bakmak, altının kabul ettiği türü (ör. şikâyet ↔ dilekçe) başarısız
+    # sayıyordu (2026-10-05 incelemesi: ilce_yenimahalle_cop).
+    return {"tahmin": pred, "kesin": pred == b["evrak_turu"], "kabul": kabul,
+            "operasyonel": operasyonel, "bilesik": kabul or operasyonel}
 
 
 def birim_tahmini(state: dict[str, Any]) -> tuple[str, str]:
@@ -314,11 +326,28 @@ def yetki_degerlendir(state: dict[str, Any], b: dict[str, Any]) -> dict[str, Any
     serbest += " " + json.dumps(state.get("canli_kaynak") or {}, ensure_ascii=False)
     serbest += " " + " ".join(map(str, state.get("clarify_questions") or []))
     metinsel = bool(kabul) and icerir_herhangi(serbest, kabul)
+    if b["yetki"] == "YARGI":
+        return _yargi_degerlendir(state, disari_yapisal_doc, yk)
     if b["yetki"] == "DISARIDA":
         return {"beklenen": "DISARIDA", "yapisal": yapisal, "metinsel": metinsel or yapisal,
                 "gecti": yapisal, "yetkili_tahmin": yk.get("ad")}
     return {"beklenen": "ICERIDE", "yanlis_alarm": disari_yapisal_doc, "gecti": not disari_yapisal_doc,
             "yetkili_tahmin": yk.get("ad")}
+
+
+def _yargi_degerlendir(state: dict[str, Any], disari_doc: bool,
+                       yk: dict[str, Any]) -> dict[str, Any]:
+    """3071 m.6/b: yargı merciinin görevine giren dilekçe İNCELENEMEZ; m.5 devri yalnız
+    'yetkili idari makama' yapılır → mahkemeye ya da başka idareye devir YANLIŞTIR. Doğru
+    çıktı devirsiz cevaptır (vatandaşa yargı yolu bildirilir). Ölçüt yapısaldır: belge ya
+    da talep düzeyinde kurum dışına devir yoksa geçer — sistemin bu sınıfa verdiği adın
+    (karar etiketi) ne olduğuna bağlı değildir."""
+    yon = state.get("yonlendirme") or {}
+    talep_devir = any(isinstance(t, dict) and t.get("karar") == "DISARIDA"
+                      for t in yon.get("talepler") or [])
+    devir = disari_doc or yon.get("karar") in ("DISARIDA", "KARMA") or talep_devir
+    return {"beklenen": "YARGI", "devir": devir, "yapisal": not devir,
+            "metinsel": not devir, "gecti": not devir, "yetkili_tahmin": yk.get("ad")}
 
 
 def mevzuat_eslesir(dosya: str, onekler: list[str]) -> bool:
@@ -365,6 +394,11 @@ def kullaniciya_giden_metinler(state: dict[str, Any]) -> dict[str, str]:
     for i, a in enumerate(state.get("alt_talepler") or []):
         if isinstance(a, dict):
             alanlar[f"alt_talep_{i}"] = " ".join(str(v) for v in a.values() if isinstance(v, str))
+    # Başka kurum/birimlere giden havale-devir-cevap yazıları da insana gider (2026-10-05:
+    # tarama yalnız ana taslağa bakıyordu, paket yazıları ölçülmüyordu).
+    for i, y in enumerate(state.get("yazi_paketi") or []):
+        if isinstance(y, dict):
+            alanlar[f"yazi_paketi_{i}"] = str(y.get("yazi_taslak_md") or "")
     return alanlar
 
 
@@ -389,7 +423,7 @@ def belge_degerlendir(state: dict[str, Any], gold_satir: dict[str, Any],
                     "dogru": icerir_herhangi((state.get("muhatap_kurum") or {}).get("ad"),
                                              b["muhatap_kabul"])},
         "birim": {"tahmin": birim, "kaynak": birim_kaynak, "durum": state.get("durum"),
-                  "dogru": icerir_herhangi(birim, b["birim_kabul_edilebilir"])},
+                  "dogru": birim_dogru(birim, b["birim_kabul_edilebilir"])},
         "yetki": yetki_degerlendir(state, b), "talep": talep_degerlendir(state, b),
         "konu": konu_degerlendir(taslak_alani(md, "konu"), gold_satir["metin"], b["konu_anahtar"]),
         "ilgi": ilgi_degerlendir(taslak_alani(md, "ilgi"), b, taslak_muhatabi(md)),
@@ -411,14 +445,12 @@ def basarisizlik_listesi(r: dict[str, Any]) -> list[str]:
     f: list[str] = []
     if r.get("hata"):
         f.append(f"hata: {r['hata']}")
-    if not r["tur"]["operasyonel"]:
+    if not r["tur"].get("bilesik", r["tur"]["operasyonel"]):
         f.append(f"tur: tahmin={r['tur']['tahmin']}")
     if not r["birim"]["dogru"]:
         f.append(f"birim: '{r['birim']['tahmin']}' ({r['birim']['kaynak']}, durum={r['birim']['durum']})")
-    y = r["yetki"]
-    if not y["gecti"]:
-        f.append("yetki: DISARIDA tespit edilmedi" + (" (yalnız metinde anıldı)" if y.get("metinsel") else "")
-                 if y["beklenen"] == "DISARIDA" else f"yetki: yanlış alarm → {y['yetkili_tahmin']}")
+    if not r["yetki"]["gecti"]:
+        f.append(_yetki_nedeni(r["yetki"]))
     t = r["talep"]
     if r["cok_talepli"] and t["decompose_bulunan"] < t["gold_sayi"]:
         f.append(f"talep: ayrıştırıcı {t['decompose_bulunan']}/{t['gold_sayi']}")
@@ -445,6 +477,15 @@ def basarisizlik_listesi(r: dict[str, Any]) -> list[str]:
     return f
 
 
+def _yetki_nedeni(y: dict[str, Any]) -> str:
+    if y["beklenen"] == "YARGI":
+        return f"yetki: yargı konusu devredildi → {y['yetkili_tahmin']}"
+    if y["beklenen"] == "DISARIDA":
+        return "yetki: DISARIDA tespit edilmedi" + (" (yalnız metinde anıldı)"
+                                                    if y.get("metinsel") else "")
+    return f"yetki: yanlış alarm → {y['yetkili_tahmin']}"
+
+
 # ============================================================ toplama
 def oran(k: int, n: int) -> dict[str, Any]:
     lo, hi = wilson_interval(k, n)
@@ -464,6 +505,7 @@ def topla(kayitlar: list[dict[str, Any]]) -> dict[str, Any]:
     n = len(kayitlar)
     dis = [r for r in kayitlar if r["yetki_beklenen"] == "DISARIDA"]
     ic = [r for r in kayitlar if r["yetki_beklenen"] == "ICERIDE"]
+    yargi = [r for r in kayitlar if r["yetki_beklenen"] == "YARGI"]
     cok = [r for r in kayitlar if r["cok_talepli"]]
     alt_birim = [x for r in cok for x in r["talep"]["alt_birim_dogru"]]
     mev_top = sum(len(r["mevzuat"]["top"]) for r in kayitlar)
@@ -484,6 +526,7 @@ def topla(kayitlar: list[dict[str, Any]]) -> dict[str, Any]:
         "yetki_tespit_yapisal": oran(sum(r["yetki"]["yapisal"] for r in dis), len(dis)),
         "yetki_tespit_metinsel": oran(sum(r["yetki"]["metinsel"] for r in dis), len(dis)),
         "yetki_yanlis_alarm": oran(sum(r["yetki"]["yanlis_alarm"] for r in ic), len(ic)),
+        "yetki_yargi_devirsiz": oran(sum(r["yetki"]["gecti"] for r in yargi), len(yargi)),
         "talep_recall_decompose": oran(sum(r["talep"]["decompose_bulunan"] for r in cok),
                                        sum(r["talep"]["gold_sayi"] for r in cok)),
         "talep_recall_cikar": oran(sum(r["talep"]["cikar_bulunan"] for r in cok),
@@ -493,6 +536,8 @@ def topla(kayitlar: list[dict[str, Any]]) -> dict[str, Any]:
         "konu_kalitesi": oran(sum(r["konu"]["gecti"] for r in kayitlar), n),
         "ilgi_dogrulugu": oran(sum(r["ilgi"]["gecti"] for r in kayitlar), n),
         "antet_dogrulugu": oran(sum(r["antet"]["gecti"] for r in kayitlar), n),
+        "antet_birim_yer_tutucu": oran(sum(bool(r["antet"].get("birim_yer_tutucu"))
+                                           for r in kayitlar), n),
         "mevzuat_beklenen_hit": oran(sum(r["mevzuat"]["hit"] for r in kayitlar), n),
         "mevzuat_precision_at_3": oran(mev_ilgili, mev_top),
         "alakasiz_mevzuat_orani": oran(mev_top - mev_ilgili, mev_top),

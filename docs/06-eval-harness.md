@@ -15,6 +15,29 @@ ablation A/B'leri **McNemar p + bootstrap Δpp CI** (`eval/stats.py` KEEP).
 > **Latency:** şartname sayısal eşik vermez ("real-time **avantaj**"). Sabit SLA gibi sunma;
 > **TTFT (stream ilk-token) + streaming**'i öne çıkar ("düşünen sistem"); tam-tamamlanma p95 ayrı raporla.
 
+## Birincil ölçüt: uçtan uca gerçekçi altın (`eval/e2e_gercek_eval.py`)
+
+Node'ları tek tek ölçen harness'lar node'ların ARASINDA doğan kusurları (yanlış ilgi, çelişen
+talep sayısı, söylenmeyen yetkisizlik) görmez. `e2e_gercek_eval` gerçek grafı 59 elle yazılmış
+sentetik evrakta koşar (`data/synthetic/e2e_gercek_gold.jsonl`; altın YALNIZ
+`scripts/e2e_gercek_gold_uret.py` ile, gerekçe yorumuyla değiştirilir) ve memurun ölçütüyle
+sayar: **kurumda kullanılabilir** = tür (altının kabulü ya da operasyonel eşdeğer) + birim +
+yetki + talep + konu + ilgi + antet kurumu + PII hepsi doğru. LLM-judge yok; kurallar
+`tests/test_e2e_gercek_eval.py`'de sabit. Metin eşleşmesi `eval/e2e_eslesme.py`: Türkçe çekim
+(ünlü düşmesi, ünsüz yumuşaması, türetme eki) + kurum sicilinin kısaltma çözümü.
+Yetki sınıfları: `ICERIDE`, `DISARIDA` (yetkili idari makama devir, 3071 m.5) ve `YARGI`
+(yargı merciinin görevi, 3071 m.6/b — devir YAPILMAMALI; `yetki_yargi_devirsiz`). Antetin
+birim satırı jenerik yer tutucuysa ayrı sayılır (`antet_birim_yer_tutucu`, bileşiğe girmez).
+PII taraması `yazi_paketi` yazılarını da kapsar.
+
+Çalıştır: `cd backend && PYTHONUTF8=1 uv run python -m eval.e2e_gercek_eval --etiket <ad>`
+(`--dokum <scratchpad yolu>` memur çıktısını belge başına yazar). Gerçek LLM ücretlidir;
+`LLM_MODE=mock` açıkça verilmezse backend ana `.env`'i yükler. Güncel sonuç ve tarihçe:
+`eval/runs/e2e_gercek_*.json` (birleşik: 45/59 = 0,76; inceleme sonrası kurallarla döküm
+üzerinden 48/59). Aşağıdaki karnelerin yayımlanmış sonuçları (`competition_scorecard`,
+held-out) kaldırılmış `deepseek-chat` modeli ve eski 9'lu kova yönlendirmesiyle üretildi —
+**tarihseldir**.
+
 ## Tek-komut karne
 
 `eval/competition_scorecard.py` (scorecard.py ADAPT) → 5 alt-metriği git-SHA'lı tek Markdown

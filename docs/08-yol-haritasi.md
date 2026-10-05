@@ -20,7 +20,8 @@
   `deepseek-v4-flash`; yeniden ölçülmedi · in-domain, n=54): sınıflandırma macro-F1 **0.817**,
   routing Top-1 **0.852**, eksik-bilgi recall(β=2) **0.739**, özet faithfulness **1.000**, taslak
   `format_uyumlu_rate` **1.000**, false-veto **0/140**, fairness **0.944**. Dairesel-olmayan
-  held-out (n=108, 2 bağımsız set): macro-F1 **~0.89** (0.864/0.907), routing Top-1 **0.907**.
+  held-out (n=108, 2 bağımsız set): macro-F1 **~0.89** (0.864/0.907), routing Top-1 **0.907**
+  *(TARİHSEL — kaldırılmış `deepseek-chat` + eski 9'lu kova; güncel: `eval/runs/e2e_gercek_birlesik.json`)*.
 
 ## Faz 0 — Ön eleme (şimdi → 12 Tmz)  ⚠️ EN ÖNCELİKLİ
 

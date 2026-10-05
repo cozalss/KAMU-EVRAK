@@ -7,6 +7,9 @@
 >
 > **Dürüstlük çerçevesi:** Üretim doğruluğu ölçüldü — dairesel-olmayan held-out sette `LLM_MODE=openai`
 > + **DeepSeek-chat** ile sıkı macro-F1 **~0.89** (0.864/0.907), operasyonel **~0.94**, yönlendirme Top-1 **0.907**
+> *(TARİHSEL: kaldırılmış model + eski 9'lu kova mimarisi.)* **Güncel ölçüm** (2026-10-05,
+> `deepseek-v4-flash`, 59 belgelik uçtan uca altın set, `backend/eval/runs/e2e_gercek_birlesik.json`):
+> kurumda kullanılabilir **45/59 = 0,76** [0,64–0,85], birim 47/59, muhatap 59/59, PII sızıntısı 0/59.
 > (n=108, 2 bağımsız set) — **reprodüke-edilebilir** artefakt (repoda `backend/eval/runs/heldout_deepseek_set*_n54_fixed.json`).
 > Tam tablo: [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md). Aşağıdaki ticarileşme iddiaları
 > bu ölçülmüş başarıma dayanır; "tamamlandı" denilen tek şey çalışan pipeline + ölçülen skordur.
@@ -46,7 +49,7 @@ sorumluluk yetkili personelde (insan-döngüde tasarım).
 | Boyut | Mevcut (manuel) | kamu-evrak ile | Kanıt |
 |---|---|---|---|
 | **İşleme süresi** | Evrak başına dakikalar (oku→sınıfla→havale→yaz) | Saniyeler içinde taslak + havale önerisi | Canlı SSE pipeline; mock modda dış-çağrısız hızlı |
-| **Sınıflandırma/havale hatası** | Tür/birim karışması, geç fark edilen eksik | Held-out sıkı macro-F1 ~0.89, havale Top-1 0.907 (DeepSeek-chat, n=108) | [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md) |
+| **Sınıflandırma/havale hatası** | Tür/birim karışması, geç fark edilen eksik | Uçtan uca altın ölçüm (n=59, `deepseek-v4-flash`, 2026-10-05): kurumda kullanılabilir 45/59 = 0,76, birim 47/59, muhatap 59/59 *(tarihsel held-out: macro-F1 ~0.89, Top-1 0.907 — eski model)* | [`benchmark/llm-heldout.md`](benchmark/llm-heldout.md) |
 | **Eksik-bilgi kaçağı** | Geç fark, geri-istek döngüsü | Recall-öncelikli eksik tespiti, dur-ve-sor | scorecard recall(β=2) yüksek |
 | **Format standardı** | Kişiden kişiye değişen kalite | Yön. 2646 şablon + Türkçe saflık + doğrulama; `format_uyumlu_rate=1.0` | scorecard: format, tür doğruluğu, saflık |
 | **Halüsinasyon / yanlış mevzuat** | Risk, denetimsiz | verify node uydurma-veto (false-veto 0) + her çıktıda disclaimer | scorecard |
@@ -71,7 +74,7 @@ garantileyen, halüsinasyona ve PII sızıntısına karşı korumalı bir karar-
 
 | Boyut | Yaklaşım |
 |---|---|
-| **Çok-kurum (multi-tenant)** | Taksonomi (19 tür) + birim eşlemesi (9 birim) **yapılandırılabilir**; her kurum kendi birim ağacı/iş kuralıyla aynı pipeline'ı koşar. |
+| **Çok-kurum (multi-tenant)** | Taksonomi (19 tür) + kurumun kendi teşkilat korpusundan birim seçimi **yapılandırılabilir**; her kurum kendi birim ağacı/iş kuralıyla aynı pipeline'ı koşar. |
 | **Konuşlandırma esnekliği** | Aynı kod **bulut (SaaS)** veya **kurum-içi (on-prem, offline)** çalışır; `LLM_MODE` ile bulut/lokal/mock arası geçiş — kod değişmez. |
 | **Gizlilik / KVKK** | Hassas kurumlar için on-prem + lokal LLM (Qwen GGUF) → veri kurumdan **hiç çıkmaz**; PII maskeleme bulut çağrısından önce uygulanır. |
 | **Yatay yük** | Stateless FastAPI worker'lar → kurum hacmine göre ölçeklenir; OCR graf-öncesi (route) yapıldığı için graf saf-metinde test-edilebilir ve hafiftir. |
@@ -102,7 +105,7 @@ SLA'dan gelir — kamu yazılımında sürdürülebilir bir desen.
 
 | Aşama | İçerik | Durum |
 |---|---|---|
-| **MVP (mevcut)** | Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca; DeepSeek-chat held-out ~%90; backend 1319 test geçti; frontend build başarılı; taslak format kapısı kapandı | ✅ Çalışıyor + ölçüldü |
+| **MVP (mevcut)** | Görev 1 (6/6) + Görev 2 (5/5) uçtan-uca; uçtan uca altın ölçümde kurumda kullanılabilir 0,76 (n=59, 2026-10-05); backend testleri CI'da yeşil; frontend build başarılı; taslak format kapısı kapandı | ✅ Çalışıyor + ölçüldü |
 | **Pilot** | 2. bağımsız held-out ile çapraz-doğrulama; blind insan-etiketli gold; tek kurumda dar pilot | Sonraki |
 | **EBYS konektörü** | Yaygın EBYS/DYS ürünleriyle API entegrasyon adaptörleri; e-Yazışma paket çıktısı | Planlı |
 | **Çok-kurum** | Multi-tenant yapılandırma yönetimi; kurum-özel taksonomi/birim ağacı arayüzü | Planlı |

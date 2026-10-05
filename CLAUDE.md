@@ -113,27 +113,75 @@ Demo 15 (real-time avantaj) · Yenilikçilik/Özgünlük/Ticarileşme 15.
 > `max_tokens`'tan düşer, bu yüzden node bütçelerine `LLM_DUSUNME_MARJI` (varsayılan 700)
 > `_llm_extract._chat_dene`'de EKLENİR. Marj olmadan dar bütçeli node'lar BOŞ cevap alıp
 > sessizce deterministik yedeğe düşer (ölçüldü: 28 çağrının 13'ü boş → marj sonrası 0).
+> 2026-10'dan beri düşünme her profilde varsayılan KAPALI (aşağıda "merkezi LLM politikası").
 
 Çekirdek anlama/üretim node'ları **gerçek LLM (DeepSeek, `LLM_MODE=openai`,
-`deepseek-v4-flash`)** kullanır — **sınıflandır · bilgi çıkar · çok-konulu ayır · eksik tespit ·
-özetle · yazı taslağı · birim yönlendir · bilgilendir** (8 çekirdek node). 2026-07
-güçlendirme dalgası (14 madde, hepsi ENV-gated + deterministik fallback'li): OCR imla
-düzeltme (`OCR_LLM_DUZELT`, WER %51→%29) · sınıflandırmada güçlü-model (`deepseek-v4-pro`)
-eskalasyonu (`SINIFLANDIR_ESKALASYON`) · risk bandı doğal dil açıklaması · llm_json
-parse-retry + LRU cache · 2646 lint auto-fix önerisi (`LINT_AUTOFIX`) · iddia-düzeyi
-grounding (`VERIFY_GROUNDING_LLM`, yalnız bandı sertleştirir) · DeepSeek listwise rerank
-(`RERANK_PROVIDER=deepseek`, Recall@1 0.65→1.00) · CRAG LLM grader+rewrite · decompose
-kapalı-küme tür/birim · SDP kapalı-küme seçici · NLI `NLI_PROVIDER=deepseek` ·
-eval LLM-judge (özet+üslup, default kapalı) · sohbet araç döngüsü (`SOHBET_ARAC_DONGUSU`,
-maks 3 tur + geçmiş) · anlama fan-out (`PARALEL_ANLAMA`, sınıflandır ∥ çıkar).
-Her LLM noktasında yok/mock/hata/timeout → **deterministik fallback**: mock modda uçtan-uca
-akış ayakta kalır, CI deterministik geçer. **Mevzuat öner = BM25 RAG birincil** (LLM yalnız
-rerank/doğrulama katmanı); risk bandı KARARI daima deterministik (LLM yalnız sunar/sertleştirir).
+`deepseek-v4-flash`)** kullanır — **sınıflandır · bilgi çıkar (talep kümesi dahil) · eksik
+tespit · özetle · yazı taslağı · birim yönlendir (`route_ajan`) · mevzuat mesele + alaka
+yargıcı · bilgilendir**. `decompose` artık LLM ÇAĞIRMAZ (talep kümesini deterministik türetir).
+Ek LLM noktaları (hepsi ENV-gated + deterministik fallback'li): OCR imla düzeltme
+(`OCR_LLM_DUZELT`) · sınıflandırmada güçlü-model eskalasyonu (`SINIFLANDIR_ESKALASYON`) · risk
+bandı doğal dil açıklaması · 2646 lint auto-fix önerisi (`LINT_AUTOFIX`) · iddia-düzeyi
+grounding (`VERIFY_GROUNDING_LLM`, yalnız bandı sertleştirir) · listwise rerank
+(`RERANK_PROVIDER=deepseek`) · CRAG grader+rewrite · NLI `NLI_PROVIDER=deepseek` · eval
+LLM-judge (varsayılan kapalı) · sohbet araç döngüsü (`SOHBET_ARAC_DONGUSU`) · anlama fan-out
+(`PARALEL_ANLAMA`). SDP seçimi tek yoldan (`agents/nodes/arsiv.py` `_sdp_secimi`; ikinci seçici `yazi/sdp_plani.py` kaldırıldı).
+Her LLM noktasında yok/mock/hata/timeout/kesik → **deterministik fallback**: mock modda uçtan-uca
+akış ayakta kalır, CI deterministik geçer. Risk bandı KARARI daima deterministik (LLM yalnız
+sunar/sertleştirir). Eski manşet skorlar (rerank "Recall@1 0.65→1.00", yönlendirme "Top-1
+0,907", "9 birim") **tarihseldir**: kaldırılmış `deepseek-chat` modeliyle ve artık olmayan
+9'lu kova mimarisiyle ölçüldü; alıntılanmaz. Güncel ölçüm aşağıdaki "Birleşik mimari"
+bölümündedir.
 Risk **skoru** sabit değil **ölçülmüştür**: `ağırlık = ciddiyet × isabet`, belge skoru noisy-OR
 (`agents/risk_agirlik.py`); isabet `eval/risk_calibration.py`'de bağımsız oracle'la sayılıp Wilson
 alt sınırı olarak yazılır. Gözlem sinyalleri (checksum/lint/`[DOĞRULA]`) ölçülmez → isabet 1.0.
 Skor bir olasılık DEĞİL, beklenen zarardır; kalibre edilen ayrı büyüklük `kusur_olasiligi`'dır.
 Maliyet ~$0.001-0.002/belge. Eval: `eval/` (bkz. `docs/06-eval-harness.md`).
+
+## Birleşik mimari (2026-10) — akışlar arası sözleşmeler
+
+Teşhis (`docs/benchmark/teshis-2026-10-05.json`): aynı belgede iki ajan farklı talep sayısı,
+taslak "devir: EDAŞ" derken bildirim "Halkla İlişkiler'e havale edildi" diyordu. Her kararın
+artık TEK kaynağı var; geri kalan her alan oradan TÜRETİLİR. Bozulmaması gerekenler:
+
+1. **Tek talep kümesi** (`agents/talep_kumesi.py`): talepler yalnız `cikar`'ın tek LLM
+   çağrısında çıkar → `bilgi_unsurlari['talep_kumesi']` (`{id, kanit, ozet, tur, birim_ipucu}`).
+   Kanıtı kaynakta birebir geçmeyen öğe düşer; tür/birim kapalı küme dışıysa düşer.
+   `decompose`, `talepler`, Konu ve gövde bağlamı bu kümeden türetilir — ikinci çıkarıcı YAZMA.
+2. **Yönlendirme tek kaynak** (`agents/yonlendirme.py`): `state['yonlendirme']` =
+   `{karar: ICERIDE|DISARIDA|KARMA|BELIRSIZ, alici_kurum, birim, devir, talepler[...], uretim}`.
+   Karar TALEP BAZLIDIR (`route_ajan` talep başına yetki/devir verir); `hedef_birim`,
+   `yetkili_kurum`, `insan_onayi_gerekli`, `gosterim_birimi` YALNIZ buradan türetilir. Devir
+   dayanağı `config.EVRAK_TO_DEVIR_DAYANAK` (3071 m.5: yalnız yetkili **idari** makama).
+   Yargı merciinin görevine giren konu devredilmez (3071 m.6/b "incelenemez") — altın sette
+   `yetki="YARGI"` olarak ölçülür. Doğrulanmamış birim/kurum otomatik havale üretmez.
+3. **Başlık tek çözücü + yazışma paketi** (`yazi/baslik.py`, `yazi/paket.py`): antet/konu/
+   muhatap/ilgi her yolda aynı çözücüden gelir; paket rolleri `cevap · havale · devir ·
+   devir_bilgi · dagitim · olur`. Aynı birime düşen talepler tek havalede birleşir; cevap ve
+   devir-bilgi gövdeleri deterministiktir (LLM yok).
+4. **İçerik odaklı mevzuat + yargıç** (`agents/mevzuat_mesele.py`, `agents/mevzuat_yargic.py`;
+   `MEVZUAT_MESELE=1` varsayılan): LLM talep başına mesele + korpus KATALOĞUNDAN kapalı küme
+   dosya seçer (madde no/kanun adı ÜRETMEZ) → BM25 aday havuzu (tür boost'u yok) → alaka
+   yargıcı (boş dönebilir; numara doğrulaması tek ihlalde tüm çıktıyı reddeder) → usul maddesi
+   ayrı deterministik `katman="usul"` kalemi. Hiçbiri uymuyorsa `mevzuat_bulunamadi=True`,
+   statik dolgu YOK. `MEVZUAT_MESELE=0` → eski tür odaklı BM25 yolu.
+5. **Merkezi LLM politikası** (`agents/llm_politika.py`): her çağrı noktasının bütçesi/düşünme/
+   kesik davranışı `PROFILLER` tablosunda; yeni `llm_json`/`llm_text` çağrısı profil adı taşımalı
+   (AST testi). Düşünme varsayılan KAPALI; açmak için `gerekce`ye ölçüm yaz. Kesikte tek tekrar
+   (düşünmesiz + 2× bütçe), sonra yedek. Her çağrı `state['llm_izleri']`'ne iz bırakır.
+6. **LLM'e giden her metin maskeli** (`mask_for_llm`, kişi adı dahil) — yeni çağrı noktası
+   `tests/test_llm_pii_sizinti_guard.py` kapsamına girer.
+
+**Güncel ölçüm** — `eval/e2e_gercek_eval.py` (59 belgelik elle yazılmış altın set,
+`data/synthetic/e2e_gercek_gold.jsonl`; üretici `scripts/e2e_gercek_gold_uret.py`; LLM-judge
+yok, Wilson %95 CI). Koşum `eval/runs/e2e_gercek_birlesik.json` (2026-10-05, `deepseek-v4-flash`,
+git `0fa4b7f`): **kurumda kullanılabilir 45/59 = 0,76 [0,64–0,85]** (başlangıç 13/59 = 0,22) ·
+birim 47/59 = 0,80 · muhatap 59/59 · tür (kesin) 50/59, (operasyonel) 58/59 · yetki tespiti 14/16,
+yanlış alarm 1/43 · konu 57/59 · ilgi 59/59 · mevzuat beklenen-hit 54/59, P@3 0,925 · PII sızıntısı
+0/59 · JSON kesilmesi 0 · süre p50 6,9 sn / p95 8,4 sn · ~7,7 LLM çağrısı/belge. Aynı koşum
+2026-10-05 inceleme sonrası düzeltilmiş eval kuralları + altınla (YENİ koşum değil, döküm
+üzerinden) **48/59 = 0,81 [0,70–0,89]**; antet birim satırı 36/59 belgede jenerik yer tutucu
+(`antet_birim_yer_tutucu`, bileşiğe girmez). Skor alıntılamadan önce koşumun git SHA'sına bak.
 
 ## Canlı kaynak keşfi (2026-08-06) — korpusta OLMAYAN kuruma evrak gelince
 

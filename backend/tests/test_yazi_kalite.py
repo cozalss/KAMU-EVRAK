@@ -143,9 +143,10 @@ def test_antet_birimi_hazirlayan_birimle_degisir():
     assert ctx_fen.jinja_vars()["birim_adi"] == "Fen İşleri Müdürlüğü"
     ctx_ruhsat = build_context("cevabi_yazi", unsur, "gövde", hazirlayan_birim="Ruhsat Denetim Müdürlüğü")
     assert ctx_ruhsat.jinja_vars()["birim_adi"] == "Ruhsat Denetim Müdürlüğü"
-    # Boş → jinja_vars _DEMO_DEFAULTS'a düşer (env/jenerik) — her evrakta sabit değil ama fallback var.
+    # Boş → KURUM_BIRIM env; o da yoksa birim satırı HİÇ basılmaz (sabit 'Yazı İşleri
+    # Birimi' her kuruma uydurulmuyordu — 2026-10-05 incelemesi).
     ctx_bos = build_context("cevabi_yazi", unsur, "gövde")
-    assert ctx_bos.jinja_vars()["birim_adi"]  # boş değil (fallback dolu)
+    assert "birim_adi" not in ctx_bos.jinja_vars()
 
 
 def test_servis_birimi_grounding_muaf():
@@ -196,7 +197,8 @@ async def test_servis_birimi_dict_zengin_yolu_dusurmez():
                           "sinyal": ["aydınlatma"]},
     })
     assert _FALLBACK_IMZASI not in out["yazi_taslak_md"]
-    assert "Fen İşleri Müdürlüğü" in out["yazi_taslak_md"]  # antet birimi konudan
+    # İçerik anahtar sözcüğüyle seçilen servis birimi DOĞRULANMIŞ değildir → antete girmez.
+    assert "Fen İşleri Müdürlüğü" not in out["yazi_taslak_md"]
 
 
 async def test_antet_idare_tek_kurum():

@@ -57,9 +57,9 @@ class TestSayiOnceligi:
         }
         # Act
         am = (await A.arsiv_node(state))["arsiv_metadata"]
-        # Assert — regex yolu AYNEN üstte
+        # Assert — gelen sayının kodu seçime girmez; LLM'e de gerek kalmadan katalog seçer
         assert am["sdp_kodu"] == "622.03"
-        assert "sayısından" in am["sdp_gerekce"]
+        assert "sayısından" not in am["sdp_gerekce"]
 
 
 # ---------------------------------------------------------------------------

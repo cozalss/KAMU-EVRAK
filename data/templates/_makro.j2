@@ -8,7 +8,9 @@
 {% macro antet(idare_adi, birim_adi) -%}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
-                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+{% if birim_adi %}
+                       {{ birim_adi }}
+{% endif %}
 {%- endmacro %}
 
 {# Üst işaretler — ivedilik (ACELE/GÜNLÜDÜR) + gizlilik (KİŞİYE ÖZEL/GİZLİ), sağ üst (Yön. m.31).

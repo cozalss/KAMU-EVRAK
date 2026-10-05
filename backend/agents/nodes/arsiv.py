@@ -39,7 +39,8 @@ from agents.config import (
     sdp_kodu,
 )
 from agents.nodes._llm_extract import llm_json, real_llm
-from agents.sdp_katalog import llm_aday_havuzu, sdp_adi, sdp_onerileri
+from agents.sdp_katalog import llm_aday_havuzu, sdp_onerileri
+from api.pii import mask_for_llm
 
 log = structlog.get_logger()
 
@@ -65,14 +66,12 @@ def _sdp_from_sayi(sayi: str) -> str | None:
     return None
 
 
-def _sdp_kodu_for(turu: str, sayi: str) -> str:
-    """SDP konu kodu: evrak sayısından okunabilirse o, değilse config kaba kodu.
+def _sdp_kodu_for(turu: str) -> str:
+    """Tür-bazlı kaba SDP kodu (bizim dosya planımız; gelen sayının kodu KULLANILMAZ).
 
     Kaba config kodu (kuruma-özgü ana hizmet 100-599) şüpheli olabileceğinden, türü
     config'de tanımlı olmayan ya da ana-hizmet aralığındaki kodlar [DOĞRULA:] ile işaretlenir.
     """
-    if sayi and (okunan := _sdp_from_sayi(sayi)):
-        return okunan
     kod = sdp_kodu(turu)
     # 100-599 ana hizmet aralığı kuruma özgüdür → kaba kod doğrulanmalı (uydurma değil, kaba).
     kok = kod.split(".")[0]
@@ -118,7 +117,7 @@ async def _sdp_llm_secimi(
         f"- {a['kod']}: {a['ad']} (anahtarlar: {', '.join(a['anahtar']) or '-'})"
         for a in havuz
     )
-    icerik = " ".join(p for p in parcalar if p)[:900]
+    icerik = mask_for_llm(" ".join(p for p in parcalar if p)[:900])
     obj = await llm_json(
         system=(
             "Sen bir kamu kurumunda Standart Dosya Planı (2005/7) uzmanısın. Evrak için "
@@ -147,7 +146,9 @@ async def _sdp_llm_secimi(
 
 
 async def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, Any]:
-    """SDP kodu + ad + gerekçe + aday listesi (öncelik: sayıdan > LLM > içerik > kaba kod).
+    """SDP kodu + ad + gerekçe + aday listesi (öncelik: LLM > içerik > kaba kod).
+
+    Gelen evrakın sayısındaki kod yalnız `karsi_kurum_kodu` bilgisidir, seçime girmez.
 
     İçerik girdileri MASKELİ alanlardan gelir (konu/talep/özet) → PII katalog eşlemesine
     (ve LLM prompt'una) sızmaz. Aday listesi her durumda döner (UI şeffaflığı: "neden bu kod?").
@@ -158,10 +159,19 @@ async def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, 
     parcalar = [str(unsurlar.get("konu") or ""), str(state.get("ozet") or "")]
     adaylar = sdp_onerileri(parcalar, turu)
 
+    secim = await _katalog_secimi(parcalar, turu, adaylar)
+    # Gelen evrakın sayısındaki SDP kodu KARŞI kurumun dosya planıdır (2026-10-05: SGK'nın
+    # 205.99'u Keçiören Belediyesinin giden Sayı satırına kopyalanıyordu). Seçimi ETKİLEMEZ;
+    # yalnız bilgi olarak taşınır (memur ilişkili dosyayı görebilsin).
     if sayi and (okunan := _sdp_from_sayi(sayi)):
-        return {"kod": okunan, "ad": sdp_adi(okunan),
-                "gerekce": "Evrak sayısından okundu (DETSİS-SDP-kayıt deseni).",
-                "adaylar": adaylar}
+        secim = {**secim, "karsi_kurum_kodu": okunan}
+    return secim
+
+
+async def _katalog_secimi(
+    parcalar: list[str], turu: str, adaylar: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Bizim dosya planımızdan seçim: kapalı-küme LLM > içerik eşleşmesi > tür kaba kodu."""
     # Kapalı-küme LLM seçici (bayrak call-time okunur → test/ENV ile anahtarlanabilir).
     if (config.SDP_LLM_SECICI and _sdp_llm_gerekli(adaylar)
             and (secim := await _sdp_llm_secimi(parcalar, turu, adaylar))):
@@ -176,7 +186,7 @@ async def _sdp_secimi(turu: str, sayi: str, state: dict[str, Any]) -> dict[str, 
         else:
             gerekce = f"Anahtar ifade yok; tür eşlemesinden kaba kod ({evrak_turu_tr(turu)})."
         return {"kod": kod, "ad": a["ad"], "gerekce": gerekce, "adaylar": adaylar}
-    return {"kod": _sdp_kodu_for(turu, sayi), "ad": "",
+    return {"kod": _sdp_kodu_for(turu), "ad": "",
             "gerekce": "Katalog eşleşmesi yok; tür-bazlı kaba kod (config).", "adaylar": []}
 
 

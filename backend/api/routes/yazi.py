@@ -154,14 +154,14 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     + jinja render. ust_yazi'da muhatap gönderen değil hedef birimdir (Yön. m.14).
     PDF/DOCX üretilmez (metin yeterli; indirme /yazi/render'dan yapılır).
     """
-    from agents.config import SDP_ONERI, birim_tr
+    from agents.config import EVRAK_TURLERI, SDP_ONERI, birim_tr
     from agents.kurum_kimlik import (
         efektif_idare_adi,
         gorus_muhatabi,
         muzekkere_muhatabi,
     )
     from agents.nodes.arsiv import sdp_secimi_yap
-    from yazi.baslik import gelen_evrak_coz, muhatap_bicimle
+    from yazi.baslik import gelen_evrak_coz, kategori_etiketi_mi, muhatap_bicimle
     from yazi.renderer import render_yazi
     from yazi.yazi_render import build_body, build_context
 
@@ -171,11 +171,11 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     unsurlar = _skaler_unsurlar(req.bilgi_unsurlari)
     hedef_birim = _sanitize_line(req.hedef_birim, 100) if req.hedef_birim else ""
     if req.yazi_turu == "ust_yazi" and hedef_birim:
-        # m.14/2 tek kapı (yazi.baslik): BÜYÜK + yönelme eki; kaba kategori → açık yer tutucu.
+        # m.14 [DOĞRULA fıkra] tek kapı (yazi.baslik): BÜYÜK + yönelme eki; kaba kategori → açık yer tutucu.
         muhatap = muhatap_bicimle(birim_tr(hedef_birim), "birim")
     elif req.yazi_turu == "gorus_mutalaa":
         # Görüşün muhatabı = görüşü talep eden birim (gelen antetten deterministik,
-        # m.14/2 hitap biçimli — pipeline ile TEK ortak kapı: kurum_kimlik.gorus_muhatabi).
+        # m.14 [DOĞRULA fıkra] hitap biçimli — pipeline ile TEK ortak kapı: kurum_kimlik.gorus_muhatabi).
         muhatap = gorus_muhatabi(text) or None
     elif req.yazi_turu == "muzekkere":
         # Müzekkere muhatabı: yargı → gönderen makam; idari iç → talep eden birim.
@@ -187,14 +187,17 @@ async def yazi_taslak_turu(request: Request, req: TaslakTuruRequest) -> dict[str
     # kural (kurum_kimlik.efektif_idare_adi).
     hazirlayan = (birim_tr(hedef_birim)
                   if hedef_birim and req.yazi_turu != "ust_yazi" else "")
+    if kategori_etiketi_mi(hazirlayan):  # kaba kategori antete birim diye basılmaz
+        hazirlayan = ""
+    # Kapalı küme: bilinmeyen tür 'belirsiz' sayılır (Sayı satırı yine tür-genel kodu alır).
+    evrak_turu = req.evrak_turu if req.evrak_turu in EVRAK_TURLERI else "belirsiz"
     try:
         metin = await build_body(req.yazi_turu, unsurlar, text)
         efektif_kurum = efektif_idare_adi(text, unsurlar)
         # Pipeline ile AYNI tek çözücü + tek SDP motoru: tür değiştirince ilgi/konu/Sayı
         # pipeline taslağından ayrışmaz (teşhis 2026-10-05: bu yol SDP geçmiyordu).
-        evrak_turu = str(getattr(req, "evrak_turu", "") or "")
         gelen = gelen_evrak_coz(text, unsurlar, evrak_turu, muhatap_idare=efektif_kurum)
-        secim = await sdp_secimi_yap(evrak_turu or "belirsiz", str(unsurlar.get("sayi") or ""),
+        secim = await sdp_secimi_yap(evrak_turu, str(unsurlar.get("sayi") or ""),
                                      {"bilgi_unsurlari": unsurlar}) if SDP_ONERI else None
         sdp_kod = str((secim or {}).get("kod") or "").split(" ")[0]
         ctx = build_context(req.yazi_turu, unsurlar, metin, muhatap_override=muhatap,

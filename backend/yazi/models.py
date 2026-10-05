@@ -31,7 +31,10 @@ _KURUM_BIRIM = os.getenv("KURUM_BIRIM", "").strip()
 _DEMO_DEFAULTS: dict[str, str] = {
     "idare_adi": _KURUM_ADI or "KAMU KURUMU",
     # Yön. m.10: antette birim adı İLK harfleri büyük yazılır (idare adı BÜYÜK kalır).
-    "birim_adi": _KURUM_BIRIM or "Yazı İşleri Birimi",
+    # Birim bilinmiyorsa satır BASILMAZ (şablonda koşullu): her kuruma sabit 'Yazı İşleri
+    # Birimi' yazmak tapu müdürlüğünde/SGM'de olmayan birimi uyduruyordu (2026-10-05
+    # incelemesi: 59 yazının 33'ü). Kurum kurulumu KURUM_BIRIM ile gerçek birimi verir.
+    "birim_adi": _KURUM_BIRIM,
     "sayi_satiri": "EBYS-TASLAK",
     "konu": "Başvuru değerlendirmesi",
     "metin": "Konuya ilişkin gerekli değerlendirme yapılmıştır.",
@@ -80,6 +83,7 @@ def sablon_iskelet_degerleri() -> frozenset[str]:
 # Render'ın her taslağa koyduğu standart format öğeleri (Yön. 2646 bölüm etiketleri +
 # demo ilgi-satırı) — kaynakta olmasa da UYDURMA DEĞİLDİR; grounding bunları işaretlemesin.
 _SABLON_FORMAT: frozenset[str] = frozenset({
+    "Yazı İşleri Birimi",  # eski antet varsayılanı — geçmiş taslaklarda grounding muafiyeti
     "İlgi", "Konu", "Sayı", "Ek", "Ekler", "Dağıtım", "Başvurunuz.",
     "tarihli başvurunuz.", "sayılı başvurunuz.", "tarihli ve", "sayılı yazınız.",
 })

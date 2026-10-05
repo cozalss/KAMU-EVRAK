@@ -156,9 +156,12 @@ def etiketli_sayi(metin: str) -> str | None:
         sayi = _RE_TARIH_DUZ.sub("", ham).strip(" ,;")
         if sayi:
             return sayi
-    for etiket in (r"esas\s+no", r"dosya\s+no"):
+    # Yargı/savcılık dosya numaraları: etiketin türü numaraya eklenir ('2026/88123
+    # Soruşturma sayılı') — savcılık yazısında ilgi sayısız kalıyordu (2026-10-05).
+    for etiket, tur in ((r"esas\s+no", "Esas"), (r"soru[şs]turma\s+no", "Soruşturma"),
+                        (r"haz[ıi]rl[ıi]k\s+no", "Hazırlık"), (r"dosya\s+no", "")):
         if (ham := _etiket(metin, etiket)):
-            return f"{ham} Esas" if "esas" in etiket and "esas" not in tr_lower(ham) else ham
+            return f"{ham} {tur}" if tur and tr_lower(tur) not in tr_lower(ham) else ham
     return None
 
 

@@ -3,7 +3,9 @@
 {% from "_makro.j2" import ust_isaretler, koordinasyon_blogu, eimza_blogu, iletisim_dipnot %}
                                    T.C.
                           {{ idare_adi | default("{{ İDARE ADI }}") }}
-                       {{ birim_adi | default("{{ BİRİM ADI }}") }}
+{% if birim_adi %}
+                       {{ birim_adi }}
+{% endif %}
 
 Sayı : {{ sayi_satiri | default("{{ SAYI }}") }}{{ " " * ([2, 73 - (sayi_satiri | default("{{ SAYI }}") | length) - (tarih | length)] | max) }}{{ tarih }}
 {% if ivedilik_derecesi or gizlilik_derecesi %}{{ ust_isaretler(ivedilik_derecesi, gizlilik_derecesi) }}{% endif %}Konu : {{ konu | default("{{ KONU }}") }}

@@ -892,7 +892,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           evrak_text: metin, yazi_turu: tur,
-          bilgi_unsurlari: result.bilgi_unsurlari || {}, hedef_birim: result.hedef_birim || "",
+          bilgi_unsurlari: result.bilgi_unsurlari || {}, hedef_birim: result.hedef_birim || "", evrak_turu: result.evrak_turu || "",
         }),
       });
       if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
@@ -947,7 +947,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         body: JSON.stringify({
           evrak_text: metin, yazi_turu: tur,
           bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet || "" },
-          hedef_birim: altTalep.birim || "",
+          hedef_birim: altTalep.birim || "", evrak_turu: result?.evrak_turu || "",
         }),
       });
       if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);

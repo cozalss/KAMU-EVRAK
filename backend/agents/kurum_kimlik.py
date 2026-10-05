@@ -347,7 +347,7 @@ def _llm_kurum_grounded(llm_kurum: str, text: str) -> bool:
     return False
 
 
-# Yönelme (hitap) eki — Yön. m.14/2: kurum muhatabın adı BÜYÜK harf + uygun yönelme
+# Yönelme (hitap) eki — Yön. m.14 [DOĞRULA fıkra]: kurum muhatabın adı BÜYÜK harf + uygun yönelme
 # hâl eki ("...BAŞKANLIĞINA"). Kanonik kurum/birim adları ünlüyle biter (Bakanlığı/
 # Müdürlüğü/Belediyesi) → ünlü + n + ünlü-uyumlu a/e. Ünsüzle bitiyorsa (beklenmez)
 # ek üretilmez — yanlış çekim riskine girmektense ad aynen kullanılır.
@@ -356,11 +356,15 @@ _ON_UNLU = frozenset("eiöüEİÖÜ")
 
 
 def hitap_eki(ad: str) -> str:
-    """Kurum/birim adına yönelme ekiyle BÜYÜK-harf hitap üret (m.14/2)."""
+    """Kurum/birim adına yönelme ekiyle BÜYÜK-harf hitap üret (m.14 [DOĞRULA fıkra])."""
     ad = (ad or "").strip()
     if not ad:
         return ""
     buyuk = _tr_upper(ad)
+    # Kısaltmayla biten şirket adı okunuşuna göre ek alır: 'A.Ş.' (şirketi) → 'A.Ş.NE',
+    # 'ŞTİ.' → 'ŞTİ.NE' (2026-10-05: 'BAŞKENT ELEKTRİK DAĞITIM A.Ş.' eksiz kalıyordu).
+    if re.search(r"(?:A\.Ş|ŞTİ)\.?$", buyuk):
+        return buyuk.rstrip(".") + ".NE"
     son = ad[-1]
     if son in _ARKA_UNLU:
         return f"{buyuk}NA"
@@ -371,9 +375,9 @@ def hitap_eki(ad: str) -> str:
 
 # Ad zaten yönelme-ekli (hitap biçiminde) mi — "...BAŞKANLIĞINA"/"...Belediyesine" gibi.
 # İkinci kez ek eklemeyi önler (idempotence): yalnız TR-upper uygulanır.
-_HITAP_BICIMLI = re.compile(r"(?:ğına|ğine|ğuna|ğüne|sına|sine|ına|ine|una|üne)$")
+_HITAP_BICIMLI = re.compile(r"(?:ğına|ğine|ğuna|ğüne|sına|sine|ına|ine|una|üne|\.ne)$")
 
-# İyelik (genitive) eki — m.15/6: ilgi tutulan belge muhatabın belgesi DEĞİLSE gönderen
+# İyelik (genitive) eki — m.15 [DOĞRULA fıkra]: ilgi tutulan belge muhatabın belgesi DEĞİLSE gönderen
 # idarenin adı yazılır: "Ticaret Bakanlığının ... tarihli ve ... sayılı yazısı."
 # (Cumhurbaşkanlığı kılavuzu Örnek 7 birebir). Kanonik adlar ünlüyle biter → ünlü-uyumlu
 # n+ın/in/un/ün; ünsüzle bitende ek üretilmez (çağıran düz kalıba düşer — yanlış çekim yok).
@@ -391,7 +395,7 @@ def iyelik_eki(ad: str) -> str:
 
 
 def _hitap_idempotent(ad: str) -> str:
-    """Adı m.14/2 hitap biçimine çevir; zaten yönelme-ekliyse yalnız TR-upper (çift ek yok)."""
+    """Adı m.14 [DOĞRULA fıkra] hitap biçimine çevir; zaten yönelme-ekliyse yalnız TR-upper (çift ek yok)."""
     ad = (ad or "").strip()
     if not ad:
         return ""
@@ -414,7 +418,7 @@ def _kurum_gorunumlu(ad: str) -> bool:
 
 
 def gorus_muhatabi(evrak_text: str, plan_muhatap: str = "") -> str:
-    """Görüş/mütalaa yazısının muhatabı — m.14/2 hitap biçimli (BÜYÜK + yönelme eki).
+    """Görüş/mütalaa yazısının muhatabı — m.14 [DOĞRULA fıkra] hitap biçimli (BÜYÜK + yönelme eki).
 
     Görüşün muhatabı görüşü TALEP EDEN birimdir (Diyanet örneği deseni). Öncelik:
     gelen antetten deterministik gönderen-birim tespiti; yoksa dinamik planın grounded
@@ -427,7 +431,7 @@ def gorus_muhatabi(evrak_text: str, plan_muhatap: str = "") -> str:
 
 
 def muzekkere_muhatabi(evrak_text: str, gonderen: str = "") -> str:
-    """Müzekkere CEVABININ muhatabı — m.14/2 hitap biçimli, kaynaktan deterministik.
+    """Müzekkere CEVABININ muhatabı — m.14 [DOĞRULA fıkra] hitap biçimli, kaynaktan deterministik.
 
     İki senaryo (2026-07-18 SGK bulgusu): (a) YARGI müzekkeresi (mahkeme/icra) → muhatap
     gönderen makamdır ("ANKARA 12. ASLİYE HUKUK MAHKEMESİNE"); (b) idari kurum İÇİ müzekkere

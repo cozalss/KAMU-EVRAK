@@ -71,14 +71,18 @@ async def yazi_plani(
     """
     if real_llm() is None:  # mock/anahtarsız → statik yol (CI deterministik)
         return None
-    konu = str(unsurlar.get("konu", "") or "")
+    # KVKK: maske kişi ADINI da kapsar (eskiden yalnız TCKN/telefon maskeleniyordu).
+    from yazi.pii_kalkan import kisi_adi
+
+    _isim = kisi_adi(unsurlar.get("gonderen"))
+    konu = mask_for_llm(str(unsurlar.get("konu", "") or ""), _isim)
     obj = await llm_json(
         system=_PLAN_SYSTEM,
         user=(
             f"EVRAK TÜRÜ: {evrak_turu}\nKONU: {konu or '(belirtilmemiş)'}\n"
             f"HAVALE EDİLEN BİRİM: {birim_tr(hedef_birim) if hedef_birim else '(yok)'}\n\n"
             f"YAZI TÜRÜ SEÇENEKLERİ:\n{_TUR_REHBER}\n\n"
-            f"EVRAK METNİ:\n{mask_for_llm(evrak_text[:1500])}\n\n"
+            f"EVRAK METNİ:\n{mask_for_llm(evrak_text[:1500], _isim)}\n\n"
             'Yalnız şu JSON: {"yazi_turu":"<kod>","muhatap":"<ad ya da boş>",'
             '"gerekce":"<tek cümle Türkçe: neden bu tür ve bu muhatap>"}'
         ),

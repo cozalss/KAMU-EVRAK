@@ -13,7 +13,7 @@ satırlarından (Sayı:, Tarih:, Başvuru No:, Başvuru Sahibi:, Esas No:) güve
 Etiketli kanıt LLM tahmininden üstündür. Belge cinsi sınıflandırıcının KAPALI KÜME türünden
 eşlenir; anahtar kelime listesi yoktur.
 
-İlgi kuralı (m.15/6): ilgi tutulan belge muhatabın kendi belgesiyse 2. şahıs iyelik
+İlgi kuralı (m.15 [DOĞRULA fıkra]): ilgi tutulan belge muhatabın kendi belgesiyse 2. şahıs iyelik
 ('dilekçeniz', 'yazınız'); değilse belgenin SAHİBİ adıyla anılır ('Ayşe Yılmaz'ın … dilekçesi',
 'Ankara Valiliğinin … yazısı'). Sahip HER ZAMAN gönderendir; yazıyı alan kurum (muhatap
 idare) asla ilgi sahibi olamaz.
@@ -421,6 +421,69 @@ def baslik_coz(
     return YaziBasligi(rol=rol, konu=konu, muhatap=muhatap, ilgi_satirlari=ilgi)
 
 
+# ------------------------------------------------------------------ antet (m.10/3)
+# İl/ilçe teşkilatı adı yapısal olarak '<YER> İL|İLÇE <…> MÜDÜRLÜĞÜ' biçimindedir. m.10(3):
+# bu teşkilatlarda 2. satır bağlı olunan MÜLKİ İDARE, 3. satır birimdir ('ANKARA VALİLİĞİ /
+# İl Sağlık Müdürlüğü'). 'SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜ' gibi bağlı kuruluş taşra birimleri
+# (İL kelimesi yer adından hemen sonra GELMEZ) bu kurala girmez.
+_IL_TESKILATI = re.compile(
+    r"^(?P<yer>[^\s]+(?:\s[^\s]+){0,2}?)\s+(?P<kad>İL|İLÇE)\s+(?P<birim>\S.*\sMÜDÜRLÜĞÜ)$")
+
+
+def antet_m10(idare: str, birim: str) -> tuple[str, str]:
+    """(idare, birim) antet satırlarını Yön. m.10(3)'e göre düzenle; kural dışıysa aynen."""
+
+    m = _IL_TESKILATI.match(tr_upper((idare or "").strip()))
+    if not m or m["yer"] in ("İL", "İLÇE"):
+        return idare, birim
+    mulki = "VALİLİĞİ" if m["kad"] == "İL" else "KAYMAKAMLIĞI"
+    yer = m["yer"]
+    # 'KONYA VALİLİĞİ İL BASIN … MÜDÜRLÜĞÜ' tek satıra sıkışmış künye: mülki idare zaten var.
+    idare_satiri = yer if yer.endswith(("VALİLİĞİ", "KAYMAKAMLIĞI")) else f"{yer} {mulki}"
+    return idare_satiri, tr_baslik(f"{m['kad']} {m['birim']}")
+
+
+# Dağıtımlı belgenin muhatap ifadeleri (Yön. m.19 'Gereği'/'Bilgi' + m.14 'Dağıtım yerleri')
+# bir İDARE ADI değildir; antete ya da kurum kimliğine girmez.
+_DAGITIM_IFADESI = re.compile(r"^(dağıtım(\s+yerleri\w*)?|gereği|bilgi)\s*:?$")
+
+
+def dagitim_ifadesi_mi(ad: str) -> bool:
+    return bool(_DAGITIM_IFADESI.match(tr_lower((ad or "").strip())))
+
+
+def ilgi_cinsi_duzelt(metin: str, gelen: dict[str, Any] | None) -> str:
+    """Üst yazı gövdesinde ilgi belgenin CİNSİ: dilekçe havalesinde 'İlgi yazı ile … Söz
+    konusu yazı' kalıbı yanlıştır (ilgi bir dilekçedir — 2026-10-05 incelemesi). Kalıp
+    gövde yönergesinden/yedek gövdeden gelir; cins gelen evrak modelinden (kapalı küme)."""
+    cins = CINS_TR.get(str((gelen or {}).get("belge_cinsi") or ""), "")
+    if not cins or cins in ("yazı", "evrak"):
+        return metin
+    return re.sub(r"\b(İlgi|Söz konusu|söz konusu|Anılan|anılan)\s+yazı(?=\s|,|\.|$)",
+                  lambda m: f"{m.group(1)} {cins}", metin or "")
+
+
+# ------------------------------------------------------------------ ek (m.18)
+_ILISIK_RE = re.compile(r"ilişikte\s+(?:gönderil|sunul)|ekte\s+(?:gönderil|sunul)")
+
+
+def ek_listesi(metin: str, gelen: dict[str, Any] | None, rol: str) -> tuple[str, ...]:
+    """Yön. m.18: gövde 'ilişikte/ekte gönderilmiştir' diyorsa 'Ek:' bölümü zorunludur.
+
+    Havale/devirde ilişik edilen, gelen belgenin örneğidir → cinsiyle adlandırılır
+    ('Dilekçe örneği'). Diğer rollerde ilişik belge taslakta bilinmez → açık yer tutucu
+    (uydurma ek listelenmez; memur EBYS'de eki iliştirirken tamamlar). Sayfa sayısı
+    taslakta bilinmediği için yazılmaz."""
+    if not _ILISIK_RE.search(tr_lower(metin or "")):
+        return ()
+    if rol in ("havale", "devir"):
+        cins = CINS_TR.get(str((gelen or {}).get("belge_cinsi") or ""), "")
+        if cins and cins != "evrak":
+            return (f"{cins[:1].upper()}{cins[1:]} örneği",)
+        return ("İlgi belgenin örneği",)
+    return ("[DOĞRULA: ilişik belgenin adı ve sayfa sayısı]",)
+
+
 __all__ = (
     "BELGE_CINSLERI",
     "BELIRSIZ_BIRIM_MUHATAP",
@@ -429,9 +492,13 @@ __all__ = (
     "ROLLER",
     "YaziBasligi",
     "antet_idaresi",
+    "antet_m10",
     "baslik_coz",
+    "dagitim_ifadesi_mi",
+    "ek_listesi",
     "gelen_evrak_coz",
     "gonderen_muhatabi",
+    "ilgi_cinsi_duzelt",
     "ilgi_satiri",
     "kategori_etiketi_mi",
     "kategori_yer_tutucu",

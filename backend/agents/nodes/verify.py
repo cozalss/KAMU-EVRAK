@@ -251,18 +251,23 @@ async def _lint_autofix(taslak: str, lint: dict[str, Any],
     (_uydurma_veto boş). Herhangi biri tutmazsa öneri sessizce düşürülür — mevcut
     davranış birebir. Mevcut taslak hiçbir durumda otomatik değişmez (yalnız öneri).
     """
+    from yazi.pii_kalkan import kisi_adi, taslak_kalkani
+
+    # KVKK: taslak (muhatap 'Sayın <ad>', adres, TCKN) dış modele belirteçle gider.
+    kalkan = taslak_kalkani(taslak, kisi_adi((state.get("bilgi_unsurlari") or {})
+                                             .get("gonderen")))
     cevap = await llm_json(
         "Resmî Yazışma Yönetmeliği (CB 2646/2020) format düzelticisisin. Sana bir resmî "
         "yazı taslağı ve tespit edilmiş format ihlalleri verilecek. YALNIZ işaretli format "
         "ihlallerini düzelt; içerik/tarih/sayı EKLEME ve DEĞİŞTİRME; yeni bilgi uydurma. "
         'YALNIZ şu JSON\'u döndür: {"duzeltilmis_taslak": "<düzeltilmiş tam taslak>"}',
-        "TASLAK:\n" + taslak + "\n\nFORMAT İHLALLERİ:\n"
+        "TASLAK:\n" + kalkan.maskele(taslak) + "\n\nFORMAT İHLALLERİ:\n"
         + "\n".join(f"- {u}" for u in lint.get("uyari", [])),
         max_tokens=900,
     )
     if not isinstance(cevap, dict):
         return None
-    duzeltme = cevap.get("duzeltilmis_taslak")
+    duzeltme = kalkan.geri_yukle(cevap.get("duzeltilmis_taslak"))
     if not isinstance(duzeltme, str) or not duzeltme.strip():
         return None
     yeni_lint = lint_2646(duzeltme, state.get("yazi_turu", "") or "",
@@ -330,7 +335,12 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     prompt'ta yasaklanır hem de somut-anchor modeliyle deterministik süzülür
     (`_grounding_yanlis_pozitif_mi`) — LLM prompt'u dinlemese de temiz taslak KIRMIZI olmaz.
     """
-    kaynak_maskeli = mask_pii(state.get("evrak_text", "") or "").masked_text
+    from yazi.pii_kalkan import kisi_adi, taslak_kalkani
+
+    # KVKK: kaynak VE taslak aynı kalkanla (ad dahil) maskelenir; iddialar geri yüklenir.
+    kalkan = taslak_kalkani(taslak, kisi_adi((state.get("bilgi_unsurlari") or {})
+                                             .get("gonderen")))
+    kaynak_maskeli = kalkan.maskele(state.get("evrak_text", "") or "")
     # Memurun kutucukla eklediği DAYANAK bloğu (yazi.dayanak) LLM'e GÖSTERİLMEZ: bu bloktaki
     # atıflar LLM üretimi değil, memurun korpustan SEÇTİĞİ referanslardır (insan-küreli, HITL) →
     # anti-halüsinasyon denetimi LLM üretimi GÖVDEyi hedefler. Blok ayrıştırılınca meşru atıf
@@ -349,7 +359,8 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
         "'işlem tesis edilmiştir' vb.). YALNIZ kaynaktaki bir kişi/kurum/olayla ÇELİŞEN veya "
         'kaynakta hiç olmayan SOMUT bir olgu uydurulduysa listele. Şu JSON\'u döndür: '
         '{"desteklenmeyen_iddialar": ["..."]}',
-        "KAYNAK EVRAK:\n" + kaynak_maskeli[:3000] + "\n\nTASLAK:\n" + taslak_govde[:3000],
+        "KAYNAK EVRAK:\n" + kaynak_maskeli[:3000] + "\n\nTASLAK:\n"
+        + kalkan.maskele(taslak_govde)[:3000],
         max_tokens=400,
     )
     if not isinstance(cevap, dict) or not isinstance(cevap.get("desteklenmeyen_iddialar"), list):
@@ -382,7 +393,8 @@ async def _grounding_iddialar(taslak: str, state: dict[str, Any]) -> list[str]:
     _bugun = date.today()
     bugunler = (_bugun.strftime("%d.%m.%Y"), _bugun.strftime("%Y-%m-%d"), _bugun.strftime("%Y"))
     temiz = [i.strip()[:_GROUNDING_MAX_KARAKTER]
-             for i in cevap["desteklenmeyen_iddialar"]
+             for i in (kalkan.geri_yukle(x) if isinstance(x, str) else x
+                       for x in cevap["desteklenmeyen_iddialar"])
              if isinstance(i, str) and i.strip()
              and not _grounding_yanlis_pozitif_mi(
                  i, iskelet_sirali, kaynak_norm, kaynak_sayilar, bugunler)]

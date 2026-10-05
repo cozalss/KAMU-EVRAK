@@ -339,10 +339,17 @@ def mevzuat_degerlendir(state: dict[str, Any], b: dict[str, Any]) -> dict[str, A
             "yasak": [d for d in top if mevzuat_eslesir(d, yasak)]}
 
 
+# Altın 'eksik_notlari' kodu → bilgi notunda aranacak ifade (eksik_tespit._IMZA_NOTU).
+_NOT_IFADESI = {"imza_dogrulanamadi": "İmza metinden doğrulanamadı"}
+
+
 def eksik_degerlendir(state: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     tahmin, gold = set(state.get("eksik_alanlar") or []), set(b.get("eksikler") or [])
+    notlar = " ".join(map(str, state.get("eksik_bilgi_notlari") or []))
+    beklenen_not = b.get("eksik_notlari") or []
     return {"tahmin": sorted(tahmin), "tam": tahmin == gold,
-            "tp": len(tahmin & gold), "fp": len(tahmin - gold), "fn": len(gold - tahmin)}
+            "tp": len(tahmin & gold), "fp": len(tahmin - gold), "fn": len(gold - tahmin),
+            "not_dogru": all(_NOT_IFADESI.get(k, k) in notlar for k in beklenen_not)}
 
 
 def kullaniciya_giden_metinler(state: dict[str, Any]) -> dict[str, str]:

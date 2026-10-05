@@ -187,12 +187,33 @@ def test_baslik_coz_havale_rolunde_muhatap_birim():
     assert b.konu == "Yol Çukurunun Kapatılması"
 
 
-def test_akis_t_gelen_evrak_tabani_kullanilir_etiket_ustun():
+def test_akis_t_gelen_evrak_tabani_otoritedir_bos_alan_turetilir():
+    # Birleşik sözleşme (2026-10): Akış T modeli aynı etiketli okuyucuyu kullanır; dolu
+    # alanları burada yeniden okunup EZİLMEZ. Türetme yalnız boş alanı doldurur.
     u = {"gelen_evrak": {"belge_cinsi": "basvuru", "gonderen_turu": "gercek_kisi",
                          "gonderen_ad": "Ayşe Yılmaz", "tarih": "01.01.2026"}}
     g = gelen_evrak_coz(DILEKCE, u, "dilekce")
     assert g["belge_cinsi"] == "basvuru"
-    assert g["tarih"] == "02.10.2026"
+    assert g["tarih"] == "01.01.2026"
+    assert g["gonderen_ad"] == "Ayşe Yılmaz"
+    # sayi modelde yok → türetme: dilekçede 'Sayı:' etiketi yok → None (uydurma yok)
+    assert g["sayi"] is None
+
+
+def test_akis_t_cikarici_ile_cozucu_ayni_tarihi_okur():
+    from yazi.gelen_evrak import gelen_evrak_cikar
+    model = gelen_evrak_cikar(DILEKCE).to_dict()
+    assert model["tarih"] == "02.10.2026"  # gövdedeki 18.10.2026 olay tarihi seçilmez
+    g = gelen_evrak_coz(DILEKCE, {"gelen_evrak": model}, "dilekce")
+    assert g["tarih"] == gelen_evrak_coz(DILEKCE, {}, "dilekce")["tarih"] == "02.10.2026"
+
+
+def test_akis_t_modeli_kapali_kume_disini_tasimaz():
+    u = {"gelen_evrak": {"belge_cinsi": "uydurma_cins", "gonderen_turu": "robot",
+                         "tarih": "02.10.2026"}}
+    g = gelen_evrak_coz(DILEKCE, u, "dilekce")
+    assert g["belge_cinsi"] == "dilekce"      # türetmeden (sınıflandırıcı türü)
+    assert g["gonderen_turu"] == "gercek_kisi"
 
 
 def test_kurum_adi_satir_sonunu_gecmez():

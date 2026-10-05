@@ -104,12 +104,67 @@ _RE_BASVURU_SAHIBI = re.compile(
     r"Başvuru[ \t]+Sahibi[ \t]*[:：][ \t]*"
     r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:[ \t]+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)")
 _RE_KONU = re.compile(r"^[ \t]*Konu[ \t]*[:：][ \t]*(\S[^\n]*?)[ \t]*$", re.MULTILINE)
-_RE_TARIH_ETIKET = re.compile(r"Tarih[ \t]*[:：][ \t]*(\d{1,2})[./-](\d{1,2})[./-](\d{4})")
-_RE_TARIH = re.compile(r"\b(\d{1,2})[./-](\d{1,2})[./-](\d{4})\b")
 _RE_TUZEL = re.compile(
     r"\b(?:Ltd\.?\s*Şti|A\.\s?Ş\.|Anonim Şirketi|Limited Şirketi|Derneği|Vakfı|Kooperatifi)")
 _UST_SATIR = 12   # antet/hitap belgenin başında aranır
 _IMZA_SATIR = 6   # imza bloğu belgenin sonundadır
+
+
+# --- Etiketli okuma (TEK kaynak; yazi.baslik de bunu kullanır) -------------------------
+_TARIH_KALIP = r"\d{1,2}[./]\d{1,2}[./]\d{4}"
+_RE_TARIH_DUZ = re.compile(_TARIH_KALIP)
+_RE_SALT_TARIH = re.compile(
+    rf"^\s*(?:tarih\s*[:.]?\s*)?({_TARIH_KALIP})\s*$", re.IGNORECASE)
+_ETIKET_KALIP = r"^\s*{etiket}\s*:\s*(?P<deger>.+?)\s*$"
+
+
+def _etiket(metin: str, etiket: str) -> str | None:
+    """Satır başındaki 'Etiket : değer' satırının değeri (çok satırlı metin, ilk eşleşme)."""
+    m = re.search(_ETIKET_KALIP.format(etiket=etiket), metin or "",
+                  re.IGNORECASE | re.MULTILINE)
+    return m.group("deger").strip() if m else None
+
+
+def _tarih_norm(t: str | None) -> str | None:
+    if not t:
+        return None
+    m = _RE_TARIH_DUZ.search(t)
+    if not m:
+        return None
+    g, a, y = re.split(r"[./]", m.group(0))
+    return f"{int(g):02d}.{int(a):02d}.{y}"
+
+
+def etiketli_tarih(metin: str) -> str | None:
+    """Gelen belgenin KENDİ tarihi: 'Tarih:' / 'Başvuru Tarihi:' etiketi → Sayı satırındaki
+    tarih → yalnız tarihten oluşan satır (dilekçe imza tarihi). Gövde içindeki olay tarihleri
+    ('18.10.2026 Pazar günü') ve gelen yazının kendi İlgi satırı ASLA seçilmez."""
+    for etiket in (r"tarih", r"ba[şs]vuru\s+tarihi"):
+        if (t := _tarih_norm(_etiket(metin, etiket))):
+            return t
+    if (t := _tarih_norm(_etiket(metin, r"say[ıi]"))):
+        return t
+    for satir in (metin or "").splitlines():
+        if (m := _RE_SALT_TARIH.match(satir)):
+            return _tarih_norm(m.group(1))
+    return None
+
+
+def etiketli_sayi(metin: str) -> str | None:
+    """Yalnız 'Sayı :' etiketinden (sondaki tarih atılır); yoksa yargı/icra dosya numarası."""
+    if (ham := _etiket(metin, r"say[ıi]")):
+        sayi = _RE_TARIH_DUZ.sub("", ham).strip(" ,;")
+        if sayi:
+            return sayi
+    for etiket in (r"esas\s+no", r"dosya\s+no"):
+        if (ham := _etiket(metin, etiket)):
+            return f"{ham} Esas" if "esas" in etiket and "esas" not in tr_lower(ham) else ham
+    return None
+
+
+def etiketli_basvuru_no(metin: str) -> str | None:
+    ham = _etiket(metin, r"(?:\w+\s+)?ba[şs]vuru\s+(?:no|numaras[ıi])")
+    return ham.split()[0].strip(" ,;") if ham else None
 
 
 def _buyuk_satir(satir: str) -> bool:
@@ -170,14 +225,6 @@ def _antet_ve_hitap(metin: str) -> tuple[str | None, str | None]:
     return gonderen, (_baslik_bicimi(hitap) if hitap else None)
 
 
-def _tarih(metin: str) -> str | None:
-    m = _RE_TARIH_ETIKET.search(metin) or _RE_TARIH.search(metin)
-    if not m:
-        return None
-    gun, ay, yil = m.groups()
-    return f"{int(gun):02d}.{int(ay):02d}.{yil}"
-
-
 def _cinsi_yedek(metin: str, kamu: bool, hitap_var: bool) -> str:
     """LLM yokken belge cinsi: yalnız belgenin kendi beyanı/yapısı (kapalı küme)."""
     t = tr_lower(metin)
@@ -234,11 +281,12 @@ def gelen_evrak_cikar(metin: str, llm: dict[str, Any] | None = None,
         gonderen_ad=None if kamu else _metin(gonderen_ad or (sahibi and sahibi.group(1))),
         gonderen_idare=(antet or _metin(llm.get("gonderen_idare"))) if kamu else None,
         muhatap_idare=hitap or _metin(llm.get("muhatap_idare")),
-        tarih=_tarih(metin),
-        sayi=_metin(sayi.group(1)) if sayi else None,
-        basvuru_no=bno.group(1).rstrip(".") if bno else None,
+        tarih=etiketli_tarih(metin),
+        sayi=_metin(etiketli_sayi(metin)),
+        basvuru_no=etiketli_basvuru_no(metin) or (bno.group(1).rstrip(".") if bno else None),
         konu_satiri=_metin(konu.group(1)) if konu else None,
     )
 
 
-__all__ = ("BELGE_CINSLERI", "GONDEREN_TURLERI", "GelenEvrak", "gelen_evrak_cikar")
+__all__ = ("BELGE_CINSLERI", "GONDEREN_TURLERI", "GelenEvrak", "etiketli_basvuru_no",
+           "etiketli_sayi", "etiketli_tarih", "gelen_evrak_cikar")

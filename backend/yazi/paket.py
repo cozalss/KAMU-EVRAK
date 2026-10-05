@@ -19,6 +19,7 @@ import asyncio
 from typing import Any
 
 from agents.config import birim_tr
+from agents.yonlendirme import devir_kurumu
 from yazi.baslik import (
     kategori_etiketi_mi,
     kategori_yer_tutucu,
@@ -37,19 +38,34 @@ def vatandas_belgesi_mi(gelen: dict[str, Any]) -> bool:
             and gelen.get("gonderen_turu") in ("gercek_kisi", "tuzel_kisi"))
 
 
-def _yonlendirme_birimi(item: dict[str, Any], yonlendirme: dict[str, Any] | None) -> str:
-    """Akış Y'nin talep başına kararı (varsa) — talep_id eşleşmesiyle birim adı."""
+def talep_yonlendirmesi(
+    item: dict[str, Any], yonlendirme: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Talebin yönlendirme kararı — TEK sözleşme: agents.yonlendirme.talep_karari şekli
+    ({talep_id, karar, alici_kurum, birim:{ad,…}, devir:{gerekli, yetkili_kurum, dayanak}}).
+
+    Öncelik: alt talebe route_ajan'ın iliştirdiği karar (alt_talepleri_zenginlestir →
+    item['yonlendirme']) → belge nesnesindeki talepler[] (talep_id == item['id']). Yoksa {}.
+    """
+    k = item.get("yonlendirme")
+    if isinstance(k, dict) and k:
+        return k
     tid = item.get("id")
     for t in (yonlendirme or {}).get("talepler") or []:
-        if tid and t.get("talep_id") == tid and isinstance(t.get("birim"), dict):
-            return str(t["birim"].get("ad") or "")
-    return ""
+        if tid and isinstance(t, dict) and t.get("talep_id") == tid:
+            return t
+    return {}
 
 
 def talep_birim_adi(item: dict[str, Any], yonlendirme: dict[str, Any] | None = None) -> str:
-    """Talebin gerçek birim adı; kaba kategori etiketi birim ADI sayılmaz → ''."""
-    ad = _yonlendirme_birimi(item, yonlendirme) or str(item.get("birim_ad") or "") \
-        or birim_tr(str(item.get("birim") or "")) or str(item.get("birim_tr") or "")
+    """Talebin KURUM İÇİ gerçek birim adı; kaba kategori etiketi birim ADI sayılmaz → ''.
+
+    Devir talebinin kurum içinde birimi yoktur (birim_ad '<Kurum> (devir)' gösterim metnidir,
+    havale muhatabı olamaz) → ''."""
+    k = talep_yonlendirmesi(item, yonlendirme)
+    if devir_kurumu(k) or item.get("yetki") == "DISARIDA":
+        return ""
+    ad = str((k.get("birim") or {}).get("ad") or "") or str(item.get("birim_ad") or "")         or birim_tr(str(item.get("birim") or "")) or str(item.get("birim_tr") or "")
     return "" if kategori_etiketi_mi(ad) else ad
 
 
@@ -72,17 +88,56 @@ def havale_gruplari(
     return list(gruplar.values())
 
 
+def devir_gruplari(
+    alt_talepler: list[dict[str, Any]], yonlendirme: dict[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """(kurum içi talepler, devir grupları). Aynı yetkili kuruma düşen talepler TEK devir
+    yazısında birleşir: {kurum:{slug,ad}, dayanak, talepler}."""
+    ic: list[dict[str, Any]] = []
+    gruplar: dict[str, dict[str, Any]] = {}
+    for item in alt_talepler:
+        k = talep_yonlendirmesi(item, yonlendirme)
+        kurum = devir_kurumu(k)
+        if not kurum:
+            ic.append(item)
+            continue
+        grup = gruplar.setdefault(str(kurum.get("slug") or kurum["ad"]), {
+            "kurum": kurum, "dayanak": str((k.get("devir") or {}).get("dayanak") or ""),
+            "talepler": []})
+        grup["talepler"].append(item)
+    return ic, list(gruplar.values())
+
+
 def cevap_govdesi(gelen: dict[str, Any], gruplar: list[dict[str, Any]],
-                  konular: list[str]) -> str:
-    """Başvurana safahat bildirimi: hangi talep hangi birimde incelenmek üzere havale edildi."""
+                  konular: list[str], devirler: list[dict[str, Any]] | None = None) -> str:
+    """Başvurana safahat bildirimi: hangi talep hangi birimde incelenmek üzere havale edildi;
+    yetki dışı talepler hangi makama GÖNDERİLDİ (3071 m.5: 'yetkili idari makama gönderilir
+    ve ayrıca dilekçe sahibine de bilgi verilir')."""
     bulunma = _CINS_BULUNMA.get(gelen.get("belge_cinsi") or "", "başvurunuzda")
     satirlar = [
         f"{i}. {konu} — {grup['birim_ad'] or 'ilgili birimimiz'}"
         for i, (konu, grup) in enumerate(zip(konular, gruplar, strict=True), start=1)]
+    if not devirler:
+        return (
+            f"İlgi'de kayıtlı {bulunma} yer alan talepleriniz, incelenmek üzere Kurumumuzun "
+            "ilgili birimlerine havale edilmiştir:\n\n" + "\n".join(satirlar) + "\n\n"
+            "Talepleriniz hakkında yapılacak işlemlerin sonucu ayrıca tarafınıza "
+            "bildirilecektir."
+        )
+    dis = [
+        f"{i}. {d['konu']} — {d['kurum']['ad']} ("
+        f"{d['dayanak'] + ' gereğince ' if d.get('dayanak') else ''}gönderilmiştir)"
+        for i, d in enumerate(devirler, start=len(satirlar) + 1)]
+    ic_metin = ("Kurumumuzun görev alanındaki talepleriniz incelenmek üzere ilgili "
+                "birimlerimize havale edilmiştir:\n\n" + "\n".join(satirlar) + "\n\n"
+                if satirlar else "")
     return (
-        f"İlgi'de kayıtlı {bulunma} yer alan talepleriniz, incelenmek üzere Kurumumuzun "
-        "ilgili birimlerine havale edilmiştir:\n\n" + "\n".join(satirlar) + "\n\n"
-        "Talepleriniz hakkında yapılacak işlemlerin sonucu ayrıca tarafınıza bildirilecektir."
+        f"İlgi'de kayıtlı {bulunma} yer alan talepleriniz hakkında yapılan işlemler aşağıda "
+        "bildirilmiştir.\n\n" + ic_metin
+        + "Kurumumuzun görev alanı dışında kalan talepleriniz yetkili makama "
+        "gönderilmiştir:\n\n" + "\n".join(dis) + "\n\n"
+        "Gönderilen talepleriniz hakkındaki işlemler ve sonucu anılan makamlarca, diğer "
+        "talepleriniz hakkındaki sonuç ise Kurumumuzca tarafınıza bildirilecektir."
     )
 
 
@@ -100,46 +155,87 @@ def devir_bilgi_govdesi(gelen: dict[str, Any], yetkili_ad: str, dayanak: str) ->
     )
 
 
+async def _havale_yazisi(
+    grup: dict[str, Any], unsurlar: dict[str, Any], semafor: asyncio.Semaphore,
+    ortak: dict[str, Any],
+) -> dict[str, Any]:
+    """Kurum içi birime havale (ust_yazi). Gövde LLM'den (merkezi politika) ya da kalıptan."""
+    from yazi.renderer import render_yazi
+    from yazi.yazi_render import build_body, build_context
+
+    talepler = grup["talepler"]
+    ozet = "\n".join(str(t.get("ozet") or "") for t in talepler)
+    adaylar = ([talepler[0].get("konu"), talepler[0].get("ozet")]
+               if len(talepler) == 1 else []) + [unsurlar.get("konu")]
+    async with semafor:
+        metin = await build_body("ust_yazi", {**unsurlar, "talepler": [
+            str(t.get("ozet") or "") for t in talepler]}, ozet)
+    ctx = build_context(
+        "ust_yazi", unsurlar, metin, muhatap_override=grup["muhatap"], rol="havale",
+        konu_adaylari=adaylar, **ortak)
+    sonuc = render_yazi(ctx)
+    return {"rol": "havale", "yazi_turu": "ust_yazi", "muhatap": ctx.muhatap,
+            "birim": grup["birim_ad"], "konu": ctx.konu,
+            "talep_ids": [t.get("id") for t in talepler if t.get("id")],
+            "yazi_taslak_md": sonuc.metin, "format_uyumlu": sonuc.format_uyumlu}
+
+
+def _devir_yazisi(
+    grup: dict[str, Any], unsurlar: dict[str, Any], ortak: dict[str, Any],
+) -> dict[str, Any]:
+    """Yetki dışı talep(ler) → yetkili kuruma DEVİR yazısı (deterministik, 3071 m.5 /
+    4982 m.7). Muhatap = yetkili kurum (m.14, büyük harf + yönelme eki)."""
+    from yazi.renderer import render_yazi
+    from yazi.yazi_render import build_context, devir_govdesi
+
+    talepler = grup["talepler"]
+    konu = str(talepler[0].get("konu") or talepler[0].get("ozet") or "")         if len(talepler) == 1 else str(unsurlar.get("konu") or "")
+    ctx = build_context(
+        "ust_yazi", unsurlar, devir_govdesi(konu, grup["dayanak"]),
+        muhatap_override=muhatap_bicimle(grup["kurum"]["ad"], "kamu_idaresi")
+        or "İLGİLİ MAKAMA", rol="devir",
+        konu_adaylari=[talepler[0].get("konu"), unsurlar.get("konu")], **ortak)
+    sonuc = render_yazi(ctx)
+    return {"rol": "devir", "yazi_turu": "ust_yazi", "muhatap": ctx.muhatap,
+            "birim": "", "kurum": grup["kurum"]["ad"], "konu": ctx.konu,
+            "talep_ids": [t.get("id") for t in talepler if t.get("id")],
+            "yazi_taslak_md": sonuc.metin, "format_uyumlu": sonuc.format_uyumlu}
+
+
 async def havale_paketi(
     alt_talepler: list[dict[str, Any]], unsurlar: dict[str, Any], *,
     gelen: dict[str, Any], kaynak_metin: str = "", idare_adi: str = "",
     sdp_kodu: str = "", yonlendirme: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Çok talepli evrak → (alt_talepler + taslak, yazışma paketi listesi)."""
-    from yazi.renderer import render_yazi
-    from yazi.yazi_render import build_body, build_context
+    """Çok talepli evrak → (alt_talepler + taslak, yazışma paketi listesi).
 
-    gruplar = havale_gruplari(alt_talepler, yonlendirme)
+    Talep başına karar Akış Y'nin şeklinden okunur (talep_yonlendirmesi): kurum içi talepler
+    birime HAVALE, yetki dışı talepler yetkili kuruma DEVİR (KARMA'da ikisi birlikte);
+    vatandaş belgesinde başvurana ikisini birlikte bildiren TEK cevap yazısı eklenir."""
+    ic, devirler = devir_gruplari(alt_talepler, yonlendirme)
+    gruplar = havale_gruplari(ic, yonlendirme)
+    ortak = {"sdp_kodu": sdp_kodu, "idare_adi": idare_adi, "gelen": gelen,
+             "kaynak_metin": kaynak_metin}
     semafor = asyncio.Semaphore(3)
-
-    async def _havale(grup: dict[str, Any]) -> dict[str, Any]:
-        talepler = grup["talepler"]
-        ozet = "\n".join(str(t.get("ozet") or "") for t in talepler)
-        adaylar = ([talepler[0].get("konu"), talepler[0].get("ozet")]
-                   if len(talepler) == 1 else []) + [unsurlar.get("konu")]
-        async with semafor:
-            metin = await build_body("ust_yazi", {**unsurlar, "talepler": [
-                str(t.get("ozet") or "") for t in talepler]}, ozet)
-        ctx = build_context(
-            "ust_yazi", unsurlar, metin, muhatap_override=grup["muhatap"], sdp_kodu=sdp_kodu,
-            idare_adi=idare_adi, gelen=gelen, rol="havale", kaynak_metin=kaynak_metin,
-            konu_adaylari=adaylar)
-        sonuc = render_yazi(ctx)
-        return {"rol": "havale", "yazi_turu": "ust_yazi", "muhatap": ctx.muhatap,
-                "birim": grup["birim_ad"], "konu": ctx.konu,
-                "talep_ids": [t.get("id") for t in talepler if t.get("id")],
-                "yazi_taslak_md": sonuc.metin, "format_uyumlu": sonuc.format_uyumlu}
-
-    paket = list(await asyncio.gather(*(_havale(g) for g in gruplar)))
-    yazisi = {id(item): yazi for grup, yazi in zip(gruplar, paket, strict=True)
+    havaleler = list(await asyncio.gather(
+        *(_havale_yazisi(g, unsurlar, semafor, ortak) for g in gruplar)))
+    devir_yazilari = [_devir_yazisi(g, unsurlar, ortak) for g in devirler]
+    yazisi = {id(item): yazi
+              for grup, yazi in zip([*gruplar, *devirler], [*havaleler, *devir_yazilari],
+                                    strict=True)
               for item in grup["talepler"]}
     alt_out = [{**item, "yazi_turu": "ust_yazi", "taslak_konu": yazisi[id(item)]["konu"],
                 "yazi_taslak_md": yazisi[id(item)]["yazi_taslak_md"],
                 "format_uyumlu": yazisi[id(item)]["format_uyumlu"]} for item in alt_talepler]
+    paket = [*havaleler, *devir_yazilari]
     if vatandas_belgesi_mi(gelen):
+        dev = [{"konu": y["konu"], "kurum": g["kurum"], "dayanak": g["dayanak"]}
+               for g, y in zip(devirler, devir_yazilari, strict=True)]
         paket.append(cevap_yazisi(
-            gelen, unsurlar, cevap_govdesi(gelen, gruplar, [y["konu"] for y in paket]),
-            kaynak_metin=kaynak_metin, idare_adi=idare_adi, sdp_kodu=sdp_kodu, rol="cevap"))
+            gelen, unsurlar,
+            cevap_govdesi(gelen, gruplar, [y["konu"] for y in havaleler], dev),
+            kaynak_metin=kaynak_metin, idare_adi=idare_adi, sdp_kodu=sdp_kodu,
+            rol="cevap" if havaleler else "devir_bilgi"))
     return alt_out, paket
 
 
@@ -162,5 +258,6 @@ def cevap_yazisi(
             "format_uyumlu": sonuc.format_uyumlu}
 
 
-__all__ = ("cevap_govdesi", "cevap_yazisi", "devir_bilgi_govdesi", "havale_gruplari",
-           "havale_paketi", "talep_birim_adi", "vatandas_belgesi_mi")
+__all__ = ("cevap_govdesi", "cevap_yazisi", "devir_bilgi_govdesi", "devir_gruplari",
+           "devir_kurumu", "havale_gruplari", "havale_paketi", "talep_birim_adi",
+           "talep_yonlendirmesi", "vatandas_belgesi_mi")

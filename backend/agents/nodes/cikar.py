@@ -30,6 +30,7 @@ from agents.talep_kumesi import (
     talep_metinleri,
 )
 from api.pii import mask_for_llm
+from core.text import tr_lower
 from yazi.gelen_evrak import BELGE_CINSLERI, GONDEREN_TURLERI, GelenEvrak, gelen_evrak_cikar
 
 log = structlog.get_logger()
@@ -207,14 +208,48 @@ def _talep_kumesi_kur(obj: dict[str, Any] | None, llm_metin: str,
     return heuristik_talep_kumesi(mask_for_llm(text, None)), "heuristik"
 
 
-def _imza_durumu(unsurlar: dict[str, Any], gelen: GelenEvrak) -> str:
-    """'var' | 'dogrulanamadi'. Düz metin/OCR'dan ıslak imzanın YOKLUĞU kanıtlanamaz.
+# Kapanış (imza) bloğu belgenin son satırlarındadır; imzalayanın adı burada aranır.
+_KAPANIS_SATIR = 6
+_RE_KISI_SATIRI = re.compile(
+    r"^(?:[A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:[ 	]+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+){1,3}"
+    r"|[A-ZÇĞİÖŞÜ]{2,}(?:[ 	]+[A-ZÇĞİÖŞÜ]{2,}){1,3})$")
+# Kurum adı / BÜYÜK harfli hitap satırı ('… BAŞKANLIĞINA') kişi adı sayılmaz. Hitap eki
+# yalnız BÜYÜK harfte aranır — 'Selma Kaya' gibi -ya/-ye ile biten adlar elenmesin.
+_RE_KURUM_SOZCUGU = re.compile(
+    r"belediye|müdürlüğ|başkanlığ|valiliğ|kaymakamlığ|kurumu|bakanlığ|dairesi|genel müdür")
+_RE_BUYUK_HITAP = re.compile(r"[A-ZÇĞİÖŞÜ][NY][AE]$")
 
-    'yok' yalnız imza alanının boş olduğunu açıkça raporlayan bir kanaldan gelebilir
-    (görsel katmanın imza tespiti henüz yok) — metinden asla türetilmez.
+
+def _kapanista_ad_var(text: str, gonderen: str | None) -> bool:
+    """Belgenin kapanış bloğunda imzalayanın adı (ad-soyad satırı / 'Ad Soyad:' etiketi /
+    çıkarılan gönderen adı) var mı. Kurum/hitap satırı ad sayılmaz."""
+    satirlar = [s.strip() for s in (text or "").splitlines() if s.strip()][-_KAPANIS_SATIR:]
+    gonderen = (gonderen or "").strip()
+    for s in satirlar:
+        if gonderen and gonderen in s:
+            return True
+        if _RE_AD_SOYAD.search(s):
+            return True
+        if (_RE_KISI_SATIRI.match(s) and not _RE_BUYUK_HITAP.search(s)
+                and not _RE_KURUM_SOZCUGU.search(tr_lower(s))):
+            return True
+    return False
+
+
+def _imza_durumu(unsurlar: dict[str, Any], gelen: GelenEvrak, text: str = "") -> str:
+    """'var' | 'dogrulanamadi' | 'yok'.
+
+    * var — metinde imza izi (İmza satırı / e-imza beyanı) ya da kimliği kanalın kendisi
+      doğrulayan elektronik başvuru (CİMER: e-Devlet girişi, ıslak imza aranmaz).
+    * dogrulanamadi — kapanışta imzalayanın adı VAR ama ıslak imza düz metinden
+      görülemez: yokluğu kanıtlanamaz → eksik sayılmaz, memura bilgi notu.
+    * yok — kurumdan gelmeyen belgede kapanış bloğunda ad-soyad BİLE yok: imza bloğunun
+      kendisi yoktur (3071 m.4 şartı karşılanmamış) → eksik sayılır.
     """
     if unsurlar.get("imza") or gelen.elektronik_kanal:
         return "var"
+    if not gelen.resmi and not _kapanista_ad_var(text, unsurlar.get("gonderen")):
+        return "yok"
     return "dogrulanamadi"
 
 
@@ -256,7 +291,7 @@ async def cikar_node(state: dict[str, Any]) -> dict[str, Any]:
     unsurlar["gelen_evrak"] = gelen.to_dict()
     if not unsurlar.get("kurum") and (gelen.muhatap_idare or gelen.gonderen_idare):
         unsurlar["kurum"] = gelen.muhatap_idare or gelen.gonderen_idare
-    unsurlar["imza_durumu"] = _imza_durumu(unsurlar, gelen)
+    unsurlar["imza_durumu"] = _imza_durumu(unsurlar, gelen, text)
 
     log.info("cikar", alanlar=list(unsurlar), pii=bool(unsurlar.get("pii_var")),
              source="llm+regex" if obj is not None else "regex",

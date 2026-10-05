@@ -7,8 +7,10 @@ dilekçede "adı-soyadı ve imzası ile iş veya ikametgâh adresi"ni şart koş
 alanlarına bakılır. Zorunlu alan kümesi config.ZORUNLU_ALANLAR (docs/02 §5).
 
 İMZA DÜRÜSTLÜĞÜ (teşhis 2026-10-05): düz metin/OCR'dan ıslak imzanın YOKLUĞU kanıtlanamaz.
-cikar 'imza_durumu'nu 'var' | 'dogrulanamadi' olarak verir; 'dogrulanamadi' eksik SAYILMAZ
-(vatandaşa "imzasız" denmez, clarifier durmaz) — memura bilgi notu düşülür.
+cikar 'imza_durumu'nu 'var' | 'dogrulanamadi' | 'yok' olarak verir; 'dogrulanamadi'
+(kapanışta ad-soyad var, ıslak imza metinden görülemez) eksik SAYILMAZ (vatandaşa
+"imzasız" denmez, clarifier durmaz) — memura bilgi notu düşülür. 'yok' (kapanışta ad-soyad
+BİLE yok → imza bloğu yok) eksiktir.
 
 Tasarım: eksik-alan tespiti DETERMİNİSTİK (çıkarılan unsurların VARLIK kontrolü —
 halüsinasyon riski yok, recall-öncelikli). Takip sorusu (clarify) ifadesi LLM ile
@@ -59,8 +61,8 @@ _ALAN_SORU: dict[str, str] = {
     "konu": "Konu açıkça belirtilmemiş; kısa bir konu giriniz.",
     "talep": "Somut bir talep/istek tespit edilemedi.",
     "iletisim_adres": "İş veya ikametgâh adresi eksik; telefon numarası adres yerine geçmez.",
-    "imza": ("İmza bulunmuyor; 3071 sayılı Kanun m.4 ve m.6/c uyarınca imzası bulunmayan "
-             "dilekçe incelenemez."),
+    "imza": ("Dilekçenin sonunda ad-soyad ve imza bloğu bulunmuyor; 3071 sayılı Kanun m.4 ve "
+             "m.6/c uyarınca imzası bulunmayan dilekçe incelenemez."),
 }
 
 _IMZA_NOTU = ("İmza metinden doğrulanamadı: ıslak veya elektronik imzayı asıl evrak üzerinde "

@@ -27,11 +27,20 @@ from typing import Any
 
 from core.text import tr_lower, tr_upper
 
-BELGE_CINSLERI: tuple[str, ...] = (
-    "dilekce", "basvuru", "cimer_basvurusu", "bilgi_edinme_basvurusu", "resmi_yazi",
-    "muzekkere", "icra_yazisi", "genelge", "diger",
+# Gelen evrak sözleşmesi + etiketli okuma TEK kaynaktan (yazi.gelen_evrak, Akış T): kapalı
+# kümeler ve Sayı/Tarih/Başvuru No okuyucusu iki modelde ortaktır — aynı belgede farklı
+# tarih ya da farklı belge cinsi kümesi oluşamaz.
+from yazi.gelen_evrak import (
+    BELGE_CINSLERI,
+    GONDEREN_TURLERI,
+    GelenEvrak,
+    _etiket,
+    _tarih_norm,
 )
-GONDEREN_TURLERI: tuple[str, ...] = ("gercek_kisi", "tuzel_kisi", "kamu_idaresi")
+from yazi.gelen_evrak import etiketli_basvuru_no as _etiketli_basvuru_no
+from yazi.gelen_evrak import etiketli_sayi as _etiketli_sayi
+from yazi.gelen_evrak import etiketli_tarih as _etiketli_tarih
+
 ROLLER: tuple[str, ...] = ("cevap", "havale", "devir", "devir_bilgi", "dagitim", "olur")
 
 # Sınıflandırıcının kapalı küme türü → gelen belgenin cinsi (eşleme, kelime listesi değil).
@@ -64,59 +73,6 @@ CINS_TR: dict[str, str] = {
     "muzekkere": "müzekkere", "icra_yazisi": "yazı", "genelge": "yazı", "diger": "evrak",
 }
 
-_TARIH = r"\d{1,2}[./]\d{1,2}[./]\d{4}"
-_RE_TARIH = re.compile(_TARIH)
-_RE_SALT_TARIH = re.compile(rf"^\s*(?:tarih\s*[:.]?\s*)?({_TARIH})\s*$", re.IGNORECASE)
-_ETIKET_KALIP = r"^\s*{etiket}\s*:\s*(?P<deger>.+?)\s*$"
-
-
-def _etiket(metin: str, etiket: str) -> str | None:
-    """Satır başındaki 'Etiket : değer' satırının değeri (çok satırlı metin, ilk eşleşme)."""
-    m = re.search(_ETIKET_KALIP.format(etiket=etiket), metin or "",
-                  re.IGNORECASE | re.MULTILINE)
-    return m.group("deger").strip() if m else None
-
-
-def _tarih_norm(t: str | None) -> str | None:
-    if not t:
-        return None
-    m = _RE_TARIH.search(t)
-    if not m:
-        return None
-    g, a, y = re.split(r"[./]", m.group(0))
-    return f"{int(g):02d}.{int(a):02d}.{y}"
-
-
-def _etiketli_tarih(metin: str) -> str | None:
-    """Gelen belgenin KENDİ tarihi: 'Tarih:' / 'Başvuru Tarihi:' etiketi → Sayı satırındaki
-    tarih → yalnız tarihten oluşan satır (dilekçe imza tarihi). Gövde içindeki olay tarihleri
-    ('18.10.2026 Pazar günü') ve gelen yazının kendi İlgi satırı ASLA seçilmez."""
-    for etiket in (r"tarih", r"ba[şs]vuru\s+tarihi"):
-        if (t := _tarih_norm(_etiket(metin, etiket))):
-            return t
-    if (t := _tarih_norm(_etiket(metin, r"say[ıi]"))):
-        return t
-    for satir in (metin or "").splitlines():
-        if (m := _RE_SALT_TARIH.match(satir)):
-            return _tarih_norm(m.group(1))
-    return None
-
-
-def _etiketli_sayi(metin: str) -> str | None:
-    """Yalnız 'Sayı :' etiketinden (sondaki tarih atılır); yoksa yargı/icra dosya numarası."""
-    if (ham := _etiket(metin, r"say[ıi]")):
-        sayi = _RE_TARIH.sub("", ham).strip(" ,;")
-        if sayi:
-            return sayi
-    for etiket in (r"esas\s+no", r"dosya\s+no"):
-        if (ham := _etiket(metin, etiket)):
-            return f"{ham} Esas" if "esas" in etiket and "esas" not in tr_lower(ham) else ham
-    return None
-
-
-def _etiketli_basvuru_no(metin: str) -> str | None:
-    ham = _etiket(metin, r"(?:\w+\s+)?ba[şs]vuru\s+(?:no|numaras[ıi])")
-    return ham.split()[0].strip(" ,;") if ham else None
 
 
 def _parantez_at(ad: str) -> str:
@@ -172,22 +128,54 @@ def _cins_coz(evrak_turu: str, metin: str, taban: dict[str, Any]) -> str:
     return cins
 
 
+def _akis_t_tabani(u: dict[str, Any]) -> dict[str, Any]:
+    """Akış T'nin gelen evrak modeli (cikar → unsurlar['gelen_evrak']) sözleşme süzgecinden
+    (GelenEvrak.from_dict: kapalı küme + metin normalizasyonu) geçirilir; yalnız GERÇEKTEN
+    dolu alanlar taban olur. from_dict'in varsayılanları (ör. gonderen_turu='gercek_kisi')
+    eksik alanı 'bilinen' gibi göstermesin diye ham sözlükte olmayan anahtar atılır;
+    belge_cinsi='diger' de 'bilinmiyor' demektir."""
+    ham = u.get("gelen_evrak")
+    if isinstance(ham, GelenEvrak):
+        ham = ham.to_dict()
+    if not isinstance(ham, dict) or not ham:
+        return {}
+    model = GelenEvrak.from_dict(ham).to_dict()
+    taban = {k: v for k, v in model.items() if ham.get(k) not in (None, "") and v}
+    if taban.get("belge_cinsi") == "diger":
+        taban.pop("belge_cinsi")
+    if ham.get("gonderen_turu") not in GONDEREN_TURLERI:
+        taban.pop("gonderen_turu", None)
+    return taban
+
+
 def gelen_evrak_coz(
     evrak_text: str, unsurlar: dict[str, Any] | None, evrak_turu: str = "",
     muhatap_idare: str = "",
 ) -> dict[str, Any]:
-    """Gelen evrak modeli (akışlar arası sözleşme şekliyle). Taban: unsurlar['gelen_evrak']
-    (Akış T); boş alanlar deterministik etiketli okumadan ve eski düz alanlardan doldurulur.
-    Etiketli kanıt (Sayı/Tarih/Başvuru No) LLM değerinin ÜSTÜNDEDİR."""
+    """Gelen evrak modeli (akışlar arası sözleşme şekliyle).
+
+    TEK SÖZLEŞME: unsurlar['gelen_evrak'] (Akış T, yazi.gelen_evrak.GelenEvrak) varsa onun
+    dolu alanları OTORİTEDİR — aynı etiketli okuyucuyu (etiketli_tarih/sayi/basvuru_no)
+    kullanır, burada yeniden okunup ezilmez. Bu çözücünün kendi türetmesi yalnız model
+    yoksa ya da alan boşsa devreye girer (eski kayıt, /yazi API'si, birim testleri)."""
     u = unsurlar or {}
-    taban = dict(u.get("gelen_evrak") or {})
-    metin = evrak_text or ""
-    cins = _cins_coz(evrak_turu, metin, taban)
+    taban = _akis_t_tabani(u)
+    turetilen = _gelen_evrak_turet(evrak_text or "", u, evrak_turu, muhatap_idare, taban)
+    return {k: (taban.get(k) or turetilen.get(k) or None) for k in turetilen}
+
+
+def _gelen_evrak_turet(
+    metin: str, u: dict[str, Any], evrak_turu: str, muhatap_idare: str,
+    taban: dict[str, Any],
+) -> dict[str, Any]:
+    """Model yokken/alan boşken deterministik türetme: etiketli satırlar + sınıflandırıcının
+    kapalı küme türünden belge cinsi + eski düz alanlar."""
+    cins = taban.get("belge_cinsi") or _cins_coz(evrak_turu, metin, {})
     sahip = _etiket(metin, r"ba[şs]vuru\s+sahibi") or _etiket(metin, r"ad[ıi]?\s*soyad[ıi]?")
-    gonderen_ad = _parantez_at(sahip or taban.get("gonderen_ad") or u.get("gonderen") or "")
-    gonderen_idare = taban.get("gonderen_idare") or antet_idaresi(metin)
+    gonderen_ad = _parantez_at(sahip or u.get("gonderen") or "")
+    gonderen_idare = antet_idaresi(metin)
     if cins in _VATANDAS_CINSLERI:
-        gonderen_idare = taban.get("gonderen_idare")  # CİMER anteti BİZİM kurumumuzdur
+        gonderen_idare = None  # CİMER anteti BİZİM kurumumuzdur
         tur = "tuzel_kisi" if _kurum_gorunumlu(gonderen_ad) else "gercek_kisi"
     elif not gonderen_idare:
         # Antet yok: gönderen adı kurum görünümlüyse idare, değilse kişi (iç rapor vb.).
@@ -197,7 +185,6 @@ def gelen_evrak_coz(
             gonderen_idare = gonderen_ad
     else:
         tur = "kamu_idaresi"
-    tur = taban.get("gonderen_turu") if taban.get("gonderen_turu") in GONDEREN_TURLERI else tur
     return {
         "belge_cinsi": cins,
         "gonderen_turu": tur or None,
@@ -205,14 +192,12 @@ def gelen_evrak_coz(
         "gonderen_idare": gonderen_idare or None,
         # Eski 'kurum' alanı iki anlamlıdır (gönderen/muhatap); yalnız vatandaş belgesinde
         # muhatap anlamı kesindir (dilekçe kişiden gelir, kurum ona yazılan idaredir).
-        "muhatap_idare": taban.get("muhatap_idare") or muhatap_idare or (
+        "muhatap_idare": muhatap_idare or (
             u.get("kurum") if cins in _VATANDAS_CINSLERI else None) or None,
-        "tarih": _etiketli_tarih(metin) or _tarih_norm(taban.get("tarih"))
-        or _tarih_norm(str(u.get("tarih") or "")) or None,
-        "sayi": _etiketli_sayi(metin) or taban.get("sayi")
-        or (str(u.get("sayi") or "") or None if not metin else None),
-        "basvuru_no": _etiketli_basvuru_no(metin) or taban.get("basvuru_no"),
-        "konu_satiri": _etiket(metin, "konu") or taban.get("konu_satiri"),
+        "tarih": _etiketli_tarih(metin) or _tarih_norm(str(u.get("tarih") or "")) or None,
+        "sayi": _etiketli_sayi(metin) or (str(u.get("sayi") or "") or None if not metin else None),
+        "basvuru_no": _etiketli_basvuru_no(metin),
+        "konu_satiri": _etiket(metin, "konu"),
     }
 
 

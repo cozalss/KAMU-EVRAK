@@ -53,6 +53,9 @@ def D(**kw):  # beklenen sözlüğü — varsayılanlarla
         "mevzuat_kabul": kw.pop("mev_kabul", []),
         "alakasiz_mevzuat_yasak": kw.pop("yasak", ["5176", "5690"]),
         "eksikler": kw.pop("eksik", []),
+        # Eksik SAYILMAYAN ama memura düşülmesi beklenen notlar (ör. 'imza_dogrulanamadi':
+        # kapanışta ad-soyad var, ıslak imza düz metinden görülemez — 3071 m.4/m.6/c).
+        "eksik_notlari": kw.pop("eksik_not", []),
         "kurum_tipi": kw.pop("kurum_tipi"),
         "kanal": kw.pop("kanal", "dilekce"),
     }
@@ -969,7 +972,10 @@ Eryaman 4. Etap'taki Akasya Parkı'nda iki sahipsiz köpek yaralı hâlde dolaş
                 T("Kırık kaydırağın değiştirilmesi", ["kaydıra", "oyun"], ["Park ve Bahçeler"])],
       birim=["Veteriner", "Park ve Bahçeler", "Basın", "Halkla İlişkiler"],
       konu=["köpek", "hayvan", "park", "kaydırak"], ilgi_turu="cimer", ilgi_kabul=[AD, "CİMER"],
-      mev=["5199", "3071", "5690"], mev_kabul=["5393"], yasak=["5176"], eksik=["imza"],
+      # ALTIN DÜZELTMESİ (2026-10-05 birleştirme): eksik=["imza"] YANLIŞTI. CİMER başvurusu
+      # e-Devlet kimlik doğrulamasıyla alınır; ıslak imza aranmaz (teşhis 'genel kalite'
+      # bölümü bunu sistem hatası değil altın hatası olarak işaretledi).
+      mev=["5199", "3071", "5690"], mev_kabul=["5393"], yasak=["5176"], eksik=[],
       kurum_tipi="ilce_belediyesi", kanal="cimer")))
 
 S.append(("bilgi_edinme_cankaya_cift", """ÇANKAYA BELEDİYE BAŞKANLIĞINA
@@ -1001,7 +1007,12 @@ Adres: Aktepe Mah. Gazi Cad. No:19 Keçiören/ANKARA
       muhatap_kabul=["Keçiören Belediye"],
       talepler=[T("Park bankları ve bakım", ["bank", "park"], ["Park ve Bahçeler", "Fen İşleri"])],
       birim=["Park ve Bahçeler", "Fen İşleri"], konu=["park", "bank"],
-      mev=["3071", "5393"], eksik=["imza"], kurum_tipi="ilce_belediyesi")))
+      # ALTIN DÜZELTMESİ (2026-10-05 birleştirme): kapanışta 'Ayşe Yılmaz' ad-soyadı VAR,
+      # yalnız 'İmza' satırı yok. Düz metinden ıslak imzanın YOKLUĞU kanıtlanamaz → doğru
+      # davranış eksik değil 'imza doğrulanamadı' bilgi notudur. (Kapanışta ad-soyad BİLE
+      # yoksa sistem 'imza' eksiğini verir — tests/test_birlesik_baglantilar.py.)
+      mev=["3071", "5393"], eksik=[], eksik_not=["imza_dogrulanamadi"],
+      kurum_tipi="ilce_belediyesi")))
 
 S.append(("eksik_adres_mamak_cop", """MAMAK BELEDİYE BAŞKANLIĞINA
 

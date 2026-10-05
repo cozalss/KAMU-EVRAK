@@ -122,7 +122,12 @@ def _devir_hedefi(state: dict[str, Any]) -> dict[str, Any]:
     Öncelik Akış Y'nin `yonlendirme.devir` kararı; yoksa eski yetkisizlik hâli: route_ajan
     yetkili_kurum'u muhataptan FARKLI buldu (iki slug dolu ve farklı).
     """
-    devir = ((state.get("yonlendirme") or {}).get("devir") or {})
+    yon = state.get("yonlendirme") or {}
+    if yon.get("karar") == "KARMA":
+        # KARMA'da belgenin TAMAMI devredilmez: kurum içi talepler havale edilir, yalnız
+        # yetki dışı talepler devredilir (yazi.paket.havale_paketi talep başına ayırır).
+        return {}
+    devir = yon.get("devir") or {}
     if devir.get("gerekli") and isinstance(devir.get("yetkili_kurum"), dict):
         return devir["yetkili_kurum"]
     muhatap = state.get("muhatap_kurum") or {}
@@ -394,6 +399,25 @@ async def _tekli_taslak(state: dict[str, Any], b: dict[str, Any]) -> dict[str, A
     return _dosya_alanlari(out, result)
 
 
+def _talep_ogeleri(state: dict[str, Any]) -> list[dict[str, Any]]:
+    """Paket yolunun talep listesi: decompose'un alt talepleri (≥2). Yönlendirme KARMA ise
+    ve alt talep listesi kurulmamışsa talepler yönlendirme kararlarından + talep kümesinden
+    kurulur — KARMA belge hiçbir koşulda tek yazıya (ya da bütünüyle devre) indirgenmez."""
+    alt = [a for a in (state.get("alt_talepler") or []) if isinstance(a, dict)]
+    yon = state.get("yonlendirme") or {}
+    if len(alt) >= 2 or yon.get("karar") != "KARMA":
+        return alt
+    kume = {str(t.get("id")): t for t in
+            ((state.get("bilgi_unsurlari") or {}).get("talep_kumesi") or [])
+            if isinstance(t, dict)}
+    out = []
+    for k in yon.get("talepler") or []:
+        t = kume.get(str(k.get("talep_id")), {})
+        out.append({"id": k.get("talep_id"), "ozet": t.get("ozet") or t.get("kanit") or "",
+                    "konu": t.get("ozet") or "", "yonlendirme": k})
+    return out if len(out) >= 2 else alt
+
+
 async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     """Resmî yazı taslağı + yazışma paketi (metin + PDF/DOCX).
 
@@ -408,7 +432,7 @@ async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
     b["sdp_kodu"] = (b["sdp"] or {}).get("kod", "")
     ek = {"sdp_secimi": secim} if secim else {}
     try:
-        alt_talepler = state.get("alt_talepler") or []
+        alt_talepler = _talep_ogeleri(state)
         if len(alt_talepler) >= 2:
             from yazi.paket import havale_paketi
             alt_out, paket = await havale_paketi(

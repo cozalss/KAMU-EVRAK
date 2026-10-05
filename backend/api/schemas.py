@@ -183,7 +183,7 @@ class AltTalepSchema(BaseModel):
     birim: str = ""
     birim_tr: str = ""
     # Talep bazlı yönlendirme (route_ajan, additive): ICERIDE|DISARIDA|BELIRSIZ + gerçek birim.
-    id: str = ""
+    # (Kimlik alanı `id` aşağıda TEK tanımlıdır — talep kümesiyle ortak; çift tanım kaldırıldı.)
     yetki: str = ""
     birim_ad: str = ""
     yetkili_kurum_ad: str = ""
@@ -193,7 +193,8 @@ class AltTalepSchema(BaseModel):
     # Bu alt-talebin KENDİ hedef birimine yönlendirilen üst yazı taslağı (>= 2 alt-talepte dolu).
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
-    # Talep kümesiyle bağ (additive, 2026-10): kimlik, kısa resmî konu, birebir kanıt.
+    # Talep kümesiyle bağ (additive, 2026-10): kimlik (route_ajan talep kararı aynı id ile
+    # eşleşir), kısa resmî konu, birebir kanıt.
     id: str | None = None
     konu: str = ""
     kanit: str = ""

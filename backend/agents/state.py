@@ -231,7 +231,7 @@ class EvrakState(TypedDict):
     #     'talepler' (list[str]) ve alt_talepler bundan TÜRETİLİR — tek doğruluk kaynağı)
     #   bilgi_unsurlari['talep_kumesi_kaynagi'] = 'llm' | 'heuristik'
     #   bilgi_unsurlari['gelen_evrak'] = yazi.gelen_evrak.GelenEvrak.to_dict()
-    #   bilgi_unsurlari['imza_durumu'] = 'var' | 'dogrulanamadi' ('yok' metinden türetilmez)
+    #   bilgi_unsurlari['imza_durumu'] = 'var' | 'dogrulanamadi' | 'yok' ('yok' = kapanışta ad-soyad bile yok)
     # Memura bilgi notları (eksik SAYILMAYAN ama kontrol gerektiren: imza doğrulanamadı vb.).
     eksik_bilgi_notlari: NotRequired[list[str]]
 

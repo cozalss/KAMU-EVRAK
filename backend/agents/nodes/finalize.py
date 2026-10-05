@@ -29,6 +29,7 @@ from agents.config import (
     etkili_birim,
     evrak_turu_tr,
 )
+from agents.yonlendirme import devir_ozeti
 
 log = structlog.get_logger()
 
@@ -80,14 +81,32 @@ def _dayanak_olabilir(m: dict[str, Any]) -> bool:
     return norm is None or float(norm) >= _DAYANAK_NORM_ESIK
 
 
+def _devir_cumlesi(devir: dict[str, Any]) -> str:
+    """'… {dayanak} gereğince yetkili makama (X) gönderildi' — 3071 m.5 lafzı: dilekçe
+    'yetkili idari makama gönderilir ve ayrıca dilekçe sahibine de bilgi verilir' (havale
+    kurum İÇİ işlemdir; başka kuruma giden evrak havale edilmez, GÖNDERİLİR)."""
+    hukum = f"{devir['dayanak']} gereğince " if devir.get("dayanak") else ""
+    return (f"{hukum}yetkili makama ({', '.join(devir['kurumlar'])}) gönderildi; "
+            "başvuru sahibine ayrıca bilgi verilecek")
+
+
 def _anlati_sablon(state: dict[str, Any], turu: str, birim: str,
                    mevzuat: list[dict]) -> str:
     """Deterministik 'ne oldu' anlatısı — LLM yok/reddedildiyse bildirim bununla çıkar.
 
     Sade-dil kuralları: tek cümle, etken anlatım, gerekçe (dayanak) cümle içinde görünür.
+    Devirde (yönlendirme DISARIDA/KARMA) yetki dışı kısım 'havale edildi' değil 'gönderildi'.
     """
     gonderen = str((state.get("bilgi_unsurlari") or {}).get("gonderen") or "").strip()
     kim = f"{gonderen} tarafından gönderilen evrak" if gonderen else "Evrak"
+    devir = devir_ozeti(state.get("yonlendirme"))
+    if devir and devir["karar"] == "DISARIDA":
+        return (f"{kim}, {turu} olarak sınıflandırıldı; konu Kurumumuzun görev alanı dışında "
+                f"kaldığından {_devir_cumlesi(devir)}.")
+    if devir:  # KARMA: içerideki talepler havale, dışarıdakiler gönderim
+        return (f"{kim}, {turu} olarak sınıflandırıldı; görev alanımızdaki talepler ilgili "
+                f"birime ({birim}) havale edildi, görev alanı dışındaki talepler "
+                f"{_devir_cumlesi(devir)}.")
     # Birim adları hâl eki içerir ("... Birimi/Müdürlüğü") → ek yinelenmemesi için parantezli.
     if mevzuat:
         return (f"{kim}, {turu} olarak sınıflandırıldı ve {mevzuat[0]['baslik']} "
@@ -95,11 +114,25 @@ def _anlati_sablon(state: dict[str, Any], turu: str, birim: str,
     return f"{kim}, {turu} olarak sınıflandırıldı ve ilgili birime ({birim}) havale edildi."
 
 
+def _ilk_adimlar(state: dict[str, Any], birim: str) -> list[dict[str, Any]]:
+    """Tamamlanan yönlendirme adım(lar)ı: havale ve/veya yetkili makama gönderim."""
+    devir = devir_ozeti(state.get("yonlendirme"))
+    if not devir:
+        return [{"adim": "Sorumlu birime havale", "detay": birim, "durum": "tamam"}]
+    adimlar = [] if devir["karar"] == "DISARIDA" else [
+        {"adim": "Sorumlu birime havale", "detay": birim, "durum": "tamam"}]
+    return [
+        *adimlar,
+        {"adim": "Yetkili makama gönderim", "detay": ", ".join(devir["kurumlar"]),
+         "durum": "tamam"},
+        {"adim": "Başvuru sahibine bilgi verilmesi", "detay": devir["dayanak"],
+         "durum": "bekliyor"}]
+
+
 def _sirada(state: dict[str, Any], birim: str, eksik: list[str],
             sorular: list[str]) -> list[dict[str, Any]]:
     """GOV.UK 'what happens next': tamamlanan + bekleyen adımlar, açık tarihli süre."""
-    adimlar: list[dict[str, Any]] = [
-        {"adim": "Sorumlu birime havale", "detay": birim, "durum": "tamam"}]
+    adimlar: list[dict[str, Any]] = _ilk_adimlar(state, birim)
     if eksik:
         # Sayı, yapilacak.maddeler ile AYNI kaynaktan (sorular ⊇ eksik olabilir) —
         # bildirimin iki bölümü farklı sayı söylemesin (review bulgusu).

@@ -99,6 +99,36 @@ def yonlendirme_kur(
     }
 
 
+def devir_kurumu(karar: dict[str, Any]) -> dict[str, Any] | None:
+    """Talep kararı DISARIDA ve yetkili kurum belliyse {slug, ad}; aksi hâlde None.
+    (Tek okuyucu: yazışma paketi ve finalize bildirimi aynı kararı okur.)"""
+    devir = karar.get("devir") or {}
+    kurum = devir.get("yetkili_kurum")
+    if (karar.get("karar") == "DISARIDA" and devir.get("gerekli")
+            and isinstance(kurum, dict) and kurum.get("ad")):
+        return kurum
+    return None
+
+
+def devir_ozeti(yon: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Belgede devir varsa {karar, kurumlar:[ad…], dayanak}; yoksa None.
+
+    DISARIDA'da belge düzeyi devir bloğu, KARMA'da talep bazlı kararlar okunur. Kurum
+    adları tekilleştirilir, giriş sırası korunur."""
+    yon = yon or {}
+    if yon.get("karar") not in ("DISARIDA", "KARMA"):
+        return None
+    adlar = [k["ad"] for t in (yon.get("talepler") or []) if isinstance(t, dict)
+             if (k := devir_kurumu(t))]
+    belge = (yon.get("devir") or {})
+    if not adlar and belge.get("gerekli") and (belge.get("yetkili_kurum") or {}).get("ad"):
+        adlar = [belge["yetkili_kurum"]["ad"]]
+    if not adlar:
+        return None
+    return {"karar": yon["karar"], "kurumlar": list(dict.fromkeys(adlar)),
+            "dayanak": str(belge.get("dayanak") or "")}
+
+
 def gosterim_birimi(yon: dict[str, Any] | None) -> str:
     """Memurun göreceği TEK birim metni (arşiv, finalize, bildirim, arayüz aynı metni basar)."""
     if not yon:
@@ -166,5 +196,5 @@ def alt_talepleri_zenginlestir(
 
 __all__ = (
     "KARARLAR", "VARSAYILAN_DEVIR_DAYANAGI", "alt_talepleri_zenginlestir", "belge_karari",
-    "devir_dayanagi", "duz_alanlar", "gosterim_birimi", "talep_karari", "yonlendirme_kur",
+    "devir_dayanagi", "devir_kurumu", "devir_ozeti", "duz_alanlar", "gosterim_birimi", "talep_karari", "yonlendirme_kur",
 )

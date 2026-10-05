@@ -44,6 +44,11 @@ class MevzuatOneri(TypedDict):
     dogrulama_yontemi: NotRequired[str]
     kaynak_guven_hatalari: NotRequired[list[str]]
     madde_tur: NotRequired[str | None]  # "madde"|"ek"|"gecici" → ek≠normal madde (link doğruluğu)
+    # İçerik odaklı, talep bazlı yol (agents/mevzuat_yargic) — additive.
+    talep_id: NotRequired[str]      # bilgi_unsurlari.talep_kumesi[].id
+    gerekce: NotRequired[str]       # alaka yargıcının kısa gerekçesi
+    katman: NotRequired[str]        # "esas" (içerik) | "usul" (başvuru usulü)
+    yargic: NotRequired[bool]       # alaka yargıcından geçti mi (False = yargıçsız yedek)
 
 
 class EvrakState(TypedDict):
@@ -78,6 +83,10 @@ class EvrakState(TypedDict):
     # operator.add reducer kullanılan mevzuat_onerileri'ne EKLEMEMEK için (duplikasyon
     # önleme) düzeltilmiş öneriler ayrı alanda tutulur; consumer'lar varsa onu tercih eder.
     mevzuat_onerileri_corrected: NotRequired[list[MevzuatOneri]]
+    # İçerik odaklı mevzuat yolu: yargıç hiçbir talep için madde seçmedi (statik dolgu YOK).
+    mevzuat_bulunamadi: NotRequired[bool]
+    mevzuat_talep_durumu: NotRequired[list[dict[str, Any]]]  # [{talep_id, mesele, bulundu}]
+    mevzuat_yargic_calisti: NotRequired[bool]
     crag_corrected: NotRequired[bool]       # CRAG düzeltme uyguladı mı (şeffaflık)
     # NLI atıf-gerekçelendirme (ENV-gated): her öneri için entailment (madde ⊨ talep?).
     mevzuat_nli: NotRequired[list[dict[str, Any]]]

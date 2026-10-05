@@ -164,6 +164,11 @@ class MevzuatOneriSchema(BaseModel):
     madde_tur: str | None = None   # "madde"|"ek"|"gecici" → modal doğru maddeyi vurgular (ek≠normal)
     # S7 — GraphRAG-lite: öneri, top sonucun atıf verdiği mevzuattan 1-hop genişletmeyle geldi.
     atif_genisletme: bool = False
+    # İçerik odaklı, talep bazlı yol (agents/mevzuat_yargic) — additive; eski yolda boş.
+    talep_id: str = ""            # bilgi_unsurlari.talep_kumesi[].id ile eşleşir
+    gerekce: str = ""             # alaka yargıcının kısa gerekçesi (hukuki dayanak DEĞİL)
+    katman: str = "esas"          # "esas" (içerik) | "usul" (başvuru usulü / cevap süresi)
+    yargic: bool | None = None    # True: yargıçtan geçti · False: yargıçsız yedek · None: eski yol
 
 
 class AltTalepSchema(BaseModel):
@@ -207,6 +212,10 @@ class ProcessResponse(BaseModel):
     mevzuat_onerileri: list[MevzuatOneriSchema] = Field(default_factory=list)
     # Yenilikçilik — NLI atıf-gerekçelendirme (her öneri için entailment işareti).
     mevzuat_nli: list = Field(default_factory=list)
+    # İçerik odaklı mevzuat yolu: yargıç hiçbir talep için uygun madde bulmadı (dürüst boş).
+    mevzuat_bulunamadi: bool = False
+    # Talep başına {talep_id, mesele, bulundu} — kartta "uygun mevzuat bulunamadı" satırı.
+    mevzuat_talep_durumu: list = Field(default_factory=list)
     ozet: str = ""
     # Kaynak-doğrulamalı ajan: doğrulanmış GERÇEK birim adı (serbest-metin) veya None (fallback).
     hedef_birim: str | None = ""

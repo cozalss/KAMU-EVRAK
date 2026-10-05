@@ -59,6 +59,27 @@ def _sla_ozeti(state: dict[str, Any]) -> str:
     return sure + ", ".join(parcalar)
 
 
+# Eski (yargıçsız) BM25 önerisi için 'dayanak' denebilecek en düşük uzunluk-düzeltilmiş skor
+# = api/mevzuat_zenginlestir._BANT_ORTA ("orta" güven bandının alt kenarı).
+_DAYANAK_NORM_ESIK = 1.20
+
+
+def _dayanak_olabilir(m: dict[str, Any]) -> bool:
+    """Öneri bildirimde 'dayanak' diye anılabilir mi (teşhis 2026-10-05: alakasız ilk öneri
+    'dayanak alınarak havale edildi' cümlesine yazılıyordu).
+
+    * Alaka yargıcından geçmiş içerik önerisi → evet.
+    * Yargıçsız içerik yedeği (yargic=False) ve usul katmanı → hayır (usul ayrı satırda).
+    * Eski yol (yargic alanı yok): yalnız en az 'orta' bantta ya da skorsuz statik kayıtsa.
+    """
+    if m.get("katman") == "usul":
+        return False
+    if "yargic" in m:
+        return m.get("yargic") is True
+    norm = m.get("norm_score")
+    return norm is None or float(norm) >= _DAYANAK_NORM_ESIK
+
+
 def _anlati_sablon(state: dict[str, Any], turu: str, birim: str,
                    mevzuat: list[dict]) -> str:
     """Deterministik 'ne oldu' anlatısı — LLM yok/reddedildiyse bildirim bununla çıkar.
@@ -160,6 +181,8 @@ def _metin(y: dict[str, Any], state: dict[str, Any]) -> str:
         satirlar.append(f"**Özet:** {state['ozet']}")
     if y["referans"]["dayanak"]:
         satirlar.append("**İlgili mevzuat:** " + "; ".join(y["referans"]["dayanak"]))
+    if y["referans"].get("usul"):
+        satirlar.append("**Başvuru usulü:** " + "; ".join(y["referans"]["usul"]))
     taslak, sla = _taslak_durumu(state), _sla_ozeti(state)
     if taslak:
         satirlar.append(f"**Yazı taslağı:** {taslak}")
@@ -195,11 +218,15 @@ async def finalize_node(state: dict[str, Any]) -> dict[str, Any]:
     # CRAG düzeltme yaptıysa düzeltilmiş öneriler tercih edilir (yoksa baseline liste).
     # Terminal node ASLA düşmez: dict-olmayan / 'baslik'sız girdi burada elenir (crash-safety);
     # sonrası bracket erişimi güvenlidir.
-    mevzuat = [m for m in (state.get("mevzuat_onerileri_corrected")
-                           or state.get("mevzuat_onerileri") or [])
-               if isinstance(m, dict) and m.get("baslik")]
+    tum = [m for m in (state.get("mevzuat_onerileri_corrected")
+                       or state.get("mevzuat_onerileri") or [])
+           if isinstance(m, dict) and m.get("baslik")]
+    mevzuat = [m for m in tum if _dayanak_olabilir(m)]
 
     yapisal = _yapisal(state, turu, birim, eksik, sorular, mevzuat)
+    usul = [m["baslik"] for m in tum if m.get("katman") == "usul"]
+    if usul:
+        yapisal["referans"]["usul"] = usul
 
     bilgilendirme = _metin(yapisal, state)
     log.info("finalize", turu=turu, birim=birim, eksik=len(eksik),

@@ -40,6 +40,10 @@ from eval.stats import fmt_ci, wilson_interval
 _ROOT = Path(__file__).resolve().parents[2]
 _GOLD_MEVZUAT = _ROOT / "data" / "synthetic" / "mevzuat_gold.jsonl"
 _GOLD_CLASS = _ROOT / "data" / "synthetic" / "evrak_class_gold.jsonl"
+# İçerik odaklı altın (teşhis 2026-10-05): beklenen kanun TÜRE göre değil talebin İÇERİĞİNE
+# göre; tüm beklenen/kabul önekleri korpusta dosya olarak VAR (üretimde süzüldü).
+_GOLD_ICERIK = _ROOT / "data" / "synthetic" / "mevzuat_icerik_gold.jsonl"
+_ICERIK_K = 3
 
 # Kanun/mevzuat numarası: 2005-7 (SDP genelge) ÖNCE denenir (aksi halde \d{3,4}
 # "2005"i yutar), sonra 3-4 hane (657, 2577, 4982...).
@@ -175,6 +179,39 @@ async def degerlendir(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _dosya_eslesir(dosya: str, onekler: list[str]) -> bool:
+    return any(dosya == o or dosya.startswith(o + "_") for o in onekler)
+
+
+async def icerik_degerlendir(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """İçerik altını: ilk 3 FARKLI dosyada precision@3 + beklenen isabeti + yasak oranı.
+
+    Ölçüt e2e koşucusuyla (eval/e2e_gercek_eval.mevzuat_degerlendir) aynıdır; burada tek
+    düğüm koşar → mock modda deterministik yolun, gerçek LLM'de içerik yolunun ölçümü.
+    """
+    from agents.nodes.mevzuat_oner import mevzuat_oner_node
+
+    top_n = ilgili = hit = yasak = bos = 0
+    for row in rows:
+        state: dict[str, Any] = {
+            "evrak_turu": row.get("evrak_turu", "belirsiz"), "evrak_text": row.get("metin", ""),
+            "bilgi_unsurlari": {"konu": (row.get("talepler") or [""])[0],
+                                "talepler": row.get("talepler") or []}}
+        oneriler = (await mevzuat_oner_node(state)).get("mevzuat_onerileri") or []
+        dosyalar = list(dict.fromkeys(o.get("kaynak_dosya") for o in oneriler if o.get("kaynak_dosya")))
+        top = dosyalar[:_ICERIK_K]
+        kabul = (row.get("beklenen_herhangi") or []) + (row.get("kabul") or [])
+        top_n += len(top)
+        ilgili += sum(_dosya_eslesir(d, kabul) for d in top)
+        hit += any(_dosya_eslesir(d, row.get("beklenen_herhangi") or []) for d in top)
+        yasak += any(_dosya_eslesir(d, row.get("yasak") or []) for d in top)
+        bos += not top
+    n = len(rows)
+    return {"n": n, "precision_at_3": ilgili / top_n if top_n else 0.0, "ilgili": ilgili,
+            "top_n": top_n, "beklenen_hit": hit / n if n else 0.0, "hit": hit,
+            "yasak_belge": yasak / n if n else 0.0, "bos_belge": bos}
+
+
 def _rapor(res: dict[str, Any]) -> str:
     """Konsol raporu (ASCII-güvenli; Wilson CI)."""
     n = res["n"]
@@ -206,7 +243,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--n", type=int, default=0, help="ilk-N altın (0=tümü)")
     parser.add_argument("--gold", type=Path, default=_GOLD_MEVZUAT, help="altın set yolu")
     parser.add_argument("--json", action="store_true", help="JSON çıktı (CI)")
+    parser.add_argument("--icerik", action="store_true",
+                        help="içerik odaklı altın (mevzuat_icerik_gold.jsonl): P@3 + isabet")
     args = parser.parse_args(argv)
+
+    if args.icerik:
+        rows = _oku_jsonl(_GOLD_ICERIK)[: args.n or None]
+        sonuc = asyncio.run(icerik_degerlendir(rows))
+        sys.stdout.write(json.dumps(sonuc, ensure_ascii=False) + "\n")
+        return 0
 
     rows = _gold_satirlari(args.gold, args.n)
     res = asyncio.run(degerlendir(rows))

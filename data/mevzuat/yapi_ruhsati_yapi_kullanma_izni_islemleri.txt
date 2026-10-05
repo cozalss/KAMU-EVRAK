@@ -7,19 +7,19 @@ Madde numaraları ve hükümler mevzuat.gov.tr / resmigazete.gov.tr resmî kayna
 araştırılarak özetlenmiştir; şüpheli veya sonradan değiştirilmiş hükümler [DOĞRULA: ...]
 işareti taşır (CLAUDE.md §1: mevzuat referansı üretimden önce doğrulanır).
 
-Madde 3194 — Yapı ruhsatiyesi (ruhsat zorunluluğu) (m.3194 m.21)
+Madde 21 — Yapı ruhsatiyesi (ruhsat zorunluluğu) (3194 sayılı İmar Kanunu m.21)
 Kanun kapsamına giren bütün yapılar için, 26. maddedeki istisna dışında, belediye veya valiliklerden yapı ruhsatı (ruhsatiye) alınması zorunludur. Ruhsat alınmış yapılarda yapılacak her değişiklik de yeniden ruhsata bağlıdır; ruhsatsız başlanan inşaat mühürlenir. Ruhsat talep dilekçeleri ve ruhsat üst yazılarının temel dayanağıdır.
 
-Madde 3194 — Ruhsat müracaatı ve verilen sürede sonuçlandırma (m.3194 m.22)
+Madde 22 — Ruhsat müracaatı ve verilen sürede sonuçlandırma (3194 sayılı İmar Kanunu m.22)
 Yapı ruhsatı almak için belediye, valilik bürolarına dilekçe ile başvurulur; dilekçeye tapu (istisnai hâllerde tapu yerine geçen belge), mimari proje, statik proje, elektrik ve tesisat projeleri, resim ve hesapları ile röperli veya yoksa ebatlı kroki eklenir. İlgili idare başvuruyu, eksiklik yoksa en geç otuz gün içinde sonuçlandırarak ruhsat verir; eksiklik varsa aynı sürede başvurana yazılı bildirir ve eksiklik giderildikten sonra on beş gün içinde ruhsat düzenlenir. Ruhsat başvurusunun belge listesi ve idari süre dayanağıdır. [DOĞRULA: 30 ve 15 günlük süreler 3194 m.22 yürürlükteki metninden teyit edilmeli.]
 
-Madde 3194 — Ruhsat süresi ve inşaata başlama-bitirme (m.3194 m.29)
+Madde 29 — Ruhsat süresi ve inşaata başlama-bitirme (3194 sayılı İmar Kanunu m.29)
 Yapıya başlama ve bitirmenin ruhsat tarihinden itibaren belirli sürelere bağlandığını; ruhsat tarihinden itibaren iki yıl içinde inşaata başlanması ve beş yıl içinde bitirilmesi gerektiğini düzenler. Bu süre içinde tamamlanamayan ve süresinde yenilenmeyen ruhsat hükümsüz hâle gelir; inşaata devam için yeniden ruhsat alınması gerekir. Ruhsat geçerlilik süresi ve yenileme yazışmalarının kanuni dayanağıdır (Planlı Alanlar İmar Yönetmeliği m.54 ile birlikte uygulanır).
 
-Madde 3194 — Yapı kullanma izni (iskân) (m.3194 m.30)
+Madde 30 — Yapı kullanma izni (iskân) (3194 sayılı İmar Kanunu m.30)
 Yapı tamamen bittiğinde tamamının, kısmen kullanılması mümkün kısımları bittiğinde bu kısımların kullanılabilmesi için, mal sahibinin müracaatı üzerine yapı ruhsatını veren belediye veya valilikten yapı kullanma izni (iskân) alınması zorunludur. İlgili idare başvuruyu en geç otuz gün içinde sonuçlandırarak yapının ruhsat ve eklerine uygun olduğunu ve kullanılmasında fen bakımından mahzur bulunmadığını tespit ederse yapı kullanma izin belgesini düzenler. İskân başvurusu ve belgesinin kanuni dayanağıdır (Yönetmelik m.64 ile birlikte uygulanır).
 
-Madde 3194 — Ruhsatsız veya ruhsata aykırı yapılar (mühürleme ve yapı tatil tutanağı) (m.3194 m.32)
+Madde 32 — Ruhsatsız veya ruhsata aykırı yapılar (mühürleme ve yapı tatil tutanağı) (3194 sayılı İmar Kanunu m.32)
 Ruhsat alınmadan veya ruhsat ve eklerine aykırı yapılan yapılarda, durumun idarece tespiti veya fenni mesulün ihbarı üzerine yapı derhal durdurulur (mühürlenir) ve yapı tatil tutanağı düzenlenip yapıya asılır. Sahibine, tespitten itibaren verilen süre içinde ruhsat alması veya yapıyı ruhsata uygun hâle getirmesi için süre tanınır; aksi hâlde belediye encümeni/il idare kurulu kararıyla yapı yıktırılır. Yapı tatil tutanağı ve yıkım yazışmalarının dayanağıdır.
 
 Madde 54 — Uygulama yönetmeliğinde ruhsat ve iskân işlemleri (m.PAİY m.54-55-64)

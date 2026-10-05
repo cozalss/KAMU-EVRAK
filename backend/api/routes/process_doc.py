@@ -139,6 +139,8 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         eksik_bilgi_notlari=state.get("eksik_bilgi_notlari") or [],
         mevzuat_onerileri=zenginlestir_mevzuat(state),  # B2: güven/dayanak/[DOĞRULA] yüzeye çıkar
         mevzuat_nli=state.get("mevzuat_nli", []),
+        mevzuat_bulunamadi=bool(state.get("mevzuat_bulunamadi")),
+        mevzuat_talep_durumu=state.get("mevzuat_talep_durumu") or [],
         # LLM özet yolu ham evrak metnini görür → TCKN/telefon kaçağına karşı sınırda maskele
         # (deterministik fallback zaten maskeli; burada savunma derinliği).
         ozet=mask_pii(state.get("ozet", "") or "").masked_text,

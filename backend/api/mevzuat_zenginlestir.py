@@ -83,6 +83,24 @@ def _guven(
     return guven, (isabet if ilk else None), (guven == "düşük" or dogrula)
 
 
+def _yargic_bandi(o: dict[str, Any], guven: str, isabet: float | None,
+                  nli_destek: bool | None) -> tuple[str, float | None]:
+    """İçerik odaklı yolun bandı. norm_score bantları TÜR etiketli setten kalibre edildi
+    (teşhis 2026-10-05) → bu öğelere o isabet rakamı İLİŞTİRİLMEZ.
+
+    * Alaka yargıcından geçmiş öneri / usul katmanı → "orta" (kaynak 'aday' olduğundan üstü
+      zaten kapalı); NLI "destek yok" dediyse "düşük".
+    * Yargıçsız içerik yedeği → "düşük" (memur teyit etmeli).
+    """
+    if "yargic" not in o:
+        return guven, isabet
+    if nli_destek is False:
+        return "düşük", None
+    if o.get("yargic") is True or o.get("katman") == "usul":
+        return "orta", None
+    return "düşük", None
+
+
 def _eslesme_gerekcesi(konu: str) -> str:
     """Öneriyi hangi sorgunun getirdiği — HUKUKİ DAYANAK DEĞİL (eski `dayanak` adı yanıltıyordu)."""
     return f"“{konu}” talebinden arandı" if konu else "evrak içeriğinden arandı"
@@ -118,6 +136,7 @@ def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
         score = float(o.get("score") or 0)
         norm_score = _sayi(o.get("norm_score"))
         guven, isabet, incele = _guven(norm_score, score, dogrula, nli_destek, ilk=(i == 0))
+        guven, isabet = _yargic_bandi(o, guven, isabet, nli_destek)
         kaynak_dogrulanmis = o.get("kaynak_guven") == "resmi_dogrulanmis"
         if not kaynak_dogrulanmis:
             if guven == "yüksek":
@@ -146,6 +165,11 @@ def zenginlestir_mevzuat(state: dict[str, Any]) -> list[dict[str, Any]]:
             "dogrulama_yontemi": str(o.get("dogrulama_yontemi", "") or ""),
             "kaynak_guven_hatalari": list(o.get("kaynak_guven_hatalari") or []),
             "atif_genisletme": bool(o.get("atif_genisletme")),
+            # İçerik odaklı yol (agents/mevzuat_yargic) — additive; eski yolda boş/None.
+            "talep_id": str(o.get("talep_id") or ""),
+            "gerekce": str(o.get("gerekce") or ""),
+            "katman": str(o.get("katman") or "esas"),
+            "yargic": o.get("yargic") if isinstance(o.get("yargic"), bool) else None,
         })
     return out
 

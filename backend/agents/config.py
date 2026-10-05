@@ -493,6 +493,12 @@ RISK_GUARD_ENABLED = os.getenv("RISK_GUARD_ENABLED", "1") == "1"
 # Düşük sınıflandırma güveni eşiği — altında SARI bandı (memur incelesin).
 RISK_GUVEN_ESIK = float(os.getenv("RISK_GUVEN_ESIK", "0.5"))
 
+# İçerik odaklı, talep bazlı mevzuat önerisi (agents/mevzuat_mesele + mevzuat_yargic):
+# LLM katalogdan mesele/dosya seçer, korpus maddeyi getirir, alaka yargıcı boş dönebilir.
+# Gerçek LLM varken VARSAYILAN AÇIK; mock/LLM'siz yolda hiç denenmez (eski BM25 yolu).
+# Kapatılırsa (MEVZUAT_MESELE=0) eski tür odaklı BM25 yolu birebir çalışır.
+MEVZUAT_MESELE_ENABLED = os.getenv("MEVZUAT_MESELE", "1") == "1"
+
 # Cross-encoder reranking (iki-aşamalı retrieve-then-rerank): mevzuat_oner BM25 top-N
 # adayı bge-reranker-v2-m3 ile yeniden sıralar → +nDCG (gerçek soru-belge alakası).
 # VARSAYILAN KAPALI → baseline saf-BM25 birebir korunur (mock/CI/demo ağır model gerektirmez).

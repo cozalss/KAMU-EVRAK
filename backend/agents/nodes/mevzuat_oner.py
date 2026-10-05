@@ -718,8 +718,32 @@ def _from_config(turu: str) -> list[dict[str, Any]]:
     }]
 
 
+async def _icerik_odakli(state: dict[str, Any]) -> dict[str, Any] | None:
+    """Gerçek LLM varsa içerik odaklı, talep bazlı yol (agents/mevzuat_yargic); yoksa None.
+
+    Mock / LLM'siz / KVKK yerel-model-yok ortamında hiç denenmez → CI deterministik kalır.
+    Beklenmedik hata → None (eski BM25 yolu); terminal davranış asla düşmez.
+    """
+    from agents.config import MEVZUAT_MESELE_ENABLED
+    from agents.nodes._llm_extract import real_llm
+
+    if not MEVZUAT_MESELE_ENABLED or real_llm() is None:
+        return None
+    try:
+        from agents.mevzuat_yargic import icerik_odakli_oneriler
+
+        return await icerik_odakli_oneriler(state)
+    except Exception as exc:  # LLM köprüsü / beklenmedik veri → eski deterministik yol
+        log.warning("mevzuat_oner.icerik_odakli_hata", hata=str(exc))
+        return None
+
+
 async def mevzuat_oner_node(state: dict[str, Any]) -> dict[str, Any]:
-    """İlgili mevzuatı öner — korpus BM25 retrieval birincil, statik config fallback."""
+    """İlgili mevzuatı öner — içerik odaklı talep bazlı yol (LLM) birincil; LLM yoksa korpus
+    BM25 retrieval, en sonda statik config fallback."""
+    icerik = await _icerik_odakli(state)
+    if icerik is not None:
+        return icerik
     turu = state.get("evrak_turu", "belirsiz")
 
     # İzin (dinlenme) matı mı? Biçimsel tür yanıltıcı olabildiğinden (izin talebi = "dilekçe")

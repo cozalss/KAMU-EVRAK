@@ -33,9 +33,12 @@ class KurumKimlik(TypedDict):
 # aralarında boşluk/virgül veya "VE" olabilir (ör. "ÇEVRE, ŞEHİRCİLİK VE İKLİM DEĞİŞİKLİĞİ").
 # ŞAPKALI HARF (Â/Î/Û) sınıfa DAHİL: aksi hâlde "MİLLÎ EĞİTİM MÜDÜRLÜĞÜ" öbeği Î'de kırılıp
 # kurum "Eğitim Müdürlüğü" olarak çözümleniyordu (il + "Millî" düşüyordu) — 2026-07-24 bulgusu.
+# SATIR SINIRI: ayırıcı [ 	,]+ — '\s' satır sonunu da geçiyordu; "Konu : Kış Mevsimi Afet
+# Hazırlık Toplantısı" satırı alttaki "ETİMESGUT BELEDİYE BAŞKANLIĞINA" hitabıyla birleşip
+# kurum "KIŞ MEVSİMİ … ETİMESGUT BELEDİYESİ" çıkıyordu (teşhis 2026-10-05, koşum C).
 _AD = (
     r"[A-ZÇĞİÖŞÜÂÎÛ][A-ZÇĞİÖŞÜÂÎÛa-zçğıöşüâîû]+"
-    r"(?:[\s,]+(?:VE\s+)?[A-ZÇĞİÖŞÜÂÎÛ][A-ZÇĞİÖŞÜÂÎÛa-zçğıöşüâîû]+){0,6}"
+    r"(?:[ 	,]+(?:VE[ 	]+)?[A-ZÇĞİÖŞÜÂÎÛ][A-ZÇĞİÖŞÜÂÎÛa-zçğıöşüâîû]+){0,6}"
 )
 
 # Sıra ÖNEMLİ: en spesifik tip önce. Her desen 'ad' grubunu (önceki özel-ad öbeği) yakalar;

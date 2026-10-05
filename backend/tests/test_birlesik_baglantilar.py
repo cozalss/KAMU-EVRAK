@@ -154,7 +154,9 @@ async def test_finalize_disarida_havale_degil_gonderildi() -> None:
 
     kararlar = [talep_karari("t1", "DISARIDA", alici_kurum=ASKI, dayanak=DAYANAK)]
     yon = yonlendirme_kur(kararlar, gerekce="", uretim={"yol": "llm"}, dayanak=DAYANAK)
+    # Memur onay kapısında onayladıktan sonraki bildirim (onay öncesi: test_finalize_onay_*).
     out = await finalize_node({"evrak_turu": "dilekce", "yonlendirme": yon,
+                               "onay_durumu": "onaylandı",
                                "bilgi_unsurlari": {"gonderen": "Ayşe Yılmaz"}})
     ne_oldu = out["bilgilendirme_yapisal"]["ne_oldu"]
     assert "havale edildi" not in ne_oldu
@@ -172,7 +174,7 @@ async def test_finalize_karma_ic_havale_dis_gonderim() -> None:
     from agents.config import etkili_birim
     from agents.nodes.finalize import finalize_node
 
-    st = _karma_state()
+    st = {**_karma_state(), "onay_durumu": "onaylandı"}
     out = await finalize_node(st)
     ne_oldu = out["bilgilendirme_yapisal"]["ne_oldu"]
     assert f"ilgili birime ({etkili_birim(st)}) havale edildi" in ne_oldu
@@ -186,8 +188,10 @@ async def test_finalize_karma_ic_havale_dis_gonderim() -> None:
 async def test_finalize_iceride_eski_metin_aynen() -> None:
     from agents.nodes.finalize import finalize_node
 
-    kararlar = [talep_karari("t1", "ICERIDE", birim={"ad": "Fen İşleri Müdürlüğü"})]
+    kararlar = [talep_karari("t1", "ICERIDE", birim={"ad": "Fen İşleri Müdürlüğü",
+                                                    "dogrulanmis": True})]
     yon = yonlendirme_kur(kararlar, gerekce="", uretim={"yol": "llm"}, dayanak="")
+    assert yon["insan_onayi_gerekli"] is False   # otomatik havale koşulları sağlandı
     out = await finalize_node({"evrak_turu": "dilekce", "yonlendirme": yon})
     assert out["bilgilendirme_yapisal"]["ne_oldu"] == (
         "Evrak, Dilekçe olarak sınıflandırıldı ve ilgili birime (Fen İşleri Müdürlüğü) "

@@ -125,17 +125,18 @@ def compute_decomposition(
 async def decompose_node(state: dict[str, Any]) -> dict[str, Any]:
     """Talep kümesinden alt talepleri türet (LLM çağrısı YOK).
 
-    ayristirma_denendi (CLAUDE.md §10): ayrıştırma GERÇEKTEN yapıldıysa True — küme LLM'den
-    geldiyse (çağrı cikar'da harcandı; "tek talep" de bir karardır) ya da ≥2 alt talep
-    çıktıysa. Deterministik kümede tek talep → False ("gerekmedi" dürüst).
+    ayristirma_denendi (CLAUDE.md §10): BU ADIM iş yaptıysa True — yalnız ≥2 alt talep
+    zenginleştirildiğinde. Bu node LLM çağırmaz; talep kümesini çıkaran LLM kararı `cikar`
+    adımına aittir ve orada "çalıştı" olarak görünür. Tek talepte (küme LLM'den gelmiş olsa
+    bile) burada yapılan iş yoktur → False ("gerekmedi" dürüst; 2026-10-05 incelemesi:
+    eskiden LLM kaynaklı tek talepte bu adım 'çalıştı' görünüyordu).
     """
     text = state.get("evrak_text", "") or ""
     unsurlar = state.get("bilgi_unsurlari") or {}
-    _, kaynak = _kume(text, unsurlar)
     alt = compute_decomposition(text, unsurlar, date.today())
     if alt:
         log.info("decompose", n_alt=len(alt), birimler=[a["birim"] for a in alt])
-    return {"alt_talepler": alt, "ayristirma_denendi": kaynak == "llm" or len(alt) >= 2}
+    return {"alt_talepler": alt, "ayristirma_denendi": len(alt) >= 2}
 
 
 __all__ = ("compute_decomposition", "decompose_node")

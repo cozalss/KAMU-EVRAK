@@ -143,15 +143,14 @@ test("gerekmediMi: taranmış belgede OCR GERÇEKTEN çalıştı", () => {
   assert.equal(gerekmediMi(n("oku", { data: { engine: "openai-vision" } })), false);
 });
 
-test("gerekmediMi: ayrıştırma DENENMEDİYSE gerekmedi (backend LLM'i hiç çağırmadı)", () => {
-  // Arrange/Act/Assert — decompose_node: _coklu_sinyal yoksa denemeden [] döner
+test("gerekmediMi: ayrıştırma YAPILMADIYSA gerekmedi (tek talep; node LLM çağırmaz)", () => {
+  // Arrange/Act/Assert — decompose_node: <2 talepte [] + ayristirma_denendi=false döner
   assert.equal(gerekmediMi(n("decompose", { data: { alt_talepler: [], ayristirma_denendi: false } })), true);
 });
 
-test("gerekmediMi: REGRESYON — LLM çağrıldıysa boş sonuç 'gerekmedi' DEĞİLDİR", () => {
-  // Arrange — çok-konu sinyali vardı, LLM koştu, anlamlı bölünme çıkmadı (decompose.py:346).
-  // Bu koşum GERÇEK bir LLM çağrısı harcadı; "iş yapılmadı" göstermek tam da bu özelliğin
-  // engellemek için var olduğu yanlış beyandır.
+test("gerekmediMi: backend 'denendi' dediyse boş liste 'gerekmedi' DEĞİLDİR", () => {
+  // Arrange — karar yalnız backend bayrağından okunur; boş listeden çıkarım yapılmaz
+  // (CLAUDE.md §10). Bayrak true iken adım "çalıştı" kalır.
   const node = n("decompose", { data: { alt_talepler: [], ayristirma_denendi: true } });
   // Act / Assert
   assert.equal(gerekmediMi(node), false);

@@ -81,9 +81,14 @@ def yonlendirme_kur(
     dis = next((t for t in talepler if t["karar"] == "DISARIDA"), None)
     birim = (ic or {}).get("birim") if ic else (dis or {}).get("birim")
     alici = None if ic else (dis or {}).get("alici_kurum")
+    # belge_karari BELIRSIZ'i ICERIDE'nin içinde yutar ([ICERIDE, BELIRSIZ] → ICERIDE); bu
+    # yüzden otomatik havale TALEP BAŞINA sınanır: hepsi içeride + her birim doğrulanmış.
+    tum_ic_dogrulanmis = bool(talepler) and all(
+        t.get("karar") == "ICERIDE" and (t.get("birim") or {}).get("dogrulanmis")
+        for t in talepler)
     otomatik = (
         not insan_onayi_zorla and uretim.get("yol") == "llm" and karar == "ICERIDE"
-        and bool(birim and birim.get("dogrulanmis"))
+        and bool(birim and birim.get("dogrulanmis")) and tum_ic_dogrulanmis
     )
     return {
         "karar": karar,

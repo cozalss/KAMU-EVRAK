@@ -56,6 +56,12 @@ EKSIK_BOLUM = "eksik_bolum"
 FORMAT_EKSIK = "format_eksik"
 DOGRULA_ISARETI = "dogrula_isareti"
 LINT_2646 = "lint_2646"
+# Onay/yönlendirme sinyalleri (2026-10-05 incelemesi): otomatik ilerleme yalnız TÜM talepler
+# içeride + doğrulanmış birim + temiz sinyallerde; diğer her durum memur onayı ister.
+YONLENDIRME_ONAY = "yonlendirme_onay"
+DEVIR_DOGRULANMADI = "devir_dogrulanmadi"
+ASIL_EVRAK_KONTROLU = "asil_evrak_kontrolu"
+YARGI_ICRA_YAZISMASI = "yargi_icra_yazismasi"
 BILINMEYEN = "bilinmeyen"
 
 # Gerekçe metni → sinyal tipi. Sıra önemli: uydurma desenleri daha spesifik, üstte.
@@ -70,6 +76,10 @@ _TAKSONOMI: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"^Resmî yazı zorunlu format bölümleri eksik"), FORMAT_EKSIK),
     (re.compile(r"alan doğrulanmalı"), DOGRULA_ISARETI),
     (re.compile(r"^Format \(2646 lint\):"), LINT_2646),
+    (re.compile(r"^Yetkili kurum sicilde doğrulanmadı"), DEVIR_DOGRULANMADI),
+    (re.compile(r"^Yönlendirme:"), YONLENDIRME_ONAY),
+    (re.compile(r"^Asıl evrak kontrolü:"), ASIL_EVRAK_KONTROLU),
+    (re.compile(r"^Yargı/icra yazışması:"), YARGI_ICRA_YAZISMASI),
 )
 
 # CIDDIYET — YARGI (ölçüm değil): sinyal doğruysa belgeye verdiği zarar.
@@ -90,6 +100,14 @@ CIDDIYET: dict[str, float] = {
     # Açıkça işaretli "bilinen bilinmeyen" — memur zaten uyarılmış, gizli hata değil.
     DOGRULA_ISARETI: 0.25,
     LINT_2646: 0.20,        # biçim ayrıntısı; içerik doğru kalır
+    # Sicilde olmayan kuruma devir yazısı: resmî görünümlü yanlış muhatap → ağır.
+    DEVIR_DOGRULANMADI: 0.80,
+    # İmza/kimlik asıl evrakta doğrulanamadı (3071 m.6/c: imzasız dilekçe incelenemez).
+    ASIL_EVRAK_KONTROLU: 0.40,
+    # Mahkeme/savcılık/icra yazışması: cevap hukuki sonuç doğurur, süre/biçim kesin.
+    YARGI_ICRA_YAZISMASI: 0.35,
+    # Devir / çözülemeyen talep / doğrulanmamış havale birimi: yanlış yere gitme riski.
+    YONLENDIRME_ONAY: 0.35,
     BILINMEYEN: 0.30,       # tanınmayan yeni sinyal → muhafazakâr orta ciddiyet
 }
 
@@ -98,8 +116,11 @@ CIDDIYET: dict[str, float] = {
 #   dogrula_isareti : "[DOĞRULA]" işareti taslakta LİTERAL olarak vardır
 #   lint_2646       : yönetmelik regex kuralı ihlali — metinde ya vardır ya yoktur
 #   format_eksik    : zorunlu bölüm checklist'i (yazi_taslak'ın kendi bayrağı)
+#   yonlendirme_onay / devir_dogrulanmadi : yönlendirme nesnesinin kendi bayrakları (karar
+#                     DISARIDA mı, birim/kurum sicilde doğrulandı mı) — tahmin değil olgu
 GOZLEM: frozenset[str] = frozenset(
-    {TUTARLILIK, DOGRULA_ISARETI, LINT_2646, FORMAT_EKSIK})
+    {TUTARLILIK, DOGRULA_ISARETI, LINT_2646, FORMAT_EKSIK, YONLENDIRME_ONAY,
+     DEVIR_DOGRULANMADI})
 
 # ÇIKARIM sinyalinde ölçüm yoksa kullanılan ÖNSEL. Ölçüm DEĞİLDİR; "onsel" ile raporlanır.
 # 0.70: "sinyal 10 kez ateşlenirse ~7'sinde haklıdır" — kalibrasyon bunu yerinden eder.
@@ -200,8 +221,10 @@ def skor_ve_katkilar(gerekceler: list[str]) -> tuple[float, list[float], str]:
 
 
 __all__ = (
+    "ASIL_EVRAK_KONTROLU",
     "BILINMEYEN",
     "CIDDIYET",
+    "DEVIR_DOGRULANMADI",
     "DOGRULA_ISARETI",
     "DUSUK_GUVEN",
     "EKSIK_BOLUM",
@@ -216,6 +239,8 @@ __all__ = (
     "TUTARLILIK",
     "UYDURMA_DEGER",
     "UYDURMA_GROUNDING",
+    "YARGI_ICRA_YAZISMASI",
+    "YONLENDIRME_ONAY",
     "agirlik",
     "gerekce_tipi",
     "isabet",

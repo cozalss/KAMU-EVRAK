@@ -1,0 +1,885 @@
+{
+ "etiket": "mevzuat",
+ "tarih": "2026-10-05T19:07:21.495950+00:00",
+ "git": {
+  "sha": "1f183fcad336ccb68719bcd8cc6dbe6956669b78",
+  "kirli": false
+ },
+ "gold": "e2e_gercek_gold.jsonl",
+ "n": 5,
+ "llm_mode": "openai",
+ "model": "deepseek-v4-flash",
+ "eszamanlilik": 6,
+ "sure_toplam_s": 32.8,
+ "kurallar": {
+  "konu_azami_kelime": 12,
+  "ham_kopya_ngram": 6,
+  "mevzuat_k": 3,
+  "bilesik": [
+   "hata",
+   "tur",
+   "birim",
+   "yetki",
+   "talep",
+   "konu",
+   "ilgi",
+   "antet",
+   "pii"
+  ]
+ },
+ "metrikler": {
+  "kurumda_kullanilabilir": {
+   "k": 1,
+   "n": 5,
+   "oran": 0.2,
+   "ci95": [
+    0.036,
+    0.624
+   ]
+  },
+  "tur_dogruluk": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "tur_dogruluk_kabul": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "tur_dogruluk_operasyonel": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "muhatap_dogruluk": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "birim_dogruluk": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "birim_dogruluk_alt_talep": {
+   "k": 0,
+   "n": 4,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.49
+   ]
+  },
+  "routing_fallback": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "yetki_tespit_yapisal": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "yetki_tespit_metinsel": {
+   "k": 1,
+   "n": 2,
+   "oran": 0.5,
+   "ci95": [
+    0.095,
+    0.905
+   ]
+  },
+  "yetki_yanlis_alarm": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "talep_recall_decompose": {
+   "k": 4,
+   "n": 4,
+   "oran": 1.0,
+   "ci95": [
+    0.51,
+    1.0
+   ]
+  },
+  "talep_recall_cikar": {
+   "k": 3,
+   "n": 4,
+   "oran": 0.75,
+   "ci95": [
+    0.301,
+    0.954
+   ]
+  },
+  "talep_sayisi_dogru": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "talep_ajan_tutarliligi": {
+   "k": 1,
+   "n": 2,
+   "oran": 0.5,
+   "ci95": [
+    0.095,
+    0.905
+   ]
+  },
+  "konu_kalitesi": {
+   "k": 3,
+   "n": 5,
+   "oran": 0.6,
+   "ci95": [
+    0.231,
+    0.882
+   ]
+  },
+  "ilgi_dogrulugu": {
+   "k": 1,
+   "n": 5,
+   "oran": 0.2,
+   "ci95": [
+    0.036,
+    0.624
+   ]
+  },
+  "antet_dogrulugu": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "mevzuat_beklenen_hit": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "mevzuat_precision_at_3": {
+   "k": 9,
+   "n": 10,
+   "oran": 0.9,
+   "ci95": [
+    0.596,
+    0.982
+   ]
+  },
+  "alakasiz_mevzuat_orani": {
+   "k": 1,
+   "n": 10,
+   "oran": 0.1,
+   "ci95": [
+    0.018,
+    0.404
+   ]
+  },
+  "yasak_mevzuat_belge": {
+   "k": 0,
+   "n": 5,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.434
+   ]
+  },
+  "eksik_tam_eslesme": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "eksik_precision": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "eksik_recall": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "pii_sizinti_belge": {
+   "k": 0,
+   "n": 5,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.434
+   ]
+  },
+  "json_kesilme_belge": {
+   "k": 2,
+   "n": 5,
+   "oran": 0.4,
+   "ci95": [
+    0.118,
+    0.769
+   ]
+  },
+  "json_kesilme_cagri": 3,
+  "json_kesilme_butce": {
+   "1300": 2,
+   "960": 1
+  },
+  "llm_cagri_toplam": 46,
+  "hata_belge": 0,
+  "sure_p50_s": 14.71,
+  "sure_p95_s": 21.46,
+  "node_ortalama_ms": {
+   "route_birim": 3816,
+   "decompose": 3682,
+   "yazi_taslak": 3030,
+   "mevzuat_oner": 2671,
+   "cikar": 1538,
+   "siniflandir": 1239,
+   "ozetle": 1169,
+   "arsiv": 354,
+   "verify": 18,
+   "servis_birim": 0,
+   "kanit_baglama": 0,
+   "eksik_tespit": 0,
+   "risk_guard": 0,
+   "sla_triyaj": 0,
+   "denetim_izi": 0,
+   "finalize": 0
+  }
+ },
+ "basarisizliklar": {
+  "ilce_kecioren_cukur_su": [
+   "yetki: DISARIDA tespit edilmedi (yalnız metinde anıldı)",
+   "talep_cikar: bilgi_unsurlari 1/2",
+   "konu: uzun(20k),ham_kopya(20-gram),birinci_sahis_fiil → Sokağımızda iki aydır büyük bir çukur bulunmakta, araçlar ve yayalar için tehlike oluşturm",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Belediye Başkanlığının 02.10.2026 tarihli yazısı.",
+   "json_kesik: 1 çağrı"
+  ],
+  "ilce_mamak_park_lamba": [
+   "yetki: DISARIDA tespit edilmedi",
+   "konu: uzun(18k),ham_kopya(18-gram),birinci_sahis_fiil → Mahallemizdeki Çınar Parkı'nda çocuk oyun gruplarının salıncakları kırık ve çocuklar için ",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Mamak Belediye Başkanlığının 25.09.2026 tarihli yazısı.",
+   "json_kesik: 2 çağrı"
+  ],
+  "ilce_bornova_emlak_vergisi": [
+   "talep_cikar: bilgi_unsurlari.talepler boş"
+  ],
+  "uni_ankara_transkript": [
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: belge_turu_yanlis → 30.09.2026 tarihli ve 19010245 sayılı yazınız."
+  ],
+  "sgk_rapor_parasi": [
+   "birim: 'Sosyal Güvenlik İl Müdürlüğü (SGK)' (hedef_birim_oneri, durum=fallback_onerisi)",
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: tarih_yanlis → 01.08.2026 tarihli başvurunuz.",
+   "mevzuat: beklenen yok, top=['3071_dilekce_hakki_kanunu']"
+  ]
+ },
+ "belgeler": [
+  {
+   "id": "ilce_kecioren_cukur_su",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 21.46,
+   "llm": {
+    "cagri": 11,
+    "kesik": 1,
+    "tokens_out": 3377,
+    "kesik_butce": {
+     "1300": 1
+    }
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Fen İşleri Müdürlüğü",
+    "kaynak": "hedef_birim",
+    "durum": "kaynak_dogrulandi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": false,
+    "metinsel": true,
+    "gecti": false,
+    "yetkili_tahmin": "Keçiören Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(20k)",
+     "ham_kopya(20-gram)",
+     "birinci_sahis_fiil"
+    ],
+    "konu": "Sokağımızda iki aydır büyük bir çukur bulunmakta, araçlar ve yayalar için tehlike oluşturmaktadır. Çukurun en kısa sürede kapatılmasını talep ediyorum",
+    "kelime": 20
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Keçiören Belediye Başkanlığının 02.10.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5393_belediye_kanunu",
+     "831_sular_hakkinda_kanun",
+     "5216_buyuksehir_belediyesi_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1909,
+    "servis_birim": 0,
+    "siniflandir": 1287,
+    "kanit_baglama": 0,
+    "decompose": 9720,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 3336,
+    "ozetle": 1204,
+    "route_birim": 4285,
+    "yazi_taslak": 1327,
+    "verify": 1,
+    "arsiv": 793,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "yetki: DISARIDA tespit edilmedi (yalnız metinde anıldı)",
+    "talep_cikar: bilgi_unsurlari 1/2",
+    "konu: uzun(20k),ham_kopya(20-gram),birinci_sahis_fiil → Sokağımızda iki aydır büyük bir çukur bulunmakta, araçlar ve yayalar için tehlike oluşturm",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Belediye Başkanlığının 02.10.2026 tarihli yazısı.",
+    "json_kesik: 1 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "ilce_mamak_park_lamba",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 19.72,
+   "llm": {
+    "cagri": 10,
+    "kesik": 2,
+    "tokens_out": 3388,
+    "kesik_butce": {
+     "1300": 1,
+     "960": 1
+    }
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Mamak Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Park ve Bahçeler Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": false,
+    "metinsel": false,
+    "gecti": false,
+    "yetkili_tahmin": "Mamak Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 2,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 2,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(18k)",
+     "ham_kopya(18-gram)",
+     "birinci_sahis_fiil"
+    ],
+    "konu": "Mahallemizdeki Çınar Parkı'nda çocuk oyun gruplarının salıncakları kırık ve çocuklar için tehlikeli durumdadır; parkın bakımının yapılmasını istiyorum",
+    "kelime": 18
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Mamak Belediye Başkanlığının 25.09.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / MAMAK BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5393_belediye_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1317,
+    "servis_birim": 0,
+    "siniflandir": 1218,
+    "kanit_baglama": 0,
+    "decompose": 8694,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2894,
+    "ozetle": 1145,
+    "route_birim": 5437,
+    "yazi_taslak": 1287,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "yetki: DISARIDA tespit edilmedi",
+    "konu: uzun(18k),ham_kopya(18-gram),birinci_sahis_fiil → Mahallemizdeki Çınar Parkı'nda çocuk oyun gruplarının salıncakları kırık ve çocuklar için ",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Mamak Belediye Başkanlığının 25.09.2026 tarihli yazısı.",
+    "json_kesik: 2 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "ilce_bornova_emlak_vergisi",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 14.71,
+   "llm": {
+    "cagri": 9,
+    "kesik": 0,
+    "tokens_out": 1884,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Bornova Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Mali Hizmetler Müdürlüğü",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Bornova Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Emlak vergisi alan bilgisinin düzeltilmesi ve fazla ödenen",
+    "kelime": 8
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "22.09.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / BORNOVA BELEDİYESİ / Fen İşleri Müdürlüğü",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "1319_emlak_vergisi_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1593,
+    "servis_birim": 0,
+    "siniflandir": 1310,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2490,
+    "ozetle": 1099,
+    "route_birim": 5837,
+    "yazi_taslak": 3632,
+    "verify": 1,
+    "arsiv": 979,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş"
+   ],
+   "kurumda_kullanilabilir": true
+  },
+  {
+   "id": "uni_ankara_transkript",
+   "kurum_tipi": "universite",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 10.1,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1107,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "talep",
+    "kesin": false,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara Üniversitesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Öğrenci İşleri Daire Başkanlığı",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Üniversitesi"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "İngilizce transkript ve diploma eki verilmesi talebi",
+    "kelime": 7
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "30.09.2026 tarihli ve 19010245 sayılı yazınız.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA ÜNİVERSİTESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "2547_yuksekogretim_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 2,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1496,
+    "servis_birim": 0,
+    "siniflandir": 1079,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2396,
+    "ozetle": 1440,
+    "route_birim": 1328,
+    "yazi_taslak": 4698,
+    "verify": 86,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: belge_turu_yanlis → 30.09.2026 tarihli ve 19010245 sayılı yazınız."
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "sgk_rapor_parasi",
+   "kurum_tipi": "sgk",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 10.15,
+   "llm": {
+    "cagri": 8,
+    "kesik": 0,
+    "tokens_out": 1393,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Sosyal Güvenlik Kurumu Keçiören Sosyal Güvenlik Merkezi Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Sosyal Güvenlik İl Müdürlüğü (SGK)",
+    "kaynak": "hedef_birim_oneri",
+    "durum": "fallback_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Sosyal Güvenlik Kurumu Keçiören Sosyal Güvenlik Merkezi Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "geçici iş göremezlik ödeneğinin ödenmesi talebi",
+    "kelime": 6
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "tarih_yanlis"
+    ],
+    "ilgi": "01.08.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / SOSYAL GÜVENLİK KURUMU KEÇİÖREN SOSYAL GÜVENLİK MERKEZİ MÜDÜRLÜĞÜ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 1,
+    "yasak": []
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1377,
+    "servis_birim": 0,
+    "siniflandir": 1301,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 2242,
+    "ozetle": 959,
+    "route_birim": 2196,
+    "yazi_taslak": 4210,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Sosyal Güvenlik İl Müdürlüğü (SGK)' (hedef_birim_oneri, durum=fallback_onerisi)",
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: tarih_yanlis → 01.08.2026 tarihli başvurunuz.",
+    "mevzuat: beklenen yok, top=['3071_dilekce_hakki_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  }
+ ]
+}

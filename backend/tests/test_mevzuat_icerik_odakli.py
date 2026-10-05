@@ -207,6 +207,24 @@ class TestKorpusLint:
         assert not [c for c in _load_index() if str(c.get("madde_no")) == "3194"]
 
 
+class TestIcerikAltini:
+    def test_beklenen_kanunlar_korpusta_var(self):
+        from eval.retrieval_eval import _GOLD_ICERIK, _dosya_eslesir, _oku_jsonl
+
+        satirlar = _oku_jsonl(_GOLD_ICERIK)
+        kat = katalog()
+        assert len(satirlar) >= 50
+        for r in satirlar:
+            for onek in r["beklenen_herhangi"] + r["kabul"]:
+                assert any(_dosya_eslesir(d, [onek]) for d in kat), (r["id"], onek)
+
+    async def test_icerik_degerlendir_metrik_alanlari(self):
+        from eval.retrieval_eval import _GOLD_ICERIK, _oku_jsonl, icerik_degerlendir
+
+        res = await icerik_degerlendir(_oku_jsonl(_GOLD_ICERIK)[:2])
+        assert res["n"] == 2 and 0.0 <= res["precision_at_3"] <= 1.0
+
+
 class TestTuketiciler:
     """finalize 'dayanak' koşulu, zenginleştirme bandı, CRAG atlama."""
 

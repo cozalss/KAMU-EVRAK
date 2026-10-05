@@ -157,6 +157,10 @@ def _risk_route(state: dict[str, Any]) -> str:
 
     Yalnız RISK_GUARD_ENABLED + HITL_ENABLED birlikte açıkken devrede (akıllı/koşullu onay).
     Banka mantığı: güvenli (yeşil) anında geçer, riskli (sarı/kırmızı) insana sorulur.
+
+    Bant yönlendirmeyi de kapsar (agents/onay_sinyalleri.py): devir, çözülemeyen talep,
+    doğrulanmamış birim, asıl evrak (imza) kontrolü ve yargı/icra yazışması en az SARI'dır;
+    YEŞİL yalnız TÜM talepler içeride + birim doğrulanmış + sinyaller temizken çıkar.
     """
     bant = (state.get("risk_metadata") or {}).get("bant", "yesil")
     return "onay_kapisi" if bant in ("sari", "kirmizi") else "arsiv"
@@ -228,7 +232,8 @@ def build_graph(checkpointer: Any = None) -> Any:
     if PARALEL_TRIYAJ:
         # Hız 15a — triyaj fan-out: kanit_baglama/decompose TÜR OKUMAZ (yalnız evrak_text +
         # bilgi_unsurlari) → siniflandir'ı beklemeden koşarlar (siniflandir en yavaş tekil
-        # çağrı; decompose LLM'i onun gölgesinde biter). Tür okuyan danışma hedefleri
+        # çağrı; decompose LLM çağırmaz, cikar'ın talep kümesini zenginleştirir). Tür okuyan
+        # danışma hedefleri
         # (eksik takip-sorusu + mevzuat + özet) siniflandir + gövde dalının BARİYERLİ
         # birleşiminden fan-out olur; fan-in route_birim.
         g.add_edge("cikar", "kanit_baglama")

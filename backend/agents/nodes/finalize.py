@@ -30,11 +30,40 @@ from agents.config import (
     evrak_turu_tr,
 )
 from agents.yonlendirme import devir_ozeti
+from yazi.gelen_evrak import GelenEvrak
 
 log = structlog.get_logger()
 
 # 3071 sayılı Dilekçe Hakkı Kanunu rejimindeki vatandaş-başvuru türleri (m.7: gerekçeli cevap).
 _3071_AILESI = frozenset({"dilekce", "talep", "basvuru", "cimer", "sikayet", "ihbar"})
+
+
+# Onay hâlleri (CLAUDE.md §9 — koşmayan adım "tamamlandı" sayılmaz):
+#   onaylandi  : onay kapısında memur onayladı/düzenledi → iş yapılmış sayılır
+#   reddedildi : memur reddetti → havale/devir YAPILMADI
+#   bekliyor   : yönlendirme insan onayı istiyor ya da bant SARI/KIRMIZI, karar henüz yok
+#   gerekmedi  : yeşil bant + otomatik havale koşulları sağlandı (ya da eski yol, nesne yok)
+_ONAYLI = frozenset({"onaylandı", "düzenlendi"})
+
+
+def _onay_hali(state: dict[str, Any]) -> str:
+    """Yönlendirmenin GERÇEK durumu — bildirim metni ve adım durumları buna bağlanır."""
+    karar = state.get("onay_durumu")
+    if karar in _ONAYLI:
+        return "onaylandi"
+    if karar == "reddedildi":
+        return "reddedildi"
+    if (state.get("yonlendirme") or {}).get("insan_onayi_gerekli"):
+        return "bekliyor"
+    if (state.get("risk_metadata") or {}).get("bant") in ("sari", "kirmizi"):
+        return "bekliyor"
+    return "gerekmedi"
+
+
+def _idare_gonderen(state: dict[str, Any]) -> bool:
+    """Gönderen bir kamu idaresi mi (kurum yazısında 'başvuru sahibi' yoktur)."""
+    veri = (state.get("bilgi_unsurlari") or {}).get("gelen_evrak")
+    return isinstance(veri, dict) and GelenEvrak.from_dict(veri).resmi
 
 
 def _taslak_durumu(state: dict[str, Any]) -> str:
@@ -44,6 +73,11 @@ def _taslak_durumu(state: dict[str, Any]) -> str:
     if not state.get("yazi_taslak_md"):
         return ""
     yazi = YAZI_TURU_TR.get(state.get("yazi_turu", ""), "Resmî yazı")
+    hal = _onay_hali(state)
+    if hal == "onaylandi":
+        return f"{yazi} taslağı memur tarafından onaylandı."
+    if hal == "reddedildi":
+        return f"{yazi} taslağı memur tarafından reddedildi."
     return f"{yazi} taslağı hazırlandı — memur onayı bekliyor."
 
 
@@ -81,13 +115,34 @@ def _dayanak_olabilir(m: dict[str, Any]) -> bool:
     return norm is None or float(norm) >= _DAYANAK_NORM_ESIK
 
 
-def _devir_cumlesi(devir: dict[str, Any]) -> str:
+def _bilgi_muhatabi(state: dict[str, Any]) -> str:
+    """Devirden sonra bilgi verilecek taraf: kurum yazısında gönderen idare, aksi hâlde
+    başvuru sahibi (3071 m.5: 'dilekçe sahibine de bilgi verilir')."""
+    return "gönderen idareye" if _idare_gonderen(state) else "başvuru sahibine"
+
+
+def _devir_cumlesi(devir: dict[str, Any], hal: str, bilgi: str) -> str:
     """'… {dayanak} gereğince yetkili makama (X) gönderildi' — 3071 m.5 lafzı: dilekçe
     'yetkili idari makama gönderilir ve ayrıca dilekçe sahibine de bilgi verilir' (havale
-    kurum İÇİ işlemdir; başka kuruma giden evrak havale edilmez, GÖNDERİLİR)."""
+    kurum İÇİ işlemdir; başka kuruma giden evrak havale edilmez, GÖNDERİLİR).
+
+    Onay beklerken iş yapılmış gibi yazılmaz; memur reddettiyse gönderim olmamıştır."""
     hukum = f"{devir['dayanak']} gereğince " if devir.get("dayanak") else ""
-    return (f"{hukum}yetkili makama ({', '.join(devir['kurumlar'])}) gönderildi; "
-            "başvuru sahibine ayrıca bilgi verilecek")
+    makam = f"yetkili makama ({', '.join(devir['kurumlar'])})"
+    if hal == "bekliyor":
+        return f"{hukum}{makam} gönderilmek üzere hazırlandı; devir için memur onayı bekliyor"
+    if hal == "reddedildi":
+        return f"{makam} gönderim önerisi memur tarafından reddedildi"
+    return f"{hukum}{makam} gönderildi; {bilgi} ayrıca bilgi verilecek"
+
+
+def _havale_ifadesi(birim: str, hal: str) -> str:
+    """İç havale cümlesi — 'havale edildi' yalnız onaylı ya da onay gerekmeyen durumda."""
+    if hal == "bekliyor":
+        return f"ilgili birime ({birim}) havale edilmesi önerildi; memur onayı bekliyor"
+    if hal == "reddedildi":
+        return f"ilgili birime ({birim}) havale önerisi memur tarafından reddedildi"
+    return f"ilgili birime ({birim}) havale edildi"
 
 
 def _anlati_sablon(state: dict[str, Any], turu: str, birim: str,
@@ -99,33 +154,37 @@ def _anlati_sablon(state: dict[str, Any], turu: str, birim: str,
     """
     gonderen = str((state.get("bilgi_unsurlari") or {}).get("gonderen") or "").strip()
     kim = f"{gonderen} tarafından gönderilen evrak" if gonderen else "Evrak"
+    hal, bilgi = _onay_hali(state), _bilgi_muhatabi(state)
     devir = devir_ozeti(state.get("yonlendirme"))
     if devir and devir["karar"] == "DISARIDA":
         return (f"{kim}, {turu} olarak sınıflandırıldı; konu Kurumumuzun görev alanı dışında "
-                f"kaldığından {_devir_cumlesi(devir)}.")
+                f"kaldığından {_devir_cumlesi(devir, hal, bilgi)}.")
     if devir:  # KARMA: içerideki talepler havale, dışarıdakiler gönderim
-        return (f"{kim}, {turu} olarak sınıflandırıldı; görev alanımızdaki talepler ilgili "
-                f"birime ({birim}) havale edildi, görev alanı dışındaki talepler "
-                f"{_devir_cumlesi(devir)}.")
+        return (f"{kim}, {turu} olarak sınıflandırıldı; görev alanımızdaki talepler için "
+                f"{_havale_ifadesi(birim, hal)}, görev alanı dışındaki talepler "
+                f"{_devir_cumlesi(devir, hal, bilgi)}.")
     # Birim adları hâl eki içerir ("... Birimi/Müdürlüğü") → ek yinelenmemesi için parantezli.
     if mevzuat:
         return (f"{kim}, {turu} olarak sınıflandırıldı ve {mevzuat[0]['baslik']} "
-                f"dayanak alınarak ilgili birime ({birim}) havale edildi.")
-    return f"{kim}, {turu} olarak sınıflandırıldı ve ilgili birime ({birim}) havale edildi."
+                f"dayanak alınarak {_havale_ifadesi(birim, hal)}.")
+    return f"{kim}, {turu} olarak sınıflandırıldı ve {_havale_ifadesi(birim, hal)}."
 
 
 def _ilk_adimlar(state: dict[str, Any], birim: str) -> list[dict[str, Any]]:
-    """Tamamlanan yönlendirme adım(lar)ı: havale ve/veya yetkili makama gönderim."""
+    """Yönlendirme adım(lar)ı: havale ve/veya yetkili makama gönderim. Onay beklerken ya da
+    memur reddettiyse adım 'tamam' sayılmaz (CLAUDE.md §9 — koşmayan adım tamamlanmadı)."""
+    durum = "tamam" if _onay_hali(state) in ("onaylandi", "gerekmedi") else "bekliyor"
     devir = devir_ozeti(state.get("yonlendirme"))
     if not devir:
-        return [{"adim": "Sorumlu birime havale", "detay": birim, "durum": "tamam"}]
+        return [{"adim": "Sorumlu birime havale", "detay": birim, "durum": durum}]
     adimlar = [] if devir["karar"] == "DISARIDA" else [
-        {"adim": "Sorumlu birime havale", "detay": birim, "durum": "tamam"}]
+        {"adim": "Sorumlu birime havale", "detay": birim, "durum": durum}]
+    bilgi = "Gönderen idareye" if _idare_gonderen(state) else "Başvuru sahibine"
     return [
         *adimlar,
         {"adim": "Yetkili makama gönderim", "detay": ", ".join(devir["kurumlar"]),
-         "durum": "tamam"},
-        {"adim": "Başvuru sahibine bilgi verilmesi", "detay": devir["dayanak"],
+         "durum": durum},
+        {"adim": f"{bilgi} bilgi verilmesi", "detay": devir["dayanak"],
          "durum": "bekliyor"}]
 
 
@@ -179,6 +238,19 @@ def _sure_blok(state: dict[str, Any]) -> dict[str, Any] | None:
     return {k: sla.get(k) for k in ("son_tarih", "kalan_gun", "sure", "mevzuat", "durum", "etiket")}
 
 
+def _durum_etiketi(state: dict[str, Any], eksik: list[str]) -> str:
+    """Bildirim başlığındaki durum: eksik > onay bekliyor > hazır (gerçek duruma bağlı)."""
+    if eksik:
+        return "Eksik bilgi bekleniyor"
+    hal = _onay_hali(state)
+    if hal == "bekliyor":
+        devir = devir_ozeti(state.get("yonlendirme"))
+        return "Devir için memur onayı bekliyor" if devir else "Memur onayı bekliyor"
+    if hal == "reddedildi":
+        return "Memur tarafından reddedildi"
+    return "Evrak işleme hazır"
+
+
 def _yapisal(state: dict[str, Any], turu: str, birim: str, eksik: list[str],
              sorular: list[str], mevzuat: list[dict]) -> dict[str, Any]:
     """Bildirimin deterministik iskeleti — LLM yalnız 'ne_oldu' alanını değiştirebilir."""
@@ -190,7 +262,7 @@ def _yapisal(state: dict[str, Any], turu: str, birim: str, eksik: list[str],
     return {
         "surum": 1,
         "durum": "eksik" if eksik else "hazir",
-        "durum_etiket": "Eksik bilgi bekleniyor" if eksik else "Evrak işleme hazır",
+        "durum_etiket": _durum_etiketi(state, eksik),
         "ne_oldu": _anlati_sablon(state, turu, birim, mevzuat),
         "ne_oldu_kaynak": "sablon",
         "referans": {"gonderen": gonderen, "evrak_turu": turu, "birim": birim,

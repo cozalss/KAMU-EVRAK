@@ -62,19 +62,18 @@ export function katmanGruplari(nodes, katmanlar) {
  * Yalnız TAMAMLANMIŞ adım için ve yalnız veriye dayanarak karar verilir — veri yoksa
  * "gerekmedi" İDDİA EDİLMEZ (yokluktan olumlu iddia türetilmez).
  *   · oku       → belgede hazır metin katmanı vardı, hiçbir OCR motoru koşmadı
- *   · decompose → tek-konulu evrak; backend LLM'i hiç çağırmaz (`_coklu_sinyal` yoksa
- *                 doğrudan `{"alt_talepler": []}` döner)
+ *   · decompose → ≥2 talep zenginleştirilmedi; bu adım LLM ÇAĞIRMAZ (talep kümesini cikar
+ *                 çıkarır, LLM emeği orada görünür) → backend `ayristirma_denendi=false` der
  */
 export function gerekmediMi(node) {
   if (!node || node.status !== "done") return false;
   const d = node.data;
   if (!d) return false;
   if (node.id === "oku") return METIN_MOTORLARI.has(d.engine);
-  // decompose: boş `alt_talepler` İKİ ayrı yoldan gelir — (a) çok-konu sinyali yok, LLM hiç
-  // çağrılmadı; (b) sinyal vardı, LLM çağrıldı, anlamlı bölünme çıkmadı. İkisi listeden
-  // ayırt edilemez, o yüzden backend `ayristirma_denendi` ile gerçeği söyler. Alan yoksa
-  // (eski yük) "gerekmedi" İDDİA EDİLMEZ — gerçek bir LLM çağrısını "iş yapılmadı" diye
-  // göstermektense hiçbir şey söylememek doğrudur.
+  // decompose: karar backend'in `ayristirma_denendi` bayrağına aittir (2026-10: node LLM
+  // çağırmaz; true yalnız ≥2 alt talep zenginleştirildiğinde). Boş listeden çıkarım YAPILMAZ.
+  // Alan yoksa (eski yük — o sürümde node kendi LLM çağrısını yapıyordu) "gerekmedi" İDDİA
+  // EDİLMEZ: gerçek bir çağrıyı "iş yapılmadı" diye göstermektense susmak doğrudur.
   if (node.id === "decompose") return d.ayristirma_denendi === false;
   return false;
 }

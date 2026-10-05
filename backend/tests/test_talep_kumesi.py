@@ -94,7 +94,8 @@ class TestTalepKumesiTekKaynak:
         assert alt[0]["birim"] == "ilgili_teknik_daire"
         assert out["ayristirma_denendi"] is True
 
-    async def test_tek_talepte_alt_talep_yok_ama_llm_karari_denendi(self):
+    async def test_tek_talepte_alt_talep_yok_decompose_gerekmedi(self):
+        """LLM kararı cikar adımına aittir; decompose tek talepte iş yapmaz (2026-10-05)."""
         bu = {"talep_kumesi": [{"id": "t1", "kanit": "Faturanın yeniden incelenmesini arz ederim",
                                 "ozet": "Fatura incelemesi", "tur": "talep",
                                 "birim_ipucu": None}],
@@ -103,7 +104,7 @@ class TestTalepKumesiTekKaynak:
                  "Faturanın yeniden incelenmesini arz ederim.")
         out = await decompose_node({"evrak_text": metin, "bilgi_unsurlari": bu})
         assert out["alt_talepler"] == []
-        assert out["ayristirma_denendi"] is True
+        assert out["ayristirma_denendi"] is False
 
     def test_alt_talep_semasi_eski_ve_yeni_anahtarlar(self):
         alt = compute_decomposition(

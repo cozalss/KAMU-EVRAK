@@ -3,9 +3,13 @@
 Kamu gerçeği: kurum "yapay zeka çıktısını gözden geçirmeden gönderemeyiz" der. Bu node
 üretilen resmî yazıya bir TRAFİK IŞIĞI atar ve koşullu onayı tetikler:
 
-  🟢 YEŞİL  (yayın-hazır): her şey kaynaktan, format tam, şüphe yok → memur uğraşmaz.
-  🟡 SARI   (memur incelesin): format eksik / [DOĞRULA] / düşük güven / eksik zorunlu alan.
-  🔴 KIRMIZI(uydurma şüphesi): verify metinde OLMAYAN somut tarih/sayı yakaladı → onaysız gitmez.
+  🟢 YEŞİL  (yayın-hazır): her şey kaynaktan, format tam, şüphe yok, TÜM talepler içeride ve
+            havale birimi doğrulanmış → memur uğraşmaz.
+  🟡 SARI   (memur incelesin): format eksik / [DOĞRULA] / düşük güven / eksik zorunlu alan /
+            devir, çözülemeyen talep, doğrulanmamış birim / asıl evrak kontrolü (imza) /
+            mahkeme-savcılık-icra yazışması (agents/onay_sinyalleri.py).
+  🔴 KIRMIZI(uydurma şüphesi): verify metinde OLMAYAN somut tarih/sayı yakaladı ya da devir
+            alıcısı sicilde yok → onaysız gitmez.
 
 Koşullu onay (graph._risk_route): YEŞİL otomatik geçer; SARI/KIRMIZI memur onayına (onay_kapisi
 interrupt) düşer. Banka mantığı: küçük havale anında, büyük havale "emin misiniz?". Karar
@@ -56,6 +60,11 @@ from agents.config import (
     RISK_GUVEN_ESIK,
 )
 from agents.nodes._llm_extract import llm_json
+from agents.onay_sinyalleri import (
+    asil_evrak_sinyalleri,
+    yargi_icra_sinyali,
+    yonlendirme_sinyalleri,
+)
 from agents.risk_agirlik import kusur_olasiligi, skor_ve_katkilar
 from api.pii import mask_pii
 
@@ -81,8 +90,14 @@ _ONERI: dict[str, str] = {
             "Aşağıdaki nedenleri tek tek kontrol edin.",
     "kirmizi": "Bu taslağı onaylamadan göndermeyin. Yapay zekâ, evrakta bulunmayan bilgiler "
                "eklemiş olabilir; aşağıdaki her maddeyi evrakla karşılaştırıp düzeltin.",
+    # Uydurma yok ama devir alıcısı sicilde yok (LLM'in serbest adı) → kurumu siz doğrulayın.
+    "kirmizi_devir": "Bu taslağı onaylamadan göndermeyin. Yazının gönderileceği kurum "
+                     "kayıtlarımızda doğrulanamadı; kurumun resmî adını ve yetkisini "
+                     "kontrol edin.",
 }
-def _bant_sonuc(bant: str, gerekceler: list[str]) -> dict[str, Any]:
+
+
+def _bant_sonuc(bant: str, gerekceler: list[str], oneri: str = "") -> dict[str, Any]:
     """Bant + gerekçelerden ÖLÇÜLMÜŞ skor/katkı üret (bant kararı çağırana aittir).
 
     YEŞİL'de gerekçe bir risk sinyali değil, bilgi cümlesidir ("tüm doğrulamalar temiz")
@@ -95,7 +110,7 @@ def _bant_sonuc(bant: str, gerekceler: list[str]) -> dict[str, Any]:
     skor, katkilar, kalibrasyon = skor_ve_katkilar(gerekceler)
     return {"bant": bant, "skor": skor, "kusur_olasiligi": kusur_olasiligi(gerekceler),
             "gerekceler": gerekceler, "katkilar": katkilar,
-            "kalibrasyon": kalibrasyon, "oneri": _ONERI[bant]}
+            "kalibrasyon": kalibrasyon, "oneri": _ONERI[oneri or bant]}
 
 # Zorunlu-alan anahtarı → kısa Türkçe etiket (risk gerekçesi okunur olsun; ham anahtar gösterilmez).
 _ALAN_TR: dict[str, str] = {
@@ -132,11 +147,16 @@ def compute_risk(
     taslak: str,
     lint_uyari: list[str] | None = None,
     tutarlilik_uyari: list[str] | None = None,
+    yonlendirme: dict[str, Any] | None = None,
+    eksik_notlari: list[str] | None = None,
+    gelen_evrak: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """verify sinyalleri + tamlık → risk bandı (SAF, deterministik).
+    """verify sinyalleri + tamlık + yönlendirme → risk bandı (SAF, deterministik).
 
-    Öncelik: uydurma (KIRMIZI) > eksik/belirsiz (SARI) > temiz (YEŞİL). Uydurma baskındır:
-    hem uydurma hem eksik varsa KIRMIZI (CLAUDE.md §1 — somut uydurma en yüksek risk).
+    Öncelik: uydurma / doğrulanmamış devir alıcısı (KIRMIZI) > eksik/belirsiz/onay gerektiren
+    yönlendirme (SARI) > temiz (YEŞİL). YEŞİL yalnız bütün talepler içeride + birim doğrulanmış
+    + diğer sinyaller temizken çıkar (agents/onay_sinyalleri.py — bant ile yönlendirmenin
+    insan onayı bayrağı çelişemez).
     """
     uyarilar = verify_uyari or []
     # KIRMIZI YALNIZ deterministik veto ile: regex somut tarih/sayı uydurma (güvenilir).
@@ -176,9 +196,13 @@ def compute_risk(
         sari.append(f"Format (2646 lint): {u}")
     for u in tutarlilik_uyari or []:
         sari.append(f"Tutarlılık: {u}")
+    yon_kirmizi, yon_sari = yonlendirme_sinyalleri(yonlendirme)
+    sari += (yon_sari + asil_evrak_sinyalleri(eksik_notlari)
+             + yargi_icra_sinyali(evrak_turu, gelen_evrak))
 
-    if uydurma:
-        return _bant_sonuc("kirmizi", gerekceler + sari)
+    if uydurma or yon_kirmizi:
+        return _bant_sonuc("kirmizi", gerekceler + yon_kirmizi + sari,
+                           oneri="kirmizi" if uydurma else "kirmizi_devir")
     if sari:
         return _bant_sonuc("sari", sari)
     return _bant_sonuc(
@@ -248,6 +272,9 @@ async def risk_guard_node(state: dict[str, Any]) -> dict[str, Any]:
         taslak=state.get("yazi_taslak_md", "") or "",
         lint_uyari=(state.get("lint_2646") or {}).get("uyari", []),
         tutarlilik_uyari=state.get("tutarlilik_uyari", []) or [],
+        yonlendirme=state.get("yonlendirme"),
+        eksik_notlari=state.get("eksik_bilgi_notlari", []) or [],
+        gelen_evrak=(state.get("bilgi_unsurlari") or {}).get("gelen_evrak"),
     )
     # PII güvenliği (CLAUDE.md §2): gerekçeler verify_uyari + lint_uyari + tutarlilik_uyari
     # birleşiminden türer; uydurma sayı/tarih token'ı TCKN-şekilli olabilir → arayüze/onaya

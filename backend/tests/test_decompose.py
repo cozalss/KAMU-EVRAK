@@ -232,9 +232,9 @@ class TestDecomposeNode:
 class TestAyristirmaDenendiSozlesmesi:
     """Arayüz "bu adım gerekmedi"yi yalnız backend açıkça False dediğinde kurar (CLAUDE.md §10).
 
-    2026-10: decompose LLM çağırmaz; ayrıştırma cikar'ın talep kümesinde yapılır. True =
-    küme LLM'den geldi (karar harcanmış bir çağrıyla verildi) ya da ≥2 alt talep çıktı.
-    Deterministik kümede tek talep → False (adım fiilen iş yapmadı).
+    2026-10: decompose LLM çağırmaz; ayrıştırma cikar'ın talep kümesinde yapılır (LLM emeği
+    cikar adımında görünür). True YALNIZ ≥2 alt talep zenginleştirildiğinde; tek talepte —
+    küme LLM'den gelse bile — bu adım iş yapmadı → False (2026-10-05 incelemesi).
     """
 
     async def test_deterministik_tek_talepte_denenmedi(self):
@@ -250,10 +250,11 @@ class TestAyristirmaDenendiSozlesmesi:
         out = await decompose_node(state)
         assert out["ayristirma_denendi"] is True
 
-    async def test_llm_kumesi_tek_talepse_gerekmedi_DEMEZ(self):
+    async def test_llm_kumesi_tek_talepse_bu_adim_gerekmedi(self):
+        """REGRESYON: LLM çağrısı cikar'a aittir; decompose'u 'çalıştı' göstermek yanlış beyan."""
         bu = {"talep_kumesi": [{"id": "t1", "kanit": "çukurun onarılmasını talep ederim",
                                 "ozet": "Çukur onarımı", "tur": "talep", "birim_ipucu": None}],
               "talep_kumesi_kaynagi": "llm"}
         out = await decompose_node({"evrak_text": "x", "bilgi_unsurlari": bu})
         assert out["alt_talepler"] == []
-        assert out["ayristirma_denendi"] is True
+        assert out["ayristirma_denendi"] is False

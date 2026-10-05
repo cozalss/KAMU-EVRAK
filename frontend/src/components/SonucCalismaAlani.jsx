@@ -11,6 +11,7 @@ import { SONUC_CSS } from "./sonucStil.js";
 import { kagitStilYukle } from "./kagitDoku.js";
 import { useDayanakIpligi, DayanakSeridi, DayanakKatmani } from "./DayanakIpligi.jsx";
 import { AltTaleplerCard, MevzuatCard, ArchiveSlaCard, RiskCard, ValidationCard, RoutingCard, LintCard } from "./SonucDestekKartlari.jsx";
+import { gosterimBirimi } from "../lib/gosterimBirimi.js";
 
 const TRUNCATED_TEXT_RE = /(?:\.{3}|…)\s*$/;
 
@@ -563,7 +564,7 @@ export default function SonucCalismaAlani({
                 Kapı HAM `r.canli_kaynak.url` yerine DOĞRULANMIŞ künyeyi sorar: adres
                 güvenlik sınavından geçmezse RoutingCard onu zaten basmaz ve burada ham
                 alana bakmak boş bir kart hücresi bırakırdı. */}
-            {(r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || canliKaynakYorum(r)) && (
+            {(gosterimBirimi(r) || canliKaynakYorum(r)) && (
               <div className="sc-support-half">
                 <RoutingCard r={r} birimAday={birimAday} />
               </div>

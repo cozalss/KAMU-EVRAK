@@ -6,6 +6,7 @@ import { mevzuatDipnot, birimDipnot, lintGiris, decomposeGiris, riskGerekceYorum
 import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, RAD, SP, NeonCard, Icon, TYPE, TNUM } from "./neonUi.jsx";
 import { arr, clean } from "./sonucOrtak.js";
 import { KaynakLinki } from "./HukumKarti.jsx";
+import { gosterimBirimi } from "../lib/gosterimBirimi.js";
 
 export function AltTaleplerCard({ alt }) {
   if (alt.length < 2) return null;
@@ -284,7 +285,7 @@ export function RoutingCard({ r, birimAday }) {
   // KENDİ resmî sitesinden okunmuş bir öneri + kaynak linki döndürür. Kart bu durumda da
   // AÇILIR (eskiden `birim` yoksa null dönüyordu ve özelliğin tamamı görünmezdi).
   const canli = canliKaynakYorum(r);
-  const korpusBirim = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori;
+  const korpusBirim = gosterimBirimi(r);
   // Öncelik havaleYorum ile BİREBİR AYNI olmalı (doğrulanmış > canlı spesifik > jenerik):
   // iki yerde farklı sıralarsak karar şeridi ile bu kart birbirini yalanlar.
   const canliBirim = !r.hedef_birim && canli && !canli.dogrulanmis ? canli.birimOneri : "";

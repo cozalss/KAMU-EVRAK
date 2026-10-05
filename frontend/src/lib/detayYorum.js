@@ -5,6 +5,7 @@
    Ton anahtarları ("yesil"|"sari"|"kirmizi") — bileşen bunları DERIN/BANT token'ına çevirir. */
 
 import { kurumGorunur } from "./sonucEtiket.js";
+import { yonlendirmeBirimi } from "./gosterimBirimi.js";
 
 /* Backend eksik_tespit._RESMI_YAZI_TURLER ile hizalı — dayanak cümlesi tür-duyarlı. */
 const RESMI_TURLER = new Set([
@@ -286,7 +287,7 @@ export function havaleYorum(r = {}, birimEtiket = (kod) => kod) {
   const altSayisi = dizi(r.alt_talepler).length;
   const kaynak = r.hedef_birim_kaynak?.birim_ad ? r.hedef_birim_kaynak : null;
   const dogrulandi = r.durum === "kaynak_dogrulandi" && !!r.hedef_birim;
-  const kod = r.hedef_birim || r.hedef_birim_oneri || r.servis_birimi?.ad || r.hedef_kategori || "";
+  const kod = yonlendirmeBirimi(r);
   const birim = kod ? birimEtiket(kod, r.evrak_turu) : "";
   // Şablon adı ("Genel Belediye Şablonu") kurum değildir — kurum bilinmiyor sayılır, birim tek başına gösterilir.
   const kurum = kurumGorunur(r.hedef_kurum_adi || kaynak?.kaynak_kurum || yetkili || muhatap || "");

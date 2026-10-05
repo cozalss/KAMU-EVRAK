@@ -1,3 +1,4 @@
+import { gosterimBirimi } from "./gosterimBirimi.js";
 /**
  * Sohbette belge işleme yardımcıları — /process_doc yanıtını Görev-1 özetine çevirir.
  *
@@ -26,7 +27,7 @@ export function belgeOzetiMd(resp) {
   if (!resp || typeof resp !== "object") return "Belge işlenemedi — boş yanıt.";
   const satir = [`**Belge işlendi** — tür: **${resp.evrak_turu || "belirsiz"}**.`];
   if (resp.ozet) satir.push(`Özet: ${resp.ozet}`);
-  const birim = resp.hedef_birim || resp.hedef_kategori || "";
+  const birim = gosterimBirimi(resp);
   if (birim) satir.push(`Önerilen birim: **${birim}**`);
   const eksik = Array.isArray(resp.eksik_alanlar) ? resp.eksik_alanlar : [];
   if (eksik.length) satir.push(`Eksik alanlar: ${eksik.join(", ")}`);

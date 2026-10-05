@@ -202,6 +202,12 @@ async def crag_node(state: dict[str, Any]) -> dict[str, Any]:
     if not CRAG_ENABLED:
         return {}  # no-op: grafta var ama kapalı (baseline davranış birebir korunur)
 
+    if state.get("mevzuat_yargic_calisti"):
+        # İçerik odaklı yolda alaka kararını yargıç verdi (boş sonuç dahil). Ham BM25/12
+        # eşiği tür tekrarıyla şişen skorda hep 1.0 çıkıyordu (teşhis 2026-10-05) ve tür
+        # odaklı yeniden getirme, yargıcın bilinçli boş sonucunu alakasız dolguyla ezerdi.
+        log.info("crag", durum="atlandi", neden="alaka_yargici_karar_verdi")
+        return {"crag_corrected": False}
     mevcut = list(state.get("mevzuat_onerileri") or [])
     guven = _retrieval_guveni(mevcut)
     if guven >= CRAG_CONF_ESIK:

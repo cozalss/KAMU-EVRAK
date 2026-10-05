@@ -193,6 +193,20 @@ class TestUsulKatmani:
         assert usul_onerileri("muzekkere") == []
 
 
+class TestKorpusLint:
+    def test_kanun_no_madde_no_cakismasi_yakalanir(self):
+        from scripts.seed_mevzuat import madde_kanun_cakismasi
+
+        metin = "Yapı Ruhsatı\nİmar Kanunu, Kanun No 3194, RG 09.05.1985\n\nMadde 3194 — X"
+        assert madde_kanun_cakismasi("y.txt", metin, [3194, 3194])
+        assert madde_kanun_cakismasi("y.txt", metin, [21, 22]) == []
+
+    def test_korpusta_madde_3194_kalmadi(self):
+        from agents.nodes.mevzuat_oner import _load_index
+
+        assert not [c for c in _load_index() if str(c.get("madde_no")) == "3194"]
+
+
 class TestTuketiciler:
     """finalize 'dayanak' koşulu, zenginleştirme bandı, CRAG atlama."""
 

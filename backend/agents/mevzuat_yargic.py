@@ -44,9 +44,11 @@ _YARGIC_SYSTEM = (
     "hukuki meselesini DOĞRUDAN düzenleyen maddeleri seç (talep başına en fazla 3).\n"
     "KURALLAR:\n"
     "- Kelime benzerliği yetmez: madde, talepteki işin yetkisini, yükümlülüğünü, usulünü ya "
-    "da hakkını düzenlemeli.\n"
+    "da hakkını düzenlemeli. Talep konusu işlemi (belge verilmesi, ödeme, kayıt vb.) genel "
+    "hükümle düzenleyen madde de alakalıdır.\n"
     "- Başka bir kanunun adını yalnız ALINTILAYAN maddeler alakalı DEĞİLDİR.\n"
     "- Hiçbir aday uymuyorsa o talep için hiçbir şey seçme — boş sonuç doğru cevaptır.\n"
+    "- secim listesine YALNIZ alakalı bulduğun maddeleri yaz; alakasız adayı hiç yazma.\n"
     "- Yalnız listedeki 'no' değerlerini kullan; yeni madde/kanun yazma.\n"
     "- gerekce: en fazla 15 kelime, maddenin talebe neden uyduğu.\n"
     'Yalnız şu JSON\'u döndür: {"secim": [{"talep": "t1", "no": 3, "gerekce": "..."}]}'

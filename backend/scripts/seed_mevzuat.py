@@ -6,6 +6,7 @@ Korpus genişletildikten sonra çalıştır:  uv run python scripts/seed_mevzuat
 from __future__ import annotations
 
 import hashlib
+import re
 import sys
 from pathlib import Path
 
@@ -24,6 +25,24 @@ _ROOT = Path(__file__).resolve().parents[2]
 _MEVZUAT_DIR = _ROOT / "data" / "mevzuat"
 _INDEX_FILE = _MEVZUAT_DIR / "index" / "mevzuat_index.json"
 _MANIFEST_FILE = _MEVZUAT_DIR / "kaynak_manifest.json"
+
+
+# Künyedeki kanun numarası: "Kanun No 3194" / "3194 sayılı".
+_KUNYE_KANUN_RE = re.compile(r"Kanun No\s*(\d{3,4})|(\d{3,4}) sayılı")
+_KUNYE_SATIR = 5
+
+
+def madde_kanun_cakismasi(dosya_adi: str, text: str, madde_nolari: list) -> list[str]:
+    """Seed lint: madde_no'su dosyanın künyesindeki KANUN numarasına eşit olan başlıklar.
+
+    Teşhis 2026-10-05: yapi_ruhsati dosyasında başlıklar 'Madde 3194 — …' yazılmıştı;
+    chunker kanun no'yu madde no sandı, 5 madde tek kayda indi ve öneride var olmayan
+    'm.3194' göründü (CLAUDE.md §1'in veri kaynaklı ihlali). Bu kalıp seed'i durdurur.
+    """
+    kunye = " ".join(text.splitlines()[:_KUNYE_SATIR])
+    kanunlar = {a or b for a, b in _KUNYE_KANUN_RE.findall(kunye)}
+    return [f"{dosya_adi}: madde_no={no} künyedeki kanun numarasıyla aynı"
+            for no in dict.fromkeys(madde_nolari) if no is not None and str(no) in kanunlar]
 
 
 def _korpus_sha256(dosyalar: list[Path]) -> str:
@@ -49,6 +68,10 @@ def build_index() -> dict:
             guvenli_dosya_sayisi += 1
         etiket = path.stem.replace("_", " ")
         chunks = chunk_mevzuat(text, subchunk=False)
+        hatalar = madde_kanun_cakismasi(
+            path.name, text, [c.metadata.get("madde_no") for c in chunks])
+        if hatalar:
+            raise SystemExit("[HATA] korpus lint: " + "; ".join(hatalar))
         madde_var = any(c.metadata.get("madde_no") is not None for c in chunks)
         for c in chunks:
             govde = c.text.strip()

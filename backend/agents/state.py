@@ -205,6 +205,14 @@ class EvrakState(TypedDict):
     # ikisi `alt_talepler`den ayırt EDİLEMEZ, o yüzden node gerçeği açıkça yazar. False =
     # denenmedi (gerekmedi), True = denendi (sonuç tek-konulu çıktı).
     ayristirma_denendi: NotRequired[bool]
+    # TEK TALEP KÜMESİ + GELEN EVRAK (2026-10, Akış T) — bilgi_unsurlari içinde tutulur:
+    #   bilgi_unsurlari['talep_kumesi'] = [{id, kanit, ozet, tur, birim_ipucu}] (cikar üretir;
+    #     'talepler' (list[str]) ve alt_talepler bundan TÜRETİLİR — tek doğruluk kaynağı)
+    #   bilgi_unsurlari['talep_kumesi_kaynagi'] = 'llm' | 'heuristik'
+    #   bilgi_unsurlari['gelen_evrak'] = yazi.gelen_evrak.GelenEvrak.to_dict()
+    #   bilgi_unsurlari['imza_durumu'] = 'var' | 'dogrulanamadi' ('yok' metinden türetilmez)
+    # Memura bilgi notları (eksik SAYILMAYAN ama kontrol gerektiren: imza doğrulanamadı vb.).
+    eksik_bilgi_notlari: NotRequired[list[str]]
 
     # --- Görev 2: dur-ve-sor (clarifier) ---
     # Kritik alan eksikse taslak üretmeden kullanıcıdan bilgi istenir (ENV-gated).

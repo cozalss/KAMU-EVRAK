@@ -40,15 +40,20 @@ def test_konu_bos():
 # ---------- #3 Çok-talep çıkarımı ----------
 
 def test_kosullu_ikinci_talep_yakalanir():
-    """'onarım olmazsa yeni direk' — koşullu ikinci talep ayrı çıkmalı (decompose boşluğu)."""
+    """'onarım olmazsa yeni direk' — koşullu alternatif DÜŞMEMELİ.
+
+    2026-10 (teşhis): alternatif, aynı konuya bağlı TEK talebin parçasıdır (iki ayrı havale
+    değil); eskiden iki maddeye bölünüp her biri ayrı taslağa gidiyordu. Gövdenin iki
+    alternatifi de karşılaması, kanıt cümlesinin ikisini birden taşımasıyla sağlanır.
+    """
     from agents.nodes.cikar import _talepleri_cikar
 
     metin = ("Sokağımızdaki aydınlatma direğinin onarılmasını, onarım mümkün değilse "
              "bölgeye yeni bir aydınlatma direği yerleştirilmesini talep ederim.")
     talepler = _talepleri_cikar(metin)
-    assert len(talepler) >= 2, talepler
+    assert len(talepler) == 1, talepler
     birlesik = " ".join(talepler).lower()
-    assert "onar" in birlesik and ("yeni" in birlesik or "direk" in birlesik)
+    assert "onar" in birlesik and "yeni" in birlesik
 
 
 def test_tek_talep_liste_uretmeyebilir():

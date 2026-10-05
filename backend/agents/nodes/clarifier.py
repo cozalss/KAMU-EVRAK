@@ -27,8 +27,10 @@ log = structlog.get_logger()
 # ölü kayıt olurdu (ECC LOW-6). Yeni kritik alan eklenirse İKİSİ birlikte güncellenir.
 _KRITIK_TALEP: dict[str, str] = {
     "imza": "Islak/elektronik imza",
-    "iletisim_adres": "İletişim/tebligat adresi (veya telefon)",
+    "iletisim_adres": "İş veya ikametgâh adresi (telefon adres yerine geçmez)",
 }
+# NOT (2026-10): 'imza' yalnız YOKLUĞU kanıtlandığında eksik_alanlar'a girer; düz metinde
+# imza 'dogrulanamadi' durumundadır ve dur-ve-sor TETİKLEMEZ (bkz. eksik_tespit).
 
 
 def kritik_eksikler(state: dict[str, Any]) -> list[str]:
@@ -48,7 +50,8 @@ def _dur_ve_sor_mesaji(kritik: list[str], sorular: list[str]) -> str:
     talepler = [_KRITIK_TALEP.get(a, a) for a in kritik]
     satirlar = [
         "⛔ **Evrak işleme alınamadı — kritik bilgiler eksik.**",
-        "3071 sayılı Kanun m.4 gereği aşağıdaki bilgiler tamamlanmadan dilekçe incelenemez:",
+        "3071 sayılı Kanun m.4 ve m.6/c uyarınca aşağıdaki bilgiler tamamlanmadan dilekçe "
+        "incelenemez:",
         "\n".join(f"- {t}" for t in talepler),
     ]
     if sorular:

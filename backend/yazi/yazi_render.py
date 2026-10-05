@@ -21,7 +21,7 @@ from typing import Any
 
 import structlog
 
-from agents.config import YAZI_GOVDE_DUSUNME_KAPALI, YAZI_TURU_TR
+from agents.config import YAZI_TURU_TR
 from agents.mevzuat_kanit import kanit_etiketlerini_coz, mevzuat_kanit_promptu
 
 # Döngü yok (denetçi doğruladı): agents.yazi_lint yalnız core.text'e bağımlı.
@@ -275,7 +275,7 @@ async def build_body_sonuclu(
     # eskiden gövde yalnız 'konu' üzerine kuruluyordu, ikinci talep düşüyordu (kullanıcı bulgusu).
     talepler = [str(t).strip() for t in (unsurlar.get("talepler") or []) if str(t).strip()]
     try:
-        from agents.llm import ChatMessage, MockLLM, get_llm
+        from agents.llm import MockLLM, get_llm
 
         llm = get_llm()
         if isinstance(llm, MockLLM):  # mock → deterministik (mock metni resmî değil)
@@ -308,29 +308,19 @@ async def build_body_sonuclu(
         # Görüş/cevabi gövdesi mevzuat çerçevesi + gerekçe taşır → biraz daha pay.
         pay = 400 if (len(talepler) > 1 or yazi_turu in (
             "gorus_mutalaa", "cevabi_yazi")) else 320
-        # DÜŞÜNME KAPALI (2026-08-07 ölçümü): bu çağrı `_chat_dene` katmanını ATLADIĞI için
-        # ne düşünme marjı ne düşünme kapatma alıyordu. Sonuç ölçüldü — üç gövde çağrısının
-        # ÜÇÜ de `tokens_out=320` yani TAM TAVAN: bütçenin tamamı muhakemeye gidiyor,
-        # `resp.content` boş kalıyor ve üç resmî yazının gövdesi de sessizce şablona düşüyordu.
-        # Marj eklemek (+700) süreyi ~3,5 sn'den ~10 sn'ye ÇIKARIRDI; düşünmeyi kapatmak
-        # gecikmeyi nötr bırakıp bütçeyi cevaba açar. İş cinsi de uyuyor: tür/konu/talepler/
-        # kanıt paketi HAZIR verilir, iş "verilmiş kararı resmî üslupla cümleye dökmek"tir.
-        # Emniyet ağı yerinde: kanit_etiketlerini_coz uydurma atıfı reddedip fallback'e döner.
-        # `dusunme_kapali` koşulsuz geçirilmez — protokole sonradan eklendi, tanımayan sahte
-        # istemcileri TypeError'la kırar (aynı guard _chat_dene'de de var).
-        temel = {"temperature": 0.2, "max_tokens": pay}
-        mesajlar = [ChatMessage(role="system", content=_BODY_SYSTEM),
-                    ChatMessage(role="user", content=prompt)]
-        try:
-            resp = await llm.chat(mesajlar, **temel,
-                                  **({"dusunme_kapali": True} if YAZI_GOVDE_DUSUNME_KAPALI
-                                     else {}))
-        except TypeError:
-            resp = await llm.chat(mesajlar, **temel)
-        body = _kapanis_kuyrugu_kirp((resp.content or "").strip())
+        # MERKEZİ POLİTİKA (agents.llm_politika, profil 'yazi_govde'): düşünme varsayılan
+        # KAPALI (2026-08-07 ölçümü: düşünmeli çağrılar 320 tavanını muhakemeye harcayıp boş
+        # gövde döndürüyordu; YAZI_GOVDE_DUSUNME_KAPALI=0 eski davranışı açar). Kesik cevapta
+        # politika tek kurtarma dener; yine kesikse llm_text None döner — YARIM GÖVDE
+        # taslağa ASLA girmez, deterministik kalıba düşülür. Emniyet ağı yerinde:
+        # kanit_etiketlerini_coz uydurma atıfı reddedip fallback'e döner.
+        from agents.nodes._llm_extract import llm_text
+
+        govde = await llm_text(_BODY_SYSTEM, prompt, profil="yazi_govde", max_tokens=pay,
+                               temperature=0.2, llm=llm)
+        body = _kapanis_kuyrugu_kirp((govde or "").strip())
         if not body:
-            log.warning("yazi_body_bos", kesik=getattr(resp, "finish_reason", "") == "length",
-                        butce=pay)
+            log.warning("yazi_body_bos", butce=pay)  # kesik/boş ayrımı llm_izleri'nde
             return GovdeSonucu(
                 _fallback_body(yazi_turu, konu, has_ilgi, talepler), "llm_bos")
         cozulmus, uyarilar, atif_sayisi = kanit_etiketlerini_coz(body, kanit_paketi)
@@ -676,7 +666,7 @@ def build_context(
         ilgi_sayi=str(unsurlar.get("sayi", "") or ""),
         ilgi_satirlari=ilgi,
         kapanis=kapanis,
-        sdp=sdp_kodu,  # Yön. m.11 Sayı konu-kodu (yazi.sdp_plani; boşsa Sayı placeholder kalır)
+        sdp=sdp_kodu,  # Yön. m.11 Sayı konu-kodu (arşivin tek SDP motoru; boşsa placeholder)
         olur_alanlari=_olcu_meta(unsurlar) if turu == "olur" else {},
     )
 

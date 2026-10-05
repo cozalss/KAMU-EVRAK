@@ -205,11 +205,9 @@ async def test_zamanli_node_izleri_statee_yazar(monkeypatch) -> None:
 
 # --- Doğrudan .chat( envanteri ----------------------------------------------------------
 
-# Akışların sahip olduğu dosyalar — birleştirmede merkezi katmana taşınacak.
-BIRLESMEDE_TASINACAK = frozenset({
-    "yazi/yazi_render.py", "retrieval/hyde.py", "retrieval/query_rewrite.py",
-    "retrieval/multi_query.py",
-})
+# Birleştirmede (insa/birlesik) yazi_render, hyde, query_rewrite ve multi_query merkezi
+# katmana (llm_json/llm_text) taşındı — liste BOŞ kalmalı; yeni istisna eklenmez.
+BIRLESMEDE_TASINACAK: frozenset[str] = frozenset()
 MERKEZ = frozenset({"agents/nodes/_llm_extract.py", "agents/llm.py"})
 
 

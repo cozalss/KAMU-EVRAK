@@ -23,7 +23,7 @@ from __future__ import annotations
 import structlog
 from qdrant_client import models
 
-from agents.llm import ChatMessage, get_llm
+from agents.llm import get_llm
 from retrieval.hybrid_search import (
     SearchResult,
     _get_embedder,
@@ -57,16 +57,12 @@ async def generate_hypothetical(
     user_msg = HYDE_USER_TEMPLATE.format(
         domain=domain or "genel hukuk", question=question,
     )
-    response = await llm.chat(
-        messages=[
-            ChatMessage(role="system", content=HYDE_SYSTEM),
-            ChatMessage(role="user", content=user_msg),
-        ],
-        temperature=0.3,         # biraz yaratıcılık iyi (daha geniş ara)
-        max_tokens=max_tokens,
-        json_mode=False,
-    )
-    text = response.content.strip()
+    # Merkezi politika (profil 'hyde'): mock/hata/kesik → None → boş tohum → çağıran
+    # düz hybrid_search'e düşer (yarım hipotetik metin embed edilmez).
+    from agents.nodes._llm_extract import llm_text
+
+    text = (await llm_text(HYDE_SYSTEM, user_msg, profil="hyde", max_tokens=max_tokens,
+                           temperature=0.3, llm=llm) or "").strip()
     log.info("hyde_generated", domain=domain, hypo_len=len(text))
     return text
 

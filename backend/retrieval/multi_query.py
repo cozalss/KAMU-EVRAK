@@ -34,7 +34,7 @@ from dataclasses import dataclass
 import httpx
 import structlog
 
-from agents.llm import ChatMessage, get_llm
+from agents.llm import get_llm
 from retrieval.hybrid_search import SearchResult, search
 from retrieval.turkish_text import expand_with_synonyms, morphological_variants
 from retrieval.typo_tolerance import typo_retrieval_variants
@@ -148,20 +148,16 @@ async def expand_queries(
         domain=domain or "genel hukuk", question=question, n=llm_slots,
     )
 
-    llm = get_llm()
+    # Merkezi politika (llm_text, profil 'multi_query'): mock/hata/timeout/kesik → None →
+    # deterministik morfoloji+eşanlam genişletmesi (aşağıdaki yedek dal).
+    from agents.nodes._llm_extract import llm_text
+
     try:
-        resp = await asyncio.wait_for(
-            llm.chat(
-                messages=[
-                    ChatMessage(role="system", content=_PARAPHRASE_SYSTEM),
-                    ChatMessage(role="user", content=user_msg),
-                ],
-                temperature=0.4,
-                max_tokens=400,
-                json_mode=True,   # Sprint-4 W1: JSON-mode enforce
-            ),
-            timeout=MQ_TIMEOUT_S,
-        )
+        icerik = await llm_text(_PARAPHRASE_SYSTEM, user_msg, profil="multi_query",
+                                max_tokens=400, temperature=0.4, timeout_s=MQ_TIMEOUT_S,
+                                llm=get_llm())
+        if icerik is None:
+            raise ConnectionError("llm_yok_veya_bos")
     except _LLM_FALLBACK_EXCEPTIONS as exc:
         # Sprint-4 W1.5: LLM unavailable → Türkçe morfoloji deterministic
         # fallback (snowballstemmer). Orijinal soru + stem variants → en
@@ -183,11 +179,11 @@ async def expand_queries(
             _cache_put(cache_key, out_queries)
         return out_queries
 
-    paraphrases = _parse_json_paraphrases(resp.content, max_n=llm_slots)
+    paraphrases = _parse_json_paraphrases(icerik, max_n=llm_slots)
     # JSON parse silent-fallback: numaralı/markdown formatına düşer.
     if not paraphrases:
-        log.debug("mq_json_parse_empty_fallback_to_numbered", n=len(resp.content))
-        paraphrases = _parse_numbered(resp.content, max_n=llm_slots)
+        log.debug("mq_json_parse_empty_fallback_to_numbered", n=len(icerik))
+        paraphrases = _parse_numbered(icerik, max_n=llm_slots)
     # Boş çıkarsa orijinalle dön; çift ise tek tut
     queries = [question, *typo_variants] + [p for p in paraphrases if p and p != question]
     queries = list(dict.fromkeys(queries))[:n]

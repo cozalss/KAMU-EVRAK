@@ -28,7 +28,7 @@ import re
 import httpx
 import structlog
 
-from agents.llm import ChatMessage, get_llm
+from agents.llm import get_llm
 from api.pii import mask_pii
 from retrieval.hybrid_search import SearchResult, search
 from retrieval.multi_query import rrf_merge
@@ -105,6 +105,25 @@ def _parse_rewrite(raw: str) -> str:
     return rewrite.strip() if isinstance(rewrite, str) else ""
 
 
+def _rewrite_al(obj: dict | None) -> str:
+    rewrite = (obj or {}).get("rewrite", "")
+    return rewrite.strip() if isinstance(rewrite, str) else ""
+
+
+async def _rewrite_cagir(system: str, user_msg: str, log_olayi: str) -> dict | None:
+    """Merkezi politika (llm_json, profil 'query_rewrite'): mock/hata/timeout/kesik → None
+    (çağıran orijinal soruyla devam eder — baseline güvenli). get_llm burada çözülür ki
+    testler/istemci seçimi tek noktadan değişsin."""
+    from agents.nodes._llm_extract import llm_json
+
+    try:
+        return await llm_json(system, user_msg, profil="query_rewrite",
+                              max_tokens=_max_tokens(), timeout_s=_timeout_s(), llm=get_llm())
+    except Exception as exc:  # llm_json kendi hatalarını yutar; bu yalnız son emniyet
+        log.warning(log_olayi, error=str(exc) or type(exc).__name__)
+        return None
+
+
 async def step_back_query(question: str, domain: str | None = None) -> str:
     """Konuşma-dili soruyu resmî hukuki arama cümlesine çevir (1 LLM çağrısı).
 
@@ -115,24 +134,8 @@ async def step_back_query(question: str, domain: str | None = None) -> str:
     if not question:
         return ""
     user_msg = _STEP_BACK_USER.format(domain=domain or "genel hukuk", question=question)
-    llm = get_llm()
-    try:
-        resp = await asyncio.wait_for(
-            llm.chat(
-                messages=[
-                    ChatMessage(role="system", content=_STEP_BACK_SYSTEM),
-                    ChatMessage(role="user", content=user_msg),
-                ],
-                temperature=0.0,
-                max_tokens=_max_tokens(),
-                json_mode=True,
-            ),
-            timeout=_timeout_s(),
-        )
-    except _LLM_FALLBACK_EXCEPTIONS as exc:
-        log.warning("step_back_llm_failed", error=str(exc) or type(exc).__name__)
-        return ""
-    rewrite = _parse_rewrite(resp.content)
+    obj = await _rewrite_cagir(_STEP_BACK_SYSTEM, user_msg, "step_back_llm_failed")
+    rewrite = _rewrite_al(obj)
     if rewrite and rewrite.lower() != question.lower():
         log.info("step_back_rewrite", domain=domain,
                  rewrite=mask_pii(rewrite).masked_text[:120])
@@ -200,27 +203,11 @@ async def decontextualize_for_retrieval(
         for t in recent
     )
     user_msg = _DECONTEXT_USER.format(history=hist, question=q)
-    llm = get_llm()
-    try:
-        resp = await asyncio.wait_for(
-            llm.chat(
-                messages=[
-                    ChatMessage(role="system", content=_DECONTEXT_SYSTEM),
-                    ChatMessage(role="user", content=user_msg),
-                ],
-                temperature=0.0,
-                max_tokens=_max_tokens(),
-                json_mode=True,
-            ),
-            timeout=_timeout_s(),
-        )
-    except Exception as exc:  # SÖZLEŞME: herhangi bir hata → orijinal sorgu (baseline).
-        # _LLM_FALLBACK_EXCEPTIONS'tan GENİŞ bilinçli: in-process llama.cpp RuntimeError/
-        # KeyError/CancelledError de fırlatabilir; dar catch bunları node'un except'ine
-        # kaçırıp retrieval'ı TAMAMEN boşaltıyordu (adversarial MEDIUM). Geniş catch → baseline.
-        log.warning("decontext_llm_failed", error=str(exc) or type(exc).__name__)
-        return q
-    rewrite = _parse_rewrite(resp.content)
+    # SÖZLEŞME: herhangi bir hata → orijinal sorgu (baseline). _rewrite_cagir GENİŞ yakalar
+    # (in-process llama.cpp RuntimeError/KeyError da fırlatabilir; dar catch retrieval'ı
+    # tamamen boşaltıyordu — adversarial MEDIUM).
+    obj = await _rewrite_cagir(_DECONTEXT_SYSTEM, user_msg, "decontext_llm_failed")
+    rewrite = _rewrite_al(obj)
     if rewrite and rewrite.lower() != q.lower():
         # original ÇIKARILDI: kullanıcının kendi sorgusu = asıl mahremiyet nesnesi.
         log.info("decontext_rewrite", domain=domain, orijinal_n=len(q),

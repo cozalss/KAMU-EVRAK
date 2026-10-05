@@ -45,6 +45,24 @@ def madde_kanun_cakismasi(dosya_adi: str, text: str, madde_nolari: list) -> list
             for no in dict.fromkeys(madde_nolari) if no is not None and str(no) in kanunlar]
 
 
+def madde_no_tekrari(dosya_adi: str, anahtarlar: list) -> list[str]:
+    """Seed lint: dosya içinde aynı (madde_no, madde_tur) iki kez başlık olmuş mu.
+
+    Teşhis 2026-10-05: hasta_haklari'nda üç ayrı hüküm 'Madde 42' taşıyordu; öneri 'm.42'
+    dediğinde hangi hükmün kastedildiği belirsizdi, _dedup da ikisini sessizce siliyordu.
+    Numara tekil değilse seed DURUR — doğrulanamayan bölüm _dogrulanacak/'a taşınır.
+    """
+    gorulen: set = set()
+    hatalar: list[str] = []
+    for no, tur in anahtarlar:
+        if no is None:
+            continue
+        if (no, tur) in gorulen:
+            hatalar.append(f"{dosya_adi}: madde_no={no} ({tur}) birden çok başlıkta")
+        gorulen.add((no, tur))
+    return hatalar
+
+
 def _korpus_sha256(dosyalar: list[Path]) -> str:
     """Korpus ve guven manifestinin deterministik surum kimligi."""
     h = hashlib.sha256()
@@ -70,6 +88,8 @@ def build_index() -> dict:
         chunks = chunk_mevzuat(text, subchunk=False)
         hatalar = madde_kanun_cakismasi(
             path.name, text, [c.metadata.get("madde_no") for c in chunks])
+        hatalar += madde_no_tekrari(path.name, [
+            (c.metadata.get("madde_no"), c.metadata.get("madde_tur") or "madde") for c in chunks])
         if hatalar:
             raise SystemExit("[HATA] korpus lint: " + "; ".join(hatalar))
         madde_var = any(c.metadata.get("madde_no") is not None for c in chunks)

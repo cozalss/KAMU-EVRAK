@@ -13,7 +13,7 @@ Kanunda gecen temel kavramlari tanimlar. Lisans, tuzel kisilere her bir piyasa f
 Madde 4 — Piyasa faaliyetleri ve lisans turleri
 Dogal gaz piyasasinda faaliyet gosterecek tuzel kisilerin her bir faaliyet icin ayri lisans almalari sarttir. Lisans turleri; ithalat, iletim, depolama, toptan satis, ihracat, sehir ici dagitim, sikistirilmis dogal gaz (CNG) ve sivilastirma (LNG) lisanslarini kapsar; uretim faaliyeti Petrol Kanununa tabidir ve bu Kanun kapsaminda piyasa faaliyeti sayilmaz. Lisans basvurularinda mevzuata uygunluk, teknik yeterlilik ve mali sartlar aranir. Bir sirketin dogal gaz piyasasinda hangi faaliyet icin hangi lisansi almasi gerektigini belirleyen temel maddedir.
 
-Madde 4 (bent g) — Sehir ici dagitim ihalesi ve dagitim sirketinin yukumlulukleri
+Madde 4/g — Sehir ici dagitim ihalesi ve dagitim sirketinin yukumlulukleri
 Sehir ici dagitim lisansi, Kurum tarafindan acilacak ve Resmi Gazetede ilan edilecek ihale ile verilir; ihaleyi kazanan sirkete dagitim lisansi duzenlenir ve lisans suresi sehrin gelismislik duzeyi dikkate alinarak belirlenir. Dagitim sirketi; talep eden musterileri sisteme baglamak, sevkiyat kontrol merkezi kurmak, ic tesisati kontrol etmek ve guvenli isletim saglamakla yukumludur. Bir sirket en fazla belirli sayida sehirde dagitim lisansi sahibi olabilir ve ilgili belediyeyi sirkete belli oranda ortak olmaya davet etmek zorundadir. Dogal gaz altyapisi basvuru ve abonelik surecinin idari dayanagidir. [DOGRULA: azami sehir sayisi ve belediye ortaklik orani yururlukteki metinden teyit edilmeli]
 
 Madde 8 — Serbest tuketici ve sisteme erisim hakki

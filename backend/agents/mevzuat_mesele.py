@@ -132,11 +132,14 @@ async def mesele_analizi(
         return None
     bu = state.get("bilgi_unsurlari") or {}
     turu = str(state.get("evrak_turu") or "")
+    # Kişi adı da maskelenir (yalnız numaralar değil): route_ajan ile aynı sözleşme.
+    isim = str(bu.get("gonderen") or "") or None
     girdi = {
-        "konu": mask_for_llm(str(bu.get("konu") or "")),
+        "konu": mask_for_llm(str(bu.get("konu") or ""), isim),
         "evrak_turu": EVRAK_TURU_TR.get(turu, turu),
-        "talepler": [{"id": t["id"], "metin": mask_for_llm(t["metin"])} for t in talepler],
-        "evrak_metni": mask_for_llm(str(state.get("evrak_text") or ""))[:_EVRAK_CHARS],
+        "talepler": [{"id": t["id"], "metin": mask_for_llm(t["metin"], isim)}
+                     for t in talepler],
+        "evrak_metni": mask_for_llm(str(state.get("evrak_text") or ""), isim)[:_EVRAK_CHARS],
     }
     # Katalog SYSTEM'de: sabit önek → sağlayıcı önbelleği (DeepSeek prefix cache) her belgede
     # yeniden faturalamaz.

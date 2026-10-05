@@ -24,6 +24,7 @@ from typing import Any
 import structlog
 
 from agents.config import EVRAK_TO_MEVZUAT
+from agents.mevzuat_atif import atif_onerileri, cerceve_maddesi_mi
 from agents.mevzuat_mesele import mesele_analizi, talep_listesi
 from agents.nodes import mevzuat_oner as mo
 from agents.nodes._llm_extract import llm_json
@@ -35,7 +36,9 @@ _DOSYA_BASI_ADAY = 5
 _GENEL_ADAY = 4
 _TALEP_BASI_ADAY = 10
 _AZAMI_ADAY = 36
-_ADAY_METIN_CHARS = 260
+# Başlık + ilk fıkra görünmeli: 260 karakterde düzenleyici kısım kesiliyor, yargıç doğru
+# maddeyi (6100/2547/5510) "alakasız" sayıp boş dönüyordu (2026-10-05 incelemesi).
+_ADAY_METIN_CHARS = 600
 _TALEP_BASI_SECIM = 3
 _YARGIC_MAX_TOKENS = 700
 
@@ -47,7 +50,9 @@ _YARGIC_SYSTEM = (
     "da hakkını düzenlemeli. Talep konusu işlemi (belge verilmesi, ödeme, kayıt vb.) genel "
     "hükümle düzenleyen madde de alakalıdır.\n"
     "- Başka bir kanunun adını yalnız ALINTILAYAN maddeler alakalı DEĞİLDİR.\n"
-    "- Hiçbir aday uymuyorsa o talep için hiçbir şey seçme — boş sonuç doğru cevaptır.\n"
+    "- Hiçbir aday uymuyorsa o talep için hiçbir şey seçme — boş sonuç doğru cevaptır. "
+    "Korpus eksik olabilir: meseleyi yalnız DOLAYLI ya da genel olarak değen bir maddeyi "
+    "(başka bir işlemi, cezayı, süreyi düzenleyen) en yakını diye SEÇME.\n"
     "- secim listesine YALNIZ alakalı bulduğun maddeleri yaz; alakasız adayı hiç yazma.\n"
     "- Yalnız listedeki 'no' değerlerini kullan; yeni madde/kanun yazma.\n"
     "- gerekce: en fazla 15 kelime, maddenin talebe neden uyduğu.\n"
@@ -67,13 +72,19 @@ def _dosya_chunklari(dosya: str) -> list[dict[str, Any]]:
     return [c for c in mo._load_index() if mo._kaynak_dosya(c) == dosya]
 
 
+def _esas_olabilir(c: dict[str, Any]) -> bool:
+    """Amaç/kapsam/tanımlar/dayanak/yürürlük maddeleri esas dayanak OLAMAZ (yapısal kural)."""
+    return not cerceve_maddesi_mi(c)
+
+
 def _talep_adaylari(sorgu: str, dosyalar: list[str]) -> list[tuple[float, dict[str, Any]]]:
     """Seçilen dosyaların en iyi maddeleri (sıfır skorlu da — başlık recall'ı) + genel BM25."""
-    ranked = mo._score(sorgu, mo._load_index())
+    ranked = [(s, c) for s, c in mo._score(sorgu, mo._load_index()) if _esas_olabilir(c)]
     skor = {id(c): s for s, c in ranked}
     adaylar: list[tuple[float, dict[str, Any]]] = []
     for dosya in dosyalar:
-        parcalar = sorted(_dosya_chunklari(dosya), key=lambda c: -skor.get(id(c), 0.0))
+        parcalar = sorted((c for c in _dosya_chunklari(dosya) if _esas_olabilir(c)),
+                          key=lambda c: -skor.get(id(c), 0.0))
         adaylar += [(skor.get(id(c), 0.0), c) for c in parcalar[:_DOSYA_BASI_ADAY]]
     adaylar += mo._dedup(ranked)[:_GENEL_ADAY]
     return mo._dedup(adaylar)[:_TALEP_BASI_ADAY]
@@ -120,12 +131,14 @@ def yargic_dogrula(obj: Any, ids: set[str], n: int) -> dict[str, list[tuple[int,
 
 
 async def alaka_yargici(
-    talepler: list[dict[str, str]], analiz: dict[str, dict[str, Any]], havuz: list[dict[str, Any]]
+    talepler: list[dict[str, str]], analiz: dict[str, dict[str, Any]], havuz: list[dict[str, Any]],
+    isim: str | None = None,
 ) -> dict[str, list[tuple[int, str]]] | None:
+    """Talep başına alaka seçimi. `isim` (gönderen adı) talep metninde [AD] olur — KVKK."""
     if not havuz:
         return {t["id"]: [] for t in talepler}
     girdi = {
-        "talepler": [{"id": t["id"], "metin": mask_for_llm(t["metin"]),
+        "talepler": [{"id": t["id"], "metin": mask_for_llm(t["metin"], isim),
                       "mesele": (analiz.get(t["id"]) or {}).get("mesele", "")} for t in talepler],
         "adaylar": [{"no": i, "kaynak": mo._kaynak_dosya(c), "baslik": _ilk_satir(c.get("text", "")),
                      "metin": str(c.get("text", ""))[:_ADAY_METIN_CHARS]}
@@ -200,6 +213,24 @@ def _gruplar(talepler: list[dict[str, str]], secim: dict[str, list[tuple[int, st
     return gruplar
 
 
+def _talep_durumu(talepler: list[dict[str, str]], analiz: dict[str, dict[str, Any]],
+                  gruplar: list[list[dict[str, Any]]], atif_eksik: list[str]) -> list[dict[str, Any]]:
+    """Talep başına durum. Esas maddesi bulunamayan talep KAPSAM BOŞLUĞU olarak işaretlenir
+    (korpus seyrek olabilir — boş dönmek, zayıf maddeyi 'dayanak' sunmaktan iyidir); mesele
+    analizinin işaret ettiği kaynaklar memura 'bakılacak yer' olarak taşınır (öneri DEĞİL)."""
+    durum: list[dict[str, Any]] = []
+    for i, (t, g) in enumerate(zip(talepler, gruplar, strict=True)):
+        a = analiz.get(t["id"]) or {}
+        aranan = [mo._resmi_ad(x) or x for x in a.get("dosyalar", [])] if not g else []
+        d: dict[str, Any] = {"talep_id": t["id"], "mesele": a.get("mesele", ""),
+                             "bulundu": bool(g), "kapsam_boslugu": not g,
+                             "aranan_kaynaklar": aranan}
+        if i == 0 and atif_eksik:
+            d["evrak_atif_dogrula"] = list(atif_eksik)
+        durum.append(d)
+    return durum
+
+
 async def icerik_odakli_oneriler(state: dict[str, Any]) -> dict[str, Any] | None:
     """Talep bazlı öneri; mesele analizi başarısızsa None (çağıran eski BM25 yoluna düşer)."""
     talepler = talep_listesi(state)
@@ -207,17 +238,20 @@ async def icerik_odakli_oneriler(state: dict[str, Any]) -> dict[str, Any] | None
     if analiz is None:
         return None
     havuz, talep_skor, q_token = aday_havuzu(talepler, analiz)
-    secim = await alaka_yargici(talepler, analiz, havuz)
+    isim = str((state.get("bilgi_unsurlari") or {}).get("gonderen") or "") or None
+    secim = await alaka_yargici(talepler, analiz, havuz, isim)
     gruplar = _gruplar(talepler, secim, havuz, talep_skor, q_token)
-    esas = _birlestir(gruplar)
+    # Evrakın kendi açık atfı (korpusta varsa) en önde; yoksa [DOĞRULA] notu (uydurma yok).
+    atif, atif_eksik = atif_onerileri(str(state.get("evrak_text") or ""))
+    esas = _birlestir([atif, *gruplar])
     turu = str(state.get("evrak_turu") or "")
     usul = [u for u in usul_onerileri(turu)
             if (u["kaynak_dosya"], u["madde_no"]) not in {(e["kaynak_dosya"], e["madde_no"]) for e in esas}]
-    durum = [{"talep_id": t["id"], "mesele": (analiz.get(t["id"]) or {}).get("mesele", ""),
-              "bulundu": bool(g)} for t, g in zip(talepler, gruplar, strict=True)]
+    durum = _talep_durumu(talepler, analiz, gruplar, atif_eksik)
     bulunamadi = secim is not None and not esas
     log.info("mevzuat_yargic", yargic=secim is not None, n_aday=len(havuz), n_esas=len(esas),
-             n_usul=len(usul), bulunamadi=bulunamadi)
+             n_usul=len(usul), n_atif=len(atif), n_atif_eksik=len(atif_eksik),
+             bulunamadi=bulunamadi)
     return {"mevzuat_onerileri": esas + usul, "mevzuat_bulunamadi": bulunamadi,
             "mevzuat_talep_durumu": durum, "mevzuat_yargic_calisti": secim is not None}
 

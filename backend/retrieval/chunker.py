@@ -23,8 +23,12 @@ _EK_PREFIX = r"(?:EK|Ek|ek)"
 _GECICI_PREFIX = r"(?:GEÇİCİ|Geçici|geçici)"
 _MADDE_TUR_PREFIX = rf"(?:{_EK_PREFIX}\s+|{_GECICI_PREFIX}\s+)?"
 
+# Başlık = "Madde N" + (isteğe bağlı kısa parantez) + AYRAÇ (— – - .). Yalnız boşluk YETMEZ:
+# satır başında "Madde 14 ve ilgili hükümlerle…", "Madde 7 uyarınca…" gibi ATIF cümleleri
+# yeni madde sanılıyor, aynı dosyada ikinci bir "m.14" kaydı doğuyordu (teşhis 2026-10-05:
+# 2873/2920/298/6283 — öneride bir maddenin yerine başka hüküm gösteriliyordu).
 MADDE_PATTERN = re.compile(
-    rf"(?=(?:^|\n)\s*{_MADDE_TUR_PREFIX}Madde\s+\d+[\.\-—\s])",
+    rf"(?=(?:^|\n)\s*{_MADDE_TUR_PREFIX}Madde\s+\d+\s*(?:/\s*Madde\s+\d+\s*)?(?:\([^)\n]{{0,40}}\)\s*)?[\.\-—–])",
     re.IGNORECASE | re.MULTILINE,
 )
 

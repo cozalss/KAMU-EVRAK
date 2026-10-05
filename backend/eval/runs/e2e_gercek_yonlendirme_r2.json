@@ -1,0 +1,684 @@
+{
+ "etiket": "yonlendirme_r2",
+ "tarih": "2026-10-05T19:21:15.175734+00:00",
+ "git": {
+  "sha": "d5864a55b20212e7776037a6c25a93c1eb3546f6",
+  "kirli": true
+ },
+ "gold": "e2e_gercek_gold.jsonl",
+ "n": 3,
+ "llm_mode": "openai",
+ "model": "deepseek-v4-flash",
+ "eszamanlilik": 6,
+ "sure_toplam_s": 13.9,
+ "kurallar": {
+  "konu_azami_kelime": 12,
+  "ham_kopya_ngram": 6,
+  "mevzuat_k": 3,
+  "bilesik": [
+   "hata",
+   "tur",
+   "birim",
+   "yetki",
+   "talep",
+   "konu",
+   "ilgi",
+   "antet",
+   "pii"
+  ]
+ },
+ "metrikler": {
+  "kurumda_kullanilabilir": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "tur_dogruluk": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "tur_dogruluk_kabul": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "tur_dogruluk_operasyonel": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "muhatap_dogruluk": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "birim_dogruluk": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "birim_dogruluk_alt_talep": {
+   "k": 5,
+   "n": 7,
+   "oran": 0.7143,
+   "ci95": [
+    0.359,
+    0.918
+   ]
+  },
+  "routing_fallback": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "yetki_tespit_yapisal": {
+   "k": 1,
+   "n": 1,
+   "oran": 1.0,
+   "ci95": [
+    0.207,
+    1.0
+   ]
+  },
+  "yetki_tespit_metinsel": {
+   "k": 1,
+   "n": 1,
+   "oran": 1.0,
+   "ci95": [
+    0.207,
+    1.0
+   ]
+  },
+  "yetki_yanlis_alarm": {
+   "k": 0,
+   "n": 2,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.658
+   ]
+  },
+  "talep_recall_decompose": {
+   "k": 7,
+   "n": 7,
+   "oran": 1.0,
+   "ci95": [
+    0.646,
+    1.0
+   ]
+  },
+  "talep_recall_cikar": {
+   "k": 5,
+   "n": 7,
+   "oran": 0.7143,
+   "ci95": [
+    0.359,
+    0.918
+   ]
+  },
+  "talep_sayisi_dogru": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "talep_ajan_tutarliligi": {
+   "k": 1,
+   "n": 3,
+   "oran": 0.3333,
+   "ci95": [
+    0.061,
+    0.792
+   ]
+  },
+  "konu_kalitesi": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "ilgi_dogrulugu": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "antet_dogrulugu": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "mevzuat_beklenen_hit": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "mevzuat_precision_at_3": {
+   "k": 3,
+   "n": 8,
+   "oran": 0.375,
+   "ci95": [
+    0.137,
+    0.694
+   ]
+  },
+  "alakasiz_mevzuat_orani": {
+   "k": 5,
+   "n": 8,
+   "oran": 0.625,
+   "ci95": [
+    0.306,
+    0.863
+   ]
+  },
+  "yasak_mevzuat_belge": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "eksik_tam_eslesme": {
+   "k": 3,
+   "n": 3,
+   "oran": 1.0,
+   "ci95": [
+    0.438,
+    1.0
+   ]
+  },
+  "eksik_precision": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "eksik_recall": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "pii_sizinti_belge": {
+   "k": 0,
+   "n": 3,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.562
+   ]
+  },
+  "json_kesilme_belge": {
+   "k": 2,
+   "n": 3,
+   "oran": 0.6667,
+   "ci95": [
+    0.208,
+    0.939
+   ]
+  },
+  "json_kesilme_cagri": 2,
+  "json_kesilme_butce": {
+   "1300": 2
+  },
+  "llm_cagri_toplam": 24,
+  "hata_belge": 0,
+  "sure_p50_s": 13.12,
+  "sure_p95_s": 13.19,
+  "node_ortalama_ms": {
+   "decompose": 6177,
+   "cikar": 1443,
+   "siniflandir": 1343,
+   "route_birim": 1311,
+   "yazi_taslak": 1281,
+   "ozetle": 1144,
+   "mevzuat_oner": 76,
+   "servis_birim": 7,
+   "verify": 1,
+   "kanit_baglama": 0,
+   "eksik_tespit": 0,
+   "arsiv": 0,
+   "risk_guard": 0,
+   "sla_triyaj": 0,
+   "denetim_izi": 0,
+   "finalize": 0
+  }
+ },
+ "basarisizliklar": {
+  "ilce_kadikoy_agac_kaldirim": [
+   "talep_cikar: bilgi_unsurlari 1/2",
+   "konu: uzun(22k),ham_kopya(21-gram) → Caferağa Mahallesi Moda Caddesi No: 140 önündeki çınar ağacının dalları balkonlara ve elek",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Kadıköy Belediye Başkanlığının 30.09.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "ilce_selcuklu_uclu": [
+   "konu: uzun(14k),ham_kopya(14-gram) → Kumru Sokak'ta asfaltta oluşan derin çukur nedeniyle iki araç lastiği patladı; çukurun ona",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Selçuklu Belediye Başkanlığının 01.10.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+   "json_kesik: 1 çağrı"
+  ],
+  "sgk_hizmet_gss": [
+   "birim: 'Basın-Halkla İlişkiler / Başvuru-Kayıt' (hedef_kategori, durum=llm_onerisi)",
+   "talep_cikar: bilgi_unsurlari 1/2",
+   "konu: uzun(20k),ham_kopya(20-gram) → 2003-2006 yılları arasında yurt dışında (Almanya) geçen çalışma sürelerimin borçlanma yolu",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Sosyal Güvenlik Kurumunun 18.09.2026 tarihli yazısı.",
+   "mevzuat: beklenen yok, top=['3071_dilekce_hakki_kanunu', '5176_etik_kurulu_kanunu']",
+   "mevzuat_yasak: ['5176_etik_kurulu_kanunu']",
+   "json_kesik: 1 çağrı"
+  ]
+ },
+ "belgeler": [
+  {
+   "id": "ilce_kadikoy_agac_kaldirim",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 8.11,
+   "llm": {
+    "cagri": 7,
+    "kesik": 0,
+    "tokens_out": 1379,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Kadıköy Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Park ve Bahçeler Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Kadıköy Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     true,
+     true
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(22k)",
+     "ham_kopya(21-gram)"
+    ],
+    "konu": "Caferağa Mahallesi Moda Caddesi No: 140 önündeki çınar ağacının dalları balkonlara ve elektrik tellerine değmektedir; fırtınada kırılma tehlikesi vardır. Ağacın budanmasını istiyor",
+    "kelime": 22
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Kadıköy Belediye Başkanlığının 30.09.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / KADIKÖY BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1558,
+    "servis_birim": 8,
+    "siniflandir": 1121,
+    "kanit_baglama": 0,
+    "decompose": 2834,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 170,
+    "ozetle": 1177,
+    "route_birim": 1338,
+    "yazi_taslak": 1182,
+    "verify": 3,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari 1/2",
+    "konu: uzun(22k),ham_kopya(21-gram) → Caferağa Mahallesi Moda Caddesi No: 140 önündeki çınar ağacının dalları balkonlara ve elek",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Kadıköy Belediye Başkanlığının 30.09.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "ilce_selcuklu_uclu",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 13.19,
+   "llm": {
+    "cagri": 9,
+    "kesik": 1,
+    "tokens_out": 2425,
+    "kesik_butce": {
+     "1300": 1
+    }
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Selçuklu Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Fen İşleri Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Selçuklu Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 3,
+    "tahmin_sayi": 3,
+    "cikar_sayi": 3,
+    "sayi_dogru": true,
+    "decompose_bulunan": 3,
+    "cikar_bulunan": 3,
+    "alt_birim_dogru": [
+     true,
+     true,
+     true
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(14k)",
+     "ham_kopya(14-gram)"
+    ],
+    "konu": "Kumru Sokak'ta asfaltta oluşan derin çukur nedeniyle iki araç lastiği patladı; çukurun onarılmasını",
+    "kelime": 14
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Selçuklu Belediye Başkanlığının 01.10.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / SELÇUKLU BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1413,
+    "servis_birim": 1,
+    "siniflandir": 1378,
+    "kanit_baglama": 0,
+    "decompose": 7697,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 31,
+    "ozetle": 1210,
+    "route_birim": 1401,
+    "yazi_taslak": 1401,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "konu: uzun(14k),ham_kopya(14-gram) → Kumru Sokak'ta asfaltta oluşan derin çukur nedeniyle iki araç lastiği patladı; çukurun ona",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Selçuklu Belediye Başkanlığının 01.10.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+    "json_kesik: 1 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "sgk_hizmet_gss",
+   "kurum_tipi": "sgk",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 13.12,
+   "llm": {
+    "cagri": 8,
+    "kesik": 1,
+    "tokens_out": 2206,
+    "kesik_butce": {
+     "1300": 1
+    }
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Basın-Halkla İlişkiler / Başvuru-Kayıt",
+    "kaynak": "hedef_kategori",
+    "durum": "llm_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Sosyal Güvenlik Kurumu Ankara Sosyal Güvenlik İl Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     false,
+     false
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(20k)",
+     "ham_kopya(20-gram)"
+    ],
+    "konu": "2003-2006 yılları arasında yurt dışında (Almanya) geçen çalışma sürelerimin borçlanma yoluyla hizmet dökümüme eklenmesini ve emeklilik tarihimin yeniden hesaplanmasını",
+    "kelime": 20
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Sosyal Güvenlik Kurumunun 18.09.2026 tarihli yazısı.",
+    "muhatap": "Strateji Geliştirme / Mali İşler"
+   },
+   "antet": {
+    "antet": "T.C. / SOSYAL GÜVENLİK KURUMU ANKARA SOSYAL GÜVENLİK İL MÜDÜRLÜĞÜ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "3071_dilekce_hakki_kanunu",
+     "5176_etik_kurulu_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1359,
+    "servis_birim": 13,
+    "siniflandir": 1532,
+    "kanit_baglama": 0,
+    "decompose": 8000,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 29,
+    "ozetle": 1046,
+    "route_birim": 1195,
+    "yazi_taslak": 1262,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Basın-Halkla İlişkiler / Başvuru-Kayıt' (hedef_kategori, durum=llm_onerisi)",
+    "talep_cikar: bilgi_unsurlari 1/2",
+    "konu: uzun(20k),ham_kopya(20-gram) → 2003-2006 yılları arasında yurt dışında (Almanya) geçen çalışma sürelerimin borçlanma yolu",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Sosyal Güvenlik Kurumunun 18.09.2026 tarihli yazısı.",
+    "mevzuat: beklenen yok, top=['3071_dilekce_hakki_kanunu', '5176_etik_kurulu_kanunu']",
+    "mevzuat_yasak: ['5176_etik_kurulu_kanunu']",
+    "json_kesik: 1 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  }
+ ]
+}

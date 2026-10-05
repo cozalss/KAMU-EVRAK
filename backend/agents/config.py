@@ -766,6 +766,11 @@ def etkili_birim(state: dict) -> str:
     hizmet müdürlüğü → kaba kategori. Böylece karar kartı, taslak, arşiv ve sonuç bildirimi
     aynı birim adını kullanır; doğrulanmamış önerinin onay durumu ayrıca state'te korunur.
     """
+    # Tek doğruluk kaynağı (agents/yonlendirme.py); DISARIDA'da '<Alıcı Kurum> (devir)'.
+    from agents.yonlendirme import gosterim_birimi
+
+    if gosterim := gosterim_birimi(state.get("yonlendirme")):
+        return gosterim
     hb = state.get("hedef_birim")
     if hb:
         return birim_tr(hb)

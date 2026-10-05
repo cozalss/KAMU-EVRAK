@@ -122,8 +122,13 @@ class EvrakState(TypedDict):
     # Ajan başarısız/grounding-fail (REVİZYON 4): eski 9-set kategori GERÇEK birim değil,
     # yalnız öneri. durum="fallback_onerisi" + insan_onayi_gerekli=True bunu işaretler.
     hedef_kategori: NotRequired[str | None]
-    durum: NotRequired[str]                  # "kaynak_dogrulandi" | "fallback_onerisi"
+    durum: NotRequired[str]  # "kaynak_dogrulandi" | "llm_onerisi" | "fallback_onerisi"
     insan_onayi_gerekli: NotRequired[bool]
+    # YÖNLENDİRME TEK DOĞRULUK KAYNAĞI (agents/yonlendirme.py): {karar, alici_kurum, birim,
+    # gerekce, insan_onayi_gerekli, devir, talepler[], uretim}. Yukarıdaki düz alanlar ve
+    # `gosterim_birimi` (memurun göreceği tek birim metni) bundan türetilir.
+    yonlendirme: NotRequired[dict[str, Any]]
+    gosterim_birimi: NotRequired[str]
     # ADDITIVE: içerikten türetilen somut hizmet müdürlüğü önerisi (5393/norm kadro);
     # {kod, ad, sinyal}. Ölçülen hedef_birim'i DEĞİŞTİRMEZ — danışma katmanı.
     servis_birimi: NotRequired[dict[str, Any]]

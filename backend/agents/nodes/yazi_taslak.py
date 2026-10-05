@@ -61,6 +61,13 @@ def _hazirlayan_birim(state: dict[str, Any], yazi_turu: str) -> str:
         hedef = state.get("hedef_birim")
         if isinstance(hedef, str) and hedef.strip():
             return hedef.strip()
+    # Yönlendirme tek doğruluk kaynağı (agents/yonlendirme.py): kurum içindeki karar birimi
+    # (doğrulanmamış öneri de olsa) içerik anahtar sözcüğüyle seçilen servis biriminden önce
+    # gelir; aksi hâlde antet ile arşiv/bildirim farklı birim söyler. Taslak zaten onaya gider.
+    yon = state.get("yonlendirme") or {}
+    yon_birim = (yon.get("birim") or {}).get("ad") if yon.get("karar") in ("ICERIDE", "KARMA") else ""
+    if yazi_turu != "ust_yazi" and isinstance(yon_birim, str) and yon_birim.strip():
+        return yon_birim.strip()
     servis = state.get("servis_birimi") or {}
     if isinstance(servis, dict):
         return str(servis.get("ad", "") or "")

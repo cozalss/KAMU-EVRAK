@@ -242,8 +242,11 @@ class TestPipelineBagcilarGurultu:
 
         assert sonuc["evrak_turu"] == "sikayet"
         assert sonuc["hedef_kurum_adi"] == "Bağcılar Belediyesi"
-        assert sonuc["hedef_birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
-        assert sonuc["durum"] == "kaynak_dogrulandi"
+        # Mock (modelsiz) yol öneri üretir; otomatik havale yalnız model kararı + üçlü
+        # grounding ile (teşhis 2026-10-05). Tutarlılık sözleşmesi aynen korunur.
+        assert sonuc["hedef_birim_oneri"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert sonuc["gosterim_birimi"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert sonuc["insan_onayi_gerekli"] is True
         assert sonuc["yazi_turu"] == "cevabi_yazi"
         assert sonuc["antet_meta"]["idare"] == "BAĞCILAR BELEDİYESİ"
         assert sonuc["antet_meta"]["birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"

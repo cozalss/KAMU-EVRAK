@@ -177,6 +177,11 @@ class AltTalepSchema(BaseModel):
     tur_tr: str = ""
     birim: str = ""
     birim_tr: str = ""
+    # Talep bazlı yönlendirme (route_ajan, additive): ICERIDE|DISARIDA|BELIRSIZ + gerçek birim.
+    id: str = ""
+    yetki: str = ""
+    birim_ad: str = ""
+    yetkili_kurum_ad: str = ""
     yazi_turu: str = ""
     cevap_suresi: str = ""        # "30 gün (3071 s.K. m.7)" vb.
     sla_durum: str = ""           # NORMAL | GECIKMIS | KRITIK | tanimsiz | tarih_yok
@@ -216,8 +221,11 @@ class ProcessResponse(BaseModel):
     hedef_birim_kaynak: dict = Field(default_factory=dict)   # KaynakKaydi (grounding kanıtı)
     canli_kaynak: dict = Field(default_factory=dict)         # doğrulanmamış canlı kaynak künyesi
     hedef_kategori: str | None = None                        # dürüst fallback köprüsü (eski 9-set)
-    durum: str = ""                                          # "kaynak_dogrulandi" | "fallback_onerisi"
+    durum: str = ""            # "kaynak_dogrulandi" | "llm_onerisi" | "fallback_onerisi"
     insan_onayi_gerekli: bool = False
+    # Yönlendirme tek doğruluk kaynağı (agents/yonlendirme.py) + memurun göreceği birim metni.
+    yonlendirme: dict = Field(default_factory=dict)
+    gosterim_birimi: str = ""
     yazi_turu: str = ""
     # Dinamik yazı planı gerekçesi ("neden bu tür/muhatap"); boş = statik eşleme kullanıldı.
     yazi_plan_notu: str = ""

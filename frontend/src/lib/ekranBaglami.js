@@ -1,3 +1,4 @@
+import { gosterimBirimi } from "./gosterimBirimi.js";
 /* ekranBaglami — "asistan ekranı takip etsin": kullanıcının O AN gördüğü şeyin sunucuya
    gönderilebilir, KÜÇÜK ve maskelenmiş özeti.
 
@@ -55,7 +56,7 @@ export function evrakOzeti(kayit) {
   const alanlar = {
     ad: kirp(baslikAl(kayit), SINIR.ad),
     tur: kirp(r.evrak_turu, SINIR.metin),
-    birim: kirp(r.hedef_birim || r.hedef_kategori, SINIR.ad),
+    birim: kirp(gosterimBirimi(r), SINIR.ad),
     bant: kirp(r.risk_metadata?.bant || kayit.bant, SINIR.metin),
     ozet: kirp(r.ozet || r.yonetici_ozeti, SINIR.ozet),
     durum: kirp(kayit.onay_durumu || r.onay_durumu, SINIR.metin),

@@ -55,7 +55,9 @@ async def test_ornek_dilekce_resmi_kurum_birimine_yonlendirilir(
     )
 
     assert out["hedef_kurum_adi"] == kurum
-    assert out["hedef_birim"] == beklenen_birim
-    assert out["durum"] == "kaynak_dogrulandi"
-    assert out["insan_onayi_gerekli"] is False
+    # Modelsiz (mock) yol öneri üretir; otomatik havale yalnız model kararı + üçlü grounding
+    # ile olur (teşhis 2026-10-05; bkz. test_yonlendirme.py).
+    assert out["hedef_birim_oneri"] == beklenen_birim
+    assert out["hedef_birim_kaynak"]["kaynak_tipi"] == "kurum_ozel"
+    assert out["insan_onayi_gerekli"] is True
     assert out["hedef_birim_kaynak"]["kaynak_tipi"] == "kurum_ozel"

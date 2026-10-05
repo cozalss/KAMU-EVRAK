@@ -1,0 +1,914 @@
+{
+ "etiket": "yonlendirme",
+ "tarih": "2026-10-05T19:10:13.756617+00:00",
+ "git": {
+  "sha": "63c0bd0fcab55b504e237d0b2883b1a501815667",
+  "kirli": true
+ },
+ "gold": "e2e_gercek_gold.jsonl",
+ "n": 5,
+ "llm_mode": "openai",
+ "model": "deepseek-v4-flash",
+ "eszamanlilik": 6,
+ "sure_toplam_s": 20.8,
+ "kurallar": {
+  "konu_azami_kelime": 12,
+  "ham_kopya_ngram": 6,
+  "mevzuat_k": 3,
+  "bilesik": [
+   "hata",
+   "tur",
+   "birim",
+   "yetki",
+   "talep",
+   "konu",
+   "ilgi",
+   "antet",
+   "pii"
+  ]
+ },
+ "metrikler": {
+  "kurumda_kullanilabilir": {
+   "k": 0,
+   "n": 5,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.434
+   ]
+  },
+  "tur_dogruluk": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "tur_dogruluk_kabul": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "tur_dogruluk_operasyonel": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "muhatap_dogruluk": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "birim_dogruluk": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "birim_dogruluk_alt_talep": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "routing_fallback": {
+   "k": 0,
+   "n": 5,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.434
+   ]
+  },
+  "yetki_tespit_yapisal": {
+   "k": 4,
+   "n": 4,
+   "oran": 1.0,
+   "ci95": [
+    0.51,
+    1.0
+   ]
+  },
+  "yetki_tespit_metinsel": {
+   "k": 4,
+   "n": 4,
+   "oran": 1.0,
+   "ci95": [
+    0.51,
+    1.0
+   ]
+  },
+  "yetki_yanlis_alarm": {
+   "k": 0,
+   "n": 1,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.793
+   ]
+  },
+  "talep_recall_decompose": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "talep_recall_cikar": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "talep_sayisi_dogru": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "talep_ajan_tutarliligi": {
+   "k": 1,
+   "n": 2,
+   "oran": 0.5,
+   "ci95": [
+    0.095,
+    0.905
+   ]
+  },
+  "konu_kalitesi": {
+   "k": 3,
+   "n": 5,
+   "oran": 0.6,
+   "ci95": [
+    0.231,
+    0.882
+   ]
+  },
+  "ilgi_dogrulugu": {
+   "k": 1,
+   "n": 5,
+   "oran": 0.2,
+   "ci95": [
+    0.036,
+    0.624
+   ]
+  },
+  "antet_dogrulugu": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "mevzuat_beklenen_hit": {
+   "k": 4,
+   "n": 5,
+   "oran": 0.8,
+   "ci95": [
+    0.376,
+    0.964
+   ]
+  },
+  "mevzuat_precision_at_3": {
+   "k": 4,
+   "n": 15,
+   "oran": 0.2667,
+   "ci95": [
+    0.109,
+    0.52
+   ]
+  },
+  "alakasiz_mevzuat_orani": {
+   "k": 11,
+   "n": 15,
+   "oran": 0.7333,
+   "ci95": [
+    0.48,
+    0.891
+   ]
+  },
+  "yasak_mevzuat_belge": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "eksik_tam_eslesme": {
+   "k": 5,
+   "n": 5,
+   "oran": 1.0,
+   "ci95": [
+    0.566,
+    1.0
+   ]
+  },
+  "eksik_precision": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "eksik_recall": {
+   "k": 0,
+   "n": 0,
+   "oran": null,
+   "ci95": [
+    0.0,
+    1.0
+   ]
+  },
+  "pii_sizinti_belge": {
+   "k": 0,
+   "n": 5,
+   "oran": 0.0,
+   "ci95": [
+    0.0,
+    0.434
+   ]
+  },
+  "json_kesilme_belge": {
+   "k": 3,
+   "n": 5,
+   "oran": 0.6,
+   "ci95": [
+    0.231,
+    0.882
+   ]
+  },
+  "json_kesilme_cagri": 3,
+  "json_kesilme_butce": {
+   "1300": 2,
+   "900": 1
+  },
+  "llm_cagri_toplam": 33,
+  "hata_belge": 0,
+  "sure_p50_s": 10.79,
+  "sure_p95_s": 14.01,
+  "node_ortalama_ms": {
+   "decompose": 2982,
+   "route_birim": 2170,
+   "yazi_taslak": 1907,
+   "siniflandir": 1495,
+   "cikar": 1385,
+   "ozetle": 1178,
+   "arsiv": 416,
+   "mevzuat_oner": 145,
+   "servis_birim": 4,
+   "verify": 1,
+   "kanit_baglama": 0,
+   "eksik_tespit": 0,
+   "risk_guard": 0,
+   "sla_triyaj": 0,
+   "denetim_izi": 0,
+   "finalize": 0
+  }
+ },
+ "basarisizliklar": {
+  "ilce_kecioren_cukur_su": [
+   "talep_cikar: bilgi_unsurlari 1/2",
+   "konu: uzun(20k),ham_kopya(20-gram),birinci_sahis_fiil → Sokağımızda iki aydır büyük bir çukur bulunmakta, araçlar ve yayalar için tehlike oluşturm",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Belediye Başkanlığının 02.10.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+   "json_kesik: 1 çağrı"
+  ],
+  "ilce_polatli_elektrik": [
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Polatlı Belediye Başkanlığının 29.09.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "ilce_selcuklu_uclu": [
+   "konu: uzun(14k),ham_kopya(14-gram) → Kumru Sokak'ta asfaltta oluşan derin çukur nedeniyle iki araç lastiği patladı; çukurun ona",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Selçuklu Belediye Başkanlığının 01.10.2026 tarihli yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+   "json_kesik: 1 çağrı"
+  ],
+  "bb_ankara_su_faturasi": [
+   "talep_cikar: bilgi_unsurlari.talepler boş",
+   "ilgi: gonderen_yanlis,belge_turu_yanlis → Ankara Büyükşehir Belediye Başkanlığının 21.09.2026 tarihli ve 4410023 sayılı yazısı.",
+   "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+  ],
+  "valilik_ankara_dernek": [
+   "birim: 'Açık Kapı Şube Müdürlüğü' (gosterim_birimi, durum=llm_onerisi)",
+   "mevzuat: beklenen yok, top=['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi', '6356_sendikalar_toplu_is_sozlesmesi_kanunu']",
+   "mevzuat_yasak: ['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi']",
+   "json_kesik: 1 çağrı"
+  ]
+ },
+ "belgeler": [
+  {
+   "id": "ilce_kecioren_cukur_su",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 13.65,
+   "llm": {
+    "cagri": 9,
+    "kesik": 1,
+    "tokens_out": 2249,
+    "kesik_butce": {
+     "1300": 1
+    }
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Keçiören Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Fen İşleri Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Keçiören Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 2,
+    "tahmin_sayi": 2,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 2,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     true,
+     true
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(20k)",
+     "ham_kopya(20-gram)",
+     "birinci_sahis_fiil"
+    ],
+    "konu": "Sokağımızda iki aydır büyük bir çukur bulunmakta, araçlar ve yayalar için tehlike oluşturmaktadır. Çukurun en kısa sürede kapatılmasını talep ediyorum",
+    "kelime": 20
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Keçiören Belediye Başkanlığının 02.10.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / KEÇİÖREN BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "3071_dilekce_hakki_kanunu",
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1461,
+    "servis_birim": 8,
+    "siniflandir": 1192,
+    "kanit_baglama": 0,
+    "decompose": 7301,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 39,
+    "ozetle": 1422,
+    "route_birim": 1400,
+    "yazi_taslak": 1054,
+    "verify": 1,
+    "arsiv": 928,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari 1/2",
+    "konu: uzun(20k),ham_kopya(20-gram),birinci_sahis_fiil → Sokağımızda iki aydır büyük bir çukur bulunmakta, araçlar ve yayalar için tehlike oluşturm",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Keçiören Belediye Başkanlığının 02.10.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+    "json_kesik: 1 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "ilce_polatli_elektrik",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 6.12,
+   "llm": {
+    "cagri": 4,
+    "kesik": 0,
+    "tokens_out": 461,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Polatlı Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Başkent Elektrik Dağıtım A.Ş. (devir)",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Başkent Elektrik Dağıtım A.Ş."
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 1,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": false
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Elektrik kesintilerinin giderilmesi ve zararın karşılanması talebi",
+    "kelime": 7
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Polatlı Belediye Başkanlığının 29.09.2026 tarihli yazısı.",
+    "muhatap": "BAŞKENT ELEKTRİK DAĞITIM A.Ş."
+   },
+   "antet": {
+    "antet": "T.C. / POLATLI BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1299,
+    "servis_birim": 1,
+    "siniflandir": 1426,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 299,
+    "ozetle": 1088,
+    "route_birim": 1199,
+    "yazi_taslak": 2241,
+    "verify": 3,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Polatlı Belediye Başkanlığının 29.09.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "ilce_selcuklu_uclu",
+   "kurum_tipi": "ilce_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": true,
+   "hata": null,
+   "sure_s": 14.01,
+   "llm": {
+    "cagri": 9,
+    "kesik": 1,
+    "tokens_out": 2403,
+    "kesik_butce": {
+     "1300": 1
+    }
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Selçuklu Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Fen İşleri Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Selçuklu Belediyesi"
+   },
+   "talep": {
+    "gold_sayi": 3,
+    "tahmin_sayi": 3,
+    "cikar_sayi": 3,
+    "sayi_dogru": true,
+    "decompose_bulunan": 3,
+    "cikar_bulunan": 3,
+    "alt_birim_dogru": [
+     true,
+     false,
+     true
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": false,
+    "neden": [
+     "uzun(14k)",
+     "ham_kopya(14-gram)"
+    ],
+    "konu": "Kumru Sokak'ta asfaltta oluşan derin çukur nedeniyle iki araç lastiği patladı; çukurun onarılmasını",
+    "kelime": 14
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Selçuklu Belediye Başkanlığının 01.10.2026 tarihli yazısı.",
+    "muhatap": "İlgili Teknik / Ana Hizmet Dairesi"
+   },
+   "antet": {
+    "antet": "T.C. / SELÇUKLU BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1448,
+    "servis_birim": 1,
+    "siniflandir": 1913,
+    "kanit_baglama": 0,
+    "decompose": 7613,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 29,
+    "ozetle": 1243,
+    "route_birim": 1564,
+    "yazi_taslak": 1544,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "konu: uzun(14k),ham_kopya(14-gram) → Kumru Sokak'ta asfaltta oluşan derin çukur nedeniyle iki araç lastiği patladı; çukurun ona",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Selçuklu Belediye Başkanlığının 01.10.2026 tarihli yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']",
+    "json_kesik: 1 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "bb_ankara_su_faturasi",
+   "kurum_tipi": "buyuksehir_belediyesi",
+   "yetki_beklenen": "DISARIDA",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 7.27,
+   "llm": {
+    "cagri": 5,
+    "kesik": 0,
+    "tokens_out": 484,
+    "kesik_butce": {}
+   },
+   "tur": {
+    "tahmin": "dilekce",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara Büyükşehir Belediyesi",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Ankara Su ve Kanalizasyon İdaresi Genel Müdürlüğü (devir)",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": true
+   },
+   "yetki": {
+    "beklenen": "DISARIDA",
+    "yapisal": true,
+    "metinsel": true,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Su ve Kanalizasyon İdaresi Genel Müdürlüğü"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 0,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Su faturası düzeltme talebi",
+    "kelime": 4
+   },
+   "ilgi": {
+    "gecti": false,
+    "neden": [
+     "gonderen_yanlis",
+     "belge_turu_yanlis"
+    ],
+    "ilgi": "Ankara Büyükşehir Belediye Başkanlığının 21.09.2026 tarihli ve 4410023 sayılı yazısı.",
+    "muhatap": "ANKARA SU VE KANALİZASYON İDARESİ GENEL MÜDÜRLÜĞÜNE"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA BÜYÜKŞEHİR BELEDİYESİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu",
+     "3071_dilekce_hakki_kanunu"
+    ],
+    "hit": true,
+    "ilgili_sayi": 1,
+    "yasak": [
+     "5690_cimer_cb_kararnamesi",
+     "5176_etik_kurulu_kanunu"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1272,
+    "servis_birim": 1,
+    "siniflandir": 1634,
+    "kanit_baglama": 1,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 87,
+    "ozetle": 1034,
+    "route_birim": 3284,
+    "yazi_taslak": 20,
+    "verify": 1,
+    "arsiv": 1152,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "talep_cikar: bilgi_unsurlari.talepler boş",
+    "ilgi: gonderen_yanlis,belge_turu_yanlis → Ankara Büyükşehir Belediye Başkanlığının 21.09.2026 tarihli ve 4410023 sayılı yazısı.",
+    "mevzuat_yasak: ['5690_cimer_cb_kararnamesi', '5176_etik_kurulu_kanunu']"
+   ],
+   "kurumda_kullanilabilir": false
+  },
+  {
+   "id": "valilik_ankara_dernek",
+   "kurum_tipi": "valilik",
+   "yetki_beklenen": "ICERIDE",
+   "cok_talepli": false,
+   "hata": null,
+   "sure_s": 10.79,
+   "llm": {
+    "cagri": 6,
+    "kesik": 1,
+    "tokens_out": 1498,
+    "kesik_butce": {
+     "900": 1
+    }
+   },
+   "tur": {
+    "tahmin": "basvuru",
+    "kesin": true,
+    "kabul": true,
+    "operasyonel": true
+   },
+   "muhatap": {
+    "tahmin": "Ankara Valiliği",
+    "dogru": true
+   },
+   "birim": {
+    "tahmin": "Açık Kapı Şube Müdürlüğü",
+    "kaynak": "gosterim_birimi",
+    "durum": "llm_onerisi",
+    "dogru": false
+   },
+   "yetki": {
+    "beklenen": "ICERIDE",
+    "yanlis_alarm": false,
+    "gecti": true,
+    "yetkili_tahmin": "Ankara Valiliği"
+   },
+   "talep": {
+    "gold_sayi": 1,
+    "tahmin_sayi": 1,
+    "cikar_sayi": 1,
+    "sayi_dogru": true,
+    "decompose_bulunan": 0,
+    "cikar_bulunan": 0,
+    "alt_birim_dogru": [
+     null
+    ],
+    "tutarli": true
+   },
+   "konu": {
+    "gecti": true,
+    "neden": [],
+    "konu": "Dernek kuruluş bildirimi",
+    "kelime": 3
+   },
+   "ilgi": {
+    "gecti": true,
+    "neden": [],
+    "ilgi": "01.10.2026 tarihli başvurunuz.",
+    "muhatap": "Sayın Ayşe Yılmaz"
+   },
+   "antet": {
+    "antet": "T.C. / ANKARA VALİLİĞİ / Yazı İşleri Birimi",
+    "gecti": true
+   },
+   "mevzuat": {
+    "top": [
+     "5176_etik_kurulu_kanunu",
+     "5690_cimer_cb_kararnamesi",
+     "6356_sendikalar_toplu_is_sozlesmesi_kanunu"
+    ],
+    "hit": false,
+    "ilgili_sayi": 0,
+    "yasak": [
+     "5176_etik_kurulu_kanunu",
+     "5690_cimer_cb_kararnamesi"
+    ]
+   },
+   "eksik": {
+    "tahmin": [],
+    "tam": true,
+    "tp": 0,
+    "fp": 0,
+    "fn": 0
+   },
+   "pii_sizinti": [],
+   "node_ms": {
+    "cikar": 1448,
+    "servis_birim": 13,
+    "siniflandir": 1310,
+    "kanit_baglama": 0,
+    "decompose": 0,
+    "eksik_tespit": 0,
+    "mevzuat_oner": 274,
+    "ozetle": 1106,
+    "route_birim": 3403,
+    "yazi_taslak": 4678,
+    "verify": 1,
+    "arsiv": 0,
+    "risk_guard": 0,
+    "sla_triyaj": 0,
+    "denetim_izi": 0,
+    "finalize": 0
+   },
+   "basarisizliklar": [
+    "birim: 'Açık Kapı Şube Müdürlüğü' (gosterim_birimi, durum=llm_onerisi)",
+    "mevzuat: beklenen yok, top=['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi', '6356_sendikalar_toplu_is_sozlesmesi_kanunu']",
+    "mevzuat_yasak: ['5176_etik_kurulu_kanunu', '5690_cimer_cb_kararnamesi']",
+    "json_kesik: 1 çağrı"
+   ],
+   "kurumda_kullanilabilir": false
+  }
+ ]
+}

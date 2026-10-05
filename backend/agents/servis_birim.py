@@ -13,6 +13,8 @@ Bu bir DANIŞMA sinyalidir; resmî havale kararı yetkili personeldedir.
 
 from __future__ import annotations
 
+import re
+
 import structlog
 
 from agents.config import BIRIM_TR
@@ -93,6 +95,15 @@ _SERVIS_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
 _SERVIS_KEYWORDS_DICT: dict[str, tuple[str, ...]] = dict(_SERVIS_KEYWORDS)
 
 
+def _kelime_basinda(kok: str, metin: str) -> bool:
+    """Kök bir SÖZCÜĞÜN BAŞINDA geçiyor mu (çekim eki serbest, sözcük içi eşleşme yok).
+
+    Teşhis 2026-10-05: alt-dize eşleşmesi 'ilkokulunun' içindeki 'koku' yüzünden valiliğe
+    Temizlik/Çevre, 'sayaç' yüzünden doğalgaz evrakına Su ve Kanalizasyon öneriyordu.
+    """
+    return re.search(rf"(?<![0-9a-zçğıöşüâîû]){re.escape(kok)}", metin) is not None
+
+
 def oner_servis_birimi(text: str) -> dict[str, object] | None:
     """Evrak metninden en olası hizmet müdürlüğünü türet (eşleşme yoksa None).
 
@@ -106,7 +117,7 @@ def oner_servis_birimi(text: str) -> dict[str, object] | None:
     best_kod: str | None = None
     best_hits: tuple[str, ...] = ()
     for kod, kws in _SERVIS_KEYWORDS:
-        hits = tuple(kw for kw in kws if tr_lower(kw) in t)
+        hits = tuple(kw for kw in kws if _kelime_basinda(tr_lower(kw), t))
         if len(hits) > len(best_hits):
             best_kod, best_hits = kod, hits
     if best_kod is None:

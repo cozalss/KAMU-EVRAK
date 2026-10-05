@@ -44,12 +44,18 @@ _BAGCILAR_GURULTU = {
 # --------------------------------------------------------------------------- #
 
 class TestKaynakDogrulanmisBirim:
-    async def test_resmi_kaynak_otomatik_havale_uretir(self):
-        """Resmi kurum kaynağı eşleşirse hedef birim memur onaysız üretilebilir."""
+    async def test_resmi_kaynak_modelsiz_oneri_ve_insan_onayi(self):
+        """Model yokken (mock) resmî kaynak eşleşmesi ÖNERİdir; otomatik havale üretilmez.
+
+        Teşhis 2026-10-05: BM25 sırası bir yargı değildir (konu cümlesindeki küçük farkla
+        Mali→Fen arasında gidip geliyordu). Otomatik havale yalnız model kararı + üçlü
+        grounding birlikte olduğunda (bkz. test_yonlendirme.py).
+        """
         out = await route_birim_node(dict(_RUHSAT))
-        assert out["hedef_birim"] == "Ruhsat ve Denetim Müdürlüğü"
-        assert out["durum"] == "kaynak_dogrulandi"
-        assert out["insan_onayi_gerekli"] is False
+        assert out["hedef_birim"] is None
+        assert out["hedef_birim_oneri"] == "Ruhsat ve Denetim Müdürlüğü"
+        assert out["durum"] == "fallback_onerisi"
+        assert out["insan_onayi_gerekli"] is True
 
     async def test_kaynak_kunyesi_tam(self):
         """hedef_birim_kaynak tam künye taşır (REVİZYON 6: kurum + belge + hash)."""
@@ -71,9 +77,8 @@ class TestKaynakDogrulanmisBirim:
         """Gürültü şikâyeti Teftiş/Zabıta'ya değil, güncel çevre denetimi birimine gider."""
         out = await route_birim_node(dict(_BAGCILAR_GURULTU))
         assert out["hedef_kurum_adi"] == "Bağcılar Belediyesi"
-        assert out["hedef_birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
-        assert out["durum"] == "kaynak_dogrulandi"
-        assert out["insan_onayi_gerekli"] is False
+        assert out["hedef_birim_oneri"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert out["insan_onayi_gerekli"] is True  # modelsiz yol: öneri
         assert "20260305_iklimdegisikligivesifiratik.pdf" in (
             out["hedef_birim_kaynak"]["url_veya_belge_kimligi"]
         )
@@ -93,8 +98,7 @@ class TestKaynakDogrulanmisBirim:
             },
         }
         out = await route_birim_node(state)
-        assert out["hedef_birim"] == "Rehberlik ve Teftiş Kurulu Müdürlüğü"
-        assert out["durum"] == "kaynak_dogrulandi"
+        assert out["hedef_birim_oneri"] == "Rehberlik ve Teftiş Kurulu Müdürlüğü"
 
 
 # --------------------------------------------------------------------------- #
@@ -227,29 +231,32 @@ class TestMockDeterminizm:
     async def test_ayni_girdi_ayni_cikti(self):
         a = await route_birim_node(dict(_RUHSAT))
         b = await route_birim_node(dict(_RUHSAT))
-        assert a["hedef_birim"] == b["hedef_birim"] == "Ruhsat ve Denetim Müdürlüğü"
-        assert a["durum"] == b["durum"] == "kaynak_dogrulandi"
+        assert a["hedef_birim_oneri"] == b["hedef_birim_oneri"] == "Ruhsat ve Denetim Müdürlüğü"
+        assert a["yonlendirme"] == b["yonlendirme"]
 
     def test_resmi_kaynak_kurum_ozel_dondurur(self):
         adaylar = kaynak_ara("yenimahalle-belediyesi", "işyeri açma çalışma ruhsatı", tur="belediye")
         assert adaylar and adaylar[0]["kaynak_tipi"] == "kurum_ozel"
         assert adaylar[0]["birim_ad"] == "Ruhsat ve Denetim Müdürlüğü"
 
-    async def test_llm_hatasinda_dogrulanmis_retrieval_sirasi_kullanilir(self, monkeypatch):
+    async def test_llm_hatasinda_oneri_var_otomatik_havale_yok(self, monkeypatch):
+        """Model yanıtı alınamazsa öneri resmî kaynak sırasından gelir ama ASLA
+        'kaynak_dogrulandi' + otomatik havale üretilmez (teşhis: buyuksehir_su vakası)."""
         import agents.nodes.route_ajan as route_mod
 
         async def _llm_hatasi(*_args, **_kwargs):
             return None
 
         monkeypatch.setattr(route_mod, "real_llm", lambda: object())
-        monkeypatch.setattr(route_mod, "_llm_sec", _llm_hatasi)
+        monkeypatch.setattr(route_mod, "llm_json", _llm_hatasi)
 
         out = await route_birim_node(dict(_BAGCILAR_GURULTU))
 
-        assert out["hedef_birim"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
-        assert out["durum"] == "kaynak_dogrulandi"
-        assert out["hedef_birim_kaynak"]["kaynak_guven"] == "resmi_dogrulanmis"
-        assert "resmî kaynak sırası" in out["birim_reasoning"]
+        assert out["hedef_birim"] is None
+        assert out["hedef_birim_oneri"] == "İklim Değişikliği ve Sıfır Atık Müdürlüğü"
+        assert out["durum"] == "fallback_onerisi"
+        assert out["insan_onayi_gerekli"] is True
+        assert "Model yanıtı alınamadı" in out["birim_reasoning"]
 
 
 class TestKapsamAliasCozumleme:
@@ -341,8 +348,7 @@ class TestRoutingContext:
         }
         out = await route_birim_node(state)
         assert out["hedef_kurum_adi"] == "Türkiye İstatistik Kurumu"
-        assert out["hedef_birim"] == "Demografi İstatistikleri Daire Başkanlığı"
-        assert out["durum"] == "kaynak_dogrulandi"
+        assert out["hedef_birim_oneri"] == "Demografi İstatistikleri Daire Başkanlığı"
 
     async def test_body_context_routes_to_fen_isleri(self):
         state = {

@@ -229,6 +229,10 @@ def tur_degerlendir(state: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
 def birim_tahmini(state: dict[str, Any]) -> tuple[str, str]:
     """Memurun gördüğü havale birimi + hangi alandan geldiği (öncelik sırası sabit)."""
     from agents.config import BIRIM_TR
+    # Yönlendirme tek doğruluk kaynağının memura gösterdiği metin (agents/yonlendirme.py);
+    # varsa arşiv/bildirim/arayüz bunu basar → ölçülen de budur.
+    if state.get("gosterim_birimi"):
+        return state["gosterim_birimi"], "gosterim_birimi"
     if state.get("hedef_birim"):
         return state["hedef_birim"], "hedef_birim"
     if state.get("hedef_birim_oneri"):

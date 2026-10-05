@@ -198,12 +198,39 @@ def _slug_chunks(kurum_slug: str) -> tuple[dict[str, Any], ...]:
     return _slug_chunks_revision(kurum_slug, _index_revision())
 
 
+# VERİ KAPISI (teşhis 2026-10-05): dosya başlığı `@DOGRULAMA: resmi` taşıyıp kendi @NOT'unda
+# görev tanımlarının TÜRETİLDİĞİNİ / dosyanın "doğrulanmamış (aday)" bırakıldığını söyleyen
+# kaynaklar vardı (ABB dahil 22 dosya). Birim ADI resmî sayfadan alınmış olsa da üçlü
+# grounding'in (c) ayağı GÖREV metnine dayanır; yapay zekâyla türetilmiş görev metni bir
+# birimi otomatik havaleye yetkili kılamaz. Dosyanın kendi beyanı esas alınır (kelime listesi
+# değil: başlıktaki @NOT satırı veri sözleşmesinin parçasıdır).
+_TURETILMIS_NOT_RE = re.compile(r"türetilmiş|doğrulanmamış \(aday\)")
+
+
+@lru_cache(maxsize=512)
+def gorev_turetilmis(kaynak_dosya: str) -> bool:
+    """Kaynak dosyanın @NOT başlığı görev tanımlarının türetildiğini beyan ediyor mu?"""
+    if not kaynak_dosya:
+        return False
+    yol = _ROOT / "data" / "teskilat" / kaynak_dosya
+    try:
+        with yol.open(encoding="utf-8") as f:
+            for _, satir in zip(range(20), f, strict=False):
+                if satir.startswith("@NOT:") and _TURETILMIS_NOT_RE.search(tr_lower(satir)):
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def _resmi_mi(chunk: dict[str, Any]) -> bool:
+    return (chunk.get("kaynak_guven") == "resmi_dogrulanmis"
+            and not gorev_turetilmis(str(chunk.get("kaynak_dosya") or "")))
+
+
 def _resmi_slug_chunks(kurum_slug: str) -> tuple[dict[str, Any], ...]:
     """Only source records explicitly verified as official may ground an automatic route."""
-    return tuple(
-        c for c in _slug_chunks(kurum_slug)
-        if c.get("kaynak_guven") == "resmi_dogrulanmis"
-    )
+    return tuple(c for c in _slug_chunks(kurum_slug) if _resmi_mi(c))
 
 
 # BM25 modeli chunk kümesi başına bir kez kurulur. Anahtar İÇERİK İMZASIDIR, id() DEĞİL.
@@ -301,7 +328,9 @@ def _score(konu: str, chunks: tuple[dict[str, Any], ...]) -> list[tuple[float, d
     return [r for r in sirali if r[0] > 0]
 
 
-def _mevzuat_adaylari(kurum_slug: str, konu: str, top_k: int) -> list[dict[str, Any]]:
+def _mevzuat_adaylari(
+    kurum_slug: str, konu: str, top_k: int, *, tumu: bool = False,
+) -> list[dict[str, Any]]:
     """Adım 1.5 — mevzuatla tür geneli zorunlu kılınmış birimleri kuruma genişlet.
 
     Şablon chunk'ları puanlanır, sonra künye SOMUT kuruma yazılır (kurum_slug/kurum_ad).
@@ -322,7 +351,8 @@ def _mevzuat_adaylari(kurum_slug: str, konu: str, top_k: int) -> list[dict[str, 
     if not chunks:
         return []
     adaylar: list[dict[str, Any]] = []
-    for skor, chunk in _score(konu, chunks)[:top_k]:
+    skorlu = _tum_skorlu(konu, chunks) if tumu else _score(konu, chunks)
+    for skor, chunk in skorlu[:top_k]:
         aday = _aday(chunk, skor, MEVZUAT_KAYNAK_TIPI)
         aday["kurum_slug"] = genisleme.kurum_slug
         aday["kaynak_kurum"] = genisleme.kurum_ad
@@ -346,7 +376,8 @@ def _aday(chunk: dict[str, Any], skor: float, kaynak_tipi: str) -> dict[str, Any
         "icerik_hash": hashlib.sha256(metin.encode("utf-8")).hexdigest()[:16],
         "skor": round(skor, 3),
         "kaynak_tipi": kaynak_tipi,
-        "kaynak_guven": chunk.get("kaynak_guven", "aday"),
+        "kaynak_guven": (chunk.get("kaynak_guven", "aday") if _resmi_mi(chunk)
+                         or chunk.get("kaynak_guven") != "resmi_dogrulanmis" else "aday"),
         "kaynak_dosya": chunk.get("kaynak_dosya", ""),
         "kaynak_sha256": chunk.get("icerik_sha256", ""),
         "dogrulayan": chunk.get("dogrulayan", ""),
@@ -428,4 +459,94 @@ def kurum_korpusta_var(kurum_slug: str) -> bool:
     return bool(kanonik and _resmi_slug_chunks(kanonik))
 
 
-__all__ = ("kelime_uyum_skoru", "kurum_korpusta_var", "teskilat_birim_ara")
+def kurum_teskilatta_var(kurum_slug: str) -> bool:
+    """Kurumun KENDİ teşkilat kaydı (doğrulanmış ya da aday) korpusta var mı?"""
+    kanonik = _kanonik_slug(kurum_slug or "")
+    return bool(kanonik and _slug_chunks(kanonik))
+
+
+# Yönlendirme ajanına verilen TAM teşkilat sınırı. Kurum teşkilatları 15-40 birimdir ve
+# prompta sığar; seçim BM25'in sözcük kapısında değil modelin akıl yürütmesinde yapılmalı
+# (teşhis: Keçiören'de erken dönüş LLM'e tek seçenek bırakıyordu). Yalnız çok büyük
+# teşkilatta (> _TAM_TESKILAT_SINIRI) konuya en yakın _DARALTILMIS birim verilir.
+_TAM_TESKILAT_SINIRI = 60
+_DARALTILMIS = 25
+
+
+def birim_adi_anahtari(ad: str) -> str:
+    """Birim adının tekilleştirme anahtarı — 'Malî/Mali', büyük/küçük harf, boşluk farkı yok."""
+    katla = str.maketrans("âîûÂÎÛ", "aiuAIU")
+    return " ".join(_WORD_RE.findall(tr_lower((ad or "").translate(katla))))
+
+
+def kurum_birimleri(kurum_slug: str, konu: str, *, tur: str = "") -> list[dict[str, Any]]:
+    """Kurumun TÜM birimleri (doğrulanmış + kurumun kendi aday kaydı + mevzuat teşkilatı).
+
+    `teskilat_birim_ara`dan farkı: 'doğrulanmış kayıt eşleşirse yalnız onu döndür' erken
+    dönüşü YOKTUR ve top_k kesmesi yoktur. Aynı birim birden çok katmanda varsa güveni en
+    yüksek kayıt tutulur (doğrulanmış > mevzuat teşkilatı > aday > jenerik). Güven katmanı
+    SEÇİMİ değil yalnız DOĞRULAMA sonucunu belirler. Kurumun kendi kaydı yoksa liste tür-genel
+    şablonla tamamlanır (yalnız tür biliniyorsa); tür bilinmiyorsa şablon eklenmez — yanlış
+    tipin şablonunu aday diye göstermektense hiç aday üretmemek doğrudur.
+    """
+    kanonik = _kanonik_slug((kurum_slug or "").strip())
+    havuz: list[dict[str, Any]] = []
+    if kanonik:
+        resmi = _resmi_slug_chunks(kanonik)
+        ozel = tuple(c for c in _slug_chunks(kanonik) if c not in resmi)
+        havuz += [_aday(c, s, "kurum_ozel") for s, c in _tum_skorlu(konu, resmi)]
+        havuz += _mevzuat_adaylari(kanonik, konu, top_k=200, tumu=True)
+        havuz += [_aday(c, s, "aday") for s, c in _tum_skorlu(konu, ozel)]
+    elif kurum_slug:
+        havuz += _mevzuat_adaylari(kurum_slug, konu, top_k=200, tumu=True)
+    kendi_kaydi = any(a["kaynak_tipi"] in ("kurum_ozel", "aday") for a in havuz)
+    if not kendi_kaydi:
+        # Kurumun KENDİ teşkilat kaydı yoksa mevzuatın zorunlu kıldığı birimler (5393 m.48'de
+        # dört birim) gerçek teşkilatın küçük bir alt kümesidir; modelin seçim uzayı tür-genel
+        # şablonla tamamlanır (ölçüldü: Selçuklu'da çöp talebi için Temizlik İşleri seçenek
+        # bile değildi). Şablon birimi 'jenerik' etiketlidir: o kurumda fiilen kurulu
+        # olmayabilir, doğrulanmış sayılmaz, otomatik havale üretmez.
+        sablon = _tamamlayici_sablon(kurum_slug or "", tur)
+        if sablon:
+            havuz += [_aday(c, s, "jenerik") for s, c in _tum_skorlu(konu, _slug_chunks(sablon))]
+    tekil: dict[str, dict[str, Any]] = {}
+    for aday in havuz:
+        anahtar = birim_adi_anahtari(aday.get("birim_ad", ""))
+        if anahtar and anahtar not in tekil:
+            tekil[anahtar] = aday
+    birimler = list(tekil.values())
+    if len(birimler) > _TAM_TESKILAT_SINIRI:
+        birimler = sorted(birimler, key=lambda a: -float(a.get("skor") or 0))[:_DARALTILMIS]
+    return birimler
+
+
+# Tür → seçim uzayını tamamlayan tür-genel şablon. _TIP_JENERIK'ten farkı: valilik ve
+# kaymakamlık kendi iç birim şablonlarına eşlenir (il müdürlükleri ayrıca BAĞLI kuruluş
+# olarak route_ajan'da sicilden eklenir); büyükşehir ayrı şablon kullanır.
+_TIP_TAMAMLAYICI: dict[str, str] = {
+    **_TIP_JENERIK,
+    "valilik": "_genel-valilik",
+    "kaymakamlik": "_genel-kaymakamlik",
+}
+
+
+def _tamamlayici_sablon(kurum_slug: str, tur: str) -> str:
+    etkin = tur if tur in _TIP_TAMAMLAYICI else (sicil_turu(kurum_slug) or tur)
+    if etkin == "belediye" and "buyuksehir" in kurum_slug:
+        return "_genel-buyuksehir-belediyesi"
+    return _TIP_TAMAMLAYICI.get(etkin, "")
+
+
+def _tum_skorlu(
+    konu: str, chunks: tuple[dict[str, Any], ...],
+) -> list[tuple[float, dict[str, Any]]]:
+    """Tüm chunk'lar (skoru 0 olanlar DAHİL), konuya göre azalan sırada."""
+    skorlu = {id(c): s for s, c in _score(konu, chunks)}
+    return sorted(((skorlu.get(id(c), 0.0), c) for c in chunks),
+                  key=lambda x: (-x[0], x[1].get("birim_ad", "")))
+
+
+__all__ = (
+    "birim_adi_anahtari", "gorev_turetilmis", "kelime_uyum_skoru", "kurum_birimleri",
+    "kurum_korpusta_var", "kurum_teskilatta_var", "teskilat_birim_ara",
+)

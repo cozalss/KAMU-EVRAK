@@ -18,9 +18,24 @@ from typing import Any
 from agents.servis_birim import oner_servis_birimi
 
 
+def _muhatap_belediye(text: str) -> bool:
+    from agents.kurum_kimlik import muhatap_kurum_tespit
+    from core.sicil import sicil_turu
+
+    muhatap = muhatap_kurum_tespit(text, {})
+    if not muhatap.get("slug"):
+        return True  # hitapsız evrak: muhatap kurulum kurumudur (KURUM_ADI), engelleme
+    return muhatap.get("tur") == "belediye" or sicil_turu(muhatap.get("slug", "")) == "belediye"
+
+
 async def servis_birim_oneri_node(state: dict[str, Any]) -> dict[str, Any]:
     """İçerikten somut hizmet müdürlüğü önerisi (additive; hedef_birim'e dokunmaz)."""
     text = state.get("evrak_text", "") or ""
+    # Katalog BELEDİYE hizmet müdürlükleridir: valiliğe/üniversiteye belediye müdürlüğü
+    # önermek yanlış tipin birimini göstermektir (teşhis 2026-10-05). Muhatap belediye
+    # bilinen ve belediye değilse öneri yapılmaz; gerçek birimi route_ajan verir.
+    if not _muhatap_belediye(text):
+        return {}
     servis = oner_servis_birimi(text)
     return {"servis_birimi": servis} if servis else {}
 

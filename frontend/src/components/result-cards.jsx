@@ -8,6 +8,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTypewriter, usePrefersReducedMotion } from "../lib/useTypewriter.js";
 import { Icon } from "./icons.jsx";
+import { gosterimBirimi } from "../lib/gosterimBirimi.js";
 
 // --- Makine kodu → Türkçe etiket (backend config ile eşleşir; UI okunabilirliği) ---
 const EVRAK_TURU_TR = {
@@ -546,7 +547,7 @@ function MevzuatCard({ oneriler, nli }) {
 
 /* ---------- 5) Birim yönlendirme + alternatifler ---------- */
 function BirimCard({ r }) {
-  const hedef = r.hedef_birim || r.hedef_birim_oneri || r.hedef_kategori || "";
+  const hedef = gosterimBirimi(r);
   const alternatifler = r.birim_alternatifleri || [];
   const kurum = r.hedef_kurum_adi || r.hedef_birim_kaynak?.kaynak_kurum || r.yetkili_kurum?.ad || r.muhatap_kurum?.ad || "";
   const alts = alternatifler.filter((b) => b !== hedef);

@@ -156,6 +156,8 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         hedef_kategori=state.get("hedef_kategori"),
         durum=state.get("durum", ""),
         insan_onayi_gerekli=bool(state.get("insan_onayi_gerekli", False)),
+        yonlendirme=state.get("yonlendirme") or {},
+        gosterim_birimi=state.get("gosterim_birimi", "") or "",
         yazi_turu=state.get("yazi_turu", ""),
         yazi_plan_notu=state.get("yazi_plan_notu", ""),
         ust_veri=state.get("ust_veri", {}),
@@ -490,7 +492,8 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         # birim_reasoning + alternatifler: "neden bu birim" gerekçesi + değerlendirilen adaylar.
         "route_birim": ("hedef_birim", "hedef_kurum_adi", "hedef_birim_oneri", "birim_reasoning", "birim_alternatifleri", "servis_birimi",
                         "muhatap_kurum", "yetkili_kurum", "hedef_birim_kaynak", "hedef_kategori",
-                        "durum", "insan_onayi_gerekli", "canli_kaynak"),
+                        "durum", "insan_onayi_gerekli", "canli_kaynak",
+                        "yonlendirme", "gosterim_birimi", "alt_talepler"),
         # clarifier (ENV-gated) dur-ve-sor: sorular + durdurma işareti SSE'ye taşınsın.
         "clarifier": ("clarify_questions", "want_stop", "clarify_stop"),
         "yazi_taslak": ("yazi_turu", "format_uyumlu", "yazi_plan_notu", "ust_veri",

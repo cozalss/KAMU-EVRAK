@@ -203,13 +203,18 @@ def ilgi_degerlendir(ilgi: str | None, b: dict[str, Any], muhatap: str = "") -> 
     return {"gecti": not nedenler, "neden": nedenler, "ilgi": ilgi, "muhatap": muhatap}
 
 
+_TARIHSEL_BIRIM_YER_TUTUCU = "Yazı İşleri Birimi"
+
+
 def _birim_yer_tutucusu() -> str:
     """Render motorunun KURUM_BIRIM yokken bastığı jenerik birim satırı (tek kaynak:
-    yazi.models._DEMO_DEFAULTS) — sabit metin kopyalanmaz, motor değişirse ölçüt de değişir."""
+    yazi.models._DEMO_DEFAULTS). duzelt/yazi'dan beri varsayılan BOŞ (yer tutucu basılmaz);
+    eski koşumların yeniden puanlanabilmesi için tarihsel yer tutucu ölçülmeye devam eder."""
     with contextlib.suppress(Exception):
         from yazi.models import _DEMO_DEFAULTS
-        return str(_DEMO_DEFAULTS.get("birim_adi") or "")
-    return ""
+        if v := str(_DEMO_DEFAULTS.get("birim_adi") or ""):
+            return v
+    return _TARIHSEL_BIRIM_YER_TUTUCU
 
 
 def antet_degerlendir(md: str, b: dict[str, Any]) -> dict[str, Any]:

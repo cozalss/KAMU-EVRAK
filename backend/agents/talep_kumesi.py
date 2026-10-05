@@ -225,6 +225,10 @@ def ozet_kisa(kanit: str) -> str:
         kelimeler[-1] = kelimeler[-1][:-2]       # -sInI → -sI: 'kapatılmasını' → 'kapatılması'
     kelimeler = kelimeler[-6:]
     ozet = " ".join(kelimeler).strip(" ,;")
+    # Son-6 kesimi cümle ortasındaki bağlacı başa taşıyabilir ('ve fazla tahsil edilen
+    # …' → konu birleşiminde 'X ve Ve fazla …'); kesimden SONRA da bağlaç atılır.
+    if m := _BAS_BAGLAC.match(tr_lower(ozet)):
+        ozet = ozet[m.end():].strip(" ,;")
     return (tr_upper(ozet[:1]) + ozet[1:]) if ozet else _bosluk(kanit)[:60]
 
 

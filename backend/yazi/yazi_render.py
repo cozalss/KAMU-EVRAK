@@ -651,7 +651,8 @@ def build_context(
         # kendi nötr varsayılanı (MAKAMA / placeholder) devreye girer.
         muhatap = ""
     else:
-        muhatap = gonderen_muhatabi(gelen) or _muhatap(unsurlar)
+        muhatap = gonderen_muhatabi(gelen) or _basvurana_yer_tutucu(gelen, rol) \
+            or _muhatap(unsurlar)
         if turu == "bilgilendirme" and muhatap and not muhatap.startswith("Sayın "):
             # Bilgilendirme dağıtımlı bir DUYURUDUR (Yön. m.14 cevabi-yazı değil):
             # gönderen KURUM ise (genelge/talimat gibi) o kurumun direktifini KENDİ
@@ -703,6 +704,20 @@ def build_context(
         olur_alanlari=_olcu_meta(unsurlar) if turu == "olur" else {},
         ekler=ek_listesi(metin, gelen, baslik.rol),  # m.18: 'ilişikte' diyen yazıda Ek: zorunlu
     )
+
+
+BASVURAN_YER_TUTUCU = "Sayın [DOĞRULA: başvuru sahibinin adı]"
+
+
+def _basvurana_yer_tutucu(gelen: dict[str, Any], rol: str | None) -> str:
+    """Başvurana yazı (cevap/devir_bilgi) göndereni çözülemediğinde: `_muhatap()` yedeği
+    `unsurlar['kurum']`a — yani belgenin muhatabı olan KENDİ kurumumuza — düşer ve cevap
+    kendimize yazılırdı. Gerçek kişi göndereni bilinmiyorsa uydurulmaz, işaretlenir."""
+    if (rol or "") not in ("cevap", "devir_bilgi"):
+        return ""
+    if (gelen.get("gonderen_turu") or "gercek_kisi") != "gercek_kisi":
+        return ""
+    return BASVURAN_YER_TUTUCU
 
 
 def _kapanis_sec(turu: str, muhatap: str, gonderen_birim: str) -> str:

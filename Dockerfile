@@ -78,9 +78,18 @@ COPY --from=builder --chown=app:app /app /app
 # Frontend derlenmiş çıktısı — StaticFiles buradan sunar (bkz. main.py STATIK_KOK).
 COPY --from=frontend --chown=app:app /fe/dist /app/frontend_dist
 
+# Depo kökündeki data/ (mevzuat korpusu, teşkilat + kurum sicili, yazı şablonları, SDP
+# kataloğu, fontlar). Kod onu `Path(__file__).parents[N] / "data"` ile DEPO KÖKÜNDE arar;
+# backend /app'e kopyalandığı için konteynerde bu yol /data olur. Bu satır yokken
+# (Ağu–Eki 2026) canlı site hiçbir korpusu göremiyor ve her belgede sessizce
+# deterministik yedeğe düşüyordu (mevzuat = statik liste, sicil boş, şablon yok).
+# Bekçi: backend/tests/test_dockerfile_veri.py. Yazılabilir olmalı: canlı kaynak önbelleği
+# ve keşif harcama defteri çalışma anında buraya yazılır.
+COPY --chown=app:app data/ /data/
+
 # data/ ÇALIŞMA ANINDA yazılır (harcama defteri). Ücretsiz katmanda kalıcı disk YOKTUR;
 # dizin yine de var olmalı, yoksa ilk yazımda hata. Kalıcılık Supabase'e devredilir.
-RUN mkdir -p /app/data && chown -R app:app /app/data
+RUN mkdir -p /app/data && chown -R app:app /app/data /data
 
 USER app
 

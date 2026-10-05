@@ -189,13 +189,14 @@ def gelen_evrak_coz(
     if cins in _VATANDAS_CINSLERI:
         gonderen_idare = taban.get("gonderen_idare")  # CİMER anteti BİZİM kurumumuzdur
         tur = "tuzel_kisi" if _kurum_gorunumlu(gonderen_ad) else "gercek_kisi"
-    elif cins == "diger" and not gonderen_idare:
+    elif not gonderen_idare:
+        # Antet yok: gönderen adı kurum görünümlüyse idare, değilse kişi (iç rapor vb.).
         tur = "kamu_idaresi" if _kurum_gorunumlu(gonderen_ad) else (
-            "gercek_kisi" if gonderen_ad else "")
+            "gercek_kisi" if gonderen_ad else ("kamu_idaresi" if cins != "diger" else ""))
+        if tur == "kamu_idaresi" and gonderen_ad:
+            gonderen_idare = gonderen_ad
     else:
         tur = "kamu_idaresi"
-        if not gonderen_idare and _kurum_gorunumlu(gonderen_ad):
-            gonderen_idare = gonderen_ad
     tur = taban.get("gonderen_turu") if taban.get("gonderen_turu") in GONDEREN_TURLERI else tur
     return {
         "belge_cinsi": cins,
@@ -283,10 +284,20 @@ def kategori_etiketi_mi(ad: str) -> bool:
     ADI değildir; resmî yazının muhatabı olamaz."""
     from agents.config import BIRIM_TR
     n = tr_lower((ad or "").strip())
-    return bool(n) and (n in {tr_lower(v) for v in BIRIM_TR.values()} or n in BIRIM_TR)
+    if not n:
+        return False
+    # Kategori etiketi: 9'lu kümeden olup bileşik ('A / B') ya da jenerik ('İlgili …') olan.
+    # 'Hukuk Müşavirliği' gibi gerçek birim adı olan üyeler ad sayılır.
+    kategoriler = {tr_lower(v) for v in BIRIM_TR.values() if "/" in v or v.startswith("İlgili")}
+    return n in kategoriler or n in BIRIM_TR or "/" in n or n.startswith("ilgili ")
 
 
 BELIRSIZ_BIRIM_MUHATAP = "[İlgili birim — havalede seçilecek]"
+
+
+def kategori_yer_tutucu(kategori: str) -> str:
+    """Kaba kategori yalnız ÖNERİ olarak, açıkça doldurulacak yer tutucu içinde görünür."""
+    return f"[Birim seçilecek — öneri: {kategori}]" if kategori else BELIRSIZ_BIRIM_MUHATAP
 
 
 def muhatap_bicimle(ad: str, tur: str) -> str:
@@ -301,7 +312,7 @@ def muhatap_bicimle(ad: str, tur: str) -> str:
     if tur == "tuzel_kisi":
         return ad
     if kategori_etiketi_mi(ad):
-        return BELIRSIZ_BIRIM_MUHATAP
+        return kategori_yer_tutucu(ad)
     return _hitap_idempotent(ad)
 
 
@@ -359,6 +370,8 @@ def konu_dogrula(konu: str, kaynak: str = "") -> list[str]:
         neden.append("birinci_sahis")
     if _ham_kopya(k, kaynak):
         neden.append("ham_kopya")
+    if kel and kel[-1].isdigit():
+        neden.append("kesik")  # "Eryaman 4" — sıra sayısı noktasında kesilmiş öbek
     return neden
 
 
@@ -366,13 +379,16 @@ def konu_sec(adaylar: list[str | None], kaynak: str = "", yedek: str = "") -> st
     """Aday sırasıyla İLK geçerli konu; hiçbiri geçmezse kısaltılmış ilk aday, o da
     geçmezse `yedek` (ör. 'Dilekçe hk.'). Sondaki nokta atılır (m.13)."""
     temiz = [str(a).strip().rstrip(".") for a in adaylar if a and str(a).strip()]
+    if not temiz:
+        return ""
     for a in temiz:
         if not konu_dogrula(a, kaynak):
             return a
     from agents.nodes.cikar import _konu_kisa
     for a in temiz:
         kisa = _konu_kisa(a)
-        if not konu_dogrula(kisa, kaynak):
+        # Kısaltma ancak anlamlı bir öbek bırakıyorsa (≥3 sözcük) kabul edilir.
+        if len(_kelimeler(kisa)) >= 3 and not konu_dogrula(kisa, kaynak):
             return kisa
     return yedek or (temiz[0] if temiz else "")
 
@@ -412,18 +428,32 @@ def baslik_coz(
     rol = rol or rol_tahmin(yazi_turu, muhatap, gelen)
     var_mi = gelen.get("tarih") or gelen.get("sayi") or gelen.get("basvuru_no")
     ilgi: tuple[str, ...] = ()
-    if rol != "olur" and var_mi:
+    if (rol != "olur" and var_mi) or (rol in ("cevap", "devir_bilgi") and gelen.get("belge_cinsi") in _CINS_ILGI):
         ilgi = (ilgi_satiri(gelen, rol),)
-    elif rol in ("cevap", "devir_bilgi") and gelen.get("belge_cinsi") in _CINS_ILGI:
-        ilgi = (ilgi_satiri(gelen, rol),)
-    yedek = f"{tr_baslik(CINS_TR.get(gelen.get('belge_cinsi') or 'diger', 'evrak'))} hk."
-    konu = konu_sec(list(konu_adaylari or []), kaynak_metin, yedek.rstrip("."))
+    cins_ad = CINS_TR.get(gelen.get("belge_cinsi") or "diger", "evrak")
+    yedek = f"{cins_ad[:1].upper()}{cins_ad[1:]} hk"
+    konu = konu_sec(list(konu_adaylari or []), kaynak_metin, yedek)
     return YaziBasligi(rol=rol, konu=konu, muhatap=muhatap, ilgi_satirlari=ilgi)
 
 
 __all__ = (
-    "BELGE_CINSLERI", "BELIRSIZ_BIRIM_MUHATAP", "CINS_TR", "GONDEREN_TURLERI", "ROLLER",
-    "YaziBasligi", "antet_idaresi", "baslik_coz", "gelen_evrak_coz", "gonderen_muhatabi",
-    "ilgi_satiri", "kategori_etiketi_mi", "kisi_iyelik", "konu_dogrula", "konu_sec",
-    "muhatap_bicimle", "rol_tahmin", "tr_baslik",
+    "BELGE_CINSLERI",
+    "BELIRSIZ_BIRIM_MUHATAP",
+    "CINS_TR",
+    "GONDEREN_TURLERI",
+    "ROLLER",
+    "YaziBasligi",
+    "antet_idaresi",
+    "baslik_coz",
+    "gelen_evrak_coz",
+    "gonderen_muhatabi",
+    "ilgi_satiri",
+    "kategori_etiketi_mi",
+    "kategori_yer_tutucu",
+    "kisi_iyelik",
+    "konu_dogrula",
+    "konu_sec",
+    "muhatap_bicimle",
+    "rol_tahmin",
+    "tr_baslik",
 )

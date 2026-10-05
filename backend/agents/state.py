@@ -133,6 +133,13 @@ class EvrakState(TypedDict):
     yazi_turu: NotRequired[str]             # YAZI_TURLERI'nden biri
     # Dinamik yazı planının (yazi/yazi_plan.py) insan-okunur gerekçesi; boş = statik yol.
     yazi_plan_notu: NotRequired[str]
+    # [Akış B] Gerçek LLM varken yazı planı alınamadı → tür statik tablodan (görünür bayrak).
+    yazi_plan_yedek: NotRequired[bool]
+    # [Akış B] Yazışma paketi: [{rol: havale|cevap|devir|devir_bilgi|olur, yazi_turu, muhatap,
+    # birim, konu, talep_ids, yazi_taslak_md, format_uyumlu}] — yazi_taslak_md ilk öğedir.
+    yazi_paketi: NotRequired[list[dict[str, Any]]]
+    # [Akış B] SDP TEK motor kararı {kod, ad, gerekce, adaylar}; yazi_taslak yazar, arsiv okur.
+    sdp_secimi: NotRequired[dict[str, Any]]
     # TS 13298 üst-veri (EBYS metadata): belge türü + konu + SDP kodu/adı + güvenlik + tarih/sayı.
     ust_veri: NotRequired[dict[str, Any]]
     yazi_taslak_md: NotRequired[str]

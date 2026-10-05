@@ -136,7 +136,9 @@ def test_muhatap_tek_kapi():
         "ANKARA CUMHURİYET BAŞSAVCILIĞINA")
     assert muhatap_bicimle("Fen İşleri Müdürlüğü", "birim") == "FEN İŞLERİ MÜDÜRLÜĞÜNE"
     assert muhatap_bicimle("İlgili Teknik / Ana Hizmet Dairesi", "birim") == (
-        BELIRSIZ_BIRIM_MUHATAP)
+        "[Birim seçilecek — öneri: İlgili Teknik / Ana Hizmet Dairesi]")
+    assert muhatap_bicimle("Hukuk Müşavirliği", "birim") == "HUKUK MÜŞAVİRLİĞİNE"
+    assert BELIRSIZ_BIRIM_MUHATAP.startswith("[")
 
 
 @pytest.mark.parametrize("konu", [
@@ -155,6 +157,13 @@ def test_konu_dogrulayici_cumleyi_reddeder(konu):
 ])
 def test_konu_dogrulayici_isim_obegini_kabul_eder(konu):
     assert konu_dogrula(konu) == []
+
+
+def test_konu_sira_sayisinda_kesilmis_obek_reddedilir():
+    # Gerçek koşum (cimer_etimesgut): "Eryaman 4. Etap'taki …" kısaltması "Eryaman 4" kaldı.
+    assert "kesik" in konu_dogrula("Eryaman 4")
+    assert konu_sec(["Eryaman 4. Etap'taki Akasya Parkı'nda iki sahipsiz köpek yaralı hâlde "
+                     "dolaşıyor"], yedek="CİMER başvurusu hk") == "CİMER başvurusu hk"
 
 
 def test_konu_ham_kopya_reddedilir():

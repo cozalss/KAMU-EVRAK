@@ -66,7 +66,9 @@ class TestVerifyRiskGuardEntegrasyonu:
 
     def test_tam_ve_tutarli_taslak_temiz_doner(self, client):
         # Gerçek renderer çıktısı (2646-uyumlu) + kaynakla tutarlı unsurlar → tertemiz sonuç.
-        taslak = _tam_taslak(client)
+        # Jenerik "KAMU KURUMU" anteti artık en az SARI (kurum belirlenmeden gönderilemez,
+        # risk_guard._antet_muhatap_bosluklari) → temiz taslak gerçek kurum anteti taşır.
+        taslak = _tam_taslak(client).replace("KAMU KURUMU", "KEÇİÖREN BELEDİYESİ")
         r = _dogrula(client, taslak, bilgi_unsurlari={
             "gonderen": "Ayşe Yılmaz", "tarih": "01.06.2026",
             "sayi": "E-12345678-622.03-99999",

@@ -82,7 +82,11 @@ async def yazi_plani(
             'Yalnız şu JSON: {"yazi_turu":"<kod>","muhatap":"<ad ya da boş>",'
             '"gerekce":"<tek cümle Türkçe: neden bu tür ve bu muhatap>"}'
         ),
-        max_tokens=200,
+        # KAPALI KÜME seçimi + kısa JSON: düşünme kapalı (teşhis 2026-10-05: düşünmeli modda
+        # 900 token bütçe düşünmeye gidip JSON kesiliyor, plan sessizce düşüyordu; düşünmesiz
+        # 4/4 geçerli, 1,1-1,4 sn). Bütçe gerekçe cümlesine yetecek kadar.
+        max_tokens=320,
+        dusunme_kapali=True,
     )
     if not obj:
         return None

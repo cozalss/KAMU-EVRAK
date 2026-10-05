@@ -39,12 +39,10 @@ from agents.config import (
 from agents.kurum_kimlik import (
     efektif_idare_adi,
     gorus_muhatabi,
-    hitap_eki,
     muzekkere_muhatabi,
 )
 from agents.mevzuat_kanit import mevzuat_kanit_paketi
 from agents.servis_birim import SERVIS_BIRIM_TR
-from yazi.sdp_plani import sdp_bul
 
 log = structlog.get_logger()
 
@@ -111,241 +109,314 @@ def _fallback_taslak(
     return {"yazi_turu": yazi_turu, "yazi_taslak_md": metin + "\n", "format_uyumlu": True}
 
 
-def _devir_var_mi(state: dict[str, Any]) -> bool:
-    """Yetkisizlik hâli: evrak muhataba gelmiş ama YETKİLİ kurum farklı (route_ajan tespiti).
+def _devir_hedefi(state: dict[str, Any]) -> dict[str, Any]:
+    """Devir gerekiyorsa yetkili kurum künyesi ({slug, ad}), yoksa {}.
 
-    Bu durumda yapılacak iş kurum-içi havale DEĞİL, yetkili kuruma göndermedir (devir):
-    3071 m.8 / 4982 m.7. yetkili_kurum yalnız route_ajan DISARIDA dalında muhataptan
-    farklılaşır; her ikisi de dolu ve slug'lar farklı olmalı.
+    Öncelik Akış Y'nin `yonlendirme.devir` kararı; yoksa eski yetkisizlik hâli: route_ajan
+    yetkili_kurum'u muhataptan FARKLI buldu (iki slug dolu ve farklı).
     """
+    devir = ((state.get("yonlendirme") or {}).get("devir") or {})
+    if devir.get("gerekli") and isinstance(devir.get("yetkili_kurum"), dict):
+        return devir["yetkili_kurum"]
     muhatap = state.get("muhatap_kurum") or {}
     yetkili = state.get("yetkili_kurum") or {}
     ms, ys = muhatap.get("slug"), yetkili.get("slug")
-    return bool(ms and ys and ms != ys)
+    return yetkili if (ms and ys and ms != ys) else {}
+
+
+def _devir_var_mi(state: dict[str, Any]) -> bool:
+    """Yetkisizlik hâli: evrak muhataba gelmiş ama YETKİLİ kurum farklı (3071 m.5)."""
+    return bool(_devir_hedefi(state))
+
+
+def _paket_ogesi(rol: str, yazi_turu: str, muhatap: str, konu: str, md: str,
+                 format_uyumlu: bool, birim: str = "") -> dict[str, Any]:
+    return {"rol": rol, "yazi_turu": yazi_turu, "muhatap": muhatap, "birim": birim,
+            "konu": konu, "talep_ids": [], "yazi_taslak_md": md,
+            "format_uyumlu": format_uyumlu}
+
+
+def _dosya_alanlari(out: dict[str, Any], result: Any) -> dict[str, Any]:
+    if result.pdf_bytes:
+        out["yazi_taslak_pdf_bytes"] = result.pdf_bytes
+        out["yazi_taslak_pdf_filename"] = result.pdf_filename
+    if result.docx_bytes:
+        out["yazi_taslak_docx_bytes"] = result.docx_bytes
+        out["yazi_taslak_docx_filename"] = result.docx_filename
+    return out
 
 
 async def _devir_taslagi(
-    state: dict[str, Any], efektif_kurum: str,
+    state: dict[str, Any], efektif_kurum: str, baglam: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Yetkisizlik → yetkili kuruma DEVİR üst yazısı (deterministik, uydurmasız).
+    """Yetkisizlik → yetkili kuruma DEVİR yazısı + (vatandaş belgesinde) dilekçe sahibine
+    bilgi yazısı (3071 m.5: "ayrıca dilekçe sahibine de bilgi verilir"). Deterministik.
 
-    Frontend `havaleYorum` bu hâli 'devir yazısı gerekli' diye işaretliyordu; taslak da
-    artık gerçekten devir yazısı üretir (üslup/eylem tutarlılığı). Muhatap = yetkili kurum
-    (üst yazı m.14); antet İDARE = evrakı alan kurum (efektif_kurum). Dayanak tür-duyarlı,
-    yoksa hükme atıf yapılmaz (madde uydurulmaz).
+    Antet İDARE = evrakı alan kurum; muhatap SATIRI = yetkili kurum (m.14, büyük + yönelme
+    eki). Dayanak tür-duyarlı; yoksa hükme atıf yapılmaz (madde uydurulmaz).
     """
+    from yazi.baslik import gelen_evrak_coz, muhatap_bicimle
+    from yazi.paket import cevap_yazisi, devir_bilgi_govdesi, vatandas_belgesi_mi
     from yazi.renderer import render_yazi
     from yazi.yazi_render import build_context, devir_govdesi, ts13298_ust_veri
 
+    baglam = baglam or {}
     unsurlar = state.get("bilgi_unsurlari") or {}
-    yetkili = state.get("yetkili_kurum") or {}
+    evrak_text = state.get("evrak_text", "") or ""
+    yetkili = _devir_hedefi(state)
     muhatap_kurum = state.get("muhatap_kurum") or {}
-    konu = str(unsurlar.get("konu", "") or "")
-    dayanak = EVRAK_TO_DEVIR_DAYANAK.get(state.get("evrak_turu", ""), "")
-    metin = devir_govdesi(konu, dayanak)
-    # Devir yazısını GÖNDEREN, evrakı alan kurumdur → antet İDARE = muhatap_kurum (route_ajan'ın
-    # güvenilir tespiti); boşsa efektif_kurum'a düş. Muhatap SATIRI ise YETKİLİ kurum (m.14),
-    # BÜYÜK + yönelme eki ("...VALİLİĞİNE"; kısaltmayla biten unvana ek gelmez, büyük harf kalır).
     idare = str(muhatap_kurum.get("ad", "") or "").strip() or efektif_kurum
-    muhatap = hitap_eki(str(yetkili.get("ad", "") or "")) or "İLGİLİ MAKAMA"
+    gelen = baglam.get("gelen") or gelen_evrak_coz(
+        evrak_text, unsurlar, state.get("evrak_turu", ""), muhatap_idare=idare)
+    dayanak = EVRAK_TO_DEVIR_DAYANAK.get(state.get("evrak_turu", ""), "")
+    yetkili_ad = str(yetkili.get("ad", "") or "")
+    sdp_kodu = baglam.get("sdp_kodu", "")
     ctx = build_context(
-        "ust_yazi", unsurlar, metin, muhatap_override=muhatap,
-        hazirlayan_birim="", idare_adi=idare)
+        "ust_yazi", unsurlar, devir_govdesi(str(unsurlar.get("konu", "") or ""), dayanak),
+        muhatap_override=muhatap_bicimle(yetkili_ad, "kamu_idaresi") or "İLGİLİ MAKAMA",
+        hazirlayan_birim="", idare_adi=idare, gelen=gelen, rol="devir",
+        kaynak_metin=evrak_text, sdp_kodu=sdp_kodu,
+        konu_adaylari=[unsurlar.get("konu"), gelen.get("konu_satiri")])
     result = render_yazi(ctx)
     jinja = ctx.jinja_vars()
-    log.info("yazi_taslak_devir", muhatap=yetkili.get("slug"), dayanak=bool(dayanak))
+    paket = [_paket_ogesi("devir", result.yazi_turu, ctx.muhatap, ctx.konu, result.metin,
+                          result.format_uyumlu)]
+    if vatandas_belgesi_mi(gelen):
+        paket.append(cevap_yazisi(
+            gelen, unsurlar, devir_bilgi_govdesi(gelen, yetkili_ad, dayanak),
+            rol="devir_bilgi", kaynak_metin=evrak_text, idare_adi=idare, sdp_kodu=sdp_kodu))
+    log.info("yazi_taslak_devir", muhatap=yetkili.get("slug"), dayanak=bool(dayanak),
+             n_yazi=len(paket))
     out: dict[str, Any] = {
         "yazi_turu": result.yazi_turu,
         "yazi_taslak_md": result.metin,
         "format_uyumlu": result.format_uyumlu,
         "yazi_plan_notu": (
             f"Yetkisizlik: evrak {idare or 'kurumumuz'} adına gelmiş; konu "
-            f"{yetkili.get('ad', 'yetkili kurum')} görev alanında. "
-            f"{dayanak + ' gereğince devir' if dayanak else 'Yetkili kuruma devir'} yazısı üretildi."
+            f"{yetkili_ad or 'yetkili kurum'} görev alanında. "
+            f"{dayanak + ' gereğince devir' if dayanak else 'Yetkili kuruma devir'} yazısı"
+            f"{' ve dilekçe sahibine bilgi yazısı' if len(paket) > 1 else ''} üretildi."
         ),
         "devir": True,
+        "yazi_paketi": paket,
         "antet_meta": {
             "idare": jinja.get("idare_adi", ""), "birim": jinja.get("birim_adi", ""),
             "muhatap": jinja.get("muhatap", ""),
         },
         "ust_veri": ts13298_ust_veri(
-            result.yazi_turu, konu, None, jinja.get("sayi_satiri", ""),
+            result.yazi_turu, ctx.konu, baglam.get("sdp"), jinja.get("sayi_satiri", ""),
             date.today().strftime("%d.%m.%Y")),
     }
-    if result.pdf_bytes:
-        out["yazi_taslak_pdf_bytes"] = result.pdf_bytes
-        out["yazi_taslak_pdf_filename"] = result.pdf_filename
-    if result.docx_bytes:
-        out["yazi_taslak_docx_bytes"] = result.docx_bytes
-        out["yazi_taslak_docx_filename"] = result.docx_filename
-    return out
+    return _dosya_alanlari(out, result)
 
 
-def _coklu_cikti(alt_out: list[dict[str, Any]]) -> dict[str, Any]:
-    """Çok-konulu (>=2 birim) çıktı — tekil alanlar geriye-uyum için ilk birimi taşır."""
+def _coklu_cikti(alt_out: list[dict[str, Any]],
+                 paket: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Çok-konulu çıktı — tekil alanlar geriye-uyum için ilk havaleyi taşır; paket tamamıdır."""
     ilk = alt_out[0]
-    log.info("yazi_taslak_coklu", n_birim=len(alt_out), birimler=[a.get("birim") for a in alt_out])
+    log.info("yazi_taslak_coklu", n_birim=len(alt_out),
+             n_yazi=len(paket or []), birimler=[a.get("birim") for a in alt_out])
     return {
         "yazi_turu": ilk["yazi_turu"], "yazi_taslak_md": ilk["yazi_taslak_md"],
         "format_uyumlu": ilk["format_uyumlu"], "alt_talepler": alt_out,
+        "yazi_paketi": list(paket or []),
     }
 
 
-async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Resmî yazı taslağı (metin + PDF/DOCX) üret — jinja2 + resmî-üslup gövde.
+def _idare_coz(state: dict[str, Any], evrak_text: str, unsurlar: dict[str, Any]) -> str:
+    """Antet İDARE (m.10): belgenin kendi hitabı → route_ajan'ın kimlik kapısından geçmiş
+    muhatap_kurum künyesi → boş (render env KURUM_ADI'ya düşer). Yargı kaynağı antet olamaz."""
+    from agents.kurum_kimlik import is_yargi_kurumu
+    efektif = efektif_idare_adi(evrak_text, unsurlar)
+    if efektif:
+        return efektif
+    muhatap = state.get("muhatap_kurum") or {}
+    if muhatap.get("ad") and not is_yargi_kurumu(muhatap):
+        return str(muhatap["ad"])
+    return ""
 
-    Çok-konulu evrakta (alt_talepler >= 2) birleşik taslak HİÇ üretilmez — her
-    alt-talep kendi hedef birimine giden bağımsız bir üst yazı alır (bkz.
-    yazi_render.build_alt_talep_taslaklari); tekil yazi_taslak_md alanı geriye
-    uyum için ilk birim taslağını taşır, asıl N taslak alt_talepler içindedir.
-    """
+
+async def _sdp_coz(turu: str, state: dict[str, Any]) -> dict[str, Any] | None:
+    """SDP TEK motor (agents.nodes.arsiv seçimi); yazı Sayı satırı ve arşiv aynı kararı
+    kullanır. SDP_ONERI kapalıysa None (Sayı placeholder kalır, arşiv kendi seçer)."""
+    if not SDP_ONERI:
+        return None
+    from agents.nodes.arsiv import sdp_secimi_yap
+    unsurlar = state.get("bilgi_unsurlari") or {}
+    return await sdp_secimi_yap(turu, str(unsurlar.get("sayi") or ""), state)
+
+
+def _sdp_render(secim: dict[str, Any] | None) -> dict[str, str] | None:
+    """Arşiv seçimi → Sayı satırına girecek çıplak kod ([DOĞRULA] eki arşivde kalır)."""
+    if not secim or not secim.get("kod"):
+        return None
+    kod = str(secim["kod"]).split(" ")[0]
+    return {"kod": kod, "baslik": str(secim.get("ad") or "")} if kod[:1].isdigit() else None
+
+
+async def _plan_ve_govde(
+    turu: str, yazi_turu: str, unsurlar: dict[str, Any], evrak_text: str,
+    hedef_birim: str, kanit_paketi: list[dict[str, Any]],
+) -> tuple[dict[str, str] | None, Any]:
+    """Dinamik plan (LLM, kapalı küme) ∥ statik türle gövde; plan farklı tür seçerse gövde
+    o türle yeniden üretilir. Mock/hata → plan None, statik yol."""
+    from yazi.yazi_plan import yazi_plani
+    from yazi.yazi_render import build_body_sonuclu
+
+    if "yazi_plan" in LLM_ATLA_NODELAR:
+        return None, await build_body_sonuclu(
+            yazi_turu, unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
+    if not YAZI_PLAN_PARALEL:
+        plan = await yazi_plani(turu, unsurlar, evrak_text, hedef_birim)
+        return plan, await build_body_sonuclu(
+            plan["yazi_turu"] if plan else yazi_turu, unsurlar, evrak_text,
+            mevzuat_kanit_paketi=kanit_paketi)
+    plan_gorevi = asyncio.create_task(yazi_plani(turu, unsurlar, evrak_text, hedef_birim))
+    try:
+        govde = await build_body_sonuclu(
+            yazi_turu, unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
+    except BaseException:
+        plan_gorevi.cancel()
+        raise
+    plan = await plan_gorevi
+    if plan and plan["yazi_turu"] != yazi_turu:
+        log.info("yazi_plan_tur_degisti", statik=yazi_turu, plan=plan["yazi_turu"])
+        govde = await build_body_sonuclu(
+            plan["yazi_turu"], unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
+    return plan, govde
+
+
+def _hedef_muhatap(
+    yazi_turu: str, plan_muhatap: str, evrak_text: str, gelen: dict[str, Any],
+    hedef_birim: str,
+) -> str | None:
+    """m.14 muhatap — tür kuralı + tek biçim kapısı (yazi.baslik.muhatap_bicimle).
+    None → build_context gönderen muhatabını (cevap rolü) kendisi kurar."""
+    from yazi.baslik import gonderen_muhatabi, muhatap_bicimle
+    from yazi.yazi_render import _kurum_adi_mi
+
+    if yazi_turu == "gorus_mutalaa":
+        return gorus_muhatabi(evrak_text, plan_muhatap) or None
+    if yazi_turu == "muzekkere":
+        return muzekkere_muhatabi(evrak_text, str(gelen.get("gonderen_ad") or "")) or None
+    if yazi_turu == "ust_yazi":
+        ad = plan_muhatap or birim_tr(hedef_birim)
+        return muhatap_bicimle(ad, "birim") if ad else None
+    if gonderen_muhatabi(gelen) or not plan_muhatap:
+        return None  # cevap muhatabı göndericidir; plan yalnız gönderen bilinmiyorsa
+    return muhatap_bicimle(
+        plan_muhatap, "kamu_idaresi" if _kurum_adi_mi(plan_muhatap) else "gercek_kisi")
+
+
+def _konu_adaylari(gelen: dict[str, Any], unsurlar: dict[str, Any]) -> list[str | None]:
+    """Kurumdan gelen yazıda kendi 'Konu:' satırı resmî konudur ve önce gelir; vatandaş
+    belgesinde çıkarılan özet konu önce gelir."""
+    if gelen.get("gonderen_turu") == "kamu_idaresi":
+        return [gelen.get("konu_satiri"), unsurlar.get("konu")]
+    return [unsurlar.get("konu"), gelen.get("konu_satiri")]
+
+
+def _baglam_kur(state: dict[str, Any]) -> dict[str, Any]:
+    """Düğüm girdilerinden tek seferlik bağlam: tür, idare, gelen evrak, hedef birim."""
+    from yazi.baslik import gelen_evrak_coz
+
     turu = state.get("evrak_turu", "belirsiz")
-    yazi_turu = EVRAK_TO_YAZI.get(turu, "cevabi_yazi")  # statik taban (fallback + coklu yol)
     unsurlar = state.get("bilgi_unsurlari") or {}
     evrak_text = state.get("evrak_text", "") or ""
-    alt_talepler = state.get("alt_talepler") or []
-    # Karar kartı/finalize/arşiv ile aynı hedef çözümünü kullan: doğrulanmış birim, kaynak
-    # önerisi, servis önerisi, son çare kaba kategori. Onay gerekliliği state'te ayrıca korunur.
-    rota_var = any(
-        state.get(alan)
-        for alan in ("hedef_birim", "hedef_birim_oneri", "servis_birimi", "hedef_kategori")
-    )
-    hedef_birim = etkili_birim(state) if rota_var else ""
-    plan_notu = ""
+    idare = _idare_coz(state, evrak_text, unsurlar)
+    rota_var = any(state.get(alan) for alan in (
+        "yonlendirme", "hedef_birim", "hedef_birim_oneri", "servis_birimi", "hedef_kategori"))
+    return {
+        "turu": turu, "unsurlar": unsurlar, "evrak_text": evrak_text, "idare": idare,
+        "gelen": gelen_evrak_coz(evrak_text, unsurlar, turu, muhatap_idare=idare),
+        "hedef_birim": etkili_birim(state) if rota_var else "",
+    }
+
+
+def _rol(yazi_turu: str) -> str:
+    return {"olur": "olur", "ust_yazi": "havale"}.get(yazi_turu, "cevap")
+
+
+async def _tekli_taslak(state: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    """Tek konulu evrak: plan + gövde + tek çözücüyle başlık + render."""
+    from agents.nodes._llm_extract import real_llm
+    from yazi.renderer import render_yazi
+    from yazi.yazi_render import build_context, ts13298_ust_veri
+
+    unsurlar, evrak_text, gelen = b["unsurlar"], b["evrak_text"], b["gelen"]
+    yazi_turu = EVRAK_TO_YAZI.get(b["turu"], "cevabi_yazi")
     kanit_paketi = mevzuat_kanit_paketi(state)
-    # Antet İDARE = belge açıkça bir kuruma hitaben yazılmışsa (yönelme-ekli, yargı hariç)
-    # O KURUM otomatik — sormadan/uyarmadan; değilse boş → render env KURUM_ADI'ya düşer.
-    # "Biz belgeye göre hareket ediyoruz" (19 Tem 2. revizyon).
-    efektif_kurum = efektif_idare_adi(evrak_text, unsurlar)
-
-    try:
-        from yazi.renderer import render_yazi
-        from yazi.yazi_plan import yazi_plani
-        from yazi.yazi_render import (
-            build_alt_talep_taslaklari,
-            build_body_sonuclu,
-            build_context,
-            hitap_bicimi,
-            ts13298_ust_veri,
-        )
-
-        alt_out = await build_alt_talep_taslaklari(
-            alt_talepler, unsurlar, idare_adi=efektif_kurum)
-        if len(alt_out) >= 2:
-            return _coklu_cikti(alt_out)
-        # Yetkisizlik (tek-konu, farklı yetkili kurum) → devir üst yazısı; plan makinesi
-        # çalıştırılmaz (tür sabittir: ust_yazi, muhatap yetkili kurum, gövde kalıp).
-        if _devir_var_mi(state):
-            return await _devir_taslagi(state, efektif_kurum)
-        # DİNAMİK plan (2026-07-09): LLM belgeyi anlayıp türü/muhatabı duruma göre seçer;
-        # mock/hata/kapalı-küme-dışı/grounded-olmayan-muhatap → None/kısmi düşürme →
-        # statik EVRAK_TO_YAZI + varsayılan muhatap yolu AYNEN devrede kalır.
-        plan_atla = "yazi_plan" in LLM_ATLA_NODELAR
-        if YAZI_PLAN_PARALEL and not plan_atla:
-            # Hız 15c — plan ∥ gövde: gövde STATİK türle plana paralel üretilir; plan
-            # farklı tür seçerse gövde o türle YENİDEN üretilir → çıktı seri yolla birebir
-            # (aynı prompt'lar), tipik yolda (plan statik türü doğrular) ~1 çağrı kazanılır.
-            # Mock'ta plan None + gövde deterministik → davranış/çağrı sayısı birebir.
-            plan_gorevi = asyncio.create_task(
-                yazi_plani(turu, unsurlar, evrak_text, hedef_birim))
-            try:
-                govde_sonucu = await build_body_sonuclu(
-                    yazi_turu, unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
-            except BaseException:
-                plan_gorevi.cancel()
-                raise
-            plan = await plan_gorevi
-            if plan and plan["yazi_turu"] != yazi_turu:
-                log.info("yazi_plan_tur_degisti", statik=yazi_turu, plan=plan["yazi_turu"])
-                govde_sonucu = await build_body_sonuclu(
-                    plan["yazi_turu"], unsurlar, evrak_text, mevzuat_kanit_paketi=kanit_paketi)
-        else:
-            plan = None if plan_atla else await yazi_plani(
-                turu, unsurlar, evrak_text, hedef_birim)
-            govde_sonucu = await build_body_sonuclu(
-                plan["yazi_turu"] if plan else yazi_turu,
-                unsurlar,
-                evrak_text,
-                mevzuat_kanit_paketi=kanit_paketi,
-            )
-        if plan:
-            yazi_turu = plan["yazi_turu"]
-            plan_notu = plan["gerekce"]
-        metin = govde_sonucu.metin
-        # ust_yazi = kurum-içi iletim (Yön. m.14): muhatap gönderen değil hedef birim.
-        # gorus_mutalaa = görüşü TALEP EDEN birime m.14/2 hitap biçimiyle — plan muhatabı
-        # da AYNI biçim kapısından geçer (gerçek-LLM yolunda eksiz/karışık-kasa kalıyordu).
-        plan_muhatap = (plan or {}).get("muhatap") or ""
-        gonderen = str(unsurlar.get("gonderen", "") or "")
-        if yazi_turu == "gorus_mutalaa":
-            hedef_muhatap = gorus_muhatabi(evrak_text, plan_muhatap) or None
-        elif yazi_turu == "muzekkere":
-            # m.14/2 hitap biçimli + yargı/idari-iç ayrımı (kaynaktan; plan güvenilmez).
-            hedef_muhatap = muzekkere_muhatabi(evrak_text, gonderen) or None
-        elif yazi_turu == "ust_yazi":
-            # m.14/2: hedef birim muhatabı BÜYÜK + yönelme eki ("...MÜDÜRLÜĞÜNE").
-            hedef_muhatap = plan_muhatap or (
-                hitap_eki(birim_tr(hedef_birim)) if hedef_birim else None)
-        else:
-            # cevabi_yazi/bilgilendirme: LLM planı çıplak ad döndürebilir ("Mehmet Demir");
-            # _muhatap()'ın "Sayın" kapısından bu yol geçmiyordu (2026-07-19 bulgusu) —
-            # hitap_bicimi ile aynı m.14 kuralına sokulur (kurum aynen, gerçek kişi Sayın).
-            hedef_muhatap = hitap_bicimi(plan_muhatap) if plan_muhatap else None
-        # SDP konu-kodu (Yön. m.11): evrak türü + konudan deterministik → Sayı satırı m.11-yapılı
-        # gerçek koda kavuşur (ENV-gated; kapalıysa Sayı placeholder = bugünkü davranış).
-        konu = str(unsurlar.get("konu", "") or "")
-        sdp = sdp_bul(turu, konu, ek_metin=evrak_text) if SDP_ONERI else None
-        # Antet İDARE = efektif_kurum (yukarıda hesaplandı: belge hitap-ekliyse doküman
-        # kurumu, değilse boş → env KURUM_ADI) + hazırlayan BİRİM (kaynak-doğrulanmış hedef
-        # birim → konuya göre servis müdürlüğü → env/tür varsayılanı).
-        hazirlayan = _hazirlayan_birim(state, yazi_turu)
-        ctx = build_context(yazi_turu, unsurlar, metin, muhatap_override=hedef_muhatap,
-                            sdp_kodu=(sdp or {}).get("kod", ""),
-                            hazirlayan_birim=hazirlayan, idare_adi=efektif_kurum)
-        result = render_yazi(ctx)
-        jinja = ctx.jinja_vars()
-        sayi_satiri = jinja.get("sayi_satiri", "")
-        # Sistem-tespitli antet/muhatap değerleri — verify grounding muafiyeti bunları
-        # "kaynakta yok → uydurma" saymasın diye state ile taşınır (Sayı satırı deseni).
-        antet_meta = {
-            "idare": jinja.get("idare_adi", ""), "birim": jinja.get("birim_adi", ""),
-            "muhatap": jinja.get("muhatap", ""),
-        }
-    except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
-        log.warning("yazi_taslak_fallback", err=str(exc))
-        return _fallback_taslak(
-            yazi_turu, str(unsurlar.get("konu", "") or ""), evrak_text,
-            idare_adi=efektif_kurum)
-
-    log.info(
-        "yazi_taslak", turu=turu, yazi_turu=result.yazi_turu,
-        format_uyumlu=result.format_uyumlu, n_eksik=len(result.eksik_format_alanlari),
-    )
+    plan, govde = await _plan_ve_govde(
+        b["turu"], yazi_turu, unsurlar, evrak_text, b["hedef_birim"], kanit_paketi)
+    plan_yedek = (plan is None and real_llm() is not None
+                  and "yazi_plan" not in LLM_ATLA_NODELAR)
+    if plan:
+        yazi_turu = plan["yazi_turu"]
+    ctx = build_context(
+        yazi_turu, unsurlar, govde.metin,
+        muhatap_override=_hedef_muhatap(yazi_turu, (plan or {}).get("muhatap") or "",
+                                        evrak_text, gelen, b["hedef_birim"]),
+        sdp_kodu=(b["sdp"] or {}).get("kod", ""),
+        hazirlayan_birim=_hazirlayan_birim(state, yazi_turu), idare_adi=b["idare"],
+        gelen=gelen, kaynak_metin=evrak_text, konu_adaylari=_konu_adaylari(gelen, unsurlar))
+    result = render_yazi(ctx)
+    jinja = ctx.jinja_vars()
+    log.info("yazi_taslak", turu=b["turu"], yazi_turu=result.yazi_turu,
+             format_uyumlu=result.format_uyumlu, plan_yedek=plan_yedek)
     out: dict[str, Any] = {
         "yazi_turu": result.yazi_turu,
         "yazi_taslak_md": result.metin,
         "format_uyumlu": result.format_uyumlu,
         # Dinamik planın insan-okunur gerekçesi (boş = statik yol kullanıldı) — UI notu.
-        "yazi_plan_notu": plan_notu,
-        # LLM'e verilen, yalnız korpus-kaynaklı madde parçaları ve kullanım sonucu.
+        "yazi_plan_notu": (plan or {}).get("gerekce", ""),
+        # Gerçek LLM varken plan alınamadı → tür statik tablodan (görünür bayrak, sessiz değil).
+        "yazi_plan_yedek": plan_yedek,
         "mevzuat_kanit_paketi": kanit_paketi,
-        "mevzuat_kanit_durumu": govde_sonucu.mevzuat_kanit_durumu,
-        "mevzuat_kanit_uyari": list(govde_sonucu.mevzuat_kanit_uyari),
-        "mevzuat_kanit_atif_sayisi": govde_sonucu.mevzuat_kanit_atif_sayisi,
+        "mevzuat_kanit_durumu": govde.mevzuat_kanit_durumu,
+        "mevzuat_kanit_uyari": list(govde.mevzuat_kanit_uyari),
+        "mevzuat_kanit_atif_sayisi": govde.mevzuat_kanit_atif_sayisi,
         # Sistem-tespitli antet künyesi (grounding muafiyeti + UI şeffaflığı).
-        "antet_meta": antet_meta,
-        # TS 13298 üst-veri (EBYS metadata) — belge türü + konu + SDP + güvenlik + tarih/sayı.
-        "ust_veri": ts13298_ust_veri(
-            result.yazi_turu, konu, sdp, sayi_satiri,
-            date.today().strftime("%d.%m.%Y")),
+        "antet_meta": {"idare": jinja.get("idare_adi", ""), "birim": jinja.get("birim_adi", ""),
+                       "muhatap": jinja.get("muhatap", "")},
+        "ust_veri": ts13298_ust_veri(result.yazi_turu, ctx.konu, b["sdp"],
+                                     jinja.get("sayi_satiri", ""),
+                                     date.today().strftime("%d.%m.%Y")),
+        "yazi_paketi": [_paket_ogesi(_rol(result.yazi_turu), result.yazi_turu, ctx.muhatap,
+                                     ctx.konu, result.metin, result.format_uyumlu)],
     }
-    if result.pdf_bytes:
-        out["yazi_taslak_pdf_bytes"] = result.pdf_bytes
-        out["yazi_taslak_pdf_filename"] = result.pdf_filename
-    if result.docx_bytes:
-        out["yazi_taslak_docx_bytes"] = result.docx_bytes
-        out["yazi_taslak_docx_filename"] = result.docx_filename
-    return out
+    return _dosya_alanlari(out, result)
+
+
+async def yazi_taslak_node(state: dict[str, Any]) -> dict[str, Any]:
+    """Resmî yazı taslağı + yazışma paketi (metin + PDF/DOCX).
+
+    Çok-konulu evrak (alt_talepler >= 2) → talep başına havale (aynı birim tek havale) +
+    vatandaş belgesinde başvurana tek cevap (yazi.paket). Yetkisizlik → devir + dilekçe
+    sahibine bilgi. Diğer → tek yazı. Tüm başlık alanları yazi.baslik tek çözücüsünden;
+    SDP tek motordan (arşiv aynı `sdp_secimi`ni okur).
+    """
+    b = _baglam_kur(state)
+    secim = await _sdp_coz(b["turu"], state)
+    b["sdp"] = _sdp_render(secim)
+    b["sdp_kodu"] = (b["sdp"] or {}).get("kod", "")
+    ek = {"sdp_secimi": secim} if secim else {}
+    try:
+        alt_talepler = state.get("alt_talepler") or []
+        if len(alt_talepler) >= 2:
+            from yazi.paket import havale_paketi
+            alt_out, paket = await havale_paketi(
+                alt_talepler, b["unsurlar"], gelen=b["gelen"], kaynak_metin=b["evrak_text"],
+                idare_adi=b["idare"], sdp_kodu=b["sdp_kodu"],
+                yonlendirme=state.get("yonlendirme"))
+            return {**_coklu_cikti(alt_out, paket), **ek}
+        if _devir_var_mi(state):
+            return {**await _devir_taslagi(state, b["idare"], b), **ek}
+        return {**await _tekli_taslak(state, b), **ek}
+    except Exception as exc:  # render altyapısı yok/hatalı → güvenli iskelet
+        log.warning("yazi_taslak_fallback", err=str(exc))
+        return _fallback_taslak(
+            EVRAK_TO_YAZI.get(b["turu"], "cevabi_yazi"),
+            str(b["unsurlar"].get("konu", "") or ""), b["evrak_text"], idare_adi=b["idare"])
 
 
 __all__ = ("yazi_taslak_node",)

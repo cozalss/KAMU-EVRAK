@@ -105,6 +105,23 @@ _ALAN_TR: dict[str, str] = {
 }
 
 
+# [Akış B] Jenerik antet / açık yer tutucu muhatap: yazı bu hâliyle gönderilemez → en az SARI.
+_JENERIK_ANTET = "KAMU KURUMU"
+_YER_TUTUCU_MUHATAP = ("[İlgili birim", "[Birim seçilecek")
+
+
+def _antet_muhatap_bosluklari(taslak: str) -> list[str]:
+    """Antet idaresi jenerik 'KAMU KURUMU' kaldıysa ya da muhatap birim açık yer tutucuysa
+    memur tamamlamalıdır (kurum/birim sistemce belirlenemedi; uydurulmadı)."""
+    out: list[str] = []
+    ilk = [s.strip() for s in (taslak or "").splitlines()[:6]]
+    if _JENERIK_ANTET in ilk:
+        out.append("Antette kurum adı belirlenemedi (jenerik 'KAMU KURUMU') — tamamlanmalı")
+    if any(y in (taslak or "") for y in _YER_TUTUCU_MUHATAP):
+        out.append("Muhatap birim belirlenemedi — havalede seçilmeli")
+    return out
+
+
 def compute_risk(
     verify_uyari: list[str],
     *,
@@ -144,6 +161,7 @@ def compute_risk(
     dogrula = taslak.count("[DOĞRULA")
     if dogrula:
         sari.append(f"{dogrula} alan doğrulanmalı ([DOĞRULA] işareti)")
+    sari += _antet_muhatap_bosluklari(taslak)
     if eksik_alanlar:
         etiketler = [_ALAN_TR.get(a, a) for a in eksik_alanlar[:3]]
         sari.append(f"Eksik zorunlu bilgi: {', '.join(etiketler)}")

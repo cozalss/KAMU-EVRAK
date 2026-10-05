@@ -11,14 +11,17 @@ from datetime import date
 import pytest
 
 from agents.nodes.decompose import (
-    _coklu_sinyal,
-    _govde,
-    _heuristik_segment,
     _segment_birim,
     _segment_turu,
     compute_decomposition,
     decompose_node,
 )
+from agents.talep_kumesi import heuristik_talep_kumesi
+
+
+def _heuristik_segment(metin: str) -> list[str]:
+    """2026-10: segmentasyon artık talep kümesinin deterministik yedeğidir (tek kaynak)."""
+    return [o["kanit"] for o in heuristik_talep_kumesi(metin)]
 
 _BUGUN = date(2026, 6, 26)
 # Kullanıcının verdiği kanonik çok-konulu dilekçe (3 ayrı iş).
@@ -73,10 +76,12 @@ class TestCokKonuluBolme:
     def test_alt_talep_anahtarlari_sabit(self):
         # Act
         alt = compute_decomposition(_COK_KONULU, {}, _BUGUN)
-        # Assert — frontend/AltTalepSchema ile eşleşen SABİT anahtarlar
+        # Assert — frontend/AltTalepSchema ile eşleşen SABİT anahtarlar korunur; 2026-10'da
+        # talep kümesiyle bağ için id/konu/kanit ADDITIVE eklendi (eski anahtar silinmez).
         beklenen = {"ozet", "tur", "tur_tr", "birim", "birim_tr",
                     "yazi_turu", "cevap_suresi", "sla_durum"}
-        assert set(alt[0]) == beklenen
+        assert beklenen <= set(alt[0])
+        assert set(alt[0]) - beklenen == {"id", "konu", "kanit"}
 
 
 # ---------------------------------------------------------------------------
@@ -95,52 +100,36 @@ class TestTekKonuluPassthrough:
         # Assert
         assert alt == []
 
-    def test_coklu_sinyal_yoksa_bos(self):
-        # Arrange — çok-talep işareti yok
-        metin = "Saygılarımla bilgilerinize sunarım."
-        # Act / Assert
-        assert _coklu_sinyal(metin) is False
-        assert compute_decomposition(metin, {}, _BUGUN) == []
+    # 2026-10: `_coklu_sinyal` anahtar-kelime kapısı KALDIRILDI (ayraçsız çok-talep hiç
+    # ayrışmıyordu; teşhis 2026-10-05). Tek-talep davranışı artık talep kümesinden sınanır.
+    def test_istek_yoksa_bos(self):
+        assert compute_decomposition("Saygılarımla bilgilerinize sunarım.", {}, _BUGUN) == []
 
-    def test_baglac_coklu_sinyali_tetikler(self):
-        # Arrange / Act / Assert — 'ayrıca' bağlacı çok-talep işareti
-        assert _coklu_sinyal(_COK_KONULU) is True
+    def test_ayni_niyetin_kokleri_tek_talep(self):
+        for metin in ("Mahalle parkına aydınlatma yapılmasını talep ederim.",
+                      "Sokağımdaki çukurun onarılmasını rica ederim.",
+                      "Kaçak yapı ile ilgili usulsüzlüğü ihbar ediyorum."):
+            assert compute_decomposition(metin, {}, _BUGUN) == [], metin
 
-    def test_ayni_niyetin_kokleri_coklu_sayilmaz(self):
-        # Regresyon (2026-10 ölçümü): kod NİYET değil ham KÖK sayıyordu — "yapılmasını talep
-        # ederim" tek niyetin üç kökünü (talep/yapılması/yapılmasını) eşleştirip sıradan tek
-        # talepli dilekçede LLM segmentasyonunu boşuna çağırıyordu. 461 sentetik metinde
-        # tetiklenme 72 → 32; değişen 40 belgenin hepsi tek talepli çıktı.
-        assert _coklu_sinyal("Mahalle parkına aydınlatma yapılmasını talep ederim.") is False
-        assert _coklu_sinyal("Sokağımdaki çukurun onarılmasını rica ederim.") is False
-        assert _coklu_sinyal("Kaçak yapı ile ilgili usulsüzlüğü ihbar ediyorum.") is False
-
-    def test_iki_farkli_niyet_hala_tetikler(self):
-        # Gerçek çok-niyetli metin (bilgi edinme + şikâyet) bağlaçsız da yakalanır.
+    def test_iki_farkli_niyet_baglacsiz_da_ayrisir(self):
         metin = ("Başvurumun sonucunu öğrenmek istiyorum. "
-                 "Ayrıntılı bilgi verilmemesinden şikâyetçiyim.")
-        assert _coklu_sinyal(metin) is True
+                 "Kaldırımdaki kırık taşların yenilenmesini istiyorum.")
+        assert len(compute_decomposition(metin, {}, _BUGUN)) == 2
 
-    def test_numarali_liste_gate_tetikler_ama_numarasiz_tetiklemez(self):
-        # Regresyon (izole): _govde metni tek satıra düzleştirir; _AYRAC'ın '\n'-çapalı
-        # numaralı desenleri govde'de ASLA eşleşmiyordu → numaralı çok-konulu evrak sessizce
-        # decompose EDİLMİYORDU. Sinyal YALNIZ numaralı işaretten gelir (numarasız → tetiklenmez).
+    def test_numarali_liste_iki_talep(self):
         metin = ("Konu: İki husus\n\n"
                  "1) Personelin izin talebinin onaylanmasını arz ederim,\n"
                  "2) Biriminize ait aracın bakımının yaptırılmasını arz ederim.")
-        assert _coklu_sinyal(_govde(metin)) is True
-        numarasiz = _govde(metin).replace("1) ", "").replace("2) ", "")
-        assert _coklu_sinyal(numarasiz) is False  # izolasyon: sinyal numaralardan
+        assert len(compute_decomposition(metin, {}, _BUGUN)) == 2
 
     def test_numarali_liste_heuristik_iki_segmente_boler(self):
-        # Numaralı liste (düzleşmiş) deterministik yolda da ≥2 segmente ayrılır.
         metin = ("1) Su faturasındaki hatanın düzeltilmesini talep ediyorum, "
                  "2) Sokaktaki çukurun onarılmasını istiyorum.")
         assert len(compute_decomposition(metin, {}, _BUGUN)) >= 2
 
-    def test_tek_numarali_madde_yanlis_tetiklemez(self):
-        # Tek 'm.5' benzeri dayanak atfı çok-talep sinyali DEĞİL (≥2 işaret gerekir).
-        assert _coklu_sinyal("Talebiniz 2926 sayılı Kanun m.5 uyarınca değerlendirilmiştir.") is False
+    def test_tek_numarali_madde_yanlis_bolmez(self):
+        assert compute_decomposition(
+            "Talebiniz 2926 sayılı Kanun m.5 uyarınca değerlendirilmiştir.", {}, _BUGUN) == []
 
 
 class TestSiraBildirenSayma:
@@ -158,9 +147,6 @@ class TestSiraBildirenSayma:
         "Üçüncü olarak, iş başvurumun sonucunu öğrenmek istiyorum."
     )
 
-    def test_sira_sozcukleri_coklu_sinyali_tetikler(self):
-        assert _coklu_sinyal(self._SIRALI) is True
-
     def test_sira_sozcukleri_uc_segmente_boler(self):
         assert len(_heuristik_segment(self._SIRALI)) >= 3
 
@@ -175,8 +161,8 @@ class TestSiraBildirenSayma:
         "Üçüncü şahıslara ait bilgiler paylaşılmamalıdır.",
     ])
     def test_olarak_EKI_YOKSA_ayrac_sayilmaz(self, cumle: str):
-        """Kapı dar olmalı — sıra sıfatı her yerde geçer, sayma kalıbı değildir."""
-        assert _coklu_sinyal(cumle) is False
+        """Sıra sıfatı her yerde geçer, sayma kalıbı değildir → bölme yapılmaz."""
+        assert len(_heuristik_segment(cumle)) <= 1
 
 
 # ---------------------------------------------------------------------------
@@ -244,53 +230,30 @@ class TestDecomposeNode:
 
 
 class TestAyristirmaDenendiSozlesmesi:
-    """Arayüz "bu adım gerekmedi" derken yalnız LLM'in HİÇ çağrılmadığı hâli kastedebilir.
+    """Arayüz "bu adım gerekmedi"yi yalnız backend açıkça False dediğinde kurar (CLAUDE.md §10).
 
-    Boş `alt_talepler` iki ayrı yoldan gelir ve listeden ayırt EDİLEMEZ:
-      (a) çok-konu sinyali yok  → LLM hiç çağrılmaz (adım fiilen boş geçer)
-      (b) sinyal var, LLM koşar → anlamlı 2 segment çıkmaz (decompose.py'deki ikinci return)
-    (b)'yi "gerekmedi" göstermek, gerçekten harcanmış bir LLM çağrısını "iş yapılmadı" diye
-    beyan etmek olurdu — bu bayrağın var olma sebebi tam olarak budur.
+    2026-10: decompose LLM çağırmaz; ayrıştırma cikar'ın talep kümesinde yapılır. True =
+    küme LLM'den geldi (karar harcanmış bir çağrıyla verildi) ya da ≥2 alt talep çıktı.
+    Deterministik kümede tek talep → False (adım fiilen iş yapmadı).
     """
 
-    async def test_coklu_sinyal_yokken_denenmedi(self):
-        # Arrange — tek konu, çok-talep bağlacı yok, TEK niyet kökü.
-        # NOT: "…yapılmasını talep ederim" gibi olağan bir dilekçe cümlesi _coklu_sinyal'i
-        # ateşler (kök sayımı 'yapılması' ⊂ 'yapılmasını' önekini iki kez sayar) → o metin
-        # bu dalı sınamaz. Ayrı bir bulgu olarak raporlandı; burada saf tek-kök metin.
-        state = {"evrak_text": "Sokaktaki çukur onarılsın."}
-        assert not _coklu_sinyal(_govde(state["evrak_text"])), "fixture artık çok-konulu sayılıyor"
-        # Act
-        out = await decompose_node(state)
-        # Assert — LLM çağrılmadı → gerekmedi
+    async def test_deterministik_tek_talepte_denenmedi(self):
+        out = await decompose_node({"evrak_text": "Sokaktaki çukur onarılsın."})
         assert out["alt_talepler"] == []
         assert out["ayristirma_denendi"] is False
 
-    async def test_bolunme_ciksa_da_denendi_isaretlenir(self, monkeypatch):
-        # Arrange — gerçek çok-konulu dilekçe
+    async def test_bolunme_ciktiginda_denendi(self):
         state = {"evrak_text": (
             "Sokağımdaki çukurun onarılmasını talep ederim. AYRICA su faturama itiraz "
             "ediyorum. BİR DE açtığım iş başvurusunun sonucunu öğrenmek istiyorum."
         )}
-        # Act
         out = await decompose_node(state)
-        # Assert — hangi dal koşarsa koşsun deneme yapıldığı bildirilir
         assert out["ayristirma_denendi"] is True
 
-    async def test_llm_kostu_ama_bos_ciktiginda_gerekmedi_DEMEZ(self, monkeypatch):
-        # Arrange — çok-konu sinyali VAR (LLM çağrılır) ama segmentler anlamlı bölünmüyor:
-        # LLM boş döner ve heuristik de <2 segment bulur → ikinci boş return dalı.
-        import agents.nodes.decompose as dmod
-        monkeypatch.setattr(dmod, "_llm_segment", _bos_llm_segment)
-        monkeypatch.setattr(dmod, "_heuristik_segment", lambda _g: ["tek parça"])
-        monkeypatch.setattr(dmod, "_coklu_sinyal", lambda _g: True)
-        # Act
-        out = await decompose_node({"evrak_text": "ayrıca bir de talep ederim"})
-        # Assert — liste boş AMA deneme yapıldı: arayüz "gerekmedi" diyemez
+    async def test_llm_kumesi_tek_talepse_gerekmedi_DEMEZ(self):
+        bu = {"talep_kumesi": [{"id": "t1", "kanit": "çukurun onarılmasını talep ederim",
+                                "ozet": "Çukur onarımı", "tur": "talep", "birim_ipucu": None}],
+              "talep_kumesi_kaynagi": "llm"}
+        out = await decompose_node({"evrak_text": "x", "bilgi_unsurlari": bu})
         assert out["alt_talepler"] == []
         assert out["ayristirma_denendi"] is True
-
-
-async def _bos_llm_segment(_govde):
-    """LLM segmentasyonu başarısız/yetersiz — deterministik fallback dalını zorlar."""
-    return []

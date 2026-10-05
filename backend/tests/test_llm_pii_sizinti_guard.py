@@ -82,12 +82,22 @@ class TestLlmPiiSizintiGuard:
         assert "user" in kayit, "eksik_tespit llm_json'u çağırmadı — test yolu kırık"
         _pii_yok(kayit["user"])
 
-    async def test_decompose_llm_ye_ham_pii_gitmez(self, monkeypatch):
-        kayit, fake = _yakalayan()
-        monkeypatch.setattr(decompose_mod, "llm_json", fake)
-        await decompose_mod.decompose_node({"evrak_text": _METIN})
-        assert "user" in kayit, "decompose çok-konulu LLM segmentini çağırmadı — test yolu kırık"
-        _pii_yok(kayit["user"])
+    async def test_decompose_llm_cagirmaz_ve_alt_talepte_ham_pii_yok(self):
+        # 2026-10: decompose dış LLM'e hiç gitmez (talep kümesi cikar'da çıkarılır);
+        # türettiği alt talep alanlarında (ozet/konu/kanit) ham PII bulunmamalı.
+        assert not hasattr(decompose_mod, "llm_json"), "decompose yeniden LLM'e bağlanmış"
+        out = await decompose_mod.decompose_node({"evrak_text": _METIN})
+        assert len(out["alt_talepler"]) == 2
+        _pii_yok(str(out["alt_talepler"]))
+
+    async def test_talep_kumesinde_ham_pii_yok(self, monkeypatch):
+        # LLM kanıtı maskeli metinden alıntılar; yine de çıktı alanları süzgeçten geçer.
+        async def _fake(system, user, **kwargs):
+            return {"talepler": [{"kanit": "Mahalledeki parkın onarılmasını talep ederim",
+                                  "ozet": f"Park onarımı {_HAM_TCKN}", "tur": "talep"}]}
+        monkeypatch.setattr(cikar_mod, "llm_json", _fake)
+        bu = (await cikar_mod.cikar_node({"evrak_text": _METIN}))["bilgi_unsurlari"]
+        _pii_yok(str(bu["talep_kumesi"]) + str(bu["gelen_evrak"]))
 
     # --- Bug-avı 2026-07-23: yan LLM yolları da maskeli (eskalasyon/route/crag) ---
 

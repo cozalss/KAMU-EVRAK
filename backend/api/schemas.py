@@ -183,6 +183,10 @@ class AltTalepSchema(BaseModel):
     # Bu alt-talebin KENDİ hedef birimine yönlendirilen üst yazı taslağı (>= 2 alt-talepte dolu).
     yazi_taslak_md: str = ""
     format_uyumlu: bool = False
+    # Talep kümesiyle bağ (additive, 2026-10): kimlik, kısa resmî konu, birebir kanıt.
+    id: str | None = None
+    konu: str = ""
+    kanit: str = ""
 
 
 class ProcessResponse(BaseModel):
@@ -193,6 +197,8 @@ class ProcessResponse(BaseModel):
     bilgi_unsurlari: dict = Field(default_factory=dict)
     eksik_alanlar: list[str] = Field(default_factory=list)
     clarify_questions: list[str] = Field(default_factory=list)
+    # Eksik SAYILMAYAN ama memurun kontrol etmesi gereken notlar (ör. imza doğrulanamadı).
+    eksik_bilgi_notlari: list[str] = Field(default_factory=list)
     mevzuat_onerileri: list[MevzuatOneriSchema] = Field(default_factory=list)
     # Yenilikçilik — NLI atıf-gerekçelendirme (her öneri için entailment işareti).
     mevzuat_nli: list = Field(default_factory=list)

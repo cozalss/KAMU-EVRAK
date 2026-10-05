@@ -136,6 +136,7 @@ def _to_response(state: dict[str, Any], ocr_meta: dict[str, Any]) -> ProcessResp
         bilgi_unsurlari=state.get("bilgi_unsurlari", {}),
         eksik_alanlar=state.get("eksik_alanlar", []),
         clarify_questions=state.get("clarify_questions", []),
+        eksik_bilgi_notlari=state.get("eksik_bilgi_notlari") or [],
         mevzuat_onerileri=zenginlestir_mevzuat(state),  # B2: güven/dayanak/[DOĞRULA] yüzeye çıkar
         mevzuat_nli=state.get("mevzuat_nli", []),
         # LLM özet yolu ham evrak metnini görür → TCKN/telefon kaçağına karşı sınırda maskele
@@ -477,7 +478,7 @@ def _node_summary(node: str, slice_: dict[str, Any]) -> dict[str, Any]:
         "siniflandir": ("evrak_turu", "tur_confidence", "tur_reasoning"),
         "cikar": ("bilgi_unsurlari",),
         "kanit_baglama": ("kanit_metadata",),
-        "eksik_tespit": ("eksik_alanlar",),
+        "eksik_tespit": ("eksik_alanlar", "eksik_bilgi_notlari"),
         # decompose (ENV-gated): çok-konulu evrak alt-talepleri SSE'ye taşınsın (canlı kart).
         "decompose": ("alt_talepler",),
         "mevzuat_oner": ("mevzuat_onerileri",),

@@ -1,12 +1,17 @@
-"""Görev 1 — Bilgi unsuru çıkarma node'u (gönderen, tarih, sayı, konu, talep, kurum, iletişim).
+"""Görev 1 — Bilgi unsuru çıkarma node'u: gelen evrak kimliği + TEK talep kümesi + PII.
 
-Akış: LLM JSON-mode YAPISAL alanları (gonderen/konu/talep/kurum/iletisim_adres/imza) çıkarır;
-tarih/sayı + PII (TCKN/telefon) HER ZAMAN regex ile tespit edilir. LLM yok/mock/hata →
-tam regex+keyword fallback (deterministik, anahtarsız demo çalışır).
+Akış: TEK LLM çağrısı (düşünme kapalı, kapalı küme JSON) belgenin anlamını çıkarır —
+gönderen, kısa resmî konu, gelen evrak modeli (belge cinsi / gönderen türü / idareler) ve
+TALEP KÜMESİ (her ayrı istek: birebir kanıt + kısa özet + tür + birim ipucu). Deterministik
+katman: PII maskeleme, etiketli alanlar (Sayı/Başvuru No/Konu/Tarih), kanıt çapası, imza
+durumu. LLM yok/mock/hata → aynı yapılar deterministik üretilir (anahtarsız demo çalışır).
 
-PII GÜVENLİĞİ (CLAUDE.md §2): TCKN/telefon ASLA ham saklanmaz/döndürülmez. LLM'in
-maskelemesine GÜVENİLMEZ — maskeleme deterministik regex ile uygulanır; LLM'in döndürdüğü
-gonderen/konu alanları da PII-tarayıcıdan geçirilip maskelenir (sızıntı önlenir).
+TEK DOĞRULUK KAYNAĞI (teşhis 2026-10-05): talepler yalnız burada çıkarılır; eski
+`talepler` (list[str]) ve decompose'un `alt_talepler`i bu kümeden TÜRETİLİR — iki ajanın
+talep sayısında çelişmesi yapısal olarak imkânsızdır, decompose ikinci LLM çağrısı yapmaz.
+
+PII GÜVENLİĞİ (CLAUDE.md §2): TCKN/telefon ASLA ham saklanmaz/döndürülmez. LLM'e yalnız
+mask_for_llm metni gider; LLM'in serbest-metin alanları PII-tarayıcıdan geçer.
 """
 
 from __future__ import annotations
@@ -16,9 +21,16 @@ from typing import Any
 
 import structlog
 
-from agents.config import LLM_DUSUNME_CIKARIMDA_KAPALI
+from agents.config import BIRIMLER
 from agents.nodes._llm_extract import llm_json
+from agents.talep_kumesi import (
+    heuristik_talep_kumesi,
+    kanit_kaynakta,
+    talep_kumesi_dogrula,
+    talep_metinleri,
+)
 from api.pii import mask_for_llm
+from yazi.gelen_evrak import BELGE_CINSLERI, GONDEREN_TURLERI, GelenEvrak, gelen_evrak_cikar
 
 log = structlog.get_logger()
 
@@ -28,13 +40,15 @@ _RE_TCKN = re.compile(r"\b[1-9]\d{10}\b")                 # 11 haneli — MASKEL
 _RE_TEL = re.compile(r"\b0?\s?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}\b")
 _RE_KONU = re.compile(r"konu\s*[:：]\s*(.+)", re.IGNORECASE)
 _RE_TALEP = re.compile(r"(talep ederim|rica ederim|arz ederim|gereğini|bilgilerinize)", re.IGNORECASE)
+# İmzanın METİNDE görünür izi: 'İmza' satırı, e-imza / elektronik imza beyanı, KEP.
+_RE_IMZA = re.compile(r"\b(imza|e-imza|elektronik imza|güvenli elektronik imza|"
+                      r"elektronik olarak imzalan\w*|e-imzal\w*)\b", re.IGNORECASE)
 
-# Konu ÖZ olmalı (Yön. 2646 m.13): tam cümle/paragraf değil kısa başlık. Uzun "Konu:" satırı
-# veya dilekçe cümlesi ilk anlamlı öbeğe indirilir (deterministik → her modda çalışır; LLM
-# kısa özü _merge_llm'de bunu ezebilir). İlk cümle-sonlandırıcı/bağlaç öncesi + kelime tavanı.
+# Konu ÖZ olmalı (Yön. 2646 m.13): tam cümle/paragraf değil kısa başlık.
 _KONU_KESME = re.compile(r"[.;,]|\s(?:olup|için|ancak|çünkü|zira|nedeniyle|dolayısıyla)\s")
 _KONU_MAX_KELIME = 8
 _KONU_MAX_KR = 64
+_CIKAR_MAX_TOKENS = 1400   # 8 talep × ~70 + künye; düşünme kapalı → gerçek cevap boyu
 
 
 def _konu_kisa(ham: str) -> str:
@@ -51,106 +65,50 @@ def _konu_kisa(ham: str) -> str:
     return parca.rstrip(".;,: ") or k[:_KONU_MAX_KR]
 
 
-# Çok-talep tespiti (§ kullanıcı: "onarım OLMAZSA yeni direk" gibi tek konu içinde birden çok
-# istek). Koşullu/alternatif bağlaçlar + numaralı maddeler + istek fiilleri → talep cümleleri.
-# bilgi_unsurlari["talep"] tarihsel BOOLEAN kalır (geriye uyum); "talepler" LİSTESİ additive
-# eklenir → build_body gövdeyi tüm taleplerle kurabilir (aksi halde ikinci talep düşüyordu).
-_RE_TALEP_BOL = re.compile(
-    r"(?:\s(?:ayrıca|bir de|bunun yanı sıra|ek olarak|aksi(?:\s+halde|\s+takdirde)?|"
-    r"mümkün\s+(?:değilse|olmazsa|olmaması\s+h(?:âlinde|alinde))|olmaz(?:sa|ise)|"
-    r"alternatif\s+olarak)\s)|(?:;\s*)|(?:\n\s*\d+[.)]\s*)", re.IGNORECASE)
-_RE_ISTEK = re.compile(
-    r"(onar[ıi]l|tamir|gideril|yenile|yeni(?:\s+\w+){0,3}?\s+(?:direk|direği|tesis|kurul)|"
-    r"tesis\s+edil|yerle[şs]tir|düzenlen|incelen|değerlendiril|kald[ıi]r|temin\s+edil|"
-    r"sağlan|yap[ıi]l|denetlen|bilgi\s+veril|kontrol\s+edil|başlat[ıi]l|kulland[ıi]r[ıi]l)", re.IGNORECASE)
-
-
-# İstek CÜMLESİNİN biçimi: Türkçe dilekçede istek "-mAsInI/-mAsI" + talep fiiliyle kurulur.
-# Yalnız istek kökü yetmez — "yapılmaktadır" (durum bildirimi) da "yapıl" içerir (tur4 bulgusu).
-_RE_TALEP_FIIL = re.compile(
-    r"(m[ae]s[ıi]n[ıi]|m[ae]s[ıi]\s+(?:hususunda|için|konusunda)|talep\s+ed|rica\s+ed|"
-    r"arz\s+ed|istiyorum|istirham|bekliyorum)", re.IGNORECASE)
-# Antet / künye / imza satırları istek değildir: "T.C.", büyük harfli kurum adı, Tarih/Konu/
-# Sayı/İlgi alanları, hitap ve kimlik satırları. Eskiden metnin İLK cümlesi alınıyordu →
-# 15 örnek evrakın 8'inde talep "T.C" çıkıyordu ve Kurul'a "talepler: 1) T.C" diye sızıyordu.
-_RE_KUNYE_SATIR = re.compile(
-    r"^\s*(?:T\.\s*C\.?|(?:Tarih|Konu|Sayı|İlgi|Ek(?:ler)?|Adres|Telefon|E-posta|Adı\s+Soyadı|"
-    r"Ad-Soyad|T\.C\.\s*Kimlik\s+No|Başvuru\s+(?:No|Türü)|İlgili\s+Kurum|Dosya\s+No)\s*:.*|"
-    r"Sayın\b.*|İmza\s*|[^a-zçğıöşü]+)\s*$")
-_RE_CUMLE_SONU = re.compile(r"(?<=[.!?])[ \t]+|(?<=[.!?])\n|\n[ \t]*\n")
-
-
-def _govde_cumleleri(text: str) -> list[str]:
-    """Künye/antet satırlarını at, kalan gövdeyi cümlelere böl. Satır sonları KORUNUR
-    (numaralı madde bölmesi `_RE_TALEP_BOL` satır başına bakar); boşluk sonra katlanır."""
-    govde = "\n".join(s for s in text.splitlines() if not _RE_KUNYE_SATIR.match(s))
-    return [c.strip() for c in _RE_CUMLE_SONU.split(govde) if c and c.strip()]
-
-
 def _talepleri_cikar(text: str) -> list[str]:
-    """Metinden ayrı istek cümlelerini çıkar (koşullu ikinci talep dahil). Boş → []."""
-    if not text:
-        return []
-    talepler: list[str] = []
-    gorulen: set[str] = set()
-    for cumle_tam in _govde_cumleleri(text):
-        if not (_RE_ISTEK.search(cumle_tam) and _RE_TALEP_FIIL.search(cumle_tam)):
-            continue
-        for p in _RE_TALEP_BOL.split(cumle_tam):
-            p = (p or "").strip()
-            if not (p and _RE_ISTEK.search(p)):
-                continue
-            cumle = re.sub(r"\s+", " ", p).strip().rstrip(".;, ")[:200]
-            anahtar = cumle.lower()[:60]
-            if cumle and anahtar not in gorulen:
-                gorulen.add(anahtar)
-                talepler.append(cumle)
-    return talepler[:5]  # makul üst sınır (belge tek işleme; 5 talep pratikte yeter)
+    """Geriye uyum: deterministik talep kümesinin kanıt cümleleri (list[str])."""
+    return talep_metinleri(heuristik_talep_kumesi(text))
 
 
-# Gönderen ad-soyad: "Ad-Soyad: <İsim>" / "Adı Soyadı: <İsim>" satırı (sentetik+gerçek desen).
-# İsim: 2+ baş-harfi büyük Türkçe sözcük; parantezli sıfat (İlgili/Vatandaş) atılır.
+# Gönderen ad-soyad: "Ad-Soyad: <İsim>" / "Adı Soyadı: <İsim>" satırı (aynı satırda kalır).
 _RE_AD_SOYAD = re.compile(
     r"ad[ıi]?[ \t-]*soyad[ıi]?[ \t]*[:：][ \t]*"
-    # İsim AYNI satırda kalmalı ([ \t], \s DEĞİL) → newline'ı geçip sonraki "Konu" vb.
-    # satırı yutmasın (bug: 'Ayşe Yılmaz\nKonu' yakalanıyordu).
     r"([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:[ \t]+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)+)",
-    re.IGNORECASE,  # "Ad-Soyad:" (büyük harf) etiketi de eşleşsin (mock-mod gönderen çıkarımı)
+    re.IGNORECASE,
 )
 
-# LLM'in serbest-metin alanlarına TCKN/telefon sızarsa maskelemek için (sızıntı önle).
 _PII_SCAN: tuple[re.Pattern[str], ...] = (_RE_TCKN, _RE_TEL)
 
 _SYSTEM = (
-    "Sen kamu evrakından yapısal bilgi çıkaran bir asistansın. Verilen evrak metninden "
-    "şu alanları çıkar (yoksa null/false bırak — UYDURMA, metinde GÖRÜNMEYENİ yazma):\n"
-    "- gonderen: gönderen kişi adı-soyadı veya tüzel kişi (ör. 'Ad-Soyad:' satırı)\n"
-    "- kurum: gönderen/muhatap kurum adı (T.C. başlık satırından, varsa)\n"
-    "- konu: evrakın konusu (kısa öz; 'Konu:' satırı yoksa gövdeden çıkar)\n"
-    "- talep/iletisim_adres/imza: her biri {\"deger\": true/false, \"kanit\": \"...\"} biçiminde "
-    "döndür. deger=true ise kanit alanına metinden BİREBİR (aynen, parafraz etmeden) "
-    "alıntılanmış kısa bir ifade yaz; deger=false ise kanit null.\n\n"
-    "KURALLAR:\n"
-    "- gonderen yalnız metinde AÇIKÇA yazan ad-soyad/kurumdur; tahmin etme.\n"
-    "- talep: dolaylı olsa da gerçek bir istek/arz varsa true (ör. 'çözülmesini umuyorum'). "
-    "Yüzeysel bakma, metinde gerçek bir talep ifadesi olup olmadığını dikkatle ARA.\n"
-    "- iletisim_adres yalnız gerçek bir adres/iletişim satırı varsa true.\n"
-    "- imza yalnız imza/e-imza/kapanış ifadesi varsa true.\n"
-    "- kanit metinde GEÇMEYEN bir ifadeyse deger=false say (uydurmaktansa false de).\n"
-    "- TCKN, telefon, tarih, sayı çıkarma — bunlar ayrıca regex ile işlenir, ATLAMA.\n\n"
-    "ÖRNEK:\n"
-    'Metin: "T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI\\nKonu: tesis izni\\nKaydımın oluşturulmasını '
-    'istiyorum.\\nAd-Soyad: Naz Tekin\\nTCKN: ..."\n'
-    '→ {"gonderen": "Naz Tekin", "kurum": "Sanayi ve Teknoloji Bakanlığı", '
-    '"konu": "tesis izni", '
-    '"talep": {"deger": true, "kanit": "Kaydımın oluşturulmasını istiyorum"}, '
-    '"iletisim_adres": {"deger": false, "kanit": null}, '
-    '"imza": {"deger": false, "kanit": null}}\n\n'
-    "Çıktı SADECE şu JSON, başka metin YOK:\n"
-    '{"gonderen": null, "kurum": null, "konu": null, '
-    '"talep": {"deger": false, "kanit": null}, '
-    '"iletisim_adres": {"deger": false, "kanit": null}, '
-    '"imza": {"deger": false, "kanit": null}}'
+    "Sen kamu evrakını yapılandıran bir asistansın. Verilen evrak metninden aşağıdaki JSON'u "
+    "çıkar. Metinde GÖRÜNMEYENİ yazma (null bırak), UYDURMA.\n"
+    "- gonderen: evrakı gönderen kişinin adı-soyadı ya da tüzel kişinin adı (yalnız metinde "
+    "açıkça yazıyorsa).\n"
+    "- konu: belgenin TEK kısa resmî konusu; en çok 8 kelimelik isim öbeği (ör. 'Yol "
+    "çukurunun kapatılması'). Belgenin kendi 'Konu:' satırı varsa onu kullan.\n"
+    "- gelen_evrak: belge_cinsi YALNIZ şunlardan biri: " + ", ".join(BELGE_CINSLERI)
+    + "; gonderen_turu YALNIZ şunlardan biri: " + ", ".join(GONDEREN_TURLERI)
+    + "; gonderen_idare: belgeyi bir kamu idaresi gönderdiyse antetindeki idare adı, değilse "
+    "null; muhatap_idare: belgenin hitap ettiği idare.\n"
+    "- talepler: gönderenin muhataptan istediği HER AYRI iş için bir madde (en çok 8). "
+    "kanit = metinden BİREBİR kopyalanmış istek ifadesi (parafraz YOK); ozet = 2-6 kelimelik "
+    "isim öbeği (resmî Konu satırına uygun); tur YALNIZ: talep, sikayet, ihbar, bilgi_edinme, "
+    "basvuru; birim_ipucu YALNIZ şunlardan biri ya da null: " + ", ".join(BIRIMLER) + ".\n"
+    "  * Aynı konuya bağlı işlemler TEK maddedir (ör. 'sayacın kontrolü ve fazla tutarın "
+    "iadesi'; 'onarılması, olmazsa yenisinin konması').\n"
+    "  * Farklı konular ayrı maddedir; bağlaç ('ayrıca') olmasa da.\n"
+    "  * Durum anlatımı ve kalıp kapanış ('gereğinin yapılmasını arz ederim', 'bilgilerinize') "
+    "tek başına madde DEĞİLDİR. Kapanış bir durumun giderilmesini istiyorsa madde o durumdur, "
+    "kanıtı durum cümlesidir.\n"
+    "  * Kurum yazısındaki (icra, mahkeme, genelge, resmî yazı) istekler de maddedir.\n"
+    "- iletisim_adres: {\"deger\": bool, \"kanit\": birebir alıntı|null}; yalnız iş veya "
+    "ikametgâh ADRESİ varsa true (telefon adres değildir).\n"
+    "- TCKN, telefon, tarih, sayı çıkarma; bunlar ayrıca işlenir.\n\n"
+    "Çıktı SADECE şu biçimde JSON, başka metin YOK:\n"
+    '{"gonderen": null, "konu": null, "gelen_evrak": {"belge_cinsi": "dilekce", '
+    '"gonderen_turu": "gercek_kisi", "gonderen_idare": null, "muhatap_idare": null}, '
+    '"talepler": [{"kanit": "...", "ozet": "...", "tur": "talep", "birim_ipucu": null}], '
+    '"iletisim_adres": {"deger": false, "kanit": null}}'
 )
 
 
@@ -170,43 +128,33 @@ def _scrub_pii(value: str) -> str:
 
 
 def _regex_unsurlar(text: str) -> dict[str, Any]:
-    """Deterministik tespit: PII maskeleme ÖNCE + tarih/sayı/konu + adres/imza/talep keyword.
+    """Deterministik tespit: PII maskeleme ÖNCE + tarih/sayı/konu + adres/imza/talep.
 
     PII (TCKN/telefon) ÖNCE tespit edilir ve metinden REDAKTE edilir; sayı/konu çıkarımı bu
     redakte metinde koşar → açgözlü 'sayi' regex'i TCKN'yi ham yakalayamaz (sızıntı önlenir).
     """
     unsurlar: dict[str, Any] = {}
-    # 1) PII — varlık işaretlenir, değer MASKELENİR (asla ham) + redakte metin kurulur.
-    redacted = text
     if tckn := _RE_TCKN.search(text):
         unsurlar["tckn_maskeli"] = _mask(tckn.group(0))
         unsurlar["pii_var"] = True
     if tel := _RE_TEL.search(text):
         unsurlar["telefon_maskeli"] = _mask(re.sub(r"\s", "", tel.group(0)))
         unsurlar["pii_var"] = True
-    redacted = _scrub_pii(text)  # TCKN/telefon span'ları maskeyle değiştir
+    redacted = _scrub_pii(text)
 
-    # 2) Yapısal alanlar — redakte metinde (sayi/konu ham PII yakalayamaz).
     if m := _RE_TARIH.search(redacted):
         unsurlar["tarih"] = m.group(0)
     if m := _RE_SAYI.search(redacted):
         unsurlar["sayi"] = m.group(0)
     if m := _RE_KONU.search(redacted):
         unsurlar["konu"] = _konu_kisa(m.group(1))          # ham satır değil kısa öz (Yön. m.13)
-    # Gönderen ad-soyad: "Ad-Soyad: <İsim>" satırı (mock modda LLM yok → eksik-tespit
-    # gonderen_ad_soyad'ı yanlış-eksik işaretliyordu; deterministik regex bunu kapatır).
     if m := _RE_AD_SOYAD.search(redacted):
         unsurlar["gonderen"] = m.group(1).strip()[:80]
     if _RE_TALEP.search(text):
         unsurlar["talep"] = True
-    # Talep LİSTESİ (additive; boolean 'talep' korunur) — gövde tüm talepleri yansıtabilsin
-    # (koşullu "onarım olmazsa yeni direk" gibi ikinci talep düşmesin). Maskeli metinden.
-    talepler = _talepleri_cikar(redacted)
-    if talepler:
-        unsurlar["talepler"] = talepler
-    if re.search(r"\b(adres|mahalle|cadde|sokak|no:)\b", text, re.IGNORECASE):
+    if re.search(r"\b(adres|mahalle|mah\.|cadde|cad\.|sokak|sok\.|no:)\b", text, re.IGNORECASE):
         unsurlar["iletisim_adres"] = True
-    if re.search(r"\b(imza|e-imza|elektronik imza)\b", text, re.IGNORECASE):
+    if _RE_IMZA.search(text):
         unsurlar["imza"] = True
     return unsurlar
 
@@ -214,37 +162,21 @@ def _regex_unsurlar(text: str) -> dict[str, Any]:
 def _kanit_gecerli(kanit: Any, text: str) -> bool:
     """Kanıt span'ı kaynak metinde GERÇEKTEN geçiyor mu? (uydurma-karşıtı doğrulama).
 
-    Boşluk/büyük-küçük harf farkına toleranslı, ama alıntı kaynakta yoksa asla true dönmez —
-    LLM'in kanıt-alıntısına 'güvenilmez, doğrulanır' ilkesi (bkz. verify.py grounding deseni).
-    Minimum 15 karakter + en az 2 kelime şartı: kısa/tek-kelimelik alıntılar ("için", "arz
-    e") kaynakta hemen her zaman TESADÜFEN geçer — gerçek bir kanıt değil, sahte-pozitif
-    "topraklama" riski.
+    ≥15 karakter + ≥2 kelime: kısa alıntılar kaynakta tesadüfen geçer (sahte topraklama).
     """
-    if not isinstance(kanit, str):
-        return False
-    kanit_norm = re.sub(r"\s+", " ", kanit).strip().casefold()
-    if len(kanit_norm) < 15 or kanit_norm.count(" ") < 1:
-        return False
-    return kanit_norm in re.sub(r"\s+", " ", text).casefold()
+    return kanit_kaynakta(kanit, text)
 
 
 def _merge_llm(unsurlar: dict[str, Any], obj: dict[str, Any], text: str) -> None:
     """LLM yapısal alanlarını birleştir (regex'i ezmeden; serbest-metin PII-scrub'lanır).
 
-    talep/iletisim_adres/imza: {"deger": bool, "kanit": str|null} kanıt-alıntılı biçimde gelir
-    (Chain-of-Verification deseni). Eksik-bilgi F-beta(β=2) eval'inde bu üç alan çıplak
-    boolean'ken precision 1.0 / recall 0.739 ölçülmüştü — model tek örneğe kalıp eşleştirip
-    dolaylı sinyalleri kaçırıyordu. Artık deger bayrağı false olsa bile kanıt kaynak metinde
-    GERÇEKTEN doğrulanıyorsa true sayılır (recall-öncelikli — kamuda FN>FP); kanıt yoksa/
-    uydurmaysa yine false — recall'a ağırlık verir ama uydurmayı asla kabul etmez.
+    talep/iletisim_adres/imza: {"deger", "kanit"} biçimi — kanıt kaynakta GERÇEKTEN
+    geçiyorsa true sayılır (recall-öncelikli, uydurma asla kabul edilmez).
     """
     for key in ("gonderen", "kurum"):
         val = obj.get(key)
         if isinstance(val, str) and val.strip() and not unsurlar.get(key):
             unsurlar[key] = _scrub_pii(val.strip()[:160])
-    # Konu ayrı ele alınır: LLM'in kısa özü, regex'in ham (uzun) konusunu EZEBİLİR — regex
-    # "Konu:" satırının tamamını alıp uzun bırakıyordu. LLM konu daha kısaysa/regex konu
-    # uzunsa LLM tercih edilir; ikisi de _konu_kisa güvenlik ağından geçer.
     llm_konu = obj.get("konu")
     if isinstance(llm_konu, str) and llm_konu.strip():
         aday = _konu_kisa(_scrub_pii(llm_konu.strip()))
@@ -253,33 +185,82 @@ def _merge_llm(unsurlar: dict[str, Any], obj: dict[str, Any], text: str) -> None
             unsurlar["konu"] = aday
     for key in ("talep", "iletisim_adres", "imza"):
         if unsurlar.get(key):
-            continue  # regex zaten tespit etti
+            continue
         alan = obj.get(key)
         if isinstance(alan, dict):
             if _kanit_gecerli(alan.get("kanit"), text):
                 unsurlar[key] = True
-        elif alan is True:  # eski çıplak-boolean şekli (LLM şema dışına çıkarsa) — geriye uyum
+        elif alan is True:  # eski çıplak-boolean şekli — geriye uyum
             unsurlar[key] = True
             log.warning("cikar_kanitsiz_boolean_fallback", alan=key)
 
 
+def _talep_kumesi_kur(obj: dict[str, Any] | None, llm_metin: str,
+                      text: str) -> tuple[list[dict[str, Any]], str]:
+    """LLM kümesi (kanıt çapalı) → yoksa/boşsa deterministik küme. (küme, kaynak)."""
+    if obj is not None:
+        kume = talep_kumesi_dogrula(obj.get("talepler"), llm_metin)
+        if kume:
+            return kume, "llm"
+        if isinstance(obj.get("talepler"), list) and obj["talepler"]:
+            log.info("cikar_talep_capa_reddi", n=len(obj["talepler"]))
+    return heuristik_talep_kumesi(mask_for_llm(text, None)), "heuristik"
+
+
+def _imza_durumu(unsurlar: dict[str, Any], gelen: GelenEvrak) -> str:
+    """'var' | 'dogrulanamadi'. Düz metin/OCR'dan ıslak imzanın YOKLUĞU kanıtlanamaz.
+
+    'yok' yalnız imza alanının boş olduğunu açıkça raporlayan bir kanaldan gelebilir
+    (görsel katmanın imza tespiti henüz yok) — metinden asla türetilmez.
+    """
+    if unsurlar.get("imza") or gelen.elektronik_kanal:
+        return "var"
+    return "dogrulanamadi"
+
+
+def _konu_tamamla(unsurlar: dict[str, Any], kume: list[dict[str, Any]]) -> None:
+    """Konu yoksa talep kümesinden türet (tek kaynak): 1 talep → özeti; ≥2 → ilk ikisi."""
+    if unsurlar.get("konu") or not kume:
+        return
+    ozetler = [o["ozet"] for o in kume[:2] if o.get("ozet")]
+    if ozetler:
+        unsurlar["konu"] = _konu_kisa(" ve ".join(ozetler))
+
+
 async def cikar_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Yapısal bilgi unsurlarını çıkar — LLM (semantik alanlar) + regex (tarih/sayı/PII)."""
-    text = state.get("evrak_text", "")
+    """Yapısal bilgi unsurları + gelen evrak modeli + talep kümesi (TEK LLM çağrısı)."""
+    text = state.get("evrak_text", "") or ""
     unsurlar = _regex_unsurlar(text)  # PII maskeleme HER ZAMAN deterministik
 
-    # KVKK: dış servise (DeepSeek) ham TCKN/telefon/IBAN GİTMEZ (route_birim.py:218 deseni).
-    # isim=None → ad korunur (LLM gonderen'i çıkarır); yalnız sayısal PII maskelenir → LLM
-    # bunları zaten regex'e bıraktığı için işlevsel kayıp yok.
+    # KVKK: dış servise (DeepSeek) ham TCKN/telefon/IBAN GİTMEZ.
     llm_metin = mask_for_llm(text, None)
-    obj = await llm_json(_SYSTEM, llm_metin[:6000], max_tokens=300,
-                         dusunme_kapali=LLM_DUSUNME_CIKARIMDA_KAPALI)
-    source = "regex"
+    obj = await llm_json(_SYSTEM, llm_metin[:6000], max_tokens=_CIKAR_MAX_TOKENS,
+                         dusunme_kapali=True) if text.strip() else None
     if obj is not None:
         _merge_llm(unsurlar, obj, text)
-        source = "llm+regex"
 
-    log.info("cikar", alanlar=list(unsurlar), pii=bool(unsurlar.get("pii_var")), source=source)
+    kume, kaynak = _talep_kumesi_kur(obj, llm_metin, text)
+    unsurlar["talep_kumesi"] = kume
+    unsurlar["talep_kumesi_kaynagi"] = kaynak
+    if kume:
+        unsurlar["talepler"] = talep_metinleri(kume)
+        unsurlar["talep"] = True
+    _konu_tamamla(unsurlar, kume)
+
+    llm_gelen = obj.get("gelen_evrak") if obj is not None else None
+    gelen = gelen_evrak_cikar(text, llm_gelen, unsurlar.get("gonderen"))
+    # Serbest metin alanları PII süzgecinden (etiketli numaralar — Sayı/Başvuru No — kalır).
+    gelen = GelenEvrak.from_dict({**gelen.to_dict(), **{
+        k: _scrub_pii(v) for k, v in gelen.to_dict().items()
+        if k in ("gonderen_ad", "konu_satiri", "gonderen_idare", "muhatap_idare") and v}})
+    unsurlar["gelen_evrak"] = gelen.to_dict()
+    if not unsurlar.get("kurum") and (gelen.muhatap_idare or gelen.gonderen_idare):
+        unsurlar["kurum"] = gelen.muhatap_idare or gelen.gonderen_idare
+    unsurlar["imza_durumu"] = _imza_durumu(unsurlar, gelen)
+
+    log.info("cikar", alanlar=list(unsurlar), pii=bool(unsurlar.get("pii_var")),
+             source="llm+regex" if obj is not None else "regex",
+             n_talep=len(kume), talep_kaynak=kaynak, belge_cinsi=gelen.belge_cinsi)
     return {"bilgi_unsurlari": unsurlar}
 
 

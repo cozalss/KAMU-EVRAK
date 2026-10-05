@@ -646,7 +646,11 @@ def _from_corpus(query: str, turu: str = "", *, ek_beklenen: frozenset[str] = fr
     boosted = _apply_boost(ranked, beklenen)
     boosted.sort(key=lambda x: -x[0])
     sorgu_kucuk = tr_lower(query)
-    deduped = [(sk, c) for sk, c in _dedup(boosted) if _baglam_uygun(c, sorgu_kucuk)]
+    from agents.mevzuat_atif import cerceve_maddesi_mi  # döngüsel import: atif → bu modül
+
+    # Amaç/kapsam/tanımlar/dayanak/yürürlük maddeleri esas dayanak olamaz (yapısal kural).
+    deduped = [(sk, c) for sk, c in _dedup(boosted)
+               if _baglam_uygun(c, sorgu_kucuk) and not cerceve_maddesi_mi(c)]
     # Aşama 2 — cross-encoder rerank (opt-in + graceful). None → BM25 yoluna devam.
     reranked = _maybe_rerank(query, deduped)
     if reranked is not None:
@@ -738,6 +742,15 @@ async def _icerik_odakli(state: dict[str, Any]) -> dict[str, Any] | None:
         return None
 
 
+def _atiflari_one_al(state: dict[str, Any], oneriler: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Evrakın kendi açık atfı korpusta varsa listenin başına (agents.mevzuat_atif)."""
+    from agents.mevzuat_atif import atif_onerileri
+
+    atif, _ = atif_onerileri(str(state.get("evrak_text") or ""))
+    anahtar = {(a["kaynak_dosya"], a["madde_no"]) for a in atif}
+    return atif + [o for o in oneriler if (o.get("kaynak_dosya"), o.get("madde_no")) not in anahtar]
+
+
 async def mevzuat_oner_node(state: dict[str, Any]) -> dict[str, Any]:
     """İlgili mevzuatı öner — içerik odaklı talep bazlı yol (LLM) birincil; LLM yoksa korpus
     BM25 retrieval, en sonda statik config fallback."""
@@ -762,6 +775,7 @@ async def mevzuat_oner_node(state: dict[str, Any]) -> dict[str, Any]:
         # loop'unda await edildiğinden, senkron çağrı TÜM eşzamanlı istekleri/SSE akışlarını
         # dondururdu → to_thread ile worker'a al (deepseek köprüsü kalıcı-loop'a gider, güvenli).
         oneriler = await asyncio.to_thread(_from_corpus, query, turu, ek_beklenen=ek_beklenen)
+    oneriler = _atiflari_one_al(state, oneriler)
     kaynak = "corpus" if oneriler else "config"
     if not oneriler:
         oneriler = _from_config(turu)

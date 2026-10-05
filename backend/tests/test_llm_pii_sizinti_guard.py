@@ -256,3 +256,66 @@ class TestYapisalMaskeleme:
             [{"ad": "Ayşe Yılmaz", "tckn": _HAM_TCKN, "tel": _HAM_TEL}],
         )
         _pii_yok(payload)
+
+
+class TestMevzuatYollariMaskeli:
+    """2026-10-05 incelemesi: mevzuat mesele analizi + alaka yargıcı KİŞİ ADINI maskelemeden
+    gönderiyordu (mask_for_llm isim=None); guard bu iki yolu kapsamıyordu."""
+
+    @staticmethod
+    def _ad_yok(user: str) -> None:
+        assert "Ayşe" not in user and "Yılmaz" not in user, "kişi adı dış LLM'e sızdı"
+
+    async def test_mevzuat_mesele_ham_pii_ve_ad_gitmez(self, monkeypatch):
+        import agents.mevzuat_mesele as mesele_mod
+
+        kayit, fake = _yakalayan()
+        monkeypatch.setattr(mesele_mod, "llm_json", fake)
+        state = {"evrak_text": _METIN, "evrak_turu": "dilekce",
+                 "bilgi_unsurlari": {"gonderen": "Ayşe Yılmaz", "konu": "Ayşe Yılmaz park onarımı"}}
+        await mesele_mod.mesele_analizi(state, [{"id": "t1", "metin": "Ben Ayşe Yılmaz, "
+                                                 f"TCKN {_HAM_TCKN}, park onarımı"}])
+        assert "user" in kayit, "mesele analizi LLM'i çağrılmadı — test yolu kırık"
+        _pii_yok(kayit["user"])
+        self._ad_yok(kayit["user"])
+
+    async def test_mevzuat_yargic_ham_pii_ve_ad_gitmez(self, monkeypatch):
+        import agents.mevzuat_yargic as yargic_mod
+
+        kayit, fake = _yakalayan()
+        monkeypatch.setattr(yargic_mod, "llm_json", fake)
+        havuz = [{"text": "Madde 4 — Dilekçede bulunması zorunlu şartlar",
+                  "source": "3071_dilekce_hakki_kanunu.txt"}]
+        await yargic_mod.alaka_yargici(
+            [{"id": "t1", "metin": f"Ben Ayşe Yılmaz, TCKN {_HAM_TCKN}, tel {_HAM_TEL}"}],
+            {}, havuz, "Ayşe Yılmaz")
+        assert "user" in kayit, "yargıç LLM'i çağrılmadı — test yolu kırık"
+        _pii_yok(kayit["user"])
+        self._ad_yok(kayit["user"])
+
+    async def test_icerik_odakli_yol_gonderen_adini_yargica_iletir(self, monkeypatch):
+        """Uçtan uca: icerik_odakli_oneriler state'teki gönderen adını iki çağrıya da taşır."""
+        import agents.mevzuat_mesele as mesele_mod
+        import agents.mevzuat_yargic as yargic_mod
+
+        giden: list[str] = []
+
+        async def _mesele(system, user, **kwargs):
+            giden.append(user)
+            return {"talepler": [{"id": "t1", "mesele": "park bakımı", "terimler": ["park"],
+                                  "dosyalar": []}]}
+
+        async def _yargic(system, user, **kwargs):
+            giden.append(user)
+            return {"secim": []}
+
+        monkeypatch.setattr(mesele_mod, "llm_json", _mesele)
+        monkeypatch.setattr(yargic_mod, "llm_json", _yargic)
+        state = {"evrak_text": _METIN, "evrak_turu": "dilekce",
+                 "bilgi_unsurlari": {"gonderen": "Ayşe Yılmaz", "talepler": [
+                     f"Ayşe Yılmaz (TCKN {_HAM_TCKN}) parkın onarılmasını talep ediyor"]}}
+        await yargic_mod.icerik_odakli_oneriler(state)
+        assert len(giden) == 2, "mesele + yargıç çağrılmadı — test yolu kırık"
+        for user in giden:
+            _pii_yok(user)
+            self._ad_yok(user)

@@ -96,6 +96,7 @@ def _il_grubu(kayit: dict[str, Any]) -> list[dict[str, Any]]:
 
 def kurum_adaylari(
     muhatap: dict[str, Any] | None, gonderen: dict[str, Any] | None = None,
+    gonderen_aile: set[str] | None = None,
 ) -> list[dict[str, str]]:
     """Muhatap için yetkili-kurum kapalı kümesi: [{'kod','slug','ad','tur','il'}].
 
@@ -112,11 +113,86 @@ def kurum_adaylari(
     for k in _tekil(havuz):
         if k.get("slug") in haric or _katla(str(k.get("ad") or "")) in haric_ad:
             continue
+        if gonderen_aile and ayni_aile(k, gonderen_aile):
+            continue  # gelen yazıyı yazan kurum ailesi alıcı olamaz (yazi_sgk_cevabi)
         out.append({"kod": f"K{len(out) + 1}", "slug": str(k["slug"]), "ad": str(k["ad"]),
                     "tur": str(k.get("tur") or ""), "il": str(k.get("il") or "")})
         if len(out) >= _AZAMI_ADAY:
             break
     return out
+
+
+# Kurum AİLE anahtarında atılan örgütsel sözcükler (katlanmış). Kalan çekirdek kurumun
+# kimliğidir: 'Ankara Sosyal Güvenlik İl Müdürlüğü', 'Sosyal Güvenlik Kurumu Başkanlığı' ve
+# 'Keçiören Sosyal Güvenlik Merkezi Müdürlüğü' → 'sosyal guvenlik'. Çekirdek boş kalırsa
+# (belediye/valilik: kimlik yer adıdır) tam ad kullanılır — 'kecioren belediyesi'.
+_ORGUT_SOZCUKLERI = frozenset({
+    "il", "ilce", "mudurlugu", "mudurlukleri", "genel", "baskanligi", "baskanlik", "kurumu",
+    "merkezi", "merkez", "daire", "dairesi", "sube", "subesi", "bolge", "bolgesi", "t", "c",
+    "tc", "ve", "idaresi", "buyuksehir", "belediyesi", "belediye", "valiligi", "kaymakamligi",
+    "bakanligi", "mudurluk", "baskan", "yardimciligi", "koordinatorlugu", "sgk", "a", "s",
+})
+
+
+@lru_cache(maxsize=1)
+def _yer_adlari(_rev: int) -> frozenset[str]:
+    """Sicildeki il ve ilçe adlarının katlanmış sözcükleri (aile anahtarından atılır)."""
+    out: set[str] = set()
+    for k in sicil_yukle().get("kurumlar") or []:
+        if isinstance(k, dict):
+            for alan in ("il", "ilce"):
+                out.update(_katla(str(k.get(alan) or "")).split())
+    return frozenset(out)
+
+
+def kurum_aile_anahtari(ad: str) -> str:
+    """Kurum ailesi anahtarı: yer adı + örgüt sözcüğü atılmış çekirdek; boşsa tam katlama."""
+    tam = _katla(_PARANTEZ_RE.sub(" ", ad or ""))
+    yer = _yer_adlari(id(sicil_yukle()))
+    cekirdek = [s for s in tam.split() if s not in _ORGUT_SOZCUKLERI and s not in yer]
+    return " ".join(cekirdek) or tam
+
+
+def gonderen_aileleri(gonderen: dict[str, Any] | None, antet_satirlari: list[str]) -> set[str]:
+    """Gönderen kurumun TÜM kimlikleri: tespit edilen künye + sicil kaydı + antet satırları
+    (üst kurum + alt birim) + sicildeki üst kurum adı. Alıcı bunlardan biriyle aynı ailedeyse
+    'yetkili kurum' olamaz — gelen yazıyı yazana devir, cevap vermemenin kılığıdır."""
+    g = gonderen or {}
+    adlar = [str(g.get("ad") or ""), *antet_satirlari]
+    kayit = muhatap_kaydi(g) if (g.get("slug") or g.get("ad")) else {}
+    adlar += [str(kayit.get("ad") or ""), str(kayit.get("ust_kurum") or "")]
+    return {a for a in (kurum_aile_anahtari(x) for x in adlar if x.strip()) if a}
+
+
+def ayni_aile(kurum: dict[str, Any], aileler: set[str]) -> bool:
+    """Kurum (adı ya da sicil üst kurumu) verilen ailelerden biriyle aynı mı?"""
+    if not aileler:
+        return False
+    kayit = sicil_cozumle(str(kurum.get("slug") or "")) or {}
+    adlar = [str(kurum.get("ad") or ""), str(kayit.get("ust_kurum") or "")]
+    return any(kurum_aile_anahtari(a) in aileler for a in adlar if a.strip())
+
+
+def yerel_tasra_tercih(
+    alici: dict[str, Any] | None, kurumlar: list[dict[str, str]],
+) -> dict[str, Any] | None:
+    """Merkezî alıcı (bakanlık/genel müdürlük) yerine muhatabın İLİNDEKİ aynı aile taşra
+    birimi (il müdürlüğü / defterdarlık) aday listesinde varsa onu döndür.
+
+    Dilekçe işi yapacak yerel birime gider (ölçüldü: Ankara Valiliği miras intikalini
+    'Tapu ve Kadastro Genel Müdürlüğüne' devrediyordu). Aile eşleşmesi sicil verisinden
+    (ad çekirdeği); taşra kaydı sicilde yoksa merkez kalır ve `merkez_teskilati` işaretlenir
+    — memur yerel birimi kendisi belirler."""
+    if not alici or str(alici.get("tur") or "") not in _MERKEZI_TURLER:
+        return alici
+    aile = kurum_aile_anahtari(str(alici.get("ad") or ""))
+    yerel = next((k for k in kurumlar
+                  if k.get("tur") in ("il_mudurlugu", "defterdarlik") and k.get("il")
+                  and kurum_aile_anahtari(str(k.get("ad") or "")) == aile), None)
+    if yerel is None:
+        return {**alici, "merkez_teskilati": True}
+    return {"slug": yerel["slug"], "ad": yerel["ad"], "tur": yerel["tur"], "kaynak": "sicil",
+            "merkez_yerine": str(alici.get("ad") or "")}
 
 
 _PARANTEZ_RE = re.compile(r"\(([^()]{2,60})\)")
@@ -142,4 +218,5 @@ def kurum_ad_cozumle(ad: str) -> dict[str, Any] | None:
     return None
 
 
-__all__ = ("kurum_ad_cozumle", "kurum_adaylari", "muhatap_kaydi")
+__all__ = ("ayni_aile", "gonderen_aileleri", "kurum_ad_cozumle", "kurum_adaylari",
+           "kurum_aile_anahtari", "muhatap_kaydi", "yerel_tasra_tercih")

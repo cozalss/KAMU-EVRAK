@@ -67,6 +67,12 @@ def profil_kapsami(ad: str) -> Iterator[None]:
         _AKTIF_PROFIL.reset(token)
 
 
+def toplanan_izler() -> list[dict[str, Any]]:
+    """Aktif node'un şu ana kadar topladığı izlerin KOPYASI (graf dışında boş liste).
+    Node, kendi çağrısının kesilip kurtarıldığını bu listeden okuyabilir."""
+    return list(_TOPLAYICI.get() or [])
+
+
 def iz_ekle(kayit: dict[str, Any]) -> None:
     """İz kaydını aktif toplayıcıya ekle. Toplayıcı yoksa (graf dışı) sessizce atla.
 

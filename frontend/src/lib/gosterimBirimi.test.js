@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { gosterimBirimi, yonlendirmeBirimi } from "./gosterimBirimi.js";
+import { BIRIM_SECILMEDI, gosterimBirimi, yonlendirmeBirimi } from "./gosterimBirimi.js";
 
 test("backend gosterim_birimi varsa tek kaynak odur (devir metni dahil)", () => {
   const r = {
@@ -26,4 +26,10 @@ test("yonlendirme alanı olmayan eski kayıtlar eski zincire düşer", () => {
   assert.equal(gosterimBirimi({ hedef_birim_oneri: "Mali Hizmetler" }), "Mali Hizmetler");
   assert.equal(gosterimBirimi({ hedef_kategori: "x" }), "x");
   assert.equal(gosterimBirimi(null), "");
+});
+
+test("yönlendirme var ama birim yoksa kaba kategori havale birimi gibi gösterilmez", () => {
+  const r = { yonlendirme: { karar: "ICERIDE", birim: null }, hedef_kategori: "Basın-Halkla İlişkiler / Başvuru-Kayıt" };
+  assert.equal(gosterimBirimi(r), BIRIM_SECILMEDI);
+  assert.equal(yonlendirmeBirimi(r), "");
 });

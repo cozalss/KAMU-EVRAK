@@ -760,10 +760,15 @@ def etkili_birim(state: dict) -> str:
     aynı birim adını kullanır; doğrulanmamış önerinin onay durumu ayrıca state'te korunur.
     """
     # Tek doğruluk kaynağı (agents/yonlendirme.py); DISARIDA'da '<Alıcı Kurum> (devir)'.
-    from agents.yonlendirme import gosterim_birimi
+    # Yönlendirme VARSA zincir orada biter: birim belirlenemediyse kaba kategori (9'lu,
+    # belediye biçimli) gerçek birim gibi DÖNMEZ — '' döner (yazı muhatabı yer tutucuya,
+    # arşiv boş birime düşer); arayüz aynı durumda `gosterim_birimi` alanındaki açık
+    # 'Birim belirlenemedi — memur seçecek' metnini basar (frontend gosterimBirimi ile aynı).
+    from agents.yonlendirme import BIRIM_SECILMEDI, gosterim_birimi
 
-    if gosterim := gosterim_birimi(state.get("yonlendirme")):
-        return gosterim
+    if state.get("yonlendirme"):
+        gosterim = gosterim_birimi(state["yonlendirme"])
+        return "" if gosterim == BIRIM_SECILMEDI else gosterim
     hb = state.get("hedef_birim")
     if hb:
         return birim_tr(hb)

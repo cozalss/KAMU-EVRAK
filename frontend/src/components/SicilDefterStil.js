@@ -37,14 +37,22 @@ export const SICIL_CSS = `
 [data-sd-derkenar][data-ton="kirmizi"]{color:var(--ke-derin-kirmizi)}
 [data-sd-derkenar][data-ton="sessiz"]{color:var(--ke-mut2);font-weight:500;text-transform:none;letter-spacing:.02em;font-size:11px}
 [data-sd-eylem]{display:inline-flex;align-items:center;gap:6px;justify-self:end;cursor:pointer;white-space:nowrap;
-  padding:6px 12px;min-height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--ke-derin-t);
+  padding:6px 12px;min-height:36px;border-radius:8px;border:1px solid var(--ke-input-line);background:var(--ke-surf);color:var(--ke-ink);
   font:500 13px/18px 'Instrument Sans','Segoe UI',system-ui,sans-serif;
   transition:background .14s ease,border-color .14s ease,opacity .16s ease,transform .14s var(--ke-ease-out)}
 [data-sd-eylem] svg{transition:transform .22s var(--ke-ease-out)}
-[data-sicil-satir]:hover [data-sd-eylem],[data-sicil-satir]:focus-within [data-sd-eylem]{border-color:var(--ke-line-hi);background:var(--ke-surf)}
+/* Satır eylemi = Panel'deki ikincil Btn ile aynı çerçeveli düğme (metin bağlantısı değil). */
+[data-sd-eylem]:hover:not(:disabled){background:var(--ke-hov)}
+/* Telefon: satır eylemi + seçim kutusu 44 px dokunma alanı (neonUi [data-dokunma] eşiğiyle aynı);
+   kutunun görsel yeri değişmesin diye negatif marj büyür. Hover olmayan ekranda gizli eylem görünür. */
+@media (max-width:640px){
+  [data-sd-eylem]{min-height:44px!important}
+  [data-sd-secim]{margin:-14px!important}
+  [data-sd-gizli]{opacity:1}
+}
+@media (hover:none){[data-sd-gizli]{opacity:1}}
 [data-sicil-satir]:hover [data-sd-eylem] svg{transform:translateX(2px)}
-[data-sd-eylem]:hover{border-color:var(--ke-input-line)!important}
-[data-sd-eylem]:disabled{cursor:not-allowed;color:var(--ke-mut2);opacity:.7}
+[data-sd-eylem]:disabled{cursor:not-allowed;color:var(--ke-mut2);background:var(--ke-press);border-color:transparent}
 [data-sd-eylem]:focus-visible{outline:2px solid var(--ke-t);outline-offset:2px}
 /* Gizli satır eylemi — durum bilgisi yerinde KALIR; eylem yalnız bakılan satırda belirir
    (yalnız opaklık: içerik değişimi göz takibini bozmaz). Klavyede :focus-within açar. */

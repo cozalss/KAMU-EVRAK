@@ -84,8 +84,8 @@
   çubuğunda sayfaya bağlanan "dosya sırtı" aktif sekme (`[data-ray]` token kapsamı + `--ke-sayfa*`).
 - **Font:** Archivo (`DISPLAY`, genişlik ekseni — yalnız başlık/rakam/damga) · Instrument Sans
   (`SANS`, gövde/UI) · IBM Plex Mono (`MONO`, makine verisi + antet satırı).
-- **Kütüphane:** motion · Radix · vaul · embla · lucide · @number-flow/react · shadcn/ui
-  (`src/components/ui/`). Tailwind yalnız çalışma alanında, renkler `var(--ke-*)`. Legacy
+- **Kütüphane:** motion · Radix · vaul · embla · lucide · @number-flow/react.
+  Tailwind yalnız çalışma alanında, renkler `var(--ke-*)`. Legacy
   `styles/kamu-evrak.css` değişkenleri dosya sonundaki köprüyle `--ke-*`'ye bağlı.
 - **a11y:** focusRing, renk tek sinyal değil, reduced-motion, telefonda 44px hedef + 16px girdi.
 - **Ayrı tanıtım (landing) sayfası YOK** (2026-10-04 kullanıcı kararı: ürün memurun iş aracıdır).

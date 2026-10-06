@@ -25,7 +25,7 @@ test("eşleşmeyen tek yıldız ve çarpma işareti düz metin kalır", () => {
 });
 
 test("kart adı dosya adı olmaz: konuya, yoksa tür etiketine düşer", () => {
-  assert.equal(kayitAdi({ baslik: "ornek-bilgi_edinme.txt", konu: "Park aydınlatma talebi" }), "Park aydınlatma talebi");
+  assert.equal(kayitAdi({ baslik: "ornek-bilgi_edinme_park_harcama.txt", konu: "Park aydınlatma talebi" }), "Park aydınlatma talebi");
   assert.equal(kayitAdi({ baslik: "evrak.txt", evrak_turu: "bilgi_edinme" }), "Bilgi edinme başvurusu");
   assert.equal(kayitAdi({ evrak_no: "E-2026/0001" }), "E-2026/0001");
   assert.equal(kayitAdi({}), "Kayıt");

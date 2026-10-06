@@ -8,8 +8,8 @@ import { komutCoz, komutOnayi } from "./sesliKomut.js";
 // eşleştirme algoritması bağımsız çalışsa da, var olmayan adlarla yazılmış bir test
 // okuyanı yanıltıyor. "şikayet" iki başlıkta birden geçer: belirsizlik testi buna dayanır.
 const BASLIKLAR = [
-  "ornek-sikayet_gurultu.txt",
-  "ornek-dilekce_aydinlatma.txt",
+  "ornek-sikayet_atik_konteyner.txt",
+  "ornek-dilekce_su_arizasi.txt",
   "saglik_mud_sikayet.txt",
 ];
 
@@ -51,8 +51,8 @@ test("'açıklama' fiil sanılmaz (serbest sonek tuzağı)", () => {
 
 test("evrak açma: başlık parçalarıyla eşleşir", () => {
   assert.deepEqual(
-    komutCoz("gürültü şikayetini aç", { basliklar: BASLIKLAR }),
-    { tur: "evrak_ac", baslik: "ornek-sikayet_gurultu.txt" });
+    komutCoz("atık konteyner şikayetini aç", { basliklar: BASLIKLAR }),
+    { tur: "evrak_ac", baslik: "ornek-sikayet_atik_konteyner.txt" });
 });
 
 test("evrak açma: ayırt etmeyen sözcük (ornek/txt) tek başına eşleştirmez", () => {
@@ -60,15 +60,15 @@ test("evrak açma: ayırt etmeyen sözcük (ornek/txt) tek başına eşleştirme
 });
 
 test("BELİRSİZLİK: iki başlık eşit skorluysa hiçbiri açılmaz", () => {
-  // "şikayet" hem gürültü hem sağlık-müdürlüğü başlığında geçiyor → beraberlik.
+  // "şikayet" hem atık-konteyner hem sağlık-müdürlüğü başlığında geçiyor → beraberlik.
   assert.equal(komutCoz("şikayeti aç", { basliklar: BASLIKLAR }).tur, "yok");
 });
 
 test("AYNI başlık iki kez listelenmişse belirsizlik SAYILMAZ (yoksa o evrak sesle hiç açılamaz)", () => {
   // Gerçek durum: aynı örnek evrak iki kez işlenmiş → taslak listesinde iki özdeş satır.
-  const ikiz = ["ornek-cok_konulu.txt", "ornek-cok_konulu.txt", "saglik_mud_sikayet.txt"];
-  assert.deepEqual(komutCoz("çok konulu olanı aç", { basliklar: ikiz }),
-    { tur: "evrak_ac", baslik: "ornek-cok_konulu.txt" });
+  const ikiz = ["ornek-cok_talepli_dilekce.txt", "ornek-cok_talepli_dilekce.txt", "saglik_mud_sikayet.txt"];
+  assert.deepEqual(komutCoz("çok talepli olanı aç", { basliklar: ikiz }),
+    { tur: "evrak_ac", baslik: "ornek-cok_talepli_dilekce.txt" });
 });
 
 test("başlık listesi boşsa evrak komutu üretilmez", () => {

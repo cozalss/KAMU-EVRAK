@@ -133,7 +133,7 @@ function EylemHucre({ item, onDuzenle }) {
       <span data-sd-ok={duzenlenir ? "degis" : ""} aria-hidden="true"><Icon.arrow width={13} height={13} /></span>
       {duzenlenir && (
         <button type="button" data-sd-eylem="" data-sd-gizli="" data-press="" onClick={(e) => { e.stopPropagation(); onDuzenle(item); }}
-          aria-label={`${item._konuGoster} taslağını Taslaklar'da düzenle`} style={{ minHeight: 30, padding: "4px 10px" }}>
+          aria-label={`${item._konuGoster} taslağını Taslaklar'da düzenle`} style={{ padding: "4px 10px" }}>
           <Icon.edit width={12} height={12} /> Düzenle
         </button>
       )}

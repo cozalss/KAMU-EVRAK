@@ -44,3 +44,14 @@ test("koyu temada ray sayfadan ayrışır — dosya sırtı görünür kalır (j
 test("kâğıt gece de açık kalır — koyu temada kâğıt zemini sayfadan ≥ 12:1 ayrışır", () => {
   assert.ok(kontrastOrani(rgb(K.koyu.kagit), rgb(K.koyu.bg)) >= 12);
 });
+
+test("primary buton dolgusu iki temada + rayda AA (tur 7: koyu temada 'devre dışı' okunuyordu)", () => {
+  for (const [adi, k] of [["açık", K.acik], ["koyu", K.koyu], ["ray-açık", K.rayAcik], ["ray-koyu", K.rayKoyu], ["kâğıt-koyu", K.kagitKoyu]]) {
+    for (const d of ["dolgu-t", "dolgu-th"]) {
+      const r = tokenOrani(k, "on-dolgu", d);
+      assert.ok(r != null && r >= 4.5, `${adi}: on-dolgu/${d} = ${r}`);
+    }
+  }
+  // Koyu temada dolgu açık lavanta DEĞİL: beyaz metin taşıyan koyu bir mavi.
+  assert.ok(kontrastOrani(rgb(K.koyu["dolgu-t"]), rgb(K.koyu.bg)) >= 2.5, "koyu dolgu zeminden ayrışmıyor");
+});

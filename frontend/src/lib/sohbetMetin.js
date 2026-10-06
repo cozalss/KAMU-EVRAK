@@ -2,7 +2,7 @@
 
    Sorun: LLM/kural tabanlı cevaplar ham anahtar sızdırıyordu — "*bilgi_edinme* türündeki
    evrak", "dilekce", "tarih_yok"; tek yıldızlı italik çıplak "*" olarak görünüyor, ekran
-   okuyucu "yıldız" okuyordu. Kayıt kartları üç kez aynı dosya adını ("ornek-bilgi_edinme.txt")
+   okuyucu "yıldız" okuyordu. Kayıt kartları üç kez aynı dosya adını ("ornek-bilgi_edinme_park_harcama.txt")
    başlık yapıyordu. Burada: satır-içi biçim ayrıştırma + bilinen kod → etiket + kart adı. */
 
 /* Evrak türü kodları — backend agents/config.py EVRAK_TURU_TR ile aynı sözlük (cümle içi

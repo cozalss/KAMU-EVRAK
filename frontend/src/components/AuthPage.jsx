@@ -201,7 +201,7 @@ function ModeTabs({ mode, onChange }) {
       {items.map(([id, label]) => {
         const active = mode === id;
         return (
-          <button key={id} type="button" onClick={() => onChange(id)} aria-pressed={active} {...focusRing} data-press=""
+          <button key={id} type="button" onClick={() => onChange(id)} aria-pressed={active} {...focusRing} data-press="" data-dokunma=""
             style={{ position: "relative", cursor: "pointer", height: 36, borderRadius: RAD.ctl, border: "none", background: "transparent", ...TYPE.ui, fontWeight: 600, color: active ? PAL.ink : PAL.mut2, transition: "color .2s ease" }}>
             {active && (
               <motion.span layoutId="ke-auth-sekme" aria-hidden="true" transition={{ type: "spring", stiffness: 420, damping: 34 }}

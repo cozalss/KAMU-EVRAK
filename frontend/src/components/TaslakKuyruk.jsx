@@ -58,7 +58,7 @@ function AramaKutusu({ filter, dar }) {
         placeholder={dar ? "Konu, dosya…" : "Konu, dosya adı…"} aria-label="Taslaklarda ara (konu ya da dosya adı)"
         onFocus={(e) => { focusRing.onFocus(e); setOdakta(true); }}
         onBlur={(e) => { focusRing.onBlur(e); setOdakta(false); }} data-dokunma=""
-        style={{ width: "100%", height: 36, boxSizing: "border-box", padding: `0 ${ince && !dar ? 32 : 12}px 0 34px`, borderRadius: RAD.ctl,
+        style={{ width: "100%", height: dar ? 44 : 36, boxSizing: "border-box", padding: `0 ${ince && !dar ? 32 : 12}px 0 34px`, borderRadius: RAD.ctl,
           border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.ink, ...TYPE.data, ...(dar ? { fontSize: 16 } : null) }} />
       {ince && !dar && !f.search && !odakta && (
         <span aria-hidden="true" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", ...TYPE.meta, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "1px 6px", background: PAL.surfHi, pointerEvents: "none" }}>/</span>

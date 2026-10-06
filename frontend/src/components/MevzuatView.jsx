@@ -350,7 +350,7 @@ const KART_IZGARA = { display: "grid", gridTemplateColumns: "repeat(auto-fill, m
 function KategoriGrup({ ad, sira, mevzuatlar, onAc, acik, q, ciftNolar }) {
   return (
     <details open={acik} aria-label={`${ad} mevzuatı`} className="mv-bolum" style={{ borderTop: `1px solid ${PAL.lineHi}`, padding: `${SP.m}px 0 ${SP.l}px` }}>
-      <summary style={{ cursor: "pointer", display: "flex", alignItems: "baseline", gap: SP.m, padding: `${SP.s}px ${SP.s}px ${SP.s}px 0`, borderRadius: RAD.ctl }}>
+      <summary data-dokunma="" style={{ cursor: "pointer", display: "flex", alignItems: "baseline", gap: SP.m, padding: `${SP.s}px ${SP.s}px ${SP.s}px 0`, borderRadius: RAD.ctl }}>
         <span style={{ fontFamily: MONO, fontSize: 12, color: DERIN.T, minWidth: 34, ...TNUM }}>§ {sira}</span>
         <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink, minWidth: 0 }}>{ad}</h2>
         <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 12, color: PAL.mut, ...TNUM, whiteSpace: "nowrap" }}>{mevzuatlar.length} kaynak</span>
@@ -495,7 +495,7 @@ function AramaBasligi({ aramaRef, filtre, setFiltre, aramaModu, setAramaModu, sa
             onFocus={() => setOdakta(true)} onBlur={() => setOdakta(false)}
             style={{ flex: 1, minWidth: 0, height: "100%", border: "none", background: "transparent", ...TYPE.read, color: PAL.ink, outline: "none" }} />
           {filtre && (
-            <button type="button" className="mv-temizle" onClick={() => { setFiltre(""); aramaRef.current?.focus(); }} aria-label="Aramayı temizle" {...focusRing} data-press=""
+            <button type="button" className="mv-temizle" data-dokunma="" onClick={() => { setFiltre(""); aramaRef.current?.focus(); }} aria-label="Aramayı temizle" {...focusRing} data-press=""
               style={{ cursor: "pointer", display: "grid", placeItems: "center", width: 32, height: 32, flexShrink: 0, borderRadius: RAD.ctl, border: "none", background: "transparent", color: PAL.mut2, padding: 0 }}>
               <Icon.x width={16} height={16} />
             </button>

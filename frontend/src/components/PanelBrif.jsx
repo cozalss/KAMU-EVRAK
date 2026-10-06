@@ -15,6 +15,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Btn, Damga, Icon, MONO, DISPLAY, T, R, TYPE, TNUM, SP, RAD, SH, EASE, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 import { kalanMetin, genislik } from "../lib/sureTakvimi.js";
 import { useDarEkran } from "../hooks/useMedya.js";
+import { HataFisi } from "./kabukAtomlari.jsx";
 
 /* Panel'in yerel giriş koreografisi. Global reduced-motion kuralı (NEON_KEYFRAMES)
    `*{animation:none!important}` ile bunları da söndürür — ayrıca koşul gerekmez.
@@ -95,7 +96,9 @@ function GecikmeRakam({ sla, renk }) {
 /* Tur 6: DURUM ve SON GÜN sütunları geniş ekranda oranla büyür (1920'de ad ile durum
    arasında ~340 px ölü alan açılıyordu); SON GÜN, en eski evrakın tarih damgasını taşıyacak
    genişlikte (136). */
-const DEFTER_SUTUN = "44px minmax(0, 1fr) minmax(128px, 16%) minmax(136px, 15%) auto";
+/* Tur 7: DURUM/SON GÜN sabit dar sütun, DURUM sola yaslı → ad uzar, ad ile durum arası
+   ölü alan kapanır (1920 ölçümü); ad kesilmez. */
+const DEFTER_SUTUN = "44px minmax(0, 1fr) 132px 136px auto";
 
 /* En eski gecikmiş evrakın SON GÜNÜ = kırmızı TARİH DAMGASI (resmî evrakın gelen-tarih
    ıstampası). Ekran başına ≤2 damga bütçesi bileşende zorlanır; burada yalnız 1. satır. */
@@ -140,7 +143,7 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme, damga }) {
   const normal = durum !== "GECIKMIS" && durum !== "KRITIK";
   const no = String(sira).padStart(2, "0");
   const isle = (
-    <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "4px 12px", minHeight: 32 }}>
+    <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "6px 12px", minHeight: dar ? 44 : 36, whiteSpace: "nowrap" }}>
       İşle <Icon.arrow width={14} height={14} />
     </Btn>
   );
@@ -164,7 +167,7 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme, damga }) {
       padding: `${SP.m}px 0`, borderTop: `1px solid ${PAL.line}`, ...giris(gecikme, "pv-yaz", 0.42) }}>
       <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, textAlign: "right", paddingRight: SP.s, ...TNUM }}>{no}</span>
       <DefterAd x={x} renk={renk} normal={normal} dolgu />
-      <span style={{ textAlign: "right" }}><GecikmeRakam sla={x.sla} renk={renk} /></span>
+      <span style={{ textAlign: "left" }}><GecikmeRakam sla={x.sla} renk={renk} /></span>
       <span style={{ textAlign: "right" }}><SonGun sla={x.sla} damga={damga} /></span>
       {isle}
     </div>
@@ -191,7 +194,7 @@ function Defter({ liste, pad, dar, onIsle, onGoInbox, etiket, fazlaMetin, damgal
             ...TYPE.antet, fontSize: 10, color: PAL.mut3 }}>
             <span style={{ textAlign: "right", paddingRight: SP.s }}>SIRA</span>
             <span>EVRAK · YASAL DAYANAK</span>
-            <span style={{ textAlign: "right" }}>DURUM</span>
+            <span>DURUM</span>
             <span style={{ textAlign: "right" }}>SON GÜN</span>
             <span style={{ width: 66 }} />
           </div>
@@ -382,21 +385,13 @@ export function BrifIskelet() {
 /* SLA servisi hatası — kahraman yuvası BOŞ kalmaz (tur 6): manşet kuyruğun kendisi, süre
    uydurulmaz; ekranın tek primary'si "Kuyruğu aç", yanında ikincil "Yeniden dene". */
 export function BrifHata({ kuyrukN, onGoInbox, onYeniden }) {
-  const dar = useDarEkran();
-  const pad = dar ? SP.l : SP.xl + 4;
   return (
-    <section role="alert" aria-label="Yasal süre özeti alınamadı" style={{ ...yuzey(BANT.sari.c), padding: `${pad + 4}px ${pad}px ${pad}px` }}>
-      <AntetSatir vurgu={null} sag="SERVİS YANIT VERMEDİ" />
-      <Manset sayi={kuyrukN} renk={PAL.ink} dar={dar}
-        baslik="evrak kuyrukta — yasal süreler şu an hesaplanamadı"
-        baglam="Süre servisi yanıt vermedi; takvim ve aciliyet sırası gizlendi. Tahmini süre gösterilmez — kuyruk ve gözlem verileri etkilenmedi."
-        eylem={(
-          <>
-            <Btn primary onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç">Kuyruğu aç <Icon.arrow /></Btn>
-            {onYeniden && <Btn onClick={onYeniden}>Yeniden dene</Btn>}
-          </>
-        )} />
-    </section>
+    <HataFisi ton="uyari" baslik="Yasal süreler şu an hesaplanamadı" onYenidenDene={onYeniden}
+      ikincil={<Btn onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç">Kuyruğu aç ({kuyrukN}) <Icon.arrow /></Btn>}
+      style={{ height: "100%" }}>
+      Süre servisi yanıt vermedi; takvim ve aciliyet sırası gizlendi, tahmini süre gösterilmez.
+      Kuyruktaki {kuyrukN} evrak ve gözlem verileri etkilenmedi.
+    </HataFisi>
   );
 }
 

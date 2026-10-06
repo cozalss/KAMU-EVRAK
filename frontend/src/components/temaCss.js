@@ -64,6 +64,10 @@ export const THEME_CSS = `
   --ke-bant-yesil:#1f8a5b; --ke-bant-sari:#c4841a; --ke-bant-kirmizi:#d23a2e;
   --ke-derin-t:#1f3fb4; --ke-derin-th:#18329a; --ke-derin-v:#56308a; --ke-derin-r:#a8261b;
   --ke-derin-yesil:#17704a; --ke-derin-sari:#87570d; --ke-derin-kirmizi:#a8261b;
+  /* dolgu-t: primary buton DOLGUSU (metin rengi değil). Açık temada derin-t ile bit-aynı; koyu
+     temada ayrışır — derin-t koyuda açık lavantadır (metin için doğru), dolgu olarak koyu metinle
+     "devre dışı" gibi okunuyordu (tur 7 jüri). on-dolgu: bu dolgunun üstündeki metin. */
+  --ke-dolgu-t:#1f3fb4; --ke-dolgu-th:#18329a; --ke-on-dolgu:#ffffff;
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -107,6 +111,8 @@ export const THEME_CSS = `
   --ke-bant-yesil:#45c08a; --ke-bant-sari:#e2a940; --ke-bant-kirmizi:#ff6a5a;
   --ke-derin-t:#a3b5ff; --ke-derin-th:#b8c6ff; --ke-derin-v:#d3b4f2; --ke-derin-r:#ff9d8f;
   --ke-derin-yesil:#7ad9ae; --ke-derin-sari:#f0c168; --ke-derin-kirmizi:#ff9d8f;
+  /* Koyu temada primary: derin mürekkep mavisi + beyaz metin (5,7:1 · hover 4,8:1). */
+  --ke-dolgu-t:#3b5bdb; --ke-dolgu-th:#4a68e0; --ke-on-dolgu:#ffffff;
 }
 /* RAY KAPSAMI (Antet & Damga, 2026-10) — kenar çubuğu "dosya cildi": iki temada da koyu
    lacivert bez. Token'lar alt ağaçta YENİDEN tanımlanır → ray içindeki her atom (hesap
@@ -125,6 +131,8 @@ export const THEME_CSS = `
   /* ACELE kırmızısı cilt üstünde (tur 6): gecikmiş sayısı rozeti rayda/alt şeritte okunmalı —
      açık temanın #a8261b'i lacivert bezde ~2:1 kalıyordu. */
   --ke-derin-kirmizi:#ff9d8f; --ke-derin-r:#ff9d8f;
+  /* Cilt üstündeki primary (yükle düğmesi) önceki görünümünü korur: açık dolgu + koyu metin. */
+  --ke-dolgu-t:#aebdff; --ke-dolgu-th:#c3ceff; --ke-on-dolgu:#0d1124;
 }
 /* Koyu temada ray ≈ sayfa zemini (ölçüldü: 1,04:1) → dosya sırtı ve ray kenarı kayboluyordu.
    Lacivert hue + cilt bezi dokusu + sağ kenar dikiş çizgisi (--ke-ray-kenar) üç ayrı sinyal;
@@ -150,6 +158,7 @@ export const THEME_CSS = `
   --ke-t:#2b4fd6; --ke-v:#6b3ea6; --ke-r:#d93a2b; --ke-on-accent:#ffffff; --ke-alfa:9%;
   --ke-derin-t:#1f3fb4; --ke-derin-th:#18329a; --ke-derin-v:#56308a; --ke-derin-r:#a8261b;
   --ke-derin-yesil:#125f3d; --ke-derin-sari:#7a4e0b; --ke-derin-kirmizi:#a8261b;
+  --ke-dolgu-t:#1f3fb4; --ke-dolgu-th:#18329a; --ke-on-dolgu:#ffffff;
 }
 /* Seçim vurgusu yalnız koyu modda tanımlanır (açık mod bit-aynı kalsın): tarayıcı
    varsayılan mavisi mürekkep paletinde yabancı duruyordu — marka gök mavisi tintine çekilir. */

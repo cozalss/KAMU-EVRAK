@@ -488,7 +488,9 @@ export const KV = ({ k, v, c = PAL.ink2 }) => (
 /* Buton — primary: düz DERIN dolgu (ekran başına 1) · varsayılan (secondary): beyaz zemin +
    koyu ink kenar · disabled: baskı zemin. Gradyan/glow yok; hover yalnız zemin tonu (120ms). */
 export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabel, title, style, type = "button" }) {
-  const fill = DERIN_OF(accent);
+  // T dolgusu ayrı token: koyu temada derin-t açık lavantadır (metin için), dolgu için koyu mavi.
+  const tDolgu = DERIN_OF(accent) === DERIN.T;
+  const fill = tDolgu ? "var(--ke-dolgu-t)" : DERIN_OF(accent);
   const base = {
     cursor: disabled ? "not-allowed" : "pointer", padding: "8px 14px", minHeight: 36,
     borderRadius: RAD.ctl, ...TYPE.ui, fontWeight: 500,
@@ -499,11 +501,11 @@ export function Btn({ children, onClick, accent = T, primary, disabled, ariaLabe
   const skin = disabled
     ? { background: PAL.press, color: PAL.mut2 }
     : primary
-      ? { background: fill, color: PAL.onAccent }
+      ? { background: fill, color: tDolgu ? "var(--ke-on-dolgu)" : PAL.onAccent }
       : { background: PAL.surf, color: PAL.ink, border: `1px solid ${PAL.inputLine}` };
   const onEnter = (e) => {
     if (disabled) return;
-    if (primary) { if (fill === DERIN.T) e.currentTarget.style.background = DERIN.Th; else e.currentTarget.style.filter = "brightness(.94)"; }
+    if (primary) { if (tDolgu) e.currentTarget.style.background = "var(--ke-dolgu-th)"; else e.currentTarget.style.filter = "brightness(.94)"; }
     else e.currentTarget.style.background = PAL.hov;
   };
   const onLeave = (e) => {

@@ -14,6 +14,7 @@ import { NeonCard, Btn, Icon, MONO, DISPLAY, T, V, TYPE, TNUM, SP, RAD, SH, EASE
 import { EVRAK_TR, BIRIM_GOSTER } from "./result-cards.jsx";
 import { iskeletCizgi, iskeletNefes } from "./PanelBrif.jsx";
 import { useDarEkran } from "../hooks/useMedya.js";
+import { HataFisi } from "./kabukAtomlari.jsx";
 import { GUN_MS, gunBasi } from "../lib/gunlukSeri.js";
 import { kayitAdi } from "../lib/sohbetMetin.js";
 import { noktaliGunSaat, noktaliSaat } from "../lib/panelBrifSaf.js";
@@ -276,17 +277,12 @@ export function GozlemDurum({ yukleniyor, span, genis, onYeniden }) {
     );
   }
   return (
-    <div role="alert" style={{ ...span(12), display: "flex", alignItems: "flex-start", gap: SP.m, flexWrap: "wrap", padding: `${SP.l}px ${SP.l + 4}px`,
-      background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `4px solid ${BANT.kirmizi.c}`, borderRadius: RAD.card, boxShadow: SH.card }}>
-      <span aria-hidden="true" style={{ display: "flex", paddingTop: 2, color: DERIN_OF(BANT.kirmizi.c) }}><Icon.alert width={16} height={16} /></span>
-      <span style={{ minWidth: 0, flex: "1 1 320px" }}>
-        <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>İşlem geçmişi alınamadı</span>
-        <span style={{ display: "block", ...TYPE.data, color: PAL.mut2, marginTop: 2, textWrap: "pretty" }}>
-          Kayıtlı işlemler sunucudan okunamadı; dağılım, süre ve son işlemler bu yüzden boş. Kuyruk, yasal süreler ve
-          giden sayısı etkilenmedi.
-        </span>
-      </span>
-      {onYeniden && <Btn onClick={onYeniden}><RotateCw size={14} strokeWidth={1.75} aria-hidden="true" /> Yeniden dene</Btn>}
+    <div style={span(12)}>
+      <HataFisi baslik="İşlem geçmişi alınamadı"
+        ikincil={onYeniden ? <Btn onClick={onYeniden}><RotateCw size={14} strokeWidth={1.75} aria-hidden="true" /> Yeniden dene</Btn> : null}>
+        Kayıtlı işlemler sunucudan okunamadı; dağılım, süre ve son işlemler bu yüzden boş. Kuyruk, yasal süreler ve
+        giden sayısı etkilenmedi.
+      </HataFisi>
     </div>
   );
 }

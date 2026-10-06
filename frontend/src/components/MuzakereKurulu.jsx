@@ -234,8 +234,9 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, o
               </div>
             )}
             {done && (
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 0 2px", borderTop: `1px solid ${PAL.line}`, ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s var(--ke-ease-out) both" }}>
-                <Icon.check /> {hukum.satir}
+              /* ✓ yalnız olumlu/revize hükümde; çekince varken nötr bilgi glifi + nötr renk (renk tek sinyal değil). */
+              <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 0 2px", borderTop: `1px solid ${PAL.line}`, ...TYPE.data, color: hukum.olumlu || hukum.tur === "revize" ? DERIN_OF(aksan) : PAL.ink2, fontWeight: 500, animation: az ? "none" : "nu-rise .2s var(--ke-ease-out) both" }}>
+                {hukum.olumlu || hukum.tur === "revize" ? <Icon.check /> : <Icon.info width={15} height={15} />} {hukum.satir}
               </div>
             )}
           </div>

@@ -5,16 +5,16 @@
    Mali-Vergi / Zabıta / Hukuk-İtiraz / İnsan Kaynakları / Diğer / Sınıflandırılmamış. */
 
 export const KATEGORILER = [
-  { id: "genel_dilekce", label: "Genel Dilekçe", color: "#2f8fa6" },
-  { id: "sikayet", label: "Şikâyet", color: "#d99a1f" },
-  { id: "bilgi_edinme", label: "Bilgi Edinme Başvurusu", color: "#4f7cc9" },
-  { id: "imar_ruhsat", label: "İmar / Ruhsat", color: "#c97c12" },
-  { id: "mali_vergi", label: "Mali İşler / Vergi", color: "#2f9e6e" },
-  { id: "zabita", label: "Zabıta", color: "#d9566a" },
-  { id: "hukuk_itiraz", label: "Hukuk / İtiraz", color: "#8e3d66" },
-  { id: "insan_kaynaklari", label: "İnsan Kaynakları", color: "#5fa8c9" },
-  { id: "diger", label: "Diğer", color: "#8a8172" },
-  { id: "siniflanmamis", label: "Sınıflandırılmamış", color: "#6b6255" },
+  { id: "genel_dilekce", label: "Genel Dilekçe", color: "var(--ke-t)" },
+  { id: "sikayet", label: "Şikâyet", color: "var(--ke-bant-sari)" },
+  { id: "bilgi_edinme", label: "Bilgi Edinme Başvurusu", color: "var(--ke-v)" },
+  { id: "imar_ruhsat", label: "İmar / Ruhsat", color: "var(--ke-derin-sari)" },
+  { id: "mali_vergi", label: "Mali İşler / Vergi", color: "var(--ke-bant-yesil)" },
+  { id: "zabita", label: "Zabıta", color: "var(--ke-r)" },
+  { id: "hukuk_itiraz", label: "Hukuk / İtiraz", color: "var(--ke-iris-3k)" },
+  { id: "insan_kaynaklari", label: "İnsan Kaynakları", color: "var(--ke-iris-1k)" },
+  { id: "diger", label: "Diğer", color: "var(--ke-mut)" },
+  { id: "siniflanmamis", label: "Sınıflandırılmamış", color: "var(--ke-mut3)" },
 ];
 
 const _META = Object.fromEntries(KATEGORILER.map((k) => [k.id, k]));
@@ -39,25 +39,35 @@ const trLow = (s) => String(s ?? "").toLocaleLowerCase("tr-TR");
 /* Evrak → kategori. Öncelik: prosedürel intake türü (4982/şikâyet ayrı rejim) → içerik
    anahtar sözcüğü (imar/zabıta/İK) → kalan tür/birim. Prosedürel tür içeriğe ÖNCELİKLİ:
    konusu imar olan bir "bilgi edinme başvurusu" yine Bilgi Edinme'dir (4982 süreci). */
+/* Etkin tür: sampleDocs `tur` (kanonik EVRAK_TURLERI) taşır; `id` yalnız tür bilinmiyorsa
+   yedektir — örnek kimlikleri ("cimer_sokak_hayvanlari") tür DEĞİLDİR. */
+export const etkinTur = (s = {}) => s.tur ?? s.evrak_turu ?? s.id ?? "";
+
+/* CİMER bir KANALDIR, rejim değil: başvurunun kendi beyan ettiği tür ("Başvuru Türü: Bilgi
+   Edinme") belirleyicidir. İhbar da kendi içeriğine göre (moloz → Zabıta) gruplanır. */
+const CIMER_TURU = /başvuru türü\s*:\s*(bilgi edinme|şikayet|şikâyet)/;
+
 export function evrakKategori({ evrak_turu = "", birim = "", konu = "", text = "" } = {}) {
   const t = trLow(evrak_turu);
   const blob = trLow(`${konu} ${text}`);
+  const cimerTuru = t === "cimer" ? (blob.match(CIMER_TURU) || [])[1] : null;
 
   // 1) Prosedürel intake türü (ayrı rejim → içerikten önce)
-  if (["bilgi_edinme", "cimer"].includes(t)) return "bilgi_edinme";
-  if (["sikayet", "ihbar"].includes(t)) return "sikayet";
+  if (t === "bilgi_edinme" || cimerTuru === "bilgi edinme") return "bilgi_edinme";
+  if (t === "sikayet" || (cimerTuru && cimerTuru !== "bilgi edinme")) return "sikayet";
 
   // 2) İçerik-spesifik (tür-üstü): imar/zabıta/İK belge türüne bağlı değil
   if (/imar|ruhsat|yapı ruhsat|iskan|kaçak yapı|yıkım|tadilat|parsel|kat irtifak|imar planı/.test(blob))
     return "imar_ruhsat";
-  if (/zabıta|işgal|seyyar|gürültü|ruhsatsız işyer|işyeri açma|pazar yeri|umuma açık/.test(blob))
+  if (/zabıta|işgal|seyyar|moloz|hafriyat|kaçak döküm|gürültü|ruhsatsız işyer|işyeri açma|pazar yeri|umuma açık/.test(blob))
     return "zabita";
   if (/personel|kadro|naklen|terfi|özlük|memur alım|atama|disiplin soruşturma|izin talebi/.test(blob)
       || birim === "insan_kaynaklari")
     return "insan_kaynaklari";
 
   // 3) Kalan tür/birim-bazlı
-  if (["dilekce", "basvuru", "talep", "cok_konulu"].includes(t)) return "genel_dilekce";
+  if (t === "ihbar") return "sikayet";
+  if (["dilekce", "basvuru", "talep", "cok_konulu", "cimer"].includes(t)) return "genel_dilekce";
   if (t === "fatura" || birim === "mali_strateji_sgb" || /vergi|tahakkuk|harç|emlak vergisi|tahsilat|fatura bedel/.test(blob))
     return "mali_vergi";
   if (["dava_evraki", "icra_evraki", "tebligat", "muzekkere", "gorus_mutalaa"].includes(t)

@@ -110,7 +110,8 @@ const OnayDugmesi = ({ geriCek, cekince, soluk, pasif, onAc }) => (
   <span style={{ opacity: soluk ? 0.45 : 1, transition: "opacity .16s ease-out" }}>
     <Btn primary={!geriCek} accent={cekince ? T : DERIN.yesil} disabled={pasif} onClick={onAc}
       ariaLabel={`${geriCek ? "Yine de onaya geç" : "Onayla ve gönder"} — önce onay fişi açılır`}>
-      <Icon.check /> {geriCek ? "Yine de onaya geç" : "Onayla ve gönder"}
+      {/* çekince varken ✓ onay sinyali vermez — nötr ileri oku */}
+      {geriCek ? <Icon.arrow /> : <Icon.check />} {geriCek ? "Yine de onaya geç" : "Onayla ve gönder"}
     </Btn>
   </span>
 );

@@ -117,7 +117,7 @@ function NitelikSeridi({ kunye, metin }) {
       <strong style={{ fontWeight: 650, color: mulga ? DERIN.R : DERIN.sari }}>{baslik}</strong>
       <span className={mulga ? undefined : "mo-serit-govde"}>{govde}</span>
       {not.url && !mulga && (
-        <a href={not.url} target="_blank" rel="noopener noreferrer" className="mo-resmi-bag" {...focusRing} style={{ color: DERIN.T, fontWeight: 600, textUnderlineOffset: 3, borderRadius: RAD.chip, whiteSpace: "nowrap" }}>
+        <a href={not.url} target="_blank" rel="noopener noreferrer" className="mo-resmi-bag" data-dokunma="" {...focusRing} style={{ display: "inline-flex", alignItems: "center", color: DERIN.T, fontWeight: 600, textUnderlineOffset: 3, borderRadius: RAD.chip, whiteSpace: "nowrap" }}>
           Resmî metni aç<span aria-hidden="true"> ↗</span><span style={SR_ONLY}> ({not.host}, yeni sekmede)</span>
         </a>
       )}
@@ -155,7 +155,7 @@ function KunyeSatiri({ kunye, metin, yer }) {
         </span>
       )}
       {not.url && !seritBaglanti && (
-        <a href={not.url} target="_blank" rel="noopener noreferrer" {...focusRing}
+        <a href={not.url} target="_blank" rel="noopener noreferrer" data-dokunma="" {...focusRing}
           style={{ display: "inline-flex", alignItems: "center", gap: 4, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3, whiteSpace: "nowrap", borderRadius: RAD.chip }}>
           {not.host}<span aria-hidden="true">↗</span><span style={SR_ONLY}> (resmî kaynak, yeni sekmede açılır)</span>
         </a>

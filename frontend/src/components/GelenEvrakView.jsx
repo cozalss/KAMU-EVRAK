@@ -17,7 +17,7 @@ import VadeHucre, { VadeStil } from "./DefterVadeCetveli.jsx";
 import { useFilter } from "../hooks/useFilter.js";
 import { useDefterArama } from "../lib/useDefterArama.js";
 import { vadeOlcusu, gunOlcegi, agirCeyrekEsigi } from "../lib/defterVade.js";
-import { evrakKategori, kategoriMeta, KATEGORILER, KATEGORI_BIRIM } from "../lib/kategori.js";
+import { evrakKategori, etkinTur, kategoriMeta, KATEGORILER, KATEGORI_BIRIM } from "../lib/kategori.js";
 import { BIRIM_LBL } from "./result-cards.jsx";
 import { SAMPLE_DOCS } from "../lib/sampleDocs.js";
 
@@ -204,7 +204,7 @@ function GelenBos({ samples, filter, bos, onUpload, busy }) {
 export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy, hedef = null, onHedefAcildi, uid = null }) {
   const done = processedIds || new Set();
   const items = useMemo(() => samples.map((s) => ({
-    ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: s.tur || s.id, text: s.text }),
+    ...s, _kategori: s._kategori || evrakKategori({ evrak_turu: etkinTur(s), konu: s.konu, text: s.text }),
     _slaGun: Number.isFinite(slaMap?.[s.id]?.kalan_gun) ? slaMap[s.id].kalan_gun : null,
     _slaDurum: slaMap?.[s.id]?.durum || "",
   })), [samples, slaMap]);

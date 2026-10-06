@@ -109,18 +109,20 @@ function NeonSidebar(props) {
       {!kompakt && <div style={{ ...TYPE.antet, color: PAL.mut3, padding: "8px 12px 10px", textTransform: "uppercase" }}>Çalışma alanı</div>}
       <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} sayac={sayac} dar={kompakt} />)}
-        {activeView === "denetim" && (
-          <>
-            <span aria-hidden="true" style={{ height: 1, margin: `${SP.s}px ${kompakt ? 6 : 12}px`, background: PAL.line }} />
-            <NavBtn item={DENETIM_OGE} active onClick={() => onNavigate("denetim")} busy={busy} dar={kompakt} />
-          </>
-        )}
       </nav>
 
       <YukleDugme kompakt={kompakt} busy={busy} onUpload={onUpload} />
 
       <DemoKotaSayaci kota={kota} kompakt={kompakt} />
       {!kompakt && <KabukSicil sicil={sicil} bayat={veriBayat} />}
+      {/* Geçici "Denetim izi" sırtı (tur 7): ana listenin içinde açılınca "Yeni evrak yükle"yi
+          ~60 px aşağı itiyordu. Artık alt bloğun (marginTop:auto) ÜSTÜNDEKİ boş alana iner →
+          üstteki hiçbir öğe zıplamaz. */}
+      {activeView === "denetim" && (
+        <nav aria-label="Açık kayıt" style={{ display: "flex", flexDirection: "column", marginTop: SP.l }}>
+          <NavBtn item={DENETIM_OGE} active onClick={() => onNavigate("denetim")} busy={busy} dar={kompakt} />
+        </nav>
+      )}
 
       <AsistanDugme kompakt={kompakt} />
       {kompakt && <div style={{ paddingBottom: SP.s }}><DaraltDugme dar onClick={darDegistir} /></div>}
